@@ -7,6 +7,7 @@ import { ASSETS } from '../content';
 import { getSplashSettings, DEFAULT_SPLASH, type SplashSettings } from '../firebase/firestore';
 import LiquidOilBackground from '../components/LiquidOilBackground';
 import DropIntro from '../components/DropIntro';
+import { goToRoute } from '../lib/staticRoutes';
 
 const STORAGE_KEY = 'inspirata.splash.seenAt';
 const REVISIT_DAYS = 7;
@@ -144,7 +145,9 @@ const SplashScreen: React.FC = () => {
 
   const dismiss = (href?: string) => {
     try { window.localStorage.setItem(STORAGE_KEY, Date.now().toString()); } catch { /* noop */ }
-    navigate(href || '/accueil');
+    // Route through goToRoute so /origine | /podcast | /vata hit Firebase
+    // hosting's static bundles instead of being captured by React Router.
+    goToRoute(navigate, href || '/accueil');
   };
 
   const tagline    = lang === 'EN' ? (settings.taglineEN || settings.tagline) : settings.tagline;

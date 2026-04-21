@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT, ASSETS } from '../content';
 import { askInternalAgent, type AgentReply } from '../lib/internalAgent';
+import { goToRoute } from '../lib/staticRoutes';
 
 // Chakra decorations — kept subtle, they're the cultural undertone.
 const ChakraDecorations = () => (
@@ -209,7 +210,7 @@ const InspiratHome: React.FC = () => {
           {heroCards.map((card, idx) => (
             <div
               key={idx}
-              onClick={() => navigate(card.href)}
+              onClick={() => goToRoute(navigate, card.href)}
               className={`hero-card opacity-0 block w-full h-[380px] lg:h-[58vh] relative group rounded-[28px] overflow-hidden cursor-pointer shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_22px_50px_rgba(212,175,55,0.28)] ${card.accent ? 'ring-1 ring-[#D4AF37]/50 hover:ring-[#D4AF37] shadow-[0_12px_40px_rgba(212,175,55,0.2)]' : ''}`}
             >
               {/* Background */}
@@ -229,7 +230,7 @@ const InspiratHome: React.FC = () => {
                 </span>
                 {card.secondaryCta && (
                   <button
-                    onClick={(e) => { e.stopPropagation(); navigate(card.secondaryCta!.href); }}
+                    onClick={(e) => { e.stopPropagation(); goToRoute(navigate, card.secondaryCta!.href); }}
                     className="inline-flex items-center gap-2 px-4 py-1.5 border border-white/30 rounded-full text-white text-[10px] bg-white/5 backdrop-blur-md uppercase tracking-widest hover:bg-white/20 transition-colors"
                   >
                     {card.secondaryCta.label}
@@ -282,7 +283,7 @@ const InspiratHome: React.FC = () => {
               {gemResult.href && gemResult.ctaLabel && (
                 <div className="mt-8 flex justify-center">
                   <button
-                    onClick={() => { const href = gemResult.href!; setGemResult(null); navigate(href); }}
+                    onClick={() => { const href = gemResult.href!; setGemResult(null); goToRoute(navigate, href); }}
                     className="inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-md"
                   >
                     {gemResult.ctaLabel}

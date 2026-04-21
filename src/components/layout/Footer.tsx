@@ -2,6 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
 import { CONTENT } from '../../content';
+import { isStaticRoute } from '../../lib/staticRoutes';
+
+// Render a React Router <Link> for in-app routes, or a plain <a> for statically
+// hosted bundles (/origine, /podcast, /vata) so Firebase rewrites can serve them.
+const NavLink: React.FC<{ href: string; className?: string; children: React.ReactNode }> = ({ href, className, children }) => (
+  isStaticRoute(href)
+    ? <a href={href} className={className}>{children}</a>
+    : <Link to={href} className={className}>{children}</Link>
+);
 
 const Footer: React.FC = () => {
   const { lang } = useApp();
@@ -56,7 +65,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               {links.map(({ href, label }) => (
                 <li key={href}>
-                  <Link to={href} className="text-xs hover:text-[#D4AF37] transition-colors uppercase tracking-wide">{label}</Link>
+                  <NavLink href={href} className="text-xs hover:text-[#D4AF37] transition-colors uppercase tracking-wide">{label}</NavLink>
                 </li>
               ))}
             </ul>
@@ -68,7 +77,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               {programmes.map(({ href, label }) => (
                 <li key={href}>
-                  <Link to={href} className="text-xs hover:text-[#D4AF37] transition-colors uppercase tracking-wide">{label}</Link>
+                  <NavLink href={href} className="text-xs hover:text-[#D4AF37] transition-colors uppercase tracking-wide">{label}</NavLink>
                 </li>
               ))}
             </ul>

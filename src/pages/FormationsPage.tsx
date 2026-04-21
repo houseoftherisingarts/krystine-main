@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
 import { ASSETS } from '../content';
+import { goToRoute } from '../lib/staticRoutes';
 
 interface Programme {
   tag: string;
@@ -122,7 +123,7 @@ const FormationsPage: React.FC = () => {
         {programmes.filter(p => p.featured).map(p => (
           <section
             key={p.href}
-            onClick={() => navigate(p.href)}
+            onClick={() => goToRoute(navigate, p.href)}
             className="group relative cursor-pointer mb-16 rounded-[30px] overflow-hidden shadow-2xl border border-[#D4AF37]/20 hover:shadow-[0_0_40px_rgba(212,175,55,0.25)] transition-all"
           >
             <div className="relative h-[500px] bg-[#0B1A36]">
@@ -154,7 +155,7 @@ const FormationsPage: React.FC = () => {
           {programmes.filter(p => !p.featured).map(p => (
             <article
               key={p.href}
-              onClick={() => navigate(p.href)}
+              onClick={() => goToRoute(navigate, p.href)}
               className="group cursor-pointer bg-white dark:bg-[#0B1A36]/60 rounded-[24px] shadow-lg border border-[#0B1A36]/5 dark:border-white/5 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
             >
               <div className="relative h-48 overflow-hidden bg-[#0B1A36]">
