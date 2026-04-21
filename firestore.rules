@@ -1,0 +1,85 @@
+rules_version = '2';
+
+// Inspirata / Krystine Main — Firestore security rules.
+//
+// Public site pages read events / blog posts / media library / settings.
+// Public forms (newsletter, dosha quiz, booking requests) allow create-only from anyone.
+// Signed-in members own their own profile, orders, and support conversation.
+// All admin operations are gated on the ADMIN allowlist in the auth token.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email in [
+          'admin@krystinestlaurent.ca',
+          'krystine@inspiratanature.com'
+        ];
+    }
+    function isSignedIn() { return request.auth != null; }
+    function isSelf(uid) { return isSignedIn() && request.auth.uid == uid; }
+
+    // ── Public read, admin write ──
+    match /events/{id}       { allow read: if true; allow write: if isAdmin(); }
+    match /blogPosts/{id}    { allow read: if true; allow write: if isAdmin(); }
+    match /mediaLibrary/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /settings/{id}     { allow read: if true; allow write: if isAdmin(); }
+
+    // ── Public create-only, admin read/update/delete ──
+    match /newsletter/{id} {
+      allow create: if request.resource.data.keys().hasAll(['email'])
+                    && request.resource.data.email is string;
+      allow read, update, delete: if isAdmin();
+    }
+    match /bookingRequests/{id} {
+      allow create: if request.resource.data.keys().hasAll(['name', 'email']);
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ── Dosha quiz: public create. Members read their own. Admins full. ──
+    match /doshaResults/{id} {
+      allow create: if request.resource.data.keys().hasAll(['email', 'dominant']);
+      allow read: if isAdmin()
+                  || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Member profiles: user owns their own profile. Admins full. ──
+    match /members/{uid} {
+      allow read: if isSelf(uid) || isAdmin();
+      allow create: if isSelf(uid);
+      allow update: if isSelf(uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── Client orders: member reads own, admin full. Created at checkout. ──
+    match /clientOrders/{id} {
+      allow read: if isAdmin()
+                  || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isSignedIn()
+                    && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Shopify orders (written by Cloud Functions via Admin SDK, which bypasses rules).
+    // Readable by admin in the dashboard. No client writes.
+    match /shopifyOrders/{id} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // ── Support messaging ──
+    // Conversation doc keyed by member uid; only the owner and admins can read/write.
+    match /conversations/{uid} {
+      allow read: if isSelf(uid) || isAdmin();
+      allow write: if isSelf(uid) || isAdmin();
+
+      match /messages/{mid} {
+        allow read: if isSelf(uid) || isAdmin();
+        allow create: if (isSelf(uid) && request.resource.data.sender == 'client')
+                      || (isAdmin() && request.resource.data.sender == 'admin');
+        allow update, delete: if isAdmin();
+      }
+    }
+  }
+}

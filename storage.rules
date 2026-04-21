@@ -1,0 +1,23 @@
+rules_version = '2';
+
+// Inspirata / Krystine Main — Firebase Storage security rules.
+// Public read for uploaded site imagery, admin-only write.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email in [
+          'admin@krystinestlaurent.ca',
+          'krystine@inspiratanature.com'
+        ];
+    }
+
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin()
+                   && request.resource.size < 10 * 1024 * 1024  // 10 MB
+                   && request.resource.contentType.matches('image/.*');
+    }
+  }
+}

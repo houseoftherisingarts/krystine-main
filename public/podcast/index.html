@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Krystine St-Laurent - Transformation Profonde</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=El+Messiri:wght@400..700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            borderRadius: {
+              'custom': '2px', // Sharper, more elegant
+              'xl': '20px',
+            },
+            colors: {
+              brand: {
+                dark: '#120F0D', // Deep Earthy Charcoal (Warm Black)
+                surface: '#1C1917', // Stone 900
+                light: '#F5F5F0', // Off-white / Eggshell
+                accent: '#C5A059', // Antique Gold
+                vata: '#64694B', // Original Earthy Sage Green
+                'vata-bright': '#88966E', // Luminous Herbal Green for specific highlights
+                sage: '#4A5D4F', // Deep Sage Green (Legacy)
+                terracotta: '#8C5E4A', // Muted Earth tone
+              }
+            },
+            fontFamily: {
+              sans: ['Helvetica Neue', 'Arial', 'sans-serif'],
+              serif: ['Georgia', 'Times New Roman', 'serif'],
+              handwriting: ['Caveat', 'cursive'],
+              messiri: ['El Messiri', 'serif'],
+            },
+            backgroundImage: {
+              'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        transition: background-color 0.5s ease, color 0.5s ease;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(100, 105, 75, 0.5); /* Reverted to Sage */
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(197, 160, 89, 0.6);
+      }
+      .text-glow-gold {
+        text-shadow: 0 0 15px rgba(197, 160, 89, 0.5);
+      }
+      .glow-highlight {
+        color: #C5A059;
+        text-shadow: 0 0 12px rgba(197, 160, 89, 0.6);
+        font-weight: 800;
+      }
+    </style>
+
+<link rel="stylesheet" href="/index.css">
+  <script type="importmap">
+{
+  "imports": {
+    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.25",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
+    "dom/": "https://esm.sh/dom@^0.0.3/",
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/podcast/assets/index-DI7wLyHA.js"></script>
+</head>
+  <body>
+    <div id="root"></div>
+</body>
+</html>

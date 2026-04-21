@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VATA | Krystine St-Laurent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=El+Messiri:wght@400..700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            borderRadius: {
+              'custom': '2px', // Sharper, more elegant
+              'xl': '20px',
+            },
+            colors: {
+              brand: {
+                dark: '#120F0D', // Deep Earthy Charcoal (Warm Black)
+                surface: '#1C1917', // Stone 900
+                light: '#F5F5F0', // Off-white / Eggshell
+                accent: '#C5A059', // Antique Gold
+                vata: '#64694B', // Original Earthy Sage Green
+                'vata-bright': '#88966E', // Luminous Herbal Green for specific highlights
+                sage: '#4A5D4F', // Deep Sage Green (Legacy)
+                terracotta: '#8C5E4A', // Muted Earth tone
+              }
+            },
+            fontFamily: {
+              sans: ['Helvetica Neue', 'Arial', 'sans-serif'],
+              serif: ['Georgia', 'Times New Roman', 'serif'],
+              handwriting: ['Caveat', 'cursive'],
+              messiri: ['El Messiri', 'serif'],
+            },
+            backgroundImage: {
+              'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      html, body {
+        scroll-behavior: smooth;
+        overscroll-behavior-y: none; /* Prevents bounce on mobile */
+      }
+      body {
+        transition: background-color 0.5s ease, color 0.5s ease;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(100, 105, 75, 0.5); /* Reverted to Sage */
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(197, 160, 89, 0.6);
+      }
+      .text-glow-gold {
+        text-shadow: 0 0 15px rgba(197, 160, 89, 0.5);
+      }
+      .glow-highlight {
+        color: #C5A059;
+        text-shadow: 0 0 12px rgba(197, 160, 89, 0.6);
+        font-weight: 800;
+      }
+    </style>
+    <!-- SEO Schema: Person & Product -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "name": "Krystine St-Laurent",
+          "jobTitle": "Auteure & Conférencière en Ayurveda et Herboristerie",
+          "url": "https://www.krystinestlaurent.com",
+          "sameAs": [
+            "https://www.instagram.com/krystinestlaurent",
+            "https://www.facebook.com/krystinestlaurentinspirata",
+            "https://krystinestlaurent.ca"
+          ],
+          "knowsAbout": [
+            "Ayurveda", 
+            "Vata Dosha", 
+            "Herboristerie", 
+            "Méditation", 
+            "Santé des femmes", 
+            "Gestion du stress",
+            "Aromathérapie"
+          ],
+          "description": "Krystine St-Laurent guide les femmes vers l'équilibre par l'Ayurveda, l'herboristerie et la reconnexion à leur nature cyclique."
+        },
+        {
+          "@type": "Product",
+          "name": "Harmoniser Vata : Apaisement & Ancrage",
+          "description": "Un programme pour calmer l'anxiété, le mental agité et retrouver son rythme naturel par l'Ayurveda. Idéal pour les symptômes de stress, insomnie et digestion irrégulière.",
+          "image": "https://storage.googleapis.com/inspirata/Vata/golden%20vata%20logo.png",
+          "brand": {
+            "@type": "Brand",
+            "name": "Inspirata Ayurveda"
+          },
+          "offers": {
+            "@type": "Offer",
+            "price": "497.00",
+            "priceCurrency": "CAD",
+            "availability": "https://schema.org/InStock",
+            "url": "https://www.krystinestlaurent.com"
+          },
+          "audience": {
+            "@type": "Audience",
+            "audienceType": "Femmes cherchant l'équilibre, intéressées par la santé globale, le yoga et la méditation."
+          }
+        }
+      ]
+    }
+    </script>
+    <!-- Hotjar Tracking Code -->
+    <script>
+        (function(h,o,t,j,a,r){
+            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+            h._hjSettings={hjid:6608075,hjsv:6};
+            a=o.getElementsByTagName('head')[0];
+            r=o.createElement('script');r.async=1;
+            r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+    </script>
+
+<link rel="stylesheet" href="/index.css">
+  <script type="importmap">
+{
+  "imports": {
+    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.25",
+    "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.0/client",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
+    "dom/": "https://esm.sh/dom@^0.0.3/",
+    "react-ga4": "https://esm.sh/react-ga4@^2.1.0",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "path": "https://esm.sh/path@^0.12.7"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/vata/assets/index-CItyUrPK.js"></script>
+  <link rel="stylesheet" crossorigin href="/vata/assets/index-B1PyWBkW.css">
+</head>
+  <body>
+    <div id="root"></div>
+</body>
+</html>

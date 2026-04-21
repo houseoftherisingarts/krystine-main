@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inspirata Nature | Krystine St-Laurent</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              royal: '#0B1A36',
+              gold: '#D4AF37',
+              'gold-light': '#F4E5BC',
+              'gold-dark': '#B59020',
+              'surface': '#FAFAFA',
+            },
+            fontFamily: {
+              serif: ['"Cormorant Garamond"', 'serif'],
+              sans: ['"Montserrat"', 'sans-serif'],
+            },
+            borderRadius: {
+              'brand': '15px',
+            },
+            boxShadow: {
+              'glow': '0 0 20px rgba(212, 175, 55, 0.15)',
+              'glow-hover': '0 10px 40px rgba(212, 175, 55, 0.25)',
+              'depth': '0 20px 40px -5px rgba(11, 26, 54, 0.15)',
+            },
+            animation: {
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            },
+            transformOrigin: {
+              'center': 'center',
+            }
+          }
+        }
+      }
+    </script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+    
+    <style>
+      /* --- CORE RESETS --- */
+      body {
+        background-color: #ffffff;
+        color: #0B1A36;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      
+      html.dark body {
+        background-color: #050C1A;
+        color: #F4F4F4;
+      }
+
+      /* --- GLASS & DEPTH --- */
+      .glass-depth {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 
+          0 4px 6px -1px rgba(0, 0, 0, 0.05), 
+          0 2px 4px -1px rgba(0, 0, 0, 0.03),
+          inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      }
+      
+      html.dark .glass-depth {
+        background: rgba(11, 26, 54, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+      }
+      
+      .glass-depth-dark {
+        background: rgba(11, 26, 54, 0.4);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      }
+
+      .shadow-depth {
+        box-shadow: 0 25px 50px -12px rgba(11, 26, 54, 0.15);
+      }
+
+      .text-shadow {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      }
+      
+      .text-shadow-sm {
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      }
+
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+      }
+      
+      html.dark .glass-panel {
+         background: rgba(5, 12, 26, 0.65);
+         border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* --- IRIDESCENCE EFFECT --- */
+      .iridescent-glow {
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .iridescent-glow::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, rgba(135,206,235,0.1) 30%, rgba(255,255,255,0) 70%);
+        transform: scale(0.8);
+        opacity: 0;
+        transition: opacity 0.6s ease, transform 0.6s ease;
+        pointer-events: none;
+        z-index: 1;
+      }
+      
+      .iridescent-glow:hover::before {
+        opacity: 1;
+        transform: scale(1) rotate(15deg);
+      }
+
+      /* --- CARD HOVER STATES --- */
+      .card-hover-effect {
+        transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s ease;
+      }
+      
+      .card-hover-effect:hover {
+        transform: translateY(-8px) scale(1.01);
+        box-shadow: 0 25px 50px -12px rgba(11, 26, 54, 0.25);
+      }
+
+      .card-bg-image {
+        transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      
+      .card-hover-effect:hover .card-bg-image {
+        transform: scale(1.08);
+      }
+
+      /* --- 3D UTILITIES --- */
+      .preserve-3d {
+        transform-style: preserve-3d;
+      }
+      .backface-hidden {
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+      .perspective-1000 {
+        perspective: 1000px;
+      }
+      .transform-style-3d {
+        transform-style: preserve-3d;
+      }
+
+      /* --- MANDALA SHAPES --- */
+      .leaf-shape {
+        border-radius: 0% 100% 0% 100%; /* Petal shape */
+      }
+      .quiz-bud {
+        transition: all 0.3s ease;
+      }
+
+      /* --- SCROLLBAR --- */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #fff;
+      }
+      html.dark ::-webkit-scrollbar-track {
+        background: #050C1A;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #D4AF37;
+        border-radius: 3px;
+      }
+      
+      /* --- TEXT TRUNCATION --- */
+      .line-clamp-1 {
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      
+      /* --- BOOK 3D ANIMATION --- */
+      .book-scene {
+        perspective: 1500px;
+      }
+      .book-wrap {
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+        width: 100%;
+        height: 100%;
+      }
+      .book-cover {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform-origin: left;
+        transform-style: preserve-3d;
+        transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+        z-index: 10;
+      }
+      .book-cover-front {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        background-size: 100% 100%;
+        background-position: center;
+        border-radius: 2px 5px 5px 2px;
+      }
+      .book-cover-back {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        background-color: #fff;
+        transform: rotateY(180deg);
+        border-radius: 2px 5px 5px 2px;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+      }
+      .book-page {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: calc(100% - 4px);
+        height: calc(100% - 4px);
+        background: #fafafa;
+        transform-origin: left;
+        transition: transform 1.4s cubic-bezier(0.25, 1, 0.5, 1);
+        z-index: 5;
+        border-radius: 2px 4px 4px 2px;
+        box-shadow: inset 3px 0 10px rgba(0,0,0,0.05);
+      }
+      .book-back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #0B1A36;
+        border-radius: 2px 5px 5px 2px;
+        z-index: 1;
+        box-shadow: 10px 10px 30px rgba(0,0,0,0.3);
+      }
+      
+      /* Active State for Opening */
+      .book-wrap.is-open .book-cover {
+        transform: rotateY(-135deg);
+      }
+      .book-wrap.is-open .book-page {
+        transform: rotateY(-20deg);
+      }
+      .book-wrap.is-open {
+        transform: translateX(30px) rotateY(10deg);
+      }
+      .book-wrap:hover .book-cover {
+        transform: rotateY(-30deg);
+      }
+      .book-wrap.is-open:hover .book-cover {
+        transform: rotateY(-145deg);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "gsap": "https://aistudiocdn.com/gsap@^3.13.0",
+    "gsap/ScrollTrigger": "https://aistudiocdn.com/gsap@^3.13.0/ScrollTrigger",
+    "gsap/": "https://aistudiocdn.com/gsap@^3.13.0/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
