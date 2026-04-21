@@ -40,6 +40,29 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
 
   return (
     <div className="space-y-8">
+      {/* Edit-site callout — routes to /accueil where the floating edit bar
+          lets Krystine flip the site into edit mode and update text/images. */}
+      <Card className="p-6 bg-gradient-to-br from-[#0B1A36] to-[#1A2642] text-white border-[#D4AF37]/20">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] block mb-2">
+              Contenu du site
+            </span>
+            <h2 className="text-2xl font-serif mb-1">Modifier le site en direct</h2>
+            <p className="text-sm text-white/70 max-w-xl">
+              Activez le mode édition pour changer les textes, les photos et recadrer les images directement
+              sur la page, avec aperçu en temps réel.
+            </p>
+          </div>
+          <a
+            href="/accueil?edit=1"
+            className="shrink-0 inline-flex items-center gap-2 bg-[#D4AF37] text-[#0B1A36] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-white transition-colors"
+          >
+            <i className="fa-solid fa-pen" /> Ouvrir en édition
+          </a>
+        </div>
+      </Card>
+
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {stats.map(s => (

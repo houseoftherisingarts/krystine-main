@@ -4,8 +4,9 @@ import { logout } from '../firebase/auth';
 import { updateMember, getClientOrdersForMember, getDoshaResultsForMember, type ClientOrder, type DoshaResult } from '../firebase/firestore';
 import { uploadImage } from '../firebase/storage';
 import ClientSupport from './client/ClientSupport';
+import ClientArchives from './client/ClientArchives';
 
-type Tab = 'profile' | 'orders' | 'dosha' | 'support';
+type Tab = 'profile' | 'orders' | 'dosha' | 'archives' | 'support';
 
 const ClientPortal: React.FC = () => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
@@ -48,10 +49,11 @@ const ClientPortal: React.FC = () => {
   }
 
   const tabs: { id: Tab; label: string; icon: string }[] = [
-    { id: 'profile', label: lang === 'FR' ? 'Profil' : 'Profile', icon: 'fa-user' },
-    { id: 'orders',  label: lang === 'FR' ? 'Commandes' : 'Orders', icon: 'fa-box' },
-    { id: 'dosha',   label: lang === 'FR' ? 'Dosha' : 'Dosha', icon: 'fa-circle-nodes' },
-    { id: 'support', label: lang === 'FR' ? 'Support' : 'Support', icon: 'fa-envelope' },
+    { id: 'profile',  label: lang === 'FR' ? 'Profil' : 'Profile', icon: 'fa-user' },
+    { id: 'orders',   label: lang === 'FR' ? 'Commandes' : 'Orders', icon: 'fa-box' },
+    { id: 'dosha',    label: lang === 'FR' ? 'Dosha' : 'Dosha', icon: 'fa-circle-nodes' },
+    { id: 'archives', label: lang === 'FR' ? 'Archives' : 'Archives', icon: 'fa-envelope-open-text' },
+    { id: 'support',  label: lang === 'FR' ? 'Support' : 'Support', icon: 'fa-comments' },
   ];
 
   return (
@@ -105,10 +107,11 @@ const ClientPortal: React.FC = () => {
 
         {/* Tab content */}
         <div className="bg-white dark:bg-[#0B1A36] rounded-[24px] shadow-sm border border-[#0B1A36]/5 dark:border-white/5 p-6 md:p-8">
-          {tab === 'profile' && <ProfileTab />}
-          {tab === 'orders'  && <OrdersTab />}
-          {tab === 'dosha'   && <DoshaTab />}
-          {tab === 'support' && <ClientSupport />}
+          {tab === 'profile'  && <ProfileTab />}
+          {tab === 'orders'   && <OrdersTab />}
+          {tab === 'dosha'    && <DoshaTab />}
+          {tab === 'archives' && <ClientArchives />}
+          {tab === 'support'  && <ClientSupport />}
         </div>
       </div>
     </div>

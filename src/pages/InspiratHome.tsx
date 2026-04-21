@@ -2,6 +2,9 @@ import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useApp } from '../contexts/AppContext';
+import { useEditMode } from '../contexts/EditModeContext';
+import EditableText from '../components/edit/EditableText';
+import EditableImage from '../components/edit/EditableImage';
 import { CONTENT, ASSETS } from '../content';
 import { askInternalAgent, type AgentReply } from '../lib/internalAgent';
 import { goToRoute } from '../lib/staticRoutes';
@@ -45,6 +48,7 @@ const QUIZ_DATA = [
 
 const InspiratHome: React.FC = () => {
   const { lang, addToCart, isAdmin, user, member, setSignInOpen } = useApp();
+  const { editMode } = useEditMode();
   const t = CONTENT[lang];
   const navigate = useNavigate();
 
@@ -56,10 +60,10 @@ const InspiratHome: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
   const dropRef = useRef<HTMLDivElement>(null);
-  const logoHeroRef = useRef<HTMLImageElement>(null);
-  const navLogoRef = useRef<HTMLDivElement>(null);
 
-  // Intro animation
+  // Intro animation — a small gold drop falls and splashes, then the overlay
+  // dissolves and the page content reveals. The splash screen already shows
+  // the full brand drop, so here we keep it short and don't re-show the logo.
   useLayoutEffect(() => {
     if (introComplete) return;
     const ctx = gsap.context(() => {
@@ -67,13 +71,13 @@ const InspiratHome: React.FC = () => {
       gsap.set(['.home-content', '.hero-card', '.gem-bar', '.guide-btn'], { opacity: 0 });
       gsap.set(dropRef.current, { y: '-45vh', scale: 0.5, opacity: 1 });
 
-      tl.to(dropRef.current, { y: 0, duration: 1.5, ease: 'power4.in' })
-        .to(dropRef.current, { scaleX: 1.5, scaleY: 0.05, opacity: 0, duration: 0.8, ease: 'power2.out' })
-        .to(introRef.current, { opacity: 0, pointerEvents: 'none', duration: 1.0 }, '-=0.5')
-        .to('.home-content', { opacity: 1, duration: 0.8 }, '<')
-        .to('.hero-card', { y: 0, opacity: 1, duration: 1.0, stagger: 0.1, ease: 'power3.out' }, '-=0.4')
-        .to('.gem-bar', { y: 0, opacity: 1, duration: 1 }, '-=0.8')
-        .to('.guide-btn', { opacity: 1, duration: 1 }, '-=0.5');
+      tl.to(dropRef.current, { y: 0, duration: 1.2, ease: 'power4.in' })
+        .to(dropRef.current, { scaleX: 1.6, scaleY: 0.05, opacity: 0, duration: 0.5, ease: 'power2.out' })
+        .to(introRef.current, { opacity: 0, pointerEvents: 'none', duration: 0.7 }, '-=0.15')
+        .to('.home-content', { opacity: 1, duration: 0.7 }, '<')
+        .to('.hero-card', { y: 0, opacity: 1, duration: 0.9, stagger: 0.08, ease: 'power3.out' }, '-=0.3')
+        .to('.gem-bar', { y: 0, opacity: 1, duration: 0.8 }, '-=0.6')
+        .to('.guide-btn', { opacity: 1, duration: 0.8 }, '-=0.4');
     }, containerRef);
     return () => ctx.revert();
   }, []);
@@ -89,52 +93,43 @@ const InspiratHome: React.FC = () => {
     }, 350);
   };
 
-  // Card definitions
-  const heroCards = [
+  // Krystine is displayed separately as a featured header tile — visually
+  // distinct from the 3 main doorways (Découvrir / Apprendre / Prendre soin).
+  const founderCard = {
+    key: 'home.cards.founder',
+    image: ASSETS.founder,
+    hoverImage: ASSETS.founderHover,
+    title: t.cards.founder.title,
+    subtitle: t.cards.founder.subtitle,
+    href: '/krystine',
+  };
+
+  // Main 3 tiles, each with a banner label (eyebrow) that states the intent.
+  const mainTiles = [
     {
-      image: ASSETS.founder,
-      hoverImage: ASSETS.founderHover,
-      title: t.cards.founder.title,
-      subtitle: t.cards.founder.subtitle,
-      href: '/krystine',
-    },
-    {
-      image: ASSETS.shopBg,
-      title: t.cards.shop.title,
-      subtitle: t.cards.shop.subtitle,
-      href: '/boutique',
-      secondaryCta: { label: t.cards.shop.locations, href: '/points-de-vente' },
-    },
-    {
-      image: ASSETS.ayurvedaBg,
-      title: t.cards.ayurveda.title,
-      subtitle: t.cards.ayurveda.subtitle,
-      href: '/ayurveda',
-    },
-    {
-      image: ASSETS.livresBg,
-      title: t.cards.livres.title,
-      subtitle: t.cards.livres.subtitle,
-      href: '/livres',
-    },
-    {
-      image: ASSETS.formationsBg,
-      title: t.cards.formations.title,
-      subtitle: t.cards.formations.subtitle,
-      href: '/formations',
-    },
-    {
+      key: 'home.cards.blog',
       image: ASSETS.blogBg,
       title: t.cards.blog.title,
       subtitle: t.cards.blog.subtitle,
+      banner: (t.cards.blog as any).banner,
       href: '/medias',
     },
     {
-      image: ASSETS.origineBanner,
-      title: t.cards.evenements.title,
-      subtitle: t.cards.evenements.subtitle,
-      href: '/evenements',
-      accent: true,
+      key: 'home.cards.formations',
+      image: ASSETS.formationsBg,
+      title: t.cards.formations.title,
+      subtitle: t.cards.formations.subtitle,
+      banner: (t.cards.formations as any).banner,
+      href: '/formations',
+    },
+    {
+      key: 'home.cards.shop',
+      image: ASSETS.shopBg,
+      title: t.cards.shop.title,
+      subtitle: t.cards.shop.subtitle,
+      banner: (t.cards.shop as any).banner,
+      href: '/boutique',
+      secondaryCta: { label: t.cards.shop.locations, href: '/points-de-vente' },
     },
   ];
 
@@ -146,31 +141,46 @@ const InspiratHome: React.FC = () => {
       <RaysOfLight />
       <ChakraDecorations />
 
-      {/* INTRO ANIMATION */}
+      {/* INTRO ANIMATION — small gold drop falls + splashes, then dissolves. */}
       <div ref={introRef} className="fixed inset-0 z-50 flex items-center justify-center bg-white pointer-events-none overflow-hidden">
         <div ref={dropRef} className="w-2.5 h-2.5 bg-gradient-to-br from-[#D4AF37] to-[#B8960C] rounded-full shadow-[0_4px_15px_rgba(212,175,55,0.6)] z-20" />
-        <img ref={logoHeroRef} src={ASSETS.logo} alt="Inspirata" className="w-48 md:w-64 object-contain absolute z-30 opacity-0" />
       </div>
 
-      {/* Floating auth chip (top-right) — replaces the hidden NavBar on /accueil */}
-      <div className="fixed top-5 right-5 md:top-6 md:right-8 z-40">
+      {/* Floating auth chips (top-right) — replace the hidden NavBar on /accueil.
+          Admins get TWO chips: "Mon espace" (client view) and a separate
+          "Admin" shortcut, so the label always matches its destination. */}
+      <div className="fixed top-5 right-5 md:top-6 md:right-8 z-40 flex items-center gap-2">
         {user ? (
-          <Link
-            to={isAdmin ? '/admin' : '/compte'}
-            title={member?.displayName || user.displayName || user.email || ''}
-            className="inline-flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-full bg-white/80 dark:bg-[#0B1A36]/80 backdrop-blur-md border border-[#D4AF37]/30 shadow-md hover:border-[#D4AF37] hover:shadow-[0_0_18px_rgba(212,175,55,0.25)] transition-all"
-          >
-            {(member?.photoURL || user.photoURL) ? (
-              <img src={member?.photoURL || user.photoURL!} alt="" className="w-7 h-7 rounded-full object-cover" />
-            ) : (
-              <div className="w-7 h-7 rounded-full bg-[#D4AF37]/20 flex items-center justify-center text-[11px] font-bold text-[#D4AF37]">
-                {(user.email?.[0] || '?').toUpperCase()}
-              </div>
+          <>
+            <Link
+              to="/compte"
+              title={member?.displayName || user.displayName || user.email || ''}
+              className="inline-flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-full bg-white/80 dark:bg-[#0B1A36]/80 backdrop-blur-md border border-[#D4AF37]/30 shadow-md hover:border-[#D4AF37] hover:shadow-[0_0_18px_rgba(212,175,55,0.25)] transition-all"
+            >
+              {(member?.photoURL || user.photoURL) ? (
+                <img src={member?.photoURL || user.photoURL!} alt="" className="w-7 h-7 rounded-full object-cover" />
+              ) : (
+                <div className="w-7 h-7 rounded-full bg-[#D4AF37]/20 flex items-center justify-center text-[11px] font-bold text-[#D4AF37]">
+                  {(user.email?.[0] || '?').toUpperCase()}
+                </div>
+              )}
+              <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#0B1A36] dark:text-white hidden sm:inline">
+                {member?.dosha || (lang === 'FR' ? 'Mon espace' : 'My space')}
+              </span>
+            </Link>
+            {isAdmin && (
+              <Link
+                to="/admin"
+                title={lang === 'FR' ? 'Tableau de bord admin' : 'Admin dashboard'}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#D4AF37] text-[#0B1A36] shadow-md hover:bg-white transition-colors"
+              >
+                <i className="fa-solid fa-shield-halved text-[11px]" />
+                <span className="text-[10px] uppercase tracking-[0.25em] font-bold hidden sm:inline">
+                  Admin
+                </span>
+              </Link>
             )}
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#0B1A36] dark:text-white hidden sm:inline">
-              {member?.dosha || (lang === 'FR' ? 'Mon espace' : 'My space')}
-            </span>
-          </Link>
+          </>
         ) : (
           <button
             onClick={() => setSignInOpen(true)}
@@ -205,35 +215,77 @@ const InspiratHome: React.FC = () => {
           <div className="relative w-2 h-2 mx-auto mt-2 rounded-full bg-[#D4AF37]/80 shadow-[0_0_12px_rgba(212,175,55,0.7)]" />
         </div>
 
-        {/* Hero Cards Grid — 3 per row; if last row has a single tile it's centered */}
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 mb-10 flex-grow items-center [&>*:nth-last-child(1):nth-child(odd)]:lg:col-start-2">
-          {heroCards.map((card, idx) => (
+        {/* Founder — standalone featured tile, wider and shorter, clearly
+            separate from the 3 "doorways" below. */}
+        <div className="w-full mb-6 lg:mb-8 flex justify-center">
+          <div
+            onClick={() => { if (!editMode) goToRoute(navigate, founderCard.href); }}
+            className={`hero-card opacity-0 relative group rounded-[32px] overflow-hidden shadow-2xl transition-all duration-500 w-full max-w-[1200px] h-[280px] lg:h-[340px] border border-[#D4AF37]/25 ${editMode ? '' : 'cursor-pointer hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(212,175,55,0.28)] hover:border-[#D4AF37]/60'}`}
+          >
+            <EditableImage
+              fieldKey={founderCard.key}
+              defaultSrc={founderCard.image}
+              className="absolute inset-0 rounded-[32px]"
+              alt={founderCard.title}
+            >
+              {founderCard.hoverImage && !editMode && (
+                <div className="absolute inset-0 bg-cover bg-center opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ backgroundImage: `url(${founderCard.hoverImage})` }} />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#0B1A36]/75 via-[#0B1A36]/35 to-transparent group-hover:from-[#0B1A36]/65 transition-colors pointer-events-none" />
+            </EditableImage>
+            <div className="absolute inset-0 flex flex-col items-start justify-center text-left pl-8 md:pl-14 pr-8 pointer-events-none">
+              <span className="text-[#D4AF37] uppercase tracking-[0.35em] text-[10px] md:text-xs font-bold mb-3">
+                {lang === 'FR' ? 'Votre guide' : 'Your guide'}
+              </span>
+              <h2 className="text-white text-3xl md:text-5xl font-serif mb-3 drop-shadow-md pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
+                <EditableText fieldKey={`${founderCard.key}.title`} defaultValue={founderCard.title} as="span" />
+              </h2>
+              <span className="inline-flex items-center gap-2 px-5 py-2 border border-white/40 rounded-full text-white text-xs bg-white/10 backdrop-blur-md uppercase tracking-widest hover:bg-white/20 transition-colors pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
+                <EditableText fieldKey={`${founderCard.key}.subtitle`} defaultValue={founderCard.subtitle} as="span" />
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Three main "doorways" — each with an eyebrow banner naming its intent */}
+        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 mb-10 flex-grow items-stretch">
+          {mainTiles.map((card, idx) => (
             <div
               key={idx}
-              onClick={() => goToRoute(navigate, card.href)}
-              className={`hero-card opacity-0 block w-full h-[380px] lg:h-[58vh] relative group rounded-[28px] overflow-hidden cursor-pointer shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_22px_50px_rgba(212,175,55,0.28)] ${card.accent ? 'ring-1 ring-[#D4AF37]/50 hover:ring-[#D4AF37] shadow-[0_12px_40px_rgba(212,175,55,0.2)]' : ''}`}
+              onClick={() => { if (!editMode) goToRoute(navigate, card.href); }}
+              className={`hero-card opacity-0 block w-full h-[380px] lg:h-[58vh] relative group rounded-[28px] overflow-hidden shadow-2xl transition-all duration-500 ${editMode ? '' : 'cursor-pointer hover:-translate-y-2 hover:shadow-[0_22px_50px_rgba(212,175,55,0.28)]'}`}
             >
-              {/* Background */}
-              <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style={{ backgroundImage: `url(${card.image})` }} />
-              {/* Hover image if exists */}
-              {card.hoverImage && (
-                <div className="absolute inset-0 bg-cover bg-center opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{ backgroundImage: `url(${card.hoverImage})` }} />
-              )}
-              {/* Overlay */}
-              <div className={`absolute inset-0 transition-colors ${card.accent ? 'bg-gradient-to-t from-[#0B1A36]/90 via-[#0B1A36]/50 to-[#0B1A36]/30 group-hover:from-[#0B1A36]/80' : 'bg-black/25 group-hover:bg-black/15'}`} />
+              <EditableImage
+                fieldKey={card.key}
+                defaultSrc={card.image}
+                className="absolute inset-0 rounded-[28px]"
+                alt={card.title}
+              >
+                <div className="absolute inset-0 bg-black/25 group-hover:bg-black/15 transition-colors pointer-events-none" />
+              </EditableImage>
 
-              {/* Content */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full px-4 flex flex-col items-center gap-3">
-                <h2 className="text-white text-2xl lg:text-3xl font-serif mb-2 drop-shadow-md">{card.title}</h2>
-                <span className="inline-flex items-center gap-2 px-5 py-2 border border-white/40 rounded-full text-white text-xs bg-white/10 backdrop-blur-md uppercase tracking-widest hover:bg-white/20 transition-colors">
-                  {card.subtitle}
+              {/* Banner eyebrow — top-center gold pill */}
+              {card.banner && (
+                <div className="absolute top-5 left-1/2 -translate-x-1/2 pointer-events-none">
+                  <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#D4AF37] text-[#0B1A36] text-[10px] md:text-[11px] uppercase tracking-[0.35em] font-bold shadow-[0_4px_18px_rgba(212,175,55,0.45)]">
+                    <EditableText fieldKey={`${card.key}.banner`} defaultValue={card.banner} as="span" />
+                  </span>
+                </div>
+              )}
+
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full px-4 flex flex-col items-center gap-3 pointer-events-none">
+                <h2 className="text-white text-2xl lg:text-3xl font-serif mb-2 drop-shadow-md pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
+                  <EditableText fieldKey={`${card.key}.title`} defaultValue={card.title} as="span" />
+                </h2>
+                <span className="inline-flex items-center gap-2 px-5 py-2 border border-white/40 rounded-full text-white text-xs bg-white/10 backdrop-blur-md uppercase tracking-widest hover:bg-white/20 transition-colors pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
+                  <EditableText fieldKey={`${card.key}.subtitle`} defaultValue={card.subtitle} as="span" />
                 </span>
                 {card.secondaryCta && (
                   <button
-                    onClick={(e) => { e.stopPropagation(); goToRoute(navigate, card.secondaryCta!.href); }}
-                    className="inline-flex items-center gap-2 px-4 py-1.5 border border-white/30 rounded-full text-white text-[10px] bg-white/5 backdrop-blur-md uppercase tracking-widest hover:bg-white/20 transition-colors"
+                    onClick={(e) => { e.stopPropagation(); if (!editMode) goToRoute(navigate, card.secondaryCta!.href); }}
+                    className="inline-flex items-center gap-2 px-4 py-1.5 border border-white/30 rounded-full text-white text-[10px] bg-white/5 backdrop-blur-md uppercase tracking-widest hover:bg-white/20 transition-colors pointer-events-auto"
                   >
-                    {card.secondaryCta.label}
+                    <EditableText fieldKey={`${card.key}.secondaryCta`} defaultValue={card.secondaryCta.label} as="span" />
                   </button>
                 )}
               </div>
@@ -298,7 +350,7 @@ const InspiratHome: React.FC = () => {
         {/* Guide Button */}
         <div className="guide-btn mt-6 pb-8 opacity-0">
           <button
-            onClick={() => navigate('/ayurveda')}
+            onClick={() => navigate('/medias')}
             className="bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-10 py-3 rounded-[30px] hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors uppercase tracking-widest text-xs font-semibold shadow-lg transform hover:-translate-y-0.5"
           >
             {t.guideBtn}

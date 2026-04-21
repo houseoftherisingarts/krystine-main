@@ -1,12 +1,16 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import type { User } from 'firebase/auth';
 import { subscribeToAuthState, isAdminUser } from '../firebase/auth';
 import { subscribeToMember, type MemberDoc } from '../firebase/firestore';
 
+// ───────────────────────────────────────────────────────────────────────────
+// Types shared across slices
+// ───────────────────────────────────────────────────────────────────────────
+
 export type Lang = 'FR' | 'EN';
 export type Theme = 'light' | 'dark';
 
-interface CartItem {
+export interface CartItem {
   id?: number | string;
   variantId?: string;
   title?: string;
@@ -19,12 +23,28 @@ interface CartItem {
   cover?: string;
 }
 
-interface AppContextType {
+// Slice context shapes — consumers can import one narrow hook and re-render
+// only when THAT slice changes, not on any unrelated state churn.
+interface UIContextType {
   lang: Lang;
   setLang: (l: Lang) => void;
   theme: Theme;
   setTheme: (t: Theme) => void;
   toggleTheme: () => void;
+  audioPlaying: boolean;
+  toggleAudio: () => void;
+}
+
+interface AuthContextType {
+  user: User | null;
+  member: MemberDoc | null;
+  isAdmin: boolean;
+  setIsAdmin: (v: boolean) => void;
+  signInOpen: boolean;
+  setSignInOpen: (open: boolean) => void;
+}
+
+interface CartContextType {
   cartItems: CartItem[];
   addToCart: (item: CartItem, e?: React.MouseEvent) => void;
   removeFromCart: (index: number) => void;
@@ -32,54 +52,31 @@ interface AppContextType {
   cartOpen: boolean;
   setCartOpen: (open: boolean) => void;
   cartTotal: string;
-  user: User | null;
-  member: MemberDoc | null;
-  isAdmin: boolean;
-  setIsAdmin: (v: boolean) => void;
-  signInOpen: boolean;
-  setSignInOpen: (open: boolean) => void;
-  audioPlaying: boolean;
-  toggleAudio: () => void;
 }
 
-const AppContext = createContext<AppContextType | null>(null);
+// Legacy combined shape — kept so existing useApp() consumers continue to work.
+// New code should prefer useUI() / useAuth() / useCart() for tighter re-render scope.
+export type AppContextType = UIContextType & AuthContextType & CartContextType;
+
+const UIContext = createContext<UIContextType | null>(null);
+const AuthContext = createContext<AuthContextType | null>(null);
+const CartContext = createContext<CartContextType | null>(null);
 
 const AUDIO_URL = 'https://storage.googleapis.com/inspirata/Base%20site/homecoming-tranquilium-main-version-25793-03-28.mp3';
 
-export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// ───────────────────────────────────────────────────────────────────────────
+// Slice providers
+// ───────────────────────────────────────────────────────────────────────────
+
+const UIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [lang, setLang] = useState<Lang>('FR');
   const [theme, setTheme] = useState<Theme>('light');
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [cartOpen, setCartOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [member, setMember] = useState<MemberDoc | null>(null);
-  const [signInOpen, setSignInOpen] = useState(false);
   const [audioPlaying, setAudioPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // ─── Auth subscription ──
   useEffect(() => {
-    const unsub = subscribeToAuthState(u => {
-      setUser(u);
-      setIsAdmin(isAdminUser(u));
-    });
-    return unsub;
-  }, []);
-
-  // ─── Member profile subscription ──
-  useEffect(() => {
-    if (!user || isAdminUser(user)) { setMember(null); return; }
-    const unsub = subscribeToMember(user.uid, setMember);
-    return unsub;
-  }, [user]);
-
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    if (theme === 'dark') document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
   }, [theme]);
 
   useEffect(() => {
@@ -90,21 +87,79 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return () => { audio.pause(); };
   }, []);
 
-  const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  }, []);
 
-  const addToCart = (item: CartItem, e?: React.MouseEvent) => {
+  const toggleAudio = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.paused) {
+      audio.volume = 0.4;
+      audio.play().catch(() => {});
+      setAudioPlaying(true);
+    } else {
+      audio.pause();
+      setAudioPlaying(false);
+    }
+  }, []);
+
+  const value = useMemo<UIContextType>(() => ({
+    lang, setLang, theme, setTheme, toggleTheme, audioPlaying, toggleAudio,
+  }), [lang, theme, toggleTheme, audioPlaying, toggleAudio]);
+
+  return (
+    <UIContext.Provider value={value}>
+      <audio ref={audioRef} src={AUDIO_URL} loop preload="auto" style={{ display: 'none' }} />
+      {children}
+    </UIContext.Provider>
+  );
+};
+
+const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [member, setMember] = useState<MemberDoc | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [signInOpen, setSignInOpen] = useState(false);
+
+  useEffect(() => {
+    const unsub = subscribeToAuthState(u => {
+      setUser(u);
+      setIsAdmin(isAdminUser(u));
+    });
+    return unsub;
+  }, []);
+
+  useEffect(() => {
+    if (!user || isAdminUser(user)) { setMember(null); return; }
+    const unsub = subscribeToMember(user.uid, setMember);
+    return unsub;
+  }, [user]);
+
+  const value = useMemo<AuthContextType>(() => ({
+    user, member, isAdmin, setIsAdmin, signInOpen, setSignInOpen,
+  }), [user, member, isAdmin, signInOpen]);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
+
+  const addToCart = useCallback((item: CartItem, e?: React.MouseEvent) => {
     if (e) { e.preventDefault(); e.stopPropagation(); }
     setCartItems(prev => [...prev, item]);
     setCartOpen(true);
-  };
+  }, []);
 
-  const removeFromCart = (index: number) => {
+  const removeFromCart = useCallback((index: number) => {
     setCartItems(prev => { const n = [...prev]; n.splice(index, 1); return n; });
-  };
+  }, []);
 
-  const clearCart = () => setCartItems([]);
+  const clearCart = useCallback(() => setCartItems([]), []);
 
-  const cartTotal = cartItems.reduce((acc, item) => {
+  const cartTotal = useMemo(() => cartItems.reduce((acc, item) => {
     if (item.priceAmount) return acc + parseFloat(item.priceAmount);
     const raw = item.price || '';
     // Handle fr-CA ("29,99 $") and en-CA ("$29.99") — keep digits, decimal point/comma, minus.
@@ -121,36 +176,50 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
     const n = parseFloat(numeric);
     return acc + (isNaN(n) ? 0 : n);
-  }, 0).toFixed(2);
+  }, 0).toFixed(2), [cartItems]);
 
-  const toggleAudio = () => {
-    if (!audioRef.current) return;
-    if (audioPlaying) {
-      audioRef.current.pause();
-      setAudioPlaying(false);
-    } else {
-      audioRef.current.volume = 0.4;
-      audioRef.current.play().catch(() => {});
-      setAudioPlaying(true);
-    }
-  };
+  const value = useMemo<CartContextType>(() => ({
+    cartItems, addToCart, removeFromCart, clearCart, cartOpen, setCartOpen, cartTotal,
+  }), [cartItems, addToCart, removeFromCart, clearCart, cartOpen, cartTotal]);
 
-  return (
-    <AppContext.Provider value={{
-      lang, setLang, theme, setTheme, toggleTheme,
-      cartItems, addToCart, removeFromCart, clearCart, cartOpen, setCartOpen, cartTotal,
-      user, member, isAdmin, setIsAdmin, signInOpen, setSignInOpen,
-      audioPlaying, toggleAudio,
-    }}>
-      {/* Global audio element */}
-      <audio ref={audioRef} src={AUDIO_URL} loop preload="auto" style={{ display: 'none' }} />
-      {children}
-    </AppContext.Provider>
-  );
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 
-export const useApp = (): AppContextType => {
-  const ctx = useContext(AppContext);
-  if (!ctx) throw new Error('useApp must be used inside AppProvider');
+// ───────────────────────────────────────────────────────────────────────────
+// Root provider + hooks
+// ───────────────────────────────────────────────────────────────────────────
+
+export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <UIProvider>
+    <AuthProvider>
+      <CartProvider>{children}</CartProvider>
+    </AuthProvider>
+  </UIProvider>
+);
+
+export const useUI = (): UIContextType => {
+  const ctx = useContext(UIContext);
+  if (!ctx) throw new Error('useUI must be used inside AppProvider');
   return ctx;
+};
+
+export const useAuth = (): AuthContextType => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used inside AppProvider');
+  return ctx;
+};
+
+export const useCart = (): CartContextType => {
+  const ctx = useContext(CartContext);
+  if (!ctx) throw new Error('useCart must be used inside AppProvider');
+  return ctx;
+};
+
+// Legacy combined hook. Subscribes to all three slices — prefer the narrower
+// hooks above for any new or frequently-rendered component.
+export const useApp = (): AppContextType => {
+  const ui = useUI();
+  const auth = useAuth();
+  const cart = useCart();
+  return { ...ui, ...auth, ...cart };
 };

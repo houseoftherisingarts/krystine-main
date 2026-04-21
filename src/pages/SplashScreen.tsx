@@ -10,7 +10,9 @@ import DropIntro from '../components/DropIntro';
 import { goToRoute } from '../lib/staticRoutes';
 
 const STORAGE_KEY = 'inspirata.splash.seenAt';
-const REVISIT_DAYS = 7;
+// Once seen, don't re-gate returning visitors on the splash for ~1 year.
+// Force it back with /?splash=1 (admin preview).
+const REVISIT_DAYS = 365;
 
 // Reduced-motion detection: skip the WebGL shaders, render a static gradient.
 function prefersReducedMotion(): boolean {
@@ -119,29 +121,11 @@ const SplashScreen: React.FC = () => {
   const [introDone, setIntroDone] = useState(false);
   const reduceMotion = useMemo(prefersReducedMotion, []);
 
-  // Force-show via ?splash=1 (admin preview); otherwise honor the seen flag.
   useEffect(() => {
-    const force = new URLSearchParams(location.search).get('splash') === '1';
-    if (!force) {
-      try {
-        const seen = parseInt(window.localStorage.getItem(STORAGE_KEY) || '0', 10);
-        if (seen && Date.now() - seen < REVISIT_DAYS * 86400 * 1000) {
-          navigate('/accueil', { replace: true });
-          return;
-        }
-      } catch { /* ignore */ }
-    }
     getSplashSettings()
-      .then(s => {
-        if (!s.enabled && !force) {
-          navigate('/accueil', { replace: true });
-          return;
-        }
-        setSettings(s);
-        setReady(true);
-      })
+      .then(s => { setSettings(s); setReady(true); })
       .catch(() => { setSettings(DEFAULT_SPLASH); setReady(true); });
-  }, [location.search, navigate]);
+  }, []);
 
   const dismiss = (href?: string) => {
     try { window.localStorage.setItem(STORAGE_KEY, Date.now().toString()); } catch { /* noop */ }

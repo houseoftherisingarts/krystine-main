@@ -41,6 +41,24 @@ export default defineConfig(() => {
           '@': path.resolve(__dirname, '.'),
           'src': path.resolve(__dirname, 'src'),
         }
-      }
+      },
+      build: {
+        // Split heavy vendor libs into their own chunks so the initial page
+        // doesn't pay for animation/3D code it may not even render.
+        rollupOptions: {
+          output: {
+            manualChunks: {
+              'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+              'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/storage', 'firebase/analytics'],
+              'vendor-motion': ['framer-motion'],
+              'vendor-gsap': ['gsap'],
+              // three / threejs-components are dynamically imported via
+              // LiquidOilBackground and already land in their own split chunk.
+              'vendor-shaders': ['@paper-design/shaders-react'],
+            },
+          },
+        },
+        chunkSizeWarningLimit: 1200,
+      },
     };
 });

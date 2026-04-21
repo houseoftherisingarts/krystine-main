@@ -1,13 +1,29 @@
-import React, { useState } from 'react';
-import { useApp } from '../../contexts/AppContext';
+import React, { useEffect, useRef, useState } from 'react';
+import { useUI, useAuth, useCart } from '../../contexts/AppContext';
 import { ASSETS } from '../../content';
 import { createCheckout, formatMoney, isShopifyConfigured } from '../../shopify';
 import { addClientOrder } from '../../firebase/firestore';
 
 const CartDrawer: React.FC = () => {
-  const { cartItems, removeFromCart, cartTotal, cartOpen, setCartOpen, lang, user } = useApp();
+  const { lang } = useUI();
+  const { user } = useAuth();
+  const { cartItems, removeFromCart, cartTotal, cartOpen, setCartOpen } = useCart();
   const [checkingOut, setCheckingOut] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  // Flash an "added" toast for 2.4s when a new item enters the cart.
+  const prevCountRef = useRef(cartItems.length);
+  const [flashTitle, setFlashTitle] = useState<string | null>(null);
+  useEffect(() => {
+    if (cartItems.length > prevCountRef.current) {
+      const newest = cartItems[cartItems.length - 1];
+      setFlashTitle(newest?.title || newest?.name || (lang === 'FR' ? 'Article ajouté' : 'Item added'));
+      const t = setTimeout(() => setFlashTitle(null), 2400);
+      return () => clearTimeout(t);
+    }
+    prevCountRef.current = cartItems.length;
+  }, [cartItems.length, lang]);
+  useEffect(() => { prevCountRef.current = cartItems.length; }, [cartItems.length]);
 
   const shopifyItems = cartItems.filter(i => !!i.variantId);
   const canCheckout = isShopifyConfigured && shopifyItems.length > 0;
@@ -75,6 +91,22 @@ const CartDrawer: React.FC = () => {
           <button onClick={() => setCartOpen(false)} className="w-8 h-8 flex items-center justify-center hover:text-[#D4AF37] transition-colors">
             <i className="fa-solid fa-times text-xl" />
           </button>
+        </div>
+
+        {/* Success flash — confirms the add even when the user didn't notice the drawer slide in. */}
+        <div
+          aria-live="polite"
+          className={`overflow-hidden transition-[max-height,opacity] duration-300 ${flashTitle ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'}`}
+        >
+          <div className="mx-4 mt-4 flex items-center gap-3 bg-[#D4AF37]/15 border border-[#D4AF37]/30 rounded-full px-4 py-2.5">
+            <i className="fa-solid fa-circle-check text-[#D4AF37]" />
+            <p className="text-xs text-[#0B1A36] dark:text-white truncate">
+              <span className="font-bold uppercase tracking-widest text-[10px] text-[#D4AF37] mr-2">
+                {lang === 'FR' ? 'Ajouté' : 'Added'}
+              </span>
+              {flashTitle}
+            </p>
+          </div>
         </div>
 
         {/* Items */}

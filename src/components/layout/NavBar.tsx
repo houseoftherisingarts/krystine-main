@@ -1,26 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useApp } from '../../contexts/AppContext';
+import { useUI, useAuth, useCart } from '../../contexts/AppContext';
 import { ASSETS } from '../../content';
 
 interface NavItem { href: string; labelFR: string; labelEN: string; }
 
-// Full brand labels — keep concise enough to sit on one line at xl+.
-// The longest ("Podcast & Médias", "Boutique Inspirata") dictate the nav's
-// min-width; avoid pushing past "Boutique Inspirata Ayurveda" which overflows.
+// Condensed nav: Ayurveda/Livres/Quiz live under /medias, Événements under
+// /formations. The 3 "doorways" map to the 3 banners on the home page.
 const NAV: NavItem[] = [
-  { href: '/krystine',    labelFR: 'Krystine St-Laurent',  labelEN: 'Krystine St-Laurent' },
-  { href: '/ayurveda',    labelFR: 'Ayurveda',             labelEN: 'Ayurveda' },
-  { href: '/formations',  labelFR: 'Formations',           labelEN: 'Programs' },
-  { href: '/boutique',    labelFR: 'Boutique Inspirata',   labelEN: 'Inspirata Shop' },
-  { href: '/livres',      labelFR: 'Livres',               labelEN: 'Books' },
-  { href: '/medias',      labelFR: 'Podcast & Médias',     labelEN: 'Podcast & Media' },
-  { href: '/evenements',  labelFR: 'Événements',           labelEN: 'Events' },
+  { href: '/krystine',    labelFR: 'Krystine St-Laurent',          labelEN: 'Krystine St-Laurent' },
+  { href: '/medias',      labelFR: 'Podcasts, Médias & Livres',    labelEN: 'Podcasts, Media & Books' },
+  { href: '/formations',  labelFR: 'Formations & Événements',      labelEN: 'Programs & Events' },
+  { href: '/boutique',    labelFR: 'Boutique Inspirata',           labelEN: 'Inspirata Shop' },
 ];
 
 const NavBar: React.FC = () => {
-  const { lang, setLang, theme, toggleTheme, cartItems, setCartOpen, audioPlaying, toggleAudio, user, member, isAdmin, setSignInOpen } = useApp();
+  const { lang, setLang, theme, toggleTheme, audioPlaying, toggleAudio } = useUI();
+  const { user, member, isAdmin, setSignInOpen } = useAuth();
+  const { cartItems, setCartOpen } = useCart();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
@@ -62,10 +60,35 @@ const NavBar: React.FC = () => {
           />
         </Link>
 
-        {/* Desktop Links */}
+        {/* Desktop Links — Boutique rendered last as a filled CTA to give the
+            nav a single primary action (revenue-driving). */}
         <ul className="hidden xl:flex items-center gap-0.5 2xl:gap-2">
           {NAV.map((item, i) => {
             const active = isActive(item.href);
+            const isPrimary = item.href === '/boutique';
+            if (isPrimary) {
+              return (
+                <motion.li
+                  key={item.href}
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: 0.18 + i * 0.04, ease: 'easeOut' }}
+                  className="ml-2"
+                >
+                  <Link
+                    to={item.href}
+                    className={`inline-flex items-center gap-2 whitespace-nowrap px-4 py-2 text-[10px] 2xl:text-[11px] uppercase tracking-[0.2em] font-bold rounded-full transition-all duration-300 ${
+                      active
+                        ? 'bg-[#0B1A36] text-[#D4AF37] border border-[#D4AF37]'
+                        : 'bg-[#D4AF37] text-[#0B1A36] border border-[#D4AF37] hover:bg-[#0B1A36] hover:text-[#D4AF37] shadow-[0_4px_18px_rgba(212,175,55,0.25)]'
+                    }`}
+                  >
+                    <i className="fa-solid fa-basket-shopping text-[10px]" />
+                    {label(item)}
+                  </Link>
+                </motion.li>
+              );
+            }
             return (
               <motion.li
                 key={item.href}
@@ -86,10 +109,6 @@ const NavBar: React.FC = () => {
                       active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
                     }`}
                     style={{ transformOrigin: 'center' }}
-                  />
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-[#D4AF37] scale-x-0 hover:scale-x-100 transition-transform duration-300 origin-center"
                   />
                 </Link>
               </motion.li>
@@ -123,27 +142,51 @@ const NavBar: React.FC = () => {
           </IconButton>
 
           {user ? (
-            <Link
-              to={isAdmin ? '/admin' : '/compte'}
-              title={member?.displayName || user.displayName || user.email || ''}
-              className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-[#0B1A36]/10 dark:border-white/10 hover:border-[#D4AF37] transition-colors"
-            >
-              {(member?.photoURL || user.photoURL) ? (
-                <img src={member?.photoURL || user.photoURL!} alt="" className="w-6 h-6 rounded-full object-cover" />
-              ) : (
-                <div className="w-6 h-6 rounded-full bg-[#D4AF37]/20 flex items-center justify-center text-[10px] font-bold text-[#D4AF37]">
-                  {(user.email?.[0] || '?').toUpperCase()}
-                </div>
+            <>
+              <Link
+                to="/compte"
+                title={member?.displayName || user.displayName || user.email || ''}
+                className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-[#0B1A36]/10 dark:border-white/10 hover:border-[#D4AF37] transition-colors"
+              >
+                {(member?.photoURL || user.photoURL) ? (
+                  <img src={member?.photoURL || user.photoURL!} alt="" className="w-6 h-6 rounded-full object-cover" />
+                ) : (
+                  <div className="w-6 h-6 rounded-full bg-[#D4AF37]/20 flex items-center justify-center text-[10px] font-bold text-[#D4AF37]">
+                    {(user.email?.[0] || '?').toUpperCase()}
+                  </div>
+                )}
+                {member?.dosha && (
+                  <span className="text-[9px] uppercase tracking-widest text-[#D4AF37] font-bold capitalize hidden xl:inline">{member.dosha}</span>
+                )}
+              </Link>
+              {/* Admin shortcut — only for admins; clearly separate from the
+                  client "mon espace" chip so the label matches the destination. */}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  title={lang === 'FR' ? 'Tableau de bord admin' : 'Admin dashboard'}
+                  className="hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0B1A36] dark:bg-[#D4AF37] text-[#D4AF37] dark:text-[#0B1A36] text-[9px] uppercase tracking-[0.2em] font-bold hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors"
+                >
+                  <i className="fa-solid fa-shield-halved text-[9px]" />
+                  Admin
+                </Link>
               )}
-              {member?.dosha && (
-                <span className="text-[9px] uppercase tracking-widest text-[#D4AF37] font-bold capitalize hidden xl:inline">{member.dosha}</span>
-              )}
-            </Link>
+            </>
           ) : (
             <button
               onClick={() => setSignInOpen(true)}
               title={lang === 'FR' ? 'Connexion' : 'Sign in'}
-              className="w-9 h-9 flex items-center justify-center rounded-full text-[#0B1A36]/70 dark:text-white/70 hover:text-[#D4AF37] hover:bg-[#D4AF37]/5 transition-colors"
+              className="hidden md:inline-flex items-center gap-2 pl-2.5 pr-3 py-1.5 rounded-full border border-[#0B1A36]/15 dark:border-white/15 text-[10px] uppercase tracking-[0.2em] font-bold text-[#0B1A36]/80 dark:text-white/80 hover:text-[#D4AF37] hover:border-[#D4AF37] transition-colors"
+            >
+              <i className="fa-solid fa-user text-[11px]" />
+              {lang === 'FR' ? 'Connexion' : 'Sign in'}
+            </button>
+          )}
+          {!user && (
+            <button
+              onClick={() => setSignInOpen(true)}
+              title={lang === 'FR' ? 'Connexion' : 'Sign in'}
+              className="md:hidden w-9 h-9 flex items-center justify-center rounded-full text-[#0B1A36]/70 dark:text-white/70 hover:text-[#D4AF37] hover:bg-[#D4AF37]/5 transition-colors"
             >
               <i className="fa-solid fa-user text-[13px]" />
             </button>

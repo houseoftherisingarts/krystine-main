@@ -1,8 +1,9 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
-import { ASSETS } from '../content';
+import { CONTENT, ASSETS } from '../content';
 import { goToRoute } from '../lib/staticRoutes';
+import { getEvents, type EventDoc } from '../firebase/firestore';
 
 interface Programme {
   tag: string;
@@ -18,6 +19,29 @@ interface Programme {
 const FormationsPage: React.FC = () => {
   const { lang } = useApp();
   const navigate = useNavigate();
+  const location = useLocation();
+  const ev = CONTENT[lang].evenements;
+
+  const [events, setEvents] = useState<EventDoc[]>([]);
+  const [eventsLoading, setEventsLoading] = useState(true);
+
+  useEffect(() => {
+    getEvents()
+      .then(setEvents)
+      .catch(() => setEvents([]))
+      .finally(() => setEventsLoading(false));
+  }, []);
+
+  // Scroll to #evenements (or any other hash) when navigating from the
+  // legacy /evenements route or from an on-site link.
+  useEffect(() => {
+    if (!location.hash) return;
+    const el = document.querySelector(location.hash);
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+  }, [location.hash, eventsLoading]);
+
+  const upcoming = events.filter(e => new Date(e.date) >= new Date());
+  const past = events.filter(e => new Date(e.date) < new Date());
 
   const programmes: Programme[] = lang === 'FR'
     ? [
@@ -191,13 +215,107 @@ const FormationsPage: React.FC = () => {
             {lang === 'FR' ? 'Vous hésitez sur le parcours adapté à votre constitution ?' : 'Unsure which journey fits your constitution?'}
           </p>
           <button
-            onClick={() => navigate('/ayurveda')}
+            onClick={() => navigate('/medias#quiz')}
             className="bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors"
           >
             {lang === 'FR' ? 'Faire le Quiz Dosha' : 'Take the Dosha Quiz'}
           </button>
         </div>
+
+        {/* ── Événements ── Merged section (previously /evenements). */}
+        <section id="evenements" className="mt-24 pt-16 border-t border-[#0B1A36]/10 dark:border-white/10 scroll-mt-32">
+          <div className="text-center mb-16">
+            <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
+              {lang === 'FR' ? 'Calendrier' : 'Calendar'}
+            </span>
+            <h2 className="text-4xl md:text-6xl font-serif mb-6">{ev.title}</h2>
+            <p className="text-lg text-[#0B1A36]/60 dark:text-white/60 font-serif italic max-w-xl mx-auto">{ev.subtitle}</p>
+            <div className="w-24 h-1 bg-[#D4AF37] mx-auto mt-8" />
+          </div>
+
+          {eventsLoading ? (
+            <div className="flex justify-center py-16">
+              <div className="w-10 h-10 border-2 border-t-transparent border-[#D4AF37] rounded-full animate-spin" />
+            </div>
+          ) : upcoming.length === 0 && past.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-28 h-28 rounded-full bg-[#D4AF37]/10 flex items-center justify-center mx-auto mb-8">
+                <i className="fa-regular fa-calendar text-4xl text-[#D4AF37]" />
+              </div>
+              <p className="text-lg font-serif text-[#0B1A36]/60 dark:text-white/60 italic">{ev.noEvents}</p>
+            </div>
+          ) : (
+            <>
+              {upcoming.length > 0 && (
+                <div className="mb-16">
+                  <h3 className="text-sm uppercase tracking-[0.3em] font-bold text-[#D4AF37] mb-10 flex items-center gap-3">
+                    <span className="w-8 h-px bg-[#D4AF37]" /> {ev.upcoming}
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {upcoming.map(e => <EventCard key={e.id} event={e} lang={lang} t={ev} />)}
+                  </div>
+                </div>
+              )}
+              {past.length > 0 && (
+                <div className="opacity-60">
+                  <h3 className="text-sm uppercase tracking-[0.3em] font-bold text-[#0B1A36]/40 dark:text-white/40 mb-10 flex items-center gap-3">
+                    <span className="w-8 h-px bg-current" /> {ev.past}
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {past.map(e => <EventCard key={e.id} event={e} lang={lang} t={ev} compact />)}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </section>
       </div>
+    </div>
+  );
+};
+
+interface EventCardProps {
+  event: EventDoc;
+  lang: string;
+  t: any;
+  compact?: boolean;
+}
+
+const EventCard: React.FC<EventCardProps> = ({ event, lang, t, compact }) => {
+  const dateObj = new Date(event.date);
+  const dateStr = dateObj.toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA', {
+    weekday: compact ? undefined : 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+  const online = event.location?.toLowerCase().includes('ligne') || event.location?.toLowerCase().includes('online');
+  return (
+    <div className={`group relative bg-white dark:bg-[#0B1A36]/60 rounded-[24px] shadow-lg border border-[#0B1A36]/5 dark:border-white/5 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 ${compact ? 'p-6' : 'p-8'}`}>
+      {event.imageUrl && !compact && (
+        <div className="absolute inset-0 opacity-5 bg-cover bg-center" style={{ backgroundImage: `url(${event.imageUrl})` }} />
+      )}
+      <span className={`inline-flex items-center gap-2 text-xs uppercase tracking-widest font-bold mb-4 px-3 py-1 rounded-full ${event.isFeatured ? 'bg-[#D4AF37]/15 text-[#D4AF37]' : 'bg-[#0B1A36]/5 dark:bg-white/5 text-[#0B1A36]/60 dark:text-white/60'}`}>
+        <i className={`fa-solid ${online ? 'fa-video' : 'fa-map-marker-alt'} text-[10px]`} />
+        {online ? t.online : t.inPerson}
+      </span>
+      <p className="text-xs text-[#D4AF37] font-bold uppercase tracking-widest mb-2">{dateStr}</p>
+      <h4 className={`font-serif text-[#0B1A36] dark:text-white mb-2 group-hover:text-[#D4AF37] transition-colors ${compact ? 'text-xl' : 'text-2xl md:text-3xl'}`}>{event.title}</h4>
+      {event.subtitle && <p className="text-[#0B1A36]/60 dark:text-white/60 font-serif italic mb-3">{event.subtitle}</p>}
+      {event.location && (
+        <p className="text-sm text-[#0B1A36]/50 dark:text-white/50 flex items-center gap-2 mb-4">
+          <i className="fa-solid fa-map-marker-alt text-[#D4AF37]" /> {event.location}
+        </p>
+      )}
+      {event.description && !compact && (
+        <p className="text-[#0B1A36]/70 dark:text-white/70 leading-relaxed mb-6 text-sm">{event.description}</p>
+      )}
+      {event.registrationLink && (
+        <a href={event.registrationLink} target="_blank" rel="noopener noreferrer"
+          className={`inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] font-bold uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-md ${compact ? 'px-4 py-2 rounded-full' : 'px-8 py-3 rounded-full'}`}>
+          {t.register} <i className="fa-solid fa-arrow-right" />
+        </a>
+      )}
     </div>
   );
 };

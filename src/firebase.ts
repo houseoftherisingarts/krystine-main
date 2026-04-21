@@ -3,7 +3,7 @@
 import { initializeApp, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
-import { getAnalytics, isSupported } from 'firebase/analytics';
+import { getAnalytics, isSupported, logEvent, Analytics } from 'firebase/analytics';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -40,9 +40,26 @@ export const auth = _auth;
 export const db = _db;
 export const isFirebaseReady = isConfigured && !!app;
 
+let _analytics: Analytics | null = null;
+
 export function enableAnalytics() {
-  if (!app) return;
-  isSupported().then(yes => yes && app ? getAnalytics(app!) : null).catch(() => null);
+  if (!app || _analytics) return;
+  isSupported()
+    .then(yes => {
+      if (yes && app) _analytics = getAnalytics(app);
+    })
+    .catch(() => null);
+}
+
+export function logPageView(path: string, title?: string) {
+  if (!_analytics) return;
+  try {
+    logEvent(_analytics, 'page_view', {
+      page_path: path,
+      page_location: typeof window !== 'undefined' ? window.location.href : path,
+      page_title: title || (typeof document !== 'undefined' ? document.title : ''),
+    });
+  } catch { /* noop */ }
 }
 
 export default app;

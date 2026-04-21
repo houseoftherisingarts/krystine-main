@@ -20,16 +20,31 @@ service cloud.firestore {
     function isSelf(uid) { return isSignedIn() && request.auth.uid == uid; }
 
     // ── Public read, admin write ──
-    match /events/{id}       { allow read: if true; allow write: if isAdmin(); }
-    match /blogPosts/{id}    { allow read: if true; allow write: if isAdmin(); }
-    match /mediaLibrary/{id} { allow read: if true; allow write: if isAdmin(); }
-    match /settings/{id}     { allow read: if true; allow write: if isAdmin(); }
+    match /events/{id}        { allow read: if true; allow write: if isAdmin(); }
+    match /blogPosts/{id}     { allow read: if true; allow write: if isAdmin(); }
+    match /mediaLibrary/{id}  { allow read: if true; allow write: if isAdmin(); }
+    match /settings/{id}      { allow read: if true; allow write: if isAdmin(); }
+    match /siteOverrides/{id} { allow read: if true; allow write: if isAdmin(); }
 
-    // ── Public create-only, admin read/update/delete ──
+    // ── Newsletter subscribers ──
+    // Public form submits a new signup (email-only). Admins manage the CRM.
+    // Unauthenticated clients may NOT read the subscriber list. Unsubscribe
+    // goes through the `unsubscribeByToken` Cloud Function (Admin SDK) so we
+    // don't need any public read access to this collection.
     match /newsletter/{id} {
       allow create: if request.resource.data.keys().hasAll(['email'])
                     && request.resource.data.email is string;
       allow read, update, delete: if isAdmin();
+    }
+
+    // ── Newsletter campaigns ──
+    // Only admins can create, update, delete. Bodies are readable by anyone
+    // because recipients (including non-admin members) open archived emails
+    // in their client portal, and the fetch needs read access to the doc.
+    // Sensitive info (subscriber addresses) is NOT in this doc.
+    match /newsletters/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
     match /bookingRequests/{id} {
       allow create: if request.resource.data.keys().hasAll(['name', 'email']);
@@ -50,6 +65,15 @@ service cloud.firestore {
       allow create: if isSelf(uid);
       allow update: if isSelf(uid) || isAdmin();
       allow delete: if isAdmin();
+
+      // Newsletter inbox pointers — written by the send Cloud Function (which
+      // uses the Admin SDK and bypasses rules). The member can read their own
+      // inbox and mark messages as read; they cannot create new entries.
+      match /inbox/{newsletterId} {
+        allow read: if isSelf(uid) || isAdmin();
+        allow update: if isSelf(uid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readAt']);
+        allow create, delete: if isAdmin();
+      }
     }
 
     // ── Client orders: member reads own, admin full. Created at checkout. ──

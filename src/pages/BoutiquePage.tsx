@@ -73,9 +73,30 @@ const BoutiquePage: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-24">
         {/* Featured heading */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-10">
           <span className="text-[#D4AF37] uppercase tracking-[0.2em] text-xs font-semibold block mb-2">{t.featured.subtitle}</span>
           <h2 className="text-4xl md:text-5xl font-serif text-[#0B1A36] dark:text-white italic">{t.featured.title}</h2>
+        </div>
+
+        {/* Trust strip — placed above the grid so first-time shoppers see
+            the brand's guarantees before they price-shop. */}
+        <div className="mb-14 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 text-center">
+          {[
+            { icon: 'fa-lock', titleFR: 'Paiement sécurisé', titleEN: 'Secure checkout', descFR: 'Shopify + SSL', descEN: 'Shopify + SSL' },
+            { icon: 'fa-leaf', titleFR: 'Formules ayurvédiques', titleEN: 'Ayurvedic formulas', descFR: 'Conçues par Krystine', descEN: 'Crafted by Krystine' },
+            { icon: 'fa-truck', titleFR: 'Livraison Canada', titleEN: 'Ships across Canada', descFR: 'Expédition rapide', descEN: 'Fast shipping' },
+            { icon: 'fa-heart', titleFR: 'Satisfaction', titleEN: 'Satisfaction', descFR: '35 ans d\u2019expérience', descEN: '35 years of expertise' },
+          ].map(b => (
+            <div key={b.icon} className="flex flex-col items-center gap-2 p-4 rounded-[20px] bg-[#F5F5F0] dark:bg-[#0B1A36] border border-[#D4AF37]/10">
+              <i className={`fa-solid ${b.icon} text-[#D4AF37] text-lg`} />
+              <span className="text-[11px] md:text-xs uppercase tracking-[0.15em] font-bold text-[#0B1A36] dark:text-white">
+                {lang === 'FR' ? b.titleFR : b.titleEN}
+              </span>
+              <span className="text-[10px] md:text-[11px] text-[#0B1A36]/60 dark:text-white/60">
+                {lang === 'FR' ? b.descFR : b.descEN}
+              </span>
+            </div>
+          ))}
         </div>
 
         {/* Loading */}
@@ -119,16 +140,6 @@ const BoutiquePage: React.FC = () => {
                         {lang === 'FR' ? 'Épuisé' : 'Sold out'}
                       </span>
                     )}
-                    {!soldOut && (
-                      <div className="absolute bottom-4 left-0 right-0 px-4 flex justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                        <button
-                          onClick={e => handleAdd(product, e)}
-                          className="bg-white/90 dark:bg-[#0B1A36]/90 backdrop-blur text-[#0B1A36] dark:text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg hover:bg-[#D4AF37] hover:text-white transition-colors w-full max-w-[200px]"
-                        >
-                          {lang === 'FR' ? 'Ajouter au panier' : 'Add to cart'}
-                        </button>
-                      </div>
-                    )}
                   </button>
                   <div className="text-center px-2 cursor-pointer" onClick={() => openProduct(product)}>
                     {product.productType && (
@@ -137,6 +148,24 @@ const BoutiquePage: React.FC = () => {
                     <h3 className="text-lg font-serif text-[#0B1A36] dark:text-white mt-1 mb-1 group-hover:text-[#D4AF37] transition-colors">{product.title}</h3>
                     <p className="text-sm text-[#0B1A36]/80 dark:text-white/80 font-medium">{price}</p>
                   </div>
+                  {/* Always-visible CTA — mobile users can't discover hover-only buttons. */}
+                  {!soldOut ? (
+                    <button
+                      type="button"
+                      onClick={e => handleAdd(product, e)}
+                      className="mt-3 w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-3 rounded-full text-[11px] font-bold uppercase tracking-widest hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-md"
+                    >
+                      {lang === 'FR' ? 'Ajouter au panier' : 'Add to cart'}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled
+                      className="mt-3 w-full bg-transparent border border-[#0B1A36]/20 dark:border-white/20 text-[#0B1A36]/50 dark:text-white/50 py-3 rounded-full text-[11px] font-bold uppercase tracking-widest cursor-not-allowed"
+                    >
+                      {lang === 'FR' ? 'Épuisé' : 'Sold out'}
+                    </button>
+                  )}
                 </div>
               );
             })}
@@ -201,6 +230,23 @@ const BoutiquePage: React.FC = () => {
                   <p className="text-2xl font-serif text-[#D4AF37] mb-6">
                     {variant ? formatMoney(variant.price, lang) : formatMoney(p.priceRange.minVariantPrice, lang)}
                   </p>
+
+                  {/* Credibility strip — genuine brand proof rather than invented reviews. */}
+                  <div className="mb-6 flex flex-wrap gap-x-4 gap-y-2 text-[11px] text-[#0B1A36]/70 dark:text-white/70">
+                    <span className="inline-flex items-center gap-1.5">
+                      <i className="fa-solid fa-seedling text-[#D4AF37]" />
+                      {lang === 'FR' ? 'Formule Krystine' : 'Krystine formula'}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <i className="fa-solid fa-award text-[#D4AF37]" />
+                      {lang === 'FR' ? '35 ans d’expertise' : '35 years of expertise'}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <i className="fa-solid fa-truck-fast text-[#D4AF37]" />
+                      {lang === 'FR' ? 'Expédition Canada' : 'Ships from Canada'}
+                    </span>
+                  </div>
+
                   {p.description && (
                     <p className="text-[#0B1A36]/70 dark:text-white/70 leading-relaxed mb-8 whitespace-pre-line">{p.description}</p>
                   )}
@@ -258,6 +304,27 @@ const BoutiquePage: React.FC = () => {
                       ))}
                     </div>
                   )}
+
+                  {/* Reviews placeholder — honest invitation rather than fake ratings. */}
+                  <div className="mt-8 pt-6 border-t border-[#0B1A36]/10 dark:border-white/10">
+                    <div className="flex items-start gap-3">
+                      <i className="fa-solid fa-quote-left text-[#D4AF37] mt-0.5" />
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#0B1A36] dark:text-white mb-1">
+                          {lang === 'FR' ? 'Partagez votre expérience' : 'Share your experience'}
+                        </p>
+                        <p className="text-xs text-[#0B1A36]/60 dark:text-white/60 leading-relaxed">
+                          {lang === 'FR'
+                            ? 'Nous rassemblons les témoignages de la communauté Inspirata. Laissez-nous un mot sur '
+                            : 'We\u2019re gathering the Inspirata community\u2019s stories. Write to us at '}
+                          <a href="mailto:bonjour@inspiratanature.com" className="text-[#D4AF37] underline hover:text-[#0B1A36] dark:hover:text-white">
+                            bonjour@inspiratanature.com
+                          </a>
+                          {lang === 'FR' ? ' ou sur Instagram.' : ' or on Instagram.'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

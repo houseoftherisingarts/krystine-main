@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@google/genai": "^1.50.1",
     "@paper-design/shaders-react": "^0.0.76",
     "firebase": "^12.12.0",
     "framer-motion": "^12.38.0",

@@ -48,24 +48,40 @@ const AyurvedaPage: React.FC = () => {
     isOpen: false, step: 0,
     scores: { vata: 0, pitta: 0, kapha: 0 },
     formData: { firstName: '', lastName: '', email: '' },
+    teaser: null as null | { dominant: any; percentages: { vata: number; pitta: number; kapha: number } },
     result: null as any,
   });
   const [submitting, setSubmitting] = useState(false);
 
+  const computeTeaser = (scores: { vata: number; pitta: number; kapha: number }) => {
+    const { vata, pitta, kapha } = scores;
+    let dominant = ay.doshas[0];
+    if (pitta > vata && pitta > kapha) dominant = ay.doshas[1];
+    if (kapha > vata && kapha > pitta) dominant = ay.doshas[2];
+    const total = vata + pitta + kapha || 1;
+    return {
+      dominant,
+      percentages: {
+        vata: Math.round((vata / total) * 100),
+        pitta: Math.round((pitta / total) * 100),
+        kapha: Math.round((kapha / total) * 100),
+      },
+    };
+  };
+
   const handleQuizAnswer = (type: string) => {
     const newScores = { ...quizState.scores, [type]: quizState.scores[type as keyof typeof quizState.scores] + 1 };
-    setQuizState({ ...quizState, scores: newScores, step: quizState.step + 1 });
+    const nextStep = quizState.step + 1;
+    // Finalize the teaser the instant the last question is answered so the
+    // user sees their dominant dosha before any auth gate.
+    const teaser = nextStep >= QUIZ_DATA.length ? computeTeaser(newScores) : quizState.teaser;
+    setQuizState({ ...quizState, scores: newScores, step: nextStep, teaser });
   };
 
   const handleQuizCompute = async () => {
     if (!user) { setSignInOpen(true); return; }
 
-    const { vata, pitta, kapha } = quizState.scores;
-    let dominant = ay.doshas[0];
-    if (pitta > vata && pitta > kapha) dominant = ay.doshas[1];
-    if (kapha > vata && kapha > pitta) dominant = ay.doshas[2];
-    const total = vata + pitta + kapha || 1;
-    const percentages = { vata: Math.round((vata / total) * 100), pitta: Math.round((pitta / total) * 100), kapha: Math.round((kapha / total) * 100) };
+    const { dominant, percentages } = quizState.teaser ?? computeTeaser(quizState.scores);
 
     // Pull identity from the signed-in member profile.
     const fullName = (member?.displayName || user.displayName || '').trim();
@@ -225,46 +241,72 @@ const AyurvedaPage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center max-w-md mx-auto py-4">
-                    <div className="w-16 h-16 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-center mx-auto mb-6">
-                      <i className="fa-solid fa-lock text-[#D4AF37] text-xl" />
-                    </div>
-                    <h4 className="text-2xl font-serif text-[#0B1A36] dark:text-white mb-3">
-                      {lang === 'FR' ? 'Votre résultat vous attend' : 'Your result awaits'}
-                    </h4>
-                    <p className="text-[#0B1A36]/60 dark:text-white/60 mb-8 text-sm leading-relaxed">
-                      {user
-                        ? (lang === 'FR'
-                            ? 'Nous allons calculer votre dosha dominant et l\'enregistrer dans votre espace client.'
-                            : 'We\'ll compute your dominant dosha and save it to your client space.')
-                        : (lang === 'FR'
-                            ? 'Connectez-vous pour voir votre résultat et le retrouver dans votre espace client à tout moment.'
-                            : 'Sign in to see your result and keep it in your client space forever.')
-                      }
+                    {/* Teaser: reveal dominant dosha + breakdown immediately,
+                        gate only the save + full-report step on auth. */}
+                    <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] mb-3">
+                      {lang === 'FR' ? 'Votre nature dominante' : 'Your dominant nature'}
                     </p>
-                    {user ? (
-                      <button
-                        onClick={handleQuizCompute}
-                        disabled={submitting}
-                        className="w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-lg flex items-center justify-center gap-2"
-                      >
-                        {submitting
-                          ? <><i className="fa-solid fa-circle-notch fa-spin" /> {lang === 'FR' ? 'Calcul…' : 'Computing…'}</>
-                          : <>{lang === 'FR' ? 'Voir mon résultat' : 'Reveal my result'} <i className="fa-solid fa-arrow-right text-[10px]" /></>}
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => setSignInOpen(true)}
-                        className="w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-lg flex items-center justify-center gap-2"
-                      >
-                        <i className="fa-brands fa-google text-sm" />
-                        {lang === 'FR' ? 'Se connecter pour voir le résultat' : 'Sign in to reveal'}
-                      </button>
+                    <h2 className="text-5xl font-serif font-bold text-[#D4AF37] mb-4">
+                      {quizState.teaser?.dominant.name}
+                    </h2>
+                    {quizState.teaser && (
+                      <div className="flex justify-center gap-8 mb-6 text-sm text-[#0B1A36]/70 dark:text-white/70">
+                        {(['vata', 'pitta', 'kapha'] as const).map(d => (
+                          <div key={d} className="flex flex-col items-center">
+                            <span className="font-bold text-[#D4AF37] text-lg">{quizState.teaser!.percentages[d]}%</span>
+                            <span className="capitalize text-xs uppercase tracking-widest">{d}</span>
+                          </div>
+                        ))}
+                      </div>
                     )}
-                    <p className="mt-4 text-[10px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">
-                      {lang === 'FR'
-                        ? 'Vos résultats restent privés et sont stockés en sécurité.'
-                        : 'Your results stay private and are stored securely.'}
-                    </p>
+                    {quizState.teaser?.dominant.elements && (
+                      <p className="text-xs uppercase tracking-[0.2em] font-bold text-[#0B1A36]/50 dark:text-white/50 mb-6">
+                        {quizState.teaser.dominant.elements}
+                      </p>
+                    )}
+
+                    <div className="border-t border-[#0B1A36]/10 dark:border-white/10 pt-6 mt-6">
+                      <div className="flex items-center gap-3 mb-4 justify-center">
+                        <i className="fa-solid fa-lock text-[#D4AF37] text-sm" />
+                        <span className="text-xs uppercase tracking-[0.25em] font-bold text-[#0B1A36]/70 dark:text-white/70">
+                          {lang === 'FR' ? 'Profil complet' : 'Full profile'}
+                        </span>
+                      </div>
+                      <p className="text-[#0B1A36]/60 dark:text-white/60 mb-6 text-sm leading-relaxed">
+                        {user
+                          ? (lang === 'FR'
+                              ? 'Enregistrez votre résultat dans votre espace client pour accéder aux rituels et recommandations personnalisés.'
+                              : 'Save your result to your client space to unlock personalized rituals and recommendations.')
+                          : (lang === 'FR'
+                              ? 'Connectez-vous pour enregistrer votre profil et débloquer vos rituels personnalisés.'
+                              : 'Sign in to save your profile and unlock your personalized rituals.')
+                        }
+                      </p>
+                      {user ? (
+                        <button
+                          onClick={handleQuizCompute}
+                          disabled={submitting}
+                          className="w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-lg flex items-center justify-center gap-2"
+                        >
+                          {submitting
+                            ? <><i className="fa-solid fa-circle-notch fa-spin" /> {lang === 'FR' ? 'Enregistrement…' : 'Saving…'}</>
+                            : <>{lang === 'FR' ? 'Enregistrer + voir le profil complet' : 'Save + reveal full profile'} <i className="fa-solid fa-arrow-right text-[10px]" /></>}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => setSignInOpen(true)}
+                          className="w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-lg flex items-center justify-center gap-2"
+                        >
+                          <i className="fa-solid fa-user text-sm" />
+                          {lang === 'FR' ? 'Se connecter pour sauvegarder' : 'Sign in to save'}
+                        </button>
+                      )}
+                      <p className="mt-4 text-[10px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">
+                        {lang === 'FR'
+                          ? 'Vos résultats restent privés et sécurisés.'
+                          : 'Your results stay private and secure.'}
+                      </p>
+                    </div>
                   </div>
                 )
               ) : (

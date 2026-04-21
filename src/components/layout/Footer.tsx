@@ -20,11 +20,9 @@ const Footer: React.FC = () => {
 
   const links = [
     { href: '/krystine', label: nav.krystine },
-    { href: '/ayurveda', label: nav.ayurveda },
-    { href: '/boutique', label: nav.boutique },
-    { href: '/livres', label: nav.livres },
     { href: '/medias', label: nav.medias },
-    { href: '/evenements', label: nav.evenements },
+    { href: '/formations', label: nav.formations },
+    { href: '/boutique', label: nav.boutique },
     { href: '/blogue', label: nav.blogue },
     { href: '/points-de-vente', label: nav.pointsDeVente },
     { href: '/conferenciere', label: nav.conferenciere },
@@ -52,7 +50,7 @@ const Footer: React.FC = () => {
               className="h-16 w-auto mb-6 opacity-90"
               style={{ filter: 'invert(1) brightness(1.5)' }}
             />
-            <p className="text-xs text-white/40 leading-relaxed max-w-[200px]">
+            <p className="text-xs text-white/40 leading-relaxed">
               {lang === 'FR'
                 ? 'Sagesse Ayurvédique pour une vie consciente.'
                 : 'Ayurvedic wisdom for conscious living.'}

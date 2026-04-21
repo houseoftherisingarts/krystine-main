@@ -2,6 +2,7 @@ import { db } from '../firebase';
 import {
   collection, addDoc, getDocs, deleteDoc, doc, updateDoc, setDoc, getDoc,
   query, orderBy, where, serverTimestamp, onSnapshot, Timestamp,
+  writeBatch, limit,
   type Unsubscribe,
 } from 'firebase/firestore';
 
@@ -80,15 +81,30 @@ export async function deleteEvent(id: string) {
   return deleteDoc(doc(db!, 'events', id));
 }
 
-// ─── Newsletter ───────────────────────────────────────────────────────────────
+// ─── Newsletter subscribers (CRM) ────────────────────────────────────────────
+export type SubscriberStatus = 'active' | 'unsubscribed' | 'bounced' | 'pending';
+
 export interface NewsletterSubscriber {
   id?: string;
   email: string;
   firstName?: string;
   lastName?: string;
   source?: string;
-  uid?: string;             // populated when the subscriber is also a signed-in member
+  uid?: string;                   // populated when the subscriber is also a signed-in member
+  tags?: string[];                // simple segmentation — "client", "event-2024", "dosha-vata", …
+  status?: SubscriberStatus;      // default 'active' when added via public form
+  unsubscribeToken?: string;      // hash used by the /desinscription public route
   subscribedAt?: Timestamp;
+  unsubscribedAt?: Timestamp;
+}
+
+// Generate a URL-safe random token. Used as the subscriber's unsubscribe key
+// so Krystine can include a revocation link in every sent email without
+// exposing the document id.
+function genUnsubToken(): string {
+  const bytes = new Uint8Array(18);
+  (globalThis.crypto || (window as any).crypto).getRandomValues(bytes);
+  return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
 }
 
 export async function addNewsletterSubscriber(data: Omit<NewsletterSubscriber, 'id' | 'subscribedAt'>) {
@@ -100,6 +116,8 @@ export async function addNewsletterSubscriber(data: Omit<NewsletterSubscriber, '
   }
   if (!clean.email) return;
   clean.email = String(clean.email).trim().toLowerCase();
+  if (!clean.status) clean.status = 'active';
+  if (!clean.unsubscribeToken) clean.unsubscribeToken = genUnsubToken();
   return addDoc(collection(db, 'newsletter'), { ...clean, subscribedAt: serverTimestamp() });
 }
 
@@ -113,6 +131,178 @@ export async function getNewsletterSubscribers(): Promise<NewsletterSubscriber[]
 export async function deleteNewsletterSubscriber(id: string) {
   if (!db) noDb();
   return deleteDoc(doc(db!, 'newsletter', id));
+}
+
+export async function updateNewsletterSubscriber(id: string, patch: Partial<NewsletterSubscriber>) {
+  if (!db) noDb();
+  return updateDoc(doc(db!, 'newsletter', id), patch as any);
+}
+
+// ─── Bulk import (CSV flow) ──────────────────────────────────────────────────
+// Skips emails that already exist (case-insensitive). Writes in batches of 400
+// to stay under Firestore's 500-op batch limit.
+export interface BulkImportResult {
+  inserted: number;
+  skippedDuplicates: number;
+  invalid: number;
+}
+
+export async function bulkAddNewsletterSubscribers(
+  rows: Array<Omit<NewsletterSubscriber, 'id' | 'subscribedAt' | 'unsubscribeToken'>>,
+): Promise<BulkImportResult> {
+  if (!db) { noDb(); return { inserted: 0, skippedDuplicates: 0, invalid: 0 }; }
+
+  const existing = await getNewsletterSubscribers();
+  const seen = new Set(existing.map(s => s.email.toLowerCase()));
+  const validRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  let inserted = 0;
+  let skipped = 0;
+  let invalid = 0;
+  let batch = writeBatch(db!);
+  let ops = 0;
+
+  for (const row of rows) {
+    const email = String(row.email || '').trim().toLowerCase();
+    if (!email || !validRx.test(email)) { invalid++; continue; }
+    if (seen.has(email)) { skipped++; continue; }
+    seen.add(email);
+
+    const ref = doc(collection(db, 'newsletter'));
+    const payload: Record<string, any> = {
+      email,
+      status: row.status || 'active',
+      source: row.source || 'csv-import',
+      unsubscribeToken: genUnsubToken(),
+      subscribedAt: serverTimestamp(),
+    };
+    if (row.firstName) payload.firstName = row.firstName;
+    if (row.lastName) payload.lastName = row.lastName;
+    if (row.tags && row.tags.length) payload.tags = row.tags;
+    batch.set(ref, payload);
+    ops++;
+    inserted++;
+
+    if (ops >= 400) {
+      await batch.commit();
+      batch = writeBatch(db!);
+      ops = 0;
+    }
+  }
+  if (ops > 0) await batch.commit();
+  return { inserted, skippedDuplicates: skipped, invalid };
+}
+
+// ─── Newsletter messages (campaigns) ─────────────────────────────────────────
+export type NewsletterStatus = 'draft' | 'scheduled' | 'sending' | 'sent' | 'failed';
+export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer';
+
+export interface NewsletterBlock {
+  type: BlockType;
+  // Loose content bag so each block type can store its own shape without a
+  // discriminated union explosion on the Firestore side.
+  content?: Record<string, any>;
+}
+
+export interface NewsletterStats {
+  recipients?: number;
+  delivered?: number;
+  opens?: number;
+  clicks?: number;
+  bounces?: number;
+  unsubscribes?: number;
+}
+
+export interface NewsletterDoc {
+  id?: string;
+  title: string;           // internal label for Krystine
+  subject: string;         // email Subject line
+  preheader?: string;      // hidden preview text
+  fromName?: string;       // e.g. "Krystine St-Laurent"
+  blocks: NewsletterBlock[];
+  status: NewsletterStatus;
+  segmentTag?: string | null;  // null → send to all active subscribers
+  scheduledFor?: Timestamp;
+  sentAt?: Timestamp;
+  stats?: NewsletterStats;
+  createdBy?: string;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+export async function createNewsletter(data: Omit<NewsletterDoc, 'id' | 'createdAt' | 'updatedAt'>) {
+  if (!db) noDb();
+  return addDoc(collection(db!, 'newsletters'), {
+    ...data,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+}
+
+export async function updateNewsletter(id: string, patch: Partial<NewsletterDoc>) {
+  if (!db) noDb();
+  return updateDoc(doc(db!, 'newsletters', id), { ...patch, updatedAt: serverTimestamp() } as any);
+}
+
+export async function deleteNewsletter(id: string) {
+  if (!db) noDb();
+  return deleteDoc(doc(db!, 'newsletters', id));
+}
+
+export async function getNewsletter(id: string): Promise<NewsletterDoc | null> {
+  if (!db) return null;
+  const snap = await getDoc(doc(db, 'newsletters', id));
+  return snap.exists() ? ({ id: snap.id, ...snap.data() } as NewsletterDoc) : null;
+}
+
+export async function getNewsletters(): Promise<NewsletterDoc[]> {
+  if (!db) return [];
+  const q = query(collection(db, 'newsletters'), orderBy('updatedAt', 'desc'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as NewsletterDoc));
+}
+
+// ─── Member inbox (newsletter archives) ──────────────────────────────────────
+// Each inbox pointer references a newsletter by id; the full body is fetched
+// from /newsletters/{newsletterId}. This keeps per-member storage tiny.
+export interface InboxPointer {
+  id?: string;                 // matches newsletterId
+  newsletterId: string;
+  title: string;
+  subject: string;
+  receivedAt?: Timestamp;
+  readAt?: Timestamp;
+}
+
+export async function getMemberInbox(uid: string): Promise<InboxPointer[]> {
+  if (!db) return [];
+  const q = query(collection(db, 'members', uid, 'inbox'), orderBy('receivedAt', 'desc'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as InboxPointer));
+}
+
+export async function markInboxRead(uid: string, newsletterId: string) {
+  if (!db) return;
+  const ref = doc(db, 'members', uid, 'inbox', newsletterId);
+  try { await updateDoc(ref, { readAt: serverTimestamp() } as any); } catch { /* not-yet-created inbox item is fine to skip */ }
+}
+
+// Resolve an unsubscribe token → subscriber doc, flip their status.
+// Delegated to a Cloud Function so we don't have to expose the newsletter
+// collection to public reads (which would leak every subscriber's email).
+// Region + project ID come from the Firebase project the app is bound to.
+const FUNCTIONS_BASE =
+  (import.meta.env.VITE_FUNCTIONS_BASE_URL as string | undefined)
+  || `https://us-central1-${import.meta.env.VITE_FIREBASE_PROJECT_ID}.cloudfunctions.net`;
+
+export async function unsubscribeByToken(token: string): Promise<{ ok: boolean; email?: string }> {
+  try {
+    const res = await fetch(`${FUNCTIONS_BASE}/unsubscribeByToken?t=${encodeURIComponent(token)}`);
+    if (!res.ok) return { ok: false };
+    return await res.json();
+  } catch {
+    return { ok: false };
+  }
 }
 
 // ─── Dosha Quiz Results ───────────────────────────────────────────────────────

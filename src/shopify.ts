@@ -63,7 +63,42 @@ interface ProductsResponse {
   };
 }
 
-export async function getProducts(first = 50, lang: 'FR' | 'EN' = 'FR'): Promise<ShopifyProduct[]> {
+// Cache products in localStorage for fast repeat visits. Stale-while-revalidate:
+// we return the cached payload immediately (if fresh) and still refire the
+// network request in the background so the next mount has up-to-date data.
+const PRODUCTS_CACHE_KEY = 'inspirata.shopify.products.v1';
+const PRODUCTS_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+
+interface ProductsCache {
+  at: number;
+  lang: 'FR' | 'EN';
+  first: number;
+  products: ShopifyProduct[];
+}
+
+function readProductsCache(first: number, lang: 'FR' | 'EN'): ShopifyProduct[] | null {
+  try {
+    const raw = localStorage.getItem(PRODUCTS_CACHE_KEY);
+    if (!raw) return null;
+    const cache = JSON.parse(raw) as ProductsCache;
+    if (cache.lang !== lang || cache.first < first) return null;
+    if (Date.now() - cache.at > PRODUCTS_CACHE_TTL_MS) return null;
+    return cache.products;
+  } catch { return null; }
+}
+
+function writeProductsCache(products: ShopifyProduct[], first: number, lang: 'FR' | 'EN') {
+  try {
+    const cache: ProductsCache = { at: Date.now(), lang, first, products };
+    localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(cache));
+  } catch { /* storage full / disabled — ignore */ }
+}
+
+export function invalidateProductsCache() {
+  try { localStorage.removeItem(PRODUCTS_CACHE_KEY); } catch { /* noop */ }
+}
+
+async function fetchProducts(first: number, lang: 'FR' | 'EN'): Promise<ShopifyProduct[]> {
   const country = lang === 'FR' ? 'CA' : 'US';
   const language = lang === 'FR' ? 'FR' : 'EN';
   const query = `
@@ -104,6 +139,20 @@ export async function getProducts(first = 50, lang: 'FR' | 'EN' = 'FR'): Promise
     variants: node.variants.edges.map(e => e.node),
     onlineStoreUrl: node.onlineStoreUrl,
   }));
+}
+
+export async function getProducts(first = 50, lang: 'FR' | 'EN' = 'FR'): Promise<ShopifyProduct[]> {
+  const cached = readProductsCache(first, lang);
+  if (cached) {
+    // Revalidate silently so next mount sees fresh data.
+    fetchProducts(first, lang)
+      .then(fresh => writeProductsCache(fresh, first, lang))
+      .catch(() => { /* keep cached */ });
+    return cached;
+  }
+  const fresh = await fetchProducts(first, lang);
+  writeProductsCache(fresh, first, lang);
+  return fresh;
 }
 
 interface CartCreateResponse {
