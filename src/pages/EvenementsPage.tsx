@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT, ASSETS } from '../content';
 import { getEvents, type EventDoc } from '../firebase/firestore';
+import EditableText from '../components/edit/EditableText';
 
 const EvenementsPage: React.FC = () => {
   const { lang } = useApp();
@@ -27,10 +28,17 @@ const EvenementsPage: React.FC = () => {
         {/* Hero */}
         <div className="text-center mb-20">
           <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
-            {lang === 'FR' ? 'Calendrier' : 'Calendar'}
+            <EditableText
+              fieldKey="evenements.hero.kicker"
+              defaultValue={lang === 'FR' ? 'Calendrier' : 'Calendar'}
+            />
           </span>
-          <h1 className="text-5xl md:text-7xl font-serif mb-6">{t.title}</h1>
-          <p className="text-xl text-[#0B1A36]/60 dark:text-white/60 font-serif italic max-w-xl mx-auto">{t.subtitle}</p>
+          <h1 className="text-5xl md:text-7xl font-serif mb-6">
+            <EditableText fieldKey="evenements.hero.title" defaultValue={t.title} />
+          </h1>
+          <p className="text-xl text-[#0B1A36]/60 dark:text-white/60 font-serif italic max-w-xl mx-auto">
+            <EditableText fieldKey="evenements.hero.subtitle" defaultValue={t.subtitle} multiline />
+          </p>
           <div className="w-24 h-1 bg-[#D4AF37] mx-auto mt-10" />
         </div>
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   getNewsletterSubscribers, deleteNewsletterSubscriber, bulkAddNewsletterSubscribers,
   type NewsletterSubscriber, type BulkImportResult,
@@ -6,10 +6,52 @@ import {
 import { parseCsv, mapCsvToSubscribers } from '../../../../lib/csv';
 import { Card, DangerButton, EmptyState, GhostButton, downloadCsv } from '../../primitives';
 
+// Sentinel value for the "All contacts" option — an empty string would collide
+// with records that genuinely have no source set, which we surface separately.
+const ALL_SOURCES = '__all__';
+const NO_SOURCE = '__none__';
+
+// Pretty label for well-known source keys. Unknown sources fall through to the
+// raw key so new lists appear in the dropdown automatically.
+const sourceLabel = (key: string): string => {
+  // Strip the "_google" suffix — we show the origin form, the Google variant
+  // is visible via tags if needed.
+  const base = key.replace(/_google$/, '');
+  const isGoogle = key.endsWith('_google');
+  const pretty = (() => {
+    switch (base) {
+      case 'waitlist-pitta':                   return "Liste d'attente · Pitta";
+      case 'waitlist-kapha':                   return "Liste d'attente · Kapha";
+      case 'waitlist-vata':                    return "Liste d'attente · Vata";
+      case 'waitlist-retraite-ayurveda-mai-2026': return "Retraite Ayurveda · mai 2026";
+      case 'waitlist-lancement-anglicane':     return "Lancement · L'Anglicane (oct. 2026)";
+      case 'waitlist-lancement-montreal':      return 'Lancement · Montréal (nov. 2026)';
+      case 'waitlist-retraite-nov-2026':       return 'Retraite · novembre 2026';
+      case 'waitlist-retraite-fev-2027':       return 'Retraite · février 2027';
+      case 'waitlist-retraite-mai-2027':       return 'Retraite · mai 2027';
+      case 'accueil-pulsation': return 'Accueil — La Pulsation';
+      case 'krystine':          return 'Page Krystine';
+      case 'podcast':           return 'Page Podcast';
+      case 'quiz':              return 'Quiz Dosha';
+      case 'conferenciere':     return 'Demande de conférence';
+      case 'conference-tour':   return 'Tournée de conférences';
+      case 'guide':             return 'Laissez-vous guider';
+      case 'csv-import':        return 'Import CSV';
+      case 'import':            return 'Import manuel';
+      case 'kajabi':            return 'Import Kajabi';
+      case 'origine':           return 'Expérience Origine';
+      case 'main':              return 'Infolettre principale';
+      default:                  return base;
+    }
+  })();
+  return isGoogle ? `${pretty} · Google` : pretty;
+};
+
 const SubscribersPanel: React.FC = () => {
   const [subs, setSubs] = useState<NewsletterSubscriber[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
+  const [source, setSource] = useState<string>(ALL_SOURCES);
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState<BulkImportResult | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
@@ -25,7 +67,27 @@ const SubscribersPanel: React.FC = () => {
     await refresh();
   };
 
+  // Build the source dropdown from the data — every distinct `source` plus a
+  // "Sans source" bucket for records missing one. Auto-expands as new forms
+  // start writing to the `newsletter` collection.
+  const sourceOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+    let noSource = 0;
+    for (const s of subs) {
+      const key = s.source?.trim();
+      if (key) counts.set(key, (counts.get(key) || 0) + 1);
+      else noSource++;
+    }
+    const entries = Array.from(counts.entries())
+      .sort((a, b) => sourceLabel(a[0]).localeCompare(sourceLabel(b[0]), 'fr'));
+    return { entries, noSource };
+  }, [subs]);
+
   const filtered = subs.filter(s => {
+    if (source !== ALL_SOURCES) {
+      const k = s.source?.trim() || '';
+      if (source === NO_SOURCE ? !!k : k !== source) return false;
+    }
     if (!filter) return true;
     const f = filter.toLowerCase();
     return (
@@ -37,7 +99,9 @@ const SubscribersPanel: React.FC = () => {
   });
 
   const exportCsv = () => {
-    const rows = subs.map(s => ({
+    // Export the currently-filtered view so Krystine can pull per-list CSVs
+    // (e.g. only the Pitta waitlist) just by picking the source dropdown.
+    const rows = filtered.map(s => ({
       email: s.email,
       firstName: s.firstName || '',
       lastName: s.lastName || '',
@@ -46,7 +110,8 @@ const SubscribersPanel: React.FC = () => {
       source: s.source || '',
       subscribedAt: s.subscribedAt?.toDate().toISOString() || '',
     }));
-    downloadCsv(`infolettre_${new Date().toISOString().slice(0, 10)}.csv`, rows);
+    const slug = source === ALL_SOURCES ? 'tous' : source === NO_SOURCE ? 'sans-source' : source;
+    downloadCsv(`infolettre_${slug}_${new Date().toISOString().slice(0, 10)}.csv`, rows);
   };
 
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,6 +142,20 @@ const SubscribersPanel: React.FC = () => {
     <div className="space-y-4">
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-3">
+        <select
+          value={source}
+          onChange={e => setSource(e.target.value)}
+          title="Filtrer par source / formulaire"
+          className="px-4 py-2 rounded-full border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-[#0B1A36]/60 text-sm text-[#0B1A36] dark:text-white outline-none focus:border-[#D4AF37]"
+        >
+          <option value={ALL_SOURCES}>Tous les contacts ({subs.length})</option>
+          {sourceOptions.entries.map(([key, count]) => (
+            <option key={key} value={key}>{sourceLabel(key)} ({count})</option>
+          ))}
+          {sourceOptions.noSource > 0 && (
+            <option value={NO_SOURCE}>Sans source ({sourceOptions.noSource})</option>
+          )}
+        </select>
         <input
           type="search"
           placeholder="Rechercher (email, nom, étiquette)…"

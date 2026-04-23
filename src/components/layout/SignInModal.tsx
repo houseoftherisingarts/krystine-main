@@ -24,9 +24,29 @@ const SignInModal: React.FC = () => {
 
   const handleGoogle = async () => {
     reset(); setBusy(true);
-    try { await loginWithGoogle(); close(); }
-    catch (e: any) { setErr(e?.message || 'Google sign-in failed'); }
-    finally { setBusy(false); }
+    try {
+      const cred = await loginWithGoogle();
+      // `cred === null` means the popup couldn't open (Safari ITP, blocked
+      // popups, etc.) and we fell back to a full-page redirect to Google.
+      // Don't close the modal here — the page is about to navigate away,
+      // and `handleRedirectResult` (in AppContext) finishes the login when
+      // the browser comes back. Showing a quick info line lets the user
+      // know what's happening.
+      if (cred === null) {
+        setInfo(lang === 'FR' ? 'Redirection vers Google…' : 'Redirecting to Google…');
+        return; // keep busy=true since we're navigating away
+      }
+      close();
+    } catch (e: any) {
+      const code = e?.code || '';
+      if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') {
+        // User dismissed the popup — silent reset, no error message.
+      } else {
+        setErr(e?.message || 'Google sign-in failed');
+      }
+    } finally {
+      setBusy(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

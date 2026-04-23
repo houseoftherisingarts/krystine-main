@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT } from '../content';
+import EditableText from '../components/edit/EditableText';
 
 const LocationsPage: React.FC = () => {
   const { lang } = useApp();
@@ -10,8 +11,12 @@ const LocationsPage: React.FC = () => {
     <div className="min-h-screen bg-[#F5F5F0] dark:bg-[#050C1A] pt-36 pb-24">
       <div className="max-w-6xl mx-auto px-6 md:px-12">
         <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-serif text-[#0B1A36] dark:text-white mb-6">{t.title}</h1>
-          <p className="text-[#0B1A36]/80 dark:text-white/80 text-lg leading-relaxed max-w-2xl mx-auto">{t.intro}</p>
+          <h1 className="text-5xl md:text-6xl font-serif text-[#0B1A36] dark:text-white mb-6">
+            <EditableText fieldKey="locations.hero.title" defaultValue={t.title} />
+          </h1>
+          <p className="text-[#0B1A36]/80 dark:text-white/80 text-lg leading-relaxed max-w-2xl mx-auto">
+            <EditableText fieldKey="locations.hero.intro" defaultValue={t.intro} multiline />
+          </p>
           <div className="w-24 h-1 bg-[#D4AF37] mx-auto mt-8" />
         </div>
 

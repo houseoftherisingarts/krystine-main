@@ -182,12 +182,12 @@ const INTENTS: Intent[] = [
     match: /krystine|fondatrice|founder|qui (est|êtes)|about|biograph/i,
     reply: {
       FR: {
-        text: "Krystine St-Laurent, fondatrice d'Inspirata, pratique l'Ayurveda depuis plus de 35 ans. Découvrez son parcours.",
+        text: "Krystine St-Laurent, fondatrice d'Inspirata, pratique l'Ayurveda depuis plus de 37 ans. Découvrez son parcours.",
         href: '/krystine',
         ctaLabel: 'Découvrir Krystine',
       },
       EN: {
-        text: 'Krystine St-Laurent, founder of Inspirata, has practiced Ayurveda for over 35 years. Discover her path.',
+        text: 'Krystine St-Laurent, founder of Inspirata, has practiced Ayurveda for over 37 years. Discover her path.',
         href: '/krystine',
         ctaLabel: 'Discover Krystine',
       },

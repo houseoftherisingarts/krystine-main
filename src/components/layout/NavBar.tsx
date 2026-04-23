@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useUI, useAuth, useCart } from '../../contexts/AppContext';
+import { useUI, useAuth, useCart, useBoutique } from '../../contexts/AppContext';
 import { ASSETS } from '../../content';
 
 interface NavItem { href: string; labelFR: string; labelEN: string; }
@@ -11,7 +11,7 @@ interface NavItem { href: string; labelFR: string; labelEN: string; }
 const NAV: NavItem[] = [
   { href: '/krystine',    labelFR: 'Krystine St-Laurent',          labelEN: 'Krystine St-Laurent' },
   { href: '/medias',      labelFR: 'Podcasts, Médias & Livres',    labelEN: 'Podcasts, Media & Books' },
-  { href: '/formations',  labelFR: 'Formations & Événements',      labelEN: 'Programs & Events' },
+  { href: '/formations',  labelFR: 'Formations',                   labelEN: 'Programs' },
   { href: '/boutique',    labelFR: 'Boutique Inspirata',           labelEN: 'Inspirata Shop' },
 ];
 
@@ -19,6 +19,7 @@ const NavBar: React.FC = () => {
   const { lang, setLang, theme, toggleTheme, audioPlaying, toggleAudio } = useUI();
   const { user, member, isAdmin, setSignInOpen } = useAuth();
   const { cartItems, setCartOpen } = useCart();
+  const { resolveHref } = useBoutique();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
@@ -67,6 +68,12 @@ const NavBar: React.FC = () => {
             const active = isActive(item.href);
             const isPrimary = item.href === '/boutique';
             if (isPrimary) {
+              const resolved = resolveHref(item.href);
+              const btnClass = `inline-flex items-center gap-2 whitespace-nowrap px-4 py-2 text-[10px] 2xl:text-[11px] uppercase tracking-[0.2em] font-bold rounded-full transition-all duration-300 ${
+                active
+                  ? 'bg-[#0B1A36] text-[#D4AF37] border border-[#D4AF37]'
+                  : 'bg-[#D4AF37] text-[#0B1A36] border border-[#D4AF37] hover:bg-[#0B1A36] hover:text-[#D4AF37] shadow-[0_4px_18px_rgba(212,175,55,0.25)]'
+              }`;
               return (
                 <motion.li
                   key={item.href}
@@ -75,17 +82,17 @@ const NavBar: React.FC = () => {
                   transition={{ duration: 0.35, delay: 0.18 + i * 0.04, ease: 'easeOut' }}
                   className="ml-2"
                 >
-                  <Link
-                    to={item.href}
-                    className={`inline-flex items-center gap-2 whitespace-nowrap px-4 py-2 text-[10px] 2xl:text-[11px] uppercase tracking-[0.2em] font-bold rounded-full transition-all duration-300 ${
-                      active
-                        ? 'bg-[#0B1A36] text-[#D4AF37] border border-[#D4AF37]'
-                        : 'bg-[#D4AF37] text-[#0B1A36] border border-[#D4AF37] hover:bg-[#0B1A36] hover:text-[#D4AF37] shadow-[0_4px_18px_rgba(212,175,55,0.25)]'
-                    }`}
-                  >
-                    <i className="fa-solid fa-basket-shopping text-[10px]" />
-                    {label(item)}
-                  </Link>
+                  {resolved.external ? (
+                    <a href={resolved.href} className={btnClass}>
+                      <i className="fa-solid fa-basket-shopping text-[10px]" />
+                      {label(item)}
+                    </a>
+                  ) : (
+                    <Link to={resolved.href} className={btnClass}>
+                      <i className="fa-solid fa-basket-shopping text-[10px]" />
+                      {label(item)}
+                    </Link>
+                  )}
                 </motion.li>
               );
             }
@@ -239,23 +246,24 @@ const NavBar: React.FC = () => {
             className="lg:hidden overflow-hidden border-t border-[#D4AF37]/10"
           >
             <div className="bg-white/95 dark:bg-[#050C1A]/98 backdrop-blur-xl px-6 py-4 flex flex-col">
-              {NAV.map((item, i) => (
-                <motion.div
-                  key={item.href}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.04 }}
-                >
-                  <Link
-                    to={item.href}
-                    className={`block py-3 text-sm font-semibold uppercase tracking-widest border-b border-[#0B1A36]/5 dark:border-white/5 transition-colors ${
-                      isActive(item.href) ? 'text-[#D4AF37]' : 'text-[#0B1A36] dark:text-white hover:text-[#D4AF37]'
-                    }`}
+              {NAV.map((item, i) => {
+                const resolved = resolveHref(item.href);
+                const cls = `block py-3 text-sm font-semibold uppercase tracking-widest border-b border-[#0B1A36]/5 dark:border-white/5 transition-colors ${
+                  isActive(item.href) ? 'text-[#D4AF37]' : 'text-[#0B1A36] dark:text-white hover:text-[#D4AF37]'
+                }`;
+                return (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.04 }}
                   >
-                    {label(item)}
-                  </Link>
-                </motion.div>
-              ))}
+                    {resolved.external
+                      ? <a href={resolved.href} className={cls}>{label(item)}</a>
+                      : <Link to={resolved.href} className={cls}>{label(item)}</Link>}
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.div>
         )}

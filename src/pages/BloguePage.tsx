@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT } from '../content';
 import { getBlogPosts, addBlogPost, deleteBlogPost, type BlogPost } from '../firebase/firestore';
+import EditableText from '../components/edit/EditableText';
 
 const COVER_STYLES = [
   'bg-gradient-to-br from-[#0B1A36] to-[#1A2642]',
@@ -77,8 +78,12 @@ const BloguePage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Header */}
         <div className="text-center mb-12 border-b border-[#0B1A36]/10 dark:border-white/10 pb-12">
-          <h1 className="text-5xl md:text-7xl font-serif text-[#0B1A36] dark:text-white italic mb-4">{t.title}</h1>
-          <p className="text-[#0B1A36]/60 dark:text-white/60 uppercase tracking-widest text-sm">{t.subtitle}</p>
+          <h1 className="text-5xl md:text-7xl font-serif text-[#0B1A36] dark:text-white italic mb-4">
+            <EditableText fieldKey="blogue.hero.title" defaultValue={t.title} />
+          </h1>
+          <p className="text-[#0B1A36]/60 dark:text-white/60 uppercase tracking-widest text-sm">
+            <EditableText fieldKey="blogue.hero.subtitle" defaultValue={t.subtitle} />
+          </p>
         </div>
 
         {/* Add form */}
@@ -144,10 +149,12 @@ const BloguePage: React.FC = () => {
               </div>
             ))}
 
-            {posts.length === 0 && !isAdmin && (
+            {posts.length === 0 && (
               <div className="col-span-full text-center py-20">
-                <p className="font-serif text-xl italic text-[#0B1A36]/40 dark:text-white/40">
-                  {lang === 'FR' ? 'Articles en préparation...' : 'Articles coming soon...'}
+                <p className="font-serif text-xl md:text-2xl italic text-[#0B1A36]/55 dark:text-white/55 leading-relaxed">
+                  {lang === 'FR'
+                    ? 'Nouveau site. Synchronisation du blog sous peu.'
+                    : 'New site. Blog syncing shortly.'}
                 </p>
               </div>
             )}

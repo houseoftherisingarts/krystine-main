@@ -1,16 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { logout } from '../firebase/auth';
-import { updateMember, getClientOrdersForMember, getDoshaResultsForMember, type ClientOrder, type DoshaResult } from '../firebase/firestore';
+import { updateMember, getClientOrdersForMember, getDoshaResultsForMember, getGuideResponsesForMember, type ClientOrder, type DoshaResult, type GuideResponse } from '../firebase/firestore';
 import { uploadImage } from '../firebase/storage';
+import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../shopify';
+import { findOilForDosha } from '../lib/shopifyOil';
+import { ritualForDosha } from '../lib/doshaRituals';
+import { jsPDF } from 'jspdf';
 import ClientSupport from './client/ClientSupport';
 import ClientArchives from './client/ClientArchives';
+import ClientLoyalty from './client/ClientLoyalty';
+import { subscribeToMemberPoints, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
 
-type Tab = 'profile' | 'orders' | 'dosha' | 'archives' | 'support';
+type Tab = 'profile' | 'orders' | 'loyalty' | 'dosha' | 'archives' | 'support';
 
 const ClientPortal: React.FC = () => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
   const [tab, setTab] = useState<Tab>('profile');
+  // Live points balance for the header chip. Subscribed here once so all
+  // tabs share the same stream rather than each re-subscribing.
+  const [pointsBalance, setPointsBalance] = useState<PointsBalance>(DEFAULT_POINTS_BALANCE);
+  useEffect(() => {
+    if (!user) return;
+    const unsub = subscribeToMemberPoints(user.uid, setPointsBalance);
+    return unsub;
+  }, [user]);
 
   if (!user) {
     return (
@@ -51,6 +65,7 @@ const ClientPortal: React.FC = () => {
   const tabs: { id: Tab; label: string; icon: string }[] = [
     { id: 'profile',  label: lang === 'FR' ? 'Profil' : 'Profile', icon: 'fa-user' },
     { id: 'orders',   label: lang === 'FR' ? 'Commandes' : 'Orders', icon: 'fa-box' },
+    { id: 'loyalty',  label: lang === 'FR' ? 'Points' : 'Points', icon: 'fa-seedling' },
     { id: 'dosha',    label: lang === 'FR' ? 'Dosha' : 'Dosha', icon: 'fa-circle-nodes' },
     { id: 'archives', label: lang === 'FR' ? 'Archives' : 'Archives', icon: 'fa-envelope-open-text' },
     { id: 'support',  label: lang === 'FR' ? 'Support' : 'Support', icon: 'fa-comments' },
@@ -80,6 +95,16 @@ const ClientPortal: React.FC = () => {
                   <i className="fa-solid fa-circle-nodes mr-1" /> {member.dosha}
                 </span>
               )}
+              {/* Balance chip — always visible in the header, clickable to
+                  jump straight to the Points tab. */}
+              <button
+                type="button"
+                onClick={() => setTab('loyalty')}
+                className="text-[10px] uppercase tracking-[0.2em] font-bold px-3 py-1 rounded-full bg-[#0B1A36] text-[#D4AF37] border border-[#D4AF37]/40 hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors"
+              >
+                <i className="fa-solid fa-seedling mr-1" />
+                {pointsBalance.balance} {lang === 'FR' ? 'pts' : 'pts'}
+              </button>
             </div>
             <p className="text-sm text-[#0B1A36]/50 dark:text-white/50 mt-1">{user.email}</p>
           </div>
@@ -109,6 +134,7 @@ const ClientPortal: React.FC = () => {
         <div className="bg-white dark:bg-[#0B1A36] rounded-[24px] shadow-sm border border-[#0B1A36]/5 dark:border-white/5 p-6 md:p-8">
           {tab === 'profile'  && <ProfileTab />}
           {tab === 'orders'   && <OrdersTab />}
+          {tab === 'loyalty'  && <ClientLoyalty />}
           {tab === 'dosha'    && <DoshaTab />}
           {tab === 'archives' && <ClientArchives />}
           {tab === 'support'  && <ClientSupport />}
@@ -289,9 +315,11 @@ const OrdersTab: React.FC = () => {
 
 // ─── Dosha tab ───────────────────────────────────────────────────────────────
 const DoshaTab: React.FC = () => {
-  const { user, member, lang } = useApp();
+  const { user, member, lang, addToCart } = useApp();
   const [results, setResults] = useState<DoshaResult[]>([]);
   const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [guideResponses, setGuideResponses] = useState<GuideResponse[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -299,24 +327,363 @@ const DoshaTab: React.FC = () => {
     getDoshaResultsForMember(user.uid)
       .then(setResults)
       .finally(() => setLoading(false));
+    getGuideResponsesForMember(user.uid).then(setGuideResponses).catch(() => setGuideResponses([]));
   }, [user]);
+
+  // Pull the Shopify catalog so we can surface the oil matching the member's
+  // dominant dosha. Failures are silent — the recommendation simply falls
+  // back to a link to the body-oils collection.
+  useEffect(() => {
+    if (!isShopifyConfigured) return;
+    getProducts(50, lang).then(setProducts).catch(() => setProducts([]));
+  }, [lang]);
 
   if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>;
 
+  // Latest saved result drives the % breakdown. Older results fall into the
+  // history list below.
+  const latest = results[0];
+  const dominant = latest?.dominant || member?.dosha || '';
+
+  // Rank the three doshas by percentage. Used to surface a "second dominant"
+  // oil recommendation when the runner-up is meaningful (≥ 30%).
+  const rankedDoshas: Array<{ name: string; pct: number }> = latest
+    ? (['vata', 'pitta', 'kapha'] as const)
+        .map(d => ({ name: d.charAt(0).toUpperCase() + d.slice(1), pct: latest[d] || 0 }))
+        .sort((a, b) => b.pct - a.pct)
+    : [];
+  const SECONDARY_THRESHOLD = 30;
+  const secondary = rankedDoshas[1] && rankedDoshas[1].pct >= SECONDARY_THRESHOLD
+    ? rankedDoshas[1]
+    : null;
+
+  const addOilToCart = (product: ShopifyProduct) => {
+    const variant = product.variants.find(v => v.availableForSale) || product.variants[0];
+    if (!variant) return;
+    addToCart({
+      id: product.id,
+      variantId: variant.id,
+      title: product.title,
+      type: product.productType || 'Huile Corporelle',
+      price: formatMoney(variant.price, lang),
+      priceAmount: variant.price.amount,
+      priceCurrency: variant.price.currencyCode,
+      image: product.featuredImage?.url,
+    });
+  };
+
+  // Ayurvedic action phrase per dosha — drives the copy above the oil
+  // recommendation so it reads as guidance, not a product pitch.
+  const doshaGuidance: Record<string, { fr: string; en: string; color: string }> = {
+    Vata:  { fr: 'Enraciner · Réchauffer · Apaiser',  en: 'Ground · Warm · Soothe',        color: '#8F9779' },
+    Pitta: { fr: 'Rafraîchir · Apaiser · Adoucir',    en: 'Cool · Soothe · Soften',        color: '#BC4A3C' },
+    Kapha: { fr: 'Activer · Alléger · Stimuler',      en: 'Activate · Lighten · Stimulate', color: '#4A7C9D' },
+  };
+  const guidance = doshaGuidance[dominant as keyof typeof doshaGuidance];
+
   return (
     <div>
-      {member?.dosha ? (
-        <div className="text-center bg-gradient-to-br from-[#D4AF37]/10 to-[#D4AF37]/5 rounded-[20px] p-10 mb-8 border border-[#D4AF37]/20">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] font-bold mb-3">{lang === 'FR' ? 'Votre dominance' : 'Your dominance'}</p>
-          <h2 className="text-5xl font-serif text-[#0B1A36] dark:text-white mb-2">{member.dosha}</h2>
-        </div>
+      {latest || member?.dosha ? (
+        <>
+          {/* Headline: dominant dosha + accent color */}
+          <div
+            className="text-center rounded-[20px] p-8 md:p-10 mb-6 border"
+            style={{
+              borderColor: guidance ? `${guidance.color}55` : 'rgba(212,175,55,0.2)',
+              background: guidance
+                ? `linear-gradient(135deg, ${guidance.color}22 0%, ${guidance.color}0A 100%)`
+                : 'linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.05))',
+            }}
+          >
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] font-bold mb-3">
+              {lang === 'FR' ? 'Votre dominance' : 'Your dominance'}
+            </p>
+            <h2 className="text-5xl font-serif text-[#0B1A36] dark:text-white mb-2">{dominant}</h2>
+            {guidance && (
+              <p className="font-serif italic text-[#0B1A36]/70 dark:text-white/70">
+                {lang === 'FR' ? guidance.fr : guidance.en}
+              </p>
+            )}
+          </div>
+
+          {/* Percentages — three big numbers with proportional bars. Built
+              straight from the latest DoshaResult, which stores percentages,
+              not raw scores. */}
+          {latest && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              {(['vata', 'pitta', 'kapha'] as const).map(d => {
+                const pct = latest[d] || 0;
+                const label = d.charAt(0).toUpperCase() + d.slice(1);
+                const color = doshaGuidance[label]?.color || '#D4AF37';
+                const isDominant = label.toLowerCase() === dominant.toLowerCase();
+                return (
+                  <div
+                    key={d}
+                    className={`rounded-2xl p-5 border transition-colors ${
+                      isDominant
+                        ? 'border-[#D4AF37]/50 bg-[#D4AF37]/5 dark:bg-[#D4AF37]/10'
+                        : 'border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-white/5'
+                    }`}
+                  >
+                    <div className="flex items-baseline justify-between mb-3">
+                      <span className="text-[11px] uppercase tracking-[0.3em] font-bold text-[#0B1A36]/70 dark:text-white/70">{label}</span>
+                      <span className="text-3xl md:text-4xl font-serif text-[#0B1A36] dark:text-white">
+                        {pct}<span className="text-base text-[#0B1A36]/50 dark:text-white/50">%</span>
+                      </span>
+                    </div>
+                    <div className="relative h-1.5 rounded-full bg-[#0B1A36]/5 dark:bg-white/10 overflow-hidden">
+                      <div
+                        className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 ease-out"
+                        style={{ width: `${Math.min(100, Math.max(0, pct))}%`, backgroundColor: color }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Rituals — primary (dominant) + runner-up when ≥ 30%. Same
+              card renderer for both; each carries its own PDF download. */}
+          {(() => {
+            const memberName = member?.displayName || user?.displayName || user?.email?.split('@')[0] || '';
+
+            const downloadPdf = (doshaName: string) => {
+              const r = ritualForDosha(doshaName);
+              if (!r) return;
+              const title = lang === 'FR' ? r.titleFR : r.titleEN;
+              const subtitle = lang === 'FR' ? r.subtitleFR : r.subtitleEN;
+              const moment = lang === 'FR' ? r.momentFR : r.momentEN;
+              const steps = lang === 'FR' ? r.stepsFR : r.stepsEN;
+              // 1-page A4 branded PDF. Helvetica avoids font-embedding weight.
+              const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+              const W = doc.internal.pageSize.getWidth();
+              const margin = 56;
+              let y = margin;
+              doc.setDrawColor(212, 175, 55); doc.setLineWidth(3);
+              doc.line(margin, y, margin + 72, y); y += 24;
+              doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+              doc.setTextColor(212, 175, 55);
+              doc.text((lang === 'FR' ? 'VOTRE RITUEL · ' : 'YOUR RITUAL · ') + doshaName.toUpperCase(), margin, y);
+              y += 28;
+              doc.setFont('helvetica', 'normal'); doc.setFontSize(28);
+              doc.setTextColor(11, 26, 54); doc.text(title, margin, y); y += 22;
+              doc.setFont('helvetica', 'italic'); doc.setFontSize(13);
+              doc.setTextColor(90, 90, 100);
+              const subLines = doc.splitTextToSize(subtitle, W - margin * 2);
+              doc.text(subLines, margin, y); y += subLines.length * 18 + 8;
+              doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+              doc.setTextColor(11, 26, 54); doc.text(moment.toUpperCase(), margin, y); y += 24;
+              doc.setDrawColor(212, 175, 55); doc.setLineWidth(0.6);
+              doc.line(margin, y, W - margin, y); y += 24;
+              doc.setFont('helvetica', 'normal'); doc.setFontSize(11);
+              doc.setTextColor(20, 20, 30);
+              steps.forEach((step, i) => {
+                const prefix = `${i + 1}.  `;
+                const prefixWidth = doc.getTextWidth(prefix);
+                doc.setFont('helvetica', 'bold'); doc.setTextColor(212, 175, 55);
+                doc.text(prefix, margin, y);
+                doc.setFont('helvetica', 'normal'); doc.setTextColor(20, 20, 30);
+                const lines = doc.splitTextToSize(step, W - margin * 2 - prefixWidth);
+                doc.text(lines, margin + prefixWidth, y);
+                y += lines.length * 16 + 10;
+              });
+              y = doc.internal.pageSize.getHeight() - margin;
+              doc.setDrawColor(212, 175, 55); doc.setLineWidth(0.5);
+              doc.line(margin, y - 20, margin + 72, y - 20);
+              doc.setFont('helvetica', 'italic'); doc.setFontSize(9);
+              doc.setTextColor(130, 130, 140);
+              doc.text(
+                (memberName ? `${memberName} · ` : '')
+                  + `Krystine St-Laurent · Inspirata Ayurveda · ${new Date().toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA')}`,
+                margin, y);
+              const safeName = (memberName || 'mon-rituel').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+              doc.save(`rituel-${doshaName.toLowerCase()}-${safeName}.pdf`);
+            };
+
+            const renderRitualCard = (doshaName: string, variant: 'primary' | 'secondary', pct: number | null) => {
+              const r = ritualForDosha(doshaName);
+              if (!r) return null;
+              return (
+                <div
+                  key={`${variant}-${doshaName}`}
+                  className="rounded-[20px] p-6 md:p-8 mb-6 border"
+                  style={{
+                    borderColor: `${r.accent}55`,
+                    background: `linear-gradient(135deg, ${r.accent}18 0%, ${r.accent}06 100%)`,
+                  }}
+                >
+                  <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.3em] font-bold mb-2" style={{ color: r.accent }}>
+                        {variant === 'primary'
+                          ? (lang === 'FR' ? 'Votre rituel' : 'Your ritual')
+                          : (lang === 'FR' ? 'En accompagnement · second dosha' : 'As a companion · second dosha')}
+                        <span className="ml-2 text-[#0B1A36]/50 dark:text-white/50 font-normal tracking-normal normal-case">
+                          · {doshaName}{pct !== null ? ` ${pct}%` : ''}
+                        </span>
+                      </p>
+                      <h3 className="font-serif text-2xl md:text-3xl text-[#0B1A36] dark:text-white mb-1">
+                        {lang === 'FR' ? r.titleFR : r.titleEN}
+                      </h3>
+                      <p className="font-serif italic text-[#0B1A36]/75 dark:text-white/75">
+                        {lang === 'FR' ? r.subtitleFR : r.subtitleEN}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => downloadPdf(doshaName)}
+                      className="inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-md"
+                    >
+                      <i className="fa-solid fa-file-pdf" />
+                      {lang === 'FR' ? 'Télécharger' : 'Download'}
+                    </button>
+                  </div>
+                  <p className="inline-block text-[10px] uppercase tracking-[0.25em] font-bold px-3 py-1 rounded-full bg-white/70 dark:bg-white/10 text-[#0B1A36]/70 dark:text-white/70 mb-5">
+                    <i className="fa-regular fa-clock mr-1.5" />
+                    {lang === 'FR' ? r.momentFR : r.momentEN}
+                  </p>
+                  <ol className="space-y-3 text-sm text-[#0B1A36]/85 dark:text-white/85 leading-relaxed">
+                    {(lang === 'FR' ? r.stepsFR : r.stepsEN).map((step, i) => (
+                      <li key={i} className="flex gap-3">
+                        <span
+                          className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold font-serif"
+                          style={{ backgroundColor: `${r.accent}22`, color: r.accent }}
+                        >
+                          {i + 1}
+                        </span>
+                        <span className="flex-1">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              );
+            };
+
+            const primaryPct = latest ? (latest[dominant.toLowerCase() as 'vata' | 'pitta' | 'kapha'] ?? null) : null;
+            return (
+              <div className="mb-4">
+                {renderRitualCard(dominant, 'primary', primaryPct)}
+                {secondary && renderRitualCard(secondary.name, 'secondary', secondary.pct)}
+              </div>
+            );
+          })()}
+
+          {/* Oil recommendation(s). Always render the primary (dominant).
+              Also render the runner-up when it's ≥ 30% — a true bi-doshic
+              profile benefits from both oils. Same card renderer for both;
+              the only differences are the kicker label and the percentage
+              shown under the name. */}
+          {(() => {
+            const renderOilCard = (
+              doshaName: string,
+              kickerFR: string,
+              kickerEN: string,
+              pct: number | null,
+              mb: string,
+            ) => {
+              const product = doshaName ? findOilForDosha(products, doshaName) : undefined;
+              const variant = product?.variants.find(v => v.availableForSale) || product?.variants[0];
+              const priceText = variant ? formatMoney(variant.price, lang) : '';
+              const soldOut = product ? !product.availableForSale : false;
+              return (
+                <div className={`rounded-[20px] border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-white/5 p-6 md:p-8 ${mb}`}>
+                  <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+                    {/* Image */}
+                    <div
+                      className="w-32 h-40 md:w-36 md:h-48 rounded-xl bg-cover bg-center shrink-0 bg-[#F5F5F0] dark:bg-[#0B1A36] border border-[#0B1A36]/5 dark:border-white/10"
+                      style={{ backgroundImage: product?.featuredImage?.url ? `url(${product.featuredImage.url})` : undefined }}
+                    />
+                    {/* Copy */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] font-bold mb-2">
+                        {lang === 'FR' ? kickerFR : kickerEN}
+                        {pct !== null && <span className="text-[#0B1A36]/50 dark:text-white/50 font-normal tracking-normal normal-case ml-2">· {doshaName} {pct}%</span>}
+                      </p>
+                      {product ? (
+                        <>
+                          <h3 className="text-xl md:text-2xl font-serif text-[#0B1A36] dark:text-white mb-1">{product.title}</h3>
+                          {product.productType && (
+                            <p className="text-[11px] uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50 mb-3">{product.productType}</p>
+                          )}
+                          <p className="text-lg font-serif text-[#D4AF37] mb-4">{priceText}</p>
+                          <div className="flex flex-wrap gap-3">
+                            {!soldOut && variant ? (
+                              <button
+                                type="button"
+                                onClick={() => addOilToCart(product)}
+                                className="inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-md"
+                              >
+                                <i className="fa-solid fa-basket-shopping text-[10px]" />
+                                {lang === 'FR' ? 'Ajouter au panier' : 'Add to cart'}
+                              </button>
+                            ) : (
+                              <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#0B1A36]/10 dark:bg-white/10 text-[#0B1A36]/60 dark:text-white/60">
+                                {lang === 'FR' ? 'Épuisé' : 'Sold out'}
+                              </span>
+                            )}
+                            <a
+                              href="/boutique/huiles-corporelles"
+                              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[#0B1A36]/15 dark:border-white/15 text-[#0B1A36]/70 dark:text-white/70 font-bold uppercase tracking-widest text-[11px] hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors"
+                            >
+                              {lang === 'FR' ? 'Voir la collection' : 'View the collection'}
+                              <i className="fa-solid fa-arrow-right text-[9px]" />
+                            </a>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <h3 className="text-xl md:text-2xl font-serif text-[#0B1A36] dark:text-white mb-2">
+                            {lang === 'FR' ? `Huile Corporelle ${doshaName}` : `${doshaName} Body Oil`}
+                          </h3>
+                          <p className="text-[#0B1A36]/60 dark:text-white/60 mb-4 font-serif italic text-sm">
+                            {lang === 'FR'
+                              ? "La formule qui correspond à cette dominance est bientôt en ligne — explorez la collection pour choisir celle qui vous appelle."
+                              : 'The matching formula is coming online soon — explore the collection to choose the one that calls to you.'}
+                          </p>
+                          <a
+                            href="/boutique/huiles-corporelles"
+                            className="inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors"
+                          >
+                            {lang === 'FR' ? 'Voir les huiles corporelles' : 'View body oils'}
+                            <i className="fa-solid fa-arrow-right text-[9px]" />
+                          </a>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            };
+
+            const primaryPct = latest ? (latest[dominant.toLowerCase() as 'vata' | 'pitta' | 'kapha'] ?? null) : null;
+            return (
+              <>
+                {renderOilCard(
+                  dominant,
+                  'Huile recommandée pour vous',
+                  'Oil recommended for you',
+                  primaryPct,
+                  secondary ? 'mb-4' : 'mb-10',
+                )}
+                {secondary && renderOilCard(
+                  secondary.name,
+                  'En accompagnement · votre second dosha',
+                  'As a companion · your second dosha',
+                  secondary.pct,
+                  'mb-10',
+                )}
+              </>
+            );
+          })()}
+        </>
       ) : (
         <div className="text-center py-12 mb-4">
           <i className="fa-solid fa-circle-nodes text-4xl text-[#0B1A36]/30 dark:text-white/30 mb-4 block" />
           <p className="text-[#0B1A36]/60 dark:text-white/60 font-serif italic mb-6">
             {lang === 'FR' ? 'Vous n\'avez pas encore complété le Quiz Dosha.' : "You haven't taken the Dosha Quiz yet."}
           </p>
-          <a href="/ayurveda" className="inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors">
+          <a href="/quiz" className="inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors">
             {lang === 'FR' ? 'Faire le quiz' : 'Take the quiz'} <i className="fa-solid fa-arrow-right" />
           </a>
         </div>
@@ -333,7 +700,7 @@ const DoshaTab: React.FC = () => {
                 <div>
                   <p className="text-sm text-[#0B1A36] dark:text-white">
                     <span className="text-[#D4AF37] font-bold capitalize">{r.dominant}</span>
-                    <span className="text-[#0B1A36]/50 dark:text-white/50 ml-3 text-xs font-mono">V{r.vata}·P{r.pitta}·K{r.kapha}</span>
+                    <span className="text-[#0B1A36]/50 dark:text-white/50 ml-3 text-xs font-mono">V{r.vata}%·P{r.pitta}%·K{r.kapha}%</span>
                   </p>
                   <p className="text-[10px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">
                     {r.createdAt?.toDate().toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA') || ''}
@@ -343,6 +710,47 @@ const DoshaTab: React.FC = () => {
             ))}
           </div>
         </>
+      )}
+
+      {/* Past "Laissez-vous guider" routings — surfaced here so the member's
+          self-knowledge journey lives in one place. */}
+      {guideResponses.length > 0 && (
+        <div className="mt-10">
+          <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-4">
+            <i className="fa-solid fa-compass text-[#D4AF37] mr-2" />
+            {lang === 'FR' ? 'Vos parcours suggérés' : 'Your suggested paths'}
+          </h3>
+          <div className="space-y-3">
+            {guideResponses.map(g => (
+              <div key={g.id} className="border border-[#0B1A36]/5 dark:border-white/5 rounded-xl p-4">
+                <div className="flex items-baseline justify-between gap-3 mb-2">
+                  <p className="text-sm text-[#0B1A36] dark:text-white">
+                    <span className="text-[#D4AF37] font-bold">{g.recommendationLabel || g.recommendationId}</span>
+                  </p>
+                  <p className="text-[10px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">
+                    {g.createdAt?.toDate().toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA') || ''}
+                  </p>
+                </div>
+                {g.answers?.length > 0 && (
+                  <details className="text-xs text-[#0B1A36]/60 dark:text-white/60">
+                    <summary className="cursor-pointer hover:text-[#D4AF37] transition-colors">
+                      {lang === 'FR' ? 'Voir les réponses' : 'View answers'}
+                    </summary>
+                    <ul className="mt-2 space-y-1.5 pl-4 list-disc">
+                      {g.answers.map((a, i) => (
+                        <li key={i}>
+                          <span className="font-bold">{a.questionLabel || a.qid}</span>
+                          {' — '}
+                          <span className="italic">{a.optionLabel || a.optionId}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

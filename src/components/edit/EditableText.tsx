@@ -63,17 +63,31 @@ const EditableText: React.FC<Props> = ({ fieldKey, defaultValue, as: Tag = 'span
       : <input type="text" {...(commonProps as any)} />;
   }
 
+  // The edit affordance is a <span role="button"> rather than a real <button>.
+  // Reason: EditableText is often dropped inside a CTA <button> (e.g. the
+  // "Réserver Krystine" button on KrystinePage). A <button> nested inside
+  // another <button> is invalid HTML, and browsers resolve the ambiguity
+  // inconsistently — in Chrome, clicks on the inner pencil were bubbling
+  // to the outer button and navigating Krystine away from the page instead
+  // of opening the inline editor. Using a <span> sidesteps the nesting
+  // rule entirely; we keep accessibility via role + tabindex + keyboard.
   return (
     <span className="relative inline-block group/edit align-baseline">
       <Tag className={className}>{value}</Tag>
-      <button
-        type="button"
+      <span
+        role="button"
+        tabIndex={0}
+        onMouseDown={e => { e.stopPropagation(); e.preventDefault(); }}
         onClick={e => { e.stopPropagation(); e.preventDefault(); setEditing(true); }}
-        className="ml-1 align-middle inline-flex w-5 h-5 rounded-full bg-[#D4AF37] text-[#0B1A36] items-center justify-center opacity-0 group-hover/edit:opacity-100 transition-opacity shadow-md"
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); setEditing(true); }
+        }}
+        className="ml-1 align-middle inline-flex w-5 h-5 rounded-full bg-[#D4AF37] text-[#0B1A36] items-center justify-center opacity-0 group-hover/edit:opacity-100 transition-opacity shadow-md cursor-pointer select-none"
         title="Modifier le texte"
+        aria-label="Modifier le texte"
       >
         <i className="fa-solid fa-pen text-[9px]" />
-      </button>
+      </span>
       {saving && <span className="ml-1 text-[10px] text-[#D4AF37]">…</span>}
     </span>
   );

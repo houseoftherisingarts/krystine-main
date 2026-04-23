@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT, ASSETS } from '../content';
+import EditableText from '../components/edit/EditableText';
+import EditableImage from '../components/edit/EditableImage';
 
 const VataPage: React.FC = () => {
   const { lang, addToCart } = useApp();
@@ -11,15 +13,27 @@ const VataPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#8F9779]/20 to-white dark:from-[#0B1A36] dark:to-[#050C1A]">
       {/* Hero */}
       <div className="relative h-[70vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${ASSETS.shopBg})`, filter: 'saturate(0.8)' }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#4A5D23]/60 to-[#0B1A36]/90" />
+        <EditableImage
+          fieldKey="vata.hero.background"
+          defaultSrc={ASSETS.shopBg}
+          className="absolute inset-0"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#4A5D23]/60 to-[#0B1A36]/90 pointer-events-none" />
         <div className="relative z-10 text-center text-white px-6">
           <span className="text-[#D4AF37] uppercase tracking-[0.4em] text-xs font-bold block mb-4">
-            {lang === 'FR' ? 'Programme Ayurvédique' : 'Ayurvedic Program'}
+            <EditableText
+              fieldKey="vata.hero.kicker"
+              defaultValue={lang === 'FR' ? 'Programme Ayurvédique' : 'Ayurvedic Program'}
+            />
           </span>
-          <h1 className="text-6xl md:text-8xl font-serif mb-4">Vata</h1>
+          <h1 className="text-6xl md:text-8xl font-serif mb-4">
+            <EditableText fieldKey="vata.hero.title" defaultValue="Vata" />
+          </h1>
           <p className="text-xl font-serif italic text-white/80">
-            {lang === 'FR' ? 'Enraciner. Réchauffer. Apaiser.' : 'Ground. Warm. Soothe.'}
+            <EditableText
+              fieldKey="vata.hero.subtitle"
+              defaultValue={lang === 'FR' ? 'Enraciner. Réchauffer. Apaiser.' : 'Ground. Warm. Soothe.'}
+            />
           </p>
         </div>
       </div>

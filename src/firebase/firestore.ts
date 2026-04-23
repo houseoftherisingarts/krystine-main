@@ -81,6 +81,27 @@ export async function deleteEvent(id: string) {
   return deleteDoc(doc(db!, 'events', id));
 }
 
+// ─── CRM collections — convention ────────────────────────────────────────────
+// The admin "Formulaires" inbox (src/pages/admin/sections/SubmissionsSection.tsx)
+// reads from four collections and shows every submission in one filterable
+// feed. Any new public-facing form or questionnaire MUST write into one of
+// these four to automatically appear in that inbox:
+//
+//   • bookingRequests  — professional requests (speaking, tours, partnerships)
+//   • newsletter       — email captures, waitlists (use `waitlist-<id>` source)
+//   • doshaResults     — personality / Ayurveda self-assessments
+//   • guideResponses   — multi-question routers / recommendation quizzes
+//
+// Required payload contract for CRM discoverability:
+//   - `source`: stable string identifying the form/page (kebab-case)
+//              e.g. "accueil-pulsation", "conference-tour", "waitlist-pitta"
+//   - `tags`:   string[] — include the source as first tag plus any
+//               structured segmentation (e.g. "kind-keynote", "rec-origine")
+//
+// The Submissions inbox auto-discovers new `source` values (no code change
+// needed), but adding a pretty label for it in SubmissionsSection's
+// `prettySource()` keeps the filter dropdown readable.
+//
 // ─── Newsletter subscribers (CRM) ────────────────────────────────────────────
 export type SubscriberStatus = 'active' | 'unsubscribed' | 'bounced' | 'pending';
 
@@ -315,12 +336,19 @@ export interface DoshaResult {
   vata: number;
   pitta: number;
   kapha: number;
+  // Origin tracking so the admin CRM can see which page/context produced
+  // the quiz submission. Defaults to 'quiz' when unspecified.
+  source?: string;
+  tags?: string[];
   createdAt?: Timestamp;
 }
 
 export async function addDoshaQuizResult(data: Omit<DoshaResult, 'id' | 'createdAt'>) {
   if (!db) return console.warn('[Firestore] Not configured');
-  return addDoc(collection(db, 'doshaResults'), { ...data, createdAt: serverTimestamp() });
+  // Default to `source: 'quiz'` so legacy callers without explicit attribution
+  // still land in the admin CRM under a recognizable bucket.
+  const payload = { source: 'quiz', ...data, createdAt: serverTimestamp() };
+  return addDoc(collection(db, 'doshaResults'), payload);
 }
 
 export async function getDoshaResults(): Promise<DoshaResult[]> {
@@ -338,20 +366,89 @@ export async function deleteDoshaResult(id: string) {
 // ─── Booking Requests (conférence / contact) ─────────────────────────────────
 export type BookingStatus = 'new' | 'in_progress' | 'accepted' | 'declined';
 
+// Speaker-booking structured fields. A requester who fills the Réserver
+// Krystine form is expected to answer these; the admin Demandes view
+// renders each as a labelled row so Krystine can triage without reading a
+// free-form paragraph.
+export type InterventionKind =
+  | 'keynote'         // conférence / keynote
+  | 'workshop'        // atelier pratique
+  | 'panel'           // table ronde / panel
+  | 'hosting'         // animation d'événement
+  | 'podcast'         // podcast / entrevue média
+  | 'corporate'       // formation corporate
+  | 'retreat'         // retraite / séjour
+  | 'other';
+
+export type EventFormat = 'in-person' | 'virtual' | 'hybrid' | 'open';
+
+export type AudienceType =
+  | 'general-public'
+  | 'corporate'
+  | 'students'
+  | 'healthcare'
+  | 'community'
+  | 'other';
+
+export type AudienceSize = 'under-50' | '50-150' | '150-500' | '500-plus' | 'unknown';
+
+export type InterventionDuration =
+  | '30min'
+  | '60min'
+  | '90min'
+  | 'half-day'
+  | 'full-day'
+  | 'multi-day'
+  | 'flexible';
+
+export type BudgetRange =
+  | 'under-2k'
+  | '2k-5k'
+  | '5k-10k'
+  | '10k-plus'
+  | 'to-discuss';
+
+export type LangPref = 'fr' | 'en' | 'bilingual';
+
 export interface BookingRequest {
   id?: string;
   name: string;
   email: string;
   organization?: string;
+  organizationUrl?: string;
   message?: string;
   eventType?: string;
+  interventionKind?: InterventionKind;
+  format?: EventFormat;
+  audienceType?: AudienceType;
+  audienceSize?: AudienceSize;
+  duration?: InterventionDuration;
+  preferredDate?: string;
+  budgetRange?: BudgetRange;
+  languagePref?: LangPref;
+  // Conference-tour-specific fields. Populated only when `source` is
+  // 'conference-tour'; left undefined for classic speaker-booking requests.
+  city?: string;
+  region?: string;
+  /**
+   * How the requester can help bring the conference to their region —
+   * ranges from a passive "I'd just like it here" to a full host offer.
+   * Lets Krystine filter serious prospects without a phone call.
+   */
+  hostCapability?: 'request-only' | 'know-venue' | 'can-venue' | 'can-organize' | 'venue-and-organize';
+  phone?: string;
   status?: BookingStatus;
+  // Origin tracking — the page / form that produced the request. Mirrors the
+  // same field on NewsletterSubscriber / DoshaResult for a consistent CRM.
+  source?: string;
+  tags?: string[];
   createdAt?: Timestamp;
 }
 
 export async function addBookingRequest(data: Omit<BookingRequest, 'id' | 'status' | 'createdAt'>) {
   if (!db) return console.warn('[Firestore] Not configured');
-  return addDoc(collection(db, 'bookingRequests'), { ...data, status: 'new' as BookingStatus, createdAt: serverTimestamp() });
+  const payload = { source: 'conferenciere', ...data, status: 'new' as BookingStatus, createdAt: serverTimestamp() };
+  return addDoc(collection(db, 'bookingRequests'), payload);
 }
 
 export async function getBookingRequests(): Promise<BookingRequest[]> {
@@ -372,6 +469,14 @@ export async function deleteBookingRequest(id: string) {
 }
 
 // ─── Media Library (Firebase Storage URL registry) ───────────────────────────
+// Holds two flavours of entries:
+//   • `source: 'upload'`  — files in our Firebase Storage bucket; `path`
+//      points at the Storage object and we own deletion.
+//   • `source: 'linked'`  — external URLs the site hardcodes (CDN banners,
+//      book covers, chakra art, /public files). Indexed so Krystine sees
+//      and downloads them from the Médiathèque, but deletion only removes
+//      the Firestore doc — the original file is not ours to delete.
+export type MediaSource = 'upload' | 'linked';
 export interface MediaItem {
   id?: string;
   url: string;
@@ -379,6 +484,9 @@ export interface MediaItem {
   name: string;
   contentType?: string;
   size?: number;
+  source?: MediaSource;
+  /** Human grouping for the grid (logo, founder, books, chakras, products, home, public). */
+  category?: string;
   uploadedAt?: Timestamp;
 }
 
@@ -397,6 +505,35 @@ export async function getMediaLibrary(): Promise<MediaItem[]> {
 export async function deleteMediaItem(id: string) {
   if (!db) noDb();
   return deleteDoc(doc(db!, 'mediaLibrary', id));
+}
+
+/**
+ * Bulk-register external media entries (hardcoded site assets) without
+ * re-creating rows that already exist. Uniqueness is keyed by `url`.
+ * Returns the number of newly added entries. Safe to re-run — existing
+ * entries are left untouched so Krystine's metadata edits aren't clobbered.
+ */
+export async function seedLinkedMedia(
+  entries: Array<{ url: string; name: string; path?: string; category?: string; contentType?: string }>
+): Promise<{ added: number; skipped: number }> {
+  if (!db) noDb();
+  const existing = await getMediaLibrary();
+  const knownUrls = new Set(existing.map(e => e.url));
+  let added = 0;
+  let skipped = 0;
+  for (const e of entries) {
+    if (knownUrls.has(e.url)) { skipped++; continue; }
+    await addMediaItem({
+      url: e.url,
+      path: e.path ?? e.url,     // for 'linked' we fall back to URL as the path — never used for deletion
+      name: e.name,
+      contentType: e.contentType,
+      source: 'linked',
+      category: e.category,
+    });
+    added++;
+  }
+  return { added, skipped };
 }
 
 // ─── Member Profiles (client accounts) ───────────────────────────────────────
@@ -665,4 +802,241 @@ export async function getSplashSettings(): Promise<SplashSettings> {
 export async function updateSplashSettings(patch: Partial<SplashSettings>) {
   if (!db) noDb();
   return setDoc(doc(db!, 'settings', 'splash'), patch, { merge: true });
+}
+
+// ─── "Laissez-vous guider" responses ────────────────────────────────────────
+// Each submission of the recommendation quiz writes a row here so Krystine
+// can see who's landing where. When the visitor is signed in we also stamp
+// their uid + email, which lets the client portal and the admin client-view
+// overlay surface their past routing decisions.
+export interface GuideAnswer {
+  qid: string;
+  optionId: string;
+  // Denormalized FR labels for fast admin rendering without re-joining
+  // against the question set.
+  questionLabel?: string;
+  optionLabel?: string;
+}
+
+export interface GuideResponse {
+  id?: string;
+  uid?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  answers: GuideAnswer[];
+  recommendationId: string;     // e.g. "origine"
+  recommendationLabel?: string; // denormalized for admin display
+  source?: string;              // always 'guide' for this collection
+  // Filterable segmentation for the unified admin CRM view. At minimum a
+  // "guide" tag plus "rec-<recommendationId>" so Krystine can slice by
+  // outcome (e.g. everyone routed to Origine). Mirrors the tag pattern
+  // used by bookingRequests / newsletter / doshaResults.
+  tags?: string[];
+  createdAt?: Timestamp;
+}
+
+export async function addGuideResponse(data: Omit<GuideResponse, 'id' | 'createdAt'>) {
+  if (!db) return null;
+  try {
+    return await addDoc(collection(db, 'guideResponses'), {
+      source: 'guide',
+      ...data,
+      createdAt: serverTimestamp(),
+    });
+  } catch (e) {
+    console.warn('[firestore] addGuideResponse failed', e);
+    return null;
+  }
+}
+
+export async function getGuideResponses(max = 200): Promise<GuideResponse[]> {
+  if (!db) return [];
+  try {
+    const q = query(collection(db, 'guideResponses'), orderBy('createdAt', 'desc'), limit(max));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() } as GuideResponse));
+  } catch (e) {
+    console.warn('[firestore] getGuideResponses failed', e);
+    return [];
+  }
+}
+
+export async function getGuideResponsesForMember(uid: string): Promise<GuideResponse[]> {
+  if (!db || !uid) return [];
+  try {
+    const q = query(
+      collection(db, 'guideResponses'),
+      where('uid', '==', uid),
+      orderBy('createdAt', 'desc'),
+    );
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() } as GuideResponse));
+  } catch (e) {
+    console.warn('[firestore] getGuideResponsesForMember failed', e);
+    return [];
+  }
+}
+
+// ─── Messaging groups (CRM segmentation) ─────────────────────────────────────
+// Krystine-curated groups of clients. Each group stores both `memberUids`
+// (for internal batch messaging — loops sendMessage) and `memberEmails`
+// (for batch emails via the newsletter cloud function). Emails are kept
+// alongside uids because many contacts are on the newsletter list without
+// a members/* record yet; the group should still be able to email them.
+//
+// Batch sending flow:
+//   • Internal message → loop `sendMessage(uid, 'admin', body, profile)`
+//     over `memberUids`. Contacts without a uid are silently skipped
+//     (shown as "only email" in the group UI).
+//   • Email → write/update newsletter subscribers with tag `group-<id>`,
+//     create a NewsletterDoc with `segmentTag: 'group-<id>'`, then fire
+//     the deployed `sendNewsletter` Cloud Function.
+export interface MessagingGroup {
+  id?: string;
+  name: string;
+  description?: string;
+  memberUids: string[];         // signed-in members — reachable via internal messages
+  memberEmails: string[];       // de-duplicated lowercase emails — reachable via email
+  /**
+   * Optional segment definition. When present, the group was assembled by
+   * the segment builder (dosha = Vata, points > 150, etc.) and can be
+   * re-evaluated against fresh data with the "Rafraîchir" action. Stored
+   * as plain JSON (mirrors the Segment shape from src/lib/segments.ts) —
+   * we deliberately avoid importing the type here to keep firestore.ts
+   * free of cross-cutting lib deps.
+   */
+  segment?: {
+    mode: 'all' | 'any';
+    criteria: Array<{ id: string; field: string; op: string; value: string | number | boolean; extra?: string }>;
+  };
+  createdBy?: string;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+export async function createMessagingGroup(data: Omit<MessagingGroup, 'id' | 'createdAt' | 'updatedAt'>) {
+  if (!db) noDb();
+  return addDoc(collection(db!, 'messagingGroups'), {
+    ...data,
+    memberUids: data.memberUids ?? [],
+    memberEmails: data.memberEmails ?? [],
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+}
+
+export async function updateMessagingGroup(id: string, patch: Partial<MessagingGroup>) {
+  if (!db) noDb();
+  return updateDoc(doc(db!, 'messagingGroups', id), { ...patch, updatedAt: serverTimestamp() } as any);
+}
+
+export async function deleteMessagingGroup(id: string) {
+  if (!db) noDb();
+  return deleteDoc(doc(db!, 'messagingGroups', id));
+}
+
+export async function getMessagingGroups(): Promise<MessagingGroup[]> {
+  if (!db) return [];
+  try {
+    const snap = await getDocs(query(collection(db, 'messagingGroups'), orderBy('updatedAt', 'desc')));
+    return snap.docs.map(d => ({ id: d.id, ...d.data() } as MessagingGroup));
+  } catch (e) {
+    console.warn('[firestore] getMessagingGroups failed', e);
+    return [];
+  }
+}
+
+/**
+ * Tag every newsletter subscriber whose email belongs to the group with
+ * `group-<groupId>`. This is what powers the email batch send — the
+ * sendNewsletter Cloud Function filters by `segmentTag`. Subscribers who
+ * aren't already on the list get a new doc created with status='active'
+ * so they can receive the group email, but they still count as
+ * opt-in-via-group (Krystine added them explicitly by pulling them into
+ * the group, which acts as the consent gesture).
+ */
+export async function tagSubscribersForGroup(groupId: string, emails: string[]): Promise<number> {
+  if (!db || emails.length === 0) return 0;
+  const tag = `group-${groupId}`;
+  const subs = await getNewsletterSubscribers();
+  const byEmail = new Map(subs.map(s => [s.email.trim().toLowerCase(), s]));
+  let updated = 0;
+  const batch = writeBatch(db);
+  for (const raw of emails) {
+    const email = raw.trim().toLowerCase();
+    if (!email) continue;
+    const existing = byEmail.get(email);
+    if (existing?.id) {
+      const nextTags = Array.from(new Set([...(existing.tags || []), tag]));
+      if (nextTags.length !== (existing.tags?.length || 0)) {
+        batch.update(doc(db, 'newsletter', existing.id), { tags: nextTags });
+        updated++;
+      }
+    } else {
+      const ref = doc(collection(db, 'newsletter'));
+      batch.set(ref, {
+        email,
+        status: 'active',
+        source: `group-${groupId}`,
+        tags: [tag],
+        subscribedAt: serverTimestamp(),
+      });
+      updated++;
+    }
+  }
+  if (updated > 0) await batch.commit();
+  return updated;
+}
+
+// ─── Boutique settings (redirect switch) ─────────────────────────────────────
+// Lives at `settings/boutique`. The redirect switch is a safety valve so
+// Krystine can temporarily swap every new-boutique link for the old
+// inspiratanature.com site while we iterate.
+export interface BoutiqueSettings {
+  redirectEnabled: boolean;
+  redirectUrl: string;
+  // Per-product visibility toggle. Each entry is the Shopify product handle
+  // (slug) that should be hidden from the public boutique without removing
+  // it from Shopify. Krystine flips these from Admin → Boutique.
+  hiddenProducts?: string[];
+  updatedAt?: Timestamp;
+}
+
+export const DEFAULT_BOUTIQUE_SETTINGS: BoutiqueSettings = {
+  redirectEnabled: false,
+  redirectUrl: 'https://www.inspiratanature.com',
+  hiddenProducts: [],
+};
+
+// Toggle a single product's visibility. Pure list-membership update —
+// rebuilds the array client-side and writes the whole field. No need for
+// arrayUnion/arrayRemove since the list is small (a handful of items).
+export async function setProductHidden(handle: string, hidden: boolean) {
+  if (!db) noDb();
+  const current = await getBoutiqueSettings();
+  const set = new Set(current.hiddenProducts || []);
+  if (hidden) set.add(handle);
+  else set.delete(handle);
+  await updateBoutiqueSettings({ hiddenProducts: Array.from(set) });
+}
+
+export async function getBoutiqueSettings(): Promise<BoutiqueSettings> {
+  if (!db) return DEFAULT_BOUTIQUE_SETTINGS;
+  const snap = await getDoc(doc(db, 'settings', 'boutique'));
+  if (!snap.exists()) return DEFAULT_BOUTIQUE_SETTINGS;
+  return { ...DEFAULT_BOUTIQUE_SETTINGS, ...snap.data() } as BoutiqueSettings;
+}
+
+export async function updateBoutiqueSettings(patch: Partial<BoutiqueSettings>) {
+  if (!db) noDb();
+  return setDoc(doc(db!, 'settings', 'boutique'), { ...patch, updatedAt: serverTimestamp() }, { merge: true });
+}
+
+export function subscribeToBoutiqueSettings(cb: (s: BoutiqueSettings) => void): Unsubscribe {
+  if (!db) { cb(DEFAULT_BOUTIQUE_SETTINGS); return () => {}; }
+  return onSnapshot(doc(db, 'settings', 'boutique'), snap => {
+    if (!snap.exists()) cb(DEFAULT_BOUTIQUE_SETTINGS);
+    else cb({ ...DEFAULT_BOUTIQUE_SETTINGS, ...snap.data() } as BoutiqueSettings);
+  });
 }

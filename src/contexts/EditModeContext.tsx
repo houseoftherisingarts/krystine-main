@@ -24,6 +24,12 @@ const EditModeContext = createContext<EditModeContextType | null>(null);
 
 const EMPTY: OverridesDoc = { text: {}, images: {} };
 
+// Session-scoped flag. Survives SPA navigations AND full-page reloads
+// (including the footer links to statically-bundled routes like /origine,
+// /podcast, /vata, which reload the whole app), so Krystine stays in edit
+// mode until she explicitly clicks "Terminer".
+const STORAGE_KEY = 'inspirata.editMode';
+
 export const EditModeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAdmin } = useAuth();
   const [editMode, setEditModeState] = useState(false);
@@ -35,21 +41,40 @@ export const EditModeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return unsub;
   }, []);
 
-  // If the admin flag ever flips off (sign-out, session expiry), force-exit edit mode.
-  useEffect(() => { if (!isAdmin) setEditModeState(false); }, [isAdmin]);
+  // If the admin flag flips off, drop edit mode from local state. We do NOT
+  // clear sessionStorage here because `isAdmin` starts as `false` on every
+  // mount (including full reloads triggered by the footer links to
+  // statically-hosted routes) and only flips `true` once Firebase auth
+  // resolves asynchronously — clearing storage on that initial `false`
+  // would race-wipe the persisted flag before the rehydration effect
+  // below could read it. Storage is cleared only on explicit exit
+  // (`setEditMode(false)`) via the bar.
+  useEffect(() => {
+    if (!isAdmin) setEditModeState(false);
+  }, [isAdmin]);
 
-  // Auto-enable edit mode when Krystine lands with ?edit=1 (coming from the
-  // "Modifier le site" shortcut in the admin dashboard).
+  // Rehydrate from sessionStorage + honour the ?edit=1 entry point. Runs
+  // whenever `isAdmin` flips to true — which on every page load means
+  // "once Firebase has confirmed the user is still an admin" — so we
+  // re-enter edit mode without the URL flag being present.
   useEffect(() => {
     if (!isAdmin) return;
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
-    if (params.get('edit') === '1') setEditModeState(true);
+    const fromUrl = params.get('edit') === '1';
+    let fromSession = false;
+    try { fromSession = sessionStorage.getItem(STORAGE_KEY) === '1'; } catch { /* noop */ }
+    if (fromUrl || fromSession) setEditModeState(true);
   }, [isAdmin]);
 
   const setEditMode = useCallback((v: boolean) => {
     if (v && !isAdmin) return;
     setEditModeState(v);
+    // Mirror the flag to sessionStorage so it survives page reloads.
+    try {
+      if (v) sessionStorage.setItem(STORAGE_KEY, '1');
+      else   sessionStorage.removeItem(STORAGE_KEY);
+    } catch { /* private mode / SSR — state still lives in memory for this tab */ }
   }, [isAdmin]);
 
   const getText = useCallback(

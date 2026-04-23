@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT, ASSETS } from '../content';
+import EditableText from '../components/edit/EditableText';
 
 const TVPage: React.FC = () => {
   const { lang } = useApp();
@@ -10,8 +11,12 @@ const TVPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-[#0B1A36] pt-36 pb-24">
       <div className="text-center mb-16 sticky top-20 bg-white/95 dark:bg-[#0B1A36]/95 backdrop-blur z-30 py-4 px-6 shadow-sm border-b border-[#0B1A36]/5 dark:border-white/5">
-        <h1 className="text-4xl md:text-6xl font-serif text-[#0B1A36] dark:text-white italic mb-4">{t.title}</h1>
-        <p className="text-[#0B1A36]/70 dark:text-white/70 font-serif text-lg max-w-3xl mx-auto">{t.desc}</p>
+        <h1 className="text-4xl md:text-6xl font-serif text-[#0B1A36] dark:text-white italic mb-4">
+          <EditableText fieldKey="tv.hero.title" defaultValue={t.title} />
+        </h1>
+        <p className="text-[#0B1A36]/70 dark:text-white/70 font-serif text-lg max-w-3xl mx-auto">
+          <EditableText fieldKey="tv.hero.desc" defaultValue={t.desc} multiline />
+        </p>
       </div>
 
       <div className="max-w-screen-xl mx-auto px-6 md:px-12 grid grid-cols-1 gap-12">

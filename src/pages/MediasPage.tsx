@@ -2,42 +2,10 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT, ASSETS } from '../content';
-import { addDoshaQuizResult, updateMember } from '../firebase/firestore';
 import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../shopify';
-
-// Dosha quiz — same 4 questions used previously on /ayurveda.
-const QUIZ_DATA = [
-  { question: "Comment décririez-vous votre digestion ?", qEN: "How would you describe your digestion?", options: [{ text: "Inconstante, votre appétit fluctue.", textEN: "Inconsistent, your appetite fluctuates.", type: 'vata' }, { text: "Forte, vous devenez irritable si vous mangez tard.", textEN: "Strong, you become irritable if you eat late.", type: 'pitta' }, { text: "Stable, vous vous sentez rassasié longtemps.", textEN: "Stable, you feel full for a long time.", type: 'kapha' }] },
-  { question: "Comment réagissez-vous au stress ?", qEN: "How do you react to stress?", options: [{ text: "Anxieux et inquiet.", textEN: "Anxious and worried.", type: 'vata' }, { text: "Irritable et impatient.", textEN: "Irritable and impatient.", type: 'pitta' }, { text: "Vous retirez et évitez les conflits.", textEN: "You withdraw and avoid conflict.", type: 'kapha' }] },
-  { question: "Comment gérez-vous votre créativité ?", qEN: "How do you manage your creativity?", options: [{ text: "Très créatif, plusieurs projets à la fois.", textEN: "Very creative, multiple projects at once.", type: 'vata' }, { text: "Créatif dans le leadership.", textEN: "Creative in leadership.", type: 'pitta' }, { text: "Méthodique, calme, ancré.", textEN: "Methodical, calm, grounded.", type: 'kapha' }] },
-  { question: "Comment décririez-vous votre tempérament ?", qEN: "How would you describe your temperament?", options: [{ text: "Enthousiaste, aime les nouvelles choses.", textEN: "Enthusiastic, loves new things.", type: 'vata' }, { text: "Déterminé, axé sur les objectifs.", textEN: "Determined, goal-oriented.", type: 'pitta' }, { text: "Facile à vivre, suit le courant.", textEN: "Easy-going, goes with the flow.", type: 'kapha' }] },
-];
-
-const AyurvedaIkigai: React.FC<{ doshas: any[]; onDoshaClick: (d: any) => void; onQuizClick: () => void; lang: string }> = ({ doshas, onDoshaClick, onQuizClick, lang }) => (
-  <svg viewBox="-200 -200 400 400" className="w-[300px] h-[300px] md:w-[420px] md:h-[420px] overflow-visible drop-shadow-2xl">
-    <defs>
-      <filter id="glow-ay-m">
-        <feGaussianBlur stdDeviation="5" result="blur" />
-        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-      </filter>
-    </defs>
-    {[
-      { cx: -60, cy: -50, fill: '#8F9779', dosha: doshas[0] },
-      { cx: 60, cy: -50, fill: '#BC4A3C', dosha: doshas[1] },
-      { cx: 0, cy: 70, fill: '#4A7C9D', dosha: doshas[2] },
-    ].map(({ cx, cy, fill, dosha }, i) => (
-      <g key={i} onClick={() => onDoshaClick(dosha)} className="cursor-pointer group">
-        <circle cx={cx} cy={cy} r={90} fill={fill} opacity={0.9} className="transition-all duration-300 hover:opacity-100" />
-        <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize="16" fontFamily="serif" fontWeight="bold" letterSpacing="2" className="pointer-events-none uppercase">{dosha.name}</text>
-      </g>
-    ))}
-    <g onClick={onQuizClick} className="cursor-pointer group">
-      <circle cx={0} cy={10} r={55} fill="rgba(255,255,255,0.88)" stroke="rgba(212,175,55,0.3)" strokeWidth={1} filter="url(#glow-ay-m)" className="transition-all duration-300 hover:scale-105" style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
-      <text x={0} y={4} textAnchor="middle" fill="#0B1A36" fontSize="13" fontFamily="serif" fontWeight="bold" className="pointer-events-none uppercase tracking-widest">{lang === 'FR' ? 'Faire' : 'Take'}</text>
-      <text x={0} y={20} textAnchor="middle" fill="#0B1A36" fontSize="13" fontFamily="serif" fontWeight="bold" className="pointer-events-none uppercase tracking-widest">{lang === 'FR' ? 'Le Quiz' : 'The Quiz'}</text>
-    </g>
-  </svg>
-);
+import { goToRoute } from '../lib/staticRoutes';
+import { points } from '../firebase/points';
+import EditableText from '../components/edit/EditableText';
 
 // Fuzzy title normalizer — reused from LivresPage to match books by Shopify title.
 const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -56,10 +24,9 @@ const matchBookToShopify = (bookTitle: string, fullTitle: string | undefined, pr
 };
 
 const MediasPage: React.FC = () => {
-  const { lang, addToCart, user, member, setSignInOpen } = useApp();
+  const { lang, addToCart, user } = useApp();
   const t = CONTENT[lang];
   const media = t.media;
-  const ay = t.ayurveda;
   const book = t.media.details.book;
   const navigate = useNavigate();
   const location = useLocation();
@@ -92,77 +59,12 @@ const MediasPage: React.FC = () => {
     return map;
   }, [products, book.items]);
 
-  // ── Ayurveda / Quiz ──
-  const [selectedDosha, setSelectedDosha] = useState<any>(null);
-  const [quizState, setQuizState] = useState({
-    isOpen: false, step: 0,
-    scores: { vata: 0, pitta: 0, kapha: 0 },
-    formData: { firstName: '', lastName: '', email: '' },
-    teaser: null as null | { dominant: any; percentages: { vata: number; pitta: number; kapha: number } },
-    result: null as any,
-  });
-  const [submitting, setSubmitting] = useState(false);
-
-  const computeTeaser = (scores: { vata: number; pitta: number; kapha: number }) => {
-    const { vata, pitta, kapha } = scores;
-    let dominant = ay.doshas[0];
-    if (pitta > vata && pitta > kapha) dominant = ay.doshas[1];
-    if (kapha > vata && kapha > pitta) dominant = ay.doshas[2];
-    const total = vata + pitta + kapha || 1;
-    return {
-      dominant,
-      percentages: {
-        vata: Math.round((vata / total) * 100),
-        pitta: Math.round((pitta / total) * 100),
-        kapha: Math.round((kapha / total) * 100),
-      },
-    };
-  };
-
-  const handleQuizAnswer = (type: string) => {
-    const newScores = { ...quizState.scores, [type]: quizState.scores[type as keyof typeof quizState.scores] + 1 };
-    const nextStep = quizState.step + 1;
-    const teaser = nextStep >= QUIZ_DATA.length ? computeTeaser(newScores) : quizState.teaser;
-    setQuizState({ ...quizState, scores: newScores, step: nextStep, teaser });
-  };
-
-  const handleQuizCompute = async () => {
-    if (!user) { setSignInOpen(true); return; }
-    const { dominant, percentages } = quizState.teaser ?? computeTeaser(quizState.scores);
-    const fullName = (member?.displayName || user.displayName || '').trim();
-    const [firstName, ...rest] = fullName ? fullName.split(/\s+/) : [''];
-    const lastName = rest.join(' ');
-    setSubmitting(true);
-    try {
-      await addDoshaQuizResult({
-        uid: user.uid,
-        firstName: firstName || '',
-        lastName: lastName || '',
-        email: user.email || '',
-        dominant: dominant.name,
-        ...percentages,
-      } as any);
-      try { await updateMember(user.uid, { dosha: dominant.name }); } catch { /* non-fatal */ }
-    } catch {}
-    finally { setSubmitting(false); }
-    setQuizState(qs => ({ ...qs, result: { dominant, percentages } }));
-  };
-
-  useEffect(() => {
-    if (user && quizState.isOpen && quizState.step >= QUIZ_DATA.length && !quizState.result && !submitting) {
-      handleQuizCompute();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, quizState.step, quizState.isOpen]);
-
   // Scroll to section matching the hash when landing from /medias#livres etc.
   useEffect(() => {
     if (!location.hash) return;
     const el = document.querySelector(location.hash);
     if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
   }, [location.hash, loadingShop]);
-
-  const openQuiz = () => setQuizState({ ...quizState, isOpen: true, step: 0, scores: { vata: 0, pitta: 0, kapha: 0 }, result: null });
 
   const pod = media.details.podcast;
   const tv = media.details.tv;
@@ -173,31 +75,69 @@ const MediasPage: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-20">
           <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
-            {lang === 'FR' ? 'Découvrir' : 'Discover'}
+            <EditableText
+              fieldKey="medias.hero.kicker"
+              defaultValue={lang === 'FR' ? 'Découvrir' : 'Discover'}
+            />
           </span>
           <h1 className="text-5xl md:text-7xl font-serif uppercase tracking-widest leading-none">
-            {lang === 'FR' ? 'Podcasts, Médias & Livres' : 'Podcasts, Media & Books'}
+            <EditableText
+              fieldKey="medias.hero.title"
+              defaultValue={lang === 'FR' ? 'Podcasts, Médias & Livres' : 'Podcasts, Media & Books'}
+            />
           </h1>
           <p className="mt-6 text-base md:text-lg text-[#0B1A36]/60 dark:text-white/60 font-serif italic max-w-2xl mx-auto">
-            {lang === 'FR'
-              ? 'Podcast, émissions, livres, Ayurveda et le quiz dosha — tout ce qu\'il faut pour commencer à écouter votre nature.'
-              : 'Podcast, TV shows, books, Ayurveda, and the dosha quiz — everything you need to start listening to your nature.'}
+            <EditableText
+              fieldKey="medias.hero.lead"
+              defaultValue={lang === 'FR'
+                ? 'Podcast, émissions, livres — les mots et la voix de Krystine, au fil des saisons.'
+                : 'Podcast, TV shows, books — Krystine\'s words and voice, across the seasons.'}
+              multiline
+            />
           </p>
           <div className="w-24 h-1 bg-[#D4AF37] mt-6 mx-auto" />
+        </div>
 
-          {/* Anchor nav — quick jumps between the stacked sections */}
-          <div className="mt-10 flex flex-wrap justify-center gap-3">
+        {/* Overview — 4 square cards on the left, brand image on the right.
+            Cards anchor-scroll to the matching stacked section below; "book"
+            lands on #livres, "blog" opens the separate /blogue page. */}
+        <div className="mb-24 flex flex-col lg:flex-row gap-16 items-center justify-center">
+          {/* Cards */}
+          <div className="w-full lg:w-1/2 grid grid-cols-2 gap-6">
             {[
-              { id: 'podcast', label: lang === 'FR' ? 'Podcast' : 'Podcast', icon: 'fa-microphone' },
-              { id: 'tv', label: lang === 'FR' ? 'Télé' : 'TV', icon: 'fa-tv' },
-              { id: 'livres', label: lang === 'FR' ? 'Livres' : 'Books', icon: 'fa-book' },
-              { id: 'ayurveda', label: 'Ayurveda', icon: 'fa-leaf' },
-              { id: 'quiz', label: lang === 'FR' ? 'Quiz Dosha' : 'Dosha Quiz', icon: 'fa-compass' },
-            ].map(s => (
-              <a key={s.id} href={`#${s.id}`} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#0B1A36]/15 dark:border-white/15 text-xs uppercase tracking-widest font-bold text-[#0B1A36]/70 dark:text-white/70 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors">
-                <i className={`fa-solid ${s.icon} text-[10px]`} />{s.label}
-              </a>
-            ))}
+              { id: 'podcast',  href: '/podcast',  label: lang === 'FR' ? 'Podcast' : 'Podcast', icon: 'fa-microphone', onPage: false },
+              { id: 'tv',       href: '#tv',       label: 'TV & YouTube',                         icon: 'fa-tv',         onPage: true },
+              { id: 'book',     href: '#livres',   label: lang === 'FR' ? 'Livres' : 'Books',    icon: 'fa-book',       onPage: true },
+              { id: 'blog',     href: '/blogue',   label: lang === 'FR' ? 'Blog' : 'Blog',       icon: 'fa-pen-nib',    onPage: false },
+            ].map(item => {
+              const cardInner = (
+                <div className="rounded-[24px] aspect-square flex flex-col items-center justify-center p-6 bg-white dark:bg-[#0B1A36]/60 border border-[#0B1A36]/5 dark:border-white/5 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white to-[#D4AF37]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="w-16 h-16 rounded-full bg-[#0B1A36]/5 dark:bg-white/5 flex items-center justify-center mb-4 text-[#0B1A36] dark:text-white group-hover:bg-[#0B1A36] group-hover:text-white transition-all duration-300 relative z-10">
+                    <i className={`fa-solid ${item.icon} text-2xl`} />
+                  </div>
+                  <h3 className="text-lg font-serif text-[#0B1A36] dark:text-white relative z-10">{item.label}</h3>
+                  <div className="w-8 h-px bg-[#D4AF37] mt-3 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center relative z-10" />
+                </div>
+              );
+              return item.onPage ? (
+                <a key={item.id} href={item.href} className="group cursor-pointer">{cardInner}</a>
+              ) : (
+                <a key={item.id} href={item.href} className="group cursor-pointer" onClick={e => { e.preventDefault(); goToRoute(navigate, item.href); }}>{cardInner}</a>
+              );
+            })}
+          </div>
+
+          {/* Image */}
+          <div className="w-full lg:w-1/2 flex justify-center">
+            <div className="w-full aspect-square rounded-[30px] overflow-hidden shadow-2xl relative group max-w-[500px]">
+              <img
+                src="https://storage.googleapis.com/inspirata/Base%20site/Gemini_Generated_Image_2cz8f92cz8f92cz8.png"
+                alt="Inspirata Media"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B1A36]/20 to-transparent" />
+            </div>
           </div>
         </div>
 
@@ -213,8 +153,19 @@ const MediasPage: React.FC = () => {
               <iframe style={{ borderRadius: '12px' }} src={pod.spotifyUrl} width="100%" height="352" frameBorder={0} allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" />
             </div>
             <div className="flex justify-center">
-              <a href={pod.ctaLink} target="_blank" rel="noopener noreferrer"
-                className="bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors inline-flex items-center gap-2">
+              <a
+                href="/podcast"
+                onClick={() => {
+                  // Loyalty — 2 pts when a member engages with the podcast.
+                  // Without per-episode tracking (the Spotify embed doesn't
+                  // expose play events), we cap this at once per lifetime
+                  // via the `podcast:overall:{uid}` dedup key.
+                  if (user?.uid) {
+                    points.podcastListened(user.uid, 'overall').catch(() => { /* non-fatal */ });
+                  }
+                }}
+                className="bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors inline-flex items-center gap-2"
+              >
                 {pod.cta} <i className="fa-solid fa-arrow-right" />
               </a>
             </div>
@@ -224,24 +175,83 @@ const MediasPage: React.FC = () => {
         {/* ── TV ── */}
         <section id="tv" className="scroll-mt-32 mb-28">
           <div className="text-center mb-10">
-            <span className="text-[#D4AF37] uppercase tracking-widest text-xs font-bold mb-2 block">{lang === 'FR' ? 'Télé' : 'TV'}</span>
+            <span className="text-[#D4AF37] uppercase tracking-widest text-xs font-bold mb-2 block">TV &amp; YouTube</span>
             <h2 className="text-4xl md:text-5xl font-serif italic mb-4">{tv.title}</h2>
             <p className="text-[#0B1A36]/70 dark:text-white/70 max-w-2xl mx-auto">{tv.desc}</p>
           </div>
+
+          {/* YouTube channel block — Krystine's channel, with a subscribe CTA.
+              YouTube disallows embedding channel pages directly in an iframe,
+              so we surface the channel handle + a one-click subscribe link. */}
+          <a
+            href="https://www.youtube.com/@KrystineStLaurent"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group block mb-10 rounded-[24px] overflow-hidden shadow-lg hover:shadow-2xl transition-all bg-gradient-to-br from-[#1A0000] via-[#2A0000] to-[#0B0000] text-white border border-white/5"
+          >
+            <div className="px-6 md:px-10 py-8 md:py-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
+              {/* YouTube icon + "LIVE" pulse */}
+              <div className="relative flex-shrink-0">
+                <div className="w-20 h-20 rounded-full bg-[#FF0000] flex items-center justify-center shadow-[0_10px_30px_rgba(255,0,0,0.4)] group-hover:scale-105 transition-transform">
+                  <i className="fa-brands fa-youtube text-white text-4xl" />
+                </div>
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#FF0000] animate-ping opacity-60" />
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#FF0000]" />
+              </div>
+
+              <div className="flex-1 text-center md:text-left">
+                <span className="text-[10px] md:text-[11px] tracking-[0.3em] uppercase font-bold text-[#FF4D4D] block mb-2">
+                  {lang === 'FR' ? 'Chaîne YouTube' : 'YouTube Channel'}
+                </span>
+                <p className="font-serif text-2xl md:text-3xl mb-2">@KrystineStLaurent</p>
+                <p className="text-sm text-white/70 leading-relaxed max-w-xl">
+                  {lang === 'FR'
+                    ? 'Entrevues, capsules et replays. Abonnez-vous pour recevoir les prochaines publications.'
+                    : 'Interviews, capsules and replays. Subscribe to get the next uploads.'}
+                </p>
+              </div>
+
+              <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#FF0000] group-hover:bg-white text-white group-hover:text-[#FF0000] font-bold uppercase tracking-[0.25em] text-[11px] whitespace-nowrap transition-colors flex-shrink-0">
+                <i className="fa-brands fa-youtube text-sm" />
+                {lang === 'FR' ? "S'abonner" : 'Subscribe'}
+              </span>
+            </div>
+          </a>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {tv.videos?.map((v: any, i: number) => (
               <div key={i} className="group bg-white dark:bg-[#0B1A36]/60 rounded-[24px] shadow-lg overflow-hidden border border-[#0B1A36]/5 dark:border-white/5 hover:shadow-2xl transition-all">
-                <div className="relative aspect-video bg-black cursor-pointer" onClick={() => setActiveVideo(activeVideo === v.id ? null : v.id)}>
+                <div
+                  className="relative aspect-video bg-black cursor-pointer"
+                  onClick={() => {
+                    const nextId = activeVideo === v.id ? null : v.id;
+                    setActiveVideo(nextId);
+                    // Loyalty — award 3 pts the first time this member plays
+                    // this video. Dedupped per (videoId, uid) so replays are
+                    // silent no-ops.
+                    if (nextId && user?.uid) {
+                      points.videoWatched(user.uid, v.id).catch(() => { /* non-fatal */ });
+                    }
+                  }}
+                >
                   {activeVideo === v.id ? (
                     <iframe width="100%" height="100%" src={`https://www.youtube-nocookie.com/embed/${v.id}?autoplay=1&rel=0`} title={v.title} frameBorder={0} allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen className="w-full h-full" />
                   ) : (
                     <>
-                      <div className="absolute inset-0 bg-[#0B1A36] flex items-center justify-center">
-                        <img src={ASSETS.logo} className="w-24 h-auto opacity-40" alt="" style={{ filter: 'invert(1) brightness(1.5)' }} />
-                      </div>
-                      <div className="absolute inset-0 flex items-center justify-center hover:bg-black/20 transition-colors">
-                        <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <i className="fa-solid fa-play text-white ml-1" />
+                      {/* YouTube's hqdefault is always available (unlike maxresdefault,
+                          which 404s on older uploads). Fall back to sddefault if the
+                          hq one ever fails. */}
+                      <img
+                        src={`https://img.youtube.com/vi/${v.id}/hqdefault.jpg`}
+                        onError={e => { (e.currentTarget as HTMLImageElement).src = `https://img.youtube.com/vi/${v.id}/sddefault.jpg`; }}
+                        alt={v.title}
+                        loading="lazy"
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-full bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-[0_8px_28px_rgba(0,0,0,0.35)] group-hover:bg-[#D4AF37] group-hover:border-[#D4AF37] group-hover:scale-110 transition-all">
+                          <i className="fa-solid fa-play text-white group-hover:text-[#0B1A36] text-lg ml-1 transition-colors" />
                         </div>
                       </div>
                     </>
@@ -360,200 +370,7 @@ const MediasPage: React.FC = () => {
           </div>
         </section>
 
-        {/* ── Ayurveda ── Merged from /ayurveda */}
-        <section id="ayurveda" className="scroll-mt-32 mb-28">
-          <div className="text-center mb-16 max-w-6xl mx-auto">
-            <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">Ayurveda</span>
-            <h2 className="text-3xl md:text-5xl font-serif mb-6 tracking-wide">{ay.whatIsTitle}</h2>
-            <p className="text-[#0B1A36]/80 dark:text-white/80 font-serif text-lg md:text-2xl leading-relaxed italic max-w-4xl mx-auto">{ay.whatIsText}</p>
-            <div className="w-16 h-1 bg-[#D4AF37] mx-auto mt-8" />
-          </div>
-
-          <div className="flex flex-col lg:flex-row items-center justify-center w-full gap-12 lg:gap-24">
-            <div className="relative flex items-center justify-center lg:w-1/2">
-              <AyurvedaIkigai doshas={ay.doshas} onDoshaClick={setSelectedDosha} onQuizClick={openQuiz} lang={lang} />
-              {selectedDosha && (
-                <div className="absolute z-30 inset-0 flex items-center justify-center">
-                  <div className="bg-white dark:bg-[#0B1A36] p-8 rounded-[30px] shadow-2xl max-w-xs md:max-w-sm text-center relative border border-[#D4AF37]/20">
-                    <button onClick={() => setSelectedDosha(null)} className="absolute top-3 right-4 text-[#0B1A36]/40 dark:text-white/40 hover:text-[#0B1A36] text-2xl">×</button>
-                    <h3 className="text-3xl font-serif font-bold mb-2 text-[#D4AF37]">{selectedDosha.name}</h3>
-                    <p className="text-xs font-bold uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50 mb-4">{selectedDosha.elements}</p>
-                    <div className="w-12 h-px bg-[#D4AF37]/30 mx-auto mb-4" />
-                    <p className="text-[#0B1A36]/80 dark:text-white/80 text-sm leading-relaxed mb-4">{selectedDosha.definition}</p>
-                    <p className="text-[#D4AF37] font-serif italic">{selectedDosha.action}</p>
-                    <div className="mt-6 pt-4 border-t border-[#0B1A36]/10">
-                      <button
-                        onClick={() => { addToCart({ title: selectedDosha.productRecom, price: '48.00 CAD', type: 'Soin Ayurvédique' }); setSelectedDosha(null); }}
-                        className="w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-2 rounded-full text-xs font-bold uppercase hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-md"
-                      >
-                        {lang === 'FR' ? 'Ajouter' : 'Add'} {selectedDosha.productRecom}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="lg:w-1/2 text-center lg:text-left max-w-xl">
-              <span className="text-[#D4AF37] uppercase tracking-[0.2em] text-xs font-semibold block mb-2">{ay.introTitle}</span>
-              <h3 className="text-3xl md:text-5xl font-serif mb-6">{ay.title}</h3>
-              <p className="text-[#0B1A36]/70 dark:text-white/70 font-serif text-lg leading-relaxed mb-6 italic">{ay.introText}</p>
-              <div className="bg-white dark:bg-[#0B1A36]/60 border border-[#0B1A36]/5 dark:border-white/5 p-8 rounded-[24px] shadow-lg mb-8">
-                <p className="text-[#0B1A36]/80 dark:text-white/80 leading-relaxed mb-4 font-medium">{ay.desc}</p>
-                <p className="text-[#0B1A36] dark:text-white font-bold">{ay.quizPrompt}</p>
-              </div>
-              <a href="#quiz" onClick={e => { e.preventDefault(); openQuiz(); }}
-                className="inline-block bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors">
-                {ay.quizBtn}
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* ── Quiz section ── Trigger lives here too, so the anchor in the subnav has a target. */}
-        <section id="quiz" className="scroll-mt-32 mb-8">
-          <div className="max-w-3xl mx-auto text-center bg-gradient-to-br from-[#0B1A36] to-[#1A2642] rounded-[30px] p-12 text-white border border-[#D4AF37]/20 shadow-2xl">
-            <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
-              {lang === 'FR' ? 'Quiz Dosha' : 'Dosha Quiz'}
-            </span>
-            <h2 className="text-3xl md:text-5xl font-serif mb-4">{ay.title}</h2>
-            <p className="text-white/70 font-serif italic mb-8 max-w-xl mx-auto">
-              {lang === 'FR'
-                ? 'Quatre questions pour dévoiler votre dominance du moment. Résultat immédiat, sauvegarde dans votre espace client.'
-                : 'Four questions to reveal your current dominance. Instant result, saved in your client space.'}
-            </p>
-            <button onClick={openQuiz}
-              className="inline-flex items-center gap-3 bg-[#D4AF37] text-[#0B1A36] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:scale-105 transition-transform">
-              <i className="fa-solid fa-compass" /> {ay.quizBtn}
-            </button>
-          </div>
-        </section>
       </div>
-
-      {/* ── Quiz Modal ── */}
-      {quizState.isOpen && (
-        <div className="fixed inset-0 z-50 bg-[#0B1A36]/40 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#0B1A36] w-full max-w-2xl rounded-[30px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-6 border-b border-[#0B1A36]/10 dark:border-white/10 flex justify-between items-center bg-[#F5F5F0] dark:bg-white/5">
-              <div>
-                <h3 className="font-serif text-2xl">Dosha Quiz</h3>
-                <p className="text-xs text-[#D4AF37] uppercase tracking-widest font-bold mt-1">
-                  {quizState.result
-                    ? (lang === 'FR' ? 'Résultats' : 'Results')
-                    : quizState.step < QUIZ_DATA.length
-                      ? `${lang === 'FR' ? 'Question' : 'Question'} ${quizState.step + 1} / ${QUIZ_DATA.length + 1}`
-                      : (lang === 'FR' ? 'Finalisation' : 'Finalizing')}
-                </p>
-              </div>
-              <button onClick={() => setQuizState({ ...quizState, isOpen: false, result: null })} className="text-[#0B1A36]/40 hover:text-[#0B1A36] dark:text-white/40 dark:hover:text-white">
-                <i className="fa-solid fa-times text-xl" />
-              </button>
-            </div>
-            {!quizState.result && (
-              <div className="w-full h-1 bg-[#0B1A36]/5">
-                <div className="h-full bg-[#D4AF37] transition-all duration-500" style={{ width: `${((quizState.step + 1) / (QUIZ_DATA.length + 1)) * 100}%` }} />
-              </div>
-            )}
-            <div className="p-8 overflow-y-auto flex-1">
-              {!quizState.result ? (
-                quizState.step < QUIZ_DATA.length ? (
-                  <div>
-                    <h4 className="text-xl md:text-2xl font-serif mb-8 leading-relaxed">
-                      {lang === 'FR' ? QUIZ_DATA[quizState.step].question : QUIZ_DATA[quizState.step].qEN}
-                    </h4>
-                    <div className="space-y-4">
-                      {QUIZ_DATA[quizState.step].options.map((opt, idx) => (
-                        <button key={idx} onClick={() => handleQuizAnswer(opt.type)}
-                          className="w-full text-left p-4 rounded-xl border border-[#0B1A36]/10 dark:border-white/10 hover:border-[#D4AF37] hover:bg-[#D4AF37]/5 transition-all group shadow-sm bg-white/50 dark:bg-white/5">
-                          <div className="flex items-start gap-4">
-                            <div className="w-5 h-5 rounded-full border border-[#0B1A36]/20 dark:border-white/20 flex items-center justify-center mt-0.5 group-hover:border-[#D4AF37] flex-shrink-0">
-                              <div className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </div>
-                            <span className="text-[#0B1A36]/80 dark:text-white/80 text-sm leading-relaxed">
-                              {lang === 'FR' ? opt.text : opt.textEN}
-                            </span>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center max-w-md mx-auto py-4">
-                    <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] mb-3">
-                      {lang === 'FR' ? 'Votre nature dominante' : 'Your dominant nature'}
-                    </p>
-                    <h2 className="text-5xl font-serif font-bold text-[#D4AF37] mb-4">{quizState.teaser?.dominant.name}</h2>
-                    {quizState.teaser && (
-                      <div className="flex justify-center gap-8 mb-6 text-sm text-[#0B1A36]/70 dark:text-white/70">
-                        {(['vata', 'pitta', 'kapha'] as const).map(d => (
-                          <div key={d} className="flex flex-col items-center">
-                            <span className="font-bold text-[#D4AF37] text-lg">{quizState.teaser!.percentages[d]}%</span>
-                            <span className="capitalize text-xs uppercase tracking-widest">{d}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {quizState.teaser?.dominant.elements && (
-                      <p className="text-xs uppercase tracking-[0.2em] font-bold text-[#0B1A36]/50 dark:text-white/50 mb-6">{quizState.teaser.dominant.elements}</p>
-                    )}
-                    <div className="border-t border-[#0B1A36]/10 dark:border-white/10 pt-6 mt-6">
-                      <div className="flex items-center gap-3 mb-4 justify-center">
-                        <i className="fa-solid fa-lock text-[#D4AF37] text-sm" />
-                        <span className="text-xs uppercase tracking-[0.25em] font-bold text-[#0B1A36]/70 dark:text-white/70">{lang === 'FR' ? 'Profil complet' : 'Full profile'}</span>
-                      </div>
-                      <p className="text-[#0B1A36]/60 dark:text-white/60 mb-6 text-sm leading-relaxed">
-                        {user
-                          ? (lang === 'FR' ? 'Enregistrez votre résultat dans votre espace client pour accéder aux rituels et recommandations personnalisés.' : 'Save your result to your client space to unlock personalized rituals and recommendations.')
-                          : (lang === 'FR' ? 'Connectez-vous pour enregistrer votre profil et débloquer vos rituels personnalisés.' : 'Sign in to save your profile and unlock your personalized rituals.')}
-                      </p>
-                      {user ? (
-                        <button onClick={handleQuizCompute} disabled={submitting}
-                          className="w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-lg flex items-center justify-center gap-2">
-                          {submitting
-                            ? <><i className="fa-solid fa-circle-notch fa-spin" /> {lang === 'FR' ? 'Enregistrement…' : 'Saving…'}</>
-                            : <>{lang === 'FR' ? 'Enregistrer + voir le profil complet' : 'Save + reveal full profile'} <i className="fa-solid fa-arrow-right text-[10px]" /></>}
-                        </button>
-                      ) : (
-                        <button onClick={() => setSignInOpen(true)}
-                          className="w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-lg flex items-center justify-center gap-2">
-                          <i className="fa-solid fa-user text-sm" />
-                          {lang === 'FR' ? 'Se connecter pour sauvegarder' : 'Sign in to save'}
-                        </button>
-                      )}
-                      <p className="mt-4 text-[10px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">
-                        {lang === 'FR' ? 'Vos résultats restent privés et sécurisés.' : 'Your results stay private and secure.'}
-                      </p>
-                    </div>
-                  </div>
-                )
-              ) : (
-                <div className="text-center">
-                  <p className="font-serif text-xl italic text-[#0B1A36]/60 dark:text-white/60 mb-2">{lang === 'FR' ? `Bonjour ${quizState.formData.firstName}, votre nature dominante est :` : `Hello ${quizState.formData.firstName}, your dominant nature is:`}</p>
-                  <h2 className="text-5xl font-serif font-bold mb-6 text-[#D4AF37]">{quizState.result.dominant.name}</h2>
-                  <div className="flex justify-center gap-8 mb-8 text-sm text-[#0B1A36]/70 dark:text-white/70">
-                    {['vata', 'pitta', 'kapha'].map(d => (
-                      <div key={d} className="flex flex-col items-center">
-                        <span className="font-bold text-[#D4AF37]">{quizState.result.percentages[d]}%</span>
-                        <span className="capitalize">{d}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="max-w-md mx-auto mb-8 bg-[#F5F5F0] dark:bg-white/5 p-6 rounded-xl border border-[#0B1A36]/5">
-                    <p className="text-[#0B1A36]/80 dark:text-white/80 italic leading-relaxed">{quizState.result.dominant.definition}</p>
-                  </div>
-                  <button onClick={() => { addToCart({ title: `Rituel ${quizState.result.dominant.name}`, price: '85.00 CAD', type: 'Bundle Dosha' }); setQuizState({ ...quizState, isOpen: false, result: null }); }}
-                    className="w-full bg-[#D4AF37] text-[#0B1A36] py-3 rounded-full uppercase tracking-widest text-xs font-bold hover:bg-[#0B1A36] hover:text-white transition-colors shadow-lg mb-4 max-w-sm mx-auto block">
-                    {lang === 'FR' ? `Ajouter le Rituel ${quizState.result.dominant.name}` : `Add ${quizState.result.dominant.name} Ritual`}
-                  </button>
-                  <button onClick={() => setQuizState({ ...quizState, isOpen: false, result: null })} className="text-[#0B1A36]/50 dark:text-white/50 uppercase tracking-widest text-xs font-bold hover:text-[#D4AF37] transition-colors">
-                    {lang === 'FR' ? 'Fermer et explorer le site' : 'Close and explore the site'}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

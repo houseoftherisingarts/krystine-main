@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
-import { CONTENT, ASSETS } from '../content';
+import { ASSETS } from '../content';
 import { goToRoute } from '../lib/staticRoutes';
-import { getEvents, type EventDoc } from '../firebase/firestore';
+import WaitlistModal, { type WaitlistTarget } from '../components/WaitlistModal';
+import { getUpcomingEvents } from '../lib/liveEvents';
+import LiveEventsSection from '../components/LiveEvents';
+import EditableText from '../components/edit/EditableText';
 
 interface Programme {
   tag: string;
@@ -14,34 +17,22 @@ interface Programme {
   href: string;
   image: string;
   featured?: boolean;
+  // When set, clicking the card opens a waitlist capture modal instead of
+  // navigating. `href` is ignored for these.
+  waitlist?: WaitlistTarget;
 }
 
 const FormationsPage: React.FC = () => {
   const { lang } = useApp();
   const navigate = useNavigate();
-  const location = useLocation();
-  const ev = CONTENT[lang].evenements;
+  const [waitlistTarget, setWaitlistTarget] = useState<WaitlistTarget | null>(null);
 
-  const [events, setEvents] = useState<EventDoc[]>([]);
-  const [eventsLoading, setEventsLoading] = useState(true);
-
-  useEffect(() => {
-    getEvents()
-      .then(setEvents)
-      .catch(() => setEvents([]))
-      .finally(() => setEventsLoading(false));
-  }, []);
-
-  // Scroll to #evenements (or any other hash) when navigating from the
-  // legacy /evenements route or from an on-site link.
-  useEffect(() => {
-    if (!location.hash) return;
-    const el = document.querySelector(location.hash);
-    if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
-  }, [location.hash, eventsLoading]);
-
-  const upcoming = events.filter(e => new Date(e.date) >= new Date());
-  const past = events.filter(e => new Date(e.date) < new Date());
+  // Waitlist targets keep their dosha-based ids — they're what the CRM
+  // filters on (`waitlist-pitta` / `waitlist-kapha` / `waitlist-vata`) — but
+  // the user-facing labels lead with the season name now.
+  const kaphaTarget: WaitlistTarget = { id: 'kapha', labelFR: 'Le Printemps · Programme Kapha', labelEN: 'Spring · Kapha Program' };
+  const pittaTarget: WaitlistTarget = { id: 'pitta', labelFR: "L'Été · Programme Pitta",        labelEN: 'Summer · Pitta Program' };
+  const vataTarget:  WaitlistTarget = { id: 'vata',  labelFR: "L'Automne · Programme Vata",     labelEN: 'Autumn · Vata Program' };
 
   const programmes: Programme[] = lang === 'FR'
     ? [
@@ -56,31 +47,34 @@ const FormationsPage: React.FC = () => {
           featured: true,
         },
         {
-          tag: 'Programme ciblé',
-          title: 'Programme Vata',
+          tag: 'Saison Kapha · Bientôt',
+          title: 'Le Printemps',
+          subtitle: 'Activer · Alléger · Stimuler',
+          description: "L'éveil du printemps demande de bouger, drainer, alléger. Un programme pour traverser la saison Kapha avec élan et clarté.",
+          duration: "Liste d'attente ouverte",
+          href: '#',
+          image: ASSETS.livresBg,
+          waitlist: kaphaTarget,
+        },
+        {
+          tag: 'Saison Pitta · Bientôt',
+          title: "L'Été",
+          subtitle: 'Rafraîchir · Apaiser · Adoucir',
+          description: "Quand la chaleur monte, le feu intérieur s'emballe. Un programme pour traverser la saison Pitta sans se brûler.",
+          duration: "Liste d'attente ouverte",
+          href: '#',
+          image: ASSETS.evenementsBg,
+          waitlist: pittaTarget,
+        },
+        {
+          tag: 'Saison Vata · Bientôt',
+          title: "L'Automne",
           subtitle: 'Enraciner · Réchauffer · Apaiser',
-          description: "Un accompagnement pour les constitutions Vata et celles qui cherchent ancrage, chaleur et régularité.",
-          duration: 'À votre rythme',
-          href: '/vata',
+          description: "Vent, sécheresse, dispersion : la saison Vata teste les nerfs. Un programme pour ancrer le corps et la tête avant l'hiver.",
+          duration: "Liste d'attente ouverte",
+          href: '#',
           image: ASSETS.ayurvedaBg,
-        },
-        {
-          tag: 'Écoute & transmission',
-          title: 'Le Podcast Inspirata',
-          subtitle: 'Au-delà des tendances',
-          description: "Conversations ancrées sur la sagesse ayurvédique, les rituels de saisons et l'art de vivre conscient.",
-          duration: 'Nouveaux épisodes',
-          href: '/podcast',
-          image: ASSETS.blogBg,
-        },
-        {
-          tag: 'Rendez-vous mensuel',
-          title: "Les Dimanches d'Origine",
-          subtitle: 'Des moments pour se retrouver',
-          description: "Retrouvailles dominicales pour approfondir une thématique, pratiquer ensemble et poser vos questions en direct.",
-          duration: 'Chaque mois',
-          href: '/dimanches-origine',
-          image: ASSETS.founder,
+          waitlist: vataTarget,
         },
       ]
     : [
@@ -95,33 +89,59 @@ const FormationsPage: React.FC = () => {
           featured: true,
         },
         {
-          tag: 'Focused program',
-          title: 'Vata Program',
+          tag: 'Kapha season · Soon',
+          title: 'Spring',
+          subtitle: 'Activate · Lighten · Stimulate',
+          description: "Spring's awakening calls for movement, drainage, lightness. A program to walk through the Kapha season with momentum and clarity.",
+          duration: 'Waitlist open',
+          href: '#',
+          image: ASSETS.livresBg,
+          waitlist: kaphaTarget,
+        },
+        {
+          tag: 'Pitta season · Soon',
+          title: 'Summer',
+          subtitle: 'Cool · Soothe · Soften',
+          description: 'When the heat rises, the inner fire flares. A program to walk through the Pitta season without burning out.',
+          duration: 'Waitlist open',
+          href: '#',
+          image: ASSETS.evenementsBg,
+          waitlist: pittaTarget,
+        },
+        {
+          tag: 'Vata season · Soon',
+          title: 'Autumn',
           subtitle: 'Ground · Warm · Soothe',
-          description: 'Support for Vata constitutions and anyone seeking grounding, warmth, and regularity.',
-          duration: 'At your own pace',
-          href: '/vata',
+          description: "Wind, dryness, scattering: the Vata season tests the nerves. A program to ground body and mind before winter.",
+          duration: 'Waitlist open',
+          href: '#',
           image: ASSETS.ayurvedaBg,
-        },
-        {
-          tag: 'Listen & learn',
-          title: 'The Inspirata Podcast',
-          subtitle: 'Beyond trends',
-          description: 'Grounded conversations on ayurvedic wisdom, seasonal rituals, and the art of conscious living.',
-          duration: 'New episodes',
-          href: '/podcast',
-          image: ASSETS.blogBg,
-        },
-        {
-          tag: 'Monthly gathering',
-          title: 'Sundays of Origin',
-          subtitle: 'Moments to reconnect',
-          description: 'Sunday gatherings to explore a theme, practice together, and ask your questions live.',
-          duration: 'Monthly',
-          href: '/dimanches-origine',
-          image: ASSETS.founder,
+          waitlist: vataTarget,
         },
       ];
+
+  const podcast = lang === 'FR'
+    ? {
+        tag: 'Écoute & transmission',
+        title: 'Au-delà des tendances',
+        subtitle: 'Le podcast',
+        description: "Conversations ancrées sur la sagesse ayurvédique, les rituels de saisons et l'art de vivre conscient.",
+        duration: 'Nouveaux épisodes',
+        cta: 'Écouter les épisodes',
+      }
+    : {
+        tag: 'Listen & learn',
+        title: 'Beyond Trends',
+        subtitle: 'The podcast',
+        description: 'Grounded conversations on ayurvedic wisdom, seasonal rituals, and the art of conscious living.',
+        duration: 'New episodes',
+        cta: 'Listen to episodes',
+      };
+
+  const openCard = (p: Programme) => {
+    if (p.waitlist) setWaitlistTarget(p.waitlist);
+    else goToRoute(navigate, p.href);
+  };
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#050C1A] text-[#0B1A36] dark:text-white pt-32 pb-24">
@@ -130,15 +150,25 @@ const FormationsPage: React.FC = () => {
         {/* Hero */}
         <div className="text-center mb-20">
           <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
-            {lang === 'FR' ? 'Programmes & Accompagnements' : 'Programs & Guidance'}
+            <EditableText
+              fieldKey="formations.hero.kicker"
+              defaultValue={lang === 'FR' ? 'Programmes & Accompagnements' : 'Programs & Guidance'}
+            />
           </span>
           <h1 className="text-5xl md:text-7xl font-serif mb-6">
-            {lang === 'FR' ? 'Formations' : 'Programs'}
+            <EditableText
+              fieldKey="formations.hero.title"
+              defaultValue={lang === 'FR' ? 'Formations' : 'Programs'}
+            />
           </h1>
           <p className="text-xl text-[#0B1A36]/60 dark:text-white/60 font-serif italic max-w-2xl mx-auto">
-            {lang === 'FR'
-              ? "Des parcours pour intégrer l'Ayurveda dans votre quotidien — à votre rythme, à votre mesure."
-              : 'Journeys to weave Ayurveda into your daily life — at your own pace, on your own terms.'}
+            <EditableText
+              fieldKey="formations.hero.lead"
+              defaultValue={lang === 'FR'
+                ? "Des parcours pour intégrer l'Ayurveda dans votre quotidien — à votre rythme, à votre mesure."
+                : 'Journeys to weave Ayurveda into your daily life — at your own pace, on your own terms.'}
+              multiline
+            />
           </p>
           <div className="w-24 h-1 bg-[#D4AF37] mx-auto mt-10" />
         </div>
@@ -146,8 +176,8 @@ const FormationsPage: React.FC = () => {
         {/* Featured programme */}
         {programmes.filter(p => p.featured).map(p => (
           <section
-            key={p.href}
-            onClick={() => goToRoute(navigate, p.href)}
+            key={p.title}
+            onClick={() => openCard(p)}
             className="group relative cursor-pointer mb-16 rounded-[30px] overflow-hidden shadow-2xl border border-[#D4AF37]/20 hover:shadow-[0_0_40px_rgba(212,175,55,0.25)] transition-all"
           >
             <div className="relative h-[500px] bg-[#0B1A36]">
@@ -157,7 +187,10 @@ const FormationsPage: React.FC = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0B1A36] via-[#0B1A36]/60 to-[#0B1A36]/20" />
               <div className="absolute bottom-0 left-0 right-0 p-10 md:p-16 text-white">
-                <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">{p.tag}</span>
+                {/* Larger eyebrow on the featured (Origine) card so the
+                    "Parcours signature" label reads as the heading kicker
+                    it actually is. */}
+                <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-sm md:text-base lg:text-lg font-bold block mb-4">{p.tag}</span>
                 <h2 className="text-4xl md:text-6xl font-serif mb-3">{p.title}</h2>
                 <p className="text-xl md:text-2xl font-serif italic text-white/80 mb-6 max-w-2xl">{p.subtitle}</p>
                 <p className="text-white/70 max-w-2xl mb-8 leading-relaxed">{p.description}</p>
@@ -174,148 +207,108 @@ const FormationsPage: React.FC = () => {
           </section>
         ))}
 
-        {/* Other programmes */}
+        {/* Les Saisonniers — Vata + the two coming-soon waitlists */}
+        <div className="text-center mb-10 mt-16">
+          <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-3">
+            {lang === 'FR' ? 'Au rythme des saisons' : 'With the seasons'}
+          </span>
+          <h2 className="text-3xl md:text-5xl font-serif leading-tight">
+            {lang === 'FR' ? 'Les Programmes Saisonniers' : 'The Seasonal Programs'}
+          </h2>
+          <div className="w-16 h-px bg-[#D4AF37]/70 mx-auto mt-5" />
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {programmes.filter(p => !p.featured).map(p => (
-            <article
-              key={p.href}
-              onClick={() => goToRoute(navigate, p.href)}
-              className="group cursor-pointer bg-white dark:bg-[#0B1A36]/60 rounded-[24px] shadow-lg border border-[#0B1A36]/5 dark:border-white/5 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
-            >
-              <div className="relative h-48 overflow-hidden bg-[#0B1A36]">
+          {programmes.filter(p => !p.featured).map(p => {
+            const soon = !!p.waitlist;
+            return (
+              <article
+                key={p.title}
+                onClick={() => openCard(p)}
+                className={`group cursor-pointer bg-white dark:bg-[#0B1A36]/60 rounded-[24px] shadow-lg border border-[#0B1A36]/5 dark:border-white/5 overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl ${soon ? 'relative' : ''}`}
+              >
+                <div className="relative h-48 overflow-hidden bg-[#0B1A36]">
+                  <div
+                    className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 ${soon ? 'opacity-70' : ''}`}
+                    style={{ backgroundImage: `url(${p.image})` }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B1A36]/80 via-[#0B1A36]/20 to-transparent" />
+                  <span className={`absolute top-5 left-5 uppercase tracking-[0.25em] text-[10px] font-bold backdrop-blur px-3 py-1.5 rounded-full border ${
+                    soon
+                      ? 'text-[#D4AF37] bg-[#0B1A36]/80 border-[#D4AF37]/50'
+                      : 'text-[#D4AF37] bg-[#0B1A36]/60 border-[#D4AF37]/30'
+                  }`}>
+                    {p.tag}
+                  </span>
+                </div>
+                <div className="p-8">
+                  <h3 className="text-2xl font-serif text-[#0B1A36] dark:text-white mb-2 group-hover:text-[#D4AF37] transition-colors">{p.title}</h3>
+                  <p className="text-sm font-serif italic text-[#D4AF37] mb-4">{p.subtitle}</p>
+                  <p className="text-[#0B1A36]/70 dark:text-white/70 text-sm leading-relaxed mb-6">{p.description}</p>
+                  <div className="flex items-center justify-between pt-4 border-t border-[#0B1A36]/10 dark:border-white/10">
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-[#0B1A36]/40 dark:text-white/40 font-bold">
+                      <i className={`fa-regular ${soon ? 'fa-hourglass-half' : 'fa-clock'} mr-2`} />{p.duration}
+                    </span>
+                    <span className="text-[#D4AF37] text-lg group-hover:translate-x-1 transition-transform">
+                      <i className={`fa-solid ${soon ? 'fa-bell' : 'fa-arrow-right'}`} />
+                    </span>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        {/* Podcast — full-width band below the 3 programme cards */}
+        <section
+          onClick={() => goToRoute(navigate, '/podcast')}
+          className="group mt-12 cursor-pointer rounded-[28px] overflow-hidden shadow-xl border border-[#D4AF37]/15 hover:shadow-[0_0_40px_rgba(212,175,55,0.2)] transition-all"
+        >
+          <div className="relative bg-[#0B1A36]">
+            <div className="grid grid-cols-1 md:grid-cols-[1.1fr_1fr]">
+              <div className="relative h-56 md:h-auto min-h-[260px] overflow-hidden">
                 <div
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                  style={{ backgroundImage: `url(${p.image})` }}
+                  style={{ backgroundImage: `url(${ASSETS.blogBg})` }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B1A36]/80 via-[#0B1A36]/20 to-transparent" />
-                <span className="absolute top-5 left-5 text-[#D4AF37] uppercase tracking-[0.25em] text-[10px] font-bold bg-[#0B1A36]/60 backdrop-blur px-3 py-1.5 rounded-full border border-[#D4AF37]/30">
-                  {p.tag}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0B1A36]/30 via-transparent to-[#0B1A36]/50 md:bg-gradient-to-r md:from-transparent md:to-[#0B1A36]" />
+              </div>
+              <div className="p-8 md:p-12 text-white flex flex-col justify-center">
+                <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-[10px] font-bold block mb-3">
+                  {podcast.tag}
                 </span>
-              </div>
-              <div className="p-8">
-                <h3 className="text-2xl font-serif text-[#0B1A36] dark:text-white mb-2 group-hover:text-[#D4AF37] transition-colors">{p.title}</h3>
-                <p className="text-sm font-serif italic text-[#D4AF37] mb-4">{p.subtitle}</p>
-                <p className="text-[#0B1A36]/70 dark:text-white/70 text-sm leading-relaxed mb-6">{p.description}</p>
-                <div className="flex items-center justify-between pt-4 border-t border-[#0B1A36]/10 dark:border-white/10">
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#0B1A36]/40 dark:text-white/40 font-bold">
-                    <i className="fa-regular fa-clock mr-2" />{p.duration}
+                <h3 className="text-3xl md:text-4xl font-serif mb-2">{podcast.title}</h3>
+                <p className="text-lg md:text-xl font-serif italic text-white/80 mb-4">{podcast.subtitle}</p>
+                <p className="text-white/70 leading-relaxed mb-6">{podcast.description}</p>
+                <div className="flex flex-wrap items-center gap-4">
+                  <span className="inline-flex items-center gap-2 bg-[#D4AF37] text-[#0B1A36] px-7 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg group-hover:scale-105 transition-transform">
+                    <i className="fa-solid fa-headphones" /> {podcast.cta}
                   </span>
-                  <span className="text-[#D4AF37] text-lg group-hover:translate-x-1 transition-transform">
-                    <i className="fa-solid fa-arrow-right" />
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-bold">
+                    <i className="fa-regular fa-clock mr-2" />{podcast.duration}
                   </span>
                 </div>
               </div>
-            </article>
-          ))}
-        </div>
-
-        {/* Dosha CTA */}
-        <div className="mt-20 text-center py-16 border-t border-[#0B1A36]/10 dark:border-white/10">
-          <p className="text-[#0B1A36]/60 dark:text-white/60 mb-6 font-serif italic">
-            {lang === 'FR' ? 'Vous hésitez sur le parcours adapté à votre constitution ?' : 'Unsure which journey fits your constitution?'}
-          </p>
-          <button
-            onClick={() => navigate('/medias#quiz')}
-            className="bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors"
-          >
-            {lang === 'FR' ? 'Faire le Quiz Dosha' : 'Take the Dosha Quiz'}
-          </button>
-        </div>
-
-        {/* ── Événements ── Merged section (previously /evenements). */}
-        <section id="evenements" className="mt-24 pt-16 border-t border-[#0B1A36]/10 dark:border-white/10 scroll-mt-32">
-          <div className="text-center mb-16">
-            <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
-              {lang === 'FR' ? 'Calendrier' : 'Calendar'}
-            </span>
-            <h2 className="text-4xl md:text-6xl font-serif mb-6">{ev.title}</h2>
-            <p className="text-lg text-[#0B1A36]/60 dark:text-white/60 font-serif italic max-w-xl mx-auto">{ev.subtitle}</p>
-            <div className="w-24 h-1 bg-[#D4AF37] mx-auto mt-8" />
+            </div>
           </div>
-
-          {eventsLoading ? (
-            <div className="flex justify-center py-16">
-              <div className="w-10 h-10 border-2 border-t-transparent border-[#D4AF37] rounded-full animate-spin" />
-            </div>
-          ) : upcoming.length === 0 && past.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="w-28 h-28 rounded-full bg-[#D4AF37]/10 flex items-center justify-center mx-auto mb-8">
-                <i className="fa-regular fa-calendar text-4xl text-[#D4AF37]" />
-              </div>
-              <p className="text-lg font-serif text-[#0B1A36]/60 dark:text-white/60 italic">{ev.noEvents}</p>
-            </div>
-          ) : (
-            <>
-              {upcoming.length > 0 && (
-                <div className="mb-16">
-                  <h3 className="text-sm uppercase tracking-[0.3em] font-bold text-[#D4AF37] mb-10 flex items-center gap-3">
-                    <span className="w-8 h-px bg-[#D4AF37]" /> {ev.upcoming}
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {upcoming.map(e => <EventCard key={e.id} event={e} lang={lang} t={ev} />)}
-                  </div>
-                </div>
-              )}
-              {past.length > 0 && (
-                <div className="opacity-60">
-                  <h3 className="text-sm uppercase tracking-[0.3em] font-bold text-[#0B1A36]/40 dark:text-white/40 mb-10 flex items-center gap-3">
-                    <span className="w-8 h-px bg-current" /> {ev.past}
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {past.map(e => <EventCard key={e.id} event={e} lang={lang} t={ev} compact />)}
-                  </div>
-                </div>
-              )}
-            </>
-          )}
         </section>
+
+        {/* Événements & Conférences — below the podcast so /formations keeps
+            the "programmes → podcast → live gatherings" narrative order. */}
+        <div className="mt-24 pt-16 border-t border-[#0B1A36]/10 dark:border-white/10">
+          <LiveEventsSection
+            events={getUpcomingEvents()}
+            kickerFR="Où on se rejoint · LIVE"
+            kickerEN="Where we meet · LIVE"
+            titleFR="Événements & Conférences"
+            titleEN="Events & Conferences"
+            leadFR="Rencontres en direct, retraites, lancements — et une tournée en préparation."
+            leadEN="Live gatherings, retreats, launches — and a tour in the making."
+          />
+        </div>
+
       </div>
-    </div>
-  );
-};
 
-interface EventCardProps {
-  event: EventDoc;
-  lang: string;
-  t: any;
-  compact?: boolean;
-}
-
-const EventCard: React.FC<EventCardProps> = ({ event, lang, t, compact }) => {
-  const dateObj = new Date(event.date);
-  const dateStr = dateObj.toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA', {
-    weekday: compact ? undefined : 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-  const online = event.location?.toLowerCase().includes('ligne') || event.location?.toLowerCase().includes('online');
-  return (
-    <div className={`group relative bg-white dark:bg-[#0B1A36]/60 rounded-[24px] shadow-lg border border-[#0B1A36]/5 dark:border-white/5 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 ${compact ? 'p-6' : 'p-8'}`}>
-      {event.imageUrl && !compact && (
-        <div className="absolute inset-0 opacity-5 bg-cover bg-center" style={{ backgroundImage: `url(${event.imageUrl})` }} />
-      )}
-      <span className={`inline-flex items-center gap-2 text-xs uppercase tracking-widest font-bold mb-4 px-3 py-1 rounded-full ${event.isFeatured ? 'bg-[#D4AF37]/15 text-[#D4AF37]' : 'bg-[#0B1A36]/5 dark:bg-white/5 text-[#0B1A36]/60 dark:text-white/60'}`}>
-        <i className={`fa-solid ${online ? 'fa-video' : 'fa-map-marker-alt'} text-[10px]`} />
-        {online ? t.online : t.inPerson}
-      </span>
-      <p className="text-xs text-[#D4AF37] font-bold uppercase tracking-widest mb-2">{dateStr}</p>
-      <h4 className={`font-serif text-[#0B1A36] dark:text-white mb-2 group-hover:text-[#D4AF37] transition-colors ${compact ? 'text-xl' : 'text-2xl md:text-3xl'}`}>{event.title}</h4>
-      {event.subtitle && <p className="text-[#0B1A36]/60 dark:text-white/60 font-serif italic mb-3">{event.subtitle}</p>}
-      {event.location && (
-        <p className="text-sm text-[#0B1A36]/50 dark:text-white/50 flex items-center gap-2 mb-4">
-          <i className="fa-solid fa-map-marker-alt text-[#D4AF37]" /> {event.location}
-        </p>
-      )}
-      {event.description && !compact && (
-        <p className="text-[#0B1A36]/70 dark:text-white/70 leading-relaxed mb-6 text-sm">{event.description}</p>
-      )}
-      {event.registrationLink && (
-        <a href={event.registrationLink} target="_blank" rel="noopener noreferrer"
-          className={`inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] font-bold uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-md ${compact ? 'px-4 py-2 rounded-full' : 'px-8 py-3 rounded-full'}`}>
-          {t.register} <i className="fa-solid fa-arrow-right" />
-        </a>
-      )}
+      <WaitlistModal target={waitlistTarget} onClose={() => setWaitlistTarget(null)} />
     </div>
   );
 };

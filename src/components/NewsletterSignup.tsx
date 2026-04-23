@@ -2,13 +2,19 @@ import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { loginWithGoogle } from '../firebase/auth';
 import { addNewsletterSubscriber, getMember, updateMember } from '../firebase/firestore';
+import { points } from '../firebase/points';
 
 type Variant = 'dark' | 'light';
 type Status = 'idle' | 'sending' | 'email-success' | 'google-success' | 'error';
 
 interface Props {
-  /** CRM tag — e.g. "krystine", "podcast", "footer". */
-  source?: string;
+  /**
+   * CRM tag — the source string stored on each subscriber so Krystine can
+   * filter the admin list by which form filled the entry. REQUIRED: no
+   * silent default, so a forgotten prop shows up as a type error rather
+   * than as generic "site" mystery entries in the CRM.
+   */
+  source: string;
   /** "dark" for navy backgrounds, "light" for cream/white. */
   variant?: Variant;
   /** Override the email submit button label. */
@@ -22,14 +28,14 @@ interface Props {
 }
 
 const NewsletterSignup: React.FC<Props> = ({
-  source = 'site',
+  source,
   variant = 'dark',
   ctaLabel,
   placeholder,
   className = '',
   emailOnly = false,
 }) => {
-  const { lang, setSignInOpen } = useApp();
+  const { lang, setSignInOpen, user } = useApp();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +55,12 @@ const NewsletterSignup: React.FC<Props> = ({
     reset();
     setStatus('sending');
     try {
-      await addNewsletterSubscriber({ email: email.trim(), source });
+      await addNewsletterSubscriber({ email: email.trim(), source, tags: [source] });
+      // Loyalty — 5 pts for newsletter subscribe, once per member (keyed on
+      // uid so anonymous signups don't earn points until the user signs in).
+      if (user?.uid) {
+        try { await points.newsletterSigned(user.uid, source); } catch { /* non-fatal */ }
+      }
       setStatus('email-success');
       setEmail('');
     } catch (err: any) {
@@ -84,6 +95,7 @@ const NewsletterSignup: React.FC<Props> = ({
               lastName: lastName || undefined,
               uid: cred.user.uid,
               source: `${source}_google`,
+              tags: [source, `${source}_google`],
             });
             try {
               await updateMember(cred.user.uid, {
@@ -91,6 +103,7 @@ const NewsletterSignup: React.FC<Props> = ({
                 newsletterSource: `${source}_google`,
               });
             } catch { /* non-fatal */ }
+            try { await points.newsletterSigned(cred.user.uid, `${source}_google`); } catch { /* non-fatal */ }
           } catch { /* non-fatal — signup succeeded even if CRM write fails */ }
         }
       }

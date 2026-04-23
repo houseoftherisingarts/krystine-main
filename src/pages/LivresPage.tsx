@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT } from '../content';
 import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../shopify';
+import EditableText from '../components/edit/EditableText';
 
 // Normalize for fuzzy title matching: strip accents, punctuation, extra whitespace.
 const norm = (s: string) =>
@@ -64,9 +65,14 @@ const LivresPage: React.FC = () => {
       <div className="max-w-6xl mx-auto px-6 md:px-12">
         <div className="text-center mb-20">
           <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
-            {lang === 'FR' ? 'Bibliothèque Inspirata' : 'Inspirata Library'}
+            <EditableText
+              fieldKey="livres.hero.kicker"
+              defaultValue={lang === 'FR' ? 'Bibliothèque Inspirata' : 'Inspirata Library'}
+            />
           </span>
-          <h1 className="text-5xl md:text-7xl font-serif text-[#0B1A36] dark:text-white">{t.title}</h1>
+          <h1 className="text-5xl md:text-7xl font-serif text-[#0B1A36] dark:text-white">
+            <EditableText fieldKey="livres.hero.title" defaultValue={t.title} />
+          </h1>
           <div className="w-24 h-1 bg-[#D4AF37] mx-auto mt-10" />
           {loadingShop && (
             <p className="mt-6 text-xs uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">

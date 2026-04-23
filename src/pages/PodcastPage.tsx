@@ -2,6 +2,7 @@ import React from 'react';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT } from '../content';
 import NewsletterSignup from '../components/NewsletterSignup';
+import EditableText from '../components/edit/EditableText';
 
 const PodcastPage: React.FC = () => {
   const { lang } = useApp();
@@ -12,9 +13,15 @@ const PodcastPage: React.FC = () => {
       <div className="max-w-5xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-12">
-          <span className="bg-[#0B1A36]/5 dark:bg-white/5 text-[#0B1A36] dark:text-white px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-4 inline-block">Podcast</span>
-          <h1 className="text-4xl md:text-6xl font-serif text-[#0B1A36] dark:text-white uppercase leading-tight mb-4">{t.title}</h1>
-          <p className="text-xl font-serif text-[#0B1A36]/70 dark:text-white/70 italic max-w-2xl mx-auto">{t.subtitle}</p>
+          <span className="bg-[#0B1A36]/5 dark:bg-white/5 text-[#0B1A36] dark:text-white px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-4 inline-block">
+            <EditableText fieldKey="podcast.hero.kicker" defaultValue="Podcast" />
+          </span>
+          <h1 className="text-4xl md:text-6xl font-serif text-[#0B1A36] dark:text-white uppercase leading-tight mb-4">
+            <EditableText fieldKey="podcast.hero.title" defaultValue={t.title} />
+          </h1>
+          <p className="text-xl font-serif text-[#0B1A36]/70 dark:text-white/70 italic max-w-2xl mx-auto">
+            <EditableText fieldKey="podcast.hero.subtitle" defaultValue={t.subtitle} multiline />
+          </p>
         </div>
 
         {/* Spotify embed */}

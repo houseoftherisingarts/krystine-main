@@ -59,6 +59,15 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    // ── "Laissez-vous guider" responses: public create (may be anonymous).
+    //    Signed-in members read their own; admins read all. ───────────────
+    match /guideResponses/{id} {
+      allow create: if true;
+      allow read: if isAdmin()
+                  || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
     // ── Member profiles: user owns their own profile. Admins full. ──
     match /members/{uid} {
       allow read: if isSelf(uid) || isAdmin();
@@ -90,6 +99,37 @@ service cloud.firestore {
     match /shopifyOrders/{id} {
       allow read: if isAdmin();
       allow write: if false;
+    }
+
+    // ── Loyalty points ──
+    // `memberPoints/{uid}` — one doc per member; client-side transactions in
+    // `src/firebase/points.ts` both increment (award) and decrement (redeem)
+    // via the owner's auth. Server-side validation (caps, delta checks) will
+    // live in Cloud Functions once we upgrade; for now the audit trail in
+    // pointsEvents lets Krystine spot anything fishy from the admin panel.
+    match /memberPoints/{uid} {
+      allow read, write: if isSelf(uid) || isAdmin();
+    }
+
+    // `pointsEvents/{dedupKey}` — append-only log. Owner creates their own
+    // events; owner + admin can read. Updates / deletes locked to admin so a
+    // user can't rewrite history.
+    match /pointsEvents/{id} {
+      allow create: if isSignedIn()
+                    && request.resource.data.uid == request.auth.uid;
+      allow read: if isAdmin()
+                  || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    // `rewardRedemptions/{id}` — client creates a pending redemption; admin
+    // fulfills / cancels.
+    match /rewardRedemptions/{id} {
+      allow create: if isSignedIn()
+                    && request.resource.data.uid == request.auth.uid;
+      allow read: if isAdmin()
+                  || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow update, delete: if isAdmin();
     }
 
     // ── Support messaging ──

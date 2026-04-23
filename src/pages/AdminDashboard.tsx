@@ -9,10 +9,14 @@ import EventsSection from './admin/sections/EventsSection';
 import BlogSection from './admin/sections/BlogSection';
 import SplashSection from './admin/sections/SplashSection';
 import OrdersSection from './admin/sections/OrdersSection';
+import BoutiqueSection from './admin/sections/BoutiqueSection';
 import MembersSection from './admin/sections/MembersSection';
 import MessagesSection from './admin/sections/MessagesSection';
+import SubmissionsSection from './admin/sections/SubmissionsSection';
+import GroupsSection from './admin/sections/GroupsSection';
 import BookingsSection from './admin/sections/BookingsSection';
 import NewsletterSection from './admin/sections/NewsletterSection';
+import GuideSection from './admin/sections/GuideSection';
 import DoshaSection from './admin/sections/DoshaSection';
 import MediaSection from './admin/sections/MediaSection';
 import SettingsSection from './admin/sections/SettingsSection';
@@ -41,13 +45,17 @@ const AdminDashboard: React.FC = () => {
       {section === 'dashboard'  && <DashboardSection onNavigate={setSection} />}
       {section === 'analytics'  && <AnalyticsSection />}
       {section === 'orders'     && <OrdersSection />}
+      {section === 'boutique'   && <BoutiqueSection />}
       {section === 'members'    && <MembersSection />}
       {section === 'messages'   && <MessagesSection user={user} />}
       {section === 'events'     && <EventsSection />}
       {section === 'blog'       && <BlogSection />}
       {section === 'splash'     && <SplashSection />}
+      {section === 'submissions' && <SubmissionsSection />}
+      {section === 'groups'     && <GroupsSection />}
       {section === 'bookings'   && <BookingsSection />}
       {section === 'newsletter' && <NewsletterSection />}
+      {section === 'guide'      && <GuideSection />}
       {section === 'dosha'      && <DoshaSection />}
       {section === 'media'      && <MediaSection />}
       {section === 'settings'   && <SettingsSection user={user} />}

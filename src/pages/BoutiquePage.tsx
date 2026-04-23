@@ -1,91 +1,138 @@
 import React, { useEffect, useState } from 'react';
-import { useApp } from '../contexts/AppContext';
+import { Link } from 'react-router-dom';
+import { useApp, useBoutique } from '../contexts/AppContext';
 import { CONTENT, ASSETS } from '../content';
-import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../shopify';
+import { getProducts, isShopifyConfigured, type ShopifyProduct } from '../shopify';
+import { ALL_PRODUCTS_SLUG, COLLECTIONS, countByCollection } from '../lib/collections';
+
+// Boutique landing — editorial collections index.
+// The per-collection product grid lives in BoutiqueCollectionPage so that this
+// page can stay calm and directional: one doorway per collection, each
+// doorway narrates its own promise before the shopper sees any prices.
 
 const BoutiquePage: React.FC = () => {
-  const { lang, addToCart } = useApp();
+  const { lang } = useApp();
+  const { redirectEnabled, redirectUrl, hiddenProducts, loading: redirectLoading } = useBoutique();
   const t = CONTENT[lang];
 
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [activeProduct, setActiveProduct] = useState<ShopifyProduct | null>(null);
-  const [activeVariantId, setActiveVariantId] = useState<string | null>(null);
-  const [activeImage, setActiveImage] = useState<string | null>(null);
+
+  // Emergency redirect — when Krystine flips the switch in /admin, anyone
+  // landing on /boutique bounces to the legacy inspiratanature.com site.
+  // `replace` avoids cluttering the back-button history.
+  useEffect(() => {
+    if (!redirectLoading && redirectEnabled && redirectUrl) {
+      window.location.replace(redirectUrl);
+    }
+  }, [redirectLoading, redirectEnabled, redirectUrl]);
 
   useEffect(() => {
-    if (!isShopifyConfigured) {
-      setLoading(false);
-      setError(lang === 'FR' ? 'Boutique non configurée.' : 'Shop not configured.');
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    getProducts(50, lang)
-      .then(setProducts)
-      .catch(e => setError(e.message))
-      .finally(() => setLoading(false));
-  }, [lang]);
+    if (!isShopifyConfigured || redirectEnabled) return;
+    // We only need the products to compute per-collection counts under each
+    // doorway card. If the fetch fails we simply render without counts —
+    // never block the landing on it.
+    getProducts(50, lang).then(setProducts).catch(() => { /* silent */ });
+  }, [lang, redirectEnabled]);
 
-  const handleAdd = (p: ShopifyProduct, e: React.MouseEvent, variantId?: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const variant = p.variants.find(v => v.id === variantId)
-      || p.variants.find(v => v.availableForSale)
-      || p.variants[0];
-    if (!variant) return;
-    addToCart({
-      id: p.id,
-      variantId: variant.id,
-      title: p.title,
-      type: p.productType,
-      price: formatMoney(variant.price, lang),
-      priceAmount: variant.price.amount,
-      priceCurrency: variant.price.currencyCode,
-      image: p.featuredImage?.url,
-    });
-  };
+  // While the redirect is firing, show a quiet placeholder instead of the
+  // full boutique landing.
+  if (redirectEnabled) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#050C1A] text-[#0B1A36] dark:text-white">
+        <p className="text-sm uppercase tracking-[0.3em] text-[#D4AF37] font-bold">
+          {lang === 'FR' ? 'Redirection…' : 'Redirecting…'}
+        </p>
+      </div>
+    );
+  }
 
-  const openProduct = (p: ShopifyProduct) => {
-    setActiveProduct(p);
-    const firstAvailable = p.variants.find(v => v.availableForSale) || p.variants[0];
-    setActiveVariantId(firstAvailable?.id || null);
-    setActiveImage(p.featuredImage?.url || p.images[0]?.url || null);
-  };
-  const closeProduct = () => {
-    setActiveProduct(null);
-    setActiveVariantId(null);
-    setActiveImage(null);
-  };
+  // Counts on the doorways respect the per-product hide toggles set in
+  // Admin → Boutique, so a collection that's been emptied via hides will
+  // honestly show 0 rather than its raw Shopify count.
+  const counts = countByCollection(products.filter(p => !hiddenProducts.has(p.handle)));
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#050C1A] pt-20">
-      {/* Banner */}
-      <div className="relative w-full h-[50vh] overflow-hidden flex items-center justify-center mb-16">
+    <div className="min-h-screen bg-white dark:bg-[#050C1A] pt-20 text-[#0B1A36] dark:text-white">
+      {/* Editorial banner */}
+      <div className="relative w-full h-[55vh] overflow-hidden flex items-center justify-center mb-16">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${ASSETS.shopBg})` }} />
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl md:text-7xl font-serif tracking-widest uppercase mb-4">{t.shop.title}</h1>
-          <p className="text-xl text-[#D4AF37] font-serif italic tracking-wide">{t.shop.subtitle}</p>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050C1A] via-[#050C1A]/40 to-[#050C1A]/20" />
+        <div className="relative z-10 text-center text-white px-6 max-w-3xl">
+          <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
+            {lang === 'FR' ? 'La Boutique' : 'The Shop'}
+          </span>
+          <h1 className="text-5xl md:text-7xl font-serif mb-4 leading-[1.05]">{t.shop.title}</h1>
+          <p className="text-lg md:text-xl text-white/80 font-serif italic">{t.shop.subtitle}</p>
+          <div className="w-24 h-1 bg-[#D4AF37] mx-auto mt-10" />
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pb-24">
-        {/* Featured heading */}
-        <div className="text-center mb-10">
-          <span className="text-[#D4AF37] uppercase tracking-[0.2em] text-xs font-semibold block mb-2">{t.featured.subtitle}</span>
-          <h2 className="text-4xl md:text-5xl font-serif text-[#0B1A36] dark:text-white italic">{t.featured.title}</h2>
+      <div className="max-w-6xl mx-auto px-6 md:px-12 pb-24">
+        {/* Short manifesto above the doorways — sets the tone. */}
+        <section className="text-center mb-20 max-w-3xl mx-auto">
+          <p className="font-serif italic text-xl md:text-2xl leading-relaxed text-[#0B1A36]/80 dark:text-white/80">
+            {lang === 'FR'
+              ? "Six collections. Une même exigence : des formules pensées lentement, des matières choisies pour durer, des mots qui accompagnent le geste."
+              : 'Six collections. One same standard: formulas composed slowly, materials chosen to last, words that accompany the gesture.'}
+          </p>
+        </section>
+
+        {/* 6 collection doorways — 2 per row on desktop. Each is big enough to
+            carry a real editorial banner and breathe; small enough that all 6
+            fit above the fold on a 15" display. */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          {COLLECTIONS.map(c => {
+            const label = lang === 'FR' ? c.labelFR : c.labelEN;
+            const tagline = lang === 'FR' ? c.taglineFR : c.taglineEN;
+            const count = counts.get(c.id) || 0;
+            return (
+              <Link
+                key={c.slug}
+                to={`/boutique/${c.slug}`}
+                className="group relative block aspect-[4/5] md:aspect-[5/4] rounded-[28px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
+              >
+                <div
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
+                  style={{ backgroundImage: `url(${c.bannerImage})` }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0B1A36] via-[#0B1A36]/55 to-[#0B1A36]/10" />
+                <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-10 text-white">
+                  <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-[10px] font-bold mb-3 block">
+                    {lang === 'FR' ? 'Collection' : 'Collection'}
+                    {count > 0 && <span className="text-white/50 font-normal tracking-normal normal-case ml-2">· {count} {lang === 'FR' ? (count > 1 ? 'pièces' : 'pièce') : (count > 1 ? 'pieces' : 'piece')}</span>}
+                  </span>
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif mb-2 leading-[1.1]">{label}</h2>
+                  <p className="text-sm md:text-base font-serif italic text-white/70 mb-6 max-w-md">{tagline}</p>
+                  <span className="inline-flex items-center gap-2 self-start border border-white/40 text-white text-[10px] uppercase tracking-[0.25em] font-bold px-5 py-2.5 rounded-full backdrop-blur-sm bg-white/5 group-hover:bg-[#D4AF37] group-hover:border-[#D4AF37] group-hover:text-[#0B1A36] transition-colors">
+                    {lang === 'FR' ? 'Explorer la collection' : 'Explore the collection'}
+                    <i className="fa-solid fa-arrow-right text-[9px] transition-transform group-hover:translate-x-1" />
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
 
-        {/* Trust strip — placed above the grid so first-time shoppers see
-            the brand's guarantees before they price-shop. */}
-        <div className="mb-14 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 text-center">
+        {/* Safety-valve: show-all link. Lives below the editorial grid so
+            shoppers who skip the collections can still reach every SKU. */}
+        <div className="mt-14 text-center">
+          <Link
+            to={`/boutique/${ALL_PRODUCTS_SLUG}`}
+            className="inline-flex items-center gap-2 text-[#0B1A36]/60 dark:text-white/60 hover:text-[#D4AF37] text-[11px] uppercase tracking-[0.3em] font-bold transition-colors"
+          >
+            {lang === 'FR' ? 'Voir tous les produits' : 'View all products'}
+            <i className="fa-solid fa-arrow-right text-[9px]" />
+          </Link>
+        </div>
+
+        {/* Trust strip — same four guarantees, kept under the doorways so
+            the editorial tone carries the page. */}
+        <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 text-center">
           {[
-            { icon: 'fa-lock', titleFR: 'Paiement sécurisé', titleEN: 'Secure checkout', descFR: 'Shopify + SSL', descEN: 'Shopify + SSL' },
-            { icon: 'fa-leaf', titleFR: 'Formules ayurvédiques', titleEN: 'Ayurvedic formulas', descFR: 'Conçues par Krystine', descEN: 'Crafted by Krystine' },
-            { icon: 'fa-truck', titleFR: 'Livraison Canada', titleEN: 'Ships across Canada', descFR: 'Expédition rapide', descEN: 'Fast shipping' },
-            { icon: 'fa-heart', titleFR: 'Satisfaction', titleEN: 'Satisfaction', descFR: '35 ans d\u2019expérience', descEN: '35 years of expertise' },
+            { icon: 'fa-lock',  titleFR: 'Paiement sécurisé',     titleEN: 'Secure checkout',     descFR: 'Shopify + SSL',         descEN: 'Shopify + SSL' },
+            { icon: 'fa-leaf',  titleFR: 'Formules ayurvédiques', titleEN: 'Ayurvedic formulas',  descFR: 'Conçues par Krystine',  descEN: 'Crafted by Krystine' },
+            { icon: 'fa-truck', titleFR: 'Livraison Canada',      titleEN: 'Ships across Canada', descFR: 'Expédition rapide',     descEN: 'Fast shipping' },
+            { icon: 'fa-heart', titleFR: 'Satisfaction',          titleEN: 'Satisfaction',        descFR: "37 ans d'expérience",   descEN: '37 years of expertise' },
           ].map(b => (
             <div key={b.icon} className="flex flex-col items-center gap-2 p-4 rounded-[20px] bg-[#F5F5F0] dark:bg-[#0B1A36] border border-[#D4AF37]/10">
               <i className={`fa-solid ${b.icon} text-[#D4AF37] text-lg`} />
@@ -99,248 +146,29 @@ const BoutiquePage: React.FC = () => {
           ))}
         </div>
 
-        {/* Loading */}
-        {loading && (
-          <div className="flex justify-center py-24">
-            <div className="w-10 h-10 border-2 border-t-transparent border-[#D4AF37] rounded-full animate-spin" />
-          </div>
-        )}
-
-        {/* Error */}
-        {!loading && error && (
-          <div className="text-center py-24">
-            <p className="text-[#0B1A36]/60 dark:text-white/60 font-serif italic mb-4">
-              {lang === 'FR' ? 'La boutique est momentanément indisponible.' : 'The shop is momentarily unavailable.'}
-            </p>
-            <p className="text-xs text-[#0B1A36]/30 dark:text-white/30 font-mono">{error}</p>
-          </div>
-        )}
-
-        {/* Products Grid */}
-        {!loading && !error && products.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {products.map(product => {
-              const image = product.featuredImage?.url || ASSETS.productVata;
-              const price = formatMoney(product.priceRange.minVariantPrice, lang);
-              const soldOut = !product.availableForSale;
-              return (
-                <div key={product.id} className="group flex flex-col relative">
-                  <button
-                    type="button"
-                    onClick={() => openProduct(product)}
-                    className="text-left block relative aspect-[3/4] rounded-[24px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 mb-4 bg-white dark:bg-[#0B1A36] cursor-pointer"
-                  >
-                    <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                      style={{ backgroundImage: `url(${image})` }}
-                    />
-                    <div className="absolute inset-0 bg-black/5 group-hover:bg-black/10 transition-colors" />
-                    {soldOut && (
-                      <span className="absolute top-4 left-4 bg-[#0B1A36]/80 backdrop-blur text-white text-[10px] uppercase tracking-widest px-3 py-1 rounded-full">
-                        {lang === 'FR' ? 'Épuisé' : 'Sold out'}
-                      </span>
-                    )}
-                  </button>
-                  <div className="text-center px-2 cursor-pointer" onClick={() => openProduct(product)}>
-                    {product.productType && (
-                      <span className="text-[10px] text-[#0B1A36]/50 dark:text-white/50 uppercase tracking-widest font-bold">{product.productType}</span>
-                    )}
-                    <h3 className="text-lg font-serif text-[#0B1A36] dark:text-white mt-1 mb-1 group-hover:text-[#D4AF37] transition-colors">{product.title}</h3>
-                    <p className="text-sm text-[#0B1A36]/80 dark:text-white/80 font-medium">{price}</p>
-                  </div>
-                  {/* Always-visible CTA — mobile users can't discover hover-only buttons. */}
-                  {!soldOut ? (
-                    <button
-                      type="button"
-                      onClick={e => handleAdd(product, e)}
-                      className="mt-3 w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-3 rounded-full text-[11px] font-bold uppercase tracking-widest hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-md"
-                    >
-                      {lang === 'FR' ? 'Ajouter au panier' : 'Add to cart'}
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      disabled
-                      className="mt-3 w-full bg-transparent border border-[#0B1A36]/20 dark:border-white/20 text-[#0B1A36]/50 dark:text-white/50 py-3 rounded-full text-[11px] font-bold uppercase tracking-widest cursor-not-allowed"
-                    >
-                      {lang === 'FR' ? 'Épuisé' : 'Sold out'}
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Empty */}
-        {!loading && !error && products.length === 0 && (
-          <div className="text-center py-24 text-[#0B1A36]/60 dark:text-white/60 font-serif italic">
-            {lang === 'FR' ? 'Aucun produit pour le moment.' : 'No products yet.'}
-          </div>
-        )}
-
-        {/* Product detail modal */}
-        {activeProduct && (() => {
-          const p = activeProduct;
-          const variant = p.variants.find(v => v.id === activeVariantId) || p.variants[0];
-          const gallery = [p.featuredImage, ...p.images].filter(Boolean) as { url: string; altText: string | null }[];
-          const unique = Array.from(new Map(gallery.map(g => [g.url, g])).values());
-          const displayImage = activeImage || unique[0]?.url || ASSETS.productVata;
-          return (
-            <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 bg-[#0B1A36]/50 backdrop-blur-md" onClick={closeProduct}>
-              <div
-                className="relative bg-white dark:bg-[#0B1A36] w-full max-w-5xl max-h-[90vh] rounded-[30px] shadow-2xl border border-[#D4AF37]/20 overflow-hidden grid grid-cols-1 md:grid-cols-2"
-                onClick={e => e.stopPropagation()}
-              >
-                <button
-                  onClick={closeProduct}
-                  aria-label="Close"
-                  className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/80 dark:bg-[#050C1A]/80 backdrop-blur flex items-center justify-center text-[#0B1A36] dark:text-white hover:bg-[#D4AF37] hover:text-white transition-colors"
-                >
-                  <i className="fa-solid fa-times text-lg" />
-                </button>
-
-                {/* Gallery */}
-                <div className="relative bg-[#F5F5F0] dark:bg-[#050C1A] flex flex-col">
-                  <div className="relative aspect-square md:aspect-auto md:flex-1 min-h-[320px]">
-                    <div className="absolute inset-0 bg-contain bg-no-repeat bg-center" style={{ backgroundImage: `url(${displayImage})` }} />
-                  </div>
-                  {unique.length > 1 && (
-                    <div className="p-4 flex gap-2 overflow-x-auto">
-                      {unique.map(img => (
-                        <button
-                          key={img.url}
-                          type="button"
-                          onClick={() => setActiveImage(img.url)}
-                          className={`w-16 h-16 rounded-xl overflow-hidden shrink-0 border-2 transition-colors ${displayImage === img.url ? 'border-[#D4AF37]' : 'border-transparent hover:border-[#D4AF37]/50'}`}
-                        >
-                          <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url(${img.url})` }} />
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Details */}
-                <div className="p-8 md:p-10 overflow-y-auto max-h-[90vh]">
-                  {p.productType && (
-                    <span className="text-[10px] text-[#D4AF37] uppercase tracking-[0.3em] font-bold block mb-3">{p.productType}</span>
-                  )}
-                  <h2 className="text-3xl md:text-4xl font-serif text-[#0B1A36] dark:text-white leading-tight mb-4">{p.title}</h2>
-                  <p className="text-2xl font-serif text-[#D4AF37] mb-6">
-                    {variant ? formatMoney(variant.price, lang) : formatMoney(p.priceRange.minVariantPrice, lang)}
-                  </p>
-
-                  {/* Credibility strip — genuine brand proof rather than invented reviews. */}
-                  <div className="mb-6 flex flex-wrap gap-x-4 gap-y-2 text-[11px] text-[#0B1A36]/70 dark:text-white/70">
-                    <span className="inline-flex items-center gap-1.5">
-                      <i className="fa-solid fa-seedling text-[#D4AF37]" />
-                      {lang === 'FR' ? 'Formule Krystine' : 'Krystine formula'}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <i className="fa-solid fa-award text-[#D4AF37]" />
-                      {lang === 'FR' ? '35 ans d’expertise' : '35 years of expertise'}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <i className="fa-solid fa-truck-fast text-[#D4AF37]" />
-                      {lang === 'FR' ? 'Expédition Canada' : 'Ships from Canada'}
-                    </span>
-                  </div>
-
-                  {p.description && (
-                    <p className="text-[#0B1A36]/70 dark:text-white/70 leading-relaxed mb-8 whitespace-pre-line">{p.description}</p>
-                  )}
-
-                  {/* Variants */}
-                  {p.variants.length > 1 && (
-                    <div className="mb-8">
-                      <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#0B1A36]/60 dark:text-white/60 block mb-3">
-                        {lang === 'FR' ? 'Option' : 'Option'}
-                      </span>
-                      <div className="flex flex-wrap gap-2">
-                        {p.variants.map(v => {
-                          const selected = v.id === activeVariantId;
-                          return (
-                            <button
-                              key={v.id}
-                              type="button"
-                              disabled={!v.availableForSale}
-                              onClick={() => setActiveVariantId(v.id)}
-                              className={`px-4 py-2 rounded-full text-xs uppercase tracking-wider font-semibold border transition-colors ${
-                                selected
-                                  ? 'bg-[#0B1A36] text-white border-[#0B1A36] dark:bg-[#D4AF37] dark:text-[#0B1A36] dark:border-[#D4AF37]'
-                                  : 'bg-transparent text-[#0B1A36] dark:text-white border-[#0B1A36]/20 dark:border-white/20 hover:border-[#D4AF37]'
-                              } ${!v.availableForSale ? 'line-through opacity-40 cursor-not-allowed' : ''}`}
-                            >
-                              {v.title}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Add to cart */}
-                  <button
-                    type="button"
-                    disabled={!variant?.availableForSale}
-                    onClick={e => {
-                      handleAdd(p, e, activeVariantId || undefined);
-                      closeProduct();
-                    }}
-                    className="w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-lg disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    {variant?.availableForSale
-                      ? (lang === 'FR' ? 'Ajouter au panier' : 'Add to cart')
-                      : (lang === 'FR' ? 'Épuisé' : 'Sold out')}
-                  </button>
-
-                  {p.tags.length > 0 && (
-                    <div className="mt-8 pt-6 border-t border-[#0B1A36]/10 dark:border-white/10 flex flex-wrap gap-2">
-                      {p.tags.map(tag => (
-                        <span key={tag} className="text-[10px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40 bg-[#0B1A36]/5 dark:bg-white/5 px-3 py-1 rounded-full">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Reviews placeholder — honest invitation rather than fake ratings. */}
-                  <div className="mt-8 pt-6 border-t border-[#0B1A36]/10 dark:border-white/10">
-                    <div className="flex items-start gap-3">
-                      <i className="fa-solid fa-quote-left text-[#D4AF37] mt-0.5" />
-                      <div>
-                        <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#0B1A36] dark:text-white mb-1">
-                          {lang === 'FR' ? 'Partagez votre expérience' : 'Share your experience'}
-                        </p>
-                        <p className="text-xs text-[#0B1A36]/60 dark:text-white/60 leading-relaxed">
-                          {lang === 'FR'
-                            ? 'Nous rassemblons les témoignages de la communauté Inspirata. Laissez-nous un mot sur '
-                            : 'We\u2019re gathering the Inspirata community\u2019s stories. Write to us at '}
-                          <a href="mailto:bonjour@inspiratanature.com" className="text-[#D4AF37] underline hover:text-[#0B1A36] dark:hover:text-white">
-                            bonjour@inspiratanature.com
-                          </a>
-                          {lang === 'FR' ? ' ou sur Instagram.' : ' or on Instagram.'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })()}
-
-        {/* Dosha oils promo */}
-        <div className="mt-24 relative overflow-hidden rounded-[30px] bg-gradient-to-br from-[#0B1A36] to-[#1A2642] p-12 text-white text-center border border-[#D4AF37]/20">
-          <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: `url(${ASSETS.shopBg})` }} />
+        {/* Bibliothèque teaser — keeps the old /livres entry point alive as
+            an editorial cross-link, just recast as another doorway into the
+            Bibliothèque collection. */}
+        <div className="mt-20 relative overflow-hidden rounded-[30px] bg-gradient-to-br from-[#0B1A36] to-[#1A2642] p-12 text-white text-center border border-[#D4AF37]/20">
+          <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: `url(${ASSETS.livresBg})` }} />
           <div className="relative z-10">
-            <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">{t.featured.hero.subtitle}</span>
-            <h2 className="text-4xl md:text-6xl font-serif mb-4">{t.featured.hero.title}</h2>
-            <p className="text-xl font-serif italic text-white/70 mb-8">{t.featured.intro.subtitle}</p>
-            <a href="/livres" className="inline-flex items-center gap-3 bg-[#D4AF37] text-[#0B1A36] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-white transition-colors">
-              {lang === 'FR' ? 'Découvrir les Livres' : 'Discover Books'} <i className="fa-solid fa-arrow-right" />
-            </a>
+            <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
+              {lang === 'FR' ? 'La Bibliothèque' : 'The Library'}
+            </span>
+            <h2 className="text-4xl md:text-6xl font-serif mb-4">
+              {lang === 'FR' ? 'Lire, avant d’agir' : 'Read, before acting'}
+            </h2>
+            <p className="text-lg md:text-xl font-serif italic text-white/70 mb-8 max-w-2xl mx-auto">
+              {lang === 'FR'
+                ? 'Les trois ouvrages signés Krystine, à lire le soir, en début de saison.'
+                : 'The three books signed by Krystine — to read at night, at the turn of a season.'}
+            </p>
+            <Link
+              to="/boutique/bibliotheque"
+              className="inline-flex items-center gap-3 bg-[#D4AF37] text-[#0B1A36] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-white transition-colors"
+            >
+              {lang === 'FR' ? 'Découvrir les livres' : 'Discover the books'} <i className="fa-solid fa-arrow-right" />
+            </Link>
           </div>
         </div>
       </div>

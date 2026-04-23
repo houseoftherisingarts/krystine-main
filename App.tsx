@@ -9,6 +9,7 @@ import ConsentBanner from './src/components/layout/ConsentBanner';
 import SignInModal from './src/components/layout/SignInModal';
 import ErrorBoundary from './src/components/layout/ErrorBoundary';
 import EditModeBar from './src/components/edit/EditModeBar';
+import { PageShareBar } from './src/components/ShareButtons';
 import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import { logPageView } from './src/firebase';
 
@@ -16,14 +17,16 @@ import { logPageView } from './src/firebase';
 const SplashScreen     = lazy(() => import('./src/pages/SplashScreen'));
 const InspiratHome     = lazy(() => import('./src/pages/InspiratHome'));
 const KrystinePage     = lazy(() => import('./src/pages/KrystinePage'));
-const BoutiquePage     = lazy(() => import('./src/pages/BoutiquePage'));
+const BoutiquePage           = lazy(() => import('./src/pages/BoutiquePage'));
+const BoutiqueCollectionPage = lazy(() => import('./src/pages/BoutiqueCollectionPage'));
 const MediasPage       = lazy(() => import('./src/pages/MediasPage'));
 const TVPage           = lazy(() => import('./src/pages/TVPage'));
 const BloguePage       = lazy(() => import('./src/pages/BloguePage'));
+const QuizPage         = lazy(() => import('./src/pages/QuizPage'));
+const GuidePage        = lazy(() => import('./src/pages/GuidePage'));
 const LocationsPage    = lazy(() => import('./src/pages/LocationsPage'));
 const ConferencierePage = lazy(() => import('./src/pages/ConferencierePage'));
 const FormationsPage   = lazy(() => import('./src/pages/FormationsPage'));
-const DimanchesPage    = lazy(() => import('./src/pages/DimanchesPage'));
 const ClientPortal     = lazy(() => import('./src/pages/ClientPortal'));
 const AdminDashboard   = lazy(() => import('./src/pages/AdminDashboard'));
 const UnsubscribePage  = lazy(() => import('./src/pages/UnsubscribePage'));
@@ -61,6 +64,7 @@ const Footing: React.FC = () => {
   ) return null;
   return (
     <>
+      <PageShareBar />
       <Footer />
       <ConsentBanner />
     </>
@@ -87,28 +91,32 @@ const App: React.FC = () => (
       <ErrorBoundary>
       <Suspense fallback={<PageLoader />}>
         <Routes>
-          {/* ── Écran d'accueil (splash) puis accueil principal ──────── */}
-          <Route path="/" element={<SplashScreen />} />
+          {/* ── Écran d'accueil (splash) puis accueil principal ────────
+              Splash is currently hidden — "/" lands straight on /accueil.
+              Restore by swapping back to `element={<SplashScreen />}` below. */}
+          <Route path="/" element={<Navigate to="/accueil" replace />} />
           <Route path="/accueil" element={<InspiratHome />} />
 
           {/* ── Pages Inspirata ───────────────────────────────────────── */}
           <Route path="/krystine"        element={<KrystinePage />} />
           <Route path="/boutique"        element={<BoutiquePage />} />
+          <Route path="/boutique/:slug"  element={<BoutiqueCollectionPage />} />
           <Route path="/medias"          element={<MediasPage />} />
           <Route path="/medias/tv"       element={<TVPage />} />
           <Route path="/blogue"          element={<BloguePage />} />
           <Route path="/points-de-vente" element={<LocationsPage />} />
           <Route path="/conferenciere"   element={<ConferencierePage />} />
 
-          {/* ── Merged sections: Ayurveda/Quiz/Livres live under /medias,
+          {/* ── Standalone Quiz + Livres live under /medias,
                 Événements lives under /formations. Keep legacy URLs redirecting. */}
-          <Route path="/ayurveda"   element={<Navigate to="/medias#ayurveda" replace />} />
-          <Route path="/livres"     element={<Navigate to="/medias#livres"   replace />} />
-          <Route path="/evenements" element={<Navigate to="/formations#evenements" replace />} />
+          <Route path="/quiz"       element={<QuizPage />} />
+          <Route path="/guide"      element={<GuidePage />} />
+          <Route path="/ayurveda"   element={<Navigate to="/quiz"                    replace />} />
+          <Route path="/livres"     element={<Navigate to="/medias#livres"           replace />} />
+          <Route path="/evenements" element={<Navigate to="/formations#evenements"   replace />} />
 
           {/* ── Programmes / ex-dist ──────────────────────────────────── */}
           <Route path="/formations"        element={<FormationsPage />} />
-          <Route path="/dimanches-origine" element={<DimanchesPage />} />
           {/* /origine, /podcast, /vata are served as-is from public/ — see firebase.json */}
 
           {/* ── Système ───────────────────────────────────────────────── */}

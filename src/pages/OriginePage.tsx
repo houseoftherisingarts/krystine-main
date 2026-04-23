@@ -1,6 +1,8 @@
 import React from 'react';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT, ASSETS } from '../content';
+import EditableText from '../components/edit/EditableText';
+import EditableImage from '../components/edit/EditableImage';
 
 const OriginePage: React.FC = () => {
   const { lang } = useApp();
@@ -10,16 +12,27 @@ const OriginePage: React.FC = () => {
     <div className="min-h-screen bg-white dark:bg-[#050C1A] text-[#0B1A36] dark:text-white">
       {/* Hero Full Screen */}
       <div className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${ASSETS.origineBanner})` }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+        <EditableImage
+          fieldKey="origine.hero.background"
+          defaultSrc={ASSETS.origineBanner}
+          className="absolute inset-0"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70 pointer-events-none" />
         <div className="relative z-10 text-center text-white px-6 max-w-4xl">
           <span className="text-[#D4AF37] uppercase tracking-[0.4em] text-xs font-bold block mb-6">
-            {lang === 'FR' ? 'Programme' : 'Program'}
+            <EditableText
+              fieldKey="origine.hero.kicker"
+              defaultValue={lang === 'FR' ? 'Programme' : 'Program'}
+            />
           </span>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif leading-tight mb-6 text-shadow">{t.hero.title}</h1>
-          <p className="text-xl md:text-2xl font-serif italic text-white/80 max-w-2xl mx-auto mb-12">{t.hero.subtitle}</p>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif leading-tight mb-6 text-shadow">
+            <EditableText fieldKey="origine.hero.title" defaultValue={t.hero.title} />
+          </h1>
+          <p className="text-xl md:text-2xl font-serif italic text-white/80 max-w-2xl mx-auto mb-12">
+            <EditableText fieldKey="origine.hero.subtitle" defaultValue={t.hero.subtitle} multiline />
+          </p>
           <a href="#pricing" className="bg-[#D4AF37] text-[#0B1A36] px-12 py-5 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-white transition-colors">
-            {t.hero.cta}
+            <EditableText fieldKey="origine.hero.cta" defaultValue={t.hero.cta} />
           </a>
         </div>
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">

@@ -1,7 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import type { User } from 'firebase/auth';
-import { subscribeToAuthState, isAdminUser } from '../firebase/auth';
-import { subscribeToMember, type MemberDoc } from '../firebase/firestore';
+import { subscribeToAuthState, isAdminUser, handleRedirectResult } from '../firebase/auth';
+import {
+  subscribeToMember, type MemberDoc,
+  subscribeToBoutiqueSettings, DEFAULT_BOUTIQUE_SETTINGS, type BoutiqueSettings,
+} from '../firebase/firestore';
 
 // ───────────────────────────────────────────────────────────────────────────
 // Types shared across slices
@@ -54,13 +57,37 @@ interface CartContextType {
   cartTotal: string;
 }
 
+// Boutique redirect switch — when enabled, every new-boutique link points at
+// Krystine's legacy inspiratanature.com instead. Exposed via its own slice so
+// any boutique CTA on the site re-renders when Krystine flips the toggle from
+// /admin without needing a full reload.
+interface BoutiqueContextType {
+  redirectEnabled: boolean;
+  redirectUrl: string;
+  /**
+   * Set of Shopify product handles Krystine has hidden from the public
+   * boutique via Admin → Boutique. Callers filter the Shopify catalog
+   * before display.
+   */
+  hiddenProducts: Set<string>;
+  loading: boolean;
+  /**
+   * Returns `{ href, external }` for a boutique target. When the redirect
+   * switch is ON, every boutique-ish href collapses to the legacy URL and
+   * `external` becomes true — callers use that to decide <Link> vs <a>.
+   */
+  resolveHref: (href: string) => { href: string; external: boolean };
+}
+
 // Legacy combined shape — kept so existing useApp() consumers continue to work.
-// New code should prefer useUI() / useAuth() / useCart() for tighter re-render scope.
-export type AppContextType = UIContextType & AuthContextType & CartContextType;
+// New code should prefer useUI() / useAuth() / useCart() / useBoutique() for
+// tighter re-render scope.
+export type AppContextType = UIContextType & AuthContextType & CartContextType & BoutiqueContextType;
 
 const UIContext = createContext<UIContextType | null>(null);
 const AuthContext = createContext<AuthContextType | null>(null);
 const CartContext = createContext<CartContextType | null>(null);
+const BoutiqueContext = createContext<BoutiqueContextType | null>(null);
 
 const AUDIO_URL = 'https://storage.googleapis.com/inspirata/Base%20site/homecoming-tranquilium-main-version-25793-03-28.mp3';
 
@@ -123,6 +150,16 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   const [signInOpen, setSignInOpen] = useState(false);
 
   useEffect(() => {
+    // Dev-only: when `localStorage.__devAdmin === '1'`, flip admin true
+    // without requiring a real Firebase sign-in. Production is untouched.
+    if (import.meta.env.DEV && typeof window !== 'undefined') {
+      try { if (localStorage.getItem('__devAdmin') === '1') setIsAdmin(true); } catch { /* noop */ }
+    }
+    // Capture any pending redirect-back from `signInWithRedirect` (the
+    // fallback path used when popup auth is blocked). No-op when nothing is
+    // pending. Fires before the auth subscription so the bootstrap runs
+    // before downstream effects react to the new user.
+    handleRedirectResult().catch(() => { /* logged in helper */ });
     const unsub = subscribeToAuthState(u => {
       setUser(u);
       setIsAdmin(isAdminUser(u));
@@ -185,6 +222,41 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 
+const BoutiqueProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [settings, setSettings] = useState<BoutiqueSettings>(DEFAULT_BOUTIQUE_SETTINGS);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsub = subscribeToBoutiqueSettings(s => {
+      setSettings(s);
+      setLoading(false);
+    });
+    return unsub;
+  }, []);
+
+  const resolveHref = useCallback<BoutiqueContextType['resolveHref']>((href) => {
+    if (settings.redirectEnabled && settings.redirectUrl) {
+      return { href: settings.redirectUrl, external: true };
+    }
+    return { href, external: false };
+  }, [settings.redirectEnabled, settings.redirectUrl]);
+
+  const hiddenProducts = useMemo(
+    () => new Set(settings.hiddenProducts || []),
+    [settings.hiddenProducts],
+  );
+
+  const value = useMemo<BoutiqueContextType>(() => ({
+    redirectEnabled: settings.redirectEnabled,
+    redirectUrl: settings.redirectUrl,
+    hiddenProducts,
+    loading,
+    resolveHref,
+  }), [settings.redirectEnabled, settings.redirectUrl, hiddenProducts, loading, resolveHref]);
+
+  return <BoutiqueContext.Provider value={value}>{children}</BoutiqueContext.Provider>;
+};
+
 // ───────────────────────────────────────────────────────────────────────────
 // Root provider + hooks
 // ───────────────────────────────────────────────────────────────────────────
@@ -192,7 +264,9 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <UIProvider>
     <AuthProvider>
-      <CartProvider>{children}</CartProvider>
+      <CartProvider>
+        <BoutiqueProvider>{children}</BoutiqueProvider>
+      </CartProvider>
     </AuthProvider>
   </UIProvider>
 );
@@ -215,11 +289,18 @@ export const useCart = (): CartContextType => {
   return ctx;
 };
 
-// Legacy combined hook. Subscribes to all three slices — prefer the narrower
+export const useBoutique = (): BoutiqueContextType => {
+  const ctx = useContext(BoutiqueContext);
+  if (!ctx) throw new Error('useBoutique must be used inside AppProvider');
+  return ctx;
+};
+
+// Legacy combined hook. Subscribes to all four slices — prefer the narrower
 // hooks above for any new or frequently-rendered component.
 export const useApp = (): AppContextType => {
   const ui = useUI();
   const auth = useAuth();
   const cart = useCart();
-  return { ...ui, ...auth, ...cart };
+  const boutique = useBoutique();
+  return { ...ui, ...auth, ...cart, ...boutique };
 };

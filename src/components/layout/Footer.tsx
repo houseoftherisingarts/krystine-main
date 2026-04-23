@@ -1,22 +1,40 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { useApp } from '../../contexts/AppContext';
-import { CONTENT } from '../../content';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { useApp, useBoutique } from '../../contexts/AppContext';
+import { CONTENT, ASSETS } from '../../content';
 import { isStaticRoute } from '../../lib/staticRoutes';
 
-// Render a React Router <Link> for in-app routes, or a plain <a> for statically
-// hosted bundles (/origine, /podcast, /vata) so Firebase rewrites can serve them.
-const NavLink: React.FC<{ href: string; className?: string; children: React.ReactNode }> = ({ href, className, children }) => (
-  isStaticRoute(href)
-    ? <a href={href} className={className}>{children}</a>
-    : <Link to={href} className={className}>{children}</Link>
-);
+// Renders the right tag for a footer link:
+// - plain <a> for statically hosted bundles (/origine, /podcast, /vata)
+// - plain <a> when Krystine's boutique-redirect switch re-routes /boutique
+// - React Router <Link> for everything else (in-app SPA routes).
+const NavLink: React.FC<{ href: string; className?: string; children: React.ReactNode }> = ({ href, className, children }) => {
+  const { resolveHref } = useBoutique();
+  const resolved = href.startsWith('/boutique') ? resolveHref(href) : { href, external: false };
+  if (resolved.external) return <a href={resolved.href} className={className}>{children}</a>;
+  if (isStaticRoute(resolved.href)) return <a href={resolved.href} className={className}>{children}</a>;
+  return <Link to={resolved.href} className={className}>{children}</Link>;
+};
 
 const Footer: React.FC = () => {
   const { lang } = useApp();
   const t = CONTENT[lang];
   const nav = t.nav;
   const foot = t.footer;
+
+  // Parallax on the Jacques-Cartier backdrop. Tracks the footer's position
+  // through the viewport; the image drifts ~40% of the footer's height in the
+  // opposite direction of scroll while the footer passes. The over-sized
+  // -inset-y on the image div gives the translation room to move without
+  // revealing any edge. Disabled when the user prefers reduced motion.
+  const reduce = useReducedMotion() ?? false;
+  const footerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: footerRef,
+    offset: ['start end', 'end start'],
+  });
+  const mountainY = useTransform(scrollYProgress, [0, 1], ['-35%', '35%']);
 
   const links = [
     { href: '/krystine', label: nav.krystine },
@@ -32,13 +50,31 @@ const Footer: React.FC = () => {
     { href: '/origine', label: nav.origine },
     { href: '/vata', label: nav.vata },
     { href: '/podcast', label: nav.podcast },
-    { href: '/dimanches-origine', label: nav.dimanchesOrigine },
   ];
 
   return (
-    <footer className="bg-[#050C1A] text-white/60 pt-20 pb-10 mt-auto">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
-        
+    <footer ref={footerRef} className="relative text-white/60 pt-28 md:pt-36 pb-10 mt-auto overflow-hidden md:min-h-[60vh]">
+      {/* Jacques-Cartier National Park backdrop — full-bleed horizontal
+          landscape behind the footer's navy tint. The div is stretched
+          beyond its bounds on the Y axis so the parallax translate can move
+          without exposing the edges. */}
+      <motion.div
+        className="absolute -inset-y-[40%] inset-x-0 bg-cover bg-center bg-no-repeat pointer-events-none will-change-transform"
+        style={reduce
+          ? { backgroundImage: `url(${ASSETS.footerBg})` }
+          : { backgroundImage: `url(${ASSETS.footerBg})`, y: mountainY }}
+        aria-hidden
+      />
+      {/* Single semi-transparent navy layer — same #050C1A as before, just at
+          85% opacity so the mountain silhouette shows through while copy
+          contrast stays WCAG-AA. */}
+      <div
+        className="absolute inset-0 bg-[#050C1A]/85 pointer-events-none"
+        aria-hidden
+      />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
+
         {/* Top grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16 pb-16 border-b border-white/10">
           
@@ -86,8 +122,9 @@ const Footer: React.FC = () => {
             <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-6">{foot.contact}</h4>
             <ul className="space-y-3 text-xs">
               <li><a href="mailto:equipe@inspiratanature.com" className="hover:text-[#D4AF37] transition-colors">equipe@inspiratanature.com</a></li>
-              <li><a href="https://www.instagram.com/krystinestlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#D4AF37] transition-colors"><i className="fa-brands fa-instagram" /> Instagram</a></li>
-              <li><a href="https://www.facebook.com/krystinestlaurentinspirata" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#D4AF37] transition-colors"><i className="fa-brands fa-facebook" /> Facebook</a></li>
+              <li><a href="https://www.instagram.com/krystinesaintlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#D4AF37] transition-colors"><i className="fa-brands fa-instagram" /> Instagram</a></li>
+              <li><a href="https://www.facebook.com/Krystinestlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#D4AF37] transition-colors"><i className="fa-brands fa-facebook" /> Facebook</a></li>
+              <li><a href="https://www.youtube.com/@KrystineStLaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#D4AF37] transition-colors"><i className="fa-brands fa-youtube" /> YouTube</a></li>
             </ul>
           </div>
         </div>

@@ -3,6 +3,7 @@ import { useUI, useAuth, useCart } from '../../contexts/AppContext';
 import { ASSETS } from '../../content';
 import { createCheckout, formatMoney, isShopifyConfigured } from '../../shopify';
 import { addClientOrder } from '../../firebase/firestore';
+import { points } from '../../firebase/points';
 
 const CartDrawer: React.FC = () => {
   const { lang } = useUI();
@@ -53,7 +54,7 @@ const CartDrawer: React.FC = () => {
         const currency = shopifyItems.find(i => i.priceCurrency)?.priceCurrency || 'CAD';
         const subtotalFormatted = formatMoney({ amount: cartTotal, currencyCode: currency }, lang);
         try {
-          await addClientOrder({
+          const orderRef = await addClientOrder({
             uid: user.uid,
             email: user.email,
             items: orderItems,
@@ -62,6 +63,11 @@ const CartDrawer: React.FC = () => {
             checkoutUrl: url,
             status: 'pending_payment',
           });
+          // Loyalty — 10 pts per item, idempotent on the order id so the
+          // same cart session can't double-earn if the user clicks twice.
+          if (orderRef?.id) {
+            try { await points.orderPlaced(user.uid, orderRef.id, shopifyItems.length); } catch { /* non-fatal */ }
+          }
         } catch (e) { console.warn('[cart] addClientOrder failed', e); }
       }
 

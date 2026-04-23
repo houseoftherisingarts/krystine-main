@@ -9,10 +9,14 @@ export type AdminSectionId =
   | 'blog'
   | 'splash'
   | 'orders'
+  | 'boutique'
   | 'members'
   | 'messages'
+  | 'submissions'
+  | 'groups'
   | 'bookings'
   | 'newsletter'
+  | 'guide'
   | 'dosha'
   | 'media'
   | 'settings';
@@ -27,13 +31,17 @@ const NAV: NavItem[] = [
   { id: 'dashboard',  label: 'Tableau de bord',  icon: 'fa-gauge-high' },
   { id: 'analytics',  label: 'Analytics Shopify', icon: 'fa-chart-line' },
   { id: 'orders',     label: 'Commandes',        icon: 'fa-box' },
+  { id: 'boutique',   label: 'Boutique',         icon: 'fa-basket-shopping' },
   { id: 'members',    label: 'Clients',          icon: 'fa-users' },
   { id: 'messages',   label: 'Messages',         icon: 'fa-comments' },
-  { id: 'events',     label: 'Événements',       icon: 'fa-calendar' },
+  { id: 'submissions', label: 'Formulaires',     icon: 'fa-clipboard-list' },
+  { id: 'groups',     label: 'Groupes',          icon: 'fa-users-rectangle' },
+  { id: 'events',     label: 'Événements & Conférences', icon: 'fa-calendar' },
   { id: 'blog',       label: 'Blogue',           icon: 'fa-pen-nib' },
   { id: 'splash',     label: 'Écran d\'accueil', icon: 'fa-wand-magic-sparkles' },
   { id: 'bookings',   label: 'Demandes',         icon: 'fa-inbox' },
   { id: 'newsletter', label: 'Infolettre',       icon: 'fa-envelope' },
+  { id: 'guide',      label: 'Parcours guidés',  icon: 'fa-compass' },
   { id: 'dosha',      label: 'Quiz Dosha',       icon: 'fa-circle-nodes' },
   { id: 'media',      label: 'Médiathèque',      icon: 'fa-photo-film' },
   { id: 'settings',   label: 'Paramètres',       icon: 'fa-gear' },
