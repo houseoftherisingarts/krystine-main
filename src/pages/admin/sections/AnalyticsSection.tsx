@@ -97,7 +97,7 @@ const AnalyticsSection: React.FC = () => {
   };
 
   const kpis = [
-    { label: 'Revenu', value: formatCurrency(revenue, currency), icon: 'fa-sack-dollar', accent: 'text-[#D4AF37]' },
+    { label: 'Revenu', value: formatCurrency(revenue, currency), icon: 'fa-sack-dollar', accent: 'text-[#B8532F]' },
     { label: 'Commandes', value: count.toString(), icon: 'fa-box', accent: 'text-[#4A7C9D]' },
     { label: 'Panier moyen', value: formatCurrency(aov, currency), icon: 'fa-chart-line', accent: 'text-[#2D4A3E]' },
     { label: 'Clients', value: uniqueCustomers.toString(), icon: 'fa-users', accent: 'text-[#BC4A3C]' },
@@ -111,12 +111,12 @@ const AnalyticsSection: React.FC = () => {
     <div className="space-y-6">
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-3 justify-between">
-        <div className="flex gap-1 p-1 rounded-full bg-white dark:bg-[#0B1A36]/60 border border-[#0B1A36]/5 dark:border-white/5">
+        <div className="flex gap-1 p-1 rounded-full bg-white dark:bg-[#3A251E]/60 border border-[#3A251E]/5 dark:border-white/5">
           {RANGES.map(r => (
             <button
               key={r.id}
               onClick={() => setRange(r.id)}
-              className={`px-4 py-1.5 text-[11px] uppercase tracking-widest font-bold rounded-full transition-colors ${range === r.id ? 'bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36]' : 'text-[#0B1A36]/60 dark:text-white/60 hover:text-[#D4AF37]'}`}
+              className={`px-4 py-1.5 text-[11px] uppercase tracking-widest font-bold rounded-full transition-colors ${range === r.id ? 'bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E]' : 'text-[#3A251E]/60 dark:text-white/60 hover:text-[#B8532F]'}`}
             >{r.label}</button>
           ))}
         </div>
@@ -125,10 +125,10 @@ const AnalyticsSection: React.FC = () => {
           {backfillBusy ? 'Importation…' : 'Importer l\'historique'}
         </GhostButton>
       </div>
-      {backfillMsg && <p className="text-xs text-[#D4AF37] font-mono">{backfillMsg}</p>}
+      {backfillMsg && <p className="text-xs text-[#B8532F] font-mono">{backfillMsg}</p>}
 
       {loading ? (
-        <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>
+        <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" /></div>
       ) : orders.length === 0 ? (
         <EmptyState icon="fa-chart-line">
           Aucune donnée Shopify. Configurez les webhooks ou lancez un import d'historique.
@@ -140,8 +140,8 @@ const AnalyticsSection: React.FC = () => {
             {kpis.map(k => (
               <Card key={k.label} className="p-4">
                 <i className={`fa-solid ${k.icon} ${k.accent} text-xl mb-2 block`} />
-                <p className="text-xl md:text-2xl font-serif text-[#0B1A36] dark:text-white leading-none">{k.value}</p>
-                <p className="text-[9px] uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50 font-bold mt-2">{k.label}</p>
+                <p className="text-xl md:text-2xl font-serif text-[#3A251E] dark:text-white leading-none">{k.value}</p>
+                <p className="text-[9px] uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 font-bold mt-2">{k.label}</p>
               </Card>
             ))}
           </div>
@@ -149,10 +149,10 @@ const AnalyticsSection: React.FC = () => {
           {/* Revenue chart */}
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold">
+              <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold">
                 Revenu quotidien
               </h3>
-              <span className="text-xs text-[#0B1A36]/40 dark:text-white/40">
+              <span className="text-xs text-[#3A251E]/40 dark:text-white/40">
                 {buckets.length} jours · max {formatCurrency(maxRev, currency)}
               </span>
             </div>
@@ -163,10 +163,10 @@ const AnalyticsSection: React.FC = () => {
                 return (
                   <div key={b.date} className="flex-1 flex flex-col justify-end group relative">
                     <div
-                      className={`w-full ${isWeekend ? 'bg-[#D4AF37]/60' : 'bg-[#D4AF37]'} rounded-t-sm transition-all group-hover:opacity-100 opacity-80`}
+                      className={`w-full ${isWeekend ? 'bg-[#B8532F]/60' : 'bg-[#B8532F]'} rounded-t-sm transition-all group-hover:opacity-100 opacity-80`}
                       style={{ height: `${Math.max(h, b.revenue > 0 ? 2 : 0)}%` }}
                     />
-                    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block bg-[#0B1A36] text-white text-[10px] px-2 py-1 rounded whitespace-nowrap pointer-events-none z-10">
+                    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block bg-[#3A251E] text-white text-[10px] px-2 py-1 rounded whitespace-nowrap pointer-events-none z-10">
                       {b.date}<br />{formatCurrency(b.revenue, currency)} · {b.orders} cmd
                     </div>
                   </div>
@@ -178,19 +178,19 @@ const AnalyticsSection: React.FC = () => {
           {/* Top products + recent orders */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="p-6">
-              <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-4">
+              <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-4">
                 Produits les plus vendus
               </h3>
               {topProducts.length === 0 ? (
-                <p className="text-sm italic text-[#0B1A36]/40 dark:text-white/40">Aucune vente dans cette période.</p>
+                <p className="text-sm italic text-[#3A251E]/40 dark:text-white/40">Aucune vente dans cette période.</p>
               ) : (
                 <ul className="space-y-3">
                   {topProducts.map((p, i) => (
                     <li key={p.title} className="flex items-center gap-3 text-sm">
-                      <span className="text-[10px] uppercase tracking-widest font-bold text-[#D4AF37] w-6">#{i + 1}</span>
-                      <span className="flex-1 text-[#0B1A36] dark:text-white truncate">{p.title}</span>
-                      <span className="text-[#0B1A36]/60 dark:text-white/60 text-xs">{p.qty}×</span>
-                      <span className="text-[#D4AF37] font-bold">{formatCurrency(p.revenue, currency)}</span>
+                      <span className="text-[10px] uppercase tracking-widest font-bold text-[#B8532F] w-6">#{i + 1}</span>
+                      <span className="flex-1 text-[#3A251E] dark:text-white truncate">{p.title}</span>
+                      <span className="text-[#3A251E]/60 dark:text-white/60 text-xs">{p.qty}×</span>
+                      <span className="text-[#B8532F] font-bold">{formatCurrency(p.revenue, currency)}</span>
                     </li>
                   ))}
                 </ul>
@@ -198,25 +198,25 @@ const AnalyticsSection: React.FC = () => {
             </Card>
 
             <Card className="p-6">
-              <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-4">
+              <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-4">
                 Dernières commandes Shopify
               </h3>
               {filtered.slice(0, 8).length === 0 ? (
-                <p className="text-sm italic text-[#0B1A36]/40 dark:text-white/40">Aucune commande.</p>
+                <p className="text-sm italic text-[#3A251E]/40 dark:text-white/40">Aucune commande.</p>
               ) : (
                 <ul className="space-y-2 text-sm">
                   {filtered.slice(0, 8).map(o => (
                     <li key={o.id} className="flex items-center justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <p className="font-mono text-xs text-[#0B1A36]/60 dark:text-white/60">{o.name}</p>
-                        <p className="text-[#0B1A36] dark:text-white truncate">{o.customer?.name || o.email || '—'}</p>
+                        <p className="font-mono text-xs text-[#3A251E]/60 dark:text-white/60">{o.name}</p>
+                        <p className="text-[#3A251E] dark:text-white truncate">{o.customer?.name || o.email || '—'}</p>
                       </div>
                       <span className={`text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full ${
                         o.financialStatus === 'paid' ? 'bg-green-50 text-green-600'
                         : o.financialStatus === 'refunded' ? 'bg-red-50 text-red-500'
                         : 'bg-yellow-50 text-yellow-600'
                       }`}>{o.financialStatus}</span>
-                      <span className="text-[#D4AF37] font-bold">{formatCurrency(o.totalPrice, o.currency)}</span>
+                      <span className="text-[#B8532F] font-bold">{formatCurrency(o.totalPrice, o.currency)}</span>
                     </li>
                   ))}
                 </ul>

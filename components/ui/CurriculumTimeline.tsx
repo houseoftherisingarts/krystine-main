@@ -60,7 +60,7 @@ export const CurriculumTimeline: React.FC<{ content: ContentText['timeline'] }> 
           // Specific colors for each module (Earth/Brown, Fire/Copper, Ether/Sage)
           let circleColorClass = "";
           if (idx === 0) circleColorClass = "bg-[#5D4B35] border-[#5D4B35] text-white shadow-lg shadow-[#5D4B35]/20";
-          else if (idx === 1) circleColorClass = "bg-[#C1875D] border-[#C1875D] text-white shadow-lg shadow-[#C1875D]/20";
+          else if (idx === 1) circleColorClass = "bg-[#B86A2F] border-[#B86A2F] text-white shadow-lg shadow-[#B86A2F]/20";
           else circleColorClass = "bg-[#7A8D7C] border-[#7A8D7C] text-white shadow-lg shadow-[#7A8D7C]/20";
 
           return (

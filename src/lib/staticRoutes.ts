@@ -12,8 +12,15 @@ export function isStaticRoute(path: string | undefined | null): boolean {
 }
 
 // Use everywhere instead of `navigate(href)` when the href may point to a
-// static-hosted bundle. Falls through to React Router for normal routes.
+// static-hosted bundle OR an external URL (e.g. a Kajabi checkout). Falls
+// through to React Router for normal in-app routes.
 export function goToRoute(navigate: (to: string) => void, href: string): void {
+  // External URL — checkout pages, partner sites, etc. Open in new tab so
+  // the user can come back to Inspirata without losing their place.
+  if (/^https?:\/\//i.test(href)) {
+    window.open(href, '_blank', 'noopener,noreferrer');
+    return;
+  }
   if (isStaticRoute(href)) {
     window.location.href = href;
   } else {

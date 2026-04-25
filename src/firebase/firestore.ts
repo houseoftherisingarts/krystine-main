@@ -1040,3 +1040,41 @@ export function subscribeToBoutiqueSettings(cb: (s: BoutiqueSettings) => void): 
     else cb({ ...DEFAULT_BOUTIQUE_SETTINGS, ...snap.data() } as BoutiqueSettings);
   });
 }
+
+// ─── Vexel inquiries (Salon des Inconnus / Alex's CRM) ───────────────────────
+// Deliberately outside the four Krystine CRM collections above — these are
+// inbound web-build leads that flow to Alex (Le Salon des Inconnus) via the
+// hidden /vexel inbox. The contact card in the Krystine site footer writes
+// here when a visitor submits the "intéressé par un site web" form.
+export interface VexelInquiry {
+  id?: string;
+  name: string;
+  email: string;
+  phone?: string;
+  projectType?: string;     // 'site-vitrine' | 'e-commerce' | 'sur-mesure' | 'refonte' | 'autre'
+  budget?: string;          // free text or one of the dropdown bands
+  timeline?: string;        // free text — "dès que possible", "automne 2026"…
+  message?: string;
+  sourceSite?: string;      // which site the visitor came from (e.g. 'krystine')
+  createdAt?: Timestamp;
+}
+
+export async function addVexelInquiry(data: Omit<VexelInquiry, 'id' | 'createdAt'>) {
+  if (!db) noDb();
+  return addDoc(collection(db!, 'vexelInquiries'), {
+    ...data,
+    createdAt: serverTimestamp(),
+  });
+}
+
+export async function getVexelInquiries(): Promise<VexelInquiry[]> {
+  if (!db) return [];
+  const q = query(collection(db, 'vexelInquiries'), orderBy('createdAt', 'desc'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as VexelInquiry));
+}
+
+export async function deleteVexelInquiry(id: string) {
+  if (!db) noDb();
+  return deleteDoc(doc(db!, 'vexelInquiries', id));
+}

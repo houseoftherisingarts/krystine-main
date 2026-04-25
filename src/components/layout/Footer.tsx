@@ -1,10 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { useApp, useBoutique } from '../../contexts/AppContext';
 import { CONTENT, ASSETS } from '../../content';
 import { isStaticRoute } from '../../lib/staticRoutes';
-
+import SalonContactCard from '../SalonContactCard';
 // Renders the right tag for a footer link:
 // - plain <a> for statically hosted bundles (/origine, /podcast, /vata)
 // - plain <a> when Krystine's boutique-redirect switch re-routes /boutique
@@ -22,6 +22,10 @@ const Footer: React.FC = () => {
   const t = CONTENT[lang];
   const nav = t.nav;
   const foot = t.footer;
+  // Salon contact card — opens in place of the previous outbound link to
+  // www.lesalondesinconnus.com so curious visitors can reach Alex (or
+  // submit the website-needs form) without leaving the site.
+  const [salonOpen, setSalonOpen] = useState(false);
 
   // Parallax on the Jacques-Cartier backdrop. Tracks the footer's position
   // through the viewport; the image drifts ~40% of the footer's height in the
@@ -65,11 +69,11 @@ const Footer: React.FC = () => {
           : { backgroundImage: `url(${ASSETS.footerBg})`, y: mountainY }}
         aria-hidden
       />
-      {/* Single semi-transparent navy layer — same #050C1A as before, just at
+      {/* Single semi-transparent navy layer — same #2E1A14 as before, just at
           85% opacity so the mountain silhouette shows through while copy
           contrast stays WCAG-AA. */}
       <div
-        className="absolute inset-0 bg-[#050C1A]/85 pointer-events-none"
+        className="absolute inset-0 bg-[#2E1A14]/85 pointer-events-none"
         aria-hidden
       />
 
@@ -86,7 +90,7 @@ const Footer: React.FC = () => {
               className="h-16 w-auto mb-6 opacity-90"
               style={{ filter: 'invert(1) brightness(1.5)' }}
             />
-            <p className="text-xs text-white/40 leading-relaxed">
+            <p className="text-sm text-white/55 leading-relaxed">
               {lang === 'FR'
                 ? 'Sagesse Ayurvédique pour une vie consciente.'
                 : 'Ayurvedic wisdom for conscious living.'}
@@ -99,7 +103,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               {links.map(({ href, label }) => (
                 <li key={href}>
-                  <NavLink href={href} className="text-xs hover:text-[#D4AF37] transition-colors uppercase tracking-wide">{label}</NavLink>
+                  <NavLink href={href} className="text-xs hover:text-[#B8532F] transition-colors uppercase tracking-wide">{label}</NavLink>
                 </li>
               ))}
             </ul>
@@ -111,7 +115,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               {programmes.map(({ href, label }) => (
                 <li key={href}>
-                  <NavLink href={href} className="text-xs hover:text-[#D4AF37] transition-colors uppercase tracking-wide">{label}</NavLink>
+                  <NavLink href={href} className="text-xs hover:text-[#B8532F] transition-colors uppercase tracking-wide">{label}</NavLink>
                 </li>
               ))}
             </ul>
@@ -120,11 +124,11 @@ const Footer: React.FC = () => {
           {/* Contact */}
           <div>
             <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-6">{foot.contact}</h4>
-            <ul className="space-y-3 text-xs">
-              <li><a href="mailto:equipe@inspiratanature.com" className="hover:text-[#D4AF37] transition-colors">equipe@inspiratanature.com</a></li>
-              <li><a href="https://www.instagram.com/krystinesaintlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#D4AF37] transition-colors"><i className="fa-brands fa-instagram" /> Instagram</a></li>
-              <li><a href="https://www.facebook.com/Krystinestlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#D4AF37] transition-colors"><i className="fa-brands fa-facebook" /> Facebook</a></li>
-              <li><a href="https://www.youtube.com/@KrystineStLaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#D4AF37] transition-colors"><i className="fa-brands fa-youtube" /> YouTube</a></li>
+            <ul className="space-y-3 text-sm">
+              <li><a href="mailto:equipe@inspiratanature.com" className="hover:text-[#B8532F] transition-colors">equipe@inspiratanature.com</a></li>
+              <li><a href="https://www.instagram.com/krystinesaintlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#B8532F] transition-colors"><i className="fa-brands fa-instagram" /> Instagram</a></li>
+              <li><a href="https://www.facebook.com/Krystinestlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#B8532F] transition-colors"><i className="fa-brands fa-facebook" /> Facebook</a></li>
+              <li><a href="https://www.youtube.com/@KrystineStLaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#B8532F] transition-colors"><i className="fa-brands fa-youtube" /> YouTube</a></li>
             </ul>
           </div>
         </div>
@@ -133,14 +137,31 @@ const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] uppercase tracking-widest text-white/30">
           <p>© {new Date().getFullYear()} Krystine St-Laurent. {lang === 'FR' ? 'Tous droits réservés.' : 'All rights reserved.'}</p>
           <div className="flex items-center gap-6">
-            <Link to="/politique-de-confidentialite" className="hover:text-[#D4AF37] transition-colors">{foot.privacy}</Link>
-            <Link to="/admin" className="hover:text-[#D4AF37]/50 transition-colors opacity-40">{lang === 'FR' ? 'Admin' : 'Admin'}</Link>
+            <Link to="/politique-de-confidentialite" className="hover:text-[#B8532F] transition-colors">{foot.privacy}</Link>
           </div>
-          <a href="https://www.lesalondesinconnus.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#D4AF37] transition-colors">
-            {foot.madeBy} <span className="font-semibold">Le Salon des Inconnus</span>
-          </a>
+          <button
+            type="button"
+            onClick={() => setSalonOpen(true)}
+            className="group inline-flex items-center gap-1 transition-colors"
+            aria-haspopup="dialog"
+          >
+            <span className="text-white/40 group-hover:text-white/70 transition-colors">{foot.madeBy}</span>{' '}
+            <span
+              className="font-semibold"
+              style={{
+                backgroundImage: 'linear-gradient(95deg, #B07A3C 0%, #D7A858 35%, #8C5A28 70%, #B07A3C 100%)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              Le Salon des Inconnus
+            </span>
+          </button>
         </div>
       </div>
+
+      <SalonContactCard open={salonOpen} onClose={() => setSalonOpen(false)} sourceSite="krystine" />
     </footer>
   );
 };

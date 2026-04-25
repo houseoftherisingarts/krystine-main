@@ -27,6 +27,12 @@
         "headers": [
           { "key": "Cache-Control", "value": "max-age=604800" }
         ]
+      },
+      {
+        "source": "**",
+        "headers": [
+          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        ]
       }
     ]
   },

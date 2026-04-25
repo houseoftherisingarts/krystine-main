@@ -24,7 +24,7 @@ const DoshaSection: React.FC = () => {
     })));
   };
 
-  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>;
+  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" /></div>;
   if (rows.length === 0) return <EmptyState icon="fa-circle-nodes">Aucun résultat de quiz pour l'instant.</EmptyState>;
 
   const totals = { vata: 0, pitta: 0, kapha: 0 };
@@ -35,20 +35,20 @@ const DoshaSection: React.FC = () => {
       <div className="grid grid-cols-3 gap-3">
         {(['vata', 'pitta', 'kapha'] as const).map(k => (
           <Card key={k} className="p-4 text-center">
-            <p className="text-[10px] uppercase tracking-widest font-bold text-[#D4AF37]">{k}</p>
-            <p className="text-2xl font-serif text-[#0B1A36] dark:text-white mt-1">{totals[k]}</p>
+            <p className="text-[10px] uppercase tracking-widest font-bold text-[#B8532F]">{k}</p>
+            <p className="text-2xl font-serif text-[#3A251E] dark:text-white mt-1">{totals[k]}</p>
           </Card>
         ))}
       </div>
 
       <div className="flex items-center justify-between">
-        <p className="text-sm text-[#0B1A36]/60 dark:text-white/60">{rows.length} résultat{rows.length > 1 ? 's' : ''}</p>
+        <p className="text-sm text-[#3A251E]/60 dark:text-white/60">{rows.length} résultat{rows.length > 1 ? 's' : ''}</p>
         <GhostButton onClick={exportCsv}><i className="fa-solid fa-file-csv" /> Exporter CSV</GhostButton>
       </div>
 
       <Card className="overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-[#F5F5F0] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60">
+          <thead className="bg-[#F4E7DD] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60">
             <tr>
               <th className="text-left px-4 py-3">Nom</th>
               <th className="text-left px-4 py-3 hidden md:table-cell">Email</th>
@@ -60,16 +60,16 @@ const DoshaSection: React.FC = () => {
           </thead>
           <tbody>
             {rows.map(r => (
-              <tr key={r.id} className="border-t border-[#0B1A36]/5 dark:border-white/5 hover:bg-[#D4AF37]/5">
-                <td className="px-4 py-3 text-[#0B1A36] dark:text-white">{r.firstName} {r.lastName}</td>
-                <td className="px-4 py-3 text-[#0B1A36]/70 dark:text-white/70 hidden md:table-cell">{r.email}</td>
+              <tr key={r.id} className="border-t border-[#3A251E]/5 dark:border-white/5 hover:bg-[#B8532F]/5">
+                <td className="px-4 py-3 text-[#3A251E] dark:text-white">{r.firstName} {r.lastName}</td>
+                <td className="px-4 py-3 text-[#3A251E]/70 dark:text-white/70 hidden md:table-cell">{r.email}</td>
                 <td className="px-4 py-3">
-                  <span className="capitalize text-[#D4AF37] font-bold">{r.dominant}</span>
+                  <span className="capitalize text-[#B8532F] font-bold">{r.dominant}</span>
                 </td>
-                <td className="px-4 py-3 text-[#0B1A36]/50 dark:text-white/50 hidden md:table-cell font-mono text-xs">
+                <td className="px-4 py-3 text-[#3A251E]/50 dark:text-white/50 hidden md:table-cell font-mono text-xs">
                   V{r.vata} · P{r.pitta} · K{r.kapha}
                 </td>
-                <td className="px-4 py-3 text-[#0B1A36]/50 dark:text-white/50 hidden md:table-cell">{r.createdAt?.toDate().toLocaleDateString('fr-CA') || '—'}</td>
+                <td className="px-4 py-3 text-[#3A251E]/50 dark:text-white/50 hidden md:table-cell">{r.createdAt?.toDate().toLocaleDateString('fr-CA') || '—'}</td>
                 <td className="px-4 py-3 text-right">
                   <DangerButton onClick={() => del(r)}><i className="fa-solid fa-trash" /></DangerButton>
                 </td>

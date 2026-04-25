@@ -60,15 +60,15 @@ const ConsentBanner: React.FC = () => {
       role="dialog"
       aria-live="polite"
       aria-label={lang === 'FR' ? 'Bandeau de consentement' : 'Consent banner'}
-      className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:max-w-sm z-[60] bg-white/95 dark:bg-[#0B1A36]/95 backdrop-blur-xl border border-[#D4AF37]/25 rounded-2xl shadow-xl p-4 md:p-5"
+      className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:max-w-sm z-[60] bg-white/95 dark:bg-[#3A251E]/95 backdrop-blur-xl border border-[#B8532F]/25 rounded-2xl shadow-xl p-4 md:p-5"
     >
       <div className="flex items-start gap-3 mb-3">
-        <i className="fa-solid fa-cookie-bite text-[#D4AF37] text-sm mt-0.5" />
+        <i className="fa-solid fa-cookie-bite text-[#B8532F] text-sm mt-0.5" />
         <div>
-          <p className="text-[9px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] mb-1">
+          <p className="text-[9px] uppercase tracking-[0.3em] font-bold text-[#B8532F] mb-1">
             {lang === 'FR' ? 'Loi 25' : 'Law 25'}
           </p>
-          <p className="text-xs text-[#0B1A36]/80 dark:text-white/80 leading-relaxed">
+          <p className="text-xs text-[#3A251E]/80 dark:text-white/80 leading-relaxed">
             {lang === 'FR'
               ? 'Témoins de mesure pour améliorer le site. Vous gardez le contrôle.'
               : 'Measurement cookies to improve the site. You stay in control.'}
@@ -78,20 +78,20 @@ const ConsentBanner: React.FC = () => {
       <div className="flex gap-2">
         <button
           onClick={() => decide('accepted')}
-          className="flex-1 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] font-bold uppercase tracking-widest text-[10px] px-4 py-2.5 rounded-full hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors"
+          className="flex-1 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] font-bold uppercase tracking-widest text-[10px] px-4 py-2.5 rounded-full hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors"
         >
           {lang === 'FR' ? 'Accepter' : 'Accept'}
         </button>
         <button
           onClick={() => decide('rejected')}
-          className="flex-1 border border-[#0B1A36]/20 dark:border-white/20 text-[#0B1A36] dark:text-white font-bold uppercase tracking-widest text-[10px] px-4 py-2.5 rounded-full hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors"
+          className="flex-1 border border-[#3A251E]/20 dark:border-white/20 text-[#3A251E] dark:text-white font-bold uppercase tracking-widest text-[10px] px-4 py-2.5 rounded-full hover:border-[#B8532F] hover:text-[#B8532F] transition-colors"
         >
           {lang === 'FR' ? 'Refuser' : 'Decline'}
         </button>
       </div>
       <Link
         to="/politique-de-confidentialite"
-        className="block mt-3 text-[10px] text-[#0B1A36]/50 dark:text-white/50 underline hover:text-[#D4AF37]"
+        className="block mt-3 text-[10px] text-[#3A251E]/50 dark:text-white/50 underline hover:text-[#B8532F]"
       >
         {lang === 'FR' ? 'Politique de confidentialité' : 'Privacy policy'}
       </Link>

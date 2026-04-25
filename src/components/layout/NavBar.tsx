@@ -17,7 +17,7 @@ const NAV: NavItem[] = [
 
 const NavBar: React.FC = () => {
   const { lang, setLang, theme, toggleTheme, audioPlaying, toggleAudio } = useUI();
-  const { user, member, isAdmin, setSignInOpen } = useAuth();
+  const { user, member, setSignInOpen } = useAuth();
   const { cartItems, setCartOpen } = useCart();
   const { resolveHref } = useBoutique();
   const location = useLocation();
@@ -43,8 +43,8 @@ const NavBar: React.FC = () => {
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className={`fixed top-0 w-full z-40 transition-[background,border,box-shadow] duration-500 ${
         scrolled
-          ? 'bg-white/85 dark:bg-[#050C1A]/95 backdrop-blur-xl border-b border-[#D4AF37]/15 shadow-[0_4px_30px_rgba(11,26,54,0.08)]'
-          : 'bg-white/60 dark:bg-[#050C1A]/70 backdrop-blur-xl border-b border-transparent'
+          ? 'bg-white/85 dark:bg-[#2E1A14]/95 backdrop-blur-xl border-b border-[#B8532F]/15 shadow-[0_4px_30px_rgba(58,37,30,0.08)]'
+          : 'bg-white/60 dark:bg-[#2E1A14]/70 backdrop-blur-xl border-b border-transparent'
       }`}
     >
       <div className="max-w-[1800px] mx-auto px-6 py-3 flex justify-between items-center gap-4">
@@ -71,8 +71,8 @@ const NavBar: React.FC = () => {
               const resolved = resolveHref(item.href);
               const btnClass = `inline-flex items-center gap-2 whitespace-nowrap px-4 py-2 text-[10px] 2xl:text-[11px] uppercase tracking-[0.2em] font-bold rounded-full transition-all duration-300 ${
                 active
-                  ? 'bg-[#0B1A36] text-[#D4AF37] border border-[#D4AF37]'
-                  : 'bg-[#D4AF37] text-[#0B1A36] border border-[#D4AF37] hover:bg-[#0B1A36] hover:text-[#D4AF37] shadow-[0_4px_18px_rgba(212,175,55,0.25)]'
+                  ? 'bg-[#3A251E] text-[#B8532F] border border-[#B8532F]'
+                  : 'bg-[#B8532F] text-[#3A251E] border border-[#B8532F] hover:bg-[#3A251E] hover:text-[#B8532F] shadow-[0_4px_18px_rgba(184,83,47,0.25)]'
               }`;
               return (
                 <motion.li
@@ -106,13 +106,13 @@ const NavBar: React.FC = () => {
                 <Link
                   to={item.href}
                   className={`relative whitespace-nowrap px-2.5 2xl:px-3 py-2 text-[10px] 2xl:text-[11px] uppercase tracking-[0.15em] 2xl:tracking-[0.2em] font-semibold transition-colors duration-300 ${
-                    active ? 'text-[#D4AF37]' : 'text-[#0B1A36] dark:text-white/85 hover:text-[#D4AF37]'
+                    active ? 'text-[#B8532F]' : 'text-[#3A251E] dark:text-white/85 hover:text-[#B8532F]'
                   }`}
                 >
                   {label(item)}
                   {/* Animated underline */}
                   <span
-                    className={`pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-[#D4AF37] origin-center transition-transform duration-300 ${
+                    className={`pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-[#B8532F] origin-center transition-transform duration-300 ${
                       active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
                     }`}
                     style={{ transformOrigin: 'center' }}
@@ -129,7 +129,7 @@ const NavBar: React.FC = () => {
             {audioPlaying ? (
               <div className="flex gap-[2px] items-end h-3">
                 {[1, 1.4, 0.8].map((d, i) => (
-                  <span key={i} className="w-[2px] bg-[#D4AF37] rounded-full animate-bounce" style={{ height: i === 1 ? '12px' : '8px', animationDelay: `${i * 0.15}s` }} />
+                  <span key={i} className="w-[2px] bg-[#B8532F] rounded-full animate-bounce" style={{ height: i === 1 ? '12px' : '8px', animationDelay: `${i * 0.15}s` }} />
                 ))}
               </div>
             ) : <i className="fa-solid fa-music text-[12px]" />}
@@ -142,48 +142,34 @@ const NavBar: React.FC = () => {
           <IconButton onClick={() => setCartOpen(true)} title="Panier">
             <i className="fa-solid fa-shopping-bag text-[14px]" />
             {cartItems.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#D4AF37] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+              <span className="absolute -top-1 -right-1 bg-[#B8532F] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
                 {cartItems.length}
               </span>
             )}
           </IconButton>
 
           {user ? (
-            <>
-              <Link
-                to="/compte"
-                title={member?.displayName || user.displayName || user.email || ''}
-                className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-[#0B1A36]/10 dark:border-white/10 hover:border-[#D4AF37] transition-colors"
-              >
-                {(member?.photoURL || user.photoURL) ? (
-                  <img src={member?.photoURL || user.photoURL!} alt="" className="w-6 h-6 rounded-full object-cover" />
-                ) : (
-                  <div className="w-6 h-6 rounded-full bg-[#D4AF37]/20 flex items-center justify-center text-[10px] font-bold text-[#D4AF37]">
-                    {(user.email?.[0] || '?').toUpperCase()}
-                  </div>
-                )}
-                {member?.dosha && (
-                  <span className="text-[9px] uppercase tracking-widest text-[#D4AF37] font-bold capitalize hidden xl:inline">{member.dosha}</span>
-                )}
-              </Link>
-              {/* Admin shortcut — only for admins; clearly separate from the
-                  client "mon espace" chip so the label matches the destination. */}
-              {isAdmin && (
-                <Link
-                  to="/admin"
-                  title={lang === 'FR' ? 'Tableau de bord admin' : 'Admin dashboard'}
-                  className="hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0B1A36] dark:bg-[#D4AF37] text-[#D4AF37] dark:text-[#0B1A36] text-[9px] uppercase tracking-[0.2em] font-bold hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors"
-                >
-                  <i className="fa-solid fa-shield-halved text-[9px]" />
-                  Admin
-                </Link>
+            <Link
+              to="/compte"
+              title={member?.displayName || user.displayName || user.email || ''}
+              className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-[#3A251E]/10 dark:border-white/10 hover:border-[#B8532F] transition-colors"
+            >
+              {(member?.photoURL || user.photoURL) ? (
+                <img src={member?.photoURL || user.photoURL!} alt="" className="w-6 h-6 rounded-full object-cover" />
+              ) : (
+                <div className="w-6 h-6 rounded-full bg-[#B8532F]/20 flex items-center justify-center text-[10px] font-bold text-[#B8532F]">
+                  {(user.email?.[0] || '?').toUpperCase()}
+                </div>
               )}
-            </>
+              {member?.dosha && (
+                <span className="text-[9px] uppercase tracking-widest text-[#B8532F] font-bold capitalize hidden xl:inline">{member.dosha}</span>
+              )}
+            </Link>
           ) : (
             <button
               onClick={() => setSignInOpen(true)}
               title={lang === 'FR' ? 'Connexion' : 'Sign in'}
-              className="hidden md:inline-flex items-center gap-2 pl-2.5 pr-3 py-1.5 rounded-full border border-[#0B1A36]/15 dark:border-white/15 text-[10px] uppercase tracking-[0.2em] font-bold text-[#0B1A36]/80 dark:text-white/80 hover:text-[#D4AF37] hover:border-[#D4AF37] transition-colors"
+              className="hidden md:inline-flex items-center gap-2 pl-2.5 pr-3 py-1.5 rounded-full border border-[#3A251E]/15 dark:border-white/15 text-[10px] uppercase tracking-[0.2em] font-bold text-[#3A251E]/80 dark:text-white/80 hover:text-[#B8532F] hover:border-[#B8532F] transition-colors"
             >
               <i className="fa-solid fa-user text-[11px]" />
               {lang === 'FR' ? 'Connexion' : 'Sign in'}
@@ -193,7 +179,7 @@ const NavBar: React.FC = () => {
             <button
               onClick={() => setSignInOpen(true)}
               title={lang === 'FR' ? 'Connexion' : 'Sign in'}
-              className="md:hidden w-9 h-9 flex items-center justify-center rounded-full text-[#0B1A36]/70 dark:text-white/70 hover:text-[#D4AF37] hover:bg-[#D4AF37]/5 transition-colors"
+              className="md:hidden w-9 h-9 flex items-center justify-center rounded-full text-[#3A251E]/70 dark:text-white/70 hover:text-[#B8532F] hover:bg-[#B8532F]/5 transition-colors"
             >
               <i className="fa-solid fa-user text-[13px]" />
             </button>
@@ -203,7 +189,7 @@ const NavBar: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setLangOpen(v => !v)}
-              className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#0B1A36]/80 dark:text-white/80 hover:text-[#D4AF37] border border-[#0B1A36]/10 dark:border-white/10 px-2.5 py-1 rounded-full"
+              className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#3A251E]/80 dark:text-white/80 hover:text-[#B8532F] border border-[#3A251E]/10 dark:border-white/10 px-2.5 py-1 rounded-full"
             >
               {lang}
             </button>
@@ -214,11 +200,11 @@ const NavBar: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute top-full right-0 mt-2 bg-white dark:bg-[#1A2642] rounded-xl shadow-xl border border-[#0B1A36]/5 flex flex-col w-20 py-2 z-50"
+                  className="absolute top-full right-0 mt-2 bg-white dark:bg-[#4A3228] rounded-xl shadow-xl border border-[#3A251E]/5 flex flex-col w-20 py-2 z-50"
                 >
                   {(['FR', 'EN'] as const).map(l => (
                     <button key={l} onClick={() => { setLang(l); setLangOpen(false); }}
-                      className={`px-4 py-2 text-left text-xs hover:bg-[#0B1A36]/5 transition-colors ${lang === l ? 'font-bold text-[#D4AF37]' : 'text-[#0B1A36] dark:text-white'}`}
+                      className={`px-4 py-2 text-left text-xs hover:bg-[#3A251E]/5 transition-colors ${lang === l ? 'font-bold text-[#B8532F]' : 'text-[#3A251E] dark:text-white'}`}
                     >{l}</button>
                   ))}
                 </motion.div>
@@ -243,13 +229,13 @@ const NavBar: React.FC = () => {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden overflow-hidden border-t border-[#D4AF37]/10"
+            className="lg:hidden overflow-hidden border-t border-[#B8532F]/10"
           >
-            <div className="bg-white/95 dark:bg-[#050C1A]/98 backdrop-blur-xl px-6 py-4 flex flex-col">
+            <div className="bg-white/95 dark:bg-[#2E1A14]/98 backdrop-blur-xl px-6 py-4 flex flex-col">
               {NAV.map((item, i) => {
                 const resolved = resolveHref(item.href);
-                const cls = `block py-3 text-sm font-semibold uppercase tracking-widest border-b border-[#0B1A36]/5 dark:border-white/5 transition-colors ${
-                  isActive(item.href) ? 'text-[#D4AF37]' : 'text-[#0B1A36] dark:text-white hover:text-[#D4AF37]'
+                const cls = `block py-3 text-sm font-semibold uppercase tracking-widest border-b border-[#3A251E]/5 dark:border-white/5 transition-colors ${
+                  isActive(item.href) ? 'text-[#B8532F]' : 'text-[#3A251E] dark:text-white hover:text-[#B8532F]'
                 }`;
                 return (
                   <motion.div
@@ -276,7 +262,7 @@ const IconButton: React.FC<{ onClick: () => void; title: string; children: React
   <button
     onClick={onClick}
     title={title}
-    className="relative w-9 h-9 flex items-center justify-center rounded-full text-[#0B1A36]/70 dark:text-white/70 hover:text-[#D4AF37] hover:bg-[#D4AF37]/5 transition-colors"
+    className="relative w-9 h-9 flex items-center justify-center rounded-full text-[#3A251E]/70 dark:text-white/70 hover:text-[#B8532F] hover:bg-[#B8532F]/5 transition-colors"
   >
     {children}
   </button>

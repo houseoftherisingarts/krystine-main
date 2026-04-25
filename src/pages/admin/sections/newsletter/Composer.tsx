@@ -147,7 +147,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
     await triggerSend();
   };
 
-  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>;
+  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" /></div>;
 
   return (
     <div className="space-y-4">
@@ -159,10 +159,10 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
           status === 'sending'  ? 'bg-yellow-50 text-yellow-600' :
           status === 'scheduled'? 'bg-blue-50 text-blue-600' :
           status === 'failed'   ? 'bg-red-50 text-red-500' :
-          'bg-[#D4AF37]/15 text-[#D4AF37]'
+          'bg-[#B8532F]/15 text-[#B8532F]'
         }`}>{status}</span>
         <div className="ml-auto flex items-center gap-3 flex-wrap">
-          {savedAt && <span className="text-xs text-[#0B1A36]/50 dark:text-white/50">Enregistré à {savedAt.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })}</span>}
+          {savedAt && <span className="text-xs text-[#3A251E]/50 dark:text-white/50">Enregistré à {savedAt.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })}</span>}
           <PrimaryButton onClick={save} disabled={saving || isReadOnly || !subject}>
             {saving ? 'Enregistrement…' : (id ? 'Enregistrer' : 'Créer le brouillon')}
           </PrimaryButton>
@@ -172,7 +172,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
           <button
             onClick={sendLive}
             disabled={sendBusy !== 'idle' || isReadOnly || !subject || !blocks.length}
-            className="inline-flex items-center justify-center gap-2 bg-[#D4AF37] text-[#0B1A36] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-md hover:bg-[#0B1A36] hover:text-[#D4AF37] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center justify-center gap-2 bg-[#B8532F] text-[#3A251E] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-md hover:bg-[#3A251E] hover:text-[#B8532F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <i className="fa-solid fa-rocket" /> {sendBusy === 'live' ? 'Envoi…' : 'Envoyer maintenant'}
           </button>
@@ -187,17 +187,17 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
       <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr_300px] gap-4">
         {/* Block palette */}
         <Card className="p-4 h-fit">
-          <h3 className="text-[10px] uppercase tracking-widest font-bold text-[#0B1A36]/60 dark:text-white/60 mb-3">Blocs</h3>
+          <h3 className="text-[10px] uppercase tracking-widest font-bold text-[#3A251E]/60 dark:text-white/60 mb-3">Blocs</h3>
           <div className="grid grid-cols-2 gap-2">
             {BLOCK_PALETTE.map(b => (
               <button
                 key={b.type}
                 disabled={isReadOnly}
                 onClick={() => addBlock(b.type)}
-                className="flex flex-col items-center gap-1 p-3 rounded-xl bg-[#F5F5F0] dark:bg-white/5 hover:bg-[#D4AF37]/10 border border-[#0B1A36]/5 dark:border-white/5 hover:border-[#D4AF37] transition-colors disabled:opacity-50"
+                className="flex flex-col items-center gap-1 p-3 rounded-xl bg-[#F4E7DD] dark:bg-white/5 hover:bg-[#B8532F]/10 border border-[#3A251E]/5 dark:border-white/5 hover:border-[#B8532F] transition-colors disabled:opacity-50"
               >
-                <i className={`fa-solid ${b.icon} text-[#D4AF37]`} />
-                <span className="text-[10px] uppercase tracking-wider text-[#0B1A36]/70 dark:text-white/70">{b.label}</span>
+                <i className={`fa-solid ${b.icon} text-[#B8532F]`} />
+                <span className="text-[10px] uppercase tracking-wider text-[#3A251E]/70 dark:text-white/70">{b.label}</span>
               </button>
             ))}
           </div>
@@ -206,7 +206,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
         {/* Canvas */}
         <Card className="p-0 overflow-hidden">
           {/* Headers */}
-          <div className="p-6 bg-[#F5F5F0] dark:bg-[#050C1A] border-b border-[#0B1A36]/5 dark:border-white/5 space-y-4">
+          <div className="p-6 bg-[#F4E7DD] dark:bg-[#2E1A14] border-b border-[#3A251E]/5 dark:border-white/5 space-y-4">
             <div>
               <Label>Titre interne (non envoyé)</Label>
               <Input value={title} onChange={e => setTitle(e.target.value)} placeholder="ex. Infolettre d’octobre" disabled={isReadOnly} />
@@ -226,9 +226,9 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
           </div>
 
           {/* Preview / block list */}
-          <div className="p-6 bg-white dark:bg-[#0B1A36] min-h-[400px]">
+          <div className="p-6 bg-white dark:bg-[#3A251E] min-h-[400px]">
             {blocks.length === 0 ? (
-              <div className="py-20 text-center text-[#0B1A36]/40 dark:text-white/40">
+              <div className="py-20 text-center text-[#3A251E]/40 dark:text-white/40">
                 <i className="fa-solid fa-envelope-open-text text-4xl mb-4 block" />
                 <p className="text-sm">Ajoutez des blocs à gauche pour commencer.</p>
               </div>
@@ -240,15 +240,15 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
                     onClick={() => setSelectedIdx(idx)}
                     className={`relative rounded-xl border-2 p-2 cursor-pointer transition-colors ${
                       selectedIdx === idx
-                        ? 'border-[#D4AF37] bg-[#D4AF37]/5'
-                        : 'border-transparent hover:border-[#D4AF37]/30'
+                        ? 'border-[#B8532F] bg-[#B8532F]/5'
+                        : 'border-transparent hover:border-[#B8532F]/30'
                     }`}
                   >
                     <RenderBlockWebPreview block={block} />
                     {!isReadOnly && (
                       <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity">
-                        <button onClick={e => { e.stopPropagation(); moveBlock(idx, -1); }} className="w-7 h-7 bg-white shadow rounded-full text-[#0B1A36]/70 hover:text-[#D4AF37]" title="Monter"><i className="fa-solid fa-arrow-up text-xs" /></button>
-                        <button onClick={e => { e.stopPropagation(); moveBlock(idx, +1); }} className="w-7 h-7 bg-white shadow rounded-full text-[#0B1A36]/70 hover:text-[#D4AF37]" title="Descendre"><i className="fa-solid fa-arrow-down text-xs" /></button>
+                        <button onClick={e => { e.stopPropagation(); moveBlock(idx, -1); }} className="w-7 h-7 bg-white shadow rounded-full text-[#3A251E]/70 hover:text-[#B8532F]" title="Monter"><i className="fa-solid fa-arrow-up text-xs" /></button>
+                        <button onClick={e => { e.stopPropagation(); moveBlock(idx, +1); }} className="w-7 h-7 bg-white shadow rounded-full text-[#3A251E]/70 hover:text-[#B8532F]" title="Descendre"><i className="fa-solid fa-arrow-down text-xs" /></button>
                         <button onClick={e => { e.stopPropagation(); removeBlock(idx); }} className="w-7 h-7 bg-white shadow rounded-full text-red-400 hover:text-red-600" title="Supprimer"><i className="fa-solid fa-trash text-xs" /></button>
                       </div>
                     )}
@@ -261,9 +261,9 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
 
         {/* Inspector */}
         <Card className="p-4 h-fit">
-          <h3 className="text-[10px] uppercase tracking-widest font-bold text-[#0B1A36]/60 dark:text-white/60 mb-3">Propriétés</h3>
+          <h3 className="text-[10px] uppercase tracking-widest font-bold text-[#3A251E]/60 dark:text-white/60 mb-3">Propriétés</h3>
           {selectedIdx === null || !blocks[selectedIdx] ? (
-            <p className="text-xs text-[#0B1A36]/40 dark:text-white/40">Sélectionnez un bloc pour modifier son contenu.</p>
+            <p className="text-xs text-[#3A251E]/40 dark:text-white/40">Sélectionnez un bloc pour modifier son contenu.</p>
           ) : (
             <BlockInspector block={blocks[selectedIdx]} onChange={patch => updateBlock(selectedIdx, patch)} disabled={isReadOnly} />
           )}
@@ -300,7 +300,7 @@ const BlockInspector: React.FC<{ block: NewsletterBlock; onChange: (patch: any) 
       return (
         <div className="space-y-3">
           <Label>Niveau</Label>
-          <select disabled={disabled} value={c.level || 2} onChange={e => onChange(field('level', Number(e.target.value)))} className="w-full px-3 py-2 rounded-xl border border-[#0B1A36]/10 dark:border-white/10 bg-[#F5F5F0] dark:bg-white/5 text-sm">
+          <select disabled={disabled} value={c.level || 2} onChange={e => onChange(field('level', Number(e.target.value)))} className="w-full px-3 py-2 rounded-xl border border-[#3A251E]/10 dark:border-white/10 bg-[#F4E7DD] dark:bg-white/5 text-sm">
             <option value={1}>H1 — Principal</option>
             <option value={2}>H2 — Section</option>
             <option value={3}>H3 — Sous-section</option>
@@ -308,7 +308,7 @@ const BlockInspector: React.FC<{ block: NewsletterBlock; onChange: (patch: any) 
           <Label>Texte</Label>
           <Input disabled={disabled} value={c.text || ''} onChange={e => onChange(field('text', e.target.value))} />
           <Label>Alignement</Label>
-          <select disabled={disabled} value={c.align || 'center'} onChange={e => onChange(field('align', e.target.value))} className="w-full px-3 py-2 rounded-xl border border-[#0B1A36]/10 dark:border-white/10 bg-[#F5F5F0] dark:bg-white/5 text-sm">
+          <select disabled={disabled} value={c.align || 'center'} onChange={e => onChange(field('align', e.target.value))} className="w-full px-3 py-2 rounded-xl border border-[#3A251E]/10 dark:border-white/10 bg-[#F4E7DD] dark:bg-white/5 text-sm">
             <option value="left">Gauche</option>
             <option value="center">Centre</option>
           </select>
@@ -319,14 +319,14 @@ const BlockInspector: React.FC<{ block: NewsletterBlock; onChange: (patch: any) 
         <div className="space-y-3">
           <Label>Texte</Label>
           <Textarea disabled={disabled} rows={5} value={c.text || ''} onChange={e => onChange(field('text', e.target.value))} />
-          <p className="text-[10px] text-[#0B1A36]/50 dark:text-white/50">Utilisez <code className="bg-[#D4AF37]/10 px-1 rounded">&#123;&#123;firstName&#125;&#125;</code> pour personnaliser.</p>
+          <p className="text-[10px] text-[#3A251E]/50 dark:text-white/50">Utilisez <code className="bg-[#B8532F]/10 px-1 rounded">&#123;&#123;firstName&#125;&#125;</code> pour personnaliser.</p>
         </div>
       );
     case 'image':
       return (
         <div className="space-y-3">
           {c.url && <img src={c.url} alt="" className="w-full rounded-lg" />}
-          <label className="inline-flex items-center gap-2 cursor-pointer text-xs uppercase tracking-widest text-[#D4AF37] hover:underline">
+          <label className="inline-flex items-center gap-2 cursor-pointer text-xs uppercase tracking-widest text-[#B8532F] hover:underline">
             <i className="fa-solid fa-upload" /> {uploading ? 'Téléversement…' : (c.url ? 'Remplacer' : 'Téléverser')}
             <input type="file" accept="image/*" className="hidden" onChange={onImageFile} disabled={disabled || uploading} />
           </label>
@@ -346,7 +346,7 @@ const BlockInspector: React.FC<{ block: NewsletterBlock; onChange: (patch: any) 
           <Label>Lien</Label>
           <Input disabled={disabled} value={c.href || ''} onChange={e => onChange(field('href', e.target.value))} placeholder="https://…" />
           <Label>Style</Label>
-          <select disabled={disabled} value={c.variant || 'primary'} onChange={e => onChange(field('variant', e.target.value))} className="w-full px-3 py-2 rounded-xl border border-[#0B1A36]/10 dark:border-white/10 bg-[#F5F5F0] dark:bg-white/5 text-sm">
+          <select disabled={disabled} value={c.variant || 'primary'} onChange={e => onChange(field('variant', e.target.value))} className="w-full px-3 py-2 rounded-xl border border-[#3A251E]/10 dark:border-white/10 bg-[#F4E7DD] dark:bg-white/5 text-sm">
             <option value="primary">Primaire (plein)</option>
             <option value="secondary">Secondaire (contour)</option>
           </select>
@@ -380,7 +380,7 @@ const BlockInspector: React.FC<{ block: NewsletterBlock; onChange: (patch: any) 
       return (
         <div>
           <Label>Taille</Label>
-          <select disabled={disabled} value={c.size || 'md'} onChange={e => onChange(field('size', e.target.value))} className="w-full px-3 py-2 rounded-xl border border-[#0B1A36]/10 dark:border-white/10 bg-[#F5F5F0] dark:bg-white/5 text-sm">
+          <select disabled={disabled} value={c.size || 'md'} onChange={e => onChange(field('size', e.target.value))} className="w-full px-3 py-2 rounded-xl border border-[#3A251E]/10 dark:border-white/10 bg-[#F4E7DD] dark:bg-white/5 text-sm">
             <option value="sm">Petit</option>
             <option value="md">Moyen</option>
             <option value="lg">Grand</option>
@@ -388,7 +388,7 @@ const BlockInspector: React.FC<{ block: NewsletterBlock; onChange: (patch: any) 
         </div>
       );
     case 'divider':
-      return <p className="text-xs text-[#0B1A36]/50 dark:text-white/50">Aucune option — séparateur simple.</p>;
+      return <p className="text-xs text-[#3A251E]/50 dark:text-white/50">Aucune option — séparateur simple.</p>;
     default:
       return null;
   }

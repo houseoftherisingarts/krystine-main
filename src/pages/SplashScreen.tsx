@@ -65,23 +65,23 @@ const SplashScreen: React.FC = () => {
   const onBgClick = () => navigate('/accueil');
 
   return (
-    <div className="relative w-full min-h-screen overflow-hidden bg-[#050C1A] text-white cursor-pointer" onClick={onBgClick}>
+    <div className="relative w-full min-h-screen overflow-hidden bg-[#2E1A14] text-white cursor-pointer" onClick={onBgClick}>
 
       {/* Ayurvedic oil surface (pointer-reactive 3D liquid) or CSS fallback */}
       {!reduceMotion ? (
         <LiquidOilBackground />
       ) : (
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#D4AF37_0%,#9A6B49_25%,#0B1A36_70%)] opacity-90" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#B8532F_0%,#6B402F_25%,#3A251E_70%)] opacity-90" />
       )}
 
       {/* Overcast pond lighting — even ambient across the whole surface with
           a gentle darkening only at the extreme corners. No centered scrim,
           so the gold water stays evenly lit edge-to-edge. */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_120%_90%_at_50%_50%,transparent_55%,rgba(5,12,26,0.35)_88%,rgba(5,12,26,0.65)_100%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_120%_90%_at_50%_50%,transparent_55%,rgba(46,30,20,0.35)_88%,rgba(46,30,20,0.65)_100%)] pointer-events-none" />
 
       {/* Thin horizon wash — a barely-there gradient from top to bottom adds
           dimensional depth without creating a focal dark spot. */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(5,12,26,0.10)_0%,transparent_25%,transparent_75%,rgba(5,12,26,0.18)_100%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(46,30,20,0.10)_0%,transparent_25%,transparent_75%,rgba(46,30,20,0.18)_100%)] pointer-events-none" />
 
       {/* Drop intro — lives on its own minimal screen, then hands off to the main content. */}
       <AnimatePresence>
@@ -115,7 +115,7 @@ const SplashScreen: React.FC = () => {
             <button
               key={l}
               onClick={() => setLang(l)}
-              className={`px-3 py-1.5 rounded-full border transition-colors ${lang === l ? 'border-[#D4AF37] text-[#D4AF37]' : 'border-white/10 hover:border-white/30'}`}
+              className={`px-3 py-1.5 rounded-full border transition-colors ${lang === l ? 'border-[#B8532F] text-[#B8532F]' : 'border-white/10 hover:border-white/30'}`}
             >{l}</button>
           ))}
         </motion.div>
@@ -135,27 +135,33 @@ const SplashScreen: React.FC = () => {
           {t.title}
         </motion.h1>
 
-        {/* Sealed title line */}
-        <motion.p
+        {/* Ivoire card holding both quoted lines — a parchment ground
+            over the liquid background so the italic copy stays legible
+            regardless of where the gold pools beneath. */}
+        <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.0, delay: 0.45, ease: 'easeOut' }}
-          className="mt-8 md:mt-10 font-serif italic text-white text-xl md:text-3xl lg:text-4xl max-w-3xl leading-snug"
-          style={{ textShadow: '0 1px 3px rgba(0,0,0,0.85), 0 2px 16px rgba(0,0,0,0.65), 0 4px 36px rgba(0,0,0,0.45)' }}
+          className="mt-8 md:mt-10 max-w-3xl w-full rounded-[22px] px-6 md:px-10 py-6 md:py-8 backdrop-blur-[3px]"
+          style={{
+            background: 'rgba(244,231,221,0.18)',
+            border: '1px solid rgba(244,231,221,0.28)',
+            boxShadow: '0 14px 40px rgba(0,0,0,0.35)',
+          }}
         >
-          {t.sealed}
-        </motion.p>
-
-        {/* Paragraph */}
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.7, ease: 'easeOut' }}
-          className="mt-6 md:mt-8 font-serif italic text-white/85 text-sm md:text-base max-w-xl leading-[1.8]"
-          style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8), 0 2px 14px rgba(0,0,0,0.6)' }}
-        >
-          {t.para}
-        </motion.p>
+          <p
+            className="font-serif italic text-white text-xl md:text-3xl lg:text-4xl leading-snug"
+            style={{ textShadow: '0 1px 3px rgba(0,0,0,0.85), 0 2px 16px rgba(0,0,0,0.65), 0 4px 36px rgba(0,0,0,0.45)' }}
+          >
+            {t.sealed}
+          </p>
+          <p
+            className="mt-5 md:mt-6 font-serif italic text-white/95 text-base md:text-lg max-w-2xl mx-auto leading-[1.8]"
+            style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8), 0 2px 14px rgba(0,0,0,0.6)' }}
+          >
+            {t.para}
+          </p>
+        </motion.div>
 
         {/* Rejoindre Origine — the only CTA. Stop propagation so the click
             goes to /origine and not to the background /accueil handler. */}
@@ -164,7 +170,7 @@ const SplashScreen: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.95, ease: 'easeOut' }}
           onClick={e => { e.stopPropagation(); goToRoute(navigate, '/origine'); }}
-          className="mt-10 md:mt-12 group inline-flex items-center gap-3 bg-[#D4AF37] hover:bg-white text-[#0B1A36] px-10 py-4 rounded-full font-bold uppercase tracking-[0.25em] text-[11px] md:text-xs shadow-[0_10px_36px_rgba(212,175,55,0.35)] transition-all duration-300 whitespace-nowrap"
+          className="mt-10 md:mt-12 group inline-flex items-center gap-3 bg-[#B8532F] hover:bg-white text-[#3A251E] px-10 py-4 rounded-full font-bold uppercase tracking-[0.25em] text-[11px] md:text-xs shadow-[0_10px_36px_rgba(184,83,47,0.35)] transition-all duration-300 whitespace-nowrap"
         >
           {t.cta}
           <i className="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform" />
@@ -174,7 +180,7 @@ const SplashScreen: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.9, delay: 1.15 }}
-          className="mt-4 font-serif italic text-[#D4AF37]/90 text-xs md:text-sm"
+          className="mt-4 font-serif italic text-[#B8532F] text-sm md:text-base"
         >
           {t.ctaSub}
         </motion.p>

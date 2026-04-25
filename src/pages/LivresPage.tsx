@@ -61,21 +61,21 @@ const LivresPage: React.FC = () => {
   }, [products, t.items]);
 
   return (
-    <div className="min-h-screen bg-[#F5F5F0] dark:bg-[#050C1A] pt-36 pb-24">
+    <div className="min-h-screen dark:bg-[#2E1A14] pt-36 pb-24">
       <div className="max-w-6xl mx-auto px-6 md:px-12">
         <div className="text-center mb-20">
-          <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
+          <span className="text-[#B8532F] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
             <EditableText
               fieldKey="livres.hero.kicker"
               defaultValue={lang === 'FR' ? 'Bibliothèque Inspirata' : 'Inspirata Library'}
             />
           </span>
-          <h1 className="text-5xl md:text-7xl font-serif text-[#0B1A36] dark:text-white">
+          <h1 className="text-5xl md:text-7xl font-serif text-[#3A251E] dark:text-white">
             <EditableText fieldKey="livres.hero.title" defaultValue={t.title} />
           </h1>
-          <div className="w-24 h-1 bg-[#D4AF37] mx-auto mt-10" />
+          <div className="w-24 h-1 bg-[#B8532F] mx-auto mt-10" />
           {loadingShop && (
-            <p className="mt-6 text-xs uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">
+            <p className="mt-6 text-xs uppercase tracking-widest text-[#3A251E]/40 dark:text-white/40">
               <i className="fa-solid fa-circle-notch fa-spin mr-2" />
               {lang === 'FR' ? 'Synchronisation boutique…' : 'Syncing shop…'}
             </p>
@@ -97,15 +97,15 @@ const LivresPage: React.FC = () => {
               >
 
                 {/* Book */}
-                <div className={`w-full aspect-[1/1.3] rounded-r-[16px] rounded-l-[3px] mb-8 overflow-hidden relative shadow-2xl border-l-4 border-[#0B1A36]/10 transition-all duration-500 ${bookOpen === idx ? 'rotate-3 translate-y-[-12px] shadow-[0_30px_60px_rgba(0,0,0,0.3)]' : 'group-hover:-translate-y-4 group-hover:rotate-1'}`}>
+                <div className={`w-full aspect-[1/1.3] rounded-r-[16px] rounded-l-[3px] mb-8 overflow-hidden relative shadow-2xl border-l-4 border-[#3A251E]/10 transition-all duration-500 ${bookOpen === idx ? 'rotate-3 translate-y-[-12px] shadow-[0_30px_60px_rgba(0,0,0,0.3)]' : 'group-hover:-translate-y-4 group-hover:rotate-1'}`}>
                   {item.cover ? (
                     <div className="absolute inset-0" style={{ backgroundImage: `url(${item.cover})`, backgroundSize: '100% 100%' }} />
                   ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0B1A36] text-white p-6">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#3A251E] text-white p-6">
                       {item.status === 'locked' ? (
                         <i className="fa-solid fa-lock text-4xl text-white/20 mb-4" />
                       ) : (
-                        <i className="fa-solid fa-leaf text-2xl text-[#D4AF37] mb-4 opacity-60" />
+                        <i className="fa-solid fa-leaf text-2xl text-[#B8532F] mb-4 opacity-60" />
                       )}
                       <h4 className="font-serif text-xl uppercase tracking-widest">{item.title}</h4>
                     </div>
@@ -114,12 +114,12 @@ const LivresPage: React.FC = () => {
                   <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 </div>
 
-                <h3 className="text-2xl font-serif text-[#0B1A36] dark:text-white mb-2 group-hover:text-[#D4AF37] transition-colors">{item.title}</h3>
-                <p className="text-sm text-[#0B1A36]/60 dark:text-white/60 mb-4">{item.subtitle || item.desc}</p>
+                <h3 className="text-2xl font-serif text-[#3A251E] dark:text-white mb-2 group-hover:text-[#B8532F] transition-colors">{item.title}</h3>
+                <p className="text-sm text-[#3A251E]/60 dark:text-white/60 mb-4">{item.subtitle || item.desc}</p>
 
                 {item.status === 'available' && (
                   <div className="flex flex-col gap-3 w-full">
-                    <p className="font-bold text-[#D4AF37] text-lg">{displayPrice}</p>
+                    <p className="font-bold text-[#B8532F] text-lg">{displayPrice}</p>
 
                     {canOrder && variant ? (
                       <button
@@ -136,7 +136,7 @@ const LivresPage: React.FC = () => {
                             image: item.cover || shopify!.featuredImage?.url,
                           });
                         }}
-                        className="w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-md"
+                        className="w-full bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors shadow-md"
                       >
                         {lang === 'FR' ? 'Commander' : 'Order'}
                       </button>
@@ -144,14 +144,14 @@ const LivresPage: React.FC = () => {
                       <button
                         disabled
                         title={shopError}
-                        className="w-full bg-[#0B1A36]/30 dark:bg-white/10 text-white/80 py-3 rounded-full font-bold uppercase tracking-widest text-xs cursor-not-allowed"
+                        className="w-full bg-[#3A251E]/30 dark:bg-white/10 text-white/80 py-3 rounded-full font-bold uppercase tracking-widest text-xs cursor-not-allowed"
                       >
                         {lang === 'FR' ? 'Boutique indisponible' : 'Shop unavailable'}
                       </button>
                     ) : loadingShop ? (
                       <button
                         disabled
-                        className="w-full bg-[#0B1A36]/20 dark:bg-white/5 text-[#0B1A36]/50 dark:text-white/50 py-3 rounded-full font-bold uppercase tracking-widest text-xs cursor-wait"
+                        className="w-full bg-[#3A251E]/20 dark:bg-white/5 text-[#3A251E]/50 dark:text-white/50 py-3 rounded-full font-bold uppercase tracking-widest text-xs cursor-wait"
                       >
                         <i className="fa-solid fa-circle-notch fa-spin mr-2" />
                         {lang === 'FR' ? 'Chargement…' : 'Loading…'}
@@ -160,7 +160,7 @@ const LivresPage: React.FC = () => {
                       <button
                         disabled
                         title={lang === 'FR' ? 'Livre non trouvé dans Shopify — ajoutez-le à la boutique Inspirata pour activer la commande.' : 'Book not found in Shopify — add it to the Inspirata shop to enable ordering.'}
-                        className="w-full bg-[#0B1A36]/30 dark:bg-white/10 text-white/80 py-3 rounded-full font-bold uppercase tracking-widest text-xs cursor-not-allowed"
+                        className="w-full bg-[#3A251E]/30 dark:bg-white/10 text-white/80 py-3 rounded-full font-bold uppercase tracking-widest text-xs cursor-not-allowed"
                       >
                         {lang === 'FR' ? 'Bientôt en boutique' : 'Coming to shop'}
                       </button>
@@ -168,8 +168,8 @@ const LivresPage: React.FC = () => {
 
                     {/* Mini reviews */}
                     {item.reviews && (
-                      <p className="text-xs text-[#0B1A36]/40 dark:text-white/40">
-                        <i className="fa-solid fa-star text-[#D4AF37] mr-1" /> {item.reviews}
+                      <p className="text-sm text-[#3A251E]/55 dark:text-white/55">
+                        <i className="fa-solid fa-star text-[#B8532F] mr-1" /> {item.reviews}
                       </p>
                     )}
                   </div>
@@ -177,13 +177,13 @@ const LivresPage: React.FC = () => {
 
                 {/* Expanded view */}
                 {bookOpen === idx && item.shortDesc && (
-                  <div className="mt-6 p-6 bg-white dark:bg-[#0B1A36]/60 rounded-[20px] text-left shadow-lg border border-[#0B1A36]/5 dark:border-white/5">
-                    <p className="text-[#0B1A36]/80 dark:text-white/80 leading-relaxed whitespace-pre-line text-sm">{item.shortDesc}</p>
+                  <div className="mt-6 p-6 bg-white dark:bg-[#3A251E]/60 rounded-[20px] text-left shadow-lg border border-[#3A251E]/5 dark:border-white/5">
+                    <p className="text-[#3A251E]/80 dark:text-white/80 leading-relaxed whitespace-pre-line text-base">{item.shortDesc}</p>
                     {item.features && (
                       <div className="flex flex-wrap gap-2 mt-4">
                         {item.features.map((f: string, i: number) => (
-                          <span key={i} className="text-xs border border-[#0B1A36]/10 dark:border-white/10 px-3 py-1 rounded-full text-[#0B1A36]/60 dark:text-white/60">
-                            <i className="fa-solid fa-check text-[#D4AF37] mr-1" />{f}
+                          <span key={i} className="text-sm border border-[#3A251E]/15 dark:border-white/15 px-3 py-1 rounded-full text-[#3A251E]/70 dark:text-white/70">
+                            <i className="fa-solid fa-check text-[#B8532F] mr-1" />{f}
                           </span>
                         ))}
                       </div>
@@ -199,18 +199,18 @@ const LivresPage: React.FC = () => {
         {(CONTENT[lang].media.details.book.items as unknown as any[]).find(i => i.detailedReviews)?.detailedReviews && (
           <div className="mt-24">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-serif text-[#0B1A36] dark:text-white italic">
+              <h2 className="text-3xl font-serif text-[#3A251E] dark:text-white italic">
                 {lang === 'FR' ? 'Ce qu\'elles en disent' : 'What they say'}
               </h2>
-              <div className="w-16 h-1 bg-[#D4AF37] mx-auto mt-4 opacity-50" />
+              <div className="w-16 h-1 bg-[#B8532F] mx-auto mt-4 opacity-50" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {(CONTENT[lang].media.details.book.items[0] as any).detailedReviews?.map((r: any, i: number) => (
-                <div key={i} className="bg-white dark:bg-[#0B1A36]/60 p-8 rounded-[24px] shadow-lg border border-[#0B1A36]/5 dark:border-white/5 relative mt-4">
-                  <div className="absolute -top-4 left-8 text-4xl text-[#D4AF37] opacity-30 font-serif">"</div>
-                  <div className="flex text-[#D4AF37] mb-4 text-xs gap-1">{Array(r.rating).fill(0).map((_, j) => <i key={j} className="fa-solid fa-star" />)}</div>
-                  <p className="text-[#0B1A36]/80 dark:text-white/80 italic font-serif text-lg mb-6 leading-relaxed">"{r.text}"</p>
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">{r.user}</p>
+                <div key={i} className="bg-white dark:bg-[#3A251E]/60 p-8 rounded-[24px] shadow-lg border border-[#3A251E]/5 dark:border-white/5 relative mt-4">
+                  <div className="absolute -top-4 left-8 text-4xl text-[#B8532F] opacity-30 font-serif">"</div>
+                  <div className="flex text-[#B8532F] mb-4 text-xs gap-1">{Array(r.rating).fill(0).map((_, j) => <i key={j} className="fa-solid fa-star" />)}</div>
+                  <p className="text-[#3A251E]/80 dark:text-white/80 italic font-serif text-lg mb-6 leading-relaxed">"{r.text}"</p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-[#3A251E]/40 dark:text-white/40">{r.user}</p>
                 </div>
               ))}
             </div>

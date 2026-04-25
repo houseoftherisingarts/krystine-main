@@ -26,8 +26,8 @@ const NewsletterSection: React.FC = () => {
           onClick={() => setTab('subscribers')}
           className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
             tab === 'subscribers'
-              ? 'bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36]'
-              : 'bg-white dark:bg-[#0B1A36]/60 text-[#0B1A36]/60 dark:text-white/60 hover:text-[#D4AF37] border border-[#0B1A36]/5 dark:border-white/5'
+              ? 'bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E]'
+              : 'bg-white dark:bg-[#3A251E]/60 text-[#3A251E]/60 dark:text-white/60 hover:text-[#B8532F] border border-[#3A251E]/5 dark:border-white/5'
           }`}
         >
           <i className="fa-solid fa-users mr-2" /> Abonnés
@@ -36,8 +36,8 @@ const NewsletterSection: React.FC = () => {
           onClick={() => { setTab('newsletters'); setView({ kind: 'list' }); }}
           className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
             tab === 'newsletters'
-              ? 'bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36]'
-              : 'bg-white dark:bg-[#0B1A36]/60 text-[#0B1A36]/60 dark:text-white/60 hover:text-[#D4AF37] border border-[#0B1A36]/5 dark:border-white/5'
+              ? 'bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E]'
+              : 'bg-white dark:bg-[#3A251E]/60 text-[#3A251E]/60 dark:text-white/60 hover:text-[#B8532F] border border-[#3A251E]/5 dark:border-white/5'
           }`}
         >
           <i className="fa-solid fa-envelope-open-text mr-2" /> Infolettres

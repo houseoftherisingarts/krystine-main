@@ -27,6 +27,7 @@ const sourceLabel = (key: string): string => {
       case 'waitlist-lancement-anglicane':     return "Lancement · L'Anglicane (oct. 2026)";
       case 'waitlist-lancement-montreal':      return 'Lancement · Montréal (nov. 2026)';
       case 'waitlist-retraite-nov-2026':       return 'Retraite · novembre 2026';
+      case 'waitlist-retraite-val-morin-nov-2026': return 'Retraite Val-Morin · novembre 2026';
       case 'waitlist-retraite-fev-2027':       return 'Retraite · février 2027';
       case 'waitlist-retraite-mai-2027':       return 'Retraite · mai 2027';
       case 'accueil-pulsation': return 'Accueil — La Pulsation';
@@ -146,7 +147,7 @@ const SubscribersPanel: React.FC = () => {
           value={source}
           onChange={e => setSource(e.target.value)}
           title="Filtrer par source / formulaire"
-          className="px-4 py-2 rounded-full border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-[#0B1A36]/60 text-sm text-[#0B1A36] dark:text-white outline-none focus:border-[#D4AF37]"
+          className="px-4 py-2 rounded-full border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-[#3A251E]/60 text-sm text-[#3A251E] dark:text-white outline-none focus:border-[#B8532F]"
         >
           <option value={ALL_SOURCES}>Tous les contacts ({subs.length})</option>
           {sourceOptions.entries.map(([key, count]) => (
@@ -161,10 +162,10 @@ const SubscribersPanel: React.FC = () => {
           placeholder="Rechercher (email, nom, étiquette)…"
           value={filter}
           onChange={e => setFilter(e.target.value)}
-          className="flex-1 min-w-[220px] px-4 py-2 rounded-full border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-[#0B1A36]/60 text-sm text-[#0B1A36] dark:text-white outline-none focus:border-[#D4AF37]"
+          className="flex-1 min-w-[220px] px-4 py-2 rounded-full border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-[#3A251E]/60 text-sm text-[#3A251E] dark:text-white outline-none focus:border-[#B8532F]"
         />
-        <p className="text-sm text-[#0B1A36]/60 dark:text-white/60">{filtered.length} / {subs.length}</p>
-        <label className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#D4AF37] text-[#0B1A36] cursor-pointer hover:bg-[#0B1A36] hover:text-[#D4AF37] transition-colors">
+        <p className="text-sm text-[#3A251E]/60 dark:text-white/60">{filtered.length} / {subs.length}</p>
+        <label className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#B8532F] text-[#3A251E] cursor-pointer hover:bg-[#3A251E] hover:text-[#B8532F] transition-colors">
           <i className="fa-solid fa-file-import" /> {importing ? 'Importation…' : 'Importer CSV'}
           <input ref={fileRef} type="file" accept=".csv,text/csv" className="hidden" onChange={handleFile} disabled={importing} />
         </label>
@@ -182,20 +183,20 @@ const SubscribersPanel: React.FC = () => {
           &nbsp;<strong>{importResult.invalid}</strong> lignes invalides.
         </div>
       )}
-      <p className="text-[11px] text-[#0B1A36]/50 dark:text-white/50">
-        Format CSV attendu — colonnes reconnues : <code className="bg-[#D4AF37]/10 px-1 rounded">email</code>, <code className="bg-[#D4AF37]/10 px-1 rounded">firstName</code>,
-        <code className="bg-[#D4AF37]/10 px-1 rounded">lastName</code>, <code className="bg-[#D4AF37]/10 px-1 rounded">tags</code> (séparées par <code>|</code> ou <code>,</code>). Les synonymes français (<em>courriel</em>, <em>prénom</em>, <em>nom</em>) sont acceptés.
+      <p className="text-[11px] text-[#3A251E]/50 dark:text-white/50">
+        Format CSV attendu — colonnes reconnues : <code className="bg-[#B8532F]/10 px-1 rounded">email</code>, <code className="bg-[#B8532F]/10 px-1 rounded">firstName</code>,
+        <code className="bg-[#B8532F]/10 px-1 rounded">lastName</code>, <code className="bg-[#B8532F]/10 px-1 rounded">tags</code> (séparées par <code>|</code> ou <code>,</code>). Les synonymes français (<em>courriel</em>, <em>prénom</em>, <em>nom</em>) sont acceptés.
       </p>
 
       {/* List */}
       {loading ? (
-        <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>
+        <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" /></div>
       ) : subs.length === 0 ? (
         <EmptyState icon="fa-envelope">Aucun abonné pour l'instant. Importez votre liste pour commencer.</EmptyState>
       ) : (
         <Card className="overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-[#F5F5F0] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60">
+            <thead className="bg-[#F4E7DD] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60">
               <tr>
                 <th className="text-left px-4 py-3">Email</th>
                 <th className="text-left px-4 py-3 hidden md:table-cell">Nom</th>
@@ -208,17 +209,17 @@ const SubscribersPanel: React.FC = () => {
             </thead>
             <tbody>
               {filtered.map(s => (
-                <tr key={s.id} className="border-t border-[#0B1A36]/5 dark:border-white/5 hover:bg-[#D4AF37]/5">
-                  <td className="px-4 py-3 text-[#0B1A36] dark:text-white">{s.email}</td>
-                  <td className="px-4 py-3 text-[#0B1A36]/70 dark:text-white/70 hidden md:table-cell">{[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'}</td>
+                <tr key={s.id} className="border-t border-[#3A251E]/5 dark:border-white/5 hover:bg-[#B8532F]/5">
+                  <td className="px-4 py-3 text-[#3A251E] dark:text-white">{s.email}</td>
+                  <td className="px-4 py-3 text-[#3A251E]/70 dark:text-white/70 hidden md:table-cell">{[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'}</td>
                   <td className="px-4 py-3 hidden lg:table-cell">
                     {(s.tags && s.tags.length > 0) ? (
                       <div className="flex flex-wrap gap-1">
                         {s.tags.slice(0, 3).map(t => (
-                          <span key={t} className="text-[10px] uppercase tracking-widest bg-[#D4AF37]/10 text-[#D4AF37] px-2 py-0.5 rounded-full">{t}</span>
+                          <span key={t} className="text-[10px] uppercase tracking-widest bg-[#B8532F]/10 text-[#B8532F] px-2 py-0.5 rounded-full">{t}</span>
                         ))}
                       </div>
-                    ) : <span className="text-[#0B1A36]/40 dark:text-white/40">—</span>}
+                    ) : <span className="text-[#3A251E]/40 dark:text-white/40">—</span>}
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell">
                     <span className={`text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full ${
@@ -228,8 +229,8 @@ const SubscribersPanel: React.FC = () => {
                       'bg-green-50 text-green-600'
                     }`}>{s.status || 'active'}</span>
                   </td>
-                  <td className="px-4 py-3 text-[#0B1A36]/50 dark:text-white/50 hidden md:table-cell">{s.source || '—'}</td>
-                  <td className="px-4 py-3 text-[#0B1A36]/50 dark:text-white/50 hidden md:table-cell">{s.subscribedAt?.toDate().toLocaleDateString('fr-CA') || '—'}</td>
+                  <td className="px-4 py-3 text-[#3A251E]/50 dark:text-white/50 hidden md:table-cell">{s.source || '—'}</td>
+                  <td className="px-4 py-3 text-[#3A251E]/50 dark:text-white/50 hidden md:table-cell">{s.subscribedAt?.toDate().toLocaleDateString('fr-CA') || '—'}</td>
                   <td className="px-4 py-3 text-right">
                     <DangerButton onClick={() => del(s)}><i className="fa-solid fa-trash" /></DangerButton>
                   </td>

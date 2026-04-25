@@ -36,13 +36,13 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
   return (
     <div className="space-y-6 max-w-3xl">
       <Card className="p-6">
-        <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-4">Compte connecté</h3>
+        <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-4">Compte connecté</h3>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            {user.photoURL && <img src={user.photoURL} alt="" className="w-12 h-12 rounded-full border border-[#D4AF37]/30" />}
+            {user.photoURL && <img src={user.photoURL} alt="" className="w-12 h-12 rounded-full border border-[#B8532F]/30" />}
             <div>
-              <p className="font-serif text-[#0B1A36] dark:text-white">{user.displayName || user.email?.split('@')[0]}</p>
-              <p className="text-sm text-[#0B1A36]/50 dark:text-white/50">{user.email}</p>
+              <p className="font-serif text-[#3A251E] dark:text-white">{user.displayName || user.email?.split('@')[0]}</p>
+              <p className="text-sm text-[#3A251E]/50 dark:text-white/50">{user.email}</p>
             </div>
           </div>
           <DangerButton onClick={logout}><i className="fa-solid fa-right-from-bracket" /> Déconnexion</DangerButton>
@@ -50,14 +50,14 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-4">Administrateurs autorisés</h3>
-        <p className="text-xs text-[#0B1A36]/50 dark:text-white/50 mb-4">
-          Pour ajouter ou retirer un administrateur, modifiez la constante <code className="bg-[#F5F5F0] dark:bg-white/10 px-2 py-0.5 rounded text-[11px]">ADMIN_EMAILS</code> dans <code className="bg-[#F5F5F0] dark:bg-white/10 px-2 py-0.5 rounded text-[11px]">src/firebase/auth.ts</code>.
+        <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-4">Administrateurs autorisés</h3>
+        <p className="text-xs text-[#3A251E]/50 dark:text-white/50 mb-4">
+          Pour ajouter ou retirer un administrateur, modifiez la constante <code className="bg-[#F4E7DD] dark:bg-white/10 px-2 py-0.5 rounded text-[11px]">ADMIN_EMAILS</code> dans <code className="bg-[#F4E7DD] dark:bg-white/10 px-2 py-0.5 rounded text-[11px]">src/firebase/auth.ts</code>.
         </p>
         <ul className="space-y-2">
           {ADMIN_EMAILS.map(email => (
-            <li key={email} className="flex items-center gap-3 text-sm text-[#0B1A36] dark:text-white">
-              <i className="fa-solid fa-user-shield text-[#D4AF37]" />
+            <li key={email} className="flex items-center gap-3 text-sm text-[#3A251E] dark:text-white">
+              <i className="fa-solid fa-user-shield text-[#B8532F]" />
               <span>{email}</span>
             </li>
           ))}
@@ -65,20 +65,20 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-2">Fichiers audio</h3>
-        <p className="text-xs text-[#0B1A36]/50 dark:text-white/50 mb-5">
+        <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-2">Fichiers audio</h3>
+        <p className="text-xs text-[#3A251E]/50 dark:text-white/50 mb-5">
           Les pistes audio utilisées sur le site. Écoutez-les ici ou téléchargez l'original.
         </p>
         <ul className="space-y-5">
           {SITE_AUDIO.map(a => (
-            <li key={a.id} className="border border-[#0B1A36]/5 dark:border-white/5 rounded-xl p-4 bg-[#F5F5F0]/60 dark:bg-white/5">
+            <li key={a.id} className="border border-[#3A251E]/5 dark:border-white/5 rounded-xl p-4 bg-[#F4E7DD]/60 dark:bg-white/5">
               <div className="flex items-start justify-between gap-4 flex-wrap mb-3">
                 <div className="min-w-0">
-                  <p className="font-serif text-[#0B1A36] dark:text-white flex items-center gap-2">
-                    <i className="fa-solid fa-music text-[#D4AF37]" />
+                  <p className="font-serif text-[#3A251E] dark:text-white flex items-center gap-2">
+                    <i className="fa-solid fa-music text-[#B8532F]" />
                     {a.labelFR}
                   </p>
-                  <p className="text-[11px] text-[#0B1A36]/50 dark:text-white/50 mt-1 leading-relaxed">{a.noteFR}</p>
+                  <p className="text-[11px] text-[#3A251E]/50 dark:text-white/50 mt-1 leading-relaxed">{a.noteFR}</p>
                 </div>
                 {/* Using an <a download> with a same-origin proxy would give a
                     cleaner filename, but GCS serves these with CORS open, so
@@ -88,7 +88,7 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
                 <a
                   href={a.url}
                   download={a.filename}
-                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-md whitespace-nowrap"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors shadow-md whitespace-nowrap"
                 >
                   <i className="fa-solid fa-download" /> Télécharger
                 </a>
@@ -110,7 +110,7 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
                   href={a.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[11px] uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50 hover:text-[#D4AF37]"
+                  className="text-[11px] uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 hover:text-[#B8532F]"
                 >
                   <i className="fa-solid fa-up-right-from-square mr-1.5" />
                   Ouvrir dans un nouvel onglet
@@ -122,15 +122,15 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-4">Infrastructure</h3>
+        <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-4">Infrastructure</h3>
         <dl className="space-y-3 text-sm">
           <div className="flex items-start justify-between gap-4">
-            <dt className="text-[#0B1A36]/60 dark:text-white/60"><i className="fa-solid fa-fire text-orange-400 mr-2" />Firebase</dt>
-            <dd className="text-[#0B1A36] dark:text-white font-mono text-xs">{firebaseProject}</dd>
+            <dt className="text-[#3A251E]/60 dark:text-white/60"><i className="fa-solid fa-fire text-orange-400 mr-2" />Firebase</dt>
+            <dd className="text-[#3A251E] dark:text-white font-mono text-xs">{firebaseProject}</dd>
           </div>
           <div className="flex items-start justify-between gap-4">
-            <dt className="text-[#0B1A36]/60 dark:text-white/60"><i className="fa-brands fa-shopify text-green-500 mr-2" />Shopify</dt>
-            <dd className="text-[#0B1A36] dark:text-white font-mono text-xs">{shopifyDomain}</dd>
+            <dt className="text-[#3A251E]/60 dark:text-white/60"><i className="fa-brands fa-shopify text-green-500 mr-2" />Shopify</dt>
+            <dd className="text-[#3A251E] dark:text-white font-mono text-xs">{shopifyDomain}</dd>
           </div>
         </dl>
       </Card>

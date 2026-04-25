@@ -28,15 +28,15 @@ const ClientPortal: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#F5F5F0] dark:bg-[#050C1A] pt-32 pb-24 px-6">
+      <div className="min-h-screen dark:bg-[#2E1A14] pt-32 pb-24 px-6">
         <div className="max-w-md mx-auto text-center">
-          <h1 className="text-3xl font-serif text-[#0B1A36] dark:text-white mb-4">
+          <h1 className="text-3xl font-serif text-[#3A251E] dark:text-white mb-4">
             {lang === 'FR' ? 'Espace Client' : 'Client Space'}
           </h1>
-          <p className="text-[#0B1A36]/60 dark:text-white/60 mb-8">
+          <p className="text-[#3A251E]/60 dark:text-white/60 mb-8">
             {lang === 'FR' ? 'Connectez-vous pour accéder à votre espace.' : 'Sign in to access your space.'}
           </p>
-          <button onClick={() => setSignInOpen(true)} className="bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors">
+          <button onClick={() => setSignInOpen(true)} className="bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors">
             {lang === 'FR' ? 'Se connecter' : 'Sign in'}
           </button>
         </div>
@@ -46,15 +46,15 @@ const ClientPortal: React.FC = () => {
 
   if (isAdmin) {
     return (
-      <div className="min-h-screen bg-[#F5F5F0] dark:bg-[#050C1A] pt-32 pb-24 px-6">
+      <div className="min-h-screen dark:bg-[#2E1A14] pt-32 pb-24 px-6">
         <div className="max-w-md mx-auto text-center">
-          <h1 className="text-3xl font-serif text-[#0B1A36] dark:text-white mb-4">
+          <h1 className="text-3xl font-serif text-[#3A251E] dark:text-white mb-4">
             {lang === 'FR' ? 'Compte Administrateur' : 'Admin Account'}
           </h1>
-          <p className="text-[#0B1A36]/60 dark:text-white/60 mb-8">
+          <p className="text-[#3A251E]/60 dark:text-white/60 mb-8">
             {lang === 'FR' ? 'Votre tableau de bord est dans l\'espace admin.' : 'Your dashboard is in the admin space.'}
           </p>
-          <a href="/admin" className="bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors inline-block">
+          <a href="/admin" className="bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors inline-block">
             {lang === 'FR' ? 'Aller au tableau de bord' : 'Go to admin dashboard'}
           </a>
         </div>
@@ -72,14 +72,14 @@ const ClientPortal: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F5F5F0] dark:bg-[#050C1A] pt-28 pb-24">
+    <div className="min-h-screen dark:bg-[#2E1A14] pt-28 pb-24">
       <div className="max-w-5xl mx-auto px-6">
         {/* Header */}
-        <div className="bg-white dark:bg-[#0B1A36] rounded-[24px] shadow-sm border border-[#0B1A36]/5 dark:border-white/5 p-6 md:p-8 mb-6 flex flex-wrap items-center gap-5">
+        <div className="bg-white dark:bg-[#3A251E] rounded-[24px] shadow-sm border border-[#3A251E]/5 dark:border-white/5 p-6 md:p-8 mb-6 flex flex-wrap items-center gap-5">
           <div className="relative">
-            <div className="w-20 h-20 rounded-full bg-cover bg-center bg-[#F5F5F0] dark:bg-white/5 border-2 border-[#D4AF37]/30" style={{ backgroundImage: member?.photoURL ? `url(${member.photoURL})` : (user.photoURL ? `url(${user.photoURL})` : undefined) }}>
+            <div className="w-20 h-20 rounded-full bg-cover bg-center bg-[#F4E7DD] dark:bg-white/5 border-2 border-[#B8532F]/30" style={{ backgroundImage: member?.photoURL ? `url(${member.photoURL})` : (user.photoURL ? `url(${user.photoURL})` : undefined) }}>
               {!member?.photoURL && !user.photoURL && (
-                <div className="w-full h-full flex items-center justify-center text-[#0B1A36]/30 dark:text-white/30">
+                <div className="w-full h-full flex items-center justify-center text-[#3A251E]/30 dark:text-white/30">
                   <i className="fa-solid fa-user text-2xl" />
                 </div>
               )}
@@ -87,11 +87,11 @@ const ClientPortal: React.FC = () => {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl md:text-3xl font-serif text-[#0B1A36] dark:text-white">
+              <h1 className="text-2xl md:text-3xl font-serif text-[#3A251E] dark:text-white">
                 {member?.displayName || user.displayName || user.email?.split('@')[0]}
               </h1>
               {member?.dosha && (
-                <span className="text-[10px] uppercase tracking-[0.2em] font-bold px-3 py-1 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/30">
+                <span className="text-[10px] uppercase tracking-[0.2em] font-bold px-3 py-1 rounded-full bg-[#B8532F]/15 text-[#B8532F] border border-[#B8532F]/30">
                   <i className="fa-solid fa-circle-nodes mr-1" /> {member.dosha}
                 </span>
               )}
@@ -100,15 +100,15 @@ const ClientPortal: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setTab('loyalty')}
-                className="text-[10px] uppercase tracking-[0.2em] font-bold px-3 py-1 rounded-full bg-[#0B1A36] text-[#D4AF37] border border-[#D4AF37]/40 hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors"
+                className="text-[10px] uppercase tracking-[0.2em] font-bold px-3 py-1 rounded-full bg-[#3A251E] text-[#B8532F] border border-[#B8532F]/40 hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors"
               >
                 <i className="fa-solid fa-seedling mr-1" />
                 {pointsBalance.balance} {lang === 'FR' ? 'pts' : 'pts'}
               </button>
             </div>
-            <p className="text-sm text-[#0B1A36]/50 dark:text-white/50 mt-1">{user.email}</p>
+            <p className="text-sm text-[#3A251E]/50 dark:text-white/50 mt-1">{user.email}</p>
           </div>
-          <button onClick={logout} className="text-xs uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50 hover:text-red-500">
+          <button onClick={logout} className="text-xs uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 hover:text-red-500">
             <i className="fa-solid fa-right-from-bracket mr-2" />{lang === 'FR' ? 'Déconnexion' : 'Sign out'}
           </button>
         </div>
@@ -121,8 +121,8 @@ const ClientPortal: React.FC = () => {
               onClick={() => setTab(t.id)}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-colors ${
                 tab === t.id
-                  ? 'bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36]'
-                  : 'bg-white dark:bg-[#0B1A36]/60 text-[#0B1A36]/60 dark:text-white/60 hover:text-[#D4AF37] border border-[#0B1A36]/5 dark:border-white/5'
+                  ? 'bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E]'
+                  : 'bg-white dark:bg-[#3A251E]/60 text-[#3A251E]/60 dark:text-white/60 hover:text-[#B8532F] border border-[#3A251E]/5 dark:border-white/5'
               }`}
             >
               <i className={`fa-solid ${t.icon}`} /> {t.label}
@@ -131,7 +131,7 @@ const ClientPortal: React.FC = () => {
         </div>
 
         {/* Tab content */}
-        <div className="bg-white dark:bg-[#0B1A36] rounded-[24px] shadow-sm border border-[#0B1A36]/5 dark:border-white/5 p-6 md:p-8">
+        <div className="bg-white dark:bg-[#3A251E] rounded-[24px] shadow-sm border border-[#3A251E]/5 dark:border-white/5 p-6 md:p-8">
           {tab === 'profile'  && <ProfileTab />}
           {tab === 'orders'   && <OrdersTab />}
           {tab === 'loyalty'  && <ClientLoyalty />}
@@ -184,30 +184,30 @@ const ProfileTab: React.FC = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
       <div className="md:col-span-1">
-        <label className="block text-[10px] uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-3">Photo</label>
-        <div className="relative w-40 h-40 rounded-full overflow-hidden bg-[#F5F5F0] dark:bg-white/5 border-2 border-[#D4AF37]/30 bg-cover bg-center" style={{ backgroundImage: member?.photoURL ? `url(${member.photoURL})` : (user?.photoURL ? `url(${user.photoURL})` : undefined) }}>
+        <label className="block text-[10px] uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-3">Photo</label>
+        <div className="relative w-40 h-40 rounded-full overflow-hidden bg-[#F4E7DD] dark:bg-white/5 border-2 border-[#B8532F]/30 bg-cover bg-center" style={{ backgroundImage: member?.photoURL ? `url(${member.photoURL})` : (user?.photoURL ? `url(${user.photoURL})` : undefined) }}>
           {uploading && <div className="absolute inset-0 bg-black/50 flex items-center justify-center"><i className="fa-solid fa-circle-notch fa-spin text-white text-xl" /></div>}
         </div>
-        <label className="inline-block mt-3 text-xs uppercase tracking-widest text-[#D4AF37] hover:underline cursor-pointer">
+        <label className="inline-block mt-3 text-xs uppercase tracking-widest text-[#B8532F] hover:underline cursor-pointer">
           <i className="fa-solid fa-camera mr-2" />{lang === 'FR' ? 'Changer la photo' : 'Change photo'}
           <input type="file" accept="image/*" className="hidden" onChange={onPickPhoto} />
         </label>
       </div>
       <div className="md:col-span-2 space-y-5">
         <div>
-          <label className="block text-[10px] uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-2">{lang === 'FR' ? 'Nom' : 'Name'}</label>
-          <input value={displayName} onChange={e => setDisplayName(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-[#0B1A36]/10 dark:border-white/10 bg-[#F5F5F0] dark:bg-white/5 text-[#0B1A36] dark:text-white outline-none focus:border-[#D4AF37]" />
+          <label className="block text-[10px] uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-2">{lang === 'FR' ? 'Nom' : 'Name'}</label>
+          <input value={displayName} onChange={e => setDisplayName(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-[#3A251E]/10 dark:border-white/10 bg-[#F4E7DD] dark:bg-white/5 text-[#3A251E] dark:text-white outline-none focus:border-[#B8532F]" />
         </div>
         <div>
-          <label className="block text-[10px] uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-2">{lang === 'FR' ? 'Courriel' : 'Email'}</label>
-          <input value={user?.email || ''} disabled className="w-full px-4 py-3 rounded-xl border border-[#0B1A36]/10 dark:border-white/10 bg-[#F5F5F0] dark:bg-white/5 text-[#0B1A36]/60 dark:text-white/60 outline-none" />
+          <label className="block text-[10px] uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-2">{lang === 'FR' ? 'Courriel' : 'Email'}</label>
+          <input value={user?.email || ''} disabled className="w-full px-4 py-3 rounded-xl border border-[#3A251E]/10 dark:border-white/10 bg-[#F4E7DD] dark:bg-white/5 text-[#3A251E]/60 dark:text-white/60 outline-none" />
         </div>
         <div>
-          <label className="block text-[10px] uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-2">{lang === 'FR' ? 'Téléphone' : 'Phone'}</label>
-          <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+1 …" className="w-full px-4 py-3 rounded-xl border border-[#0B1A36]/10 dark:border-white/10 bg-[#F5F5F0] dark:bg-white/5 text-[#0B1A36] dark:text-white outline-none focus:border-[#D4AF37]" />
+          <label className="block text-[10px] uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-2">{lang === 'FR' ? 'Téléphone' : 'Phone'}</label>
+          <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+1 …" className="w-full px-4 py-3 rounded-xl border border-[#3A251E]/10 dark:border-white/10 bg-[#F4E7DD] dark:bg-white/5 text-[#3A251E] dark:text-white outline-none focus:border-[#B8532F]" />
         </div>
         <div className="flex items-center gap-4 pt-2">
-          <button onClick={save} disabled={saving} className="bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors disabled:opacity-50">
+          <button onClick={save} disabled={saving} className="bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors disabled:opacity-50">
             {saving ? (lang === 'FR' ? 'Enregistrement…' : 'Saving…') : (lang === 'FR' ? 'Enregistrer' : 'Save')}
           </button>
           {saved && <span className="text-xs text-green-600 uppercase tracking-widest"><i className="fa-solid fa-check mr-1" />{lang === 'FR' ? 'Enregistré' : 'Saved'}</span>}
@@ -253,12 +253,12 @@ const OrdersTab: React.FC = () => {
       .finally(() => setLoading(false));
   }, [user]);
 
-  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>;
+  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" /></div>;
   if (!orders.length) {
     return (
       <div className="text-center py-12">
-        <i className="fa-regular fa-box text-4xl text-[#0B1A36]/30 dark:text-white/30 mb-4 block" />
-        <p className="text-[#0B1A36]/60 dark:text-white/60 font-serif italic">
+        <i className="fa-regular fa-box text-4xl text-[#3A251E]/30 dark:text-white/30 mb-4 block" />
+        <p className="text-[#3A251E]/60 dark:text-white/60 font-serif italic">
           {lang === 'FR' ? 'Aucune commande pour l\'instant.' : 'No orders yet.'}
         </p>
       </div>
@@ -269,41 +269,41 @@ const OrdersTab: React.FC = () => {
   return (
     <div className="space-y-4">
       {orders.map(o => (
-        <div key={o.id} className="border border-[#0B1A36]/5 dark:border-white/5 rounded-[20px] p-5">
+        <div key={o.id} className="border border-[#3A251E]/5 dark:border-white/5 rounded-[20px] p-5">
           <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
             <div>
-              <p className="text-xs uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">
+              <p className="text-xs uppercase tracking-widest text-[#3A251E]/40 dark:text-white/40">
                 {o.createdAt?.toDate().toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA', { year: 'numeric', month: 'long', day: 'numeric' }) || '—'}
               </p>
-              <p className="text-sm font-mono text-[#0B1A36]/60 dark:text-white/60">#{o.id?.slice(0, 8)}</p>
+              <p className="text-sm font-mono text-[#3A251E]/60 dark:text-white/60">#{o.id?.slice(0, 8)}</p>
             </div>
-            <span className={`text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full ${STATUS_COLORS[o.status] || 'bg-[#0B1A36]/5 text-[#0B1A36]/60'}`}>
+            <span className={`text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full ${STATUS_COLORS[o.status] || 'bg-[#3A251E]/5 text-[#3A251E]/60'}`}>
               {labels[o.status] || o.status}
             </span>
           </div>
           <ul className="space-y-1 mb-3">
             {o.items.map((it, i) => (
-              <li key={i} className="text-sm text-[#0B1A36]/80 dark:text-white/80 flex justify-between">
+              <li key={i} className="text-sm text-[#3A251E]/80 dark:text-white/80 flex justify-between">
                 <span>{it.quantity}× {it.title}</span>
-                {it.price && <span className="text-[#0B1A36]/60 dark:text-white/60">{it.price}</span>}
+                {it.price && <span className="text-[#3A251E]/60 dark:text-white/60">{it.price}</span>}
               </li>
             ))}
           </ul>
-          {o.subtotal && <p className="text-sm font-bold text-[#D4AF37] mb-2">Total: {o.subtotal}</p>}
+          {o.subtotal && <p className="text-sm font-bold text-[#B8532F] mb-2">Total: {o.subtotal}</p>}
           {o.trackingNumber && (
-            <div className="mt-3 pt-3 border-t border-[#0B1A36]/5 dark:border-white/5">
-              <p className="text-[10px] uppercase tracking-widest font-bold text-[#0B1A36]/60 dark:text-white/60 mb-1">
+            <div className="mt-3 pt-3 border-t border-[#3A251E]/5 dark:border-white/5">
+              <p className="text-[10px] uppercase tracking-widest font-bold text-[#3A251E]/60 dark:text-white/60 mb-1">
                 {lang === 'FR' ? 'Numéro de suivi' : 'Tracking number'}
               </p>
               {o.trackingUrl ? (
-                <a href={o.trackingUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-mono text-[#D4AF37] underline hover:text-[#0B1A36] dark:hover:text-white">{o.trackingNumber}</a>
+                <a href={o.trackingUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-mono text-[#B8532F] underline hover:text-[#3A251E] dark:hover:text-white">{o.trackingNumber}</a>
               ) : (
-                <p className="text-sm font-mono text-[#0B1A36] dark:text-white">{o.trackingNumber}</p>
+                <p className="text-sm font-mono text-[#3A251E] dark:text-white">{o.trackingNumber}</p>
               )}
             </div>
           )}
           {o.checkoutUrl && o.status === 'pending_payment' && (
-            <a href={o.checkoutUrl} className="inline-block mt-3 text-xs text-[#D4AF37] hover:underline">
+            <a href={o.checkoutUrl} className="inline-block mt-3 text-xs text-[#B8532F] hover:underline">
               <i className="fa-solid fa-arrow-right mr-1" />{lang === 'FR' ? 'Finaliser le paiement' : 'Complete payment'}
             </a>
           )}
@@ -338,7 +338,7 @@ const DoshaTab: React.FC = () => {
     getProducts(50, lang).then(setProducts).catch(() => setProducts([]));
   }, [lang]);
 
-  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>;
+  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" /></div>;
 
   // Latest saved result drives the % breakdown. Older results fall into the
   // history list below.
@@ -389,18 +389,18 @@ const DoshaTab: React.FC = () => {
           <div
             className="text-center rounded-[20px] p-8 md:p-10 mb-6 border"
             style={{
-              borderColor: guidance ? `${guidance.color}55` : 'rgba(212,175,55,0.2)',
+              borderColor: guidance ? `${guidance.color}55` : 'rgba(184,83,47,0.2)',
               background: guidance
                 ? `linear-gradient(135deg, ${guidance.color}22 0%, ${guidance.color}0A 100%)`
-                : 'linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.05))',
+                : 'linear-gradient(135deg, rgba(184,83,47,0.1), rgba(184,83,47,0.05))',
             }}
           >
-            <p className="text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] font-bold mb-3">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#B8532F] font-bold mb-3">
               {lang === 'FR' ? 'Votre dominance' : 'Your dominance'}
             </p>
-            <h2 className="text-5xl font-serif text-[#0B1A36] dark:text-white mb-2">{dominant}</h2>
+            <h2 className="text-5xl font-serif text-[#3A251E] dark:text-white mb-2">{dominant}</h2>
             {guidance && (
-              <p className="font-serif italic text-[#0B1A36]/70 dark:text-white/70">
+              <p className="font-serif italic text-[#3A251E]/70 dark:text-white/70">
                 {lang === 'FR' ? guidance.fr : guidance.en}
               </p>
             )}
@@ -414,24 +414,24 @@ const DoshaTab: React.FC = () => {
               {(['vata', 'pitta', 'kapha'] as const).map(d => {
                 const pct = latest[d] || 0;
                 const label = d.charAt(0).toUpperCase() + d.slice(1);
-                const color = doshaGuidance[label]?.color || '#D4AF37';
+                const color = doshaGuidance[label]?.color || '#B8532F';
                 const isDominant = label.toLowerCase() === dominant.toLowerCase();
                 return (
                   <div
                     key={d}
                     className={`rounded-2xl p-5 border transition-colors ${
                       isDominant
-                        ? 'border-[#D4AF37]/50 bg-[#D4AF37]/5 dark:bg-[#D4AF37]/10'
-                        : 'border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-white/5'
+                        ? 'border-[#B8532F]/50 bg-[#B8532F]/5 dark:bg-[#B8532F]/10'
+                        : 'border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-white/5'
                     }`}
                   >
                     <div className="flex items-baseline justify-between mb-3">
-                      <span className="text-[11px] uppercase tracking-[0.3em] font-bold text-[#0B1A36]/70 dark:text-white/70">{label}</span>
-                      <span className="text-3xl md:text-4xl font-serif text-[#0B1A36] dark:text-white">
-                        {pct}<span className="text-base text-[#0B1A36]/50 dark:text-white/50">%</span>
+                      <span className="text-[11px] uppercase tracking-[0.3em] font-bold text-[#3A251E]/70 dark:text-white/70">{label}</span>
+                      <span className="text-3xl md:text-4xl font-serif text-[#3A251E] dark:text-white">
+                        {pct}<span className="text-base text-[#3A251E]/50 dark:text-white/50">%</span>
                       </span>
                     </div>
-                    <div className="relative h-1.5 rounded-full bg-[#0B1A36]/5 dark:bg-white/10 overflow-hidden">
+                    <div className="relative h-1.5 rounded-full bg-[#3A251E]/5 dark:bg-white/10 overflow-hidden">
                       <div
                         className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 ease-out"
                         style={{ width: `${Math.min(100, Math.max(0, pct))}%`, backgroundColor: color }}
@@ -519,31 +519,31 @@ const DoshaTab: React.FC = () => {
                         {variant === 'primary'
                           ? (lang === 'FR' ? 'Votre rituel' : 'Your ritual')
                           : (lang === 'FR' ? 'En accompagnement · second dosha' : 'As a companion · second dosha')}
-                        <span className="ml-2 text-[#0B1A36]/50 dark:text-white/50 font-normal tracking-normal normal-case">
+                        <span className="ml-2 text-[#3A251E]/50 dark:text-white/50 font-normal tracking-normal normal-case">
                           · {doshaName}{pct !== null ? ` ${pct}%` : ''}
                         </span>
                       </p>
-                      <h3 className="font-serif text-2xl md:text-3xl text-[#0B1A36] dark:text-white mb-1">
+                      <h3 className="font-serif text-2xl md:text-3xl text-[#3A251E] dark:text-white mb-1">
                         {lang === 'FR' ? r.titleFR : r.titleEN}
                       </h3>
-                      <p className="font-serif italic text-[#0B1A36]/75 dark:text-white/75">
+                      <p className="font-serif italic text-[#3A251E]/75 dark:text-white/75">
                         {lang === 'FR' ? r.subtitleFR : r.subtitleEN}
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => downloadPdf(doshaName)}
-                      className="inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-md"
+                      className="inline-flex items-center gap-2 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors shadow-md"
                     >
                       <i className="fa-solid fa-file-pdf" />
                       {lang === 'FR' ? 'Télécharger' : 'Download'}
                     </button>
                   </div>
-                  <p className="inline-block text-[10px] uppercase tracking-[0.25em] font-bold px-3 py-1 rounded-full bg-white/70 dark:bg-white/10 text-[#0B1A36]/70 dark:text-white/70 mb-5">
+                  <p className="inline-block text-[10px] uppercase tracking-[0.25em] font-bold px-3 py-1 rounded-full bg-white/70 dark:bg-white/10 text-[#3A251E]/70 dark:text-white/70 mb-5">
                     <i className="fa-regular fa-clock mr-1.5" />
                     {lang === 'FR' ? r.momentFR : r.momentEN}
                   </p>
-                  <ol className="space-y-3 text-sm text-[#0B1A36]/85 dark:text-white/85 leading-relaxed">
+                  <ol className="space-y-3 text-sm text-[#3A251E]/85 dark:text-white/85 leading-relaxed">
                     {(lang === 'FR' ? r.stepsFR : r.stepsEN).map((step, i) => (
                       <li key={i} className="flex gap-3">
                         <span
@@ -587,44 +587,44 @@ const DoshaTab: React.FC = () => {
               const priceText = variant ? formatMoney(variant.price, lang) : '';
               const soldOut = product ? !product.availableForSale : false;
               return (
-                <div className={`rounded-[20px] border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-white/5 p-6 md:p-8 ${mb}`}>
+                <div className={`rounded-[20px] border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-white/5 p-6 md:p-8 ${mb}`}>
                   <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
                     {/* Image */}
                     <div
-                      className="w-32 h-40 md:w-36 md:h-48 rounded-xl bg-cover bg-center shrink-0 bg-[#F5F5F0] dark:bg-[#0B1A36] border border-[#0B1A36]/5 dark:border-white/10"
+                      className="w-32 h-40 md:w-36 md:h-48 rounded-xl bg-cover bg-center shrink-0 bg-[#F4E7DD] dark:bg-[#3A251E] border border-[#3A251E]/5 dark:border-white/10"
                       style={{ backgroundImage: product?.featuredImage?.url ? `url(${product.featuredImage.url})` : undefined }}
                     />
                     {/* Copy */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] font-bold mb-2">
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-[#B8532F] font-bold mb-2">
                         {lang === 'FR' ? kickerFR : kickerEN}
-                        {pct !== null && <span className="text-[#0B1A36]/50 dark:text-white/50 font-normal tracking-normal normal-case ml-2">· {doshaName} {pct}%</span>}
+                        {pct !== null && <span className="text-[#3A251E]/50 dark:text-white/50 font-normal tracking-normal normal-case ml-2">· {doshaName} {pct}%</span>}
                       </p>
                       {product ? (
                         <>
-                          <h3 className="text-xl md:text-2xl font-serif text-[#0B1A36] dark:text-white mb-1">{product.title}</h3>
+                          <h3 className="text-xl md:text-2xl font-serif text-[#3A251E] dark:text-white mb-1">{product.title}</h3>
                           {product.productType && (
-                            <p className="text-[11px] uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50 mb-3">{product.productType}</p>
+                            <p className="text-[11px] uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 mb-3">{product.productType}</p>
                           )}
-                          <p className="text-lg font-serif text-[#D4AF37] mb-4">{priceText}</p>
+                          <p className="text-lg font-serif text-[#B8532F] mb-4">{priceText}</p>
                           <div className="flex flex-wrap gap-3">
                             {!soldOut && variant ? (
                               <button
                                 type="button"
                                 onClick={() => addOilToCart(product)}
-                                className="inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-md"
+                                className="inline-flex items-center gap-2 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors shadow-md"
                               >
                                 <i className="fa-solid fa-basket-shopping text-[10px]" />
                                 {lang === 'FR' ? 'Ajouter au panier' : 'Add to cart'}
                               </button>
                             ) : (
-                              <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#0B1A36]/10 dark:bg-white/10 text-[#0B1A36]/60 dark:text-white/60">
+                              <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#3A251E]/10 dark:bg-white/10 text-[#3A251E]/60 dark:text-white/60">
                                 {lang === 'FR' ? 'Épuisé' : 'Sold out'}
                               </span>
                             )}
                             <a
                               href="/boutique/huiles-corporelles"
-                              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[#0B1A36]/15 dark:border-white/15 text-[#0B1A36]/70 dark:text-white/70 font-bold uppercase tracking-widest text-[11px] hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors"
+                              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[#3A251E]/15 dark:border-white/15 text-[#3A251E]/70 dark:text-white/70 font-bold uppercase tracking-widest text-[11px] hover:border-[#B8532F] hover:text-[#B8532F] transition-colors"
                             >
                               {lang === 'FR' ? 'Voir la collection' : 'View the collection'}
                               <i className="fa-solid fa-arrow-right text-[9px]" />
@@ -633,17 +633,17 @@ const DoshaTab: React.FC = () => {
                         </>
                       ) : (
                         <>
-                          <h3 className="text-xl md:text-2xl font-serif text-[#0B1A36] dark:text-white mb-2">
+                          <h3 className="text-xl md:text-2xl font-serif text-[#3A251E] dark:text-white mb-2">
                             {lang === 'FR' ? `Huile Corporelle ${doshaName}` : `${doshaName} Body Oil`}
                           </h3>
-                          <p className="text-[#0B1A36]/60 dark:text-white/60 mb-4 font-serif italic text-sm">
+                          <p className="text-[#3A251E]/60 dark:text-white/60 mb-4 font-serif italic text-sm">
                             {lang === 'FR'
                               ? "La formule qui correspond à cette dominance est bientôt en ligne — explorez la collection pour choisir celle qui vous appelle."
                               : 'The matching formula is coming online soon — explore the collection to choose the one that calls to you.'}
                           </p>
                           <a
                             href="/boutique/huiles-corporelles"
-                            className="inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors"
+                            className="inline-flex items-center gap-2 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors"
                           >
                             {lang === 'FR' ? 'Voir les huiles corporelles' : 'View body oils'}
                             <i className="fa-solid fa-arrow-right text-[9px]" />
@@ -679,11 +679,11 @@ const DoshaTab: React.FC = () => {
         </>
       ) : (
         <div className="text-center py-12 mb-4">
-          <i className="fa-solid fa-circle-nodes text-4xl text-[#0B1A36]/30 dark:text-white/30 mb-4 block" />
-          <p className="text-[#0B1A36]/60 dark:text-white/60 font-serif italic mb-6">
+          <i className="fa-solid fa-circle-nodes text-4xl text-[#3A251E]/30 dark:text-white/30 mb-4 block" />
+          <p className="text-[#3A251E]/60 dark:text-white/60 font-serif italic mb-6">
             {lang === 'FR' ? 'Vous n\'avez pas encore complété le Quiz Dosha.' : "You haven't taken the Dosha Quiz yet."}
           </p>
-          <a href="/quiz" className="inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors">
+          <a href="/quiz" className="inline-flex items-center gap-2 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors">
             {lang === 'FR' ? 'Faire le quiz' : 'Take the quiz'} <i className="fa-solid fa-arrow-right" />
           </a>
         </div>
@@ -691,18 +691,18 @@ const DoshaTab: React.FC = () => {
 
       {results.length > 0 && (
         <>
-          <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-4">
+          <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-4">
             {lang === 'FR' ? 'Historique des résultats' : 'Results history'}
           </h3>
           <div className="space-y-3">
             {results.map(r => (
-              <div key={r.id} className="border border-[#0B1A36]/5 dark:border-white/5 rounded-xl p-4 flex items-center justify-between">
+              <div key={r.id} className="border border-[#3A251E]/5 dark:border-white/5 rounded-xl p-4 flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-[#0B1A36] dark:text-white">
-                    <span className="text-[#D4AF37] font-bold capitalize">{r.dominant}</span>
-                    <span className="text-[#0B1A36]/50 dark:text-white/50 ml-3 text-xs font-mono">V{r.vata}%·P{r.pitta}%·K{r.kapha}%</span>
+                  <p className="text-sm text-[#3A251E] dark:text-white">
+                    <span className="text-[#B8532F] font-bold capitalize">{r.dominant}</span>
+                    <span className="text-[#3A251E]/50 dark:text-white/50 ml-3 text-xs font-mono">V{r.vata}%·P{r.pitta}%·K{r.kapha}%</span>
                   </p>
-                  <p className="text-[10px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">
+                  <p className="text-[10px] uppercase tracking-widest text-[#3A251E]/40 dark:text-white/40">
                     {r.createdAt?.toDate().toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA') || ''}
                   </p>
                 </div>
@@ -716,24 +716,24 @@ const DoshaTab: React.FC = () => {
           self-knowledge journey lives in one place. */}
       {guideResponses.length > 0 && (
         <div className="mt-10">
-          <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-4">
-            <i className="fa-solid fa-compass text-[#D4AF37] mr-2" />
+          <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-4">
+            <i className="fa-solid fa-compass text-[#B8532F] mr-2" />
             {lang === 'FR' ? 'Vos parcours suggérés' : 'Your suggested paths'}
           </h3>
           <div className="space-y-3">
             {guideResponses.map(g => (
-              <div key={g.id} className="border border-[#0B1A36]/5 dark:border-white/5 rounded-xl p-4">
+              <div key={g.id} className="border border-[#3A251E]/5 dark:border-white/5 rounded-xl p-4">
                 <div className="flex items-baseline justify-between gap-3 mb-2">
-                  <p className="text-sm text-[#0B1A36] dark:text-white">
-                    <span className="text-[#D4AF37] font-bold">{g.recommendationLabel || g.recommendationId}</span>
+                  <p className="text-sm text-[#3A251E] dark:text-white">
+                    <span className="text-[#B8532F] font-bold">{g.recommendationLabel || g.recommendationId}</span>
                   </p>
-                  <p className="text-[10px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">
+                  <p className="text-[10px] uppercase tracking-widest text-[#3A251E]/40 dark:text-white/40">
                     {g.createdAt?.toDate().toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA') || ''}
                   </p>
                 </div>
                 {g.answers?.length > 0 && (
-                  <details className="text-xs text-[#0B1A36]/60 dark:text-white/60">
-                    <summary className="cursor-pointer hover:text-[#D4AF37] transition-colors">
+                  <details className="text-xs text-[#3A251E]/60 dark:text-white/60">
+                    <summary className="cursor-pointer hover:text-[#B8532F] transition-colors">
                       {lang === 'FR' ? 'Voir les réponses' : 'View answers'}
                     </summary>
                     <ul className="mt-2 space-y-1.5 pl-4 list-disc">

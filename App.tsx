@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AppProvider } from './src/contexts/AppContext';
 import { EditModeProvider } from './src/contexts/EditModeContext';
+import { SiteFlagsProvider } from './src/contexts/SiteFlagsContext';
 import NavBar from './src/components/layout/NavBar';
 import Footer from './src/components/layout/Footer';
 import CartDrawer from './src/components/layout/CartDrawer';
@@ -9,14 +10,25 @@ import ConsentBanner from './src/components/layout/ConsentBanner';
 import SignInModal from './src/components/layout/SignInModal';
 import ErrorBoundary from './src/components/layout/ErrorBoundary';
 import EditModeBar from './src/components/edit/EditModeBar';
+import EditOverlay from './src/components/edit/EditOverlay';
 import { PageShareBar } from './src/components/ShareButtons';
 import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import { logPageView } from './src/firebase';
+import { processDevAdminUrl } from './src/lib/devAdmin';
+
+// Run the dev-mode admin URL processor once at module load — before
+// any React component mounts — so an `?unlock=…` query param is acted
+// on (set localStorage flags + reload) before the auth context boots
+// and decides who's an admin. No-op in production builds.
+processDevAdminUrl();
 
 // Lazy-loaded pages for code splitting
 const SplashScreen     = lazy(() => import('./src/pages/SplashScreen'));
 const InspiratHome     = lazy(() => import('./src/pages/InspiratHome'));
-const KrystinePage     = lazy(() => import('./src/pages/KrystinePage'));
+// /krystine + /conferenciere are now the same merged pillar page.
+// ConferencierePage reads the current pathname and auto-scrolls to the
+// form when opened via /conferenciere; /krystine opens at the top so
+// the bio narrative leads.
 const BoutiquePage           = lazy(() => import('./src/pages/BoutiquePage'));
 const BoutiqueCollectionPage = lazy(() => import('./src/pages/BoutiqueCollectionPage'));
 const MediasPage       = lazy(() => import('./src/pages/MediasPage'));
@@ -30,6 +42,11 @@ const FormationsPage   = lazy(() => import('./src/pages/FormationsPage'));
 const ClientPortal     = lazy(() => import('./src/pages/ClientPortal'));
 const AdminDashboard   = lazy(() => import('./src/pages/AdminDashboard'));
 const UnsubscribePage  = lazy(() => import('./src/pages/UnsubscribePage'));
+const SlideBg          = lazy(() => import('./src/pages/SlideBg'));
+// /vexel is the hidden inbox for Salon des Inconnus website-inquiry leads
+// captured from the footer contact card. URL-only access — never linked
+// from the visible navigation.
+const VexelPage        = lazy(() => import('./src/pages/VexelPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#050C1A]">
@@ -45,7 +62,8 @@ const Chrome: React.FC = () => {
   const hidden = location.pathname.startsWith('/admin')
     || location.pathname === '/'
     || location.pathname === '/accueil'
-    || location.pathname === '/desinscription';
+    || location.pathname === '/desinscription'
+    || location.pathname === '/slidebg';
   if (hidden) return null;
   return (
     <>
@@ -61,6 +79,7 @@ const Footing: React.FC = () => {
     location.pathname.startsWith('/admin')
     || location.pathname === '/'
     || location.pathname === '/desinscription'
+    || location.pathname === '/slidebg'
   ) return null;
   return (
     <>
@@ -83,11 +102,13 @@ const AnalyticsPageViews: React.FC = () => {
 
 const App: React.FC = () => (
   <AppProvider>
+    <SiteFlagsProvider>
     <EditModeProvider>
     <BrowserRouter>
       <AnalyticsPageViews />
       <Chrome />
       <EditModeBar />
+      <EditOverlay />
       <ErrorBoundary>
       <Suspense fallback={<PageLoader />}>
         <Routes>
@@ -98,7 +119,7 @@ const App: React.FC = () => (
           <Route path="/accueil" element={<InspiratHome />} />
 
           {/* ── Pages Inspirata ───────────────────────────────────────── */}
-          <Route path="/krystine"        element={<KrystinePage />} />
+          <Route path="/krystine"        element={<ConferencierePage />} />
           <Route path="/boutique"        element={<BoutiquePage />} />
           <Route path="/boutique/:slug"  element={<BoutiqueCollectionPage />} />
           <Route path="/medias"          element={<MediasPage />} />
@@ -124,6 +145,10 @@ const App: React.FC = () => (
           <Route path="/compte" element={<ClientPortal />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/desinscription" element={<UnsubscribePage />} />
+          {/* Hidden / unlisted — slide-style background of the home hero */}
+          <Route path="/slidebg" element={<SlideBg />} />
+          {/* Hidden / unlisted — Salon des Inconnus inbound-leads inbox */}
+          <Route path="/vexel" element={<VexelPage />} />
         </Routes>
       </Suspense>
       </ErrorBoundary>
@@ -131,6 +156,7 @@ const App: React.FC = () => (
       <SignInModal />
     </BrowserRouter>
     </EditModeProvider>
+    </SiteFlagsProvider>
   </AppProvider>
 );
 

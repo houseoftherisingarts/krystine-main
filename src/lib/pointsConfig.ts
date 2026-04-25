@@ -48,7 +48,7 @@ export interface Tier {
 export const TIERS: Tier[] = [
   { id: 'graine', threshold:    0, labelFR: 'Graine',   labelEN: 'Seed',   accent: '#8F9779' },
   { id: 'pousse', threshold:   50, labelFR: 'Pousse',   labelEN: 'Sprout', accent: '#6E8E4B' },
-  { id: 'tige',   threshold:  150, labelFR: 'Tige',     labelEN: 'Stem',   accent: '#D4AF37' },
+  { id: 'tige',   threshold:  150, labelFR: 'Tige',     labelEN: 'Stem',   accent: '#B8532F' },
   { id: 'fleur',  threshold:  350, labelFR: 'Fleur',    labelEN: 'Bloom',  accent: '#BC4A3C' },
   { id: 'source', threshold:  700, labelFR: 'Source',   labelEN: 'Source', accent: '#4A7C9D' },
 ];

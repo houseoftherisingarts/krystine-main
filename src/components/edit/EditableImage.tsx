@@ -99,11 +99,11 @@ const EditableImage: React.FC<Props> = ({ fieldKey, defaultSrc, className, alt, 
         {editMode && (
           <>
             {/* Edit badge ring — makes the surface visually distinct in edit mode. */}
-            <div className="pointer-events-none absolute inset-0 ring-2 ring-[#D4AF37]/80 ring-inset rounded-[inherit]" />
+            <div className="pointer-events-none absolute inset-0 ring-2 ring-[#B8532F]/80 ring-inset rounded-[inherit]" />
 
             {/* Focal point crosshair */}
             <div
-              className="pointer-events-none absolute w-8 h-8 rounded-full border-2 border-white shadow-[0_0_0_2px_rgba(212,175,55,0.9)] -translate-x-1/2 -translate-y-1/2"
+              className="pointer-events-none absolute w-8 h-8 rounded-full border-2 border-white shadow-[0_0_0_2px_rgba(184,83,47,0.9)] -translate-x-1/2 -translate-y-1/2"
               style={{ left: `${displayFocal.x * 100}%`, top: `${displayFocal.y * 100}%` }}
             />
 
@@ -112,14 +112,14 @@ const EditableImage: React.FC<Props> = ({ fieldKey, defaultSrc, className, alt, 
               type="button"
               onPointerDown={e => e.stopPropagation()}
               onClick={e => { e.preventDefault(); e.stopPropagation(); setPickerOpen(true); }}
-              className="absolute top-3 left-3 inline-flex items-center gap-2 bg-[#0B1A36] text-[#D4AF37] border border-[#D4AF37] px-3 py-1.5 rounded-full text-[10px] uppercase tracking-widest font-bold shadow-lg hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors"
+              className="absolute top-3 left-3 inline-flex items-center gap-2 bg-[#3A251E] text-[#B8532F] border border-[#B8532F] px-3 py-1.5 rounded-full text-[10px] uppercase tracking-widest font-bold shadow-lg hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors"
             >
               <i className="fa-solid fa-image text-[10px]" />
               Changer la photo
             </button>
 
             {/* Hint */}
-            <div className="absolute bottom-3 left-3 right-3 text-[10px] uppercase tracking-widest font-bold text-white/90 bg-[#0B1A36]/70 backdrop-blur px-3 py-1.5 rounded-full text-center pointer-events-none">
+            <div className="absolute bottom-3 left-3 right-3 text-[10px] uppercase tracking-widest font-bold text-white/90 bg-[#3A251E]/70 backdrop-blur px-3 py-1.5 rounded-full text-center pointer-events-none">
               {dragging ? 'Glissez pour recentrer' : 'Cliquez-glissez pour recentrer'}
             </div>
           </>

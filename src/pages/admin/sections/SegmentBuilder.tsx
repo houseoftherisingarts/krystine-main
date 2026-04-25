@@ -130,28 +130,28 @@ const SegmentBuilder: React.FC<Props> = ({ onClose, onCreated }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-start justify-center p-4 bg-[#0B1A36]/60 backdrop-blur-md overflow-y-auto" onClick={onClose}>
-      <div className="relative w-full max-w-4xl my-8 bg-white dark:bg-[#0B1A36] rounded-[28px] shadow-2xl border border-[#D4AF37]/20" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-[120] flex items-start justify-center p-4 bg-[#3A251E]/60 backdrop-blur-md overflow-y-auto" onClick={onClose}>
+      <div className="relative w-full max-w-4xl my-8 bg-white dark:bg-[#3A251E] rounded-[28px] shadow-2xl border border-[#B8532F]/20" onClick={e => e.stopPropagation()}>
 
         {/* Header */}
-        <div className="px-6 md:px-8 py-5 border-b border-[#0B1A36]/5 dark:border-white/10 flex items-start justify-between gap-3 sticky top-0 bg-white dark:bg-[#0B1A36] rounded-t-[28px] z-10">
+        <div className="px-6 md:px-8 py-5 border-b border-[#3A251E]/5 dark:border-white/10 flex items-start justify-between gap-3 sticky top-0 bg-white dark:bg-[#3A251E] rounded-t-[28px] z-10">
           <div>
-            <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-[10px] font-bold block mb-1">
+            <span className="text-[#B8532F] uppercase tracking-[0.3em] text-[10px] font-bold block mb-1">
               Segment intelligent
             </span>
-            <h2 className="font-serif text-2xl text-[#0B1A36] dark:text-white">Nouveau groupe par segment</h2>
-            <p className="text-sm text-[#0B1A36]/60 dark:text-white/60 mt-1 font-serif italic">
+            <h2 className="font-serif text-2xl text-[#3A251E] dark:text-white">Nouveau groupe par segment</h2>
+            <p className="text-sm text-[#3A251E]/60 dark:text-white/60 mt-1 font-serif italic">
               Composez des critères (dosha, points, achats, parcours…) — le comptage se met à jour en direct.
             </p>
           </div>
-          <button onClick={onClose} aria-label="Fermer" className="w-9 h-9 rounded-full text-[#0B1A36]/40 dark:text-white/40 hover:text-[#0B1A36] dark:hover:text-white shrink-0">
+          <button onClick={onClose} aria-label="Fermer" className="w-9 h-9 rounded-full text-[#3A251E]/40 dark:text-white/40 hover:text-[#3A251E] dark:hover:text-white shrink-0">
             <i className="fa-solid fa-times text-lg" />
           </button>
         </div>
 
         {loading ? (
           <div className="py-24 flex justify-center">
-            <i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" />
+            <i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" />
           </div>
         ) : (
           <div className="p-6 md:p-8 space-y-6">
@@ -171,10 +171,10 @@ const SegmentBuilder: React.FC<Props> = ({ onClose, onCreated }) => {
             {/* ── Mode ── */}
             <Card className="p-5">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-[11px] uppercase tracking-widest font-bold text-[#0B1A36]/70 dark:text-white/70">
+                <h3 className="text-[11px] uppercase tracking-widest font-bold text-[#3A251E]/70 dark:text-white/70">
                   Critères
                 </h3>
-                <div className="flex items-center gap-1 p-1 rounded-full bg-[#F5F5F0] dark:bg-white/5">
+                <div className="flex items-center gap-1 p-1 rounded-full bg-[#F4E7DD] dark:bg-white/5">
                   <ModeButton active={segment.mode === 'all'} onClick={() => setSegment(s => ({ ...s, mode: 'all' }))}>Tous les critères (ET)</ModeButton>
                   <ModeButton active={segment.mode === 'any'} onClick={() => setSegment(s => ({ ...s, mode: 'any' }))}>Au moins un (OU)</ModeButton>
                 </div>
@@ -197,7 +197,7 @@ const SegmentBuilder: React.FC<Props> = ({ onClose, onCreated }) => {
                   <i className="fa-solid fa-plus text-[10px]" /> Ajouter un critère
                 </GhostButton>
                 {pointsLoading && (
-                  <span className="text-[11px] text-[#0B1A36]/50 dark:text-white/50">
+                  <span className="text-[11px] text-[#3A251E]/50 dark:text-white/50">
                     <i className="fa-solid fa-circle-notch fa-spin mr-2" /> Chargement des points…
                   </span>
                 )}
@@ -207,35 +207,35 @@ const SegmentBuilder: React.FC<Props> = ({ onClose, onCreated }) => {
             {/* ── Preview ── */}
             <Card className="p-5">
               <div className="flex items-baseline justify-between mb-3">
-                <h3 className="text-[11px] uppercase tracking-widest font-bold text-[#0B1A36]/70 dark:text-white/70">
+                <h3 className="text-[11px] uppercase tracking-widest font-bold text-[#3A251E]/70 dark:text-white/70">
                   Aperçu
                 </h3>
-                <p className="text-sm text-[#0B1A36] dark:text-white">
-                  <span className="font-serif text-2xl text-[#D4AF37]">{matched.length}</span>{' '}
+                <p className="text-sm text-[#3A251E] dark:text-white">
+                  <span className="font-serif text-2xl text-[#B8532F]">{matched.length}</span>{' '}
                   contact{matched.length === 1 ? '' : 's'} correspond{matched.length === 1 ? '' : 'ent'}
                 </p>
               </div>
 
               {matched.length === 0 ? (
-                <p className="text-sm text-[#0B1A36]/40 dark:text-white/40 italic py-3">
+                <p className="text-sm text-[#3A251E]/40 dark:text-white/40 italic py-3">
                   Personne ne correspond aux critères actuels.
                 </p>
               ) : (
-                <div className="max-h-64 overflow-y-auto divide-y divide-[#0B1A36]/5 dark:divide-white/5">
+                <div className="max-h-64 overflow-y-auto divide-y divide-[#3A251E]/5 dark:divide-white/5">
                   {matched.slice(0, 50).map(c => (
                     <div key={c.email} className="flex items-center justify-between py-2 text-sm">
                       <div className="min-w-0">
-                        <p className="text-[#0B1A36] dark:text-white truncate">{c.name}</p>
-                        <p className="text-[11px] text-[#0B1A36]/50 dark:text-white/50 truncate">{c.displayEmail}</p>
+                        <p className="text-[#3A251E] dark:text-white truncate">{c.name}</p>
+                        <p className="text-[11px] text-[#3A251E]/50 dark:text-white/50 truncate">{c.displayEmail}</p>
                       </div>
                       <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest shrink-0">
-                        {c.dosha && <span className="px-2 py-0.5 rounded-full bg-[#0B1A36]/5 dark:bg-white/10 text-[#0B1A36]/60 dark:text-white/60">{c.dosha}</span>}
-                        {c.isMember && <span className="px-2 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] font-bold">Compte</span>}
+                        {c.dosha && <span className="px-2 py-0.5 rounded-full bg-[#3A251E]/5 dark:bg-white/10 text-[#3A251E]/60 dark:text-white/60">{c.dosha}</span>}
+                        {c.isMember && <span className="px-2 py-0.5 rounded-full bg-[#B8532F]/15 text-[#B8532F] font-bold">Compte</span>}
                       </div>
                     </div>
                   ))}
                   {matched.length > 50 && (
-                    <p className="py-2 text-[11px] text-[#0B1A36]/40 dark:text-white/40 italic text-center">
+                    <p className="py-2 text-[11px] text-[#3A251E]/40 dark:text-white/40 italic text-center">
                       + {matched.length - 50} autres…
                     </p>
                   )}
@@ -287,13 +287,13 @@ const CriterionRow: React.FC<RowProps> = ({ criterion, onChange, onRemove, canRe
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr_auto] gap-3 items-center p-3 rounded-xl bg-[#F5F5F0] dark:bg-white/5 border border-[#0B1A36]/5 dark:border-white/5">
+    <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr_auto] gap-3 items-center p-3 rounded-xl bg-[#F4E7DD] dark:bg-white/5 border border-[#3A251E]/5 dark:border-white/5">
 
       {/* Field select */}
       <select
         value={criterion.field}
         onChange={e => setField(e.target.value as CriterionField)}
-        className="px-3 py-2 rounded-lg border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-[#0B1A36]/80 text-sm text-[#0B1A36] dark:text-white"
+        className="px-3 py-2 rounded-lg border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-[#3A251E]/80 text-sm text-[#3A251E] dark:text-white"
       >
         {FIELDS.map(f => (
           <option key={f.id} value={f.id}>{f.label}</option>
@@ -304,7 +304,7 @@ const CriterionRow: React.FC<RowProps> = ({ criterion, onChange, onRemove, canRe
       <select
         value={criterion.op}
         onChange={e => onChange({ op: e.target.value as Operator })}
-        className="px-3 py-2 rounded-lg border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-[#0B1A36]/80 text-sm text-[#0B1A36] dark:text-white"
+        className="px-3 py-2 rounded-lg border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-[#3A251E]/80 text-sm text-[#3A251E] dark:text-white"
       >
         {field?.operators.map(op => (
           <option key={op} value={op}>{OPERATOR_LABELS[op]}</option>
@@ -320,7 +320,7 @@ const CriterionRow: React.FC<RowProps> = ({ criterion, onChange, onRemove, canRe
               const v = field.valueKind === 'boolean' ? e.target.value === 'true' : e.target.value;
               onChange({ value: v });
             }}
-            className="flex-1 px-3 py-2 rounded-lg border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-[#0B1A36]/80 text-sm text-[#0B1A36] dark:text-white"
+            className="flex-1 px-3 py-2 rounded-lg border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-[#3A251E]/80 text-sm text-[#3A251E] dark:text-white"
           >
             {field.options?.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
@@ -329,7 +329,7 @@ const CriterionRow: React.FC<RowProps> = ({ criterion, onChange, onRemove, canRe
             type="number"
             value={Number(criterion.value)}
             onChange={e => onChange({ value: Number(e.target.value) })}
-            className="flex-1 px-3 py-2 rounded-lg border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-[#0B1A36]/80 text-sm text-[#0B1A36] dark:text-white"
+            className="flex-1 px-3 py-2 rounded-lg border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-[#3A251E]/80 text-sm text-[#3A251E] dark:text-white"
           />
         ) : (
           <input
@@ -337,7 +337,7 @@ const CriterionRow: React.FC<RowProps> = ({ criterion, onChange, onRemove, canRe
             value={String(criterion.value)}
             onChange={e => onChange({ value: e.target.value })}
             placeholder="valeur"
-            className="flex-1 px-3 py-2 rounded-lg border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-[#0B1A36]/80 text-sm text-[#0B1A36] dark:text-white"
+            className="flex-1 px-3 py-2 rounded-lg border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-[#3A251E]/80 text-sm text-[#3A251E] dark:text-white"
           />
         )}
         {field?.needsExtra && (
@@ -346,7 +346,7 @@ const CriterionRow: React.FC<RowProps> = ({ criterion, onChange, onRemove, canRe
             value={criterion.extra || ''}
             onChange={e => onChange({ extra: e.target.value })}
             placeholder={field.extraPlaceholder}
-            className="w-40 px-3 py-2 rounded-lg border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-[#0B1A36]/80 text-sm text-[#0B1A36] dark:text-white"
+            className="w-40 px-3 py-2 rounded-lg border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-[#3A251E]/80 text-sm text-[#3A251E] dark:text-white"
             title={field.extraLabel}
           />
         )}
@@ -358,7 +358,7 @@ const CriterionRow: React.FC<RowProps> = ({ criterion, onChange, onRemove, canRe
       </DangerButton>
 
       {field?.description && (
-        <p className="md:col-span-4 text-[11px] text-[#0B1A36]/50 dark:text-white/50 italic mt-1">
+        <p className="md:col-span-4 text-[11px] text-[#3A251E]/50 dark:text-white/50 italic mt-1">
           {field.description}
         </p>
       )}
@@ -373,8 +373,8 @@ const ModeButton: React.FC<{ active: boolean; onClick: () => void; children: Rea
     onClick={onClick}
     className={`px-3 py-1.5 rounded-full text-[10px] uppercase tracking-widest font-bold transition-colors ${
       active
-        ? 'bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36]'
-        : 'text-[#0B1A36]/60 dark:text-white/60 hover:text-[#D4AF37]'
+        ? 'bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E]'
+        : 'text-[#3A251E]/60 dark:text-white/60 hover:text-[#B8532F]'
     }`}
   >
     {children}

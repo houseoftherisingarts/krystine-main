@@ -10,45 +10,71 @@ import { goToRoute, isStaticRoute } from '../lib/staticRoutes';
 import { addNewsletterSubscriber } from '../firebase/firestore';
 import { points } from '../firebase/points';
 import AyurvedaIkigai from '../components/AyurvedaIkigai';
+import PremiersRituelsHero from '../components/PremiersRituelsHero';
 import DropIntro from '../components/DropIntro';
 import LiveEventsSection from '../components/LiveEvents';
+import CompassOfYou from '../components/CompassOfYou';
+import ScrollDecorations from '../components/ScrollDecorations';
+import RevealSection from '../components/RevealSection';
+import EditorialSectionHeader from '../components/EditorialSectionHeader';
+import Sprig from '../components/Sprig';
+import OrigineHomeSection from '../components/OrigineHomeSection';
+import TodayConferenceBanner from '../components/TodayConferenceBanner';
+import { motion, useReducedMotion } from 'framer-motion';
 import { getUpcomingEvents } from '../lib/liveEvents';
+import { useSiteFlags } from '../contexts/SiteFlagsContext';
 
-// Chakra decorations — kept subtle, they're the cultural undertone.
-const ChakraDecorations = () => (
-  <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-    <img src={ASSETS.chakras[0]} className="absolute -right-[250px] -top-[150px] w-[800px] opacity-[0.04] dark:opacity-[0.08] dark:invert" alt="" />
-    <img src={ASSETS.chakras[1]} className="absolute -left-[150px] bottom-[5%] w-[500px] opacity-[0.03] dark:opacity-[0.06] rotate-45 dark:invert" alt="" />
-    <img src={ASSETS.chakras[4]} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] opacity-[0.02] dark:opacity-[0.04] dark:invert" alt="" />
-  </div>
-);
-
-// Luminous "ray of light" atmosphere — drives the eye from the title down to the cards.
-// Layers: (1) warm top radial halo, (2) an oblique sun-ray streak, (3) a soft core glow
-// behind the title, (4) a warm base wash to lift the grid.
-const RaysOfLight = () => (
-  <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-    {/* Top radial halo — the apparent "light source" */}
-    <div className="absolute -top-[30vh] left-1/2 -translate-x-1/2 w-[120vw] h-[110vh] bg-[radial-gradient(ellipse_at_center,rgba(250,240,210,0.55)_0%,rgba(250,240,210,0.20)_30%,transparent_65%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.14)_0%,rgba(212,175,55,0.05)_35%,transparent_70%)]" />
-    {/* Central soft core glow, pooling around the title */}
-    <div className="absolute top-[20vh] left-1/2 -translate-x-1/2 w-[70vw] h-[70vh] bg-[radial-gradient(ellipse_at_center,rgba(244,214,121,0.28)_0%,transparent_60%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(244,214,121,0.09)_0%,transparent_65%)] blur-3xl" />
-    {/* Oblique ray streak — slanted from upper-left, dissolving toward lower-right */}
-    <div
-      className="absolute -top-[10vh] -left-[10vw] w-[140vw] h-[80vh] opacity-60 dark:opacity-40 mix-blend-screen"
-      style={{
-        background: 'linear-gradient(115deg, transparent 35%, rgba(244,214,121,0.16) 48%, rgba(255,248,220,0.22) 52%, rgba(244,214,121,0.12) 56%, transparent 70%)',
-      }}
-    />
-    {/* Warm base wash — lifts the card area without greying the copy */}
-    <div className="absolute inset-x-0 bottom-0 h-[45vh] bg-[linear-gradient(to_top,rgba(252,245,228,0.5)_0%,transparent_100%)] dark:bg-[linear-gradient(to_top,rgba(11,26,54,0.35)_0%,transparent_100%)]" />
-  </div>
-);
+// ParchmentBackdrop previously composited an SVG palm-frond + fibre
+// noise + vignettes on top of an ivoire body. Since `krystine-bg.jpg`
+// (set on <body> in index.html) already carries the real parchment
+// texture + the palm-frond shadow, the synthetic layer is retired —
+// leaving only the photo as the furthest layer of every page.
+// Kept as a no-op component so existing imports / consumers don't
+// break; returns null.
+const ParchmentBackdrop: React.FC = () => null;
 
 const InspiratHome: React.FC = () => {
   const { lang, isAdmin, user, member, setSignInOpen } = useApp();
-  const { editMode } = useEditMode();
+  const { editMode, saveImage } = useEditMode();
+  const { showTedx } = useSiteFlags();
   const t = CONTENT[lang];
   const navigate = useNavigate();
+  const reduceMotion = useReducedMotion();
+
+  // One-shot reset for the "Votre Accompagnatrice" banner. Visiting
+  // /accueil?reset-founder-image=1 as admin overwrites the Firestore
+  // override with the shipped default (/krystine-banner.png) and then
+  // cleans the URL. This exists because the in-app edit picker is
+  // sometimes the wrong tool (e.g. when the override was set to a
+  // now-broken URL that can no longer be found via the normal UI).
+  useEffect(() => {
+    if (!isAdmin) return;
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('reset-founder-image') !== '1') return;
+    (async () => {
+      try {
+        // Field key was bumped to `-v2` after a stale Firestore override
+        // from before the parchment redesign couldn't be cleared without
+        // real Firebase admin credentials. The reset writes to the new
+        // key so admins editing now stay in sync with what visitors see.
+        await saveImage('home.cards.founder.banner-img-v2', {
+          url: '/krystine-banner.png',
+          focalX: 0.5,
+          focalY: 0.5,
+        });
+        // Strip the flag so a refresh doesn't re-trigger.
+        params.delete('reset-founder-image');
+        const clean = window.location.pathname + (params.toString() ? `?${params}` : '') + window.location.hash;
+        window.history.replaceState(null, '', clean);
+        // Minimal confirmation — not worth the weight of a toast system here.
+        alert('Bannière Krystine restaurée.');
+      } catch (err) {
+        console.error('[reset-founder-image] failed', err);
+        alert('La restauration a échoué. Voir la console.');
+      }
+    })();
+  }, [isAdmin, saveImage]);
 
   const [introComplete, setIntroComplete] = useState(false);
   // Opens the Salut Bonjour clip in a full-viewport modal with audio + the
@@ -56,23 +82,36 @@ const InspiratHome: React.FC = () => {
   // autoplay is allowed; the modal is where sound lives.
   const [videoOpen, setVideoOpen] = useState(false);
 
+  // YouTube refuses embeds on production HTTPS when it can't verify the
+  // host; without an explicit `origin` param + a Referrer-Policy that
+  // leaks the origin, we get the grey "Video unavailable" screen even
+  // though the video plays fine on localhost. Compute the current origin
+  // here and thread it through both iframe URLs. (firebase.json also sets
+  // Referrer-Policy: strict-origin-when-cross-origin for the same reason.)
+  const ytOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+  const ytPreviewSrc = `https://www.youtube.com/embed/fxzVTt5RfBw?autoplay=1&mute=1&loop=1&playlist=fxzVTt5RfBw&controls=0&rel=0&modestbranding=1&playsinline=1&disablekb=1&origin=${encodeURIComponent(ytOrigin)}`;
+  const ytModalSrc   = `https://www.youtube.com/embed/fxzVTt5RfBw?autoplay=1&rel=0&modestbranding=1&playsinline=1&origin=${encodeURIComponent(ytOrigin)}`;
+
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Hide the content up-front so the shared <DropIntro> can play cleanly;
-  // the gsap reveal below fires only once the drop+logo sequence finishes.
+  // Hide the up-front content so the shared <DropIntro> can play cleanly.
+  // Only the home-content wrapper and the .hero-card tiles are touched
+  // here — every subsequent section uses <RevealSection> (framer-motion
+  // whileInView) instead, so they reveal as the user scrolls into them
+  // rather than all-at-once at intro end.
   useLayoutEffect(() => {
-    gsap.set(['.home-content', '.hero-card', '.home-section'], { opacity: 0 });
+    gsap.set(['.home-content', '.hero-card'], { opacity: 0 });
   }, []);
 
-  // Reveal the page once DropIntro calls back. Same cascade as before —
-  // main content fades, hero cards stagger in, then the long sections.
+  // Reveal the page once DropIntro calls back. Main content fades; the
+  // three .hero-card tiles stagger in. Sections below the fold animate
+  // themselves on scroll via RevealSection.
   useEffect(() => {
     if (!introComplete) return;
     const ctx = gsap.context(() => {
       const tl = gsap.timeline();
       tl.to('.home-content', { opacity: 1, duration: 0.7 })
-        .to('.hero-card', { y: 0, opacity: 1, duration: 0.9, stagger: 0.08, ease: 'power3.out' }, '-=0.4')
-        .to('.home-section', { y: 0, opacity: 1, duration: 0.8, stagger: 0.1 }, '-=0.5');
+        .to('.hero-card', { y: 0, opacity: 1, duration: 0.9, stagger: 0.08, ease: 'power3.out' }, '-=0.4');
     }, containerRef);
     return () => ctx.revert();
   }, [introComplete]);
@@ -112,6 +151,8 @@ const InspiratHome: React.FC = () => {
 
   // Les trois portes — Podcast · Origine (centre, vedette) · Boutique.
   // Labels + subtitles come from sealed copy in content.ts.
+  // `pictoIcon` is an Origine signature picto (Font-Awesome glyph) that
+  // floats above the title on each tile, matching the moodboard.
   const mainTiles = [
     {
       key: 'home.cards.blog',
@@ -121,6 +162,7 @@ const InspiratHome: React.FC = () => {
       banner: (t.cards.blog as any).banner,
       cta: (t.cards.blog as any).cta,
       href: (t.cards.blog as any).link,
+      pictoIcon: 'fa-microphone-lines',
     },
     {
       key: 'home.cards.formations',
@@ -130,6 +172,7 @@ const InspiratHome: React.FC = () => {
       banner: (t.cards.formations as any).banner,
       cta: (t.cards.formations as any).cta,
       href: (t.cards.formations as any).link,
+      pictoIcon: 'fa-book-open',
     },
     {
       key: 'home.cards.shop',
@@ -137,8 +180,10 @@ const InspiratHome: React.FC = () => {
       title: t.cards.shop.title,
       subtitle: t.cards.shop.subtitle,
       banner: (t.cards.shop as any).banner,
+      bannerSub: (t.cards.shop as any).bannerSub,
       cta: (t.cards.shop as any).cta,
       href: (t.cards.shop as any).link,
+      pictoIcon: 'fa-basket-shopping',
     },
   ];
 
@@ -174,9 +219,15 @@ const InspiratHome: React.FC = () => {
     const id = window.setInterval(() => setEventsTick(t => t + 1), 60 * 60 * 1000);
     return () => window.clearInterval(id);
   }, []);
+  // Origine cohort has its own dedicated section above the events grid, so
+  // we filter it out here to avoid duplicating it in the "Événements"
+  // grille. Past, TEDx, and open-ended items are already excluded by the
+  // base query; this just removes the cohort tile.
   const closestEvents = React.useMemo(
-    () => getUpcomingEvents({ includeOpenEnded: false }).slice(0, 4),
-    [eventsTick]
+    () => getUpcomingEvents({ includeOpenEnded: false, hideTedx: !showTedx })
+      .filter(ev => ev.id !== 'origine-cohorte-fondatrice')
+      .slice(0, 4),
+    [eventsTick, showTedx]
   );
 
   // Trilogie — book 3 is kept secret until release: we don't reveal the
@@ -191,10 +242,10 @@ const InspiratHome: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      className="relative font-sans text-[#0B1A36] dark:text-[#E0E0E0] min-h-screen transition-colors duration-300 bg-[linear-gradient(180deg,#FEFBF4_0%,#FDF8EC_40%,#FAF3DF_100%)] dark:bg-[linear-gradient(180deg,#050C1A_0%,#0B1A36_55%,#050C1A_100%)]"
+      className="relative font-sans text-[#3A251E] dark:text-[#E0E0E0] min-h-screen transition-colors duration-300"
     >
-      <RaysOfLight />
-      <ChakraDecorations />
+      <ParchmentBackdrop />
+      <ScrollDecorations />
 
       {/* INTRO ANIMATION — shared drop (bead falls + splash + Inspirata logo
           pops + overlay fades). Same sequence as the root splash so the
@@ -210,16 +261,16 @@ const InspiratHome: React.FC = () => {
             <Link
               to="/compte"
               title={member?.displayName || user.displayName || user.email || ''}
-              className="inline-flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-full bg-white/80 dark:bg-[#0B1A36]/80 backdrop-blur-md border border-[#D4AF37]/30 shadow-md hover:border-[#D4AF37] hover:shadow-[0_0_18px_rgba(212,175,55,0.25)] transition-all"
+              className="inline-flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-full bg-white/80 dark:bg-[#3A251E]/80 backdrop-blur-md border border-[#B8532F]/30 shadow-md hover:border-[#B8532F] hover:shadow-[0_0_18px_rgba(184,83,47,0.25)] transition-all"
             >
               {(member?.photoURL || user.photoURL) ? (
                 <img src={member?.photoURL || user.photoURL!} alt="" className="w-7 h-7 rounded-full object-cover" />
               ) : (
-                <div className="w-7 h-7 rounded-full bg-[#D4AF37]/20 flex items-center justify-center text-[11px] font-bold text-[#D4AF37]">
+                <div className="w-7 h-7 rounded-full bg-[#B8532F]/20 flex items-center justify-center text-[11px] font-bold text-[#B8532F]">
                   {(user.email?.[0] || '?').toUpperCase()}
                 </div>
               )}
-              <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#0B1A36] dark:text-white hidden sm:inline">
+              <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#3A251E] dark:text-white hidden sm:inline">
                 {member?.dosha || (lang === 'FR' ? 'Mon espace' : 'My space')}
               </span>
             </Link>
@@ -227,7 +278,7 @@ const InspiratHome: React.FC = () => {
               <Link
                 to="/admin"
                 title={lang === 'FR' ? 'Tableau de bord admin' : 'Admin dashboard'}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#D4AF37] text-[#0B1A36] shadow-md hover:bg-white transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#B8532F] text-[#3A251E] shadow-md hover:bg-white transition-colors"
               >
                 <i className="fa-solid fa-shield-halved text-[11px]" />
                 <span className="text-[10px] uppercase tracking-[0.25em] font-bold hidden sm:inline">
@@ -239,10 +290,10 @@ const InspiratHome: React.FC = () => {
         ) : (
           <button
             onClick={() => setSignInOpen(true)}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 dark:bg-[#0B1A36]/80 backdrop-blur-md border border-[#D4AF37]/30 shadow-md hover:border-[#D4AF37] hover:shadow-[0_0_18px_rgba(212,175,55,0.25)] transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 dark:bg-[#3A251E]/80 backdrop-blur-md border border-[#B8532F]/30 shadow-md hover:border-[#B8532F] hover:shadow-[0_0_18px_rgba(184,83,47,0.25)] transition-all"
           >
-            <i className="fa-solid fa-user text-[11px] text-[#D4AF37]" />
-            <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#0B1A36] dark:text-white">
+            <i className="fa-solid fa-user text-[11px] text-[#B8532F]" />
+            <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#3A251E] dark:text-white">
               {lang === 'FR' ? 'Connexion' : 'Sign in'}
             </span>
           </button>
@@ -250,85 +301,99 @@ const InspiratHome: React.FC = () => {
       </div>
 
       {/* MAIN CONTENT */}
-      <main className="home-content pt-44 pb-10 px-4 md:px-8 w-full max-w-[1800px] mx-auto flex flex-col items-center min-h-screen opacity-0 relative z-10 justify-between">
+      <main className="home-content pt-6 md:pt-10 pb-10 px-4 md:px-8 w-full max-w-[1800px] mx-auto flex flex-col items-center min-h-screen opacity-0 relative z-10 justify-between">
         
         {/* Section 2 · Hero — name + the two sealed phrases borrowed back from
             the splash while the splash itself is hidden. Remove these two
             <p> blocks once the proper splash screen ships. */}
-        <div className="text-center mb-10 relative z-20">
-          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[220%] bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.22)_0%,rgba(244,214,121,0.08)_40%,transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(244,214,121,0.16)_0%,transparent_65%)] blur-2xl" />
-          <h1
-            className="relative text-4xl md:text-6xl font-serif text-[#0B1A36] dark:text-white tracking-[0.2em] uppercase leading-tight"
-            style={{ textShadow: '0 1px 24px rgba(212,175,55,0.20)' }}
-          >
-            Krystine St-Laurent
-          </h1>
-          <p className="relative mt-6 md:mt-8 font-serif italic text-[#0B1A36]/90 dark:text-white/90 text-lg md:text-2xl lg:text-3xl max-w-3xl mx-auto leading-snug">
-            {lang === 'FR'
-              ? 'Le corps sait. Il manquait la carte pour le lire.'
-              : 'The body knows. What was missing was the map to read it.'}
-          </p>
-          <p className="relative mt-4 md:mt-5 font-serif italic text-[#0B1A36]/60 dark:text-white/60 text-sm md:text-base max-w-xl mx-auto leading-[1.8]">
-            {lang === 'FR'
-              ? "Au-delà des tendances, lorsque les recettes toutes faites ne suffisent plus, reprendre SA direction."
-              : 'Beyond trends, when ready-made recipes no longer suffice, reclaim YOUR direction.'}
-          </p>
-          <div className="relative w-24 h-px mx-auto mt-8 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
-          <div className="relative w-2 h-2 mx-auto mt-2 rounded-full bg-[#D4AF37]/80 shadow-[0_0_12px_rgba(212,175,55,0.7)]" />
-
-          {/* Soft CTA into the recommendation quiz — sits under the title
-              block so visitors who don't yet know which doorway to pick
-              get an alternative narrow path. Pre-title answers "what is
-              this for?" at a glance; the sub-line sets the expectation
-              (only five questions) so clicking feels low-cost. */}
-          <p className="relative mt-8 font-serif italic text-[#0B1A36]/85 dark:text-white/85 text-xl md:text-2xl">
-            {lang === 'FR' ? 'Par où commencer ?' : 'Where to start?'}
-          </p>
-          <Link
-            to="/guide"
-            className="relative inline-flex items-center gap-2.5 mt-3 px-7 py-3.5 rounded-full bg-white/80 dark:bg-white/10 border border-[#D4AF37]/50 hover:bg-[#D4AF37] hover:text-[#0B1A36] hover:shadow-[0_10px_28px_rgba(212,175,55,0.35)] text-[#0B1A36]/85 dark:text-white/90 text-xs md:text-sm uppercase tracking-[0.3em] font-bold backdrop-blur-sm transition-all duration-300"
-          >
-            <i className="fa-solid fa-compass text-[#D4AF37] text-sm" />
-            {t.guideBtn}
-            <i className="fa-solid fa-arrow-right text-[11px]" />
-          </Link>
-          <p className="relative mt-3 font-serif italic text-[#0B1A36]/55 dark:text-white/55 text-xs md:text-sm max-w-md mx-auto">
-            {lang === 'FR'
-              ? '5 questions à choix pour vous aiguiller selon votre situation.'
-              : '5 multiple-choice questions to point you in the right direction based on your situation.'}
-          </p>
+        {/* Hero — editorial split. The name anchors the left column; the
+            CTA card sits as a proper "invitation" on the right instead of
+            floating beneath. A thin gold filet between them ties the two
+            halves into one composition. Collapses to a single stacked
+            column below md for mobile. */}
+        {/* Hero — Compass of You. Rotating constellation of twelve
+            botanical allies on a parchment canvas. The compass itself
+            is the primary CTA; a labelled pill sits below the poem for
+            visitors who prefer a button. The "Votre Accompagnatrice"
+            banner with Krystine's portrait lives immediately below. */}
+        <div className="relative z-20 w-full max-w-[1400px] mx-auto mb-2 md:mb-4">
+          <CompassOfYou />
         </div>
 
         {/* Section 3 · Votre Accompagnatrice · Krystine — wide featured tile. Text at
             the top-left, video at the bottom-left (within frame), Krystine
-            photo visible on the right via the underlying banner image. */}
-        <div className="w-full mb-6 lg:mb-8">
+            photo visible on the right via the underlying banner image.
+            Motion: the ivoire-chaud wash sweeps left-to-right on scroll-in
+            like a slow uncover, revealing Krystine. Corner sprigs fade in
+            to echo the moodboard's botanical margin vocabulary. */}
+        <motion.div
+          className="w-full mb-6 lg:mb-8"
+          initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 1, ease: [0.2, 0.8, 0.2, 1] }}
+        >
           <div className="relative">
+            {/* Corner sprigs — laurel + eucalyptus flanking the banner.
+                Absolutely-positioned, pointer-events:none so the tile stays
+                a single click target. */}
+            <motion.div
+              aria-hidden
+              className="absolute -top-5 -left-1 md:-top-7 md:-left-3 w-10 h-14 md:w-14 md:h-20 z-20 pointer-events-none"
+              initial={reduceMotion ? { opacity: 0.75, scale: 1 } : { opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 0.75, scale: 1 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 1, delay: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
+            >
+              <Sprig variant="laurel" fill="#8A8F72" />
+            </motion.div>
+            <motion.div
+              aria-hidden
+              className="absolute -bottom-4 -right-1 md:-bottom-6 md:-right-3 w-10 h-14 md:w-14 md:h-20 z-20 pointer-events-none"
+              initial={reduceMotion ? { opacity: 0.75, scale: 1 } : { opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 0.75, scale: 1 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 1, delay: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
+            >
+              <Sprig variant="eucalyptus" flip fill="#8A8F72" />
+            </motion.div>
+
             <div
               onClick={() => { if (!editMode) followHref(founderCard.href); }}
-              className={`hero-card opacity-0 relative group rounded-[32px] overflow-hidden shadow-2xl transition-all duration-500 w-full h-[340px] md:h-[460px] lg:h-[520px] border border-[#D4AF37]/25 ${editMode ? '' : 'cursor-pointer hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(212,175,55,0.28)] hover:border-[#D4AF37]/60'}`}
+              className={`hero-card opacity-0 relative group rounded-[32px] overflow-hidden shadow-2xl transition-all duration-500 w-full h-[340px] md:h-[460px] lg:h-[520px] border border-[#B8532F]/25 ${editMode ? '' : 'cursor-pointer hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(184,83,47,0.28)] hover:border-[#B8532F]/60'}`}
             >
               <EditableImage
-                fieldKey={`${founderCard.key}.banner-img`}
+                fieldKey={`${founderCard.key}.banner-img-v2`}
                 defaultSrc={founderCard.image}
                 className="absolute inset-0 rounded-[32px] transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
                 alt={founderCard.title}
               >
-                {/* Subtle left-side wash — lifts legibility of the dark text on
-                    the beige mandala area without dimming the image itself. */}
-                <div className="absolute inset-0 bg-gradient-to-r from-white/60 via-white/15 to-transparent pointer-events-none" />
+                {/* Ivoire-chaud wash, left side — lifts dark-brun copy on
+                    the mandala without dulling the image. This is the
+                    final resting state. */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#F4E7DD]/65 via-[#F4E7DD]/18 to-transparent pointer-events-none" />
+                {/* Uncover-sweep overlay — a heavier ivoire cover that
+                    retracts left-to-right on scroll-in. Fades to 0 so it
+                    blends back into the permanent wash above. */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-[#F4E7DD] via-[#F4E7DD]/95 to-[#F4E7DD]/85 pointer-events-none"
+                  initial={reduceMotion ? { opacity: 0, x: 0 } : { opacity: 1, x: 0 }}
+                  whileInView={{ opacity: 0, x: '20%' }}
+                  viewport={{ once: true, amount: 0.35 }}
+                  transition={{ duration: 1.6, ease: [0.2, 0.8, 0.2, 1], delay: 0.1 }}
+                />
               </EditableImage>
               <div className="absolute inset-0 flex flex-col items-start justify-start pt-10 md:pt-14 text-left pl-8 md:pl-14 pr-8 md:pr-16 max-w-2xl pointer-events-none">
-                <span className="text-[#8B6F47] uppercase tracking-[0.35em] text-[10px] md:text-xs font-bold mb-3">
+                <span className="text-[#6B402F] uppercase tracking-[0.35em] text-[10px] md:text-xs font-bold mb-3">
                   <EditableText fieldKey={`${founderCard.key}.banner`} defaultValue={founderCard.banner} as="span" />
                 </span>
-                <h2 className="text-[#0B1A36] text-3xl md:text-5xl font-serif mb-4 pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
+                <h2 className="text-[#3A251E] text-3xl md:text-5xl font-serif mb-4 pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
                   <EditableText fieldKey={`${founderCard.key}.title`} defaultValue={founderCard.title} as="span" />
                 </h2>
-                <p className="text-[#0B1A36]/85 text-sm md:text-base font-serif italic leading-relaxed mb-5 pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
+                <p className="text-[#3A251E]/85 text-base md:text-lg font-serif italic leading-relaxed mb-5 pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
                   <EditableText fieldKey={`${founderCard.key}.subtitle`} defaultValue={founderCard.subtitle} as="span" />
                 </p>
-                <span className="inline-flex items-center gap-2 px-5 py-2 border border-[#0B1A36] rounded-full text-[#0B1A36] text-[11px] bg-white/60 backdrop-blur-md uppercase tracking-[0.25em] font-bold group-hover:bg-[#0B1A36] group-hover:text-[#D4AF37] group-hover:shadow-[0_8px_22px_rgba(11,26,54,0.25)] transition-all duration-500 pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
+                <span className="inline-flex items-center gap-2 px-5 py-2 border border-[#3A251E] rounded-full text-[#3A251E] text-[11px] bg-white/60 backdrop-blur-md uppercase tracking-[0.25em] font-bold group-hover:bg-[#3A251E] group-hover:text-[#B8532F] group-hover:shadow-[0_8px_22px_rgba(58,37,30,0.25)] transition-all duration-500 pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
                   <EditableText fieldKey={`${founderCard.key}.cta`} defaultValue={founderCard.cta} as="span" />
                   <i className="fa-solid fa-arrow-right text-[9px] transition-transform duration-500 group-hover:translate-x-1" />
                 </span>
@@ -342,10 +407,10 @@ const InspiratHome: React.FC = () => {
                 native YouTube controls (volume slider, fullscreen, captions). */}
             <div
               onClick={e => e.stopPropagation()}
-              className="hero-card opacity-0 hidden md:block absolute bottom-6 left-6 lg:bottom-8 lg:left-9 w-64 lg:w-[22rem] aspect-video rounded-xl overflow-hidden shadow-[0_16px_36px_rgba(0,0,0,0.45)] border border-[#D4AF37]/35 bg-black z-10"
+              className="hero-card opacity-0 hidden md:block absolute bottom-6 left-6 lg:bottom-8 lg:left-9 w-64 lg:w-[22rem] aspect-video rounded-xl overflow-hidden shadow-[0_16px_36px_rgba(0,0,0,0.45)] border border-[#B8532F]/35 bg-black z-10"
             >
-              <span className="absolute top-2 left-2 z-20 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur text-[#D4AF37] text-[9px] uppercase tracking-[0.25em] font-bold pointer-events-none">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+              <span className="absolute top-2 left-2 z-20 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur text-[#B8532F] text-[9px] uppercase tracking-[0.25em] font-bold pointer-events-none">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B8532F] animate-pulse" />
                 Salut Bonjour
               </span>
               {/* Muted ambient iframe — pointer-events-none so the invisible
@@ -353,8 +418,9 @@ const InspiratHome: React.FC = () => {
                   them). */}
               <iframe
                 title="Salut Bonjour — extrait"
-                src="https://www.youtube-nocookie.com/embed/fxzVTt5RfBw?autoplay=1&mute=1&loop=1&playlist=fxzVTt5RfBw&controls=0&rel=0&modestbranding=1&playsinline=1&disablekb=1"
+                src={ytPreviewSrc}
                 allow="autoplay; encrypted-media; picture-in-picture"
+                referrerPolicy="strict-origin-when-cross-origin"
                 frameBorder={0}
                 className="w-full h-full pointer-events-none"
               />
@@ -378,116 +444,278 @@ const InspiratHome: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Section 5 · Les trois portes — Podcast · Origine · Boutique. */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 mb-12 items-stretch">
+        {/* Today-only · Conférence Expo Manger Santé. Self-hides ~90 min
+            after the start time (see TodayConferenceBanner.tsx). Remove
+            the import + component once the date is past. */}
+        <TodayConferenceBanner />
+
+        {/* Section 5 · Les trois portes — Podcast · Origine · Boutique.
+            Enveloppées dans une bande beige légèrement plus soutenue que
+            l'ivoire body → crée un contrexte éditorial derrière les trois
+            tuiles pour qu'elles se détachent nettement au lieu de se
+            dissoudre dans le fond (beige sur beige). */}
+        <div
+          className="w-full rounded-[28px] px-4 md:px-8 py-10 md:py-14 mb-12"
+          style={{
+            background: 'linear-gradient(180deg, rgba(122,128,102,0.10) 0%, rgba(184,83,47,0.08) 100%)',
+            border: '1px solid rgba(184,83,47,0.14)',
+          }}
+        >
+        <EditorialSectionHeader
+          kicker={lang === 'FR' ? 'Section 01 · Les trois portes' : 'Section 01 · Three doors'}
+          title={lang === 'FR' ? 'Par où entrer.' : 'Where to enter.'}
+          lede={lang === 'FR'
+            ? 'Trois seuils — choisissez celui qui vous appelle.'
+            : 'Three thresholds — pick the one that calls you.'}
+          sprigs={['olive', 'eucalyptus']}
+          divider="compass"
+          className="mb-8 md:mb-10"
+        />
+        {/* Three doors — one-shot staggered reveal. Each tile rises from
+            y:40 with a spring; stagger 90ms so the row settles as a
+            cascade without depending on scroll position. */}
+        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 items-stretch">
           {mainTiles.map((card, idx) => (
-            <div
+            <motion.div
               key={idx}
               onClick={() => { if (!editMode) followHref(card.href); }}
-              className={`hero-card opacity-0 block w-full aspect-square relative group rounded-[28px] overflow-hidden shadow-2xl transition-all duration-500 ${editMode ? '' : 'cursor-pointer hover:-translate-y-2 hover:shadow-[0_22px_50px_rgba(212,175,55,0.28)]'} ${card.accent ? 'ring-2 ring-[#D4AF37]/60 hover:ring-[#D4AF37] shadow-[0_14px_44px_rgba(212,175,55,0.28)]' : ''}`}
+              initial={reduceMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 40, scale: 0.97 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{
+                duration: 0.9,
+                delay: reduceMotion ? 0 : idx * 0.09,
+                ease: [0.2, 0.8, 0.2, 1],
+              }}
+              style={{
+                border: '1px solid rgba(184,83,47,0.35)',
+                boxShadow: '0 14px 32px rgba(0,0,0, 0.22), 0 2px 6px rgba(107,74,47,0.08)',
+              }}
+              className={`block w-full aspect-square relative group rounded-[28px] overflow-hidden transition-[box-shadow,transform] duration-500 ${editMode ? '' : 'cursor-pointer hover:-translate-y-2'}`}
+              onMouseEnter={e => {
+                e.currentTarget.style.boxShadow = '0 22px 44px rgba(0,0,0,0.30), 0 4px 10px rgba(107,74,47,0.12)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.boxShadow = '0 14px 32px rgba(0,0,0, 0.22), 0 2px 6px rgba(107,74,47,0.08)';
+              }}
             >
-              {/* Image zooms gently on hover; the underlying <EditableImage>
-                  uses background-size:cover so scaling its box effectively
-                  zooms the picture inside it. */}
               <EditableImage
                 fieldKey={card.key}
                 defaultSrc={card.image}
-                className="absolute inset-0 rounded-[28px] transition-transform duration-[1200ms] ease-out group-hover:scale-[1.06]"
+                className="absolute inset-0 rounded-[28px] origine-image-soft transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
                 alt={card.title}
               >
-                <div className={`absolute inset-0 transition-colors duration-500 pointer-events-none ${card.accent ? 'bg-gradient-to-t from-[#0B1A36]/90 via-[#0B1A36]/55 to-[#0B1A36]/25 group-hover:from-[#0B1A36]/80' : 'bg-black/35 group-hover:bg-black/20'}`} />
-                {/* Soft gold sheen sweeping across on hover */}
-                <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_40%,rgba(244,214,121,0.22)_50%,transparent_60%)] -translate-x-full group-hover:translate-x-full transition-transform duration-[1400ms] ease-out pointer-events-none" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(58,37,30,0.45)_0%,rgba(58,37,30,0.22)_35%,rgba(58,37,30,0.08)_60%,transparent_85%)] pointer-events-none" />
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_40%,rgba(244,231,221,0.22)_50%,transparent_60%)] -translate-x-full group-hover:translate-x-full transition-transform duration-[1400ms] ease-out" />
+                </div>
               </EditableImage>
 
-              {/* Banner eyebrow — top-center gold pill (ÉCOUTER · ENTRER · INFUSER) */}
+              {/* Label éditorial — copper assombri, texte ivoire, tracking
+                  typographique ouvert. Pas de halo "badge UI". */}
               {card.banner && (
-                <div className="absolute top-5 left-1/2 -translate-x-1/2 pointer-events-none transition-transform duration-500 group-hover:-translate-y-1">
-                  <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#D4AF37] text-[#0B1A36] text-[10px] md:text-[11px] uppercase tracking-[0.35em] font-bold shadow-[0_4px_18px_rgba(212,175,55,0.45)] group-hover:shadow-[0_8px_26px_rgba(212,175,55,0.65)] transition-shadow duration-500">
+                <div className="absolute top-5 left-1/2 -translate-x-1/2 pointer-events-none transition-transform duration-500 group-hover:-translate-y-0.5 flex flex-col items-center gap-1">
+                  <span
+                    className="inline-flex items-center px-5 py-1.5 rounded-[14px] text-[10px] md:text-[11px] uppercase font-semibold"
+                    style={{
+                      backgroundColor: '#A04E2A',
+                      color: '#F4E7DD',
+                      letterSpacing: '0.42em',
+                      paddingRight: 'calc(1.25rem - 0.42em)',
+                    }}
+                  >
                     <EditableText fieldKey={`${card.key}.banner`} defaultValue={card.banner} as="span" />
                   </span>
+                  {(card as any).bannerSub && (
+                    <span
+                      className="font-serif italic text-[10px] md:text-[11px] text-[#F4E7DD]/85"
+                      style={{ textShadow: '0 1px 6px rgba(58,37,30,0.55)' }}
+                    >
+                      <EditableText fieldKey={`${card.key}.bannerSub`} defaultValue={(card as any).bannerSub} as="span" />
+                    </span>
+                  )}
                 </div>
               )}
 
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full px-6 flex flex-col items-center gap-4 pointer-events-none">
-                <h2 className="text-white text-2xl lg:text-3xl font-serif drop-shadow-md pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
+                {/* Picto éditorial — ivoire plein, bordure cuivre fine,
+                    glyphe brun terre 100% opacité. Pas de médaillon
+                    "app icon" avec ombre interne. */}
+                {card.pictoIcon && (
+                  <div
+                    className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-transform duration-500 group-hover:-translate-y-0.5"
+                    style={{
+                      backgroundColor: '#F4E7DD',
+                      border: '1px solid rgba(184,83,47,0.4)',
+                      boxShadow: '0 4px 14px rgba(107,74,47,0.10)',
+                    }}
+                    aria-hidden
+                  >
+                    <i
+                      className={`fa-solid ${card.pictoIcon} text-xl md:text-[1.35rem]`}
+                      style={{ color: '#6B402F', opacity: 1 }}
+                    />
+                  </div>
+                )}
+                {/* Titre en ivoire chaud — jamais blanc pur. Tracking
+                    légèrement ouvert pour rester éditorial. */}
+                <h2
+                  className="text-2xl lg:text-3xl font-serif pointer-events-auto"
+                  style={{ color: '#F4E7DD', letterSpacing: '0.02em', textShadow: '0 1px 10px rgba(58,37,30,0.35)' }}
+                  onClick={e => editMode && e.stopPropagation()}
+                >
                   <EditableText fieldKey={`${card.key}.title`} defaultValue={card.title} as="span" />
                 </h2>
-                <p className="text-white/85 text-sm md:text-base font-serif italic leading-relaxed max-w-[22rem] pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
+                <p
+                  className="text-sm md:text-base font-serif italic leading-relaxed max-w-[22rem] pointer-events-auto"
+                  style={{ color: 'rgba(244,231,221,0.82)' }}
+                  onClick={e => editMode && e.stopPropagation()}
+                >
                   <EditableText fieldKey={`${card.key}.subtitle`} defaultValue={card.subtitle} as="span" />
                 </p>
-                <span className="inline-flex items-center gap-2 px-5 py-2 border border-white/50 rounded-full text-white text-[11px] bg-white/10 backdrop-blur-md uppercase tracking-[0.25em] font-bold group-hover:bg-[#D4AF37] group-hover:text-[#0B1A36] group-hover:border-[#D4AF37] transition-colors duration-500 pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
+                {/* Bouton éditorial — brun terre plein, texte ivoire,
+                    bordure cuivre fine. Hover = légère brillance, rien
+                    de flashy. */}
+                <span
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-[11px] uppercase font-semibold pointer-events-auto transition-[filter] duration-300 group-hover:[filter:brightness(1.05)]"
+                  style={{
+                    backgroundColor: '#6B402F',
+                    color: '#F4E7DD',
+                    border: '1px solid rgba(184,83,47,0.5)',
+                    letterSpacing: '0.28em',
+                    paddingRight: 'calc(1.25rem - 0.28em)',
+                  }}
+                  onClick={e => editMode && e.stopPropagation()}
+                >
                   <EditableText fieldKey={`${card.key}.cta`} defaultValue={card.cta} as="span" />
                   <i className="fa-solid fa-arrow-right text-[9px] transition-transform duration-500 group-hover:translate-x-1" />
                 </span>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
+        </div>
+
+
+        {/* ── Section Origine — Le parcours signature ──────────────────────
+            Full-width editorial band with hero image + programme +
+            status/CTA. See src/components/OrigineHomeSection.tsx for the
+            asymmetric layout, parallax, and scroll-linked motion. */}
+        <OrigineHomeSection />
 
         {/* Section 6 · Événements & Conférences — closest 3 upcoming. Dates
             are curated in src/lib/liveEvents.ts; past events drop off via
             the hourly tick. Countdown chip appears within 14 days. */}
         {closestEvents.length > 0 && (
-          <section className="home-section w-full mb-12 opacity-0">
-            <div className="w-full rounded-[28px] bg-white/60 dark:bg-white/5 backdrop-blur-sm border border-[#0B1A36]/5 dark:border-white/10 px-6 md:px-12 py-10 md:py-14 shadow-[0_8px_32px_rgba(11,26,54,0.06)]">
+          <RevealSection className="w-full mb-12">
+            <div className="relative w-full rounded-[28px] bg-[rgba(232,208,190,0.45)] dark:bg-white/5 border border-[#B8532F]/12 dark:border-white/10 px-6 md:px-12 py-10 md:py-14 shadow-[0_8px_32px_rgba(0,0,0,0.07)] overflow-hidden">
+              {/* Corner sprigs framing the events card */}
+              <div className="pointer-events-none absolute top-4 left-4 md:top-6 md:left-6 w-8 h-11 md:w-10 md:h-14 opacity-55" aria-hidden>
+                <Sprig variant="wheat" fill="#B07A3C" />
+              </div>
+              <div className="pointer-events-none absolute bottom-4 right-4 md:bottom-6 md:right-6 w-8 h-11 md:w-10 md:h-14 opacity-55" aria-hidden>
+                <Sprig variant="wheat" flip fill="#B07A3C" />
+              </div>
+
+              <EditorialSectionHeader
+                kicker={lang === 'FR' ? 'Section 02 · Où on se rejoint · Live' : 'Section 02 · Where we meet · Live'}
+                title={lang === 'FR' ? 'Événements & Conférences' : 'Events & Conferences'}
+                lede={lang === 'FR' ? 'Les quatre prochains rendez-vous.' : 'The next four gatherings.'}
+                sprigs={['dandelion', 'wheat']}
+                divider="laurel"
+                className="mb-10"
+              />
+
               <LiveEventsSection
                 events={closestEvents}
-                kickerFR="Où on se rejoint · Live"
-                kickerEN="Where we meet · Live"
-                titleFR="Événements & Conférences"
-                titleEN="Events & Conferences"
-                leadFR="Les quatre prochains rendez-vous."
-                leadEN="The next four gatherings."
               />
 
               <div className="mt-10 text-center">
                 <Link
                   to="/formations#events"
-                  className="group/all inline-flex items-center gap-2 text-[11px] tracking-[0.3em] uppercase font-bold text-[#D4AF37] hover:text-[#8B6F47] transition-colors"
+                  className="group/all inline-flex items-center gap-2 text-[11px] tracking-[0.3em] uppercase font-bold text-[#B8532F] hover:text-[#6B402F] transition-colors"
                 >
                   {lang === 'FR' ? 'Voir tous les rendez-vous' : 'See all gatherings'}
                   <i className="fa-solid fa-arrow-right text-[9px] transition-transform duration-300 group-hover/all:translate-x-1" />
                 </Link>
               </div>
             </div>
-          </section>
+          </RevealSection>
         )}
 
-        {/* Section 7 · La Trilogie — full-width showcase with book covers. */}
-        <section className="home-section w-full mb-12 opacity-0">
-          <div className="w-full rounded-[28px] bg-[rgba(201,183,156,0.14)] dark:bg-white/5 border border-[#0B1A36]/5 dark:border-white/10 px-6 md:px-12 py-10 md:py-14">
-            <p className="text-center text-[#D4AF37] uppercase tracking-[0.3em] text-[10px] md:text-[11px] font-bold mb-10">
-              {lang === 'FR' ? "L'œuvre · Trilogie aux Éditions de l'Homme" : "The work · Trilogy at Éditions de l'Homme"}
+
+        {/* Section 7 · La Trilogie — full-width showcase with book covers.
+            Books fall onto the shelf in a spring-stagger: each lifts from
+            y:-60, rotate:-8 to rest, spaced 140 ms apart. */}
+        <RevealSection className="w-full mb-12">
+          <div className="relative w-full rounded-[28px] bg-[rgba(244,231,221,0.75)] dark:bg-white/5 border border-[#B8532F]/15 dark:border-white/10 px-6 md:px-12 py-10 md:py-14 overflow-hidden">
+            {/* Flanking dried-leaf sprigs — moodboard vocabulary */}
+            <div className="pointer-events-none absolute top-6 left-6 w-7 h-12 md:w-9 md:h-16 opacity-55" aria-hidden>
+              <Sprig variant="driedLeaf" fill="#8B674A" />
+            </div>
+            <div className="pointer-events-none absolute bottom-6 right-6 w-7 h-12 md:w-9 md:h-16 opacity-55" aria-hidden>
+              <Sprig variant="driedLeaf" flip fill="#8B674A" />
+            </div>
+
+            <EditorialSectionHeader
+              kicker={lang === 'FR' ? "L'œuvre fondatrice" : 'The founding work'}
+              title={lang === 'FR' ? "La Trilogie d'Origine" : 'The Origin Trilogy'}
+              lede={lang === 'FR'
+                ? "Trois livres. 8 ans. 1200 pages inspirées de l'Ayurveda — et une partie de leur contenu inédit nourrit Expérience Origine avant même sa publication."
+                : "Three books. 8 years. 1200 pages drawn from Ayurveda — and some of their unreleased material feeds the Origin Experience before publication."}
+              sprigs={['olive', 'laurel']}
+              divider="bloom"
+              className="mb-8"
+            />
+
+            {/* Phrase-pont — sits above the row of book covers, framing the
+                relationship between the trilogy and Origine. */}
+            <p className="font-serif italic text-center text-[#3A251E]/80 dark:text-white/70 text-base md:text-lg lg:text-xl mb-10 md:mb-12 max-w-3xl mx-auto">
+              {lang === 'FR'
+                ? <>La trilogie donne <span className="text-[#B8532F]">les mots</span>… ORIGINE donne <span className="text-[#B8532F]">l'EXPÉRIENCE</span>…</>
+                : <>The trilogy gives <span className="text-[#B8532F]">the words</span>… ORIGINE gives <span className="text-[#B8532F]">the EXPERIENCE</span>…</>}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 md:gap-14 max-w-5xl mx-auto">
               {trilogy.map((b, i) => (
-                <Link
+                <motion.div
                   key={i}
+                  initial={reduceMotion ? { opacity: 1, y: 0, rotate: 0 } : { opacity: 0, y: -60, rotate: -6 + i * 3 }}
+                  whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 110,
+                    damping: 14,
+                    delay: reduceMotion ? 0 : i * 0.14,
+                  }}
+                  className="flex flex-col items-center text-center"
+                >
+                <Link
                   to="/medias#livres"
-                  className="group flex flex-col items-center text-center"
+                  className="group flex flex-col items-center text-center w-full"
+                  aria-label={b.mystery ? (lang === 'FR' ? 'Tome 3 — À révéler' : 'Volume 3 — To be revealed') : b.title}
                 >
                   {/* Book cover — real image when available; for the unreleased
                       third title we keep it mysterious: a big gold "?" with a
                       sparkle, no title. */}
-                  <div className="w-full max-w-[220px] aspect-[1/1.3] rounded-r-[12px] rounded-l-[3px] overflow-hidden relative shadow-[0_18px_40px_rgba(0,0,0,0.18)] border-l-4 border-[#0B1A36]/10 mb-5 transition-all duration-500 group-hover:-translate-y-3 group-hover:rotate-1 group-hover:shadow-[0_28px_52px_rgba(0,0,0,0.28)]">
+                  <div className="w-full max-w-[220px] aspect-[1/1.3] rounded-r-[12px] rounded-l-[3px] overflow-hidden relative shadow-[0_18px_40px_rgba(0,0,0,0.18)] border-l-4 border-[#3A251E]/10 mb-5 transition-all duration-500 group-hover:-translate-y-3 group-hover:rotate-1 group-hover:shadow-[0_28px_52px_rgba(0,0,0,0.28)]">
                     {b.cover ? (
                       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${b.cover})`, backgroundSize: '100% 100%' }} />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#0B1A36] via-[#1A2642] to-[#2E1F3D] text-white overflow-hidden">
-                        {/* Soft glow halo behind the ? */}
-                        <div className="absolute w-40 h-40 rounded-full bg-[#D4AF37]/20 blur-3xl" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#3A251E] via-[#4A3228] to-[#6B402F] text-[#F4E7DD] overflow-hidden">
+                        {/* Soft glow halo behind the ? — warm brun, not plum. */}
+                        <div className="absolute w-40 h-40 rounded-full bg-[#6B402F]/30 blur-3xl" />
                         {/* Sparkle decorations for the "cute mysterious" feel */}
-                        <i className="fa-solid fa-sparkles absolute top-6 right-7 text-[#D4AF37]/70 text-sm" />
-                        <i className="fa-solid fa-sparkles absolute bottom-10 left-6 text-[#D4AF37]/50 text-[10px]" />
-                        <i className="fa-regular fa-star absolute top-14 left-8 text-[#D4AF37]/40 text-[9px]" />
+                        <i className="fa-solid fa-sparkles absolute top-6 right-7 text-[#B8532F]/70 text-sm" />
+                        <i className="fa-solid fa-sparkles absolute bottom-10 left-6 text-[#B8532F]/50 text-[10px]" />
+                        <i className="fa-regular fa-star absolute top-14 left-8 text-[#B8532F]/40 text-[9px]" />
                         {/* The ? itself */}
                         <span
-                          className="relative font-serif italic text-[#D4AF37] text-[7rem] md:text-[8rem] leading-none"
-                          style={{ textShadow: '0 0 30px rgba(212,175,55,0.5), 0 0 60px rgba(212,175,55,0.3)' }}
+                          className="relative font-serif italic text-[#B8532F] text-[7rem] md:text-[8rem] leading-none"
+                          style={{ textShadow: '0 0 30px rgba(184,83,47,0.4), 0 0 60px rgba(107,74,47,0.3)' }}
                         >
                           ?
                         </span>
@@ -495,82 +723,66 @@ const InspiratHome: React.FC = () => {
                     )}
                     {/* Shine on hover */}
                     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    {/* Launch date banner — only on the mystery (third) book. */}
+                    {b.mystery && (
+                      <span className="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#B8532F] text-[#3A251E] text-[9px] uppercase tracking-[0.25em] font-bold shadow-md whitespace-nowrap">
+                        {lang === 'FR' ? 'Lancement le 14 octobre' : 'Launch Oct. 14'}
+                      </span>
+                    )}
                   </div>
 
-                  <p className="font-serif italic text-lg md:text-xl text-[#0B1A36] dark:text-white group-hover:text-[#D4AF37] transition-colors">
+                  <p className="font-serif italic text-lg md:text-xl text-[#3A251E] dark:text-white group-hover:text-[#B8532F] transition-colors">
                     {b.mystery ? (lang === 'FR' ? 'À Révéler' : 'To Be Revealed') : b.title}
                   </p>
-                  <p className="text-[10px] uppercase tracking-[0.25em] text-[#0B1A36]/50 dark:text-white/50 mt-1">{b.year}</p>
+                  <p className="text-[10px] uppercase tracking-[0.25em] text-[#3A251E]/50 dark:text-white/50 mt-1">{b.year}</p>
                 </Link>
+                {/* Tome 3 — dedicated capture CTA. Lands on the Médias page
+                    where the email-capture for the parution lives. */}
+                {b.mystery && (
+                  <Link
+                    to="/medias#livres"
+                    className="mt-4 inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#3A251E] text-[#F4E7DD] hover:bg-[#B8532F] hover:text-[#3A251E] hover:shadow-[0_10px_22px_rgba(184,83,47,0.35)] text-[10px] tracking-[0.25em] uppercase font-bold transition-all"
+                  >
+                    {lang === 'FR' ? 'Me prévenir du dévoilement' : 'Notify me of the unveiling'}
+                    <i className="fa-solid fa-arrow-right text-[8px]" />
+                  </Link>
+                )}
+                </motion.div>
               ))}
             </div>
 
             <div className="mt-12 text-center">
               <Link
                 to="/medias#livres"
-                className="group/tril inline-flex items-center gap-2 px-6 py-2.5 border border-[#D4AF37] rounded-full text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#0B1A36] hover:shadow-[0_8px_22px_rgba(212,175,55,0.35)] text-[11px] tracking-[0.25em] uppercase font-bold transition-all duration-300"
+                className="group/tril inline-flex items-center gap-2 px-6 py-2.5 border border-[#B8532F] rounded-full text-[#B8532F] hover:bg-[#B8532F] hover:text-[#3A251E] hover:shadow-[0_8px_22px_rgba(184,83,47,0.35)] text-[11px] tracking-[0.25em] uppercase font-bold transition-all duration-300"
               >
                 {lang === 'FR' ? 'Découvrir la trilogie' : 'Discover the trilogy'}
                 <i className="fa-solid fa-arrow-right text-[9px] transition-transform duration-300 group-hover/tril:translate-x-1" />
               </Link>
             </div>
           </div>
-        </section>
+        </RevealSection>
 
-        {/* Section 8 · La Pulsation — newsletter capture, full width, last block
-            before the footer. Form stays centered inside the wide container. */}
-        <section className="home-section w-full mb-4 opacity-0">
-          <div className="w-full rounded-[28px] bg-white/70 dark:bg-[#0B1A36]/50 backdrop-blur-sm border border-[#D4AF37]/25 px-6 md:px-12 py-10 md:py-14 shadow-[0_8px_32px_rgba(11,26,54,0.08)] text-center">
-            <p className="font-serif italic text-xl md:text-2xl text-[#0B1A36] dark:text-white mb-2">
-              {lang === 'FR' ? 'Une correspondance' : 'A correspondence'}
-            </p>
-            <p className="text-xs md:text-sm text-[#0B1A36]/60 dark:text-white/60 mb-8 font-serif italic">
-              {lang === 'FR' ? 'Un fil de sagesse. Quelques mots, lorsque cela compte.' : 'A thread of wisdom. A few words, when it matters.'}
-            </p>
+        <RevealSection className="w-full mb-12">
+          {/* Voir src/components/PremiersRituelsHero.tsx — programme $27, */}
+          {/* hero partagé avec FormationsPage. */}
+          <PremiersRituelsHero />
+        </RevealSection>
 
-            {formState === 'success' ? (
-              <p className="font-serif italic text-[#D4AF37] py-4 text-base md:text-lg">
-                {lang === 'FR' ? 'Merci. Vous recevrez bientôt votre première correspondance.' : 'Thank you. You will soon receive your first correspondence.'}
-              </p>
-            ) : (
-              <form onSubmit={submitPulsation} className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder={lang === 'FR' ? 'Votre adresse courriel' : 'Your email address'}
-                  aria-label={lang === 'FR' ? 'Votre adresse courriel' : 'Your email address'}
-                  className="flex-1 min-w-0 px-5 py-3 rounded-full border border-[#0B1A36]/15 dark:border-white/15 bg-white dark:bg-white/5 text-sm text-[#0B1A36] dark:text-white placeholder:text-[#0B1A36]/40 dark:placeholder:text-white/40 focus:outline-none focus:border-[#D4AF37]"
-                />
-                <button
-                  type="submit"
-                  disabled={formState === 'submitting'}
-                  className="px-7 py-3 rounded-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] hover:bg-[#D4AF37] hover:text-[#0B1A36] hover:shadow-[0_10px_26px_rgba(212,175,55,0.45)] hover:-translate-y-0.5 font-bold uppercase tracking-[0.25em] text-[11px] transition-all duration-300 shadow-md disabled:opacity-60 disabled:translate-y-0 disabled:shadow-md"
-                >
-                  {formState === 'submitting' ? <i className="fa-solid fa-circle-notch fa-spin" /> : (lang === 'FR' ? 'Rejoindre' : 'Join')}
-                </button>
-              </form>
-            )}
-
-            {formState === 'error' && (
-              <p className="mt-4 text-[11px] text-red-700 dark:text-red-400">
-                {lang === 'FR' ? 'Une erreur est survenue. Veuillez réessayer ou nous écrire à equipe@inspiratanature.com.' : 'An error occurred. Please try again or write to us at equipe@inspiratanature.com.'}
-              </p>
-            )}
-
-            <p className="mt-6 text-[10px] text-[#0B1A36]/50 dark:text-white/50">
-              {lang === 'FR' ? "Désabonnement en un clic. Votre adresse n'est jamais revendue." : 'Unsubscribe in one click. Your address is never resold.'}
-            </p>
-          </div>
-        </section>
-
-        {/* Section 9 · Quiz Dosha — Ikigai + intro block mirroring /quiz.
-            Every interactive element (circles, CTA) navigates to /quiz. */}
-        <section className="home-section w-full mb-4 opacity-0">
-          <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-24 px-2 md:px-6 py-8 md:py-12">
-            {/* Ikigai — clicks navigate to /quiz */}
-            <div className="relative flex items-center justify-center lg:w-1/2">
+        {/* Section 7 · Quiz Dosha — Ikigai + new "votre signature" tagline.
+            Sits between the Trilogie and Pulsation per Krystine's April 25
+            rebuild. Replaces the older 5-elements explanatory paragraph
+            with a tighter, signature-led pitch. */}
+        <RevealSection className="w-full mb-12">
+          <EditorialSectionHeader
+            kicker={lang === 'FR' ? 'Section 04 · Votre signature' : 'Section 04 · Your signature'}
+            title={t.ayurveda.title}
+            sprigs={['olive', 'wheat']}
+            divider="laurel"
+            className="mb-4"
+          />
+          <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-16 xl:gap-24 px-4 md:px-6 py-8 md:py-12">
+            <div className="relative flex items-center justify-center flex-shrink-0 lg:w-auto xl:w-1/2">
               <AyurvedaIkigai
                 doshas={t.ayurveda.doshas}
                 onDoshaClick={() => navigate('/quiz')}
@@ -580,25 +792,110 @@ const InspiratHome: React.FC = () => {
               />
             </div>
 
-            {/* Intro text + CTA */}
-            <div className="lg:w-1/2 text-center lg:text-left max-w-xl">
-              <span className="text-[#D4AF37] uppercase tracking-[0.2em] text-xs font-semibold block mb-2">{t.ayurveda.introTitle}</span>
-              <h3 className="text-3xl md:text-5xl font-serif text-[#0B1A36] dark:text-white mb-6">{t.ayurveda.title}</h3>
-              <p className="text-[#0B1A36]/70 dark:text-white/70 font-serif text-lg leading-relaxed mb-6 italic">{t.ayurveda.introText}</p>
-              <div className="bg-white dark:bg-[#0B1A36]/60 border border-[#0B1A36]/5 dark:border-white/5 p-8 rounded-[24px] shadow-lg mb-8">
-                <p className="text-[#0B1A36]/80 dark:text-white/80 leading-relaxed mb-4 font-medium">{t.ayurveda.desc}</p>
-                <p className="text-[#0B1A36] dark:text-white font-bold">{t.ayurveda.quizPrompt}</p>
+            <div className="flex-1 min-w-0 text-center lg:text-left max-w-xl">
+              <span className="text-[#B8532F] uppercase tracking-[0.2em] text-xs font-semibold block mb-2">{t.ayurveda.introTitle}</span>
+              <div className="bg-white dark:bg-[#3A251E]/60 border border-[#3A251E]/5 dark:border-white/5 p-8 rounded-[24px] shadow-lg mb-8 space-y-3">
+                <p className="font-serif italic text-[#3A251E] dark:text-white text-lg md:text-xl leading-snug">
+                  {lang === 'FR'
+                    ? 'Vous êtes uniques, absolument comme tout le monde !'
+                    : "You are unique — exactly like everyone else!"}
+                </p>
+                <p className="text-[#3A251E]/80 dark:text-white/80 leading-relaxed">
+                  {lang === 'FR'
+                    ? "Nous avons notre signature. La comprendre, c'est retrouver ses propres repères et arrêter de suivre des modes."
+                    : "We each carry a signature. Understanding it is how you reclaim your own bearings and stop chasing trends."}
+                </p>
+                <p className="text-[#3A251E] dark:text-white font-bold">
+                  {lang === 'FR' ? 'Dix questions · quelques minutes.' : 'Ten questions · a few minutes.'}
+                </p>
               </div>
               <Link
                 to="/quiz"
-                className="group/quiz inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#D4AF37] hover:text-[#0B1A36] hover:shadow-[0_14px_32px_rgba(212,175,55,0.45)] hover:-translate-y-0.5 transition-all duration-300"
+                className="group/quiz inline-flex items-center gap-2 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#B8532F] hover:text-[#3A251E] hover:shadow-[0_14px_32px_rgba(184,83,47,0.45)] hover:-translate-y-0.5 transition-all duration-300"
               >
                 {t.ayurveda.quizBtn}
                 <i className="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover/quiz:translate-x-1" />
               </Link>
             </div>
           </div>
-        </section>
+        </RevealSection>
+
+        {/* Section 8 · La Pulsation — newsletter capture, full width, last block
+            before the footer. Form stays centered inside the wide container. */}
+        <RevealSection className="w-full mb-4">
+          <div
+            className="relative w-full rounded-[28px] dark:bg-[#3A251E]/50 px-6 md:px-12 py-10 md:py-14 text-center overflow-hidden"
+            style={{
+              background: 'linear-gradient(180deg, rgba(232,208,190,0.55) 0%, rgba(244,231,221,0.75) 100%)',
+              border: '1px solid rgba(184,83,47,0.22)',
+              boxShadow: '0 8px 28px rgba(107,74,47,0.08)',
+            }}
+          >
+            <div className="pointer-events-none absolute top-5 left-5 w-7 h-11 md:w-9 md:h-14 opacity-55" aria-hidden>
+              <Sprig variant="olive" fill="#8A8F72" />
+            </div>
+            <div className="pointer-events-none absolute bottom-5 right-5 w-7 h-11 md:w-9 md:h-14 opacity-55" aria-hidden>
+              <Sprig variant="olive" flip fill="#8A8F72" />
+            </div>
+
+            <EditorialSectionHeader
+              kicker={lang === 'FR' ? 'Section 05 · La Pulsation' : 'Section 05 · The Pulse'}
+              title={lang === 'FR' ? 'Une correspondance' : 'A correspondence'}
+              lede={lang === 'FR'
+                ? 'Un fil de sagesse. Quelques mots, lorsque cela compte.'
+                : 'A thread of wisdom. A few words, when it matters.'}
+              sprigs={['dandelion', 'eucalyptus']}
+              divider="compass"
+              className="mb-6"
+            />
+
+            {/* "Au fil des saisons" framing — sits above the form so visitors
+                know Pulsation is the channel for future doors (retreats,
+                tour, parution) before they hand over their email. */}
+            <p className="font-serif italic text-[#3A251E]/85 dark:text-white/80 text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-8">
+              {lang === 'FR'
+                ? "L'Ayurveda comme boussole se déploie dans le temps. D'autres portes ouvriront au fil des saisons. Pour être informée lorsqu'elles paraîtront, Pulsation."
+                : 'Ayurveda as a compass unfolds over time. Other doors will open with the seasons. To be told when they appear — Pulsation.'}
+            </p>
+
+            {formState === 'success' ? (
+              <p className="font-serif italic text-[#B8532F] py-4 text-base md:text-lg">
+                {lang === 'FR' ? 'Merci. Vous recevrez bientôt votre première correspondance.' : 'Thank you. You will soon receive your first correspondence.'}
+              </p>
+            ) : (
+              <form onSubmit={submitPulsation} className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto group/pulsation">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder={lang === 'FR' ? 'Votre adresse courriel' : 'Your email address'}
+                  aria-label={lang === 'FR' ? 'Votre adresse courriel' : 'Your email address'}
+                  className="pulsation-input flex-1 min-w-0 px-5 py-3 rounded-full border border-[#3A251E]/15 dark:border-white/15 bg-white dark:bg-white/5 text-sm text-[#3A251E] dark:text-white placeholder:text-[#3A251E]/40 dark:placeholder:text-white/40 focus:outline-none focus:border-[#B8532F] focus:shadow-[0_0_0_4px_rgba(184,83,47,0.12)] transition-shadow duration-300"
+                />
+                <button
+                  type="submit"
+                  disabled={formState === 'submitting'}
+                  className="px-7 py-3 rounded-full bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] hover:bg-[#B8532F] hover:text-[#3A251E] hover:shadow-[0_10px_26px_rgba(184,83,47,0.45)] hover:-translate-y-0.5 font-bold uppercase tracking-[0.25em] text-[11px] transition-all duration-300 shadow-md disabled:opacity-60 disabled:translate-y-0 disabled:shadow-md"
+                >
+                  {formState === 'submitting' ? <i className="fa-solid fa-circle-notch fa-spin" /> : (lang === 'FR' ? 'Rejoindre' : 'Join')}
+                </button>
+              </form>
+            )}
+
+            {formState === 'error' && (
+              <p className="mt-4 text-sm text-red-700 dark:text-red-400">
+                {lang === 'FR' ? 'Une erreur est survenue. Veuillez réessayer ou nous écrire à equipe@inspiratanature.com.' : 'An error occurred. Please try again or write to us at equipe@inspiratanature.com.'}
+              </p>
+            )}
+
+            <p className="mt-6 text-sm text-[#3A251E]/60 dark:text-white/60">
+              {lang === 'FR' ? "Désabonnement en un clic. Votre adresse n'est jamais revendue." : 'Unsubscribe in one click. Your address is never resold.'}
+            </p>
+          </div>
+        </RevealSection>
+
+
       </main>
 
       {/* ── Full-screen video modal ── */}
@@ -624,8 +921,9 @@ const InspiratHome: React.FC = () => {
           >
             <iframe
               title="Salut Bonjour"
-              src="https://www.youtube-nocookie.com/embed/fxzVTt5RfBw?autoplay=1&rel=0&modestbranding=1&playsinline=1"
+              src={ytModalSrc}
               allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
               frameBorder={0}
               className="w-full h-full"

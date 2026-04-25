@@ -25,8 +25,8 @@ const DropIntro: React.FC<Props> = ({ onComplete }) => {
 
   if (reduce) {
     return (
-      <div className="fixed inset-0 z-[200] flex items-center justify-center bg-[#FEFBF4] dark:bg-[#050C1A]">
-        <img src={ASSETS.logoInspirata} alt="Inspirata" className="w-16 drop-shadow-[0_0_30px_rgba(212,175,55,0.4)]" />
+      <div className="fixed inset-0 z-[200] flex items-center justify-center bg-[#F4E7DD] dark:bg-[#2E1A14]">
+        <img src={ASSETS.logoInspirata} alt="Inspirata" className="w-16 drop-shadow-[0_0_30px_rgba(184,83,47,0.4)]" />
       </div>
     );
   }
@@ -41,7 +41,7 @@ const DropIntro: React.FC<Props> = ({ onComplete }) => {
       initial={{ opacity: 1 }}
       animate={{ opacity: 0 }}
       transition={{ duration: 0.65, delay: (FALL_MS + SPLASH_MS + LOGO_HOLD_MS) / 1000, ease: 'easeOut' }}
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-[#FEFBF4] dark:bg-[#050C1A] pointer-events-none"
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-[#F4E7DD] dark:bg-[#2E1A14] pointer-events-none"
     >
       {/* Stage — both the bead and the logo share this centered slot so they
           land on exactly the same point. Using absolute+inset-0+flex keeps
@@ -57,7 +57,7 @@ const DropIntro: React.FC<Props> = ({ onComplete }) => {
             scaleY:  { delay: splashDelay, duration: SPLASH_MS / 1000, ease: [0.16, 0.84, 0.44, 1] },
             opacity: { delay: splashDelay, duration: SPLASH_MS / 1000, ease: 'easeOut' },
           }}
-          className="absolute block w-3 h-3 rounded-full bg-gradient-to-br from-[#F4D679] to-[#8B6914] shadow-[0_0_14px_rgba(212,175,55,0.55)] origin-center"
+          className="absolute block w-3 h-3 rounded-full bg-gradient-to-br from-[#D4A876] to-[#8B6914] shadow-[0_0_14px_rgba(184,83,47,0.55)] origin-center"
         />
       </div>
 
@@ -77,7 +77,7 @@ const DropIntro: React.FC<Props> = ({ onComplete }) => {
             times: [0, SPLASH_MS / totalLogoPhase, (SPLASH_MS + LOGO_HOLD_MS) / totalLogoPhase, 1],
             ease: 'easeOut',
           }}
-          className="w-28 md:w-36 drop-shadow-[0_0_40px_rgba(212,175,55,0.55)]"
+          className="w-28 md:w-36 drop-shadow-[0_0_40px_rgba(184,83,47,0.55)]"
         />
       </div>
     </motion.div>

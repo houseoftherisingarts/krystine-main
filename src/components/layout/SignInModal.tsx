@@ -76,14 +76,14 @@ const SignInModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-[#0B1A36]/50 backdrop-blur-md" onClick={close}>
-      <div className="relative w-full max-w-md bg-white dark:bg-[#0B1A36] rounded-[30px] shadow-2xl border border-[#D4AF37]/20 p-8 md:p-10" onClick={e => e.stopPropagation()}>
-        <button onClick={close} className="absolute top-5 right-5 w-9 h-9 rounded-full flex items-center justify-center text-[#0B1A36]/40 dark:text-white/40 hover:text-[#0B1A36] dark:hover:text-white">
+    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-[#3A251E]/50 backdrop-blur-md" onClick={close}>
+      <div className="relative w-full max-w-md bg-white dark:bg-[#3A251E] rounded-[30px] shadow-2xl border border-[#B8532F]/20 p-8 md:p-10" onClick={e => e.stopPropagation()}>
+        <button onClick={close} className="absolute top-5 right-5 w-9 h-9 rounded-full flex items-center justify-center text-[#3A251E]/40 dark:text-white/40 hover:text-[#3A251E] dark:hover:text-white">
           <i className="fa-solid fa-times text-lg" />
         </button>
 
-        <h2 className="font-serif text-3xl text-[#0B1A36] dark:text-white mb-2">{titles[mode]}</h2>
-        <p className="text-sm text-[#0B1A36]/60 dark:text-white/60 mb-6">
+        <h2 className="font-serif text-3xl text-[#3A251E] dark:text-white mb-2">{titles[mode]}</h2>
+        <p className="text-sm text-[#3A251E]/60 dark:text-white/60 mb-6">
           {lang === 'FR' ? 'Accédez à votre espace client Inspirata.' : 'Access your Inspirata client space.'}
         </p>
 
@@ -92,15 +92,15 @@ const SignInModal: React.FC = () => {
             <button
               onClick={handleGoogle}
               disabled={busy}
-              className="w-full flex items-center justify-center gap-3 bg-white border border-[#0B1A36]/10 dark:bg-white/5 dark:border-white/10 text-[#0B1A36] dark:text-white px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:border-[#D4AF37] transition-colors disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-3 bg-white border border-[#3A251E]/10 dark:bg-white/5 dark:border-white/10 text-[#3A251E] dark:text-white px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:border-[#B8532F] transition-colors disabled:opacity-50"
             >
               <i className="fa-brands fa-google text-base" />
               {lang === 'FR' ? 'Continuer avec Google' : 'Continue with Google'}
             </button>
-            <div className="my-5 flex items-center gap-3 text-[10px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">
-              <span className="flex-1 h-px bg-[#0B1A36]/10 dark:bg-white/10" />
+            <div className="my-5 flex items-center gap-3 text-[10px] uppercase tracking-widest text-[#3A251E]/40 dark:text-white/40">
+              <span className="flex-1 h-px bg-[#3A251E]/10 dark:bg-white/10" />
               <span>{lang === 'FR' ? 'ou' : 'or'}</span>
-              <span className="flex-1 h-px bg-[#0B1A36]/10 dark:bg-white/10" />
+              <span className="flex-1 h-px bg-[#3A251E]/10 dark:bg-white/10" />
             </div>
           </>
         )}
@@ -112,7 +112,7 @@ const SignInModal: React.FC = () => {
               placeholder={lang === 'FR' ? 'Nom' : 'Name'}
               value={displayName}
               onChange={e => setDisplayName(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-[#0B1A36]/10 dark:border-white/10 bg-[#F5F5F0] dark:bg-white/5 text-[#0B1A36] dark:text-white outline-none focus:border-[#D4AF37]"
+              className="w-full px-4 py-3 rounded-xl border border-[#3A251E]/10 dark:border-white/10 bg-[#F4E7DD] dark:bg-white/5 text-[#3A251E] dark:text-white outline-none focus:border-[#B8532F]"
             />
           )}
           <input
@@ -122,7 +122,7 @@ const SignInModal: React.FC = () => {
             placeholder={lang === 'FR' ? 'Courriel' : 'Email'}
             value={email}
             onChange={e => setEmail(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-[#0B1A36]/10 dark:border-white/10 bg-[#F5F5F0] dark:bg-white/5 text-[#0B1A36] dark:text-white outline-none focus:border-[#D4AF37]"
+            className="w-full px-4 py-3 rounded-xl border border-[#3A251E]/10 dark:border-white/10 bg-[#F4E7DD] dark:bg-white/5 text-[#3A251E] dark:text-white outline-none focus:border-[#B8532F]"
           />
           {mode !== 'reset' && (
             <input
@@ -132,13 +132,13 @@ const SignInModal: React.FC = () => {
               placeholder={lang === 'FR' ? 'Mot de passe' : 'Password'}
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-[#0B1A36]/10 dark:border-white/10 bg-[#F5F5F0] dark:bg-white/5 text-[#0B1A36] dark:text-white outline-none focus:border-[#D4AF37]"
+              className="w-full px-4 py-3 rounded-xl border border-[#3A251E]/10 dark:border-white/10 bg-[#F4E7DD] dark:bg-white/5 text-[#3A251E] dark:text-white outline-none focus:border-[#B8532F]"
             />
           )}
           <button
             type="submit"
             disabled={busy}
-            className="w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors disabled:opacity-50"
+            className="w-full bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors disabled:opacity-50"
           >
             {busy
               ? (lang === 'FR' ? 'Chargement…' : 'Loading…')
@@ -151,19 +151,19 @@ const SignInModal: React.FC = () => {
         {err && <p className="mt-4 text-xs text-red-500 font-mono">{err}</p>}
         {info && <p className="mt-4 text-xs text-green-600 font-mono">{info}</p>}
 
-        <div className="mt-6 flex flex-col gap-2 text-xs text-center text-[#0B1A36]/60 dark:text-white/60">
+        <div className="mt-6 flex flex-col gap-2 text-xs text-center text-[#3A251E]/60 dark:text-white/60">
           {mode === 'signin' && <>
-            <button onClick={() => { reset(); setMode('signup'); }} className="hover:text-[#D4AF37]">
+            <button onClick={() => { reset(); setMode('signup'); }} className="hover:text-[#B8532F]">
               {lang === 'FR' ? 'Pas de compte ? S\'inscrire' : 'No account? Sign up'}
             </button>
-            <button onClick={() => { reset(); setMode('reset'); }} className="hover:text-[#D4AF37]">
+            <button onClick={() => { reset(); setMode('reset'); }} className="hover:text-[#B8532F]">
               {lang === 'FR' ? 'Mot de passe oublié ?' : 'Forgot password?'}
             </button>
           </>}
-          {mode === 'signup' && <button onClick={() => { reset(); setMode('signin'); }} className="hover:text-[#D4AF37]">
+          {mode === 'signup' && <button onClick={() => { reset(); setMode('signin'); }} className="hover:text-[#B8532F]">
             {lang === 'FR' ? 'Déjà un compte ? Se connecter' : 'Already have an account? Sign in'}
           </button>}
-          {mode === 'reset' && <button onClick={() => { reset(); setMode('signin'); }} className="hover:text-[#D4AF37]">
+          {mode === 'reset' && <button onClick={() => { reset(); setMode('signin'); }} className="hover:text-[#B8532F]">
             {lang === 'FR' ? 'Retour à la connexion' : 'Back to sign in'}
           </button>}
         </div>

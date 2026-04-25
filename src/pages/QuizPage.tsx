@@ -337,44 +337,44 @@ const QuizPage: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#F5F5F0] dark:bg-[#050C1A] text-[#0B1A36] dark:text-white pt-36 pb-24">
+    <div className="min-h-screen dark:bg-[#2E1A14] text-[#3A251E] dark:text-white pt-36 pb-24">
       <div className="max-w-[1800px] mx-auto px-4 md:px-12">
 
         {/* Header */}
         <div className="text-center mb-16">
-          <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
+          <span className="text-[#B8532F] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
             {lang === 'FR' ? 'Connaître votre nature' : 'Know your nature'}
           </span>
           <h1 className="text-5xl md:text-7xl font-serif uppercase tracking-widest leading-none">
             {lang === 'FR' ? 'Quiz Dosha' : 'Dosha Quiz'}
           </h1>
-          <div className="w-24 h-1 bg-[#D4AF37] mt-6 mx-auto" />
+          <div className="w-24 h-1 bg-[#B8532F] mt-6 mx-auto" />
         </div>
 
         {/* What is Ayurveda — intro block */}
         <div className="text-center mb-16 max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-5xl font-serif mb-6 tracking-wide">{ay.whatIsTitle}</h2>
-          <p className="text-[#0B1A36]/80 dark:text-white/80 font-serif text-lg md:text-2xl leading-relaxed italic max-w-4xl mx-auto">{ay.whatIsText}</p>
-          <div className="w-16 h-1 bg-[#D4AF37] mx-auto mt-8" />
+          <p className="text-[#3A251E]/80 dark:text-white/80 font-serif text-lg md:text-2xl leading-relaxed italic max-w-4xl mx-auto">{ay.whatIsText}</p>
+          <div className="w-16 h-1 bg-[#B8532F] mx-auto mt-8" />
         </div>
 
         {/* Ikigai + info */}
-        <div className="flex flex-col lg:flex-row items-center justify-center w-full gap-12 lg:gap-24 mb-16">
-          <div className="relative flex items-center justify-center lg:w-1/2">
+        <div className="flex flex-col lg:flex-row items-center justify-center w-full gap-10 lg:gap-16 xl:gap-24 mb-16 px-4">
+          <div className="relative flex items-center justify-center flex-shrink-0 lg:w-auto xl:w-1/2">
             <AyurvedaIkigai doshas={ay.doshas} onDoshaClick={setSelectedDosha} onQuizClick={openQuiz} lang={lang} filterId="page" />
             {selectedDosha && (
               <div className="absolute z-30 inset-0 flex items-center justify-center">
-                <div className="bg-white dark:bg-[#0B1A36] p-8 rounded-[30px] shadow-2xl max-w-xs md:max-w-sm text-center relative border border-[#D4AF37]/20">
-                  <button onClick={() => setSelectedDosha(null)} className="absolute top-3 right-4 text-[#0B1A36]/40 dark:text-white/40 hover:text-[#0B1A36] text-2xl">×</button>
-                  <h3 className="text-3xl font-serif font-bold mb-2 text-[#D4AF37]">{selectedDosha.name}</h3>
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50 mb-4">{selectedDosha.elements}</p>
-                  <div className="w-12 h-px bg-[#D4AF37]/30 mx-auto mb-4" />
-                  <p className="text-[#0B1A36]/80 dark:text-white/80 text-sm leading-relaxed mb-4">{selectedDosha.definition}</p>
-                  <p className="text-[#D4AF37] font-serif italic">{selectedDosha.action}</p>
-                  <div className="mt-6 pt-4 border-t border-[#0B1A36]/10">
+                <div className="bg-white dark:bg-[#3A251E] p-8 rounded-[30px] shadow-2xl max-w-xs md:max-w-sm text-center relative border border-[#B8532F]/20">
+                  <button onClick={() => setSelectedDosha(null)} className="absolute top-3 right-4 text-[#3A251E]/40 dark:text-white/40 hover:text-[#3A251E] text-2xl">×</button>
+                  <h3 className="text-3xl font-serif font-bold mb-2 text-[#B8532F]">{selectedDosha.name}</h3>
+                  <p className="text-xs font-bold uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 mb-4">{selectedDosha.elements}</p>
+                  <div className="w-12 h-px bg-[#B8532F]/30 mx-auto mb-4" />
+                  <p className="text-[#3A251E]/80 dark:text-white/80 text-sm leading-relaxed mb-4">{selectedDosha.definition}</p>
+                  <p className="text-[#B8532F] font-serif italic">{selectedDosha.action}</p>
+                  <div className="mt-6 pt-4 border-t border-[#3A251E]/10">
                     <button
                       onClick={() => { addDoshaOil(selectedDosha.name); setSelectedDosha(null); }}
-                      className="w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-2 rounded-full text-xs font-bold uppercase hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-md"
+                      className="w-full bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] py-2 rounded-full text-xs font-bold uppercase hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors shadow-md"
                     >
                       {lang === 'FR' ? 'Ajouter' : 'Add'} {selectedDosha.productRecom}
                     </button>
@@ -385,16 +385,16 @@ const QuizPage: React.FC = () => {
           </div>
 
           <div className="lg:w-1/2 text-center lg:text-left max-w-xl">
-            <span className="text-[#D4AF37] uppercase tracking-[0.2em] text-xs font-semibold block mb-2">{ay.introTitle}</span>
+            <span className="text-[#B8532F] uppercase tracking-[0.2em] text-xs font-semibold block mb-2">{ay.introTitle}</span>
             <h3 className="text-3xl md:text-5xl font-serif mb-6">{ay.title}</h3>
-            <p className="text-[#0B1A36]/70 dark:text-white/70 font-serif text-lg leading-relaxed mb-6 italic">{ay.introText}</p>
-            <div className="bg-white dark:bg-[#0B1A36]/60 border border-[#0B1A36]/5 dark:border-white/5 p-8 rounded-[24px] shadow-lg mb-8">
-              <p className="text-[#0B1A36]/80 dark:text-white/80 leading-relaxed mb-4 font-medium">{ay.desc}</p>
-              <p className="text-[#0B1A36] dark:text-white font-bold">{ay.quizPrompt}</p>
+            <p className="text-[#3A251E]/70 dark:text-white/70 font-serif text-lg leading-relaxed mb-6 italic">{ay.introText}</p>
+            <div className="bg-white dark:bg-[#3A251E]/60 border border-[#3A251E]/5 dark:border-white/5 p-8 rounded-[24px] shadow-lg mb-8">
+              <p className="text-[#3A251E]/80 dark:text-white/80 leading-relaxed mb-4 font-medium">{ay.desc}</p>
+              <p className="text-[#3A251E] dark:text-white font-bold">{ay.quizPrompt}</p>
             </div>
             <button
               onClick={openQuiz}
-              className="inline-block bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors"
+              className="inline-block bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors"
             >
               {ay.quizBtn}
             </button>
@@ -406,12 +406,12 @@ const QuizPage: React.FC = () => {
       {quizState.isOpen && (() => {
         const q = quizState.step < QUIZ_DATA.length ? QUIZ_DATA[quizState.step] : null;
         return (
-        <div className="fixed inset-0 z-50 bg-[#0B1A36]/40 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#0B1A36] w-full max-w-2xl rounded-[30px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-6 border-b border-[#0B1A36]/10 dark:border-white/10 flex justify-between items-center bg-[#F5F5F0] dark:bg-white/5">
+        <div className="fixed inset-0 z-50 bg-[#3A251E]/40 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-[#3A251E] w-full max-w-2xl rounded-[30px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-6 border-b border-[#3A251E]/10 dark:border-white/10 flex justify-between items-center bg-[#F4E7DD] dark:bg-white/5">
               <div>
                 <h3 className="font-serif text-2xl">Dosha Quiz</h3>
-                <p className="text-xs text-[#D4AF37] uppercase tracking-widest font-bold mt-1">
+                <p className="text-xs text-[#B8532F] uppercase tracking-widest font-bold mt-1">
                   {quizState.result
                     ? (lang === 'FR' ? 'Résultats' : 'Results')
                     : q
@@ -419,20 +419,20 @@ const QuizPage: React.FC = () => {
                       : (lang === 'FR' ? 'Finalisation' : 'Finalizing')}
                 </p>
               </div>
-              <button onClick={() => setQuizState({ ...quizState, isOpen: false, result: null })} className="text-[#0B1A36]/40 hover:text-[#0B1A36] dark:text-white/40 dark:hover:text-white">
+              <button onClick={() => setQuizState({ ...quizState, isOpen: false, result: null })} className="text-[#3A251E]/40 hover:text-[#3A251E] dark:text-white/40 dark:hover:text-white">
                 <i className="fa-solid fa-times text-xl" />
               </button>
             </div>
             {!quizState.result && (
-              <div className="w-full h-1 bg-[#0B1A36]/5">
-                <div className="h-full bg-[#D4AF37] transition-all duration-500" style={{ width: `${((quizState.step + (q ? 0 : 1)) / QUIZ_DATA.length) * 100}%` }} />
+              <div className="w-full h-1 bg-[#3A251E]/5">
+                <div className="h-full bg-[#B8532F] transition-all duration-500" style={{ width: `${((quizState.step + (q ? 0 : 1)) / QUIZ_DATA.length) * 100}%` }} />
               </div>
             )}
             <div className="p-6 md:p-8 overflow-y-auto flex-1">
               {!quizState.result ? (
                 q ? (
                   <div>
-                    <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] mb-3">
+                    <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#B8532F] mb-3">
                       {lang === 'FR' ? q.categoryFR : q.categoryEN}
                     </p>
                     <h4 className="text-xl md:text-2xl font-serif mb-6 leading-snug">
@@ -443,8 +443,8 @@ const QuizPage: React.FC = () => {
                       {q.options.map((opt, idx) => {
                         const isFlash = quizState.flashPick === opt.type;
                         const stateClass = isFlash
-                          ? 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-[0_4px_18px_rgba(212,175,55,0.25)]'
-                          : 'border-[#0B1A36]/10 dark:border-white/10 bg-white/50 dark:bg-white/5 hover:border-[#D4AF37] hover:bg-[#D4AF37]/5';
+                          ? 'border-[#B8532F] bg-[#B8532F]/10 shadow-[0_4px_18px_rgba(184,83,47,0.25)]'
+                          : 'border-[#3A251E]/10 dark:border-white/10 bg-white/50 dark:bg-white/5 hover:border-[#B8532F] hover:bg-[#B8532F]/5';
                         return (
                           <button
                             key={idx}
@@ -453,11 +453,11 @@ const QuizPage: React.FC = () => {
                             className={`w-full text-left p-4 rounded-xl border transition-all shadow-sm flex items-start gap-4 ${stateClass}`}
                           >
                             <div className={`shrink-0 w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 transition-colors ${
-                              isFlash ? 'border-[#D4AF37] bg-[#D4AF37]' : 'border-[#0B1A36]/20 dark:border-white/20'
+                              isFlash ? 'border-[#B8532F] bg-[#B8532F]' : 'border-[#3A251E]/20 dark:border-white/20'
                             }`}>
-                              {isFlash && <i className="fa-solid fa-check text-[#0B1A36] text-[9px]" />}
+                              {isFlash && <i className="fa-solid fa-check text-[#3A251E] text-[9px]" />}
                             </div>
-                            <span className="block text-[#0B1A36]/85 dark:text-white/85 text-sm leading-relaxed flex-1">
+                            <span className="block text-[#3A251E]/85 dark:text-white/85 text-sm leading-relaxed flex-1">
                               {lang === 'FR' ? opt.fr : opt.en}
                             </span>
                           </button>
@@ -471,14 +471,14 @@ const QuizPage: React.FC = () => {
                         type="button"
                         onClick={goBack}
                         disabled={quizState.step === 0}
-                        className="text-[#0B1A36]/50 dark:text-white/50 hover:text-[#D4AF37] disabled:opacity-30 disabled:hover:text-inherit transition-colors"
+                        className="text-[#3A251E]/50 dark:text-white/50 hover:text-[#B8532F] disabled:opacity-30 disabled:hover:text-inherit transition-colors"
                       >
                         <i className="fa-solid fa-arrow-left mr-1" /> {lang === 'FR' ? 'Précédent' : 'Back'}
                       </button>
                       <button
                         type="button"
                         onClick={restart}
-                        className="text-[#0B1A36]/40 dark:text-white/40 hover:text-[#D4AF37] transition-colors"
+                        className="text-[#3A251E]/40 dark:text-white/40 hover:text-[#B8532F] transition-colors"
                       >
                         {lang === 'FR' ? 'Recommencer' : 'Restart'}
                       </button>
@@ -486,48 +486,48 @@ const QuizPage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center max-w-md mx-auto py-4">
-                    <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] mb-3">
+                    <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#B8532F] mb-3">
                       {lang === 'FR' ? 'Votre nature dominante' : 'Your dominant nature'}
                     </p>
-                    <h2 className="text-5xl font-serif font-bold text-[#D4AF37] mb-4">{quizState.teaser?.dominant.name}</h2>
+                    <h2 className="text-5xl font-serif font-bold text-[#B8532F] mb-4">{quizState.teaser?.dominant.name}</h2>
                     {quizState.teaser && (
-                      <div className="flex justify-center gap-8 mb-6 text-sm text-[#0B1A36]/70 dark:text-white/70">
+                      <div className="flex justify-center gap-8 mb-6 text-sm text-[#3A251E]/70 dark:text-white/70">
                         {ALL_DOSHAS.map(d => (
                           <div key={d} className="flex flex-col items-center">
-                            <span className="font-bold text-[#D4AF37] text-lg">{quizState.teaser!.percentages[d]}%</span>
+                            <span className="font-bold text-[#B8532F] text-lg">{quizState.teaser!.percentages[d]}%</span>
                             <span className="capitalize text-xs uppercase tracking-widest">{d}</span>
                           </div>
                         ))}
                       </div>
                     )}
                     {quizState.teaser?.dominant.elements && (
-                      <p className="text-xs uppercase tracking-[0.2em] font-bold text-[#0B1A36]/50 dark:text-white/50 mb-6">{quizState.teaser.dominant.elements}</p>
+                      <p className="text-xs uppercase tracking-[0.2em] font-bold text-[#3A251E]/50 dark:text-white/50 mb-6">{quizState.teaser.dominant.elements}</p>
                     )}
-                    <div className="border-t border-[#0B1A36]/10 dark:border-white/10 pt-6 mt-6">
+                    <div className="border-t border-[#3A251E]/10 dark:border-white/10 pt-6 mt-6">
                       <div className="flex items-center gap-3 mb-4 justify-center">
-                        <i className="fa-solid fa-lock text-[#D4AF37] text-sm" />
-                        <span className="text-xs uppercase tracking-[0.25em] font-bold text-[#0B1A36]/70 dark:text-white/70">{lang === 'FR' ? 'Profil complet' : 'Full profile'}</span>
+                        <i className="fa-solid fa-lock text-[#B8532F] text-sm" />
+                        <span className="text-xs uppercase tracking-[0.25em] font-bold text-[#3A251E]/70 dark:text-white/70">{lang === 'FR' ? 'Profil complet' : 'Full profile'}</span>
                       </div>
-                      <p className="text-[#0B1A36]/60 dark:text-white/60 mb-6 text-sm leading-relaxed">
+                      <p className="text-[#3A251E]/60 dark:text-white/60 mb-6 text-sm leading-relaxed">
                         {user
                           ? (lang === 'FR' ? 'Enregistrez votre résultat dans votre espace client pour accéder aux rituels et recommandations personnalisés.' : 'Save your result to your client space to unlock personalized rituals and recommendations.')
                           : (lang === 'FR' ? 'Connectez-vous pour enregistrer votre profil et débloquer vos rituels personnalisés.' : 'Sign in to save your profile and unlock your personalized rituals.')}
                       </p>
                       {user ? (
                         <button onClick={handleQuizCompute} disabled={submitting}
-                          className="w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-lg flex items-center justify-center gap-2">
+                          className="w-full bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors shadow-lg flex items-center justify-center gap-2">
                           {submitting
                             ? <><i className="fa-solid fa-circle-notch fa-spin" /> {lang === 'FR' ? 'Enregistrement…' : 'Saving…'}</>
                             : <>{lang === 'FR' ? 'Enregistrer + voir le profil complet' : 'Save + reveal full profile'} <i className="fa-solid fa-arrow-right text-[10px]" /></>}
                         </button>
                       ) : (
                         <button onClick={() => setSignInOpen(true)}
-                          className="w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-lg flex items-center justify-center gap-2">
+                          className="w-full bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors shadow-lg flex items-center justify-center gap-2">
                           <i className="fa-solid fa-user text-sm" />
                           {lang === 'FR' ? 'Se connecter pour sauvegarder et avoir des rituels associés' : 'Sign in to save and unlock associated rituals'}
                         </button>
                       )}
-                      <p className="mt-4 text-[10px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">
+                      <p className="mt-4 text-[10px] uppercase tracking-widest text-[#3A251E]/40 dark:text-white/40">
                         {lang === 'FR' ? 'Vos résultats restent privés et sécurisés.' : 'Your results stay private and secure.'}
                       </p>
                     </div>
@@ -535,18 +535,18 @@ const QuizPage: React.FC = () => {
                 )
               ) : (
                 <div className="text-center">
-                  <p className="font-serif text-xl italic text-[#0B1A36]/60 dark:text-white/60 mb-2">{lang === 'FR' ? `Votre nature dominante est :` : `Your dominant nature is:`}</p>
-                  <h2 className="text-5xl font-serif font-bold mb-6 text-[#D4AF37]">{quizState.result.dominant.name}</h2>
-                  <div className="flex justify-center gap-8 mb-8 text-sm text-[#0B1A36]/70 dark:text-white/70">
+                  <p className="font-serif text-xl italic text-[#3A251E]/60 dark:text-white/60 mb-2">{lang === 'FR' ? `Votre nature dominante est :` : `Your dominant nature is:`}</p>
+                  <h2 className="text-5xl font-serif font-bold mb-6 text-[#B8532F]">{quizState.result.dominant.name}</h2>
+                  <div className="flex justify-center gap-8 mb-8 text-sm text-[#3A251E]/70 dark:text-white/70">
                     {ALL_DOSHAS.map(d => (
                       <div key={d} className="flex flex-col items-center">
-                        <span className="font-bold text-[#D4AF37]">{quizState.result.percentages[d]}%</span>
+                        <span className="font-bold text-[#B8532F]">{quizState.result.percentages[d]}%</span>
                         <span className="capitalize">{d}</span>
                       </div>
                     ))}
                   </div>
-                  <div className="max-w-md mx-auto mb-8 bg-[#F5F5F0] dark:bg-white/5 p-6 rounded-xl border border-[#0B1A36]/5">
-                    <p className="text-[#0B1A36]/80 dark:text-white/80 italic leading-relaxed">{quizState.result.dominant.definition}</p>
+                  <div className="max-w-md mx-auto mb-8 bg-[#F4E7DD] dark:bg-white/5 p-6 rounded-xl border border-[#3A251E]/5">
+                    <p className="text-[#3A251E]/80 dark:text-white/80 italic leading-relaxed">{quizState.result.dominant.definition}</p>
                   </div>
 
                   {/* Ritual matched to the dominant dosha. Transcribed from
@@ -567,17 +567,17 @@ const QuizPage: React.FC = () => {
                         <p className="text-[10px] uppercase tracking-[0.3em] font-bold mb-2" style={{ color: ritual.accent }}>
                           {lang === 'FR' ? 'Votre rituel' : 'Your ritual'}
                         </p>
-                        <h3 className="font-serif text-xl md:text-2xl text-[#0B1A36] dark:text-white mb-1">
+                        <h3 className="font-serif text-xl md:text-2xl text-[#3A251E] dark:text-white mb-1">
                           {lang === 'FR' ? ritual.titleFR : ritual.titleEN}
                         </h3>
-                        <p className="font-serif italic text-[#0B1A36]/75 dark:text-white/75 text-sm md:text-base mb-3">
+                        <p className="font-serif italic text-[#3A251E]/75 dark:text-white/75 text-sm md:text-base mb-3">
                           {lang === 'FR' ? ritual.subtitleFR : ritual.subtitleEN}
                         </p>
-                        <p className="inline-block text-[10px] uppercase tracking-[0.25em] font-bold px-3 py-1 rounded-full bg-white/60 dark:bg-white/10 text-[#0B1A36]/70 dark:text-white/70 mb-5">
+                        <p className="inline-block text-[10px] uppercase tracking-[0.25em] font-bold px-3 py-1 rounded-full bg-white/60 dark:bg-white/10 text-[#3A251E]/70 dark:text-white/70 mb-5">
                           <i className="fa-regular fa-clock mr-1.5" />
                           {lang === 'FR' ? ritual.momentFR : ritual.momentEN}
                         </p>
-                        <ol className="space-y-3 text-sm text-[#0B1A36]/85 dark:text-white/85 leading-relaxed">
+                        <ol className="space-y-3 text-sm text-[#3A251E]/85 dark:text-white/85 leading-relaxed">
                           {(lang === 'FR' ? ritual.stepsFR : ritual.stepsEN).map((step, i) => (
                             <li key={i} className="flex gap-3">
                               <span
@@ -595,10 +595,10 @@ const QuizPage: React.FC = () => {
                   })()}
 
                   <button onClick={() => { addDoshaOil(quizState.result.dominant.name); setQuizState({ ...quizState, isOpen: false, result: null }); }}
-                    className="w-full bg-[#D4AF37] text-[#0B1A36] py-3 rounded-full uppercase tracking-widest text-xs font-bold hover:bg-[#0B1A36] hover:text-white transition-colors shadow-lg mb-4 max-w-sm mx-auto block">
+                    className="w-full bg-[#B8532F] text-[#3A251E] py-3 rounded-full uppercase tracking-widest text-xs font-bold hover:bg-[#3A251E] hover:text-white transition-colors shadow-lg mb-4 max-w-sm mx-auto block">
                     {lang === 'FR' ? `Ajouter l'huile ${quizState.result.dominant.name}` : `Add ${quizState.result.dominant.name} oil`}
                   </button>
-                  <button onClick={() => setQuizState({ ...quizState, isOpen: false, result: null })} className="text-[#0B1A36]/50 dark:text-white/50 uppercase tracking-widest text-xs font-bold hover:text-[#D4AF37] transition-colors">
+                  <button onClick={() => setQuizState({ ...quizState, isOpen: false, result: null })} className="text-[#3A251E]/50 dark:text-white/50 uppercase tracking-widest text-xs font-bold hover:text-[#B8532F] transition-colors">
                     {lang === 'FR' ? 'Fermer et explorer le site' : 'Close and explore the site'}
                   </button>
                 </div>

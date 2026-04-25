@@ -87,14 +87,14 @@ const CartDrawer: React.FC = () => {
       />
 
       {/* Drawer */}
-      <div className={`fixed right-0 top-0 h-full w-full max-w-md bg-white dark:bg-[#0B1A36] shadow-2xl z-[101] transform transition-transform duration-500 ease-out flex flex-col ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`fixed right-0 top-0 h-full w-full max-w-md bg-white dark:bg-[#3A251E] shadow-2xl z-[101] transform transition-transform duration-500 ease-out flex flex-col ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         
         {/* Header */}
-        <div className="p-6 border-b border-[#0B1A36]/10 dark:border-white/10 flex justify-between items-center bg-[#F5F5F0] dark:bg-[#050C1A]">
-          <h3 className="text-2xl font-serif text-[#0B1A36] dark:text-white">
+        <div className="p-6 border-b border-[#3A251E]/10 dark:border-white/10 flex justify-between items-center bg-[#F4E7DD] dark:bg-[#2E1A14]">
+          <h3 className="text-2xl font-serif text-[#3A251E] dark:text-white">
             {lang === 'FR' ? 'Panier' : 'Cart'}
           </h3>
-          <button onClick={() => setCartOpen(false)} className="w-8 h-8 flex items-center justify-center hover:text-[#D4AF37] transition-colors">
+          <button onClick={() => setCartOpen(false)} className="w-8 h-8 flex items-center justify-center hover:text-[#B8532F] transition-colors">
             <i className="fa-solid fa-times text-xl" />
           </button>
         </div>
@@ -104,10 +104,10 @@ const CartDrawer: React.FC = () => {
           aria-live="polite"
           className={`overflow-hidden transition-[max-height,opacity] duration-300 ${flashTitle ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'}`}
         >
-          <div className="mx-4 mt-4 flex items-center gap-3 bg-[#D4AF37]/15 border border-[#D4AF37]/30 rounded-full px-4 py-2.5">
-            <i className="fa-solid fa-circle-check text-[#D4AF37]" />
-            <p className="text-xs text-[#0B1A36] dark:text-white truncate">
-              <span className="font-bold uppercase tracking-widest text-[10px] text-[#D4AF37] mr-2">
+          <div className="mx-4 mt-4 flex items-center gap-3 bg-[#B8532F]/15 border border-[#B8532F]/30 rounded-full px-4 py-2.5">
+            <i className="fa-solid fa-circle-check text-[#B8532F]" />
+            <p className="text-xs text-[#3A251E] dark:text-white truncate">
+              <span className="font-bold uppercase tracking-widest text-[10px] text-[#B8532F] mr-2">
                 {lang === 'FR' ? 'Ajouté' : 'Added'}
               </span>
               {flashTitle}
@@ -118,7 +118,7 @@ const CartDrawer: React.FC = () => {
         {/* Items */}
         <div className="flex-1 overflow-y-auto p-6">
           {cartItems.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center opacity-40 text-[#0B1A36] dark:text-white">
+            <div className="h-full flex flex-col items-center justify-center opacity-40 text-[#3A251E] dark:text-white">
               <i className="fa-solid fa-basket-shopping text-4xl mb-4" />
               <p className="text-sm uppercase tracking-widest">{lang === 'FR' ? 'Panier vide' : 'Empty cart'}</p>
             </div>
@@ -127,14 +127,14 @@ const CartDrawer: React.FC = () => {
               {cartItems.map((item, i) => (
                 <div key={i} className="flex gap-4">
                   <div
-                    className="w-20 h-24 rounded-lg bg-[#f0f0ec] bg-cover bg-center shrink-0"
+                    className="w-20 h-24 rounded-lg bg-[#F4E7DD] bg-cover bg-center shrink-0"
                     style={{ backgroundImage: `url(${item.image || item.cover || ASSETS.productVata})` }}
                   />
                   <div className="flex-1">
-                    <h4 className="font-serif text-[#0B1A36] dark:text-white leading-tight mb-1">{item.title || item.name}</h4>
-                    <p className="text-xs text-[#0B1A36]/50 dark:text-white/50 uppercase tracking-wider mb-2">{item.type}</p>
+                    <h4 className="font-serif text-[#3A251E] dark:text-white leading-tight mb-1">{item.title || item.name}</h4>
+                    <p className="text-xs text-[#3A251E]/50 dark:text-white/50 uppercase tracking-wider mb-2">{item.type}</p>
                     <div className="flex justify-between items-center">
-                      <span className="font-bold text-[#D4AF37]">{item.price}</span>
+                      <span className="font-bold text-[#B8532F]">{item.price}</span>
                       <button onClick={() => removeFromCart(i)} className="text-xs text-red-400 hover:text-red-600 underline transition-colors">
                         {lang === 'FR' ? 'Retirer' : 'Remove'}
                       </button>
@@ -148,8 +148,8 @@ const CartDrawer: React.FC = () => {
 
         {/* Footer */}
         {cartItems.length > 0 && (
-          <div className="p-6 bg-[#F5F5F0] dark:bg-[#050C1A] border-t border-[#0B1A36]/10 dark:border-white/10">
-            <div className="flex justify-between mb-6 text-lg font-serif font-bold text-[#0B1A36] dark:text-white">
+          <div className="p-6 bg-[#F4E7DD] dark:bg-[#2E1A14] border-t border-[#3A251E]/10 dark:border-white/10">
+            <div className="flex justify-between mb-6 text-lg font-serif font-bold text-[#3A251E] dark:text-white">
               <span>Total</span>
               <span>{totalFormatted}</span>
             </div>
@@ -159,14 +159,14 @@ const CartDrawer: React.FC = () => {
             <button
               onClick={handleCheckout}
               disabled={!canCheckout || checkingOut}
-              className="w-full bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {checkingOut
                 ? (lang === 'FR' ? 'Redirection vers Shopify…' : 'Redirecting to Shopify…')
                 : (lang === 'FR' ? 'Passer la commande' : 'Checkout')}
             </button>
             {!canCheckout && (
-              <p className="mt-3 text-[10px] text-center text-[#0B1A36]/50 dark:text-white/50 uppercase tracking-widest">
+              <p className="mt-3 text-[10px] text-center text-[#3A251E]/50 dark:text-white/50 uppercase tracking-widest">
                 {lang === 'FR' ? 'Aucun article éligible à la commande' : 'No items eligible for checkout'}
               </p>
             )}

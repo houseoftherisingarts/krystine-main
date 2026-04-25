@@ -46,10 +46,10 @@ interface Submission {
 
 // ─── Category metadata ──────────────────────────────────────────────────────
 const CATEGORY_META: Record<FormCategory, { label: string; icon: string; badge: string }> = {
-  booking:    { label: 'Réservations',  icon: 'fa-handshake',     badge: 'bg-[#D4AF37]/15 text-[#D4AF37]' },
-  newsletter: { label: 'Infolettre',    icon: 'fa-envelope',      badge: 'bg-[#0B1A36]/10 text-[#0B1A36]/80 dark:bg-white/10 dark:text-white/80' },
+  booking:    { label: 'Réservations',  icon: 'fa-handshake',     badge: 'bg-[#B8532F]/15 text-[#B8532F]' },
+  newsletter: { label: 'Infolettre',    icon: 'fa-envelope',      badge: 'bg-[#3A251E]/10 text-[#3A251E]/80 dark:bg-white/10 dark:text-white/80' },
   waitlist:   { label: "Listes d'attente", icon: 'fa-hourglass-half', badge: 'bg-[#BC4A3C]/10 text-[#BC4A3C]' },
-  dosha:      { label: 'Quiz Dosha',    icon: 'fa-circle-nodes',  badge: 'bg-[#8B6F47]/15 text-[#8B6F47]' },
+  dosha:      { label: 'Quiz Dosha',    icon: 'fa-circle-nodes',  badge: 'bg-[#6B402F]/15 text-[#6B402F]' },
   guide:      { label: 'Laissez-vous guider', icon: 'fa-compass', badge: 'bg-[#4A7C9D]/15 text-[#4A7C9D]' },
 };
 
@@ -230,11 +230,11 @@ const TIME_TABS: { id: TimeFilter; label: string }[] = [
 ];
 
 const DOSHA_TABS: { id: DoshaFilter; label: string; color: string }[] = [
-  { id: 'all',       label: 'Tous',     color: 'border-[#0B1A36]/10 dark:border-white/10' },
+  { id: 'all',       label: 'Tous',     color: 'border-[#3A251E]/10 dark:border-white/10' },
   { id: 'Vata',      label: 'Vata',     color: 'border-[#8F9779]/60 text-[#4A5D23]' },
   { id: 'Pitta',     label: 'Pitta',    color: 'border-[#BC4A3C]/60 text-[#BC4A3C]' },
   { id: 'Kapha',     label: 'Kapha',    color: 'border-[#4A7C9D]/60 text-[#4A7C9D]' },
-  { id: 'Tridoshic', label: 'Tridosha', color: 'border-[#D4AF37]/60 text-[#D4AF37]' },
+  { id: 'Tridoshic', label: 'Tridosha', color: 'border-[#B8532F]/60 text-[#B8532F]' },
 ];
 
 const SubmissionsSection: React.FC = () => {
@@ -350,7 +350,7 @@ const SubmissionsSection: React.FC = () => {
   if (loading) {
     return (
       <div className="py-16 flex justify-center">
-        <i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" />
+        <i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" />
       </div>
     );
   }
@@ -359,7 +359,7 @@ const SubmissionsSection: React.FC = () => {
     <div className="space-y-5">
       {/* Intro */}
       <Card className="p-5">
-        <p className="text-sm text-[#0B1A36]/70 dark:text-white/70 leading-relaxed">
+        <p className="text-sm text-[#3A251E]/70 dark:text-white/70 leading-relaxed">
           Toutes les réponses aux formulaires du site — Réserver Krystine, Tournée de conférences,
           Pulsation, listes d'attente, Quiz Dosha et Laissez-vous guider — atterrissent ici dans un
           seul flux filtrable. Les sections spécialisées (Demandes, Infolettre, Quiz Dosha, Parcours
@@ -378,8 +378,8 @@ const SubmissionsSection: React.FC = () => {
               onClick={() => { setCat(tab.id); if (tab.id !== 'dosha' && tab.id !== 'all') setDosha('all'); }}
               className={`px-4 py-2 rounded-full text-[11px] uppercase tracking-widest font-bold border transition-colors ${
                 active
-                  ? 'bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] border-transparent'
-                  : 'border-[#0B1A36]/10 dark:border-white/10 text-[#0B1A36]/70 dark:text-white/70 hover:border-[#D4AF37] hover:text-[#D4AF37]'
+                  ? 'bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] border-transparent'
+                  : 'border-[#3A251E]/10 dark:border-white/10 text-[#3A251E]/70 dark:text-white/70 hover:border-[#B8532F] hover:text-[#B8532F]'
               }`}
             >
               {tab.label}
@@ -394,7 +394,7 @@ const SubmissionsSection: React.FC = () => {
           categories where it would be irrelevant (e.g. Bookings). */}
       {(cat === 'all' || cat === 'dosha') && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[10px] uppercase tracking-widest font-bold text-[#0B1A36]/50 dark:text-white/50 mr-1">
+          <span className="text-[10px] uppercase tracking-widest font-bold text-[#3A251E]/50 dark:text-white/50 mr-1">
             Dosha dominant
           </span>
           {DOSHA_TABS.map(tab => {
@@ -405,7 +405,7 @@ const SubmissionsSection: React.FC = () => {
                 onClick={() => setDosha(tab.id)}
                 className={`px-3.5 py-1.5 rounded-full text-[11px] uppercase tracking-widest font-bold border transition-colors ${
                   active
-                    ? `bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] border-transparent`
+                    ? `bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] border-transparent`
                     : `${tab.color} bg-white/40 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10`
                 }`}
               >
@@ -421,7 +421,7 @@ const SubmissionsSection: React.FC = () => {
         <select
           value={sourceFilter}
           onChange={e => setSourceFilter(e.target.value)}
-          className="text-xs px-4 py-2.5 rounded-full border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-white/5 text-[#0B1A36] dark:text-white min-w-[220px]"
+          className="text-xs px-4 py-2.5 rounded-full border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-white/5 text-[#3A251E] dark:text-white min-w-[220px]"
         >
           <option value="all">Toutes les origines</option>
           {sourceOptions.map(s => <option key={s} value={s}>{prettySource(s)}</option>)}
@@ -434,8 +434,8 @@ const SubmissionsSection: React.FC = () => {
               onClick={() => setTime(tab.id)}
               className={`px-3 py-2 rounded-full text-[11px] uppercase tracking-widest font-bold border transition-colors ${
                 time === tab.id
-                  ? 'bg-[#D4AF37]/15 text-[#D4AF37] border-[#D4AF37]/40'
-                  : 'border-[#0B1A36]/10 dark:border-white/10 text-[#0B1A36]/60 dark:text-white/60 hover:text-[#D4AF37]'
+                  ? 'bg-[#B8532F]/15 text-[#B8532F] border-[#B8532F]/40'
+                  : 'border-[#3A251E]/10 dark:border-white/10 text-[#3A251E]/60 dark:text-white/60 hover:text-[#B8532F]'
               }`}
             >
               {tab.label}
@@ -444,13 +444,13 @@ const SubmissionsSection: React.FC = () => {
         </div>
 
         <div className="relative flex-1 min-w-[200px]">
-          <i className="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-[#0B1A36]/30 dark:text-white/30 text-[11px]" />
+          <i className="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-[#3A251E]/30 dark:text-white/30 text-[11px]" />
           <input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Rechercher nom, courriel, message…"
-            className="w-full pl-10 pr-4 py-2.5 rounded-full border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-[#0B1A36] dark:text-white placeholder:text-[#0B1A36]/40 dark:placeholder:text-white/40 focus:outline-none focus:border-[#D4AF37]"
+            className="w-full pl-10 pr-4 py-2.5 rounded-full border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-[#3A251E] dark:text-white placeholder:text-[#3A251E]/40 dark:placeholder:text-white/40 focus:outline-none focus:border-[#B8532F]"
           />
         </div>
 
@@ -460,7 +460,7 @@ const SubmissionsSection: React.FC = () => {
       </div>
 
       {/* Results */}
-      <div className="text-[11px] uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50">
+      <div className="text-[11px] uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50">
         {filtered.length} {filtered.length === 1 ? 'soumission' : 'soumissions'}
       </div>
 
@@ -491,24 +491,24 @@ const SubmissionsSection: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setViewingUid(s.memberUid!)}
-                          className="font-serif text-[#0B1A36] dark:text-white hover:text-[#D4AF37] transition-colors inline-flex items-center gap-1.5"
+                          className="font-serif text-[#3A251E] dark:text-white hover:text-[#B8532F] transition-colors inline-flex items-center gap-1.5"
                           title="Voir le profil client"
                         >
                           {s.name}
-                          <i className="fa-solid fa-arrow-up-right-from-square text-[10px] text-[#D4AF37]" />
+                          <i className="fa-solid fa-arrow-up-right-from-square text-[10px] text-[#B8532F]" />
                         </button>
                       ) : (
-                        <h3 className="font-serif text-[#0B1A36] dark:text-white">{s.name}</h3>
+                        <h3 className="font-serif text-[#3A251E] dark:text-white">{s.name}</h3>
                       )}
-                      <span className="text-[10px] uppercase tracking-widest font-bold text-[#0B1A36]/50 dark:text-white/50">
+                      <span className="text-[10px] uppercase tracking-widest font-bold text-[#3A251E]/50 dark:text-white/50">
                         · {meta.label}
                       </span>
                       {s.memberUid && (
-                        <span className="text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37]">
+                        <span className="text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full bg-[#B8532F]/15 text-[#B8532F]">
                           Membre
                         </span>
                       )}
-                      <span className="text-[10px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40 ml-auto">
+                      <span className="text-[10px] uppercase tracking-widest text-[#3A251E]/40 dark:text-white/40 ml-auto">
                         {dateStr}
                       </span>
                     </div>
@@ -517,10 +517,10 @@ const SubmissionsSection: React.FC = () => {
                       onClick={() => setExpanded(isOpen ? null : s.id)}
                       className="block text-left w-full"
                     >
-                      <p className="text-xs text-[#0B1A36]/60 dark:text-white/60 mt-1 truncate">
+                      <p className="text-xs text-[#3A251E]/60 dark:text-white/60 mt-1 truncate">
                         {s.email || '—'} · <span className="italic">{prettySource(s.source)}</span>
                       </p>
-                      <p className="text-xs text-[#0B1A36]/70 dark:text-white/70 mt-1 truncate">{s.summary}</p>
+                      <p className="text-xs text-[#3A251E]/70 dark:text-white/70 mt-1 truncate">{s.summary}</p>
                     </button>
                   </div>
                   <button
@@ -529,36 +529,36 @@ const SubmissionsSection: React.FC = () => {
                     aria-label={isOpen ? 'Replier' : 'Déplier'}
                     className="shrink-0"
                   >
-                    <i className={`fa-solid ${isOpen ? 'fa-chevron-up' : 'fa-chevron-down'} text-[#0B1A36]/40 dark:text-white/40 text-xs mt-2`} />
+                    <i className={`fa-solid ${isOpen ? 'fa-chevron-up' : 'fa-chevron-down'} text-[#3A251E]/40 dark:text-white/40 text-xs mt-2`} />
                   </button>
                 </div>
 
                 {isOpen && (
-                  <div className="mt-4 pl-[52px] border-t border-[#0B1A36]/5 dark:border-white/10 pt-4 space-y-1">
+                  <div className="mt-4 pl-[52px] border-t border-[#3A251E]/5 dark:border-white/10 pt-4 space-y-1">
                     {s.details.length === 0 ? (
-                      <p className="text-xs text-[#0B1A36]/40 dark:text-white/40 italic">Aucun détail structuré.</p>
+                      <p className="text-xs text-[#3A251E]/40 dark:text-white/40 italic">Aucun détail structuré.</p>
                     ) : s.details.map((d, i) => (
                       <div key={i} className="flex items-baseline gap-3 py-0.5 text-sm">
-                        <span className="text-[10px] uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50 font-bold w-36 shrink-0">
+                        <span className="text-[10px] uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 font-bold w-36 shrink-0">
                           {d.label}
                         </span>
-                        <span className="text-[#0B1A36]/85 dark:text-white/85 break-words">{d.value}</span>
+                        <span className="text-[#3A251E]/85 dark:text-white/85 break-words">{d.value}</span>
                       </div>
                     ))}
 
                     {s.message && (
                       <div className="pt-3">
-                        <span className="block text-[10px] uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50 font-bold mb-1">
+                        <span className="block text-[10px] uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 font-bold mb-1">
                           Message
                         </span>
-                        <p className="text-sm text-[#0B1A36]/85 dark:text-white/85 leading-relaxed whitespace-pre-line">{s.message}</p>
+                        <p className="text-sm text-[#3A251E]/85 dark:text-white/85 leading-relaxed whitespace-pre-line">{s.message}</p>
                       </div>
                     )}
 
                     {s.tags.length > 0 && (
                       <div className="pt-3 flex flex-wrap gap-1.5">
                         {s.tags.map(tag => (
-                          <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full bg-[#0B1A36]/5 dark:bg-white/10 text-[#0B1A36]/60 dark:text-white/60">
+                          <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full bg-[#3A251E]/5 dark:bg-white/10 text-[#3A251E]/60 dark:text-white/60">
                             {tag}
                           </span>
                         ))}

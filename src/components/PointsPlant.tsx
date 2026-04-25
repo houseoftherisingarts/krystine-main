@@ -15,7 +15,7 @@ interface Props {
   className?: string;
 }
 
-const PointsPlant: React.FC<Props> = ({ stage, accent = '#D4AF37', className = '' }) => {
+const PointsPlant: React.FC<Props> = ({ stage, accent = '#B8532F', className = '' }) => {
   return (
     <div className={`relative aspect-square w-full ${className}`}>
       {/* Soft background halo — same radial in all stages so the tile feels
@@ -23,12 +23,12 @@ const PointsPlant: React.FC<Props> = ({ stage, accent = '#D4AF37', className = '
       <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full" aria-hidden>
         <defs>
           <radialGradient id="pp-halo" cx="50%" cy="55%" r="55%">
-            <stop offset="0%"  stopColor="#FAF4E3" stopOpacity="0.85" />
-            <stop offset="55%" stopColor="#EFE7D2" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#F5F5F0" stopOpacity="0" />
+            <stop offset="0%"  stopColor="#F4E7DD" stopOpacity="0.85" />
+            <stop offset="55%" stopColor="#F4E7DD" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="#F4E7DD" stopOpacity="0" />
           </radialGradient>
           <radialGradient id="pp-soil" cx="50%" cy="35%" r="65%">
-            <stop offset="0%"  stopColor="#6B4A2E" />
+            <stop offset="0%"  stopColor="#6B402E" />
             <stop offset="60%" stopColor="#4E3520" />
             <stop offset="100%" stopColor="#2E1F14" />
           </radialGradient>
@@ -47,7 +47,7 @@ const PointsPlant: React.FC<Props> = ({ stage, accent = '#D4AF37', className = '
           </linearGradient>
           <radialGradient id="pp-flower" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor={accent} />
-            <stop offset="100%" stopColor="#9A6B49" />
+            <stop offset="100%" stopColor="#6B402F" />
           </radialGradient>
           <filter id="pp-shadow" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="2.2" />
@@ -98,7 +98,7 @@ const PointsPlant: React.FC<Props> = ({ stage, accent = '#D4AF37', className = '
 const StageSeed: React.FC = () => (
   <g className="pp-float" filter="url(#pp-shadow)">
     {/* Small seed half-buried */}
-    <ellipse cx="100" cy="155" rx="8" ry="5" fill="#3A2616" />
+    <ellipse cx="100" cy="155" rx="8" ry="5" fill="#3A2316" />
     <path d="M100 150 Q 97 144 100 138 Q 103 144 100 150 Z" fill="url(#pp-leaf)" opacity="0.9" />
   </g>
 );
@@ -146,14 +146,14 @@ const StageBloom: React.FC<{ accent: string }> = ({ accent }) => (
       />
     ))}
     <circle cx="100" cy="70" r="6" fill={accent} />
-    <circle cx="100" cy="70" r="3" fill="#3A2616" opacity="0.55" />
+    <circle cx="100" cy="70" r="3" fill="#3A2316" opacity="0.55" />
   </g>
 );
 
 const StageTree: React.FC<{ accent: string }> = ({ accent }) => (
   <g className="pp-float" filter="url(#pp-shadow)">
     {/* Trunk */}
-    <path d="M100 165 L 96 115 L 104 115 Z" fill="#6B4A2E" />
+    <path d="M100 165 L 96 115 L 104 115 Z" fill="#6B402E" />
     <rect x="96" y="115" width="8" height="52" rx="3" fill="#5A3D24" />
     {/* Canopy — three overlapping rounded shapes for fullness */}
     <ellipse cx="100" cy="80" rx="50" ry="38" fill="url(#pp-canopy)" />

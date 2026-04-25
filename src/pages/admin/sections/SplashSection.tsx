@@ -19,24 +19,24 @@ const SplashSection: React.FC = () => {
     } finally { setSaving(false); }
   };
 
-  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>;
+  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" /></div>;
 
   return (
     <div className="space-y-6 max-w-3xl">
       <Card className="p-6">
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold">Affichage</h3>
+          <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold">Affichage</h3>
           <ToggleSwitch checked={s.enabled} onChange={v => setS({ ...s, enabled: v })} label={s.enabled ? 'Activé' : 'Désactivé'} />
         </div>
-        <p className="text-xs text-[#0B1A36]/50 dark:text-white/50">
+        <p className="text-xs text-[#3A251E]/50 dark:text-white/50">
           Quand activé, les nouveaux visiteurs voient l'écran d'accueil avant le site. Les visiteurs récurrents le revoient tous les 7 jours.
           <br />
-          <a href="/?splash=1" target="_blank" rel="noopener noreferrer" className="text-[#D4AF37] underline">Aperçu en direct ↗</a>
+          <a href="/?splash=1" target="_blank" rel="noopener noreferrer" className="text-[#B8532F] underline">Aperçu en direct ↗</a>
         </p>
       </Card>
 
       <Card className="p-6 space-y-5">
-        <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold">Contenu (FR)</h3>
+        <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold">Contenu (FR)</h3>
         <div>
           <Label>Étiquette en haut</Label>
           <Input value={s.tagline} onChange={e => setS({ ...s, tagline: e.target.value })} />
@@ -66,8 +66,8 @@ const SplashSection: React.FC = () => {
       </Card>
 
       <Card className="p-6 space-y-5">
-        <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold">Contenu (EN — facultatif)</h3>
-        <p className="text-xs text-[#0B1A36]/50 dark:text-white/50 -mt-2">Si vide, le texte FR est utilisé.</p>
+        <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold">Contenu (EN — facultatif)</h3>
+        <p className="text-xs text-[#3A251E]/50 dark:text-white/50 -mt-2">Si vide, le texte FR est utilisé.</p>
         <div>
           <Label>Tagline</Label>
           <Input value={s.taglineEN || ''} onChange={e => setS({ ...s, taglineEN: e.target.value })} />

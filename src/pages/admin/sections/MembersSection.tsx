@@ -46,6 +46,7 @@ const sourceLabel = (key: string): string => {
       case 'waitlist-lancement-anglicane':     return "Lancement · L'Anglicane (oct. 2026)";
       case 'waitlist-lancement-montreal':      return 'Lancement · Montréal (nov. 2026)';
       case 'waitlist-retraite-nov-2026':       return 'Retraite · novembre 2026';
+      case 'waitlist-retraite-val-morin-nov-2026': return 'Retraite Val-Morin · novembre 2026';
       case 'waitlist-retraite-fev-2027':       return 'Retraite · février 2027';
       case 'waitlist-retraite-mai-2027':       return 'Retraite · mai 2027';
       case 'accueil-pulsation': return 'Accueil — La Pulsation';
@@ -235,7 +236,7 @@ const MembersSection: React.FC = () => {
     })));
   };
 
-  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>;
+  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" /></div>;
   if (contacts.length === 0) return <EmptyState icon="fa-users">Aucun contact pour l'instant.</EmptyState>;
 
   return (
@@ -245,7 +246,7 @@ const MembersSection: React.FC = () => {
           value={view}
           onChange={e => setView(e.target.value)}
           title="Filtrer par vue / source"
-          className="px-4 py-2 rounded-full border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-[#0B1A36]/60 text-sm text-[#0B1A36] dark:text-white outline-none focus:border-[#D4AF37]"
+          className="px-4 py-2 rounded-full border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-[#3A251E]/60 text-sm text-[#3A251E] dark:text-white outline-none focus:border-[#B8532F]"
         >
           <option value={ALL_CONTACTS}>Tous les contacts ({contacts.length})</option>
           <option value={MEMBERS_ONLY}>Membres inscrits ({viewOptions.memberCount})</option>
@@ -261,11 +262,11 @@ const MembersSection: React.FC = () => {
           placeholder="Rechercher (email, nom, téléphone, étiquette)…"
           value={filter}
           onChange={e => setFilter(e.target.value)}
-          className="flex-1 min-w-[220px] px-4 py-2 rounded-full border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-[#0B1A36]/60 text-sm text-[#0B1A36] dark:text-white outline-none focus:border-[#D4AF37]"
+          className="flex-1 min-w-[220px] px-4 py-2 rounded-full border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-[#3A251E]/60 text-sm text-[#3A251E] dark:text-white outline-none focus:border-[#B8532F]"
         />
-        <p className="text-sm text-[#0B1A36]/60 dark:text-white/60">{filtered.length} / {contacts.length}</p>
+        <p className="text-sm text-[#3A251E]/60 dark:text-white/60">{filtered.length} / {contacts.length}</p>
         <label
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#D4AF37] text-[#0B1A36] cursor-pointer hover:bg-[#0B1A36] hover:text-[#D4AF37] transition-colors"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#B8532F] text-[#3A251E] cursor-pointer hover:bg-[#3A251E] hover:text-[#B8532F] transition-colors"
           title="Importer un CSV de contacts (étiqueté « Import manuel »)"
         >
           <i className="fa-solid fa-file-import" />
@@ -295,7 +296,7 @@ const MembersSection: React.FC = () => {
 
       <Card className="overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-[#F5F5F0] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60">
+          <thead className="bg-[#F4E7DD] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60">
             <tr>
               <th className="text-left px-4 py-3">Contact</th>
               <th className="text-left px-4 py-3 hidden lg:table-cell">Source · Vue</th>
@@ -315,21 +316,21 @@ const MembersSection: React.FC = () => {
                 <tr
                   key={c.email}
                   onClick={() => { if (canOpen) setViewingUid(c.uid!); }}
-                  className={`border-t border-[#0B1A36]/5 dark:border-white/5 ${canOpen ? 'hover:bg-[#D4AF37]/5 cursor-pointer' : 'hover:bg-[#0B1A36]/[0.02] dark:hover:bg-white/[0.02]'}`}
+                  className={`border-t border-[#3A251E]/5 dark:border-white/5 ${canOpen ? 'hover:bg-[#B8532F]/5 cursor-pointer' : 'hover:bg-[#3A251E]/[0.02] dark:hover:bg-white/[0.02]'}`}
                   title={canOpen ? "Ouvrir l'espace client" : undefined}
                 >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-cover bg-center bg-[#F5F5F0] dark:bg-white/5 border border-[#0B1A36]/5 dark:border-white/10 shrink-0 flex items-center justify-center text-[10px] text-[#0B1A36]/40 dark:text-white/40" style={{ backgroundImage: c.photoURL ? `url(${c.photoURL})` : undefined }}>
+                      <div className="w-8 h-8 rounded-full bg-cover bg-center bg-[#F4E7DD] dark:bg-white/5 border border-[#3A251E]/5 dark:border-white/10 shrink-0 flex items-center justify-center text-[10px] text-[#3A251E]/40 dark:text-white/40" style={{ backgroundImage: c.photoURL ? `url(${c.photoURL})` : undefined }}>
                         {!c.photoURL && <i className={`fa-solid ${c.isMember ? 'fa-user' : 'fa-envelope'}`} />}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[#0B1A36] dark:text-white truncate flex items-center gap-2">
+                        <p className="text-[#3A251E] dark:text-white truncate flex items-center gap-2">
                           {name}
-                          {c.isMember && <span className="text-[9px] uppercase tracking-widest bg-[#D4AF37]/10 text-[#D4AF37] px-2 py-0.5 rounded-full">Membre</span>}
-                          {canOpen && <i className="fa-solid fa-arrow-right text-[#D4AF37]/40 text-[10px]" />}
+                          {c.isMember && <span className="text-[9px] uppercase tracking-widest bg-[#B8532F]/10 text-[#B8532F] px-2 py-0.5 rounded-full">Membre</span>}
+                          {canOpen && <i className="fa-solid fa-arrow-right text-[#B8532F]/40 text-[10px]" />}
                         </p>
-                        <p className="text-[11px] text-[#0B1A36]/50 dark:text-white/50 truncate">{c.displayEmail}</p>
+                        <p className="text-[11px] text-[#3A251E]/50 dark:text-white/50 truncate">{c.displayEmail}</p>
                       </div>
                     </div>
                   </td>
@@ -337,19 +338,19 @@ const MembersSection: React.FC = () => {
                     {c.sources.length > 0 ? (
                       <div className="flex flex-wrap gap-1">
                         {c.sources.slice(0, 3).map(s => (
-                          <span key={s} className="text-[10px] uppercase tracking-widest bg-[#D4AF37]/10 text-[#D4AF37] px-2 py-0.5 rounded-full">{sourceLabel(s)}</span>
+                          <span key={s} className="text-[10px] uppercase tracking-widest bg-[#B8532F]/10 text-[#B8532F] px-2 py-0.5 rounded-full">{sourceLabel(s)}</span>
                         ))}
                       </div>
                     ) : (
-                      <span className="text-[#0B1A36]/30 dark:text-white/30">—</span>
+                      <span className="text-[#3A251E]/30 dark:text-white/30">—</span>
                     )}
                   </td>
                   <td className="px-4 py-3 hidden md:table-cell">
-                    {c.dosha ? <span className="text-[#D4AF37] font-bold capitalize">{c.dosha}</span> : <span className="text-[#0B1A36]/30 dark:text-white/30">—</span>}
+                    {c.dosha ? <span className="text-[#B8532F] font-bold capitalize">{c.dosha}</span> : <span className="text-[#3A251E]/30 dark:text-white/30">—</span>}
                   </td>
-                  <td className="px-4 py-3 text-[#0B1A36]/70 dark:text-white/70 hidden md:table-cell">{c.phone || '—'}</td>
-                  <td className="px-4 py-3 text-[#0B1A36]/50 dark:text-white/50 hidden md:table-cell capitalize">{c.provider || (c.isMember ? '—' : 'infolettre')}</td>
-                  <td className="px-4 py-3 text-[#0B1A36]/50 dark:text-white/50 hidden md:table-cell">{c.joinedAt?.toLocaleDateString('fr-CA') || '—'}</td>
+                  <td className="px-4 py-3 text-[#3A251E]/70 dark:text-white/70 hidden md:table-cell">{c.phone || '—'}</td>
+                  <td className="px-4 py-3 text-[#3A251E]/50 dark:text-white/50 hidden md:table-cell capitalize">{c.provider || (c.isMember ? '—' : 'infolettre')}</td>
+                  <td className="px-4 py-3 text-[#3A251E]/50 dark:text-white/50 hidden md:table-cell">{c.joinedAt?.toLocaleDateString('fr-CA') || '—'}</td>
                 </tr>
               );
             })}

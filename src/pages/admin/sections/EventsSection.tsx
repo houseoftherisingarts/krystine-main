@@ -45,7 +45,7 @@ const EventsSection: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-[#0B1A36]/60 dark:text-white/60">{events.length} événement{events.length > 1 ? 's' : ''}</p>
+        <p className="text-sm text-[#3A251E]/60 dark:text-white/60">{events.length} événement{events.length > 1 ? 's' : ''}</p>
         <PrimaryButton onClick={startCreate}><i className="fa-solid fa-plus" /> Ajouter</PrimaryButton>
       </div>
 
@@ -99,21 +99,21 @@ const EventsSection: React.FC = () => {
       )}
 
       {loading ? (
-        <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>
+        <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" /></div>
       ) : events.length === 0 ? (
         <EmptyState icon="fa-calendar">Aucun événement pour l'instant.</EmptyState>
       ) : (
         <div className="space-y-3">
           {events.map(e => (
             <Card key={e.id} className="p-5 flex items-center gap-5">
-              <div className="w-20 h-20 rounded-xl bg-cover bg-center bg-[#F5F5F0] dark:bg-white/5 shrink-0" style={{ backgroundImage: e.imageUrl ? `url(${e.imageUrl})` : undefined }} />
+              <div className="w-20 h-20 rounded-xl bg-cover bg-center bg-[#F4E7DD] dark:bg-white/5 shrink-0" style={{ backgroundImage: e.imageUrl ? `url(${e.imageUrl})` : undefined }} />
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <h3 className="font-serif text-[#0B1A36] dark:text-white truncate">{e.title}</h3>
-                  {e.isFeatured && <span className="text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full bg-[#D4AF37]/10 text-[#D4AF37]">Vedette</span>}
-                  {e.isPublished === false && <span className="text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full bg-[#0B1A36]/10 dark:bg-white/10 text-[#0B1A36]/60 dark:text-white/60">Brouillon</span>}
+                  <h3 className="font-serif text-[#3A251E] dark:text-white truncate">{e.title}</h3>
+                  {e.isFeatured && <span className="text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full bg-[#B8532F]/10 text-[#B8532F]">Vedette</span>}
+                  {e.isPublished === false && <span className="text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full bg-[#3A251E]/10 dark:bg-white/10 text-[#3A251E]/60 dark:text-white/60">Brouillon</span>}
                 </div>
-                <p className="text-sm text-[#0B1A36]/50 dark:text-white/50 truncate">{e.date}{e.location ? ` · ${e.location}` : ''}</p>
+                <p className="text-sm text-[#3A251E]/50 dark:text-white/50 truncate">{e.date}{e.location ? ` · ${e.location}` : ''}</p>
               </div>
               <div className="flex gap-2 shrink-0">
                 <GhostButton onClick={() => startEdit(e)}><i className="fa-solid fa-pen" /> Éditer</GhostButton>

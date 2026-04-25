@@ -45,7 +45,7 @@ export const Compass: React.FC<CompassProps> = ({
 
         {/* The Needle - Antique Style */}
         <g className="origin-center animate-[spin_60s_linear_infinite_reverse]">
-          <path d="M 100, 25 L 108, 100 L 100, 175 L 92, 100 Z" fill="#9A6B49" className="drop-shadow-lg" />
+          <path d="M 100, 25 L 108, 100 L 100, 175 L 92, 100 Z" fill="#6B4A2F" className="drop-shadow-lg" />
           <path d="M 100, 25 L 100, 175" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
           <circle cx="100" cy="100" r="3" fill="#2C2420" />
         </g>

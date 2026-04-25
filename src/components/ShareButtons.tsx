@@ -67,7 +67,7 @@ const ShareButtons: React.FC<Props> = ({ title, url, className = '', compact = f
 
   return (
     <div className={`inline-flex items-center gap-2 ${className}`}>
-      <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#0B1A36]/60 dark:text-white/60 mr-1">
+      <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#3A251E]/60 dark:text-white/60 mr-1">
         {lang === 'FR' ? 'Partager' : 'Share'}
       </span>
       <button
@@ -75,7 +75,7 @@ const ShareButtons: React.FC<Props> = ({ title, url, className = '', compact = f
         onClick={() => onShare('facebook')}
         aria-label="Facebook"
         title="Facebook"
-        className={`${iconBtn} border-[#0B1A36]/15 dark:border-white/15 text-[#0B1A36]/70 dark:text-white/70 hover:border-[#D4AF37] hover:text-[#D4AF37]`}
+        className={`${iconBtn} border-[#3A251E]/15 dark:border-white/15 text-[#3A251E]/70 dark:text-white/70 hover:border-[#B8532F] hover:text-[#B8532F]`}
       >
         <i className="fa-brands fa-facebook-f" />
       </button>
@@ -84,7 +84,7 @@ const ShareButtons: React.FC<Props> = ({ title, url, className = '', compact = f
         onClick={() => onShare('x')}
         aria-label="X (Twitter)"
         title="X (Twitter)"
-        className={`${iconBtn} border-[#0B1A36]/15 dark:border-white/15 text-[#0B1A36]/70 dark:text-white/70 hover:border-[#D4AF37] hover:text-[#D4AF37]`}
+        className={`${iconBtn} border-[#3A251E]/15 dark:border-white/15 text-[#3A251E]/70 dark:text-white/70 hover:border-[#B8532F] hover:text-[#B8532F]`}
       >
         <i className="fa-brands fa-x-twitter" />
       </button>
@@ -93,7 +93,7 @@ const ShareButtons: React.FC<Props> = ({ title, url, className = '', compact = f
         onClick={() => onShare('email')}
         aria-label={lang === 'FR' ? 'Courriel' : 'Email'}
         title={lang === 'FR' ? 'Courriel' : 'Email'}
-        className={`${iconBtn} border-[#0B1A36]/15 dark:border-white/15 text-[#0B1A36]/70 dark:text-white/70 hover:border-[#D4AF37] hover:text-[#D4AF37]`}
+        className={`${iconBtn} border-[#3A251E]/15 dark:border-white/15 text-[#3A251E]/70 dark:text-white/70 hover:border-[#B8532F] hover:text-[#B8532F]`}
       >
         <i className="fa-solid fa-envelope" />
       </button>
@@ -102,12 +102,12 @@ const ShareButtons: React.FC<Props> = ({ title, url, className = '', compact = f
         onClick={() => onShare('copy')}
         aria-label={lang === 'FR' ? 'Copier le lien' : 'Copy link'}
         title={lang === 'FR' ? 'Copier le lien' : 'Copy link'}
-        className={`${iconBtn} border-[#0B1A36]/15 dark:border-white/15 text-[#0B1A36]/70 dark:text-white/70 hover:border-[#D4AF37] hover:text-[#D4AF37]`}
+        className={`${iconBtn} border-[#3A251E]/15 dark:border-white/15 text-[#3A251E]/70 dark:text-white/70 hover:border-[#B8532F] hover:text-[#B8532F]`}
       >
         <i className={`fa-solid ${copied ? 'fa-check' : 'fa-link'}`} />
       </button>
       {copied && (
-        <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-bold ml-1">
+        <span className="text-[10px] uppercase tracking-widest text-[#B8532F] font-bold ml-1">
           {lang === 'FR' ? 'Copié' : 'Copied'}
         </span>
       )}
@@ -121,10 +121,10 @@ export default ShareButtons;
 // the footer on every public page, so the user always has a way to share
 // (and earn 2 pts doing it).
 export const PageShareBar: React.FC = () => (
-  <div className="w-full border-t border-[#0B1A36]/5 dark:border-white/5 bg-[#F5F5F0] dark:bg-[#050C1A]">
+  <div className="w-full border-t border-[#3A251E]/5 dark:border-white/5 bg-[#F4E7DD] dark:bg-[#2E1A14]">
     <div className="max-w-5xl mx-auto px-6 md:px-12 py-6 flex flex-wrap items-center justify-between gap-4">
-      <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#0B1A36]/60 dark:text-white/60">
-        <i className="fa-solid fa-seedling text-[#D4AF37] mr-2" />
+      <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#3A251E]/60 dark:text-white/60">
+        <i className="fa-solid fa-seedling text-[#B8532F] mr-2" />
         Inspirata Ayurveda
       </p>
       <ShareButtons />

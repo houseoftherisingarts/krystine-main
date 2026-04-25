@@ -7,6 +7,12 @@ import {
   type ImageOverride,
 } from '../firebase/overrides';
 import { useAuth } from './AppContext';
+import {
+  isLocalOverridesActive,
+  readLocalOverrides,
+  writeLocalText,
+  writeLocalImage,
+} from '../lib/devAdmin';
 
 interface EditModeContextType {
   editMode: boolean;
@@ -35,8 +41,20 @@ export const EditModeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [editMode, setEditModeState] = useState(false);
   const [overrides, setOverrides] = useState<OverridesDoc>(EMPTY);
 
-  // Stream overrides live so every visitor sees the latest edits without reload.
+  // Stream overrides live so every visitor sees the latest edits
+  // without reload. In dev-admin local mode we bypass Firestore
+  // entirely and seed from localStorage instead — edits stay on this
+  // browser, never hit the network. The `storage` event keeps multiple
+  // tabs in sync.
   useEffect(() => {
+    if (isLocalOverridesActive()) {
+      setOverrides(readLocalOverrides());
+      const onStorage = (e: StorageEvent) => {
+        if (e.key === '__localOverridesDoc') setOverrides(readLocalOverrides());
+      };
+      window.addEventListener('storage', onStorage);
+      return () => window.removeEventListener('storage', onStorage);
+    }
     const unsub = subscribeToOverrides(setOverrides);
     return unsub;
   }, []);
@@ -88,10 +106,22 @@ export const EditModeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   );
 
   const saveText = useCallback(async (key: string, value: string) => {
+    if (isLocalOverridesActive()) {
+      writeLocalText(key, value);
+      // Mirror to local state immediately — the storage event only
+      // fires for OTHER tabs, not the one that wrote.
+      setOverrides(prev => ({ ...prev, text: { ...prev.text, [key]: value } }));
+      return;
+    }
     await setTextOverride(key, value);
   }, []);
 
   const saveImage = useCallback(async (key: string, payload: ImageOverride) => {
+    if (isLocalOverridesActive()) {
+      writeLocalImage(key, payload);
+      setOverrides(prev => ({ ...prev, images: { ...prev.images, [key]: payload } }));
+      return;
+    }
     await setImageOverride(key, payload);
   }, []);
 

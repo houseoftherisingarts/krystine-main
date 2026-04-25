@@ -116,7 +116,7 @@ const MediaSection: React.FC = () => {
     <div className="space-y-5">
       {/* Intro / actions */}
       <Card className="p-5">
-        <p className="text-sm text-[#0B1A36]/70 dark:text-white/70 leading-relaxed">
+        <p className="text-sm text-[#3A251E]/70 dark:text-white/70 leading-relaxed">
           Médiathèque centrale. Les images hardcodées du site (logos, portraits, couvertures, chakras)
           peuvent être préréférencées en un clic pour les parcourir et les télécharger d'ici. Les
           fichiers que vous téléversez ici vivent dans Firebase Storage.
@@ -130,7 +130,7 @@ const MediaSection: React.FC = () => {
             <i className={`fa-solid ${busy ? 'fa-circle-notch fa-spin' : 'fa-upload'}`} /> Téléverser des fichiers
           </GhostButton>
           <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={onPick} />
-          {seedMsg && <span className="text-[11px] text-[#0B1A36]/60 dark:text-white/60 italic">· {seedMsg}</span>}
+          {seedMsg && <span className="text-[11px] text-[#3A251E]/60 dark:text-white/60 italic">· {seedMsg}</span>}
         </div>
       </Card>
 
@@ -145,8 +145,8 @@ const MediaSection: React.FC = () => {
               onClick={() => setCategory(cat.id)}
               className={`px-3.5 py-1.5 rounded-full text-[11px] uppercase tracking-widest font-bold border transition-colors ${
                 active
-                  ? 'bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] border-transparent'
-                  : 'border-[#0B1A36]/10 dark:border-white/10 text-[#0B1A36]/70 dark:text-white/70 hover:border-[#D4AF37] hover:text-[#D4AF37]'
+                  ? 'bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] border-transparent'
+                  : 'border-[#3A251E]/10 dark:border-white/10 text-[#3A251E]/70 dark:text-white/70 hover:border-[#B8532F] hover:text-[#B8532F]'
               }`}
             >
               <i className={`fa-solid ${cat.icon} text-[10px] mr-1.5`} />
@@ -157,23 +157,23 @@ const MediaSection: React.FC = () => {
         })}
 
         <div className="relative flex-1 min-w-[200px] max-w-sm ml-auto">
-          <i className="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-[#0B1A36]/30 dark:text-white/30 text-[11px]" />
+          <i className="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-[#3A251E]/30 dark:text-white/30 text-[11px]" />
           <input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Rechercher…"
-            className="w-full pl-10 pr-4 py-2 rounded-full border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-[#0B1A36] dark:text-white placeholder:text-[#0B1A36]/40 dark:placeholder:text-white/40 focus:outline-none focus:border-[#D4AF37]"
+            className="w-full pl-10 pr-4 py-2 rounded-full border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-[#3A251E] dark:text-white placeholder:text-[#3A251E]/40 dark:placeholder:text-white/40 focus:outline-none focus:border-[#B8532F]"
           />
         </div>
       </div>
 
-      <p className="text-[11px] uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50">
+      <p className="text-[11px] uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50">
         {filtered.length} fichier{filtered.length === 1 ? '' : 's'}
       </p>
 
       {loading ? (
-        <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>
+        <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" /></div>
       ) : filtered.length === 0 ? (
         <EmptyState icon="fa-photo-film">
           {items.length === 0
@@ -185,7 +185,7 @@ const MediaSection: React.FC = () => {
           {filtered.map(m => (
             <Card key={m.id} className="overflow-hidden">
               <div className="relative">
-                <div className="aspect-square bg-cover bg-center bg-[#F5F5F0] dark:bg-white/5" style={{ backgroundImage: `url(${m.url})` }} />
+                <div className="aspect-square bg-cover bg-center bg-[#F4E7DD] dark:bg-white/5" style={{ backgroundImage: `url(${m.url})` }} />
                 {m.source === 'linked' && (
                   <span className="absolute top-2 right-2 text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full bg-black/40 text-white backdrop-blur">
                     <i className="fa-solid fa-link text-[8px] mr-1" /> Lié
@@ -193,9 +193,9 @@ const MediaSection: React.FC = () => {
                 )}
               </div>
               <div className="p-3 space-y-2">
-                <p className="text-xs text-[#0B1A36]/80 dark:text-white/80 truncate font-medium" title={m.name}>{m.name}</p>
+                <p className="text-xs text-[#3A251E]/80 dark:text-white/80 truncate font-medium" title={m.name}>{m.name}</p>
                 {m.category && (
-                  <p className="text-[10px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">{m.category}</p>
+                  <p className="text-[10px] uppercase tracking-widest text-[#3A251E]/40 dark:text-white/40">{m.category}</p>
                 )}
                 <div className="flex gap-1.5">
                   <GhostButton onClick={() => downloadImage(m.url, m.name)} className="flex-1" title="Télécharger">

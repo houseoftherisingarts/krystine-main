@@ -90,12 +90,12 @@ const GuidePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F0] dark:bg-[#050C1A] text-[#0B1A36] dark:text-white pt-36 pb-24">
+    <div className="min-h-screen dark:bg-[#2E1A14] text-[#3A251E] dark:text-white pt-36 pb-24">
       <div className="max-w-3xl mx-auto px-6 md:px-12">
 
         {/* Hero */}
         <div className="text-center mb-10">
-          <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
+          <span className="text-[#B8532F] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
             <EditableText
               fieldKey="guide.hero.kicker"
               defaultValue={lang === 'FR' ? 'Laissez-vous guider' : 'Let yourself be guided'}
@@ -107,7 +107,7 @@ const GuidePage: React.FC = () => {
               defaultValue={lang === 'FR' ? 'Par où commencer ?' : 'Where to start?'}
             />
           </h1>
-          <p className="mt-5 font-serif italic text-[#0B1A36]/60 dark:text-white/60 max-w-xl mx-auto">
+          <p className="mt-5 font-serif italic text-[#3A251E]/60 dark:text-white/60 max-w-xl mx-auto">
             <EditableText
               fieldKey="guide.hero.lead"
               defaultValue={lang === 'FR'
@@ -116,7 +116,7 @@ const GuidePage: React.FC = () => {
               multiline
             />
           </p>
-          <div className="w-24 h-1 bg-[#D4AF37] mx-auto mt-8" />
+          <div className="w-24 h-1 bg-[#B8532F] mx-auto mt-8" />
         </div>
 
         {/* ── Result screen ── */}
@@ -127,27 +127,27 @@ const GuidePage: React.FC = () => {
         ) : (
           <>
             {/* Progress */}
-            <div className="flex items-center justify-between mb-6 text-[10px] uppercase tracking-widest font-bold text-[#0B1A36]/50 dark:text-white/50">
+            <div className="flex items-center justify-between mb-6 text-[10px] uppercase tracking-widest font-bold text-[#3A251E]/50 dark:text-white/50">
               <span>{lang === 'FR' ? 'Question' : 'Question'} {step + 1} / {total}</span>
               <button
                 type="button"
                 onClick={restart}
-                className="hover:text-[#D4AF37] transition-colors"
+                className="hover:text-[#B8532F] transition-colors"
               >
                 {lang === 'FR' ? 'Recommencer' : 'Restart'}
               </button>
             </div>
-            <div className="relative h-1 rounded-full bg-[#0B1A36]/5 dark:bg-white/10 overflow-hidden mb-8">
+            <div className="relative h-1 rounded-full bg-[#3A251E]/5 dark:bg-white/10 overflow-hidden mb-8">
               <div
-                className="absolute inset-y-0 left-0 bg-[#D4AF37] rounded-full transition-[width] duration-500 ease-out"
+                className="absolute inset-y-0 left-0 bg-[#B8532F] rounded-full transition-[width] duration-500 ease-out"
                 style={{ width: `${((step + 1) / total) * 100}%` }}
               />
             </div>
 
             {/* Question card */}
             {current && (
-              <div className="bg-white dark:bg-[#0B1A36] rounded-[24px] shadow-lg border border-[#0B1A36]/5 dark:border-white/5 p-6 md:p-10">
-                <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] mb-3">
+              <div className="bg-white dark:bg-[#3A251E] rounded-[24px] shadow-lg border border-[#3A251E]/5 dark:border-white/5 p-6 md:p-10">
+                <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#B8532F] mb-3">
                   {lang === 'FR' ? current.kickerFR : current.kickerEN}
                 </p>
                 <h2 className="text-xl md:text-2xl font-serif leading-snug mb-8">
@@ -164,16 +164,16 @@ const GuidePage: React.FC = () => {
                         disabled={!!flashOption}
                         className={`w-full text-left p-4 rounded-xl border transition-all shadow-sm flex items-start gap-4 ${
                           isFlash
-                            ? 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-[0_4px_18px_rgba(212,175,55,0.25)]'
-                            : 'border-[#0B1A36]/10 dark:border-white/10 bg-white/50 dark:bg-white/5 hover:border-[#D4AF37] hover:bg-[#D4AF37]/5'
+                            ? 'border-[#B8532F] bg-[#B8532F]/10 shadow-[0_4px_18px_rgba(184,83,47,0.25)]'
+                            : 'border-[#3A251E]/10 dark:border-white/10 bg-white/50 dark:bg-white/5 hover:border-[#B8532F] hover:bg-[#B8532F]/5'
                         }`}
                       >
                         <div className={`shrink-0 w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 transition-colors ${
-                          isFlash ? 'border-[#D4AF37] bg-[#D4AF37]' : 'border-[#0B1A36]/20 dark:border-white/20'
+                          isFlash ? 'border-[#B8532F] bg-[#B8532F]' : 'border-[#3A251E]/20 dark:border-white/20'
                         }`}>
-                          {isFlash && <i className="fa-solid fa-check text-[#0B1A36] text-[9px]" />}
+                          {isFlash && <i className="fa-solid fa-check text-[#3A251E] text-[9px]" />}
                         </div>
-                        <span className="block text-[#0B1A36]/85 dark:text-white/85 text-sm leading-relaxed flex-1">
+                        <span className="block text-[#3A251E]/85 dark:text-white/85 text-sm leading-relaxed flex-1">
                           {lang === 'FR' ? opt.fr : opt.en}
                         </span>
                       </button>
@@ -181,16 +181,16 @@ const GuidePage: React.FC = () => {
                   })}
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-[#0B1A36]/10 dark:border-white/10 flex items-center justify-between text-[10px] uppercase tracking-widest font-bold text-[#0B1A36]/50 dark:text-white/50">
+                <div className="mt-6 pt-4 border-t border-[#3A251E]/10 dark:border-white/10 flex items-center justify-between text-[10px] uppercase tracking-widest font-bold text-[#3A251E]/50 dark:text-white/50">
                   <button
                     type="button"
                     onClick={goBack}
                     disabled={step === 0}
-                    className="hover:text-[#D4AF37] disabled:opacity-30 disabled:hover:text-inherit transition-colors"
+                    className="hover:text-[#B8532F] disabled:opacity-30 disabled:hover:text-inherit transition-colors"
                   >
                     <i className="fa-solid fa-arrow-left mr-1" /> {lang === 'FR' ? 'Précédent' : 'Back'}
                   </button>
-                  <span className="text-[#0B1A36]/30 dark:text-white/30">
+                  <span className="text-[#3A251E]/30 dark:text-white/30">
                     {lang === 'FR' ? 'Bientôt : recommandations Claude en direct' : 'Coming: live Claude recommendations'}
                   </span>
                 </div>
@@ -233,17 +233,17 @@ const ResultCard: React.FC<{
       <p className="text-[10px] uppercase tracking-[0.3em] font-bold mb-3" style={{ color: rec.accent }}>
         {lang === 'FR' ? rec.eyebrowFR : rec.eyebrowEN}
       </p>
-      <h2 className="text-3xl md:text-5xl font-serif text-[#0B1A36] dark:text-white mb-6 leading-tight">
+      <h2 className="text-3xl md:text-5xl font-serif text-[#3A251E] dark:text-white mb-6 leading-tight">
         {lang === 'FR' ? rec.titleFR : rec.titleEN}
       </h2>
-      <p className="text-[#0B1A36]/75 dark:text-white/75 font-serif italic text-lg leading-relaxed max-w-xl mx-auto mb-10">
+      <p className="text-[#3A251E]/75 dark:text-white/75 font-serif italic text-lg leading-relaxed max-w-xl mx-auto mb-10">
         {lang === 'FR' ? rec.blurbFR : rec.blurbEN}
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         <button
           type="button"
           onClick={onPrimary}
-          className="inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-8 py-3.5 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors shadow-md"
+          className="inline-flex items-center gap-2 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-8 py-3.5 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors shadow-md"
         >
           {lang === 'FR' ? rec.ctaFR : rec.ctaEN}
           <i className="fa-solid fa-arrow-right text-[10px]" />
@@ -252,17 +252,17 @@ const ResultCard: React.FC<{
           <button
             type="button"
             onClick={goSecondary}
-            className="inline-flex items-center gap-2 border border-[#0B1A36]/15 dark:border-white/15 text-[#0B1A36]/70 dark:text-white/70 px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors"
+            className="inline-flex items-center gap-2 border border-[#3A251E]/15 dark:border-white/15 text-[#3A251E]/70 dark:text-white/70 px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] hover:border-[#B8532F] hover:text-[#B8532F] transition-colors"
           >
             {lang === 'FR' ? rec.secondaryCtaFR : rec.secondaryCtaEN}
           </button>
         )}
       </div>
-      <div className="mt-10 pt-6 border-t border-[#0B1A36]/10 dark:border-white/10">
+      <div className="mt-10 pt-6 border-t border-[#3A251E]/10 dark:border-white/10">
         <button
           type="button"
           onClick={onRestart}
-          className="text-[10px] uppercase tracking-widest font-bold text-[#0B1A36]/40 dark:text-white/40 hover:text-[#D4AF37] transition-colors"
+          className="text-[10px] uppercase tracking-widest font-bold text-[#3A251E]/40 dark:text-white/40 hover:text-[#B8532F] transition-colors"
         >
           <i className="fa-solid fa-rotate mr-1.5" />
           {lang === 'FR' ? 'Refaire le test' : 'Retake the quiz'}

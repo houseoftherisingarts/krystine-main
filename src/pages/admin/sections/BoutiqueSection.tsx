@@ -86,15 +86,15 @@ const BoutiqueSection: React.FC = () => {
       <Card className="p-6">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-2">
+            <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-2">
               Redirect switch
             </h3>
-            <p className="text-sm text-[#0B1A36]/70 dark:text-white/70 max-w-xl">
+            <p className="text-sm text-[#3A251E]/70 dark:text-white/70 max-w-xl">
               Active cette option pour remplacer tous les liens « Boutique » du site par un renvoi vers votre ancienne boutique. Utile en cas de bug : vous pouvez revenir en arrière à tout moment.
             </p>
           </div>
           {settingsLoading ? (
-            <i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-xl" />
+            <i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-xl" />
           ) : (
             <ToggleSwitch
               checked={settings.redirectEnabled}
@@ -135,7 +135,7 @@ const BoutiqueSection: React.FC = () => {
           <p className="mt-3 text-sm text-red-600 dark:text-red-400">{settingsError}</p>
         )}
         {savedAt && !settingsError && (
-          <p className="mt-3 text-[11px] uppercase tracking-widest text-[#D4AF37] font-bold">
+          <p className="mt-3 text-[11px] uppercase tracking-widest text-[#B8532F] font-bold">
             <i className="fa-solid fa-check mr-1" /> Enregistré à {new Date(savedAt).toLocaleTimeString('fr-CA')}
           </p>
         )}
@@ -145,10 +145,10 @@ const BoutiqueSection: React.FC = () => {
       <Card className="p-6">
         <div className="flex items-start justify-between gap-4 flex-wrap mb-5">
           <div>
-            <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-2">
+            <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-2">
               Collections
             </h3>
-            <p className="text-sm text-[#0B1A36]/70 dark:text-white/70 max-w-xl">
+            <p className="text-sm text-[#3A251E]/70 dark:text-white/70 max-w-xl">
               Les six collections éditoriales de la boutique. Le nombre indique combien de produits Shopify correspondent automatiquement à chaque collection via leurs tags / titre.
             </p>
           </div>
@@ -157,14 +157,14 @@ const BoutiqueSection: React.FC = () => {
           {COLLECTIONS.map(c => {
             const n = collectionCounts.get(c.id) || 0;
             return (
-              <div key={c.id} className="flex items-center gap-4 p-4 rounded-xl bg-[#F5F5F0] dark:bg-white/5 border border-[#0B1A36]/5 dark:border-white/5">
+              <div key={c.id} className="flex items-center gap-4 p-4 rounded-xl bg-[#F4E7DD] dark:bg-white/5 border border-[#3A251E]/5 dark:border-white/5">
                 <div className="w-14 h-14 rounded-lg bg-cover bg-center shrink-0" style={{ backgroundImage: `url(${c.bannerImage})` }} />
                 <div className="flex-1 min-w-0">
-                  <p className="font-serif text-[#0B1A36] dark:text-white truncate">{c.labelFR}</p>
-                  <p className="text-[11px] text-[#0B1A36]/60 dark:text-white/60 truncate">/boutique/{c.slug}</p>
+                  <p className="font-serif text-[#3A251E] dark:text-white truncate">{c.labelFR}</p>
+                  <p className="text-[11px] text-[#3A251E]/60 dark:text-white/60 truncate">/boutique/{c.slug}</p>
                 </div>
                 <span className={`text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full ${
-                  n > 0 ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'bg-[#0B1A36]/5 dark:bg-white/5 text-[#0B1A36]/40 dark:text-white/40'
+                  n > 0 ? 'bg-[#B8532F]/10 text-[#B8532F]' : 'bg-[#3A251E]/5 dark:bg-white/5 text-[#3A251E]/40 dark:text-white/40'
                 }`}>
                   {n} {n === 1 ? 'produit' : 'produits'}
                 </span>
@@ -178,16 +178,16 @@ const BoutiqueSection: React.FC = () => {
       <Card className="p-6">
         <div className="flex items-start justify-between gap-4 flex-wrap mb-5">
           <div>
-            <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-2">
+            <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-2">
               Produits Shopify
             </h3>
-            <p className="text-sm text-[#0B1A36]/70 dark:text-white/70 max-w-xl">
+            <p className="text-sm text-[#3A251E]/70 dark:text-white/70 max-w-xl">
               La liste complète tirée de votre boutique Shopify. Les produits sont synchronisés automatiquement (cache 10 min) — utilisez le bouton ci-dessous pour forcer un rafraîchissement après avoir ajouté ou modifié un produit.
             </p>
           </div>
           <div className="flex items-center gap-3">
             {refreshedAt && (
-              <span className="text-[11px] text-[#0B1A36]/50 dark:text-white/50">
+              <span className="text-[11px] text-[#3A251E]/50 dark:text-white/50">
                 <i className="fa-solid fa-clock mr-1" /> {new Date(refreshedAt).toLocaleTimeString('fr-CA')}
               </span>
             )}
@@ -218,15 +218,15 @@ const BoutiqueSection: React.FC = () => {
         )}
 
         {productsLoading && products.length === 0 ? (
-          <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>
+          <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" /></div>
         ) : products.length === 0 && !productsError ? (
-          <div className="py-12 text-center text-[#0B1A36]/50 dark:text-white/50 text-sm italic">
+          <div className="py-12 text-center text-[#3A251E]/50 dark:text-white/50 text-sm italic">
             Aucun produit Shopify détecté.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F5F5F0] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60">
+              <thead className="bg-[#F4E7DD] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60">
                 <tr>
                   <th className="text-left px-4 py-3">Produit</th>
                   <th className="text-left px-4 py-3 hidden md:table-cell">Type</th>
@@ -252,23 +252,23 @@ const BoutiqueSection: React.FC = () => {
                     catch { /* revert? — keep optimistic for now */ }
                   };
                   return (
-                  <tr key={p.id} className={`border-t border-[#0B1A36]/5 dark:border-white/5 hover:bg-[#D4AF37]/5 ${hidden ? 'opacity-60' : ''}`}>
+                  <tr key={p.id} className={`border-t border-[#3A251E]/5 dark:border-white/5 hover:bg-[#B8532F]/5 ${hidden ? 'opacity-60' : ''}`}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-10 h-10 rounded-lg bg-cover bg-center shrink-0 bg-[#F5F5F0] dark:bg-white/5 border border-[#0B1A36]/5 dark:border-white/10"
+                          className="w-10 h-10 rounded-lg bg-cover bg-center shrink-0 bg-[#F4E7DD] dark:bg-white/5 border border-[#3A251E]/5 dark:border-white/10"
                           style={{ backgroundImage: p.featuredImage?.url ? `url(${p.featuredImage.url})` : undefined }}
                         />
                         <div className="min-w-0">
-                          <p className="text-[#0B1A36] dark:text-white truncate">{p.title}</p>
-                          <p className="text-[11px] text-[#0B1A36]/50 dark:text-white/50 truncate">{p.handle}</p>
+                          <p className="text-[#3A251E] dark:text-white truncate">{p.title}</p>
+                          <p className="text-[11px] text-[#3A251E]/50 dark:text-white/50 truncate">{p.handle}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-[#0B1A36]/70 dark:text-white/70 hidden md:table-cell">{p.productType || '—'}</td>
+                    <td className="px-4 py-3 text-[#3A251E]/70 dark:text-white/70 hidden md:table-cell">{p.productType || '—'}</td>
                     <td className="px-4 py-3">
                       {collection ? (
-                        <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-bold bg-[#D4AF37]/10 text-[#D4AF37] px-2.5 py-1 rounded-full">
+                        <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-bold bg-[#B8532F]/10 text-[#B8532F] px-2.5 py-1 rounded-full">
                           {collection.labelFR}
                         </span>
                       ) : (
@@ -281,15 +281,15 @@ const BoutiqueSection: React.FC = () => {
                       {p.tags.length > 0 ? (
                         <div className="flex flex-wrap gap-1 max-w-xs">
                           {p.tags.slice(0, 4).map(t => (
-                            <span key={t} className="text-[10px] uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50 bg-[#0B1A36]/5 dark:bg-white/5 px-2 py-0.5 rounded-full">{t}</span>
+                            <span key={t} className="text-[10px] uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 bg-[#3A251E]/5 dark:bg-white/5 px-2 py-0.5 rounded-full">{t}</span>
                           ))}
-                          {p.tags.length > 4 && <span className="text-[10px] text-[#0B1A36]/40 dark:text-white/40">+{p.tags.length - 4}</span>}
+                          {p.tags.length > 4 && <span className="text-[10px] text-[#3A251E]/40 dark:text-white/40">+{p.tags.length - 4}</span>}
                         </div>
                       ) : (
-                        <span className="text-[#0B1A36]/30 dark:text-white/30">—</span>
+                        <span className="text-[#3A251E]/30 dark:text-white/30">—</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-[#0B1A36]/70 dark:text-white/70 hidden md:table-cell">
+                    <td className="px-4 py-3 text-[#3A251E]/70 dark:text-white/70 hidden md:table-cell">
                       {formatMoney(p.priceRange.minVariantPrice, 'FR')}
                     </td>
                     <td className="px-4 py-3 hidden md:table-cell">
@@ -319,8 +319,8 @@ const BoutiqueSection: React.FC = () => {
           </div>
         )}
 
-        <div className="mt-6 pt-5 border-t border-[#0B1A36]/10 dark:border-white/10 flex items-center justify-between gap-4 flex-wrap">
-          <p className="text-xs text-[#0B1A36]/50 dark:text-white/50">
+        <div className="mt-6 pt-5 border-t border-[#3A251E]/10 dark:border-white/10 flex items-center justify-between gap-4 flex-wrap">
+          <p className="text-xs text-[#3A251E]/50 dark:text-white/50">
             L'édition des produits (titre, prix, images, tags) se fait directement dans Shopify.
           </p>
           <GhostButton

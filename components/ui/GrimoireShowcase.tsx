@@ -42,7 +42,7 @@ export const GrimoireShowcase: React.FC<{ content: ContentText['grimoire'] }> = 
           {/* Background decoration */}
           <div className="absolute inset-0 bg-copper-bruni/10 blur-[60px] rounded-full scale-75"></div>
           
-          <div className="relative w-full aspect-[3/4] max-w-md mx-auto bg-[#F7F5F0] dark:bg-[#1e1e1e] rounded-l-md rounded-r-2xl shadow-2xl border-l-8 border-copper-bruni transform rotate-y-12 rotate-3 hover:rotate-0 transition-all duration-700 flex flex-col overflow-hidden">
+          <div className="relative w-full aspect-[3/4] max-w-md mx-auto bg-[#F4EBDD] dark:bg-[#1e1e1e] rounded-l-md rounded-r-2xl shadow-2xl border-l-8 border-copper-bruni transform rotate-y-12 rotate-3 hover:rotate-0 transition-all duration-700 flex flex-col overflow-hidden">
              {/* Book Texture Overlay */}
              <div className="absolute inset-0 bg-noise opacity-[0.05] pointer-events-none"></div>
              

@@ -142,7 +142,7 @@ const ClientLoyalty: React.FC = () => {
     }
   };
 
-  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>;
+  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" /></div>;
 
   const { current, next } = tierFromLifetime(balance.lifetime);
   const progressPct = next
@@ -157,7 +157,7 @@ const ClientLoyalty: React.FC = () => {
         <div
           className={`mb-6 px-4 py-3 rounded-xl text-sm ${
             toast.kind === 'ok'
-              ? 'bg-[#D4AF37]/15 text-[#0B1A36] dark:text-white border border-[#D4AF37]/30'
+              ? 'bg-[#B8532F]/15 text-[#3A251E] dark:text-white border border-[#B8532F]/30'
               : 'bg-red-50 text-red-600 border border-red-200'
           }`}
         >
@@ -191,18 +191,18 @@ const ClientLoyalty: React.FC = () => {
                   await refreshHistory();
                 }}
                 title={lang === 'FR' ? 'Actualiser le solde' : 'Refresh balance'}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-[#0B1A36]/40 dark:text-white/40 hover:text-[#D4AF37] hover:bg-white/40 dark:hover:bg-white/10 transition-colors"
+                className="w-7 h-7 rounded-full flex items-center justify-center text-[#3A251E]/40 dark:text-white/40 hover:text-[#B8532F] hover:bg-white/40 dark:hover:bg-white/10 transition-colors"
               >
                 <i className="fa-solid fa-rotate text-[11px]" />
               </button>
             </div>
             <div className="flex items-baseline justify-center md:justify-start gap-2 mb-3">
-              <span className="text-6xl md:text-7xl font-serif text-[#0B1A36] dark:text-white">{balance.balance}</span>
-              <span className="text-lg text-[#0B1A36]/50 dark:text-white/50 uppercase tracking-widest font-bold">
+              <span className="text-6xl md:text-7xl font-serif text-[#3A251E] dark:text-white">{balance.balance}</span>
+              <span className="text-lg text-[#3A251E]/50 dark:text-white/50 uppercase tracking-widest font-bold">
                 {lang === 'FR' ? 'points' : 'points'}
               </span>
             </div>
-            <p className="text-[11px] text-[#0B1A36]/50 dark:text-white/50 uppercase tracking-widest mb-4">
+            <p className="text-[11px] text-[#3A251E]/50 dark:text-white/50 uppercase tracking-widest mb-4">
               {lang === 'FR' ? 'Total accumulé' : 'Lifetime'} · {balance.lifetime}
             </p>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 dark:bg-white/10 backdrop-blur-sm text-[10px] uppercase tracking-[0.25em] font-bold" style={{ color: current.accent }}>
@@ -212,7 +212,7 @@ const ClientLoyalty: React.FC = () => {
           </div>
           {/* Right: growing plant tile, keyed to the current tier id so the
               SVG transitions smoothly when the member crosses a threshold. */}
-          <div className="w-40 h-40 md:w-48 md:h-48 mx-auto md:mx-0 rounded-2xl overflow-hidden border border-[#0B1A36]/5 dark:border-white/10 shadow-[0_12px_32px_rgba(11,26,54,0.08)] bg-white/50 dark:bg-white/5">
+          <div className="w-40 h-40 md:w-48 md:h-48 mx-auto md:mx-0 rounded-2xl overflow-hidden border border-[#3A251E]/5 dark:border-white/10 shadow-[0_12px_32px_rgba(58,37,30,0.08)] bg-white/50 dark:bg-white/5">
             <PointsPlant stage={current.id as Stage} accent={current.accent} />
           </div>
         </div>
@@ -237,7 +237,7 @@ const ClientLoyalty: React.FC = () => {
             type="button"
             onClick={runReconcile}
             disabled={reconciling}
-            className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[11px] uppercase tracking-widest font-bold bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors disabled:opacity-50"
+            className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[11px] uppercase tracking-widest font-bold bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors disabled:opacity-50"
           >
             {reconciling
               ? <><i className="fa-solid fa-circle-notch fa-spin" /> {lang === 'FR' ? 'Rétablissement…' : 'Reconciling…'}</>
@@ -253,27 +253,27 @@ const ClientLoyalty: React.FC = () => {
           type="button"
           onClick={claimWelcome}
           disabled={claimingWelcome}
-          className="w-full mb-6 flex items-center justify-between gap-4 px-5 py-4 rounded-2xl border border-[#D4AF37]/40 bg-gradient-to-r from-[#D4AF37]/20 to-[#D4AF37]/5 hover:from-[#D4AF37]/30 hover:to-[#D4AF37]/10 transition-colors text-left"
+          className="w-full mb-6 flex items-center justify-between gap-4 px-5 py-4 rounded-2xl border border-[#B8532F]/40 bg-gradient-to-r from-[#B8532F]/20 to-[#B8532F]/5 hover:from-[#B8532F]/30 hover:to-[#B8532F]/10 transition-colors text-left"
         >
           <div>
-            <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#D4AF37] mb-1">
+            <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#B8532F] mb-1">
               {lang === 'FR' ? 'Cadeau de bienvenue' : 'Welcome gift'}
             </p>
-            <p className="font-serif text-[#0B1A36] dark:text-white">
+            <p className="font-serif text-[#3A251E] dark:text-white">
               {lang === 'FR'
                 ? `Réclamez vos ${POINTS.welcome} points de bienvenue.`
                 : `Claim your ${POINTS.welcome} welcome points.`}
             </p>
           </div>
-          <span className="shrink-0 inline-flex items-center gap-2 bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px]">
+          <span className="shrink-0 inline-flex items-center gap-2 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px]">
             {claimingWelcome
               ? <><i className="fa-solid fa-circle-notch fa-spin" /> {lang === 'FR' ? 'En cours…' : 'Claiming…'}</>
               : <><i className="fa-solid fa-gift" /> {lang === 'FR' ? `Réclamer +${POINTS.welcome}` : `Claim +${POINTS.welcome}`}</>}
           </span>
         </button>
       ) : (
-        <div className="mb-6 px-5 py-3 rounded-2xl border border-[#0B1A36]/5 dark:border-white/5 bg-white/50 dark:bg-white/5 flex items-center gap-3 text-sm text-[#0B1A36]/70 dark:text-white/70">
-          <i className="fa-solid fa-check-circle text-[#D4AF37]" />
+        <div className="mb-6 px-5 py-3 rounded-2xl border border-[#3A251E]/5 dark:border-white/5 bg-white/50 dark:bg-white/5 flex items-center gap-3 text-sm text-[#3A251E]/70 dark:text-white/70">
+          <i className="fa-solid fa-check-circle text-[#B8532F]" />
           {lang === 'FR' ? `Cadeau de bienvenue réclamé (+${POINTS.welcome} pts)` : `Welcome gift claimed (+${POINTS.welcome} pts)`}
         </div>
       )}
@@ -281,7 +281,7 @@ const ClientLoyalty: React.FC = () => {
       {/* Progress bar to next tier */}
       {next && (
         <div className="mb-8">
-          <div className="flex items-baseline justify-between mb-2 text-[11px] uppercase tracking-widest font-bold text-[#0B1A36]/60 dark:text-white/60">
+          <div className="flex items-baseline justify-between mb-2 text-[11px] uppercase tracking-widest font-bold text-[#3A251E]/60 dark:text-white/60">
             <span>{current.labelFR}</span>
             <span>
               {lang === 'FR'
@@ -289,7 +289,7 @@ const ClientLoyalty: React.FC = () => {
                 : `${pointsToNext} pts to ${next.labelEN}`}
             </span>
           </div>
-          <div className="relative h-2 rounded-full bg-[#0B1A36]/5 dark:bg-white/10 overflow-hidden">
+          <div className="relative h-2 rounded-full bg-[#3A251E]/5 dark:bg-white/10 overflow-hidden">
             <div
               className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 ease-out"
               style={{ width: `${progressPct}%`, backgroundColor: current.accent }}
@@ -301,7 +301,7 @@ const ClientLoyalty: React.FC = () => {
       {/* Rewards catalog */}
       <section className="mb-10">
         <div className="flex items-baseline justify-between mb-4">
-          <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold">
+          <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold">
             {lang === 'FR' ? 'Récompenses' : 'Rewards'}
           </h3>
         </div>
@@ -319,15 +319,15 @@ const ClientLoyalty: React.FC = () => {
               <div
                 key={r.id}
                 className={`rounded-2xl border p-5 transition-opacity ${
-                  locked ? 'border-[#0B1A36]/5 dark:border-white/5 bg-[#F5F5F0]/50 dark:bg-white/[0.03]'
-                    : 'border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-white/5'
+                  locked ? 'border-[#3A251E]/5 dark:border-white/5 bg-[#F4E7DD]/50 dark:bg-white/[0.03]'
+                    : 'border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-white/5'
                 }`}
               >
                 <div className="flex items-baseline justify-between mb-2 gap-2 flex-wrap">
-                  <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#D4AF37]">
+                  <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#B8532F]">
                     {r.cost} pts
                     {r.oneShot && (
-                      <span className="text-[#0B1A36]/50 dark:text-white/50 font-normal tracking-normal normal-case ml-2">
+                      <span className="text-[#3A251E]/50 dark:text-white/50 font-normal tracking-normal normal-case ml-2">
                         · {lang === 'FR' ? 'unique' : 'one-time'}
                       </span>
                     )}
@@ -338,27 +338,27 @@ const ClientLoyalty: React.FC = () => {
                       {lang === 'FR' ? `Palier ${tierLabel.labelFR}` : `${tierLabel.labelEN} tier`}
                     </span>
                   ) : alreadyClaimed ? (
-                    <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#D4AF37]">
+                    <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#B8532F]">
                       <i className="fa-solid fa-check mr-1" />
                       {lang === 'FR' ? 'Récompense obtenue' : 'Claimed'}
                     </span>
                   ) : !canAfford ? (
-                    <span className="text-[10px] uppercase tracking-[0.25em] text-[#0B1A36]/40 dark:text-white/40">
+                    <span className="text-[10px] uppercase tracking-[0.25em] text-[#3A251E]/40 dark:text-white/40">
                       {lang === 'FR' ? `Encore ${r.cost - balance.balance} pts` : `${r.cost - balance.balance} pts away`}
                     </span>
                   ) : null}
                 </div>
-                <h4 className="font-serif text-[#0B1A36] dark:text-white text-lg mb-2">
+                <h4 className="font-serif text-[#3A251E] dark:text-white text-lg mb-2">
                   {lang === 'FR' ? r.labelFR : r.labelEN}
                 </h4>
-                <p className="text-sm text-[#0B1A36]/60 dark:text-white/60 mb-4 leading-relaxed">
+                <p className="text-sm text-[#3A251E]/60 dark:text-white/60 mb-4 leading-relaxed">
                   {lang === 'FR' ? r.descFR : r.descEN}
                 </p>
                 <button
                   type="button"
                   disabled={!canAfford || locked || redeeming === r.id}
                   onClick={() => onRedeem(r)}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#0B1A36] dark:bg-[#D4AF37] text-white dark:text-[#0B1A36] hover:bg-[#D4AF37] hover:text-[#0B1A36] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {redeeming === r.id
                     ? <><i className="fa-solid fa-circle-notch fa-spin" /> {lang === 'FR' ? 'Échange…' : 'Redeeming…'}</>
@@ -379,18 +379,18 @@ const ClientLoyalty: React.FC = () => {
         <button
           type="button"
           onClick={() => setGuideOpen(v => !v)}
-          className="w-full flex items-center justify-between px-5 py-4 rounded-2xl border border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-white/5 text-left hover:border-[#D4AF37] transition-colors"
+          className="w-full flex items-center justify-between px-5 py-4 rounded-2xl border border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-white/5 text-left hover:border-[#B8532F] transition-colors"
         >
           <span className="flex items-center gap-3">
-            <i className="fa-solid fa-circle-info text-[#D4AF37]" />
-            <span className="font-serif text-[#0B1A36] dark:text-white">
+            <i className="fa-solid fa-circle-info text-[#B8532F]" />
+            <span className="font-serif text-[#3A251E] dark:text-white">
               {lang === 'FR' ? 'Comment gagner des points' : 'How to earn points'}
             </span>
           </span>
-          <i className={`fa-solid fa-chevron-down text-[#0B1A36]/40 dark:text-white/40 text-xs transition-transform ${guideOpen ? 'rotate-180' : ''}`} />
+          <i className={`fa-solid fa-chevron-down text-[#3A251E]/40 dark:text-white/40 text-xs transition-transform ${guideOpen ? 'rotate-180' : ''}`} />
         </button>
         {guideOpen && (
-          <ul className="mt-3 space-y-2 text-sm text-[#0B1A36]/80 dark:text-white/80 bg-[#F5F5F0] dark:bg-white/5 rounded-2xl p-5">
+          <ul className="mt-3 space-y-2 text-sm text-[#3A251E]/80 dark:text-white/80 bg-[#F4E7DD] dark:bg-white/5 rounded-2xl p-5">
             <GuideRow pts={POINTS.orderPerItem} label={lang === 'FR' ? 'Chaque produit commandé' : 'Each product ordered'} />
             <GuideRow pts={POINTS.quiz}       label={lang === 'FR' ? 'Compléter le Quiz Dosha' : 'Complete the Dosha Quiz'} note={lang === 'FR' ? 'une fois' : 'once'} />
             <GuideRow pts={POINTS.newsletter} label={lang === 'FR' ? "S'abonner à une infolettre" : 'Subscribe to a newsletter'} note={lang === 'FR' ? 'une fois' : 'once'} />
@@ -406,7 +406,7 @@ const ClientLoyalty: React.FC = () => {
 
       {/* Tier ladder */}
       <section className="mb-10">
-        <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-4">
+        <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-4">
           {lang === 'FR' ? 'Votre parcours' : 'Your journey'}
         </h3>
         <ol className="space-y-3">
@@ -418,21 +418,21 @@ const ClientLoyalty: React.FC = () => {
                 key={t.id}
                 className={`rounded-xl border p-4 flex items-center gap-4 transition-colors ${
                   isCurrent
-                    ? 'border-[#D4AF37]/50 bg-[#D4AF37]/5'
+                    ? 'border-[#B8532F]/50 bg-[#B8532F]/5'
                     : reached
-                      ? 'border-[#0B1A36]/10 dark:border-white/10 bg-white dark:bg-white/5'
-                      : 'border-[#0B1A36]/5 dark:border-white/5 bg-[#F5F5F0]/50 dark:bg-white/[0.02] opacity-60'
+                      ? 'border-[#3A251E]/10 dark:border-white/10 bg-white dark:bg-white/5'
+                      : 'border-[#3A251E]/5 dark:border-white/5 bg-[#F4E7DD]/50 dark:bg-white/[0.02] opacity-60'
                 }`}
               >
                 <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-sm font-serif" style={{ backgroundColor: `${t.accent}22`, color: t.accent }}>
                   {reached ? <i className="fa-solid fa-check" /> : <i className="fa-regular fa-circle" />}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-serif text-[#0B1A36] dark:text-white">
+                  <p className="font-serif text-[#3A251E] dark:text-white">
                     {lang === 'FR' ? t.labelFR : t.labelEN}
-                    {isCurrent && <span className="ml-2 text-[10px] uppercase tracking-widest font-bold text-[#D4AF37]">· {lang === 'FR' ? 'Actuel' : 'Current'}</span>}
+                    {isCurrent && <span className="ml-2 text-[10px] uppercase tracking-widest font-bold text-[#B8532F]">· {lang === 'FR' ? 'Actuel' : 'Current'}</span>}
                   </p>
-                  <p className="text-[11px] uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50">
+                  <p className="text-[11px] uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50">
                     {t.threshold} pts
                   </p>
                 </div>
@@ -444,11 +444,11 @@ const ClientLoyalty: React.FC = () => {
 
       {/* Recent activity */}
       <section>
-        <h3 className="text-sm uppercase tracking-widest text-[#0B1A36]/60 dark:text-white/60 font-bold mb-4">
+        <h3 className="text-sm uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-4">
           {lang === 'FR' ? 'Activité récente' : 'Recent activity'}
         </h3>
         {events.length === 0 ? (
-          <p className="text-sm text-[#0B1A36]/50 dark:text-white/50 italic font-serif py-4">
+          <p className="text-sm text-[#3A251E]/50 dark:text-white/50 italic font-serif py-4">
             {lang === 'FR' ? "Aucune activité pour l'instant." : 'No activity yet.'}
           </p>
         ) : (
@@ -457,19 +457,19 @@ const ClientLoyalty: React.FC = () => {
               const l = EVENT_LABELS[ev.kind] || { fr: ev.kind, en: ev.kind, icon: 'fa-star' };
               const positive = ev.amount >= 0;
               return (
-                <li key={ev.id} className="flex items-center gap-4 border border-[#0B1A36]/5 dark:border-white/5 rounded-xl p-3">
+                <li key={ev.id} className="flex items-center gap-4 border border-[#3A251E]/5 dark:border-white/5 rounded-xl p-3">
                   <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${
-                    positive ? 'bg-[#D4AF37]/15 text-[#D4AF37]' : 'bg-red-50 text-red-500'
+                    positive ? 'bg-[#B8532F]/15 text-[#B8532F]' : 'bg-red-50 text-red-500'
                   }`}>
                     <i className={`fa-solid ${l.icon}`} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-[#0B1A36] dark:text-white truncate">{lang === 'FR' ? l.fr : l.en}</p>
-                    <p className="text-[10px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">
+                    <p className="text-sm text-[#3A251E] dark:text-white truncate">{lang === 'FR' ? l.fr : l.en}</p>
+                    <p className="text-[10px] uppercase tracking-widest text-[#3A251E]/40 dark:text-white/40">
                       {ev.at?.toDate().toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA') || ''}
                     </p>
                   </div>
-                  <span className={`font-serif font-bold ${positive ? 'text-[#D4AF37]' : 'text-red-500'}`}>
+                  <span className={`font-serif font-bold ${positive ? 'text-[#B8532F]' : 'text-red-500'}`}>
                     {positive ? '+' : ''}{ev.amount}
                   </span>
                 </li>
@@ -480,14 +480,14 @@ const ClientLoyalty: React.FC = () => {
 
         {redemptions.length > 0 && (
           <div className="mt-6">
-            <h4 className="text-[11px] uppercase tracking-widest font-bold text-[#0B1A36]/60 dark:text-white/60 mb-3">
+            <h4 className="text-[11px] uppercase tracking-widest font-bold text-[#3A251E]/60 dark:text-white/60 mb-3">
               {lang === 'FR' ? 'Mes récompenses' : 'My rewards'}
             </h4>
             <ul className="space-y-2">
               {redemptions.map(r => (
-                <li key={r.id} className="flex items-center gap-3 border border-[#0B1A36]/5 dark:border-white/5 rounded-xl p-3 text-sm">
-                  <i className="fa-solid fa-gift text-[#D4AF37]" />
-                  <span className="flex-1 text-[#0B1A36] dark:text-white">{r.rewardLabel}</span>
+                <li key={r.id} className="flex items-center gap-3 border border-[#3A251E]/5 dark:border-white/5 rounded-xl p-3 text-sm">
+                  <i className="fa-solid fa-gift text-[#B8532F]" />
+                  <span className="flex-1 text-[#3A251E] dark:text-white">{r.rewardLabel}</span>
                   <span className={`text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full ${
                     r.status === 'fulfilled' ? 'bg-green-50 text-green-600'
                       : r.status === 'cancelled' ? 'bg-red-50 text-red-500'
@@ -509,9 +509,9 @@ const ClientLoyalty: React.FC = () => {
 
 const GuideRow: React.FC<{ pts: number; label: string; note?: string }> = ({ pts, label, note }) => (
   <li className="flex items-center gap-3">
-    <span className="w-10 text-right font-serif text-[#D4AF37] font-bold">+{pts}</span>
+    <span className="w-10 text-right font-serif text-[#B8532F] font-bold">+{pts}</span>
     <span className="flex-1">{label}</span>
-    {note && <span className="text-[9px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40 whitespace-nowrap">{note}</span>}
+    {note && <span className="text-[9px] uppercase tracking-widest text-[#3A251E]/40 dark:text-white/40 whitespace-nowrap">{note}</span>}
   </li>
 );
 

@@ -3,10 +3,10 @@ import { getBlogPosts, addBlogPost, updateBlogPost, deleteBlogPost, type BlogPos
 import { Card, Input, Textarea, Label, PrimaryButton, GhostButton, DangerButton, ToggleSwitch, EmptyState, ImageUpload } from '../primitives';
 
 const COVER_STYLES = [
-  'bg-gradient-to-br from-[#0B1A36] to-[#1A2642]',
-  'bg-gradient-to-br from-[#2D4A3E] to-[#0B1A36]',
-  'bg-gradient-to-br from-[#3D2B1F] to-[#5C3D2E]',
-  'bg-gradient-to-br from-[#1A1A2E] to-[#0B1A36]',
+  'bg-gradient-to-br from-[#3A251E] to-[#4A3228]',
+  'bg-gradient-to-br from-[#2D4A3E] to-[#3A251E]',
+  'bg-gradient-to-br from-[#3D271F] to-[#5C372E]',
+  'bg-gradient-to-br from-[#1A1A2E] to-[#3A251E]',
 ];
 
 const empty: Partial<BlogPost> = {
@@ -59,7 +59,7 @@ const BlogSection: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-[#0B1A36]/60 dark:text-white/60">{posts.length} article{posts.length > 1 ? 's' : ''}</p>
+        <p className="text-sm text-[#3A251E]/60 dark:text-white/60">{posts.length} article{posts.length > 1 ? 's' : ''}</p>
         <PrimaryButton onClick={startCreate}><i className="fa-solid fa-plus" /> Rédiger un article</PrimaryButton>
       </div>
 
@@ -79,7 +79,7 @@ const BlogSection: React.FC = () => {
                       key={c}
                       type="button"
                       onClick={() => setEditing({ ...editing, coverStyle: c })}
-                      className={`h-14 rounded-xl ${c} border-2 ${editing.coverStyle === c ? 'border-[#D4AF37]' : 'border-transparent'}`}
+                      className={`h-14 rounded-xl ${c} border-2 ${editing.coverStyle === c ? 'border-[#B8532F]' : 'border-transparent'}`}
                     />
                   ))}
                 </div>
@@ -113,7 +113,7 @@ const BlogSection: React.FC = () => {
       )}
 
       {loading ? (
-        <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>
+        <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" /></div>
       ) : posts.length === 0 ? (
         <EmptyState icon="fa-pen-nib">Aucun article pour l'instant.</EmptyState>
       ) : (
@@ -126,13 +126,13 @@ const BlogSection: React.FC = () => {
               />
               <div className="p-5 flex-1 flex flex-col">
                 <div className="flex items-center gap-2 mb-2">
-                  {p.isPublished === false && <span className="text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full bg-[#0B1A36]/10 dark:bg-white/10 text-[#0B1A36]/60 dark:text-white/60">Brouillon</span>}
-                  {p.date && <span className="text-[10px] uppercase tracking-widest text-[#0B1A36]/40 dark:text-white/40">{p.date}</span>}
+                  {p.isPublished === false && <span className="text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full bg-[#3A251E]/10 dark:bg-white/10 text-[#3A251E]/60 dark:text-white/60">Brouillon</span>}
+                  {p.date && <span className="text-[10px] uppercase tracking-widest text-[#3A251E]/40 dark:text-white/40">{p.date}</span>}
                 </div>
-                <h3 className="font-serif text-lg text-[#0B1A36] dark:text-white mb-1">{p.title}</h3>
-                {p.subtitle && <p className="text-sm italic text-[#0B1A36]/60 dark:text-white/60 mb-2">{p.subtitle}</p>}
-                <p className="text-sm text-[#0B1A36]/70 dark:text-white/70 line-clamp-3 flex-1">{p.content}</p>
-                <div className="flex gap-2 pt-4 mt-4 border-t border-[#0B1A36]/5 dark:border-white/5">
+                <h3 className="font-serif text-lg text-[#3A251E] dark:text-white mb-1">{p.title}</h3>
+                {p.subtitle && <p className="text-sm italic text-[#3A251E]/60 dark:text-white/60 mb-2">{p.subtitle}</p>}
+                <p className="text-sm text-[#3A251E]/70 dark:text-white/70 line-clamp-3 flex-1">{p.content}</p>
+                <div className="flex gap-2 pt-4 mt-4 border-t border-[#3A251E]/5 dark:border-white/5">
                   <GhostButton onClick={() => startEdit(p)}><i className="fa-solid fa-pen" /> Éditer</GhostButton>
                   <DangerButton onClick={() => del(p)}><i className="fa-solid fa-trash" /></DangerButton>
                 </div>

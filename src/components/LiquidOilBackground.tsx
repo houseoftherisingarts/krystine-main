@@ -13,11 +13,11 @@ function makeOilTexture(): string {
   cv.width = size; cv.height = size;
   const ctx = cv.getContext('2d')!;
   const g = ctx.createRadialGradient(size / 2, size / 2, size * 0.05, size / 2, size / 2, size * 0.75);
-  g.addColorStop(0.00, '#F6E1A0');    // light gold glint
-  g.addColorStop(0.18, '#E6B942');    // warm gold
-  g.addColorStop(0.42, '#B8860B');    // amber
+  g.addColorStop(0.00, '#F4E7DD');    // light gold glint
+  g.addColorStop(0.18, '#B8532F');    // warm gold
+  g.addColorStop(0.42, '#6B402F');    // amber
   g.addColorStop(0.72, '#5C4117');    // burnt amber
-  g.addColorStop(1.00, '#0B1A36');    // royal navy
+  g.addColorStop(1.00, '#3A251E');    // royal navy
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, size, size);
   // Add subtle warm sheen streaks (gives the oil specular highlights something to pick up)
@@ -25,9 +25,9 @@ function makeOilTexture(): string {
     const streak = ctx.createLinearGradient(
       Math.random() * size, 0, Math.random() * size, size
     );
-    streak.addColorStop(0.0, 'rgba(246, 225, 160, 0)');
-    streak.addColorStop(0.5, 'rgba(246, 225, 160, 0.08)');
-    streak.addColorStop(1.0, 'rgba(246, 225, 160, 0)');
+    streak.addColorStop(0.0, 'rgba(232,208,190, 0)');
+    streak.addColorStop(0.5, 'rgba(232,208,190, 0.08)');
+    streak.addColorStop(1.0, 'rgba(232,208,190, 0)');
     ctx.fillStyle = streak;
     ctx.fillRect(0, 0, size, size);
   }
@@ -91,7 +91,7 @@ const LiquidOilBackground: React.FC = () => {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full touch-none pointer-events-auto"
-      style={{ background: '#050C1A' }}
+      style={{ background: '#2E1A14' }}
       aria-hidden
     />
   );

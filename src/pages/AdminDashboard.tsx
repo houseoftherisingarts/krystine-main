@@ -1,6 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { subscribeToAuthState, isAdminUser } from '../firebase/auth';
+import { subscribeToAuthState, isAdminUser, isAdminBypassActive } from '../firebase/auth';
 import type { User } from 'firebase/auth';
+
+// Synthesized user object when the local bypass is active. The shell only
+// reads a few fields (email, displayName, photoURL, uid) so a minimal
+// stand-in is enough to render. Not a real Firebase User — casting via
+// `unknown` because the Firebase type has many internals we don't need.
+const BYPASS_USER = {
+  uid: 'bypass-alex',
+  email: 'alex@lesalondesinconnus.com',
+  displayName: 'Alex (bypass)',
+  photoURL: null,
+  emailVerified: true,
+  isAnonymous: false,
+  providerData: [],
+  refreshToken: '',
+  tenantId: null,
+  delete: async () => {},
+  getIdToken: async () => '',
+  getIdTokenResult: async () => ({} as any),
+  reload: async () => {},
+  toJSON: () => ({}),
+  metadata: { creationTime: undefined, lastSignInTime: undefined },
+  phoneNumber: null,
+  providerId: 'bypass',
+} as unknown as User;
 import AdminShell, { type AdminSectionId } from './admin/AdminShell';
 import AdminLogin from './admin/AdminLogin';
 import DashboardSection from './admin/sections/DashboardSection';
@@ -30,10 +54,37 @@ const AdminDashboard: React.FC = () => {
     return unsub;
   }, []);
 
+  // Local bypass short-circuit: when `__adminBypass === '1'` we skip the
+  // Firebase auth check entirely and render the dashboard with a
+  // synthesized user. Bypass is cleared on logout in AdminShell.
+  if (isAdminBypassActive()) {
+    return (
+      <AdminShell user={BYPASS_USER} section={section} onSectionChange={setSection}>
+        {section === 'dashboard'  && <DashboardSection onNavigate={setSection} />}
+        {section === 'analytics'  && <AnalyticsSection />}
+        {section === 'orders'     && <OrdersSection />}
+        {section === 'boutique'   && <BoutiqueSection />}
+        {section === 'members'    && <MembersSection />}
+        {section === 'messages'   && <MessagesSection user={BYPASS_USER} />}
+        {section === 'events'     && <EventsSection />}
+        {section === 'blog'       && <BlogSection />}
+        {section === 'splash'     && <SplashSection />}
+        {section === 'submissions' && <SubmissionsSection />}
+        {section === 'groups'     && <GroupsSection />}
+        {section === 'bookings'   && <BookingsSection />}
+        {section === 'newsletter' && <NewsletterSection />}
+        {section === 'guide'      && <GuideSection />}
+        {section === 'dosha'      && <DoshaSection />}
+        {section === 'media'      && <MediaSection />}
+        {section === 'settings'   && <SettingsSection user={BYPASS_USER} />}
+      </AdminShell>
+    );
+  }
+
   if (user === undefined) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#050C1A]">
-        <div className="w-10 h-10 border-2 border-t-transparent border-[#D4AF37] rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-[#2E1A14]">
+        <div className="w-10 h-10 border-2 border-t-transparent border-[#B8532F] rounded-full animate-spin" />
       </div>
     );
   }

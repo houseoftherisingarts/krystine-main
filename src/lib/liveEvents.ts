@@ -48,7 +48,16 @@ export interface LiveEvent {
   registerUrl?: string;          // external ticket link
   internalHref?: string;         // e.g. /origine
   waitlistTarget?: WaitlistTarget;
-  triggersTourRequest?: boolean; // 'tour-request' kind
+  triggersTourRequest?: boolean; // opens the conference-tour modal — works on
+                                 // any kind, not just 'tour-request', so an
+                                 // 'announcement' card (e.g. parution) can
+                                 // double as a tour signup.
+
+  // Optional CTA label override. When set, replaces the kind's default
+  // primary-CTA text (e.g. "Liste d'attente" → "Liste d'attente pour
+  // réserver mon billet") without changing routing.
+  ctaLabelFR?: string;
+  ctaLabelEN?: string;
 
   // Optional featured highlight (gold ring).
   featured?: boolean;
@@ -117,6 +126,9 @@ export const LIVE_EVENTS: LiveEvent[] = [
   },
 
   // ── Parution du 3e livre ──
+  // Doubles as a "tour" signup: the parution kicks off a conference tour,
+  // so the card opens the tour-request modal with a tour-specific CTA
+  // label rather than a generic announcement.
   {
     id: 'parution-livre-3',
     kind: 'announcement',
@@ -127,18 +139,21 @@ export const LIVE_EVENTS: LiveEvent[] = [
     dateFR: '14 octobre 2026',
     dateEN: 'October 14, 2026',
     startDate: '2026-10-14',
-    bodyFR: 'Troisième volet de la trilogie. Titre dévoilé à la parution.',
-    bodyEN: 'Third volume of the trilogy. Title revealed at release.',
+    bodyFR: 'Troisième volet de la trilogie. Titre dévoilé à la parution. Une tournée de conférences suit la parution.',
+    bodyEN: 'Third volume of the trilogy. Title revealed at release. A conference tour follows the launch.',
+    triggersTourRequest: true,
+    ctaLabelFR: 'Me tenir au courant de la tournée',
+    ctaLabelEN: 'Keep me posted on the tour',
   },
 
   // ── Dévoilement · L'Anglicane (Lévis) ──
   {
     id: 'lancement-anglicane',
     kind: 'launch-waitlist',
-    titleFR: 'Dévoilement de la trilogie · L\'Anglicane',
-    titleEN: 'Trilogy unveiling · L\'Anglicane',
-    subtitleFR: 'Événement public de lancement',
-    subtitleEN: 'Public launch event',
+    titleFR: 'L\'Anglicane · Lévis',
+    titleEN: 'L\'Anglicane · Lévis',
+    subtitleFR: 'Dévoilement de la trilogie',
+    subtitleEN: 'Trilogy unveiling',
     dateFR: '24 octobre 2026',
     dateEN: 'October 24, 2026',
     startDate: '2026-10-24',
@@ -149,6 +164,8 @@ export const LIVE_EVENTS: LiveEvent[] = [
     waitlistTarget: waitlist('lancement-anglicane',
       'Lancement · L\'Anglicane (Lévis)',
       'Launch · L\'Anglicane (Lévis)'),
+    ctaLabelFR: 'Liste d\'attente pour réserver mon billet',
+    ctaLabelEN: 'Waitlist to reserve my ticket',
     featured: true,
   },
 
@@ -188,18 +205,24 @@ export const LIVE_EVENTS: LiveEvent[] = [
 
   // ── Retraites à venir (dates + thèmes à confirmer) ──
   {
-    id: 'retraite-nov-2026',
+    id: 'retraite-val-morin-nov-2026',
     kind: 'retreat-waitlist',
-    titleFR: 'Retraite à venir',
-    titleEN: 'Upcoming retreat',
-    dateFR: 'Novembre 2026',
-    dateEN: 'November 2026',
+    titleFR: 'Retraite Val-Morin',
+    titleEN: 'Val-Morin Retreat',
+    subtitleFR: 'Quatre jours dans les Laurentides',
+    subtitleEN: 'Four days in the Laurentians',
+    dateFR: 'Novembre 2026 · dates à confirmer',
+    dateEN: 'November 2026 · dates to be confirmed',
     startDate: '2026-11-15',
-    bodyFR: 'Date et thème à confirmer. Inscription sur liste d\'attente.',
-    bodyEN: 'Date and theme to be confirmed. Waitlist registration.',
-    waitlistTarget: waitlist('retraite-nov-2026',
-      'Retraite · Novembre 2026',
-      'Retreat · November 2026'),
+    locationFR: 'Val-Morin, Laurentides',
+    locationEN: 'Val-Morin, Laurentians',
+    bodyFR: 'Thème et dates précises à confirmer. Inscription sur liste d\'attente.',
+    bodyEN: 'Theme and exact dates to be confirmed. Waitlist registration.',
+    waitlistTarget: waitlist('retraite-val-morin-nov-2026',
+      'Retraite Val-Morin · Novembre 2026',
+      'Val-Morin Retreat · November 2026'),
+    ctaLabelFR: 'Liste d\'attente',
+    ctaLabelEN: 'Join waitlist',
   },
   {
     id: 'retraite-fev-2027',
@@ -251,18 +274,21 @@ export const LIVE_EVENTS: LiveEvent[] = [
  * Upcoming events sorted by `startDate` ascending. Events whose startDate
  * is in the past are dropped. Open-ended events (no startDate — e.g. the
  * tour-request tile and the TEDx note) can be appended or excluded via
- * `opts.includeOpenEnded`.
+ * `opts.includeOpenEnded`. Pass `opts.hideTedx: true` to also strip the
+ * TEDx event regardless of `includeOpenEnded` — used by the visibility
+ * flag system so admins can toggle TEDx mentions without a redeploy.
  */
-export function getUpcomingEvents(opts: { includeOpenEnded?: boolean; now?: Date } = {}): LiveEvent[] {
-  const { includeOpenEnded = true, now = new Date() } = opts;
-  const dated = LIVE_EVENTS
+export function getUpcomingEvents(opts: { includeOpenEnded?: boolean; hideTedx?: boolean; now?: Date } = {}): LiveEvent[] {
+  const { includeOpenEnded = true, hideTedx = false, now = new Date() } = opts;
+  const allowed = LIVE_EVENTS.filter(ev => !hideTedx || ev.id !== 'tedx');
+  const dated = allowed
     .filter(ev => !!ev.startDate)
     .map(ev => ({ ev, t: new Date(ev.startDate as string).getTime() }))
     .filter(({ t }) => !Number.isNaN(t) && t >= now.getTime())
     .sort((a, b) => a.t - b.t)
     .map(({ ev }) => ev);
   if (!includeOpenEnded) return dated;
-  const openEnded = LIVE_EVENTS.filter(ev => !ev.startDate);
+  const openEnded = allowed.filter(ev => !ev.startDate);
   return [...dated, ...openEnded];
 }
 

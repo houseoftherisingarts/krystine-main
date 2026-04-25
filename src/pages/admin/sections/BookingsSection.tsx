@@ -9,7 +9,7 @@ import {
 import { Card, DangerButton, EmptyState, GhostButton } from '../primitives';
 
 const STATUS_OPTIONS: { id: BookingStatus; label: string; color: string }[] = [
-  { id: 'new',         label: 'Nouveau',     color: 'bg-[#D4AF37]/10 text-[#D4AF37]' },
+  { id: 'new',         label: 'Nouveau',     color: 'bg-[#B8532F]/10 text-[#B8532F]' },
   { id: 'in_progress', label: 'En cours',    color: 'bg-yellow-50 text-yellow-600' },
   { id: 'accepted',    label: 'Accepté',     color: 'bg-green-50 text-green-600' },
   { id: 'declined',    label: 'Refusé',      color: 'bg-red-50 text-red-500' },
@@ -95,10 +95,10 @@ const DetailRow: React.FC<{ label: string; value?: string | null }> = ({ label, 
   if (!value) return null;
   return (
     <div className="flex items-baseline gap-3 py-1 text-sm">
-      <span className="text-[10px] uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50 font-bold w-36 shrink-0">
+      <span className="text-[10px] uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 font-bold w-36 shrink-0">
         {label}
       </span>
-      <span className="text-[#0B1A36]/85 dark:text-white/85 break-words">{value}</span>
+      <span className="text-[#3A251E]/85 dark:text-white/85 break-words">{value}</span>
     </div>
   );
 };
@@ -123,7 +123,7 @@ const BookingsSection: React.FC = () => {
     await refresh();
   };
 
-  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#D4AF37] text-2xl" /></div>;
+  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#B8532F] text-2xl" /></div>;
   if (items.length === 0) return <EmptyState icon="fa-inbox">Aucune demande reçue.</EmptyState>;
 
   return (
@@ -137,13 +137,13 @@ const BookingsSection: React.FC = () => {
             <div className="flex items-start gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h3 className="font-serif text-[#0B1A36] dark:text-white">{b.name}</h3>
+                  <h3 className="font-serif text-[#3A251E] dark:text-white">{b.name}</h3>
                   <span className={`text-[10px] uppercase tracking-widest font-bold px-2.5 py-0.5 rounded-full ${status.color}`}>{status.label}</span>
-                  <span className="text-[10px] uppercase tracking-widest font-bold px-2.5 py-0.5 rounded-full bg-[#0B1A36]/5 dark:bg-white/10 text-[#0B1A36]/70 dark:text-white/70">
+                  <span className="text-[10px] uppercase tracking-widest font-bold px-2.5 py-0.5 rounded-full bg-[#3A251E]/5 dark:bg-white/10 text-[#3A251E]/70 dark:text-white/70">
                     {sourceLabel}
                   </span>
                 </div>
-                <p className="text-xs text-[#0B1A36]/50 dark:text-white/50 mt-1">
+                <p className="text-xs text-[#3A251E]/50 dark:text-white/50 mt-1">
                   {b.email}
                   {b.phone ? ` · ${b.phone}` : ''}
                   {b.organization ? ` · ${b.organization}` : ''}
@@ -152,7 +152,7 @@ const BookingsSection: React.FC = () => {
                 </p>
 
                 {isOpen && (
-                  <div className="mt-5 border-t border-[#0B1A36]/5 dark:border-white/10 pt-4 space-y-0.5">
+                  <div className="mt-5 border-t border-[#3A251E]/5 dark:border-white/10 pt-4 space-y-0.5">
                     <DetailRow label="Courriel"       value={b.email} />
                     <DetailRow label="Téléphone"      value={b.phone} />
                     <DetailRow label="Organisation"   value={b.organization} />
@@ -171,16 +171,16 @@ const BookingsSection: React.FC = () => {
                     <DetailRow label="Type (libre)"   value={b.eventType} />
                     {b.message && (
                       <div className="pt-3">
-                        <span className="block text-[10px] uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50 font-bold mb-1">
+                        <span className="block text-[10px] uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 font-bold mb-1">
                           Message
                         </span>
-                        <p className="text-sm text-[#0B1A36]/85 dark:text-white/85 leading-relaxed whitespace-pre-line">{b.message}</p>
+                        <p className="text-sm text-[#3A251E]/85 dark:text-white/85 leading-relaxed whitespace-pre-line">{b.message}</p>
                       </div>
                     )}
                     {b.tags && b.tags.length > 0 && (
                       <div className="pt-3 flex flex-wrap gap-1.5">
                         {b.tags.map(tag => (
-                          <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full bg-[#0B1A36]/5 dark:bg-white/10 text-[#0B1A36]/60 dark:text-white/60">
+                          <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full bg-[#3A251E]/5 dark:bg-white/10 text-[#3A251E]/60 dark:text-white/60">
                             {tag}
                           </span>
                         ))}
@@ -193,7 +193,7 @@ const BookingsSection: React.FC = () => {
                 <select
                   value={b.status || 'new'}
                   onChange={e => b.id && changeStatus(b.id, e.target.value as BookingStatus)}
-                  className="text-xs px-3 py-2 rounded-lg border border-[#0B1A36]/10 dark:border-white/10 bg-[#F5F5F0] dark:bg-white/5 text-[#0B1A36] dark:text-white"
+                  className="text-xs px-3 py-2 rounded-lg border border-[#3A251E]/10 dark:border-white/10 bg-[#F4E7DD] dark:bg-white/5 text-[#3A251E] dark:text-white"
                 >
                   {STATUS_OPTIONS.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
                 </select>

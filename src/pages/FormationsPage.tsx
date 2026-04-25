@@ -6,6 +6,7 @@ import { goToRoute } from '../lib/staticRoutes';
 import WaitlistModal, { type WaitlistTarget } from '../components/WaitlistModal';
 import { getUpcomingEvents } from '../lib/liveEvents';
 import LiveEventsSection from '../components/LiveEvents';
+import PremiersRituelsHero from '../components/PremiersRituelsHero';
 import EditableText from '../components/edit/EditableText';
 
 interface Programme {
@@ -144,12 +145,12 @@ const FormationsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#050C1A] text-[#0B1A36] dark:text-white pt-32 pb-24">
+    <div className="min-h-screen dark:bg-[#2E1A14] text-[#3A251E] dark:text-white pt-32 pb-24">
       <div className="max-w-6xl mx-auto px-6 md:px-12">
 
         {/* Hero */}
         <div className="text-center mb-20">
-          <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
+          <span className="text-[#B8532F] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
             <EditableText
               fieldKey="formations.hero.kicker"
               defaultValue={lang === 'FR' ? 'Programmes & Accompagnements' : 'Programs & Guidance'}
@@ -161,7 +162,7 @@ const FormationsPage: React.FC = () => {
               defaultValue={lang === 'FR' ? 'Formations' : 'Programs'}
             />
           </h1>
-          <p className="text-xl text-[#0B1A36]/60 dark:text-white/60 font-serif italic max-w-2xl mx-auto">
+          <p className="text-xl text-[#3A251E]/60 dark:text-white/60 font-serif italic max-w-2xl mx-auto">
             <EditableText
               fieldKey="formations.hero.lead"
               defaultValue={lang === 'FR'
@@ -170,7 +171,7 @@ const FormationsPage: React.FC = () => {
               multiline
             />
           </p>
-          <div className="w-24 h-1 bg-[#D4AF37] mx-auto mt-10" />
+          <div className="w-24 h-1 bg-[#B8532F] mx-auto mt-10" />
         </div>
 
         {/* Featured programme */}
@@ -178,24 +179,24 @@ const FormationsPage: React.FC = () => {
           <section
             key={p.title}
             onClick={() => openCard(p)}
-            className="group relative cursor-pointer mb-16 rounded-[30px] overflow-hidden shadow-2xl border border-[#D4AF37]/20 hover:shadow-[0_0_40px_rgba(212,175,55,0.25)] transition-all"
+            className="group relative cursor-pointer mb-16 rounded-[30px] overflow-hidden shadow-2xl border border-[#B8532F]/20 hover:shadow-[0_0_40px_rgba(184,83,47,0.25)] transition-all"
           >
-            <div className="relative h-[500px] bg-[#0B1A36]">
+            <div className="relative h-[500px] bg-[#3A251E]">
               <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                 style={{ backgroundImage: `url(${p.image})` }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B1A36] via-[#0B1A36]/60 to-[#0B1A36]/20" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#3A251E] via-[#3A251E]/60 to-[#3A251E]/20" />
               <div className="absolute bottom-0 left-0 right-0 p-10 md:p-16 text-white">
                 {/* Larger eyebrow on the featured (Origine) card so the
                     "Parcours signature" label reads as the heading kicker
                     it actually is. */}
-                <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-sm md:text-base lg:text-lg font-bold block mb-4">{p.tag}</span>
+                <span className="text-[#B8532F] uppercase tracking-[0.3em] text-sm md:text-base lg:text-lg font-bold block mb-4">{p.tag}</span>
                 <h2 className="text-4xl md:text-6xl font-serif mb-3">{p.title}</h2>
                 <p className="text-xl md:text-2xl font-serif italic text-white/80 mb-6 max-w-2xl">{p.subtitle}</p>
                 <p className="text-white/70 max-w-2xl mb-8 leading-relaxed">{p.description}</p>
                 <div className="flex flex-wrap items-center gap-4">
-                  <span className="inline-flex items-center gap-3 bg-[#D4AF37] text-[#0B1A36] px-8 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg group-hover:scale-105 transition-transform">
+                  <span className="inline-flex items-center gap-3 bg-[#B8532F] text-[#3A251E] px-8 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg group-hover:scale-105 transition-transform">
                     {lang === 'FR' ? 'Découvrir' : 'Discover'} <i className="fa-solid fa-arrow-right" />
                   </span>
                   <span className="text-xs uppercase tracking-[0.3em] text-white/50 font-bold">
@@ -207,15 +208,24 @@ const FormationsPage: React.FC = () => {
           </section>
         ))}
 
+        {/* Les Premiers Rituels — entry-level $27 program. Sits between the
+            signature Origine (featured above) and the seasonal waitlists
+            below, offering the most accessible first step for visitors who
+            aren't ready to commit to a full journey. Shared component with
+            the home page. */}
+        <div className="my-12 md:my-16">
+          <PremiersRituelsHero />
+        </div>
+
         {/* Les Saisonniers — Vata + the two coming-soon waitlists */}
         <div className="text-center mb-10 mt-16">
-          <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold block mb-3">
+          <span className="text-[#B8532F] uppercase tracking-[0.3em] text-xs font-bold block mb-3">
             {lang === 'FR' ? 'Au rythme des saisons' : 'With the seasons'}
           </span>
           <h2 className="text-3xl md:text-5xl font-serif leading-tight">
             {lang === 'FR' ? 'Les Programmes Saisonniers' : 'The Seasonal Programs'}
           </h2>
-          <div className="w-16 h-px bg-[#D4AF37]/70 mx-auto mt-5" />
+          <div className="w-16 h-px bg-[#B8532F]/70 mx-auto mt-5" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {programmes.filter(p => !p.featured).map(p => {
@@ -224,31 +234,31 @@ const FormationsPage: React.FC = () => {
               <article
                 key={p.title}
                 onClick={() => openCard(p)}
-                className={`group cursor-pointer bg-white dark:bg-[#0B1A36]/60 rounded-[24px] shadow-lg border border-[#0B1A36]/5 dark:border-white/5 overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl ${soon ? 'relative' : ''}`}
+                className={`group cursor-pointer bg-white dark:bg-[#3A251E]/60 rounded-[24px] shadow-lg border border-[#3A251E]/5 dark:border-white/5 overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl ${soon ? 'relative' : ''}`}
               >
-                <div className="relative h-48 overflow-hidden bg-[#0B1A36]">
+                <div className="relative h-48 overflow-hidden bg-[#3A251E]">
                   <div
                     className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 ${soon ? 'opacity-70' : ''}`}
                     style={{ backgroundImage: `url(${p.image})` }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B1A36]/80 via-[#0B1A36]/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#3A251E]/80 via-[#3A251E]/20 to-transparent" />
                   <span className={`absolute top-5 left-5 uppercase tracking-[0.25em] text-[10px] font-bold backdrop-blur px-3 py-1.5 rounded-full border ${
                     soon
-                      ? 'text-[#D4AF37] bg-[#0B1A36]/80 border-[#D4AF37]/50'
-                      : 'text-[#D4AF37] bg-[#0B1A36]/60 border-[#D4AF37]/30'
+                      ? 'text-[#B8532F] bg-[#3A251E]/80 border-[#B8532F]/50'
+                      : 'text-[#B8532F] bg-[#3A251E]/60 border-[#B8532F]/30'
                   }`}>
                     {p.tag}
                   </span>
                 </div>
                 <div className="p-8">
-                  <h3 className="text-2xl font-serif text-[#0B1A36] dark:text-white mb-2 group-hover:text-[#D4AF37] transition-colors">{p.title}</h3>
-                  <p className="text-sm font-serif italic text-[#D4AF37] mb-4">{p.subtitle}</p>
-                  <p className="text-[#0B1A36]/70 dark:text-white/70 text-sm leading-relaxed mb-6">{p.description}</p>
-                  <div className="flex items-center justify-between pt-4 border-t border-[#0B1A36]/10 dark:border-white/10">
-                    <span className="text-[10px] uppercase tracking-[0.3em] text-[#0B1A36]/40 dark:text-white/40 font-bold">
+                  <h3 className="text-2xl font-serif text-[#3A251E] dark:text-white mb-2 group-hover:text-[#B8532F] transition-colors">{p.title}</h3>
+                  <p className="text-sm font-serif italic text-[#B8532F] mb-4">{p.subtitle}</p>
+                  <p className="text-[#3A251E]/70 dark:text-white/70 text-sm leading-relaxed mb-6">{p.description}</p>
+                  <div className="flex items-center justify-between pt-4 border-t border-[#3A251E]/10 dark:border-white/10">
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-[#3A251E]/40 dark:text-white/40 font-bold">
                       <i className={`fa-regular ${soon ? 'fa-hourglass-half' : 'fa-clock'} mr-2`} />{p.duration}
                     </span>
-                    <span className="text-[#D4AF37] text-lg group-hover:translate-x-1 transition-transform">
+                    <span className="text-[#B8532F] text-lg group-hover:translate-x-1 transition-transform">
                       <i className={`fa-solid ${soon ? 'fa-bell' : 'fa-arrow-right'}`} />
                     </span>
                   </div>
@@ -261,26 +271,26 @@ const FormationsPage: React.FC = () => {
         {/* Podcast — full-width band below the 3 programme cards */}
         <section
           onClick={() => goToRoute(navigate, '/podcast')}
-          className="group mt-12 cursor-pointer rounded-[28px] overflow-hidden shadow-xl border border-[#D4AF37]/15 hover:shadow-[0_0_40px_rgba(212,175,55,0.2)] transition-all"
+          className="group mt-12 cursor-pointer rounded-[28px] overflow-hidden shadow-xl border border-[#B8532F]/15 hover:shadow-[0_0_40px_rgba(184,83,47,0.2)] transition-all"
         >
-          <div className="relative bg-[#0B1A36]">
+          <div className="relative bg-[#3A251E]">
             <div className="grid grid-cols-1 md:grid-cols-[1.1fr_1fr]">
               <div className="relative h-56 md:h-auto min-h-[260px] overflow-hidden">
                 <div
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                   style={{ backgroundImage: `url(${ASSETS.blogBg})` }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#0B1A36]/30 via-transparent to-[#0B1A36]/50 md:bg-gradient-to-r md:from-transparent md:to-[#0B1A36]" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#3A251E]/30 via-transparent to-[#3A251E]/50 md:bg-gradient-to-r md:from-transparent md:to-[#3A251E]" />
               </div>
               <div className="p-8 md:p-12 text-white flex flex-col justify-center">
-                <span className="text-[#D4AF37] uppercase tracking-[0.3em] text-[10px] font-bold block mb-3">
+                <span className="text-[#B8532F] uppercase tracking-[0.3em] text-[10px] font-bold block mb-3">
                   {podcast.tag}
                 </span>
                 <h3 className="text-3xl md:text-4xl font-serif mb-2">{podcast.title}</h3>
                 <p className="text-lg md:text-xl font-serif italic text-white/80 mb-4">{podcast.subtitle}</p>
                 <p className="text-white/70 leading-relaxed mb-6">{podcast.description}</p>
                 <div className="flex flex-wrap items-center gap-4">
-                  <span className="inline-flex items-center gap-2 bg-[#D4AF37] text-[#0B1A36] px-7 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg group-hover:scale-105 transition-transform">
+                  <span className="inline-flex items-center gap-2 bg-[#B8532F] text-[#3A251E] px-7 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg group-hover:scale-105 transition-transform">
                     <i className="fa-solid fa-headphones" /> {podcast.cta}
                   </span>
                   <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-bold">
@@ -294,7 +304,7 @@ const FormationsPage: React.FC = () => {
 
         {/* Événements & Conférences — below the podcast so /formations keeps
             the "programmes → podcast → live gatherings" narrative order. */}
-        <div className="mt-24 pt-16 border-t border-[#0B1A36]/10 dark:border-white/10">
+        <div className="mt-24 pt-16 border-t border-[#3A251E]/10 dark:border-white/10">
           <LiveEventsSection
             events={getUpcomingEvents()}
             kickerFR="Où on se rejoint · LIVE"

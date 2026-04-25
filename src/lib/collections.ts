@@ -88,20 +88,12 @@ export const COLLECTIONS: CollectionManifest[] = [
     bannerImage: ASSETS.formationsBg,
     match: p => productHas(p, ['neroli', 'after sun', 'after-sun', 'aftersun', 'solaire']),
   },
-  {
-    id: 'chandelles',
-    slug: 'chandelles',
-    labelFR: 'Les Chandelles',
-    labelEN: 'The Candles',
-    taglineFR: 'Une flamme, une atmosphère',
-    taglineEN: 'A flame, an atmosphere',
-    storyFR:
-      "Cires végétales, mèches de coton, parfums composés pour la méditation et les soirs tranquilles. Des chandelles à brûler lentement, pour poser le soir dans la pièce.",
-    storyEN:
-      "Plant waxes, cotton wicks, scents composed for meditation and quiet evenings. Candles to burn slowly, to set the evening into the room.",
-    bannerImage: ASSETS.shopBg,
-    match: p => productHas(p, ['chandelle', 'candle', 'bougie']),
-  },
+  // "Les Chandelles" collection retired at request — no candles on
+  // sale right now. Slug + match logic kept commented for the day they
+  // come back; flip back in by uncommenting + wiring into COLLECTIONS.
+  // {
+  //   id: 'chandelles', slug: 'chandelles', labelFR: 'Les Chandelles', ...
+  // },
   {
     id: 'rituels',
     slug: 'rituels',

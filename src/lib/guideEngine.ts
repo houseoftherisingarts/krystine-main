@@ -11,6 +11,7 @@
 export type OutcomeId =
   | 'podcast'            // lowest commitment; entry point
   | 'dosha-quiz'         // free self-assessment
+  | 'premiers-rituels'   // $27 entry-level ritual program — first paid step
   | 'serenite-oil'       // stress-specific body oil (D-Stress)
   | 'bibliotheque'       // books — learn first
   | 'seasonal-waitlist'  // upcoming Kapha/Pitta/Vata seasonal programs
@@ -69,7 +70,7 @@ export const GUIDE_QUESTIONS: GuideQuestion[] = [
     options: [
       { id: 'curious',         fr: 'Je découvre, je me laisse porter.',
         en: "I'm discovering, letting myself drift.",
-        weights: { podcast: 5, 'dosha-quiz': 2, bibliotheque: 2 } },
+        weights: { podcast: 5, 'dosha-quiz': 2, bibliotheque: 2, 'premiers-rituels': 3 } },
       { id: 'intense-period',  fr: "Je traverse une période intense, j'ai besoin de m'apaiser.",
         en: "I'm moving through an intense phase and need to settle.",
         weights: { 'serenite-oil': 5, origine: 3, events: 2 } },
@@ -81,7 +82,7 @@ export const GUIDE_QUESTIONS: GuideQuestion[] = [
         weights: { origine: 8, 'seasonal-waitlist': 3 } },
       { id: 'learn',           fr: "J'ai soif d'apprendre et de me former.",
         en: 'I hunger to learn and deepen my knowledge.',
-        weights: { bibliotheque: 5, origine: 3, 'dosha-quiz': 2 } },
+        weights: { bibliotheque: 5, origine: 3, 'dosha-quiz': 2, 'premiers-rituels': 3 } },
     ],
   },
   {
@@ -93,10 +94,10 @@ export const GUIDE_QUESTIONS: GuideQuestion[] = [
     options: [
       { id: 'new',         fr: 'Je viens tout juste de la découvrir.',
         en: "I've just found her.",
-        weights: { podcast: 5, 'dosha-quiz': 2 } },
+        weights: { podcast: 5, 'dosha-quiz': 2, 'premiers-rituels': 3 } },
       { id: 'follower',    fr: 'Je suis son travail à distance.',
         en: 'I follow her work from afar.',
-        weights: { bibliotheque: 3, 'seasonal-waitlist': 3, 'serenite-oil': 2 } },
+        weights: { bibliotheque: 3, 'seasonal-waitlist': 3, 'serenite-oil': 2, 'premiers-rituels': 3 } },
       { id: 'read-books',  fr: "J'ai lu ses livres.",
         en: "I've read her books.",
         weights: { 'seasonal-waitlist': 5, origine: 3, events: 3 } },
@@ -114,10 +115,10 @@ export const GUIDE_QUESTIONS: GuideQuestion[] = [
     options: [
       { id: 'minutes',   fr: 'Quelques minutes, çà et là.',
         en: 'A few minutes here and there.',
-        weights: { podcast: 5, 'serenite-oil': 2 } },
+        weights: { podcast: 5, 'serenite-oil': 2, 'premiers-rituels': 4 } },
       { id: 'evenings',  fr: 'Quelques soirs par semaine.',
         en: 'A few evenings a week.',
-        weights: { bibliotheque: 5, podcast: 3, 'dosha-quiz': 2 } },
+        weights: { bibliotheque: 5, podcast: 3, 'dosha-quiz': 2, 'premiers-rituels': 3 } },
       { id: 'weekly',    fr: 'Un rendez-vous hebdomadaire régulier.',
         en: 'A steady weekly appointment.',
         weights: { 'seasonal-waitlist': 5, events: 3 } },
@@ -135,7 +136,7 @@ export const GUIDE_QUESTIONS: GuideQuestion[] = [
     options: [
       { id: 'exploring', fr: "Rien de pressé — j'explore simplement.",
         en: "Nothing urgent — I'm just exploring.",
-        weights: { podcast: 4, 'dosha-quiz': 3, bibliotheque: 2 } },
+        weights: { podcast: 4, 'dosha-quiz': 3, bibliotheque: 2, 'premiers-rituels': 3 } },
       { id: 'constitution', fr: 'Comprendre ma nature ayurvédique (dosha).',
         en: 'Understanding my ayurvedic nature (dosha).',
         weights: { 'dosha-quiz': 10 } },
@@ -159,10 +160,10 @@ export const GUIDE_QUESTIONS: GuideQuestion[] = [
     options: [
       { id: 'free',      fr: 'Un premier pas gratuit.',
         en: 'A free first step.',
-        weights: { podcast: 5, 'dosha-quiz': 3 } },
+        weights: { podcast: 5, 'dosha-quiz': 3, 'premiers-rituels': 4 } },
       { id: 'small',     fr: 'Un geste concret pour soi — un livre, une huile.',
         en: 'A small concrete gesture — a book, an oil.',
-        weights: { 'serenite-oil': 3, bibliotheque: 3 } },
+        weights: { 'serenite-oil': 3, bibliotheque: 3, 'premiers-rituels': 7 } },
       { id: 'journey',   fr: 'Un investissement dans ma transformation.',
         en: 'An investment in my transformation.',
         weights: { 'seasonal-waitlist': 5, origine: 3 } },
@@ -195,8 +196,21 @@ export const OUTCOMES: Record<OutcomeId, GuideRecommendation> = {
     blurbEN:   'Before any formula, discover your bodily signature — Vata, Pitta or Kapha. Ten questions, a personalized ritual as a gift.',
     ctaFR:     'Faire le Quiz Dosha',                  ctaEN:     'Take the Dosha Quiz',
     href:      '/quiz',
-    accent:    '#D4AF37',
+    accent:    '#B8532F',
     icon:      'fa-circle-nodes',
+  },
+  'premiers-rituels': {
+    id: 'premiers-rituels',
+    eyebrowFR: 'Un premier pas accessible',            eyebrowEN: 'An accessible first step',
+    titleFR:   'Les Premiers Rituels',                 titleEN:   'The First Rituals',
+    blurbFR:   "Une porte d'entrée concrète dans l'Ayurveda sans s'engager dans un parcours complet : 10 capsules vidéo pour vos premiers gestes — introduction, auto-massage, soins du nez, de la bouche, des mains et des pieds. 27 $, accès immédiat.",
+    blurbEN:   "A concrete entry into Ayurveda without committing to a full program: 10 video capsules for your first gestures — introduction, self-massage, care of the nose, mouth, hands and feet. $27, instant access.",
+    ctaFR:     'Commencer — 27 $',                     ctaEN:     'Begin — $27',
+    href:      'https://www.krystinestlaurent.com/offers/2ksjqcW3/checkout',
+    secondaryCtaFR: "Voir d'abord le podcast",         secondaryCtaEN: 'Listen to the podcast first',
+    secondaryHref:  '/podcast',
+    accent:    '#7A8066',
+    icon:      'fa-seedling',
   },
   'serenite-oil': {
     id: 'serenite-oil',
@@ -219,7 +233,7 @@ export const OUTCOMES: Record<OutcomeId, GuideRecommendation> = {
     blurbEN:   'Krystine has woven three best-sellers: Nature & Ayurveda, Femininity & Ayurveda, The Tonic Kitchen. Books to read at night, at the turn of a season.',
     ctaFR:     'Parcourir la Bibliothèque',            ctaEN:     'Browse the Library',
     href:      '/boutique/bibliotheque',
-    accent:    '#6B4A2E',
+    accent:    '#6B402E',
     icon:      'fa-book',
   },
   'seasonal-waitlist': {
@@ -241,7 +255,7 @@ export const OUTCOMES: Record<OutcomeId, GuideRecommendation> = {
     blurbEN:   'Twelve weeks to rebuild your inner compass. Grounding (Earth), Alchemy (Fire), Clarity (Ether). The deepest journey Inspirata offers.',
     ctaFR:     "Découvrir l'Expérience Origine",       ctaEN:     'Discover the Origin Experience',
     href:      '/origine',
-    accent:    '#D4AF37',
+    accent:    '#B8532F',
     icon:      'fa-compass',
   },
   'events': {
@@ -252,7 +266,7 @@ export const OUTCOMES: Record<OutcomeId, GuideRecommendation> = {
     blurbEN:   'Workshops, talks, small-group gatherings — this is where you meet Krystine face to face. Check the season\'s calendar.',
     ctaFR:     'Voir les événements',                  ctaEN:     'View the events',
     href:      '/krystine#events',
-    accent:    '#8B6F47',
+    accent:    '#6B402F',
     icon:      'fa-calendar-heart',
   },
 };
@@ -264,13 +278,13 @@ export const OUTCOMES: Record<OutcomeId, GuideRecommendation> = {
 // land on Podcast / Dosha Quiz rather than pushing the visitor into
 // Origine before they're ready.
 const OUTCOME_PRIORITY: OutcomeId[] = [
-  'podcast', 'dosha-quiz', 'bibliotheque', 'serenite-oil',
+  'podcast', 'dosha-quiz', 'premiers-rituels', 'bibliotheque', 'serenite-oil',
   'seasonal-waitlist', 'events', 'origine',
 ];
 
 export function scoreAnswers(answers: GuideAnswer[]): Record<OutcomeId, number> {
   const scores: Record<OutcomeId, number> = {
-    podcast: 0, 'dosha-quiz': 0, 'serenite-oil': 0, bibliotheque: 0,
+    podcast: 0, 'dosha-quiz': 0, 'premiers-rituels': 0, 'serenite-oil': 0, bibliotheque: 0,
     'seasonal-waitlist': 0, origine: 0, events: 0,
   };
   for (const ans of answers) {

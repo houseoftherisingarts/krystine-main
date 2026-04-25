@@ -6,25 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- SEO Primary -->
-    <title>Inspirata Ayurveda | Krystine St-Laurent — Sagesse Ayurvédique</title>
-    <meta name="description" content="Bienvenue dans l'univers de Krystine St-Laurent, experte en Ayurveda, autrice best-seller, et fondatrice d'Inspirata. Découvrez nos programmes, produits et rituels." />
+    <title>Krystine St-Laurent — Autrice · Trilogie Ayurveda · Conférencière</title>
+    <meta name="description" content="Krystine St-Laurent — autrice best-seller, conférencière et experte en Ayurveda. Trilogie d'Origine, Expérience Origine, podcast, retraites et rituels essentiels. 37 ans d'expérience au service d'un art de vivre conscient." />
     <meta name="author" content="Krystine St-Laurent" />
     <link rel="canonical" href="https://www.krystinestlaurent.ca/" />
 
-    <!-- Open Graph -->
+    <!-- Open Graph · social-share preview (Facebook, LinkedIn, Messenger…) -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.krystinestlaurent.ca/" />
-    <meta property="og:title" content="Inspirata Ayurveda | Krystine St-Laurent" />
-    <meta property="og:description" content="Sagesse Ayurvédique pour une vie consciente. Programmes, produits et rituels." />
-    <meta property="og:image" content="https://storage.googleapis.com/inspirata/Base%20site/Gemini_Generated_Image_2cz8f92cz8f92cz8.png" />
+    <meta property="og:site_name" content="Krystine St-Laurent" />
+    <meta property="og:title" content="Krystine St-Laurent — Autrice · Trilogie Ayurveda · Conférencière" />
+    <meta property="og:description" content="Sagesse ayurvédique pour une vie consciente. Trilogie, Expérience Origine, podcast et retraites." />
+    <meta property="og:image" content="https://www.krystinestlaurent.ca/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Krystine St-Laurent — accueil du site" />
     <meta property="og:locale" content="fr_CA" />
     <meta property="og:locale:alternate" content="en_CA" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Inspirata Ayurveda | Krystine St-Laurent" />
-    <meta name="twitter:description" content="Sagesse Ayurvédique pour une vie consciente." />
-    <meta name="twitter:image" content="https://storage.googleapis.com/inspirata/Base%20site/Gemini_Generated_Image_2cz8f92cz8f92cz8.png" />
+    <meta name="twitter:title" content="Krystine St-Laurent — Autrice · Trilogie Ayurveda · Conférencière" />
+    <meta name="twitter:description" content="Sagesse ayurvédique pour une vie consciente. Trilogie, Expérience Origine, podcast et retraites." />
+    <meta name="twitter:image" content="https://www.krystinestlaurent.ca/og-image.jpg" />
+    <meta name="twitter:image:alt" content="Krystine St-Laurent — accueil du site" />
 
     <!-- Schema.org Person -->
     <script type="application/ld+json">
@@ -44,13 +49,15 @@
     }
     </script>
 
-    <!-- Schema.org Organization -->
+    <!-- Schema.org Organization · Krystine St-Laurent (the brand surface
+         is now her name; "Inspirata Ayurveda" remains the imprint of the
+         boutique line and is kept as an alternate). -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "Inspirata Ayurveda",
-      "alternateName": "Krystine St-Laurent — Inspirata",
+      "name": "Krystine St-Laurent",
+      "alternateName": ["Inspirata Ayurveda", "Inspirata"],
       "url": "https://www.krystinestlaurent.ca",
       "logo": "https://storage.googleapis.com/inspirata/Vata/1%20(1).png",
       "founder": { "@type": "Person", "name": "Krystine St-Laurent" },
@@ -72,7 +79,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
 
-    <!-- Tailwind CDN for utility classes used by Inspirata styles -->
+    <!-- Tailwind CDN for utility classes used by Inspirata styles.
+         Origine palette: copper / sauge / brun / prune / bleu-mineral /
+         beige / ivoire / gris-pierre. Legacy tokens (royal, gold, surface,
+         white) are remapped to Origine so existing utility classes shift
+         without rewriting markup. -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -80,9 +91,20 @@
         theme: {
           extend: {
             colors: {
-              royal: '#0B1A36',
-              gold: '#D4AF37',
-              surface: '#F5F5F0',
+              copper:      '#B8532F',
+              copperDeep:  '#A04E2A',
+              sauge:       '#7A8066',
+              brun:        '#6B402F',
+              brunFonce:   '#3A251E',
+              prune:       '#4A2635',
+              bleuMineral: '#1F3F4A',
+              beige:       '#E8D0BE',
+              ivoire:      '#F4E7DD',
+              grisPierre:  '#7D7D72',
+              royal:   '#3A251E',
+              gold:    '#B8532F',
+              surface: '#F4E7DD',
+              white:   '#F4E7DD',
             },
             fontFamily: {
               serif: ['"Cormorant Garamond"', 'serif'],
@@ -92,8 +114,8 @@
               brand: '30px',
             },
             boxShadow: {
-              glow: '0 0 30px rgba(212,175,55,0.25)',
-              depth: '0 8px 32px rgba(0,0,0,0.08)',
+              glow:  '0 0 30px rgba(184,83,47,0.18)',
+              depth: '0 8px 24px rgba(107,74,47,0.08)',
             },
           }
         }
@@ -104,39 +126,212 @@
     <link rel="stylesheet" href="/index.css" />
 
     <style>
-      /* Global smooth scroll, scrollbar styling */
+      /* ──────────────────────────────────────────────────────────────
+         Origine — signature visuelle
+         Éditoriale · organique · ancrée · haut de gamme · silencieuse
+         ────────────────────────────────────────────────────────────── */
+      :root {
+        --color-copper:       #B8532F;
+        --color-copper-deep:  #A04E2A;
+        --color-sauge:        #7A8066;
+        --color-brun:         #6B402F;
+        --color-brun-fonce:   #3A251E;
+        --color-prune:        #4A2635;
+        --color-bleu-mineral: #1F3F4A;
+        --color-beige:        #E8D0BE;
+        --color-ivoire:       #F4E7DD;
+        --color-gris-pierre:  #7D7D72;
+        --shadow-origine:     0 8px 24px rgba(107, 74, 47, 0.08);
+        --shadow-origine-lg:  0 16px 36px rgba(107, 74, 47, 0.10);
+      }
+
       html { scroll-behavior: smooth; }
-      ::-webkit-scrollbar { width: 5px; }
+      /* Prevent any off-screen animation (parallax sprigs, letter reveal,
+         founder wash sweep) from showing a horizontal scrollbar. */
+      html, body { overflow-x: hidden; }
+      /* Discreet scrollbar — sauge at low opacity so it disappears into
+         the parchment palette instead of shouting copper. */
+      ::-webkit-scrollbar { width: 8px; }
       ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(122, 128, 102, 0.35);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(122, 128, 102, 0.55); }
+      /* Firefox */
+      html { scrollbar-width: thin; scrollbar-color: rgba(122, 128, 102, 0.35) transparent; }
       body { font-family: 'Inter', sans-serif; }
+
+      /* Fond principal — la photo de parchemin avec ombre de palmier
+         sert de couche la plus reculée pour TOUTES les pages. Ivoire
+         chaud uni en fallback pendant le chargement. Fixed attachment
+         so the texture stays anchored as the visitor scrolls, turning
+         the whole site into one long parchment scroll.
+         (Mobile iOS falls back to scroll-attached automatically.) */
+      body {
+        background-color: var(--color-ivoire);
+        color: var(--color-brun-fonce);
+        background-image: url('/krystine-bg.jpg');
+        background-size: cover;
+        background-position: center top;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+      }
+      .dark body {
+        background-color: #2E1A14;
+        color: var(--color-ivoire);
+        /* In dark mode we keep the photo but mute it with a warm
+           overlay via ::before, declared below. */
+      }
+      /* Subtle ivoire-to-transparent vignette so copy stays legible on
+         top of the photo without dulling its texture. Sits directly on
+         body via ::before; inert to clicks. Kept intentionally gentle
+         so the photo texture stays dominant on pages like /accueil that
+         don't rely on a global wash for readability. Pages that need
+         stronger readability (e.g. /krystine) use per-component
+         parchment containers instead. */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          /* Counter-wash precisely over the photo's top-left palm-frond
+             shadow — that patch was dragging body copy contrast down.
+             Soft ivoire ellipse anchored where the shadow lives, fades
+             to transparent so the rest of the photo keeps its texture. */
+          radial-gradient(ellipse 70% 55% at 18% 22%, rgba(244,231,221,0.55) 0%, rgba(244,231,221,0.20) 45%, transparent 75%),
+          /* Subtle central vignette — unchanged. */
+          radial-gradient(ellipse at 50% 45%, rgba(244,231,221,0.28) 0%, rgba(244,231,221,0.10) 40%, transparent 75%);
+        pointer-events: none;
+        z-index: 0;
+      }
+      .dark body::before {
+        background:
+          radial-gradient(ellipse at 50% 45%, rgba(46,26,20,0.55) 0%, rgba(46,26,20,0.35) 50%, rgba(46,26,20,0.65) 100%);
+      }
+
+      .origine-card {
+        background: var(--color-ivoire);
+        border: 1px solid rgba(184, 83, 47, 0.16);
+        border-radius: 20px;
+        box-shadow: var(--shadow-origine);
+      }
+      /* Low-contrast filter removed at request — pictures now render at
+         their native saturation/contrast. Keep the class hook so the
+         JSX consumers don't need to be touched, but it's a no-op now. */
+      .origine-image-soft { filter: none; }
+      .origine-image-wash::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(232, 208, 190, 0.15);
+        pointer-events: none;
+      }
+      .origine-btn {
+        background: var(--color-sauge);
+        color: var(--color-ivoire);
+        border: 1px solid rgba(184, 83, 47, 0.5);
+        transition: filter 0.3s ease;
+      }
+      .origine-btn:hover { filter: brightness(1.05); }
+      .origine-btn--brun { background: var(--color-brun); }
+      .origine-picto {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 9999px;
+        background: var(--color-ivoire);
+        color: var(--color-brun);
+        border: 1px solid rgba(184, 83, 47, 0.3);
+        font-size: 1.05rem;
+      }
+      .origine-picto i, .origine-picto svg { stroke-width: 2; color: var(--color-brun); }
+      .origine-rule {
+        height: 1px;
+        background: linear-gradient(to right, transparent, rgba(184,83,47,0.4), transparent);
+      }
+
       .glass-depth {
-        background: rgba(255,255,255,0.7);
+        background: rgba(244, 231, 221, 0.75);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.5);
+        border: 1px solid rgba(184, 83, 47, 0.18);
       }
       .dark .glass-depth {
-        background: rgba(11,26,54,0.7);
-        border: 1px solid rgba(255,255,255,0.05);
+        background: rgba(46, 30, 20, 0.7);
+        border: 1px solid rgba(232, 208, 190, 0.08);
       }
       .glass-depth-dark {
-        background: rgba(5,12,26,0.6);
+        background: rgba(46, 30, 20, 0.6);
         backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.05);
+        border: 1px solid rgba(232, 208, 190, 0.08);
       }
-      .iridescent-glow { box-shadow: 0 0 30px rgba(212,175,55,0.15); }
-      .text-shadow { text-shadow: 0 2px 20px rgba(0,0,0,0.4); }
-      .text-shadow-sm { text-shadow: 0 1px 8px rgba(0,0,0,0.2); }
+      .iridescent-glow { box-shadow: 0 0 30px rgba(184,83,47,0.12); }
+      .text-shadow { text-shadow: 0 2px 20px rgba(58, 37, 30, 0.35); }
+      .text-shadow-sm { text-shadow: 0 1px 8px rgba(58, 37, 30, 0.18); }
       .rounded-brand { border-radius: 30px; }
-      .shadow-glow { box-shadow: 0 0 30px rgba(212,175,55,0.25); }
-      .shadow-depth { box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
+      .shadow-glow { box-shadow: 0 0 30px rgba(184,83,47,0.18); }
+      .shadow-depth { box-shadow: var(--shadow-origine); }
       .transform-style-3d { transform-style: preserve-3d; }
       .perspective-1000 { perspective: 1000px; }
       .animate-pulse-slow { animation: pulse 4s ease-in-out infinite; }
+
+      /* Hero title gold-foil shimmer — a slow sweep across a gradient
+         that's masked to the text (bg-clip: text), so KRYSTINE ST-LAURENT
+         feels stamped in warm metal instead of printed flat. */
+      @keyframes krystine-shimmer {
+        0%   { background-position: 0% 50%; }
+        100% { background-position: 200% 50%; }
+      }
+      .krystine-shimmer-text {
+        background-image: linear-gradient(
+          110deg,
+          #3A251E 0%, #3A251E 30%,
+          #B8532F 44%, #E8CFA0 50%, #B8532F 56%,
+          #3A251E 70%, #3A251E 100%
+        );
+        background-size: 250% 100%;
+        background-position: 0% 50%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: krystine-shimmer 9s ease-in-out infinite;
+        filter: drop-shadow(0 1px 18px rgba(184, 83, 47, 0.22));
+      }
+      .dark .krystine-shimmer-text {
+        background-image: linear-gradient(
+          110deg,
+          #F4E7DD 0%, #F4E7DD 30%,
+          #FFE5B8 46%, #FFF6DB 50%, #FFE5B8 54%,
+          #F4E7DD 70%, #F4E7DD 100%
+        );
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .krystine-shimmer-text { animation: none; background-position: 50% 50%; }
+      }
+
+      /* ──────────────────────────────────────────────────────────────
+         Brand minimum readable text — 12 px floor across the entire
+         site, mobile and desktop. Any Tailwind arbitrary text size
+         below 12 px is bumped up so we catch every spot in one place
+         without sweeping the codebase. <i> tags (Font-Awesome glyph
+         icons) are intentionally NOT excluded — bumping a 9 px
+         chevron to 12 px keeps the icon-with-text rhythm consistent
+         at the new floor.
+         ────────────────────────────────────────────────────────────── */
+      .text-\[6px\],
+      .text-\[7px\],
+      .text-\[8px\],
+      .text-\[9px\],
+      .text-\[10px\],
+      .text-\[11px\] {
+        font-size: 12px !important;
+      }
     </style>
   </head>
-  <body class="bg-white dark:bg-[#050C1A] transition-colors duration-300">
+  <body class="bg-ivoire dark:bg-[#2E1A14] transition-colors duration-300">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

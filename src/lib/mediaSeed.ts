@@ -53,6 +53,7 @@ export const SITE_MEDIA_SEED: MediaSeedEntry[] = [
   // <img> tags resolve from anywhere the admin is loaded.
   { category: 'public', name: 'Bannière Krystine (public/)',     url: '/krystine-banner.png' },
   { category: 'public', name: 'Footer · Jacques-Cartier',         url: '/footer-jacques-cartier.jpg' },
+  { category: 'public', name: 'Roue Origine · sans texte',        url: '/wheel-no-text.png' },
 ];
 
 // Category display metadata for the admin filter bar.

@@ -13,12 +13,12 @@ export interface SpacerContent    { size?: 'sm' | 'md' | 'lg' }
 // Brand palette — keep in sync with index.html Tailwind config so on-site
 // previews and emailed HTML match.
 export const BRAND = {
-  gold: '#D4AF37',
-  royal: '#0B1A36',
-  cream: '#FEFBF4',
-  surface: '#F5F5F0',
-  ink: '#0B1A36',
-  muted: 'rgba(11,26,54,0.7)',
+  gold: '#B8532F',
+  royal: '#3A251E',
+  cream: '#F4E7DD',
+  surface: '#F4E7DD',
+  ink: '#3A251E',
+  muted: 'rgba(58,37,30,0.7)',
   serif: "'Cormorant Garamond', Georgia, serif",
   sans: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
 };
@@ -33,14 +33,14 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock }> = ({ block }) 
       const level = c.level || 1;
       const align = c.align === 'center' ? 'text-center' : 'text-left';
       const size = level === 1 ? 'text-4xl md:text-5xl' : level === 2 ? 'text-3xl md:text-4xl' : 'text-2xl md:text-3xl';
-      const className = `font-serif text-[#0B1A36] dark:text-white my-6 ${size} ${align}`;
+      const className = `font-serif text-[#3A251E] dark:text-white my-6 ${size} ${align}`;
       if (level === 1) return <h1 className={className}>{c.text || ''}</h1>;
       if (level === 2) return <h2 className={className}>{c.text || ''}</h2>;
       return <h3 className={className}>{c.text || ''}</h3>;
     }
     case 'paragraph':
       return (
-        <p className={`text-[#0B1A36]/80 dark:text-white/80 leading-relaxed my-4 ${c.align === 'center' ? 'text-center' : 'text-left'}`}>
+        <p className={`text-[#3A251E]/80 dark:text-white/80 leading-relaxed my-4 ${c.align === 'center' ? 'text-center' : 'text-left'}`}>
           {c.text || ''}
         </p>
       );
@@ -48,7 +48,7 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock }> = ({ block }) 
       return (
         <figure className="my-6">
           {c.url && <img src={c.url} alt={c.alt || ''} className="w-full rounded-2xl" />}
-          {c.caption && <figcaption className="text-xs uppercase tracking-widest text-[#0B1A36]/50 dark:text-white/50 text-center mt-3">{c.caption}</figcaption>}
+          {c.caption && <figcaption className="text-xs uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 text-center mt-3">{c.caption}</figcaption>}
         </figure>
       );
     case 'button': {
@@ -61,8 +61,8 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock }> = ({ block }) 
             rel="noopener noreferrer"
             className={`inline-block px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-md transition-colors ${
               primary
-                ? 'bg-[#0B1A36] text-white hover:bg-[#D4AF37] hover:text-[#0B1A36]'
-                : 'border border-[#0B1A36]/20 text-[#0B1A36] dark:text-white hover:border-[#D4AF37] hover:text-[#D4AF37]'
+                ? 'bg-[#3A251E] text-white hover:bg-[#B8532F] hover:text-[#3A251E]'
+                : 'border border-[#3A251E]/20 text-[#3A251E] dark:text-white hover:border-[#B8532F] hover:text-[#B8532F]'
             }`}
           >
             {c.label || 'En savoir plus'}
@@ -71,22 +71,22 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock }> = ({ block }) 
       );
     }
     case 'divider':
-      return <hr className="my-8 border-0 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent" />;
+      return <hr className="my-8 border-0 h-px bg-gradient-to-r from-transparent via-[#B8532F]/50 to-transparent" />;
     case 'quote':
       return (
-        <blockquote className="my-8 border-l-2 border-[#D4AF37] pl-6 italic font-serif text-lg text-[#0B1A36]/80 dark:text-white/80">
+        <blockquote className="my-8 border-l-2 border-[#B8532F] pl-6 italic font-serif text-lg text-[#3A251E]/80 dark:text-white/80">
           <p>« {c.text || ''} »</p>
-          {c.attribution && <cite className="block mt-3 text-xs uppercase tracking-widest not-italic text-[#D4AF37]">— {c.attribution}</cite>}
+          {c.attribution && <cite className="block mt-3 text-xs uppercase tracking-widest not-italic text-[#B8532F]">— {c.attribution}</cite>}
         </blockquote>
       );
     case 'cta':
       return (
-        <div className="my-8 rounded-[24px] bg-gradient-to-br from-[#0B1A36] to-[#1A2642] text-white p-8 md:p-10 text-center border border-[#D4AF37]/20">
-          {c.eyebrow && <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] block mb-3">{c.eyebrow}</span>}
+        <div className="my-8 rounded-[24px] bg-gradient-to-br from-[#3A251E] to-[#4A3228] text-white p-8 md:p-10 text-center border border-[#B8532F]/20">
+          {c.eyebrow && <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#B8532F] block mb-3">{c.eyebrow}</span>}
           {c.title && <h3 className="text-2xl md:text-3xl font-serif mb-3">{c.title}</h3>}
           {c.body && <p className="text-white/70 mb-6 max-w-xl mx-auto">{c.body}</p>}
           {c.href && c.buttonLabel && (
-            <a href={c.href} target="_blank" rel="noopener noreferrer" className="inline-block bg-[#D4AF37] text-[#0B1A36] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-white transition-colors">
+            <a href={c.href} target="_blank" rel="noopener noreferrer" className="inline-block bg-[#B8532F] text-[#3A251E] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-white transition-colors">
               {c.buttonLabel}
             </a>
           )}
@@ -159,8 +159,8 @@ function blockToEmail(block: NewsletterBlock, firstName?: string): string {
     case 'button': {
       const primary = c.variant !== 'secondary';
       const bg = primary ? BRAND.royal : 'transparent';
-      const fg = primary ? '#ffffff' : BRAND.royal;
-      const border = primary ? BRAND.royal : `rgba(11,26,54,0.2)`;
+      const fg = primary ? '#F4E7DD' : BRAND.royal;
+      const border = primary ? BRAND.royal : `rgba(58,37,30,0.2)`;
       return `<tr><td align="center" style="padding:20px 0;">
         <a href="${esc(c.href || '#')}" target="_blank"
            style="display:inline-block;background:${bg};color:${fg};border:1px solid ${border};
@@ -183,8 +183,8 @@ function blockToEmail(block: NewsletterBlock, firstName?: string): string {
       </td></tr>`;
     case 'cta':
       return `<tr><td style="padding:20px 0;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${BRAND.royal};border-radius:16px;border:1px solid rgba(212,175,55,0.2);">
-          <tr><td align="center" style="padding:32px 24px;color:#ffffff;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${BRAND.royal};border-radius:16px;border:1px solid rgba(184,83,47,0.2);">
+          <tr><td align="center" style="padding:32px 24px;color:#F4E7DD;">
             ${c.eyebrow ? `<div style="font-family:${BRAND.sans};font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:${BRAND.gold};margin-bottom:10px;font-weight:700;">${esc(c.eyebrow)}</div>` : ''}
             ${c.title ? `<div style="font-family:${BRAND.serif};font-size:26px;line-height:1.2;margin-bottom:10px;">${esc(c.title)}</div>` : ''}
             ${c.body ? `<div style="font-family:${BRAND.sans};font-size:14px;line-height:1.6;color:rgba(255,255,255,0.75);margin-bottom:22px;">${esc(c.body)}</div>` : ''}
@@ -221,14 +221,14 @@ export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOpti
   ${preheader}
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${BRAND.cream};padding:32px 16px;">
     <tr><td align="center">
-      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 4px 24px rgba(11,26,54,0.08);">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#F4E7DD;border-radius:24px;overflow:hidden;box-shadow:0 4px 24px rgba(58,37,30,0.08);">
         ${logo}
         <tr><td style="padding:16px 36px 40px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
             ${blockRows}
           </table>
         </td></tr>
-        <tr><td style="padding:24px 36px;border-top:1px solid rgba(11,26,54,0.08);font-family:${BRAND.sans};font-size:11px;line-height:1.6;color:rgba(11,26,54,0.5);">
+        <tr><td style="padding:24px 36px;border-top:1px solid rgba(58,37,30,0.08);font-family:${BRAND.sans};font-size:11px;line-height:1.6;color:rgba(58,37,30,0.5);">
           <div style="margin-bottom:8px;">${esc(opts.postalAddress)}</div>
           <div><a href="${esc(opts.unsubscribeUrl)}" style="color:${BRAND.gold};text-decoration:underline;">Se désabonner</a> · <a href="https://www.krystinestlaurent.ca/politique-de-confidentialite" style="color:${BRAND.gold};text-decoration:underline;">Politique de confidentialité</a></div>
         </td></tr>

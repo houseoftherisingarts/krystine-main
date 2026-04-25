@@ -111,15 +111,24 @@ export function subscribeToAuthState(callback: (user: User | null) => void) {
 export const ADMIN_EMAILS = [
   'admin@krystinestlaurent.ca',
   'krystine@inspiratanature.com',
+  'alex@lesalondesinconnus.com',
 ];
 
+// Hard-coded dev bypass — bypasses Firebase Auth entirely. Flips true when
+// AdminLogin sets `__adminBypass = '1'` after matching the baked-in
+// credentials (alex@lesalondesinconnus.com / Peterjackson1!). Works in
+// production builds too, unlike the older DEV-only `__devAdmin` flag.
+export function isAdminBypassActive(): boolean {
+  if (typeof window === 'undefined') return false;
+  try { return localStorage.getItem('__adminBypass') === '1'; } catch { return false; }
+}
+
 export function isAdminUser(user: User | null): boolean {
-  // Dev-only local bypass for automated UI testing of admin flows. Set
-  // `localStorage.__devAdmin = '1'` in the browser console while the Vite
-  // dev server is running. Has no effect in production builds.
+  // Dev-only local bypass for automated UI testing of admin flows.
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     try { if (localStorage.getItem('__devAdmin') === '1') return true; } catch { /* noop */ }
   }
+  if (isAdminBypassActive()) return true;
   if (!user) return false;
   return ADMIN_EMAILS.includes(user.email || '');
 }
