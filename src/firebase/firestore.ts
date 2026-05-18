@@ -114,6 +114,10 @@ export interface NewsletterSubscriber {
   uid?: string;                   // populated when the subscriber is also a signed-in member
   tags?: string[];                // simple segmentation — "client", "event-2024", "dosha-vata", …
   status?: SubscriberStatus;      // default 'active' when added via public form
+  // Geo segmentation — captured on the /liste-attente form (cascading
+  // Province/Country → Région). Empty when the form didn't ask.
+  province?: string;              // e.g. "Québec", "France", "Belgique"
+  region?: string;                // e.g. "Outaouais", "07 — Ardèche"
   unsubscribeToken?: string;      // hash used by the /desinscription public route
   subscribedAt?: Timestamp;
   unsubscribedAt?: Timestamp;

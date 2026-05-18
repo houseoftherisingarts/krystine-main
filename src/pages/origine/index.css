@@ -1,0 +1,117 @@
+/*
+ * Origine page tokens — copied verbatim from the bundle's
+ * `src/index.css` then adapted for the host app's Tailwind v3 setup:
+ *   · `@import "tailwindcss"` removed (Tailwind is loaded globally via CDN)
+ *   · `@theme {...}` → `:root {...}` (v4 directive → plain CSS vars)
+ *   · `@custom-variant dark` removed (v4 only — main app already has its
+ *     own dark-mode story via Tailwind's `darkMode: 'class'`)
+ *   · `@layer base/utilities` flattened to plain CSS (the v4 layer system
+ *     isn't available without the v4 plugin)
+ *   · Body styles scoped to `.origine-page` so they don't bleed onto the
+ *     rest of the site (originally bare `body { ... }`).
+ *
+ * The CSS variable names are unchanged — components use them directly via
+ * Tailwind arbitrary values (`bg-[var(--color-paper)]`, etc.), so the
+ * page renders identically once these vars resolve.
+ */
+
+/* Build v2.0 - Forced Reset */
+/* Cormorant Garamond + Inter are already loaded by the main index.html.
+   Dancing Script is unique to this page and is fetched here. */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+
+:root {
+  /* La Palette Originale Scellée */
+  --color-paper: #F2EFE9;
+  --color-paper-light: #FAF9F6;
+  --color-paper-dark: #2C2420;
+
+  --color-copper-bruni: #9A6B49;
+  --color-copper-oxy: #6B7F6D;
+  --color-copper-light: #DCC8B3;
+  --color-copper-glow: #E6A374;
+  --color-copper-honey: #D4A04A;
+
+  --color-ink-sureau: #1A1614;
+  --color-ink-forest: #2A332B;
+  --color-ink-noir: #000000;
+
+  --color-eucalyptus: #4A5D52;
+  --color-eucalyptus-light: #5B7065;
+  --color-sage: #4A5D52;
+  --color-sage-light: #5B7065;
+
+  /* Les Typographies Originales */
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-script: 'Dancing Script', cursive;
+  --font-handwriting: 'Dancing Script', cursive;
+}
+
+@keyframes origine-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+@keyframes origine-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.05); opacity: 0.6; }
+}
+
+/* Base — scoped to the page so it doesn't override the site's parchment
+   background on every other route. */
+.origine-page {
+  background-color: var(--color-paper-light);
+  color: var(--color-ink-sureau);
+  font-family: var(--font-sans);
+  transition: background-color 0.7s ease, color 0.7s ease;
+  min-height: 100vh;
+  scroll-behavior: smooth;
+}
+
+.origine-page.dark,
+:root.dark .origine-page {
+  background-color: var(--color-ink-forest);
+  color: var(--color-paper);
+}
+
+/* Scrollbar — only inside the origine page wrapper. */
+.origine-page ::-webkit-scrollbar { width: 6px; }
+.origine-page ::-webkit-scrollbar-track { background: transparent; }
+.origine-page ::-webkit-scrollbar-thumb { background: #9A6B49; border-radius: 10px; }
+
+/* The bundle uses `font-handwriting` AND `font-script` for the same
+   Dancing Script face. The host app's `font-handwriting` resolves to
+   Caveat (used by /podcast + /vata), so we override it here for the
+   origine page only. `font-script` is registered cleanly in the host
+   Tailwind config and works as-is. */
+.origine-page .font-handwriting {
+  font-family: 'Dancing Script', cursive;
+}
+
+/* Les Effets de Verre Polie (Glassmorphism) Originales */
+.glass-panel {
+  background: rgba(255, 252, 245, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+}
+
+.origine-page.dark .glass-panel,
+:root.dark .glass-panel {
+  background: rgba(44, 36, 32, 0.6);
+  border: 1px solid rgba(154, 107, 73, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.glass-amber {
+  background: rgba(220, 200, 179, 0.15);
+  backdrop-filter: blur(12px) sepia(20%);
+  border: 1px solid rgba(154, 107, 73, 0.2);
+}
+
+.origine-page.dark .glass-amber,
+:root.dark .glass-amber {
+  background: rgba(154, 107, 73, 0.1);
+  border: 1px solid rgba(154, 107, 73, 0.15);
+}

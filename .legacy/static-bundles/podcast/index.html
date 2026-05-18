@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Podcast — Au-delà des tendances · Krystine St-Laurent</title>
+    <meta name="description" content="Le podcast de Krystine St-Laurent : entretiens et explorations autour de l'Ayurveda, de la santé féminine, de la transmission et d'un art de vivre conscient." />
+    <link rel="canonical" href="https://www.krystinestlaurent.ca/podcast" />
+    <meta name="last-modified" content="2026-05-06" />
+
+    <!-- Schema.org PodcastSeries — first-class structured data for the
+         podcast landing surface so AI answer engines can cite it. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "PodcastSeries",
+      "name": "Au-delà des tendances",
+      "description": "Le podcast de Krystine St-Laurent — entretiens et explorations autour de l'Ayurveda, de la santé féminine, de la médecine intégrative et de l'art de vivre conscient.",
+      "url": "https://www.krystinestlaurent.ca/podcast",
+      "inLanguage": "fr-CA",
+      "author": { "@type": "Person", "name": "Krystine St-Laurent" },
+      "dateModified": "2026-05-06"
+    }
+    </script>
+
+    <!-- ── Meta Pixel · gated on the Loi 25 consent flag set by the
+         React app (localStorage "inspirata.consent.v1"). Fires
+         PageView + ViewContent for the podcast landing surface. ── -->
+    <script>
+      (function () {
+        try {
+          var c = window.localStorage && localStorage.getItem('inspirata.consent.v1');
+          if (c !== 'accepted') return;
+          if (window.fbq) return;
+          !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', '836682756431077');
+          fbq('track', 'PageView');
+          fbq('track', 'ViewContent', {
+            content_name: 'Au-delà des tendances · Podcast',
+            content_category: 'podcast',
+            content_ids: ['podcast'],
+          });
+        } catch (e) { /* analytics must never break the page */ }
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=El+Messiri:wght@400..700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            borderRadius: {
+              'custom': '2px', // Sharper, more elegant
+              'xl': '20px',
+            },
+            colors: {
+              brand: {
+                dark: '#120F0D', // Deep Earthy Charcoal (Warm Black)
+                surface: '#1C1917', // Stone 900
+                light: '#F5F5F0', // Off-white / Eggshell
+                accent: '#C5A059', // Antique Gold
+                vata: '#64694B', // Original Earthy Sage Green
+                'vata-bright': '#88966E', // Luminous Herbal Green for specific highlights
+                sage: '#4A5D4F', // Deep Sage Green (Legacy)
+                terracotta: '#8C5E4A', // Muted Earth tone
+              }
+            },
+            fontFamily: {
+              sans: ['Helvetica Neue', 'Arial', 'sans-serif'],
+              serif: ['Georgia', 'Times New Roman', 'serif'],
+              handwriting: ['Caveat', 'cursive'],
+              messiri: ['El Messiri', 'serif'],
+            },
+            backgroundImage: {
+              'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        transition: background-color 0.5s ease, color 0.5s ease;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(100, 105, 75, 0.5); /* Reverted to Sage */
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(197, 160, 89, 0.6);
+      }
+      .text-glow-gold {
+        text-shadow: 0 0 15px rgba(197, 160, 89, 0.5);
+      }
+      .glow-highlight {
+        color: #C5A059;
+        text-shadow: 0 0 12px rgba(197, 160, 89, 0.6);
+        font-weight: 800;
+      }
+    </style>
+
+<link rel="stylesheet" href="/index.css">
+  <script type="importmap">
+{
+  "imports": {
+    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.25",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
+    "dom/": "https://esm.sh/dom@^0.0.3/",
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/podcast/assets/index-zLk81AKp.js"></script>
+</head>
+  <body>
+    <div id="root"></div>
+</body>
+</html>

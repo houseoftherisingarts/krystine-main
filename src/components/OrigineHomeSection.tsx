@@ -332,20 +332,17 @@ const OrigineHomeSection: React.FC = () => {
         className="relative z-10 px-6 md:px-12 lg:px-14 py-12 md:py-14 grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-8 lg:gap-14 items-center"
       >
         {/* Status — every line editable so Krystine can flip pre→post
-            closure without a deploy. Post-closure defaults in comments. */}
+            closure without a deploy. Current state: the active cohort is
+            closed, the next one opens through the waitlist. */}
         <div className="space-y-4">
           <p className="flex items-start gap-3 text-[#3A251E] font-bold text-sm md:text-base">
-            <span className="mt-1 relative inline-flex w-2.5 h-2.5 flex-shrink-0">
-              <span className="absolute inset-0 rounded-full bg-[#B8532F]/55 animate-ping" />
-              <span className="relative w-2.5 h-2.5 rounded-full bg-[#B8532F]" />
-            </span>
+            <span className="mt-1 inline-flex w-2.5 h-2.5 rounded-full bg-[#3A251E]/40 flex-shrink-0" />
             <span>
               <EditableText
                 fieldKey="home.origine.status.cohort1.title"
-                // Post-closure: "Cohorte printemps 2026 · en cours"
                 defaultValue={lang === 'FR'
-                  ? 'Cohorte printemps 2026 · en route depuis le 15 avril'
-                  : 'Spring 2026 cohort · underway since April 15'}
+                  ? 'Cohorte en cours · inscriptions fermées'
+                  : 'Cohort underway · registrations closed'}
                 as="span"
               />
             </span>
@@ -353,21 +350,23 @@ const OrigineHomeSection: React.FC = () => {
           <p className="pl-[22px] font-serif italic text-[#3A251E]/85 text-sm md:text-[15px] leading-relaxed">
             <EditableText
               fieldKey="home.origine.status.cohort1.body"
-              // Post-closure: leave blank or change to closing line
               defaultValue={lang === 'FR'
-                ? "Inscriptions jusqu'à minuit le 27 avril. Il n'est pas trop tard pour vous joindre · vous aurez accès à tous les contenus passés."
-                : 'Registrations open until midnight April 27. It\'s not too late to join · you will have access to all past content.'}
+                ? "Le parcours est complet pour cette saison. La prochaine cohorte sera ouverte en priorité aux inscrites de la liste d'attente."
+                : 'The journey is full for this season. The next cohort will open first to those on the waitlist.'}
               multiline
             />
           </p>
-          <p className="flex items-start gap-3 text-[#3A251E] text-sm md:text-base pt-2">
-            <span className="mt-1 inline-flex w-2.5 h-2.5 rounded-full bg-[#B8532F]/40 flex-shrink-0" />
+          <p className="flex items-start gap-3 text-[#3A251E] font-bold text-sm md:text-base pt-2">
+            <span className="mt-1 relative inline-flex w-2.5 h-2.5 flex-shrink-0">
+              <span className="absolute inset-0 rounded-full bg-[#B8532F]/55 animate-ping" />
+              <span className="relative w-2.5 h-2.5 rounded-full bg-[#B8532F]" />
+            </span>
             <span>
               <EditableText
                 fieldKey="home.origine.status.cohort2.title"
                 defaultValue={lang === 'FR'
-                  ? "Cohorte automne 2026 · inscription sur liste d'attente"
-                  : 'Fall 2026 cohort · waitlist open'}
+                  ? "Prochaine cohorte · liste d'attente ouverte"
+                  : 'Next cohort · waitlist open'}
                 as="span"
               />
             </span>
@@ -377,7 +376,7 @@ const OrigineHomeSection: React.FC = () => {
         {/* CTA column — shine sweep on hover, scale-feedback */}
         <div className="flex flex-col items-start lg:items-end">
           <a
-            href="/origine"
+            href="/liste-attente?programme=origine"
             className="group relative inline-flex items-center gap-3 overflow-hidden px-8 md:px-10 py-4 md:py-5 rounded-full text-[11px] md:text-[12px] uppercase font-semibold tracking-[0.28em] transition-[transform] duration-300 hover:scale-[1.015] active:scale-[0.98]"
             style={{
               background: '#3A251E',
@@ -397,8 +396,7 @@ const OrigineHomeSection: React.FC = () => {
             />
             <EditableText
               fieldKey="home.origine.status.cta"
-              // Post-closure: "Découvrir le programme"
-              defaultValue={lang === 'FR' ? 'Rejoindre la cohorte fondatrice' : 'Join the founding cohort'}
+              defaultValue={lang === 'FR' ? "Rejoindre la liste d'attente" : 'Join the waitlist'}
               as="span"
             />
             <i className="fa-solid fa-arrow-right text-[9px] transition-transform duration-300 group-hover:translate-x-1" />
@@ -406,7 +404,7 @@ const OrigineHomeSection: React.FC = () => {
           <p className="mt-3 text-[10px] uppercase tracking-[0.3em] font-bold text-[#6B402F]/75">
             <EditableText
               fieldKey="home.origine.status.ctaHint"
-              defaultValue={lang === 'FR' ? 'Inscription · cohorte fondatrice' : 'Enrollment · founding cohort'}
+              defaultValue={lang === 'FR' ? 'Prochaine cohorte · accès prioritaire' : 'Next cohort · priority access'}
               as="span"
             />
           </p>

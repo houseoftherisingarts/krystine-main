@@ -39,6 +39,7 @@ const sourceLabel = (key: string): string => {
   const isGoogle = key.endsWith('_google');
   const pretty = (() => {
     switch (base) {
+      case 'waitlist-origine':                 return "Liste d'attente · Origine (prochaine cohorte)";
       case 'waitlist-pitta':                   return "Liste d'attente · Pitta";
       case 'waitlist-kapha':                   return "Liste d'attente · Kapha";
       case 'waitlist-vata':                    return "Liste d'attente · Vata";

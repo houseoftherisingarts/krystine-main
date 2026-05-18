@@ -149,6 +149,8 @@ function normalizeNewsletter(n: NewsletterSubscriber): Submission {
   const details: Submission['details'] = [];
   if (n.firstName) details.push({ label: 'Prénom', value: n.firstName });
   if (n.lastName)  details.push({ label: 'Nom',    value: n.lastName });
+  if (n.province)  details.push({ label: 'Province / pays', value: n.province });
+  if (n.region)    details.push({ label: 'Région', value: n.region });
   if (n.status)    details.push({ label: 'Statut', value: n.status });
   if (n.uid)       details.push({ label: 'Membre lié', value: 'oui' });
 

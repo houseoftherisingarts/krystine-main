@@ -1,0 +1,49 @@
+/*
+ * Origine page tokens — migrated from the standalone Vite project's
+ * src/index.css. Original used Tailwind v4 (`@import "tailwindcss"` +
+ * `@theme`); the main app uses Tailwind v3 via CDN, so the v4 directives
+ * are stripped here. The CSS variables stay so the page's components
+ * (which reference `bg-[var(--color-chalk)]` etc. via Tailwind arbitrary
+ * values) keep resolving correctly.
+ *
+ * Body styles are intentionally scoped to `.origine-page` instead of
+ * bare `body`, so this page's chalk background and eucalyptus type don't
+ * override the main app's parchment palette on every other route.
+ */
+
+/* Cormorant Garamond + Inter are already loaded by the main index.html;
+   the @import below is left commented for reference. Uncomment if those
+   fonts ever get removed from the global head. */
+/* @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap'); */
+
+:root {
+  --font-serif: "Cormorant Garamond", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-chalk: #FBF8F1;
+  --color-chalk-dark: #EAE5D9;
+  --color-eucalyptus: #5A6B5D;
+  --color-eucalyptus-light: #7A8B7D;
+  --color-eucalyptus-dark: #3A4B3D;
+  --color-copper: #8C4A28;
+  --color-copper-light: #A86A48;
+  --color-copper-dark: #6C2A08;
+}
+
+.origine-page {
+  background-color: var(--color-chalk);
+  color: var(--color-eucalyptus);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+.origine-page h1,
+.origine-page h2,
+.origine-page h3,
+.origine-page h4,
+.origine-page h5,
+.origine-page h6 {
+  font-family: var(--font-serif);
+}

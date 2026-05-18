@@ -1,0 +1,310 @@
+- generic [ref=e2]:
+  - navigation [ref=e3]:
+    - generic [ref=e4]:
+      - link "Krystine St-Laurent" [ref=e5] [cursor=pointer]:
+        - /url: /?splash=1
+        - img "Krystine St-Laurent" [ref=e6]
+      - list [ref=e7]:
+        - listitem [ref=e8]:
+          - link "Krystine St-Laurent" [ref=e9] [cursor=pointer]:
+            - /url: /krystine
+            - text: Krystine St-Laurent
+        - listitem [ref=e10]:
+          - link "Podcasts, Médias & Livres" [ref=e11] [cursor=pointer]:
+            - /url: /medias
+            - text: Podcasts, Médias & Livres
+        - listitem [ref=e12]:
+          - link "Formations" [ref=e13] [cursor=pointer]:
+            - /url: /formations
+            - text: Formations
+        - listitem [ref=e14]:
+          - link " Boutique Inspirata" [ref=e15] [cursor=pointer]:
+            - /url: /boutique
+            - generic [ref=e16]: 
+            - text: Boutique Inspirata
+      - generic [ref=e17]:
+        - button "" [ref=e18] [cursor=pointer]:
+          - generic [ref=e19]: 
+        - button "" [ref=e20] [cursor=pointer]:
+          - generic [ref=e21]: 
+        - button "" [ref=e22] [cursor=pointer]:
+          - generic [ref=e23]: 
+        - button " Connexion" [ref=e24] [cursor=pointer]:
+          - generic [ref=e25]: 
+          - text: Connexion
+        - text: 
+        - button "FR" [ref=e27] [cursor=pointer]
+  - generic [ref=e28]:
+    - generic [ref=e29]:
+      - heading "Panier" [level=3] [ref=e30]
+      - button "" [ref=e31] [cursor=pointer]:
+        - generic [ref=e32]: 
+    - generic [ref=e33]:
+      - generic [ref=e34]: 
+      - paragraph [ref=e35]: Ajouté
+    - generic [ref=e37]:
+      - generic [ref=e38]: 
+      - paragraph [ref=e39]: Panier vide
+  - generic [ref=e41]:
+    - button " Retour" [ref=e42] [cursor=pointer]:
+      - generic [ref=e43]: 
+      - text: Retour
+    - generic [ref=e44]:
+      - generic:
+        - generic:
+          - img
+      - generic:
+        - generic:
+          - img
+      - generic [ref=e45]:
+        - generic [ref=e46]:
+          - generic [ref=e47]: Parcours signature · Prochaine cohorte
+          - heading "L'Expérience Origine" [level=1] [ref=e48]
+          - paragraph [ref=e49]: Retrouver votre boussole intérieure
+          - paragraph [ref=e50]: "L'Expérience Origine est un parcours de 12 semaines au cœur de l'Ayurveda. La cohorte en cours est fermée. Inscrivez-vous à la liste d'attente : vous serez parmi les premières à savoir lorsque les portes rouvriront, avec un accès privilégié et des conditions réservées à la liste."
+          - blockquote [ref=e51]:
+            - generic [ref=e53]: 
+            - paragraph [ref=e54]: Jamais il n'y a eu autant d'informations, et jamais autant de dispersion. L'exigence actuelle est de retrouver des repères intérieurs fiables.
+          - list [ref=e55]:
+            - listitem [ref=e56]:
+              - generic [ref=e57]: 
+              - generic [ref=e58]: Aucun engagement — vous êtes inscrite sur la liste, c'est tout.
+            - listitem [ref=e59]:
+              - generic [ref=e60]: 
+              - generic [ref=e61]: Vous serez avisée par courriel à l'ouverture, avant la communication publique.
+            - listitem [ref=e62]:
+              - generic [ref=e63]: 
+              - generic [ref=e64]: Vos coordonnées ne sont jamais partagées. Désabonnement en un clic.
+        - generic [ref=e67]:
+          - paragraph [ref=e68]: Inscription · liste d'attente
+          - generic [ref=e69]:
+            - generic [ref=e70]:
+              - generic [ref=e71]: Prénom
+              - textbox "Prénom" [ref=e72]
+            - generic [ref=e73]:
+              - generic [ref=e74]: Nom
+              - textbox "Nom" [ref=e75]
+          - generic [ref=e76]:
+            - generic [ref=e77]: Adresse courriel
+            - textbox "Adresse courriel" [ref=e78]
+          - generic [ref=e79]:
+            - generic [ref=e80]:
+              - generic [ref=e81]: Pays ou province
+              - generic [ref=e82]:
+                - combobox "Pays ou province " [ref=e83]:
+                  - option "Pays · province" [disabled]
+                  - option "Québec"
+                  - option "Canada — autres provinces"
+                  - option "France" [selected]
+                  - option "Belgique"
+                  - option "Suisse"
+                  - option "États-Unis"
+                  - option "Ailleurs dans le monde"
+                - generic: 
+            - generic [ref=e84]:
+              - generic [ref=e85]: Région
+              - generic [ref=e168]:
+                - combobox "Région " [ref=e169]:
+                  - option "Région" [disabled] [selected]
+                  - option "01 — Ain"
+                  - option "02 — Aisne"
+                  - option "03 — Allier"
+                  - option "04 — Alpes-de-Haute-Provence"
+                  - option "05 — Hautes-Alpes"
+                  - option "06 — Alpes-Maritimes"
+                  - option "07 — Ardèche"
+                  - option "08 — Ardennes"
+                  - option "09 — Ariège"
+                  - option "10 — Aube"
+                  - option "11 — Aude"
+                  - option "12 — Aveyron"
+                  - option "13 — Bouches-du-Rhône"
+                  - option "14 — Calvados"
+                  - option "15 — Cantal"
+                  - option "16 — Charente"
+                  - option "17 — Charente-Maritime"
+                  - option "18 — Cher"
+                  - option "19 — Corrèze"
+                  - option "2A — Corse-du-Sud"
+                  - option "2B — Haute-Corse"
+                  - option "21 — Côte-d’Or"
+                  - option "22 — Côtes-d’Armor"
+                  - option "23 — Creuse"
+                  - option "24 — Dordogne"
+                  - option "25 — Doubs"
+                  - option "26 — Drôme"
+                  - option "27 — Eure"
+                  - option "28 — Eure-et-Loir"
+                  - option "29 — Finistère"
+                  - option "30 — Gard"
+                  - option "31 — Haute-Garonne"
+                  - option "32 — Gers"
+                  - option "33 — Gironde"
+                  - option "34 — Hérault"
+                  - option "35 — Ille-et-Vilaine"
+                  - option "36 — Indre"
+                  - option "37 — Indre-et-Loire"
+                  - option "38 — Isère"
+                  - option "39 — Jura"
+                  - option "40 — Landes"
+                  - option "41 — Loir-et-Cher"
+                  - option "42 — Loire"
+                  - option "43 — Haute-Loire"
+                  - option "44 — Loire-Atlantique"
+                  - option "45 — Loiret"
+                  - option "46 — Lot"
+                  - option "47 — Lot-et-Garonne"
+                  - option "48 — Lozère"
+                  - option "49 — Maine-et-Loire"
+                  - option "50 — Manche"
+                  - option "51 — Marne"
+                  - option "52 — Haute-Marne"
+                  - option "53 — Mayenne"
+                  - option "54 — Meurthe-et-Moselle"
+                  - option "55 — Meuse"
+                  - option "56 — Morbihan"
+                  - option "57 — Moselle"
+                  - option "58 — Nièvre"
+                  - option "59 — Nord"
+                  - option "60 — Oise"
+                  - option "61 — Orne"
+                  - option "62 — Pas-de-Calais"
+                  - option "63 — Puy-de-Dôme"
+                  - option "64 — Pyrénées-Atlantiques"
+                  - option "65 — Hautes-Pyrénées"
+                  - option "66 — Pyrénées-Orientales"
+                  - option "67 — Bas-Rhin"
+                  - option "68 — Haut-Rhin"
+                  - option "69 — Rhône"
+                  - option "70 — Haute-Saône"
+                  - option "71 — Saône-et-Loire"
+                  - option "72 — Sarthe"
+                  - option "73 — Savoie"
+                  - option "74 — Haute-Savoie"
+                  - option "75 — Paris"
+                  - option "76 — Seine-Maritime"
+                  - option "77 — Seine-et-Marne"
+                  - option "78 — Yvelines"
+                  - option "79 — Deux-Sèvres"
+                  - option "80 — Somme"
+                  - option "81 — Tarn"
+                  - option "82 — Tarn-et-Garonne"
+                  - option "83 — Var"
+                  - option "84 — Vaucluse"
+                  - option "85 — Vendée"
+                  - option "86 — Vienne"
+                  - option "87 — Haute-Vienne"
+                  - option "88 — Vosges"
+                  - option "89 — Yonne"
+                  - option "90 — Territoire de Belfort"
+                  - option "91 — Essonne"
+                  - option "92 — Hauts-de-Seine"
+                  - option "93 — Seine-Saint-Denis"
+                  - option "94 — Val-de-Marne"
+                  - option "95 — Val-d’Oise"
+                  - option "971 — Guadeloupe"
+                  - option "972 — Martinique"
+                  - option "973 — Guyane"
+                  - option "974 — La Réunion"
+                  - option "976 — Mayotte"
+                - generic: 
+          - button "Rejoindre la liste d'attente " [ref=e87] [cursor=pointer]:
+            - generic [ref=e88]:
+              - text: Rejoindre la liste d'attente
+              - generic [ref=e89]: 
+          - paragraph [ref=e90]: Désabonnement en un clic · jamais de partage
+  - generic [ref=e92]:
+    - paragraph [ref=e93]:
+      - generic [ref=e94]: 
+      - text: Inspirata Ayurveda
+    - generic [ref=e95]:
+      - generic [ref=e96]: Partager
+      - button "Facebook" [ref=e97] [cursor=pointer]:
+        - generic [ref=e98]: 
+      - button "X (Twitter)" [ref=e99] [cursor=pointer]:
+        - generic [ref=e100]: 
+      - button "Courriel" [ref=e101] [cursor=pointer]:
+        - generic [ref=e102]: 
+      - button "Copier le lien" [ref=e103] [cursor=pointer]:
+        - generic [ref=e104]: 
+  - contentinfo [ref=e105]:
+    - generic [ref=e106]:
+      - generic [ref=e107]:
+        - generic [ref=e108]:
+          - img "Krystine St-Laurent" [ref=e109]
+          - paragraph [ref=e110]: Sagesse Ayurvédique pour une vie consciente.
+        - generic [ref=e111]:
+          - heading "Navigation" [level=4] [ref=e112]
+          - list [ref=e113]:
+            - listitem [ref=e114]:
+              - link "Krystine" [ref=e115] [cursor=pointer]:
+                - /url: /krystine
+            - listitem [ref=e116]:
+              - link "Podcasts, Médias & Livres" [ref=e117] [cursor=pointer]:
+                - /url: /medias
+            - listitem [ref=e118]:
+              - link "Formations" [ref=e119] [cursor=pointer]:
+                - /url: /formations
+            - listitem [ref=e120]:
+              - link "Boutique Inspirata Ayurveda" [ref=e121] [cursor=pointer]:
+                - /url: /boutique
+            - listitem [ref=e122]:
+              - link "Blogue" [ref=e123] [cursor=pointer]:
+                - /url: /blogue
+            - listitem [ref=e124]:
+              - link "Points de Vente" [ref=e125] [cursor=pointer]:
+                - /url: /points-de-vente
+            - listitem [ref=e126]:
+              - link "Conférencière" [ref=e127] [cursor=pointer]:
+                - /url: /conferenciere
+        - generic [ref=e128]:
+          - heading "Formations" [level=4] [ref=e129]
+          - list [ref=e130]:
+            - listitem [ref=e131]:
+              - link "Expérience Origine" [ref=e132] [cursor=pointer]:
+                - /url: /origine
+            - listitem [ref=e133]:
+              - link "Programme Vata" [ref=e134] [cursor=pointer]:
+                - /url: /vata
+            - listitem [ref=e135]:
+              - link "Podcast" [ref=e136] [cursor=pointer]:
+                - /url: /podcast
+        - generic [ref=e137]:
+          - heading "Contact" [level=4] [ref=e138]
+          - list [ref=e139]:
+            - listitem [ref=e140]:
+              - link "equipe@inspiratanature.com" [ref=e141] [cursor=pointer]:
+                - /url: mailto:equipe@inspiratanature.com
+            - listitem [ref=e142]:
+              - link " Instagram" [ref=e143] [cursor=pointer]:
+                - /url: https://www.instagram.com/krystinesaintlaurent
+                - generic [ref=e144]: 
+                - text: Instagram
+            - listitem [ref=e145]:
+              - link " Facebook" [ref=e146] [cursor=pointer]:
+                - /url: https://www.facebook.com/Krystinestlaurent
+                - generic [ref=e147]: 
+                - text: Facebook
+            - listitem [ref=e148]:
+              - link " YouTube" [ref=e149] [cursor=pointer]:
+                - /url: https://www.youtube.com/@KrystineStLaurent
+                - generic [ref=e150]: 
+                - text: YouTube
+      - generic [ref=e151]:
+        - paragraph [ref=e152]: © 2026 Krystine St-Laurent. Tous droits réservés.
+        - link "Politique de confidentialité" [ref=e154] [cursor=pointer]:
+          - /url: /politique-de-confidentialite
+        - button "Plateforme développée par Le Salon des Inconnus" [ref=e155] [cursor=pointer]:
+          - generic [ref=e156]: Plateforme développée par
+          - generic [ref=e157]: Le Salon des Inconnus
+  - dialog "Bandeau de consentement" [ref=e158]:
+    - generic [ref=e159]:
+      - generic [ref=e160]: 
+      - generic [ref=e161]:
+        - paragraph [ref=e162]: Loi 25
+        - paragraph [ref=e163]: Témoins de mesure pour améliorer le site. Vous gardez le contrôle.
+    - generic [ref=e164]:
+      - button "Accepter" [ref=e165] [cursor=pointer]
+      - button "Refuser" [ref=e166] [cursor=pointer]
+    - link "Politique de confidentialité" [ref=e167] [cursor=pointer]:
+      - /url: /politique-de-confidentialite

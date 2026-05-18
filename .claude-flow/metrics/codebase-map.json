@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-05-18T22:45:09.762Z",
+  "projectRoot": "/Users/lesalondesinconnus/Documents/Websites/Krystine Main",
+  "structure": {
+    "hasPackageJson": true,
+    "hasTsConfig": true,
+    "hasClaudeConfig": true,
+    "hasClaudeFlow": true
+  },
+  "scannedAt": 1779144309762
+}

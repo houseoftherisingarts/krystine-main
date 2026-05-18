@@ -1,0 +1,126 @@
+- generic [ref=e2]:
+  - navigation [ref=e3]:
+    - generic [ref=e4]:
+      - link "Krystine St-Laurent" [ref=e5] [cursor=pointer]:
+        - /url: /?splash=1
+        - img "Krystine St-Laurent" [ref=e6]
+      - text: 
+      - generic [ref=e7]:
+        - button "" [ref=e8] [cursor=pointer]:
+          - generic [ref=e9]: 
+        - button "" [ref=e10] [cursor=pointer]:
+          - generic [ref=e11]: 
+        - button "" [ref=e12] [cursor=pointer]:
+          - generic [ref=e13]: 
+        - text: 
+        - button "" [ref=e14] [cursor=pointer]:
+          - generic [ref=e15]: 
+        - button "FR" [ref=e17] [cursor=pointer]
+        - button [ref=e18] [cursor=pointer]
+  - generic [ref=e22]:
+    - generic [ref=e23]:
+      - heading "Panier" [level=3] [ref=e24]
+      - button "" [ref=e25] [cursor=pointer]:
+        - generic [ref=e26]: 
+    - generic [ref=e27]:
+      - generic [ref=e28]: 
+      - paragraph [ref=e29]: Ajouté
+    - generic [ref=e31]:
+      - generic [ref=e32]: 
+      - paragraph [ref=e33]: Panier vide
+  - paragraph [ref=e37]: Chargement...
+  - generic [ref=e39]:
+    - paragraph [ref=e40]:
+      - generic [ref=e41]: 
+      - text: Inspirata Ayurveda
+    - generic [ref=e42]:
+      - generic [ref=e43]: Partager
+      - button "Facebook" [ref=e44] [cursor=pointer]:
+        - generic [ref=e45]: 
+      - button "X (Twitter)" [ref=e46] [cursor=pointer]:
+        - generic [ref=e47]: 
+      - button "Courriel" [ref=e48] [cursor=pointer]:
+        - generic [ref=e49]: 
+      - button "Copier le lien" [ref=e50] [cursor=pointer]:
+        - generic [ref=e51]: 
+  - contentinfo [ref=e52]:
+    - generic [ref=e53]:
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - img "Krystine St-Laurent" [ref=e56]
+          - paragraph [ref=e57]: Sagesse Ayurvédique pour une vie consciente.
+        - generic [ref=e58]:
+          - heading "Navigation" [level=4] [ref=e59]
+          - list [ref=e60]:
+            - listitem [ref=e61]:
+              - link "Krystine" [ref=e62] [cursor=pointer]:
+                - /url: /krystine
+            - listitem [ref=e63]:
+              - link "Podcasts, Médias & Livres" [ref=e64] [cursor=pointer]:
+                - /url: /medias
+            - listitem [ref=e65]:
+              - link "Formations" [ref=e66] [cursor=pointer]:
+                - /url: /formations
+            - listitem [ref=e67]:
+              - link "Boutique Inspirata Ayurveda" [ref=e68] [cursor=pointer]:
+                - /url: /boutique
+            - listitem [ref=e69]:
+              - link "Blogue" [ref=e70] [cursor=pointer]:
+                - /url: /blogue
+            - listitem [ref=e71]:
+              - link "Points de Vente" [ref=e72] [cursor=pointer]:
+                - /url: /points-de-vente
+            - listitem [ref=e73]:
+              - link "Conférencière" [ref=e74] [cursor=pointer]:
+                - /url: /conferenciere
+        - generic [ref=e75]:
+          - heading "Formations" [level=4] [ref=e76]
+          - list [ref=e77]:
+            - listitem [ref=e78]:
+              - link "Expérience Origine" [ref=e79] [cursor=pointer]:
+                - /url: /origine
+            - listitem [ref=e80]:
+              - link "Programme Vata" [ref=e81] [cursor=pointer]:
+                - /url: /vata
+            - listitem [ref=e82]:
+              - link "Podcast" [ref=e83] [cursor=pointer]:
+                - /url: /podcast
+        - generic [ref=e84]:
+          - heading "Contact" [level=4] [ref=e85]
+          - list [ref=e86]:
+            - listitem [ref=e87]:
+              - link "equipe@inspiratanature.com" [ref=e88] [cursor=pointer]:
+                - /url: mailto:equipe@inspiratanature.com
+            - listitem [ref=e89]:
+              - link " Instagram" [ref=e90] [cursor=pointer]:
+                - /url: https://www.instagram.com/krystinesaintlaurent
+                - generic [ref=e91]: 
+                - text: Instagram
+            - listitem [ref=e92]:
+              - link " Facebook" [ref=e93] [cursor=pointer]:
+                - /url: https://www.facebook.com/Krystinestlaurent
+                - generic [ref=e94]: 
+                - text: Facebook
+            - listitem [ref=e95]:
+              - link " YouTube" [ref=e96] [cursor=pointer]:
+                - /url: https://www.youtube.com/@KrystineStLaurent
+                - generic [ref=e97]: 
+                - text: YouTube
+      - generic [ref=e98]:
+        - paragraph [ref=e99]: © 2026 Krystine St-Laurent. Tous droits réservés.
+        - link "Politique de confidentialité" [ref=e101] [cursor=pointer]:
+          - /url: /politique-de-confidentialite
+        - button "Plateforme développée par Le Salon des Inconnus" [ref=e102] [cursor=pointer]:
+          - generic [ref=e103]: Plateforme développée par
+          - generic [ref=e104]: Le Salon des Inconnus
+  - dialog "Bandeau de consentement" [ref=e105]:
+    - generic [ref=e106]:
+      - generic [ref=e107]: 
+      - generic [ref=e108]:
+        - paragraph [ref=e109]: Loi 25
+        - paragraph [ref=e110]: Témoins de mesure pour améliorer le site. Vous gardez le contrôle.
+    - generic [ref=e111]:
+      - button "Accepter" [ref=e112] [cursor=pointer]
+      - button "Refuser" [ref=e113] [cursor=pointer]
+    - link "Politique de confidentialité" [ref=e114] [cursor=pointer]:
+      - /url: /politique-de-confidentialite

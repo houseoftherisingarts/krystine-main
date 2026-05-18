@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-05-18T22:45:14.438Z",
+  "mode": "headless",
+  "workerType": "testgaps",
+  "model": "sonnet",
+  "durationMs": 4716,
+  "executionId": "testgaps_1779144309722_9zb4wd",
+  "success": false,
+  "findings": {
+    "sections": [],
+    "codeBlocks": []
+  },
+  "rawOutputPreview": "Not logged in · Please run /login\n",
+  "rawOutputLength": 34
+}

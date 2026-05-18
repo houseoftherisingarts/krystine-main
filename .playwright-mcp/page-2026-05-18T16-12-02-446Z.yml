@@ -1,0 +1,226 @@
+- generic [ref=e2]:
+  - navigation [ref=e3]:
+    - generic [ref=e4]:
+      - link "Krystine St-Laurent" [ref=e5] [cursor=pointer]:
+        - /url: /?splash=1
+        - img "Krystine St-Laurent" [ref=e6]
+      - list [ref=e7]:
+        - listitem [ref=e8]:
+          - link "Krystine St-Laurent" [ref=e9] [cursor=pointer]:
+            - /url: /krystine
+            - text: Krystine St-Laurent
+        - listitem [ref=e10]:
+          - link "Podcasts, Médias & Livres" [ref=e11] [cursor=pointer]:
+            - /url: /medias
+            - text: Podcasts, Médias & Livres
+        - listitem [ref=e12]:
+          - link "Formations" [ref=e13] [cursor=pointer]:
+            - /url: /formations
+            - text: Formations
+        - listitem [ref=e14]:
+          - link " Boutique Inspirata" [ref=e15] [cursor=pointer]:
+            - /url: /boutique
+            - generic [ref=e16]: 
+            - text: Boutique Inspirata
+      - generic [ref=e17]:
+        - button "" [ref=e18] [cursor=pointer]:
+          - generic [ref=e19]: 
+        - button "" [ref=e20] [cursor=pointer]:
+          - generic [ref=e21]: 
+        - button "" [ref=e22] [cursor=pointer]:
+          - generic [ref=e23]: 
+        - button " Connexion" [ref=e24] [cursor=pointer]:
+          - generic [ref=e25]: 
+          - text: Connexion
+        - text: 
+        - button "FR" [ref=e27] [cursor=pointer]
+  - generic [ref=e28]:
+    - generic [ref=e29]:
+      - heading "Panier" [level=3] [ref=e30]
+      - button "" [ref=e31] [cursor=pointer]:
+        - generic [ref=e32]: 
+    - generic [ref=e33]:
+      - generic [ref=e34]: 
+      - paragraph [ref=e35]: Ajouté
+    - generic [ref=e37]:
+      - generic [ref=e38]: 
+      - paragraph [ref=e39]: Panier vide
+  - generic [ref=e41]:
+    - button " Retour" [ref=e42] [cursor=pointer]:
+      - generic [ref=e43]: 
+      - text: Retour
+    - generic [ref=e44]:
+      - generic:
+        - generic:
+          - img
+      - generic:
+        - generic:
+          - img
+      - generic [ref=e45]:
+        - generic [ref=e46]:
+          - generic [ref=e47]: Parcours signature · Prochaine cohorte
+          - heading "L'Expérience Origine" [level=1] [ref=e48]
+          - paragraph [ref=e49]: Retrouver votre boussole intérieure
+          - paragraph [ref=e50]: "L'Expérience Origine est un parcours de 12 semaines au cœur de l'Ayurveda. La cohorte en cours est fermée. Inscrivez-vous à la liste d'attente : vous serez parmi les premières à savoir lorsque les portes rouvriront, avec un accès privilégié et des conditions réservées à la liste."
+          - blockquote [ref=e51]:
+            - generic [ref=e53]: 
+            - paragraph [ref=e54]: Jamais il n'y a eu autant d'informations, et jamais autant de dispersion. L'exigence actuelle est de retrouver des repères intérieurs fiables.
+          - list [ref=e55]:
+            - listitem [ref=e56]:
+              - generic [ref=e57]: 
+              - generic [ref=e58]: Aucun engagement — vous êtes inscrite sur la liste, c'est tout.
+            - listitem [ref=e59]:
+              - generic [ref=e60]: 
+              - generic [ref=e61]: Vous serez avisée par courriel à l'ouverture, avant la communication publique.
+            - listitem [ref=e62]:
+              - generic [ref=e63]: 
+              - generic [ref=e64]: Vos coordonnées ne sont jamais partagées. Désabonnement en un clic.
+        - generic [ref=e67]:
+          - paragraph [ref=e68]: Inscription · liste d'attente
+          - generic [ref=e69]:
+            - generic [ref=e70]:
+              - generic [ref=e71]: Prénom
+              - textbox "Prénom" [ref=e72]
+            - generic [ref=e73]:
+              - generic [ref=e74]: Nom
+              - textbox "Nom" [ref=e75]
+          - generic [ref=e76]:
+            - generic [ref=e77]: Adresse courriel
+            - textbox "Adresse courriel" [ref=e78]
+          - generic [ref=e79]:
+            - generic [ref=e80]:
+              - generic [ref=e81]: Pays ou province
+              - generic [ref=e82]:
+                - combobox "Pays ou province " [ref=e83]:
+                  - option "Pays · province" [disabled]
+                  - option "Québec" [selected]
+                  - option "Canada — autres provinces"
+                  - option "France"
+                  - option "Belgique"
+                  - option "Suisse"
+                  - option "États-Unis"
+                  - option "Ailleurs dans le monde"
+                - generic: 
+            - generic [ref=e84]:
+              - generic [ref=e85]: Région
+              - generic [ref=e168]:
+                - combobox "Région " [ref=e169]:
+                  - option "Région" [disabled] [selected]
+                  - option "Montréal"
+                  - option "Laval"
+                  - option "Montérégie"
+                  - option "Laurentides"
+                  - option "Lanaudière"
+                  - option "Capitale-Nationale"
+                  - option "Outaouais"
+                  - option "Estrie"
+                  - option "Mauricie"
+                  - option "Centre-du-Québec"
+                  - option "Chaudière-Appalaches"
+                  - option "Saguenay–Lac-Saint-Jean"
+                  - option "Bas-Saint-Laurent"
+                  - option "Abitibi-Témiscamingue"
+                  - option "Côte-Nord"
+                  - option "Gaspésie–Îles-de-la-Madeleine"
+                  - option "Nord-du-Québec"
+                - generic: 
+          - button "Rejoindre la liste d'attente " [ref=e87] [cursor=pointer]:
+            - generic [ref=e88]:
+              - text: Rejoindre la liste d'attente
+              - generic [ref=e89]: 
+          - paragraph [ref=e90]: Désabonnement en un clic · jamais de partage
+  - generic [ref=e92]:
+    - paragraph [ref=e93]:
+      - generic [ref=e94]: 
+      - text: Inspirata Ayurveda
+    - generic [ref=e95]:
+      - generic [ref=e96]: Partager
+      - button "Facebook" [ref=e97] [cursor=pointer]:
+        - generic [ref=e98]: 
+      - button "X (Twitter)" [ref=e99] [cursor=pointer]:
+        - generic [ref=e100]: 
+      - button "Courriel" [ref=e101] [cursor=pointer]:
+        - generic [ref=e102]: 
+      - button "Copier le lien" [ref=e103] [cursor=pointer]:
+        - generic [ref=e104]: 
+  - contentinfo [ref=e105]:
+    - generic [ref=e106]:
+      - generic [ref=e107]:
+        - generic [ref=e108]:
+          - img "Krystine St-Laurent" [ref=e109]
+          - paragraph [ref=e110]: Sagesse Ayurvédique pour une vie consciente.
+        - generic [ref=e111]:
+          - heading "Navigation" [level=4] [ref=e112]
+          - list [ref=e113]:
+            - listitem [ref=e114]:
+              - link "Krystine" [ref=e115] [cursor=pointer]:
+                - /url: /krystine
+            - listitem [ref=e116]:
+              - link "Podcasts, Médias & Livres" [ref=e117] [cursor=pointer]:
+                - /url: /medias
+            - listitem [ref=e118]:
+              - link "Formations" [ref=e119] [cursor=pointer]:
+                - /url: /formations
+            - listitem [ref=e120]:
+              - link "Boutique Inspirata Ayurveda" [ref=e121] [cursor=pointer]:
+                - /url: /boutique
+            - listitem [ref=e122]:
+              - link "Blogue" [ref=e123] [cursor=pointer]:
+                - /url: /blogue
+            - listitem [ref=e124]:
+              - link "Points de Vente" [ref=e125] [cursor=pointer]:
+                - /url: /points-de-vente
+            - listitem [ref=e126]:
+              - link "Conférencière" [ref=e127] [cursor=pointer]:
+                - /url: /conferenciere
+        - generic [ref=e128]:
+          - heading "Formations" [level=4] [ref=e129]
+          - list [ref=e130]:
+            - listitem [ref=e131]:
+              - link "Expérience Origine" [ref=e132] [cursor=pointer]:
+                - /url: /origine
+            - listitem [ref=e133]:
+              - link "Programme Vata" [ref=e134] [cursor=pointer]:
+                - /url: /vata
+            - listitem [ref=e135]:
+              - link "Podcast" [ref=e136] [cursor=pointer]:
+                - /url: /podcast
+        - generic [ref=e137]:
+          - heading "Contact" [level=4] [ref=e138]
+          - list [ref=e139]:
+            - listitem [ref=e140]:
+              - link "equipe@inspiratanature.com" [ref=e141] [cursor=pointer]:
+                - /url: mailto:equipe@inspiratanature.com
+            - listitem [ref=e142]:
+              - link " Instagram" [ref=e143] [cursor=pointer]:
+                - /url: https://www.instagram.com/krystinesaintlaurent
+                - generic [ref=e144]: 
+                - text: Instagram
+            - listitem [ref=e145]:
+              - link " Facebook" [ref=e146] [cursor=pointer]:
+                - /url: https://www.facebook.com/Krystinestlaurent
+                - generic [ref=e147]: 
+                - text: Facebook
+            - listitem [ref=e148]:
+              - link " YouTube" [ref=e149] [cursor=pointer]:
+                - /url: https://www.youtube.com/@KrystineStLaurent
+                - generic [ref=e150]: 
+                - text: YouTube
+      - generic [ref=e151]:
+        - paragraph [ref=e152]: © 2026 Krystine St-Laurent. Tous droits réservés.
+        - link "Politique de confidentialité" [ref=e154] [cursor=pointer]:
+          - /url: /politique-de-confidentialite
+        - button "Plateforme développée par Le Salon des Inconnus" [ref=e155] [cursor=pointer]:
+          - generic [ref=e156]: Plateforme développée par
+          - generic [ref=e157]: Le Salon des Inconnus
+  - dialog "Bandeau de consentement" [ref=e158]:
+    - generic [ref=e159]:
+      - generic [ref=e160]: 
+      - generic [ref=e161]:
+        - paragraph [ref=e162]: Loi 25
+        - paragraph [ref=e163]: Témoins de mesure pour améliorer le site. Vous gardez le contrôle.
+    - generic [ref=e164]:
+      - button "Accepter" [ref=e165] [cursor=pointer]
+      - button "Refuser" [ref=e166] [cursor=pointer]
+    - link "Politique de confidentialité" [ref=e167] [cursor=pointer]:
+      - /url: /politique-de-confidentialite

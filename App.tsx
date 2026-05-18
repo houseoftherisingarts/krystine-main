@@ -39,6 +39,7 @@ const GuidePage        = lazy(() => import('./src/pages/GuidePage'));
 const LocationsPage    = lazy(() => import('./src/pages/LocationsPage'));
 const ConferencierePage = lazy(() => import('./src/pages/ConferencierePage'));
 const FormationsPage   = lazy(() => import('./src/pages/FormationsPage'));
+const ListeAttentePage = lazy(() => import('./src/pages/ListeAttentePage'));
 const ClientPortal     = lazy(() => import('./src/pages/ClientPortal'));
 const AdminDashboard   = lazy(() => import('./src/pages/AdminDashboard'));
 const UnsubscribePage  = lazy(() => import('./src/pages/UnsubscribePage'));
@@ -138,6 +139,7 @@ const App: React.FC = () => (
 
           {/* ── Programmes / ex-dist ──────────────────────────────────── */}
           <Route path="/formations"        element={<FormationsPage />} />
+          <Route path="/liste-attente"     element={<ListeAttentePage />} />
           {/* /origine, /podcast, /vata are served as-is from public/ — see firebase.json */}
 
           {/* ── Système ───────────────────────────────────────────────── */}
