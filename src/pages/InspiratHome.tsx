@@ -235,8 +235,8 @@ const InspiratHome: React.FC = () => {
   const trilogy = [
     { title: 'Nature & Ayurveda',   year: '2018',                                                cover: 'https://storage.googleapis.com/inspirata/Livres/nature%20ayurveda%20front.jpg', mystery: false },
     { title: 'Féminité & Ayurveda', year: '2021',                                                cover: 'https://storage.googleapis.com/inspirata/Livres/feminite%20ayurveda%20front.jpg', mystery: false },
-    { title: 'Énergie & Ayurveda', /* hidden — see mystery flag */
-      year: lang === 'FR' ? '14 octobre 2026' : 'Oct. 14, 2026',                                  cover: null as string | null, mystery: true },
+    { title: '', /* third title kept secret until release — see mystery flag */
+      year: lang === 'FR' ? '4 novembre 2026' : 'Nov. 4, 2026',                                  cover: null as string | null, mystery: true },
   ];
 
   return (
@@ -599,6 +599,56 @@ const InspiratHome: React.FC = () => {
         </div>
 
 
+        {/* ── Section · Saison en cours — Expérience PITTA (été) ────────────
+            Mise en avant saisonnière pointant vers la sales page Kajabi de
+            l'expérience estivale. Lien externe → ouvre dans un nouvel onglet
+            via followHref. À mettre à jour (ou retirer) au changement de
+            saison. */}
+        <RevealSection className="w-full mb-12">
+          <div
+            onClick={() => followHref('https://krystinestlaurent.mykajabi.com/experience-ayurveda-saison-estivale')}
+            className="group relative w-full cursor-pointer rounded-[28px] overflow-hidden border border-[#B8532F]/20 shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:shadow-[0_0_40px_rgba(184,83,47,0.22)] transition-all"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_1.05fr] bg-[#3A251E]">
+              {/* Visuel saison Pitta — champ doré ensoleillé (chaleur Pitta) */}
+              <div className="relative h-56 md:h-auto min-h-[320px] overflow-hidden">
+                <div
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
+                  style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&auto=format&fit=crop&q=80)' }}
+                />
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(58,37,30,0.25),transparent_60%)] md:bg-[linear-gradient(to_right,transparent,rgba(58,37,30,0.92))]" />
+              </div>
+              {/* Texte + CTA */}
+              <div className="relative p-8 md:p-12 lg:p-14 text-[#F4E7DD] flex flex-col justify-center">
+                <span className="uppercase tracking-[0.3em] text-[10px] md:text-[11px] font-bold text-[#E8A07A] mb-4">
+                  {lang === 'FR' ? 'Saison en cours · Pitta' : 'Current season · Pitta'}
+                </span>
+                <h3 className="text-3xl md:text-4xl lg:text-5xl font-serif mb-3 leading-tight">
+                  {lang === 'FR' ? "L'Expérience Ayurveda — Été" : 'The Ayurveda Experience — Summer'}
+                </h3>
+                <p className="text-lg md:text-xl font-serif italic text-[#F4E7DD]/85 mb-5">
+                  {lang === 'FR' ? 'Rafraîchir · Apaiser · Adoucir' : 'Cool · Soothe · Soften'}
+                </p>
+                <p className="text-[#F4E7DD]/75 leading-relaxed mb-8 max-w-xl">
+                  {lang === 'FR'
+                    ? "Quand la chaleur monte, le feu intérieur s'emballe. Un parcours de 7 semaines pour traverser la saison Pitta avec clarté — sans se brûler."
+                    : 'When the heat rises, the inner fire flares. A 7-week journey to move through the Pitta season with clarity — without burning out.'}
+                </p>
+                <div className="flex flex-wrap items-center gap-4">
+                  <span className="inline-flex items-center gap-3 bg-[#B8532F] text-[#3A251E] px-8 py-4 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg group-hover:scale-105 transition-transform">
+                    {lang === 'FR' ? "Découvrir l'expérience" : 'Discover the experience'}
+                    <i className="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1" />
+                  </span>
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#F4E7DD]/55 font-bold">
+                    <i className="fa-regular fa-clock mr-2" />{lang === 'FR' ? '7 semaines · Disponible' : '7 weeks · Available'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </RevealSection>
+
+
         {/* ── Section Origine — Le parcours signature ──────────────────────
             Full-width editorial band with hero image + programme +
             status/CTA. See src/components/OrigineHomeSection.tsx for the
@@ -726,7 +776,7 @@ const InspiratHome: React.FC = () => {
                     {/* Launch date banner — only on the mystery (third) book. */}
                     {b.mystery && (
                       <span className="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#B8532F] text-[#3A251E] text-[9px] uppercase tracking-[0.25em] font-bold shadow-md whitespace-nowrap">
-                        {lang === 'FR' ? 'Lancement le 14 octobre' : 'Launch Oct. 14'}
+                        {lang === 'FR' ? 'Lancement le 4 novembre' : 'Launch Nov. 4'}
                       </span>
                     )}
                   </div>
@@ -885,7 +935,7 @@ const InspiratHome: React.FC = () => {
 
             {formState === 'error' && (
               <p className="mt-4 text-sm text-red-700 dark:text-red-400">
-                {lang === 'FR' ? 'Une erreur est survenue. Veuillez réessayer ou nous écrire à equipe@inspiratanature.com.' : 'An error occurred. Please try again or write to us at equipe@inspiratanature.com.'}
+                {lang === 'FR' ? 'Une erreur est survenue. Veuillez réessayer ou nous écrire à teamksl@inspiratanature.com.' : 'An error occurred. Please try again or write to us at teamksl@inspiratanature.com.'}
               </p>
             )}
 
