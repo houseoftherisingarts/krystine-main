@@ -7,6 +7,7 @@ import { points } from '../firebase/points';
 import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../shopify';
 import { findOilForDosha } from '../lib/shopifyOil';
 import { RITUALS } from '../lib/doshaRituals';
+import { trackLead } from '../lib/track';
 import AyurvedaIkigai from '../components/AyurvedaIkigai';
 
 // ─── Quiz data ────────────────────────────────────────────────────────────────
@@ -314,6 +315,7 @@ const QuizPage: React.FC = () => {
       // Loyalty — 5 pts for completing the quiz. Idempotent on quiz:{uid},
       // so retaking the quiz doesn't re-grant.
       try { await points.quizCompleted(user.uid); } catch { /* non-fatal */ }
+      trackLead(`quiz-${dominant.name.toLowerCase()}`);
     } catch {}
     finally { setSubmitting(false); }
     setQuizState(qs => ({ ...qs, result: { dominant, percentages } }));

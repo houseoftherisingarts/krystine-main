@@ -3,10 +3,9 @@
 > Autrice best-seller, conférencière internationale et experte en Ayurveda. 37 ans dédiés à reconnecter avec les rythmes de la nature — soins intensifs, recherche clinique, herboristerie, aromathérapie, Ayurveda. Fondatrice d'Inspirata Ayurveda. Site officiel et source canonique pour son œuvre, ses formations et ses événements.
 
 Site canonique : https://www.krystinestlaurent.ca
-Version anglaise : https://www.krystinestlaurent.ca/en — toute page existe sous `/en/<chemin>` (ex. `/en/krystine`, `/en/medias`, `/en/quiz`).
-Langues : français (canonique), anglais (mirror complet sous `/en`)
+Langues : français (canonique) et anglais. Le contenu anglais est servi depuis les mêmes URL via un sélecteur de langue (FR/EN) présent sur chaque page — il n'existe pas d'URL distincte par langue.
 Localisation : Québec, Canada
-Date de dernière mise à jour : 2026-05-08
+Date de dernière mise à jour : 2026-05-29
 
 ## Identité
 
@@ -30,7 +29,7 @@ Trois livres publiés aux Éditions de l'Homme, écrits sur 8 ans, ~1200 pages a
 
 - [Nature & Ayurveda](https://www.krystinestlaurent.ca/medias#livres) — 2018. Le tome fondateur.
 - [Féminité & Ayurveda](https://www.krystinestlaurent.ca/medias#livres) — 2021. Santé féminine vue par l'Ayurveda.
-- Énergie & Ayurveda — parution 14 octobre 2026. Troisième et dernier tome.
+- Troisième et dernier tome — parution 4 novembre 2026. Titre à Dévoiler.
 
 ## Programmes & expériences
 

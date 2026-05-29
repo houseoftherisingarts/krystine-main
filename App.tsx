@@ -13,7 +13,7 @@ import EditModeBar from './src/components/edit/EditModeBar';
 import EditOverlay from './src/components/edit/EditOverlay';
 import { PageShareBar } from './src/components/ShareButtons';
 import PrivacyPolicy from './components/pages/PrivacyPolicy';
-import { logPageView } from './src/firebase';
+import { trackPageView } from './src/lib/track';
 import { processDevAdminUrl } from './src/lib/devAdmin';
 
 // Run the dev-mode admin URL processor once at module load — before
@@ -91,12 +91,14 @@ const Footing: React.FC = () => {
   );
 };
 
-// SPA page_view tracker — fires only once analytics has been initialized
-// (which happens after the user accepts consent via ConsentBanner).
+// SPA page_view tracker — fires only once analytics / the Pixel have been
+// initialized (after the visitor accepts consent via ConsentBanner). Routes
+// through trackPageView so GA4 AND the Meta Pixel stay in sync on every
+// route change (previously only GA4 fired; the Pixel claimed to but didn't).
 const AnalyticsPageViews: React.FC = () => {
   const location = useLocation();
   useEffect(() => {
-    logPageView(location.pathname + location.search);
+    trackPageView(location.pathname + location.search);
   }, [location.pathname, location.search]);
   return null;
 };

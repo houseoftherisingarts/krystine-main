@@ -62,4 +62,15 @@ export function logPageView(path: string, title?: string) {
   } catch { /* noop */ }
 }
 
+// GA4 conversion event for any opt-in (newsletter / waitlist / quiz capture).
+// `source` mirrors the internal source tag (accueil-pulsation, waitlist-*,
+// quiz, etc.) so funnels can be split by entry point. No-ops until analytics
+// is enabled post-consent (LOI 25), so it's always safe to call.
+export function logLead(source: string) {
+  if (!_analytics) return;
+  try {
+    logEvent(_analytics, 'generate_lead', { source });
+  } catch { /* noop */ }
+}
+
 export default app;

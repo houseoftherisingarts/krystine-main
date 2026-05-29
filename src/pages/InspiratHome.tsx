@@ -7,6 +7,7 @@ import EditableText from '../components/edit/EditableText';
 import EditableImage from '../components/edit/EditableImage';
 import { CONTENT, ASSETS } from '../content';
 import { goToRoute, isStaticRoute } from '../lib/staticRoutes';
+import { trackLead } from '../lib/track';
 import { addNewsletterSubscriber } from '../firebase/firestore';
 import { points } from '../firebase/points';
 import AyurvedaIkigai from '../components/AyurvedaIkigai';
@@ -201,6 +202,7 @@ const InspiratHome: React.FC = () => {
       if (user?.uid) {
         try { await points.newsletterSigned(user.uid, 'accueil-pulsation'); } catch { /* non-fatal */ }
       }
+      trackLead('accueil-pulsation');
       setFormState('success');
       setEmail('');
     } catch {
