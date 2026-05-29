@@ -23,6 +23,7 @@ import { useApp } from '../contexts/AppContext';
 import { addNewsletterSubscriber } from '../firebase/firestore';
 import { points } from '../firebase/points';
 import { COUNTRIES, findCountry } from '../lib/regions';
+import { trackLead } from '../lib/track';
 import Sprig from '../components/Sprig';
 
 // Known programmes that map to a CRM source key + display copy. Visitors
@@ -136,11 +137,9 @@ const ListeAttentePage: React.FC = () => {
       setErr(lang === 'FR' ? 'Veuillez choisir un pays ou une province.' : 'Please choose a country or province.');
       return;
     }
+    // Région facultative — capturée si fournie, jamais bloquante (réduit la
+    // friction sur la liste d'attente; le pays/province suffit à segmenter).
     const resolvedRegion = (isFreeText ? regionFreeText : region).trim();
-    if (!resolvedRegion) {
-      setErr(lang === 'FR' ? 'Veuillez préciser votre région.' : 'Please specify your region.');
-      return;
-    }
     setBusy(true);
     try {
       await addNewsletterSubscriber({
@@ -148,7 +147,7 @@ const ListeAttentePage: React.FC = () => {
         firstName: firstName.trim() || undefined,
         lastName: lastName.trim() || undefined,
         province: country.label,
-        region: resolvedRegion,
+        region: resolvedRegion || undefined,
         source: meta.source,
         tags: [meta.source, `province-${country.code.toLowerCase()}`],
         status: 'active',
@@ -156,6 +155,7 @@ const ListeAttentePage: React.FC = () => {
       if (user?.uid) {
         try { await points.newsletterSigned(user.uid, meta.source); } catch { /* non-fatal */ }
       }
+      trackLead(meta.source);
       setDone(true);
     } catch (ex: any) {
       setErr(ex?.message || (lang === 'FR' ? 'Une erreur est survenue. Veuillez réessayer.' : 'Something went wrong. Please try again.'));
@@ -383,7 +383,6 @@ const ListeAttentePage: React.FC = () => {
                         ) : isFreeText ? (
                           <input
                             type="text"
-                            required
                             value={regionFreeText}
                             onChange={e => setRegionFreeText(e.target.value)}
                             placeholder={country.regionPlaceholder || (lang === 'FR' ? 'Région' : 'Region')}
@@ -392,7 +391,6 @@ const ListeAttentePage: React.FC = () => {
                         ) : (
                           <div className="relative">
                             <select
-                              required
                               value={region}
                               onChange={e => setRegion(e.target.value)}
                               className="w-full appearance-none px-5 py-3 pr-10 rounded-full border border-[#3A251E]/15 bg-white text-sm text-[#3A251E] focus:outline-none focus:border-[#B8532F] focus:shadow-[0_0_0_4px_rgba(184,83,47,0.12)] transition-shadow"
