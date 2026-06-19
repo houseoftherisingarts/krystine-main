@@ -74,10 +74,14 @@
       linear-gradient(129deg, transparent 55%, rgba(230,200,128,.18) 62%, transparent 70%),
       radial-gradient(17% 12% at 74% 85%, rgba(248,222,158,.42), transparent 72%);
     -webkit-mask:radial-gradient(150% 130% at 92% 4%, #000 6%, rgba(0,0,0,.62) 44%, transparent 84%),
-      radial-gradient(15% 20% at 62% 33%, transparent 0%, transparent 54%, #000 82%);
-    -webkit-mask-composite:source-in;
+      radial-gradient(15% 19% at 62% 33%, transparent 0%, transparent 52%, #000 80%),
+      radial-gradient(20% 26% at 59% 63%, transparent 0%, transparent 54%, #000 82%),
+      radial-gradient(17% 17% at 53% 84%, transparent 0%, transparent 52%, #000 80%);
+    -webkit-mask-composite:source-in,source-in,source-in;
     mask:radial-gradient(150% 130% at 92% 4%, #000 6%, rgba(0,0,0,.62) 44%, transparent 84%),
-      radial-gradient(15% 20% at 62% 33%, transparent 0%, transparent 54%, #000 82%);
+      radial-gradient(15% 19% at 62% 33%, transparent 0%, transparent 52%, #000 80%),
+      radial-gradient(20% 26% at 59% 63%, transparent 0%, transparent 54%, #000 82%),
+      radial-gradient(17% 17% at 53% 84%, transparent 0%, transparent 52%, #000 80%);
     mask-composite:intersect}
   @media(prefers-reduced-motion:no-preference){ .hero .rays{animation:rayBreathe 17s ease-in-out infinite alternate} }
   @keyframes rayBreathe{from{opacity:.03}to{opacity:.9}}
