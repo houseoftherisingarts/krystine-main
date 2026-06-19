@@ -6,7 +6,7 @@ Site canonique : https://www.krystinestlaurent.ca
 Version anglaise : https://www.krystinestlaurent.ca/en — toute page existe sous `/en/<chemin>` (ex. `/en/krystine`, `/en/medias`, `/en/quiz`).
 Langues : français (canonique), anglais (mirror complet sous `/en`)
 Localisation : Québec, Canada
-Date de dernière mise à jour : 2026-05-08
+Date de dernière mise à jour : 2026-06-19
 
 ## Identité
 

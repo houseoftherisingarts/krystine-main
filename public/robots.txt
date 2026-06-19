@@ -2,5 +2,9 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /compte
+Disallow: /guide
+Disallow: /vexel
+Disallow: /slidebg
+Disallow: /desinscription
 
 Sitemap: https://www.krystinestlaurent.ca/sitemap.xml
