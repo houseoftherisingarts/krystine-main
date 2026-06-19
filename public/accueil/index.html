@@ -53,6 +53,14 @@
 
   /* ---------- hero ---------- */
   .hero-frame{display:contents}
+  .rotate-hint{display:none}
+  @media(max-width:900px) and (orientation:portrait){
+    .rotate-hint{display:flex;flex-direction:column;align-items:center;gap:.65rem;
+      padding:1.6rem 1.4rem 1.8rem;background:var(--cream);color:var(--ink);text-align:center}
+    .rotate-hint svg{width:30px;height:30px;stroke:var(--brass);stroke-width:1.4;fill:none;transform-origin:center;animation:rotHint 4.2s ease-in-out infinite}
+    .rotate-hint span{font-family:var(--serif);font-style:italic;font-size:1.08rem;line-height:1.4;color:var(--ink);max-width:280px}
+  }
+  @keyframes rotHint{0%,66%,100%{transform:rotate(0)}84%{transform:rotate(-90deg)}}
   .hero{position:sticky;top:0;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:var(--espresso-deep);z-index:1}
   /* V2 scroll choreography: hero headline scales + dims as the next sheet rises over it */
   @supports (animation-timeline: scroll()){
@@ -285,9 +293,8 @@
     .navlinks{display:none}
 
     /* HERO : exact copy of the desktop hero, scaled down to fit the width */
-    .hero-frame{display:block;width:100%;overflow:hidden;height:calc(100vw*840/1440)}
-    .hero{position:relative!important;top:auto!important;width:1440px;height:840px;min-height:0;
-      transform-origin:top left}
+    .hero-frame{display:block;width:100%;overflow:hidden;background:var(--espresso-deep)}
+    .hero{position:relative!important;top:auto!important;left:0;width:1440px;height:840px;min-height:0;transform-origin:top left}
     .hero h1{font-size:8.6rem}
     .hero .sub{font-size:1.7rem;margin:1.4rem 0 1.5rem}
     .hero .lede{font-size:.95rem;max-width:400px}
@@ -371,6 +378,10 @@
       </div>
     </div>
   </section>
+  </div>
+  <div class="rotate-hint" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M10 19.3h4"/><path d="M2.6 9.2a5.4 5.4 0 0 1 5.2-4.1"/><path d="M2.6 9.2l-1-2M2.6 9.2l2.1-.7"/></svg>
+    <span>Prenez le temps de tourner votre téléphone</span>
   </div>
 
   <!-- ===== TRILOGIE ===== -->
@@ -656,9 +667,15 @@
 
   /* mobile hero: render the desktop hero and scale it to the viewport width (exact copy) */
   (function(){
-    var hero=document.querySelector('.hero');
-    function setScale(){ hero.style.transform = innerWidth<=900 ? 'scale('+(innerWidth/1440)+')' : ''; }
-    setScale(); addEventListener('resize',setScale); addEventListener('load',setScale);
+    var hero=document.querySelector('.hero'), frame=document.querySelector('.hero-frame');
+    function setScale(){
+      if(innerWidth>900){ hero.style.transform=''; hero.style.left=''; if(frame) frame.style.height=''; return; }
+      var s=Math.min(innerWidth/1440, innerHeight/840);
+      hero.style.transform='scale('+s+')';
+      hero.style.left=((innerWidth-1440*s)/2)+'px';
+      if(frame) frame.style.height=(840*s)+'px';
+    }
+    setScale(); addEventListener('resize',setScale); addEventListener('load',setScale); addEventListener('orientationchange',setScale);
   })();
   /* section flip: scroll-TRIGGERED (not scroll-bound). The CSS transition owns
      the timing; scrolling past a threshold just toggles the flipped state. */
