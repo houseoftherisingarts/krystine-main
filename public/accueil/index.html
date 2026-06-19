@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Krystine St-Laurent · L'ŒUVRE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --espresso-deep:#16100a; --espresso:#1d1604; --espresso-soft:#2a2015;
+    --cream:#f6f3ee; --cream-2:#f1ebe0; --cream-3:#ede5d7; --card:#faf7f0;
+    --ink:#3a3126; --ink-soft:#665746;
+    --brass:#bb9a5e; --brass-deep:#a3823f; --ochre:#c79a52; --terracotta:#b06a3f;
+    --ctext:#f4ece0; --ctext-soft:#cdbfa9;
+    --serif:"Cormorant Garamond",Georgia,serif; --sans:"Inter",system-ui,sans-serif; --script:"Pinyon Script",cursive;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--cream);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  img{display:block;max-width:100%}
+  a{text-decoration:none;color:inherit}
+  button,a{cursor:pointer}
+  :focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+  .mx{max-width:1280px;margin:0 auto;padding:0 3rem}
+
+  /* ---------- nav ---------- */
+  nav{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;
+    max-width:1280px;margin:0 auto;padding:1.9rem 3rem}
+  .logo{font-family:var(--serif);font-weight:600;letter-spacing:.12em;font-size:1.32rem;line-height:1.0;text-transform:uppercase;color:var(--ctext)}
+  .navlinks{display:flex;gap:2.1rem;font-size:.68rem;letter-spacing:.17em;text-transform:uppercase;color:var(--ctext-soft)}
+  .navlinks a{position:relative;transition:color .25s}
+  .navlinks a:hover{color:var(--brass-bright)}
+  .navlinks a::after{content:"";position:absolute;left:0;right:100%;bottom:-5px;height:1px;background:var(--brass-bright);transition:right .3s cubic-bezier(.2,.7,.2,1)}
+  .navlinks a:hover::after{right:0}
+
+  /* ---------- hero ---------- */
+  .hero{position:sticky;top:0;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:var(--espresso-deep);z-index:1}
+  /* V2 scroll choreography: hero headline scales + dims as the next sheet rises over it */
+  @supports (animation-timeline: scroll()){
+    .hero h1{animation:ovHeroExit linear both;animation-timeline:scroll(root);animation-range:2vh 88vh}
+    @keyframes ovHeroExit{to{transform:translateY(-12%) scale(.84);opacity:.16;filter:blur(2px)}}
+    .hero .sub,.hero .lede,.hero .cta{animation:ovFade linear both;animation-timeline:scroll(root);animation-range:2vh 60vh}
+    @keyframes ovFade{to{opacity:0;transform:translateY(-10%)}}
+  }
+  .wc{animation:none!important}
+  .hero .scene{position:absolute;top:0;bottom:0;right:0;left:auto;width:84%;z-index:0;overflow:hidden;background:#16100a}
+  .hero .scene video{position:absolute;top:50%;left:0;transform:translateY(-50%);height:100%;width:auto;min-width:100%}
+  .hero .veil{position:absolute;inset:0;z-index:1;
+    background:linear-gradient(90deg, rgba(16,11,7,.95) 0%, rgba(16,11,7,.86) 20%, rgba(16,11,7,.6) 38%, rgba(16,11,7,.3) 58%, rgba(16,11,7,.12) 74%, rgba(16,11,7,0) 90%)}
+  canvas#dust{position:absolute;inset:0;z-index:2;pointer-events:none;
+    -webkit-mask:radial-gradient(34% 47% at 66% 48%, transparent 0%, transparent 48%, #000 82%);
+    mask:radial-gradient(34% 47% at 66% 48%, transparent 0%, transparent 48%, #000 82%)}
+  .hero-inner{position:relative;z-index:3;width:100%;max-width:1280px;margin:0 auto;padding:7rem 3rem 3rem}
+  .copy{max-width:520px}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(4.5rem,10vw,8.6rem);line-height:.84;letter-spacing:.015em;color:var(--ctext)}
+  .sub{font-family:var(--serif);font-size:clamp(1.2rem,2.2vw,1.7rem);line-height:1.28;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--ctext);margin:1.4rem 0 1.5rem;font-weight:500}
+  .lede{font-size:.9rem;line-height:1.85;color:var(--ctext-soft);max-width:400px}
+  .cta{display:inline-flex;align-items:center;gap:.8rem;margin-top:2rem;padding:1.05rem 2.3rem;
+    background:var(--brass);border:1px solid var(--brass);color:var(--espresso-deep);font-size:.69rem;letter-spacing:.22em;font-weight:500;
+    text-transform:uppercase;transition:background .3s,border-color .3s,transform .3s}
+  .cta:hover{background:var(--brass-bright);border-color:var(--brass-bright);transform:translateY(-2px)}
+  .cta svg{width:18px;height:10px;stroke:currentColor;stroke-width:1.4;fill:none;transition:transform .3s}
+  .cta:hover svg{transform:translateX(4px)}
+
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(30px);filter:blur(6px);transition:opacity 1.1s ease,transform 1.2s cubic-bezier(.16,.8,.24,1),filter 1.1s ease}
+  .parallax{will-change:transform}
+  .reveal.in{opacity:1;transform:none;filter:none}
+  .d1{transition-delay:.1s}.d2{transition-delay:.24s}.d3{transition-delay:.38s}.d4{transition-delay:.52s}
+  .d5{transition-delay:.66s}.d6{transition-delay:.8s}
+
+  /* ---------- fil central ---------- */
+  .central{position:relative;z-index:3;background:var(--cream);padding:6.5rem 0;border-radius:18px 18px 0 0;box-shadow:0 -26px 60px rgba(40,28,16,.2)}
+  .central .mx{display:grid;grid-template-columns:.92fr 1fr;gap:4rem;align-items:center}
+  .wheel{position:relative;display:flex;justify-content:center;align-items:center;aspect-ratio:1/1}
+  .wheel .wc{width:100%;max-width:480px;
+    -webkit-mask:radial-gradient(closest-side,#000 64%,transparent 82%);mask:radial-gradient(closest-side,#000 64%,transparent 82%);
+    animation:spin 140s linear infinite}
+  .wheel .disc{position:absolute;width:34%;aspect-ratio:1;border-radius:50%;
+    background:radial-gradient(circle at 50% 38%, #d8ad60, var(--ochre) 70%, #b8893f);
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    font-family:var(--serif);font-weight:500;font-size:clamp(.7rem,1.1vw,.95rem);letter-spacing:.12em;text-transform:uppercase;line-height:1.3;
+    color:#4b3a1e;box-shadow:0 12px 30px rgba(120,90,40,.28), inset 0 1px 6px rgba(255,240,210,.4)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .head .eyebrow{font-family:var(--serif);font-size:clamp(1.5rem,2.6vw,2.1rem);letter-spacing:.08em;color:var(--ink);text-transform:uppercase;font-weight:500}
+  .head h2{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,3.6vw,3rem);line-height:1.04;color:var(--ink);text-transform:uppercase;letter-spacing:.01em;margin-top:.2rem}
+  .head p{margin-top:1.4rem;color:var(--ink-soft);line-height:1.9;font-size:.95rem;max-width:470px}
+  .icons{display:flex;flex-wrap:wrap;gap:1.7rem 2.1rem;margin-top:2.5rem}
+  .ic{display:flex;flex-direction:column;align-items:center;gap:.7rem;width:60px}
+  .ic svg{width:33px;height:33px;stroke:var(--ink);stroke-width:1.2;fill:none}
+  .ic span{font-size:.55rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-soft);text-align:center;line-height:1.25}
+  .tagline{margin-top:2.2rem;font-family:var(--serif);font-style:italic;color:var(--terracotta);font-size:1.2rem;letter-spacing:.01em}
+
+  /* ---------- portes ---------- */
+  .portes{position:relative;z-index:4;background:var(--cream);padding:5.5rem 0 6.5rem}
+  .sec-title{text-align:center;font-family:var(--serif);font-weight:500;font-size:clamp(1.9rem,3.4vw,2.7rem);color:var(--ink);letter-spacing:.04em;text-transform:uppercase}
+  .rule{width:60px;height:1px;background:var(--brass);margin:1.1rem auto 0}
+  .fan{position:relative;height:clamp(330px,40vw,540px);max-width:920px;margin:3.4rem auto 0}
+  .fan .card{position:absolute;left:50%;bottom:8%;width:clamp(150px,19vw,224px);aspect-ratio:3/4.1;margin-left:calc(clamp(150px,19vw,224px) / -2);
+    transform-origin:bottom center;border-radius:3px;overflow:hidden;cursor:pointer;opacity:0;will-change:transform;
+    box-shadow:0 16px 38px rgba(40,28,16,.3);transition:transform .55s cubic-bezier(.34,1.25,.5,1),box-shadow .4s ease}
+  .fan .card img{width:100%;height:100%;object-fit:cover;filter:saturate(.92) brightness(.94)}
+  .fan .card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(22,16,10,.3) 0%,transparent 30%,transparent 64%,rgba(22,16,10,.55) 100%)}
+  .fan .card .fn{position:absolute;top:.6rem;left:.7rem;font-family:var(--serif);font-style:italic;font-size:1rem;color:var(--ctext);opacity:.9}
+  .fan-cap{max-width:560px;margin:2.6rem auto 0;text-align:center;min-height:7.5rem}
+  .fan-cap .fc-num{font-family:var(--serif);font-style:italic;font-size:.9rem;color:var(--brass-deep)}
+  .fan-cap h3{font-family:var(--serif);font-weight:500;font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.05;color:var(--ink);text-transform:uppercase;letter-spacing:.02em;margin-top:.3rem}
+  .fan-cap p{font-size:.85rem;line-height:1.7;color:var(--ink-soft);margin:.8rem auto 0;max-width:440px}
+  .fan-cap a{display:inline-flex;gap:.45rem;align-items:center;margin-top:1rem;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--brass-deep);border-bottom:1px solid transparent;padding-bottom:2px;transition:border-color .25s}
+  .fan-cap a:hover{border-color:var(--brass)}
+  .fan-cap .fc-inner{transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1)}
+  .fan-cap.swap .fc-inner{opacity:0;transform:translateY(6px)}
+
+  /* ---------- comment tout se relie ---------- */
+  .relie{position:relative;z-index:5;background:var(--cream-2);padding:5.5rem 0 6rem}
+  .relie .mx{display:grid;grid-template-columns:.78fr 1.22fr;gap:3rem;align-items:center}
+  .relie h2{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,3.6vw,2.9rem);line-height:1.04;text-transform:uppercase;letter-spacing:.01em;color:var(--ink)}
+  .relie .copy2 p{margin-top:1.3rem;color:var(--ink-soft);line-height:1.85;font-size:.92rem;max-width:330px}
+  .relie .more{display:inline-flex;gap:.6rem;align-items:center;margin-top:1.9rem;color:var(--terracotta);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid transparent;transition:border-color .25s;padding-bottom:2px}
+  .relie .more:hover{border-color:var(--terracotta)}
+  /* radial hub (V3 reactive) */
+  .web{position:relative;width:100%;max-width:500px;aspect-ratio:1;margin:0 auto}
+  .web .spokes{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1}
+  .web .spokes .spk{stroke:rgba(187,154,94,.5);stroke-width:.4;transition:stroke .35s,stroke-width .35s}
+  .web .spokes .ring{fill:none;stroke:rgba(187,154,94,.28);stroke-width:.3;stroke-dasharray:1.4 2.6}
+  .web.foc .spk{stroke:rgba(187,154,94,.18)}
+  .web.foc .spk.on{stroke:var(--brass-bright);stroke-width:.7}
+  .hcore{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:33%;aspect-ratio:1;border-radius:50%;z-index:2;
+    background:radial-gradient(circle at 50% 38%,#d8ad60,var(--ochre) 72%,#b8893f);color:#4b3a1e;
+    display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--serif);font-size:clamp(.6rem,1.05vw,.8rem);letter-spacing:.09em;text-transform:uppercase;line-height:1.25;padding:.8rem;
+    box-shadow:0 12px 34px rgba(120,90,40,.3),inset 0 1px 6px rgba(255,240,210,.45);transition:box-shadow .35s}
+  .web.foc .hcore{box-shadow:0 12px 46px rgba(216,173,96,.65),inset 0 1px 9px rgba(255,240,210,.7)}
+  .hnode{position:absolute;transform:translate(-50%,-50%);width:clamp(84px,11.5vw,120px);display:flex;flex-direction:column;align-items:center;gap:.42rem;text-align:center;z-index:3;cursor:pointer;transition:opacity .35s}
+  .web.foc .hnode{opacity:.4}
+  .web.foc .hnode.on{opacity:1}
+  .hnode .ni{width:46px;height:46px;border-radius:50%;border:1px solid rgba(187,154,94,.5);background:var(--cream-2);display:flex;align-items:center;justify-content:center;transition:transform .4s cubic-bezier(.2,.7,.2,1),border-color .3s,box-shadow .3s}
+  .hnode .ni svg{width:21px;height:21px;stroke:var(--brass-deep);stroke-width:1.2;fill:none}
+  .hnode .nt{font-size:.56rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);font-weight:600;line-height:1.3}
+  .hnode:hover .ni,.hnode.on .ni{transform:scale(1.12);border-color:var(--brass);box-shadow:0 8px 22px rgba(120,90,40,.25)}
+
+  /* ---------- footer ---------- */
+  .foot{position:relative;z-index:6;background:var(--espresso);color:var(--ctext);padding:4.8rem 0 0;overflow:hidden}
+  .foot-dust{position:absolute;inset:0;z-index:0;pointer-events:none}
+  .foot::before{content:"";position:absolute;inset:0;background:url('/accueil/assets/texture-cream.jpg') center/cover;opacity:.09;mix-blend-mode:overlay}
+  .foot .mx{position:relative;display:grid;grid-template-columns:1fr 1.15fr;gap:3rem;align-items:center}
+  .foot .q{font-family:var(--serif);font-style:italic;font-size:1.55rem;line-height:1.42;color:var(--ctext)}
+  .foot .q .sig{font-family:var(--script);font-style:normal;font-size:2rem;color:var(--brass);display:block;margin-top:.5rem;letter-spacing:.02em}
+  .foot .nl h3{font-family:var(--serif);font-weight:500;font-size:1.55rem;letter-spacing:.04em;text-transform:uppercase}
+  .foot .nl p{color:var(--ctext-soft);font-size:.82rem;margin-top:.7rem;line-height:1.65;max-width:380px}
+  .nlform{display:flex;margin-top:1.5rem;max-width:430px}
+  .nlform input{flex:1;padding:1rem 1.1rem;background:rgba(244,236,224,.12);border:1px solid rgba(187,154,94,.55);color:var(--ctext);font-family:var(--sans);font-size:.82rem;transition:border-color .25s,background .25s}
+  .nlform input:focus{outline:none;border-color:var(--brass);background:rgba(244,236,224,.16)}
+  .nlform input::placeholder{color:var(--ctext-soft)}
+  .nlform button{padding:1rem 1.7rem;background:var(--terracotta);color:#fbf6ec;border:none;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;transition:background .3s}
+  .nlform button:hover{background:#9a5a32}
+  .nlform input[aria-invalid="true"]{border-color:#c4622f}
+  .nl-msg{min-height:1.1em;margin-top:.7rem;font-size:.76rem;letter-spacing:.01em;opacity:0;transform:translateY(-3px);transition:opacity .35s,transform .35s}
+  .nl-msg.show{opacity:1;transform:none}
+  .nl-msg.err{color:#dd8a5e}
+  .nl-msg.ok{color:var(--brass-bright);font-family:var(--serif);font-style:italic;font-size:.95rem}
+  .copyr{position:relative;text-align:center;margin-top:3.6rem;padding:1.4rem 0;border-top:1px solid rgba(187,154,94,.16);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ctext-soft)}
+
+  /* ---------- trilogie ---------- */
+  .trilogy{position:sticky;top:0;z-index:2;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:#eae1d0;border-radius:18px 18px 0 0;box-shadow:0 -26px 60px rgba(40,28,16,.28)}
+  .trilogy .scene2{position:absolute;left:0;right:0;top:-9%;bottom:-9%;z-index:0;background:url('/accueil/assets/trilogy-books.png') 58% 82%/117% no-repeat}
+  .trilogy .veil2{position:absolute;inset:0;z-index:1;
+    background:
+      linear-gradient(90deg, rgba(234,225,208,.98) 0%, rgba(234,225,208,.96) 34%, rgba(234,225,208,.5) 48%, rgba(234,225,208,0) 62%),
+      linear-gradient(180deg, rgba(234,225,208,.6) 0%, transparent 22%, transparent 68%, rgba(150,120,72,.14) 100%)}
+  .trilogy .tinner{position:relative;z-index:2;width:100%;max-width:1280px;margin:0 auto;padding:0 3rem}
+  .tcopy{max-width:430px}
+  .tri-ey{font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--terracotta);margin-bottom:1.1rem}
+  .t-rule{width:48px;height:1px;background:var(--brass);margin-bottom:1.4rem}
+  .trilogy h2{font-family:var(--serif);font-weight:500;font-size:clamp(2.5rem,4.4vw,3.7rem);line-height:.98;color:var(--ink);text-transform:uppercase;letter-spacing:.01em}
+  .trilogy h2 b{font-weight:600;color:var(--brass-deep);font-style:italic}
+  .tcopy p{margin-top:1.3rem;color:var(--ink-soft);line-height:1.85;font-size:.92rem;max-width:420px}
+  .tri-btns{display:flex;gap:1rem;margin-top:2.1rem;flex-wrap:wrap}
+  .btn-solid{padding:.95rem 1.7rem;background:var(--brass);color:#fbf6ec;font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;transition:background .3s}
+  .btn-solid:hover{background:var(--brass-deep)}
+  .btn-outline{padding:.95rem 1.7rem;border:1px solid var(--brass);color:var(--ink);font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;transition:background .3s,color .3s}
+  .btn-outline:hover{background:var(--brass);color:#fbf6ec}
+  .tri-foot{position:absolute;left:0;right:0;bottom:2rem;z-index:2;text-align:center;font-family:var(--serif);font-style:italic;color:#8a7152;font-size:1.05rem;line-height:1.5;padding:0 1.5rem}
+
+  /* ---------- responsive ---------- */
+  @media(max-width:980px){
+    .mx{padding:0 1.5rem}
+    nav{padding:1.4rem 1.5rem}.navlinks{display:none}
+    .hero .scene{background-position:center}
+    .hero-inner{padding:7rem 1.5rem 4rem}
+    .central .mx,.relie .mx,.foot .mx{grid-template-columns:1fr;gap:2.6rem}
+    .trilogy{min-height:auto;padding:6rem 0 18rem}
+    .trilogy .scene2{background-position:center bottom}
+    .trilogy .veil2{background:linear-gradient(180deg, rgba(234,225,208,.97) 0%, rgba(234,225,208,.86) 36%, rgba(234,225,208,.1) 60%)}
+    .tri-foot{bottom:8rem}
+    .wheel{max-width:380px;margin:0 auto}
+    .cards{grid-template-columns:repeat(2,1fr)}
+    .web{grid-template-columns:1fr}.web::before{display:none}.node.r{flex-direction:row;text-align:left}
+    .hub{margin:.5rem auto}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    .reveal{opacity:1!important;transform:none!important}
+  }
+</style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">Krystine<br/>St-Laurent</div>
+    <div class="navlinks">
+      <a href="#oeuvre">L'Œuvre</a><a href="#origine">Origine</a><a href="#portes">Les Portes</a>
+      <a href="#ressources">Ressources</a><a href="#apropos">À propos</a><a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="oeuvre">
+    <div class="scene"><video autoplay muted loop playsinline preload="auto" poster="/accueil/assets/hero-ml-poster.jpg"><source src="/accueil/assets/hero-motionleap.mp4" type="video/mp4" /></video></div>
+    <div class="veil"></div>
+    <canvas id="dust"></canvas>
+    <div class="hero-inner">
+      <div class="copy">
+        <h1 class="reveal d1">L'Œuvre</h1>
+        <div class="sub reveal d2">Au service du retour au corps,<br/>au rythme, à la nature<br/>et aux cycles.</div>
+        <p class="lede reveal d3">Depuis plus de 30 ans, Krystine St-Laurent relie les savoirs ancestraux, la sagesse du corps et l'expérience de la nature pour accompagner les passages de transformation intérieure.</p>
+        <a class="cta reveal d4" href="#origine">Découvrir l'œuvre <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TRILOGIE ===== -->
+  <section class="trilogy" id="ressources">
+    <div class="scene2"></div>
+    <div class="veil2"></div>
+    <div class="tinner">
+      <div class="tcopy reveal">
+        <div class="t-rule"></div>
+        <h2><b>14</b> ans d'écriture.<br/><b>3</b> livres. <b>1200</b> pages.</h2>
+        <p>Le troisième et dernier tome de la trilogie paraîtra le 4 novembre.</p>
+        <p>Depuis le premier livre, une même question traverse l'œuvre de Krystine St-Laurent : comment revenir au point d'origine, là où le corps, le rythme, la nature et les cycles redeviennent des repères fiables.</p>
+        <div class="tri-btns">
+          <a class="btn-solid" href="#portes">Découvrir la trilogie</a>
+          <a class="btn-outline" href="#infolettre">Être informée de la sortie</a>
+        </div>
+      </div>
+    </div>
+    <div class="tri-foot reveal d3">La trilogie pose les fondations écrites. Le retour au point d'origine devient l'axe de l'œuvre.</div>
+  </section>
+
+  <!-- ===== FIL CENTRAL ===== -->
+  <section class="central" id="origine">
+    <div class="mx">
+      <div class="wheel reveal">
+        <img class="wc" src="/accueil/assets/wheel-watercolor.png" alt="Roue du retour au point d'origine" />
+        <div class="disc">Retour au point d'origine</div>
+      </div>
+      <div class="head reveal d2">
+        <div class="eyebrow">Le fil central :</div>
+        <h2>Le retour au point d'origine</h2>
+        <p>Revenir à l'axe qui relie l'ensemble de l'œuvre. Il invite à revenir à un repère intérieur plus stable, à travers le corps, les rythmes, les saisons, la matière et les passages de vie.</p>
+        <div class="icons">
+          <div class="ic"><svg viewBox="0 0 33 33"><circle cx="16.5" cy="7" r="3"/><path d="M16.5 10v12M16.5 13l-8 4M16.5 13l8 4M16.5 22l-5 8M16.5 22l5 8"/></svg><span>Corps</span></div>
+          <div class="ic"><svg viewBox="0 0 33 33"><circle cx="16.5" cy="16.5" r="10"/><path d="M20 9a8 8 0 1 0 0 15 10 10 0 0 1 0-15Z" fill="var(--ink)" stroke="none"/></svg><span>Cycles</span></div>
+          <div class="ic"><svg viewBox="0 0 33 33"><path d="M16.5 28V11M16.5 15c-5-3-9-1-11 4M16.5 19c5-3 9-1 11 4"/></svg><span>Nature</span></div>
+          <div class="ic"><svg viewBox="0 0 33 33"><path d="M4 13c3-4.5 6-4.5 9 0s6 4.5 9 0 6-4.5 7.5 0"/><path d="M4 20c3-4.5 6-4.5 9 0s6 4.5 9 0 6-4.5 7.5 0"/></svg><span>Rythme</span></div>
+          <div class="ic"><svg viewBox="0 0 33 33"><path d="M6 27V15a10.5 10.5 0 0 1 21 0v12"/></svg><span>Passages</span></div>
+          <div class="ic"><svg viewBox="0 0 33 33"><path d="M5 15h23a11.5 11.5 0 0 1-23 0Z"/><path d="M16.5 15V8"/></svg><span>Choix<br/>quotidiens</span></div>
+        </div>
+        <div class="tagline reveal d3">Tout part de là. Tout s'y relie.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PORTES ===== -->
+  <section class="portes" id="portes">
+    <div class="mx">
+      <h2 class="sec-title reveal">Les portes d'entrée</h2>
+      <div class="rule reveal d1"></div>
+      <div class="fan" id="fan">
+        <a class="card" href="/origine" data-num="01" data-title="Expérience Origine" data-desc="Un parcours pour revenir à un repère intérieur plus stable et transformer sa relation à soi, au corps et à la vie." data-link="Découvrir"><img src="/accueil/assets/portes/origine.png" alt="Sentier de jardin vers la lumière"><span class="fn">01</span></a>
+        <a class="card" href="/podcast" data-num="02" data-title="Le Podcast" data-desc="Des épisodes pour ouvrir la réflexion, questionner, comprendre et revenir à l'essentiel." data-link="Écouter"><img src="/accueil/assets/portes/podcast.png" alt="Micro de studio en lumière chaude"><span class="fn">02</span></a>
+        <a class="card" href="/medias#livres" data-num="03" data-title="Les Livres" data-desc="Les fondations écrites de l'œuvre : sagesse du corps, cycles, plantes, alimentation, saisons et transformation." data-link="Découvrir"><img src="/accueil/assets/portes/livres.png" alt="Livres reliés et brins botaniques"><span class="fn">03</span></a>
+        <a class="card" href="/liste-attente?programme=retraite" data-num="04" data-title="Les Retraites" data-desc="Des espaces en nature pour déposer le bruit, revenir au corps et s'ouvrir à la transformation." data-link="Découvrir"><img src="/accueil/assets/portes/retraites.png" alt="Cabane de bois dans la forêt d'automne"><span class="fn">04</span></a>
+        <a class="card" href="/conferenciere" data-num="05" data-title="Les Conférences" data-desc="Conférences et soirées de parole pour partager la vision et inspirer le changement." data-link="Inviter"><img src="/accueil/assets/portes/conferences.png" alt="Salle de conférence à la lueur des bougies"><span class="fn">05</span></a>
+        <a class="card" href="/boutique" data-num="06" data-title="Inspirata Ayurveda" data-desc="Les huiles, les plantes et les rituels de soin pour incarner l'œuvre au quotidien." data-link="Découvrir"><img src="/accueil/assets/portes/inspirata.png" alt="Flacons d'huiles ayurvédiques ambrés"><span class="fn">06</span></a>
+      </div>
+      <div class="fan-cap" id="fancap">
+        <div class="fc-inner">
+          <span class="fc-num">01</span>
+          <h3>Expérience Origine</h3>
+          <p>Un parcours pour revenir à un repère intérieur plus stable et transformer sa relation à soi, au corps et à la vie.</p>
+          <a href="/origine">Découvrir →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COMMENT TOUT SE RELIE ===== -->
+  <section class="relie" id="apropos">
+    <div class="mx">
+      <div class="copy2 reveal">
+        <h2>Comment tout<br/>se relie</h2>
+        <p>Chaque porte mène au même centre : revenir au corps, au rythme, à la nature et à ce qui organise la vie de l'intérieur.</p>
+        <a class="more" href="#oeuvre">Voir l'ensemble de l'œuvre →</a>
+      </div>
+      <div class="web reveal d2">
+        <svg class="spokes" viewBox="0 0 100 100" aria-hidden="true"><circle class="ring" cx="50" cy="50" r="38"/><line class="spk s0" x1="50" y1="50" x2="50" y2="12"/><line class="spk s1" x1="50" y1="50" x2="83" y2="31"/><line class="spk s2" x1="50" y1="50" x2="83" y2="69"/><line class="spk s3" x1="50" y1="50" x2="50" y2="88"/><line class="spk s4" x1="50" y1="50" x2="17" y2="69"/><line class="spk s5" x1="50" y1="50" x2="17" y2="31"/></svg>
+        <div class="hcore">Retour au point d'origine</div>
+        <a class="hnode n0" href="/medias#livres" style="top:12%;left:50%"><span class="ni"><svg viewBox="0 0 23 23"><path d="M11.5 6c-2-1.4-5-1.4-7.5 0v12c2.5-1.4 5.5-1.4 7.5 0M11.5 6c2-1.4 5-1.4 7.5 0v12c-2.5-1.4-5.5-1.4-7.5 0M11.5 6v12"/></svg></span><span class="nt">Les Livres</span></a>
+        <a class="hnode n1" href="/podcast" style="top:31%;left:83%"><span class="ni"><svg viewBox="0 0 23 23"><rect x="8.5" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6 6 0 0 0 12 0M11.5 17v4"/></svg></span><span class="nt">Le Podcast</span></a>
+        <a class="hnode n2" href="/boutique" style="top:69%;left:83%"><span class="ni"><svg viewBox="0 0 23 23"><path d="M9.5 3h4M10.5 3v4l-3 8.5a2.8 2.8 0 0 0 2.8 3.7h1.4a2.8 2.8 0 0 0 2.8-3.7l-3-8.5V3"/></svg></span><span class="nt">Inspirata Ayurveda</span></a>
+        <a class="hnode n3" href="/origine" style="top:88%;left:50%"><span class="ni"><svg viewBox="0 0 23 23"><circle cx="11.5" cy="8.5" r="3"/><path d="M5 19c0-3.6 2.9-6.5 6.5-6.5S18 15.4 18 19"/></svg></span><span class="nt">Expérience Origine</span></a>
+        <a class="hnode n4" href="/conferenciere" style="top:69%;left:17%"><span class="ni"><svg viewBox="0 0 23 23"><circle cx="7.5" cy="8.5" r="2.3"/><circle cx="15.5" cy="8.5" r="2.3"/><path d="M3 18.5c0-3 2-5 4.5-5s4.5 2 4.5 5M11 18.5c0-3 2-5 4.5-5s4.5 2 4.5 5"/></svg></span><span class="nt">Les Conférences</span></a>
+        <a class="hnode n5" href="/liste-attente?programme=retraite" style="top:31%;left:17%"><span class="ni"><svg viewBox="0 0 23 23"><path d="M3 19l8.5-7 8.5 7M6 17.5v-4M17 17.5v-4M9 20v-5h5v5"/></svg></span><span class="nt">Les Retraites</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER / INFOLETTRE ===== -->
+  <footer class="foot" id="contact">
+    <canvas id="dust2" class="foot-dust"></canvas>
+    <div class="mx">
+      <div class="q reveal">« Le retour à soi<br/>est le plus grand acte<br/>de transformation. »<span class="sig">Krystine</span></div>
+      <div class="nl reveal d2" id="infolettre">
+        <h3>Rester relié à L'Œuvre</h3>
+        <p>Recevez les prochaines transmissions, inspirations et invitations de Krystine St-Laurent.</p>
+        <form class="nlform" id="nlform" novalidate>
+          <label for="nlmail" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Votre courriel</label>
+          <input id="nlmail" type="email" placeholder="Votre courriel" autocomplete="email" aria-describedby="nlmsg" />
+          <button type="submit">S'inscrire</button>
+        </form>
+        <p class="nl-msg" id="nlmsg" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+    <div class="copyr">© Krystine St-Laurent · Inspira Nature · Tous droits réservés</div>
+  </footer>
+
+<script>
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  // reusable ambient warm dust on any canvas
+  function dust(canvas,count,maxr){
+    const x=canvas.getContext('2d');let W,H,parts;
+    function size(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;
+      parts=Array.from({length:count},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*maxr+.3,
+        s:Math.random()*.2+.05,o:Math.random()*.4+.1,d:Math.random()*Math.PI}));}
+    function tick(){x.clearRect(0,0,W,H);
+      for(const p of parts){p.y-=p.s;p.x+=Math.sin(p.d+=0.01)*0.2;if(p.y<-5){p.y=H+5;p.x=Math.random()*W;}
+        x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fillStyle='rgba(230,210,164,'+p.o+')';x.fill();}
+      requestAnimationFrame(tick);}
+    size();tick();addEventListener('resize',size);
+  }
+  if(!reduce){
+    const d1=document.getElementById('dust'); if(d1) dust(d1,58,1.5);
+    const d2=document.getElementById('dust2'); if(d2) dust(d2,42,1.6);
+  }
+  // scroll reveals with stagger
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.16});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  setTimeout(()=>document.querySelectorAll('.hero .reveal').forEach(el=>el.classList.add('in')),130);
+  // V2: rotate the fil-central wheel with scroll position
+  if(!reduce){
+    const wc=document.querySelector('.wc'); let wraf=false;
+    function wf(){ if(wc) wc.style.transform='rotate('+(scrollY*0.05)+'deg)'; wraf=false; }
+    addEventListener('scroll',()=>{ if(!wraf){wraf=true;requestAnimationFrame(wf);} },{passive:true}); wf();
+  }
+  // gentle scroll parallax (transform-only, rAF-throttled)
+  if(!reduce){
+    const items=[...document.querySelectorAll('[data-par]')].map(el=>({el,sp:parseFloat(el.dataset.par)}));
+    let ticking=false;
+    function frame(){
+      const vh=innerHeight;
+      for(const it of items){
+        const r=it.el.getBoundingClientRect();
+        const off=((r.top+r.height/2)-vh/2)*it.sp;
+        it.el.style.transform='translate3d(0,'+off.toFixed(1)+'px,0)';
+      }
+      ticking=false;
+    }
+    function onScroll(){ if(!ticking){ticking=true;requestAnimationFrame(frame);} }
+    addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll); onScroll();
+  }
+
+  // Subtle wind rustle on hover (synthesized filtered noise, no audio file). Hover-capable devices only.
+  if(matchMedia('(hover: hover)').matches){
+    let actx=null;
+    function ensureCtx(){ if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(actx&&actx.state==='suspended') actx.resume(); return actx; }
+    addEventListener('pointerdown',ensureCtx,{once:true});
+    let last=0;
+    function rustle(){
+      const ctx=ensureCtx(); if(!ctx) return;
+      const t=ctx.currentTime; if(t-last<0.05) return; last=t;
+      const dur=0.7;
+      const buf=ctx.createBuffer(1, Math.floor(ctx.sampleRate*dur), ctx.sampleRate);
+      const d=buf.getChannelData(0);
+      for(let i=0;i<d.length;i++){ d[i]=(Math.random()*2-1); }
+      const src=ctx.createBufferSource(); src.buffer=buf;
+      const bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.Q.value=0.55;
+      bp.frequency.setValueAtTime(420,t);
+      bp.frequency.linearRampToValueAtTime(900,t+0.20);   // a soft gust swelling
+      bp.frequency.linearRampToValueAtTime(520,t+dur);
+      const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1500;
+      const g=ctx.createGain();
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.linearRampToValueAtTime(0.045,t+0.14);        // gentle airy swell
+      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      src.connect(bp).connect(lp).connect(g).connect(ctx.destination);
+      src.start(t); src.stop(t+dur);
+    }
+    // Event delegation: robust even for buttons that move/disappear on hover.
+    const HOVER_SEL='.cta,.btn-solid,.btn-outline,.clink,.nlform button,.more,.navlinks a';
+    let lastEl=null;
+    document.addEventListener('pointerover',(e)=>{
+      const el=e.target.closest && e.target.closest(HOVER_SEL);
+      if(el && el!==lastEl){ lastEl=el; rustle(); }
+    });
+    document.addEventListener('pointerout',(e)=>{
+      const el=e.target.closest && e.target.closest(HOVER_SEL);
+      if(el===lastEl) lastEl=null;
+    });
+  }
+
+  // Portes en éventail: fan layout, staggered entrance, hover spread, caption swap
+  (function(){
+    const fan=document.getElementById('fan'); if(!fan) return;
+    const cards=[...fan.querySelectorAll('.card')]; const N=cards.length;
+    const cap=document.getElementById('fancap'), inner=cap.querySelector('.fc-inner');
+    const center=(N-1)/2;
+    function mult(){ const w=innerWidth; if(w<480)return .42; if(w<640)return .54; if(w<860)return .72; return 1; }
+    function slot(i){ const d=i-center, m=mult();
+      return { x:d*108*m, y:Math.abs(d)*Math.abs(d)*9*m, rot:d*8, sc:1-Math.abs(d)*0.045, z:20-Math.round(Math.abs(d)*3) }; }
+    function place(i,o){ const c=cards[i];
+      c.style.transform='translateX('+o.x+'px) translateY('+o.y+'px) rotate('+o.rot+'deg) scale('+o.sc+')';
+      c.style.zIndex=o.z; c.style.opacity=1; }
+    function rest(){ cards.forEach((c,i)=>place(i,slot(i))); }
+    function spread(h){
+      cards.forEach((c,i)=>{ const b=slot(i);
+        if(i===h){ b.y-=26; b.sc*=1.07; b.z=30; b.rot*=.4; }
+        else { const dir=i<h?-1:1, dist=Math.abs(i-h); b.x+=dir*38*(1-Math.min(1,dist/3.2)); b.rot+=dir*2.5/(dist); }
+        place(i,b);
+      });
+    }
+    function setCap(c){
+      inner.innerHTML='<span class="fc-num">'+c.dataset.num+'</span><h3>'+c.dataset.title+'</h3><p>'+c.dataset.desc+'</p><a href="'+c.getAttribute('href')+'">'+c.dataset.link+' →</a>';
+    }
+    cards.forEach((c,i)=>{
+      c.addEventListener('pointerenter',()=>{ if(entered){ spread(i); cap.classList.add('swap'); setTimeout(()=>{ setCap(c); cap.classList.remove('swap'); },180); } });
+    });
+    fan.addEventListener('pointerleave',()=>{ if(entered) rest(); });
+    // entrance on scroll-in (staggered rise); reduced-motion = instant
+    let entered=false;
+    function enter(){ if(entered) return; entered=true;
+      if(reduce){ rest(); return; }
+      cards.forEach((c,i)=>{
+        c.style.transition='none';
+        c.style.transform='translateY(120px) scale(.55)'; c.style.opacity='0';
+        const o=slot(i), delay=120+Math.abs(i-center)*90;
+        requestAnimationFrame(()=>setTimeout(()=>{
+          c.style.transition='transform .95s cubic-bezier(.34,1.32,.5,1),opacity .6s ease';
+          place(i,o);
+        },delay));
+      });
+    }
+    const fio=new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ enter(); fio.disconnect(); } }),{threshold:.35});
+    fio.observe(fan);
+  })();
+
+  // Newsletter: inline validation + success state
+  (function(){
+    const f=document.getElementById('nlform'); if(!f) return;
+    const input=document.getElementById('nlmail'), msg=document.getElementById('nlmsg');
+    const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    function setMsg(text,cls){ msg.textContent=text; msg.className='nl-msg show '+cls; }
+    input.addEventListener('input',()=>{ if(input.getAttribute('aria-invalid')==='true' && ok.test(input.value.trim())){ input.removeAttribute('aria-invalid'); msg.className='nl-msg'; } });
+    f.addEventListener('submit',(e)=>{
+      e.preventDefault();
+      const v=input.value.trim();
+      if(!ok.test(v)){ input.setAttribute('aria-invalid','true'); input.focus(); setMsg('Entrez un courriel valide pour recevoir les transmissions.','err'); return; }
+      input.removeAttribute('aria-invalid');
+      var btn=f.querySelector('button'); if(btn)btn.disabled=true; setMsg('Un instant…','');
+      (async function(){
+        try{
+          if(window.__nlSubscribe){ await window.__nlSubscribe(v); }
+          f.style.display='none';
+          setMsg('Merci. Vous êtes reliée à l’Œuvre. À très bientôt.','ok');
+        }catch(err){
+          if(btn)btn.disabled=false;
+          setMsg('Un souci est survenu. Réessayez dans un instant.','err');
+        }
+      })();
+    });
+  })();
+
+  /* radial hub — reactive focus */
+  (function(){var w=document.querySelector('.web');if(!w)return;var nodes=[].slice.call(w.querySelectorAll('.hnode')),spk=[].slice.call(w.querySelectorAll('.spk'));
+   function clear(){nodes.forEach(function(x){x.classList.remove('on')});spk.forEach(function(x){x.classList.remove('on')});}
+   nodes.forEach(function(n,i){n.addEventListener('pointerenter',function(){w.classList.add('foc');clear();n.classList.add('on');if(spk[i])spk[i].classList.add('on');});});
+   w.addEventListener('pointerleave',function(){w.classList.remove('foc');clear();});
+  })();
+</script>
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  const app = initializeApp({
+    apiKey: "AIzaSyCjxu7l0ZNpbLa5LJdTe5WdjlTmLhoNUNk",
+    authDomain: "krystinestlaurent-87566.firebaseapp.com",
+    projectId: "krystinestlaurent-87566",
+    storageBucket: "krystinestlaurent-87566.firebasestorage.app",
+    messagingSenderId: "908806491352",
+    appId: "1:908806491352:web:a11a9f39bdcc5183851bad"
+  });
+  const db = getFirestore(app);
+  function token(){ const b=new Uint8Array(18); crypto.getRandomValues(b); return Array.from(b,x=>x.toString(16).padStart(2,'0')).join(''); }
+  window.__nlSubscribe = async (email) => {
+    await addDoc(collection(db,'newsletter'), {
+      email: String(email).trim().toLowerCase(),
+      source: 'accueil-loeuvre',
+      tags: ['accueil-loeuvre'],
+      status: 'active',
+      unsubscribeToken: token(),
+      subscribedAt: serverTimestamp()
+    });
+  };
+</script>
+</body>
+</html>
