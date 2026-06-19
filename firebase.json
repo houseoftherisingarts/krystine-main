@@ -6,7 +6,12 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "redirects": [
+      { "source": "/", "destination": "/accueil", "type": 302 }
+    ],
     "rewrites": [
+      { "source": "/accueil",    "destination": "/accueil/index.html" },
+      { "source": "/accueil/**", "destination": "/accueil/index.html" },
       { "source": "/origine",   "destination": "/origine/index.html" },
       { "source": "/podcast",   "destination": "/podcast/index.html" },
       { "source": "/vata",      "destination": "/vata/index.html" },

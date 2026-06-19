@@ -22,6 +22,16 @@ import { processDevAdminUrl } from './src/lib/devAdmin';
 // and decides who's an admin. No-op in production builds.
 processDevAdminUrl();
 
+// The home is served as a self-contained static bundle via Firebase Hosting
+// (public/accueil/, see firebase.json rewrites + staticRoutes.ts). On client-side
+// navigation to /accueil, force a full document load so Firebase serves the static
+// landing instead of React Router rendering the SPA. The previous React home is
+// kept at /accueil-classic for rollback and side-by-side comparison.
+function HardReload({ to }: { to: string }) {
+  useEffect(() => { window.location.replace(to); }, [to]);
+  return null;
+}
+
 // Lazy-loaded pages for code splitting
 const SplashScreen     = lazy(() => import('./src/pages/SplashScreen'));
 const InspiratHome     = lazy(() => import('./src/pages/InspiratHome'));
@@ -117,7 +127,8 @@ const App: React.FC = () => (
               Splash is currently hidden — "/" lands straight on /accueil.
               Restore by swapping back to `element={<SplashScreen />}` below. */}
           <Route path="/" element={<Navigate to="/accueil" replace />} />
-          <Route path="/accueil" element={<InspiratHome />} />
+          <Route path="/accueil" element={<HardReload to="/accueil" />} />
+          <Route path="/accueil-classic" element={<InspiratHome />} />
 
           {/* ── Pages Inspirata ───────────────────────────────────────── */}
           <Route path="/krystine"        element={<ConferencierePage />} />
