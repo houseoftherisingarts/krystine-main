@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Liste d'attente · Origine — Krystine St-Laurent</title>
+<meta name="description" content="Joignez la liste d'attente d'Origine. Vous serez prévenue en douceur, parmi les premières, avant l'annonce publique." />
+<link rel="canonical" href="https://krystinestlaurent.ca/liste-attente-origine" />
+<meta name="robots" content="noindex,follow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --espresso-deep:#16100a; --espresso:#1d1604; --espresso-soft:#2a2015;
+    --cream:#f6f3ee; --cream-2:#f1ebe0; --cream-3:#ede5d7; --card:#faf7f0;
+    --ink:#3a3126; --ink-soft:#665746;
+    --brass:#bb9a5e; --brass-deep:#a3823f; --brass-bright:#dcb874; --brass-ink:#7d6330; --ochre:#c79a52; --terracotta:#b06a3f;
+    --ctext:#f4ece0; --ctext-soft:#cdbfa9;
+    --serif:"Cormorant Garamond",Georgia,serif; --sans:"Inter",system-ui,sans-serif; --script:"Pinyon Script",cursive;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--cream);color:var(--ink);min-height:100dvh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .mx{width:100%;max-width:720px;margin:0 auto;padding:0 1.5rem}
+
+  /* top band */
+  .topbar{background:var(--espresso-deep)}
+  .topbar .mx{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1100px}
+  .logo{font-family:var(--serif);font-weight:600;letter-spacing:.12em;font-size:1.04rem;text-transform:uppercase;color:var(--ctext)}
+  .back{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ctext-soft);transition:color .25s}
+  .back:hover{color:var(--brass-bright)}
+
+  /* main */
+  main{flex:1;display:flex;align-items:center;justify-content:center;padding:4.5rem 0 5rem}
+  .panel{text-align:center}
+  .eyebrow{font-family:var(--serif);font-style:italic;font-size:1.12rem;letter-spacing:.04em;color:var(--terracotta)}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(3rem,8vw,5rem);line-height:.92;letter-spacing:.01em;color:var(--ink);text-transform:uppercase;margin:.5rem 0 0}
+  .rule{width:60px;height:1px;background:var(--brass);margin:1.4rem auto 0}
+  .lede{margin:1.6rem auto 0;max-width:430px;font-size:.98rem;line-height:1.9;color:var(--ink-soft)}
+
+  form{margin:2.6rem auto 0;max-width:460px;text-align:left;background:var(--card);border:1px solid rgba(187,154,94,.4);border-radius:4px;padding:2.1rem 1.9rem 2rem;box-shadow:0 24px 60px -38px rgba(40,28,16,.55)}
+  .field{margin-bottom:1.15rem}
+  .field:last-of-type{margin-bottom:1.4rem}
+  label{display:block;font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:.5rem;font-weight:600}
+  label .req{color:var(--terracotta);margin-left:.15em}
+  input{width:100%;height:50px;padding:0 1rem;background:#fffdf8;border:1px solid rgba(58,49,38,.22);border-radius:3px;color:var(--ink);font-family:var(--sans);font-size:.92rem;transition:border-color .22s,box-shadow .22s}
+  input::placeholder{color:rgba(102,87,70,.55)}
+  input:focus{outline:none;border-color:var(--brass);box-shadow:0 0 0 3px rgba(187,154,94,.16)}
+  input[aria-invalid="true"]{border-color:#b85a30;box-shadow:0 0 0 3px rgba(184,90,48,.12)}
+  button{width:100%;height:54px;background:var(--brass);color:var(--espresso-deep);border:1px solid var(--brass);border-radius:3px;font-family:var(--sans);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background .28s,transform .2s,border-color .28s}
+  button:hover:not(:disabled){background:var(--brass-bright);border-color:var(--brass-bright);transform:translateY(-2px)}
+  button:disabled{opacity:.6;cursor:default}
+  .fineprint{margin-top:1.1rem;font-size:.72rem;line-height:1.6;color:var(--ink-soft);text-align:center}
+  .msg{min-height:1.1em;margin-top:1rem;font-size:.82rem;line-height:1.5;text-align:center;opacity:0;transform:translateY(-3px);transition:opacity .35s,transform .35s}
+  .msg.show{opacity:1;transform:none}
+  .msg.err{color:#b85a30}
+  .done{font-family:var(--serif);font-style:italic;font-size:1.22rem;line-height:1.5;color:var(--ink);max-width:430px;margin:2.4rem auto 0}
+  .done .sig{display:block;margin-top:1rem;font-family:var(--script);font-style:normal;font-size:1.9rem;color:var(--brass-deep)}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(26px);filter:blur(6px);transition:opacity 1.1s ease,transform 1.2s cubic-bezier(.16,.8,.24,1),filter 1.1s ease}
+  .reveal.d2{transition-delay:.12s}
+  .reveal.d3{transition-delay:.24s}
+  .reveal.in{opacity:1;transform:none;filter:none}
+
+  /* footer */
+  .foot{position:relative;background:var(--espresso);color:var(--ctext);padding:3.2rem 0 0;overflow:hidden}
+  .foot-dust{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+  .foot .mx{position:relative;text-align:center}
+  .foot .q{font-family:var(--serif);font-style:italic;font-size:1.32rem;line-height:1.45;color:var(--ctext)}
+  .foot .q .sig{font-family:var(--script);font-style:normal;font-size:1.9rem;color:var(--brass);display:block;margin-top:.5rem;letter-spacing:.02em}
+  .copyr{position:relative;text-align:center;margin-top:2.6rem;padding:1.3rem 0;border-top:1px solid rgba(187,154,94,.16);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ctext-soft)}
+
+  @media(max-width:560px){
+    form{padding:1.7rem 1.3rem 1.6rem}
+    main{padding:3.2rem 0 3.6rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .reveal{opacity:1!important;transform:none!important;filter:none!important}
+  }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="mx">
+      <a class="logo" href="/accueil">Krystine St-Laurent</a>
+      <a class="back" href="/accueil">← Retour</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="mx">
+      <div class="panel">
+        <p class="eyebrow reveal">Origine</p>
+        <h1 class="reveal">Liste<br/>d'attente</h1>
+        <div class="rule reveal d2"></div>
+        <p class="lede reveal d2">Origine s'ouvrira bientôt. Laissez-nous votre nom : vous serez prévenue en douceur, parmi les premières, avant l'annonce publique.</p>
+
+        <form id="wform" class="reveal d3" novalidate>
+          <div class="field">
+            <label for="fn">Prénom<span class="req">*</span></label>
+            <input id="fn" name="firstName" type="text" autocomplete="given-name" placeholder="Votre prénom" required />
+          </div>
+          <div class="field">
+            <label for="ln">Nom<span class="req">*</span></label>
+            <input id="ln" name="lastName" type="text" autocomplete="family-name" placeholder="Votre nom" required />
+          </div>
+          <div class="field">
+            <label for="em">Courriel<span class="req">*</span></label>
+            <input id="em" name="email" type="email" autocomplete="email" inputmode="email" placeholder="vous@exemple.com" aria-describedby="wmsg" required />
+          </div>
+          <button type="submit">Rejoindre la liste</button>
+          <p class="fineprint">Aucun engagement. Vous pouvez vous désinscrire en tout temps.</p>
+        </form>
+        <p class="msg" id="wmsg" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <canvas id="dust2" class="foot-dust"></canvas>
+    <div class="mx">
+      <div class="q reveal">« Le retour à soi<br/>est le plus grand acte<br/>de transformation. »<span class="sig">Krystine</span></div>
+    </div>
+    <div class="copyr">© Krystine St-Laurent · Inspira Nature · Tous droits réservés</div>
+  </footer>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  const app = initializeApp({
+    apiKey: "AIzaSyCjxu7l0ZNpbLa5LJdTe5WdjlTmLhoNUNk",
+    authDomain: "krystinestlaurent-87566.firebaseapp.com",
+    projectId: "krystinestlaurent-87566",
+    storageBucket: "krystinestlaurent-87566.firebasestorage.app",
+    messagingSenderId: "908806491352",
+    appId: "1:908806491352:web:a11a9f39bdcc5183851bad"
+  });
+  const db = getFirestore(app);
+  function token(){ const b=new Uint8Array(18); crypto.getRandomValues(b); return Array.from(b,x=>x.toString(16).padStart(2,'0')).join(''); }
+
+  // source from ?programme= so backend segmentation matches the React waitlist; default 'origine'
+  const params = new URLSearchParams(location.search);
+  const source = (params.get('programme') || 'origine').trim().toLowerCase() || 'origine';
+
+  const f = document.getElementById('wform');
+  const msgEl = document.getElementById('wmsg');
+  const fn = document.getElementById('fn'), ln = document.getElementById('ln'), em = document.getElementById('em');
+  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  function setMsg(t, cls){ msgEl.textContent = t; msgEl.className = 'msg show' + (cls ? ' ' + cls : ''); }
+  function clearInvalid(){ [fn,ln,em].forEach(i=>i.removeAttribute('aria-invalid')); }
+
+  f.addEventListener('submit', (e) => {
+    e.preventDefault();
+    clearInvalid();
+    const firstName = fn.value.trim(), lastName = ln.value.trim(), email = em.value.trim();
+    if(!firstName){ fn.setAttribute('aria-invalid','true'); fn.focus(); return setMsg('Votre prénom est requis.','err'); }
+    if(!lastName){ ln.setAttribute('aria-invalid','true'); ln.focus(); return setMsg('Votre nom est requis.','err'); }
+    if(!emailRe.test(email)){ em.setAttribute('aria-invalid','true'); em.focus(); return setMsg('Une adresse courriel valide est requise.','err'); }
+
+    const btn = f.querySelector('button'); btn.disabled = true; setMsg('Un instant…','');
+    (async () => {
+      try{
+        await addDoc(collection(db,'newsletter'), {
+          email: email.toLowerCase(),
+          firstName, lastName,
+          source,
+          tags: [source],
+          status: 'active',
+          unsubscribeToken: token(),
+          subscribedAt: serverTimestamp()
+        });
+        f.style.display = 'none';
+        msgEl.className = 'msg show';
+        msgEl.innerHTML = '<span class="done">Merci. Votre nom est inscrit. Vous serez parmi les premières prévenues à l’ouverture d’Origine.<span class="sig">Krystine</span></span>';
+      }catch(err){
+        btn.disabled = false;
+        setMsg('Un souci est survenu. Réessayez dans un instant.','err');
+      }
+    })();
+  });
+</script>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function dust(canvas,count,maxr){
+    const x=canvas.getContext('2d');let W,H,parts;
+    function build(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;
+      parts=Array.from({length:count},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*maxr+.3,
+        s:Math.random()*.2+.05,o:Math.random()*.4+.12,d:Math.random()*Math.PI}));}
+    function draw(){x.clearRect(0,0,W,H);
+      for(const p of parts){x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fillStyle='rgba(230,210,164,'+p.o+')';x.fill();}}
+    function tick(){for(const p of parts){p.y-=p.s;p.x+=Math.sin(p.d+=0.01)*0.2;if(p.y<-5){p.y=H+5;p.x=Math.random()*W;}}draw();requestAnimationFrame(tick);}
+    function resize(){build();draw();}
+    build(); if(reduce){draw();} else {tick();}
+    addEventListener('resize',resize);addEventListener('load',resize);setTimeout(resize,400);
+  }
+  const d2=document.getElementById('dust2'); if(d2) dust(d2,90,1.5);
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.16});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  setTimeout(()=>document.querySelectorAll('main .reveal').forEach(el=>el.classList.add('in')),130);
+</script>
+</body>
+</html>
