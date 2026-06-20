@@ -18,6 +18,8 @@
       { "source": "/origine/**", "destination": "/origine/index.html" },
       { "source": "/podcast/**", "destination": "/podcast/index.html" },
       { "source": "/vata/**",    "destination": "/vata/index.html" },
+      { "source": "/liste-attente-origine",    "destination": "/liste-attente-origine/index.html" },
+      { "source": "/liste-attente-origine/**", "destination": "/liste-attente-origine/index.html" },
       { "source": "**", "destination": "/index.html" }
     ],
     "headers": [
