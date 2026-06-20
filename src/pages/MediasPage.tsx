@@ -358,8 +358,8 @@ const MediasPage: React.FC = () => {
                             e.stopPropagation();
                             setWaitlistTarget({
                               id: 'parution-livre-3',
-                              labelFR: 'Parution · Énergie & Ayurveda (14 octobre 2026)',
-                              labelEN: 'Release · Energy & Ayurveda (October 14, 2026)',
+                              labelFR: 'Parution · Titre à révéler (4 novembre 2026)',
+                              labelEN: 'Release · Title to be revealed (November 4, 2026)',
                             });
                           }}
                           className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] font-bold uppercase tracking-[0.25em] text-[11px] shadow-md hover:bg-[#B8532F] hover:text-[#3A251E] hover:shadow-[0_10px_24px_rgba(184,83,47,0.35)] transition-all"
