@@ -139,7 +139,7 @@
   .portes{position:relative;z-index:4;background:var(--cream);padding:5.5rem 0 6.5rem}
   .sec-title{text-align:center;font-family:var(--serif);font-weight:500;font-size:clamp(1.9rem,3.4vw,2.7rem);color:var(--ink);letter-spacing:.04em;text-transform:uppercase}
   .rule{width:60px;height:1px;background:var(--brass);margin:1.1rem auto 0}
-  .fan{position:relative;height:clamp(330px,40vw,540px);max-width:1000px;margin:3.4rem auto 0}
+  .fan{position:relative;height:clamp(330px,40vw,540px);max-width:1200px;margin:3.4rem auto 0}
   .fan .card{position:absolute;left:50%;bottom:8%;width:clamp(150px,19vw,224px);aspect-ratio:3/4.1;margin-left:calc(clamp(150px,19vw,224px) / -2);
     transform-origin:bottom center;border-radius:3px;overflow:hidden;cursor:pointer;opacity:0;will-change:transform;
     box-shadow:0 16px 38px rgba(40,28,16,.3);transition:transform .55s cubic-bezier(.34,1.25,.5,1),box-shadow .4s ease}
@@ -695,7 +695,7 @@
     const center=(N-1)/2;
     function mult(){ const w=innerWidth; if(w<480)return .42; if(w<640)return .54; if(w<860)return .72; return 1; }
     function slot(i){ const d=i-center, m=mult();
-      return { x:d*128*m, y:Math.abs(d)*Math.abs(d)*9*m, rot:d*7, sc:1-Math.abs(d)*0.045, z:20-Math.round(Math.abs(d)*3) }; }
+      return { x:d*190*m, y:Math.abs(d)*Math.abs(d)*9*m, rot:d*6, sc:1-Math.abs(d)*0.04, z:20-Math.round(Math.abs(d)*3) }; }
     function place(i,o){ const c=cards[i];
       c.style.transform='translateX('+o.x+'px) translateY('+o.y+'px) rotate('+o.rot+'deg) scale('+o.sc+')';
       c.style.zIndex=o.z; c.style.opacity=1; }
