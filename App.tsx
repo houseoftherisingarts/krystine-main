@@ -58,6 +58,9 @@ const SlideBg          = lazy(() => import('./src/pages/SlideBg'));
 // captured from the footer contact card. URL-only access — never linked
 // from the visible navigation.
 const VexelPage        = lazy(() => import('./src/pages/VexelPage'));
+// Expérience Origine — refonte React au style L'Œuvre (remplacera le bundle
+// statique /origine une fois toutes les sections portées). Preview en cours.
+const OrigineExperience = lazy(() => import('./src/pages/OrigineExperience'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#050C1A]">
@@ -131,6 +134,8 @@ const App: React.FC = () => (
           <Route path="/accueil-classic" element={<InspiratHome />} />
 
           {/* ── Pages Inspirata ───────────────────────────────────────── */}
+          {/* Preview refonte L'Œuvre de l'Expérience Origine (Phase 1) */}
+          <Route path="/origine-loeuvre" element={<OrigineExperience />} />
           <Route path="/krystine"        element={<ConferencierePage />} />
           <Route path="/boutique"        element={<BoutiquePage />} />
           <Route path="/boutique/:slug"  element={<BoutiqueCollectionPage />} />
