@@ -78,7 +78,7 @@ const FAQS = [
   { q: "J'ai suivi tellement de formations et j'ai l'impression d'avoir empilé les connaissances. Rien ne semble rester. Pourquoi ce serait différent cette fois ?", a: "C'est la différence entre savoir et sentir. Origine n'est pas une formation intellectuelle de plus. C'est un espace pour déposer le savoir dans le corps. On ne cherche pas à ajouter, on cherche à intégrer." },
   { q: "Quelque chose me dit oui, mais j'arrête toujours en chemin. Qu'est-ce qui me dit que cette fois je vais tenir ?", a: "La structure du parcours est conçue spécifiquement pour vous soutenir sans vous surcharger. Les méditations courtes et la communauté bienveillante sont là pour vous ramener à vous-même, à votre rythme." },
   { q: "Combien de temps par semaine ?", a: "Prévoyez environ 3 heures par semaine : 2 heures pour notre rencontre en direct le dimanche, et environ 1 heure répartie dans votre semaine pour écouter le module audio et pratiquer les intégrations." },
-  { q: "Le cercle est limité à 250 personnes. Est-ce que je vais me perdre dans le groupe ?", a: "Au contraire. Cette limite garantit une intimité et permet à Krystine de ressentir l'énergie du groupe. L'espace communautaire est conçu pour être un lieu calme, loin du bruit des grands réseaux sociaux." },
+  { q: "Le cercle est limité à 350 personnes. Est-ce que je vais me perdre dans le groupe ?", a: "Au contraire. Cette limite garantit une intimité et permet à Krystine de ressentir l'énergie du groupe. L'espace communautaire est conçu pour être un lieu calme, loin du bruit des grands réseaux sociaux." },
   { q: "J'ai déjà essayé beaucoup de choses.", a: "Si vous avez l'impression d'avoir tout essayé, c'est peut-être qu'il est temps d'arrêter de chercher à l'extérieur. Origine vous ramène à votre propre autorité intérieure et aux signaux de votre corps." },
   { q: "C'est un investissement important pour moi.", a: "C'est un engagement envers vous-même. C'est pour cela que nous offrons des options de versements, et surtout une Garantie Cœur Léger de 15 jours. Si vous sentez que ce n'est pas votre place, vous serez remboursée." },
   { q: "À quelle heure ont lieu les rencontres en direct ?", a: "Les heures varient selon votre localisation dans le monde. Consultez le calendrier juste au-dessous pour voir l'horaire exact selon votre propre fuseau horaire (Québec, France, etc)." },
@@ -230,18 +230,31 @@ const OrigineExperience: React.FC = () => {
   return (
     <div className="bg-cream text-ink font-sans antialiased">
 
-      {/* ─────────── HERO ─────────── */}
+      {/* ─────────── HERO (motionsites A4 Ken Burns + D1 éditorial 2-col) ─────────── */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-espressoDeep">
         <div className="pointer-events-none absolute -top-1/4 -left-1/4 h-[70%] w-[70%] rounded-full bg-forest/20 blur-[140px]" />
         <div className="pointer-events-none absolute -bottom-1/4 -right-1/5 h-[60%] w-[60%] rounded-full bg-brass/10 blur-[150px]" />
-        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-28">
+        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-24 grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-center">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }}>
-            <p className="font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brass mb-10">Expérience Origine</p>
-            <h1 className="font-serif font-medium text-ctext leading-[0.98] text-[clamp(2.4rem,6vw,5rem)] max-w-[16ch]">Vous n'avez pas besoin de plus d'information.</h1>
-            <p className="mt-8 font-serif italic text-[clamp(1.5rem,3.4vw,2.6rem)] leading-snug text-ctextSoft max-w-[20ch]">Vous avez besoin de revenir à <span className="text-brassBright not-italic">votre point d'origine.</span></p>
-            <div className="mt-14 flex flex-wrap items-center gap-6">
+            <p className="font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brass mb-8">Expérience Origine</p>
+            <h1 className="font-serif font-medium text-ctext leading-[0.98] text-[clamp(2.4rem,5.2vw,4.4rem)] max-w-[15ch]">Vous n'avez pas besoin de plus d'information.</h1>
+            <p className="mt-7 font-serif italic text-[clamp(1.4rem,3vw,2.3rem)] leading-snug text-ctextSoft max-w-[20ch]">Vous avez besoin de revenir à <span className="text-brassBright not-italic">votre point d'origine.</span></p>
+            <div className="mt-12 flex flex-wrap items-center gap-6">
               <a href="#curriculum" className="inline-flex items-center gap-3 rounded-full bg-brass px-8 py-3.5 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-espressoDeep transition-colors duration-300 hover:bg-brassBright min-h-[44px]">Découvrir le parcours <ArrowRight size={16} /></a>
               <span className="font-serif italic text-ctextSoft/80 text-base">« Catherine, participante fondatrice »</span>
+            </div>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, ease, delay: 0.15 }} className="relative">
+            <div className="relative rounded-[1.8rem] overflow-hidden border border-brass/25 shadow-[0_30px_80px_rgba(0,0,0,0.5)] aspect-[16/11]">
+              <motion.img
+                src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg"
+                alt="Enveloppe Expérience Origine, sceau boussole, sauge et lavande"
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+                animate={{ scale: [1.05, 1.13] }}
+                transition={{ duration: 26, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
+              />
+              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(120deg, rgba(22,16,10,0.45) 0%, transparent 45%)' }} />
             </div>
           </motion.div>
         </div>
@@ -465,8 +478,8 @@ const OrigineExperience: React.FC = () => {
           {/* Garantie */}
           <Reveal className="mt-10">
             <div className="mx-auto max-w-[760px] rounded-3xl border border-cream3 bg-card p-8 md:p-10 text-center shadow-sm">
-              <h4 className="font-serif font-medium text-xl md:text-2xl text-ink uppercase tracking-[0.08em] mb-4">Notre garantie cœur léger, 15 jours</h4>
-              <p className="font-sans text-[1.02rem] italic leading-relaxed text-inkSoft max-w-[60ch] mx-auto">Si après <span className="text-brassInk font-medium not-italic">15 jours</span> vous sentez que ce cadre ne vous convient pas, nous vous <span className="text-brassInk font-medium not-italic">remboursons</span>. Sans question. Cela enlève le risque.</p>
+              <h4 className="font-serif font-medium text-xl md:text-2xl text-ink uppercase tracking-[0.08em] mb-4">Notre garantie cœur léger, 30 jours</h4>
+              <p className="font-sans text-[1.02rem] italic leading-relaxed text-inkSoft max-w-[60ch] mx-auto">Si après <span className="text-brassInk font-medium not-italic">30 jours</span> vous sentez que ce cadre ne vous convient pas, nous vous <span className="text-brassInk font-medium not-italic">remboursons</span>. Sans question. Cela enlève le risque.</p>
             </div>
           </Reveal>
         </div>
