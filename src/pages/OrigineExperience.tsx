@@ -56,8 +56,8 @@ const WORKS = [
   { title: 'Les méditations guidées', body: "Ce qui a été reçu a besoin de se déposer. Un ancrage court, entre les rendez-vous, pour que la compréhension descende de la tête vers le corps." },
   { title: 'Vos questions', body: "Le privilège fondatrice. Vos questions sont soumises trois jours avant. Krystine et son équipe les lisent, préparent, et le rendez-vous s'ajuste à ce que vous vivez réellement. Pas un parcours générique. Votre réalité." },
   { title: 'Notre rendez-vous', body: "Deux heures chaque semaine, en direct. Krystine enseigne, écoute, ajuste. Chaque rendez-vous se termine par une méditation de groupe. 24 heures de présence directe sur 12 semaines. Celles qui ont essayé seules savent pourquoi cela change tout." },
-  { title: 'Les gestes comme guidance', body: "Un geste juste, posé au bon moment, change tout. La Dinacharya, l'art ancestral de s'accorder aux rythmes du jour. Une routine devient un repère par la simple intention que l'on y dépose. Des gestes adaptés à votre réalité unique." },
-  { title: "L'espace", body: "Pour celles qui ne veulent pas traverser seules. Un endroit calme entre les rendez-vous. Sans notifications, sans obligation de publier." },
+  { title: 'Le Guide', body: "Le compagnon papier des douze semaines. Repères saisonniers, questions, recettes, rituels, espace d'écriture. Ce qui reste entre vos mains quand l'écran se ferme." },
+  { title: "L'Espace", body: "Une communauté, mais pas comme vous les connaissez. Un endroit calme entre les rendez-vous. Sans notifications, sans obligation de publier. Pour ceux et celles qui ne veulent pas traverser seuls." },
 ];
 
 const VALUE_ITEMS = [
@@ -65,7 +65,7 @@ const VALUE_ITEMS = [
   { title: '12 modules audio, la grille de lecture du corps', detail: "Chaque semaine, un enseignement en audio. Une grille de lecture pour se comprendre quand le corps donne des signaux que l'on ne sait pas décoder.", value: '600 $' },
   { title: '12 méditations audio guidées', detail: "Un ancrage personnel, court et pré-enregistré, pour laisser se déposer ce qui a été reçu entre les rendez-vous.", value: '360 $' },
   { title: 'Vos questions, le privilège fondatrice', detail: "Soumises trois jours avant le rendez-vous. Krystine et son équipe les lisent, préparent, et le rendez-vous s'ajuste à ce que vous vivez réellement.", value: '500 $' },
-  { title: "Le Journal d'Observation et de Rituels", detail: "L'ancrage tangible des douze semaines. Espace d'intégration, repères saisonniers et rituels.", value: '150 $' },
+  { title: "Le Guide du Retour à l'Origine", detail: "Le compagnon papier des douze semaines. Repères saisonniers, recettes, rituels, journal d'observation.", value: '150 $' },
   { title: "L'Espace, la communauté d'Origine", detail: "Une communauté, mais pas comme vous les connaissez. Un endroit calme entre les rendez-vous. Sans notifications, sans obligation de publier.", value: '300 $' },
   { title: 'Liste de musique (spirale dorée, 432 Hz)', detail: "Une liste de musique qui fait voyager le cœur et l'âme, disponible avec un lien privé sur Spotify.", value: '97 $' },
 ];
@@ -380,7 +380,7 @@ const OrigineExperience: React.FC = () => {
           </Reveal>
           <Reveal delay={0.08}>
             <SectionTitle on="dark">Krystine St-Laurent</SectionTitle>
-            <p className="mt-6 font-sans text-[1.02rem] leading-[1.85] text-ctextSoft max-w-[52ch]">35 ans en première ligne, soins intensifs, recherche clinique, les coulisses du système, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de la série télé Santé la vie et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle laisse les gens seuls. Les rituels qu'elle enseigne, elle les pratique chaque matin.</p>
+            <p className="mt-6 font-sans text-[1.02rem] leading-[1.85] text-ctextSoft max-w-[52ch]">35 ans à traverser les milieux de la santé, soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de la série télé Santé la vie et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle laisse les gens seuls. Les rituels qu'elle enseigne, elle les pratique chaque matin.</p>
             <div className="mt-8 space-y-5 border-l-2 border-forestSoft/60 pl-6">
               {TESTIMONIALS.map((t) => (
                 <p key={t.who} className="text-forestSoft">
@@ -406,39 +406,23 @@ const OrigineExperience: React.FC = () => {
             {/* Table de valeur */}
             <Reveal className="lg:col-span-7">
               <div className="rounded-[2rem] border border-cream3 bg-card p-6 md:p-9 shadow-lg">
-                <div className="flex justify-between items-end border-b border-brass/20 pb-4 mb-6">
-                  <h3 className="font-serif font-medium text-lg md:text-xl uppercase tracking-[0.08em] text-ink">Ce que vous recevez</h3>
-                  <span className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-brassInk">Valeur</span>
+                <div className="border-b border-brass/20 pb-4 mb-5">
+                  <h3 className="font-serif font-medium text-lg md:text-xl uppercase tracking-[0.08em] text-ink">Ce qui est inclus</h3>
                 </div>
                 <div>
                   {VALUE_ITEMS.map((it, i) => (
-                    <div key={i} className={`flex justify-between items-start gap-4 py-4 ${i < VALUE_ITEMS.length - 1 ? 'border-b border-cream3' : ''}`}>
-                      <div className="pr-2">
+                    <div key={i} className={`flex items-start gap-3 py-4 ${i < VALUE_ITEMS.length - 1 ? 'border-b border-cream3' : ''}`}>
+                      <Check size={16} className="text-brass mt-1 shrink-0" />
+                      <div>
                         <p className="font-sans text-[0.95rem] font-semibold text-ink leading-snug">{it.title}</p>
-                        <p className="mt-1 font-sans text-[0.82rem] italic text-inkSoft leading-relaxed max-w-[52ch]">{it.detail}</p>
+                        <p className="mt-1 font-sans text-[0.82rem] italic text-inkSoft leading-relaxed max-w-[54ch]">{it.detail}</p>
                       </div>
-                      <span className="font-serif font-medium text-lg text-brassInk tabular-nums whitespace-nowrap">{it.value}</span>
                     </div>
                   ))}
                 </div>
-                <div className="mt-6 rounded-2xl bg-forest/8 border border-forest/20 p-5 flex justify-between items-center gap-4">
-                  <span className="font-sans text-[0.9rem] text-inkSoft">15 % sur toute la boutique Inspirata Ayurveda (rituels, soins, présence)</span>
-                  <span className="font-serif font-medium text-brassInk tabular-nums whitespace-nowrap">(~150 $)</span>
-                </div>
-                <div className="mt-8 pt-6 border-t border-brass/20 space-y-3">
-                  <div className="flex justify-between items-center text-inkSoft">
-                    <span className="uppercase tracking-[0.1em] text-sm">Valeur totale</span>
-                    <span className="font-serif text-xl line-through decoration-brass/70 tabular-nums">6 957 $</span>
-                  </div>
-                  <div className="flex justify-between items-center text-inkSoft">
-                    <span className="uppercase tracking-[0.1em] text-sm">Avec bonus</span>
-                    <span className="font-serif text-xl line-through decoration-brass/70 tabular-nums">7 254 $+</span>
-                  </div>
-                  <div className="flex justify-between items-center pt-4">
-                    <span className="font-serif font-medium text-lg uppercase tracking-[0.08em] text-ink">Vous payez</span>
-                    <span className="font-serif font-medium text-4xl text-brassInk tabular-nums">997 $</span>
-                  </div>
-                  <p className="text-right font-sans text-[0.85rem] italic text-brassInk">Tarif exceptionnel de lancement de la cohorte fondatrice. Pour un temps limité. (vraiment)</p>
+                <div className="mt-6 rounded-2xl bg-forest/8 border border-forest/20 p-5 flex items-start gap-3">
+                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-forestDeep mt-0.5 whitespace-nowrap">Boni</span>
+                  <span className="font-sans text-[0.9rem] text-inkSoft">15 % sur toute la boutique Inspirata Ayurveda (huiles, aromathérapie, rituels douceur), pendant les 12 semaines, sans limite de fréquence.</span>
                 </div>
               </div>
             </Reveal>
