@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, ChevronDown, Calendar, Clock, Radio, Globe, Play, BookOpen, ArrowRight } from 'lucide-react';
+import { Check, ChevronDown, Calendar, Clock, Radio, Globe, BookOpen, ArrowRight, Headphones, Activity, Sparkles, Download } from 'lucide-react';
 
 /**
  * Expérience Origine — page React au style L'Œuvre (espresso/cream/brass)
@@ -475,16 +475,47 @@ const OrigineExperience: React.FC = () => {
       {/* ─────────── PROGRAMME ─────────── */}
       <ScheduleSection />
 
-      {/* ─────────── AUDIO 19 MIN ─────────── */}
-      <section className="bg-espressoDeep py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[760px] px-6 md:px-12 text-center">
-          <Reveal>
-            <span className="inline-flex items-center gap-2 rounded-full bg-brass/15 text-brass px-4 py-1.5 text-[0.62rem] uppercase tracking-[0.2em]"><Play size={13} /> Audio spécial</span>
-            <SectionTitle on="dark" className="mt-6">Écoutez l'audio spécial Origine</SectionTitle>
-            <p className="mt-5 font-serif italic text-[clamp(1.1rem,2vw,1.45rem)] text-ctextSoft max-w-[46ch] mx-auto">19 minutes. Pas de texte, pas de plan. Juste un élan. Pourquoi Expérience Origine ne pouvait pas attendre.</p>
-            <audio controls preload="none" className="mt-10 w-full max-w-[560px] mx-auto">
-              <source src="https://storage.googleapis.com/origine1/AUDIO%20V3%20Expe%CC%81rience%20origine%20audio%20%20-%202026-02-28%2C%201.37%E2%80%AFPM.mp3" type="audio/mpeg" />
-            </audio>
+      {/* ─────────── FRÉQUENCE D'ORIGINE (module écouteurs flottants) ─────────── */}
+      <section className="bg-espressoDeep py-24 md:py-32 overflow-hidden">
+        <div className="pointer-events-none absolute" />
+        <div className="mx-auto w-full max-w-[1100px] px-6 md:px-12 grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+          {/* Disque + écouteurs flottants */}
+          <Reveal className="relative flex flex-col items-center">
+            <div className="relative w-64 h-64 md:w-[380px] md:h-[380px] flex items-center justify-center">
+              <motion.div animate={{ rotate: 360 }} transition={{ duration: 28, repeat: Infinity, ease: 'linear' }} className="absolute inset-[-8%] rounded-full border border-dashed border-brass/30" />
+              <motion.div animate={{ rotate: -360 }} transition={{ duration: 38, repeat: Infinity, ease: 'linear' }} className="absolute inset-[6%] rounded-full border border-brass/15" />
+              <div className="absolute inset-[14%] rounded-full bg-brass/12 blur-2xl" />
+              <motion.img
+                src="https://storage.googleapis.com/origine1/headphones.png"
+                alt="Écouteurs · Expérience Origine"
+                draggable={false}
+                referrerPolicy="no-referrer"
+                animate={{ y: [-14, 14, -14] }}
+                transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
+                className="relative z-10 w-[64%] h-[64%] object-contain drop-shadow-[0_30px_55px_rgba(0,0,0,0.55)]"
+              />
+            </div>
+            <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-cream text-espressoDeep px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl">
+              <span className="h-1.5 w-1.5 rounded-full bg-brass animate-pulse" /> Souffle d'Origine
+            </div>
+          </Reveal>
+          {/* Contenu */}
+          <Reveal delay={0.1} className="text-center lg:text-left">
+            <p className="inline-flex items-center gap-2 text-brass text-xs font-bold uppercase tracking-[0.2em] mb-4"><Headphones size={14} /> Trame sonore originale</p>
+            <h2 className="font-serif font-medium text-ctext text-[clamp(2.2rem,4.4vw,3.4rem)] leading-[1.05]">Fréquence <br /><span className="text-brassBright">d'Origine</span></h2>
+            <p className="mt-6 font-sans text-[1rem] leading-relaxed text-ctextSoft max-w-md mx-auto lg:mx-0">La musique qui vous accompagne sur cette page a été composée pour réaligner votre système nerveux. Emportez cette fréquence avec vous pour retrouver votre centre à tout moment.</p>
+            <div className="mt-8 flex gap-8 border-y border-brass/20 py-4 max-w-md mx-auto lg:mx-0 justify-center lg:justify-start">
+              <div className="flex flex-col gap-1">
+                <span className="flex items-center gap-2 text-[0.7rem] uppercase tracking-widest text-ctextSoft/70"><Activity size={12} /> Fréquence</span>
+                <span className="font-serif text-xl text-brassBright">432 Hz</span>
+              </div>
+              <div className="w-px h-10 bg-brass/20" />
+              <div className="flex flex-col gap-1">
+                <span className="flex items-center gap-2 text-[0.7rem] uppercase tracking-widest text-ctextSoft/70"><Sparkles size={12} /> Qualité</span>
+                <span className="font-serif text-xl text-brassBright">Studio haute résolution</span>
+              </div>
+            </div>
+            <a href="https://www.krystinestlaurent.com/musiquedorigine" target="_blank" rel="noopener noreferrer" className="mt-9 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-serif text-lg text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]"><Download size={20} /> Télécharger la musique</a>
           </Reveal>
         </div>
       </section>
