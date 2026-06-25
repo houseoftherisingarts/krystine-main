@@ -91,20 +91,21 @@
         theme: {
           extend: {
             colors: {
-              copper:      '#B8532F',
-              copperDeep:  '#A04E2A',
-              sauge:       '#7A8066',
-              brun:        '#6B402F',
-              brunFonce:   '#3A251E',
-              prune:       '#4A2635',
-              bleuMineral: '#1F3F4A',
-              beige:       '#E8D0BE',
-              ivoire:      '#F4E7DD',
-              grisPierre:  '#7D7D72',
-              royal:   '#3A251E',
-              gold:    '#B8532F',
-              surface: '#F4E7DD',
-              white:   '#F4E7DD',
+              // Remap global vers L'Œuvre — restyle toutes les pages d'un coup.
+              copper:      '#bb9a5e',  // ex-#B8532F → brass (fill/decor); accent TEXTE = brassInk
+              copperDeep:  '#a3823f',
+              sauge:       '#665746',  // sauge neutralisé en ink-soft (pas de vert dans L'Œuvre, sauf forest)
+              brun:        '#5a4a37',
+              brunFonce:   '#2a2015',  // espresso-soft
+              prune:       '#3a2b22',
+              bleuMineral: '#2a2015',
+              beige:       '#ede5d7',  // cream-3
+              ivoire:      '#f6f3ee',  // cream
+              grisPierre:  '#8c8268',
+              royal:   '#2a2015',
+              gold:    '#bb9a5e',  // brass
+              surface: '#f6f3ee',  // cream
+              white:   '#f6f3ee',  // (ex-ivoire warm) → cream
               // L'Œuvre — tokens nommés (réf 30_library/loeuvre-design-system).
               brass:        '#bb9a5e',  // accent unique (décor/fond/bouton)
               brassDeep:    '#a3823f',
@@ -153,16 +154,16 @@
          Éditoriale · organique · ancrée · haut de gamme · silencieuse
          ────────────────────────────────────────────────────────────── */
       :root {
-        --color-copper:       #B8532F;
-        --color-copper-deep:  #A04E2A;
-        --color-sauge:        #7A8066;
-        --color-brun:         #6B402F;
-        --color-brun-fonce:   #3A251E;
-        --color-prune:        #4A2635;
-        --color-bleu-mineral: #1F3F4A;
-        --color-beige:        #E8D0BE;
-        --color-ivoire:       #F4E7DD;
-        --color-gris-pierre:  #7D7D72;
+        --color-copper:       #bb9a5e;
+        --color-copper-deep:  #a3823f;
+        --color-sauge:        #665746;
+        --color-brun:         #5a4a37;
+        --color-brun-fonce:   #2a2015;
+        --color-prune:        #3a2b22;
+        --color-bleu-mineral: #2a2015;
+        --color-beige:        #ede5d7;
+        --color-ivoire:       #f6f3ee;
+        --color-gris-pierre:  #8c8268;
         --shadow-origine:     0 8px 24px rgba(107, 74, 47, 0.08);
         --shadow-origine-lg:  0 16px 36px rgba(107, 74, 47, 0.10);
       }
