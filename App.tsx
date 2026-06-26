@@ -66,6 +66,13 @@ const OrigineExperience = lazy(() => import('./src/pages/OrigineExperience'));
 const PodcastEpisodes = lazy(() => import('./src/pages/PodcastEpisodes'));
 // Expérience Vata — portée du bundle statique vers React (style L'Œuvre)
 const VataExperience = lazy(() => import('./src/pages/VataExperience'));
+// Pages publiques rebâties from scratch en L'Œuvre (back-end préservé)
+const BlogueLoeuvre = lazy(() => import('./src/pages/BlogueLoeuvre'));
+const LocationsLoeuvre = lazy(() => import('./src/pages/LocationsLoeuvre'));
+const ConferenciereLoeuvre = lazy(() => import('./src/pages/ConferenciereLoeuvre'));
+const MediasLoeuvre = lazy(() => import('./src/pages/MediasLoeuvre'));
+const GuideLoeuvre = lazy(() => import('./src/pages/GuideLoeuvre'));
+const FormationsLoeuvre = lazy(() => import('./src/pages/FormationsLoeuvre'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#050C1A]">
@@ -146,25 +153,25 @@ const App: React.FC = () => (
           <Route path="/podcast" element={<PodcastEpisodes />} />
           {/* Vata porté en React (remplace le bundle statique /vata) */}
           <Route path="/vata" element={<VataExperience />} />
-          <Route path="/krystine"        element={<ConferencierePage />} />
+          <Route path="/krystine"        element={<ConferenciereLoeuvre />} />
           <Route path="/boutique"        element={<BoutiquePage />} />
           <Route path="/boutique/:slug"  element={<BoutiqueCollectionPage />} />
-          <Route path="/medias"          element={<MediasPage />} />
+          <Route path="/medias"          element={<MediasLoeuvre />} />
           <Route path="/medias/tv"       element={<TVPage />} />
-          <Route path="/blogue"          element={<BloguePage />} />
-          <Route path="/points-de-vente" element={<LocationsPage />} />
-          <Route path="/conferenciere"   element={<ConferencierePage />} />
+          <Route path="/blogue"          element={<BlogueLoeuvre />} />
+          <Route path="/points-de-vente" element={<LocationsLoeuvre />} />
+          <Route path="/conferenciere"   element={<ConferenciereLoeuvre />} />
 
           {/* ── Standalone Quiz + Livres live under /medias,
                 Événements lives under /formations. Keep legacy URLs redirecting. */}
           <Route path="/quiz"       element={<QuizPage />} />
-          <Route path="/guide"      element={<GuidePage />} />
+          <Route path="/guide"      element={<GuideLoeuvre />} />
           <Route path="/ayurveda"   element={<Navigate to="/quiz"                    replace />} />
           <Route path="/livres"     element={<Navigate to="/medias#livres"           replace />} />
           <Route path="/evenements" element={<Navigate to="/formations#evenements"   replace />} />
 
           {/* ── Programmes / ex-dist ──────────────────────────────────── */}
-          <Route path="/formations"        element={<FormationsPage />} />
+          <Route path="/formations"        element={<FormationsLoeuvre />} />
           <Route path="/liste-attente"     element={<ListeAttentePage />} />
           {/* /origine, /podcast, /vata are served as-is from public/ — see firebase.json */}
 
