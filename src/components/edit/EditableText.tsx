@@ -56,7 +56,7 @@ const EditableText: React.FC<Props> = ({ fieldKey, defaultValue, as: Tag = 'span
         if (e.key === 'Escape') { e.preventDefault(); cancel(); }
         if (e.key === 'Enter' && !multiline) { e.preventDefault(); (e.target as HTMLElement).blur(); }
       },
-      className: `bg-white dark:bg-[#2E1A14] border-2 border-[#B8532F] rounded-md px-2 py-1 outline-none font-inherit text-inherit min-w-[120px] ${className || ''}`,
+      className: `bg-white dark:bg-[#16100a] border-2 border-[#bb9a5e] rounded-md px-2 py-1 outline-none font-inherit text-inherit min-w-[120px] ${className || ''}`,
     };
     return multiline
       ? <textarea {...(commonProps as any)} rows={3} />
@@ -82,13 +82,13 @@ const EditableText: React.FC<Props> = ({ fieldKey, defaultValue, as: Tag = 'span
         onKeyDown={e => {
           if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); setEditing(true); }
         }}
-        className="ml-1 align-middle inline-flex w-5 h-5 rounded-full bg-[#B8532F] text-[#3A251E] items-center justify-center opacity-0 group-hover/edit:opacity-100 transition-opacity shadow-md cursor-pointer select-none"
+        className="ml-1 align-middle inline-flex w-5 h-5 rounded-full bg-[#bb9a5e] text-[#2a2015] items-center justify-center opacity-0 group-hover/edit:opacity-100 transition-opacity shadow-md cursor-pointer select-none"
         title="Modifier le texte"
         aria-label="Modifier le texte"
       >
         <i className="fa-solid fa-pen text-[9px]" />
       </span>
-      {saving && <span className="ml-1 text-[10px] text-[#B8532F]">…</span>}
+      {saving && <span className="ml-1 text-[10px] text-[#7d6330]">…</span>}
     </span>
   );
 };

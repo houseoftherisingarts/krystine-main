@@ -20,7 +20,7 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
     // Loading
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-t-transparent border-[#B8532F] rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-t-transparent border-[#bb9a5e] rounded-full animate-spin" />
       </div>
     );
   }

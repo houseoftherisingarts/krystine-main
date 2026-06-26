@@ -158,13 +158,13 @@ const EditOverlay: React.FC = () => {
     style.textContent = `
       .${CLASS_TAG} { transition: outline 0.15s ease, background 0.15s ease; }
       .${CLASS_TAG}:not([contenteditable="true"]):hover {
-        outline: 1px dashed rgba(184, 83, 47, 0.55);
+        outline: 1px dashed rgba(187, 154, 94, 0.55);
         outline-offset: 4px;
         cursor: text;
         background: rgba(244, 231, 221, 0.18);
       }
       .${CLASS_TAG}[contenteditable="true"] {
-        outline: 2px solid #B8532F !important;
+        outline: 2px solid #bb9a5e !important;
         outline-offset: 4px;
         background: rgba(244, 231, 221, 0.7) !important;
         cursor: text;

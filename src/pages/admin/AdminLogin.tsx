@@ -45,7 +45,7 @@ const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#2E1A14] flex flex-col items-center justify-center px-6 py-16">
+    <div className="min-h-screen bg-[#16100a] flex flex-col items-center justify-center px-6 py-16">
       <div className="w-full max-w-md text-center">
         <img src="https://storage.googleapis.com/inspirata/Vata/1%20(1).png" alt="Krystine St-Laurent" className="h-16 w-auto mx-auto mb-8 opacity-90" style={{ filter: 'invert(1) brightness(1.5)' }} />
         <h1 className="text-3xl font-serif text-white mb-3">Accès Admin</h1>
@@ -53,10 +53,10 @@ const AdminLogin: React.FC = () => {
 
         {/* Tabs */}
         <div className="inline-flex rounded-full bg-white/5 border border-white/10 p-1 mb-8">
-          <button onClick={() => setMode('google')} className={`px-5 py-1.5 rounded-full text-[11px] uppercase tracking-widest font-bold transition-colors ${mode === 'google' ? 'bg-[#B8532F] text-[#3A251E]' : 'text-white/60'}`}>
+          <button onClick={() => setMode('google')} className={`px-5 py-1.5 rounded-full text-[11px] uppercase tracking-widest font-bold transition-colors ${mode === 'google' ? 'bg-[#bb9a5e] text-[#2a2015]' : 'text-white/60'}`}>
             Google
           </button>
-          <button onClick={() => setMode('email')} className={`px-5 py-1.5 rounded-full text-[11px] uppercase tracking-widest font-bold transition-colors ${mode === 'email' ? 'bg-[#B8532F] text-[#3A251E]' : 'text-white/60'}`}>
+          <button onClick={() => setMode('email')} className={`px-5 py-1.5 rounded-full text-[11px] uppercase tracking-widest font-bold transition-colors ${mode === 'email' ? 'bg-[#bb9a5e] text-[#2a2015]' : 'text-white/60'}`}>
             Email
           </button>
         </div>
@@ -65,7 +65,7 @@ const AdminLogin: React.FC = () => {
           <button
             onClick={handleGoogle}
             disabled={busy}
-            className="w-full flex items-center justify-center gap-3 bg-white text-[#3A251E] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#B8532F] hover:text-white transition-colors disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-3 bg-white text-[#2a2015] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#bb9a5e] hover:text-white transition-colors disabled:opacity-50"
           >
             <i className="fa-brands fa-google text-lg" /> {busy ? 'Connexion…' : 'Se connecter avec Google'}
           </button>
@@ -79,7 +79,7 @@ const AdminLogin: React.FC = () => {
                 onChange={e => setEmail(e.target.value)}
                 autoComplete="email"
                 required
-                className="w-full bg-white/5 border border-white/10 focus:border-[#B8532F] rounded-xl px-4 py-3 text-white outline-none"
+                className="w-full bg-white/5 border border-white/10 focus:border-[#bb9a5e] rounded-xl px-4 py-3 text-white outline-none"
               />
             </div>
             <div>
@@ -90,13 +90,13 @@ const AdminLogin: React.FC = () => {
                 onChange={e => setPassword(e.target.value)}
                 autoComplete="current-password"
                 required
-                className="w-full bg-white/5 border border-white/10 focus:border-[#B8532F] rounded-xl px-4 py-3 text-white outline-none"
+                className="w-full bg-white/5 border border-white/10 focus:border-[#bb9a5e] rounded-xl px-4 py-3 text-white outline-none"
               />
             </div>
             <button
               type="submit"
               disabled={busy}
-              className="w-full bg-[#B8532F] text-[#3A251E] py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-white transition-colors disabled:opacity-50"
+              className="w-full bg-[#bb9a5e] text-[#2a2015] py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-white transition-colors disabled:opacity-50"
             >
               {busy ? 'Connexion…' : 'Se connecter'}
             </button>

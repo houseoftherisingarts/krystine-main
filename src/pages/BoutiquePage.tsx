@@ -29,8 +29,8 @@ const BoutiquePage: React.FC = () => {
 
   if (redirectEnabled) {
     return (
-      <div className="min-h-screen flex items-center justify-center dark:bg-[#2E1A14] text-[#3A251E] dark:text-white">
-        <p className="text-sm uppercase tracking-[0.3em] text-[#B8532F] font-bold">
+      <div className="min-h-screen flex items-center justify-center dark:bg-[#16100a] text-[#2a2015] dark:text-white">
+        <p className="text-sm uppercase tracking-[0.3em] text-[#7d6330] font-bold">
           {lang === 'FR' ? 'Redirection…' : 'Redirecting…'}
         </p>
       </div>

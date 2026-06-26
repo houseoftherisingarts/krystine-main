@@ -18,7 +18,7 @@ interface Props {
 }
 
 const INK    = '#8B674A';
-const COPPER = '#B8532F';
+const COPPER = '#bb9a5e';
 const SAUGE  = '#8A8F72';
 
 const Laurel: React.FC = () => (
@@ -39,7 +39,7 @@ const Laurel: React.FC = () => (
     {/* Losange central copper */}
     <g transform="translate(100 15)">
       <path d="M 0 -4 L 3 0 L 0 4 L -3 0 Z" fill={COPPER} fillOpacity="0.85" stroke={INK} strokeWidth="0.5" strokeLinejoin="round" />
-      <circle r="0.9" fill="#F4E7DD" />
+      <circle r="0.9" fill="#f6f3ee" />
     </g>
     {/* Rameau droit — miroir */}
     <path d="M 170 15 Q 180 10, 190 8" fill="none" stroke={INK} strokeWidth="0.8" strokeLinecap="round" />

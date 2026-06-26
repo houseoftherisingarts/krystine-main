@@ -43,8 +43,8 @@ const NavBar: React.FC = () => {
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className={`fixed top-0 w-full z-40 transition-[background,border,box-shadow] duration-500 ${
         scrolled
-          ? 'bg-white/85 dark:bg-[#2E1A14]/95 backdrop-blur-xl border-b border-[#B8532F]/15 shadow-[0_4px_30px_rgba(58,37,30,0.08)]'
-          : 'bg-white/60 dark:bg-[#2E1A14]/70 backdrop-blur-xl border-b border-transparent'
+          ? 'bg-white/85 dark:bg-[#16100a]/95 backdrop-blur-xl border-b border-[#bb9a5e]/15 shadow-[0_4px_30px_rgba(58,37,30,0.08)]'
+          : 'bg-white/60 dark:bg-[#16100a]/70 backdrop-blur-xl border-b border-transparent'
       }`}
     >
       <div className="max-w-[1800px] mx-auto px-6 py-3 flex justify-between items-center gap-4">
@@ -71,8 +71,8 @@ const NavBar: React.FC = () => {
               const resolved = resolveHref(item.href);
               const btnClass = `inline-flex items-center gap-2 whitespace-nowrap px-4 py-2 text-[10px] 2xl:text-[11px] uppercase tracking-[0.2em] font-bold rounded-full transition-all duration-300 ${
                 active
-                  ? 'bg-[#3A251E] text-[#B8532F] border border-[#B8532F]'
-                  : 'bg-[#B8532F] text-[#3A251E] border border-[#B8532F] hover:bg-[#3A251E] hover:text-[#B8532F] shadow-[0_4px_18px_rgba(184,83,47,0.25)]'
+                  ? 'bg-[#2a2015] text-[#7d6330] border border-[#bb9a5e]'
+                  : 'bg-[#bb9a5e] text-[#2a2015] border border-[#bb9a5e] hover:bg-[#2a2015] hover:text-[#7d6330] shadow-[0_4px_18px_rgba(187, 154, 94,0.25)]'
               }`;
               return (
                 <motion.li
@@ -106,13 +106,13 @@ const NavBar: React.FC = () => {
                 <Link
                   to={item.href}
                   className={`relative whitespace-nowrap px-2.5 2xl:px-3 py-2 text-[10px] 2xl:text-[11px] uppercase tracking-[0.15em] 2xl:tracking-[0.2em] font-semibold transition-colors duration-300 ${
-                    active ? 'text-[#B8532F]' : 'text-[#3A251E] dark:text-white/85 hover:text-[#B8532F]'
+                    active ? 'text-[#7d6330]' : 'text-[#2a2015] dark:text-white/85 hover:text-[#7d6330]'
                   }`}
                 >
                   {label(item)}
                   {/* Animated underline */}
                   <span
-                    className={`pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-[#B8532F] origin-center transition-transform duration-300 ${
+                    className={`pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-[#bb9a5e] origin-center transition-transform duration-300 ${
                       active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
                     }`}
                     style={{ transformOrigin: 'center' }}
@@ -129,7 +129,7 @@ const NavBar: React.FC = () => {
             {audioPlaying ? (
               <div className="flex gap-[2px] items-end h-3">
                 {[1, 1.4, 0.8].map((d, i) => (
-                  <span key={i} className="w-[2px] bg-[#B8532F] rounded-full animate-bounce" style={{ height: i === 1 ? '12px' : '8px', animationDelay: `${i * 0.15}s` }} />
+                  <span key={i} className="w-[2px] bg-[#bb9a5e] rounded-full animate-bounce" style={{ height: i === 1 ? '12px' : '8px', animationDelay: `${i * 0.15}s` }} />
                 ))}
               </div>
             ) : <i className="fa-solid fa-music text-[12px]" />}
@@ -142,7 +142,7 @@ const NavBar: React.FC = () => {
           <IconButton onClick={() => setCartOpen(true)} title="Panier">
             <i className="fa-solid fa-shopping-bag text-[14px]" />
             {cartItems.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#B8532F] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+              <span className="absolute -top-1 -right-1 bg-[#bb9a5e] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
                 {cartItems.length}
               </span>
             )}
@@ -152,24 +152,24 @@ const NavBar: React.FC = () => {
             <Link
               to="/compte"
               title={member?.displayName || user.displayName || user.email || ''}
-              className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-[#3A251E]/10 dark:border-white/10 hover:border-[#B8532F] transition-colors"
+              className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-[#2a2015]/10 dark:border-white/10 hover:border-[#bb9a5e] transition-colors"
             >
               {(member?.photoURL || user.photoURL) ? (
                 <img src={member?.photoURL || user.photoURL!} alt="" className="w-6 h-6 rounded-full object-cover" />
               ) : (
-                <div className="w-6 h-6 rounded-full bg-[#B8532F]/20 flex items-center justify-center text-[10px] font-bold text-[#B8532F]">
+                <div className="w-6 h-6 rounded-full bg-[#bb9a5e]/20 flex items-center justify-center text-[10px] font-bold text-[#7d6330]">
                   {(user.email?.[0] || '?').toUpperCase()}
                 </div>
               )}
               {member?.dosha && (
-                <span className="text-[9px] uppercase tracking-widest text-[#B8532F] font-bold capitalize hidden xl:inline">{member.dosha}</span>
+                <span className="text-[9px] uppercase tracking-widest text-[#7d6330] font-bold capitalize hidden xl:inline">{member.dosha}</span>
               )}
             </Link>
           ) : (
             <button
               onClick={() => setSignInOpen(true)}
               title={lang === 'FR' ? 'Connexion' : 'Sign in'}
-              className="hidden md:inline-flex items-center gap-2 pl-2.5 pr-3 py-1.5 rounded-full border border-[#3A251E]/15 dark:border-white/15 text-[10px] uppercase tracking-[0.2em] font-bold text-[#3A251E]/80 dark:text-white/80 hover:text-[#B8532F] hover:border-[#B8532F] transition-colors"
+              className="hidden md:inline-flex items-center gap-2 pl-2.5 pr-3 py-1.5 rounded-full border border-[#2a2015]/15 dark:border-white/15 text-[10px] uppercase tracking-[0.2em] font-bold text-[#2a2015]/80 dark:text-white/80 hover:text-[#7d6330] hover:border-[#bb9a5e] transition-colors"
             >
               <i className="fa-solid fa-user text-[11px]" />
               {lang === 'FR' ? 'Connexion' : 'Sign in'}
@@ -179,7 +179,7 @@ const NavBar: React.FC = () => {
             <button
               onClick={() => setSignInOpen(true)}
               title={lang === 'FR' ? 'Connexion' : 'Sign in'}
-              className="md:hidden w-9 h-9 flex items-center justify-center rounded-full text-[#3A251E]/70 dark:text-white/70 hover:text-[#B8532F] hover:bg-[#B8532F]/5 transition-colors"
+              className="md:hidden w-9 h-9 flex items-center justify-center rounded-full text-[#2a2015]/70 dark:text-white/70 hover:text-[#7d6330] hover:bg-[#bb9a5e]/5 transition-colors"
             >
               <i className="fa-solid fa-user text-[13px]" />
             </button>
@@ -189,7 +189,7 @@ const NavBar: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setLangOpen(v => !v)}
-              className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#3A251E]/80 dark:text-white/80 hover:text-[#B8532F] border border-[#3A251E]/10 dark:border-white/10 px-2.5 py-1 rounded-full"
+              className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#2a2015]/80 dark:text-white/80 hover:text-[#7d6330] border border-[#2a2015]/10 dark:border-white/10 px-2.5 py-1 rounded-full"
             >
               {lang}
             </button>
@@ -200,11 +200,11 @@ const NavBar: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute top-full right-0 mt-2 bg-white dark:bg-[#4A3228] rounded-xl shadow-xl border border-[#3A251E]/5 flex flex-col w-20 py-2 z-50"
+                  className="absolute top-full right-0 mt-2 bg-white dark:bg-[#4A3228] rounded-xl shadow-xl border border-[#2a2015]/5 flex flex-col w-20 py-2 z-50"
                 >
                   {(['FR', 'EN'] as const).map(l => (
                     <button key={l} onClick={() => { setLang(l); setLangOpen(false); }}
-                      className={`px-4 py-2 text-left text-xs hover:bg-[#3A251E]/5 transition-colors ${lang === l ? 'font-bold text-[#B8532F]' : 'text-[#3A251E] dark:text-white'}`}
+                      className={`px-4 py-2 text-left text-xs hover:bg-[#2a2015]/5 transition-colors ${lang === l ? 'font-bold text-[#7d6330]' : 'text-[#2a2015] dark:text-white'}`}
                     >{l}</button>
                   ))}
                 </motion.div>
@@ -229,13 +229,13 @@ const NavBar: React.FC = () => {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden overflow-hidden border-t border-[#B8532F]/10"
+            className="lg:hidden overflow-hidden border-t border-[#bb9a5e]/10"
           >
-            <div className="bg-white/95 dark:bg-[#2E1A14]/98 backdrop-blur-xl px-6 py-4 flex flex-col">
+            <div className="bg-white/95 dark:bg-[#16100a]/98 backdrop-blur-xl px-6 py-4 flex flex-col">
               {NAV.map((item, i) => {
                 const resolved = resolveHref(item.href);
-                const cls = `block py-3 text-sm font-semibold uppercase tracking-widest border-b border-[#3A251E]/5 dark:border-white/5 transition-colors ${
-                  isActive(item.href) ? 'text-[#B8532F]' : 'text-[#3A251E] dark:text-white hover:text-[#B8532F]'
+                const cls = `block py-3 text-sm font-semibold uppercase tracking-widest border-b border-[#2a2015]/5 dark:border-white/5 transition-colors ${
+                  isActive(item.href) ? 'text-[#7d6330]' : 'text-[#2a2015] dark:text-white hover:text-[#7d6330]'
                 }`;
                 return (
                   <motion.div
@@ -262,7 +262,7 @@ const IconButton: React.FC<{ onClick: () => void; title: string; children: React
   <button
     onClick={onClick}
     title={title}
-    className="relative w-9 h-9 flex items-center justify-center rounded-full text-[#3A251E]/70 dark:text-white/70 hover:text-[#B8532F] hover:bg-[#B8532F]/5 transition-colors"
+    className="relative w-9 h-9 flex items-center justify-center rounded-full text-[#2a2015]/70 dark:text-white/70 hover:text-[#7d6330] hover:bg-[#bb9a5e]/5 transition-colors"
   >
     {children}
   </button>

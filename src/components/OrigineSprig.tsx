@@ -31,7 +31,7 @@ const pick = (seed?: string): Variant => {
 // Sepia / copper / soft magenta — the moodboard's trio.
 const INK     = '#8B674A';   // main line — warm sepia brun
 const INK_SOFT = '#A88866';  // secondary accent
-const COPPER  = '#B8532F';   // buds / berries
+const COPPER  = '#bb9a5e';   // buds / berries
 const ROSE    = '#A6556B';   // soft magenta flower buds
 const SAUGE   = '#8A8F72';   // sauge leaf fill when used
 
@@ -232,16 +232,16 @@ const Ticket: React.FC = () => (
     <g transform="translate(24 62) rotate(-8) translate(-20 -18)">
       {/* Perforated left edge — small semicircle notches */}
       <rect x="0" y="0" width="40" height="36" rx="3" ry="3"
-        fill="#F4E7DD" stroke={INK} strokeWidth="0.8" />
+        fill="#f6f3ee" stroke={INK} strokeWidth="0.8" />
       {/* Perforation dashed divider at ~1/3 */}
       <line x1="12" y1="3" x2="12" y2="33"
         stroke={INK} strokeWidth="0.6" strokeDasharray="1.2 1.6" />
       {/* Notches on the outer left + right edges */}
       {[8, 18, 28].map(y => (
-        <circle key={`l${y}`} cx="0" cy={y} r="1.3" fill="#F4E7DD" stroke={INK} strokeWidth="0.6" />
+        <circle key={`l${y}`} cx="0" cy={y} r="1.3" fill="#f6f3ee" stroke={INK} strokeWidth="0.6" />
       ))}
       {[8, 18, 28].map(y => (
-        <circle key={`r${y}`} cx="40" cy={y} r="1.3" fill="#F4E7DD" stroke={INK} strokeWidth="0.6" />
+        <circle key={`r${y}`} cx="40" cy={y} r="1.3" fill="#f6f3ee" stroke={INK} strokeWidth="0.6" />
       ))}
       {/* Stub label — small 6-point star */}
       <g transform="translate(6 18)">
@@ -266,7 +266,7 @@ const Compass: React.FC = () => (
     <Flourish y={22} w={18} />
     <g transform="translate(24 62)">
       {/* Outer rings */}
-      <circle r="18" fill="#F4E7DD" stroke={INK} strokeWidth="0.9" />
+      <circle r="18" fill="#f6f3ee" stroke={INK} strokeWidth="0.9" />
       <circle r="14.5" fill="none" stroke={INK_SOFT} strokeWidth="0.5" />
       {/* Tick marks around the outer ring — 16 divisions */}
       {Array.from({ length: 16 }, (_, i) => i).map(i => {
@@ -294,7 +294,7 @@ const Compass: React.FC = () => (
         return (
           <path key={a}
             d={`M ${tipX} ${tipY} L ${lX} ${lY} L ${-tipX * 0.12} ${-tipY * 0.12} L ${-lX} ${-lY} Z`}
-            fill={filled ? COPPER : '#F4E7DD'}
+            fill={filled ? COPPER : '#f6f3ee'}
             fillOpacity={filled ? 0.85 : 1}
             stroke={INK} strokeWidth="0.7" strokeLinejoin="round" />
         );
@@ -338,7 +338,7 @@ const OrigineCompass: React.FC = () => (
     </g>
     <g transform="translate(24 62)">
       {/* Double ring */}
-      <circle r="18" fill="#F4E7DD" stroke={INK} strokeWidth="0.9" />
+      <circle r="18" fill="#f6f3ee" stroke={INK} strokeWidth="0.9" />
       <circle r="15.5" fill="none" stroke={INK} strokeWidth="0.4" />
       <circle r="12"   fill="none" stroke={INK_SOFT} strokeWidth="0.4" />
       {/* Tick marks at every 30° */}
@@ -365,13 +365,13 @@ const OrigineCompass: React.FC = () => (
         return (
           <path key={a}
             d={`M ${tipX} ${tipY} L ${lX} ${lY} L ${-tipX * 0.1} ${-tipY * 0.1} L ${-lX} ${-lY} Z`}
-            fill={major && a === 270 ? COPPER : '#F4E7DD'}
+            fill={major && a === 270 ? COPPER : '#f6f3ee'}
             fillOpacity={major && a === 270 ? 0.85 : 1}
             stroke={INK} strokeWidth={major ? 0.7 : 0.5} strokeLinejoin="round" />
         );
       })}
       {/* Centre ornament */}
-      <circle r="2.2" fill="#F4E7DD" stroke={INK} strokeWidth="0.7" />
+      <circle r="2.2" fill="#f6f3ee" stroke={INK} strokeWidth="0.7" />
       <circle r="0.9" fill={COPPER} fillOpacity="0.9" />
       {/* Cardinal label */}
       <text x="0" y="-20.5" textAnchor="middle"
@@ -402,10 +402,10 @@ const Book: React.FC = () => (
       {/* Open book — two pages meeting at a central spine */}
       {/* Left page */}
       <path d="M -18 -13 Q -9 -15, 0 -12 L 0 14 Q -9 12, -18 14 Z"
-        fill="#F4E7DD" stroke={INK} strokeWidth="0.8" strokeLinejoin="round" />
+        fill="#f6f3ee" stroke={INK} strokeWidth="0.8" strokeLinejoin="round" />
       {/* Right page */}
       <path d="M 18 -13 Q 9 -15, 0 -12 L 0 14 Q 9 12, 18 14 Z"
-        fill="#F4E7DD" stroke={INK} strokeWidth="0.8" strokeLinejoin="round" />
+        fill="#f6f3ee" stroke={INK} strokeWidth="0.8" strokeLinejoin="round" />
       {/* Spine */}
       <line x1="0" y1="-12" x2="0" y2="14" stroke={INK} strokeWidth="0.6" />
       {/* Text lines on the pages */}
@@ -420,7 +420,7 @@ const Book: React.FC = () => (
         fill={COPPER} fillOpacity="0.75" stroke={INK} strokeWidth="0.4" strokeLinejoin="round" />
       {/* Small label emblem at the top */}
       <g transform="translate(0 -20)">
-        <circle r="3" fill="#F4E7DD" stroke={INK} strokeWidth="0.6" />
+        <circle r="3" fill="#f6f3ee" stroke={INK} strokeWidth="0.6" />
         <path d="M 0 -1.6 L 0.5 -0.5 L 1.6 0 L 0.5 0.5 L 0 1.6 L -0.5 0.5 L -1.6 0 L -0.5 -0.5 Z"
           fill={COPPER} fillOpacity="0.8" />
       </g>
@@ -440,10 +440,10 @@ const Retreat: React.FC = () => (
       <circle cx="0" cy="-26" r="1" fill={INK} />
       {/* Top cap */}
       <path d="M -10 -22 L 10 -22 L 8 -18 L -8 -18 Z"
-        fill="#F4E7DD" stroke={INK} strokeWidth="0.8" strokeLinejoin="round" />
+        fill="#f6f3ee" stroke={INK} strokeWidth="0.8" strokeLinejoin="round" />
       {/* Lantern body — rounded hexagon */}
       <path d="M -12 -18 L 12 -18 L 14 -4 L 10 10 L -10 10 L -14 -4 Z"
-        fill="#F4E7DD" stroke={INK} strokeWidth="0.9" strokeLinejoin="round" />
+        fill="#f6f3ee" stroke={INK} strokeWidth="0.9" strokeLinejoin="round" />
       {/* Vertical ribs */}
       <line x1="-6" y1="-17" x2="-7" y2="9" stroke={INK_SOFT} strokeWidth="0.5" />
       <line x1="0"  y1="-17" x2="0"  y2="10" stroke={INK_SOFT} strokeWidth="0.5" />
@@ -455,7 +455,7 @@ const Retreat: React.FC = () => (
         fill={COPPER} fillOpacity="0.85" stroke={INK} strokeWidth="0.5" strokeLinejoin="round" />
       {/* Base */}
       <path d="M -12 10 L 12 10 L 10 14 L -10 14 Z"
-        fill="#F4E7DD" stroke={INK} strokeWidth="0.7" strokeLinejoin="round" />
+        fill="#f6f3ee" stroke={INK} strokeWidth="0.7" strokeLinejoin="round" />
     </g>
     <Flourish y={100} w={22} />
   </svg>
@@ -481,7 +481,7 @@ const Route: React.FC = () => (
         <g key={i}>
           {/* Teardrop pin */}
           <path d={`M ${p.cx} ${p.cy - 3.5} Q ${p.cx + 2.5} ${p.cy - 2.5}, ${p.cx + 2.5} ${p.cy - 0.5} Q ${p.cx + 2.5} ${p.cy + 1.5}, ${p.cx} ${p.cy + 3.5} Q ${p.cx - 2.5} ${p.cy + 1.5}, ${p.cx - 2.5} ${p.cy - 0.5} Q ${p.cx - 2.5} ${p.cy - 2.5}, ${p.cx} ${p.cy - 3.5} Z`}
-            fill={i === 0 || i === 4 ? COPPER : '#F4E7DD'}
+            fill={i === 0 || i === 4 ? COPPER : '#f6f3ee'}
             fillOpacity={i === 0 || i === 4 ? 0.85 : 1}
             stroke={INK} strokeWidth="0.6" strokeLinejoin="round" />
           <circle cx={p.cx} cy={p.cy - 1} r="0.7" fill={INK} />
@@ -489,7 +489,7 @@ const Route: React.FC = () => (
       ))}
       {/* Tiny compass rose at the start */}
       <g transform="translate(-16 -22)">
-        <circle r="3" fill="#F4E7DD" stroke={INK} strokeWidth="0.5" />
+        <circle r="3" fill="#f6f3ee" stroke={INK} strokeWidth="0.5" />
         <path d="M 0 -2.2 L 0.6 0 L 0 2.2 L -0.6 0 Z" fill={COPPER} fillOpacity="0.8" />
       </g>
     </g>
@@ -517,19 +517,19 @@ const Launch: React.FC = () => (
           return (
             <path key={a}
               d={`M ${tipX} ${tipY} L ${lX} ${lY} L ${-tipX * 0.1} ${-tipY * 0.1} L ${-lX} ${-lY} Z`}
-              fill={major ? COPPER : '#F4E7DD'}
+              fill={major ? COPPER : '#f6f3ee'}
               fillOpacity={major ? 0.85 : 1}
               stroke={INK} strokeWidth="0.6" strokeLinejoin="round" />
           );
         })}
-        <circle r="1.4" fill="#F4E7DD" stroke={INK} strokeWidth="0.5" />
+        <circle r="1.4" fill="#f6f3ee" stroke={INK} strokeWidth="0.5" />
       </g>
       {/* Ribbon banner — waving scroll below the star */}
       <path d="M -16 6 Q -8 2, 0 6 Q 8 10, 16 6 L 18 14 Q 10 18, 0 14 Q -10 10, -18 14 Z"
-        fill="#F4E7DD" stroke={INK} strokeWidth="0.8" strokeLinejoin="round" />
+        fill="#f6f3ee" stroke={INK} strokeWidth="0.8" strokeLinejoin="round" />
       {/* Ribbon tails on each side */}
-      <path d="M -16 6 L -20 16 L -14 14" fill="#F4E7DD" stroke={INK} strokeWidth="0.6" strokeLinejoin="round" />
-      <path d="M 16 6 L 20 16 L 14 14" fill="#F4E7DD" stroke={INK} strokeWidth="0.6" strokeLinejoin="round" />
+      <path d="M -16 6 L -20 16 L -14 14" fill="#f6f3ee" stroke={INK} strokeWidth="0.6" strokeLinejoin="round" />
+      <path d="M 16 6 L 20 16 L 14 14" fill="#f6f3ee" stroke={INK} strokeWidth="0.6" strokeLinejoin="round" />
       {/* Small line of text on the ribbon */}
       <line x1="-10" y1="11" x2="10" y2="11" stroke={INK_SOFT} strokeWidth="0.55" />
     </g>
@@ -544,7 +544,7 @@ const Mic: React.FC = () => (
     <g transform="translate(24 62)">
       {/* Mic head — rounded rectangle */}
       <rect x="-7" y="-22" width="14" height="22" rx="7" ry="7"
-        fill="#F4E7DD" stroke={INK} strokeWidth="0.9" />
+        fill="#f6f3ee" stroke={INK} strokeWidth="0.9" />
       {/* Mic grille lines */}
       <line x1="-5" y1="-15" x2="5" y2="-15" stroke={INK_SOFT} strokeWidth="0.5" />
       <line x1="-5" y1="-10" x2="5" y2="-10" stroke={INK_SOFT} strokeWidth="0.5" />
@@ -557,7 +557,7 @@ const Mic: React.FC = () => (
       {/* Stand stem */}
       <line x1="0" y1="10" x2="0" y2="22" stroke={INK} strokeWidth="1" strokeLinecap="round" />
       {/* Base */}
-      <ellipse cx="0" cy="24" rx="10" ry="2" fill="#F4E7DD" stroke={INK} strokeWidth="0.8" />
+      <ellipse cx="0" cy="24" rx="10" ry="2" fill="#f6f3ee" stroke={INK} strokeWidth="0.8" />
       {/* Sound waves */}
       <path d="M -18 -10 Q -22 -4, -18 2" fill="none" stroke={INK_SOFT} strokeWidth="0.6" strokeLinecap="round" />
       <path d="M -22 -14 Q -28 -4, -22 6" fill="none" stroke={INK_SOFT} strokeWidth="0.5" strokeLinecap="round" opacity="0.7" />
@@ -612,8 +612,8 @@ const OrigineSprig: React.FC<Props> = ({
       <div
         className={`shrink-0 ${size} rounded-full flex items-center justify-center relative ${className}`}
         style={{
-          background: 'radial-gradient(circle at 35% 30%, #F4E7DD 0%, #EAD0B9 80%)',
-          border: '1px solid rgba(184,83,47,0.35)',
+          background: 'radial-gradient(circle at 35% 30%, #f6f3ee 0%, #EAD0B9 80%)',
+          border: '1px solid rgba(187, 154, 94,0.35)',
           boxShadow: '0 6px 18px rgba(107,74,47,0.08), inset 0 0 22px rgba(232,208,190,0.6)',
         }}
         aria-hidden

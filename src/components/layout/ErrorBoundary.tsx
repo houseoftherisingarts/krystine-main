@@ -26,15 +26,15 @@ export default class ErrorBoundary extends React.Component<Props, State> {
   render() {
     if (!this.state.error) return this.props.children;
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center bg-white dark:bg-[#2E1A14]">
+      <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center bg-white dark:bg-[#16100a]">
         <div className="max-w-md">
-          <div className="w-16 h-16 rounded-full bg-[#B8532F]/15 border border-[#B8532F]/30 flex items-center justify-center mx-auto mb-6">
-            <i className="fa-solid fa-triangle-exclamation text-[#B8532F] text-xl" />
+          <div className="w-16 h-16 rounded-full bg-[#bb9a5e]/15 border border-[#bb9a5e]/30 flex items-center justify-center mx-auto mb-6">
+            <i className="fa-solid fa-triangle-exclamation text-[#7d6330] text-xl" />
           </div>
-          <h1 className="text-3xl font-serif text-[#3A251E] dark:text-white mb-3">
+          <h1 className="text-3xl font-serif text-[#2a2015] dark:text-white mb-3">
             Un instant…
           </h1>
-          <p className="text-sm text-[#3A251E]/70 dark:text-white/70 mb-8 leading-relaxed">
+          <p className="text-sm text-[#2a2015]/70 dark:text-white/70 mb-8 leading-relaxed">
             Une erreur est survenue lors du chargement de cette page. Rafraîchir la page devrait tout remettre en ordre.
             <br />
             <span className="italic">An error occurred. Refreshing should fix it.</span>
@@ -42,13 +42,13 @@ export default class ErrorBoundary extends React.Component<Props, State> {
           <div className="flex gap-3 justify-center">
             <button
               onClick={() => window.location.reload()}
-              className="bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors"
+              className="bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
             >
               Rafraîchir
             </button>
             <a
               href="/accueil"
-              className="border border-[#3A251E]/20 dark:border-white/20 text-[#3A251E] dark:text-white px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:border-[#B8532F] hover:text-[#B8532F] transition-colors"
+              className="border border-[#2a2015]/20 dark:border-white/20 text-[#2a2015] dark:text-white px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:border-[#bb9a5e] hover:text-[#7d6330] transition-colors"
             >
               Accueil
             </a>

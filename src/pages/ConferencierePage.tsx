@@ -264,7 +264,7 @@ const Hero: React.FC<{ scrollToForm: () => void }> = ({ scrollToForm }) => {
             initial={reduce ? { opacity: 1 } : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.2, 0.8, 0.2, 1] }}
-            className="inline-block uppercase tracking-[0.42em] text-[11px] md:text-xs font-bold text-[#6B402F] mb-5"
+            className="inline-block uppercase tracking-[0.42em] text-[11px] md:text-xs font-bold text-[#5a4a37] mb-5"
             style={{
               textShadow: '0 1px 0 rgba(244,231,221,0.95), 0 2px 6px rgba(244,231,221,0.8)',
             }}
@@ -277,7 +277,7 @@ const Hero: React.FC<{ scrollToForm: () => void }> = ({ scrollToForm }) => {
             initial="hidden"
             animate="show"
             aria-label="Krystine St-Laurent"
-            className="font-serif uppercase text-[#1E140F] dark:text-[#F4E7DD] leading-[0.95]"
+            className="font-serif uppercase text-[#16100a] dark:text-[#f6f3ee] leading-[0.95]"
             style={{
               letterSpacing: '0.02em',
               // Strong layered halo — embossed into paper, not printed.
@@ -296,7 +296,7 @@ const Hero: React.FC<{ scrollToForm: () => void }> = ({ scrollToForm }) => {
               initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.6, ease: [0.2, 0.8, 0.2, 1] }}
-              className="block mt-1 md:mt-2 text-[#4A2818]"
+              className="block mt-1 md:mt-2 text-[#2a2015]"
               style={{
                 fontSize: 'clamp(1.4rem, 3.3vw, 3.1rem)',
                 letterSpacing: '0.08em',
@@ -323,9 +323,9 @@ const Hero: React.FC<{ scrollToForm: () => void }> = ({ scrollToForm }) => {
             ].map((p, i) => (
               <span key={i}
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] uppercase tracking-[0.25em] font-bold"
-                style={{ background: 'rgba(255, 255, 255, 0.55)', border: '1px solid rgba(184,83,47,0.3)', color: '#3A251E' }}
+                style={{ background: 'rgba(255, 255, 255, 0.55)', border: '1px solid rgba(187, 154, 94,0.3)', color: '#2a2015' }}
               >
-                <span className="w-1 h-1 rounded-full bg-[#B8532F]" />
+                <span className="w-1 h-1 rounded-full bg-[#bb9a5e]" />
                 {lang === 'FR' ? p.fr : p.en}
               </span>
             ))}
@@ -335,7 +335,7 @@ const Hero: React.FC<{ scrollToForm: () => void }> = ({ scrollToForm }) => {
             initial={reduce ? { opacity: 1 } : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.05, ease: [0.2, 0.8, 0.2, 1] }}
-            className="mt-6 md:mt-8 font-serif italic text-[#2A1A12] text-lg md:text-xl leading-relaxed"
+            className="mt-6 md:mt-8 font-serif italic text-[#2a2015] text-lg md:text-xl leading-relaxed"
             style={{
               textShadow:
                 '0 1px 0 rgba(244,231,221,0.95), 0 2px 6px rgba(244,231,221,0.75), 0 0 18px rgba(244,231,221,0.55)',
@@ -361,8 +361,8 @@ const Hero: React.FC<{ scrollToForm: () => void }> = ({ scrollToForm }) => {
               onClick={scrollToForm}
               className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-[12px] uppercase font-semibold tracking-[0.28em] transition-[filter,transform] duration-300 hover:[filter:brightness(1.06)] active:scale-[0.98]"
               style={{
-                background: '#3A251E', color: '#F4E7DD',
-                border: '1px solid rgba(184,83,47,0.55)',
+                background: '#2a2015', color: '#f6f3ee',
+                border: '1px solid rgba(187, 154, 94,0.55)',
                 boxShadow: '0 12px 28px rgba(58,37,30,0.28)',
               }}
             >
@@ -371,10 +371,10 @@ const Hero: React.FC<{ scrollToForm: () => void }> = ({ scrollToForm }) => {
             </button>
             <Link
               to="/medias#tv"
-              className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-[12px] uppercase font-semibold tracking-[0.28em] transition-colors duration-300 hover:bg-[#3A251E]/5"
-              style={{ background: 'transparent', color: '#3A251E', border: '1px solid rgba(58,37,30,0.5)' }}
+              className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-[12px] uppercase font-semibold tracking-[0.28em] transition-colors duration-300 hover:bg-[#2a2015]/5"
+              style={{ background: 'transparent', color: '#2a2015', border: '1px solid rgba(58,37,30,0.5)' }}
             >
-              <i className="fa-solid fa-play text-[10px] text-[#B8532F]" />
+              <i className="fa-solid fa-play text-[10px] text-[#7d6330]" />
               {lang === 'FR' ? 'Voir une conférence' : 'Watch a talk'}
             </Link>
           </motion.div>
@@ -389,7 +389,7 @@ const Hero: React.FC<{ scrollToForm: () => void }> = ({ scrollToForm }) => {
           className="relative mx-auto lg:mx-0 w-full max-w-[460px]"
         >
           <div className="relative aspect-[4/5] rounded-[28px] overflow-hidden shadow-[0_22px_60px_rgba(58,37,30,0.28)]"
-            style={{ border: '1px solid rgba(184,83,47,0.35)' }}
+            style={{ border: '1px solid rgba(187, 154, 94,0.35)' }}
           >
             <motion.div className="absolute inset-0" style={{ y: portraitY, scale: portraitScale }}>
               <EditableImage
@@ -398,14 +398,14 @@ const Hero: React.FC<{ scrollToForm: () => void }> = ({ scrollToForm }) => {
                 className="absolute inset-0"
                 alt="Krystine St-Laurent"
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-[#3A251E]/40 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#2a2015]/40 via-transparent to-transparent pointer-events-none" />
               </EditableImage>
             </motion.div>
             <div className="absolute bottom-4 left-4 right-4 flex items-center gap-2 pointer-events-none">
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#3A251E]/80 backdrop-blur text-[#F4D49A] text-[10px] uppercase tracking-[0.3em] font-bold">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#2a2015]/80 backdrop-blur text-[#F4D49A] text-[10px] uppercase tracking-[0.3em] font-bold">
                 <span className="relative flex w-1.5 h-1.5">
-                  <span className="absolute inset-0 rounded-full bg-[#B8532F] animate-ping" />
-                  <span className="relative w-1.5 h-1.5 rounded-full bg-[#B8532F]" />
+                  <span className="absolute inset-0 rounded-full bg-[#bb9a5e] animate-ping" />
+                  <span className="relative w-1.5 h-1.5 rounded-full bg-[#bb9a5e]" />
                 </span>
                 {lang === 'FR' ? 'En conférence' : 'On stage'}
               </span>
@@ -424,7 +424,7 @@ const PressMarquee: React.FC = () => {
   const list = [...PRESS_LIST, ...PRESS_LIST];
   return (
     <section className="relative py-10 md:py-14 overflow-hidden">
-      <p className="text-center text-[10px] uppercase tracking-[0.4em] font-bold text-[#6B402F] mb-6">
+      <p className="text-center text-[10px] uppercase tracking-[0.4em] font-bold text-[#5a4a37] mb-6">
         · {lang === 'FR' ? 'Sur scène · médias · institutions' : 'Stages · media · institutions'} ·
       </p>
       <div
@@ -436,7 +436,7 @@ const PressMarquee: React.FC = () => {
       >
         <div className={`flex gap-12 md:gap-16 whitespace-nowrap ${reduce ? '' : 'press-marquee-track'}`}>
           {list.map((p, i) => (
-            <span key={i} className="font-serif italic text-[#3A251E]/65 dark:text-white/55 text-xl md:text-2xl flex-shrink-0">
+            <span key={i} className="font-serif italic text-[#2a2015]/65 dark:text-white/55 text-xl md:text-2xl flex-shrink-0">
               {p}
             </span>
           ))}
@@ -499,15 +499,15 @@ const Story: React.FC = () => {
           className="mb-14 md:mb-20 max-w-4xl mx-auto px-4 text-center"
         >
           <p
-            className="font-serif italic text-2xl md:text-4xl lg:text-5xl leading-[1.2] text-[#1E140F] dark:text-white"
+            className="font-serif italic text-2xl md:text-4xl lg:text-5xl leading-[1.2] text-[#16100a] dark:text-white"
             style={{
               textShadow:
                 '0 1px 0 rgba(244,231,221,0.95), 0 2px 6px rgba(244,231,221,0.8), 0 4px 16px rgba(244,231,221,0.55)',
             }}
           >
-            <span className="text-[#B8532F]/70 mr-1">&ldquo;</span>
+            <span className="text-[#7d6330]/70 mr-1">&ldquo;</span>
             <EditableText fieldKey="krystine.story.quote" defaultValue={t.story.p3} multiline />
-            <span className="text-[#B8532F]/70 ml-1">&rdquo;</span>
+            <span className="text-[#7d6330]/70 ml-1">&rdquo;</span>
           </p>
         </motion.blockquote>
 
@@ -522,17 +522,17 @@ const Story: React.FC = () => {
               transition={{ duration: 0.75, delay: reduce ? 0 : (i % 2) * 0.1, ease: [0.2, 0.8, 0.2, 1] }}
               className="relative rounded-[24px] p-6 md:p-8"
               style={{
-                background: i % 2 === 0 ? '#F4E7DD' : '#ECD6BE',
-                border: `1px solid ${i % 2 === 0 ? 'rgba(184,83,47,0.20)' : 'rgba(139,103,74,0.30)'}`,
+                background: i % 2 === 0 ? '#f6f3ee' : '#ECD6BE',
+                border: `1px solid ${i % 2 === 0 ? 'rgba(187, 154, 94,0.20)' : 'rgba(139,103,74,0.30)'}`,
                 boxShadow: i % 2 === 0
                   ? '0 8px 20px rgba(107,74,47,0.08), inset 0 1px 0 rgba(255,255,255,0.5)'
                   : '0 10px 24px rgba(107,74,47,0.14), inset 0 1px 0 rgba(244,231,221,0.55)',
               }}
             >
-              <span className="block font-serif italic text-[#B8532F] text-3xl md:text-4xl mb-3">
+              <span className="block font-serif italic text-[#7d6330] text-3xl md:text-4xl mb-3">
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <p className="text-[#3A251E]/85 leading-relaxed font-serif">
+              <p className="text-[#2a2015]/85 leading-relaxed font-serif">
                 <EditableText fieldKey={para.key} defaultValue={para.value} multiline />
               </p>
             </motion.article>
@@ -574,22 +574,22 @@ const AnimatedStat: React.FC<{ value: string; sub: string; label: string; fieldK
       ref={ref}
       className="rounded-[22px] p-6 md:p-7 text-center transition-all duration-500 hover:-translate-y-0.5"
       style={{
-        background: '#F4E7DD',
-        border: '1px solid rgba(184,83,47,0.22)',
+        background: '#f6f3ee',
+        border: '1px solid rgba(187, 154, 94,0.22)',
         boxShadow: '0 8px 22px rgba(107,74,47,0.10), inset 0 1px 0 rgba(255,255,255,0.5)',
       }}
     >
-      <div className="font-serif text-[#B8532F] leading-none mb-3" style={{ fontSize: 'clamp(2.2rem, 4.2vw, 3.4rem)' }}>
+      <div className="font-serif text-[#7d6330] leading-none mb-3" style={{ fontSize: 'clamp(2.2rem, 4.2vw, 3.4rem)' }}>
         {target == null ? (
           <EditableText fieldKey={`${fieldKeyBase}.value`} defaultValue={value} as="span" />
         ) : (
           display
         )}
       </div>
-      <div className="text-[10px] md:text-[11px] uppercase tracking-[0.3em] font-bold text-[#3A251E] mb-1">
+      <div className="text-[10px] md:text-[11px] uppercase tracking-[0.3em] font-bold text-[#2a2015] mb-1">
         <EditableText fieldKey={`${fieldKeyBase}.sub`} defaultValue={sub} as="span" />
       </div>
-      <div className="text-xs text-[#6B402F]/85 font-serif italic">
+      <div className="text-xs text-[#5a4a37]/85 font-serif italic">
         <EditableText fieldKey={`${fieldKeyBase}.label`} defaultValue={label} as="span" />
       </div>
     </div>
@@ -630,7 +630,7 @@ const MissionCard: React.FC = () => {
         viewport={{ once: true, amount: 0.25 }}
         transition={{ duration: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
         className="max-w-[1200px] mx-auto rounded-[28px] overflow-hidden shadow-[0_22px_50px_rgba(58,37,30,0.20)]"
-        style={{ border: '1px solid rgba(184,83,47,0.25)' }}
+        style={{ border: '1px solid rgba(187, 154, 94,0.25)' }}
       >
         <div className="grid grid-cols-1 md:grid-cols-[1.1fr_1fr]">
           <div className="relative h-72 md:h-auto min-h-[360px] overflow-hidden">
@@ -639,10 +639,10 @@ const MissionCard: React.FC = () => {
               defaultSrc={ASSETS.shopBg}
               className="absolute inset-0"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-[#3A251E]/35 to-[#3A251E]/90 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#2a2015]/35 to-[#2a2015]/90 pointer-events-none" />
             </EditableImage>
           </div>
-          <div className="p-10 md:p-14 text-[#F4E7DD] flex flex-col justify-center" style={{ background: '#3A251E' }}>
+          <div className="p-10 md:p-14 text-[#f6f3ee] flex flex-col justify-center" style={{ background: '#2a2015' }}>
             <span className="text-[#F4D49A] uppercase tracking-[0.3em] text-[10px] font-bold block mb-5">
               <EditableText
                 fieldKey="krystine.mission.kicker"
@@ -652,11 +652,11 @@ const MissionCard: React.FC = () => {
             <h2 className="font-serif text-3xl md:text-4xl leading-[1.2] mb-6">
               <EditableText fieldKey="krystine.mission.title" defaultValue={t.bio.mission} multiline />
             </h2>
-            <p className="text-[#F4E7DD]/75 leading-relaxed mb-8 font-serif italic">
+            <p className="text-[#f6f3ee]/75 leading-relaxed mb-8 font-serif italic">
               <EditableText fieldKey="krystine.mission.body" defaultValue={t.bio.outro} multiline />
             </p>
             <div className="flex items-center gap-4 text-[#F4D49A]/70 uppercase tracking-[0.25em] text-[10px] font-bold">
-              <span className="h-px w-10 bg-[#B8532F]/60" />
+              <span className="h-px w-10 bg-[#bb9a5e]/60" />
               <EditableText fieldKey="krystine.mission.expert" defaultValue={t.bio.expert} />
             </div>
           </div>
@@ -699,8 +699,8 @@ const SignatureTalks: React.FC = () => {
               whileHover={reduce ? undefined : { y: -5, scale: 1.012, transition: { type: 'spring' as const, stiffness: 260, damping: 22 } }}
               className="relative rounded-[24px] p-6 md:p-7 group flex flex-col"
               style={{
-                background: i === 1 ? '#ECD6BE' : '#F4E7DD',
-                border: `1px solid ${i === 1 ? 'rgba(139,103,74,0.32)' : 'rgba(184,83,47,0.20)'}`,
+                background: i === 1 ? '#ECD6BE' : '#f6f3ee',
+                border: `1px solid ${i === 1 ? 'rgba(139,103,74,0.32)' : 'rgba(187, 154, 94,0.20)'}`,
                 boxShadow: i === 1
                   ? '0 12px 28px rgba(107,74,47,0.16), inset 0 1px 0 rgba(244,231,221,0.55)'
                   : '0 10px 24px rgba(107,74,47,0.10), inset 0 1px 0 rgba(255,255,255,0.45)',
@@ -709,23 +709,23 @@ const SignatureTalks: React.FC = () => {
               <div className="absolute -top-2 -right-2 w-8 h-12 opacity-65 pointer-events-none" aria-hidden>
                 <Sprig variant={talk.sprig} fill="#8A8F72" />
               </div>
-              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#B8532F] mb-3">
+              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#7d6330] mb-3">
                 {lang === 'FR' ? talk.kicker.fr : talk.kicker.en}
               </span>
-              <h3 className="font-serif text-2xl md:text-[1.65rem] leading-[1.15] text-[#3A251E] mb-3 transition-colors duration-300 group-hover:text-[#B8532F]">
+              <h3 className="font-serif text-2xl md:text-[1.65rem] leading-[1.15] text-[#2a2015] mb-3 transition-colors duration-300 group-hover:text-[#7d6330]">
                 {lang === 'FR' ? talk.title.fr : talk.title.en}
               </h3>
-              <p className="font-serif italic text-[#3A251E]/75 leading-relaxed text-[15px] mb-5 flex-1">
+              <p className="font-serif italic text-[#2a2015]/75 leading-relaxed text-[15px] mb-5 flex-1">
                 {lang === 'FR' ? talk.lede.fr : talk.lede.en}
               </p>
-              <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.25em] font-bold text-[#6B402F] mt-auto pt-4 border-t border-[#B8532F]/15">
+              <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.25em] font-bold text-[#5a4a37] mt-auto pt-4 border-t border-[#bb9a5e]/15">
                 <span className="inline-flex items-center gap-1.5">
-                  <i className="fa-regular fa-clock text-[#B8532F]" />
+                  <i className="fa-regular fa-clock text-[#7d6330]" />
                   {lang === 'FR' ? talk.duration.fr : talk.duration.en}
                 </span>
-                <span className="w-1 h-1 rounded-full bg-[#B8532F]/50" />
+                <span className="w-1 h-1 rounded-full bg-[#bb9a5e]/50" />
                 <span className="inline-flex items-center gap-1.5">
-                  <i className="fa-solid fa-map-pin text-[#B8532F]" />
+                  <i className="fa-solid fa-map-pin text-[#7d6330]" />
                   {lang === 'FR' ? talk.format.fr : talk.format.en}
                 </span>
               </div>
@@ -756,13 +756,13 @@ const Testimonials: React.FC = () => {
           className="relative rounded-[28px] px-6 md:px-12 py-12 md:py-16 text-center overflow-hidden"
           style={{
             background: 'rgba(244,231,221,0.7)',
-            border: '1px solid rgba(184,83,47,0.20)',
+            border: '1px solid rgba(187, 154, 94,0.20)',
             boxShadow: '0 10px 30px rgba(107,74,47,0.10)',
             backdropFilter: 'blur(6px)',
             WebkitBackdropFilter: 'blur(6px)',
           }}
         >
-          <i className="fa-solid fa-quote-left text-[#B8532F]/40 text-3xl mb-5" />
+          <i className="fa-solid fa-quote-left text-[#7d6330]/40 text-3xl mb-5" />
           <div className="relative min-h-[140px] md:min-h-[120px]">
             {TESTIMONIALS.map((tm, i) => (
               <motion.blockquote
@@ -773,10 +773,10 @@ const Testimonials: React.FC = () => {
                 className="absolute inset-0 flex flex-col justify-center"
                 style={{ pointerEvents: i === tIndex ? 'auto' : 'none' }}
               >
-                <p className="font-serif italic text-[#3A251E] dark:text-white text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
+                <p className="font-serif italic text-[#2a2015] dark:text-white text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
                   « {lang === 'FR' ? tm.quote.fr : tm.quote.en} »
                 </p>
-                <p className="mt-5 text-[10px] uppercase tracking-[0.35em] font-bold text-[#6B402F]">{tm.by}</p>
+                <p className="mt-5 text-[10px] uppercase tracking-[0.35em] font-bold text-[#5a4a37]">{tm.by}</p>
               </motion.blockquote>
             ))}
           </div>
@@ -792,7 +792,7 @@ const Testimonials: React.FC = () => {
                   width: i === tIndex ? 26 : 8,
                   height: 8,
                   borderRadius: 999,
-                  background: i === tIndex ? '#B8532F' : 'rgba(184,83,47,0.3)',
+                  background: i === tIndex ? '#bb9a5e' : 'rgba(187, 154, 94,0.3)',
                 }}
               />
             ))}
@@ -818,7 +818,7 @@ const ProcessTimeline: React.FC = () => {
           className="mb-12 md:mb-16"
         />
         <div className="relative grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-4">
-          <div className="hidden md:block absolute top-8 left-[12%] right-[12%] h-px bg-gradient-to-r from-[#B8532F]/0 via-[#B8532F]/50 to-[#B8532F]/0" />
+          <div className="hidden md:block absolute top-8 left-[12%] right-[12%] h-px bg-gradient-to-r from-[#bb9a5e]/0 via-[#bb9a5e]/50 to-[#bb9a5e]/0" />
           {PROCESS_STEPS.map((step, i) => (
             <motion.div
               key={i}
@@ -832,19 +832,19 @@ const ProcessTimeline: React.FC = () => {
                 <span
                   className="relative z-10 inline-flex items-center justify-center w-16 h-16 rounded-full font-serif text-xl"
                   style={{
-                    background: '#F4E7DD',
-                    border: '1.5px solid #B8532F',
-                    color: '#3A251E',
+                    background: '#f6f3ee',
+                    border: '1.5px solid #bb9a5e',
+                    color: '#2a2015',
                     boxShadow: '0 8px 22px rgba(107,74,47,0.15)',
                   }}
                 >
                   {step.n}
                 </span>
               </div>
-              <h3 className="font-serif text-xl md:text-[1.35rem] text-[#3A251E] dark:text-white mb-2 leading-snug">
+              <h3 className="font-serif text-xl md:text-[1.35rem] text-[#2a2015] dark:text-white mb-2 leading-snug">
                 {lang === 'FR' ? step.titleFR : step.titleEN}
               </h3>
-              <p className="font-serif italic text-[#3A251E]/70 dark:text-white/70 text-sm md:text-[15px] leading-relaxed">
+              <p className="font-serif italic text-[#2a2015]/70 dark:text-white/70 text-sm md:text-[15px] leading-relaxed">
                 {lang === 'FR' ? step.bodyFR : step.bodyEN}
               </p>
             </motion.div>
@@ -882,8 +882,8 @@ const FAQ: React.FC = () => {
                 transition={{ duration: 0.6, delay: reduce ? 0 : i * 0.05, ease: [0.2, 0.8, 0.2, 1] }}
                 className="rounded-2xl overflow-hidden"
                 style={{
-                  background: isOpen ? '#F4E7DD' : 'rgba(244,231,221,0.55)',
-                  border: `1px solid ${isOpen ? 'rgba(184,83,47,0.4)' : 'rgba(184,83,47,0.18)'}`,
+                  background: isOpen ? '#f6f3ee' : 'rgba(244,231,221,0.55)',
+                  border: `1px solid ${isOpen ? 'rgba(187, 154, 94,0.4)' : 'rgba(187, 154, 94,0.18)'}`,
                   boxShadow: isOpen ? '0 10px 28px rgba(107,74,47,0.12)' : '0 4px 14px rgba(107,74,47,0.05)',
                   transition: 'background 250ms ease, border-color 250ms ease, box-shadow 250ms ease',
                 }}
@@ -894,14 +894,14 @@ const FAQ: React.FC = () => {
                   className="w-full flex items-center justify-between gap-4 px-5 md:px-6 py-4 text-left"
                   aria-expanded={isOpen}
                 >
-                  <span className="font-serif text-[#3A251E] dark:text-white text-base md:text-lg leading-snug">
+                  <span className="font-serif text-[#2a2015] dark:text-white text-base md:text-lg leading-snug">
                     {lang === 'FR' ? item.qFR : item.qEN}
                   </span>
                   <span
                     className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-transform duration-300"
                     style={{
-                      background: isOpen ? '#B8532F' : 'rgba(184,83,47,0.12)',
-                      color: isOpen ? '#F4E7DD' : '#B8532F',
+                      background: isOpen ? '#bb9a5e' : 'rgba(187, 154, 94,0.12)',
+                      color: isOpen ? '#f6f3ee' : '#bb9a5e',
                       transform: isOpen ? 'rotate(45deg)' : 'rotate(0)',
                     }}
                   >
@@ -915,7 +915,7 @@ const FAQ: React.FC = () => {
                   style={{ overflow: 'hidden' }}
                 >
                   <div className="px-5 md:px-6 pb-5 md:pb-6">
-                    <p className="font-serif italic text-[#3A251E]/75 dark:text-white/75 leading-relaxed text-[15px]">
+                    <p className="font-serif italic text-[#2a2015]/75 dark:text-white/75 leading-relaxed text-[15px]">
                       {lang === 'FR' ? item.aFR : item.aEN}
                     </p>
                   </div>
@@ -978,22 +978,22 @@ const EventsSection: React.FC = () => {
               });
               return (
                 <div key={ev.id}
-                  className="group relative rounded-2xl border border-[#3A251E]/10 dark:border-white/10 bg-[#F4E7DD] dark:bg-[#3A251E]/60 p-6 transition-all duration-500 hover:-translate-y-1 hover:border-[#B8532F]/50 hover:shadow-lg"
+                  className="group relative rounded-2xl border border-[#2a2015]/10 dark:border-white/10 bg-[#f6f3ee] dark:bg-[#2a2015]/60 p-6 transition-all duration-500 hover:-translate-y-1 hover:border-[#bb9a5e]/50 hover:shadow-lg"
                 >
-                  <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#B8532F] block mb-3">{dateStr}</span>
-                  <h3 className="font-serif text-xl md:text-2xl text-[#3A251E] dark:text-white mb-1 group-hover:text-[#B8532F] transition-colors">{ev.title}</h3>
-                  {ev.subtitle && <p className="text-sm font-serif italic text-[#3A251E]/60 dark:text-white/60 mb-3">{ev.subtitle}</p>}
+                  <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#7d6330] block mb-3">{dateStr}</span>
+                  <h3 className="font-serif text-xl md:text-2xl text-[#2a2015] dark:text-white mb-1 group-hover:text-[#7d6330] transition-colors">{ev.title}</h3>
+                  {ev.subtitle && <p className="text-sm font-serif italic text-[#2a2015]/60 dark:text-white/60 mb-3">{ev.subtitle}</p>}
                   {ev.location && (
-                    <p className="text-sm text-[#3A251E]/65 dark:text-white/65 flex items-center gap-2 mb-3">
-                      <i className="fa-solid fa-map-marker-alt text-[#B8532F] text-[11px]" />{ev.location}
+                    <p className="text-sm text-[#2a2015]/65 dark:text-white/65 flex items-center gap-2 mb-3">
+                      <i className="fa-solid fa-map-marker-alt text-[#7d6330] text-[11px]" />{ev.location}
                     </p>
                   )}
                   {ev.description && (
-                    <p className="text-sm text-[#3A251E]/70 dark:text-white/70 leading-relaxed mb-4 line-clamp-3">{ev.description}</p>
+                    <p className="text-sm text-[#2a2015]/70 dark:text-white/70 leading-relaxed mb-4 line-clamp-3">{ev.description}</p>
                   )}
                   {ev.registrationLink && (
                     <a href={ev.registrationLink} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-5 py-2 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors"
+                      className="inline-flex items-center gap-2 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-5 py-2 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
                     >
                       {lang === 'FR' ? "S'inscrire" : 'Register'}
                       <i className="fa-solid fa-arrow-right text-[9px]" />
@@ -1022,26 +1022,26 @@ const Correspondence: React.FC = () => {
       transition={{ duration: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
       className="relative py-14 md:py-20 px-6"
     >
-      <div className="max-w-[1200px] mx-auto rounded-[28px] border border-[#B8532F]/22 bg-[rgba(244,231,221,0.85)] px-6 md:px-12 py-14 md:py-20 text-center"
+      <div className="max-w-[1200px] mx-auto rounded-[28px] border border-[#bb9a5e]/22 bg-[rgba(244,231,221,0.85)] px-6 md:px-12 py-14 md:py-20 text-center"
         style={{ boxShadow: '0 10px 30px rgba(107,74,47,0.10)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
       >
-        <span className="text-[#B8532F] uppercase tracking-[0.35em] text-[11px] font-bold block mb-4">
+        <span className="text-[#7d6330] uppercase tracking-[0.35em] text-[11px] font-bold block mb-4">
           <EditableText
             fieldKey="krystine.newsletter.kicker"
             defaultValue={lang === 'FR' ? 'Une correspondance' : 'A correspondence'}
           />
         </span>
-        <h3 className="font-serif text-3xl md:text-5xl leading-tight text-[#1E140F]">
+        <h3 className="font-serif text-3xl md:text-5xl leading-tight text-[#16100a]">
           <EditableText fieldKey="krystine.newsletter.title" defaultValue={t.newsletter.title} />
         </h3>
-        <h4 className="font-serif italic text-2xl md:text-4xl text-[#B8532F] leading-tight mb-10">
+        <h4 className="font-serif italic text-2xl md:text-4xl text-[#7d6330] leading-tight mb-10">
           <EditableText fieldKey="krystine.newsletter.subtitle" defaultValue={t.newsletter.subtitle} />
         </h4>
-        <p className="text-[#3A251E]/70 leading-relaxed max-w-xl mx-auto mb-10 font-serif italic">
+        <p className="text-[#2a2015]/70 leading-relaxed max-w-xl mx-auto mb-10 font-serif italic">
           <EditableText fieldKey="krystine.newsletter.intro" defaultValue={t.newsletter.intro} multiline />
         </p>
 
-        <ul className="grid grid-cols-1 md:grid-cols-3 border-y border-[#3A251E]/10 mb-12 max-w-4xl mx-auto">
+        <ul className="grid grid-cols-1 md:grid-cols-3 border-y border-[#2a2015]/10 mb-12 max-w-4xl mx-auto">
           {t.newsletter.list.map((item, i) => (
             <motion.li
               key={i}
@@ -1049,8 +1049,8 @@ const Correspondence: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.55, delay: reduce ? 0 : i * 0.08, ease: [0.2, 0.8, 0.2, 1] }}
-              className={`py-6 px-6 font-serif italic text-[#3A251E]/75 ${
-                i < t.newsletter.list.length - 1 ? 'md:border-r border-[#3A251E]/10' : ''
+              className={`py-6 px-6 font-serif italic text-[#2a2015]/75 ${
+                i < t.newsletter.list.length - 1 ? 'md:border-r border-[#2a2015]/10' : ''
               }`}
             >
               <EditableText fieldKey={`krystine.newsletter.list.${i}`} defaultValue={item} multiline />
@@ -1065,7 +1065,7 @@ const Correspondence: React.FC = () => {
           placeholder={lang === 'FR' ? 'Votre adresse courriel' : 'Your email address'}
           className="max-w-xl mx-auto"
         />
-        <p className="text-[#3A251E]/65 text-sm italic mt-6">
+        <p className="text-[#2a2015]/65 text-sm italic mt-6">
           <EditableText fieldKey="krystine.newsletter.outro" defaultValue={t.newsletter.outro} multiline />
         </p>
       </div>
@@ -1088,13 +1088,13 @@ const Closing: React.FC = () => {
     >
       <div className="max-w-4xl mx-auto">
         <span
-          className="text-[#B8532F] uppercase tracking-[0.35em] text-[11px] font-bold block mb-8"
+          className="text-[#7d6330] uppercase tracking-[0.35em] text-[11px] font-bold block mb-8"
           style={{ textShadow: '0 1px 0 rgba(244,231,221,0.9), 0 2px 6px rgba(244,231,221,0.7)' }}
         >
           <EditableText fieldKey="krystine.closing.title" defaultValue={t.footerBio.title} />
         </span>
         <p
-          className="font-serif italic text-2xl md:text-4xl lg:text-[2.6rem] leading-[1.26] text-[#1E140F]"
+          className="font-serif italic text-2xl md:text-4xl lg:text-[2.6rem] leading-[1.26] text-[#16100a]"
           style={{
             textShadow:
               '0 1px 0 rgba(244,231,221,0.95), 0 2px 6px rgba(244,231,221,0.8), 0 4px 16px rgba(244,231,221,0.55)',
@@ -1103,14 +1103,14 @@ const Closing: React.FC = () => {
           <EditableText fieldKey="krystine.closing.text" defaultValue={t.footerBio.text} multiline />
         </p>
         <div className="flex items-center justify-center gap-6 mt-10">
-          <span className="h-px w-16 bg-[#B8532F]/50" />
+          <span className="h-px w-16 bg-[#bb9a5e]/50" />
           <span
-            className="uppercase tracking-[0.35em] text-[11px] font-bold text-[#B8532F]"
+            className="uppercase tracking-[0.35em] text-[11px] font-bold text-[#7d6330]"
             style={{ textShadow: '0 1px 0 rgba(244,231,221,0.9), 0 2px 6px rgba(244,231,221,0.7)' }}
           >
             Krystine St-Laurent
           </span>
-          <span className="h-px w-16 bg-[#B8532F]/50" />
+          <span className="h-px w-16 bg-[#bb9a5e]/50" />
         </div>
       </div>
     </motion.section>
@@ -1139,9 +1139,9 @@ const StickyCTA: React.FC<{ scrollToForm: () => void }> = ({ scrollToForm }) => 
         onClick={scrollToForm}
         className="group inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-3.5 rounded-full text-[11px] md:text-[12px] uppercase font-semibold tracking-[0.28em] transition-[filter,transform] duration-300 hover:[filter:brightness(1.06)] active:scale-[0.98]"
         style={{
-          background: '#3A251E',
-          color: '#F4E7DD',
-          border: '1px solid rgba(184,83,47,0.6)',
+          background: '#2a2015',
+          color: '#f6f3ee',
+          border: '1px solid rgba(187, 154, 94,0.6)',
           boxShadow: '0 16px 36px rgba(58,37,30,0.32)',
         }}
       >
@@ -1238,7 +1238,7 @@ const ConferencierePage: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen dark:bg-[#2E1A14] overflow-x-hidden">
+    <div className="relative min-h-screen dark:bg-[#16100a] overflow-x-hidden">
       <Hero scrollToForm={scrollToForm} />
       <PressMarquee />
       <Story />
@@ -1266,7 +1266,7 @@ const ConferencierePage: React.FC = () => {
             className="relative rounded-[28px] px-5 md:px-10 py-8 md:py-12 overflow-hidden"
             style={{
               background: 'rgba(244,231,221,0.85)',
-              border: '1px solid rgba(184,83,47,0.22)',
+              border: '1px solid rgba(187, 154, 94,0.22)',
               boxShadow: '0 14px 40px rgba(107,74,47,0.10)',
               backdropFilter: 'blur(6px)',
               WebkitBackdropFilter: 'blur(6px)',
@@ -1283,13 +1283,13 @@ const ConferencierePage: React.FC = () => {
                 transition={{ type: 'spring', stiffness: 180, damping: 18 }}
                 className="text-center py-10"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#B8532F]/15 text-[#B8532F] mb-5">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#bb9a5e]/15 text-[#7d6330] mb-5">
                   <i className="fa-solid fa-check text-2xl" />
                 </div>
-                <h3 className="font-serif text-2xl md:text-3xl text-[#3A251E] dark:text-white mb-3">
+                <h3 className="font-serif text-2xl md:text-3xl text-[#2a2015] dark:text-white mb-3">
                   {lang === 'FR' ? 'Demande envoyée.' : 'Request sent.'}
                 </h3>
-                <p className="font-serif italic text-[#3A251E]/70 dark:text-white/70 max-w-md mx-auto">
+                <p className="font-serif italic text-[#2a2015]/70 dark:text-white/70 max-w-md mx-auto">
                   {lang === 'FR'
                     ? "Merci. L'équipe vous revient sous 48 h ouvrables avec une proposition adaptée."
                     : 'Thank you. The team will reply within 48 business hours with a tailored proposal.'}
@@ -1349,9 +1349,9 @@ const ConferencierePage: React.FC = () => {
                   disabled={sending}
                   className="w-full py-4 rounded-full font-bold uppercase tracking-[0.28em] text-[12px] transition-[filter,transform] duration-300 hover:[filter:brightness(1.06)] active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2"
                   style={{
-                    background: '#3A251E',
-                    color: '#F4E7DD',
-                    border: '1px solid rgba(184,83,47,0.55)',
+                    background: '#2a2015',
+                    color: '#f6f3ee',
+                    border: '1px solid rgba(187, 154, 94,0.55)',
                     boxShadow: '0 12px 28px rgba(58,37,30,0.28)',
                   }}
                 >
@@ -1359,7 +1359,7 @@ const ConferencierePage: React.FC = () => {
                   {lang === 'FR' ? 'Envoyer la demande' : 'Send request'}
                 </button>
 
-                <p className="text-[11px] text-center text-[#3A251E]/75 dark:text-white/75 pt-2 italic font-serif">
+                <p className="text-[11px] text-center text-[#2a2015]/75 dark:text-white/75 pt-2 italic font-serif">
                   {lang === 'FR'
                     ? "Vos réponses sont enregistrées de manière confidentielle. L'équipe revient vers vous avec une proposition adaptée."
                     : 'Your answers are stored confidentially. The team will reply with a tailored proposal.'}
@@ -1381,7 +1381,7 @@ const ConferencierePage: React.FC = () => {
 
 // ─── Field primitives ──────────────────────────────────────────────────────
 const FIELD_CLASS =
-  'w-full px-4 py-3 rounded-xl border border-[#3A251E]/15 dark:border-white/15 bg-white/80 dark:bg-white/5 text-sm text-[#3A251E] dark:text-white placeholder:text-[#3A251E]/40 dark:placeholder:text-white/40 focus:outline-none focus:border-[#B8532F] focus:shadow-[0_0_0_4px_rgba(184,83,47,0.12)] transition-shadow duration-300';
+  'w-full px-4 py-3 rounded-xl border border-[#2a2015]/15 dark:border-white/15 bg-white/80 dark:bg-white/5 text-sm text-[#2a2015] dark:text-white placeholder:text-[#2a2015]/40 dark:placeholder:text-white/40 focus:outline-none focus:border-[#bb9a5e] focus:shadow-[0_0_0_4px_rgba(187, 154, 94,0.12)] transition-shadow duration-300';
 
 const SELECT_CHEVRON =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2 4l4 4 4-4' stroke='%238B6F47' fill='none' stroke-width='1.5'/></svg>\")";
@@ -1393,12 +1393,12 @@ interface FormSectionProps {
 const FormSection: React.FC<FormSectionProps> = ({ step, titleFR, titleEN, children }) => {
   const { lang } = useApp();
   return (
-    <div className="rounded-[20px] border border-[#3A251E]/8 dark:border-white/8 bg-white/40 dark:bg-white/[0.03] p-4 md:p-5">
+    <div className="rounded-[20px] border border-[#2a2015]/8 dark:border-white/8 bg-white/40 dark:bg-white/[0.03] p-4 md:p-5">
       <div className="flex items-center gap-3 mb-4">
-        <span className="w-7 h-7 rounded-full text-[11px] font-bold flex items-center justify-center shrink-0" style={{ background: '#B8532F', color: '#F4E7DD' }}>
+        <span className="w-7 h-7 rounded-full text-[11px] font-bold flex items-center justify-center shrink-0" style={{ background: '#bb9a5e', color: '#f6f3ee' }}>
           {step}
         </span>
-        <h3 className="font-serif text-base md:text-lg text-[#3A251E] dark:text-white">
+        <h3 className="font-serif text-base md:text-lg text-[#2a2015] dark:text-white">
           {lang === 'FR' ? titleFR : titleEN}
         </h3>
       </div>
@@ -1431,7 +1431,7 @@ interface SelectProps {
 }
 const LabelledSelect: React.FC<SelectProps> = ({ label, value, onChange, options }) => (
   <label className="block">
-    <span className="block text-[10px] uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-2">
+    <span className="block text-[10px] uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-2">
       {label}
     </span>
     <select

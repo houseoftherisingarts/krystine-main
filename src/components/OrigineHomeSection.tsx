@@ -65,8 +65,8 @@ const OrigineHomeSection: React.FC = () => {
       ref={sectionRef}
       className="relative w-full mb-12 rounded-[28px] overflow-hidden"
       style={{
-        border: '1px solid rgba(184,83,47,0.22)',
-        background: 'linear-gradient(160deg, rgba(232,208,190,0.55) 0%, rgba(244,231,221,0.72) 45%, rgba(184,83,47,0.12) 100%)',
+        border: '1px solid rgba(187, 154, 94,0.22)',
+        background: 'linear-gradient(160deg, rgba(232,208,190,0.55) 0%, rgba(244,231,221,0.72) 45%, rgba(187, 154, 94,0.12) 100%)',
         boxShadow: '0 16px 44px rgba(107,74,47,0.12)',
       }}
     >
@@ -102,7 +102,7 @@ const OrigineHomeSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
-            className="font-serif text-[#1E140F] leading-[1.04]"
+            className="font-serif text-[#16100a] leading-[1.04]"
             style={{
               fontSize: 'clamp(2rem, 4.4vw, 3.6rem)',
               letterSpacing: '0.008em',
@@ -119,7 +119,7 @@ const OrigineHomeSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.8, delay: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
-            className="mt-5 md:mt-7 font-serif italic text-[#3A251E]/85 text-lg md:text-xl leading-relaxed"
+            className="mt-5 md:mt-7 font-serif italic text-[#2a2015]/85 text-lg md:text-xl leading-relaxed"
           >
             <EditableText
               fieldKey="home.origine.opener.subtitle"
@@ -140,7 +140,7 @@ const OrigineHomeSection: React.FC = () => {
             className="mt-8 md:mt-10 relative px-6 md:px-8 py-6 md:py-7 rounded-[18px]"
             style={{
               background: 'rgba(244,231,221,0.82)',
-              border: '1px solid rgba(184,83,47,0.28)',
+              border: '1px solid rgba(187, 154, 94,0.28)',
               boxShadow: '0 8px 22px rgba(107,74,47,0.10), inset 0 1px 0 rgba(255,255,255,0.55)',
             }}
           >
@@ -153,10 +153,10 @@ const OrigineHomeSection: React.FC = () => {
               viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.9, delay: 0.7, ease: [0.2, 0.8, 0.2, 1] }}
               className="absolute left-0 top-4 bottom-4 w-[3px] rounded-r-sm origin-top"
-              style={{ background: 'linear-gradient(to bottom, #B8532F, rgba(184,83,47,0))' }}
+              style={{ background: 'linear-gradient(to bottom, #bb9a5e, rgba(187, 154, 94,0))' }}
             />
-            <i className="fa-solid fa-quote-left text-[#B8532F]/40 text-2xl mb-3" />
-            <p className="font-serif italic text-[#3A251E] text-base md:text-[17px] leading-relaxed">
+            <i className="fa-solid fa-quote-left text-[#7d6330]/40 text-2xl mb-3" />
+            <p className="font-serif italic text-[#2a2015] text-base md:text-[17px] leading-relaxed">
               <EditableText
                 fieldKey="home.origine.opener.citation"
                 defaultValue={lang === 'FR'
@@ -211,11 +211,11 @@ const OrigineHomeSection: React.FC = () => {
               ambient callout that doesn't compete with the main CTA. */}
           <div
             className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-10 pointer-events-none inline-flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur"
-            style={{ background: 'rgba(58,37,30,0.78)', border: '1px solid rgba(184,83,47,0.55)' }}
+            style={{ background: 'rgba(58,37,30,0.78)', border: '1px solid rgba(187, 154, 94,0.55)' }}
           >
             <span className="relative flex w-1.5 h-1.5">
-              <span className="absolute inset-0 rounded-full bg-[#B8532F] animate-ping" />
-              <span className="relative w-1.5 h-1.5 rounded-full bg-[#B8532F]" />
+              <span className="absolute inset-0 rounded-full bg-[#bb9a5e] animate-ping" />
+              <span className="relative w-1.5 h-1.5 rounded-full bg-[#bb9a5e]" />
             </span>
             <span className="text-[#F4D49A] text-[10px] uppercase tracking-[0.3em] font-bold">
               {lang === 'FR' ? 'Cohorte en route' : 'Cohort underway'}
@@ -229,7 +229,7 @@ const OrigineHomeSection: React.FC = () => {
         aria-hidden
         className="relative mx-6 md:mx-12 lg:mx-14 h-px"
         style={{
-          background: 'linear-gradient(to right, rgba(184,83,47,0), rgba(184,83,47,0.4) 25%, rgba(184,83,47,0.4) 75%, rgba(184,83,47,0) 100%)',
+          background: 'linear-gradient(to right, rgba(187, 154, 94,0), rgba(187, 154, 94,0.4) 25%, rgba(187, 154, 94,0.4) 75%, rgba(187, 154, 94,0) 100%)',
         }}
       />
 
@@ -240,7 +240,7 @@ const OrigineHomeSection: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.6, ease: [0.2, 0.8, 0.2, 1] }}
-          className="block text-[#B8532F] uppercase tracking-[0.4em] text-[10px] md:text-[11px] font-bold mb-5"
+          className="block text-[#7d6330] uppercase tracking-[0.4em] text-[10px] md:text-[11px] font-bold mb-5"
         >
           · <EditableText
               fieldKey="home.origine.programme.kicker"
@@ -254,7 +254,7 @@ const OrigineHomeSection: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.8, delay: 0.12, ease: [0.2, 0.8, 0.2, 1] }}
-          className="font-serif italic text-[#3A251E] mb-10 md:mb-12"
+          className="font-serif italic text-[#2a2015] mb-10 md:mb-12"
           style={{ fontSize: 'clamp(1.6rem, 3.2vw, 2.6rem)', letterSpacing: '0.01em' }}
         >
           <EditableText
@@ -289,12 +289,12 @@ const OrigineHomeSection: React.FC = () => {
                     show:   { scaleX: 1, opacity: 1, transition: { duration: 0.6, ease: [0.2, 0.8, 0.2, 1] as const } },
                   }}
                   className="hidden md:block h-px w-16 lg:w-24 origin-left"
-                  style={{ background: 'linear-gradient(to right, rgba(184,83,47,0.55), rgba(184,83,47,0.15))' }}
+                  style={{ background: 'linear-gradient(to right, rgba(187, 154, 94,0.55), rgba(187, 154, 94,0.15))' }}
                 />
               )}
               <motion.span
                 variants={axisItem}
-                className="font-serif text-[#B8532F] uppercase tracking-[0.28em] font-semibold"
+                className="font-serif text-[#7d6330] uppercase tracking-[0.28em] font-semibold"
                 style={{ fontSize: 'clamp(1.4rem, 2.5vw, 2.1rem)' }}
               >
                 <EditableText
@@ -314,7 +314,7 @@ const OrigineHomeSection: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.7, delay: 0.4, ease: [0.2, 0.8, 0.2, 1] }}
-          className="font-serif italic text-[#3A251E]/85 text-base md:text-lg lg:text-xl"
+          className="font-serif italic text-[#2a2015]/85 text-base md:text-lg lg:text-xl"
         >
           <EditableText
             fieldKey="home.origine.programme.tagline"
@@ -335,8 +335,8 @@ const OrigineHomeSection: React.FC = () => {
             closure without a deploy. Current state: the active cohort is
             closed, the next one opens through the waitlist. */}
         <div className="space-y-4">
-          <p className="flex items-start gap-3 text-[#3A251E] font-bold text-sm md:text-base">
-            <span className="mt-1 inline-flex w-2.5 h-2.5 rounded-full bg-[#3A251E]/40 flex-shrink-0" />
+          <p className="flex items-start gap-3 text-[#2a2015] font-bold text-sm md:text-base">
+            <span className="mt-1 inline-flex w-2.5 h-2.5 rounded-full bg-[#2a2015]/40 flex-shrink-0" />
             <span>
               <EditableText
                 fieldKey="home.origine.status.cohort1.title"
@@ -347,7 +347,7 @@ const OrigineHomeSection: React.FC = () => {
               />
             </span>
           </p>
-          <p className="pl-[22px] font-serif italic text-[#3A251E]/85 text-sm md:text-[15px] leading-relaxed">
+          <p className="pl-[22px] font-serif italic text-[#2a2015]/85 text-sm md:text-[15px] leading-relaxed">
             <EditableText
               fieldKey="home.origine.status.cohort1.body"
               defaultValue={lang === 'FR'
@@ -356,10 +356,10 @@ const OrigineHomeSection: React.FC = () => {
               multiline
             />
           </p>
-          <p className="flex items-start gap-3 text-[#3A251E] font-bold text-sm md:text-base pt-2">
+          <p className="flex items-start gap-3 text-[#2a2015] font-bold text-sm md:text-base pt-2">
             <span className="mt-1 relative inline-flex w-2.5 h-2.5 flex-shrink-0">
-              <span className="absolute inset-0 rounded-full bg-[#B8532F]/55 animate-ping" />
-              <span className="relative w-2.5 h-2.5 rounded-full bg-[#B8532F]" />
+              <span className="absolute inset-0 rounded-full bg-[#bb9a5e]/55 animate-ping" />
+              <span className="relative w-2.5 h-2.5 rounded-full bg-[#bb9a5e]" />
             </span>
             <span>
               <EditableText
@@ -379,9 +379,9 @@ const OrigineHomeSection: React.FC = () => {
             href="/liste-attente?programme=origine"
             className="group relative inline-flex items-center gap-3 overflow-hidden px-8 md:px-10 py-4 md:py-5 rounded-full text-[11px] md:text-[12px] uppercase font-semibold tracking-[0.28em] transition-[transform] duration-300 hover:scale-[1.015] active:scale-[0.98]"
             style={{
-              background: '#3A251E',
-              color: '#F4E7DD',
-              border: '1px solid rgba(184,83,47,0.55)',
+              background: '#2a2015',
+              color: '#f6f3ee',
+              border: '1px solid rgba(187, 154, 94,0.55)',
               boxShadow: '0 14px 32px rgba(58,37,30,0.28)',
             }}
           >
@@ -401,7 +401,7 @@ const OrigineHomeSection: React.FC = () => {
             />
             <i className="fa-solid fa-arrow-right text-[9px] transition-transform duration-300 group-hover:translate-x-1" />
           </a>
-          <p className="mt-3 text-[10px] uppercase tracking-[0.3em] font-bold text-[#6B402F]/75">
+          <p className="mt-3 text-[10px] uppercase tracking-[0.3em] font-bold text-[#5a4a37]/75">
             <EditableText
               fieldKey="home.origine.status.ctaHint"
               defaultValue={lang === 'FR' ? 'Prochaine cohorte · accès prioritaire' : 'Next cohort · priority access'}

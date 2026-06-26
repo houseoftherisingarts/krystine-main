@@ -54,17 +54,17 @@ const MessagesSection: React.FC<{ user: User }> = ({ user }) => {
             <button
               key={c.uid}
               onClick={() => setActiveUid(c.uid)}
-              className={`w-full text-left p-4 border-b border-[#3A251E]/5 dark:border-white/5 hover:bg-[#B8532F]/5 transition-colors ${isActive ? 'bg-[#B8532F]/10' : ''}`}
+              className={`w-full text-left p-4 border-b border-[#2a2015]/5 dark:border-white/5 hover:bg-[#bb9a5e]/5 transition-colors ${isActive ? 'bg-[#bb9a5e]/10' : ''}`}
             >
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-cover bg-center bg-[#F4E7DD] dark:bg-white/5 shrink-0 border border-[#3A251E]/5 dark:border-white/10" style={{ backgroundImage: c.memberPhotoURL ? `url(${c.memberPhotoURL})` : undefined }} />
+                <div className="w-10 h-10 rounded-full bg-cover bg-center bg-[#f6f3ee] dark:bg-white/5 shrink-0 border border-[#2a2015]/5 dark:border-white/10" style={{ backgroundImage: c.memberPhotoURL ? `url(${c.memberPhotoURL})` : undefined }} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="font-serif text-sm text-[#3A251E] dark:text-white truncate">{c.memberName || c.memberEmail}</p>
-                    {unread > 0 && <span className="text-[10px] font-bold bg-[#B8532F] text-[#3A251E] px-2 py-0.5 rounded-full">{unread}</span>}
+                    <p className="font-serif text-sm text-[#2a2015] dark:text-white truncate">{c.memberName || c.memberEmail}</p>
+                    {unread > 0 && <span className="text-[10px] font-bold bg-[#bb9a5e] text-[#2a2015] px-2 py-0.5 rounded-full">{unread}</span>}
                   </div>
-                  <p className="text-xs text-[#3A251E]/50 dark:text-white/50 truncate">{c.memberEmail}</p>
-                  {c.lastMessage && <p className="text-xs text-[#3A251E]/60 dark:text-white/60 truncate mt-1">{c.lastMessage}</p>}
+                  <p className="text-xs text-[#2a2015]/50 dark:text-white/50 truncate">{c.memberEmail}</p>
+                  {c.lastMessage && <p className="text-xs text-[#2a2015]/60 dark:text-white/60 truncate mt-1">{c.lastMessage}</p>}
                 </div>
               </div>
             </button>
@@ -75,27 +75,27 @@ const MessagesSection: React.FC<{ user: User }> = ({ user }) => {
       {/* Thread */}
       <Card className="flex flex-col overflow-hidden">
         {!active ? (
-          <div className="flex-1 flex items-center justify-center text-[#3A251E]/40 dark:text-white/40 text-sm italic">
+          <div className="flex-1 flex items-center justify-center text-[#2a2015]/40 dark:text-white/40 text-sm italic">
             Sélectionnez une conversation.
           </div>
         ) : (
           <>
-            <div className="p-4 border-b border-[#3A251E]/5 dark:border-white/5 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-cover bg-center bg-[#F4E7DD] dark:bg-white/5 shrink-0 border border-[#3A251E]/5 dark:border-white/10" style={{ backgroundImage: active.memberPhotoURL ? `url(${active.memberPhotoURL})` : undefined }} />
+            <div className="p-4 border-b border-[#2a2015]/5 dark:border-white/5 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-cover bg-center bg-[#f6f3ee] dark:bg-white/5 shrink-0 border border-[#2a2015]/5 dark:border-white/10" style={{ backgroundImage: active.memberPhotoURL ? `url(${active.memberPhotoURL})` : undefined }} />
               <div className="min-w-0">
-                <p className="font-serif text-[#3A251E] dark:text-white truncate">{active.memberName || active.memberEmail}</p>
-                <p className="text-xs text-[#3A251E]/50 dark:text-white/50 truncate">{active.memberEmail}</p>
+                <p className="font-serif text-[#2a2015] dark:text-white truncate">{active.memberName || active.memberEmail}</p>
+                <p className="text-xs text-[#2a2015]/50 dark:text-white/50 truncate">{active.memberEmail}</p>
               </div>
             </div>
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-3 bg-[#F4E7DD] dark:bg-white/5">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-3 bg-[#f6f3ee] dark:bg-white/5">
               {messages.map(m => {
                 const me = m.sender === 'admin';
                 return (
                   <div key={m.id} className={`flex ${me ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
                       me
-                        ? 'bg-[#B8532F] text-[#3A251E] rounded-br-sm'
-                        : 'bg-white dark:bg-[#3A251E] text-[#3A251E] dark:text-white border border-[#3A251E]/5 dark:border-white/5 rounded-bl-sm'
+                        ? 'bg-[#bb9a5e] text-[#2a2015] rounded-br-sm'
+                        : 'bg-white dark:bg-[#2a2015] text-[#2a2015] dark:text-white border border-[#2a2015]/5 dark:border-white/5 rounded-bl-sm'
                     }`}>
                       {m.body}
                       <span className="block text-[10px] opacity-50 mt-1">
@@ -106,18 +106,18 @@ const MessagesSection: React.FC<{ user: User }> = ({ user }) => {
                 );
               })}
             </div>
-            <div className="p-4 border-t border-[#3A251E]/5 dark:border-white/5 flex gap-3">
+            <div className="p-4 border-t border-[#2a2015]/5 dark:border-white/5 flex gap-3">
               <input
                 value={draft}
                 onChange={e => setDraft(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
                 placeholder={`Répondre à ${active.memberName || active.memberEmail}…`}
-                className="flex-1 px-4 py-3 rounded-full border border-[#3A251E]/10 dark:border-white/10 bg-[#F4E7DD] dark:bg-white/5 text-[#3A251E] dark:text-white outline-none focus:border-[#B8532F]"
+                className="flex-1 px-4 py-3 rounded-full border border-[#2a2015]/10 dark:border-white/10 bg-[#f6f3ee] dark:bg-white/5 text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]"
               />
               <button
                 onClick={send}
                 disabled={sending || !draft.trim()}
-                className="px-6 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors disabled:opacity-50"
+                className="px-6 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors disabled:opacity-50"
               >
                 <i className="fa-solid fa-paper-plane" />
               </button>

@@ -15,13 +15,13 @@ const EditModeBar: React.FC = () => {
 
   return (
     <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[150]" data-edit-ui>
-      <div className="flex items-center gap-3 pl-4 pr-1 py-1 rounded-full bg-[#B8532F] border border-[#B8532F] text-[#3A251E] shadow-lg">
+      <div className="flex items-center gap-3 pl-4 pr-1 py-1 rounded-full bg-[#bb9a5e] border border-[#bb9a5e] text-[#2a2015] shadow-lg">
         <span className="text-[10px] uppercase tracking-[0.3em] font-bold">
           Édition en cours
         </span>
         <button
           onClick={() => setEditMode(false)}
-          className="text-[10px] uppercase tracking-[0.25em] font-bold px-4 py-2 rounded-full bg-[#3A251E] text-[#B8532F] hover:bg-white hover:text-[#3A251E] transition-colors"
+          className="text-[10px] uppercase tracking-[0.25em] font-bold px-4 py-2 rounded-full bg-[#2a2015] text-[#7d6330] hover:bg-white hover:text-[#2a2015] transition-colors"
           title="Quitter le mode édition"
         >
           <i className="fa-solid fa-check mr-1.5 text-[10px]" /> Terminer

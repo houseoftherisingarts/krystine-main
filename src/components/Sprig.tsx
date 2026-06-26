@@ -30,7 +30,7 @@ interface Props {
 
 const INK_DEFAULT  = '#8B674A';
 const SAUGE        = '#8A8F72';
-const COPPER       = '#B8532F';
+const COPPER       = '#bb9a5e';
 
 const Eucalyptus: React.FC<{ ink: string; fill: string }> = ({ ink, fill }) => (
   <svg viewBox="0 0 80 140" aria-hidden className="w-full h-full">

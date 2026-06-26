@@ -15,7 +15,7 @@ interface Props {
   className?: string;
 }
 
-const PointsPlant: React.FC<Props> = ({ stage, accent = '#B8532F', className = '' }) => {
+const PointsPlant: React.FC<Props> = ({ stage, accent = '#bb9a5e', className = '' }) => {
   return (
     <div className={`relative aspect-square w-full ${className}`}>
       {/* Soft background halo — same radial in all stages so the tile feels
@@ -23,9 +23,9 @@ const PointsPlant: React.FC<Props> = ({ stage, accent = '#B8532F', className = '
       <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full" aria-hidden>
         <defs>
           <radialGradient id="pp-halo" cx="50%" cy="55%" r="55%">
-            <stop offset="0%"  stopColor="#F4E7DD" stopOpacity="0.85" />
-            <stop offset="55%" stopColor="#F4E7DD" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#F4E7DD" stopOpacity="0" />
+            <stop offset="0%"  stopColor="#f6f3ee" stopOpacity="0.85" />
+            <stop offset="55%" stopColor="#f6f3ee" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="#f6f3ee" stopOpacity="0" />
           </radialGradient>
           <radialGradient id="pp-soil" cx="50%" cy="35%" r="65%">
             <stop offset="0%"  stopColor="#6B402E" />
@@ -47,7 +47,7 @@ const PointsPlant: React.FC<Props> = ({ stage, accent = '#B8532F', className = '
           </linearGradient>
           <radialGradient id="pp-flower" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor={accent} />
-            <stop offset="100%" stopColor="#6B402F" />
+            <stop offset="100%" stopColor="#5a4a37" />
           </radialGradient>
           <filter id="pp-shadow" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="2.2" />

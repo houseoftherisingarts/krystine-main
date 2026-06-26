@@ -242,7 +242,7 @@ const InspiratHome: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      className="relative font-sans text-[#3A251E] dark:text-[#E0E0E0] min-h-screen transition-colors duration-300"
+      className="relative font-sans text-[#2a2015] dark:text-[#E0E0E0] min-h-screen transition-colors duration-300"
     >
       <ParchmentBackdrop />
       <ScrollDecorations />
@@ -261,16 +261,16 @@ const InspiratHome: React.FC = () => {
             <Link
               to="/compte"
               title={member?.displayName || user.displayName || user.email || ''}
-              className="inline-flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-full bg-white/80 dark:bg-[#3A251E]/80 backdrop-blur-md border border-[#B8532F]/30 shadow-md hover:border-[#B8532F] hover:shadow-[0_0_18px_rgba(184,83,47,0.25)] transition-all"
+              className="inline-flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-full bg-white/80 dark:bg-[#2a2015]/80 backdrop-blur-md border border-[#bb9a5e]/30 shadow-md hover:border-[#bb9a5e] hover:shadow-[0_0_18px_rgba(187, 154, 94,0.25)] transition-all"
             >
               {(member?.photoURL || user.photoURL) ? (
                 <img src={member?.photoURL || user.photoURL!} alt="" className="w-7 h-7 rounded-full object-cover" />
               ) : (
-                <div className="w-7 h-7 rounded-full bg-[#B8532F]/20 flex items-center justify-center text-[11px] font-bold text-[#B8532F]">
+                <div className="w-7 h-7 rounded-full bg-[#bb9a5e]/20 flex items-center justify-center text-[11px] font-bold text-[#7d6330]">
                   {(user.email?.[0] || '?').toUpperCase()}
                 </div>
               )}
-              <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#3A251E] dark:text-white hidden sm:inline">
+              <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#2a2015] dark:text-white hidden sm:inline">
                 {member?.dosha || (lang === 'FR' ? 'Mon espace' : 'My space')}
               </span>
             </Link>
@@ -278,7 +278,7 @@ const InspiratHome: React.FC = () => {
               <Link
                 to="/admin"
                 title={lang === 'FR' ? 'Tableau de bord admin' : 'Admin dashboard'}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#B8532F] text-[#3A251E] shadow-md hover:bg-white transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#bb9a5e] text-[#2a2015] shadow-md hover:bg-white transition-colors"
               >
                 <i className="fa-solid fa-shield-halved text-[11px]" />
                 <span className="text-[10px] uppercase tracking-[0.25em] font-bold hidden sm:inline">
@@ -290,10 +290,10 @@ const InspiratHome: React.FC = () => {
         ) : (
           <button
             onClick={() => setSignInOpen(true)}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 dark:bg-[#3A251E]/80 backdrop-blur-md border border-[#B8532F]/30 shadow-md hover:border-[#B8532F] hover:shadow-[0_0_18px_rgba(184,83,47,0.25)] transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 dark:bg-[#2a2015]/80 backdrop-blur-md border border-[#bb9a5e]/30 shadow-md hover:border-[#bb9a5e] hover:shadow-[0_0_18px_rgba(187, 154, 94,0.25)] transition-all"
           >
-            <i className="fa-solid fa-user text-[11px] text-[#B8532F]" />
-            <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#3A251E] dark:text-white">
+            <i className="fa-solid fa-user text-[11px] text-[#7d6330]" />
+            <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#2a2015] dark:text-white">
               {lang === 'FR' ? 'Connexion' : 'Sign in'}
             </span>
           </button>
@@ -360,7 +360,7 @@ const InspiratHome: React.FC = () => {
 
             <div
               onClick={() => { if (!editMode) followHref(founderCard.href); }}
-              className={`hero-card opacity-0 relative group rounded-[32px] overflow-hidden shadow-2xl transition-all duration-500 w-full h-[340px] md:h-[460px] lg:h-[520px] border border-[#B8532F]/25 ${editMode ? '' : 'cursor-pointer hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(184,83,47,0.28)] hover:border-[#B8532F]/60'}`}
+              className={`hero-card opacity-0 relative group rounded-[32px] overflow-hidden shadow-2xl transition-all duration-500 w-full h-[340px] md:h-[460px] lg:h-[520px] border border-[#bb9a5e]/25 ${editMode ? '' : 'cursor-pointer hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(187, 154, 94,0.28)] hover:border-[#bb9a5e]/60'}`}
             >
               <EditableImage
                 fieldKey={`${founderCard.key}.banner-img-v2`}
@@ -371,12 +371,12 @@ const InspiratHome: React.FC = () => {
                 {/* Ivoire-chaud wash, left side — lifts dark-brun copy on
                     the mandala without dulling the image. This is the
                     final resting state. */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#F4E7DD]/65 via-[#F4E7DD]/18 to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#f6f3ee]/65 via-[#f6f3ee]/18 to-transparent pointer-events-none" />
                 {/* Uncover-sweep overlay — a heavier ivoire cover that
                     retracts left-to-right on scroll-in. Fades to 0 so it
                     blends back into the permanent wash above. */}
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-[#F4E7DD] via-[#F4E7DD]/95 to-[#F4E7DD]/85 pointer-events-none"
+                  className="absolute inset-0 bg-gradient-to-r from-[#f6f3ee] via-[#f6f3ee]/95 to-[#f6f3ee]/85 pointer-events-none"
                   initial={reduceMotion ? { opacity: 0, x: 0 } : { opacity: 1, x: 0 }}
                   whileInView={{ opacity: 0, x: '20%' }}
                   viewport={{ once: true, amount: 0.35 }}
@@ -384,16 +384,16 @@ const InspiratHome: React.FC = () => {
                 />
               </EditableImage>
               <div className="absolute inset-0 flex flex-col items-start justify-start pt-10 md:pt-14 text-left pl-8 md:pl-14 pr-8 md:pr-16 max-w-2xl pointer-events-none">
-                <span className="text-[#6B402F] uppercase tracking-[0.35em] text-[10px] md:text-xs font-bold mb-3">
+                <span className="text-[#5a4a37] uppercase tracking-[0.35em] text-[10px] md:text-xs font-bold mb-3">
                   <EditableText fieldKey={`${founderCard.key}.banner`} defaultValue={founderCard.banner} as="span" />
                 </span>
-                <h2 className="text-[#3A251E] text-3xl md:text-5xl font-serif mb-4 pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
+                <h2 className="text-[#2a2015] text-3xl md:text-5xl font-serif mb-4 pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
                   <EditableText fieldKey={`${founderCard.key}.title`} defaultValue={founderCard.title} as="span" />
                 </h2>
-                <p className="text-[#3A251E]/85 text-base md:text-lg font-serif italic leading-relaxed mb-5 pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
+                <p className="text-[#2a2015]/85 text-base md:text-lg font-serif italic leading-relaxed mb-5 pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
                   <EditableText fieldKey={`${founderCard.key}.subtitle`} defaultValue={founderCard.subtitle} as="span" />
                 </p>
-                <span className="inline-flex items-center gap-2 px-5 py-2 border border-[#3A251E] rounded-full text-[#3A251E] text-[11px] bg-white/60 backdrop-blur-md uppercase tracking-[0.25em] font-bold group-hover:bg-[#3A251E] group-hover:text-[#B8532F] group-hover:shadow-[0_8px_22px_rgba(58,37,30,0.25)] transition-all duration-500 pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
+                <span className="inline-flex items-center gap-2 px-5 py-2 border border-[#2a2015] rounded-full text-[#2a2015] text-[11px] bg-white/60 backdrop-blur-md uppercase tracking-[0.25em] font-bold group-hover:bg-[#2a2015] group-hover:text-[#7d6330] group-hover:shadow-[0_8px_22px_rgba(58,37,30,0.25)] transition-all duration-500 pointer-events-auto" onClick={e => editMode && e.stopPropagation()}>
                   <EditableText fieldKey={`${founderCard.key}.cta`} defaultValue={founderCard.cta} as="span" />
                   <i className="fa-solid fa-arrow-right text-[9px] transition-transform duration-500 group-hover:translate-x-1" />
                 </span>
@@ -407,10 +407,10 @@ const InspiratHome: React.FC = () => {
                 native YouTube controls (volume slider, fullscreen, captions). */}
             <div
               onClick={e => e.stopPropagation()}
-              className="hero-card opacity-0 hidden md:block absolute bottom-6 left-6 lg:bottom-8 lg:left-9 w-64 lg:w-[22rem] aspect-video rounded-xl overflow-hidden shadow-[0_16px_36px_rgba(0,0,0,0.45)] border border-[#B8532F]/35 bg-black z-10"
+              className="hero-card opacity-0 hidden md:block absolute bottom-6 left-6 lg:bottom-8 lg:left-9 w-64 lg:w-[22rem] aspect-video rounded-xl overflow-hidden shadow-[0_16px_36px_rgba(0,0,0,0.45)] border border-[#bb9a5e]/35 bg-black z-10"
             >
-              <span className="absolute top-2 left-2 z-20 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur text-[#B8532F] text-[9px] uppercase tracking-[0.25em] font-bold pointer-events-none">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#B8532F] animate-pulse" />
+              <span className="absolute top-2 left-2 z-20 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur text-[#7d6330] text-[9px] uppercase tracking-[0.25em] font-bold pointer-events-none">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#bb9a5e] animate-pulse" />
                 Salut Bonjour
               </span>
               {/* Muted ambient iframe — pointer-events-none so the invisible
@@ -459,8 +459,8 @@ const InspiratHome: React.FC = () => {
         <div
           className="w-full rounded-[28px] px-4 md:px-8 py-10 md:py-14 mb-12"
           style={{
-            background: 'linear-gradient(180deg, rgba(122,128,102,0.10) 0%, rgba(184,83,47,0.08) 100%)',
-            border: '1px solid rgba(184,83,47,0.14)',
+            background: 'linear-gradient(180deg, rgba(122,128,102,0.10) 0%, rgba(187, 154, 94,0.08) 100%)',
+            border: '1px solid rgba(187, 154, 94,0.14)',
           }}
         >
         <EditorialSectionHeader
@@ -490,7 +490,7 @@ const InspiratHome: React.FC = () => {
                 ease: [0.2, 0.8, 0.2, 1],
               }}
               style={{
-                border: '1px solid rgba(184,83,47,0.35)',
+                border: '1px solid rgba(187, 154, 94,0.35)',
                 boxShadow: '0 14px 32px rgba(0,0,0, 0.22), 0 2px 6px rgba(107,74,47,0.08)',
               }}
               className={`block w-full aspect-square relative group rounded-[28px] overflow-hidden transition-[box-shadow,transform] duration-500 ${editMode ? '' : 'cursor-pointer hover:-translate-y-2'}`}
@@ -520,8 +520,8 @@ const InspiratHome: React.FC = () => {
                   <span
                     className="inline-flex items-center px-5 py-1.5 rounded-[14px] text-[10px] md:text-[11px] uppercase font-semibold"
                     style={{
-                      backgroundColor: '#A04E2A',
-                      color: '#F4E7DD',
+                      backgroundColor: '#a3823f',
+                      color: '#f6f3ee',
                       letterSpacing: '0.42em',
                       paddingRight: 'calc(1.25rem - 0.42em)',
                     }}
@@ -530,7 +530,7 @@ const InspiratHome: React.FC = () => {
                   </span>
                   {(card as any).bannerSub && (
                     <span
-                      className="font-serif italic text-[10px] md:text-[11px] text-[#F4E7DD]/85"
+                      className="font-serif italic text-[10px] md:text-[11px] text-[#f6f3ee]/85"
                       style={{ textShadow: '0 1px 6px rgba(58,37,30,0.55)' }}
                     >
                       <EditableText fieldKey={`${card.key}.bannerSub`} defaultValue={(card as any).bannerSub} as="span" />
@@ -547,15 +547,15 @@ const InspiratHome: React.FC = () => {
                   <div
                     className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-transform duration-500 group-hover:-translate-y-0.5"
                     style={{
-                      backgroundColor: '#F4E7DD',
-                      border: '1px solid rgba(184,83,47,0.4)',
+                      backgroundColor: '#f6f3ee',
+                      border: '1px solid rgba(187, 154, 94,0.4)',
                       boxShadow: '0 4px 14px rgba(107,74,47,0.10)',
                     }}
                     aria-hidden
                   >
                     <i
                       className={`fa-solid ${card.pictoIcon} text-xl md:text-[1.35rem]`}
-                      style={{ color: '#6B402F', opacity: 1 }}
+                      style={{ color: '#5a4a37', opacity: 1 }}
                     />
                   </div>
                 )}
@@ -563,7 +563,7 @@ const InspiratHome: React.FC = () => {
                     légèrement ouvert pour rester éditorial. */}
                 <h2
                   className="text-2xl lg:text-3xl font-serif pointer-events-auto"
-                  style={{ color: '#F4E7DD', letterSpacing: '0.02em', textShadow: '0 1px 10px rgba(58,37,30,0.35)' }}
+                  style={{ color: '#f6f3ee', letterSpacing: '0.02em', textShadow: '0 1px 10px rgba(58,37,30,0.35)' }}
                   onClick={e => editMode && e.stopPropagation()}
                 >
                   <EditableText fieldKey={`${card.key}.title`} defaultValue={card.title} as="span" />
@@ -581,9 +581,9 @@ const InspiratHome: React.FC = () => {
                 <span
                   className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-[11px] uppercase font-semibold pointer-events-auto transition-[filter] duration-300 group-hover:[filter:brightness(1.05)]"
                   style={{
-                    backgroundColor: '#6B402F',
-                    color: '#F4E7DD',
-                    border: '1px solid rgba(184,83,47,0.5)',
+                    backgroundColor: '#5a4a37',
+                    color: '#f6f3ee',
+                    border: '1px solid rgba(187, 154, 94,0.5)',
                     letterSpacing: '0.28em',
                     paddingRight: 'calc(1.25rem - 0.28em)',
                   }}
@@ -607,9 +607,9 @@ const InspiratHome: React.FC = () => {
         <RevealSection className="w-full mb-12">
           <div
             onClick={() => followHref('https://krystinestlaurent.mykajabi.com/experience-ayurveda-saison-estivale')}
-            className="group relative w-full cursor-pointer rounded-[28px] overflow-hidden border border-[#B8532F]/20 shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:shadow-[0_0_40px_rgba(184,83,47,0.22)] transition-all"
+            className="group relative w-full cursor-pointer rounded-[28px] overflow-hidden border border-[#bb9a5e]/20 shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:shadow-[0_0_40px_rgba(187, 154, 94,0.22)] transition-all"
           >
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_1.05fr] bg-[#3A251E]">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_1.05fr] bg-[#2a2015]">
               {/* Visuel saison Pitta — champ doré ensoleillé (chaleur Pitta) */}
               <div className="relative h-56 md:h-auto min-h-[320px] overflow-hidden">
                 <div
@@ -619,27 +619,27 @@ const InspiratHome: React.FC = () => {
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(58,37,30,0.25),transparent_60%)] md:bg-[linear-gradient(to_right,transparent,rgba(58,37,30,0.92))]" />
               </div>
               {/* Texte + CTA */}
-              <div className="relative p-8 md:p-12 lg:p-14 text-[#F4E7DD] flex flex-col justify-center">
+              <div className="relative p-8 md:p-12 lg:p-14 text-[#f6f3ee] flex flex-col justify-center">
                 <span className="uppercase tracking-[0.3em] text-[10px] md:text-[11px] font-bold text-[#E8A07A] mb-4">
                   {lang === 'FR' ? 'Saison en cours · Pitta' : 'Current season · Pitta'}
                 </span>
                 <h3 className="text-3xl md:text-4xl lg:text-5xl font-serif mb-3 leading-tight">
                   {lang === 'FR' ? "L'Expérience Ayurveda — Été" : 'The Ayurveda Experience — Summer'}
                 </h3>
-                <p className="text-lg md:text-xl font-serif italic text-[#F4E7DD]/85 mb-5">
+                <p className="text-lg md:text-xl font-serif italic text-[#f6f3ee]/85 mb-5">
                   {lang === 'FR' ? 'Rafraîchir · Apaiser · Adoucir' : 'Cool · Soothe · Soften'}
                 </p>
-                <p className="text-[#F4E7DD]/75 leading-relaxed mb-8 max-w-xl">
+                <p className="text-[#f6f3ee]/75 leading-relaxed mb-8 max-w-xl">
                   {lang === 'FR'
                     ? "Quand la chaleur monte, le feu intérieur s'emballe. Un parcours de 7 semaines pour traverser la saison Pitta avec clarté — sans se brûler."
                     : 'When the heat rises, the inner fire flares. A 7-week journey to move through the Pitta season with clarity — without burning out.'}
                 </p>
                 <div className="flex flex-wrap items-center gap-4">
-                  <span className="inline-flex items-center gap-3 bg-[#B8532F] text-[#3A251E] px-8 py-4 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg group-hover:scale-105 transition-transform">
+                  <span className="inline-flex items-center gap-3 bg-[#bb9a5e] text-[#2a2015] px-8 py-4 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg group-hover:scale-105 transition-transform">
                     {lang === 'FR' ? "Découvrir l'expérience" : 'Discover the experience'}
                     <i className="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1" />
                   </span>
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#F4E7DD]/55 font-bold">
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#f6f3ee]/55 font-bold">
                     <i className="fa-regular fa-clock mr-2" />{lang === 'FR' ? '7 semaines · Disponible' : '7 weeks · Available'}
                   </span>
                 </div>
@@ -660,7 +660,7 @@ const InspiratHome: React.FC = () => {
             the hourly tick. Countdown chip appears within 14 days. */}
         {closestEvents.length > 0 && (
           <RevealSection className="w-full mb-12">
-            <div className="relative w-full rounded-[28px] bg-[rgba(232,208,190,0.45)] dark:bg-white/5 border border-[#B8532F]/12 dark:border-white/10 px-6 md:px-12 py-10 md:py-14 shadow-[0_8px_32px_rgba(0,0,0,0.07)] overflow-hidden">
+            <div className="relative w-full rounded-[28px] bg-[rgba(232,208,190,0.45)] dark:bg-white/5 border border-[#bb9a5e]/12 dark:border-white/10 px-6 md:px-12 py-10 md:py-14 shadow-[0_8px_32px_rgba(0,0,0,0.07)] overflow-hidden">
               {/* Corner sprigs framing the events card */}
               <div className="pointer-events-none absolute top-4 left-4 md:top-6 md:left-6 w-8 h-11 md:w-10 md:h-14 opacity-55" aria-hidden>
                 <Sprig variant="wheat" fill="#B07A3C" />
@@ -685,7 +685,7 @@ const InspiratHome: React.FC = () => {
               <div className="mt-10 text-center">
                 <Link
                   to="/formations#events"
-                  className="group/all inline-flex items-center gap-2 text-[11px] tracking-[0.3em] uppercase font-bold text-[#B8532F] hover:text-[#6B402F] transition-colors"
+                  className="group/all inline-flex items-center gap-2 text-[11px] tracking-[0.3em] uppercase font-bold text-[#7d6330] hover:text-[#5a4a37] transition-colors"
                 >
                   {lang === 'FR' ? 'Voir tous les rendez-vous' : 'See all gatherings'}
                   <i className="fa-solid fa-arrow-right text-[9px] transition-transform duration-300 group-hover/all:translate-x-1" />
@@ -700,7 +700,7 @@ const InspiratHome: React.FC = () => {
             Books fall onto the shelf in a spring-stagger: each lifts from
             y:-60, rotate:-8 to rest, spaced 140 ms apart. */}
         <RevealSection className="w-full mb-12">
-          <div className="relative w-full rounded-[28px] bg-[rgba(244,231,221,0.75)] dark:bg-white/5 border border-[#B8532F]/15 dark:border-white/10 px-6 md:px-12 py-10 md:py-14 overflow-hidden">
+          <div className="relative w-full rounded-[28px] bg-[rgba(244,231,221,0.75)] dark:bg-white/5 border border-[#bb9a5e]/15 dark:border-white/10 px-6 md:px-12 py-10 md:py-14 overflow-hidden">
             {/* Flanking dried-leaf sprigs — moodboard vocabulary */}
             <div className="pointer-events-none absolute top-6 left-6 w-7 h-12 md:w-9 md:h-16 opacity-55" aria-hidden>
               <Sprig variant="driedLeaf" fill="#8B674A" />
@@ -722,10 +722,10 @@ const InspiratHome: React.FC = () => {
 
             {/* Phrase-pont — sits above the row of book covers, framing the
                 relationship between the trilogy and Origine. */}
-            <p className="font-serif italic text-center text-[#3A251E]/80 dark:text-white/70 text-base md:text-lg lg:text-xl mb-10 md:mb-12 max-w-3xl mx-auto">
+            <p className="font-serif italic text-center text-[#2a2015]/80 dark:text-white/70 text-base md:text-lg lg:text-xl mb-10 md:mb-12 max-w-3xl mx-auto">
               {lang === 'FR'
-                ? <>La trilogie donne <span className="text-[#B8532F]">les mots</span>… ORIGINE donne <span className="text-[#B8532F]">l'EXPÉRIENCE</span>…</>
-                : <>The trilogy gives <span className="text-[#B8532F]">the words</span>… ORIGINE gives <span className="text-[#B8532F]">the EXPERIENCE</span>…</>}
+                ? <>La trilogie donne <span className="text-[#7d6330]">les mots</span>… ORIGINE donne <span className="text-[#7d6330]">l'EXPÉRIENCE</span>…</>
+                : <>The trilogy gives <span className="text-[#7d6330]">the words</span>… ORIGINE gives <span className="text-[#7d6330]">the EXPERIENCE</span>…</>}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 md:gap-14 max-w-5xl mx-auto">
@@ -751,21 +751,21 @@ const InspiratHome: React.FC = () => {
                   {/* Book cover — real image when available; for the unreleased
                       third title we keep it mysterious: a big gold "?" with a
                       sparkle, no title. */}
-                  <div className="w-full max-w-[220px] aspect-[1/1.3] rounded-r-[12px] rounded-l-[3px] overflow-hidden relative shadow-[0_18px_40px_rgba(0,0,0,0.18)] border-l-4 border-[#3A251E]/10 mb-5 transition-all duration-500 group-hover:-translate-y-3 group-hover:rotate-1 group-hover:shadow-[0_28px_52px_rgba(0,0,0,0.28)]">
+                  <div className="w-full max-w-[220px] aspect-[1/1.3] rounded-r-[12px] rounded-l-[3px] overflow-hidden relative shadow-[0_18px_40px_rgba(0,0,0,0.18)] border-l-4 border-[#2a2015]/10 mb-5 transition-all duration-500 group-hover:-translate-y-3 group-hover:rotate-1 group-hover:shadow-[0_28px_52px_rgba(0,0,0,0.28)]">
                     {b.cover ? (
                       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${b.cover})`, backgroundSize: '100% 100%' }} />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#3A251E] via-[#4A3228] to-[#6B402F] text-[#F4E7DD] overflow-hidden">
+                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#2a2015] via-[#4A3228] to-[#5a4a37] text-[#f6f3ee] overflow-hidden">
                         {/* Soft glow halo behind the ? — warm brun, not plum. */}
-                        <div className="absolute w-40 h-40 rounded-full bg-[#6B402F]/30 blur-3xl" />
+                        <div className="absolute w-40 h-40 rounded-full bg-[#5a4a37]/30 blur-3xl" />
                         {/* Sparkle decorations for the "cute mysterious" feel */}
-                        <i className="fa-solid fa-sparkles absolute top-6 right-7 text-[#B8532F]/70 text-sm" />
-                        <i className="fa-solid fa-sparkles absolute bottom-10 left-6 text-[#B8532F]/50 text-[10px]" />
-                        <i className="fa-regular fa-star absolute top-14 left-8 text-[#B8532F]/40 text-[9px]" />
+                        <i className="fa-solid fa-sparkles absolute top-6 right-7 text-[#7d6330]/70 text-sm" />
+                        <i className="fa-solid fa-sparkles absolute bottom-10 left-6 text-[#7d6330]/50 text-[10px]" />
+                        <i className="fa-regular fa-star absolute top-14 left-8 text-[#7d6330]/40 text-[9px]" />
                         {/* The ? itself */}
                         <span
-                          className="relative font-serif italic text-[#B8532F] text-[7rem] md:text-[8rem] leading-none"
-                          style={{ textShadow: '0 0 30px rgba(184,83,47,0.4), 0 0 60px rgba(107,74,47,0.3)' }}
+                          className="relative font-serif italic text-[#7d6330] text-[7rem] md:text-[8rem] leading-none"
+                          style={{ textShadow: '0 0 30px rgba(187, 154, 94,0.4), 0 0 60px rgba(107,74,47,0.3)' }}
                         >
                           ?
                         </span>
@@ -775,23 +775,23 @@ const InspiratHome: React.FC = () => {
                     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     {/* Launch date banner — only on the mystery (third) book. */}
                     {b.mystery && (
-                      <span className="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#B8532F] text-[#3A251E] text-[9px] uppercase tracking-[0.25em] font-bold shadow-md whitespace-nowrap">
+                      <span className="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#bb9a5e] text-[#2a2015] text-[9px] uppercase tracking-[0.25em] font-bold shadow-md whitespace-nowrap">
                         {lang === 'FR' ? 'Lancement le 4 novembre' : 'Launch Nov. 4'}
                       </span>
                     )}
                   </div>
 
-                  <p className="font-serif italic text-lg md:text-xl text-[#3A251E] dark:text-white group-hover:text-[#B8532F] transition-colors">
+                  <p className="font-serif italic text-lg md:text-xl text-[#2a2015] dark:text-white group-hover:text-[#7d6330] transition-colors">
                     {b.mystery ? (lang === 'FR' ? 'À Révéler' : 'To Be Revealed') : b.title}
                   </p>
-                  <p className="text-[10px] uppercase tracking-[0.25em] text-[#3A251E]/50 dark:text-white/50 mt-1">{b.year}</p>
+                  <p className="text-[10px] uppercase tracking-[0.25em] text-[#2a2015]/50 dark:text-white/50 mt-1">{b.year}</p>
                 </Link>
                 {/* Tome 3 — dedicated capture CTA. Lands on the Médias page
                     where the email-capture for the parution lives. */}
                 {b.mystery && (
                   <Link
                     to="/medias#livres"
-                    className="mt-4 inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#3A251E] text-[#F4E7DD] hover:bg-[#B8532F] hover:text-[#3A251E] hover:shadow-[0_10px_22px_rgba(184,83,47,0.35)] text-[10px] tracking-[0.25em] uppercase font-bold transition-all"
+                    className="mt-4 inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#2a2015] text-[#f6f3ee] hover:bg-[#bb9a5e] hover:text-[#2a2015] hover:shadow-[0_10px_22px_rgba(187, 154, 94,0.35)] text-[10px] tracking-[0.25em] uppercase font-bold transition-all"
                   >
                     {lang === 'FR' ? 'Me prévenir du dévoilement' : 'Notify me of the unveiling'}
                     <i className="fa-solid fa-arrow-right text-[8px]" />
@@ -804,7 +804,7 @@ const InspiratHome: React.FC = () => {
             <div className="mt-12 text-center">
               <Link
                 to="/medias#livres"
-                className="group/tril inline-flex items-center gap-2 px-6 py-2.5 border border-[#B8532F] rounded-full text-[#B8532F] hover:bg-[#B8532F] hover:text-[#3A251E] hover:shadow-[0_8px_22px_rgba(184,83,47,0.35)] text-[11px] tracking-[0.25em] uppercase font-bold transition-all duration-300"
+                className="group/tril inline-flex items-center gap-2 px-6 py-2.5 border border-[#bb9a5e] rounded-full text-[#7d6330] hover:bg-[#bb9a5e] hover:text-[#2a2015] hover:shadow-[0_8px_22px_rgba(187, 154, 94,0.35)] text-[11px] tracking-[0.25em] uppercase font-bold transition-all duration-300"
               >
                 {lang === 'FR' ? 'Découvrir la trilogie' : 'Discover the trilogy'}
                 <i className="fa-solid fa-arrow-right text-[9px] transition-transform duration-300 group-hover/tril:translate-x-1" />
@@ -843,25 +843,25 @@ const InspiratHome: React.FC = () => {
             </div>
 
             <div className="flex-1 min-w-0 text-center lg:text-left max-w-xl">
-              <span className="text-[#B8532F] uppercase tracking-[0.2em] text-xs font-semibold block mb-2">{t.ayurveda.introTitle}</span>
-              <div className="bg-white dark:bg-[#3A251E]/60 border border-[#3A251E]/5 dark:border-white/5 p-8 rounded-[24px] shadow-lg mb-8 space-y-3">
-                <p className="font-serif italic text-[#3A251E] dark:text-white text-lg md:text-xl leading-snug">
+              <span className="text-[#7d6330] uppercase tracking-[0.2em] text-xs font-semibold block mb-2">{t.ayurveda.introTitle}</span>
+              <div className="bg-white dark:bg-[#2a2015]/60 border border-[#2a2015]/5 dark:border-white/5 p-8 rounded-[24px] shadow-lg mb-8 space-y-3">
+                <p className="font-serif italic text-[#2a2015] dark:text-white text-lg md:text-xl leading-snug">
                   {lang === 'FR'
                     ? 'Vous êtes uniques, absolument comme tout le monde !'
                     : "You are unique — exactly like everyone else!"}
                 </p>
-                <p className="text-[#3A251E]/80 dark:text-white/80 leading-relaxed">
+                <p className="text-[#2a2015]/80 dark:text-white/80 leading-relaxed">
                   {lang === 'FR'
                     ? "Nous avons notre signature. La comprendre, c'est retrouver ses propres repères et arrêter de suivre des modes."
                     : "We each carry a signature. Understanding it is how you reclaim your own bearings and stop chasing trends."}
                 </p>
-                <p className="text-[#3A251E] dark:text-white font-bold">
+                <p className="text-[#2a2015] dark:text-white font-bold">
                   {lang === 'FR' ? 'Dix questions · quelques minutes.' : 'Ten questions · a few minutes.'}
                 </p>
               </div>
               <Link
                 to="/quiz"
-                className="group/quiz inline-flex items-center gap-2 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#B8532F] hover:text-[#3A251E] hover:shadow-[0_14px_32px_rgba(184,83,47,0.45)] hover:-translate-y-0.5 transition-all duration-300"
+                className="group/quiz inline-flex items-center gap-2 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#bb9a5e] hover:text-[#2a2015] hover:shadow-[0_14px_32px_rgba(187, 154, 94,0.45)] hover:-translate-y-0.5 transition-all duration-300"
               >
                 {t.ayurveda.quizBtn}
                 <i className="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover/quiz:translate-x-1" />
@@ -874,10 +874,10 @@ const InspiratHome: React.FC = () => {
             before the footer. Form stays centered inside the wide container. */}
         <RevealSection className="w-full mb-4">
           <div
-            className="relative w-full rounded-[28px] dark:bg-[#3A251E]/50 px-6 md:px-12 py-10 md:py-14 text-center overflow-hidden"
+            className="relative w-full rounded-[28px] dark:bg-[#2a2015]/50 px-6 md:px-12 py-10 md:py-14 text-center overflow-hidden"
             style={{
               background: 'linear-gradient(180deg, rgba(232,208,190,0.55) 0%, rgba(244,231,221,0.75) 100%)',
-              border: '1px solid rgba(184,83,47,0.22)',
+              border: '1px solid rgba(187, 154, 94,0.22)',
               boxShadow: '0 8px 28px rgba(107,74,47,0.08)',
             }}
           >
@@ -902,14 +902,14 @@ const InspiratHome: React.FC = () => {
             {/* "Au fil des saisons" framing — sits above the form so visitors
                 know Pulsation is the channel for future doors (retreats,
                 tour, parution) before they hand over their email. */}
-            <p className="font-serif italic text-[#3A251E]/85 dark:text-white/80 text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-8">
+            <p className="font-serif italic text-[#2a2015]/85 dark:text-white/80 text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-8">
               {lang === 'FR'
                 ? "L'Ayurveda comme boussole se déploie dans le temps. D'autres portes ouvriront au fil des saisons. Pour être informée lorsqu'elles paraîtront, Pulsation."
                 : 'Ayurveda as a compass unfolds over time. Other doors will open with the seasons. To be told when they appear — Pulsation.'}
             </p>
 
             {formState === 'success' ? (
-              <p className="font-serif italic text-[#B8532F] py-4 text-base md:text-lg">
+              <p className="font-serif italic text-[#7d6330] py-4 text-base md:text-lg">
                 {lang === 'FR' ? 'Merci. Vous recevrez bientôt votre première correspondance.' : 'Thank you. You will soon receive your first correspondence.'}
               </p>
             ) : (
@@ -921,12 +921,12 @@ const InspiratHome: React.FC = () => {
                   onChange={e => setEmail(e.target.value)}
                   placeholder={lang === 'FR' ? 'Votre adresse courriel' : 'Your email address'}
                   aria-label={lang === 'FR' ? 'Votre adresse courriel' : 'Your email address'}
-                  className="pulsation-input flex-1 min-w-0 px-5 py-3 rounded-full border border-[#3A251E]/15 dark:border-white/15 bg-white dark:bg-white/5 text-sm text-[#3A251E] dark:text-white placeholder:text-[#3A251E]/40 dark:placeholder:text-white/40 focus:outline-none focus:border-[#B8532F] focus:shadow-[0_0_0_4px_rgba(184,83,47,0.12)] transition-shadow duration-300"
+                  className="pulsation-input flex-1 min-w-0 px-5 py-3 rounded-full border border-[#2a2015]/15 dark:border-white/15 bg-white dark:bg-white/5 text-sm text-[#2a2015] dark:text-white placeholder:text-[#2a2015]/40 dark:placeholder:text-white/40 focus:outline-none focus:border-[#bb9a5e] focus:shadow-[0_0_0_4px_rgba(187, 154, 94,0.12)] transition-shadow duration-300"
                 />
                 <button
                   type="submit"
                   disabled={formState === 'submitting'}
-                  className="px-7 py-3 rounded-full bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] hover:bg-[#B8532F] hover:text-[#3A251E] hover:shadow-[0_10px_26px_rgba(184,83,47,0.45)] hover:-translate-y-0.5 font-bold uppercase tracking-[0.25em] text-[11px] transition-all duration-300 shadow-md disabled:opacity-60 disabled:translate-y-0 disabled:shadow-md"
+                  className="px-7 py-3 rounded-full bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] hover:bg-[#bb9a5e] hover:text-[#2a2015] hover:shadow-[0_10px_26px_rgba(187, 154, 94,0.45)] hover:-translate-y-0.5 font-bold uppercase tracking-[0.25em] text-[11px] transition-all duration-300 shadow-md disabled:opacity-60 disabled:translate-y-0 disabled:shadow-md"
                 >
                   {formState === 'submitting' ? <i className="fa-solid fa-circle-notch fa-spin" /> : (lang === 'FR' ? 'Rejoindre' : 'Join')}
                 </button>
@@ -939,7 +939,7 @@ const InspiratHome: React.FC = () => {
               </p>
             )}
 
-            <p className="mt-6 text-sm text-[#3A251E]/60 dark:text-white/60">
+            <p className="mt-6 text-sm text-[#2a2015]/60 dark:text-white/60">
               {lang === 'FR' ? "Désabonnement en un clic. Votre adresse n'est jamais revendue." : 'Unsubscribe in one click. Your address is never resold.'}
             </p>
           </div>

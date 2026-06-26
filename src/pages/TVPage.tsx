@@ -16,20 +16,20 @@ const TVPage: React.FC = () => {
   const [activeListId, setActiveListId] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen dark:bg-[#2E1A14] pt-36 pb-24">
+    <div className="min-h-screen dark:bg-[#16100a] pt-36 pb-24">
       {/* Sticky editorial header */}
-      <div className="text-center mb-16 sticky top-20 bg-white/95 dark:bg-[#3A251E]/95 backdrop-blur z-30 py-4 px-6 shadow-sm border-b border-[#3A251E]/5 dark:border-white/5">
-        <h1 className="text-4xl md:text-6xl font-serif text-[#3A251E] dark:text-white italic mb-4">
+      <div className="text-center mb-16 sticky top-20 bg-white/95 dark:bg-[#2a2015]/95 backdrop-blur z-30 py-4 px-6 shadow-sm border-b border-[#2a2015]/5 dark:border-white/5">
+        <h1 className="text-4xl md:text-6xl font-serif text-[#2a2015] dark:text-white italic mb-4">
           <EditableText fieldKey="tv.hero.title" defaultValue={t.title} />
         </h1>
-        <p className="text-[#3A251E]/70 dark:text-white/70 font-serif text-lg max-w-3xl mx-auto">
+        <p className="text-[#2a2015]/70 dark:text-white/70 font-serif text-lg max-w-3xl mx-auto">
           <EditableText fieldKey="tv.hero.desc" defaultValue={t.desc} multiline />
         </p>
         <a
           href={CHANNEL_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-bold text-[#B8532F] hover:text-[#6B402F] transition-colors"
+          className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-bold text-[#7d6330] hover:text-[#5a4a37] transition-colors"
         >
           <i className="fa-brands fa-youtube text-sm" />
           {lang === 'FR' ? "S'abonner sur YouTube" : 'Subscribe on YouTube'}
@@ -44,8 +44,8 @@ const TVPage: React.FC = () => {
               key={p.listId}
               className="group rounded-[20px] overflow-hidden transition-all duration-500 hover:-translate-y-1"
               style={{
-                background: '#F4E7DD',
-                border: '1px solid rgba(184,83,47,0.22)',
+                background: '#f6f3ee',
+                border: '1px solid rgba(187, 154, 94,0.22)',
                 boxShadow: '0 8px 24px rgba(107,74,47,0.10)',
               }}
             >
@@ -70,8 +70,8 @@ const TVPage: React.FC = () => {
                       loading="lazy"
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#3A251E]/60 via-[#3A251E]/20 to-transparent" />
-                    <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#3A251E]/80 text-[#F4E7DD] text-[9px] uppercase tracking-[0.2em] font-bold backdrop-blur-sm">
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#2a2015]/60 via-[#2a2015]/20 to-transparent" />
+                    <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#2a2015]/80 text-[#f6f3ee] text-[9px] uppercase tracking-[0.2em] font-bold backdrop-blur-sm">
                       <i className="fa-solid fa-list text-[9px]" />
                       {lang === 'FR' ? 'Playlist' : 'Playlist'}
                     </span>
@@ -80,23 +80,23 @@ const TVPage: React.FC = () => {
                         className="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
                         style={{
                           background: 'rgba(244,231,221,0.92)',
-                          border: '1px solid rgba(184,83,47,0.5)',
+                          border: '1px solid rgba(187, 154, 94,0.5)',
                           boxShadow: '0 6px 20px rgba(58,37,30,0.35)',
                         }}
                       >
-                        <i className="fa-solid fa-play text-[#6B402F] text-base ml-0.5" />
+                        <i className="fa-solid fa-play text-[#5a4a37] text-base ml-0.5" />
                       </span>
                     </div>
                   </>
                 )}
               </div>
               <div className="p-5 md:p-6">
-                <h2 className="font-serif text-lg md:text-xl text-[#3A251E] group-hover:text-[#B8532F] transition-colors leading-snug line-clamp-2">
+                <h2 className="font-serif text-lg md:text-xl text-[#2a2015] group-hover:text-[#7d6330] transition-colors leading-snug line-clamp-2">
                   {p.title || (lang === 'FR' ? `Playlist ${idx + 1}` : `Playlist ${idx + 1}`)}
                 </h2>
-                <div className="mt-3 flex items-center justify-between text-[10px] uppercase tracking-[0.25em] font-bold text-[#3A251E]/55">
+                <div className="mt-3 flex items-center justify-between text-[10px] uppercase tracking-[0.25em] font-bold text-[#2a2015]/55">
                   <span className="flex items-center gap-2">
-                    <i className="fa-solid fa-circle-play text-[#B8532F] text-[10px]" />
+                    <i className="fa-solid fa-circle-play text-[#7d6330] text-[10px]" />
                     {lang === 'FR' ? 'Regarder la série' : 'Watch the series'}
                   </span>
                   <a
@@ -104,7 +104,7 @@ const TVPage: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={e => e.stopPropagation()}
-                    className="hover:text-[#B8532F] transition-colors"
+                    className="hover:text-[#7d6330] transition-colors"
                     aria-label={lang === 'FR' ? 'Ouvrir sur YouTube' : 'Open on YouTube'}
                   >
                     <i className="fa-brands fa-youtube text-sm" />

@@ -61,7 +61,7 @@ const LiveEventsSection: React.FC<SectionProps> = ({
       {(titleFR || titleEN) && (
         <div className="text-center mb-12">
           {(kickerFR || kickerEN) && (
-            <span className="text-[#B8532F] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
+            <span className="text-[#7d6330] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
               {lang === 'FR' ? kickerFR : kickerEN}
             </span>
           )}
@@ -69,11 +69,11 @@ const LiveEventsSection: React.FC<SectionProps> = ({
             {lang === 'FR' ? titleFR : titleEN}
           </h2>
           {(leadFR || leadEN) && (
-            <p className="text-[#3A251E]/60 dark:text-white/60 font-serif italic max-w-xl mx-auto">
+            <p className="text-[#2a2015]/60 dark:text-white/60 font-serif italic max-w-xl mx-auto">
               {lang === 'FR' ? leadFR : leadEN}
             </p>
           )}
-          <div className="w-16 h-px bg-[#B8532F]/70 mx-auto mt-6" />
+          <div className="w-16 h-px bg-[#bb9a5e]/70 mx-auto mt-6" />
         </div>
       )}
 
@@ -134,11 +134,11 @@ export const LiveEventCard: React.FC<CardProps> = ({ event: ev, onWaitlist, onTo
   const kindBadge = (() => {
     switch (ev.kind) {
       case 'in-progress':      return { fr: 'En cours',          en: 'In progress',    icon: 'fa-circle-play', tone: 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300' };
-      case 'ticketed':         return { fr: 'Billetterie ouverte', en: 'Tickets open', icon: 'fa-ticket',       tone: 'bg-[#B8532F]/10 text-[#B8532F]' };
-      case 'retreat-waitlist': return { fr: 'Retraite · liste',  en: 'Retreat · list', icon: 'fa-leaf',         tone: 'bg-[#3A251E]/5 dark:bg-white/5 text-[#3A251E]/70 dark:text-white/70' };
+      case 'ticketed':         return { fr: 'Billetterie ouverte', en: 'Tickets open', icon: 'fa-ticket',       tone: 'bg-[#bb9a5e]/10 text-[#7d6330]' };
+      case 'retreat-waitlist': return { fr: 'Retraite · liste',  en: 'Retreat · list', icon: 'fa-leaf',         tone: 'bg-[#2a2015]/5 dark:bg-white/5 text-[#2a2015]/70 dark:text-white/70' };
       case 'launch-waitlist':  return { fr: 'Lancement · liste', en: 'Launch · list',  icon: 'fa-book-open',    tone: 'bg-[#BC4A3C]/10 text-[#BC4A3C]' };
-      case 'tour-request':     return { fr: 'Tournée · demande', en: 'Tour · request', icon: 'fa-route',        tone: 'bg-[#6B402F]/10 text-[#6B402F]' };
-      case 'announcement':     return { fr: 'Annonce',           en: 'Announcement',   icon: 'fa-bullhorn',     tone: 'bg-[#3A251E]/5 dark:bg-white/5 text-[#3A251E]/60 dark:text-white/60' };
+      case 'tour-request':     return { fr: 'Tournée · demande', en: 'Tour · request', icon: 'fa-route',        tone: 'bg-[#5a4a37]/10 text-[#5a4a37]' };
+      case 'announcement':     return { fr: 'Annonce',           en: 'Announcement',   icon: 'fa-bullhorn',     tone: 'bg-[#2a2015]/5 dark:bg-white/5 text-[#2a2015]/60 dark:text-white/60' };
     }
   })();
 
@@ -166,7 +166,7 @@ export const LiveEventCard: React.FC<CardProps> = ({ event: ev, onWaitlist, onTo
   // Parchment card palette — light is ivoire, dark is a warmer beige
   // with a deeper fibre tone. Both wear a double-border (copper + paper)
   // + a subtle top highlight so they read as hand-laid paper cards.
-  const bgLight = '#F4E7DD';
+  const bgLight = '#f6f3ee';
   const bgDark  = '#ECD6BE';
   const isDark  = tone === 'dark';
   const paperBg = isDark ? bgDark : bgLight;
@@ -186,8 +186,8 @@ export const LiveEventCard: React.FC<CardProps> = ({ event: ev, onWaitlist, onTo
   const hoverShadow = isDark
     ? '0 22px 50px rgba(107,74,47,0.22), inset 0 1px 0 rgba(244,231,221,0.6)'
     : '0 20px 44px rgba(107,74,47,0.18), inset 0 1px 0 rgba(255,255,255,0.5)';
-  const restBorder = isDark ? 'rgba(139,103,74,0.32)' : 'rgba(184,83,47,0.20)';
-  const hoverBorder = isDark ? 'rgba(139,103,74,0.55)' : 'rgba(184,83,47,0.5)';
+  const restBorder = isDark ? 'rgba(139,103,74,0.32)' : 'rgba(187, 154, 94,0.20)';
+  const hoverBorder = isDark ? 'rgba(139,103,74,0.55)' : 'rgba(187, 154, 94,0.5)';
 
   const cardVariants = {
     rest:  {
@@ -264,9 +264,9 @@ export const LiveEventCard: React.FC<CardProps> = ({ event: ev, onWaitlist, onTo
             {/* Date — lifts + shifts copper→brun on card hover */}
             <motion.span
               variants={{
-                rest:  { y: 0, color: '#B8532F' },
-                show:  { y: 0, color: '#B8532F' },
-                hover: reduceMotion ? {} : { y: -2, color: '#6B402F' },
+                rest:  { y: 0, color: '#7d6330' },
+                show:  { y: 0, color: '#7d6330' },
+                hover: reduceMotion ? {} : { y: -2, color: '#5a4a37' },
                 tap:   {},
               }}
               transition={{ duration: 0.25, ease: [0.2, 0.8, 0.2, 1] }}
@@ -288,19 +288,19 @@ export const LiveEventCard: React.FC<CardProps> = ({ event: ev, onWaitlist, onTo
               animate={reduceMotion ? undefined : { scale: [1, 1.025, 1], opacity: [0.92, 1, 0.92] }}
               transition={reduceMotion ? undefined : { duration: 2.8, ease: 'easeInOut', repeat: Infinity }}
               whileHover={{ scale: 1, opacity: 1 }}
-              className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#B8532F]/20 to-[#B8532F]/10 border border-[#B8532F]/40 text-[11px] uppercase tracking-[0.25em] font-bold text-[#3A251E] dark:text-white"
+              className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#bb9a5e]/20 to-[#bb9a5e]/10 border border-[#bb9a5e]/40 text-[11px] uppercase tracking-[0.25em] font-bold text-[#2a2015] dark:text-white"
               style={{ transformOrigin: 'left center' }}
             >
-              <i className="fa-regular fa-clock text-[#B8532F] text-[10px]" />
+              <i className="fa-regular fa-clock text-[#7d6330] text-[10px]" />
               {lang === 'FR' ? countdown.fr : countdown.en}
             </motion.div>
           )}
 
           <motion.h3
             variants={{
-              rest:  { letterSpacing: '0em', color: '#3A251E' },
-              show:  { letterSpacing: '0em', color: '#3A251E' },
-              hover: reduceMotion ? {} : { letterSpacing: '0.012em', color: '#B8532F' },
+              rest:  { letterSpacing: '0em', color: '#2a2015' },
+              show:  { letterSpacing: '0em', color: '#2a2015' },
+              hover: reduceMotion ? {} : { letterSpacing: '0.012em', color: '#7d6330' },
               tap:   {},
             }}
             transition={{ duration: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
@@ -309,16 +309,16 @@ export const LiveEventCard: React.FC<CardProps> = ({ event: ev, onWaitlist, onTo
             {title}
           </motion.h3>
           {subtitle && (
-            <p className="text-sm font-serif italic text-[#3A251E]/60 dark:text-white/60 mb-3">{subtitle}</p>
+            <p className="text-sm font-serif italic text-[#2a2015]/60 dark:text-white/60 mb-3">{subtitle}</p>
           )}
           {location && (
-            <p className="text-xs text-[#3A251E]/55 dark:text-white/50 flex items-center gap-2 mb-3">
-              <i className="fa-solid fa-map-marker-alt text-[#B8532F] text-[10px]" />
+            <p className="text-xs text-[#2a2015]/55 dark:text-white/50 flex items-center gap-2 mb-3">
+              <i className="fa-solid fa-map-marker-alt text-[#7d6330] text-[10px]" />
               {location}
             </p>
           )}
           {body && (
-            <p className="text-sm text-[#3A251E]/70 dark:text-white/70 leading-relaxed mb-4">{body}</p>
+            <p className="text-sm text-[#2a2015]/70 dark:text-white/70 leading-relaxed mb-4">{body}</p>
           )}
 
           {/* Primary CTA per kind + calendar export (when dated). Per-event
@@ -331,7 +331,7 @@ export const LiveEventCard: React.FC<CardProps> = ({ event: ev, onWaitlist, onTo
           <button
             type="button"
             onClick={() => goToRoute(navigate, ev.internalHref!)}
-            className="inline-flex items-center gap-2 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-5 py-2 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors"
+            className="inline-flex items-center gap-2 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-5 py-2 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
           >
             {(lang === 'FR' ? ev.ctaLabelFR : ev.ctaLabelEN) ?? (lang === 'FR' ? 'Découvrir le programme' : 'View the program')}
             <i className="fa-solid fa-arrow-right text-[9px]" />
@@ -342,7 +342,7 @@ export const LiveEventCard: React.FC<CardProps> = ({ event: ev, onWaitlist, onTo
             href={ev.registerUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-5 py-2 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors"
+            className="inline-flex items-center gap-2 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-5 py-2 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
           >
             {(lang === 'FR' ? ev.ctaLabelFR : ev.ctaLabelEN) ?? (lang === 'FR' ? 'Billets' : 'Tickets')}
             <i className="fa-solid fa-arrow-up-right-from-square text-[9px]" />
@@ -352,7 +352,7 @@ export const LiveEventCard: React.FC<CardProps> = ({ event: ev, onWaitlist, onTo
           <button
             type="button"
             onClick={onWaitlist}
-            className="inline-flex items-center gap-2 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-5 py-2 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors"
+            className="inline-flex items-center gap-2 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-5 py-2 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
           >
             <i className="fa-regular fa-hourglass-half text-[10px]" />
             {(lang === 'FR' ? ev.ctaLabelFR : ev.ctaLabelEN) ?? (lang === 'FR' ? "Liste d'attente" : 'Join waitlist')}
@@ -365,7 +365,7 @@ export const LiveEventCard: React.FC<CardProps> = ({ event: ev, onWaitlist, onTo
           <button
             type="button"
             onClick={onTourRequest}
-            className="inline-flex items-center gap-2 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-5 py-2 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors"
+            className="inline-flex items-center gap-2 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-5 py-2 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
           >
             <i className="fa-solid fa-location-dot text-[10px]" />
             {(lang === 'FR' ? ev.ctaLabelFR : ev.ctaLabelEN) ?? (lang === 'FR' ? 'Demander une tournée' : 'Request a tour stop')}
@@ -421,7 +421,7 @@ const AddToCalendarMenu: React.FC<{ event: LiveEvent }> = ({ event }) => {
       <button
         type="button"
         onClick={() => setOpen(v => !v)}
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#3A251E]/15 dark:border-white/15 text-[#3A251E]/80 dark:text-white/80 font-bold uppercase tracking-widest text-[11px] hover:border-[#B8532F] hover:text-[#B8532F] transition-colors"
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#2a2015]/15 dark:border-white/15 text-[#2a2015]/80 dark:text-white/80 font-bold uppercase tracking-widest text-[11px] hover:border-[#bb9a5e] hover:text-[#7d6330] transition-colors"
         aria-haspopup="menu"
         aria-expanded={open}
       >
@@ -433,7 +433,7 @@ const AddToCalendarMenu: React.FC<{ event: LiveEvent }> = ({ event }) => {
       {open && (
         <div
           role="menu"
-          className="absolute z-20 mt-2 right-0 w-64 rounded-2xl bg-white dark:bg-[#3A251E] border border-[#3A251E]/10 dark:border-white/10 shadow-[0_14px_40px_rgba(58,37,30,0.18)] overflow-hidden"
+          className="absolute z-20 mt-2 right-0 w-64 rounded-2xl bg-white dark:bg-[#2a2015] border border-[#2a2015]/10 dark:border-white/10 shadow-[0_14px_40px_rgba(58,37,30,0.18)] overflow-hidden"
         >
           <MenuItem onClick={() => handle('ics')}     icon="fa-apple" brand="fa-brands"
             label={lang === 'FR' ? 'Apple · iCal · Outlook' : 'Apple · iCal · Outlook'}
@@ -455,12 +455,12 @@ const MenuItem: React.FC<{ onClick: () => void; icon: string; brand?: string; la
     type="button"
     role="menuitem"
     onClick={onClick}
-    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#F4E7DD] dark:hover:bg-white/5 transition-colors"
+    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#f6f3ee] dark:hover:bg-white/5 transition-colors"
   >
-    <i className={`${brand} ${icon} text-[#B8532F] text-sm w-4 text-center`} />
+    <i className={`${brand} ${icon} text-[#7d6330] text-sm w-4 text-center`} />
     <div className="min-w-0">
-      <p className="text-sm font-medium text-[#3A251E] dark:text-white truncate">{label}</p>
-      {sub && <p className="text-[11px] text-[#3A251E]/50 dark:text-white/50 truncate">{sub}</p>}
+      <p className="text-sm font-medium text-[#2a2015] dark:text-white truncate">{label}</p>
+      {sub && <p className="text-[11px] text-[#2a2015]/50 dark:text-white/50 truncate">{sub}</p>}
     </div>
   </button>
 );

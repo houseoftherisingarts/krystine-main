@@ -69,11 +69,11 @@ const Footer: React.FC = () => {
           : { backgroundImage: `url(${ASSETS.footerBg})`, y: mountainY }}
         aria-hidden
       />
-      {/* Single semi-transparent navy layer — same #2E1A14 as before, just at
+      {/* Single semi-transparent navy layer — same #16100a as before, just at
           85% opacity so the mountain silhouette shows through while copy
           contrast stays WCAG-AA. */}
       <div
-        className="absolute inset-0 bg-[#2E1A14]/85 pointer-events-none"
+        className="absolute inset-0 bg-[#16100a]/85 pointer-events-none"
         aria-hidden
       />
 
@@ -103,7 +103,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               {links.map(({ href, label }) => (
                 <li key={href}>
-                  <NavLink href={href} className="text-xs hover:text-[#B8532F] transition-colors uppercase tracking-wide">{label}</NavLink>
+                  <NavLink href={href} className="text-xs hover:text-[#7d6330] transition-colors uppercase tracking-wide">{label}</NavLink>
                 </li>
               ))}
             </ul>
@@ -115,7 +115,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               {programmes.map(({ href, label }) => (
                 <li key={href}>
-                  <NavLink href={href} className="text-xs hover:text-[#B8532F] transition-colors uppercase tracking-wide">{label}</NavLink>
+                  <NavLink href={href} className="text-xs hover:text-[#7d6330] transition-colors uppercase tracking-wide">{label}</NavLink>
                 </li>
               ))}
             </ul>
@@ -125,10 +125,10 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-6">{foot.contact}</h4>
             <ul className="space-y-3 text-sm">
-              <li><a href="mailto:equipe@inspiratanature.com" className="hover:text-[#B8532F] transition-colors">equipe@inspiratanature.com</a></li>
-              <li><a href="https://www.instagram.com/krystinesaintlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#B8532F] transition-colors"><i className="fa-brands fa-instagram" /> Instagram</a></li>
-              <li><a href="https://www.facebook.com/Krystinestlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#B8532F] transition-colors"><i className="fa-brands fa-facebook" /> Facebook</a></li>
-              <li><a href="https://www.youtube.com/@KrystineStLaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#B8532F] transition-colors"><i className="fa-brands fa-youtube" /> YouTube</a></li>
+              <li><a href="mailto:equipe@inspiratanature.com" className="hover:text-[#7d6330] transition-colors">equipe@inspiratanature.com</a></li>
+              <li><a href="https://www.instagram.com/krystinesaintlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#7d6330] transition-colors"><i className="fa-brands fa-instagram" /> Instagram</a></li>
+              <li><a href="https://www.facebook.com/Krystinestlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#7d6330] transition-colors"><i className="fa-brands fa-facebook" /> Facebook</a></li>
+              <li><a href="https://www.youtube.com/@KrystineStLaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#7d6330] transition-colors"><i className="fa-brands fa-youtube" /> YouTube</a></li>
             </ul>
           </div>
         </div>
@@ -137,7 +137,7 @@ const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] uppercase tracking-widest text-white/30">
           <p>© {new Date().getFullYear()} Krystine St-Laurent. {lang === 'FR' ? 'Tous droits réservés.' : 'All rights reserved.'}</p>
           <div className="flex items-center gap-6">
-            <Link to="/politique-de-confidentialite" className="hover:text-[#B8532F] transition-colors">{foot.privacy}</Link>
+            <Link to="/politique-de-confidentialite" className="hover:text-[#7d6330] transition-colors">{foot.privacy}</Link>
           </div>
           <button
             type="button"

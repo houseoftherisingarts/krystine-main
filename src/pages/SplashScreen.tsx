@@ -65,13 +65,13 @@ const SplashScreen: React.FC = () => {
   const onBgClick = () => navigate('/accueil');
 
   return (
-    <div className="relative w-full min-h-screen overflow-hidden bg-[#2E1A14] text-white cursor-pointer" onClick={onBgClick}>
+    <div className="relative w-full min-h-screen overflow-hidden bg-[#16100a] text-white cursor-pointer" onClick={onBgClick}>
 
       {/* Ayurvedic oil surface (pointer-reactive 3D liquid) or CSS fallback */}
       {!reduceMotion ? (
         <LiquidOilBackground />
       ) : (
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#B8532F_0%,#6B402F_25%,#3A251E_70%)] opacity-90" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#bb9a5e_0%,#5a4a37_25%,#2a2015_70%)] opacity-90" />
       )}
 
       {/* Overcast pond lighting — even ambient across the whole surface with
@@ -115,7 +115,7 @@ const SplashScreen: React.FC = () => {
             <button
               key={l}
               onClick={() => setLang(l)}
-              className={`px-3 py-1.5 rounded-full border transition-colors ${lang === l ? 'border-[#B8532F] text-[#B8532F]' : 'border-white/10 hover:border-white/30'}`}
+              className={`px-3 py-1.5 rounded-full border transition-colors ${lang === l ? 'border-[#bb9a5e] text-[#7d6330]' : 'border-white/10 hover:border-white/30'}`}
             >{l}</button>
           ))}
         </motion.div>
@@ -170,7 +170,7 @@ const SplashScreen: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.95, ease: 'easeOut' }}
           onClick={e => { e.stopPropagation(); goToRoute(navigate, '/origine'); }}
-          className="mt-10 md:mt-12 group inline-flex items-center gap-3 bg-[#B8532F] hover:bg-white text-[#3A251E] px-10 py-4 rounded-full font-bold uppercase tracking-[0.25em] text-[11px] md:text-xs shadow-[0_10px_36px_rgba(184,83,47,0.35)] transition-all duration-300 whitespace-nowrap"
+          className="mt-10 md:mt-12 group inline-flex items-center gap-3 bg-[#bb9a5e] hover:bg-white text-[#2a2015] px-10 py-4 rounded-full font-bold uppercase tracking-[0.25em] text-[11px] md:text-xs shadow-[0_10px_36px_rgba(187, 154, 94,0.35)] transition-all duration-300 whitespace-nowrap"
         >
           {t.cta}
           <i className="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform" />
@@ -180,7 +180,7 @@ const SplashScreen: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.9, delay: 1.15 }}
-          className="mt-4 font-serif italic text-[#B8532F] text-sm md:text-base"
+          className="mt-4 font-serif italic text-[#7d6330] text-sm md:text-base"
         >
           {t.ctaSub}
         </motion.p>

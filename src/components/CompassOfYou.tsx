@@ -116,7 +116,7 @@ const CompassOfYou: React.FC = () => {
         <div className="text-center md:text-left flex flex-col items-center md:items-start">
           <motion.p
             variants={item}
-            className="text-[12px] md:text-[14px] uppercase tracking-[0.42em] font-bold text-[#6B402F] mb-6 md:mb-8"
+            className="text-[12px] md:text-[14px] uppercase tracking-[0.42em] font-bold text-[#5a4a37] mb-6 md:mb-8"
             style={{ textShadow: '0 0 12px rgba(255,255,255,0.85), 0 0 28px rgba(255,255,255,0.55), 0 0 50px rgba(255,255,255,0.3)' }}
           >
             · {kicker} ·
@@ -124,7 +124,7 @@ const CompassOfYou: React.FC = () => {
 
           <motion.h1
             variants={item}
-            className="font-serif uppercase text-[#2F2A22] dark:text-[#F4E7DD] leading-[0.92]"
+            className="font-serif uppercase text-[#2F2A22] dark:text-[#f6f3ee] leading-[0.92]"
             style={{
               letterSpacing: '0.02em',
               // Wide white halo behind the title — pure radial glow
@@ -167,7 +167,7 @@ const CompassOfYou: React.FC = () => {
             >
               <motion.span
                 variants={item}
-                className="block whitespace-nowrap text-[#6B402F]/85"
+                className="block whitespace-nowrap text-[#5a4a37]/85"
               >
                 St-Laurent
               </motion.span>
@@ -182,7 +182,7 @@ const CompassOfYou: React.FC = () => {
                 className="absolute left-0 -bottom-1 md:-bottom-2 h-[2px] w-full origin-left"
                 style={{
                   background:
-                    'linear-gradient(to right, rgba(184,83,47,0.9) 0%, rgba(176,122,60,0.7) 60%, rgba(184,83,47,0) 100%)',
+                    'linear-gradient(to right, rgba(187, 154, 94,0.9) 0%, rgba(176,122,60,0.7) 60%, rgba(187, 154, 94,0) 100%)',
                   transformOrigin: 'left center',
                 }}
               />
@@ -197,14 +197,14 @@ const CompassOfYou: React.FC = () => {
             className="mt-6 md:mt-7 max-w-xl w-full rounded-[22px] px-6 md:px-8 py-6 md:py-7 backdrop-blur-[2px]"
             style={{
               background: 'rgba(244,231,221,0.78)',
-              border: '1px solid rgba(184,83,47,0.25)',
+              border: '1px solid rgba(187, 154, 94,0.25)',
               boxShadow: '0 14px 36px rgba(58,37,30,0.12), 0 2px 8px rgba(107,74,47,0.08)',
             }}
           >
-            <p className="font-serif italic text-[#3A251E]/90 text-xl md:text-2xl lg:text-3xl leading-snug">
+            <p className="font-serif italic text-[#2a2015]/90 text-xl md:text-2xl lg:text-3xl leading-snug">
               {poem1Lines[0]}<br />{poem1Lines[1]}
             </p>
-            <p className="mt-4 font-serif italic text-[#3A251E]/85 text-lg md:text-xl lg:text-2xl leading-[1.6]">
+            <p className="mt-4 font-serif italic text-[#2a2015]/85 text-lg md:text-xl lg:text-2xl leading-[1.6]">
               {poem2}
             </p>
           </motion.div>
@@ -245,7 +245,7 @@ const CompassOfYou: React.FC = () => {
                 alt=""
                 draggable={false}
                 style={{ rotate: rotation, transformOrigin: '50% 50%', willChange: 'transform' }}
-                className="block w-full h-auto select-none transition-[filter] duration-700 group-hover:[filter:drop-shadow(0_0_50px_rgba(184,83,47,0.55))]"
+                className="block w-full h-auto select-none transition-[filter] duration-700 group-hover:[filter:drop-shadow(0_0_50px_rgba(187, 154, 94,0.55))]"
               />
 
               {/* Centre CTA — two-line kicker keeps the long "Par où
@@ -255,13 +255,13 @@ const CompassOfYou: React.FC = () => {
                 className="
                   absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                   flex flex-col items-center justify-center text-center
-                  rounded-full bg-[#6B402F] text-[#F4E7DD]
-                  border-[3px] border-[#F4E7DD]
-                  shadow-[0_10px_28px_rgba(58,37,30,0.40),0_3px_10px_rgba(58,37,30,0.20),inset_0_0_0_1px_rgba(184,83,47,0.5)]
+                  rounded-full bg-[#5a4a37] text-[#f6f3ee]
+                  border-[3px] border-[#f6f3ee]
+                  shadow-[0_10px_28px_rgba(58,37,30,0.40),0_3px_10px_rgba(58,37,30,0.20),inset_0_0_0_1px_rgba(187, 154, 94,0.5)]
                   transition-all duration-500
-                  group-hover:bg-[#3A251E]
+                  group-hover:bg-[#2a2015]
                   group-hover:scale-[1.04]
-                  group-hover:shadow-[0_18px_44px_rgba(58,37,30,0.55),0_5px_14px_rgba(58,37,30,0.30),inset_0_0_0_1px_rgba(184,83,47,0.7)]
+                  group-hover:shadow-[0_18px_44px_rgba(58,37,30,0.55),0_5px_14px_rgba(58,37,30,0.30),inset_0_0_0_1px_rgba(187, 154, 94,0.7)]
                 "
                 style={{ width: '30%', aspectRatio: '1 / 1', pointerEvents: 'none', padding: '6% 8%' }}
               >
@@ -273,7 +273,7 @@ const CompassOfYou: React.FC = () => {
                   <span className="whitespace-nowrap">{lang === 'FR' ? 'commencer ?' : 'to start?'}</span>
                 </span>
                 <span
-                  className="font-serif italic mt-2 leading-[1.05] text-[#F4E7DD] flex flex-col items-center"
+                  className="font-serif italic mt-2 leading-[1.05] text-[#f6f3ee] flex flex-col items-center"
                   style={{ fontSize: 'clamp(0.8rem, 1.4vw, 1.25rem)' }}
                 >
                   <span className="block whitespace-nowrap">{ctaCenter1}</span>
@@ -289,7 +289,7 @@ const CompassOfYou: React.FC = () => {
             </button>
           </motion.div>
 
-          <p className="mt-3 md:mt-4 font-serif italic text-[#3A251E]/70 dark:text-white/70 text-sm md:text-base">
+          <p className="mt-3 md:mt-4 font-serif italic text-[#2a2015]/70 dark:text-white/70 text-sm md:text-base">
             {ctaSub}
           </p>
         </motion.div>

@@ -135,18 +135,18 @@ const NewsletterSignup: React.FC<Props> = ({
 
     return (
       <div className={`text-center ${className}`}>
-        <div className={`inline-flex items-center gap-3 mb-5 ${isDark ? 'text-[#B8532F]' : 'text-[#B8532F]'}`}>
+        <div className={`inline-flex items-center gap-3 mb-5 ${isDark ? 'text-[#7d6330]' : 'text-[#7d6330]'}`}>
           <i className="fa-solid fa-check-circle text-2xl" />
           <span className="font-serif italic text-xl md:text-2xl">{title}</span>
         </div>
-        <p className={`text-sm leading-relaxed max-w-md mx-auto ${isDark ? 'text-white/60' : 'text-[#3A251E]/60'}`}>
+        <p className={`text-sm leading-relaxed max-w-md mx-auto ${isDark ? 'text-white/60' : 'text-[#2a2015]/60'}`}>
           {body}
         </p>
         {!isGoogle && (
           <button
             type="button"
             onClick={() => setSignInOpen(true)}
-            className="mt-6 inline-flex items-center gap-2 text-[#B8532F] hover:text-white uppercase tracking-widest text-[11px] font-bold border-b border-[#B8532F]/40 hover:border-[#B8532F] pb-1 transition-colors"
+            className="mt-6 inline-flex items-center gap-2 text-[#7d6330] hover:text-white uppercase tracking-widest text-[11px] font-bold border-b border-[#bb9a5e]/40 hover:border-[#bb9a5e] pb-1 transition-colors"
           >
             {lang === 'FR' ? 'Créer mon espace client' : 'Create my client space'}
             <i className="fa-solid fa-arrow-right text-[9px]" />
@@ -158,16 +158,16 @@ const NewsletterSignup: React.FC<Props> = ({
 
   // ── Styles ──
   const inputClass = isDark
-    ? 'bg-transparent border-b border-white/20 text-white placeholder:text-white/30 focus:border-[#B8532F]'
-    : 'bg-transparent border-b border-[#3A251E]/20 text-[#3A251E] placeholder:text-[#3A251E]/40 focus:border-[#B8532F]';
+    ? 'bg-transparent border-b border-white/20 text-white placeholder:text-white/30 focus:border-[#bb9a5e]'
+    : 'bg-transparent border-b border-[#2a2015]/20 text-[#2a2015] placeholder:text-[#2a2015]/40 focus:border-[#bb9a5e]';
 
   const googleBtnClass = isDark
-    ? 'bg-white/5 border border-white/15 text-white hover:border-[#B8532F] hover:bg-white/10'
-    : 'bg-white border border-[#3A251E]/10 text-[#3A251E] hover:border-[#B8532F]';
+    ? 'bg-white/5 border border-white/15 text-white hover:border-[#bb9a5e] hover:bg-white/10'
+    : 'bg-white border border-[#2a2015]/10 text-[#2a2015] hover:border-[#bb9a5e]';
 
-  const dividerClass = isDark ? 'text-white/40' : 'text-[#3A251E]/40';
-  const dividerLineClass = isDark ? 'bg-white/10' : 'bg-[#3A251E]/10';
-  const fineprintClass = isDark ? 'text-white/30' : 'text-[#3A251E]/40';
+  const dividerClass = isDark ? 'text-white/40' : 'text-[#2a2015]/40';
+  const dividerLineClass = isDark ? 'bg-white/10' : 'bg-[#2a2015]/10';
+  const fineprintClass = isDark ? 'text-white/30' : 'text-[#2a2015]/40';
 
   return (
     <div className={className}>
@@ -204,7 +204,7 @@ const NewsletterSignup: React.FC<Props> = ({
         <button
           type="submit"
           disabled={busy}
-          className="bg-[#B8532F] text-[#3A251E] font-bold uppercase tracking-widest text-xs px-10 py-4 rounded-full hover:bg-white transition-colors whitespace-nowrap disabled:opacity-50 flex items-center justify-center gap-2"
+          className="bg-[#bb9a5e] text-[#2a2015] font-bold uppercase tracking-widest text-xs px-10 py-4 rounded-full hover:bg-white transition-colors whitespace-nowrap disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {busy ? <i className="fa-solid fa-circle-notch fa-spin" /> : labelCta}
         </button>

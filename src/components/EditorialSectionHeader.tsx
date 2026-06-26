@@ -52,9 +52,9 @@ const sprigIn: Variants = {
 };
 
 const toneColour = (tone: Props['tone']) => {
-  if (tone === 'copper') return { kicker: '#B8532F', title: '#3A251E' };
-  if (tone === 'sauge')  return { kicker: '#7A8066', title: '#3A251E' };
-  return { kicker: '#6B402F', title: '#3A251E' };
+  if (tone === 'copper') return { kicker: '#bb9a5e', title: '#2a2015' };
+  if (tone === 'sauge')  return { kicker: '#665746', title: '#2a2015' };
+  return { kicker: '#5a4a37', title: '#2a2015' };
 };
 
 const EditorialSectionHeader: React.FC<Props> = ({
@@ -78,7 +78,7 @@ const EditorialSectionHeader: React.FC<Props> = ({
   // so wide lede lines don't sprawl across the viewport.
   const containerStyle = contained ? {
     background: 'rgba(244, 231, 221, 0.86)',
-    border: '1px solid rgba(184, 83, 47, 0.20)',
+    border: '1px solid rgba(187, 154, 94, 0.20)',
     boxShadow: '0 10px 26px rgba(107, 74, 47, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.55)',
     backdropFilter: 'blur(8px)',
     WebkitBackdropFilter: 'blur(8px)',
@@ -189,7 +189,7 @@ const EditorialSectionHeader: React.FC<Props> = ({
       {lede && (
         <motion.p
           variants={itemFade}
-          className={`font-serif italic ${contained ? 'text-[#3A251E]/85' : 'text-[#2A1A12]'} dark:text-white/70 text-base md:text-lg leading-relaxed ${
+          className={`font-serif italic ${contained ? 'text-[#2a2015]/85' : 'text-[#2a2015]'} dark:text-white/70 text-base md:text-lg leading-relaxed ${
             align === 'center' ? 'max-w-2xl mx-auto' : 'max-w-xl'
           }`}
           style={contained ? undefined : {

@@ -17,12 +17,12 @@ const DevAdminIndicator: React.FC = () => {
     <div className="fixed top-5 left-5 z-[200]" data-edit-ui>
       <a
         href="?lock=1"
-        className="group inline-flex items-center gap-2 pl-3 pr-2 py-1.5 rounded-full bg-[#3A251E]/90 backdrop-blur text-[#F4D49A] border border-[#B07A3C]/60 shadow-lg text-[10px] uppercase tracking-[0.25em] font-bold hover:bg-[#B07A3C] hover:text-[#3A251E] transition-colors"
+        className="group inline-flex items-center gap-2 pl-3 pr-2 py-1.5 rounded-full bg-[#2a2015]/90 backdrop-blur text-[#F4D49A] border border-[#B07A3C]/60 shadow-lg text-[10px] uppercase tracking-[0.25em] font-bold hover:bg-[#B07A3C] hover:text-[#2a2015] transition-colors"
         title="Quitter le mode admin local (efface les drapeaux localStorage et recharge)"
       >
-        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#B07A3C] group-hover:bg-[#3A251E] animate-pulse" />
+        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#B07A3C] group-hover:bg-[#2a2015] animate-pulse" />
         Mode local{localStore ? ' · édits dans ce navigateur' : ''}
-        <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#B07A3C]/20 group-hover:bg-[#3A251E]/20 ml-1">
+        <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#B07A3C]/20 group-hover:bg-[#2a2015]/20 ml-1">
           <i className="fa-solid fa-xmark text-[9px]" />
         </span>
       </a>

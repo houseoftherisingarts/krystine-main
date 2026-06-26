@@ -165,9 +165,9 @@ const ListeAttentePage: React.FC = () => {
   };
 
   // Consistent palette with the rest of the site:
-  //   parchemin / ivoire chaud   #F4E7DD
-  //   brun terre                 #3A251E
-  //   cuivre signature           #B8532F
+  //   parchemin / ivoire chaud   #f6f3ee
+  //   brun terre                 #2a2015
+  //   cuivre signature           #bb9a5e
   //   olive sage                 #8A8F72
   //
   // Inputs: ivoire 95% backing, 1px copper border at 25% — picks up to 100%
@@ -175,13 +175,13 @@ const ListeAttentePage: React.FC = () => {
   // newsletter Pulsation form and WaitlistModal so the form feels native.
 
   return (
-    <div className="min-h-screen pt-28 md:pt-32 pb-20 px-4 md:px-8 text-[#3A251E] dark:text-white">
+    <div className="min-h-screen pt-28 md:pt-32 pb-20 px-4 md:px-8 text-[#2a2015] dark:text-white">
       <div className="max-w-[1500px] mx-auto">
         {/* Top breadcrumb — quiet link back to where the visitor came from. */}
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-bold text-[#3A251E]/55 hover:text-[#B8532F] transition-colors mb-6 md:mb-10"
+          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-bold text-[#2a2015]/55 hover:text-[#7d6330] transition-colors mb-6 md:mb-10"
         >
           <i className="fa-solid fa-arrow-left text-[9px]" />
           {lang === 'FR' ? 'Retour' : 'Back'}
@@ -195,8 +195,8 @@ const ListeAttentePage: React.FC = () => {
           className="relative w-full rounded-[30px] overflow-hidden"
           style={{
             background:
-              'linear-gradient(160deg, rgba(232,208,190,0.65) 0%, rgba(244,231,221,0.85) 45%, rgba(184,83,47,0.10) 100%)',
-            border: '1px solid rgba(184,83,47,0.22)',
+              'linear-gradient(160deg, rgba(232,208,190,0.65) 0%, rgba(244,231,221,0.85) 45%, rgba(187, 154, 94,0.10) 100%)',
+            border: '1px solid rgba(187, 154, 94,0.22)',
             boxShadow: '0 18px 48px rgba(107,74,47,0.12)',
           }}
         >
@@ -211,19 +211,19 @@ const ListeAttentePage: React.FC = () => {
           <div className="relative grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-0">
             {/* ── LEFT · editorial pitch ──────────────────────────────── */}
             <div className="relative z-10 px-6 md:px-12 lg:px-16 pt-14 md:pt-20 lg:pt-24 pb-10 lg:pb-20 flex flex-col justify-center">
-              <span className="text-[#B8532F] uppercase tracking-[0.35em] text-[10px] md:text-xs font-bold block mb-4">
+              <span className="text-[#7d6330] uppercase tracking-[0.35em] text-[10px] md:text-xs font-bold block mb-4">
                 {meta.kicker}
               </span>
               <h1
-                className="font-serif text-[#1E140F] leading-[1.04] mb-5"
+                className="font-serif text-[#16100a] leading-[1.04] mb-5"
                 style={{ fontSize: 'clamp(2.1rem, 4.4vw, 3.6rem)', letterSpacing: '0.008em' }}
               >
                 {meta.title}
               </h1>
-              <p className="font-serif italic text-[#3A251E]/80 text-lg md:text-xl leading-relaxed mb-7 md:mb-9">
+              <p className="font-serif italic text-[#2a2015]/80 text-lg md:text-xl leading-relaxed mb-7 md:mb-9">
                 {meta.subtitle}
               </p>
-              <p className="text-[#3A251E]/85 text-base md:text-lg leading-relaxed max-w-2xl mb-8 md:mb-10">
+              <p className="text-[#2a2015]/85 text-base md:text-lg leading-relaxed max-w-2xl mb-8 md:mb-10">
                 {meta.promise}
               </p>
 
@@ -233,38 +233,38 @@ const ListeAttentePage: React.FC = () => {
                   className="relative px-6 md:px-8 py-6 md:py-7 rounded-[18px] max-w-2xl"
                   style={{
                     background: 'rgba(244,231,221,0.78)',
-                    border: '1px solid rgba(184,83,47,0.28)',
+                    border: '1px solid rgba(187, 154, 94,0.28)',
                     boxShadow: '0 8px 22px rgba(107,74,47,0.10), inset 0 1px 0 rgba(255,255,255,0.55)',
                   }}
                 >
                   <span
                     aria-hidden
                     className="absolute left-0 top-4 bottom-4 w-[3px] rounded-r-sm"
-                    style={{ background: 'linear-gradient(to bottom, #B8532F, rgba(184,83,47,0))' }}
+                    style={{ background: 'linear-gradient(to bottom, #bb9a5e, rgba(187, 154, 94,0))' }}
                   />
-                  <i className="fa-solid fa-quote-left text-[#B8532F]/40 text-2xl mb-3" />
-                  <p className="font-serif italic text-[#3A251E] text-base md:text-[17px] leading-relaxed">
+                  <i className="fa-solid fa-quote-left text-[#7d6330]/40 text-2xl mb-3" />
+                  <p className="font-serif italic text-[#2a2015] text-base md:text-[17px] leading-relaxed">
                     {meta.citation}
                   </p>
                 </blockquote>
               )}
 
               {/* Trust line — speaks to friction. */}
-              <ul className="mt-8 md:mt-10 space-y-3 text-sm md:text-[15px] text-[#3A251E]/75">
+              <ul className="mt-8 md:mt-10 space-y-3 text-sm md:text-[15px] text-[#2a2015]/75">
                 <li className="flex items-start gap-3">
-                  <i className="fa-solid fa-leaf text-[#B8532F] mt-1" />
+                  <i className="fa-solid fa-leaf text-[#7d6330] mt-1" />
                   <span>{lang === 'FR'
                     ? "Aucun engagement — vous êtes inscrite sur la liste, c'est tout."
                     : 'No commitment — you are simply on the list.'}</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <i className="fa-solid fa-envelope-open-text text-[#B8532F] mt-1" />
+                  <i className="fa-solid fa-envelope-open-text text-[#7d6330] mt-1" />
                   <span>{lang === 'FR'
                     ? "Vous serez avisée par courriel à l'ouverture, avant la communication publique."
                     : 'You will be notified by email at the opening, before the public announcement.'}</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <i className="fa-solid fa-shield-halved text-[#B8532F] mt-1" />
+                  <i className="fa-solid fa-shield-halved text-[#7d6330] mt-1" />
                   <span>{lang === 'FR'
                     ? "Vos coordonnées ne sont jamais partagées. Désabonnement en un clic."
                     : 'Your details are never shared. One-click unsubscribe.'}</span>
@@ -278,26 +278,26 @@ const ListeAttentePage: React.FC = () => {
                 className="w-full rounded-[24px] p-7 md:p-9 lg:p-10"
                 style={{
                   background: 'rgba(255,253,250,0.92)',
-                  border: '1px solid rgba(184,83,47,0.22)',
+                  border: '1px solid rgba(187, 154, 94,0.22)',
                   boxShadow: '0 14px 36px rgba(107,74,47,0.10), inset 0 1px 0 rgba(255,255,255,0.65)',
                 }}
               >
                 {done ? (
                   <div className="text-center py-6 md:py-10">
-                    <div className="w-16 h-16 rounded-full bg-[#B8532F]/15 flex items-center justify-center mx-auto mb-5">
-                      <i className="fa-solid fa-check text-[#B8532F] text-2xl" />
+                    <div className="w-16 h-16 rounded-full bg-[#bb9a5e]/15 flex items-center justify-center mx-auto mb-5">
+                      <i className="fa-solid fa-check text-[#7d6330] text-2xl" />
                     </div>
-                    <h2 className="font-serif text-2xl md:text-3xl text-[#3A251E] mb-3">
+                    <h2 className="font-serif text-2xl md:text-3xl text-[#2a2015] mb-3">
                       {lang === 'FR' ? 'Merci.' : 'Thank you.'}
                     </h2>
-                    <p className="font-serif italic text-[#3A251E]/75 text-base md:text-lg leading-relaxed max-w-sm mx-auto mb-8">
+                    <p className="font-serif italic text-[#2a2015]/75 text-base md:text-lg leading-relaxed max-w-sm mx-auto mb-8">
                       {lang === 'FR'
                         ? "Vous êtes inscrite. Vous serez parmi les premières à savoir."
                         : 'You are on the list. You will be among the first to know.'}
                     </p>
                     <Link
                       to="/accueil"
-                      className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-[#3A251E] text-[#F4E7DD] hover:bg-[#B8532F] hover:text-[#3A251E] text-[11px] tracking-[0.28em] uppercase font-bold transition-all"
+                      className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-[#2a2015] text-[#f6f3ee] hover:bg-[#bb9a5e] hover:text-[#2a2015] text-[11px] tracking-[0.28em] uppercase font-bold transition-all"
                     >
                       {lang === 'FR' ? "Retour à l'accueil" : 'Back to home'}
                       <i className="fa-solid fa-arrow-right text-[9px]" />
@@ -305,7 +305,7 @@ const ListeAttentePage: React.FC = () => {
                   </div>
                 ) : (
                   <form onSubmit={submit} className="space-y-4" noValidate>
-                    <p className="text-[10px] uppercase tracking-[0.32em] font-bold text-[#B8532F] mb-1">
+                    <p className="text-[10px] uppercase tracking-[0.32em] font-bold text-[#7d6330] mb-1">
                       {lang === 'FR' ? "Inscription · liste d'attente" : 'Sign-up · waitlist'}
                     </p>
 
@@ -319,7 +319,7 @@ const ListeAttentePage: React.FC = () => {
                           value={firstName}
                           onChange={e => setFirstName(e.target.value)}
                           placeholder={lang === 'FR' ? 'Prénom' : 'First name'}
-                          className="w-full px-5 py-3 rounded-full border border-[#3A251E]/15 bg-white text-sm text-[#3A251E] placeholder:text-[#3A251E]/40 focus:outline-none focus:border-[#B8532F] focus:shadow-[0_0_0_4px_rgba(184,83,47,0.12)] transition-shadow"
+                          className="w-full px-5 py-3 rounded-full border border-[#2a2015]/15 bg-white text-sm text-[#2a2015] placeholder:text-[#2a2015]/40 focus:outline-none focus:border-[#bb9a5e] focus:shadow-[0_0_0_4px_rgba(187, 154, 94,0.12)] transition-shadow"
                         />
                       </label>
                       <label className="block">
@@ -330,7 +330,7 @@ const ListeAttentePage: React.FC = () => {
                           value={lastName}
                           onChange={e => setLastName(e.target.value)}
                           placeholder={lang === 'FR' ? 'Nom' : 'Last name'}
-                          className="w-full px-5 py-3 rounded-full border border-[#3A251E]/15 bg-white text-sm text-[#3A251E] placeholder:text-[#3A251E]/40 focus:outline-none focus:border-[#B8532F] focus:shadow-[0_0_0_4px_rgba(184,83,47,0.12)] transition-shadow"
+                          className="w-full px-5 py-3 rounded-full border border-[#2a2015]/15 bg-white text-sm text-[#2a2015] placeholder:text-[#2a2015]/40 focus:outline-none focus:border-[#bb9a5e] focus:shadow-[0_0_0_4px_rgba(187, 154, 94,0.12)] transition-shadow"
                         />
                       </label>
                     </div>
@@ -345,7 +345,7 @@ const ListeAttentePage: React.FC = () => {
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         placeholder={lang === 'FR' ? 'Adresse courriel' : 'Email address'}
-                        className="w-full px-5 py-3 rounded-full border border-[#3A251E]/15 bg-white text-sm text-[#3A251E] placeholder:text-[#3A251E]/40 focus:outline-none focus:border-[#B8532F] focus:shadow-[0_0_0_4px_rgba(184,83,47,0.12)] transition-shadow"
+                        className="w-full px-5 py-3 rounded-full border border-[#2a2015]/15 bg-white text-sm text-[#2a2015] placeholder:text-[#2a2015]/40 focus:outline-none focus:border-[#bb9a5e] focus:shadow-[0_0_0_4px_rgba(187, 154, 94,0.12)] transition-shadow"
                       />
                     </label>
 
@@ -358,7 +358,7 @@ const ListeAttentePage: React.FC = () => {
                             required
                             value={countryCode}
                             onChange={e => onCountryChange(e.target.value)}
-                            className="w-full appearance-none px-5 py-3 pr-10 rounded-full border border-[#3A251E]/15 bg-white text-sm text-[#3A251E] focus:outline-none focus:border-[#B8532F] focus:shadow-[0_0_0_4px_rgba(184,83,47,0.12)] transition-shadow"
+                            className="w-full appearance-none px-5 py-3 pr-10 rounded-full border border-[#2a2015]/15 bg-white text-sm text-[#2a2015] focus:outline-none focus:border-[#bb9a5e] focus:shadow-[0_0_0_4px_rgba(187, 154, 94,0.12)] transition-shadow"
                           >
                             <option value="" disabled>
                               {lang === 'FR' ? 'Pays · province' : 'Country · province'}
@@ -367,7 +367,7 @@ const ListeAttentePage: React.FC = () => {
                               <option key={c.code} value={c.code}>{c.label}</option>
                             ))}
                           </select>
-                          <i className="fa-solid fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-[#3A251E]/40 text-[10px] pointer-events-none" />
+                          <i className="fa-solid fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-[#2a2015]/40 text-[10px] pointer-events-none" />
                         </div>
                       </label>
 
@@ -378,7 +378,7 @@ const ListeAttentePage: React.FC = () => {
                             type="text"
                             disabled
                             placeholder={lang === 'FR' ? 'Région' : 'Region'}
-                            className="w-full px-5 py-3 rounded-full border border-[#3A251E]/10 bg-[#3A251E]/5 text-sm text-[#3A251E]/40 placeholder:text-[#3A251E]/30 cursor-not-allowed"
+                            className="w-full px-5 py-3 rounded-full border border-[#2a2015]/10 bg-[#2a2015]/5 text-sm text-[#2a2015]/40 placeholder:text-[#2a2015]/30 cursor-not-allowed"
                           />
                         ) : isFreeText ? (
                           <input
@@ -387,7 +387,7 @@ const ListeAttentePage: React.FC = () => {
                             value={regionFreeText}
                             onChange={e => setRegionFreeText(e.target.value)}
                             placeholder={country.regionPlaceholder || (lang === 'FR' ? 'Région' : 'Region')}
-                            className="w-full px-5 py-3 rounded-full border border-[#3A251E]/15 bg-white text-sm text-[#3A251E] placeholder:text-[#3A251E]/40 focus:outline-none focus:border-[#B8532F] focus:shadow-[0_0_0_4px_rgba(184,83,47,0.12)] transition-shadow"
+                            className="w-full px-5 py-3 rounded-full border border-[#2a2015]/15 bg-white text-sm text-[#2a2015] placeholder:text-[#2a2015]/40 focus:outline-none focus:border-[#bb9a5e] focus:shadow-[0_0_0_4px_rgba(187, 154, 94,0.12)] transition-shadow"
                           />
                         ) : (
                           <div className="relative">
@@ -395,7 +395,7 @@ const ListeAttentePage: React.FC = () => {
                               required
                               value={region}
                               onChange={e => setRegion(e.target.value)}
-                              className="w-full appearance-none px-5 py-3 pr-10 rounded-full border border-[#3A251E]/15 bg-white text-sm text-[#3A251E] focus:outline-none focus:border-[#B8532F] focus:shadow-[0_0_0_4px_rgba(184,83,47,0.12)] transition-shadow"
+                              className="w-full appearance-none px-5 py-3 pr-10 rounded-full border border-[#2a2015]/15 bg-white text-sm text-[#2a2015] focus:outline-none focus:border-[#bb9a5e] focus:shadow-[0_0_0_4px_rgba(187, 154, 94,0.12)] transition-shadow"
                             >
                               <option value="" disabled>
                                 {lang === 'FR' ? 'Région' : 'Region'}
@@ -404,7 +404,7 @@ const ListeAttentePage: React.FC = () => {
                                 <option key={r} value={r}>{r}</option>
                               ))}
                             </select>
-                            <i className="fa-solid fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-[#3A251E]/40 text-[10px] pointer-events-none" />
+                            <i className="fa-solid fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-[#2a2015]/40 text-[10px] pointer-events-none" />
                           </div>
                         )}
                       </label>
@@ -414,7 +414,7 @@ const ListeAttentePage: React.FC = () => {
                     <button
                       type="submit"
                       disabled={busy}
-                      className="group relative w-full overflow-hidden mt-2 px-7 py-3.5 rounded-full bg-[#3A251E] text-[#F4E7DD] text-[11px] md:text-[12px] uppercase tracking-[0.28em] font-bold transition-all duration-300 hover:bg-[#B8532F] hover:text-[#3A251E] hover:shadow-[0_12px_28px_rgba(184,83,47,0.4)] hover:-translate-y-0.5 disabled:opacity-60 disabled:translate-y-0 disabled:shadow-none"
+                      className="group relative w-full overflow-hidden mt-2 px-7 py-3.5 rounded-full bg-[#2a2015] text-[#f6f3ee] text-[11px] md:text-[12px] uppercase tracking-[0.28em] font-bold transition-all duration-300 hover:bg-[#bb9a5e] hover:text-[#2a2015] hover:shadow-[0_12px_28px_rgba(187, 154, 94,0.4)] hover:-translate-y-0.5 disabled:opacity-60 disabled:translate-y-0 disabled:shadow-none"
                     >
                       <span
                         aria-hidden
@@ -436,7 +436,7 @@ const ListeAttentePage: React.FC = () => {
                       <p className="text-center text-xs text-red-700 pt-1">{err}</p>
                     )}
 
-                    <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#3A251E]/45 text-center pt-2">
+                    <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#2a2015]/45 text-center pt-2">
                       {lang === 'FR'
                         ? "Désabonnement en un clic · jamais de partage"
                         : 'One-click unsubscribe · never shared'}

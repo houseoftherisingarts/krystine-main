@@ -99,26 +99,26 @@ const ConferenceTourModal: React.FC<Props> = ({ open, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-[#3A251E]/60 backdrop-blur-md overflow-y-auto" onClick={close}>
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-[#2a2015]/60 backdrop-blur-md overflow-y-auto" onClick={close}>
       <div
-        className="relative w-full max-w-lg bg-white dark:bg-[#3A251E] rounded-[30px] shadow-2xl border border-[#B8532F]/20 p-8 md:p-10 my-8"
+        className="relative w-full max-w-lg bg-white dark:bg-[#2a2015] rounded-[30px] shadow-2xl border border-[#bb9a5e]/20 p-8 md:p-10 my-8"
         onClick={e => e.stopPropagation()}
       >
         <button
           onClick={close}
           aria-label={lang === 'FR' ? 'Fermer' : 'Close'}
-          className="absolute top-5 right-5 w-9 h-9 rounded-full flex items-center justify-center text-[#3A251E]/40 dark:text-white/40 hover:text-[#3A251E] dark:hover:text-white"
+          className="absolute top-5 right-5 w-9 h-9 rounded-full flex items-center justify-center text-[#2a2015]/40 dark:text-white/40 hover:text-[#2a2015] dark:hover:text-white"
         >
           <i className="fa-solid fa-times text-lg" />
         </button>
 
-        <span className="text-[#B8532F] uppercase tracking-[0.3em] text-[10px] font-bold block mb-3">
+        <span className="text-[#7d6330] uppercase tracking-[0.3em] text-[10px] font-bold block mb-3">
           {lang === 'FR' ? 'Tournée de conférences' : 'Conference tour'}
         </span>
-        <h2 className="font-serif text-2xl md:text-3xl text-[#3A251E] dark:text-white mb-2">
+        <h2 className="font-serif text-2xl md:text-3xl text-[#2a2015] dark:text-white mb-2">
           {lang === 'FR' ? 'Demander une tournée de conférences' : 'Request a conference tour'}
         </h2>
-        <p className="text-sm text-[#3A251E]/60 dark:text-white/60 font-serif italic mb-6 leading-relaxed">
+        <p className="text-sm text-[#2a2015]/60 dark:text-white/60 font-serif italic mb-6 leading-relaxed">
           {lang === 'FR'
             ? "Krystine prépare une tournée à travers le Québec et ailleurs. Dites-nous où vous aimeriez la recevoir — et si vous pouvez contribuer à l'organiser."
             : 'Krystine is preparing a conference tour across Quebec and beyond. Tell us where you\'d like to receive her — and whether you can help organize.'}
@@ -126,17 +126,17 @@ const ConferenceTourModal: React.FC<Props> = ({ open, onClose }) => {
 
         {done ? (
           <div className="text-center py-4">
-            <div className="w-14 h-14 rounded-full bg-[#B8532F]/15 flex items-center justify-center mx-auto mb-4">
-              <i className="fa-solid fa-check text-[#B8532F] text-xl" />
+            <div className="w-14 h-14 rounded-full bg-[#bb9a5e]/15 flex items-center justify-center mx-auto mb-4">
+              <i className="fa-solid fa-check text-[#7d6330] text-xl" />
             </div>
-            <p className="font-serif italic text-[#3A251E] dark:text-white mb-6">
+            <p className="font-serif italic text-[#2a2015] dark:text-white mb-6">
               {lang === 'FR'
                 ? "Merci. Votre demande est transmise à l'équipe — elle guide le choix des prochaines villes."
                 : 'Thank you. Your request is with the team — it helps guide the next tour stops.'}
             </p>
             <button
               onClick={close}
-              className="inline-flex items-center gap-2 bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors"
+              className="inline-flex items-center gap-2 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
             >
               {lang === 'FR' ? 'Fermer' : 'Close'}
             </button>
@@ -197,7 +197,7 @@ const ConferenceTourModal: React.FC<Props> = ({ open, onClose }) => {
             </div>
 
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-[#3A251E]/60 dark:text-white/60 font-bold mb-2 mt-2">
+              <label className="block text-[10px] uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-2 mt-2">
                 {lang === 'FR' ? 'Votre rôle possible' : 'Your potential role'}
               </label>
               <select
@@ -234,13 +234,13 @@ const ConferenceTourModal: React.FC<Props> = ({ open, onClose }) => {
             <button
               type="submit"
               disabled={busy}
-              className="w-full bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors disabled:opacity-60 mt-2"
+              className="w-full bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors disabled:opacity-60 mt-2"
             >
               {busy
                 ? <i className="fa-solid fa-circle-notch fa-spin" />
                 : (lang === 'FR' ? 'Envoyer ma demande' : 'Send my request')}
             </button>
-            <p className="text-[10px] text-center text-[#3A251E]/50 dark:text-white/50 pt-1">
+            <p className="text-[10px] text-center text-[#2a2015]/50 dark:text-white/50 pt-1">
               {lang === 'FR'
                 ? "Votre demande oriente le choix des prochaines villes. L'équipe vous écrit si une étape se confirme près de chez vous."
                 : "Your request guides the choice of upcoming cities. The team will reach out if a stop lands near you."}
@@ -258,6 +258,6 @@ const Field: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 const FIELD_CLASS =
-  "w-full px-4 py-3 rounded-xl border border-[#3A251E]/15 dark:border-white/15 bg-white dark:bg-white/5 text-sm text-[#3A251E] dark:text-white placeholder:text-[#3A251E]/40 dark:placeholder:text-white/40 focus:outline-none focus:border-[#B8532F]";
+  "w-full px-4 py-3 rounded-xl border border-[#2a2015]/15 dark:border-white/15 bg-white dark:bg-white/5 text-sm text-[#2a2015] dark:text-white placeholder:text-[#2a2015]/40 dark:placeholder:text-white/40 focus:outline-none focus:border-[#bb9a5e]";
 
 export default ConferenceTourModal;

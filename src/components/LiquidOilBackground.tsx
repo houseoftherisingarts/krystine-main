@@ -13,11 +13,11 @@ function makeOilTexture(): string {
   cv.width = size; cv.height = size;
   const ctx = cv.getContext('2d')!;
   const g = ctx.createRadialGradient(size / 2, size / 2, size * 0.05, size / 2, size / 2, size * 0.75);
-  g.addColorStop(0.00, '#F4E7DD');    // light gold glint
-  g.addColorStop(0.18, '#B8532F');    // warm gold
-  g.addColorStop(0.42, '#6B402F');    // amber
+  g.addColorStop(0.00, '#f6f3ee');    // light gold glint
+  g.addColorStop(0.18, '#bb9a5e');    // warm gold
+  g.addColorStop(0.42, '#5a4a37');    // amber
   g.addColorStop(0.72, '#5C4117');    // burnt amber
-  g.addColorStop(1.00, '#3A251E');    // royal navy
+  g.addColorStop(1.00, '#2a2015');    // royal navy
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, size, size);
   // Add subtle warm sheen streaks (gives the oil specular highlights something to pick up)
@@ -91,7 +91,7 @@ const LiquidOilBackground: React.FC = () => {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full touch-none pointer-events-auto"
-      style={{ background: '#2E1A14' }}
+      style={{ background: '#16100a' }}
       aria-hidden
     />
   );

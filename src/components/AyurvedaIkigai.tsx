@@ -163,7 +163,7 @@ const AyurvedaIkigai: React.FC<Props> = ({ doshas, onDoshaClick, onQuizClick, la
           <circle
             cx={0} cy={10} r={50}
             fill="none"
-            stroke="rgba(184,83,47,0.55)"
+            stroke="rgba(187, 154, 94,0.55)"
             strokeWidth="1.2"
             className="ikigai-pulse"
             style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
@@ -172,7 +172,7 @@ const AyurvedaIkigai: React.FC<Props> = ({ doshas, onDoshaClick, onQuizClick, la
         <circle
           cx={0} cy={10} r={50}
           fill="rgba(255,255,255,0.96)"
-          stroke="rgba(184,83,47,0.35)"
+          stroke="rgba(187, 154, 94,0.35)"
           strokeWidth={1}
           filter={`url(#${glowId})`}
           style={{
@@ -181,12 +181,12 @@ const AyurvedaIkigai: React.FC<Props> = ({ doshas, onDoshaClick, onQuizClick, la
             transform: quizHover ? 'scale(1.08)' : 'scale(1)',
             transition: 'transform 350ms cubic-bezier(.22,.9,.31,1), filter 350ms ease-out',
             filter: quizHover
-              ? `url(#${glowId}) drop-shadow(0 8px 22px rgba(184,83,47,0.35))`
+              ? `url(#${glowId}) drop-shadow(0 8px 22px rgba(187, 154, 94,0.35))`
               : `url(#${glowId})`,
           }}
         />
-        <text x={0} y={4} textAnchor="middle" fill="#3A251E" fontSize="13" fontFamily="serif" fontWeight="bold" className="pointer-events-none uppercase tracking-widest">{lang === 'FR' ? 'Faire' : 'Take'}</text>
-        <text x={0} y={20} textAnchor="middle" fill="#3A251E" fontSize="13" fontFamily="serif" fontWeight="bold" className="pointer-events-none uppercase tracking-widest">{lang === 'FR' ? 'Le Quiz' : 'The Quiz'}</text>
+        <text x={0} y={4} textAnchor="middle" fill="#2a2015" fontSize="13" fontFamily="serif" fontWeight="bold" className="pointer-events-none uppercase tracking-widest">{lang === 'FR' ? 'Faire' : 'Take'}</text>
+        <text x={0} y={20} textAnchor="middle" fill="#2a2015" fontSize="13" fontFamily="serif" fontWeight="bold" className="pointer-events-none uppercase tracking-widest">{lang === 'FR' ? 'Le Quiz' : 'The Quiz'}</text>
       </motion.g>
 
       {/* Scoped keyframes — breathing + pulse. Using SVG attribute

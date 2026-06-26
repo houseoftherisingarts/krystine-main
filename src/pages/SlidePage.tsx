@@ -505,7 +505,7 @@ const SlidePage: React.FC = () => {
 
   return (
     <div
-      className="fixed inset-0 w-screen h-screen text-[#3A251E] overflow-hidden"
+      className="fixed inset-0 w-screen h-screen text-[#2a2015] overflow-hidden"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
@@ -603,7 +603,7 @@ const PageCard: React.FC<{ children: React.ReactNode; slideNumber: number; total
         // bottom corner. Removing the alpha makes the card sit fully
         // against the dark stage so projector contrast is maximum.
         background:
-          'linear-gradient(160deg, #F4E7DD 0%, #E5C9A8 55%, #C99C5C 100%)',
+          'linear-gradient(160deg, #f6f3ee 0%, #E5C9A8 55%, #C99C5C 100%)',
         border: '2px solid rgba(107,64,47,0.45)',
         boxShadow:
           '0 36px 80px rgba(20,9,5,0.55), 0 12px 22px rgba(20,9,5,0.30), inset 0 1px 0 rgba(255,255,255,0.60)',
@@ -699,7 +699,7 @@ const TitleSlide: React.FC<{ s: SlideTitleLayout }> = ({ s }) => {
           transition={{ duration: 0.85, delay: reduce ? 0 : 0.18, ease: [0.2, 0.8, 0.2, 1] }}
         >
           <p
-            className="font-bold uppercase text-[#3A251E] leading-tight whitespace-nowrap"
+            className="font-bold uppercase text-[#2a2015] leading-tight whitespace-nowrap"
             style={{
               fontSize: 'clamp(1.2rem, 2.15vw, 2rem)',
               letterSpacing: '0.14em',
@@ -708,7 +708,7 @@ const TitleSlide: React.FC<{ s: SlideTitleLayout }> = ({ s }) => {
             {s.author}
           </p>
           <p
-            className="font-serif italic text-[#6B402F] mt-1"
+            className="font-serif italic text-[#5a4a37] mt-1"
             style={{ fontSize: 'clamp(1.15rem, 1.5vw, 1.45rem)' }}
           >
             {s.role}
@@ -725,7 +725,7 @@ const TitleSlide: React.FC<{ s: SlideTitleLayout }> = ({ s }) => {
           style={{
             width: 'min(320px, 55%)',
             background:
-              'linear-gradient(to right, rgba(184,83,47,0.9) 0%, rgba(176,122,60,0.7) 60%, rgba(184,83,47,0) 100%)',
+              'linear-gradient(to right, rgba(187, 154, 94,0.9) 0%, rgba(176,122,60,0.7) 60%, rgba(187, 154, 94,0) 100%)',
           }}
         />
 
@@ -769,13 +769,13 @@ const TitleSlide: React.FC<{ s: SlideTitleLayout }> = ({ s }) => {
           className="mt-6 md:mt-7 max-w-xl rounded-[18px] px-6 md:px-7 py-5 md:py-6"
           style={{
             background: 'rgba(244,231,221,0.85)',
-            border: '1px solid rgba(184,83,47,0.28)',
+            border: '1px solid rgba(187, 154, 94,0.28)',
             boxShadow: '0 10px 24px rgba(107,74,47,0.10), inset 0 1px 0 rgba(255,255,255,0.55)',
           }}
         >
-          <i className="fa-solid fa-quote-left text-[#B8532F]/40 text-2xl mb-2 block" />
+          <i className="fa-solid fa-quote-left text-[#7d6330]/40 text-2xl mb-2 block" />
           <p
-            className="font-serif italic text-[#3A251E] leading-snug"
+            className="font-serif italic text-[#2a2015] leading-snug"
             style={{ fontSize: 'clamp(1.3rem, 1.75vw, 1.6rem)' }}
           >
             {s.quote}
@@ -787,7 +787,7 @@ const TitleSlide: React.FC<{ s: SlideTitleLayout }> = ({ s }) => {
             initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: reduce ? 0 : 1.95, ease: [0.2, 0.8, 0.2, 1] }}
-            className="mt-4 md:mt-5 max-w-2xl text-[#6B402F]/80 font-bold uppercase"
+            className="mt-4 md:mt-5 max-w-2xl text-[#5a4a37]/80 font-bold uppercase"
             style={{
               fontSize: 'clamp(0.7rem, 0.78vw, 0.82rem)',
               letterSpacing: '0.18em',
@@ -829,7 +829,7 @@ const CalloutSlide: React.FC<{ s: SlideCalloutLayout }> = ({ s }) => {
           className="relative mx-auto rounded-[22px] px-7 md:px-10 py-6 md:py-8 max-w-3xl w-full"
           style={{
             background: 'rgba(244,231,221,0.78)',
-            border: '1px solid rgba(184,83,47,0.28)',
+            border: '1px solid rgba(187, 154, 94,0.28)',
             boxShadow: '0 14px 40px rgba(107,74,47,0.14), inset 0 1px 0 rgba(255,255,255,0.6)',
           }}
         >
@@ -893,7 +893,7 @@ const TwoPartSlide: React.FC<{ s: SlideTwoPartLayout }> = ({ s }) => {
                     ? 'rgba(244,231,221,0.78)'
                     : 'linear-gradient(160deg, rgba(244,231,221,0.92) 0%, rgba(215,168,88,0.18) 100%)',
                   border: part.tone === 'reject'
-                    ? '1px solid rgba(184,83,47,0.30)'
+                    ? '1px solid rgba(187, 154, 94,0.30)'
                     : '1px solid rgba(215,168,88,0.55)',
                   boxShadow: '0 14px 32px rgba(58,37,30,0.16), inset 0 1px 0 rgba(255,255,255,0.55)',
                 }}
@@ -946,18 +946,18 @@ const ClaimSlide: React.FC<{ s: SlideClaimLayout }> = ({ s }) => {
             className="relative rounded-[22px] px-7 md:px-9 py-9 md:py-11 flex flex-col justify-center"
             style={{
               background: 'rgba(244,231,221,0.78)',
-              border: '1px solid rgba(184,83,47,0.28)',
+              border: '1px solid rgba(187, 154, 94,0.28)',
               boxShadow: '0 14px 32px rgba(58,37,30,0.14), inset 0 1px 0 rgba(255,255,255,0.55)',
             }}
           >
-            <i className="fa-solid fa-quote-left text-[#B8532F]/45 text-3xl md:text-4xl mb-4" />
+            <i className="fa-solid fa-quote-left text-[#7d6330]/45 text-3xl md:text-4xl mb-4" />
             <p
               className="font-serif italic text-[#0A0604] leading-snug"
               style={{ fontSize: 'clamp(1.3rem, 2.4vw, 2rem)' }}
             >
               {s.quote}
             </p>
-            <i className="fa-solid fa-quote-right text-[#B8532F]/35 text-2xl mt-4 self-end" />
+            <i className="fa-solid fa-quote-right text-[#7d6330]/35 text-2xl mt-4 self-end" />
           </motion.div>
 
           {/* Evidence column */}
@@ -968,7 +968,7 @@ const ClaimSlide: React.FC<{ s: SlideClaimLayout }> = ({ s }) => {
             className="relative rounded-[22px] px-7 md:px-9 py-9 md:py-11"
             style={{
               background: 'linear-gradient(160deg, rgba(244,231,221,0.92) 0%, rgba(232,208,190,0.85) 100%)',
-              border: '1px solid rgba(184,83,47,0.30)',
+              border: '1px solid rgba(187, 154, 94,0.30)',
               boxShadow: '0 14px 32px rgba(58,37,30,0.14), inset 0 1px 0 rgba(255,255,255,0.55)',
             }}
           >
@@ -976,7 +976,7 @@ const ClaimSlide: React.FC<{ s: SlideClaimLayout }> = ({ s }) => {
               className="font-bold uppercase tracking-[0.32em] mb-6"
               style={{
                 fontSize: 'clamp(0.7rem, 0.85vw, 0.85rem)',
-                color: '#6B402F',
+                color: '#5a4a37',
               }}
             >
               · La preuve dit ·
@@ -1000,8 +1000,8 @@ const ClaimSlide: React.FC<{ s: SlideClaimLayout }> = ({ s }) => {
                   style={{
                     fontSize: 'clamp(0.95rem, 1.3vw, 1.1rem)',
                     background: 'rgba(244,231,221,0.85)',
-                    border: '1px solid rgba(184,83,47,0.40)',
-                    color: '#3A251E',
+                    border: '1px solid rgba(187, 154, 94,0.40)',
+                    color: '#2a2015',
                   }}
                 >
                   <span className="relative">
@@ -1017,7 +1017,7 @@ const ClaimSlide: React.FC<{ s: SlideClaimLayout }> = ({ s }) => {
                       }}
                       className="absolute left-0 right-0 top-1/2 h-[2px] origin-left"
                       style={{
-                        background: 'linear-gradient(to right, rgba(184,83,47,0.85), rgba(176,122,60,0.7))',
+                        background: 'linear-gradient(to right, rgba(187, 154, 94,0.85), rgba(176,122,60,0.7))',
                         transform: 'translateY(-1px)',
                       }}
                     />
@@ -1047,7 +1047,7 @@ const ClaimSlide: React.FC<{ s: SlideClaimLayout }> = ({ s }) => {
                 {s.bigNumber}
               </span>
               <span
-                className="font-serif italic text-[#3A251E]/80"
+                className="font-serif italic text-[#2a2015]/80"
                 style={{ fontSize: 'clamp(1rem, 1.4vw, 1.3rem)' }}
               >
                 {s.numberSuffix}
@@ -1058,7 +1058,7 @@ const ClaimSlide: React.FC<{ s: SlideClaimLayout }> = ({ s }) => {
               initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: reduce ? 0 : 2.6, ease: [0.2, 0.8, 0.2, 1] }}
-              className="font-serif italic text-[#3A251E]"
+              className="font-serif italic text-[#2a2015]"
               style={{ fontSize: 'clamp(1rem, 1.4vw, 1.25rem)', lineHeight: 1.4 }}
             >
               {s.summary}
@@ -1120,8 +1120,8 @@ const CtaSlide: React.FC<{ s: SlideCtaLayout }> = ({ s }) => {
           <div
             className="relative rounded-[28px] p-4 md:p-5 inline-block"
             style={{
-              background: '#F4E7DD',
-              border: '2px solid rgba(184,83,47,0.5)',
+              background: '#f6f3ee',
+              border: '2px solid rgba(187, 154, 94,0.5)',
               boxShadow:
                 '0 24px 60px rgba(58,37,30,0.30), 0 6px 14px rgba(58,37,30,0.14), inset 0 1px 0 rgba(255,255,255,0.7)',
             }}
@@ -1137,8 +1137,8 @@ const CtaSlide: React.FC<{ s: SlideCtaLayout }> = ({ s }) => {
             <QRCodeSVG
               value={s.qrTarget}
               level="H"
-              bgColor="#F4E7DD"
-              fgColor="#3A251E"
+              bgColor="#f6f3ee"
+              fgColor="#2a2015"
               size={400}
               marginSize={2}
               style={{
@@ -1151,7 +1151,7 @@ const CtaSlide: React.FC<{ s: SlideCtaLayout }> = ({ s }) => {
 
           {/* URL caption */}
           <p
-            className="font-serif italic text-[#3A251E] mt-2 md:mt-3"
+            className="font-serif italic text-[#2a2015] mt-2 md:mt-3"
             style={{ fontSize: 'clamp(0.9rem, 1.1vw, 1.1rem)', letterSpacing: '0.02em' }}
           >
             {s.url}
@@ -1161,7 +1161,7 @@ const CtaSlide: React.FC<{ s: SlideCtaLayout }> = ({ s }) => {
             style={{
               fontSize: 'clamp(0.65rem, 0.8vw, 0.78rem)',
               letterSpacing: '0.32em',
-              color: '#6B402F',
+              color: '#5a4a37',
             }}
           >
             · Pointez votre téléphone ·
@@ -1178,7 +1178,7 @@ const CtaSlide: React.FC<{ s: SlideCtaLayout }> = ({ s }) => {
         initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: reduce ? 0 : 1.6, ease: [0.2, 0.8, 0.2, 1] }}
-        className="font-serif italic text-[#6B402F] flex-shrink-0 mt-2 md:mt-3"
+        className="font-serif italic text-[#5a4a37] flex-shrink-0 mt-2 md:mt-3"
         style={{ fontSize: 'clamp(1rem, 1.35vw, 1.2rem)' }}
       >
         {s.closing}
@@ -1203,7 +1203,7 @@ const CtaCard: React.FC<{ card: SlideCtaLayout['cards'][number]; delay: number }
       className="group relative overflow-hidden rounded-[20px] p-4 md:p-5 text-left max-h-full"
       style={{
         background: 'rgba(244,231,221,0.92)',
-        border: `1px solid ${isGold ? 'rgba(215,168,88,0.6)' : 'rgba(184,83,47,0.4)'}`,
+        border: `1px solid ${isGold ? 'rgba(215,168,88,0.6)' : 'rgba(187, 154, 94,0.4)'}`,
         boxShadow: '0 12px 26px rgba(58,37,30,0.16), inset 0 1px 0 rgba(255,255,255,0.55)',
       }}
     >
@@ -1213,7 +1213,7 @@ const CtaCard: React.FC<{ card: SlideCtaLayout['cards'][number]; delay: number }
         style={{
           background: isGold
             ? 'linear-gradient(115deg, transparent 40%, rgba(215,168,88,0.22) 50%, transparent 60%)'
-            : 'linear-gradient(115deg, transparent 40%, rgba(184,83,47,0.18) 50%, transparent 60%)',
+            : 'linear-gradient(115deg, transparent 40%, rgba(187, 154, 94,0.18) 50%, transparent 60%)',
         }}
       />
 
@@ -1221,11 +1221,11 @@ const CtaCard: React.FC<{ card: SlideCtaLayout['cards'][number]; delay: number }
         <span
           className="flex-shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full"
           style={{
-            background: isGold ? 'rgba(215,168,88,0.14)' : 'rgba(184,83,47,0.12)',
-            border: `1px solid ${isGold ? 'rgba(215,168,88,0.45)' : 'rgba(184,83,47,0.35)'}`,
+            background: isGold ? 'rgba(215,168,88,0.14)' : 'rgba(187, 154, 94,0.12)',
+            border: `1px solid ${isGold ? 'rgba(215,168,88,0.45)' : 'rgba(187, 154, 94,0.35)'}`,
           }}
         >
-          <i className={`fa-solid ${c.icon}`} style={{ color: isGold ? '#8C5A28' : '#B8532F', fontSize: '0.85rem' }} />
+          <i className={`fa-solid ${c.icon}`} style={{ color: isGold ? '#8C5A28' : '#bb9a5e', fontSize: '0.85rem' }} />
         </span>
         <div className="min-w-0">
           <p
@@ -1235,7 +1235,7 @@ const CtaCard: React.FC<{ card: SlideCtaLayout['cards'][number]; delay: number }
               letterSpacing: '0.3em',
               backgroundImage: isGold
                 ? 'linear-gradient(95deg, #B07A3C 0%, #D7A858 35%, #8C5A28 75%, #B07A3C 100%)'
-                : 'linear-gradient(95deg, #6B402F 0%, #B8532F 50%, #6B402F 100%)',
+                : 'linear-gradient(95deg, #5a4a37 0%, #bb9a5e 50%, #5a4a37 100%)',
               WebkitBackgroundClip: 'text',
               backgroundClip: 'text',
               color: 'transparent',
@@ -1248,7 +1248,7 @@ const CtaCard: React.FC<{ card: SlideCtaLayout['cards'][number]; delay: number }
           </h3>
         </div>
       </div>
-      <p className="text-[#3A251E]/85 leading-snug" style={{ fontSize: 'clamp(0.8rem, 0.98vw, 0.92rem)', lineHeight: 1.45 }}>
+      <p className="text-[#2a2015]/85 leading-snug" style={{ fontSize: 'clamp(0.8rem, 0.98vw, 0.92rem)', lineHeight: 1.45 }}>
         {c.body}
       </p>
     </motion.div>
@@ -1273,7 +1273,7 @@ const HeroPhotoSlide: React.FC<{ s: SlideHeroPhotoLayout }> = ({ s }) => {
           maxWidth: 'min(420px, 100%)',
           border: '1px solid rgba(107,64,47,0.45)',
           boxShadow: '0 22px 50px rgba(20,9,5,0.32), inset 0 1px 0 rgba(255,255,255,0.55)',
-          background: '#3A251E',
+          background: '#2a2015',
         }}
       >
         <img
@@ -1334,7 +1334,7 @@ const HeroPhotoSlide: React.FC<{ s: SlideHeroPhotoLayout }> = ({ s }) => {
           style={{
             width: 'min(280px, 60%)',
             background:
-              'linear-gradient(to right, rgba(184,83,47,0.9) 0%, rgba(176,122,60,0.7) 60%, rgba(184,83,47,0) 100%)',
+              'linear-gradient(to right, rgba(187, 154, 94,0.9) 0%, rgba(176,122,60,0.7) 60%, rgba(187, 154, 94,0) 100%)',
           }}
         />
 
@@ -1346,7 +1346,7 @@ const HeroPhotoSlide: React.FC<{ s: SlideHeroPhotoLayout }> = ({ s }) => {
           style={{ fontSize: 'clamp(1.15rem, 1.55vw, 1.45rem)' }}
         >
           {s.description.map((line, i) => (
-            <p key={i} className={i === s.description.length - 1 ? 'italic text-[#3A251E]/85' : ''}>
+            <p key={i} className={i === s.description.length - 1 ? 'italic text-[#2a2015]/85' : ''}>
               {line}
             </p>
           ))}
@@ -1444,7 +1444,7 @@ const VideoSlide: React.FC<{ s: SlideVideoLayout; onEnded?: () => void }> = ({ s
           initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: reduce ? 0 : 1.0, ease: [0.2, 0.8, 0.2, 1] }}
-          className="mt-3 md:mt-4 font-serif italic text-[#3A251E]/85 text-center flex-shrink-0"
+          className="mt-3 md:mt-4 font-serif italic text-[#2a2015]/85 text-center flex-shrink-0"
           style={{ fontSize: 'clamp(1rem, 1.3vw, 1.2rem)', maxWidth: 'min(720px, 90%)', alignSelf: 'center' }}
         >
           {s.caption}
@@ -1491,7 +1491,7 @@ const ProgressionSlide: React.FC<{ s: SlideProgressionLayout }> = ({ s }) => {
                   background: isGold
                     ? 'linear-gradient(160deg, rgba(244,231,221,0.94) 0%, rgba(215,168,88,0.26) 100%)'
                     : 'rgba(244,231,221,0.85)',
-                  border: `1px solid ${isGold ? 'rgba(215,168,88,0.6)' : isReject ? 'rgba(184,83,47,0.32)' : 'rgba(184,83,47,0.25)'}`,
+                  border: `1px solid ${isGold ? 'rgba(215,168,88,0.6)' : isReject ? 'rgba(187, 154, 94,0.32)' : 'rgba(187, 154, 94,0.25)'}`,
                   boxShadow: '0 12px 28px rgba(58,37,30,0.14), inset 0 1px 0 rgba(255,255,255,0.55)',
                 }}
               >
@@ -1500,7 +1500,7 @@ const ProgressionSlide: React.FC<{ s: SlideProgressionLayout }> = ({ s }) => {
                   style={{ fontSize: 'clamp(1.3rem, 2.6vw, 2.1rem)' }}
                 >
                   {stanza.lines.map((line, li) => (
-                    <p key={li} className={isGold ? 'font-medium' : isReject ? 'italic text-[#3A251E]/85' : ''}>
+                    <p key={li} className={isGold ? 'font-medium' : isReject ? 'italic text-[#2a2015]/85' : ''}>
                       {line}
                     </p>
                   ))}
@@ -1548,18 +1548,18 @@ const AlternatingSlide: React.FC<{ s: SlideAlternatingLayout }> = ({ s }) => {
             className="relative mx-auto rounded-[20px] px-7 md:px-10 py-6 md:py-8 max-w-3xl mt-3"
             style={{
               background: 'rgba(244,231,221,0.82)',
-              border: '1px solid rgba(184,83,47,0.30)',
+              border: '1px solid rgba(187, 154, 94,0.30)',
               boxShadow: '0 14px 32px rgba(58,37,30,0.14), inset 0 1px 0 rgba(255,255,255,0.55)',
             }}
           >
-            <i className="fa-solid fa-quote-left text-[#B8532F]/50 text-2xl md:text-3xl mb-2 block" />
+            <i className="fa-solid fa-quote-left text-[#7d6330]/50 text-2xl md:text-3xl mb-2 block" />
             <p
               className="font-serif italic text-[#0A0604] leading-[1.28]"
               style={{ fontSize: 'clamp(1.5rem, 3.2vw, 2.55rem)' }}
             >
               {s.quote}
             </p>
-            <i className="fa-solid fa-quote-right text-[#B8532F]/35 text-xl md:text-2xl mt-2 block text-right" />
+            <i className="fa-solid fa-quote-right text-[#7d6330]/35 text-xl md:text-2xl mt-2 block text-right" />
           </motion.blockquote>
         )}
 
@@ -1593,7 +1593,7 @@ const AlternatingSlide: React.FC<{ s: SlideAlternatingLayout }> = ({ s }) => {
             <div
               className="inline-block px-6 md:px-9 py-3 md:py-4 rounded-[14px]"
               style={{
-                background: 'linear-gradient(135deg, #3A251E 0%, #6B402F 100%)',
+                background: 'linear-gradient(135deg, #2a2015 0%, #5a4a37 100%)',
                 border: '1px solid rgba(215,168,88,0.55)',
                 boxShadow: '0 12px 28px rgba(20,9,5,0.32), inset 0 1px 0 rgba(255,255,255,0.08)',
               }}
@@ -1622,7 +1622,7 @@ const AlternatingSlide: React.FC<{ s: SlideAlternatingLayout }> = ({ s }) => {
             initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: reduce ? 0 : 1.2, ease: [0.2, 0.8, 0.2, 1] }}
-            className={`mt-4 md:mt-6 max-w-3xl mx-auto space-y-0.5 ${isBelief ? 'text-[#3A251E]/65 italic' : 'text-[#3A251E]/85'}`}
+            className={`mt-4 md:mt-6 max-w-3xl mx-auto space-y-0.5 ${isBelief ? 'text-[#2a2015]/65 italic' : 'text-[#2a2015]/85'}`}
             style={{ fontSize: 'clamp(1.2rem, 1.7vw, 1.55rem)', lineHeight: 1.5 }}
           >
             {s.followUp.map((line, i) => (
@@ -1679,13 +1679,13 @@ const DemoSlide: React.FC<{ s: SlideDemoLayout }> = ({ s }) => {
               {s.bigWord}
             </h2>
             <p
-              className="font-serif italic text-[#3A251E] mb-1.5"
+              className="font-serif italic text-[#2a2015] mb-1.5"
               style={{ fontSize: 'clamp(1.2rem, 1.65vw, 1.45rem)' }}
             >
               {s.bodyHook}
             </p>
             <p
-              className="text-[#6B402F] uppercase font-bold tracking-[0.2em]"
+              className="text-[#5a4a37] uppercase font-bold tracking-[0.2em]"
               style={{ fontSize: 'clamp(0.78rem, 0.95vw, 0.95rem)' }}
             >
               {s.symptoms}
@@ -1693,10 +1693,10 @@ const DemoSlide: React.FC<{ s: SlideDemoLayout }> = ({ s }) => {
             <div
               aria-hidden
               className="my-3 h-px w-full"
-              style={{ background: 'linear-gradient(to right, rgba(184,83,47,0.55), rgba(184,83,47,0))' }}
+              style={{ background: 'linear-gradient(to right, rgba(187, 154, 94,0.55), rgba(187, 154, 94,0))' }}
             />
             <p
-              className="font-serif italic text-[#3A251E]/80"
+              className="font-serif italic text-[#2a2015]/80"
               style={{ fontSize: 'clamp(1.1rem, 1.4vw, 1.3rem)', lineHeight: 1.45 }}
             >
               {s.context}
@@ -1711,7 +1711,7 @@ const DemoSlide: React.FC<{ s: SlideDemoLayout }> = ({ s }) => {
             className="relative rounded-[20px] px-6 md:px-8 py-5 md:py-7"
             style={{
               background: 'rgba(244,231,221,0.85)',
-              border: '1px solid rgba(184,83,47,0.30)',
+              border: '1px solid rgba(187, 154, 94,0.30)',
               boxShadow: '0 14px 32px rgba(58,37,30,0.14), inset 0 1px 0 rgba(255,255,255,0.55)',
             }}
           >
@@ -1719,7 +1719,7 @@ const DemoSlide: React.FC<{ s: SlideDemoLayout }> = ({ s }) => {
               className="font-bold uppercase tracking-[0.32em] mb-3"
               style={{
                 fontSize: 'clamp(0.95rem, 1.1vw, 1.1rem)',
-                color: '#6B402F',
+                color: '#5a4a37',
               }}
             >
               · {s.gesturesIntro.toUpperCase()} ·
@@ -1735,14 +1735,14 @@ const DemoSlide: React.FC<{ s: SlideDemoLayout }> = ({ s }) => {
                   className="flex items-baseline gap-3"
                 >
                   <span
-                    className="font-bold uppercase tracking-[0.2em] text-[#B8532F] whitespace-nowrap flex-shrink-0"
+                    className="font-bold uppercase tracking-[0.2em] text-[#7d6330] whitespace-nowrap flex-shrink-0"
                     style={{ fontSize: 'clamp(0.95rem, 1.1vw, 1.1rem)' }}
                   >
                     {g.time}
                   </span>
-                  <span className="text-[#B8532F]/45">·</span>
+                  <span className="text-[#7d6330]/45">·</span>
                   <span
-                    className="font-serif italic text-[#3A251E]"
+                    className="font-serif italic text-[#2a2015]"
                     style={{ fontSize: 'clamp(1.2rem, 1.6vw, 1.45rem)', lineHeight: 1.35 }}
                   >
                     {g.action}
@@ -1754,7 +1754,7 @@ const DemoSlide: React.FC<{ s: SlideDemoLayout }> = ({ s }) => {
             <div
               aria-hidden
               className="h-px w-full mb-3"
-              style={{ background: 'linear-gradient(to right, rgba(184,83,47,0), rgba(184,83,47,0.45), rgba(184,83,47,0))' }}
+              style={{ background: 'linear-gradient(to right, rgba(187, 154, 94,0), rgba(187, 154, 94,0.45), rgba(187, 154, 94,0))' }}
             />
 
             <motion.div
@@ -1769,7 +1769,7 @@ const DemoSlide: React.FC<{ s: SlideDemoLayout }> = ({ s }) => {
                 {s.principleHeader}
               </p>
               <p
-                className="font-serif italic text-[#3A251E]/85"
+                className="font-serif italic text-[#2a2015]/85"
                 style={{ fontSize: 'clamp(1.1rem, 1.45vw, 1.32rem)', lineHeight: 1.45 }}
               >
                 {s.principleBody}
@@ -1809,7 +1809,7 @@ const PromoSlide: React.FC<{ s: SlidePromoLayout }> = ({ s }) => {
               className="group relative overflow-hidden rounded-[20px] p-5 md:p-6 text-left flex flex-col"
               style={{
                 background: 'rgba(244,231,221,0.92)',
-                border: '1px solid rgba(184,83,47,0.36)',
+                border: '1px solid rgba(187, 154, 94,0.36)',
                 boxShadow: '0 14px 30px rgba(58,37,30,0.18), inset 0 1px 0 rgba(255,255,255,0.55)',
               }}
             >
@@ -1817,18 +1817,18 @@ const PromoSlide: React.FC<{ s: SlidePromoLayout }> = ({ s }) => {
                 aria-hidden
                 className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[1100ms] ease-out pointer-events-none"
                 style={{
-                  background: 'linear-gradient(115deg, transparent 40%, rgba(184,83,47,0.18) 50%, transparent 60%)',
+                  background: 'linear-gradient(115deg, transparent 40%, rgba(187, 154, 94,0.18) 50%, transparent 60%)',
                 }}
               />
 
               <span
                 className="inline-flex items-center justify-center w-10 h-10 rounded-full mb-3"
                 style={{
-                  background: 'rgba(184,83,47,0.12)',
-                  border: '1px solid rgba(184,83,47,0.35)',
+                  background: 'rgba(187, 154, 94,0.12)',
+                  border: '1px solid rgba(187, 154, 94,0.35)',
                 }}
               >
-                <i className={`fa-solid ${b.icon} text-[#B8532F]`} style={{ fontSize: '0.95rem' }} />
+                <i className={`fa-solid ${b.icon} text-[#7d6330]`} style={{ fontSize: '0.95rem' }} />
               </span>
 
               <p
@@ -1836,7 +1836,7 @@ const PromoSlide: React.FC<{ s: SlidePromoLayout }> = ({ s }) => {
                 style={{
                   fontSize: 'clamp(0.9rem, 1.05vw, 1.05rem)',
                   letterSpacing: '0.3em',
-                  backgroundImage: 'linear-gradient(95deg, #6B402F 0%, #B8532F 50%, #6B402F 100%)',
+                  backgroundImage: 'linear-gradient(95deg, #5a4a37 0%, #bb9a5e 50%, #5a4a37 100%)',
                   WebkitBackgroundClip: 'text',
                   backgroundClip: 'text',
                   color: 'transparent',
@@ -1851,17 +1851,17 @@ const PromoSlide: React.FC<{ s: SlidePromoLayout }> = ({ s }) => {
                 {b.title}
               </h3>
               <p
-                className="text-[#3A251E]/85 leading-relaxed flex-1"
+                className="text-[#2a2015]/85 leading-relaxed flex-1"
                 style={{ fontSize: 'clamp(1.05rem, 1.35vw, 1.25rem)' }}
               >
                 {b.body}
               </p>
               {b.meta && (
                 <p
-                  className="mt-2 pt-2 border-t font-serif italic text-[#6B402F]/85"
+                  className="mt-2 pt-2 border-t font-serif italic text-[#5a4a37]/85"
                   style={{
                     fontSize: 'clamp(0.78rem, 1vw, 0.95rem)',
-                    borderColor: 'rgba(184,83,47,0.20)',
+                    borderColor: 'rgba(187, 154, 94,0.20)',
                   }}
                 >
                   {b.meta}
@@ -1883,7 +1883,7 @@ const PromoSlide: React.FC<{ s: SlidePromoLayout }> = ({ s }) => {
           transition={{ duration: 0.7, delay: reduce ? 0 : 1.4, ease: [0.2, 0.8, 0.2, 1] }}
           className="inline-block px-7 md:px-10 py-3.5 md:py-4 rounded-[16px]"
           style={{
-            background: 'linear-gradient(135deg, #3A251E 0%, #6B402F 100%)',
+            background: 'linear-gradient(135deg, #2a2015 0%, #5a4a37 100%)',
             border: '1px solid rgba(215,168,88,0.55)',
             boxShadow: '0 14px 32px rgba(20,9,5,0.35), inset 0 1px 0 rgba(255,255,255,0.08)',
           }}
@@ -1951,7 +1951,7 @@ const DotsDivider: React.FC = () => {
           key={i}
           variants={dot}
           className="block w-1.5 h-1.5 rounded-full"
-          style={{ background: '#B8532F', opacity: 0.7 }}
+          style={{ background: '#bb9a5e', opacity: 0.7 }}
         />
       ))}
     </motion.div>
@@ -1963,11 +1963,11 @@ const DotsDivider: React.FC = () => {
 const RuleOrnament: React.FC<{ flip?: boolean }> = ({ flip }) => (
   <div className="flex items-center gap-3 justify-center" aria-hidden style={{ transform: flip ? 'rotate(180deg)' : undefined }}>
     <span className="block h-px flex-1" style={{
-      background: 'linear-gradient(to right, transparent, rgba(184,83,47,0.55), rgba(184,83,47,0))',
+      background: 'linear-gradient(to right, transparent, rgba(187, 154, 94,0.55), rgba(187, 154, 94,0))',
     }} />
-    <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(184,83,47,0.6)' }} />
+    <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(187, 154, 94,0.6)' }} />
     <span className="block h-px flex-1" style={{
-      background: 'linear-gradient(to left, transparent, rgba(184,83,47,0.55), rgba(184,83,47,0))',
+      background: 'linear-gradient(to left, transparent, rgba(187, 154, 94,0.55), rgba(187, 154, 94,0))',
     }} />
   </div>
 );
@@ -1985,7 +1985,7 @@ const SectionNumber: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       style={{
         fontSize: 'clamp(5rem, 14vw, 11rem)',
         lineHeight: 0.85,
-        color: '#1E140F',
+        color: '#16100a',
         letterSpacing: '-0.04em',
       }}
     >
@@ -2002,20 +2002,20 @@ const PartTag: React.FC<{ tone: 'reject' | 'accept' }> = ({ tone }) => {
     <span
       className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full self-start"
       style={{
-        background: isReject ? 'rgba(184,83,47,0.10)' : 'rgba(215,168,88,0.16)',
-        border: `1px solid ${isReject ? 'rgba(184,83,47,0.35)' : 'rgba(215,168,88,0.55)'}`,
+        background: isReject ? 'rgba(187, 154, 94,0.10)' : 'rgba(215,168,88,0.16)',
+        border: `1px solid ${isReject ? 'rgba(187, 154, 94,0.35)' : 'rgba(215,168,88,0.55)'}`,
       }}
     >
       <i
         className={`fa-solid ${isReject ? 'fa-xmark' : 'fa-check'}`}
-        style={{ color: isReject ? '#B8532F' : '#8C5A28', fontSize: '0.85rem' }}
+        style={{ color: isReject ? '#bb9a5e' : '#8C5A28', fontSize: '0.85rem' }}
       />
       <span
         className="font-bold uppercase"
         style={{
           fontSize: 'clamp(0.7rem, 0.85vw, 0.8rem)',
           letterSpacing: '0.28em',
-          color: isReject ? '#B8532F' : '#8C5A28',
+          color: isReject ? '#bb9a5e' : '#8C5A28',
         }}
       >
         {isReject ? 'L\'illusion' : 'Le réel'}
@@ -2037,14 +2037,14 @@ const ConnectorArrow: React.FC = () => {
           animate={{ scaleX: 1 }}
           transition={{ duration: 0.85, delay: reduce ? 0 : 0.85, ease: [0.2, 0.8, 0.2, 1] }}
           className="block h-[2px] w-12 lg:w-20 origin-left"
-          style={{ background: 'linear-gradient(to right, rgba(184,83,47,0.85), rgba(176,122,60,0.7))' }}
+          style={{ background: 'linear-gradient(to right, rgba(187, 154, 94,0.85), rgba(176,122,60,0.7))' }}
         />
         <motion.i
           initial={reduce ? { opacity: 1, x: 0 } : { opacity: 0, x: -6 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, delay: reduce ? 0 : 1.55, ease: [0.2, 0.8, 0.2, 1] }}
           className="fa-solid fa-arrow-right"
-          style={{ color: '#B8532F', fontSize: '1.1rem' }}
+          style={{ color: '#7d6330', fontSize: '1.1rem' }}
         />
       </div>
       {/* Mobile vertical connector */}
@@ -2054,9 +2054,9 @@ const ConnectorArrow: React.FC = () => {
           animate={{ scaleY: 1 }}
           transition={{ duration: 0.85, delay: reduce ? 0 : 0.85, ease: [0.2, 0.8, 0.2, 1] }}
           className="block w-[2px] h-12 origin-top"
-          style={{ background: 'linear-gradient(to bottom, rgba(184,83,47,0.85), rgba(176,122,60,0.7))' }}
+          style={{ background: 'linear-gradient(to bottom, rgba(187, 154, 94,0.85), rgba(176,122,60,0.7))' }}
         />
-        <i className="fa-solid fa-arrow-down" style={{ color: '#B8532F', fontSize: '1.1rem' }} />
+        <i className="fa-solid fa-arrow-down" style={{ color: '#7d6330', fontSize: '1.1rem' }} />
       </div>
     </div>
   );
@@ -2166,7 +2166,7 @@ const CoverWheel: React.FC = () => {
           rotate: rotation,
           transformOrigin: '50% 50%',
           willChange: 'transform',
-          filter: 'drop-shadow(0 0 80px rgba(184,83,47,0.30))',
+          filter: 'drop-shadow(0 0 80px rgba(187, 154, 94,0.30))',
         }}
       />
       <style>{`
@@ -2199,8 +2199,8 @@ const CornerQR: React.FC = () => {
       <div
         className="rounded-[16px] p-2.5 md:p-3"
         style={{
-          background: '#F4E7DD',
-          border: '2px solid rgba(184,83,47,0.55)',
+          background: '#f6f3ee',
+          border: '2px solid rgba(187, 154, 94,0.55)',
           boxShadow: '0 12px 28px rgba(58,37,30,0.40)',
           width: 'clamp(120px, 13vw, 180px)',
         }}
@@ -2208,8 +2208,8 @@ const CornerQR: React.FC = () => {
         <QRCodeSVG
           value="https://krystinestlaurent.ca"
           level="H"
-          bgColor="#F4E7DD"
-          fgColor="#3A251E"
+          bgColor="#f6f3ee"
+          fgColor="#2a2015"
           size={400}
           marginSize={1}
           style={{ display: 'block', width: '100%', height: 'auto' }}
@@ -2284,8 +2284,8 @@ const NavArrow: React.FC<{ direction: 'prev' | 'next'; onClick: () => void; disa
     className="group inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full transition-all"
     style={{
       background: 'rgba(244,231,221,0.85)',
-      border: '1px solid rgba(184,83,47,0.45)',
-      color: '#3A251E',
+      border: '1px solid rgba(187, 154, 94,0.45)',
+      color: '#2a2015',
       boxShadow: '0 8px 22px rgba(58,37,30,0.18)',
       opacity: disabled ? 0.35 : 1,
       cursor: disabled ? 'default' : 'pointer',
@@ -2294,7 +2294,7 @@ const NavArrow: React.FC<{ direction: 'prev' | 'next'; onClick: () => void; disa
   >
     <i
       className={`fa-solid ${direction === 'prev' ? 'fa-arrow-left' : 'fa-arrow-right'}`}
-      style={{ color: '#6B402F', fontSize: '1rem' }}
+      style={{ color: '#5a4a37', fontSize: '1rem' }}
     />
   </motion.button>
 );
@@ -2307,13 +2307,13 @@ const SlideCounter: React.FC<{ index: number; total: number; planned: number }> 
       className="font-serif italic px-4 md:px-5 py-2 rounded-full"
       style={{
         background: 'rgba(244,231,221,0.7)',
-        border: '1px solid rgba(184,83,47,0.25)',
-        color: '#3A251E',
+        border: '1px solid rgba(187, 154, 94,0.25)',
+        color: '#2a2015',
         fontSize: 'clamp(0.85rem, 1.1vw, 1rem)',
         backdropFilter: 'blur(6px)',
       }}
     >
-      {cur} <span className="text-[#6B402F]/60 mx-1">·</span> {tot}
+      {cur} <span className="text-[#5a4a37]/60 mx-1">·</span> {tot}
     </div>
   );
 };

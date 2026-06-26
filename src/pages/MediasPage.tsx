@@ -79,11 +79,11 @@ const MediasPage: React.FC = () => {
   const tv = media.details.tv;
 
   return (
-    <div className="min-h-screen dark:bg-[#2E1A14] pt-36 pb-24 text-[#3A251E] dark:text-white">
+    <div className="min-h-screen dark:bg-[#16100a] pt-36 pb-24 text-[#2a2015] dark:text-white">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Header */}
         <div className="text-center mb-20">
-          <span className="text-[#B8532F] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
+          <span className="text-[#7d6330] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
             <EditableText
               fieldKey="medias.hero.kicker"
               defaultValue={lang === 'FR' ? 'Découvrir' : 'Discover'}
@@ -95,7 +95,7 @@ const MediasPage: React.FC = () => {
               defaultValue={lang === 'FR' ? 'Podcasts, Médias & Livres' : 'Podcasts, Media & Books'}
             />
           </h1>
-          <p className="mt-6 text-base md:text-lg text-[#3A251E]/60 dark:text-white/60 font-serif italic max-w-2xl mx-auto">
+          <p className="mt-6 text-base md:text-lg text-[#2a2015]/60 dark:text-white/60 font-serif italic max-w-2xl mx-auto">
             <EditableText
               fieldKey="medias.hero.lead"
               defaultValue={lang === 'FR'
@@ -104,7 +104,7 @@ const MediasPage: React.FC = () => {
               multiline
             />
           </p>
-          <div className="w-24 h-1 bg-[#B8532F] mt-6 mx-auto" />
+          <div className="w-24 h-1 bg-[#bb9a5e] mt-6 mx-auto" />
         </div>
 
         {/* Overview — 4 square cards on the left, brand image on the right.
@@ -120,13 +120,13 @@ const MediasPage: React.FC = () => {
               { id: 'blog',     href: '/blogue',   label: lang === 'FR' ? 'Blog' : 'Blog',       icon: 'fa-pen-nib',    onPage: false },
             ].map(item => {
               const cardInner = (
-                <div className="rounded-[24px] aspect-square flex flex-col items-center justify-center p-6 bg-white dark:bg-[#3A251E]/60 border border-[#3A251E]/5 dark:border-white/5 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white to-[#B8532F]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="w-16 h-16 rounded-full bg-[#3A251E]/5 dark:bg-white/5 flex items-center justify-center mb-4 text-[#3A251E] dark:text-white group-hover:bg-[#3A251E] group-hover:text-white transition-all duration-300 relative z-10">
+                <div className="rounded-[24px] aspect-square flex flex-col items-center justify-center p-6 bg-white dark:bg-[#2a2015]/60 border border-[#2a2015]/5 dark:border-white/5 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white to-[#bb9a5e]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="w-16 h-16 rounded-full bg-[#2a2015]/5 dark:bg-white/5 flex items-center justify-center mb-4 text-[#2a2015] dark:text-white group-hover:bg-[#2a2015] group-hover:text-white transition-all duration-300 relative z-10">
                     <i className={`fa-solid ${item.icon} text-2xl`} />
                   </div>
-                  <h3 className="text-lg font-serif text-[#3A251E] dark:text-white relative z-10">{item.label}</h3>
-                  <div className="w-8 h-px bg-[#B8532F] mt-3 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center relative z-10" />
+                  <h3 className="text-lg font-serif text-[#2a2015] dark:text-white relative z-10">{item.label}</h3>
+                  <div className="w-8 h-px bg-[#bb9a5e] mt-3 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center relative z-10" />
                 </div>
               );
               return item.onPage ? (
@@ -145,7 +145,7 @@ const MediasPage: React.FC = () => {
                 alt="Inspirata Media"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#3A251E]/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#2a2015]/20 to-transparent" />
             </div>
           </div>
         </div>
@@ -153,9 +153,9 @@ const MediasPage: React.FC = () => {
         {/* ── Podcast ── */}
         <section id="podcast" className="scroll-mt-32 mb-28">
           <div className="text-center mb-10">
-            <span className="text-[#B8532F] uppercase tracking-widest text-xs font-bold mb-2 block">Podcast</span>
+            <span className="text-[#7d6330] uppercase tracking-widest text-xs font-bold mb-2 block">Podcast</span>
             <h2 className="text-4xl md:text-5xl font-serif mb-4">{pod.title}</h2>
-            <p className="text-[#3A251E]/70 dark:text-white/70 font-serif italic">{pod.subtitle}</p>
+            <p className="text-[#2a2015]/70 dark:text-white/70 font-serif italic">{pod.subtitle}</p>
           </div>
           <div className="max-w-5xl mx-auto">
             <div className="rounded-xl overflow-hidden shadow-2xl mb-12">
@@ -173,7 +173,7 @@ const MediasPage: React.FC = () => {
                     points.podcastListened(user.uid, 'overall').catch(() => { /* non-fatal */ });
                   }
                 }}
-                className="bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors inline-flex items-center gap-2"
+                className="bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors inline-flex items-center gap-2"
               >
                 {pod.cta} <i className="fa-solid fa-arrow-right" />
               </a>
@@ -184,9 +184,9 @@ const MediasPage: React.FC = () => {
         {/* ── TV ── */}
         <section id="tv" className="scroll-mt-32 mb-28">
           <div className="text-center mb-10">
-            <span className="text-[#B8532F] uppercase tracking-widest text-xs font-bold mb-2 block">TV &amp; YouTube</span>
+            <span className="text-[#7d6330] uppercase tracking-widest text-xs font-bold mb-2 block">TV &amp; YouTube</span>
             <h2 className="text-4xl md:text-5xl font-serif italic mb-4">{tv.title}</h2>
-            <p className="text-[#3A251E]/70 dark:text-white/70 max-w-2xl mx-auto">{tv.desc}</p>
+            <p className="text-[#2a2015]/70 dark:text-white/70 max-w-2xl mx-auto">{tv.desc}</p>
           </div>
 
           {/* YouTube channel block — Krystine's channel, with a subscribe CTA.
@@ -232,7 +232,7 @@ const MediasPage: React.FC = () => {
             {tvPlaylists.map((p, idx) => (
               <div
                 key={p.listId}
-                className="group bg-[#F4E7DD] dark:bg-[#3A251E]/60 rounded-[24px] shadow-lg overflow-hidden border border-[#B8532F]/20 dark:border-white/5 hover:shadow-2xl transition-all"
+                className="group bg-[#f6f3ee] dark:bg-[#2a2015]/60 rounded-[24px] shadow-lg overflow-hidden border border-[#bb9a5e]/20 dark:border-white/5 hover:shadow-2xl transition-all"
               >
                 <div
                   className="relative aspect-video bg-black cursor-pointer"
@@ -265,23 +265,23 @@ const MediasPage: React.FC = () => {
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                      <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#3A251E]/80 text-[#F4E7DD] text-[9px] uppercase tracking-[0.2em] font-bold backdrop-blur-sm">
+                      <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#2a2015]/80 text-[#f6f3ee] text-[9px] uppercase tracking-[0.2em] font-bold backdrop-blur-sm">
                         <i className="fa-solid fa-list text-[9px]" />
                         {lang === 'FR' ? 'Playlist' : 'Playlist'}
                       </span>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-[0_8px_28px_rgba(0,0,0,0.35)] group-hover:bg-[#B8532F] group-hover:border-[#B8532F] group-hover:scale-110 transition-all">
-                          <i className="fa-solid fa-play text-white group-hover:text-[#3A251E] text-lg ml-1 transition-colors" />
+                        <div className="w-16 h-16 rounded-full bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-[0_8px_28px_rgba(0,0,0,0.35)] group-hover:bg-[#bb9a5e] group-hover:border-[#bb9a5e] group-hover:scale-110 transition-all">
+                          <i className="fa-solid fa-play text-white group-hover:text-[#2a2015] text-lg ml-1 transition-colors" />
                         </div>
                       </div>
                     </>
                   )}
                 </div>
                 <div className="p-5 text-center">
-                  <h3 className="font-serif text-lg line-clamp-2 text-[#3A251E] dark:text-white">
+                  <h3 className="font-serif text-lg line-clamp-2 text-[#2a2015] dark:text-white">
                     {p.title || (lang === 'FR' ? `Playlist ${idx + 1}` : `Playlist ${idx + 1}`)}
                   </h3>
-                  <span className="text-xs text-[#B8532F] uppercase tracking-widest mt-1 inline-flex items-center gap-1.5">
+                  <span className="text-xs text-[#7d6330] uppercase tracking-widest mt-1 inline-flex items-center gap-1.5">
                     <i className="fa-solid fa-circle-play text-[10px]" />
                     {lang === 'FR' ? 'Regarder la série' : 'Watch the series'}
                   </span>
@@ -294,13 +294,13 @@ const MediasPage: React.FC = () => {
         {/* ── Livres ── Merged from /livres */}
         <section id="livres" className="scroll-mt-32 mb-28">
           <div className="text-center mb-16">
-            <span className="text-[#B8532F] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
+            <span className="text-[#7d6330] uppercase tracking-[0.3em] text-xs font-bold block mb-4">
               {lang === 'FR' ? 'Bibliothèque Inspirata' : 'Inspirata Library'}
             </span>
             <h2 className="text-4xl md:text-5xl font-serif">{book.title}</h2>
-            <div className="w-24 h-1 bg-[#B8532F] mx-auto mt-6" />
+            <div className="w-24 h-1 bg-[#bb9a5e] mx-auto mt-6" />
             {loadingShop && (
-              <p className="mt-6 text-xs uppercase tracking-widest text-[#3A251E]/40 dark:text-white/40">
+              <p className="mt-6 text-xs uppercase tracking-widest text-[#2a2015]/40 dark:text-white/40">
                 <i className="fa-solid fa-circle-notch fa-spin mr-2" />
                 {lang === 'FR' ? 'Synchronisation boutique…' : 'Syncing shop…'}
               </p>
@@ -319,37 +319,37 @@ const MediasPage: React.FC = () => {
                   className={`flex flex-col items-center text-center group ${item.status === 'locked' ? 'opacity-60' : 'cursor-pointer'}`}
                   onClick={() => item.status !== 'locked' && setBookOpen(bookOpen === idx ? null : idx)}
                 >
-                  <div className={`w-full aspect-[1/1.3] rounded-r-[16px] rounded-l-[3px] mb-8 overflow-hidden relative shadow-2xl border-l-4 border-[#3A251E]/10 transition-all duration-500 ${bookOpen === idx ? 'rotate-3 translate-y-[-12px] shadow-[0_30px_60px_rgba(0,0,0,0.3)]' : 'group-hover:-translate-y-4 group-hover:rotate-1'}`}>
+                  <div className={`w-full aspect-[1/1.3] rounded-r-[16px] rounded-l-[3px] mb-8 overflow-hidden relative shadow-2xl border-l-4 border-[#2a2015]/10 transition-all duration-500 ${bookOpen === idx ? 'rotate-3 translate-y-[-12px] shadow-[0_30px_60px_rgba(0,0,0,0.3)]' : 'group-hover:-translate-y-4 group-hover:rotate-1'}`}>
                     {item.cover ? (
                       <div className="absolute inset-0" style={{ backgroundImage: `url(${item.cover})`, backgroundSize: '100% 100%' }} />
                     ) : (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#3A251E] text-white p-6">
-                        {item.status === 'locked' ? <i className="fa-solid fa-lock text-4xl text-white/20 mb-4" /> : <i className="fa-solid fa-leaf text-2xl text-[#B8532F] mb-4 opacity-60" />}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#2a2015] text-white p-6">
+                        {item.status === 'locked' ? <i className="fa-solid fa-lock text-4xl text-white/20 mb-4" /> : <i className="fa-solid fa-leaf text-2xl text-[#7d6330] mb-4 opacity-60" />}
                         <h4 className="font-serif text-xl uppercase tracking-widest">{item.title}</h4>
                       </div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     {/* Launch date banner on the unreleased third volume. */}
                     {item.status === 'locked' && (
-                      <span className="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#B8532F] text-[#3A251E] text-[10px] uppercase tracking-[0.25em] font-bold shadow-md whitespace-nowrap">
+                      <span className="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#bb9a5e] text-[#2a2015] text-[10px] uppercase tracking-[0.25em] font-bold shadow-md whitespace-nowrap">
                         {lang === 'FR' ? 'Lancement le 14 octobre' : 'Launch Oct. 14'}
                       </span>
                     )}
                   </div>
-                  <h3 className="text-2xl font-serif mb-2 group-hover:text-[#B8532F] transition-colors">{item.title}</h3>
-                  <p className="text-sm text-[#3A251E]/60 dark:text-white/60 mb-4">{item.subtitle || item.desc}</p>
+                  <h3 className="text-2xl font-serif mb-2 group-hover:text-[#7d6330] transition-colors">{item.title}</h3>
+                  <p className="text-sm text-[#2a2015]/60 dark:text-white/60 mb-4">{item.subtitle || item.desc}</p>
                   {/* Locked card · Tome 3 — parution metadata + dedicated
                       email-capture CTA. Opens a WaitlistModal so the launch
                       list lives separately from Pulsation. */}
                   {item.status === 'locked' && (item.releaseDate || item.publisher || item.captureCta) && (
                     <div className="flex flex-col items-center gap-2 mb-4">
                       {item.releaseDate && (
-                        <p className="text-[11px] uppercase tracking-[0.28em] text-[#B8532F] font-bold">
+                        <p className="text-[11px] uppercase tracking-[0.28em] text-[#7d6330] font-bold">
                           {lang === 'FR' ? 'Parution' : 'Release'} · {item.releaseDate}
                         </p>
                       )}
                       {item.publisher && (
-                        <p className="text-sm font-serif italic text-[#3A251E]/65 dark:text-white/65">{item.publisher}</p>
+                        <p className="text-sm font-serif italic text-[#2a2015]/65 dark:text-white/65">{item.publisher}</p>
                       )}
                       {item.captureCta && (
                         <button
@@ -362,7 +362,7 @@ const MediasPage: React.FC = () => {
                               labelEN: 'Release · Title to be revealed (November 4, 2026)',
                             });
                           }}
-                          className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] font-bold uppercase tracking-[0.25em] text-[11px] shadow-md hover:bg-[#B8532F] hover:text-[#3A251E] hover:shadow-[0_10px_24px_rgba(184,83,47,0.35)] transition-all"
+                          className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] font-bold uppercase tracking-[0.25em] text-[11px] shadow-md hover:bg-[#bb9a5e] hover:text-[#2a2015] hover:shadow-[0_10px_24px_rgba(187, 154, 94,0.35)] transition-all"
                         >
                           {item.captureCta}
                           <i className="fa-solid fa-arrow-right text-[9px]" />
@@ -372,7 +372,7 @@ const MediasPage: React.FC = () => {
                   )}
                   {item.status === 'available' && (
                     <div className="flex flex-col gap-3 w-full">
-                      <p className="font-bold text-[#B8532F] text-lg">{displayPrice}</p>
+                      <p className="font-bold text-[#7d6330] text-lg">{displayPrice}</p>
                       {canOrder && variant ? (
                         <button
                           onClick={e => {
@@ -388,39 +388,39 @@ const MediasPage: React.FC = () => {
                               image: item.cover || shopify!.featuredImage?.url,
                             });
                           }}
-                          className="w-full bg-[#3A251E] dark:bg-[#B8532F] text-white dark:text-[#3A251E] py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#B8532F] hover:text-[#3A251E] transition-colors shadow-md"
+                          className="w-full bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors shadow-md"
                         >
                           {lang === 'FR' ? 'Commander' : 'Order'}
                         </button>
                       ) : shopError ? (
-                        <button disabled title={shopError} className="w-full bg-[#3A251E]/30 dark:bg-white/10 text-white/80 py-3 rounded-full font-bold uppercase tracking-widest text-xs cursor-not-allowed">
+                        <button disabled title={shopError} className="w-full bg-[#2a2015]/30 dark:bg-white/10 text-white/80 py-3 rounded-full font-bold uppercase tracking-widest text-xs cursor-not-allowed">
                           {lang === 'FR' ? 'Boutique indisponible' : 'Shop unavailable'}
                         </button>
                       ) : loadingShop ? (
-                        <button disabled className="w-full bg-[#3A251E]/20 dark:bg-white/5 text-[#3A251E]/50 dark:text-white/50 py-3 rounded-full font-bold uppercase tracking-widest text-xs cursor-wait">
+                        <button disabled className="w-full bg-[#2a2015]/20 dark:bg-white/5 text-[#2a2015]/50 dark:text-white/50 py-3 rounded-full font-bold uppercase tracking-widest text-xs cursor-wait">
                           <i className="fa-solid fa-circle-notch fa-spin mr-2" />
                           {lang === 'FR' ? 'Chargement…' : 'Loading…'}
                         </button>
                       ) : (
-                        <button disabled className="w-full bg-[#3A251E]/30 dark:bg-white/10 text-white/80 py-3 rounded-full font-bold uppercase tracking-widest text-xs cursor-not-allowed">
+                        <button disabled className="w-full bg-[#2a2015]/30 dark:bg-white/10 text-white/80 py-3 rounded-full font-bold uppercase tracking-widest text-xs cursor-not-allowed">
                           {lang === 'FR' ? 'Bientôt en boutique' : 'Coming to shop'}
                         </button>
                       )}
                       {item.reviews && (
-                        <p className="text-sm text-[#3A251E]/55 dark:text-white/55">
-                          <i className="fa-solid fa-star text-[#B8532F] mr-1" /> {item.reviews}
+                        <p className="text-sm text-[#2a2015]/55 dark:text-white/55">
+                          <i className="fa-solid fa-star text-[#7d6330] mr-1" /> {item.reviews}
                         </p>
                       )}
                     </div>
                   )}
                   {bookOpen === idx && item.shortDesc && (
-                    <div className="mt-6 p-6 bg-white dark:bg-[#3A251E]/60 rounded-[20px] text-left shadow-lg border border-[#3A251E]/5 dark:border-white/5">
-                      <p className="text-[#3A251E]/80 dark:text-white/80 leading-relaxed whitespace-pre-line text-base">{item.shortDesc}</p>
+                    <div className="mt-6 p-6 bg-white dark:bg-[#2a2015]/60 rounded-[20px] text-left shadow-lg border border-[#2a2015]/5 dark:border-white/5">
+                      <p className="text-[#2a2015]/80 dark:text-white/80 leading-relaxed whitespace-pre-line text-base">{item.shortDesc}</p>
                       {item.features && (
                         <div className="flex flex-wrap gap-2 mt-4">
                           {item.features.map((f: string, i: number) => (
-                            <span key={i} className="text-sm border border-[#3A251E]/15 dark:border-white/15 px-3 py-1 rounded-full text-[#3A251E]/70 dark:text-white/70">
-                              <i className="fa-solid fa-check text-[#B8532F] mr-1" />{f}
+                            <span key={i} className="text-sm border border-[#2a2015]/15 dark:border-white/15 px-3 py-1 rounded-full text-[#2a2015]/70 dark:text-white/70">
+                              <i className="fa-solid fa-check text-[#7d6330] mr-1" />{f}
                             </span>
                           ))}
                         </div>

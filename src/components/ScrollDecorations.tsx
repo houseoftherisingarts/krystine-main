@@ -53,8 +53,8 @@ const ScrollDecorations: React.FC = () => {
           transformOrigin: '0% 0%',
         }}
       >
-        <g fill="#3A251E">
-          <path d="M120 40 Q 240 260, 360 640" stroke="#3A251E" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.55" />
+        <g fill="#2a2015">
+          <path d="M120 40 Q 240 260, 360 640" stroke="#2a2015" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.55" />
           {Array.from({ length: 12 }).map((_, i) => {
             const t = i / 11;
             const cx = 120 + (360 - 120) * t + (t * t * 40);
@@ -81,9 +81,9 @@ const ScrollDecorations: React.FC = () => {
         className="absolute -bottom-[40px] -right-[60px] w-[340px] md:w-[480px] opacity-[0.30] dark:opacity-[0.18]"
         style={{ y: laurelY, mixBlendMode: 'multiply' }}
       >
-        <g stroke="#3A251E" strokeWidth="0.8" fill="#3A251E">
+        <g stroke="#2a2015" strokeWidth="0.8" fill="#2a2015">
           <g transform="translate(360 240)">
-            <path d="M 0 0 Q -120 -60, -260 -180" stroke="#3A251E" fill="none" opacity="0.55" />
+            <path d="M 0 0 Q -120 -60, -260 -180" stroke="#2a2015" fill="none" opacity="0.55" />
             {Array.from({ length: 8 }).map((_, i) => {
               const t = i / 7;
               const x = -260 * t;

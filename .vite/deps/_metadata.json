@@ -1,0 +1,37 @@
+{
+  "hash": "2fbd092d",
+  "configHash": "77d3476f",
+  "lockfileHash": "e6988ddc",
+  "browserHash": "133f1758",
+  "optimized": {
+    "react": {
+      "src": "../../../../../Users/lesalondesinconnus/Documents/Websites/Krystine Main/node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "96431888",
+      "needsInterop": true
+    },
+    "react-dom": {
+      "src": "../../../../../Users/lesalondesinconnus/Documents/Websites/Krystine Main/node_modules/react-dom/index.js",
+      "file": "react-dom.js",
+      "fileHash": "f445708c",
+      "needsInterop": true
+    },
+    "react/jsx-dev-runtime": {
+      "src": "../../../../../Users/lesalondesinconnus/Documents/Websites/Krystine Main/node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "e6a65a4a",
+      "needsInterop": true
+    },
+    "react/jsx-runtime": {
+      "src": "../../../../../Users/lesalondesinconnus/Documents/Websites/Krystine Main/node_modules/react/jsx-runtime.js",
+      "file": "react_jsx-runtime.js",
+      "fileHash": "fbd7e91a",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-YSSB3QMO": {
+      "file": "chunk-YSSB3QMO.js"
+    }
+  }
+}

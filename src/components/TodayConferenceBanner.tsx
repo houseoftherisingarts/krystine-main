@@ -87,7 +87,7 @@ const TodayConferenceBanner: React.FC = () => {
           'linear-gradient(135deg, rgba(244,231,221,0.92) 0%, rgba(232,208,190,0.85) 55%, rgba(215,168,88,0.18) 100%)',
         border: '1px solid rgba(215,168,88,0.55)',
         boxShadow:
-          '0 18px 44px rgba(58,37,30,0.18), 0 0 0 1px rgba(184,83,47,0.10), inset 0 1px 0 rgba(255,255,255,0.55)',
+          '0 18px 44px rgba(58,37,30,0.18), 0 0 0 1px rgba(187, 154, 94,0.10), inset 0 1px 0 rgba(255,255,255,0.55)',
       }}
     >
       {/* Animated gold halo · soft conic sweep behind the content,
@@ -135,9 +135,9 @@ const TodayConferenceBanner: React.FC = () => {
           <span className="inline-flex items-center gap-2.5 mb-4">
             <span className="relative inline-flex w-2.5 h-2.5">
               {!reduce && (
-                <span className="absolute inset-0 rounded-full bg-[#B8532F] opacity-60 animate-ping" />
+                <span className="absolute inset-0 rounded-full bg-[#bb9a5e] opacity-60 animate-ping" />
               )}
-              <span className="relative w-2.5 h-2.5 rounded-full bg-[#B8532F]" />
+              <span className="relative w-2.5 h-2.5 rounded-full bg-[#bb9a5e]" />
             </span>
             <span
               className="text-[11px] md:text-xs uppercase tracking-[0.4em] font-bold"
@@ -150,7 +150,7 @@ const TodayConferenceBanner: React.FC = () => {
             >
               {lang === 'FR' ? "Aujourd'hui · samedi 25 avril · 16 h 30" : "Today · Saturday April 25 · 4:30 pm"}
             </span>
-            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#B8532F]/10 border border-[#B8532F]/30 text-[10px] uppercase tracking-[0.25em] font-bold text-[#B8532F]">
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#bb9a5e]/10 border border-[#bb9a5e]/30 text-[10px] uppercase tracking-[0.25em] font-bold text-[#7d6330]">
               <i className="fa-regular fa-clock text-[9px]" />
               {countdownLabel}
             </span>
@@ -163,13 +163,13 @@ const TodayConferenceBanner: React.FC = () => {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.3 }}
-            className="font-serif text-[#3A251E] leading-[1.06] mb-3"
+            className="font-serif text-[#2a2015] leading-[1.06] mb-3"
             style={{
               fontSize: 'clamp(1.9rem, 4.2vw, 3.2rem)',
               letterSpacing: '0.005em',
             }}
           >
-            <span className="block text-[#B8532F] uppercase tracking-[0.32em] font-bold mb-2"
+            <span className="block text-[#7d6330] uppercase tracking-[0.32em] font-bold mb-2"
               style={{ fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}>
               {lang === 'FR' ? 'Conférence' : 'Talk'}
             </span>
@@ -183,20 +183,20 @@ const TodayConferenceBanner: React.FC = () => {
                 {w}
               </motion.span>
             ))}
-            <span className="block font-serif italic text-[#6B402F] mt-1"
+            <span className="block font-serif italic text-[#5a4a37] mt-1"
               style={{ fontSize: 'clamp(1.1rem, 2.1vw, 1.6rem)' }}>
               {lang === 'FR' ? "l'équilibre n'est pas one-size." : "balance isn't one-size."}
             </span>
           </motion.h2>
 
-          <p className="font-serif italic text-[#3A251E]/80 text-base md:text-lg leading-relaxed max-w-2xl mx-auto md:mx-0 mb-4">
+          <p className="font-serif italic text-[#2a2015]/80 text-base md:text-lg leading-relaxed max-w-2xl mx-auto md:mx-0 mb-4">
             {lang === 'FR'
               ? "Krystine prend la scène Vivre cet après-midi pour défaire les tendances et remettre l'équilibre en mots simples — vagues, saisons, signature personnelle."
               : 'Krystine takes the Vivre stage this afternoon to unwind the trends and put balance back into plain words — waves, seasons, personal signature.'}
           </p>
 
-          <div className="flex items-center gap-2 justify-center md:justify-start text-[12px] md:text-sm text-[#6B402F]">
-            <i className="fa-solid fa-map-marker-alt text-[#B8532F] text-[11px]" />
+          <div className="flex items-center gap-2 justify-center md:justify-start text-[12px] md:text-sm text-[#5a4a37]">
+            <i className="fa-solid fa-map-marker-alt text-[#7d6330] text-[11px]" />
             <span className="font-serif">
               {lang === 'FR'
                 ? 'Scène Vivre · Expo Manger Santé · Québec'
@@ -213,10 +213,10 @@ const TodayConferenceBanner: React.FC = () => {
             href={CONF_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative inline-flex items-center justify-center gap-3 px-8 md:px-10 py-4 md:py-5 rounded-full overflow-hidden text-[12px] md:text-[13px] uppercase font-semibold tracking-[0.28em] transition-[transform,box-shadow] duration-300 hover:scale-[1.025] active:scale-[0.985] hover:shadow-[0_18px_38px_rgba(184,83,47,0.45)]"
+            className="group relative inline-flex items-center justify-center gap-3 px-8 md:px-10 py-4 md:py-5 rounded-full overflow-hidden text-[12px] md:text-[13px] uppercase font-semibold tracking-[0.28em] transition-[transform,box-shadow] duration-300 hover:scale-[1.025] active:scale-[0.985] hover:shadow-[0_18px_38px_rgba(187, 154, 94,0.45)]"
             style={{
-              backgroundImage: 'linear-gradient(95deg, #6B402F 0%, #B8532F 45%, #D7A858 100%)',
-              color: '#F4E7DD',
+              backgroundImage: 'linear-gradient(95deg, #5a4a37 0%, #bb9a5e 45%, #D7A858 100%)',
+              color: '#f6f3ee',
               border: '1px solid rgba(215,168,88,0.65)',
               boxShadow:
                 '0 14px 30px rgba(58,37,30,0.32), inset 0 1px 0 rgba(255,255,255,0.18)',
@@ -236,7 +236,7 @@ const TodayConferenceBanner: React.FC = () => {
             <span>{lang === 'FR' ? 'Voir la programmation' : 'View the programme'}</span>
             <i className="fa-solid fa-arrow-up-right-from-square text-[10px] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
-          <p className="mt-4 md:mt-6 text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-[#6B402F]/80 font-bold">
+          <p className="mt-4 md:mt-6 text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-[#5a4a37]/80 font-bold">
             {lang === 'FR' ? "Aussi demain · dimanche 26 avril · 13 h 15" : 'Also tomorrow · Sunday April 26 · 1:15 pm'}
           </p>
         </div>

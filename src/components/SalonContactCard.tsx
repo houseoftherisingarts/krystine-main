@@ -119,8 +119,8 @@ const SalonContactCard: React.FC<Props> = ({ open, onClose, sourceSite = 'krysti
   // a more human image as soon as they engage with the form.
   const HeroColumn: React.FC<{ src: string; alt: string }> = ({ src, alt }) => (
     <div
-      className="relative h-[40vh] md:h-full overflow-hidden border-b md:border-b-0 md:border-r border-[#B8532F]/20"
-      style={{ background: 'linear-gradient(180deg, #2E1A14 0%, #3A251E 100%)' }}
+      className="relative h-[40vh] md:h-full overflow-hidden border-b md:border-b-0 md:border-r border-[#bb9a5e]/20"
+      style={{ background: 'linear-gradient(180deg, #16100a 0%, #2a2015 100%)' }}
     >
       <img
         src={src}
@@ -158,7 +158,7 @@ const SalonContactCard: React.FC<Props> = ({ open, onClose, sourceSite = 'krysti
           type="button"
           onClick={close}
           aria-label="Fermer"
-          className="absolute top-4 right-4 z-30 w-10 h-10 rounded-full bg-[#1A0E08]/55 hover:bg-[#1A0E08]/80 text-[#F4E7DD] flex items-center justify-center transition-colors backdrop-blur"
+          className="absolute top-4 right-4 z-30 w-10 h-10 rounded-full bg-[#1A0E08]/55 hover:bg-[#1A0E08]/80 text-[#f6f3ee] flex items-center justify-center transition-colors backdrop-blur"
         >
           <i className="fa-solid fa-times text-base" />
         </button>
@@ -203,20 +203,20 @@ const SalonContactCard: React.FC<Props> = ({ open, onClose, sourceSite = 'krysti
                     >
                       Le Salon des Inconnus
                     </h2>
-                    <p className="font-serif italic text-[#3A251E] text-base md:text-lg leading-tight">
+                    <p className="font-serif italic text-[#2a2015] text-base md:text-lg leading-tight">
                       Alex&nbsp;T.&nbsp;St-Laurent
                     </p>
                   </div>
                 </div>
 
-                <p className="font-serif italic text-[#3A251E]/85 leading-relaxed text-[15px] md:text-base mb-4">
+                <p className="font-serif italic text-[#2a2015]/85 leading-relaxed text-[15px] md:text-base mb-4">
                   Nos plateformes naissent à la croisée du code et de l'Art
                   — celui d'un centre d'artistes en pleine activité. La
                   technologie la plus récente, ramenée à l'essentiel&nbsp;:
                   un site qui raconte votre histoire avec justesse, lenteur
                   et lumière. Pas un gabarit. Une œuvre signée.
                 </p>
-                <p className="text-[#3A251E]/75 leading-relaxed text-sm md:text-[15px] mb-6">
+                <p className="text-[#2a2015]/75 leading-relaxed text-sm md:text-[15px] mb-6">
                   Le Salon des Inconnus est un centre d'artistes perché dans
                   un manoir victorien en pleine nature.
                 </p>
@@ -225,9 +225,9 @@ const SalonContactCard: React.FC<Props> = ({ open, onClose, sourceSite = 'krysti
                 <button
                   type="button"
                   onClick={() => setFlipped(true)}
-                  className="group inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-full text-[12px] uppercase tracking-[0.25em] font-bold text-[#F4E7DD] mb-5 transition-all hover:shadow-[0_14px_32px_rgba(184,83,47,0.45)] hover:-translate-y-0.5"
+                  className="group inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-full text-[12px] uppercase tracking-[0.25em] font-bold text-[#f6f3ee] mb-5 transition-all hover:shadow-[0_14px_32px_rgba(187, 154, 94,0.45)] hover:-translate-y-0.5"
                   style={{
-                    background: 'linear-gradient(95deg, #6B402F 0%, #B8532F 50%, #6B402F 100%)',
+                    background: 'linear-gradient(95deg, #5a4a37 0%, #bb9a5e 50%, #5a4a37 100%)',
                     border: '1px solid rgba(215,168,88,0.55)',
                   }}
                 >
@@ -241,28 +241,28 @@ const SalonContactCard: React.FC<Props> = ({ open, onClose, sourceSite = 'krysti
                     href="https://www.lesalondesinconnus.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-[#3A251E] hover:text-[#B8532F] transition-colors"
+                    className="flex items-center gap-3 text-[#2a2015] hover:text-[#7d6330] transition-colors"
                   >
-                    <span className="w-7 h-7 rounded-full bg-[#3A251E]/8 border border-[#B8532F]/25 flex items-center justify-center">
-                      <i className="fa-solid fa-globe text-[#B8532F] text-[10px]" />
+                    <span className="w-7 h-7 rounded-full bg-[#2a2015]/8 border border-[#bb9a5e]/25 flex items-center justify-center">
+                      <i className="fa-solid fa-globe text-[#7d6330] text-[10px]" />
                     </span>
                     <span className="font-serif">www.lesalondesinconnus.com</span>
                   </a>
                   <a
                     href="tel:+15144183450"
-                    className="flex items-center gap-3 text-[#3A251E] hover:text-[#B8532F] transition-colors"
+                    className="flex items-center gap-3 text-[#2a2015] hover:text-[#7d6330] transition-colors"
                   >
-                    <span className="w-7 h-7 rounded-full bg-[#3A251E]/8 border border-[#B8532F]/25 flex items-center justify-center">
-                      <i className="fa-solid fa-phone text-[#B8532F] text-[10px]" />
+                    <span className="w-7 h-7 rounded-full bg-[#2a2015]/8 border border-[#bb9a5e]/25 flex items-center justify-center">
+                      <i className="fa-solid fa-phone text-[#7d6330] text-[10px]" />
                     </span>
                     <span className="font-serif">514&nbsp;418&nbsp;3450</span>
                   </a>
                   <a
                     href="mailto:alex@lesalondesinconnus.com"
-                    className="flex items-center gap-3 text-[#3A251E] hover:text-[#B8532F] transition-colors"
+                    className="flex items-center gap-3 text-[#2a2015] hover:text-[#7d6330] transition-colors"
                   >
-                    <span className="w-7 h-7 rounded-full bg-[#3A251E]/8 border border-[#B8532F]/25 flex items-center justify-center">
-                      <i className="fa-solid fa-envelope text-[#B8532F] text-[10px]" />
+                    <span className="w-7 h-7 rounded-full bg-[#2a2015]/8 border border-[#bb9a5e]/25 flex items-center justify-center">
+                      <i className="fa-solid fa-envelope text-[#7d6330] text-[10px]" />
                     </span>
                     <span className="font-serif">alex@lesalondesinconnus.com</span>
                   </a>
@@ -282,31 +282,31 @@ const SalonContactCard: React.FC<Props> = ({ open, onClose, sourceSite = 'krysti
                   <button
                     type="button"
                     onClick={() => setFlipped(false)}
-                    className="w-9 h-9 rounded-full border border-[#3A251E]/20 text-[#3A251E] hover:bg-[#3A251E]/5 hover:border-[#B8532F] flex items-center justify-center transition-colors"
+                    className="w-9 h-9 rounded-full border border-[#2a2015]/20 text-[#2a2015] hover:bg-[#2a2015]/5 hover:border-[#bb9a5e] flex items-center justify-center transition-colors"
                     aria-label="Retour"
                   >
                     <i className="fa-solid fa-arrow-left text-xs" />
                   </button>
                   <div>
-                    <span className="block text-[10px] uppercase tracking-[0.3em] font-bold text-[#B8532F]">Parlons-en</span>
-                    <h3 className="font-serif text-xl md:text-2xl text-[#3A251E] leading-tight">L'esquisse de votre site</h3>
+                    <span className="block text-[10px] uppercase tracking-[0.3em] font-bold text-[#7d6330]">Parlons-en</span>
+                    <h3 className="font-serif text-xl md:text-2xl text-[#2a2015] leading-tight">L'esquisse de votre site</h3>
                   </div>
                 </div>
 
                 {done ? (
                   <div className="flex-1 flex flex-col justify-center items-center text-center">
-                    <div className="w-14 h-14 rounded-full bg-[#B8532F] text-[#F4E7DD] flex items-center justify-center mb-5 shadow-[0_8px_20px_rgba(184,83,47,0.35)]">
+                    <div className="w-14 h-14 rounded-full bg-[#bb9a5e] text-[#f6f3ee] flex items-center justify-center mb-5 shadow-[0_8px_20px_rgba(187, 154, 94,0.35)]">
                       <i className="fa-solid fa-check text-lg" />
                     </div>
-                    <h3 className="font-serif text-2xl text-[#3A251E] mb-2">Merci.</h3>
-                    <p className="font-serif italic text-[#3A251E]/75 max-w-sm">
+                    <h3 className="font-serif text-2xl text-[#2a2015] mb-2">Merci.</h3>
+                    <p className="font-serif italic text-[#2a2015]/75 max-w-sm">
                       Votre message est arrivé au Salon. Je reviens vers vous
                       dans les jours qui suivent — souvent plus tôt.
                     </p>
                     <button
                       type="button"
                       onClick={close}
-                      className="mt-7 inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#3A251E] text-[#F4E7DD] text-[11px] uppercase tracking-[0.25em] font-bold hover:bg-[#B8532F] transition-colors"
+                      className="mt-7 inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#2a2015] text-[#f6f3ee] text-[11px] uppercase tracking-[0.25em] font-bold hover:bg-[#bb9a5e] transition-colors"
                     >
                       Fermer
                     </button>
@@ -362,7 +362,7 @@ const SalonContactCard: React.FC<Props> = ({ open, onClose, sourceSite = 'krysti
                       <button
                         type="submit"
                         disabled={busy}
-                        className="w-full inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full bg-[#3A251E] text-[#F4E7DD] hover:bg-[#B8532F] hover:shadow-[0_12px_28px_rgba(184,83,47,0.40)] font-bold uppercase tracking-[0.25em] text-[11px] transition-all disabled:opacity-60"
+                        className="w-full inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full bg-[#2a2015] text-[#f6f3ee] hover:bg-[#bb9a5e] hover:shadow-[0_12px_28px_rgba(187, 154, 94,0.40)] font-bold uppercase tracking-[0.25em] text-[11px] transition-all disabled:opacity-60"
                       >
                         {busy ? (
                           <><i className="fa-solid fa-circle-notch fa-spin" /> Envoi…</>
@@ -370,7 +370,7 @@ const SalonContactCard: React.FC<Props> = ({ open, onClose, sourceSite = 'krysti
                           <>Envoyer au Salon <i className="fa-solid fa-arrow-right text-[9px]" /></>
                         )}
                       </button>
-                      <p className="text-[10px] text-[#3A251E]/50 text-center mt-2">
+                      <p className="text-[10px] text-[#2a2015]/50 text-center mt-2">
                         Vos coordonnées ne servent qu'à cette correspondance.
                       </p>
                     </div>
@@ -392,9 +392,9 @@ const SalonContactCard: React.FC<Props> = ({ open, onClose, sourceSite = 'krysti
 // the parent reaches its 180° flip target.
 const Face: React.FC<{ children: React.ReactNode; back?: boolean }> = ({ children, back }) => (
   <div
-    className="absolute inset-0 rounded-[24px] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.55)] border border-[#B8532F]/30"
+    className="absolute inset-0 rounded-[24px] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.55)] border border-[#bb9a5e]/30"
     style={{
-      background: 'linear-gradient(160deg, #F4E7DD 0%, #ECD6BE 100%)',
+      background: 'linear-gradient(160deg, #f6f3ee 0%, #ECD6BE 100%)',
       backfaceVisibility: 'hidden',
       WebkitBackfaceVisibility: 'hidden',
       transform: back ? 'rotateY(180deg)' : undefined,
@@ -405,12 +405,12 @@ const Face: React.FC<{ children: React.ReactNode; back?: boolean }> = ({ childre
 );
 
 const inputCls =
-  'w-full px-3.5 py-2 rounded-lg border border-[#3A251E]/15 bg-white text-sm text-[#3A251E] placeholder:text-[#3A251E]/40 focus:outline-none focus:border-[#B8532F] focus:shadow-[0_0_0_3px_rgba(184,83,47,0.12)] transition-shadow';
+  'w-full px-3.5 py-2 rounded-lg border border-[#2a2015]/15 bg-white text-sm text-[#2a2015] placeholder:text-[#2a2015]/40 focus:outline-none focus:border-[#bb9a5e] focus:shadow-[0_0_0_3px_rgba(187, 154, 94,0.12)] transition-shadow';
 
 const Field: React.FC<{ label: string; required?: boolean; children: React.ReactNode }> = ({ label, required, children }) => (
   <label className="block">
-    <span className="block text-[10px] uppercase tracking-[0.25em] font-bold text-[#3A251E]/65 mb-1">
-      {label}{required && <span className="text-[#B8532F]"> *</span>}
+    <span className="block text-[10px] uppercase tracking-[0.25em] font-bold text-[#2a2015]/65 mb-1">
+      {label}{required && <span className="text-[#7d6330]"> *</span>}
     </span>
     {children}
   </label>
