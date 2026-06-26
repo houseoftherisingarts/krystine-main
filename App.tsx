@@ -64,6 +64,8 @@ const OrigineExperience = lazy(() => import('./src/pages/OrigineExperience'));
 // Podcast « Au-delà des tendances » — porté du bundle statique vers React
 // (fetch fiable du flux HelloAudio, les 36 épisodes, style L'Œuvre).
 const PodcastEpisodes = lazy(() => import('./src/pages/PodcastEpisodes'));
+// Expérience Vata — portée du bundle statique vers React (style L'Œuvre)
+const VataExperience = lazy(() => import('./src/pages/VataExperience'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#050C1A]">
@@ -142,6 +144,8 @@ const App: React.FC = () => (
           <Route path="/origine-loeuvre" element={<OrigineExperience />} />
           {/* Podcast porté en React (remplace le bundle statique /podcast) */}
           <Route path="/podcast" element={<PodcastEpisodes />} />
+          {/* Vata porté en React (remplace le bundle statique /vata) */}
+          <Route path="/vata" element={<VataExperience />} />
           <Route path="/krystine"        element={<ConferencierePage />} />
           <Route path="/boutique"        element={<BoutiquePage />} />
           <Route path="/boutique/:slug"  element={<BoutiqueCollectionPage />} />
