@@ -75,6 +75,7 @@ const GuideLoeuvre = lazy(() => import('./src/pages/GuideLoeuvre'));
 const FormationsLoeuvre = lazy(() => import('./src/pages/FormationsLoeuvre'));
 const BoutiqueLoeuvre = lazy(() => import('./src/pages/BoutiqueLoeuvre'));
 const ListeAttenteLoeuvre = lazy(() => import('./src/pages/ListeAttenteLoeuvre'));
+const QuizLoeuvre = lazy(() => import('./src/pages/QuizLoeuvre'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#050C1A]">
@@ -166,7 +167,7 @@ const App: React.FC = () => (
 
           {/* ── Standalone Quiz + Livres live under /medias,
                 Événements lives under /formations. Keep legacy URLs redirecting. */}
-          <Route path="/quiz"       element={<QuizPage />} />
+          <Route path="/quiz"       element={<QuizLoeuvre />} />
           <Route path="/guide"      element={<GuideLoeuvre />} />
           <Route path="/ayurveda"   element={<Navigate to="/quiz"                    replace />} />
           <Route path="/livres"     element={<Navigate to="/medias#livres"           replace />} />
