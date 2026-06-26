@@ -137,7 +137,8 @@ const App: React.FC = () => (
           <Route path="/accueil-classic" element={<InspiratHome />} />
 
           {/* ── Pages Inspirata ───────────────────────────────────────── */}
-          {/* Preview refonte L'Œuvre de l'Expérience Origine (Phase 1) */}
+          {/* Expérience Origine — refonte React L'Œuvre (remplace le bundle statique) */}
+          <Route path="/origine" element={<OrigineExperience />} />
           <Route path="/origine-loeuvre" element={<OrigineExperience />} />
           {/* Podcast porté en React (remplace le bundle statique /podcast) */}
           <Route path="/podcast" element={<PodcastEpisodes />} />
