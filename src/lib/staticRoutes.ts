@@ -4,7 +4,7 @@
 // swallow the request before Firebase can serve the real HTML.
 //
 // Keep this list in sync with firebase.json's rewrites.
-export const STATIC_ROUTES = ['/accueil', '/origine', '/podcast', '/vata'] as const;
+export const STATIC_ROUTES = ['/accueil', '/origine', '/vata'] as const;
 
 export function isStaticRoute(path: string | undefined | null): boolean {
   if (!path) return false;

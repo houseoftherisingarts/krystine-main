@@ -6,7 +6,7 @@ import react from '@vitejs/plugin-react';
 // Dev-server middleware: serve /accueil, /origine, /podcast, /vata as their own
 // static SPAs from public/. Without this, Vite's catch-all sends them to the main
 // React app, which then redirects back (isStaticRoute) -> infinite reload loop.
-const STATIC_APPS = ['accueil', 'origine', 'podcast', 'vata'];
+const STATIC_APPS = ['accueil', 'origine', 'vata'];
 
 function serveStaticApps(): Plugin {
   return {

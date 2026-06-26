@@ -61,6 +61,9 @@ const VexelPage        = lazy(() => import('./src/pages/VexelPage'));
 // Expérience Origine — refonte React au style L'Œuvre (remplacera le bundle
 // statique /origine une fois toutes les sections portées). Preview en cours.
 const OrigineExperience = lazy(() => import('./src/pages/OrigineExperience'));
+// Podcast « Au-delà des tendances » — porté du bundle statique vers React
+// (fetch fiable du flux HelloAudio, les 36 épisodes, style L'Œuvre).
+const PodcastEpisodes = lazy(() => import('./src/pages/PodcastEpisodes'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#050C1A]">
@@ -136,6 +139,8 @@ const App: React.FC = () => (
           {/* ── Pages Inspirata ───────────────────────────────────────── */}
           {/* Preview refonte L'Œuvre de l'Expérience Origine (Phase 1) */}
           <Route path="/origine-loeuvre" element={<OrigineExperience />} />
+          {/* Podcast porté en React (remplace le bundle statique /podcast) */}
+          <Route path="/podcast" element={<PodcastEpisodes />} />
           <Route path="/krystine"        element={<ConferencierePage />} />
           <Route path="/boutique"        element={<BoutiquePage />} />
           <Route path="/boutique/:slug"  element={<BoutiqueCollectionPage />} />
