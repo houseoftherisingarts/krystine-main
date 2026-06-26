@@ -73,6 +73,8 @@ const ConferenciereLoeuvre = lazy(() => import('./src/pages/ConferenciereLoeuvre
 const MediasLoeuvre = lazy(() => import('./src/pages/MediasLoeuvre'));
 const GuideLoeuvre = lazy(() => import('./src/pages/GuideLoeuvre'));
 const FormationsLoeuvre = lazy(() => import('./src/pages/FormationsLoeuvre'));
+const BoutiqueLoeuvre = lazy(() => import('./src/pages/BoutiqueLoeuvre'));
+const ListeAttenteLoeuvre = lazy(() => import('./src/pages/ListeAttenteLoeuvre'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#050C1A]">
@@ -154,7 +156,7 @@ const App: React.FC = () => (
           {/* Vata porté en React (remplace le bundle statique /vata) */}
           <Route path="/vata" element={<VataExperience />} />
           <Route path="/krystine"        element={<ConferenciereLoeuvre />} />
-          <Route path="/boutique"        element={<BoutiquePage />} />
+          <Route path="/boutique"        element={<BoutiqueLoeuvre />} />
           <Route path="/boutique/:slug"  element={<BoutiqueCollectionPage />} />
           <Route path="/medias"          element={<MediasLoeuvre />} />
           <Route path="/medias/tv"       element={<TVPage />} />
@@ -172,7 +174,7 @@ const App: React.FC = () => (
 
           {/* ── Programmes / ex-dist ──────────────────────────────────── */}
           <Route path="/formations"        element={<FormationsLoeuvre />} />
-          <Route path="/liste-attente"     element={<ListeAttentePage />} />
+          <Route path="/liste-attente"     element={<ListeAttenteLoeuvre />} />
           {/* /origine, /podcast, /vata are served as-is from public/ — see firebase.json */}
 
           {/* ── Système ───────────────────────────────────────────────── */}
