@@ -421,35 +421,64 @@ const ConferenciereLoeuvre: React.FC = () => {
     }
   };
 
+  const heroItem = {
+    hidden: { opacity: 0, y: 24 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.9, ease } },
+  };
+
   return (
     <div className="bg-cream text-ink font-sans antialiased">
 
-      {/* ─────────── HERO ─────────── */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-espressoDeep">
-        <div className="pointer-events-none absolute -top-1/4 -left-1/4 h-[70%] w-[70%] rounded-full bg-forest/18 blur-[150px]" />
-        <div className="pointer-events-none absolute -bottom-1/4 -right-1/5 h-[60%] w-[55%] rounded-full bg-brass/10 blur-[150px]" />
-        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-24 grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-center">
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }}>
-            <p className="font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brass mb-8">
+      {/* ─────────── HERO · même cinémagraphe que l'accueil ─────────── */}
+      <section className="relative flex min-h-screen items-center overflow-hidden bg-espressoDeep">
+        {/* cinémagraphe partagé avec le hero d'accueil */}
+        <div className="absolute inset-0 z-0" aria-hidden>
+          <video
+            className="absolute right-0 top-1/2 h-full w-auto min-w-full -translate-y-1/2 object-cover md:left-auto md:w-[82%]"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster="/accueil/assets/hero-ml-poster.jpg"
+          >
+            <source src="/accueil/assets/hero-motionleap.mp4" type="video/mp4" />
+          </video>
+        </div>
+        {/* voile lisible, du sombre vers la transparence (comme l'accueil) */}
+        <div
+          className="absolute inset-0 z-[1]"
+          aria-hidden
+          style={{ background: 'linear-gradient(90deg, rgba(22,16,10,0.95) 0%, rgba(22,16,10,0.88) 22%, rgba(22,16,10,0.62) 42%, rgba(22,16,10,0.3) 62%, rgba(22,16,10,0.08) 80%, rgba(22,16,10,0) 94%)' }}
+        />
+
+        <motion.div
+          className="relative z-[2] mx-auto w-full max-w-[1280px] px-6 md:px-12 py-28"
+          initial="hidden"
+          animate="show"
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.09 } } }}
+        >
+          <div className="max-w-[36rem]">
+            <motion.p variants={heroItem} className="font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brass mb-8">
               Conférencière · Autrice
-            </p>
-            <h1 className="font-serif font-medium text-ctext leading-[0.98] text-[clamp(2.6rem,5.6vw,4.8rem)]">
+            </motion.p>
+            <motion.h1 variants={heroItem} className="font-serif font-medium text-ctext leading-[0.96] text-[clamp(2.8rem,6vw,5.2rem)]">
               Krystine<br /><span className="italic font-normal text-brassBright">St-Laurent</span>
-            </h1>
-            <p className="mt-7 font-serif italic text-[clamp(1.3rem,2.6vw,2rem)] leading-snug text-ctextSoft max-w-[26ch]">
+            </motion.h1>
+            <motion.p variants={heroItem} className="mt-7 font-serif italic text-[clamp(1.3rem,2.6vw,2rem)] leading-snug text-ctextSoft max-w-[26ch]">
               Une voix rare, où la rigueur du clinicien rencontre la sagesse millénaire.
-            </p>
-            <div className="mt-9 flex flex-wrap gap-2.5">
+            </motion.p>
+            <motion.div variants={heroItem} className="mt-8 flex flex-wrap gap-2.5">
               {BADGES.map((b) => (
                 <span key={b} className="inline-flex items-center gap-2 rounded-full border border-brass/30 bg-brass/8 px-4 py-1.5 text-[0.62rem] font-sans uppercase tracking-[0.16em] text-brass">
                   <span className="w-1 h-1 rounded-full bg-brass" />{b}
                 </span>
               ))}
-            </div>
-            <p className="mt-9 font-sans text-[0.98rem] leading-[1.8] text-ctextSoft max-w-[48ch]">
+            </motion.div>
+            <motion.p variants={heroItem} className="mt-8 font-sans text-[0.98rem] leading-[1.8] text-ctextSoft max-w-[46ch]">
               Chaque conférence est cousue main pour le public qui l'attend. Pas un module pré-fait, une rencontre.
-            </p>
-            <div className="mt-11 flex flex-wrap items-center gap-5">
+            </motion.p>
+            <motion.div variants={heroItem} className="mt-11 flex flex-wrap items-center gap-5">
               <button onClick={scrollToForm}
                 className="inline-flex items-center gap-3 rounded-full bg-brass px-8 py-3.5 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-espressoDeep transition-colors duration-300 hover:bg-brassBright min-h-[44px]">
                 Réserver Krystine <ArrowDown size={16} />
@@ -457,28 +486,9 @@ const ConferenciereLoeuvre: React.FC = () => {
               <a href="#talks" className="inline-flex items-center gap-2 font-serif italic text-ctextSoft/85 text-lg border-b border-brass/30 pb-1 transition-colors hover:text-brassBright">
                 Voir les conférences
               </a>
-            </div>
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, ease, delay: 0.15 }} className="relative">
-            <div className="relative rounded-[2rem] overflow-hidden border border-brass/25 shadow-[0_30px_80px_rgba(0,0,0,0.5)] aspect-[4/5]">
-              <motion.img
-                src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=1000&output=webp"
-                alt="Krystine St-Laurent, conférencière"
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
-                animate={{ scale: [1.04, 1.1] }}
-                transition={{ duration: 26, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
-              />
-              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(160deg, transparent 50%, rgba(22,16,10,0.55) 100%)' }} />
-              <div className="absolute bottom-5 left-5">
-                <span className="inline-flex items-center gap-2 rounded-full bg-espressoDeep/80 backdrop-blur px-4 py-2 text-[0.6rem] font-sans uppercase tracking-[0.2em] text-brass">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brass animate-pulse" /> En conférence
-                </span>
-              </div>
-            </div>
-          </motion.div>
-        </div>
+            </motion.div>
+          </div>
+        </motion.div>
       </section>
 
       {/* ─────────── SON HISTOIRE ─────────── */}

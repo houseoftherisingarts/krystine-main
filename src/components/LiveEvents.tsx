@@ -10,6 +10,7 @@ import {
 } from '../lib/calendar';
 import OrigineSprig from './OrigineSprig';
 import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 
 // Title-matched apothecary glyph for every event. All events are mapped
 // so the hash-picked botanical fallback never fires — the formations page
@@ -77,25 +78,161 @@ const LiveEventsSection: React.FC<SectionProps> = ({
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-        {events.map((ev, idx) => (
-          <LiveEventCard
+      {/* Agenda éditorial : lignes pleine largeur, gros chiffre de date,
+          filets fins, aucune carte ni icône générique. Le câblage (waitlist,
+          tournée, billets, calendrier) est préservé, juste re-présenté. */}
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.12 }}
+        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+        className="mx-auto max-w-[1040px]"
+      >
+        {events.map((ev) => (
+          <LiveEventRow
             key={ev.id}
             event={ev}
             onWaitlist={() => ev.waitlistTarget && setWaitlistTarget(ev.waitlistTarget)}
             onTourRequest={() => setTourOpen(true)}
-            // Diagonal parchment pattern — every other card is slightly
-            // deeper in tone so the grid reads as hand-laid cards, not a
-            // flat spreadsheet. idx 0 & 3 = dark, 1 & 2 = light.
-            tone={(Math.floor(idx / 2) + idx) % 2 === 0 ? 'dark' : 'light'}
-            stagger={idx}
           />
         ))}
-      </div>
+      </motion.div>
 
       <WaitlistModal target={waitlistTarget} onClose={() => setWaitlistTarget(null)} />
       <ConferenceTourModal open={tourOpen} onClose={() => setTourOpen(false)} />
     </section>
+  );
+};
+
+// ─── Ligne d'agenda éditoriale (présentation premium, sans carte) ────────────
+
+const actionLink =
+  'group/cta inline-flex items-center gap-1.5 font-sans text-[0.64rem] uppercase tracking-[0.2em] text-ink border-b border-brass/40 pb-1 transition-colors hover:text-brassInk hover:border-brassInk';
+
+const LiveEventRow: React.FC<{ event: LiveEvent; onWaitlist: () => void; onTourRequest: () => void }> = ({
+  event: ev, onWaitlist, onTourRequest,
+}) => {
+  const { lang } = useApp();
+  const navigate = useNavigate();
+  const reduce = useReducedMotion();
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(new Date()), 60_000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const title    = lang === 'FR' ? ev.titleFR    : ev.titleEN;
+  const subtitle = lang === 'FR' ? ev.subtitleFR : ev.subtitleEN;
+  const dateLabel= lang === 'FR' ? ev.dateFR     : ev.dateEN;
+  const location = lang === 'FR' ? ev.locationFR : ev.locationEN;
+  const body     = lang === 'FR' ? ev.bodyFR     : ev.bodyEN;
+
+  // Gros chiffre de date à partir de startDate quand on l'a ; sinon on tombe
+  // sur le libellé éditorial (dateFR) en serif italique.
+  const d = ev.startDate ? new Date(ev.startDate) : null;
+  const validD = d !== null && !Number.isNaN(d.getTime());
+  const day = validD ? d!.getDate() : null;
+  const monthYear = validD
+    ? d!.toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA', { month: 'short', year: 'numeric' }).replace('.', '')
+    : null;
+
+  const kindLabel = (() => {
+    switch (ev.kind) {
+      case 'in-progress':      return lang === 'FR' ? 'En cours'             : 'In progress';
+      case 'ticketed':         return lang === 'FR' ? 'Billetterie ouverte'  : 'Tickets open';
+      case 'retreat-waitlist': return lang === 'FR' ? 'Retraite · liste'     : 'Retreat · list';
+      case 'launch-waitlist':  return lang === 'FR' ? 'Lancement · liste'    : 'Launch · list';
+      case 'tour-request':     return lang === 'FR' ? 'Tournée · sur demande': 'Tour · on request';
+      case 'announcement':     return lang === 'FR' ? 'Annonce'              : 'Announcement';
+    }
+  })();
+
+  const countdown = (() => {
+    if (!ev.startDate) return null;
+    const target = new Date(ev.startDate).getTime();
+    if (Number.isNaN(target)) return null;
+    const diff = target - now.getTime();
+    if (diff <= 0) return null;
+    const days = Math.floor(diff / 86_400_000);
+    if (days > 14) return null;
+    const hours = Math.floor((diff % 86_400_000) / 3_600_000);
+    const minutes = Math.floor((diff % 3_600_000) / 60_000);
+    if (lang === 'FR') return days < 1 ? `Dans ${hours} h ${minutes.toString().padStart(2, '0')}` : `Dans ${days} ${days === 1 ? 'jour' : 'jours'}`;
+    return days < 1 ? `In ${hours}h ${minutes.toString().padStart(2, '0')}` : `In ${days} day${days === 1 ? '' : 's'}`;
+  })();
+
+  const rowVariants = {
+    hidden: { opacity: 0, y: reduce ? 0 : 24 },
+    show:   { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } },
+  };
+
+  return (
+    <motion.article
+      variants={rowVariants}
+      className="group grid grid-cols-1 gap-4 border-t border-ink/12 py-9 first:border-t-0 md:grid-cols-[150px_1fr] md:gap-10 md:py-11"
+    >
+      {/* Rail de date */}
+      <div className="flex items-baseline gap-3 md:flex-col md:items-start md:gap-1">
+        {day !== null ? (
+          <>
+            <span className="font-serif leading-[0.8] tabular-nums text-ink text-[clamp(3rem,5vw,4.4rem)] transition-colors duration-500 group-hover:text-brassInk">
+              {day}
+            </span>
+            <span className="font-sans text-[0.6rem] uppercase tracking-[0.22em] text-brassInk">{monthYear}</span>
+          </>
+        ) : (
+          <span className="font-serif italic leading-tight text-inkSoft text-[1.4rem]">{dateLabel}</span>
+        )}
+      </div>
+
+      {/* Contenu */}
+      <div className="min-w-0">
+        <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+          <span className="font-sans text-[0.6rem] uppercase tracking-[0.24em] text-brassInk">{kindLabel}</span>
+          {countdown && (
+            <span className="font-sans text-[0.6rem] uppercase tracking-[0.24em] text-inkSoft/70">· {countdown}</span>
+          )}
+          {day !== null && dateLabel && (
+            <span className="font-serif italic text-[0.95rem] text-inkSoft/80">{dateLabel}</span>
+          )}
+        </div>
+
+        <h3 className="font-serif leading-[1.1] text-ink text-[clamp(1.5rem,2.6vw,2.2rem)] transition-colors duration-500 group-hover:text-brassInk">
+          {title}
+        </h3>
+        {subtitle && <p className="mt-1.5 font-serif italic text-[1.05rem] text-inkSoft">{subtitle}</p>}
+        {location && <p className="mt-3 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-inkSoft/70">{location}</p>}
+        {body && <p className="mt-4 max-w-[60ch] font-sans text-[0.95rem] leading-[1.8] text-inkSoft">{body}</p>}
+
+        <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-3">
+          {ev.kind === 'in-progress' && ev.internalHref && (
+            <button type="button" onClick={() => goToRoute(navigate, ev.internalHref!)} className={actionLink}>
+              {(lang === 'FR' ? ev.ctaLabelFR : ev.ctaLabelEN) ?? (lang === 'FR' ? 'Découvrir le programme' : 'View the program')}
+              <ArrowRight size={14} className="transition-transform duration-300 group-hover/cta:translate-x-1" />
+            </button>
+          )}
+          {ev.kind === 'ticketed' && ev.registerUrl && (
+            <a href={ev.registerUrl} target="_blank" rel="noopener noreferrer" className={actionLink}>
+              {(lang === 'FR' ? ev.ctaLabelFR : ev.ctaLabelEN) ?? (lang === 'FR' ? 'Billets' : 'Tickets')}
+              <ArrowUpRight size={14} className="transition-transform duration-300 group-hover/cta:translate-x-0.5 group-hover/cta:-translate-y-0.5" />
+            </a>
+          )}
+          {(ev.kind === 'retreat-waitlist' || ev.kind === 'launch-waitlist') && ev.waitlistTarget && (
+            <button type="button" onClick={onWaitlist} className={actionLink}>
+              {(lang === 'FR' ? ev.ctaLabelFR : ev.ctaLabelEN) ?? (lang === 'FR' ? "Liste d'attente" : 'Join waitlist')}
+              <ArrowRight size={14} className="transition-transform duration-300 group-hover/cta:translate-x-1" />
+            </button>
+          )}
+          {(ev.kind === 'tour-request' || ev.triggersTourRequest) && (
+            <button type="button" onClick={onTourRequest} className={actionLink}>
+              {(lang === 'FR' ? ev.ctaLabelFR : ev.ctaLabelEN) ?? (lang === 'FR' ? 'Demander une tournée' : 'Request a tour stop')}
+              <ArrowRight size={14} className="transition-transform duration-300 group-hover/cta:translate-x-1" />
+            </button>
+          )}
+          {ev.startDate && <AddToCalendarMenu event={ev} />}
+        </div>
+      </div>
+    </motion.article>
   );
 };
 
@@ -421,47 +558,42 @@ const AddToCalendarMenu: React.FC<{ event: LiveEvent }> = ({ event }) => {
       <button
         type="button"
         onClick={() => setOpen(v => !v)}
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#2a2015]/15 dark:border-white/15 text-[#2a2015]/80 dark:text-white/80 font-bold uppercase tracking-widest text-[11px] hover:border-[#bb9a5e] hover:text-[#7d6330] transition-colors"
+        className="inline-flex items-center gap-1.5 font-sans text-[0.64rem] uppercase tracking-[0.2em] text-inkSoft border-b border-transparent pb-1 transition-colors hover:text-brassInk hover:border-brassInk/50"
         aria-haspopup="menu"
         aria-expanded={open}
       >
-        <i className="fa-regular fa-calendar-plus text-[10px]" />
-        {lang === 'FR' ? 'Calendrier' : 'Calendar'}
-        <i className={`fa-solid fa-chevron-${open ? 'up' : 'down'} text-[9px]`} />
+        {lang === 'FR' ? 'Ajouter au calendrier' : 'Add to calendar'}
       </button>
 
       {open && (
         <div
           role="menu"
-          className="absolute z-20 mt-2 right-0 w-64 rounded-2xl bg-white dark:bg-[#2a2015] border border-[#2a2015]/10 dark:border-white/10 shadow-[0_14px_40px_rgba(58,37,30,0.18)] overflow-hidden"
+          className="absolute z-20 mt-3 right-0 w-64 rounded-xl bg-card border border-cream3 shadow-[0_14px_40px_rgba(58,37,30,0.16)] overflow-hidden"
         >
-          <MenuItem onClick={() => handle('ics')}     icon="fa-apple" brand="fa-brands"
-            label={lang === 'FR' ? 'Apple · iCal · Outlook' : 'Apple · iCal · Outlook'}
+          <MenuItem onClick={() => handle('ics')}
+            label="Apple · iCal · Outlook"
             sub={lang === 'FR' ? 'Télécharger .ics' : 'Download .ics'} />
-          <MenuItem onClick={() => handle('google')}  icon="fa-google" brand="fa-brands"
+          <MenuItem onClick={() => handle('google')}
             label="Google Calendar"
-            sub={lang === 'FR' ? 'Ouvrir dans un nouvel onglet' : 'Open in new tab'} />
-          <MenuItem onClick={() => handle('outlook')} icon="fa-microsoft" brand="fa-brands"
+            sub={lang === 'FR' ? 'Nouvel onglet' : 'New tab'} />
+          <MenuItem onClick={() => handle('outlook')}
             label="Outlook"
-            sub={lang === 'FR' ? 'Outlook.com' : 'Outlook.com'} />
+            sub="Outlook.com" />
         </div>
       )}
     </div>
   );
 };
 
-const MenuItem: React.FC<{ onClick: () => void; icon: string; brand?: string; label: string; sub?: string }> = ({ onClick, icon, brand = 'fa-solid', label, sub }) => (
+const MenuItem: React.FC<{ onClick: () => void; label: string; sub?: string }> = ({ onClick, label, sub }) => (
   <button
     type="button"
     role="menuitem"
     onClick={onClick}
-    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#f6f3ee] dark:hover:bg-white/5 transition-colors"
+    className="w-full px-4 py-3 text-left transition-colors hover:bg-cream2"
   >
-    <i className={`${brand} ${icon} text-[#7d6330] text-sm w-4 text-center`} />
-    <div className="min-w-0">
-      <p className="text-sm font-medium text-[#2a2015] dark:text-white truncate">{label}</p>
-      {sub && <p className="text-[11px] text-[#2a2015]/50 dark:text-white/50 truncate">{sub}</p>}
-    </div>
+    <p className="font-sans text-sm font-medium text-ink truncate">{label}</p>
+    {sub && <p className="font-sans text-[11px] text-inkSoft/70 truncate">{sub}</p>}
   </button>
 );
 
