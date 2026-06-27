@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import { AppProvider } from './src/contexts/AppContext';
 import { EditModeProvider } from './src/contexts/EditModeContext';
 import { SiteFlagsProvider } from './src/contexts/SiteFlagsContext';
@@ -77,14 +78,31 @@ const BoutiqueLoeuvre = lazy(() => import('./src/pages/BoutiqueLoeuvre'));
 const ListeAttenteLoeuvre = lazy(() => import('./src/pages/ListeAttenteLoeuvre'));
 const QuizLoeuvre = lazy(() => import('./src/pages/QuizLoeuvre'));
 
+// On-palette loader (espresso + brass). Replaces the old white/gold spinner
+// that caused a jarring flash of the previous design on every page change.
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#050C1A]">
-    <div className="flex flex-col items-center gap-4">
-      <div className="w-12 h-12 rounded-full border-2 border-t-transparent border-[#D4AF37] animate-spin" />
-      <p className="text-xs uppercase tracking-widest text-[#D4AF37] font-semibold">Chargement...</p>
-    </div>
+  <div className="min-h-screen flex items-center justify-center bg-espressoDeep">
+    <div className="w-9 h-9 rounded-full border-2 border-brass/25 border-t-brass animate-spin" />
   </div>
 );
+
+// Smooth cross-page fade so navigations feel fluid instead of popping in.
+// Keyed on the pathname so each page re-mounts and plays its entrance.
+// Respects prefers-reduced-motion.
+const RouteFade: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const location = useLocation();
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      key={location.pathname}
+      initial={reduce ? false : { opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+};
 
 const Chrome: React.FC = () => {
   const location = useLocation();
@@ -140,6 +158,7 @@ const App: React.FC = () => (
       <EditOverlay />
       <ErrorBoundary>
       <Suspense fallback={<PageLoader />}>
+        <RouteFade>
         <Routes>
           {/* ── Écran d'accueil (splash) puis accueil principal ────────
               Splash is currently hidden — "/" lands straight on /accueil.
@@ -188,6 +207,7 @@ const App: React.FC = () => (
           {/* Hidden / unlisted — Salon des Inconnus inbound-leads inbox */}
           <Route path="/vexel" element={<VexelPage />} />
         </Routes>
+        </RouteFade>
       </Suspense>
       </ErrorBoundary>
       <Footing />
