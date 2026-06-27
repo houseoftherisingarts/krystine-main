@@ -22,15 +22,27 @@ const NavBar: React.FC = () => {
   const { cartItems, setCartOpen } = useCart();
   const { resolveHref } = useBoutique();
   const location = useLocation();
+  const isHome = location.pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  // Sur la home, le NavBar est le « second header » : caché au-dessus du hero,
+  // révélé une fois passé ~85% de la première fenêtre (entrée dans la Trilogie).
+  const [pastHero, setPastHero] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+      setPastHero(window.scrollY > window.innerHeight * 0.85);
+    };
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // Hors home : toujours visible (comportement inchangé). Sur home : visible
+  // seulement après le hero.
+  const show = !isHome || pastHero;
 
   useEffect(() => { setMenuOpen(false); setLangOpen(false); }, [location.pathname]);
 
@@ -40,9 +52,9 @@ const NavBar: React.FC = () => {
   return (
     <motion.nav
       initial={{ y: -16, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
+      animate={{ y: show ? 0 : -120, opacity: show ? 1 : 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className={`fixed top-0 w-full z-40 transition-[background,border,box-shadow] duration-500 ${
+      className={`fixed top-0 w-full z-40 transition-[background,border,box-shadow] duration-500 ${show ? '' : 'pointer-events-none'} ${
         scrolled
           ? 'bg-cream/90 dark:bg-espressoDeep/95 backdrop-blur-xl border-b border-brass/15 shadow-[0_6px_34px_rgba(58,49,38,0.10)]'
           : 'bg-cream/55 dark:bg-espressoDeep/70 backdrop-blur-xl border-b border-transparent'

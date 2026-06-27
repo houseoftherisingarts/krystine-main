@@ -22,16 +22,6 @@ import { processDevAdminUrl } from './src/lib/devAdmin';
 // and decides who's an admin. No-op in production builds.
 processDevAdminUrl();
 
-// The home is served as a self-contained static bundle via Firebase Hosting
-// (public/accueil/, see firebase.json rewrites + staticRoutes.ts). On client-side
-// navigation to /accueil, force a full document load so Firebase serves the static
-// landing instead of React Router rendering the SPA. The previous React home is
-// kept at /accueil-classic for rollback and side-by-side comparison.
-function HardReload({ to }: { to: string }) {
-  useEffect(() => { window.location.replace(to); }, [to]);
-  return null;
-}
-
 // Lazy-loaded pages for code splitting
 const SplashScreen     = lazy(() => import('./src/pages/SplashScreen'));
 const InspiratHome     = lazy(() => import('./src/pages/InspiratHome'));
@@ -76,6 +66,9 @@ const FormationsLoeuvre = lazy(() => import('./src/pages/FormationsLoeuvre'));
 const BoutiqueLoeuvre = lazy(() => import('./src/pages/BoutiqueLoeuvre'));
 const ListeAttenteLoeuvre = lazy(() => import('./src/pages/ListeAttenteLoeuvre'));
 const QuizLoeuvre = lazy(() => import('./src/pages/QuizLoeuvre'));
+// Accueil porté en React au style L'Œuvre (remplace le bundle statique
+// public/accueil/). Le chrome (NavBar/Footer) est monté globalement par App.
+const LoeuvreHome = lazy(() => import('./src/pages/LoeuvreHome'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#050C1A]">
@@ -88,9 +81,10 @@ const PageLoader = () => (
 
 const Chrome: React.FC = () => {
   const location = useLocation();
+  // Sur la home, le NavBar est le « second header » : il reste masqué au-dessus
+  // du hero L'Œuvre (la home a son propre header d'origine) et se révèle, collé
+  // en haut, une fois la Trilogie atteinte (logique dans NavBar via pastHero).
   const hidden = location.pathname.startsWith('/admin')
-    || location.pathname === '/'
-    || location.pathname === '/accueil'
     || location.pathname === '/desinscription'
     || location.pathname === '/slidebg';
   if (hidden) return null;
@@ -106,7 +100,6 @@ const Footing: React.FC = () => {
   const location = useLocation();
   if (
     location.pathname.startsWith('/admin')
-    || location.pathname === '/'
     || location.pathname === '/desinscription'
     || location.pathname === '/slidebg'
   ) return null;
@@ -144,8 +137,9 @@ const App: React.FC = () => (
           {/* ── Écran d'accueil (splash) puis accueil principal ────────
               Splash is currently hidden — "/" lands straight on /accueil.
               Restore by swapping back to `element={<SplashScreen />}` below. */}
-          <Route path="/" element={<Navigate to="/accueil" replace />} />
-          <Route path="/accueil" element={<HardReload to="/accueil" />} />
+          <Route path="/" element={<LoeuvreHome />} />
+          {/* Ancienne URL du bundle statique — redirige vers la home React. */}
+          <Route path="/accueil" element={<Navigate to="/" replace />} />
           <Route path="/accueil-classic" element={<InspiratHome />} />
 
           {/* ── Pages Inspirata ───────────────────────────────────────── */}
