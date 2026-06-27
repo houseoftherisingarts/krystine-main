@@ -231,7 +231,7 @@ const NavBar: React.FC = () => {
             onClick={() => setMenuOpen(v => !v)}
             aria-label={menuOpen ? (lang === 'FR' ? 'Fermer le menu' : 'Close menu') : (lang === 'FR' ? 'Ouvrir le menu' : 'Open menu')}
             aria-expanded={menuOpen}
-            className="lg:hidden w-11 h-11 flex items-center justify-center rounded-full text-ink/80 dark:text-ctext/80 hover:text-brassInk dark:hover:text-brassBright hover:bg-brass/8 transition-colors"
+            className="xl:hidden w-11 h-11 flex items-center justify-center rounded-full text-ink/80 dark:text-ctext/80 hover:text-brassInk dark:hover:text-brassBright hover:bg-brass/8 transition-colors"
           >
             {menuOpen ? <X size={20} strokeWidth={1.75} /> : <Menu size={20} strokeWidth={1.75} />}
           </button>
@@ -246,7 +246,7 @@ const NavBar: React.FC = () => {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden overflow-hidden border-t border-brass/12"
+            className="xl:hidden overflow-hidden border-t border-brass/12"
           >
             <div className="bg-cream/97 dark:bg-espressoDeep/98 backdrop-blur-xl px-6 py-4 flex flex-col">
               {NAV.map((item, i) => {
