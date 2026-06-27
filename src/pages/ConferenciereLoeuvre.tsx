@@ -71,7 +71,7 @@ const SIGNATURE_TALKS: { icon: React.ReactNode; kicker: string; title: string; l
     icon: <Compass size={20} />,
     kicker: 'Conférence vedette',
     title: 'Au-delà des tendances',
-    lede: "Reprendre SA direction — écouter ce que le corps sait avant que l'algorithme ne l'écrase.",
+    lede: "Reprendre SA direction, écouter ce que le corps sait avant que l'algorithme ne l'écrase.",
     duration: '60 à 90 min',
     format: 'Présentiel · Virtuel',
   },
@@ -79,7 +79,7 @@ const SIGNATURE_TALKS: { icon: React.ReactNode; kicker: string; title: string; l
     icon: <Mic size={20} />,
     kicker: 'Conférence signature',
     title: "L'Ayurveda comme boussole intérieure",
-    lede: 'Une cartographie ancestrale pour la vie moderne — comment les éléments lisent ce qui se passe en vous.',
+    lede: 'Une cartographie ancestrale pour la vie moderne : comment les éléments lisent ce qui se passe en vous.',
     duration: '90 min · ½ journée',
     format: 'Présentiel · Hybride',
     feature: true,
@@ -88,7 +88,7 @@ const SIGNATURE_TALKS: { icon: React.ReactNode; kicker: string; title: string; l
     icon: <Moon size={20} />,
     kicker: 'Conférence dédiée',
     title: 'La femme et ses saisons',
-    lede: "Cycles biologiques et saisons intérieures — vivre en alliance avec son corps plutôt qu'à son insu.",
+    lede: "Cycles biologiques et saisons intérieures, pour vivre en alliance avec son corps plutôt qu'à son insu.",
     duration: '60 min',
     format: 'Présentiel',
   },
@@ -96,7 +96,7 @@ const SIGNATURE_TALKS: { icon: React.ReactNode; kicker: string; title: string; l
 
 const TESTIMONIALS = [
   {
-    quote: "Krystine a une voix rare — celle d'une femme qui sait, qui a vu, et qui sait nommer ce que le public n'a jamais osé dire. Notre événement n'a pas été le même après son passage.",
+    quote: "Krystine a une voix rare, celle d'une femme qui sait, qui a vu, et qui sait nommer ce que le public n'a jamais osé dire. Notre événement n'a pas été le même après son passage.",
     by: 'Productrice · Festival Mondial',
   },
   {
@@ -104,7 +104,7 @@ const TESTIMONIALS = [
     by: 'Directrice RH · Entreprise québécoise',
   },
   {
-    quote: "Krystine ne fait pas une conférence — elle ouvre un espace. Le public écoute différemment, comme s'il rentrait à la maison.",
+    quote: "Krystine ne fait pas une conférence. Elle ouvre un espace. Le public écoute différemment, comme s'il rentrait à la maison.",
     by: 'Animatrice · Salut Bonjour',
   },
 ];
@@ -118,7 +118,7 @@ const PROCESS_STEPS = [
 
 const FAQS = [
   { q: 'Quels sujets Krystine aborde-t-elle ?', a: "Ayurveda, santé féminine, médecine intégrative, équilibre travail-vie, transmission générationnelle, écologie intérieure. Les conférences sont toujours adaptées au public." },
-  { q: "Voyage-t-elle à l'extérieur du Québec ?", a: "Oui — Canada, États-Unis, France, Belgique, Suisse selon l'agenda. Indiquez la ville dans le formulaire et on vous revient avec la faisabilité." },
+  { q: "Voyage-t-elle à l'extérieur du Québec ?", a: "Oui : Canada, États-Unis, France, Belgique, Suisse selon l'agenda. Indiquez la ville dans le formulaire et on vous revient avec la faisabilité." },
   { q: 'Quels sont les délais habituels ?', a: "8 à 16 semaines avant l'événement permettent une préparation idéale. Les demandes plus serrées sont étudiées au cas par cas." },
   { q: 'En quelles langues ?', a: 'Français principalement, anglais sur demande, bilingue possible.' },
   { q: 'Quelle fourchette tarifaire ?', a: "Variable selon le format, la durée, le public et le déplacement. Indiquez votre enveloppe budgétaire dans le formulaire et l'équipe vous revient avec un devis adapté." },
@@ -305,7 +305,7 @@ const EventsSection: React.FC = () => {
           <Eyebrow>Où on se rejoint · Live</Eyebrow>
           <SectionTitle className="mt-4">Événements &amp; Conférences</SectionTitle>
           <p className="mt-6 font-serif italic text-[clamp(1.1rem,2vw,1.5rem)] text-inkSoft max-w-[44ch] mx-auto">
-            Rencontres en direct, retraites, lancements — et une tournée en préparation.
+            Rencontres en direct, retraites, lancements, plus une tournée en préparation.
           </p>
         </Reveal>
 

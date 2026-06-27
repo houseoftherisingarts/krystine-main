@@ -269,7 +269,7 @@ const BoutiqueLoeuvre: React.FC = () => {
                                   ? 'bg-forest text-cream'
                                   : 'bg-brass text-espressoDeep hover:bg-brassBright'
                               }`}
-                              aria-label={`${lang === 'FR' ? 'Ajouter au panier' : 'Add to cart'} — ${p.title}`}
+                              aria-label={`${lang === 'FR' ? 'Ajouter au panier' : 'Add to cart'} : ${p.title}`}
                             >
                               {isAdded ? (
                                 <><Check size={14} /> {lang === 'FR' ? 'Ajouté' : 'Added'}</>

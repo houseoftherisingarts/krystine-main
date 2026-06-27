@@ -172,7 +172,7 @@ export const CONTENT = {
           points: ['Conversations profondes, loin du bruit ambiant.', 'Clés pratiques inspirées de la sagesse vivante.', 'Une voix pour retrouver énergie et clarté.'],
           newsletter: { title: 'Restons connectés', subtitle: '( hors des réseaux sociaux )', desc: 'Recevez chaque nouvel épisode du podcast Inspirata directement par courriel.', button: "Je m'inscris" },
           cta: 'Accéder aux épisodes',
-          promo: '🌿 Découvrir les Rituels Essentiels — APAISE, NOURRIT, TRANSFORME 27 $',
+          promo: '🌿 Découvrir les Rituels Essentiels : APAISE, NOURRIT, TRANSFORME · 27 $',
         },
         tv: {
           title: 'Émissions et Entrevues',
@@ -266,7 +266,7 @@ export const CONTENT = {
         subtitle: 'C\'est un fil de sagesse.',
         intro: 'Dans un monde qui change à chaque seconde… Ici, pas de tendance à suivre.',
         list: ['Parfois : une méditation, un rituel', 'Parfois : un extrait du prochain livre', 'Parfois : un simple rappel'],
-        outro: 'Pour celles et ceux qui ressentent un appel — même doux, même flou.',
+        outro: 'Pour celles et ceux qui ressentent un appel, même doux, même flou.',
         formTitle: 'Rester connecté·e',
         cta: 'Rejoindre le fil',
       },
@@ -313,7 +313,7 @@ export const CONTENT = {
       transition: 'Découvrir encore plus avec Krystine',
       about: {
         title: 'Krystine St-Laurent',
-        p1: '37 ans à traverser les milieux de la santé — soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque — avant de choisir l\'herboristerie, l\'Ayurveda et l\'aromathérapie.',
+        p1: '37 ans à traverser les milieux de la santé (soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque) avant de choisir l\'herboristerie, l\'Ayurveda et l\'aromathérapie.',
         testimonials: [
           { text: 'Personne ne parle de ces choses-là comme Krystine. Quand elle explique, tout devient clair.', author: 'Annie' },
           { text: 'Je me suis rarement écoutée tout au long de ma vie. C\'est la première fois que quelqu\'un me donne les outils pour le faire.', author: 'Françoise' },
@@ -359,7 +359,7 @@ export const CONTENT = {
     cards: {
       founder: {
         title: 'Krystine St-Laurent',
-        subtitle: '37 years of experience — critical care, clinical research, behind the scenes of the system — before choosing herbalism, Ayurveda, and aromatherapy.',
+        subtitle: '37 years of experience (critical care, clinical research, behind the scenes of the system) before choosing herbalism, Ayurveda, and aromatherapy.',
         link: '/krystine',
         banner: 'Author · Ayurveda Trilogy · Speaker',
         cta: 'Meet her',
@@ -475,7 +475,7 @@ export const CONTENT = {
       bio: { intro: 'In a world of constant acceleration, slowing down is essential.', p1: 'For more than 37 years, I have woven rituals rooted in Ayurveda, plants, breathing, and inner listening.', p2: 'This work does not follow trends.', highlight: 'Two of my books have been best-sellers.', expert: 'Emergency Nurse (10 years)', mission: 'I dedicate my life to the Art of Conscious Living.', outro: 'Welcome to a space to reconnect.' },
       stats: [{ value: '37+', label: 'Years of Experience', sub: 'Holistic Health' }, { value: '2', label: 'Francophonie', sub: 'Best-Sellers' }, { value: '3', label: 'Santé La Vie', sub: 'TV Seasons' }, { value: '10', label: 'Critical Care', sub: 'Years' }],
       story: { title: 'THE LOVE STORY', subtitle: 'BETWEEN KRYSTINE ST-LAURENT & AYURVEDA', p1: 'I have the immense privilege of living my dream life daily.', p2: 'Inspired by the history of the first nurses in America (the Augustinian sisters).', p3: 'I deeply believe our body is unique and made to regenerate.', p4: 'Imagine a vibrant, alive, conscious community.', p5: 'I wish to accompany you on this Ayurvedic path: a return to oneself.' },
-      newsletter: { title: 'It\'s not a newsletter.', subtitle: 'It\'s a thread of wisdom.', intro: 'In a world that changes every second...', list: ['Sometimes: a meditation, a ritual', 'Sometimes: an excerpt from the next book', 'Sometimes: a simple reminder'], outro: 'For those who feel a call — even soft, even blurry.', formTitle: 'Stay Connected', cta: 'Join the thread' },
+      newsletter: { title: 'It\'s not a newsletter.', subtitle: 'It\'s a thread of wisdom.', intro: 'In a world that changes every second...', list: ['Sometimes: a meditation, a ritual', 'Sometimes: an excerpt from the next book', 'Sometimes: a simple reminder'], outro: 'For those who feel a call, even soft, even blurry.', formTitle: 'Stay Connected', cta: 'Join the thread' },
       footerBio: { title: 'WHO IS KRYSTINE ST-LAURENT?', text: 'Krystine St-Laurent is a best-selling author, international speaker, and recognized expert in Ayurveda.' },
       cta: 'Book Krystine',
     },

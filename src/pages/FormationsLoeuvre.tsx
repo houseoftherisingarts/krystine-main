@@ -80,8 +80,8 @@ const PROGRAMMES: Programme[] = [
     titleEN: 'The Origin Experience',
     subtitleFR: 'Retrouver votre boussole intérieure',
     subtitleEN: 'Rediscover your inner compass',
-    bodyFR: "Un parcours de 12 semaines au cœur de l'Ayurveda. La cohorte en cours est complète — inscrivez-vous à la liste d'attente pour la prochaine ouverture.",
-    bodyEN: 'A 12-week journey at the heart of Ayurveda. The current cohort is full — join the waitlist for the next opening.',
+    bodyFR: "Un parcours de 12 semaines au cœur de l'Ayurveda. La cohorte en cours est complète. Inscrivez-vous à la liste d'attente pour la prochaine ouverture.",
+    bodyEN: 'A 12-week journey at the heart of Ayurveda. The current cohort is full. Join the waitlist for the next opening.',
     statusFR: "Liste d'attente ouverte",
     statusEN: 'Waitlist open',
     ctaFR: "Rejoindre la liste d'attente",
@@ -454,8 +454,8 @@ const FormationsLoeuvre: React.FC = () => {
               </SectionTitle>
               <p className="mt-5 font-serif italic text-[clamp(1.05rem,1.9vw,1.4rem)] text-ctextSoft max-w-[52ch] mx-auto">
                 {lang === 'FR'
-                  ? 'Rencontres en direct, retraites, lancements — et une tournée en préparation.'
-                  : 'Live gatherings, retreats, launches — and a tour in the making.'}
+                  ? 'Rencontres en direct, retraites, lancements, plus une tournée en préparation.'
+                  : 'Live gatherings, retreats, launches, and a tour in the making.'}
               </p>
               <div className="mt-6 h-px w-16 bg-brass/70 mx-auto" />
             </Reveal>

@@ -76,7 +76,7 @@ const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
     promise:
       "L'éveil du printemps demande de bouger, drainer, alléger. Un programme " +
       'pour traverser la saison Kapha avec élan et clarté. Inscrivez-vous à la ' +
-      "liste d'attente — vous serez avisée dès que les portes s'ouvrent.",
+      "liste d'attente : vous serez avisée dès que les portes s'ouvrent.",
   },
   pitta: {
     source: 'waitlist-pitta',
@@ -86,7 +86,7 @@ const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
     promise:
       "Quand la chaleur monte, le feu intérieur s'emballe. Un programme pour " +
       "traverser la saison Pitta sans se brûler. Inscrivez-vous à la liste " +
-      "d'attente — vous serez avisée dès que les portes s'ouvrent.",
+      "d'attente : vous serez avisée dès que les portes s'ouvrent.",
   },
   default: {
     source: 'waitlist-general',
@@ -95,7 +95,7 @@ const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
     subtitle: 'Soyez parmi les premières à savoir',
     promise:
       "Inscrivez-vous pour être avisée dès que la prochaine programmation " +
-      "ouvre ses portes. Pas de spam — quelques mots, lorsque cela compte.",
+      "ouvre ses portes. Pas de spam, juste quelques mots, lorsque cela compte.",
   },
 };
 
@@ -187,8 +187,8 @@ const ListeAttenteLoeuvre: React.FC = () => {
     {
       Icon: Leaf,
       text: lang === 'FR'
-        ? "Aucun engagement — vous êtes inscrite sur la liste, c'est tout."
-        : 'No commitment — you are simply on the list.',
+        ? "Aucun engagement : vous êtes inscrite sur la liste, c'est tout."
+        : 'No commitment, you are simply on the list.',
     },
     {
       Icon: MailOpen,
