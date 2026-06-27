@@ -82,6 +82,8 @@ export const KenBurns: React.FC<{ src: string; className?: string; alt?: string 
       src={src}
       alt={alt}
       aria-hidden={alt === ''}
+      loading="eager"
+      referrerPolicy="no-referrer"
       className={`absolute inset-0 h-full w-full object-cover ${className}`}
       initial={reduce ? false : { scale: 1.06 }}
       animate={reduce ? undefined : { scale: 1.16 }}

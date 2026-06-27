@@ -9,6 +9,7 @@ import {
   type ShopifyProduct,
 } from '../shopify';
 import NewsletterSignup from '../components/NewsletterSignup';
+import { KenBurns, Parallax, Seam } from '../components/motion/loeuvre';
 
 /**
  * La Boutique — page React au style L'Œuvre (espresso / cream / brass).
@@ -151,24 +152,24 @@ const BoutiqueLoeuvre: React.FC = () => {
               </span>
             </div>
           </motion.div>
-          <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, ease, delay: 0.15 }} className="relative">
-            <div className="relative rounded-[1.8rem] overflow-hidden border border-brass/25 shadow-[0_30px_80px_rgba(0,0,0,0.5)] aspect-[4/5]">
-              <img
-                src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=900&output=webp"
-                alt="Krystine St-Laurent"
-                className="w-full h-full object-cover"
-                loading="eager"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(120deg, rgba(22,16,10,0.4) 0%, transparent 50%)' }} />
-            </div>
-          </motion.div>
+          <Parallax speed={0.12} className="relative">
+            <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, ease, delay: 0.15 }}>
+              <div className="relative rounded-[1.8rem] overflow-hidden border border-brass/25 shadow-[0_30px_80px_rgba(0,0,0,0.5)] aspect-[4/5]">
+                <KenBurns
+                  src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=900&output=webp"
+                  alt="Krystine St-Laurent"
+                />
+                <div className="absolute inset-0 pointer-events-none z-[1]" style={{ background: 'linear-gradient(120deg, rgba(22,16,10,0.4) 0%, transparent 50%)' }} />
+              </div>
+            </motion.div>
+          </Parallax>
         </div>
       </section>
 
       {/* ─────────── CATALOGUE (light) · id="catalogue" ─────────── */}
-      <section id="catalogue" className="scroll-mt-28 bg-cream py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
+      <section id="catalogue" className="relative scroll-mt-28 bg-cream py-24 md:py-32 overflow-hidden">
+        <Seam from="#16100a" />
+        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12">
           <Reveal className="max-w-[640px]">
             <Eyebrow>{lang === 'FR' ? 'Le catalogue Inspirata' : 'The Inspirata catalogue'}</Eyebrow>
             <SectionTitle className="mt-4">
@@ -352,8 +353,9 @@ const BoutiqueLoeuvre: React.FC = () => {
       </section>
 
       {/* ─────────── NEWSLETTER (dark) ─────────── */}
-      <section className="bg-espressoDeep py-24 md:py-32 overflow-hidden">
-        <div className="mx-auto w-full max-w-[760px] px-6 md:px-12 text-center">
+      <section className="relative bg-espressoDeep py-24 md:py-32 overflow-hidden">
+        <Seam from="#ede5d7" />
+        <div className="relative z-10 mx-auto w-full max-w-[760px] px-6 md:px-12 text-center">
           <Reveal>
             <Sparkles size={26} className="text-brass mx-auto mb-6" />
             <Eyebrow on="dark">{lang === 'FR' ? 'Rester connectés' : 'Stay connected'}</Eyebrow>
