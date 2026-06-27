@@ -9,6 +9,7 @@ import { points } from '../firebase/points';
 import { useTVPlaylists } from '../lib/youtube';
 import NewsletterSignup from '../components/NewsletterSignup';
 import WaitlistModal, { type WaitlistTarget } from '../components/WaitlistModal';
+import { KenBurns, Seam } from '../components/motion/loeuvre';
 
 /**
  * Médias — page React au style L'Œuvre (espresso / cream / brass).
@@ -106,50 +107,49 @@ const MediasLoeuvre: React.FC = () => {
   return (
     <div className="bg-cream text-ink font-sans antialiased">
 
-      {/* ─────────── HERO (dark, éditorial 2-col) ─────────── */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-espressoDeep">
-        <div className="pointer-events-none absolute -top-1/4 -left-1/4 h-[70%] w-[70%] rounded-full bg-forest/18 blur-[150px]" />
-        <div className="pointer-events-none absolute -bottom-1/4 -right-1/5 h-[60%] w-[60%] rounded-full bg-brass/12 blur-[160px]" />
-        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-28 grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-20 items-center">
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }}>
-            <p className="font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brass mb-8">
+      {/* ─────────── HERO (crème texturé, Ken Burns + voile) ─────────── */}
+      <section className="relative min-h-screen flex items-end overflow-hidden bg-cream">
+        <KenBurns src="/krystine-bg.jpg" />
+        {/* voile bas : lisibilité du titre + fondu vers la section crème suivante */}
+        <span aria-hidden className="absolute inset-0 pointer-events-none"
+          style={{ background: 'linear-gradient(to top, rgba(246,243,238,0.94) 0%, rgba(246,243,238,0.35) 32%, transparent 64%)' }} />
+        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 pb-20 md:pb-28">
+          <motion.div initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.1, ease }} className="max-w-[44ch]">
+            <p className="font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brassInk mb-7">
               {lang === 'FR' ? 'Médias · La voix de Krystine' : 'Media · Krystine’s voice'}
             </p>
-            <h1 className="font-serif font-medium text-ctext leading-[0.98] text-[clamp(2.4rem,5.2vw,4.4rem)] max-w-[16ch]">
+            <h1 className="font-serif font-medium text-ink leading-[0.96] text-[clamp(2.6rem,6.2vw,5rem)]">
               {lang === 'FR' ? 'Krystine dans les médias.' : 'Krystine in the media.'}
             </h1>
-            <p className="mt-7 font-serif italic text-[clamp(1.3rem,2.6vw,2rem)] leading-snug text-ctextSoft max-w-[28ch]">
+            <p className="mt-6 font-serif italic text-[clamp(1.3rem,2.6vw,2rem)] leading-snug text-inkSoft max-w-[30ch]">
               {lang === 'FR'
-                ? <>Le podcast, les livres, la télé : <span className="text-brassBright not-italic">les mots et la voix</span>, au fil des saisons.</>
-                : <>The podcast, the books, the TV: <span className="text-brassBright not-italic">the words and the voice</span>, season after season.</>}
+                ? <>Le podcast, les livres, la télé : <span className="text-brassInk not-italic">les mots et la voix</span>, au fil des saisons.</>
+                : <>The podcast, the books, the TV: <span className="text-brassInk not-italic">the words and the voice</span>, season after season.</>}
             </p>
-            <div className="mt-12 flex flex-wrap items-center gap-3">
+            <div className="mt-10 flex flex-wrap items-center gap-3">
               {NAV.map(n => (
                 <a key={n.id} href={n.href}
-                  className="inline-flex items-center gap-2.5 rounded-full border border-brass/30 bg-brass/8 px-5 py-2.5 font-sans text-[0.68rem] uppercase tracking-[0.16em] text-brassBright transition-colors duration-300 hover:bg-brass hover:text-espressoDeep min-h-[44px]">
+                  className="inline-flex items-center gap-2.5 rounded-full border border-brassInk/30 bg-brass/10 px-5 py-2.5 font-sans text-[0.68rem] uppercase tracking-[0.16em] text-brassInk transition-colors duration-300 hover:bg-brass hover:text-espressoDeep min-h-[44px]">
                   <n.icon size={15} /> {n.label}
                 </a>
               ))}
             </div>
           </motion.div>
-          <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, ease, delay: 0.15 }} className="relative">
-            <div className="relative rounded-[1.8rem] overflow-hidden border border-brass/25 shadow-[0_30px_80px_rgba(0,0,0,0.5)] aspect-[4/5]">
-              <img
-                src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=900&output=webp"
-                alt="Krystine St-Laurent"
-                className="w-full h-full object-cover"
-                loading="eager"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(120deg, rgba(22,16,10,0.4) 0%, transparent 50%)' }} />
-            </div>
-          </motion.div>
         </div>
+        {/* indice de défilement */}
+        <motion.div
+          aria-hidden
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-[0.58rem] uppercase tracking-[0.3em] text-ink/45"
+          animate={{ opacity: [0.4, 1, 0.4], y: [0, 4, 0] }}
+          transition={{ duration: 2.6, ease: 'easeInOut', repeat: Infinity }}
+        >
+          {lang === 'FR' ? 'défiler' : 'scroll'}
+        </motion.div>
       </section>
 
       {/* ─────────── PODCAST (light) ─────────── */}
-      <section id="podcast" className="scroll-mt-28 bg-cream py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12 grid lg:grid-cols-[0.95fr_1.05fr] gap-12 lg:gap-20 items-center">
+      <section id="podcast" className="relative scroll-mt-28 bg-cream py-24 md:py-32 overflow-hidden">
+        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 grid lg:grid-cols-[0.95fr_1.05fr] gap-12 lg:gap-20 items-center">
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full bg-brass/12 text-brassInk px-4 py-1.5 text-[0.62rem] font-sans uppercase tracking-[0.2em]">
               <Mic size={14} /> {lang === 'FR' ? 'Le podcast' : 'The podcast'}
@@ -336,8 +336,9 @@ const MediasLoeuvre: React.FC = () => {
       </section>
 
       {/* ─────────── TÉLÉ / YOUTUBE (dark) ─────────── */}
-      <section id="tv" className="scroll-mt-28 bg-espressoSoft py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
+      <section id="tv" className="relative scroll-mt-28 bg-espressoSoft py-24 md:py-32 overflow-hidden">
+        <Seam from="#ede5d7" />
+        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12">
           <Reveal className="max-w-[640px]">
             <Eyebrow on="dark">{lang === 'FR' ? 'À la télé & YouTube' : 'TV & YouTube'}</Eyebrow>
             <SectionTitle on="dark" className="mt-4">{tv.title}</SectionTitle>
