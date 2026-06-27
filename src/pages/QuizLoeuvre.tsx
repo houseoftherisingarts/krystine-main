@@ -15,6 +15,7 @@ import {
 import { findOilForDosha } from '../lib/shopifyOil';
 import { RITUALS } from '../lib/doshaRituals';
 import NewsletterSignup from '../components/NewsletterSignup';
+import { Seam } from '../components/motion/loeuvre';
 
 /**
  * Quiz Dosha — page React au style L'Œuvre (espresso/cream/brass).
@@ -708,8 +709,9 @@ const QuizLoeuvre: React.FC = () => {
       </section>
 
       {/* ─────────── QU'EST-CE QUE L'AYURVEDA ─────────── */}
-      <section className="bg-cream py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[900px] px-6 md:px-12 text-center">
+      <section className="relative bg-cream py-24 md:py-32 overflow-hidden">
+        <Seam from="#16100a" />
+        <div className="relative z-10 mx-auto w-full max-w-[900px] px-6 md:px-12 text-center">
           <Reveal>
             <Eyebrow>{lang === 'FR' ? 'La sagesse derrière le quiz' : 'The wisdom behind the quiz'}</Eyebrow>
             <SectionTitle className="mt-4">{ay.whatIsTitle}</SectionTitle>
@@ -751,8 +753,9 @@ const QuizLoeuvre: React.FC = () => {
       </section>
 
       {/* ─────────── LE QUIZ ─────────── */}
-      <section id="quiz" className="bg-espressoSoft py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[820px] px-6 md:px-12">
+      <section id="quiz" className="relative bg-espressoSoft py-24 md:py-32 overflow-hidden">
+        <Seam from="#ede5d7" />
+        <div className="relative z-10 mx-auto w-full max-w-[820px] px-6 md:px-12">
           <Reveal className="text-center mb-12">
             <Eyebrow on="dark">{lang === 'FR' ? 'À vous de jouer' : 'Your turn'}</Eyebrow>
             <SectionTitle on="dark" className="mt-4">

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Check, ChevronDown, ArrowRight, ArrowLeft, Leaf, MailOpen, ShieldCheck, Loader2 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
+import { Seam } from '../components/motion/loeuvre';
 import { addNewsletterSubscriber } from '../firebase/firestore';
 import { points } from '../firebase/points';
 import { COUNTRIES, findCountry } from '../lib/regions';
@@ -242,8 +243,9 @@ const ListeAttenteLoeuvre: React.FC = () => {
 
       {/* ─────────── CITATION (clair) — Origine uniquement, comme l'original ─────────── */}
       {meta.citation && (
-        <section className="bg-cream2 py-20 md:py-28">
-          <div className="mx-auto w-full max-w-[820px] px-6 md:px-12 text-center">
+        <section className="relative bg-cream2 py-20 md:py-28 overflow-hidden">
+          <Seam from="#16100a" />
+          <div className="relative z-10 mx-auto w-full max-w-[820px] px-6 md:px-12 text-center">
             <Reveal>
               <span className="font-serif text-brassInk text-5xl leading-none">“</span>
               <blockquote className="mt-2 font-serif italic text-ink text-[clamp(1.3rem,2.6vw,2rem)] leading-snug max-w-[40ch] mx-auto">

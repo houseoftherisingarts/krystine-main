@@ -9,6 +9,7 @@ import { useApp } from '../contexts/AppContext';
 import { goToRoute } from '../lib/staticRoutes';
 import { getUpcomingEvents, type LiveEvent } from '../lib/liveEvents';
 import WaitlistModal, { type WaitlistTarget } from '../components/WaitlistModal';
+import { Seam } from '../components/motion/loeuvre';
 import ConferenceTourModal from '../components/ConferenceTourModal';
 import {
   liveEventToCalendar, downloadIcs, googleCalendarUrl, outlookCalendarUrl,
@@ -412,8 +413,9 @@ const FormationsLoeuvre: React.FC = () => {
       </section>
 
       {/* ─────────── PROGRAMMES SAISONNIERS ─────────── */}
-      <section id="programmes" className="bg-cream py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
+      <section id="programmes" className="relative bg-cream py-24 md:py-32 overflow-hidden">
+        <Seam from="#16100a" />
+        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12">
           <Reveal className="text-center">
             <Eyebrow>{lang === 'FR' ? 'Au rythme des saisons' : 'With the seasons'}</Eyebrow>
             <SectionTitle className="mt-4 uppercase tracking-[0.02em]">
@@ -445,8 +447,9 @@ const FormationsLoeuvre: React.FC = () => {
 
       {/* ─────────── ÉVÉNEMENTS & CONFÉRENCES ─────────── */}
       {events.length > 0 && (
-        <section id="events" className="scroll-mt-32 bg-espressoSoft py-24 md:py-32">
-          <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
+        <section id="events" className="relative scroll-mt-32 bg-espressoSoft py-24 md:py-32 overflow-hidden">
+          <Seam from="#f6f3ee" />
+          <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12">
             <Reveal className="text-center mb-16">
               <Eyebrow on="dark">{lang === 'FR' ? 'Où on se rejoint · LIVE' : 'Where we meet · LIVE'}</Eyebrow>
               <SectionTitle on="dark" className="mt-4">
@@ -478,8 +481,9 @@ const FormationsLoeuvre: React.FC = () => {
       )}
 
       {/* ─────────── NEWSLETTER ─────────── */}
-      <section className="bg-cream2 py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[760px] px-6 md:px-12 text-center">
+      <section className="relative bg-cream2 py-24 md:py-32 overflow-hidden">
+        <Seam from="#2a2015" />
+        <div className="relative z-10 mx-auto w-full max-w-[760px] px-6 md:px-12 text-center">
           <Reveal>
             <Eyebrow>{lang === 'FR' ? 'Rester dans le fil' : 'Stay in the thread'}</Eyebrow>
             <SectionTitle className="mt-4">
