@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ShoppingBag, User, Music, Moon, Sun, Menu, X } from 'lucide-react';
 import { useUI, useAuth, useCart, useBoutique } from '../../contexts/AppContext';
 import { ASSETS } from '../../content';
 
@@ -43,36 +44,44 @@ const NavBar: React.FC = () => {
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className={`fixed top-0 w-full z-40 transition-[background,border,box-shadow] duration-500 ${
         scrolled
-          ? 'bg-white/85 dark:bg-[#16100a]/95 backdrop-blur-xl border-b border-[#bb9a5e]/15 shadow-[0_4px_30px_rgba(58,37,30,0.08)]'
-          : 'bg-white/60 dark:bg-[#16100a]/70 backdrop-blur-xl border-b border-transparent'
+          ? 'bg-cream/90 dark:bg-espressoDeep/95 backdrop-blur-xl border-b border-brass/15 shadow-[0_6px_34px_rgba(58,49,38,0.10)]'
+          : 'bg-cream/55 dark:bg-espressoDeep/70 backdrop-blur-xl border-b border-transparent'
       }`}
     >
-      <div className="max-w-[1800px] mx-auto px-6 py-3 flex justify-between items-center gap-4">
+      <div className="max-w-[1800px] mx-auto px-6 md:px-8 py-3.5 flex justify-between items-center gap-4">
 
-        {/* Logo */}
-        <Link to="/?splash=1" title="Retour à l'écran d'accueil" className="block flex-shrink-0 group">
+        {/* Wordmark — Cormorant editorial wordmark, with logomark fallback */}
+        <Link
+          to="/?splash=1"
+          title="Retour à l'écran d'accueil"
+          className="flex items-center gap-3 flex-shrink-0 group min-h-[44px]"
+        >
           <motion.img
             initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
             src={ASSETS.navLogo}
-            alt="Krystine St-Laurent"
-            className="h-10 md:h-12 w-auto transition-all duration-300 group-hover:opacity-75 dark:invert dark:brightness-[1.5]"
+            alt=""
+            aria-hidden
+            className="h-9 md:h-11 w-auto transition-opacity duration-300 group-hover:opacity-70 dark:invert dark:brightness-[1.5]"
           />
+          <span className="hidden sm:block font-serif text-ink dark:text-ctext text-[1.35rem] md:text-[1.55rem] leading-none tracking-[0.01em] transition-colors duration-300 group-hover:text-brassInk dark:group-hover:text-brassBright">
+            Krystine St-Laurent
+          </span>
         </Link>
 
-        {/* Desktop Links — Boutique rendered last as a filled CTA to give the
-            nav a single primary action (revenue-driving). */}
-        <ul className="hidden xl:flex items-center gap-0.5 2xl:gap-2">
+        {/* Desktop Links — Boutique rendered last as a filled brass pill to give
+            the nav a single primary action (revenue-driving). */}
+        <ul className="hidden xl:flex items-center gap-1 2xl:gap-2">
           {NAV.map((item, i) => {
             const active = isActive(item.href);
             const isPrimary = item.href === '/boutique';
             if (isPrimary) {
               const resolved = resolveHref(item.href);
-              const btnClass = `inline-flex items-center gap-2 whitespace-nowrap px-4 py-2 text-[10px] 2xl:text-[11px] uppercase tracking-[0.2em] font-bold rounded-full transition-all duration-300 ${
+              const btnClass = `group inline-flex items-center gap-2 whitespace-nowrap px-5 py-2.5 text-[10px] 2xl:text-[11px] uppercase tracking-[0.2em] font-sans font-semibold rounded-full transition-colors duration-300 min-h-[44px] ${
                 active
-                  ? 'bg-[#2a2015] text-[#7d6330] border border-[#bb9a5e]'
-                  : 'bg-[#bb9a5e] text-[#2a2015] border border-[#bb9a5e] hover:bg-[#2a2015] hover:text-[#7d6330] shadow-[0_4px_18px_rgba(187, 154, 94,0.25)]'
+                  ? 'bg-espressoSoft text-brassBright border border-brass'
+                  : 'bg-brass text-espressoDeep border border-brass hover:bg-brassBright shadow-[0_6px_20px_rgba(187,154,94,0.30)]'
               }`;
               return (
                 <motion.li
@@ -84,12 +93,12 @@ const NavBar: React.FC = () => {
                 >
                   {resolved.external ? (
                     <a href={resolved.href} className={btnClass}>
-                      <i className="fa-solid fa-basket-shopping text-[10px]" />
+                      <ShoppingBag size={13} strokeWidth={2} />
                       {label(item)}
                     </a>
                   ) : (
                     <Link to={resolved.href} className={btnClass}>
-                      <i className="fa-solid fa-basket-shopping text-[10px]" />
+                      <ShoppingBag size={13} strokeWidth={2} />
                       {label(item)}
                     </Link>
                   )}
@@ -105,14 +114,14 @@ const NavBar: React.FC = () => {
               >
                 <Link
                   to={item.href}
-                  className={`relative whitespace-nowrap px-2.5 2xl:px-3 py-2 text-[10px] 2xl:text-[11px] uppercase tracking-[0.15em] 2xl:tracking-[0.2em] font-semibold transition-colors duration-300 ${
-                    active ? 'text-[#7d6330]' : 'text-[#2a2015] dark:text-white/85 hover:text-[#7d6330]'
+                  className={`group relative whitespace-nowrap px-3 2xl:px-4 py-2.5 text-[10px] 2xl:text-[11px] uppercase tracking-[0.15em] 2xl:tracking-[0.18em] font-sans font-medium transition-colors duration-300 ${
+                    active ? 'text-brassInk dark:text-brassBright' : 'text-ink/80 dark:text-ctext/80 hover:text-brassInk dark:hover:text-brassBright'
                   }`}
                 >
                   {label(item)}
-                  {/* Animated underline */}
+                  {/* Animated brass underline */}
                   <span
-                    className={`pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-[#bb9a5e] origin-center transition-transform duration-300 ${
+                    className={`pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-brass transition-transform duration-300 ${
                       active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
                     }`}
                     style={{ transformOrigin: 'center' }}
@@ -124,25 +133,25 @@ const NavBar: React.FC = () => {
         </ul>
 
         {/* Controls */}
-        <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
-          <IconButton onClick={toggleAudio} title={audioPlaying ? 'Pause' : 'Play'}>
+        <div className="flex items-center gap-1 md:gap-1.5 flex-shrink-0">
+          <IconButton onClick={toggleAudio} title={audioPlaying ? 'Pause' : 'Play'} ariaLabel={audioPlaying ? (lang === 'FR' ? 'Mettre la musique en pause' : 'Pause music') : (lang === 'FR' ? 'Jouer la musique' : 'Play music')}>
             {audioPlaying ? (
-              <div className="flex gap-[2px] items-end h-3">
+              <div className="flex gap-[2px] items-end h-3" aria-hidden>
                 {[1, 1.4, 0.8].map((d, i) => (
-                  <span key={i} className="w-[2px] bg-[#bb9a5e] rounded-full animate-bounce" style={{ height: i === 1 ? '12px' : '8px', animationDelay: `${i * 0.15}s` }} />
+                  <span key={i} className="w-[2px] bg-brass rounded-full animate-bounce motion-reduce:animate-none" style={{ height: i === 1 ? '12px' : '8px', animationDelay: `${i * 0.15}s` }} />
                 ))}
               </div>
-            ) : <i className="fa-solid fa-music text-[12px]" />}
+            ) : <Music size={15} strokeWidth={1.75} />}
           </IconButton>
 
-          <IconButton onClick={toggleTheme} title={theme === 'light' ? 'Mode sombre' : 'Mode clair'}>
-            <i className={`fa-solid ${theme === 'light' ? 'fa-moon' : 'fa-sun'} text-[13px]`} />
+          <IconButton onClick={toggleTheme} title={theme === 'light' ? 'Mode sombre' : 'Mode clair'} ariaLabel={theme === 'light' ? (lang === 'FR' ? 'Activer le mode sombre' : 'Switch to dark mode') : (lang === 'FR' ? 'Activer le mode clair' : 'Switch to light mode')}>
+            {theme === 'light' ? <Moon size={16} strokeWidth={1.75} /> : <Sun size={16} strokeWidth={1.75} />}
           </IconButton>
 
-          <IconButton onClick={() => setCartOpen(true)} title="Panier">
-            <i className="fa-solid fa-shopping-bag text-[14px]" />
+          <IconButton onClick={() => setCartOpen(true)} title="Panier" ariaLabel={lang === 'FR' ? `Panier, ${cartItems.length} article${cartItems.length > 1 ? 's' : ''}` : `Cart, ${cartItems.length} item${cartItems.length > 1 ? 's' : ''}`}>
+            <ShoppingBag size={17} strokeWidth={1.75} />
             {cartItems.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#bb9a5e] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+              <span className="absolute -top-0.5 -right-0.5 bg-brass text-espressoDeep text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold tabular-nums">
                 {cartItems.length}
               </span>
             )}
@@ -152,26 +161,26 @@ const NavBar: React.FC = () => {
             <Link
               to="/compte"
               title={member?.displayName || user.displayName || user.email || ''}
-              className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-[#2a2015]/10 dark:border-white/10 hover:border-[#bb9a5e] transition-colors"
+              className="flex items-center gap-2 pl-1.5 pr-3 py-1 min-h-[44px] rounded-full border border-ink/10 dark:border-ctext/10 hover:border-brass transition-colors"
             >
               {(member?.photoURL || user.photoURL) ? (
                 <img src={member?.photoURL || user.photoURL!} alt="" className="w-6 h-6 rounded-full object-cover" />
               ) : (
-                <div className="w-6 h-6 rounded-full bg-[#bb9a5e]/20 flex items-center justify-center text-[10px] font-bold text-[#7d6330]">
+                <div className="w-6 h-6 rounded-full bg-brass/20 flex items-center justify-center text-[10px] font-bold text-brassInk">
                   {(user.email?.[0] || '?').toUpperCase()}
                 </div>
               )}
               {member?.dosha && (
-                <span className="text-[9px] uppercase tracking-widest text-[#7d6330] font-bold capitalize hidden xl:inline">{member.dosha}</span>
+                <span className="text-[9px] uppercase tracking-[0.18em] text-brassInk dark:text-brassBright font-semibold capitalize hidden xl:inline">{member.dosha}</span>
               )}
             </Link>
           ) : (
             <button
               onClick={() => setSignInOpen(true)}
               title={lang === 'FR' ? 'Connexion' : 'Sign in'}
-              className="hidden md:inline-flex items-center gap-2 pl-2.5 pr-3 py-1.5 rounded-full border border-[#2a2015]/15 dark:border-white/15 text-[10px] uppercase tracking-[0.2em] font-bold text-[#2a2015]/80 dark:text-white/80 hover:text-[#7d6330] hover:border-[#bb9a5e] transition-colors"
+              className="hidden md:inline-flex items-center gap-2 pl-3 pr-4 py-2 min-h-[44px] rounded-full border border-ink/15 dark:border-ctext/15 text-[10px] uppercase tracking-[0.18em] font-sans font-semibold text-ink/75 dark:text-ctext/80 hover:text-brassInk dark:hover:text-brassBright hover:border-brass transition-colors"
             >
-              <i className="fa-solid fa-user text-[11px]" />
+              <User size={13} strokeWidth={1.75} />
               {lang === 'FR' ? 'Connexion' : 'Sign in'}
             </button>
           )}
@@ -179,9 +188,10 @@ const NavBar: React.FC = () => {
             <button
               onClick={() => setSignInOpen(true)}
               title={lang === 'FR' ? 'Connexion' : 'Sign in'}
-              className="md:hidden w-9 h-9 flex items-center justify-center rounded-full text-[#2a2015]/70 dark:text-white/70 hover:text-[#7d6330] hover:bg-[#bb9a5e]/5 transition-colors"
+              aria-label={lang === 'FR' ? 'Connexion' : 'Sign in'}
+              className="md:hidden w-11 h-11 flex items-center justify-center rounded-full text-ink/70 dark:text-ctext/70 hover:text-brassInk dark:hover:text-brassBright hover:bg-brass/8 transition-colors"
             >
-              <i className="fa-solid fa-user text-[13px]" />
+              <User size={16} strokeWidth={1.75} />
             </button>
           )}
 
@@ -189,7 +199,10 @@ const NavBar: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setLangOpen(v => !v)}
-              className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#2a2015]/80 dark:text-white/80 hover:text-[#7d6330] border border-[#2a2015]/10 dark:border-white/10 px-2.5 py-1 rounded-full"
+              aria-haspopup="menu"
+              aria-expanded={langOpen}
+              aria-label={lang === 'FR' ? 'Changer de langue' : 'Change language'}
+              className="min-h-[44px] text-[10px] uppercase tracking-[0.18em] font-sans font-semibold text-ink/75 dark:text-ctext/80 hover:text-brassInk dark:hover:text-brassBright border border-ink/10 dark:border-ctext/10 hover:border-brass px-3 py-2 rounded-full transition-colors"
             >
               {lang}
             </button>
@@ -200,11 +213,12 @@ const NavBar: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute top-full right-0 mt-2 bg-white dark:bg-[#4A3228] rounded-xl shadow-xl border border-[#2a2015]/5 flex flex-col w-20 py-2 z-50"
+                  role="menu"
+                  className="absolute top-full right-0 mt-2 bg-card dark:bg-espressoSoft rounded-xl shadow-xl border border-brass/15 flex flex-col w-20 py-2 z-50"
                 >
                   {(['FR', 'EN'] as const).map(l => (
-                    <button key={l} onClick={() => { setLang(l); setLangOpen(false); }}
-                      className={`px-4 py-2 text-left text-xs hover:bg-[#2a2015]/5 transition-colors ${lang === l ? 'font-bold text-[#7d6330]' : 'text-[#2a2015] dark:text-white'}`}
+                    <button key={l} role="menuitem" onClick={() => { setLang(l); setLangOpen(false); }}
+                      className={`px-4 py-2 text-left text-xs font-sans hover:bg-brass/8 transition-colors ${lang === l ? 'font-bold text-brassInk dark:text-brassBright' : 'text-ink dark:text-ctext'}`}
                     >{l}</button>
                   ))}
                 </motion.div>
@@ -213,10 +227,13 @@ const NavBar: React.FC = () => {
           </div>
 
           {/* Hamburger (mobile) */}
-          <button onClick={() => setMenuOpen(v => !v)} className="lg:hidden w-9 h-9 flex flex-col items-center justify-center gap-1.5">
-            <span className={`w-5 h-0.5 bg-current transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-            <span className={`w-5 h-0.5 bg-current transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
-            <span className={`w-5 h-0.5 bg-current transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+          <button
+            onClick={() => setMenuOpen(v => !v)}
+            aria-label={menuOpen ? (lang === 'FR' ? 'Fermer le menu' : 'Close menu') : (lang === 'FR' ? 'Ouvrir le menu' : 'Open menu')}
+            aria-expanded={menuOpen}
+            className="lg:hidden w-11 h-11 flex items-center justify-center rounded-full text-ink/80 dark:text-ctext/80 hover:text-brassInk dark:hover:text-brassBright hover:bg-brass/8 transition-colors"
+          >
+            {menuOpen ? <X size={20} strokeWidth={1.75} /> : <Menu size={20} strokeWidth={1.75} />}
           </button>
         </div>
       </div>
@@ -229,13 +246,13 @@ const NavBar: React.FC = () => {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden overflow-hidden border-t border-[#bb9a5e]/10"
+            className="lg:hidden overflow-hidden border-t border-brass/12"
           >
-            <div className="bg-white/95 dark:bg-[#16100a]/98 backdrop-blur-xl px-6 py-4 flex flex-col">
+            <div className="bg-cream/97 dark:bg-espressoDeep/98 backdrop-blur-xl px-6 py-4 flex flex-col">
               {NAV.map((item, i) => {
                 const resolved = resolveHref(item.href);
-                const cls = `block py-3 text-sm font-semibold uppercase tracking-widest border-b border-[#2a2015]/5 dark:border-white/5 transition-colors ${
-                  isActive(item.href) ? 'text-[#7d6330]' : 'text-[#2a2015] dark:text-white hover:text-[#7d6330]'
+                const cls = `block py-3.5 min-h-[44px] text-sm font-sans font-semibold uppercase tracking-[0.15em] border-b border-ink/5 dark:border-ctext/5 transition-colors ${
+                  isActive(item.href) ? 'text-brassInk dark:text-brassBright' : 'text-ink dark:text-ctext hover:text-brassInk dark:hover:text-brassBright'
                 }`;
                 return (
                   <motion.div
@@ -258,11 +275,12 @@ const NavBar: React.FC = () => {
   );
 };
 
-const IconButton: React.FC<{ onClick: () => void; title: string; children: React.ReactNode }> = ({ onClick, title, children }) => (
+const IconButton: React.FC<{ onClick: () => void; title: string; ariaLabel?: string; children: React.ReactNode }> = ({ onClick, title, ariaLabel, children }) => (
   <button
     onClick={onClick}
     title={title}
-    className="relative w-9 h-9 flex items-center justify-center rounded-full text-[#2a2015]/70 dark:text-white/70 hover:text-[#7d6330] hover:bg-[#bb9a5e]/5 transition-colors"
+    aria-label={ariaLabel ?? title}
+    className="relative w-11 h-11 flex items-center justify-center rounded-full text-ink/70 dark:text-ctext/70 hover:text-brassInk dark:hover:text-brassBright hover:bg-brass/8 transition-colors"
   >
     {children}
   </button>
