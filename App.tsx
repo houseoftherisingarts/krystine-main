@@ -1,6 +1,5 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
 import { AppProvider } from './src/contexts/AppContext';
 import { EditModeProvider } from './src/contexts/EditModeContext';
 import { SiteFlagsProvider } from './src/contexts/SiteFlagsContext';
@@ -86,22 +85,14 @@ const PageLoader = () => (
   </div>
 );
 
-// Smooth cross-page fade so navigations feel fluid instead of popping in.
-// Keyed on the pathname so each page re-mounts and plays its entrance.
-// Respects prefers-reduced-motion.
+// Per-page mount, no page-level opacity fade. A full-page fade made the
+// incoming page semi-transparent for ~0.5s, which exposed the base color
+// behind it (the old-background flash) and slowed perceived load. Each page
+// plays its own hero entrance + section reveals instead. Keyed on the
+// pathname so the route remounts cleanly and those entrances replay.
 const RouteFade: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
-  const reduce = useReducedMotion();
-  return (
-    <motion.div
-      key={location.pathname}
-      initial={reduce ? false : { opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
+  return <div key={location.pathname}>{children}</div>;
 };
 
 const Chrome: React.FC = () => {

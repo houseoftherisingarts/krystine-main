@@ -1,15 +1,19 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mic, Tv, BookOpen, ArrowRight, Youtube, Play, Lock, Star, Quote } from 'lucide-react';
+import { Mic, Tv, BookOpen, ArrowRight, Youtube, Lock, Star, Quote } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT } from '../content';
 import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../shopify';
 import { points } from '../firebase/points';
-import { useTVPlaylists } from '../lib/youtube';
 import NewsletterSignup from '../components/NewsletterSignup';
 import WaitlistModal, { type WaitlistTarget } from '../components/WaitlistModal';
-import { KenBurns, Seam } from '../components/motion/loeuvre';
+import { Seam, Parallax } from '../components/motion/loeuvre';
+
+// Grain fin (SVG feTurbulence inline) — texture « matière » premium sur les
+// fonds sombres. Recette D3 (Motionsites Maison).
+const GRAIN =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
 /**
  * Médias — page React au style L'Œuvre (espresso / cream / brass).
@@ -57,13 +61,8 @@ const MediasLoeuvre: React.FC = () => {
   const t = CONTENT[lang];
   const media = t.media;
   const pod = media.details.podcast;
-  const tv = media.details.tv;
   const book = media.details.book;
   const location = useLocation();
-
-  // ── TV / YouTube — curated playlists ──
-  const [activeListId, setActiveListId] = useState<string | null>(null);
-  const tvPlaylists = useTVPlaylists();
 
   // ── Livres (Shopify) ──
   const [bookOpen, setBookOpen] = useState<number | null>(null);
@@ -107,39 +106,62 @@ const MediasLoeuvre: React.FC = () => {
   return (
     <div className="bg-cream text-ink font-sans antialiased">
 
-      {/* ─────────── HERO (crème texturé, Ken Burns + voile) ─────────── */}
-      <section className="relative min-h-screen flex items-end overflow-hidden bg-cream">
-        <KenBurns src="/krystine-bg.jpg" />
-        {/* voile bas : lisibilité du titre + fondu vers la section crème suivante */}
-        <span aria-hidden className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(to top, rgba(246,243,238,0.94) 0%, rgba(246,243,238,0.35) 32%, transparent 64%)' }} />
+      {/* ─────────── HERO — éditorial sombre, type cinétique (zéro photo) ─────────── */}
+      <section className="relative min-h-[92vh] flex items-end overflow-hidden bg-espressoDeep text-ctext">
+        {/* Orbs ambiants laiton — drift transform-only, 2 orbs, poids-plume (60fps) */}
+        <motion.span aria-hidden className="pointer-events-none absolute -top-40 -left-28 h-[34rem] w-[34rem] rounded-full blur-3xl"
+          style={{ background: 'radial-gradient(circle, rgba(187,154,94,0.18), transparent 70%)' }}
+          animate={{ x: [0, 44, 0], y: [0, 30, 0] }}
+          transition={{ duration: 28, ease: 'easeInOut', repeat: Infinity }} />
+        <motion.span aria-hidden className="pointer-events-none absolute -bottom-44 -right-24 h-[42rem] w-[42rem] rounded-full blur-3xl"
+          style={{ background: 'radial-gradient(circle, rgba(220,184,116,0.10), transparent 70%)' }}
+          animate={{ x: [0, -38, 0], y: [0, -26, 0] }}
+          transition={{ duration: 34, ease: 'easeInOut', repeat: Infinity }} />
+        {/* Grain matière */}
+        <span aria-hidden className="absolute inset-0 opacity-[0.05] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
+
+        {/* Contenu ancré bas-gauche (anti-centré D1) */}
         <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 pb-20 md:pb-28">
-          <motion.div initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.1, ease }} className="max-w-[44ch]">
-            <p className="font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brassInk mb-7">
+          <motion.div
+            className="max-w-[46ch]"
+            initial="hidden"
+            animate="show"
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } } }}
+          >
+            <motion.p
+              variants={{ hidden: { opacity: 0, y: 22 }, show: { opacity: 1, y: 0, transition: { duration: 1.0, ease } } }}
+              className="font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.34em] text-brass mb-7">
               {lang === 'FR' ? 'Médias · La voix de Krystine' : 'Media · Krystine’s voice'}
-            </p>
-            <h1 className="font-serif font-medium text-ink leading-[0.96] text-[clamp(2.6rem,6.2vw,5rem)]">
-              {lang === 'FR' ? 'Krystine dans les médias.' : 'Krystine in the media.'}
-            </h1>
-            <p className="mt-6 font-serif italic text-[clamp(1.3rem,2.6vw,2rem)] leading-snug text-inkSoft max-w-[30ch]">
+            </motion.p>
+            <motion.h1
+              variants={{ hidden: { opacity: 0, y: 26 }, show: { opacity: 1, y: 0, transition: { duration: 1.1, ease } } }}
+              className="font-serif font-medium text-ctext leading-[0.96] text-[clamp(2.8rem,6.6vw,5.4rem)]">
+              {lang === 'FR' ? <>Krystine,<br /><span className="italic font-normal text-brassBright">dans les médias.</span></> : <>Krystine,<br /><span className="italic font-normal text-brassBright">in the media.</span></>}
+            </motion.h1>
+            <motion.p
+              variants={{ hidden: { opacity: 0, y: 22 }, show: { opacity: 1, y: 0, transition: { duration: 1.0, ease } } }}
+              className="mt-6 font-serif italic text-[clamp(1.3rem,2.6vw,2rem)] leading-snug text-ctextSoft max-w-[32ch]">
               {lang === 'FR'
-                ? <>Le podcast, les livres, la télé : <span className="text-brassInk not-italic">les mots et la voix</span>, au fil des saisons.</>
-                : <>The podcast, the books, the TV: <span className="text-brassInk not-italic">the words and the voice</span>, season after season.</>}
-            </p>
-            <div className="mt-10 flex flex-wrap items-center gap-3">
+                ? <>Le podcast, les livres, la télé : <span className="text-brass not-italic">les mots et la voix</span>, au fil des saisons.</>
+                : <>The podcast, the books, the TV: <span className="text-brass not-italic">the words and the voice</span>, season after season.</>}
+            </motion.p>
+            <motion.div
+              variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease } } }}
+              className="mt-10 flex flex-wrap items-center gap-3">
               {NAV.map(n => (
                 <a key={n.id} href={n.href}
-                  className="inline-flex items-center gap-2.5 rounded-full border border-brassInk/30 bg-brass/10 px-5 py-2.5 font-sans text-[0.68rem] uppercase tracking-[0.16em] text-brassInk transition-colors duration-300 hover:bg-brass hover:text-espressoDeep min-h-[44px]">
+                  className="inline-flex items-center gap-2.5 rounded-full border border-brass/30 bg-brass/10 px-5 py-2.5 font-sans text-[0.68rem] uppercase tracking-[0.16em] text-brass transition-colors duration-300 hover:bg-brass hover:text-espressoDeep min-h-[44px]">
                   <n.icon size={15} /> {n.label}
                 </a>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
         </div>
-        {/* indice de défilement */}
+
+        {/* Indice de défilement */}
         <motion.div
           aria-hidden
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-[0.58rem] uppercase tracking-[0.3em] text-ink/45"
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-[0.58rem] uppercase tracking-[0.3em] text-brass/50"
           animate={{ opacity: [0.4, 1, 0.4], y: [0, 4, 0] }}
           transition={{ duration: 2.6, ease: 'easeInOut', repeat: Infinity }}
         >
@@ -149,6 +171,7 @@ const MediasLoeuvre: React.FC = () => {
 
       {/* ─────────── PODCAST (light) ─────────── */}
       <section id="podcast" className="relative scroll-mt-28 bg-cream py-24 md:py-32 overflow-hidden">
+        <Seam from="#16100a" />
         <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 grid lg:grid-cols-[0.95fr_1.05fr] gap-12 lg:gap-20 items-center">
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full bg-brass/12 text-brassInk px-4 py-1.5 text-[0.62rem] font-sans uppercase tracking-[0.2em]">
@@ -219,6 +242,7 @@ const MediasLoeuvre: React.FC = () => {
                 <Reveal key={idx} delay={(idx % 3) * 0.08}>
                   <article className="flex flex-col">
                     {/* Cover */}
+                    <Parallax speed={idx === 1 ? 0.16 : 0.08}>
                     <div
                       onClick={() => !isLocked && setBookOpen(isOpen ? null : idx)}
                       className={`group relative w-full aspect-[1/1.3] rounded-l-[3px] rounded-r-[14px] overflow-hidden border-l-[6px] border-l-brass shadow-2xl transition-all duration-500 ${isLocked ? 'opacity-80' : 'cursor-pointer'} ${isOpen ? 'rotate-1 -translate-y-2' : 'hover:-translate-y-2 hover:rotate-1'}`}
@@ -238,6 +262,7 @@ const MediasLoeuvre: React.FC = () => {
                         </span>
                       )}
                     </div>
+                    </Parallax>
 
                     {/* Meta */}
                     <h3 className="mt-7 font-serif text-2xl text-ink leading-snug">{item.title}</h3>
@@ -335,92 +360,48 @@ const MediasLoeuvre: React.FC = () => {
         </div>
       </section>
 
-      {/* ─────────── TÉLÉ / YOUTUBE (dark) ─────────── */}
-      <section id="tv" className="relative scroll-mt-28 bg-espressoSoft py-24 md:py-32 overflow-hidden">
-        <Seam from="#ede5d7" />
-        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12">
-          <Reveal className="max-w-[640px]">
-            <Eyebrow on="dark">{lang === 'FR' ? 'À la télé & YouTube' : 'TV & YouTube'}</Eyebrow>
-            <SectionTitle on="dark" className="mt-4">{tv.title}</SectionTitle>
-            <p className="mt-6 font-serif italic text-[clamp(1.1rem,2vw,1.5rem)] text-ctextSoft max-w-[50ch]">{tv.desc}</p>
-            <div className="mt-5 h-px w-16 bg-brass" />
+      {/* ─────────── SUR YOUTUBE (dark) — hero + lien unique, plus d'embeds ─────────── */}
+      <section id="tv" className="relative scroll-mt-28 bg-espresso py-28 md:py-40 overflow-hidden">
+        <Seam from="#f1ebe0" />
+        {/* Orb ambiant + grain pour la matière */}
+        <motion.span aria-hidden className="pointer-events-none absolute -top-32 right-[-8rem] h-[40rem] w-[40rem] rounded-full blur-3xl"
+          style={{ background: 'radial-gradient(circle, rgba(187,154,94,0.14), transparent 70%)' }}
+          animate={{ x: [0, -34, 0], y: [0, 24, 0] }}
+          transition={{ duration: 30, ease: 'easeInOut', repeat: Infinity }} />
+        <span aria-hidden className="absolute inset-0 opacity-[0.05] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
+
+        <div className="relative z-10 mx-auto w-full max-w-[920px] px-6 md:px-12 text-center">
+          <Reveal>
+            <span className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-brass text-espressoDeep mb-9 shadow-[0_0_50px_rgba(187,154,94,0.35)]">
+              <Youtube size={38} />
+            </span>
+            <Eyebrow on="dark">{lang === 'FR' ? 'Émissions, entrevues & passages télé' : 'Shows, interviews & TV'}</Eyebrow>
+            <SectionTitle on="dark" className="mt-5 mx-auto max-w-[20ch]">
+              {lang === 'FR'
+                ? <>Tout est rassemblé<br /><span className="italic font-normal text-brassBright">sur sa chaîne YouTube.</span></>
+                : <>It all lives<br /><span className="italic font-normal text-brassBright">on her YouTube channel.</span></>}
+            </SectionTitle>
+            <p className="mt-7 font-serif italic text-[clamp(1.15rem,2.1vw,1.6rem)] text-ctextSoft max-w-[46ch] mx-auto">
+              {lang === 'FR'
+                ? 'Trois saisons de Santé la vie, Salut Bonjour, et toutes les capsules qui les ont précédées. Au même endroit, en accès libre.'
+                : 'Three seasons of Santé la vie, Salut Bonjour, and every capsule that came before. All in one place, freely.'}
+            </p>
           </Reveal>
 
-          {/* YouTube channel band */}
-          <Reveal delay={0.08} className="mt-12">
-            <a href="https://www.youtube.com/@KrystineStLaurent" target="_blank" rel="noopener noreferrer"
-              className="group flex flex-col md:flex-row items-center gap-6 md:gap-10 rounded-[1.8rem] border border-brass/20 bg-espresso px-6 md:px-10 py-8">
-              <span className="grid place-items-center w-16 h-16 rounded-2xl bg-brass text-espressoDeep shrink-0 transition-transform group-hover:scale-105">
-                <Youtube size={30} />
-              </span>
-              <div className="flex-1 text-center md:text-left">
-                <span className="block text-[0.6rem] uppercase tracking-[0.24em] text-brass font-semibold mb-2">{lang === 'FR' ? 'Chaîne YouTube' : 'YouTube Channel'}</span>
-                <p className="font-serif text-2xl md:text-3xl text-ctext">@KrystineStLaurent</p>
-                <p className="mt-2 font-sans text-[0.9rem] text-ctextSoft/80 max-w-xl">
-                  {lang === 'FR' ? 'Entrevues, capsules et rediffusions. Abonnez-vous pour les prochaines publications.' : 'Interviews, capsules and replays. Subscribe to get the next uploads.'}
-                </p>
-              </div>
-              <span className="inline-flex items-center gap-2 rounded-full bg-brass px-6 py-3 font-sans text-[0.66rem] uppercase tracking-[0.18em] text-espressoDeep transition-colors group-hover:bg-brassBright whitespace-nowrap shrink-0">
-                <Youtube size={15} /> {lang === 'FR' ? "S'abonner" : 'Subscribe'}
-              </span>
+          <Reveal delay={0.12} className="mt-11">
+            <a
+              href="https://www.youtube.com/@KrystineStLaurent"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => { if (user?.uid) points.videoWatched(user.uid, 'youtube-channel').catch(() => {}); }}
+              className="group inline-flex items-center gap-3.5 rounded-full bg-brass px-9 py-5 font-sans text-[0.72rem] uppercase tracking-[0.18em] text-espressoDeep shadow-xl transition-all duration-300 hover:bg-brassBright hover:-translate-y-0.5 min-h-[44px]"
+            >
+              <Youtube size={18} />
+              {lang === 'FR' ? 'Voir la chaîne YouTube' : 'Visit the YouTube channel'}
+              <ArrowRight size={17} className="transition-transform duration-300 group-hover:translate-x-1" />
             </a>
+            <p className="mt-5 font-sans text-[0.8rem] tracking-[0.12em] text-ctextSoft/70">@KrystineStLaurent</p>
           </Reveal>
-
-          {/* Curated playlists */}
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-7">
-            {tvPlaylists.map((p, idx) => (
-              <Reveal key={p.listId} delay={(idx % 2) * 0.06}>
-                <div className="group rounded-[1.6rem] border border-brass/20 bg-espresso overflow-hidden shadow-lg transition-shadow hover:shadow-2xl">
-                  <div
-                    className="relative aspect-video bg-espressoDeep cursor-pointer"
-                    onClick={() => {
-                      const nextId = activeListId === p.listId ? null : p.listId;
-                      setActiveListId(nextId);
-                      if (nextId && user?.uid) points.videoWatched(user.uid, p.videoId).catch(() => {});
-                    }}
-                  >
-                    {activeListId === p.listId ? (
-                      <iframe
-                        width="100%" height="100%"
-                        src={`https://www.youtube.com/embed/${p.videoId}?list=${p.listId}&autoplay=1&rel=0&modestbranding=1&origin=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : '')}`}
-                        title={p.title || `Playlist ${idx + 1}`}
-                        referrerPolicy="strict-origin-when-cross-origin"
-                        frameBorder={0}
-                        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-                        allowFullScreen
-                        className="w-full h-full"
-                      />
-                    ) : (
-                      <>
-                        <img
-                          src={p.thumbnail}
-                          onError={e => { (e.currentTarget as HTMLImageElement).src = `https://img.youtube.com/vi/${p.videoId}/hqdefault.jpg`; }}
-                          alt={p.title || `Playlist ${idx + 1}`}
-                          loading="lazy"
-                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-espressoDeep/70 via-espressoDeep/10 to-transparent" />
-                        <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-espressoDeep/80 text-ctext px-2.5 py-1 text-[0.58rem] uppercase tracking-[0.18em] font-bold backdrop-blur-sm">
-                          {lang === 'FR' ? 'Playlist' : 'Playlist'}
-                        </span>
-                        <div className="absolute inset-0 grid place-items-center">
-                          <span className="grid place-items-center w-16 h-16 rounded-full bg-cream/15 border border-cream/30 backdrop-blur-md shadow-xl transition-all group-hover:bg-brass group-hover:border-brass group-hover:scale-110">
-                            <Play size={20} className="text-ctext ml-0.5 transition-colors group-hover:text-espressoDeep" />
-                          </span>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                  <div className="p-5 text-center">
-                    <h3 className="font-serif text-lg text-ctext line-clamp-2">{p.title || `Playlist ${idx + 1}`}</h3>
-                    <span className="mt-1.5 inline-flex items-center gap-1.5 text-[0.66rem] uppercase tracking-[0.18em] text-brass">
-                      <Play size={11} /> {lang === 'FR' ? 'Regarder la série' : 'Watch the series'}
-                    </span>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
         </div>
       </section>
 

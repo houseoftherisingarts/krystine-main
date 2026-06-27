@@ -185,52 +185,14 @@
       html { scrollbar-width: thin; scrollbar-color: rgba(122, 128, 102, 0.35) transparent; }
       body { font-family: 'Inter', sans-serif; }
 
-      /* Fond principal — la photo de parchemin avec ombre de palmier
-         sert de couche la plus reculée pour TOUTES les pages. Ivoire
-         chaud uni en fallback pendant le chargement. Fixed attachment
-         so the texture stays anchored as the visitor scrolls, turning
-         the whole site into one long parchment scroll.
-         (Mobile iOS falls back to scroll-attached automatically.) */
+      /* Base L'Œuvre — espresso uni comme couche la plus reculée pour
+         TOUTES les pages de la refonte. Plus de photo parchemin globale :
+         elle appartenait à l'ancien design ivoire, se chargeait sur chaque
+         page (image inutile) et flashait derrière les pages pendant les
+         transitions. Chaque page peint son propre fond par-dessus. */
       body {
-        background-color: var(--color-ivoire);
-        color: var(--color-brun-fonce);
-        background-image: url('/krystine-bg.jpg');
-        background-size: cover;
-        background-position: center top;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-      }
-      .dark body {
-        background-color: #2E1A14;
+        background-color: #16100a;
         color: var(--color-ivoire);
-        /* In dark mode we keep the photo but mute it with a warm
-           overlay via ::before, declared below. */
-      }
-      /* Subtle ivoire-to-transparent vignette so copy stays legible on
-         top of the photo without dulling its texture. Sits directly on
-         body via ::before; inert to clicks. Kept intentionally gentle
-         so the photo texture stays dominant on pages like /accueil that
-         don't rely on a global wash for readability. Pages that need
-         stronger readability (e.g. /krystine) use per-component
-         parchment containers instead. */
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background:
-          /* Counter-wash precisely over the photo's top-left palm-frond
-             shadow — that patch was dragging body copy contrast down.
-             Soft ivoire ellipse anchored where the shadow lives, fades
-             to transparent so the rest of the photo keeps its texture. */
-          radial-gradient(ellipse 70% 55% at 18% 22%, rgba(244,231,221,0.55) 0%, rgba(244,231,221,0.20) 45%, transparent 75%),
-          /* Subtle central vignette — unchanged. */
-          radial-gradient(ellipse at 50% 45%, rgba(244,231,221,0.28) 0%, rgba(244,231,221,0.10) 40%, transparent 75%);
-        pointer-events: none;
-        z-index: 0;
-      }
-      .dark body::before {
-        background:
-          radial-gradient(ellipse at 50% 45%, rgba(46,26,20,0.55) 0%, rgba(46,26,20,0.35) 50%, rgba(46,26,20,0.65) 100%);
       }
 
       .origine-card {
@@ -354,7 +316,7 @@
       }
     </style>
   </head>
-  <body class="bg-ivoire dark:bg-[#2E1A14] transition-colors duration-300">
+  <body class="bg-espressoDeep">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>
