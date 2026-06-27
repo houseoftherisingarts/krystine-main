@@ -133,38 +133,17 @@ export async function fetchVideoMeta(videoId: string): Promise<VideoMeta> {
   return meta;
 }
 
-// Hook — enriches the static TV_PLAYLISTS array with titles + hi-res
-// thumbnails. Always returns a usable array immediately (with hqdefault
-// thumbnails as the default); titles trickle in as oEmbed resolves.
+// Static-resolved playlists. Titles are set explicitly in TV_PLAYLISTS, and
+// thumbnails come straight from YouTube's image CDN — no API key, no oEmbed,
+// no CORS proxy. We dropped the allorigins oEmbed enrichment: it added nothing
+// (titles were already set) and only produced flaky CORS failures in the
+// console. maxresdefault is sharp; the consumer's <img onError> falls back to
+// hqdefault for the rare video that lacks a maxres frame.
+const TV_PLAYLISTS_RESOLVED: TVPlaylist[] = TV_PLAYLISTS.map(p => ({
+  ...p,
+  thumbnail: p.thumbnail || `https://i.ytimg.com/vi/${p.videoId}/maxresdefault.jpg`,
+}));
+
 export function useTVPlaylists(): TVPlaylist[] {
-  const [playlists, setPlaylists] = useState<TVPlaylist[]>(
-    () => TV_PLAYLISTS.map(p => ({
-      ...p,
-      thumbnail: p.thumbnail || `https://i.ytimg.com/vi/${p.videoId}/hqdefault.jpg`,
-    }))
-  );
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const enriched = await Promise.all(
-        TV_PLAYLISTS.map(async (p) => {
-          try {
-            const meta = await fetchVideoMeta(p.videoId);
-            // Preserve the static playlist title when one is set —
-            // oEmbed returns the lead VIDEO's title, which doesn't match
-            // the playlist's name and was producing the broken-text
-            // titles Krystine flagged on 2026-04-24.
-            return { ...p, title: p.title || meta.title, thumbnail: meta.thumbnail };
-          } catch {
-            return { ...p, thumbnail: `https://i.ytimg.com/vi/${p.videoId}/hqdefault.jpg` };
-          }
-        })
-      );
-      if (!cancelled) setPlaylists(enriched);
-    })();
-    return () => { cancelled = true; };
-  }, []);
-
-  return playlists;
+  return TV_PLAYLISTS_RESOLVED;
 }
