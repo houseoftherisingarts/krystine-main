@@ -113,7 +113,7 @@ const BlogueLoeuvre: React.FC = () => {
 
       {/* ─────────── HERO ─────────── */}
       <section className="relative min-h-[68vh] flex items-center overflow-hidden bg-espressoDeep">
-        <KenBurns src="/krystine-portrait.jpg" alt="Krystine St-Laurent" />
+        <KenBurns src="/krystine-portrait.jpg" alt="Krystine St-Laurent" className="object-[center_22%]" />
         <span aria-hidden className="absolute inset-0 pointer-events-none"
           style={{ background: 'linear-gradient(90deg, rgba(22,16,10,0.92) 0%, rgba(22,16,10,0.6) 44%, rgba(22,16,10,0.18) 100%)' }} />
         <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-28 md:py-36">
