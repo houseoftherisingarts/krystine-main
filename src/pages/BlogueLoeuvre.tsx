@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, Feather, BookOpen } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { getBlogPosts, type BlogPost } from '../firebase/firestore';
 import NewsletterSignup from '../components/NewsletterSignup';
-import { Seam } from '../components/motion/loeuvre';
+import { Seam, KenBurns } from '../components/motion/loeuvre';
 
 /**
  * Le Blogue · Journal — page React au style L'Œuvre (espresso/cream/brass).
@@ -113,8 +113,9 @@ const BlogueLoeuvre: React.FC = () => {
 
       {/* ─────────── HERO ─────────── */}
       <section className="relative min-h-[68vh] flex items-center overflow-hidden bg-espressoDeep">
-        <div className="pointer-events-none absolute -top-1/4 -left-1/4 h-[70%] w-[70%] rounded-full bg-forest/20 blur-[140px]" />
-        <div className="pointer-events-none absolute -bottom-1/4 -right-1/5 h-[60%] w-[60%] rounded-full bg-brass/10 blur-[150px]" />
+        <KenBurns src="/krystine-portrait.jpg" alt="Krystine St-Laurent" />
+        <span aria-hidden className="absolute inset-0 pointer-events-none"
+          style={{ background: 'linear-gradient(90deg, rgba(22,16,10,0.92) 0%, rgba(22,16,10,0.6) 44%, rgba(22,16,10,0.18) 100%)' }} />
         <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-28 md:py-36">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }}>
             <p className="inline-flex items-center gap-2 font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brass mb-8">

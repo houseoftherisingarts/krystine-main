@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Phone, Clock, ArrowRight, Compass } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT } from '../content';
-import { Seam } from '../components/motion/loeuvre';
+import { Seam, KenBurns } from '../components/motion/loeuvre';
 
 /**
  * Points de vente · Où nous trouver — page React au style L'Œuvre (espresso/cream/brass).
@@ -57,8 +57,9 @@ const LocationsLoeuvre: React.FC = () => {
 
       {/* ─────────── HERO ─────────── */}
       <section className="relative min-h-[88vh] flex items-center overflow-hidden bg-espressoDeep">
-        <div className="pointer-events-none absolute -top-1/4 -left-1/4 h-[70%] w-[70%] rounded-full bg-forest/20 blur-[140px]" />
-        <div className="pointer-events-none absolute -bottom-1/4 -right-1/5 h-[60%] w-[60%] rounded-full bg-brass/10 blur-[150px]" />
+        <KenBurns src="/footer-jacques-cartier.jpg" alt="" />
+        <span aria-hidden className="absolute inset-0 pointer-events-none"
+          style={{ background: 'linear-gradient(90deg, rgba(22,16,10,0.92) 0%, rgba(22,16,10,0.62) 45%, rgba(22,16,10,0.28) 100%)' }} />
         <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-28">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }} className="max-w-[44ch]">
             <p className="inline-flex items-center gap-2 text-brass text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.3em] mb-8">
