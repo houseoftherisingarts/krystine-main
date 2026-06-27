@@ -6,7 +6,12 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "redirects": [
+      { "source": "/", "destination": "/accueil", "type": 302 }
+    ],
     "rewrites": [
+      { "source": "/accueil",    "destination": "/accueil/index.html" },
+      { "source": "/accueil/**", "destination": "/accueil/index.html" },
       { "source": "/liste-attente-origine",    "destination": "/liste-attente-origine/index.html" },
       { "source": "/liste-attente-origine/**", "destination": "/liste-attente-origine/index.html" },
       { "source": "**", "destination": "/index.html" }

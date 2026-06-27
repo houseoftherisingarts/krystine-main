@@ -4,9 +4,7 @@
 // swallow the request before Firebase can serve the real HTML.
 //
 // Keep this list in sync with firebase.json's rewrites.
-// /accueil retiré : la home est désormais une page React (LoeuvreHome),
-// plus un bundle statique. Liste vide pour l'instant.
-export const STATIC_ROUTES = [] as const;
+export const STATIC_ROUTES = ['/accueil'] as const;
 
 export function isStaticRoute(path: string | undefined | null): boolean {
   if (!path) return false;
