@@ -7,6 +7,7 @@ import {
 import { useApp } from '../contexts/AppContext';
 import NewsletterSignup from '../components/NewsletterSignup';
 import LiveEventsSection from '../components/LiveEvents';
+import { Seam } from '../components/motion/loeuvre';
 import { getEvents, type EventDoc } from '../firebase/firestore';
 import { getUpcomingEvents } from '../lib/liveEvents';
 import {
@@ -492,8 +493,9 @@ const ConferenciereLoeuvre: React.FC = () => {
       </section>
 
       {/* ─────────── SON HISTOIRE ─────────── */}
-      <section className="bg-cream py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12 grid lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-20 items-start">
+      <section className="relative bg-cream py-24 md:py-32 overflow-hidden">
+        <Seam from="#16100a" />
+        <div className="relative z-10 mx-auto w-full max-w-[1180px] px-6 md:px-12 grid lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-20 items-start">
           <Reveal>
             <Eyebrow>Chapitre 01 · Son histoire</Eyebrow>
             <SectionTitle className="mt-5">De la clinique<br /><span className="italic font-normal text-brassInk">à la scène</span></SectionTitle>
@@ -512,8 +514,9 @@ const ConferenciereLoeuvre: React.FC = () => {
       </section>
 
       {/* ─────────── CONFÉRENCES SIGNATURE ─────────── */}
-      <section id="talks" className="bg-espressoSoft py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
+      <section id="talks" className="relative bg-espressoSoft py-24 md:py-32 overflow-hidden">
+        <Seam from="#f6f3ee" />
+        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12">
           <Reveal className="text-center mb-16">
             <Eyebrow on="dark">Chapitre 02 · Conférences signature</Eyebrow>
             <SectionTitle on="dark" className="mt-4">Trois portes d'entrée</SectionTitle>
@@ -542,8 +545,9 @@ const ConferenciereLoeuvre: React.FC = () => {
       </section>
 
       {/* ─────────── TÉMOIGNAGES ─────────── */}
-      <section className="bg-cream2 py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12">
+      <section className="relative bg-cream2 py-24 md:py-32 overflow-hidden">
+        <Seam from="#2a2015" />
+        <div className="relative z-10 mx-auto w-full max-w-[1180px] px-6 md:px-12">
           <Reveal className="text-center mb-16">
             <Eyebrow>Ce qu'on en dit</Eyebrow>
             <SectionTitle className="mt-4">Après son passage</SectionTitle>
@@ -586,8 +590,9 @@ const ConferenciereLoeuvre: React.FC = () => {
       </section>
 
       {/* ─────────── RÉSERVER · FORMULAIRE (back-end préservé) ─────────── */}
-      <section ref={formRef} className="bg-espresso py-24 md:py-32 scroll-mt-24">
-        <div className="mx-auto w-full max-w-[980px] px-6 md:px-12">
+      <section ref={formRef} className="relative bg-espresso py-24 md:py-32 scroll-mt-24 overflow-hidden">
+        <Seam from="#f6f3ee" />
+        <div className="relative z-10 mx-auto w-full max-w-[980px] px-6 md:px-12">
           <Reveal className="text-center mb-12">
             <Eyebrow on="dark">Chapitre 04 · Réserver Krystine</Eyebrow>
             <SectionTitle on="dark" className="mt-4">Faire une demande</SectionTitle>
@@ -710,8 +715,9 @@ const ConferenciereLoeuvre: React.FC = () => {
       </section>
 
       {/* ─────────── CLÔTURE · CTA ─────────── */}
-      <section className="bg-cream py-20 md:py-28 text-center">
-        <div className="mx-auto w-full max-w-[760px] px-6 md:px-12">
+      <section className="relative bg-cream py-20 md:py-28 text-center overflow-hidden">
+        <Seam from="#2a2015" />
+        <div className="relative z-10 mx-auto w-full max-w-[760px] px-6 md:px-12">
           <Reveal>
             <p className="font-serif italic text-[clamp(1.5rem,3.4vw,2.6rem)] leading-[1.26] text-ink">
               « Krystine ne fait pas une conférence, elle ouvre un espace. »
