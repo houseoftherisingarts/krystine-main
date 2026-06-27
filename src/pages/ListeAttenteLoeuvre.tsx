@@ -210,8 +210,12 @@ const ListeAttenteLoeuvre: React.FC = () => {
 
       {/* ─────────── HERO (sombre · promesse, s'adapte au programme) ─────────── */}
       <section className="relative min-h-[78vh] flex items-center overflow-hidden bg-espressoDeep">
-        <div className="pointer-events-none absolute -top-1/4 -left-1/4 h-[70%] w-[70%] rounded-full bg-forest/20 blur-[140px]" />
-        <div className="pointer-events-none absolute -bottom-1/4 -right-1/5 h-[60%] w-[60%] rounded-full bg-brass/10 blur-[150px]" />
+        <motion.div aria-hidden className="pointer-events-none absolute -top-1/4 -left-1/4 h-[70%] w-[70%] rounded-full bg-forest/20 blur-[140px]"
+          animate={reduce ? undefined : { x: [0, 40, 0], y: [0, 28, 0] }}
+          transition={{ duration: 18, ease: 'easeInOut', repeat: Infinity }} />
+        <motion.div aria-hidden className="pointer-events-none absolute -bottom-1/4 -right-1/5 h-[60%] w-[60%] rounded-full bg-brass/10 blur-[150px]"
+          animate={reduce ? undefined : { x: [0, -34, 0], y: [0, -26, 0] }}
+          transition={{ duration: 23, ease: 'easeInOut', repeat: Infinity }} />
         <div className="relative z-10 mx-auto w-full max-w-[1080px] px-6 md:px-12 py-28">
           <button
             type="button"
