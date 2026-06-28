@@ -77,6 +77,11 @@ const BoutiqueLoeuvre = lazy(() => import('./src/pages/BoutiqueLoeuvre'));
 const ListeAttenteLoeuvre = lazy(() => import('./src/pages/ListeAttenteLoeuvre'));
 const QuizLoeuvre = lazy(() => import('./src/pages/QuizLoeuvre'));
 
+// Concepts de refonte (comparaison côte à côte) — pages standalone, chrome masqué.
+const KrystineV1 = lazy(() => import('./src/pages/concepts/KrystineV1'));
+const KrystineV2 = lazy(() => import('./src/pages/concepts/KrystineV2'));
+const KrystineV3 = lazy(() => import('./src/pages/concepts/KrystineV3'));
+
 // On-palette loader (espresso + brass). Replaces the old white/gold spinner
 // that caused a jarring flash of the previous design on every page change.
 const PageLoader = () => (
@@ -101,7 +106,10 @@ const Chrome: React.FC = () => {
     || location.pathname === '/'
     || location.pathname === '/accueil'
     || location.pathname === '/desinscription'
-    || location.pathname === '/slidebg';
+    || location.pathname === '/slidebg'
+    || location.pathname === '/v1'
+    || location.pathname === '/v2'
+    || location.pathname === '/v3';
   if (hidden) return null;
   return (
     <>
@@ -118,6 +126,9 @@ const Footing: React.FC = () => {
     || location.pathname === '/'
     || location.pathname === '/desinscription'
     || location.pathname === '/slidebg'
+    || location.pathname === '/v1'
+    || location.pathname === '/v2'
+    || location.pathname === '/v3'
   ) return null;
   return (
     <>
@@ -167,6 +178,11 @@ const App: React.FC = () => (
           {/* Vata porté en React (remplace le bundle statique /vata) */}
           <Route path="/vata" element={<VataExperience />} />
           <Route path="/krystine"        element={<ConferenciereLoeuvre />} />
+
+          {/* ── Concepts de refonte (comparaison) ─────────────────────── */}
+          <Route path="/v1" element={<KrystineV1 />} />
+          <Route path="/v2" element={<KrystineV2 />} />
+          <Route path="/v3" element={<KrystineV3 />} />
           <Route path="/boutique"        element={<BoutiqueLoeuvre />} />
           <Route path="/boutique/:slug"  element={<BoutiqueCollectionPage />} />
           <Route path="/medias"          element={<MediasLoeuvre />} />
