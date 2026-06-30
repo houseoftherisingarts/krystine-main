@@ -81,8 +81,10 @@ const QuizLoeuvre = lazy(() => import('./src/pages/QuizLoeuvre'));
 const KrystineV1 = lazy(() => import('./src/pages/concepts/KrystineV1'));
 const KrystineV2 = lazy(() => import('./src/pages/concepts/KrystineV2'));
 const KrystineV3 = lazy(() => import('./src/pages/concepts/KrystineV3'));
-// Vitrine complète en langage V2 (magazine crème) — preview avant de promouvoir sur /krystine.
-const ConferenciereV2 = lazy(() => import('./src/pages/ConferenciereV2'));
+// Formations en langage V2 (magazine crème), même branding que /krystine.
+const FormationsV2 = lazy(() => import('./src/pages/concepts/FormationsV2'));
+const MediasV2 = lazy(() => import('./src/pages/concepts/MediasV2'));
+const PodcastV2 = lazy(() => import('./src/pages/concepts/PodcastV2'));
 
 // On-palette loader (espresso + brass). Replaces the old white/gold spinner
 // that caused a jarring flash of the previous design on every page change.
@@ -111,8 +113,7 @@ const Chrome: React.FC = () => {
     || location.pathname === '/slidebg'
     || location.pathname === '/v1'
     || location.pathname === '/v2'
-    || location.pathname === '/v3'
-    || location.pathname === '/krystine-v2';
+    || location.pathname === '/v3';
   if (hidden) return null;
   return (
     <>
@@ -132,7 +133,11 @@ const Footing: React.FC = () => {
     || location.pathname === '/v1'
     || location.pathname === '/v2'
     || location.pathname === '/v3'
-    || location.pathname === '/krystine-v2'
+    || location.pathname === '/krystine'
+    || location.pathname === '/conferenciere'
+    || location.pathname === '/formations'
+    || location.pathname === '/medias'
+    || location.pathname === '/podcast'
   ) return null;
   return (
     <>
@@ -174,27 +179,29 @@ const App: React.FC = () => (
           <Route path="/accueil-classic" element={<InspiratHome />} />
 
           {/* ── Pages Inspirata ───────────────────────────────────────── */}
-          {/* Expérience Origine — refonte React L'Œuvre (remplace le bundle statique) */}
-          <Route path="/origine" element={<OrigineExperience />} />
+          {/* Expérience Origine — cohorte en cours fermée, prochaine en octobre.
+              La porte publique /origine sert la liste d'attente (verrouillée
+              sur le programme « origine »). La page de vente reste garée sur
+              /origine-loeuvre, prête à reprendre la route /origine pour octobre. */}
+          <Route path="/origine" element={<ListeAttenteLoeuvre forcedProgramme="origine" />} />
           <Route path="/origine-loeuvre" element={<OrigineExperience />} />
           {/* Podcast porté en React (remplace le bundle statique /podcast) */}
-          <Route path="/podcast" element={<PodcastEpisodes />} />
+          <Route path="/podcast" element={<PodcastV2 />} />
           {/* Vata porté en React (remplace le bundle statique /vata) */}
           <Route path="/vata" element={<VataExperience />} />
-          <Route path="/krystine"        element={<ConferenciereLoeuvre />} />
+          <Route path="/krystine"        element={<KrystineV2 />} />
 
           {/* ── Concepts de refonte (comparaison) ─────────────────────── */}
           <Route path="/v1" element={<KrystineV1 />} />
           <Route path="/v2" element={<KrystineV2 />} />
           <Route path="/v3" element={<KrystineV3 />} />
-          <Route path="/krystine-v2" element={<ConferenciereV2 />} />
           <Route path="/boutique"        element={<BoutiqueLoeuvre />} />
           <Route path="/boutique/:slug"  element={<BoutiqueCollectionPage />} />
-          <Route path="/medias"          element={<MediasLoeuvre />} />
+          <Route path="/medias"          element={<MediasV2 />} />
           <Route path="/medias/tv"       element={<TVPage />} />
           <Route path="/blogue"          element={<BlogueLoeuvre />} />
           <Route path="/points-de-vente" element={<LocationsLoeuvre />} />
-          <Route path="/conferenciere"   element={<ConferenciereLoeuvre />} />
+          <Route path="/conferenciere"   element={<KrystineV2 />} />
 
           {/* ── Standalone Quiz + Livres live under /medias,
                 Événements lives under /formations. Keep legacy URLs redirecting. */}
@@ -205,7 +212,7 @@ const App: React.FC = () => (
           <Route path="/evenements" element={<Navigate to="/formations#evenements"   replace />} />
 
           {/* ── Programmes / ex-dist ──────────────────────────────────── */}
-          <Route path="/formations"        element={<FormationsLoeuvre />} />
+          <Route path="/formations"        element={<FormationsV2 />} />
           <Route path="/liste-attente"     element={<ListeAttenteLoeuvre />} />
           {/* /origine, /podcast, /vata are served as-is from public/ — see firebase.json */}
 

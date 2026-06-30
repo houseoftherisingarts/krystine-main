@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useMemo, useRef } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Check, ChevronDown, Calendar, Clock, Radio, Globe, BookOpen, ArrowRight, Headphones, Activity, Sparkles, Download } from 'lucide-react';
 
 /**
@@ -227,36 +227,66 @@ const ScheduleSection: React.FC = () => {
 };
 
 const OrigineExperience: React.FC = () => {
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '-8%']);
+
+  const heroCopy = (
+    <>
+      <p className="font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brass mb-7 md:mb-8">Expérience Origine</p>
+      <h1 className="font-serif font-medium text-ctext leading-[0.98] text-[clamp(2.1rem,4.6vw,4rem)] max-w-[15ch] [text-shadow:0_2px_30px_rgba(0,0,0,0.55)]">Vous n'avez pas besoin de plus d'information.</h1>
+      <p className="mt-6 md:mt-7 font-serif italic text-[clamp(1.3rem,2.6vw,2.1rem)] leading-snug text-ctextSoft max-w-[20ch]">Vous avez besoin de revenir à <span className="text-brassBright not-italic">votre point d'origine.</span></p>
+      <div className="mt-9 md:mt-11 flex flex-wrap items-center gap-5 md:gap-6">
+        <a href="#curriculum" className="inline-flex items-center gap-3 rounded-full bg-brass px-8 py-3.5 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-espressoDeep transition-colors duration-300 hover:bg-brassBright min-h-[44px]">Découvrir le parcours <ArrowRight size={16} /></a>
+        <span className="font-serif italic text-ctextSoft/80 text-base">« Catherine, participante fondatrice »</span>
+      </div>
+    </>
+  );
+
   return (
     <div className="bg-cream text-ink font-sans antialiased">
 
-      {/* ─────────── HERO (motionsites A4 Ken Burns + D1 éditorial 2-col) ─────────── */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-espressoDeep">
-        <div className="pointer-events-none absolute -top-1/4 -left-1/4 h-[70%] w-[70%] rounded-full bg-forest/20 blur-[140px]" />
-        <div className="pointer-events-none absolute -bottom-1/4 -right-1/5 h-[60%] w-[60%] rounded-full bg-brass/10 blur-[150px]" />
-        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-24 grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-center">
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }}>
-            <p className="font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brass mb-8">Expérience Origine</p>
-            <h1 className="font-serif font-medium text-ctext leading-[0.98] text-[clamp(2.4rem,5.2vw,4.4rem)] max-w-[15ch]">Vous n'avez pas besoin de plus d'information.</h1>
-            <p className="mt-7 font-serif italic text-[clamp(1.4rem,3vw,2.3rem)] leading-snug text-ctextSoft max-w-[20ch]">Vous avez besoin de revenir à <span className="text-brassBright not-italic">votre point d'origine.</span></p>
-            <div className="mt-12 flex flex-wrap items-center gap-6">
-              <a href="#curriculum" className="inline-flex items-center gap-3 rounded-full bg-brass px-8 py-3.5 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-espressoDeep transition-colors duration-300 hover:bg-brassBright min-h-[44px]">Découvrir le parcours <ArrowRight size={16} /></a>
-              <span className="font-serif italic text-ctextSoft/80 text-base">« Catherine, participante fondatrice »</span>
+      {/* ─────────── HERO (enveloppe pleine largeur, image entière, parallaxe vertical) ─────────── */}
+      <section ref={heroRef} className="relative w-full overflow-hidden bg-espressoDeep">
+        {/* DESKTOP : bande pleine largeur, image complète (jamais croppée en largeur), texte par-dessus */}
+        <div className="relative hidden md:block w-full overflow-hidden aspect-[2528/1015]">
+          <motion.img
+            src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg"
+            alt="Enveloppe Expérience Origine, sceau boussole, sauge et lavande"
+            className="absolute top-0 left-0 w-full h-auto"
+            style={{ y: heroY }}
+            referrerPolicy="no-referrer"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.2, ease }}
+          />
+          {/* Voiles : assombrir la gauche pour le texte, laisser l'enveloppe (droite) claire */}
+          <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(90deg, rgba(22,16,10,0.90) 0%, rgba(22,16,10,0.72) 26%, rgba(22,16,10,0.28) 50%, transparent 72%)' }} />
+          <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(22,16,10,0.28) 0%, transparent 28%, transparent 70%, rgba(22,16,10,0.42) 100%)' }} />
+          <div className="absolute inset-0 z-10 flex items-center">
+            <div className="mx-auto w-full max-w-[1280px] px-12">
+              <motion.div className="max-w-[34rem]" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }}>
+                {heroCopy}
+              </motion.div>
             </div>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, ease, delay: 0.15 }} className="relative">
-            <div className="relative rounded-[1.8rem] overflow-hidden border border-brass/25 shadow-[0_30px_80px_rgba(0,0,0,0.5)] aspect-[16/11]">
-              <motion.img
-                src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg"
-                alt="Enveloppe Expérience Origine, sceau boussole, sauge et lavande"
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
-                animate={{ scale: [1.05, 1.13] }}
-                transition={{ duration: 26, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
-              />
-              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(120deg, rgba(22,16,10,0.45) 0%, transparent 45%)' }} />
-            </div>
-          </motion.div>
+          </div>
+        </div>
+        {/* MOBILE : image pleine largeur complète (aucun crop), texte dessous */}
+        <div className="md:hidden">
+          <motion.img
+            src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg"
+            alt="Enveloppe Expérience Origine, sceau boussole, sauge et lavande"
+            className="w-full h-auto block"
+            referrerPolicy="no-referrer"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, ease }}
+          />
+          <div className="px-6 pt-10 pb-14">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease }}>
+              {heroCopy}
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -430,17 +460,13 @@ const OrigineExperience: React.FC = () => {
             {/* Panneau prix + action */}
             <Reveal delay={0.1} className="lg:col-span-5">
               <div className="rounded-[2rem] border border-brass/30 bg-espresso p-8 md:p-10 text-center">
-                <p className="font-serif font-medium uppercase tracking-[0.12em] text-brass text-lg md:text-xl leading-tight">Tarif cohorte fondatrice<br /><span className="text-forestSoft text-base font-normal">prix de lancement</span></p>
+                <p className="font-serif font-medium uppercase tracking-[0.12em] text-brass text-lg md:text-xl leading-tight">Tarif de la cohorte<br /><span className="text-forestSoft text-base font-normal">Expérience Origine</span></p>
                 <div className="mt-6 flex items-start justify-center text-ctext">
-                  <span className="font-serif text-7xl md:text-8xl tabular-nums leading-none">997</span>
+                  <span className="font-serif text-7xl md:text-8xl tabular-nums leading-none">1 500</span>
                   <span className="text-3xl mt-2 ml-1">$</span>
                 </div>
-                <div className="mt-6 inline-flex flex-col items-center rounded-2xl border border-ctextSoft/20 bg-espressoDeep/40 px-7 py-4">
-                  <span className="text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-ctextSoft/70">Prix régulier</span>
-                  <span className="font-serif text-xl text-ctextSoft tabular-nums">1 297 $</span>
-                </div>
                 <button onClick={goCheckout} className="mt-8 w-full rounded-xl bg-brass py-4 font-serif text-base tracking-[0.12em] uppercase text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]">Commencer la traversée</button>
-                <p className="mt-5 text-[0.78rem] text-ctextSoft/60">Options de versements disponibles : 3 × 314 $ ou 6 × 165 $ par mois.</p>
+                <p className="mt-5 text-[0.78rem] text-ctextSoft/60">Options de versements disponibles : 3 × 500 $ ou 6 × 250 $ par mois.</p>
                 <div className="mt-8 text-left rounded-2xl bg-brass/8 border border-brass/20 p-6">
                   <h4 className="font-serif text-base font-medium text-brass uppercase tracking-[0.1em] mb-4">Privilèges exclusifs fondatrice</h4>
                   <div className="space-y-4">

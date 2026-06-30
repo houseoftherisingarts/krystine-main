@@ -11,8 +11,9 @@ interface NavItem { href: string; labelFR: string; labelEN: string; }
 // /formations. The 3 "doorways" map to the 3 banners on the home page.
 const NAV: NavItem[] = [
   { href: '/krystine',    labelFR: 'Krystine St-Laurent',          labelEN: 'Krystine St-Laurent' },
-  { href: '/medias',      labelFR: 'Podcasts, Médias & Livres',    labelEN: 'Podcasts, Media & Books' },
+  { href: '/origine',     labelFR: 'Expérience Origine',           labelEN: 'Origine Experience' },
   { href: '/formations',  labelFR: 'Formations',                   labelEN: 'Programs' },
+  { href: '/medias',      labelFR: 'Podcasts, Médias & Livres',    labelEN: 'Podcasts, Media & Books' },
   { href: '/boutique',    labelFR: 'Boutique Inspirata',           labelEN: 'Inspirata Shop' },
 ];
 

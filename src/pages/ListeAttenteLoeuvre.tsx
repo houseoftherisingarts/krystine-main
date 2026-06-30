@@ -57,14 +57,15 @@ interface ProgrammeMeta {
 const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
   origine: {
     source: 'waitlist-origine',
-    kicker: 'Parcours signature · Prochaine cohorte',
+    kicker: 'Parcours signature · Prochaine cohorte en octobre',
     title: "L'Expérience Origine",
     subtitle: 'Retrouver votre boussole intérieure',
     promise:
       "L'Expérience Origine est un parcours de 12 semaines au cœur de l'Ayurveda. " +
-      "La cohorte en cours est fermée. Inscrivez-vous à la liste d'attente : vous " +
-      "serez parmi les premières à savoir lorsque les portes rouvriront, avec " +
-      "un accès privilégié et des conditions réservées à la liste.",
+      "La cohorte en cours est fermée : la prochaine s'ouvre en octobre prochain. " +
+      "Inscrivez-vous à la liste d'attente et vous serez parmi les premières à " +
+      "savoir lorsque les portes rouvriront, avec un accès privilégié et des " +
+      "conditions réservées à la liste.",
     citation:
       "Jamais il n'y a eu autant d'informations, et jamais autant de dispersion. " +
       "L'exigence actuelle est de retrouver des repères intérieurs fiables.",
@@ -110,18 +111,20 @@ const fieldBase =
   'focus:outline-none focus:border-brass focus:ring-2 focus:ring-brass/30';
 const selectBase = `${fieldBase} appearance-none pr-11 cursor-pointer`;
 
-const ListeAttenteLoeuvre: React.FC = () => {
+const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ forcedProgramme }) => {
   const { lang, user } = useApp();
   const navigate = useNavigate();
   const location = useLocation();
   const reduce = useReducedMotion();
 
-  // ?programme=<key> — clé inconnue → variante générique (logique d'origine).
+  // forcedProgramme (ex. route /origine montée en liste d'attente) prime sur
+  // ?programme=<key>. Sinon, clé inconnue → variante générique.
   const programmeKey = useMemo<ProgrammeKey | 'default'>(() => {
+    if (forcedProgramme) return forcedProgramme;
     const params = new URLSearchParams(location.search);
     const raw = (params.get('programme') || '').trim().toLowerCase();
     return isKnownProgramme(raw) ? raw : 'default';
-  }, [location.search]);
+  }, [location.search, forcedProgramme]);
   const meta = PROGRAMMES[programmeKey];
 
   // ── État du formulaire (identique à l'original) ──

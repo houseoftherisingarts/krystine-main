@@ -46,10 +46,12 @@ interface SectionProps {
   leadFR?:   string; leadEN?:   string;
   /** Wrapper class — caller controls top margin / border above. */
   className?: string;
+  /** Layout des lignes d'agenda. 2 → grille deux colonnes (opt-in, défaut 1). */
+  columns?: 1 | 2;
 }
 
 const LiveEventsSection: React.FC<SectionProps> = ({
-  events, kickerFR, kickerEN, titleFR, titleEN, leadFR, leadEN, className = '',
+  events, kickerFR, kickerEN, titleFR, titleEN, leadFR, leadEN, className = '', columns = 1,
 }) => {
   const { lang } = useApp();
   const [waitlistTarget, setWaitlistTarget] = useState<WaitlistTarget | null>(null);
@@ -86,7 +88,7 @@ const LiveEventsSection: React.FC<SectionProps> = ({
         whileInView="show"
         viewport={{ once: true, amount: 0.12 }}
         variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
-        className="mx-auto max-w-[1040px]"
+        className={columns === 2 ? 'mx-auto max-w-[1180px] grid md:grid-cols-2 md:gap-x-14' : 'mx-auto max-w-[1040px]'}
       >
         {events.map((ev) => (
           <LiveEventRow
@@ -172,10 +174,10 @@ const LiveEventRow: React.FC<{ event: LiveEvent; onWaitlist: () => void; onTourR
       className="group grid grid-cols-1 gap-4 border-t border-ink/12 py-9 first:border-t-0 md:grid-cols-[150px_1fr] md:gap-10 md:py-11"
     >
       {/* Rail de date */}
-      <div className="flex items-baseline gap-3 md:flex-col md:items-start md:gap-1">
+      <div className="flex items-baseline gap-3 md:flex-col md:items-start md:gap-2">
         {day !== null ? (
           <>
-            <span className="font-serif leading-[0.8] tabular-nums text-ink text-[clamp(3rem,5vw,4.4rem)] transition-colors duration-500 group-hover:text-brassInk">
+            <span className="font-serif leading-[0.92] tabular-nums tracking-[0.04em] text-ink text-[clamp(3rem,5vw,4.4rem)] transition-colors duration-500 group-hover:text-brassInk">
               {day}
             </span>
             <span className="font-sans text-[0.6rem] uppercase tracking-[0.22em] text-brassInk">{monthYear}</span>
