@@ -85,7 +85,7 @@ const ConsentBanner: React.FC = () => {
       <div className="flex gap-2">
         <button
           onClick={() => decide('accepted')}
-          className="flex-1 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] font-bold uppercase tracking-widest text-[10px] px-4 py-2.5 rounded-full hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
+          className="flex-1 min-h-[44px] bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] font-bold uppercase tracking-widest text-[10px] px-4 py-2.5 rounded-full hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
         >
           {lang === 'FR' ? "J'accepte" : 'I accept'}
         </button>
