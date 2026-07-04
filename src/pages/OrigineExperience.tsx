@@ -246,20 +246,6 @@ const OrigineExperience: React.FC = () => {
             <p className="mt-6 font-serif italic text-[clamp(1.1rem,2vw,1.5rem)] text-inkSoft max-w-[40ch] mx-auto">Une sagesse de 5 000 ans, dans votre réalité d'aujourd'hui.</p>
           </Reveal>
           <PillarsTimeline />
-                    <div className={`pl-9 md:pl-0 ${i % 2 === 0 ? 'md:text-right md:pr-16' : 'md:order-2 md:pl-16'}`}>
-                      <p className="font-sans text-[0.6rem] uppercase tracking-[0.26em] text-brassInk">{p.range}</p>
-                      <p className="mt-3 font-serif text-forestDeep text-[0.95rem] uppercase tracking-[0.18em]">{p.roman}</p>
-                      <h3 className="mt-2 font-serif font-medium text-ink leading-[1.05] text-[clamp(1.7rem,2.8vw,2.4rem)]">{p.subtitle}</h3>
-                    </div>
-                    <div className={`pl-9 md:pl-0 ${i % 2 === 0 ? '' : 'md:order-1 md:text-right md:pr-16'}`}>
-                      <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[46ch]">{p.body}</p>
-                      <p className={`mt-7 font-serif italic text-brassInk text-[clamp(1.15rem,1.7vw,1.45rem)] leading-snug max-w-[42ch] ${i % 2 === 0 ? '' : 'md:ml-auto'}`}>{p.reflection}</p>
-                    </div>
-                  </article>
-                </Reveal>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
