@@ -55,15 +55,16 @@ export const Reveal: React.FC<{
 export const Parallax: React.FC<{
   children: React.ReactNode;
   className?: string;
+  innerClassName?: string;
   speed?: number;
-}> = ({ children, className, speed = 0.18 }) => {
+}> = ({ children, className, innerClassName, speed = 0.18 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
   const y = useTransform(scrollYProgress, [0, 1], [`${speed * -50}%`, `${speed * 50}%`]);
   return (
     <div ref={ref} className={className}>
-      <motion.div style={reduce ? undefined : { y }}>{children}</motion.div>
+      <motion.div className={innerClassName} style={reduce ? undefined : { y }}>{children}</motion.div>
     </div>
   );
 };
