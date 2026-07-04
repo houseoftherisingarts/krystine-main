@@ -328,7 +328,7 @@ const OrigineExperience: React.FC = () => {
         <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12 text-center">
           <Reveal>
             <p className="mx-auto max-w-[52ch] font-serif text-[clamp(1.2rem,2.1vw,1.7rem)] leading-snug text-ctext">12 semaines pour comprendre les messages du corps, retrouver ce qui nous appartient, ancrer les rituels qui tiennent, et revenir au point d'origine.</p>
-            <button onClick={() => document.getElementById('tarifs')?.scrollIntoView({ behavior: 'smooth' })} className="mt-10 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]">Rejoindre l'Expérience Origine <ArrowRight size={16} /></button>
+            <Link to={WAITLIST} className="mt-10 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]">Rejoindre la liste d'attente <ArrowRight size={16} /></Link>
           </Reveal>
         </div>
       </section>
