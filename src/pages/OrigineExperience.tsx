@@ -483,9 +483,6 @@ const OrigineExperience: React.FC = () => {
       {/* ─────────── FAQ ─────────── */}
       <FaqSection />
 
-      {/* ─────────── PROGRAMME ─────────── */}
-      <ScheduleSection />
-
       {/* ─────────── FRÉQUENCE D'ORIGINE (module écouteurs flottants) ─────────── */}
       <section className="bg-espressoDeep py-24 md:py-32 overflow-hidden">
         <div className="pointer-events-none absolute" />
