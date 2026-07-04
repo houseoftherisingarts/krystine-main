@@ -318,23 +318,24 @@ const OrigineExperience: React.FC = () => {
         </div>
       </section>
 
-      {/* ─────────── BIO KRYSTINE ─────────── */}
-      <section id="about" className="relative overflow-hidden bg-espressoSoft py-24 md:py-32">
-        <Atmosphere light="24% 10%" strength={0.85} />
-        <div className="relative mx-auto w-full max-w-[1180px] px-6 md:px-12 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      {/* ─────────── BIO KRYSTINE (clair, planche portrait encadrée) ─────────── */}
+      <section id="about" className="bg-cream2 py-24 md:py-32">
+        <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <Reveal className="order-last lg:order-first">
-            <div className="relative rounded-[2rem] overflow-hidden aspect-[4/5] shadow-2xl">
-              <img src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            <div className="relative border border-brass/45 p-2.5 bg-card shadow-[0_30px_70px_rgba(58,49,38,0.14)]">
+              <div className="relative overflow-hidden aspect-[4/5]">
+                <img src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              </div>
             </div>
           </Reveal>
           <Reveal delay={0.08}>
-            <SectionTitle on="dark">Krystine St-Laurent</SectionTitle>
-            <p className="mt-6 font-sans text-[1.02rem] leading-[1.85] text-ctextSoft max-w-[52ch]">35 ans à traverser les milieux de la santé, soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de la série télé Santé la vie et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle laisse les gens seuls. Les rituels qu'elle enseigne, elle les pratique chaque matin.</p>
-            <div className="mt-8 space-y-5 pt-6 border-t border-brass/25">
+            <SectionTitle>Krystine St-Laurent</SectionTitle>
+            <p className="mt-6 font-sans text-[1.02rem] leading-[1.85] text-inkSoft max-w-[52ch]">35 ans à traverser les milieux de la santé, soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de la série télé Santé la vie et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle laisse les gens seuls. Les rituels qu'elle enseigne, elle les pratique chaque matin.</p>
+            <div className="mt-8 space-y-5 pt-6 border-t border-ink/12">
               {TESTIMONIALS.map((t) => (
-                <p key={t.who} className="text-forestSoft">
+                <p key={t.who} className="text-ink">
                   <span className="font-serif italic text-[1.05rem] leading-snug">« {t.quote} »</span>
-                  <span className="block mt-1 text-ctextSoft/70 text-sm not-italic">— {t.who}</span>
+                  <span className="block mt-1 text-inkSoft/80 text-sm not-italic">— {t.who}</span>
                 </p>
               ))}
             </div>
