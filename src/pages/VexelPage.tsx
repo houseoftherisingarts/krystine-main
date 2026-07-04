@@ -9,7 +9,10 @@
 // when navigating here from the same browser tab.
 
 import React, { useEffect, useState } from 'react';
+import type { User } from 'firebase/auth';
 import { getVexelInquiries, deleteVexelInquiry, type VexelInquiry } from '../firebase/firestore';
+import { subscribeToAuthState, isAdminUser, isAdminBypassActive } from '../firebase/auth';
+import AdminLogin from './admin/AdminLogin';
 
 const projectLabel = (v?: string) => {
   switch (v) {
