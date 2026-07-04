@@ -368,7 +368,9 @@ const OrigineExperience: React.FC = () => {
           </Reveal>
           <Reveal delay={0.1} className="flex justify-center">
             <div className="relative w-full max-w-[400px] aspect-[3/4] rounded-l-md rounded-r-2xl border-l-[8px] border-brass shadow-2xl overflow-hidden bg-card">
-              <img src="https://storage.googleapis.com/origine1/Livre%20cover%20origine.jpeg" alt="Journal d'observation et de rituels" loading="lazy" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              <Parallax speed={0.1} className="h-full">
+                <img src="https://storage.googleapis.com/origine1/Livre%20cover%20origine.jpeg" alt="Journal d'observation et de rituels" loading="lazy" className="w-full h-full object-cover scale-110" referrerPolicy="no-referrer" />
+              </Parallax>
             </div>
           </Reveal>
         </div>
