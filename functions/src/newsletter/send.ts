@@ -1,17 +1,20 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
 import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
-import { Resend } from 'resend';
+import * as nodemailer from 'nodemailer';
 import { renderEmailHtml, renderEmailText, type NewsletterBlock } from './renderer';
 
 // ─── Secrets ─────────────────────────────────────────────────────────────────
-// Set with: firebase functions:secrets:set RESEND_API_KEY
-// and:       firebase functions:secrets:set NEWSLETTER_FROM_EMAIL
-// and:       firebase functions:secrets:set NEWSLETTER_POSTAL_ADDRESS
+// Sends through Krystine's own Google Workspace mailbox over Gmail SMTP — no
+// third-party ESP (Resend) and no DNS setup, because inspiratanature.com already
+// has Google's SPF/DKIM. Set with:
+//   firebase functions:secrets:set GMAIL_USER              (krystine@inspiratanature.com)
+//   firebase functions:secrets:set GMAIL_APP_PASSWORD      (16-char Google app password)
+//   firebase functions:secrets:set NEWSLETTER_POSTAL_ADDRESS
 // NEWSLETTER_POSTAL_ADDRESS is the CASL-required business mailing address
 // rendered in the footer of every email.
-const RESEND_API_KEY = defineSecret('RESEND_API_KEY');
-const NEWSLETTER_FROM_EMAIL = defineSecret('NEWSLETTER_FROM_EMAIL');
+const GMAIL_USER = defineSecret('GMAIL_USER');
+const GMAIL_APP_PASSWORD = defineSecret('GMAIL_APP_PASSWORD');
 const NEWSLETTER_POSTAL_ADDRESS = defineSecret('NEWSLETTER_POSTAL_ADDRESS');
 
 const ADMIN_EMAILS = [
@@ -48,7 +51,7 @@ interface NewsletterRecord {
 // does NOT mutate the newsletter's status or write per-member inbox docs.
 export const sendNewsletter = onCall(
   {
-    secrets: [RESEND_API_KEY, NEWSLETTER_FROM_EMAIL, NEWSLETTER_POSTAL_ADDRESS],
+    secrets: [GMAIL_USER, GMAIL_APP_PASSWORD, NEWSLETTER_POSTAL_ADDRESS],
     timeoutSeconds: 540,
     memory: '512MiB',
   },
@@ -73,8 +76,19 @@ export const sendNewsletter = onCall(
     if (!doc.blocks?.length) throw new HttpsError('failed-precondition', 'Newsletter has no content');
     if (!doc.subject) throw new HttpsError('failed-precondition', 'Newsletter is missing a subject');
 
-    const resend = new Resend(RESEND_API_KEY.value());
-    const fromAddr = `${doc.fromName || 'Krystine St-Laurent'} <${NEWSLETTER_FROM_EMAIL.value()}>`;
+    // Gmail SMTP transport (pooled — many messages over a few connections).
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: { user: GMAIL_USER.value(), pass: GMAIL_APP_PASSWORD.value() },
+      pool: true,
+      maxConnections: 3,
+      maxMessages: 100,
+    });
+    // Gmail requires the From to be the authenticated mailbox (or a configured
+    // send-as alias); the display name is free.
+    const fromAddr = `"${doc.fromName || 'Krystine St-Laurent'}" <${GMAIL_USER.value()}>`;
     const postalAddress = NEWSLETTER_POSTAL_ADDRESS.value();
 
     // ── Test send path ────────────────────────────────────────────────────
@@ -89,13 +103,14 @@ export const sendNewsletter = onCall(
         brandLogoUrl: BRAND_LOGO_URL,
       });
       const text = renderEmailText(doc.blocks, { subject: doc.subject, unsubscribeUrl, postalAddress, firstName: 'Test' });
-      await resend.emails.send({
+      await transporter.sendMail({
         from: fromAddr,
-        to: [testEmail],
+        to: testEmail,
         subject: `[TEST] ${doc.subject}`,
         html,
         text,
       });
+      transporter.close();
       return { ok: true, test: true };
     }
 
@@ -113,53 +128,52 @@ export const sendNewsletter = onCall(
 
     let delivered = 0;
     let bounced = 0;
-    const BATCH = 100;
 
-    for (let i = 0; i < subscribers.length; i += BATCH) {
-      const slice = subscribers.slice(i, i + BATCH);
-      await Promise.all(slice.map(async (sub) => {
-        try {
-          const unsubscribeUrl = `${PUBLIC_BASE_URL}/desinscription?t=${encodeURIComponent(sub.unsubscribeToken || '')}`;
-          const html = renderEmailHtml(doc.blocks, {
-            subject: doc.subject,
-            preheader: doc.preheader,
-            unsubscribeUrl,
-            postalAddress,
-            firstName: sub.firstName,
-            brandLogoUrl: BRAND_LOGO_URL,
-          });
-          const text = renderEmailText(doc.blocks, { subject: doc.subject, unsubscribeUrl, postalAddress, firstName: sub.firstName });
-          await resend.emails.send({
-            from: fromAddr,
-            to: [sub.email],
-            subject: doc.subject,
-            html,
-            text,
-            headers: {
-              'List-Unsubscribe': `<${unsubscribeUrl}>`,
-              'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-            },
-          });
-          delivered++;
+    // Send one at a time over the pooled SMTP connection. Gentler on Gmail's
+    // sending limits than firing a large parallel batch.
+    for (const sub of subscribers) {
+      try {
+        const unsubscribeUrl = `${PUBLIC_BASE_URL}/desinscription?t=${encodeURIComponent(sub.unsubscribeToken || '')}`;
+        const html = renderEmailHtml(doc.blocks, {
+          subject: doc.subject,
+          preheader: doc.preheader,
+          unsubscribeUrl,
+          postalAddress,
+          firstName: sub.firstName,
+          brandLogoUrl: BRAND_LOGO_URL,
+        });
+        const text = renderEmailText(doc.blocks, { subject: doc.subject, unsubscribeUrl, postalAddress, firstName: sub.firstName });
+        await transporter.sendMail({
+          from: fromAddr,
+          to: sub.email,
+          subject: doc.subject,
+          html,
+          text,
+          headers: {
+            'List-Unsubscribe': `<${unsubscribeUrl}>`,
+            'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+          },
+        });
+        delivered++;
 
-          // If the subscriber has a member uid, drop an inbox pointer so
-          // the newsletter shows up in their client portal archives.
-          if (sub.uid) {
-            await db
-              .doc(`members/${sub.uid}/inbox/${newsletterId}`)
-              .set({
-                newsletterId,
-                title: doc.title || doc.subject,
-                subject: doc.subject,
-                receivedAt: FieldValue.serverTimestamp(),
-              }, { merge: true });
-          }
-        } catch (err) {
-          bounced++;
-          console.warn('[sendNewsletter] delivery failed', sub.email, err);
+        // If the subscriber has a member uid, drop an inbox pointer so
+        // the newsletter shows up in their client portal archives.
+        if (sub.uid) {
+          await db
+            .doc(`members/${sub.uid}/inbox/${newsletterId}`)
+            .set({
+              newsletterId,
+              title: doc.title || doc.subject,
+              subject: doc.subject,
+              receivedAt: FieldValue.serverTimestamp(),
+            }, { merge: true });
         }
-      }));
+      } catch (err) {
+        bounced++;
+        console.warn('[sendNewsletter] delivery failed', sub.email, err);
+      }
     }
+    transporter.close();
 
     await ref.update({
       status: 'sent',
