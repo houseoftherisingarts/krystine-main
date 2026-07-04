@@ -1,29 +1,42 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Check, ChevronDown, ArrowRight, Snowflake, Sparkles } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import {
+  Wind, ArrowRight, ArrowDown, Check, CaretDown, Anchor, Ear, Drop, Quotes,
+} from '@phosphor-icons/react';
 import { Atmosphere } from '../components/motion/loeuvre';
 
 /**
- * Expérience Ayurveda · Saison Vata — page React (style L'Œuvre).
- * Porte le bundle statique /vata vers React. Contenu extrait de
- * src/pages/vata/constants.ts. Botanique forest + espresso/cream/brass.
+ * Expérience Ayurveda · Saison Vata — page de vente, langage V2 « magazine crème ».
+ * Système multi-couleur de la charte : accent Vata #b9822f, accent-encre #8a5e1f,
+ * tint de carte #efe1c6 sur crème #f4efe6. Contenu et câblage préservés
+ * (checkout Kajabi, tiers, FAQ). Effets de scroll : mot fantôme « Vata »,
+ * ligne de progression qui se dessine, DrawRule, parallax doux, médaillons.
  */
 
-const ease = [0.16, 0.8, 0.24, 1] as const;
+const ease = [0.22, 1, 0.36, 1] as const;
+const SPRING = { type: 'spring' as const, stiffness: 220, damping: 24, mass: 0.8 };
+
 const CHECKOUT = 'https://www.krystinestlaurent.com/VATAETPREMIUMOPTIONSDEPAIEMENT';
 const go = () => window.open(CHECKOUT, '_blank', 'noopener,noreferrer');
 
-const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: string }> = ({ children, delay = 0, className }) => (
-  <motion.div className={className} initial={{ opacity: 0, y: 28, filter: 'blur(6px)' }} whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: 1.0, ease, delay }}>
-    {children}
-  </motion.div>
-);
-const Eyebrow: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light' }> = ({ children, on = 'light' }) => (
-  <p className={`font-sans text-[0.62rem] uppercase tracking-[0.28em] ${on === 'dark' ? 'text-brass' : 'text-brassInk'}`}>{children}</p>
-);
-const Title: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light'; className?: string }> = ({ children, on = 'light', className = '' }) => (
-  <h2 className={`font-serif font-medium leading-[1.05] text-[clamp(2rem,4.2vw,3.2rem)] ${on === 'dark' ? 'text-ctext' : 'text-ink'} ${className}`}>{children}</h2>
-);
+/* Tokens V2 + identité Vata (air / automne) */
+const C = {
+  cream: '#f4efe6',
+  panel: '#efe6d7',
+  card: '#faf6ee',
+  ink: '#1c1712',
+  inkSoft: '#3a2f23',
+  accent: '#b9822f',
+  accentInk: '#8a5e1f',
+  tint: '#efe1c6',
+  dark: '#34241a',
+};
+
+/* Portrait hero : recadrage éditorial (brume, lever de soleil, feuilles d'or)
+   du visuel Vata, sans le texte incrusté ni la bande noire. */
+const HERO_IMG = 'https://wsrv.nl/?url=storage.googleapis.com/inspirata/Vata/bg.png&cx=0&cy=0&cw=870&ch=1044&precrop&w=1200&output=webp';
+
+/* ════════════════════════ Données (préservées) ════════════════════════ */
 
 const SIGNALS = [
   ['La surchauffe mentale', '15 onglets ouverts en permanence. Vous ne « pensez » plus, vous subissez le bruit de vos pensées.'],
@@ -37,10 +50,10 @@ const SIGNALS = [
   ['La dispersion mentale', "Vous commencez dix tâches, n'en finissez aucune. Votre focus s'effrite et vous perdez le fil constamment."],
 ];
 
-const SYSTEMS = [
-  ["Le système d'ancrage", "Avant de calmer le mental, il faut sécuriser le corps. Le souffle devient votre « bouton stop » accessible en 30 secondes, n'importe où."],
-  ['Le filtrage sensoriel', 'Vos 5 sens sont actuellement des portes grandes ouvertes. Nous allons poser des filtres pour que le bruit extérieur cesse de vous envahir.'],
-  ["La maintenance d'actif", "Votre corps est votre capital le plus précieux. Nous allons remettre de l'huile dans les rouages (sommeil, digestion) pour éviter la casse."],
+const SYSTEMS: Array<[string, string, React.ComponentType<{ size?: number; weight?: any; className?: string }>]> = [
+  ["Le système d'ancrage", "Avant de calmer le mental, il faut sécuriser le corps. Le souffle devient votre « bouton stop » accessible en 30 secondes, n'importe où.", Anchor],
+  ['Le filtrage sensoriel', 'Vos 5 sens sont actuellement des portes grandes ouvertes. Nous allons poser des filtres pour que le bruit extérieur cesse de vous envahir.', Ear],
+  ["La maintenance d'actif", "Votre corps est votre capital le plus précieux. Nous allons remettre de l'huile dans les rouages (sommeil, digestion) pour éviter la casse.", Drop],
 ];
 
 const PHASES = [
@@ -83,222 +96,595 @@ const FAQS = [
   ['Quelle est la différence entre les deux options ?', "L'option Essentiel contient tout le parcours de 7 semaines. L'option Premium ajoute un accès illimité à la Grande Bibliothèque : plus de 50 capsules, des séries télé et des Masterclasses exclusives."],
 ];
 
-const Faq: React.FC = () => {
-  const [open, setOpen] = useState<number | null>(0);
+/* ════════════════════════ Primitives V2 ════════════════════════ */
+
+const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: string; y?: number }> = ({ children, delay = 0, className, y = 30 }) => {
+  const reduce = useReducedMotion();
   return (
-    <section className="bg-cream2 py-24 md:py-32">
-      <div className="mx-auto w-full max-w-[820px] px-6 md:px-12">
-        <Reveal className="text-center mb-12"><Eyebrow>Questions fréquentes</Eyebrow></Reveal>
-        <Reveal>
-          {FAQS.map(([q, a], i) => (
-            <div key={i} className={`mb-3 rounded-2xl border bg-card overflow-hidden ${open === i ? 'border-brass/40 shadow-[0_10px_30px_rgba(187,154,94,0.12)]' : 'border-cream3 shadow-sm'}`}>
-              <button onClick={() => setOpen(open === i ? null : i)} aria-expanded={open === i} className="w-full text-left py-5 px-6 md:px-8 flex items-center justify-between gap-4 min-h-[44px] group">
-                <h3 className={`font-serif text-lg md:text-xl pr-6 ${open === i ? 'text-brassInk' : 'text-ink group-hover:text-brassInk'}`}>{q}</h3>
-                <ChevronDown className={`w-5 h-5 shrink-0 text-brassInk transition-transform duration-300 ${open === i ? 'rotate-180' : ''}`} />
-              </button>
-              <AnimatePresence initial={false}>
-                {open === i && (
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease }}>
-                    <p className="px-6 md:px-8 pb-7 text-inkSoft leading-[1.8] font-sans text-[0.95rem] max-w-[62ch]">{a}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+    <motion.div
+      className={className}
+      initial={reduce ? { opacity: 1 } : { opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.95, ease, delay }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+const Kicker: React.FC<{ children: React.ReactNode; color?: string; className?: string }> = ({ children, color = C.accentInk, className = '' }) => (
+  <p className={`text-[0.7rem] uppercase tracking-[0.34em] ${className}`} style={{ color }}>{children}</p>
+);
+
+/* Filet qui se trace au scroll (scaleX, transform seulement) */
+const DrawRule: React.FC<{ className?: string; color?: string; center?: boolean; delay?: number }> = ({ className = '', color = C.accent, center = false, delay = 0.15 }) => {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      aria-hidden
+      className={`h-px ${className}`}
+      style={{ background: color, transformOrigin: center ? 'center' : 'left center' }}
+      initial={reduce ? false : { scaleX: 0 }}
+      whileInView={{ scaleX: 1 }}
+      viewport={{ once: true, amount: 0.7 }}
+      transition={{ duration: 1.2, ease, delay }}
+    />
+  );
+};
+
+/* Médaillon Vata : plein accent, icône crème, éclosion à l'entrée + hover */
+const Medallion: React.FC<{ Icon: React.ComponentType<{ size?: number; weight?: any }>; size?: number }> = ({ Icon, size = 48 }) => {
+  const reduce = useReducedMotion();
+  return (
+    <motion.span
+      className="inline-grid place-items-center rounded-full will-change-transform"
+      style={{ background: C.accent, color: C.card, width: size, height: size }}
+      initial={reduce ? false : { scale: 0.4, rotate: -12, opacity: 0 }}
+      whileInView={{ scale: 1, rotate: 0, opacity: 1 }}
+      whileHover={reduce ? undefined : { scale: 1.09, rotate: -4 }}
+      viewport={{ once: true, amount: 0.6 }}
+      transition={SPRING}
+    >
+      <Icon size={Math.round(size * 0.46)} weight="light" />
+    </motion.span>
+  );
+};
+
+/* ════════════════════════ Sections ════════════════════════ */
+
+/* ── Hero · une de magazine ── */
+const Hero: React.FC = () => {
+  const ref = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
+  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '9%']);
+  return (
+    <section
+      ref={ref}
+      className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(7rem,13vh,9.5rem)] pb-[clamp(2rem,5vh,4rem)] min-h-screen flex flex-col"
+    >
+      <Reveal y={12}>
+        <div className="flex items-center justify-between border-t pt-3.5 text-[0.6rem] uppercase tracking-[0.28em]" style={{ borderColor: 'rgba(28,23,18,0.15)', color: 'rgba(28,23,18,0.55)' }}>
+          <span>N&deg; 03 &middot; Saison Vata</span>
+          <span className="hidden sm:inline">Québec &middot; MMXXVI</span>
+        </div>
+      </Reveal>
+
+      <div className="flex-1 grid items-stretch gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.08fr_0.92fr] mt-[clamp(2rem,5vh,4rem)]">
+        {/* Masthead */}
+        <div className="order-1 self-center">
+          <Reveal y={20}>
+            <div className="flex items-center gap-4 mb-7">
+              <Medallion Icon={Wind} size={44} />
+              <Kicker>Expérience Ayurveda &middot; Saison Vata</Kicker>
             </div>
+          </Reveal>
+          <Reveal y={26} delay={0.08}>
+            <h1 className="v2-serif font-light leading-[0.96] text-[clamp(2.7rem,6.5vw,5.6rem)]" style={{ color: C.ink }}>
+              Votre corps n'est pas fait pour cette vitesse.
+            </h1>
+          </Reveal>
+          <Reveal y={24} delay={0.18}>
+            <p className="mt-7 v2-serif italic text-[clamp(1.2rem,2.2vw,1.7rem)] leading-[1.35] max-w-[42ch]" style={{ color: C.inkSoft }}>
+              Froid, sécheresse, surcharge mentale : la saison Vata teste vos limites.
+              Apprenez à sécuriser vos portes sensorielles pour ramener
+              le calme <span className="not-italic" style={{ color: C.accentInk }}>à l'intérieur.</span>
+            </p>
+          </Reveal>
+          <Reveal y={20} delay={0.28}>
+            <div className="mt-10 flex flex-wrap items-center gap-x-9 gap-y-4">
+              <button
+                type="button"
+                onClick={go}
+                className="group inline-flex items-center gap-2.5 min-h-[44px] text-[0.72rem] uppercase tracking-[0.2em] border-b pb-1.5 transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+                style={{ color: C.ink, borderColor: C.ink, outlineColor: C.accent }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = C.accentInk; e.currentTarget.style.borderColor = C.accent; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = C.ink; e.currentTarget.style.borderColor = C.ink; }}
+              >
+                Apaiser mon système nerveux
+                <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
+              </button>
+              <a href="#parcours" className="v2-serif italic text-lg transition-colors duration-300 hover:opacity-70" style={{ color: 'rgba(28,23,18,0.7)' }}>
+                Voir le parcours
+              </a>
+            </div>
+            <ul className="mt-8 flex flex-wrap gap-x-7 gap-y-2">
+              {['7 semaines + introduction', 'Automne · élément air', 'À votre rythme · accès immédiat'].map((m) => (
+                <li key={m} className="flex items-center gap-2.5 text-[0.66rem] uppercase tracking-[0.2em]" style={{ color: 'rgba(28,23,18,0.62)' }}>
+                  <span className="h-1 w-1 rounded-full" style={{ background: C.accent }} />
+                  {m}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        </div>
+
+        {/* Encart portrait encadré · brume et feuilles d'or */}
+        <div className="order-2 relative flex">
+          <Reveal className="relative w-full self-center" delay={0.15} y={36}>
+            <span className="pointer-events-none absolute -inset-2 border" style={{ borderColor: 'rgba(185,130,47,0.45)' }} aria-hidden />
+            <div className="relative w-full aspect-[5/6] overflow-hidden">
+              <motion.img
+                src={HERO_IMG}
+                alt="Brume d'automne sur un lac au lever du soleil, feuilles dorées portées par le vent"
+                referrerPolicy="no-referrer"
+                className="absolute left-0 top-[-5%] h-[112%] w-full object-cover will-change-transform"
+                style={reduce ? undefined : { y: imgY }}
+              />
+              <div
+                className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
+                style={{ background: 'linear-gradient(to top, rgba(28,23,18,0.55), transparent)' }}
+                aria-hidden
+              />
+              <p className="absolute bottom-4 left-4 right-4 v2-serif italic text-sm tracking-wide" style={{ color: C.cream }}>
+                « Le vent se calme lorsqu'il trouve un endroit où se poser. »
+              </p>
+            </div>
+            <span
+              className="absolute -top-2 -left-2 px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.24em]"
+              style={{ background: C.ink, color: C.cream }}
+            >
+              Automne
+            </span>
+          </Reveal>
+        </div>
+      </div>
+
+      <Reveal y={10}>
+        <div className="flex items-end justify-between border-b pb-3.5 mt-[clamp(1.5rem,4vh,3rem)] text-[0.6rem] uppercase tracking-[0.28em]" style={{ borderColor: 'rgba(28,23,18,0.15)', color: 'rgba(28,23,18,0.55)' }}>
+          <span className="flex items-center gap-2 v2-cue">
+            <ArrowDown size={13} weight="regular" />
+            Faire défiler
+          </span>
+          <span className="hidden sm:inline">Enraciner &middot; Réchauffer &middot; Apaiser</span>
+        </div>
+      </Reveal>
+    </section>
+  );
+};
+
+/* ── Signaux · mot fantôme « Vata » qui glisse derrière la grille ── */
+const Signals: React.FC = () => {
+  const ref = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+  const ghostX = useTransform(scrollYProgress, [0, 1], ['8%', '-16%']);
+  return (
+    <section ref={ref} className="relative w-full overflow-hidden px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,14vh,10rem)]">
+      <motion.span
+        aria-hidden
+        className="pointer-events-none select-none absolute top-[8%] left-0 v2-serif italic font-light leading-none whitespace-nowrap"
+        style={{ fontSize: 'clamp(12rem,30vw,26rem)', color: 'rgba(185,130,47,0.07)', x: reduce ? 0 : ghostX }}
+      >
+        Vata
+      </motion.span>
+
+      <div className="relative">
+        <Reveal className="max-w-[820px] mb-4">
+          <Kicker className="mb-5">Les signaux d'alerte</Kicker>
+          <h2 className="v2-serif font-light leading-[1.02] text-[clamp(2.2rem,5vw,3.9rem)]" style={{ color: C.ink }}>
+            Avez-vous perdu vos filtres ?
+          </h2>
+          <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] leading-snug max-w-[46ch]" style={{ color: C.inkSoft }}>
+            Si plus de trois de ces signaux vous ressemblent, votre vent intérieur est en turbulence.
+          </p>
+        </Reveal>
+        <DrawRule className="w-24 mb-14" />
+
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.1 }}
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+          className="grid gap-x-[clamp(2rem,4vw,4rem)] gap-y-12 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {SIGNALS.map(([t, d], i) => (
+            <motion.article
+              key={t}
+              variants={{ hidden: { opacity: 0, y: 28 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease } } }}
+              className="border-t pt-6"
+              style={{ borderColor: 'rgba(28,23,18,0.14)' }}
+            >
+              <span className="text-[0.62rem] uppercase tracking-[0.26em] tabular-nums" style={{ color: C.accentInk }}>
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <h3 className="mt-3 v2-serif font-light text-[1.45rem] leading-[1.15]" style={{ color: C.ink }}>{t}</h3>
+              <p className="mt-3 text-[0.92rem] leading-[1.75]" style={{ color: C.inkSoft }}>{d}</p>
+            </motion.article>
           ))}
+        </motion.div>
+
+        <Reveal className="mt-16">
+          <p className="v2-serif italic text-[clamp(1.25rem,2.4vw,1.9rem)] leading-snug max-w-[38ch]" style={{ color: C.accentInk }}>
+            Ces signes sont le langage du corps. Vata vous invite à ralentir.
+          </p>
         </Reveal>
       </div>
     </section>
   );
 };
 
-const VataExperience: React.FC = () => {
+/* ── Méthode · trois systèmes sur panneau, cartes tint ── */
+const Method: React.FC = () => (
+  <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,14vh,10rem)]" style={{ background: C.panel }}>
+    <Reveal className="max-w-[820px] mb-14">
+      <Kicker className="mb-5">La méthode</Kicker>
+      <h2 className="v2-serif font-light leading-[1.02] text-[clamp(2.2rem,5vw,3.9rem)]" style={{ color: C.ink }}>
+        Comment nous allons arrêter la fuite d'énergie
+      </h2>
+      <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] leading-snug max-w-[46ch]" style={{ color: C.inkSoft }}>
+        Pas de tâches en plus. Trois systèmes de régulation invisibles.
+      </p>
+    </Reveal>
+    <motion.div
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.2 }}
+      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}
+      className="grid gap-6 md:grid-cols-3"
+    >
+      {SYSTEMS.map(([t, d, Icon], i) => (
+        <motion.article
+          key={t}
+          variants={{ hidden: { opacity: 0, y: 36 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease } } }}
+          whileHover={{ y: -8, transition: SPRING }}
+          className="flex flex-col p-[clamp(1.6rem,2.5vw,2.25rem)] will-change-transform"
+          style={{ background: C.tint }}
+        >
+          <div className="flex items-center justify-between">
+            <Medallion Icon={Icon} size={48} />
+            <span className="v2-serif font-light text-[2.4rem] leading-none tabular-nums" style={{ color: 'rgba(185,130,47,0.5)' }}>
+              {String(i + 1).padStart(2, '0')}
+            </span>
+          </div>
+          <h3 className="mt-7 v2-serif font-light text-[1.6rem] leading-[1.12]" style={{ color: C.ink }}>{t}</h3>
+          <span className="mt-4 block h-px w-12" style={{ background: C.accent }} aria-hidden />
+          <p className="mt-4 text-[0.94rem] leading-[1.8] flex-1" style={{ color: C.inkSoft }}>{d}</p>
+        </motion.article>
+      ))}
+    </motion.div>
+  </section>
+);
+
+/* ── Parcours · rangées indexées, ligne de progression qui se dessine ── */
+const Journey: React.FC = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.8', 'end 0.5'] });
   return (
-    <div className="bg-cream text-ink font-sans antialiased">
-      {/* ── HERO ── */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-espressoDeep">
-        <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: 'url(https://storage.googleapis.com/inspirata/Vata/bg.png)' }} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(120deg, #16100a 10%, rgba(22,16,10,0.7) 55%, transparent 100%)' }} />
-        <Atmosphere strength={0.5} vignette={false} />
-        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-28">
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }}>
-            <p className="inline-flex items-center gap-2 text-brass text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.3em] mb-8"><Snowflake size={14} /> Expérience Ayurveda · Saison Vata</p>
-            <h1 className="font-serif font-medium text-ctext leading-[1.0] text-[clamp(2.4rem,5.4vw,4.6rem)] max-w-[18ch]">Votre corps n'est pas fait pour cette vitesse.</h1>
-            <p className="mt-7 font-serif italic text-[clamp(1.2rem,2.4vw,1.8rem)] leading-snug text-ctextSoft max-w-[42ch]">Froid, sécheresse, surcharge mentale : la saison Vata teste vos limites. Apprenez à sécuriser vos portes sensorielles pour ramener le calme à l'intérieur.</p>
-            <div className="mt-12 flex flex-wrap items-center gap-5">
-              <button onClick={go} className="inline-flex items-center gap-3 rounded-full bg-brass px-8 py-4 font-sans text-[0.7rem] uppercase tracking-[0.16em] text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]">Apaiser mon système nerveux <ArrowRight size={16} /></button>
-              <span className="font-sans text-[0.75rem] text-ctextSoft/70">Programme autonome · accès immédiat · à votre rythme</span>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+    <section id="parcours" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,14vh,10rem)] scroll-mt-24">
+      <Reveal className="max-w-[820px] mb-16">
+        <Kicker className="mb-5">L'art de l'ancrage réel</Kicker>
+        <h2 className="v2-serif font-light leading-[1.02] text-[clamp(2.2rem,5vw,3.9rem)]" style={{ color: C.ink }}>
+          Le parcours, étape par étape
+        </h2>
+        <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] leading-snug max-w-[48ch]" style={{ color: C.inkSoft }}>
+          Délaisser le superflu, éteindre le bruit, rebâtir votre sécurité intérieure.
+        </p>
+      </Reveal>
 
-      {/* ── SIGNAUX D'ALERTE ── */}
-      <section className="bg-cream py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
-          <Reveal className="text-center mb-14">
-            <Eyebrow>Les signaux d'alerte</Eyebrow>
-            <Title className="mt-4">Avez-vous perdu vos filtres ?</Title>
-            <p className="mt-5 font-serif italic text-[clamp(1.05rem,1.9vw,1.4rem)] text-inkSoft max-w-[52ch] mx-auto">Si plus de trois de ces signaux vous ressemblent, votre vent intérieur est en turbulence.</p>
-          </Reveal>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {SIGNALS.map(([t, d], i) => (
-              <Reveal key={i} delay={(i % 3) * 0.05}>
-                <div className="h-full rounded-2xl bg-card border border-cream3 p-7 transition-shadow hover:shadow-lg">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="w-2 h-2 rounded-full bg-forest shrink-0" />
-                    <h3 className="font-serif text-lg md:text-xl text-ink leading-snug">{t}</h3>
+      <div ref={ref} className="relative pl-9 md:pl-14">
+        {/* rail qui se dessine au fil du scroll */}
+        <div className="pointer-events-none absolute left-[5px] md:left-[7px] top-2 bottom-2 w-px" style={{ background: 'rgba(185,130,47,0.18)' }} aria-hidden />
+        <motion.div
+          className="pointer-events-none absolute left-[5px] md:left-[7px] top-2 bottom-2 w-px"
+          style={reduce ? { background: C.accent } : { background: C.accent, scaleY: scrollYProgress, transformOrigin: 'top center' }}
+          aria-hidden
+        />
+        <div>
+          {PHASES.map(([t, d], i) => (
+            <Reveal key={t} y={26}>
+              <article
+                className={`relative grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-3 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] items-baseline py-9 md:py-11 ${i > 0 ? 'border-t' : ''}`}
+                style={{ borderColor: 'rgba(28,23,18,0.12)' }}
+              >
+                <span
+                  className="absolute -left-9 md:-left-14 top-[2.6rem] md:top-[3.1rem] block h-3 w-3 rounded-full ring-4"
+                  style={{ background: C.accent, ['--tw-ring-color' as any]: C.cream }}
+                  aria-hidden
+                />
+                <div>
+                  <div className="flex items-baseline gap-4">
+                    <span className="v2-serif font-light text-[clamp(2rem,3.4vw,3rem)] leading-none tabular-nums" style={{ color: 'rgba(185,130,47,0.55)' }}>
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: C.accentInk }}>Semaine {i + 1}</span>
                   </div>
-                  <p className="font-sans text-[0.9rem] leading-relaxed text-inkSoft">{d}</p>
+                  <h3 className="mt-2 v2-serif font-light leading-[1.08] text-[clamp(1.6rem,2.8vw,2.3rem)]" style={{ color: C.ink }}>{t}</h3>
                 </div>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal className="text-center mt-14">
-            <p className="font-serif italic text-brassInk text-[clamp(1.2rem,2.2vw,1.7rem)]">Ces signes sont le langage du corps. Vata vous invite à ralentir.</p>
-          </Reveal>
+                <p className="text-[0.95rem] leading-[1.8] max-w-[52ch]" style={{ color: C.inkSoft }}>{d}</p>
+              </article>
+            </Reveal>
+          ))}
         </div>
-      </section>
-
-      {/* ── 3 SYSTÈMES ── */}
-      <section className="relative overflow-hidden bg-espressoSoft py-24 md:py-32">
-        <Atmosphere strength={0.8} light="26% 10%" />
-        <div className="relative mx-auto w-full max-w-[1180px] px-6 md:px-12">
-          <Reveal className="text-center mb-16">
-            <Eyebrow on="dark">La méthode</Eyebrow>
-            <Title on="dark" className="mt-4">Comment nous allons arrêter la fuite d'énergie</Title>
-            <p className="mt-5 font-serif italic text-[clamp(1.05rem,1.9vw,1.4rem)] text-ctextSoft max-w-[56ch] mx-auto">Pas de tâches en plus. Trois systèmes de régulation invisibles.</p>
-          </Reveal>
-          <div className="grid md:grid-cols-3 gap-6">
-            {SYSTEMS.map(([t, d], i) => (
-              <Reveal key={i} delay={i * 0.08}>
-                <div className="h-full rounded-3xl border border-brass/20 bg-espresso p-8">
-                  <span className="font-serif text-brass text-3xl">{String(i + 1).padStart(2, '0')}</span>
-                  <h3 className="mt-4 font-serif text-xl md:text-2xl text-ctext leading-snug">{t}</h3>
-                  <p className="mt-3 font-sans text-[0.92rem] leading-relaxed text-ctextSoft">{d}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── PROGRAMME 8 PHASES ── */}
-      <section className="bg-cream py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1080px] px-6 md:px-12">
-          <Reveal className="text-center mb-16">
-            <Eyebrow>L'art de l'ancrage réel</Eyebrow>
-            <Title className="mt-4 uppercase tracking-[0.02em]">Le parcours, étape par étape</Title>
-            <p className="mt-5 font-serif italic text-[clamp(1.05rem,1.9vw,1.4rem)] text-inkSoft max-w-[54ch] mx-auto">Délaisser le superflu, éteindre le bruit, rebâtir votre sécurité intérieure.</p>
-          </Reveal>
-          <div className="relative">
-            <div className="pointer-events-none absolute left-[18px] md:left-1/2 top-2 bottom-2 w-px bg-gradient-to-b from-forest/0 via-forest/40 to-forest/0 md:-translate-x-1/2" aria-hidden />
-            <div className="space-y-12">
-              {PHASES.map(([t, d], i) => (
-                <Reveal key={i}>
-                  <div className={`relative grid md:grid-cols-2 gap-x-14 items-center ${i % 2 ? 'md:[direction:rtl]' : ''}`}>
-                    <span className="absolute left-[11px] md:left-1/2 top-3 h-3.5 w-3.5 rounded-full bg-brass ring-4 ring-cream md:-translate-x-1/2" aria-hidden />
-                    <div className={`pl-12 md:pl-0 [direction:ltr] ${i % 2 ? 'md:pl-14' : 'md:text-right md:pr-14'}`}>
-                      <span className="font-serif text-brassInk text-sm uppercase tracking-[0.2em]">Semaine {i + 1}</span>
-                      <h3 className="mt-1 font-serif font-medium text-ink text-[clamp(1.5rem,2.6vw,2.1rem)] leading-snug">{t}</h3>
-                    </div>
-                    <div className={`pl-12 md:pl-0 [direction:ltr] ${i % 2 ? 'md:text-right md:pr-14' : 'md:pl-14'}`}>
-                      <p className="font-sans text-[0.95rem] leading-[1.8] text-inkSoft max-w-[44ch] md:inline-block">{d}</p>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── TARIFS ── */}
-      <section id="tarifs" className="bg-cream3 py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1080px] px-6 md:px-12">
-          <Reveal className="text-center mb-14"><Eyebrow>Choisissez votre parcours</Eyebrow><Title className="mt-4">Deux façons de traverser la saison</Title></Reveal>
-          <div className="grid md:grid-cols-2 gap-7 items-stretch">
-            {TIERS.map((tier, i) => (
-              <Reveal key={i} delay={i * 0.08}>
-                <div className={`h-full flex flex-col rounded-[2rem] border p-8 md:p-10 ${tier.recommended ? 'border-brass/50 bg-espresso' : 'border-cream3 bg-card'}`}>
-                  {tier.recommended && <span className="self-start mb-4 rounded-full bg-brass/15 text-brass px-3 py-1 text-[0.58rem] font-bold uppercase tracking-[0.16em]">Expérience profonde</span>}
-                  <h3 className={`font-serif text-2xl md:text-3xl ${tier.recommended ? 'text-ctext' : 'text-ink'}`}>{tier.name}</h3>
-                  <p className={`mt-2 font-serif italic text-[0.98rem] ${tier.recommended ? 'text-ctextSoft' : 'text-inkSoft'}`}>{tier.intro}</p>
-                  <div className="mt-6 flex items-end gap-3">
-                    <span className={`font-serif text-4xl tabular-nums ${tier.recommended ? 'text-brassBright' : 'text-brassInk'}`}>{tier.promo}</span>
-                    <span className={`font-serif text-lg line-through tabular-nums ${tier.recommended ? 'text-ctextSoft/60' : 'text-inkSoft/60'}`}>{tier.price}</span>
-                  </div>
-                  {tier.plan && <p className={`mt-1 text-[0.78rem] uppercase tracking-[0.12em] ${tier.recommended ? 'text-ctextSoft/70' : 'text-inkSoft/70'}`}>{tier.plan}</p>}
-                  <ul className="mt-7 space-y-3 flex-1">
-                    {tier.features.map((f, j) => (
-                      <li key={j} className={`flex items-start gap-3 text-[0.9rem] leading-relaxed ${tier.recommended ? 'text-ctextSoft' : 'text-inkSoft'}`}>
-                        <Check size={16} className={`mt-0.5 shrink-0 ${tier.recommended ? 'text-brass' : 'text-brassInk'}`} />{f}
-                      </li>
-                    ))}
-                  </ul>
-                  <button onClick={go} className={`mt-8 w-full rounded-xl py-4 font-serif text-base tracking-[0.08em] uppercase transition-colors min-h-[44px] ${tier.recommended ? 'bg-brass text-espressoDeep hover:bg-brassBright' : 'bg-espresso text-ctext hover:bg-espressoDeep'}`}>{tier.name.includes('Bibliothèque') ? 'Rejoindre VATA + Bibliothèque' : 'Rejoindre VATA Essentiel'}</button>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── TÉMOIGNAGES ── */}
-      <section className="bg-cream py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12">
-          <Reveal className="text-center mb-14"><Eyebrow>Elles l'ont vécu</Eyebrow><Title className="mt-4">Témoignages de la communauté</Title></Reveal>
-          <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t, i) => (
-              <Reveal key={i} delay={i * 0.06}>
-                <figure className="h-full rounded-3xl bg-card border border-cream3 p-8 flex flex-col">
-                  <Sparkles size={18} className="text-brass mb-4" />
-                  <blockquote className="font-serif italic text-[1.02rem] leading-relaxed text-ink flex-1">« {t.quote} »</blockquote>
-                  <figcaption className="mt-5 pt-4 border-t border-cream3">
-                    <span className="block font-serif text-brassInk">{t.who}</span>
-                    <span className="block text-[0.8rem] text-inkSoft">{t.role}</span>
-                  </figcaption>
-                </figure>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── BIO ── */}
-      <section className="relative overflow-hidden bg-espressoSoft py-24 md:py-32">
-        <Atmosphere strength={0.8} light="74% 12%" />
-        <div className="relative mx-auto w-full max-w-[1100px] px-6 md:px-12 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <Reveal className="order-last lg:order-first">
-            <div className="rounded-[2rem] overflow-hidden aspect-[4/5] shadow-2xl">
-              <img src="https://wsrv.nl/?url=storage.googleapis.com/inspirata/21%20jours/krysttine%20red.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-            </div>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <Eyebrow on="dark">Fondatrice d'Inspirata Ayurveda</Eyebrow>
-            <Title on="dark" className="mt-3">Krystine St-Laurent</Title>
-            <p className="mt-5 font-serif italic text-[clamp(1.05rem,1.8vw,1.35rem)] text-ctextSoft max-w-[48ch]">35 ans à la jonction de la rigueur clinique et de la santé globale.</p>
-            <div className="mt-6 space-y-4 font-sans text-[0.98rem] leading-[1.85] text-ctextSoft max-w-[52ch]">
-              <p>Pendant 35 ans, Krystine a œuvré en soins intensifs et en recherche clinique, puis en herboristerie, Ayurveda et aromathérapie. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle vous laisse seule.</p>
-              <p>Trois livres aux Éditions de l'Homme. Finaliste au Prix de la Santé Intégrative (catégorie Pionnier). Récipiendaire du Prime Mover Award (Las Vegas).</p>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      <Faq />
-
-      {/* ── CTA FINAL ── */}
-      <section className="relative overflow-hidden bg-espressoDeep py-20 md:py-24 text-center">
-        <Atmosphere light="50% 0%" />
-        <div className="relative mx-auto w-full max-w-[760px] px-6 md:px-12">
-          <Reveal>
-            <Title on="dark">Prête à traverser la saison autrement ?</Title>
-            <button onClick={go} className="mt-9 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-sans text-[0.7rem] uppercase tracking-[0.16em] text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]">Apaiser mon système nerveux maintenant <ArrowRight size={16} /></button>
-          </Reveal>
-        </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 };
+
+/* ── Tarifs · deux parcours ── */
+const Tiers: React.FC = () => (
+  <section id="tarifs" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,14vh,10rem)] scroll-mt-24" style={{ background: C.panel }}>
+    <Reveal className="max-w-[820px] mb-14">
+      <Kicker className="mb-5">Choisissez votre parcours</Kicker>
+      <h2 className="v2-serif font-light leading-[1.02] text-[clamp(2.2rem,5vw,3.9rem)]" style={{ color: C.ink }}>
+        Deux façons de traverser la saison
+      </h2>
+    </Reveal>
+    <div className="grid md:grid-cols-2 gap-6 items-stretch">
+      {TIERS.map((tier, i) => (
+        <Reveal key={tier.name} delay={i * 0.1} className="h-full">
+          <article
+            className="h-full flex flex-col p-[clamp(1.75rem,3vw,3rem)] border"
+            style={tier.recommended
+              ? { background: C.tint, borderColor: 'rgba(185,130,47,0.55)' }
+              : { background: C.card, borderColor: 'rgba(28,23,18,0.12)' }}
+          >
+            {tier.recommended && (
+              <span className="self-start mb-5 px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.24em]" style={{ background: C.accent, color: C.card }}>
+                Expérience profonde
+              </span>
+            )}
+            <h3 className="v2-serif font-light text-[clamp(1.7rem,2.6vw,2.2rem)] leading-[1.1]" style={{ color: C.ink }}>{tier.name}</h3>
+            <p className="mt-3 v2-serif italic text-[1.05rem]" style={{ color: C.accentInk }}>{tier.intro}</p>
+            <div className="mt-7 flex items-end gap-3">
+              <span className="v2-serif font-light text-[clamp(2.6rem,4vw,3.4rem)] leading-none tabular-nums" style={{ color: C.accentInk }}>{tier.promo}</span>
+              <span className="v2-serif text-xl line-through tabular-nums" style={{ color: 'rgba(28,23,18,0.4)' }}>{tier.price}</span>
+            </div>
+            {tier.plan && <p className="mt-2 text-[0.72rem] uppercase tracking-[0.16em]" style={{ color: 'rgba(28,23,18,0.6)' }}>{tier.plan}</p>}
+            <span className="mt-6 block h-px w-full" style={{ background: 'rgba(185,130,47,0.35)' }} aria-hidden />
+            <ul className="mt-6 space-y-3.5 flex-1">
+              {tier.features.map((f) => (
+                <li key={f} className="flex items-start gap-3 text-[0.92rem] leading-[1.65]" style={{ color: C.inkSoft }}>
+                  <Check size={16} weight="bold" className="mt-1 shrink-0" style={{ color: C.accent }} />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              onClick={go}
+              className="group mt-9 inline-flex items-center justify-center gap-2.5 w-full py-4 min-h-[44px] text-[0.7rem] uppercase tracking-[0.2em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+              style={{ background: C.ink, color: C.cream, outlineColor: C.accent }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = C.accent; e.currentTarget.style.color = C.ink; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = C.ink; e.currentTarget.style.color = C.cream; }}
+            >
+              {tier.name.includes('Bibliothèque') ? 'Rejoindre VATA + Bibliothèque' : 'Rejoindre VATA Essentiel'}
+              <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
+            </button>
+          </article>
+        </Reveal>
+      ))}
+    </div>
+  </section>
+);
+
+/* ── Témoignages · citations éditoriales ── */
+const Testimonials: React.FC = () => (
+  <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,14vh,10rem)]">
+    <Reveal className="max-w-[820px] mb-6">
+      <Kicker className="mb-5">Elles l'ont vécu</Kicker>
+      <h2 className="v2-serif font-light leading-[1.02] text-[clamp(2.2rem,5vw,3.9rem)]" style={{ color: C.ink }}>
+        Témoignages de la communauté
+      </h2>
+    </Reveal>
+    <DrawRule className="w-24 mb-14" />
+    <motion.div
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.15 }}
+      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}
+      className="grid gap-x-[clamp(2rem,4vw,4.5rem)] gap-y-12 md:grid-cols-3"
+    >
+      {TESTIMONIALS.map((t) => (
+        <motion.figure
+          key={t.who}
+          variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.95, ease } } }}
+          className="flex flex-col border-t pt-7"
+          style={{ borderColor: 'rgba(185,130,47,0.4)' }}
+        >
+          <Quotes size={26} weight="light" style={{ color: C.accent }} aria-hidden />
+          <blockquote className="mt-4 v2-serif italic font-light text-[1.12rem] leading-[1.55] flex-1" style={{ color: C.ink }}>
+            « {t.quote} »
+          </blockquote>
+          <figcaption className="mt-6">
+            <span className="block v2-serif text-[1.05rem]" style={{ color: C.accentInk }}>{t.who}</span>
+            <span className="block mt-0.5 text-[0.8rem]" style={{ color: 'rgba(28,23,18,0.6)' }}>{t.role}</span>
+          </figcaption>
+        </motion.figure>
+      ))}
+    </motion.div>
+  </section>
+);
+
+/* ── Bio · planche portrait encadrée, parallax doux ── */
+const Bio: React.FC = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+  const y = useTransform(scrollYProgress, [0, 1], ['-4%', '4%']);
+  return (
+    <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,14vh,10rem)]" style={{ background: C.panel }}>
+      <div className="grid lg:grid-cols-2 gap-x-[clamp(2.5rem,5vw,5.5rem)] gap-y-12 items-center">
+        <Reveal className="order-last lg:order-first">
+          <div ref={ref} className="relative border p-2.5 shadow-[0_30px_70px_rgba(58,49,38,0.14)]" style={{ borderColor: 'rgba(156,122,68,0.5)', background: C.card }}>
+            <div className="relative overflow-hidden aspect-[4/5]">
+              <motion.img
+                src="https://wsrv.nl/?url=storage.googleapis.com/inspirata/21%20jours/krysttine%20red.webp&w=1000&output=webp"
+                alt="Krystine St-Laurent"
+                loading="lazy"
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover scale-110 will-change-transform"
+                style={reduce ? undefined : { y }}
+              />
+            </div>
+          </div>
+        </Reveal>
+        <Reveal delay={0.08}>
+          <Kicker color={C.brassInkFallback ?? '#7d6330'} className="mb-5">Fondatrice d'Inspirata Ayurveda</Kicker>
+          <h2 className="v2-serif font-light leading-[1.02] text-[clamp(2.2rem,5vw,3.9rem)]" style={{ color: C.ink }}>
+            Krystine St-Laurent
+          </h2>
+          <p className="mt-5 v2-serif italic text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[44ch]" style={{ color: C.inkSoft }}>
+            35 ans à la jonction de la rigueur clinique et de la santé globale.
+          </p>
+          <DrawRule className="mt-6 w-16" color="#9c7a44" />
+          <div className="mt-7 space-y-4 text-[0.98rem] leading-[1.85] max-w-[54ch]" style={{ color: C.inkSoft }}>
+            <p>Pendant 35 ans, Krystine a œuvré en soins intensifs et en recherche clinique, puis en herboristerie, Ayurveda et aromathérapie. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle vous laisse seule.</p>
+            <p>Trois livres aux Éditions de l'Homme. Finaliste au Prix de la Santé Intégrative (catégorie Pionnier). Récipiendaire du Prime Mover Award (Las Vegas).</p>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+};
+
+/* ── FAQ · deux colonnes pleine largeur ── */
+const FAQItem: React.FC<{ q: string; a: string; open: boolean; onClick: () => void }> = ({ q, a, open, onClick }) => (
+  <div className="border-b" style={{ borderColor: 'rgba(28,23,18,0.14)' }}>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-expanded={open}
+      className="group w-full text-left py-6 flex items-center justify-between gap-5 min-h-[44px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+      style={{ outlineColor: C.accent }}
+    >
+      <h3 className="v2-serif font-light text-[1.25rem] md:text-[1.4rem] leading-[1.2] pr-4 transition-colors duration-300" style={{ color: open ? C.accentInk : C.ink }}>
+        {q}
+      </h3>
+      <CaretDown size={18} weight="light" className={`shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} style={{ color: C.accentInk }} />
+    </button>
+    <AnimatePresence initial={false}>
+      {open && (
+        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.35, ease }} className="overflow-hidden">
+          <p className="pb-7 text-[0.95rem] leading-[1.8] max-w-[62ch]" style={{ color: C.inkSoft }}>{a}</p>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </div>
+);
+
+const Faq: React.FC = () => {
+  const [open, setOpen] = useState<number | null>(0);
+  const mid = Math.ceil(FAQS.length / 2);
+  const columns = [FAQS.slice(0, mid), FAQS.slice(mid)];
+  return (
+    <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,14vh,10rem)]">
+      <Reveal className="max-w-[820px] mb-6">
+        <Kicker className="mb-5">Questions fréquentes</Kicker>
+        <h2 className="v2-serif font-light leading-[1.02] text-[clamp(2.2rem,5vw,3.9rem)]" style={{ color: C.ink }}>
+          Avant de dire oui
+        </h2>
+      </Reveal>
+      <DrawRule className="w-24 mb-10" />
+      <div className="grid lg:grid-cols-2 gap-x-[clamp(2.5rem,5vw,5.5rem)] items-start border-t" style={{ borderColor: 'rgba(28,23,18,0.14)' }}>
+        {columns.map((col, c) => (
+          <Reveal key={c} delay={c * 0.08}>
+            {col.map(([q, a], j) => {
+              const i = c * mid + j;
+              return <FAQItem key={q} q={q} a={a} open={open === i} onClick={() => setOpen(open === i ? null : i)} />;
+            })}
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+/* ── Clôture · l'unique moment sombre, arêtes nettes + Atmosphere ── */
+const FinalCta: React.FC = () => (
+  <section className="relative w-full overflow-hidden" style={{ background: C.dark }}>
+    {/* arête nette : filet accent pleine largeur */}
+    <span className="absolute inset-x-0 top-0 h-px z-10" style={{ background: C.accent }} aria-hidden />
+    <Atmosphere light="50% 8%" strength={0.85} />
+    <div className="relative px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,14vh,10rem)] text-center">
+      <Reveal>
+        <Kicker color="#d3a75e" className="mb-6 flex items-center justify-center gap-3">
+          <Wind size={15} weight="light" aria-hidden /> Saison Vata &middot; L'automne vous attend
+        </Kicker>
+        <h2 className="mx-auto v2-serif font-light leading-[1.08] text-[clamp(2.2rem,5vw,3.9rem)] max-w-[22ch]" style={{ color: C.cream }}>
+          Prête à traverser la saison autrement ?
+        </h2>
+        <p className="mt-7 mx-auto v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] leading-snug max-w-[40ch]" style={{ color: 'rgba(244,239,230,0.75)' }}>
+          « Le calme n'est pas ce qui reste quand tout s'arrête. C'est ce que l'on cultive pendant que le vent souffle. »
+        </p>
+        <div className="mt-11 flex flex-wrap items-center justify-center gap-x-9 gap-y-5">
+          <button
+            type="button"
+            onClick={go}
+            className="group inline-flex items-center gap-2.5 px-9 py-4 min-h-[44px] text-[0.72rem] uppercase tracking-[0.2em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+            style={{ background: C.cream, color: C.dark, outlineColor: C.accent }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = C.accent; e.currentTarget.style.color = C.ink; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = C.cream; e.currentTarget.style.color = C.dark; }}
+          >
+            Apaiser mon système nerveux maintenant
+            <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
+          </button>
+          <a href="#tarifs" className="v2-serif italic text-lg transition-colors duration-300" style={{ color: 'rgba(244,239,230,0.8)' }}>
+            Revoir les deux parcours
+          </a>
+        </div>
+        <p className="mt-9 text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: 'rgba(244,239,230,0.45)' }}>
+          Programme autonome &middot; accès immédiat &middot; à votre rythme
+        </p>
+      </Reveal>
+    </div>
+  </section>
+);
+
+/* ════════════════════════ Page ════════════════════════ */
+
+const VataExperience: React.FC = () => (
+  <div
+    className="relative min-h-screen w-full antialiased overflow-x-hidden"
+    style={{ background: C.cream, color: C.ink, fontFamily: '"Inter", system-ui, sans-serif' }}
+  >
+    <style>{`
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@300;400;500&display=swap');
+      .v2-serif { font-family: "Fraunces", Georgia, serif; }
+      .v2-grain {
+        position: fixed; inset: 0; z-index: 60; pointer-events: none;
+        opacity: 0.045; mix-blend-mode: multiply;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+      @keyframes v2cue { 0%,100% { transform: translateY(0); opacity:.45 } 50% { transform: translateY(8px); opacity:1 } }
+      .v2-cue { animation: v2cue 2.4s cubic-bezier(0.22,1,0.36,1) infinite; }
+      @media (prefers-reduced-motion: reduce) { .v2-cue { animation: none; } }
+    `}</style>
+
+    <div className="v2-grain" aria-hidden />
+
+    <Hero />
+    <Signals />
+    <Method />
+    <Journey />
+    <Tiers />
+    <Testimonials />
+    <Bio />
+    <Faq />
+    <FinalCta />
+  </div>
+);
 
 export default VataExperience;
