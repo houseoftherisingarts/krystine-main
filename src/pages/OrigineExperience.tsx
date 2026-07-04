@@ -239,8 +239,9 @@ const OrigineExperience: React.FC = () => {
       </section>
 
       {/* ─────────── CTA BAND ─────────── */}
-      <section className="bg-espresso py-20 md:py-24">
-        <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12 text-center">
+      <section className="relative overflow-hidden bg-espresso py-20 md:py-24">
+        <Atmosphere light="50% 0%" />
+        <div className="relative mx-auto w-full max-w-[1280px] px-6 md:px-12 text-center">
           <Reveal>
             <p className="mx-auto max-w-[52ch] font-serif text-[clamp(1.2rem,2.1vw,1.7rem)] leading-snug text-ctext">12 semaines pour comprendre les messages du corps, retrouver ce qui nous appartient, ancrer les rituels qui tiennent, et revenir au point d'origine.</p>
             <Link to={WAITLIST} className="mt-10 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]">Rejoindre la liste d'attente <ArrowRight size={16} /></Link>
