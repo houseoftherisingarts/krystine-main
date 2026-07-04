@@ -315,8 +315,10 @@ const OrigineExperience: React.FC = () => {
             <p className="mt-8 font-script text-[2rem] text-brassInk leading-none" style={{ fontFamily: '"Pinyon Script", cursive' }}>Krystine</p>
           </Reveal>
           <Reveal delay={0.1}>
-            <div className="rounded-[2rem] border border-cream3 bg-card p-5 md:p-8 shadow-xl">
-              <img src="https://wsrv.nl/?url=https%3A%2F%2Fstorage.googleapis.com%2Forigine1%2FA%25CC%2580%2520venir%2520biento%25CC%2582t!.png&w=1200&output=webp" alt="La Trilogie d'Origine" loading="lazy" className="w-full h-auto object-contain max-h-[560px] mx-auto" referrerPolicy="no-referrer" />
+            <div className="rounded-[2rem] border border-cream3 bg-card p-5 md:p-8 shadow-xl overflow-hidden">
+              <Parallax speed={0.08}>
+                <img src="https://wsrv.nl/?url=https%3A%2F%2Fstorage.googleapis.com%2Forigine1%2FA%25CC%2580%2520venir%2520biento%25CC%2582t!.png&w=1200&output=webp" alt="La Trilogie d'Origine" loading="lazy" className="w-full h-auto object-contain max-h-[560px] mx-auto" referrerPolicy="no-referrer" />
+              </Parallax>
             </div>
           </Reveal>
         </div>
