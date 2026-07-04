@@ -328,7 +328,7 @@ const OrigineExperience: React.FC = () => {
           <Reveal className="text-center mb-16">
             <Eyebrow>Chaque semaine</Eyebrow>
             <SectionTitle className="mt-4">Ce qui travaille pour vous chaque semaine</SectionTitle>
-            <div className="mt-5 h-px w-24 bg-brass mx-auto" />
+            <DrawRule className="mt-5 w-24 mx-auto" center />
           </Reveal>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {WORKS.map((w, i) => (
