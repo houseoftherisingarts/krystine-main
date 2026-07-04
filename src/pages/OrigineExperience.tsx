@@ -245,13 +245,7 @@ const OrigineExperience: React.FC = () => {
             <SectionTitle className="mt-5 uppercase tracking-[0.02em]">Retour au Point d'Origine</SectionTitle>
             <p className="mt-6 font-serif italic text-[clamp(1.1rem,2vw,1.5rem)] text-inkSoft max-w-[40ch] mx-auto">Une sagesse de 5 000 ans, dans votre réalité d'aujourd'hui.</p>
           </Reveal>
-          <div className="relative mt-24">
-            <div className="pointer-events-none absolute left-[7px] md:left-1/2 top-2 bottom-2 w-px bg-gradient-to-b from-forest/0 via-forest/40 to-forest/0 md:-translate-x-1/2" aria-hidden />
-            <div className="space-y-24 md:space-y-32">
-              {PILLARS.map((p, i) => (
-                <Reveal key={p.roman}>
-                  <article className="relative grid md:grid-cols-2 gap-x-16 gap-y-6 items-start">
-                    <span className="absolute left-0 md:left-1/2 top-2 h-3.5 w-3.5 rounded-full bg-brass ring-4 ring-cream md:-translate-x-1/2" aria-hidden />
+          <PillarsTimeline />
                     <div className={`pl-9 md:pl-0 ${i % 2 === 0 ? 'md:text-right md:pr-16' : 'md:order-2 md:pl-16'}`}>
                       <p className="font-sans text-[0.6rem] uppercase tracking-[0.26em] text-brassInk">{p.range}</p>
                       <p className="mt-3 font-serif text-forestDeep text-[0.95rem] uppercase tracking-[0.18em]">{p.roman}</p>
