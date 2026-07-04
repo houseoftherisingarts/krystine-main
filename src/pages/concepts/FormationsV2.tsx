@@ -109,7 +109,7 @@ const PROGRAMMES: Programme[] = [
 /* ════════════════════════ Primitives V2 ════════════════════════ */
 
 const Kicker: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <p className={`text-[0.7rem] uppercase tracking-[0.34em] text-[#9c7a44] ${className}`}>{children}</p>
+  <p className={`text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] ${className}`}>{children}</p>
 );
 
 /* ── Origine en vedette · pleine largeur éditoriale ── */
@@ -138,7 +138,7 @@ const FeaturedOrigine: React.FC<{ p: Programme; onOpen: (p: Programme) => void }
         <button
           type="button"
           onClick={() => onOpen(p)}
-          className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:border-[#9c7a44] hover:text-[#9c7a44]"
+          className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:border-[#9c7a44] hover:text-[#7d6330]"
         >
           {p.cta}
           <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -351,7 +351,7 @@ export default function FormationsV2() {
         <div className="flex-1 grid items-stretch gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.05fr_0.95fr] mt-[clamp(2rem,5vh,4rem)]">
           {/* MASTHEAD */}
           <div className="order-1 lg:row-start-1 lg:col-start-1 self-start">
-            <p data-fade className="text-[0.7rem] uppercase tracking-[0.34em] text-[#9c7a44] mb-7">
+            <p data-fade className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-7">
               Programmes &middot; Ayurvéda
             </p>
             <h1 className="v2-serif font-light leading-[0.9] text-[#1c1712] text-[clamp(3.4rem,11vw,10rem)]">
@@ -413,12 +413,12 @@ export default function FormationsV2() {
             <div data-fade className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-4">
               <a
                 href="#programmes"
-                className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#9c7a44] hover:border-[#9c7a44]"
+                className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44]"
               >
                 Voir les programmes
                 <ArrowDown size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-y-0.5" />
               </a>
-              <a href="#evenements" className="v2-serif italic text-lg text-[#1c1712]/70 hover:text-[#9c7a44] transition-colors duration-300">
+              <a href="#evenements" className="v2-serif italic text-lg text-[#1c1712]/70 hover:text-[#7d6330] transition-colors duration-300">
                 Événements &amp; conférences
               </a>
             </div>

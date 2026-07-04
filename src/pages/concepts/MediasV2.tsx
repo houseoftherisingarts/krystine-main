@@ -47,7 +47,7 @@ const matchBookToShopify = (bookTitle: string, fullTitle: string | undefined, pr
 };
 
 const Kicker: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <p className={`text-[0.7rem] uppercase tracking-[0.34em] text-[#9c7a44] ${className}`}>{children}</p>
+  <p className={`text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] ${className}`}>{children}</p>
 );
 
 export default function MediasV2() {
@@ -182,7 +182,7 @@ export default function MediasV2() {
         </div>
 
         <div className="mt-[clamp(2rem,5vh,3.5rem)]">
-          <p data-fade className="text-[0.7rem] uppercase tracking-[0.34em] text-[#9c7a44] mb-6">La voix de Krystine</p>
+          <p data-fade className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-6">La voix de Krystine</p>
           <h1 className="v2-serif font-light leading-[0.9] text-[#1c1712] text-[clamp(3.2rem,10vw,9rem)] max-w-[14ch]">
             <span data-line className="block overflow-hidden"><span className="block">Dans les médias</span></span>
           </h1>
@@ -191,7 +191,7 @@ export default function MediasV2() {
           </p>
           <div data-fade className="mt-8 flex flex-wrap gap-x-7 gap-y-3">
             {navLinks.map(([label, href]) => (
-              <a key={label} href={href} className="text-[0.68rem] uppercase tracking-[0.2em] text-[#1c1712]/70 border-b border-[#1c1712]/30 pb-1.5 hover:text-[#9c7a44] hover:border-[#9c7a44] transition-colors duration-300">
+              <a key={label} href={href} className="text-[0.68rem] uppercase tracking-[0.2em] text-[#1c1712]/70 border-b border-[#1c1712]/30 pb-1.5 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors duration-300">
                 {label}
               </a>
             ))}
@@ -241,7 +241,7 @@ export default function MediasV2() {
             <a
               href="/podcast"
               onClick={() => { if (user?.uid) points.podcastListened(user.uid, 'overall').catch(() => {}); }}
-              className="group mt-10 inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#9c7a44] hover:border-[#9c7a44]"
+              className="group mt-10 inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44]"
             >
               {pod.cta} <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
             </a>
@@ -341,10 +341,10 @@ export default function MediasV2() {
                 {item.status === 'available' && (
                   <div className="mt-4 flex flex-col gap-3">
                     <div className="flex items-center justify-between gap-4">
-                      <span className="v2-serif text-xl text-[#9c7a44] tabular-nums">{displayPrice}</span>
+                      <span className="v2-serif text-xl text-[#7d6330] tabular-nums">{displayPrice}</span>
                       {item.reviews && (
                         <span className="inline-flex items-center gap-1.5 text-[0.8rem] text-[#1c1712]/60">
-                          <Star size={13} weight="fill" className="text-[#9c7a44]" /> {item.reviews}
+                          <Star size={13} weight="fill" className="text-[#7d6330]" /> {item.reviews}
                         </span>
                       )}
                     </div>
@@ -391,7 +391,7 @@ export default function MediasV2() {
                     {item.features && (
                       <div className="mt-4 flex flex-wrap gap-2">
                         {item.features.map((f: string, i: number) => (
-                          <span key={i} className="inline-flex items-center text-[0.72rem] uppercase tracking-[0.14em] text-[#9c7a44] border border-[#9c7a44]/30 px-3 py-1">{f}</span>
+                          <span key={i} className="inline-flex items-center text-[0.72rem] uppercase tracking-[0.14em] text-[#7d6330] border border-[#9c7a44]/30 px-3 py-1">{f}</span>
                         ))}
                       </div>
                     )}
@@ -409,7 +409,7 @@ export default function MediasV2() {
           <div>
             <Kicker className="mb-5">Chapitre 03 · À la télé</Kicker>
             <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">Santé la vie</h2>
-            <p className="mt-3 v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] text-[#9c7a44]">Trois saisons sur les ondes de MAtv</p>
+            <p className="mt-3 v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] text-[#7d6330]">Trois saisons sur les ondes de MAtv</p>
             <p className="mt-7 text-[1rem] leading-[1.85] text-[#3a2f23] max-w-[56ch]">
               Pendant trois saisons, Krystine a conçu, produit et animé Santé la vie sur MAtv, avec son complice François Lemay. Le fil conducteur : relier les sagesses anciennes, l’Ayurveda en tête, aux réalités d’aujourd’hui. Mieux respirer, mieux manger, ralentir et revenir à son équilibre, par gestes simples, sans dogme, une chose à la fois. Plusieurs de ces épisodes vivent encore en ligne, prêts à être redécouverts.
             </p>
@@ -429,10 +429,10 @@ export default function MediasV2() {
         <div data-reveal className="grid md:grid-cols-2 gap-px bg-[#1c1712]/12 border border-[#1c1712]/12">
           {/* Redécouvrir sur YouTube · accès libre */}
           <div className="flex flex-col p-[clamp(1.75rem,3vw,2.75rem)] bg-[#faf6ee]">
-            <span className="inline-grid place-items-center w-12 h-12 rounded-full border border-[#9c7a44]/40 text-[#9c7a44] mb-7">
+            <span className="inline-grid place-items-center w-12 h-12 rounded-full border border-[#9c7a44]/40 text-[#7d6330] mb-7">
               <YoutubeLogo size={22} weight="light" />
             </span>
-            <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#9c7a44] mb-4">En accès libre</span>
+            <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-4">En accès libre</span>
             <h3 className="v2-serif text-[1.6rem] font-light leading-[1.12] text-[#1c1712]">Redécouvrir les épisodes</h3>
             <p className="mt-4 text-[0.95rem] leading-[1.8] text-[#3a2f23] flex-1">
               Des épisodes de Santé la vie, des capsules et des passages télé sont rassemblés sur sa chaîne YouTube, à revoir librement, quand vous voulez.
@@ -442,7 +442,7 @@ export default function MediasV2() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => { if (user?.uid) points.videoWatched(user.uid, 'youtube-channel').catch(() => {}); }}
-              className="group mt-8 inline-flex w-fit items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#9c7a44] hover:border-[#9c7a44]"
+              className="group mt-8 inline-flex w-fit items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44]"
             >
               Voir la chaîne YouTube
               <ArrowUpRight size={14} weight="regular" className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -454,13 +454,13 @@ export default function MediasV2() {
             <span className="inline-grid place-items-center w-12 h-12 rounded-full bg-[#9c7a44] text-[#faf6ee] mb-7">
               <Television size={22} weight="light" />
             </span>
-            <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#9c7a44] mb-4">Le coffret complet</span>
+            <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-4">Le coffret complet</span>
             <h3 className="v2-serif text-[1.6rem] font-light leading-[1.12] text-[#1c1712]">Les trois saisons réunies</h3>
             <p className="mt-4 text-[0.95rem] leading-[1.8] text-[#3a2f23] flex-1">
               L’intégrale de Santé la vie, les trois saisons réunies en un coffret, à revoir à votre rythme, où que vous soyez.
             </p>
             <div className="mt-8 pt-6 border-t border-[#1c1712]/12 flex items-end justify-between gap-4">
-              <span className="v2-serif text-[clamp(2rem,4vw,2.8rem)] font-light leading-none text-[#9c7a44] tabular-nums">30&nbsp;$</span>
+              <span className="v2-serif text-[clamp(2rem,4vw,2.8rem)] font-light leading-none text-[#7d6330] tabular-nums">30&nbsp;$</span>
               <button
                 type="button"
                 disabled

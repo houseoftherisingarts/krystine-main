@@ -304,7 +304,7 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
             >
               <ArrowLeft size={13} /> {lang === 'FR' ? 'Retour' : 'Back'}
             </button>
-            <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#9c7a44]">{meta.kicker}</p>
+            <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330]">{meta.kicker}</p>
             <h1 className="mt-6 v2-serif font-light leading-[0.98] text-[#1c1712] text-[clamp(2.8rem,6vw,5.2rem)] max-w-[16ch]">
               {meta.title}
             </h1>
@@ -354,7 +354,7 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
 
           {/* ── Colonne gauche · réassurance numérotée ── */}
           <Reveal>
-            <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#9c7a44]">
+            <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330]">
               {lang === 'FR' ? "Liste d'attente" : 'Waitlist'}
             </p>
             <h2 className="mt-5 v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2rem,4vw,3.2rem)]">
@@ -363,7 +363,7 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
             <div className="mt-10">
               {trust.map(({ num, title, text }) => (
                 <div key={num} className="border-t border-[#1c1712]/15 py-6 grid grid-cols-[3rem_1fr] gap-4 items-baseline">
-                  <span className="v2-serif italic text-[#9c7a44] text-lg tabular-nums">{num}</span>
+                  <span className="v2-serif italic text-[#7d6330] text-lg tabular-nums">{num}</span>
                   <div>
                     <h3 className="v2-serif text-[1.2rem] font-light text-[#1c1712]">{title}</h3>
                     <p className="mt-1.5 text-[0.92rem] font-light leading-[1.75] text-[#3a2f23] max-w-[46ch]">{text}</p>
@@ -401,7 +401,7 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
                   </div>
                 ) : (
                   <form onSubmit={submit} className="space-y-7" noValidate>
-                    <p className="text-[0.65rem] uppercase tracking-[0.3em] text-[#9c7a44]">
+                    <p className="text-[0.65rem] uppercase tracking-[0.3em] text-[#7d6330]">
                       {lang === 'FR' ? "Inscription · liste d'attente" : 'Sign-up · waitlist'}
                     </p>
 

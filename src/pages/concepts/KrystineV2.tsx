@@ -174,7 +174,7 @@ const EMPTY_FORM: Form = {
 
 // Eyebrow chapitre, registre de couverture.
 const Kicker: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <p className={`text-[0.7rem] uppercase tracking-[0.34em] text-[#9c7a44] ${className}`}>{children}</p>
+  <p className={`text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] ${className}`}>{children}</p>
 );
 
 // Champ éditorial : filet bas, pas de boîte (langage magazine).
@@ -211,7 +211,7 @@ const SelectField: React.FC<{
           <option key={o.id} value={o.id}>{o.label}</option>
         ))}
       </select>
-      <CaretDown size={14} weight="light" className="absolute right-1 top-1/2 -translate-y-1/2 text-[#9c7a44] pointer-events-none" />
+      <CaretDown size={14} weight="light" className="absolute right-1 top-1/2 -translate-y-1/2 text-[#7d6330] pointer-events-none" />
     </div>
   </label>
 );
@@ -219,7 +219,7 @@ const SelectField: React.FC<{
 const Fieldset: React.FC<{ step: string; title: string; children: React.ReactNode }> = ({ step, title, children }) => (
   <div>
     <div className="flex items-baseline gap-3 mb-6">
-      <span className="v2-serif italic text-[#9c7a44] text-lg tabular-nums">{step}</span>
+      <span className="v2-serif italic text-[#7d6330] text-lg tabular-nums">{step}</span>
       <h3 className="v2-serif text-[1.25rem] font-light text-[#1c1712]">{title}</h3>
     </div>
     {children}
@@ -312,7 +312,7 @@ const BookingSection: React.FC = () => {
           <div className="relative">
             {sent ? (
               <div className="text-center py-12 v2-pop">
-                <span className="inline-grid place-items-center w-16 h-16 rounded-full border border-[#9c7a44]/40 text-[#9c7a44] mb-6">
+                <span className="inline-grid place-items-center w-16 h-16 rounded-full border border-[#9c7a44]/40 text-[#7d6330] mb-6">
                   <Check size={26} weight="light" />
                 </span>
                 <h3 className="v2-serif font-light text-[2rem] text-[#1c1712] mb-3">Demande envoyée.</h3>
@@ -408,14 +408,14 @@ const FaqSection: React.FC = () => {
           aria-expanded={isOpen}
           className="w-full text-left py-7 flex items-start justify-between gap-6 group"
         >
-          <span className="v2-serif text-[clamp(1.15rem,1.7vw,1.45rem)] font-light leading-snug text-[#1c1712] transition-colors duration-300 group-hover:text-[#9c7a44]">
-            <span className="text-[#9c7a44] tabular-nums mr-3 text-[0.8em]">{String(idx + 1).padStart(2, '0')}</span>
+          <span className="v2-serif text-[clamp(1.15rem,1.7vw,1.45rem)] font-light leading-snug text-[#1c1712] transition-colors duration-300 group-hover:text-[#7d6330]">
+            <span className="text-[#7d6330] tabular-nums mr-3 text-[0.8em]">{String(idx + 1).padStart(2, '0')}</span>
             {f.q}
           </span>
           <CaretDown
             size={18}
             weight="light"
-            className={`mt-1.5 shrink-0 text-[#9c7a44] transition-transform duration-500 ${isOpen ? 'rotate-180' : ''}`}
+            className={`mt-1.5 shrink-0 text-[#7d6330] transition-transform duration-500 ${isOpen ? 'rotate-180' : ''}`}
           />
         </button>
         <div className={`grid transition-all duration-500 ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`} style={{ transitionTimingFunction: EASE }}>
@@ -481,13 +481,13 @@ const EventsSection: React.FC = () => {
               });
               return (
                 <article key={ev.id} className="group grid grid-cols-1 gap-2 border-t border-[#1c1712]/12 py-9 md:grid-cols-[150px_1fr] md:gap-10">
-                  <span className="text-[0.6rem] uppercase tracking-[0.22em] text-[#9c7a44]">{dateStr}</span>
+                  <span className="text-[0.6rem] uppercase tracking-[0.22em] text-[#7d6330]">{dateStr}</span>
                   <div className="min-w-0">
-                    <h3 className="v2-serif text-[clamp(1.5rem,2.6vw,2.2rem)] font-light leading-[1.1] text-[#1c1712] transition-colors duration-300 group-hover:text-[#9c7a44]">{ev.title}</h3>
+                    <h3 className="v2-serif text-[clamp(1.5rem,2.6vw,2.2rem)] font-light leading-[1.1] text-[#1c1712] transition-colors duration-300 group-hover:text-[#7d6330]">{ev.title}</h3>
                     {ev.subtitle && <p className="mt-1.5 v2-serif italic text-[1.05rem] text-[#3a2f23]">{ev.subtitle}</p>}
                     {ev.location && (
                       <p className="mt-3 text-[0.7rem] uppercase tracking-[0.18em] text-[#1c1712]/60 flex items-center gap-2">
-                        <MapPin size={13} weight="light" className="text-[#9c7a44]" />{ev.location}
+                        <MapPin size={13} weight="light" className="text-[#7d6330]" />{ev.location}
                       </p>
                     )}
                     {ev.description && <p className="mt-4 max-w-[60ch] text-[0.95rem] leading-[1.8] text-[#3a2f23]">{ev.description}</p>}
@@ -496,7 +496,7 @@ const EventsSection: React.FC = () => {
                         href={ev.registrationLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-6 inline-flex items-center gap-2 text-[0.66rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1 transition-colors hover:text-[#9c7a44] hover:border-[#9c7a44]"
+                        className="mt-6 inline-flex items-center gap-2 text-[0.66rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1 transition-colors hover:text-[#7d6330] hover:border-[#9c7a44]"
                       >
                         S’inscrire <ArrowUpRight size={13} weight="regular" />
                       </a>
@@ -708,7 +708,7 @@ export default function KrystineV2() {
           <div className="order-1 lg:row-start-1 lg:col-start-1 self-start">
             <p
               data-fade
-              className="text-[0.7rem] uppercase tracking-[0.34em] text-[#9c7a44] mb-7"
+              className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-7"
             >
               Conférencière &middot; Autrice
             </p>
@@ -787,14 +787,14 @@ export default function KrystineV2() {
             <div data-fade className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-4">
               <a
                 href="#reserver"
-                className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#9c7a44] hover:border-[#9c7a44]"
+                className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44]"
               >
                 Réserver une conférence
                 <ArrowUpRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
               <a
                 href="#conferences"
-                className="v2-serif italic text-lg text-[#1c1712]/70 hover:text-[#9c7a44] transition-colors duration-300"
+                className="v2-serif italic text-lg text-[#1c1712]/70 hover:text-[#7d6330] transition-colors duration-300"
               >
                 Voir les conférences
               </a>
@@ -820,7 +820,7 @@ export default function KrystineV2() {
         id="histoire"
         className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,16vh,12rem)] scroll-mt-24"
       >
-        <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#9c7a44] mb-12">
+        <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-12">
           Chapitre 01 &middot; Son histoire
         </p>
 
@@ -846,7 +846,7 @@ export default function KrystineV2() {
                 ['Scènes', 'USA, Canada & Europe'],
               ].map(([n, l]) => (
                 <div data-beat key={l}>
-                  <p className="v2-serif text-[clamp(2rem,4vw,3.2rem)] font-light leading-none text-[#9c7a44]">
+                  <p className="v2-serif text-[clamp(2rem,4vw,3.2rem)] font-light leading-none text-[#7d6330]">
                     {n}
                   </p>
                   <p className="mt-3 text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/60 leading-relaxed">
@@ -902,16 +902,16 @@ export default function KrystineV2() {
               key={talk.title}
               className={`group h-full flex flex-col p-[clamp(1.75rem,3vw,2.5rem)] transition-colors duration-500 ${talk.feature ? 'bg-[#faf6ee]' : 'bg-[#efe6d7] hover:bg-[#faf6ee]'}`}
             >
-              <span className="inline-grid place-items-center w-12 h-12 rounded-full border border-[#9c7a44]/40 text-[#9c7a44] mb-7">
+              <span className="inline-grid place-items-center w-12 h-12 rounded-full border border-[#9c7a44]/40 text-[#7d6330] mb-7">
                 {talk.icon}
               </span>
-              <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#9c7a44] mb-4">{talk.kicker}</span>
+              <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-4">{talk.kicker}</span>
               <h3 className="v2-serif text-[1.6rem] font-light leading-[1.12] text-[#1c1712] mb-4">{talk.title}</h3>
               <p className="v2-serif italic text-[#3a2f23] leading-relaxed text-[1rem] flex-1">{talk.lede}</p>
               <div className="mt-8 pt-5 border-t border-[#1c1712]/12 flex flex-wrap items-center gap-x-5 gap-y-2 text-[0.62rem] uppercase tracking-[0.16em] text-[#1c1712]/65">
-                <span className="inline-flex items-center gap-1.5"><Clock size={13} weight="light" className="text-[#9c7a44]" />{talk.duration}</span>
+                <span className="inline-flex items-center gap-1.5"><Clock size={13} weight="light" className="text-[#7d6330]" />{talk.duration}</span>
                 <span className="h-1 w-1 rounded-full bg-[#9c7a44]/50" />
-                <span className="inline-flex items-center gap-1.5"><MapPin size={13} weight="light" className="text-[#9c7a44]" />{talk.format}</span>
+                <span className="inline-flex items-center gap-1.5"><MapPin size={13} weight="light" className="text-[#7d6330]" />{talk.format}</span>
               </div>
             </article>
           ))}
@@ -934,7 +934,7 @@ export default function KrystineV2() {
               <blockquote className="v2-serif italic text-[#1c1712] text-[1.15rem] leading-[1.55] flex-1">
                 {t.quote}
               </blockquote>
-              <figcaption className="mt-7 text-[0.62rem] uppercase tracking-[0.2em] text-[#9c7a44]">{t.by}</figcaption>
+              <figcaption className="mt-7 text-[0.62rem] uppercase tracking-[0.2em] text-[#7d6330]">{t.by}</figcaption>
             </figure>
           ))}
         </div>
@@ -952,7 +952,7 @@ export default function KrystineV2() {
         <div data-reveal className="grid md:grid-cols-2 lg:grid-cols-4 gap-x-[clamp(1.5rem,3vw,3rem)] gap-y-12">
           {PROCESS_STEPS.map((step) => (
             <div key={step.n} className="border-t-2 border-[#9c7a44] pt-6">
-              <span className="v2-serif text-[2.6rem] font-light leading-none text-[#9c7a44] tabular-nums">{step.n}</span>
+              <span className="v2-serif text-[2.6rem] font-light leading-none text-[#7d6330] tabular-nums">{step.n}</span>
               <h3 className="mt-5 v2-serif text-[1.3rem] font-light leading-snug text-[#1c1712]">{step.title}</h3>
               <p className="mt-3 text-[0.92rem] leading-[1.8] text-[#3a2f23]">{step.body}</p>
             </div>

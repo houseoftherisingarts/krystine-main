@@ -154,7 +154,7 @@ export default function PodcastV2() {
         >
           <div>
             <motion.p variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 1, ease } } }}
-              className="inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.34em] text-[#9c7a44] mb-6">
+              className="inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-6">
               <Headphones size={14} weight="light" /> Au-delà des tendances
             </motion.p>
             <motion.h1 variants={{ hidden: { opacity: 0, y: 26 }, show: { opacity: 1, y: 0, transition: { duration: 1.1, ease } } }}
@@ -201,7 +201,7 @@ export default function PodcastV2() {
       {status === 'ready' && current && (
         <section className="sticky top-[64px] z-40 bg-[#efe6d7]/95 backdrop-blur-sm border-y border-[#1c1712]/12 py-6">
           <div className="mx-auto w-full max-w-[1180px] px-[clamp(1.5rem,5vw,5.5rem)]">
-            <p className="text-[0.6rem] uppercase tracking-[0.24em] text-[#9c7a44] mb-2">À l’écoute</p>
+            <p className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-2">À l’écoute</p>
             <h2 className="v2-serif font-light text-[#1c1712] text-xl md:text-2xl mb-4 leading-snug">{current.title}</h2>
             <audio key={current.id} controls preload="none" className="w-full max-w-[760px]">
               <source src={current.audio} type="audio/mpeg" />
@@ -214,7 +214,7 @@ export default function PodcastV2() {
       <section className="mx-auto w-full max-w-[1180px] px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(4rem,10vh,7rem)]">
         {status === 'loading' && (
           <div className="flex flex-col items-center justify-center py-24 text-[#3a2f23]">
-            <CircleNotch className="animate-spin text-[#9c7a44]" size={28} weight="bold" />
+            <CircleNotch className="animate-spin text-[#7d6330]" size={28} weight="bold" />
             <p className="mt-4 v2-serif italic">Chargement des épisodes…</p>
           </div>
         )}
@@ -226,7 +226,7 @@ export default function PodcastV2() {
               href="https://www.youtube.com/@KrystineStLaurent"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 hover:text-[#9c7a44] hover:border-[#9c7a44] transition-colors"
+              className="inline-flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors"
             >
               Écouter sur YouTube <ArrowUpRight size={14} weight="regular" />
             </a>
@@ -236,7 +236,7 @@ export default function PodcastV2() {
         {status === 'ready' && (
           <>
             <div className="mb-10">
-              <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#9c7a44] mb-4">Tous les épisodes</p>
+              <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-4">Tous les épisodes</p>
               <h2 className="v2-serif font-light text-[#1c1712] text-[clamp(1.8rem,3.4vw,2.8rem)]">L’archive complète</h2>
             </div>
 
@@ -254,17 +254,17 @@ export default function PodcastV2() {
                     className={`group w-full text-left border-t border-[#1c1712]/12 last:border-b py-7 transition-colors duration-300 ${active ? 'bg-[#efe6d7]' : 'hover:bg-[#efe6d7]/50'}`}
                   >
                     <div className="flex items-start gap-5 px-1">
-                      <span className={`grid place-items-center w-11 h-11 shrink-0 rounded-full transition-colors duration-300 ${active ? 'bg-[#9c7a44] text-[#faf6ee]' : 'border border-[#9c7a44]/40 text-[#9c7a44] group-hover:bg-[#9c7a44] group-hover:text-[#faf6ee]'}`}>
+                      <span className={`grid place-items-center w-11 h-11 shrink-0 rounded-full transition-colors duration-300 ${active ? 'bg-[#9c7a44] text-[#faf6ee]' : 'border border-[#9c7a44]/40 text-[#7d6330] group-hover:bg-[#9c7a44] group-hover:text-[#faf6ee]'}`}>
                         <Play size={15} weight="fill" className="ml-0.5" />
                       </span>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-baseline gap-3">
-                          <span className="v2-serif text-[#9c7a44] tabular-nums text-sm shrink-0">{String(episodes.length - i).padStart(2, '0')}</span>
+                          <span className="v2-serif text-[#7d6330] tabular-nums text-sm shrink-0">{String(episodes.length - i).padStart(2, '0')}</span>
                           <h3 className="v2-serif font-light text-[#1c1712] text-[clamp(1.2rem,2vw,1.6rem)] leading-snug">{ep.title}</h3>
                         </div>
                         <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 pl-8 text-[0.62rem] uppercase tracking-[0.16em] text-[#1c1712]/55">
-                          {ep.date && <span className="inline-flex items-center gap-1.5"><CalendarBlank size={12} weight="light" className="text-[#9c7a44]" />{fmtDate(ep.date)}</span>}
-                          {ep.duration && <span className="inline-flex items-center gap-1.5"><Clock size={12} weight="light" className="text-[#9c7a44]" />{fmtDur(ep.duration)}</span>}
+                          {ep.date && <span className="inline-flex items-center gap-1.5"><CalendarBlank size={12} weight="light" className="text-[#7d6330]" />{fmtDate(ep.date)}</span>}
+                          {ep.duration && <span className="inline-flex items-center gap-1.5"><Clock size={12} weight="light" className="text-[#7d6330]" />{fmtDur(ep.duration)}</span>}
                         </div>
                         {ep.description && (
                           <p className="mt-3 pl-8 text-[0.92rem] leading-relaxed text-[#3a2f23] line-clamp-2 max-w-[80ch]">{ep.description}</p>
@@ -282,7 +282,7 @@ export default function PodcastV2() {
       {/* ─────────── INFOLETTRE (back-end préservé) ─────────── */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#efe6d7]">
         <div className="max-w-[720px] mx-auto text-center">
-          <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#9c7a44] mb-5">Rester dans le fil</p>
+          <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-5">Rester dans le fil</p>
           <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
             Chaque épisode, dans votre boîte
           </h2>
