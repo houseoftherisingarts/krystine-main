@@ -33,23 +33,9 @@ function HardReload({ to }: { to: string }) {
 }
 
 // Lazy-loaded pages for code splitting
-const SplashScreen     = lazy(() => import('./src/pages/SplashScreen'));
 const InspiratHome     = lazy(() => import('./src/pages/InspiratHome'));
-// /krystine + /conferenciere are now the same merged pillar page.
-// ConferencierePage reads the current pathname and auto-scrolls to the
-// form when opened via /conferenciere; /krystine opens at the top so
-// the bio narrative leads.
-const BoutiquePage           = lazy(() => import('./src/pages/BoutiquePage'));
 const BoutiqueCollectionPage = lazy(() => import('./src/pages/BoutiqueCollectionPage'));
-const MediasPage       = lazy(() => import('./src/pages/MediasPage'));
 const TVPage           = lazy(() => import('./src/pages/TVPage'));
-const BloguePage       = lazy(() => import('./src/pages/BloguePage'));
-const QuizPage         = lazy(() => import('./src/pages/QuizPage'));
-const GuidePage        = lazy(() => import('./src/pages/GuidePage'));
-const LocationsPage    = lazy(() => import('./src/pages/LocationsPage'));
-const ConferencierePage = lazy(() => import('./src/pages/ConferencierePage'));
-const FormationsPage   = lazy(() => import('./src/pages/FormationsPage'));
-const ListeAttentePage = lazy(() => import('./src/pages/ListeAttentePage'));
 const ClientPortal     = lazy(() => import('./src/pages/ClientPortal'));
 const AdminDashboard   = lazy(() => import('./src/pages/AdminDashboard'));
 const UnsubscribePage  = lazy(() => import('./src/pages/UnsubscribePage'));

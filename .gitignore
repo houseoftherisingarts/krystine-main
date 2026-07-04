@@ -29,3 +29,10 @@ dist-ssr
 # Claude
 .claude/
 .agent/
+
+# Agent tooling / local state (never ship or track)
+.claude-flow/
+.swarm/
+.playwright-mcp/
+.vite/
+ruvector.db
