@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { addNewsletterSubscriber } from '../firebase/firestore';
 import { points } from '../firebase/points';
+import { trackLead } from '../lib/track';
 
 export interface WaitlistTarget {
   id: string;            // stable key, used for source + tag (e.g. "waitlist-pitta")
@@ -54,6 +55,7 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ target, onClose }) => {
       if (user?.uid) {
         try { await points.newsletterSigned(user.uid, sourceTag); } catch { /* non-fatal */ }
       }
+      trackLead(sourceTag);
       setDone(true);
     } catch (e: any) {
       setErr(e?.message || (lang === 'FR' ? 'Une erreur est survenue.' : 'Something went wrong.'));
