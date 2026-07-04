@@ -186,7 +186,7 @@ const QUIZ_DATA: QuizQuestion[] = [
     questionEN: 'How does your energy unfold during the day?',
     options: [
       { fr: "En dents de scie, pics d'énergie suivis de chutes brutales.",
-        en: 'Jagged — energy spikes followed by sharp drops.', type: 'vata' },
+        en: 'Jagged: energy spikes followed by sharp drops.', type: 'vata' },
       { fr: "Soutenue et intense jusqu'en fin de journée, difficile à éteindre.",
         en: 'Sustained and intense through the evening, hard to turn off.', type: 'pitta' },
       { fr: 'Lente à démarrer le matin, constante une fois lancée, endurance naturelle.',
@@ -281,7 +281,7 @@ const themeForName = (name: string) =>
   DOSHA_THEME[(name || '').trim().toLowerCase() as DoshaType]
   ?? { accent: '#9c7a44', ink: '#7d6330', tint: '#faf6ee' };
 
-// One answer per question — the dosha the user picked. Total score equals the
+// One answer per question : the dosha the user picked. Total score equals the
 // number of answered questions; percentages are computed from that total.
 const scoresFromPicks = (picks: (DoshaType | null)[]) => {
   const s = { vata: 0, pitta: 0, kapha: 0 };
@@ -341,7 +341,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   const t = CONTENT[lang];
   const ay = t.ayurveda;
 
-  // Shopify catalog — fetched so the quiz recommendation lands a genuine
+  // Shopify catalog, fetched so the quiz recommendation lands a genuine
   // variantId in the cart (without which CartDrawer rightly marks items
   // ineligible for checkout).
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
@@ -396,7 +396,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
     };
   };
 
-  // Single-click answer — records the pick and auto-advances after a brief
+  // Single-click answer: records the pick and auto-advances after a brief
   // highlight so the user sees which option they chose.
   const handlePick = (type: DoshaType) => {
     if (flashPick) return; // ignore double-clicks during the reveal
@@ -451,7 +451,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
         tags: ['dosha-quiz'],
       } as any);
       try { await updateMember(user.uid, { dosha: dominant.name }); } catch { /* non-fatal */ }
-      // Loyalty — 5 pts for completing the quiz. Idempotent on quiz:{uid},
+      // Loyalty: 5 pts for completing the quiz. Idempotent on quiz:{uid},
       // so retaking the quiz doesn't re-grant.
       try { await points.quizCompleted(user.uid); } catch { /* non-fatal */ }
     } catch {}
@@ -508,7 +508,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
               </p>
             </div>
 
-            {/* Rituel associé, transcrit de "Guide Rituels — Partie 1", + CTA huile */}
+            {/* Rituel associé, transcrit de "Guide Rituels, Partie 1", + CTA huile */}
             <div className="p-[clamp(2rem,4.5vw,3.75rem)] flex flex-col justify-center">
               {ritual && (
                 <div className="bg-[#faf6ee] border p-7 md:p-9 text-left" style={{ borderColor: `${th.accent}40` }}>
