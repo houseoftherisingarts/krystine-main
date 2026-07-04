@@ -368,7 +368,7 @@ const OrigineExperience: React.FC = () => {
           </Reveal>
           <Reveal delay={0.1} className="flex justify-center">
             <div className="relative w-full max-w-[400px] aspect-[3/4] rounded-l-md rounded-r-2xl border-l-[8px] border-brass shadow-2xl overflow-hidden bg-card">
-              <Parallax speed={0.1} className="h-full">
+              <Parallax speed={0.1} className="h-full" innerClassName="h-full">
                 <img src="https://storage.googleapis.com/origine1/Livre%20cover%20origine.jpeg" alt="Journal d'observation et de rituels" loading="lazy" className="w-full h-full object-cover scale-110" referrerPolicy="no-referrer" />
               </Parallax>
             </div>
@@ -382,7 +382,7 @@ const OrigineExperience: React.FC = () => {
           <Reveal className="order-last lg:order-first">
             <div className="relative border border-brass/45 p-2.5 bg-card shadow-[0_30px_70px_rgba(58,49,38,0.14)]">
               <div className="relative overflow-hidden aspect-[4/5]">
-                <Parallax speed={0.1} className="h-full">
+                <Parallax speed={0.1} className="h-full" innerClassName="h-full">
                   <img src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" className="w-full h-full object-cover scale-110" referrerPolicy="no-referrer" />
                 </Parallax>
               </div>
