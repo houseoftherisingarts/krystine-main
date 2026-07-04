@@ -141,7 +141,10 @@ const FaqSection: React.FC = () => {
 const OrigineExperience: React.FC = () => {
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '-8%']);
+  // Parallax réel : l'image déborde du cadre (bleed 12%) et glisse + grossit
+  // légèrement pendant que le hero sort de l'écran. Transform seulement.
+  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '-6%']);
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
 
   const heroCopy = (
     <>
