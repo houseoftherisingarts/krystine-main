@@ -140,6 +140,17 @@ const AnalyticsPageViews: React.FC = () => {
   return null;
 };
 
+// Per-route SEO: title, description, canonical and og: tags follow the
+// route (see src/lib/pageMeta.ts). Without this, every SPA page shipped
+// the home title and declared itself canonical of the root.
+const PageMeta: React.FC = () => {
+  const location = useLocation();
+  useEffect(() => {
+    applyPageMeta(location.pathname);
+  }, [location.pathname]);
+  return null;
+};
+
 const App: React.FC = () => (
   <AppProvider>
     <SiteFlagsProvider>
