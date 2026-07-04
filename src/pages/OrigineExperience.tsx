@@ -415,13 +415,20 @@ const OrigineExperience: React.FC = () => {
                 </div>
                 <div>
                   {VALUE_ITEMS.map((it, i) => (
-                    <div key={i} className={`flex items-start gap-3 py-4 ${i < VALUE_ITEMS.length - 1 ? 'border-b border-cream3' : ''}`}>
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 14 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.5 }}
+                      transition={{ duration: 0.8, ease, delay: 0.1 + i * 0.06 }}
+                      className={`flex items-start gap-3 py-4 ${i < VALUE_ITEMS.length - 1 ? 'border-b border-cream3' : ''}`}
+                    >
                       <Check size={16} className="text-brass mt-1 shrink-0" />
                       <div>
                         <p className="font-sans text-[0.95rem] font-semibold text-ink leading-snug">{it.title}</p>
                         <p className="mt-1 font-sans text-[0.82rem] italic text-inkSoft leading-relaxed max-w-[54ch]">{it.detail}</p>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
                 <div className="mt-6 rounded-2xl bg-forest/8 border border-forest/20 p-5 flex items-start gap-3">
