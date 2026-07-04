@@ -483,7 +483,7 @@ const GuideLoeuvre: React.FC = () => {
             <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
             <div className="relative bg-[#faf6ee] px-9 py-3">
               {GUIDE_QUESTIONS.map((q, i) => (
-                <div key={q.id} className={`flex items-baseline gap-5 py-4.5 ${i > 0 ? 'border-t border-[#1c1712]/10' : ''}`} style={{ paddingTop: '1.1rem', paddingBottom: '1.1rem' }}>
+                <div key={q.id} className={`flex items-baseline gap-5 py-[1.1rem] ${i > 0 ? 'border-t border-[#1c1712]/10' : ''}`}>
                   <span className="v2-serif text-[1.05rem] tabular-nums text-[#7d6330]">0{i + 1}</span>
                   <span className="v2-serif font-light text-[1.2rem] text-[#1c1712]">
                     {lang === 'FR' ? q.kickerFR : q.kickerEN}
