@@ -458,30 +458,14 @@ const OrigineExperience: React.FC = () => {
               </div>
             </Reveal>
 
-            {/* Panneau prix + action */}
+            {/* Panneau liste d'attente (pré-ouverture : ni prix, ni inscription) */}
             <Reveal delay={0.1} className="lg:col-span-5">
               <div className="rounded-[2rem] border border-brass/30 bg-espresso p-8 md:p-10 text-center">
-                <p className="font-serif font-medium uppercase tracking-[0.12em] text-brass text-lg md:text-xl leading-tight">Tarif de la cohorte<br /><span className="text-forestSoft text-base font-normal">Expérience Origine</span></p>
-                <div className="mt-6 flex items-start justify-center text-ctext">
-                  <span className="font-serif text-7xl md:text-8xl tabular-nums leading-none">1 500</span>
-                  <span className="text-3xl mt-2 ml-1">$</span>
-                </div>
-                <button onClick={goCheckout} className="mt-8 w-full rounded-xl bg-brass py-4 font-serif text-base tracking-[0.12em] uppercase text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]">Commencer la traversée</button>
-                <p className="mt-5 text-[0.78rem] text-ctextSoft/60">Options de versements disponibles : 3 × 500 $ ou 6 × 250 $ par mois.</p>
-                <div className="mt-8 text-left rounded-2xl bg-brass/8 border border-brass/20 p-6">
-                  <h4 className="font-serif text-base font-medium text-brass uppercase tracking-[0.1em] mb-4">Privilèges exclusifs fondatrice</h4>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-start gap-4">
-                      <span className="text-sm text-ctextSoft">Rediffusions Dimanches d'Origine</span>
-                      <span className="text-sm font-serif text-brass whitespace-nowrap tabular-nums">297 $</span>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <span className="text-sm text-ctextSoft">Accès au contenu inspiré du troisième tome (parution 14 octobre 2026)</span>
-                      <span className="text-sm font-serif italic text-brass whitespace-nowrap">Inestimable</span>
-                    </div>
-                  </div>
-                </div>
-                <p className="mt-6 text-[0.78rem] italic text-ctextSoft/60 leading-relaxed"><span className="text-brass font-medium">La cohorte a commencé le 19 avril</span>, vous pouvez rejoindre jusqu'au 27 en intégrant la rediffusion.</p>
+                <p className="font-serif font-medium uppercase tracking-[0.12em] text-brass text-lg md:text-xl leading-tight">Prochaine cohorte<br /><span className="text-forestSoft text-base font-normal">Expérience Origine</span></p>
+                <p className="mt-8 font-serif text-[1.6rem] md:text-[1.9rem] leading-snug text-ctext">Les portes de la prochaine traversée ne sont pas encore ouvertes.</p>
+                <p className="mt-5 font-sans text-[0.95rem] leading-relaxed text-ctextSoft">Le cercle est limité à 350 personnes. Les personnes sur la liste d'attente reçoivent les détails et l'accès en premier, avant toute annonce publique.</p>
+                <Link to={WAITLIST} className="mt-8 block w-full rounded-xl bg-brass py-4 font-serif text-base tracking-[0.12em] uppercase text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]">Rejoindre la liste d'attente</Link>
+                <p className="mt-5 text-[0.78rem] text-ctextSoft/60">Sans engagement. Vous choisirez librement à l'ouverture des portes.</p>
               </div>
             </Reveal>
           </div>
