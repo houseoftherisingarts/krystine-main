@@ -15,17 +15,36 @@ const ease = [0.16, 0.8, 0.24, 1] as const;
 
 const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: string }> = ({
   children, delay = 0, className,
-}) => (
-  <motion.div
-    className={className}
-    initial={{ opacity: 0, y: 28, filter: 'blur(6px)' }}
-    whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-    viewport={{ once: true, amount: 0.15 }}
-    transition={{ duration: 1.0, ease, delay }}
-  >
-    {children}
-  </motion.div>
-);
+}) => {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      className={className}
+      initial={reduce ? { opacity: 1 } : { opacity: 0, y: 28, filter: 'blur(6px)' }}
+      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 1.0, ease, delay }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+/* ── Filet laiton qui se trace à l'entrée (scaleX, transform seulement) ── */
+const DrawRule: React.FC<{ className?: string; center?: boolean; delay?: number }> = ({ className = '', center = false, delay = 0.15 }) => {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      aria-hidden
+      className={`h-px bg-brass ${className}`}
+      style={{ transformOrigin: center ? 'center' : 'left center' }}
+      initial={reduce ? false : { scaleX: 0 }}
+      whileInView={{ scaleX: 1 }}
+      viewport={{ once: true, amount: 0.7 }}
+      transition={{ duration: 1.2, ease, delay }}
+    />
+  );
+};
 
 const Eyebrow: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light' }> = ({ children, on = 'light' }) => (
   <p className={`font-sans text-[0.62rem] uppercase tracking-[0.28em] ${on === 'dark' ? 'text-brass' : 'text-brassInk'}`}>
