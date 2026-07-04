@@ -30,6 +30,49 @@ const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: 
   );
 };
 
+/* ── Timeline des piliers : le rail laiton se dessine au fil du scroll
+   (scaleY ← scrollYProgress), les points éclosent à l'entrée. ── */
+const PillarsTimeline: React.FC = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.78', 'end 0.55'] });
+  return (
+    <div ref={ref} className="relative mt-24">
+      <motion.div
+        className="pointer-events-none absolute left-[7px] md:left-1/2 top-2 bottom-2 w-px bg-gradient-to-b from-brass/0 via-brass/50 to-brass/0 md:-translate-x-1/2"
+        style={reduce ? undefined : { scaleY: scrollYProgress, transformOrigin: 'top center' }}
+        aria-hidden
+      />
+      <div className="space-y-24 md:space-y-32">
+        {PILLARS.map((p, i) => (
+          <Reveal key={p.roman}>
+            <article className="relative grid md:grid-cols-2 gap-x-16 gap-y-6 items-start">
+              <span className="absolute left-0 md:left-1/2 top-2 md:-translate-x-1/2" aria-hidden>
+                <motion.span
+                  className="block h-3.5 w-3.5 rounded-full bg-brass ring-4 ring-cream"
+                  initial={reduce ? false : { scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true, amount: 1 }}
+                  transition={{ duration: 0.7, ease, delay: 0.35 }}
+                />
+              </span>
+              <div className={`pl-9 md:pl-0 ${i % 2 === 0 ? 'md:text-right md:pr-16' : 'md:order-2 md:pl-16'}`}>
+                <p className="font-sans text-[0.6rem] uppercase tracking-[0.26em] text-brassInk">{p.range}</p>
+                <p className="mt-3 font-serif text-forestDeep text-[0.95rem] uppercase tracking-[0.18em]">{p.roman}</p>
+                <h3 className="mt-2 font-serif font-medium text-ink leading-[1.05] text-[clamp(1.7rem,2.8vw,2.4rem)]">{p.subtitle}</h3>
+              </div>
+              <div className={`pl-9 md:pl-0 ${i % 2 === 0 ? '' : 'md:order-1 md:text-right md:pr-16'}`}>
+                <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[46ch]">{p.body}</p>
+                <p className={`mt-7 font-serif italic text-brassInk text-[clamp(1.15rem,1.7vw,1.45rem)] leading-snug max-w-[42ch] ${i % 2 === 0 ? '' : 'md:ml-auto'}`}>{p.reflection}</p>
+              </div>
+            </article>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 /* ── Filet laiton qui se trace à l'entrée (scaleX, transform seulement) ── */
 const DrawRule: React.FC<{ className?: string; center?: boolean; delay?: number }> = ({ className = '', center = false, delay = 0.15 }) => {
   const reduce = useReducedMotion();
