@@ -424,11 +424,11 @@ const OrigineExperience: React.FC = () => {
         </div>
       </section>
 
-      {/* ─────────── TARIFS ─────────── */}
-      <section id="tarifs" className="bg-cream py-24 md:py-32">
+      {/* ─────────── CE QUI EST INCLUS + LISTE D'ATTENTE ─────────── */}
+      <section id="liste-attente" className="bg-cream py-24 md:py-32">
         <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12">
           <Reveal className="text-center mb-12">
-            <Eyebrow>Cohorte fondatrice</Eyebrow>
+            <Eyebrow>Prochaine cohorte</Eyebrow>
             <SectionTitle className="mt-4">Expérience Origine</SectionTitle>
             <p className="mt-6 font-script text-[clamp(1.8rem,3.5vw,2.6rem)] text-brassInk" style={{ fontFamily: '"Pinyon Script", cursive' }}>Le corps sait. Il manquait la carte pour le lire.</p>
           </Reveal>
