@@ -132,21 +132,28 @@ export const Atmosphere: React.FC<{
   light?: string;
   strength?: number;
   grain?: boolean;
+  vignette?: boolean;
   className?: string;
-}> = ({ light = '76% 14%', strength = 1, grain = true, className = '' }) => (
+}> = ({ light = '76% 14%', strength = 1, grain = true, vignette = true, className = '' }) => (
   <div aria-hidden className={`pointer-events-none absolute inset-0 ${className}`}>
-    <div
-      className="absolute inset-0"
-      style={{ background: `radial-gradient(58% 46% at ${light}, rgba(187,154,94,${0.15 * strength}), transparent 70%)` }}
-    />
-    <div
-      className="absolute inset-0"
-      style={{ background: `radial-gradient(72% 58% at 20% 96%, rgba(176,106,63,${0.11 * strength}), transparent 72%)` }}
-    />
-    <div
-      className="absolute inset-0"
-      style={{ background: 'radial-gradient(125% 92% at 50% 40%, transparent 56%, rgba(9,6,3,0.5) 100%)' }}
-    />
+    {strength > 0 && (
+      <>
+        <div
+          className="absolute inset-0"
+          style={{ background: `radial-gradient(58% 46% at ${light}, rgba(187,154,94,${0.15 * strength}), transparent 70%)` }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: `radial-gradient(72% 58% at 20% 96%, rgba(176,106,63,${0.11 * strength}), transparent 72%)` }}
+        />
+      </>
+    )}
+    {vignette && (
+      <div
+        className="absolute inset-0"
+        style={{ background: 'radial-gradient(125% 92% at 50% 40%, transparent 56%, rgba(9,6,3,0.5) 100%)' }}
+      />
+    )}
     {grain && (
       <div
         className="absolute inset-0 opacity-[0.055]"
