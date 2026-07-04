@@ -310,7 +310,7 @@ const OrigineExperience: React.FC = () => {
           <Reveal>
             <Eyebrow>L'Œuvre fondatrice</Eyebrow>
             <SectionTitle className="mt-4">La Trilogie d'Origine</SectionTitle>
-            <div className="mt-5 h-px w-16 bg-brass" />
+            <DrawRule className="mt-5 w-16" />
             <p className="mt-7 font-sans text-[1.05rem] leading-[1.85] text-inkSoft max-w-[46ch]">Trois livres. 8 ans. 1200 pages inspirées de l'Ayurveda, <span className="text-brassInk font-medium">et une partie de leur contenu inédit nourrit Expérience Origine avant même sa publication.</span></p>
             <p className="mt-8 font-script text-[2rem] text-brassInk leading-none" style={{ fontFamily: '"Pinyon Script", cursive' }}>Krystine</p>
           </Reveal>
