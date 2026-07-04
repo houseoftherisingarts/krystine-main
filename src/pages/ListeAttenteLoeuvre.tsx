@@ -282,15 +282,10 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
   return (
     <div className="bg-cream text-ink font-sans antialiased">
 
-      {/* ─────────── HERO (sombre · promesse, s'adapte au programme) ─────────── */}
+      {/* ─────────── HERO (sombre · split éditorial : promesse + planche photo) ─────────── */}
       <section className="relative min-h-[78vh] flex items-center overflow-hidden bg-espressoDeep">
-        <motion.div aria-hidden className="pointer-events-none absolute -top-1/4 -left-1/4 h-[70%] w-[70%] rounded-full bg-forest/20 blur-[140px]"
-          animate={reduce ? undefined : { x: [0, 40, 0], y: [0, 28, 0] }}
-          transition={{ duration: 18, ease: 'easeInOut', repeat: Infinity }} />
-        <motion.div aria-hidden className="pointer-events-none absolute -bottom-1/4 -right-1/5 h-[60%] w-[60%] rounded-full bg-brass/10 blur-[150px]"
-          animate={reduce ? undefined : { x: [0, -34, 0], y: [0, -26, 0] }}
-          transition={{ duration: 23, ease: 'easeInOut', repeat: Infinity }} />
-        <div className="relative z-10 mx-auto w-full max-w-[1080px] px-6 md:px-12 py-28">
+        <Atmosphere light="72% 20%" />
+        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-24 md:py-28">
           <button
             type="button"
             onClick={() => navigate(-1)}
@@ -298,24 +293,29 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
           >
             <ArrowLeft size={13} /> {lang === 'FR' ? 'Retour' : 'Back'}
           </button>
-          <motion.div
-            initial={reduce ? { opacity: 1 } : { opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease }}
-          >
-            <p className="font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brass mb-7">{meta.kicker}</p>
-            <h1 className="font-serif font-medium text-ctext leading-[1.0] text-[clamp(2.3rem,5vw,4.2rem)] max-w-[18ch]">{meta.title}</h1>
-            <p className="mt-6 font-serif italic text-[clamp(1.3rem,2.6vw,2rem)] leading-snug text-brassBright max-w-[24ch]">{meta.subtitle}</p>
-            <p className="mt-8 font-sans text-[1rem] md:text-[1.05rem] leading-[1.85] text-ctextSoft max-w-[58ch]">{meta.promise}</p>
-            <div className="mt-10">
-              <a
-                href="#inscription"
-                className="inline-flex items-center gap-3 rounded-full bg-brass px-8 py-3.5 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]"
-              >
-                {lang === 'FR' ? "Rejoindre la liste d'attente" : 'Join the waitlist'} <ArrowRight size={16} />
-              </a>
+          <div className="grid lg:grid-cols-[1.05fr_0.9fr] gap-14 lg:gap-20 items-center">
+            <motion.div
+              initial={reduce ? { opacity: 1 } : { opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease }}
+            >
+              <p className="font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brass mb-7">{meta.kicker}</p>
+              <h1 className="font-serif font-medium text-ctext leading-[1.0] text-[clamp(2.3rem,5vw,4.2rem)] max-w-[18ch]">{meta.title}</h1>
+              <p className="mt-6 font-serif italic text-[clamp(1.3rem,2.6vw,2rem)] leading-snug text-brassBright max-w-[24ch]">{meta.subtitle}</p>
+              <p className="mt-8 font-sans text-[1rem] md:text-[1.05rem] leading-[1.85] text-ctextSoft max-w-[58ch]">{meta.promise}</p>
+              <div className="mt-10">
+                <a
+                  href="#inscription"
+                  className="inline-flex items-center gap-3 rounded-full bg-brass px-8 py-3.5 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]"
+                >
+                  {lang === 'FR' ? "Rejoindre la liste d'attente" : 'Join the waitlist'} <ArrowRight size={16} />
+                </a>
+              </div>
+            </motion.div>
+            <div className="max-w-[420px] w-full mx-auto lg:mx-0 lg:justify-self-end">
+              <HeroPlate art={HERO_ART[programmeKey]} />
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
