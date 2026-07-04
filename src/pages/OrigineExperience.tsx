@@ -84,12 +84,6 @@ const FAQS = [
   { q: "À quelle heure ont lieu les rencontres en direct ?", a: "Les rencontres ont lieu le dimanche, en direct, et chacune est disponible en rediffusion dans les 24 heures. L'horaire précis de la prochaine cohorte sera transmis en priorité aux personnes de la liste d'attente." },
 ];
 
-const SCHEDULE = [
-  { pillar: 'Pilier 1', weeks: [{ id: 1, date: '19 avril' }, { id: 2, date: '26 avril' }, { id: 3, date: '3 mai' }, { id: 4, date: '10 mai' }] },
-  { pillar: 'Pilier 2', weeks: [{ id: 5, date: '17 mai' }, { id: 6, date: '24 mai' }, { id: 7, date: '31 mai' }, { id: 8, date: '7 juin' }] },
-  { pillar: 'Pilier 3', weeks: [{ id: 9, date: '14 juin' }, { id: 10, date: '21 juin' }, { id: 11, date: '28 juin' }, { id: 12, date: '5 juillet' }] },
-];
-
 const TESTIMONIALS = [
   { quote: "Personne ne parle de ces choses-là comme Krystine. Quand elle explique, tout devient clair.", who: 'Annie' },
   { quote: "Je me suis rarement écoutée tout au long de ma vie. C'est la première fois que quelqu'un me donne les outils pour le faire.", who: 'Françoise' },
