@@ -52,10 +52,7 @@ const VataExperience = lazy(() => import('./src/pages/VataExperience'));
 // Pages publiques rebâties from scratch en L'Œuvre (back-end préservé)
 const BlogueLoeuvre = lazy(() => import('./src/pages/BlogueLoeuvre'));
 const LocationsLoeuvre = lazy(() => import('./src/pages/LocationsLoeuvre'));
-const ConferenciereLoeuvre = lazy(() => import('./src/pages/ConferenciereLoeuvre'));
-const MediasLoeuvre = lazy(() => import('./src/pages/MediasLoeuvre'));
 const GuideLoeuvre = lazy(() => import('./src/pages/GuideLoeuvre'));
-const FormationsLoeuvre = lazy(() => import('./src/pages/FormationsLoeuvre'));
 const BoutiqueLoeuvre = lazy(() => import('./src/pages/BoutiqueLoeuvre'));
 const ListeAttenteLoeuvre = lazy(() => import('./src/pages/ListeAttenteLoeuvre'));
 const QuizLoeuvre = lazy(() => import('./src/pages/QuizLoeuvre'));
