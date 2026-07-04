@@ -542,7 +542,7 @@ const Bio: React.FC = () => {
           </div>
         </Reveal>
         <Reveal delay={0.08}>
-          <Kicker color={C.brassInkFallback ?? '#7d6330'} className="mb-5">Fondatrice d'Inspirata Ayurveda</Kicker>
+          <Kicker color="#7d6330" className="mb-5">Fondatrice d'Inspirata Ayurveda</Kicker>
           <h2 className="v2-serif font-light leading-[1.02] text-[clamp(2.2rem,5vw,3.9rem)]" style={{ color: C.ink }}>
             Krystine St-Laurent
           </h2>
