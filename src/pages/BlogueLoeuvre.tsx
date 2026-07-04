@@ -109,7 +109,14 @@ const BlogueLoeuvre: React.FC = () => {
   const [selected, setSelected] = useState<BlogPost | null>(null);
 
   useEffect(() => {
-    getBlogPosts().then(setPosts).catch(() => setPosts([])).finally(() => setLoading(false));
+    // TEMP MOCK VISUEL - a retirer
+    setPosts([
+      { id: 'a', title: 'Ce que l’automne demande au corps', subtitle: 'Vent, sécheresse, dispersion : lire les signaux de la saison Vata et y répondre avec des gestes simples.', date: '12 septembre 2026', coverImage: '/sante-la-vie.jpg', content: '' } as unknown as BlogPost,
+      { id: 'b', title: 'La Dinacharya, matin après matin', subtitle: 'L’art ancestral de s’accorder aux rythmes du jour, sans en faire une performance.', date: '28 août 2026', coverImage: '/origine-square.jpg', content: '' } as unknown as BlogPost,
+      { id: 'c', title: 'Écouter avant d’agir', subtitle: 'Le premier geste de l’Ayurveda n’est pas une recette. C’est une écoute.', date: '14 août 2026', coverImage: '/krystine-bg.jpg', content: '' } as unknown as BlogPost,
+      { id: 'd', title: 'Les saisons comme boussole', subtitle: 'Quand le calendrier extérieur et le calendrier intérieur se répondent.', date: '2 août 2026', content: '' } as unknown as BlogPost,
+    ]);
+    setLoading(false);
   }, []);
 
   /* Parallax doux du portrait hero (transform seulement) */
