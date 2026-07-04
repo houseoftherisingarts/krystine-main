@@ -104,6 +104,77 @@ const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
 const isKnownProgramme = (key: string): key is ProgrammeKey =>
   key === 'origine' || key === 'kapha' || key === 'pitta';
 
+/* ── Planche photo du hero (par programme) ──
+   L'enveloppe scellée pour Origine; le sentier vers la lumière pour les
+   saisons et la liste générale. `pos` = object-position du cadrage. */
+interface HeroArt { src: string; alt: string; caption: string; pos: string }
+const HERO_ART: Record<ProgrammeKey | 'default', HeroArt> = {
+  origine: {
+    src: 'https://wsrv.nl/?url=https%3A%2F%2Fstorage.googleapis.com%2Forigine1%2Fbanner%2520origine%2520enveloppe.jpg&w=1400&output=webp',
+    alt: "L'enveloppe scellée de l'Expérience Origine, sceau boussole, sauge et lavande",
+    caption: "L'invitation scellée · sceau boussole, sauge et lavande",
+    pos: '74% 48%',
+  },
+  kapha: {
+    src: '/accueil/assets/portes/origine.png',
+    alt: 'Sentier de jardin qui monte vers la lumière',
+    caption: 'Le sentier du printemps · vers la légèreté',
+    pos: '50% 62%',
+  },
+  pitta: {
+    src: '/accueil/assets/portes/origine.png',
+    alt: 'Sentier de jardin qui monte vers la lumière',
+    caption: "Le sentier de l'été · vers la fraîcheur",
+    pos: '50% 62%',
+  },
+  default: {
+    src: '/accueil/assets/portes/origine.png',
+    alt: 'Sentier de jardin qui monte vers la lumière',
+    caption: 'Le chemin commence ici',
+    pos: '50% 62%',
+  },
+};
+
+/* ── Planche éditoriale : cadre filet laiton, photo en parallax doux,
+   légende de magazine. Le parallax translate une image sur-dimensionnée
+   (bleed 14%) à l'intérieur du cadre, transform seulement. ── */
+const HeroPlate: React.FC<{ art: HeroArt }> = ({ art }) => {
+  const reduce = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+  const y = useTransform(scrollYProgress, [0, 1], ['-5%', '5%']);
+  return (
+    <motion.figure
+      ref={ref}
+      initial={reduce ? { opacity: 1 } : { opacity: 0, y: 30, scale: 1.02 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 1.3, ease, delay: 0.25 }}
+      className="relative"
+    >
+      <div className="relative overflow-hidden rounded-[1.4rem] ring-1 ring-brass/30 shadow-[0_44px_90px_rgba(6,4,2,0.6)] aspect-[4/5] md:aspect-[5/6]">
+        <motion.img
+          src={art.src}
+          alt={art.alt}
+          referrerPolicy="no-referrer"
+          className="absolute left-0 top-[-7%] h-[114%] w-full object-cover"
+          style={reduce ? { objectPosition: art.pos } : { objectPosition: art.pos, y }}
+        />
+        <span aria-hidden className="absolute inset-0 rounded-[1.4rem] ring-1 ring-inset ring-ctext/10" />
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{ background: 'radial-gradient(120% 90% at 50% 38%, transparent 55%, rgba(9,6,3,0.38) 100%)' }}
+        />
+      </div>
+      <span aria-hidden className="absolute -top-3 left-8 h-px w-24 bg-brass/70" />
+      <figcaption className="mt-5 flex items-baseline gap-3">
+        <span aria-hidden className="h-px w-8 bg-brass/60 translate-y-[-4px]" />
+        <span className="font-serif italic text-ctextSoft/85 text-[0.95rem] leading-snug">{art.caption}</span>
+      </figcaption>
+    </motion.figure>
+  );
+};
+
 /* ── Champs partagés : look L'Œuvre, hauteur ≥ 44px, focus brass ── */
 const fieldBase =
   'w-full min-h-[48px] px-5 py-3 rounded-xl border bg-card text-[0.95rem] text-ink ' +
