@@ -181,12 +181,11 @@ const App: React.FC = () => (
           <Route path="/accueil-classic" element={<InspiratHome />} />
 
           {/* ── Pages Inspirata ───────────────────────────────────────── */}
-          {/* Expérience Origine — cohorte en cours fermée, prochaine en octobre.
-              La porte publique /origine sert la liste d'attente (verrouillée
-              sur le programme « origine »). La page de vente reste garée sur
-              /origine-loeuvre, prête à reprendre la route /origine pour octobre. */}
-          <Route path="/origine" element={<ListeAttenteLoeuvre forcedProgramme="origine" />} />
-          <Route path="/origine-loeuvre" element={<OrigineExperience />} />
+          {/* Expérience Origine — /origine sert la page de vente en mode
+              pré-ouverture : les infos du parcours, sans prix ni inscription,
+              avec invitation à la liste d'attente (/liste-attente?programme=origine). */}
+          <Route path="/origine" element={<OrigineExperience />} />
+          <Route path="/origine-loeuvre" element={<Navigate to="/origine" replace />} />
           {/* Podcast porté en React (remplace le bundle statique /podcast) */}
           <Route path="/podcast" element={<PodcastV2 />} />
           {/* Vata porté en React (remplace le bundle statique /vata) */}
