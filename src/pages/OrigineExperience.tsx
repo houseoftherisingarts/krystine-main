@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Check, ChevronDown, BookOpen, ArrowRight, Headphones, Activity, Sparkles, Download } from 'lucide-react';
+import { Atmosphere } from '../components/motion/loeuvre';
 
 /**
  * Expérience Origine — page React au style L'Œuvre (espresso/cream/brass)
