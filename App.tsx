@@ -158,6 +158,7 @@ const App: React.FC = () => (
     <EditModeProvider>
     <BrowserRouter>
       <AnalyticsPageViews />
+      <PageMeta />
       <Chrome />
       <EditModeBar />
       <EditOverlay />
