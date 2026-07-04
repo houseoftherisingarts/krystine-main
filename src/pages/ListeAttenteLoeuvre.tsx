@@ -1,48 +1,39 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
-import { Check, ChevronDown, ArrowRight, ArrowLeft, Leaf, MailOpen, ShieldCheck, Loader2 } from 'lucide-react';
+import { Check, ChevronDown, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
-import { Seam, Atmosphere } from '../components/motion/loeuvre';
 import { addNewsletterSubscriber } from '../firebase/firestore';
 import { points } from '../firebase/points';
 import { COUNTRIES, findCountry } from '../lib/regions';
 
 /**
- * /liste-attente — capture liste d'attente, style L'Œuvre (espresso/cream/brass).
- * Reskin complet de ListeAttentePage. Le back-end est préservé à l'identique :
- * lecture de ?programme=<key>, écriture Firestore via addNewsletterSubscriber
- * (source `waitlist-<key>`), points.newsletterSigned, états busy/done/err.
- * Gold standard suivi : OrigineExperience / VataExperience (Reveal, Eyebrow,
- * SectionTitle, alternance sombre/clair, brassInk en texte sur crème).
+ * /liste-attente — capture liste d'attente, langage V2 « magazine crème »
+ * (même famille que /krystine, /formations : Fraunces, crème #f4efe6,
+ * filets hairline, boutons encre, grain multiply pleine page).
+ * Le back-end est préservé à l'identique : lecture de ?programme=<key>,
+ * écriture Firestore via addNewsletterSubscriber (source `waitlist-<key>`),
+ * points.newsletterSigned, états busy/done/err.
  */
 
-const ease = [0.16, 0.8, 0.24, 1] as const;
+const ease = [0.22, 1, 0.36, 1] as const;
 
 const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: string }> = ({ children, delay = 0, className }) => {
   const reduce = useReducedMotion();
   return (
     <motion.div
       className={className}
-      initial={reduce ? { opacity: 1 } : { opacity: 0, y: 28, filter: 'blur(6px)' }}
-      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 1.0, ease, delay }}
+      initial={reduce ? { opacity: 1 } : { opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.95, ease, delay }}
     >
       {children}
     </motion.div>
   );
 };
 
-const Eyebrow: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light' }> = ({ children, on = 'light' }) => (
-  <p className={`font-sans text-[0.62rem] uppercase tracking-[0.28em] ${on === 'dark' ? 'text-brass' : 'text-brassInk'}`}>{children}</p>
-);
-
-const SectionTitle: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light'; className?: string }> = ({ children, on = 'light', className = '' }) => (
-  <h2 className={`font-serif font-medium leading-[1.04] text-[clamp(2rem,4.4vw,3.4rem)] ${on === 'dark' ? 'text-ctext' : 'text-ink'} ${className}`}>{children}</h2>
-);
-
-/* ── Programme copy (préservé du fichier d'origine, mot pour mot) ── */
+/* ── Programme copy (préservé, mot pour mot) ── */
 type ProgrammeKey = 'origine' | 'kapha' | 'pitta';
 
 interface ProgrammeMeta {
@@ -104,9 +95,7 @@ const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
 const isKnownProgramme = (key: string): key is ProgrammeKey =>
   key === 'origine' || key === 'kapha' || key === 'pitta';
 
-/* ── Planche photo du hero (par programme) ──
-   L'enveloppe scellée pour Origine; le sentier vers la lumière pour les
-   saisons et la liste générale. `pos` = object-position du cadrage. */
+/* ── Planche photo du hero (par programme) ── */
 interface HeroArt { src: string; alt: string; caption: string; pos: string }
 const HERO_ART: Record<ProgrammeKey | 'default', HeroArt> = {
   origine: {
@@ -135,10 +124,9 @@ const HERO_ART: Record<ProgrammeKey | 'default', HeroArt> = {
   },
 };
 
-/* ── Planche éditoriale : cadre filet laiton, photo en parallax doux,
-   légende de magazine. Le parallax translate une image sur-dimensionnée
-   (bleed 14%) à l'intérieur du cadre, transform seulement. ── */
-const HeroPlate: React.FC<{ art: HeroArt }> = ({ art }) => {
+/* ── Planche éditoriale V2 : filet laiton + hairline intérieur, tab d'angle,
+   photo en parallax doux (bleed 114 %, transform seulement), légende. ── */
+const HeroPlate: React.FC<{ art: HeroArt; tab: string }> = ({ art, tab }) => {
   const reduce = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
@@ -146,41 +134,38 @@ const HeroPlate: React.FC<{ art: HeroArt }> = ({ art }) => {
   return (
     <motion.figure
       ref={ref}
-      initial={reduce ? { opacity: 1 } : { opacity: 0, y: 30, scale: 1.02 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 1.3, ease, delay: 0.25 }}
+      initial={reduce ? { opacity: 1 } : { opacity: 0, y: 26 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1.2, ease, delay: 0.2 }}
       className="relative"
     >
-      <div className="relative overflow-hidden rounded-[1.4rem] ring-1 ring-brass/30 shadow-[0_44px_90px_rgba(6,4,2,0.6)] aspect-[4/5] md:aspect-[5/6]">
-        <motion.img
-          src={art.src}
-          alt={art.alt}
-          referrerPolicy="no-referrer"
-          className="absolute left-0 top-[-7%] h-[114%] w-full object-cover"
-          style={reduce ? { objectPosition: art.pos } : { objectPosition: art.pos, y }}
-        />
-        <span aria-hidden className="absolute inset-0 rounded-[1.4rem] ring-1 ring-inset ring-ctext/10" />
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{ background: 'radial-gradient(120% 90% at 50% 38%, transparent 55%, rgba(9,6,3,0.38) 100%)' }}
-        />
+      <div className="relative border border-[#9c7a44]/45 p-2.5 bg-[#faf6ee] shadow-[0_30px_70px_rgba(28,23,18,0.16)]">
+        <span className="absolute -top-px -left-px bg-[#1c1712] text-[#f4efe6] text-[0.55rem] uppercase tracking-[0.24em] px-3 py-1.5 z-10">
+          {tab}
+        </span>
+        <div className="relative overflow-hidden aspect-[4/5]">
+          <motion.img
+            src={art.src}
+            alt={art.alt}
+            referrerPolicy="no-referrer"
+            className="absolute left-0 top-[-7%] h-[114%] w-full object-cover"
+            style={reduce ? { objectPosition: art.pos } : { objectPosition: art.pos, y }}
+          />
+        </div>
       </div>
-      <span aria-hidden className="absolute -top-3 left-8 h-px w-24 bg-brass/70" />
-      <figcaption className="mt-5 flex items-baseline gap-3">
-        <span aria-hidden className="h-px w-8 bg-brass/60 translate-y-[-4px]" />
-        <span className="font-serif italic text-ctextSoft/85 text-[0.95rem] leading-snug">{art.caption}</span>
+      <figcaption className="mt-4 flex items-baseline gap-3">
+        <span aria-hidden className="h-px w-9 bg-[#9c7a44]/70 translate-y-[-4px]" />
+        <span className="v2-serif italic text-[#3a2f23] text-[0.95rem] leading-snug">{art.caption}</span>
       </figcaption>
     </motion.figure>
   );
 };
 
-/* ── Champs partagés : look L'Œuvre, hauteur ≥ 44px, focus brass ── */
+/* ── Champs V2 : filet bas, fond transparent, focus laiton ── */
 const fieldBase =
-  'w-full min-h-[48px] px-5 py-3 rounded-xl border bg-card text-[0.95rem] text-ink ' +
-  'border-cream3 placeholder:text-inkSoft/55 transition-shadow ' +
-  'focus:outline-none focus:border-brass focus:ring-2 focus:ring-brass/30';
-const selectBase = `${fieldBase} appearance-none pr-11 cursor-pointer`;
+  'w-full min-h-[44px] bg-transparent border-b border-[#1c1712]/25 px-1 py-2.5 text-[0.95rem] text-[#1c1712] ' +
+  'placeholder:text-[#1c1712]/35 transition-colors duration-300 focus:outline-none focus:border-[#9c7a44]';
+const selectBase = `${fieldBase} appearance-none pr-9 cursor-pointer rounded-none`;
 
 const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ forcedProgramme }) => {
   const { lang, user } = useApp();
@@ -188,8 +173,6 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
   const location = useLocation();
   const reduce = useReducedMotion();
 
-  // forcedProgramme (ex. route /origine montée en liste d'attente) prime sur
-  // ?programme=<key>. Sinon, clé inconnue → variante générique.
   const programmeKey = useMemo<ProgrammeKey | 'default'>(() => {
     if (forcedProgramme) return forcedProgramme;
     const params = new URLSearchParams(location.search);
@@ -260,142 +243,172 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
 
   const trust = [
     {
-      Icon: Leaf,
+      num: '01',
+      title: lang === 'FR' ? 'Aucun engagement' : 'No commitment',
       text: lang === 'FR'
-        ? "Aucun engagement : vous êtes inscrite sur la liste, c'est tout."
-        : 'No commitment, you are simply on the list.',
+        ? "Vous êtes inscrite sur la liste, c'est tout. Vous choisirez librement à l'ouverture."
+        : 'You are simply on the list. You will choose freely at the opening.',
     },
     {
-      Icon: MailOpen,
+      num: '02',
+      title: lang === 'FR' ? 'Avisée en premier' : 'First to know',
       text: lang === 'FR'
-        ? "Vous serez avisée par courriel à l'ouverture, avant la communication publique."
-        : 'You will be notified by email at the opening, before the public announcement.',
+        ? "Vous recevez les détails par courriel à l'ouverture, avant la communication publique."
+        : 'You receive the details by email at the opening, before the public announcement.',
     },
     {
-      Icon: ShieldCheck,
+      num: '03',
+      title: lang === 'FR' ? 'Coordonnées protégées' : 'Details protected',
       text: lang === 'FR'
-        ? "Vos coordonnées ne sont jamais partagées. Désabonnement en un clic."
+        ? 'Vos coordonnées ne sont jamais partagées. Désabonnement en un clic.'
         : 'Your details are never shared. One-click unsubscribe.',
     },
   ];
 
-  return (
-    <div className="bg-cream text-ink font-sans antialiased">
+  const editionLeft = lang === 'FR' ? "Liste d'attente · Inspira Nature" : 'Waitlist · Inspira Nature';
 
-      {/* ─────────── HERO (sombre · split éditorial : promesse + planche photo) ─────────── */}
-      <section className="relative min-h-[78vh] flex items-center overflow-hidden bg-espressoDeep">
-        <Atmosphere light="72% 20%" />
-        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-24 md:py-28">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 text-brass text-[0.62rem] uppercase tracking-[0.28em] hover:text-brassBright transition-colors mb-10"
+  return (
+    <div
+      className="relative min-h-screen w-full bg-[#f4efe6] text-[#1c1712] antialiased overflow-x-hidden"
+      style={{ fontFamily: '"Inter", system-ui, sans-serif' }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@300;400;500&display=swap');
+        .v2-serif { font-family: "Fraunces", Georgia, serif; }
+        .v2-grain {
+          position: fixed; inset: 0; z-index: 60; pointer-events: none;
+          opacity: 0.045; mix-blend-mode: multiply;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+      `}</style>
+      <div className="v2-grain" aria-hidden />
+
+      {/* ─────────── HERO · couverture (clair, split éditorial) ─────────── */}
+      <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(6.5rem,12vh,9rem)] pb-[clamp(3rem,8vh,6rem)]">
+        {/* ligne d'édition */}
+        <div className="flex items-center justify-between border-t border-[#1c1712]/15 pt-3.5 text-[0.6rem] uppercase tracking-[0.28em] text-[#1c1712]/55">
+          <span>{editionLeft}</span>
+          <span className="hidden md:inline">Québec · MMXXVI</span>
+        </div>
+
+        <div className="mt-[clamp(2.5rem,6vh,4.5rem)] grid lg:grid-cols-[1.1fr_0.9fr] gap-x-[clamp(2.5rem,6vw,6rem)] gap-y-14 items-center">
+          <motion.div
+            initial={reduce ? { opacity: 1 } : { opacity: 0, y: 26 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease }}
           >
-            <ArrowLeft size={13} /> {lang === 'FR' ? 'Retour' : 'Back'}
-          </button>
-          <div className="grid lg:grid-cols-[1.05fr_0.9fr] gap-14 lg:gap-20 items-center">
-            <motion.div
-              initial={reduce ? { opacity: 1 } : { opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease }}
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center gap-2 text-[#7d6330] text-[0.62rem] uppercase tracking-[0.26em] hover:text-[#1c1712] transition-colors duration-300 mb-9"
             >
-              <p className="font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brass mb-7">{meta.kicker}</p>
-              <h1 className="font-serif font-medium text-ctext leading-[1.0] text-[clamp(2.3rem,5vw,4.2rem)] max-w-[18ch]">{meta.title}</h1>
-              <p className="mt-6 font-serif italic text-[clamp(1.3rem,2.6vw,2rem)] leading-snug text-brassBright max-w-[24ch]">{meta.subtitle}</p>
-              <p className="mt-8 font-sans text-[1rem] md:text-[1.05rem] leading-[1.85] text-ctextSoft max-w-[58ch]">{meta.promise}</p>
-              <div className="mt-10">
-                <a
-                  href="#inscription"
-                  className="inline-flex items-center gap-3 rounded-full bg-brass px-8 py-3.5 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]"
-                >
-                  {lang === 'FR' ? "Rejoindre la liste d'attente" : 'Join the waitlist'} <ArrowRight size={16} />
-                </a>
-              </div>
-            </motion.div>
-            <div className="max-w-[420px] w-full mx-auto lg:mx-0 lg:justify-self-end">
-              <HeroPlate art={HERO_ART[programmeKey]} />
+              <ArrowLeft size={13} /> {lang === 'FR' ? 'Retour' : 'Back'}
+            </button>
+            <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#9c7a44]">{meta.kicker}</p>
+            <h1 className="mt-6 v2-serif font-light leading-[0.98] text-[#1c1712] text-[clamp(2.8rem,6vw,5.2rem)] max-w-[16ch]">
+              {meta.title}
+            </h1>
+            <p className="mt-5 v2-serif italic text-[clamp(1.25rem,2.2vw,1.8rem)] leading-snug text-[#7d6330] max-w-[26ch]">
+              {meta.subtitle}
+            </p>
+            <p className="mt-8 text-[0.98rem] md:text-[1.03rem] font-light leading-[1.9] text-[#3a2f23] max-w-[58ch]">
+              {meta.promise}
+            </p>
+            <div className="mt-11 flex flex-wrap items-center gap-7">
+              <a
+                href="#inscription"
+                className="group inline-flex items-center justify-center gap-3 bg-[#1c1712] px-9 py-4 text-[0.72rem] uppercase tracking-[0.22em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] min-h-[44px]"
+              >
+                {lang === 'FR' ? "Rejoindre la liste d'attente" : 'Join the waitlist'}
+                <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
+              <span className="v2-serif italic text-[0.95rem] text-[#3a2f23]/80">
+                {lang === 'FR' ? 'Quelques mots, lorsque cela compte.' : 'A few words, when it matters.'}
+              </span>
             </div>
+          </motion.div>
+
+          <div className="max-w-[440px] w-full mx-auto lg:mx-0 lg:justify-self-end">
+            <HeroPlate art={HERO_ART[programmeKey]} tab={lang === 'FR' ? 'Octobre 2026' : 'October 2026'} />
           </div>
         </div>
       </section>
 
-      {/* ─────────── CITATION (clair) — Origine uniquement, comme l'original ─────────── */}
+      {/* ─────────── CITATION · pull-quote éditorial (Origine uniquement) ─────────── */}
       {meta.citation && (
-        <section className="relative bg-cream2 py-20 md:py-28 overflow-hidden">
-          <Seam from="#16100a" />
-          <div className="relative z-10 mx-auto w-full max-w-[820px] px-6 md:px-12 text-center">
-            <Reveal>
-              <span className="font-serif text-brassInk text-5xl leading-none">“</span>
-              <blockquote className="mt-2 font-serif italic text-ink text-[clamp(1.3rem,2.6vw,2rem)] leading-snug max-w-[40ch] mx-auto">
-                {meta.citation}
+        <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(4.5rem,10vh,7.5rem)] bg-[#efe6d7]">
+          <Reveal className="mx-auto max-w-[880px]">
+            <div className="border-t border-[#1c1712]/15 pt-10">
+              <blockquote className="v2-serif italic font-light text-[#1c1712] text-[clamp(1.5rem,3.2vw,2.5rem)] leading-[1.3]">
+                « {meta.citation} »
               </blockquote>
-              <div className="mt-7 mx-auto h-px w-16 bg-brass" />
-              <p className="mt-4 font-sans text-[0.7rem] uppercase tracking-[0.2em] text-brassInk">Krystine St-Laurent</p>
-            </Reveal>
-          </div>
+              <p className="mt-7 text-[0.65rem] uppercase tracking-[0.3em] text-[#7d6330]">Krystine St-Laurent</p>
+            </div>
+          </Reveal>
         </section>
       )}
 
-      {/* ─────────── INSCRIPTION (clair) — promesse + formulaire ─────────── */}
-      <section id="inscription" className="bg-cream py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12">
-          <div className="grid lg:grid-cols-[5fr_6fr] gap-12 lg:gap-16 lg:items-start">
+      {/* ─────────── INSCRIPTION · réassurance + formulaire ─────────── */}
+      <section id="inscription" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,9rem)] bg-[#f4efe6]">
+        <div className="grid lg:grid-cols-[5fr_6fr] gap-x-[clamp(2.5rem,6vw,6rem)] gap-y-14 items-start">
 
-            {/* ── Colonne gauche · réassurance ── */}
-            <Reveal className="lg:pt-2">
-              <Eyebrow>{lang === 'FR' ? "Liste d'attente" : 'Waitlist'}</Eyebrow>
-              <SectionTitle className="mt-4">
-                {lang === 'FR' ? 'Parmi les premières à savoir' : 'Among the first to know'}
-              </SectionTitle>
-              <div className="mt-5 h-px w-16 bg-brass" />
-              <ul className="mt-9 space-y-6">
-                {trust.map(({ Icon, text }, i) => (
-                  <li key={i} className="flex items-start gap-4">
-                    <span className="grid place-items-center w-10 h-10 rounded-2xl bg-brass/12 text-brassInk shrink-0">
-                      <Icon size={18} />
-                    </span>
-                    <span className="font-sans text-[0.98rem] leading-[1.7] text-inkSoft max-w-[42ch]">{text}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-10 font-serif italic text-brassInk text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[36ch]">
-                {lang === 'FR'
-                  ? 'Quelques mots, lorsque cela compte. Rien de plus.'
-                  : 'A few words, when it matters. Nothing more.'}
-              </p>
-            </Reveal>
+          {/* ── Colonne gauche · réassurance numérotée ── */}
+          <Reveal>
+            <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#9c7a44]">
+              {lang === 'FR' ? "Liste d'attente" : 'Waitlist'}
+            </p>
+            <h2 className="mt-5 v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2rem,4vw,3.2rem)]">
+              {lang === 'FR' ? 'Parmi les premières à savoir' : 'Among the first to know'}
+            </h2>
+            <div className="mt-10">
+              {trust.map(({ num, title, text }) => (
+                <div key={num} className="border-t border-[#1c1712]/15 py-6 grid grid-cols-[3rem_1fr] gap-4 items-baseline">
+                  <span className="v2-serif italic text-[#9c7a44] text-lg tabular-nums">{num}</span>
+                  <div>
+                    <h3 className="v2-serif text-[1.2rem] font-light text-[#1c1712]">{title}</h3>
+                    <p className="mt-1.5 text-[0.92rem] font-light leading-[1.75] text-[#3a2f23] max-w-[46ch]">{text}</p>
+                  </div>
+                </div>
+              ))}
+              <div className="border-t border-[#1c1712]/15" />
+            </div>
+          </Reveal>
 
-            {/* ── Colonne droite · carte formulaire ── */}
-            <Reveal delay={0.08}>
-              <div className="rounded-[2rem] border border-cream3 bg-card p-7 md:p-10 shadow-[0_18px_48px_rgba(107,74,47,0.10)]">
+          {/* ── Colonne droite · formulaire éditorial encadré ── */}
+          <Reveal delay={0.08}>
+            <div className="relative border border-[#9c7a44]/40 bg-[#faf6ee] p-8 md:p-12">
+              <span className="pointer-events-none absolute inset-3 border border-[#9c7a44]/25" aria-hidden />
+              <div className="relative">
                 {done ? (
-                  <div className="text-center py-8 md:py-12">
-                    <div className="w-16 h-16 rounded-full bg-brass/15 grid place-items-center mx-auto mb-6">
-                      <Check size={28} className="text-brassInk" />
-                    </div>
-                    <h2 className="font-serif font-medium text-ink text-[clamp(1.8rem,3.5vw,2.6rem)]">
+                  <div className="text-center py-10 md:py-14">
+                    <span className="inline-grid place-items-center w-16 h-16 rounded-full border border-[#9c7a44]/45 text-[#7d6330] mb-7">
+                      <Check size={26} />
+                    </span>
+                    <h2 className="v2-serif font-light text-[#1c1712] text-[clamp(1.9rem,3.5vw,2.7rem)]">
                       {lang === 'FR' ? 'Merci.' : 'Thank you.'}
                     </h2>
-                    <p className="mt-4 font-serif italic text-inkSoft text-[clamp(1.05rem,1.8vw,1.3rem)] leading-relaxed max-w-[34ch] mx-auto">
+                    <p className="mt-4 v2-serif italic text-[#3a2f23] text-[clamp(1.05rem,1.8vw,1.3rem)] leading-relaxed max-w-[34ch] mx-auto">
                       {lang === 'FR'
                         ? 'Vous êtes inscrite. Vous serez parmi les premières à savoir.'
                         : 'You are on the list. You will be among the first to know.'}
                     </p>
                     <Link
                       to="/accueil"
-                      className="mt-9 inline-flex items-center gap-3 rounded-full bg-espresso px-8 py-3.5 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-ctext transition-colors hover:bg-espressoDeep min-h-[44px]"
+                      className="mt-10 inline-flex items-center gap-3 bg-[#1c1712] px-8 py-4 text-[0.72rem] uppercase tracking-[0.22em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] min-h-[44px]"
                     >
                       {lang === 'FR' ? "Retour à l'accueil" : 'Back to home'} <ArrowRight size={14} />
                     </Link>
                   </div>
                 ) : (
-                  <form onSubmit={submit} className="space-y-5" noValidate>
-                    <Eyebrow>{lang === 'FR' ? "Inscription · liste d'attente" : 'Sign-up · waitlist'}</Eyebrow>
+                  <form onSubmit={submit} className="space-y-7" noValidate>
+                    <p className="text-[0.65rem] uppercase tracking-[0.3em] text-[#9c7a44]">
+                      {lang === 'FR' ? "Inscription · liste d'attente" : 'Sign-up · waitlist'}
+                    </p>
 
                     {/* Prénom + Nom */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-7">
                       <label className="block">
-                        <span className="block mb-1.5 font-sans text-[0.72rem] uppercase tracking-[0.14em] text-inkSoft">
+                        <span className="block mb-1 text-[0.62rem] uppercase tracking-[0.2em] text-[#3a2f23]/70">
                           {lang === 'FR' ? 'Prénom' : 'First name'}
                         </span>
                         <input
@@ -408,7 +421,7 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
                         />
                       </label>
                       <label className="block">
-                        <span className="block mb-1.5 font-sans text-[0.72rem] uppercase tracking-[0.14em] text-inkSoft">
+                        <span className="block mb-1 text-[0.62rem] uppercase tracking-[0.2em] text-[#3a2f23]/70">
                           {lang === 'FR' ? 'Nom' : 'Last name'}
                         </span>
                         <input
@@ -424,7 +437,7 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
 
                     {/* Courriel */}
                     <label className="block">
-                      <span className="block mb-1.5 font-sans text-[0.72rem] uppercase tracking-[0.14em] text-inkSoft">
+                      <span className="block mb-1 text-[0.62rem] uppercase tracking-[0.2em] text-[#3a2f23]/70">
                         {lang === 'FR' ? 'Adresse courriel' : 'Email address'}
                       </span>
                       <input
@@ -439,9 +452,9 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
                     </label>
 
                     {/* Pays/province + région (cascade) */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-7">
                       <label className="block">
-                        <span className="block mb-1.5 font-sans text-[0.72rem] uppercase tracking-[0.14em] text-inkSoft">
+                        <span className="block mb-1 text-[0.62rem] uppercase tracking-[0.2em] text-[#3a2f23]/70">
                           {lang === 'FR' ? 'Pays ou province' : 'Country or province'}
                         </span>
                         <div className="relative">
@@ -458,12 +471,12 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
                               <option key={c.code} value={c.code}>{c.label}</option>
                             ))}
                           </select>
-                          <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-brassInk pointer-events-none" />
+                          <ChevronDown size={15} className="absolute right-1 top-1/2 -translate-y-1/2 text-[#7d6330] pointer-events-none" />
                         </div>
                       </label>
 
                       <label className="block">
-                        <span className="block mb-1.5 font-sans text-[0.72rem] uppercase tracking-[0.14em] text-inkSoft">
+                        <span className="block mb-1 text-[0.62rem] uppercase tracking-[0.2em] text-[#3a2f23]/70">
                           {lang === 'FR' ? 'Région' : 'Region'}
                         </span>
                         {!country ? (
@@ -471,7 +484,7 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
                             type="text"
                             disabled
                             placeholder={lang === 'FR' ? 'Région' : 'Region'}
-                            className={`${fieldBase} bg-cream2 text-inkSoft/45 cursor-not-allowed`}
+                            className={`${fieldBase} opacity-45 cursor-not-allowed`}
                           />
                         ) : isFreeText ? (
                           <input
@@ -497,7 +510,7 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
                                 <option key={r} value={r}>{r}</option>
                               ))}
                             </select>
-                            <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-brassInk pointer-events-none" />
+                            <ChevronDown size={15} className="absolute right-1 top-1/2 -translate-y-1/2 text-[#7d6330] pointer-events-none" />
                           </div>
                         )}
                       </label>
@@ -507,41 +520,44 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
                     <button
                       type="submit"
                       disabled={busy}
-                      className="w-full mt-1 inline-flex items-center justify-center gap-3 rounded-xl bg-brass py-4 font-serif text-base tracking-[0.1em] uppercase text-espressoDeep transition-colors hover:bg-brassBright disabled:opacity-60 disabled:cursor-not-allowed min-h-[48px]"
+                      className="group w-full mt-2 inline-flex items-center justify-center gap-3 bg-[#1c1712] py-4 text-[0.72rem] uppercase tracking-[0.22em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] disabled:opacity-60 disabled:cursor-not-allowed min-h-[48px]"
                     >
                       {busy
                         ? <Loader2 size={18} className="animate-spin" />
-                        : <>{lang === 'FR' ? "Rejoindre la liste d'attente" : 'Join the waitlist'} <ArrowRight size={16} /></>}
+                        : <>{lang === 'FR' ? "Rejoindre la liste d'attente" : 'Join the waitlist'}
+                            <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" /></>}
                     </button>
 
                     {err && (
-                      <p role="alert" className="text-center font-sans text-[0.85rem] text-red-700">{err}</p>
+                      <p role="alert" className="text-center text-[0.85rem] text-[#8f3d29]">{err}</p>
                     )}
 
-                    <p className="text-center font-sans text-[0.68rem] uppercase tracking-[0.18em] text-inkSoft/60 pt-1">
+                    <p className="text-center v2-serif italic text-[0.88rem] text-[#3a2f23]/70">
                       {lang === 'FR'
-                        ? 'Désabonnement en un clic · jamais de partage'
-                        : 'One-click unsubscribe · never shared'}
+                        ? 'Désabonnement en un clic · vos coordonnées ne sont jamais partagées.'
+                        : 'One-click unsubscribe · your details are never shared.'}
                     </p>
                   </form>
                 )}
               </div>
-            </Reveal>
+            </div>
+          </Reveal>
 
-          </div>
         </div>
       </section>
 
-      {/* ─────────── CONTACT (clair) ─────────── */}
-      <section className="bg-cream2 py-16 md:py-20 text-center">
-        <a
-          href="mailto:teamksl@inspiratanature.com"
-          className="font-serif italic text-brassInk hover:text-brassBright transition-colors text-lg md:text-xl border-b border-brass/30 pb-1"
-        >
-          {lang === 'FR'
-            ? 'Une question ? Écrivez à teamksl@inspiratanature.com'
-            : 'A question? Write to teamksl@inspiratanature.com'}
-        </a>
+      {/* ─────────── CONTACT ─────────── */}
+      <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(4rem,9vh,7rem)] bg-[#f4efe6]">
+        <div className="border-t border-[#1c1712]/15 pt-9 text-center">
+          <a
+            href="mailto:teamksl@inspiratanature.com"
+            className="v2-serif italic text-[#7d6330] hover:text-[#1c1712] transition-colors duration-300 text-lg md:text-xl"
+          >
+            {lang === 'FR'
+              ? 'Une question ? Écrivez à teamksl@inspiratanature.com'
+              : 'A question? Write to teamksl@inspiratanature.com'}
+          </a>
+        </div>
       </section>
 
     </div>
