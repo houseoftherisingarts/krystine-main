@@ -377,7 +377,8 @@ const OrigineExperience: React.FC = () => {
 
             {/* Panneau liste d'attente (pré-ouverture : ni prix, ni inscription) */}
             <Reveal delay={0.1} className="lg:col-span-5">
-              <div className="rounded-[2rem] border border-brass/30 bg-espresso p-8 md:p-10 text-center">
+              <div className="relative overflow-hidden rounded-[2rem] border border-brass/30 bg-espresso p-8 md:p-10 text-center">
+                <Atmosphere light="50% 6%" strength={0.9} vignette={false} />
                 <p className="font-serif font-medium uppercase tracking-[0.12em] text-brass text-lg md:text-xl leading-tight">Prochaine cohorte<br /><span className="text-forestSoft text-base font-normal">Expérience Origine</span></p>
                 <p className="mt-8 font-serif text-[1.6rem] md:text-[1.9rem] leading-snug text-ctext">Les portes de la prochaine traversée ne sont pas encore ouvertes.</p>
                 <p className="mt-5 font-sans text-[0.95rem] leading-relaxed text-ctextSoft">Le cercle est limité à 350 personnes. Les personnes sur la liste d'attente reçoivent les détails et l'accès en premier, avant toute annonce publique.</p>
