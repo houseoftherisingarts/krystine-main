@@ -81,7 +81,7 @@ const FAQS = [
   { q: "Le cercle est limité à 350 personnes. Est-ce que je vais me perdre dans le groupe ?", a: "Au contraire. Cette limite garantit une intimité et permet à Krystine de ressentir l'énergie du groupe. L'espace communautaire est conçu pour être un lieu calme, loin du bruit des grands réseaux sociaux." },
   { q: "J'ai déjà essayé beaucoup de choses.", a: "Si vous avez l'impression d'avoir tout essayé, c'est peut-être qu'il est temps d'arrêter de chercher à l'extérieur. Origine vous ramène à votre propre autorité intérieure et aux signaux de votre corps." },
   { q: "C'est un investissement important pour moi.", a: "C'est un engagement envers vous-même. C'est pour cela que nous offrons des options de versements, et surtout une Garantie Cœur Léger de 15 jours. Si vous sentez que ce n'est pas votre place, vous serez remboursée." },
-  { q: "À quelle heure ont lieu les rencontres en direct ?", a: "Les heures varient selon votre localisation dans le monde. Consultez le calendrier juste au-dessous pour voir l'horaire exact selon votre propre fuseau horaire (Québec, France, etc)." },
+  { q: "À quelle heure ont lieu les rencontres en direct ?", a: "Les rencontres ont lieu le dimanche, en direct, et chacune est disponible en rediffusion dans les 24 heures. L'horaire précis de la prochaine cohorte sera transmis en priorité aux personnes de la liste d'attente." },
 ];
 
 const SCHEDULE = [
