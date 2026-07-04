@@ -318,8 +318,9 @@ const OrigineExperience: React.FC = () => {
       </section>
 
       {/* ─────────── BIO KRYSTINE ─────────── */}
-      <section id="about" className="bg-espressoSoft py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <section id="about" className="relative overflow-hidden bg-espressoSoft py-24 md:py-32">
+        <Atmosphere light="24% 10%" strength={0.85} />
+        <div className="relative mx-auto w-full max-w-[1180px] px-6 md:px-12 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <Reveal className="order-last lg:order-first">
             <div className="relative rounded-[2rem] overflow-hidden aspect-[4/5] shadow-2xl">
               <img src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
