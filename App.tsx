@@ -67,11 +67,11 @@ const FormationsV2 = lazy(() => import('./src/pages/concepts/FormationsV2'));
 const MediasV2 = lazy(() => import('./src/pages/concepts/MediasV2'));
 const PodcastV2 = lazy(() => import('./src/pages/concepts/PodcastV2'));
 
-// On-palette loader (espresso + brass). Replaces the old white/gold spinner
-// that caused a jarring flash of the previous design on every page change.
+// On-palette loader (crème V2 + laiton). Le site est magazine crème :
+// un loader espresso flashait un écran brun entre deux pages claires.
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-espressoDeep">
-    <div className="w-9 h-9 rounded-full border-2 border-brass/25 border-t-brass animate-spin" />
+  <div className="min-h-screen flex items-center justify-center bg-[#f4efe6]">
+    <div className="w-9 h-9 rounded-full border-2 border-[#9c7a44]/25 border-t-[#9c7a44] animate-spin" />
   </div>
 );
 
