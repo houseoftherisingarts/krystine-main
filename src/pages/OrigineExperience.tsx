@@ -378,13 +378,15 @@ const OrigineExperience: React.FC = () => {
 
             {/* Panneau liste d'attente (pré-ouverture : ni prix, ni inscription) */}
             <Reveal delay={0.1} className="lg:col-span-5">
-              <div className="relative overflow-hidden rounded-[2rem] border border-brass/30 bg-espresso p-8 md:p-10 text-center">
-                <Atmosphere light="50% 6%" strength={0.9} vignette={false} />
-                <p className="font-serif font-medium uppercase tracking-[0.12em] text-brass text-lg md:text-xl leading-tight">Prochaine cohorte<br /><span className="text-forestSoft text-base font-normal">Expérience Origine</span></p>
-                <p className="mt-8 font-serif text-[1.6rem] md:text-[1.9rem] leading-snug text-ctext">Les portes de la prochaine traversée ne sont pas encore ouvertes.</p>
-                <p className="mt-5 font-sans text-[0.95rem] leading-relaxed text-ctextSoft">Le cercle est limité à 350 personnes. Les personnes sur la liste d'attente reçoivent les détails et l'accès en premier, avant toute annonce publique.</p>
-                <Link to={WAITLIST} className="mt-8 block w-full rounded-xl bg-brass py-4 font-serif text-base tracking-[0.12em] uppercase text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]">Rejoindre la liste d'attente</Link>
-                <p className="mt-5 text-[0.78rem] text-ctextSoft/60">Sans engagement. Vous choisirez librement à l'ouverture des portes.</p>
+              <div className="relative border border-brass/45 bg-card p-8 md:p-12 text-center">
+                <span className="pointer-events-none absolute inset-3 border border-brass/25" aria-hidden />
+                <div className="relative">
+                  <p className="font-sans text-[0.65rem] uppercase tracking-[0.3em] text-brassInk">Prochaine cohorte<br /><span className="mt-1.5 inline-block tracking-[0.2em] text-inkSoft/80 normal-case font-serif italic text-base">Expérience Origine</span></p>
+                  <p className="mt-8 font-serif text-[1.7rem] md:text-[2rem] leading-[1.25] text-ink">Les portes de la prochaine traversée ne sont pas encore ouvertes.</p>
+                  <p className="mt-5 font-sans text-[0.95rem] leading-[1.8] text-inkSoft">Le cercle est limité à 350 personnes. Les personnes sur la liste d'attente reçoivent les détails et l'accès en premier, avant toute annonce publique.</p>
+                  <Link to={WAITLIST} className="mt-9 block w-full bg-ink py-4 font-sans text-[0.72rem] tracking-[0.2em] uppercase text-cream transition-colors duration-300 hover:bg-brass hover:text-espressoDeep min-h-[44px]">Rejoindre la liste d'attente</Link>
+                  <p className="mt-5 font-serif italic text-[0.88rem] text-inkSoft/75">Sans engagement. Vous choisirez librement à l'ouverture des portes.</p>
+                </div>
               </div>
             </Reveal>
           </div>
