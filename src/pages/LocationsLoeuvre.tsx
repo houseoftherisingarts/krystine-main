@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Phone, Clock, ArrowRight, Compass } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT } from '../content';
-import { Seam, KenBurns } from '../components/motion/loeuvre';
+import { Atmosphere, Seam, KenBurns } from '../components/motion/loeuvre';
 
 /**
  * Points de vente · Où nous trouver — page React au style L'Œuvre (espresso/cream/brass).
@@ -60,6 +60,7 @@ const LocationsLoeuvre: React.FC = () => {
         <KenBurns src="/footer-jacques-cartier.jpg" alt="" />
         <span aria-hidden className="absolute inset-0 pointer-events-none"
           style={{ background: 'linear-gradient(90deg, rgba(22,16,10,0.92) 0%, rgba(22,16,10,0.62) 45%, rgba(22,16,10,0.28) 100%)' }} />
+        <Atmosphere strength={0} vignette={false} />
         <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-28">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }} className="max-w-[44ch]">
             <p className="inline-flex items-center gap-2 text-brass text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.3em] mb-8">
@@ -160,6 +161,7 @@ const LocationsLoeuvre: React.FC = () => {
       {/* ─────────── CTA BOUTIQUE EN LIGNE ─────────── */}
       <section className="relative bg-espresso py-24 md:py-32 overflow-hidden">
         <Seam from="#ede5d7" />
+        <Atmosphere strength={0.8} light="50% 12%" />
         <div className="relative z-10 mx-auto w-full max-w-[820px] px-6 md:px-12 text-center">
           <Reveal>
             <Eyebrow on="dark">{isFr ? 'À distance' : 'From anywhere'}</Eyebrow>

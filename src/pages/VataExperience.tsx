@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, ChevronDown, ArrowRight, Snowflake, Sparkles } from 'lucide-react';
+import { Atmosphere } from '../components/motion/loeuvre';
 
 /**
  * Expérience Ayurveda · Saison Vata — page React (style L'Œuvre).
@@ -117,7 +118,7 @@ const VataExperience: React.FC = () => {
       <section className="relative min-h-screen flex items-center overflow-hidden bg-espressoDeep">
         <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: 'url(https://storage.googleapis.com/inspirata/Vata/bg.png)' }} />
         <div className="absolute inset-0" style={{ background: 'linear-gradient(120deg, #16100a 10%, rgba(22,16,10,0.7) 55%, transparent 100%)' }} />
-        <div className="pointer-events-none absolute -bottom-1/4 -right-1/5 h-[55%] w-[55%] rounded-full bg-forest/20 blur-[150px]" />
+        <Atmosphere strength={0.5} vignette={false} />
         <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-28">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }}>
             <p className="inline-flex items-center gap-2 text-brass text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.3em] mb-8"><Snowflake size={14} /> Expérience Ayurveda · Saison Vata</p>
@@ -159,8 +160,9 @@ const VataExperience: React.FC = () => {
       </section>
 
       {/* ── 3 SYSTÈMES ── */}
-      <section className="bg-espressoSoft py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12">
+      <section className="relative overflow-hidden bg-espressoSoft py-24 md:py-32">
+        <Atmosphere strength={0.8} light="26% 10%" />
+        <div className="relative mx-auto w-full max-w-[1180px] px-6 md:px-12">
           <Reveal className="text-center mb-16">
             <Eyebrow on="dark">La méthode</Eyebrow>
             <Title on="dark" className="mt-4">Comment nous allons arrêter la fuite d'énergie</Title>
@@ -263,8 +265,9 @@ const VataExperience: React.FC = () => {
       </section>
 
       {/* ── BIO ── */}
-      <section className="bg-espressoSoft py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1100px] px-6 md:px-12 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <section className="relative overflow-hidden bg-espressoSoft py-24 md:py-32">
+        <Atmosphere strength={0.8} light="74% 12%" />
+        <div className="relative mx-auto w-full max-w-[1100px] px-6 md:px-12 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <Reveal className="order-last lg:order-first">
             <div className="rounded-[2rem] overflow-hidden aspect-[4/5] shadow-2xl">
               <img src="https://wsrv.nl/?url=storage.googleapis.com/inspirata/21%20jours/krysttine%20red.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
@@ -285,8 +288,9 @@ const VataExperience: React.FC = () => {
       <Faq />
 
       {/* ── CTA FINAL ── */}
-      <section className="bg-espressoDeep py-20 md:py-24 text-center">
-        <div className="mx-auto w-full max-w-[760px] px-6 md:px-12">
+      <section className="relative overflow-hidden bg-espressoDeep py-20 md:py-24 text-center">
+        <Atmosphere light="50% 0%" />
+        <div className="relative mx-auto w-full max-w-[760px] px-6 md:px-12">
           <Reveal>
             <Title on="dark">Prête à traverser la saison autrement ?</Title>
             <button onClick={go} className="mt-9 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-sans text-[0.7rem] uppercase tracking-[0.16em] text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]">Apaiser mon système nerveux maintenant <ArrowRight size={16} /></button>

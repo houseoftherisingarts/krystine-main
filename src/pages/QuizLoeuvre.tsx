@@ -15,7 +15,7 @@ import {
 import { findOilForDosha } from '../lib/shopifyOil';
 import { RITUALS } from '../lib/doshaRituals';
 import NewsletterSignup from '../components/NewsletterSignup';
-import { Seam } from '../components/motion/loeuvre';
+import { Atmosphere, Seam } from '../components/motion/loeuvre';
 
 /**
  * Quiz Dosha — page React au style L'Œuvre (espresso/cream/brass).
@@ -658,8 +658,7 @@ const QuizLoeuvre: React.FC = () => {
 
       {/* ─────────── HERO (la promesse du quiz) ─────────── */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-espressoDeep">
-        <div className="pointer-events-none absolute -top-1/4 -left-1/4 h-[70%] w-[70%] rounded-full bg-forest/20 blur-[140px]" />
-        <div className="pointer-events-none absolute -bottom-1/4 -right-1/5 h-[60%] w-[60%] rounded-full bg-brass/10 blur-[150px]" />
+        <Atmosphere light="74% 20%" />
         <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-24 grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-center">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }}>
             <p className="inline-flex items-center gap-2 font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brass mb-8">
@@ -772,8 +771,9 @@ const QuizLoeuvre: React.FC = () => {
       </section>
 
       {/* ─────────── SIGNUP / CTA (NewsletterSignup, source="quiz") ─────────── */}
-      <section className="bg-espressoDeep py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[760px] px-6 md:px-12 text-center">
+      <section className="relative overflow-hidden bg-espressoDeep py-24 md:py-32">
+        <Atmosphere strength={0.8} light="50% 8%" />
+        <div className="relative mx-auto w-full max-w-[760px] px-6 md:px-12 text-center">
           <Reveal>
             <Eyebrow on="dark">{lang === 'FR' ? 'Rester sur le fil' : 'Stay on the thread'}</Eyebrow>
             <SectionTitle on="dark" className="mt-4">

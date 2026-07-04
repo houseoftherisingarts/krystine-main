@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, Feather, BookOpen } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { getBlogPosts, type BlogPost } from '../firebase/firestore';
 import NewsletterSignup from '../components/NewsletterSignup';
-import { Seam, KenBurns } from '../components/motion/loeuvre';
+import { Atmosphere, Seam, KenBurns } from '../components/motion/loeuvre';
 
 /**
  * Le Blogue · Journal — page React au style L'Œuvre (espresso/cream/brass).
@@ -116,6 +116,7 @@ const BlogueLoeuvre: React.FC = () => {
         <KenBurns src="/krystine-portrait.jpg" alt="Krystine St-Laurent" className="object-[center_22%]" />
         <span aria-hidden className="absolute inset-0 pointer-events-none"
           style={{ background: 'linear-gradient(90deg, rgba(22,16,10,0.92) 0%, rgba(22,16,10,0.6) 44%, rgba(22,16,10,0.18) 100%)' }} />
+        <Atmosphere strength={0} vignette={false} />
         <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12 py-28 md:py-36">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }}>
             <p className="inline-flex items-center gap-2 font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brass mb-8">
@@ -219,6 +220,7 @@ const BlogueLoeuvre: React.FC = () => {
       {/* ─────────── INFOLETTRE ─────────── */}
       <section className="bg-espressoDeep py-24 md:py-32 overflow-hidden relative">
         <div className="pointer-events-none absolute -top-1/4 -right-1/4 h-[60%] w-[60%] rounded-full bg-brass/10 blur-[150px]" />
+        <Atmosphere strength={0.7} light="50% 4%" />
         <div className="relative z-10 mx-auto w-full max-w-[820px] px-6 md:px-12 text-center">
           <Reveal>
             <Eyebrow on="dark">{lang === 'FR' ? 'Rester au fil' : 'Stay in the thread'}</Eyebrow>
