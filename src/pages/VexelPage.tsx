@@ -74,6 +74,19 @@ const VexelPage: React.FC = () => {
     setInquiries(prev => prev.filter(x => x.id !== id));
   };
 
+  // Admin gate: the Firestore rules only let admins read/delete inquiries,
+  // so this inbox now requires the same sign-in as /admin (dev bypass incl.).
+  if (!isAdminBypassActive()) {
+    if (user === undefined) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-[#1A0E08]">
+          <div className="w-10 h-10 border-2 border-t-transparent border-[#bb9a5e] rounded-full animate-spin" />
+        </div>
+      );
+    }
+    if (!user || !isAdminUser(user)) return <AdminLogin />;
+  }
+
   return (
     <div className="min-h-screen bg-[#1A0E08] text-[#f6f3ee] py-12 px-6">
       <div className="max-w-5xl mx-auto">
