@@ -278,7 +278,7 @@ const OrigineExperience: React.FC = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {WORKS.map((w, i) => (
               <Reveal key={w.title} delay={(i % 3) * 0.06}>
-                <div className="h-full rounded-3xl bg-card border-l-[3px] border-l-brass border-y border-r border-cream3 p-8 md:p-9 transition-shadow hover:shadow-xl">
+                <div className="h-full rounded-3xl bg-card border border-cream3 p-8 md:p-9 transition-shadow hover:shadow-xl">
                   <div className="flex items-center gap-4 mb-4">
                     <span className="w-2.5 h-2.5 rounded-full bg-brass shrink-0" />
                     <h3 className="font-serif text-xl md:text-2xl text-ink">{w.title}</h3>
