@@ -119,20 +119,32 @@ const FAQItem: React.FC<{ q: string; a: string; i: number; open: boolean; onClic
 
 const FaqSection: React.FC = () => {
   const [open, setOpen] = useState<number | null>(0);
+  // Pleine largeur, 2 colonnes indépendantes (règle full-width : jamais de
+  // colonne étroite centrée). Chaque colonne garde son flux : ouvrir un item
+  // ne fait bouger que sa colonne.
+  const mid = Math.ceil(FAQS.length / 2);
+  const columns = [FAQS.slice(0, mid), FAQS.slice(mid)];
   return (
     <section id="faq" className="bg-cream2 py-24 md:py-32">
-      <div className="mx-auto w-full max-w-[860px] px-6 md:px-12">
-        <Reveal className="text-center mb-12">
+      <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
+        <Reveal className="text-center mb-14">
           <Eyebrow>Avant de dire oui</Eyebrow>
           <SectionTitle className="mt-4 uppercase tracking-[0.02em] text-[clamp(1.7rem,3.2vw,2.5rem)]">
             Ce qui se murmure avant de dire oui
           </SectionTitle>
         </Reveal>
-        <Reveal>
-          {FAQS.map((f, i) => (
-            <FAQItem key={i} i={i} q={f.q} a={f.a} open={open === i} onClick={() => setOpen(open === i ? null : i)} />
+        <div className="grid lg:grid-cols-2 gap-x-8 items-start">
+          {columns.map((col, c) => (
+            <Reveal key={c} delay={c * 0.08}>
+              {col.map((f, j) => {
+                const i = c * mid + j;
+                return (
+                  <FAQItem key={i} i={i} q={f.q} a={f.a} open={open === i} onClick={() => setOpen(open === i ? null : i)} />
+                );
+              })}
+            </Reveal>
           ))}
-        </Reveal>
+        </div>
       </div>
     </section>
   );
