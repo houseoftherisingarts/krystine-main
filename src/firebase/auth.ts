@@ -114,11 +114,13 @@ export const ADMIN_EMAILS = [
   'alex@lesalondesinconnus.com',
 ];
 
-// Hard-coded dev bypass — bypasses Firebase Auth entirely. Flips true when
-// AdminLogin sets `__adminBypass = '1'` after matching the baked-in
-// credentials (alex@lesalondesinconnus.com / Peterjackson1!). Works in
-// production builds too, unlike the older DEV-only `__devAdmin` flag.
+// Dev-only bypass — bypasses Firebase Auth entirely. Flips true when
+// AdminLogin sets `__adminBypass = '1'` after matching the baked-in dev
+// credentials. Gated on import.meta.env.DEV so it can never unlock the
+// admin UI in a production build; prod access goes through Firebase Auth
+// against the ADMIN allowlist (also enforced server-side in firestore.rules).
 export function isAdminBypassActive(): boolean {
+  if (!import.meta.env.DEV) return false;
   if (typeof window === 'undefined') return false;
   try { return localStorage.getItem('__adminBypass') === '1'; } catch { return false; }
 }
