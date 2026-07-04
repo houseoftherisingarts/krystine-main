@@ -68,7 +68,14 @@ const ConsentBanner: React.FC = () => {
           <p className="text-[9px] uppercase tracking-[0.3em] font-bold text-[#7d6330] mb-1">
             {lang === 'FR' ? 'En toute transparence' : 'With full transparency'}
           </p>
-          <p className="text-xs text-[#2a2015]/80 dark:text-white/80 leading-relaxed">
+          {/* Mobile: une ligne. Le détail complet reste sur sm+ (recette
+              bandeau compact, improvements-ledger 2026-07-04). */}
+          <p className="sm:hidden text-xs text-[#2a2015]/80 dark:text-white/80 leading-relaxed">
+            {lang === 'FR'
+              ? 'Quelques témoins discrets, vous gardez le contrôle (Loi 25).'
+              : 'A few discreet cookies; you stay in control (Law 25).'}
+          </p>
+          <p className="hidden sm:block text-xs text-[#2a2015]/80 dark:text-white/80 leading-relaxed">
             {lang === 'FR'
               ? "Quelques témoins discrets nous aident à améliorer votre expérience. Vous gardez le contrôle, comme le veut la Loi 25."
               : "A few discreet cookies help us improve your experience. You stay in control, as Quebec's Law 25 intends."}
