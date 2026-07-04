@@ -25,11 +25,11 @@ const AdminLogin: React.FC = () => {
     e.preventDefault();
     setErr(null); setBusy(true);
 
-    // Baked-in bypass — intentional shortcut for Alex so he can reach
-    // the dashboard without depending on Firebase Auth being wired up.
-    // Sets a localStorage flag that `isAdminBypassActive()` reads; the
-    // full-page reload re-mounts AdminDashboard with bypass on.
-    if (email.trim().toLowerCase() === BYPASS_EMAIL && password === BYPASS_PASSWORD) {
+    // Dev-only bypass: lets local sessions exercise the admin flows without
+    // Firebase Auth. Sets the localStorage flag `isAdminBypassActive()`
+    // reads; the full-page reload re-mounts AdminDashboard with bypass on.
+    // Never active in production builds.
+    if (import.meta.env.DEV && email.trim().toLowerCase() === BYPASS_EMAIL && password === BYPASS_PASSWORD) {
       try {
         localStorage.setItem('__adminBypass', '1');
         localStorage.setItem('__adminBypassEmail', BYPASS_EMAIL);
