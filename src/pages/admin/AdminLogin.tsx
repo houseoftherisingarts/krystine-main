@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { loginWithEmail, loginWithGoogle } from '../../firebase/auth';
 
-// Hard-coded bypass credentials. If the operator signs in with these, we
-// skip Firebase Auth and flip a localStorage flag that grants admin
-// access site-wide via `isAdminBypassActive()`.
+// Dev-only bypass credentials. The block below is gated on
+// `import.meta.env.DEV`, so Vite strips it (and these strings) from the
+// production bundle. In prod, Alex signs in with Google/email: his address
+// is on the ADMIN allowlist client-side AND in firestore.rules.
 const BYPASS_EMAIL = 'alex@lesalondesinconnus.com';
-const BYPASS_PASSWORD = 'Peterjackson1!';
+const BYPASS_PASSWORD = import.meta.env.DEV ? 'Peterjackson1!' : '';
 
 const AdminLogin: React.FC = () => {
   const [mode, setMode] = useState<'google' | 'email'>('google');
