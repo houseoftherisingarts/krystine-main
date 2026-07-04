@@ -66,12 +66,12 @@ const ConsentBanner: React.FC = () => {
         <i className="fa-solid fa-cookie-bite text-[#7d6330] text-sm mt-0.5" />
         <div>
           <p className="text-[9px] uppercase tracking-[0.3em] font-bold text-[#7d6330] mb-1">
-            {lang === 'FR' ? 'Loi 25' : 'Law 25'}
+            {lang === 'FR' ? 'En toute transparence' : 'With full transparency'}
           </p>
           <p className="text-xs text-[#2a2015]/80 dark:text-white/80 leading-relaxed">
             {lang === 'FR'
-              ? 'Témoins de mesure pour améliorer le site. Vous gardez le contrôle.'
-              : 'Measurement cookies to improve the site. You stay in control.'}
+              ? "Quelques témoins discrets nous aident à améliorer votre expérience. Vous gardez le contrôle, comme le veut la Loi 25."
+              : "A few discreet cookies help us improve your experience. You stay in control, as Quebec's Law 25 intends."}
           </p>
         </div>
       </div>
