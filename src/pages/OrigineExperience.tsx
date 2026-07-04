@@ -382,7 +382,9 @@ const OrigineExperience: React.FC = () => {
           <Reveal className="order-last lg:order-first">
             <div className="relative border border-brass/45 p-2.5 bg-card shadow-[0_30px_70px_rgba(58,49,38,0.14)]">
               <div className="relative overflow-hidden aspect-[4/5]">
-                <img src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                <Parallax speed={0.1} className="h-full">
+                  <img src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" className="w-full h-full object-cover scale-110" referrerPolicy="no-referrer" />
+                </Parallax>
               </div>
             </div>
           </Reveal>
