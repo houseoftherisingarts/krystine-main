@@ -238,13 +238,14 @@ const OrigineExperience: React.FC = () => {
         </div>
       </section>
 
-      {/* ─────────── CTA BAND ─────────── */}
-      <section className="relative overflow-hidden bg-espresso py-20 md:py-24">
-        <Atmosphere light="50% 0%" />
-        <div className="relative mx-auto w-full max-w-[1280px] px-6 md:px-12 text-center">
+      {/* ─────────── CTA BAND (panneau éditorial clair, filets pleine largeur) ─────────── */}
+      <section className="bg-cream2 py-16 md:py-20">
+        <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
           <Reveal>
-            <p className="mx-auto max-w-[52ch] font-serif text-[clamp(1.2rem,2.1vw,1.7rem)] leading-snug text-ctext">12 semaines pour comprendre les messages du corps, retrouver ce qui nous appartient, ancrer les rituels qui tiennent, et revenir au point d'origine.</p>
-            <Link to={WAITLIST} className="mt-10 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]">Rejoindre la liste d'attente <ArrowRight size={16} /></Link>
+            <div className="border-y border-ink/12 py-14 md:py-16 text-center">
+              <p className="mx-auto max-w-[46ch] font-serif text-[clamp(1.35rem,2.5vw,2.1rem)] leading-[1.35] text-ink">12 semaines pour comprendre les messages du corps, retrouver ce qui nous appartient, ancrer les rituels qui tiennent, et revenir <span className="italic text-brassInk">au point d'origine.</span></p>
+              <Link to={WAITLIST} className="mt-10 inline-flex items-center gap-3 bg-ink px-9 py-4 font-sans text-[0.7rem] uppercase tracking-[0.2em] text-cream transition-colors duration-300 hover:bg-brass hover:text-espressoDeep min-h-[44px]">Rejoindre la liste d'attente <ArrowRight size={16} /></Link>
+            </div>
           </Reveal>
         </div>
       </section>
