@@ -52,6 +52,15 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
+    // ── Vexel inquiries (Salon des Inconnus contact card → /vexel inbox) ──
+    // Public form creates a lead; only admins may list, read, or delete them.
+    match /vexelInquiries/{id} {
+      allow create: if request.resource.data.keys().hasAll(['name', 'email'])
+                    && request.resource.data.name is string
+                    && request.resource.data.email is string;
+      allow read, update, delete: if isAdmin();
+    }
+
     // ── Dosha quiz: public create. Members read their own. Admins full. ──
     match /doshaResults/{id} {
       allow create: if request.resource.data.keys().hasAll(['email', 'dominant']);
