@@ -401,9 +401,9 @@ const OrigineExperience: React.FC = () => {
       <FaqSection />
 
       {/* ─────────── FRÉQUENCE D'ORIGINE (module écouteurs flottants) ─────────── */}
-      <section className="bg-espressoDeep py-24 md:py-32 overflow-hidden">
-        <div className="pointer-events-none absolute" />
-        <div className="mx-auto w-full max-w-[1100px] px-6 md:px-12 grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+      <section className="relative bg-espressoDeep py-24 md:py-32 overflow-hidden">
+        <Atmosphere light="30% 32%" />
+        <div className="relative mx-auto w-full max-w-[1100px] px-6 md:px-12 grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
           {/* Disque + écouteurs flottants */}
           <Reveal className="relative flex flex-col items-center">
             <div className="relative w-64 h-64 md:w-[380px] md:h-[380px] flex items-center justify-center">
