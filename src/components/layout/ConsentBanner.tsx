@@ -80,7 +80,7 @@ const ConsentBanner: React.FC = () => {
           onClick={() => decide('accepted')}
           className="flex-1 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] font-bold uppercase tracking-widest text-[10px] px-4 py-2.5 rounded-full hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
         >
-          {lang === 'FR' ? 'Accepter' : 'Accept'}
+          {lang === 'FR' ? "J'accepte" : 'I accept'}
         </button>
         <button
           onClick={() => decide('rejected')}
