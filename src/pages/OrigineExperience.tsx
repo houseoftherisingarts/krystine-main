@@ -329,7 +329,7 @@ const OrigineExperience: React.FC = () => {
           <Reveal delay={0.08}>
             <SectionTitle on="dark">Krystine St-Laurent</SectionTitle>
             <p className="mt-6 font-sans text-[1.02rem] leading-[1.85] text-ctextSoft max-w-[52ch]">35 ans à traverser les milieux de la santé, soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de la série télé Santé la vie et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle laisse les gens seuls. Les rituels qu'elle enseigne, elle les pratique chaque matin.</p>
-            <div className="mt-8 space-y-5 border-l-2 border-forestSoft/60 pl-6">
+            <div className="mt-8 space-y-5 pt-6 border-t border-brass/25">
               {TESTIMONIALS.map((t) => (
                 <p key={t.who} className="text-forestSoft">
                   <span className="font-serif italic text-[1.05rem] leading-snug">« {t.quote} »</span>
