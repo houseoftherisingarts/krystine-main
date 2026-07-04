@@ -627,7 +627,7 @@ const FinalCta: React.FC = () => (
           Prête à traverser la saison autrement ?
         </h2>
         <p className="mt-7 mx-auto v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] leading-snug max-w-[40ch]" style={{ color: 'rgba(244,239,230,0.75)' }}>
-          « Le calme n'est pas ce qui reste quand tout s'arrête. C'est ce que l'on cultive pendant que le vent souffle. »
+          « Le calme se cultive pendant que le vent souffle. »
         </p>
         <div className="mt-11 flex flex-wrap items-center justify-center gap-x-9 gap-y-5">
           <button
