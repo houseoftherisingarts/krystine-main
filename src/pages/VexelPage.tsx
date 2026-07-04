@@ -44,10 +44,13 @@ const fmtDate = (ts?: any): string => {
 };
 
 const VexelPage: React.FC = () => {
+  const [user, setUser] = useState<User | null | undefined>(undefined);
   const [inquiries, setInquiries] = useState<VexelInquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
+
+  useEffect(() => subscribeToAuthState(u => setUser(u)), []);
 
   const load = async () => {
     setLoading(true);
