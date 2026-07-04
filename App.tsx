@@ -47,9 +47,6 @@ const VexelPage        = lazy(() => import('./src/pages/VexelPage'));
 // Expérience Origine — refonte React au style L'Œuvre (remplacera le bundle
 // statique /origine une fois toutes les sections portées). Preview en cours.
 const OrigineExperience = lazy(() => import('./src/pages/OrigineExperience'));
-// Podcast « Au-delà des tendances » — porté du bundle statique vers React
-// (fetch fiable du flux HelloAudio, les 36 épisodes, style L'Œuvre).
-const PodcastEpisodes = lazy(() => import('./src/pages/PodcastEpisodes'));
 // Expérience Vata — portée du bundle statique vers React (style L'Œuvre)
 const VataExperience = lazy(() => import('./src/pages/VataExperience'));
 // Pages publiques rebâties from scratch en L'Œuvre (back-end préservé)
