@@ -14,6 +14,7 @@ import EditOverlay from './src/components/edit/EditOverlay';
 import { PageShareBar } from './src/components/ShareButtons';
 import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import { trackPageView } from './src/lib/track';
+import { applyPageMeta } from './src/lib/pageMeta';
 import { processDevAdminUrl } from './src/lib/devAdmin';
 
 // Run the dev-mode admin URL processor once at module load — before
