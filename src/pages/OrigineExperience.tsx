@@ -1,6 +1,7 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { Check, ChevronDown, Calendar, Clock, Radio, Globe, BookOpen, ArrowRight, Headphones, Activity, Sparkles, Download } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Check, ChevronDown, BookOpen, ArrowRight, Headphones, Activity, Sparkles, Download } from 'lucide-react';
 
 /**
  * Expérience Origine — page React au style L'Œuvre (espresso/cream/brass)
@@ -131,91 +132,6 @@ const FaqSection: React.FC = () => {
             <FAQItem key={i} i={i} q={f.q} a={f.a} open={open === i} onClick={() => setOpen(open === i ? null : i)} />
           ))}
         </Reveal>
-      </div>
-    </section>
-  );
-};
-
-const ScheduleSection: React.FC = () => {
-  const [tz, setTz] = useState('America/Toronto');
-  const time = useMemo(() => {
-    try {
-      const s = new Date('2026-05-03T08:30:00-04:00'), e = new Date('2026-05-03T10:30:00-04:00');
-      const f = new Intl.DateTimeFormat('fr-CA', { hour: 'numeric', minute: '2-digit', timeZone: tz });
-      return `${f.format(s).replace(' h ', 'h')} à ${f.format(e).replace(' h ', 'h')}`;
-    } catch { return '8h30 à 10h30'; }
-  }, [tz]);
-  return (
-    <section id="programme" className="bg-cream py-24 md:py-32">
-      <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 lg:items-start">
-          <div className="lg:col-span-5">
-            <Reveal>
-              <span className="inline-flex items-center gap-2 rounded-full bg-brass/12 text-brassInk px-4 py-1.5 text-[0.62rem] font-sans uppercase tracking-[0.2em]">
-                <Calendar size={14} /> Calendrier de la traversée
-              </span>
-              <SectionTitle className="mt-6">Cohorte Fondatrice<br /><span className="italic font-normal text-brassInk">Horaire 2026</span></SectionTitle>
-            </Reveal>
-            <Reveal delay={0.1} className="mt-10 space-y-6">
-              <div className="rounded-3xl border border-cream3 bg-card p-6 relative">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="grid place-items-center w-10 h-10 rounded-2xl bg-brass text-espressoDeep"><Radio size={18} /></span>
-                  <h3 className="font-serif text-2xl text-ink">Le Dimanche : le direct</h3>
-                </div>
-                <p className="text-inkSoft leading-relaxed mb-4 font-sans text-[0.95rem]">Rencontres en direct, tous les dimanches.</p>
-                <div className="rounded-2xl border border-brass/20 bg-cream2 p-4 flex flex-col gap-3">
-                  <span className="font-serif text-2xl text-brassInk tabular-nums">{time}</span>
-                  <div className="relative">
-                    <Globe size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-brassInk pointer-events-none" />
-                    <select value={tz} onChange={(e) => setTz(e.target.value)} aria-label="Fuseau horaire"
-                      className="w-full appearance-none bg-card border border-brass/30 rounded-lg py-2.5 pl-10 pr-9 text-sm text-ink cursor-pointer focus:outline-none focus:ring-1 focus:ring-brass min-h-[44px]">
-                      <optgroup label="Principaux">
-                        <option value="America/Toronto">Québec (heure de l'Est)</option>
-                        <option value="Europe/Paris">France (Europe centrale)</option>
-                      </optgroup>
-                      <optgroup label="Autres fuseaux">
-                        <option value="Europe/London">Royaume-Uni (Londres)</option>
-                        <option value="America/Vancouver">Canada (Pacifique)</option>
-                        <option value="America/Halifax">Canada (Atlantique)</option>
-                        <option value="Indian/Reunion">La Réunion</option>
-                        <option value="America/Martinique">Martinique / Guadeloupe</option>
-                        <option value="Pacific/Noumea">Nouvelle-Calédonie</option>
-                        <option value="Pacific/Tahiti">Polynésie française</option>
-                      </optgroup>
-                    </select>
-                    <ChevronDown size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-brassInk pointer-events-none" />
-                  </div>
-                </div>
-              </div>
-              <div className="rounded-3xl border border-cream3 bg-card p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="grid place-items-center w-10 h-10 rounded-2xl bg-forest text-cream"><Clock size={18} /></span>
-                  <h3 className="font-serif text-2xl text-ink">Le Jeudi : les enseignements</h3>
-                </div>
-                <p className="text-inkSoft leading-relaxed font-sans text-[0.95rem]"><span className="text-brassInk font-medium">Enseignements audio + PDF</span> déposés sur votre portail chaque jeudi matin.</p>
-              </div>
-              <p className="text-sm italic text-inkSoft/80 leading-relaxed">Chaque rencontre est disponible en rediffusion dans les 24 heures. Vous pouvez poser vos questions à l'avance.</p>
-            </Reveal>
-          </div>
-          <div className="lg:col-span-7 space-y-7">
-            {SCHEDULE.map((p, pi) => (
-              <Reveal key={p.pillar} delay={pi * 0.08}>
-                <div className="flex items-center gap-4 mb-3">
-                  <h4 className="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-brassInk whitespace-nowrap">{p.pillar}</h4>
-                  <span className="flex-1 h-px bg-brass/20" />
-                </div>
-                <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-                  {p.weeks.map((w) => (
-                    <div key={w.id} className="rounded-2xl border border-brass/20 bg-card p-5 text-center">
-                      <div className="text-[0.6rem] uppercase tracking-[0.18em] text-brassInk font-semibold mb-1">Semaine {w.id}</div>
-                      <div className="font-serif text-xl text-ink">{w.date}</div>
-                    </div>
-                  ))}
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );
