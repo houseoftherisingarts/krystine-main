@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { Check, ChevronDown, ArrowRight, ArrowLeft, Leaf, MailOpen, ShieldCheck, Loader2 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
-import { Seam } from '../components/motion/loeuvre';
+import { Seam, Atmosphere } from '../components/motion/loeuvre';
 import { addNewsletterSubscriber } from '../firebase/firestore';
 import { points } from '../firebase/points';
 import { COUNTRIES, findCountry } from '../lib/regions';
