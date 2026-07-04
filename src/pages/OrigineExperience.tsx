@@ -168,8 +168,8 @@ const OrigineExperience: React.FC = () => {
           <motion.img
             src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg"
             alt="Enveloppe Expérience Origine, sceau boussole, sauge et lavande"
-            className="absolute top-0 left-0 w-full h-auto"
-            style={{ y: heroY }}
+            className="absolute left-0 top-[-6%] h-[112%] w-full object-cover"
+            style={{ y: heroY, scale: heroScale }}
             referrerPolicy="no-referrer"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -178,6 +178,7 @@ const OrigineExperience: React.FC = () => {
           {/* Voiles : assombrir la gauche pour le texte, laisser l'enveloppe (droite) claire */}
           <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(90deg, rgba(22,16,10,0.90) 0%, rgba(22,16,10,0.72) 26%, rgba(22,16,10,0.28) 50%, transparent 72%)' }} />
           <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(22,16,10,0.28) 0%, transparent 28%, transparent 70%, rgba(22,16,10,0.42) 100%)' }} />
+          <Atmosphere strength={0} vignette={false} />
           <div className="absolute inset-0 z-10 flex items-center">
             <div className="mx-auto w-full max-w-[1280px] px-12">
               <motion.div className="max-w-[34rem]" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }}>
