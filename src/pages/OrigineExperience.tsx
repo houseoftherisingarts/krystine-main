@@ -405,8 +405,9 @@ const OrigineExperience: React.FC = () => {
       {/* ─────────── FAQ ─────────── */}
       <FaqSection />
 
-      {/* ─────────── FRÉQUENCE D'ORIGINE (module écouteurs flottants) ─────────── */}
-      <section className="relative bg-espressoDeep py-24 md:py-32 overflow-hidden">
+      {/* ─────────── FRÉQUENCE D'ORIGINE — le seul moment sombre de la page,
+           sur le brun chaud back-cover de la charte (#34241a), pas l'espresso boueux ─────────── */}
+      <section className="relative py-24 md:py-32 overflow-hidden" style={{ backgroundColor: '#34241a' }}>
         <Atmosphere light="30% 32%" />
         <div className="relative mx-auto w-full max-w-[1100px] px-6 md:px-12 grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
           {/* Disque + écouteurs flottants */}
