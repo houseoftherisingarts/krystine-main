@@ -9,7 +9,7 @@ import {
   type ShopifyProduct,
 } from '../shopify';
 import NewsletterSignup from '../components/NewsletterSignup';
-import { Atmosphere, KenBurns, Parallax, Seam } from '../components/motion/loeuvre';
+import { Atmosphere, KenBurns, Parallax } from '../components/motion/loeuvre';
 
 /**
  * La Boutique — page React au style L'Œuvre (espresso / cream / brass).
@@ -167,7 +167,6 @@ const BoutiqueLoeuvre: React.FC = () => {
 
       {/* ─────────── CATALOGUE (light) · id="catalogue" ─────────── */}
       <section id="catalogue" className="relative scroll-mt-28 bg-cream py-24 md:py-32 overflow-hidden">
-        <Seam from="#16100a" />
         <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12">
           <Reveal className="max-w-[640px]">
             <Eyebrow>{lang === 'FR' ? 'Le catalogue Inspirata' : 'The Inspirata catalogue'}</Eyebrow>
@@ -354,7 +353,6 @@ const BoutiqueLoeuvre: React.FC = () => {
       {/* ─────────── NEWSLETTER (dark) ─────────── */}
       <section className="relative bg-espressoDeep py-24 md:py-32 overflow-hidden">
         <Atmosphere strength={0.8} light="50% 8%" />
-        <Seam from="#ede5d7" />
         <div className="relative z-10 mx-auto w-full max-w-[760px] px-6 md:px-12 text-center">
           <Reveal>
             <Sparkles size={26} className="text-brass mx-auto mb-6" />

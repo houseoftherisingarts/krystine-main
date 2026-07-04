@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Phone, Clock, ArrowRight, Compass } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT } from '../content';
-import { Atmosphere, Seam, KenBurns } from '../components/motion/loeuvre';
+import { Atmosphere, KenBurns } from '../components/motion/loeuvre';
 
 /**
  * Points de vente · Où nous trouver — page React au style L'Œuvre (espresso/cream/brass).
@@ -93,7 +93,6 @@ const LocationsLoeuvre: React.FC = () => {
 
       {/* ─────────── INTRO ÉDITORIALE ─────────── */}
       <section className="relative bg-cream py-20 md:py-28 overflow-hidden">
-        <Seam from="#16100a" />
         <div className="relative z-10 mx-auto w-full max-w-[860px] px-6 md:px-12 text-center">
           <Reveal>
             <Eyebrow>{isFr ? 'Nos précieux collaborateurs' : 'Our cherished collaborators'}</Eyebrow>
@@ -160,7 +159,6 @@ const LocationsLoeuvre: React.FC = () => {
 
       {/* ─────────── CTA BOUTIQUE EN LIGNE ─────────── */}
       <section className="relative bg-espresso py-24 md:py-32 overflow-hidden">
-        <Seam from="#ede5d7" />
         <Atmosphere strength={0.8} light="50% 12%" />
         <div className="relative z-10 mx-auto w-full max-w-[820px] px-6 md:px-12 text-center">
           <Reveal>

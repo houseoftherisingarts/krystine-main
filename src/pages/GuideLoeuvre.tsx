@@ -10,7 +10,7 @@ import {
 import { goToRoute } from '../lib/staticRoutes';
 import { addGuideResponse } from '../firebase/firestore';
 import NewsletterSignup from '../components/NewsletterSignup';
-import { Atmosphere, Seam } from '../components/motion/loeuvre';
+import { Atmosphere } from '../components/motion/loeuvre';
 
 /**
  * Laissez-vous guider — page React au style L'Œuvre (espresso/cream/brass).
@@ -340,7 +340,6 @@ const GuideLoeuvre: React.FC = () => {
 
       {/* ─────────── CE QUE VOUS OBTENEZ ─────────── */}
       <section className="relative bg-cream py-24 md:py-32 overflow-hidden">
-        <Seam from="#16100a" />
         <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12">
           <Reveal className="text-center mb-16">
             <Eyebrow>{lang === 'FR' ? 'Ce qui vous attend' : 'What you get'}</Eyebrow>
@@ -380,7 +379,6 @@ const GuideLoeuvre: React.FC = () => {
 
       {/* ─────────── LE TEST (routeur) ─────────── */}
       <section id="guide" className="relative bg-espressoSoft py-24 md:py-32 overflow-hidden">
-        <Seam from="#f6f3ee" />
         <div className="relative z-10 mx-auto w-full max-w-[820px] px-6 md:px-12">
           <Reveal className="text-center mb-12">
             <Eyebrow on="dark">{lang === 'FR' ? 'À vous de jouer' : 'Your turn'}</Eyebrow>

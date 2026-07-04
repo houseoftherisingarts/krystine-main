@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, Feather, BookOpen } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { getBlogPosts, type BlogPost } from '../firebase/firestore';
 import NewsletterSignup from '../components/NewsletterSignup';
-import { Atmosphere, Seam, KenBurns } from '../components/motion/loeuvre';
+import { Atmosphere, KenBurns } from '../components/motion/loeuvre';
 
 /**
  * Le Blogue · Journal — page React au style L'Œuvre (espresso/cream/brass).
@@ -136,7 +136,6 @@ const BlogueLoeuvre: React.FC = () => {
 
       {/* ─────────── ARTICLES ─────────── */}
       <section className="relative bg-cream py-24 md:py-32 overflow-hidden">
-        <Seam from="#16100a" />
         <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-12">
           <Reveal className="mb-16">
             <Eyebrow>{lang === 'FR' ? 'Les écrits' : 'The writings'}</Eyebrow>
