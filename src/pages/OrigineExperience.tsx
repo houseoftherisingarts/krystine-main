@@ -96,8 +96,9 @@ const TESTIMONIALS = [
   { quote: "Ce que j'ai lu dans cent livres sans comprendre, Krystine l'a rendu évident.", who: 'Marie' },
 ];
 
-const CHECKOUT = 'https://www.krystinestlaurent.com/offers/KHHc9r9b/checkout';
-const goCheckout = () => window.open(CHECKOUT, '_blank', 'noopener,noreferrer');
+/* Pré-ouverture : aucune inscription directe. Tous les appels à l'action
+   mènent à la liste d'attente (prix et checkout volontairement absents). */
+const WAITLIST = '/liste-attente?programme=origine';
 
 /* ════════════════════════ Sections ════════════════════════ */
 
