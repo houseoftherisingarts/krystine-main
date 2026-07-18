@@ -826,6 +826,22 @@
     function onS(){ if(raf) return; raf=true; requestAnimationFrame(check); }
     addEventListener('scroll',onS,{passive:true}); addEventListener('resize',onS); check();
   })();
+  /* fix #portes anchor: land on the flipped BACK face (les portes), not the front (fil central) */
+  (function(){
+    function flipActive(){ return innerWidth>900 && !reduce && document.querySelector('.sflip'); }
+    function goPortes(){
+      var sf=document.querySelector('.sflip'); if(!sf) return;
+      var y=sf.getBoundingClientRect().top+scrollY+innerHeight*0.4;
+      scrollTo({top:y,behavior:'smooth'});
+      history.replaceState(null,'','#portes');
+    }
+    document.addEventListener('click',function(e){
+      var a=e.target.closest && e.target.closest('a[href="#portes"]');
+      if(!a||!flipActive()) return;
+      e.preventDefault(); goPortes();
+    });
+    if(location.hash==='#portes'&&flipActive()) setTimeout(goPortes,80);
+  })();
   /* ambient music: starts on first user click, toggle to mute/resume */
   (function(){
     var a=document.getElementById('amb'), btn=document.getElementById('ambtoggle'); if(!a||!btn) return;
