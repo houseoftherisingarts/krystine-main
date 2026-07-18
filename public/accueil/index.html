@@ -814,6 +814,18 @@
     }
     setScale(); addEventListener('resize',setScale); addEventListener('load',setScale); addEventListener('orientationchange',setScale);
   })();
+  /* mobile nav: burger toggle + full-screen overlay */
+  (function(){
+    var btn=document.getElementById('mnavBtn'), ov=document.getElementById('mnavOverlay'); if(!btn||!ov) return;
+    var links=[].slice.call(ov.querySelectorAll('a'));
+    function open(){ btn.classList.add('open'); ov.classList.add('open'); ov.setAttribute('aria-hidden','false');
+      btn.setAttribute('aria-expanded','true'); document.body.style.overflow='hidden'; }
+    function close(){ btn.classList.remove('open'); ov.classList.remove('open'); ov.setAttribute('aria-hidden','true');
+      btn.setAttribute('aria-expanded','false'); document.body.style.overflow=''; }
+    btn.addEventListener('click',function(){ ov.classList.contains('open')?close():open(); });
+    links.forEach(function(a){ a.addEventListener('click',close); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&ov.classList.contains('open')) close(); });
+  })();
   /* section flip: scroll-TRIGGERED (not scroll-bound). The CSS transition owns
      the timing; scrolling past a threshold just toggles the flipped state. */
   (function(){
