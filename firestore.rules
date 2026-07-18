@@ -14,7 +14,8 @@ service cloud.firestore {
         && request.auth.token.email in [
           'admin@krystinestlaurent.ca',
           'krystine@inspiratanature.com',
-          'alex@lesalondesinconnus.com'
+          'alex@lesalondesinconnus.com',
+          'krystinestterredhysope@gmail.com'
         ];
     }
     function isSignedIn() { return request.auth != null; }

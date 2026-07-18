@@ -112,6 +112,7 @@ export const ADMIN_EMAILS = [
   'admin@krystinestlaurent.ca',
   'krystine@inspiratanature.com',
   'alex@lesalondesinconnus.com',
+  'krystinestterredhysope@gmail.com',
 ];
 
 // Dev-only bypass — bypasses Firebase Auth entirely. Flips true when

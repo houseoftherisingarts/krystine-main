@@ -20,6 +20,7 @@ const NEWSLETTER_POSTAL_ADDRESS = defineSecret('NEWSLETTER_POSTAL_ADDRESS');
 const ADMIN_EMAILS = [
   'admin@krystinestlaurent.ca',
   'krystine@inspiratanature.com',
+  'krystinestterredhysope@gmail.com',
 ];
 
 const PUBLIC_BASE_URL = 'https://www.krystinestlaurent.ca';
