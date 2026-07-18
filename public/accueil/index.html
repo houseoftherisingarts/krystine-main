@@ -452,6 +452,18 @@
     </div>
   </nav>
 
+  <!-- ===== MOBILE NAV (burger + overlay) ===== -->
+  <button id="mnavBtn" class="mnav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mnavOverlay">
+    <svg class="ic-burger" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    <svg class="ic-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <div id="mnavOverlay" class="mnav-overlay" aria-hidden="true">
+    <nav class="mnav-links">
+      <a href="#oeuvre">L'Œuvre</a><a href="#origine">Origine</a><a href="#portes">Les Portes</a>
+      <a href="#ressources">Ressources</a><a href="#apropos">À propos</a><a href="#contact">Contact</a>
+    </nav>
+  </div>
+
   <!-- ===== HERO ===== -->
   <div class="hero-frame">
   <section class="hero" id="oeuvre">
