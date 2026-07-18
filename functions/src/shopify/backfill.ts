@@ -12,6 +12,7 @@ const SHOPIFY_API_VERSION = '2025-01';
 const ADMIN_EMAILS = [
   'admin@krystinestlaurent.ca',
   'krystine@inspiratanature.com',
+  'krystinestterredhysope@gmail.com',
 ];
 
 // Fetch one page of orders from the Shopify Admin REST API.
