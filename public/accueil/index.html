@@ -830,12 +830,6 @@
     });
   })();
 
-  /* radial hub : reactive focus */
-  (function(){var w=document.querySelector('.web');if(!w)return;var nodes=[].slice.call(w.querySelectorAll('.hnode')),spk=[].slice.call(w.querySelectorAll('.spk'));
-   function clear(){nodes.forEach(function(x){x.classList.remove('on')});spk.forEach(function(x){x.classList.remove('on')});}
-   nodes.forEach(function(n,i){n.addEventListener('pointerenter',function(){w.classList.add('foc');clear();n.classList.add('on');if(spk[i])spk[i].classList.add('on');});});
-   w.addEventListener('pointerleave',function(){w.classList.remove('foc');clear();});
-  })();
 
   /* mobile hero: render the desktop hero and scale it to the viewport width (exact copy) */
   (function(){
