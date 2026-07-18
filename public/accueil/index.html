@@ -357,15 +357,16 @@
       font-family:var(--serif);font-size:.92rem;line-height:1.15;color:var(--ctext);text-shadow:0 1px 6px rgba(0,0,0,.55)}
     .fan-cap{display:none}
 
-    /* HUB radial */
-    .relie .mx{grid-template-columns:1fr;gap:1.6rem;text-align:center}
-    .relie .copy2 p{margin-left:auto;margin-right:auto}
-    .relie .more{justify-content:center;display:inline-flex}
-    .web{max-width:350px;margin:1.2rem auto 0}
-    .hnode{width:120px}
-    .hnode .ni{width:76px;height:76px}.hnode .ni svg{width:34px;height:34px}
-    .hnode .nt{font-size:.54rem}
-    .hcore{font-size:.52rem;padding:.5rem;line-height:1.2}
+    /* REPÈRES : rangées icône + texte */
+    .reperes{padding:3.6rem 0 4rem}
+    .rp-grid{grid-template-columns:1fr;margin-top:2rem}
+    .rp-item{display:grid;grid-template-columns:auto 1fr;column-gap:1.2rem;text-align:left;align-items:center;padding:1.15rem 0}
+    .rp-item+.rp-item::before{top:0;bottom:auto;left:0;right:0;width:auto;height:1px}
+    .rp-ic{width:66px;height:66px;grid-row:1/3}
+    .rp-ic svg{width:32px;height:32px}
+    .rp-item h3{margin-top:0;align-self:end}
+    .rp-item p{margin-top:.3rem;font-size:.98rem;align-self:start}
+    .echo{padding:4rem 0 4.5rem}
 
     /* FOOTER */
     .foot .mx{grid-template-columns:1fr;gap:2.2rem}
