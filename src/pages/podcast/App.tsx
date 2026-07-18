@@ -61,10 +61,10 @@ interface Episode {
 //   1. Module-level kickoff — the network request fires the moment this
 //      module is imported (before React mounts), so by the time the
 //      component's effect runs, the response is often already in flight.
-//   2. Multi-proxy race — `corsproxy.io` and `allorigins.win` are queried
-//      in parallel; whichever returns first wins. allorigins is often
-//      slow / overloaded, so racing it against a faster mirror cuts the
-//      typical wait from 2–5s to 300–800ms.
+//   2. Direct fetch first — the helloaudio feed serves
+//      `access-control-allow-origin: *`, so no proxy is needed;
+//      allorigins.win stays in the race only as a fallback
+//      (corsproxy.io now returns 403 and was dropped, 2026-07-18).
 //   3. 24h localStorage cache (was 1h) — repeat visits are instant; a
 //      background revalidation still runs once per day.
 const RSS_URL = "https://podcasts.helloaudio.fm/podcast/8b5de66f-dd99-4ccd-be0a-088c2553719e/Gx891ivJLp";
