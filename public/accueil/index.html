@@ -170,7 +170,7 @@
   .fan-cap .fc-inner{transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1)}
   .fan-cap.swap .fc-inner{opacity:0;transform:translateY(6px)}
 
-  /* ---------- comment tout se relie ---------- */
+  /* ---------- les grands reperes + echo final ---------- */
   .reperes{position:relative;z-index:3;background:var(--cream-2);padding:5rem 0 5.5rem}
   .rp-title{text-align:center;font-family:var(--serif);font-weight:500;font-size:clamp(1.4rem,2.5vw,2.05rem);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
   .rp-orn{display:flex;align-items:center;justify-content:center;gap:.75rem;margin:1.1rem auto 0;max-width:300px}
@@ -900,18 +900,6 @@
   })();
 
 
-  /* hub intro animation (overkill) : fires once when the hub scrolls into view */
-  (function(){
-    var web=document.querySelector('.web'); if(!web) return;
-    if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-    web.classList.add('preintro');
-    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){
-      web.classList.remove('preintro'); web.classList.add('intro');
-      setTimeout(function(){ web.classList.remove('intro'); }, 2100);
-      io.disconnect();
-    }}); },{threshold:.4});
-    io.observe(web);
-  })();
 
 </script>
   <audio id="amb" loop preload="none"><source src="https://storage.googleapis.com/inspirata/Base%20site/homecoming-tranquilium-main-version-25793-03-28.mp3" type="audio/mpeg"></audio>
