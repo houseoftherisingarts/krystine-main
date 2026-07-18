@@ -17,11 +17,12 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 const RSS_URL = 'https://podcasts.helloaudio.fm/podcast/8b5de66f-dd99-4ccd-be0a-088c2553719e/Gx891ivJLp';
 
-// Proxies CORS, par fiabilité (allorigins d'abord — validé 36 épisodes).
+// Flux direct d'abord : helloaudio sert access-control-allow-origin: *,
+// aucun proxy requis. allorigins reste en secours; corsproxy.io (403) et
+// thingproxy (mort) retirés le 2026-07-18.
 const PROXIES: ((u: string) => string)[] = [
+  (u) => u,
   (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-  (u) => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
-  (u) => `https://thingproxy.freeboard.io/fetch/${u}`,
 ];
 
 type Episode = {
