@@ -71,7 +71,7 @@ const RSS_URL = "https://podcasts.helloaudio.fm/podcast/8b5de66f-dd99-4ccd-be0a-
 const EPISODES_CACHE_KEY = 'podcast_episodes_v2';
 const EPISODES_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const EPISODES_PROXIES: ((u: string) => string)[] = [
-  (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+  (u) => u,
   (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
 ];
 
