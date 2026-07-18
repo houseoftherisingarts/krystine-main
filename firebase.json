@@ -18,6 +18,12 @@
     ],
     "headers": [
       {
+        "source": "**",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache" }
+        ]
+      },
+      {
         "source": "**/*.@(js|jsx|ts|tsx|css|json)",
         "headers": [
           { "key": "Cache-Control", "value": "max-age=31536000" }
