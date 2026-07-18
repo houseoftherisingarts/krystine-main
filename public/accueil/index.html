@@ -141,9 +141,13 @@
   .head h2{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,3.6vw,3rem);line-height:1.04;color:var(--ink);text-transform:uppercase;letter-spacing:.01em;margin-top:.2rem}
   .head p{margin-top:1.4rem;color:var(--ink-soft);line-height:1.9;font-size:.95rem;max-width:470px}
   .icons{display:flex;flex-wrap:wrap;gap:1.7rem 2.1rem;margin-top:2.5rem}
-  .ic{display:flex;flex-direction:column;align-items:center;gap:.7rem;width:60px}
-  .ic svg{width:33px;height:33px;stroke:var(--ink);stroke-width:1.2;fill:none}
-  .ic span{font-size:.55rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-soft);text-align:center;line-height:1.25}
+  .ic{display:flex;flex-direction:column;align-items:center;gap:.7rem;width:64px}
+  .ic svg{width:36px;height:36px;stroke:var(--ink);stroke-width:1.4;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:stroke .3s}
+  .ic span{font-size:.55rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-soft);text-align:center;line-height:1.25;transition:color .3s}
+  .ic .fi{fill:var(--ink);stroke:none;transition:fill .3s}
+  .ic:hover svg{stroke:var(--brass-deep)}
+  .ic:hover .fi{fill:var(--brass-deep)}
+  .ic:hover span{color:var(--ink)}
   .tagline{margin-top:2.2rem;font-family:var(--serif);font-style:italic;color:var(--terracotta);font-size:1.2rem;letter-spacing:.01em}
 
   /* ---------- portes ---------- */
