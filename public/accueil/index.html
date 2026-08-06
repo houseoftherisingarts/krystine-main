@@ -875,30 +875,40 @@
     fio.observe(fan);
   })();
 
-  // Newsletter: inline validation + success state
+  // Newsletter: inline validation + success state.
+  // Two capture points on the page (tome 3 block + footer); each one tags its own
+  // source so we can see which one actually converts.
   (function(){
-    const f=document.getElementById('nlform'); if(!f) return;
-    const input=document.getElementById('nlmail'), msg=document.getElementById('nlmsg');
     const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    function setMsg(text,cls){ msg.textContent=text; msg.className='nl-msg show '+cls; }
-    input.addEventListener('input',()=>{ if(input.getAttribute('aria-invalid')==='true' && ok.test(input.value.trim())){ input.removeAttribute('aria-invalid'); msg.className='nl-msg'; } });
-    f.addEventListener('submit',(e)=>{
-      e.preventDefault();
-      const v=input.value.trim();
-      if(!ok.test(v)){ input.setAttribute('aria-invalid','true'); input.focus(); setMsg('Entrez un courriel valide pour recevoir les transmissions.','err'); return; }
-      input.removeAttribute('aria-invalid');
-      var btn=f.querySelector('button'); if(btn)btn.disabled=true; setMsg('Un instant…','');
-      (async function(){
-        try{
-          if(window.__nlSubscribe){ await window.__nlSubscribe(v); }
-          f.style.display='none';
-          setMsg('Merci. Vous êtes reliée à l’Œuvre. À très bientôt.','ok');
-        }catch(err){
-          if(btn)btn.disabled=false;
-          setMsg('Un souci est survenu. Réessayez dans un instant.','err');
-        }
-      })();
-    });
+    function bind(o){
+      const f=document.getElementById(o.form); if(!f) return;
+      const input=document.getElementById(o.input), msg=document.getElementById(o.msg);
+      function setMsg(text,cls){ msg.textContent=text; msg.className=o.cls+' show '+cls; }
+      input.addEventListener('input',()=>{ if(input.getAttribute('aria-invalid')==='true' && ok.test(input.value.trim())){ input.removeAttribute('aria-invalid'); msg.className=o.cls; } });
+      f.addEventListener('submit',(e)=>{
+        e.preventDefault();
+        const v=input.value.trim();
+        if(!ok.test(v)){ input.setAttribute('aria-invalid','true'); input.focus(); setMsg('Entrez un courriel valide pour recevoir les transmissions.','err'); return; }
+        input.removeAttribute('aria-invalid');
+        var btn=f.querySelector('button'); if(btn)btn.disabled=true; setMsg('Un instant…','');
+        (async function(){
+          try{
+            if(window.__nlSubscribe){ await window.__nlSubscribe(v,o.source,o.tags); }
+            f.style.display='none';
+            setMsg(o.done,'ok');
+          }catch(err){
+            if(btn)btn.disabled=false;
+            setMsg('Un souci est survenu. Réessayez dans un instant.','err');
+          }
+        })();
+      });
+    }
+    bind({form:'tmform',input:'tmmail',msg:'tmmsg',cls:'tm-msg',
+          source:'accueil-tome3',tags:['accueil-loeuvre','tome3-sortie'],
+          done:'C’est noté. Vous serez prévenue avant tout le monde.'});
+    bind({form:'nlform',input:'nlmail',msg:'nlmsg',cls:'nl-msg',
+          source:'accueil-loeuvre',tags:['accueil-loeuvre'],
+          done:'Merci. Vous êtes reliée à l’Œuvre. À très bientôt.'});
   })();
 
 
