@@ -993,11 +993,11 @@
   });
   const db = getFirestore(app);
   function token(){ const b=new Uint8Array(18); crypto.getRandomValues(b); return Array.from(b,x=>x.toString(16).padStart(2,'0')).join(''); }
-  window.__nlSubscribe = async (email) => {
+  window.__nlSubscribe = async (email, source, tags) => {
     await addDoc(collection(db,'newsletter'), {
       email: String(email).trim().toLowerCase(),
-      source: 'accueil-loeuvre',
-      tags: ['accueil-loeuvre'],
+      source: source || 'accueil-loeuvre',
+      tags: tags || ['accueil-loeuvre'],
       status: 'active',
       unsubscribeToken: token(),
       subscribedAt: serverTimestamp()
