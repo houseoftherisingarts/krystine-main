@@ -20,6 +20,7 @@
 <meta name="twitter:description" content="Autrice et experte en Ayurveda : livres, podcast, conférences, retraites et Inspirata Ayurveda." />
 <meta name="twitter:image" content="https://www.krystinestlaurent.ca/accueil/assets/hero-ml-poster.jpg" />
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://www.krystinestlaurent.ca/#website","url":"https://www.krystinestlaurent.ca/","name":"Krystine St-Laurent","inLanguage":"fr-CA","publisher":{"@id":"https://www.krystinestlaurent.ca/#person"}},{"@type":"Person","@id":"https://www.krystinestlaurent.ca/#person","name":"Krystine St-Laurent","url":"https://www.krystinestlaurent.ca/","jobTitle":"Autrice, conférencière et experte en Ayurveda","description":"Autrice best-seller, conférencière et experte en Ayurveda depuis plus de 37 ans. Fondatrice d'Inspirata Ayurveda. Accompagne le retour au corps, aux rythmes et aux cycles de la nature.","knowsAbout":["Ayurveda","herboristerie","aromathérapie","bien-être féminin","santé intégrative"],"sameAs":["https://www.instagram.com/krystinesaintlaurent","https://www.facebook.com/Krystinestlaurent","https://www.youtube.com/@KrystineStLaurent"],"worksFor":{"@type":"Organization","name":"Inspirata Ayurveda","url":"https://www.krystinestlaurent.ca/boutique"}}]}</script>
+<link rel="preload" as="image" href="/accueil/assets/hero-ml-poster.jpg" fetchpriority="high" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet" />
@@ -231,7 +232,7 @@
   /* ---------- footer ---------- */
   .foot{position:relative;z-index:6;background:var(--espresso);color:var(--ctext);padding:4.8rem 0 0;overflow:hidden}
   .foot-dust{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
-  .foot::before{content:"";position:absolute;inset:0;background:url('/accueil/assets/texture-cream.jpg') center/cover;opacity:.09;mix-blend-mode:overlay}
+  .foot::before{content:"";position:absolute;inset:0;background:url('/accueil/assets/texture-cream.webp') center/cover;opacity:.09;mix-blend-mode:overlay}
   .foot .mx{position:relative;display:grid;grid-template-columns:1fr 1.15fr;gap:3rem;align-items:center}
   .foot .q{font-family:var(--serif);font-style:italic;font-size:1.55rem;line-height:1.42;color:var(--ctext)}
   .foot .q .sig{font-family:var(--script);font-style:normal;font-size:2rem;color:var(--brass);display:block;margin-top:.5rem;letter-spacing:.02em}
@@ -253,7 +254,7 @@
 
   /* ---------- trilogie ---------- */
   .trilogy{position:sticky;top:0;z-index:2;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:#eae1d0;border-radius:18px 18px 0 0;box-shadow:0 -26px 60px rgba(40,28,16,.28)}
-  .trilogy .scene2{position:absolute;left:0;right:0;top:-9%;bottom:-9%;z-index:0;background:url('/accueil/assets/trilogy-books.png') 58% 82%/117% no-repeat}
+  .trilogy .scene2{position:absolute;left:0;right:0;top:-9%;bottom:-9%;z-index:0;background:url('/accueil/assets/trilogy-books.png') 58% 82%/117% no-repeat;background-image:image-set(url('/accueil/assets/trilogy-books.webp') type('image/webp'),url('/accueil/assets/trilogy-books.png') type('image/png'))}
   .trilogy .veil2{position:absolute;inset:0;z-index:1;
     background:
       linear-gradient(90deg, rgba(234,225,208,.98) 0%, rgba(234,225,208,.96) 34%, rgba(234,225,208,.5) 48%, rgba(234,225,208,0) 62%),
@@ -579,12 +580,12 @@
       <h2 class="sec-title reveal">Par où commencer</h2>
       <div class="rule reveal d1"></div>
       <div class="fan" id="fan">
-        <a class="card" href="/podcast" data-num="01" data-title="Le Podcast" data-desc="Des épisodes pour ouvrir la réflexion, questionner, comprendre et revenir à l'essentiel." data-link="Écouter"><img src="/accueil/assets/portes/podcast.png" alt="Micro de studio en lumière chaude"><span class="fn">01</span><span class="verb">Écouter</span></a>
-        <a class="card" href="/medias#livres" data-num="02" data-title="La Trilogie" data-desc="Les fondations écrites de l'œuvre : sagesse du corps, cycles, plantes, alimentation, saisons et transformation." data-link="Lire"><img src="/accueil/assets/portes/livres.png" alt="Livres reliés et brins botaniques"><span class="fn">02</span><span class="verb">Lire</span></a>
-        <a class="card" href="/conferenciere" data-num="03" data-title="Les Conférences" data-desc="Conférences et soirées de parole pour partager la vision et inspirer le changement." data-link="Rencontrer"><img src="/accueil/assets/portes/conferences.png" alt="Salle de conférence à la lueur des bougies"><span class="fn">03</span><span class="verb">Rencontrer</span></a>
-        <a class="card" href="/origine" data-num="04" data-title="Expérience Origine" data-desc="Un parcours pour revenir à un repère intérieur plus stable et transformer sa relation à soi, au corps et à la vie." data-link="Vivre"><img src="/accueil/assets/portes/origine.png" alt="Sentier de jardin vers la lumière"><span class="fn">04</span><span class="verb">Vivre</span></a>
-        <a class="card" href="/liste-attente?programme=retraite" data-num="05" data-title="Les Retraites" data-desc="Des espaces en nature pour déposer le bruit, revenir au corps et s'ouvrir à la transformation." data-link="S'immerger"><img src="/accueil/assets/portes/retraites.png" alt="Cabane de bois dans la forêt d'automne"><span class="fn">05</span><span class="verb">S'immerger</span></a>
-        <a class="card" href="https://inspiratanature.com" target="_blank" rel="noopener noreferrer" data-num="06" data-title="Inspirata Ayurveda" data-desc="Les huiles, les plantes et les rituels de soin pour incarner l'œuvre au quotidien." data-link="Prendre soin"><img src="/accueil/assets/portes/inspirata.png" alt="Flacons d'huiles ayurvédiques ambrés"><span class="fn">06</span><span class="verb">Prendre soin</span></a>
+        <a class="card" href="/podcast" data-num="01" data-title="Le Podcast" data-desc="Des épisodes pour ouvrir la réflexion, questionner, comprendre et revenir à l'essentiel." data-link="Écouter"><img src="/accueil/assets/portes/podcast.webp" alt="Micro de studio en lumière chaude" width="560" height="750" loading="lazy" decoding="async"><span class="fn">01</span><span class="verb">Écouter</span></a>
+        <a class="card" href="/medias#livres" data-num="02" data-title="La Trilogie" data-desc="Les fondations écrites de l'œuvre : sagesse du corps, cycles, plantes, alimentation, saisons et transformation." data-link="Lire"><img src="/accueil/assets/portes/livres.webp" alt="Livres reliés et brins botaniques" width="560" height="750" loading="lazy" decoding="async"><span class="fn">02</span><span class="verb">Lire</span></a>
+        <a class="card" href="/conferenciere" data-num="03" data-title="Les Conférences" data-desc="Conférences et soirées de parole pour partager la vision et inspirer le changement." data-link="Rencontrer"><img src="/accueil/assets/portes/conferences.webp" alt="Salle de conférence à la lueur des bougies" width="560" height="750" loading="lazy" decoding="async"><span class="fn">03</span><span class="verb">Rencontrer</span></a>
+        <a class="card" href="/origine" data-num="04" data-title="Expérience Origine" data-desc="Un parcours pour revenir à un repère intérieur plus stable et transformer sa relation à soi, au corps et à la vie." data-link="Vivre"><img src="/accueil/assets/portes/origine.webp" alt="Sentier de jardin vers la lumière" width="560" height="750" loading="lazy" decoding="async"><span class="fn">04</span><span class="verb">Vivre</span></a>
+        <a class="card" href="/liste-attente?programme=retraite" data-num="05" data-title="Les Retraites" data-desc="Des espaces en nature pour déposer le bruit, revenir au corps et s'ouvrir à la transformation." data-link="S'immerger"><img src="/accueil/assets/portes/retraites.webp" alt="Cabane de bois dans la forêt d'automne" width="560" height="750" loading="lazy" decoding="async"><span class="fn">05</span><span class="verb">S'immerger</span></a>
+        <a class="card" href="https://inspiratanature.com" target="_blank" rel="noopener noreferrer" data-num="06" data-title="Inspirata Ayurveda" data-desc="Les huiles, les plantes et les rituels de soin pour incarner l'œuvre au quotidien." data-link="Prendre soin"><img src="/accueil/assets/portes/inspirata.webp" alt="Flacons d'huiles ayurvédiques ambrés" width="560" height="750" loading="lazy" decoding="async"><span class="fn">06</span><span class="verb">Prendre soin</span></a>
       </div>
       <div class="fan-cap" id="fancap">
         <div class="fc-inner">
