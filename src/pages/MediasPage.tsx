@@ -358,8 +358,8 @@ const MediasPage: React.FC = () => {
                             e.stopPropagation();
                             setWaitlistTarget({
                               id: 'parution-livre-3',
-                              labelFR: 'Parution · Titre à révéler (4 novembre 2026)',
-                              labelEN: 'Release · Title to be revealed (November 4, 2026)',
+                              labelFR: 'Parution · Titre à révéler (février 2027)',
+                              labelEN: 'Release · Title to be revealed (February 2027)',
                             });
                           }}
                           className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] font-bold uppercase tracking-[0.25em] text-[11px] shadow-md hover:bg-[#bb9a5e] hover:text-[#2a2015] hover:shadow-[0_10px_24px_rgba(187, 154, 94,0.35)] transition-all"

@@ -279,8 +279,8 @@ const MediasLoeuvre: React.FC = () => {
                             type="button"
                             onClick={() => setWaitlistTarget({
                               id: 'parution-livre-3',
-                              labelFR: 'Parution · Titre à révéler (4 novembre 2026)',
-                              labelEN: 'Release · Title to be revealed (November 4, 2026)',
+                              labelFR: 'Parution · Titre à révéler (février 2027)',
+                              labelEN: 'Release · Title to be revealed (February 2027)',
                             })}
                             className="mt-1 inline-flex items-center justify-center gap-2 rounded-full bg-espresso px-5 py-3 font-sans text-[0.66rem] uppercase tracking-[0.18em] text-ctext transition-colors hover:bg-espressoDeep min-h-[44px]"
                           >

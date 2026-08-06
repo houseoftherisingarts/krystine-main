@@ -225,7 +225,7 @@ export const CONTENT = {
             {
               title: 'Titre à révéler',
               subtitle: '',
-              releaseDate: '4 novembre 2026',
+              releaseDate: 'février 2027',
               publisher: "Éditions de l'Homme",
               captureCta: 'Être prévenue de la parution',
               status: 'locked',
@@ -461,7 +461,7 @@ export const CONTENT = {
           {
             title: 'Title to be revealed',
             subtitle: '',
-            releaseDate: 'November 4, 2026',
+            releaseDate: 'February 2027',
             publisher: "Éditions de l'Homme",
             captureCta: 'Notify me when it releases',
             status: 'locked',
