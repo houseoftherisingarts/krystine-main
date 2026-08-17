@@ -299,11 +299,15 @@ export default function BodySections() {
                 </p>
               ))}
 
-              <div className="mt-10 flex gap-10 border-y border-ink/[0.12] py-6 max-w-[46ch]">
+              <div className="mt-12 flex flex-wrap gap-x-16 gap-y-8 border-y border-ink/[0.12] py-9 max-w-[52ch]">
                 {SECTION7.stats.map((s) => (
-                  <div key={s.value} className="flex flex-col gap-1">
-                    <span className="font-serif text-2xl md:text-3xl text-brassInk leading-none">{s.value}</span>
-                    <span className="font-sans text-[0.72rem] leading-snug text-inkSoft max-w-[18ch]">{s.label}</span>
+                  <div key={s.value} className="flex flex-col gap-2">
+                    <span className="font-serif text-[3rem] md:text-[4rem] font-medium text-brassInk leading-none tracking-[-0.01em]">
+                      {s.value}
+                    </span>
+                    <span className="font-sans text-[0.68rem] uppercase tracking-[0.16em] leading-snug text-inkSoft max-w-[20ch]">
+                      {s.label}
+                    </span>
                   </div>
                 ))}
               </div>
