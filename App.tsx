@@ -182,6 +182,8 @@ const App: React.FC = () => (
               avec invitation à la liste d'attente (/liste-attente?programme=origine). */}
           <Route path="/origine" element={<OrigineExperience />} />
           <Route path="/origine-loeuvre" element={<Navigate to="/origine" replace />} />
+          {/* Le Foyer d'Origine — page de vente WIP, accès par URL seulement */}
+          <Route path="/foyer" element={<FoyerPage />} />
           {/* Podcast porté en React (remplace le bundle statique /podcast) */}
           <Route path="/podcast" element={<PodcastV2 />} />
           {/* Vata porté en React (remplace le bundle statique /vata) */}
