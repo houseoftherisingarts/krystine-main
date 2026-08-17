@@ -52,6 +52,13 @@ const Dot: React.FC<{ on?: 'dark' | 'light' }> = ({ on = 'light' }) => (
 
 const roman = ['I', 'II', 'III', 'IV'];
 
+const SEMAINE_IMAGES = [
+  '/foyer/sem1-regarder.webp',
+  '/foyer/sem2-saison.webp',
+  '/foyer/sem3-piece.webp',
+  '/foyer/sem4-decouverte.webp',
+];
+
 /* ── Seam chaud : la jointure sombre-crème reste dans la gamme du feu
    (voile terracotta au milieu) au lieu de passer par un gris sale ── */
 const WarmSeam: React.FC<{ from: string; height?: number }> = ({ from, height = 130 }) => (
