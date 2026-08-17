@@ -263,18 +263,15 @@ const Allumage: React.FC = () => {
           style={{ opacity: warm }}
         />
         <div className="relative z-10 px-6 text-center md:px-12">
-          {LINES.map((l, i) => {
-            const s = lineAt(i);
-            return (
-              <motion.p
-                key={l}
-                style={{ opacity: s.opacity, y: s.y, color: inkShift }}
-                className="font-serif text-[2.2rem] font-semibold leading-[1.15] md:text-[3.8rem]"
-              >
-                {l}
-              </motion.p>
-            );
-          })}
+          {LINES.map((l, i) => (
+            <motion.p
+              key={l}
+              style={{ opacity: lineStyles[i].opacity, y: lineStyles[i].y, color: inkShift }}
+              className="font-serif text-[2.2rem] font-semibold leading-[1.15] md:text-[3.8rem]"
+            >
+              {l}
+            </motion.p>
+          ))}
           <motion.p
             style={closing}
             className="mt-10 font-sans text-[0.72rem] uppercase tracking-[0.26em] text-brassInk"
