@@ -226,12 +226,21 @@ export default function BodySections() {
             <Eyebrow>{SECTION5.eyebrow}</Eyebrow>
             <SectionTitle className="mt-5">{SECTION5.title}</SectionTitle>
           </Reveal>
-          <div className="mt-16 grid md:grid-cols-2 gap-x-14 gap-y-12">
+          {/* liste tabulaire éditoriale : titre serif à gauche, corps à droite, une rangée par promesse */}
+          <div className="mt-16 border-t border-brass/25">
             {SECTION5.items.map((it, i) => (
-              <Reveal key={it.title} delay={(i % 2) * 0.06} className={i % 2 === 1 ? 'md:mt-10' : ''}>
-                <span className="block h-px w-8 bg-brass/50" aria-hidden />
-                <h3 className="mt-4 font-serif text-xl md:text-2xl text-ink">{it.title}</h3>
-                <p className="mt-3 font-serif text-[1.08rem] leading-[1.7] text-inkSoft max-w-[44ch]">{it.body}</p>
+              <Reveal key={it.title}>
+                <div className="grid items-baseline gap-x-12 gap-y-2 border-b border-brass/25 py-7 lg:grid-cols-12">
+                  <div className="flex items-baseline gap-5 lg:col-span-5">
+                    <span className="font-sans text-[0.68rem] tracking-[0.2em] text-brassInk tabular-nums">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <h3 className="font-serif text-xl md:text-2xl text-ink">{it.title}</h3>
+                  </div>
+                  <p className="lg:col-span-7 font-serif text-[1.08rem] leading-[1.7] text-inkSoft max-w-[58ch] pl-10 lg:pl-0">
+                    {it.body}
+                  </p>
+                </div>
               </Reveal>
             ))}
           </div>
