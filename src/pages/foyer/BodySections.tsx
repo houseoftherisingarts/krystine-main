@@ -228,7 +228,7 @@ export default function BodySections() {
 
       {/* ═══════════════ SECTION 6 · Le premier samedi du mois (SOMBRE) ═══════════════ */}
       <section className="relative overflow-hidden bg-espressoSoft py-24 md:py-36">
-        <Seam from="#f6f3ee" />
+        <WarmSeam from="#f6f3ee" />
         <Atmosphere light="70% 25%" strength={0.8} />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
