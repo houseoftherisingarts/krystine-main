@@ -209,6 +209,23 @@ const LINES = [
 const Allumage: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
+  /* la video (3 Mo) ne se charge qu'a l'approche de la section */
+  const [videoNear, setVideoNear] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setVideoNear(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '900px 0px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   /* Progression maison (pattern /communaute) : useScroll({target}) mesurait
      toute la page ici au lieu de la section, alors on lit le rect nous-mêmes.
      p = distance parcourue dans le pin / hauteur scrollable de la section. */
