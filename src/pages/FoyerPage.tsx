@@ -420,37 +420,55 @@ const Offre: React.FC = () => (
 );
 
 /* ── Appel final (section 12 du PDF) : retour au feu ── */
-const AppelFinal: React.FC = () => (
-  <section className="relative overflow-hidden bg-espressoDeep px-6 py-32 md:px-12 lg:px-20">
-    <Atmosphere light="50% 92%" strength={1} />
-    <div className="relative z-10 mx-auto max-w-4xl">
-      <h2 className="font-serif text-[2.6rem] font-semibold leading-[1.06] text-ctext md:text-[4rem]">
-        Tout ne mérite pas notre attention.
-      </h2>
-      <p className="mt-6 max-w-2xl font-serif text-2xl leading-snug text-brassBright">
-        Mais certaines choses peuvent changer notre manière de voir.
-      </p>
-      <p className="mt-3 font-serif text-xl text-ctextSoft">
-        Le Foyer d'Origine est une place pour les découvrir.
-      </p>
-      <div className="mt-10 space-y-1 font-serif text-lg leading-relaxed text-ctextSoft">
-        <p>Pour sortir de la répétition.</p>
-        <p>Pour rencontrer l'inattendu.</p>
-        <p>Pour accéder à des liens impossibles à demander dans une barre de recherche.</p>
+const AppelFinal: React.FC = () => {
+  const reduce = useReducedMotion();
+  return (
+    <section className="relative overflow-hidden bg-espressoDeep px-6 py-32 md:px-12 lg:px-20">
+      <Atmosphere light="72% 30%" strength={1} />
+      {/* la braise du hero revient : l'arc se referme au même feu */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(38% 30% at 30% 96%, rgba(176,106,63,0.22), transparent 70%)',
+          animation: reduce ? undefined : 'foyerBreathe 5.5s ease-in-out infinite',
+        }}
+      />
+      <div className="relative z-10 mx-auto grid w-full max-w-[1360px] items-center gap-y-14 lg:grid-cols-12 lg:gap-x-12">
+        <div className="lg:col-span-8">
+          <h2 className="font-serif text-[2.6rem] font-semibold leading-[1.06] text-ctext md:text-[4rem]">
+            Tout ne mérite pas notre attention.
+          </h2>
+          <p className="mt-6 max-w-2xl font-serif text-2xl leading-snug text-brassBright">
+            Mais certaines choses peuvent changer notre manière de voir.
+          </p>
+          <p className="mt-3 font-serif text-xl text-ctextSoft">
+            Le Foyer d'Origine est une place pour les découvrir.
+          </p>
+          <div className="mt-10 space-y-1 font-serif text-lg leading-relaxed text-ctextSoft">
+            <p>Pour sortir de la répétition.</p>
+            <p>Pour rencontrer l'inattendu.</p>
+            <p>Pour accéder à des liens impossibles à demander dans une barre de recherche.</p>
+          </div>
+          <p className="mt-8 max-w-2xl font-serif text-lg leading-relaxed text-ctext">
+            Pour retrouver un rythme humain, une place parmi les autres et la
+            possibilité d'être bien pendant que le monde bouge.
+          </p>
+          <p className="mt-14 font-serif text-[clamp(2.2rem,3.6vw,3.6rem)] font-semibold leading-[1.08] text-ctext">
+            Prenez place autour du feu.
+          </p>
+          <div className="mt-9">
+            <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d'accès" dark />
+          </div>
+        </div>
+        <div className="hidden lg:col-span-4 lg:flex lg:justify-end">
+          <Seal animate={false} className="h-64 w-64 opacity-30 xl:h-80 xl:w-80" />
+        </div>
       </div>
-      <p className="mt-8 max-w-2xl font-serif text-lg leading-relaxed text-ctext">
-        Pour retrouver un rythme humain, une place parmi les autres et la
-        possibilité d'être bien pendant que le monde bouge.
-      </p>
-      <p className="mt-12 font-serif text-3xl font-semibold text-ctext">
-        Prenez place autour du feu.
-      </p>
-      <div className="mt-8">
-        <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d'accès" dark />
-      </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 /* ── Page ── */
 const FoyerPage: React.FC = () => {
