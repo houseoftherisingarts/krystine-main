@@ -247,8 +247,11 @@ const Allumage: React.FC = () => {
         {/* le feu qui prend */}
         <motion.div
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-[62%] h-[58vmin] w-[58vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
+          className="pointer-events-none absolute left-1/2 top-[62%] h-[58vmin] w-[58vmin] rounded-full"
           style={{
+            /* x/y dans framer (pas de classes -translate : scale les écraserait) */
+            x: '-50%',
+            y: '-50%',
             scale: emberScale,
             opacity: emberOpacity,
             background:
