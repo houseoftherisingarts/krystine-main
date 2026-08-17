@@ -168,7 +168,10 @@
       html { scroll-behavior: smooth; }
       /* Prevent any off-screen animation (parallax sprigs, letter reveal,
          founder wash sweep) from showing a horizontal scrollbar. */
-      html, body { overflow-x: hidden; }
+      /* clip (pas hidden) : même coupe visuelle, mais ne crée pas de
+         conteneur de défilement, donc position:sticky reste fonctionnel
+         (le hidden cassait la section pinnée du Foyer). */
+      html, body { overflow-x: clip; }
       /* Discreet scrollbar — sauge at low opacity so it disappears into
          the parchment palette instead of shouting copper. */
       ::-webkit-scrollbar { width: 8px; }

@@ -1,4 +1,4 @@
-// Le Foyer d'Origine — copie VERBATIM extraite de foyer-copy.txt (17 août 2026).
+// Le Foyer d'Origine · copie VERBATIM extraite de foyer-copy.txt (17 août 2026).
 // Sections 2 à 9 + FAQ (corps de page). Hero, préloader et route vivent ailleurs.
 // Les sauts de ligne du PDF ont été refondus en phrases/paragraphes complets ;
 // aucun mot n'a été ajouté, retiré ou reformulé.

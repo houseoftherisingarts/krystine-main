@@ -15,7 +15,7 @@ import {
 } from './content';
 
 /**
- * Le Foyer d'Origine — sections de CORPS (2 à 9 + FAQ).
+ * Le Foyer d'Origine · sections de CORPS (2 à 9 + FAQ).
  * Hero, préloader et route vivent dans la session principale.
  * Style L'Œuvre (espresso/cream/brass), page sœur d'OrigineExperience.tsx.
  */
@@ -97,7 +97,7 @@ export default function BodySections() {
 
   return (
     <>
-      {/* ═══════════════ SECTION 2 — Une autre façon de choisir ═══════════════ */}
+      {/* ═══════════════ SECTION 2 · Une autre façon de choisir ═══════════════ */}
       <section className="bg-cream py-24 md:py-36">
         <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
@@ -131,7 +131,7 @@ export default function BodySections() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 3 — Une place pour être bien ═══════════════ */}
+      {/* ═══════════════ SECTION 3 · Une place pour être bien ═══════════════ */}
       <section className="bg-cream2 py-24 md:py-36">
         <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
@@ -156,7 +156,7 @@ export default function BodySections() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 4 — Chaque semaine, une nouvelle ouverture ═══════════════ */}
+      {/* ═══════════════ SECTION 4 · Chaque semaine, une nouvelle ouverture ═══════════════ */}
       <section className="bg-cream3 py-24 md:py-36">
         <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-6 items-end">
@@ -189,7 +189,7 @@ export default function BodySections() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 5 — Ce que Le Foyer rend possible ═══════════════ */}
+      {/* ═══════════════ SECTION 5 · Ce que Le Foyer rend possible ═══════════════ */}
       <section className="bg-cream py-24 md:py-36">
         <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Reveal className="max-w-[36ch]">
@@ -208,7 +208,7 @@ export default function BodySections() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 6 — Le premier samedi du mois (SOMBRE) ═══════════════ */}
+      {/* ═══════════════ SECTION 6 · Le premier samedi du mois (SOMBRE) ═══════════════ */}
       <section className="relative overflow-hidden bg-espressoSoft py-24 md:py-36">
         <Seam from="#f6f3ee" />
         <Atmosphere light="70% 25%" strength={0.8} />
@@ -242,7 +242,7 @@ export default function BodySections() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 7 — Ce qui relie les étoiles (Krystine) ═══════════════ */}
+      {/* ═══════════════ SECTION 7 · Ce qui relie les étoiles (Krystine) ═══════════════ */}
       <section className="relative bg-cream2 py-24 md:py-36">
         <Seam from="#2a2015" />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
@@ -305,7 +305,7 @@ export default function BodySections() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 8 — Ce que comprend l'année ═══════════════ */}
+      {/* ═══════════════ SECTION 8 · Ce que comprend l'année ═══════════════ */}
       <section className="bg-cream py-24 md:py-36">
         <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Reveal className="max-w-[36ch]">
@@ -357,7 +357,7 @@ export default function BodySections() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 9 — Foyer vs Expérience Origine ═══════════════ */}
+      {/* ═══════════════ SECTION 9 · Foyer vs Expérience Origine ═══════════════ */}
       <section className="bg-cream3 py-24 md:py-36">
         <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Reveal className="max-w-[42ch]">
