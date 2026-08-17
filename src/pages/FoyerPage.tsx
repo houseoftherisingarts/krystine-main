@@ -280,10 +280,6 @@ const Allumage: React.FC = () => {
       [30, 0],
     ),
   }));
-  const closing = {
-    opacity: useTransform(scrollYProgress, [0.62, 0.74], [0, 1]),
-  };
-  const inkShift = useTransform(scrollYProgress, [0.7, 0.95], ['#f4ece0', '#3a3126']);
 
   if (reduce) {
     return (
