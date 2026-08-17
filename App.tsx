@@ -48,6 +48,9 @@ const VexelPage        = lazy(() => import('./src/pages/VexelPage'));
 // Expérience Origine — refonte React au style L'Œuvre (remplacera le bundle
 // statique /origine une fois toutes les sections portées). Preview en cours.
 const OrigineExperience = lazy(() => import('./src/pages/OrigineExperience'));
+// Le Foyer d'Origine — page de vente membership (work in progress, URL dédiée
+// non liée à la navigation, partageable à Krystine pour validation).
+const FoyerPage = lazy(() => import('./src/pages/FoyerPage'));
 // Expérience Vata — portée du bundle statique vers React (style L'Œuvre)
 const VataExperience = lazy(() => import('./src/pages/VataExperience'));
 // Pages publiques rebâties from scratch en L'Œuvre (back-end préservé)
