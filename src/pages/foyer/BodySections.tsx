@@ -177,26 +177,38 @@ export default function BodySections() {
       {/* ═══════════════ SECTION 4 · Chaque semaine, une nouvelle ouverture ═══════════════ */}
       <section className="bg-cream3 py-24 md:py-36">
         <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <div className="grid lg:grid-cols-12 gap-x-12 gap-y-6 items-end">
+          <div className="grid lg:grid-cols-12 gap-x-12 gap-y-6 items-start">
             <Reveal className="lg:col-span-6">
               <Eyebrow>{SECTION4.eyebrow}</Eyebrow>
               <SectionTitle className="mt-5">{SECTION4.title}</SectionTitle>
             </Reveal>
-            <Reveal delay={0.08} className="lg:col-span-6">
-              <p className="font-serif text-[1.15rem] leading-[1.75] text-inkSoft max-w-[48ch]">{SECTION4.intro}</p>
+            <Reveal delay={0.08} className="lg:col-span-5 lg:col-start-8">
+              <p className="font-serif text-[1.15rem] leading-[1.75] text-inkSoft max-w-[42ch]">{SECTION4.intro}</p>
             </Reveal>
           </div>
 
-          <div className="mt-16 grid md:grid-cols-2 gap-6">
-            {SECTION4.openings.map((o, i) => (
-              <Reveal key={o.title} delay={(i % 2) * 0.08}>
-                <div className="h-full rounded-[30px] border border-brass/20 bg-card p-8 md:p-9">
-                  <span className="font-serif text-brass text-3xl leading-none">{roman[i]}</span>
-                  <h3 className="mt-5 font-serif text-xl md:text-2xl text-ink">{o.title}</h3>
-                  <p className="mt-4 font-serif text-[1.08rem] leading-[1.7] text-inkSoft">{o.body}</p>
-                </div>
-              </Reveal>
-            ))}
+          {/* les 4 semaines du mois, reliées par un rail brass : un déploiement, pas un catalogue */}
+          <div className="relative mt-20">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -top-8 left-[12%] right-[12%] hidden h-px xl:block"
+              style={{ background: 'linear-gradient(90deg, rgba(187,154,94,0) 0%, rgba(187,154,94,0.55) 18%, rgba(187,154,94,0.55) 82%, rgba(187,154,94,0) 100%)' }}
+            />
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              {SECTION4.openings.map((o, i) => (
+                <Reveal key={o.title} delay={i * 0.07}>
+                  <div className="relative h-full rounded-[30px] border border-brass/20 bg-card p-8">
+                    <span
+                      aria-hidden
+                      className="absolute -top-[37px] left-1/2 hidden h-2 w-2 -translate-x-1/2 rounded-full bg-brass ring-4 ring-cream3 xl:block"
+                    />
+                    <span className="font-serif text-brass text-3xl leading-none">{roman[i]}</span>
+                    <h3 className="mt-5 font-serif text-xl text-ink">{o.title}</h3>
+                    <p className="mt-4 font-serif text-[1.05rem] leading-[1.7] text-inkSoft">{o.body}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
           </div>
 
           <Reveal className="mt-16">
