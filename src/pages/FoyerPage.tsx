@@ -8,7 +8,7 @@ import {
 } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { Atmosphere } from '../components/motion/loeuvre';
+import { Atmosphere, KenBurns } from '../components/motion/loeuvre';
 import BodySections from './foyer/BodySections';
 
 /**
