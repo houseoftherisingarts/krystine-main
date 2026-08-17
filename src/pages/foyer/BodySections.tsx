@@ -94,6 +94,7 @@ const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; o
     <AnimatePresence initial={false}>
       {open && (
         <motion.div
+          id={`faq-panel-${i}`}
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: 'auto', opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
