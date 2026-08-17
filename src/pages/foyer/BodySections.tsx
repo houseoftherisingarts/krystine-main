@@ -307,7 +307,7 @@ export default function BodySections() {
                     <span className="font-serif text-[3rem] md:text-[4rem] font-medium text-brassInk leading-none tracking-[-0.01em]">
                       {s.value}
                     </span>
-                    <span className="font-sans text-[0.68rem] uppercase tracking-[0.16em] leading-snug text-inkSoft max-w-[20ch]">
+                    <span className="font-sans text-[0.8rem] leading-snug text-inkSoft max-w-[26ch]">
                       {s.label}
                     </span>
                   </div>
