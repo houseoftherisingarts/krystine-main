@@ -32,7 +32,7 @@ export const SECTION2 = {
 
 export const SECTION3 = {
   eyebrow: 'Un rythme, pas une obligation',
-  title: 'Une place pour être bien pendant que le monde bouge',
+  title: 'Être bien pendant que le monde bouge',
   paragraphs: [
     'Le Foyer d’Origine n’est pas une formation à compléter.',
     'C’est une place où revenir.',
@@ -173,7 +173,7 @@ export const SECTION8 = {
 
 export const SECTION9 = {
   eyebrow: 'Deux espaces, une même maison',
-  title: 'Le Foyer d’Origine et l\'Expérience Origine',
+  title: 'Le Foyer et l’Expérience',
   foyer: {
     lead: 'Le Foyer ouvre.',
     text: 'Il offre un lieu d’exploration, un rythme, des découvertes et de nouvelles relations entre des mondes que nous avions appris à séparer. Nous y circulons librement.',

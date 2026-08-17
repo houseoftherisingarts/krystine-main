@@ -54,7 +54,7 @@ const Seal: React.FC<{ animate?: boolean; className?: string }> = ({
   </svg>
 );
 
-/* ── Preloader ~1s : nuit, le sceau se dessine, la braise s'allume ── */
+/* ── Preloader ~1s : nuit, le sceau se dessine, la braise s’allume ── */
 const Preloader: React.FC<{ done: boolean }> = ({ done }) => (
   <AnimatePresence>
     {!done && (
@@ -71,7 +71,7 @@ const Preloader: React.FC<{ done: boolean }> = ({ done }) => (
             animate={{ opacity: 0.85 }}
             transition={{ delay: 0.5, duration: 0.5 }}
           >
-            Le Foyer d'Origine
+            Le Foyer d’Origine
           </motion.p>
         </div>
       </motion.div>
@@ -185,22 +185,22 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
           <div className="relative z-10 w-full px-6 pb-16 pt-36 md:px-12 lg:px-20">
             <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
             <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brass">
-              KSL | Le Foyer d'Origine
+              KSL | Le Foyer d’Origine
             </p>
             <h1 className="mt-5 font-serif font-medium leading-[0.9] text-ctext text-[clamp(3.4rem,9vw,8rem)]">
-              Le Foyer d'Origine
+              Le Foyer d’Origine
             </h1>
             <p className="mt-6 max-w-2xl font-serif font-medium text-[clamp(1.35rem,2.2vw,1.9rem)] leading-snug text-ctext">
-              Nous n'avons jamais eu autant d'information.
+              Nous n’avons jamais eu autant d’information.
               <span className="block text-brassBright">Et jamais autant de dispersion.</span>
             </p>
             <p className="mt-5 max-w-xl font-sans text-[0.95rem] leading-[1.85] text-ctextSoft">
-              Un espace privé en ligne pour découvrir ce que nous n'aurions pas
+              Un espace privé en ligne pour découvrir ce que nous n’aurions pas
               su chercher et accéder à des liens impossibles à demander dans une
               barre de recherche.
             </p>
             <div className="mt-9">
-              <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d'accès" dark />
+              <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d’accès" dark />
             </div>
           </div>
         </header>
@@ -292,7 +292,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
             >
               <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
               <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brass">
-                KSL | Le Foyer d'Origine
+                KSL | Le Foyer d’Origine
               </p>
             </motion.div>
             <motion.h1
@@ -301,7 +301,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
               transition={{ duration: 1.1, ease, delay: 0.31 }}
               className="mt-4 font-serif font-medium leading-[0.9] text-ctext text-[clamp(3.4rem,9vw,8rem)]"
             >
-              Le Foyer d'Origine
+              Le Foyer d’Origine
             </motion.h1>
             <motion.p
               initial={reduce ? {} : { opacity: 0, y: 24 }}
@@ -309,7 +309,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
               transition={{ duration: 1.1, ease, delay: 0.47 }}
               className="mt-6 max-w-2xl font-serif font-medium text-[clamp(1.35rem,2.2vw,1.9rem)] leading-snug text-ctext"
             >
-              Nous n'avons jamais eu autant d'information.
+              Nous n’avons jamais eu autant d’information.
               <span className="block text-brassBright">Et jamais autant de dispersion.</span>
             </motion.p>
             <motion.div
@@ -318,7 +318,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
               transition={{ duration: 1.1, ease, delay: 0.63 }}
               className="mt-8 flex flex-wrap items-end justify-between gap-6"
             >
-              <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d'accès" dark />
+              <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d’accès" dark />
               <span
                 className="hidden font-sans text-[0.6rem] uppercase tracking-[0.3em] text-ctextSoft md:block"
                 style={{ animation: 'foyerCue 2.6s ease-in-out infinite' }}
@@ -391,12 +391,12 @@ const Offre: React.FC = () => (
       <div className="lg:col-span-5">
         <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
         <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassBright">
-          L'offre
+          L’offre
         </p>
         <h2 className="mt-5 font-serif font-medium uppercase leading-[1.08] tracking-[0.04em] text-ctext text-[clamp(1.9rem,3.4vw,2.7rem)]">
-          Le Foyer d'Origine
+          Le Foyer d’Origine
         </h2>
-        <p className="mt-4 font-serif text-2xl text-ctextSoft">12 mois d'accès</p>
+        <p className="mt-4 font-serif text-2xl text-ctextSoft">12 mois d’accès</p>
         <div className="mt-10 hidden lg:block">
           <div className="max-w-[360px] overflow-hidden rounded-[30px] bg-espresso/50 p-2.5 shadow-depth ring-1 ring-brass/40">
             <img
@@ -407,7 +407,7 @@ const Offre: React.FC = () => (
             />
           </div>
           <p className="mt-4 font-sans text-[0.78rem] tracking-[0.06em] text-ctextSoft">
-            L'invitation scellée · sceau brass et sauge séchée
+            L’invitation scellée · sceau brass et sauge séchée
           </p>
         </div>
       </div>
@@ -472,22 +472,22 @@ const AppelFinal: React.FC = () => {
             Mais certaines choses peuvent changer notre manière de voir.
           </p>
           <p className="mt-3 font-serif text-xl text-ctextSoft">
-            Le Foyer d'Origine est une place pour les découvrir.
+            Le Foyer d’Origine est une place pour les découvrir.
           </p>
           <div className="mt-10 space-y-1 font-sans text-[0.95rem] leading-[1.85] text-ctextSoft">
             <p>Pour sortir de la répétition.</p>
-            <p>Pour rencontrer l'inattendu.</p>
+            <p>Pour rencontrer l’inattendu.</p>
             <p>Pour accéder à des liens impossibles à demander dans une barre de recherche.</p>
           </div>
           <p className="mt-8 max-w-2xl font-sans text-[0.95rem] leading-[1.85] text-ctext">
             Pour retrouver un rythme humain, une place parmi les autres et la
-            possibilité d'être bien pendant que le monde bouge.
+            possibilité d’être bien pendant que le monde bouge.
           </p>
           <p className="mt-14 font-serif font-semibold leading-[1.08] text-ctext text-[clamp(2.2rem,3.6vw,3.6rem)]">
             Prenez place autour du feu.
           </p>
           <div className="mt-9">
-            <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d'accès" dark />
+            <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d’accès" dark />
           </div>
         </div>
         <div className="hidden lg:col-span-4 lg:flex lg:justify-end">
