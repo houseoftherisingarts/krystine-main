@@ -205,7 +205,8 @@ const Allumage: React.FC = () => {
   const emberScale = useTransform(scrollYProgress, [0, 0.6], [0.25, 3.1]);
   const emberOpacity = useTransform(scrollYProgress, [0, 0.12, 0.6], [0, 0.5, 1]);
   const warm = useTransform(scrollYProgress, [0.66, 0.97], [0, 1]);
-  const lineAt = (i: number) => ({
+  /* hooks appelés inconditionnellement, dans le même ordre à chaque rendu */
+  const lineStyles = [0, 1, 2].map((i) => ({
     opacity: useTransform(
       scrollYProgress,
       [0.14 + i * 0.15, 0.24 + i * 0.15],
@@ -216,7 +217,7 @@ const Allumage: React.FC = () => {
       [0.14 + i * 0.15, 0.24 + i * 0.15],
       [30, 0],
     ),
-  });
+  }));
   const closing = {
     opacity: useTransform(scrollYProgress, [0.62, 0.74], [0, 1]),
   };
