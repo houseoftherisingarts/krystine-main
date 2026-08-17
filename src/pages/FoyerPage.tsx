@@ -474,26 +474,34 @@ const AppelFinal: React.FC = () => {
 const FoyerPage: React.FC = () => {
   const [ready, setReady] = useState(false);
   useEffect(() => {
+    const prev = document.title;
     document.title = "Le Foyer d'Origine | Krystine St-Laurent";
     const t = window.setTimeout(() => setReady(true), 1150);
-    return () => window.clearTimeout(t);
+    return () => {
+      window.clearTimeout(t);
+      document.title = prev;
+    };
   }, []);
   return (
     <div className="bg-cream">
       <Preloader done={ready} />
-      <Hero ready={ready} />
-      <Allumage />
-      <BodySections />
-      <Offre />
-      <AppelFinal />
-      <footer className="bg-espressoDeep px-6 py-10 text-center">
-        <Link
-          to="/"
-          className="font-sans text-[0.62rem] uppercase tracking-[0.28em] text-ctextSoft transition-colors hover:text-brassBright"
-        >
-          Krystine St-Laurent
-        </Link>
-      </footer>
+      {/* inert tant que le preloader couvre : le clavier ne peut pas
+          atteindre le contenu invisible dessous */}
+      <div inert={ready ? undefined : true}>
+        <Hero ready={ready} />
+        <Allumage />
+        <BodySections />
+        <Offre />
+        <AppelFinal />
+        <footer className="bg-espressoDeep px-6 py-8 text-center">
+          <Link
+            to="/"
+            className="inline-block p-3 font-sans text-[0.62rem] uppercase tracking-[0.28em] text-ctextSoft transition-colors hover:text-brassBright"
+          >
+            Krystine St-Laurent
+          </Link>
+        </footer>
+      </div>
     </div>
   );
 };
