@@ -151,17 +151,18 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   const heroY = useTransform(scrollYProgress, [0, 0.14], [0, -36]);
   /* le voile du hero s'allège : le feu prend toute la lumière */
   const veilHero = useTransform(scrollYProgress, [0, 0.16, 0.3], [1, 1, 0.35]);
-  const linesVeil = useTransform(scrollYProgress, [0.26, 0.36, 0.6, 0.7], [0, 1, 1, 0]);
+  /* les lignes entrent dès la sortie du titre : jamais d'écran sans texte */
+  const linesVeil = useTransform(scrollYProgress, [0.14, 0.24, 0.6, 0.7], [0, 1, 1, 0]);
   const lineStyles = [0, 1, 2].map((i) => ({
     opacity: useTransform(
       scrollYProgress,
-      [0.3 + i * 0.09, 0.38 + i * 0.09, 0.62, 0.7],
+      [0.16 + i * 0.1, 0.24 + i * 0.1, 0.62, 0.7],
       [0, 1, 1, 0],
     ),
-    y: useTransform(scrollYProgress, [0.3 + i * 0.09, 0.38 + i * 0.09], [26, 0]),
+    y: useTransform(scrollYProgress, [0.16 + i * 0.1, 0.24 + i * 0.1], [26, 0]),
   }));
   const kickerFade = useTransform(scrollYProgress, [0.72, 0.8], [0, 1]);
-  const emberDust = useTransform(scrollYProgress, [0.12, 0.3], [0, 1]);
+  const emberDust = useTransform(scrollYProgress, [0.1, 0.25], [0, 1]);
   const warm = useTransform(scrollYProgress, [0.86, 1], [0, 1]);
 
   if (reduce) {
