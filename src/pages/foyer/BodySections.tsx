@@ -276,6 +276,16 @@ export default function BodySections() {
 
       {/* ═══════════════ SECTION 6 · Le premier samedi du mois (SOMBRE) ═══════════════ */}
       <section className="relative overflow-hidden bg-espressoSoft py-24 md:py-36">
+        {/* la chandelle du premier samedi, voilée pour la lisibilité */}
+        <img
+          src="/foyer/meditation.webp"
+          alt=""
+          aria-hidden
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover opacity-50"
+          style={{ objectPosition: '70% center' }}
+        />
+        <span aria-hidden className="absolute inset-0 bg-espressoSoft/55" />
         <WarmSeam from="#f6f3ee" />
         <Atmosphere light="70% 25%" strength={0.8} />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
