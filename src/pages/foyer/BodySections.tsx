@@ -76,10 +76,11 @@ const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; o
   open,
   onClick,
 }) => (
-  <div className="border-b border-brass/20">
+  <div className={`border-b border-brass/20 rounded-2xl px-5 -mx-5 transition-colors duration-300 ${open ? 'bg-card' : ''}`}>
     <button
       onClick={onClick}
       aria-expanded={open}
+      aria-controls={`faq-panel-${i}`}
       className="w-full text-left py-6 flex items-start justify-between gap-6 min-h-[44px] group"
     >
       <h3 className={`font-serif text-xl md:text-2xl leading-snug pr-4 transition-colors ${open ? 'text-brassInk' : 'text-ink group-hover:text-brassInk'}`}>
