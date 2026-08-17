@@ -284,6 +284,15 @@ const Allumage: React.FC = () => {
   return (
     <div ref={ref} className="relative h-[280vh] bg-espressoDeep">
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
+        {/* la braise réelle qui ancre le feu animé */}
+        <motion.img
+          src="/foyer/allumage-fond.webp"
+          alt=""
+          aria-hidden
+          loading="lazy"
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+          style={{ opacity: bgEmber }}
+        />
         {/* le feu qui prend : trois couches (ambient, halo, coeur) + flicker lent */}
         <motion.div
           aria-hidden
