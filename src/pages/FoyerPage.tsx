@@ -9,7 +9,7 @@ import {
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Atmosphere } from '../components/motion/loeuvre';
-import BodySections from './foyer/content-sections';
+import BodySections from './foyer/BodySections';
 
 /**
  * Le Foyer d'Origine — page de vente (work in progress, URL dédiée /foyer).
