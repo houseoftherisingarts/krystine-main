@@ -199,14 +199,32 @@ export default function BodySections() {
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
               {SECTION4.openings.map((o, i) => (
                 <Reveal key={o.title} delay={i * 0.07}>
-                  <div className="relative h-full rounded-[30px] border border-brass/20 bg-card p-8">
+                  <div className="relative h-full">
                     <span
                       aria-hidden
                       className="absolute -top-[37px] left-1/2 hidden h-2 w-2 -translate-x-1/2 rounded-full bg-brass ring-4 ring-cream3 xl:block"
                     />
-                    <span className="font-serif text-brass text-3xl leading-none">{roman[i]}</span>
-                    <h3 className="mt-5 font-serif text-xl text-ink">{o.title}</h3>
-                    <p className="mt-4 font-serif text-[1.05rem] leading-[1.7] text-inkSoft">{o.body}</p>
+                    <div className="h-full overflow-hidden rounded-[30px] border border-brass/20 bg-card">
+                      <div className="relative h-40 overflow-hidden">
+                        <img
+                          src={SEMAINE_IMAGES[i]}
+                          alt=""
+                          aria-hidden
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-105"
+                        />
+                        <span
+                          aria-hidden
+                          className="absolute inset-0"
+                          style={{ background: 'linear-gradient(to top, rgba(250,247,240,0.25) 0%, transparent 40%)' }}
+                        />
+                      </div>
+                      <div className="p-7">
+                        <span className="font-serif text-brass text-3xl leading-none">{roman[i]}</span>
+                        <h3 className="mt-4 font-serif text-xl text-ink">{o.title}</h3>
+                        <p className="mt-3 font-serif text-[1.05rem] leading-[1.7] text-inkSoft">{o.body}</p>
+                      </div>
+                    </div>
                   </div>
                 </Reveal>
               ))}
