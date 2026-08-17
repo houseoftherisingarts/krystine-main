@@ -418,7 +418,17 @@ const Offre: React.FC = () => (
         </h2>
         <p className="mt-4 font-serif text-2xl text-ctextSoft">12 mois d’accès</p>
         <div className="mt-10 hidden lg:block">
-          <Seal animate={false} className="h-24 w-24 opacity-40" />
+          <div className="max-w-[360px] overflow-hidden rounded-[30px] bg-espresso/50 p-2.5 shadow-depth ring-1 ring-brass/40">
+            <img
+              src="/foyer/invitation.webp"
+              alt="Invitation scellée du Foyer d'Origine"
+              loading="lazy"
+              className="w-full rounded-[22px]"
+            />
+          </div>
+          <p className="mt-4 font-sans text-[0.78rem] tracking-[0.06em] text-ctextSoft">
+            L'invitation scellée · sceau brass et sauge séchée
+          </p>
         </div>
       </div>
       <div className="lg:col-span-7">
