@@ -419,8 +419,8 @@ const Allumage: React.FC = () => {
           {LINES.map((l, i) => (
             <motion.p
               key={l}
-              style={{ opacity: lineStyles[i].opacity, y: lineStyles[i].y, color: inkShift }}
-              className="font-serif text-[2.2rem] font-semibold leading-[1.15] md:text-[3.8rem]"
+              style={{ opacity: lineStyles[i].opacity, y: lineStyles[i].y }}
+              className="font-serif text-[2.2rem] font-semibold leading-[1.15] text-ctext md:text-[3.8rem]"
             >
               {l}
             </motion.p>
