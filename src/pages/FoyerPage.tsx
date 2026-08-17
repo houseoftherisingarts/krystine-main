@@ -227,7 +227,11 @@ const Allumage: React.FC = () => {
   }, [scrollYProgress]);
   const emberScale = useTransform(scrollYProgress, [0, 0.6], [0.25, 3.1]);
   const emberOpacity = useTransform(scrollYProgress, [0, 0.12, 0.6], [0, 0.5, 1]);
+  /* le coeur incandescent monte avec la progression : de la braise sombre a l'or */
+  const coreHeat = useTransform(scrollYProgress, [0.12, 0.55], [0, 1]);
   const warm = useTransform(scrollYProgress, [0.66, 0.97], [0, 1]);
+  /* kicker : brass clair tant que la scene est sombre, brassInk une fois creme */
+  const kickerColor = useTransform(scrollYProgress, [0.7, 0.95], ['#dcb874', '#7d6330']);
   /* hooks appelés inconditionnellement, dans le même ordre à chaque rendu */
   const lineStyles = [0, 1, 2].map((i) => ({
     opacity: useTransform(

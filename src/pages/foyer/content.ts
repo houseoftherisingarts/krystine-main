@@ -176,7 +176,7 @@ export const SECTION9 = {
   title: 'Le Foyer d’Origine et l\'Expérience Origine',
   foyer: {
     lead: 'Le Foyer ouvre.',
-    text: 'Il offre un lieu d’exploration, un rythme, des découvertes et de nouvelles relations entre des mondes que nous avions appris à separer. Nous y circulons librement.',
+    text: 'Il offre un lieu d’exploration, un rythme, des découvertes et de nouvelles relations entre des mondes que nous avions appris à séparer. Nous y circulons librement.',
   },
   experience: {
     lead: 'L’Expérience Origine accompagne.',
