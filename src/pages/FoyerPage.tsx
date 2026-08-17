@@ -8,22 +8,21 @@ import {
 } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { Atmosphere, KenBurns } from '../components/motion/loeuvre';
+import { Atmosphere } from '../components/motion/loeuvre';
 import BodySections from './foyer/BodySections';
 
 /**
- * Le Foyer d'Origine · page de vente (work in progress, URL dédiée /foyer).
- * Concept « l'allumage » : la page ouvre dans la nuit (espresso), le sceau
- * se dessine, la braise s'allume, et le premier scroll fait prendre le feu
- * avant que la scène se réchauffe vers la crème éditoriale.
- * Skills: premium-web (orchestrateur) + recettes motionsites-maison
- * B2/B4 (preloader + entrée staggered), D4 Atmosphere, C2 Seam, D1 anti-centré.
+ * Le Foyer d'Origine · page de vente (URL dédiée /foyer).
+ * Canon : BRANDING L'ŒUVRE (CLAUDE.md du repo + 30_library/loeuvre-design-system.md).
+ * Une seule scène de feu : LA vidéo du foyer extérieur au matin roule dès
+ * l'entrée, hero et allumage partagent le même plan continu (zéro couture),
+ * puis le voile crème pose le corps éditorial.
  */
 
 const ease = [0.16, 0.8, 0.24, 1] as const;
 const CTA_HREF = '/liste-attente?programme=foyer';
 
-/* ── Sceau concentrique (le mark du PDF) · se dessine au chargement ── */
+/* ── Sceau concentrique (mark du PDF) · préloader et appel final seulement ── */
 const Seal: React.FC<{ animate?: boolean; className?: string }> = ({
   animate = true,
   className = '',
@@ -55,7 +54,7 @@ const Seal: React.FC<{ animate?: boolean; className?: string }> = ({
   </svg>
 );
 
-/* ── Preloader ~1s : nuit, le sceau se dessine, la braise s’allume ── */
+/* ── Preloader ~1s : nuit, le sceau se dessine, la braise s'allume ── */
 const Preloader: React.FC<{ done: boolean }> = ({ done }) => (
   <AnimatePresence>
     {!done && (
@@ -72,7 +71,7 @@ const Preloader: React.FC<{ done: boolean }> = ({ done }) => (
             animate={{ opacity: 0.85 }}
             transition={{ delay: 0.5, duration: 0.5 }}
           >
-            Le Foyer d’Origine
+            Le Foyer d'Origine
           </motion.p>
         </div>
       </motion.div>
@@ -80,7 +79,7 @@ const Preloader: React.FC<{ done: boolean }> = ({ done }) => (
   </AnimatePresence>
 );
 
-/* ── CTA brass ── */
+/* ── CTA laiton (fond brass + texte espresso, canon contraste) ── */
 const Cta: React.FC<{ label: string; sub?: string; dark?: boolean }> = ({
   label,
   sub,
@@ -109,126 +108,19 @@ const Cta: React.FC<{ label: string; sub?: string; dark?: boolean }> = ({
   </div>
 );
 
-/* ── Hero : nuit espresso, type display, braise au repos ── */
-const Hero: React.FC<{ ready: boolean }> = ({ ready }) => {
-  const reduce = useReducedMotion();
-  const stagger = (i: number) =>
-    reduce
-      ? {}
-      : {
-          initial: { opacity: 0, y: 26 },
-          animate: ready ? { opacity: 1, y: 0 } : {},
-          transition: { duration: 1.1, ease, delay: 0.15 + i * 0.16 },
-        };
-  return (
-    <header className="relative flex min-h-screen flex-col justify-end overflow-hidden bg-espressoDeep">
-      {/* l'âtre en pleine page : Ken Burns lent, gradient bas pour la lisibilité */}
-      <div className="absolute inset-0" aria-hidden>
-        <KenBurns src="/foyer/hero-atre.webp" />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(to top, #16100a 6%, rgba(22,16,10,0.78) 38%, rgba(22,16,10,0.35) 66%, rgba(22,16,10,0.6) 100%)',
-          }}
-        />
-      </div>
-      <Atmosphere light="74% 18%" strength={0.9} />
-      {/* braise ambiante au repos */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(34% 26% at 50% 88%, rgba(176,106,63,0.16), transparent 70%)',
-          animation: reduce ? undefined : 'foyerBreathe 5.5s ease-in-out infinite',
-        }}
-      />
-      <Seal
-        animate={false}
-        className="pointer-events-none absolute right-[6%] top-[12%] h-40 w-40 opacity-[0.22] md:h-56 md:w-56"
-      />
-      <div className="relative z-10 w-full px-6 pb-16 pt-36 md:px-12 md:pb-20 lg:px-20">
-        <motion.div {...stagger(0)}>
-          <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
-          <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brass">
-            KSL | Le Foyer d’Origine
-          </p>
-        </motion.div>
-        <motion.h1
-          {...stagger(1)}
-          className="mt-6 max-w-5xl font-serif text-[2.6rem] font-semibold leading-[1.04] text-ctext md:text-[4.4rem] lg:text-[5.2rem]"
-        >
-          Nous n’avons jamais eu autant d’information.
-          <span className="block text-brassBright">
-            Et jamais autant de dispersion.
-          </span>
-        </motion.h1>
-        <motion.p
-          {...stagger(2)}
-          className="mt-8 max-w-xl font-serif text-xl leading-relaxed text-ctextSoft md:text-2xl"
-        >
-          Un espace privé en ligne pour découvrir ce que nous n’aurions pas su
-          chercher et accéder à des liens impossibles à demander dans une barre
-          de recherche.
-        </motion.p>
-        <motion.div {...stagger(3)} className="mt-10">
-          <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d’accès" dark />
-        </motion.div>
-      </div>
-      {/* indice de défilement */}
-      <motion.div
-        className="relative z-10 flex justify-center pb-8"
-        initial={{ opacity: 0 }}
-        animate={ready ? { opacity: 1 } : {}}
-        transition={{ delay: 1.2, duration: 0.8 }}
-      >
-        <span
-          className="font-sans text-[0.6rem] uppercase tracking-[0.3em] text-ctextSoft"
-          style={{ animation: reduce ? undefined : 'foyerCue 2.6s ease-in-out infinite' }}
-        >
-          Défiler
-        </span>
-      </motion.div>
-      <style>{`
-        @keyframes foyerBreathe{0%,100%{opacity:.75}50%{opacity:1}}
-        @keyframes foyerCue{0%,100%{opacity:.45;transform:translateY(0)}50%{opacity:1;transform:translateY(4px)}}
-      `}</style>
-    </header>
-  );
-};
-
-/* ── Allumage : section pinnée, le premier scroll fait prendre le feu,
-      puis la scène se réchauffe de l'espresso vers la crème. ── */
+/* ── La scène du feu : hero + allumage sur le MÊME plan vidéo continu ──
+   Le feu roule dès l'entrée. Le titre s'efface au premier scroll, les
+   trois lignes passent sur la même vidéo, la crème se pose à la fin.
+   Progression maison (rAF + rect) : useScroll({target}) mesurait la page. */
 const LINES = [
   'Une place autour du feu.',
   'Un rythme simple.',
   'Une autre manière de voir.',
 ];
 
-const Allumage: React.FC = () => {
+const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
-  /* la video (3 Mo) ne se charge qu'a l'approche de la section */
-  const [videoNear, setVideoNear] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || typeof IntersectionObserver === 'undefined') return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setVideoNear(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: '900px 0px' },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-  /* Progression maison (pattern /communaute) : useScroll({target}) mesurait
-     toute la page ici au lieu de la section, alors on lit le rect nous-mêmes.
-     p = distance parcourue dans le pin / hauteur scrollable de la section. */
   const scrollYProgress = useMotionValue(0);
   useEffect(() => {
     const el = ref.current;
@@ -253,179 +145,230 @@ const Allumage: React.FC = () => {
       cancelAnimationFrame(raf);
     };
   }, [scrollYProgress]);
-  const emberScale = useTransform(scrollYProgress, [0, 0.6], [0.25, 3.1]);
-  /* le feu anime s'efface quand la video du matin se revele */
-  const emberOpacity = useTransform(scrollYProgress, [0, 0.12, 0.55, 0.7], [0, 0.5, 1, 0]);
-  /* la braise macro reelle derriere le feu anime; s'efface avant la video */
-  const bgEmber = useTransform(scrollYProgress, [0, 0.15, 0.5, 0.64], [0, 0.4, 0.6, 0]);
-  /* le coeur incandescent monte avec la progression : de la braise sombre a l'or */
-  const coreHeat = useTransform(scrollYProgress, [0.12, 0.55, 0.7], [0, 1, 0]);
-  /* les lignes s'effacent pour laisser la scene au matin */
-  const textFade = useTransform(scrollYProgress, [0.14, 0.6, 0.72], [1, 1, 0]);
-  /* le climax : la video du foyer au matin, revelee plein cadre */
-  const videoOpacity = useTransform(scrollYProgress, [0.58, 0.76, 0.9, 0.99], [0, 1, 1, 0.35]);
-  const kickerFade = useTransform(scrollYProgress, [0.74, 0.84], [0, 1]);
-  /* la couture creme se pose sur la fin du matin */
-  const warm = useTransform(scrollYProgress, [0.88, 1], [0, 1]);
-  /* hooks appelés inconditionnellement, dans le même ordre à chaque rendu */
+
+  /* chorégraphie */
+  const heroFade = useTransform(scrollYProgress, [0, 0.14], [1, 0]);
+  const heroY = useTransform(scrollYProgress, [0, 0.14], [0, -36]);
+  /* le voile du hero s'allège : le feu prend toute la lumière */
+  const veilHero = useTransform(scrollYProgress, [0, 0.16, 0.3], [1, 1, 0.35]);
+  const linesVeil = useTransform(scrollYProgress, [0.26, 0.36, 0.6, 0.7], [0, 1, 1, 0]);
   const lineStyles = [0, 1, 2].map((i) => ({
     opacity: useTransform(
       scrollYProgress,
-      [0.14 + i * 0.15, 0.24 + i * 0.15],
-      [0, 1],
+      [0.3 + i * 0.09, 0.38 + i * 0.09, 0.62, 0.7],
+      [0, 1, 1, 0],
     ),
-    y: useTransform(
-      scrollYProgress,
-      [0.14 + i * 0.15, 0.24 + i * 0.15],
-      [30, 0],
-    ),
+    y: useTransform(scrollYProgress, [0.3 + i * 0.09, 0.38 + i * 0.09], [26, 0]),
   }));
+  const kickerFade = useTransform(scrollYProgress, [0.72, 0.8], [0, 1]);
+  const emberDust = useTransform(scrollYProgress, [0.12, 0.3], [0, 1]);
+  const warm = useTransform(scrollYProgress, [0.86, 1], [0, 1]);
 
   if (reduce) {
     return (
-      <section className="relative overflow-hidden bg-espressoSoft px-6 py-32 md:px-12 lg:px-20">
-        <Atmosphere light="50% 80%" strength={1} />
-        <div className="relative z-10 mx-auto max-w-4xl">
-          {LINES.map((l) => (
-            <p key={l} className="font-serif text-4xl leading-tight text-ctext md:text-6xl">
-              {l}
+      <>
+        <header className="relative flex min-h-screen flex-col justify-end overflow-hidden bg-espressoDeep">
+          <img
+            src="/foyer/firepit-poster.webp"
+            alt=""
+            aria-hidden
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(to top, rgba(22,16,10,0.9) 0%, rgba(22,16,10,0.5) 45%, rgba(22,16,10,0.25) 100%)',
+            }}
+          />
+          <div className="relative z-10 w-full px-6 pb-16 pt-36 md:px-12 lg:px-20">
+            <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
+            <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brass">
+              KSL | Le Foyer d'Origine
             </p>
-          ))}
-          <p className="mt-8 font-sans text-sm uppercase tracking-[0.22em] text-brassBright">
-            Rien à terminer. Rien à rattraper.
-          </p>
-        </div>
-      </section>
+            <h1 className="mt-5 font-serif font-medium leading-[0.9] text-ctext text-[clamp(3.4rem,9vw,8rem)]">
+              Le Foyer d'Origine
+            </h1>
+            <p className="mt-6 max-w-2xl font-serif font-medium text-[clamp(1.35rem,2.2vw,1.9rem)] leading-snug text-ctext">
+              Nous n'avons jamais eu autant d'information.
+              <span className="block text-brassBright">Et jamais autant de dispersion.</span>
+            </p>
+            <p className="mt-5 max-w-xl font-sans text-[0.95rem] leading-[1.85] text-ctextSoft">
+              Un espace privé en ligne pour découvrir ce que nous n'aurions pas
+              su chercher et accéder à des liens impossibles à demander dans une
+              barre de recherche.
+            </p>
+            <div className="mt-9">
+              <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d'accès" dark />
+            </div>
+          </div>
+        </header>
+        <section className="relative overflow-hidden bg-espressoSoft px-6 py-32 md:px-12 lg:px-20">
+          <Atmosphere light="50% 80%" strength={1} />
+          <div className="relative z-10 mx-auto max-w-4xl">
+            {LINES.map((l) => (
+              <p key={l} className="font-serif text-4xl leading-tight text-ctext md:text-5xl">
+                {l}
+              </p>
+            ))}
+            <p className="mt-8 font-sans text-[0.72rem] uppercase tracking-[0.26em] text-brassBright">
+              Rien à terminer. Rien à rattraper.
+            </p>
+          </div>
+        </section>
+      </>
     );
   }
 
   return (
-    <div ref={ref} className="relative h-[280vh] bg-espressoDeep">
-      <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
-        {/* la braise réelle qui ancre le feu animé */}
-        <motion.img
-          src="/foyer/allumage-fond.webp"
-          alt=""
-          aria-hidden
-          loading="lazy"
-          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-          style={{ opacity: bgEmber }}
+    <div ref={ref} className="relative h-[380vh] bg-espressoDeep">
+      <div className="sticky top-0 h-screen overflow-hidden">
+        {/* LE feu : la vidéo roule dès l'entrée, seule représentation du feu */}
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          src="/foyer/firepit.mp4"
+          poster="/foyer/firepit-poster.webp"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
         />
-        {/* le feu qui prend : trois couches (ambient, halo, coeur) + flicker lent */}
+        {/* voile hero : lisibilité du titre, s'allège quand le feu prend la scène */}
         <motion.div
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-[62%] h-[58vmin] w-[58vmin]"
+          className="pointer-events-none absolute inset-0"
           style={{
-            /* x/y dans framer (pas de classes -translate : scale les écraserait) */
-            x: '-50%',
-            y: '-50%',
-            scale: emberScale,
-            opacity: emberOpacity,
+            opacity: veilHero,
+            background:
+              'linear-gradient(to top, rgba(22,16,10,0.92) 0%, rgba(22,16,10,0.62) 34%, rgba(22,16,10,0.22) 62%, rgba(22,16,10,0.4) 100%)',
           }}
-        >
-          <div
-            className="absolute inset-0 rounded-full"
-            style={{
-              background:
-                'radial-gradient(circle, rgba(187,154,94,0.20) 0%, rgba(176,106,63,0.10) 55%, transparent 76%)',
-              filter: 'blur(8px)',
-            }}
-          />
-          <div
-            className="absolute inset-[16%] rounded-full"
-            style={{
-              background:
-                'radial-gradient(circle, rgba(176,106,63,0.45) 0%, rgba(176,106,63,0.14) 58%, transparent 78%)',
-              filter: 'blur(10px)',
-              animation: 'foyerFlicker 5.4s ease-in-out infinite',
-            }}
-          />
-          <motion.div className="absolute inset-[32%]" style={{ opacity: coreHeat }}>
-            <div
-              className="absolute inset-0 rounded-full"
-              style={{
-                background:
-                  'radial-gradient(circle, rgba(220,184,116,0.85) 0%, rgba(199,154,82,0.5) 40%, rgba(176,106,63,0.16) 66%, transparent 80%)',
-                filter: 'blur(4px)',
-                animation: 'foyerFlicker 3.8s ease-in-out infinite reverse',
-              }}
-            />
-          </motion.div>
-        </motion.div>
-        {/* braises ponctuelles qui montent, lentes */}
-        <motion.div aria-hidden className="pointer-events-none absolute inset-0" style={{ opacity: coreHeat }}>
+        />
+        {/* socle sombre permanent en bas (kicker + transition) */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-40"
+          style={{ background: 'linear-gradient(to top, rgba(22,16,10,0.55) 0%, transparent 100%)' }}
+        />
+        {/* poussière chaude : braises fines qui montent (canon L'Œuvre) */}
+        <motion.div aria-hidden className="pointer-events-none absolute inset-0" style={{ opacity: emberDust }}>
           {[
-            { l: '46%', d: '0s', s: 5 },
-            { l: '53%', d: '2.6s', s: 4 },
-            { l: '49%', d: '4.7s', s: 3 },
+            { l: '44%', d: '0s', s: 5 },
+            { l: '55%', d: '3.1s', s: 4 },
+            { l: '49%', d: '5.6s', s: 3 },
           ].map((b) => (
             <span
               key={b.l}
               className="absolute rounded-full"
               style={{
                 left: b.l,
-                bottom: '24%',
+                bottom: '22%',
                 width: b.s,
                 height: b.s,
                 background: '#dcb874',
                 filter: 'blur(1px)',
-                animation: `foyerRise 7.5s linear ${b.d} infinite`,
+                animation: `foyerRise 8s linear ${b.d} infinite`,
                 opacity: 0,
               }}
             />
           ))}
         </motion.div>
         <style>{`
-          @keyframes foyerFlicker{0%,100%{opacity:.8;transform:scale(1)}38%{opacity:1;transform:scale(1.045)}64%{opacity:.88;transform:scale(.985)}}
-          @keyframes foyerRise{0%{transform:translateY(0);opacity:0}10%{opacity:.65}100%{transform:translateY(-44vh);opacity:0}}
+          @keyframes foyerRise{0%{transform:translateY(0);opacity:0}10%{opacity:.6}100%{transform:translateY(-46vh);opacity:0}}
+          @keyframes foyerCue{0%,100%{opacity:.45;transform:translateY(0)}50%{opacity:1;transform:translateY(4px)}}
         `}</style>
-        {/* le climax : la nuit devient matin autour du vrai feu (50mm, 35mm) */}
-        <motion.div aria-hidden className="pointer-events-none absolute inset-0" style={{ opacity: videoOpacity }}>
-          {videoNear && (
-            <video
-              className="absolute inset-0 h-full w-full object-cover"
-              src="/foyer/firepit.mp4"
-              poster="/foyer/firepit-poster.webp"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-            />
-          )}
-          <div
-            className="absolute inset-x-0 bottom-0 h-44"
-            style={{ background: 'linear-gradient(to top, rgba(22,16,10,0.6) 0%, transparent 100%)' }}
-          />
-        </motion.div>
-        <motion.p
-          style={{ opacity: kickerFade }}
-          className="absolute bottom-14 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap font-sans text-[0.72rem] uppercase tracking-[0.26em] text-brassBright"
+
+        {/* HERO : titre display court (canon, 2 lignes max), la phrase en énoncé */}
+        <motion.div
+          className="absolute inset-0 z-10 flex flex-col justify-end"
+          style={{ opacity: heroFade, y: heroY }}
         >
-          Rien à terminer. Rien à rattraper.
-        </motion.p>
-        {/* le réchauffement : la nuit devient crème, en gardant l'or du feu
-            au centre pour que la transition reste chaude, jamais grise */}
+          <div className="w-full px-6 pb-14 md:px-12 lg:px-20">
+            <motion.div
+              initial={reduce ? {} : { opacity: 0, y: 26 }}
+              animate={ready ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 1.1, ease, delay: 0.15 }}
+            >
+              <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
+              <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brass">
+                KSL | Le Foyer d'Origine
+              </p>
+            </motion.div>
+            <motion.h1
+              initial={reduce ? {} : { opacity: 0, y: 26 }}
+              animate={ready ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 1.1, ease, delay: 0.31 }}
+              className="mt-4 font-serif font-medium leading-[0.9] text-ctext text-[clamp(3.4rem,9vw,8rem)]"
+            >
+              Le Foyer d'Origine
+            </motion.h1>
+            <motion.p
+              initial={reduce ? {} : { opacity: 0, y: 24 }}
+              animate={ready ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 1.1, ease, delay: 0.47 }}
+              className="mt-6 max-w-2xl font-serif font-medium text-[clamp(1.35rem,2.2vw,1.9rem)] leading-snug text-ctext"
+            >
+              Nous n'avons jamais eu autant d'information.
+              <span className="block text-brassBright">Et jamais autant de dispersion.</span>
+            </motion.p>
+            <motion.div
+              initial={reduce ? {} : { opacity: 0, y: 22 }}
+              animate={ready ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 1.1, ease, delay: 0.63 }}
+              className="mt-8 flex flex-wrap items-end justify-between gap-6"
+            >
+              <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d'accès" dark />
+              <span
+                className="hidden font-sans text-[0.6rem] uppercase tracking-[0.3em] text-ctextSoft md:block"
+                style={{ animation: 'foyerCue 2.6s ease-in-out infinite' }}
+              >
+                Défiler
+              </span>
+            </motion.div>
+          </div>
+        </motion.div>
+
+        {/* LIGNES : sur la même vidéo, voile radial doux pour la lisibilité */}
         <motion.div
           aria-hidden
           className="pointer-events-none absolute inset-0"
+          style={{
+            opacity: linesVeil,
+            background:
+              'radial-gradient(52% 42% at 50% 46%, rgba(22,16,10,0.55), transparent 76%)',
+          }}
+        />
+        <div className="absolute inset-0 z-10 flex items-center justify-center px-6 text-center md:px-12">
+          <div>
+            {LINES.map((l, i) => (
+              <motion.p
+                key={l}
+                style={{ opacity: lineStyles[i].opacity, y: lineStyles[i].y }}
+                className="font-serif font-medium text-[2rem] leading-[1.2] text-ctext md:text-[3.2rem]"
+              >
+                {l}
+              </motion.p>
+            ))}
+          </div>
+        </div>
+        <motion.p
+          style={{ opacity: kickerFade }}
+          className="absolute bottom-12 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap font-sans text-[0.72rem] uppercase tracking-[0.26em] text-brassBright"
+        >
+          Rien à terminer. Rien à rattraper.
+        </motion.p>
+
+        {/* la crème se pose sur le matin : couture invisible vers le corps */}
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-20"
           style={{
             opacity: warm,
             background:
               'radial-gradient(62% 52% at 50% 60%, #f7ead2 0%, #f6f1e6 45%, #f6f3ee 75%)',
           }}
         />
-        <motion.div className="relative z-10 px-6 text-center md:px-12" style={{ opacity: textFade }}>
-          {LINES.map((l, i) => (
-            <motion.p
-              key={l}
-              style={{ opacity: lineStyles[i].opacity, y: lineStyles[i].y }}
-              className="font-serif text-[2.2rem] font-semibold leading-[1.15] text-ctext md:text-[3.8rem]"
-            >
-              {l}
-            </motion.p>
-          ))}
-        </motion.div>
       </div>
     </div>
   );
@@ -448,12 +391,12 @@ const Offre: React.FC = () => (
       <div className="lg:col-span-5">
         <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
         <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassBright">
-          L’offre
+          L'offre
         </p>
-        <h2 className="mt-5 font-serif text-5xl font-semibold leading-[1.05] text-ctext md:text-6xl">
-          Le Foyer d’Origine
+        <h2 className="mt-5 font-serif font-medium uppercase leading-[1.08] tracking-[0.04em] text-ctext text-[clamp(1.9rem,3.4vw,2.7rem)]">
+          Le Foyer d'Origine
         </h2>
-        <p className="mt-4 font-serif text-2xl text-ctextSoft">12 mois d’accès</p>
+        <p className="mt-4 font-serif text-2xl text-ctextSoft">12 mois d'accès</p>
         <div className="mt-10 hidden lg:block">
           <div className="max-w-[360px] overflow-hidden rounded-[30px] bg-espresso/50 p-2.5 shadow-depth ring-1 ring-brass/40">
             <img
@@ -473,8 +416,8 @@ const Offre: React.FC = () => (
           <ul className="space-y-4">
             {OFFER_ITEMS.map((item) => (
               <li key={item} className="flex items-start gap-4">
-                <span className="mt-[0.58rem] h-1.5 w-1.5 shrink-0 rounded-full bg-brass" aria-hidden />
-                <span className="font-serif text-lg leading-snug text-ink">{item}</span>
+                <span className="mt-[0.5rem] h-1.5 w-1.5 shrink-0 rounded-full bg-brass" aria-hidden />
+                <span className="font-sans text-[0.95rem] leading-[1.85] text-ink">{item}</span>
               </li>
             ))}
           </ul>
@@ -493,13 +436,12 @@ const Offre: React.FC = () => (
   </section>
 );
 
-/* ── Appel final (section 12 du PDF) : retour au feu ── */
+/* ── Appel final (section 12 du PDF) : le sceau revient, la braise aussi ── */
 const AppelFinal: React.FC = () => {
   const reduce = useReducedMotion();
   return (
     <section className="relative overflow-hidden bg-espressoDeep px-6 py-32 md:px-12 lg:px-20">
       <Atmosphere light="72% 30%" strength={1} />
-      {/* les étincelles réelles montent derrière l'appel final */}
       <img
         src="/foyer/final-braises.webp"
         alt=""
@@ -511,7 +453,6 @@ const AppelFinal: React.FC = () => {
           WebkitMaskImage: 'linear-gradient(to top, black 50%, transparent 100%)',
         }}
       />
-      {/* la braise du hero revient : l'arc se referme au même feu */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
@@ -521,31 +462,32 @@ const AppelFinal: React.FC = () => {
           animation: reduce ? undefined : 'foyerBreathe 5.5s ease-in-out infinite',
         }}
       />
+      <style>{`@keyframes foyerBreathe{0%,100%{opacity:.75}50%{opacity:1}}`}</style>
       <div className="relative z-10 mx-auto grid w-full max-w-[1360px] items-center gap-y-14 lg:grid-cols-12 lg:gap-x-12">
         <div className="lg:col-span-8">
-          <h2 className="font-serif text-[2.6rem] font-semibold leading-[1.06] text-ctext md:text-[4rem]">
+          <h2 className="font-serif font-medium leading-[1.08] text-ctext text-[clamp(2.2rem,3.6vw,3.4rem)]">
             Tout ne mérite pas notre attention.
           </h2>
           <p className="mt-6 max-w-2xl font-serif text-2xl leading-snug text-brassBright">
             Mais certaines choses peuvent changer notre manière de voir.
           </p>
           <p className="mt-3 font-serif text-xl text-ctextSoft">
-            Le Foyer d’Origine est une place pour les découvrir.
+            Le Foyer d'Origine est une place pour les découvrir.
           </p>
-          <div className="mt-10 space-y-1 font-serif text-lg leading-relaxed text-ctextSoft">
+          <div className="mt-10 space-y-1 font-sans text-[0.95rem] leading-[1.85] text-ctextSoft">
             <p>Pour sortir de la répétition.</p>
-            <p>Pour rencontrer l’inattendu.</p>
+            <p>Pour rencontrer l'inattendu.</p>
             <p>Pour accéder à des liens impossibles à demander dans une barre de recherche.</p>
           </div>
-          <p className="mt-8 max-w-2xl font-serif text-lg leading-relaxed text-ctext">
+          <p className="mt-8 max-w-2xl font-sans text-[0.95rem] leading-[1.85] text-ctext">
             Pour retrouver un rythme humain, une place parmi les autres et la
-            possibilité d’être bien pendant que le monde bouge.
+            possibilité d'être bien pendant que le monde bouge.
           </p>
-          <p className="mt-14 font-serif text-[clamp(2.2rem,3.6vw,3.6rem)] font-semibold leading-[1.08] text-ctext">
+          <p className="mt-14 font-serif font-semibold leading-[1.08] text-ctext text-[clamp(2.2rem,3.6vw,3.6rem)]">
             Prenez place autour du feu.
           </p>
           <div className="mt-9">
-            <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d’accès" dark />
+            <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d'accès" dark />
           </div>
         </div>
         <div className="hidden lg:col-span-4 lg:flex lg:justify-end">
@@ -574,8 +516,7 @@ const FoyerPage: React.FC = () => {
       {/* inert tant que le preloader couvre : le clavier ne peut pas
           atteindre le contenu invisible dessous */}
       <div inert={ready ? undefined : true}>
-        <Hero ready={ready} />
-        <Allumage />
+        <FoyerScene ready={ready} />
         <BodySections />
         <Offre />
         <AppelFinal />

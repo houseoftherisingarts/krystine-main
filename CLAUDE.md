@@ -191,3 +191,15 @@ npx @claude-flow/cli@latest doctor --fix
 ```
 
 **Agent tool** handles execution (agents, files, code, git). **MCP tools** handle coordination (swarm, memory, hooks). **CLI** is the same via Bash.
+
+# 🚨 BRANDING L'ŒUVRE — règles dures, à charger AVANT tout pixel (posées 2026-08-17 après 3e rappel d'Alex)
+Canon complet : `~/Documents/Onyx/30_library/loeuvre-design-system.md`. Résumé non négociable :
+1. **Titres : JAMAIS plus de 2 lignes**, desktop ET mobile. Trop long = raccourcir la copie, pas rapetisser la police.
+2. **Échelle typographique** : h1 display `clamp(4.5rem,10vw,8.6rem)` lh .84 (titre COURT) · titres de section `clamp(1.9rem,3.4vw,2.7rem)` UPPERCASE letter-spacing léger · corps `.9-.95rem` lh 1.85 · libellés `.55-.68rem` uppercase ls `.13-.22em`.
+3. **Fonts** : Cormorant Garamond 500 = titres/display/taglines · Inter = corps/libellés/boutons · Pinyon Script = signature seulement. JAMAIS d'italique (règle globale d'Alex, prime sur le doc).
+4. **Couleurs** : tokens espresso/crème/brass SEULEMENT (index.html). Brass = décor/fond de bouton, JAMAIS en texte sur crème → `brassInk #7d6330`. Bouton = fond brass + texte espresso. Jamais #000/#fff. Un seul accent, ≤10% de la surface.
+5. **Hero canon** : vidéo/cinémagraphe plein cadre + voile dégradé + poussière chaude (canvas léger) + CTA laiton. Pas de photo statique quand une vidéo existe.
+6. **Transitions** : feuilles empilées sticky (section suivante monte avec `border-radius:18px 18px 0 0` + ombre) ou couture invisible. JAMAIS de vide/panneau brun entre deux sections.
+7. **Motion** : reveal 1.1-1.2s `cubic-bezier(.16,.8,.24,1)`, blur(6px)→0, délais étagés; lent, jamais de bounce; `prefers-reduced-motion` respecté.
+8. **Un seul feu / un seul motif central par page** : ne pas multiplier les représentations du même symbole (leçon Foyer : 3 feux différents = non; LA vidéo est le feu).
+Toute nouvelle page DOIT réutiliser ces tokens et composants (`src/components/motion/loeuvre.tsx`), jamais un template générique.
