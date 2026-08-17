@@ -52,6 +52,24 @@ const Dot: React.FC<{ on?: 'dark' | 'light' }> = ({ on = 'light' }) => (
 
 const roman = ['I', 'II', 'III', 'IV'];
 
+/* ── Seam chaud : la jointure sombre-crème reste dans la gamme du feu
+   (voile terracotta au milieu) au lieu de passer par un gris sale ── */
+const WarmSeam: React.FC<{ from: string; height?: number }> = ({ from, height = 130 }) => (
+  <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-0" style={{ height }}>
+    <div
+      className="absolute inset-0"
+      style={{ background: `linear-gradient(180deg, ${from} 0%, transparent 100%)` }}
+    />
+    <div
+      className="absolute inset-0"
+      style={{
+        background:
+          'linear-gradient(180deg, rgba(176,106,63,0) 0%, rgba(176,106,63,0.14) 42%, rgba(199,154,82,0.06) 68%, rgba(176,106,63,0) 100%)',
+      }}
+    />
+  </div>
+);
+
 const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; onClick: () => void }> = ({
   item,
   i,
