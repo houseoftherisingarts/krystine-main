@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
-import { Atmosphere, Reveal, Seam, Parallax } from '../../components/motion/loeuvre';
+import { Atmosphere, Reveal, Parallax } from '../../components/motion/loeuvre';
 import {
   SECTION2,
   SECTION3,
@@ -81,7 +81,7 @@ const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; o
           transition={{ duration: 0.5, ease }}
           className="overflow-hidden"
         >
-          <p className="pb-7 pl-10 pr-10 font-sans text-[0.98rem] leading-[1.8] text-inkSoft max-w-[58ch]">
+          <p className="pb-7 pl-10 pr-10 font-serif text-[1.1rem] leading-[1.7] text-inkSoft max-w-[58ch]">
             {item.a}
           </p>
         </motion.div>
@@ -106,20 +106,20 @@ export default function BodySections() {
               <SectionTitle className="mt-5">{SECTION2.title}</SectionTitle>
             </Reveal>
             <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
-              <p className="font-sans text-[1.05rem] leading-[1.85] text-inkSoft max-w-[52ch]">{SECTION2.lead}</p>
+              <p className="font-serif text-[1.18rem] leading-[1.75] text-inkSoft max-w-[52ch]">{SECTION2.lead}</p>
               <p className="mt-8 font-serif text-ink text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug max-w-[36ch]">
                 {SECTION2.question}
               </p>
               <p className="mt-6 font-serif font-medium text-ink text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug">
                 {SECTION2.statement}
               </p>
-              <p className="mt-6 font-sans text-[1.02rem] leading-[1.85] text-inkSoft max-w-[52ch]">{SECTION2.body}</p>
+              <p className="mt-6 font-serif text-[1.15rem] leading-[1.75] text-inkSoft max-w-[52ch]">{SECTION2.body}</p>
               <p className="mt-10 font-serif font-medium text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[44ch]">
                 {SECTION2.pullQuote}
               </p>
               <ul className="mt-8 space-y-3">
                 {SECTION2.list.map((li) => (
-                  <li key={li} className="flex items-start gap-3 font-sans text-[0.98rem] leading-relaxed text-inkSoft">
+                  <li key={li} className="flex items-start gap-3 font-serif text-[1.1rem] leading-[1.7] text-inkSoft">
                     <Dot />
                     {li}
                   </li>
@@ -143,7 +143,7 @@ export default function BodySections() {
               {SECTION3.paragraphs.map((p, i) => (
                 <p
                   key={p}
-                  className={`font-sans text-[1.05rem] leading-[1.85] text-inkSoft max-w-[54ch] ${i > 0 ? 'mt-6' : ''}`}
+                  className={`font-serif text-[1.18rem] leading-[1.75] text-inkSoft max-w-[54ch] ${i > 0 ? 'mt-6' : ''}`}
                 >
                   {p}
                 </p>
@@ -165,7 +165,7 @@ export default function BodySections() {
               <SectionTitle className="mt-5">{SECTION4.title}</SectionTitle>
             </Reveal>
             <Reveal delay={0.08} className="lg:col-span-6">
-              <p className="font-sans text-[1.02rem] leading-[1.85] text-inkSoft max-w-[48ch]">{SECTION4.intro}</p>
+              <p className="font-serif text-[1.15rem] leading-[1.75] text-inkSoft max-w-[48ch]">{SECTION4.intro}</p>
             </Reveal>
           </div>
 
@@ -175,7 +175,7 @@ export default function BodySections() {
                 <div className="h-full rounded-[30px] border border-brass/20 bg-card p-8 md:p-9">
                   <span className="font-serif text-brass text-3xl leading-none">{roman[i]}</span>
                   <h3 className="mt-5 font-serif text-xl md:text-2xl text-ink">{o.title}</h3>
-                  <p className="mt-4 font-sans text-[0.95rem] leading-[1.8] text-inkSoft">{o.body}</p>
+                  <p className="mt-4 font-serif text-[1.08rem] leading-[1.7] text-inkSoft">{o.body}</p>
                 </div>
               </Reveal>
             ))}
@@ -201,7 +201,7 @@ export default function BodySections() {
               <Reveal key={it.title} delay={(i % 2) * 0.06} className={i % 2 === 1 ? 'md:mt-10' : ''}>
                 <span className="block h-px w-8 bg-brass/50" aria-hidden />
                 <h3 className="mt-4 font-serif text-xl md:text-2xl text-ink">{it.title}</h3>
-                <p className="mt-3 font-sans text-[0.95rem] leading-[1.8] text-inkSoft max-w-[44ch]">{it.body}</p>
+                <p className="mt-3 font-serif text-[1.08rem] leading-[1.7] text-inkSoft max-w-[44ch]">{it.body}</p>
               </Reveal>
             ))}
           </div>
@@ -225,7 +225,7 @@ export default function BodySections() {
             </Reveal>
             <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
               {SECTION6.paragraphs.map((p) => (
-                <p key={p} className="font-sans text-[1.05rem] leading-[1.85] text-ctextSoft max-w-[52ch]">
+                <p key={p} className="font-serif text-[1.18rem] leading-[1.75] text-ctextSoft max-w-[52ch]">
                   {p}
                 </p>
               ))}
@@ -233,7 +233,7 @@ export default function BodySections() {
                 {SECTION6.emphasis}
               </p>
               {SECTION6.closingParagraphs.map((p) => (
-                <p key={p} className="mt-6 font-sans text-[1.02rem] leading-[1.85] text-ctextSoft max-w-[52ch]">
+                <p key={p} className="mt-6 font-serif text-[1.15rem] leading-[1.75] text-ctextSoft max-w-[52ch]">
                   {p}
                 </p>
               ))}
@@ -250,17 +250,17 @@ export default function BodySections() {
             <Reveal className="lg:col-span-7">
               <Eyebrow>{SECTION7.eyebrow}</Eyebrow>
               <SectionTitle className="mt-5">{SECTION7.title}</SectionTitle>
-              <p className="mt-8 font-sans text-[1.05rem] leading-[1.85] text-inkSoft max-w-[50ch]">{SECTION7.lead}</p>
+              <p className="mt-8 font-serif text-[1.18rem] leading-[1.75] text-inkSoft max-w-[50ch]">{SECTION7.lead}</p>
               <p className="mt-6 font-serif font-medium text-brassInk text-[clamp(1.25rem,2vw,1.6rem)] leading-snug max-w-[46ch]">
                 {SECTION7.emphasis}
               </p>
               {SECTION7.paragraphs.map((p) => (
-                <p key={p} className="mt-6 font-sans text-[1.02rem] leading-[1.85] text-inkSoft max-w-[52ch]">
+                <p key={p} className="mt-6 font-serif text-[1.15rem] leading-[1.75] text-inkSoft max-w-[52ch]">
                   {p}
                 </p>
               ))}
 
-              <div className="mt-10 flex gap-10 border-y border-ink/12 py-6 max-w-[46ch]">
+              <div className="mt-10 flex gap-10 border-y border-ink/[0.12] py-6 max-w-[46ch]">
                 {SECTION7.stats.map((s) => (
                   <div key={s.value} className="flex flex-col gap-1">
                     <span className="font-serif text-2xl md:text-3xl text-brassInk leading-none">{s.value}</span>
@@ -272,13 +272,13 @@ export default function BodySections() {
               <h3 className="mt-10 font-serif text-xl md:text-2xl text-ink max-w-[36ch]">{SECTION7.subhead}</h3>
               <ul className="mt-6 space-y-4">
                 {SECTION7.questions.map((q) => (
-                  <li key={q} className="flex items-start gap-3 font-sans text-[0.98rem] leading-relaxed text-inkSoft">
+                  <li key={q} className="flex items-start gap-3 font-serif text-[1.1rem] leading-[1.7] text-inkSoft">
                     <Dot />
                     {q}
                   </li>
                 ))}
               </ul>
-              <p className="mt-8 font-sans text-[1.02rem] leading-[1.85] text-inkSoft max-w-[52ch]">{SECTION7.paragraph2}</p>
+              <p className="mt-8 font-serif text-[1.15rem] leading-[1.75] text-inkSoft max-w-[52ch]">{SECTION7.paragraph2}</p>
               <p className="mt-4 font-serif font-medium text-brassInk text-[clamp(1.25rem,2vw,1.6rem)] leading-snug max-w-[42ch]">
                 {SECTION7.closing}
               </p>
@@ -320,7 +320,7 @@ export default function BodySections() {
                 <div className="mt-6 grid sm:grid-cols-2 gap-8">
                   <ul className="space-y-3">
                     {SECTION8.season.openings.map((li) => (
-                      <li key={li} className="flex items-start gap-3 font-sans text-[0.92rem] leading-relaxed text-inkSoft">
+                      <li key={li} className="flex items-start gap-3 font-serif text-[1.05rem] leading-[1.7] text-inkSoft">
                         <Dot />
                         {li}
                       </li>
@@ -332,7 +332,7 @@ export default function BodySections() {
                     </p>
                     <ul className="space-y-3">
                       {SECTION8.season.space.map((li) => (
-                        <li key={li} className="flex items-start gap-3 font-sans text-[0.92rem] leading-relaxed text-inkSoft">
+                        <li key={li} className="flex items-start gap-3 font-serif text-[1.05rem] leading-[1.7] text-inkSoft">
                           <Dot />
                           {li}
                         </li>
@@ -346,11 +346,11 @@ export default function BodySections() {
             <Reveal delay={0.08} className="lg:col-span-5 flex flex-col gap-6">
               <div className="rounded-[30px] border border-brass/20 bg-card p-8">
                 <h3 className="font-serif text-lg md:text-xl text-ink">{SECTION8.summer.title}</h3>
-                <p className="mt-4 font-sans text-[0.92rem] leading-[1.8] text-inkSoft">{SECTION8.summer.text}</p>
+                <p className="mt-4 font-serif text-[1.05rem] leading-[1.7] text-inkSoft">{SECTION8.summer.text}</p>
               </div>
               <div className="rounded-[30px] border border-brass/20 bg-card p-8">
                 <h3 className="font-serif text-lg md:text-xl text-ink">{SECTION8.yearRound.title}</h3>
-                <p className="mt-4 font-sans text-[0.92rem] leading-[1.8] text-inkSoft">{SECTION8.yearRound.text}</p>
+                <p className="mt-4 font-serif text-[1.05rem] leading-[1.7] text-inkSoft">{SECTION8.yearRound.text}</p>
               </div>
             </Reveal>
           </div>
@@ -370,7 +370,7 @@ export default function BodySections() {
               <div className="h-full rounded-[30px] bg-card border border-brass/20 p-8 md:p-10">
                 <p className="font-sans text-[0.62rem] uppercase tracking-[0.28em] text-brassInk mb-4">Le Foyer</p>
                 <h3 className="font-serif text-2xl text-ink">{SECTION9.foyer.lead}</h3>
-                <p className="mt-4 font-sans text-[0.98rem] leading-[1.8] text-inkSoft">{SECTION9.foyer.text}</p>
+                <p className="mt-4 font-serif text-[1.1rem] leading-[1.7] text-inkSoft">{SECTION9.foyer.text}</p>
               </div>
             </Reveal>
             <Reveal delay={0.08}>
@@ -379,7 +379,7 @@ export default function BodySections() {
                   L'Expérience Origine
                 </p>
                 <h3 className="font-serif text-2xl text-ink">{SECTION9.experience.lead}</h3>
-                <p className="mt-4 font-sans text-[0.98rem] leading-[1.8] text-inkSoft">{SECTION9.experience.text}</p>
+                <p className="mt-4 font-serif text-[1.1rem] leading-[1.7] text-inkSoft">{SECTION9.experience.text}</p>
               </div>
             </Reveal>
           </div>
@@ -388,7 +388,7 @@ export default function BodySections() {
             <p className="font-serif font-medium text-ink text-[clamp(1.15rem,1.8vw,1.4rem)] leading-snug">
               {SECTION9.bridgeLead}
             </p>
-            <p className="mt-4 font-sans text-[0.98rem] leading-[1.85] text-inkSoft">{SECTION9.bridgeBody}</p>
+            <p className="mt-4 font-serif text-[1.1rem] leading-[1.75] text-inkSoft">{SECTION9.bridgeBody}</p>
           </Reveal>
         </div>
       </section>
