@@ -198,10 +198,33 @@ const LINES = [
 const Allumage: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end end'],
-  });
+  /* Progression maison (pattern /communaute) : useScroll({target}) mesurait
+     toute la page ici au lieu de la section, alors on lit le rect nous-mêmes.
+     p = distance parcourue dans le pin / hauteur scrollable de la section. */
+  const scrollYProgress = useMotionValue(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    const update = () => {
+      const r = el.getBoundingClientRect();
+      const total = r.height - window.innerHeight;
+      if (total <= 0) return;
+      scrollYProgress.set(Math.min(1, Math.max(0, -r.top / total)));
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [scrollYProgress]);
   const emberScale = useTransform(scrollYProgress, [0, 0.6], [0.25, 3.1]);
   const emberOpacity = useTransform(scrollYProgress, [0, 0.12, 0.6], [0, 0.5, 1]);
   const warm = useTransform(scrollYProgress, [0.66, 0.97], [0, 1]);
