@@ -383,6 +383,31 @@ const Allumage: React.FC = () => {
           @keyframes foyerFlicker{0%,100%{opacity:.8;transform:scale(1)}38%{opacity:1;transform:scale(1.045)}64%{opacity:.88;transform:scale(.985)}}
           @keyframes foyerRise{0%{transform:translateY(0);opacity:0}10%{opacity:.65}100%{transform:translateY(-44vh);opacity:0}}
         `}</style>
+        {/* le climax : la nuit devient matin autour du vrai feu (50mm, 35mm) */}
+        <motion.div aria-hidden className="pointer-events-none absolute inset-0" style={{ opacity: videoOpacity }}>
+          {videoNear && (
+            <video
+              className="absolute inset-0 h-full w-full object-cover"
+              src="/foyer/firepit.mp4"
+              poster="/foyer/firepit-poster.webp"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+            />
+          )}
+          <div
+            className="absolute inset-x-0 bottom-0 h-44"
+            style={{ background: 'linear-gradient(to top, rgba(22,16,10,0.6) 0%, transparent 100%)' }}
+          />
+        </motion.div>
+        <motion.p
+          style={{ opacity: kickerFade }}
+          className="absolute bottom-14 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap font-sans text-[0.72rem] uppercase tracking-[0.26em] text-brassBright"
+        >
+          Rien à terminer. Rien à rattraper.
+        </motion.p>
         {/* le réchauffement : la nuit devient crème, en gardant l'or du feu
             au centre pour que la transition reste chaude, jamais grise */}
         <motion.div
