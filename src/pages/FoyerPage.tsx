@@ -12,7 +12,7 @@ import { Atmosphere } from '../components/motion/loeuvre';
 import BodySections from './foyer/BodySections';
 
 /**
- * Le Foyer d'Origine — page de vente (work in progress, URL dédiée /foyer).
+ * Le Foyer d'Origine · page de vente (work in progress, URL dédiée /foyer).
  * Concept « l'allumage » : la page ouvre dans la nuit (espresso), le sceau
  * se dessine, la braise s'allume, et le premier scroll fait prendre le feu
  * avant que la scène se réchauffe vers la crème éditoriale.
@@ -23,7 +23,7 @@ import BodySections from './foyer/BodySections';
 const ease = [0.16, 0.8, 0.24, 1] as const;
 const CTA_HREF = '/liste-attente?programme=foyer';
 
-/* ── Sceau concentrique (le mark du PDF) — se dessine au chargement ── */
+/* ── Sceau concentrique (le mark du PDF) · se dessine au chargement ── */
 const Seal: React.FC<{ animate?: boolean; className?: string }> = ({
   animate = true,
   className = '',
@@ -55,7 +55,7 @@ const Seal: React.FC<{ animate?: boolean; className?: string }> = ({
   </svg>
 );
 
-/* ── Preloader ~1s : nuit, le sceau se dessine, la braise s'allume ── */
+/* ── Preloader ~1s : nuit, le sceau se dessine, la braise s’allume ── */
 const Preloader: React.FC<{ done: boolean }> = ({ done }) => (
   <AnimatePresence>
     {!done && (
@@ -72,7 +72,7 @@ const Preloader: React.FC<{ done: boolean }> = ({ done }) => (
             animate={{ opacity: 0.85 }}
             transition={{ delay: 0.5, duration: 0.5 }}
           >
-            Le Foyer d'Origine
+            Le Foyer d’Origine
           </motion.p>
         </div>
       </motion.div>
@@ -141,14 +141,14 @@ const Hero: React.FC<{ ready: boolean }> = ({ ready }) => {
         <motion.div {...stagger(0)}>
           <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
           <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brass">
-            KSL | Le Foyer d'Origine
+            KSL | Le Foyer d’Origine
           </p>
         </motion.div>
         <motion.h1
           {...stagger(1)}
           className="mt-6 max-w-5xl font-serif text-[2.6rem] font-semibold leading-[1.04] text-ctext md:text-[4.4rem] lg:text-[5.2rem]"
         >
-          Nous n'avons jamais eu autant d'information.
+          Nous n’avons jamais eu autant d’information.
           <span className="block text-brassBright">
             Et jamais autant de dispersion.
           </span>
@@ -157,12 +157,12 @@ const Hero: React.FC<{ ready: boolean }> = ({ ready }) => {
           {...stagger(2)}
           className="mt-8 max-w-xl font-serif text-xl leading-relaxed text-ctextSoft md:text-2xl"
         >
-          Un espace privé en ligne pour découvrir ce que nous n'aurions pas su
+          Un espace privé en ligne pour découvrir ce que nous n’aurions pas su
           chercher et accéder à des liens impossibles à demander dans une barre
           de recherche.
         </motion.p>
         <motion.div {...stagger(3)} className="mt-10">
-          <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d'accès" dark />
+          <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d’accès" dark />
         </motion.div>
       </div>
       {/* indice de défilement */}
@@ -339,11 +339,16 @@ const Allumage: React.FC = () => {
           @keyframes foyerFlicker{0%,100%{opacity:.8;transform:scale(1)}38%{opacity:1;transform:scale(1.045)}64%{opacity:.88;transform:scale(.985)}}
           @keyframes foyerRise{0%{transform:translateY(0);opacity:0}10%{opacity:.65}100%{transform:translateY(-44vh);opacity:0}}
         `}</style>
-        {/* le réchauffement : la nuit devient crème */}
+        {/* le réchauffement : la nuit devient crème, en gardant l'or du feu
+            au centre pour que la transition reste chaude, jamais grise */}
         <motion.div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-cream"
-          style={{ opacity: warm }}
+          className="pointer-events-none absolute inset-0"
+          style={{
+            opacity: warm,
+            background:
+              'radial-gradient(62% 52% at 50% 60%, #f7ead2 0%, #f6f1e6 45%, #f6f3ee 75%)',
+          }}
         />
         <div className="relative z-10 px-6 text-center md:px-12">
           {LINES.map((l, i) => (
@@ -384,12 +389,12 @@ const Offre: React.FC = () => (
       <div className="lg:col-span-5">
         <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
         <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassBright">
-          L'offre
+          L’offre
         </p>
         <h2 className="mt-5 font-serif text-5xl font-semibold leading-[1.05] text-ctext md:text-6xl">
-          Le Foyer d'Origine
+          Le Foyer d’Origine
         </h2>
-        <p className="mt-4 font-serif text-2xl text-ctextSoft">12 mois d'accès</p>
+        <p className="mt-4 font-serif text-2xl text-ctextSoft">12 mois d’accès</p>
         <div className="mt-10 hidden lg:block">
           <Seal animate={false} className="h-24 w-24 opacity-40" />
         </div>
@@ -444,22 +449,22 @@ const AppelFinal: React.FC = () => {
             Mais certaines choses peuvent changer notre manière de voir.
           </p>
           <p className="mt-3 font-serif text-xl text-ctextSoft">
-            Le Foyer d'Origine est une place pour les découvrir.
+            Le Foyer d’Origine est une place pour les découvrir.
           </p>
           <div className="mt-10 space-y-1 font-serif text-lg leading-relaxed text-ctextSoft">
             <p>Pour sortir de la répétition.</p>
-            <p>Pour rencontrer l'inattendu.</p>
+            <p>Pour rencontrer l’inattendu.</p>
             <p>Pour accéder à des liens impossibles à demander dans une barre de recherche.</p>
           </div>
           <p className="mt-8 max-w-2xl font-serif text-lg leading-relaxed text-ctext">
             Pour retrouver un rythme humain, une place parmi les autres et la
-            possibilité d'être bien pendant que le monde bouge.
+            possibilité d’être bien pendant que le monde bouge.
           </p>
           <p className="mt-14 font-serif text-[clamp(2.2rem,3.6vw,3.6rem)] font-semibold leading-[1.08] text-ctext">
             Prenez place autour du feu.
           </p>
           <div className="mt-9">
-            <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d'accès" dark />
+            <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d’accès" dark />
           </div>
         </div>
         <div className="hidden lg:col-span-4 lg:flex lg:justify-end">
