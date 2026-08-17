@@ -327,7 +327,7 @@ export default function BodySections() {
               </p>
             </Reveal>
 
-            <Reveal delay={0.1} className="lg:col-span-5">
+            <Reveal delay={0.1} className="lg:col-span-5 lg:sticky lg:top-24">
               <span className="block h-px w-10 bg-brass mb-5" aria-hidden />
               <div className="ring-1 ring-brass/40 rounded-[30px] shadow-depth overflow-hidden bg-card p-2.5">
                 <div className="relative overflow-hidden rounded-[22px] aspect-[4/5]">
