@@ -271,21 +271,74 @@ const Allumage: React.FC = () => {
   return (
     <div ref={ref} className="relative h-[280vh] bg-espressoDeep">
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
-        {/* le feu qui prend */}
+        {/* le feu qui prend : trois couches (ambient, halo, coeur) + flicker lent */}
         <motion.div
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-[62%] h-[58vmin] w-[58vmin] rounded-full"
+          className="pointer-events-none absolute left-1/2 top-[62%] h-[58vmin] w-[58vmin]"
           style={{
             /* x/y dans framer (pas de classes -translate : scale les écraserait) */
             x: '-50%',
             y: '-50%',
             scale: emberScale,
             opacity: emberOpacity,
-            background:
-              'radial-gradient(circle, rgba(199,154,82,0.55) 0%, rgba(176,106,63,0.32) 38%, rgba(187,154,94,0.10) 62%, transparent 78%)',
-            filter: 'blur(6px)',
           }}
-        />
+        >
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{
+              background:
+                'radial-gradient(circle, rgba(187,154,94,0.20) 0%, rgba(176,106,63,0.10) 55%, transparent 76%)',
+              filter: 'blur(8px)',
+            }}
+          />
+          <div
+            className="absolute inset-[16%] rounded-full"
+            style={{
+              background:
+                'radial-gradient(circle, rgba(176,106,63,0.45) 0%, rgba(176,106,63,0.14) 58%, transparent 78%)',
+              filter: 'blur(10px)',
+              animation: 'foyerFlicker 5.4s ease-in-out infinite',
+            }}
+          />
+          <motion.div className="absolute inset-[32%]" style={{ opacity: coreHeat }}>
+            <div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background:
+                  'radial-gradient(circle, rgba(220,184,116,0.85) 0%, rgba(199,154,82,0.5) 40%, rgba(176,106,63,0.16) 66%, transparent 80%)',
+                filter: 'blur(4px)',
+                animation: 'foyerFlicker 3.8s ease-in-out infinite reverse',
+              }}
+            />
+          </motion.div>
+        </motion.div>
+        {/* braises ponctuelles qui montent, lentes */}
+        <motion.div aria-hidden className="pointer-events-none absolute inset-0" style={{ opacity: coreHeat }}>
+          {[
+            { l: '46%', d: '0s', s: 5 },
+            { l: '53%', d: '2.6s', s: 4 },
+            { l: '49%', d: '4.7s', s: 3 },
+          ].map((b) => (
+            <span
+              key={b.l}
+              className="absolute rounded-full"
+              style={{
+                left: b.l,
+                bottom: '24%',
+                width: b.s,
+                height: b.s,
+                background: '#dcb874',
+                filter: 'blur(1px)',
+                animation: `foyerRise 7.5s linear ${b.d} infinite`,
+                opacity: 0,
+              }}
+            />
+          ))}
+        </motion.div>
+        <style>{`
+          @keyframes foyerFlicker{0%,100%{opacity:.8;transform:scale(1)}38%{opacity:1;transform:scale(1.045)}64%{opacity:.88;transform:scale(.985)}}
+          @keyframes foyerRise{0%{transform:translateY(0);opacity:0}10%{opacity:.65}100%{transform:translateY(-44vh);opacity:0}}
+        `}</style>
         {/* le réchauffement : la nuit devient crème */}
         <motion.div
           aria-hidden
