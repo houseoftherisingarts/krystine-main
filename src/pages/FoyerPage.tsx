@@ -238,6 +238,8 @@ const Allumage: React.FC = () => {
   }, [scrollYProgress]);
   const emberScale = useTransform(scrollYProgress, [0, 0.6], [0.25, 3.1]);
   const emberOpacity = useTransform(scrollYProgress, [0, 0.12, 0.6], [0, 0.5, 1]);
+  /* la braise macro reelle derriere le feu anime; s'efface sous le voile creme */
+  const bgEmber = useTransform(scrollYProgress, [0, 0.15, 0.6, 0.82], [0, 0.4, 0.6, 0]);
   /* le coeur incandescent monte avec la progression : de la braise sombre a l'or */
   const coreHeat = useTransform(scrollYProgress, [0.12, 0.55], [0, 1]);
   const warm = useTransform(scrollYProgress, [0.66, 0.97], [0, 1]);
