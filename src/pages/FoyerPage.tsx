@@ -419,7 +419,7 @@ const Allumage: React.FC = () => {
               'radial-gradient(62% 52% at 50% 60%, #f7ead2 0%, #f6f1e6 45%, #f6f3ee 75%)',
           }}
         />
-        <div className="relative z-10 px-6 text-center md:px-12">
+        <motion.div className="relative z-10 px-6 text-center md:px-12" style={{ opacity: textFade }}>
           {LINES.map((l, i) => (
             <motion.p
               key={l}
@@ -429,13 +429,7 @@ const Allumage: React.FC = () => {
               {l}
             </motion.p>
           ))}
-          <motion.p
-            style={{ ...closing, color: kickerColor }}
-            className="mt-10 font-sans text-[0.72rem] uppercase tracking-[0.26em]"
-          >
-            Rien à terminer. Rien à rattraper.
-          </motion.p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
