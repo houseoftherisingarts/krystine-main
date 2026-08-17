@@ -262,7 +262,7 @@ export default function BodySections() {
 
       {/* ═══════════════ SECTION 7 · Ce qui relie les étoiles (Krystine) ═══════════════ */}
       <section className="relative bg-cream2 py-24 md:py-36">
-        <Seam from="#2a2015" />
+        <WarmSeam from="#2a2015" />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="grid lg:grid-cols-12 gap-x-14 gap-y-14 items-start">
             <Reveal className="lg:col-span-7">
