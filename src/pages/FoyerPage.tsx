@@ -122,6 +122,17 @@ const Hero: React.FC<{ ready: boolean }> = ({ ready }) => {
         };
   return (
     <header className="relative flex min-h-screen flex-col justify-end overflow-hidden bg-espressoDeep">
+      {/* l'âtre en pleine page : Ken Burns lent, gradient bas pour la lisibilité */}
+      <div className="absolute inset-0" aria-hidden>
+        <KenBurns src="/foyer/hero-atre.webp" />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(to top, #16100a 6%, rgba(22,16,10,0.78) 38%, rgba(22,16,10,0.35) 66%, rgba(22,16,10,0.6) 100%)',
+          }}
+        />
+      </div>
       <Atmosphere light="74% 18%" strength={0.9} />
       {/* braise ambiante au repos */}
       <div
