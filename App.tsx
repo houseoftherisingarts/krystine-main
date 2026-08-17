@@ -123,6 +123,7 @@ const Footing: React.FC = () => {
     || location.pathname === '/formations'
     || location.pathname === '/medias'
     || location.pathname === '/podcast'
+    || location.pathname === '/foyer'
   ) return null;
   return (
     <>
