@@ -97,7 +97,8 @@ const Chrome: React.FC = () => {
     || location.pathname === '/slidebg'
     || location.pathname === '/v1'
     || location.pathname === '/v2'
-    || location.pathname === '/v3';
+    || location.pathname === '/v3'
+    || location.pathname === '/foyer';
   if (hidden) return null;
   return (
     <>
