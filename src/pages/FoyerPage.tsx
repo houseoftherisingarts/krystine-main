@@ -237,14 +237,19 @@ const Allumage: React.FC = () => {
     };
   }, [scrollYProgress]);
   const emberScale = useTransform(scrollYProgress, [0, 0.6], [0.25, 3.1]);
-  const emberOpacity = useTransform(scrollYProgress, [0, 0.12, 0.6], [0, 0.5, 1]);
-  /* la braise macro reelle derriere le feu anime; s'efface sous le voile creme */
-  const bgEmber = useTransform(scrollYProgress, [0, 0.15, 0.6, 0.82], [0, 0.4, 0.6, 0]);
+  /* le feu anime s'efface quand la video du matin se revele */
+  const emberOpacity = useTransform(scrollYProgress, [0, 0.12, 0.55, 0.7], [0, 0.5, 1, 0]);
+  /* la braise macro reelle derriere le feu anime; s'efface avant la video */
+  const bgEmber = useTransform(scrollYProgress, [0, 0.15, 0.5, 0.64], [0, 0.4, 0.6, 0]);
   /* le coeur incandescent monte avec la progression : de la braise sombre a l'or */
-  const coreHeat = useTransform(scrollYProgress, [0.12, 0.55], [0, 1]);
-  const warm = useTransform(scrollYProgress, [0.66, 0.97], [0, 1]);
-  /* kicker : brass clair tant que la scene est sombre, brassInk une fois creme */
-  const kickerColor = useTransform(scrollYProgress, [0.7, 0.95], ['#dcb874', '#7d6330']);
+  const coreHeat = useTransform(scrollYProgress, [0.12, 0.55, 0.7], [0, 1, 0]);
+  /* les lignes s'effacent pour laisser la scene au matin */
+  const textFade = useTransform(scrollYProgress, [0.14, 0.6, 0.72], [1, 1, 0]);
+  /* le climax : la video du foyer au matin, revelee plein cadre */
+  const videoOpacity = useTransform(scrollYProgress, [0.58, 0.76, 0.9, 0.99], [0, 1, 1, 0.35]);
+  const kickerFade = useTransform(scrollYProgress, [0.74, 0.84], [0, 1]);
+  /* la couture creme se pose sur la fin du matin */
+  const warm = useTransform(scrollYProgress, [0.88, 1], [0, 1]);
   /* hooks appelés inconditionnellement, dans le même ordre à chaque rendu */
   const lineStyles = [0, 1, 2].map((i) => ({
     opacity: useTransform(
