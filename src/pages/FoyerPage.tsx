@@ -356,8 +356,8 @@ const Allumage: React.FC = () => {
             </motion.p>
           ))}
           <motion.p
-            style={closing}
-            className="mt-10 font-sans text-[0.72rem] uppercase tracking-[0.26em] text-brassInk"
+            style={{ ...closing, color: kickerColor }}
+            className="mt-10 font-sans text-[0.72rem] uppercase tracking-[0.26em]"
           >
             Rien à terminer. Rien à rattraper.
           </motion.p>
