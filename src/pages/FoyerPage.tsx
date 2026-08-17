@@ -504,10 +504,16 @@ const FoyerPage: React.FC = () => {
   useEffect(() => {
     const prev = document.title;
     document.title = "Le Foyer d'Origine | Krystine St-Laurent";
+    /* la page repart toujours en haut : sinon le navigateur restaure un
+       scroll au milieu de la scène pinnée et le titre semble absent */
+    const prevRestore = window.history.scrollRestoration;
+    window.history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
     const t = window.setTimeout(() => setReady(true), 1150);
     return () => {
       window.clearTimeout(t);
       document.title = prev;
+      window.history.scrollRestoration = prevRestore;
     };
   }, []);
   return (
