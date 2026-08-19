@@ -344,23 +344,40 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
           </div>
         </motion.div>
 
-        {/* LIGNES : sur la même vidéo, voile radial doux pour la lisibilité */}
+        {/* STROPHES : sur la même vidéo, voile radial doux pour la lisibilité */}
         <motion.div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
             opacity: linesVeil,
             background:
-              'radial-gradient(52% 42% at 50% 46%, rgba(22,16,10,0.55), transparent 76%)',
+              'radial-gradient(56% 46% at 50% 46%, rgba(22,16,10,0.6), transparent 78%)',
           }}
         />
         <div className="absolute inset-0 z-10 flex items-center justify-center px-6 text-center md:px-12">
-          <div>
-            {LINES.map((l, i) => (
+          <div className="max-w-5xl">
+            {STANZA1.map((l, i) => (
               <motion.p
                 key={l}
-                style={{ opacity: lineStyles[i].opacity, y: lineStyles[i].y }}
-                className="font-serif font-medium text-[2rem] leading-[1.2] text-ctext md:text-[3.2rem]"
+                style={{ opacity: stanza1Styles[i].opacity, y: stanza1Styles[i].y }}
+                className={`font-serif font-medium leading-[1.25] text-ctext ${
+                  i === 2 ? 'text-[1.4rem] md:text-[2.1rem] text-ctextSoft' : 'text-[1.9rem] md:text-[3rem]'
+                }`}
+              >
+                {l}
+              </motion.p>
+            ))}
+          </div>
+        </div>
+        <div className="absolute inset-0 z-10 flex items-center justify-center px-6 text-center md:px-12">
+          <div>
+            {STANZA2.map((l, i) => (
+              <motion.p
+                key={l}
+                style={{ opacity: stanza2Styles[i].opacity, y: stanza2Styles[i].y }}
+                className={`font-serif font-medium leading-[1.25] ${
+                  i === 1 ? 'text-brassBright' : 'text-ctext'
+                } text-[2rem] md:text-[3.2rem]`}
               >
                 {l}
               </motion.p>
