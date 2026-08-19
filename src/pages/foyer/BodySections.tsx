@@ -124,7 +124,7 @@ export default function BodySections() {
 
   return (
     <>
-      {/* ═══════════════ SECTION 2 · Une autre façon de choisir ═══════════════ */}
+      {/* ═══════════════ SECTION 2 · L'Histoire du feu (Varanasi) ═══════════════ */}
       <section className="bg-cream py-24 md:py-36">
         <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
@@ -133,26 +133,17 @@ export default function BodySections() {
               <SectionTitle className="mt-5">{SECTION2.title}</SectionTitle>
             </Reveal>
             <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
-              <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[52ch]">{SECTION2.lead}</p>
-              <p className="mt-8 font-serif text-ink text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug max-w-[36ch]">
-                {SECTION2.question}
+              <p className="font-serif font-medium text-ink text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug max-w-[38ch]">
+                {SECTION2.lead}
               </p>
-              <p className="mt-6 font-serif font-medium text-ink text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug">
-                {SECTION2.statement}
+              {SECTION2.paragraphs.map((p) => (
+                <p key={p} className="mt-6 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[52ch]">
+                  {p}
+                </p>
+              ))}
+              <p className="mt-10 font-serif font-medium text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[46ch]">
+                {SECTION2.closingLead} {SECTION2.closing}
               </p>
-              <p className="mt-6 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[52ch]">{SECTION2.body}</p>
-              <p className="mt-10 font-serif font-medium text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[44ch]">
-                {SECTION2.pullQuote}
-              </p>
-              <ul className="mt-8 space-y-3">
-                {SECTION2.list.map((li) => (
-                  <li key={li} className="flex items-start gap-3 font-sans text-[0.92rem] leading-[1.85] text-inkSoft">
-                    <Dot />
-                    {li}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-8 font-serif font-medium text-ink text-[clamp(1.2rem,1.9vw,1.55rem)]">{SECTION2.closing}</p>
             </Reveal>
           </div>
         </div>
