@@ -237,6 +237,9 @@ export default function BodySections() {
             <Reveal className="lg:col-span-5">
               <Eyebrow>{SECTION3.eyebrow}</Eyebrow>
               <SectionTitle className="mt-5">{SECTION3.title}</SectionTitle>
+              <p className="mt-6 font-serif text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[30ch]">
+                {SECTION3.subtitle}
+              </p>
             </Reveal>
             <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
               {SECTION3.paragraphs.map((p, i) => (
