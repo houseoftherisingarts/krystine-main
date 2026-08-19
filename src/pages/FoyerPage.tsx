@@ -294,12 +294,12 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
           @keyframes foyerCue{0%,100%{opacity:.45;transform:translateY(0)}50%{opacity:1;transform:translateY(4px)}}
         `}</style>
 
-        {/* HERO : titre display court (canon, 2 lignes max), la phrase en énoncé */}
+        {/* HERO : centré verticalement (le bas était écrasé), phrases clés en relief */}
         <motion.div
-          className="absolute inset-0 z-10 flex flex-col justify-end"
+          className="absolute inset-0 z-10 flex flex-col justify-center"
           style={{ opacity: heroFade, y: heroY }}
         >
-          <div className="w-full px-6 pb-14 md:px-12 lg:px-20">
+          <div className="w-full px-6 pb-6 md:px-12 lg:px-20">
             <motion.div
               initial={reduce ? {} : { opacity: 0, y: 26 }}
               animate={ready ? { opacity: 1, y: 0 } : {}}
