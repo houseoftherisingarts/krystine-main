@@ -33,13 +33,14 @@ const Door: React.FC<{ open: boolean; hover: boolean }> = ({ open, hover }) => {
 const PorteDuMois3D: React.FC<{ open: boolean; hover: boolean }> = ({ open, hover }) => (
   <Canvas
     className="!absolute inset-0"
-    camera={{ position: [0.15, 0.05, 2.35], fov: 36 }}
+    camera={{ position: [0.55, 0.14, 2.15], fov: 36 }}
     dpr={[1, 2]}
     gl={{ antialias: true, alpha: true }}
   >
-    <ambientLight intensity={0.75} color="#f4e6c8" />
-    <directionalLight position={[2.2, 2.4, 3]} intensity={1.7} color="#ffe3b0" />
-    <pointLight position={[-1.6, -0.4, 1.4]} intensity={0.5} color="#c7842c" />
+    <ambientLight intensity={0.42} color="#f4e6c8" />
+    <directionalLight position={[2.4, 2.2, 2.6]} intensity={1.15} color="#ffe0a6" />
+    <directionalLight position={[-2.6, 0.6, 1.2]} intensity={0.35} color="#c7842c" />
+    <pointLight position={[-0.4, -0.6, 1.6]} intensity={0.35} color="#b06a3f" />
     <Suspense fallback={null}>
       <Door open={open} hover={hover} />
       <ContactShadows position={[0, -0.98, 0]} opacity={0.5} scale={3.4} blur={2.6} far={1.4} color="#2a1a10" />
