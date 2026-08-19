@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { Atmosphere, Reveal, Parallax } from '../../components/motion/loeuvre';
@@ -73,6 +73,59 @@ const Aura: React.FC<{ tone: AuraTone; size?: number; className?: string }> = ({
   </span>
 );
 
+/* ── La porte du mois : asset généré (FLUX), battant en vraie perspective.
+   Survol = la porte s'entrouvre et la niche s'allume; clic = le mois s'ouvre. ── */
+const PorteDuMois: React.FC<{ open: boolean; onToggle: () => void }> = ({ open, onToggle }) => {
+  const [hover, setHover] = useState(false);
+  const angle = open ? -86 : hover ? -24 : 0;
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      aria-expanded={open}
+      aria-label={open ? 'Refermer la porte de septembre' : 'Ouvrir la porte de septembre'}
+      className="relative mx-auto block w-full max-w-[300px] focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+      style={{ perspective: '1400px' }}
+    >
+      {/* la niche, derrière le battant */}
+      <span className="absolute inset-x-[7%] top-[4%] bottom-[2%] overflow-hidden rounded-t-[999px]">
+        <img src="/foyer/niche-septembre.webp" alt="" aria-hidden loading="lazy" className="h-full w-full object-cover" />
+        {/* la lueur sort quand la porte bouge */}
+        <motion.span
+          aria-hidden
+          className="absolute inset-0"
+          animate={{ opacity: open ? 0 : hover ? 0.15 : 0.55 }}
+          transition={{ duration: 0.6, ease }}
+          style={{ background: '#16100a' }}
+        />
+      </span>
+      {/* halo chaud projeté */}
+      <motion.span
+        aria-hidden
+        className="absolute -inset-6 -z-10 rounded-full"
+        animate={{ opacity: open ? 1 : hover ? 0.5 : 0 }}
+        transition={{ duration: 0.7, ease }}
+        style={{ background: 'radial-gradient(50% 50% at 50% 55%, rgba(199,132,44,0.45), transparent 75%)', filter: 'blur(14px)' }}
+      />
+      {/* le battant */}
+      <motion.img
+        src="/foyer/porte-septembre.webp"
+        alt="Porte de septembre, sceau doré"
+        loading="lazy"
+        className="relative w-full drop-shadow-xl"
+        animate={{ rotateY: angle }}
+        transition={{ duration: 0.9, ease }}
+        style={{ transformOrigin: 'left center', transformStyle: 'preserve-3d' }}
+      />
+      <span className="mt-5 block font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
+        {open ? 'Le mois est ouvert' : 'Ouvrir le mois'}
+      </span>
+    </button>
+  );
+};
+
 /* ── Séparateur doré du moodboard : filet, losange, deux brins végétaux ── */
 const Ornament: React.FC<{ on?: 'dark' | 'light'; motto?: boolean; className?: string }> = ({
   on = 'light',
@@ -134,6 +187,7 @@ const Dot: React.FC<{ on?: 'dark' | 'light' }> = ({ on = 'light' }) => (
 const roman = ['I', 'II', 'III', 'IV'];
 /* une aura par ouverture : regarder=bleu, saison=sauge, pièce=prune, découverte=ocre */
 const WEEK_TONES: AuraTone[] = ['bleu', 'sauge', 'prune', 'ocre'];
+const ROW_TONES: AuraTone[] = ['ocre', 'sauge', 'prune', 'bleu', 'terre'];
 
 const SEMAINE_IMAGES = [
   '/foyer/sem1-regarder.webp',
@@ -166,7 +220,10 @@ const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; o
   open,
   onClick,
 }) => (
-  <div className={`border-b border-brass/20 rounded-2xl px-5 -mx-5 transition-colors duration-300 ${open ? 'bg-card' : ''}`}>
+  <div
+    className="border-b border-brass/20 rounded-2xl px-5 -mx-5 transition-colors duration-300"
+    style={open ? { background: 'rgba(199,132,44,0.08)' } : undefined}
+  >
     <button
       onClick={onClick}
       aria-expanded={open}
@@ -202,6 +259,14 @@ const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; o
 
 export default function BodySections() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [moisOuvert, setMoisOuvert] = useState(false);
+  const semainesRef = useRef<HTMLDivElement>(null);
+  const toggleMois = () => {
+    setMoisOuvert((v) => {
+      if (!v) window.setTimeout(() => semainesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 500);
+      return !v;
+    });
+  };
   const faqMid = Math.ceil(FAQ.length / 2);
   const faqColumns = [FAQ.slice(0, faqMid), FAQ.slice(faqMid)];
 
@@ -212,8 +277,12 @@ export default function BodySections() {
         @media (prefers-reduced-motion: reduce){[style*="auraBreathe"]{animation:none!important}}
       `}</style>
       {/* ═══════════════ SECTION 2 · L'Histoire du feu (Varanasi) ═══════════════ */}
-      <section className="relative overflow-hidden bg-cream py-24 md:py-36">
-        <Aura tone="ocre" size={460} className="-left-32 top-10 opacity-70" />
+      <section
+        className="relative overflow-hidden py-24 md:py-36"
+        style={{ background: 'linear-gradient(180deg, #f6f3ee 0%, #f5e8cf 16%, #f1ddb2 58%, #f3e3c2 100%)' }}
+      >
+        <Aura tone="ocre" size={560} className="-left-36 top-4" />
+        <Aura tone="terre" size={420} className="-right-28 bottom-2 opacity-90" />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
             <Reveal className="lg:col-span-5">
@@ -221,7 +290,10 @@ export default function BodySections() {
               <SectionTitle className="mt-5">{SECTION2.title}</SectionTitle>
             </Reveal>
             <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
-              <p className="font-serif font-medium text-ink text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug max-w-[38ch]">
+              <p
+                className="font-serif font-medium text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug max-w-[38ch]"
+                style={{ color: TONE_INK.terre }}
+              >
                 {SECTION2.lead}
               </p>
               {SECTION2.paragraphs.map((p) => (
@@ -238,8 +310,12 @@ export default function BodySections() {
       </section>
 
       {/* ═══════════════ SECTION 3 · Le feu reste allumé ═══════════════ */}
-      <section className="relative overflow-hidden bg-cream2 py-24 md:py-36">
-        <Aura tone="sauge" size={420} className="-right-28 bottom-10 opacity-50" />
+      <section
+        className="relative overflow-hidden py-24 md:py-36"
+        style={{ background: 'linear-gradient(180deg, #f3e3c2 0%, #edf0df 22%, #e8ecd7 100%)' }}
+      >
+        <Aura tone="sauge" size={480} className="-right-28 bottom-6" />
+        <Aura tone="beige" size={360} className="-left-24 top-24 opacity-80" />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament className="mb-16" />
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
@@ -259,7 +335,10 @@ export default function BodySections() {
                   {p}
                 </p>
               ))}
-              <p className="mt-9 font-serif font-medium text-brassInk text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug">
+              <p
+                className="mt-9 font-serif font-medium text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug"
+                style={{ color: TONE_INK.sauge }}
+              >
                 {SECTION3.closing}
               </p>
             </Reveal>
@@ -268,20 +347,26 @@ export default function BodySections() {
       </section>
 
       {/* ═══════════════ SECTION 4 · Chaque semaine, une nouvelle ouverture ═══════════════ */}
-      <section className="bg-cream3 py-24 md:py-36">
-        <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <div className="grid lg:grid-cols-12 gap-x-12 gap-y-6 items-start">
-            <Reveal className="lg:col-span-6">
+      <section className="relative overflow-hidden bg-cream3 py-24 md:py-36">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-28"
+          style={{ background: 'linear-gradient(180deg, #e8ecd7 0%, transparent 100%)' }}
+        />
+        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
+          <div className="grid items-center gap-x-12 gap-y-12 lg:grid-cols-12">
+            <Reveal className="lg:col-span-4 lg:row-span-2">
+              <PorteDuMois open={moisOuvert} onToggle={toggleMois} />
+            </Reveal>
+            <Reveal delay={0.08} className="lg:col-span-7 lg:col-start-6">
               <Eyebrow>{SECTION4.eyebrow}</Eyebrow>
               <SectionTitle className="mt-5">{SECTION4.title}</SectionTitle>
-            </Reveal>
-            <Reveal delay={0.08} className="lg:col-span-5 lg:col-start-8">
-              <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[42ch]">{SECTION4.intro}</p>
+              <p className="mt-7 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[46ch]">{SECTION4.intro}</p>
             </Reveal>
           </div>
 
           {/* les 4 semaines du mois, reliées par un rail brass : un déploiement, pas un catalogue */}
-          <div className="relative mt-20">
+          <div ref={semainesRef} className="relative mt-20 scroll-mt-24">
             <div
               aria-hidden
               className="pointer-events-none absolute -top-8 left-[12%] right-[12%] hidden h-px xl:block"
@@ -293,9 +378,16 @@ export default function BodySections() {
                   <div className="relative h-full">
                     <span
                       aria-hidden
-                      className="absolute -top-[37px] left-1/2 hidden h-2 w-2 -translate-x-1/2 rounded-full bg-brass ring-4 ring-cream3 xl:block"
+                      className="absolute -top-[37px] left-1/2 hidden h-2 w-2 -translate-x-1/2 rounded-full ring-4 ring-cream3 xl:block"
+                      style={{ background: `rgb(${AURAS[WEEK_TONES[i]]})` }}
                     />
-                    <div className="h-full overflow-hidden rounded-[30px] border border-brass/20 bg-card">
+                    <div
+                      className="h-full overflow-hidden rounded-[30px] border"
+                      style={{
+                        borderColor: `rgba(${AURAS[WEEK_TONES[i]]},0.45)`,
+                        background: `linear-gradient(180deg, rgba(${AURAS[WEEK_TONES[i]]},0.16) 0%, #faf7f0 62%)`,
+                      }}
+                    >
                       <div className="relative h-40 overflow-hidden">
                         <img
                           src={SEMAINE_IMAGES[i]}
@@ -321,7 +413,9 @@ export default function BodySections() {
                               filter: 'blur(4px)',
                             }}
                           />
-                          <span className="relative font-serif text-3xl leading-none text-ink">{roman[i]}</span>
+                          <span className="relative font-serif text-3xl leading-none" style={{ color: TONE_INK[WEEK_TONES[i]] }}>
+                            {roman[i]}
+                          </span>
                         </span>
                         <h3 className="mt-4 font-serif text-xl text-ink">{o.title}</h3>
                         <p className="mt-3 font-sans text-[0.9rem] leading-[1.85] text-inkSoft">{o.body}</p>
@@ -356,7 +450,13 @@ export default function BodySections() {
               <Reveal key={it.title}>
                 <div className="grid items-baseline gap-x-12 gap-y-2 border-b border-brass/25 py-7 lg:grid-cols-12">
                   <div className="flex items-baseline gap-5 lg:col-span-5">
-                    <span className="font-sans text-[0.68rem] tracking-[0.2em] text-brassInk tabular-nums">
+                    <span
+                      className="relative flex h-8 w-8 shrink-0 -translate-y-1 items-center justify-center self-center rounded-full font-sans text-[0.68rem] tracking-[0.08em] tabular-nums"
+                      style={{
+                        background: `radial-gradient(circle at 40% 36%, rgba(${AURAS[ROW_TONES[i % ROW_TONES.length]]},0.5), rgba(${AURAS[ROW_TONES[i % ROW_TONES.length]]},0.14) 70%, transparent 100%)`,
+                        color: TONE_INK[ROW_TONES[i % ROW_TONES.length]],
+                      }}
+                    >
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <h3 className="font-serif text-xl md:text-2xl text-ink">{it.title}</h3>
@@ -372,7 +472,7 @@ export default function BodySections() {
       </section>
 
       {/* ═══════════════ SECTION 6 · Le premier samedi du mois (SOMBRE) ═══════════════ */}
-      <section className="relative overflow-hidden bg-espressoSoft py-24 md:py-36">
+      <section className="relative overflow-hidden py-24 md:py-36" style={{ background: '#241726' }}>
         {/* la chandelle du premier samedi, voilée pour la lisibilité */}
         <img
           src="/foyer/meditation.webp"
@@ -382,11 +482,12 @@ export default function BodySections() {
           className="absolute inset-0 h-full w-full object-cover opacity-50"
           style={{ objectPosition: '70% center' }}
         />
-        <span aria-hidden className="absolute inset-0 bg-espressoSoft/55" />
+        <span aria-hidden className="absolute inset-0" style={{ background: 'rgba(36,23,38,0.62)' }} />
         <WarmSeam from="#f6f3ee" />
         <Atmosphere light="70% 25%" strength={0.8} />
         {/* aura prune : introspection, profondeur (moodboard) */}
-        <Aura tone="prune" size={560} className="left-[8%] top-1/4" />
+        <Aura tone="prune" size={640} className="left-[6%] top-[18%]" />
+        <Aura tone="bleu" size={380} className="right-[4%] bottom-[8%] opacity-60" />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament on="dark" motto className="mb-16" />
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
@@ -395,7 +496,7 @@ export default function BodySections() {
               <SectionTitle on="dark" className="mt-5">
                 {SECTION6.title}
               </SectionTitle>
-              <p className="mt-6 font-serif text-brass text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[30ch]">
+              <p className="mt-6 font-serif text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[30ch]" style={{ color: '#cfa8ca' }}>
                 {SECTION6.subtitle}
               </p>
             </Reveal>
@@ -420,7 +521,7 @@ export default function BodySections() {
 
       {/* ═══════════════ SECTION 7 · Ce qui relie les étoiles (Krystine) ═══════════════ */}
       <section className="relative bg-cream2 py-24 md:py-36">
-        <WarmSeam from="#2a2015" />
+        <WarmSeam from="#241726" />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="grid lg:grid-cols-12 gap-x-14 gap-y-14 items-start">
             <Reveal className="lg:col-span-7">
@@ -439,7 +540,10 @@ export default function BodySections() {
               <div className="mt-12 flex flex-wrap gap-x-16 gap-y-8 border-y border-ink/[0.12] py-9 max-w-[52ch]">
                 {SECTION7.stats.map((s) => (
                   <div key={s.value} className="flex flex-col gap-2">
-                    <span className="font-serif text-[3rem] md:text-[4rem] font-medium text-brassInk leading-none tracking-[-0.01em]">
+                    <span
+                      className="font-serif text-[3rem] md:text-[4rem] font-medium leading-none tracking-[-0.01em]"
+                      style={{ color: TONE_INK.terre }}
+                    >
                       {s.value}
                     </span>
                     <span className="font-sans text-[0.8rem] leading-snug text-inkSoft max-w-[26ch]">
@@ -466,7 +570,7 @@ export default function BodySections() {
 
             <Reveal delay={0.1} className="relative lg:col-span-5 lg:sticky lg:top-24">
               {/* terre ancrée : stabilité, enracinement */}
-              <Aura tone="terre" size={420} className="-right-24 top-6 opacity-60" />
+              <Aura tone="terre" size={420} className="-right-24 top-6 opacity-85" />
               <span className="block h-px w-10 bg-brass mb-5" aria-hidden />
               <div className="relative ring-1 ring-brass/40 rounded-[30px] shadow-depth overflow-hidden bg-card p-2.5">
                 <div className="relative overflow-hidden rounded-[22px] aspect-[4/5]">
@@ -488,11 +592,15 @@ export default function BodySections() {
       </section>
 
       {/* ═══════════════ SECTION 8 · Ce que comprend l'année ═══════════════ */}
-      <section className="relative overflow-hidden bg-cream py-24 md:py-36">
-        <Aura tone="bleu" size={460} className="-left-32 bottom-8 opacity-60" />
+      <section
+        className="relative overflow-hidden py-24 md:py-36"
+        style={{ background: 'linear-gradient(180deg, #f6f3ee 0%, #e9eef1 24%, #e4ebef 100%)' }}
+      >
+        <Aura tone="bleu" size={520} className="-left-32 bottom-8" />
+        <Aura tone="beige" size={380} className="-right-24 top-10 opacity-70" />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament className="mb-16" />
-          <Reveal className="max-w-[36ch]">
+          <Reveal className="max-w-[34rem]">
             <Eyebrow>{SECTION8.eyebrow}</Eyebrow>
             <SectionTitle className="mt-5">{SECTION8.title}</SectionTitle>
           </Reveal>
@@ -511,7 +619,7 @@ export default function BodySections() {
                     ))}
                   </ul>
                   <div>
-                    <p className="font-sans text-[0.68rem] uppercase tracking-[0.22em] text-brassInk mb-3">
+                    <p className="font-sans text-[0.68rem] uppercase tracking-[0.22em] mb-3" style={{ color: TONE_INK.bleu }}>
                       {SECTION8.season.spaceTitle}
                     </p>
                     <ul className="space-y-3">
@@ -543,6 +651,11 @@ export default function BodySections() {
 
       {/* ═══════════════ SECTION 9 · Foyer vs Expérience Origine ═══════════════ */}
       <section className="relative overflow-hidden bg-cream3 py-24 md:py-36">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-28"
+          style={{ background: 'linear-gradient(180deg, #e4ebef 0%, transparent 100%)' }}
+        />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament className="mb-16" />
           <Reveal className="max-w-[42ch]">
@@ -552,18 +665,22 @@ export default function BodySections() {
 
           <div className="mt-14 grid md:grid-cols-2 gap-6">
             <Reveal>
-              <div className="relative h-full overflow-hidden rounded-[30px] bg-card border border-brass/20 p-8 md:p-10">
-                {/* beige lumière : ouverture */}
-                <Aura tone="beige" size={300} className="-right-20 -top-20" />
+              <div
+                className="relative h-full overflow-hidden rounded-[30px] border p-8 md:p-10"
+                style={{ borderColor: 'rgba(199,132,44,0.35)', background: 'linear-gradient(160deg, rgba(199,132,44,0.14), #faf7f0 58%)' }}
+              >
+                <Aura tone="ocre" size={300} className="-right-20 -top-20" />
                 <p className="relative font-sans text-[0.62rem] uppercase tracking-[0.28em] text-brassInk mb-4">Le Foyer</p>
                 <h3 className="relative font-serif text-2xl text-ink">{SECTION9.foyer.lead}</h3>
                 <p className="relative mt-4 font-sans text-[0.92rem] leading-[1.85] text-inkSoft">{SECTION9.foyer.text}</p>
               </div>
             </Reveal>
             <Reveal delay={0.08}>
-              <div className="relative h-full overflow-hidden rounded-[30px] bg-cream border border-forest/30 p-8 md:p-10">
-                {/* ocre chaud : transformation */}
-                <Aura tone="ocre" size={300} className="-right-20 -top-20 opacity-70" />
+              <div
+                className="relative h-full overflow-hidden rounded-[30px] border p-8 md:p-10"
+                style={{ borderColor: 'rgba(129,143,96,0.5)', background: 'linear-gradient(160deg, rgba(129,143,96,0.16), #f6f3ee 58%)' }}
+              >
+                <Aura tone="sauge" size={300} className="-right-20 -top-20" />
                 <p className="relative font-sans text-[0.62rem] uppercase tracking-[0.28em] text-forestDeep mb-4">
                   L'Expérience Origine
                 </p>
