@@ -337,7 +337,7 @@ export default function BodySections() {
         <Aura tone="beige" size={520} className="-right-40 -top-24" />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament className="mb-16" />
-          <Reveal className="max-w-[36ch]">
+          <Reveal className="max-w-[34rem]">
             <Eyebrow>{SECTION5.eyebrow}</Eyebrow>
             <SectionTitle className="mt-5">{SECTION5.title}</SectionTitle>
           </Reveal>
