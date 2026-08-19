@@ -540,19 +540,23 @@ export default function BodySections() {
 
           <div className="mt-14 grid md:grid-cols-2 gap-6">
             <Reveal>
-              <div className="h-full rounded-[30px] bg-card border border-brass/20 p-8 md:p-10">
-                <p className="font-sans text-[0.62rem] uppercase tracking-[0.28em] text-brassInk mb-4">Le Foyer</p>
-                <h3 className="font-serif text-2xl text-ink">{SECTION9.foyer.lead}</h3>
-                <p className="mt-4 font-sans text-[0.92rem] leading-[1.85] text-inkSoft">{SECTION9.foyer.text}</p>
+              <div className="relative h-full overflow-hidden rounded-[30px] bg-card border border-brass/20 p-8 md:p-10">
+                {/* beige lumière : ouverture */}
+                <Aura tone="beige" size={300} className="-right-20 -top-20" />
+                <p className="relative font-sans text-[0.62rem] uppercase tracking-[0.28em] text-brassInk mb-4">Le Foyer</p>
+                <h3 className="relative font-serif text-2xl text-ink">{SECTION9.foyer.lead}</h3>
+                <p className="relative mt-4 font-sans text-[0.92rem] leading-[1.85] text-inkSoft">{SECTION9.foyer.text}</p>
               </div>
             </Reveal>
             <Reveal delay={0.08}>
-              <div className="h-full rounded-[30px] bg-cream border border-forest/30 p-8 md:p-10">
-                <p className="font-sans text-[0.62rem] uppercase tracking-[0.28em] text-forestDeep mb-4">
+              <div className="relative h-full overflow-hidden rounded-[30px] bg-cream border border-forest/30 p-8 md:p-10">
+                {/* ocre chaud : transformation */}
+                <Aura tone="ocre" size={300} className="-right-20 -top-20 opacity-70" />
+                <p className="relative font-sans text-[0.62rem] uppercase tracking-[0.28em] text-forestDeep mb-4">
                   L'Expérience Origine
                 </p>
-                <h3 className="font-serif text-2xl text-ink">{SECTION9.experience.lead}</h3>
-                <p className="mt-4 font-sans text-[0.92rem] leading-[1.85] text-inkSoft">{SECTION9.experience.text}</p>
+                <h3 className="relative font-serif text-2xl text-ink">{SECTION9.experience.lead}</h3>
+                <p className="relative mt-4 font-sans text-[0.92rem] leading-[1.85] text-inkSoft">{SECTION9.experience.text}</p>
               </div>
             </Reveal>
           </div>
