@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Lock } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { Atmosphere, Reveal, Parallax } from '../../components/motion/loeuvre';
 import {
   SECTION2,
@@ -73,27 +73,39 @@ const Aura: React.FC<{ tone: AuraTone; size?: number; className?: string }> = ({
   </span>
 );
 
-/* ── Le calendrier de l'année : asset pleine largeur, le feu de l'âtre est
-   une vidéo posée exactement sur l'ouverture (crop 1:1, masque elliptique).
-   Chaque porte a sa zone : cadenas au survol (verrouillée), septembre
-   s'illumine (cutout 1:1 qui pop) et s'ouvre au clic. ── */
+/* ── Le calendrier de l'année (doc « 12 portes » du 19 août) ──
+   Porte fermée : le nom du mois seulement. Toutes fermées au chargement,
+   une seule ouverte à la fois, ouverture lente et calme. À l'ouverture :
+   mouvement saisonnier (petite ligne), THÈME HUMAIN CENTRAL (le plus
+   visible), aperçu public (une phrase), un seul appel discret. Aucune
+   date, aucun cadenas, aucun vocabulaire de formation. ── */
 const IMG_W = 1672;
 const IMG_H = 941;
 const HEARTH = { left: 643 / IMG_W, top: 235 / IMG_H, width: 385 / IMG_W, height: 498 / IMG_H };
-const LOCKED_DOORS: Array<{ n: string; b: [number, number, number, number] }> = [
-  { n: 'janvier', b: [88, 143, 334, 404] },
-  { n: 'fevrier', b: [333, 128, 577, 404] },
-  { n: 'mars', b: [88, 406, 334, 662] },
-  { n: 'avril', b: [333, 406, 577, 662] },
-  { n: 'mai', b: [88, 641, 334, 907] },
-  { n: 'juin', b: [333, 638, 577, 907] },
-  { n: 'juillet', b: [1086, 128, 1330, 404] },
-  { n: 'aout', b: [1328, 143, 1572, 404] },
-  { n: 'octobre', b: [1328, 406, 1572, 662] },
-  { n: 'novembre', b: [1086, 641, 1330, 907] },
-  { n: 'decembre', b: [1328, 638, 1572, 907] },
+
+interface Porte {
+  n: string;
+  mois: string;
+  b: [number, number, number, number];
+  src: string;
+  mouvement: string;
+  theme: string;
+  apercu: string;
+}
+const PORTES: Porte[] = [
+  { n: 'janvier', mois: 'Janvier', b: [88, 143, 334, 404], src: 'porte-janvier-cutout', mouvement: 'Après l’abondance', theme: 'Retrouver une mesure qui nous ressemble', apercu: 'Une histoire de mesure, un geste de table et un regard sur ce qui suffit.' },
+  { n: 'fevrier', mois: 'Février', b: [333, 128, 577, 404], src: 'porte-fevrier-cutout', mouvement: 'Plein hiver', theme: 'Protéger ses réserves sans se retirer du monde', apercu: 'Une huile, une histoire et une rencontre autour de ce qui nous soutient.' },
+  { n: 'mars', mois: 'Mars', b: [88, 406, 334, 662], src: 'porte-mars-cutout', mouvement: 'Premier dégel', theme: 'Remettre en circulation ce qui stagnait', apercu: 'Une plante, une rivière et une histoire de remise en mouvement.' },
+  { n: 'avril', mois: 'Avril', b: [333, 406, 577, 662], src: 'porte-avril-cutout', mouvement: 'Accumulation du printemps', theme: 'Alléger sans entrer dans la punition', apercu: 'Une recette, une plante et une règle de détox à regarder autrement.' },
+  { n: 'mai', mois: 'Mai', b: [88, 641, 334, 907], src: 'porte-mai-cutout', mouvement: 'Retour des odeurs et des couleurs', theme: 'Réapprendre à recevoir par les sens', apercu: 'Une fleur, un son et une rencontre sensorielle.' },
+  { n: 'juin', mois: 'Juin', b: [333, 638, 577, 907], src: 'porte-juin-cutout', mouvement: 'Expansion et longues journées', theme: 'Recevoir davantage sans se disperser', apercu: 'Une histoire de lumière, une boisson et un regard sur l’ambition.' },
+  { n: 'juillet', mois: 'Juillet', b: [1086, 128, 1330, 404], src: 'porte-juillet-cutout', mouvement: 'Chaleur installée', theme: 'Habiter l’intensité sans se brûler', apercu: 'L’eau, le feu, les aliments et les nuits d’été.' },
+  { n: 'aout', mois: 'Août', b: [1328, 143, 1572, 404], src: 'porte-aout-cutout', mouvement: 'Récolte et prochaine transition', theme: 'Reconnaître ce qui mérite d’être conservé', apercu: 'Des semences, des conserves et des gestes qui se transmettent.' },
+  { n: 'septembre', mois: 'Septembre', b: [1085, 408, 1332, 662], src: 'porte-sept-cutout', mouvement: 'Changement de rythme', theme: 'Changer de cadence sans se perdre', apercu: 'Thoreau, le sommeil et une histoire de changement de rythme.' },
+  { n: 'octobre', mois: 'Octobre', b: [1328, 406, 1572, 662], src: 'porte-octobre-cutout', mouvement: 'Refroidissement et dessèchement', theme: 'Se préparer avant d’être épuisée', apercu: 'Des racines, des épices, une huile et les gestes qui précèdent le froid.' },
+  { n: 'novembre', mois: 'Novembre', b: [1086, 641, 1330, 907], src: 'porte-novembre-cutout', mouvement: 'Baisse de lumière', theme: 'Nourrir le feu lorsque l’élan diminue', apercu: 'Une histoire, une cuisson et une rencontre autour du feu.' },
+  { n: 'decembre', mois: 'Décembre', b: [1328, 638, 1572, 907], src: 'porte-decembre-cutout', mouvement: 'Rassemblement et transmission', theme: 'Ce que nous choisissons de garder et de transmettre', apercu: 'Des récits familiaux, de la musique et des gestes transmis autour du feu.' },
 ];
-const SEPT_BOX: [number, number, number, number] = [1085, 408, 1332, 662];
 const zone = (b: [number, number, number, number]) => ({
   left: `${(b[0] / IMG_W) * 100}%`,
   top: `${(b[1] / IMG_H) * 100}%`,
@@ -101,107 +113,129 @@ const zone = (b: [number, number, number, number]) => ({
   height: `${((b[3] - b[1]) / IMG_H) * 100}%`,
 });
 
-const CalendrierAnnee: React.FC<{ open: boolean; onToggle: () => void }> = ({ open, onToggle }) => {
-  const [hoverSept, setHoverSept] = useState(false);
+const CalendrierAnnee: React.FC = () => {
   const [hoverDoor, setHoverDoor] = useState<string | null>(null);
+  const [openDoor, setOpenDoor] = useState<string | null>(null);
+  const ouverte = PORTES.find((d) => d.n === openDoor) ?? null;
   return (
-    <div className="relative w-full">
-      <img
-        src="/foyer/calendrier-annee.webp"
-        alt="Le calendrier des douze portes du Foyer d'Origine, l'âtre allumé au centre"
-        loading="lazy"
-        className="block w-full"
-      />
-      <video
-        src="/foyer/atre-feu.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-hidden
-        className="pointer-events-none absolute object-cover"
-        style={{
-          left: `${HEARTH.left * 100}%`,
-          top: `${HEARTH.top * 100}%`,
-          width: `${HEARTH.width * 100}%`,
-          height: `${HEARTH.height * 100}%`,
-          maskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
-          WebkitMaskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
-        }}
-      />
-      {/* portes verrouillées : le cutout se soulève en ombre, le cadenas apparaît */}
-      {LOCKED_DOORS.map((d) => (
-        <React.Fragment key={d.n}>
-          <motion.img
-            src={`/foyer/porte-${d.n}-cutout.webp`}
-            alt=""
-            aria-hidden
-            className="pointer-events-none absolute z-30"
-            style={zone(d.b)}
-            animate={
-              hoverDoor === d.n
-                ? { scale: 1.05, filter: 'brightness(0.66) drop-shadow(0 14px 30px rgba(22,16,10,0.75))' }
-                : { scale: 1, filter: 'brightness(1) drop-shadow(0 0px 0px rgba(22,16,10,0))' }
-            }
-            transition={{ duration: 0.5, ease }}
-          />
-          <div
-            aria-hidden
-            className="absolute z-40 flex cursor-not-allowed items-center justify-center"
-            style={zone(d.b)}
-            onMouseEnter={() => setHoverDoor(d.n)}
-            onMouseLeave={() => setHoverDoor(null)}
+    <div>
+      <div className="relative w-full">
+        <img
+          src="/foyer/calendrier-annee.webp"
+          alt="Le calendrier des douze portes du Foyer d'Origine, l'âtre allumé au centre"
+          className="block w-full"
+        />
+        <video
+          src="/foyer/atre-feu.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden
+          className="pointer-events-none absolute object-cover"
+          style={{
+            left: `${HEARTH.left * 100}%`,
+            top: `${HEARTH.top * 100}%`,
+            width: `${HEARTH.width * 100}%`,
+            height: `${HEARTH.height * 100}%`,
+            maskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
+          }}
+        />
+        {PORTES.map((d) => {
+          const isOpen = openDoor === d.n;
+          const isHover = hoverDoor === d.n && !isOpen;
+          return (
+            <React.Fragment key={d.n}>
+              {/* l'embrasure : lueur chaude révélée derrière le battant */}
+              <motion.span
+                aria-hidden
+                className="absolute z-10 rounded-t-[46%] rounded-b-xl"
+                style={{
+                  ...zone(d.b),
+                  transform: 'scale(0.84)',
+                  background:
+                    'radial-gradient(60% 55% at 50% 58%, rgba(199,132,44,0.55), rgba(42,26,16,0.96) 78%)',
+                }}
+                animate={{ opacity: isOpen ? 1 : 0 }}
+                transition={{ duration: 0.8, ease }}
+              />
+              {/* halo doux au survol */}
+              <motion.span
+                aria-hidden
+                className="pointer-events-none absolute z-20"
+                style={{
+                  ...zone(d.b),
+                  background:
+                    'radial-gradient(50% 50% at 50% 50%, rgba(220,184,116,0.65), rgba(199,132,44,0.25) 55%, transparent 78%)',
+                  filter: 'blur(16px)',
+                  transform: 'scale(1.3)',
+                }}
+                animate={{ opacity: isHover ? 1 : 0 }}
+                transition={{ duration: 0.45, ease }}
+              />
+              {/* le battant : cutout 1:1, ouverture lente et calme */}
+              <motion.img
+                src={`/foyer/${d.src}.webp`}
+                alt=""
+                aria-hidden
+                className="pointer-events-none absolute z-30"
+                style={{ ...zone(d.b), transformOrigin: 'left center', transformPerspective: 700 }}
+                animate={
+                  isOpen
+                    ? { rotateY: -64, scale: 1, filter: 'brightness(0.94) drop-shadow(18px 10px 28px rgba(22,16,10,0.55))' }
+                    : isHover
+                      ? { rotateY: 0, scale: 1.06, filter: 'brightness(1.1) drop-shadow(0 8px 28px rgba(199,132,44,0.8))' }
+                      : { rotateY: 0, scale: 1, filter: 'brightness(1) drop-shadow(0 0px 0px rgba(22,16,10,0))' }
+                }
+                transition={{ duration: isOpen ? 1.5 : 0.5, ease }}
+              />
+              <button
+                type="button"
+                onClick={() => setOpenDoor(isOpen ? null : d.n)}
+                onMouseEnter={() => setHoverDoor(d.n)}
+                onMouseLeave={() => setHoverDoor(null)}
+                aria-expanded={isOpen}
+                aria-label={isOpen ? `Refermer la porte de ${d.mois}` : `Ouvrir la porte de ${d.mois}`}
+                className="absolute z-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+                style={zone(d.b)}
+              />
+            </React.Fragment>
+          );
+        })}
+        <span className="absolute bottom-4 left-1/2 -translate-x-1/2 font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
+          {ouverte ? ouverte.mois : 'Ouvrir une porte'}
+        </span>
+      </div>
+
+      {/* le mois révélé : mouvement · THÈME · aperçu · un seul appel discret */}
+      <AnimatePresence mode="wait">
+        {ouverte && (
+          <motion.div
+            key={ouverte.n}
+            initial={{ opacity: 0, y: 26 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 14 }}
+            transition={{ duration: 0.9, ease }}
+            className="mx-auto max-w-3xl px-6 pb-4 pt-14 text-center"
           >
-            <motion.span
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-espressoDeep/75 text-brassBright"
-              animate={{ opacity: hoverDoor === d.n ? 1 : 0, scale: hoverDoor === d.n ? 1 : 0.8 }}
-              transition={{ duration: 0.4, ease }}
+            <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
+              {ouverte.mois} · {ouverte.mouvement}
+            </p>
+            <h3 className="mt-5 font-serif font-medium leading-[1.15] text-ink text-[clamp(1.7rem,3.4vw,2.6rem)]">
+              {ouverte.theme}
+            </h3>
+            <p className="mt-5 font-sans text-[0.95rem] leading-[1.85] text-inkSoft">{ouverte.apercu}</p>
+            <a
+              href="/liste-attente?programme=foyer"
+              className="mt-7 inline-block border-b border-brass/60 pb-1 font-sans text-[0.72rem] uppercase tracking-[0.22em] text-brassInk transition-colors hover:text-brassBright"
             >
-              <Lock size={17} />
-            </motion.span>
-          </div>
-        </React.Fragment>
-      ))}
-      {/* septembre : halo doré + le cutout s'illumine et pop, le clic ouvre le mois */}
-      <motion.span
-        aria-hidden
-        className="pointer-events-none absolute z-20"
-        style={{
-          ...zone(SEPT_BOX),
-          background: 'radial-gradient(50% 50% at 50% 50%, rgba(220,184,116,0.75), rgba(199,132,44,0.3) 55%, transparent 78%)',
-          filter: 'blur(16px)',
-          transform: 'scale(1.35)',
-        }}
-        animate={{ opacity: hoverSept ? 1 : 0 }}
-        transition={{ duration: 0.45, ease }}
-      />
-      <motion.img
-        src="/foyer/porte-sept-cutout.webp"
-        alt=""
-        aria-hidden
-        className="pointer-events-none absolute z-30"
-        style={zone(SEPT_BOX)}
-        animate={
-          hoverSept
-            ? { scale: 1.09, filter: 'brightness(1.14) drop-shadow(0 10px 34px rgba(199,132,44,0.9))' }
-            : { scale: 1, filter: 'brightness(1) drop-shadow(0 0px 0px rgba(220,184,116,0))' }
-        }
-        transition={{ duration: 0.5, ease }}
-      />
-      <button
-        type="button"
-        onClick={onToggle}
-        onMouseEnter={() => setHoverSept(true)}
-        onMouseLeave={() => setHoverSept(false)}
-        aria-expanded={open}
-        aria-label={open ? 'Refermer le mois de septembre' : 'Ouvrir le mois de septembre'}
-        className="absolute z-20 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
-        style={zone(SEPT_BOX)}
-      />
-      <span className="absolute bottom-4 left-1/2 -translate-x-1/2 font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
-        {open ? 'Le mois est ouvert' : 'Ouvrir le mois en cours'}
-      </span>
+              Entrer dans le Foyer
+            </a>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -339,14 +373,6 @@ const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; o
 
 export default function BodySections() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [moisOuvert, setMoisOuvert] = useState(false);
-  const semainesRef = useRef<HTMLDivElement>(null);
-  const toggleMois = () => {
-    setMoisOuvert((v) => {
-      if (!v) window.setTimeout(() => semainesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 500);
-      return !v;
-    });
-  };
   const faqMid = Math.ceil(FAQ.length / 2);
   const faqColumns = [FAQ.slice(0, faqMid), FAQ.slice(faqMid)];
 
@@ -377,22 +403,13 @@ export default function BodySections() {
 
         {/* le calendrier, pleine largeur, hors du conteneur */}
         <Reveal className="mt-16">
-          <CalendrierAnnee open={moisOuvert} onToggle={toggleMois} />
+          <CalendrierAnnee />
         </Reveal>
 
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
 
-          {/* les 4 semaines du mois : les portes en dessous, ouvertes par le clic */}
-          <AnimatePresence initial={false}>
-          {moisOuvert && (
-          <motion.div
-            ref={semainesRef}
-            className="relative mt-20 scroll-mt-24"
-            initial={{ opacity: 0, y: 34 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.8, ease }}
-          >
+          {/* les 4 semaines du mois, reliées par un rail brass */}
+          <div className="relative mt-20">
             <div
               aria-hidden
               className="pointer-events-none absolute -top-8 left-[12%] right-[12%] hidden h-px xl:block"
@@ -457,9 +474,7 @@ export default function BodySections() {
               {SECTION4.closing}
             </p>
           </Reveal>
-          </motion.div>
-          )}
-          </AnimatePresence>
+          </div>
         </div>
       </section>
 
