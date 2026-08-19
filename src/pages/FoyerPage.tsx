@@ -112,11 +112,13 @@ const Cta: React.FC<{ label: string; sub?: string; dark?: boolean }> = ({
    Le feu roule dès l'entrée. Le titre s'efface au premier scroll, les
    trois lignes passent sur la même vidéo, la crème se pose à la fin.
    Progression maison (rAF + rect) : useScroll({target}) mesurait la page. */
-const LINES = [
-  'Une place autour du feu.',
-  'Un rythme simple.',
-  'Une autre manière de voir.',
+/* Deux strophes (PDF 19 août) : le constat, puis le besoin. */
+const STANZA1 = [
+  'Le plus difficile n’est plus de trouver.',
+  'C’est de démêler le vrai du faux.',
+  'Ce qui mérite notre attention de ce qui cherche seulement à la capter.',
 ];
+const STANZA2 = ['Nous n’avons pas besoin de plus.', 'Nous avons besoin d’authentique.'];
 
 const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   const ref = useRef<HTMLDivElement>(null);
