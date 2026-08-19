@@ -215,15 +215,15 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
               barre de recherche.
             </p>
             <div className="mt-9">
-              <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d’accès" dark />
+              <Cta label="Prendre place au foyer" sub="497 $ | 12 mois d’accès" dark />
             </div>
           </div>
         </header>
         <section className="relative overflow-hidden bg-espressoSoft px-6 py-32 md:px-12 lg:px-20">
           <Atmosphere light="50% 80%" strength={1} />
           <div className="relative z-10 mx-auto max-w-4xl">
-            {LINES.map((l) => (
-              <p key={l} className="font-serif text-4xl leading-tight text-ctext md:text-5xl">
+            {[...STANZA1, ...STANZA2].map((l) => (
+              <p key={l} className="font-serif text-3xl leading-tight text-ctext md:text-4xl">
                 {l}
               </p>
             ))}
