@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Lock } from 'lucide-react';
 import { Atmosphere, Reveal, Parallax } from '../../components/motion/loeuvre';
 import {
   SECTION2,
@@ -75,46 +75,116 @@ const Aura: React.FC<{ tone: AuraTone; size?: number; className?: string }> = ({
 
 /* ── Le calendrier de l'année : asset pleine largeur, le feu de l'âtre est
    une vidéo posée exactement sur l'ouverture (crop 1:1, masque elliptique).
-   Clic = ouvrir les semaines du mois en dessous. ── */
-const HEARTH = { left: 643 / 1672, top: 235 / 941, width: 385 / 1672, height: 498 / 941 };
+   Chaque porte a sa zone : cadenas au survol (verrouillée), septembre
+   s'illumine (cutout 1:1 qui pop) et s'ouvre au clic. ── */
+const IMG_W = 1672;
+const IMG_H = 941;
+const HEARTH = { left: 643 / IMG_W, top: 235 / IMG_H, width: 385 / IMG_W, height: 498 / IMG_H };
+const LOCKED_DOORS: Array<{ n: string; b: [number, number, number, number] }> = [
+  { n: 'janvier', b: [100, 155, 322, 392] },
+  { n: 'fevrier', b: [345, 140, 565, 392] },
+  { n: 'mars', b: [100, 420, 322, 650] },
+  { n: 'avril', b: [345, 420, 565, 650] },
+  { n: 'mai', b: [100, 655, 322, 895] },
+  { n: 'juin', b: [345, 650, 565, 895] },
+  { n: 'juillet', b: [1098, 140, 1318, 392] },
+  { n: 'aout', b: [1340, 155, 1560, 392] },
+  { n: 'octobre', b: [1340, 420, 1560, 650] },
+  { n: 'novembre', b: [1098, 655, 1318, 895] },
+  { n: 'decembre', b: [1340, 650, 1560, 895] },
+];
+const SEPT_BOX: [number, number, number, number] = [1085, 408, 1332, 662];
+const zone = (b: [number, number, number, number]) => ({
+  left: `${(b[0] / IMG_W) * 100}%`,
+  top: `${(b[1] / IMG_H) * 100}%`,
+  width: `${((b[2] - b[0]) / IMG_W) * 100}%`,
+  height: `${((b[3] - b[1]) / IMG_H) * 100}%`,
+});
 
-const CalendrierAnnee: React.FC<{ open: boolean; onToggle: () => void }> = ({ open, onToggle }) => (
-  <button
-    type="button"
-    onClick={onToggle}
-    aria-expanded={open}
-    aria-label={open ? 'Refermer le mois' : 'Ouvrir le mois en cours'}
-    className="relative block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
-  >
-    <img
-      src="/foyer/calendrier-annee.webp"
-      alt="Le calendrier des douze portes du Foyer d'Origine, l'âtre allumé au centre"
-      loading="lazy"
-      className="block w-full"
-    />
-    <video
-      src="/foyer/atre-feu.mp4"
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="metadata"
-      aria-hidden
-      className="pointer-events-none absolute object-cover"
-      style={{
-        left: `${HEARTH.left * 100}%`,
-        top: `${HEARTH.top * 100}%`,
-        width: `${HEARTH.width * 100}%`,
-        height: `${HEARTH.height * 100}%`,
-        maskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
-        WebkitMaskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
-      }}
-    />
-    <span className="absolute bottom-4 left-1/2 -translate-x-1/2 font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
-      {open ? 'Le mois est ouvert' : 'Ouvrir le mois en cours'}
-    </span>
-  </button>
-);
+const CalendrierAnnee: React.FC<{ open: boolean; onToggle: () => void }> = ({ open, onToggle }) => {
+  const [hoverSept, setHoverSept] = useState(false);
+  return (
+    <div className="relative w-full">
+      <img
+        src="/foyer/calendrier-annee.webp"
+        alt="Le calendrier des douze portes du Foyer d'Origine, l'âtre allumé au centre"
+        loading="lazy"
+        className="block w-full"
+      />
+      <video
+        src="/foyer/atre-feu.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-hidden
+        className="pointer-events-none absolute object-cover"
+        style={{
+          left: `${HEARTH.left * 100}%`,
+          top: `${HEARTH.top * 100}%`,
+          width: `${HEARTH.width * 100}%`,
+          height: `${HEARTH.height * 100}%`,
+          maskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
+        }}
+      />
+      {/* portes verrouillées : cadenas au survol */}
+      {LOCKED_DOORS.map((d) => (
+        <div
+          key={d.n}
+          aria-hidden
+          className="group absolute flex cursor-not-allowed items-center justify-center"
+          style={zone(d.b)}
+        >
+          <span className="absolute inset-[6%] rounded-t-[45%] rounded-b-lg bg-espressoDeep/0 transition-colors duration-500 group-hover:bg-espressoDeep/35" />
+          <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-espressoDeep/70 text-brassBright opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+            <Lock size={17} />
+          </span>
+        </div>
+      ))}
+      {/* septembre : halo doré + le cutout s'illumine et pop, le clic ouvre le mois */}
+      <motion.span
+        aria-hidden
+        className="pointer-events-none absolute z-20"
+        style={{
+          ...zone(SEPT_BOX),
+          background: 'radial-gradient(50% 50% at 50% 50%, rgba(220,184,116,0.75), rgba(199,132,44,0.3) 55%, transparent 78%)',
+          filter: 'blur(16px)',
+          transform: 'scale(1.35)',
+        }}
+        animate={{ opacity: hoverSept ? 1 : 0 }}
+        transition={{ duration: 0.45, ease }}
+      />
+      <motion.img
+        src="/foyer/porte-sept-cutout.webp"
+        alt=""
+        aria-hidden
+        className="pointer-events-none absolute z-30"
+        style={zone(SEPT_BOX)}
+        animate={
+          hoverSept
+            ? { scale: 1.09, filter: 'brightness(1.14) drop-shadow(0 10px 34px rgba(199,132,44,0.9))' }
+            : { scale: 1, filter: 'brightness(1) drop-shadow(0 0px 0px rgba(220,184,116,0))' }
+        }
+        transition={{ duration: 0.5, ease }}
+      />
+      <button
+        type="button"
+        onClick={onToggle}
+        onMouseEnter={() => setHoverSept(true)}
+        onMouseLeave={() => setHoverSept(false)}
+        aria-expanded={open}
+        aria-label={open ? 'Refermer le mois de septembre' : 'Ouvrir le mois de septembre'}
+        className="absolute z-20 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+        style={zone(SEPT_BOX)}
+      />
+      <span className="absolute bottom-4 left-1/2 -translate-x-1/2 font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
+        {open ? 'Le mois est ouvert' : 'Ouvrir le mois en cours'}
+      </span>
+    </div>
+  );
+};
 
 /* ── Séparateur doré du moodboard : filet, losange, deux brins végétaux ── */
 const Ornament: React.FC<{ on?: 'dark' | 'light'; motto?: boolean; className?: string }> = ({
@@ -266,82 +336,12 @@ export default function BodySections() {
         @keyframes auraBreathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.06);opacity:1}}
         @media (prefers-reduced-motion: reduce){[style*="auraBreathe"]{animation:none!important}}
       `}</style>
-      {/* ═══════════════ SECTION 2 · L'Histoire du feu (Varanasi) ═══════════════ */}
-      <section
-        className="relative overflow-hidden py-24 md:py-36"
-        style={{ background: 'linear-gradient(180deg, #f6f3ee 0%, #f5e8cf 16%, #f1ddb2 58%, #f3e3c2 100%)' }}
-      >
-        <Aura tone="ocre" size={560} className="-left-36 top-4" />
-        <Aura tone="terre" size={420} className="-right-28 bottom-2 opacity-90" />
-        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
-            <Reveal className="lg:col-span-5">
-              <Eyebrow>{SECTION2.eyebrow}</Eyebrow>
-              <SectionTitle className="mt-5">{SECTION2.title}</SectionTitle>
-            </Reveal>
-            <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
-              <p
-                className="font-serif font-medium text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug max-w-[38ch]"
-                style={{ color: TONE_INK.terre }}
-              >
-                {SECTION2.lead}
-              </p>
-              {SECTION2.paragraphs.map((p) => (
-                <p key={p} className="mt-6 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[52ch]">
-                  {p}
-                </p>
-              ))}
-              <p className="mt-10 font-serif font-medium text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[46ch]">
-                {SECTION2.closingLead} {SECTION2.closing}
-              </p>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════ SECTION 3 · Le feu reste allumé ═══════════════ */}
-      <section
-        className="relative overflow-hidden py-24 md:py-36"
-        style={{ background: 'linear-gradient(180deg, #f3e3c2 0%, #edf0df 22%, #e8ecd7 100%)' }}
-      >
-        <Aura tone="sauge" size={480} className="-right-28 bottom-6" />
-        <Aura tone="beige" size={360} className="-left-24 top-24 opacity-80" />
-        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <Ornament className="mb-16" />
-          <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
-            <Reveal className="lg:col-span-5">
-              <Eyebrow>{SECTION3.eyebrow}</Eyebrow>
-              <SectionTitle className="mt-5">{SECTION3.title}</SectionTitle>
-              <p className="mt-6 font-serif text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[30ch]">
-                {SECTION3.subtitle}
-              </p>
-            </Reveal>
-            <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
-              {SECTION3.paragraphs.map((p, i) => (
-                <p
-                  key={p}
-                  className={`font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[54ch] ${i > 0 ? 'mt-6' : ''}`}
-                >
-                  {p}
-                </p>
-              ))}
-              <p
-                className="mt-9 font-serif font-medium text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug"
-                style={{ color: TONE_INK.sauge }}
-              >
-                {SECTION3.closing}
-              </p>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
       {/* ═══════════════ SECTION 4 · Chaque semaine, une nouvelle ouverture ═══════════════ */}
       <section className="relative overflow-hidden bg-cream3 py-24 md:py-36">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 h-28"
-          style={{ background: 'linear-gradient(180deg, #e8ecd7 0%, transparent 100%)' }}
+          style={{ background: 'linear-gradient(180deg, #f6f3ee 0%, transparent 100%)' }}
         />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="grid items-start gap-x-12 gap-y-6 lg:grid-cols-12">
@@ -443,8 +443,83 @@ export default function BodySections() {
         </div>
       </section>
 
+      {/* ═══════════════ SECTION 2 · L'Histoire du feu (Varanasi) ═══════════════ */}
+      <section
+        className="relative overflow-hidden py-24 md:py-36"
+        style={{ background: 'linear-gradient(180deg, #ede5d7 0%, #f5e8cf 16%, #f1ddb2 58%, #f3e3c2 100%)' }}
+      >
+        <Aura tone="ocre" size={560} className="-left-36 top-4" />
+        <Aura tone="terre" size={420} className="-right-28 bottom-2 opacity-90" />
+        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
+          <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
+            <Reveal className="lg:col-span-5">
+              <Eyebrow>{SECTION2.eyebrow}</Eyebrow>
+              <SectionTitle className="mt-5">{SECTION2.title}</SectionTitle>
+            </Reveal>
+            <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
+              <p
+                className="font-serif font-medium text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug max-w-[38ch]"
+                style={{ color: TONE_INK.terre }}
+              >
+                {SECTION2.lead}
+              </p>
+              {SECTION2.paragraphs.map((p) => (
+                <p key={p} className="mt-6 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[52ch]">
+                  {p}
+                </p>
+              ))}
+              <p className="mt-10 font-serif font-medium text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[46ch]">
+                {SECTION2.closingLead} {SECTION2.closing}
+              </p>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════ SECTION 3 · Le feu reste allumé ═══════════════ */}
+      <section
+        className="relative overflow-hidden py-24 md:py-36"
+        style={{ background: 'linear-gradient(180deg, #f3e3c2 0%, #edf0df 22%, #e8ecd7 100%)' }}
+      >
+        <Aura tone="sauge" size={480} className="-right-28 bottom-6" />
+        <Aura tone="beige" size={360} className="-left-24 top-24 opacity-80" />
+        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
+          <Ornament className="mb-16" />
+          <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
+            <Reveal className="lg:col-span-5">
+              <Eyebrow>{SECTION3.eyebrow}</Eyebrow>
+              <SectionTitle className="mt-5">{SECTION3.title}</SectionTitle>
+              <p className="mt-6 font-serif text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[30ch]">
+                {SECTION3.subtitle}
+              </p>
+            </Reveal>
+            <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
+              {SECTION3.paragraphs.map((p, i) => (
+                <p
+                  key={p}
+                  className={`font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[54ch] ${i > 0 ? 'mt-6' : ''}`}
+                >
+                  {p}
+                </p>
+              ))}
+              <p
+                className="mt-9 font-serif font-medium text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug"
+                style={{ color: TONE_INK.sauge }}
+              >
+                {SECTION3.closing}
+              </p>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════════ SECTION 5 · Ce que Le Foyer rend possible ═══════════════ */}
       <section className="relative overflow-hidden bg-cream py-24 md:py-36">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-24"
+          style={{ background: 'linear-gradient(180deg, #e8ecd7 0%, transparent 100%)' }}
+        />
         <Aura tone="beige" size={520} className="-right-40 -top-24" />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament className="mb-16" />
