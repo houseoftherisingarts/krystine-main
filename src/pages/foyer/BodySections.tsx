@@ -476,8 +476,10 @@ export default function BodySections() {
       </section>
 
       {/* ═══════════════ SECTION 8 · Ce que comprend l'année ═══════════════ */}
-      <section className="bg-cream py-24 md:py-36">
-        <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
+      <section className="relative overflow-hidden bg-cream py-24 md:py-36">
+        <Aura tone="bleu" size={460} className="-left-32 bottom-8 opacity-60" />
+        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
+          <Ornament className="mb-16" />
           <Reveal className="max-w-[36ch]">
             <Eyebrow>{SECTION8.eyebrow}</Eyebrow>
             <SectionTitle className="mt-5">{SECTION8.title}</SectionTitle>
