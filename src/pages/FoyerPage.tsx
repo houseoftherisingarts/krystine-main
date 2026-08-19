@@ -7,7 +7,7 @@ import {
   useReducedMotion,
 } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Volume2, VolumeX } from 'lucide-react';
 import { Atmosphere } from '../components/motion/loeuvre';
 import BodySections from './foyer/BodySections';
 
