@@ -322,18 +322,18 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
               initial={reduce ? {} : { opacity: 0, y: 24 }}
               animate={ready ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 1.1, ease, delay: 0.47 }}
-              className="mt-6 max-w-2xl font-serif font-medium text-[clamp(1.35rem,2.2vw,1.9rem)] leading-snug text-ctext"
+              className="mt-7 max-w-3xl font-serif font-medium text-[clamp(1.7rem,3.1vw,2.7rem)] leading-[1.2] text-ctext"
             >
-              Nous n’avons jamais eu autant d’information.
+              Nous n’avons jamais eu accès à autant d’informations.
               <span className="block text-brassBright">Et jamais autant de dispersion.</span>
             </motion.p>
             <motion.div
               initial={reduce ? {} : { opacity: 0, y: 22 }}
               animate={ready ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 1.1, ease, delay: 0.63 }}
-              className="mt-8 flex flex-wrap items-end justify-between gap-6"
+              className="mt-10 flex flex-wrap items-end justify-between gap-6"
             >
-              <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d’accès" dark />
+              <Cta label="Prendre place au foyer" sub="497 $ | 12 mois d’accès" dark />
               <span
                 className="hidden font-sans text-[0.6rem] uppercase tracking-[0.3em] text-ctextSoft md:block"
                 style={{ animation: 'foyerCue 2.6s ease-in-out infinite' }}
