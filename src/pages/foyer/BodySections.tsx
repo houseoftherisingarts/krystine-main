@@ -299,7 +299,18 @@ export default function BodySections() {
                         />
                       </div>
                       <div className="p-7">
-                        <span className="font-serif text-brass text-3xl leading-none">{roman[i]}</span>
+                        {/* cercle-aura du moodboard : jamais vide */}
+                        <span className="relative flex h-14 w-14 items-center justify-center">
+                          <span
+                            aria-hidden
+                            className="absolute inset-0 rounded-full"
+                            style={{
+                              background: `radial-gradient(circle at 42% 38%, rgba(${AURAS[WEEK_TONES[i]]},0.55), rgba(${AURAS[WEEK_TONES[i]]},0.2) 55%, transparent 78%)`,
+                              filter: 'blur(4px)',
+                            }}
+                          />
+                          <span className="relative font-serif text-3xl leading-none text-ink">{roman[i]}</span>
+                        </span>
                         <h3 className="mt-4 font-serif text-xl text-ink">{o.title}</h3>
                         <p className="mt-3 font-sans text-[0.9rem] leading-[1.85] text-inkSoft">{o.body}</p>
                       </div>
