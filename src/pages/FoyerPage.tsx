@@ -548,11 +548,15 @@ const AppelFinal: React.FC = () => {
   return (
     <section className="relative overflow-hidden bg-espressoDeep px-6 py-32 md:px-12 lg:px-20">
       <Atmosphere light="72% 30%" strength={1} />
-      <img
-        src="/foyer/final-braises.webp"
-        alt=""
+      <video
+        src="/foyer/final-braises.mp4"
+        poster="/foyer/final-braises.webp"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
         aria-hidden
-        loading="lazy"
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[72%] w-full object-cover opacity-45"
         style={{
           maskImage: 'linear-gradient(to top, black 50%, transparent 100%)',
