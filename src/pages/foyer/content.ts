@@ -13,33 +13,33 @@ export interface FaqItem {
   a: string;
 }
 
+// SECTION 2 refondue le 19 août 2026 (PDF « SECTION HERO ») : L'Histoire du feu.
 export const SECTION2 = {
-  eyebrow: 'Une autre façon de choisir',
-  title: 'Une autre façon de choisir ce qui entre',
-  lead: 'Nous avons appris à trier. À comparer. À enregistrer pour plus tard. À chercher encore.',
-  question: 'Mais comment chercher ce que nous ne savons pas encore nommer?',
-  statement: 'Le Foyer commence là.',
-  body: 'Ce qui entre dans cet espace a été choisi par une personne. Regardé avec attention. Replacé dans un ensemble plus vaste.',
-  pullQuote: 'Le choix n’est que le premier geste. La véritable valeur se trouve dans les liens qui apparaissent ensuite.',
-  list: [
-    'Entre nourrir et soigner.',
-    'Entre le corps et la conscience.',
-    'Entre la science et la sagesse.',
-    'Entre une plante, une œuvre, une idée, une saison, une voix ou une pratique que rien ne semblait réunir.',
+  eyebrow: 'L’histoire du feu',
+  title: 'L’Histoire du feu',
+  lead: 'Il était une fois, dans un pays lointain du continent indien, une ville appelée Varanasi.',
+  paragraphs: [
+    'Dans cette ville, une flamme brûle sans arrêt depuis plus de deux mille cinq cents ans.',
+    'Des familles se passent cette responsabilité, de père en fils, pour que cette lumière ne s’éteigne jamais. Jour et nuit, quelqu’un veille sur elle.',
+    'Chaque gardien passe le relais au suivant, comme on se passe un secret trop important pour être oublié.',
+    'Et puis, la flamme est devenue le centre de la maison, le foyer. L’endroit où la famille se rassemblait, où les anciens racontaient les histoires, où les enfants écoutaient, les yeux grands ouverts.',
   ],
-  closing: 'Jusqu\'à ce que le lien apparaisse.',
+  closingLead: 'Le Foyer d’Origine',
+  closing: 'est né de ce même mouvement humain : revenir au cœur, se réchauffer, se nourrir ensemble et transmettre, par les histoires, ce qui compte assez pour ne pas être oublié.',
 };
 
+// SECTION 3 refondue le 19 août 2026 (PDF « SECTION HERO »).
 export const SECTION3 = {
-  eyebrow: 'Un rythme, pas une obligation',
-  title: 'Être bien pendant que le monde bouge',
+  eyebrow: 'Un rythme régulier, sans obligations',
+  title: 'Le feu reste allumé, semaine après semaine',
   paragraphs: [
-    'Le Foyer d’Origine n’est pas une formation à compléter.',
-    'C’est une place où revenir.',
-    'Comme autour d’un feu commun, chacun peut s\'approcher à sa façon. Ouvrir ce qui attire. Laisser passer ce qui appelle moins. Revenir quand le moment est juste.',
-    'On y retrouve un rythme reconnaissable, la présence des autres et le plaisir de découvrir quelque chose que nous n’aurions jamais rencontré seuls.',
+    'Chaque semaine, quelque chose de précis est apporté au Foyer : une histoire à écouter, une plante à découvrir, un ingrédient à cuisiner, un livre à ouvrir ou une question à regarder autrement.',
+    'En texte, en audio ou en vidéo, nous découvrons d’où cela vient, pourquoi cela mérite notre attention maintenant et ce que cela peut changer dans notre manière de voir.',
+    'De septembre à juin, le premier samedi du mois, une méditation guidée en direct nous rassemble autour du feu. Chaque rencontre demeure accessible en reprise.',
+    'Il n’y a ni modules à suivre ni progression à compléter.',
+    'Vous pouvez rejoindre ce qui est partagé cette semaine ou revenir plus tard. Vous n’avez rien à rattraper, rien à publier et rien à prouver.',
   ],
-  closing: 'On vient s’y faire chauffer le cœur.',
+  closing: 'On ne suit pas Le Foyer. On y revient.',
 };
 
 export const SECTION4 = {
