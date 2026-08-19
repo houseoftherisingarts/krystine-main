@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, X } from 'lucide-react';
 import { Atmosphere, Reveal, Parallax } from '../../components/motion/loeuvre';
 import {
   SECTION2,
@@ -117,6 +117,14 @@ const CalendrierAnnee: React.FC = () => {
   const [hoverDoor, setHoverDoor] = useState<string | null>(null);
   const [openDoor, setOpenDoor] = useState<string | null>(null);
   const ouverte = PORTES.find((d) => d.n === openDoor) ?? null;
+  useEffect(() => {
+    if (!openDoor) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenDoor(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [openDoor]);
   return (
     <div>
       <div className="relative w-full">
@@ -207,35 +215,65 @@ const CalendrierAnnee: React.FC = () => {
         <span className="absolute bottom-4 left-1/2 -translate-x-1/2 font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
           {ouverte ? ouverte.mois : 'Ouvrir une porte'}
         </span>
-      </div>
 
-      {/* le mois révélé : mouvement · THÈME · aperçu · un seul appel discret */}
-      <AnimatePresence mode="wait">
-        {ouverte && (
-          <motion.div
-            key={ouverte.n}
-            initial={{ opacity: 0, y: 26 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 14 }}
-            transition={{ duration: 0.9, ease }}
-            className="mx-auto max-w-3xl px-6 pb-4 pt-14 text-center"
-          >
-            <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
-              {ouverte.mois} · {ouverte.mouvement}
-            </p>
-            <h3 className="mt-5 font-serif font-medium leading-[1.15] text-ink text-[clamp(1.7rem,3.4vw,2.6rem)]">
-              {ouverte.theme}
-            </h3>
-            <p className="mt-5 font-sans text-[0.95rem] leading-[1.85] text-inkSoft">{ouverte.apercu}</p>
-            <a
-              href="/liste-attente?programme=foyer"
-              className="mt-7 inline-block border-b border-brass/60 pb-1 font-sans text-[0.72rem] uppercase tracking-[0.22em] text-brassInk transition-colors hover:text-brassBright"
+        {/* le halo du mois : la lumière sort de la porte cliquée, par-dessus le calendrier */}
+        <AnimatePresence>
+          {ouverte && (
+            <motion.div
+              key={ouverte.n}
+              role="dialog"
+              aria-label={`${ouverte.mois} : ${ouverte.theme}`}
+              className="absolute z-50 w-[min(560px,86%)]"
+              initial={{
+                left: `${((ouverte.b[0] + ouverte.b[2]) / 2 / IMG_W) * 100}%`,
+                top: `${((ouverte.b[1] + ouverte.b[3]) / 2 / IMG_H) * 100}%`,
+                scale: 0.22,
+                opacity: 0,
+              }}
+              animate={{ left: '50%', top: '50%', scale: 1, opacity: 1 }}
+              exit={{
+                left: `${((ouverte.b[0] + ouverte.b[2]) / 2 / IMG_W) * 100}%`,
+                top: `${((ouverte.b[1] + ouverte.b[3]) / 2 / IMG_H) * 100}%`,
+                scale: 0.22,
+                opacity: 0,
+              }}
+              transition={{ duration: 0.85, ease }}
+              style={{ x: '-50%', y: '-50%' }}
             >
-              Entrer dans le Foyer
-            </a>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <div
+                className="relative rounded-[30px] px-8 py-10 text-center md:px-12"
+                style={{
+                  background: 'radial-gradient(circle at 50% 24%, #fffdf7 0%, #fbf2dd 58%, #f4e3b8 100%)',
+                  boxShadow:
+                    '0 0 60px 22px rgba(220,184,116,0.5), 0 0 140px 60px rgba(220,184,116,0.28), 0 18px 50px rgba(22,16,10,0.25)',
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenDoor(null)}
+                  aria-label="Refermer la porte"
+                  className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full text-espresso/70 transition-colors hover:bg-espresso/10 hover:text-espresso"
+                >
+                  <X size={17} />
+                </button>
+                <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
+                  {ouverte.mois} · {ouverte.mouvement}
+                </p>
+                <h3 className="mt-4 font-serif font-medium leading-[1.15] text-espresso text-[clamp(1.4rem,2.6vw,2.1rem)]">
+                  {ouverte.theme}
+                </h3>
+                <p className="mt-4 font-sans text-[0.92rem] leading-[1.8] text-ink">{ouverte.apercu}</p>
+                <a
+                  href="/liste-attente?programme=foyer"
+                  className="mt-6 inline-block border-b border-brassInk/60 pb-1 font-sans text-[0.7rem] uppercase tracking-[0.22em] text-brassInk transition-colors hover:text-espresso"
+                >
+                  Entrer dans le Foyer
+                </a>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };
