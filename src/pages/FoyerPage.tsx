@@ -595,9 +595,6 @@ const AppelFinal: React.FC = () => {
             <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d’accès" dark />
           </div>
         </div>
-        <div className="hidden lg:col-span-4 lg:flex lg:justify-end">
-          <Seal animate={false} className="h-64 w-64 opacity-30 xl:h-80 xl:w-80" />
-        </div>
       </div>
     </section>
   );
