@@ -530,8 +530,9 @@ export default function BodySections() {
       </section>
 
       {/* ═══════════════ SECTION 9 · Foyer vs Expérience Origine ═══════════════ */}
-      <section className="bg-cream3 py-24 md:py-36">
-        <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
+      <section className="relative overflow-hidden bg-cream3 py-24 md:py-36">
+        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
+          <Ornament className="mb-16" />
           <Reveal className="max-w-[42ch]">
             <Eyebrow>{SECTION9.eyebrow}</Eyebrow>
             <SectionTitle className="mt-5">{SECTION9.title}</SectionTitle>
