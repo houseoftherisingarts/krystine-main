@@ -59,14 +59,14 @@ const Aura: React.FC<{ tone: AuraTone; size?: number; className?: string }> = ({
     <span
       className="absolute inset-0 rounded-full"
       style={{
-        background: `radial-gradient(circle at 42% 40%, rgba(${AURAS[tone]},0.5), rgba(${AURAS[tone]},0.16) 46%, transparent 72%)`,
+        background: `radial-gradient(circle at 42% 40%, rgba(${AURAS[tone]},0.8), rgba(${AURAS[tone]},0.32) 46%, transparent 72%)`,
         filter: 'blur(18px)',
       }}
     />
     <span
       className="absolute inset-[12%] rounded-full"
       style={{
-        background: `radial-gradient(circle at 62% 64%, rgba(${AURAS[tone]},0.36), transparent 64%)`,
+        background: `radial-gradient(circle at 62% 64%, rgba(${AURAS[tone]},0.55), transparent 64%)`,
         filter: 'blur(10px)',
       }}
     />
