@@ -120,20 +120,21 @@ const PorteDuMois: React.FC<{ open: boolean; onToggle: () => void }> = ({ open, 
           transition={{ duration: 0.7, ease }}
           style={{ background: 'radial-gradient(50% 50% at 50% 55%, rgba(199,132,44,0.45), transparent 75%)', filter: 'blur(14px)' }}
         />
-        {/* le battant : GLB 3D quand WebGL est là, sinon l'asset 2D qui pivote */}
+        {/* le battant : 2D nette au repos, GLB 3D dès que la porte bouge */}
         {webgl ? (
-          <React.Suspense
-            fallback={
-              <img
-                src="/foyer/porte-septembre.webp"
-                alt="Porte de septembre, sceau doré"
-                loading="lazy"
-                className="absolute inset-0 h-full w-full object-contain drop-shadow-xl"
-              />
-            }
-          >
-            <PorteDuMois3D open={open} hover={hover} />
-          </React.Suspense>
+          <>
+            <React.Suspense fallback={null}>
+              <PorteDuMois3D open={open} hover={hover} />
+            </React.Suspense>
+            <motion.img
+              src="/foyer/porte-septembre.webp"
+              alt="Porte de septembre, sceau doré"
+              loading="lazy"
+              className="pointer-events-none absolute inset-0 h-full w-full object-contain drop-shadow-xl"
+              animate={{ opacity: hover || open ? 0 : 1 }}
+              transition={{ duration: 0.35, ease }}
+            />
+          </>
         ) : (
           <motion.img
             src="/foyer/porte-septembre.webp"

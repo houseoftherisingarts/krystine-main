@@ -15,7 +15,7 @@ const HALF_W = 0.62; // demi-largeur du modèle normalisé Meshy (h 1.9, ratio 6
 const Door: React.FC<{ open: boolean; hover: boolean }> = ({ open, hover }) => {
   const { scene } = useGLTF(MODEL, '/draco/');
   const pivot = useRef<Group>(null);
-  const target = open ? -1.66 : hover ? -0.46 : 0;
+  const target = open ? -1.66 : hover ? -0.52 : -0.02;
   useFrame((_, dt) => {
     const g = pivot.current;
     if (!g) return;
@@ -37,10 +37,10 @@ const PorteDuMois3D: React.FC<{ open: boolean; hover: boolean }> = ({ open, hove
     dpr={[1, 2]}
     gl={{ antialias: true, alpha: true }}
   >
-    <ambientLight intensity={0.42} color="#f4e6c8" />
-    <directionalLight position={[2.4, 2.2, 2.6]} intensity={1.15} color="#ffe0a6" />
-    <directionalLight position={[-2.6, 0.6, 1.2]} intensity={0.35} color="#c7842c" />
-    <pointLight position={[-0.4, -0.6, 1.6]} intensity={0.35} color="#b06a3f" />
+    <ambientLight intensity={0.9} color="#fffaf0" />
+    <hemisphereLight args={['#fff7e8', '#8a6a4f', 0.55]} />
+    <directionalLight position={[2.4, 2.2, 2.6]} intensity={1.35} color="#fff3dd" />
+    <directionalLight position={[-2.6, 0.6, 1.2]} intensity={0.4} color="#e8c48a" />
     <Suspense fallback={null}>
       <Door open={open} hover={hover} />
       <ContactShadows position={[0, -0.98, 0]} opacity={0.5} scale={3.4} blur={2.6} far={1.4} color="#2a1a10" />
