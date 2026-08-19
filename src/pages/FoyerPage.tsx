@@ -464,6 +464,17 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
           Rien à terminer. Rien à rattraper.
         </motion.p>
 
+        {/* son du feu : bouton discret, coupé par défaut */}
+        <button
+          type="button"
+          onClick={fire.toggle}
+          aria-pressed={fire.on}
+          aria-label={fire.on ? 'Couper le son du feu' : 'Écouter le feu'}
+          className="absolute bottom-6 right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-brass/40 bg-espressoDeep/50 text-brass backdrop-blur-sm transition-colors duration-300 hover:border-brass hover:text-brassBright"
+        >
+          {fire.on ? <Volume2 size={17} /> : <VolumeX size={17} />}
+        </button>
+
         {/* la crème se pose sur le matin : couture invisible vers le corps */}
         <motion.div
           aria-hidden
