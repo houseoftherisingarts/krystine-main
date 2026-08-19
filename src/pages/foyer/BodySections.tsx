@@ -330,8 +330,10 @@ export default function BodySections() {
       </section>
 
       {/* ═══════════════ SECTION 5 · Ce que Le Foyer rend possible ═══════════════ */}
-      <section className="bg-cream py-24 md:py-36">
-        <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
+      <section className="relative overflow-hidden bg-cream py-24 md:py-36">
+        <Aura tone="beige" size={520} className="-right-40 -top-24" />
+        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
+          <Ornament className="mb-16" />
           <Reveal className="max-w-[36ch]">
             <Eyebrow>{SECTION5.eyebrow}</Eyebrow>
             <SectionTitle className="mt-5">{SECTION5.title}</SectionTitle>
