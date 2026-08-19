@@ -22,39 +22,7 @@ import BodySections from './foyer/BodySections';
 const ease = [0.16, 0.8, 0.24, 1] as const;
 const CTA_HREF = '/liste-attente?programme=foyer';
 
-/* ── Sceau concentrique (mark du PDF) · préloader et appel final seulement ── */
-const Seal: React.FC<{ animate?: boolean; className?: string }> = ({
-  animate = true,
-  className = '',
-}) => (
-  <svg viewBox="0 0 120 120" fill="none" className={className} aria-hidden>
-    {[52, 34].map((r, i) => (
-      <motion.circle
-        key={r}
-        cx="60"
-        cy="60"
-        r={r}
-        stroke="#bb9a5e"
-        strokeWidth={i === 0 ? 1 : 1.4}
-        initial={animate ? { pathLength: 0, opacity: 0 } : false}
-        animate={{ pathLength: 1, opacity: i === 0 ? 0.55 : 0.9 }}
-        transition={{ duration: 0.9, ease, delay: 0.1 + i * 0.25 }}
-      />
-    ))}
-    <motion.circle
-      cx="60"
-      cy="60"
-      r="7"
-      fill="#c79a52"
-      initial={animate ? { scale: 0, opacity: 0 } : false}
-      animate={{ scale: [0, 1.25, 1], opacity: 1 }}
-      transition={{ duration: 0.7, ease, delay: 0.62 }}
-      style={{ transformOrigin: '60px 60px' }}
-    />
-  </svg>
-);
-
-/* ── Preloader ~1s : nuit, le sceau se dessine, la braise s’allume ── */
+/* ── Preloader ~1s : nuit, le filet doré se trace, la braise s’allume ── */
 const Preloader: React.FC<{ done: boolean }> = ({ done }) => (
   <AnimatePresence>
     {!done && (
@@ -63,13 +31,34 @@ const Preloader: React.FC<{ done: boolean }> = ({ done }) => (
         exit={{ opacity: 0 }}
         transition={{ duration: 0.7, ease }}
       >
-        <div className="relative">
-          <Seal className="h-28 w-28" />
+        <div className="relative flex flex-col items-center gap-6">
+          <svg width="220" height="18" viewBox="0 0 220 18" fill="none" aria-hidden>
+            <motion.line
+              x1="0" y1="9" x2="88" y2="9" stroke="#bb9a5e" strokeWidth="1"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 0.6 }}
+              transition={{ duration: 0.7, ease, delay: 0.1 }}
+            />
+            <motion.line
+              x1="220" y1="9" x2="132" y2="9" stroke="#bb9a5e" strokeWidth="1"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 0.6 }}
+              transition={{ duration: 0.7, ease, delay: 0.1 }}
+            />
+            <motion.rect
+              x="105.5" y="4.5" width="9" height="9"
+              transform="rotate(45 110 9)" stroke="#c79a52" strokeWidth="1.2"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: [0, 1.25, 1] }}
+              transition={{ duration: 0.6, ease, delay: 0.55 }}
+              style={{ transformOrigin: '110px 9px' }}
+            />
+          </svg>
           <motion.p
-            className="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap font-sans text-[0.6rem] uppercase tracking-[0.34em] text-ctextSoft"
+            className="whitespace-nowrap font-sans text-[0.6rem] uppercase tracking-[0.34em] text-ctextSoft"
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.85 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
           >
             Le Foyer d’Origine
           </motion.p>
