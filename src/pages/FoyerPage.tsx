@@ -568,8 +568,8 @@ const AppelFinal: React.FC = () => {
         }}
       />
       <style>{`@keyframes foyerBreathe{0%,100%{opacity:.75}50%{opacity:1}}`}</style>
-      <div className="relative z-10 mx-auto grid w-full max-w-[1360px] items-center gap-y-14 lg:grid-cols-12 lg:gap-x-12">
-        <div className="lg:col-span-8">
+      <div className="relative z-10 mx-auto w-full max-w-[1360px]">
+        <div className="max-w-3xl">
           <h2 className="font-serif font-medium leading-[1.08] text-ctext text-[clamp(2.2rem,3.6vw,3.4rem)]">
             Tout ne mérite pas notre attention.
           </h2>
