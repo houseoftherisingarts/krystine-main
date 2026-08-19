@@ -28,13 +28,22 @@ const ease = [0.16, 0.8, 0.24, 1] as const;
    prune/sauge/bleuMineral restent neutralisés pour les autres pages. */
 const AURAS = {
   beige: '217,196,160', // beige lumière · clarté, douceur, ouverture
-  ocre: '192,138,62', // ocre chaud · transformation, énergie juste
-  prune: '125,90,120', // prune aquarelle · introspection, profondeur
-  sauge: '138,148,113', // sauge végétal · apaisement, régénération
-  bleu: '74,112,133', // bleu minéral · fluidité, circulation
-  terre: '138,106,79', // terre ancrée · stabilité, enracinement
+  ocre: '199,132,44', // ocre chaud · transformation, énergie juste
+  prune: '136,86,130', // prune aquarelle · introspection, profondeur
+  sauge: '129,143,96', // sauge végétal · apaisement, régénération
+  bleu: '62,110,138', // bleu minéral · fluidité, circulation
+  terre: '150,104,66', // terre ancrée · stabilité, enracinement
 } as const;
 type AuraTone = keyof typeof AURAS;
+/* version encre des tons : lisible en gros texte sur crème */
+const TONE_INK: Record<AuraTone, string> = {
+  beige: '#8a713f',
+  ocre: '#8a5a1f',
+  prune: '#6b4a66',
+  sauge: '#5c6647',
+  bleu: '#3d5a6e',
+  terre: '#6e5138',
+};
 
 /* Tache aquarelle : deux couches radiales décalées + flou, respiration lente. */
 const Aura: React.FC<{ tone: AuraTone; size?: number; className?: string }> = ({
