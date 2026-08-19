@@ -42,9 +42,11 @@ export const SECTION3 = {
   closing: 'On ne suit pas Le Foyer. On y revient.',
 };
 
+// Titre du PDF du 19 août; le reste de la section est marqué « À COMPLÉTER »
+// dans le PDF : les ouvertures existantes restent en place en attendant la copie.
 export const SECTION4 = {
   eyebrow: 'Le rythme du mois',
-  title: 'Chaque semaine, une nouvelle ouverture',
+  title: 'Un mois autour du feu',
   intro: 'Le mois n’est pas un sujet découpé en quatre leçons. Il se déploie. Chaque semaine change la perspective.',
   openings: [
     {
