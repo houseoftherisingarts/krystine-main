@@ -73,27 +73,47 @@ const Aura: React.FC<{ tone: AuraTone; size?: number; className?: string }> = ({
   </span>
 );
 
-/* ── La porte du mois : asset statique. Clic = ouvrir les semaines dessous. ── */
-const PorteDuMois: React.FC<{ open: boolean; onToggle: () => void }> = ({ open, onToggle }) => (
-  <div className="mx-auto w-full max-w-[300px]">
-    <button
-      type="button"
-      onClick={onToggle}
-      aria-expanded={open}
-      aria-label={open ? 'Refermer le mois' : 'Ouvrir le mois'}
-      className="block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
-    >
-      <img
-        src="/foyer/porte-septembre.webp"
-        alt="Porte de septembre, sceau doré"
-        loading="lazy"
-        className="w-full drop-shadow-xl"
-      />
-    </button>
-    <p className="mt-5 text-center font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
-      {open ? 'Le mois est ouvert' : 'Ouvrir le mois'}
-    </p>
-  </div>
+/* ── Le calendrier de l'année : asset pleine largeur, le feu de l'âtre est
+   une vidéo posée exactement sur l'ouverture (crop 1:1, masque elliptique).
+   Clic = ouvrir les semaines du mois en dessous. ── */
+const HEARTH = { left: 643 / 1672, top: 235 / 941, width: 385 / 1672, height: 498 / 941 };
+
+const CalendrierAnnee: React.FC<{ open: boolean; onToggle: () => void }> = ({ open, onToggle }) => (
+  <button
+    type="button"
+    onClick={onToggle}
+    aria-expanded={open}
+    aria-label={open ? 'Refermer le mois' : 'Ouvrir le mois en cours'}
+    className="relative block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+  >
+    <img
+      src="/foyer/calendrier-annee.webp"
+      alt="Le calendrier des douze portes du Foyer d'Origine, l'âtre allumé au centre"
+      loading="lazy"
+      className="block w-full"
+    />
+    <video
+      src="/foyer/atre-feu.mp4"
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-hidden
+      className="pointer-events-none absolute object-cover"
+      style={{
+        left: `${HEARTH.left * 100}%`,
+        top: `${HEARTH.top * 100}%`,
+        width: `${HEARTH.width * 100}%`,
+        height: `${HEARTH.height * 100}%`,
+        maskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
+        WebkitMaskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
+      }}
+    />
+    <span className="absolute bottom-4 left-1/2 -translate-x-1/2 font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
+      {open ? 'Le mois est ouvert' : 'Ouvrir le mois en cours'}
+    </span>
+  </button>
 );
 
 /* ── Séparateur doré du moodboard : filet, losange, deux brins végétaux ── */
@@ -324,16 +344,23 @@ export default function BodySections() {
           style={{ background: 'linear-gradient(180deg, #e8ecd7 0%, transparent 100%)' }}
         />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <div className="grid items-center gap-x-12 gap-y-12 lg:grid-cols-12">
-            <Reveal className="lg:col-span-4 lg:row-span-2">
-              <PorteDuMois open={moisOuvert} onToggle={toggleMois} />
-            </Reveal>
-            <Reveal delay={0.08} className="lg:col-span-7 lg:col-start-6">
+          <div className="grid items-start gap-x-12 gap-y-6 lg:grid-cols-12">
+            <Reveal className="lg:col-span-6">
               <Eyebrow>{SECTION4.eyebrow}</Eyebrow>
               <SectionTitle className="mt-5">{SECTION4.title}</SectionTitle>
-              <p className="mt-7 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[46ch]">{SECTION4.intro}</p>
+            </Reveal>
+            <Reveal delay={0.08} className="lg:col-span-5 lg:col-start-8">
+              <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[42ch]">{SECTION4.intro}</p>
             </Reveal>
           </div>
+        </div>
+
+        {/* le calendrier, pleine largeur, hors du conteneur */}
+        <Reveal className="mt-16">
+          <CalendrierAnnee open={moisOuvert} onToggle={toggleMois} />
+        </Reveal>
+
+        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
 
           {/* les 4 semaines du mois : les portes en dessous, ouvertes par le clic */}
           <AnimatePresence initial={false}>
