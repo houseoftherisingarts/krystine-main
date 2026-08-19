@@ -373,7 +373,10 @@ export default function BodySections() {
         <span aria-hidden className="absolute inset-0 bg-espressoSoft/55" />
         <WarmSeam from="#f6f3ee" />
         <Atmosphere light="70% 25%" strength={0.8} />
+        {/* aura prune : introspection, profondeur (moodboard) */}
+        <Aura tone="prune" size={560} className="left-[8%] top-1/4" />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
+          <Ornament on="dark" motto className="mb-16" />
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
             <Reveal className="lg:col-span-5">
               <Eyebrow on="dark">{SECTION6.eyebrow}</Eyebrow>
