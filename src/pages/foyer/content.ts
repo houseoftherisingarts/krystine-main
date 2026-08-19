@@ -30,8 +30,9 @@ export const SECTION2 = {
 
 // SECTION 3 refondue le 19 août 2026 (PDF « SECTION HERO »).
 export const SECTION3 = {
-  eyebrow: 'Un rythme régulier, sans obligations',
-  title: 'Le feu reste allumé, semaine après semaine',
+  eyebrow: 'Le rythme',
+  title: 'Un rythme régulier, sans obligations',
+  subtitle: 'Le feu reste allumé, semaine après semaine.',
   paragraphs: [
     'Chaque semaine, quelque chose de précis est apporté au Foyer : une histoire à écouter, une plante à découvrir, un ingrédient à cuisiner, un livre à ouvrir ou une question à regarder autrement.',
     'En texte, en audio ou en vidéo, nous découvrons d’où cela vient, pourquoi cela mérite notre attention maintenant et ce que cela peut changer dans notre manière de voir.',
