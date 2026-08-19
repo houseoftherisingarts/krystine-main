@@ -97,73 +97,31 @@ const Cta: React.FC<{ label: string; sub?: string; dark?: boolean }> = ({
   </div>
 );
 
-/* ── Son du feu : craquements synthétisés (Web Audio, zéro fichier).
-   Braise = bruit brun filtré, craques = brèves bouffées de bruit passe-bande
-   à hauteur et cadence aléatoires. Coupé par défaut (autoplay audio bloqué). ── */
+/* ── Son du feu : vrai enregistrement de feu qui craque (Freesound 414767,
+   samarobryn), 40 s en boucle, fondu aux coutures. Coupé par défaut
+   (autoplay audio bloqué). ── */
 const useFireSound = () => {
   const [on, setOn] = useState(false);
-  const nodeRef = useRef<{ stop: () => void } | null>(null);
-  useEffect(() => () => nodeRef.current?.stop(), []);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  useEffect(
+    () => () => {
+      audioRef.current?.pause();
+    },
+    [],
+  );
   const toggle = () => {
-    if (nodeRef.current) {
-      nodeRef.current.stop();
-      nodeRef.current = null;
+    if (on) {
+      audioRef.current?.pause();
       setOn(false);
       return;
     }
-    const ctx = new AudioContext();
-    const master = ctx.createGain();
-    master.gain.value = 0;
-    master.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 1.2);
-    master.connect(ctx.destination);
-    /* braise : bruit brun bouclé sous passe-bas */
-    const buf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
-    const data = buf.getChannelData(0);
-    let last = 0;
-    for (let i = 0; i < data.length; i++) {
-      last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02;
-      data[i] = last * 3.5;
+    if (!audioRef.current) {
+      const a = new Audio('/foyer/feu-craquant.m4a');
+      a.loop = true;
+      a.volume = 0.55;
+      audioRef.current = a;
     }
-    const bed = ctx.createBufferSource();
-    bed.buffer = buf;
-    bed.loop = true;
-    const lp = ctx.createBiquadFilter();
-    lp.type = 'lowpass';
-    lp.frequency.value = 380;
-    const bedGain = ctx.createGain();
-    bedGain.gain.value = 0.3;
-    bed.connect(lp).connect(bedGain).connect(master);
-    bed.start();
-    /* craques */
-    let alive = true;
-    let timer = 0;
-    const pop = () => {
-      if (!alive) return;
-      const len = Math.floor(ctx.sampleRate * (0.015 + Math.random() * 0.025));
-      const pb = ctx.createBuffer(1, len, ctx.sampleRate);
-      const pd = pb.getChannelData(0);
-      for (let i = 0; i < len; i++) pd[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 2;
-      const src = ctx.createBufferSource();
-      src.buffer = pb;
-      const bp = ctx.createBiquadFilter();
-      bp.type = 'bandpass';
-      bp.frequency.value = 900 + Math.random() * 2600;
-      bp.Q.value = 1.2;
-      const g = ctx.createGain();
-      g.gain.value = 0.15 + Math.random() * 0.3;
-      src.connect(bp).connect(g).connect(master);
-      src.start();
-      timer = window.setTimeout(pop, 70 + Math.random() * 420);
-    };
-    timer = window.setTimeout(pop, 300);
-    nodeRef.current = {
-      stop: () => {
-        alive = false;
-        window.clearTimeout(timer);
-        bed.stop();
-        void ctx.close();
-      },
-    };
+    void audioRef.current.play();
     setOn(true);
   };
   return { on, toggle };
