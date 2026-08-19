@@ -120,19 +120,31 @@ const PorteDuMois: React.FC<{ open: boolean; onToggle: () => void }> = ({ open, 
           transition={{ duration: 0.7, ease }}
           style={{ background: 'radial-gradient(50% 50% at 50% 55%, rgba(199,132,44,0.45), transparent 75%)', filter: 'blur(14px)' }}
         />
-        {/* le battant 3D */}
-        <React.Suspense
-          fallback={
-            <img
-              src="/foyer/porte-septembre.webp"
-              alt="Porte de septembre, sceau doré"
-              loading="lazy"
-              className="absolute inset-0 h-full w-full object-contain drop-shadow-xl"
-            />
-          }
-        >
-          <PorteDuMois3D open={open} hover={hover} />
-        </React.Suspense>
+        {/* le battant : GLB 3D quand WebGL est là, sinon l'asset 2D qui pivote */}
+        {webgl ? (
+          <React.Suspense
+            fallback={
+              <img
+                src="/foyer/porte-septembre.webp"
+                alt="Porte de septembre, sceau doré"
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-contain drop-shadow-xl"
+              />
+            }
+          >
+            <PorteDuMois3D open={open} hover={hover} />
+          </React.Suspense>
+        ) : (
+          <motion.img
+            src="/foyer/porte-septembre.webp"
+            alt="Porte de septembre, sceau doré"
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-contain drop-shadow-xl"
+            animate={{ rotateY: open ? -86 : hover ? -24 : 0 }}
+            transition={{ duration: 0.9, ease }}
+            style={{ transformOrigin: 'left center' }}
+          />
+        )}
       </button>
       <p className="mt-5 text-center font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
         {open ? 'Le mois est ouvert' : 'Ouvrir le mois'}
