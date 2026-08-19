@@ -205,8 +205,8 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
             <h1 className="mt-5 font-serif font-medium leading-[0.9] text-ctext text-[clamp(3.4rem,9vw,8rem)]">
               Le Foyer d’Origine
             </h1>
-            <p className="mt-6 max-w-2xl font-serif font-medium text-[clamp(1.35rem,2.2vw,1.9rem)] leading-snug text-ctext">
-              Nous n’avons jamais eu autant d’information.
+            <p className="mt-6 max-w-3xl font-serif font-medium text-[clamp(1.7rem,3.1vw,2.7rem)] leading-[1.2] text-ctext">
+              Nous n’avons jamais eu accès à autant d’informations.
               <span className="block text-brassBright">Et jamais autant de dispersion.</span>
             </p>
             <p className="mt-5 max-w-xl font-sans text-[0.95rem] leading-[1.85] text-ctextSoft">
