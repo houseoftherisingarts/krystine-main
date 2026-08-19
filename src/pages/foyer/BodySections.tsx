@@ -123,6 +123,8 @@ const Dot: React.FC<{ on?: 'dark' | 'light' }> = ({ on = 'light' }) => (
 );
 
 const roman = ['I', 'II', 'III', 'IV'];
+/* une aura par ouverture : regarder=bleu, saison=sauge, pièce=prune, découverte=ocre */
+const WEEK_TONES: AuraTone[] = ['bleu', 'sauge', 'prune', 'ocre'];
 
 const SEMAINE_IMAGES = [
   '/foyer/sem1-regarder.webp',
