@@ -73,56 +73,71 @@ const Aura: React.FC<{ tone: AuraTone; size?: number; className?: string }> = ({
   </span>
 );
 
-/* ── La porte du mois : asset généré (FLUX), battant en vraie perspective.
-   Survol = la porte s'entrouvre et la niche s'allume; clic = le mois s'ouvre. ── */
+/* ── La porte du mois : GLB 3D (Meshy) sur charnière réelle, niche derrière.
+   Survol = la porte s'entrouvre et la niche s'allume; clic = le mois s'ouvre.
+   Fallback (chargement / SSR) : l'asset 2D détouré. ── */
+const PorteDuMois3D = React.lazy(() => import('./PorteDuMois3D'));
+
+const hasWebgl = () => {
+  try {
+    const c = document.createElement('canvas');
+    return !!(c.getContext('webgl2') || c.getContext('webgl'));
+  } catch {
+    return false;
+  }
+};
+
 const PorteDuMois: React.FC<{ open: boolean; onToggle: () => void }> = ({ open, onToggle }) => {
   const [hover, setHover] = useState(false);
-  const angle = open ? -86 : hover ? -24 : 0;
+  const [webgl] = useState(hasWebgl);
   return (
-    <button
-      type="button"
-      onClick={onToggle}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      aria-expanded={open}
-      aria-label={open ? 'Refermer la porte de septembre' : 'Ouvrir la porte de septembre'}
-      className="relative mx-auto block w-full max-w-[300px] focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
-      style={{ perspective: '1400px' }}
-    >
-      {/* la niche, derrière le battant */}
-      <span className="absolute inset-x-[7%] top-[4%] bottom-[2%] overflow-hidden rounded-t-[999px]">
-        <img src="/foyer/niche-septembre.webp" alt="" aria-hidden loading="lazy" className="h-full w-full object-cover" />
-        {/* la lueur sort quand la porte bouge */}
+    <div className="mx-auto w-full max-w-[320px]">
+      <button
+        type="button"
+        onClick={onToggle}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        aria-expanded={open}
+        aria-label={open ? 'Refermer la porte de septembre' : 'Ouvrir la porte de septembre'}
+        className="relative block aspect-[640/984] w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+      >
+        {/* la niche, derrière le battant */}
+        <span className="absolute inset-x-[12%] top-[7%] bottom-[6%] overflow-hidden rounded-t-[999px]">
+          <img src="/foyer/niche-septembre.webp" alt="" aria-hidden loading="lazy" className="h-full w-full object-cover" />
+          <motion.span
+            aria-hidden
+            className="absolute inset-0"
+            animate={{ opacity: open ? 0 : hover ? 0.18 : 0.7 }}
+            transition={{ duration: 0.6, ease }}
+            style={{ background: '#16100a' }}
+          />
+        </span>
+        {/* halo chaud projeté */}
         <motion.span
           aria-hidden
-          className="absolute inset-0"
-          animate={{ opacity: open ? 0 : hover ? 0.15 : 0.55 }}
-          transition={{ duration: 0.6, ease }}
-          style={{ background: '#16100a' }}
+          className="absolute -inset-8 -z-10 rounded-full"
+          animate={{ opacity: open ? 1 : hover ? 0.5 : 0 }}
+          transition={{ duration: 0.7, ease }}
+          style={{ background: 'radial-gradient(50% 50% at 50% 55%, rgba(199,132,44,0.45), transparent 75%)', filter: 'blur(14px)' }}
         />
-      </span>
-      {/* halo chaud projeté */}
-      <motion.span
-        aria-hidden
-        className="absolute -inset-6 -z-10 rounded-full"
-        animate={{ opacity: open ? 1 : hover ? 0.5 : 0 }}
-        transition={{ duration: 0.7, ease }}
-        style={{ background: 'radial-gradient(50% 50% at 50% 55%, rgba(199,132,44,0.45), transparent 75%)', filter: 'blur(14px)' }}
-      />
-      {/* le battant */}
-      <motion.img
-        src="/foyer/porte-septembre.webp"
-        alt="Porte de septembre, sceau doré"
-        loading="lazy"
-        className="relative w-full drop-shadow-xl"
-        animate={{ rotateY: angle }}
-        transition={{ duration: 0.9, ease }}
-        style={{ transformOrigin: 'left center', transformStyle: 'preserve-3d' }}
-      />
-      <span className="mt-5 block font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
+        {/* le battant 3D */}
+        <React.Suspense
+          fallback={
+            <img
+              src="/foyer/porte-septembre.webp"
+              alt="Porte de septembre, sceau doré"
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-contain drop-shadow-xl"
+            />
+          }
+        >
+          <PorteDuMois3D open={open} hover={hover} />
+        </React.Suspense>
+      </button>
+      <p className="mt-5 text-center font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
         {open ? 'Le mois est ouvert' : 'Ouvrir le mois'}
-      </span>
-    </button>
+      </p>
+    </div>
   );
 };
 
