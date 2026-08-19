@@ -195,6 +195,7 @@ const STANZA2 = ['Nous n’avons pas besoin de plus.', 'Nous avons besoin d’au
 const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
+  const fire = useFireSound();
   const scrollYProgress = useMotionValue(0);
   useEffect(() => {
     const el = ref.current;
