@@ -15,7 +15,7 @@ export interface FaqItem {
 
 // SECTION 2 refondue le 19 août 2026 (PDF « SECTION HERO ») : L'Histoire du feu.
 export const SECTION2 = {
-  eyebrow: 'L’histoire du feu',
+  eyebrow: 'Il était une fois',
   title: 'L’Histoire du feu',
   lead: 'Il était une fois, dans un pays lointain du continent indien, une ville appelée Varanasi.',
   paragraphs: [
