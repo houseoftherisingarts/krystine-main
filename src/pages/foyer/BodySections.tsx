@@ -196,9 +196,14 @@ export default function BodySections() {
 
   return (
     <>
+      <style>{`
+        @keyframes auraBreathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.06);opacity:1}}
+        @media (prefers-reduced-motion: reduce){[style*="auraBreathe"]{animation:none!important}}
+      `}</style>
       {/* ═══════════════ SECTION 2 · L'Histoire du feu (Varanasi) ═══════════════ */}
-      <section className="bg-cream py-24 md:py-36">
-        <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
+      <section className="relative overflow-hidden bg-cream py-24 md:py-36">
+        <Aura tone="ocre" size={460} className="-left-32 top-10 opacity-70" />
+        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
             <Reveal className="lg:col-span-5">
               <Eyebrow>{SECTION2.eyebrow}</Eyebrow>
