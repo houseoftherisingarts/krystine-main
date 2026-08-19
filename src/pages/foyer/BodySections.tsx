@@ -81,17 +81,17 @@ const IMG_W = 1672;
 const IMG_H = 941;
 const HEARTH = { left: 643 / IMG_W, top: 235 / IMG_H, width: 385 / IMG_W, height: 498 / IMG_H };
 const LOCKED_DOORS: Array<{ n: string; b: [number, number, number, number] }> = [
-  { n: 'janvier', b: [100, 155, 322, 392] },
-  { n: 'fevrier', b: [345, 140, 565, 392] },
-  { n: 'mars', b: [100, 420, 322, 650] },
-  { n: 'avril', b: [345, 420, 565, 650] },
-  { n: 'mai', b: [100, 655, 322, 895] },
-  { n: 'juin', b: [345, 650, 565, 895] },
-  { n: 'juillet', b: [1098, 140, 1318, 392] },
-  { n: 'aout', b: [1340, 155, 1560, 392] },
-  { n: 'octobre', b: [1340, 420, 1560, 650] },
-  { n: 'novembre', b: [1098, 655, 1318, 895] },
-  { n: 'decembre', b: [1340, 650, 1560, 895] },
+  { n: 'janvier', b: [88, 143, 334, 404] },
+  { n: 'fevrier', b: [333, 128, 577, 404] },
+  { n: 'mars', b: [88, 406, 334, 662] },
+  { n: 'avril', b: [333, 406, 577, 662] },
+  { n: 'mai', b: [88, 641, 334, 907] },
+  { n: 'juin', b: [333, 638, 577, 907] },
+  { n: 'juillet', b: [1086, 128, 1330, 404] },
+  { n: 'aout', b: [1328, 143, 1572, 404] },
+  { n: 'octobre', b: [1328, 406, 1572, 662] },
+  { n: 'novembre', b: [1086, 641, 1330, 907] },
+  { n: 'decembre', b: [1328, 638, 1572, 907] },
 ];
 const SEPT_BOX: [number, number, number, number] = [1085, 408, 1332, 662];
 const zone = (b: [number, number, number, number]) => ({
@@ -103,6 +103,7 @@ const zone = (b: [number, number, number, number]) => ({
 
 const CalendrierAnnee: React.FC<{ open: boolean; onToggle: () => void }> = ({ open, onToggle }) => {
   const [hoverSept, setHoverSept] = useState(false);
+  const [hoverDoor, setHoverDoor] = useState<string | null>(null);
   return (
     <div className="relative w-full">
       <img
@@ -129,19 +130,38 @@ const CalendrierAnnee: React.FC<{ open: boolean; onToggle: () => void }> = ({ op
           WebkitMaskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
         }}
       />
-      {/* portes verrouillées : cadenas au survol */}
+      {/* portes verrouillées : le cutout se soulève en ombre, le cadenas apparaît */}
       {LOCKED_DOORS.map((d) => (
-        <div
-          key={d.n}
-          aria-hidden
-          className="group absolute flex cursor-not-allowed items-center justify-center"
-          style={zone(d.b)}
-        >
-          <span className="absolute inset-[6%] rounded-t-[45%] rounded-b-lg bg-espressoDeep/0 transition-colors duration-500 group-hover:bg-espressoDeep/35" />
-          <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-espressoDeep/70 text-brassBright opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-            <Lock size={17} />
-          </span>
-        </div>
+        <React.Fragment key={d.n}>
+          <motion.img
+            src={`/foyer/porte-${d.n}-cutout.webp`}
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute z-30"
+            style={zone(d.b)}
+            animate={
+              hoverDoor === d.n
+                ? { scale: 1.05, filter: 'brightness(0.66) drop-shadow(0 14px 30px rgba(22,16,10,0.75))' }
+                : { scale: 1, filter: 'brightness(1) drop-shadow(0 0px 0px rgba(22,16,10,0))' }
+            }
+            transition={{ duration: 0.5, ease }}
+          />
+          <div
+            aria-hidden
+            className="absolute z-40 flex cursor-not-allowed items-center justify-center"
+            style={zone(d.b)}
+            onMouseEnter={() => setHoverDoor(d.n)}
+            onMouseLeave={() => setHoverDoor(null)}
+          >
+            <motion.span
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-espressoDeep/75 text-brassBright"
+              animate={{ opacity: hoverDoor === d.n ? 1 : 0, scale: hoverDoor === d.n ? 1 : 0.8 }}
+              transition={{ duration: 0.4, ease }}
+            >
+              <Lock size={17} />
+            </motion.span>
+          </div>
+        </React.Fragment>
       ))}
       {/* septembre : halo doré + le cutout s'illumine et pop, le clic ouvre le mois */}
       <motion.span
