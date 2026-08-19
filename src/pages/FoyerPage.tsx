@@ -148,24 +148,36 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
     };
   }, [scrollYProgress]);
 
-  /* chorégraphie */
-  const heroFade = useTransform(scrollYProgress, [0, 0.14], [1, 0]);
-  const heroY = useTransform(scrollYProgress, [0, 0.14], [0, -36]);
+  /* chorégraphie : hero → strophe 1 (constat) → strophe 2 (besoin) → kicker → crème */
+  const heroFade = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
+  const heroY = useTransform(scrollYProgress, [0, 0.12], [0, -36]);
   /* le voile du hero s'allège : le feu prend toute la lumière */
-  const veilHero = useTransform(scrollYProgress, [0, 0.16, 0.3], [1, 1, 0.35]);
-  /* les lignes entrent dès la sortie du titre : jamais d'écran sans texte */
-  const linesVeil = useTransform(scrollYProgress, [0.14, 0.24, 0.6, 0.7], [0, 1, 1, 0]);
-  const lineStyles = [0, 1, 2].map((i) => ({
+  const veilHero = useTransform(scrollYProgress, [0, 0.14, 0.28], [1, 1, 0.35]);
+  /* voile radial partagé des deux strophes : jamais d'écran sans texte */
+  const linesVeil = useTransform(
+    scrollYProgress,
+    [0.12, 0.2, 0.46, 0.53, 0.56, 0.63, 0.78, 0.85],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+  );
+  const stanza1Styles = [0, 1, 2].map((i) => ({
     opacity: useTransform(
       scrollYProgress,
-      [0.16 + i * 0.1, 0.24 + i * 0.1, 0.62, 0.7],
+      [0.14 + i * 0.07, 0.22 + i * 0.07, 0.46, 0.53],
       [0, 1, 1, 0],
     ),
-    y: useTransform(scrollYProgress, [0.16 + i * 0.1, 0.24 + i * 0.1], [26, 0]),
+    y: useTransform(scrollYProgress, [0.14 + i * 0.07, 0.22 + i * 0.07], [26, 0]),
   }));
-  const kickerFade = useTransform(scrollYProgress, [0.72, 0.8], [0, 1]);
+  const stanza2Styles = [0, 1].map((i) => ({
+    opacity: useTransform(
+      scrollYProgress,
+      [0.56 + i * 0.08, 0.64 + i * 0.08, 0.78, 0.85],
+      [0, 1, 1, 0],
+    ),
+    y: useTransform(scrollYProgress, [0.56 + i * 0.08, 0.64 + i * 0.08], [26, 0]),
+  }));
+  const kickerFade = useTransform(scrollYProgress, [0.85, 0.91], [0, 1]);
   const emberDust = useTransform(scrollYProgress, [0.1, 0.25], [0, 1]);
-  const warm = useTransform(scrollYProgress, [0.86, 1], [0, 1]);
+  const warm = useTransform(scrollYProgress, [0.9, 1], [0, 1]);
 
   if (reduce) {
     return (
