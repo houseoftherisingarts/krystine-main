@@ -505,14 +505,15 @@ const Offre: React.FC = () => (
         <div className="mt-10 hidden lg:block">
           <div className="max-w-[360px] overflow-hidden rounded-[30px] bg-espresso/50 p-2.5 shadow-depth ring-1 ring-brass/40">
             <img
-              src="/foyer/invitation.webp"
-              alt="Invitation scellée du Foyer d'Origine"
+              src="https://wsrv.nl/?url=https%3A%2F%2Fstorage.googleapis.com%2Forigine1%2Fbanner%2520origine%2520enveloppe.jpg&w=800&output=webp"
+              alt="L'invitation scellée du Foyer d'Origine"
               loading="lazy"
+              referrerPolicy="no-referrer"
               className="w-full rounded-[22px]"
             />
           </div>
           <p className="mt-4 font-sans text-[0.78rem] tracking-[0.06em] text-ctextSoft">
-            L’invitation scellée · sceau brass et sauge séchée
+            L’invitation scellée · sceau boussole, sauge et lavande
           </p>
         </div>
       </div>

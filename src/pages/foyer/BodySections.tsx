@@ -73,86 +73,28 @@ const Aura: React.FC<{ tone: AuraTone; size?: number; className?: string }> = ({
   </span>
 );
 
-/* ── La porte du mois : GLB 3D (Meshy) sur charnière réelle, niche derrière.
-   Survol = la porte s'entrouvre et la niche s'allume; clic = le mois s'ouvre.
-   Fallback (chargement / SSR) : l'asset 2D détouré. ── */
-const PorteDuMois3D = React.lazy(() => import('./PorteDuMois3D'));
-
-const hasWebgl = () => {
-  try {
-    const c = document.createElement('canvas');
-    return !!(c.getContext('webgl2') || c.getContext('webgl'));
-  } catch {
-    return false;
-  }
-};
-
-const PorteDuMois: React.FC<{ open: boolean; onToggle: () => void }> = ({ open, onToggle }) => {
-  const [hover, setHover] = useState(false);
-  const [webgl] = useState(hasWebgl);
-  return (
-    <div className="mx-auto w-full max-w-[320px]">
-      <button
-        type="button"
-        onClick={onToggle}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        aria-expanded={open}
-        aria-label={open ? 'Refermer la porte de septembre' : 'Ouvrir la porte de septembre'}
-        className="relative block aspect-[640/984] w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
-      >
-        {/* la niche, derrière le battant */}
-        <span className="absolute inset-x-[12%] top-[7%] bottom-[6%] overflow-hidden rounded-t-[999px]">
-          <img src="/foyer/niche-septembre.webp" alt="" aria-hidden loading="lazy" className="h-full w-full object-cover" />
-          <motion.span
-            aria-hidden
-            className="absolute inset-0"
-            animate={{ opacity: open ? 0 : hover ? 0.18 : 0.7 }}
-            transition={{ duration: 0.6, ease }}
-            style={{ background: '#16100a' }}
-          />
-        </span>
-        {/* halo chaud projeté */}
-        <motion.span
-          aria-hidden
-          className="absolute -inset-8 -z-10 rounded-full"
-          animate={{ opacity: open ? 1 : hover ? 0.5 : 0 }}
-          transition={{ duration: 0.7, ease }}
-          style={{ background: 'radial-gradient(50% 50% at 50% 55%, rgba(199,132,44,0.45), transparent 75%)', filter: 'blur(14px)' }}
-        />
-        {/* le battant : 2D nette au repos, GLB 3D dès que la porte bouge */}
-        {webgl ? (
-          <>
-            <React.Suspense fallback={null}>
-              <PorteDuMois3D open={open} hover={hover} />
-            </React.Suspense>
-            <motion.img
-              src="/foyer/porte-septembre.webp"
-              alt="Porte de septembre, sceau doré"
-              loading="lazy"
-              className="pointer-events-none absolute inset-0 h-full w-full object-contain drop-shadow-xl"
-              animate={{ opacity: hover || open ? 0 : 1 }}
-              transition={{ duration: 0.35, ease }}
-            />
-          </>
-        ) : (
-          <motion.img
-            src="/foyer/porte-septembre.webp"
-            alt="Porte de septembre, sceau doré"
-            loading="lazy"
-            className="absolute inset-0 h-full w-full object-contain drop-shadow-xl"
-            animate={{ rotateY: open ? -86 : hover ? -24 : 0 }}
-            transition={{ duration: 0.9, ease }}
-            style={{ transformOrigin: 'left center' }}
-          />
-        )}
-      </button>
-      <p className="mt-5 text-center font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
-        {open ? 'Le mois est ouvert' : 'Ouvrir le mois'}
-      </p>
-    </div>
-  );
-};
+/* ── La porte du mois : asset statique. Clic = ouvrir les semaines dessous. ── */
+const PorteDuMois: React.FC<{ open: boolean; onToggle: () => void }> = ({ open, onToggle }) => (
+  <div className="mx-auto w-full max-w-[300px]">
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={open}
+      aria-label={open ? 'Refermer le mois' : 'Ouvrir le mois'}
+      className="block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+    >
+      <img
+        src="/foyer/porte-septembre.webp"
+        alt="Porte de septembre, sceau doré"
+        loading="lazy"
+        className="w-full drop-shadow-xl"
+      />
+    </button>
+    <p className="mt-5 text-center font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
+      {open ? 'Le mois est ouvert' : 'Ouvrir le mois'}
+    </p>
+  </div>
+);
 
 /* ── Séparateur doré du moodboard : filet, losange, deux brins végétaux ── */
 const Ornament: React.FC<{ on?: 'dark' | 'light'; motto?: boolean; className?: string }> = ({
@@ -393,8 +335,17 @@ export default function BodySections() {
             </Reveal>
           </div>
 
-          {/* les 4 semaines du mois, reliées par un rail brass : un déploiement, pas un catalogue */}
-          <div ref={semainesRef} className="relative mt-20 scroll-mt-24">
+          {/* les 4 semaines du mois : les portes en dessous, ouvertes par le clic */}
+          <AnimatePresence initial={false}>
+          {moisOuvert && (
+          <motion.div
+            ref={semainesRef}
+            className="relative mt-20 scroll-mt-24"
+            initial={{ opacity: 0, y: 34 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.8, ease }}
+          >
             <div
               aria-hidden
               className="pointer-events-none absolute -top-8 left-[12%] right-[12%] hidden h-px xl:block"
@@ -453,13 +404,15 @@ export default function BodySections() {
                 </Reveal>
               ))}
             </div>
-          </div>
 
           <Reveal className="mt-16">
             <p className="font-serif text-ink text-[clamp(1.2rem,2vw,1.6rem)] leading-snug max-w-[52ch]">
               {SECTION4.closing}
             </p>
           </Reveal>
+          </motion.div>
+          )}
+          </AnimatePresence>
         </div>
       </section>
 
@@ -499,23 +452,21 @@ export default function BodySections() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 6 · Le premier samedi du mois (SOMBRE) ═══════════════ */}
-      <section className="relative overflow-hidden py-24 md:py-36" style={{ background: '#241726' }}>
-        {/* la chandelle du premier samedi, voilée pour la lisibilité */}
-        <img
-          src="/foyer/meditation.webp"
-          alt=""
-          aria-hidden
-          loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover opacity-50"
-          style={{ objectPosition: '70% center' }}
-        />
-        <span aria-hidden className="absolute inset-0" style={{ background: 'rgba(36,23,38,0.62)' }} />
-        <WarmSeam from="#f6f3ee" />
-        <Atmosphere light="70% 25%" strength={0.8} />
-        {/* aura prune : introspection, profondeur (moodboard) */}
-        <Aura tone="prune" size={640} className="left-[6%] top-[18%]" />
-        <Aura tone="bleu" size={380} className="right-[4%] bottom-[8%] opacity-60" />
+      {/* ═══════════════ SECTION 6 · Le premier samedi du mois (photo pleine, parallaxe) ═══════════════ */}
+      <section className="relative overflow-hidden bg-espressoDeep py-28 md:py-44">
+        <div aria-hidden className="absolute inset-0">
+          <Parallax speed={0.16} className="h-full" innerClassName="h-full">
+            <img
+              src="/foyer/meditation.webp"
+              alt=""
+              loading="lazy"
+              className="h-full w-full scale-125 object-cover"
+              style={{ objectPosition: '68% center' }}
+            />
+          </Parallax>
+          {/* voile uniforme pour la lisibilité, aucun dégradé */}
+          <span className="absolute inset-0" style={{ background: 'rgba(22,16,10,0.58)' }} />
+        </div>
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament on="dark" motto className="mb-16" />
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
@@ -524,7 +475,7 @@ export default function BodySections() {
               <SectionTitle on="dark" className="mt-5">
                 {SECTION6.title}
               </SectionTitle>
-              <p className="mt-6 font-serif text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[30ch]" style={{ color: '#cfa8ca' }}>
+              <p className="mt-6 font-serif text-brass text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[30ch]">
                 {SECTION6.subtitle}
               </p>
             </Reveal>
@@ -549,7 +500,6 @@ export default function BodySections() {
 
       {/* ═══════════════ SECTION 7 · Ce qui relie les étoiles (Krystine) ═══════════════ */}
       <section className="relative bg-cream2 py-24 md:py-36">
-        <WarmSeam from="#241726" />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="grid lg:grid-cols-12 gap-x-14 gap-y-14 items-start">
             <Reveal className="lg:col-span-7">
