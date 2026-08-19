@@ -457,7 +457,7 @@ export default function BodySections() {
 
             <Reveal delay={0.1} className="relative lg:col-span-5 lg:sticky lg:top-24">
               {/* terre ancrée : stabilité, enracinement */}
-              <Aura tone="terre" size={420} className="-right-24 -top-16 opacity-80" />
+              <Aura tone="terre" size={420} className="-right-24 top-6 opacity-60" />
               <span className="block h-px w-10 bg-brass mb-5" aria-hidden />
               <div className="relative ring-1 ring-brass/40 rounded-[30px] shadow-depth overflow-hidden bg-card p-2.5">
                 <div className="relative overflow-hidden rounded-[22px] aspect-[4/5]">
