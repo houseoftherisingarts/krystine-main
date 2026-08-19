@@ -22,6 +22,78 @@ import {
 
 const ease = [0.16, 0.8, 0.24, 1] as const;
 
+/* ── Palette d'auras du moodboard Origine (19 août 2026) ──
+   « Chaque cercle contient une aura, jamais vide. L'aura donne la vie,
+   la profondeur, l'émotion. » Locale au Foyer : les alias globaux
+   prune/sauge/bleuMineral restent neutralisés pour les autres pages. */
+const AURAS = {
+  beige: '217,196,160', // beige lumière · clarté, douceur, ouverture
+  ocre: '192,138,62', // ocre chaud · transformation, énergie juste
+  prune: '125,90,120', // prune aquarelle · introspection, profondeur
+  sauge: '138,148,113', // sauge végétal · apaisement, régénération
+  bleu: '74,112,133', // bleu minéral · fluidité, circulation
+  terre: '138,106,79', // terre ancrée · stabilité, enracinement
+} as const;
+type AuraTone = keyof typeof AURAS;
+
+/* Tache aquarelle : deux couches radiales décalées + flou, respiration lente. */
+const Aura: React.FC<{ tone: AuraTone; size?: number; className?: string }> = ({
+  tone,
+  size = 340,
+  className = '',
+}) => (
+  <span
+    aria-hidden
+    className={`pointer-events-none absolute ${className}`}
+    style={{ width: size, height: size, animation: 'auraBreathe 9s ease-in-out infinite' }}
+  >
+    <span
+      className="absolute inset-0 rounded-full"
+      style={{
+        background: `radial-gradient(circle at 42% 40%, rgba(${AURAS[tone]},0.5), rgba(${AURAS[tone]},0.16) 46%, transparent 72%)`,
+        filter: 'blur(18px)',
+      }}
+    />
+    <span
+      className="absolute inset-[12%] rounded-full"
+      style={{
+        background: `radial-gradient(circle at 62% 64%, rgba(${AURAS[tone]},0.36), transparent 64%)`,
+        filter: 'blur(10px)',
+      }}
+    />
+  </span>
+);
+
+/* ── Séparateur doré du moodboard : filet, losange, deux brins végétaux ── */
+const Ornament: React.FC<{ on?: 'dark' | 'light'; motto?: boolean; className?: string }> = ({
+  on = 'light',
+  motto = false,
+  className = '',
+}) => {
+  const stroke = on === 'dark' ? '#bb9a5e' : '#7d6330';
+  return (
+    <div className={`flex flex-col items-center gap-4 ${className}`} aria-hidden>
+      <svg width="220" height="18" viewBox="0 0 220 18" fill="none">
+        <line x1="0" y1="9" x2="88" y2="9" stroke={stroke} strokeWidth="1" opacity="0.55" />
+        <line x1="132" y1="9" x2="220" y2="9" stroke={stroke} strokeWidth="1" opacity="0.55" />
+        <rect x="105.5" y="4.5" width="9" height="9" transform="rotate(45 110 9)" stroke={stroke} strokeWidth="1.1" />
+        {/* brins végétaux */}
+        <path d="M96 9c-3-4-7-5-10-4 2 3 6 5 10 4Z" fill={stroke} opacity="0.7" />
+        <path d="M124 9c3-4 7-5 10-4-2 3-6 5-10 4Z" fill={stroke} opacity="0.7" />
+      </svg>
+      {motto && (
+        <p
+          className={`font-sans text-[0.62rem] uppercase tracking-[0.3em] ${
+            on === 'dark' ? 'text-brass' : 'text-brassInk'
+          }`}
+        >
+          Observer · Ressentir · Accueillir
+        </p>
+      )}
+    </div>
+  );
+};
+
 /* ── Eyebrow : filet brass court EMPILÉ au-dessus du label, jamais inline ── */
 const Eyebrow: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light' }> = ({ children, on = 'light' }) => (
   <div className="flex flex-col gap-3">
