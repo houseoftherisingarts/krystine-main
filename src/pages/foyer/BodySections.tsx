@@ -226,9 +226,11 @@ export default function BodySections() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 3 · Une place pour être bien ═══════════════ */}
-      <section className="bg-cream2 py-24 md:py-36">
-        <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
+      {/* ═══════════════ SECTION 3 · Le feu reste allumé ═══════════════ */}
+      <section className="relative overflow-hidden bg-cream2 py-24 md:py-36">
+        <Aura tone="sauge" size={420} className="-right-28 bottom-0 opacity-70" />
+        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
+          <Ornament className="mb-16" />
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
             <Reveal className="lg:col-span-5">
               <Eyebrow>{SECTION3.eyebrow}</Eyebrow>
