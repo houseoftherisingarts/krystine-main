@@ -668,7 +668,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       </section>
 
       {/* ═══════ SECTION 5 · Une place où les connaissances se rencontrent ═══════ */}
-      <section className="relative overflow-hidden py-24 md:py-36">
+      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-40' : 'relative'} ${cover}`} style={pin}>
         <div aria-hidden className="absolute inset-0">
           <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
           <span
