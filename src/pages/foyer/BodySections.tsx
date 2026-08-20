@@ -561,7 +561,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
 
       {/* ═══════ SECTION 2 · L'Histoire du feu : la niche de la flamme éternelle,
           même pierre que le calendrier ═══════ */}
-      <section className="relative overflow-hidden py-24 md:py-36">
+      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-20' : 'relative'} ${cover}`} style={pin}>
         <div aria-hidden className="absolute inset-0">
           <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
           <span
