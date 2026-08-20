@@ -683,7 +683,9 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       </section>
 
       {/* ═══════ SECTION 5 · Une place où les connaissances se rencontrent ═══════ */}
-      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-40' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
+      {/* jamais épinglée : elle roule librement pour que la fenêtre parallax
+          de la chandelle qui suit garde tout son effet */}
+      <section className={`relative overflow-hidden py-24 md:py-36 ${overlap ? 'z-40' : ''} ${cover}`}>
         <div aria-hidden className="absolute inset-0">
           <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
           <span
