@@ -502,10 +502,25 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
   /* Feuilles empilées généralisées : chaque section fige (sticky, le bas
      aligné au bas de l'écran quand elle est plus haute que lui) et la
      suivante monte par-dessus, coins arrondis + ombre, comme le feu. */
-  const pin = overlap
-    ? ({ position: 'sticky', top: 'min(0px, calc(100vh - 100%))' } as React.CSSProperties)
-    : undefined;
+  const pin = overlap ? ({ position: 'sticky' } as React.CSSProperties) : undefined;
   const cover = overlap ? 'rounded-t-[18px] shadow-[0_-26px_60px_rgba(22,16,10,0.45)]' : '';
+  useEffect(() => {
+    if (!overlap) return;
+    const els = Array.from(document.querySelectorAll<HTMLElement>('[data-pin-sheet]'));
+    const set = () => {
+      els.forEach((el) => {
+        el.style.top = `${Math.min(0, window.innerHeight - el.offsetHeight)}px`;
+      });
+    };
+    set();
+    const ro = new ResizeObserver(set);
+    els.forEach((el) => ro.observe(el));
+    window.addEventListener('resize', set);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', set);
+    };
+  }, [overlap]);
 
   return (
     <>
