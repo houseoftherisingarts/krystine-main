@@ -444,7 +444,7 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
         style={still ? undefined : { y: titleY }}
       >
         <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brassBright">{OFFRE.eyebrow}</p>
-        <h2 className="mt-5 whitespace-nowrap font-serif font-medium leading-[0.9] text-ctext text-[clamp(3rem,9.6vw,8.8rem)]">
+        <h2 className="mt-5 whitespace-nowrap font-serif font-medium leading-[0.9] text-ctext text-[clamp(2.2rem,9.6vw,8.8rem)]">
           {OFFRE.title}
         </h2>
         <p className="mt-6 font-serif text-[clamp(1.15rem,2vw,1.7rem)] text-ctextSoft">{OFFRE.subtitle}</p>
