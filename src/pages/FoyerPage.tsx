@@ -181,7 +181,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   /* voile radial partagé des trois groupes : jamais d'écran sans texte */
   const linesVeil = useTransform(
     scrollYProgress,
-    [0.12, 0.2, 0.3, 0.36, 0.38, 0.46, 0.56, 0.62, 0.64, 0.72, 0.8, 0.86],
+    [0.1, 0.18, 0.3, 0.36, 0.38, 0.46, 0.54, 0.6, 0.62, 0.7, 0.78, 0.83],
     [0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0],
   );
   const stanzaStyles = STANZAS.map((lines, g) =>
