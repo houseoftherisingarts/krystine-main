@@ -923,27 +923,29 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             })}
           </div>
 
-          <Reveal delay={0.2} className="mt-14 max-w-[54ch]">
-            <p className="font-sans text-[0.68rem] uppercase tracking-[0.22em] text-brassInk">
-              {SECTION8.consequenceTitle}
-            </p>
-            {SECTION8.consequence.map((p) => (
-              <p key={p.slice(0, 24)} className="mt-5 font-sans text-[0.95rem] leading-[1.85] text-inkSoft">
-                {p}
+          {/* conséquence | protection : deux colonnes pleine largeur */}
+          <div className="mt-20 grid gap-x-14 gap-y-14 border-t border-brass/25 pt-14 lg:grid-cols-2">
+            <Reveal delay={0.1}>
+              <p className="font-sans text-[0.68rem] uppercase tracking-[0.22em] text-brassInk">
+                {SECTION8.consequenceTitle}
               </p>
-            ))}
-          </Reveal>
-
-          <Reveal className="mt-16 max-w-[54ch]">
-            <h3 className="font-serif font-medium text-ink text-[clamp(1.4rem,2.4vw,1.9rem)] leading-snug">
-              {SECTION8.protectionTitle}
-            </h3>
-            {SECTION8.protection.map((p) => (
-              <p key={p.slice(0, 24)} className="mt-5 font-sans text-[0.95rem] leading-[1.85] text-inkSoft">
-                {p}
-              </p>
-            ))}
-          </Reveal>
+              {SECTION8.consequence.map((p) => (
+                <p key={p.slice(0, 24)} className="mt-5 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[58ch]">
+                  {p}
+                </p>
+              ))}
+            </Reveal>
+            <Reveal delay={0.2}>
+              <h3 className="font-serif font-medium text-ink text-[clamp(1.5rem,2.6vw,2.1rem)] leading-snug max-w-[24ch]">
+                {SECTION8.protectionTitle}
+              </h3>
+              {SECTION8.protection.map((p) => (
+                <p key={p.slice(0, 24)} className="mt-5 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[58ch]">
+                  {p}
+                </p>
+              ))}
+            </Reveal>
+          </div>
         </div>
       </section>
 
