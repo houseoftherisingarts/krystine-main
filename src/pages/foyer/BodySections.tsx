@@ -517,9 +517,10 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       {/* ═══════ SECTION 4 · Les douze portes : la feuille monte SUR le feu (feuilles
           empilées du canon), le calendrier arrive bord à bord, zéro vide crème ═══════ */}
       <section
-        className={`relative overflow-hidden bg-cream3 pb-24 md:pb-36 ${
-          overlap ? 'z-10 -mt-[100vh] rounded-t-[18px] shadow-[0_-26px_60px_rgba(22,16,10,0.5)]' : ''
+        className={`overflow-hidden bg-cream3 pb-24 md:pb-36 ${
+          overlap ? 'z-10 -mt-[100vh] rounded-t-[18px] shadow-[0_-26px_60px_rgba(22,16,10,0.5)]' : 'relative'
         }`}
+        style={pin}
       >
         <CalendrierAnnee />
 
