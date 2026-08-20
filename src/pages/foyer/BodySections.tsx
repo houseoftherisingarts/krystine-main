@@ -498,6 +498,7 @@ const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; o
 
 export default function BodySections({ overlap = false }: { overlap?: boolean }) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const reduceAll = useReducedMotion();
 
   return (
     <>
