@@ -524,7 +524,7 @@ const Offre: React.FC = () => {
 const AppelFinal: React.FC = () => {
   const reduce = useReducedMotion();
   return (
-    <section className="relative overflow-hidden bg-espressoDeep px-6 py-32 md:px-12 lg:px-20">
+    <section className="relative overflow-hidden bg-espressoDeep px-6 pt-32 pb-44 md:px-12 md:pb-60 lg:px-20">
       <Atmosphere light="72% 30%" strength={1} />
       <video
         src="/foyer/final-braises.mp4"
@@ -535,7 +535,7 @@ const AppelFinal: React.FC = () => {
         playsInline
         preload="metadata"
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[72%] w-full object-cover opacity-45"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[72%] w-full object-cover opacity-60"
         style={{
           maskImage: 'linear-gradient(to top, black 50%, transparent 100%)',
           WebkitMaskImage: 'linear-gradient(to top, black 50%, transparent 100%)',
