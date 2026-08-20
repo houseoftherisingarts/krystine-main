@@ -855,11 +855,19 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             <Eyebrow>Avant de dire oui</Eyebrow>
             <SectionTitle className="mt-5">Questions fréquentes</SectionTitle>
           </Reveal>
-          <div className="mx-auto max-w-4xl">
-            {FAQ.map((item, i) => (
-              <Reveal key={item.q}>
-                <FaqRow item={item} i={i} open={openFaq === i} onClick={() => setOpenFaq(openFaq === i ? null : i)} />
-              </Reveal>
+          {/* pleine largeur, deux colonnes (canon : jamais de colonne étroite centrée) */}
+          <div className="grid items-start gap-x-14 lg:grid-cols-2">
+            {[FAQ.slice(0, Math.ceil(FAQ.length / 2)), FAQ.slice(Math.ceil(FAQ.length / 2))].map((col, c) => (
+              <div key={c}>
+                {col.map((item, j) => {
+                  const i = c * Math.ceil(FAQ.length / 2) + j;
+                  return (
+                    <Reveal key={item.q}>
+                      <FaqRow item={item} i={i} open={openFaq === i} onClick={() => setOpenFaq(openFaq === i ? null : i)} />
+                    </Reveal>
+                  );
+                })}
+              </div>
             ))}
           </div>
         </div>
