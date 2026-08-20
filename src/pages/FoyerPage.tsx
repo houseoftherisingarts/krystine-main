@@ -438,24 +438,59 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
         className="absolute inset-0"
         style={{ background: 'radial-gradient(70% 55% at 50% 45%, rgba(22,16,10,0.1), rgba(22,16,10,0.55) 100%)' }}
       />
-      {/* le titre, pris entre les plans */}
+      {/* le titre, pris entre les plans : XXL, il EST le hero */}
       <motion.div
-        className="absolute inset-x-0 top-[34%] z-10 text-center"
+        className="absolute inset-x-0 top-[24%] z-10 px-4 text-center"
         style={still ? undefined : { y: titleY }}
       >
         <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brassBright">{OFFRE.eyebrow}</p>
-        <h2 className="mt-4 font-serif font-medium leading-[0.9] text-ctext text-[clamp(3rem,8.5vw,7.5rem)]">
+        <h2 className="mt-5 whitespace-nowrap font-serif font-medium leading-[0.9] text-ctext text-[clamp(3rem,9.6vw,8.8rem)]">
           {OFFRE.title}
         </h2>
-        <p className="mt-5 font-serif text-[clamp(1.15rem,2vw,1.7rem)] text-ctextSoft">{OFFRE.subtitle}</p>
+        <p className="mt-6 font-serif text-[clamp(1.15rem,2vw,1.7rem)] text-ctextSoft">{OFFRE.subtitle}</p>
       </motion.div>
-      {/* plan avant : la vasque de cuivre, presque verrouillée, recouvre le pied du titre */}
+      {/* lueur du feu derrière la vasque */}
       <motion.div
         aria-hidden
-        className="absolute bottom-[-6%] left-1/2 z-20 w-[min(58vw,520px)] mix-blend-screen"
+        className="absolute bottom-[-8%] left-1/2 z-[15] h-[52vh] w-[min(80vw,900px)] -translate-x-1/2"
+        style={{ background: 'radial-gradient(50% 55% at 50% 62%, rgba(199,110,44,0.34), rgba(199,110,44,0.1) 55%, transparent 75%)' }}
+        animate={still ? undefined : { opacity: [0.7, 1, 0.7] }}
+        transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      {/* braises fines qui montent de la vasque */}
+      {!still && (
+        <div aria-hidden className="pointer-events-none absolute inset-0 z-[16]">
+          {[
+            { l: '46%', d: '0s', s: 5 },
+            { l: '52%', d: '2.4s', s: 4 },
+            { l: '49%', d: '4.9s', s: 3 },
+            { l: '55%', d: '6.8s', s: 4 },
+          ].map((b) => (
+            <span
+              key={b.l + b.d}
+              className="absolute rounded-full"
+              style={{
+                left: b.l,
+                bottom: '14%',
+                width: b.s,
+                height: b.s,
+                background: '#dcb874',
+                filter: 'blur(1px)',
+                animation: `foyerRise 9s linear ${b.d} infinite`,
+                opacity: 0,
+              }}
+            />
+          ))}
+          <style>{`@keyframes foyerRise{0%{transform:translateY(0);opacity:0}10%{opacity:.6}100%{transform:translateY(-46vh);opacity:0}}`}</style>
+        </div>
+      )}
+      {/* plan avant : la vasque détourée, presque verrouillée, recouvre le pied du titre */}
+      <motion.div
+        aria-hidden
+        className="absolute bottom-[-4%] left-1/2 z-20 w-[min(66vw,640px)]"
         style={still ? { x: '-50%' } : { y: vaseY, x: '-50%' }}
       >
-        <img src="/foyer/vasque-feu.webp" alt="" className="w-full" />
+        <img src="/foyer/vasque-feu.webp" alt="" className="w-full drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)]" />
       </motion.div>
       {/* couture vers le contenu de l'offre */}
       <div
