@@ -556,8 +556,8 @@ export default function BodySections() {
         className="relative overflow-hidden py-24 md:py-36"
         style={{ background: 'linear-gradient(180deg, #f3e3c2 0%, #edf0df 22%, #e8ecd7 100%)' }}
       >
-        <Aura tone="sauge" size={480} className="-right-28 bottom-6" />
-        <Aura tone="beige" size={360} className="-left-24 top-24 opacity-80" />
+        <Aura tone="sauge" size={480} className="hidden md:block -right-28 bottom-6" />
+        <Aura tone="beige" size={360} className="hidden md:block -left-24 top-24 opacity-80" />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament className="mb-16" />
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
