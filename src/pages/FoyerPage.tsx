@@ -415,67 +415,64 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   );
 };
 
+/* ── Offre : HERO cinématique en couches parallax (référence Osmo, assets maison).
+   L'antre de pierre au fond, le titre pris entre les plans, la vasque de cuivre
+   devant (fond noir + mix-blend-screen : les flammes seules traversent). ── */
+const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+  const bgY = useTransform(scrollYProgress, [0, 1], ['-26%', '26%']);
+  const titleY = useTransform(scrollYProgress, [0, 1], ['-120%', '120%']);
+  const vaseY = useTransform(scrollYProgress, [0, 1], ['-5%', '5%']);
+  const still = reduce;
+  return (
+    <div ref={ref} className="relative h-[92vh] min-h-[540px] overflow-hidden md:h-screen">
+      {/* plan du fond : l'antre, mouvement le plus ample */}
+      <motion.div aria-hidden className="absolute -inset-y-[28%] inset-x-0" style={still ? undefined : { y: bgY }}>
+        <img src="/foyer/antre-foyer.webp" alt="" className="h-full w-full object-cover" />
+      </motion.div>
+      {/* voile de lisibilité */}
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{ background: 'radial-gradient(70% 55% at 50% 45%, rgba(22,16,10,0.1), rgba(22,16,10,0.55) 100%)' }}
+      />
+      {/* le titre, pris entre les plans */}
+      <motion.div
+        className="absolute inset-x-0 top-[34%] z-10 text-center"
+        style={still ? undefined : { y: titleY }}
+      >
+        <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brassBright">{OFFRE.eyebrow}</p>
+        <h2 className="mt-4 font-serif font-medium leading-[0.9] text-ctext text-[clamp(3rem,8.5vw,7.5rem)]">
+          {OFFRE.title}
+        </h2>
+        <p className="mt-5 font-serif text-[clamp(1.15rem,2vw,1.7rem)] text-ctextSoft">{OFFRE.subtitle}</p>
+      </motion.div>
+      {/* plan avant : la vasque de cuivre, presque verrouillée, recouvre le pied du titre */}
+      <motion.div
+        aria-hidden
+        className="absolute bottom-[-6%] left-1/2 z-20 w-[min(58vw,520px)] -translate-x-1/2"
+        style={still ? undefined : { y: vaseY }}
+      >
+        <img src="/foyer/vasque-feu.webp" alt="" className="w-full mix-blend-screen" />
+      </motion.div>
+      {/* couture vers le contenu de l'offre */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 z-30 h-32"
+        style={{ background: 'linear-gradient(to top, #16100a 8%, transparent 100%)' }}
+      />
+    </div>
+  );
+};
+
 /* ── Offre (section 9 du doc final) ── */
 const Offre: React.FC = () => {
   const reduce = useReducedMotion();
-  const inView = { once: true, margin: '-80px' } as const;
   return (
-    <section className="relative overflow-hidden bg-espressoSoft px-6 py-28 md:px-12 lg:px-20">
-      <Atmosphere light="26% 18%" strength={0.9} />
-      <div className="relative z-10 mx-auto w-full max-w-[1360px]">
-        {/* entête éditoriale pleine largeur : titre à gauche, invitation scellée à droite */}
-        <div className="grid items-end gap-x-14 gap-y-10 lg:grid-cols-12">
-          <motion.div
-            className="lg:col-span-7"
-            initial={reduce ? undefined : { opacity: 0, y: 28, filter: 'blur(6px)' }}
-            whileInView={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
-            viewport={inView}
-            transition={{ duration: 1.1, ease }}
-          >
-            <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
-            <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassBright">
-              {OFFRE.eyebrow}
-            </p>
-            <h2 className="mt-5 font-serif font-medium uppercase leading-[1.08] tracking-[0.04em] text-ctext text-[clamp(1.9rem,3.4vw,2.7rem)]">
-              {OFFRE.title}
-            </h2>
-            <p className="mt-4 font-serif text-2xl text-ctextSoft">{OFFRE.subtitle}</p>
-          </motion.div>
-          <motion.div
-            className="hidden lg:col-span-5 lg:block lg:justify-self-end"
-            initial={reduce ? undefined : { opacity: 0, y: 34 }}
-            whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-            viewport={inView}
-            transition={{ duration: 1.2, ease, delay: 0.15 }}
-          >
-            {/* l'invitation scellée respire : flottement lent + lueur du sceau */}
-            <motion.div
-              animate={reduce ? undefined : { y: [0, -7, 0] }}
-              transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative w-[320px]"
-            >
-              <motion.span
-                aria-hidden
-                className="pointer-events-none absolute -inset-4 rounded-[38px]"
-                style={{ background: 'radial-gradient(60% 60% at 50% 45%, rgba(220,184,116,0.22), transparent 75%)' }}
-                animate={reduce ? undefined : { opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
-              />
-              <div className="relative overflow-hidden rounded-[30px] bg-espresso/50 p-2.5 shadow-depth ring-1 ring-brass/40">
-                <img
-                  src="https://wsrv.nl/?url=https%3A%2F%2Fstorage.googleapis.com%2Forigine1%2Fbanner%2520origine%2520enveloppe.jpg&w=800&output=webp"
-                  alt="L'invitation scellée du Foyer d'Origine"
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
-                  className="w-full rounded-[22px]"
-                />
-              </div>
-              <p className="mt-4 font-sans text-[0.78rem] tracking-[0.06em] text-ctextSoft">
-                L’invitation scellée · sceau boussole, sauge et lavande
-              </p>
-            </motion.div>
-          </motion.div>
-        </div>
+    <section className="relative overflow-hidden bg-espressoDeep">
+      <OffreScene reduce={!!reduce} />
+      <div className="relative z-10 mx-auto w-full max-w-[1360px] px-6 pb-28 pt-6 md:px-12 lg:px-20">
 
         {/* ce que contient l'année : filets éditoriaux pleine largeur, deux colonnes */}
         <div className="mt-16 grid gap-x-14 lg:grid-cols-2">
