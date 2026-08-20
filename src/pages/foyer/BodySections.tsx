@@ -801,8 +801,8 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </div>
       </section>
 
-      {/* ═══════ SECTION 7 · La signature du Foyer ═══════ */}
-      <section className={`relative bg-cream2 py-24 md:py-36 ${overlap ? 'z-50' : ''}`}>
+      {/* ═══════ SECTION 7 · La signature du Foyer : feuille épinglée ═══════ */}
+      <section className={`bg-cream2 py-24 md:py-36 ${overlap ? 'z-[51]' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="grid lg:grid-cols-12 gap-x-14 gap-y-14 items-start">
             <Reveal className="lg:col-span-7">
