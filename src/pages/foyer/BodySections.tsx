@@ -535,7 +535,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         className={`overflow-hidden bg-cream3 pb-24 md:pb-36 ${
           overlap ? 'z-10 -mt-[100vh] rounded-t-[18px] shadow-[0_-26px_60px_rgba(22,16,10,0.5)]' : 'relative'
         }`}
-        style={pin}
+        style={pin} data-pin-sheet
       >
         <CalendrierAnnee />
 
@@ -576,7 +576,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
 
       {/* ═══════ SECTION 2 · L'Histoire du feu : la niche de la flamme éternelle,
           même pierre que le calendrier ═══════ */}
-      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-20' : 'relative'} ${cover}`} style={pin}>
+      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-20' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
         <div aria-hidden className="absolute inset-0">
           <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
           <span
@@ -628,7 +628,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
 
       {/* ═══════ SECTION 3 · Le rythme : l'étagère des rituels de la semaine,
           même céramique que le calendrier ═══════ */}
-      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-30' : 'relative'} ${cover}`} style={pin}>
+      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-30' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
         <div aria-hidden className="absolute inset-0">
           <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
           <span
@@ -683,7 +683,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       </section>
 
       {/* ═══════ SECTION 5 · Une place où les connaissances se rencontrent ═══════ */}
-      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-40' : 'relative'} ${cover}`} style={pin}>
+      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-40' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
         <div aria-hidden className="absolute inset-0">
           <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
           <span
@@ -749,7 +749,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       {/* ═══════ SECTION 6 · Les méditations : la chandelle VIT (vidéo), parallaxe ═══════ */}
       <section className={`relative overflow-hidden bg-espressoDeep py-28 md:py-44 ${overlap ? 'z-50' : ''} ${cover}`}>
         <div aria-hidden className="absolute inset-0">
-          <Parallax speed={0.16} className="h-full" innerClassName="h-full">
+          <Parallax speed={0.26} className="h-full" innerClassName="h-full">
             {reduceAll ? (
               <img
                 src="/foyer/meditation.webp"
@@ -870,15 +870,20 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </div>
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament className="mb-16" />
-          <Reveal className="max-w-[44rem]">
-            <Eyebrow>{SECTION8.eyebrow}</Eyebrow>
-            <SectionTitle long className="mt-5 max-w-[34ch]">
-              {SECTION8.title}
-            </SectionTitle>
-            <p className="mt-6 font-serif text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug">
-              {SECTION8.subtitle}
-            </p>
-          </Reveal>
+          {/* entête éditoriale : le titre porte la section, le souffle à droite */}
+          <div className="grid items-end gap-x-14 gap-y-6 lg:grid-cols-12">
+            <Reveal className="lg:col-span-8">
+              <Eyebrow>{SECTION8.eyebrow}</Eyebrow>
+              <h2 className="mt-6 font-serif font-medium leading-[1.08] text-ink text-[clamp(2.1rem,4vw,3.6rem)] max-w-[18ch]">
+                {SECTION8.title}
+              </h2>
+            </Reveal>
+            <Reveal delay={0.1} className="lg:col-span-4 lg:pb-2">
+              <p className="font-serif text-brassInk text-[clamp(1.35rem,2.2vw,1.8rem)] leading-snug">
+                {SECTION8.subtitle}
+              </p>
+            </Reveal>
+          </div>
 
           {/* les trois situations : pigments du moodboard sur papier fait main */}
           <div className="mt-16 grid gap-6 md:grid-cols-3">
