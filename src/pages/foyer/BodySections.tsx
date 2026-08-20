@@ -68,32 +68,58 @@ const Aura: React.FC<{ tone: AuraTone; size?: number; className?: string }> = ({
   </span>
 );
 
-/* ── Séparateur doré : filet, losange, brins végétaux ── */
+/* ── Séparateur doré : le filet se trace, le losange se pose, les brins
+   poussent (même langage que le préloader) ── */
 const Ornament: React.FC<{ on?: 'dark' | 'light'; motto?: boolean; className?: string }> = ({
   on = 'light',
   motto = false,
   className = '',
 }) => {
   const stroke = on === 'dark' ? '#bb9a5e' : '#7d6330';
+  const reduce = useReducedMotion();
+  const anim = !reduce;
   return (
-    <div className={`flex flex-col items-center gap-4 ${className}`} aria-hidden>
+    <motion.div
+      className={`flex flex-col items-center gap-4 ${className}`}
+      aria-hidden
+      initial={anim ? 'hide' : undefined}
+      whileInView={anim ? 'show' : undefined}
+      viewport={{ once: true, margin: '-60px' }}
+    >
       <svg width="220" height="18" viewBox="0 0 220 18" fill="none">
-        <line x1="0" y1="9" x2="88" y2="9" stroke={stroke} strokeWidth="1" opacity="0.55" />
-        <line x1="132" y1="9" x2="220" y2="9" stroke={stroke} strokeWidth="1" opacity="0.55" />
-        <rect x="105.5" y="4.5" width="9" height="9" transform="rotate(45 110 9)" stroke={stroke} strokeWidth="1.1" />
-        <path d="M96 9c-3-4-7-5-10-4 2 3 6 5 10 4Z" fill={stroke} opacity="0.7" />
-        <path d="M124 9c3-4 7-5 10-4-2 3-6 5-10 4Z" fill={stroke} opacity="0.7" />
+        <motion.line
+          x1="0" y1="9" x2="88" y2="9" stroke={stroke} strokeWidth="1"
+          variants={{ hide: { pathLength: 0, opacity: 0 }, show: { pathLength: 1, opacity: 0.55, transition: { duration: 0.9, ease } } }}
+        />
+        <motion.line
+          x1="220" y1="9" x2="132" y2="9" stroke={stroke} strokeWidth="1"
+          variants={{ hide: { pathLength: 0, opacity: 0 }, show: { pathLength: 1, opacity: 0.55, transition: { duration: 0.9, ease } } }}
+        />
+        <motion.rect
+          x="105.5" y="4.5" width="9" height="9" transform="rotate(45 110 9)" stroke={stroke} strokeWidth="1.1"
+          style={{ transformOrigin: '110px 9px' }}
+          variants={{ hide: { opacity: 0, scale: 0 }, show: { opacity: 1, scale: 1, transition: { duration: 0.6, ease, delay: 0.55 } } }}
+        />
+        <motion.path
+          d="M96 9c-3-4-7-5-10-4 2 3 6 5 10 4Z" fill={stroke}
+          variants={{ hide: { opacity: 0 }, show: { opacity: 0.7, transition: { duration: 0.5, ease, delay: 0.75 } } }}
+        />
+        <motion.path
+          d="M124 9c3-4 7-5 10-4-2 3-6 5-10 4Z" fill={stroke}
+          variants={{ hide: { opacity: 0 }, show: { opacity: 0.7, transition: { duration: 0.5, ease, delay: 0.75 } } }}
+        />
       </svg>
       {motto && (
-        <p
+        <motion.p
           className={`font-sans text-[0.62rem] uppercase tracking-[0.3em] ${
             on === 'dark' ? 'text-brass' : 'text-brassInk'
           }`}
+          variants={{ hide: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease, delay: 0.7 } } }}
         >
           Observer · Ressentir · Accueillir
-        </p>
+        </motion.p>
       )}
-    </div>
+    </motion.div>
   );
 };
 
