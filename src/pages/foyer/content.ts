@@ -111,7 +111,7 @@ export const SECTION7 = {
   paragraphs: [
     'Depuis 37 ans, Krystine St-Laurent explore l’Ayurveda, les plantes, la cuisine, les saisons, les rythmes du corps et les grandes questions humaines.',
     'Son parcours traverse les soins infirmiers, la recherche, l’écriture, l’enseignement, les voyages, les rencontres et la création de produits à partir des plantes d’ici.',
-    'Deux livres ont été publiés. Un troisième est en préparation.',
+    'Trois livres ont été publiés.',
     'Le Foyer naît de cette réserve de connaissances, d’histoires et d’expériences, mais surtout d’une façon particulière de les mettre en relation.',
   ],
   emphasis: 'Il ne s’agit pas de tout savoir.',
