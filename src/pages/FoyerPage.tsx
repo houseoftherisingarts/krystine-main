@@ -410,17 +410,6 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
         >
           {fire.on ? <Volume2 size={17} /> : <VolumeX size={17} />}
         </button>
-
-        {/* la crème se pose sur le matin : couture invisible vers le corps */}
-        <motion.div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-20"
-          style={{
-            opacity: warm,
-            background:
-              'radial-gradient(62% 52% at 50% 60%, #f7ead2 0%, #f6f1e6 45%, #f6f3ee 75%)',
-          }}
-        />
       </div>
     </div>
   );
