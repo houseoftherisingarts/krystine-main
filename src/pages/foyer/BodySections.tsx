@@ -659,13 +659,14 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       </section>
 
       {/* ═══════ SECTION 5 · Une place où les connaissances se rencontrent ═══════ */}
-      <section className="relative overflow-hidden bg-cream py-24 md:py-36">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-24"
-          style={{ background: 'linear-gradient(180deg, #e8ecd7 0%, transparent 100%)' }}
-        />
-        <Aura tone="beige" size={520} className="-right-40 -top-24" />
+      <section className="relative overflow-hidden py-24 md:py-36">
+        <div aria-hidden className="absolute inset-0">
+          <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
+          <span
+            className="absolute inset-0"
+            style={{ background: 'linear-gradient(180deg, rgba(232,236,215,0.85) 0%, rgba(246,243,238,0.72) 18%, rgba(246,243,238,0.72) 100%)' }}
+          />
+        </div>
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament className="mb-16" />
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
