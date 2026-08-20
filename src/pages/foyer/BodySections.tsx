@@ -499,6 +499,13 @@ const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; o
 export default function BodySections({ overlap = false }: { overlap?: boolean }) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const reduceAll = useReducedMotion();
+  /* Feuilles empilées généralisées : chaque section fige (sticky, le bas
+     aligné au bas de l'écran quand elle est plus haute que lui) et la
+     suivante monte par-dessus, coins arrondis + ombre, comme le feu. */
+  const pin = overlap
+    ? ({ position: 'sticky', top: 'min(0px, calc(100vh - 100%))' } as React.CSSProperties)
+    : undefined;
+  const cover = overlap ? 'rounded-t-[18px] shadow-[0_-26px_60px_rgba(22,16,10,0.45)]' : '';
 
   return (
     <>
