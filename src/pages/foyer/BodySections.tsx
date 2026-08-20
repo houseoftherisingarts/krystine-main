@@ -924,7 +924,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 h-24"
-          style={{ background: 'linear-gradient(180deg, #e4ebef 0%, transparent 100%)' }}
+          style={{ background: 'linear-gradient(180deg, #f3efe6 0%, transparent 100%)' }}
         />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Reveal className="max-w-[36ch] mb-14">
