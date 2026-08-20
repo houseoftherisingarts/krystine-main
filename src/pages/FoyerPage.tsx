@@ -259,7 +259,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   }
 
   return (
-    <div ref={ref} className="relative h-[460vh] bg-espressoDeep">
+    <div ref={ref} className="relative z-0 h-[460vh] bg-espressoDeep">
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* LE feu : la vidéo roule dès l'entrée, seule représentation du feu */}
         <video
