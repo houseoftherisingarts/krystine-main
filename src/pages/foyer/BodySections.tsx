@@ -515,8 +515,16 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       >
         <CalendrierAnnee />
 
+        {/* la pierre du calendrier se fond dans la page : bande de liaison + ornement */}
+        <div
+          aria-hidden
+          className="h-20 w-full md:h-28"
+          style={{ background: 'linear-gradient(180deg, #d7c9bc 0%, #ede5d7 100%)' }}
+        />
+        <Ornament motto className="-mt-4 mb-2" />
+
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <div className="mt-16 grid items-start gap-x-12 gap-y-8 lg:grid-cols-12">
+          <div className="mt-12 grid items-start gap-x-12 gap-y-8 lg:grid-cols-12">
             <Reveal className="lg:col-span-6">
               <Eyebrow>{SECTION4.eyebrow}</Eyebrow>
               <SectionTitle className="mt-5">{SECTION4.title}</SectionTitle>
