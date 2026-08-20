@@ -496,7 +496,7 @@ const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; o
   </div>
 );
 
-export default function BodySections() {
+export default function BodySections({ overlap = false }: { overlap?: boolean }) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
@@ -506,16 +506,14 @@ export default function BodySections() {
         @media (prefers-reduced-motion: reduce){[style*="auraBreathe"]{animation:none!important}}
       `}</style>
 
-      {/* ═══════ SECTION 4 · Les douze portes : le feu enchaîne direct sur les portes ═══════ */}
-      <section className="relative overflow-hidden bg-cream3 pb-24 md:pb-36">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-16"
-          style={{ background: 'linear-gradient(180deg, #f6f3ee 0%, transparent 100%)' }}
-        />
-        <Reveal>
-          <CalendrierAnnee />
-        </Reveal>
+      {/* ═══════ SECTION 4 · Les douze portes : la feuille monte SUR le feu (feuilles
+          empilées du canon), le calendrier arrive bord à bord, zéro vide crème ═══════ */}
+      <section
+        className={`relative overflow-hidden bg-cream3 pb-24 md:pb-36 ${
+          overlap ? 'z-10 -mt-[100vh] rounded-t-[18px] shadow-[0_-26px_60px_rgba(22,16,10,0.5)]' : ''
+        }`}
+      >
+        <CalendrierAnnee />
 
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="mt-16 grid items-start gap-x-12 gap-y-8 lg:grid-cols-12">
