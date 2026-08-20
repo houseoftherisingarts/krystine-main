@@ -471,7 +471,7 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
 const Offre: React.FC = () => {
   const reduce = useReducedMotion();
   return (
-    <section className="relative overflow-hidden bg-espressoDeep">
+    <section className="relative z-[55] overflow-hidden bg-espressoDeep">
       <OffreScene reduce={!!reduce} />
       <div className="relative z-10 mx-auto w-full max-w-[1360px] px-6 pb-28 pt-6 md:px-12 lg:px-20">
 
