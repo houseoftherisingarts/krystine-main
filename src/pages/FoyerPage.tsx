@@ -198,9 +198,8 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
       ),
     })),
   );
-  const kickerFade = useTransform(scrollYProgress, [0.87, 0.93], [0, 1]);
+  const kickerFade = useTransform(scrollYProgress, [0.68, 0.75], [0, 1]);
   const emberDust = useTransform(scrollYProgress, [0.1, 0.25], [0, 1]);
-  const warm = useTransform(scrollYProgress, [0.9, 1], [0, 1]);
 
   if (reduce) {
     return (
