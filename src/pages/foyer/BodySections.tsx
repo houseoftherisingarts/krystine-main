@@ -613,7 +613,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
 
       {/* ═══════ SECTION 3 · Le rythme : l'étagère des rituels de la semaine,
           même céramique que le calendrier ═══════ */}
-      <section className="relative overflow-hidden py-24 md:py-36">
+      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-30' : 'relative'} ${cover}`} style={pin}>
         <div aria-hidden className="absolute inset-0">
           <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
           <span
