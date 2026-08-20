@@ -479,7 +479,7 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
 
   return (
     <div ref={ref} className="relative h-[260vh]">
-      <div className="sticky top-0 h-screen overflow-hidden">
+      <div className="sticky top-0 h-screen overflow-hidden rounded-t-[18px]">
         {/* l'antre VIT : la vidéo respire, s'allume et s'approche au scroll */}
         <motion.div aria-hidden className="absolute inset-0" style={{ scale: sceneScale, filter: sceneFilter }}>
           <video
