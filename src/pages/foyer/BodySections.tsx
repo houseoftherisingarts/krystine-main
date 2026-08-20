@@ -951,7 +951,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       </section>
 
       {/* ═══════ SECTION 10 · FAQ ═══════ */}
-      <section className={`relative overflow-hidden bg-cream2 py-24 md:py-36 ${overlap ? 'z-50' : ''}`}>
+      <section className={`overflow-hidden bg-cream2 py-24 md:py-36 ${overlap ? 'z-[53]' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 h-24"
