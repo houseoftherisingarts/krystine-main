@@ -546,6 +546,7 @@ const AppelFinal: React.FC = () => {
 /* ── Page ── */
 const FoyerPage: React.FC = () => {
   const [ready, setReady] = useState(false);
+  const reduce = useReducedMotion();
   useEffect(() => {
     const prev = document.title;
     document.title = "Le Foyer d'Origine | Krystine St-Laurent";
