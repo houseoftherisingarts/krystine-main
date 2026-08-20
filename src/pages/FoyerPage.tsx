@@ -78,7 +78,7 @@ const Cta: React.FC<{ label: string; sub?: string; dark?: boolean }> = ({
   <div className="flex flex-col items-start gap-3">
     <Link
       to={CTA_HREF}
-      className="group inline-flex items-center gap-3 rounded-[30px] bg-brass px-9 py-4 font-sans text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-espresso shadow-glow transition-colors duration-300 hover:bg-brassBright"
+      className="group inline-flex items-center gap-3 whitespace-nowrap rounded-[30px] bg-brass px-6 py-3.5 font-sans text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-espresso shadow-glow transition-colors duration-300 hover:bg-brassBright md:px-9 md:py-4 md:text-[0.78rem] md:tracking-[0.22em]"
     >
       {label}
       <ArrowRight
