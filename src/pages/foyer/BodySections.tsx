@@ -850,8 +850,8 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
               return (
                 <Reveal key={sit.slice(0, 20)} delay={i * 0.18}>
                   <div
-                    className="relative h-full overflow-hidden rounded-[30px] p-8 shadow-depth ring-1"
-                    style={{ ringColor: `rgba(${AURAS[tone]},0.35)` } as React.CSSProperties}
+                    className="relative h-full overflow-hidden rounded-[30px] border p-8 shadow-depth"
+                    style={{ borderColor: `rgba(${AURAS[tone]},0.35)` }}
                   >
                     <img
                       src={`/foyer/${pigment}.webp`}
