@@ -118,7 +118,8 @@ export const SECTION7 = {
   closing: 'Il s’agit de reconnaître ce qui mérite d’être apporté au feu maintenant.',
   stats: [
     { value: '37 ans', label: 'à explorer l’Ayurveda, les plantes, la cuisine, les saisons et les rythmes du corps' },
-    { value: '2 livres', label: 'publiés, un troisième en préparation' },
+    { value: '3 livres', label: 'publiés' },
+    { value: '3 saisons', label: 'de l’émission Santé la vie à MATV' },
   ],
   photoCaption: 'Krystine St-Laurent',
 };
