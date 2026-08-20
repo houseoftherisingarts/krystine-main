@@ -10,32 +10,27 @@ import {
   SECTION6,
   SECTION7,
   SECTION8,
-  SECTION9,
   FAQ,
 } from './content';
 
 /**
- * Le Foyer d'Origine · sections de CORPS (2 à 9 + FAQ).
- * Hero, préloader et route vivent dans la session principale.
- * Style L'Œuvre (espresso/cream/brass), page sœur d'OrigineExperience.tsx.
+ * Le Foyer d'Origine · sections de CORPS (copie du doc « PAGE DE VENTE FINALE »).
+ * Hero, préloader, offre et appel final vivent dans FoyerPage.
+ * Style L'Œuvre (espresso/cream/brass) + auras du moodboard Origine.
  */
 
 const ease = [0.16, 0.8, 0.24, 1] as const;
 
-/* ── Palette d'auras du moodboard Origine (19 août 2026) ──
-   « Chaque cercle contient une aura, jamais vide. L'aura donne la vie,
-   la profondeur, l'émotion. » Locale au Foyer : les alias globaux
-   prune/sauge/bleuMineral restent neutralisés pour les autres pages. */
+/* ── Palette d'auras du moodboard Origine ── */
 const AURAS = {
-  beige: '217,196,160', // beige lumière · clarté, douceur, ouverture
-  ocre: '199,132,44', // ocre chaud · transformation, énergie juste
-  prune: '136,86,130', // prune aquarelle · introspection, profondeur
-  sauge: '129,143,96', // sauge végétal · apaisement, régénération
-  bleu: '62,110,138', // bleu minéral · fluidité, circulation
-  terre: '150,104,66', // terre ancrée · stabilité, enracinement
+  beige: '217,196,160',
+  ocre: '199,132,44',
+  prune: '136,86,130',
+  sauge: '129,143,96',
+  bleu: '62,110,138',
+  terre: '150,104,66',
 } as const;
 type AuraTone = keyof typeof AURAS;
-/* version encre des tons : lisible en gros texte sur crème */
 const TONE_INK: Record<AuraTone, string> = {
   beige: '#8a713f',
   ocre: '#8a5a1f',
@@ -44,8 +39,8 @@ const TONE_INK: Record<AuraTone, string> = {
   bleu: '#3d5a6e',
   terre: '#6e5138',
 };
+const ROW_TONES: AuraTone[] = ['ocre', 'sauge', 'prune', 'bleu', 'terre'];
 
-/* Tache aquarelle : deux couches radiales décalées + flou, respiration lente. */
 const Aura: React.FC<{ tone: AuraTone; size?: number; className?: string }> = ({
   tone,
   size = 340,
@@ -73,12 +68,59 @@ const Aura: React.FC<{ tone: AuraTone; size?: number; className?: string }> = ({
   </span>
 );
 
-/* ── Le calendrier de l'année (doc « 12 portes » du 19 août) ──
-   Porte fermée : le nom du mois seulement. Toutes fermées au chargement,
-   une seule ouverte à la fois, ouverture lente et calme. À l'ouverture :
-   mouvement saisonnier (petite ligne), THÈME HUMAIN CENTRAL (le plus
-   visible), aperçu public (une phrase), un seul appel discret. Aucune
-   date, aucun cadenas, aucun vocabulaire de formation. ── */
+/* ── Séparateur doré : filet, losange, brins végétaux ── */
+const Ornament: React.FC<{ on?: 'dark' | 'light'; motto?: boolean; className?: string }> = ({
+  on = 'light',
+  motto = false,
+  className = '',
+}) => {
+  const stroke = on === 'dark' ? '#bb9a5e' : '#7d6330';
+  return (
+    <div className={`flex flex-col items-center gap-4 ${className}`} aria-hidden>
+      <svg width="220" height="18" viewBox="0 0 220 18" fill="none">
+        <line x1="0" y1="9" x2="88" y2="9" stroke={stroke} strokeWidth="1" opacity="0.55" />
+        <line x1="132" y1="9" x2="220" y2="9" stroke={stroke} strokeWidth="1" opacity="0.55" />
+        <rect x="105.5" y="4.5" width="9" height="9" transform="rotate(45 110 9)" stroke={stroke} strokeWidth="1.1" />
+        <path d="M96 9c-3-4-7-5-10-4 2 3 6 5 10 4Z" fill={stroke} opacity="0.7" />
+        <path d="M124 9c3-4 7-5 10-4-2 3-6 5-10 4Z" fill={stroke} opacity="0.7" />
+      </svg>
+      {motto && (
+        <p
+          className={`font-sans text-[0.62rem] uppercase tracking-[0.3em] ${
+            on === 'dark' ? 'text-brass' : 'text-brassInk'
+          }`}
+        >
+          Observer · Ressentir · Accueillir
+        </p>
+      )}
+    </div>
+  );
+};
+
+const Eyebrow: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light' }> = ({ children, on = 'light' }) => (
+  <div className="flex flex-col gap-3">
+    <span className="block h-px w-10 bg-brass" aria-hidden />
+    <p className={`font-sans text-[0.62rem] uppercase tracking-[0.28em] ${on === 'dark' ? 'text-brass' : 'text-brassInk'}`}>
+      {children}
+    </p>
+  </div>
+);
+
+const SectionTitle: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light'; className?: string }> = ({
+  children,
+  on = 'light',
+  className = '',
+}) => (
+  <h2
+    className={`font-serif font-medium uppercase leading-[1.08] text-[clamp(1.9rem,3.4vw,2.7rem)] tracking-[0.04em] ${
+      on === 'dark' ? 'text-ctext' : 'text-ink'
+    } ${className}`}
+  >
+    {children}
+  </h2>
+);
+
+/* ═══════════ Le calendrier des douze portes ═══════════ */
 const IMG_W = 1672;
 const IMG_H = 941;
 const HEARTH = { left: 643 / IMG_W, top: 235 / IMG_H, width: 385 / IMG_W, height: 498 / IMG_H };
@@ -106,6 +148,7 @@ const PORTES: Porte[] = [
   { n: 'novembre', mois: 'Novembre', b: [1086, 641, 1330, 907], src: 'porte-novembre-cutout', mouvement: 'Baisse de lumière', theme: 'Nourrir le feu lorsque l’élan diminue', apercu: 'Une histoire, une cuisson et une rencontre autour du feu.' },
   { n: 'decembre', mois: 'Décembre', b: [1328, 638, 1572, 907], src: 'porte-decembre-cutout', mouvement: 'Rassemblement et transmission', theme: 'Ce que nous choisissons de garder et de transmettre', apercu: 'Des récits familiaux, de la musique et des gestes transmis autour du feu.' },
 ];
+const MENU_BOX: [number, number, number, number] = [1520, 42, 1620, 130];
 const zone = (b: [number, number, number, number]) => ({
   left: `${(b[0] / IMG_W) * 100}%`,
   top: `${(b[1] / IMG_H) * 100}%`,
@@ -113,259 +156,270 @@ const zone = (b: [number, number, number, number]) => ({
   height: `${((b[3] - b[1]) / IMG_H) * 100}%`,
 });
 
+/* Halo de lumière : carte dorée qui naît d'un point de l'image */
+const Halo: React.FC<{
+  originPct: [number, number];
+  onClose: () => void;
+  label: string;
+  children: React.ReactNode;
+}> = ({ originPct, onClose, label, children }) => (
+  <motion.div
+    role="dialog"
+    aria-label={label}
+    className="absolute z-50 w-[min(560px,86%)]"
+    initial={{ left: `${originPct[0]}%`, top: `${originPct[1]}%`, scale: 0.22, opacity: 0 }}
+    animate={{ left: '50%', top: '50%', scale: 1, opacity: 1 }}
+    exit={{ left: `${originPct[0]}%`, top: `${originPct[1]}%`, scale: 0.22, opacity: 0 }}
+    transition={{ duration: 0.85, ease }}
+    style={{ x: '-50%', y: '-50%' }}
+  >
+    <div
+      className="relative rounded-[30px] px-8 py-10 text-center md:px-12"
+      style={{
+        background: 'radial-gradient(circle at 50% 24%, #fffdf7 0%, #fbf2dd 58%, #f4e3b8 100%)',
+        boxShadow:
+          '0 0 60px 22px rgba(220,184,116,0.5), 0 0 140px 60px rgba(220,184,116,0.28), 0 18px 50px rgba(22,16,10,0.25)',
+      }}
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Refermer"
+        className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full text-espresso/70 transition-colors hover:bg-espresso/10 hover:text-espresso"
+      >
+        <X size={17} />
+      </button>
+      {children}
+    </div>
+  </motion.div>
+);
+
 const CalendrierAnnee: React.FC = () => {
   const [hoverDoor, setHoverDoor] = useState<string | null>(null);
   const [openDoor, setOpenDoor] = useState<string | null>(null);
+  const [helpOpen, setHelpOpen] = useState(false);
   const ouverte = PORTES.find((d) => d.n === openDoor) ?? null;
   useEffect(() => {
-    if (!openDoor) return;
+    if (!openDoor && !helpOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpenDoor(null);
+      if (e.key === 'Escape') {
+        setOpenDoor(null);
+        setHelpOpen(false);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [openDoor]);
-  return (
-    <div>
-      <div className="relative w-full">
-        <img
-          src="/foyer/calendrier-annee.webp"
-          alt="Le calendrier des douze portes du Foyer d'Origine, l'âtre allumé au centre"
-          className="block w-full"
-        />
-        <video
-          src="/foyer/atre-feu.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          aria-hidden
-          className="pointer-events-none absolute object-cover"
-          style={{
-            left: `${HEARTH.left * 100}%`,
-            top: `${HEARTH.top * 100}%`,
-            width: `${HEARTH.width * 100}%`,
-            height: `${HEARTH.height * 100}%`,
-            maskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
-            WebkitMaskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
-          }}
-        />
-        {PORTES.map((d) => {
-          const isOpen = openDoor === d.n;
-          const isHover = hoverDoor === d.n && !isOpen;
-          return (
-            <React.Fragment key={d.n}>
-              {/* l'embrasure : lueur chaude révélée derrière le battant */}
-              <motion.span
-                aria-hidden
-                className="absolute z-10 rounded-t-[46%] rounded-b-xl"
-                style={{
-                  ...zone(d.b),
-                  transform: 'scale(0.84)',
-                  background:
-                    'radial-gradient(60% 55% at 50% 58%, rgba(199,132,44,0.55), rgba(42,26,16,0.96) 78%)',
-                }}
-                animate={{ opacity: isOpen ? 1 : 0 }}
-                transition={{ duration: 0.8, ease }}
-              />
-              {/* halo doux au survol */}
-              <motion.span
-                aria-hidden
-                className="pointer-events-none absolute z-20"
-                style={{
-                  ...zone(d.b),
-                  background:
-                    'radial-gradient(50% 50% at 50% 50%, rgba(220,184,116,0.65), rgba(199,132,44,0.25) 55%, transparent 78%)',
-                  filter: 'blur(16px)',
-                  transform: 'scale(1.3)',
-                }}
-                animate={{ opacity: isHover ? 1 : 0 }}
-                transition={{ duration: 0.45, ease }}
-              />
-              {/* le battant : cutout 1:1, ouverture lente et calme */}
-              <motion.img
-                src={`/foyer/${d.src}.webp`}
-                alt=""
-                aria-hidden
-                className="pointer-events-none absolute z-30"
-                style={{ ...zone(d.b), transformOrigin: 'left center', transformPerspective: 700 }}
-                animate={
-                  isOpen
-                    ? { rotateY: -64, scale: 1, filter: 'brightness(0.94) drop-shadow(18px 10px 28px rgba(22,16,10,0.55))' }
-                    : isHover
-                      ? { rotateY: 0, scale: 1.06, filter: 'brightness(1.1) drop-shadow(0 8px 28px rgba(199,132,44,0.8))' }
-                      : { rotateY: 0, scale: 1, filter: 'brightness(1) drop-shadow(0 0px 0px rgba(22,16,10,0))' }
-                }
-                transition={{ duration: isOpen ? 1.5 : 0.5, ease }}
-              />
-              <button
-                type="button"
-                onClick={() => setOpenDoor(isOpen ? null : d.n)}
-                onMouseEnter={() => setHoverDoor(d.n)}
-                onMouseLeave={() => setHoverDoor(null)}
-                aria-expanded={isOpen}
-                aria-label={isOpen ? `Refermer la porte de ${d.mois}` : `Ouvrir la porte de ${d.mois}`}
-                className="absolute z-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
-                style={zone(d.b)}
-              />
-            </React.Fragment>
-          );
-        })}
-        <span className="absolute bottom-4 left-1/2 -translate-x-1/2 font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
-          {ouverte ? ouverte.mois : 'Ouvrir une porte'}
-        </span>
+  }, [openDoor, helpOpen]);
 
-        {/* le halo du mois : la lumière sort de la porte cliquée, par-dessus le calendrier */}
-        <AnimatePresence>
-          {ouverte && (
-            <motion.div
-              key={ouverte.n}
-              role="dialog"
-              aria-label={`${ouverte.mois} : ${ouverte.theme}`}
-              className="absolute z-50 w-[min(560px,86%)]"
-              initial={{
-                left: `${((ouverte.b[0] + ouverte.b[2]) / 2 / IMG_W) * 100}%`,
-                top: `${((ouverte.b[1] + ouverte.b[3]) / 2 / IMG_H) * 100}%`,
-                scale: 0.22,
-                opacity: 0,
+  return (
+    <div className="relative w-full">
+      <img
+        src="/foyer/calendrier-annee.webp"
+        alt="Le calendrier des douze portes du Foyer d'Origine, l'âtre allumé au centre"
+        className="block w-full"
+      />
+      <video
+        src="/foyer/atre-feu.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-hidden
+        className="pointer-events-none absolute object-cover"
+        style={{
+          left: `${HEARTH.left * 100}%`,
+          top: `${HEARTH.top * 100}%`,
+          width: `${HEARTH.width * 100}%`,
+          height: `${HEARTH.height * 100}%`,
+          maskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 43% 45% at 50% 46%, black 88%, transparent 99%)',
+        }}
+      />
+      {PORTES.map((d) => {
+        const isOpen = openDoor === d.n;
+        const isHover = hoverDoor === d.n && !isOpen;
+        return (
+          <React.Fragment key={d.n}>
+            <motion.span
+              aria-hidden
+              className="absolute z-10 rounded-t-[46%] rounded-b-xl"
+              style={{
+                ...zone(d.b),
+                transform: 'scale(0.84)',
+                background:
+                  'radial-gradient(60% 55% at 50% 58%, rgba(199,132,44,0.55), rgba(42,26,16,0.96) 78%)',
               }}
-              animate={{ left: '50%', top: '50%', scale: 1, opacity: 1 }}
-              exit={{
-                left: `${((ouverte.b[0] + ouverte.b[2]) / 2 / IMG_W) * 100}%`,
-                top: `${((ouverte.b[1] + ouverte.b[3]) / 2 / IMG_H) * 100}%`,
-                scale: 0.22,
-                opacity: 0,
+              animate={{ opacity: isOpen ? 1 : 0 }}
+              transition={{ duration: 0.8, ease }}
+            />
+            <motion.span
+              aria-hidden
+              className="pointer-events-none absolute z-20"
+              style={{
+                ...zone(d.b),
+                background:
+                  'radial-gradient(50% 50% at 50% 50%, rgba(220,184,116,0.65), rgba(199,132,44,0.25) 55%, transparent 78%)',
+                filter: 'blur(16px)',
+                transform: 'scale(1.3)',
               }}
-              transition={{ duration: 0.85, ease }}
-              style={{ x: '-50%', y: '-50%' }}
+              animate={{ opacity: isHover ? 1 : 0 }}
+              transition={{ duration: 0.45, ease }}
+            />
+            <motion.img
+              src={`/foyer/${d.src}.webp`}
+              alt=""
+              aria-hidden
+              className="pointer-events-none absolute z-30"
+              style={{ ...zone(d.b), transformOrigin: 'left center', transformPerspective: 700 }}
+              animate={
+                isOpen
+                  ? { rotateY: -64, scale: 1, filter: 'brightness(0.94) drop-shadow(18px 10px 28px rgba(22,16,10,0.55))' }
+                  : isHover
+                    ? { rotateY: 0, scale: 1.06, filter: 'brightness(1.1) drop-shadow(0 8px 28px rgba(199,132,44,0.8))' }
+                    : { rotateY: 0, scale: 1, filter: 'brightness(1) drop-shadow(0 0px 0px rgba(22,16,10,0))' }
+              }
+              transition={{ duration: isOpen ? 1.5 : 0.5, ease }}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                setHelpOpen(false);
+                setOpenDoor(isOpen ? null : d.n);
+              }}
+              onMouseEnter={() => setHoverDoor(d.n)}
+              onMouseLeave={() => setHoverDoor(null)}
+              aria-expanded={isOpen}
+              aria-label={isOpen ? `Refermer la porte de ${d.mois}` : `Ouvrir la porte de ${d.mois}`}
+              className="absolute z-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+              style={zone(d.b)}
+            />
+          </React.Fragment>
+        );
+      })}
+      {/* l'icône menu de l'image : un mot sur la façon d'explorer */}
+      <button
+        type="button"
+        onClick={() => {
+          setOpenDoor(null);
+          setHelpOpen((v) => !v);
+        }}
+        aria-expanded={helpOpen}
+        aria-label="Comment explorer le calendrier"
+        className="absolute z-40 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+        style={zone(MENU_BOX)}
+      />
+      <span className="absolute bottom-4 left-1/2 -translate-x-1/2 font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
+        {ouverte ? ouverte.mois : 'Ouvrir une porte'}
+      </span>
+
+      <AnimatePresence>
+        {ouverte && (
+          <Halo
+            key={ouverte.n}
+            originPct={[((ouverte.b[0] + ouverte.b[2]) / 2 / IMG_W) * 100, ((ouverte.b[1] + ouverte.b[3]) / 2 / IMG_H) * 100]}
+            onClose={() => setOpenDoor(null)}
+            label={`${ouverte.mois} : ${ouverte.theme}`}
+          >
+            <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
+              {ouverte.mois} · {ouverte.mouvement}
+            </p>
+            <h3 className="mt-4 font-serif font-medium leading-[1.15] text-espresso text-[clamp(1.4rem,2.6vw,2.1rem)]">
+              {ouverte.theme}
+            </h3>
+            <p className="mt-4 font-sans text-[0.92rem] leading-[1.8] text-ink">{ouverte.apercu}</p>
+            <a
+              href="/liste-attente?programme=foyer"
+              className="mt-6 inline-block border-b border-brassInk/60 pb-1 font-sans text-[0.7rem] uppercase tracking-[0.22em] text-brassInk transition-colors hover:text-espresso"
             >
-              <div
-                className="relative rounded-[30px] px-8 py-10 text-center md:px-12"
-                style={{
-                  background: 'radial-gradient(circle at 50% 24%, #fffdf7 0%, #fbf2dd 58%, #f4e3b8 100%)',
-                  boxShadow:
-                    '0 0 60px 22px rgba(220,184,116,0.5), 0 0 140px 60px rgba(220,184,116,0.28), 0 18px 50px rgba(22,16,10,0.25)',
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpenDoor(null)}
-                  aria-label="Refermer la porte"
-                  className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full text-espresso/70 transition-colors hover:bg-espresso/10 hover:text-espresso"
-                >
-                  <X size={17} />
-                </button>
-                <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
-                  {ouverte.mois} · {ouverte.mouvement}
-                </p>
-                <h3 className="mt-4 font-serif font-medium leading-[1.15] text-espresso text-[clamp(1.4rem,2.6vw,2.1rem)]">
-                  {ouverte.theme}
-                </h3>
-                <p className="mt-4 font-sans text-[0.92rem] leading-[1.8] text-ink">{ouverte.apercu}</p>
-                <a
-                  href="/liste-attente?programme=foyer"
-                  className="mt-6 inline-block border-b border-brassInk/60 pb-1 font-sans text-[0.7rem] uppercase tracking-[0.22em] text-brassInk transition-colors hover:text-espresso"
-                >
-                  Entrer dans le Foyer
-                </a>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+              Entrer dans le Foyer
+            </a>
+          </Halo>
+        )}
+        {helpOpen && (
+          <Halo
+            key="aide"
+            originPct={[((MENU_BOX[0] + MENU_BOX[2]) / 2 / IMG_W) * 100, ((MENU_BOX[1] + MENU_BOX[3]) / 2 / IMG_H) * 100]}
+            onClose={() => setHelpOpen(false)}
+            label="Comment explorer le calendrier"
+          >
+            <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">Une année à découvrir</p>
+            <h3 className="mt-4 font-serif font-medium leading-[1.15] text-espresso text-[clamp(1.3rem,2.2vw,1.8rem)]">
+              Douze portes, un même feu
+            </h3>
+            <p className="mt-4 font-sans text-[0.92rem] leading-[1.8] text-ink">
+              Chaque porte porte un mois de l’année. Ouvrez celle qui vous appelle : elle révèle le
+              mouvement de la saison, le thème du mois et un aperçu de ce qui vous y attend.
+            </p>
+          </Halo>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
 
-/* ── Séparateur doré du moodboard : filet, losange, deux brins végétaux ── */
-const Ornament: React.FC<{ on?: 'dark' | 'light'; motto?: boolean; className?: string }> = ({
-  on = 'light',
-  motto = false,
-  className = '',
-}) => {
-  const stroke = on === 'dark' ? '#bb9a5e' : '#7d6330';
-  return (
-    <div className={`flex flex-col items-center gap-4 ${className}`} aria-hidden>
-      <svg width="220" height="18" viewBox="0 0 220 18" fill="none">
-        <line x1="0" y1="9" x2="88" y2="9" stroke={stroke} strokeWidth="1" opacity="0.55" />
-        <line x1="132" y1="9" x2="220" y2="9" stroke={stroke} strokeWidth="1" opacity="0.55" />
-        <rect x="105.5" y="4.5" width="9" height="9" transform="rotate(45 110 9)" stroke={stroke} strokeWidth="1.1" />
-        {/* brins végétaux */}
-        <path d="M96 9c-3-4-7-5-10-4 2 3 6 5 10 4Z" fill={stroke} opacity="0.7" />
-        <path d="M124 9c3-4 7-5 10-4-2 3-6 5-10 4Z" fill={stroke} opacity="0.7" />
-      </svg>
-      {motto && (
-        <p
-          className={`font-sans text-[0.62rem] uppercase tracking-[0.3em] ${
-            on === 'dark' ? 'text-brass' : 'text-brassInk'
-          }`}
-        >
-          Observer · Ressentir · Accueillir
-        </p>
-      )}
-    </div>
-  );
-};
-
-/* ── Eyebrow : filet brass court EMPILÉ au-dessus du label, jamais inline ── */
-const Eyebrow: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light' }> = ({ children, on = 'light' }) => (
-  <div className="flex flex-col gap-3">
-    <span className="block h-px w-10 bg-brass" aria-hidden />
-    <p className={`font-sans text-[0.62rem] uppercase tracking-[0.28em] ${on === 'dark' ? 'text-brass' : 'text-brassInk'}`}>
-      {children}
-    </p>
-  </div>
-);
-
-const SectionTitle: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light'; className?: string }> = ({
-  children,
-  on = 'light',
-  className = '',
-}) => (
-  <h2
-    className={`font-serif font-medium uppercase leading-[1.08] text-[clamp(1.9rem,3.4vw,2.7rem)] tracking-[0.04em] ${
-      on === 'dark' ? 'text-ctext' : 'text-ink'
-    } ${className}`}
-  >
-    {children}
-  </h2>
-);
-
-const Dot: React.FC<{ on?: 'dark' | 'light' }> = ({ on = 'light' }) => (
-  <span className={`mt-2.5 w-1.5 h-1.5 rounded-full shrink-0 ${on === 'dark' ? 'bg-brass' : 'bg-brassInk'}`} />
-);
-
-const roman = ['I', 'II', 'III', 'IV'];
-/* une aura par ouverture : regarder=bleu, saison=sauge, pièce=prune, découverte=ocre */
-const WEEK_TONES: AuraTone[] = ['bleu', 'sauge', 'prune', 'ocre'];
-const ROW_TONES: AuraTone[] = ['ocre', 'sauge', 'prune', 'bleu', 'terre'];
-
-const SEMAINE_IMAGES = [
-  '/foyer/sem1-regarder.webp',
-  '/foyer/sem2-saison.webp',
-  '/foyer/sem3-piece.webp',
-  '/foyer/sem4-decouverte.webp',
+/* ═══════════ La fleur du Foyer : racines Ayurveda, huit pétales ═══════════ */
+const FLEUR_W = 1536;
+const FLEUR_H = 1024;
+interface Petale {
+  n: string;
+  b: [number, number, number, number];
+}
+const PETALES: Petale[] = [
+  { n: 'Plantes médicinales', b: [608, 30, 900, 330] },
+  { n: 'Aromathérapie', b: [860, 100, 1160, 380] },
+  { n: 'Ingrédients', b: [900, 330, 1270, 550] },
+  { n: 'Respiration', b: [880, 470, 1170, 740] },
+  { n: 'Méditation', b: [740, 560, 990, 860] },
+  { n: 'Histoires', b: [440, 480, 750, 800] },
+  { n: 'Œuvres', b: [290, 350, 650, 580] },
+  { n: 'Sages', b: [380, 130, 690, 400] },
+  { n: 'Le thème du mois', b: [615, 315, 920, 595] },
 ];
+const pzone = (b: [number, number, number, number]) => ({
+  left: `${(b[0] / FLEUR_W) * 100}%`,
+  top: `${(b[1] / FLEUR_H) * 100}%`,
+  width: `${((b[2] - b[0]) / FLEUR_W) * 100}%`,
+  height: `${((b[3] - b[1]) / FLEUR_H) * 100}%`,
+});
 
-/* ── Seam chaud : la jointure sombre-crème reste dans la gamme du feu
-   (voile terracotta au milieu) au lieu de passer par un gris sale ── */
-const WarmSeam: React.FC<{ from: string; height?: number }> = ({ from, height = 130 }) => (
-  <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-0" style={{ height }}>
-    <div
-      className="absolute inset-0"
-      style={{ background: `linear-gradient(180deg, ${from} 0%, transparent 100%)` }}
-    />
-    <div
-      className="absolute inset-0"
-      style={{
-        background:
-          'linear-gradient(180deg, rgba(176,106,63,0) 0%, rgba(176,106,63,0.14) 42%, rgba(199,154,82,0.06) 68%, rgba(176,106,63,0) 100%)',
-      }}
-    />
-  </div>
-);
+const FleurDuFoyer: React.FC = () => {
+  const [hover, setHover] = useState<string | null>(null);
+  return (
+    <div className="relative mx-auto w-full max-w-4xl">
+      <img
+        src="/foyer/fleur-foyer.webp"
+        alt="La fleur du Foyer : l'Ayurveda en racines, huit pétales autour du thème du mois"
+        loading="lazy"
+        className="block w-full"
+      />
+      {PETALES.map((p) => (
+        <div
+          key={p.n}
+          aria-hidden
+          className="absolute z-10"
+          style={pzone(p.b)}
+          onMouseEnter={() => setHover(p.n)}
+          onMouseLeave={() => setHover(null)}
+        >
+          <motion.span
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                'radial-gradient(50% 50% at 50% 50%, rgba(220,184,116,0.6), rgba(199,132,44,0.22) 55%, transparent 78%)',
+              filter: 'blur(14px)',
+              transform: 'scale(1.25)',
+            }}
+            animate={{ opacity: hover === p.n ? 1 : 0 }}
+            transition={{ duration: 0.45, ease }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
 
+/* ═══════════ FAQ ═══════════ */
 const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; onClick: () => void }> = ({
   item,
   i,
@@ -400,9 +454,13 @@ const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; o
           transition={{ duration: 0.5, ease }}
           className="overflow-hidden"
         >
-          <p className="pb-7 pl-10 pr-10 font-sans text-[0.92rem] leading-[1.85] text-inkSoft max-w-[58ch]">
-            {item.a}
-          </p>
+          <div className="pb-7 pl-10 pr-10 max-w-[62ch] space-y-4">
+            {item.a.map((p) => (
+              <p key={p.slice(0, 32)} className="font-sans text-[0.92rem] leading-[1.85] text-inkSoft">
+                {p}
+              </p>
+            ))}
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
@@ -411,8 +469,6 @@ const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; o
 
 export default function BodySections() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const faqMid = Math.ceil(FAQ.length / 2);
-  const faqColumns = [FAQ.slice(0, faqMid), FAQ.slice(faqMid)];
 
   return (
     <>
@@ -420,7 +476,8 @@ export default function BodySections() {
         @keyframes auraBreathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.06);opacity:1}}
         @media (prefers-reduced-motion: reduce){[style*="auraBreathe"]{animation:none!important}}
       `}</style>
-      {/* ═══════════════ SECTION 4 · Chaque semaine, une nouvelle ouverture ═══════════════ */}
+
+      {/* ═══════ SECTION 4 · Les douze portes (juste après le feu) ═══════ */}
       <section className="relative overflow-hidden bg-cream3 py-24 md:py-36">
         <div
           aria-hidden
@@ -428,95 +485,40 @@ export default function BodySections() {
           style={{ background: 'linear-gradient(180deg, #f6f3ee 0%, transparent 100%)' }}
         />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <div className="grid items-start gap-x-12 gap-y-6 lg:grid-cols-12">
+          <div className="grid items-start gap-x-12 gap-y-8 lg:grid-cols-12">
             <Reveal className="lg:col-span-6">
               <Eyebrow>{SECTION4.eyebrow}</Eyebrow>
               <SectionTitle className="mt-5">{SECTION4.title}</SectionTitle>
             </Reveal>
             <Reveal delay={0.08} className="lg:col-span-5 lg:col-start-8">
-              <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[42ch]">{SECTION4.intro}</p>
+              <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[44ch]">
+                {SECTION4.paragraphs[0]}
+              </p>
             </Reveal>
           </div>
         </div>
 
-        {/* le calendrier, pleine largeur, hors du conteneur */}
         <Reveal className="mt-16">
           <CalendrierAnnee />
         </Reveal>
 
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-
-          {/* les 4 semaines du mois, reliées par un rail brass */}
-          <div className="relative mt-20">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -top-8 left-[12%] right-[12%] hidden h-px xl:block"
-              style={{ background: 'linear-gradient(90deg, rgba(187,154,94,0) 0%, rgba(187,154,94,0.55) 18%, rgba(187,154,94,0.55) 82%, rgba(187,154,94,0) 100%)' }}
-            />
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-              {SECTION4.openings.map((o, i) => (
-                <Reveal key={o.title} delay={i * 0.07}>
-                  <div className="relative h-full">
-                    <span
-                      aria-hidden
-                      className="absolute -top-[37px] left-1/2 hidden h-2 w-2 -translate-x-1/2 rounded-full ring-4 ring-cream3 xl:block"
-                      style={{ background: `rgb(${AURAS[WEEK_TONES[i]]})` }}
-                    />
-                    <div
-                      className="h-full overflow-hidden rounded-[30px] border"
-                      style={{
-                        borderColor: `rgba(${AURAS[WEEK_TONES[i]]},0.45)`,
-                        background: `linear-gradient(180deg, rgba(${AURAS[WEEK_TONES[i]]},0.16) 0%, #faf7f0 62%)`,
-                      }}
-                    >
-                      <div className="relative h-40 overflow-hidden">
-                        <img
-                          src={SEMAINE_IMAGES[i]}
-                          alt=""
-                          aria-hidden
-                          loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-105"
-                        />
-                        <span
-                          aria-hidden
-                          className="absolute inset-0"
-                          style={{ background: 'linear-gradient(to top, rgba(250,247,240,0.25) 0%, transparent 40%)' }}
-                        />
-                      </div>
-                      <div className="p-7">
-                        {/* cercle-aura du moodboard : jamais vide */}
-                        <span className="relative flex h-14 w-14 items-center justify-center">
-                          <span
-                            aria-hidden
-                            className="absolute inset-0 rounded-full"
-                            style={{
-                              background: `radial-gradient(circle at 42% 38%, rgba(${AURAS[WEEK_TONES[i]]},0.55), rgba(${AURAS[WEEK_TONES[i]]},0.2) 55%, transparent 78%)`,
-                              filter: 'blur(4px)',
-                            }}
-                          />
-                          <span className="relative font-serif text-3xl leading-none" style={{ color: TONE_INK[WEEK_TONES[i]] }}>
-                            {roman[i]}
-                          </span>
-                        </span>
-                        <h3 className="mt-4 font-serif text-xl text-ink">{o.title}</h3>
-                        <p className="mt-3 font-sans text-[0.9rem] leading-[1.85] text-inkSoft">{o.body}</p>
-                      </div>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-
-          <Reveal className="mt-16">
-            <p className="font-serif text-ink text-[clamp(1.2rem,2vw,1.6rem)] leading-snug max-w-[52ch]">
+          <div className="mt-16 grid gap-x-12 gap-y-6 lg:grid-cols-2">
+            {SECTION4.paragraphs.slice(1).map((p) => (
+              <Reveal key={p.slice(0, 24)}>
+                <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[54ch]">{p}</p>
+              </Reveal>
+            ))}
+          </div>
+          <Reveal className="mt-14">
+            <p className="font-serif font-medium text-brassInk text-[clamp(1.25rem,2.1vw,1.65rem)] leading-snug">
               {SECTION4.closing}
             </p>
           </Reveal>
-          </div>
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 2 · L'Histoire du feu (Varanasi) ═══════════════ */}
+      {/* ═══════ SECTION 2 · L'Histoire du feu (salle d'ambre) ═══════ */}
       <section
         className="relative overflow-hidden py-24 md:py-36"
         style={{ background: 'linear-gradient(180deg, #ede5d7 0%, #f5e8cf 16%, #f1ddb2 58%, #f3e3c2 100%)' }}
@@ -537,7 +539,7 @@ export default function BodySections() {
                 {SECTION2.lead}
               </p>
               {SECTION2.paragraphs.map((p) => (
-                <p key={p} className="mt-6 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[52ch]">
+                <p key={p.slice(0, 24)} className="mt-6 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[52ch]">
                   {p}
                 </p>
               ))}
@@ -549,7 +551,7 @@ export default function BodySections() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 3 · Le feu reste allumé ═══════════════ */}
+      {/* ═══════ SECTION 3 · Le rythme (salle sauge) ═══════ */}
       <section
         className="relative overflow-hidden py-24 md:py-36"
         style={{ background: 'linear-gradient(180deg, #f3e3c2 0%, #edf0df 22%, #e8ecd7 100%)' }}
@@ -569,7 +571,7 @@ export default function BodySections() {
             <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
               {SECTION3.paragraphs.map((p, i) => (
                 <p
-                  key={p}
+                  key={p.slice(0, 24)}
                   className={`font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[54ch] ${i > 0 ? 'mt-6' : ''}`}
                 >
                   {p}
@@ -586,7 +588,7 @@ export default function BodySections() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 5 · Ce que Le Foyer rend possible ═══════════════ */}
+      {/* ═══════ SECTION 5 · Une place où les connaissances se rencontrent ═══════ */}
       <section className="relative overflow-hidden bg-cream py-24 md:py-36">
         <div
           aria-hidden
@@ -596,11 +598,28 @@ export default function BodySections() {
         <Aura tone="beige" size={520} className="-right-40 -top-24" />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament className="mb-16" />
-          <Reveal className="max-w-[34rem]">
-            <Eyebrow>{SECTION5.eyebrow}</Eyebrow>
-            <SectionTitle className="mt-5">{SECTION5.title}</SectionTitle>
+          <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
+            <Reveal className="lg:col-span-5">
+              <Eyebrow>{SECTION5.eyebrow}</Eyebrow>
+              <SectionTitle className="mt-5">{SECTION5.title}</SectionTitle>
+            </Reveal>
+            <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
+              {SECTION5.intro.map((p, i) => (
+                <p
+                  key={p.slice(0, 24)}
+                  className={`font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[54ch] ${i > 0 ? 'mt-6' : ''}`}
+                >
+                  {p}
+                </p>
+              ))}
+            </Reveal>
+          </div>
+
+          {/* la fleur : l'Ayurveda en racines, huit pétales qui s'illuminent */}
+          <Reveal className="mt-16">
+            <FleurDuFoyer />
           </Reveal>
-          {/* liste tabulaire éditoriale : titre serif à gauche, corps à droite, une rangée par promesse */}
+
           <div className="mt-16 border-t border-brass/25">
             {SECTION5.items.map((it, i) => (
               <Reveal key={it.title}>
@@ -627,7 +646,7 @@ export default function BodySections() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 6 · Le premier samedi du mois (photo pleine, parallaxe) ═══════════════ */}
+      {/* ═══════ SECTION 6 · Les méditations (photo pleine, parallaxe) ═══════ */}
       <section className="relative overflow-hidden bg-espressoDeep py-28 md:py-44">
         <div aria-hidden className="absolute inset-0">
           <Parallax speed={0.16} className="h-full" innerClassName="h-full">
@@ -639,7 +658,6 @@ export default function BodySections() {
               style={{ objectPosition: '68% center' }}
             />
           </Parallax>
-          {/* voile uniforme pour la lisibilité, aucun dégradé */}
           <span className="absolute inset-0" style={{ background: 'rgba(22,16,10,0.58)' }} />
         </div>
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
@@ -650,42 +668,33 @@ export default function BodySections() {
               <SectionTitle on="dark" className="mt-5">
                 {SECTION6.title}
               </SectionTitle>
-              <p className="mt-6 font-serif text-brass text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[30ch]">
-                {SECTION6.subtitle}
-              </p>
             </Reveal>
             <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
-              {SECTION6.paragraphs.map((p) => (
-                <p key={p} className="font-sans text-[0.95rem] leading-[1.85] text-ctextSoft max-w-[52ch]">
+              {SECTION6.paragraphs.map((p, i) => (
+                <p
+                  key={p.slice(0, 24)}
+                  className={`font-sans text-[0.95rem] leading-[1.85] text-ctextSoft max-w-[52ch] ${i > 0 ? 'mt-6' : ''}`}
+                >
                   {p}
                 </p>
               ))}
               <p className="mt-8 font-serif font-medium text-brass text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug max-w-[40ch]">
                 {SECTION6.emphasis}
               </p>
-              {SECTION6.closingParagraphs.map((p) => (
-                <p key={p} className="mt-6 font-sans text-[0.95rem] leading-[1.85] text-ctextSoft max-w-[52ch]">
-                  {p}
-                </p>
-              ))}
             </Reveal>
           </div>
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 7 · Ce qui relie les étoiles (Krystine) ═══════════════ */}
+      {/* ═══════ SECTION 7 · La signature du Foyer ═══════ */}
       <section className="relative bg-cream2 py-24 md:py-36">
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="grid lg:grid-cols-12 gap-x-14 gap-y-14 items-start">
             <Reveal className="lg:col-span-7">
               <Eyebrow>{SECTION7.eyebrow}</Eyebrow>
               <SectionTitle className="mt-5">{SECTION7.title}</SectionTitle>
-              <p className="mt-8 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[50ch]">{SECTION7.lead}</p>
-              <p className="mt-6 font-serif font-medium text-brassInk text-[clamp(1.25rem,2vw,1.6rem)] leading-snug max-w-[46ch]">
-                {SECTION7.emphasis}
-              </p>
               {SECTION7.paragraphs.map((p) => (
-                <p key={p} className="mt-6 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[52ch]">
+                <p key={p.slice(0, 24)} className="mt-6 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[52ch]">
                   {p}
                 </p>
               ))}
@@ -699,30 +708,20 @@ export default function BodySections() {
                     >
                       {s.value}
                     </span>
-                    <span className="font-sans text-[0.8rem] leading-snug text-inkSoft max-w-[26ch]">
-                      {s.label}
-                    </span>
+                    <span className="font-sans text-[0.8rem] leading-snug text-inkSoft max-w-[26ch]">{s.label}</span>
                   </div>
                 ))}
               </div>
 
-              <h3 className="mt-10 font-serif text-xl md:text-2xl text-ink max-w-[36ch]">{SECTION7.subhead}</h3>
-              <ul className="mt-6 space-y-4">
-                {SECTION7.questions.map((q) => (
-                  <li key={q} className="flex items-start gap-3 font-sans text-[0.92rem] leading-[1.85] text-inkSoft">
-                    <Dot />
-                    {q}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-8 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[52ch]">{SECTION7.paragraph2}</p>
-              <p className="mt-4 font-serif font-medium text-brassInk text-[clamp(1.25rem,2vw,1.6rem)] leading-snug max-w-[42ch]">
+              <p className="mt-10 font-serif font-medium text-ink text-[clamp(1.25rem,2vw,1.6rem)] leading-snug">
+                {SECTION7.emphasis}
+              </p>
+              <p className="mt-3 font-serif font-medium text-brassInk text-[clamp(1.25rem,2vw,1.6rem)] leading-snug max-w-[42ch]">
                 {SECTION7.closing}
               </p>
             </Reveal>
 
             <Reveal delay={0.1} className="relative lg:col-span-5 lg:sticky lg:top-24">
-              {/* terre ancrée : stabilité, enracinement */}
               <Aura tone="terre" size={420} className="-right-24 top-6 opacity-85" />
               <span className="block h-px w-10 bg-brass mb-5" aria-hidden />
               <div className="relative ring-1 ring-brass/40 rounded-[30px] shadow-depth overflow-hidden bg-card p-2.5">
@@ -744,130 +743,89 @@ export default function BodySections() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 8 · Ce que comprend l'année ═══════════════ */}
+      {/* ═══════ SECTION 8 · Votre attention (s'anime au défilement) ═══════ */}
       <section
         className="relative overflow-hidden py-24 md:py-36"
-        style={{ background: 'linear-gradient(180deg, #f6f3ee 0%, #e9eef1 24%, #e4ebef 100%)' }}
+        style={{ background: 'linear-gradient(180deg, #f1ebe0 0%, #e9eef1 26%, #e4ebef 100%)' }}
       >
         <Aura tone="bleu" size={520} className="-left-32 bottom-8" />
-        <Aura tone="beige" size={380} className="-right-24 top-10 opacity-70" />
+        <Aura tone="prune" size={380} className="-right-24 top-16 opacity-70" />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament className="mb-16" />
-          <Reveal className="max-w-[34rem]">
+          <Reveal className="max-w-[44rem]">
             <Eyebrow>{SECTION8.eyebrow}</Eyebrow>
             <SectionTitle className="mt-5">{SECTION8.title}</SectionTitle>
+            <p className="mt-6 font-serif text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug">
+              {SECTION8.subtitle}
+            </p>
           </Reveal>
 
-          <div className="mt-16 grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-            <Reveal className="lg:col-span-7">
-              <div className="h-full rounded-[30px] border border-brass/20 bg-card p-8 md:p-10">
-                <h3 className="font-serif text-xl md:text-2xl text-ink">{SECTION8.season.title}</h3>
-                <div className="mt-6 grid sm:grid-cols-2 gap-8">
-                  <ul className="space-y-3">
-                    {SECTION8.season.openings.map((li) => (
-                      <li key={li} className="flex items-start gap-3 font-sans text-[0.9rem] leading-[1.85] text-inkSoft">
-                        <Dot />
-                        {li}
-                      </li>
-                    ))}
-                  </ul>
-                  <div>
-                    <p className="font-sans text-[0.68rem] uppercase tracking-[0.22em] mb-3" style={{ color: TONE_INK.bleu }}>
-                      {SECTION8.season.spaceTitle}
-                    </p>
-                    <ul className="space-y-3">
-                      {SECTION8.season.space.map((li) => (
-                        <li key={li} className="flex items-start gap-3 font-sans text-[0.9rem] leading-[1.85] text-inkSoft">
-                          <Dot />
-                          {li}
-                        </li>
-                      ))}
-                    </ul>
+          {/* les trois situations apparaissent l'une après l'autre */}
+          <div className="mt-16 grid gap-6 md:grid-cols-3">
+            {SECTION8.situations.map((sit, i) => {
+              const tone: AuraTone = (['terre', 'bleu', 'prune'] as AuraTone[])[i];
+              return (
+                <Reveal key={sit.slice(0, 20)} delay={i * 0.18}>
+                  <div
+                    className="relative h-full overflow-hidden rounded-[30px] border p-8"
+                    style={{
+                      borderColor: `rgba(${AURAS[tone]},0.4)`,
+                      background: `linear-gradient(165deg, rgba(${AURAS[tone]},0.14), #faf7f0 62%)`,
+                    }}
+                  >
+                    <span
+                      className="font-sans text-[0.68rem] tracking-[0.2em] tabular-nums"
+                      style={{ color: TONE_INK[tone] }}
+                    >
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <p className="mt-4 font-sans text-[0.92rem] leading-[1.85] text-ink">{sit}</p>
                   </div>
-                </div>
-              </div>
-            </Reveal>
-
-            <Reveal delay={0.08} className="lg:col-span-5 flex flex-col gap-6">
-              <div className="rounded-[30px] border border-brass/20 bg-card p-8">
-                <h3 className="font-serif text-lg md:text-xl text-ink">{SECTION8.summer.title}</h3>
-                <p className="mt-4 font-sans text-[0.9rem] leading-[1.85] text-inkSoft">{SECTION8.summer.text}</p>
-              </div>
-              <div className="rounded-[30px] border border-brass/20 bg-card p-8">
-                <h3 className="font-serif text-lg md:text-xl text-ink">{SECTION8.yearRound.title}</h3>
-                <p className="mt-4 font-sans text-[0.9rem] leading-[1.85] text-inkSoft">{SECTION8.yearRound.text}</p>
-              </div>
-            </Reveal>
+                </Reveal>
+              );
+            })}
           </div>
+
+          <Reveal delay={0.2} className="mt-14 max-w-[54ch]">
+            <p className="font-sans text-[0.68rem] uppercase tracking-[0.22em] text-brassInk">
+              {SECTION8.consequenceTitle}
+            </p>
+            {SECTION8.consequence.map((p) => (
+              <p key={p.slice(0, 24)} className="mt-5 font-sans text-[0.95rem] leading-[1.85] text-inkSoft">
+                {p}
+              </p>
+            ))}
+          </Reveal>
+
+          <Reveal className="mt-16 max-w-[54ch]">
+            <h3 className="font-serif font-medium text-ink text-[clamp(1.4rem,2.4vw,1.9rem)] leading-snug">
+              {SECTION8.protectionTitle}
+            </h3>
+            {SECTION8.protection.map((p) => (
+              <p key={p.slice(0, 24)} className="mt-5 font-sans text-[0.95rem] leading-[1.85] text-inkSoft">
+                {p}
+              </p>
+            ))}
+          </Reveal>
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 9 · Foyer vs Expérience Origine ═══════════════ */}
-      <section className="relative overflow-hidden bg-cream3 py-24 md:py-36">
+      {/* ═══════ SECTION 10 · FAQ ═══════ */}
+      <section className="relative overflow-hidden bg-cream2 py-24 md:py-36">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-28"
+          className="pointer-events-none absolute inset-x-0 top-0 h-24"
           style={{ background: 'linear-gradient(180deg, #e4ebef 0%, transparent 100%)' }}
         />
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <Ornament className="mb-16" />
-          <Reveal className="max-w-[42ch]">
-            <Eyebrow>{SECTION9.eyebrow}</Eyebrow>
-            <SectionTitle className="mt-5">{SECTION9.title}</SectionTitle>
-          </Reveal>
-
-          <div className="mt-14 grid md:grid-cols-2 gap-6">
-            <Reveal>
-              <div
-                className="relative h-full overflow-hidden rounded-[30px] border p-8 md:p-10"
-                style={{ borderColor: 'rgba(199,132,44,0.35)', background: 'linear-gradient(160deg, rgba(199,132,44,0.14), #faf7f0 58%)' }}
-              >
-                <Aura tone="ocre" size={300} className="-right-20 -top-20" />
-                <p className="relative font-sans text-[0.62rem] uppercase tracking-[0.28em] text-brassInk mb-4">Le Foyer</p>
-                <h3 className="relative font-serif text-2xl text-ink">{SECTION9.foyer.lead}</h3>
-                <p className="relative mt-4 font-sans text-[0.92rem] leading-[1.85] text-inkSoft">{SECTION9.foyer.text}</p>
-              </div>
-            </Reveal>
-            <Reveal delay={0.08}>
-              <div
-                className="relative h-full overflow-hidden rounded-[30px] border p-8 md:p-10"
-                style={{ borderColor: 'rgba(129,143,96,0.5)', background: 'linear-gradient(160deg, rgba(129,143,96,0.16), #f6f3ee 58%)' }}
-              >
-                <Aura tone="sauge" size={300} className="-right-20 -top-20" />
-                <p className="relative font-sans text-[0.62rem] uppercase tracking-[0.28em] text-forestDeep mb-4">
-                  L'Expérience Origine
-                </p>
-                <h3 className="relative font-serif text-2xl text-ink">{SECTION9.experience.lead}</h3>
-                <p className="relative mt-4 font-sans text-[0.92rem] leading-[1.85] text-inkSoft">{SECTION9.experience.text}</p>
-              </div>
-            </Reveal>
-          </div>
-
-          <Reveal delay={0.12} className="mt-10 max-w-[54ch]">
-            <p className="font-serif font-medium text-ink text-[clamp(1.15rem,1.8vw,1.4rem)] leading-snug">
-              {SECTION9.bridgeLead}
-            </p>
-            <p className="mt-4 font-sans text-[0.92rem] leading-[1.85] text-inkSoft">{SECTION9.bridgeBody}</p>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ═══════════════ FAQ ═══════════════ */}
-      <section className="bg-cream2 py-24 md:py-36">
-        <div className="mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Reveal className="max-w-[36ch] mb-14">
             <Eyebrow>Avant de dire oui</Eyebrow>
             <SectionTitle className="mt-5">Questions fréquentes</SectionTitle>
           </Reveal>
-          <div className="grid lg:grid-cols-2 gap-x-14">
-            {faqColumns.map((col, c) => (
-              <Reveal key={c} delay={c * 0.08}>
-                {col.map((item, j) => {
-                  const i = c * faqMid + j;
-                  return (
-                    <FaqRow key={item.q} item={item} i={i} open={openFaq === i} onClick={() => setOpenFaq(openFaq === i ? null : i)} />
-                  );
-                })}
+          <div className="mx-auto max-w-4xl">
+            {FAQ.map((item, i) => (
+              <Reveal key={item.q}>
+                <FaqRow item={item} i={i} open={openFaq === i} onClick={() => setOpenFaq(openFaq === i ? null : i)} />
               </Reveal>
             ))}
           </div>
