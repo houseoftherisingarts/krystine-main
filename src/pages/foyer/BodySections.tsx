@@ -845,7 +845,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       </section>
 
       {/* ═══════ SECTION 8 · Votre attention (s'anime au défilement) ═══════ */}
-      <section className="relative overflow-hidden py-24 md:py-36">
+      <section className={`relative overflow-hidden py-24 md:py-36 ${overlap ? 'z-50' : ''}`}>
         <div aria-hidden className="absolute inset-0">
           <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
           <span
