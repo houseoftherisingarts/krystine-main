@@ -602,23 +602,42 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </div>
       </section>
 
-      {/* ═══════ SECTION 3 · Le rythme (salle sauge) ═══════ */}
-      <section
-        className="relative overflow-hidden py-24 md:py-36"
-        style={{ background: 'linear-gradient(180deg, #f3e3c2 0%, #edf0df 22%, #e8ecd7 100%)' }}
-      >
-        <Aura tone="sauge" size={480} className="hidden md:block -right-28 bottom-6" />
-        <Aura tone="beige" size={360} className="hidden md:block -left-24 top-24 opacity-80" />
+      {/* ═══════ SECTION 3 · Le rythme : l'étagère des rituels de la semaine,
+          même céramique que le calendrier ═══════ */}
+      <section className="relative overflow-hidden py-24 md:py-36">
+        <div aria-hidden className="absolute inset-0">
+          <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
+          <span
+            className="absolute inset-0"
+            style={{ background: 'linear-gradient(180deg, rgba(243,227,194,0.85) 0%, rgba(237,240,223,0.6) 40%, rgba(232,236,215,0.85) 100%)' }}
+          />
+        </div>
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament className="mb-16" />
-          <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
-            <Reveal className="lg:col-span-5">
-              <Eyebrow>{SECTION3.eyebrow}</Eyebrow>
-              <SectionTitle className="mt-5">{SECTION3.title}</SectionTitle>
-              <p className="mt-6 font-serif text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[30ch]">
-                {SECTION3.subtitle}
-              </p>
-            </Reveal>
+          <div className="grid items-start gap-x-14 gap-y-12 lg:grid-cols-12">
+            <div className="lg:col-span-5">
+              <Reveal>
+                <Eyebrow>{SECTION3.eyebrow}</Eyebrow>
+                <SectionTitle className="mt-5">{SECTION3.title}</SectionTitle>
+                <p className="mt-6 font-serif text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[30ch]">
+                  {SECTION3.subtitle}
+                </p>
+              </Reveal>
+              {/* ce que la semaine dépose : la tasse, le livre, l'huile, la plante, la chandelle */}
+              <Reveal delay={0.12} className="mt-10 lg:sticky lg:top-24">
+                <div className="relative max-w-[380px] overflow-hidden rounded-[30px] bg-card p-2.5 ring-1 ring-brass/40 shadow-depth">
+                  <img
+                    src="/foyer/etagere-rituels.webp"
+                    alt="L'étagère des rituels : une tasse, un livre, une huile, une plante et une chandelle dans des niches de céramique"
+                    loading="lazy"
+                    className="w-full rounded-[22px]"
+                  />
+                </div>
+                <p className="mt-4 font-sans text-[0.8rem] tracking-[0.06em] text-inkSoft">
+                  Chaque semaine dépose quelque chose de précis
+                </p>
+              </Reveal>
+            </div>
             <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
               {SECTION3.paragraphs.map((p, i) => (
                 <p
