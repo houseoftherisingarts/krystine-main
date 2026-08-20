@@ -842,26 +842,38 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             </p>
           </Reveal>
 
-          {/* les trois situations apparaissent l'une après l'autre */}
+          {/* les trois situations : pigments du moodboard sur papier fait main */}
           <div className="mt-16 grid gap-6 md:grid-cols-3">
             {SECTION8.situations.map((sit, i) => {
               const tone: AuraTone = (['terre', 'bleu', 'prune'] as AuraTone[])[i];
+              const pigment = ['pigment-terre', 'pigment-bleu', 'pigment-prune'][i];
               return (
                 <Reveal key={sit.slice(0, 20)} delay={i * 0.18}>
                   <div
-                    className="relative h-full overflow-hidden rounded-[30px] border p-8"
-                    style={{
-                      borderColor: `rgba(${AURAS[tone]},0.4)`,
-                      background: `linear-gradient(165deg, rgba(${AURAS[tone]},0.14), #faf7f0 62%)`,
-                    }}
+                    className="relative h-full overflow-hidden rounded-[30px] p-8 shadow-depth ring-1"
+                    style={{ ringColor: `rgba(${AURAS[tone]},0.35)` } as React.CSSProperties}
                   >
+                    <img
+                      src={`/foyer/${pigment}.webp`}
+                      alt=""
+                      aria-hidden
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
                     <span
-                      className="font-sans text-[0.68rem] tracking-[0.2em] tabular-nums"
-                      style={{ color: TONE_INK[tone] }}
-                    >
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <p className="mt-4 font-sans text-[0.92rem] leading-[1.85] text-ink">{sit}</p>
+                      aria-hidden
+                      className="absolute inset-0"
+                      style={{ background: 'linear-gradient(180deg, rgba(250,247,240,0.15) 0%, rgba(250,247,240,0.55) 78%)' }}
+                    />
+                    <div className="relative">
+                      <span
+                        className="font-sans text-[0.68rem] tracking-[0.2em] tabular-nums"
+                        style={{ color: TONE_INK[tone] }}
+                      >
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <p className="mt-4 font-sans text-[0.92rem] leading-[1.85] text-ink">{sit}</p>
+                    </div>
                   </div>
                 </Reveal>
               );
