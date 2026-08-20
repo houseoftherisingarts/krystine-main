@@ -722,17 +722,31 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </div>
       </section>
 
-      {/* ═══════ SECTION 6 · Les méditations (photo pleine, parallaxe) ═══════ */}
+      {/* ═══════ SECTION 6 · Les méditations : la chandelle VIT (vidéo), parallaxe ═══════ */}
       <section className="relative overflow-hidden bg-espressoDeep py-28 md:py-44">
         <div aria-hidden className="absolute inset-0">
           <Parallax speed={0.16} className="h-full" innerClassName="h-full">
-            <img
-              src="/foyer/meditation.webp"
-              alt=""
-              loading="lazy"
-              className="h-full w-full scale-125 object-cover"
-              style={{ objectPosition: '68% center' }}
-            />
+            {reduceAll ? (
+              <img
+                src="/foyer/meditation.webp"
+                alt=""
+                loading="lazy"
+                className="h-full w-full scale-125 object-cover"
+                style={{ objectPosition: '68% center' }}
+              />
+            ) : (
+              <video
+                src="/foyer/chandelle.mp4"
+                poster="/foyer/meditation.webp"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                className="h-full w-full scale-125 object-cover"
+                style={{ objectPosition: '68% center' }}
+              />
+            )}
           </Parallax>
           <span className="absolute inset-0" style={{ background: 'rgba(22,16,10,0.58)' }} />
         </div>
