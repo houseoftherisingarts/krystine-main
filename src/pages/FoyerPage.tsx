@@ -476,7 +476,16 @@ const Offre: React.FC = () => {
       <div className="relative z-10 mx-auto w-full max-w-[1360px] px-6 pb-28 pt-6 md:px-12 lg:px-20">
 
         {/* ce que contient l'année : filets éditoriaux pleine largeur, deux colonnes */}
-        <div className="mt-16 grid gap-x-14 lg:grid-cols-2">
+        <motion.p
+          className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassBright"
+          initial={reduce ? undefined : { opacity: 0, y: 14 }}
+          whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.8, ease }}
+        >
+          Ce que l’année contient
+        </motion.p>
+        <div className="mt-8 grid gap-x-14 lg:grid-cols-2">
           {OFFRE.items.map((item, i) => (
             <motion.div
               key={item.slice(0, 24)}
