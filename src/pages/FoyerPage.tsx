@@ -422,9 +422,11 @@ const Offre: React.FC = () => {
   return (
     <section className="relative overflow-hidden bg-espressoSoft px-6 py-28 md:px-12 lg:px-20">
       <Atmosphere light="26% 18%" strength={0.9} />
-      <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-12">
-        <div className="lg:col-span-5">
+      <div className="relative z-10 mx-auto w-full max-w-[1360px]">
+        {/* entête éditoriale pleine largeur : titre à gauche, invitation scellée à droite */}
+        <div className="grid items-end gap-x-14 gap-y-10 lg:grid-cols-12">
           <motion.div
+            className="lg:col-span-7"
             initial={reduce ? undefined : { opacity: 0, y: 28, filter: 'blur(6px)' }}
             whileInView={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
             viewport={inView}
@@ -440,7 +442,7 @@ const Offre: React.FC = () => {
             <p className="mt-4 font-serif text-2xl text-ctextSoft">{OFFRE.subtitle}</p>
           </motion.div>
           <motion.div
-            className="mt-10 hidden lg:block"
+            className="hidden lg:col-span-5 lg:block lg:justify-self-end"
             initial={reduce ? undefined : { opacity: 0, y: 34 }}
             whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
             viewport={inView}
@@ -450,7 +452,7 @@ const Offre: React.FC = () => {
             <motion.div
               animate={reduce ? undefined : { y: [0, -7, 0] }}
               transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative max-w-[360px]"
+              className="relative w-[320px]"
             >
               <motion.span
                 aria-hidden
@@ -468,54 +470,50 @@ const Offre: React.FC = () => {
                   className="w-full rounded-[22px]"
                 />
               </div>
+              <p className="mt-4 font-sans text-[0.78rem] tracking-[0.06em] text-ctextSoft">
+                L’invitation scellée · sceau boussole, sauge et lavande
+              </p>
             </motion.div>
-            <p className="mt-4 font-sans text-[0.78rem] tracking-[0.06em] text-ctextSoft">
-              L’invitation scellée · sceau boussole, sauge et lavande
-            </p>
           </motion.div>
         </div>
-        <div className="lg:col-span-7">
+
+        {/* ce que contient l'année : filets éditoriaux pleine largeur, deux colonnes */}
+        <div className="mt-16 grid gap-x-14 lg:grid-cols-2">
+          {OFFRE.items.map((item, i) => (
+            <motion.div
+              key={item.slice(0, 24)}
+              className="flex items-start gap-5 border-t border-brass/25 py-6"
+              initial={reduce ? undefined : { opacity: 0, y: 16 }}
+              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.7, ease, delay: (i % 2) * 0.08 }}
+            >
+              <span className="font-sans text-[0.68rem] tracking-[0.14em] tabular-nums text-brassBright">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span className="font-sans text-[0.95rem] leading-[1.85] text-ctext">{item}</span>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* prix + geste : rangée pleine largeur */}
+        <div className="mt-16 flex flex-wrap items-end justify-between gap-10 border-t border-brass/25 pt-10">
           <motion.div
-            className="rounded-[30px] border border-brass/25 bg-card p-8 shadow-depth md:p-12"
-            initial={reduce ? undefined : { opacity: 0, y: 36 }}
-            whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-            viewport={inView}
-            transition={{ duration: 1.1, ease }}
+            initial={reduce ? undefined : { opacity: 0, y: 18, filter: 'blur(6px)' }}
+            whileInView={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 1.1, ease, delay: 0.15 }}
           >
-            <ul className="space-y-4">
-              {OFFRE.items.map((item, i) => (
-                <motion.li
-                  key={item.slice(0, 24)}
-                  className="flex items-start gap-4"
-                  initial={reduce ? undefined : { opacity: 0, y: 14 }}
-                  whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-40px' }}
-                  transition={{ duration: 0.7, ease, delay: 0.15 + i * 0.07 }}
-                >
-                  <span className="mt-[0.5rem] h-1.5 w-1.5 shrink-0 rounded-full bg-brass" aria-hidden />
-                  <span className="font-sans text-[0.95rem] leading-[1.85] text-ink">{item}</span>
-                </motion.li>
+            <p className="font-serif text-6xl font-semibold text-brassBright md:text-7xl">{OFFRE.price}</p>
+            <div className="mt-4 space-y-1">
+              {OFFRE.paymentLines.map((l) => (
+                <p key={l.slice(0, 20)} className="font-sans text-[0.78rem] tracking-[0.08em] text-ctextSoft">
+                  {l}
+                </p>
               ))}
-            </ul>
-            <div className="mt-10 flex flex-wrap items-end justify-between gap-6 border-t border-brass/20 pt-8">
-              <motion.div
-                initial={reduce ? undefined : { opacity: 0, y: 18, filter: 'blur(6px)' }}
-                whileInView={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
-                viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 1.1, ease, delay: 0.2 }}
-              >
-                <p className="font-serif text-6xl font-semibold text-brassInk">{OFFRE.price}</p>
-                <div className="mt-3 space-y-1">
-                  {OFFRE.paymentLines.map((l) => (
-                    <p key={l.slice(0, 20)} className="font-sans text-[0.7rem] tracking-[0.08em] text-inkSoft">
-                      {l}
-                    </p>
-                  ))}
-                </div>
-              </motion.div>
-              <Cta label={OFFRE.cta} />
             </div>
           </motion.div>
+          <Cta label={OFFRE.cta} dark />
         </div>
       </div>
     </section>
