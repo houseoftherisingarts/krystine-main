@@ -874,7 +874,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
           <div className="grid items-end gap-x-14 gap-y-6 lg:grid-cols-12">
             <Reveal className="lg:col-span-8">
               <Eyebrow>{SECTION8.eyebrow}</Eyebrow>
-              <h2 className="mt-6 font-serif font-medium leading-[1.08] text-ink text-[clamp(2.1rem,4vw,3.6rem)] max-w-[18ch]">
+              <h2 className="mt-6 font-serif font-medium leading-[1.12] text-ink text-[clamp(1.55rem,3.6vw,3.2rem)]">
                 {SECTION8.title}
               </h2>
             </Reveal>
