@@ -416,62 +416,111 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
 };
 
 /* ── Offre (section 9 du doc final) ── */
-const Offre: React.FC = () => (
-  <section className="relative overflow-hidden bg-espressoSoft px-6 py-28 md:px-12 lg:px-20">
-    <Atmosphere light="26% 18%" strength={0.9} />
-    <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-12">
-      <div className="lg:col-span-5">
-        <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
-        <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassBright">
-          {OFFRE.eyebrow}
-        </p>
-        <h2 className="mt-5 font-serif font-medium uppercase leading-[1.08] tracking-[0.04em] text-ctext text-[clamp(1.9rem,3.4vw,2.7rem)]">
-          {OFFRE.title}
-        </h2>
-        <p className="mt-4 font-serif text-2xl text-ctextSoft">{OFFRE.subtitle}</p>
-        <div className="mt-10 hidden lg:block">
-          <div className="max-w-[360px] overflow-hidden rounded-[30px] bg-espresso/50 p-2.5 shadow-depth ring-1 ring-brass/40">
-            <img
-              src="https://wsrv.nl/?url=https%3A%2F%2Fstorage.googleapis.com%2Forigine1%2Fbanner%2520origine%2520enveloppe.jpg&w=800&output=webp"
-              alt="L'invitation scellée du Foyer d'Origine"
-              loading="lazy"
-              referrerPolicy="no-referrer"
-              className="w-full rounded-[22px]"
-            />
-          </div>
-          <p className="mt-4 font-sans text-[0.78rem] tracking-[0.06em] text-ctextSoft">
-            L’invitation scellée · sceau boussole, sauge et lavande
-          </p>
-        </div>
-      </div>
-      <div className="lg:col-span-7">
-        <div className="rounded-[30px] border border-brass/25 bg-card p-8 shadow-depth md:p-12">
-          <ul className="space-y-4">
-            {OFFRE.items.map((item) => (
-              <li key={item.slice(0, 24)} className="flex items-start gap-4">
-                <span className="mt-[0.5rem] h-1.5 w-1.5 shrink-0 rounded-full bg-brass" aria-hidden />
-                <span className="font-sans text-[0.95rem] leading-[1.85] text-ink">{item}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-10 flex flex-wrap items-end justify-between gap-6 border-t border-brass/20 pt-8">
-            <div>
-              <p className="font-serif text-6xl font-semibold text-brassInk">{OFFRE.price}</p>
-              <div className="mt-3 space-y-1">
-                {OFFRE.paymentLines.map((l) => (
-                  <p key={l.slice(0, 20)} className="font-sans text-[0.7rem] tracking-[0.08em] text-inkSoft">
-                    {l}
-                  </p>
-                ))}
+const Offre: React.FC = () => {
+  const reduce = useReducedMotion();
+  const inView = { once: true, margin: '-80px' } as const;
+  return (
+    <section className="relative overflow-hidden bg-espressoSoft px-6 py-28 md:px-12 lg:px-20">
+      <Atmosphere light="26% 18%" strength={0.9} />
+      <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-12">
+        <div className="lg:col-span-5">
+          <motion.div
+            initial={reduce ? undefined : { opacity: 0, y: 28, filter: 'blur(6px)' }}
+            whileInView={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={inView}
+            transition={{ duration: 1.1, ease }}
+          >
+            <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
+            <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassBright">
+              {OFFRE.eyebrow}
+            </p>
+            <h2 className="mt-5 font-serif font-medium uppercase leading-[1.08] tracking-[0.04em] text-ctext text-[clamp(1.9rem,3.4vw,2.7rem)]">
+              {OFFRE.title}
+            </h2>
+            <p className="mt-4 font-serif text-2xl text-ctextSoft">{OFFRE.subtitle}</p>
+          </motion.div>
+          <motion.div
+            className="mt-10 hidden lg:block"
+            initial={reduce ? undefined : { opacity: 0, y: 34 }}
+            whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+            viewport={inView}
+            transition={{ duration: 1.2, ease, delay: 0.15 }}
+          >
+            {/* l'invitation scellée respire : flottement lent + lueur du sceau */}
+            <motion.div
+              animate={reduce ? undefined : { y: [0, -7, 0] }}
+              transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+              className="relative max-w-[360px]"
+            >
+              <motion.span
+                aria-hidden
+                className="pointer-events-none absolute -inset-4 rounded-[38px]"
+                style={{ background: 'radial-gradient(60% 60% at 50% 45%, rgba(220,184,116,0.22), transparent 75%)' }}
+                animate={reduce ? undefined : { opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              <div className="relative overflow-hidden rounded-[30px] bg-espresso/50 p-2.5 shadow-depth ring-1 ring-brass/40">
+                <img
+                  src="https://wsrv.nl/?url=https%3A%2F%2Fstorage.googleapis.com%2Forigine1%2Fbanner%2520origine%2520enveloppe.jpg&w=800&output=webp"
+                  alt="L'invitation scellée du Foyer d'Origine"
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                  className="w-full rounded-[22px]"
+                />
               </div>
+            </motion.div>
+            <p className="mt-4 font-sans text-[0.78rem] tracking-[0.06em] text-ctextSoft">
+              L’invitation scellée · sceau boussole, sauge et lavande
+            </p>
+          </motion.div>
+        </div>
+        <div className="lg:col-span-7">
+          <motion.div
+            className="rounded-[30px] border border-brass/25 bg-card p-8 shadow-depth md:p-12"
+            initial={reduce ? undefined : { opacity: 0, y: 36 }}
+            whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+            viewport={inView}
+            transition={{ duration: 1.1, ease }}
+          >
+            <ul className="space-y-4">
+              {OFFRE.items.map((item, i) => (
+                <motion.li
+                  key={item.slice(0, 24)}
+                  className="flex items-start gap-4"
+                  initial={reduce ? undefined : { opacity: 0, y: 14 }}
+                  whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ duration: 0.7, ease, delay: 0.15 + i * 0.07 }}
+                >
+                  <span className="mt-[0.5rem] h-1.5 w-1.5 shrink-0 rounded-full bg-brass" aria-hidden />
+                  <span className="font-sans text-[0.95rem] leading-[1.85] text-ink">{item}</span>
+                </motion.li>
+              ))}
+            </ul>
+            <div className="mt-10 flex flex-wrap items-end justify-between gap-6 border-t border-brass/20 pt-8">
+              <motion.div
+                initial={reduce ? undefined : { opacity: 0, y: 18, filter: 'blur(6px)' }}
+                whileInView={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 1.1, ease, delay: 0.2 }}
+              >
+                <p className="font-serif text-6xl font-semibold text-brassInk">{OFFRE.price}</p>
+                <div className="mt-3 space-y-1">
+                  {OFFRE.paymentLines.map((l) => (
+                    <p key={l.slice(0, 20)} className="font-sans text-[0.7rem] tracking-[0.08em] text-inkSoft">
+                      {l}
+                    </p>
+                  ))}
+                </div>
+              </motion.div>
+              <Cta label={OFFRE.cta} />
             </div>
-            <Cta label={OFFRE.cta} />
-          </div>
+          </motion.div>
         </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 /* ── Appel final (section 11 du doc final) ── */
 const AppelFinal: React.FC = () => {
