@@ -569,9 +569,9 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
 /* ── Offre (section 9 du doc final) ── */
 const Offre: React.FC = () => {
   const reduce = useReducedMotion();
+  /* pas d'overflow-hidden sur la section : il en ferait le conteneur du sticky
+     et la scène ne collerait jamais (leçon FoyerScene) */
   return (
-    {/* pas d'overflow-hidden ici : il ferait de la section le conteneur du sticky
-        et la scène ne collerait jamais (leçon FoyerScene) */}
     <section className="relative z-[55] rounded-t-[18px] bg-espressoDeep shadow-[0_-26px_60px_rgba(22,16,10,0.5)]">
       <OffreScene reduce={!!reduce} />
       <div className="relative z-10 mx-auto w-full max-w-[1360px] px-6 pb-28 pt-6 md:px-12 lg:px-20">
