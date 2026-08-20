@@ -5,6 +5,7 @@ import {
   useMotionValue,
   useScroll,
   useTransform,
+  useMotionTemplate,
   useReducedMotion,
 } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -416,50 +417,90 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   );
 };
 
-/* ── Offre : HERO cinématique en couches parallax (référence Osmo, assets maison).
-   L'antre de pierre au fond, le titre pris entre les plans, la vasque de cuivre
-   devant (fond noir + mix-blend-screen : les flammes seules traversent). ── */
+/* ── Offre : HERO cinématique façon Apple : l'antre VIT (vidéo), la scène
+   s'allume au scroll, deux temps : le titre XXL, puis le prix et le geste. ── */
 const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
-  const bgY = useTransform(scrollYProgress, [0, 1], ['-26%', '26%']);
-  const titleY = useTransform(scrollYProgress, [0, 1], ['-120%', '120%']);
-  const vaseY = useTransform(scrollYProgress, [0, 1], ['-5%', '5%']);
-  const still = reduce;
+  /* progression maison (rAF + rect) : useScroll({target}) mesure mal dans cette
+     page (mêmes symptômes que la scène du feu), on lit le rect nous-mêmes */
+  const scrollYProgress = useMotionValue(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    const update = () => {
+      const r = el.getBoundingClientRect();
+      const totalH = r.height - window.innerHeight;
+      if (totalH <= 0) return;
+      scrollYProgress.set(Math.min(1, Math.max(0, -r.top / totalH)));
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [scrollYProgress]);
+  /* allumage : la scène s'éclaire et s'approche pendant qu'on défile */
+  const bright = useTransform(scrollYProgress, [0, 0.4], [0.48, 1.02]);
+  const sat = useTransform(scrollYProgress, [0, 0.4], [0.68, 1.05]);
+  const sceneFilter = useMotionTemplate`brightness(${bright}) saturate(${sat})`;
+  const sceneScale = useTransform(scrollYProgress, [0, 1], [1.14, 1]);
+  /* temps 1 : le titre, énorme, se resserre puis cède la place */
+  const titleScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.88]);
+  const titleY = useTransform(scrollYProgress, [0, 0.55], [0, -64]);
+  const titleOpacity = useTransform(scrollYProgress, [0.42, 0.58], [1, 0]);
+  /* temps 2 : le prix et le geste, sur le feu allumé */
+  const offerOpacity = useTransform(scrollYProgress, [0.6, 0.74], [0, 1]);
+  const offerY = useTransform(scrollYProgress, [0.6, 0.8], [46, 0]);
+  const offerScale = useTransform(scrollYProgress, [0.6, 0.85], [0.96, 1]);
+
+  if (reduce) {
+    return (
+      <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-24 text-center">
+        <img src="/foyer/antre-foyer.webp" alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-80" />
+        <div aria-hidden className="absolute inset-0" style={{ background: 'radial-gradient(70% 55% at 50% 45%, rgba(22,16,10,0.2), rgba(22,16,10,0.7) 100%)' }} />
+        <div className="relative">
+          <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brassBright">{OFFRE.eyebrow}</p>
+          <h2 className="mt-5 font-serif font-medium leading-[0.9] text-ctext text-[clamp(2.2rem,9vw,8rem)]">{OFFRE.title}</h2>
+          <p className="mt-6 font-serif text-[clamp(1.15rem,2vw,1.7rem)] text-ctextSoft">{OFFRE.subtitle}</p>
+          <p className="mt-10 font-serif text-6xl font-semibold text-brassBright">{OFFRE.price}</p>
+          <div className="mt-8 flex justify-center"><Cta label={OFFRE.cta} dark /></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div ref={ref} className="relative h-[92vh] min-h-[540px] overflow-hidden md:h-screen">
-      {/* plan du fond : l'antre, mouvement le plus ample */}
-      <motion.div aria-hidden className="absolute -inset-y-[28%] inset-x-0" style={still ? undefined : { y: bgY }}>
-        <img src="/foyer/antre-foyer.webp" alt="" className="h-full w-full object-cover" />
-      </motion.div>
-      {/* voile de lisibilité */}
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{ background: 'radial-gradient(70% 55% at 50% 45%, rgba(22,16,10,0.1), rgba(22,16,10,0.55) 100%)' }}
-      />
-      {/* le titre, pris entre les plans : XXL, il EST le hero */}
-      <motion.div
-        className="absolute inset-x-0 top-[24%] z-10 px-4 text-center"
-        style={still ? undefined : { y: titleY }}
-      >
-        <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brassBright">{OFFRE.eyebrow}</p>
-        <h2 className="mt-5 whitespace-nowrap font-serif font-medium leading-[0.9] text-ctext text-[clamp(2.2rem,9.6vw,8.8rem)]">
-          {OFFRE.title}
-        </h2>
-        <p className="mt-6 font-serif text-[clamp(1.15rem,2vw,1.7rem)] text-ctextSoft">{OFFRE.subtitle}</p>
-      </motion.div>
-      {/* lueur du feu derrière la vasque */}
-      <motion.div
-        aria-hidden
-        className="absolute bottom-[-8%] left-1/2 z-[15] h-[52vh] w-[min(80vw,900px)] -translate-x-1/2"
-        style={{ background: 'radial-gradient(50% 55% at 50% 62%, rgba(199,110,44,0.34), rgba(199,110,44,0.1) 55%, transparent 75%)' }}
-        animate={still ? undefined : { opacity: [0.7, 1, 0.7] }}
-        transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      {/* braises fines qui montent de la vasque */}
-      {!still && (
-        <div aria-hidden className="pointer-events-none absolute inset-0 z-[16]">
+    <div ref={ref} className="relative h-[260vh]">
+      <div className="sticky top-0 h-screen overflow-hidden">
+        {/* l'antre VIT : la vidéo respire, s'allume et s'approche au scroll */}
+        <motion.div aria-hidden className="absolute inset-0" style={{ scale: sceneScale, filter: sceneFilter }}>
+          <video
+            src="/foyer/antre-foyer.mp4"
+            poster="/foyer/antre-foyer.webp"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            className="h-full w-full object-cover"
+          />
+        </motion.div>
+        {/* voile de lisibilité */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{ background: 'radial-gradient(70% 55% at 50% 46%, rgba(22,16,10,0.08), rgba(22,16,10,0.6) 100%)' }}
+        />
+        {/* braises fines */}
+        <div aria-hidden className="pointer-events-none absolute inset-0">
           {[
             { l: '46%', d: '0s', s: 5 },
             { l: '52%', d: '2.4s', s: 4 },
@@ -471,7 +512,7 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
               className="absolute rounded-full"
               style={{
                 left: b.l,
-                bottom: '14%',
+                bottom: '12%',
                 width: b.s,
                 height: b.s,
                 background: '#dcb874',
@@ -481,23 +522,46 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
               }}
             />
           ))}
-          <style>{`@keyframes foyerRise{0%{transform:translateY(0);opacity:0}10%{opacity:.6}100%{transform:translateY(-46vh);opacity:0}}`}</style>
         </div>
-      )}
-      {/* plan avant : la vasque détourée, presque verrouillée, recouvre le pied du titre */}
-      <motion.div
-        aria-hidden
-        className="absolute bottom-[-4%] left-1/2 z-20 w-[min(66vw,640px)]"
-        style={still ? { x: '-50%' } : { y: vaseY, x: '-50%' }}
-      >
-        <img src="/foyer/vasque-feu-cut.webp" alt="" className="w-full drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)]" />
-      </motion.div>
-      {/* couture vers le contenu de l'offre */}
-      <div
-        aria-hidden
-        className="absolute inset-x-0 bottom-0 z-30 h-32"
-        style={{ background: 'linear-gradient(to top, #16100a 8%, transparent 100%)' }}
-      />
+        {/* temps 1 : le titre EST le hero */}
+        <motion.div
+          className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center"
+          style={{ opacity: titleOpacity, y: titleY, scale: titleScale }}
+        >
+          <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brassBright">{OFFRE.eyebrow}</p>
+          <h2 className="mt-5 whitespace-nowrap font-serif font-medium leading-[0.9] text-ctext text-[clamp(2.2rem,9.6vw,8.8rem)]">
+            {OFFRE.title}
+          </h2>
+          <p className="mt-6 font-serif text-[clamp(1.15rem,2vw,1.7rem)] text-ctextSoft">{OFFRE.subtitle}</p>
+        </motion.div>
+        {/* temps 2 : le prix et le geste, posés sur le feu allumé */}
+        <motion.div
+          className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center"
+          style={{ opacity: offerOpacity, y: offerY, scale: offerScale }}
+        >
+          <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brassBright">Une année entière</p>
+          <p className="mt-6 font-serif font-semibold leading-none text-brassBright text-[clamp(3.4rem,8vw,7rem)]">
+            {OFFRE.price}
+          </p>
+          <div className="mt-5 space-y-1">
+            {OFFRE.paymentLines.map((l) => (
+              <p key={l.slice(0, 20)} className="font-sans text-[0.78rem] tracking-[0.08em] text-ctextSoft">
+                {l}
+              </p>
+            ))}
+          </div>
+          <div className="mt-9">
+            <Cta label={OFFRE.cta} dark />
+          </div>
+        </motion.div>
+        <style>{`@keyframes foyerRise{0%{transform:translateY(0);opacity:0}10%{opacity:.6}100%{transform:translateY(-46vh);opacity:0}}`}</style>
+        {/* couture vers le contenu */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-28"
+          style={{ background: 'linear-gradient(to top, #16100a 8%, transparent 100%)' }}
+        />
+      </div>
     </div>
   );
 };
@@ -538,25 +602,6 @@ const Offre: React.FC = () => {
           ))}
         </div>
 
-        {/* prix + geste : rangée pleine largeur */}
-        <div className="mt-16 flex flex-wrap items-end justify-between gap-10 border-t border-brass/25 pt-10">
-          <motion.div
-            initial={reduce ? undefined : { opacity: 0, y: 18, filter: 'blur(6px)' }}
-            whileInView={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 1.1, ease, delay: 0.15 }}
-          >
-            <p className="font-serif text-6xl font-semibold text-brassBright md:text-7xl">{OFFRE.price}</p>
-            <div className="mt-4 space-y-1">
-              {OFFRE.paymentLines.map((l) => (
-                <p key={l.slice(0, 20)} className="font-sans text-[0.78rem] tracking-[0.08em] text-ctextSoft">
-                  {l}
-                </p>
-              ))}
-            </div>
-          </motion.div>
-          <Cta label={OFFRE.cta} dark />
-        </div>
       </div>
     </section>
   );

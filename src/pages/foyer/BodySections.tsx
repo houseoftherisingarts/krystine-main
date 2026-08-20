@@ -752,13 +752,13 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
           la chandelle vit derrière le texte ═══════ */}
       <section className={`relative overflow-hidden bg-espressoDeep py-28 md:py-44 ${overlap ? 'z-50' : ''}`}>
         <div aria-hidden className="absolute inset-0">
-          <Parallax speed={0.26} className="h-full" innerClassName="h-full">
+          <Parallax speed={0.5} className="h-full" innerClassName="h-full">
             {reduceAll ? (
               <img
                 src="/foyer/meditation.webp"
                 alt=""
                 loading="lazy"
-                className="h-full w-full scale-125 object-cover"
+                className="h-full w-full scale-150 object-cover"
                 style={{ objectPosition: '68% center' }}
               />
             ) : (
@@ -770,7 +770,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
                 loop
                 playsInline
                 preload="metadata"
-                className="h-full w-full scale-125 object-cover"
+                className="h-full w-full scale-150 object-cover"
                 style={{ objectPosition: '68% center' }}
               />
             )}
