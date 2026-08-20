@@ -746,8 +746,9 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </div>
       </section>
 
-      {/* ═══════ SECTION 6 · Les méditations : la chandelle VIT (vidéo), parallaxe ═══════ */}
-      <section className={`relative overflow-hidden bg-espressoDeep py-28 md:py-44 ${overlap ? 'z-50' : ''} ${cover}`}>
+      {/* ═══════ SECTION 6 · Les méditations : fenêtre PARALLAX pure (jamais sticky),
+          la chandelle vit derrière le texte ═══════ */}
+      <section className={`relative overflow-hidden bg-espressoDeep py-28 md:py-44 ${overlap ? 'z-50' : ''}`}>
         <div aria-hidden className="absolute inset-0">
           <Parallax speed={0.26} className="h-full" innerClassName="h-full">
             {reduceAll ? (
