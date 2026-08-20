@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Volume2, VolumeX } from 'lucide-react';
 import { Atmosphere } from '../components/motion/loeuvre';
 import BodySections from './foyer/BodySections';
+import { OFFRE, FINAL } from './foyer/content';
 
 /**
  * Le Foyer d'Origine · page de vente (URL dédiée /foyer).
@@ -131,13 +132,17 @@ const useFireSound = () => {
    Le feu roule dès l'entrée. Le titre s'efface au premier scroll, les
    trois lignes passent sur la même vidéo, la crème se pose à la fin.
    Progression maison (rAF + rect) : useScroll({target}) mesurait la page. */
-/* Deux strophes (PDF 19 août) : le constat, puis le besoin. */
-const STANZA1 = [
-  'Le plus difficile n’est plus de trouver.',
-  'C’est de démêler le vrai du faux.',
-  'Ce qui mérite notre attention de ce qui cherche seulement à la capter.',
+/* Trois groupes au défilement (doc « PAGE DE VENTE FINALE ») */
+const STANZAS: string[][] = [
+  ['Notre attention est notre monnaie d’échange la plus précieuse.'],
+  ['Le plus difficile n’est plus de trouver.', 'C’est de démêler le vrai du faux.'],
+  ['Nous n’avons pas besoin de plus.', 'Nous avons besoin d’authentique.'],
 ];
-const STANZA2 = ['Nous n’avons pas besoin de plus.', 'Nous avons besoin d’authentique.'];
+const STANZA_WINDOWS: Array<[number, number, number, number]> = [
+  [0.14, 0.22, 0.3, 0.36],
+  [0.38, 0.46, 0.56, 0.62],
+  [0.64, 0.72, 0.8, 0.86],
+];
 
 const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -173,29 +178,27 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   const heroY = useTransform(scrollYProgress, [0, 0.12], [0, -36]);
   /* le voile du hero s'allège : le feu prend toute la lumière */
   const veilHero = useTransform(scrollYProgress, [0, 0.14, 0.28], [1, 1, 0.35]);
-  /* voile radial partagé des deux strophes : jamais d'écran sans texte */
+  /* voile radial partagé des trois groupes : jamais d'écran sans texte */
   const linesVeil = useTransform(
     scrollYProgress,
-    [0.12, 0.2, 0.46, 0.53, 0.56, 0.63, 0.78, 0.85],
-    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0.12, 0.2, 0.3, 0.36, 0.38, 0.46, 0.56, 0.62, 0.64, 0.72, 0.8, 0.86],
+    [0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0],
   );
-  const stanza1Styles = [0, 1, 2].map((i) => ({
-    opacity: useTransform(
-      scrollYProgress,
-      [0.14 + i * 0.07, 0.22 + i * 0.07, 0.46, 0.53],
-      [0, 1, 1, 0],
-    ),
-    y: useTransform(scrollYProgress, [0.14 + i * 0.07, 0.22 + i * 0.07], [26, 0]),
-  }));
-  const stanza2Styles = [0, 1].map((i) => ({
-    opacity: useTransform(
-      scrollYProgress,
-      [0.56 + i * 0.08, 0.64 + i * 0.08, 0.78, 0.85],
-      [0, 1, 1, 0],
-    ),
-    y: useTransform(scrollYProgress, [0.56 + i * 0.08, 0.64 + i * 0.08], [26, 0]),
-  }));
-  const kickerFade = useTransform(scrollYProgress, [0.85, 0.91], [0, 1]);
+  const stanzaStyles = STANZAS.map((lines, g) =>
+    lines.map((_, i) => ({
+      opacity: useTransform(
+        scrollYProgress,
+        [STANZA_WINDOWS[g][0] + i * 0.05, STANZA_WINDOWS[g][1] + i * 0.05, STANZA_WINDOWS[g][2], STANZA_WINDOWS[g][3]],
+        [0, 1, 1, 0],
+      ),
+      y: useTransform(
+        scrollYProgress,
+        [STANZA_WINDOWS[g][0] + i * 0.05, STANZA_WINDOWS[g][1] + i * 0.05],
+        [26, 0],
+      ),
+    })),
+  );
+  const kickerFade = useTransform(scrollYProgress, [0.87, 0.93], [0, 1]);
   const emberDust = useTransform(scrollYProgress, [0.1, 0.25], [0, 1]);
   const warm = useTransform(scrollYProgress, [0.9, 1], [0, 1]);
 
@@ -235,14 +238,14 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
               barre de recherche.
             </p>
             <div className="mt-9">
-              <Cta label="Prendre place au foyer" sub="497 $ | 12 mois d’accès" dark />
+              <Cta label="Prendre place autour du feu" dark />
             </div>
           </div>
         </header>
         <section className="relative overflow-hidden bg-espressoSoft px-6 py-32 md:px-12 lg:px-20">
           <Atmosphere light="50% 80%" strength={1} />
           <div className="relative z-10 mx-auto max-w-4xl">
-            {[...STANZA1, ...STANZA2].map((l) => (
+            {STANZAS.flat().map((l) => (
               <p key={l} className="font-serif text-3xl leading-tight text-ctext md:text-4xl">
                 {l}
               </p>
@@ -353,7 +356,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
               transition={{ duration: 1.1, ease, delay: 0.63 }}
               className="mt-10 flex flex-wrap items-end justify-between gap-6"
             >
-              <Cta label="Prendre place au foyer" sub="497 $ | 12 mois d’accès" dark />
+              <Cta label="Prendre place autour du feu" dark />
               <span
                 className="hidden font-sans text-[0.6rem] uppercase tracking-[0.3em] text-ctextSoft md:block"
                 style={{ animation: 'foyerCue 2.6s ease-in-out infinite' }}
@@ -374,36 +377,23 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
               'radial-gradient(56% 46% at 50% 46%, rgba(22,16,10,0.6), transparent 78%)',
           }}
         />
-        <div className="absolute inset-0 z-10 flex items-center justify-center px-6 text-center md:px-12">
-          <div className="max-w-5xl">
-            {STANZA1.map((l, i) => (
-              <motion.p
-                key={l}
-                style={{ opacity: stanza1Styles[i].opacity, y: stanza1Styles[i].y }}
-                className={`font-serif font-medium leading-[1.25] text-ctext ${
-                  i === 2 ? 'text-[1.4rem] md:text-[2.1rem] text-ctextSoft' : 'text-[1.9rem] md:text-[3rem]'
-                }`}
-              >
-                {l}
-              </motion.p>
-            ))}
+        {STANZAS.map((lines, g) => (
+          <div key={g} className="absolute inset-0 z-10 flex items-center justify-center px-6 text-center md:px-12">
+            <div className="max-w-5xl">
+              {lines.map((l, i) => (
+                <motion.p
+                  key={l}
+                  style={{ opacity: stanzaStyles[g][i].opacity, y: stanzaStyles[g][i].y }}
+                  className={`font-serif font-medium leading-[1.25] ${
+                    g === 2 && i === 1 ? 'text-brassBright' : 'text-ctext'
+                  } text-[1.9rem] md:text-[3rem]`}
+                >
+                  {l}
+                </motion.p>
+              ))}
+            </div>
           </div>
-        </div>
-        <div className="absolute inset-0 z-10 flex items-center justify-center px-6 text-center md:px-12">
-          <div>
-            {STANZA2.map((l, i) => (
-              <motion.p
-                key={l}
-                style={{ opacity: stanza2Styles[i].opacity, y: stanza2Styles[i].y }}
-                className={`font-serif font-medium leading-[1.25] ${
-                  i === 1 ? 'text-brassBright' : 'text-ctext'
-                } text-[2rem] md:text-[3.2rem]`}
-              >
-                {l}
-              </motion.p>
-            ))}
-          </div>
-        </div>
+        ))}
         <motion.p
           style={{ opacity: kickerFade }}
           className="absolute bottom-12 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap font-sans text-[0.72rem] uppercase tracking-[0.26em] text-brassBright"
@@ -437,16 +427,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   );
 };
 
-/* ── Offre (section 10 du PDF) ── */
-const OFFER_ITEMS = [
-  'Dix mois actifs',
-  'Quatre ouvertures par mois',
-  'Dix méditations guidées en direct et leurs reprises',
-  'Deux propositions estivales',
-  'Un espace privé protégé du défilement, des publicités et des recommandations automatisées',
-  "La liberté d'ouvrir uniquement ce qui nous attire",
-];
-
+/* ── Offre (section 9 du doc final) ── */
 const Offre: React.FC = () => (
   <section className="relative overflow-hidden bg-espressoSoft px-6 py-28 md:px-12 lg:px-20">
     <Atmosphere light="26% 18%" strength={0.9} />
@@ -454,12 +435,12 @@ const Offre: React.FC = () => (
       <div className="lg:col-span-5">
         <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
         <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassBright">
-          L’offre
+          {OFFRE.eyebrow}
         </p>
         <h2 className="mt-5 font-serif font-medium uppercase leading-[1.08] tracking-[0.04em] text-ctext text-[clamp(1.9rem,3.4vw,2.7rem)]">
-          Le Foyer d’Origine
+          {OFFRE.title}
         </h2>
-        <p className="mt-4 font-serif text-2xl text-ctextSoft">12 mois d’accès</p>
+        <p className="mt-4 font-serif text-2xl text-ctextSoft">{OFFRE.subtitle}</p>
         <div className="mt-10 hidden lg:block">
           <div className="max-w-[360px] overflow-hidden rounded-[30px] bg-espresso/50 p-2.5 shadow-depth ring-1 ring-brass/40">
             <img
@@ -478,8 +459,8 @@ const Offre: React.FC = () => (
       <div className="lg:col-span-7">
         <div className="rounded-[30px] border border-brass/25 bg-card p-8 shadow-depth md:p-12">
           <ul className="space-y-4">
-            {OFFER_ITEMS.map((item) => (
-              <li key={item} className="flex items-start gap-4">
+            {OFFRE.items.map((item) => (
+              <li key={item.slice(0, 24)} className="flex items-start gap-4">
                 <span className="mt-[0.5rem] h-1.5 w-1.5 shrink-0 rounded-full bg-brass" aria-hidden />
                 <span className="font-sans text-[0.95rem] leading-[1.85] text-ink">{item}</span>
               </li>
@@ -487,12 +468,16 @@ const Offre: React.FC = () => (
           </ul>
           <div className="mt-10 flex flex-wrap items-end justify-between gap-6 border-t border-brass/20 pt-8">
             <div>
-              <p className="font-serif text-6xl font-semibold text-brassInk">497 $</p>
-              <p className="mt-2 font-sans text-[0.7rem] tracking-[0.08em] text-inkSoft">
-                Paiement par carte de crédit.
-              </p>
+              <p className="font-serif text-6xl font-semibold text-brassInk">{OFFRE.price}</p>
+              <div className="mt-3 space-y-1">
+                {OFFRE.paymentLines.map((l) => (
+                  <p key={l.slice(0, 20)} className="font-sans text-[0.7rem] tracking-[0.08em] text-inkSoft">
+                    {l}
+                  </p>
+                ))}
+              </div>
             </div>
-            <Cta label="Prendre place autour du feu" />
+            <Cta label={OFFRE.cta} />
           </div>
         </div>
       </div>
@@ -500,7 +485,7 @@ const Offre: React.FC = () => (
   </section>
 );
 
-/* ── Appel final (section 12 du PDF) : le sceau revient, la braise aussi ── */
+/* ── Appel final (section 11 du doc final) ── */
 const AppelFinal: React.FC = () => {
   const reduce = useReducedMotion();
   return (
@@ -534,28 +519,35 @@ const AppelFinal: React.FC = () => {
       <div className="relative z-10 mx-auto w-full max-w-[1360px]">
         <div className="max-w-3xl">
           <h2 className="font-serif font-medium leading-[1.08] text-ctext text-[clamp(2.2rem,3.6vw,3.4rem)]">
-            Tout ne mérite pas notre attention.
+            {FINAL.title}
           </h2>
           <p className="mt-6 max-w-2xl font-serif text-2xl leading-snug text-brassBright">
-            Mais certaines choses peuvent changer notre manière de voir.
+            {FINAL.emphasis}
           </p>
-          <p className="mt-3 font-serif text-xl text-ctextSoft">
-            Le Foyer d’Origine est une place pour les découvrir.
-          </p>
+          <p className="mt-3 font-serif text-xl text-ctextSoft">{FINAL.sub}</p>
           <div className="mt-10 space-y-1 font-sans text-[0.95rem] leading-[1.85] text-ctextSoft">
-            <p>Pour sortir de la répétition.</p>
-            <p>Pour rencontrer l’inattendu.</p>
-            <p>Pour accéder à des liens impossibles à demander dans une barre de recherche.</p>
+            {FINAL.lines.map((l) => (
+              <p key={l.slice(0, 20)}>{l}</p>
+            ))}
           </div>
           <p className="mt-8 max-w-2xl font-sans text-[0.95rem] leading-[1.85] text-ctext">
-            Pour retrouver un rythme humain, une place parmi les autres et la
-            possibilité d’être bien pendant que le monde bouge.
+            {FINAL.closing}
           </p>
           <p className="mt-14 font-serif font-semibold leading-[1.08] text-ctext text-[clamp(2.2rem,3.6vw,3.6rem)]">
-            Prenez place autour du feu.
+            {FINAL.callout}
           </p>
+          <div className="mt-8">
+            <p className="font-serif text-4xl font-semibold text-brassBright">{FINAL.price}</p>
+            <div className="mt-2 space-y-0.5">
+              {FINAL.priceLines.map((l) => (
+                <p key={l} className="font-sans text-[0.78rem] tracking-[0.08em] text-ctextSoft">
+                  {l}
+                </p>
+              ))}
+            </div>
+          </div>
           <div className="mt-9">
-            <Cta label="Entrer dans le Foyer" sub="497 $ | 12 mois d’accès" dark />
+            <Cta label={FINAL.cta} dark />
           </div>
         </div>
       </div>

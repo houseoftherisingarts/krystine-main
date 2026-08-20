@@ -106,15 +106,18 @@ const Eyebrow: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light' }> = 
   </div>
 );
 
-const SectionTitle: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light'; className?: string }> = ({
+const SectionTitle: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light'; long?: boolean; className?: string }> = ({
   children,
   on = 'light',
+  long = false,
   className = '',
 }) => (
   <h2
-    className={`font-serif font-medium uppercase leading-[1.08] text-[clamp(1.9rem,3.4vw,2.7rem)] tracking-[0.04em] ${
-      on === 'dark' ? 'text-ctext' : 'text-ink'
-    } ${className}`}
+    className={`font-serif font-medium ${
+      long
+        ? 'leading-[1.2] text-[clamp(1.55rem,2.7vw,2.15rem)]'
+        : 'uppercase leading-[1.08] text-[clamp(1.9rem,3.4vw,2.7rem)] tracking-[0.04em]'
+    } ${on === 'dark' ? 'text-ctext' : 'text-ink'} ${className}`}
   >
     {children}
   </h2>
@@ -601,7 +604,9 @@ export default function BodySections() {
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
             <Reveal className="lg:col-span-5">
               <Eyebrow>{SECTION5.eyebrow}</Eyebrow>
-              <SectionTitle className="mt-5">{SECTION5.title}</SectionTitle>
+              <SectionTitle long className="mt-5">
+                {SECTION5.title}
+              </SectionTitle>
             </Reveal>
             <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
               {SECTION5.intro.map((p, i) => (
@@ -665,7 +670,7 @@ export default function BodySections() {
           <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
             <Reveal className="lg:col-span-5">
               <Eyebrow on="dark">{SECTION6.eyebrow}</Eyebrow>
-              <SectionTitle on="dark" className="mt-5">
+              <SectionTitle on="dark" long className="mt-5">
                 {SECTION6.title}
               </SectionTitle>
             </Reveal>
@@ -692,7 +697,9 @@ export default function BodySections() {
           <div className="grid lg:grid-cols-12 gap-x-14 gap-y-14 items-start">
             <Reveal className="lg:col-span-7">
               <Eyebrow>{SECTION7.eyebrow}</Eyebrow>
-              <SectionTitle className="mt-5">{SECTION7.title}</SectionTitle>
+              <SectionTitle long className="mt-5 max-w-[30ch]">
+                {SECTION7.title}
+              </SectionTitle>
               {SECTION7.paragraphs.map((p) => (
                 <p key={p.slice(0, 24)} className="mt-6 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[52ch]">
                   {p}
@@ -754,7 +761,9 @@ export default function BodySections() {
           <Ornament className="mb-16" />
           <Reveal className="max-w-[44rem]">
             <Eyebrow>{SECTION8.eyebrow}</Eyebrow>
-            <SectionTitle className="mt-5">{SECTION8.title}</SectionTitle>
+            <SectionTitle long className="mt-5 max-w-[34ch]">
+              {SECTION8.title}
+            </SectionTitle>
             <p className="mt-6 font-serif text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug">
               {SECTION8.subtitle}
             </p>
