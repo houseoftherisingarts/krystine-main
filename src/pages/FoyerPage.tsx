@@ -452,10 +452,10 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
       {/* plan avant : la vasque de cuivre, presque verrouillée, recouvre le pied du titre */}
       <motion.div
         aria-hidden
-        className="absolute bottom-[-6%] left-1/2 z-20 w-[min(58vw,520px)] -translate-x-1/2"
-        style={still ? undefined : { y: vaseY }}
+        className="absolute bottom-[-6%] left-1/2 z-20 w-[min(58vw,520px)] mix-blend-screen"
+        style={still ? { x: '-50%' } : { y: vaseY, x: '-50%' }}
       >
-        <img src="/foyer/vasque-feu.webp" alt="" className="w-full mix-blend-screen" />
+        <img src="/foyer/vasque-feu.webp" alt="" className="w-full" />
       </motion.div>
       {/* couture vers le contenu de l'offre */}
       <div
