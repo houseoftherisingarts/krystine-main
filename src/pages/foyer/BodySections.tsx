@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ChevronDown, X } from 'lucide-react';
 import { Atmosphere, Reveal, Parallax } from '../../components/motion/loeuvre';
 import {
