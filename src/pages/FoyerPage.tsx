@@ -490,7 +490,7 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
         className="absolute bottom-[-4%] left-1/2 z-20 w-[min(66vw,640px)]"
         style={still ? { x: '-50%' } : { y: vaseY, x: '-50%' }}
       >
-        <img src="/foyer/vasque-feu.webp" alt="" className="w-full drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)]" />
+        <img src="/foyer/vasque-feu-cut.webp" alt="" className="w-full drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)]" />
       </motion.div>
       {/* couture vers le contenu de l'offre */}
       <div
