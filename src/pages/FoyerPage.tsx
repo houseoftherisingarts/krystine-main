@@ -3,6 +3,7 @@ import {
   motion,
   AnimatePresence,
   useMotionValue,
+  useScroll,
   useTransform,
   useReducedMotion,
 } from 'framer-motion';
