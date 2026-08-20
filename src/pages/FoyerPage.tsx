@@ -555,25 +555,64 @@ const AppelFinal: React.FC = () => {
       <style>{`@keyframes foyerBreathe{0%,100%{opacity:.75}50%{opacity:1}}`}</style>
       <div className="relative z-10 mx-auto w-full max-w-[1360px]">
         <div className="max-w-3xl">
-          <h2 className="font-serif font-medium leading-[1.08] text-ctext text-[clamp(2.2rem,3.6vw,3.4rem)]">
+          <motion.h2
+            className="font-serif font-medium leading-[1.08] text-ctext text-[clamp(2.2rem,3.6vw,3.4rem)]"
+            initial={reduce ? undefined : { opacity: 0, y: 30, filter: 'blur(6px)' }}
+            whileInView={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 1.2, ease }}
+          >
             {FINAL.title}
-          </h2>
-          <p className="mt-6 max-w-2xl font-serif text-2xl leading-snug text-brassBright">
-            {FINAL.emphasis}
-          </p>
-          <p className="mt-3 font-serif text-xl text-ctextSoft">{FINAL.sub}</p>
+          </motion.h2>
+          <motion.div
+            initial={reduce ? undefined : { opacity: 0, y: 26 }}
+            whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 1.1, ease, delay: 0.18 }}
+          >
+            <p className="mt-6 max-w-2xl font-serif text-2xl leading-snug text-brassBright">
+              {FINAL.emphasis}
+            </p>
+            <p className="mt-3 font-serif text-xl text-ctextSoft">{FINAL.sub}</p>
+          </motion.div>
           <div className="mt-10 space-y-1 font-sans text-[0.95rem] leading-[1.85] text-ctextSoft">
-            {FINAL.lines.map((l) => (
-              <p key={l.slice(0, 20)}>{l}</p>
+            {FINAL.lines.map((l, i) => (
+              <motion.p
+                key={l.slice(0, 20)}
+                initial={reduce ? undefined : { opacity: 0, x: -18 }}
+                whileInView={reduce ? undefined : { opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ duration: 0.8, ease, delay: 0.1 + i * 0.12 }}
+              >
+                {l}
+              </motion.p>
             ))}
           </div>
-          <p className="mt-8 max-w-2xl font-sans text-[0.95rem] leading-[1.85] text-ctext">
+          <motion.p
+            className="mt-8 max-w-2xl font-sans text-[0.95rem] leading-[1.85] text-ctext"
+            initial={reduce ? undefined : { opacity: 0, y: 18 }}
+            whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.9, ease, delay: 0.2 }}
+          >
             {FINAL.closing}
-          </p>
-          <p className="mt-14 font-serif font-semibold leading-[1.08] text-ctext text-[clamp(2.2rem,3.6vw,3.6rem)]">
+          </motion.p>
+          <motion.p
+            className="mt-14 font-serif font-semibold leading-[1.08] text-ctext text-[clamp(2.2rem,3.6vw,3.6rem)]"
+            initial={reduce ? undefined : { opacity: 0, y: 34, filter: 'blur(8px)' }}
+            whileInView={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 1.3, ease }}
+          >
             {FINAL.callout}
-          </p>
-          <div className="mt-8">
+          </motion.p>
+          <motion.div
+            className="mt-8"
+            initial={reduce ? undefined : { opacity: 0, y: 22, filter: 'blur(6px)' }}
+            whileInView={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 1.1, ease, delay: 0.2 }}
+          >
             <p className="font-serif text-4xl font-semibold text-brassBright">{FINAL.price}</p>
             <div className="mt-2 space-y-0.5">
               {FINAL.priceLines.map((l) => (
@@ -582,10 +621,16 @@ const AppelFinal: React.FC = () => {
                 </p>
               ))}
             </div>
-          </div>
-          <div className="mt-9">
+          </motion.div>
+          <motion.div
+            className="mt-9"
+            initial={reduce ? undefined : { opacity: 0, y: 18 }}
+            whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.9, ease, delay: 0.35 }}
+          >
             <Cta label={FINAL.cta} dark />
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
