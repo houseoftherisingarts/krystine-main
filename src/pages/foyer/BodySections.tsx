@@ -550,19 +550,38 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </div>
       </section>
 
-      {/* ═══════ SECTION 2 · L'Histoire du feu (salle d'ambre) ═══════ */}
-      <section
-        className="relative overflow-hidden py-24 md:py-36"
-        style={{ background: 'linear-gradient(180deg, #ede5d7 0%, #f5e8cf 16%, #f1ddb2 58%, #f3e3c2 100%)' }}
-      >
-        <Aura tone="ocre" size={560} className="-left-36 top-4" />
-        <Aura tone="terre" size={420} className="-right-28 bottom-2 opacity-90" />
+      {/* ═══════ SECTION 2 · L'Histoire du feu : la niche de la flamme éternelle,
+          même pierre que le calendrier ═══════ */}
+      <section className="relative overflow-hidden py-24 md:py-36">
+        <div aria-hidden className="absolute inset-0">
+          <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
+          <span
+            className="absolute inset-0"
+            style={{ background: 'linear-gradient(180deg, rgba(237,229,215,0.9) 0%, rgba(243,227,194,0.55) 45%, rgba(237,229,215,0.85) 100%)' }}
+          />
+        </div>
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <div className="grid lg:grid-cols-12 gap-x-12 gap-y-10">
-            <Reveal className="lg:col-span-5">
-              <Eyebrow>{SECTION2.eyebrow}</Eyebrow>
-              <SectionTitle className="mt-5">{SECTION2.title}</SectionTitle>
-            </Reveal>
+          <div className="grid items-start gap-x-14 gap-y-12 lg:grid-cols-12">
+            <div className="lg:col-span-5">
+              <Reveal>
+                <Eyebrow>{SECTION2.eyebrow}</Eyebrow>
+                <SectionTitle className="mt-5">{SECTION2.title}</SectionTitle>
+              </Reveal>
+              {/* la flamme qui ne s'éteint jamais, dans la même céramique que les portes */}
+              <Reveal delay={0.12} className="mt-10 lg:sticky lg:top-24">
+                <div className="relative max-w-[380px] overflow-hidden rounded-[30px] bg-card p-2.5 ring-1 ring-brass/40 shadow-depth">
+                  <img
+                    src="/foyer/niche-flamme.webp"
+                    alt="La flamme de Varanasi : une lampe de cuivre allumée dans une niche de céramique"
+                    loading="lazy"
+                    className="w-full rounded-[22px]"
+                  />
+                </div>
+                <p className="mt-4 font-sans text-[0.8rem] tracking-[0.06em] text-inkSoft">
+                  La flamme qui brûle depuis deux mille cinq cents ans
+                </p>
+              </Reveal>
+            </div>
             <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
               <p
                 className="font-serif font-medium text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug max-w-[38ch]"
