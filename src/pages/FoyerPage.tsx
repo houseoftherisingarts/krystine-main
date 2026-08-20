@@ -569,7 +569,8 @@ const FoyerPage: React.FC = () => {
           atteindre le contenu invisible dessous */}
       <div inert={ready ? undefined : true}>
         <FoyerScene ready={ready} />
-        <BodySections />
+        {/* la feuille des portes monte SUR le feu : aucune coupure crème */}
+        <BodySections overlap={!reduce} />
         <Offre />
         <AppelFinal />
         <footer className="bg-espressoDeep px-6 py-8 text-center">
