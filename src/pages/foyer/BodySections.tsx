@@ -389,7 +389,7 @@ const pzone = (b: [number, number, number, number]) => ({
 const FleurDuFoyer: React.FC = () => {
   const [hover, setHover] = useState<string | null>(null);
   return (
-    <div className="relative mx-auto w-full max-w-4xl">
+    <div className="relative w-full">
       <img
         src="/foyer/fleur-foyer.webp"
         alt="La fleur du Foyer : l'Ayurveda en racines, huit pétales autour du thème du mois"
@@ -480,15 +480,19 @@ export default function BodySections() {
         @media (prefers-reduced-motion: reduce){[style*="auraBreathe"]{animation:none!important}}
       `}</style>
 
-      {/* ═══════ SECTION 4 · Les douze portes (juste après le feu) ═══════ */}
-      <section className="relative overflow-hidden bg-cream3 py-24 md:py-36">
+      {/* ═══════ SECTION 4 · Les douze portes : le feu enchaîne direct sur les portes ═══════ */}
+      <section className="relative overflow-hidden bg-cream3 pb-24 md:pb-36">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-28"
+          className="pointer-events-none absolute inset-x-0 top-0 h-16"
           style={{ background: 'linear-gradient(180deg, #f6f3ee 0%, transparent 100%)' }}
         />
+        <Reveal>
+          <CalendrierAnnee />
+        </Reveal>
+
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <div className="grid items-start gap-x-12 gap-y-8 lg:grid-cols-12">
+          <div className="mt-16 grid items-start gap-x-12 gap-y-8 lg:grid-cols-12">
             <Reveal className="lg:col-span-6">
               <Eyebrow>{SECTION4.eyebrow}</Eyebrow>
               <SectionTitle className="mt-5">{SECTION4.title}</SectionTitle>
@@ -499,14 +503,7 @@ export default function BodySections() {
               </p>
             </Reveal>
           </div>
-        </div>
-
-        <Reveal className="mt-16">
-          <CalendrierAnnee />
-        </Reveal>
-
-        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <div className="mt-16 grid gap-x-12 gap-y-6 lg:grid-cols-2">
+          <div className="mt-12 grid gap-x-12 gap-y-6 lg:grid-cols-2">
             {SECTION4.paragraphs.slice(1).map((p) => (
               <Reveal key={p.slice(0, 24)}>
                 <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[54ch]">{p}</p>
@@ -620,11 +617,14 @@ export default function BodySections() {
             </Reveal>
           </div>
 
-          {/* la fleur : l'Ayurveda en racines, huit pétales qui s'illuminent */}
-          <Reveal className="mt-16">
-            <FleurDuFoyer />
-          </Reveal>
+        </div>
 
+        {/* la fleur : l'Ayurveda en racines, huit pétales qui s'illuminent, pleine largeur */}
+        <Reveal className="mt-16">
+          <FleurDuFoyer />
+        </Reveal>
+
+        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="mt-16 border-t border-brass/25">
             {SECTION5.items.map((it, i) => (
               <Reveal key={it.title}>
