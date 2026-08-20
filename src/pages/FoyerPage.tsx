@@ -664,15 +664,8 @@ const FoyerPage: React.FC = () => {
         {/* la feuille des portes monte SUR le feu : aucune coupure crème */}
         <BodySections overlap={!reduce} />
         <Offre />
+        {/* le feu des braises est le point le plus bas de la page : rien après */}
         <AppelFinal />
-        <footer className="bg-espressoDeep px-6 py-8 text-center">
-          <Link
-            to="/"
-            className="inline-block p-3 font-sans text-[0.62rem] uppercase tracking-[0.28em] text-ctextSoft transition-colors hover:text-brassBright"
-          >
-            Krystine St-Laurent
-          </Link>
-        </footer>
       </div>
     </div>
   );
