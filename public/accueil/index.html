@@ -316,17 +316,22 @@
     .navlinks{display:none}
     .mnav-toggle{display:flex}
 
-    /* HERO : exact copy of the desktop hero, scaled down to fit the width */
-    .hero-frame{display:block;width:100%;overflow:hidden;background:var(--espresso-deep)}
-    .hero{position:relative!important;top:auto!important;left:0;width:1440px;height:840px;min-height:0;transform-origin:top left}
-    .hero .copy{max-width:840px}
-    .hero h1{font-size:3.2rem}
-    .hero .sub{font-size:1.9rem;margin:0;max-width:760px}
-    .hero .lede{font-size:1.7rem;max-width:none}
-    .hero .lede-row{max-width:800px}
-    .hero .h-rule{max-width:640px}
-    .hero .lede-row .sprig{width:38px;height:50px}
-    .hero .cta{font-size:1.3rem;padding:1.2rem 2.7rem}
+    /* HERO mobile : vraie mise en page responsive (le hero desktop n'est plus réduit à l'échelle) */
+    .hero-frame{display:contents}
+    .hero{position:sticky;top:0;min-height:100svh;padding:0;align-items:flex-end}
+    .hero .scene{width:100%;left:0}
+    .hero .scene video{left:50%;right:auto;top:0;transform:translateX(-57%);height:80%;width:auto;min-width:0}
+    .hero .veil{background:linear-gradient(180deg,rgba(22,16,10,.34) 0%,rgba(22,16,10,.22) 22%,rgba(22,16,10,.86) 48%,rgba(22,16,10,.96) 100%)}
+    .hero-inner{padding:14rem 1.5rem 5.6rem}
+    .hero .copy{max-width:none}
+    .hero h1{font-size:clamp(1.45rem,6.2vw,2rem);line-height:1.22;letter-spacing:.06em}
+    .h1-b{margin-top:.8rem}
+    .hero .sub{font-size:1.08rem;line-height:1.5;max-width:none}
+    .hero .lede-row{max-width:none;gap:.9rem}
+    .hero .lede-row .lede{font-size:.98rem;line-height:1.6}
+    .hero .h-rule{max-width:none}
+    .hero .lede-row .sprig{width:26px;height:34px;flex-shrink:0}
+    .hero .cta{font-size:.72rem;padding:.95rem 1.7rem;margin-top:1.4rem}
 
     /* TRILOGY */
     .trilogy{min-height:auto;padding:5rem 0 15rem}
@@ -392,9 +397,8 @@
     .trilogy{padding:3.5rem 0 9rem}
   }
   @media(max-width:480px){
-    h1{font-size:clamp(2.9rem,15vw,3.8rem)}
     .fan{max-width:340px;gap:.6rem}
-    .hero-inner{padding-bottom:2.8rem}
+    .hero-inner{padding-bottom:6rem}
   }
 
 
@@ -492,6 +496,7 @@
   }
 
 </style>
+<style>/* no-italic-rule */ em,i,.italic{font-style:normal!important}</style>
 </head>
 <body>
 
@@ -917,7 +922,7 @@
   (function(){
     var hero=document.querySelector('.hero'), frame=document.querySelector('.hero-frame');
     function setScale(){
-      if(innerWidth>900){ hero.style.transform=''; hero.style.left=''; if(frame) frame.style.height=''; return; }
+      if(innerWidth>0){ hero.style.transform=''; hero.style.left=''; if(frame) frame.style.height=''; return; }
       var s=Math.min(innerWidth/1440, innerHeight/840);
       hero.style.transform='scale('+s+')';
       hero.style.left=((innerWidth-1440*s)/2)+'px';

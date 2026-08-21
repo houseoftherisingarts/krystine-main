@@ -397,7 +397,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
         ))}
         <motion.p
           style={{ opacity: kickerFade }}
-          className="absolute bottom-12 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap font-sans text-[0.72rem] uppercase tracking-[0.26em] text-brassBright"
+          className="absolute bottom-12 left-1/2 z-10 -translate-x-1/2 w-max max-w-[calc(100vw-3rem)] text-center font-sans text-[0.72rem] uppercase tracking-[0.26em] text-brassBright"
         >
           Rien à terminer. Rien à rattraper.
         </motion.p>
@@ -744,7 +744,7 @@ const FoyerPage: React.FC = () => {
     };
   }, []);
   return (
-    <div className="bg-cream">
+    <div className="bg-cream overflow-x-clip">
       <Preloader done={ready} />
       {/* inert tant que le preloader couvre : le clavier ne peut pas
           atteindre le contenu invisible dessous */}

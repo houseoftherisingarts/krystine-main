@@ -284,8 +284,7 @@ const Cover: React.FC = () => (
 
       <h1 className="relative v2-serif font-light leading-[0.94] text-[clamp(3rem,8.6vw,7.6rem)] max-w-[13ch]" style={{ color: C.ink }}>
         <MaskLine delay={0.05}>Votre corps</MaskLine>
-        <MaskLine delay={0.16}>n'est pas fait</MaskLine>
-        <MaskLine delay={0.27}><em className="not-italic" style={{ color: C.sageInk }}>pour cette vitesse.</em></MaskLine>
+        <MaskLine delay={0.16}><em className="not-italic" style={{ color: C.sageInk }}>va moins vite.</em></MaskLine>
       </h1>
 
       <div className="relative mt-10 grid gap-y-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">

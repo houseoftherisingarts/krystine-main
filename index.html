@@ -146,6 +146,13 @@
     </script>
 
     <style>
+      /* no-italic-rule: règle dure d'Alex, jamais d'italique. L'accent passe par la couleur et le poids. */
+      em, i, .italic, [class*="italic"] { font-style: normal !important; }
+      /* touch-target-rule: on touch screens, plain text links and buttons get a 44px hit area without moving a pixel. */
+      @media (pointer: coarse) {
+        a:not(:has(*)), button:not(:has(*)) { position: relative; }
+        a:not(:has(*))::before, button:not(:has(*))::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%); }
+      }
       /* ──────────────────────────────────────────────────────────────
          Origine — signature visuelle
          Éditoriale · organique · ancrée · haut de gamme · silencieuse

@@ -51,3 +51,5 @@ node_modules/
 
 # Graphe de connaissance local (graphify), reconstruit à la demande
 graphify-out/
+scripts/qa/shots/
+scripts/qa/report.json

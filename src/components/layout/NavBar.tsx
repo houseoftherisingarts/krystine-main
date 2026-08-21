@@ -66,7 +66,7 @@ const NavBar: React.FC = () => {
             aria-hidden
             className="h-9 md:h-11 w-auto transition-opacity duration-300 group-hover:opacity-70 dark:invert dark:brightness-[1.5]"
           />
-          <span className="hidden sm:block font-serif text-ink dark:text-ctext text-[1.35rem] md:text-[1.55rem] leading-none tracking-[0.01em] transition-colors duration-300 group-hover:text-brassInk dark:group-hover:text-brassBright">
+          <span className="hidden sm:block xl:hidden 2xl:block font-serif text-ink dark:text-ctext text-[1.35rem] md:text-[1.55rem] leading-none tracking-[0.01em] transition-colors duration-300 group-hover:text-brassInk dark:group-hover:text-brassBright">
             Krystine St-Laurent
           </span>
         </Link>
