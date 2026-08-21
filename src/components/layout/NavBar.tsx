@@ -135,7 +135,7 @@ const NavBar: React.FC = () => {
 
         {/* Controls */}
         <div className="flex items-center gap-1 md:gap-1.5 flex-shrink-0">
-          <IconButton onClick={toggleAudio} title={audioPlaying ? 'Pause' : 'Play'} ariaLabel={audioPlaying ? (lang === 'FR' ? 'Mettre la musique en pause' : 'Pause music') : (lang === 'FR' ? 'Jouer la musique' : 'Play music')}>
+          <IconButton className="hidden sm:flex" onClick={toggleAudio} title={audioPlaying ? 'Pause' : 'Play'} ariaLabel={audioPlaying ? (lang === 'FR' ? 'Mettre la musique en pause' : 'Pause music') : (lang === 'FR' ? 'Jouer la musique' : 'Play music')}>
             {audioPlaying ? (
               <div className="flex gap-[2px] items-end h-3" aria-hidden>
                 {[1, 1.4, 0.8].map((d, i) => (
@@ -145,7 +145,7 @@ const NavBar: React.FC = () => {
             ) : <Music size={15} strokeWidth={1.75} />}
           </IconButton>
 
-          <IconButton onClick={toggleTheme} title={theme === 'light' ? 'Mode sombre' : 'Mode clair'} ariaLabel={theme === 'light' ? (lang === 'FR' ? 'Activer le mode sombre' : 'Switch to dark mode') : (lang === 'FR' ? 'Activer le mode clair' : 'Switch to light mode')}>
+          <IconButton className="hidden sm:flex" onClick={toggleTheme} title={theme === 'light' ? 'Mode sombre' : 'Mode clair'} ariaLabel={theme === 'light' ? (lang === 'FR' ? 'Activer le mode sombre' : 'Switch to dark mode') : (lang === 'FR' ? 'Activer le mode clair' : 'Switch to light mode')}>
             {theme === 'light' ? <Moon size={16} strokeWidth={1.75} /> : <Sun size={16} strokeWidth={1.75} />}
           </IconButton>
 
@@ -276,12 +276,12 @@ const NavBar: React.FC = () => {
   );
 };
 
-const IconButton: React.FC<{ onClick: () => void; title: string; ariaLabel?: string; children: React.ReactNode }> = ({ onClick, title, ariaLabel, children }) => (
+const IconButton: React.FC<{ onClick: () => void; title: string; ariaLabel?: string; className?: string; children: React.ReactNode }> = ({ onClick, title, ariaLabel, className = '', children }) => (
   <button
     onClick={onClick}
     title={title}
     aria-label={ariaLabel ?? title}
-    className="relative w-11 h-11 flex items-center justify-center rounded-full text-ink/70 dark:text-ctext/70 hover:text-brassInk dark:hover:text-brassBright hover:bg-brass/8 transition-colors"
+    className={`relative w-11 h-11 flex items-center justify-center rounded-full text-ink/70 dark:text-ctext/70 hover:text-brassInk dark:hover:text-brassBright hover:bg-brass/8 transition-colors ${className}`}
   >
     {children}
   </button>
