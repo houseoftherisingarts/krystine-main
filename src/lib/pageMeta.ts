@@ -1,3 +1,4 @@
+import { tr } from './i18n/lang';
 // Per-route SEO metadata for the SPA. index.html carries the defaults for
 // the home; every client-side route below overrides document.title, the
 // meta description and the canonical URL so pages stop declaring themselves
@@ -93,7 +94,8 @@ function setNamedMeta(attr: 'name' | 'property', key: string, value: string) {
 export function applyPageMeta(pathname: string) {
   // Collection sub-pages inherit the boutique meta; unknown routes fall back.
   const base = pathname.startsWith('/boutique/') ? ROUTES['/boutique'] : ROUTES[pathname];
-  const meta = base || DEFAULT_META;
+  const raw = base || DEFAULT_META;
+  const meta = { title: tr(raw.title), description: tr(raw.description) };
 
   document.title = meta.title;
   setNamedMeta('name', 'description', meta.description);

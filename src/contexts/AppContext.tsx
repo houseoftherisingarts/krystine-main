@@ -1,3 +1,4 @@
+import { getLang, setLang as persistLang } from '../lib/i18n/lang';
 import React, { createContext, useContext, useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import type { User } from 'firebase/auth';
 import { subscribeToAuthState, isAdminUser, handleRedirectResult } from '../firebase/auth';
@@ -96,7 +97,8 @@ const AUDIO_URL = 'https://storage.googleapis.com/inspirata/Base%20site/homecomi
 // ───────────────────────────────────────────────────────────────────────────
 
 const UIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [lang, setLang] = useState<Lang>('FR');
+  const [lang] = useState<Lang>(() => getLang() === 'en' ? 'EN' : 'FR');
+  const setLang = useCallback((l: Lang) => { if (l !== lang) persistLang(l === 'EN' ? 'en' : 'fr'); }, [lang]);
   const [theme, setTheme] = useState<Theme>('light');
   const [audioPlaying, setAudioPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);

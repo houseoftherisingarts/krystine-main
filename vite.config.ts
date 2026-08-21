@@ -30,13 +30,30 @@ function serveStaticApps(): Plugin {
   };
 }
 
+// Route every app-side `react/jsx-runtime` import through the i18n shim
+// (src/lib/i18n/jsx-runtime.ts) so JSX strings are translated at render time.
+// node_modules keep the real runtime.
+function i18nJsxRuntime(): Plugin {
+  const shim = path.resolve(__dirname, 'src/lib/i18n');
+  return {
+    name: 'i18n-jsx-runtime',
+    enforce: 'pre',
+    resolveId(source, importer) {
+      if (!importer || importer.includes('node_modules') || importer.startsWith(shim)) return null;
+      if (source === 'react/jsx-runtime') return path.join(shim, 'jsx-runtime.ts');
+      if (source === 'react/jsx-dev-runtime') return path.join(shim, 'jsx-dev-runtime.ts');
+      return null;
+    },
+  };
+}
+
 export default defineConfig(() => {
     return {
       server: {
         port: 3000,
         host: '0.0.0.0',
       },
-      plugins: [react(), serveStaticApps()],
+      plugins: [i18nJsxRuntime(), react(), serveStaticApps()],
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),

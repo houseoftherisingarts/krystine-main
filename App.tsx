@@ -8,6 +8,7 @@ import Footer from './src/components/layout/Footer';
 import CartDrawer from './src/components/layout/CartDrawer';
 import ConsentBanner from './src/components/layout/ConsentBanner';
 import SignInModal from './src/components/layout/SignInModal';
+import LangPill from './src/components/layout/LangPill';
 import ErrorBoundary from './src/components/layout/ErrorBoundary';
 import EditModeBar from './src/components/edit/EditModeBar';
 import EditOverlay from './src/components/edit/EditOverlay';
@@ -165,6 +166,7 @@ const App: React.FC = () => (
       <AnalyticsPageViews />
       <PageMeta />
       <Chrome />
+      <LangPill />
       <EditModeBar />
       <EditOverlay />
       <ErrorBoundary>
