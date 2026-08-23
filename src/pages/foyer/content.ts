@@ -14,16 +14,14 @@ export interface FaqItem {
 // SECTION 2 · L'Histoire du feu
 export const SECTION2 = {
   eyebrow: 'Il était une fois',
-  title: 'L’Histoire du feu',
-  lead: 'Il était une fois, dans un pays lointain du continent indien, une ville appelée Varanasi.',
+  title: 'L’histoire du feu',
+  lead: 'Il était une fois, à Varanasi, une flamme gardée vivante depuis plus de deux mille cinq cents ans.',
   paragraphs: [
-    'Dans cette ville, une flamme brûle sans arrêt depuis plus de deux mille cinq cents ans.',
-    'Des familles se passent cette responsabilité, de père en fils, pour que cette lumière ne s’éteigne jamais. Jour et nuit, quelqu’un veille sur elle.',
-    'Chaque gardien passe le relais au suivant, comme on se passe un secret trop important pour être oublié.',
-    'Et puis, la flamme est devenue le centre de la maison, le foyer. L’endroit où la famille se rassemblait, où les anciens racontaient les histoires, où les enfants écoutaient, les yeux grands ouverts.',
+    'Jour et nuit, des familles se transmettent la responsabilité de veiller sur elle, afin que sa lumière ne s’éteigne jamais.',
+    'Autour du feu, nous nous rassemblons. Les anciens racontent. Les enfants écoutent.',
   ],
   closingLead: 'Le Foyer d’Origine',
-  closing: 'est né de ce même mouvement humain : revenir au cœur, se réchauffer, se nourrir ensemble et transmettre, par les histoires, ce qui compte assez pour ne pas être oublié.',
+  closing: 'porte ce même mouvement humain : se rassembler, se nourrir et garder vivant ce qui compte assez pour ne pas être oublié.',
 };
 
 // SECTION 3 · Le rythme
@@ -49,20 +47,6 @@ export const BIENVENUE = {
   bridge: 'Douze portes à ouvrir…',
 };
 
-// SECTION 4 · Les douze portes
-export const SECTION4 = {
-  eyebrow: 'Une année à découvrir',
-  title: 'Douze portes autour du même feu',
-  paragraphs: [
-    'L’année éditoriale du Foyer se déroule du 15 septembre au 15 août.',
-    'Chaque mois, une nouvelle porte s’ouvre. Derrière elle se trouve une composition créée pour le moment de l’année que nous traversons : une histoire, une plante, un ingrédient, une œuvre, une musique, un sage, une rencontre avec l’Ayurveda ou une autre découverte apportée autour du feu.',
-    'À l’intérieur de la porte mensuelle, une nouvelle ouverture apparaît chaque semaine. Vous ne recevez pas tout d’un seul coup. Vous avez le temps de découvrir ce qui a été choisi, de comprendre pourquoi cela entre dans Le Foyer maintenant et de voir ce que vous souhaitez en garder.',
-    'En entrant en cours d’année, vous accédez immédiatement aux portes déjà ouvertes ainsi qu’aux nouvelles ouvertures déposées jusqu’au 15 août.',
-    'Votre accès personnel demeure actif pendant douze mois à partir de votre inscription. Après le 15 août, les contenus déjà déposés restent accessibles jusqu’à la fin de votre période d’accès.',
-  ],
-  closing: 'La porte ouvre une question. Derrière la porte, on rencontre de la matière.',
-  triptyque: 'Découvrir · Relier · Ressentir',
-};
 
 // SECTION 5 · Ce que le Foyer rend possible
 export const SECTION5 = {
@@ -136,23 +120,22 @@ export const SECTION7 = {
 // SECTION 8 · Votre attention
 export const SECTION8 = {
   eyebrow: 'Une année composée avec intention',
-  title: 'Votre attention est votre monnaie d’échange la plus précieuse',
+  title: 'Notre attention est notre monnaie d’échange la plus précieuse.',
   subtitle: 'Elle porte un pouvoir de création immense.',
+  hook: 'Et pourtant, presque tout aujourd’hui cherche à la capter.',
   situations: [
-    'Vous prononcez le mot « stress » dans une conversation. Un peu plus tard, une série de publicités apparaît.',
-    'Vous vous arrêtez quelques secondes sur une vidéo. Le même sujet commence à vous suivre pendant des semaines.',
-    'Vous cherchez une réponse simple. Vous recevez des protocoles, des produits et des experts qui se contredisent.',
+    ['Nous prononçons le mot « stress » dans une conversation.', 'Un peu plus tard, une série de publicités apparaît.'],
+    ['Nous nous arrêtons quelques secondes sur une vidéo.', 'Le même sujet commence à nous suivre pendant des semaines.'],
+    ['Nous cherchons une réponse simple.', 'Nous recevons des protocoles, des produits et des experts qui se contredisent.'],
   ],
-  consequenceTitle: 'Conséquence',
-  consequence: [
-    'À force d’être sollicitée, observée et orientée, il devient difficile de distinguer le vrai du faux, de reconnaître ce qui mérite notre confiance et de savoir si un nouvel élan vient réellement de nous.',
-    'Nous accumulons. Nous enregistrons pour plus tard. Nous hésitons. Nous repoussons certaines décisions. Notre capacité à découvrir se retrouve peu à peu enfermée dans ce que les plateformes ont déjà prévu de nous montrer.',
+  turnTitle: 'Le Foyer fait l’inverse.',
+  turn: [
+    'Chaque semaine, quelque chose est choisi avec intention.',
+    'Pas pour ajouter du bruit.',
+    'Pour vous mettre en présence de ce qui mérite peut-être votre attention.',
   ],
-  protectionTitle: 'Le Foyer protège une autre qualité d’attention',
-  protection: [
-    'Chaque élément du Foyer possède une place, un moment et une raison d’être.',
-    'La recherche, le choix, la mise en contexte et la composition sont portés à l’intérieur du Foyer. Vous pouvez recevoir ce qui s’ouvre, explorer ce qui vous appelle et décider de ce que vous souhaitez laisser entrer dans votre vie.',
-  ],
+  triptyque: 'Découvrir · Relier · Ressentir',
+  closing: 'Le Foyer ne demande pas davantage d’attention. Il prend soin de ce qui mérite d’en recevoir.',
 };
 
 // SECTION 9 · L'offre

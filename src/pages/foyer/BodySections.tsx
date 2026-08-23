@@ -6,7 +6,6 @@ import {
   SECTION2,
   SECTION3,
   BIENVENUE,
-  SECTION4,
   SECTION5,
   SECTION6,
   SECTION7,
@@ -571,86 +570,172 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         />
         <Ornament motto className="-mt-4 mb-2" />
 
-        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <div className="mt-12 grid items-start gap-x-12 gap-y-8 lg:grid-cols-12">
-            <Reveal className="lg:col-span-6">
-              <Eyebrow>{SECTION4.eyebrow}</Eyebrow>
-              <SectionTitle className="mt-5">{SECTION4.title}</SectionTitle>
-            </Reveal>
-            <Reveal delay={0.08} className="lg:col-span-5 lg:col-start-8">
-              <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[44ch]">
-                {SECTION4.paragraphs[0]}
-              </p>
-            </Reveal>
-          </div>
-          <div className="mt-12 grid gap-x-12 gap-y-6 lg:grid-cols-2">
-            {SECTION4.paragraphs.slice(1).map((p) => (
-              <Reveal key={p.slice(0, 24)}>
-                <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[54ch]">{p}</p>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal className="mt-14">
-            <p className="font-serif font-medium text-brassInk text-[clamp(1.25rem,2.1vw,1.65rem)] leading-snug">
-              {SECTION4.closing}
-            </p>
-            <p className="mt-5 font-sans text-[0.62rem] uppercase tracking-[0.32em] text-brassInk/80">
-              {SECTION4.triptyque}
-            </p>
-          </Reveal>
-        </div>
       </section>
 
-      {/* ═══════ SECTION 2 · L'Histoire du feu : la niche de la flamme éternelle,
-          même pierre que le calendrier ═══════ */}
-      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-20' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
+      {/* ═══════ SECTION 3 · Notre attention : juste après les douze portes ═══════ */}
+      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-[15]' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
         <div aria-hidden className="absolute inset-0">
           <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
           <span
             className="absolute inset-0"
-            style={{ background: 'linear-gradient(180deg, rgba(237,229,215,0.9) 0%, rgba(243,227,194,0.55) 45%, rgba(237,229,215,0.85) 100%)' }}
+            style={{ background: 'linear-gradient(180deg, rgba(241,235,224,0.88) 0%, rgba(246,243,238,0.78) 100%)' }}
           />
         </div>
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <div className="grid items-start gap-x-14 gap-y-12 lg:grid-cols-12">
-            <div className="lg:col-span-5">
-              <Reveal>
-                <Eyebrow>{SECTION2.eyebrow}</Eyebrow>
-                <SectionTitle className="mt-5">{SECTION2.title}</SectionTitle>
-              </Reveal>
-              {/* la flamme qui ne s'éteint jamais, dans la même céramique que les portes */}
-              <Reveal delay={0.12} className="mt-10 lg:sticky lg:top-24">
-                <div className="relative max-w-[380px] overflow-hidden rounded-[30px] bg-card p-2.5 ring-1 ring-brass/40 shadow-depth">
-                  <img
-                    src="/foyer/niche-flamme.webp"
-                    alt="La flamme de Varanasi : une lampe de cuivre allumée dans une niche de céramique"
-                    loading="lazy"
-                    className="w-full rounded-[22px]"
-                  />
-                </div>
-                <p className="mt-4 font-sans text-[0.8rem] tracking-[0.06em] text-inkSoft">
-                  La flamme qui brûle depuis deux mille cinq cents ans
-                </p>
-              </Reveal>
-            </div>
-            <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
-              <p
-                className="font-serif font-medium text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug max-w-[38ch]"
-                style={{ color: TONE_INK.terre }}
-              >
-                {SECTION2.lead}
+          <Ornament className="mb-16" />
+          <div className="grid items-end gap-x-14 gap-y-8 lg:grid-cols-12">
+            <Reveal className="lg:col-span-8">
+              <Eyebrow>{SECTION8.eyebrow}</Eyebrow>
+              <h2 className="mt-6 font-serif font-medium leading-[1.08] text-ink text-[clamp(1.75rem,3.4vw,3.05rem)]">
+                {SECTION8.title}
+              </h2>
+            </Reveal>
+            <Reveal delay={0.1} className="lg:col-span-4 lg:pb-2">
+              <p className="font-serif text-ink text-[clamp(1.2rem,1.8vw,1.5rem)] leading-snug max-w-[30ch]">
+                {SECTION8.subtitle}
               </p>
-              {SECTION2.paragraphs.map((p) => (
-                <p key={p.slice(0, 24)} className="mt-6 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[52ch]">
+              <p className="mt-4 font-serif text-brassInk text-[clamp(1.2rem,1.8vw,1.5rem)] leading-snug max-w-[30ch]">
+                {SECTION8.hook}
+              </p>
+            </Reveal>
+          </div>
+
+          {/* les trois situations : pigments du moodboard sur papier fait main */}
+          <div className="mt-16 grid gap-6 md:grid-cols-3">
+            {SECTION8.situations.map((sit, i) => {
+              const tone: AuraTone = (['terre', 'bleu', 'prune'] as AuraTone[])[i];
+              const pigment = ['pigment-terre', 'pigment-bleu', 'pigment-prune'][i];
+              return (
+                <Reveal key={sit[0].slice(0, 20)} delay={i * 0.18}>
+                  <div
+                    className="relative h-full overflow-hidden rounded-[30px] border p-8 shadow-depth"
+                    style={{ borderColor: `rgba(${AURAS[tone]},0.35)` }}
+                  >
+                    <img
+                      src={`/foyer/${pigment}.webp`}
+                      alt=""
+                      aria-hidden
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                    <span
+                      aria-hidden
+                      className="absolute inset-0"
+                      style={{ background: 'linear-gradient(180deg, rgba(250,247,240,0.15) 0%, rgba(250,247,240,0.55) 78%)' }}
+                    />
+                    <div className="relative">
+                      <span
+                        className="font-sans text-[0.68rem] tracking-[0.2em] tabular-nums"
+                        style={{ color: TONE_INK[tone] }}
+                      >
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <p className="mt-4 font-sans text-[0.95rem] leading-[1.8] text-ink">{sit[0]}</p>
+                      <p className="mt-3 font-sans text-[0.92rem] leading-[1.8] text-inkSoft">{sit[1]}</p>
+                    </div>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+
+          {/* le retournement : ce que le Foyer fait de l'attention */}
+          <div className="mt-20 grid gap-x-14 gap-y-10 border-t border-brass/25 pt-14 lg:grid-cols-12">
+            <Reveal className="lg:col-span-6">
+              <h3 className="font-serif font-medium leading-[1.06] text-espresso text-[clamp(2.1rem,5vw,4rem)]">
+                {SECTION8.turnTitle}
+              </h3>
+              <p className="mt-8 font-sans text-[0.62rem] uppercase tracking-[0.32em] text-brassInk">
+                {SECTION8.triptyque}
+              </p>
+            </Reveal>
+            <Reveal delay={0.14} className="lg:col-span-5 lg:col-start-8">
+              {SECTION8.turn.map((p, i) => (
+                <p
+                  key={p.slice(0, 24)}
+                  className={`font-sans text-[0.98rem] leading-[1.85] max-w-[44ch] ${i ? 'mt-4 text-inkSoft' : 'text-ink'}`}
+                >
                   {p}
                 </p>
               ))}
-              <p className="mt-10 font-serif font-medium text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[46ch]">
-                {SECTION2.closingLead} {SECTION2.closing}
+              <p className="mt-10 font-serif font-medium text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[40ch]">
+                {SECTION8.closing}
               </p>
             </Reveal>
           </div>
         </div>
+      </section>
+
+      {/* ═══════ SECTION 4 · L'histoire du feu : le chapitre sombre de la page,
+          la flamme de Varanasi pleine hauteur, la seule rupture du parcours crème ═══════ */}
+      <section
+        className={`relative overflow-hidden bg-espressoDeep ${overlap ? 'z-20' : ''} ${cover}`}
+        style={pin}
+        data-pin-sheet
+      >
+        <div className="grid lg:min-h-[86vh] lg:grid-cols-2">
+          {/* la flamme, bord à bord */}
+          <div className="relative h-[58vh] overflow-hidden lg:h-auto">
+            <img
+              src="/foyer/niche-flamme.webp"
+              alt="La flamme de Varanasi : une lampe de cuivre allumée dans une niche de céramique"
+              loading="lazy"
+              className="foyer-braise absolute inset-0 h-full w-full object-cover"
+            />
+            <span
+              aria-hidden
+              className="absolute inset-0"
+              style={{
+                background:
+                  'radial-gradient(58% 46% at 50% 52%, rgba(220,184,116,0.22), transparent 72%)',
+              }}
+            />
+            {/* la flamme se fond dans le noir du texte, jamais de bord net */}
+            <span
+              aria-hidden
+              className="absolute inset-x-0 bottom-0 h-32 lg:hidden"
+              style={{ background: 'linear-gradient(180deg, transparent 0%, #16100a 100%)' }}
+            />
+            <span
+              aria-hidden
+              className="absolute inset-y-0 right-0 hidden w-24 lg:block"
+              style={{ background: 'linear-gradient(90deg, transparent 0%, #16100a 100%)' }}
+            />
+          </div>
+
+          {/* le récit */}
+          <div className="flex items-center px-6 py-20 md:px-12 md:py-28 lg:px-16 xl:px-24">
+            <div className="max-w-[46ch]">
+              <Reveal>
+                <Eyebrow on="dark">{SECTION2.eyebrow}</Eyebrow>
+                <SectionTitle on="dark" className="mt-6">
+                  {SECTION2.title}
+                </SectionTitle>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <p className="mt-9 font-serif font-medium text-ctext text-[clamp(1.45rem,2.6vw,2.05rem)] leading-[1.28]">
+                  {SECTION2.lead}
+                </p>
+              </Reveal>
+              {SECTION2.paragraphs.map((p, i) => (
+                <Reveal key={p.slice(0, 24)} delay={0.18 + i * 0.08}>
+                  <p className="mt-7 font-sans text-[0.98rem] leading-[1.9] text-ctextSoft">{p}</p>
+                </Reveal>
+              ))}
+              <Reveal delay={0.34}>
+                <span className="mt-12 block h-px w-16 bg-brass" aria-hidden />
+                <p className="mt-7 font-serif font-medium text-brassBright text-[clamp(1.2rem,2vw,1.6rem)] leading-snug">
+                  {SECTION2.closingLead} {SECTION2.closing}
+                </p>
+              </Reveal>
+            </div>
+          </div>
+        </div>
+        <style>{`
+          @keyframes foyerBraise { 0%,100% { transform: scale(1); } 50% { transform: scale(1.035); } }
+          .foyer-braise { animation: foyerBraise 11s ease-in-out infinite; transform-origin: 50% 55%; }
+          @media (prefers-reduced-motion: reduce) { .foyer-braise { animation: none; } }
+        `}</style>
       </section>
 
       {/* ═══════ SECTION 3 · Le rythme : l'étagère des rituels de la semaine,
@@ -884,96 +969,6 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
                 </div>
               </div>
               <p className="mt-4 font-sans text-[0.8rem] tracking-[0.06em] text-inkSoft">{SECTION7.photoCaption}</p>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════ SECTION 8 · Votre attention (s'anime au défilement) ═══════ */}
-      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-[52]' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
-        <div aria-hidden className="absolute inset-0">
-          <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
-          <span
-            className="absolute inset-0"
-            style={{ background: 'linear-gradient(180deg, rgba(241,235,224,0.88) 0%, rgba(246,243,238,0.78) 100%)' }}
-          />
-        </div>
-        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <Ornament className="mb-16" />
-          {/* entête éditoriale : le titre porte la section, le souffle à droite */}
-          <div className="grid items-end gap-x-14 gap-y-6 lg:grid-cols-12">
-            <Reveal className="lg:col-span-8">
-              <Eyebrow>{SECTION8.eyebrow}</Eyebrow>
-              <h2 className="mt-6 font-serif font-medium leading-[1.12] text-ink text-[clamp(1.55rem,3.6vw,3.2rem)]">
-                {SECTION8.title}
-              </h2>
-            </Reveal>
-            <Reveal delay={0.1} className="lg:col-span-4 lg:pb-2">
-              <p className="font-serif text-brassInk text-[clamp(1.35rem,2.2vw,1.8rem)] leading-snug">
-                {SECTION8.subtitle}
-              </p>
-            </Reveal>
-          </div>
-
-          {/* les trois situations : pigments du moodboard sur papier fait main */}
-          <div className="mt-16 grid gap-6 md:grid-cols-3">
-            {SECTION8.situations.map((sit, i) => {
-              const tone: AuraTone = (['terre', 'bleu', 'prune'] as AuraTone[])[i];
-              const pigment = ['pigment-terre', 'pigment-bleu', 'pigment-prune'][i];
-              return (
-                <Reveal key={sit.slice(0, 20)} delay={i * 0.18}>
-                  <div
-                    className="relative h-full overflow-hidden rounded-[30px] border p-8 shadow-depth"
-                    style={{ borderColor: `rgba(${AURAS[tone]},0.35)` }}
-                  >
-                    <img
-                      src={`/foyer/${pigment}.webp`}
-                      alt=""
-                      aria-hidden
-                      loading="lazy"
-                      className="absolute inset-0 h-full w-full object-cover"
-                    />
-                    <span
-                      aria-hidden
-                      className="absolute inset-0"
-                      style={{ background: 'linear-gradient(180deg, rgba(250,247,240,0.15) 0%, rgba(250,247,240,0.55) 78%)' }}
-                    />
-                    <div className="relative">
-                      <span
-                        className="font-sans text-[0.68rem] tracking-[0.2em] tabular-nums"
-                        style={{ color: TONE_INK[tone] }}
-                      >
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
-                      <p className="mt-4 font-sans text-[0.92rem] leading-[1.85] text-ink">{sit}</p>
-                    </div>
-                  </div>
-                </Reveal>
-              );
-            })}
-          </div>
-
-          {/* conséquence | protection : deux colonnes pleine largeur */}
-          <div className="mt-20 grid gap-x-14 gap-y-14 border-t border-brass/25 pt-14 lg:grid-cols-2">
-            <Reveal delay={0.1}>
-              <p className="font-sans text-[0.68rem] uppercase tracking-[0.22em] text-brassInk">
-                {SECTION8.consequenceTitle}
-              </p>
-              {SECTION8.consequence.map((p) => (
-                <p key={p.slice(0, 24)} className="mt-5 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[58ch]">
-                  {p}
-                </p>
-              ))}
-            </Reveal>
-            <Reveal delay={0.2}>
-              <h3 className="font-serif font-medium text-ink text-[clamp(1.5rem,2.6vw,2.1rem)] leading-snug max-w-[24ch]">
-                {SECTION8.protectionTitle}
-              </h3>
-              {SECTION8.protection.map((p) => (
-                <p key={p.slice(0, 24)} className="mt-5 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[58ch]">
-                  {p}
-                </p>
-              ))}
             </Reveal>
           </div>
         </div>
