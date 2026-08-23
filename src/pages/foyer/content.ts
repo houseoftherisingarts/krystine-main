@@ -52,7 +52,8 @@ export const SECTION4 = {
     'En entrant en cours d’année, vous accédez immédiatement aux portes déjà ouvertes ainsi qu’aux nouvelles ouvertures déposées jusqu’au 15 août.',
     'Votre accès personnel demeure actif pendant douze mois à partir de votre inscription. Après le 15 août, les contenus déjà déposés restent accessibles jusqu’à la fin de votre période d’accès.',
   ],
-  closing: 'Une porte s’ouvre. Une rencontre commence. Le feu demeure au centre.',
+  closing: 'La porte ouvre une question. Derrière la porte, on rencontre de la matière.',
+  triptyque: 'Découvrir · Relier · Ressentir',
 };
 
 // SECTION 5 · Ce que le Foyer rend possible

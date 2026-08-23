@@ -161,21 +161,21 @@ interface Porte {
   src: string;
   mouvement: string;
   theme: string;
-  apercu: string;
+  question: string;
 }
 const PORTES: Porte[] = [
-  { n: 'janvier', mois: 'Janvier', b: [88, 143, 334, 404], src: 'porte-janvier-cutout', mouvement: 'Après l’abondance', theme: 'Retrouver une mesure qui nous ressemble', apercu: 'Une histoire de mesure, un geste de table et un regard sur ce qui suffit.' },
-  { n: 'fevrier', mois: 'Février', b: [333, 128, 577, 404], src: 'porte-fevrier-cutout', mouvement: 'Plein hiver', theme: 'Protéger ses réserves sans se retirer du monde', apercu: 'Une huile, une histoire et une rencontre autour de ce qui nous soutient.' },
-  { n: 'mars', mois: 'Mars', b: [88, 406, 334, 662], src: 'porte-mars-cutout', mouvement: 'Premier dégel', theme: 'Remettre en circulation ce qui stagnait', apercu: 'Une plante, une rivière et une histoire de remise en mouvement.' },
-  { n: 'avril', mois: 'Avril', b: [333, 406, 577, 662], src: 'porte-avril-cutout', mouvement: 'Accumulation du printemps', theme: 'Alléger sans entrer dans la punition', apercu: 'Une recette, une plante et une règle de détox à regarder autrement.' },
-  { n: 'mai', mois: 'Mai', b: [88, 641, 334, 907], src: 'porte-mai-cutout', mouvement: 'Retour des odeurs et des couleurs', theme: 'Réapprendre à recevoir par les sens', apercu: 'Une fleur, un son et une rencontre sensorielle.' },
-  { n: 'juin', mois: 'Juin', b: [333, 638, 577, 907], src: 'porte-juin-cutout', mouvement: 'Expansion et longues journées', theme: 'Recevoir davantage sans se disperser', apercu: 'Une histoire de lumière, une boisson et un regard sur l’ambition.' },
-  { n: 'juillet', mois: 'Juillet', b: [1086, 128, 1330, 404], src: 'porte-juillet-cutout', mouvement: 'Chaleur installée', theme: 'Habiter l’intensité sans se brûler', apercu: 'L’eau, le feu, les aliments et les nuits d’été.' },
-  { n: 'aout', mois: 'Août', b: [1328, 143, 1572, 404], src: 'porte-aout-cutout', mouvement: 'Récolte et prochaine transition', theme: 'Reconnaître ce qui mérite d’être conservé', apercu: 'Des semences, des conserves et des gestes qui se transmettent.' },
-  { n: 'septembre', mois: 'Septembre', b: [1085, 408, 1332, 662], src: 'porte-sept-cutout', mouvement: 'Changement de rythme', theme: 'Changer de cadence sans se perdre', apercu: 'Thoreau, le sommeil et une histoire de changement de rythme.' },
-  { n: 'octobre', mois: 'Octobre', b: [1328, 406, 1572, 662], src: 'porte-octobre-cutout', mouvement: 'Refroidissement et dessèchement', theme: 'Se préparer avant d’être épuisée', apercu: 'Des racines, des épices, une huile et les gestes qui précèdent le froid.' },
-  { n: 'novembre', mois: 'Novembre', b: [1086, 641, 1330, 907], src: 'porte-novembre-cutout', mouvement: 'Baisse de lumière', theme: 'Nourrir le feu lorsque l’élan diminue', apercu: 'Une histoire, une cuisson et une rencontre autour du feu.' },
-  { n: 'decembre', mois: 'Décembre', b: [1328, 638, 1572, 907], src: 'porte-decembre-cutout', mouvement: 'Rassemblement et transmission', theme: 'Ce que nous choisissons de garder et de transmettre', apercu: 'Des récits familiaux, de la musique et des gestes transmis autour du feu.' },
+  { n: 'septembre', mois: 'Septembre', b: [1085, 408, 1332, 662], src: 'porte-sept-cutout', mouvement: 'Le rythme change', theme: 'Revenir à son propre rythme', question: 'Et si le corps remarquait le changement de rythme avant nous?' },
+  { n: 'octobre', mois: 'Octobre', b: [1328, 406, 1572, 662], src: 'porte-octobre-cutout', mouvement: 'L’air change', theme: 'Élaguer pour voir', question: 'Et si ce que nous gardons par habitude nous empêchait de voir ce qui compte vraiment?' },
+  { n: 'novembre', mois: 'Novembre', b: [1086, 641, 1330, 907], src: 'porte-novembre-cutout', mouvement: 'Les nuits allongent', theme: 'Nourrir ce qui compte', question: 'Tout ce qui nous réchauffe ne nous nourrit pas forcément de la même façon.' },
+  { n: 'decembre', mois: 'Décembre', b: [1328, 638, 1572, 907], src: 'porte-decembre-cutout', mouvement: 'Fin de cycle', theme: 'Choisir ce que l’on emporte', question: 'Et si ce que nous choisissons de garder disait quelque chose de ce que nous voulons nourrir ensuite?' },
+  { n: 'janvier', mois: 'Janvier', b: [88, 143, 334, 404], src: 'porte-janvier-cutout', mouvement: 'Renouveau', theme: 'L’art de choisir, ou de rechoisir', question: 'Et si ce qui mérite notre oui était parfois quelque chose que nous avions déjà choisi?' },
+  { n: 'fevrier', mois: 'Février', b: [333, 128, 577, 404], src: 'porte-fevrier-cutout', mouvement: 'Au cœur de l’hiver', theme: 'Ce que l’amour exige parfois', question: 'Et si s’aimer passait aussi par les choix que personne ne voit?' },
+  { n: 'mars', mois: 'Mars', b: [88, 406, 334, 662], src: 'porte-mars-cutout', mouvement: 'Premier dégel', theme: 'Activer sans brusquer', question: 'Et si ce qui recommence à circuler n’avait pas besoin d’être poussé?' },
+  { n: 'avril', mois: 'Avril', b: [333, 406, 577, 662], src: 'porte-avril-cutout', mouvement: 'La vie qui émerge', theme: 'Choisir ce qui mérite de grandir', question: 'Tout ce qui peut grandir ne mérite pas forcément notre énergie.' },
+  { n: 'mai', mois: 'Mai', b: [88, 641, 334, 907], src: 'porte-mai-cutout', mouvement: 'Le monde reprend ses couleurs', theme: 'Ouvrir sans se disperser', question: 'Quand tout nous appelle, comment reconnaître ce qui mérite vraiment notre attention?' },
+  { n: 'juin', mois: 'Juin', b: [333, 638, 577, 907], src: 'porte-juin-cutout', mouvement: 'Les jours s’étirent', theme: 'Recevoir ce qui est là', question: 'Que devient notre regard lorsque, pour une fois, rien ne manque?' },
+  { n: 'juillet', mois: 'Juillet', b: [1086, 128, 1330, 404], src: 'porte-juillet-cutout', mouvement: 'La saison de feu', theme: 'Ce que le feu révèle', question: 'Et si l’intensité révélait quelque chose que la modération nous permet de ne pas voir?' },
+  { n: 'aout', mois: 'Août', b: [1328, 143, 1572, 404], src: 'porte-aout-cutout', mouvement: 'La lumière change déjà', theme: 'Savoir ce que l’on laisse', question: 'Et si avancer demandait parfois moins de décider où aller que de reconnaître ce qui est terminé?' },
 ];
 const MENU_BOX: [number, number, number, number] = [1520, 42, 1620, 130];
 const zone = (b: [number, number, number, number]) => ({
@@ -356,7 +356,7 @@ const CalendrierAnnee: React.FC = () => {
             <h3 className="mt-4 font-serif font-medium leading-[1.15] text-espresso text-[clamp(1.4rem,2.6vw,2.1rem)]">
               {ouverte.theme}
             </h3>
-            <p className="mt-4 font-sans text-[0.92rem] leading-[1.8] text-ink">{ouverte.apercu}</p>
+            <p className="mt-4 font-sans text-[0.92rem] leading-[1.8] text-ink">{ouverte.question}</p>
             <a
               href="/liste-attente?programme=foyer"
               className="mt-6 inline-block border-b border-brassInk/60 pb-1 font-sans text-[0.7rem] uppercase tracking-[0.22em] text-brassInk transition-colors hover:text-espresso"
@@ -378,7 +378,7 @@ const CalendrierAnnee: React.FC = () => {
             </h3>
             <p className="mt-4 font-sans text-[0.92rem] leading-[1.8] text-ink">
               Chaque porte porte un mois de l’année. Ouvrez celle qui vous appelle : elle révèle le
-              mouvement de la saison, le thème du mois et un aperçu de ce qui vous y attend.
+              mouvement de la saison, le thème du mois et la question qui l’ouvre.
             </p>
           </Halo>
         )}
@@ -569,6 +569,9 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
           <Reveal className="mt-14">
             <p className="font-serif font-medium text-brassInk text-[clamp(1.25rem,2.1vw,1.65rem)] leading-snug">
               {SECTION4.closing}
+            </p>
+            <p className="mt-5 font-sans text-[0.62rem] uppercase tracking-[0.32em] text-brassInk/80">
+              {SECTION4.triptyque}
             </p>
           </Reveal>
         </div>
