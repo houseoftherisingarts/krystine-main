@@ -41,6 +41,14 @@ export const SECTION3 = {
   closing: 'On ne suit pas Le Foyer. On y revient.',
 };
 
+// BIENVENUE · l'arrivée dans le Foyer, entre la scène du feu et les douze portes
+export const BIENVENUE = {
+  eyebrow: 'Bienvenue dans :',
+  title: 'Le Foyer d’Origine',
+  promise: 'Une année pour découvrir. Relier. Ressentir.',
+  bridge: 'Douze portes à ouvrir…',
+};
+
 // SECTION 4 · Les douze portes
 export const SECTION4 = {
   eyebrow: 'Une année à découvrir',

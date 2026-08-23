@@ -136,14 +136,12 @@ const useFireSound = () => {
    Progression maison (rAF + rect) : useScroll({target}) mesurait la page. */
 /* Trois groupes au défilement (doc « PAGE DE VENTE FINALE ») */
 const STANZAS: string[][] = [
-  ['Notre attention est notre monnaie d’échange la plus précieuse.'],
   ['Le plus difficile n’est plus de trouver.', 'C’est de démêler le vrai du faux.'],
   ['Nous n’avons pas besoin de plus.', 'Nous avons besoin d’authentique.'],
 ];
 const STANZA_WINDOWS: Array<[number, number, number, number]> = [
-  [0.12, 0.2, 0.3, 0.36],
-  [0.38, 0.46, 0.54, 0.6],
-  [0.62, 0.7, 0.78, 0.83],
+  [0.16, 0.25, 0.4, 0.47],
+  [0.5, 0.59, 0.74, 0.81],
 ];
 
 const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
@@ -183,8 +181,8 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   /* voile radial partagé des trois groupes : jamais d'écran sans texte */
   const linesVeil = useTransform(
     scrollYProgress,
-    [0.1, 0.18, 0.3, 0.36, 0.38, 0.46, 0.54, 0.6, 0.62, 0.7, 0.78, 0.83],
-    [0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0],
+    [0.14, 0.22, 0.4, 0.47, 0.49, 0.57, 0.74, 0.81],
+    [0, 1, 1, 0, 0, 1, 1, 0],
   );
   const stanzaStyles = STANZAS.map((lines, g) =>
     lines.map((_, i) => ({
@@ -200,7 +198,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
       ),
     })),
   );
-  const kickerFade = useTransform(scrollYProgress, [0.68, 0.75], [0, 1]);
+  const kickerFade = useTransform(scrollYProgress, [0.72, 0.8], [0, 1]);
   const emberDust = useTransform(scrollYProgress, [0.1, 0.25], [0, 1]);
 
   if (reduce) {
@@ -261,7 +259,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   }
 
   return (
-    <div ref={ref} className="relative z-0 h-[460vh] bg-espressoDeep">
+    <div ref={ref} className="relative z-0 h-[380vh] bg-espressoDeep">
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* LE feu : la vidéo roule dès l'entrée, seule représentation du feu */}
         <video
@@ -386,7 +384,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
                   key={l}
                   style={{ opacity: stanzaStyles[g][i].opacity, y: stanzaStyles[g][i].y }}
                   className={`font-serif font-medium leading-[1.25] ${
-                    g === 2 && i === 1 ? 'text-brassBright' : 'text-ctext'
+                    g === 1 && i === 1 ? 'text-brassBright' : 'text-ctext'
                   } text-[1.9rem] md:text-[3rem]`}
                 >
                   {l}

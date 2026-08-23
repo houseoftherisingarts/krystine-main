@@ -5,6 +5,7 @@ import { Atmosphere, Reveal, Parallax } from '../../components/motion/loeuvre';
 import {
   SECTION2,
   SECTION3,
+  BIENVENUE,
   SECTION4,
   SECTION5,
   SECTION6,
@@ -537,6 +538,29 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         }`}
         style={pin} data-pin-sheet
       >
+        {/* Bienvenue : l'arrivée dans le Foyer, juste avant le mur des douze portes */}
+        <div className="flex min-h-[86vh] items-center px-6 py-28 md:px-12 md:py-36 lg:px-20">
+          <div className="grid w-full gap-y-10 lg:grid-cols-12 lg:items-end lg:gap-x-12">
+            <Reveal className="lg:col-span-7">
+              <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
+              <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
+                {BIENVENUE.eyebrow}
+              </p>
+              <h2 className="mt-6 font-serif font-medium leading-[0.94] text-espresso text-[clamp(2.8rem,6.5vw,5.6rem)]">
+                {BIENVENUE.title}
+              </h2>
+            </Reveal>
+            <Reveal delay={0.12} className="lg:col-span-5 lg:pb-3">
+              <p className="max-w-[22ch] font-serif font-medium leading-[1.3] text-brassInk text-[clamp(1.35rem,2.4vw,2rem)]">
+                {BIENVENUE.promise}
+              </p>
+              <p className="mt-8 font-sans text-[0.62rem] uppercase tracking-[0.3em] text-inkSoft">
+                {BIENVENUE.bridge}
+              </p>
+            </Reveal>
+          </div>
+        </div>
+
         <CalendrierAnnee />
 
         {/* la pierre du calendrier se fond dans la page : bande de liaison + ornement */}
