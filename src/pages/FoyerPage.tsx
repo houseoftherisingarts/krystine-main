@@ -130,6 +130,28 @@ const useFireSound = () => {
   return { on, toggle };
 };
 
+/* ── Le prix : le tarif régulier barré, le tarif de lancement en dessous ── */
+const PrixLancement: React.FC<{
+  regular: string;
+  price: string;
+  note: string;
+  className?: string;
+}> = ({ regular, price, note, className = '' }) => (
+  <div className={className}>
+    <span className="relative inline-block font-serif text-ctextSoft text-[clamp(1.15rem,2vw,1.75rem)] leading-none">
+      {regular}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute left-[-6%] top-1/2 h-[2px] w-[112%] origin-center"
+        style={{ background: '#c2412a', transform: 'translateY(-50%) rotate(-9deg)' }}
+      />
+      <span className="sr-only"> (tarif régulier)</span>
+    </span>
+    <p className="mt-3 font-serif font-semibold leading-none text-brassBright">{price}</p>
+    <p className="mt-3 font-sans text-[0.62rem] uppercase tracking-[0.32em] text-brass">{note}</p>
+  </div>
+);
+
 /* ── La scène du feu : hero + allumage sur le MÊME plan vidéo continu ──
    Le feu roule dès l'entrée. Le titre s'efface au premier scroll, les
    trois lignes passent sur la même vidéo, la crème se pose à la fin.
@@ -468,7 +490,12 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
           <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brassBright">{OFFRE.eyebrow}</p>
           <h2 className="mt-5 font-serif font-medium leading-[0.9] text-ctext text-[clamp(2.2rem,9vw,8rem)]">{OFFRE.title}</h2>
           <p className="mt-6 font-serif text-[clamp(1.15rem,2vw,1.7rem)] text-ctextSoft">{OFFRE.subtitle}</p>
-          <p className="mt-10 font-serif text-6xl font-semibold text-brassBright">{OFFRE.price}</p>
+          <PrixLancement
+            regular={OFFRE.priceRegular}
+            price={OFFRE.price}
+            note={OFFRE.priceNote}
+            className="mt-10 [&>p:first-of-type]:text-6xl"
+          />
           <div className="mt-8 flex justify-center"><Cta label={OFFRE.cta} dark /></div>
         </div>
       </div>
@@ -538,9 +565,12 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
           style={{ opacity: offerOpacity, y: offerY, scale: offerScale }}
         >
           <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brassBright">Une année entière</p>
-          <p className="mt-6 font-serif font-semibold leading-none text-brassBright text-[clamp(3.4rem,8vw,7rem)]">
-            {OFFRE.price}
-          </p>
+          <PrixLancement
+            regular={OFFRE.priceRegular}
+            price={OFFRE.price}
+            note={OFFRE.priceNote}
+            className="mt-6 [&>p:first-of-type]:text-[clamp(3.4rem,8vw,7rem)]"
+          />
           <div className="mt-5 space-y-1">
             {OFFRE.paymentLines.map((l) => (
               <p key={l.slice(0, 20)} className="font-sans text-[0.78rem] tracking-[0.08em] text-ctextSoft">
@@ -572,37 +602,6 @@ const Offre: React.FC = () => {
   return (
     <section className="relative z-[55] rounded-t-[18px] bg-espressoDeep shadow-[0_-26px_60px_rgba(22,16,10,0.5)]">
       <OffreScene reduce={!!reduce} />
-      <div className="relative z-10 mx-auto w-full max-w-[1360px] px-6 pb-28 pt-6 md:px-12 lg:px-20">
-
-        {/* ce que contient l'année : filets éditoriaux pleine largeur, deux colonnes */}
-        <motion.p
-          className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassBright"
-          initial={reduce ? undefined : { opacity: 0, y: 14 }}
-          whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-40px' }}
-          transition={{ duration: 0.8, ease }}
-        >
-          Ce que l’année contient
-        </motion.p>
-        <div className="mt-8 grid gap-x-14 lg:grid-cols-2">
-          {OFFRE.items.map((item, i) => (
-            <motion.div
-              key={item.slice(0, 24)}
-              className="flex items-start gap-5 border-t border-brass/25 py-6"
-              initial={reduce ? undefined : { opacity: 0, y: 16 }}
-              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.7, ease, delay: (i % 2) * 0.08 }}
-            >
-              <span className="font-sans text-[0.68rem] tracking-[0.14em] tabular-nums text-brassBright">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <span className="font-sans text-[0.95rem] leading-[1.85] text-ctext">{item}</span>
-            </motion.div>
-          ))}
-        </div>
-
-      </div>
     </section>
   );
 };
@@ -698,7 +697,12 @@ const AppelFinal: React.FC = () => {
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 1.1, ease, delay: 0.2 }}
           >
-            <p className="font-serif text-4xl font-semibold text-brassBright">{FINAL.price}</p>
+            <PrixLancement
+              regular={FINAL.priceRegular}
+              price={FINAL.price}
+              note={FINAL.priceNote}
+              className="[&>p:first-of-type]:text-4xl"
+            />
             <div className="mt-2 space-y-0.5">
               {FINAL.priceLines.map((l) => (
                 <p key={l} className="font-sans text-[0.78rem] tracking-[0.08em] text-ctextSoft">

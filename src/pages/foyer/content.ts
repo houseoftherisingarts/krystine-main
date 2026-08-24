@@ -26,17 +26,18 @@ export const SECTION2 = {
 
 // SECTION 3 · Le rythme
 export const SECTION3 = {
-  eyebrow: 'Sans obligations',
+  eyebrow: 'Au Foyer d’Origine',
   title: 'Un rythme régulier',
   subtitle: 'Le feu reste allumé, semaine après semaine.',
   paragraphs: [
-    'Chaque semaine, quelque chose de précis est apporté au Foyer : une histoire à écouter, une plante à découvrir, un ingrédient à cuisiner, un livre à ouvrir ou une question à regarder autrement.',
-    'En texte, en audio ou en vidéo, nous découvrons d’où cela vient, pourquoi cela mérite notre attention maintenant et ce que cela peut changer dans notre manière de voir.',
-    'De septembre à juin, dix méditations guidées sont offertes en direct. Chaque rencontre demeure accessible en rediffusion pendant la durée de l’accès.',
-    'Il n’y a ni modules à suivre ni progression à compléter.',
-    'Vous pouvez rejoindre ce qui est partagé cette semaine ou revenir plus tard. Vous n’avez rien à rattraper, rien à publier et rien à prouver.',
+    'Chaque mois, une porte ouvre un nouvel univers.',
+    'Puis, chaque semaine, une nouvelle ouverture apparaît à l’intérieur du Foyer : une histoire, une œuvre, une plante, un savoir, une personne, une pratique ou une découverte choisie pour ce moment de l’année.',
+    'En texte, en audio ou en vidéo, nous découvrons pourquoi elle a sa place ici maintenant, ce qu’elle révèle et les liens qu’elle permet de faire.',
+    'De septembre à juin, dix méditations guidées nous rassemblent en direct. Elles demeurent accessibles en rediffusion pendant la durée de notre accès.',
+    'Il n’y a aucune progression à compléter.',
+    'Nous pouvons entrer dans ce qui est proposé cette semaine ou y revenir plus tard.',
   ],
-  closing: 'On ne suit pas Le Foyer. On y revient.',
+  closing: 'Rien à rattraper. Rien à publier. Rien à prouver.',
 };
 
 // BIENVENUE · l'arrivée dans le Foyer, entre la scène du feu et les douze portes
@@ -50,70 +51,69 @@ export const BIENVENUE = {
 
 // SECTION 5 · Ce que le Foyer rend possible
 export const SECTION5 = {
-  eyebrow: 'Ce que le Foyer rend possible',
-  title: 'Une place où les connaissances se rencontrent',
-  intro: [
-    'Le Foyer rassemble des savoirs, des pratiques et des récits que nous rencontrons habituellement séparément.',
-    'L’Ayurveda en forme les racines. Il apporte une lecture du corps, des saisons, des rythmes et des qualités. Au fil des mois, cette perspective rencontre les plantes médicinales, l’aromathérapie, les ingrédients, la respiration, la méditation, les histoires, les œuvres et la parole des sages.',
-    'Chaque porte part d’un thème humain lié au moment de l’année. Les ouvertures du mois permettent de l’approcher de plusieurs façons et d’apercevoir les liens entre ce que nous découvrons.',
-  ],
+  eyebrow: 'Au fil des mois',
+  title: 'Une année nourrie par l’Ayurveda, les plantes, les œuvres et les histoires',
+  intro: ['Au fil des mois, de nouvelles choses entrent dans notre champ de vision.'],
   items: [
-    {
-      title: 'Retrouver une pulsation régulière',
-      body: 'Chaque semaine, une nouvelle ouverture apparaît. Ce rythme crée un rendez-vous reconnaissable au fil des mois.',
-    },
-    {
-      title: 'Se laisser surprendre',
-      body: 'Les portes s’ouvrent une à une. Chaque mois révèle un nouvel univers, avec des rencontres et des formes différentes.',
-    },
-    {
-      title: 'Se sentir vue et reconnue',
-      body: 'Le Foyer s’adresse à ce que nous traversons comme humaines. Chacune y possède pleinement sa place, dans la parole comme dans le silence.',
-    },
-    {
-      title: 'Recevoir à sa manière',
-      body: 'Lire. Écouter. Regarder. Cuisiner. Méditer. Revenir. Chacune s’approche du feu selon son temps, son intérêt et le moment qu’elle traverse.',
-    },
-    {
-      title: 'Appartenir à un espace commun',
-      body: 'Les mêmes portes s’ouvrent pour toutes. Les mêmes histoires circulent. Les méditations nous réunissent. Le même feu demeure au centre.',
-    },
-    {
-      title: 'Laisser circuler ce qui a été reçu',
-      body: 'Une découverte peut transformer un geste, une recette, une conversation ou une manière de regarder ce qui nous entoure. Ce qui entre dans Le Foyer peut ensuite poursuivre son chemin dans nos vies et auprès de ceux qui nous sont chers.',
-    },
-  ] satisfies TitledBlock[],
+    'Une plante nous fait remarquer un changement de saison.',
+    'Une œuvre nous conduit vers une idée inattendue.',
+    'Une histoire nous rapproche d’une expérience humaine que nous pensions éloignée de la nôtre.',
+    'Un savoir ancien nous aide à comprendre quelque chose de très actuel.',
+  ],
+  link: 'Et, peu à peu, des liens apparaissent là où nous n’en voyions pas auparavant.',
+  release: [
+    'Nous n’avons pas à tout retenir.',
+    'Certaines découvertes passent.',
+    'D’autres nous surprennent, nous touchent ou restent avec nous plus longtemps que prévu.',
+  ],
+  lead: 'Une année pour découvrir ce que nous n’aurions pas pensé chercher, relier ce que nous avions appris à regarder séparément et rester capables d’être touchés.',
+  closing: 'Nous ne suivons pas Le Foyer. Nous y revenons.',
 };
 
 // SECTION 6 · Les méditations
 export const SECTION6 = {
   eyebrow: 'Un temps commun',
-  title: 'Dix fois dans l’année, nous nous retrouvons',
-  paragraphs: [
-    'De septembre à juin, dix méditations guidées en direct rassemblent les membres du Foyer.',
-    'Chaque rendez-vous marque un temps d’arrêt dans le mois. Un moment pour se déposer, écouter et laisser ce qui a été rencontré faire son chemin.',
-    'Vous pouvez être présente en direct ou retrouver la méditation en rediffusion pendant la durée de votre accès.',
+  title: 'Dix fois dans l’année, nous nous retrouvons.',
+  lead: 'De septembre à juin, une méditation guidée en direct nous rassemble autour du même feu.',
+  modes: [
+    { label: 'En direct', body: 'Un rendez-vous pour être là ensemble, au même moment.' },
+    { label: 'En rediffusion', body: 'Chaque méditation demeure accessible pendant toute la durée de notre accès.' },
   ],
-  emphasis: 'Ce temps partagé nous ramène ensemble autour du feu.',
+  pause: 'Un temps pour arrêter de recevoir, revenir au corps, laisser ce qui a été rencontré faire son chemin.',
+  tagline: ['Dix rendez-vous.', 'Un même feu.', 'Une année pour y revenir.'],
+  badgeNumber: '10',
+  badgeLabel: 'méditations en direct',
+  contentsTitle: 'Ce que l’année contient',
+  contents: [
+    'Douze portes mensuelles liées au moment de l’année et à une expérience humaine.',
+    'Une nouvelle ouverture chaque semaine, en texte, en audio ou en vidéo.',
+    'Dix méditations guidées en direct, avec leurs rediffusions.',
+    'Les saisons 1 et 2 de l’émission Santé la vie, dans les archives du Foyer.',
+    'Les épisodes du podcast Au-delà des tendances réunis dans la plateforme.',
+    'Un espace privé sans publicité ni recommandations automatisées.',
+    'Un accès prioritaire aux annonces de retraites, de conférences et d’événements.',
+    'Les événements sont offerts séparément, sauf indication contraire.',
+    'Douze mois d’accès à partir de votre inscription.',
+  ],
 };
 
 // SECTION 7 · La signature du Foyer
 export const SECTION7 = {
   eyebrow: 'Pourquoi ces histoires, ces matières et ces rencontres?',
-  title: 'Une manière unique de relier ce que nous avons appris à séparer',
+  title: 'Près de 40 ans à relier ce que nous avons appris à séparer',
   paragraphs: [
-    'Depuis 37 ans, Krystine St-Laurent explore l’Ayurveda, les plantes, la cuisine, les saisons, les rythmes du corps et les grandes questions humaines.',
-    'Son parcours traverse les soins infirmiers, la recherche, l’écriture, l’enseignement, les voyages, les rencontres et la création de produits à partir des plantes d’ici.',
-    'Trois livres ont été publiés.',
-    'Le Foyer naît de cette réserve de connaissances, d’histoires et d’expériences, mais surtout d’une façon particulière de les mettre en relation.',
+    'Soins infirmiers et recherche clinique. Ayurveda, plantes médicinales et aromathérapie. Cuisine, saisons et rythmes du corps. Écriture, enseignement, voyages et transmission.',
+    'Trois livres écrits. Près de 1 200 pages publiées. Une émission de télévision. Des dizaines d’entrevues. Des articles écrits dans de multiples magazines. Des années de conférences, de recherche, d’étude et de transmission.',
   ],
-  emphasis: 'Il ne s’agit pas de tout savoir.',
-  closing: 'Il s’agit de reconnaître ce qui mérite d’être apporté au feu maintenant.',
-  stats: [
-    { value: '37 ans', label: 'à explorer l’Ayurveda, les plantes, la cuisine, les saisons et les rythmes du corps' },
-    { value: '3 livres', label: 'publiés' },
-    { value: '3 saisons', label: 'de l’émission Santé la vie à MATV' },
+  pillarsLead: 'Depuis près de 40 ans, le même fil traverse sa vision, ses valeurs et son travail :',
+  pillars: ['Nourrir et soigner', 'Corps et conscience', 'Science et sagesse'],
+  pillarsClosing: 'Relier ce que nous avons appris à regarder séparément.',
+  paragraphs2: [
+    'Avec les années, cette façon de relier est devenue une manière de choisir : savoir où porter le regard, reconnaître ce qui possède de la substance et voir les liens qui ne sont pas toujours évidents au premier regard.',
+    'C’est ce regard qui compose Le Foyer : reconnaître ce qui mérite notre attention, écarter ce qui ajoute du bruit et créer des liens entre des connaissances, des expériences et des disciplines rarement réunies au même endroit.',
   ],
+  emphasis: 'Le Foyer ne rassemble pas près de 40 ans de connaissances.',
+  closing: 'Il est composé à partir du regard que près de 40 ans ont permis d’affiner.',
   photoCaption: 'Krystine St-Laurent',
 };
 
@@ -154,7 +154,9 @@ export const OFFRE = {
     'Un accès prioritaire aux annonces de retraites, de conférences et d’événements. Les événements sont offerts séparément, sauf indication contraire.',
     'Douze mois d’accès à partir de votre inscription.',
   ],
+  priceRegular: '597 $ CA',
   price: '497 $ CA',
+  priceNote: 'Tarif de lancement',
   paymentLines: [
     'Paiement complet par carte de crédit.',
     'Une option de paiement en trois versements est offerte au moment du paiement.',
@@ -258,7 +260,9 @@ export const FINAL = {
   ],
   closing: 'Pour retrouver un rythme régulier, une place parmi les autres et la possibilité d’être bien pendant que le monde bouge.',
   callout: 'Prenez place autour du feu.',
+  priceRegular: '597 $ CAD',
   price: '497 $ CAD',
+  priceNote: 'Tarif de lancement',
   priceLines: ['Douze mois d’accès', 'Garantie cœur léger de quinze jours'],
   cta: 'Prendre place autour du feu',
 };
