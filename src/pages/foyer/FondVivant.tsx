@@ -19,7 +19,7 @@ const FondVivant: React.FC<{
   speed?: number;
   /** densité du grain, 0.32 par défaut */
   grain?: number;
-}> = ({ className = '', speed = 0.06, grain = 0.32 }) => {
+}> = ({ className = '', speed = 0.06, grain = 0.22 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const [visible, setVisible] = useState(false);
@@ -38,18 +38,18 @@ const FondVivant: React.FC<{
   return (
     <div ref={ref} aria-hidden className={`absolute inset-0 overflow-hidden ${className}`}>
       {/* le repli : la même teinte, en plat, tant que le canevas n'est pas là */}
-      <div className="absolute inset-0 bg-forestDeep" />
+      <div className="absolute inset-0 bg-encre" />
       {visible && (
         <GrainGradient
           className="absolute inset-0 h-full w-full"
-          colorBack="#0f1613"
-          colors={['#24352c', '#4a5d52', '#7d6330', '#c8943e']}
-          softness={0.86}
-          intensity={0.34}
+          colorBack="#0b110e"
+          colors={['#101a15', '#16241d', '#233128', '#3a3a24']}
+          softness={0.95}
+          intensity={0.16}
           noise={grain}
           shape="wave"
           speed={reduce ? 0 : speed}
-          scale={1.4}
+          scale={2.2}
         />
       )}
     </div>

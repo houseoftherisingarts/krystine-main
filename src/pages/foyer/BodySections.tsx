@@ -13,6 +13,7 @@ import {
 } from './content';
 import { Cta } from './Cta';
 import TelephoneHorizontal from './TelephoneHorizontal';
+import EclatDuFoyer from './EclatDuFoyer';
 
 /**
  * Le Foyer d'Origine · sections de CORPS (copie du doc « PAGE DE VENTE FINALE »).
@@ -618,11 +619,12 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
 
       {/* ═══════ SECTION 4 · Les douze portes : la feuille monte SUR le feu (feuilles
           empilées du canon), le calendrier arrive bord à bord, zéro vide crème ═══════ */}
+      {/* ═══════ SECTION 2 · le hook et l'éclat : pas d'overflow-hidden ici,
+          la scène épinglée en dépend ═══════ */}
       <section
-        className={`overflow-hidden bg-cream3 pb-24 md:pb-36 ${
-          overlap ? 'z-10 -mt-[100vh] rounded-t-[18px] shadow-[0_-26px_60px_rgba(22,16,10,0.5)]' : 'relative'
+        className={`bg-encre ${
+          overlap ? 'relative z-10 -mt-[100vh] rounded-t-[18px] shadow-[0_-26px_60px_rgba(15,22,19,0.5)]' : 'relative'
         }`}
-        style={pin} data-pin-sheet
       >
         {/* SECTION 2 · le hook : la scène du téléphone devant le feu, la phrase
             sur un écran couché, puis le retournement sur le papier */}
@@ -684,39 +686,17 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
           </div>
         </div>
 
-        {/* le retournement : la lumière revient sur le papier, au centre */}
-        <div className="px-6 py-28 md:px-12 md:py-36 lg:px-20">
-          <Reveal className="mx-auto max-w-[62ch] text-center">
-            <p className="font-sans text-[0.7rem] uppercase tracking-[0.32em] text-brassInk">
-              {BIENVENUE.eyebrow}
-            </p>
-            <p className="mx-auto mt-8 max-w-[24ch] font-serif font-medium leading-[1.1] text-espresso text-[clamp(1.9rem,3.8vw,3.1rem)]">
-              {BIENVENUE.promise}
-            </p>
-            <p className="mx-auto mt-9 max-w-[54ch] font-sans text-[1.02rem] leading-[1.85] text-ink">
-              {BIENVENUE.body}
-            </p>
-          </Reveal>
+        {/* l'éclat : le téléphone cède, le feu en sort, la parole arrive au scroll */}
+        <EclatDuFoyer />
+      </section>
 
-          <div className="mx-auto mt-16 grid max-w-[900px] gap-y-6 border-y border-brass/30 py-10 text-center sm:grid-cols-3">
-            {BIENVENUE.marks.map((m, i) => (
-              <Reveal key={m} delay={i * 0.08}>
-                <p className="font-serif text-brassInk text-[clamp(1.2rem,2.1vw,1.6rem)] leading-snug">{m}</p>
-              </Reveal>
-            ))}
-          </div>
-
-          <Reveal className="mt-14 flex justify-center">
-            <Cta label={BIENVENUE.cta} />
-          </Reveal>
-        </div>
-
-        <Reveal className="mb-16 px-6 md:px-12 lg:px-20">
-          <p className="font-serif font-medium leading-snug text-espresso text-[clamp(1.5rem,3vw,2.3rem)] max-w-[22ch]">
-            {PORTES_INTRO.title}
-          </p>
-        </Reveal>
-
+      {/* ═══════ SECTION 4 · Le mur des douze portes ═══════ */}
+      <section
+        className={`overflow-hidden bg-cream3 pb-24 md:pb-36 ${
+          overlap ? 'z-[12] rounded-t-[18px] shadow-[0_-26px_60px_rgba(15,22,19,0.5)]' : 'relative'
+        }`}
+        style={pin} data-pin-sheet
+      >
         <CalendrierAnnee />
 
         {/* la pierre du calendrier se fond dans la page : bande de liaison + ornement */}
@@ -726,6 +706,24 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
           style={{ background: 'linear-gradient(180deg, #d7c9bc 0%, #ede5d7 100%)' }}
         />
         <Ornament motto className="-mt-4 mb-2" />
+
+        {/* le rythme de la semaine, posé juste sous le mur des douze portes */}
+        <div className="mx-auto w-full max-w-[1360px] px-6 pb-6 pt-16 md:px-12 md:pt-24">
+          <div className="grid gap-x-14 gap-y-10 lg:grid-cols-12 lg:items-start">
+            <Reveal className="lg:col-span-6">
+              <p className="font-serif font-medium text-brassInk text-[clamp(1.45rem,2.6vw,2.1rem)] leading-snug max-w-[30ch]">
+                <strong className="font-semibold">{SECTION5.rhythmLead}</strong>
+                {SECTION5.rhythm}
+              </p>
+            </Reveal>
+            <Reveal delay={0.12} className="lg:col-span-5 lg:col-start-8">
+              <p className="font-sans text-[1.02rem] leading-[1.85] text-ink max-w-[44ch]">
+                {SECTION5.meditations}
+              </p>
+              <p className="mt-5 font-sans text-[1.02rem] leading-[1.85] text-ink max-w-[44ch]">{SECTION5.keep}</p>
+            </Reveal>
+          </div>
+        </div>
 
       </section>
 
@@ -835,38 +833,17 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </Reveal>
 
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          {/* trois manières dont les matières se répondent */}
+          {/* trois manières dont les matières se répondent : une ligne chacune */}
           <div className="mt-16 border-t border-brass/25">
             {SECTION5.items.map((it, i) => (
               <Reveal key={it.slice(0, 24)} delay={i * 0.08}>
-                <div className="flex items-baseline gap-6 border-b border-brass/25 py-7">
-                  <span
-                    className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ background: `rgba(${AURAS[ROW_TONES[i % ROW_TONES.length]]},0.75)` }}
-                    aria-hidden
-                  />
-                  <p className="font-serif text-ink text-[clamp(1.1rem,1.9vw,1.5rem)] leading-snug max-w-[46ch]">
+                <div className="flex min-h-[7.5rem] items-center justify-center border-b border-brass/25 px-2 py-8">
+                  <p className="whitespace-nowrap text-center font-serif text-ink leading-none text-[clamp(0.62rem,2.05vw,1.7rem)]">
                     {it}
                   </p>
                 </div>
               </Reveal>
             ))}
-          </div>
-
-          {/* le rythme de la semaine, puis les dix rendez-vous */}
-          <div className="mt-16 grid gap-x-14 gap-y-10 lg:grid-cols-12">
-            <Reveal className="lg:col-span-6">
-              <p className="font-serif font-medium text-brassInk text-[clamp(1.3rem,2.2vw,1.75rem)] leading-snug max-w-[30ch]">
-                <strong className="font-semibold">{SECTION5.rhythmLead}</strong>
-                {SECTION5.rhythm}
-              </p>
-            </Reveal>
-            <Reveal delay={0.12} className="lg:col-span-5 lg:col-start-8">
-              <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[44ch]">
-                {SECTION5.meditations}
-              </p>
-              <p className="mt-4 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[44ch]">{SECTION5.keep}</p>
-            </Reveal>
           </div>
 
           <Reveal className="mt-20 border-t border-brass/25 pt-14">

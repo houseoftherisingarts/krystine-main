@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { motion, useMotionValue, useTransform, useReducedMotion } from 'framer-motion';
 import { BIENVENUE } from './content';
 import { Cta } from './Cta';
+import FondVivant from './FondVivant';
 
 const ease = [0.16, 0.8, 0.24, 1] as const;
 
@@ -74,7 +75,7 @@ const EclatDuFoyer: React.FC = () => {
   /* l'appareil : il se redresse, s'approche, puis la vitre cède */
   const telScale = useTransform(p, [0, 0.5, 1], [0.86, 1.02, 1.14]);
   const telRotate = useTransform(p, [0, 1], [7, -2]);
-  const telY = useTransform(p, [0, 1], [26, -18]);
+  const telY = useTransform(p, [0, 1], [18, -26]);
   /* l'éclat : le fondu se fait au milieu, pas au début */
   const ferme = useTransform(p, [0.34, 0.58], [1, 0]);
   const feu = useTransform(p, [0.34, 0.62], [0, 1]);
@@ -90,6 +91,9 @@ const EclatDuFoyer: React.FC = () => {
   return (
     <div ref={ref} className="relative h-[460vh] bg-encre">
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
+        {/* le fond vivant : encre de forêt et laiton, jamais du brun plat */}
+        <FondVivant />
+
         {/* la chaleur qui sort de l'appareil */}
         <motion.span
           aria-hidden
@@ -105,7 +109,7 @@ const EclatDuFoyer: React.FC = () => {
 
         {/* l'appareil : deux planches, un seul mouvement */}
         <motion.div
-          className="relative h-[74vmin] w-[74vmin]"
+          className="relative h-[64vmin] w-[64vmin] -translate-y-[11vh]"
           style={{ scale: telScale, rotate: telRotate, y: telY }}
         >
           <motion.img
@@ -135,7 +139,7 @@ const EclatDuFoyer: React.FC = () => {
         />
 
         {/* la parole, un temps à la fois, au centre */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center">
+        <div className="pointer-events-none absolute inset-x-0 bottom-[19vh] flex justify-center px-6 text-center">
           {TEMPS.map((t) => (
             <Paragraphe key={t.texte.slice(0, 18)} temps={t} p={p} reduce={!!reduce} />
           ))}
@@ -143,7 +147,7 @@ const EclatDuFoyer: React.FC = () => {
 
         {/* le geste, une fois le feu sorti */}
         <motion.div
-          className="absolute bottom-[12vh] left-1/2 -translate-x-1/2"
+          className="absolute bottom-[7vh] left-1/2 -translate-x-1/2"
           style={{ opacity: gesteOpacity, y: gesteY }}
         >
           <Cta label={BIENVENUE.cta} dark />
