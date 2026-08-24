@@ -136,7 +136,7 @@ const Eyebrow: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light' }> = 
 const Masthead: React.FC<{ label: string; on?: 'cream' | 'stone' }> = ({ label, on = 'cream' }) => (
   <div className="flex items-baseline gap-6">
     <span
-      className={`shrink-0 font-sans text-[0.62rem] uppercase tracking-[0.32em] ${
+      className={`shrink-0 font-sans text-[0.7rem] uppercase tracking-[0.3em] ${
         on === 'stone' ? 'text-brassInk' : 'text-brassInk'
       }`}
     >
@@ -585,7 +585,7 @@ const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; o
         >
           <div className="pb-7 pl-10 pr-10 max-w-[62ch] space-y-4">
             {item.a.map((p) => (
-              <p key={p.slice(0, 32)} className="font-sans text-[0.92rem] leading-[1.85] text-inkSoft">
+              <p key={p.slice(0, 32)} className="font-sans text-[1rem] leading-[1.85] text-ink">
                 {p}
               </p>
             ))}
@@ -637,56 +637,83 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         }`}
         style={pin} data-pin-sheet
       >
-        {/* SECTION 2 · le hook, puis l'entrée dans Le Foyer, juste avant le mur des douze portes */}
-        <div className="px-6 pt-28 pb-24 md:px-12 md:pt-36 md:pb-28 lg:px-20">
-          {/* le constat : la phrase tient la gauche, les trois faits s'alignent à droite */}
-          <div className="grid gap-x-14 gap-y-12 lg:grid-cols-12 lg:items-start">
-            <Reveal className="lg:col-span-6">
-              <span className="mb-8 block h-px w-16 bg-brass" aria-hidden />
-              <h2 className="font-serif font-medium leading-[1.02] text-espresso text-[clamp(2rem,3.9vw,3.4rem)] max-w-[22ch]">
-                {BIENVENUE.title}
-              </h2>
-            </Reveal>
-            <Reveal delay={0.12} className="lg:col-span-5 lg:col-start-8">
-              {BIENVENUE.paragraphs.map((p, i) => (
-                <div key={p.slice(0, 22)} className="border-t border-brass/30 py-6 first:border-t-0 first:pt-0">
-                  <p className="font-sans text-[0.6rem] uppercase tracking-[0.3em] text-brassInk/70">
-                    {String(i + 1).padStart(2, '0')}
-                  </p>
-                  <p className="mt-3 font-sans text-[0.95rem] leading-[1.9] text-inkSoft">{p}</p>
+        {/* SECTION 2 · le chapitre du couloir : la planche tient la moitié gauche,
+            la parole occupe la moitié droite, comme l'histoire du feu */}
+        <div className="relative -mx-0 bg-espressoDeep">
+          <div className="grid lg:min-h-[92vh] lg:grid-cols-2">
+            {/* le couloir des portes identiques, bord à bord */}
+            <div className="relative h-[52vh] overflow-hidden lg:h-auto">
+              <Parallax speed={0.14} className="h-full" innerClassName="h-full">
+                <img
+                  src="/foyer/couloir-portes.webp"
+                  alt="Un couloir de portes identiques qui s'enfonce dans la pénombre"
+                  className="h-full w-full scale-110 object-cover"
+                  loading="lazy"
+                />
+              </Parallax>
+              <span
+                aria-hidden
+                className="absolute inset-0"
+                style={{ background: 'linear-gradient(90deg, rgba(22,16,10,0.25) 0%, transparent 42%, rgba(22,16,10,0.9) 100%)' }}
+              />
+            </div>
+
+            {/* la parole */}
+            <div className="flex items-center px-6 py-24 md:px-14 md:py-28 lg:px-20">
+              <div className="w-full">
+                <Reveal>
+                  <span className="mb-9 block h-px w-16 bg-brass" aria-hidden />
+                  <h2 className="font-serif font-medium leading-[0.98] text-ctext text-[clamp(2.6rem,5.2vw,4.6rem)] max-w-[16ch]">
+                    {BIENVENUE.title}
+                  </h2>
+                </Reveal>
+                <div className="mt-14">
+                  {BIENVENUE.paragraphs.map((par, i) => (
+                    <Reveal key={par.slice(0, 22)} delay={0.1 + i * 0.08}>
+                      <div className="flex items-baseline gap-7 border-t border-brass/30 py-6">
+                        <span className="shrink-0 font-serif text-[1.35rem] leading-none text-brass">
+                          {String(i + 1).padStart(2, '0')}
+                        </span>
+                        <p className="font-sans text-[1.02rem] leading-[1.8] text-ctextSoft">{par}</p>
+                      </div>
+                    </Reveal>
+                  ))}
                 </div>
-              ))}
-            </Reveal>
+              </div>
+            </div>
           </div>
 
-          {/* la collision, tenue entre deux filets, pleine largeur */}
-          <Reveal className="mt-20 border-y border-brass/40 py-14 md:mt-24 md:py-16">
-            <p className="font-serif font-medium leading-[1.06] text-brassInk text-[clamp(2rem,5.4vw,4.4rem)]">
-              {BIENVENUE.kicker}
-            </p>
+          {/* la collision : pleine largeur, à l'échelle du titre du calendrier */}
+          <Reveal>
+            <div className="border-t border-brass/30 px-6 py-24 md:px-14 md:py-32 lg:px-20">
+              <p className="font-serif font-medium leading-[0.98] text-brassBright text-[clamp(2.4rem,7.4vw,6.4rem)]">
+                {BIENVENUE.kicker}
+              </p>
+            </div>
           </Reveal>
+        </div>
 
-          {/* le retournement : ce que Le Foyer fait à la place */}
-          <div className="mt-20 grid gap-x-14 gap-y-12 lg:grid-cols-12 lg:items-start md:mt-24">
+        {/* le retournement : la lumière revient sur le papier, juste avant le mur */}
+        <div className="px-6 py-28 md:px-14 md:py-36 lg:px-20">
+          <div className="grid gap-x-16 gap-y-12 lg:grid-cols-12 lg:items-start">
             <Reveal className="lg:col-span-7">
-              <p className="font-sans text-[0.62rem] uppercase tracking-[0.32em] text-brassInk">
+              <p className="font-sans text-[0.7rem] uppercase tracking-[0.32em] text-brassInk">
                 {BIENVENUE.eyebrow}
               </p>
-              <p className="mt-7 font-serif font-medium leading-[1.16] text-espresso text-[clamp(1.3rem,2.2vw,1.85rem)] max-w-[54ch]">
+              <p className="mt-8 font-serif font-medium leading-[1.1] text-espresso text-[clamp(1.9rem,3.6vw,3rem)] max-w-[24ch]">
                 {BIENVENUE.promise}
               </p>
             </Reveal>
-            <Reveal delay={0.12} className="lg:col-span-4 lg:col-start-9 lg:pt-10">
-              <p className="font-sans text-[0.95rem] leading-[1.9] text-inkSoft max-w-[42ch]">{BIENVENUE.body}</p>
+            <Reveal delay={0.12} className="lg:col-span-4 lg:col-start-9 lg:pt-14">
+              <p className="font-sans text-[1.02rem] leading-[1.85] text-ink max-w-[40ch]">{BIENVENUE.body}</p>
             </Reveal>
           </div>
 
-          {/* les trois repères, puis le geste, sur une même ligne de base */}
-          <div className="mt-20 grid gap-x-14 gap-y-12 border-t border-brass/30 pt-12 lg:grid-cols-12 lg:items-end md:mt-24">
+          <div className="mt-20 grid gap-x-16 gap-y-12 border-t border-brass/35 pt-14 lg:grid-cols-12 lg:items-end">
             <div className="grid gap-x-10 gap-y-8 sm:grid-cols-3 lg:col-span-8">
               {BIENVENUE.marks.map((m, i) => (
                 <Reveal key={m} delay={i * 0.08}>
-                  <p className="font-serif text-brassInk text-[clamp(1.15rem,2vw,1.55rem)] leading-snug">{m}</p>
+                  <p className="font-serif text-brassInk text-[clamp(1.35rem,2.4vw,1.9rem)] leading-snug">{m}</p>
                 </Reveal>
               ))}
             </div>
@@ -700,7 +727,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         <Reveal className="pb-10">
           <div className="mx-auto flex max-w-[1360px] flex-col items-center px-6 text-center md:px-12">
             <span className="block h-px w-16 bg-brass" aria-hidden />
-            <p className="mt-7 font-serif font-medium leading-[1.14] text-espresso text-[clamp(1.5rem,3vw,2.3rem)] max-w-[22ch]">
+            <p className="mt-8 font-serif font-medium leading-[1.08] text-espresso text-[clamp(2rem,4.4vw,3.4rem)] max-w-[24ch]">
               {PORTES_INTRO.title}
             </p>
           </div>
@@ -809,7 +836,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
               </h2>
             </Reveal>
             <Reveal delay={0.1} className="lg:col-span-4 lg:col-start-9">
-              <p className="font-sans text-[0.92rem] leading-[1.9] text-ink max-w-[38ch]">{SECTION5.intro}</p>
+              <p className="font-sans text-[1.02rem] leading-[1.85] text-ink max-w-[38ch]">{SECTION5.intro}</p>
             </Reveal>
           </div>
         </div>
@@ -820,17 +847,29 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </Reveal>
 
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          {/* trois manières dont les matières se répondent, en écho aux pétales */}
-          <div className="mt-16 grid gap-x-12 gap-y-10 md:grid-cols-3">
+          {/* trois matières, trois planches, en écho aux pétales */}
+          <div className="mt-20 grid gap-x-12 gap-y-14 md:grid-cols-3">
             {SECTION5.items.map((it, i) => (
               <Reveal key={it.slice(0, 24)} delay={i * 0.09}>
-                <span className="block h-px w-full bg-brassInk/30" aria-hidden />
-                <p className="mt-6 font-sans text-[0.6rem] uppercase tracking-[0.3em] text-brassInk/80">
-                  {String(i + 1).padStart(2, '0')}
-                </p>
-                <p className="mt-4 font-serif text-espresso text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[26ch]">
-                  {it}
-                </p>
+                <figure>
+                  <div className="overflow-hidden rounded-[15px] ring-1 ring-brassInk/25 shadow-[0_24px_54px_rgba(58,49,38,0.24)]">
+                    <img
+                      src={`/foyer/${['plaque-plante', 'plaque-oeuvre', 'plaque-savoir'][i]}.webp`}
+                      alt=""
+                      aria-hidden
+                      loading="lazy"
+                      className="aspect-square w-full object-cover"
+                    />
+                  </div>
+                  <figcaption className="mt-7">
+                    <span className="font-serif text-[1.3rem] leading-none text-brassInk">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <p className="mt-4 font-serif text-espresso text-[clamp(1.3rem,2.2vw,1.75rem)] leading-snug max-w-[24ch]">
+                      {it}
+                    </p>
+                  </figcaption>
+                </figure>
               </Reveal>
             ))}
           </div>
@@ -838,14 +877,14 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
           {/* le rythme de la semaine, puis les dix rendez-vous */}
           <div className="mt-24 grid gap-x-14 gap-y-10 border-t border-brassInk/25 pt-14 lg:grid-cols-12 md:mt-28">
             <Reveal className="lg:col-span-6">
-              <p className="font-serif font-medium text-brassInk text-[clamp(1.2rem,2vw,1.6rem)] leading-snug max-w-[50ch]">
+              <p className="font-serif font-medium text-brassInk text-[clamp(1.5rem,2.7vw,2.15rem)] leading-snug max-w-[50ch]">
                 <strong className="font-semibold">{SECTION5.rhythmLead}</strong>
                 {SECTION5.rhythm}
               </p>
             </Reveal>
             <Reveal delay={0.12} className="lg:col-span-5 lg:col-start-8">
-              <p className="font-sans text-[0.92rem] leading-[1.9] text-ink max-w-[44ch]">{SECTION5.meditations}</p>
-              <p className="mt-5 font-sans text-[0.92rem] leading-[1.9] text-ink max-w-[44ch]">{SECTION5.keep}</p>
+              <p className="font-sans text-[1.02rem] leading-[1.85] text-ink max-w-[44ch]">{SECTION5.meditations}</p>
+              <p className="mt-5 font-sans text-[1.02rem] leading-[1.85] text-ink max-w-[44ch]">{SECTION5.keep}</p>
             </Reveal>
           </div>
 
@@ -865,7 +904,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
                 </span>
               ))}
             </div>
-            <p className="mt-10 font-sans text-[0.92rem] leading-[1.9] text-ink">{SECTION5.release}</p>
+            <p className="mt-10 font-sans text-[1.02rem] leading-[1.85] text-ink">{SECTION5.release}</p>
           </Reveal>
 
           {/* la chute, décalée à droite */}
@@ -880,6 +919,10 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       {/* ═══════ SECTION 7 · Ce que l'année contient : plein jour, les chiffres
           en tête, l'index de l'année et une planche photographique ═══════ */}
       <section className={`relative overflow-hidden bg-cream py-28 md:py-40 ${overlap ? 'z-50' : ''} ${cover}`} style={pin} data-pin-sheet>
+        <div aria-hidden className="absolute inset-0">
+          <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
+          <span className="absolute inset-0" style={{ background: 'rgba(246,243,238,0.82)' }} />
+        </div>
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Masthead label={CONTENU.eyebrow} />
 
@@ -888,8 +931,8 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             {CONTENU.stats.map((s, i) => (
               <Reveal key={s.label} delay={i * 0.08}>
                 <div className="px-2 text-center lg:border-r lg:border-brass/25 lg:last:border-r-0">
-                  <p className="font-serif leading-none text-espresso text-[clamp(3rem,5.4vw,4.6rem)]">{s.n}</p>
-                  <p className="mx-auto mt-5 max-w-[16ch] font-sans text-[0.62rem] uppercase tracking-[0.26em] text-brassInk leading-[1.8]">
+                  <p className="font-serif leading-none text-espresso text-[clamp(3.6rem,7vw,6.4rem)]">{s.n}</p>
+                  <p className="mx-auto mt-5 max-w-[16ch] font-sans text-[0.7rem] uppercase tracking-[0.24em] text-brassInk leading-[1.8]">
                     {s.label}
                   </p>
                 </div>
@@ -900,7 +943,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
           {/* la porte du mois, puis les quatre ouvertures de la semaine */}
           <div className="mt-24 grid gap-x-14 gap-y-10 lg:grid-cols-12 md:mt-28">
             <Reveal className="lg:col-span-5">
-              <h2 className="font-serif font-medium leading-[1.08] text-espresso text-[clamp(1.5rem,2.5vw,2.05rem)] max-w-[26ch]">
+              <h2 className="font-serif font-medium leading-[1.08] text-espresso text-[clamp(2rem,3.8vw,3.1rem)] max-w-[26ch]">
                 {CONTENU.title}
               </h2>
             </Reveal>
@@ -908,7 +951,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
               {CONTENU.intro.map((p, i) => (
                 <p
                   key={p.slice(0, 22)}
-                  className={`font-sans text-[0.92rem] leading-[1.9] text-inkSoft max-w-[54ch] ${i ? 'mt-5' : ''}`}
+                  className={`font-sans text-[1.02rem] leading-[1.85] text-ink max-w-[54ch] ${i ? 'mt-5' : ''}`}
                 >
                   {p}
                 </p>
@@ -919,10 +962,10 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
           {/* l'équation, tenue entre deux filets, pleine largeur */}
           <Reveal className="mt-20 border-y border-brass/30 py-12 md:mt-24">
             <div className="grid gap-x-14 gap-y-4 lg:grid-cols-12 lg:items-baseline">
-              <p className="font-serif font-medium text-brassInk text-[clamp(1.3rem,2.5vw,2rem)] leading-snug lg:col-span-7">
+              <p className="font-serif font-medium text-brassInk text-[clamp(1.7rem,3.2vw,2.6rem)] leading-snug lg:col-span-7">
                 {CONTENU.equation}
               </p>
-              <p className="font-sans text-[0.92rem] leading-[1.8] text-inkSoft lg:col-span-5">
+              <p className="font-sans text-[1.02rem] leading-[1.8] text-ink lg:col-span-5">
                 {CONTENU.equationSub}
               </p>
             </div>
@@ -938,10 +981,10 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
                       <p className="font-sans text-[0.6rem] uppercase tracking-[0.3em] text-brassInk/70">
                         {String(i + 1).padStart(2, '0')}
                       </p>
-                      <p className="mt-4 font-serif text-espresso text-[clamp(1.05rem,1.7vw,1.35rem)] leading-snug">
+                      <p className="mt-5 font-serif text-espresso text-[clamp(1.3rem,2.2vw,1.75rem)] leading-snug">
                         {it.title}
                       </p>
-                      <p className="mt-3 font-sans text-[0.88rem] leading-[1.85] text-inkSoft">{it.body}</p>
+                      <p className="mt-4 font-sans text-[0.98rem] leading-[1.85] text-ink">{it.body}</p>
                     </div>
                   </Reveal>
                 ))}
@@ -976,10 +1019,10 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             <div className="mt-10 grid gap-x-14 gap-y-10 md:grid-cols-2">
               {CONTENU.bonis.map((b, i) => (
                 <Reveal key={b.title} delay={i * 0.1}>
-                  <p className="font-serif text-espresso text-[clamp(1.05rem,1.8vw,1.35rem)] leading-snug max-w-[30ch]">
+                  <p className="font-serif text-espresso text-[clamp(1.3rem,2.2vw,1.75rem)] leading-snug max-w-[30ch]">
                     {b.title}
                   </p>
-                  <p className="mt-3 font-sans text-[0.88rem] leading-[1.85] text-inkSoft max-w-[42ch]">{b.body}</p>
+                  <p className="mt-4 font-sans text-[0.98rem] leading-[1.85] text-ink max-w-[42ch]">{b.body}</p>
                 </Reveal>
               ))}
             </div>
@@ -987,87 +1030,85 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </div>
       </section>
 
-      {/* ═══════ SECTION 6 · Le regard qui compose Le Foyer : plein jour,
-          le portrait posé comme une planche, les trois piliers en colonnes ═══════ */}
-      <section className={`overflow-hidden bg-cream2 py-24 md:py-36 ${overlap ? 'z-[51]' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
-        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <Masthead label={SECTION7.eyebrow} />
+      {/* ═══════ SECTION 6 · Le regard qui compose Le Foyer : le portrait tient
+          la moitié gauche bord à bord, la parole occupe la droite ═══════ */}
+      <section className={`overflow-hidden bg-espressoDeep ${overlap ? 'z-[51]' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
+        <div className="grid lg:min-h-[94vh] lg:grid-cols-12">
+          <div className="relative h-[58vh] overflow-hidden lg:col-span-5 lg:h-auto">
+            <Parallax speed={0.12} className="h-full" innerClassName="h-full">
+              <img
+                src="/foyer/krystine-conference.webp"
+                alt="Krystine St-Laurent en conférence"
+                loading="lazy"
+                className="h-full w-full scale-105 object-cover"
+                style={{ objectPosition: '54% 30%' }}
+              />
+            </Parallax>
+            <span
+              aria-hidden
+              className="absolute inset-0"
+              style={{ background: 'linear-gradient(90deg, rgba(22,16,10,0.2) 0%, transparent 46%, rgba(22,16,10,0.85) 100%)' }}
+            />
+            <p className="absolute bottom-7 left-7 font-sans text-[0.66rem] uppercase tracking-[0.28em] text-ctextSoft">
+              {SECTION7.photoCaption}
+            </p>
+          </div>
 
-          <div className="mt-16 grid gap-x-14 gap-y-14 lg:grid-cols-12 lg:items-start">
-            <Reveal className="lg:col-span-7">
-              <h2 className="font-serif font-medium leading-[1.04] text-espresso text-[clamp(1.7rem,2.9vw,2.5rem)] max-w-[34ch]">
-                {SECTION7.title}
-              </h2>
-              <div className="mt-12 grid gap-x-12 gap-y-8 sm:grid-cols-2">
-                {SECTION7.paragraphs.map((p) => (
-                  <p key={p.slice(0, 24)} className="font-sans text-[0.92rem] leading-[1.9] text-inkSoft">
-                    {p}
-                  </p>
+          <div className="flex items-center px-6 py-24 md:px-14 md:py-28 lg:col-span-7 lg:px-20">
+            <div className="w-full">
+              <Reveal>
+                <Eyebrow on="dark">{SECTION7.eyebrow}</Eyebrow>
+                <h2 className="mt-8 font-serif font-medium leading-[1.02] text-ctext text-[clamp(2.1rem,4vw,3.4rem)] max-w-[24ch]">
+                  {SECTION7.title}
+                </h2>
+              </Reveal>
+              <div className="mt-12 grid gap-x-12 gap-y-7 sm:grid-cols-2">
+                {SECTION7.paragraphs.map((par) => (
+                  <Reveal key={par.slice(0, 24)}>
+                    <p className="font-sans text-[1rem] leading-[1.85] text-ctextSoft">{par}</p>
+                  </Reveal>
                 ))}
               </div>
-            </Reveal>
-
-            {/* la planche : le portrait, filet de laiton, légende sous le cadre */}
-            <Reveal delay={0.12} className="lg:col-span-5">
-              <figure className="lg:-mt-6">
-                <div className="overflow-hidden rounded-[15px] ring-1 ring-brassInk/25 shadow-[0_26px_60px_rgba(58,49,38,0.18)]">
-                  <Parallax speed={0.1}>
-                    <img
-                      src="/foyer/krystine-conference.webp"
-                      alt="Krystine St-Laurent en conférence"
-                      loading="lazy"
-                      className="aspect-[4/5] w-full object-cover"
-                    />
-                  </Parallax>
-                </div>
-                <figcaption className="mt-4 flex items-baseline gap-4">
-                  <span className="h-px w-8 shrink-0 bg-brass" aria-hidden />
-                  <span className="font-sans text-[0.62rem] uppercase tracking-[0.28em] text-brassInk">
-                    {SECTION7.photoCaption}
-                  </span>
-                </figcaption>
-              </figure>
-            </Reveal>
-          </div>
-
-          {/* le fil : trois piliers, trois colonnes, un filet par colonne */}
-          <div className="mt-24 md:mt-32">
-            <Reveal>
-              <p className="font-sans text-[0.92rem] leading-[1.9] text-inkSoft max-w-[54ch]">
-                {SECTION7.pillarsLead}
-              </p>
-            </Reveal>
-            <div className="mt-12 grid gap-x-12 gap-y-10 sm:grid-cols-3">
-              {SECTION7.pillars.map((p, i) => (
-                <Reveal key={p} delay={i * 0.1}>
-                  <span className="block h-px w-full bg-brass/40" aria-hidden />
-                  <p className="mt-6 font-sans text-[0.6rem] uppercase tracking-[0.3em] text-brassInk/70">
-                    {String(i + 1).padStart(2, '0')}
-                  </p>
-                  <p className="mt-4 font-serif font-medium text-brassInk text-[clamp(1.3rem,2.3vw,1.8rem)] leading-snug">
-                    {p}
-                  </p>
-                </Reveal>
-              ))}
             </div>
-            <Reveal delay={0.3}>
-              <p className="mt-14 font-serif text-espresso text-[clamp(1.2rem,2.1vw,1.7rem)] leading-snug max-w-[34ch]">
-                {SECTION7.pillarsClosing}
-              </p>
-            </Reveal>
           </div>
+        </div>
 
-          {/* le pont, puis la chute, décalée à droite pour casser la pile */}
-          <div className="mt-24 grid gap-x-14 gap-y-12 lg:grid-cols-12 lg:items-end md:mt-32">
+        <div className="mx-auto w-full max-w-[1360px] px-6 pb-28 md:px-12 md:pb-36">
+          {/* le fil : trois piliers, trois colonnes */}
+          <Reveal>
+            <p className="font-sans text-[1rem] leading-[1.85] text-ctextSoft max-w-[54ch]">
+              {SECTION7.pillarsLead}
+            </p>
+          </Reveal>
+          <div className="mt-12 grid gap-x-12 gap-y-10 sm:grid-cols-3">
+            {SECTION7.pillars.map((par, i) => (
+              <Reveal key={par} delay={i * 0.1}>
+                <span className="block h-px w-full bg-brass/45" aria-hidden />
+                <p className="mt-6 font-serif text-[1.15rem] leading-none text-brass">
+                  {String(i + 1).padStart(2, '0')}
+                </p>
+                <p className="mt-5 font-serif font-medium text-brassBright text-[clamp(1.55rem,2.8vw,2.2rem)] leading-snug">
+                  {par}
+                </p>
+              </Reveal>
+            ))}
+          </div>
+          <Reveal delay={0.3}>
+            <p className="mt-16 font-serif text-ctext text-[clamp(1.45rem,2.6vw,2.1rem)] leading-snug max-w-[34ch]">
+              {SECTION7.pillarsClosing}
+            </p>
+          </Reveal>
+
+          {/* le pont, puis la chute, décalée à droite */}
+          <div className="mt-24 grid gap-x-16 gap-y-12 border-t border-brass/30 pt-16 lg:grid-cols-12 lg:items-end">
             <Reveal className="lg:col-span-5">
-              <p className="font-sans text-[0.92rem] leading-[1.9] text-inkSoft max-w-[42ch]">{SECTION7.bridge}</p>
+              <p className="font-sans text-[1rem] leading-[1.85] text-ctextSoft max-w-[42ch]">{SECTION7.bridge}</p>
             </Reveal>
             <Reveal delay={0.12} className="lg:col-span-6 lg:col-start-7">
-              <span className="block h-px w-16 bg-brass" aria-hidden />
-              <p className="mt-8 font-serif font-medium text-espresso text-[clamp(1.4rem,2.6vw,2.1rem)] leading-snug">
+              <p className="font-serif font-medium text-ctext text-[clamp(1.7rem,3.2vw,2.6rem)] leading-snug">
                 {SECTION7.emphasis}
               </p>
-              <p className="mt-5 font-serif font-medium text-brassInk text-[clamp(1.3rem,2.3vw,1.85rem)] leading-snug max-w-[42ch]">
+              <p className="mt-6 font-serif font-medium text-brassBright text-[clamp(1.7rem,3.2vw,2.6rem)] leading-snug max-w-[26ch]">
                 {SECTION7.closing}
               </p>
             </Reveal>
@@ -1076,7 +1117,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       </section>
 
       {/* ═══════ SECTION 10 · FAQ ═══════ */}
-      <section className={`overflow-hidden bg-cream3 py-24 md:py-36 ${overlap ? 'z-[53]' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
+      <section className={`relative overflow-hidden bg-cream3 py-24 md:py-36 ${overlap ? 'z-[53]' : ''} ${cover}`} style={pin} data-pin-sheet>
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 h-24"
