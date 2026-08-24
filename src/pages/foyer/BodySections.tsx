@@ -12,6 +12,7 @@ import {
   FAQ,
 } from './content';
 import { Cta } from './Cta';
+import TelephoneHorizontal from './TelephoneHorizontal';
 
 /**
  * Le Foyer d'Origine · sections de CORPS (copie du doc « PAGE DE VENTE FINALE »).
@@ -623,58 +624,91 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         }`}
         style={pin} data-pin-sheet
       >
-        {/* SECTION 2 · le hook, puis l'entrée dans Le Foyer, juste avant le mur des douze portes */}
-        <div className="px-6 py-28 md:px-12 md:py-36 lg:px-20">
-          <div className="grid w-full gap-x-14 gap-y-12 lg:grid-cols-12 lg:items-center">
-            <Reveal className="lg:col-span-6">
-              <span className="mb-6 block h-px w-10 bg-brass" aria-hidden />
-              <h2 className="font-serif font-medium leading-[1.02] text-espresso text-[clamp(2.2rem,4.6vw,4rem)] max-w-[16ch]">
-                {BIENVENUE.title}
-              </h2>
-            </Reveal>
-            <Reveal delay={0.12} className="lg:col-span-6 lg:pt-4">
-              {BIENVENUE.paragraphs.map((p, i) => (
-                <p
-                  key={p.slice(0, 22)}
-                  className={`font-sans text-[0.98rem] leading-[1.9] text-inkSoft max-w-[52ch] ${i ? 'mt-5' : ''}`}
-                >
-                  {p}
-                </p>
-              ))}
-              <p className="mt-10 font-serif font-medium leading-snug text-brassInk text-[clamp(1.5rem,3vw,2.4rem)] max-w-[20ch]">
-                {BIENVENUE.kicker}
-              </p>
-            </Reveal>
-          </div>
-
-          {/* le retournement : ce que Le Foyer fait à la place */}
-          <div className="mt-24 border-t border-brass/30 pt-16 md:mt-32 md:pt-20">
-            <div className="grid gap-x-14 gap-y-12 lg:grid-cols-12 lg:items-end">
-              <Reveal className="lg:col-span-7">
-                <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
-                  {BIENVENUE.eyebrow}
-                </p>
-                <p className="mt-7 font-serif font-medium leading-[1.22] text-espresso text-[clamp(1.5rem,2.9vw,2.4rem)] max-w-[32ch]">
-                  {BIENVENUE.promise}
-                </p>
-              </Reveal>
-              <Reveal delay={0.12} className="lg:col-span-5 lg:pb-2">
-                <p className="font-sans text-[0.95rem] leading-[1.9] text-inkSoft max-w-[46ch]">{BIENVENUE.body}</p>
+        {/* SECTION 2 · le hook : la scène du téléphone devant le feu, la phrase
+            sur un écran couché, puis le retournement sur le papier */}
+        <div className="relative -mt-px bg-encre">
+          {/* la scène, bord à bord */}
+          <div className="relative h-[62vh] overflow-hidden md:h-[76vh]">
+            <Parallax speed={0.16} className="h-full" innerClassName="h-full">
+              <img
+                src="/foyer/feu-et-ecran.webp"
+                alt="Une femme assise devant un feu de camp, le regard pris par l'écran de son téléphone"
+                className="h-full w-full scale-105 object-cover"
+                loading="lazy"
+              />
+            </Parallax>
+            <span
+              aria-hidden
+              className="absolute inset-0"
+              style={{
+                background:
+                  'linear-gradient(90deg, rgba(15,22,19,0.92) 0%, rgba(15,22,19,0.55) 38%, rgba(15,22,19,0.08) 68%, rgba(15,22,19,0.35) 100%)',
+              }}
+            />
+            <div className="absolute inset-0 flex items-center px-6 md:px-14 lg:px-20">
+              <Reveal>
+                <span className="mb-8 block h-px w-16 bg-brass" aria-hidden />
+                <h2 className="font-serif font-medium leading-[0.98] text-ctext text-[clamp(2.4rem,5vw,4.4rem)] max-w-[15ch]">
+                  {BIENVENUE.title}
+                </h2>
               </Reveal>
             </div>
+          </div>
 
-            <div className="mt-16 grid gap-y-6 border-t border-brass/25 pt-10 sm:grid-cols-3">
-              {BIENVENUE.marks.map((m, i) => (
-                <Reveal key={m} delay={i * 0.08}>
-                  <p className="font-serif text-brassInk text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug">{m}</p>
+          {/* les trois constats, en colonnes, sur l'encre */}
+          <div className="mx-auto w-full max-w-[1360px] px-6 pt-20 md:px-12 md:pt-28">
+            <div className="grid gap-x-12 gap-y-10 md:grid-cols-3">
+              {BIENVENUE.paragraphs.map((par, i) => (
+                <Reveal key={par.slice(0, 22)} delay={i * 0.09}>
+                  <span className="block h-px w-full bg-brass/40" aria-hidden />
+                  <p className="mt-6 font-serif text-[1.2rem] leading-none text-brass">
+                    {String(i + 1).padStart(2, '0')}
+                  </p>
+                  <p className="mt-5 font-sans text-[1.02rem] leading-[1.8] text-ctextSoft">{par}</p>
                 </Reveal>
               ))}
             </div>
+          </div>
 
-            <Reveal className="mt-14">
-              <Cta label={BIENVENUE.cta} />
+          {/* la phrase, seule, sur un écran couché */}
+          <div className="px-6 py-24 md:py-32">
+            <Reveal>
+              <div className="mx-auto w-full max-w-[880px]">
+                <TelephoneHorizontal>
+                  <p className="whitespace-nowrap text-center font-serif font-medium leading-none text-brassBright text-[clamp(0.95rem,3.15vw,2.5rem)]">
+                    {BIENVENUE.kicker}
+                  </p>
+                </TelephoneHorizontal>
+              </div>
             </Reveal>
           </div>
+        </div>
+
+        {/* le retournement : la lumière revient sur le papier, au centre */}
+        <div className="px-6 py-28 md:px-12 md:py-36 lg:px-20">
+          <Reveal className="mx-auto max-w-[62ch] text-center">
+            <p className="font-sans text-[0.7rem] uppercase tracking-[0.32em] text-brassInk">
+              {BIENVENUE.eyebrow}
+            </p>
+            <p className="mx-auto mt-8 max-w-[24ch] font-serif font-medium leading-[1.1] text-espresso text-[clamp(1.9rem,3.8vw,3.1rem)]">
+              {BIENVENUE.promise}
+            </p>
+            <p className="mx-auto mt-9 max-w-[54ch] font-sans text-[1.02rem] leading-[1.85] text-ink">
+              {BIENVENUE.body}
+            </p>
+          </Reveal>
+
+          <div className="mx-auto mt-16 grid max-w-[900px] gap-y-6 border-y border-brass/30 py-10 text-center sm:grid-cols-3">
+            {BIENVENUE.marks.map((m, i) => (
+              <Reveal key={m} delay={i * 0.08}>
+                <p className="font-serif text-brassInk text-[clamp(1.2rem,2.1vw,1.6rem)] leading-snug">{m}</p>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal className="mt-14 flex justify-center">
+            <Cta label={BIENVENUE.cta} />
+          </Reveal>
         </div>
 
         <Reveal className="mb-16 px-6 md:px-12 lg:px-20">
@@ -698,7 +732,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       {/* ═══════ SECTION 4 · L'histoire du feu : le chapitre sombre de la page,
           la flamme de Varanasi pleine hauteur, la seule rupture du parcours crème ═══════ */}
       <section
-        className={`relative overflow-hidden bg-espressoDeep ${overlap ? 'z-20' : ''} ${cover}`}
+        className={`relative overflow-hidden bg-encre ${overlap ? 'z-20' : ''} ${cover}`}
         style={pin}
         data-pin-sheet
       >
@@ -855,7 +889,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
 
       {/* ═══════ SECTION 7 · Ce que l'année contient : la base du feu vit
           derrière les chiffres, comme dans la planche du Foyer ═══════ */}
-      <section className={`relative overflow-hidden bg-espressoDeep py-28 md:py-40 ${overlap ? 'z-50' : ''}`}>
+      <section className={`relative overflow-hidden bg-encre py-28 md:py-40 ${overlap ? 'z-50' : ''}`}>
         <div aria-hidden className="absolute inset-0">
           <Parallax speed={0.5} className="h-full" innerClassName="h-full">
             {reduceAll ? (
@@ -873,7 +907,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
               />
             )}
           </Parallax>
-          <span className="absolute inset-0" style={{ background: 'rgba(22,16,10,0.74)' }} />
+          <span className="absolute inset-0" style={{ background: 'rgba(15,22,19,0.74)' }} />
           <span
             className="absolute inset-0"
             style={{ background: 'radial-gradient(58% 46% at 50% 42%, rgba(199,132,44,0.16), transparent 72%)' }}
@@ -968,7 +1002,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
 
       {/* ═══════ SECTION KSL · le regard qui compose Le Foyer :
           le feu crépite derrière, la photo de Krystine posée dessus ═══════ */}
-      <section className={`overflow-hidden bg-espressoDeep py-24 md:py-36 ${overlap ? 'z-[51]' : 'relative'}`} style={pin} data-pin-sheet>
+      <section className={`overflow-hidden bg-encre py-24 md:py-36 ${overlap ? 'z-[51]' : 'relative'}`} style={pin} data-pin-sheet>
         <div aria-hidden className="absolute inset-0">
           {reduceAll ? (
             <img src="/foyer/firepit-poster.webp" alt="" loading="lazy" className="h-full w-full object-cover" />
@@ -984,7 +1018,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
               className="h-full w-full object-cover"
             />
           )}
-          <span className="absolute inset-0" style={{ background: 'rgba(22,16,10,0.78)' }} />
+          <span className="absolute inset-0" style={{ background: 'rgba(15,22,19,0.78)' }} />
         </div>
 
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">

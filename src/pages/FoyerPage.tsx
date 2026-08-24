@@ -29,7 +29,7 @@ const Preloader: React.FC<{ done: boolean }> = ({ done }) => (
   <AnimatePresence>
     {!done && (
       <motion.div
-        className="fixed inset-0 z-[90] flex items-center justify-center bg-espressoDeep"
+        className="fixed inset-0 z-[90] flex items-center justify-center bg-encre"
         exit={{ opacity: 0 }}
         transition={{ duration: 0.7, ease }}
       >
@@ -196,7 +196,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   if (reduce) {
     return (
       <>
-        <header className="relative flex min-h-screen flex-col justify-end overflow-hidden bg-espressoDeep">
+        <header className="relative flex min-h-screen flex-col justify-end overflow-hidden bg-encre">
           <img
             src="/foyer/firepit-poster.webp"
             alt=""
@@ -208,7 +208,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
             className="absolute inset-0"
             style={{
               background:
-                'linear-gradient(to top, rgba(22,16,10,0.9) 0%, rgba(22,16,10,0.5) 45%, rgba(22,16,10,0.25) 100%)',
+                'linear-gradient(to top, rgba(15,22,19,0.9) 0%, rgba(15,22,19,0.5) 45%, rgba(15,22,19,0.25) 100%)',
             }}
           />
           <div className="relative z-10 w-full px-6 pb-16 pt-36 md:px-12 lg:px-20">
@@ -251,7 +251,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
   }
 
   return (
-    <div ref={ref} className="relative z-0 h-[380vh] bg-espressoDeep">
+    <div ref={ref} className="relative z-0 h-[380vh] bg-encre">
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* LE feu : la vidéo roule dès l'entrée, seule représentation du feu */}
         <video
@@ -271,14 +271,14 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
           style={{
             opacity: veilHero,
             background:
-              'linear-gradient(to top, rgba(22,16,10,0.92) 0%, rgba(22,16,10,0.62) 34%, rgba(22,16,10,0.22) 62%, rgba(22,16,10,0.4) 100%)',
+              'linear-gradient(to top, rgba(15,22,19,0.92) 0%, rgba(15,22,19,0.62) 34%, rgba(15,22,19,0.22) 62%, rgba(15,22,19,0.4) 100%)',
           }}
         />
         {/* socle sombre permanent en bas (kicker + transition) */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 h-40"
-          style={{ background: 'linear-gradient(to top, rgba(22,16,10,0.55) 0%, transparent 100%)' }}
+          style={{ background: 'linear-gradient(to top, rgba(15,22,19,0.55) 0%, transparent 100%)' }}
         />
         {/* poussière chaude : braises fines qui montent (canon L'Œuvre) */}
         <motion.div aria-hidden className="pointer-events-none absolute inset-0" style={{ opacity: emberDust }}>
@@ -365,7 +365,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
           style={{
             opacity: linesVeil,
             background:
-              'radial-gradient(56% 46% at 50% 46%, rgba(22,16,10,0.6), transparent 78%)',
+              'radial-gradient(56% 46% at 50% 46%, rgba(15,22,19,0.6), transparent 78%)',
           }}
         />
         {STANZAS.map((lines, g) => (
@@ -398,7 +398,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
           onClick={fire.toggle}
           aria-pressed={fire.on}
           aria-label={fire.on ? 'Couper le son du feu' : 'Écouter le feu'}
-          className="absolute bottom-6 right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-brass/40 bg-espressoDeep/50 text-brass backdrop-blur-sm transition-colors duration-300 hover:border-brass hover:text-brassBright"
+          className="absolute bottom-6 right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-brass/40 bg-encre/50 text-brass backdrop-blur-sm transition-colors duration-300 hover:border-brass hover:text-brassBright"
         >
           {fire.on ? <Volume2 size={17} /> : <VolumeX size={17} />}
         </button>
@@ -455,7 +455,7 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-24 text-center">
         <img src="/foyer/antre-foyer.webp" alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-80" />
-        <div aria-hidden className="absolute inset-0" style={{ background: 'radial-gradient(70% 55% at 50% 45%, rgba(22,16,10,0.2), rgba(22,16,10,0.7) 100%)' }} />
+        <div aria-hidden className="absolute inset-0" style={{ background: 'radial-gradient(70% 55% at 50% 45%, rgba(15,22,19,0.2), rgba(15,22,19,0.7) 100%)' }} />
         <div className="relative">
           <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brassBright">{OFFRE.eyebrow}</p>
           <h2 className="mt-5 font-serif font-medium leading-[0.9] text-ctext text-[clamp(2.2rem,9vw,8rem)]">{OFFRE.title}</h2>
@@ -492,7 +492,7 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
-          style={{ background: 'radial-gradient(70% 55% at 50% 46%, rgba(22,16,10,0.08), rgba(22,16,10,0.6) 100%)' }}
+          style={{ background: 'radial-gradient(70% 55% at 50% 46%, rgba(15,22,19,0.08), rgba(15,22,19,0.6) 100%)' }}
         />
         {/* braises fines */}
         <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -557,7 +557,7 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 h-28"
-          style={{ background: 'linear-gradient(to top, #16100a 8%, transparent 100%)' }}
+          style={{ background: 'linear-gradient(to top, #0f1613 8%, transparent 100%)' }}
         />
       </div>
     </div>
@@ -570,7 +570,7 @@ const Offre: React.FC = () => {
   /* pas d'overflow-hidden sur la section : il en ferait le conteneur du sticky
      et la scène ne collerait jamais (leçon FoyerScene) */
   return (
-    <section className="relative z-[55] rounded-t-[18px] bg-espressoDeep shadow-[0_-26px_60px_rgba(22,16,10,0.5)]">
+    <section className="relative z-[55] rounded-t-[18px] bg-encre shadow-[0_-26px_60px_rgba(15,22,19,0.5)]">
       <OffreScene reduce={!!reduce} />
       {/* la récapitulation : ce que contient l'année, puis le geste */}
       <div className="relative mx-auto w-full max-w-[1360px] px-6 pb-28 pt-20 md:px-12 md:pb-36">
@@ -626,7 +626,7 @@ const Offre: React.FC = () => {
 const AppelFinal: React.FC = () => {
   const reduce = useReducedMotion();
   return (
-    <section className="relative z-[55] overflow-hidden bg-espressoDeep px-6 pt-32 pb-44 md:px-12 md:pb-60 lg:px-20">
+    <section className="relative z-[55] overflow-hidden bg-encre px-6 pt-32 pb-44 md:px-12 md:pb-60 lg:px-20">
       <Atmosphere light="72% 30%" strength={1} />
       <video
         src="/foyer/final-braises.mp4"
