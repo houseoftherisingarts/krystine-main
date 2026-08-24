@@ -133,11 +133,11 @@ export const CONTENU = {
   bonisTitle: 'Bonis',
   bonis: [
     {
-      title: 'Boni 1 — La saison 2 du podcast Au-delà des tendances',
+      title: 'Boni 1 · La saison 2 du podcast Au-delà des tendances',
       body: 'Tous les épisodes de la saison 2 réunis dans la plateforme.',
     },
     {
-      title: 'Boni 2 — Les saisons 1 et 2 de Santé la vie',
+      title: 'Boni 2 · Les saisons 1 et 2 de Santé la vie',
       body: '20 émissions réunies dans les archives du Foyer, à découvrir ou à revoir.',
     },
   ],

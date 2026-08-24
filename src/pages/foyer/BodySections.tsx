@@ -4,14 +4,14 @@ import { ChevronDown, X } from 'lucide-react';
 import { Atmosphere, Reveal, Parallax } from '../../components/motion/loeuvre';
 import {
   SECTION2,
-  SECTION3,
   BIENVENUE,
+  PORTES_INTRO,
   SECTION5,
-  SECTION6,
   SECTION7,
-  SECTION8,
+  CONTENU,
   FAQ,
 } from './content';
+import { Cta } from './Cta';
 
 /**
  * Le Foyer d'Origine · sections de CORPS (copie du doc « PAGE DE VENTE FINALE »).
@@ -164,18 +164,18 @@ interface Porte {
   question: string;
 }
 const PORTES: Porte[] = [
-  { n: 'septembre', mois: 'Septembre', b: [1085, 408, 1332, 662], src: 'porte-sept-cutout', mouvement: 'Le rythme change', theme: 'Revenir à son propre rythme', question: 'Et si le corps remarquait le changement de rythme avant nous?' },
-  { n: 'octobre', mois: 'Octobre', b: [1328, 406, 1572, 662], src: 'porte-octobre-cutout', mouvement: 'L’air change', theme: 'Élaguer pour voir', question: 'Et si ce que nous gardons par habitude nous empêchait de voir ce qui compte vraiment?' },
-  { n: 'novembre', mois: 'Novembre', b: [1086, 641, 1330, 907], src: 'porte-novembre-cutout', mouvement: 'Les nuits allongent', theme: 'Nourrir ce qui compte', question: 'Tout ce qui nous réchauffe ne nous nourrit pas forcément de la même façon.' },
-  { n: 'decembre', mois: 'Décembre', b: [1328, 638, 1572, 907], src: 'porte-decembre-cutout', mouvement: 'Fin de cycle', theme: 'Choisir ce que l’on emporte', question: 'Et si ce que nous choisissons de garder disait quelque chose de ce que nous voulons nourrir ensuite?' },
-  { n: 'janvier', mois: 'Janvier', b: [88, 143, 334, 404], src: 'porte-janvier-cutout', mouvement: 'Renouveau', theme: 'L’art de choisir, ou de rechoisir', question: 'Et si ce qui mérite notre oui était parfois quelque chose que nous avions déjà choisi?' },
-  { n: 'fevrier', mois: 'Février', b: [333, 128, 577, 404], src: 'porte-fevrier-cutout', mouvement: 'Au cœur de l’hiver', theme: 'Ce que l’amour exige parfois', question: 'Et si s’aimer passait aussi par les choix que personne ne voit?' },
-  { n: 'mars', mois: 'Mars', b: [88, 406, 334, 662], src: 'porte-mars-cutout', mouvement: 'Premier dégel', theme: 'Activer sans brusquer', question: 'Et si ce qui recommence à circuler n’avait pas besoin d’être poussé?' },
-  { n: 'avril', mois: 'Avril', b: [333, 406, 577, 662], src: 'porte-avril-cutout', mouvement: 'La vie qui émerge', theme: 'Choisir ce qui mérite de grandir', question: 'Tout ce qui peut grandir ne mérite pas forcément notre énergie.' },
-  { n: 'mai', mois: 'Mai', b: [88, 641, 334, 907], src: 'porte-mai-cutout', mouvement: 'Le monde reprend ses couleurs', theme: 'Ouvrir sans se disperser', question: 'Quand tout nous appelle, comment reconnaître ce qui mérite vraiment notre attention?' },
-  { n: 'juin', mois: 'Juin', b: [333, 638, 577, 907], src: 'porte-juin-cutout', mouvement: 'Les jours s’étirent', theme: 'Recevoir ce qui est là', question: 'Que devient notre regard lorsque, pour une fois, rien ne manque?' },
-  { n: 'juillet', mois: 'Juillet', b: [1086, 128, 1330, 404], src: 'porte-juillet-cutout', mouvement: 'La saison de feu', theme: 'Ce que le feu révèle', question: 'Et si l’intensité révélait quelque chose que la modération nous permet de ne pas voir?' },
-  { n: 'aout', mois: 'Août', b: [1328, 143, 1572, 404], src: 'porte-aout-cutout', mouvement: 'La lumière change déjà', theme: 'Savoir ce que l’on laisse', question: 'Et si avancer demandait parfois moins de décider où aller que de reconnaître ce qui est terminé?' },
+  { n: 'septembre', mois: 'Septembre', b: [88, 143, 334, 404], src: 'porte-sept-cutout', mouvement: 'Le rythme change', theme: 'Revenir à son propre rythme', question: 'Et si le premier signe que nous allons trop vite n’était pas celui que nous croyons?' },
+  { n: 'octobre', mois: 'Octobre', b: [333, 128, 577, 404], src: 'porte-octobre-cutout', mouvement: 'La nature se dépouille', theme: 'Élaguer pour voir', question: 'Certaines choses prennent de la place longtemps après avoir cessé de nous nourrir.' },
+  { n: 'novembre', mois: 'Novembre', b: [88, 406, 334, 662], src: 'porte-novembre-cutout', mouvement: 'La lumière diminue', theme: 'Nourrir ce qui compte', question: 'Tout ce qui nous réchauffe ne nous nourrit pas forcément de la même façon.' },
+  { n: 'decembre', mois: 'Décembre', b: [333, 406, 577, 662], src: 'porte-decembre-cutout', mouvement: 'Fin de cycle', theme: 'Choisir ce que l’on emporte', question: 'Tout ne mérite pas de nous suivre dans l’année qui vient.' },
+  { n: 'janvier', mois: 'Janvier', b: [88, 641, 334, 907], src: 'porte-janvier-cutout', mouvement: 'Après le trop-plein', theme: 'Recommencer sans se trahir', question: 'Et si recommencer ne demandait pas de devenir quelqu’un d’autre?' },
+  { n: 'fevrier', mois: 'Février', b: [333, 638, 577, 907], src: 'porte-fevrier-cutout', mouvement: 'L’hiver est encore là', theme: 'Habiter ce qui est déjà là', question: 'Ce qui nous soutient le plus devient parfois invisible simplement parce qu’il est familier.' },
+  { n: 'mars', mois: 'Mars', b: [1086, 128, 1330, 404], src: 'porte-mars-cutout', mouvement: 'La saison recommence à bouger', theme: 'Réveiller sans brusquer', question: 'Le retour de l’élan n’est pas toujours une invitation à accélérer.' },
+  { n: 'avril', mois: 'Avril', b: [1328, 143, 1572, 404], src: 'porte-avril-cutout', mouvement: 'La poussée reprend', theme: 'Choisir ce qui mérite de grandir', question: 'Tout ce qui peut grandir ne mérite pas forcément que nous le nourrissions.' },
+  { n: 'mai', mois: 'Mai', b: [1086, 408, 1330, 662], src: 'porte-mai-cutout', mouvement: 'Tout s’ouvre autour de nous', theme: 'Ouvrir sans se disperser', question: 'Quand tout nous attire en même temps, comment reconnaître ce qui mérite réellement notre attention?' },
+  { n: 'juin', mois: 'Juin', b: [1328, 406, 1572, 662], src: 'porte-juin-cutout', mouvement: 'La lumière s’étire', theme: 'Recevoir ce qui est là', question: 'Et si, parfois, ce qui est là n’avait besoin de rien de plus?' },
+  { n: 'juillet', mois: 'Juillet', b: [1086, 641, 1330, 907], src: 'porte-juillet-cutout', mouvement: 'La saison est abondante', theme: 'Habiter la pleine saison', question: 'Pourquoi avons-nous parfois tant de mal à simplement profiter de ce qui est là?' },
+  { n: 'aout', mois: 'Août', b: [1328, 638, 1572, 907], src: 'porte-aout-cutout', mouvement: 'La lumière change déjà', theme: 'Savoir ce que l’on laisse', question: 'Et si avancer demandait parfois moins de décider où aller que de reconnaître ce qui est terminé?' },
 ];
 const MENU_BOX: [number, number, number, number] = [1520, 42, 1620, 130];
 const zone = (b: [number, number, number, number]) => ({
@@ -361,7 +361,7 @@ const CalendrierAnnee: React.FC = () => {
               href="/liste-attente?programme=foyer"
               className="mt-6 inline-block border-b border-brassInk/60 pb-1 font-sans text-[0.7rem] uppercase tracking-[0.22em] text-brassInk transition-colors hover:text-espresso"
             >
-              Entrer dans le Foyer
+              {PORTES_INTRO.cta}
             </a>
           </Halo>
         )}
@@ -623,28 +623,65 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         }`}
         style={pin} data-pin-sheet
       >
-        {/* Bienvenue : l'arrivée dans le Foyer, juste avant le mur des douze portes */}
-        <div className="flex min-h-[86vh] items-center px-6 py-28 md:px-12 md:py-36 lg:px-20">
-          <div className="grid w-full gap-y-10 lg:grid-cols-12 lg:items-end lg:gap-x-12">
-            <Reveal className="lg:col-span-7">
-              <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
-              <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
-                {BIENVENUE.eyebrow}
-              </p>
-              <h2 className="mt-6 font-serif font-medium leading-[0.94] text-espresso text-[clamp(2.8rem,6.5vw,5.6rem)]">
+        {/* SECTION 2 · le hook, puis l'entrée dans Le Foyer, juste avant le mur des douze portes */}
+        <div className="px-6 py-28 md:px-12 md:py-36 lg:px-20">
+          <div className="grid w-full gap-x-14 gap-y-12 lg:grid-cols-12 lg:items-center">
+            <Reveal className="lg:col-span-6">
+              <span className="mb-6 block h-px w-10 bg-brass" aria-hidden />
+              <h2 className="font-serif font-medium leading-[1.02] text-espresso text-[clamp(2.2rem,4.6vw,4rem)] max-w-[16ch]">
                 {BIENVENUE.title}
               </h2>
             </Reveal>
-            <Reveal delay={0.12} className="lg:col-span-5 lg:pb-3">
-              <p className="max-w-[22ch] font-serif font-medium leading-[1.3] text-brassInk text-[clamp(1.35rem,2.4vw,2rem)]">
-                {BIENVENUE.promise}
-              </p>
-              <p className="mt-8 font-sans text-[0.62rem] uppercase tracking-[0.3em] text-inkSoft">
-                {BIENVENUE.bridge}
+            <Reveal delay={0.12} className="lg:col-span-6 lg:pt-4">
+              {BIENVENUE.paragraphs.map((p, i) => (
+                <p
+                  key={p.slice(0, 22)}
+                  className={`font-sans text-[0.98rem] leading-[1.9] text-inkSoft max-w-[52ch] ${i ? 'mt-5' : ''}`}
+                >
+                  {p}
+                </p>
+              ))}
+              <p className="mt-10 font-serif font-medium leading-snug text-brassInk text-[clamp(1.5rem,3vw,2.4rem)] max-w-[20ch]">
+                {BIENVENUE.kicker}
               </p>
             </Reveal>
           </div>
+
+          {/* le retournement : ce que Le Foyer fait à la place */}
+          <div className="mt-24 border-t border-brass/30 pt-16 md:mt-32 md:pt-20">
+            <div className="grid gap-x-14 gap-y-12 lg:grid-cols-12 lg:items-end">
+              <Reveal className="lg:col-span-7">
+                <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brassInk">
+                  {BIENVENUE.eyebrow}
+                </p>
+                <p className="mt-7 font-serif font-medium leading-[1.22] text-espresso text-[clamp(1.5rem,2.9vw,2.4rem)] max-w-[32ch]">
+                  {BIENVENUE.promise}
+                </p>
+              </Reveal>
+              <Reveal delay={0.12} className="lg:col-span-5 lg:pb-2">
+                <p className="font-sans text-[0.95rem] leading-[1.9] text-inkSoft max-w-[46ch]">{BIENVENUE.body}</p>
+              </Reveal>
+            </div>
+
+            <div className="mt-16 grid gap-y-6 border-t border-brass/25 pt-10 sm:grid-cols-3">
+              {BIENVENUE.marks.map((m, i) => (
+                <Reveal key={m} delay={i * 0.08}>
+                  <p className="font-serif text-brassInk text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug">{m}</p>
+                </Reveal>
+              ))}
+            </div>
+
+            <Reveal className="mt-14">
+              <Cta label={BIENVENUE.cta} />
+            </Reveal>
+          </div>
         </div>
+
+        <Reveal className="mb-16 px-6 md:px-12 lg:px-20">
+          <p className="font-serif font-medium leading-snug text-espresso text-[clamp(1.5rem,3vw,2.3rem)] max-w-[22ch]">
+            {PORTES_INTRO.title}
+          </p>
+        </Reveal>
 
         <CalendrierAnnee />
 
@@ -656,100 +693,6 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         />
         <Ornament motto className="-mt-4 mb-2" />
 
-      </section>
-
-      {/* ═══════ SECTION 3 · Notre attention : juste après les douze portes ═══════ */}
-      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-[15]' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
-        <div aria-hidden className="absolute inset-0">
-          <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
-          <span
-            className="absolute inset-0"
-            style={{ background: 'linear-gradient(180deg, rgba(241,235,224,0.88) 0%, rgba(246,243,238,0.78) 100%)' }}
-          />
-        </div>
-        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <Ornament className="mb-16" />
-          <div className="grid items-end gap-x-14 gap-y-8 lg:grid-cols-12">
-            <Reveal className="lg:col-span-8">
-              <Eyebrow>{SECTION8.eyebrow}</Eyebrow>
-              <h2 className="mt-6 font-serif font-medium leading-[1.08] text-ink text-[clamp(1.75rem,3.4vw,3.05rem)]">
-                {SECTION8.title}
-              </h2>
-            </Reveal>
-            <Reveal delay={0.1} className="lg:col-span-4 lg:pb-2">
-              <p className="font-serif text-ink text-[clamp(1.2rem,1.8vw,1.5rem)] leading-snug max-w-[30ch]">
-                {SECTION8.subtitle}
-              </p>
-              <p className="mt-4 font-serif text-brassInk text-[clamp(1.2rem,1.8vw,1.5rem)] leading-snug max-w-[30ch]">
-                {SECTION8.hook}
-              </p>
-            </Reveal>
-          </div>
-
-          {/* les trois situations : pigments du moodboard sur papier fait main */}
-          <div className="mt-16 grid gap-6 md:grid-cols-3">
-            {SECTION8.situations.map((sit, i) => {
-              const tone: AuraTone = (['terre', 'bleu', 'prune'] as AuraTone[])[i];
-              const pigment = ['pigment-terre', 'pigment-bleu', 'pigment-prune'][i];
-              return (
-                <Reveal key={sit[0].slice(0, 20)} delay={i * 0.18}>
-                  <div
-                    className="relative h-full overflow-hidden rounded-[30px] border p-8 shadow-depth"
-                    style={{ borderColor: `rgba(${AURAS[tone]},0.35)` }}
-                  >
-                    <img
-                      src={`/foyer/${pigment}.webp`}
-                      alt=""
-                      aria-hidden
-                      loading="lazy"
-                      className="absolute inset-0 h-full w-full object-cover"
-                    />
-                    <span
-                      aria-hidden
-                      className="absolute inset-0"
-                      style={{ background: 'linear-gradient(180deg, rgba(250,247,240,0.15) 0%, rgba(250,247,240,0.55) 78%)' }}
-                    />
-                    <div className="relative">
-                      <span
-                        className="font-sans text-[0.68rem] tracking-[0.2em] tabular-nums"
-                        style={{ color: TONE_INK[tone] }}
-                      >
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
-                      <p className="mt-4 font-sans text-[0.95rem] leading-[1.8] text-ink">{sit[0]}</p>
-                      <p className="mt-3 font-sans text-[0.92rem] leading-[1.8] text-inkSoft">{sit[1]}</p>
-                    </div>
-                  </div>
-                </Reveal>
-              );
-            })}
-          </div>
-
-          {/* le retournement : ce que le Foyer fait de l'attention */}
-          <div className="mt-20 grid gap-x-14 gap-y-10 border-t border-brass/25 pt-14 lg:grid-cols-12">
-            <Reveal className="lg:col-span-6">
-              <h3 className="font-serif font-medium leading-[1.06] text-espresso text-[clamp(2.1rem,5vw,4rem)]">
-                {SECTION8.turnTitle}
-              </h3>
-              <p className="mt-8 font-sans text-[0.62rem] uppercase tracking-[0.32em] text-brassInk">
-                {SECTION8.triptyque}
-              </p>
-            </Reveal>
-            <Reveal delay={0.14} className="lg:col-span-5 lg:col-start-8">
-              {SECTION8.turn.map((p, i) => (
-                <p
-                  key={p.slice(0, 24)}
-                  className={`font-sans text-[0.98rem] leading-[1.85] max-w-[44ch] ${i ? 'mt-4 text-inkSoft' : 'text-ink'}`}
-                >
-                  {p}
-                </p>
-              ))}
-              <p className="mt-10 font-serif font-medium text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[40ch]">
-                {SECTION8.closing}
-              </p>
-            </Reveal>
-          </div>
-        </div>
       </section>
 
       {/* ═══════ SECTION 4 · L'histoire du feu : le chapitre sombre de la page,
@@ -811,7 +754,9 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
               <Reveal delay={0.34}>
                 <span className="mt-12 block h-px w-16 bg-brass" aria-hidden />
                 <p className="mt-7 font-serif font-medium text-brassBright text-[clamp(1.2rem,2vw,1.6rem)] leading-snug">
-                  {SECTION2.closingLead} {SECTION2.closing}
+                  <strong className="font-semibold">{SECTION2.closingLead}</strong>
+                  {SECTION2.closingMid}
+                  <strong className="font-semibold">{SECTION2.closingEnd}</strong>
                 </p>
               </Reveal>
             </div>
@@ -824,54 +769,8 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         `}</style>
       </section>
 
-      {/* ═══════ SECTION 3 · Le rythme : l'étagère des rituels de la semaine,
-          même céramique que le calendrier ═══════ */}
-      <section className={`overflow-hidden py-24 md:py-36 ${overlap ? 'z-30' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
-        <div aria-hidden className="absolute inset-0">
-          <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
-          <span
-            className="absolute inset-0"
-            style={{ background: 'linear-gradient(180deg, rgba(243,227,194,0.85) 0%, rgba(237,240,223,0.6) 40%, rgba(232,236,215,0.85) 100%)' }}
-          />
-        </div>
-        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <Ornament className="mb-16" />
-          <div className="grid items-start gap-x-14 gap-y-12 lg:grid-cols-12">
-            <div className="lg:col-span-5">
-              <Reveal>
-                <Eyebrow>{SECTION3.eyebrow}</Eyebrow>
-                <SectionTitle className="mt-5">{SECTION3.title}</SectionTitle>
-                <p className="mt-6 font-serif text-brassInk text-[clamp(1.2rem,1.9vw,1.55rem)] leading-snug max-w-[30ch]">
-                  {SECTION3.subtitle}
-                </p>
-              </Reveal>
-              {/* les deux portes du mois s'ouvrent sur le feu qui reste allumé */}
-              <Reveal delay={0.12} className="mt-12">
-                <PortesSurLeCoeur label={SECTION3.title} />
-              </Reveal>
-            </div>
-            <Reveal delay={0.08} className="lg:col-span-7 lg:pt-3">
-              {SECTION3.paragraphs.map((p, i) => (
-                <p
-                  key={p.slice(0, 24)}
-                  className={`font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[54ch] ${i > 0 ? 'mt-6' : ''}`}
-                >
-                  {p}
-                </p>
-              ))}
-              <p
-                className="mt-9 font-serif font-medium text-[clamp(1.3rem,2.2vw,1.7rem)] leading-snug"
-                style={{ color: TONE_INK.sauge }}
-              >
-                {SECTION3.closing}
-              </p>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════ SECTION 6 · Une année nourrie par l'Ayurveda, les plantes,
-          les œuvres et les histoires ═══════ */}
+      {/* ═══════ SECTION 5 · Une année nourrie par l'Ayurveda, les saisons,
+          les plantes, les œuvres et les savoirs ═══════ */}
       <section className={`relative overflow-hidden py-24 md:py-36 ${overlap ? 'z-40' : ''} ${cover}`}>
         <div aria-hidden className="absolute inset-0">
           <img src="/foyer/texture-pierre.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
@@ -891,9 +790,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
               </h2>
             </Reveal>
             <Reveal delay={0.1} className="lg:col-span-4 lg:pb-2">
-              <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[36ch]">
-                {SECTION5.intro[0]}
-              </p>
+              <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[36ch]">{SECTION5.intro}</p>
             </Reveal>
           </div>
         </div>
@@ -904,7 +801,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </Reveal>
 
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          {/* ce qui entre dans le champ de vision : quatre phrases, quatre pigments */}
+          {/* trois manières dont les matières se répondent */}
           <div className="mt-16 border-t border-brass/25">
             {SECTION5.items.map((it, i) => (
               <Reveal key={it.slice(0, 24)} delay={i * 0.08}>
@@ -922,28 +819,30 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             ))}
           </div>
 
+          {/* le rythme de la semaine, puis les dix rendez-vous */}
           <div className="mt-16 grid gap-x-14 gap-y-10 lg:grid-cols-12">
             <Reveal className="lg:col-span-6">
               <p className="font-serif font-medium text-brassInk text-[clamp(1.3rem,2.2vw,1.75rem)] leading-snug max-w-[30ch]">
-                {SECTION5.link}
+                <strong className="font-semibold">{SECTION5.rhythmLead}</strong>
+                {SECTION5.rhythm}
               </p>
             </Reveal>
             <Reveal delay={0.12} className="lg:col-span-5 lg:col-start-8">
-              {SECTION5.release.map((p, i) => (
-                <p
-                  key={p.slice(0, 24)}
-                  className={`font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[44ch] ${i ? 'mt-4' : ''}`}
-                >
-                  {p}
-                </p>
-              ))}
+              <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[44ch]">
+                {SECTION5.meditations}
+              </p>
+              <p className="mt-4 font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[44ch]">{SECTION5.keep}</p>
             </Reveal>
           </div>
 
           <Reveal className="mt-20 border-t border-brass/25 pt-14">
             <p className="font-serif font-medium text-ink text-[clamp(1.35rem,2.4vw,1.95rem)] leading-[1.35] max-w-[52ch]">
-              {SECTION5.lead}
+              {SECTION5.receiveTitle}
             </p>
+            <p className="mt-5 font-serif text-brassInk text-[clamp(1.15rem,2vw,1.55rem)] leading-snug">
+              {SECTION5.receive}
+            </p>
+            <p className="mt-8 font-sans text-[0.95rem] leading-[1.85] text-inkSoft">{SECTION5.release}</p>
             <p
               className="mt-10 font-serif font-medium text-[clamp(1.6rem,3.2vw,2.6rem)] leading-snug"
               style={{ color: TONE_INK.sauge }}
@@ -954,106 +853,115 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </div>
       </section>
 
-      {/* ═══════ SECTION 7 · Un temps commun, puis ce que l'année contient :
-          la chandelle vit derrière le texte (parallax pure, jamais sticky) ═══════ */}
+      {/* ═══════ SECTION 7 · Ce que l'année contient : la base du feu vit
+          derrière les chiffres, comme dans la planche du Foyer ═══════ */}
       <section className={`relative overflow-hidden bg-espressoDeep py-28 md:py-40 ${overlap ? 'z-50' : ''}`}>
         <div aria-hidden className="absolute inset-0">
           <Parallax speed={0.5} className="h-full" innerClassName="h-full">
             {reduceAll ? (
-              <img
-                src="/foyer/meditation.webp"
-                alt=""
-                loading="lazy"
-                className="h-full w-full scale-150 object-cover"
-                style={{ objectPosition: '68% center' }}
-              />
+              <img src="/foyer/antre-foyer.webp" alt="" loading="lazy" className="h-full w-full scale-125 object-cover" />
             ) : (
               <video
-                src="/foyer/chandelle.mp4"
-                poster="/foyer/meditation.webp"
+                src="/foyer/antre-foyer.mp4"
+                poster="/foyer/antre-foyer.webp"
                 autoPlay
                 muted
                 loop
                 playsInline
                 preload="metadata"
-                className="h-full w-full scale-150 object-cover"
-                style={{ objectPosition: '68% center' }}
+                className="h-full w-full scale-125 object-cover"
               />
             )}
           </Parallax>
-          <span className="absolute inset-0" style={{ background: 'rgba(22,16,10,0.62)' }} />
+          <span className="absolute inset-0" style={{ background: 'rgba(22,16,10,0.74)' }} />
           <span
             className="absolute inset-0"
-            style={{ background: 'linear-gradient(90deg, rgba(22,16,10,0.72) 0%, rgba(22,16,10,0.2) 46%, rgba(22,16,10,0.55) 100%)' }}
+            style={{ background: 'radial-gradient(58% 46% at 50% 42%, rgba(199,132,44,0.16), transparent 72%)' }}
           />
         </div>
 
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <div className="grid gap-x-14 gap-y-12 lg:grid-cols-12">
-            {/* le rendez-vous */}
-            <Reveal className="lg:col-span-7">
-              <Eyebrow on="dark">{SECTION6.eyebrow}</Eyebrow>
-              <h2 className="mt-6 font-serif font-medium leading-[1.1] text-ctext text-[clamp(1.8rem,3.6vw,3rem)] max-w-[20ch]">
-                {SECTION6.title}
-              </h2>
-              <p className="mt-7 font-serif text-brass text-[clamp(1.1rem,1.8vw,1.4rem)] leading-snug max-w-[36ch]">
-                {SECTION6.lead}
-              </p>
-              <div className="mt-12 grid gap-8 sm:grid-cols-2">
-                {SECTION6.modes.map((m) => (
-                  <div key={m.label}>
-                    <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brass">{m.label}</p>
-                    <p className="mt-3 font-sans text-[0.92rem] leading-[1.8] text-ctextSoft max-w-[30ch]">{m.body}</p>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
+          <Reveal>
+            <p className="text-center font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brass">
+              {CONTENU.eyebrow}
+            </p>
+          </Reveal>
 
-            {/* le médaillon : dix rendez-vous, un même feu */}
-            <Reveal delay={0.14} className="lg:col-span-5 lg:pl-8">
-              <p className="font-sans text-[0.92rem] leading-[1.85] text-ctextSoft max-w-[36ch]">
-                {SECTION6.pause}
-              </p>
-              <div className="mt-10 flex items-center gap-8">
-                <div>
-                  {SECTION6.tagline.map((t) => (
-                    <p key={t} className="font-sans text-[0.7rem] uppercase tracking-[0.28em] text-brassBright leading-[2.1]">
-                      {t}
-                    </p>
-                  ))}
+          {/* les quatre chiffres de l'année */}
+          <div className="mt-14 grid gap-y-10 border-y border-brass/25 py-12 sm:grid-cols-2 lg:grid-cols-4">
+            {CONTENU.stats.map((s, i) => (
+              <Reveal key={s.label} delay={i * 0.08}>
+                <div className="px-2 text-center lg:border-r lg:border-brass/20 lg:last:border-r-0">
+                  <p className="font-serif leading-none text-ctext text-[clamp(2.8rem,5vw,4.2rem)]">{s.n}</p>
+                  <p className="mx-auto mt-4 max-w-[16ch] font-sans text-[0.66rem] uppercase tracking-[0.24em] text-brass leading-[1.7]">
+                    {s.label}
+                  </p>
                 </div>
-                <div
-                  className="flex h-28 w-28 shrink-0 flex-col items-center justify-center rounded-full border border-brass/50 text-center"
-                  style={{ background: 'radial-gradient(circle at 50% 40%, rgba(199,154,82,0.22), transparent 72%)' }}
+              </Reveal>
+            ))}
+          </div>
+
+          {/* la porte du mois, puis les quatre ouvertures de la semaine */}
+          <div className="mt-16 grid gap-x-14 gap-y-10 lg:grid-cols-12">
+            <Reveal className="lg:col-span-5">
+              <h2 className="font-serif font-medium leading-[1.12] text-brassBright text-[clamp(1.5rem,2.7vw,2.2rem)] max-w-[24ch]">
+                {CONTENU.title}
+              </h2>
+            </Reveal>
+            <Reveal delay={0.12} className="lg:col-span-7">
+              {CONTENU.intro.map((p, i) => (
+                <p
+                  key={p.slice(0, 22)}
+                  className={`font-sans text-[0.95rem] leading-[1.9] text-ctextSoft max-w-[58ch] ${i ? 'mt-5' : ''}`}
                 >
-                  <span className="font-serif text-brassBright text-[2.4rem] leading-none">{SECTION6.badgeNumber}</span>
-                  <span className="mt-1 max-w-[6rem] font-sans text-[0.5rem] uppercase tracking-[0.22em] text-brass leading-[1.5]">
-                    {SECTION6.badgeLabel}
-                  </span>
-                </div>
-              </div>
+                  {p}
+                </p>
+              ))}
             </Reveal>
           </div>
 
-          {/* ce que l'année contient : neuf lignes, trois colonnes */}
-          <div className="mt-24 border-t border-brass/30 pt-14">
-            <Reveal>
-              <p className="text-center font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brass">
-                {SECTION6.contentsTitle}
-              </p>
-            </Reveal>
-            <div className="mt-12 grid gap-x-12 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
-              {SECTION6.contents.map((c, i) => (
-                <Reveal key={c.slice(0, 22)} delay={(i % 3) * 0.08}>
-                  <div className="flex items-start gap-5 border-t border-brass/20 pt-5">
-                    <span className="font-sans text-[0.72rem] tabular-nums tracking-[0.14em] text-brassBright">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <p className="font-sans text-[0.88rem] leading-[1.8] text-ctextSoft">{c}</p>
+          <Reveal className="mt-14 text-center">
+            <p className="font-serif font-medium text-brassBright text-[clamp(1.2rem,2.2vw,1.7rem)] leading-snug">
+              {CONTENU.equation}
+            </p>
+            <p className="mt-3 font-sans text-[0.92rem] leading-[1.8] text-ctextSoft">{CONTENU.equationSub}</p>
+          </Reveal>
+
+          {/* ce que l'année dépose, ligne à ligne */}
+          <div className="mt-20 grid gap-x-14 gap-y-0 border-t border-brass/25 md:grid-cols-2">
+            {CONTENU.items.map((it, i) => (
+              <Reveal key={it.title} delay={(i % 2) * 0.08}>
+                <div className="flex items-start gap-6 border-b border-brass/20 py-7">
+                  <span className="mt-1 font-sans text-[0.72rem] tabular-nums tracking-[0.14em] text-brassBright">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <div>
+                    <p className="font-serif text-ctext text-[clamp(1.05rem,1.7vw,1.35rem)] leading-snug">{it.title}</p>
+                    <p className="mt-3 font-sans text-[0.9rem] leading-[1.8] text-ctextSoft max-w-[46ch]">{it.body}</p>
                   </div>
-                </Reveal>
-              ))}
-            </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          {/* les bonis, posés comme deux braises */}
+          <Reveal className="mt-20">
+            <p className="text-center font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brass">
+              {CONTENU.bonisTitle}
+            </p>
+          </Reveal>
+          <div className="mt-10 grid gap-8 md:grid-cols-2">
+            {CONTENU.bonis.map((b, i) => (
+              <Reveal key={b.title} delay={i * 0.1}>
+                <div
+                  className="h-full rounded-[15px] border border-brass/35 px-8 py-9 backdrop-blur-md"
+                  style={{ background: 'rgba(12,8,5,0.42)' }}
+                >
+                  <p className="font-serif text-brassBright text-[clamp(1.05rem,1.7vw,1.3rem)] leading-snug">{b.title}</p>
+                  <p className="mt-4 font-sans text-[0.9rem] leading-[1.8] text-ctextSoft">{b.body}</p>
+                </div>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
@@ -1093,16 +1001,21 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
               ))}
             </Reveal>
 
-            {/* la photo : Krystine en conférence */}
+            {/* la photo : Krystine sur scène, détourée, posée sur le feu */}
             <Reveal delay={0.12} className="lg:col-span-5">
-              <div className="relative overflow-hidden rounded-[30px] ring-1 ring-brass/40 shadow-depth">
+              <div className="relative">
+                <span
+                  aria-hidden
+                  className="absolute inset-0 rounded-full"
+                  style={{ background: 'radial-gradient(52% 46% at 52% 44%, rgba(199,132,44,0.34), transparent 72%)' }}
+                />
                 <Parallax speed={0.12}>
                   <img
-                    src="/foyer/krystine-conference.webp"
-                    alt="Krystine St-Laurent en conférence"
+                    src="/foyer/krystine-scene.webp"
+                    alt="Krystine St-Laurent sur scène"
                     loading="lazy"
-                    className="aspect-[4/5] w-full object-cover"
-                    style={{ objectPosition: '58% 34%', filter: 'saturate(0.86) sepia(0.1)' }}
+                    className="relative w-full"
+                    style={{ filter: 'drop-shadow(0 26px 46px rgba(12,8,5,0.6))' }}
                   />
                 </Parallax>
               </div>
@@ -1133,13 +1046,9 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             </Reveal>
           </div>
 
-          <div className="mt-16 grid gap-x-14 gap-y-10 lg:grid-cols-2">
-            {SECTION7.paragraphs2.map((p, i) => (
-              <Reveal key={p.slice(0, 24)} delay={i * 0.1}>
-                <p className="font-sans text-[0.95rem] leading-[1.9] text-ctextSoft max-w-[54ch]">{p}</p>
-              </Reveal>
-            ))}
-          </div>
+          <Reveal className="mt-16">
+            <p className="font-sans text-[0.95rem] leading-[1.9] text-ctextSoft max-w-[60ch]">{SECTION7.bridge}</p>
+          </Reveal>
 
           <Reveal className="mt-20">
             <span className="block h-px w-16 bg-brass" aria-hidden />

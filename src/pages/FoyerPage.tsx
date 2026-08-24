@@ -8,10 +8,10 @@ import {
   useMotionTemplate,
   useReducedMotion,
 } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { ArrowRight, Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX } from 'lucide-react';
 import { Atmosphere } from '../components/motion/loeuvre';
 import BodySections from './foyer/BodySections';
+import { Cta } from './foyer/Cta';
 import { OFFRE, FINAL } from './foyer/content';
 
 /**
@@ -23,7 +23,6 @@ import { OFFRE, FINAL } from './foyer/content';
  */
 
 const ease = [0.16, 0.8, 0.24, 1] as const;
-const CTA_HREF = '/liste-attente?programme=foyer';
 
 /* ── Preloader ~1s : nuit, le filet doré se trace, la braise s’allume ── */
 const Preloader: React.FC<{ done: boolean }> = ({ done }) => (
@@ -69,35 +68,6 @@ const Preloader: React.FC<{ done: boolean }> = ({ done }) => (
       </motion.div>
     )}
   </AnimatePresence>
-);
-
-/* ── CTA laiton (fond brass + texte espresso, canon contraste) ── */
-const Cta: React.FC<{ label: string; sub?: string; dark?: boolean }> = ({
-  label,
-  sub,
-  dark,
-}) => (
-  <div className="flex flex-col items-start gap-3">
-    <Link
-      to={CTA_HREF}
-      className="group inline-flex items-center gap-3 whitespace-nowrap rounded-[30px] bg-brass px-6 py-3.5 font-sans text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-espresso shadow-glow transition-colors duration-300 hover:bg-brassBright md:px-9 md:py-4 md:text-[0.78rem] md:tracking-[0.22em]"
-    >
-      {label}
-      <ArrowRight
-        size={16}
-        className="transition-transform duration-300 group-hover:translate-x-1"
-      />
-    </Link>
-    {sub && (
-      <span
-        className={`font-sans text-[0.7rem] tracking-[0.08em] ${
-          dark ? 'text-ctextSoft' : 'text-inkSoft'
-        }`}
-      >
-        {sub}
-      </span>
-    )}
-  </div>
 );
 
 /* ── Son du feu : vrai enregistrement de feu qui craque (Freesound 414767,
@@ -602,6 +572,52 @@ const Offre: React.FC = () => {
   return (
     <section className="relative z-[55] rounded-t-[18px] bg-espressoDeep shadow-[0_-26px_60px_rgba(22,16,10,0.5)]">
       <OffreScene reduce={!!reduce} />
+      {/* la récapitulation : ce que contient l'année, puis le geste */}
+      <div className="relative mx-auto w-full max-w-[1360px] px-6 pb-28 pt-20 md:px-12 md:pb-36">
+        <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brass">{OFFRE.eyebrow}</p>
+        <h2 className="mt-6 font-serif font-medium leading-[1.06] text-ctext text-[clamp(1.8rem,3.4vw,2.8rem)]">
+          {OFFRE.title}
+        </h2>
+        <p className="mt-4 font-serif text-brassBright text-[clamp(1.1rem,1.9vw,1.5rem)]">{OFFRE.subtitle}</p>
+        <ul className="mt-12 grid gap-x-14 gap-y-0 border-t border-brass/25 md:grid-cols-2">
+          {OFFRE.items.map((it) => (
+            <li key={it} className="flex items-baseline gap-5 border-b border-brass/20 py-5">
+              <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-brassBright" />
+              <span className="font-sans text-[0.95rem] leading-[1.8] text-ctextSoft">{it}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-12 grid gap-8 md:grid-cols-2">
+          {OFFRE.bonis.map((b) => (
+            <div
+              key={b.title}
+              className="rounded-[15px] border border-brass/35 px-7 py-7 backdrop-blur-md"
+              style={{ background: 'rgba(12,8,5,0.42)' }}
+            >
+              <p className="font-sans text-[0.62rem] uppercase tracking-[0.28em] text-brassBright">{b.title}</p>
+              <p className="mt-3 font-sans text-[0.92rem] leading-[1.8] text-ctextSoft">{b.body}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-14 flex flex-wrap items-end gap-x-16 gap-y-10">
+          <PrixLancement
+            regular={OFFRE.priceRegular}
+            price={OFFRE.price}
+            note={OFFRE.priceNote}
+            className="[&>p:first-of-type]:text-[clamp(2.6rem,5vw,4rem)]"
+          />
+          <div className="space-y-1">
+            {OFFRE.paymentLines.map((l) => (
+              <p key={l.slice(0, 20)} className="font-sans text-[0.82rem] tracking-[0.06em] text-ctextSoft">
+                {l}
+              </p>
+            ))}
+          </div>
+        </div>
+        <div className="mt-12">
+          <Cta label={OFFRE.cta} dark />
+        </div>
+      </div>
     </section>
   );
 };
@@ -657,7 +673,6 @@ const AppelFinal: React.FC = () => {
             <p className="mt-6 max-w-2xl font-serif text-2xl leading-snug text-brassBright">
               {FINAL.emphasis}
             </p>
-            <p className="mt-3 font-serif text-xl text-ctextSoft">{FINAL.sub}</p>
           </motion.div>
           <div className="mt-10 space-y-1 font-sans text-[0.95rem] leading-[1.85] text-ctextSoft">
             {FINAL.lines.map((l, i) => (
