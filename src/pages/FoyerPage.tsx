@@ -572,14 +572,9 @@ const Offre: React.FC = () => {
   return (
     <section className="relative z-[55] rounded-t-[18px] bg-espressoDeep shadow-[0_-26px_60px_rgba(22,16,10,0.5)]">
       <OffreScene reduce={!!reduce} />
-      {/* la récapitulation : ce que contient l'année, puis le geste */}
+      {/* la récapitulation : ce que contient l'année, puis le prix */}
       <div className="relative mx-auto w-full max-w-[1360px] px-6 pb-28 pt-20 md:px-12 md:pb-36">
-        <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brass">{OFFRE.eyebrow}</p>
-        <h2 className="mt-6 font-serif font-medium leading-[1.06] text-ctext text-[clamp(1.8rem,3.4vw,2.8rem)]">
-          {OFFRE.title}
-        </h2>
-        <p className="mt-4 font-serif text-brassBright text-[clamp(1.1rem,1.9vw,1.5rem)]">{OFFRE.subtitle}</p>
-        <ul className="mt-12 grid gap-x-14 gap-y-0 border-t border-brass/25 md:grid-cols-2">
+        <ul className="grid gap-x-14 gap-y-0 border-t border-brass/25 md:grid-cols-2">
           {OFFRE.items.map((it) => (
             <li key={it} className="flex items-baseline gap-5 border-b border-brass/20 py-5">
               <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-brassBright" />
@@ -587,18 +582,6 @@ const Offre: React.FC = () => {
             </li>
           ))}
         </ul>
-        <div className="mt-12 grid gap-8 md:grid-cols-2">
-          {OFFRE.bonis.map((b) => (
-            <div
-              key={b.title}
-              className="rounded-[15px] border border-brass/35 px-7 py-7 backdrop-blur-md"
-              style={{ background: 'rgba(12,8,5,0.42)' }}
-            >
-              <p className="font-sans text-[0.62rem] uppercase tracking-[0.28em] text-brassBright">{b.title}</p>
-              <p className="mt-3 font-sans text-[0.92rem] leading-[1.8] text-ctextSoft">{b.body}</p>
-            </div>
-          ))}
-        </div>
         <div className="mt-14 flex flex-wrap items-end gap-x-16 gap-y-10">
           <PrixLancement
             regular={OFFRE.priceRegular}
@@ -613,9 +596,6 @@ const Offre: React.FC = () => {
               </p>
             ))}
           </div>
-        </div>
-        <div className="mt-12">
-          <Cta label={OFFRE.cta} dark />
         </div>
       </div>
     </section>
@@ -654,7 +634,8 @@ const AppelFinal: React.FC = () => {
       />
       <style>{`@keyframes foyerBreathe{0%,100%{opacity:.75}50%{opacity:1}}`}</style>
       <div className="relative z-10 mx-auto w-full max-w-[1360px]">
-        <div className="max-w-3xl">
+        <div className="grid gap-x-16 gap-y-16 lg:grid-cols-12 lg:items-start">
+          <div className="lg:col-span-7">
           <motion.h2
             className="font-serif font-medium leading-[1.08] text-ctext text-[clamp(2.2rem,3.6vw,3.4rem)]"
             initial={reduce ? undefined : { opacity: 0, y: 30, filter: 'blur(6px)' }}
@@ -696,8 +677,12 @@ const AppelFinal: React.FC = () => {
           >
             {FINAL.closing}
           </motion.p>
+          </div>
+
+          {/* le geste, à droite, à hauteur de la collision */}
+          <div className="lg:col-span-5 lg:pt-4">
           <motion.p
-            className="mt-14 font-serif font-semibold leading-[1.08] text-ctext text-[clamp(2.2rem,3.6vw,3.6rem)]"
+            className="font-serif font-semibold leading-[1.08] text-ctext text-[clamp(2rem,3.2vw,3rem)]"
             initial={reduce ? undefined : { opacity: 0, y: 34, filter: 'blur(8px)' }}
             whileInView={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
             viewport={{ once: true, margin: '-60px' }}
@@ -735,6 +720,7 @@ const AppelFinal: React.FC = () => {
           >
             <Cta label={FINAL.cta} dark />
           </motion.div>
+          </div>
         </div>
       </div>
     </section>

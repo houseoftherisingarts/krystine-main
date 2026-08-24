@@ -584,7 +584,7 @@ const FaqRow: React.FC<{ item: (typeof FAQ)[number]; i: number; open: boolean; o
 
 export default function BodySections({ overlap = false }: { overlap?: boolean }) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const reduceAll = useReducedMotion();
+
   /* Feuilles empilées généralisées : chaque section fige (sticky, le bas
      aligné au bas de l'écran quand elle est plus haute que lui) et la
      suivante monte par-dessus, coins arrondis + ombre, comme le feu. */
@@ -857,26 +857,10 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
           derrière les chiffres, comme dans la planche du Foyer ═══════ */}
       <section className={`relative overflow-hidden bg-espressoDeep py-28 md:py-40 ${overlap ? 'z-50' : ''}`}>
         <div aria-hidden className="absolute inset-0">
-          <Parallax speed={0.5} className="h-full" innerClassName="h-full">
-            {reduceAll ? (
-              <img src="/foyer/antre-foyer.webp" alt="" loading="lazy" className="h-full w-full scale-125 object-cover" />
-            ) : (
-              <video
-                src="/foyer/antre-foyer.mp4"
-                poster="/foyer/antre-foyer.webp"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                className="h-full w-full scale-125 object-cover"
-              />
-            )}
-          </Parallax>
-          <span className="absolute inset-0" style={{ background: 'rgba(22,16,10,0.74)' }} />
+          <img src="/foyer/braise-sobre.webp" alt="" loading="lazy" className="h-full w-full object-cover" />
           <span
             className="absolute inset-0"
-            style={{ background: 'radial-gradient(58% 46% at 50% 42%, rgba(199,132,44,0.16), transparent 72%)' }}
+            style={{ background: 'linear-gradient(180deg, rgba(22,16,10,0.55) 0%, rgba(22,16,10,0.2) 46%, rgba(22,16,10,0.6) 100%)' }}
           />
         </div>
 
@@ -969,24 +953,6 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       {/* ═══════ SECTION KSL · le regard qui compose Le Foyer :
           le feu crépite derrière, la photo de Krystine posée dessus ═══════ */}
       <section className={`overflow-hidden bg-espressoDeep py-24 md:py-36 ${overlap ? 'z-[51]' : 'relative'}`} style={pin} data-pin-sheet>
-        <div aria-hidden className="absolute inset-0">
-          {reduceAll ? (
-            <img src="/foyer/firepit-poster.webp" alt="" loading="lazy" className="h-full w-full object-cover" />
-          ) : (
-            <video
-              src="/foyer/atre-feu.mp4"
-              poster="/foyer/firepit-poster.webp"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              className="h-full w-full object-cover"
-            />
-          )}
-          <span className="absolute inset-0" style={{ background: 'rgba(22,16,10,0.78)' }} />
-        </div>
-
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <div className="grid items-start gap-x-14 gap-y-14 lg:grid-cols-12">
             <Reveal className="lg:col-span-7">
@@ -1001,21 +967,16 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
               ))}
             </Reveal>
 
-            {/* la photo : Krystine sur scène, détourée, posée sur le feu */}
+            {/* la photo : Krystine en conférence */}
             <Reveal delay={0.12} className="lg:col-span-5">
-              <div className="relative">
-                <span
-                  aria-hidden
-                  className="absolute inset-0 rounded-full"
-                  style={{ background: 'radial-gradient(52% 46% at 52% 44%, rgba(199,132,44,0.34), transparent 72%)' }}
-                />
+              <div className="relative overflow-hidden rounded-[30px] ring-1 ring-brass/40 shadow-depth">
                 <Parallax speed={0.12}>
                   <img
-                    src="/foyer/krystine-scene.webp"
-                    alt="Krystine St-Laurent sur scène"
+                    src="/foyer/krystine-conference.webp"
+                    alt="Krystine St-Laurent en conférence"
                     loading="lazy"
-                    className="relative w-full"
-                    style={{ filter: 'drop-shadow(0 26px 46px rgba(12,8,5,0.6))' }}
+                    className="aspect-[4/5] w-full object-cover"
+                    style={{ objectPosition: '58% 34%', filter: 'saturate(0.86) sepia(0.1)' }}
                   />
                 </Parallax>
               </div>
