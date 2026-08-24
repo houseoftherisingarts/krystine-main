@@ -45,6 +45,7 @@ const CLASSES: Record<Temps['taille'], string> = {
 
 const EclatDuFoyer: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const reduce = useReducedMotion();
   const p = useMotionValue(0);
 
@@ -72,13 +73,37 @@ const EclatDuFoyer: React.FC = () => {
     };
   }, [p]);
 
+  /* la lecture de la vidéo suit le scroll : on vise la position, on y glisse */
+  useEffect(() => {
+    if (reduce) return;
+    const v = videoRef.current;
+    if (!v) return;
+    let raf = 0;
+    let joue = 0;
+    const boucle = () => {
+      const d = v.duration;
+      if (d && Number.isFinite(d)) {
+        /* la vitre cède entre 20 % et 90 % du défilement */
+        const avance = Math.min(1, Math.max(0, (p.get() - 0.2) / 0.7));
+        const cible = avance * (d - 0.04);
+        /* un grand écart se rattrape d'un coup, les petits glissent */
+        joue += (cible - joue) * (Math.abs(cible - joue) > 0.8 ? 1 : 0.22);
+        if (Math.abs(joue - v.currentTime) > 0.012) v.currentTime = joue;
+      }
+      raf = requestAnimationFrame(boucle);
+    };
+    const demarrer = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(boucle);
+    };
+    if (v.readyState >= 1) demarrer();
+    else v.addEventListener('loadedmetadata', demarrer, { once: true });
+    return () => cancelAnimationFrame(raf);
+  }, [p, reduce]);
+
   /* l'appareil : il se redresse, s'approche, puis la vitre cède */
   const telScale = useTransform(p, [0, 0.5, 1], [0.86, 1.02, 1.14]);
-  const telRotate = useTransform(p, [0, 1], [7, -2]);
   const telY = useTransform(p, [0, 1], [18, -26]);
-  /* l'éclat : le fondu se fait au milieu, pas au début */
-  const ferme = useTransform(p, [0.34, 0.58], [1, 0]);
-  const feu = useTransform(p, [0.34, 0.62], [0, 1]);
   /* la chaleur derrière l'appareil, qui monte avec l'éclat */
   const halo = useTransform(p, [0.3, 0.72], [0, 1]);
   const haloScale = useTransform(p, [0.3, 1], [0.6, 1.25]);
@@ -107,23 +132,24 @@ const EclatDuFoyer: React.FC = () => {
           }}
         />
 
-        {/* l'appareil : deux planches, un seul mouvement */}
+        {/* la scène : une seule vidéo, lue au rythme du scroll */}
         <motion.div
-          className="relative h-[64vmin] w-[64vmin] -translate-y-[11vh]"
-          style={{ scale: telScale, rotate: telRotate, y: telY }}
+          className="relative h-[62vmin] w-[62vmin] -translate-y-[11vh]"
+          style={{ scale: telScale, y: telY }}
         >
-          <motion.img
-            src="/foyer/tel-ferme.webp"
-            alt=""
-            aria-hidden
-            className="absolute inset-0 h-full w-full object-contain"
-            style={{ opacity: reduce ? 0 : ferme }}
-          />
-          <motion.img
-            src="/foyer/tel-feu.webp"
-            alt="Un téléphone dont la vitre éclate et d'où sort un feu de camp"
-            className="absolute inset-0 h-full w-full object-contain"
-            style={{ opacity: reduce ? 1 : feu }}
+          <video
+            ref={videoRef}
+            src="/foyer/eclat-telephone.mp4"
+            poster="/foyer/eclat-telephone.webp"
+            muted
+            playsInline
+            preload="auto"
+            aria-label="Un feu brûle dans l'écran d'un téléphone, puis fait éclater la vitre"
+            className="h-full w-full object-contain"
+            style={{
+              maskImage: 'radial-gradient(ellipse 62% 68% at 50% 46%, black 62%, transparent 92%)',
+              WebkitMaskImage: 'radial-gradient(ellipse 62% 68% at 50% 46%, black 62%, transparent 92%)',
+            }}
           />
         </motion.div>
 

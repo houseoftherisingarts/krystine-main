@@ -850,14 +850,23 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             <p className="font-serif font-medium text-ink text-[clamp(1.35rem,2.4vw,1.95rem)] leading-[1.35] max-w-[52ch]">
               {SECTION5.receiveTitle}
             </p>
-            <p className="mt-5 font-serif text-brassInk text-[clamp(1.15rem,2vw,1.55rem)] leading-snug">
-              {SECTION5.receive}
-            </p>
-            <p className="mt-8 font-sans text-[0.95rem] leading-[1.85] text-inkSoft">{SECTION5.release}</p>
-            <p
-              className="mt-10 font-serif font-medium text-[clamp(1.6rem,3.2vw,2.6rem)] leading-snug"
-              style={{ color: TONE_INK.sauge }}
-            >
+            <div className="mt-8 flex flex-wrap items-baseline gap-x-8 gap-y-3">
+              {SECTION5.receive.split(' ').filter(Boolean).map((verbe, i) => (
+                <span
+                  key={verbe}
+                  className="font-serif text-espresso text-[clamp(1.35rem,3vw,2.4rem)] leading-none"
+                  style={{ opacity: 1 - i * 0.06 }}
+                >
+                  {verbe}
+                </span>
+              ))}
+            </div>
+            <p className="mt-10 font-sans text-[1rem] leading-[1.85] text-ink">{SECTION5.release}</p>
+          </Reveal>
+
+          {/* la chute, décalée à droite */}
+          <Reveal className="mt-20 flex md:mt-24 md:justify-end">
+            <p className="font-serif font-medium text-brassInk text-[clamp(1.6rem,3.4vw,2.8rem)] leading-snug max-w-[20ch] md:text-right">
               {SECTION5.closing}
             </p>
           </Reveal>
@@ -977,102 +986,93 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </div>
       </section>
 
-      {/* ═══════ SECTION KSL · le regard qui compose Le Foyer :
-          le feu crépite derrière, la photo de Krystine posée dessus ═══════ */}
-      <section className={`overflow-hidden bg-encre py-24 md:py-36 ${overlap ? 'z-[51]' : 'relative'}`} style={pin} data-pin-sheet>
-        <div aria-hidden className="absolute inset-0">
-          {reduceAll ? (
-            <img src="/foyer/firepit-poster.webp" alt="" loading="lazy" className="h-full w-full object-cover" />
-          ) : (
-            <video
-              src="/foyer/atre-feu.mp4"
-              poster="/foyer/firepit-poster.webp"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              className="h-full w-full object-cover"
+      {/* ═══════ SECTION 6 · Le regard qui compose Le Foyer : la parole à gauche,
+          le portrait bord à bord à droite, plein jour, aucune vidéo ═══════ */}
+      <section className={`overflow-hidden bg-cream2 ${overlap ? 'z-[51]' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
+        <div className="grid lg:min-h-[94vh] lg:grid-cols-12">
+          <div className="flex items-center px-6 py-24 md:px-14 md:py-28 lg:col-span-7 lg:px-20">
+            <div className="w-full">
+              <Reveal>
+                <Eyebrow>{SECTION7.eyebrow}</Eyebrow>
+                <h2 className="mt-8 font-serif font-medium leading-[1.02] text-espresso text-[clamp(1.9rem,3.5vw,3rem)] max-w-[30ch]">
+                  {SECTION7.title}
+                </h2>
+              </Reveal>
+              <div className="mt-12 grid gap-x-12 gap-y-7 sm:grid-cols-2">
+                {SECTION7.paragraphs.map((par) => (
+                  <Reveal key={par.slice(0, 24)}>
+                    <p className="font-sans text-[1rem] leading-[1.85] text-inkSoft">{par}</p>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* le portrait, bord à bord, à droite */}
+          <div className="relative order-first h-[58vh] overflow-hidden lg:order-last lg:col-span-5 lg:h-auto">
+            <Parallax speed={0.12} className="h-full" innerClassName="h-full">
+              <img
+                src="/foyer/krystine-conference.webp"
+                alt="Krystine St-Laurent en conférence"
+                loading="lazy"
+                className="h-full w-full object-cover"
+                style={{ objectPosition: '56% 26%' }}
+              />
+            </Parallax>
+            <span
+              aria-hidden
+              className="absolute inset-0"
+              style={{ background: 'linear-gradient(270deg, transparent 58%, rgba(241,235,224,0.55) 100%)' }}
             />
-          )}
-          <span className="absolute inset-0" style={{ background: 'rgba(15,22,19,0.78)' }} />
+            <p className="absolute bottom-7 right-7 font-sans text-[0.66rem] uppercase tracking-[0.28em] text-cream drop-shadow-[0_1px_6px_rgba(15,22,19,0.7)]">
+              {SECTION7.photoCaption}
+            </p>
+          </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          <div className="grid items-start gap-x-14 gap-y-14 lg:grid-cols-12">
-            <Reveal className="lg:col-span-7">
-              <Eyebrow on="dark">{SECTION7.eyebrow}</Eyebrow>
-              <h2 className="mt-6 font-serif font-medium leading-[1.06] text-ctext text-[clamp(1.6rem,2.9vw,2.5rem)] max-w-[30ch]">
-                {SECTION7.title}
-              </h2>
-              {SECTION7.paragraphs.map((p) => (
-                <p key={p.slice(0, 24)} className="mt-7 font-sans text-[0.95rem] leading-[1.9] text-ctextSoft max-w-[52ch]">
-                  {p}
+        <div className="mx-auto w-full max-w-[1360px] px-6 pb-28 md:px-12 md:pb-36">
+          {/* le fil : trois piliers, trois colonnes */}
+          <Reveal>
+            <p className="font-sans text-[1rem] leading-[1.85] text-inkSoft max-w-[54ch]">
+              {SECTION7.pillarsLead}
+            </p>
+          </Reveal>
+          <div className="mt-12 grid gap-x-12 gap-y-10 sm:grid-cols-3">
+            {SECTION7.pillars.map((par, i) => (
+              <Reveal key={par} delay={i * 0.1}>
+                <span className="block h-px w-full bg-brass/45" aria-hidden />
+                <p className="mt-6 font-serif text-[1.15rem] leading-none text-brassInk/70">
+                  {String(i + 1).padStart(2, '0')}
                 </p>
-              ))}
-            </Reveal>
-
-            {/* la photo : Krystine sur scène, détourée, posée sur le feu */}
-            <Reveal delay={0.12} className="lg:col-span-5">
-              <div className="relative">
-                <span
-                  aria-hidden
-                  className="absolute inset-0 rounded-full"
-                  style={{ background: 'radial-gradient(52% 46% at 52% 44%, rgba(199,132,44,0.34), transparent 72%)' }}
-                />
-                <Parallax speed={0.12}>
-                  <img
-                    src="/foyer/krystine-scene.webp"
-                    alt="Krystine St-Laurent sur scène"
-                    loading="lazy"
-                    className="relative w-full"
-                    style={{ filter: 'drop-shadow(0 26px 46px rgba(12,8,5,0.6))' }}
-                  />
-                </Parallax>
-              </div>
-              <p className="mt-4 font-sans text-[0.8rem] tracking-[0.06em] text-ctextSoft">{SECTION7.photoCaption}</p>
-            </Reveal>
+                <p className="mt-5 font-serif font-medium text-brassInk text-[clamp(1.5rem,2.7vw,2.15rem)] leading-snug">
+                  {par}
+                </p>
+              </Reveal>
+            ))}
           </div>
-
-          {/* le fil : trois piliers autour du même feu */}
-          <div className="mt-20 border-t border-brass/30 pt-14">
-            <Reveal>
-              <p className="font-sans text-[0.95rem] leading-[1.85] text-ctextSoft max-w-[54ch]">
-                {SECTION7.pillarsLead}
-              </p>
-            </Reveal>
-            <div className="mt-10 grid gap-y-8 sm:grid-cols-3">
-              {SECTION7.pillars.map((p, i) => (
-                <Reveal key={p} delay={i * 0.1}>
-                  <p className="font-serif font-medium text-brassBright text-[clamp(1.25rem,2.2vw,1.7rem)] leading-snug">
-                    {p}
-                  </p>
-                </Reveal>
-              ))}
-            </div>
-            <Reveal delay={0.3}>
-              <p className="mt-10 font-serif text-ctext text-[clamp(1.15rem,1.9vw,1.5rem)] leading-snug max-w-[40ch]">
-                {SECTION7.pillarsClosing}
-              </p>
-            </Reveal>
-          </div>
-
-          <Reveal className="mt-16">
-            <p className="font-sans text-[0.95rem] leading-[1.9] text-ctextSoft max-w-[60ch]">{SECTION7.bridge}</p>
+          <Reveal delay={0.3}>
+            <p className="mt-16 font-serif text-espresso text-[clamp(1.4rem,2.5vw,2rem)] leading-snug max-w-[34ch]">
+              {SECTION7.pillarsClosing}
+            </p>
           </Reveal>
 
-          <Reveal className="mt-20">
-            <span className="block h-px w-16 bg-brass" aria-hidden />
-            <p className="mt-8 font-serif font-medium text-ctext text-[clamp(1.35rem,2.5vw,2rem)] leading-snug max-w-[34ch]">
-              {SECTION7.emphasis}
-            </p>
-            <p className="mt-5 font-serif font-medium text-brassBright text-[clamp(1.35rem,2.5vw,2rem)] leading-snug max-w-[38ch]">
-              {SECTION7.closing}
-            </p>
+          {/* le pont vers le Foyer */}
+          <Reveal className="mt-24 border-t border-brass/30 pt-16">
+            <p className="font-sans text-[1rem] leading-[1.85] text-inkSoft max-w-[58ch]">{SECTION7.bridge}</p>
+          </Reveal>
+
+          <Reveal className="mt-20 flex md:justify-end">
+            <div className="md:text-right">
+              <p className="font-serif font-medium text-espresso text-[clamp(1.6rem,3vw,2.4rem)] leading-snug max-w-[34ch]">
+                {SECTION7.emphasis}
+              </p>
+              <p className="mt-6 font-serif font-medium text-brassInk text-[clamp(1.6rem,3vw,2.4rem)] leading-snug max-w-[34ch]">
+                {SECTION7.closing}
+              </p>
+            </div>
           </Reveal>
         </div>
       </section>
-
       {/* ═══════ SECTION 10 · FAQ ═══════ */}
       <section className={`overflow-hidden bg-cream2 py-24 md:py-36 ${overlap ? 'z-[53]' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
         <div
