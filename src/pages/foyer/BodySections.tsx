@@ -12,8 +12,6 @@ import {
   FAQ,
 } from './content';
 import { Cta } from './Cta';
-import TelephoneHorizontal from './TelephoneHorizontal';
-import EclatDuFoyer from './EclatDuFoyer';
 
 /**
  * Le Foyer d'Origine · sections de CORPS (copie du doc « PAGE DE VENTE FINALE »).
@@ -672,22 +670,47 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             </div>
           </div>
 
-          {/* la phrase, seule, sur un écran couché */}
-          <div className="px-6 py-24 md:py-32">
-            <Reveal>
-              <div className="mx-auto w-full max-w-[880px]">
-                <TelephoneHorizontal>
-                  <p className="whitespace-nowrap text-center font-serif font-medium leading-none text-brassBright text-[clamp(0.95rem,3.15vw,2.5rem)]">
-                    {BIENVENUE.kicker}
-                  </p>
-                </TelephoneHorizontal>
-              </div>
+          {/* la collision : centrée, pleine largeur, à l'échelle du calendrier */}
+          <Reveal>
+            <div className="px-6 py-28 text-center md:py-36">
+              <p className="mx-auto max-w-[24ch] font-serif font-medium leading-[1.02] text-brassBright text-[clamp(2.2rem,6vw,5.2rem)]">
+                {BIENVENUE.kicker}
+              </p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ═══════ SECTION 3 · Le retournement : ce que Le Foyer fait à la place.
+          Socle provisoire en attendant l'idée de scène retenue ═══════ */}
+      <section
+        className={`bg-cream3 px-6 py-28 md:px-12 md:py-36 lg:px-20 ${
+          overlap ? 'relative z-[11] rounded-t-[18px] shadow-[0_-26px_60px_rgba(15,22,19,0.5)]' : 'relative'
+        }`}
+      >
+        <Reveal className="mx-auto max-w-[62ch] text-center">
+          <p className="font-sans text-[0.7rem] uppercase tracking-[0.32em] text-brassInk">
+            {BIENVENUE.eyebrow}
+          </p>
+          <p className="mx-auto mt-8 max-w-[24ch] font-serif font-medium leading-[1.1] text-espresso text-[clamp(1.9rem,3.8vw,3.1rem)]">
+            {BIENVENUE.promise}
+          </p>
+          <p className="mx-auto mt-9 max-w-[54ch] font-sans text-[1.02rem] leading-[1.85] text-ink">
+            {BIENVENUE.body}
+          </p>
+        </Reveal>
+
+        <div className="mx-auto mt-16 grid max-w-[900px] gap-y-6 border-y border-brass/30 py-10 text-center sm:grid-cols-3">
+          {BIENVENUE.marks.map((m, i) => (
+            <Reveal key={m} delay={i * 0.08}>
+              <p className="font-serif text-brassInk text-[clamp(1.2rem,2.1vw,1.6rem)] leading-snug">{m}</p>
             </Reveal>
-          </div>
+          ))}
         </div>
 
-        {/* l'éclat : le téléphone cède, le feu en sort, la parole arrive au scroll */}
-        <EclatDuFoyer />
+        <Reveal className="mt-14 flex justify-center">
+          <Cta label={BIENVENUE.cta} />
+        </Reveal>
       </section>
 
       {/* ═══════ SECTION 4 · Le mur des douze portes ═══════ */}
