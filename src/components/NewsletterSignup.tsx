@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useApp } from '../contexts/AppContext';
 import { loginWithGoogle } from '../firebase/auth';
 import { addNewsletterSubscriber, getMember, updateMember } from '../firebase/firestore';
@@ -35,10 +36,11 @@ const NewsletterSignup: React.FC<Props> = ({
   className = '',
   emailOnly = false,
 }) => {
-  const { lang, setSignInOpen, user } = useApp();
+  const { lang, user } = useApp();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
+  const reduce = useReducedMotion();
 
   const isDark = variant === 'dark';
   const busy = status === 'sending';
@@ -119,40 +121,62 @@ const NewsletterSignup: React.FC<Props> = ({
     }
   };
 
-  // ── Success states ──
+  // ── Écran de confirmation ──
+  // Une vraie scène : l'image du livre aux fleurs séchées (public/foyer), le
+  // titre en Cormorant, une phrase qui dit ce qui arrive ensuite. Carte crème,
+  // coins 15 px, entrée lente et feutrée (reduced-motion respecté).
   if (done) {
     const isGoogle = status === 'google-success';
     const title = isGoogle
       ? (lang === 'FR' ? 'Bienvenue dans le fil' : 'Welcome to the thread')
-      : (lang === 'FR' ? 'Merci, vous êtes inscrit·e' : 'Thank you, you\'re subscribed');
+      : (lang === 'FR' ? 'Vous êtes bien inscrit·e' : 'You are on the list');
     const body = isGoogle
       ? (lang === 'FR'
-          ? 'Votre espace client Inspirata est prêt. Nous vous écrirons bientôt.'
-          : 'Your Inspirata client space is ready. We\'ll be in touch soon.')
+          ? 'Votre espace client Inspirata est prêt et un premier mot de bienvenue arrive dans votre boîte.'
+          : 'Your Inspirata client space is ready and a first welcome note is on its way to your inbox.')
       : (lang === 'FR'
-          ? 'Vous recevrez bientôt le fil. Créez votre espace client pour accéder à vos rituels et résultats.'
-          : 'The thread is on its way. Create a client space to access your rituals and results.');
+          ? 'Un premier mot de bienvenue arrive dans votre boîte d\'ici quelques minutes. La prochaine infolettre suivra avec la nouvelle saison.'
+          : 'A first welcome note reaches your inbox within a few minutes. The next newsletter follows with the new season.');
+    const ease = [0.16, 0.8, 0.24, 1] as const;
+    const fade = (delay: number) => ({
+      initial: reduce ? false : { opacity: 0, y: 18, filter: 'blur(6px)' },
+      animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
+      transition: { duration: 1, delay, ease },
+    });
 
     return (
-      <div className={`text-center ${className}`}>
-        <div className={`inline-flex items-center gap-3 mb-5 ${isDark ? 'text-[#7d6330]' : 'text-[#7d6330]'}`}>
-          <i className="fa-solid fa-check-circle text-2xl" />
-          <span className="font-serif italic text-xl md:text-2xl">{title}</span>
+      <motion.div
+        role="status"
+        aria-live="polite"
+        className={`w-full max-w-2xl mx-auto overflow-hidden rounded-[15px] bg-[#f6f3ee] text-[#2a2015] shadow-[0_18px_50px_rgba(42,32,21,0.18)] ${className}`}
+        initial={reduce ? false : { opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9, ease }}
+      >
+        <div className="relative aspect-[16/9] overflow-hidden">
+          <motion.img
+            src="/foyer/livre-fleurs.webp"
+            alt={lang === 'FR' ? 'Un livre ouvert, quelques roses séchées entre les pages' : 'An open book with a few dried roses between the pages'}
+            className="absolute inset-0 h-full w-full object-cover"
+            initial={reduce ? false : { scale: 1.08, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1.2, ease }}
+          />
+          <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#f6f3ee] to-transparent" />
         </div>
-        <p className={`text-sm leading-relaxed max-w-md mx-auto ${isDark ? 'text-white/60' : 'text-[#2a2015]/60'}`}>
-          {body}
-        </p>
-        {!isGoogle && (
-          <button
-            type="button"
-            onClick={() => setSignInOpen(true)}
-            className="mt-6 inline-flex items-center gap-2 text-[#7d6330] hover:text-white uppercase tracking-widest text-[11px] font-bold border-b border-[#bb9a5e]/40 hover:border-[#bb9a5e] pb-1 transition-colors"
+        <div className="px-8 pb-10 pt-2 text-center md:px-12 md:pb-12">
+          <motion.div aria-hidden className="mx-auto mb-6 h-px w-16 bg-[#bb9a5e]" {...fade(0.25)} />
+          <motion.h3
+            className="font-serif font-medium text-[clamp(2rem,4.5vw,2.9rem)] leading-[1.05]"
+            {...fade(0.35)}
           >
-            {lang === 'FR' ? 'Créer mon espace client' : 'Create my client space'}
-            <i className="fa-solid fa-arrow-right text-[9px]" />
-          </button>
-        )}
-      </div>
+            {title}
+          </motion.h3>
+          <motion.p className="mx-auto mt-5 max-w-md text-[0.95rem] leading-[1.75] text-[#2a2015]/70" {...fade(0.5)}>
+            {body}
+          </motion.p>
+        </div>
+      </motion.div>
     );
   }
 
