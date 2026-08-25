@@ -754,6 +754,11 @@ const FoyerPage: React.FC = () => {
     document.title = "Le Foyer d'Origine | Krystine St-Laurent";
     /* la page repart toujours en haut : sinon le navigateur restaure un
        scroll au milieu de la scène pinnée et le titre semble absent */
+    /* le fond du body est l'espresso du site : sur cette page, il transparaît
+       en brun quand une feuille épinglée n'est pas encore peinte. On le passe
+       en crème le temps de la visite. */
+    const prevBg = document.body.style.background;
+    document.body.style.background = '#f6f3ee';
     const prevRestore = window.history.scrollRestoration;
     window.history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
@@ -761,6 +766,7 @@ const FoyerPage: React.FC = () => {
     return () => {
       window.clearTimeout(t);
       document.title = prev;
+      document.body.style.background = prevBg;
       window.history.scrollRestoration = prevRestore;
     };
   }, []);
