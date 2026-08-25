@@ -25,7 +25,7 @@ interface Temps {
 }
 
 const TEMPS: Temps[] = [
-  { texte: BIENVENUE.marks[0], f: [0.14, 0.24, 0.36, 0.44], taille: 'repere' },
+  { texte: BIENVENUE.marks[0], f: [0.08, 0.18, 0.34, 0.42], taille: 'repere' },
   { texte: BIENVENUE.marks[1], f: [0.44, 0.54, 0.64, 0.72], taille: 'repere' },
   { texte: BIENVENUE.marks[2], f: [0.72, 0.8, 0.985, 1], taille: 'repere' },
 ];
@@ -80,7 +80,7 @@ const AllumetteDuFoyer: React.FC = () => {
       const d = v.duration;
       if (d && Number.isFinite(d)) {
         /* l'allumette prend entre 10 % et 80 % du défilement */
-        const avance = Math.min(1, Math.max(0, (p.get() - 0.1) / 0.7));
+        const avance = Math.min(1, Math.max(0, (p.get() - 0.02) / 0.62));
         /* la flamme reste dans le cadre : on s'arrête avant que la main ne l'emporte */
         const cible = avance * (d * 0.86);
         joue += (cible - joue) * (Math.abs(cible - joue) > 0.8 ? 1 : 0.22);
@@ -103,7 +103,7 @@ const AllumetteDuFoyer: React.FC = () => {
   const halo = useTransform(p, [0.2, 0.7], [0, 1]);
   const haloScale = useTransform(p, [0.2, 1], [0.55, 1.6]);
   /* le voile de lisibilité s'épaissit quand la parole arrive */
-  const voile = useTransform(p, [0, 0.06, 0.94, 1], [0.3, 0.9, 0.9, 0.55]);
+  const voile = useTransform(p, [0, 0.06, 0.94, 1], [0.2, 0.5, 0.5, 0.35]);
   const gesteOpacity = useTransform(p, [0.82, 0.9], [0, 1]);
   const gesteY = useTransform(p, [0.82, 0.94], [22, 0]);
 
@@ -152,12 +152,7 @@ const AllumetteDuFoyer: React.FC = () => {
         />
 
         {/* la parole, un temps à la fois, sur un voile local qui la tient lisible */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[52vh]"
-          style={{ background: 'linear-gradient(180deg, transparent 0%, rgba(15,22,19,0.55) 38%, rgba(15,22,19,0.9) 100%)' }}
-        />
-        <div className="pointer-events-none absolute inset-x-0 bottom-[30vh] flex justify-center px-6 text-center">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center">
           {TEMPS.map((t) => (
             <Paragraphe key={t.texte.slice(0, 18)} temps={t} p={p} reduce={!!reduce} />
           ))}
@@ -165,7 +160,7 @@ const AllumetteDuFoyer: React.FC = () => {
 
         {/* le geste, une fois la flamme installée */}
         <motion.div
-          className="absolute bottom-[8vh] left-1/2 -translate-x-1/2"
+          className="absolute bottom-[8vh] right-6 md:right-12 lg:right-20"
           style={{ opacity: gesteOpacity, y: gesteY }}
         >
           <Cta label={BIENVENUE.cta} dark />
@@ -187,7 +182,7 @@ const Paragraphe: React.FC<{
   const filter = useTransform(blur, (v) => `blur(${v}px)`);
   return (
     <motion.p
-      className={`absolute bottom-0 px-2 [text-shadow:0_2px_18px_rgba(15,22,19,0.85)] ${CLASSES[temps.taille]}`}
+      className={`absolute px-2 [text-shadow:0_2px_22px_rgba(15,22,19,0.9)] ${CLASSES[temps.taille]}`}
       style={reduce ? { opacity } : { opacity, y, filter }}
       transition={{ ease }}
     >
