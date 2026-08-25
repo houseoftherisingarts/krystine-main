@@ -15,7 +15,8 @@ service cloud.firestore {
           'admin@krystinestlaurent.ca',
           'krystine@inspiratanature.com',
           'alex@lesalondesinconnus.com',
-          'krystinestterredhysope@gmail.com'
+          'krystinestterredhysope@gmail.com',
+          'krystinestlaurent@gmail.com'
         ];
     }
     function isSignedIn() { return request.auth != null; }
