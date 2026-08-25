@@ -27,9 +27,9 @@ interface Temps {
 const TEMPS: Temps[] = [
   { texte: BIENVENUE.promise, f: [0.04, 0.12, 0.22, 0.29], taille: 'grand' },
   { texte: BIENVENUE.body, f: [0.3, 0.38, 0.46, 0.53], taille: 'moyen' },
-  { texte: BIENVENUE.marks[0], f: [0.54, 0.6, 0.65, 0.7], taille: 'repere' },
-  { texte: BIENVENUE.marks[1], f: [0.63, 0.69, 0.74, 0.79], taille: 'repere' },
-  { texte: BIENVENUE.marks[2], f: [0.72, 0.78, 0.83, 0.88], taille: 'repere' },
+  { texte: BIENVENUE.marks[0], f: [0.54, 0.585, 0.635, 0.665], taille: 'repere' },
+  { texte: BIENVENUE.marks[1], f: [0.665, 0.71, 0.76, 0.79], taille: 'repere' },
+  { texte: BIENVENUE.marks[2], f: [0.79, 0.835, 0.885, 0.915], taille: 'repere' },
 ];
 
 const CLASSES: Record<Temps['taille'], string> = {
@@ -104,9 +104,9 @@ const AllumetteDuFoyer: React.FC = () => {
   const halo = useTransform(p, [0.2, 0.7], [0, 1]);
   const haloScale = useTransform(p, [0.2, 1], [0.55, 1.2]);
   /* le voile de lisibilité s'épaissit quand la parole arrive */
-  const voile = useTransform(p, [0, 0.06, 0.9, 1], [0.2, 0.62, 0.62, 0.28]);
-  const gesteOpacity = useTransform(p, [0.88, 0.95], [0, 1]);
-  const gesteY = useTransform(p, [0.88, 0.98], [22, 0]);
+  const voile = useTransform(p, [0, 0.06, 0.94, 1], [0.3, 0.9, 0.9, 0.55]);
+  const gesteOpacity = useTransform(p, [0.92, 0.97], [0, 1]);
+  const gesteY = useTransform(p, [0.92, 1], [22, 0]);
 
   return (
     <div ref={ref} className="relative h-[440vh] bg-encre">
@@ -148,7 +148,7 @@ const AllumetteDuFoyer: React.FC = () => {
           style={{
             opacity: voile,
             background:
-              'linear-gradient(180deg, rgba(15,22,19,0.62) 0%, rgba(15,22,19,0.3) 34%, rgba(15,22,19,0.88) 100%)',
+              'linear-gradient(180deg, rgba(15,22,19,0.55) 0%, rgba(15,22,19,0.22) 26%, rgba(15,22,19,0.72) 58%, rgba(15,22,19,0.95) 100%)',
           }}
         />
 
@@ -183,7 +183,7 @@ const Paragraphe: React.FC<{
   const filter = useTransform(blur, (v) => `blur(${v}px)`);
   return (
     <motion.p
-      className={`absolute bottom-0 px-2 ${CLASSES[temps.taille]}`}
+      className={`absolute bottom-0 px-2 [text-shadow:0_2px_18px_rgba(15,22,19,0.85)] ${CLASSES[temps.taille]}`}
       style={reduce ? { opacity } : { opacity, y, filter }}
       transition={{ ease }}
     >
