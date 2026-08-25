@@ -1,13 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  animate,
-  motion,
-  AnimatePresence,
-  useInView,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from 'framer-motion';
+import { animate, motion, AnimatePresence, useInView, useReducedMotion, useTransform, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { ChevronDown, X } from 'lucide-react';
 import { Reveal, Parallax } from '../../components/motion/loeuvre';
 import {
@@ -408,13 +400,46 @@ const FleurDuFoyer: React.FC = () => {
   );
 };
 
+/* ═══════════ Progression maison : la position d'un bloc dans l'écran, de 0
+   (son haut entre par le bas) à 1 (son centre atteint la hauteur voulue).
+   useScroll({ target }) mesure mal dans cette page, on lit le rect nous-mêmes. ═══════════ */
+const useProgression = (ref: React.RefObject<HTMLElement | null>, fin = 0.45) => {
+  const p = useMotionValue(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    const update = () => {
+      const r = el.getBoundingClientRect();
+      const h = window.innerHeight;
+      const depart = h * 0.96;
+      const arrivee = h * fin - r.height / 2;
+      const v = (depart - r.top) / Math.max(1, depart - arrivee);
+      p.set(Math.min(1, Math.max(0, v)));
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [ref, fin, p]);
+  return p;
+};
+
 /* ═══════════ Le kicker qui se met au point : « Plus on nous montre, moins
    on voit. » arrive flou et se précise au fil du défilement, une seule fois,
    lié au scroll (jamais sur minuterie). ═══════════ */
 const KickerFocus: React.FC<{ text: string }> = ({ text }) => {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 95%', 'center 45%'] });
+  const scrollYProgress = useProgression(ref, 0.45);
   const blur = useTransform(scrollYProgress, [0, 1], [18, 0]);
   const filter = useTransform(blur, (b) => `blur(${b}px)`);
   const opacity = useTransform(scrollYProgress, [0, 1], [0.12, 1]);
@@ -473,8 +498,18 @@ const BandeDesQuatre: React.FC = () => (
 const PIGMENTS = ['pigment-terre', 'pigment-prune', 'pigment-bleu'] as const;
 const Tache: React.FC<{ n: number; className?: string }> = ({ n, className = '' }) => {
   const reduce = useReducedMotion();
+  const ref = useRef<HTMLImageElement>(null);
+  /* la progression : la tache commence à naître quand elle entre par le bas,
+     elle est pleine quand elle atteint le milieu de l'écran */
+  const scrollYProgress = useProgression(ref, 0.42);
+  const scale = useTransform(scrollYProgress, [0, 1], [0.42, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 1], [0, 0.55, 0.85]);
+  /* le bord de l'eau : le rayon plein grandit, le pinceau se dissout vers l'extérieur */
+  const bord = useTransform(scrollYProgress, [0, 1], [8, 55]);
+  const masque = useMotionTemplate`radial-gradient(closest-side, black ${bord}%, transparent 100%)`;
   return (
     <motion.img
+      ref={ref}
       aria-hidden
       src={`/foyer/${PIGMENTS[n % PIGMENTS.length]}.webp`}
       alt=""
@@ -482,15 +517,11 @@ const Tache: React.FC<{ n: number; className?: string }> = ({ n, className = '' 
       height={800}
       loading="lazy"
       className={`pointer-events-none absolute h-auto select-none ${className}`}
-      style={{
-        mixBlendMode: 'multiply',
-        maskImage: 'radial-gradient(closest-side, black 55%, transparent 100%)',
-        WebkitMaskImage: 'radial-gradient(closest-side, black 55%, transparent 100%)',
-      }}
-      initial={reduce ? undefined : { opacity: 0, scale: 0.55 }}
-      whileInView={{ opacity: 0.85, scale: 1 }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 1.8, ease }}
+      style={
+        reduce
+          ? { mixBlendMode: 'multiply', opacity: 0.85, maskImage: 'radial-gradient(closest-side, black 55%, transparent 100%)', WebkitMaskImage: 'radial-gradient(closest-side, black 55%, transparent 100%)' }
+          : { mixBlendMode: 'multiply', scale, opacity, maskImage: masque, WebkitMaskImage: masque }
+      }
     />
   );
 };
@@ -626,9 +657,6 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
               <Reveal delay={0.12}>
                 <p className="mt-8 max-w-[52ch] font-sans text-fyBody text-ink">{BIENVENUE.body}</p>
               </Reveal>
-              <Reveal delay={0.2} className="mt-10">
-                <Cta label={BIENVENUE.cta} />
-              </Reveal>
             </div>
             <Reveal delay={0.1} className="lg:col-span-6">
               <Parallax speed={0.1} className="overflow-hidden rounded-[15px] shadow-[0_34px_90px_rgba(58,49,38,0.24)]">
@@ -650,8 +678,6 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
           la flamme de Varanasi pleine hauteur (scène validée, tailles ajustées) ═══════ */}
       <section
         className={`relative overflow-hidden bg-encre ${overlap ? 'z-10' : ''} ${cover}`}
-        style={pin}
-        data-pin-sheet
       >
         <div className="grid lg:min-h-[88vh] lg:grid-cols-12">
           {/* la flamme, bord à bord */}
@@ -788,7 +814,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       {/* ═══════ SECTION 4 · Le mur des douze portes, puis le rythme de la semaine ═══════ */}
       <section
         className={`overflow-hidden bg-cream3 pb-28 md:pb-40 ${
-          overlap ? 'z-[12] rounded-t-[18px] shadow-[0_-26px_60px_rgba(15,22,19,0.5)]' : 'relative'
+          overlap ? 'z-[13] rounded-t-[18px] shadow-[0_-26px_60px_rgba(15,22,19,0.5)]' : 'relative'
         }`}
         style={pin}
         data-pin-sheet
@@ -999,16 +1025,17 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
           </div>
 
           {/* les bonis : deux lignes de laiton, jamais deux cartes */}
-          <div className="mt-20 grid gap-x-16 gap-y-10 lg:grid-cols-12">
-            <Reveal className="lg:col-span-3">
+          <div className="mt-20">
+            <Reveal>
               <Eyebrow>{CONTENU.bonisTitle}</Eyebrow>
             </Reveal>
-            <div className="lg:col-span-9">
+            <div className="mt-8 grid gap-6 md:grid-cols-2 md:gap-8">
               {CONTENU.bonis.map((b, i) => (
-                <Reveal key={b.title} delay={i * 0.1}>
-                  <div className={`py-8 ${i ? 'border-t border-brass/25' : ''}`}>
-                    <p className="fy-h max-w-[30ch] font-serif font-medium text-fyH3 text-brassInk">{b.title}</p>
-                    <p className="mt-3 max-w-[60ch] font-sans text-fyBody text-ink">{b.body}</p>
+                <Reveal key={b.title} delay={i * 0.1} className="h-full">
+                  <div className="flex h-full flex-col rounded-[15px] border border-brass/40 bg-cream2 p-8 shadow-[0_22px_50px_rgba(58,49,38,0.12)] md:p-10">
+                    <span className="font-serif text-fyLead leading-none text-brassInk/70">{String(i + 1).padStart(2, '0')}</span>
+                    <p className="fy-h mt-6 font-serif font-medium text-fyH3 text-espresso">{b.title}</p>
+                    <p className="mt-4 font-sans text-fyBody text-ink">{b.body}</p>
                   </div>
                 </Reveal>
               ))}
@@ -1088,33 +1115,29 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             <p className="fy-h mt-16 max-w-[28ch] font-serif font-medium leading-[1.06] text-[clamp(1.7rem,1.1rem+2.8vw,3.2rem)] text-espresso">{SECTION7.pillarsClosing}</p>
           </Reveal>
 
-          {/* le pont vers le Foyer */}
-          <Reveal className="mt-24 border-t border-brass/30 pt-16">
-            <p className="max-w-[64ch] font-sans text-fyBody text-ink">{SECTION7.bridge}</p>
-          </Reveal>
-
-          <Reveal className="mt-20 flex md:justify-end">
-            <div className="md:text-right">
-              <p className="fy-h max-w-[30ch] font-serif font-medium text-fyH3 text-espresso">{SECTION7.emphasis}</p>
-              <p className="fy-h mt-5 max-w-[30ch] font-serif font-medium leading-[1.25] text-[clamp(1.4rem,1.2rem+0.9vw,1.5rem)] text-brassInk">
-                {SECTION7.closing}
-              </p>
-            </div>
-          </Reveal>
+          {/* le pont, puis la chute : une seule colonne, un seul point de regard */}
+          <div className="mt-24 border-y border-brass/30 py-16 md:py-20">
+            <Reveal className="mx-auto max-w-[62ch] text-center">
+              <p className="font-sans text-fyBody text-ink">{SECTION7.bridge}</p>
+              <span className="mx-auto mt-10 block h-px w-16 bg-brass" aria-hidden />
+              <p className="fy-h mt-10 font-serif font-medium text-fyH3 text-espresso">{SECTION7.emphasis}</p>
+              <p className="fy-h mt-4 font-serif font-medium text-fyH3 text-brassInk">{SECTION7.closing}</p>
+            </Reveal>
+          </div>
         </div>
       </section>
 
       {/* ═══════ SECTION 10 · FAQ : l'invitation scellée reste à gauche pendant
           que les questions défilent à droite, en une seule colonne large ═══════ */}
-      <section className={`overflow-hidden bg-cream3 py-24 md:py-36 ${overlap ? 'z-[53]' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
+      <section className={`relative bg-cream3 py-24 md:py-36 ${overlap ? 'z-[53]' : ''} ${cover}`}>
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
+          <Reveal className="mb-14">
+            <Eyebrow>Avant de dire oui</Eyebrow>
+            <SectionTitle className="mt-5">Questions fréquentes</SectionTitle>
+          </Reveal>
           <div className="grid gap-x-16 gap-y-14 lg:grid-cols-12 lg:items-start">
             <div className="lg:sticky lg:top-24 lg:col-span-5">
-              <Reveal>
-                <Eyebrow>Avant de dire oui</Eyebrow>
-                <SectionTitle className="mt-5">Questions fréquentes</SectionTitle>
-              </Reveal>
-              <Reveal delay={0.15} className="mt-12 hidden lg:block">
+              <Reveal delay={0.15} className="hidden lg:block">
                 <Parallax speed={0.1} className="overflow-hidden rounded-[15px] shadow-[0_30px_80px_rgba(58,49,38,0.22)]">
                   <img
                     src="/foyer/lettre-lin.webp"

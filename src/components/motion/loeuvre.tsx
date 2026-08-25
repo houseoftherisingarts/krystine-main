@@ -40,8 +40,8 @@ export const Reveal: React.FC<{
       className={className}
       initial={reduce ? false : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.95, delay, ease: EASE }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.8, delay: Math.min(delay, 0.25), ease: EASE }}
     >
       {children}
     </motion.div>

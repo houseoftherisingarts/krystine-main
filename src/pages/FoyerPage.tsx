@@ -616,9 +616,6 @@ const Offre: React.FC = () => {
                 </p>
               ))}
             </div>
-            <div className="mt-10">
-              <Cta label={OFFRE.cta} dark />
-            </div>
           </div>
         </div>
       </div>

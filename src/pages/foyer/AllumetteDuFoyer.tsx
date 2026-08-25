@@ -27,7 +27,7 @@ interface Temps {
 const TEMPS: Temps[] = [
   { texte: BIENVENUE.marks[0], f: [0.14, 0.24, 0.36, 0.44], taille: 'repere' },
   { texte: BIENVENUE.marks[1], f: [0.44, 0.54, 0.64, 0.72], taille: 'repere' },
-  { texte: BIENVENUE.marks[2], f: [0.72, 0.8, 0.9, 0.96], taille: 'repere' },
+  { texte: BIENVENUE.marks[2], f: [0.72, 0.8, 0.985, 1], taille: 'repere' },
 ];
 
 const CLASSES: Record<Temps['taille'], string> = {
@@ -81,7 +81,8 @@ const AllumetteDuFoyer: React.FC = () => {
       if (d && Number.isFinite(d)) {
         /* l'allumette prend entre 10 % et 80 % du défilement */
         const avance = Math.min(1, Math.max(0, (p.get() - 0.1) / 0.7));
-        const cible = avance * (d - 0.04);
+        /* la flamme reste dans le cadre : on s'arrête avant que la main ne l'emporte */
+        const cible = avance * (d * 0.86);
         joue += (cible - joue) * (Math.abs(cible - joue) > 0.8 ? 1 : 0.22);
         if (Math.abs(joue - v.currentTime) > 0.012) v.currentTime = joue;
       }
@@ -100,14 +101,14 @@ const AllumetteDuFoyer: React.FC = () => {
   const scale = useTransform(p, [0, 1], [1.04, 1.16]);
   /* la chaleur de la flamme, qui monte avec elle */
   const halo = useTransform(p, [0.2, 0.7], [0, 1]);
-  const haloScale = useTransform(p, [0.2, 1], [0.55, 1.2]);
+  const haloScale = useTransform(p, [0.2, 1], [0.55, 1.6]);
   /* le voile de lisibilité s'épaissit quand la parole arrive */
   const voile = useTransform(p, [0, 0.06, 0.94, 1], [0.3, 0.9, 0.9, 0.55]);
-  const gesteOpacity = useTransform(p, [0.92, 0.97], [0, 1]);
-  const gesteY = useTransform(p, [0.92, 1], [22, 0]);
+  const gesteOpacity = useTransform(p, [0.82, 0.9], [0, 1]);
+  const gesteY = useTransform(p, [0.82, 0.94], [22, 0]);
 
   return (
-    <div ref={ref} className="relative h-[440vh] bg-encre">
+    <div ref={ref} className="relative z-[12] h-[380vh] bg-encre">
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
         {/* le fond vivant : encre de forêt et laiton, jamais du brun plat */}
         <FondVivant />
@@ -134,7 +135,7 @@ const AllumetteDuFoyer: React.FC = () => {
             opacity: halo,
             scale: haloScale,
             background:
-              'radial-gradient(circle, rgba(224,121,46,0.3) 0%, rgba(199,132,44,0.12) 46%, transparent 74%)',
+              'radial-gradient(circle, rgba(224,121,46,0.42) 0%, rgba(199,132,44,0.16) 46%, transparent 74%)',
             filter: 'blur(34px)',
           }}
         />
@@ -150,8 +151,13 @@ const AllumetteDuFoyer: React.FC = () => {
           }}
         />
 
-        {/* la parole, un temps à la fois */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-[21vh] flex justify-center px-6 text-center">
+        {/* la parole, un temps à la fois, sur un voile local qui la tient lisible */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[52vh]"
+          style={{ background: 'linear-gradient(180deg, transparent 0%, rgba(15,22,19,0.55) 38%, rgba(15,22,19,0.9) 100%)' }}
+        />
+        <div className="pointer-events-none absolute inset-x-0 bottom-[30vh] flex justify-center px-6 text-center">
           {TEMPS.map((t) => (
             <Paragraphe key={t.texte.slice(0, 18)} temps={t} p={p} reduce={!!reduce} />
           ))}
