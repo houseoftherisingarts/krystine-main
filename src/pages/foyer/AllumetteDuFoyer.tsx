@@ -98,7 +98,7 @@ const AllumetteDuFoyer: React.FC = () => {
   }, [p, reduce]);
 
   /* la scène s'approche pendant que la flamme prend */
-  const scale = useTransform(p, [0, 1], [1.04, 1.16]);
+  const scale = useTransform(p, [0, 1], [1, 1.05]);
   /* la chaleur de la flamme, qui monte avec elle */
   const halo = useTransform(p, [0.2, 0.7], [0, 1]);
   const haloScale = useTransform(p, [0.2, 1], [0.55, 1.6]);
