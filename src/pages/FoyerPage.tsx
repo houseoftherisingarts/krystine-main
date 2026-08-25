@@ -440,6 +440,32 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
       cancelAnimationFrame(raf);
     };
   }, [scrollYProgress]);
+  /* l'antre ne boucle plus : la vidéo est lue au rythme du défilement */
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    if (reduce) return;
+    const v = videoRef.current;
+    if (!v) return;
+    let raf = 0;
+    let joue = 0;
+    const boucle = () => {
+      const d = v.duration;
+      if (d && Number.isFinite(d)) {
+        const cible = scrollYProgress.get() * (d - 0.04);
+        joue += (cible - joue) * (Math.abs(cible - joue) > 0.8 ? 1 : 0.22);
+        if (Math.abs(joue - v.currentTime) > 0.012) v.currentTime = joue;
+      }
+      raf = requestAnimationFrame(boucle);
+    };
+    const demarrer = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(boucle);
+    };
+    if (v.readyState >= 1) demarrer();
+    else v.addEventListener('loadedmetadata', demarrer, { once: true });
+    return () => cancelAnimationFrame(raf);
+  }, [scrollYProgress, reduce]);
+
   /* allumage : la scène s'éclaire et s'approche pendant qu'on défile */
   const bright = useTransform(scrollYProgress, [0, 0.4], [0.48, 1.02]);
   const sat = useTransform(scrollYProgress, [0, 0.4], [0.68, 1.05]);
@@ -481,13 +507,12 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
         {/* l'antre VIT : la vidéo respire, s'allume et s'approche au scroll */}
         <motion.div aria-hidden className="absolute inset-0" style={{ scale: sceneScale, filter: sceneFilter }}>
           <video
-            src="/foyer/antre-foyer.mp4"
+            ref={videoRef}
+            src="/foyer/antre-foyer-scrub.mp4"
             poster="/foyer/antre-foyer.webp"
-            autoPlay
             muted
-            loop
             playsInline
-            preload="metadata"
+            preload="auto"
             className="h-full w-full object-cover"
           />
         </motion.div>

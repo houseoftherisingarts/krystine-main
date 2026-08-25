@@ -108,7 +108,7 @@ const AllumetteDuFoyer: React.FC = () => {
   const gesteY = useTransform(p, [0.82, 0.94], [22, 0]);
 
   return (
-    <div ref={ref} className="relative z-[12] h-[380vh] bg-encre">
+    <div ref={ref} className="relative z-[12] h-[230vh] bg-encre">
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
         {/* le fond vivant : encre de forêt et laiton, jamais du brun plat */}
         <FondVivant />
