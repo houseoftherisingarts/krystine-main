@@ -7,48 +7,94 @@
       "**/node_modules/**"
     ],
     "redirects": [
-      { "source": "/", "destination": "/accueil", "type": 302 }
+      {
+        "source": "/",
+        "destination": "/accueil",
+        "type": 302
+      }
     ],
     "rewrites": [
-      { "source": "/accueil",    "destination": "/accueil/index.html" },
-      { "source": "/accueil/**", "destination": "/accueil/index.html" },
-      { "source": "/liste-attente-origine",    "destination": "/liste-attente-origine/index.html" },
-      { "source": "/liste-attente-origine/**", "destination": "/liste-attente-origine/index.html" },
-      { "source": "**", "destination": "/index.html" }
+      {
+        "source": "/accueil",
+        "destination": "/accueil/index.html"
+      },
+      {
+        "source": "/accueil/**",
+        "destination": "/accueil/index.html"
+      },
+      {
+        "source": "/liste-attente-origine",
+        "destination": "/liste-attente-origine/index.html"
+      },
+      {
+        "source": "/liste-attente-origine/**",
+        "destination": "/liste-attente-origine/index.html"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ],
     "headers": [
       {
         "source": "**",
         "headers": [
-          { "key": "Cache-Control", "value": "no-cache" }
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
         ]
       },
       {
         "source": "**/*.@(js|jsx|ts|tsx|css|json)",
         "headers": [
-          { "key": "Cache-Control", "value": "max-age=31536000" }
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000"
+          }
         ]
       },
       {
         "source": "**/*.@(jpg|jpeg|gif|png|webp|svg|avif)",
         "headers": [
-          { "key": "Cache-Control", "value": "max-age=604800" }
+          {
+            "key": "Cache-Control",
+            "value": "max-age=604800"
+          }
         ]
       },
       {
         "source": "**",
         "headers": [
-          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-          { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-          { "key": "X-Content-Type-Options", "value": "nosniff" },
-          { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },
-          { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          },
+          {
+            "key": "Content-Security-Policy",
+            "value": "frame-ancestors 'self' https://vexelwebstudio.com https://www.vexelwebstudio.com https://vexel-webstudio.web.app"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "Strict-Transport-Security",
+            "value": "max-age=31536000; includeSubDomains"
+          },
+          {
+            "key": "Permissions-Policy",
+            "value": "camera=(), microphone=(), geolocation=()"
+          }
         ]
       },
       {
         "source": "**/*.@(mp4|webm|glb)",
         "headers": [
-          { "key": "Cache-Control", "value": "max-age=604800" }
+          {
+            "key": "Cache-Control",
+            "value": "max-age=604800"
+          }
         ]
       }
     ]
@@ -57,8 +103,16 @@
     {
       "source": "functions",
       "codebase": "default",
-      "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "*.local"],
-      "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"],
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ],
       "runtime": "nodejs22"
     }
   ],
