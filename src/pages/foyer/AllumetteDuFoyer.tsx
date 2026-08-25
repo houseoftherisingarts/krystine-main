@@ -98,8 +98,7 @@ const AllumetteDuFoyer: React.FC = () => {
   }, [p, reduce]);
 
   /* la scène s'approche pendant que la flamme prend */
-  /* la caméra recule : la scène tient dans 78 % de l'écran et ses bords se fondent dans l'encre */
-  const scale = useTransform(p, [0, 1], [0.66, 0.7]);
+  const scale = useTransform(p, [0, 1], [1, 1.05]);
   /* la chaleur de la flamme, qui monte avec elle */
   const halo = useTransform(p, [0.2, 0.7], [0, 1]);
   const haloScale = useTransform(p, [0.2, 1], [0.55, 1.6]);
@@ -124,11 +123,7 @@ const AllumetteDuFoyer: React.FC = () => {
             playsInline
             preload="auto"
             aria-label="Une main frotte une allumette, l'étincelle prend et la flamme s'installe"
-            className="h-full w-full object-contain"
-            style={{
-              maskImage: 'radial-gradient(ellipse 58% 62% at 50% 50%, black 36%, transparent 82%)',
-              WebkitMaskImage: 'radial-gradient(ellipse 58% 62% at 50% 50%, black 36%, transparent 82%)',
-            }}
+            className="h-full w-full object-cover"
           />
         </motion.div>
 

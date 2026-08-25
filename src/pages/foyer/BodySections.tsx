@@ -921,28 +921,21 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
           </div>
 
           <Reveal className="mt-28 border-t border-brass/30 pt-16 md:mt-36">
-            <div className="grid gap-x-16 gap-y-10 lg:grid-cols-12 lg:items-end">
-              <div className="lg:col-span-7">
-                <p className="fy-h font-serif font-medium text-fyH2 text-ink">{SECTION5.receiveTitle}</p>
-                <div className="mt-8 flex flex-wrap items-baseline gap-x-8 gap-y-3">
-                  {SECTION5.receive.split(' ').filter(Boolean).map((verbe, i) => (
-                    <span
-                      key={verbe}
-                      className="font-serif text-fyH3 leading-none text-espresso"
-                      style={{ opacity: 1 - i * 0.07 }}
-                    >
-                      {verbe}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <p className="max-w-[40ch] font-sans text-fyBody text-ink lg:col-span-5">{SECTION5.release}</p>
+            {/* recevoir à sa manière : un seul axe, centré, une seule famille de titres */}
+            <div className="mx-auto max-w-[70ch] text-center">
+              <p className="font-sans text-fyLabel uppercase tracking-[0.24em] text-brassInk">{SECTION5.receiveTitle}</p>
+              <p className="fy-h mt-8 font-serif font-medium leading-[1.2] text-[clamp(1.6rem,1.1rem+2vw,2.9rem)] text-espresso">
+                {SECTION5.receive.split(' ').filter(Boolean).map((verbe, i, arr) => (
+                  <React.Fragment key={verbe}>
+                    {verbe.replace('.', '')}
+                    {i < arr.length - 1 && <span className="mx-4 text-brass" aria-hidden>·</span>}
+                  </React.Fragment>
+                ))}
+              </p>
+              <span className="mx-auto mt-10 block h-px w-16 bg-brass" aria-hidden />
+              <p className="mt-10 font-sans text-fyBody text-ink">{SECTION5.release}</p>
+              <p className="fy-h mt-6 font-serif font-medium text-fyH3 text-brassInk">{SECTION5.closing}</p>
             </div>
-          </Reveal>
-
-          {/* la chute, décalée à droite */}
-          <Reveal className="mt-24 flex md:justify-end">
-            <p className="fy-h max-w-[18ch] font-serif font-medium text-fyH2 text-brassInk md:text-right">{SECTION5.closing}</p>
           </Reveal>
         </div>
       </section>
