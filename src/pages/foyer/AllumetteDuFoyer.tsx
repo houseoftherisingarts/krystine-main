@@ -25,11 +25,9 @@ interface Temps {
 }
 
 const TEMPS: Temps[] = [
-  { texte: BIENVENUE.promise, f: [0.04, 0.12, 0.22, 0.29], taille: 'grand' },
-  { texte: BIENVENUE.body, f: [0.3, 0.38, 0.46, 0.53], taille: 'moyen' },
-  { texte: BIENVENUE.marks[0], f: [0.54, 0.585, 0.635, 0.665], taille: 'repere' },
-  { texte: BIENVENUE.marks[1], f: [0.665, 0.71, 0.76, 0.79], taille: 'repere' },
-  { texte: BIENVENUE.marks[2], f: [0.79, 0.835, 0.885, 0.915], taille: 'repere' },
+  { texte: BIENVENUE.marks[0], f: [0.14, 0.24, 0.36, 0.44], taille: 'repere' },
+  { texte: BIENVENUE.marks[1], f: [0.44, 0.54, 0.64, 0.72], taille: 'repere' },
+  { texte: BIENVENUE.marks[2], f: [0.72, 0.8, 0.9, 0.96], taille: 'repere' },
 ];
 
 const CLASSES: Record<Temps['taille'], string> = {

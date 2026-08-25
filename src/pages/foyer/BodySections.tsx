@@ -20,6 +20,7 @@ import {
   FAQ,
 } from './content';
 import AllumetteDuFoyer from './AllumetteDuFoyer';
+import { Cta } from './Cta';
 
 /**
  * Le Foyer d'Origine · sections de CORPS (copie du doc « PAGE DE VENTE FINALE »).
@@ -430,13 +431,22 @@ const KickerFocus: React.FC<{ text: string }> = ({ text }) => {
   );
 };
 
+/* ═══════════ Le rythme des saisons : quatre cercles, puis le feu ═══════════ */
+const SAISONS: { label: string; src: string; alt: string; video?: string }[] = [
+  { label: 'Hiver', src: '/foyer/saison-hiver.webp', alt: 'Une branche nue givrée sous une lumière d’hiver' },
+  { label: 'Printemps', src: '/foyer/saison-printemps.webp', alt: 'Une jeune pousse verte qui sort de la terre' },
+  { label: 'Été', src: '/foyer/saison-ete.webp', alt: 'Des feuilles vertes traversées par le soleil d’été' },
+  { label: 'Automne', src: '/foyer/saison-automne.webp', alt: 'Des feuilles de chêne rousses sur une branche' },
+  { label: 'Et toujours le feu', src: '/foyer/firepit-poster.webp', alt: 'Le feu du Foyer', video: '/foyer/atre-feu.mp4' },
+];
+
 /* ═══════════ Les quatre ouvertures de la semaine : bande de photos en
    parallaxe, chaque image à sa vitesse, comme une pellicule qui défile ═══════════ */
 const SEMAINE = [
   { src: 'sem1-regarder', alt: 'Une tasse fumante posée sur un carnet ouvert, la lumière du matin par la fenêtre', speed: 0.1, top: 'lg:mt-24' },
   { src: 'sem2-saison', alt: 'Des bols de curcuma, de cardamome et d’épices sur une table sombre', speed: 0.26, top: 'lg:mt-0' },
-  { src: 'sem3-piece', alt: 'Un livre relié sous une chandelle de laiton allumée', speed: 0.16, top: 'lg:mt-36' },
-  { src: 'sem4-decouverte', alt: 'Une allée de forêt traversée par la lumière dorée d’octobre', speed: 0.32, top: 'lg:mt-10' },
+  { src: 'sem3-ecrire', alt: 'Des mains qui écrivent à la plume dans un carnet de lin, une tasse posée à côté', speed: 0.16, top: 'lg:mt-36' },
+  { src: 'sem4-graines', alt: 'Des têtes de graines séchées devant la lumière chaude de fin d’automne', speed: 0.32, top: 'lg:mt-10' },
 ] as const;
 
 const BandeDesQuatre: React.FC = () => (
@@ -594,13 +604,121 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         .fy-plaster{background-color:#f3ede2;background-image:url(/foyer/texture-pierre.webp);background-size:cover;background-position:center}
       `}</style>
 
-      {/* ═══════ SECTION 2 · le hook : la scène du téléphone devant le feu, puis
-          les trois constats en plein jour et le kicker qui se met au point ═══════ */}
+      {/* ═══════ SECTION 1 · Le livre : une année à découvrir, la promesse à gauche,
+          le livre aux fleurs pressées à droite, la feuille monte SUR le feu ═══════ */}
       <section
-        className={`${
-          overlap ? 'relative z-10 -mt-[100vh] rounded-t-[18px] shadow-[0_-26px_60px_rgba(15,22,19,0.5)]' : 'relative'
+        className={`overflow-hidden bg-cream ${
+          overlap ? 'relative z-[9] -mt-[100vh] rounded-t-[18px] shadow-[0_-26px_60px_rgba(15,22,19,0.5)]' : 'relative'
         }`}
       >
+        <div className="mx-auto w-full max-w-[1360px] px-6 py-24 md:px-12 md:py-32">
+          <div className="grid gap-x-16 gap-y-12 lg:grid-cols-12 lg:items-center">
+            <div className="lg:col-span-6">
+              <Reveal>
+                <Eyebrow>{BIENVENUE.eyebrow}</Eyebrow>
+                <h2 className="fy-h mt-6 max-w-[14ch] font-serif font-medium leading-[1.02] text-fyH2 text-espresso">
+                  Une année à découvrir
+                </h2>
+                <p className="fy-h mt-8 max-w-[44ch] font-serif font-medium leading-[1.3] text-[clamp(1.2rem,1rem+0.7vw,1.45rem)] text-brassInk">
+                  {BIENVENUE.promise}
+                </p>
+              </Reveal>
+              <Reveal delay={0.12}>
+                <p className="mt-8 max-w-[52ch] font-sans text-fyBody text-ink">{BIENVENUE.body}</p>
+              </Reveal>
+              <Reveal delay={0.2} className="mt-10">
+                <Cta label={BIENVENUE.cta} />
+              </Reveal>
+            </div>
+            <Reveal delay={0.1} className="lg:col-span-6">
+              <Parallax speed={0.1} className="overflow-hidden rounded-[15px] shadow-[0_34px_90px_rgba(58,49,38,0.24)]">
+                <img
+                  src="/foyer/livre-fleurs.webp"
+                  alt="Un vieux livre ouvert, des roses séchées pressées sur ses pages, dans la lumière d'une fenêtre"
+                  width={1600}
+                  height={893}
+                  loading="lazy"
+                  className="block h-auto w-full scale-105"
+                />
+              </Parallax>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════ SECTION 4 · L'histoire du feu : le seul chapitre sombre de la page,
+          la flamme de Varanasi pleine hauteur (scène validée, tailles ajustées) ═══════ */}
+      <section
+        className={`relative overflow-hidden bg-encre ${overlap ? 'z-10' : ''} ${cover}`}
+        style={pin}
+        data-pin-sheet
+      >
+        <div className="grid lg:min-h-[88vh] lg:grid-cols-12">
+          {/* la flamme, bord à bord */}
+          <div className="relative h-[58vh] overflow-hidden lg:col-span-5 lg:h-auto">
+            <img
+              src="/foyer/niche-flamme.webp"
+              alt="La flamme de Varanasi : une lampe de cuivre allumée dans une niche de céramique"
+              width={1000}
+              height={1241}
+              loading="lazy"
+              className="foyer-braise absolute inset-0 h-full w-full object-cover"
+            />
+            <span
+              aria-hidden
+              className="absolute inset-0"
+              style={{ background: 'radial-gradient(58% 46% at 50% 52%, rgba(220,184,116,0.22), transparent 72%)' }}
+            />
+            <span
+              aria-hidden
+              className="absolute inset-x-0 bottom-0 h-32 lg:hidden"
+              style={{ background: 'linear-gradient(180deg, transparent 0%, #0f1613 100%)' }}
+            />
+            <span
+              aria-hidden
+              className="absolute inset-y-0 right-0 hidden w-24 lg:block"
+              style={{ background: 'linear-gradient(90deg, transparent 0%, #0f1613 100%)' }}
+            />
+          </div>
+
+          {/* le récit : une colonne de 62 caractères, jamais moins */}
+          <div className="flex items-center px-6 py-20 md:px-12 md:py-28 lg:col-span-7 lg:px-20 xl:px-28">
+            <div className="max-w-[62ch]">
+              <Reveal>
+                <Eyebrow on="dark">{SECTION2.eyebrow}</Eyebrow>
+                <SectionTitle on="dark" className="mt-6">
+                  {SECTION2.title}
+                </SectionTitle>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <p className="fy-h mt-10 font-serif font-medium text-fyLead text-ctext">{SECTION2.lead}</p>
+              </Reveal>
+              {SECTION2.paragraphs.map((p, i) => (
+                <Reveal key={p.slice(0, 24)} delay={0.18 + i * 0.08}>
+                  <p className="mt-7 font-sans text-fyBody text-ctextSoft">{p}</p>
+                </Reveal>
+              ))}
+              <Reveal delay={0.34}>
+                <span className="mt-12 block h-px w-16 bg-brass" aria-hidden />
+                <p className="mt-7 font-serif font-medium leading-[1.32] text-[clamp(1.25rem,1.1rem+0.55vw,1.5rem)] text-brassBright">
+                  <strong className="font-semibold">{SECTION2.closingLead}</strong>
+                  {SECTION2.closingMid}
+                  <strong className="font-semibold">{SECTION2.closingEnd}</strong>
+                </p>
+              </Reveal>
+            </div>
+          </div>
+        </div>
+        <style>{`
+          @keyframes foyerBraise { 0%,100% { transform: scale(1); } 50% { transform: scale(1.035); } }
+          .foyer-braise { animation: foyerBraise 11s ease-in-out infinite; transform-origin: 50% 55%; }
+          @media (prefers-reduced-motion: reduce) { .foyer-braise { animation: none; } }
+        `}</style>
+      </section>
+
+      {/* ═══════ SECTION 2 · le hook : la scène du téléphone devant le feu, puis
+          les trois constats en plein jour et le kicker qui se met au point ═══════ */}
+      <section className={`${overlap ? 'relative z-[11] rounded-t-[18px] shadow-[0_-26px_60px_rgba(15,22,19,0.5)]' : 'relative'}`}>
         {/* la scène, bord à bord (la photo est la seule surface sombre ici) */}
         <div className="relative h-[62vh] overflow-hidden rounded-t-[18px] bg-encre md:h-[80vh]">
           <Parallax speed={0.16} className="h-full" innerClassName="h-full">
@@ -685,6 +803,31 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         />
         <Ornament motto className="-mt-4 mb-2" />
 
+        {/* le rythme des saisons : quatre cercles de nature, et le feu qui ne s'éteint pas */}
+        <div className="mx-auto w-full max-w-[1360px] px-6 pt-16 md:px-12 md:pt-24">
+          <Reveal>
+            <Eyebrow>Le rythme des saisons</Eyebrow>
+          </Reveal>
+          <div className="relative mt-12 grid grid-cols-2 gap-y-12 sm:grid-cols-3 lg:grid-cols-5 lg:gap-x-6">
+            {/* le fil de laiton qui relie les cercles, sur grand écran */}
+            <span aria-hidden className="pointer-events-none absolute left-[10%] right-[10%] top-[88px] hidden border-t border-dotted border-brass/60 lg:block" />
+            {SAISONS.map((sn, i) => (
+              <Reveal key={sn.label} delay={i * 0.1} className="relative flex flex-col items-center text-center">
+                <div className="relative h-[150px] w-[150px] overflow-hidden rounded-full ring-1 ring-brass/50 shadow-[0_22px_50px_rgba(58,49,38,0.2)] md:h-[176px] md:w-[176px]">
+                  {sn.video ? (
+                    <video src={sn.video} poster={sn.src} autoPlay muted loop playsInline preload="metadata" aria-hidden className="h-full w-full object-cover" />
+                  ) : (
+                    <img src={sn.src} alt={sn.alt} width={800} height={800} loading="lazy" className="h-full w-full object-cover" />
+                  )}
+                </div>
+                <span aria-hidden className="mt-6 block h-2 w-2 rounded-full bg-brass" />
+                <p className="mt-5 font-sans text-fyLabel uppercase tracking-[0.22em] text-brassInk">{sn.label}</p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+
+
         {/* le rythme de la semaine : la parole à gauche, la pellicule des quatre
             ouvertures à droite, chaque photo à sa propre vitesse */}
         <div className="mx-auto w-full max-w-[1360px] px-6 pt-20 md:px-12 md:pt-28">
@@ -706,76 +849,6 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             <BandeDesQuatre />
           </div>
         </div>
-      </section>
-
-      {/* ═══════ SECTION 4 · L'histoire du feu : le seul chapitre sombre de la page,
-          la flamme de Varanasi pleine hauteur (scène validée, tailles ajustées) ═══════ */}
-      <section
-        className={`relative overflow-hidden bg-encre ${overlap ? 'z-20' : ''} ${cover}`}
-        style={pin}
-        data-pin-sheet
-      >
-        <div className="grid lg:min-h-[88vh] lg:grid-cols-12">
-          {/* la flamme, bord à bord */}
-          <div className="relative h-[58vh] overflow-hidden lg:col-span-5 lg:h-auto">
-            <img
-              src="/foyer/niche-flamme.webp"
-              alt="La flamme de Varanasi : une lampe de cuivre allumée dans une niche de céramique"
-              width={1000}
-              height={1241}
-              loading="lazy"
-              className="foyer-braise absolute inset-0 h-full w-full object-cover"
-            />
-            <span
-              aria-hidden
-              className="absolute inset-0"
-              style={{ background: 'radial-gradient(58% 46% at 50% 52%, rgba(220,184,116,0.22), transparent 72%)' }}
-            />
-            <span
-              aria-hidden
-              className="absolute inset-x-0 bottom-0 h-32 lg:hidden"
-              style={{ background: 'linear-gradient(180deg, transparent 0%, #0f1613 100%)' }}
-            />
-            <span
-              aria-hidden
-              className="absolute inset-y-0 right-0 hidden w-24 lg:block"
-              style={{ background: 'linear-gradient(90deg, transparent 0%, #0f1613 100%)' }}
-            />
-          </div>
-
-          {/* le récit : une colonne de 62 caractères, jamais moins */}
-          <div className="flex items-center px-6 py-20 md:px-12 md:py-28 lg:col-span-7 lg:px-20 xl:px-28">
-            <div className="max-w-[62ch]">
-              <Reveal>
-                <Eyebrow on="dark">{SECTION2.eyebrow}</Eyebrow>
-                <SectionTitle on="dark" className="mt-6">
-                  {SECTION2.title}
-                </SectionTitle>
-              </Reveal>
-              <Reveal delay={0.1}>
-                <p className="fy-h mt-10 font-serif font-medium text-fyLead text-ctext">{SECTION2.lead}</p>
-              </Reveal>
-              {SECTION2.paragraphs.map((p, i) => (
-                <Reveal key={p.slice(0, 24)} delay={0.18 + i * 0.08}>
-                  <p className="mt-7 font-sans text-fyBody text-ctextSoft">{p}</p>
-                </Reveal>
-              ))}
-              <Reveal delay={0.34}>
-                <span className="mt-12 block h-px w-16 bg-brass" aria-hidden />
-                <p className="mt-7 font-serif font-medium leading-[1.32] text-[clamp(1.25rem,1.1rem+0.55vw,1.5rem)] text-brassBright">
-                  <strong className="font-semibold">{SECTION2.closingLead}</strong>
-                  {SECTION2.closingMid}
-                  <strong className="font-semibold">{SECTION2.closingEnd}</strong>
-                </p>
-              </Reveal>
-            </div>
-          </div>
-        </div>
-        <style>{`
-          @keyframes foyerBraise { 0%,100% { transform: scale(1); } 50% { transform: scale(1.035); } }
-          .foyer-braise { animation: foyerBraise 11s ease-in-out infinite; transform-origin: 50% 55%; }
-          @media (prefers-reduced-motion: reduce) { .foyer-braise { animation: none; } }
-        `}</style>
       </section>
 
       {/* ═══════ SECTION 5 · Une année nourrie par l'Ayurveda : le plâtre chaud,
@@ -1044,10 +1117,10 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
               <Reveal delay={0.15} className="mt-12 hidden lg:block">
                 <Parallax speed={0.1} className="overflow-hidden rounded-[15px] shadow-[0_30px_80px_rgba(58,49,38,0.22)]">
                   <img
-                    src="/foyer/invitation.webp"
-                    alt="Une enveloppe de papier crème fermée d'un sceau de cire doré, posée sur un drap de lin brun"
-                    width={1152}
-                    height={896}
+                    src="/foyer/lettre-lin.webp"
+                    alt="Une lettre manuscrite pliée sur un drap de lin, un brin de lavande séchée et un stylo de laiton"
+                    width={800}
+                    height={993}
                     loading="lazy"
                     className="block h-auto w-full scale-110"
                   />
