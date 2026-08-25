@@ -1,30 +1,16 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
-import { defineSecret } from 'firebase-functions/params';
 import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
-import * as nodemailer from 'nodemailer';
 import { renderEmailHtml, renderEmailText, type NewsletterBlock } from './renderer';
+import { MAIL_SECRETS, NEWSLETTER_POSTAL_ADDRESS, BRAND_LOGO_URL, createTransporter, fromAddr as buildFrom, unsubscribeUrl as buildUnsub } from './mail';
 
-// ─── Secrets ─────────────────────────────────────────────────────────────────
-// Sends through Krystine's own Google Workspace mailbox over Gmail SMTP — no
-// third-party ESP (Resend) and no DNS setup, because inspiratanature.com already
-// has Google's SPF/DKIM. Set with:
-//   firebase functions:secrets:set GMAIL_USER              (krystine@inspiratanature.com)
-//   firebase functions:secrets:set GMAIL_APP_PASSWORD      (16-char Google app password)
-//   firebase functions:secrets:set NEWSLETTER_POSTAL_ADDRESS
-// NEWSLETTER_POSTAL_ADDRESS is the CASL-required business mailing address
-// rendered in the footer of every email.
-const GMAIL_USER = defineSecret('GMAIL_USER');
-const GMAIL_APP_PASSWORD = defineSecret('GMAIL_APP_PASSWORD');
-const NEWSLETTER_POSTAL_ADDRESS = defineSecret('NEWSLETTER_POSTAL_ADDRESS');
+// Secrets, transport SMTP et adresses de base vivent dans ./mail.ts, partagés
+// avec le courriel de bienvenue (welcome.ts).
 
 const ADMIN_EMAILS = [
   'admin@krystinestlaurent.ca',
   'krystine@inspiratanature.com',
   'krystinestterredhysope@gmail.com',
 ];
-
-const PUBLIC_BASE_URL = 'https://www.krystinestlaurent.ca';
-const BRAND_LOGO_URL = 'https://storage.googleapis.com/inspirata/Vata/1%20(1).png';
 
 interface SubscriberDoc {
   email: string;
@@ -52,7 +38,7 @@ interface NewsletterRecord {
 // does NOT mutate the newsletter's status or write per-member inbox docs.
 export const sendNewsletter = onCall(
   {
-    secrets: [GMAIL_USER, GMAIL_APP_PASSWORD, NEWSLETTER_POSTAL_ADDRESS],
+    secrets: MAIL_SECRETS,
     timeoutSeconds: 540,
     memory: '512MiB',
   },
@@ -77,24 +63,13 @@ export const sendNewsletter = onCall(
     if (!doc.blocks?.length) throw new HttpsError('failed-precondition', 'Newsletter has no content');
     if (!doc.subject) throw new HttpsError('failed-precondition', 'Newsletter is missing a subject');
 
-    // Gmail SMTP transport (pooled — many messages over a few connections).
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: { user: GMAIL_USER.value(), pass: GMAIL_APP_PASSWORD.value() },
-      pool: true,
-      maxConnections: 3,
-      maxMessages: 100,
-    });
-    // Gmail requires the From to be the authenticated mailbox (or a configured
-    // send-as alias); the display name is free.
-    const fromAddr = `"${doc.fromName || 'Krystine St-Laurent'}" <${GMAIL_USER.value()}>`;
+    const transporter = createTransporter();
+    const fromAddr = buildFrom(doc.fromName || 'Krystine St-Laurent');
     const postalAddress = NEWSLETTER_POSTAL_ADDRESS.value();
 
     // ── Test send path ────────────────────────────────────────────────────
     if (testEmail) {
-      const unsubscribeUrl = `${PUBLIC_BASE_URL}/desinscription?t=TEST`;
+      const unsubscribeUrl = buildUnsub('TEST');
       const html = renderEmailHtml(doc.blocks, {
         subject: doc.subject,
         preheader: doc.preheader,
@@ -134,7 +109,7 @@ export const sendNewsletter = onCall(
     // sending limits than firing a large parallel batch.
     for (const sub of subscribers) {
       try {
-        const unsubscribeUrl = `${PUBLIC_BASE_URL}/desinscription?t=${encodeURIComponent(sub.unsubscribeToken || '')}`;
+        const unsubscribeUrl = buildUnsub(sub.unsubscribeToken || '');
         const html = renderEmailHtml(doc.blocks, {
           subject: doc.subject,
           preheader: doc.preheader,
