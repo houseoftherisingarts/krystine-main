@@ -13,7 +13,7 @@ export const Cta: React.FC<{ label: string; sub?: string; dark?: boolean }> = ({
   <div className="flex flex-col items-start gap-3">
     <Link
       to={CTA_HREF}
-      className="group inline-flex items-center gap-3 whitespace-nowrap rounded-[30px] bg-brass px-6 py-3.5 font-sans text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-espresso shadow-glow transition-colors duration-300 hover:bg-brassBright md:px-9 md:py-4 md:text-[0.78rem] md:tracking-[0.22em]"
+      className="group inline-flex items-center gap-3 whitespace-nowrap rounded-[30px] bg-brass px-7 py-4 font-sans text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-espresso shadow-glow transition-colors duration-300 hover:bg-brassBright focus:outline-none focus-visible:ring-2 focus-visible:ring-brassBright focus-visible:ring-offset-2 md:px-10 md:py-5 md:text-[0.9rem] md:tracking-[0.2em]"
     >
       {label}
       <ArrowRight
@@ -23,7 +23,7 @@ export const Cta: React.FC<{ label: string; sub?: string; dark?: boolean }> = ({
     </Link>
     {sub && (
       <span
-        className={`font-sans text-[0.7rem] tracking-[0.08em] ${
+        className={`font-sans text-[0.9rem] tracking-[0.04em] ${
           dark ? 'text-ctextSoft' : 'text-inkSoft'
         }`}
       >

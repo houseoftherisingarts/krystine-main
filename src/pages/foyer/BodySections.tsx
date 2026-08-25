@@ -19,6 +19,7 @@ import {
   CONTENU,
   FAQ,
 } from './content';
+import AllumetteDuFoyer from './AllumetteDuFoyer';
 
 /**
  * Le Foyer d'Origine · sections de CORPS (copie du doc « PAGE DE VENTE FINALE »).
@@ -420,7 +421,7 @@ const KickerFocus: React.FC<{ text: string }> = ({ text }) => {
   return (
     <div ref={ref} className="px-6 py-28 md:px-12 md:py-40 lg:px-20">
       <motion.p
-        className="fy-h mx-auto max-w-[18ch] text-center font-serif font-medium text-fyDisplay text-espresso"
+        className="fy-h mx-auto max-w-[18ch] text-center font-serif font-medium leading-[1] text-[clamp(2.4rem,1.6rem+4vw,5.8rem)] text-espresso"
         style={reduce ? undefined : { filter, opacity, scale }}
       >
         {text}
@@ -471,7 +472,11 @@ const Tache: React.FC<{ n: number; className?: string }> = ({ n, className = '' 
       height={800}
       loading="lazy"
       className={`pointer-events-none absolute h-auto select-none ${className}`}
-      style={{ mixBlendMode: 'multiply' }}
+      style={{
+        mixBlendMode: 'multiply',
+        maskImage: 'radial-gradient(closest-side, black 55%, transparent 100%)',
+        WebkitMaskImage: 'radial-gradient(closest-side, black 55%, transparent 100%)',
+      }}
       initial={reduce ? undefined : { opacity: 0, scale: 0.55 }}
       whileInView={{ opacity: 0.85, scale: 1 }}
       viewport={{ once: true, amount: 0.4 }}
@@ -602,8 +607,8 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             <img
               src="/foyer/feu-et-ecran.webp"
               alt="Une femme assise devant un feu de camp, le regard pris par l'écran de son téléphone"
-              width={1536}
-              height={1024}
+              width={1920}
+              height={1072}
               className="h-full w-full scale-105 object-cover"
               loading="lazy"
             />
@@ -619,7 +624,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
           <div className="absolute inset-0 flex items-center px-6 md:px-14 lg:px-20">
             <Reveal>
               <span className="mb-8 block h-px w-16 bg-brass" aria-hidden />
-              <h2 className="fy-h max-w-[14ch] font-serif font-medium text-fyDisplay text-ctext">{BIENVENUE.title}</h2>
+              <h2 className="fy-h max-w-[20ch] font-serif font-medium leading-[1] text-[clamp(2.4rem,1.6rem+4vw,5.8rem)] text-ctext">{BIENVENUE.title}</h2>
             </Reveal>
           </div>
         </div>
@@ -646,7 +651,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
                       <span className="mt-1 shrink-0 font-serif text-fyLead leading-none text-brassInk/70">
                         {String(i + 1).padStart(2, '0')}
                       </span>
-                      <p className={`fy-h max-w-[62ch] font-serif font-medium text-ink ${i === 0 ? 'text-fyH3' : 'text-fyLead'}`}>
+                      <p className={`fy-h max-w-[62ch] font-serif font-medium text-ink ${i === 0 ? 'text-fyH3' : 'leading-[1.4] text-[clamp(1.3rem,1.1rem+0.7vw,1.5rem)]'}`}>
                         {par}
                       </p>
                     </div>
@@ -659,8 +664,8 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </div>
       </section>
 
-      {/* ═══════ SECTION 3 · Le retournement : l'allumette (scène validée) ═══════ */}
-      {/* rendue par FoyerPage entre le hook et le mur des portes */}
+      {/* ═══════ SECTION 3 · Le retournement : l'allumette qu'on frotte (scène validée) ═══════ */}
+      <AllumetteDuFoyer />
 
       {/* ═══════ SECTION 4 · Le mur des douze portes, puis le rythme de la semaine ═══════ */}
       <section
@@ -683,22 +688,22 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         {/* le rythme de la semaine : la parole à gauche, la pellicule des quatre
             ouvertures à droite, chaque photo à sa propre vitesse */}
         <div className="mx-auto w-full max-w-[1360px] px-6 pt-20 md:px-12 md:pt-28">
-          <div className="grid gap-x-16 gap-y-14 lg:grid-cols-12 lg:items-start">
-            <div className="lg:col-span-5">
-              <Reveal>
-                <p className="fy-h max-w-[30ch] font-serif font-medium text-fyH2 text-brassInk">
-                  <strong className="font-semibold text-espresso">{SECTION5.rhythmLead}</strong>
-                  {SECTION5.rhythm}
-                </p>
-              </Reveal>
-              <Reveal delay={0.12}>
-                <p className="mt-10 max-w-[60ch] font-sans text-fyBody text-ink">{SECTION5.meditations}</p>
-                <p className="mt-6 max-w-[60ch] font-sans text-fyBody text-ink">{SECTION5.keep}</p>
-              </Reveal>
-            </div>
-            <div className="lg:col-span-7">
-              <BandeDesQuatre />
-            </div>
+          <Reveal>
+            <p className="font-serif font-medium text-brassInk">
+              <strong className="fy-h block font-semibold text-fyDisplay text-espresso">{SECTION5.rhythmLead}</strong>
+              <span className="fy-h mt-4 block max-w-[40ch] text-fyLead">{SECTION5.rhythm}</span>
+            </p>
+          </Reveal>
+          <div className="mt-12 grid gap-x-16 gap-y-6 md:grid-cols-2">
+            <Reveal delay={0.12}>
+              <p className="max-w-[56ch] font-sans text-fyBody text-ink">{SECTION5.meditations}</p>
+            </Reveal>
+            <Reveal delay={0.2}>
+              <p className="max-w-[56ch] font-sans text-fyBody text-ink">{SECTION5.keep}</p>
+            </Reveal>
+          </div>
+          <div className="mt-20 md:mt-28">
+            <BandeDesQuatre />
           </div>
         </div>
       </section>
@@ -716,8 +721,8 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             <img
               src="/foyer/niche-flamme.webp"
               alt="La flamme de Varanasi : une lampe de cuivre allumée dans une niche de céramique"
-              width={1024}
-              height={1536}
+              width={1000}
+              height={1241}
               loading="lazy"
               className="foyer-braise absolute inset-0 h-full w-full object-cover"
             />
@@ -748,7 +753,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
                 </SectionTitle>
               </Reveal>
               <Reveal delay={0.1}>
-                <p className="fy-h mt-10 font-serif font-medium text-fyH3 text-ctext">{SECTION2.lead}</p>
+                <p className="fy-h mt-10 font-serif font-medium text-fyLead text-ctext">{SECTION2.lead}</p>
               </Reveal>
               {SECTION2.paragraphs.map((p, i) => (
                 <Reveal key={p.slice(0, 24)} delay={0.18 + i * 0.08}>
@@ -787,7 +792,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
               </h2>
             </Reveal>
             <Reveal delay={0.1} className="lg:col-span-5 lg:pb-3">
-              <p className="max-w-[48ch] font-serif font-medium text-fyLead text-ink">{SECTION5.intro}</p>
+              <p className="max-w-[48ch] font-serif font-medium leading-[1.4] text-[clamp(1.15rem,1rem+0.55vw,1.5rem)] text-ink">{SECTION5.intro}</p>
             </Reveal>
           </div>
         </div>
@@ -809,7 +814,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
                       n={i}
                       className={`-top-16 w-[260px] md:-top-24 md:w-[380px] ${i % 2 ? '-right-12 md:-right-24' : '-left-12 md:-left-24'}`}
                     />
-                    <p className="fy-h relative max-w-[30ch] font-serif font-medium text-fyH3 text-espresso">{it}</p>
+                    <p className="fy-h relative max-w-[46ch] font-serif font-medium leading-[1.2] text-[clamp(1.4rem,1.1rem+1.4vw,2.3rem)] text-espresso">{it}</p>
                   </div>
                 </div>
               </Reveal>
@@ -947,7 +952,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             <div className="lg:col-span-7">
               <Reveal>
                 <Eyebrow>{SECTION7.eyebrow}</Eyebrow>
-                <h2 className="fy-h mt-8 max-w-[22ch] font-serif font-medium text-fyH2 text-espresso">{SECTION7.title}</h2>
+                <h2 className="fy-h mt-8 max-w-[30ch] font-serif font-medium leading-[1.06] text-[clamp(1.7rem,1.1rem+2.8vw,3.2rem)] text-espresso">{SECTION7.title}</h2>
               </Reveal>
               <div className="mt-12 space-y-7">
                 {SECTION7.paragraphs.map((par) => (
@@ -969,7 +974,12 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
                   height={800}
                   loading="lazy"
                   className="block h-auto w-full"
-                  style={{ mixBlendMode: 'multiply', opacity: 0.9 }}
+                  style={{
+                    mixBlendMode: 'multiply',
+                    opacity: 0.9,
+                    maskImage: 'radial-gradient(closest-side, black 55%, transparent 100%)',
+                    WebkitMaskImage: 'radial-gradient(closest-side, black 55%, transparent 100%)',
+                  }}
                 />
               </Parallax>
               <Parallax speed={0.08} className="relative">
@@ -1002,7 +1012,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             ))}
           </div>
           <Reveal delay={0.3}>
-            <p className="fy-h mt-16 max-w-[26ch] font-serif font-medium text-fyH2 text-espresso">{SECTION7.pillarsClosing}</p>
+            <p className="fy-h mt-16 max-w-[28ch] font-serif font-medium leading-[1.06] text-[clamp(1.7rem,1.1rem+2.8vw,3.2rem)] text-espresso">{SECTION7.pillarsClosing}</p>
           </Reveal>
 
           {/* le pont vers le Foyer */}

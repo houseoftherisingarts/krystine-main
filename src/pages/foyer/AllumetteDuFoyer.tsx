@@ -34,8 +34,8 @@ const TEMPS: Temps[] = [
 
 const CLASSES: Record<Temps['taille'], string> = {
   grand:
-    'font-serif font-medium leading-[1.08] text-ctext text-[clamp(1.6rem,3.4vw,3rem)] max-w-[22ch]',
-  moyen: 'font-sans leading-[1.8] text-ctextSoft text-[clamp(0.98rem,1.5vw,1.15rem)] max-w-[46ch]',
+    'font-serif font-medium leading-[1.12] text-ctext text-[clamp(1.35rem,0.85rem+2.4vw,3rem)] max-w-[48ch]',
+  moyen: 'font-sans text-ctextSoft text-fyBody max-w-[60ch]',
   repere:
     'font-serif font-medium leading-none text-brassBright text-[clamp(2rem,5vw,4.2rem)] max-w-[18ch]',
 };

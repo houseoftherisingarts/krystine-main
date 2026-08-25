@@ -91,7 +91,7 @@
         theme: {
           extend: {
             colors: {
-              // Remap global vers L'Œuvre — restyle toutes les pages d'un coup.
+              // Remap global vers L'Œuvre : restyle toutes les pages d'un coup.
               copper:      '#bb9a5e',  // ex-#B8532F → brass (fill/decor); accent TEXTE = brassInk
               copperDeep:  '#a3823f',
               sauge:       '#665746',  // sauge neutralisé en ink-soft (pas de vert dans L'Œuvre, sauf forest)
@@ -106,7 +106,7 @@
               gold:    '#bb9a5e',  // brass
               surface: '#f6f3ee',  // cream
               white:   '#f6f3ee',  // (ex-ivoire warm) → cream
-              // L'Œuvre — tokens nommés (réf 30_library/loeuvre-design-system).
+              // L'Œuvre : tokens nommés (réf 30_library/loeuvre-design-system).
               brass:        '#bb9a5e',  // accent unique (décor/fond/bouton)
               brassDeep:    '#a3823f',
               brassBright:  '#dcb874',  // hover / surbrillance
@@ -124,7 +124,7 @@
               terracotta:   '#b06a3f',
               ctext:        '#f4ece0',  // texte sur sombre
               ctextSoft:    '#cdbfa9',
-              // Accent botanique (Origine) — vert forêt secondaire
+              // Accent botanique (Origine) : vert forêt secondaire
               forest:       '#4a5d52',
               forestDeep:   '#3a4d42',
               forestSoft:   '#6f8478',
@@ -169,7 +169,7 @@
         a:not(:has(*))::before, button:not(:has(*))::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%); }
       }
       /* ──────────────────────────────────────────────────────────────
-         Origine — signature visuelle
+         Origine : signature visuelle
          Éditoriale · organique · ancrée · haut de gamme · silencieuse
          ────────────────────────────────────────────────────────────── */
       :root {
@@ -194,7 +194,7 @@
          conteneur de défilement, donc position:sticky reste fonctionnel
          (le hidden cassait la section pinnée du Foyer). */
       html, body { overflow-x: clip; }
-      /* Discreet scrollbar — sauge at low opacity so it disappears into
+      /* Discreet scrollbar : sauge at low opacity so it disappears into
          the parchment palette instead of shouting copper. */
       ::-webkit-scrollbar { width: 8px; }
       ::-webkit-scrollbar-track { background: transparent; }
@@ -207,7 +207,7 @@
       html { scrollbar-width: thin; scrollbar-color: rgba(122, 128, 102, 0.35) transparent; }
       body { font-family: 'Inter', sans-serif; }
 
-      /* Base L'Œuvre — espresso uni comme couche la plus reculée pour
+      /* Base L'Œuvre : espresso uni comme couche la plus reculée pour
          TOUTES les pages de la refonte. Plus de photo parchemin globale :
          elle appartenait à l'ancien design ivoire, se chargeait sur chaque
          page (image inutile) et flashait derrière les pages pendant les
@@ -226,7 +226,7 @@
         border-radius: 20px;
         box-shadow: var(--shadow-origine);
       }
-      /* Low-contrast filter removed at request — pictures now render at
+      /* Low-contrast filter removed at request : pictures now render at
          their native saturation/contrast. Keep the class hook so the
          JSX consumers don't need to be touched, but it's a no-op now. */
       .origine-image-soft { filter: none; }
@@ -288,7 +288,7 @@
       .perspective-1000 { perspective: 1000px; }
       .animate-pulse-slow { animation: pulse 4s ease-in-out infinite; }
 
-      /* Hero title gold-foil shimmer — a slow sweep across a gradient
+      /* Hero title gold-foil shimmer : a slow sweep across a gradient
          that's masked to the text (bg-clip: text), so KRYSTINE ST-LAURENT
          feels stamped in warm metal instead of printed flat. */
       @keyframes krystine-shimmer {
@@ -323,11 +323,11 @@
       }
 
       /* ──────────────────────────────────────────────────────────────
-         Brand minimum readable text — 12 px floor across the entire
+         Brand minimum readable text : 12 px floor across the entire
          site, mobile and desktop. Any Tailwind arbitrary text size
          below 12 px is bumped up so we catch every spot in one place
          without sweeping the codebase. <i> tags (Font-Awesome glyph
-         icons) are intentionally NOT excluded — bumping a 9 px
+         icons) are intentionally NOT excluded : bumping a 9 px
          chevron to 12 px keeps the icon-with-text rhythm consistent
          at the new floor.
          ────────────────────────────────────────────────────────────── */

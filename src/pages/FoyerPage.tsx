@@ -57,7 +57,7 @@ const Preloader: React.FC<{ done: boolean }> = ({ done }) => (
             />
           </svg>
           <motion.p
-            className="whitespace-nowrap font-sans text-[0.6rem] uppercase tracking-[0.34em] text-ctextSoft"
+            className="whitespace-nowrap font-sans text-fyLabel uppercase text-ctextSoft"
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.85 }}
             transition={{ delay: 0.4, duration: 0.5 }}
@@ -118,7 +118,7 @@ const PrixLancement: React.FC<{
       <span className="sr-only"> (tarif régulier)</span>
     </span>
     <p className="mt-3 font-serif font-semibold leading-none text-brassBright">{price}</p>
-    <p className="mt-3 font-sans text-[0.62rem] uppercase tracking-[0.32em] text-brass">{note}</p>
+    <p className="mt-3 font-sans text-fyLabel uppercase text-brass">{note}</p>
   </div>
 );
 
@@ -201,6 +201,9 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
             src="/foyer/firepit-poster.webp"
             alt=""
             aria-hidden
+            width={1920}
+            height={1080}
+            fetchPriority="high"
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div
@@ -213,17 +216,17 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
           />
           <div className="relative z-10 w-full px-6 pb-16 pt-36 md:px-12 lg:px-20">
             <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
-            <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brass">
+            <p className="font-sans text-fyLabel uppercase text-brass">
               KSL | Le Foyer d’Origine
             </p>
             <h1 className="mt-5 font-serif font-medium leading-[0.9] text-ctext text-[clamp(3.4rem,9vw,8rem)]">
               Le Foyer d’Origine
             </h1>
-            <p className="mt-6 max-w-3xl font-serif font-medium text-[clamp(1.7rem,3.1vw,2.7rem)] leading-[1.2] text-ctext">
+            <p className="mt-6 max-w-[56ch] font-serif font-medium text-[clamp(1.35rem,0.9rem+2.2vw,2.7rem)] leading-[1.2] text-ctext">
               Nous n’avons jamais eu accès à autant d’informations.
               <span className="block text-brassBright">Et jamais autant de dispersion.</span>
             </p>
-            <p className="mt-5 max-w-xl font-sans text-[0.95rem] leading-[1.85] text-ctextSoft">
+            <p className="mt-5 max-w-[60ch] font-sans text-fyBody text-ctextSoft">
               Un espace privé en ligne pour découvrir ce que nous n’aurions pas
               su chercher et accéder à des liens impossibles à demander dans une
               barre de recherche.
@@ -241,7 +244,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
                 {l}
               </p>
             ))}
-            <p className="mt-8 font-sans text-[0.72rem] uppercase tracking-[0.26em] text-brassBright">
+            <p className="mt-8 font-sans text-fyLabel uppercase text-brassBright">
               Rien à terminer. Rien à rattraper.
             </p>
           </div>
@@ -320,7 +323,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
               transition={{ duration: 1.1, ease, delay: 0.15 }}
             >
               <span className="mb-4 block h-px w-10 bg-brass" aria-hidden />
-              <p className="font-sans text-[0.62rem] uppercase tracking-[0.3em] text-brass">
+              <p className="font-sans text-fyLabel uppercase text-brass">
                 KSL | Le Foyer d’Origine
               </p>
             </motion.div>
@@ -336,7 +339,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
               initial={reduce ? {} : { opacity: 0, y: 24 }}
               animate={ready ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 1.1, ease, delay: 0.47 }}
-              className="mt-7 max-w-3xl font-serif font-medium text-[clamp(1.7rem,3.1vw,2.7rem)] leading-[1.2] text-ctext"
+              className="mt-7 max-w-[56ch] font-serif font-medium text-[clamp(1.35rem,0.9rem+2.2vw,2.7rem)] leading-[1.2] text-ctext"
             >
               Nous n’avons jamais eu accès à autant d’informations.
               <span className="block text-brassBright">Et jamais autant de dispersion.</span>
@@ -349,7 +352,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
             >
               <Cta label="Prendre place autour du feu" dark />
               <span
-                className="hidden font-sans text-[0.6rem] uppercase tracking-[0.3em] text-ctextSoft md:block"
+                className="hidden font-sans text-fyLabel uppercase text-ctextSoft md:block"
                 style={{ animation: 'foyerCue 2.6s ease-in-out infinite' }}
               >
                 Défiler
@@ -387,7 +390,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
         ))}
         <motion.p
           style={{ opacity: kickerFade }}
-          className="absolute bottom-12 left-1/2 z-10 -translate-x-1/2 w-max max-w-[calc(100vw-3rem)] text-center font-sans text-[0.72rem] uppercase tracking-[0.26em] text-brassBright"
+          className="absolute bottom-12 left-1/2 z-10 -translate-x-1/2 w-max max-w-[calc(100vw-3rem)] text-center font-sans text-fyLabel uppercase text-brassBright"
         >
           Rien à terminer. Rien à rattraper.
         </motion.p>
@@ -457,7 +460,7 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
         <img src="/foyer/antre-foyer.webp" alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-80" />
         <div aria-hidden className="absolute inset-0" style={{ background: 'radial-gradient(70% 55% at 50% 45%, rgba(15,22,19,0.2), rgba(15,22,19,0.7) 100%)' }} />
         <div className="relative">
-          <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brassBright">{OFFRE.eyebrow}</p>
+          <p className="font-sans text-fyLabel uppercase text-brassBright">{OFFRE.eyebrow}</p>
           <h2 className="mt-5 font-serif font-medium leading-[0.9] text-ctext text-[clamp(2.2rem,9vw,8rem)]">{OFFRE.title}</h2>
           <p className="mt-6 font-serif text-[clamp(1.15rem,2vw,1.7rem)] text-ctextSoft">{OFFRE.subtitle}</p>
           <PrixLancement
@@ -523,7 +526,7 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
           className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center"
           style={{ opacity: titleOpacity, y: titleY, scale: titleScale }}
         >
-          <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brassBright">{OFFRE.eyebrow}</p>
+          <p className="font-sans text-fyLabel uppercase text-brassBright">{OFFRE.eyebrow}</p>
           <h2 className="mt-5 whitespace-nowrap font-serif font-medium leading-[0.9] text-ctext text-[clamp(2.2rem,9.6vw,8.8rem)]">
             {OFFRE.title}
           </h2>
@@ -534,7 +537,7 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
           className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center"
           style={{ opacity: offerOpacity, y: offerY, scale: offerScale }}
         >
-          <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brassBright">Une année entière</p>
+          <p className="font-sans text-fyLabel uppercase text-brassBright">Une année entière</p>
           <PrixLancement
             regular={OFFRE.priceRegular}
             price={OFFRE.price}
@@ -543,7 +546,7 @@ const OffreScene: React.FC<{ reduce: boolean }> = ({ reduce }) => {
           />
           <div className="mt-5 space-y-1">
             {OFFRE.paymentLines.map((l) => (
-              <p key={l.slice(0, 20)} className="font-sans text-[0.78rem] tracking-[0.08em] text-ctextSoft">
+              <p key={l.slice(0, 20)} className="font-sans text-[0.95rem] tracking-[0.04em] text-ctextSoft">
                 {l}
               </p>
             ))}
@@ -572,50 +575,51 @@ const Offre: React.FC = () => {
   return (
     <section className="relative z-[55] rounded-t-[18px] bg-encre shadow-[0_-26px_60px_rgba(15,22,19,0.5)]">
       <OffreScene reduce={!!reduce} />
-      {/* la récapitulation : ce que contient l'année, puis le geste */}
-      <div className="relative mx-auto w-full max-w-[1360px] px-6 pb-28 pt-20 md:px-12 md:pb-36">
-        <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-brass">{OFFRE.eyebrow}</p>
-        <h2 className="mt-6 font-serif font-medium leading-[1.06] text-ctext text-[clamp(1.8rem,3.4vw,2.8rem)]">
-          {OFFRE.title}
-        </h2>
-        <p className="mt-4 font-serif text-brassBright text-[clamp(1.1rem,1.9vw,1.5rem)]">{OFFRE.subtitle}</p>
-        <ul className="mt-12 grid gap-x-14 gap-y-0 border-t border-brass/25 md:grid-cols-2">
-          {OFFRE.items.map((it) => (
-            <li key={it} className="flex items-baseline gap-5 border-b border-brass/20 py-5">
-              <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-brassBright" />
-              <span className="font-sans text-[0.95rem] leading-[1.8] text-ctextSoft">{it}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-12 grid gap-8 md:grid-cols-2">
-          {OFFRE.bonis.map((b) => (
-            <div
-              key={b.title}
-              className="rounded-[15px] border border-brass/35 px-7 py-7 backdrop-blur-md"
-              style={{ background: 'rgba(12,8,5,0.42)' }}
-            >
-              <p className="font-sans text-[0.62rem] uppercase tracking-[0.28em] text-brassBright">{b.title}</p>
-              <p className="mt-3 font-sans text-[0.92rem] leading-[1.8] text-ctextSoft">{b.body}</p>
+      {/* la récapitulation : la liste à gauche sur une colonne large, le prix
+          et le geste qui restent en regard à droite, les bonis en lignes de laiton */}
+      <div className="relative mx-auto w-full max-w-[1360px] px-6 pb-28 pt-24 md:px-12 md:pb-40 md:pt-32">
+        <div className="grid gap-x-20 gap-y-16 lg:grid-cols-12 lg:items-start">
+          <div className="lg:col-span-7">
+            <p className="font-sans text-fyLabel uppercase text-brass">{OFFRE.eyebrow}</p>
+            <h2 className="mt-6 font-serif font-medium text-fyH2 text-ctext" style={{ textWrap: 'balance' }}>
+              {OFFRE.title}
+            </h2>
+            <p className="mt-4 font-serif text-fyLead text-brassBright">{OFFRE.subtitle}</p>
+            <ul className="mt-12 border-t border-brass/30">
+              {OFFRE.items.map((it, i) => (
+                <li key={it} className="flex items-baseline gap-6 border-b border-brass/20 py-5 md:gap-8">
+                  <span className="font-sans text-fyLabel tabular-nums text-brassBright/80">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="max-w-[56ch] font-serif font-medium text-fyLead text-ctext">{it}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-14">
+              {OFFRE.bonis.map((b, i) => (
+                <div key={b.title} className={`py-7 ${i ? 'border-t border-brass/20' : ''}`}>
+                  <p className="font-sans text-fyLabel uppercase text-brassBright">{b.title}</p>
+                  <p className="mt-3 max-w-[56ch] font-sans text-fyBody text-ctextSoft">{b.body}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        <div className="mt-14 flex flex-wrap items-end gap-x-16 gap-y-10">
-          <PrixLancement
-            regular={OFFRE.priceRegular}
-            price={OFFRE.price}
-            note={OFFRE.priceNote}
-            className="[&>p:first-of-type]:text-[clamp(2.6rem,5vw,4rem)]"
-          />
-          <div className="space-y-1">
-            {OFFRE.paymentLines.map((l) => (
-              <p key={l.slice(0, 20)} className="font-sans text-[0.82rem] tracking-[0.06em] text-ctextSoft">
-                {l}
-              </p>
-            ))}
           </div>
-        </div>
-        <div className="mt-12">
-          <Cta label={OFFRE.cta} dark />
+          <div className="lg:sticky lg:top-28 lg:col-span-5 lg:pl-8">
+            <PrixLancement
+              regular={OFFRE.priceRegular}
+              price={OFFRE.price}
+              note={OFFRE.priceNote}
+              className="[&>p:first-of-type]:text-[clamp(3.2rem,2.2rem+4vw,6rem)]"
+            />
+            <div className="mt-8 space-y-2">
+              {OFFRE.paymentLines.map((l) => (
+                <p key={l.slice(0, 20)} className="font-sans text-fyBody text-ctextSoft">
+                  {l}
+                </p>
+              ))}
+            </div>
+            <div className="mt-10">
+              <Cta label={OFFRE.cta} dark />
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -654,7 +658,7 @@ const AppelFinal: React.FC = () => {
       />
       <style>{`@keyframes foyerBreathe{0%,100%{opacity:.75}50%{opacity:1}}`}</style>
       <div className="relative z-10 mx-auto w-full max-w-[1360px]">
-        <div className="max-w-3xl">
+        <div className="max-w-[900px]">
           <motion.h2
             className="font-serif font-medium leading-[1.08] text-ctext text-[clamp(2.2rem,3.6vw,3.4rem)]"
             initial={reduce ? undefined : { opacity: 0, y: 30, filter: 'blur(6px)' }}
@@ -670,11 +674,11 @@ const AppelFinal: React.FC = () => {
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 1.1, ease, delay: 0.18 }}
           >
-            <p className="mt-6 max-w-2xl font-serif text-2xl leading-snug text-brassBright">
+            <p className="mt-6 max-w-[40ch] font-serif font-medium leading-[1.2] text-[clamp(1.4rem,1.1rem+1.4vw,2.3rem)] text-brassBright">
               {FINAL.emphasis}
             </p>
           </motion.div>
-          <div className="mt-10 space-y-1 font-sans text-[0.95rem] leading-[1.85] text-ctextSoft">
+          <div className="mt-10 max-w-[64ch] space-y-2 font-sans text-fyBody text-ctextSoft">
             {FINAL.lines.map((l, i) => (
               <motion.p
                 key={l.slice(0, 20)}
@@ -688,7 +692,7 @@ const AppelFinal: React.FC = () => {
             ))}
           </div>
           <motion.p
-            className="mt-8 max-w-2xl font-sans text-[0.95rem] leading-[1.85] text-ctext"
+            className="mt-8 max-w-[64ch] font-serif font-medium text-fyLead text-ctext"
             initial={reduce ? undefined : { opacity: 0, y: 18 }}
             whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
@@ -720,7 +724,7 @@ const AppelFinal: React.FC = () => {
             />
             <div className="mt-2 space-y-0.5">
               {FINAL.priceLines.map((l) => (
-                <p key={l} className="font-sans text-[0.78rem] tracking-[0.08em] text-ctextSoft">
+                <p key={l} className="font-sans text-[0.95rem] tracking-[0.04em] text-ctextSoft">
                   {l}
                 </p>
               ))}
