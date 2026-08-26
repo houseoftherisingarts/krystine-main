@@ -230,7 +230,7 @@ const NewsletterSignup: React.FC<Props> = ({
         </>
       )}
 
-      <form onSubmit={handleEmailSubmit} className="flex flex-col md:flex-row gap-4 items-center">
+      <form onSubmit={handleEmailSubmit} className={askFirstName ? 'grid gap-4 sm:grid-cols-2' : 'flex flex-col md:flex-row gap-4 items-center'}>
         {askFirstName && (
           <input
             type="text"
@@ -238,7 +238,7 @@ const NewsletterSignup: React.FC<Props> = ({
             placeholder={lang === 'FR' ? 'Votre prénom' : 'Your first name'}
             value={firstName}
             onChange={e => setFirstName(e.target.value)}
-            className={`w-full md:w-[38%] px-2 py-3 outline-none transition-colors text-center md:text-left tracking-wide ${inputClass}`}
+            className={`w-full px-2 py-3 outline-none transition-colors text-center md:text-left tracking-wide ${inputClass}`}
           />
         )}
         <input
@@ -253,7 +253,7 @@ const NewsletterSignup: React.FC<Props> = ({
         <button
           type="submit"
           disabled={busy}
-          className="bg-[#bb9a5e] text-[#2a2015] font-bold uppercase tracking-widest text-xs px-10 py-4 rounded-full hover:bg-white transition-colors whitespace-nowrap disabled:opacity-50 flex items-center justify-center gap-2"
+          className={`bg-[#bb9a5e] text-[#2a2015] font-bold uppercase tracking-widest text-xs px-10 py-4 rounded-full hover:bg-white transition-colors whitespace-nowrap disabled:opacity-50 flex items-center justify-center gap-2 ${askFirstName ? 'sm:col-span-2 w-full mt-2' : ''}`}
         >
           {busy ? <i className="fa-solid fa-circle-notch fa-spin" /> : labelCta}
         </button>
