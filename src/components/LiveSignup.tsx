@@ -18,10 +18,16 @@ const ease = [0.22, 1, 0.36, 1] as const;
 function fmtDay(d: Date, lang: 'FR' | 'EN') {
   return new Intl.DateTimeFormat(lang === 'FR' ? 'fr-CA' : 'en-CA', { weekday: 'long', day: 'numeric', month: 'long', timeZone: TZ }).format(d);
 }
-function fmtTime(d: Date, lang: 'FR' | 'EN') {
-  const s = new Intl.DateTimeFormat(lang === 'FR' ? 'fr-CA' : 'en-CA', { hour: 'numeric', minute: '2-digit', timeZone: TZ }).format(d);
-  return lang === 'FR' ? s.replace(':', ' h ') : s;
+function fmtTime(d: Date, lang: 'FR' | 'EN', tz: string) {
+  const s = new Intl.DateTimeFormat(lang === 'FR' ? 'fr-CA' : 'en-CA', { hour: 'numeric', minute: '2-digit', timeZone: tz }).format(d);
+  return lang === 'FR' ? s.replace(':00', ' h').replace(':', ' h ') : s;
 }
+
+const YouTubeMark: React.FC<{ className?: string }> = ({ className }) => (
+  <svg viewBox="0 0 24 24" aria-hidden className={className} fill="currentColor">
+    <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z" />
+  </svg>
+);
 
 const LiveSignup: React.FC = () => {
   const { lang } = useApp();
@@ -42,8 +48,33 @@ const LiveSignup: React.FC = () => {
 
   const start = ev.startsAt.toDate();
   const isPast = Date.now() > start.getTime() + 3 * 3600e3;
+  const fr = lang === 'FR';
   const jour = fmtDay(start, lang);
-  const heure = fmtTime(start, lang);
+  const heureQc = fmtTime(start, lang, TZ);
+  const heureFr = fmtTime(start, lang, 'Europe/Paris');
+  const t = fr ? {
+    live: 'En direct sur YouTube',
+    replay: 'Rediffusion',
+    title: isPast ? 'La rediffusion est en ligne' : 'Le podcast, en direct',
+    body: isPast
+      ? `L'épisode en direct du ${jour} reste à votre disposition aussi longtemps que vous le voulez.`
+      : `Le ${jour} à ${heureQc} (heure du Québec), Krystine ouvre un épisode en direct où vous pourrez poser vos questions dans le clavardage. Laissez votre adresse et vous recevrez le lien, un rappel la veille et la rediffusion.`,
+    qc: `${heureQc} · Québec`, fra: `${heureFr} · France`,
+    watch: 'Regarder la rediffusion', cta: 'Réserver ma place', placeholder: 'Votre courriel',
+    okTitle: 'Votre place est réservée',
+    okBody: `Un courriel de confirmation arrive à l'instant. Vous recevrez un rappel trois jours avant, la veille et une heure avant le direct du ${jour}, puis la rediffusion.`,
+  } : {
+    live: 'Live on YouTube',
+    replay: 'Replay',
+    title: isPast ? 'The replay is online' : 'The podcast, live',
+    body: isPast
+      ? `The live episode of ${jour} stays available for as long as you like.`
+      : `On ${jour} at ${heureQc} (Québec time), Krystine opens a live episode where you can ask your questions in the chat. Leave your address and you will receive the link, a reminder the day before and the replay.`,
+    qc: `${heureQc} · Québec`, fra: `${heureFr} · France`,
+    watch: 'Watch the replay', cta: 'Save my seat', placeholder: 'Your email',
+    okTitle: 'Your seat is reserved',
+    okBody: `A confirmation email is on its way. You will receive a reminder three days before, the day before and one hour before the live of ${jour}, then the replay.`,
+  };
 
   const fade = (delay: number) => ({
     initial: reduce ? false : { opacity: 0, y: 18 },
@@ -53,9 +84,9 @@ const LiveSignup: React.FC = () => {
   });
 
   return (
-    <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(3rem,7vh,5rem)]">
+    <section className="relative w-full px-[clamp(1rem,3vw,3rem)] pb-[clamp(3rem,7vh,5rem)]">
       <motion.div
-        className="relative mx-auto w-full max-w-[1180px] overflow-hidden rounded-[15px] bg-[#28352F] text-[#EEE7DB] shadow-[0_24px_60px_rgba(41,48,39,0.28)]"
+        className="relative w-full overflow-hidden rounded-[15px] bg-[#28352F] text-[#EEE7DB] shadow-[0_28px_70px_rgba(41,48,39,0.32)]"
         initial={reduce ? false : { opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-10% 0px' }}
@@ -63,41 +94,49 @@ const LiveSignup: React.FC = () => {
       >
         {/* Fil lumineux */}
         <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#BA7B39] to-transparent" />
-        <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#BA7B39]/15 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -right-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-[#BA7B39]/15 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-[#8B4A2F]/12 blur-3xl" />
 
-        <div className="grid gap-10 px-[clamp(1.5rem,5vw,4rem)] py-[clamp(2.5rem,6vh,4rem)] lg:grid-cols-[1fr_0.9fr] lg:items-center">
+        <div className="grid gap-12 px-[clamp(1.5rem,6vw,6rem)] py-[clamp(3.5rem,9vh,6.5rem)] lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
           <div>
-            <motion.p {...fade(0.05)} className="flex items-center gap-3 text-[0.68rem] uppercase tracking-[0.34em] text-[#BA7B39]">
-              <span className="relative flex h-2 w-2">
+            <motion.div {...fade(0.05)} className="inline-flex items-center gap-4 rounded-full border border-[#BA7B39]/45 bg-[#BA7B39]/10 px-6 py-3">
+              <span className="relative flex h-3 w-3">
                 {!isPast && !reduce && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#BA7B39] opacity-70" />}
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#BA7B39]" />
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-[#BA7B39]" />
               </span>
-              {isPast ? 'Rediffusion' : 'En direct sur YouTube'}
-            </motion.p>
-            <motion.h2 {...fade(0.15)} className="v2-serif mt-5 font-light leading-[1.02] text-[clamp(2.2rem,5vw,3.8rem)]">
-              {isPast ? 'La rediffusion est en ligne' : 'Le podcast, en direct'}
+              <YouTubeMark className="h-7 w-7 text-[#EEE7DB]" />
+              <span className="text-[clamp(0.85rem,1.4vw,1.15rem)] font-semibold uppercase tracking-[0.3em] text-[#EEE7DB]">
+                {isPast ? t.replay : t.live}
+              </span>
+            </motion.div>
+            <motion.h2 {...fade(0.15)} className="v2-serif mt-8 font-light leading-[1] text-[clamp(3rem,7vw,5.6rem)]">
+              {t.title}
             </motion.h2>
-            <motion.p {...fade(0.25)} className="mt-5 text-[1.05rem] leading-[1.7] text-[#EEE7DB]/75 max-w-[44ch]">
-              {isPast
-                ? `L'épisode en direct du ${jour} reste à votre disposition aussi longtemps que vous le voulez.`
-                : `Le ${jour} à ${heure}, Krystine ouvre un épisode en direct où vous pourrez poser vos questions dans le clavardage. Laissez votre adresse et vous recevrez le lien, un rappel la veille et la rediffusion.`}
+            <motion.p {...fade(0.25)} className="mt-7 text-[clamp(1.1rem,1.6vw,1.35rem)] leading-[1.7] text-[#EEE7DB]/80 max-w-[46ch]">
+              {t.body}
             </motion.p>
-            <motion.p {...fade(0.3)} className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[0.62rem] uppercase tracking-[0.26em] text-[#EEE7DB]/45">
-              <span>{jour}</span>
-              <span>{heure} · Québec</span>
-              <span>{ev.title}</span>
-            </motion.p>
+            <motion.div {...fade(0.3)} className="mt-9 flex flex-wrap gap-x-10 gap-y-4">
+              <div>
+                <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#BA7B39]">{fr ? 'Date' : 'Date'}</p>
+                <p className="v2-serif mt-1 text-[clamp(1.4rem,2.4vw,2rem)] capitalize">{jour}</p>
+              </div>
+              <div>
+                <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#BA7B39]">{fr ? 'Heure' : 'Time'}</p>
+                <p className="v2-serif mt-1 text-[clamp(1.4rem,2.4vw,2rem)]">{t.qc}</p>
+                <p className="v2-serif text-[clamp(1.1rem,1.8vw,1.5rem)] text-[#EEE7DB]/65">{t.fra}</p>
+              </div>
+            </motion.div>
           </div>
 
-          <motion.div {...fade(0.35)} className="rounded-[15px] border border-[#EEE7DB]/12 bg-[#293027]/60 p-[clamp(1.25rem,3vw,2.25rem)] backdrop-blur-sm">
+          <motion.div {...fade(0.35)} className="rounded-[15px] border border-[#EEE7DB]/12 bg-[#293027]/60 p-[clamp(1.5rem,3.5vw,3rem)] backdrop-blur-sm">
             {isPast ? (
               <a
                 href={ev.replayUrl || ev.youtubeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex w-full items-center justify-center rounded-full bg-[#BA7B39] px-10 py-4 text-xs font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#EEE7DB]"
+                className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#BA7B39] px-10 py-5 text-sm font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#EEE7DB]"
               >
-                Regarder la rediffusion
+                <YouTubeMark className="h-6 w-6" /> {t.watch}
               </a>
             ) : (
               <NewsletterSignup
@@ -106,12 +145,9 @@ const LiveSignup: React.FC = () => {
                 variant="dark"
                 emailOnly
                 askFirstName
-                ctaLabel="Réserver ma place"
-                placeholder="Votre adresse courriel"
-                success={{
-                  title: 'Votre place est réservée',
-                  body: `Un courriel de confirmation arrive à l'instant. Vous recevrez un rappel trois jours avant, la veille et une heure avant le direct du ${jour}, puis la rediffusion.`,
-                }}
+                ctaLabel={t.cta}
+                placeholder={t.placeholder}
+                success={{ title: t.okTitle, body: t.okBody }}
               />
             )}
           </motion.div>
