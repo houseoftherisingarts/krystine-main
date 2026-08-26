@@ -8,6 +8,7 @@ import {
   fromAddr,
   unsubscribeUrl,
 } from './mail';
+import { findEventByTags, sendLiveMail } from './live';
 
 // ─── Courriel de bienvenue ───────────────────────────────────────────────────
 // Déclenché à la création d'un document dans `newsletter` (formulaire public
@@ -107,6 +108,7 @@ export const sendWelcomeEmail = onDocumentCreated(
       status?: string;
       source?: string;
       unsubscribeToken?: string;
+      tags?: string[];
       welcomeSentAt?: unknown;
     };
 
@@ -122,6 +124,15 @@ export const sendWelcomeEmail = onDocumentCreated(
     const postalAddress = NEWSLETTER_POSTAL_ADDRESS.value();
     const transporter = createTransporter();
     try {
+      // Inscription à un direct du podcast : la confirmation du direct
+      // remplace le mot de bienvenue (date, lien, agenda).
+      if (d.source === 'podcast-live') {
+        const ev = await findEventByTags(d.tags);
+        if (ev) {
+          await sendLiveMail(transporter, 'confirm', ev, { email: d.email, firstName: d.firstName, unsubscribeToken: d.unsubscribeToken });
+          return;
+        }
+      }
       await transporter.sendMail({
         from: fromAddr(),
         to: d.email,

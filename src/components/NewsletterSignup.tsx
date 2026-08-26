@@ -26,6 +26,12 @@ interface Props {
   className?: string;
   /** If true, skip the Google primary path and only show the email form. */
   emailOnly?: boolean;
+  /** Étiquettes CRM posées sur l'inscrit (défaut : [source]). */
+  tags?: string[];
+  /** Demander le prénom avant le courriel. */
+  askFirstName?: boolean;
+  /** Écran de succès sur mesure (titre + phrase), à la place du message infolettre. */
+  success?: { title: string; body: string };
 }
 
 const NewsletterSignup: React.FC<Props> = ({
@@ -35,9 +41,13 @@ const NewsletterSignup: React.FC<Props> = ({
   placeholder,
   className = '',
   emailOnly = false,
+  tags,
+  askFirstName = false,
+  success,
 }) => {
   const { lang, user } = useApp();
   const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
   const reduce = useReducedMotion();
@@ -57,7 +67,12 @@ const NewsletterSignup: React.FC<Props> = ({
     reset();
     setStatus('sending');
     try {
-      await addNewsletterSubscriber({ email: email.trim(), source, tags: [source] });
+      await addNewsletterSubscriber({
+        email: email.trim(),
+        firstName: askFirstName ? firstName.trim() || undefined : undefined,
+        source,
+        tags: tags || [source],
+      });
       // Loyalty — 5 pts for newsletter subscribe, once per member (keyed on
       // uid so anonymous signups don't earn points until the user signs in).
       if (user?.uid) {
@@ -97,7 +112,7 @@ const NewsletterSignup: React.FC<Props> = ({
               lastName: lastName || undefined,
               uid: cred.user.uid,
               source: `${source}_google`,
-              tags: [source, `${source}_google`],
+              tags: [...(tags || [source]), `${source}_google`],
             });
             try {
               await updateMember(cred.user.uid, {
@@ -127,10 +142,10 @@ const NewsletterSignup: React.FC<Props> = ({
   // coins 15 px, entrée lente et feutrée (reduced-motion respecté).
   if (done) {
     const isGoogle = status === 'google-success';
-    const title = isGoogle
+    const title = success ? success.title : isGoogle
       ? (lang === 'FR' ? 'Bienvenue dans le fil' : 'Welcome to the thread')
       : (lang === 'FR' ? 'Vous êtes bien inscrit·e' : 'You are on the list');
-    const body = isGoogle
+    const body = success ? success.body : isGoogle
       ? (lang === 'FR'
           ? 'Votre espace client Inspirata est prêt et un premier mot de bienvenue arrive dans votre boîte.'
           : 'Your Inspirata client space is ready and a first welcome note is on its way to your inbox.')
@@ -216,6 +231,16 @@ const NewsletterSignup: React.FC<Props> = ({
       )}
 
       <form onSubmit={handleEmailSubmit} className="flex flex-col md:flex-row gap-4 items-center">
+        {askFirstName && (
+          <input
+            type="text"
+            autoComplete="given-name"
+            placeholder={lang === 'FR' ? 'Votre prénom' : 'Your first name'}
+            value={firstName}
+            onChange={e => setFirstName(e.target.value)}
+            className={`w-full md:w-[38%] px-2 py-3 outline-none transition-colors text-center md:text-left tracking-wide ${inputClass}`}
+          />
+        )}
         <input
           type="email"
           required

@@ -163,6 +163,34 @@ export async function updateNewsletterSubscriber(id: string, patch: Partial<News
   return updateDoc(doc(db!, 'newsletter', id), patch as any);
 }
 
+// ─── Directs du podcast ──────────────────────────────────────────────────────
+// Un document par direct. Les inscrits portent `tag` dans newsletter.tags;
+// les rappels partent de la fonction planifiée `sendLiveReminders`.
+export interface LiveEvent {
+  id: string;
+  title: string;
+  startsAt: Timestamp;
+  youtubeUrl: string;
+  replayUrl?: string;
+  tag: string;
+  reminders?: Partial<Record<'d3' | 'veille' | 'h1' | 'replay', Timestamp>>;
+  stats?: Partial<Record<'d3' | 'veille' | 'h1' | 'replay', number>>;
+}
+
+export async function getLiveEvents(): Promise<LiveEvent[]> {
+  if (!db) return [];
+  const snap = await getDocs(query(collection(db, 'liveEvents'), orderBy('startsAt', 'desc')));
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as LiveEvent));
+}
+
+export async function saveLiveEvent(ev: LiveEvent) {
+  if (!db) noDb();
+  const { id, ...data } = ev;
+  const clean: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(data)) if (v !== undefined) clean[k] = v;
+  return setDoc(doc(db!, 'liveEvents', id), clean, { merge: true });
+}
+
 // ─── Bulk import (CSV flow) ──────────────────────────────────────────────────
 // Skips emails that already exist (case-insensitive). Writes in batches of 400
 // to stay under Firestore's 500-op batch limit.

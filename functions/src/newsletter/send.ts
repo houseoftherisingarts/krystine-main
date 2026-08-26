@@ -100,7 +100,9 @@ export const sendNewsletter = onCall(
     const segmentTag = doc.segmentTag || null;
     const subscribers: Array<SubscriberDoc & { id: string }> = subsSnap.docs
       .map(d => ({ id: d.id, ...(d.data() as SubscriberDoc) }))
-      .filter(s => !segmentTag || (s.tags || []).includes(segmentTag));
+      .filter(s => !segmentTag || (s.tags || []).includes(segmentTag))
+      // Une adresse inscrite par deux formulaires ne reçoit qu'un courriel.
+      .filter((s, i, arr) => arr.findIndex(o => o.email === s.email) === i);
 
     let delivered = 0;
     let bounced = 0;
