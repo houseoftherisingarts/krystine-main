@@ -135,8 +135,8 @@ const NewsletterSignup: React.FC<Props> = ({
           ? 'Votre espace client Inspirata est prêt et un premier mot de bienvenue arrive dans votre boîte.'
           : 'Your Inspirata client space is ready and a first welcome note is on its way to your inbox.')
       : (lang === 'FR'
-          ? 'Un premier mot de bienvenue arrive dans votre boîte d\'ici quelques minutes. La prochaine infolettre suivra avec la nouvelle saison.'
-          : 'A first welcome note reaches your inbox within a few minutes. The next newsletter follows with the new season.');
+          ? 'Vous êtes maintenant inscrit·e à l\'infolettre, ce courrier que nous envoyons au rythme des saisons. Vous y trouverez à l\'occasion des rituels ou des lectures à emporter avec vous, ainsi que d\'autres petits trésors. Vous n\'avez rien d\'autre à faire pour le moment. La prochaine infolettre arrivera dans votre boîte.'
+          : 'You are now on the newsletter, the letter we send with the seasons. In it you will find, now and then, rituals or readings to take with you, along with a few other small treasures. There is nothing else to do for now. The next newsletter will arrive in your inbox.');
     const ease = [0.16, 0.8, 0.24, 1] as const;
     const fade = (delay: number) => ({
       initial: reduce ? false : { opacity: 0, y: 18, filter: 'blur(6px)' },

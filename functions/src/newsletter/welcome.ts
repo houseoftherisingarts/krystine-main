@@ -35,15 +35,15 @@ function esc(s: unknown): string {
     .replace(/"/g, '&quot;');
 }
 
-export const WELCOME_SUBJECT = 'Bienvenue dans le fil';
+export const WELCOME_SUBJECT = 'Vous êtes maintenant inscrit·e à l\'infolettre';
 
 // Texte du courriel, une seule fois, servi en HTML et en texte brut.
 function paragraphs(firstName?: string): string[] {
   const salut = firstName ? `Bonjour ${firstName},` : 'Bonjour,';
   return [
     salut,
-    'Merci d\'avoir laissé votre adresse. Vous faites maintenant partie du fil, ce courrier que nous envoyons au rythme des saisons pour vous raconter ce qui se prépare chez Krystine et vous glisser à l\'occasion un rituel ou une lecture à emporter avec vous.',
-    'Vous n\'avez rien d\'autre à faire. La prochaine infolettre arrive avec la nouvelle saison, dans cette même boîte.',
+    'Vous êtes maintenant inscrit·e à l\'infolettre, ce courrier que nous envoyons au rythme des saisons. Vous y trouverez à l\'occasion des rituels ou des lectures à emporter avec vous, ainsi que d\'autres petits trésors.',
+    'Vous n\'avez rien d\'autre à faire pour le moment. La prochaine infolettre arrivera dans votre boîte.',
     'À bientôt,',
     'Krystine St-Laurent',
   ];
@@ -64,7 +64,7 @@ export function renderWelcomeHtml(opts: { firstName?: string; unsubscribeUrl: st
   <title>${esc(WELCOME_SUBJECT)}</title>
 </head>
 <body style="margin:0;padding:0;background:${CHARTE.cream};">
-  <div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;font-size:1px;color:transparent;line-height:1px;">Vous voilà dans le fil. La prochaine infolettre arrive avec la nouvelle saison.</div>
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;font-size:1px;color:transparent;line-height:1px;">Vous êtes maintenant inscrit·e à l'infolettre. La prochaine arrivera dans votre boîte.</div>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CHARTE.cream};padding:40px 16px;">
     <tr><td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:15px;overflow:hidden;">
