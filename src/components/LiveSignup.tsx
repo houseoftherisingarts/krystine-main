@@ -58,9 +58,10 @@ const LiveSignup: React.FC = () => {
     title: isPast ? 'La rediffusion est en ligne' : 'Le podcast, en direct',
     body: isPast
       ? `L'épisode en direct du ${jour} reste à votre disposition aussi longtemps que vous le voulez.`
-      : `Le ${jour} à ${heureQc} (heure du Québec), Krystine ouvre un épisode en direct où vous pourrez poser vos questions dans le clavardage. Laissez votre adresse et vous recevrez le lien, un rappel la veille et la rediffusion.`,
+      : `Le ${jour} à ${heureQc} (heure du Québec), Krystine ouvre un épisode en direct où vous pourrez poser vos questions dans le clavardage. Laissez votre adresse et, si vous le souhaitez, votre question : vous recevrez le lien, un rappel la veille et la rediffusion.`,
     qc: `${heureQc} · Québec`, fra: `${heureFr} · France`,
     watch: 'Regarder la rediffusion', cta: 'Réserver ma place', placeholder: 'Votre courriel',
+    question: 'Votre question pour Krystine (facultatif)', qHint: 'Les questions reçues à l\'inscription seront répondues pendant le direct.',
     okTitle: 'Votre place est réservée',
     okBody: `Un courriel de confirmation arrive à l'instant. Vous recevrez un rappel trois jours avant, la veille et une heure avant le direct du ${jour}, puis la rediffusion.`,
   } : {
@@ -69,9 +70,10 @@ const LiveSignup: React.FC = () => {
     title: isPast ? 'The replay is online' : 'The podcast, live',
     body: isPast
       ? `The live episode of ${jour} stays available for as long as you like.`
-      : `On ${jour} at ${heureQc} (Québec time), Krystine opens a live episode where you can ask your questions in the chat. Leave your address and you will receive the link, a reminder the day before and the replay.`,
+      : `On ${jour} at ${heureQc} (Québec time), Krystine opens a live episode where you can ask your questions in the chat. Leave your address and, if you wish, your question: you will receive the link, a reminder the day before and the replay.`,
     qc: `${heureQc} · Québec`, fra: `${heureFr} · France`,
     watch: 'Watch the replay', cta: 'Save my seat', placeholder: 'Your email',
+    question: 'Your question for Krystine (optional)', qHint: 'Questions received at sign-up will be answered during the live.',
     okTitle: 'Your seat is reserved',
     okBody: `A confirmation email is on its way. You will receive a reminder three days before, the day before and one hour before the live of ${jour}, then the replay.`,
   };
@@ -145,6 +147,7 @@ const LiveSignup: React.FC = () => {
                 variant="dark"
                 emailOnly
                 askFirstName
+                askQuestion={{ placeholder: t.question, hint: t.qHint }}
                 ctaLabel={t.cta}
                 placeholder={t.placeholder}
                 success={{ title: t.okTitle, body: t.okBody }}

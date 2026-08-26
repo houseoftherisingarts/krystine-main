@@ -112,6 +112,7 @@ export interface NewsletterSubscriber {
   lastName?: string;
   source?: string;
   uid?: string;                   // populated when the subscriber is also a signed-in member
+  question?: string;              // question posée à l'inscription à un direct du podcast
   tags?: string[];                // simple segmentation — "client", "event-2024", "dosha-vata", …
   status?: SubscriberStatus;      // default 'active' when added via public form
   // Geo segmentation — captured on the /liste-attente form (cascading

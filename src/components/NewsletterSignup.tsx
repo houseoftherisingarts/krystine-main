@@ -30,6 +30,8 @@ interface Props {
   tags?: string[];
   /** Demander le prénom avant le courriel. */
   askFirstName?: boolean;
+  /** Champ facultatif « votre question » (direct du podcast). */
+  askQuestion?: { placeholder: string; hint?: string };
   /** Écran de succès sur mesure (titre + phrase), à la place du message infolettre. */
   success?: { title: string; body: string };
 }
@@ -43,11 +45,13 @@ const NewsletterSignup: React.FC<Props> = ({
   emailOnly = false,
   tags,
   askFirstName = false,
+  askQuestion,
   success,
 }) => {
   const { lang, user } = useApp();
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
+  const [question, setQuestion] = useState('');
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
   const reduce = useReducedMotion();
@@ -70,6 +74,7 @@ const NewsletterSignup: React.FC<Props> = ({
       await addNewsletterSubscriber({
         email: email.trim(),
         firstName: askFirstName ? firstName.trim() || undefined : undefined,
+        question: askQuestion ? question.trim().slice(0, 1000) || undefined : undefined,
         source,
         tags: tags || [source],
       });
@@ -250,6 +255,19 @@ const NewsletterSignup: React.FC<Props> = ({
           onChange={e => setEmail(e.target.value)}
           className={`flex-1 w-full px-2 py-3 outline-none transition-colors text-center md:text-left tracking-wide ${inputClass}`}
         />
+        {askQuestion && (
+          <div className="sm:col-span-2">
+            <textarea
+              rows={3}
+              maxLength={1000}
+              placeholder={askQuestion.placeholder}
+              value={question}
+              onChange={e => setQuestion(e.target.value)}
+              className={`w-full resize-none px-2 py-3 outline-none transition-colors tracking-wide ${inputClass}`}
+            />
+            {askQuestion.hint && <p className={`mt-2 text-xs ${fineprintClass}`}>{askQuestion.hint}</p>}
+          </div>
+        )}
         <button
           type="submit"
           disabled={busy}

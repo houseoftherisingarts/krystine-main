@@ -105,9 +105,9 @@ const LivePanel: React.FC = () => {
             <div className="flex items-baseline justify-between">
               <div>
                 <p className="text-[10px] uppercase tracking-[0.25em] text-[#2a2015]/50 dark:text-white/50">Inscrits au direct</p>
-                <p className="font-serif text-4xl text-[#2a2015] dark:text-white">{uniq.length}</p>
+                <p className="font-serif text-4xl text-[#2a2015] dark:text-white">{uniq.length} <span className="text-base text-[#7d6330]">· {uniq.filter(s => s.question).length} question{uniq.filter(s => s.question).length > 1 ? 's' : ''}</span></p>
               </div>
-              <GhostButton onClick={() => downloadCsv(`${sel.tag}.csv`, uniq.map(s => ({ email: s.email, firstName: s.firstName || '', subscribedAt: s.subscribedAt?.toDate?.().toISOString() || '' })))} disabled={uniq.length === 0}>
+              <GhostButton onClick={() => downloadCsv(`${sel.tag}.csv`, uniq.map(s => ({ email: s.email, firstName: s.firstName || '', question: s.question || '', subscribedAt: s.subscribedAt?.toDate?.().toISOString() || '' })))} disabled={uniq.length === 0}>
                 <i className="fa-solid fa-download mr-2" />CSV
               </GhostButton>
             </div>
@@ -127,9 +127,12 @@ const LivePanel: React.FC = () => {
             </ul>
             <ul className="max-h-72 overflow-auto text-xs space-y-1.5">
               {uniq.map(s => (
-                <li key={s.id} className="flex justify-between gap-3 text-[#2a2015]/70 dark:text-white/70">
-                  <span className="truncate">{s.firstName ? `${s.firstName} · ` : ''}{s.email}</span>
-                  <span className="shrink-0 text-[#2a2015]/40 dark:text-white/40">{s.subscribedAt?.toDate?.().toLocaleDateString('fr-CA')}</span>
+                <li key={s.id} className="text-[#2a2015]/70 dark:text-white/70">
+                  <div className="flex justify-between gap-3">
+                    <span className="truncate">{s.firstName ? `${s.firstName} · ` : ''}{s.email}</span>
+                    <span className="shrink-0 text-[#2a2015]/40 dark:text-white/40">{s.subscribedAt?.toDate?.().toLocaleDateString('fr-CA')}</span>
+                  </div>
+                  {s.question && <p className="mt-1 pl-3 border-l-2 border-[#bb9a5e]/60 text-[#2a2015]/80 dark:text-white/80 whitespace-pre-wrap">{s.question}</p>}
                 </li>
               ))}
             </ul>
