@@ -5,6 +5,7 @@ import {
   MAIL_SECRETS,
   NEWSLETTER_POSTAL_ADDRESS,
   PUBLIC_BASE_URL,
+  REPLY_TO,
   createTransporter,
   fromAddr,
   unsubscribeUrl,
@@ -224,6 +225,7 @@ export async function sendLiveMail(
   const unsub = unsubscribeUrl(sub.unsubscribeToken || '');
   const postalAddress = NEWSLETTER_POSTAL_ADDRESS.value();
   await transporter.sendMail({
+        replyTo: REPLY_TO,
     from: fromAddr(),
     to: sub.email,
     subject: m.subject,

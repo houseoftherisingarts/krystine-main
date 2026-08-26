@@ -2,6 +2,7 @@ import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { renderEmailHtml, renderEmailText, type NewsletterBlock } from './renderer';
 import { MAIL_SECRETS, NEWSLETTER_POSTAL_ADDRESS, BRAND_LOGO_URL, createTransporter, fromAddr as buildFrom, unsubscribeUrl as buildUnsub } from './mail';
+import { REPLY_TO } from './mail';
 
 // Secrets, transport SMTP et adresses de base vivent dans ./mail.ts, partagés
 // avec le courriel de bienvenue (welcome.ts).
@@ -81,6 +82,7 @@ export const sendNewsletter = onCall(
       const text = renderEmailText(doc.blocks, { subject: doc.subject, unsubscribeUrl, postalAddress, firstName: 'Test' });
       await transporter.sendMail({
         from: fromAddr,
+        replyTo: REPLY_TO,
         to: testEmail,
         subject: `[TEST] ${doc.subject}`,
         html,
@@ -123,6 +125,8 @@ export const sendNewsletter = onCall(
         const text = renderEmailText(doc.blocks, { subject: doc.subject, unsubscribeUrl, postalAddress, firstName: sub.firstName });
         await transporter.sendMail({
           from: fromAddr,
+          replyTo: REPLY_TO,
+        replyTo: REPLY_TO,
           to: sub.email,
           subject: doc.subject,
           html,

@@ -4,6 +4,7 @@ import {
   MAIL_SECRETS,
   NEWSLETTER_POSTAL_ADDRESS,
   PUBLIC_BASE_URL,
+  REPLY_TO,
   createTransporter,
   fromAddr,
   unsubscribeUrl,
@@ -134,6 +135,7 @@ export const sendWelcomeEmail = onDocumentCreated(
         }
       }
       await transporter.sendMail({
+        replyTo: REPLY_TO,
         from: fromAddr(),
         to: d.email,
         subject: WELCOME_SUBJECT,
