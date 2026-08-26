@@ -126,7 +126,6 @@ export const sendNewsletter = onCall(
         await transporter.sendMail({
           from: fromAddr,
           replyTo: REPLY_TO,
-        replyTo: REPLY_TO,
           to: sub.email,
           subject: doc.subject,
           html,
