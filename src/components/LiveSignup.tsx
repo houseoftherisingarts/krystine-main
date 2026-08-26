@@ -80,7 +80,7 @@ const LiveSignup: React.FC = () => {
             <motion.p {...fade(0.25)} className="mt-5 text-[1.05rem] leading-[1.7] text-[#EEE7DB]/75 max-w-[44ch]">
               {isPast
                 ? `L'épisode en direct du ${jour} reste à votre disposition aussi longtemps que vous le voulez.`
-                : `Le ${jour} à ${heure}, Krystine ouvre un épisode en direct, sans montage, avec vos questions dans le clavardage. Laissez votre adresse : vous recevrez le lien, un rappel la veille et la rediffusion.`}
+                : `Le ${jour} à ${heure}, Krystine ouvre un épisode en direct où vous pourrez poser vos questions dans le clavardage. Laissez votre adresse et vous recevrez le lien, un rappel la veille et la rediffusion.`}
             </motion.p>
             <motion.p {...fade(0.3)} className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[0.62rem] uppercase tracking-[0.26em] text-[#EEE7DB]/45">
               <span>{jour}</span>

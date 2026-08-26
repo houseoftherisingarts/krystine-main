@@ -266,14 +266,13 @@ export const sendLiveReminders = onSchedule(
         for (const s of due) lock[`reminders.${s}`] = FieldValue.serverTimestamp();
         await evDoc.ref.update(lock);
 
-        const subsSnap = await db.collection('newsletter')
-          .where('status', '==', 'active')
-          .where('tags', 'array-contains', ev.tag)
-          .get();
+        // Un seul filtre dans la requête (array-contains); le statut se
+        // vérifie en code pour éviter un index composé.
+        const subsSnap = await db.collection('newsletter').where('tags', 'array-contains', ev.tag).get();
         const seen = new Set<string>();
         const subs = subsSnap.docs
-          .map(d => d.data() as { email?: string; firstName?: string; unsubscribeToken?: string })
-          .filter(s => s.email && !seen.has(s.email) && seen.add(s.email));
+          .map(d => d.data() as { email?: string; firstName?: string; unsubscribeToken?: string; status?: string })
+          .filter(s => s.email && (!s.status || s.status === 'active') && !seen.has(s.email) && seen.add(s.email));
 
         transporter = transporter || createTransporter();
         for (const step of due) {

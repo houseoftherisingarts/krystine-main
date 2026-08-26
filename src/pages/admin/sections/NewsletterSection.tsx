@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import SubscribersPanel from './newsletter/SubscribersPanel';
 import NewsletterList from './newsletter/NewsletterList';
 import Composer from './newsletter/Composer';
+import LivePanel from './newsletter/LivePanel';
 
 type View =
   | { kind: 'list' }
   | { kind: 'composer'; id: string | null };
 
-type Tab = 'subscribers' | 'newsletters';
+type Tab = 'subscribers' | 'newsletters' | 'live';
 
 const NewsletterSection: React.FC = () => {
   const [tab, setTab] = useState<Tab>('subscribers');
@@ -42,7 +43,19 @@ const NewsletterSection: React.FC = () => {
         >
           <i className="fa-solid fa-envelope-open-text mr-2" /> Infolettres
         </button>
+        <button
+          onClick={() => setTab('live')}
+          className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
+            tab === 'live'
+              ? 'bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015]'
+              : 'bg-white dark:bg-[#2a2015]/60 text-[#2a2015]/60 dark:text-white/60 hover:text-[#7d6330] border border-[#2a2015]/5 dark:border-white/5'
+          }`}
+        >
+          <i className="fa-solid fa-tower-broadcast mr-2" /> Direct
+        </button>
       </div>
+
+      {tab === 'live' && <LivePanel />}
 
       {tab === 'subscribers' && <SubscribersPanel />}
       {tab === 'newsletters' && view.kind === 'list' && (

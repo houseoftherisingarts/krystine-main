@@ -4,6 +4,7 @@ import {
   Headphones, CalendarBlank, Clock, Play, CircleNotch, ArrowUpRight, ArrowDown, ArrowRight,
 } from '@phosphor-icons/react';
 import NewsletterSignup from '../../components/NewsletterSignup';
+import LiveSignup from '../../components/LiveSignup';
 
 /**
  * Podcast « Au-delà des tendances » — branding V2 (magazine crème), même
@@ -197,6 +198,9 @@ export default function PodcastV2() {
           </div>
         )}
       </section>
+
+      {/* ─────────── Podcast en direct (liveEvents) ─────────── */}
+      <LiveSignup />
 
       {/* ─────────── Lecteur sticky de l'épisode sélectionné ─────────── */}
       {status === 'ready' && current && (

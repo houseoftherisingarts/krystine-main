@@ -34,6 +34,7 @@ const sourceLabel = (key: string): string => {
       case 'accueil-pulsation': return 'Accueil — La Pulsation';
       case 'krystine':          return 'Page Krystine';
       case 'podcast':           return 'Page Podcast';
+      case 'podcast-live':      return 'Podcast en direct';
       case 'quiz':              return 'Quiz Dosha';
       case 'conferenciere':     return 'Demande de conférence';
       case 'conference-tour':   return 'Tournée de conférences';
