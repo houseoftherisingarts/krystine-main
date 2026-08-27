@@ -13,7 +13,7 @@ const NO_SOURCE = '__none__';
 
 // Pretty label for well-known source keys. Unknown sources fall through to the
 // raw key so new lists appear in the dropdown automatically.
-const sourceLabel = (key: string): string => {
+export const sourceLabel = (key: string): string => {
   // Strip the "_google" suffix — we show the origin form, the Google variant
   // is visible via tags if needed.
   const base = key.replace(/_google$/, '');

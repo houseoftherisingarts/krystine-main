@@ -132,7 +132,7 @@ export const newsletterAssistant = onCall(
       now?: string;
     };
     if (!messages?.length) throw new HttpsError('invalid-argument', 'messages is required');
-    if (!ANTHROPIC_API_KEY.value()) throw new HttpsError('failed-precondition', 'ANTHROPIC_API_KEY manquante');
+    if (!ANTHROPIC_API_KEY.value() || ANTHROPIC_API_KEY.value() === 'PLACEHOLDER') throw new HttpsError('failed-precondition', 'Iris attend sa clé : firebase functions:secrets:set ANTHROPIC_API_KEY');
 
     const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY.value() });
 

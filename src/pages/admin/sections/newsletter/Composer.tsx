@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import app from '../../../../firebase';
+import { Timestamp } from 'firebase/firestore';
 import {
   createNewsletter, updateNewsletter, getNewsletter,
-  type NewsletterBlock, type BlockType, type NewsletterStatus,
+  type NewsletterBlock, type BlockType, type NewsletterStatus, type NewsletterAudience,
 } from '../../../../firebase/firestore';
+import AudiencePicker from './AudiencePicker';
+import PreviewFrame from './PreviewFrame';
+import AssistantPanel, { type Proposal } from './AssistantPanel';
 import { uploadImage } from '../../../../firebase/storage';
 import { RenderBlocksWeb } from '../../../../lib/newsletterRenderer';
 import { Card, Input, Textarea, Label, PrimaryButton, GhostButton } from '../../primitives';
@@ -38,6 +42,12 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
   const [fromName, setFromName] = useState('Krystine St-Laurent');
   const [blocks, setBlocks] = useState<NewsletterBlock[]>([]);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  const [audience, setAudience] = useState<NewsletterAudience>({ mode: 'all' });
+  const [when, setWhen] = useState('');          // datetime-local, heure du Québec
+  const [side, setSide] = useState<'props' | 'preview' | 'iris'>('props');
+
+  // datetime-local <-> Date
+  const toLocal = (d: Date) => { const p = (n: number) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; };
 
   useEffect(() => {
     if (!newsletterId) { setLoading(false); return; }
@@ -51,6 +61,8 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
         setFromName(n.fromName || 'Krystine St-Laurent');
         setBlocks(n.blocks || []);
         setStatus(n.status || 'draft');
+        setAudience(n.audience || (n.segmentTag ? { mode: 'tags', tags: [n.segmentTag] } : { mode: 'all' }));
+        setWhen(n.scheduledFor ? toLocal(n.scheduledFor.toDate()) : '');
       })
       .finally(() => setLoading(false));
   }, [newsletterId, onBack]);
@@ -89,10 +101,11 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
     if (isReadOnly) return id;
     setSaving(true);
     try {
+      const scheduledFor = when ? Timestamp.fromDate(new Date(when)) : null;
       if (id) {
-        await updateNewsletter(id, { title, subject, preheader, fromName, blocks });
+        await updateNewsletter(id, { title, subject, preheader, fromName, blocks, audience, scheduledFor });
       } else {
-        const ref = await createNewsletter({ title, subject, preheader, fromName, blocks, status: 'draft' });
+        const ref = await createNewsletter({ title, subject, preheader, fromName, blocks, status: 'draft', audience, scheduledFor });
         if (ref) setId(ref.id);
         setSavedAt(new Date());
         return ref?.id || null;
@@ -143,16 +156,49 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
   };
 
   const sendLive = async () => {
-    if (!confirm('Envoyer cette infolettre à tous les abonnés actifs ? Cette action est irréversible.')) return;
+    const who = audience.mode === 'all' ? 'tous les abonnés actifs' : audience.mode === 'tags' ? `les listes ${(audience.tags || []).join(', ')}` : `${(audience.emails || []).length} personne(s) choisie(s)`;
+    if (!confirm(`Envoyer cette infolettre maintenant à ${who} ? Cette action est irréversible.`)) return;
     await triggerSend();
+  };
+
+  // Programmer : le brouillon passe « scheduled »; la fonction planifiée
+  // l'enverra à l'heure dite. Déprogrammer le ramène en brouillon.
+  const schedule = async () => {
+    setSendErr(null); setSendInfo(null);
+    if (!when) { setSendErr('Choisissez une date et une heure d\u2019envoi.'); return; }
+    if (new Date(when).getTime() < Date.now() + 5 * 60e3) { setSendErr('La date d\u2019envoi doit être dans au moins cinq minutes.'); return; }
+    if (!subject || !blocks.length) { setSendErr('Le sujet et au moins un bloc sont requis.'); return; }
+    const savedId = await save();
+    if (!savedId) return;
+    await updateNewsletter(savedId, { status: 'scheduled' });
+    setStatus('scheduled');
+    setSendInfo(`Programmée pour le ${new Date(when).toLocaleString('fr-CA', { dateStyle: 'full', timeStyle: 'short' })}.`);
+  };
+  const unschedule = async () => {
+    if (!id) return;
+    await updateNewsletter(id, { status: 'draft' });
+    setStatus('draft');
+    setSendInfo('Déprogrammée : elle redevient un brouillon.');
+  };
+
+  // Iris propose; le composeur applique. Krystine garde le dernier geste.
+  const applyProposal = (p: Proposal) => {
+    setTitle(p.title || title);
+    setSubject(p.subject || subject);
+    setPreheader(p.preheader || '');
+    setBlocks(p.blocks || []);
+    setAudience(p.audience || { mode: 'all' });
+    if (p.scheduledFor) setWhen(toLocal(new Date(p.scheduledFor)));
+    setSelectedIdx(null);
+    setSide('preview');
   };
 
   if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#7d6330] text-2xl" /></div>;
 
   return (
     <div className="space-y-4">
-      {/* Top bar */}
-      <div className="flex flex-wrap items-center gap-3">
+      {/* Barre du haut : sur fond clair, la page admin étant sombre */}
+      <div className="flex flex-wrap items-center gap-3 bg-white dark:bg-[#2a2015]/60 rounded-2xl px-4 py-3 border border-[#2a2015]/5 dark:border-white/5">
         <GhostButton onClick={onBack}><i className="fa-solid fa-arrow-left" /> Retour</GhostButton>
         <span className={`text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full ${
           status === 'sent'     ? 'bg-green-50 text-green-600' :
@@ -163,9 +209,20 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
         }`}>{status}</span>
         <div className="ml-auto flex items-center gap-3 flex-wrap">
           {savedAt && <span className="text-xs text-[#2a2015]/50 dark:text-white/50">Enregistré à {savedAt.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })}</span>}
+          <GhostButton onClick={() => setSide(side === 'iris' ? 'props' : 'iris')} disabled={isReadOnly}>
+            <i className="fa-solid fa-terminal" /> {side === 'iris' ? 'Fermer Iris' : 'Rédiger avec Iris'}
+          </GhostButton>
+          <GhostButton onClick={() => setSide(side === 'preview' ? 'props' : 'preview')}>
+            <i className="fa-solid fa-eye" /> {side === 'preview' ? 'Propriétés' : 'Aperçu'}
+          </GhostButton>
           <PrimaryButton onClick={save} disabled={saving || isReadOnly || !subject}>
             {saving ? 'Enregistrement…' : (id ? 'Enregistrer' : 'Créer le brouillon')}
           </PrimaryButton>
+          {status === 'scheduled' ? (
+            <GhostButton onClick={unschedule}><i className="fa-solid fa-calendar-xmark" /> Déprogrammer</GhostButton>
+          ) : (
+            <GhostButton onClick={schedule} disabled={isReadOnly || !subject || !blocks.length}><i className="fa-solid fa-calendar-check" /> Programmer</GhostButton>
+          )}
           <GhostButton onClick={sendTest} disabled={sendBusy !== 'idle' || isReadOnly || !subject}>
             <i className="fa-solid fa-paper-plane" /> {sendBusy === 'test' ? 'Envoi…' : 'Envoyer un test'}
           </GhostButton>
@@ -184,7 +241,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr_300px] gap-4">
+      <div className={`grid grid-cols-1 gap-4 ${side === 'props' ? 'lg:grid-cols-[260px_1fr_300px]' : 'lg:grid-cols-[220px_1fr_minmax(460px,1fr)]'}`}>
         {/* Block palette */}
         <Card className="p-4 h-fit">
           <h3 className="text-[10px] uppercase tracking-widest font-bold text-[#2a2015]/60 dark:text-white/60 mb-3">Blocs</h3>
@@ -219,10 +276,17 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
               <Label>Pré-en-tête (aperçu dans la boîte de réception)</Label>
               <Input value={preheader} onChange={e => setPreheader(e.target.value)} placeholder="Quelques mots d’intrigue…" disabled={isReadOnly} />
             </div>
-            <div>
-              <Label>Nom de l’expéditeur</Label>
-              <Input value={fromName} onChange={e => setFromName(e.target.value)} disabled={isReadOnly} />
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <Label>Nom de l’expéditeur</Label>
+                <Input value={fromName} onChange={e => setFromName(e.target.value)} disabled={isReadOnly} />
+              </div>
+              <div>
+                <Label>Date et heure d’envoi (heure du Québec)</Label>
+                <Input type="datetime-local" value={when} onChange={e => setWhen(e.target.value)} disabled={isReadOnly || status === 'scheduled'} />
+              </div>
             </div>
+            <AudiencePicker value={audience} onChange={setAudience} disabled={isReadOnly || status === 'scheduled'} />
           </div>
 
           {/* Preview / block list */}
@@ -259,15 +323,27 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
           </div>
         </Card>
 
-        {/* Inspector */}
-        <Card className="p-4 h-fit">
-          <h3 className="text-[10px] uppercase tracking-widest font-bold text-[#2a2015]/60 dark:text-white/60 mb-3">Propriétés</h3>
-          {selectedIdx === null || !blocks[selectedIdx] ? (
-            <p className="text-xs text-[#2a2015]/40 dark:text-white/40">Sélectionnez un bloc pour modifier son contenu.</p>
-          ) : (
-            <BlockInspector block={blocks[selectedIdx]} onChange={patch => updateBlock(selectedIdx, patch)} disabled={isReadOnly} />
-          )}
-        </Card>
+        {/* Colonne de droite : propriétés du bloc, aperçu exact, ou Iris */}
+        {side === 'iris' ? (
+          <AssistantPanel
+            draft={{ title, subject, preheader, blocks, audience, scheduledFor: when ? new Date(when).toISOString() : null }}
+            onProposal={applyProposal}
+            onClose={() => setSide('props')}
+          />
+        ) : side === 'preview' ? (
+          <div className="lg:sticky lg:top-4 h-fit">
+            <PreviewFrame blocks={blocks} subject={subject} preheader={preheader} height={Math.max(700, window.innerHeight - 200)} />
+          </div>
+        ) : (
+          <Card className="p-4 h-fit">
+            <h3 className="text-[10px] uppercase tracking-widest font-bold text-[#2a2015]/60 dark:text-white/60 mb-3">Propriétés</h3>
+            {selectedIdx === null || !blocks[selectedIdx] ? (
+              <p className="text-xs text-[#2a2015]/40 dark:text-white/40">Sélectionnez un bloc pour modifier son contenu.</p>
+            ) : (
+              <BlockInspector block={blocks[selectedIdx]} onChange={patch => updateBlock(selectedIdx, patch)} disabled={isReadOnly} />
+            )}
+          </Card>
+        )}
       </div>
     </div>
   );

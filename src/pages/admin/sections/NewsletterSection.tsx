@@ -3,64 +3,56 @@ import SubscribersPanel from './newsletter/SubscribersPanel';
 import NewsletterList from './newsletter/NewsletterList';
 import Composer from './newsletter/Composer';
 import LivePanel from './newsletter/LivePanel';
+import CalendarPanel from './newsletter/CalendarPanel';
+import AutomaticsPanel from './newsletter/AutomaticsPanel';
 
 type View =
   | { kind: 'list' }
   | { kind: 'composer'; id: string | null };
 
-type Tab = 'subscribers' | 'newsletters' | 'live';
+type Tab = 'newsletters' | 'calendar' | 'subscribers' | 'live' | 'automatics';
+
+const TABS: Array<{ key: Tab; icon: string; label: string }> = [
+  { key: 'newsletters', icon: 'fa-envelope-open-text', label: 'Infolettres' },
+  { key: 'calendar', icon: 'fa-calendar-days', label: 'Calendrier' },
+  { key: 'subscribers', icon: 'fa-users', label: 'Abonnés' },
+  { key: 'live', icon: 'fa-tower-broadcast', label: 'Direct' },
+  { key: 'automatics', icon: 'fa-robot', label: 'Automatiques' },
+];
 
 const NewsletterSection: React.FC = () => {
-  const [tab, setTab] = useState<Tab>('subscribers');
+  const [tab, setTab] = useState<Tab>('newsletters');
   const [view, setView] = useState<View>({ kind: 'list' });
 
-  // Composer is a full-bleed view inside the admin shell — suppress the tab bar.
-  if (tab === 'newsletters' && view.kind === 'composer') {
+  // Le composeur prend toute la place : la barre d'onglets s'efface.
+  if (view.kind === 'composer') {
     return <Composer newsletterId={view.id} onBack={() => setView({ kind: 'list' })} />;
   }
+  const open = (id: string | null) => setView({ kind: 'composer', id });
 
   return (
     <div className="space-y-6">
-      {/* Tabs */}
-      <div className="flex gap-2">
-        <button
-          onClick={() => setTab('subscribers')}
-          className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
-            tab === 'subscribers'
-              ? 'bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015]'
-              : 'bg-white dark:bg-[#2a2015]/60 text-[#2a2015]/60 dark:text-white/60 hover:text-[#7d6330] border border-[#2a2015]/5 dark:border-white/5'
-          }`}
-        >
-          <i className="fa-solid fa-users mr-2" /> Abonnés
-        </button>
-        <button
-          onClick={() => { setTab('newsletters'); setView({ kind: 'list' }); }}
-          className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
-            tab === 'newsletters'
-              ? 'bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015]'
-              : 'bg-white dark:bg-[#2a2015]/60 text-[#2a2015]/60 dark:text-white/60 hover:text-[#7d6330] border border-[#2a2015]/5 dark:border-white/5'
-          }`}
-        >
-          <i className="fa-solid fa-envelope-open-text mr-2" /> Infolettres
-        </button>
-        <button
-          onClick={() => setTab('live')}
-          className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
-            tab === 'live'
-              ? 'bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015]'
-              : 'bg-white dark:bg-[#2a2015]/60 text-[#2a2015]/60 dark:text-white/60 hover:text-[#7d6330] border border-[#2a2015]/5 dark:border-white/5'
-          }`}
-        >
-          <i className="fa-solid fa-tower-broadcast mr-2" /> Direct
-        </button>
+      <div className="flex flex-wrap gap-2">
+        {TABS.map(t => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
+              tab === t.key
+                ? 'bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015]'
+                : 'bg-white dark:bg-[#2a2015]/60 text-[#2a2015]/60 dark:text-white/60 hover:text-[#7d6330] border border-[#2a2015]/5 dark:border-white/5'
+            }`}
+          >
+            <i className={`fa-solid ${t.icon} mr-2`} /> {t.label}
+          </button>
+        ))}
       </div>
 
-      {tab === 'live' && <LivePanel />}
-
+      {tab === 'newsletters' && <NewsletterList onOpen={open} />}
+      {tab === 'calendar' && <CalendarPanel onOpen={open} onNew={() => open(null)} />}
       {tab === 'subscribers' && <SubscribersPanel />}
-      {tab === 'newsletters' && view.kind === 'list' && (
-        <NewsletterList onOpen={id => setView({ kind: 'composer', id })} />
-      )}
+      {tab === 'live' && <LivePanel />}
+      {tab === 'automatics' && <AutomaticsPanel />}
     </div>
   );
 };
