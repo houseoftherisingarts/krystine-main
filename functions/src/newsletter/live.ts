@@ -44,8 +44,9 @@ const TZ = 'America/Toronto';
 const CHARTE = {
   cream: '#EEE7DB',
   ink: '#293027',
-  night: '#161311',
-  gold: '#c8a86a',
+  night: '#141311',
+  gold: '#e0b060',
+  goldInk: '#7d6330',
   amber: '#BA7B39',
   copper: '#8B4A2F',
   serif: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
@@ -177,7 +178,7 @@ export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAd
   const p = (t: string) =>
     `<tr><td style="padding:0 0 18px;font-family:${CHARTE.sans};font-size:16px;line-height:1.75;color:${CHARTE.ink};">${esc(t)}</td></tr>`;
   const btn = (c: { label: string; url: string }, primary: boolean) =>
-    `<a href="${esc(c.url)}" style="display:inline-block;margin:0 10px 10px 0;padding:15px 28px;border-radius:999px;font-family:${CHARTE.sans};font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;${primary ? `background:${CHARTE.amber};color:${CHARTE.ink};` : `border:1px solid ${CHARTE.amber};color:${CHARTE.copper};`}">${esc(c.label)}</a>`;
+    `<a href="${esc(c.url)}" style="display:inline-block;margin:0 10px 10px 0;padding:15px 28px;border-radius:999px;font-family:${CHARTE.sans};font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;${primary ? `background:${CHARTE.gold};color:${CHARTE.night};` : `border:1px solid ${CHARTE.gold};color:${CHARTE.goldInk};`}">${esc(c.label)}</a>`;
 
   const ev = opts.ev;
   const start = ev ? ev.startsAt.toDate() : null;
@@ -186,7 +187,7 @@ export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAd
   const heureFr = start ? fmtTime(start, 'Europe/Paris') : '';
   const cell = (label: string, big: string, small?: string) =>
     `<td valign="top" style="padding:0 24px 0 0;">
-      <div style="font-family:${CHARTE.sans};font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:${CHARTE.amber};padding-bottom:6px;">${esc(label)}</div>
+      <div style="font-family:${CHARTE.sans};font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:${CHARTE.gold};padding-bottom:6px;">${esc(label)}</div>
       <div style="font-family:${CHARTE.serif};font-size:24px;line-height:1.15;color:${CHARTE.cream};">${esc(big)}</div>
       ${small ? `<div style="font-family:${CHARTE.serif};font-size:17px;line-height:1.3;color:rgba(238,231,219,0.65);">${esc(small)}</div>` : ''}
     </td>`;
@@ -201,16 +202,16 @@ export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAd
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;">
 
         <!-- Couverture du podcast (carte du moodboard KSL) -->
-        <tr><td style="padding:0;border-radius:15px 15px 0 0;overflow:hidden;background:#1c1a17;">
+        <tr><td style="padding:0;border-radius:15px 15px 0 0;overflow:hidden;background:${CHARTE.night};">
           <img src="cid:cover" width="600" alt="Au-delà des tendances, le podcast avec Krystine St-Laurent" style="display:block;width:100%;max-width:600px;height:auto;border-radius:15px 15px 0 0;" />
         </td></tr>
 
-        <!-- Bandeau vert profond : le rendez-vous -->
+        <!-- Bandeau noir chaud + or (visuel Saison 2) : le rendez-vous -->
         <tr><td style="background:${CHARTE.night};padding:30px 40px 28px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:0 0 18px;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:${CHARTE.amber};font-weight:600;">&#9679;&nbsp; En direct sur YouTube</td></tr>
+            <tr><td style="padding:0 0 18px;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:${CHARTE.gold};font-weight:600;">&#9679;&nbsp; En direct sur YouTube</td></tr>
             <tr><td style="padding:0 0 20px;font-family:${CHARTE.serif};font-size:34px;line-height:1.08;color:${CHARTE.cream};font-weight:500;">${esc(m.subject)}</td></tr>
-            <tr><td style="padding:0 0 22px;"><div style="height:1px;width:64px;background:${CHARTE.amber};"></div></td></tr>
+            <tr><td style="padding:0 0 22px;"><div style="height:1px;width:64px;background:${CHARTE.gold};"></div></td></tr>
             ${start ? `<tr><td><table role="presentation" cellpadding="0" cellspacing="0"><tr>${cell('Date', jour.charAt(0).toUpperCase() + jour.slice(1))}${cell('Heure', `${heureQc} · Québec`, `${heureFr} · France`)}</tr></table></td></tr>` : ''}
           </table>
         </td></tr>
@@ -224,11 +225,11 @@ export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAd
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td width="96" valign="middle" style="padding:0 18px 14px 0;"><img src="cid:portrait" width="96" height="96" alt="Krystine St-Laurent" style="display:block;width:96px;height:96px;object-fit:cover;border-radius:50%;" /></td>
-                  <td valign="middle" style="padding:0 0 14px;font-family:${CHARTE.serif};font-size:20px;line-height:1.35;color:${CHARTE.copper};">Au micro&nbsp;: Krystine St-Laurent</td>
+                  <td valign="middle" style="padding:0 0 14px;font-family:${CHARTE.serif};font-size:20px;line-height:1.35;color:${CHARTE.goldInk};">Au micro&nbsp;: Krystine St-Laurent</td>
                 </tr>
                 <tr><td colspan="2" style="font-family:${CHARTE.sans};font-size:14px;line-height:1.75;color:${CHARTE.ink};">
                   <p style="margin:0 0 12px;">Pr&egrave;s de 40 ans &agrave; relier ce que nous avons appris &agrave; s&eacute;parer&nbsp;:</p>
-                  <p style="margin:0 0 12px;font-family:${CHARTE.serif};font-size:16px;color:${CHARTE.copper};">Nourrir et soigner. Corps et conscience. Science et sagesses.</p>
+                  <p style="margin:0 0 12px;font-family:${CHARTE.serif};font-size:16px;color:${CHARTE.goldInk};">Nourrir et soigner. Corps et conscience. Science et sagesses.</p>
                   <p style="margin:0 0 12px;">Des soins infirmiers et de la recherche clinique &agrave; l&rsquo;Ayurveda, aux plantes m&eacute;dicinales, &agrave; l&rsquo;&eacute;criture et &agrave; la transmission, le m&ecirc;me fil traverse son &oelig;uvre.</p>
                   <p style="margin:0 0 12px;">Douze ann&eacute;es de recherche et d&rsquo;&eacute;criture. Pr&egrave;s de 1&nbsp;200 pages. Une trilogie.</p>
                   <p style="margin:0;">Conf&eacute;renci&egrave;re internationale, autrice &agrave; succ&egrave;s et fondatrice d&rsquo;INSPIRATA Ayurveda.</p>
@@ -242,9 +243,9 @@ export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAd
 
         <!-- Pied -->
         <tr><td style="background:${CHARTE.cream};padding:26px 40px 8px;border-radius:0 0 15px 15px;border:1px solid rgba(41,48,39,0.08);border-top:0;font-family:${CHARTE.sans};font-size:11px;line-height:1.6;color:rgba(41,48,39,0.6);">
-          <div style="font-family:${CHARTE.sans};font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:${CHARTE.copper};padding-bottom:10px;">Nourrir et soigner &middot; Corps et conscience &middot; Science et sagesses</div>
+          <div style="font-family:${CHARTE.sans};font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:${CHARTE.goldInk};padding-bottom:10px;">Nourrir et soigner &middot; Corps et conscience &middot; Science et sagesses</div>
           <div style="margin-bottom:8px;">${esc(opts.postalAddress)}</div>
-          <div style="padding-bottom:18px;"><a href="${esc(opts.unsubscribeUrl)}" style="color:${CHARTE.copper};text-decoration:underline;">Se désabonner</a> · <a href="${PUBLIC_BASE_URL}/politique-de-confidentialite" style="color:${CHARTE.copper};text-decoration:underline;">Politique de confidentialité</a></div>
+          <div style="padding-bottom:18px;"><a href="${esc(opts.unsubscribeUrl)}" style="color:${CHARTE.goldInk};text-decoration:underline;">Se désabonner</a> · <a href="${PUBLIC_BASE_URL}/politique-de-confidentialite" style="color:${CHARTE.goldInk};text-decoration:underline;">Politique de confidentialité</a></div>
         </td></tr>
       </table>
     </td></tr>
