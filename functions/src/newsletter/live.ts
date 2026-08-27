@@ -160,7 +160,19 @@ export function buildMail(step: Step | 'confirm', ev: LiveEvent, firstName?: str
 }
 
 const COVER_URL = `${PUBLIC_BASE_URL}/podcast/live-cover.jpg`;
+const PORTRAIT_URL = `${PUBLIC_BASE_URL}/podcast/krystine.jpg`;
 const SIGNATURE_URL = 'https://storage.googleapis.com/inspirata/Vata/1%20(1).png';
+
+// Les images partent EN PIÈCES INLINE (cid:) : elles s'affichent même quand le
+// client courriel bloque les images distantes. `liveAttachments()` fournit la
+// liste correspondante pour nodemailer.
+export function liveAttachments() {
+  return [
+    { filename: 'couverture.jpg', href: COVER_URL, cid: 'cover' },
+    { filename: 'krystine.jpg', href: PORTRAIT_URL, cid: 'portrait' },
+    { filename: 'signature.png', href: SIGNATURE_URL, cid: 'signature' },
+  ];
+}
 
 export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAddress: string; ev?: LiveEvent }): string {
   const p = (t: string) =>
@@ -191,7 +203,7 @@ export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAd
 
         <!-- Couverture du podcast (carte du moodboard KSL) -->
         <tr><td style="padding:0;border-radius:15px 15px 0 0;overflow:hidden;background:#1c1a17;">
-          <img src="${COVER_URL}" width="600" alt="Au-delà des tendances, le podcast avec Krystine St-Laurent" style="display:block;width:100%;max-width:600px;height:auto;border-radius:15px 15px 0 0;" />
+          <img src="cid:cover" width="600" alt="Au-delà des tendances, le podcast avec Krystine St-Laurent" style="display:block;width:100%;max-width:600px;height:auto;border-radius:15px 15px 0 0;" />
         </td></tr>
 
         <!-- Bandeau vert profond : le rendez-vous -->
@@ -209,8 +221,14 @@ export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAd
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
             ${m.paragraphs.map(p).join('\n')}
             <tr><td style="padding:10px 0 26px;">${btn(m.cta, true)}${m.cta2 ? btn(m.cta2, false) : ''}</td></tr>
+            <tr><td style="padding:6px 0 24px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+                <td width="96" valign="middle" style="padding:0 18px 0 0;"><img src="cid:portrait" width="96" height="96" alt="Krystine St-Laurent" style="display:block;width:96px;height:96px;object-fit:cover;border-radius:50%;" /></td>
+                <td valign="middle" style="font-family:${CHARTE.serif};font-size:19px;line-height:1.4;color:${CHARTE.copper};">Au micro : Krystine St-Laurent, infirmière de formation, autrice et fondatrice d'Inspirata.</td>
+              </tr></table>
+            </td></tr>
             <tr><td style="padding:0 0 6px;font-family:${CHARTE.sans};font-size:16px;line-height:1.7;color:${CHARTE.ink};">${esc(m.closing)}</td></tr>
-            <tr><td style="padding:0 0 8px;"><img src="${SIGNATURE_URL}" width="170" alt="Krystine St-Laurent" style="display:block;width:170px;height:auto;" /></td></tr>
+            <tr><td style="padding:0 0 8px;"><img src="cid:signature" width="170" alt="Krystine St-Laurent" style="display:block;width:170px;height:auto;" /></td></tr>
           </table>
         </td></tr>
 
@@ -263,6 +281,7 @@ export async function sendLiveMail(
       'List-Unsubscribe': `<${unsub}>`,
       'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
     },
+    attachments: liveAttachments(),
   });
 }
 
