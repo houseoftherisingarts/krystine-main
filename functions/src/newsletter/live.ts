@@ -69,18 +69,17 @@ export function fmtTime(d: Date, tz: string = TZ): string {
 }
 
 // Lien « ajouter à mon agenda » (Google Agenda, une heure par défaut).
+// Page maison qui offre tous les agendas (Google, Apple, Outlook, fichier .ics),
+// au lieu d'un lien Google seul. Elle lit l'événement dans l'URL.
 export function calendarUrl(ev: LiveEvent): string {
   const start = ev.startsAt.toDate();
-  const end = new Date(start.getTime() + H);
-  const stamp = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
   const q = new URLSearchParams({
-    action: 'TEMPLATE',
-    text: ev.title,
-    dates: `${stamp(start)}/${stamp(end)}`,
-    details: `En direct sur YouTube : ${ev.youtubeUrl}`,
-    location: ev.youtubeUrl,
+    title: ev.title,
+    start: start.toISOString(),
+    dur: String(H / 60000),
+    url: ev.youtubeUrl,
   });
-  return `https://calendar.google.com/calendar/render?${q.toString()}`;
+  return `${PUBLIC_BASE_URL}/podcast/agenda.html?${q.toString()}`;
 }
 
 // ─── Copie des cinq courriels ────────────────────────────────────────────────
