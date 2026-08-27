@@ -27,7 +27,13 @@ const CHARTE = {
   sans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
 };
 
-const IMAGE_URL = `${PUBLIC_BASE_URL}/foyer/livre-fleurs.webp`;
+const IMAGE_URL = `${PUBLIC_BASE_URL}/foyer/livre-fleurs-mail.jpg`;
+
+// Photo embarquée en pièce inline : visible même quand le client bloque les
+// images distantes (leçon des tests du 26 août).
+export function welcomeAttachments() {
+  return [{ filename: 'livre-fleurs.jpg', href: IMAGE_URL, cid: 'photo' }];
+}
 
 function esc(s: unknown): string {
   return String(s ?? '')
@@ -71,7 +77,7 @@ export function renderWelcomeHtml(opts: { firstName?: string; unsubscribeUrl: st
     <tr><td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:15px;overflow:hidden;">
         <tr><td style="padding:0;">
-          <img src="${IMAGE_URL}" width="600" alt="Un livre ouvert, quelques roses séchées entre les pages" style="display:block;width:100%;max-width:600px;height:auto;border-radius:15px 15px 0 0;" />
+          <img src="cid:photo" width="600" alt="Un livre ouvert, quelques roses séchées entre les pages" style="display:block;width:100%;max-width:600px;height:auto;border-radius:15px 15px 0 0;" />
         </td></tr>
         <tr><td style="padding:40px 40px 8px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
@@ -145,6 +151,7 @@ export const sendWelcomeEmail = onDocumentCreated(
           'List-Unsubscribe': `<${unsub}>`,
           'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
         },
+        attachments: welcomeAttachments(),
       });
     } catch (err) {
       // Envoi raté : on retire le verrou pour qu'une relance manuelle puisse réessayer.
