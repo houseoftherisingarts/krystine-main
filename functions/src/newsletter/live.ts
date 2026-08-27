@@ -95,102 +95,128 @@ export function buildMail(step: Step | 'confirm', ev: LiveEvent, firstName?: str
   switch (step) {
     case 'confirm':
       return {
-        subject: `Votre place pour le podcast en direct du ${jour.replace(/^\S+\s/, '')}`,
-        preheader: `${jour} à ${heure}, sur YouTube. Le lien vous arrivera par courriel.`,
+        subject: `Votre place est réservée pour le direct du ${jour.replace(/^\S+\s/, '')}`,
+        preheader: `${jour} à ${heure}, en direct sur YouTube. Le lien viendra à vous.`,
         paragraphs: [
           salut,
-          `Votre place est réservée pour l'épisode en direct du podcast Au-delà des tendances, ${jour} à ${heure}. Vous n'avez rien à préparer : le jour venu, un courriel vous apportera le lien vers la diffusion sur YouTube, et vous recevrez un premier rappel trois jours avant.`,
-          'Pour être certaine de ne rien manquer, vous pouvez inscrire le rendez-vous à votre agenda dès maintenant.',
+          `Vous y êtes! Votre place est réservée pour le premier épisode en direct d'Au-delà des tendances, ${jour} à ${heure}. Nous allons prendre le temps, ensemble, de revenir à ce que le corps sait déjà et que les tendances nous font oublier.`,
+          'Si vous avez laissé une question en vous inscrivant, elle est bien reçue. Je la garde pour le direct, et j\'y répondrai en ondes, devant vous.',
+          'Vous n\'avez rien à préparer. Le lien vous arrivera par courriel, avec un premier rappel trois jours avant. D\'ici là, vous pouvez inscrire le rendez-vous à votre agenda.',
         ],
         cta: agenda,
-        closing: 'Au plaisir de vous retrouver en direct,',
+        closing: 'Au plaisir de vous retrouver en direct!',
       };
     case 'd3':
       return {
-        subject: 'Dans trois jours, le podcast en direct',
-        preheader: `${jour} à ${heure}. Le lien est déjà prêt.`,
+        subject: 'Dans trois jours, nous ouvrons le direct',
+        preheader: `${jour} à ${heure}. Le lien est prêt, gardez-le près de vous.`,
         paragraphs: [
           salut,
-          `Nous nous retrouvons dans trois jours, ${jour} à ${heure}, pour un épisode en direct du podcast Au-delà des tendances. Le direct se tient sur YouTube et le lien est déjà prêt; vous pouvez le garder sous la main.`,
-          'Si le rendez-vous manque encore à votre agenda, voici de quoi l\'y inscrire.',
+          `Avez-vous remarqué comme le corps sait toujours avant nous quand un rendez-vous approche? Le nôtre est dans trois jours : ${jour} à ${heure}, en direct sur YouTube, pour le premier épisode en direct d'Au-delà des tendances.`,
+          'Le lien est déjà prêt. Gardez-le près de vous, et si le rendez-vous manque encore à votre agenda, voici de quoi l\'y inscrire.',
         ],
         cta: direct,
         cta2: agenda,
-        closing: 'À très bientôt,',
+        closing: 'À très bientôt!',
       };
     case 'veille':
       return {
         subject: `C'est demain, à ${heure}`,
-        preheader: 'Une conversation sans montage, avec vos questions dans le clavardage.',
+        preheader: 'Une conversation sans montage, avec vos questions, en direct.',
         paragraphs: [
           salut,
-          `Le podcast en direct se tient demain, ${jour}, à ${heure}. Vous y trouverez une conversation sans montage, telle qu'elle se vit sur le moment, et vous pourrez poser vos questions dans le clavardage pendant la diffusion.`,
+          `C'est demain! ${jour.charAt(0).toUpperCase() + jour.slice(1)}, à ${heure}, nous nous retrouvons en direct. Pas de montage, pas de version retouchée : une conversation telle qu'elle se vit sur le moment, avec vos questions dans le clavardage et celles que vous m'avez confiées à l'inscription.`,
           'Voici le lien, à garder sous la main pour demain.',
         ],
         cta: direct,
-        closing: 'À demain,',
+        closing: 'À demain!',
       };
     case 'h1':
       return {
         subject: 'Nous commençons dans une heure',
-        preheader: `Le direct s'ouvre à ${heure}.`,
+        preheader: `Le direct s'ouvre à ${heure}. Installez-vous.`,
         paragraphs: [
           salut,
-          `Nous ouvrons le direct dans une heure, à ${heure}. Installez-vous confortablement, avec une tasse de quelque chose de chaud si le cœur vous en dit, et rejoignez-nous sur YouTube.`,
+          `Dans une heure, à ${heure}, nous ouvrons le direct. Prenez le temps de vous installer, respirez un bon coup, et venez me rejoindre sur YouTube. Le corps aime qu'on arrive doucement.`,
         ],
         cta: { label: 'Rejoindre le direct', url: ev.youtubeUrl },
-        closing: 'À tout de suite,',
+        closing: 'À tout de suite!',
       };
     case 'replay':
       return {
-        subject: 'La rediffusion du podcast en direct est en ligne',
-        preheader: 'Elle vous attend aussi longtemps que vous le voulez.',
+        subject: 'La rediffusion du direct est en ligne',
+        preheader: 'Elle vous attend, au rythme qui est le vôtre.',
         paragraphs: [
           salut,
-          `Si vous n'avez pas pu être des nôtres ${jour}, la rediffusion de l'épisode en direct est maintenant en ligne. Elle vous attend aussi longtemps que vous le voulez, et elle sert aussi à réécouter un passage qui vous a parlé.`,
+          `Vous n'avez pas pu être des nôtres ${jour}? La rediffusion du premier épisode en direct est maintenant en ligne. Elle vous attend au rythme qui est le vôtre, pour l'écouter en entier ou pour revenir sur un passage qui vous a parlé.`,
+          'Merci à toutes celles et ceux qui étaient là, et à vous qui arrivez maintenant. C\'est ici que nous connectons!',
         ],
         cta: { label: 'Regarder la rediffusion', url: ev.replayUrl || ev.youtubeUrl },
-        closing: 'Merci d\'avoir été là, de près ou de loin,',
+        closing: 'À la prochaine!',
       };
   }
 }
 
-export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAddress: string }): string {
+const COVER_URL = `${PUBLIC_BASE_URL}/podcast/live-cover.jpg`;
+const SIGNATURE_URL = 'https://storage.googleapis.com/inspirata/Vata/1%20(1).png';
+
+export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAddress: string; ev?: LiveEvent }): string {
   const p = (t: string) =>
-    `<tr><td style="padding:0 0 18px;font-family:${CHARTE.sans};font-size:16px;line-height:1.7;color:${CHARTE.ink};">${esc(t)}</td></tr>`;
+    `<tr><td style="padding:0 0 18px;font-family:${CHARTE.sans};font-size:16px;line-height:1.75;color:${CHARTE.ink};">${esc(t)}</td></tr>`;
   const btn = (c: { label: string; url: string }, primary: boolean) =>
-    `<a href="${esc(c.url)}" style="display:inline-block;margin:0 10px 10px 0;padding:14px 26px;border-radius:999px;font-family:${CHARTE.sans};font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;${primary ? `background:${CHARTE.amber};color:${CHARTE.ink};` : `border:1px solid ${CHARTE.amber};color:${CHARTE.copper};`}">${esc(c.label)}</a>`;
+    `<a href="${esc(c.url)}" style="display:inline-block;margin:0 10px 10px 0;padding:15px 28px;border-radius:999px;font-family:${CHARTE.sans};font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;${primary ? `background:${CHARTE.amber};color:${CHARTE.ink};` : `border:1px solid ${CHARTE.amber};color:${CHARTE.copper};`}">${esc(c.label)}</a>`;
+
+  const ev = opts.ev;
+  const start = ev ? ev.startsAt.toDate() : null;
+  const jour = start ? fmtDay(start) : '';
+  const heureQc = start ? fmtTime(start) : '';
+  const heureFr = start ? new Intl.DateTimeFormat('fr-CA', { hour: 'numeric', minute: '2-digit', timeZone: 'Europe/Paris' }).format(start).replace(':', ' h ') : '';
+  const cell = (label: string, big: string, small?: string) =>
+    `<td valign="top" style="padding:0 24px 0 0;">
+      <div style="font-family:${CHARTE.sans};font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:${CHARTE.amber};padding-bottom:6px;">${esc(label)}</div>
+      <div style="font-family:${CHARTE.serif};font-size:24px;line-height:1.15;color:${CHARTE.cream};">${esc(big)}</div>
+      ${small ? `<div style="font-family:${CHARTE.serif};font-size:17px;line-height:1.3;color:rgba(238,231,219,0.65);">${esc(small)}</div>` : ''}
+    </td>`;
 
   return `<!doctype html>
 <html lang="fr">
 <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>${esc(m.subject)}</title></head>
 <body style="margin:0;padding:0;background:${CHARTE.cream};">
   <div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;font-size:1px;color:transparent;line-height:1px;">${esc(m.preheader)}</div>
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CHARTE.cream};padding:40px 16px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CHARTE.cream};padding:36px 16px;">
     <tr><td align="center">
-      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:${CHARTE.green};border-radius:15px;overflow:hidden;">
-        <tr><td style="height:3px;background:linear-gradient(90deg,transparent,${CHARTE.amber},transparent);font-size:0;line-height:0;">&nbsp;</td></tr>
-        <tr><td style="padding:44px 40px 8px;">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;">
+
+        <!-- Couverture du podcast (carte du moodboard KSL) -->
+        <tr><td style="padding:0;border-radius:15px 15px 0 0;overflow:hidden;background:#1c1a17;">
+          <img src="${COVER_URL}" width="600" alt="Au-delà des tendances, le podcast avec Krystine St-Laurent" style="display:block;width:100%;max-width:600px;height:auto;border-radius:15px 15px 0 0;" />
+        </td></tr>
+
+        <!-- Bandeau vert profond : le rendez-vous -->
+        <tr><td style="background:${CHARTE.green};padding:30px 40px 28px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:0 0 12px;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:${CHARTE.amber};font-weight:600;">Au-delà des tendances &middot; en direct</td></tr>
-            <tr><td style="padding:0 0 22px;font-family:${CHARTE.serif};font-size:34px;line-height:1.1;color:${CHARTE.cream};font-weight:500;">${esc(m.subject)}</td></tr>
-            <tr><td style="padding:0 0 28px;"><div style="height:1px;width:64px;background:${CHARTE.amber};"></div></td></tr>
+            <tr><td style="padding:0 0 18px;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:${CHARTE.amber};font-weight:600;">&#9679;&nbsp; En direct sur YouTube</td></tr>
+            <tr><td style="padding:0 0 20px;font-family:${CHARTE.serif};font-size:34px;line-height:1.08;color:${CHARTE.cream};font-weight:500;">${esc(m.subject)}</td></tr>
+            <tr><td style="padding:0 0 22px;"><div style="height:1px;width:64px;background:${CHARTE.amber};"></div></td></tr>
+            ${start ? `<tr><td><table role="presentation" cellpadding="0" cellspacing="0"><tr>${cell('Date', jour)}${cell('Heure', `${heureQc} · Québec`, `${heureFr} · France`)}</tr></table></td></tr>` : ''}
           </table>
         </td></tr>
-        <tr><td style="padding:0;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;">
-            <tr><td style="padding:36px 40px 12px;">
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-                ${m.paragraphs.map(p).join('\n')}
-                <tr><td style="padding:8px 0 22px;">${btn(m.cta, true)}${m.cta2 ? btn(m.cta2, false) : ''}</td></tr>
-                <tr><td style="padding:0;font-family:${CHARTE.sans};font-size:16px;line-height:1.7;color:${CHARTE.ink};">${esc(m.closing)}<br /><span style="font-family:${CHARTE.serif};font-size:22px;color:${CHARTE.copper};">Krystine St-Laurent</span></td></tr>
-              </table>
-            </td></tr>
-            <tr><td style="padding:24px 40px 32px;border-top:1px solid rgba(41,48,39,0.08);font-family:${CHARTE.sans};font-size:11px;line-height:1.6;color:rgba(41,48,39,0.55);">
-              <div style="margin-bottom:8px;">${esc(opts.postalAddress)}</div>
-              <div><a href="${esc(opts.unsubscribeUrl)}" style="color:${CHARTE.copper};text-decoration:underline;">Se désabonner</a> · <a href="${PUBLIC_BASE_URL}/politique-de-confidentialite" style="color:${CHARTE.copper};text-decoration:underline;">Politique de confidentialité</a></div>
-            </td></tr>
+
+        <!-- Corps ivoire -->
+        <tr><td style="background:#ffffff;padding:40px 40px 14px;border-left:1px solid rgba(41,48,39,0.08);border-right:1px solid rgba(41,48,39,0.08);">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${m.paragraphs.map(p).join('\n')}
+            <tr><td style="padding:10px 0 26px;">${btn(m.cta, true)}${m.cta2 ? btn(m.cta2, false) : ''}</td></tr>
+            <tr><td style="padding:0 0 6px;font-family:${CHARTE.sans};font-size:16px;line-height:1.7;color:${CHARTE.ink};">${esc(m.closing)}</td></tr>
+            <tr><td style="padding:0 0 8px;"><img src="${SIGNATURE_URL}" width="170" alt="Krystine St-Laurent" style="display:block;width:170px;height:auto;" /></td></tr>
           </table>
+        </td></tr>
+
+        <!-- Pied -->
+        <tr><td style="background:${CHARTE.cream};padding:26px 40px 8px;border-radius:0 0 15px 15px;border:1px solid rgba(41,48,39,0.08);border-top:0;font-family:${CHARTE.sans};font-size:11px;line-height:1.6;color:rgba(41,48,39,0.6);">
+          <div style="font-family:${CHARTE.sans};font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:${CHARTE.copper};padding-bottom:10px;">Nourrir et soigner &middot; Corps et conscience &middot; Science et sagesses</div>
+          <div style="margin-bottom:8px;">${esc(opts.postalAddress)}</div>
+          <div style="padding-bottom:18px;"><a href="${esc(opts.unsubscribeUrl)}" style="color:${CHARTE.copper};text-decoration:underline;">Se désabonner</a> · <a href="${PUBLIC_BASE_URL}/politique-de-confidentialite" style="color:${CHARTE.copper};text-decoration:underline;">Politique de confidentialité</a></div>
         </td></tr>
       </table>
     </td></tr>
@@ -229,7 +255,7 @@ export async function sendLiveMail(
     from: fromAddr(),
     to: sub.email,
     subject: m.subject,
-    html: renderLiveHtml(m, { unsubscribeUrl: unsub, postalAddress }),
+    html: renderLiveHtml(m, { unsubscribeUrl: unsub, postalAddress, ev }),
     text: renderLiveText(m, { unsubscribeUrl: unsub, postalAddress }),
     headers: {
       'List-Unsubscribe': `<${unsub}>`,
