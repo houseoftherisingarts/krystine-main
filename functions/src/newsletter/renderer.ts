@@ -27,6 +27,7 @@ export const CHARTE = {
 
 const COVER_URL = `${PUBLIC_BASE_URL}/podcast/live-cover.jpg`;
 const SIGNATURE_URL = 'https://storage.googleapis.com/inspirata/Vata/1%20(1).png';
+const PORTRAIT_URL = `${PUBLIC_BASE_URL}/podcast/krystine.jpg`;
 
 // Pièces inline : visibles même quand le client bloque les images distantes.
 export function newsletterAttachments() {
@@ -38,7 +39,7 @@ export function newsletterAttachments() {
 
 // Pour l'aperçu dans l'admin (iframe), les cid: deviennent des URL publiques.
 export function inlineForPreview(html: string): string {
-  return html.replace(/cid:cover/g, COVER_URL).replace(/cid:signature/g, SIGNATURE_URL);
+  return html.replace(/cid:cover/g, COVER_URL).replace(/cid:signature/g, SIGNATURE_URL).replace(/cid:portrait/g, PORTRAIT_URL);
 }
 
 export interface RenderEmailOptions {
