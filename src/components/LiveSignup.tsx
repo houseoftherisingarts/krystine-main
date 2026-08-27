@@ -55,12 +55,14 @@ const LiveSignup: React.FC = () => {
   const t = fr ? {
     live: 'En direct sur YouTube',
     replay: 'Rediffusion',
-    title: isPast ? 'La rediffusion est en ligne' : 'Le podcast, en direct',
+    title: isPast ? 'La rediffusion est en ligne' : 'Le podcast en direct',
+    sub: 'Spécial ouverture de saison',
     body: isPast
       ? `L'épisode en direct du ${jour} reste à votre disposition aussi longtemps que vous le voulez.`
-      : `Le ${jour} à ${heureQc} (heure du Québec), Krystine ouvre un épisode en direct où vous pourrez poser vos questions dans le clavardage. Laissez votre adresse et, si vous le souhaitez, votre question : vous recevrez le lien, un rappel la veille et la rediffusion.`,
+      : 'Nous vous retrouvons en direct pour vous présenter en avant-première les nouveautés de la saison et répondre à vos questions dans le clavardage.',
+    body2: isPast ? '' : 'En vous inscrivant, vous pourrez poser votre question à Krystine et vous recevrez le lien, un rappel avant le direct ainsi que la rediffusion.',
     qc: `${heureQc} · Québec`, fra: `${heureFr} · France`,
-    watch: 'Regarder la rediffusion', cta: 'Réserver ma place', placeholder: 'Votre courriel',
+    watch: 'Regarder la rediffusion', cta: 'M\'inscrire et poser ma question', placeholder: 'Votre courriel',
     question: 'Votre question pour Krystine (facultatif)', qHint: 'Les questions reçues à l\'inscription seront répondues pendant le direct.',
     okTitle: 'Votre place est réservée',
     okBody: `Un courriel de confirmation arrive à l'instant. Vous recevrez un rappel trois jours avant, la veille et une heure avant le direct du ${jour}, puis la rediffusion.`,
@@ -68,11 +70,13 @@ const LiveSignup: React.FC = () => {
     live: 'Live on YouTube',
     replay: 'Replay',
     title: isPast ? 'The replay is online' : 'The podcast, live',
+    sub: 'Season-opening special',
     body: isPast
       ? `The live episode of ${jour} stays available for as long as you like.`
-      : `On ${jour} at ${heureQc} (Québec time), Krystine opens a live episode where you can ask your questions in the chat. Leave your address and, if you wish, your question: you will receive the link, a reminder the day before and the replay.`,
+      : 'We meet you live to give you a first look at what the new season holds and to answer your questions in the chat.',
+    body2: isPast ? '' : 'By signing up, you can ask Krystine your question and you will receive the link, a reminder before the live and the replay.',
     qc: `${heureQc} · Québec`, fra: `${heureFr} · France`,
-    watch: 'Watch the replay', cta: 'Save my seat', placeholder: 'Your email',
+    watch: 'Watch the replay', cta: 'Sign up and ask my question', placeholder: 'Your email',
     question: 'Your question for Krystine (optional)', qHint: 'Questions received at sign-up will be answered during the live.',
     okTitle: 'Your seat is reserved',
     okBody: `A confirmation email is on its way. You will receive a reminder three days before, the day before and one hour before the live of ${jour}, then the replay.`,
@@ -114,6 +118,11 @@ const LiveSignup: React.FC = () => {
             <motion.h2 {...fade(0.15)} className="v2-serif mt-8 font-light leading-[1] text-[clamp(3rem,7vw,5.6rem)]">
               {t.title}
             </motion.h2>
+            {!isPast && (
+              <motion.p {...fade(0.2)} className="mt-4 text-[clamp(0.8rem,1.2vw,1rem)] font-semibold uppercase tracking-[0.3em] text-[#BA7B39]">
+                {t.sub}
+              </motion.p>
+            )}
             <motion.p {...fade(0.25)} className="mt-7 text-[clamp(1.1rem,1.6vw,1.35rem)] leading-[1.7] text-[#EEE7DB]/80 max-w-[46ch]">
               {t.body}
             </motion.p>
