@@ -198,7 +198,7 @@ export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAd
             <tr><td style="padding:0 0 18px;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:${CHARTE.amber};font-weight:600;">&#9679;&nbsp; En direct sur YouTube</td></tr>
             <tr><td style="padding:0 0 20px;font-family:${CHARTE.serif};font-size:34px;line-height:1.08;color:${CHARTE.cream};font-weight:500;">${esc(m.subject)}</td></tr>
             <tr><td style="padding:0 0 22px;"><div style="height:1px;width:64px;background:${CHARTE.amber};"></div></td></tr>
-            ${start ? `<tr><td><table role="presentation" cellpadding="0" cellspacing="0"><tr>${cell('Date', jour)}${cell('Heure', `${heureQc} · Québec`, `${heureFr} · France`)}</tr></table></td></tr>` : ''}
+            ${start ? `<tr><td><table role="presentation" cellpadding="0" cellspacing="0"><tr>${cell('Date', jour.charAt(0).toUpperCase() + jour.slice(1))}${cell('Heure', `${heureQc} · Québec`, `${heureFr} · France`)}</tr></table></td></tr>` : ''}
           </table>
         </td></tr>
 
