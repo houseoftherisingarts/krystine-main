@@ -55,6 +55,7 @@ const SubscribersPanel: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
   const [source, setSource] = useState<string>(ALL_SOURCES);
+  const [tag, setTag] = useState<string>('');
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState<BulkImportResult | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
@@ -86,7 +87,14 @@ const SubscribersPanel: React.FC = () => {
     return { entries, noSource };
   }, [subs]);
 
+  const tagOptions = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const s of subs) for (const t of s.tags || []) m.set(t, (m.get(t) || 0) + 1);
+    return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0], 'fr'));
+  }, [subs]);
+
   const filtered = subs.filter(s => {
+    if (tag && !(s.tags || []).includes(tag)) return false;
     if (source !== ALL_SOURCES) {
       const k = s.source?.trim() || '';
       if (source === NO_SOURCE ? !!k : k !== source) return false;
@@ -113,7 +121,7 @@ const SubscribersPanel: React.FC = () => {
       source: s.source || '',
       subscribedAt: s.subscribedAt?.toDate().toISOString() || '',
     }));
-    const slug = source === ALL_SOURCES ? 'tous' : source === NO_SOURCE ? 'sans-source' : source;
+    const slug = [source === ALL_SOURCES ? 'tous' : source === NO_SOURCE ? 'sans-source' : source, tag].filter(Boolean).join('_');
     downloadCsv(`infolettre_${slug}_${new Date().toISOString().slice(0, 10)}.csv`, rows);
   };
 
@@ -158,6 +166,15 @@ const SubscribersPanel: React.FC = () => {
           {sourceOptions.noSource > 0 && (
             <option value={NO_SOURCE}>Sans source ({sourceOptions.noSource})</option>
           )}
+        </select>
+        <select
+          value={tag}
+          onChange={e => setTag(e.target.value)}
+          title="Filtrer par liste (étiquette)"
+          className="px-4 py-2 rounded-full border border-[#2a2015]/10 dark:border-white/10 bg-white dark:bg-[#2a2015]/60 text-sm text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]"
+        >
+          <option value="">Toutes les listes</option>
+          {tagOptions.map(([t, n]) => <option key={t} value={t}>{t} ({n})</option>)}
         </select>
         <input
           type="search"

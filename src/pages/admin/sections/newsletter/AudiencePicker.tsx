@@ -1,0 +1,105 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { getNewsletterSubscribers, type NewsletterAudience, type NewsletterSubscriber } from '../../../../firebase/firestore';
+import { Label } from '../../primitives';
+
+// Qui reçoit l'infolettre : tout le monde, une ou plusieurs listes
+// (étiquettes), ou des personnes choisies une à une. Le compte se calcule
+// ici, avec la même règle que le serveur (actifs, une adresse = un envoi).
+
+export function countRecipients(subs: NewsletterSubscriber[], a: NewsletterAudience): number {
+  const norm = (e: string) => e.trim().toLowerCase();
+  const wanted = new Set((a.emails || []).map(norm));
+  const seen = new Set<string>();
+  for (const s of subs) {
+    if (s.status === 'unsubscribed') continue;
+    const ok = a.mode === 'all' || (a.mode === 'tags' ? (s.tags || []).some(t => (a.tags || []).includes(t)) : wanted.has(norm(s.email)));
+    if (ok) seen.add(norm(s.email));
+  }
+  return seen.size;
+}
+
+const chip = (on: boolean) =>
+  `px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest border transition-colors ${on ? 'bg-[#2a2015] text-white border-[#2a2015] dark:bg-[#bb9a5e] dark:text-[#2a2015]' : 'bg-white dark:bg-white/5 text-[#2a2015]/60 dark:text-white/60 border-[#2a2015]/10 dark:border-white/10 hover:text-[#7d6330]'}`;
+
+const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: NewsletterAudience) => void; disabled?: boolean }> = ({ value, onChange, disabled }) => {
+  const [subs, setSubs] = useState<NewsletterSubscriber[]>([]);
+  const [q, setQ] = useState('');
+  useEffect(() => { getNewsletterSubscribers().then(setSubs); }, []);
+
+  const tags = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const s of subs) if (s.status !== 'unsubscribed') for (const t of s.tags || []) m.set(t, (m.get(t) || 0) + 1);
+    return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0], 'fr'));
+  }, [subs]);
+
+  const people = useMemo(() => {
+    const f = q.trim().toLowerCase();
+    const uniq = subs.filter((s, i, a) => s.status !== 'unsubscribed' && a.findIndex(o => o.email === s.email) === i);
+    return (f ? uniq.filter(s => s.email.toLowerCase().includes(f) || `${s.firstName || ''} ${s.lastName || ''}`.toLowerCase().includes(f)) : uniq).slice(0, 40);
+  }, [subs, q]);
+
+  const total = countRecipients(subs, value);
+  const toggleTag = (t: string) => {
+    const cur = value.tags || [];
+    onChange({ ...value, mode: 'tags', tags: cur.includes(t) ? cur.filter(x => x !== t) : [...cur, t] });
+  };
+  const toggleEmail = (e: string) => {
+    const cur = value.emails || [];
+    onChange({ ...value, mode: 'emails', emails: cur.includes(e) ? cur.filter(x => x !== e) : [...cur, e] });
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-baseline justify-between">
+        <Label>Destinataires</Label>
+        <span className="font-serif text-2xl text-[#2a2015] dark:text-white">{total} <span className="text-xs text-[#7d6330]">personne{total > 1 ? 's' : ''}</span></span>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <button disabled={disabled} className={chip(value.mode === 'all')} onClick={() => onChange({ mode: 'all' })}>Tout le monde</button>
+        <button disabled={disabled} className={chip(value.mode === 'tags')} onClick={() => onChange({ ...value, mode: 'tags', tags: value.tags || [] })}>Des listes</button>
+        <button disabled={disabled} className={chip(value.mode === 'emails')} onClick={() => onChange({ ...value, mode: 'emails', emails: value.emails || [] })}>Des personnes</button>
+      </div>
+
+      {value.mode === 'tags' && (
+        <div className="flex flex-wrap gap-1.5 max-h-48 overflow-auto">
+          {tags.length === 0 && <p className="text-xs text-[#2a2015]/50 dark:text-white/50">Aucune liste pour le moment.</p>}
+          {tags.map(([t, n]) => (
+            <button key={t} disabled={disabled} onClick={() => toggleTag(t)}
+              className={`px-2.5 py-1 rounded-full text-[11px] border transition-colors ${(value.tags || []).includes(t) ? 'bg-[#bb9a5e] text-[#2a2015] border-[#bb9a5e]' : 'bg-[#f6f3ee] dark:bg-white/5 text-[#2a2015]/70 dark:text-white/70 border-transparent hover:border-[#bb9a5e]'}`}>
+              {t} <span className="opacity-60">· {n}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {value.mode === 'emails' && (
+        <div className="space-y-2">
+          {(value.emails || []).length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {(value.emails || []).map(e => (
+                <button key={e} disabled={disabled} onClick={() => toggleEmail(e)} className="px-2.5 py-1 rounded-full text-[11px] bg-[#bb9a5e] text-[#2a2015]" title="Retirer">{e} ×</button>
+              ))}
+            </div>
+          )}
+          <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Chercher une personne…" disabled={disabled}
+            className="w-full px-3 py-2 rounded-xl border border-[#2a2015]/10 dark:border-white/10 bg-[#f6f3ee] dark:bg-white/5 text-sm outline-none focus:border-[#bb9a5e]" />
+          <ul className="max-h-48 overflow-auto divide-y divide-[#2a2015]/5 dark:divide-white/5 text-xs">
+            {people.map(s => {
+              const on = (value.emails || []).includes(s.email);
+              return (
+                <li key={s.email}>
+                  <button disabled={disabled} onClick={() => toggleEmail(s.email)} className={`w-full text-left px-2 py-1.5 flex justify-between gap-2 hover:bg-[#bb9a5e]/10 ${on ? 'text-[#7d6330]' : 'text-[#2a2015]/80 dark:text-white/80'}`}>
+                    <span className="truncate">{[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'} · {s.email}</span>
+                    {on && <i className="fa-solid fa-check shrink-0" />}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AudiencePicker;

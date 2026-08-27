@@ -267,6 +267,13 @@ export interface NewsletterStats {
   unsubscribes?: number;
 }
 
+// Qui reçoit : tout le monde, des listes (étiquettes) ou des personnes choisies.
+export interface NewsletterAudience {
+  mode: 'all' | 'tags' | 'emails';
+  tags?: string[];
+  emails?: string[];
+}
+
 export interface NewsletterDoc {
   id?: string;
   title: string;           // internal label for Krystine
@@ -275,8 +282,9 @@ export interface NewsletterDoc {
   fromName?: string;       // e.g. "Krystine St-Laurent"
   blocks: NewsletterBlock[];
   status: NewsletterStatus;
-  segmentTag?: string | null;  // null → send to all active subscribers
-  scheduledFor?: Timestamp;
+  segmentTag?: string | null;  // ancien champ, lu pour compatibilité
+  audience?: NewsletterAudience | null;
+  scheduledFor?: Timestamp | null;
   sentAt?: Timestamp;
   stats?: NewsletterStats;
   createdBy?: string;
