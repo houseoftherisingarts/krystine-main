@@ -19,8 +19,9 @@ function fmtDay(d: Date, lang: 'FR' | 'EN') {
   return new Intl.DateTimeFormat(lang === 'FR' ? 'fr-CA' : 'en-CA', { weekday: 'long', day: 'numeric', month: 'long', timeZone: TZ }).format(d);
 }
 function fmtTime(d: Date, lang: 'FR' | 'EN', tz: string) {
-  const s = new Intl.DateTimeFormat(lang === 'FR' ? 'fr-CA' : 'en-CA', { hour: 'numeric', minute: '2-digit', timeZone: tz }).format(d);
-  return lang === 'FR' ? s.replace(':00', ' h').replace(':', ' h ') : s;
+  const raw = new Intl.DateTimeFormat(lang === 'FR' ? 'fr-CA' : 'en-CA', { hour: 'numeric', minute: '2-digit', timeZone: tz }).format(d);
+  const s = raw.replace(/[\u202f\u00a0]/g, ' ');
+  return lang === 'FR' ? s.replace(/ h 00\b/, ' h').replace(':00', ' h').replace(':', ' h ') : s.replace(':00', '');
 }
 
 const YouTubeMark: React.FC<{ className?: string }> = ({ className }) => (
@@ -126,6 +127,11 @@ const LiveSignup: React.FC = () => {
             <motion.p {...fade(0.25)} className="mt-7 text-[clamp(1.1rem,1.6vw,1.35rem)] leading-[1.7] text-[#EEE7DB]/80 max-w-[46ch]">
               {t.body}
             </motion.p>
+            {t.body2 && (
+              <motion.p {...fade(0.28)} className="mt-4 text-[clamp(1rem,1.4vw,1.2rem)] leading-[1.7] text-[#EEE7DB]/65 max-w-[46ch]">
+                {t.body2}
+              </motion.p>
+            )}
             <motion.div {...fade(0.3)} className="mt-9 flex flex-wrap gap-x-10 gap-y-4">
               <div>
                 <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#BA7B39]">{fr ? 'Date' : 'Date'}</p>
