@@ -93,20 +93,20 @@ const LiveSignup: React.FC = () => {
   return (
     <section className="relative w-full px-[clamp(1rem,3vw,3rem)] pb-[clamp(3rem,7vh,5rem)]">
       <motion.div
-        className="relative w-full overflow-hidden rounded-[15px] bg-[#28352F] text-[#EEE7DB] shadow-[0_28px_70px_rgba(41,48,39,0.32)]"
+        className="relative w-full overflow-hidden rounded-[15px] bg-[#161311] text-[#EEE7DB] shadow-[0_28px_70px_rgba(20,16,12,0.45)]"
         initial={reduce ? false : { opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-10% 0px' }}
         transition={{ duration: 1.1, ease }}
       >
         {/* Fil lumineux */}
-        <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#BA7B39] to-transparent" />
-        <div aria-hidden className="pointer-events-none absolute -right-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-[#BA7B39]/15 blur-3xl" />
-        <div aria-hidden className="pointer-events-none absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-[#8B4A2F]/12 blur-3xl" />
+        <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#c8a86a] to-transparent" />
+        <div aria-hidden className="pointer-events-none absolute -right-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-[#c8a86a]/15 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-[#BA7B39]/10 blur-3xl" />
 
         <div className="grid gap-12 px-[clamp(1.5rem,6vw,6rem)] py-[clamp(3.5rem,9vh,6.5rem)] lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
           <div>
-            <motion.div {...fade(0.05)} className="inline-flex items-center gap-4 rounded-full border border-[#BA7B39]/45 bg-[#BA7B39]/10 px-6 py-3">
+            <motion.div {...fade(0.05)} className="inline-flex items-center gap-4 rounded-full border border-[#c8a86a]/45 bg-[#c8a86a]/10 px-6 py-3">
               <span className="relative flex h-3 w-3">
                 {!isPast && !reduce && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#BA7B39] opacity-70" />}
                 <span className="relative inline-flex h-3 w-3 rounded-full bg-[#BA7B39]" />
@@ -145,7 +145,7 @@ const LiveSignup: React.FC = () => {
             </motion.div>
           </div>
 
-          <motion.div {...fade(0.35)} className="rounded-[15px] border border-[#EEE7DB]/12 bg-[#293027]/60 p-[clamp(1.5rem,3.5vw,3rem)] backdrop-blur-sm">
+          <motion.div {...fade(0.35)} className="rounded-[15px] border border-[#EEE7DB]/12 bg-[#211c18]/60 p-[clamp(1.5rem,3.5vw,3rem)] backdrop-blur-sm">
             {isPast ? (
               <a
                 href={ev.replayUrl || ev.youtubeUrl}

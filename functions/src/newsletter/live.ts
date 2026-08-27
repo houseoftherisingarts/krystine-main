@@ -44,7 +44,8 @@ const TZ = 'America/Toronto';
 const CHARTE = {
   cream: '#EEE7DB',
   ink: '#293027',
-  green: '#28352F',
+  night: '#161311',
+  gold: '#c8a86a',
   amber: '#BA7B39',
   copper: '#8B4A2F',
   serif: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
@@ -194,7 +195,7 @@ export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAd
         </td></tr>
 
         <!-- Bandeau vert profond : le rendez-vous -->
-        <tr><td style="background:${CHARTE.green};padding:30px 40px 28px;">
+        <tr><td style="background:${CHARTE.night};padding:30px 40px 28px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
             <tr><td style="padding:0 0 18px;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:${CHARTE.amber};font-weight:600;">&#9679;&nbsp; En direct sur YouTube</td></tr>
             <tr><td style="padding:0 0 20px;font-family:${CHARTE.serif};font-size:34px;line-height:1.08;color:${CHARTE.cream};font-weight:500;">${esc(m.subject)}</td></tr>
