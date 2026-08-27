@@ -62,8 +62,9 @@ function esc(s: unknown): string {
 export function fmtDay(d: Date): string {
   return new Intl.DateTimeFormat('fr-CA', { weekday: 'long', day: 'numeric', month: 'long', timeZone: TZ }).format(d);
 }
-export function fmtTime(d: Date): string {
-  return new Intl.DateTimeFormat('fr-CA', { hour: 'numeric', minute: '2-digit', timeZone: TZ }).format(d).replace(':', ' h ');
+export function fmtTime(d: Date, tz: string = TZ): string {
+  const s = new Intl.DateTimeFormat('fr-CA', { hour: 'numeric', minute: '2-digit', timeZone: tz }).format(d).replace(/[\u202f\u00a0]/g, ' ');
+  return s.replace(/ h 00\b/, ' h').replace(':00', ' h').replace(':', ' h ');
 }
 
 // Lien « ajouter à mon agenda » (Google Agenda, une heure par défaut).
@@ -170,7 +171,7 @@ export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAd
   const start = ev ? ev.startsAt.toDate() : null;
   const jour = start ? fmtDay(start) : '';
   const heureQc = start ? fmtTime(start) : '';
-  const heureFr = start ? new Intl.DateTimeFormat('fr-CA', { hour: 'numeric', minute: '2-digit', timeZone: 'Europe/Paris' }).format(start).replace(':', ' h ') : '';
+  const heureFr = start ? fmtTime(start, 'Europe/Paris') : '';
   const cell = (label: string, big: string, small?: string) =>
     `<td valign="top" style="padding:0 24px 0 0;">
       <div style="font-family:${CHARTE.sans};font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:${CHARTE.amber};padding-bottom:6px;">${esc(label)}</div>
