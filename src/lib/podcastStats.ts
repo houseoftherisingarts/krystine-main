@@ -39,6 +39,7 @@ export function trackListenStart(episodeId: string, episodeTitle: string): void 
 }
 
 let beat: ReturnType<typeof setInterval> | null = null;
+let unloadHooked = false;
 
 /** Battement de présence tant que la lecture roule. */
 export function startPresence(episodeId: string, episodeTitle: string): void {
@@ -52,6 +53,12 @@ export function startPresence(episodeId: string, episodeTitle: string): void {
     }).catch(() => {});
   write();
   beat = setInterval(write, HEARTBEAT_MS);
+  if (!unloadHooked) {
+    unloadHooked = true;
+    // L'onglet qui se ferme en pleine écoute libère sa place sans attendre
+    // les 75 s de la fenêtre de présence.
+    window.addEventListener('pagehide', stopPresence);
+  }
 }
 
 function stopPresenceTimer(): void {

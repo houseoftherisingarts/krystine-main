@@ -5,6 +5,7 @@ import {
 } from '@phosphor-icons/react';
 import NewsletterSignup from '../../components/NewsletterSignup';
 import LiveSignup from '../../components/LiveSignup';
+import { trackListenStart, startPresence, stopPresence } from '../../lib/podcastStats';
 
 /**
  * Podcast « Au-delà des tendances » — branding V2 (magazine crème), même
@@ -33,6 +34,8 @@ type Episode = {
   duration: string;
   description: string;
   audio: string;
+  /** Vignette propre à l'épisode (itunes:image de l'item), sinon la pochette. */
+  image: string;
 };
 
 async function fetchFeedXml(): Promise<string> {
@@ -71,6 +74,7 @@ function parseEpisodes(xml: string): { cover: string; episodes: Episode[] } {
       duration: it.getElementsByTagName('itunes:duration')[0]?.textContent?.trim() || '',
       description: desc,
       audio: it.querySelector('enclosure')?.getAttribute('url') || '',
+      image: it.getElementsByTagName('itunes:image')[0]?.getAttribute('href') || cover,
     };
   });
   return { cover, episodes };
@@ -206,11 +210,37 @@ export default function PodcastV2() {
       {status === 'ready' && current && (
         <section className="sticky top-[64px] z-40 bg-[#efe6d7]/95 backdrop-blur-sm border-y border-[#1c1712]/12 py-6">
           <div className="mx-auto w-full max-w-[1180px] px-[clamp(1.5rem,5vw,5.5rem)]">
-            <p className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-2">À l’écoute</p>
-            <h2 className="v2-serif font-light text-[#1c1712] text-xl md:text-2xl mb-4 leading-snug">{current.title}</h2>
-            <audio key={current.id} controls preload="none" className="w-full max-w-[760px]">
-              <source src={current.audio} type="audio/mpeg" />
-            </audio>
+            <div className="flex items-start gap-4">
+              {current.image && (
+                <img
+                  src={current.image}
+                  alt=""
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                  className="hidden sm:block w-20 h-20 rounded-[10px] object-cover shrink-0 shadow-[0_10px_24px_rgba(28,23,18,0.25)]"
+                />
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-2">À l’écoute</p>
+                <h2 className="v2-serif font-light text-[#1c1712] text-xl md:text-2xl mb-4 leading-snug">{current.title}</h2>
+                <audio
+                  key={current.id}
+                  controls
+                  preload="none"
+                  className="w-full max-w-[760px]"
+                  onPlay={e => {
+                    // Première lecture de cet épisode dans ce rendu : trace permanente.
+                    const el = e.currentTarget;
+                    if (!el.dataset.traced) { el.dataset.traced = '1'; trackListenStart(current.id, current.title); }
+                    startPresence(current.id, current.title);
+                  }}
+                  onPause={stopPresence}
+                  onEnded={stopPresence}
+                >
+                  <source src={current.audio} type="audio/mpeg" />
+                </audio>
+              </div>
+            </div>
           </div>
         </section>
       )}
@@ -259,9 +289,18 @@ export default function PodcastV2() {
                     className={`group w-full text-left border-t border-[#1c1712]/12 last:border-b py-7 transition-colors duration-300 ${active ? 'bg-[#efe6d7]' : 'hover:bg-[#efe6d7]/50'}`}
                   >
                     <div className="flex items-start gap-5 px-1">
-                      <span className={`grid place-items-center w-11 h-11 shrink-0 rounded-full transition-colors duration-300 ${active ? 'bg-[#9c7a44] text-[#faf6ee]' : 'border border-[#9c7a44]/40 text-[#7d6330] group-hover:bg-[#9c7a44] group-hover:text-[#faf6ee]'}`}>
-                        <Play size={15} weight="fill" className="ml-0.5" />
-                      </span>
+                      {ep.image ? (
+                        <span className="relative w-14 h-14 shrink-0 overflow-hidden rounded-[10px]">
+                          <img src={ep.image} alt="" referrerPolicy="no-referrer" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                          <span className={`absolute inset-0 grid place-items-center transition-colors duration-300 ${active ? 'bg-[#1c1712]/45 text-[#faf6ee]' : 'bg-[#1c1712]/0 text-transparent group-hover:bg-[#1c1712]/45 group-hover:text-[#faf6ee]'}`}>
+                            <Play size={15} weight="fill" className="ml-0.5" />
+                          </span>
+                        </span>
+                      ) : (
+                        <span className={`grid place-items-center w-11 h-11 shrink-0 rounded-full transition-colors duration-300 ${active ? 'bg-[#9c7a44] text-[#faf6ee]' : 'border border-[#9c7a44]/40 text-[#7d6330] group-hover:bg-[#9c7a44] group-hover:text-[#faf6ee]'}`}>
+                          <Play size={15} weight="fill" className="ml-0.5" />
+                        </span>
+                      )}
                       <div className="min-w-0 flex-1">
                         <div className="flex items-baseline gap-3">
                           <span className="v2-serif text-[#7d6330] tabular-nums text-sm shrink-0">{String(episodes.length - i).padStart(2, '0')}</span>

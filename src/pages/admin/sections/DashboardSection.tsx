@@ -5,6 +5,7 @@ import {
   type EventDoc, type BlogPost, type BookingRequest, type NewsletterSubscriber, type DoshaResult,
 } from '../../../firebase/firestore';
 import { useEditMode } from '../../../contexts/EditModeContext';
+import { subscribeLiveListeners, subscribeListenTotals, type PresenceRow } from '../../../lib/podcastStats';
 import { Card } from '../primitives';
 
 interface Stat { label: string; value: number; icon: string; accent: string; hint?: string; }
@@ -17,6 +18,8 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
   const [bookings, setBookings] = useState<BookingRequest[]>([]);
   const [subs, setSubs] = useState<NewsletterSubscriber[]>([]);
   const [dosha, setDosha] = useState<DoshaResult[]>([]);
+  const [enDirect, setEnDirect] = useState<PresenceRow[]>([]);
+  const [ecoutes, setEcoutes] = useState<{ total: number; parEpisode: { episodeId: string; episodeTitle: string; n: number }[] }>({ total: 0, parEpisode: [] });
 
   // Flip edit mode on, then navigate to /accueil via SPA. Using
   // useNavigate (rather than a plain <a href>) keeps the auth context
@@ -34,6 +37,15 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
     getBookingRequests().then(setBookings).catch(() => {});
     getNewsletterSubscribers().then(setSubs).catch(() => {});
     getDoshaResults().then(setDosha).catch(() => {});
+  }, []);
+
+  // Écoutes du podcast : présence en direct + trace permanente.
+  useEffect(() => {
+    const a = subscribeLiveListeners(setEnDirect);
+    const b = subscribeListenTotals(setEcoutes);
+    // La fenêtre de 75 s se réévalue même sans nouvel événement Firestore.
+    const t = setInterval(() => setEnDirect(rows => [...rows.filter(r => Date.now() - r.lastSeenMs < 75_000)]), 20_000);
+    return () => { a(); b(); clearInterval(t); };
   }, []);
 
   const upcoming = events.filter(e => new Date(e.date) >= new Date()).length;
@@ -91,6 +103,37 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
           </Card>
         ))}
       </div>
+
+      {/* Écoutes du podcast sur la page */}
+      <Card className="p-6">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <div className="flex items-center gap-3">
+            <span className="relative flex h-3 w-3">
+              {enDirect.length > 0 && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#BC4A3C] opacity-70" />}
+              <span className={`relative inline-flex h-3 w-3 rounded-full ${enDirect.length > 0 ? 'bg-[#BC4A3C]' : 'bg-[#2a2015]/20 dark:bg-white/20'}`} />
+            </span>
+            <h3 className="text-sm font-bold uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60">Podcast sur la page</h3>
+          </div>
+          <p className="text-sm text-[#2a2015] dark:text-white">
+            <span className="font-serif text-2xl">{enDirect.length}</span>
+            <span className="ml-2 text-[#2a2015]/50 dark:text-white/50">{enDirect.length === 1 ? 'personne écoute en ce moment' : 'personnes écoutent en ce moment'}</span>
+          </p>
+          <p className="text-sm text-[#2a2015] dark:text-white">
+            <span className="font-serif text-2xl">{ecoutes.total}</span>
+            <span className="ml-2 text-[#2a2015]/50 dark:text-white/50">écoutes depuis le début</span>
+          </p>
+        </div>
+        {ecoutes.parEpisode.length > 0 && (
+          <ul className="mt-5 space-y-2">
+            {ecoutes.parEpisode.slice(0, 5).map(e => (
+              <li key={e.episodeId} className="flex items-center justify-between gap-4 text-sm">
+                <span className="truncate text-[#2a2015]/70 dark:text-white/70">{e.episodeTitle || e.episodeId}</span>
+                <span className="shrink-0 font-bold tabular-nums text-[#7d6330]">{e.n}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Card>
 
       {/* Dosha breakdown */}
       {dosha.length > 0 && (
