@@ -46,3 +46,21 @@ export async function setFormationStatut(id: string, statut: Formation['statut']
 export async function deleteFormation(id: string) {
   await deleteDoc(doc(db(), 'formations', id));
 }
+
+export async function updateFormationOptions(id: string, options: FormationOptions) {
+  await updateDoc(doc(db(), 'formations', id), { ...options, maj: serverTimestamp() });
+}
+
+// Les formations achetées par un membre. La preuve d'achat sera écrite par le
+// webhook Stripe; l'admin peut aussi en accorder une à la main (tests, cadeaux).
+export interface AchatFormation {
+  id: string;            // = id de la formation
+  titre: string;
+  imageUrl: string;
+  acheteLe?: Timestamp;
+}
+
+export async function getMesFormations(uid: string): Promise<AchatFormation[]> {
+  const snap = await getDocs(collection(db(), 'achatsFormations', uid, 'formations'));
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as AchatFormation));
+}
