@@ -47,7 +47,7 @@ const ClientPortal: React.FC = () => {
     );
   }
 
-  if (isAdmin) {
+  if (isAdmin && !voirPortailClient) {
     return (
       <div className="min-h-screen dark:bg-[#16100a] pt-32 pb-24 px-6">
         <div className="max-w-md mx-auto text-center">
