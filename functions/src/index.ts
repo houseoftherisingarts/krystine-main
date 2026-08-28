@@ -10,3 +10,4 @@ export { sendWelcomeEmail } from './newsletter/welcome';
 export { sendLiveReminders } from './newsletter/live';
 export { sendScheduledNewsletters, previewNewsletter } from './newsletter/send';
 export { newsletterAssistant } from './newsletter/assistant';
+export { verifierCaptcha } from './captcha';
