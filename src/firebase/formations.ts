@@ -16,9 +16,18 @@ export interface Formation {
   kajabiId: string;
   statut: 'masque' | 'publie';
   prix: number | null;
+  // Options de mise en vente (panneau « Options » de l'admin).
+  paywall?: boolean;
+  evergreen?: boolean;
+  dateSortie?: string | null;      // AAAA-MM-JJ quand la sortie est datée
+  lancementOrchestre?: boolean;
+  messageAcheteursEnvoye?: boolean;
   creeLe?: Timestamp;
   maj?: Timestamp;
 }
+
+export type FormationOptions = Pick<Formation,
+  'paywall' | 'prix' | 'evergreen' | 'dateSortie' | 'lancementOrchestre' | 'messageAcheteursEnvoye'>;
 
 const db = () => {
   if (!app) throw new Error('[Formations] Firebase not configured');
