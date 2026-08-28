@@ -130,7 +130,12 @@ const SubscribersPanel: React.FC = () => {
       source: s.source || '',
       subscribedAt: s.subscribedAt?.toDate().toISOString() || '',
     }));
-    const slug = [source === ALL_SOURCES ? 'tous' : source === NO_SOURCE ? 'sans-source' : source, tag].filter(Boolean).join('_');
+    const slug = [
+      source === ALL_SOURCES ? 'tous' : source === NO_SOURCE ? 'sans-source' : source,
+      tag,
+      dateFrom && `du-${dateFrom}`,
+      dateTo && `au-${dateTo}`,
+    ].filter(Boolean).join('_');
     downloadCsv(`infolettre_${slug}_${new Date().toISOString().slice(0, 10)}.csv`, rows);
   };
 
