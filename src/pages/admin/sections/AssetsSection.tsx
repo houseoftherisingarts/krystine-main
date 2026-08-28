@@ -42,6 +42,25 @@ const AssetsSection: React.FC = () => {
   const [files, setFiles] = useState<ManifestFile[]>([]);
   const [kind, setKind] = useState<'tous' | ManifestFile['kind']>('tous');
   const [terme, setTerme] = useState('');
+  const [televersement, setTeleversement] = useState(false);
+  const [erreurTeleversement, setErreurTeleversement] = useState<string | null>(null);
+  const fichierRef = useRef<HTMLInputElement>(null);
+
+  const televerser = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fichiers = Array.from(e.target.files || []);
+    if (!fichiers.length) return;
+    setErreurTeleversement(null);
+    setTeleversement(true);
+    try {
+      for (const f of fichiers) await uploadImage(f, 'mediatheque');
+      setMedia(await getMediaLibrary());
+    } catch (err: any) {
+      setErreurTeleversement(err?.message || 'Le téléversement a échoué.');
+    } finally {
+      setTeleversement(false);
+      if (fichierRef.current) fichierRef.current.value = '';
+    }
+  };
 
   useEffect(() => {
     getMediaLibrary().then(setMedia).catch(() => {});
