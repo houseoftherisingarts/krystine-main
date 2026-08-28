@@ -32,6 +32,7 @@ import AnalyticsSection from './admin/sections/AnalyticsSection';
 import EventsSection from './admin/sections/EventsSection';
 import BlogSection from './admin/sections/BlogSection';
 import SplashSection from './admin/sections/SplashSection';
+import FoyerSection from './admin/sections/FoyerSection';
 import OrdersSection from './admin/sections/OrdersSection';
 import BoutiqueSection from './admin/sections/BoutiqueSection';
 import MembersSection from './admin/sections/MembersSection';
@@ -69,6 +70,7 @@ const AdminDashboard: React.FC = () => {
         {section === 'events'     && <EventsSection />}
         {section === 'blog'       && <BlogSection />}
         {section === 'splash'     && <SplashSection />}
+      {section === 'foyer'      && <FoyerSection />}
         {section === 'submissions' && <SubmissionsSection />}
         {section === 'groups'     && <GroupsSection />}
         {section === 'bookings'   && <BookingsSection />}
@@ -102,6 +104,7 @@ const AdminDashboard: React.FC = () => {
       {section === 'events'     && <EventsSection />}
       {section === 'blog'       && <BlogSection />}
       {section === 'splash'     && <SplashSection />}
+        {section === 'foyer'      && <FoyerSection />}
       {section === 'submissions' && <SubmissionsSection />}
       {section === 'groups'     && <GroupsSection />}
       {section === 'bookings'   && <BookingsSection />}

@@ -12,6 +12,7 @@ import LangPill from './src/components/layout/LangPill';
 import ErrorBoundary from './src/components/layout/ErrorBoundary';
 import EditModeBar from './src/components/edit/EditModeBar';
 import EditOverlay from './src/components/edit/EditOverlay';
+import EditImageOverlay from './src/components/edit/EditImageOverlay';
 import { PageShareBar } from './src/components/ShareButtons';
 import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import { trackPageView } from './src/lib/track';
@@ -169,6 +170,7 @@ const App: React.FC = () => (
       <LangPill />
       <EditModeBar />
       <EditOverlay />
+      <EditImageOverlay />
       <ErrorBoundary>
       <Suspense fallback={<PageLoader />}>
         <RouteFade>

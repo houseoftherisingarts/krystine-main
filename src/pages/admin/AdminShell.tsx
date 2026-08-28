@@ -17,6 +17,7 @@ export type AdminSectionId =
   | 'events'
   | 'blog'
   | 'splash'
+  | 'foyer'
   | 'orders'
   | 'boutique'
   | 'members'
@@ -48,6 +49,7 @@ const NAV: NavItem[] = [
   { id: 'events',     label: 'Événements & Conférences', icon: 'fa-calendar' },
   { id: 'blog',       label: 'Blogue',           icon: 'fa-pen-nib' },
   { id: 'splash',     label: 'Écran d\'accueil', icon: 'fa-wand-magic-sparkles' },
+  { id: 'foyer',      label: 'Le Foyer',         icon: 'fa-fire' },
   { id: 'bookings',   label: 'Demandes',         icon: 'fa-inbox' },
   { id: 'newsletter', label: 'Infolettre',       icon: 'fa-envelope' },
   { id: 'guide',      label: 'Parcours guidés',  icon: 'fa-compass' },

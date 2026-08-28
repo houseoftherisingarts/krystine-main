@@ -103,17 +103,28 @@ const EditOverlay: React.FC = () => {
       candidates.forEach((node) => {
         const el = node as HTMLElement;
         if (!isLeafText(el)) return;
-        // Capture original on first sight so we can restore if the
-        // override is later removed.
-        if (el.dataset.editOriginal === undefined) {
-          el.dataset.editOriginal = el.textContent || '';
-        }
-        const original = el.dataset.editOriginal!;
-        const key = buildKey(el, original, lang);
-        const override = overrides.text[key];
-        const desired = override !== undefined ? override : original;
-        if (el.textContent !== desired) {
-          el.textContent = desired;
+        // Never fight the admin who is typing — the captured original has
+        // to survive the edit so `finish()` can tell whether it changed.
+        if (el.isContentEditable) return;
+
+        // The captured original is refreshed from the DOM on every pass
+        // EXCEPT when we are the ones who put the current text there.
+        // Otherwise the first text an element ever showed would be pinned
+        // forever, and any text React later changes (an admin header, a
+        // counter, a translated string) would snap back to it.
+        const current = el.textContent || '';
+        const appliedByUs = el.dataset.editApplied !== undefined && current === el.dataset.editApplied;
+        if (!appliedByUs) el.dataset.editOriginal = current;
+        const original = el.dataset.editOriginal ?? current;
+
+        const override = overrides.text[buildKey(el, original, lang)];
+        if (override !== undefined) {
+          if (current !== override) el.textContent = override;
+          el.dataset.editApplied = override;
+        } else if (appliedByUs) {
+          // The override was removed — put the original copy back.
+          el.textContent = original;
+          delete el.dataset.editApplied;
         }
       });
     };
