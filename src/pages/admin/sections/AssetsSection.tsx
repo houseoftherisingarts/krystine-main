@@ -121,10 +121,28 @@ const AssetsSection: React.FC = () => {
       <Card className="p-6">
         <div className="mb-5 flex items-baseline justify-between gap-4">
           <h3 className="text-sm font-bold uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60">
-            Vos images téléversées
+            Vos fichiers téléversés
           </h3>
-          <span className="text-xs text-[#2a2015]/40 dark:text-white/40">{media.length} fichiers</span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-[#2a2015]/40 dark:text-white/40">{media.length} fichiers</span>
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#bb9a5e] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#2a2015] transition-colors hover:bg-[#2a2015] hover:text-[#7d6330]">
+              <i className="fa-solid fa-upload text-[10px]" />
+              {televersement ? 'Téléversement…' : 'Téléverser'}
+              <input
+                ref={fichierRef}
+                type="file"
+                multiple
+                accept="image/*,video/*,audio/*,.pdf"
+                className="hidden"
+                onChange={televerser}
+                disabled={televersement}
+              />
+            </label>
+          </div>
         </div>
+        {erreurTeleversement && (
+          <div className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{erreurTeleversement}</div>
+        )}
         {media.length === 0 ? (
           <p className="font-serif italic text-sm text-[#2a2015]/50 dark:text-white/50">
             La médiathèque est vide pour l’instant.
