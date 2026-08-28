@@ -56,6 +56,8 @@ const SubscribersPanel: React.FC = () => {
   const [filter, setFilter] = useState('');
   const [source, setSource] = useState<string>(ALL_SOURCES);
   const [tag, setTag] = useState<string>('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState<BulkImportResult | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
