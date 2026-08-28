@@ -97,6 +97,13 @@ const SubscribersPanel: React.FC = () => {
 
   const filtered = subs.filter(s => {
     if (tag && !(s.tags || []).includes(tag)) return false;
+    if (dateFrom || dateTo) {
+      // Dates locales inclusives sur la date d'ajout (subscribedAt).
+      const t = s.subscribedAt?.toDate().getTime();
+      if (t === undefined) return false;
+      if (dateFrom && t < new Date(`${dateFrom}T00:00:00`).getTime()) return false;
+      if (dateTo && t > new Date(`${dateTo}T23:59:59.999`).getTime()) return false;
+    }
     if (source !== ALL_SOURCES) {
       const k = s.source?.trim() || '';
       if (source === NO_SOURCE ? !!k : k !== source) return false;
