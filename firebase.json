@@ -23,6 +23,14 @@
         "destination": "/accueil/index.html"
       },
       {
+        "source": "/communaute",
+        "destination": "/communaute/index.html"
+      },
+      {
+        "source": "/communaute/**",
+        "destination": "/communaute/index.html"
+      },
+      {
         "source": "/liste-attente-origine",
         "destination": "/liste-attente-origine/index.html"
       },
