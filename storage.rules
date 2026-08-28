@@ -9,7 +9,8 @@ service firebase.storage {
       return request.auth != null
         && request.auth.token.email in [
           'admin@krystinestlaurent.ca',
-          'krystine@inspiratanature.com'
+          'krystine@inspiratanature.com',
+          'houseoftherisingarts@gmail.com'
         ];
     }
 
