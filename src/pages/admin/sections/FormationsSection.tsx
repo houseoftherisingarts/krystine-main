@@ -182,6 +182,18 @@ const FormationsSection: React.FC = () => {
                 </button>
                 <button
                   type="button"
+                  onClick={() => setOptionsOuvertes(optionsOuvertes === f.id ? null : f.id)}
+                  title="Paywall, prix, sortie, lancement"
+                  className={`shrink-0 rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${
+                    optionsOuvertes === f.id
+                      ? 'border-[#2a2015] bg-[#2a2015] text-[#7d6330]'
+                      : 'border-[#2a2015]/20 text-[#2a2015]/70 hover:border-[#bb9a5e] hover:text-[#7d6330] dark:border-white/20 dark:text-white/70'
+                  }`}
+                >
+                  <i className="fa-solid fa-sliders mr-1" /> Options
+                </button>
+                <button
+                  type="button"
                   onClick={() => supprimer(f)}
                   disabled={busy === f.id}
                   title="Supprimer définitivement"
@@ -189,6 +201,8 @@ const FormationsSection: React.FC = () => {
                 >
                   <i className="fa-solid fa-trash" />
                 </button>
+              </div>
+              {optionsOuvertes === f.id && <OptionsPanel f={f} onSaved={refresh} />}
               </div>
             ))}
           </div>
