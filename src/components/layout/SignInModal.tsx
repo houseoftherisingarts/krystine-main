@@ -8,7 +8,7 @@ type Mode = 'signin' | 'signup' | 'reset';
 
 // reCAPTCHA v2 sur la création de compte par courriel. Sans clé configurée
 // (dev), la case ne s'affiche pas et l'inscription passe sans captcha.
-const RECAPTCHA_SITE_KEY = (import.meta.env.VITE_RECAPTCHA_SITE_KEY as string | undefined) || '';
+const RECAPTCHA_SITE_KEY = ((import.meta as any).env.VITE_RECAPTCHA_SITE_KEY as string | undefined) || '';
 declare const grecaptcha: any;
 
 function useRecaptcha(active: boolean) {
