@@ -147,10 +147,8 @@ const FormationsSection: React.FC = () => {
         ) : (
           <div className="space-y-3">
             {formations.map(f => (
-              <div
-                key={f.id}
-                className="flex items-center gap-4 rounded-[15px] border border-[#2a2015]/10 p-3 dark:border-white/10"
-              >
+              <div key={f.id} className="rounded-[15px] border border-[#2a2015]/10 p-3 dark:border-white/10">
+              <div className="flex items-center gap-4">
                 {f.imageUrl ? (
                   <img src={f.imageUrl} alt={f.titre} className="h-16 w-24 shrink-0 rounded-xl object-cover" />
                 ) : (
