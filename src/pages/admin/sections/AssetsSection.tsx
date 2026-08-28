@@ -71,27 +71,27 @@ const AssetsSection: React.FC = () => {
       <Card className="overflow-hidden border-[#bb9a5e]/20 bg-gradient-to-br from-[#2a2015] to-[#4A3228] text-white">
         <div className="flex flex-col gap-6 p-6 md:flex-row md:items-center">
           <video
-            src="/assets/foyer-visuel-9x16.mp4"
-            poster="/assets/foyer-visuel-9x16.jpg"
+            src="/assets/foyer-visuel-16x9.mp4"
+            poster="/assets/foyer-visuel-16x9.jpg"
             autoPlay
             muted
             loop
             playsInline
-            className="w-40 shrink-0 rounded-[15px] border border-[#bb9a5e]/30 shadow-lg"
+            className="w-72 shrink-0 rounded-[15px] border border-[#bb9a5e]/30 shadow-lg"
           />
           <div className="min-w-0">
             <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.3em] text-[#7d6330]">
               Le visuel du Foyer
             </span>
-            <h2 className="mb-1 font-serif text-2xl">Le feu qui brûle, format vertical</h2>
+            <h2 className="mb-1 font-serif text-2xl">Le feu qui brûle, grand format</h2>
             <p className="max-w-xl text-sm text-white/70">
               La niche du Foyer et sa flamme, sur le mur de parchemin, avec votre signature.
-              Le fichier fait 1080 × 1920 et tourne en boucle sans coupure, prêt pour une
-              story, un reel ou un écran de salle.
+              Le fichier fait 1920 × 1080 et tourne en boucle sans coupure, prêt pour un
+              écran, une présentation ou une vidéo.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
-              <DownloadButton url="/assets/foyer-visuel-9x16.mp4" name="foyer-visuel-9x16.mp4" label="Télécharger la vidéo" />
-              <DownloadButton url="/assets/foyer-visuel-9x16.jpg" name="foyer-visuel-9x16.jpg" label="Télécharger l’image fixe" />
+              <DownloadButton url="/assets/foyer-visuel-16x9.mp4" name="foyer-visuel-16x9.mp4" label="Télécharger la vidéo" />
+              <DownloadButton url="/assets/foyer-visuel-16x9.jpg" name="foyer-visuel-16x9.jpg" label="Télécharger l’image fixe" />
             </div>
           </div>
         </div>
