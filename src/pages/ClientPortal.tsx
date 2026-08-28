@@ -136,6 +136,7 @@ const ClientPortal: React.FC = () => {
         <div className="bg-white dark:bg-[#2a2015] rounded-[24px] shadow-sm border border-[#2a2015]/5 dark:border-white/5 p-6 md:p-8">
           {tab === 'profile'  && <ProfileTab />}
           {tab === 'orders'   && <OrdersTab />}
+          {tab === 'formations' && <ClientFormations />}
           {tab === 'loyalty'  && <ClientLoyalty />}
           {tab === 'dosha'    && <DoshaTab />}
           {tab === 'archives' && <ClientArchives />}
