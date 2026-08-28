@@ -98,6 +98,7 @@ const FormationsSection: React.FC = () => {
   const [formations, setFormations] = useState<Formation[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
+  const [optionsOuvertes, setOptionsOuvertes] = useState<string | null>(null);
 
   const refresh = () => {
     setLoading(true);
