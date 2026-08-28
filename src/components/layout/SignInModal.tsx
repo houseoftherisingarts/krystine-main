@@ -94,6 +94,22 @@ const SignInModal: React.FC = () => {
         await loginWithEmail(email.trim(), password);
         close();
       } else if (mode === 'signup') {
+        if (RECAPTCHA_SITE_KEY) {
+          const token = captcha.getToken();
+          if (!token) {
+            setErr(lang === 'FR' ? 'Cochez la case « Je ne suis pas un robot ».' : 'Please check the "I\'m not a robot" box.');
+            setBusy(false);
+            return;
+          }
+          try {
+            await httpsCallable(getFunctions(app!, 'us-central1'), 'verifierCaptcha')({ token });
+          } catch {
+            captcha.resetWidget();
+            setErr(lang === 'FR' ? 'La vérification anti-robot a échoué. Réessayez.' : 'Robot check failed. Please try again.');
+            setBusy(false);
+            return;
+          }
+        }
         await signUpWithEmail(email.trim(), password, displayName.trim() || undefined);
         close();
       } else if (mode === 'reset') {
