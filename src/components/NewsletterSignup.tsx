@@ -201,8 +201,10 @@ const NewsletterSignup: React.FC<Props> = ({
   }
 
   // ── Styles ──
+  // Sur fond sombre, les champs deviennent des surfaces claires : Krystine a
+  // vu le formulaire du direct « trop foncé, pas assez blanc » (2026-08-28).
   const inputClass = isDark
-    ? 'bg-transparent border-b border-white/20 text-white placeholder:text-white/30 focus:border-[#bb9a5e]'
+    ? 'rounded-md bg-[#f6f1e7] border border-transparent text-[#2a2015] placeholder:text-[#2a2015]/55 focus:border-[#bb9a5e] px-4'
     : 'bg-transparent border-b border-[#2a2015]/20 text-[#2a2015] placeholder:text-[#2a2015]/40 focus:border-[#bb9a5e]';
 
   const googleBtnClass = isDark
@@ -211,7 +213,7 @@ const NewsletterSignup: React.FC<Props> = ({
 
   const dividerClass = isDark ? 'text-white/40' : 'text-[#2a2015]/40';
   const dividerLineClass = isDark ? 'bg-white/10' : 'bg-[#2a2015]/10';
-  const fineprintClass = isDark ? 'text-white/30' : 'text-[#2a2015]/40';
+  const fineprintClass = isDark ? 'text-white/60' : 'text-[#2a2015]/40';
 
   return (
     <div className={className}>
