@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { getMediaLibrary, type MediaItem } from '../../../firebase/firestore';
+import { uploadImage } from '../../../firebase/storage';
 import { downloadFile } from '../../../lib/download';
 import { Card } from '../primitives';
 
