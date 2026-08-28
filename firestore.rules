@@ -31,6 +31,30 @@ service cloud.firestore {
     match /settings/{id}      { allow read: if true; allow write: if isAdmin(); }
     match /siteOverrides/{id} { allow read: if true; allow write: if isAdmin(); }
 
+    // ── Écoutes du podcast sur la page ──
+    // Chaque lancement de lecture laisse une trace permanente (create-only,
+    // champs bornés). La présence en direct est un battement par session que
+    // le visiteur écrase toutes les 30 s; seul l'admin lit les deux.
+    match /podcastListens/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['episodeId', 'episodeTitle', 'startedAt', 'sessionId'])
+                    && request.resource.data.episodeId is string
+                    && request.resource.data.episodeId.size() < 300
+                    && request.resource.data.episodeTitle is string
+                    && request.resource.data.episodeTitle.size() < 300
+                    && request.resource.data.sessionId is string
+                    && request.resource.data.sessionId.size() < 80;
+      allow read, update, delete: if isAdmin();
+    }
+    match /podcastPresence/{sessionId} {
+      allow write: if request.resource.data.keys().hasOnly(['episodeId', 'episodeTitle', 'lastSeen'])
+                   && request.resource.data.episodeId is string
+                   && request.resource.data.episodeId.size() < 300
+                   && request.resource.data.episodeTitle is string
+                   && request.resource.data.episodeTitle.size() < 300;
+      allow delete: if true;
+      allow read: if isAdmin();
+    }
+
     // ── Newsletter subscribers ──
     // Public form submits a new signup (email-only). Admins manage the CRM.
     // Unauthenticated clients may NOT read the subscriber list. Unsubscribe
