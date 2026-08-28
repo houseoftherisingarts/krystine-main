@@ -1,0 +1,649 @@
+{
+  "generatedAt": "2026-08-28T15:36:09.771Z",
+  "files": [
+    {
+      "path": "/accueil/assets/hero-ml-poster.jpg",
+      "name": "hero-ml-poster.jpg",
+      "folder": "accueil/assets",
+      "kind": "image",
+      "size": 239833
+    },
+    {
+      "path": "/accueil/assets/hero-motionleap.mp4",
+      "name": "hero-motionleap.mp4",
+      "folder": "accueil/assets",
+      "kind": "video",
+      "size": 3097688
+    },
+    {
+      "path": "/accueil/assets/texture-cream.jpg",
+      "name": "texture-cream.jpg",
+      "folder": "accueil/assets",
+      "kind": "image",
+      "size": 539662
+    },
+    {
+      "path": "/accueil/assets/texture-cream.webp",
+      "name": "texture-cream.webp",
+      "folder": "accueil/assets",
+      "kind": "image",
+      "size": 23290
+    },
+    {
+      "path": "/accueil/assets/trilogy-books.png",
+      "name": "trilogy-books.png",
+      "folder": "accueil/assets",
+      "kind": "image",
+      "size": 616926
+    },
+    {
+      "path": "/accueil/assets/trilogy-books.webp",
+      "name": "trilogy-books.webp",
+      "folder": "accueil/assets",
+      "kind": "image",
+      "size": 54960
+    },
+    {
+      "path": "/accueil/assets/wheel-watercolor.png",
+      "name": "wheel-watercolor.png",
+      "folder": "accueil/assets",
+      "kind": "image",
+      "size": 720255
+    },
+    {
+      "path": "/accueil/assets/portes/conferences.png",
+      "name": "conferences.png",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 742136
+    },
+    {
+      "path": "/accueil/assets/portes/conferences.webp",
+      "name": "conferences.webp",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 35616
+    },
+    {
+      "path": "/accueil/assets/portes/inspirata.png",
+      "name": "inspirata.png",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 863058
+    },
+    {
+      "path": "/accueil/assets/portes/inspirata.webp",
+      "name": "inspirata.webp",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 58840
+    },
+    {
+      "path": "/accueil/assets/portes/livres.png",
+      "name": "livres.png",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 814749
+    },
+    {
+      "path": "/accueil/assets/portes/livres.webp",
+      "name": "livres.webp",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 47546
+    },
+    {
+      "path": "/accueil/assets/portes/origine.png",
+      "name": "origine.png",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 1096970
+    },
+    {
+      "path": "/accueil/assets/portes/origine.webp",
+      "name": "origine.webp",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 112600
+    },
+    {
+      "path": "/accueil/assets/portes/podcast.png",
+      "name": "podcast.png",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 717432
+    },
+    {
+      "path": "/accueil/assets/portes/podcast.webp",
+      "name": "podcast.webp",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 33036
+    },
+    {
+      "path": "/accueil/assets/portes/retraites.png",
+      "name": "retraites.png",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 1223313
+    },
+    {
+      "path": "/accueil/assets/portes/retraites.webp",
+      "name": "retraites.webp",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 121448
+    },
+    {
+      "path": "/assets/foyer-visuel-9x16.jpg",
+      "name": "foyer-visuel-9x16.jpg",
+      "folder": "assets",
+      "kind": "image",
+      "size": 98291
+    },
+    {
+      "path": "/assets/foyer-visuel-9x16.mp4",
+      "name": "foyer-visuel-9x16.mp4",
+      "folder": "assets",
+      "kind": "video",
+      "size": 971770
+    },
+    {
+      "path": "/foyer/allumage-fond.webp",
+      "name": "allumage-fond.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 22294
+    },
+    {
+      "path": "/foyer/allumette.mp4",
+      "name": "allumette.mp4",
+      "folder": "foyer",
+      "kind": "video",
+      "size": 1521966
+    },
+    {
+      "path": "/foyer/allumette.webp",
+      "name": "allumette.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 15564
+    },
+    {
+      "path": "/foyer/antre-foyer-scrub.mp4",
+      "name": "antre-foyer-scrub.mp4",
+      "folder": "foyer",
+      "kind": "video",
+      "size": 2417099
+    },
+    {
+      "path": "/foyer/antre-foyer.mp4",
+      "name": "antre-foyer.mp4",
+      "folder": "foyer",
+      "kind": "video",
+      "size": 934051
+    },
+    {
+      "path": "/foyer/antre-foyer.webp",
+      "name": "antre-foyer.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 35504
+    },
+    {
+      "path": "/foyer/atre-feu.mp4",
+      "name": "atre-feu.mp4",
+      "folder": "foyer",
+      "kind": "video",
+      "size": 826337
+    },
+    {
+      "path": "/foyer/calendrier-annee.webp",
+      "name": "calendrier-annee.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 121728
+    },
+    {
+      "path": "/foyer/chandelle.mp4",
+      "name": "chandelle.mp4",
+      "folder": "foyer",
+      "kind": "video",
+      "size": 346059
+    },
+    {
+      "path": "/foyer/coeur-foyer.webp",
+      "name": "coeur-foyer.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 48926
+    },
+    {
+      "path": "/foyer/etagere-rituels.webp",
+      "name": "etagere-rituels.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 59296
+    },
+    {
+      "path": "/foyer/feu-craquant.m4a",
+      "name": "feu-craquant.m4a",
+      "folder": "foyer",
+      "kind": "audio",
+      "size": 497628
+    },
+    {
+      "path": "/foyer/feu-et-ecran.webp",
+      "name": "feu-et-ecran.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 146026
+    },
+    {
+      "path": "/foyer/final-braises.mp4",
+      "name": "final-braises.mp4",
+      "folder": "foyer",
+      "kind": "video",
+      "size": 1050052
+    },
+    {
+      "path": "/foyer/final-braises.webp",
+      "name": "final-braises.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 28236
+    },
+    {
+      "path": "/foyer/firepit-poster.webp",
+      "name": "firepit-poster.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 61850
+    },
+    {
+      "path": "/foyer/firepit.mp4",
+      "name": "firepit.mp4",
+      "folder": "foyer",
+      "kind": "video",
+      "size": 2616779
+    },
+    {
+      "path": "/foyer/fleur-foyer.webp",
+      "name": "fleur-foyer.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 283854
+    },
+    {
+      "path": "/foyer/hero-atre.webp",
+      "name": "hero-atre.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 30730
+    },
+    {
+      "path": "/foyer/invitation.webp",
+      "name": "invitation.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 54028
+    },
+    {
+      "path": "/foyer/krystine-conference.webp",
+      "name": "krystine-conference.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 137562
+    },
+    {
+      "path": "/foyer/krystine-scene.webp",
+      "name": "krystine-scene.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 118192
+    },
+    {
+      "path": "/foyer/lettre-lin.webp",
+      "name": "lettre-lin.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 110396
+    },
+    {
+      "path": "/foyer/livre-fleurs-mail.jpg",
+      "name": "livre-fleurs-mail.jpg",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 139065
+    },
+    {
+      "path": "/foyer/livre-fleurs.webp",
+      "name": "livre-fleurs.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 142406
+    },
+    {
+      "path": "/foyer/meditation.webp",
+      "name": "meditation.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 10148
+    },
+    {
+      "path": "/foyer/niche-flamme.webp",
+      "name": "niche-flamme.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 143846
+    },
+    {
+      "path": "/foyer/niche-septembre.webp",
+      "name": "niche-septembre.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 51850
+    },
+    {
+      "path": "/foyer/pigment-bleu.webp",
+      "name": "pigment-bleu.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 53246
+    },
+    {
+      "path": "/foyer/pigment-prune.webp",
+      "name": "pigment-prune.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 34514
+    },
+    {
+      "path": "/foyer/pigment-terre.webp",
+      "name": "pigment-terre.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 29488
+    },
+    {
+      "path": "/foyer/porte-aout-cutout.webp",
+      "name": "porte-aout-cutout.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 12784
+    },
+    {
+      "path": "/foyer/porte-avril-cutout.webp",
+      "name": "porte-avril-cutout.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 11318
+    },
+    {
+      "path": "/foyer/porte-decembre-cutout.webp",
+      "name": "porte-decembre-cutout.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 11290
+    },
+    {
+      "path": "/foyer/porte-fevrier-cutout.webp",
+      "name": "porte-fevrier-cutout.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 14464
+    },
+    {
+      "path": "/foyer/porte-janvier-cutout.webp",
+      "name": "porte-janvier-cutout.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 10954
+    },
+    {
+      "path": "/foyer/porte-juillet-cutout.webp",
+      "name": "porte-juillet-cutout.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 13962
+    },
+    {
+      "path": "/foyer/porte-juin-cutout.webp",
+      "name": "porte-juin-cutout.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 14340
+    },
+    {
+      "path": "/foyer/porte-mai-cutout.webp",
+      "name": "porte-mai-cutout.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 11348
+    },
+    {
+      "path": "/foyer/porte-mars-cutout.webp",
+      "name": "porte-mars-cutout.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 14854
+    },
+    {
+      "path": "/foyer/porte-novembre-cutout.webp",
+      "name": "porte-novembre-cutout.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 12752
+    },
+    {
+      "path": "/foyer/porte-octobre-cutout.webp",
+      "name": "porte-octobre-cutout.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 13930
+    },
+    {
+      "path": "/foyer/porte-sept-cutout.webp",
+      "name": "porte-sept-cutout.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 11408
+    },
+    {
+      "path": "/foyer/porte-septembre.glb",
+      "name": "porte-septembre.glb",
+      "folder": "foyer",
+      "kind": "modele",
+      "size": 1128848
+    },
+    {
+      "path": "/foyer/porte-septembre.webp",
+      "name": "porte-septembre.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 58078
+    },
+    {
+      "path": "/foyer/saison-automne.webp",
+      "name": "saison-automne.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 90620
+    },
+    {
+      "path": "/foyer/saison-ete.webp",
+      "name": "saison-ete.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 38614
+    },
+    {
+      "path": "/foyer/saison-hiver.webp",
+      "name": "saison-hiver.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 24110
+    },
+    {
+      "path": "/foyer/saison-printemps.webp",
+      "name": "saison-printemps.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 31310
+    },
+    {
+      "path": "/foyer/sem1-regarder.webp",
+      "name": "sem1-regarder.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 12874
+    },
+    {
+      "path": "/foyer/sem2-saison.webp",
+      "name": "sem2-saison.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 18582
+    },
+    {
+      "path": "/foyer/sem3-ecrire.webp",
+      "name": "sem3-ecrire.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 59504
+    },
+    {
+      "path": "/foyer/sem3-piece.webp",
+      "name": "sem3-piece.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 7950
+    },
+    {
+      "path": "/foyer/sem4-decouverte.webp",
+      "name": "sem4-decouverte.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 30734
+    },
+    {
+      "path": "/foyer/sem4-graines.webp",
+      "name": "sem4-graines.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 75092
+    },
+    {
+      "path": "/foyer/texture-pierre.webp",
+      "name": "texture-pierre.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 13172
+    },
+    {
+      "path": "/foyer/vasque-feu-cut.webp",
+      "name": "vasque-feu-cut.webp",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 109650
+    },
+    {
+      "path": "/podcast/krystine.jpg",
+      "name": "krystine.jpg",
+      "folder": "podcast",
+      "kind": "image",
+      "size": 186023
+    },
+    {
+      "path": "/podcast/live-cover.jpg",
+      "name": "live-cover.jpg",
+      "folder": "podcast",
+      "kind": "image",
+      "size": 78970
+    },
+    {
+      "path": "/footer-jacques-cartier.jpg",
+      "name": "footer-jacques-cartier.jpg",
+      "folder": "racine",
+      "kind": "image",
+      "size": 1303631
+    },
+    {
+      "path": "/krystine-banner.png",
+      "name": "krystine-banner.png",
+      "folder": "racine",
+      "kind": "image",
+      "size": 4735724
+    },
+    {
+      "path": "/krystine-bg.jpg",
+      "name": "krystine-bg.jpg",
+      "folder": "racine",
+      "kind": "image",
+      "size": 539662
+    },
+    {
+      "path": "/krystine-portrait.jpg",
+      "name": "krystine-portrait.jpg",
+      "folder": "racine",
+      "kind": "image",
+      "size": 414420
+    },
+    {
+      "path": "/og-image.jpg",
+      "name": "og-image.jpg",
+      "folder": "racine",
+      "kind": "image",
+      "size": 96888
+    },
+    {
+      "path": "/origine-square.jpg",
+      "name": "origine-square.jpg",
+      "folder": "racine",
+      "kind": "image",
+      "size": 294335
+    },
+    {
+      "path": "/sante-la-vie.jpg",
+      "name": "sante-la-vie.jpg",
+      "folder": "racine",
+      "kind": "image",
+      "size": 973546
+    },
+    {
+      "path": "/wheel-no-text.png",
+      "name": "wheel-no-text.png",
+      "folder": "racine",
+      "kind": "image",
+      "size": 2801927
+    },
+    {
+      "path": "/salon/alex.jpg",
+      "name": "alex.jpg",
+      "folder": "salon",
+      "kind": "image",
+      "size": 203130
+    },
+    {
+      "path": "/salon/hero.jpg",
+      "name": "hero.jpg",
+      "folder": "salon",
+      "kind": "image",
+      "size": 241779
+    },
+    {
+      "path": "/salon/logo.svg",
+      "name": "logo.svg",
+      "folder": "salon",
+      "kind": "image",
+      "size": 25361
+    },
+    {
+      "path": "/salon/profile.jpg",
+      "name": "profile.jpg",
+      "folder": "salon",
+      "kind": "image",
+      "size": 354347
+    }
+  ]
+}

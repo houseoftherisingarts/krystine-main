@@ -33,6 +33,7 @@ import EventsSection from './admin/sections/EventsSection';
 import BlogSection from './admin/sections/BlogSection';
 import SplashSection from './admin/sections/SplashSection';
 import FoyerSection from './admin/sections/FoyerSection';
+import AssetsSection from './admin/sections/AssetsSection';
 import OrdersSection from './admin/sections/OrdersSection';
 import BoutiqueSection from './admin/sections/BoutiqueSection';
 import MembersSection from './admin/sections/MembersSection';
@@ -78,6 +79,7 @@ const AdminDashboard: React.FC = () => {
         {section === 'guide'      && <GuideSection />}
         {section === 'dosha'      && <DoshaSection />}
         {section === 'media'      && <MediaSection />}
+        {section === 'assets'     && <AssetsSection />}
         {section === 'settings'   && <SettingsSection user={BYPASS_USER} />}
       </AdminShell>
     );
@@ -112,6 +114,7 @@ const AdminDashboard: React.FC = () => {
       {section === 'guide'      && <GuideSection />}
       {section === 'dosha'      && <DoshaSection />}
       {section === 'media'      && <MediaSection />}
+      {section === 'assets'     && <AssetsSection />}
       {section === 'settings'   && <SettingsSection user={user} />}
     </AdminShell>
   );

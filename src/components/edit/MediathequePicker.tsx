@@ -1,28 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getMediaLibrary, type MediaItem } from '../../firebase/firestore';
 import { uploadImage } from '../../firebase/storage';
-
-// Fetch the image as a blob so the browser's download dialog opens with
-// the desired filename. Cross-origin CDNs (Google Storage etc.) usually
-// allow CORS; when they don't we fall back to opening in a new tab.
-async function downloadImage(url: string, name: string) {
-  try {
-    const res = await fetch(url, { mode: 'cors' });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const blob = await res.blob();
-    const objectUrl = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = objectUrl;
-    const ext = url.match(/\.(jpe?g|png|webp|avif|gif|svg)(\?|$)/i)?.[1] || 'png';
-    a.download = /\.[a-z0-9]+$/i.test(name) ? name : `${name}.${ext}`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(objectUrl);
-  } catch {
-    window.open(url, '_blank', 'noopener,noreferrer');
-  }
-}
+import { downloadFile } from '../../lib/download';
 
 interface Props {
   open: boolean;
@@ -130,7 +109,7 @@ const MediathequePicker: React.FC<Props> = ({ open, onClose, onSelect }) => {
                   </button>
                   <button
                     type="button"
-                    onClick={e => { e.stopPropagation(); downloadImage(item.url, item.name); }}
+                    onClick={e => { e.stopPropagation(); downloadFile(item.url, item.name); }}
                     className="absolute bottom-1.5 right-1.5 bg-white/95 dark:bg-[#2a2015]/95 backdrop-blur rounded-full w-8 h-8 flex items-center justify-center text-[#2a2015] dark:text-white hover:bg-[#bb9a5e] hover:text-[#2a2015] shadow-md transition-colors"
                     title="Télécharger"
                     aria-label="Télécharger l'image"

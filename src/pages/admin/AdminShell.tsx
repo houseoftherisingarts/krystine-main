@@ -18,6 +18,7 @@ export type AdminSectionId =
   | 'blog'
   | 'splash'
   | 'foyer'
+  | 'assets'
   | 'orders'
   | 'boutique'
   | 'members'
@@ -55,6 +56,7 @@ const NAV: NavItem[] = [
   { id: 'guide',      label: 'Parcours guidés',  icon: 'fa-compass' },
   { id: 'dosha',      label: 'Quiz Dosha',       icon: 'fa-circle-nodes' },
   { id: 'media',      label: 'Médiathèque',      icon: 'fa-photo-film' },
+  { id: 'assets',     label: 'Assets et téléchargements', icon: 'fa-download' },
   { id: 'settings',   label: 'Paramètres',       icon: 'fa-gear' },
 ];
 
