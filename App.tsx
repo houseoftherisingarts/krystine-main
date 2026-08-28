@@ -180,6 +180,7 @@ const App: React.FC = () => (
               Restore by swapping back to `element={<SplashScreen />}` below. */}
           <Route path="/" element={<Navigate to="/accueil" replace />} />
           <Route path="/accueil" element={<HardReload to="/accueil" />} />
+          <Route path="/communaute" element={<HardReload to="/communaute" />} />
           <Route path="/accueil-classic" element={<InspiratHome />} />
 
           {/* ── Pages Inspirata ───────────────────────────────────────── */}
