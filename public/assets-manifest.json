@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-28T15:36:09.771Z",
+  "generatedAt": "2026-08-28T16:34:57.042Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -135,18 +135,18 @@
       "size": 121448
     },
     {
-      "path": "/assets/foyer-visuel-9x16.jpg",
-      "name": "foyer-visuel-9x16.jpg",
+      "path": "/assets/foyer-visuel-16x9.jpg",
+      "name": "foyer-visuel-16x9.jpg",
       "folder": "assets",
       "kind": "image",
-      "size": 98291
+      "size": 92039
     },
     {
-      "path": "/assets/foyer-visuel-9x16.mp4",
-      "name": "foyer-visuel-9x16.mp4",
+      "path": "/assets/foyer-visuel-16x9.mp4",
+      "name": "foyer-visuel-16x9.mp4",
       "folder": "assets",
       "kind": "video",
-      "size": 971770
+      "size": 1105558
     },
     {
       "path": "/foyer/allumage-fond.webp",
