@@ -1,8 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useApp } from '../../contexts/AppContext';
 import { loginWithEmail, loginWithGoogle, signUpWithEmail, sendPasswordReset } from '../../firebase/auth';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import app from '../../firebase';
 
 type Mode = 'signin' | 'signup' | 'reset';
+
+// reCAPTCHA v2 sur la création de compte par courriel. Sans clé configurée
+// (dev), la case ne s'affiche pas et l'inscription passe sans captcha.
+const RECAPTCHA_SITE_KEY = (import.meta.env.VITE_RECAPTCHA_SITE_KEY as string | undefined) || '';
+declare const grecaptcha: any;
+
+function useRecaptcha(active: boolean) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const widgetRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!active || !RECAPTCHA_SITE_KEY) return;
+    const render = () => {
+      if (widgetRef.current !== null || !boxRef.current) return;
+      widgetRef.current = grecaptcha.render(boxRef.current, { sitekey: RECAPTCHA_SITE_KEY });
+    };
+    if (typeof grecaptcha !== 'undefined' && grecaptcha.render) { render(); return; }
+    (window as any).__recaptchaReady = render;
+    if (!document.querySelector('script[src*="recaptcha/api.js"]')) {
+      const s = document.createElement('script');
+      s.src = 'https://www.google.com/recaptcha/api.js?onload=__recaptchaReady&render=explicit';
+      s.async = true;
+      document.head.appendChild(s);
+    }
+  }, [active]);
+
+  const getToken = (): string => {
+    if (widgetRef.current === null) return '';
+    try { return grecaptcha.getResponse(widgetRef.current) || ''; } catch { return ''; }
+  };
+  const resetWidget = () => {
+    if (widgetRef.current !== null) { try { grecaptcha.reset(widgetRef.current); } catch { /* noop */ } }
+  };
+  return { boxRef, getToken, resetWidget };
+}
 
 const SignInModal: React.FC = () => {
   const { lang, signInOpen, setSignInOpen } = useApp();
