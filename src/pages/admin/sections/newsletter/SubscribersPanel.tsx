@@ -190,6 +190,24 @@ const SubscribersPanel: React.FC = () => {
           <option value="">Toutes les listes</option>
           {tagOptions.map(([t, n]) => <option key={t} value={t}>{t} ({n})</option>)}
         </select>
+        <label className="inline-flex items-center gap-2 text-sm text-[#2a2015]/60 dark:text-white/60">
+          Ajoutés du
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={e => setDateFrom(e.target.value)}
+            title="Ne garder que les contacts ajoutés à partir de cette date"
+            className="px-3 py-2 rounded-full border border-[#2a2015]/10 dark:border-white/10 bg-white dark:bg-[#2a2015]/60 text-sm text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]"
+          />
+          au
+          <input
+            type="date"
+            value={dateTo}
+            onChange={e => setDateTo(e.target.value)}
+            title="Ne garder que les contacts ajoutés jusqu'à cette date incluse"
+            className="px-3 py-2 rounded-full border border-[#2a2015]/10 dark:border-white/10 bg-white dark:bg-[#2a2015]/60 text-sm text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]"
+          />
+        </label>
         <input
           type="search"
           placeholder="Rechercher (email, nom, étiquette)…"
