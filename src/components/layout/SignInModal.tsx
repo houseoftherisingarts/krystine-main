@@ -50,6 +50,7 @@ const SignInModal: React.FC = () => {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
+  const captcha = useRecaptcha(signInOpen && mode === 'signup');
 
   const reset = () => { setErr(null); setInfo(null); };
 
