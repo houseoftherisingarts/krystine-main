@@ -10,6 +10,7 @@ import { jsPDF } from 'jspdf';
 import ClientSupport from './client/ClientSupport';
 import ClientArchives from './client/ClientArchives';
 import ClientLoyalty from './client/ClientLoyalty';
+import ClientFormations from './client/ClientFormations';
 import { subscribeToMemberPoints, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
 
 type Tab = 'profile' | 'orders' | 'loyalty' | 'dosha' | 'archives' | 'support';
