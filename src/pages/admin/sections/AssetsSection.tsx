@@ -151,7 +151,15 @@ const AssetsSection: React.FC = () => {
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {media.map(item => (
               <div key={item.id || item.url} className="group relative">
-                <img src={item.url} alt={item.name} className="aspect-square w-full rounded-xl object-cover" />
+                {item.contentType?.startsWith('video/') ? (
+                  <video src={item.url} muted playsInline className="aspect-square w-full rounded-xl object-cover" />
+                ) : item.contentType?.startsWith('image/') || !item.contentType ? (
+                  <img src={item.url} alt={item.name} className="aspect-square w-full rounded-xl object-cover" />
+                ) : (
+                  <div className="flex aspect-square w-full items-center justify-center rounded-xl bg-[#bb9a5e]/10">
+                    <i className={`fa-solid ${item.contentType?.startsWith('audio/') ? 'fa-music' : 'fa-file-pdf'} text-2xl text-[#7d6330]`} />
+                  </div>
+                )}
                 <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-[#2a2015]/60 opacity-0 transition-opacity group-hover:opacity-100">
                   <DownloadButton url={item.url} name={item.name} />
                 </div>
