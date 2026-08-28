@@ -189,6 +189,9 @@ const SignInModal: React.FC = () => {
               className="w-full px-4 py-3 rounded-xl border border-[#2a2015]/10 dark:border-white/10 bg-[#f6f3ee] dark:bg-white/5 text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]"
             />
           )}
+          {mode === 'signup' && RECAPTCHA_SITE_KEY && (
+            <div ref={captcha.boxRef} className="flex justify-center pt-1" />
+          )}
           <button
             type="submit"
             disabled={busy}
