@@ -66,6 +66,7 @@ const ClientPortal: React.FC = () => {
   const tabs: { id: Tab; label: string; icon: string }[] = [
     { id: 'profile',  label: lang === 'FR' ? 'Profil' : 'Profile', icon: 'fa-user' },
     { id: 'orders',   label: lang === 'FR' ? 'Commandes' : 'Orders', icon: 'fa-box' },
+    { id: 'formations', label: lang === 'FR' ? 'Mes formations' : 'My courses', icon: 'fa-graduation-cap' },
     { id: 'loyalty',  label: lang === 'FR' ? 'Points' : 'Points', icon: 'fa-seedling' },
     { id: 'dosha',    label: lang === 'FR' ? 'Dosha' : 'Dosha', icon: 'fa-circle-nodes' },
     { id: 'archives', label: lang === 'FR' ? 'Archives' : 'Archives', icon: 'fa-envelope-open-text' },
