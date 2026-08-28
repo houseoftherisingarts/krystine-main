@@ -60,6 +60,13 @@ const ClientPortal: React.FC = () => {
           <a href="/admin" className="bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors inline-block">
             {lang === 'FR' ? 'Aller au tableau de bord' : 'Go to admin dashboard'}
           </a>
+          <button
+            type="button"
+            onClick={() => setVoirPortailClient(true)}
+            className="mt-4 block w-full text-xs uppercase tracking-widest text-[#7d6330] hover:text-[#bb9a5e]"
+          >
+            {lang === 'FR' ? 'Voir le portail client (test)' : 'View client portal (test)'}
+          </button>
         </div>
       </div>
     );
