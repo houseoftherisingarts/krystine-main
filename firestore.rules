@@ -216,8 +216,9 @@ service cloud.firestore {
       // L'annuaire de la communauté lit les fiches; la coche bleue et le rang
       // de modératrice ne se donnent qu'à l'admin, jamais à soi-même.
       allow read: if isSignedIn();
-      allow create: if isSelf(uid)
-                    && !request.resource.data.keys().hasAny(['verifie', 'moderateur']);
+      allow create: if isAdmin()
+                    || (isSelf(uid)
+                        && !request.resource.data.keys().hasAny(['verifie', 'moderateur']));
       allow update: if isAdmin()
                     || (isSelf(uid)
                         && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['verifie', 'moderateur']));
