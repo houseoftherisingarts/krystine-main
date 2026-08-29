@@ -390,7 +390,8 @@ const ClientPortal: React.FC = () => {
       {/* Le contenu en deux colonnes : l'onglet à gauche, le rail vivant à droite */}
       <div className="mx-auto mt-8 grid max-w-7xl gap-6 px-6 lg:grid-cols-[1fr_320px]">
         <div className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-[#2a2015]/55">
-          {tab === 'profile'  && <ProfileTab />}
+          {tab === 'profile'  && <ProfilVue uid={user.uid} member={member} email={user.email || ''} lang={lang} />}
+          {tab === 'amis'     && <ClientAmis uid={user.uid} lang={lang} />}
           {tab === 'orders'   && <OrdersTab />}
           {tab === 'formations' && <ClientFormations />}
           {tab === 'loyalty'  && <ClientLoyalty />}
