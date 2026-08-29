@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, User, Music, Moon, Sun, Menu, X } from 'lucide-react';
 import { useUI, useAuth, useCart, useBoutique } from '../../contexts/AppContext';
-import { ASSETS } from '../../content';
 
 interface NavItem { href: string; labelFR: string; labelEN: string; }
 
