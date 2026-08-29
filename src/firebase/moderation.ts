@@ -1,0 +1,88 @@
+// ─── La tenue de la place ────────────────────────────────────────────
+// Porté du FMM 2026 (src/firebase/moderation.ts). Chacun peut faire
+// taire quelqu'un et signaler un message à Krystine.
+//
+//   /blocages/{uid}       { uids: [...] }   la liste de la personne
+//   /signalements/{id}    un message rapporté
+//
+// Le blocage ne pèse que d'un côté : le mur communautaire reste public
+// pour tout le monde, il ne peut donc être qu'un silence côté client.
+// C'est à cela que sert le signalement, qui prévient Krystine.
+
+import {
+  addDoc, arrayRemove, arrayUnion, collection, doc, onSnapshot,
+  serverTimestamp, setDoc,
+} from 'firebase/firestore';
+import { db } from '../firebase';
+
+/** La longueur d'un message, ici comme dans firestore.rules. Les deux
+ *  chiffres doivent rester égaux : la règle est la seule qui compte. */
+export const LONGUEUR_MAX = 2000;
+
+// ── Le garde-fou contre l'envoi en rafale ───────────────────────────
+// ponytail : garde-fou de navigateur seulement, la console le contourne.
+// Le vrai plafond vit dans firestore.rules et dans le signalement. Le
+// jour où quelqu'un inonde vraiment le mur, la limite se déplace dans
+// une Cloud Function qui compte les messages par minute.
+const DELAI_MIN = 1500;
+const dernierEnvoi = new Map<string, number>();
+
+/** Vrai si le message précédent est trop récent. Marque l'instant
+ *  quand il laisse passer. */
+export function tropVite(cle: string): boolean {
+  const maintenant = Date.now();
+  const avant = dernierEnvoi.get(cle) ?? 0;
+  if (maintenant - avant < DELAI_MIN) return true;
+  dernierEnvoi.set(cle, maintenant);
+  return false;
+}
+
+// ── Les gens qu'on ne veut plus entendre ────────────────────────────
+const BLOCAGES = 'blocages';
+
+/** La liste des personnes bloquées, en direct. */
+export function suivreBlocages(uid: string, cb: (uids: string[]) => void): () => void {
+  if (!db) { cb([]); return () => {}; }
+  return onSnapshot(
+    doc(db, BLOCAGES, uid),
+    (snap) => cb((snap.data()?.uids as string[]) || []),
+    () => cb([]),
+  );
+}
+
+export async function bloquer(moi: string, autre: string): Promise<void> {
+  if (!db || moi === autre) return;
+  await setDoc(doc(db, BLOCAGES, moi), { uids: arrayUnion(autre) }, { merge: true });
+}
+
+export async function debloquer(moi: string, autre: string): Promise<void> {
+  if (!db) return;
+  await setDoc(doc(db, BLOCAGES, moi), { uids: arrayRemove(autre) }, { merge: true });
+}
+
+// ── Les signalements ────────────────────────────────────────────────
+export type LieuSignale = 'mur';
+
+export interface Signalement {
+  /** Qui signale. La règle Firestore refuse tout autre nom. */
+  parUid: string;
+  parNom: string;
+  /** La personne visée, et ce qu'elle a écrit, recopié tel quel pour
+   *  que Krystine puisse juger même si le message disparaît ensuite. */
+  contreUid: string;
+  contreNom: string;
+  texte: string;
+  lieu: LieuSignale;
+  /** L'endroit exact : l'identifiant du billet ou du commentaire. */
+  reference: string;
+}
+
+export async function signaler(s: Signalement): Promise<void> {
+  if (!db) throw new Error('Firestore non configuré');
+  await addDoc(collection(db, 'signalements'), {
+    ...s,
+    texte: s.texte.slice(0, LONGUEUR_MAX),
+    signaleLe: serverTimestamp(),
+    traite: false,
+  });
+}
