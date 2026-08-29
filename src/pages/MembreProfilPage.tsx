@@ -98,7 +98,10 @@ const MembreProfilPage: React.FC = () => {
           <div className="flex items-center gap-4">
             <Avatar nom={nom} url={profil.photoURL} taille={72} />
             <div className="min-w-0">
-              <h1 className="font-serif text-2xl text-[#2a2015] dark:text-white truncate">{nom}</h1>
+              <h1 className="flex items-center gap-2 font-serif text-2xl text-[#2a2015] dark:text-white truncate">
+                <span className="truncate">{nom}</span>
+                {profil.verifie && <i className="fa-solid fa-circle-check shrink-0 text-lg text-[#3b82f6]" title="Profil vérifié" />}
+              </h1>
               {profil.dosha && (
                 <p className="text-[11px] uppercase tracking-[0.14em] text-[#7d6330] dark:text-[#bb9a5e] mt-1">
                   Dosha {profil.dosha}
