@@ -83,6 +83,7 @@ function parseEpisodes(xml: string): { cover: string; episodes: Episode[] } {
       description: desc,
       audio: it.querySelector('enclosure')?.getAttribute('url') || '',
       image: it.getElementsByTagName('itunes:image')[0]?.getAttribute('href') || cover,
+      season: seasonFromDate(it.querySelector('pubDate')?.textContent || ''),
     };
   });
   return { cover, episodes };
