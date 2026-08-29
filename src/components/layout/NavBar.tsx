@@ -62,9 +62,9 @@ const NavBar: React.FC = () => {
             initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-serif font-semibold uppercase text-ink dark:text-ctext text-[1.32rem] leading-none tracking-[0.12em] transition-colors duration-300 group-hover:text-brassInk dark:group-hover:text-brassBright"
+            className="font-serif font-semibold uppercase whitespace-nowrap text-ink dark:text-ctext text-[1.32rem] leading-none tracking-[0.12em] transition-colors duration-300 group-hover:text-brassInk dark:group-hover:text-brassBright"
           >
-            Krystine<br />St-Laurent
+            Krystine St-Laurent
           </motion.span>
         </Link>
 
