@@ -88,17 +88,27 @@ export const ingestMediaLecon = onRequest(
       if (d.wistiaHash) {
         const j = await (await fetch(`https://fast.wistia.net/embed/medias/${d.wistiaHash}.json`)).json() as any;
         const assets = (j.media?.assets || []) as Array<{ type: string; url: string; size: number; ext?: string }>;
-        const hd = assets.filter(a => a.type === 'hd_mp4_video').sort((a, b) => b.size - a.size)[0]
-          || assets.filter(a => a.type === 'mp4_video').sort((a, b) => b.size - a.size)[0]
-          || assets.find(a => a.type === 'original');
+        // mp4 le plus LÉGER en HD (économie mémoire), sinon mp4 standard.
+        const mp4s = assets.filter(a => /mp4/.test(a.type)).sort((a, b) => a.size - b.size);
+        const hd = mp4s.find(a => a.type === 'hd_mp4_video') || mp4s[0] || assets.find(a => a.type === 'original');
         if (hd) {
           let url = hd.url;
           if (!/\.(mp4|bin)/.test(url)) url += '.mp4';
-          const buf = Buffer.from(await (await fetch(url)).arrayBuffer());
           chemin = `${base}/video.mp4`;
-          await bucket.file(chemin).save(buf, { contentType: 'video/mp4', resumable: false });
-          fichiers.push(chemin);
-          type = 'video';
+          // Streaming : la réponse se déverse directement dans Storage, sans
+          // charger toute la vidéo en mémoire.
+          const resp = await fetch(url);
+          if (resp.ok && resp.body) {
+            const { Readable } = await import('stream');
+            const nodeStream = Readable.fromWeb(resp.body as any);
+            await new Promise<void>((resolve, reject) => {
+              const ws = bucket.file(chemin).createWriteStream({ contentType: 'video/mp4', resumable: false });
+              nodeStream.pipe(ws).on('finish', () => resolve()).on('error', reject);
+              nodeStream.on('error', reject);
+            });
+            fichiers.push(chemin);
+            type = 'video';
+          } else { chemin = ''; }
         }
       }
       // Fichiers S3 (audio, PDF).
