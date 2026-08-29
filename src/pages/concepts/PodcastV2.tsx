@@ -36,7 +36,15 @@ type Episode = {
   audio: string;
   /** Vignette propre à l'épisode (itunes:image de l'item), sinon la pochette. */
   image: string;
+  season: 1 | 2;
 };
+
+// La saison 2 a été lancée en 2026. Les épisodes publiés à partir de cette
+// année sont classés Saison 2, les autres Saison 1.
+function seasonFromDate(pubDate: string): 1 | 2 {
+  const y = new Date(pubDate).getFullYear();
+  return y >= 2026 ? 2 : 1;
+}
 
 async function fetchFeedXml(): Promise<string> {
   for (const mk of PROXIES) {
