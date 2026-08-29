@@ -13,3 +13,4 @@ export { newsletterAssistant } from './newsletter/assistant';
 export { verifierCaptcha } from './captcha';
 export { creerSessionPaiement, stripeWebhook, obtenirLecon } from './paiements';
 export { murVoteBillet, murVoteCommentaire, murCommentaireCompte } from './mur';
+export { badgeAchatFormation, badgePremierBillet, badgeAmitieAcceptee } from './badges';
