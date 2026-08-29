@@ -107,6 +107,22 @@ service cloud.firestore {
         && request.resource.data.exposes.size() <= 5;
       allow create, delete: if false;
     }
+    // ── Parrainage : le code est public en lecture (résolution du lien);
+    // chacun crée le sien; la filiation s'écrit une fois par la filleule.
+    // Le compteur et les badges viennent du serveur (parrainage.ts).
+    match /codesParrain/{code} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+    match /parrainages/{filleulUid} {
+      allow read: if isSelf(filleulUid) || isAdmin();
+      allow create: if isSelf(filleulUid)
+                    && request.resource.data.parrainUid is string
+                    && request.resource.data.parrainUid != request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
     match /signalements/{id} {
       allow create: if isSignedIn();
       allow read, update, delete: if isAdmin();
