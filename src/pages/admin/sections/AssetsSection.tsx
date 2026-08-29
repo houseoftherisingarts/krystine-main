@@ -144,7 +144,7 @@ const AssetsSection: React.FC = () => {
           <div className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{erreurTeleversement}</div>
         )}
         {media.length === 0 ? (
-          <p className="font-serif italic text-sm text-[#2a2015]/50 dark:text-white/50">
+          <p className="font-serif text-sm text-[#2a2015]/50 dark:text-white/50">
             La médiathèque est vide pour l’instant.
           </p>
         ) : (
