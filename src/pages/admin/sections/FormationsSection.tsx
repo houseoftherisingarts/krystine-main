@@ -117,6 +117,7 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
         dateSortie: evergreen ? null : (dateSortie || null),
         lancementOrchestre: lancement,
         messageAcheteursEnvoye: message,
+        categorie,
       };
       await updateFormationOptions(f.id, options);
       setSaved(true);
