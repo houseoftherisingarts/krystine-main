@@ -320,8 +320,11 @@ const ClientPortal: React.FC = () => {
         <BanniereUpload uid={user.uid} />
         <div className="absolute inset-x-0 bottom-0">
           <div className="mx-auto flex max-w-7xl items-end gap-5 px-6 pb-5">
-            <div
-              className="h-28 w-28 shrink-0 rounded-full border-4 border-[#f6f3ee] bg-cover bg-center bg-[#efe7db] shadow-xl md:h-32 md:w-32 dark:border-[#16100a]"
+            <button
+              type="button"
+              onClick={() => setEditOuvert(true)}
+              title={lang === 'FR' ? 'Modifier mon profil' : 'Edit my profile'}
+              className="group relative h-28 w-28 shrink-0 overflow-hidden rounded-full border-4 border-[#f6f3ee] bg-cover bg-center bg-[#efe7db] shadow-xl md:h-32 md:w-32 dark:border-[#16100a]"
               style={{ backgroundImage: (member?.photoURL || user.photoURL) ? `url(${member?.photoURL || user.photoURL})` : undefined }}
             >
               {!member?.photoURL && !user.photoURL && (
@@ -329,7 +332,10 @@ const ClientPortal: React.FC = () => {
                   <i className="fa-solid fa-user text-3xl" />
                 </div>
               )}
-            </div>
+              <span className="absolute inset-0 flex items-center justify-center bg-[#16100a]/50 opacity-0 transition-opacity group-hover:opacity-100">
+                <i className="fa-solid fa-pen text-white" />
+              </span>
+            </button>
             <div className="min-w-0 flex-1 pb-1">
               <h1 className="flex items-center gap-2.5 truncate font-serif text-3xl text-white md:text-4xl" style={{ letterSpacing: '-0.01em', textShadow: '0 2px 18px rgba(0,0,0,0.45)' }}>
                 <span className="truncate">{member?.displayName || user.displayName || user.email?.split('@')[0]}</span>
