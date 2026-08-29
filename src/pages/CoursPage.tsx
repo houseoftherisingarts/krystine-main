@@ -10,10 +10,13 @@ const CoursPage: React.FC = () => {
   const { lang } = useUI();
   const [formations, setFormations] = useState<Formation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filtre, setFiltre] = useState<'tous' | 'cours' | 'musique'>('tous');
 
   useEffect(() => {
     getFormationsPubliees().then(setFormations).finally(() => setLoading(false));
   }, []);
+
+  const visibles = formations.filter(f => filtre === 'tous' || (f.categorie || 'cours') === filtre);
 
   return (
     <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-32 pb-24">
