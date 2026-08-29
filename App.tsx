@@ -235,6 +235,10 @@ const App: React.FC = () => (
           <Route path="/cours" element={<CoursPage />} />
           <Route path="/cours/:id" element={<CoursDetailPage />} />
           <Route path="/espace" element={<CommunauteEspace />} />
+          <Route path="/membres" element={<CommunauteMembres />} />
+          <Route path="/membre/:uid" element={<MembreProfilPage />} />
+          <Route path="/messages" element={<MessagesPage />} />
+          <Route path="/messages/:autreUid" element={<MessagesPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/desinscription" element={<UnsubscribePage />} />
           {/* Hidden / unlisted — slide-style background of the home hero */}
