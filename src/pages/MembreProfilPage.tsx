@@ -23,6 +23,10 @@ const MembreProfilPage: React.FC = () => {
   const [profil, setProfil] = useState<MemberDoc | null>(null);
   const [chargement, setChargement] = useState(true);
   const [amities, setAmities] = useState<Amitie[]>([]);
+  const [badges, setBadges] = useState<string[]>([]);
+  const [publications, setPublications] = useState<PostMur[]>([]);
+  useEffect(() => { if (uid) getBadgesDe(uid).then(setBadges).catch(() => {}); }, [uid]);
+  useEffect(() => (uid ? suivrePublicationsDe(uid, setPublications) : undefined), [uid]);
   const [envoi, setEnvoi] = useState(false);
 
   useEffect(() => {
