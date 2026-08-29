@@ -63,7 +63,7 @@ export const importKajabiStructure = onRequest(
 // 2) Télécharge le média d'UNE leçon (vidéo Wistia + fichiers S3) côté serveur
 //    et le ré-héberge dans Storage. Appelée en parallèle, une leçon par appel.
 export const ingestMediaLecon = onRequest(
-  { region: 'us-central1', timeoutSeconds: 540, memory: '2GiB', cors: true },
+  { region: 'us-central1', timeoutSeconds: 540, memory: '4GiB', cors: true },
   async (req, res) => {
     if (req.query.secret !== JETON) { res.status(403).send('non'); return; }
     const formationId = String(req.query.formationId || req.body?.formationId || '');
