@@ -122,7 +122,7 @@ const ClientAmis: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">{lang === 'FR' ? 'Demandes reçues' : 'Requests received'}</p>
           <div className="mt-3 space-y-2">
             {recues.map(l => { const { autre, nom, m } = ligne(l); return (
-              <Rangee key={l.id} autre={autre} nom={nom} m={m ?? null} enfant={
+              <Rangee key={autre} autre={autre} nom={nom} m={m ?? null} enfant={
                 <div className="flex shrink-0 gap-2">
                   <button onClick={() => accepterAmitie(uid, autre)} className="rounded-full bg-[#bb9a5e] px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#2a2015] hover:bg-[#a3823f]">{lang === 'FR' ? 'Accepter' : 'Accept'}</button>
                   <button onClick={() => refuserAmitie(uid, autre)} className="rounded-full border border-[#3a3126]/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#3a3126]/50 hover:text-red-500 dark:border-white/15 dark:text-white/50">{lang === 'FR' ? 'Refuser' : 'Decline'}</button>
@@ -141,7 +141,7 @@ const ClientAmis: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
           </p>
         ) : (
           <div className="mt-3 space-y-2">
-            {amis.map(l => { const { autre, nom, m } = ligne(l); return <Rangee key={l.id} autre={autre} nom={nom} m={m ?? null} />; })}
+            {amis.map(l => { const { autre, nom, m } = ligne(l); return <Rangee key={autre} autre={autre} nom={nom} m={m ?? null} />; })}
           </div>
         )}
       </div>
@@ -149,7 +149,7 @@ const ClientAmis: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">{lang === 'FR' ? 'Demandes envoyées' : 'Requests sent'}</p>
           <div className="mt-3 space-y-2">
-            {envoyees.map(l => { const { autre, nom, m } = ligne(l); return <Rangee key={l.id} autre={autre} nom={nom} m={m ?? null} enfant={<span className="text-[10px] uppercase tracking-widest text-[#3a3126]/40 dark:text-white/40">{lang === 'FR' ? 'En attente' : 'Pending'}</span>} />; })}
+            {envoyees.map(l => { const { autre, nom, m } = ligne(l); return <Rangee key={autre} autre={autre} nom={nom} m={m ?? null} enfant={<span className="text-[10px] uppercase tracking-widest text-[#3a3126]/40 dark:text-white/40">{lang === 'FR' ? 'En attente' : 'Pending'}</span>} />; })}
           </div>
         </div>
       )}
