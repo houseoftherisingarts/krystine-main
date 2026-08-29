@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, User, Music, Moon, Sun, Menu, X } from 'lucide-react';
 import { useUI, useAuth, useCart, useBoutique } from '../../contexts/AppContext';
 import Cloche from '../communaute/Cloche';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
 
 interface NavItem { href: string; labelFR: string; labelEN: string; }
 
