@@ -10,14 +10,14 @@ export const Card: React.FC<{ children: React.ReactNode; className?: string }> =
 export const Input: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = (props) => (
   <input
     {...props}
-    className={`w-full px-4 py-3 rounded-xl border border-[#2a2015]/10 dark:border-white/10 focus:border-[#bb9a5e] outline-none bg-[#f6f3ee] dark:bg-white/5 text-[#2a2015] dark:text-white transition-colors ${props.className || ''}`}
+    className={`w-full px-4 py-3 rounded-xl border border-[#3a3126]/10 dark:border-white/10 focus:border-[#bb9a5e] outline-none bg-white/60 dark:bg-white/5 text-[#2a2015] dark:text-white transition-colors ${props.className || ''}`}
   />
 );
 
 export const Textarea: React.FC<React.TextareaHTMLAttributes<HTMLTextAreaElement>> = (props) => (
   <textarea
     {...props}
-    className={`w-full px-4 py-3 rounded-xl border border-[#2a2015]/10 dark:border-white/10 focus:border-[#bb9a5e] outline-none bg-[#f6f3ee] dark:bg-white/5 text-[#2a2015] dark:text-white transition-colors resize-y ${props.className || ''}`}
+    className={`w-full px-4 py-3 rounded-xl border border-[#3a3126]/10 dark:border-white/10 focus:border-[#bb9a5e] outline-none bg-white/60 dark:bg-white/5 text-[#2a2015] dark:text-white transition-colors resize-y ${props.className || ''}`}
   />
 );
 
