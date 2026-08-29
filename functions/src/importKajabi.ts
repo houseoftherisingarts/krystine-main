@@ -26,12 +26,14 @@ export const stashSkeleton = onRequest(
     if (req.method === 'POST') {
       const id = String(req.body?.productId || '');
       if (!id) { res.status(400).send('id'); return; }
-      await db.doc(`_kajabiStash/${id}`).set({ skeleton: req.body.skeleton || [], slug: req.body.slug || '' });
+      // Firestore refuse les tableaux imbriqués : on garde le squelette en JSON.
+      await db.doc(`_kajabiStash/${id}`).set({ skeletonJson: JSON.stringify(req.body.skeleton || []), slug: req.body.slug || '' });
       res.status(200).json({ ok: true, n: (req.body.skeleton || []).length });
     } else {
       const id = String(req.query.productId || '');
       const snap = await db.doc(`_kajabiStash/${id}`).get();
-      res.status(200).json(snap.exists ? snap.data() : { skeleton: [], slug: '' });
+      const data = snap.exists ? snap.data() : {};
+      res.status(200).json({ slug: (data as any)?.slug || '', skeleton: JSON.parse((data as any)?.skeletonJson || '[]') });
     }
   },
 );
