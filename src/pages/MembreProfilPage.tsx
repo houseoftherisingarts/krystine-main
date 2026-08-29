@@ -72,7 +72,9 @@ const MembreProfilPage: React.FC = () => {
     );
   }
 
-  const nom = profil.displayName || profil.email.split('@')[0];
+  // Jamais dériver le nom du courriel : rien de contactable hors plateforme
+  // ne doit fuiter sur un profil public.
+  const nom = profil.displayName || 'Membre';
   const soi = user.uid === uid;
   const amis = estAmi(amities, user.uid, uid);
   const enAttente = amitieEnAttente(amities, user.uid, uid);
