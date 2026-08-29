@@ -40,8 +40,43 @@ const BanniereUpload: React.FC<{ uid: string }> = ({ uid }) => {
   );
 };
 
+// Le panneau d'invitation : le lien de parrainage du membre, avec les
+// paliers de badges (1, 5, 10 et 20 filleules).
+const ParrainagePanel: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
+  const [lien, setLien] = useState('');
+  const [copie, setCopie] = useState(false);
+  useEffect(() => {
+    monCodeParrain(uid).then(code => setLien(`https://www.krystinestlaurent.ca/compte?parrain=${code}`)).catch(() => {});
+  }, [uid]);
+  const copier = async () => {
+    try { await navigator.clipboard.writeText(lien); setCopie(true); setTimeout(() => setCopie(false), 2000); } catch { /* noop */ }
+  };
+  return (
+    <div className="rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#2a2015]/55">
+      <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">
+        {lang === 'FR' ? 'Invitez vos proches' : 'Invite your circle'}
+      </p>
+      <p className="mt-2 text-xs text-[#3a3126]/60 dark:text-white/60">
+        {lang === 'FR'
+          ? 'Partagez votre lien : chaque personne qui crée son compte par lui devient votre filleule, et des badges honorifiques vous attendent à 1, 5, 10 et 20 invitations.'
+          : 'Share your link: each person who joins through it becomes your invitee, and honorary badges await at 1, 5, 10 and 20 invitations.'}
+      </p>
+      {lien && (
+        <button
+          type="button"
+          onClick={copier}
+          className="mt-3 flex w-full items-center gap-2 rounded-full border border-[#bb9a5e]/50 bg-white/60 px-4 py-2 text-left text-[11px] text-[#3a3126]/80 transition-colors hover:border-[#bb9a5e] dark:bg-white/5 dark:text-white/80"
+        >
+          <i className={`fa-solid ${copie ? 'fa-check text-green-600' : 'fa-copy text-[#7d6330]'}`} />
+          <span className="truncate">{copie ? (lang === 'FR' ? 'Lien copié !' : 'Link copied!') : lien}</span>
+        </button>
+      )}
+    </div>
+  );
+};
+
 // Le rail droit : la vie de la communauté entre dans l'espace personnel.
-const RailCommunaute: React.FC<{ lang: string }> = ({ lang }) => {
+const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) => {
   const [posts, setPosts] = useState<PostMur[]>([]);
   useEffect(() => suivreLeMur('communaute', p => setPosts(p.slice(0, 5)), 5), []);
   return (
