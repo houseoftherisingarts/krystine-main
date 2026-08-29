@@ -113,6 +113,7 @@ const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) 
           <Link to="/messages" className="flex items-center gap-3 text-[#3a3126]/80 hover:text-[#7d6330] dark:text-white/80"><i className="fa-solid fa-envelope w-4 text-[#7d6330]" />{lang === 'FR' ? 'Mes messages' : 'My messages'}</Link>
         </div>
       </div>
+      <ParrainagePanel uid={uid} lang={lang} />
     </aside>
   );
 };
