@@ -88,7 +88,7 @@ const AssetsSection: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Le visuel du Foyer, prêt à publier */}
-      <Card className="overflow-hidden border-[#bb9a5e]/20 bg-gradient-to-br from-[#2a2015] to-[#4A3228] text-white">
+      <Card className="overflow-hidden border-[#bb9a5e]/40">
         <div className="flex flex-col gap-6 p-6 md:flex-row md:items-center">
           <video
             src="/assets/foyer-visuel-16x9.mp4"
