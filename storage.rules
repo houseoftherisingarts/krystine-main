@@ -14,6 +14,14 @@ service firebase.storage {
         ];
     }
 
+    // Le contenu des formations est privé : aucune lecture directe. Les
+    // acheteuses reçoivent une URL signée par la fonction obtenirLecon.
+    match /formations-contenu/{allPaths=**} {
+      allow read: if false;
+      allow write: if isAdmin()
+                   && request.resource.size < 2 * 1024 * 1024 * 1024;  // 2 GB par leçon
+    }
+
     match /{allPaths=**} {
       allow read: if true;
       allow write: if isAdmin()
