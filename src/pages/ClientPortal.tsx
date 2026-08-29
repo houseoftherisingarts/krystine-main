@@ -191,8 +191,11 @@ const ClientPortal: React.FC = () => {
               )}
             </div>
             <div className="min-w-0 flex-1 pb-1">
-              <h1 className="truncate font-serif text-3xl text-white md:text-4xl" style={{ letterSpacing: '-0.01em', textShadow: '0 2px 18px rgba(0,0,0,0.45)' }}>
-                {member?.displayName || user.displayName || user.email?.split('@')[0]}
+              <h1 className="flex items-center gap-2.5 truncate font-serif text-3xl text-white md:text-4xl" style={{ letterSpacing: '-0.01em', textShadow: '0 2px 18px rgba(0,0,0,0.45)' }}>
+                <span className="truncate">{member?.displayName || user.displayName || user.email?.split('@')[0]}</span>
+                {(member?.verifie || isAdmin) && (
+                  <i className="fa-solid fa-circle-check shrink-0 text-xl text-[#4da3ff]" title={lang === 'FR' ? 'Profil vérifié' : 'Verified profile'} />
+                )}
               </h1>
               <div className="mt-1.5 flex flex-wrap items-center gap-2">
                 {member?.dosha && (
