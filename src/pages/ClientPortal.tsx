@@ -19,7 +19,143 @@ import ClientLoyalty from './client/ClientLoyalty';
 import ClientFormations from './client/ClientFormations';
 import { subscribeToMemberPoints, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
 
-type Tab = 'profile' | 'orders' | 'formations' | 'loyalty' | 'dosha' | 'archives' | 'support';
+type Tab = 'profile' | 'amis' | 'orders' | 'formations' | 'loyalty' | 'dosha' | 'archives' | 'support';
+
+// L'onglet Profil en lecture : la fiche (courriel, téléphone, dosha, badges)
+// et surtout LE MUR de la personne. L'édition s'ouvre en cliquant sur la
+// photo de la bannière.
+const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string; lang: string }> = ({ uid, member, email, lang }) => {
+  const [posts, setPosts] = useState<PostMur[]>([]);
+  const [badges, setBadges] = useState<string[]>([]);
+  useEffect(() => suivrePublicationsDe(uid, setPosts), [uid]);
+  useEffect(() => { getBadgesDe(uid).then(setBadges).catch(() => {}); }, [uid]);
+  return (
+    <div className="space-y-8">
+      <div className="grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2">
+        <p className="text-[#3a3126]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#7d6330]">Courriel</span>{email}</p>
+        {member?.phone && <p className="text-[#3a3126]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#7d6330]">Téléphone</span>{member.phone}</p>}
+        {member?.dosha && <p className="text-[#3a3126]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#7d6330]">Dosha</span><span className="capitalize">{member.dosha}</span></p>}
+      </div>
+      {badges.length > 0 && (
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">Badges</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {badges.map(id => (
+              <span key={id} className="inline-flex items-center gap-2 rounded-full border border-[#bb9a5e]/40 bg-[#bb9a5e]/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#7d6330]">
+                <i className={`fa-solid ${CATALOGUE_BADGES[id].icone}`} /> {CATALOGUE_BADGES[id].nom}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+      <div>
+        <div className="flex items-baseline justify-between gap-3">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">{lang === 'FR' ? 'Mon mur' : 'My wall'}</p>
+          <Link to="/espace" className="text-[11px] font-bold uppercase tracking-widest text-[#7d6330] hover:text-[#bb9a5e]">
+            {lang === 'FR' ? 'Publier' : 'Post'} <i className="fa-solid fa-pen" />
+          </Link>
+        </div>
+        {posts.length === 0 ? (
+          <p className="mt-3 text-sm text-[#3a3126]/50 dark:text-white/50">
+            {lang === 'FR' ? 'Vous n\'avez encore rien publié. Votre mur montre vos publications de la communauté.' : 'Nothing posted yet. Your wall shows your community posts.'}
+          </p>
+        ) : (
+          <div className="mt-3 space-y-3">
+            {posts.map(p => (
+              <div key={p.id} className="rounded-[15px] border border-[#3a3126]/10 p-4 dark:border-white/10">
+                <p className="whitespace-pre-line text-sm text-[#2a2015] dark:text-white">{p.texte}</p>
+                {p.photoUrl && <img src={p.photoUrl} alt="" className="mt-3 max-h-72 rounded-[12px] object-cover" />}
+                <p className="mt-2 text-[11px] text-[#3a3126]/40 dark:text-white/40">
+                  {p.creeLe?.toDate?.().toLocaleDateString('fr-CA')} · {(p.pour || 0)} <i className="fa-solid fa-heart text-[#bb9a5e]" /> · {p.nbCommentaires || 0} <i className="fa-solid fa-comment" />
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// L'onglet Amis : les demandes reçues à accepter, puis le cercle.
+const ClientAmis: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
+  const [liens, setLiens] = useState<Amitie[]>([]);
+  const [fiches, setFiches] = useState<Record<string, MemberDoc | null>>({});
+  useEffect(() => suivreMesAmities(uid, setLiens), [uid]);
+  useEffect(() => {
+    const autres = [...new Set(liens.map(l => l.paire.find(u => u !== uid)!).filter(Boolean))];
+    autres.forEach(autre => {
+      if (fiches[autre] !== undefined) return;
+      getMember(autre).then(m => setFiches(f => ({ ...f, [autre]: m }))).catch(() => {});
+    });
+  }, [liens, uid]);
+
+  const ligne = (l: Amitie) => {
+    const autre = l.paire.find(u => u !== uid)!;
+    const m = fiches[autre];
+    const nom = m?.displayName || m?.email?.split('@')[0] || '…';
+    return { autre, m, nom };
+  };
+  const recues = liens.filter(l => l.statut === 'demande' && l.de !== uid);
+  const envoyees = liens.filter(l => l.statut === 'demande' && l.de === uid);
+  const amis = liens.filter(l => l.statut === 'amis');
+
+  const Rangee: React.FC<{ autre: string; nom: string; m: MemberDoc | null; enfant?: React.ReactNode }> = ({ autre, nom, m, enfant }) => (
+    <div className="flex items-center gap-3 rounded-[15px] border border-[#3a3126]/10 p-3 dark:border-white/10">
+      <Link to={`/membre/${autre}`} className="flex min-w-0 flex-1 items-center gap-3">
+        <div className="h-10 w-10 shrink-0 rounded-full bg-cover bg-center bg-[#bb9a5e]/15" style={{ backgroundImage: m?.photoURL ? `url(${m.photoURL})` : undefined }}>
+          {!m?.photoURL && <div className="flex h-full w-full items-center justify-center text-[#7d6330]"><i className="fa-solid fa-user text-sm" /></div>}
+        </div>
+        <span className="flex min-w-0 items-center gap-1.5 truncate text-sm font-medium text-[#2a2015] dark:text-white">
+          <span className="truncate">{nom}</span>
+          {m?.verifie && <i className="fa-solid fa-circle-check shrink-0 text-[12px] text-[#3b82f6]" />}
+        </span>
+      </Link>
+      {enfant}
+    </div>
+  );
+
+  return (
+    <div className="space-y-8">
+      {recues.length > 0 && (
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">{lang === 'FR' ? 'Demandes reçues' : 'Requests received'}</p>
+          <div className="mt-3 space-y-2">
+            {recues.map(l => { const { autre, nom, m } = ligne(l); return (
+              <Rangee key={l.id} autre={autre} nom={nom} m={m ?? null} enfant={
+                <div className="flex shrink-0 gap-2">
+                  <button onClick={() => accepterAmitie(uid, autre)} className="rounded-full bg-[#bb9a5e] px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#2a2015] hover:bg-[#a3823f]">{lang === 'FR' ? 'Accepter' : 'Accept'}</button>
+                  <button onClick={() => refuserAmitie(uid, autre)} className="rounded-full border border-[#3a3126]/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#3a3126]/50 hover:text-red-500 dark:border-white/15 dark:text-white/50">{lang === 'FR' ? 'Refuser' : 'Decline'}</button>
+                </div>
+              } />
+            ); })}
+          </div>
+        </div>
+      )}
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">{lang === 'FR' ? 'Mes amis' : 'My friends'} ({amis.length})</p>
+        {amis.length === 0 ? (
+          <p className="mt-3 text-sm text-[#3a3126]/50 dark:text-white/50">
+            {lang === 'FR' ? 'Votre cercle commence dans l\'annuaire de la communauté.' : 'Your circle begins in the community directory.'}
+            {' '}<Link to="/membres" className="text-[#7d6330] underline-offset-2 hover:underline">{lang === 'FR' ? 'Voir les membres' : 'See members'}</Link>
+          </p>
+        ) : (
+          <div className="mt-3 space-y-2">
+            {amis.map(l => { const { autre, nom, m } = ligne(l); return <Rangee key={l.id} autre={autre} nom={nom} m={m ?? null} />; })}
+          </div>
+        )}
+      </div>
+      {envoyees.length > 0 && (
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">{lang === 'FR' ? 'Demandes envoyées' : 'Requests sent'}</p>
+          <div className="mt-3 space-y-2">
+            {envoyees.map(l => { const { autre, nom, m } = ligne(l); return <Rangee key={l.id} autre={autre} nom={nom} m={m ?? null} enfant={<span className="text-[10px] uppercase tracking-widest text-[#3a3126]/40 dark:text-white/40">{lang === 'FR' ? 'En attente' : 'Pending'}</span>} />; })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Le bouton discret en haut à droite de la bannière : téléverser la sienne.
 const BanniereUpload: React.FC<{ uid: string }> = ({ uid }) => {
