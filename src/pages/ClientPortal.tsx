@@ -130,6 +130,11 @@ const ClientPortal: React.FC = () => {
     return unsub;
   }, [user]);
 
+  // Parrainage : retenir le code du lien d'invitation, puis le réclamer une
+  // fois connecté (une seule fois, jamais soi-même).
+  useEffect(() => { retenirCodeDepuisUrl(); }, []);
+  useEffect(() => { if (user) reclamerCodeRetenu(user.uid).catch(() => {}); }, [user]);
+
   if (!user) {
     return (
       <div className="min-h-screen dark:bg-[#16100a] pt-32 pb-24 px-6">
