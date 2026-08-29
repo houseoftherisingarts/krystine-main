@@ -103,6 +103,7 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
   const [dateSortie, setDateSortie] = useState(f.dateSortie || '');
   const [lancement, setLancement] = useState(!!f.lancementOrchestre);
   const [message, setMessage] = useState(!!f.messageAcheteursEnvoye);
+  const [categorie, setCategorie] = useState<'cours' | 'musique'>(f.categorie || 'cours');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
