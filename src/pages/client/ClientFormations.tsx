@@ -85,7 +85,7 @@ const ClientFormations: React.FC = () => {
             {aDecouvrir.map(f => (
               <Link
                 key={f.id}
-                to={`/cours/${f.id}`}
+                to={f.lienFiche || `/cours/${f.id}`}
                 className="group overflow-hidden rounded-[15px] border border-[#bb9a5e]/30 transition-transform duration-300 hover:-translate-y-0.5"
               >
                 {f.imageUrl ? (
