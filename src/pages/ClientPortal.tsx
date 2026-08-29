@@ -15,6 +15,70 @@ import { subscribeToMemberPoints, type PointsBalance, DEFAULT_POINTS_BALANCE } f
 
 type Tab = 'profile' | 'orders' | 'formations' | 'loyalty' | 'dosha' | 'archives' | 'support';
 
+// Le bouton discret en haut à droite de la bannière : téléverser la sienne.
+const BanniereUpload: React.FC<{ uid: string }> = ({ uid }) => {
+  const [busy, setBusy] = useState(false);
+  const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setBusy(true);
+    try {
+      const { url } = await uploadImage(file, 'bannieres');
+      await updateMember(uid, { bannerURL: url });
+      window.location.reload();
+    } finally { setBusy(false); }
+  };
+  return (
+    <label className="absolute right-4 top-4 inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-[#16100a]/40 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md transition-colors hover:bg-[#16100a]/60">
+      <i className="fa-solid fa-image" />
+      {busy ? 'Téléversement…' : 'Changer la bannière'}
+      <input type="file" accept="image/*" className="hidden" onChange={onFile} disabled={busy} />
+    </label>
+  );
+};
+
+// Le rail droit : la vie de la communauté entre dans l'espace personnel.
+const RailCommunaute: React.FC<{ lang: string }> = ({ lang }) => {
+  const [posts, setPosts] = useState<PostMur[]>([]);
+  useEffect(() => suivreLeMur('communaute', p => setPosts(p.slice(0, 5)), 5), []);
+  return (
+    <aside className="space-y-4">
+      <div className="rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#2a2015]/55">
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">
+          {lang === 'FR' ? 'La communauté' : 'Community'}
+        </p>
+        {posts.length === 0 ? (
+          <p className="mt-3 text-sm text-[#3a3126]/50 dark:text-white/50">
+            {lang === 'FR' ? 'Les premières publications arrivent bientôt.' : 'First posts coming soon.'}
+          </p>
+        ) : (
+          <div className="mt-3 space-y-3">
+            {posts.map(p => (
+              <Link key={p.id} to="/espace" className="block rounded-[14px] bg-white/50 p-3 transition-colors hover:bg-white/80 dark:bg-white/5 dark:hover:bg-white/10">
+                <p className="text-xs font-semibold text-[#2a2015] dark:text-white">{p.nom}</p>
+                <p className="mt-0.5 line-clamp-2 text-xs text-[#3a3126]/60 dark:text-white/60">{p.texte}</p>
+              </Link>
+            ))}
+          </div>
+        )}
+        <Link to="/espace" className="mt-4 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#7d6330] hover:text-[#bb9a5e]">
+          {lang === 'FR' ? 'Ouvrir mon espace' : 'Open my space'} <i className="fa-solid fa-arrow-right" />
+        </Link>
+      </div>
+      <div className="rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#2a2015]/55">
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">
+          {lang === 'FR' ? 'Raccourcis' : 'Shortcuts'}
+        </p>
+        <div className="mt-3 space-y-2 text-sm">
+          <Link to="/cours" className="flex items-center gap-3 text-[#3a3126]/80 hover:text-[#7d6330] dark:text-white/80"><i className="fa-solid fa-graduation-cap w-4 text-[#7d6330]" />{lang === 'FR' ? 'Les formations' : 'Courses'}</Link>
+          <Link to="/membres" className="flex items-center gap-3 text-[#3a3126]/80 hover:text-[#7d6330] dark:text-white/80"><i className="fa-solid fa-users w-4 text-[#7d6330]" />{lang === 'FR' ? 'Voir la communauté' : 'See the community'}</Link>
+          <Link to="/messages" className="flex items-center gap-3 text-[#3a3126]/80 hover:text-[#7d6330] dark:text-white/80"><i className="fa-solid fa-envelope w-4 text-[#7d6330]" />{lang === 'FR' ? 'Mes messages' : 'My messages'}</Link>
+        </div>
+      </div>
+    </aside>
+  );
+};
+
 const ClientPortal: React.FC = () => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
   const [tab, setTab] = useState<Tab>('profile');
