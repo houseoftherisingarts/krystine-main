@@ -73,36 +73,18 @@ const NavBar: React.FC = () => {
         <ul className="hidden xl:flex items-center gap-1 2xl:gap-2">
           {NAV.map((item, i) => {
             const active = isActive(item.href);
-            const isPrimary = item.href === '/boutique';
-            if (isPrimary) {
-              const resolved = resolveHref(item.href);
-              const btnClass = `group inline-flex items-center gap-2 whitespace-nowrap px-5 py-2.5 text-[10px] 2xl:text-[11px] uppercase tracking-[0.2em] font-sans font-semibold rounded-full transition-colors duration-300 min-h-[44px] ${
-                active
-                  ? 'bg-espressoSoft text-brassBright border border-brass'
-                  : 'bg-brass text-espressoDeep border border-brass hover:bg-brassBright shadow-[0_6px_20px_rgba(187,154,94,0.30)]'
-              }`;
-              return (
-                <motion.li
-                  key={item.href}
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, delay: 0.18 + i * 0.04, ease: 'easeOut' }}
-                  className="ml-2"
-                >
-                  {resolved.external ? (
-                    <a href={resolved.href} className={btnClass}>
-                      <ShoppingBag size={13} strokeWidth={2} />
-                      {label(item)}
-                    </a>
-                  ) : (
-                    <Link to={resolved.href} className={btnClass}>
-                      <ShoppingBag size={13} strokeWidth={2} />
-                      {label(item)}
-                    </Link>
-                  )}
-                </motion.li>
-              );
-            }
+            const resolved = resolveHref(item.href);
+            const cls = `group relative whitespace-nowrap px-3 2xl:px-4 py-2.5 text-[10px] 2xl:text-[11px] uppercase tracking-[0.15em] 2xl:tracking-[0.18em] font-sans font-medium transition-colors duration-300 ${
+              active ? 'text-brassInk dark:text-brassBright' : 'text-ink/80 dark:text-ctext/80 hover:text-brassInk dark:hover:text-brassBright'
+            }`;
+            const underline = (
+              <span
+                className={`pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-brass transition-transform duration-300 ${
+                  active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                }`}
+                style={{ transformOrigin: 'center' }}
+              />
+            );
             return (
               <motion.li
                 key={item.href}
@@ -110,21 +92,11 @@ const NavBar: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: 0.18 + i * 0.04, ease: 'easeOut' }}
               >
-                <Link
-                  to={item.href}
-                  className={`group relative whitespace-nowrap px-3 2xl:px-4 py-2.5 text-[10px] 2xl:text-[11px] uppercase tracking-[0.15em] 2xl:tracking-[0.18em] font-sans font-medium transition-colors duration-300 ${
-                    active ? 'text-brassInk dark:text-brassBright' : 'text-ink/80 dark:text-ctext/80 hover:text-brassInk dark:hover:text-brassBright'
-                  }`}
-                >
-                  {label(item)}
-                  {/* Animated brass underline */}
-                  <span
-                    className={`pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-brass transition-transform duration-300 ${
-                      active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
-                    }`}
-                    style={{ transformOrigin: 'center' }}
-                  />
-                </Link>
+                {resolved.external ? (
+                  <a href={resolved.href} className={cls}>{label(item)}{underline}</a>
+                ) : (
+                  <Link to={resolved.href} className={cls}>{label(item)}{underline}</Link>
+                )}
               </motion.li>
             );
           })}
