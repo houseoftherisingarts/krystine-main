@@ -145,6 +145,39 @@ const MembreProfilPage: React.FC = () => {
               </button>
             </div>
           )}
+
+          {badges.length > 0 && (
+            <div className="mt-6 border-t border-[#3a3126]/10 pt-5 dark:border-white/10">
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">Badges</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {badges.map(id => (
+                  <span key={id} className="inline-flex items-center gap-2 rounded-full border border-[#bb9a5e]/40 bg-[#bb9a5e]/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#7d6330]">
+                    <i className={`fa-solid ${CATALOGUE_BADGES[id].icone}`} /> {CATALOGUE_BADGES[id].nom}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Le mur de la personne, comme sur Facebook */}
+        <div className="mt-6">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">Le mur de {nom}</p>
+          {publications.length === 0 ? (
+            <p className="mt-3 text-sm text-[#3a3126]/50 dark:text-white/50">Aucune publication pour le moment.</p>
+          ) : (
+            <div className="mt-3 space-y-3">
+              {publications.map(p => (
+                <div key={p.id} className="rounded-[20px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#2a2015]/55">
+                  <p className="whitespace-pre-line text-sm text-[#2a2015] dark:text-white">{p.texte}</p>
+                  {p.photoUrl && <img src={p.photoUrl} alt="" className="mt-3 max-h-80 rounded-[14px] object-cover" />}
+                  <p className="mt-2 text-[11px] text-[#3a3126]/40 dark:text-white/40">
+                    {p.creeLe?.toDate?.().toLocaleDateString('fr-CA')} · {p.pour || 0} <i className="fa-solid fa-heart text-[#bb9a5e]" /> · {p.nbCommentaires || 0} <i className="fa-solid fa-comment" />
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
