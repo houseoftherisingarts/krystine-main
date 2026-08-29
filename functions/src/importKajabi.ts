@@ -15,6 +15,27 @@ interface LeconIn {
   s3urls?: string[];
 }
 
+// 0) Relais : garde le squelette d'un cours (scrapé sur l'outline Kajabi) pour
+//    que le moissonneur du storefront le relise, les deux étant sur des
+//    origines différentes.
+export const stashSkeleton = onRequest(
+  { region: 'us-central1', cors: true },
+  async (req, res) => {
+    if (req.query.secret !== JETON) { res.status(403).send('non'); return; }
+    const db = getFirestore();
+    if (req.method === 'POST') {
+      const id = String(req.body?.productId || '');
+      if (!id) { res.status(400).send('id'); return; }
+      await db.doc(`_kajabiStash/${id}`).set({ skeleton: req.body.skeleton || [], slug: req.body.slug || '' });
+      res.status(200).json({ ok: true, n: (req.body.skeleton || []).length });
+    } else {
+      const id = String(req.query.productId || '');
+      const snap = await db.doc(`_kajabiStash/${id}`).get();
+      res.status(200).json(snap.exists ? snap.data() : { skeleton: [], slug: '' });
+    }
+  },
+);
+
 // 1) Écrit la structure + les textes d'un cours (rapide, sans média).
 export const importKajabiStructure = onRequest(
   { region: 'us-central1', timeoutSeconds: 300, memory: '512MiB', cors: true },
