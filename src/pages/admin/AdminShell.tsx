@@ -74,60 +74,69 @@ const AdminShell: React.FC<Props> = ({ user, section, onSectionChange, children 
   const current = NAV.find(n => n.id === section);
 
   return (
-    <div className="min-h-screen dark:bg-[#16100a] flex">
-      {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-40 w-72 bg-[#2a2015] text-white flex flex-col transform transition-transform duration-300 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:z-0`}>
-        <div className="px-6 pt-8 pb-6 border-b border-white/10">
-          <img src="https://storage.googleapis.com/inspirata/Vata/1%20(1).png" alt="Krystine St-Laurent" className="h-10 w-auto mb-4" style={{ filter: 'invert(1) brightness(1.5)' }} />
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[#7d6330] font-bold">Espace Auteure</p>
-          <p className="text-sm font-serif italic text-white/70 mt-1">Krystine St-Laurent</p>
-        </div>
-        <nav className="flex-1 overflow-y-auto py-4">
-          {NAV.map(item => {
-            const active = section === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => { onSectionChange(item.id); setMobileOpen(false); }}
-                className={`w-full flex items-center gap-3 px-6 py-3 text-sm text-left transition-colors border-l-4 ${active ? 'bg-white/5 border-[#bb9a5e] text-[#7d6330]' : 'border-transparent text-white/70 hover:text-white hover:bg-white/5'}`}
-              >
-                <i className={`fa-solid ${item.icon} w-4 text-center`} />
-                <span className="uppercase tracking-wider text-xs font-semibold">{item.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-        <div className="px-6 py-4 border-t border-white/10 text-xs text-white/60">
-          <div className="flex items-center gap-3 mb-3">
-            {user.photoURL && <img src={user.photoURL} alt="" className="w-8 h-8 rounded-full border border-[#bb9a5e]/30" />}
-            <div className="min-w-0">
-              <p className="truncate text-white">{user.displayName || user.email?.split('@')[0]}</p>
-              <p className="truncate text-white/50 text-[11px]">{user.email}</p>
-            </div>
+    <div
+      className="min-h-screen flex dark:bg-[#16100a]"
+      style={{ background: 'radial-gradient(120% 80% at 78% 0%, rgba(255,248,235,0.9), transparent 60%), #efe7db' }}
+    >
+      {/* Sidebar : panneau de verre flottant sur le parchemin */}
+      <aside className={`fixed inset-y-0 left-0 z-40 w-72 flex flex-col transform transition-transform duration-300 lg:translate-x-0 lg:static lg:z-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="m-3 flex min-h-0 flex-1 flex-col rounded-[24px] border border-white/60 bg-white/45 shadow-[0_18px_50px_-20px_rgba(58,49,38,0.35)] backdrop-blur-2xl dark:border-white/10 dark:bg-[#2a2015]/50">
+          <div className="border-b border-[#3a3126]/10 px-6 pt-7 pb-5 dark:border-white/10">
+            <img src="https://storage.googleapis.com/inspirata/Vata/1%20(1).png" alt="Krystine St-Laurent" className="mb-4 h-10 w-auto dark:brightness-150 dark:invert" />
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#7d6330]">Espace Auteure</p>
+            <p className="mt-1 font-serif text-sm text-[#3a3126]/80 dark:text-white/70">Krystine St-Laurent</p>
           </div>
-          <button onClick={handleLogout} className="w-full text-left text-[11px] uppercase tracking-widest text-white/50 hover:text-red-400 transition-colors">
-            <i className="fa-solid fa-right-from-bracket mr-2" /> Déconnexion
-          </button>
+          <nav className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
+            {NAV.map(item => {
+              const active = section === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => { onSectionChange(item.id); setMobileOpen(false); }}
+                  className={`mb-0.5 flex w-full items-center gap-3 rounded-full px-4 py-2.5 text-left text-sm transition-colors ${
+                    active
+                      ? 'bg-[#bb9a5e] text-[#2a2015] shadow-[0_6px_18px_-8px_rgba(163,130,63,0.7)]'
+                      : 'text-[#3a3126]/70 hover:bg-white/60 hover:text-[#3a3126] dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white'
+                  }`}
+                >
+                  <i className={`fa-solid ${item.icon} w-4 text-center ${active ? '' : 'text-[#7d6330]/70'}`} />
+                  <span className="text-xs font-semibold uppercase tracking-wider">{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+          <div className="border-t border-[#3a3126]/10 px-6 py-4 text-xs text-[#3a3126]/70 dark:border-white/10 dark:text-white/60">
+            <div className="mb-3 flex items-center gap-3">
+              {user.photoURL && <img src={user.photoURL} alt="" className="h-8 w-8 rounded-full border border-[#bb9a5e]/40" />}
+              <div className="min-w-0">
+                <p className="truncate text-[#3a3126] dark:text-white">{user.displayName || user.email?.split('@')[0]}</p>
+                <p className="truncate text-[11px] text-[#3a3126]/50 dark:text-white/50">{user.email}</p>
+              </div>
+            </div>
+            <button onClick={handleLogout} className="w-full text-left text-[11px] uppercase tracking-widest text-[#3a3126]/50 transition-colors hover:text-red-500 dark:text-white/50">
+              <i className="fa-solid fa-right-from-bracket mr-2" /> Déconnexion
+            </button>
+          </div>
         </div>
       </aside>
 
       {/* Mobile backdrop */}
-      {mobileOpen && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setMobileOpen(false)} />}
+      {mobileOpen && <div className="fixed inset-0 z-30 bg-[#3a3126]/40 backdrop-blur-sm lg:hidden" onClick={() => setMobileOpen(false)} />}
 
       {/* Main */}
-      <main className="flex-1 min-w-0">
-        <header className="bg-white dark:bg-[#2a2015] border-b border-[#2a2015]/10 dark:border-white/10 px-6 py-4 flex items-center gap-4 sticky top-0 z-20">
-          <button onClick={() => setMobileOpen(true)} className="lg:hidden w-8 h-8 text-[#2a2015] dark:text-white">
+      <main className="min-w-0 flex-1">
+        <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-white/50 bg-[#f6f3ee]/60 px-6 py-4 backdrop-blur-xl dark:border-white/10 dark:bg-[#16100a]/60">
+          <button onClick={() => setMobileOpen(true)} className="h-8 w-8 text-[#3a3126] lg:hidden dark:text-white">
             <i className="fa-solid fa-bars text-lg" />
           </button>
           <div className="flex-1">
-            <h1 className="text-xl md:text-2xl font-serif text-[#2a2015] dark:text-white">{current?.label}</h1>
+            <h1 className="font-serif text-xl text-[#2a2015] md:text-2xl dark:text-white" style={{ letterSpacing: '-0.01em' }}>{current?.label}</h1>
           </div>
-          <a href="/" target="_blank" rel="noopener noreferrer" className="text-xs uppercase tracking-widest text-[#2a2015]/50 dark:text-white/50 hover:text-[#7d6330] transition-colors">
+          <a href="/" target="_blank" rel="noopener noreferrer" className="text-xs uppercase tracking-widest text-[#3a3126]/50 transition-colors hover:text-[#7d6330] dark:text-white/50">
             <i className="fa-solid fa-up-right-from-square mr-2" /> Voir le site
           </a>
         </header>
-        <div className="p-6 md:p-10 max-w-6xl mx-auto">
+        <div className="mx-auto max-w-6xl p-6 md:p-10">
           {children}
         </div>
       </main>
