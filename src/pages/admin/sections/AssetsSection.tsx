@@ -103,8 +103,8 @@ const AssetsSection: React.FC = () => {
             <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.3em] text-[#7d6330]">
               Le visuel du Foyer
             </span>
-            <h2 className="mb-1 font-serif text-2xl">Le feu qui brûle, grand format</h2>
-            <p className="max-w-xl text-sm text-white/70">
+            <h2 className="mb-1 font-serif text-2xl text-[#2a2015] dark:text-white">Le feu qui brûle, grand format</h2>
+            <p className="max-w-xl text-sm text-[#3a3126]/70 dark:text-white/70">
               La niche du Foyer et sa flamme, sur le mur de parchemin, avec votre signature.
               Le fichier fait 1920 × 1080 et tourne en boucle sans coupure, prêt pour un
               écran, une présentation ou une vidéo.
