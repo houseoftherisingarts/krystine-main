@@ -60,8 +60,9 @@ const CommunauteMembres: React.FC = () => {
               >
                 <Avatar nom={m.displayName || m.email} url={m.photoURL} taille={52} />
                 <div className="min-w-0">
-                  <p className="font-serif text-base text-[#2a2015] dark:text-white truncate">
-                    {m.displayName || m.email.split('@')[0]}
+                  <p className="flex items-center gap-1.5 font-serif text-base text-[#2a2015] dark:text-white truncate">
+                    <span className="truncate">{m.displayName || m.email.split('@')[0]}</span>
+                    {m.verifie && <i className="fa-solid fa-circle-check shrink-0 text-[13px] text-[#3b82f6]" title="Profil vérifié" />}
                   </p>
                   {m.dosha && (
                     <p className="text-[11px] uppercase tracking-[0.14em] text-[#7d6330] dark:text-[#bb9a5e] mt-0.5">
