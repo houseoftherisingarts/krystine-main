@@ -239,7 +239,7 @@ const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) 
           </div>
         )}
         <Link to="/espace" className="mt-4 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#7d6330] hover:text-[#bb9a5e]">
-          {lang === 'FR' ? 'Ouvrir mon espace' : 'Open my space'} <i className="fa-solid fa-arrow-right" />
+          {lang === 'FR' ? 'Voir le mur de la communauté' : 'See the community wall'} <i className="fa-solid fa-arrow-right" />
         </Link>
       </div>
       <div className="rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#2a2015]/55">
