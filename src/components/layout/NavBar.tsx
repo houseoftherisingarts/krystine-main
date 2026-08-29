@@ -57,18 +57,16 @@ const NavBar: React.FC = () => {
           title="Retour à l'écran d'accueil"
           className="flex items-center gap-3 flex-shrink-0 group min-h-[44px]"
         >
-          <motion.img
+          {/* Le mot-symbole de l'accueil, repris tel quel : deux lignes serif
+              en majuscules espacées. Un seul logo pour tout le site. */}
+          <motion.span
             initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            src={ASSETS.navLogo}
-            alt=""
-            aria-hidden
-            className="h-9 md:h-11 w-auto transition-opacity duration-300 group-hover:opacity-70 dark:invert dark:brightness-[1.5]"
-          />
-          <span className="hidden sm:block xl:hidden 2xl:block font-serif text-ink dark:text-ctext text-[1.35rem] md:text-[1.55rem] leading-none tracking-[0.01em] transition-colors duration-300 group-hover:text-brassInk dark:group-hover:text-brassBright">
-            Krystine St-Laurent
-          </span>
+            className="font-serif font-semibold uppercase text-ink dark:text-ctext text-[1.05rem] md:text-[1.18rem] leading-[1.05] tracking-[0.12em] transition-colors duration-300 group-hover:text-brassInk dark:group-hover:text-brassBright"
+          >
+            Krystine<br />St-Laurent
+          </motion.span>
         </Link>
 
         {/* Desktop Links — Boutique rendered last as a filled brass pill to give
