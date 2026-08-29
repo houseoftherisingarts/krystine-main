@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase-admin/app';
+export { importKajabiStructure } from "./importKajabi";
 
 initializeApp();
 
