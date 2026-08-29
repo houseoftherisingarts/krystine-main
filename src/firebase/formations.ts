@@ -1,8 +1,10 @@
 import app from '../firebase';
 import {
-  getFirestore, collection, doc, getDocs, orderBy, query,
+  getFirestore, collection, doc, getDoc, getDocs, orderBy, query, where, setDoc,
   updateDoc, deleteDoc, serverTimestamp, Timestamp,
 } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, deleteObject } from 'firebase/storage';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 
 // Les formations natives (migration Kajabi, 2026-08-28). Les documents sont
 // créés par l'import; l'admin les publie, les masque ou les supprime.
