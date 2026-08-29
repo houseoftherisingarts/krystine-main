@@ -20,7 +20,16 @@ const NAV: NavItem[] = [
 
 const NavBar: React.FC = () => {
   const { lang, setLang, theme, toggleTheme, audioPlaying, toggleAudio } = useUI();
-  const { user, member, setSignInOpen } = useAuth();
+  const { user, member, isAdmin, setSignInOpen } = useAuth();
+  // Accès profil/compte : caché au public tant que le flag n'est pas activé
+  // dans l'admin. Les administrateurs le voient toujours pour travailler.
+  const [profilPublic, setProfilPublic] = useState(false);
+  useEffect(() => {
+    getDoc(doc(db, 'settings', 'community'))
+      .then(s => setProfilPublic(!!s.data()?.profilPublic))
+      .catch(() => {});
+  }, []);
+  const profilVisible = profilPublic || isAdmin;
   const { cartItems, setCartOpen } = useCart();
   const { resolveHref } = useBoutique();
   const location = useLocation();
