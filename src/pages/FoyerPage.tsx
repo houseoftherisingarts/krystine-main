@@ -805,7 +805,50 @@ const FoyerPage: React.FC = () => {
         {/* le feu des braises est le point le plus bas de la page : rien après */}
         <AppelFinal />
       </div>
+      <AchatFoyer />
     </div>
+  );
+};
+
+// La pilule d'achat flottante : rejoindre le Foyer par Stripe. Une fois la
+// formation achetée, elle devient la porte vers le lecteur.
+const AchatFoyer: React.FC = () => {
+  const { user, setSignInOpen } = useAuth();
+  const [formation, setFormation] = useState<Formation | null>(null);
+  const [possede, setPossede] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => { getFormation('foyer').then(setFormation).catch(() => {}); }, []);
+  useEffect(() => {
+    if (user) aAchete(user.uid, 'foyer').then(setPossede).catch(() => {});
+    else setPossede(false);
+  }, [user]);
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 600);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  if (!formation || formation.statut !== 'publie' || !visible) return null;
+
+  const rejoindre = async () => {
+    if (possede) { window.location.href = '/cours/foyer'; return; }
+    if (!user) { setSignInOpen(true); return; }
+    setBusy(true);
+    try { window.location.href = await acheterFormation('foyer'); } catch { setBusy(false); }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={rejoindre}
+      disabled={busy}
+      className="fixed bottom-6 right-6 z-[90] inline-flex items-center gap-2 rounded-full bg-[#bb9a5e] px-6 py-3.5 text-xs font-bold uppercase tracking-widest text-[#2a2015] shadow-[0_12px_35px_-10px_rgba(163,130,63,0.9)] backdrop-blur transition-transform hover:scale-[1.03] disabled:opacity-60"
+    >
+      <i className={`fa-solid ${possede ? 'fa-door-open' : 'fa-fire'}`} />
+      {busy ? 'Redirection…' : possede ? 'Ouvrir ma formation' : `Rejoindre le Foyer${formation.paywall && formation.prix ? ` · ${formation.prix} $` : ''}`}
+    </button>
   );
 };
 
