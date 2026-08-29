@@ -13,6 +13,8 @@ import { Atmosphere } from '../components/motion/loeuvre';
 import BodySections from './foyer/BodySections';
 import { Cta } from './foyer/Cta';
 import { OFFRE, FINAL } from './foyer/content';
+import { useAuth } from '../contexts/AppContext';
+import { getFormation, aAchete, acheterFormation, type Formation } from '../firebase/formations';
 
 /**
  * Le Foyer d'Origine · page de vente (URL dédiée /foyer).
