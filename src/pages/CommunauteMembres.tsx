@@ -44,7 +44,15 @@ const CommunauteMembres: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-28 pb-24">
       <div className="max-w-4xl mx-auto px-6">
-        <h1 className="font-serif text-3xl md:text-4xl text-[#2a2015] dark:text-white mb-8">Membres</h1>
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+          <h1 className="font-serif text-3xl md:text-4xl text-[#2a2015] dark:text-white">Membres</h1>
+          <Link
+            to="/membre/kYorHEdND9bfk5A4I3oxVJJSquR2"
+            className="inline-flex items-center gap-2 rounded-full border border-[#bb9a5e]/50 bg-white/50 px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest text-[#7d6330] transition-colors hover:border-[#bb9a5e] hover:bg-[#bb9a5e] hover:text-[#2a2015] dark:bg-white/5"
+          >
+            <i className="fa-solid fa-shield-halved" /> Contacter l’équipe de modération
+          </Link>
+        </div>
 
         {chargement ? (
           <p className="text-sm text-[#3a3126]/50 dark:text-white/45">Un instant.</p>
