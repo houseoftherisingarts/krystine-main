@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { uploadImage } from '../../firebase/storage';
 
 export const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <div className={`bg-white dark:bg-[#2a2015]/60 rounded-[20px] shadow-sm border border-[#2a2015]/5 dark:border-white/5 ${className}`}>
+  <div className={`bg-white/55 backdrop-blur-md dark:bg-[#2a2015]/55 rounded-[20px] border border-white/60 dark:border-white/10 shadow-[0_10px_30px_-18px_rgba(58,49,38,0.3)] ${className}`}>
     {children}
   </div>
 );
