@@ -47,6 +47,8 @@ const SlideBg          = lazy(() => import('./src/pages/SlideBg'));
 // captured from the footer contact card. URL-only access — never linked
 // from the visible navigation.
 const VexelPage        = lazy(() => import('./src/pages/VexelPage'));
+const CoursPage        = lazy(() => import('./src/pages/CoursPage'));
+const CoursDetailPage  = lazy(() => import('./src/pages/CoursDetailPage'));
 // Expérience Origine — refonte React au style L'Œuvre (remplacera le bundle
 // statique /origine une fois toutes les sections portées). Preview en cours.
 const OrigineExperience = lazy(() => import('./src/pages/OrigineExperience'));
