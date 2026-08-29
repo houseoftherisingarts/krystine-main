@@ -112,6 +112,7 @@ export default function PodcastV2() {
   const [cover, setCover] = useState('/podcast/live-cover.jpg');
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [selected, setSelected] = useState<string | null>(null);
+  const [openSeason, setOpenSeason] = useState<1 | 2 | null>(2);
 
   useEffect(() => {
     let alive = true;
