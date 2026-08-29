@@ -255,7 +255,7 @@ const ClientPortal: React.FC = () => {
           {tab === 'archives' && <ClientArchives />}
           {tab === 'support'  && <ClientSupport />}
         </div>
-        <RailCommunaute lang={lang} />
+        <RailCommunaute lang={lang} uid={user.uid} />
       </div>
     </div>
   );
