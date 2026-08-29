@@ -176,6 +176,7 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
         </button>
         {saved && <span className="text-xs text-green-600">Enregistré.</span>}
       </div>
+      <LeconsPanel formationId={f.id} />
     </div>
   );
 };
