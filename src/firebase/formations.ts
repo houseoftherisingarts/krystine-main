@@ -20,6 +20,7 @@ export interface Formation {
   prix: number | null;
   // Options de mise en vente (panneau « Options » de l'admin).
   categorie?: 'cours' | 'musique';
+  lienFiche?: string;   // page de vente dédiée (ex. /foyer) au lieu de /cours/:id
   paywall?: boolean;
   evergreen?: boolean;
   dateSortie?: string | null;      // AAAA-MM-JJ quand la sortie est datée
