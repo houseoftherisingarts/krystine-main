@@ -59,75 +59,86 @@ const ClientPortal: React.FC = () => {
     { id: 'support',  label: lang === 'FR' ? 'Support' : 'Support', icon: 'fa-comments' },
   ];
 
+  const banniere = member?.bannerURL || '/krystine-bg.jpg';
+
   return (
-    <div className="min-h-screen dark:bg-[#16100a] pt-28 pb-24">
-      <div className="max-w-5xl mx-auto px-6">
-        {/* Header */}
-        <div className="bg-white dark:bg-[#2a2015] rounded-[24px] shadow-sm border border-[#2a2015]/5 dark:border-white/5 p-6 md:p-8 mb-6 flex flex-wrap items-center gap-5">
-          <div className="relative">
-            <div className="w-20 h-20 rounded-full bg-cover bg-center bg-[#f6f3ee] dark:bg-white/5 border-2 border-[#bb9a5e]/30" style={{ backgroundImage: member?.photoURL ? `url(${member.photoURL})` : (user.photoURL ? `url(${user.photoURL})` : undefined) }}>
+    <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-16 pb-24">
+      {/* La bannière pleine largeur, l'avatar qui la chevauche, le nom et les
+          points par-dessus la photo : le patron du FMM et de la référence
+          d'Alex, dans le canon L'Œuvre. */}
+      <div className="relative h-64 w-full overflow-hidden md:h-80">
+        <img src={banniere} alt="" className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#16100a]/75 via-[#16100a]/20 to-transparent" />
+        <BanniereUpload uid={user.uid} />
+        <div className="absolute inset-x-0 bottom-0">
+          <div className="mx-auto flex max-w-7xl items-end gap-5 px-6 pb-5">
+            <div
+              className="h-28 w-28 shrink-0 rounded-full border-4 border-[#f6f3ee] bg-cover bg-center bg-[#efe7db] shadow-xl md:h-32 md:w-32 dark:border-[#16100a]"
+              style={{ backgroundImage: (member?.photoURL || user.photoURL) ? `url(${member?.photoURL || user.photoURL})` : undefined }}
+            >
               {!member?.photoURL && !user.photoURL && (
-                <div className="w-full h-full flex items-center justify-center text-[#2a2015]/30 dark:text-white/30">
-                  <i className="fa-solid fa-user text-2xl" />
+                <div className="flex h-full w-full items-center justify-center text-[#2a2015]/30">
+                  <i className="fa-solid fa-user text-3xl" />
                 </div>
               )}
             </div>
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl md:text-3xl font-serif text-[#2a2015] dark:text-white">
+            <div className="min-w-0 flex-1 pb-1">
+              <h1 className="truncate font-serif text-3xl text-white md:text-4xl" style={{ letterSpacing: '-0.01em', textShadow: '0 2px 18px rgba(0,0,0,0.45)' }}>
                 {member?.displayName || user.displayName || user.email?.split('@')[0]}
               </h1>
-              {member?.dosha && (
-                <span className="text-[10px] uppercase tracking-[0.2em] font-bold px-3 py-1 rounded-full bg-[#bb9a5e]/15 text-[#7d6330] border border-[#bb9a5e]/30">
-                  <i className="fa-solid fa-circle-nodes mr-1" /> {member.dosha}
-                </span>
+              <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                {member?.dosha && (
+                  <span className="rounded-full border border-white/30 bg-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
+                    <i className="fa-solid fa-circle-nodes mr-1" /> {member.dosha}
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setTab('loyalty')}
+                  className="rounded-full bg-[#bb9a5e] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#2a2015] transition-colors hover:bg-[#dcb874]"
+                >
+                  <i className="fa-solid fa-seedling mr-1" />
+                  {pointsBalance.balance} {lang === 'FR' ? 'points' : 'points'}
+                </button>
+                <span className="hidden truncate text-xs text-white/70 sm:inline">{user.email}</span>
+              </div>
+            </div>
+            <div className="hidden shrink-0 items-center gap-4 pb-2 md:flex">
+              {isAdmin && (
+                <a href="/admin" className="text-xs uppercase tracking-widest text-[#dcb874] hover:text-white">
+                  <i className="fa-solid fa-gauge-high mr-2" />{lang === 'FR' ? 'Espace admin' : 'Admin space'}
+                </a>
               )}
-              {/* Balance chip — always visible in the header, clickable to
-                  jump straight to the Points tab. */}
-              <button
-                type="button"
-                onClick={() => setTab('loyalty')}
-                className="text-[10px] uppercase tracking-[0.2em] font-bold px-3 py-1 rounded-full bg-[#2a2015] text-[#7d6330] border border-[#bb9a5e]/40 hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
-              >
-                <i className="fa-solid fa-seedling mr-1" />
-                {pointsBalance.balance} {lang === 'FR' ? 'pts' : 'pts'}
+              <button onClick={logout} className="text-xs uppercase tracking-widest text-white/60 hover:text-red-300">
+                <i className="fa-solid fa-right-from-bracket mr-2" />{lang === 'FR' ? 'Déconnexion' : 'Sign out'}
               </button>
             </div>
-            <p className="text-sm text-[#2a2015]/50 dark:text-white/50 mt-1">{user.email}</p>
           </div>
-          {isAdmin && (
-            <a
-              href="/admin"
-              className="text-xs uppercase tracking-widest text-[#7d6330] hover:text-[#bb9a5e]"
-            >
-              <i className="fa-solid fa-gauge-high mr-2" />{lang === 'FR' ? 'Espace admin' : 'Admin space'}
-            </a>
-          )}
-          <button onClick={logout} className="text-xs uppercase tracking-widest text-[#2a2015]/50 dark:text-white/50 hover:text-red-500">
-            <i className="fa-solid fa-right-from-bracket mr-2" />{lang === 'FR' ? 'Déconnexion' : 'Sign out'}
-          </button>
         </div>
+      </div>
 
-        {/* Tabs */}
-        <div className="flex flex-wrap gap-2 mb-6">
+      {/* Les onglets, pleine largeur sous la bannière */}
+      <div className="border-b border-[#3a3126]/10 bg-white/45 backdrop-blur-xl dark:border-white/10 dark:bg-[#2a2015]/45">
+        <div className="mx-auto flex max-w-7xl flex-wrap gap-1 px-6">
           {tabs.map(t => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-colors ${
+              className={`flex items-center gap-2 border-b-2 px-4 py-3.5 text-xs font-bold uppercase tracking-wider transition-colors ${
                 tab === t.id
-                  ? 'bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015]'
-                  : 'bg-white dark:bg-[#2a2015]/60 text-[#2a2015]/60 dark:text-white/60 hover:text-[#7d6330] border border-[#2a2015]/5 dark:border-white/5'
+                  ? 'border-[#bb9a5e] text-[#7d6330] dark:text-[#dcb874]'
+                  : 'border-transparent text-[#3a3126]/55 hover:text-[#7d6330] dark:text-white/55 dark:hover:text-[#dcb874]'
               }`}
             >
               <i className={`fa-solid ${t.icon}`} /> {t.label}
             </button>
           ))}
         </div>
+      </div>
 
-        {/* Tab content */}
-        <div className="bg-white dark:bg-[#2a2015] rounded-[24px] shadow-sm border border-[#2a2015]/5 dark:border-white/5 p-6 md:p-8">
+      {/* Le contenu en deux colonnes : l'onglet à gauche, le rail vivant à droite */}
+      <div className="mx-auto mt-8 grid max-w-7xl gap-6 px-6 lg:grid-cols-[1fr_320px]">
+        <div className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-[#2a2015]/55">
           {tab === 'profile'  && <ProfileTab />}
           {tab === 'orders'   && <OrdersTab />}
           {tab === 'formations' && <ClientFormations />}
@@ -136,6 +147,7 @@ const ClientPortal: React.FC = () => {
           {tab === 'archives' && <ClientArchives />}
           {tab === 'support'  && <ClientSupport />}
         </div>
+        <RailCommunaute lang={lang} />
       </div>
     </div>
   );
