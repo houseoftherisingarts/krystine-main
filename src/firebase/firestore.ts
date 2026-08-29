@@ -586,6 +586,7 @@ export interface MemberDoc {
   phone?: string;
   provider?: 'google' | 'email' | string;
   dosha?: string;                 // dominant dosha set after quiz
+  bannerURL?: string;              // profile banner shown on the public /membre/:uid page
   newsletterSubscribed?: boolean; // true once the member is on the newsletter list
   newsletterSource?: string;      // page/context that triggered the subscription
   joinedAt?: Timestamp;
