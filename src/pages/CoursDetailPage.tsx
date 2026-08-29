@@ -53,10 +53,13 @@ const CoursDetailPage: React.FC = () => {
   );
 
   const ouvrir = async (l: Lecon) => {
-    setCourante(l); setUrlCourante(''); setErreur(null); setChargeLecon(true);
+    setCourante(l); setUrlCourante(''); setErreur(null);
+    if (user) marquerLecon(user.uid, id, l.id, terminees[l.id] || false).catch(() => {});
+    // Leçon sans fichier média : seul le texte s'affiche, pas d'appel serveur.
+    if (!l.chemin) { setChargeLecon(false); return; }
+    setChargeLecon(true);
     try {
       setUrlCourante(await urlDeLecon(id, l.id));
-      if (user) marquerLecon(user.uid, id, l.id, terminees[l.id] || false).catch(() => {});
     } catch {
       setErreur(lang === 'FR' ? 'Cette leçon n\'a pas pu se charger.' : 'This lesson could not load.');
     } finally { setChargeLecon(false); }
