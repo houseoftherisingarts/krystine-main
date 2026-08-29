@@ -92,9 +92,9 @@ service cloud.firestore {
     }
 
     match /amities/{id} {
-      allow read: if isSignedIn() && request.auth.uid in resource.data.uids;
-      allow create: if isSignedIn() && request.auth.uid in request.resource.data.uids;
-      allow update, delete: if isSignedIn() && request.auth.uid in resource.data.uids;
+      allow read: if isSignedIn() && request.auth.uid in resource.data.paire;
+      allow create: if isSignedIn() && request.auth.uid in request.resource.data.paire;
+      allow update, delete: if isSignedIn() && request.auth.uid in resource.data.paire;
     }
 
     // ── Badges (moteur du FMM) : chacun lit tout, n'écrit que sa vitrine.

@@ -51,8 +51,8 @@ export const badgeAmitieAcceptee = onDocumentUpdated(
   { document: 'amities/{id}', region: 'us-central1' },
   async (event) => {
     const avant = event.data?.before.data() as { statut?: string } | undefined;
-    const apres = event.data?.after.data() as { statut?: string; uids?: string[] } | undefined;
-    if (avant?.statut === 'acceptee' || apres?.statut !== 'acceptee' || !apres.uids) return;
-    for (const uid of apres.uids) await poserBadge(uid, 'main-tendue');
+    const apres = event.data?.after.data() as { statut?: string; paire?: string[] } | undefined;
+    if (avant?.statut === 'amis' || apres?.statut !== 'amis' || !apres.paire) return;
+    for (const uid of apres.paire) await poserBadge(uid, 'main-tendue');
   },
 );
