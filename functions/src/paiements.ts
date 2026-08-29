@@ -1,0 +1,147 @@
+import * as crypto from 'crypto';
+import { onCall, onRequest, HttpsError } from 'firebase-functions/v2/https';
+import { defineSecret } from 'firebase-functions/params';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { getStorage } from 'firebase-admin/storage';
+
+// Le paywall des formations natives (migration Kajabi, 2026-08-28).
+// Trois portes : créer la session Stripe Checkout, encaisser le webhook qui
+// écrit la preuve d'achat, et servir les fichiers de leçon aux acheteuses.
+// Tout passe par l'API REST de Stripe : aucune dépendance npm.
+
+const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
+const STRIPE_WEBHOOK_SECRET = defineSecret('STRIPE_WEBHOOK_SECRET');
+
+const SITE = 'https://www.krystinestlaurent.ca';
+
+const ADMIN_EMAILS = [
+  'admin@krystinestlaurent.ca',
+  'krystine@inspiratanature.com',
+  'alex@lesalondesinconnus.com',
+  'krystinestterredhysope@gmail.com',
+  'krystinestlaurent@gmail.com',
+  'houseoftherisingarts@gmail.com',
+];
+
+export const creerSessionPaiement = onCall(
+  { region: 'us-central1', secrets: [STRIPE_SECRET_KEY] },
+  async (req) => {
+    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour acheter une formation.');
+    const formationId = String(req.data?.formationId || '');
+    if (!formationId) throw new HttpsError('invalid-argument', 'Formation manquante.');
+
+    const snap = await getFirestore().doc(`formations/${formationId}`).get();
+    if (!snap.exists) throw new HttpsError('not-found', 'Formation introuvable.');
+    const f = snap.data() as { titre: string; statut: string; paywall?: boolean; prix?: number | null; imageUrl?: string };
+    if (f.statut !== 'publie') throw new HttpsError('failed-precondition', 'Cette formation n\'est pas en vente.');
+    if (!f.paywall || !f.prix || f.prix <= 0) throw new HttpsError('failed-precondition', 'Cette formation n\'a pas de prix.');
+
+    const body = new URLSearchParams({
+      mode: 'payment',
+      'line_items[0][price_data][currency]': 'cad',
+      'line_items[0][price_data][product_data][name]': f.titre,
+      'line_items[0][price_data][unit_amount]': String(Math.round(f.prix * 100)),
+      'line_items[0][quantity]': '1',
+      success_url: `${SITE}/compte?achat=ok`,
+      cancel_url: `${SITE}/cours/${formationId}`,
+      'metadata[uid]': req.auth.uid,
+      'metadata[formationId]': formationId,
+    });
+    const email = req.auth.token.email;
+    if (email) body.set('customer_email', String(email));
+
+    const r = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${STRIPE_SECRET_KEY.value()}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body,
+    });
+    const session = (await r.json()) as { url?: string; error?: { message?: string } };
+    if (!r.ok || !session.url) {
+      console.error('[paiements] checkout session refusée', session.error?.message);
+      throw new HttpsError('internal', 'Le paiement n\'a pas pu démarrer. Réessayez.');
+    }
+    return { url: session.url };
+  },
+);
+
+// Vérification de signature Stripe (schéma t=...,v1=... ; HMAC-SHA256 de "t.corps").
+function verifierSignatureStripe(rawBody: Buffer, header: string | undefined, secret: string): boolean {
+  if (!header) return false;
+  const parts = Object.fromEntries(header.split(',').map(p => p.split('=') as [string, string]));
+  const t = parts['t']; const v1 = parts['v1'];
+  if (!t || !v1) return false;
+  if (Math.abs(Date.now() / 1000 - Number(t)) > 600) return false; // rejoue trop vieux
+  const attendu = crypto.createHmac('sha256', secret).update(`${t}.${rawBody.toString('utf8')}`).digest('hex');
+  try {
+    return crypto.timingSafeEqual(Buffer.from(attendu), Buffer.from(v1));
+  } catch { return false; }
+}
+
+export const stripeWebhook = onRequest(
+  { region: 'us-central1', secrets: [STRIPE_WEBHOOK_SECRET], cors: false, maxInstances: 5 },
+  async (req, res) => {
+    if (req.method !== 'POST') { res.status(405).send('Method not allowed'); return; }
+    const rawBody: Buffer = (req as any).rawBody as Buffer;
+    if (!rawBody) { res.status(400).send('Missing body'); return; }
+    if (!verifierSignatureStripe(rawBody, req.header('Stripe-Signature'), STRIPE_WEBHOOK_SECRET.value())) {
+      res.status(401).send('Invalid signature'); return;
+    }
+
+    const event = JSON.parse(rawBody.toString('utf8'));
+    if (event.type !== 'checkout.session.completed') { res.status(200).send('ignored'); return; }
+    const session = event.data?.object || {};
+    const uid = session.metadata?.uid;
+    const formationId = session.metadata?.formationId;
+    if (!uid || !formationId || session.payment_status !== 'paid') { res.status(200).send('incomplete'); return; }
+
+    const db = getFirestore();
+    const fSnap = await db.doc(`formations/${formationId}`).get();
+    const f = fSnap.exists ? (fSnap.data() as { titre?: string; imageUrl?: string }) : {};
+    await db.doc(`achatsFormations/${uid}/formations/${formationId}`).set({
+      titre: f.titre || formationId,
+      imageUrl: f.imageUrl || '',
+      montant: (session.amount_total || 0) / 100,
+      sessionId: session.id || '',
+      acheteLe: FieldValue.serverTimestamp(),
+    }, { merge: true });
+    console.log(`[paiements] achat enregistré: ${uid} -> ${formationId}`);
+    res.status(200).send('ok');
+  },
+);
+
+// Sert un fichier de leçon à une acheteuse (URL signée 2 h). Les fichiers de
+// contenu vivent sous formations-contenu/ dans Storage, illisibles au public.
+export const obtenirLecon = onCall(
+  { region: 'us-central1' },
+  async (req) => {
+    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous.');
+    const formationId = String(req.data?.formationId || '');
+    const leconId = String(req.data?.leconId || '');
+    if (!formationId || !leconId) throw new HttpsError('invalid-argument', 'Leçon manquante.');
+
+    const db = getFirestore();
+    const estAdmin = ADMIN_EMAILS.includes(String(req.auth.token.email || ''));
+    if (!estAdmin) {
+      const fSnap = await db.doc(`formations/${formationId}`).get();
+      const paywall = !!(fSnap.data() as { paywall?: boolean } | undefined)?.paywall;
+      if (paywall) {
+        const achat = await db.doc(`achatsFormations/${req.auth.uid}/formations/${formationId}`).get();
+        if (!achat.exists) throw new HttpsError('permission-denied', 'Cette formation ne vous appartient pas encore.');
+      }
+    }
+
+    const lSnap = await db.doc(`formations/${formationId}/lecons/${leconId}`).get();
+    if (!lSnap.exists) throw new HttpsError('not-found', 'Leçon introuvable.');
+    const chemin = (lSnap.data() as { chemin?: string }).chemin;
+    if (!chemin) throw new HttpsError('not-found', 'Fichier absent.');
+
+    const [url] = await getStorage().bucket().file(chemin).getSignedUrl({
+      action: 'read',
+      expires: Date.now() + 2 * 60 * 60 * 1000,
+    });
+    return { url };
+  },
+);
