@@ -18,8 +18,6 @@ type Tab = 'profile' | 'orders' | 'formations' | 'loyalty' | 'dosha' | 'archives
 const ClientPortal: React.FC = () => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
   const [tab, setTab] = useState<Tab>('profile');
-  // Un admin peut entrer dans le portail client pour tester l'expérience réelle.
-  const [voirPortailClient, setVoirPortailClient] = useState(false);
   // Live points balance for the header chip. Subscribed here once so all
   // tabs share the same stream rather than each re-subscribing.
   const [pointsBalance, setPointsBalance] = useState<PointsBalance>(DEFAULT_POINTS_BALANCE);
