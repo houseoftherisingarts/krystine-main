@@ -10,11 +10,10 @@ interface NavItem { href: string; labelFR: string; labelEN: string; }
 // Condensed nav: Ayurveda/Livres/Quiz live under /medias, Événements under
 // /formations. The 3 "doorways" map to the 3 banners on the home page.
 const NAV: NavItem[] = [
-  { href: '/krystine',    labelFR: 'Krystine St-Laurent',          labelEN: 'Krystine St-Laurent' },
-  { href: '/origine',     labelFR: 'Expérience Origine',           labelEN: 'Origine Experience' },
+  { href: '/origine',     labelFR: 'Origine',                      labelEN: 'Origine' },
   { href: '/formations',  labelFR: 'Formations',                   labelEN: 'Programs' },
-  { href: '/medias',      labelFR: 'Podcasts, Médias & Livres',    labelEN: 'Podcasts, Media & Books' },
-  { href: '/boutique',    labelFR: 'Boutique Inspirata',           labelEN: 'Inspirata Shop' },
+  { href: '/medias',      labelFR: 'Médias & Livres',              labelEN: 'Media & Books' },
+  { href: '/boutique',    labelFR: 'Boutique',                     labelEN: 'Shop' },
 ];
 
 const NavBar: React.FC = () => {
