@@ -47,13 +47,6 @@ export const badgePremierBillet = onDocumentCreated(
 );
 
 // Main tendue : la première amitié acceptée.
-export const badgePremiereAmitie = onDocumentCreated(
-  { document: 'amities/{id}', region: 'us-central1' },
-  async () => { /* posé à l'acceptation, voir badgeAmitieAcceptee ci-dessous */ },
-);
-
-import { onDocumentUpdated } from 'firebase-functions/v2/firestore';
-
 export const badgeAmitieAcceptee = onDocumentUpdated(
   { document: 'amities/{id}', region: 'us-central1' },
   async (event) => {
