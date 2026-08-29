@@ -98,7 +98,9 @@ const fmtDur = (d: string) => {
 
 export default function PodcastV2() {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
-  const [cover, setCover] = useState('');
+  // La couverture de la page reste le visuel officiel Saison 2 (noir + or),
+  // indépendamment de la pochette du flux RSS.
+  const [cover, setCover] = useState('/podcast/live-cover.jpg');
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [selected, setSelected] = useState<string | null>(null);
 
