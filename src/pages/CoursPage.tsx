@@ -56,8 +56,8 @@ const CoursPage: React.FC = () => {
             {lang === 'FR' ? 'Les premières formations arrivent bientôt.' : 'The first courses are coming soon.'}
           </p>
         ) : (
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {formations.map(f => (
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {visibles.map(f => (
               <Link
                 key={f.id}
                 to={`/cours/${f.id}`}
