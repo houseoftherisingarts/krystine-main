@@ -168,21 +168,38 @@ const CoursDetailPage: React.FC = () => {
               {lecons.length === 0 && (
                 <p className="p-3 text-sm text-[#3a3126]/50 dark:text-white/50">{lang === 'FR' ? 'Les leçons arrivent bientôt.' : 'Lessons coming soon.'}</p>
               )}
-              {lecons.map((l, i) => (
-                <button
-                  key={l.id}
-                  onClick={() => ouvrir(l)}
-                  className={`flex w-full items-center gap-3 rounded-[14px] px-3 py-2.5 text-left text-sm transition-colors ${
-                    courante?.id === l.id
-                      ? 'bg-[#bb9a5e] text-[#2a2015]'
-                      : 'text-[#3a3126]/80 hover:bg-white/70 dark:text-white/80 dark:hover:bg-white/10'
-                  }`}
-                >
-                  <i className={`fa-solid ${terminees[l.id] ? 'fa-circle-check text-green-700' : ICONES[l.type]} w-4 ${courante?.id === l.id ? '' : 'text-[#7d6330]/70'}`} />
-                  <span className="min-w-0 flex-1 truncate">{i + 1}. {l.titre}</span>
-                  {l.duree && <span className="text-[11px] opacity-60">{l.duree}</span>}
-                </button>
-              ))}
+              {/* Groupé par module, dans l'ordre du cours */}
+              {(() => {
+                const groupes: { nom: string; items: Lecon[] }[] = [];
+                for (const l of lecons) {
+                  const nom = l.moduleNom || '';
+                  const g = groupes[groupes.length - 1];
+                  if (g && g.nom === nom) g.items.push(l);
+                  else groupes.push({ nom, items: [l] });
+                }
+                return groupes.map((g, gi) => (
+                  <div key={gi} className="mb-2">
+                    {g.nom && (
+                      <p className="px-3 pt-3 pb-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#7d6330]">{g.nom}</p>
+                    )}
+                    {g.items.map(l => (
+                      <button
+                        key={l.id}
+                        onClick={() => ouvrir(l)}
+                        className={`flex w-full items-center gap-3 rounded-[14px] px-3 py-2.5 text-left text-sm transition-colors ${
+                          courante?.id === l.id
+                            ? 'bg-[#bb9a5e] text-[#2a2015]'
+                            : 'text-[#3a3126]/80 hover:bg-white/70 dark:text-white/80 dark:hover:bg-white/10'
+                        }`}
+                      >
+                        <i className={`fa-solid ${terminees[l.id] ? 'fa-circle-check text-green-700' : ICONES[l.type]} w-4 ${courante?.id === l.id ? '' : 'text-[#7d6330]/70'}`} />
+                        <span className="min-w-0 flex-1 truncate">{l.titre}</span>
+                        {l.duree && <span className="text-[11px] opacity-60">{l.duree}</span>}
+                      </button>
+                    ))}
+                  </div>
+                ));
+              })()}
             </aside>
 
             {/* Le contenu de la leçon */}
