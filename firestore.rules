@@ -37,6 +37,46 @@ service cloud.firestore {
     match /progression/{uid}/formations/{fid} {
       allow read, write: if isSelf(uid) || isAdmin();
     }
+
+    // ── Le mur social (porté du FMM) ─────────────────────────────────────
+    // Les compteurs (pour/contre/score/chaleur/nbCommentaires) ne s'écrivent
+    // JAMAIS depuis le navigateur : les fonctions mur.ts recomptent avec
+    // l'Admin SDK, qui contourne ces règles.
+    match /mur/{postId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.texte is string
+                    && request.resource.data.texte.size() <= 5000
+                    && (request.resource.data.fil == 'communaute' || isAdmin());
+      allow update: if isAdmin();
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+
+      match /votes/{voterUid} {
+        allow read: if isSignedIn();
+        allow write: if isSelf(voterUid);
+      }
+      match /commentaires/{cid} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn()
+                      && request.resource.data.uid == request.auth.uid
+                      && request.resource.data.texte is string
+                      && request.resource.data.texte.size() <= 2000;
+        allow update: if false;
+        allow delete: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+
+        match /votes/{voterUid} {
+          allow read: if isSignedIn();
+          allow write: if isSelf(voterUid);
+        }
+      }
+    }
+
+    match /blocages/{uid} { allow read, write: if isSelf(uid); }
+    match /signalements/{id} {
+      allow create: if isSignedIn();
+      allow read, update, delete: if isAdmin();
+    }
     // La preuve d'achat d'une formation : le membre lit la sienne; l'écriture
     // vient du serveur (webhook Stripe) ou de l'admin (tests, cadeaux).
     match /achatsFormations/{uid}/formations/{fid} {
