@@ -308,6 +308,7 @@ const ClientPortal: React.FC = () => {
   ];
 
   const banniere = member?.bannerURL || '/krystine-bg.jpg';
+  const [editOuvert, setEditOuvert] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-16 pb-24">
