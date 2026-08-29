@@ -156,6 +156,7 @@ const NavBar: React.FC = () => {
             )}
           </IconButton>
 
+          {user && <Cloche uid={user.uid} />}
           {user ? (
             <Link
               to="/compte"
