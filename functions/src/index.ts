@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase-admin/app';
-export { importKajabiStructure } from "./importKajabi";
+export { importKajabiStructure, ingestMediaLecon } from "./importKajabi";
 
 initializeApp();
 
