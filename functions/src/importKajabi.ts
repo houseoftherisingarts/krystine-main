@@ -38,6 +38,44 @@ export const stashSkeleton = onRequest(
   },
 );
 
+// 0b) Crée ou complète les documents parents formations/{id}. Sans eux, les
+//     leçons existent mais le cours n'apparaît nulle part. Ne touche pas au
+//     statut d'un cours déjà présent (pour ne pas re-masquer un cours publié).
+export const ensureFormations = onRequest(
+  { region: 'us-central1', cors: true },
+  async (req, res) => {
+    if (req.query.secret !== JETON) { res.status(403).send('non'); return; }
+    const list: Array<{ id: string; titre: string; imageUrl?: string; description?: string }> = req.body?.formations || [];
+    if (!list.length) { res.status(400).send('vide'); return; }
+    const db = getFirestore();
+    let crees = 0, majs = 0;
+    for (const f of list) {
+      const ref = db.doc(`formations/${f.id}`);
+      const snap = await ref.get();
+      if (snap.exists) {
+        await ref.set({ titre: f.titre, ...(f.imageUrl ? { imageUrl: f.imageUrl } : {}), maj: FieldValue.serverTimestamp() }, { merge: true });
+        majs++;
+      } else {
+        await ref.set({
+          titre: f.titre,
+          description: f.description || '',
+          imageUrl: f.imageUrl || '',
+          kajabiId: String(f.id).replace(/^kajabi-/, ''),
+          statut: 'masque',
+          prix: null,
+          categorie: 'cours',
+          paywall: true,
+          evergreen: true,
+          creeLe: FieldValue.serverTimestamp(),
+          maj: FieldValue.serverTimestamp(),
+        });
+        crees++;
+      }
+    }
+    res.status(200).json({ ok: true, crees, majs });
+  },
+);
+
 // 1) Écrit la structure + les textes d'un cours (rapide, sans média).
 export const importKajabiStructure = onRequest(
   { region: 'us-central1', timeoutSeconds: 300, memory: '512MiB', cors: true },
