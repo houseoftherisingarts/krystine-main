@@ -96,6 +96,14 @@ const ClientPortal: React.FC = () => {
             </div>
             <p className="text-sm text-[#2a2015]/50 dark:text-white/50 mt-1">{user.email}</p>
           </div>
+          {isAdmin && (
+            <a
+              href="/admin"
+              className="text-xs uppercase tracking-widest text-[#7d6330] hover:text-[#bb9a5e]"
+            >
+              <i className="fa-solid fa-gauge-high mr-2" />{lang === 'FR' ? 'Espace admin' : 'Admin space'}
+            </a>
+          )}
           <button onClick={logout} className="text-xs uppercase tracking-widest text-[#2a2015]/50 dark:text-white/50 hover:text-red-500">
             <i className="fa-solid fa-right-from-bracket mr-2" />{lang === 'FR' ? 'Déconnexion' : 'Sign out'}
           </button>
