@@ -66,6 +66,7 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
 
   return (
     <div className="space-y-6 max-w-3xl">
+      <AccesProfilCard />
       <Card className="p-6">
         <h3 className="text-sm uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-4">Compte connecté</h3>
         <div className="flex items-center justify-between">
