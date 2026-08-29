@@ -49,6 +49,7 @@ const SlideBg          = lazy(() => import('./src/pages/SlideBg'));
 const VexelPage        = lazy(() => import('./src/pages/VexelPage'));
 const CoursPage        = lazy(() => import('./src/pages/CoursPage'));
 const CoursDetailPage  = lazy(() => import('./src/pages/CoursDetailPage'));
+const CommunauteEspace = lazy(() => import('./src/pages/CommunauteEspace'));
 // Expérience Origine — refonte React au style L'Œuvre (remplacera le bundle
 // statique /origine une fois toutes les sections portées). Preview en cours.
 const OrigineExperience = lazy(() => import('./src/pages/OrigineExperience'));
