@@ -12,3 +12,4 @@ export { sendScheduledNewsletters, previewNewsletter } from './newsletter/send';
 export { newsletterAssistant } from './newsletter/assistant';
 export { verifierCaptcha } from './captcha';
 export { creerSessionPaiement, stripeWebhook, obtenirLecon } from './paiements';
+export { murVoteBillet, murVoteCommentaire, murCommentaireCompte } from './mur';
