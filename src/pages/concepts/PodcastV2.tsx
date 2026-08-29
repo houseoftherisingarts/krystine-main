@@ -285,47 +285,64 @@ export default function PodcastV2() {
               <h2 className="v2-serif font-light text-[#1c1712] text-[clamp(1.8rem,3.4vw,2.8rem)]">L’archive complète</h2>
             </div>
 
-            <div>
-              {episodes.map((ep, i) => {
-                const active = ep.id === selected;
+            <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+              {([2, 1] as const).map((s) => {
+                const list = episodes.filter((e) => e.season === s);
+                if (!list.length) return null;
+                const open = openSeason === s;
                 return (
-                  <motion.button
-                    key={ep.id}
-                    onClick={() => { setSelected(ep.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                    initial={{ opacity: 0, y: 16 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.05 }}
-                    transition={{ duration: 0.6, ease, delay: Math.min(i, 8) * 0.03 }}
-                    className={`group w-full text-left border-t border-[#1c1712]/12 last:border-b py-7 transition-colors duration-300 ${active ? 'bg-[#efe6d7]' : 'hover:bg-[#efe6d7]/50'}`}
-                  >
-                    <div className="flex items-start gap-5 px-1">
-                      {ep.image ? (
-                        <span className="relative w-14 h-14 shrink-0 overflow-hidden rounded-[10px]">
-                          <img src={ep.image} alt="" referrerPolicy="no-referrer" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
-                          <span className={`absolute inset-0 grid place-items-center transition-colors duration-300 ${active ? 'bg-[#1c1712]/45 text-[#faf6ee]' : 'bg-[#1c1712]/0 text-transparent group-hover:bg-[#1c1712]/45 group-hover:text-[#faf6ee]'}`}>
-                            <Play size={15} weight="fill" className="ml-0.5" />
-                          </span>
-                        </span>
-                      ) : (
-                        <span className={`grid place-items-center w-11 h-11 shrink-0 rounded-full transition-colors duration-300 ${active ? 'bg-[#9c7a44] text-[#faf6ee]' : 'border border-[#9c7a44]/40 text-[#7d6330] group-hover:bg-[#9c7a44] group-hover:text-[#faf6ee]'}`}>
-                          <Play size={15} weight="fill" className="ml-0.5" />
-                        </span>
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-baseline gap-3">
-                          <span className="v2-serif text-[#7d6330] tabular-nums text-sm shrink-0">{String(episodes.length - i).padStart(2, '0')}</span>
-                          <h3 className="v2-serif font-light text-[#1c1712] text-[clamp(1.2rem,2vw,1.6rem)] leading-snug">{ep.title}</h3>
-                        </div>
-                        <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 pl-8 text-[0.62rem] uppercase tracking-[0.16em] text-[#1c1712]/55">
-                          {ep.date && <span className="inline-flex items-center gap-1.5"><CalendarBlank size={12} weight="light" className="text-[#7d6330]" />{fmtDate(ep.date)}</span>}
-                          {ep.duration && <span className="inline-flex items-center gap-1.5"><Clock size={12} weight="light" className="text-[#7d6330]" />{fmtDur(ep.duration)}</span>}
-                        </div>
-                        {ep.description && (
-                          <p className="mt-3 pl-8 text-[0.92rem] leading-relaxed text-[#3a2f23] line-clamp-2 max-w-[80ch]">{ep.description}</p>
-                        )}
+                  <div key={s}>
+                    <button
+                      onClick={() => setOpenSeason(open ? null : s)}
+                      className="group flex w-full items-center justify-between border-b border-[#1c1712]/25 pb-4 text-left"
+                    >
+                      <span className="flex items-baseline gap-3">
+                        <span className="v2-serif font-light text-[#1c1712] text-[clamp(1.5rem,2.6vw,2.1rem)]">Saison {s}</span>
+                        <span className="text-[0.62rem] uppercase tracking-[0.18em] text-[#7d6330]">{list.length} épisodes</span>
+                      </span>
+                      <ArrowDown size={20} weight="light" className={`text-[#7d6330] transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+                    </button>
+                    {open && (
+                      <div>
+                        {list.map((ep) => {
+                          const active = ep.id === selected;
+                          const num = list.length - list.indexOf(ep);
+                          return (
+                            <button
+                              key={ep.id}
+                              onClick={() => { setSelected(ep.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                              className={`group w-full text-left border-b border-[#1c1712]/10 py-5 transition-colors duration-300 ${active ? 'bg-[#efe6d7]' : 'hover:bg-[#efe6d7]/50'}`}
+                            >
+                              <div className="flex items-start gap-4 px-1">
+                                {ep.image ? (
+                                  <span className="relative w-12 h-12 shrink-0 overflow-hidden rounded-[10px]">
+                                    <img src={ep.image} alt="" referrerPolicy="no-referrer" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                                    <span className={`absolute inset-0 grid place-items-center transition-colors duration-300 ${active ? 'bg-[#1c1712]/45 text-[#faf6ee]' : 'bg-[#1c1712]/0 text-transparent group-hover:bg-[#1c1712]/45 group-hover:text-[#faf6ee]'}`}>
+                                      <Play size={14} weight="fill" className="ml-0.5" />
+                                    </span>
+                                  </span>
+                                ) : (
+                                  <span className={`grid place-items-center w-10 h-10 shrink-0 rounded-full transition-colors duration-300 ${active ? 'bg-[#9c7a44] text-[#faf6ee]' : 'border border-[#9c7a44]/40 text-[#7d6330] group-hover:bg-[#9c7a44] group-hover:text-[#faf6ee]'}`}>
+                                    <Play size={14} weight="fill" className="ml-0.5" />
+                                  </span>
+                                )}
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-baseline gap-2.5">
+                                    <span className="v2-serif text-[#7d6330] tabular-nums text-xs shrink-0">{String(num).padStart(2, '0')}</span>
+                                    <h3 className="v2-serif font-light text-[#1c1712] text-[clamp(1.05rem,1.6vw,1.3rem)] leading-snug">{ep.title}</h3>
+                                  </div>
+                                  <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 pl-6 text-[0.58rem] uppercase tracking-[0.14em] text-[#1c1712]/55">
+                                    {ep.date && <span className="inline-flex items-center gap-1.5"><CalendarBlank size={11} weight="light" className="text-[#7d6330]" />{fmtDate(ep.date)}</span>}
+                                    {ep.duration && <span className="inline-flex items-center gap-1.5"><Clock size={11} weight="light" className="text-[#7d6330]" />{fmtDur(ep.duration)}</span>}
+                                  </div>
+                                </div>
+                              </div>
+                            </button>
+                          );
+                        })}
                       </div>
-                    </div>
-                  </motion.button>
+                    )}
+                  </div>
                 );
               })}
             </div>
