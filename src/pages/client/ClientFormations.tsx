@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
-import { getMesFormations, type AchatFormation } from '../../firebase/formations';
+import { getMesFormations, getFormationsPubliees, type AchatFormation, type Formation } from '../../firebase/formations';
 
 // « Mes formations » : les cours que la cliente a achetés. La preuve d'achat
 // est écrite par le serveur au paiement; l'admin peut aussi en accorder.
