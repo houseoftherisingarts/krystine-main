@@ -25,6 +25,8 @@ interface ContactRow {
   tags: string[];         // union of newsletter tags
   joinedAt?: Date;        // earliest known first-seen (joinedAt or subscribedAt)
   photoURL?: string;
+  verifie?: boolean;
+  moderateur?: boolean;
 }
 
 // Sentinel values for the view dropdown that can't clash with real source keys.
@@ -87,6 +89,8 @@ function mergeContacts(members: MemberDoc[], subs: NewsletterSubscriber[]): Cont
       tags: [],
       joinedAt: m.joinedAt?.toDate(),
       photoURL: m.photoURL,
+      verifie: m.verifie,
+      moderateur: m.moderateur,
     });
   }
 
@@ -304,6 +308,7 @@ const MembersSection: React.FC = () => {
               <th className="text-left px-4 py-3 hidden md:table-cell">Dosha</th>
               <th className="text-left px-4 py-3 hidden md:table-cell">Téléphone</th>
               <th className="text-left px-4 py-3 hidden md:table-cell">Auth</th>
+              <th className="text-left px-4 py-3">Communauté</th>
               <th className="text-left px-4 py-3 hidden md:table-cell">Premier contact</th>
             </tr>
           </thead>
@@ -351,6 +356,38 @@ const MembersSection: React.FC = () => {
                   </td>
                   <td className="px-4 py-3 text-[#2a2015]/70 dark:text-white/70 hidden md:table-cell">{c.phone || '—'}</td>
                   <td className="px-4 py-3 text-[#2a2015]/50 dark:text-white/50 hidden md:table-cell capitalize">{c.provider || (c.isMember ? '—' : 'infolettre')}</td>
+                  <td className="px-4 py-3">
+                    {c.isMember && c.uid ? (
+                      <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                        <button
+                          type="button"
+                          title={c.verifie ? 'Retirer la coche bleue' : 'Vérifier ce profil (coche bleue)'}
+                          onClick={async () => { await updateMember(c.uid!, { verifie: !c.verifie }); await refresh(); }}
+                          className={`flex h-7 w-7 items-center justify-center rounded-full border transition-colors ${
+                            c.verifie
+                              ? 'border-[#3b82f6] bg-[#3b82f6] text-white'
+                              : 'border-[#2a2015]/15 text-[#2a2015]/30 hover:border-[#3b82f6] hover:text-[#3b82f6] dark:border-white/15 dark:text-white/30'
+                          }`}
+                        >
+                          <i className="fa-solid fa-circle-check text-[11px]" />
+                        </button>
+                        <button
+                          type="button"
+                          title={c.moderateur ? 'Retirer le rang de modératrice' : 'Promouvoir modératrice'}
+                          onClick={async () => { await updateMember(c.uid!, { moderateur: !c.moderateur }); await refresh(); }}
+                          className={`flex h-7 w-7 items-center justify-center rounded-full border transition-colors ${
+                            c.moderateur
+                              ? 'border-[#bb9a5e] bg-[#bb9a5e] text-[#2a2015]'
+                              : 'border-[#2a2015]/15 text-[#2a2015]/30 hover:border-[#bb9a5e] hover:text-[#7d6330] dark:border-white/15 dark:text-white/30'
+                          }`}
+                        >
+                          <i className="fa-solid fa-shield-halved text-[11px]" />
+                        </button>
+                      </div>
+                    ) : (
+                      <span className="text-[#2a2015]/30 dark:text-white/30">—</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-[#2a2015]/50 dark:text-white/50 hidden md:table-cell">{c.joinedAt?.toLocaleDateString('fr-CA') || '—'}</td>
                 </tr>
               );
