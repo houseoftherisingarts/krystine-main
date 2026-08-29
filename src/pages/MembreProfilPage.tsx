@@ -8,6 +8,8 @@ import {
   estAmi, amitieEnAttente, type Amitie,
 } from '../firebase/amities';
 import Avatar from '../components/communaute/Avatar';
+import { suivrePublicationsDe, type PostMur } from '../firebase/mur';
+import { getBadgesDe, CATALOGUE_BADGES } from '../firebase/badgesCatalogue';
 
 // ─── Le profil public d'un membre ────────────────────────────────────
 // Porté du mur social du FMM 2026 (la fiche de l'Ordre), simplifié :
