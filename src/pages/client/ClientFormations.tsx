@@ -39,7 +39,11 @@ const ClientFormations: React.FC = () => {
   return (
     <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
       {achats.map(a => (
-        <div key={a.id} className="overflow-hidden rounded-[15px] border border-[#2a2015]/10 dark:border-white/10">
+        <Link
+          key={a.id}
+          to={`/cours/${a.id}`}
+          className="group overflow-hidden rounded-[15px] border border-[#2a2015]/10 transition-transform duration-300 hover:-translate-y-0.5 dark:border-white/10"
+        >
           {a.imageUrl ? (
             <img src={a.imageUrl} alt={a.titre} className="aspect-video w-full object-cover" />
           ) : (
@@ -47,10 +51,13 @@ const ClientFormations: React.FC = () => {
               <i className="fa-solid fa-graduation-cap text-2xl text-[#7d6330]" />
             </div>
           )}
-          <div className="p-4">
+          <div className="flex items-center justify-between gap-3 p-4">
             <p className="font-medium text-[#2a2015] dark:text-white">{a.titre}</p>
+            <span className="shrink-0 text-[10px] font-bold uppercase tracking-widest text-[#7d6330] opacity-0 transition-opacity group-hover:opacity-100">
+              {lang === 'FR' ? 'Continuer' : 'Continue'} <i className="fa-solid fa-arrow-right" />
+            </span>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );
