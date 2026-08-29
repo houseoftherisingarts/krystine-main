@@ -99,6 +99,8 @@ export interface Lecon {
   chemin: string;
   duree?: string;
   ordre: number;
+  moduleNom?: string;
+  texte?: string;
 }
 
 export function typeDeLecon(file: File): LeconType {
