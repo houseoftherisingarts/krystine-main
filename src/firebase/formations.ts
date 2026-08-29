@@ -19,6 +19,7 @@ export interface Formation {
   statut: 'masque' | 'publie';
   prix: number | null;
   // Options de mise en vente (panneau « Options » de l'admin).
+  categorie?: 'cours' | 'musique';
   paywall?: boolean;
   evergreen?: boolean;
   dateSortie?: string | null;      // AAAA-MM-JJ quand la sortie est datée
