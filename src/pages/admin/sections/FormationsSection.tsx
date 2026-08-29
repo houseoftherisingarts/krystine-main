@@ -161,6 +161,17 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
           </label>
         )}
         <label className={ligne}>
+          Catégorie
+          <select
+            value={categorie}
+            onChange={e => setCategorie(e.target.value as 'cours' | 'musique')}
+            className="rounded-full border border-[#2a2015]/15 bg-white px-4 py-1.5 text-sm outline-none focus:border-[#bb9a5e] dark:border-white/15 dark:bg-[#2a2015]"
+          >
+            <option value="cours">Cours</option>
+            <option value="musique">Musique</option>
+          </select>
+        </label>
+        <label className={ligne}>
           <input type="checkbox" className={case_} checked={lancement} onChange={e => setLancement(e.target.checked)} />
           Lancement orchestré
         </label>
