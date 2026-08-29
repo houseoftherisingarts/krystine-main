@@ -31,7 +31,8 @@ export const importKajabiStructure = onRequest(
       batch.set(col.doc(id), {
         titre: l.titre,
         ordre: l.ordre,
-        module: l.module,
+        moduleNom: l.moduleNom || '',
+        module: l.moduleNom ? ordreModules.indexOf(l.moduleNom) + 1 : (l.module || 0),
         type: 'video',
         chemin: '',
         creeLe: FieldValue.serverTimestamp(),
