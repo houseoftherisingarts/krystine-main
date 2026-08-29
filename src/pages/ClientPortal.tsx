@@ -408,6 +408,21 @@ const ClientPortal: React.FC = () => {
         </div>
         <RailCommunaute lang={lang} uid={user.uid} />
       </div>
+
+      {/* Le module d'édition du profil, ouvert par la photo de la bannière */}
+      {editOuvert && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-[#16100a]/60 p-4 backdrop-blur-sm" onClick={() => setEditOuvert(false)}>
+          <div className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-[24px] border border-white/60 bg-[#f6f3ee] p-6 md:p-8 dark:border-white/10 dark:bg-[#2a2015]" onClick={e => e.stopPropagation()}>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-serif text-2xl text-[#2a2015] dark:text-white">{lang === 'FR' ? 'Modifier mon profil' : 'Edit my profile'}</h2>
+              <button onClick={() => setEditOuvert(false)} className="flex h-9 w-9 items-center justify-center rounded-full text-[#2a2015]/40 hover:text-[#2a2015] dark:text-white/40 dark:hover:text-white">
+                <i className="fa-solid fa-times text-lg" />
+              </button>
+            </div>
+            <ProfileTab />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
