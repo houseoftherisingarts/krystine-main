@@ -230,6 +230,7 @@ const App: React.FC = () => (
           <Route path="/compte" element={<ClientPortal />} />
           <Route path="/cours" element={<CoursPage />} />
           <Route path="/cours/:id" element={<CoursDetailPage />} />
+          <Route path="/espace" element={<CommunauteEspace />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/desinscription" element={<UnsubscribePage />} />
           {/* Hidden / unlisted — slide-style background of the home hero */}
