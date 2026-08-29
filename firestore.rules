@@ -73,6 +73,40 @@ service cloud.firestore {
     }
 
     match /blocages/{uid} { allow read, write: if isSelf(uid); }
+
+    // ── Messagerie privée et amitiés (portées du FMM) ────────────────────
+    match /dms/{filId} {
+      allow read: if isSignedIn() && request.auth.uid in resource.data.participantUids;
+      allow create: if isSignedIn() && request.auth.uid in request.resource.data.participantUids;
+      allow update: if isSignedIn() && request.auth.uid in resource.data.participantUids;
+      allow delete: if false;
+
+      match /messages/{mid} {
+        allow read: if isSignedIn()
+          && request.auth.uid in get(/databases/$(database)/documents/dms/$(filId)).data.participantUids;
+        allow create: if isSignedIn()
+          && request.resource.data.senderUid == request.auth.uid
+          && request.auth.uid in get(/databases/$(database)/documents/dms/$(filId)).data.participantUids;
+        allow update, delete: if false;
+      }
+    }
+
+    match /amities/{id} {
+      allow read: if isSignedIn() && request.auth.uid in resource.data.uids;
+      allow create: if isSignedIn() && request.auth.uid in request.resource.data.uids;
+      allow update, delete: if isSignedIn() && request.auth.uid in resource.data.uids;
+    }
+
+    // ── Badges (moteur du FMM) : chacun lit tout, n'écrit que sa vitrine.
+    // Les badges se posent côté serveur (fonctions badges.ts, Admin SDK).
+    match /badges/{uid} {
+      allow read: if isSignedIn();
+      allow update: if isSelf(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['exposes'])
+        && request.resource.data.exposes is list
+        && request.resource.data.exposes.size() <= 5;
+      allow create, delete: if false;
+    }
     match /signalements/{id} {
       allow create: if isSignedIn();
       allow read, update, delete: if isAdmin();
