@@ -1,7 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { User } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../../../firebase';
 import { ADMIN_EMAILS, logout } from '../../../firebase/auth';
-import { Card, DangerButton, GhostButton } from '../primitives';
+import { Card, DangerButton, GhostButton, ToggleSwitch } from '../primitives';
+
+// L'accès profil/compte dans le header du site public. Tant que le toggle est
+// off, l'avatar, la cloche et la connexion sont cachés au public (les
+// administrateurs les voient toujours). On l'active quand la communauté est prête.
+const AccesProfilCard: React.FC = () => {
+  const [profilPublic, setProfilPublic] = useState(false);
+  const [charge, setCharge] = useState(true);
+  useEffect(() => {
+    getDoc(doc(db, 'settings', 'community'))
+      .then(s => setProfilPublic(!!s.data()?.profilPublic))
+      .finally(() => setCharge(false));
+  }, []);
+  const basculer = async (v: boolean) => {
+    setProfilPublic(v);
+    await setDoc(doc(db, 'settings', 'community'), { profilPublic: v }, { merge: true });
+  };
+  return (
+    <Card className="p-6">
+      <h3 className="mb-2 text-sm font-bold uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60">Accès profil public</h3>
+      <p className="mb-4 max-w-xl text-sm text-[#2a2015]/60 dark:text-white/60">
+        Quand ce réglage est activé, l'espace compte devient accessible à tous depuis le header du site.
+        Tant qu'il est désactivé, seuls les administrateurs y accèdent, le temps de finir la communauté.
+      </p>
+      {!charge && (
+        <ToggleSwitch checked={profilPublic} onChange={basculer} label={profilPublic ? 'Accessible au public' : 'Caché au public'} />
+      )}
+    </Card>
+  );
+};
 
 // Site-level audio assets (background music + the Origine cohort piece),
 // hosted in Google Cloud Storage and played in-browser. Listed here so
