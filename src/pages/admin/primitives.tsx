@@ -28,7 +28,7 @@ export const Label: React.FC<{ children: React.ReactNode; className?: string }> 
 export const PrimaryButton: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = (props) => (
   <button
     {...props}
-    className={`inline-flex items-center justify-center gap-2 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-md hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${props.className || ''}`}
+    className={`inline-flex items-center justify-center gap-2 bg-[#bb9a5e] text-[#2a2015] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-[0_8px_22px_-10px_rgba(163,130,63,0.8)] hover:bg-[#a3823f] active:scale-[0.98] transition-[background-color,transform] disabled:opacity-50 disabled:cursor-not-allowed ${props.className || ''}`}
   />
 );
 
