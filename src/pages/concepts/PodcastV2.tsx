@@ -183,14 +183,14 @@ export default function PodcastV2() {
           {cover && (
             <motion.div
               variants={{ hidden: { opacity: 0, scale: 1.04 }, show: { opacity: 1, scale: 1, transition: { duration: 1.1, ease } } }}
-              className="relative justify-self-center lg:justify-self-end w-[clamp(220px,42vw,340px)]"
+              className="relative justify-self-center lg:justify-self-end w-[clamp(260px,46vw,420px)]"
             >
               <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
               <img
                 src={cover}
-                alt="Au-delà des tendances"
+                alt="Au-delà des tendances, saison 2"
                 referrerPolicy="no-referrer"
-                className="relative w-full aspect-square object-cover"
+                className="relative w-full h-auto"
               />
             </motion.div>
           )}
