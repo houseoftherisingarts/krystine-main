@@ -11,7 +11,10 @@ export const importKajabiStructure = onRequest(
     if (req.query.secret !== JETON) { res.status(403).send('non'); return; }
     const body = req.body || {};
     const formationId: string = body.formationId;
-    const lecons: Array<{ ordre: number; titre: string; module: number }> = body.lecons || [];
+    const lecons: Array<{ ordre: number; titre: string; moduleNom?: string; module?: number }> = body.lecons || [];
+    // Numéroter les modules dans l'ordre d'apparition.
+    const ordreModules: string[] = [];
+    for (const l of lecons) { const m = l.moduleNom || ''; if (m && !ordreModules.includes(m)) ordreModules.push(m); }
     if (!formationId || !lecons.length) { res.status(400).send('payload'); return; }
 
     const db = getFirestore();
