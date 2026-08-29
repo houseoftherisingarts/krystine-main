@@ -240,7 +240,7 @@ const CoursDetailPage: React.FC = () => {
                   </div>
                   {courante.texte && courante.texte.trim().length > 40 && (
                     <div className="mt-6 whitespace-pre-line text-[0.95rem] leading-relaxed text-[#3a2f23] dark:text-white/80">
-                      {courante.texte.replace(/^[\s\S]*?\/\s*$/m, '').replace(/^.*?\/\s*/s, '').trim() || courante.texte}
+                      {courante.texte.trim()}
                     </div>
                   )}
                   <div className="mt-6 flex flex-wrap items-center gap-3">
