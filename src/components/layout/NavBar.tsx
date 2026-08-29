@@ -70,19 +70,18 @@ const NavBar: React.FC = () => {
 
         {/* Desktop Links — Boutique rendered last as a filled brass pill to give
             the nav a single primary action (revenue-driving). */}
-        <ul className="hidden xl:flex items-center gap-1 2xl:gap-2">
+        <ul className="hidden xl:flex items-center gap-[2.1rem]">
           {NAV.map((item, i) => {
             const active = isActive(item.href);
             const resolved = resolveHref(item.href);
-            const cls = `group relative whitespace-nowrap px-3 2xl:px-4 py-2.5 text-[10px] 2xl:text-[11px] uppercase tracking-[0.15em] 2xl:tracking-[0.18em] font-sans font-medium transition-colors duration-300 ${
-              active ? 'text-brassInk dark:text-brassBright' : 'text-ink/80 dark:text-ctext/80 hover:text-brassInk dark:hover:text-brassBright'
+            const cls = `group relative whitespace-nowrap text-[0.68rem] uppercase tracking-[0.17em] font-sans transition-colors duration-[250ms] ${
+              active ? 'text-brassInk dark:text-brassBright' : 'text-ink/75 dark:text-ctext/70 hover:text-brassInk dark:hover:text-brassBright'
             }`;
             const underline = (
               <span
-                className={`pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-brass transition-transform duration-300 ${
-                  active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                className={`pointer-events-none absolute left-0 -bottom-[5px] h-px bg-brassBright transition-[width] duration-300 ease-[cubic-bezier(.2,.7,.2,1)] ${
+                  active ? 'w-full' : 'w-0 group-hover:w-full'
                 }`}
-                style={{ transformOrigin: 'center' }}
               />
             );
             return (
