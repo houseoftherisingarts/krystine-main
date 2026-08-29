@@ -14,18 +14,25 @@ service firebase.storage {
         ];
     }
 
-    // Le contenu des formations est privé : aucune lecture directe. Les
-    // acheteuses reçoivent une URL signée par la fonction obtenirLecon.
+    // Le contenu des formations est privé : l'écriture reste à l'admin et la
+    // lecture passe par la fonction obtenirLecon (URL signée après achat).
+    // Les règles Storage s'additionnent par OU : le tout-venant ci-dessous
+    // capture donc le premier segment pour EXCLURE formations-contenu.
     match /formations-contenu/{allPaths=**} {
-      allow read: if false;
       allow write: if isAdmin()
                    && request.resource.size < 2 * 1024 * 1024 * 1024;  // 2 GB par leçon
     }
 
-    match /{allPaths=**} {
-      allow read: if true;
+    match /{dossier}/{allPaths=**} {
+      allow read: if dossier != 'formations-contenu';
       allow write: if isAdmin()
                    && request.resource.size < 500 * 1024 * 1024  // 500 MB
+                   && request.resource.contentType.matches('(image|video|audio)/.*|application/pdf');
+    }
+    match /{fichier} {
+      allow read: if true;
+      allow write: if isAdmin()
+                   && request.resource.size < 500 * 1024 * 1024
                    && request.resource.contentType.matches('(image|video|audio)/.*|application/pdf');
     }
   }
