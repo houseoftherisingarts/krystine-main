@@ -112,7 +112,6 @@ export default function PodcastV2() {
         const parsed = parseEpisodes(xml);
         if (!alive) return;
         if (!parsed.episodes.length) throw new Error('Aucun épisode');
-        setCover(parsed.cover);
         setEpisodes(parsed.episodes);
         setSelected(parsed.episodes[0].id);
         setStatus('ready');
