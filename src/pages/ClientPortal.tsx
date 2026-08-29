@@ -45,30 +45,9 @@ const ClientPortal: React.FC = () => {
     );
   }
 
-  if (isAdmin && !voirPortailClient) {
-    return (
-      <div className="min-h-screen dark:bg-[#16100a] pt-32 pb-24 px-6">
-        <div className="max-w-md mx-auto text-center">
-          <h1 className="text-3xl font-serif text-[#2a2015] dark:text-white mb-4">
-            {lang === 'FR' ? 'Compte Administrateur' : 'Admin Account'}
-          </h1>
-          <p className="text-[#2a2015]/60 dark:text-white/60 mb-8">
-            {lang === 'FR' ? 'Votre tableau de bord est dans l\'espace admin.' : 'Your dashboard is in the admin space.'}
-          </p>
-          <a href="/admin" className="bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors inline-block">
-            {lang === 'FR' ? 'Aller au tableau de bord' : 'Go to admin dashboard'}
-          </a>
-          <button
-            type="button"
-            onClick={() => setVoirPortailClient(true)}
-            className="mt-4 block w-full text-xs uppercase tracking-widest text-[#7d6330] hover:text-[#bb9a5e]"
-          >
-            {lang === 'FR' ? 'Voir le portail client (test)' : 'View client portal (test)'}
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // Un compte admin vit dans le portail client comme tout le monde : ça lui
+  // montre exactement ce que les clientes voient. L'espace admin ne s'atteint
+  // que par /admin (ou le lien discret dans l'en-tête ci-dessous).
 
   const tabs: { id: Tab; label: string; icon: string }[] = [
     { id: 'profile',  label: lang === 'FR' ? 'Profil' : 'Profile', icon: 'fa-user' },
