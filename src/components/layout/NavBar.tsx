@@ -137,44 +137,40 @@ const NavBar: React.FC = () => {
             )}
           </IconButton>
 
-          {user && <Cloche uid={user.uid} />}
-          {user ? (
+          {profilVisible && user && <Cloche uid={user.uid} />}
+          {profilVisible && (user ? (
             <Link
               to="/compte"
               title={member?.displayName || user.displayName || user.email || ''}
-              className="flex items-center gap-2 pl-1.5 pr-3 py-1 min-h-[44px] rounded-full border border-ink/10 dark:border-ctext/10 hover:border-brass transition-colors"
+              className="w-10 h-10 rounded-full overflow-hidden border border-brass/40 hover:border-brass transition-colors shrink-0"
             >
               {(member?.photoURL || user.photoURL) ? (
-                <img src={member?.photoURL || user.photoURL!} alt="" className="w-6 h-6 rounded-full object-cover" />
+                <img src={member?.photoURL || user.photoURL!} alt="" className="w-full h-full object-cover" />
               ) : (
-                <div className="w-6 h-6 rounded-full bg-brass/20 flex items-center justify-center text-[10px] font-bold text-brassInk">
+                <span className="w-full h-full flex items-center justify-center bg-brass/20 text-xs font-bold text-brassInk">
                   {(user.email?.[0] || '?').toUpperCase()}
-                </div>
-              )}
-              {member?.dosha && (
-                <span className="text-[9px] uppercase tracking-[0.18em] text-brassInk dark:text-brassBright font-semibold capitalize hidden xl:inline">{member.dosha}</span>
+                </span>
               )}
             </Link>
           ) : (
-            <button
-              onClick={() => setSignInOpen(true)}
-              title={lang === 'FR' ? 'Connexion' : 'Sign in'}
-              className="hidden md:inline-flex items-center gap-2 pl-3 pr-4 py-2 min-h-[44px] rounded-full border border-ink/15 dark:border-ctext/15 text-[10px] uppercase tracking-[0.18em] font-sans font-semibold text-ink/75 dark:text-ctext/80 hover:text-brassInk dark:hover:text-brassBright hover:border-brass transition-colors"
-            >
-              <User size={13} strokeWidth={1.75} />
-              {lang === 'FR' ? 'Connexion' : 'Sign in'}
-            </button>
-          )}
-          {!user && (
-            <button
-              onClick={() => setSignInOpen(true)}
-              title={lang === 'FR' ? 'Connexion' : 'Sign in'}
-              aria-label={lang === 'FR' ? 'Connexion' : 'Sign in'}
-              className="md:hidden w-11 h-11 flex items-center justify-center rounded-full text-ink/70 dark:text-ctext/70 hover:text-brassInk dark:hover:text-brassBright hover:bg-brass/8 transition-colors"
-            >
-              <User size={16} strokeWidth={1.75} />
-            </button>
-          )}
+            <>
+              <button
+                onClick={() => setSignInOpen(true)}
+                title={lang === 'FR' ? 'Connexion' : 'Sign in'}
+                className="hidden md:inline-flex items-center gap-2 pl-3 pr-4 py-2 min-h-[44px] rounded-full border border-ink/15 dark:border-ctext/15 text-[10px] uppercase tracking-[0.18em] font-sans font-semibold text-ink/75 dark:text-ctext/80 hover:text-brassInk dark:hover:text-brassBright hover:border-brass transition-colors"
+              >
+                <User size={13} strokeWidth={1.75} />
+                {lang === 'FR' ? 'Connexion' : 'Sign in'}
+              </button>
+              <button
+                onClick={() => setSignInOpen(true)}
+                aria-label={lang === 'FR' ? 'Connexion' : 'Sign in'}
+                className="md:hidden w-11 h-11 flex items-center justify-center rounded-full text-ink/70 dark:text-ctext/70 hover:text-brassInk hover:bg-brass/8 transition-colors"
+              >
+                <User size={16} strokeWidth={1.75} />
+              </button>
+            </>
+          ))}
 
           {/* Language */}
           <div className="relative">
