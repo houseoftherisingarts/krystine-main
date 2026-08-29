@@ -260,6 +260,7 @@ const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) 
 const ClientPortal: React.FC = () => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
   const [tab, setTab] = useState<Tab>('profile');
+  const [editOuvert, setEditOuvert] = useState(false);
   // Live points balance for the header chip. Subscribed here once so all
   // tabs share the same stream rather than each re-subscribing.
   const [pointsBalance, setPointsBalance] = useState<PointsBalance>(DEFAULT_POINTS_BALANCE);
@@ -308,7 +309,6 @@ const ClientPortal: React.FC = () => {
   ];
 
   const banniere = member?.bannerURL || '/krystine-bg.jpg';
-  const [editOuvert, setEditOuvert] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-16 pb-24">
