@@ -202,3 +202,14 @@ export function suivreMonVoteCommentaire(postId: string, cid: string, uid: strin
     cb(v === 1 || v === -1 ? v : 0);
   }, () => cb(0));
 }
+
+// Les publications d'une seule personne (le mur du profil). Trié côté client
+// pour éviter un index composite.
+export function suivrePublicationsDe(uid: string, cb: (posts: PostMur[]) => void, max = 50): () => void {
+  const q = query(collection(db, COL), where('uid', '==', uid), fsLimit(max));
+  return onSnapshot(q, snap => {
+    const posts = snap.docs.map(d => ({ id: d.id, ...d.data() } as PostMur));
+    posts.sort((a, b) => (b.creeLe?.toMillis?.() || 0) - (a.creeLe?.toMillis?.() || 0));
+    cb(posts);
+  });
+}
