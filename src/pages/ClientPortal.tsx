@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
+import { suivreLeMur, type PostMur } from '../firebase/mur';
 import { logout } from '../firebase/auth';
 import { updateMember, getClientOrdersForMember, getDoshaResultsForMember, getGuideResponsesForMember, type ClientOrder, type DoshaResult, type GuideResponse } from '../firebase/firestore';
 import { uploadImage } from '../firebase/storage';
