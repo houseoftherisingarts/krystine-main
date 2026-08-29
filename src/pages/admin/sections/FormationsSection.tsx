@@ -1,9 +1,98 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   getFormations, setFormationStatut, deleteFormation, updateFormationOptions,
-  type Formation, type FormationOptions,
+  getLecons, ajouterLecon, supprimerLecon, setLeconOrdre,
+  type Formation, type FormationOptions, type Lecon,
 } from '../../../firebase/formations';
 import { Card } from '../primitives';
+
+// Les leçons d'un cours : téléversement (vidéo, musique, PDF, autre fichier),
+// ordre par flèches, suppression. Le fichier part dans formations-contenu/
+// (privé) et la leçon apparaît immédiatement dans le lecteur.
+const LeconsPanel: React.FC<{ formationId: string }> = ({ formationId }) => {
+  const [lecons, setLecons] = useState<Lecon[]>([]);
+  const [charge, setCharge] = useState(true);
+  const [televersement, setTeleversement] = useState(false);
+  const [erreur, setErreur] = useState<string | null>(null);
+  const fichierRef = useRef<HTMLInputElement>(null);
+
+  const refresh = () => getLecons(formationId).then(setLecons).finally(() => setCharge(false));
+  useEffect(() => { refresh(); }, [formationId]);
+
+  const televerser = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fichiers = Array.from(e.target.files || []);
+    if (!fichiers.length) return;
+    setErreur(null); setTeleversement(true);
+    try {
+      let ordre = lecons.length;
+      for (const f of fichiers) {
+        const titre = f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').trim();
+        await ajouterLecon(formationId, f, titre || f.name, ordre++);
+      }
+      await refresh();
+    } catch (err: any) {
+      setErreur(err?.message || 'Le téléversement a échoué.');
+    } finally {
+      setTeleversement(false);
+      if (fichierRef.current) fichierRef.current.value = '';
+    }
+  };
+
+  const bouger = async (i: number, dir: -1 | 1) => {
+    const j = i + dir;
+    if (j < 0 || j >= lecons.length) return;
+    await Promise.all([
+      setLeconOrdre(formationId, lecons[i].id, j),
+      setLeconOrdre(formationId, lecons[j].id, i),
+    ]);
+    await refresh();
+  };
+
+  const retirer = async (l: Lecon) => {
+    if (!confirm(`Supprimer la leçon « ${l.titre} » ?`)) return;
+    await supprimerLecon(formationId, l);
+    await refresh();
+  };
+
+  return (
+    <div className="mt-4 border-t border-[#3a3126]/10 pt-4 dark:border-white/10">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[#7d6330]">
+          Leçons ({lecons.length})
+        </p>
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#bb9a5e] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#2a2015] transition-colors hover:bg-[#a3823f]">
+          <i className="fa-solid fa-upload text-[10px]" />
+          {televersement ? 'Téléversement…' : 'Ajouter des leçons'}
+          <input
+            ref={fichierRef} type="file" multiple className="hidden"
+            accept="video/*,audio/*,.pdf,application/pdf,*/*"
+            onChange={televerser} disabled={televersement}
+          />
+        </label>
+      </div>
+      {erreur && <p className="mb-3 text-xs text-red-600">{erreur}</p>}
+      {charge ? (
+        <p className="text-xs text-[#3a3126]/50 dark:text-white/50">Chargement…</p>
+      ) : lecons.length === 0 ? (
+        <p className="text-xs text-[#3a3126]/50 dark:text-white/50">
+          Aucune leçon. Téléversez des vidéos, des musiques ou des PDF : l'ordre de téléversement devient l'ordre du cours.
+        </p>
+      ) : (
+        <div className="space-y-1.5">
+          {lecons.map((l, i) => (
+            <div key={l.id} className="flex items-center gap-3 rounded-[12px] bg-white/50 px-3 py-2 text-sm dark:bg-white/5">
+              <i className={`fa-solid ${l.type === 'video' ? 'fa-circle-play' : l.type === 'audio' ? 'fa-music' : l.type === 'pdf' ? 'fa-file-pdf' : 'fa-file'} w-4 text-[#7d6330]`} />
+              <span className="min-w-0 flex-1 truncate text-[#2a2015] dark:text-white">{i + 1}. {l.titre}</span>
+              <button type="button" onClick={() => bouger(i, -1)} disabled={i === 0} title="Monter" className="text-[#3a3126]/40 hover:text-[#7d6330] disabled:opacity-20 dark:text-white/40"><i className="fa-solid fa-chevron-up" /></button>
+              <button type="button" onClick={() => bouger(i, 1)} disabled={i === lecons.length - 1} title="Descendre" className="text-[#3a3126]/40 hover:text-[#7d6330] disabled:opacity-20 dark:text-white/40"><i className="fa-solid fa-chevron-down" /></button>
+              <button type="button" onClick={() => retirer(l)} title="Supprimer" className="text-red-400 hover:text-red-600"><i className="fa-solid fa-trash" /></button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Le panneau « Options » d'une formation : paywall et prix, evergreen ou
 // sortie datée, lancement orchestré, message aux acheteuses.
