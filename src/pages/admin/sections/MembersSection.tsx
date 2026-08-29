@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  getAllMembers, getNewsletterSubscribers, bulkAddNewsletterSubscribers,
+  getAllMembers, getNewsletterSubscribers, bulkAddNewsletterSubscribers, updateMember,
   type MemberDoc, type NewsletterSubscriber, type BulkImportResult,
 } from '../../../firebase/firestore';
 import { parseCsv, mapCsvToSubscribers } from '../../../lib/csv';
