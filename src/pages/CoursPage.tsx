@@ -33,9 +33,25 @@ const CoursPage: React.FC = () => {
             : 'Guided paths back to the body, its rhythms and the cycles of nature, at your own pace.'}
         </p>
 
+        <div className="mt-8 flex flex-wrap gap-2">
+          {([['tous', lang === 'FR' ? 'Tout' : 'All'], ['cours', lang === 'FR' ? 'Les cours' : 'Courses'], ['musique', lang === 'FR' ? 'La musique' : 'Music']] as const).map(([k, l]) => (
+            <button
+              key={k}
+              onClick={() => setFiltre(k)}
+              className={`rounded-full px-5 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors ${
+                filtre === k
+                  ? 'bg-[#bb9a5e] text-[#2a2015]'
+                  : 'border border-[#3a3126]/15 text-[#3a3126]/60 hover:border-[#bb9a5e] hover:text-[#7d6330] dark:border-white/15 dark:text-white/60'
+              }`}
+            >
+              {l}
+            </button>
+          ))}
+        </div>
+
         {loading ? (
           <p className="mt-14 text-sm text-[#3a3126]/50 dark:text-white/50">{lang === 'FR' ? 'Chargement…' : 'Loading…'}</p>
-        ) : formations.length === 0 ? (
+        ) : visibles.length === 0 ? (
           <p className="mt-14 text-sm text-[#3a3126]/50 dark:text-white/50">
             {lang === 'FR' ? 'Les premières formations arrivent bientôt.' : 'The first courses are coming soon.'}
           </p>
