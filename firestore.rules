@@ -219,10 +219,10 @@ service cloud.firestore {
       allow read: if isSignedIn();
       allow create: if isAdmin()
                     || (isSelf(uid)
-                        && !request.resource.data.keys().hasAny(['verifie', 'moderateur']));
+                        && !request.resource.data.keys().hasAny(['verifie', 'moderateur', 'filleules', 'filleulesAcheteuses', 'accesVie']));
       allow update: if isAdmin()
                     || (isSelf(uid)
-                        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['verifie', 'moderateur']));
+                        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['verifie', 'moderateur', 'filleules', 'filleulesAcheteuses', 'accesVie']));
       allow delete: if isAdmin();
 
       // Newsletter inbox pointers — written by the send Cloud Function (which
