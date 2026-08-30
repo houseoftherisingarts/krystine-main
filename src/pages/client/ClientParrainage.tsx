@@ -69,7 +69,7 @@ const ClientParrainage: React.FC<{ uid: string; lang: string }> = ({ uid, lang }
 
       {code && (
         <div className="mt-4">
-          <p className="font-['Cormorant_Garamond'] text-[34px] leading-none tracking-[0.18em] text-[#3a3126] dark:text-white">{code}</p>
+          <p className="font-['Cormorant_Garamond'] lining-nums text-[34px] leading-none tracking-[0.18em] text-[#3a3126] dark:text-white">{code}</p>
           <button
             type="button"
             onClick={copier}
@@ -83,11 +83,11 @@ const ClientParrainage: React.FC<{ uid: string; lang: string }> = ({ uid, lang }
 
       <div className="mt-4 grid grid-cols-2 gap-2">
         <div className="rounded-2xl bg-[#3a3126]/5 px-3 py-2.5 dark:bg-white/5">
-          <p className="font-['Cormorant_Garamond'] text-[28px] leading-none text-[#3a3126] dark:text-white">{invitees}</p>
+          <p className="font-['Cormorant_Garamond'] lining-nums text-[28px] leading-none text-[#3a3126] dark:text-white">{invitees}</p>
           <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[#7d6330]">{fr ? (invitees === 1 ? 'Invitée' : 'Invitées') : (invitees === 1 ? 'Invitee' : 'Invitees')}</p>
         </div>
         <div className="rounded-2xl bg-[#bb9a5e]/12 px-3 py-2.5">
-          <p className="font-['Cormorant_Garamond'] text-[28px] leading-none text-[#3a3126] dark:text-white">{acheteuses}</p>
+          <p className="font-['Cormorant_Garamond'] lining-nums text-[28px] leading-none text-[#3a3126] dark:text-white">{acheteuses}</p>
           <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[#7d6330]">{fr ? (acheteuses === 1 ? 'Filleule acheteuse' : 'Filleules acheteuses') : (acheteuses === 1 ? 'Paying invitee' : 'Paying invitees')}</p>
         </div>
       </div>
