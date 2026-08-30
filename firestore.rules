@@ -115,7 +115,9 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
     match /parrainages/{filleulUid} {
-      allow read: if isSelf(filleulUid) || isAdmin();
+      // La marraine lit ses propres filleules (requête filtrée sur parrainUid).
+      allow read: if isSelf(filleulUid) || isAdmin()
+                  || (isSignedIn() && resource.data.parrainUid == request.auth.uid);
       allow create: if isSelf(filleulUid)
                     && request.resource.data.parrainUid is string
                     && request.resource.data.parrainUid != request.auth.uid;
