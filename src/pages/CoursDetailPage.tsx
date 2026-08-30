@@ -6,6 +6,7 @@ import {
   type Formation, type Lecon,
 } from '../firebase/formations';
 import { useAuth, useUI } from '../contexts/AppContext';
+import { getMember } from '../firebase/firestore';
 
 // La fiche d'un cours et son lecteur, sur le patron de l'Académie Zéro
 // Limite : liste des leçons et progression à gauche, contenu à droite,
@@ -23,6 +24,7 @@ const CoursDetailPage: React.FC = () => {
   const [formation, setFormation] = useState<Formation | null>(null);
   const [lecons, setLecons] = useState<Lecon[]>([]);
   const [achete, setAchete] = useState(false);
+  const [accesVie, setAccesVie] = useState(false);
   const [terminees, setTerminees] = useState<Record<string, boolean>>({});
   const [courante, setCourante] = useState<Lecon | null>(null);
   const [urlCourante, setUrlCourante] = useState('');
@@ -40,16 +42,17 @@ const CoursDetailPage: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    if (!user || !id) { setAchete(false); return; }
+    if (!user || !id) { setAchete(false); setAccesVie(false); return; }
     aAchete(user.uid, id).then(setAchete).catch(() => {});
+    getMember(user.uid).then(m => setAccesVie(!!m?.accesVie)).catch(() => {});
     getProgression(user.uid, id).then(p => {
       setTerminees(p.terminees || {});
     }).catch(() => {});
   }, [user, id]);
 
   const accessible = useMemo(
-    () => isAdmin || achete || (formation ? !formation.paywall : false),
-    [isAdmin, achete, formation],
+    () => isAdmin || achete || accesVie || (formation ? !formation.paywall : false),
+    [isAdmin, achete, accesVie, formation],
   );
 
   const ouvrir = async (l: Lecon) => {

@@ -589,7 +589,9 @@ export interface MemberDoc {
   bannerURL?: string;              // profile banner shown on the public /membre/:uid page
   verifie?: boolean;               // coche bleue, donnée par l'admin seulement
   moderateur?: boolean;            // rang de modératrice, donné par l'admin seulement
-  filleules?: number;              // compteur de parrainage, écrit par le serveur
+  filleules?: number;
+  filleulesAcheteuses?: number;
+  accesVie?: boolean;              // compteur de parrainage, écrit par le serveur
   newsletterSubscribed?: boolean; // true once the member is on the newsletter list
   newsletterSource?: string;      // page/context that triggered the subscription
   joinedAt?: Timestamp;
