@@ -128,7 +128,13 @@ export const obtenirLecon = onCall(
       const paywall = !!(fSnap.data() as { paywall?: boolean } | undefined)?.paywall;
       if (paywall) {
         const achat = await db.doc(`achatsFormations/${req.auth.uid}/formations/${formationId}`).get();
-        if (!achat.exists) throw new HttpsError('permission-denied', 'Cette formation ne vous appartient pas encore.');
+        if (!achat.exists) {
+          // Accès à vie : le vingtième palier du parrainage.
+          const m = await db.doc(`members/${req.auth.uid}`).get();
+          if (!(m.data() as { accesVie?: boolean } | undefined)?.accesVie) {
+            throw new HttpsError('permission-denied', 'Cette formation ne vous appartient pas encore.');
+          }
+        }
       }
     }
 
