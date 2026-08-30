@@ -18,7 +18,6 @@ const ADMIN_EMAILS = [
   'admin@krystinestlaurent.ca',
   'krystine@inspiratanature.com',
   'alex@lesalondesinconnus.com',
-  'krystinestterredhysope@gmail.com',
   'krystinestlaurent@gmail.com',
   'houseoftherisingarts@gmail.com',
 ];

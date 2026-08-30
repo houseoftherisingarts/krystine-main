@@ -12,7 +12,7 @@ import { buildMail, renderLiveHtml, type LiveEvent } from './live';
 export const ADMIN_EMAILS = [
   'admin@krystinestlaurent.ca',
   'krystine@inspiratanature.com',
-  'krystinestterredhysope@gmail.com',
+  'krystinestlaurent@gmail.com',
 ];
 
 export function assertAdmin(request: CallableRequest): string {

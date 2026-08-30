@@ -10,6 +10,7 @@ service firebase.storage {
         && request.auth.token.email in [
           'admin@krystinestlaurent.ca',
           'krystine@inspiratanature.com',
+          'krystinestlaurent@gmail.com',
           'houseoftherisingarts@gmail.com'
         ];
     }
