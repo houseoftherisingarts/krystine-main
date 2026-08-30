@@ -64,14 +64,14 @@ export const parrainageAchat = onDocumentCreated(
     const db = getFirestore();
     const pRef = db.doc(`parrainages/${filleulUid}`);
     const pSnap = await pRef.get();
-    const p = pSnap.data() as { parrainUid?: string; achatCompteLe?: unknown } | undefined;
-    if (!pSnap.exists || !p?.parrainUid || p.achatCompteLe) return;
-    await pRef.update({ achatCompteLe: FieldValue.serverTimestamp() });
+    const p = pSnap.data() as { parrainUid?: string; achatCompte?: boolean } | undefined;
+    if (!pSnap.exists || !p?.parrainUid || p.achatCompte) return;
+    await pRef.update({ achatCompte: true, achatCompteLe: FieldValue.serverTimestamp() });
 
     const parrainUid = p.parrainUid;
     const acheteuses = await db.collection('parrainages')
       .where('parrainUid', '==', parrainUid)
-      .where('achatCompteLe', '!=', null)
+      .where('achatCompte', '==', true)
       .count().get();
     const n = acheteuses.data().count;
     await db.doc(`members/${parrainUid}`).set({ filleulesAcheteuses: n }, { merge: true });
