@@ -11,7 +11,8 @@ service firebase.storage {
           'admin@krystinestlaurent.ca',
           'krystine@inspiratanature.com',
           'krystinestlaurent@gmail.com',
-          'houseoftherisingarts@gmail.com'
+          'houseoftherisingarts@gmail.com',
+          'krystinestterredhysope@gmail.com'
         ];
     }
 

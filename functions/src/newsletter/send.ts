@@ -13,6 +13,7 @@ export const ADMIN_EMAILS = [
   'admin@krystinestlaurent.ca',
   'krystine@inspiratanature.com',
   'krystinestlaurent@gmail.com',
+  'krystinestterredhysope@gmail.com',
 ];
 
 export function assertAdmin(request: CallableRequest): string {

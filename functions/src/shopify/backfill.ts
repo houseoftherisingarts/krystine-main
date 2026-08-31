@@ -13,6 +13,7 @@ const ADMIN_EMAILS = [
   'admin@krystinestlaurent.ca',
   'krystine@inspiratanature.com',
   'krystinestlaurent@gmail.com',
+  'krystinestterredhysope@gmail.com',
 ];
 
 // Fetch one page of orders from the Shopify Admin REST API.

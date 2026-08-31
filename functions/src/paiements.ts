@@ -20,6 +20,7 @@ const ADMIN_EMAILS = [
   'alex@lesalondesinconnus.com',
   'krystinestlaurent@gmail.com',
   'houseoftherisingarts@gmail.com',
+  'krystinestterredhysope@gmail.com',
 ];
 
 export const creerSessionPaiement = onCall(
