@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import MurSocial from '../components/communaute/MurSocial';
 import { useParams, Link } from 'react-router-dom';
 import {
   getFormation, getLecons, getProgression, marquerLecon, aAchete,
