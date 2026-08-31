@@ -32,6 +32,7 @@ export type AdminSectionId =
   | 'guide'
   | 'dosha'
   | 'media'
+  | 'live'
   | 'settings';
 
 interface NavItem {
@@ -49,6 +50,7 @@ const NAV: NavItem[] = [
   { id: 'messages',   label: 'Messages',         icon: 'fa-comments' },
   { id: 'submissions', label: 'Formulaires',     icon: 'fa-clipboard-list' },
   { id: 'groups',     label: 'Groupes',          icon: 'fa-users-rectangle' },
+  { id: 'live',       label: 'Live',             icon: 'fa-tower-broadcast' },
   { id: 'events',     label: 'Événements & Conférences', icon: 'fa-calendar' },
   { id: 'blog',       label: 'Blogue',           icon: 'fa-pen-nib' },
   { id: 'splash',     label: 'Écran d\'accueil', icon: 'fa-wand-magic-sparkles' },

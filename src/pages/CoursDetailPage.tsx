@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import MurSocial from '../components/communaute/MurSocial';
+import { suivreLiveEnCours, type LiveEnCours } from '../firebase/lives';
 import { useParams, Link } from 'react-router-dom';
 import {
   getFormation, getLecons, getProgression, marquerLecon, aAchete,
@@ -26,6 +27,8 @@ const CoursDetailPage: React.FC = () => {
   const [lecons, setLecons] = useState<Lecon[]>([]);
   const [achete, setAchete] = useState(false);
   const [accesVie, setAccesVie] = useState(false);
+  const [live, setLive] = useState<LiveEnCours | null>(null);
+  useEffect(() => suivreLiveEnCours(setLive), []);
   const [terminees, setTerminees] = useState<Record<string, boolean>>({});
   const [courante, setCourante] = useState<Lecon | null>(null);
   const [urlCourante, setUrlCourante] = useState('');
@@ -114,9 +117,40 @@ const CoursDetailPage: React.FC = () => {
         <Link to="/cours" className="text-[11px] font-bold uppercase tracking-widest text-[#7d6330]">
           <i className="fa-solid fa-arrow-left mr-2" />{lang === 'FR' ? 'Toutes les formations' : 'All courses'}
         </Link>
+        {id === 'foyer' && accessible && (
+          <div className="mt-4 overflow-hidden rounded-[20px] border border-white/60 shadow-[0_24px_60px_-24px_rgba(58,49,38,0.5)] dark:border-white/10">
+            <video
+              src="/assets/foyer-visuel-16x9.mp4"
+              poster="/assets/foyer-visuel-16x9.jpg"
+              autoPlay muted loop playsInline
+              className="aspect-video w-full object-cover"
+            />
+          </div>
+        )}
         <h1 className="mt-3 max-w-3xl font-serif text-3xl leading-tight text-[#2a2015] md:text-4xl dark:text-white" style={{ letterSpacing: '-0.01em' }}>
           {formation.titre}
         </h1>
+
+        {live?.formationId === id && (
+          <div className="mt-5 flex flex-wrap items-center gap-4 rounded-[20px] border border-red-500/30 bg-[#2a2015] px-5 py-4 text-white">
+            <span className="relative flex h-3 w-3">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
+            </span>
+            <p className="min-w-0 flex-1 text-sm">
+              <span className="font-bold uppercase tracking-widest text-[11px] text-red-300">Live en cours</span>
+              <span className="ml-2">{live.titre}</span>
+              {!accessible && (
+                <span className="block text-white/60">{lang === 'FR' ? 'Rejoignez la formation ci-dessous pour entrer dans le live.' : 'Join the course below to enter the live.'}</span>
+              )}
+            </p>
+            {accessible && live.url && (
+              <a href={live.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-red-500 px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white hover:bg-red-400">
+                {lang === 'FR' ? 'Rejoindre le live' : 'Join the live'} <i className="fa-solid fa-arrow-right" />
+              </a>
+            )}
+          </div>
+        )}
 
         {accessible && lecons.length > 0 && (
           <div className="mt-5 max-w-3xl">

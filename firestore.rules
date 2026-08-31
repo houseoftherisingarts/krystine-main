@@ -29,6 +29,7 @@ service cloud.firestore {
     match /blogPosts/{id}     { allow read: if true; allow write: if isAdmin(); }
     match /mediaLibrary/{id}  { allow read: if true; allow write: if isAdmin(); }
     match /formations/{id}    { allow read: if true; allow write: if isAdmin(); }
+    match /livesEnCours/{id}  { allow read: if true; allow write: if isAdmin(); }
     // Le plan des leçons est lisible (titres et durées pour la fiche du cours);
     // le FICHIER passe par la fonction obtenirLecon qui vérifie l'achat.
     match /formations/{id}/lecons/{lid} { allow read: if true; allow write: if isAdmin(); }

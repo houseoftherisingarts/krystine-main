@@ -191,13 +191,14 @@
   .relie .more:hover{border-color:var(--terracotta)}
   /* ===== BIO (qui est Krystine, dès l'entrée) ===== */
   .bio{position:relative;z-index:5;background:var(--cream);padding:5.5rem 0 6rem}
-  .bio .mx{display:grid;grid-template-columns:.86fr 1.14fr;gap:4rem;align-items:center}
+  .bio .mx{display:grid;grid-template-columns:1.14fr .86fr;gap:4rem;align-items:center}
   .bio-frame{border:1px solid rgba(187,154,94,.45);padding:.6rem;background:var(--card);box-shadow:0 30px 70px rgba(58,49,38,.14)}
   .bio-frame .ph{aspect-ratio:4/5;overflow:hidden}
   .bio-frame img{width:100%;height:100%;object-fit:cover;object-position:center top;transform:scale(1.06);transition:transform 1.4s cubic-bezier(.16,.8,.24,1)}
   .bio-frame:hover img{transform:scale(1.02)}
   .bio-eyebrow{font-family:var(--sans);font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--brass-deep)}
-  .bio h2{margin-top:1rem;font-family:var(--serif);font-weight:500;font-size:clamp(2.2rem,4vw,3.4rem);line-height:1.02;text-transform:uppercase;letter-spacing:.01em;color:var(--ink)}
+  .bio h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,3.2vw,2.7rem);line-height:1.14;color:var(--ink);max-width:19ch}
+  .bio-cap{margin-top:.8rem;font-family:var(--sans);font-size:.62rem;letter-spacing:.26em;text-transform:uppercase;color:var(--brass-deep);text-align:right}
   .bio .bio-sub{margin-top:1.1rem;font-family:var(--serif);font-size:clamp(1.15rem,1.8vw,1.45rem);line-height:1.35;color:var(--ink-soft);max-width:38ch}
   .bio .bio-rule{width:72px;height:1px;background:var(--brass);margin-top:1.5rem}
   .bio .bio-p{margin-top:1.5rem;color:var(--ink-soft);line-height:1.85;font-size:.95rem;max-width:56ch}
@@ -564,23 +565,6 @@
     <span>Prenez le temps de tourner votre téléphone</span>
   </div>
 
-  <!-- ===== BIO · qui est Krystine ===== -->
-  <section class="bio" id="krystine">
-    <div class="mx">
-      <div class="bio-frame reveal">
-        <div class="ph"><img src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" referrerpolicy="no-referrer" /></div>
-      </div>
-      <div class="bio-copy reveal d2">
-        <div class="bio-eyebrow">Fondatrice d'Inspirata Ayurveda</div>
-        <h2>Krystine<br/>St-Laurent</h2>
-        <p class="bio-sub">35 ans à la jonction de la rigueur clinique et de la santé globale.</p>
-        <div class="bio-rule" aria-hidden="true"></div>
-        <p class="bio-p">35 ans à traverser les milieux de la santé, soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de la série télé Santé la vie et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle laisse les gens seuls. Les rituels qu'elle enseigne, elle les pratique chaque matin.</p>
-        <a class="more" href="/conferenciere">Découvrir son parcours →</a>
-      </div>
-    </div>
-  </section>
-
   <!-- ===== FIL CENTRAL ===== -->
   <section class="reperes" id="origine">
     <div class="mx">
@@ -708,6 +692,23 @@
         </form>
         <p class="tm-fine">Une transmission par mois environ. Désinscription en un clic, votre courriel reste entre nous.</p>
         <p class="tm-msg" id="tmmsg" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BIO · qui est Krystine (sous les livres) ===== -->
+  <section class="bio" id="krystine">
+    <div class="mx">
+      <div class="bio-copy reveal">
+        <h2>Près de 40 ans à relier ce que nous avons appris à séparer</h2>
+        <div class="bio-rule" aria-hidden="true"></div>
+        <p class="bio-p">Soins infirmiers et recherche clinique. Ayurveda, plantes médicinales et aromathérapie. Cuisine, saisons et rythmes du corps. Écriture, enseignement, voyages et transmission.</p>
+        <p class="bio-p">Trois livres écrits. Près de 1 200 pages publiées. Une émission de télévision. Des dizaines d'entrevues. Des articles écrits dans de multiples magazines. Des années de conférences, de recherche, d'étude et de transmission.</p>
+        <a class="more" href="/conferenciere">Découvrir son parcours →</a>
+      </div>
+      <div class="bio-frame reveal d2">
+        <div class="ph"><img src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" referrerpolicy="no-referrer" /></div>
+        <p class="bio-cap">Krystine St-Laurent</p>
       </div>
     </div>
   </section>
@@ -1048,5 +1049,31 @@
   };
 </script>
 <script src="/i18n/static.js" defer></script>
+  <script>
+  (function(){
+    fetch('https://firestore.googleapis.com/v1/projects/krystinestlaurent-87566/databases/(default)/documents/livesEnCours/actuel')
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if(!d || !d.fields || !d.fields.actif || d.fields.actif.booleanValue !== true) return;
+        var f = d.fields;
+        var titre = (f.titre && f.titre.stringValue) || 'Live en cours';
+        var fid = f.formationId && f.formationId.stringValue;
+        var url = f.url && f.url.stringValue;
+        var a = document.createElement('a');
+        a.href = fid ? '/cours/' + fid : (url || '/espace');
+        if(!fid && url){ a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+        a.setAttribute('aria-label', 'Live en cours : ' + titre);
+        a.style.cssText = 'position:fixed;top:76px;right:16px;z-index:2000;display:flex;align-items:center;gap:10px;background:rgba(42,32,21,.92);color:#fff;font:700 11px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:11px 18px;border-radius:999px;border:1px solid rgba(239,68,68,.35);backdrop-filter:blur(8px);text-decoration:none;box-shadow:0 14px 40px -12px rgba(180,40,30,.6)';
+        var dot = document.createElement('span');
+        dot.style.cssText = 'width:9px;height:9px;border-radius:50%;background:#ef4444;box-shadow:0 0 0 0 rgba(239,68,68,.7);animation:livePulse 1.6s infinite';
+        var st = document.createElement('style');
+        st.textContent = '@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,.7)}70%{box-shadow:0 0 0 9px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}';
+        a.appendChild(dot);
+        a.appendChild(document.createTextNode('Live en cours'));
+        document.head.appendChild(st);
+        document.body.appendChild(a);
+      }).catch(function(){});
+  })();
+  </script>
 </body>
 </html>

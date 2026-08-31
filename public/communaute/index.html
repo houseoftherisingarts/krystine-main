@@ -1023,5 +1023,31 @@
   };
 </script>
 <script src="/i18n/static.js" defer></script>
+  <script>
+  (function(){
+    fetch('https://firestore.googleapis.com/v1/projects/krystinestlaurent-87566/databases/(default)/documents/livesEnCours/actuel')
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if(!d || !d.fields || !d.fields.actif || d.fields.actif.booleanValue !== true) return;
+        var f = d.fields;
+        var titre = (f.titre && f.titre.stringValue) || 'Live en cours';
+        var fid = f.formationId && f.formationId.stringValue;
+        var url = f.url && f.url.stringValue;
+        var a = document.createElement('a');
+        a.href = fid ? '/cours/' + fid : (url || '/espace');
+        if(!fid && url){ a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+        a.setAttribute('aria-label', 'Live en cours : ' + titre);
+        a.style.cssText = 'position:fixed;top:76px;right:16px;z-index:2000;display:flex;align-items:center;gap:10px;background:rgba(42,32,21,.92);color:#fff;font:700 11px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:11px 18px;border-radius:999px;border:1px solid rgba(239,68,68,.35);backdrop-filter:blur(8px);text-decoration:none;box-shadow:0 14px 40px -12px rgba(180,40,30,.6)';
+        var dot = document.createElement('span');
+        dot.style.cssText = 'width:9px;height:9px;border-radius:50%;background:#ef4444;box-shadow:0 0 0 0 rgba(239,68,68,.7);animation:livePulse 1.6s infinite';
+        var st = document.createElement('style');
+        st.textContent = '@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,.7)}70%{box-shadow:0 0 0 9px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}';
+        a.appendChild(dot);
+        a.appendChild(document.createTextNode('Live en cours'));
+        document.head.appendChild(st);
+        document.body.appendChild(a);
+      }).catch(function(){});
+  })();
+  </script>
 </body>
 </html>
