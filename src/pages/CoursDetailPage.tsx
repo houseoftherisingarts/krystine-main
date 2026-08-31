@@ -3,7 +3,7 @@ import EspaceGroupe from '../components/communaute/EspaceGroupe';
 import { suivreLiveEnCours, type LiveEnCours } from '../firebase/lives';
 import { PORTES, porteDuMois } from './foyer/portesData';
 import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, type QuestionLecon } from '../firebase/formations';
-import { useParams, Link } from 'react-router-dom';
+import { Navigate, useParams, Link } from 'react-router-dom';
 import {
   getFormation, getLecons, getProgression, marquerLecon, aAchete,
   acheterFormation, urlDeLecon,
@@ -108,6 +108,12 @@ const CoursDetailPage: React.FC = () => {
   }
   // Un cours masqué reste ouvert pour qui le possède (achat accordé par
   // l'admin, accès à vie ou admin) : il est absent du catalogue, pas du compte.
+  // Le Foyer a sa page de vente : qui ne le possède pas encore y est menée
+  // (le bouton d'achat vit là, avec toute la promesse). Les membres passent.
+  if (id === 'foyer' && formation && !accessible && (!user || !verifAcces)) {
+    return <Navigate to="/foyer" replace />;
+  }
+
   const masqueMaisPossede = formation && formation.statut !== 'publie' && (isAdmin || achete || accesVie);
   if (formation && formation.statut !== 'publie' && !masqueMaisPossede && user && verifAcces) {
     return <div className="min-h-screen bg-[#EEE7DB] pt-40 text-center text-sm text-[#38403a]/50 dark:bg-[#151d19] dark:text-white/50">…</div>;
