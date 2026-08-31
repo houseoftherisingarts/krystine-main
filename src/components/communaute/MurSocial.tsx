@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { suivreLeMur, type FilMur, type PostMur } from '../../firebase/mur';
 import BilletCarte from './BilletCarte';
 import Composeur from './Composeur';
+import PubCarte from './PubCarte';
 
 // ─── Le mur d'un seul fil ────────────────────────────────────────────
 // Porté du FMM 2026 (src/components/mur/MurSocial.tsx). CommunauteEspace
@@ -21,7 +22,13 @@ const MurSocial: React.FC<{ fil: FilMur; titre: string }> = ({ fil, titre }) => 
         <p className="text-sm text-[#3a3126]/50 dark:text-white/45">
           {fil === 'krystine' ? 'Rien de publié pour le moment.' : fil.startsWith('formation:') ? 'Le feed de cette formation est encore vide. Partagez votre parcours.' : 'Le fil est encore vide. Soyez la première voix.'}
         </p>
-      ) : posts.map((p, i) => <BilletCarte key={p.id} post={p} delaiIndex={i} />)}
+      ) : posts.map((p, i) => (
+        <React.Fragment key={p.id}>
+          <BilletCarte post={p} delaiIndex={i} />
+          {/* Une suggestion maison tous les 4 billets, dans le fil public seulement. */}
+          {fil === 'communaute' && (i + 1) % 4 === 0 && <PubCarte index={Math.floor(i / 4)} />}
+        </React.Fragment>
+      ))}
     </div>
   );
 };

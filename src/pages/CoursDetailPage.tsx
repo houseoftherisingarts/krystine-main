@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import MurSocial from '../components/communaute/MurSocial';
 import { suivreLiveEnCours, type LiveEnCours } from '../firebase/lives';
+import { PORTES, porteDuMois } from './foyer/portesData';
 import { useParams, Link } from 'react-router-dom';
 import {
   getFormation, getLecons, getProgression, marquerLecon, aAchete,
@@ -127,6 +128,64 @@ const CoursDetailPage: React.FC = () => {
             />
           </div>
         )}
+
+        {id === 'foyer' && accessible && (() => {
+          const ouverte = porteDuMois();
+          return (
+            <div className="mt-10">
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">Les douze portes</p>
+              <h2 className="mt-1 font-serif text-2xl text-[#2a2015] dark:text-white">
+                La porte de {ouverte.mois.toLowerCase()} est ouverte
+              </h2>
+              <p className="mt-1 max-w-2xl text-sm text-[#3a3126]/60 dark:text-white/60">
+                Une seule porte s'ouvre à la fois, celle du mois en cours. Les autres attendent leur tour.
+              </p>
+
+              <div className="mt-6 grid gap-6 rounded-[24px] border border-[#bb9a5e]/40 bg-white/55 p-6 backdrop-blur-md md:grid-cols-[220px_1fr] md:p-8 dark:border-[#bb9a5e]/30 dark:bg-[#2a2015]/55">
+                <img
+                  src={`/foyer/${ouverte.src}.webp`}
+                  alt={`La porte de ${ouverte.mois}`}
+                  className="mx-auto w-44 max-w-full drop-shadow-[0_18px_30px_rgba(58,49,38,0.35)] md:w-full"
+                  loading="lazy"
+                />
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">{ouverte.mois} · {ouverte.mouvement}</p>
+                  <h3 className="mt-2 font-serif text-2xl text-[#2a2015] dark:text-white">{ouverte.theme}</h3>
+                  <p className="mt-4 max-w-xl font-serif text-lg italic leading-relaxed text-[#3a3126]/80 dark:text-white/75">« {ouverte.question} »</p>
+                  <p className="mt-4 text-sm text-[#3a3126]/60 dark:text-white/60">
+                    Le rituel du mois se vit ici : gardez la question près de vous, revenez-y chaque matin, et partagez ce qu'elle remue dans le feed plus bas.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 grid grid-cols-3 gap-4 sm:grid-cols-4 lg:grid-cols-6">
+                {PORTES.map(pt => {
+                  const estOuverte = pt.n === ouverte.n;
+                  return (
+                    <div key={pt.n} className="text-center">
+                      <div className={`relative overflow-hidden rounded-[16px] border p-2 ${estOuverte ? 'border-[#bb9a5e]/60 bg-[#bb9a5e]/10' : 'border-[#3a3126]/10 bg-white/40 dark:border-white/10 dark:bg-white/5'}`}>
+                        <img
+                          src={`/foyer/${pt.src}.webp`}
+                          alt={`Porte de ${pt.mois}`}
+                          loading="lazy"
+                          className={`mx-auto h-28 w-auto object-contain transition-all ${estOuverte ? '' : 'opacity-45 grayscale'}`}
+                        />
+                        {!estOuverte && (
+                          <span className="absolute inset-0 flex items-center justify-center">
+                            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2a2015]/70 text-[#dcb874]">
+                              <i className="fa-solid fa-lock text-sm" />
+                            </span>
+                          </span>
+                        )}
+                      </div>
+                      <p className={`mt-2 text-[10px] font-bold uppercase tracking-widest ${estOuverte ? 'text-[#7d6330]' : 'text-[#3a3126]/40 dark:text-white/40'}`}>{pt.mois}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
         <h1 className="mt-3 max-w-3xl font-serif text-3xl leading-tight text-[#2a2015] md:text-4xl dark:text-white" style={{ letterSpacing: '-0.01em' }}>
           {formation.titre}
         </h1>
