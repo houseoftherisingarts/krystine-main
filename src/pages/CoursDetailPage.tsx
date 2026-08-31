@@ -27,6 +27,7 @@ const CoursDetailPage: React.FC = () => {
   const [formation, setFormation] = useState<Formation | null>(null);
   const [lecons, setLecons] = useState<Lecon[]>([]);
   const [achete, setAchete] = useState(false);
+  const [verifAcces, setVerifAcces] = useState(true);   // le temps de savoir si la personne possède le cours
   const [accesVie, setAccesVie] = useState(false);
   const [live, setLive] = useState<LiveEnCours | null>(null);
   useEffect(() => suivreLiveEnCours(setLive), []);
@@ -47,8 +48,9 @@ const CoursDetailPage: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    if (!user || !id) { setAchete(false); setAccesVie(false); return; }
-    aAchete(user.uid, id).then(setAchete).catch(() => {});
+    if (!user || !id) { setAchete(false); setAccesVie(false); setVerifAcces(false); return; }
+    setVerifAcces(true);
+    aAchete(user.uid, id).then(setAchete).catch(() => {}).finally(() => setVerifAcces(false));
     getMember(user.uid).then(m => setAccesVie(!!m?.accesVie)).catch(() => {});
     getProgression(user.uid, id).then(p => {
       setTerminees(p.terminees || {});
@@ -103,7 +105,13 @@ const CoursDetailPage: React.FC = () => {
   if (loading) {
     return <div className="min-h-screen bg-[#EEE7DB] pt-40 text-center text-sm text-[#38403a]/50 dark:bg-[#151d19] dark:text-white/50">…</div>;
   }
-  if (!formation || formation.statut !== 'publie') {
+  // Un cours masqué reste ouvert pour qui le possède (achat accordé par
+  // l'admin, accès à vie ou admin) : il est absent du catalogue, pas du compte.
+  const masqueMaisPossede = formation && formation.statut !== 'publie' && (isAdmin || achete || accesVie);
+  if (formation && formation.statut !== 'publie' && !masqueMaisPossede && user && verifAcces) {
+    return <div className="min-h-screen bg-[#EEE7DB] pt-40 text-center text-sm text-[#38403a]/50 dark:bg-[#151d19] dark:text-white/50">…</div>;
+  }
+  if (!formation || (formation.statut !== 'publie' && !masqueMaisPossede)) {
     return (
       <div className="min-h-screen bg-[#EEE7DB] pt-40 text-center dark:bg-[#151d19]">
         <p className="font-serif text-2xl text-[#293027] dark:text-white">{lang === 'FR' ? 'Cette formation n\'est pas disponible.' : 'This course is not available.'}</p>
