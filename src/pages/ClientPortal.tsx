@@ -4,6 +4,7 @@ import { useApp } from '../contexts/AppContext';
 import { suivreLeMur, suivrePublicationsDe, type PostMur } from '../firebase/mur';
 import { retenirCodeDepuisUrl, reclamerCodeRetenu } from '../firebase/parrainage';
 import ClientParrainage from './client/ClientParrainage';
+import Composeur from '../components/communaute/Composeur';
 import { getBadgesDe, CATALOGUE_BADGES } from '../firebase/badgesCatalogue';
 import { suivreMesAmities, accepterAmitie, refuserAmitie, type Amitie } from '../firebase/amities';
 import { getMember, type MemberDoc } from '../firebase/firestore';
@@ -52,13 +53,13 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
       <div>
         <div className="flex items-baseline justify-between gap-3">
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">{lang === 'FR' ? 'Mon mur' : 'My wall'}</p>
-          <Link to="/espace" className="text-[11px] font-bold uppercase tracking-widest text-[#7d6330] hover:text-[#bb9a5e]">
-            {lang === 'FR' ? 'Publier' : 'Post'} <i className="fa-solid fa-pen" />
-          </Link>
+        </div>
+        <div className="mt-3">
+          <Composeur fil="communaute" compact />
         </div>
         {posts.length === 0 ? (
           <p className="mt-3 text-sm text-[#3a3126]/50 dark:text-white/50">
-            {lang === 'FR' ? 'Vous n\'avez encore rien publié. Votre mur montre vos publications de la communauté.' : 'Nothing posted yet. Your wall shows your community posts.'}
+            {lang === 'FR' ? 'Vous n\'avez encore rien publié. Ce que vous publiez ici paraît aussi sur le mur de la communauté.' : 'Nothing posted yet. What you post here also appears on the community wall.'}
           </p>
         ) : (
           <div className="mt-3 space-y-3">
@@ -66,6 +67,7 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
               <div key={p.id} className="rounded-[15px] border border-[#3a3126]/10 p-4 dark:border-white/10">
                 <p className="whitespace-pre-line text-sm text-[#2a2015] dark:text-white">{p.texte}</p>
                 {p.photoUrl && <img src={p.photoUrl} alt="" className="mt-3 max-h-72 rounded-[12px] object-cover" />}
+                {p.videoUrl && <video src={p.videoUrl} controls playsInline preload="metadata" className="mt-3 max-h-72 w-full rounded-[12px] bg-black" />}
                 <p className="mt-2 text-[11px] text-[#3a3126]/40 dark:text-white/40">
                   {p.creeLe?.toDate?.().toLocaleDateString('fr-CA')} · {(p.pour || 0)} <i className="fa-solid fa-heart text-[#bb9a5e]" /> · {p.nbCommentaires || 0} <i className="fa-solid fa-comment" />
                 </p>

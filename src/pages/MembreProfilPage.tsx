@@ -177,6 +177,7 @@ const MembreProfilPage: React.FC = () => {
                 <div key={p.id} className="rounded-[20px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#2a2015]/55">
                   <p className="whitespace-pre-line text-sm text-[#2a2015] dark:text-white">{p.texte}</p>
                   {p.photoUrl && <img src={p.photoUrl} alt="" className="mt-3 max-h-80 rounded-[14px] object-cover" />}
+                  {p.videoUrl && <video src={p.videoUrl} controls playsInline preload="metadata" className="mt-3 max-h-80 w-full rounded-[14px] bg-black" />}
                   <p className="mt-2 text-[11px] text-[#3a3126]/40 dark:text-white/40">
                     {p.creeLe?.toDate?.().toLocaleDateString('fr-CA')} · {p.pour || 0} <i className="fa-solid fa-heart text-[#bb9a5e]" /> · {p.nbCommentaires || 0} <i className="fa-solid fa-comment" />
                   </p>

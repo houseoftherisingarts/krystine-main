@@ -24,6 +24,15 @@ service firebase.storage {
                    && request.resource.size < 2 * 1024 * 1024 * 1024;  // 2 GB par leçon
     }
 
+    // Le mur : chaque membre téléverse ses photos et vidéos dans son propre
+    // dossier, image ou vidéo seulement, 200 Mo au plus.
+    match /mur/{uid}/{fichier} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid
+                   && request.resource.size < 200 * 1024 * 1024
+                   && request.resource.contentType.matches('(image|video)/.*');
+    }
+
     match /{dossier}/{allPaths=**} {
       allow read: if dossier != 'formations-contenu';
       allow write: if isAdmin()

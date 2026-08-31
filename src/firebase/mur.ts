@@ -47,6 +47,8 @@ export interface PostMur {
   texte: string;
   photoUrl?: string;
   photoChemin?: string;
+  videoUrl?: string;
+  videoChemin?: string;
   fil: FilMur;
   /** Le vote façon Reddit. Écrits UNIQUEMENT par les fonctions serveur —
    *  jamais directement par le client. */
@@ -79,6 +81,7 @@ export async function publierSurLeMur(opts: {
   uid: string; nom: string; avatarUrl?: string; texte: string;
   /** Déjà téléversée par le composant (voir uploadImage, dossier 'mur'). */
   photoUrl?: string; photoChemin?: string;
+  videoUrl?: string; videoChemin?: string;
   fil: FilMur;
   /** Le fil « krystine » refuse tout le monde sauf un admin. */
   estAdmin: boolean;
@@ -86,13 +89,14 @@ export async function publierSurLeMur(opts: {
   if (!db) throw new Error('Firestore non configuré');
   if (opts.fil === 'krystine' && !opts.estAdmin) throw new Error('Seule Krystine publie dans ce fil.');
   const texte = opts.texte.trim().slice(0, LONGUEUR_MAX_POST);
-  if (!texte && !opts.photoUrl) throw new Error('Rien à publier.');
+  if (!texte && !opts.photoUrl && !opts.videoUrl) throw new Error('Rien à publier.');
   const id = doc(collection(db, COL)).id;
   await setDoc(doc(db, COL, id), {
     uid: opts.uid, nom: opts.nom,
     ...(opts.avatarUrl ? { avatarUrl: opts.avatarUrl } : {}),
     texte,
     ...(opts.photoUrl ? { photoUrl: opts.photoUrl, ...(opts.photoChemin ? { photoChemin: opts.photoChemin } : {}) } : {}),
+    ...(opts.videoUrl ? { videoUrl: opts.videoUrl, ...(opts.videoChemin ? { videoChemin: opts.videoChemin } : {}) } : {}),
     fil: opts.fil,
     // Le ballon d'hélium part vide : la fonction serveur seule le gonfle.
     pour: 0, contre: 0, score: 0, nbCommentaires: 0,

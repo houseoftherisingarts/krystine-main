@@ -132,6 +132,9 @@ const BilletCarte: React.FC<{ post: PostMur; delaiIndex: number }> = ({ post, de
       </div>
 
       {post.texte && <p className="text-[15px] text-[#3a3126] dark:text-white/90 leading-relaxed whitespace-pre-line">{post.texte}</p>}
+      {post.videoUrl && (
+        <video src={post.videoUrl} controls playsInline preload="metadata" className="mt-3 max-h-[480px] w-full rounded-[16px] bg-black" />
+      )}
       {post.photoUrl && (
         <img
           src={post.photoUrl} alt="" loading="lazy"
