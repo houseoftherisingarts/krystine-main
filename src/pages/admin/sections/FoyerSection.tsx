@@ -1,14 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEditMode } from '../../../contexts/EditModeContext';
-import { Card } from '../primitives';
+import { Card, EmptyState } from '../primitives';
+import { getAcheteursDe, type AcheteurFormation } from '../../../firebase/formations';
+import { getMember, type MemberDoc } from '../../../firebase/firestore';
+import MurSocial from '../../../components/communaute/MurSocial';
+import Avatar from '../../../components/communaute/Avatar';
 
-// Entrée d'édition de la page Le Foyer d'Origine (/foyer). Comme la carte
-// du tableau de bord pour l'accueil : le mode édition s'allume, puis la
-// navigation reste en SPA pour garder la session admin vivante.
+// La maison du Foyer dans l'admin : l'édition de la page de vente, la
+// communauté des acheteuses (le groupe du Foyer) et son feed exclusif, où
+// Krystine lit les billets et publie les siens.
+
 const FoyerSection: React.FC = () => {
   const navigate = useNavigate();
   const { setEditMode } = useEditMode();
+  const [acheteurs, setAcheteurs] = useState<Array<AcheteurFormation & { membre?: MemberDoc | null }>>([]);
+  const [charge, setCharge] = useState(true);
+
+  useEffect(() => {
+    getAcheteursDe('foyer')
+      .then(async liste => {
+        const avecFiches = await Promise.all(liste.map(async a => ({
+          ...a,
+          membre: await getMember(a.uid).catch(() => null),
+        })));
+        avecFiches.sort((x, y) => (y.acheteLe?.toMillis() || 0) - (x.acheteLe?.toMillis() || 0));
+        setAcheteurs(avecFiches);
+      })
+      .catch(() => setAcheteurs([]))
+      .finally(() => setCharge(false));
+  }, []);
 
   const openInEditMode = () => {
     setEditMode(true);
@@ -17,44 +38,74 @@ const FoyerSection: React.FC = () => {
 
   return (
     <div className="space-y-8">
+      {/* La page de vente, en édition directe */}
       <Card className="p-6 bg-gradient-to-br from-[#293027] to-[#4A3228] text-white border-[#BA7B39]/20">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#8B4A2F] block mb-2">
-              Page du site
-            </span>
-            <h2 className="text-2xl font-serif mb-1">Le Foyer d’Origine</h2>
+            <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#d9a05b] block mb-2">Page du site</span>
+            <h2 className="text-2xl font-serif mb-1">Le Foyer d'Origine</h2>
             <p className="text-sm text-white/70 max-w-xl">
-              La page s’édite directement là où elle vit, à l’adresse /foyer. Un clic sur un texte
-              le rend modifiable, un clic sur une photo ouvre la médiathèque pour la remplacer.
-              Chaque changement est enregistré aussitôt et se voit en direct sur le site.
+              La page se modifie directement là où elle vit, à l'adresse /foyer. Un clic sur un texte le rend
+              modifiable, un clic sur une photo ouvre la médiathèque. Tout s'enregistre aussitôt.
             </p>
           </div>
           <button
             type="button"
             onClick={openInEditMode}
-            className="shrink-0 inline-flex items-center gap-2 bg-[#BA7B39] text-[#293027] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-white transition-colors"
+            className="shrink-0 inline-flex items-center gap-2 bg-[#BA7B39] text-[#293027] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-[#d9a05b] transition-colors"
           >
             <i className="fa-solid fa-pen" /> Ouvrir en édition
           </button>
         </div>
       </Card>
 
-      <Card className="p-6">
-        <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-4">
-          Comment ça se passe
-        </h3>
-        <ol className="space-y-3 text-sm text-[#293027]/80 dark:text-white/70 list-decimal pl-5">
-          <li>Cliquez sur « Ouvrir en édition ». La page s’ouvre avec la barre dorée « Édition en cours » au bas de l’écran.</li>
-          <li>Cliquez sur un titre ou un paragraphe pour le récrire. Le texte s’enregistre dès que vous cliquez ailleurs.</li>
-          <li>Cliquez sur une photo pour ouvrir la médiathèque, puis choisissez l’image qui la remplace, ou téléversez-en une nouvelle.</li>
-          <li>Cliquez sur « Terminer » dans la barre dorée pour sortir du mode édition.</li>
-        </ol>
-        <p className="text-xs text-[#293027]/50 dark:text-white/50 mt-5 leading-relaxed">
-          Les vidéos, les fonds de texture et les animations de la page demeurent hors du mode édition.
-          Écrivez à Alex pour les faire changer.
-        </p>
-      </Card>
+      <div className="grid gap-8 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        {/* Le groupe : qui possède le Foyer */}
+        <Card className="p-6">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">Le groupe du Foyer</p>
+          <h3 className="mt-1 font-serif text-xl text-[#293027] dark:text-white">
+            {charge ? 'La communauté' : `${acheteurs.length} membre${acheteurs.length > 1 ? 's' : ''}`}
+          </h3>
+          <p className="mt-1 text-sm text-[#293027]/60 dark:text-white/60">
+            Les personnes qui ont le Foyer : achat, cadeau de parrainage ou accès accordé.
+          </p>
+          {charge ? (
+            <p className="mt-6 text-sm text-[#293027]/50 dark:text-white/50"><i className="fa-solid fa-circle-notch fa-spin mr-2" />Chargement…</p>
+          ) : acheteurs.length === 0 ? (
+            <div className="mt-4"><EmptyState icon="fa-fire">Personne n'a encore le Foyer. La première arrivera.</EmptyState></div>
+          ) : (
+            <ul className="mt-5 max-h-[480px] space-y-1 overflow-y-auto pr-1">
+              {acheteurs.map(a => {
+                const nom = (a.membre?.displayName || '').trim() || a.membre?.email || a.uid.slice(0, 8);
+                return (
+                  <li key={a.uid} className="flex items-center gap-3 rounded-2xl px-3 py-2.5 hover:bg-[#BA7B39]/8">
+                    <Avatar nom={nom} url={a.membre?.photoURL || undefined} taille={38} />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-[#293027] dark:text-white">{nom}</p>
+                      <p className="truncate text-xs text-[#293027]/50 dark:text-white/50">{a.membre?.email || ''}</p>
+                    </div>
+                    <div className="shrink-0 text-right">
+                      <p className="text-[11px] text-[#293027]/50 dark:text-white/50">{a.acheteLe?.toDate().toLocaleDateString('fr-CA') || ''}</p>
+                      <p className="text-[10px] uppercase tracking-widest text-[#8B4A2F]">
+                        {a.source === 'admin' ? 'Accordé' : a.source === 'parrainage' ? 'Parrainage' : a.montant ? `${a.montant} $` : 'Achat'}
+                      </p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </Card>
+
+        {/* Le feed du Foyer : lire et publier */}
+        <Card className="p-6">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">Le feed du Foyer</p>
+          <p className="mt-1 mb-5 text-sm text-[#293027]/60 dark:text-white/60">
+            Le même fil que voient les membres sur leur page du cours. Ce que vous publiez ici paraît chez elles.
+          </p>
+          <MurSocial fil="formation:foyer" titre="" />
+        </Card>
+      </div>
     </div>
   );
 };

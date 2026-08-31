@@ -1,6 +1,6 @@
 import app from '../firebase';
 import {
-  getFirestore, collection, doc, getDoc, getDocs, orderBy, query, where, setDoc,
+  getFirestore, collection, collectionGroup, doc, getDoc, getDocs, orderBy, query, where, setDoc,
   updateDoc, deleteDoc, serverTimestamp, Timestamp,
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, deleteObject } from 'firebase/storage';
@@ -67,6 +67,28 @@ export interface AchatFormation {
 export async function getMesFormations(uid: string): Promise<AchatFormation[]> {
   const snap = await getDocs(collection(db(), 'achatsFormations', uid, 'formations'));
   return snap.docs.map(d => ({ id: d.id, ...d.data() } as AchatFormation));
+}
+
+export interface AcheteurFormation {
+  uid: string;
+  acheteLe?: Timestamp;
+  montant?: number;
+  source?: string;
+}
+
+// Toutes les personnes qui possèdent une formation (admin seulement, via la
+// règle collection-group). ponytail: lit tous les achats puis filtre par id de
+// document; passer à un champ formationId indexé si le volume le demande.
+export async function getAcheteursDe(formationId: string): Promise<AcheteurFormation[]> {
+  const snap = await getDocs(collectionGroup(db(), 'formations'));
+  return snap.docs
+    .filter(d => d.id === formationId && d.ref.parent.parent?.parent.id === 'achatsFormations')
+    .map(d => ({
+      uid: d.ref.parent.parent!.id,
+      acheteLe: (d.data() as { acheteLe?: Timestamp }).acheteLe,
+      montant: (d.data() as { montant?: number }).montant,
+      source: (d.data() as { source?: string }).source,
+    }));
 }
 
 export async function aAchete(uid: string, formationId: string): Promise<boolean> {

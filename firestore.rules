@@ -136,6 +136,13 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    // Lecture groupée des achats (collectionGroup 'formations') : l'admin
+    // liste qui possède un cours. S'applique aussi au catalogue top-niveau,
+    // déjà public en lecture, donc sans effet là.
+    match /{path=**}/formations/{fid} {
+      allow read: if isAdmin();
+    }
+
     match /signalements/{id} {
       allow create: if isSignedIn();
       allow read, update, delete: if isAdmin();

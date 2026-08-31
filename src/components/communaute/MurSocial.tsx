@@ -14,7 +14,7 @@ const MurSocial: React.FC<{ fil: FilMur; titre: string }> = ({ fil, titre }) => 
 
   return (
     <div className="space-y-5">
-      <h2 className="font-serif text-xl text-[#293027] dark:text-white">{titre}</h2>
+      {titre && <h2 className="font-serif text-xl text-[#293027] dark:text-white">{titre}</h2>}
 
       <Composeur fil={fil} contexte="feed" />
 
