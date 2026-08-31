@@ -141,6 +141,17 @@ export const obtenirLecon = onCall(
 
     const lSnap = await db.doc(`formations/${formationId}/lecons/${leconId}`).get();
     if (!lSnap.exists) throw new HttpsError('not-found', 'Leçon introuvable.');
+    // Un document déposé sous la leçon : même barrière, autre chemin.
+    const docIndex = req.data?.docIndex;
+    if (typeof docIndex === 'number') {
+      const docs = (lSnap.data() as { docs?: Array<{ chemin?: string }> }).docs || [];
+      const d = docs[docIndex];
+      if (!d?.chemin) throw new HttpsError('not-found', 'Document introuvable.');
+      const [urlDoc] = await getStorage().bucket().file(d.chemin).getSignedUrl({
+        action: 'read', expires: Date.now() + 60 * 60 * 1000,
+      });
+      return { url: urlDoc };
+    }
     const chemin = (lSnap.data() as { chemin?: string }).chemin;
     if (!chemin) throw new HttpsError('not-found', 'Fichier absent.');
 

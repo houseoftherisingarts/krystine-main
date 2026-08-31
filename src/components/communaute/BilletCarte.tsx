@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, MessageCircle, Send, Trash2 } from 'lucide-react';
+import { Loader2, MessageCircle, Send, Trash2, Pin, Bookmark, Share2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AppContext';
 import {
-  retirerDuMur, voter, suivreMonVote,
+  retirerDuMur, voter, suivreMonVote, epinglerPost, sauvegarderPost,
   publierCommentaire, suivreCommentaires, retirerCommentaire,
   voterCommentaire, suivreMonVoteCommentaire,
   LONGUEUR_MAX_COMMENTAIRE, type PostMur, type CommentaireMur,
@@ -72,8 +72,11 @@ const LigneCommentaire: React.FC<{ postId: string; postAuteurUid: string; c: Com
   );
 };
 
-const BilletCarte: React.FC<{ post: PostMur; delaiIndex: number }> = ({ post, delaiIndex }) => {
+const BilletCarte: React.FC<{ post: PostMur; delaiIndex: number; estSauvegarde?: boolean }> = ({ post, delaiIndex, estSauvegarde }) => {
   const { user, member, isAdmin } = useAuth();
+  const [garde, setGarde] = useState(false);
+  useEffect(() => { if (estSauvegarde !== undefined) setGarde(estSauvegarde); }, [estSauvegarde]);
+  const [partage, setPartage] = useState(false);
 
   const [monVote, setMonVote] = useState<1 | -1 | 0>(0);
   useEffect(() => (user ? suivreMonVote(post.id, user.uid, setMonVote) : undefined), [post.id, user]);
@@ -116,7 +119,11 @@ const BilletCarte: React.FC<{ post: PostMur; delaiIndex: number }> = ({ post, de
       <div className="flex items-center gap-3 mb-3">
         <Medaillon nom={post.nom} url={post.avatarUrl} />
         <div className="min-w-0 flex-1">
-          <p className="font-serif text-base text-[#293027] dark:text-white truncate">{post.nom}</p>
+          <p className="font-serif text-base text-[#293027] dark:text-white truncate">
+            {post.nom}
+            {post.officiel && <span className="ml-2 align-middle rounded-full bg-[#BA7B39]/15 px-2 py-0.5 text-[9px] font-sans font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]">Krystine</span>}
+            {post.epingle && <span className="ml-1.5 align-middle text-[#8B4A2F] dark:text-[#d9a05b]"><Pin size={12} className="inline" /></span>}
+          </p>
           <p className="text-[11px] text-[#38403a]/50 dark:text-white/45">{quandTexte(post.creeLe?.toMillis?.() ?? Date.now())}</p>
         </div>
         {user && (user.uid === post.uid || isAdmin) && (
@@ -144,6 +151,39 @@ const BilletCarte: React.FC<{ post: PostMur; delaiIndex: number }> = ({ post, de
 
       <div className="mt-4 pt-3 border-t border-[#38403a]/10 dark:border-white/10 flex items-center gap-4">
         <VoteBar score={post.score ?? 0} monVote={monVote} onVoter={voterIci} />
+        {user && (
+          <button
+            type="button"
+            onClick={() => { setGarde(g => !g); void sauvegarderPost(user.uid, post.id, !garde); }}
+            aria-pressed={garde}
+            className={`inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.14em] transition-colors ${garde ? 'text-[#8B4A2F] dark:text-[#d9a05b]' : 'text-[#38403a]/60 dark:text-white/60 hover:text-[#8B4A2F]'}`}
+          >
+            <Bookmark size={14} fill={garde ? 'currentColor' : 'none'} /> {garde ? 'Gardé' : 'Garder'}
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={async () => {
+            const texte = `${post.nom} · ${post.texte || ''}`.slice(0, 200);
+            const url = window.location.href;
+            try {
+              if (navigator.share) await navigator.share({ title: 'Krystine St-Laurent', text: texte, url });
+              else { await navigator.clipboard.writeText(`${texte}\n${url}`); setPartage(true); setTimeout(() => setPartage(false), 2000); }
+            } catch { /* geste annulé */ }
+          }}
+          className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.14em] text-[#38403a]/60 dark:text-white/60 hover:text-[#8B4A2F] transition-colors"
+        >
+          <Share2 size={14} /> {partage ? 'Copié !' : 'Partager'}
+        </button>
+        {isAdmin && (
+          <button
+            type="button"
+            onClick={() => { void epinglerPost(post.id, !post.epingle); }}
+            className={`inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.14em] transition-colors ${post.epingle ? 'text-[#8B4A2F] dark:text-[#d9a05b]' : 'text-[#38403a]/60 dark:text-white/60 hover:text-[#8B4A2F]'}`}
+          >
+            <Pin size={14} /> {post.epingle ? 'Épinglé' : 'Épingler'}
+          </button>
+        )}
         <button
           type="button"
           onClick={() => setCommentairesOuverts((v) => !v)}

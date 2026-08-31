@@ -34,6 +34,14 @@ service cloud.firestore {
     // Le plan des leçons est lisible (titres et durées pour la fiche du cours);
     // le FICHIER passe par la fonction obtenirLecon qui vérifie l'achat.
     match /formations/{id}/lecons/{lid} { allow read: if true; allow write: if isAdmin(); }
+    // Les questions posées sous une leçon : le groupe les lit, chacune écrit
+    // la sienne, Krystine répond (update), l'auteure ou l'admin retire.
+    match /formations/{id}/lecons/{lid}/questions/{qid} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow update: if isAdmin();
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+    }
     // La progression appartient à la personne (cases cochées, dernière leçon).
     match /progression/{uid}/formations/{fid} {
       allow read, write: if isSelf(uid) || isAdmin();
@@ -56,7 +64,7 @@ service cloud.firestore {
                         // Feed d'une formation : réservé à qui a le cours
                         // (achat, accès à vie, ou formation sans paywall).
                         || (request.resource.data.formationId is string
-                            && request.resource.data.fil == 'formation:' + request.resource.data.formationId
+                            && request.resource.data.fil.matches('formation:' + request.resource.data.formationId + '(--.*)?')
                             && (exists(/databases/$(database)/documents/achatsFormations/$(request.auth.uid)/formations/$(request.resource.data.formationId))
                                 || get(/databases/$(database)/documents/members/$(request.auth.uid)).data.accesVie == true
                                 || get(/databases/$(database)/documents/formations/$(request.resource.data.formationId)).data.paywall != true)));
@@ -141,6 +149,17 @@ service cloud.firestore {
     // déjà public en lecture, donc sans effet là.
     match /{path=**}/formations/{fid} {
       allow read: if isAdmin();
+    }
+
+    // Les onglets d'un espace de formation (Krystine les gère).
+    match /formations/{id}/onglets/{oid} { allow read: if isSignedIn(); allow write: if isAdmin(); }
+
+    // Les membres d'un groupe de formation (miroir écrit par la fonction).
+    match /groupes/{fid}/membres/{uid} { allow read: if isSignedIn(); allow write: if false; }
+
+    // Les billets sauvegardés d'une personne.
+    match /members/{uid}/sauvegardes/{postId} {
+      allow read, write: if isSelf(uid);
     }
 
     match /signalements/{id} {

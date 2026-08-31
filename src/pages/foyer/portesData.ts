@@ -30,6 +30,9 @@ export const PORTES: Porte[] = [
 // La porte du mois en cours (0 = janvier … 11 = décembre).
 const ORDRE_CIVIL = ['janvier','fevrier','mars','avril','mai','juin','juillet','aout','septembre','octobre','novembre','decembre'];
 export function porteDuMois(date = new Date()): Porte {
+  // Le cycle ouvre en septembre 2026 : avant cette date, la première porte
+  // (septembre) est celle qui accueille.
+  if (date < new Date(2026, 8, 1)) return PORTES[0];
   const n = ORDRE_CIVIL[date.getMonth()];
   return PORTES.find(p => p.n === n) || PORTES[0];
 }

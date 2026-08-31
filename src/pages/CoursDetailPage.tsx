@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import MurSocial from '../components/communaute/MurSocial';
+import EspaceGroupe from '../components/communaute/EspaceGroupe';
 import { suivreLiveEnCours, type LiveEnCours } from '../firebase/lives';
 import { PORTES, porteDuMois } from './foyer/portesData';
+import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, type QuestionLecon } from '../firebase/formations';
 import { useParams, Link } from 'react-router-dom';
 import {
   getFormation, getLecons, getProgression, marquerLecon, aAchete,
@@ -122,7 +123,7 @@ const CoursDetailPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#EEE7DB] pt-28 pb-24 dark:bg-[#151d19]">
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="mx-auto max-w-[1720px] px-5 md:px-10">
         <Link to="/cours" className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">
           <i className="fa-solid fa-arrow-left mr-2" />{lang === 'FR' ? 'Toutes les formations' : 'All courses'}
         </Link>
@@ -135,6 +136,24 @@ const CoursDetailPage: React.FC = () => {
               className="aspect-video w-full object-cover"
             />
           </div>
+        )}
+
+        {id === 'foyer' && accessible && (
+          <section className="mt-10 rounded-[24px] border border-[#BA7B39]/35 bg-gradient-to-br from-[#293027] to-[#1b241f] px-7 py-10 text-white md:px-12 md:py-12">
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#d9a05b]">Espace VIP</p>
+            <h2 className="mt-2 max-w-3xl font-serif text-3xl leading-tight md:text-4xl">Bienvenue dans votre espace VIP du Foyer d'Origine</h2>
+            <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-white/80">
+              Vous avez pris place autour du feu. Douze portes vous attendent, une par mois, et chacune ouvre sur son rituel,
+              ses leçons et sa question à porter. L'année se nourrit de l'Ayurveda, des saisons, des plantes et des savoirs,
+              et la communauté chemine avec vous : le feed du groupe, les membres à votre droite, et Krystine qui y vit aussi.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-[12px] font-bold uppercase tracking-widest text-[#d9a05b]">
+              <span><i className="fa-solid fa-door-open mr-2" />Douze portes, une par mois</span>
+              <span><i className="fa-solid fa-fire mr-2" />Le feu et les saisons</span>
+              <span><i className="fa-solid fa-users mr-2" />La communauté du Foyer</span>
+              <span><i className="fa-solid fa-tower-broadcast mr-2" />Les directs de Krystine</span>
+            </div>
+          </section>
         )}
 
         {id === 'foyer' && accessible && (() => {
@@ -220,14 +239,39 @@ const CoursDetailPage: React.FC = () => {
         )}
 
         {accessible && lecons.length > 0 && (
-          <div className="mt-5 max-w-3xl">
-            <div className="flex items-baseline justify-between text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">
-              <span>{pct} % {lang === 'FR' ? 'terminé' : 'complete'}</span>
-              <span>{nbTerminees}/{lecons.length} {lang === 'FR' ? 'leçons' : 'lessons'}</span>
+          <div className="mt-6 flex flex-wrap items-center gap-6 rounded-[20px] border border-white/60 bg-white/55 px-6 py-5 backdrop-blur-md dark:border-white/10 dark:bg-white/5">
+            {/* L'anneau de progression */}
+            <div className="relative h-20 w-20 shrink-0">
+              <svg viewBox="0 0 80 80" className="h-20 w-20 -rotate-90">
+                <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" strokeWidth="7" className="text-[#38403a]/10 dark:text-white/10" />
+                <circle cx="40" cy="40" r="34" fill="none" stroke="#BA7B39" strokeWidth="7" strokeLinecap="round"
+                  strokeDasharray={`${2 * Math.PI * 34}`} strokeDashoffset={`${2 * Math.PI * 34 * (1 - pct / 100)}`}
+                  className="transition-[stroke-dashoffset] duration-700" />
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center font-serif text-lg text-[#293027] dark:text-white">{pct} %</span>
             </div>
-            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#38403a]/10 dark:bg-white/10">
-              <div className="h-full rounded-full bg-[#BA7B39] transition-[width] duration-500" style={{ width: `${pct}%` }} />
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">{lang === 'FR' ? 'Votre progression' : 'Your progress'}</p>
+              <p className="mt-0.5 font-serif text-xl text-[#293027] dark:text-white">{nbTerminees}/{lecons.length} {lang === 'FR' ? 'leçons terminées' : 'lessons complete'}</p>
+              {/* Une flamme par leçon terminée */}
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {lecons.map(l => (
+                  <i key={l.id} title={l.titre} className={`fa-solid fa-fire text-sm ${terminees[l.id] ? 'text-[#BA7B39]' : 'text-[#38403a]/15 dark:text-white/15'}`} />
+                ))}
+              </div>
             </div>
+            {(() => { const prochaine = lecons.find(l => !terminees[l.id]); return prochaine ? (
+              <button
+                onClick={() => ouvrir(prochaine)}
+                className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-6 py-3 text-[11px] font-bold uppercase tracking-widest text-[#293027] hover:bg-[#d9a05b] transition-colors"
+              >
+                <i className="fa-solid fa-play" /> {nbTerminees === 0 ? (lang === 'FR' ? 'Commencer' : 'Start') : (lang === 'FR' ? 'Continuer' : 'Continue')}
+              </button>
+            ) : (
+              <span className="inline-flex items-center gap-2 rounded-full bg-green-600/10 px-5 py-3 text-[11px] font-bold uppercase tracking-widest text-green-700">
+                <i className="fa-solid fa-fire" /> {lang === 'FR' ? 'Année complétée' : 'Year complete'}
+              </span>
+            ); })()}
           </div>
         )}
 
@@ -351,6 +395,30 @@ const CoursDetailPage: React.FC = () => {
                       {courante.texte.trim()}
                     </div>
                   )}
+
+                  {/* Les documents déposés par Krystine sous la leçon */}
+                  {(courante.docs?.length ?? 0) > 0 && (
+                    <div className="mt-6">
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">{lang === 'FR' ? 'Documents de la leçon' : 'Lesson documents'}</p>
+                      <ul className="mt-2 space-y-2">
+                        {courante.docs!.map((d, i) => (
+                          <li key={d.chemin}>
+                            <button
+                              onClick={async () => {
+                                try { window.open(await urlDeDocumentLecon(id, courante.id, i), '_blank', 'noopener'); }
+                                catch { setErreur(lang === 'FR' ? 'Document indisponible pour le moment.' : 'Document unavailable right now.'); }
+                              }}
+                              className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/40 px-4 py-2 text-sm text-[#8B4A2F] transition-colors hover:bg-[#BA7B39]/10 dark:text-[#d9a05b]"
+                            >
+                              <i className="fa-solid fa-file-arrow-down" /> {d.nom}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <QuestionsLecon formationId={id} lecon={courante} />
                   <div className="mt-6 flex flex-wrap items-center gap-3">
                     <button
                       onClick={() => basculerTerminee(courante)}
@@ -381,13 +449,97 @@ const CoursDetailPage: React.FC = () => {
           </div>
         )}
 
-        {/* Le feed de la formation : un mur commun par cours, pour celles qui l'ont. */}
+        {/* L'espace de groupe : onglets, feed et membres, pleine largeur. */}
         {accessible && user && (
-          <div className="mt-12 max-w-3xl">
-            <MurSocial fil={`formation:${id}`} titre="Feed" />
+          <div className="mt-14">
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">La communauté</p>
+            <h2 className="mt-1 mb-6 font-serif text-2xl text-[#293027] dark:text-white">{lang === 'FR' ? 'Autour du feu' : 'Around the fire'}</h2>
+            <EspaceGroupe formationId={id} />
           </div>
         )}
       </div>
+    </div>
+  );
+};
+
+
+// ─── Les questions sous une leçon ───────────────────────────────────────────
+const QuestionsLecon: React.FC<{ formationId: string; lecon: Lecon }> = ({ formationId, lecon }) => {
+  const { user, member, isAdmin } = useAuth();
+  const { lang } = useUI();
+  const [questions, setQuestions] = useState<QuestionLecon[]>([]);
+  const [texte, setTexte] = useState('');
+  const [envoi, setEnvoi] = useState(false);
+  const [reponses, setReponses] = useState<Record<string, string>>({});
+  useEffect(() => suivreQuestions(formationId, lecon.id, setQuestions), [formationId, lecon.id]);
+
+  const poser = async () => {
+    if (!user || !texte.trim() || envoi) return;
+    setEnvoi(true);
+    try {
+      await poserQuestion(formationId, lecon.id, { uid: user.uid, nom: (member?.displayName || user.displayName || '').trim() || 'Un membre', texte });
+      setTexte('');
+    } finally { setEnvoi(false); }
+  };
+
+  return (
+    <div className="mt-8 border-t border-[#38403a]/10 pt-6 dark:border-white/10">
+      <p className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">{lang === 'FR' ? 'Vos questions' : 'Your questions'}</p>
+      {user && (
+        <div className="mt-3 flex items-end gap-2">
+          <textarea
+            value={texte}
+            onChange={e => setTexte(e.target.value.slice(0, 2000))}
+            rows={2}
+            placeholder={lang === 'FR' ? 'Posez votre question sur cette leçon…' : 'Ask your question about this lesson…'}
+            className="min-h-[52px] flex-1 resize-y rounded-2xl border border-[#38403a]/10 bg-white/70 px-4 py-3 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/10 dark:bg-white/5 dark:text-white"
+          />
+          <button
+            onClick={poser}
+            disabled={envoi || !texte.trim()}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#BA7B39] text-[#293027] disabled:opacity-40"
+            aria-label={lang === 'FR' ? 'Envoyer la question' : 'Send the question'}
+          >
+            <i className={`fa-solid ${envoi ? 'fa-circle-notch fa-spin' : 'fa-paper-plane'} text-sm`} />
+          </button>
+        </div>
+      )}
+      <ul className="mt-4 space-y-3">
+        {questions.map(q => (
+          <li key={q.id} className="rounded-2xl border border-[#38403a]/8 bg-white/60 p-4 dark:border-white/10 dark:bg-white/5">
+            <div className="flex items-baseline justify-between gap-3">
+              <p className="text-sm font-semibold text-[#293027] dark:text-white">{q.nom}</p>
+              <span className="shrink-0 text-[11px] text-[#38403a]/45 dark:text-white/40">{q.creeLe?.toDate().toLocaleDateString('fr-CA')}</span>
+            </div>
+            <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-[#38403a]/85 dark:text-white/80">{q.texte}</p>
+            {q.reponse ? (
+              <div className="mt-3 rounded-xl border-l-2 border-[#BA7B39] bg-[#BA7B39]/8 px-4 py-3">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]">Krystine</p>
+                <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-[#293027] dark:text-white/90">{q.reponse}</p>
+              </div>
+            ) : isAdmin && (
+              <div className="mt-3 flex items-end gap-2">
+                <textarea
+                  value={reponses[q.id] || ''}
+                  onChange={e => setReponses(r => ({ ...r, [q.id]: e.target.value }))}
+                  rows={2}
+                  placeholder="Votre réponse…"
+                  className="flex-1 resize-y rounded-xl border border-[#38403a]/10 bg-white px-3 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/10 dark:bg-white/10 dark:text-white"
+                />
+                <button
+                  onClick={async () => { const r = (reponses[q.id] || '').trim(); if (r) { await repondreQuestion(formationId, lecon.id, q.id, r); setReponses(x => ({ ...x, [q.id]: '' })); } }}
+                  className="rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#d9a05b]"
+                >
+                  Répondre
+                </button>
+              </div>
+            )}
+          </li>
+        ))}
+        {questions.length === 0 && (
+          <li className="text-sm text-[#38403a]/50 dark:text-white/50">{lang === 'FR' ? 'Aucune question pour l\'instant. La vôtre ouvrira le bal.' : 'No questions yet. Yours will open the floor.'}</li>
+        )}
+      </ul>
     </div>
   );
 };

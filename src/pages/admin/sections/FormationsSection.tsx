@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   getFormations, setFormationStatut, deleteFormation, updateFormationOptions,
   getLecons, ajouterLecon, supprimerLecon, setLeconOrdre,
+  majLecon, ajouterDocumentLecon, retirerDocumentLecon,
   type Formation, type FormationOptions, type Lecon,
 } from '../../../firebase/formations';
 import { Card } from '../primitives';
@@ -9,7 +10,75 @@ import { Card } from '../primitives';
 // Les leçons d'un cours : téléversement (vidéo, musique, PDF, autre fichier),
 // ordre par flèches, suppression. Le fichier part dans formations-contenu/
 // (privé) et la leçon apparaît immédiatement dans le lecteur.
-const LeconsPanel: React.FC<{ formationId: string }> = ({ formationId }) => {
+const MOIS_PORTES = ['', 'septembre', 'octobre', 'novembre', 'decembre', 'janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout'];
+
+// L'éditeur d'une leçon : le texte qui l'accompagne, sa porte (mois), sa durée
+// et les documents que Krystine dépose dessous.
+const LeconEditeur: React.FC<{ formationId: string; lecon: Lecon; onFerme: () => void; onMaj: () => void }> = ({ formationId, lecon, onFerme, onMaj }) => {
+  const [titre, setTitre] = useState(lecon.titre);
+  const [texte, setTexte] = useState(lecon.texte || '');
+  const [mois, setMois] = useState(lecon.mois || '');
+  const [duree, setDuree] = useState(lecon.duree || '');
+  const [occupe, setOccupe] = useState(false);
+  const docRef = useRef<HTMLInputElement>(null);
+
+  const enregistrer = async () => {
+    setOccupe(true);
+    try {
+      await majLecon(formationId, lecon.id, { titre: titre.trim() || lecon.titre, texte, mois, duree });
+      onMaj();
+    } finally { setOccupe(false); }
+  };
+  const deposer = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fs = Array.from(e.target.files || []);
+    if (!fs.length) return;
+    setOccupe(true);
+    try { for (const f of fs) await ajouterDocumentLecon(formationId, lecon.id, f); onMaj(); }
+    finally { setOccupe(false); if (docRef.current) docRef.current.value = ''; }
+  };
+
+  return (
+    <div className="mt-2 space-y-3 rounded-2xl border border-[#BA7B39]/30 bg-[#BA7B39]/6 p-4">
+      <input value={titre} onChange={e => setTitre(e.target.value)} placeholder="Titre de la leçon"
+        className="w-full rounded-xl border border-[#38403a]/10 bg-white/70 px-3 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/10 dark:bg-white/5 dark:text-white" />
+      <textarea value={texte} onChange={e => setTexte(e.target.value)} rows={4} placeholder="Le texte qui accompagne la leçon…"
+        className="w-full resize-y rounded-xl border border-[#38403a]/10 bg-white/70 px-3 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/10 dark:bg-white/5 dark:text-white" />
+      <div className="flex flex-wrap items-center gap-3">
+        <select value={mois} onChange={e => setMois(e.target.value)}
+          className="rounded-xl border border-[#38403a]/10 bg-white/70 px-3 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/10 dark:bg-white/5 dark:text-white">
+          {MOIS_PORTES.map(m => <option key={m} value={m}>{m ? `Porte de ${m}` : 'Sans porte (toujours visible)'}</option>)}
+        </select>
+        <input value={duree} onChange={e => setDuree(e.target.value)} placeholder="Durée (ex. 12 min)"
+          className="w-36 rounded-xl border border-[#38403a]/10 bg-white/70 px-3 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/10 dark:bg-white/5 dark:text-white" />
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-[#BA7B39]/40 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">
+          <i className="fa-solid fa-paperclip" /> Déposer un document
+          <input ref={docRef} type="file" multiple className="hidden" onChange={deposer} disabled={occupe} />
+        </label>
+      </div>
+      {(lecon.docs?.length ?? 0) > 0 && (
+        <ul className="space-y-1">
+          {lecon.docs!.map(d => (
+            <li key={d.chemin} className="flex items-center gap-2 text-sm text-[#293027]/80 dark:text-white/80">
+              <i className="fa-solid fa-file text-[#8B4A2F]/70" /> <span className="min-w-0 flex-1 truncate">{d.nom}</span>
+              <button onClick={async () => { await retirerDocumentLecon(formationId, lecon.id, d.chemin); onMaj(); }}
+                className="text-[#38403a]/40 hover:text-red-500" aria-label={`Retirer ${d.nom}`}><i className="fa-solid fa-trash text-xs" /></button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div className="flex justify-end gap-2">
+        <button onClick={onFerme} className="rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/60 dark:text-white/60">Fermer</button>
+        <button onClick={enregistrer} disabled={occupe}
+          className="rounded-full bg-[#BA7B39] px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] disabled:opacity-50">
+          {occupe ? 'Un instant…' : 'Enregistrer'}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export const LeconsPanel: React.FC<{ formationId: string }> = ({ formationId }) => {
+  const [enEdition, setEnEdition] = useState<string | null>(null);
   const [lecons, setLecons] = useState<Lecon[]>([]);
   const [charge, setCharge] = useState(true);
   const [televersement, setTeleversement] = useState(false);
@@ -80,13 +149,19 @@ const LeconsPanel: React.FC<{ formationId: string }> = ({ formationId }) => {
       ) : (
         <div className="space-y-1.5">
           {lecons.map((l, i) => (
-            <div key={l.id} className="flex items-center gap-3 rounded-[12px] bg-white/50 px-3 py-2 text-sm dark:bg-white/5">
+<React.Fragment key={l.id}>
+            <div className="flex items-center gap-3 rounded-[12px] bg-white/50 px-3 py-2 text-sm dark:bg-white/5">
               <i className={`fa-solid ${l.type === 'video' ? 'fa-circle-play' : l.type === 'audio' ? 'fa-music' : l.type === 'pdf' ? 'fa-file-pdf' : 'fa-file'} w-4 text-[#8B4A2F]`} />
               <span className="min-w-0 flex-1 truncate text-[#293027] dark:text-white">{i + 1}. {l.titre}</span>
+              <button type="button" onClick={() => setEnEdition(e => e === l.id ? null : l.id)} title="Éditer la leçon" className="text-[#38403a]/40 hover:text-[#8B4A2F] dark:text-white/40"><i className="fa-solid fa-pen" /></button>
               <button type="button" onClick={() => bouger(i, -1)} disabled={i === 0} title="Monter" className="text-[#38403a]/40 hover:text-[#8B4A2F] disabled:opacity-20 dark:text-white/40"><i className="fa-solid fa-chevron-up" /></button>
               <button type="button" onClick={() => bouger(i, 1)} disabled={i === lecons.length - 1} title="Descendre" className="text-[#38403a]/40 hover:text-[#8B4A2F] disabled:opacity-20 dark:text-white/40"><i className="fa-solid fa-chevron-down" /></button>
               <button type="button" onClick={() => retirer(l)} title="Supprimer" className="text-red-400 hover:text-red-600"><i className="fa-solid fa-trash" /></button>
             </div>
+              {enEdition === l.id && (
+                <LeconEditeur formationId={formationId} lecon={l} onFerme={() => setEnEdition(null)} onMaj={() => { void refresh(); }} />
+              )}
+            </React.Fragment>
           ))}
         </div>
       )}

@@ -1,8 +1,6 @@
 import app from '../firebase';
-import {
-  getFirestore, collection, collectionGroup, doc, getDoc, getDocs, orderBy, query, where, setDoc,
-  updateDoc, deleteDoc, serverTimestamp, Timestamp,
-} from 'firebase/firestore';
+import {  getFirestore, collection, collectionGroup, doc, getDoc, getDocs, orderBy, query, where, setDoc,
+  updateDoc, deleteDoc, serverTimestamp, Timestamp, addDoc, onSnapshot,} from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, deleteObject } from 'firebase/storage';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 
@@ -123,6 +121,10 @@ export interface Lecon {
   ordre: number;
   moduleNom?: string;
   texte?: string;
+  /** Le mois de la porte du Foyer (ex. 'septembre'). */
+  mois?: string;
+  /** Les documents déposés par Krystine sous la leçon. */
+  docs?: Array<{ nom: string; chemin: string }>;
 }
 
 export function typeDeLecon(file: File): LeconType {
@@ -191,4 +193,103 @@ export async function urlDeLecon(formationId: string, leconId: string): Promise<
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'obtenirLecon');
   const res = await call({ formationId, leconId });
   return (res.data as { url: string }).url;
+}
+
+// ─── Les onglets d'un espace de formation (façon Circle) ────────────────────
+// Krystine crée des onglets depuis l'admin; chacun porte son propre fil
+// (`formation:{id}--{onglet}`) dans la même collection mur.
+
+export interface OngletFormation {
+  id: string;
+  nom: string;
+  ordre: number;
+}
+
+export async function getOngletsFormation(formationId: string): Promise<OngletFormation[]> {
+  const snap = await getDocs(query(collection(db(), 'formations', formationId, 'onglets'), orderBy('ordre')));
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as OngletFormation));
+}
+
+export async function ajouterOngletFormation(formationId: string, nom: string, ordre: number): Promise<void> {
+  const id = nom.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || `onglet-${Date.now()}`;
+  await setDoc(doc(db(), 'formations', formationId, 'onglets', id), { nom: nom.trim().slice(0, 40), ordre });
+}
+
+export async function supprimerOngletFormation(formationId: string, ongletId: string): Promise<void> {
+  await deleteDoc(doc(db(), 'formations', formationId, 'onglets', ongletId));
+}
+
+// ─── Les membres d'un groupe de formation ───────────────────────────────────
+// Miroir écrit par la fonction groupeMembre à chaque achat (lisible par toute
+// personne connectée : la colonne Membres de l'espace du cours).
+
+export interface MembreGroupe {
+  uid: string;
+  ajouteLe?: Timestamp;
+}
+
+export async function getMembresGroupe(formationId: string): Promise<MembreGroupe[]> {
+  const snap = await getDocs(collection(db(), 'groupes', formationId, 'membres'));
+  return snap.docs.map(d => ({ uid: d.id, ...d.data() } as MembreGroupe));
+}
+
+// ─── Le contenu riche d'une leçon (admin) ───────────────────────────────────
+export async function majLecon(formationId: string, leconId: string, champs: Partial<Pick<Lecon, 'titre' | 'texte' | 'mois' | 'duree'>>): Promise<void> {
+  await updateDoc(doc(db(), 'formations', formationId, 'lecons', leconId), champs as Record<string, unknown>);
+}
+
+export async function ajouterDocumentLecon(formationId: string, leconId: string, file: File): Promise<void> {
+  if (!app) throw new Error('[Formations] Firebase not configured');
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+  const chemin = `formations-contenu/${formationId}/docs/${Date.now()}_${safeName}`;
+  await uploadBytes(ref(getStorage(app), chemin), file);
+  const lecon = (await getDoc(doc(db(), 'formations', formationId, 'lecons', leconId))).data() as Lecon | undefined;
+  const docs = [...(lecon?.docs || []), { nom: file.name, chemin }];
+  await updateDoc(doc(db(), 'formations', formationId, 'lecons', leconId), { docs });
+}
+
+export async function retirerDocumentLecon(formationId: string, leconId: string, chemin: string): Promise<void> {
+  if (!app) throw new Error('[Formations] Firebase not configured');
+  const lecon = (await getDoc(doc(db(), 'formations', formationId, 'lecons', leconId))).data() as Lecon | undefined;
+  const docs = (lecon?.docs || []).filter(d => d.chemin !== chemin);
+  await updateDoc(doc(db(), 'formations', formationId, 'lecons', leconId), { docs });
+  try { await deleteObject(ref(getStorage(app), chemin)); } catch { /* déjà parti */ }
+}
+
+/** URL signée d'un document d'une leçon (même barrière d'achat que la leçon). */
+export async function urlDeDocumentLecon(formationId: string, leconId: string, docIndex: number): Promise<string> {
+  if (!app) throw new Error('[Formations] Firebase not configured');
+  const call = httpsCallable(getFunctions(app, 'us-central1'), 'obtenirLecon');
+  const res = await call({ formationId, leconId, docIndex });
+  return (res.data as { url: string }).url;
+}
+
+// ─── Les questions sous une leçon ───────────────────────────────────────────
+// Chaque membre pose sa question; Krystine répond depuis la même carte.
+
+export interface QuestionLecon {
+  id: string;
+  uid: string;
+  nom: string;
+  texte: string;
+  creeLe?: Timestamp;
+  reponse?: string;
+  reponduLe?: Timestamp;
+}
+
+export async function poserQuestion(formationId: string, leconId: string, opts: { uid: string; nom: string; texte: string }): Promise<void> {
+  await addDoc(collection(db(), 'formations', formationId, 'lecons', leconId, 'questions'), {
+    uid: opts.uid, nom: opts.nom, texte: opts.texte.trim().slice(0, 2000), creeLe: serverTimestamp(),
+  });
+}
+
+export function suivreQuestions(formationId: string, leconId: string, cb: (qs: QuestionLecon[]) => void): () => void {
+  const q = query(collection(db(), 'formations', formationId, 'lecons', leconId, 'questions'), orderBy('creeLe', 'desc'));
+  return onSnapshot(q, snap => cb(snap.docs.map(d => ({ id: d.id, ...d.data() } as QuestionLecon))), () => cb([]));
+}
+
+export async function repondreQuestion(formationId: string, leconId: string, questionId: string, reponse: string): Promise<void> {
+  await updateDoc(doc(db(), 'formations', formationId, 'lecons', leconId, 'questions', questionId), {
+    reponse: reponse.trim().slice(0, 4000), reponduLe: serverTimestamp(),
+  });
 }

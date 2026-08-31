@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { suivreLeMur, type FilMur, type PostMur } from '../../firebase/mur';
+import { suivreLeMur, suivreMesSauvegardes, type FilMur, type PostMur } from '../../firebase/mur';
+import { useAuth } from '../../contexts/AppContext';
 import BilletCarte from './BilletCarte';
 import Composeur from './Composeur';
 import PubCarte from './PubCarte';
@@ -9,8 +10,11 @@ import PubCarte from './PubCarte';
 // pose deux instances côte à côte : « krystine » (Krystine seule publie)
 // et « communaute » (tout membre connecté publie).
 const MurSocial: React.FC<{ fil: FilMur; titre: string }> = ({ fil, titre }) => {
+  const { user } = useAuth();
   const [posts, setPosts] = useState<PostMur[]>([]);
+  const [sauvegardes, setSauvegardes] = useState<Set<string>>(new Set());
   useEffect(() => suivreLeMur(fil, setPosts), [fil]);
+  useEffect(() => (user ? suivreMesSauvegardes(user.uid, setSauvegardes) : undefined), [user]);
 
   return (
     <div className="space-y-5">
@@ -24,7 +28,7 @@ const MurSocial: React.FC<{ fil: FilMur; titre: string }> = ({ fil, titre }) => 
         </p>
       ) : posts.map((p, i) => (
         <React.Fragment key={p.id}>
-          <BilletCarte post={p} delaiIndex={i} />
+          <BilletCarte post={p} delaiIndex={i} estSauvegarde={sauvegardes.has(p.id)} />
           {/* Une suggestion maison tous les 4 billets, dans le fil public seulement. */}
           {fil === 'communaute' && (i + 1) % 4 === 0 && <PubCarte index={Math.floor(i / 4)} />}
         </React.Fragment>

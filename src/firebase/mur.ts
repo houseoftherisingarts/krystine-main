@@ -32,7 +32,7 @@
 
 import {
   collection, doc, setDoc, deleteDoc, onSnapshot, query, orderBy,
-  limit as fsLimit, where, serverTimestamp, type Timestamp,
+  limit as fsLimit, where, serverTimestamp, updateDoc, getDoc, type Timestamp,
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import { deleteStoredImage } from './storage';
@@ -58,6 +58,10 @@ export interface PostMur {
   score?: number;
   chaleur?: number;
   nbCommentaires?: number;
+  /** Épinglé par Krystine : toujours en tête du fil. */
+  epingle?: boolean;
+  /** Publié par Krystine ou l'équipe : prioritaire sous les épinglés. */
+  officiel?: boolean;
   creeLe: Timestamp | null;
 }
 
@@ -87,7 +91,7 @@ export async function publierSurLeMur(opts: {
   /** Le fil « krystine » refuse tout le monde sauf un admin. */
   estAdmin: boolean;
 }): Promise<string> {
-  const formationId = opts.fil.startsWith('formation:') ? opts.fil.slice('formation:'.length) : null;
+  const formationId = opts.fil.startsWith('formation:') ? opts.fil.slice('formation:'.length).split('--')[0] : null;
   if (!db) throw new Error('Firestore non configuré');
   if (opts.fil === 'krystine' && !opts.estAdmin) throw new Error('Seule Krystine publie dans ce fil.');
   const texte = opts.texte.trim().slice(0, LONGUEUR_MAX_POST);
@@ -100,6 +104,7 @@ export async function publierSurLeMur(opts: {
     ...(opts.photoUrl ? { photoUrl: opts.photoUrl, ...(opts.photoChemin ? { photoChemin: opts.photoChemin } : {}) } : {}),
     ...(opts.videoUrl ? { videoUrl: opts.videoUrl, ...(opts.videoChemin ? { videoChemin: opts.videoChemin } : {}) } : {}),
     fil: opts.fil,
+    officiel: !!opts.estAdmin,
     ...(formationId ? { formationId } : {}),
     // Le ballon d'hélium part vide : la fonction serveur seule le gonfle.
     pour: 0, contre: 0, score: 0, nbCommentaires: 0,
@@ -125,7 +130,12 @@ const parChaleur = <T extends { chaleur?: number }>(a: T, b: T) => (b.chaleur ??
 export function suivreLeMur(fil: FilMur, cb: (posts: PostMur[]) => void, max = 100): () => void {
   if (!db) { cb([]); return () => {}; }
   const q = query(collection(db, COL), where('fil', '==', fil), orderBy('chaleur', 'desc'), fsLimit(max));
-  return onSnapshot(q, (snap) => cb(snap.docs.map(lire)), () => cb([]));
+  // Les épinglés d'abord, puis les billets de Krystine, puis la chaleur.
+  const trier = (posts: PostMur[]) => [...posts].sort((x, y) =>
+    Number(!!y.epingle) - Number(!!x.epingle)
+    || Number(!!y.officiel) - Number(!!x.officiel)
+    || (y.chaleur ?? 0) - (x.chaleur ?? 0));
+  return onSnapshot(q, (snap) => cb(trier(snap.docs.map(lire))), () => cb([]));
 }
 
 // ── Voter sur un billet ─────────────────────────────────────────────
@@ -219,4 +229,31 @@ export function suivrePublicationsDe(uid: string, cb: (posts: PostMur[]) => void
     posts.sort((a, b) => (b.creeLe?.toMillis?.() || 0) - (a.creeLe?.toMillis?.() || 0));
     cb(posts);
   });
+}
+
+/** Épingler (ou dépingler) un billet : Krystine seulement (règle update admin). */
+export async function epinglerPost(postId: string, epingle: boolean): Promise<void> {
+  if (!db) throw new Error('Firestore non configuré');
+  await updateDoc(doc(db, COL, postId), { epingle });
+}
+
+// ─── Les billets sauvegardés (par personne) ─────────────────────────────────
+export async function sauvegarderPost(uid: string, postId: string, garder: boolean): Promise<void> {
+  if (!db) throw new Error('Firestore non configuré');
+  const ref = doc(db, 'members', uid, 'sauvegardes', postId);
+  if (garder) await setDoc(ref, { creeLe: serverTimestamp() });
+  else await deleteDoc(ref);
+}
+
+export function suivreMesSauvegardes(uid: string, cb: (ids: Set<string>) => void): () => void {
+  if (!db) { cb(new Set()); return () => {}; }
+  return onSnapshot(collection(db, 'members', uid, 'sauvegardes'),
+    snap => cb(new Set(snap.docs.map(d => d.id))), () => cb(new Set()));
+}
+
+/** Un billet précis (pour l'onglet Enregistrés). */
+export async function getPost(postId: string): Promise<PostMur | null> {
+  if (!db) return null;
+  const snap = await getDoc(doc(db, COL, postId));
+  return snap.exists() ? ({ id: snap.id, ...snap.data() } as PostMur) : null;
 }
