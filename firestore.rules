@@ -47,7 +47,15 @@ service cloud.firestore {
                     && request.resource.data.uid == request.auth.uid
                     && request.resource.data.texte is string
                     && request.resource.data.texte.size() <= 5000
-                    && (request.resource.data.fil == 'communaute' || isAdmin());
+                    && (request.resource.data.fil == 'communaute'
+                        || isAdmin()
+                        // Feed d'une formation : réservé à qui a le cours
+                        // (achat, accès à vie, ou formation sans paywall).
+                        || (request.resource.data.formationId is string
+                            && request.resource.data.fil == 'formation:' + request.resource.data.formationId
+                            && (exists(/databases/$(database)/documents/achatsFormations/$(request.auth.uid)/formations/$(request.resource.data.formationId))
+                                || get(/databases/$(database)/documents/members/$(request.auth.uid)).data.accesVie == true
+                                || get(/databases/$(database)/documents/formations/$(request.resource.data.formationId)).data.paywall != true)));
       allow update: if isAdmin();
       allow delete: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
 

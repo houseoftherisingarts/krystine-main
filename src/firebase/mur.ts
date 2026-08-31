@@ -37,7 +37,8 @@ import {
 import { db } from '../firebase';
 import { deleteStoredImage } from './storage';
 
-export type FilMur = 'krystine' | 'communaute';
+// Un fil par formation s'écrit `formation:{id}` (le feed commun d'un cours).
+export type FilMur = 'krystine' | 'communaute' | `formation:${string}`;
 
 export interface PostMur {
   id: string;
@@ -86,6 +87,7 @@ export async function publierSurLeMur(opts: {
   /** Le fil « krystine » refuse tout le monde sauf un admin. */
   estAdmin: boolean;
 }): Promise<string> {
+  const formationId = opts.fil.startsWith('formation:') ? opts.fil.slice('formation:'.length) : null;
   if (!db) throw new Error('Firestore non configuré');
   if (opts.fil === 'krystine' && !opts.estAdmin) throw new Error('Seule Krystine publie dans ce fil.');
   const texte = opts.texte.trim().slice(0, LONGUEUR_MAX_POST);
@@ -98,6 +100,7 @@ export async function publierSurLeMur(opts: {
     ...(opts.photoUrl ? { photoUrl: opts.photoUrl, ...(opts.photoChemin ? { photoChemin: opts.photoChemin } : {}) } : {}),
     ...(opts.videoUrl ? { videoUrl: opts.videoUrl, ...(opts.videoChemin ? { videoChemin: opts.videoChemin } : {}) } : {}),
     fil: opts.fil,
+    ...(formationId ? { formationId } : {}),
     // Le ballon d'hélium part vide : la fonction serveur seule le gonfle.
     pour: 0, contre: 0, score: 0, nbCommentaires: 0,
     chaleur: calculerChaleur(0, Date.now()),

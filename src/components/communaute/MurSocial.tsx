@@ -19,7 +19,7 @@ const MurSocial: React.FC<{ fil: FilMur; titre: string }> = ({ fil, titre }) => 
 
       {posts.length === 0 ? (
         <p className="text-sm text-[#3a3126]/50 dark:text-white/45">
-          {fil === 'krystine' ? 'Rien de publié pour le moment.' : 'Le fil est encore vide. Soyez la première voix.'}
+          {fil === 'krystine' ? 'Rien de publié pour le moment.' : fil.startsWith('formation:') ? 'Le feed de cette formation est encore vide. Partagez votre parcours.' : 'Le fil est encore vide. Soyez la première voix.'}
         </p>
       ) : posts.map((p, i) => <BilletCarte key={p.id} post={p} delaiIndex={i} />)}
     </div>

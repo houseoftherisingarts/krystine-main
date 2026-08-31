@@ -278,6 +278,13 @@ const CoursDetailPage: React.FC = () => {
             </section>
           </div>
         )}
+
+        {/* Le feed de la formation : un mur commun par cours, pour celles qui l'ont. */}
+        {accessible && user && (
+          <div className="mt-12 max-w-3xl">
+            <MurSocial fil={`formation:${id}`} titre="Feed" />
+          </div>
+        )}
       </div>
     </div>
   );
