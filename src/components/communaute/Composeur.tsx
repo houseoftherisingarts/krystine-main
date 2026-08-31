@@ -1,8 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Image as ImageIcon, Loader2, Send, Video, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AppContext';
 import { uploadMediaMur } from '../../firebase/storage';
 import { publierSurLeMur, LONGUEUR_MAX_POST, type FilMur } from '../../firebase/mur';
+import { onSnapshot, doc } from 'firebase/firestore';
+import { db } from '../../firebase';
 
 // Le composeur du mur, façon Facebook : l'avatar, une zone de texte qui
 // grandit, un bouton Photo, un bouton Vidéo, l'aperçu du média choisi et
@@ -12,7 +14,11 @@ import { publierSurLeMur, LONGUEUR_MAX_POST, type FilMur } from '../../firebase/
 const TAILLE_MAX_PHOTO = 15 * 1024 * 1024;   // 15 Mo
 const TAILLE_MAX_VIDEO = 200 * 1024 * 1024;  // 200 Mo
 
-const Composeur: React.FC<{ fil: FilMur; onPublie?: () => void; compact?: boolean }> = ({ fil, onPublie, compact }) => {
+// contexte 'feed' : dans le fil public, si Krystine n'a pas ouvert le mur aux
+// membres, le composeur se retire (elle seule publie). contexte 'monmur' : le
+// billet part alors dans le fil 'perso' (visible sur le mur de la personne,
+// jamais dans le feed public).
+const Composeur: React.FC<{ fil: FilMur; onPublie?: () => void; compact?: boolean; contexte?: 'feed' | 'monmur' }> = ({ fil, onPublie, compact, contexte = 'feed' }) => {
   const { user, member, isAdmin } = useAuth();
   const nom = member?.displayName || user?.displayName || user?.email?.split('@')[0] || 'Un membre';
   const prenom = nom.split(' ')[0];
@@ -28,8 +34,22 @@ const Composeur: React.FC<{ fil: FilMur; onPublie?: () => void; compact?: boolea
   const champPhoto = useRef<HTMLInputElement>(null);
   const champVideo = useRef<HTMLInputElement>(null);
 
+  const [membresOk, setMembresOk] = useState<boolean | null>(null);
+  useEffect(() => {
+    if (fil !== 'communaute' || !db) return;
+    return onSnapshot(doc(db, 'settings', 'community'), s => setMembresOk(!!s.data()?.membresPeuventPublier), () => setMembresOk(false));
+  }, [fil]);
+
   if (!user) return null;
   if (fil === 'krystine' && !isAdmin) return null;
+  const filEffectif: FilMur = (fil === 'communaute' && !isAdmin && membresOk === false && contexte === 'monmur') ? 'perso' : fil;
+  if (fil === 'communaute' && !isAdmin && membresOk !== true && contexte === 'feed') {
+    return (
+      <p className="text-sm italic text-[#3a3126]/50 dark:text-white/45">
+        Seule Krystine publie sur ce fil pour le moment.
+      </p>
+    );
+  }
 
   const ajuster = () => {
     const el = zoneTexte.current;
@@ -65,7 +85,7 @@ const Composeur: React.FC<{ fil: FilMur; onPublie?: () => void; compact?: boolea
         photoChemin: media?.kind === 'photo' ? media.chemin : undefined,
         videoUrl: media?.kind === 'video' ? media.url : undefined,
         videoChemin: media?.kind === 'video' ? media.chemin : undefined,
-        fil, estAdmin: isAdmin,
+        fil: filEffectif, estAdmin: isAdmin,
       });
       setTexte(''); setMedia(null); setOuvert(false);
       if (zoneTexte.current) zoneTexte.current.style.height = 'auto';

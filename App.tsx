@@ -10,6 +10,7 @@ import ConsentBanner from './src/components/layout/ConsentBanner';
 import SignInModal from './src/components/layout/SignInModal';
 import LangPill from './src/components/layout/LangPill';
 import LiveBadge from './src/components/layout/LiveBadge';
+import ChatKrystine from './src/components/layout/ChatKrystine';
 import ErrorBoundary from './src/components/layout/ErrorBoundary';
 import EditModeBar from './src/components/edit/EditModeBar';
 import EditOverlay from './src/components/edit/EditOverlay';
@@ -176,6 +177,7 @@ const App: React.FC = () => (
       <Chrome />
       <LangPill />
       <LiveBadge />
+      <ChatKrystine />
       <EditModeBar />
       <EditOverlay />
       <EditImageOverlay />

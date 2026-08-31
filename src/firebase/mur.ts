@@ -38,7 +38,7 @@ import { db } from '../firebase';
 import { deleteStoredImage } from './storage';
 
 // Un fil par formation s'écrit `formation:{id}` (le feed commun d'un cours).
-export type FilMur = 'krystine' | 'communaute' | `formation:${string}`;
+export type FilMur = 'krystine' | 'communaute' | 'perso' | `formation:${string}`;
 
 export interface PostMur {
   id: string;

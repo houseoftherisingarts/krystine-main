@@ -16,7 +16,7 @@ const MurSocial: React.FC<{ fil: FilMur; titre: string }> = ({ fil, titre }) => 
     <div className="space-y-5">
       <h2 className="font-serif text-xl text-[#2a2015] dark:text-white">{titre}</h2>
 
-      <Composeur fil={fil} />
+      <Composeur fil={fil} contexte="feed" />
 
       {posts.length === 0 ? (
         <p className="text-sm text-[#3a3126]/50 dark:text-white/45">

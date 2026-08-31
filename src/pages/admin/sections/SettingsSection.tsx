@@ -34,6 +34,34 @@ const AccesProfilCard: React.FC = () => {
   );
 };
 
+
+// Le feed public : réservé à Krystine, ou ouvert aux billets des membres.
+const MurPublicCard: React.FC = () => {
+  const [membresOk, setMembresOk] = useState(false);
+  const [charge, setCharge] = useState(true);
+  useEffect(() => {
+    getDoc(doc(db, 'settings', 'community'))
+      .then(s => setMembresOk(!!s.data()?.membresPeuventPublier))
+      .finally(() => setCharge(false));
+  }, []);
+  const basculer = async (v: boolean) => {
+    setMembresOk(v);
+    await setDoc(doc(db, 'settings', 'community'), { membresPeuventPublier: v }, { merge: true });
+  };
+  return (
+    <Card className="p-6">
+      <h3 className="mb-2 text-sm font-bold uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60">Le feed public</h3>
+      <p className="mb-4 max-w-xl text-sm text-[#2a2015]/60 dark:text-white/60">
+        Fermé, le feed n'accueille que vos billets : les membres publient sur leur mur personnel, sans paraître dans le fil commun.
+        Ouvert, leurs billets rejoignent aussi le feed de la communauté.
+      </p>
+      {!charge && (
+        <ToggleSwitch checked={membresOk} onChange={basculer} label={membresOk ? 'Les membres peuvent poster sur le mur public' : 'Seule Krystine publie sur le mur public'} />
+      )}
+    </Card>
+  );
+};
+
 // Site-level audio assets (background music + the Origine cohort piece),
 // hosted in Google Cloud Storage and played in-browser. Listed here so
 // Krystine can grab the original files at any time from the admin.
@@ -67,6 +95,7 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
   return (
     <div className="space-y-6 max-w-3xl">
       <AccesProfilCard />
+      <MurPublicCard />
       <Card className="p-6">
         <h3 className="text-sm uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-4">Compte connecté</h3>
         <div className="flex items-center justify-between">

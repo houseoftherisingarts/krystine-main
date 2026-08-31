@@ -56,11 +56,11 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">{lang === 'FR' ? 'Mon mur' : 'My wall'}</p>
         </div>
         <div className="mt-3">
-          <Composeur fil="communaute" compact />
+          <Composeur fil="communaute" compact contexte="monmur" />
         </div>
         {posts.length === 0 ? (
           <p className="mt-3 text-sm text-[#3a3126]/50 dark:text-white/50">
-            {lang === 'FR' ? 'Vous n\'avez encore rien publié. Ce que vous publiez ici paraît aussi sur le feed.' : 'Nothing posted yet. What you post here also appears on the feed.'}
+            {lang === 'FR' ? 'Vous n\'avez encore rien publié. Ce que vous publiez ici paraît sur votre mur, et sur le feed quand Krystine l\'ouvre aux membres.' : 'Nothing posted yet. What you post here also appears on the feed.'}
           </p>
         ) : (
           <div className="mt-3 space-y-3">
