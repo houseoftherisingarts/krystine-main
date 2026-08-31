@@ -33,6 +33,18 @@ const CoursDetailPage: React.FC = () => {
   // Les petits sons des portes (hover) : le son de survol du Festival
   // Médiéval (orb/sfx/hover.mp3) pour l'ouverte, le petit verrou maison pour
   // les barrées. Volumes très discrets.
+  const ambiance = useRef<HTMLAudioElement | null>(null);
+  const [ambianceJoue, setAmbianceJoue] = useState(false);
+  const basculerAmbiance = () => {
+    if (!ambiance.current) {
+      ambiance.current = new Audio('/foyer/sons/ambiance-feu.mp3');
+      ambiance.current.loop = true;
+      ambiance.current.volume = 0.18;
+    }
+    if (ambianceJoue) { ambiance.current.pause(); setAmbianceJoue(false); }
+    else { void ambiance.current.play().then(() => setAmbianceJoue(true)).catch(() => {}); }
+  };
+  useEffect(() => () => { ambiance.current?.pause(); }, []);
   const sonFeu = useRef<HTMLAudioElement | null>(null);
   const sonVerrou = useRef<HTMLAudioElement | null>(null);
   const jouerSon = (ouverte: boolean) => {
@@ -152,6 +164,18 @@ const CoursDetailPage: React.FC = () => {
               autoPlay muted loop playsInline
               className="aspect-video w-full object-cover"
             />
+            {/* Le médaillon de cuivre sous la niche : le feu s'écoute. */}
+            <button
+              type="button"
+              onClick={basculerAmbiance}
+              aria-label={ambianceJoue ? 'Mettre le feu en pause' : 'Écouter le feu crépiter'}
+              aria-pressed={ambianceJoue}
+              className="group absolute flex h-[11%] w-auto aspect-square items-center justify-center rounded-full"
+              style={{ left: '68.2%', top: '72.5%' }}
+            >
+              <span className={`absolute inset-0 rounded-full transition-all duration-500 ${ambianceJoue ? 'shadow-[0_0_26px_8px_rgba(217,160,91,0.55)]' : 'shadow-[0_0_0_0_rgba(217,160,91,0)] group-hover:shadow-[0_0_20px_5px_rgba(217,160,91,0.4)]'}`} />
+              <i className={`fa-solid ${ambianceJoue ? 'fa-pause' : 'fa-play'} relative text-sm text-[#EEE7DB]/0 transition-colors duration-300 group-hover:text-[#EEE7DB]/90 ${ambianceJoue ? 'text-[#EEE7DB]/80' : ''}`} />
+            </button>
           </div>
         )}
 
