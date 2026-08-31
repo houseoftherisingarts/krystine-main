@@ -41,19 +41,19 @@ const OrdersSection: React.FC = () => {
     await refresh();
   };
 
-  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#7d6330] text-2xl" /></div>;
+  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#8B4A2F] text-2xl" /></div>;
   if (orders.length === 0) return <EmptyState icon="fa-box">Aucune commande enregistrée.</EmptyState>;
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-[#2a2015]/60 dark:text-white/60">{orders.length} commande{orders.length > 1 ? 's' : ''}</p>
+      <p className="text-sm text-[#293027]/60 dark:text-white/60">{orders.length} commande{orders.length > 1 ? 's' : ''}</p>
 
       {orders.map(o => (
         <Card key={o.id} className="p-5">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-3 mb-2">
-                <p className="font-mono text-xs text-[#2a2015]/60 dark:text-white/60">#{o.id?.slice(0, 8)}</p>
+                <p className="font-mono text-xs text-[#293027]/60 dark:text-white/60">#{o.id?.slice(0, 8)}</p>
                 <span className={`text-[10px] uppercase tracking-widest font-bold px-2.5 py-0.5 rounded-full ${
                   o.status === 'delivered' ? 'bg-green-50 text-green-600' :
                   o.status === 'shipped' ? 'bg-indigo-50 text-indigo-600' :
@@ -62,11 +62,11 @@ const OrdersSection: React.FC = () => {
                   'bg-yellow-50 text-yellow-600'
                 }`}>{STATUS_OPTIONS.find(s => s.id === o.status)?.label || o.status}</span>
               </div>
-              <p className="text-sm text-[#2a2015] dark:text-white font-serif">{o.email}</p>
-              <p className="text-xs text-[#2a2015]/50 dark:text-white/50">
+              <p className="text-sm text-[#293027] dark:text-white font-serif">{o.email}</p>
+              <p className="text-xs text-[#293027]/50 dark:text-white/50">
                 {o.createdAt?.toDate().toLocaleString('fr-CA') || '—'} · {o.items.length} article{o.items.length > 1 ? 's' : ''} {o.subtotal ? ` · ${o.subtotal}` : ''}
               </p>
-              {o.trackingNumber && <p className="text-xs font-mono text-[#7d6330] mt-2">{o.trackingNumber}</p>}
+              {o.trackingNumber && <p className="text-xs font-mono text-[#8B4A2F] mt-2">{o.trackingNumber}</p>}
             </div>
             <div className="flex gap-2">
               <GhostButton onClick={() => setEditing(o)}><i className="fa-solid fa-pen" /> Gérer</GhostButton>
@@ -75,13 +75,13 @@ const OrdersSection: React.FC = () => {
           </div>
 
           {editing?.id === o.id && (
-            <div className="mt-5 pt-5 border-t border-[#2a2015]/5 dark:border-white/5 space-y-4">
+            <div className="mt-5 pt-5 border-t border-[#293027]/5 dark:border-white/5 space-y-4">
               <div>
                 <Label>Statut</Label>
                 <select
                   value={editing.status}
                   onChange={e => setEditing({ ...editing, status: e.target.value as ClientOrderStatus })}
-                  className="w-full px-4 py-3 rounded-xl border border-[#2a2015]/10 dark:border-white/10 bg-[#f6f3ee] dark:bg-white/5 text-[#2a2015] dark:text-white"
+                  className="w-full px-4 py-3 rounded-xl border border-[#293027]/10 dark:border-white/10 bg-[#EEE7DB] dark:bg-white/5 text-[#293027] dark:text-white"
                 >
                   {STATUS_OPTIONS.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
                 </select>
@@ -100,7 +100,7 @@ const OrdersSection: React.FC = () => {
                 <Label>Notes internes</Label>
                 <Input value={editing.notes || ''} onChange={e => setEditing({ ...editing, notes: e.target.value })} />
               </div>
-              <ul className="text-xs text-[#2a2015]/60 dark:text-white/60 bg-[#f6f3ee] dark:bg-white/5 rounded-xl p-3 space-y-1">
+              <ul className="text-xs text-[#293027]/60 dark:text-white/60 bg-[#EEE7DB] dark:bg-white/5 rounded-xl p-3 space-y-1">
                 {o.items.map((it, i) => (
                   <li key={i}>{it.quantity}× {it.title} {it.price ? `— ${it.price}` : ''}</li>
                 ))}

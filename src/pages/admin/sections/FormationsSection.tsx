@@ -55,12 +55,12 @@ const LeconsPanel: React.FC<{ formationId: string }> = ({ formationId }) => {
   };
 
   return (
-    <div className="mt-4 border-t border-[#3a3126]/10 pt-4 dark:border-white/10">
+    <div className="mt-4 border-t border-[#38403a]/10 pt-4 dark:border-white/10">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-[#7d6330]">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">
           Leçons ({lecons.length})
         </p>
-        <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#bb9a5e] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#2a2015] transition-colors hover:bg-[#a3823f]">
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#9c6630]">
           <i className="fa-solid fa-upload text-[10px]" />
           {televersement ? 'Téléversement…' : 'Ajouter des leçons'}
           <input
@@ -72,19 +72,19 @@ const LeconsPanel: React.FC<{ formationId: string }> = ({ formationId }) => {
       </div>
       {erreur && <p className="mb-3 text-xs text-red-600">{erreur}</p>}
       {charge ? (
-        <p className="text-xs text-[#3a3126]/50 dark:text-white/50">Chargement…</p>
+        <p className="text-xs text-[#38403a]/50 dark:text-white/50">Chargement…</p>
       ) : lecons.length === 0 ? (
-        <p className="text-xs text-[#3a3126]/50 dark:text-white/50">
+        <p className="text-xs text-[#38403a]/50 dark:text-white/50">
           Aucune leçon. Téléversez des vidéos, des musiques ou des PDF : l'ordre de téléversement devient l'ordre du cours.
         </p>
       ) : (
         <div className="space-y-1.5">
           {lecons.map((l, i) => (
             <div key={l.id} className="flex items-center gap-3 rounded-[12px] bg-white/50 px-3 py-2 text-sm dark:bg-white/5">
-              <i className={`fa-solid ${l.type === 'video' ? 'fa-circle-play' : l.type === 'audio' ? 'fa-music' : l.type === 'pdf' ? 'fa-file-pdf' : 'fa-file'} w-4 text-[#7d6330]`} />
-              <span className="min-w-0 flex-1 truncate text-[#2a2015] dark:text-white">{i + 1}. {l.titre}</span>
-              <button type="button" onClick={() => bouger(i, -1)} disabled={i === 0} title="Monter" className="text-[#3a3126]/40 hover:text-[#7d6330] disabled:opacity-20 dark:text-white/40"><i className="fa-solid fa-chevron-up" /></button>
-              <button type="button" onClick={() => bouger(i, 1)} disabled={i === lecons.length - 1} title="Descendre" className="text-[#3a3126]/40 hover:text-[#7d6330] disabled:opacity-20 dark:text-white/40"><i className="fa-solid fa-chevron-down" /></button>
+              <i className={`fa-solid ${l.type === 'video' ? 'fa-circle-play' : l.type === 'audio' ? 'fa-music' : l.type === 'pdf' ? 'fa-file-pdf' : 'fa-file'} w-4 text-[#8B4A2F]`} />
+              <span className="min-w-0 flex-1 truncate text-[#293027] dark:text-white">{i + 1}. {l.titre}</span>
+              <button type="button" onClick={() => bouger(i, -1)} disabled={i === 0} title="Monter" className="text-[#38403a]/40 hover:text-[#8B4A2F] disabled:opacity-20 dark:text-white/40"><i className="fa-solid fa-chevron-up" /></button>
+              <button type="button" onClick={() => bouger(i, 1)} disabled={i === lecons.length - 1} title="Descendre" className="text-[#38403a]/40 hover:text-[#8B4A2F] disabled:opacity-20 dark:text-white/40"><i className="fa-solid fa-chevron-down" /></button>
               <button type="button" onClick={() => retirer(l)} title="Supprimer" className="text-red-400 hover:text-red-600"><i className="fa-solid fa-trash" /></button>
             </div>
           ))}
@@ -126,11 +126,11 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
     } finally { setSaving(false); }
   };
 
-  const ligne = 'flex items-center gap-3 text-sm text-[#2a2015] dark:text-white';
-  const case_ = 'h-4 w-4 accent-[#bb9a5e]';
+  const ligne = 'flex items-center gap-3 text-sm text-[#293027] dark:text-white';
+  const case_ = 'h-4 w-4 accent-[#BA7B39]';
 
   return (
-    <div className="mt-3 space-y-4 rounded-[15px] bg-[#bb9a5e]/8 p-5 dark:bg-white/5">
+    <div className="mt-3 space-y-4 rounded-[15px] bg-[#BA7B39]/8 p-5 dark:bg-white/5">
       <div className="grid gap-4 md:grid-cols-2">
         <label className={ligne}>
           <input type="checkbox" className={case_} checked={paywall} onChange={e => setPaywall(e.target.checked)} />
@@ -142,7 +142,7 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
             <input
               type="number" min="0" step="1" value={prix} onChange={e => setPrix(e.target.value)}
               placeholder="0"
-              className="w-28 rounded-full border border-[#2a2015]/15 bg-white px-4 py-1.5 text-sm outline-none focus:border-[#bb9a5e] dark:border-white/15 dark:bg-[#2a2015]"
+              className="w-28 rounded-full border border-[#293027]/15 bg-white px-4 py-1.5 text-sm outline-none focus:border-[#BA7B39] dark:border-white/15 dark:bg-[#293027]"
             />
             $ CA
           </label>
@@ -156,7 +156,7 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
             Sortie le
             <input
               type="date" value={dateSortie} onChange={e => setDateSortie(e.target.value)}
-              className="rounded-full border border-[#2a2015]/15 bg-white px-4 py-1.5 text-sm outline-none focus:border-[#bb9a5e] dark:border-white/15 dark:bg-[#2a2015]"
+              className="rounded-full border border-[#293027]/15 bg-white px-4 py-1.5 text-sm outline-none focus:border-[#BA7B39] dark:border-white/15 dark:bg-[#293027]"
             />
           </label>
         )}
@@ -165,7 +165,7 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
           <select
             value={categorie}
             onChange={e => setCategorie(e.target.value as 'cours' | 'musique')}
-            className="rounded-full border border-[#2a2015]/15 bg-white px-4 py-1.5 text-sm outline-none focus:border-[#bb9a5e] dark:border-white/15 dark:bg-[#2a2015]"
+            className="rounded-full border border-[#293027]/15 bg-white px-4 py-1.5 text-sm outline-none focus:border-[#BA7B39] dark:border-white/15 dark:bg-[#293027]"
           >
             <option value="cours">Cours</option>
             <option value="musique">Musique</option>
@@ -183,7 +183,7 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
       <div className="flex items-center gap-3">
         <button
           type="button" onClick={enregistrer} disabled={saving}
-          className="rounded-full bg-[#bb9a5e] px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-[#2a2015] transition-colors hover:bg-[#2a2015] hover:text-[#7d6330] disabled:opacity-40"
+          className="rounded-full bg-[#BA7B39] px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#293027] hover:text-[#8B4A2F] disabled:opacity-40"
         >
           {saving ? 'Enregistrement…' : 'Enregistrer les options'}
         </button>
@@ -232,44 +232,44 @@ const FormationsSection: React.FC = () => {
     <div className="space-y-6">
       <Card className="p-6">
         <div className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
-          <h3 className="text-sm font-bold uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">
             Vos formations
           </h3>
-          <span className="text-xs text-[#2a2015]/40 dark:text-white/40">
+          <span className="text-xs text-[#293027]/40 dark:text-white/40">
             {publiees} publiée{publiees > 1 ? 's' : ''} · {formations.length} au total
           </span>
         </div>
-        <p className="mb-6 max-w-2xl text-sm text-[#2a2015]/60 dark:text-white/60">
+        <p className="mb-6 max-w-2xl text-sm text-[#293027]/60 dark:text-white/60">
           Le catalogue importé de Kajabi. Une formation masquée reste ici sans être visible
           du public. La supprimer la retire pour de bon.
         </p>
         {loading ? (
-          <p className="text-sm text-[#2a2015]/50 dark:text-white/50">Chargement…</p>
+          <p className="text-sm text-[#293027]/50 dark:text-white/50">Chargement…</p>
         ) : formations.length === 0 ? (
-          <p className="text-sm text-[#2a2015]/50 dark:text-white/50">Aucune formation pour l'instant.</p>
+          <p className="text-sm text-[#293027]/50 dark:text-white/50">Aucune formation pour l'instant.</p>
         ) : (
           <div className="space-y-3">
             {formations.map(f => (
-              <div key={f.id} className="rounded-[15px] border border-[#2a2015]/10 p-3 dark:border-white/10">
+              <div key={f.id} className="rounded-[15px] border border-[#293027]/10 p-3 dark:border-white/10">
               <div className="flex items-center gap-4">
                 {f.imageUrl ? (
                   <img src={f.imageUrl} alt={f.titre} className="h-16 w-24 shrink-0 rounded-xl object-cover" />
                 ) : (
-                  <div className="flex h-16 w-24 shrink-0 items-center justify-center rounded-xl bg-[#bb9a5e]/10">
-                    <i className="fa-solid fa-graduation-cap text-[#7d6330]" />
+                  <div className="flex h-16 w-24 shrink-0 items-center justify-center rounded-xl bg-[#BA7B39]/10">
+                    <i className="fa-solid fa-graduation-cap text-[#8B4A2F]" />
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-[#2a2015] dark:text-white">{f.titre}</p>
+                  <p className="truncate font-medium text-[#293027] dark:text-white">{f.titre}</p>
                   {f.description && (
-                    <p className="truncate text-xs text-[#2a2015]/50 dark:text-white/50">{f.description}</p>
+                    <p className="truncate text-xs text-[#293027]/50 dark:text-white/50">{f.description}</p>
                   )}
                 </div>
                 <span
                   className={`shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest ${
                     f.statut === 'publie'
-                      ? 'bg-[#bb9a5e] text-[#2a2015]'
-                      : 'bg-[#2a2015]/10 text-[#2a2015]/60 dark:bg-white/10 dark:text-white/60'
+                      ? 'bg-[#BA7B39] text-[#293027]'
+                      : 'bg-[#293027]/10 text-[#293027]/60 dark:bg-white/10 dark:text-white/60'
                   }`}
                 >
                   {f.statut === 'publie' ? 'Publiée' : 'Masquée'}
@@ -279,7 +279,7 @@ const FormationsSection: React.FC = () => {
                   onClick={() => basculer(f)}
                   disabled={busy === f.id}
                   title={f.statut === 'publie' ? 'Masquer cette formation' : 'Publier cette formation'}
-                  className="shrink-0 rounded-full border border-[#bb9a5e] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#7d6330] transition-colors hover:bg-[#bb9a5e] hover:text-[#2a2015] disabled:opacity-40"
+                  className="shrink-0 rounded-full border border-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] transition-colors hover:bg-[#BA7B39] hover:text-[#293027] disabled:opacity-40"
                 >
                   {f.statut === 'publie' ? 'Masquer' : 'Publier'}
                 </button>
@@ -289,8 +289,8 @@ const FormationsSection: React.FC = () => {
                   title="Paywall, prix, sortie, lancement"
                   className={`shrink-0 rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${
                     optionsOuvertes === f.id
-                      ? 'border-[#2a2015] bg-[#2a2015] text-[#7d6330]'
-                      : 'border-[#2a2015]/20 text-[#2a2015]/70 hover:border-[#bb9a5e] hover:text-[#7d6330] dark:border-white/20 dark:text-white/70'
+                      ? 'border-[#293027] bg-[#293027] text-[#8B4A2F]'
+                      : 'border-[#293027]/20 text-[#293027]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/20 dark:text-white/70'
                   }`}
                 >
                   <i className="fa-solid fa-sliders mr-1" /> Options

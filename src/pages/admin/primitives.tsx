@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { uploadImage } from '../../firebase/storage';
 
 export const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <div className={`bg-white/55 backdrop-blur-md dark:bg-[#2a2015]/55 rounded-[20px] border border-white/60 dark:border-white/10 shadow-[0_10px_30px_-18px_rgba(58,49,38,0.3)] ${className}`}>
+  <div className={`bg-white/55 backdrop-blur-md dark:bg-[#293027]/55 rounded-[20px] border border-white/60 dark:border-white/10 shadow-[0_10px_30px_-18px_rgba(41,48,39,0.3)] ${className}`}>
     {children}
   </div>
 );
@@ -10,32 +10,32 @@ export const Card: React.FC<{ children: React.ReactNode; className?: string }> =
 export const Input: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = (props) => (
   <input
     {...props}
-    className={`w-full px-4 py-3 rounded-xl border border-[#3a3126]/10 dark:border-white/10 focus:border-[#bb9a5e] outline-none bg-white/60 dark:bg-white/5 text-[#2a2015] dark:text-white transition-colors ${props.className || ''}`}
+    className={`w-full px-4 py-3 rounded-xl border border-[#38403a]/10 dark:border-white/10 focus:border-[#BA7B39] outline-none bg-white/60 dark:bg-white/5 text-[#293027] dark:text-white transition-colors ${props.className || ''}`}
   />
 );
 
 export const Textarea: React.FC<React.TextareaHTMLAttributes<HTMLTextAreaElement>> = (props) => (
   <textarea
     {...props}
-    className={`w-full px-4 py-3 rounded-xl border border-[#3a3126]/10 dark:border-white/10 focus:border-[#bb9a5e] outline-none bg-white/60 dark:bg-white/5 text-[#2a2015] dark:text-white transition-colors resize-y ${props.className || ''}`}
+    className={`w-full px-4 py-3 rounded-xl border border-[#38403a]/10 dark:border-white/10 focus:border-[#BA7B39] outline-none bg-white/60 dark:bg-white/5 text-[#293027] dark:text-white transition-colors resize-y ${props.className || ''}`}
   />
 );
 
 export const Label: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <label className={`block text-[10px] uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-2 ${className}`}>{children}</label>
+  <label className={`block text-[10px] uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-2 ${className}`}>{children}</label>
 );
 
 export const PrimaryButton: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = (props) => (
   <button
     {...props}
-    className={`inline-flex items-center justify-center gap-2 bg-[#bb9a5e] text-[#2a2015] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-[0_8px_22px_-10px_rgba(163,130,63,0.8)] hover:bg-[#a3823f] active:scale-[0.98] transition-[background-color,transform] disabled:opacity-50 disabled:cursor-not-allowed ${props.className || ''}`}
+    className={`inline-flex items-center justify-center gap-2 bg-[#BA7B39] text-[#293027] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-[0_8px_22px_-10px_rgba(186,123,57,0.8)] hover:bg-[#9c6630] active:scale-[0.98] transition-[background-color,transform] disabled:opacity-50 disabled:cursor-not-allowed ${props.className || ''}`}
   />
 );
 
 export const GhostButton: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = (props) => (
   <button
     {...props}
-    className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] border border-[#3a3126]/15 bg-white/40 backdrop-blur-sm dark:border-white/10 dark:bg-white/5 text-[#3a3126]/70 dark:text-white/70 hover:border-[#bb9a5e] hover:text-[#7d6330] active:scale-[0.98] transition-[border-color,color,transform] disabled:opacity-50 ${props.className || ''}`}
+    className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] border border-[#38403a]/15 bg-white/40 backdrop-blur-sm dark:border-white/10 dark:bg-white/5 text-[#38403a]/70 dark:text-white/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] active:scale-[0.98] transition-[border-color,color,transform] disabled:opacity-50 ${props.className || ''}`}
   />
 );
 
@@ -50,16 +50,16 @@ export const ToggleSwitch: React.FC<{ checked: boolean; onChange: (v: boolean) =
   <label className="inline-flex items-center gap-3 cursor-pointer select-none">
     <span
       onClick={() => onChange(!checked)}
-      className={`w-10 h-6 rounded-full relative transition-colors ${checked ? 'bg-[#bb9a5e]' : 'bg-[#2a2015]/20 dark:bg-white/20'}`}
+      className={`w-10 h-6 rounded-full relative transition-colors ${checked ? 'bg-[#BA7B39]' : 'bg-[#293027]/20 dark:bg-white/20'}`}
     >
       <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-4' : ''}`} />
     </span>
-    {label && <span className="text-sm text-[#2a2015] dark:text-white">{label}</span>}
+    {label && <span className="text-sm text-[#293027] dark:text-white">{label}</span>}
   </label>
 );
 
 export const EmptyState: React.FC<{ icon?: string; children: React.ReactNode }> = ({ icon = 'fa-inbox', children }) => (
-  <div className="text-center py-16 text-[#2a2015]/40 dark:text-white/40">
+  <div className="text-center py-16 text-[#293027]/40 dark:text-white/40">
     <i className={`fa-solid ${icon} text-4xl mb-4 block`} />
     <p className="text-sm">{children}</p>
   </div>
@@ -90,12 +90,12 @@ export const ImageUpload: React.FC<{ value?: string; onChange: (url: string) => 
     <div>
       <div
         onClick={pick}
-        className="relative w-full aspect-[16/10] rounded-xl border-2 border-dashed border-[#2a2015]/20 dark:border-white/20 bg-[#f6f3ee] dark:bg-white/5 cursor-pointer flex items-center justify-center overflow-hidden hover:border-[#bb9a5e] transition-colors"
+        className="relative w-full aspect-[16/10] rounded-xl border-2 border-dashed border-[#293027]/20 dark:border-white/20 bg-[#EEE7DB] dark:bg-white/5 cursor-pointer flex items-center justify-center overflow-hidden hover:border-[#BA7B39] transition-colors"
       >
         {value ? (
           <img src={value} alt="" className="absolute inset-0 w-full h-full object-cover" />
         ) : (
-          <div className="text-center text-[#2a2015]/40 dark:text-white/40">
+          <div className="text-center text-[#293027]/40 dark:text-white/40">
             <i className="fa-solid fa-image text-3xl mb-2 block" />
             <p className="text-[11px] uppercase tracking-widest">Cliquer pour téléverser</p>
           </div>
@@ -107,7 +107,7 @@ export const ImageUpload: React.FC<{ value?: string; onChange: (url: string) => 
         )}
       </div>
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
-      <div className="flex items-center justify-between mt-2 text-[11px] text-[#2a2015]/50 dark:text-white/50">
+      <div className="flex items-center justify-between mt-2 text-[11px] text-[#293027]/50 dark:text-white/50">
         {value && <button type="button" onClick={() => onChange('')} className="hover:text-red-500">Retirer</button>}
         {err && <span className="text-red-500">{err}</span>}
       </div>

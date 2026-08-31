@@ -39,8 +39,8 @@ const NewsletterSection: React.FC = () => {
             onClick={() => setTab(t.key)}
             className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
               tab === t.key
-                ? 'bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015]'
-                : 'bg-white dark:bg-[#2a2015]/60 text-[#2a2015]/60 dark:text-white/60 hover:text-[#7d6330] border border-[#2a2015]/5 dark:border-white/5'
+                ? 'bg-[#293027] dark:bg-[#BA7B39] text-white dark:text-[#293027]'
+                : 'bg-white dark:bg-[#293027]/60 text-[#293027]/60 dark:text-white/60 hover:text-[#8B4A2F] border border-[#293027]/5 dark:border-white/5'
             }`}
           >
             <i className={`fa-solid ${t.icon} mr-2`} /> {t.label}

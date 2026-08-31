@@ -22,8 +22,8 @@ const AccesProfilCard: React.FC = () => {
   };
   return (
     <Card className="p-6">
-      <h3 className="mb-2 text-sm font-bold uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60">Accès profil public</h3>
-      <p className="mb-4 max-w-xl text-sm text-[#2a2015]/60 dark:text-white/60">
+      <h3 className="mb-2 text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">Accès profil public</h3>
+      <p className="mb-4 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
         Quand ce réglage est activé, l'espace compte devient accessible à tous depuis le header du site.
         Tant qu'il est désactivé, seuls les administrateurs y accèdent, le temps de finir la communauté.
       </p>
@@ -50,8 +50,8 @@ const MurPublicCard: React.FC = () => {
   };
   return (
     <Card className="p-6">
-      <h3 className="mb-2 text-sm font-bold uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60">Le feed public</h3>
-      <p className="mb-4 max-w-xl text-sm text-[#2a2015]/60 dark:text-white/60">
+      <h3 className="mb-2 text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">Le feed public</h3>
+      <p className="mb-4 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
         Fermé, le feed n'accueille que vos billets : les membres publient sur leur mur personnel, sans paraître dans le fil commun.
         Ouvert, leurs billets rejoignent aussi le feed de la communauté.
       </p>
@@ -97,13 +97,13 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
       <AccesProfilCard />
       <MurPublicCard />
       <Card className="p-6">
-        <h3 className="text-sm uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-4">Compte connecté</h3>
+        <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-4">Compte connecté</h3>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            {user.photoURL && <img src={user.photoURL} alt="" className="w-12 h-12 rounded-full border border-[#bb9a5e]/30" />}
+            {user.photoURL && <img src={user.photoURL} alt="" className="w-12 h-12 rounded-full border border-[#BA7B39]/30" />}
             <div>
-              <p className="font-serif text-[#2a2015] dark:text-white">{user.displayName || user.email?.split('@')[0]}</p>
-              <p className="text-sm text-[#2a2015]/50 dark:text-white/50">{user.email}</p>
+              <p className="font-serif text-[#293027] dark:text-white">{user.displayName || user.email?.split('@')[0]}</p>
+              <p className="text-sm text-[#293027]/50 dark:text-white/50">{user.email}</p>
             </div>
           </div>
           <DangerButton onClick={logout}><i className="fa-solid fa-right-from-bracket" /> Déconnexion</DangerButton>
@@ -111,14 +111,14 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-sm uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-4">Administrateurs autorisés</h3>
-        <p className="text-xs text-[#2a2015]/50 dark:text-white/50 mb-4">
-          Pour ajouter ou retirer un administrateur, modifiez la constante <code className="bg-[#f6f3ee] dark:bg-white/10 px-2 py-0.5 rounded text-[11px]">ADMIN_EMAILS</code> dans <code className="bg-[#f6f3ee] dark:bg-white/10 px-2 py-0.5 rounded text-[11px]">src/firebase/auth.ts</code>.
+        <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-4">Administrateurs autorisés</h3>
+        <p className="text-xs text-[#293027]/50 dark:text-white/50 mb-4">
+          Pour ajouter ou retirer un administrateur, modifiez la constante <code className="bg-[#EEE7DB] dark:bg-white/10 px-2 py-0.5 rounded text-[11px]">ADMIN_EMAILS</code> dans <code className="bg-[#EEE7DB] dark:bg-white/10 px-2 py-0.5 rounded text-[11px]">src/firebase/auth.ts</code>.
         </p>
         <ul className="space-y-2">
           {ADMIN_EMAILS.map(email => (
-            <li key={email} className="flex items-center gap-3 text-sm text-[#2a2015] dark:text-white">
-              <i className="fa-solid fa-user-shield text-[#7d6330]" />
+            <li key={email} className="flex items-center gap-3 text-sm text-[#293027] dark:text-white">
+              <i className="fa-solid fa-user-shield text-[#8B4A2F]" />
               <span>{email}</span>
             </li>
           ))}
@@ -126,20 +126,20 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-sm uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-2">Fichiers audio</h3>
-        <p className="text-xs text-[#2a2015]/50 dark:text-white/50 mb-5">
+        <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-2">Fichiers audio</h3>
+        <p className="text-xs text-[#293027]/50 dark:text-white/50 mb-5">
           Les pistes audio utilisées sur le site. Écoutez-les ici ou téléchargez l'original.
         </p>
         <ul className="space-y-5">
           {SITE_AUDIO.map(a => (
-            <li key={a.id} className="border border-[#2a2015]/5 dark:border-white/5 rounded-xl p-4 bg-[#f6f3ee]/60 dark:bg-white/5">
+            <li key={a.id} className="border border-[#293027]/5 dark:border-white/5 rounded-xl p-4 bg-[#EEE7DB]/60 dark:bg-white/5">
               <div className="flex items-start justify-between gap-4 flex-wrap mb-3">
                 <div className="min-w-0">
-                  <p className="font-serif text-[#2a2015] dark:text-white flex items-center gap-2">
-                    <i className="fa-solid fa-music text-[#7d6330]" />
+                  <p className="font-serif text-[#293027] dark:text-white flex items-center gap-2">
+                    <i className="fa-solid fa-music text-[#8B4A2F]" />
                     {a.labelFR}
                   </p>
-                  <p className="text-[11px] text-[#2a2015]/50 dark:text-white/50 mt-1 leading-relaxed">{a.noteFR}</p>
+                  <p className="text-[11px] text-[#293027]/50 dark:text-white/50 mt-1 leading-relaxed">{a.noteFR}</p>
                 </div>
                 {/* Using an <a download> with a same-origin proxy would give a
                     cleaner filename, but GCS serves these with CORS open, so
@@ -149,7 +149,7 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
                 <a
                   href={a.url}
                   download={a.filename}
-                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors shadow-md whitespace-nowrap"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#293027] dark:bg-[#BA7B39] text-white dark:text-[#293027] hover:bg-[#BA7B39] hover:text-[#293027] transition-colors shadow-md whitespace-nowrap"
                 >
                   <i className="fa-solid fa-download" /> Télécharger
                 </a>
@@ -171,7 +171,7 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
                   href={a.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[11px] uppercase tracking-widest text-[#2a2015]/50 dark:text-white/50 hover:text-[#7d6330]"
+                  className="text-[11px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50 hover:text-[#8B4A2F]"
                 >
                   <i className="fa-solid fa-up-right-from-square mr-1.5" />
                   Ouvrir dans un nouvel onglet
@@ -183,15 +183,15 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-sm uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-4">Infrastructure</h3>
+        <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-4">Infrastructure</h3>
         <dl className="space-y-3 text-sm">
           <div className="flex items-start justify-between gap-4">
-            <dt className="text-[#2a2015]/60 dark:text-white/60"><i className="fa-solid fa-fire text-orange-400 mr-2" />Firebase</dt>
-            <dd className="text-[#2a2015] dark:text-white font-mono text-xs">{firebaseProject}</dd>
+            <dt className="text-[#293027]/60 dark:text-white/60"><i className="fa-solid fa-fire text-orange-400 mr-2" />Firebase</dt>
+            <dd className="text-[#293027] dark:text-white font-mono text-xs">{firebaseProject}</dd>
           </div>
           <div className="flex items-start justify-between gap-4">
-            <dt className="text-[#2a2015]/60 dark:text-white/60"><i className="fa-brands fa-shopify text-green-500 mr-2" />Shopify</dt>
-            <dd className="text-[#2a2015] dark:text-white font-mono text-xs">{shopifyDomain}</dd>
+            <dt className="text-[#293027]/60 dark:text-white/60"><i className="fa-brands fa-shopify text-green-500 mr-2" />Shopify</dt>
+            <dd className="text-[#293027] dark:text-white font-mono text-xs">{shopifyDomain}</dd>
           </div>
         </dl>
       </Card>

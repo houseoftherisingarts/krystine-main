@@ -40,14 +40,14 @@ const ClientArchives: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#7d6330] text-2xl" /></div>;
+    return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#8B4A2F] text-2xl" /></div>;
   }
 
   if (!inbox.length) {
     return (
       <div className="text-center py-16">
-        <i className="fa-regular fa-envelope text-4xl text-[#2a2015]/30 dark:text-white/30 mb-4 block" />
-        <p className="text-[#2a2015]/60 dark:text-white/60 font-serif italic">
+        <i className="fa-regular fa-envelope text-4xl text-[#293027]/30 dark:text-white/30 mb-4 block" />
+        <p className="text-[#293027]/60 dark:text-white/60 font-serif italic">
           {lang === 'FR' ? 'Aucune infolettre reçue pour l\u2019instant.' : 'No newsletters received yet.'}
         </p>
       </div>
@@ -58,15 +58,15 @@ const ClientArchives: React.FC = () => {
   if (openId && openDoc) {
     return (
       <div>
-        <button onClick={() => { setOpenId(null); setOpenDoc(null); }} className="mb-6 text-xs uppercase tracking-widest text-[#7d6330] hover:underline">
+        <button onClick={() => { setOpenId(null); setOpenDoc(null); }} className="mb-6 text-xs uppercase tracking-widest text-[#8B4A2F] hover:underline">
           <i className="fa-solid fa-arrow-left mr-2" /> {lang === 'FR' ? 'Retour aux archives' : 'Back to archives'}
         </button>
-        <article className="max-w-2xl mx-auto bg-white dark:bg-[#2a2015] rounded-[24px] border border-[#2a2015]/5 dark:border-white/5 p-6 md:p-10">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[#7d6330] font-bold mb-3">
+        <article className="max-w-2xl mx-auto bg-white dark:bg-[#293027] rounded-[24px] border border-[#293027]/5 dark:border-white/5 p-6 md:p-10">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-[#8B4A2F] font-bold mb-3">
             {openDoc.sentAt?.toDate().toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA', { year: 'numeric', month: 'long', day: 'numeric' }) || ''}
           </p>
-          <h1 className="text-3xl md:text-4xl font-serif text-[#2a2015] dark:text-white mb-6">{openDoc.subject}</h1>
-          {openDoc.preheader && <p className="text-[#2a2015]/60 dark:text-white/60 italic mb-8">{openDoc.preheader}</p>}
+          <h1 className="text-3xl md:text-4xl font-serif text-[#293027] dark:text-white mb-6">{openDoc.subject}</h1>
+          {openDoc.preheader && <p className="text-[#293027]/60 dark:text-white/60 italic mb-8">{openDoc.preheader}</p>}
           <RenderBlocksWeb blocks={openDoc.blocks || []} />
         </article>
       </div>
@@ -75,33 +75,33 @@ const ClientArchives: React.FC = () => {
 
   return (
     <div className="space-y-3">
-      {loadingOpen && <div className="py-4 text-center text-[#7d6330]"><i className="fa-solid fa-circle-notch fa-spin" /></div>}
+      {loadingOpen && <div className="py-4 text-center text-[#8B4A2F]"><i className="fa-solid fa-circle-notch fa-spin" /></div>}
       {inbox.map(item => {
         const unread = !item.readAt;
         return (
           <button
             key={item.id}
             onClick={() => open(item)}
-            className={`w-full text-left border rounded-[18px] p-5 transition-colors hover:border-[#bb9a5e] ${
+            className={`w-full text-left border rounded-[18px] p-5 transition-colors hover:border-[#BA7B39] ${
               unread
-                ? 'border-[#bb9a5e]/40 bg-[#bb9a5e]/5'
-                : 'border-[#2a2015]/5 dark:border-white/5 bg-white dark:bg-[#2a2015]/60'
+                ? 'border-[#BA7B39]/40 bg-[#BA7B39]/5'
+                : 'border-[#293027]/5 dark:border-white/5 bg-white dark:bg-[#293027]/60'
             }`}
           >
             <div className="flex items-start gap-4">
-              <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${unread ? 'bg-[#bb9a5e]' : 'bg-transparent'}`} />
+              <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${unread ? 'bg-[#BA7B39]' : 'bg-transparent'}`} />
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline justify-between gap-4">
-                  <h3 className={`font-serif text-lg text-[#2a2015] dark:text-white truncate ${unread ? 'font-bold' : ''}`}>
+                  <h3 className={`font-serif text-lg text-[#293027] dark:text-white truncate ${unread ? 'font-bold' : ''}`}>
                     {item.subject}
                   </h3>
-                  <span className="text-[10px] uppercase tracking-widest text-[#2a2015]/50 dark:text-white/50 shrink-0">
+                  <span className="text-[10px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50 shrink-0">
                     {item.receivedAt?.toDate().toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA') || ''}
                   </span>
                 </div>
-                {item.title && <p className="text-xs text-[#2a2015]/60 dark:text-white/60 mt-1">{item.title}</p>}
+                {item.title && <p className="text-xs text-[#293027]/60 dark:text-white/60 mt-1">{item.title}</p>}
               </div>
-              <i className="fa-solid fa-chevron-right text-[#2a2015]/30 dark:text-white/30 mt-1" />
+              <i className="fa-solid fa-chevron-right text-[#293027]/30 dark:text-white/30 mt-1" />
             </div>
           </button>
         );

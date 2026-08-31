@@ -41,17 +41,17 @@ const ClientSupport: React.FC = () => {
   return (
     <div className="flex flex-col h-[60vh] min-h-[400px]">
       <div className="mb-4">
-        <h3 className="text-sm uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold">
+        <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold">
           {lang === 'FR' ? 'Écrire au soutien' : 'Write to support'}
         </h3>
-        <p className="text-xs text-[#2a2015]/40 dark:text-white/40 mt-1">
+        <p className="text-xs text-[#293027]/40 dark:text-white/40 mt-1">
           {lang === 'FR' ? "L'équipe Inspirata vous répondra dès que possible." : 'The Inspirata team will reply as soon as possible.'}
         </p>
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto bg-[#f6f3ee] dark:bg-white/5 rounded-[20px] p-5 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto bg-[#EEE7DB] dark:bg-white/5 rounded-[20px] p-5 space-y-3">
         {messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-[#2a2015]/40 dark:text-white/40">
+          <div className="h-full flex flex-col items-center justify-center text-[#293027]/40 dark:text-white/40">
             <i className="fa-regular fa-comments text-3xl mb-3" />
             <p className="text-sm italic">{lang === 'FR' ? 'Commencez la conversation.' : 'Start the conversation.'}</p>
           </div>
@@ -61,8 +61,8 @@ const ClientSupport: React.FC = () => {
             <div key={m.id} className={`flex ${me ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
                 me
-                  ? 'bg-[#2a2015] text-white dark:bg-[#bb9a5e] dark:text-[#2a2015] rounded-br-sm'
-                  : 'bg-white dark:bg-[#2a2015] text-[#2a2015] dark:text-white border border-[#2a2015]/5 dark:border-white/5 rounded-bl-sm'
+                  ? 'bg-[#293027] text-white dark:bg-[#BA7B39] dark:text-[#293027] rounded-br-sm'
+                  : 'bg-white dark:bg-[#293027] text-[#293027] dark:text-white border border-[#293027]/5 dark:border-white/5 rounded-bl-sm'
               }`}>
                 {m.body}
                 <span className="block text-[10px] opacity-50 mt-1">
@@ -81,12 +81,12 @@ const ClientSupport: React.FC = () => {
           onChange={e => setDraft(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
           placeholder={lang === 'FR' ? 'Votre message…' : 'Your message…'}
-          className="flex-1 px-4 py-3 rounded-full border border-[#2a2015]/10 dark:border-white/10 bg-[#f6f3ee] dark:bg-white/5 text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]"
+          className="flex-1 px-4 py-3 rounded-full border border-[#293027]/10 dark:border-white/10 bg-[#EEE7DB] dark:bg-white/5 text-[#293027] dark:text-white outline-none focus:border-[#BA7B39]"
         />
         <button
           onClick={send}
           disabled={sending || !draft.trim()}
-          className="px-6 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors disabled:opacity-50"
+          className="px-6 bg-[#293027] dark:bg-[#BA7B39] text-white dark:text-[#293027] rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#BA7B39] hover:text-[#293027] transition-colors disabled:opacity-50"
         >
           <i className="fa-solid fa-paper-plane" />
         </button>

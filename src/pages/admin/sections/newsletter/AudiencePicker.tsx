@@ -19,7 +19,7 @@ export function countRecipients(subs: NewsletterSubscriber[], a: NewsletterAudie
 }
 
 const chip = (on: boolean) =>
-  `px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest border transition-colors ${on ? 'bg-[#2a2015] text-white border-[#2a2015] dark:bg-[#bb9a5e] dark:text-[#2a2015]' : 'bg-white dark:bg-white/5 text-[#2a2015]/60 dark:text-white/60 border-[#2a2015]/10 dark:border-white/10 hover:text-[#7d6330]'}`;
+  `px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest border transition-colors ${on ? 'bg-[#293027] text-white border-[#293027] dark:bg-[#BA7B39] dark:text-[#293027]' : 'bg-white dark:bg-white/5 text-[#293027]/60 dark:text-white/60 border-[#293027]/10 dark:border-white/10 hover:text-[#8B4A2F]'}`;
 
 const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: NewsletterAudience) => void; disabled?: boolean }> = ({ value, onChange, disabled }) => {
   const [subs, setSubs] = useState<NewsletterSubscriber[]>([]);
@@ -52,7 +52,7 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
     <div className="space-y-3">
       <div className="flex items-baseline justify-between">
         <Label>Destinataires</Label>
-        <span className="font-serif text-2xl text-[#2a2015] dark:text-white">{total} <span className="text-xs text-[#7d6330]">personne{total > 1 ? 's' : ''}</span></span>
+        <span className="font-serif text-2xl text-[#293027] dark:text-white">{total} <span className="text-xs text-[#8B4A2F]">personne{total > 1 ? 's' : ''}</span></span>
       </div>
       <div className="flex flex-wrap gap-2">
         <button disabled={disabled} className={chip(value.mode === 'all')} onClick={() => onChange({ mode: 'all' })}>Tout le monde</button>
@@ -62,10 +62,10 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
 
       {value.mode === 'tags' && (
         <div className="flex flex-wrap gap-1.5 max-h-48 overflow-auto">
-          {tags.length === 0 && <p className="text-xs text-[#2a2015]/50 dark:text-white/50">Aucune liste pour le moment.</p>}
+          {tags.length === 0 && <p className="text-xs text-[#293027]/50 dark:text-white/50">Aucune liste pour le moment.</p>}
           {tags.map(([t, n]) => (
             <button key={t} disabled={disabled} onClick={() => toggleTag(t)}
-              className={`px-2.5 py-1 rounded-full text-[11px] border transition-colors ${(value.tags || []).includes(t) ? 'bg-[#bb9a5e] text-[#2a2015] border-[#bb9a5e]' : 'bg-[#f6f3ee] dark:bg-white/5 text-[#2a2015]/70 dark:text-white/70 border-transparent hover:border-[#bb9a5e]'}`}>
+              className={`px-2.5 py-1 rounded-full text-[11px] border transition-colors ${(value.tags || []).includes(t) ? 'bg-[#BA7B39] text-[#293027] border-[#BA7B39]' : 'bg-[#EEE7DB] dark:bg-white/5 text-[#293027]/70 dark:text-white/70 border-transparent hover:border-[#BA7B39]'}`}>
               {t} <span className="opacity-60">· {n}</span>
             </button>
           ))}
@@ -77,18 +77,18 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
           {(value.emails || []).length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {(value.emails || []).map(e => (
-                <button key={e} disabled={disabled} onClick={() => toggleEmail(e)} className="px-2.5 py-1 rounded-full text-[11px] bg-[#bb9a5e] text-[#2a2015]" title="Retirer">{e} ×</button>
+                <button key={e} disabled={disabled} onClick={() => toggleEmail(e)} className="px-2.5 py-1 rounded-full text-[11px] bg-[#BA7B39] text-[#293027]" title="Retirer">{e} ×</button>
               ))}
             </div>
           )}
           <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Chercher une personne…" disabled={disabled}
-            className="w-full px-3 py-2 rounded-xl border border-[#2a2015]/10 dark:border-white/10 bg-[#f6f3ee] dark:bg-white/5 text-sm outline-none focus:border-[#bb9a5e]" />
-          <ul className="max-h-48 overflow-auto divide-y divide-[#2a2015]/5 dark:divide-white/5 text-xs">
+            className="w-full px-3 py-2 rounded-xl border border-[#293027]/10 dark:border-white/10 bg-[#EEE7DB] dark:bg-white/5 text-sm outline-none focus:border-[#BA7B39]" />
+          <ul className="max-h-48 overflow-auto divide-y divide-[#293027]/5 dark:divide-white/5 text-xs">
             {people.map(s => {
               const on = (value.emails || []).includes(s.email);
               return (
                 <li key={s.email}>
-                  <button disabled={disabled} onClick={() => toggleEmail(s.email)} className={`w-full text-left px-2 py-1.5 flex justify-between gap-2 hover:bg-[#bb9a5e]/10 ${on ? 'text-[#7d6330]' : 'text-[#2a2015]/80 dark:text-white/80'}`}>
+                  <button disabled={disabled} onClick={() => toggleEmail(s.email)} className={`w-full text-left px-2 py-1.5 flex justify-between gap-2 hover:bg-[#BA7B39]/10 ${on ? 'text-[#8B4A2F]' : 'text-[#293027]/80 dark:text-white/80'}`}>
                     <span className="truncate">{[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'} · {s.email}</span>
                     {on && <i className="fa-solid fa-check shrink-0" />}
                   </button>

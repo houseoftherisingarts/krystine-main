@@ -173,7 +173,7 @@ const SubscribersPanel: React.FC = () => {
           value={source}
           onChange={e => setSource(e.target.value)}
           title="Filtrer par source / formulaire"
-          className="px-4 py-2 rounded-full border border-[#2a2015]/10 dark:border-white/10 bg-white dark:bg-[#2a2015]/60 text-sm text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]"
+          className="px-4 py-2 rounded-full border border-[#293027]/10 dark:border-white/10 bg-white dark:bg-[#293027]/60 text-sm text-[#293027] dark:text-white outline-none focus:border-[#BA7B39]"
         >
           <option value={ALL_SOURCES}>Tous les contacts ({subs.length})</option>
           {sourceOptions.entries.map(([key, count]) => (
@@ -187,19 +187,19 @@ const SubscribersPanel: React.FC = () => {
           value={tag}
           onChange={e => setTag(e.target.value)}
           title="Filtrer par liste (étiquette)"
-          className="px-4 py-2 rounded-full border border-[#2a2015]/10 dark:border-white/10 bg-white dark:bg-[#2a2015]/60 text-sm text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]"
+          className="px-4 py-2 rounded-full border border-[#293027]/10 dark:border-white/10 bg-white dark:bg-[#293027]/60 text-sm text-[#293027] dark:text-white outline-none focus:border-[#BA7B39]"
         >
           <option value="">Toutes les listes</option>
           {tagOptions.map(([t, n]) => <option key={t} value={t}>{t} ({n})</option>)}
         </select>
-        <label className="inline-flex items-center gap-2 text-sm text-[#2a2015]/60 dark:text-white/60">
+        <label className="inline-flex items-center gap-2 text-sm text-[#293027]/60 dark:text-white/60">
           Ajoutés du
           <input
             type="date"
             value={dateFrom}
             onChange={e => setDateFrom(e.target.value)}
             title="Ne garder que les contacts ajoutés à partir de cette date"
-            className="px-3 py-2 rounded-full border border-[#2a2015]/10 dark:border-white/10 bg-white dark:bg-[#2a2015]/60 text-sm text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]"
+            className="px-3 py-2 rounded-full border border-[#293027]/10 dark:border-white/10 bg-white dark:bg-[#293027]/60 text-sm text-[#293027] dark:text-white outline-none focus:border-[#BA7B39]"
           />
           au
           <input
@@ -207,7 +207,7 @@ const SubscribersPanel: React.FC = () => {
             value={dateTo}
             onChange={e => setDateTo(e.target.value)}
             title="Ne garder que les contacts ajoutés jusqu'à cette date incluse"
-            className="px-3 py-2 rounded-full border border-[#2a2015]/10 dark:border-white/10 bg-white dark:bg-[#2a2015]/60 text-sm text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]"
+            className="px-3 py-2 rounded-full border border-[#293027]/10 dark:border-white/10 bg-white dark:bg-[#293027]/60 text-sm text-[#293027] dark:text-white outline-none focus:border-[#BA7B39]"
           />
         </label>
         <input
@@ -215,10 +215,10 @@ const SubscribersPanel: React.FC = () => {
           placeholder="Rechercher (email, nom, étiquette)…"
           value={filter}
           onChange={e => setFilter(e.target.value)}
-          className="flex-1 min-w-[220px] px-4 py-2 rounded-full border border-[#2a2015]/10 dark:border-white/10 bg-white dark:bg-[#2a2015]/60 text-sm text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]"
+          className="flex-1 min-w-[220px] px-4 py-2 rounded-full border border-[#293027]/10 dark:border-white/10 bg-white dark:bg-[#293027]/60 text-sm text-[#293027] dark:text-white outline-none focus:border-[#BA7B39]"
         />
-        <p className="text-sm text-[#2a2015]/60 dark:text-white/60">{filtered.length} / {subs.length}</p>
-        <label className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#bb9a5e] text-[#2a2015] cursor-pointer hover:bg-[#2a2015] hover:text-[#7d6330] transition-colors">
+        <p className="text-sm text-[#293027]/60 dark:text-white/60">{filtered.length} / {subs.length}</p>
+        <label className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#BA7B39] text-[#293027] cursor-pointer hover:bg-[#293027] hover:text-[#8B4A2F] transition-colors">
           <i className="fa-solid fa-file-import" /> {importing ? 'Importation…' : 'Importer CSV'}
           <input ref={fileRef} type="file" accept=".csv,text/csv" className="hidden" onChange={handleFile} disabled={importing} />
         </label>
@@ -236,20 +236,20 @@ const SubscribersPanel: React.FC = () => {
           &nbsp;<strong>{importResult.invalid}</strong> lignes invalides.
         </div>
       )}
-      <p className="text-[11px] text-[#2a2015]/50 dark:text-white/50">
-        Format CSV attendu — colonnes reconnues : <code className="bg-[#bb9a5e]/10 px-1 rounded">email</code>, <code className="bg-[#bb9a5e]/10 px-1 rounded">firstName</code>,
-        <code className="bg-[#bb9a5e]/10 px-1 rounded">lastName</code>, <code className="bg-[#bb9a5e]/10 px-1 rounded">tags</code> (séparées par <code>|</code> ou <code>,</code>). Les synonymes français (<em>courriel</em>, <em>prénom</em>, <em>nom</em>) sont acceptés.
+      <p className="text-[11px] text-[#293027]/50 dark:text-white/50">
+        Format CSV attendu — colonnes reconnues : <code className="bg-[#BA7B39]/10 px-1 rounded">email</code>, <code className="bg-[#BA7B39]/10 px-1 rounded">firstName</code>,
+        <code className="bg-[#BA7B39]/10 px-1 rounded">lastName</code>, <code className="bg-[#BA7B39]/10 px-1 rounded">tags</code> (séparées par <code>|</code> ou <code>,</code>). Les synonymes français (<em>courriel</em>, <em>prénom</em>, <em>nom</em>) sont acceptés.
       </p>
 
       {/* List */}
       {loading ? (
-        <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#7d6330] text-2xl" /></div>
+        <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#8B4A2F] text-2xl" /></div>
       ) : subs.length === 0 ? (
         <EmptyState icon="fa-envelope">Aucun abonné pour l'instant. Importez votre liste pour commencer.</EmptyState>
       ) : (
         <Card className="overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-[#f6f3ee] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60">
+            <thead className="bg-[#EEE7DB] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#293027]/60 dark:text-white/60">
               <tr>
                 <th className="text-left px-4 py-3">Email</th>
                 <th className="text-left px-4 py-3 hidden md:table-cell">Nom</th>
@@ -263,21 +263,21 @@ const SubscribersPanel: React.FC = () => {
             <tbody>
               {filtered.map(s => (
                 <React.Fragment key={s.id}>
-                <tr className={`border-t border-[#2a2015]/5 dark:border-white/5 hover:bg-[#bb9a5e]/5 ${ouvert === s.id ? 'bg-[#bb9a5e]/10' : ''}`}>
-                  <td className="px-4 py-3 text-[#2a2015] dark:text-white">
+                <tr className={`border-t border-[#293027]/5 dark:border-white/5 hover:bg-[#BA7B39]/5 ${ouvert === s.id ? 'bg-[#BA7B39]/10' : ''}`}>
+                  <td className="px-4 py-3 text-[#293027] dark:text-white">
                     {s.email}
-                    {s.question && <i className="fa-solid fa-circle-question ml-2 text-[#7d6330]" title="A posé une question" />}
-                    {s.derniereReponseLe && <i className="fa-solid fa-reply ml-2 text-[#7d6330]/70" title={`Dernière réponse le ${s.derniereReponseLe.toDate().toLocaleDateString('fr-CA')}`} />}
+                    {s.question && <i className="fa-solid fa-circle-question ml-2 text-[#8B4A2F]" title="A posé une question" />}
+                    {s.derniereReponseLe && <i className="fa-solid fa-reply ml-2 text-[#8B4A2F]/70" title={`Dernière réponse le ${s.derniereReponseLe.toDate().toLocaleDateString('fr-CA')}`} />}
                   </td>
-                  <td className="px-4 py-3 text-[#2a2015]/70 dark:text-white/70 hidden md:table-cell">{[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'}</td>
+                  <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden md:table-cell">{[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'}</td>
                   <td className="px-4 py-3 hidden lg:table-cell">
                     {(s.tags && s.tags.length > 0) ? (
                       <div className="flex flex-wrap gap-1">
                         {s.tags.slice(0, 3).map(t => (
-                          <span key={t} className="text-[10px] uppercase tracking-widest bg-[#bb9a5e]/10 text-[#7d6330] px-2 py-0.5 rounded-full">{t}</span>
+                          <span key={t} className="text-[10px] uppercase tracking-widest bg-[#BA7B39]/10 text-[#8B4A2F] px-2 py-0.5 rounded-full">{t}</span>
                         ))}
                       </div>
-                    ) : <span className="text-[#2a2015]/40 dark:text-white/40">—</span>}
+                    ) : <span className="text-[#293027]/40 dark:text-white/40">—</span>}
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell">
                     <span className={`text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full ${
@@ -287,15 +287,15 @@ const SubscribersPanel: React.FC = () => {
                       'bg-green-50 text-green-600'
                     }`}>{s.status || 'active'}</span>
                   </td>
-                  <td className="px-4 py-3 text-[#2a2015]/50 dark:text-white/50 hidden md:table-cell">{s.source || '—'}</td>
-                  <td className="px-4 py-3 text-[#2a2015]/50 dark:text-white/50 hidden md:table-cell">{s.subscribedAt?.toDate().toLocaleDateString('fr-CA') || '—'}</td>
+                  <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden md:table-cell">{s.source || '—'}</td>
+                  <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden md:table-cell">{s.subscribedAt?.toDate().toLocaleDateString('fr-CA') || '—'}</td>
                   <td className="px-4 py-3 text-right whitespace-nowrap">
                     <button
                       type="button"
                       onClick={() => setOuvert(ouvert === s.id ? null : (s.id || null))}
                       title="Répondre par courriel"
                       aria-expanded={ouvert === s.id}
-                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-colors mr-2 ${ouvert === s.id ? 'bg-[#bb9a5e] text-[#2a2015]' : 'bg-[#bb9a5e]/15 text-[#7d6330] hover:bg-[#bb9a5e]/30'}`}
+                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-colors mr-2 ${ouvert === s.id ? 'bg-[#BA7B39] text-[#293027]' : 'bg-[#BA7B39]/15 text-[#8B4A2F] hover:bg-[#BA7B39]/30'}`}
                     >
                       <i className="fa-solid fa-reply" /> Répondre
                     </button>
@@ -303,7 +303,7 @@ const SubscribersPanel: React.FC = () => {
                   </td>
                 </tr>
                 {ouvert === s.id && (
-                  <tr className="bg-[#bb9a5e]/5">
+                  <tr className="bg-[#BA7B39]/5">
                     <td colSpan={7} className="p-0">
                       <ReponsePanel abonne={s} onClose={() => setOuvert(null)} onSent={refresh} />
                     </td>

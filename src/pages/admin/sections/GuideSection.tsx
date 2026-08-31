@@ -57,7 +57,7 @@ const GuideSection: React.FC = () => {
     })));
   };
 
-  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#7d6330] text-2xl" /></div>;
+  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#8B4A2F] text-2xl" /></div>;
   if (responses.length === 0) return <EmptyState icon="fa-compass">Aucun parcours « Laissez-vous guider » pour l'instant.</EmptyState>;
 
   return (
@@ -66,7 +66,7 @@ const GuideSection: React.FC = () => {
         <select
           value={recoFilter}
           onChange={e => setRecoFilter(e.target.value)}
-          className="px-4 py-2 rounded-full border border-[#2a2015]/10 dark:border-white/10 bg-white dark:bg-[#2a2015]/60 text-sm text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]"
+          className="px-4 py-2 rounded-full border border-[#293027]/10 dark:border-white/10 bg-white dark:bg-[#293027]/60 text-sm text-[#293027] dark:text-white outline-none focus:border-[#BA7B39]"
         >
           <option value="__all__">Toutes les recommandations ({responses.length})</option>
           {recoOptions.map(opt => (
@@ -78,15 +78,15 @@ const GuideSection: React.FC = () => {
           placeholder="Rechercher (email, nom, recommandation)…"
           value={filter}
           onChange={e => setFilter(e.target.value)}
-          className="flex-1 min-w-[220px] px-4 py-2 rounded-full border border-[#2a2015]/10 dark:border-white/10 bg-white dark:bg-[#2a2015]/60 text-sm text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]"
+          className="flex-1 min-w-[220px] px-4 py-2 rounded-full border border-[#293027]/10 dark:border-white/10 bg-white dark:bg-[#293027]/60 text-sm text-[#293027] dark:text-white outline-none focus:border-[#BA7B39]"
         />
-        <p className="text-sm text-[#2a2015]/60 dark:text-white/60">{filtered.length} / {responses.length}</p>
+        <p className="text-sm text-[#293027]/60 dark:text-white/60">{filtered.length} / {responses.length}</p>
         <GhostButton onClick={exportCsv}><i className="fa-solid fa-file-csv" /> CSV</GhostButton>
       </div>
 
       <Card className="overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-[#f6f3ee] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60">
+          <thead className="bg-[#EEE7DB] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#293027]/60 dark:text-white/60">
             <tr>
               <th className="text-left px-4 py-3">Personne</th>
               <th className="text-left px-4 py-3">Recommandation</th>
@@ -99,33 +99,33 @@ const GuideSection: React.FC = () => {
               const name = [r.firstName, r.lastName].filter(Boolean).join(' ') || (r.email ? r.email.split('@')[0] : '');
               const isAuthed = !!r.uid;
               return (
-                <tr key={r.id} className="border-t border-[#2a2015]/5 dark:border-white/5 align-top">
+                <tr key={r.id} className="border-t border-[#293027]/5 dark:border-white/5 align-top">
                   <td className="px-4 py-3">
                     {isAuthed ? (
                       <div className="min-w-0">
-                        <p className="text-[#2a2015] dark:text-white truncate flex items-center gap-2">
+                        <p className="text-[#293027] dark:text-white truncate flex items-center gap-2">
                           {name || '—'}
-                          <span className="text-[9px] uppercase tracking-widest bg-[#bb9a5e]/10 text-[#7d6330] px-2 py-0.5 rounded-full">Membre</span>
+                          <span className="text-[9px] uppercase tracking-widest bg-[#BA7B39]/10 text-[#8B4A2F] px-2 py-0.5 rounded-full">Membre</span>
                         </p>
-                        {r.email && <p className="text-[11px] text-[#2a2015]/50 dark:text-white/50 truncate">{r.email}</p>}
+                        {r.email && <p className="text-[11px] text-[#293027]/50 dark:text-white/50 truncate">{r.email}</p>}
                       </div>
                     ) : (
-                      <span className="text-[#2a2015]/40 dark:text-white/40 italic">Anonyme</span>
+                      <span className="text-[#293027]/40 dark:text-white/40 italic">Anonyme</span>
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-bold bg-[#bb9a5e]/10 text-[#7d6330] px-2.5 py-1 rounded-full">
+                    <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-bold bg-[#BA7B39]/10 text-[#8B4A2F] px-2.5 py-1 rounded-full">
                       <i className="fa-solid fa-compass text-[9px]" />
                       {r.recommendationLabel || r.recommendationId}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-[#2a2015]/50 dark:text-white/50 hidden md:table-cell text-xs">
+                  <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden md:table-cell text-xs">
                     {r.createdAt?.toDate().toLocaleString('fr-CA', { dateStyle: 'short', timeStyle: 'short' }) || '—'}
                   </td>
                   <td className="px-4 py-3">
                     {r.answers?.length > 0 ? (
-                      <details className="text-xs text-[#2a2015]/70 dark:text-white/70 max-w-md">
-                        <summary className="cursor-pointer hover:text-[#7d6330] transition-colors uppercase tracking-widest text-[10px] font-bold">
+                      <details className="text-xs text-[#293027]/70 dark:text-white/70 max-w-md">
+                        <summary className="cursor-pointer hover:text-[#8B4A2F] transition-colors uppercase tracking-widest text-[10px] font-bold">
                           {r.answers.length} réponses
                         </summary>
                         <ul className="mt-2 space-y-1 pl-4 list-disc">
@@ -139,7 +139,7 @@ const GuideSection: React.FC = () => {
                         </ul>
                       </details>
                     ) : (
-                      <span className="text-[#2a2015]/30 dark:text-white/30">—</span>
+                      <span className="text-[#293027]/30 dark:text-white/30">—</span>
                     )}
                   </td>
                 </tr>

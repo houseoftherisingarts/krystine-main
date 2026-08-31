@@ -101,25 +101,25 @@ const CoursDetailPage: React.FC = () => {
   const pct = lecons.length ? Math.round((nbTerminees / lecons.length) * 100) : 0;
 
   if (loading) {
-    return <div className="min-h-screen bg-[#f6f3ee] pt-40 text-center text-sm text-[#3a3126]/50 dark:bg-[#16100a] dark:text-white/50">…</div>;
+    return <div className="min-h-screen bg-[#EEE7DB] pt-40 text-center text-sm text-[#38403a]/50 dark:bg-[#151d19] dark:text-white/50">…</div>;
   }
   if (!formation || formation.statut !== 'publie') {
     return (
-      <div className="min-h-screen bg-[#f6f3ee] pt-40 text-center dark:bg-[#16100a]">
-        <p className="font-serif text-2xl text-[#2a2015] dark:text-white">{lang === 'FR' ? 'Cette formation n\'est pas disponible.' : 'This course is not available.'}</p>
-        <Link to="/cours" className="mt-4 inline-block text-sm text-[#7d6330]">{lang === 'FR' ? 'Retour aux formations' : 'Back to courses'}</Link>
+      <div className="min-h-screen bg-[#EEE7DB] pt-40 text-center dark:bg-[#151d19]">
+        <p className="font-serif text-2xl text-[#293027] dark:text-white">{lang === 'FR' ? 'Cette formation n\'est pas disponible.' : 'This course is not available.'}</p>
+        <Link to="/cours" className="mt-4 inline-block text-sm text-[#8B4A2F]">{lang === 'FR' ? 'Retour aux formations' : 'Back to courses'}</Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f6f3ee] pt-28 pb-24 dark:bg-[#16100a]">
+    <div className="min-h-screen bg-[#EEE7DB] pt-28 pb-24 dark:bg-[#151d19]">
       <div className="mx-auto max-w-6xl px-6">
-        <Link to="/cours" className="text-[11px] font-bold uppercase tracking-widest text-[#7d6330]">
+        <Link to="/cours" className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">
           <i className="fa-solid fa-arrow-left mr-2" />{lang === 'FR' ? 'Toutes les formations' : 'All courses'}
         </Link>
         {id === 'foyer' && accessible && (
-          <div className="mt-4 overflow-hidden rounded-[20px] border border-white/60 shadow-[0_24px_60px_-24px_rgba(58,49,38,0.5)] dark:border-white/10">
+          <div className="mt-4 overflow-hidden rounded-[20px] border border-white/60 shadow-[0_24px_60px_-24px_rgba(41,48,39,0.5)] dark:border-white/10">
             <video
               src="/assets/foyer-visuel-16x9.mp4"
               poster="/assets/foyer-visuel-16x9.jpg"
@@ -133,26 +133,26 @@ const CoursDetailPage: React.FC = () => {
           const ouverte = porteDuMois();
           return (
             <div className="mt-10">
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">Les douze portes</p>
-              <h2 className="mt-1 font-serif text-2xl text-[#2a2015] dark:text-white">
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">Les douze portes</p>
+              <h2 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">
                 La porte de {ouverte.mois.toLowerCase()} est ouverte
               </h2>
-              <p className="mt-1 max-w-2xl text-sm text-[#3a3126]/60 dark:text-white/60">
+              <p className="mt-1 max-w-2xl text-sm text-[#38403a]/60 dark:text-white/60">
                 Une seule porte s'ouvre à la fois, celle du mois en cours. Les autres attendent leur tour.
               </p>
 
-              <div className="mt-6 grid gap-6 rounded-[24px] border border-[#bb9a5e]/40 bg-white/55 p-6 backdrop-blur-md md:grid-cols-[220px_1fr] md:p-8 dark:border-[#bb9a5e]/30 dark:bg-[#2a2015]/55">
+              <div className="mt-6 grid gap-6 rounded-[24px] border border-[#BA7B39]/40 bg-white/55 p-6 backdrop-blur-md md:grid-cols-[220px_1fr] md:p-8 dark:border-[#BA7B39]/30 dark:bg-[#293027]/55">
                 <img
                   src={`/foyer/${ouverte.src}.webp`}
                   alt={`La porte de ${ouverte.mois}`}
-                  className="mx-auto w-44 max-w-full drop-shadow-[0_18px_30px_rgba(58,49,38,0.35)] md:w-full"
+                  className="mx-auto w-44 max-w-full drop-shadow-[0_18px_30px_rgba(41,48,39,0.35)] md:w-full"
                   loading="lazy"
                 />
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">{ouverte.mois} · {ouverte.mouvement}</p>
-                  <h3 className="mt-2 font-serif text-2xl text-[#2a2015] dark:text-white">{ouverte.theme}</h3>
-                  <p className="mt-4 max-w-xl font-serif text-lg italic leading-relaxed text-[#3a3126]/80 dark:text-white/75">« {ouverte.question} »</p>
-                  <p className="mt-4 text-sm text-[#3a3126]/60 dark:text-white/60">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{ouverte.mois} · {ouverte.mouvement}</p>
+                  <h3 className="mt-2 font-serif text-2xl text-[#293027] dark:text-white">{ouverte.theme}</h3>
+                  <p className="mt-4 max-w-xl font-serif text-lg italic leading-relaxed text-[#38403a]/80 dark:text-white/75">« {ouverte.question} »</p>
+                  <p className="mt-4 text-sm text-[#38403a]/60 dark:text-white/60">
                     Le rituel du mois se vit ici : gardez la question près de vous, revenez-y chaque matin, et partagez ce qu'elle remue dans le feed plus bas.
                   </p>
                 </div>
@@ -163,7 +163,7 @@ const CoursDetailPage: React.FC = () => {
                   const estOuverte = pt.n === ouverte.n;
                   return (
                     <div key={pt.n} className="text-center">
-                      <div className={`relative overflow-hidden rounded-[16px] border p-2 ${estOuverte ? 'border-[#bb9a5e]/60 bg-[#bb9a5e]/10' : 'border-[#3a3126]/10 bg-white/40 dark:border-white/10 dark:bg-white/5'}`}>
+                      <div className={`relative overflow-hidden rounded-[16px] border p-2 ${estOuverte ? 'border-[#BA7B39]/60 bg-[#BA7B39]/10' : 'border-[#38403a]/10 bg-white/40 dark:border-white/10 dark:bg-white/5'}`}>
                         <img
                           src={`/foyer/${pt.src}.webp`}
                           alt={`Porte de ${pt.mois}`}
@@ -172,13 +172,13 @@ const CoursDetailPage: React.FC = () => {
                         />
                         {!estOuverte && (
                           <span className="absolute inset-0 flex items-center justify-center">
-                            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2a2015]/70 text-[#dcb874]">
+                            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#293027]/70 text-[#d9a05b]">
                               <i className="fa-solid fa-lock text-sm" />
                             </span>
                           </span>
                         )}
                       </div>
-                      <p className={`mt-2 text-[10px] font-bold uppercase tracking-widest ${estOuverte ? 'text-[#7d6330]' : 'text-[#3a3126]/40 dark:text-white/40'}`}>{pt.mois}</p>
+                      <p className={`mt-2 text-[10px] font-bold uppercase tracking-widest ${estOuverte ? 'text-[#8B4A2F]' : 'text-[#38403a]/40 dark:text-white/40'}`}>{pt.mois}</p>
                     </div>
                   );
                 })}
@@ -186,12 +186,12 @@ const CoursDetailPage: React.FC = () => {
             </div>
           );
         })()}
-        <h1 className="mt-3 max-w-3xl font-serif text-3xl leading-tight text-[#2a2015] md:text-4xl dark:text-white" style={{ letterSpacing: '-0.01em' }}>
+        <h1 className="mt-3 max-w-3xl font-serif text-3xl leading-tight text-[#293027] md:text-4xl dark:text-white" style={{ letterSpacing: '-0.01em' }}>
           {formation.titre}
         </h1>
 
         {live?.formationId === id && (
-          <div className="mt-5 flex flex-wrap items-center gap-4 rounded-[20px] border border-red-500/30 bg-[#2a2015] px-5 py-4 text-white">
+          <div className="mt-5 flex flex-wrap items-center gap-4 rounded-[20px] border border-red-500/30 bg-[#293027] px-5 py-4 text-white">
             <span className="relative flex h-3 w-3">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
               <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
@@ -213,12 +213,12 @@ const CoursDetailPage: React.FC = () => {
 
         {accessible && lecons.length > 0 && (
           <div className="mt-5 max-w-3xl">
-            <div className="flex items-baseline justify-between text-[11px] font-bold uppercase tracking-widest text-[#7d6330]">
+            <div className="flex items-baseline justify-between text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">
               <span>{pct} % {lang === 'FR' ? 'terminé' : 'complete'}</span>
               <span>{nbTerminees}/{lecons.length} {lang === 'FR' ? 'leçons' : 'lessons'}</span>
             </div>
-            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#3a3126]/10 dark:bg-white/10">
-              <div className="h-full rounded-full bg-[#bb9a5e] transition-[width] duration-500" style={{ width: `${pct}%` }} />
+            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#38403a]/10 dark:bg-white/10">
+              <div className="h-full rounded-full bg-[#BA7B39] transition-[width] duration-500" style={{ width: `${pct}%` }} />
             </div>
           </div>
         )}
@@ -226,33 +226,33 @@ const CoursDetailPage: React.FC = () => {
         {!accessible ? (
           <div className="mt-10 grid gap-8 md:grid-cols-2 md:items-start">
             {formation.imageUrl && (
-              <img src={formation.imageUrl} alt="" className="rounded-[20px] border border-white/60 shadow-[0_18px_50px_-25px_rgba(58,49,38,0.5)] dark:border-white/10" />
+              <img src={formation.imageUrl} alt="" className="rounded-[20px] border border-white/60 shadow-[0_18px_50px_-25px_rgba(41,48,39,0.5)] dark:border-white/10" />
             )}
             <div>
               {formation.description && (
-                <p className="whitespace-pre-line text-[#3a3126]/80 dark:text-white/80">{formation.description}</p>
+                <p className="whitespace-pre-line text-[#38403a]/80 dark:text-white/80">{formation.description}</p>
               )}
-              <p className="mt-6 font-serif text-3xl text-[#2a2015] dark:text-white">{formation.prix} $ CA</p>
+              <p className="mt-6 font-serif text-3xl text-[#293027] dark:text-white">{formation.prix} $ CA</p>
               <button
                 onClick={acheter}
                 disabled={paiement}
-                className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#bb9a5e] px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-[#2a2015] shadow-[0_8px_22px_-10px_rgba(163,130,63,0.8)] transition-colors hover:bg-[#a3823f] disabled:opacity-50"
+                className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-[#293027] shadow-[0_8px_22px_-10px_rgba(186,123,57,0.8)] transition-colors hover:bg-[#9c6630] disabled:opacity-50"
               >
                 <i className="fa-solid fa-lock-open" />
                 {paiement ? (lang === 'FR' ? 'Redirection…' : 'Redirecting…') : (lang === 'FR' ? 'Rejoindre la formation' : 'Join the course')}
               </button>
-              <p className="mt-3 text-xs text-[#3a3126]/50 dark:text-white/50">
+              <p className="mt-3 text-xs text-[#38403a]/50 dark:text-white/50">
                 {lang === 'FR' ? 'Paiement sécurisé par Stripe. La formation apparaît dans votre espace dès le paiement.' : 'Secure payment by Stripe. The course appears in your space right after payment.'}
               </p>
               {lecons.length > 0 && (
                 <div className="mt-8">
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-[#7d6330]">{lecons.length} {lang === 'FR' ? 'leçons' : 'lessons'}</p>
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">{lecons.length} {lang === 'FR' ? 'leçons' : 'lessons'}</p>
                   <ul className="mt-3 space-y-2">
                     {lecons.map(l => (
-                      <li key={l.id} className="flex items-center gap-3 text-sm text-[#3a3126]/70 dark:text-white/70">
-                        <i className={`fa-solid ${ICONES[l.type]} w-4 text-[#7d6330]/70`} />
+                      <li key={l.id} className="flex items-center gap-3 text-sm text-[#38403a]/70 dark:text-white/70">
+                        <i className={`fa-solid ${ICONES[l.type]} w-4 text-[#8B4A2F]/70`} />
                         {l.titre}
-                        {l.duree && <span className="ml-auto text-xs text-[#3a3126]/40 dark:text-white/40">{l.duree}</span>}
+                        {l.duree && <span className="ml-auto text-xs text-[#38403a]/40 dark:text-white/40">{l.duree}</span>}
                       </li>
                     ))}
                   </ul>
@@ -264,9 +264,9 @@ const CoursDetailPage: React.FC = () => {
         ) : (
           <div className="mt-8 grid gap-6 lg:grid-cols-[320px_1fr]">
             {/* La liste des leçons */}
-            <aside className="rounded-[20px] border border-white/60 bg-white/55 p-3 backdrop-blur-md dark:border-white/10 dark:bg-[#2a2015]/55">
+            <aside className="rounded-[20px] border border-white/60 bg-white/55 p-3 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55">
               {lecons.length === 0 && (
-                <p className="p-3 text-sm text-[#3a3126]/50 dark:text-white/50">{lang === 'FR' ? 'Les leçons arrivent bientôt.' : 'Lessons coming soon.'}</p>
+                <p className="p-3 text-sm text-[#38403a]/50 dark:text-white/50">{lang === 'FR' ? 'Les leçons arrivent bientôt.' : 'Lessons coming soon.'}</p>
               )}
               {/* Groupé par module, dans l'ordre du cours */}
               {(() => {
@@ -280,7 +280,7 @@ const CoursDetailPage: React.FC = () => {
                 return groupes.map((g, gi) => (
                   <div key={gi} className="mb-2">
                     {g.nom && (
-                      <p className="px-3 pt-3 pb-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#7d6330]">{g.nom}</p>
+                      <p className="px-3 pt-3 pb-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#8B4A2F]">{g.nom}</p>
                     )}
                     {g.items.map(l => (
                       <button
@@ -288,11 +288,11 @@ const CoursDetailPage: React.FC = () => {
                         onClick={() => ouvrir(l)}
                         className={`flex w-full items-center gap-3 rounded-[14px] px-3 py-2.5 text-left text-sm transition-colors ${
                           courante?.id === l.id
-                            ? 'bg-[#bb9a5e] text-[#2a2015]'
-                            : 'text-[#3a3126]/80 hover:bg-white/70 dark:text-white/80 dark:hover:bg-white/10'
+                            ? 'bg-[#BA7B39] text-[#293027]'
+                            : 'text-[#38403a]/80 hover:bg-white/70 dark:text-white/80 dark:hover:bg-white/10'
                         }`}
                       >
-                        <i className={`fa-solid ${terminees[l.id] ? 'fa-circle-check text-green-700' : ICONES[l.type]} w-4 ${courante?.id === l.id ? '' : 'text-[#7d6330]/70'}`} />
+                        <i className={`fa-solid ${terminees[l.id] ? 'fa-circle-check text-green-700' : ICONES[l.type]} w-4 ${courante?.id === l.id ? '' : 'text-[#8B4A2F]/70'}`} />
                         <span className="min-w-0 flex-1 truncate">{l.titre}</span>
                         {l.duree && <span className="text-[11px] opacity-60">{l.duree}</span>}
                       </button>
@@ -303,23 +303,23 @@ const CoursDetailPage: React.FC = () => {
             </aside>
 
             {/* Le contenu de la leçon */}
-            <section className="rounded-[20px] border border-white/60 bg-white/55 p-6 backdrop-blur-md dark:border-white/10 dark:bg-[#2a2015]/55">
+            <section className="rounded-[20px] border border-white/60 bg-white/55 p-6 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55">
               {!courante ? (
-                <div className="py-16 text-center text-[#3a3126]/60 dark:text-white/60">
-                  <i className="fa-solid fa-circle-play mb-4 block text-4xl text-[#bb9a5e]" />
-                  <p className="font-serif text-xl text-[#2a2015] dark:text-white">
+                <div className="py-16 text-center text-[#38403a]/60 dark:text-white/60">
+                  <i className="fa-solid fa-circle-play mb-4 block text-4xl text-[#BA7B39]" />
+                  <p className="font-serif text-xl text-[#293027] dark:text-white">
                     {lang === 'FR' ? 'Choisissez une leçon pour commencer' : 'Pick a lesson to begin'}
                   </p>
                 </div>
               ) : (
                 <>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
                     {lang === 'FR' ? 'Leçon' : 'Lesson'} {lecons.findIndex(l => l.id === courante.id) + 1} {lang === 'FR' ? 'de' : 'of'} {lecons.length}
                   </p>
-                  <h2 className="mt-1 font-serif text-2xl text-[#2a2015] dark:text-white">{courante.titre}</h2>
+                  <h2 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">{courante.titre}</h2>
                   <div className="mt-5">
                     {chargeLecon ? (
-                      <p className="text-sm text-[#3a3126]/50 dark:text-white/50">{lang === 'FR' ? 'Chargement…' : 'Loading…'}</p>
+                      <p className="text-sm text-[#38403a]/50 dark:text-white/50">{lang === 'FR' ? 'Chargement…' : 'Loading…'}</p>
                     ) : erreur ? (
                       <p className="text-sm text-red-600">{erreur}</p>
                     ) : urlCourante ? (
@@ -330,7 +330,7 @@ const CoursDetailPage: React.FC = () => {
                       ) : (
                         <a
                           href={urlCourante} target="_blank" rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-full bg-[#bb9a5e] px-6 py-3 text-xs font-bold uppercase tracking-widest text-[#2a2015] hover:bg-[#a3823f]"
+                          className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-6 py-3 text-xs font-bold uppercase tracking-widest text-[#293027] hover:bg-[#9c6630]"
                         >
                           <i className={`fa-solid ${ICONES[courante.type]}`} />
                           {lang === 'FR' ? 'Ouvrir le document' : 'Open the document'}
@@ -349,7 +349,7 @@ const CoursDetailPage: React.FC = () => {
                       className={`inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest transition-colors ${
                         terminees[courante.id]
                           ? 'border-green-600 bg-green-600/10 text-green-700'
-                          : 'border-[#bb9a5e] text-[#7d6330] hover:bg-[#bb9a5e] hover:text-[#2a2015]'
+                          : 'border-[#BA7B39] text-[#8B4A2F] hover:bg-[#BA7B39] hover:text-[#293027]'
                       }`}
                     >
                       <i className="fa-solid fa-check" />
@@ -360,7 +360,7 @@ const CoursDetailPage: React.FC = () => {
                     {lecons.findIndex(l => l.id === courante.id) < lecons.length - 1 && (
                       <button
                         onClick={suivante}
-                        className="inline-flex items-center gap-2 rounded-full bg-[#bb9a5e] px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest text-[#2a2015] hover:bg-[#a3823f]"
+                        className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest text-[#293027] hover:bg-[#9c6630]"
                       >
                         {lang === 'FR' ? 'Leçon suivante' : 'Next lesson'}
                         <i className="fa-solid fa-arrow-right" />

@@ -92,8 +92,8 @@ const AdminDashboard: React.FC = () => {
 
   if (user === undefined) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#16100a]">
-        <div className="w-10 h-10 border-2 border-t-transparent border-[#bb9a5e] rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-[#151d19]">
+        <div className="w-10 h-10 border-2 border-t-transparent border-[#BA7B39] rounded-full animate-spin" />
       </div>
     );
   }

@@ -82,16 +82,16 @@ const AdminShell: React.FC<Props> = ({ user, section, onSectionChange, children 
 
   return (
     <div
-      className="min-h-screen flex dark:bg-[#16100a]"
-      style={{ background: 'radial-gradient(120% 80% at 78% 0%, rgba(255,248,235,0.9), transparent 60%), #efe7db' }}
+      className="min-h-screen flex dark:bg-[#151d19]"
+      style={{ background: 'radial-gradient(120% 80% at 78% 0%, rgba(250,247,240,0.9), transparent 60%), #EEE7DB' }}
     >
       {/* Sidebar : panneau de verre flottant sur le parchemin */}
       <aside className={`fixed inset-y-0 left-0 z-40 w-72 flex flex-col transform transition-transform duration-300 lg:translate-x-0 lg:static lg:z-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="m-3 flex min-h-0 flex-1 flex-col rounded-[24px] border border-white/60 bg-white/45 shadow-[0_18px_50px_-20px_rgba(58,49,38,0.35)] backdrop-blur-2xl dark:border-white/10 dark:bg-[#2a2015]/50">
-          <div className="border-b border-[#3a3126]/10 px-6 pt-7 pb-5 dark:border-white/10">
+        <div className="m-3 flex min-h-0 flex-1 flex-col rounded-[24px] border border-white/60 bg-white/45 shadow-[0_18px_50px_-20px_rgba(41,48,39,0.35)] backdrop-blur-2xl dark:border-white/10 dark:bg-[#293027]/50">
+          <div className="border-b border-[#38403a]/10 px-6 pt-7 pb-5 dark:border-white/10">
             <img src="https://storage.googleapis.com/inspirata/Vata/1%20(1).png" alt="Krystine St-Laurent" className="mb-4 h-10 w-auto dark:brightness-150 dark:invert" />
-            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#7d6330]">Espace Auteure</p>
-            <p className="mt-1 font-serif text-sm text-[#3a3126]/80 dark:text-white/70">Krystine St-Laurent</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#8B4A2F]">Espace Auteure</p>
+            <p className="mt-1 font-serif text-sm text-[#38403a]/80 dark:text-white/70">Krystine St-Laurent</p>
           </div>
           <nav className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
             {NAV.map(item => {
@@ -102,16 +102,16 @@ const AdminShell: React.FC<Props> = ({ user, section, onSectionChange, children 
                   onClick={() => { onSectionChange(item.id); setMobileOpen(false); }}
                   className={`mb-0.5 flex w-full items-center gap-3 rounded-full px-4 py-2.5 text-left text-sm transition-colors ${
                     active
-                      ? 'bg-[#bb9a5e] text-[#2a2015] shadow-[0_6px_18px_-8px_rgba(163,130,63,0.7)]'
-                      : 'text-[#3a3126]/70 hover:bg-white/60 hover:text-[#3a3126] dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white'
+                      ? 'bg-[#BA7B39] text-[#293027] shadow-[0_6px_18px_-8px_rgba(186,123,57,0.7)]'
+                      : 'text-[#38403a]/70 hover:bg-white/60 hover:text-[#38403a] dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white'
                   }`}
                 >
-                  <i className={`fa-solid ${item.icon} w-4 text-center ${active ? '' : 'text-[#7d6330]/70'}`} />
+                  <i className={`fa-solid ${item.icon} w-4 text-center ${active ? '' : 'text-[#8B4A2F]/70'}`} />
                   <span className="text-xs font-semibold uppercase tracking-wider">{item.label}</span>
                   {item.id === 'messages' && nonLus > 0 && (
                     <span
                       aria-label={`${nonLus} message${nonLus > 1 ? 's' : ''} non lu${nonLus > 1 ? 's' : ''}`}
-                      className={`ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold tabular-nums ${active ? 'bg-[#2a2015] text-[#dcb874]' : 'bg-[#bb9a5e] text-[#2a2015] shadow-[0_0_0_3px_rgba(187,154,94,0.25)]'}`}
+                      className={`ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold tabular-nums ${active ? 'bg-[#293027] text-[#d9a05b]' : 'bg-[#BA7B39] text-[#293027] shadow-[0_0_0_3px_rgba(186,123,57,0.25)]'}`}
                     >
                       {nonLus > 99 ? '99+' : nonLus}
                     </span>
@@ -120,15 +120,15 @@ const AdminShell: React.FC<Props> = ({ user, section, onSectionChange, children 
               );
             })}
           </nav>
-          <div className="border-t border-[#3a3126]/10 px-6 py-4 text-xs text-[#3a3126]/70 dark:border-white/10 dark:text-white/60">
+          <div className="border-t border-[#38403a]/10 px-6 py-4 text-xs text-[#38403a]/70 dark:border-white/10 dark:text-white/60">
             <div className="mb-3 flex items-center gap-3">
-              {user.photoURL && <img src={user.photoURL} alt="" className="h-8 w-8 rounded-full border border-[#bb9a5e]/40" />}
+              {user.photoURL && <img src={user.photoURL} alt="" className="h-8 w-8 rounded-full border border-[#BA7B39]/40" />}
               <div className="min-w-0">
-                <p className="truncate text-[#3a3126] dark:text-white">{user.displayName || user.email?.split('@')[0]}</p>
-                <p className="truncate text-[11px] text-[#3a3126]/50 dark:text-white/50">{user.email}</p>
+                <p className="truncate text-[#38403a] dark:text-white">{user.displayName || user.email?.split('@')[0]}</p>
+                <p className="truncate text-[11px] text-[#38403a]/50 dark:text-white/50">{user.email}</p>
               </div>
             </div>
-            <button onClick={handleLogout} className="w-full text-left text-[11px] uppercase tracking-widest text-[#3a3126]/50 transition-colors hover:text-red-500 dark:text-white/50">
+            <button onClick={handleLogout} className="w-full text-left text-[11px] uppercase tracking-widest text-[#38403a]/50 transition-colors hover:text-red-500 dark:text-white/50">
               <i className="fa-solid fa-right-from-bracket mr-2" /> Déconnexion
             </button>
           </div>
@@ -136,19 +136,19 @@ const AdminShell: React.FC<Props> = ({ user, section, onSectionChange, children 
       </aside>
 
       {/* Mobile backdrop */}
-      {mobileOpen && <div className="fixed inset-0 z-30 bg-[#3a3126]/40 backdrop-blur-sm lg:hidden" onClick={() => setMobileOpen(false)} />}
+      {mobileOpen && <div className="fixed inset-0 z-30 bg-[#38403a]/40 backdrop-blur-sm lg:hidden" onClick={() => setMobileOpen(false)} />}
 
       {/* Main */}
       <main className="min-w-0 flex-1">
-        <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-white/50 bg-[#f6f3ee]/60 px-6 py-4 backdrop-blur-xl dark:border-white/10 dark:bg-[#16100a]/60">
-          <button onClick={() => setMobileOpen(true)} className="h-8 w-8 text-[#3a3126] lg:hidden dark:text-white">
+        <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-white/50 bg-[#EEE7DB]/60 px-6 py-4 backdrop-blur-xl dark:border-white/10 dark:bg-[#151d19]/60">
+          <button onClick={() => setMobileOpen(true)} className="h-8 w-8 text-[#38403a] lg:hidden dark:text-white">
             <i className="fa-solid fa-bars text-lg" />
-            {nonLus > 0 && <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-[#bb9a5e] ring-2 ring-[#f6f3ee]" />}
+            {nonLus > 0 && <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-[#BA7B39] ring-2 ring-[#EEE7DB]" />}
           </button>
           <div className="flex-1">
-            <h1 className="font-serif text-xl text-[#2a2015] md:text-2xl dark:text-white" style={{ letterSpacing: '-0.01em' }}>{current?.label}</h1>
+            <h1 className="font-serif text-xl text-[#293027] md:text-2xl dark:text-white" style={{ letterSpacing: '-0.01em' }}>{current?.label}</h1>
           </div>
-          <a href="/" target="_blank" rel="noopener noreferrer" className="text-xs uppercase tracking-widest text-[#3a3126]/50 transition-colors hover:text-[#7d6330] dark:text-white/50">
+          <a href="/" target="_blank" rel="noopener noreferrer" className="text-xs uppercase tracking-widest text-[#38403a]/50 transition-colors hover:text-[#8B4A2F] dark:text-white/50">
             <i className="fa-solid fa-up-right-from-square mr-2" /> Voir le site
           </a>
         </header>

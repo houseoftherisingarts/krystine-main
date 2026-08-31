@@ -45,32 +45,32 @@ const ReponsePanel: React.FC<{ abonne: NewsletterSubscriber; onClose: () => void
   const prenom = abonne.firstName || abonne.email;
 
   return (
-    <div className="px-5 py-5 bg-[#f6f3ee]/70 dark:bg-white/[0.03] border-t border-[#bb9a5e]/30">
+    <div className="px-5 py-5 bg-[#EEE7DB]/70 dark:bg-white/[0.03] border-t border-[#BA7B39]/30">
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] gap-6">
         <div className="space-y-4 min-w-0">
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-[#7d6330] font-bold">Fil avec {prenom}</p>
-            <p className="text-xs text-[#2a2015]/60 dark:text-white/60 mt-1">Les courriels partent de {TEAM_EMAIL}. Si {prenom} répond, la réponse arrive dans cette boîte.</p>
+            <p className="text-[10px] uppercase tracking-widest text-[#8B4A2F] font-bold">Fil avec {prenom}</p>
+            <p className="text-xs text-[#293027]/60 dark:text-white/60 mt-1">Les courriels partent de {TEAM_EMAIL}. Si {prenom} répond, la réponse arrive dans cette boîte.</p>
           </div>
           {abonne.question && (
-            <div className="rounded-xl border border-[#bb9a5e]/40 bg-white/70 dark:bg-white/5 px-4 py-3">
-              <p className="text-[10px] uppercase tracking-widest text-[#7d6330] font-bold mb-1">Sa question</p>
-              <p className="text-sm text-[#2a2015] dark:text-white whitespace-pre-wrap leading-relaxed">{abonne.question}</p>
+            <div className="rounded-xl border border-[#BA7B39]/40 bg-white/70 dark:bg-white/5 px-4 py-3">
+              <p className="text-[10px] uppercase tracking-widest text-[#8B4A2F] font-bold mb-1">Sa question</p>
+              <p className="text-sm text-[#293027] dark:text-white whitespace-pre-wrap leading-relaxed">{abonne.question}</p>
             </div>
           )}
           {chargement ? (
-            <p className="text-xs text-[#2a2015]/50 dark:text-white/50"><i className="fa-solid fa-circle-notch fa-spin mr-2" />Chargement du fil…</p>
+            <p className="text-xs text-[#293027]/50 dark:text-white/50"><i className="fa-solid fa-circle-notch fa-spin mr-2" />Chargement du fil…</p>
           ) : fil.length === 0 ? (
-            <p className="text-xs text-[#2a2015]/50 dark:text-white/50">Aucune réponse envoyée pour l'instant.</p>
+            <p className="text-xs text-[#293027]/50 dark:text-white/50">Aucune réponse envoyée pour l'instant.</p>
           ) : (
             <ul className="space-y-3 max-h-[320px] overflow-y-auto pr-1">
               {fil.map(r => (
-                <li key={r.id} className="rounded-xl bg-white/70 dark:bg-white/5 border border-[#2a2015]/8 dark:border-white/10 px-4 py-3">
+                <li key={r.id} className="rounded-xl bg-white/70 dark:bg-white/5 border border-[#293027]/8 dark:border-white/10 px-4 py-3">
                   <div className="flex items-baseline justify-between gap-3">
-                    <p className="text-sm font-semibold text-[#2a2015] dark:text-white truncate">{r.sujet}</p>
-                    <p className="text-[11px] text-[#2a2015]/50 dark:text-white/50 shrink-0">{r.envoyeLe?.toDate().toLocaleString('fr-CA', { dateStyle: 'medium', timeStyle: 'short' }) || '…'}</p>
+                    <p className="text-sm font-semibold text-[#293027] dark:text-white truncate">{r.sujet}</p>
+                    <p className="text-[11px] text-[#293027]/50 dark:text-white/50 shrink-0">{r.envoyeLe?.toDate().toLocaleString('fr-CA', { dateStyle: 'medium', timeStyle: 'short' }) || '…'}</p>
                   </div>
-                  <p className="mt-1 text-sm text-[#2a2015]/75 dark:text-white/75 whitespace-pre-wrap leading-relaxed">{r.message}</p>
+                  <p className="mt-1 text-sm text-[#293027]/75 dark:text-white/75 whitespace-pre-wrap leading-relaxed">{r.message}</p>
                 </li>
               ))}
             </ul>

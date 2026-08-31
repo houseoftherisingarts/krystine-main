@@ -11,7 +11,7 @@ const LiveBadge: React.FC = () => {
   useEffect(() => suivreLiveEnCours(setLive), []);
   if (!live) return null;
 
-  const classes = 'fixed right-4 top-20 z-[95] flex items-center gap-2.5 rounded-full border border-red-500/30 bg-[#2a2015]/90 px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white shadow-[0_14px_40px_-12px_rgba(180,40,30,0.6)] backdrop-blur-md transition-transform hover:scale-[1.04]';
+  const classes = 'fixed right-4 top-20 z-[95] flex items-center gap-2.5 rounded-full border border-red-500/30 bg-[#293027]/90 px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white shadow-[0_14px_40px_-12px_rgba(180,40,30,0.6)] backdrop-blur-md transition-transform hover:scale-[1.04]';
   const contenu = (
     <>
       <span className="relative flex h-2.5 w-2.5">

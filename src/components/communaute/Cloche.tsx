@@ -24,7 +24,7 @@ interface Item {
 const Pastille: React.FC<{ n: number }> = ({ n }) => (n > 0 ? (
   <span
     className="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 rounded-full flex items-center justify-center text-[10px] font-bold"
-    style={{ background: '#bb9a5e', color: '#2a2015' }}
+    style={{ background: '#BA7B39', color: '#293027' }}
   >
     {n > 9 ? '9+' : n}
   </span>
@@ -85,7 +85,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
 
   const total = items.length;
   const bouton = 'relative inline-flex items-center justify-center w-10 h-10 rounded-full border transition-colors';
-  const style = { background: 'rgba(246,243,238,0.9)', borderColor: 'rgba(187,154,94,0.35)', color: '#7d6330' };
+  const style = { background: 'rgba(246,243,238,0.9)', borderColor: 'rgba(186,123,57,0.35)', color: '#8B4A2F' };
 
   return (
     <div ref={boite} className="relative flex items-center gap-2">
@@ -115,14 +115,14 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.98 }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute right-0 top-[calc(100%+10px)] z-30 w-[min(22rem,calc(100vw-2rem))] rounded-[20px] overflow-hidden bg-white/90 dark:bg-[#2a2015]/95 backdrop-blur-md border border-[#bb9a5e]/25 shadow-[0_20px_50px_-20px_rgba(58,49,38,0.4)]"
+            className="absolute right-0 top-[calc(100%+10px)] z-30 w-[min(22rem,calc(100vw-2rem))] rounded-[20px] overflow-hidden bg-white/90 dark:bg-[#293027]/95 backdrop-blur-md border border-[#BA7B39]/25 shadow-[0_20px_50px_-20px_rgba(41,48,39,0.4)]"
             role="menu"
           >
-            <p className="px-4 pt-3.5 pb-2 text-[10px] uppercase tracking-[0.18em] text-[#3a3126]/50 dark:text-white/45 border-b border-[#3a3126]/10 dark:border-white/10">
+            <p className="px-4 pt-3.5 pb-2 text-[10px] uppercase tracking-[0.18em] text-[#38403a]/50 dark:text-white/45 border-b border-[#38403a]/10 dark:border-white/10">
               Ce qui vous attend
             </p>
             {total === 0 ? (
-              <p className="px-4 py-5 text-sm text-[#3a3126]/60 dark:text-white/60">
+              <p className="px-4 py-5 text-sm text-[#38403a]/60 dark:text-white/60">
                 Rien de neuf pour le moment. Tout est à jour.
               </p>
             ) : (
@@ -131,9 +131,9 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
                   <li key={n.id}>
                     <Link
                       to={n.lien} role="menuitem" onClick={() => setOuverte(false)}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-[#bb9a5e]/10 transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-[#BA7B39]/10 transition-colors"
                     >
-                      <span className="font-sans text-sm text-[#2a2015] dark:text-white">{n.titre}</span>
+                      <span className="font-sans text-sm text-[#293027] dark:text-white">{n.titre}</span>
                     </Link>
                   </li>
                 ))}
@@ -141,7 +141,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
             )}
             <Link
               to="/messages" onClick={() => setOuverte(false)}
-              className="block px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-[#7d6330] dark:text-[#bb9a5e] hover:bg-[#bb9a5e]/10 transition-colors border-t border-[#3a3126]/10 dark:border-white/10"
+              className="block px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-[#8B4A2F] dark:text-[#BA7B39] hover:bg-[#BA7B39]/10 transition-colors border-t border-[#38403a]/10 dark:border-white/10"
             >
               Ouvrir ma boîte de réception
             </Link>

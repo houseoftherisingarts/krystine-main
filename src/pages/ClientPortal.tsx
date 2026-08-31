@@ -35,16 +35,16 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
   return (
     <div className="space-y-8">
       <div className="grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2">
-        <p className="text-[#3a3126]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#7d6330]">Courriel</span>{email}</p>
-        {member?.phone && <p className="text-[#3a3126]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#7d6330]">Téléphone</span>{member.phone}</p>}
-        {member?.dosha && <p className="text-[#3a3126]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#7d6330]">Dosha</span><span className="capitalize">{member.dosha}</span></p>}
+        <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Courriel</span>{email}</p>
+        {member?.phone && <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Téléphone</span>{member.phone}</p>}
+        {member?.dosha && <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Dosha</span><span className="capitalize">{member.dosha}</span></p>}
       </div>
       {badges.length > 0 && (
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">Badges</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">Badges</p>
           <div className="mt-2 flex flex-wrap gap-2">
             {badges.map(id => (
-              <span key={id} className="inline-flex items-center gap-2 rounded-full border border-[#bb9a5e]/40 bg-[#bb9a5e]/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#7d6330]">
+              <span key={id} className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/40 bg-[#BA7B39]/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">
                 <i className={`fa-solid ${CATALOGUE_BADGES[id].icone}`} /> {CATALOGUE_BADGES[id].nom}
               </span>
             ))}
@@ -53,24 +53,24 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
       )}
       <div>
         <div className="flex items-baseline justify-between gap-3">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">{lang === 'FR' ? 'Mon mur' : 'My wall'}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Mon mur' : 'My wall'}</p>
         </div>
         <div className="mt-3">
           <Composeur fil="communaute" compact contexte="monmur" />
         </div>
         {posts.length === 0 ? (
-          <p className="mt-3 text-sm text-[#3a3126]/50 dark:text-white/50">
+          <p className="mt-3 text-sm text-[#38403a]/50 dark:text-white/50">
             {lang === 'FR' ? 'Vous n\'avez encore rien publié. Ce que vous publiez ici paraît sur votre mur, et sur le feed quand Krystine l\'ouvre aux membres.' : 'Nothing posted yet. What you post here also appears on the feed.'}
           </p>
         ) : (
           <div className="mt-3 space-y-3">
             {posts.map(p => (
-              <div key={p.id} className="rounded-[15px] border border-[#3a3126]/10 p-4 dark:border-white/10">
-                <p className="whitespace-pre-line text-sm text-[#2a2015] dark:text-white">{p.texte}</p>
+              <div key={p.id} className="rounded-[15px] border border-[#38403a]/10 p-4 dark:border-white/10">
+                <p className="whitespace-pre-line text-sm text-[#293027] dark:text-white">{p.texte}</p>
                 {p.photoUrl && <img src={p.photoUrl} alt="" className="mt-3 max-h-72 rounded-[12px] object-cover" />}
                 {p.videoUrl && <video src={p.videoUrl} controls playsInline preload="metadata" className="mt-3 max-h-72 w-full rounded-[12px] bg-black" />}
-                <p className="mt-2 text-[11px] text-[#3a3126]/40 dark:text-white/40">
-                  {p.creeLe?.toDate?.().toLocaleDateString('fr-CA')} · {(p.pour || 0)} <i className="fa-solid fa-heart text-[#bb9a5e]" /> · {p.nbCommentaires || 0} <i className="fa-solid fa-comment" />
+                <p className="mt-2 text-[11px] text-[#38403a]/40 dark:text-white/40">
+                  {p.creeLe?.toDate?.().toLocaleDateString('fr-CA')} · {(p.pour || 0)} <i className="fa-solid fa-heart text-[#BA7B39]" /> · {p.nbCommentaires || 0} <i className="fa-solid fa-comment" />
                 </p>
               </div>
             ))}
@@ -105,12 +105,12 @@ const ClientAmis: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
   const amis = liens.filter(l => l.statut === 'amis');
 
   const Rangee: React.FC<{ autre: string; nom: string; m: MemberDoc | null; enfant?: React.ReactNode }> = ({ autre, nom, m, enfant }) => (
-    <div className="flex items-center gap-3 rounded-[15px] border border-[#3a3126]/10 p-3 dark:border-white/10">
+    <div className="flex items-center gap-3 rounded-[15px] border border-[#38403a]/10 p-3 dark:border-white/10">
       <Link to={`/membre/${autre}`} className="flex min-w-0 flex-1 items-center gap-3">
-        <div className="h-10 w-10 shrink-0 rounded-full bg-cover bg-center bg-[#bb9a5e]/15" style={{ backgroundImage: m?.photoURL ? `url(${m.photoURL})` : undefined }}>
-          {!m?.photoURL && <div className="flex h-full w-full items-center justify-center text-[#7d6330]"><i className="fa-solid fa-user text-sm" /></div>}
+        <div className="h-10 w-10 shrink-0 rounded-full bg-cover bg-center bg-[#BA7B39]/15" style={{ backgroundImage: m?.photoURL ? `url(${m.photoURL})` : undefined }}>
+          {!m?.photoURL && <div className="flex h-full w-full items-center justify-center text-[#8B4A2F]"><i className="fa-solid fa-user text-sm" /></div>}
         </div>
-        <span className="flex min-w-0 items-center gap-1.5 truncate text-sm font-medium text-[#2a2015] dark:text-white">
+        <span className="flex min-w-0 items-center gap-1.5 truncate text-sm font-medium text-[#293027] dark:text-white">
           <span className="truncate">{nom}</span>
           {m?.verifie && <i className="fa-solid fa-circle-check shrink-0 text-[12px] text-[#3b82f6]" />}
         </span>
@@ -123,13 +123,13 @@ const ClientAmis: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
     <div className="space-y-8">
       {recues.length > 0 && (
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">{lang === 'FR' ? 'Demandes reçues' : 'Requests received'}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Demandes reçues' : 'Requests received'}</p>
           <div className="mt-3 space-y-2">
             {recues.map(l => { const { autre, nom, m } = ligne(l); return (
               <Rangee key={autre} autre={autre} nom={nom} m={m ?? null} enfant={
                 <div className="flex shrink-0 gap-2">
-                  <button onClick={() => accepterAmitie(uid, autre)} className="rounded-full bg-[#bb9a5e] px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#2a2015] hover:bg-[#a3823f]">{lang === 'FR' ? 'Accepter' : 'Accept'}</button>
-                  <button onClick={() => refuserAmitie(uid, autre)} className="rounded-full border border-[#3a3126]/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#3a3126]/50 hover:text-red-500 dark:border-white/15 dark:text-white/50">{lang === 'FR' ? 'Refuser' : 'Decline'}</button>
+                  <button onClick={() => accepterAmitie(uid, autre)} className="rounded-full bg-[#BA7B39] px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#293027] hover:bg-[#9c6630]">{lang === 'FR' ? 'Accepter' : 'Accept'}</button>
+                  <button onClick={() => refuserAmitie(uid, autre)} className="rounded-full border border-[#38403a]/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/50 hover:text-red-500 dark:border-white/15 dark:text-white/50">{lang === 'FR' ? 'Refuser' : 'Decline'}</button>
                 </div>
               } />
             ); })}
@@ -137,11 +137,11 @@ const ClientAmis: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
         </div>
       )}
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">{lang === 'FR' ? 'Mes amis' : 'My friends'} ({amis.length})</p>
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Mes amis' : 'My friends'} ({amis.length})</p>
         {amis.length === 0 ? (
-          <p className="mt-3 text-sm text-[#3a3126]/50 dark:text-white/50">
+          <p className="mt-3 text-sm text-[#38403a]/50 dark:text-white/50">
             {lang === 'FR' ? 'Votre cercle commence dans l\'annuaire de la communauté.' : 'Your circle begins in the community directory.'}
-            {' '}<Link to="/membres" className="text-[#7d6330] underline-offset-2 hover:underline">{lang === 'FR' ? 'Voir les membres' : 'See members'}</Link>
+            {' '}<Link to="/membres" className="text-[#8B4A2F] underline-offset-2 hover:underline">{lang === 'FR' ? 'Voir les membres' : 'See members'}</Link>
           </p>
         ) : (
           <div className="mt-3 space-y-2">
@@ -151,9 +151,9 @@ const ClientAmis: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
       </div>
       {envoyees.length > 0 && (
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">{lang === 'FR' ? 'Demandes envoyées' : 'Requests sent'}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Demandes envoyées' : 'Requests sent'}</p>
           <div className="mt-3 space-y-2">
-            {envoyees.map(l => { const { autre, nom, m } = ligne(l); return <Rangee key={autre} autre={autre} nom={nom} m={m ?? null} enfant={<span className="text-[10px] uppercase tracking-widest text-[#3a3126]/40 dark:text-white/40">{lang === 'FR' ? 'En attente' : 'Pending'}</span>} />; })}
+            {envoyees.map(l => { const { autre, nom, m } = ligne(l); return <Rangee key={autre} autre={autre} nom={nom} m={m ?? null} enfant={<span className="text-[10px] uppercase tracking-widest text-[#38403a]/40 dark:text-white/40">{lang === 'FR' ? 'En attente' : 'Pending'}</span>} />; })}
           </div>
         </div>
       )}
@@ -175,7 +175,7 @@ const BanniereUpload: React.FC<{ uid: string }> = ({ uid }) => {
     } finally { setBusy(false); }
   };
   return (
-    <label className="absolute right-4 top-4 inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-[#16100a]/40 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md transition-colors hover:bg-[#16100a]/60">
+    <label className="absolute right-4 top-4 inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-[#151d19]/40 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md transition-colors hover:bg-[#151d19]/60">
       <i className="fa-solid fa-image" />
       {busy ? 'Téléversement…' : 'Changer la bannière'}
       <input type="file" accept="image/*" className="hidden" onChange={onFile} disabled={busy} />
@@ -189,36 +189,36 @@ const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) 
   useEffect(() => suivreLeMur('communaute', p => setPosts(p.slice(0, 5)), 5), []);
   return (
     <aside className="space-y-4">
-      <div className="rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#2a2015]/55">
-        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">
+      <div className="rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55">
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
           {lang === 'FR' ? 'La communauté' : 'Community'}
         </p>
         {posts.length === 0 ? (
-          <p className="mt-3 text-sm text-[#3a3126]/50 dark:text-white/50">
+          <p className="mt-3 text-sm text-[#38403a]/50 dark:text-white/50">
             {lang === 'FR' ? 'Les premières publications arrivent bientôt.' : 'First posts coming soon.'}
           </p>
         ) : (
           <div className="mt-3 space-y-3">
             {posts.map(p => (
               <Link key={p.id} to="/espace" className="block rounded-[14px] bg-white/50 p-3 transition-colors hover:bg-white/80 dark:bg-white/5 dark:hover:bg-white/10">
-                <p className="text-xs font-semibold text-[#2a2015] dark:text-white">{p.nom}</p>
-                <p className="mt-0.5 line-clamp-2 text-xs text-[#3a3126]/60 dark:text-white/60">{p.texte}</p>
+                <p className="text-xs font-semibold text-[#293027] dark:text-white">{p.nom}</p>
+                <p className="mt-0.5 line-clamp-2 text-xs text-[#38403a]/60 dark:text-white/60">{p.texte}</p>
               </Link>
             ))}
           </div>
         )}
-        <Link to="/espace" className="mt-4 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#7d6330] hover:text-[#bb9a5e]">
+        <Link to="/espace" className="mt-4 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:text-[#BA7B39]">
           {lang === 'FR' ? 'Voir le feed' : 'See the feed'} <i className="fa-solid fa-arrow-right" />
         </Link>
       </div>
-      <div className="rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#2a2015]/55">
-        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">
+      <div className="rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55">
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
           {lang === 'FR' ? 'Raccourcis' : 'Shortcuts'}
         </p>
         <div className="mt-3 space-y-2 text-sm">
-          <Link to="/cours" className="flex items-center gap-3 text-[#3a3126]/80 hover:text-[#7d6330] dark:text-white/80"><i className="fa-solid fa-graduation-cap w-4 text-[#7d6330]" />{lang === 'FR' ? 'Les formations' : 'Courses'}</Link>
-          <Link to="/membres" className="flex items-center gap-3 text-[#3a3126]/80 hover:text-[#7d6330] dark:text-white/80"><i className="fa-solid fa-users w-4 text-[#7d6330]" />{lang === 'FR' ? 'Voir la communauté' : 'See the community'}</Link>
-          <Link to="/messages" className="flex items-center gap-3 text-[#3a3126]/80 hover:text-[#7d6330] dark:text-white/80"><i className="fa-solid fa-envelope w-4 text-[#7d6330]" />{lang === 'FR' ? 'Mes messages' : 'My messages'}</Link>
+          <Link to="/cours" className="flex items-center gap-3 text-[#38403a]/80 hover:text-[#8B4A2F] dark:text-white/80"><i className="fa-solid fa-graduation-cap w-4 text-[#8B4A2F]" />{lang === 'FR' ? 'Les formations' : 'Courses'}</Link>
+          <Link to="/membres" className="flex items-center gap-3 text-[#38403a]/80 hover:text-[#8B4A2F] dark:text-white/80"><i className="fa-solid fa-users w-4 text-[#8B4A2F]" />{lang === 'FR' ? 'Voir la communauté' : 'See the community'}</Link>
+          <Link to="/messages" className="flex items-center gap-3 text-[#38403a]/80 hover:text-[#8B4A2F] dark:text-white/80"><i className="fa-solid fa-envelope w-4 text-[#8B4A2F]" />{lang === 'FR' ? 'Mes messages' : 'My messages'}</Link>
         </div>
       </div>
       <ClientParrainage uid={uid} lang={lang} />
@@ -247,17 +247,30 @@ const ClientPortal: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen dark:bg-[#16100a] pt-32 pb-24 px-6">
-        <div className="max-w-md mx-auto text-center">
-          <h1 className="text-3xl font-serif text-[#2a2015] dark:text-white mb-4">
-            {lang === 'FR' ? 'Espace Client' : 'Client Space'}
+      <div
+        className="flex min-h-screen items-center justify-center px-6 pb-24 pt-32 dark:bg-[#151d19]"
+        style={{ background: 'radial-gradient(120% 80% at 50% 0%, rgba(250,247,240,0.95), transparent 60%), #EEE7DB' }}
+      >
+        <div className="w-full max-w-md rounded-[24px] border border-white/60 bg-white/55 px-8 py-12 text-center shadow-[0_30px_80px_-30px_rgba(41,48,39,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-[#293027]/55">
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#8B4A2F] dark:text-[#d9a05b]">Inspirata</p>
+          <h1 className="mt-3 font-serif text-3xl text-[#293027] dark:text-white" style={{ letterSpacing: '-0.01em' }}>
+            {lang === 'FR' ? 'Votre espace' : 'Your space'}
           </h1>
-          <p className="text-[#2a2015]/60 dark:text-white/60 mb-8">
-            {lang === 'FR' ? 'Connectez-vous pour accéder à votre espace.' : 'Sign in to access your space.'}
+          <div className="mx-auto mt-5 h-px w-16 bg-[#BA7B39]" aria-hidden="true" />
+          <p className="mt-5 text-sm leading-relaxed text-[#38403a]/70 dark:text-white/65">
+            {lang === 'FR'
+              ? 'Le feed de la communauté, vos formations, vos messages et vos cadeaux de parrainage vous attendent de l\'autre côté.'
+              : 'The community feed, your courses, your messages, and your referral gifts are waiting on the other side.'}
           </p>
-          <button onClick={() => setSignInOpen(true)} className="bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors">
-            {lang === 'FR' ? 'Se connecter' : 'Sign in'}
+          <button
+            onClick={() => setSignInOpen(true)}
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-10 py-4 text-xs font-bold uppercase tracking-widest text-[#293027] shadow-[0_10px_28px_-10px_rgba(186,123,57,0.8)] transition-[background-color,transform] hover:bg-[#9c6630] active:scale-[0.98]"
+          >
+            <i className="fa-solid fa-arrow-right-to-bracket" /> {lang === 'FR' ? 'Se connecter' : 'Sign in'}
           </button>
+          <p className="mt-4 text-xs text-[#38403a]/50 dark:text-white/45">
+            {lang === 'FR' ? 'Le compte se crée en une minute, au même endroit.' : 'Creating an account takes a minute, in the same place.'}
+          </p>
         </div>
       </div>
     );
@@ -282,13 +295,13 @@ const ClientPortal: React.FC = () => {
   const banniere = member?.bannerURL || '/krystine-bg.jpg';
 
   return (
-    <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-16 pb-24">
+    <div className="min-h-screen bg-[#EEE7DB] dark:bg-[#151d19] pt-16 pb-24">
       {/* La bannière pleine largeur, l'avatar qui la chevauche, le nom et les
           points par-dessus la photo : le patron du FMM et de la référence
           d'Alex, dans le canon L'Œuvre. */}
       <div className="relative h-64 w-full overflow-hidden md:h-80">
         <img src={banniere} alt="" className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#16100a]/75 via-[#16100a]/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#151d19]/75 via-[#151d19]/20 to-transparent" />
         <BanniereUpload uid={user.uid} />
         <div className="absolute inset-x-0 bottom-0">
           <div className="mx-auto flex max-w-7xl items-end gap-5 px-6 pb-5">
@@ -296,15 +309,15 @@ const ClientPortal: React.FC = () => {
               type="button"
               onClick={() => setEditOuvert(true)}
               title={lang === 'FR' ? 'Modifier mon profil' : 'Edit my profile'}
-              className="group relative h-28 w-28 shrink-0 overflow-hidden rounded-full border-4 border-[#f6f3ee] bg-cover bg-center bg-[#efe7db] shadow-xl md:h-32 md:w-32 dark:border-[#16100a]"
+              className="group relative h-28 w-28 shrink-0 overflow-hidden rounded-full border-4 border-[#EEE7DB] bg-cover bg-center bg-[#EEE7DB] shadow-xl md:h-32 md:w-32 dark:border-[#151d19]"
               style={{ backgroundImage: (member?.photoURL || user.photoURL) ? `url(${member?.photoURL || user.photoURL})` : undefined }}
             >
               {!member?.photoURL && !user.photoURL && (
-                <div className="flex h-full w-full items-center justify-center text-[#2a2015]/30">
+                <div className="flex h-full w-full items-center justify-center text-[#293027]/30">
                   <i className="fa-solid fa-user text-3xl" />
                 </div>
               )}
-              <span className="absolute inset-0 flex items-center justify-center bg-[#16100a]/50 opacity-0 transition-opacity group-hover:opacity-100">
+              <span className="absolute inset-0 flex items-center justify-center bg-[#151d19]/50 opacity-0 transition-opacity group-hover:opacity-100">
                 <i className="fa-solid fa-pen text-white" />
               </span>
             </button>
@@ -324,7 +337,7 @@ const ClientPortal: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setTab('loyalty')}
-                  className="rounded-full bg-[#bb9a5e] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#2a2015] transition-colors hover:bg-[#dcb874]"
+                  className="rounded-full bg-[#BA7B39] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#293027] transition-colors hover:bg-[#d9a05b]"
                 >
                   <i className="fa-solid fa-seedling mr-1" />
                   {pointsBalance.balance} {lang === 'FR' ? 'points' : 'points'}
@@ -334,7 +347,7 @@ const ClientPortal: React.FC = () => {
             </div>
             <div className="hidden shrink-0 items-center gap-4 pb-2 md:flex">
               {isAdmin && (
-                <a href="/admin" className="text-xs uppercase tracking-widest text-[#dcb874] hover:text-white">
+                <a href="/admin" className="text-xs uppercase tracking-widest text-[#d9a05b] hover:text-white">
                   <i className="fa-solid fa-gauge-high mr-2" />{lang === 'FR' ? 'Espace admin' : 'Admin space'}
                 </a>
               )}
@@ -347,7 +360,7 @@ const ClientPortal: React.FC = () => {
       </div>
 
       {/* Les onglets, pleine largeur sous la bannière */}
-      <div className="border-b border-[#3a3126]/10 bg-white/45 backdrop-blur-xl dark:border-white/10 dark:bg-[#2a2015]/45">
+      <div className="border-b border-[#38403a]/10 bg-white/45 backdrop-blur-xl dark:border-white/10 dark:bg-[#293027]/45">
         <div className="mx-auto flex max-w-7xl flex-wrap gap-1 px-6">
           {tabs.map(t => (
             <button
@@ -355,8 +368,8 @@ const ClientPortal: React.FC = () => {
               onClick={() => setTab(t.id)}
               className={`flex items-center gap-2 border-b-2 px-4 py-3.5 text-xs font-bold uppercase tracking-wider transition-colors ${
                 tab === t.id
-                  ? 'border-[#bb9a5e] text-[#7d6330] dark:text-[#dcb874]'
-                  : 'border-transparent text-[#3a3126]/55 hover:text-[#7d6330] dark:text-white/55 dark:hover:text-[#dcb874]'
+                  ? 'border-[#BA7B39] text-[#8B4A2F] dark:text-[#d9a05b]'
+                  : 'border-transparent text-[#38403a]/55 hover:text-[#8B4A2F] dark:text-white/55 dark:hover:text-[#d9a05b]'
               }`}
             >
               <i className={`fa-solid ${t.icon}`} /> {t.label}
@@ -367,7 +380,7 @@ const ClientPortal: React.FC = () => {
 
       {/* Le contenu en deux colonnes : l'onglet à gauche, le rail vivant à droite */}
       <div className="mx-auto mt-8 grid max-w-7xl gap-6 px-6 lg:grid-cols-[1fr_320px]">
-        <div className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-[#2a2015]/55">
+        <div className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-[#293027]/55">
           {tab === 'feed'     && <MurSocial fil="communaute" titre="Feed" />}
           {tab === 'profile'  && <ProfilVue uid={user.uid} member={member} email={user.email || ''} lang={lang} />}
           {tab === 'amis'     && <ClientAmis uid={user.uid} lang={lang} />}
@@ -383,11 +396,11 @@ const ClientPortal: React.FC = () => {
 
       {/* Le module d'édition du profil, ouvert par la photo de la bannière */}
       {editOuvert && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-[#16100a]/60 p-4 backdrop-blur-sm" onClick={() => setEditOuvert(false)}>
-          <div className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-[24px] border border-white/60 bg-[#f6f3ee] p-6 md:p-8 dark:border-white/10 dark:bg-[#2a2015]" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-[#151d19]/60 p-4 backdrop-blur-sm" onClick={() => setEditOuvert(false)}>
+          <div className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-[24px] border border-white/60 bg-[#EEE7DB] p-6 md:p-8 dark:border-white/10 dark:bg-[#293027]" onClick={e => e.stopPropagation()}>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-serif text-2xl text-[#2a2015] dark:text-white">{lang === 'FR' ? 'Modifier mon profil' : 'Edit my profile'}</h2>
-              <button onClick={() => setEditOuvert(false)} className="flex h-9 w-9 items-center justify-center rounded-full text-[#2a2015]/40 hover:text-[#2a2015] dark:text-white/40 dark:hover:text-white">
+              <h2 className="font-serif text-2xl text-[#293027] dark:text-white">{lang === 'FR' ? 'Modifier mon profil' : 'Edit my profile'}</h2>
+              <button onClick={() => setEditOuvert(false)} className="flex h-9 w-9 items-center justify-center rounded-full text-[#293027]/40 hover:text-[#293027] dark:text-white/40 dark:hover:text-white">
                 <i className="fa-solid fa-times text-lg" />
               </button>
             </div>
@@ -439,30 +452,30 @@ const ProfileTab: React.FC = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
       <div className="md:col-span-1">
-        <label className="block text-[10px] uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-3">Photo</label>
-        <div className="relative w-40 h-40 rounded-full overflow-hidden bg-[#f6f3ee] dark:bg-white/5 border-2 border-[#bb9a5e]/30 bg-cover bg-center" style={{ backgroundImage: member?.photoURL ? `url(${member.photoURL})` : (user?.photoURL ? `url(${user.photoURL})` : undefined) }}>
+        <label className="block text-[10px] uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-3">Photo</label>
+        <div className="relative w-40 h-40 rounded-full overflow-hidden bg-[#EEE7DB] dark:bg-white/5 border-2 border-[#BA7B39]/30 bg-cover bg-center" style={{ backgroundImage: member?.photoURL ? `url(${member.photoURL})` : (user?.photoURL ? `url(${user.photoURL})` : undefined) }}>
           {uploading && <div className="absolute inset-0 bg-black/50 flex items-center justify-center"><i className="fa-solid fa-circle-notch fa-spin text-white text-xl" /></div>}
         </div>
-        <label className="inline-block mt-3 text-xs uppercase tracking-widest text-[#7d6330] hover:underline cursor-pointer">
+        <label className="inline-block mt-3 text-xs uppercase tracking-widest text-[#8B4A2F] hover:underline cursor-pointer">
           <i className="fa-solid fa-camera mr-2" />{lang === 'FR' ? 'Changer la photo' : 'Change photo'}
           <input type="file" accept="image/*" className="hidden" onChange={onPickPhoto} />
         </label>
       </div>
       <div className="md:col-span-2 space-y-5">
         <div>
-          <label className="block text-[10px] uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-2">{lang === 'FR' ? 'Nom' : 'Name'}</label>
-          <input value={displayName} onChange={e => setDisplayName(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-[#2a2015]/10 dark:border-white/10 bg-[#f6f3ee] dark:bg-white/5 text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]" />
+          <label className="block text-[10px] uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-2">{lang === 'FR' ? 'Nom' : 'Name'}</label>
+          <input value={displayName} onChange={e => setDisplayName(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-[#293027]/10 dark:border-white/10 bg-[#EEE7DB] dark:bg-white/5 text-[#293027] dark:text-white outline-none focus:border-[#BA7B39]" />
         </div>
         <div>
-          <label className="block text-[10px] uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-2">{lang === 'FR' ? 'Courriel' : 'Email'}</label>
-          <input value={user?.email || ''} disabled className="w-full px-4 py-3 rounded-xl border border-[#2a2015]/10 dark:border-white/10 bg-[#f6f3ee] dark:bg-white/5 text-[#2a2015]/60 dark:text-white/60 outline-none" />
+          <label className="block text-[10px] uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-2">{lang === 'FR' ? 'Courriel' : 'Email'}</label>
+          <input value={user?.email || ''} disabled className="w-full px-4 py-3 rounded-xl border border-[#293027]/10 dark:border-white/10 bg-[#EEE7DB] dark:bg-white/5 text-[#293027]/60 dark:text-white/60 outline-none" />
         </div>
         <div>
-          <label className="block text-[10px] uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-2">{lang === 'FR' ? 'Téléphone' : 'Phone'}</label>
-          <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+1 …" className="w-full px-4 py-3 rounded-xl border border-[#2a2015]/10 dark:border-white/10 bg-[#f6f3ee] dark:bg-white/5 text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e]" />
+          <label className="block text-[10px] uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-2">{lang === 'FR' ? 'Téléphone' : 'Phone'}</label>
+          <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+1 …" className="w-full px-4 py-3 rounded-xl border border-[#293027]/10 dark:border-white/10 bg-[#EEE7DB] dark:bg-white/5 text-[#293027] dark:text-white outline-none focus:border-[#BA7B39]" />
         </div>
         <div className="flex items-center gap-4 pt-2">
-          <button onClick={save} disabled={saving} className="bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors disabled:opacity-50">
+          <button onClick={save} disabled={saving} className="bg-[#293027] dark:bg-[#BA7B39] text-white dark:text-[#293027] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#BA7B39] hover:text-[#293027] transition-colors disabled:opacity-50">
             {saving ? (lang === 'FR' ? 'Enregistrement…' : 'Saving…') : (lang === 'FR' ? 'Enregistrer' : 'Save')}
           </button>
           {saved && <span className="text-xs text-green-600 uppercase tracking-widest"><i className="fa-solid fa-check mr-1" />{lang === 'FR' ? 'Enregistré' : 'Saved'}</span>}
@@ -508,12 +521,12 @@ const OrdersTab: React.FC = () => {
       .finally(() => setLoading(false));
   }, [user]);
 
-  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#7d6330] text-2xl" /></div>;
+  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#8B4A2F] text-2xl" /></div>;
   if (!orders.length) {
     return (
       <div className="text-center py-12">
-        <i className="fa-regular fa-box text-4xl text-[#2a2015]/30 dark:text-white/30 mb-4 block" />
-        <p className="text-[#2a2015]/60 dark:text-white/60 font-serif italic">
+        <i className="fa-regular fa-box text-4xl text-[#293027]/30 dark:text-white/30 mb-4 block" />
+        <p className="text-[#293027]/60 dark:text-white/60 font-serif italic">
           {lang === 'FR' ? 'Aucune commande pour l\'instant.' : 'No orders yet.'}
         </p>
       </div>
@@ -524,41 +537,41 @@ const OrdersTab: React.FC = () => {
   return (
     <div className="space-y-4">
       {orders.map(o => (
-        <div key={o.id} className="border border-[#2a2015]/5 dark:border-white/5 rounded-[20px] p-5">
+        <div key={o.id} className="border border-[#293027]/5 dark:border-white/5 rounded-[20px] p-5">
           <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
             <div>
-              <p className="text-xs uppercase tracking-widest text-[#2a2015]/40 dark:text-white/40">
+              <p className="text-xs uppercase tracking-widest text-[#293027]/40 dark:text-white/40">
                 {o.createdAt?.toDate().toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA', { year: 'numeric', month: 'long', day: 'numeric' }) || '—'}
               </p>
-              <p className="text-sm font-mono text-[#2a2015]/60 dark:text-white/60">#{o.id?.slice(0, 8)}</p>
+              <p className="text-sm font-mono text-[#293027]/60 dark:text-white/60">#{o.id?.slice(0, 8)}</p>
             </div>
-            <span className={`text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full ${STATUS_COLORS[o.status] || 'bg-[#2a2015]/5 text-[#2a2015]/60'}`}>
+            <span className={`text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full ${STATUS_COLORS[o.status] || 'bg-[#293027]/5 text-[#293027]/60'}`}>
               {labels[o.status] || o.status}
             </span>
           </div>
           <ul className="space-y-1 mb-3">
             {o.items.map((it, i) => (
-              <li key={i} className="text-sm text-[#2a2015]/80 dark:text-white/80 flex justify-between">
+              <li key={i} className="text-sm text-[#293027]/80 dark:text-white/80 flex justify-between">
                 <span>{it.quantity}× {it.title}</span>
-                {it.price && <span className="text-[#2a2015]/60 dark:text-white/60">{it.price}</span>}
+                {it.price && <span className="text-[#293027]/60 dark:text-white/60">{it.price}</span>}
               </li>
             ))}
           </ul>
-          {o.subtotal && <p className="text-sm font-bold text-[#7d6330] mb-2">Total: {o.subtotal}</p>}
+          {o.subtotal && <p className="text-sm font-bold text-[#8B4A2F] mb-2">Total: {o.subtotal}</p>}
           {o.trackingNumber && (
-            <div className="mt-3 pt-3 border-t border-[#2a2015]/5 dark:border-white/5">
-              <p className="text-[10px] uppercase tracking-widest font-bold text-[#2a2015]/60 dark:text-white/60 mb-1">
+            <div className="mt-3 pt-3 border-t border-[#293027]/5 dark:border-white/5">
+              <p className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60 mb-1">
                 {lang === 'FR' ? 'Numéro de suivi' : 'Tracking number'}
               </p>
               {o.trackingUrl ? (
-                <a href={o.trackingUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-mono text-[#7d6330] underline hover:text-[#2a2015] dark:hover:text-white">{o.trackingNumber}</a>
+                <a href={o.trackingUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-mono text-[#8B4A2F] underline hover:text-[#293027] dark:hover:text-white">{o.trackingNumber}</a>
               ) : (
-                <p className="text-sm font-mono text-[#2a2015] dark:text-white">{o.trackingNumber}</p>
+                <p className="text-sm font-mono text-[#293027] dark:text-white">{o.trackingNumber}</p>
               )}
             </div>
           )}
           {o.checkoutUrl && o.status === 'pending_payment' && (
-            <a href={o.checkoutUrl} className="inline-block mt-3 text-xs text-[#7d6330] hover:underline">
+            <a href={o.checkoutUrl} className="inline-block mt-3 text-xs text-[#8B4A2F] hover:underline">
               <i className="fa-solid fa-arrow-right mr-1" />{lang === 'FR' ? 'Finaliser le paiement' : 'Complete payment'}
             </a>
           )}
@@ -593,7 +606,7 @@ const DoshaTab: React.FC = () => {
     getProducts(50, lang).then(setProducts).catch(() => setProducts([]));
   }, [lang]);
 
-  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#7d6330] text-2xl" /></div>;
+  if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#8B4A2F] text-2xl" /></div>;
 
   // Latest saved result drives the % breakdown. Older results fall into the
   // history list below.
@@ -650,12 +663,12 @@ const DoshaTab: React.FC = () => {
                 : 'linear-gradient(135deg, rgba(187, 154, 94,0.1), rgba(187, 154, 94,0.05))',
             }}
           >
-            <p className="text-[10px] uppercase tracking-[0.3em] text-[#7d6330] font-bold mb-3">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#8B4A2F] font-bold mb-3">
               {lang === 'FR' ? 'Votre dominance' : 'Your dominance'}
             </p>
-            <h2 className="text-5xl font-serif text-[#2a2015] dark:text-white mb-2">{dominant}</h2>
+            <h2 className="text-5xl font-serif text-[#293027] dark:text-white mb-2">{dominant}</h2>
             {guidance && (
-              <p className="font-serif italic text-[#2a2015]/70 dark:text-white/70">
+              <p className="font-serif italic text-[#293027]/70 dark:text-white/70">
                 {lang === 'FR' ? guidance.fr : guidance.en}
               </p>
             )}
@@ -669,24 +682,24 @@ const DoshaTab: React.FC = () => {
               {(['vata', 'pitta', 'kapha'] as const).map(d => {
                 const pct = latest[d] || 0;
                 const label = d.charAt(0).toUpperCase() + d.slice(1);
-                const color = doshaGuidance[label]?.color || '#bb9a5e';
+                const color = doshaGuidance[label]?.color || '#BA7B39';
                 const isDominant = label.toLowerCase() === dominant.toLowerCase();
                 return (
                   <div
                     key={d}
                     className={`rounded-2xl p-5 border transition-colors ${
                       isDominant
-                        ? 'border-[#bb9a5e]/50 bg-[#bb9a5e]/5 dark:bg-[#bb9a5e]/10'
-                        : 'border-[#2a2015]/10 dark:border-white/10 bg-white dark:bg-white/5'
+                        ? 'border-[#BA7B39]/50 bg-[#BA7B39]/5 dark:bg-[#BA7B39]/10'
+                        : 'border-[#293027]/10 dark:border-white/10 bg-white dark:bg-white/5'
                     }`}
                   >
                     <div className="flex items-baseline justify-between mb-3">
-                      <span className="text-[11px] uppercase tracking-[0.3em] font-bold text-[#2a2015]/70 dark:text-white/70">{label}</span>
-                      <span className="text-3xl md:text-4xl font-serif text-[#2a2015] dark:text-white">
-                        {pct}<span className="text-base text-[#2a2015]/50 dark:text-white/50">%</span>
+                      <span className="text-[11px] uppercase tracking-[0.3em] font-bold text-[#293027]/70 dark:text-white/70">{label}</span>
+                      <span className="text-3xl md:text-4xl font-serif text-[#293027] dark:text-white">
+                        {pct}<span className="text-base text-[#293027]/50 dark:text-white/50">%</span>
                       </span>
                     </div>
-                    <div className="relative h-1.5 rounded-full bg-[#2a2015]/5 dark:bg-white/10 overflow-hidden">
+                    <div className="relative h-1.5 rounded-full bg-[#293027]/5 dark:bg-white/10 overflow-hidden">
                       <div
                         className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 ease-out"
                         style={{ width: `${Math.min(100, Math.max(0, pct))}%`, backgroundColor: color }}
@@ -774,31 +787,31 @@ const DoshaTab: React.FC = () => {
                         {variant === 'primary'
                           ? (lang === 'FR' ? 'Votre rituel' : 'Your ritual')
                           : (lang === 'FR' ? 'En accompagnement · second dosha' : 'As a companion · second dosha')}
-                        <span className="ml-2 text-[#2a2015]/50 dark:text-white/50 font-normal tracking-normal normal-case">
+                        <span className="ml-2 text-[#293027]/50 dark:text-white/50 font-normal tracking-normal normal-case">
                           · {doshaName}{pct !== null ? ` ${pct}%` : ''}
                         </span>
                       </p>
-                      <h3 className="font-serif text-2xl md:text-3xl text-[#2a2015] dark:text-white mb-1">
+                      <h3 className="font-serif text-2xl md:text-3xl text-[#293027] dark:text-white mb-1">
                         {lang === 'FR' ? r.titleFR : r.titleEN}
                       </h3>
-                      <p className="font-serif italic text-[#2a2015]/75 dark:text-white/75">
+                      <p className="font-serif italic text-[#293027]/75 dark:text-white/75">
                         {lang === 'FR' ? r.subtitleFR : r.subtitleEN}
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => downloadPdf(doshaName)}
-                      className="inline-flex items-center gap-2 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors shadow-md"
+                      className="inline-flex items-center gap-2 bg-[#293027] dark:bg-[#BA7B39] text-white dark:text-[#293027] px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#BA7B39] hover:text-[#293027] transition-colors shadow-md"
                     >
                       <i className="fa-solid fa-file-pdf" />
                       {lang === 'FR' ? 'Télécharger' : 'Download'}
                     </button>
                   </div>
-                  <p className="inline-block text-[10px] uppercase tracking-[0.25em] font-bold px-3 py-1 rounded-full bg-white/70 dark:bg-white/10 text-[#2a2015]/70 dark:text-white/70 mb-5">
+                  <p className="inline-block text-[10px] uppercase tracking-[0.25em] font-bold px-3 py-1 rounded-full bg-white/70 dark:bg-white/10 text-[#293027]/70 dark:text-white/70 mb-5">
                     <i className="fa-regular fa-clock mr-1.5" />
                     {lang === 'FR' ? r.momentFR : r.momentEN}
                   </p>
-                  <ol className="space-y-3 text-sm text-[#2a2015]/85 dark:text-white/85 leading-relaxed">
+                  <ol className="space-y-3 text-sm text-[#293027]/85 dark:text-white/85 leading-relaxed">
                     {(lang === 'FR' ? r.stepsFR : r.stepsEN).map((step, i) => (
                       <li key={i} className="flex gap-3">
                         <span
@@ -842,44 +855,44 @@ const DoshaTab: React.FC = () => {
               const priceText = variant ? formatMoney(variant.price, lang) : '';
               const soldOut = product ? !product.availableForSale : false;
               return (
-                <div className={`rounded-[20px] border border-[#2a2015]/10 dark:border-white/10 bg-white dark:bg-white/5 p-6 md:p-8 ${mb}`}>
+                <div className={`rounded-[20px] border border-[#293027]/10 dark:border-white/10 bg-white dark:bg-white/5 p-6 md:p-8 ${mb}`}>
                   <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
                     {/* Image */}
                     <div
-                      className="w-32 h-40 md:w-36 md:h-48 rounded-xl bg-cover bg-center shrink-0 bg-[#f6f3ee] dark:bg-[#2a2015] border border-[#2a2015]/5 dark:border-white/10"
+                      className="w-32 h-40 md:w-36 md:h-48 rounded-xl bg-cover bg-center shrink-0 bg-[#EEE7DB] dark:bg-[#293027] border border-[#293027]/5 dark:border-white/10"
                       style={{ backgroundImage: product?.featuredImage?.url ? `url(${product.featuredImage.url})` : undefined }}
                     />
                     {/* Copy */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-[10px] uppercase tracking-[0.3em] text-[#7d6330] font-bold mb-2">
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-[#8B4A2F] font-bold mb-2">
                         {lang === 'FR' ? kickerFR : kickerEN}
-                        {pct !== null && <span className="text-[#2a2015]/50 dark:text-white/50 font-normal tracking-normal normal-case ml-2">· {doshaName} {pct}%</span>}
+                        {pct !== null && <span className="text-[#293027]/50 dark:text-white/50 font-normal tracking-normal normal-case ml-2">· {doshaName} {pct}%</span>}
                       </p>
                       {product ? (
                         <>
-                          <h3 className="text-xl md:text-2xl font-serif text-[#2a2015] dark:text-white mb-1">{product.title}</h3>
+                          <h3 className="text-xl md:text-2xl font-serif text-[#293027] dark:text-white mb-1">{product.title}</h3>
                           {product.productType && (
-                            <p className="text-[11px] uppercase tracking-widest text-[#2a2015]/50 dark:text-white/50 mb-3">{product.productType}</p>
+                            <p className="text-[11px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50 mb-3">{product.productType}</p>
                           )}
-                          <p className="text-lg font-serif text-[#7d6330] mb-4">{priceText}</p>
+                          <p className="text-lg font-serif text-[#8B4A2F] mb-4">{priceText}</p>
                           <div className="flex flex-wrap gap-3">
                             {!soldOut && variant ? (
                               <button
                                 type="button"
                                 onClick={() => addOilToCart(product)}
-                                className="inline-flex items-center gap-2 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors shadow-md"
+                                className="inline-flex items-center gap-2 bg-[#293027] dark:bg-[#BA7B39] text-white dark:text-[#293027] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#BA7B39] hover:text-[#293027] transition-colors shadow-md"
                               >
                                 <i className="fa-solid fa-basket-shopping text-[10px]" />
                                 {lang === 'FR' ? 'Ajouter au panier' : 'Add to cart'}
                               </button>
                             ) : (
-                              <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#2a2015]/10 dark:bg-white/10 text-[#2a2015]/60 dark:text-white/60">
+                              <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] bg-[#293027]/10 dark:bg-white/10 text-[#293027]/60 dark:text-white/60">
                                 {lang === 'FR' ? 'Épuisé' : 'Sold out'}
                               </span>
                             )}
                             <a
                               href="/boutique/huiles-corporelles"
-                              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[#2a2015]/15 dark:border-white/15 text-[#2a2015]/70 dark:text-white/70 font-bold uppercase tracking-widest text-[11px] hover:border-[#bb9a5e] hover:text-[#7d6330] transition-colors"
+                              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[#293027]/15 dark:border-white/15 text-[#293027]/70 dark:text-white/70 font-bold uppercase tracking-widest text-[11px] hover:border-[#BA7B39] hover:text-[#8B4A2F] transition-colors"
                             >
                               {lang === 'FR' ? 'Voir la collection' : 'View the collection'}
                               <i className="fa-solid fa-arrow-right text-[9px]" />
@@ -888,17 +901,17 @@ const DoshaTab: React.FC = () => {
                         </>
                       ) : (
                         <>
-                          <h3 className="text-xl md:text-2xl font-serif text-[#2a2015] dark:text-white mb-2">
+                          <h3 className="text-xl md:text-2xl font-serif text-[#293027] dark:text-white mb-2">
                             {lang === 'FR' ? `Huile Corporelle ${doshaName}` : `${doshaName} Body Oil`}
                           </h3>
-                          <p className="text-[#2a2015]/60 dark:text-white/60 mb-4 font-serif italic text-sm">
+                          <p className="text-[#293027]/60 dark:text-white/60 mb-4 font-serif italic text-sm">
                             {lang === 'FR'
                               ? "La formule qui correspond à cette dominance est bientôt en ligne — explorez la collection pour choisir celle qui vous appelle."
                               : 'The matching formula is coming online soon — explore the collection to choose the one that calls to you.'}
                           </p>
                           <a
                             href="/boutique/huiles-corporelles"
-                            className="inline-flex items-center gap-2 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
+                            className="inline-flex items-center gap-2 bg-[#293027] dark:bg-[#BA7B39] text-white dark:text-[#293027] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-[#BA7B39] hover:text-[#293027] transition-colors"
                           >
                             {lang === 'FR' ? 'Voir les huiles corporelles' : 'View body oils'}
                             <i className="fa-solid fa-arrow-right text-[9px]" />
@@ -934,11 +947,11 @@ const DoshaTab: React.FC = () => {
         </>
       ) : (
         <div className="text-center py-12 mb-4">
-          <i className="fa-solid fa-circle-nodes text-4xl text-[#2a2015]/30 dark:text-white/30 mb-4 block" />
-          <p className="text-[#2a2015]/60 dark:text-white/60 font-serif italic mb-6">
+          <i className="fa-solid fa-circle-nodes text-4xl text-[#293027]/30 dark:text-white/30 mb-4 block" />
+          <p className="text-[#293027]/60 dark:text-white/60 font-serif italic mb-6">
             {lang === 'FR' ? 'Vous n\'avez pas encore complété le Quiz Dosha.' : "You haven't taken the Dosha Quiz yet."}
           </p>
-          <a href="/quiz" className="inline-flex items-center gap-2 bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors">
+          <a href="/quiz" className="inline-flex items-center gap-2 bg-[#293027] dark:bg-[#BA7B39] text-white dark:text-[#293027] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#BA7B39] hover:text-[#293027] transition-colors">
             {lang === 'FR' ? 'Faire le quiz' : 'Take the quiz'} <i className="fa-solid fa-arrow-right" />
           </a>
         </div>
@@ -946,18 +959,18 @@ const DoshaTab: React.FC = () => {
 
       {results.length > 0 && (
         <>
-          <h3 className="text-sm uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-4">
+          <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-4">
             {lang === 'FR' ? 'Historique des résultats' : 'Results history'}
           </h3>
           <div className="space-y-3">
             {results.map(r => (
-              <div key={r.id} className="border border-[#2a2015]/5 dark:border-white/5 rounded-xl p-4 flex items-center justify-between">
+              <div key={r.id} className="border border-[#293027]/5 dark:border-white/5 rounded-xl p-4 flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-[#2a2015] dark:text-white">
-                    <span className="text-[#7d6330] font-bold capitalize">{r.dominant}</span>
-                    <span className="text-[#2a2015]/50 dark:text-white/50 ml-3 text-xs font-mono">V{r.vata}%·P{r.pitta}%·K{r.kapha}%</span>
+                  <p className="text-sm text-[#293027] dark:text-white">
+                    <span className="text-[#8B4A2F] font-bold capitalize">{r.dominant}</span>
+                    <span className="text-[#293027]/50 dark:text-white/50 ml-3 text-xs font-mono">V{r.vata}%·P{r.pitta}%·K{r.kapha}%</span>
                   </p>
-                  <p className="text-[10px] uppercase tracking-widest text-[#2a2015]/40 dark:text-white/40">
+                  <p className="text-[10px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">
                     {r.createdAt?.toDate().toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA') || ''}
                   </p>
                 </div>
@@ -971,24 +984,24 @@ const DoshaTab: React.FC = () => {
           self-knowledge journey lives in one place. */}
       {guideResponses.length > 0 && (
         <div className="mt-10">
-          <h3 className="text-sm uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-4">
-            <i className="fa-solid fa-compass text-[#7d6330] mr-2" />
+          <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-4">
+            <i className="fa-solid fa-compass text-[#8B4A2F] mr-2" />
             {lang === 'FR' ? 'Vos parcours suggérés' : 'Your suggested paths'}
           </h3>
           <div className="space-y-3">
             {guideResponses.map(g => (
-              <div key={g.id} className="border border-[#2a2015]/5 dark:border-white/5 rounded-xl p-4">
+              <div key={g.id} className="border border-[#293027]/5 dark:border-white/5 rounded-xl p-4">
                 <div className="flex items-baseline justify-between gap-3 mb-2">
-                  <p className="text-sm text-[#2a2015] dark:text-white">
-                    <span className="text-[#7d6330] font-bold">{g.recommendationLabel || g.recommendationId}</span>
+                  <p className="text-sm text-[#293027] dark:text-white">
+                    <span className="text-[#8B4A2F] font-bold">{g.recommendationLabel || g.recommendationId}</span>
                   </p>
-                  <p className="text-[10px] uppercase tracking-widest text-[#2a2015]/40 dark:text-white/40">
+                  <p className="text-[10px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">
                     {g.createdAt?.toDate().toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA') || ''}
                   </p>
                 </div>
                 {g.answers?.length > 0 && (
-                  <details className="text-xs text-[#2a2015]/60 dark:text-white/60">
-                    <summary className="cursor-pointer hover:text-[#7d6330] transition-colors">
+                  <details className="text-xs text-[#293027]/60 dark:text-white/60">
+                    <summary className="cursor-pointer hover:text-[#8B4A2F] transition-colors">
                       {lang === 'FR' ? 'Voir les réponses' : 'View answers'}
                     </summary>
                     <ul className="mt-2 space-y-1.5 pl-4 list-disc">

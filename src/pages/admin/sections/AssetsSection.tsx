@@ -31,7 +31,7 @@ const DownloadButton: React.FC<{ url: string; name: string; label?: string }> = 
   <button
     type="button"
     onClick={() => downloadFile(url, name)}
-    className="inline-flex items-center gap-2 rounded-full bg-[#2a2015] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-[#bb9a5e] hover:text-[#2a2015]"
+    className="inline-flex items-center gap-2 rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-[#BA7B39] hover:text-[#293027]"
   >
     <i className="fa-solid fa-download text-[10px]" /> {label || 'Télécharger'}
   </button>
@@ -88,7 +88,7 @@ const AssetsSection: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Le visuel du Foyer, prêt à publier */}
-      <Card className="overflow-hidden border-[#bb9a5e]/40">
+      <Card className="overflow-hidden border-[#BA7B39]/40">
         <div className="flex flex-col gap-6 p-6 md:flex-row md:items-center">
           <video
             src="/assets/foyer-visuel-16x9.mp4"
@@ -97,14 +97,14 @@ const AssetsSection: React.FC = () => {
             muted
             loop
             playsInline
-            className="w-72 shrink-0 rounded-[15px] border border-[#bb9a5e]/30 shadow-lg"
+            className="w-72 shrink-0 rounded-[15px] border border-[#BA7B39]/30 shadow-lg"
           />
           <div className="min-w-0">
-            <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.3em] text-[#7d6330]">
+            <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.3em] text-[#8B4A2F]">
               Le visuel du Foyer
             </span>
-            <h2 className="mb-1 font-serif text-2xl text-[#2a2015] dark:text-white">Le feu qui brûle, grand format</h2>
-            <p className="max-w-xl text-sm text-[#3a3126]/70 dark:text-white/70">
+            <h2 className="mb-1 font-serif text-2xl text-[#293027] dark:text-white">Le feu qui brûle, grand format</h2>
+            <p className="max-w-xl text-sm text-[#38403a]/70 dark:text-white/70">
               La niche du Foyer et sa flamme, sur le mur de parchemin, avec votre signature.
               Le fichier fait 1920 × 1080 et tourne en boucle sans coupure, prêt pour un
               écran, une présentation ou une vidéo.
@@ -120,12 +120,12 @@ const AssetsSection: React.FC = () => {
       {/* La médiathèque */}
       <Card className="p-6">
         <div className="mb-5 flex items-baseline justify-between gap-4">
-          <h3 className="text-sm font-bold uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">
             Vos fichiers téléversés
           </h3>
           <div className="flex items-center gap-3">
-            <span className="text-xs text-[#2a2015]/40 dark:text-white/40">{media.length} fichiers</span>
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#bb9a5e] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#2a2015] transition-colors hover:bg-[#2a2015] hover:text-[#7d6330]">
+            <span className="text-xs text-[#293027]/40 dark:text-white/40">{media.length} fichiers</span>
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#293027] hover:text-[#8B4A2F]">
               <i className="fa-solid fa-upload text-[10px]" />
               {televersement ? 'Téléversement…' : 'Téléverser'}
               <input
@@ -144,7 +144,7 @@ const AssetsSection: React.FC = () => {
           <div className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{erreurTeleversement}</div>
         )}
         {media.length === 0 ? (
-          <p className="font-serif text-sm text-[#2a2015]/50 dark:text-white/50">
+          <p className="font-serif text-sm text-[#293027]/50 dark:text-white/50">
             La médiathèque est vide pour l’instant.
           </p>
         ) : (
@@ -156,14 +156,14 @@ const AssetsSection: React.FC = () => {
                 ) : item.contentType?.startsWith('image/') || !item.contentType ? (
                   <img src={item.url} alt={item.name} className="aspect-square w-full rounded-xl object-cover" />
                 ) : (
-                  <div className="flex aspect-square w-full items-center justify-center rounded-xl bg-[#bb9a5e]/10">
-                    <i className={`fa-solid ${item.contentType?.startsWith('audio/') ? 'fa-music' : 'fa-file-pdf'} text-2xl text-[#7d6330]`} />
+                  <div className="flex aspect-square w-full items-center justify-center rounded-xl bg-[#BA7B39]/10">
+                    <i className={`fa-solid ${item.contentType?.startsWith('audio/') ? 'fa-music' : 'fa-file-pdf'} text-2xl text-[#8B4A2F]`} />
                   </div>
                 )}
-                <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-[#2a2015]/60 opacity-0 transition-opacity group-hover:opacity-100">
+                <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-[#293027]/60 opacity-0 transition-opacity group-hover:opacity-100">
                   <DownloadButton url={item.url} name={item.name} />
                 </div>
-                <p className="mt-2 truncate text-[11px] text-[#2a2015]/60 dark:text-white/50">{item.name}</p>
+                <p className="mt-2 truncate text-[11px] text-[#293027]/60 dark:text-white/50">{item.name}</p>
               </div>
             ))}
           </div>
@@ -173,14 +173,14 @@ const AssetsSection: React.FC = () => {
       {/* Tous les fichiers du site */}
       <Card className="p-6">
         <div className="mb-5 flex flex-wrap items-center gap-3">
-          <h3 className="mr-auto text-sm font-bold uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60">
+          <h3 className="mr-auto text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">
             Les fichiers du site
           </h3>
           <input
             value={terme}
             onChange={e => setTerme(e.target.value)}
             placeholder="Chercher un fichier"
-            className="rounded-full border border-[#2a2015]/15 bg-transparent px-4 py-2 text-sm text-[#2a2015] outline-none focus:border-[#bb9a5e] dark:border-white/15 dark:text-white"
+            className="rounded-full border border-[#293027]/15 bg-transparent px-4 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/15 dark:text-white"
           />
           <div className="flex flex-wrap gap-2">
             {(['tous', 'image', 'video', 'audio', 'modele', 'document'] as const).map(k => (
@@ -190,8 +190,8 @@ const AssetsSection: React.FC = () => {
                 onClick={() => setKind(k)}
                 className={`rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-colors ${
                   kind === k
-                    ? 'bg-[#bb9a5e] text-[#2a2015]'
-                    : 'bg-[#2a2015]/5 text-[#2a2015]/60 hover:bg-[#2a2015]/10 dark:bg-white/5 dark:text-white/60'
+                    ? 'bg-[#BA7B39] text-[#293027]'
+                    : 'bg-[#293027]/5 text-[#293027]/60 hover:bg-[#293027]/10 dark:bg-white/5 dark:text-white/60'
                 }`}
               >
                 {k === 'tous' ? 'Tout' : KIND_LABEL[k]}
@@ -201,27 +201,27 @@ const AssetsSection: React.FC = () => {
         </div>
 
         {parDossier.length === 0 ? (
-          <p className="font-serif italic text-sm text-[#2a2015]/50 dark:text-white/50">Aucun fichier ne correspond.</p>
+          <p className="font-serif italic text-sm text-[#293027]/50 dark:text-white/50">Aucun fichier ne correspond.</p>
         ) : (
           <div className="space-y-7">
             {parDossier.map(([dossier, liste]) => (
               <div key={dossier}>
-                <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#7d6330]">
+                <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#8B4A2F]">
                   {dossier} · {liste.length}
                 </p>
-                <ul className="divide-y divide-[#2a2015]/5 dark:divide-white/5">
+                <ul className="divide-y divide-[#293027]/5 dark:divide-white/5">
                   {liste.map(f => (
                     <li key={f.path} className="flex items-center gap-4 py-2.5">
                       {f.kind === 'image' ? (
                         <img src={f.path} alt="" className="h-10 w-10 rounded-md object-cover" />
                       ) : (
-                        <span className="flex h-10 w-10 items-center justify-center rounded-md bg-[#2a2015]/5 text-[#7d6330] dark:bg-white/5">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-md bg-[#293027]/5 text-[#8B4A2F] dark:bg-white/5">
                           <i className={`fa-solid ${f.kind === 'video' ? 'fa-film' : f.kind === 'audio' ? 'fa-music' : f.kind === 'modele' ? 'fa-cube' : 'fa-file-lines'}`} />
                         </span>
                       )}
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm text-[#2a2015] dark:text-white">{f.name}</p>
-                        <p className="text-[11px] text-[#2a2015]/40 dark:text-white/40">{poids(f.size)}</p>
+                        <p className="truncate text-sm text-[#293027] dark:text-white">{f.name}</p>
+                        <p className="text-[11px] text-[#293027]/40 dark:text-white/40">{poids(f.size)}</p>
                       </div>
                       <DownloadButton url={f.path} name={f.name} />
                     </li>

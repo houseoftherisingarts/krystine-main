@@ -50,34 +50,34 @@ const AutomaticsPanel: React.FC = () => {
         <Card className="p-2">
           {autos.map(a => (
             <button key={a.key} onClick={() => setOpen(a.key)}
-              className={`w-full text-left px-4 py-3 rounded-xl transition-colors ${open === a.key ? 'bg-[#141311] text-[#EEE7DB]' : 'hover:bg-[#bb9a5e]/10 text-[#2a2015] dark:text-white'}`}>
+              className={`w-full text-left px-4 py-3 rounded-xl transition-colors ${open === a.key ? 'bg-[#141311] text-[#EEE7DB]' : 'hover:bg-[#BA7B39]/10 text-[#293027] dark:text-white'}`}>
               <div className="flex items-baseline justify-between gap-3">
                 <span className="font-serif text-lg">{a.title}</span>
-                {typeof a.count === 'number' && <span className={`text-xs ${open === a.key ? 'text-[#e0b060]' : 'text-[#7d6330]'}`}>{a.count} envoyé{a.count > 1 ? 's' : ''}</span>}
+                {typeof a.count === 'number' && <span className={`text-xs ${open === a.key ? 'text-[#e0b060]' : 'text-[#8B4A2F]'}`}>{a.count} envoyé{a.count > 1 ? 's' : ''}</span>}
               </div>
-              <div className={`text-[11px] ${open === a.key ? 'text-white/60' : 'text-[#2a2015]/50 dark:text-white/50'}`}>{a.when}</div>
+              <div className={`text-[11px] ${open === a.key ? 'text-white/60' : 'text-[#293027]/50 dark:text-white/50'}`}>{a.when}</div>
             </button>
           ))}
         </Card>
 
         <Card className="p-5">
-          <p className="text-[10px] uppercase tracking-[0.25em] text-[#2a2015]/50 dark:text-white/50 mb-3">Mot de bienvenue, par formulaire</p>
-          <ul className="divide-y divide-[#2a2015]/5 dark:divide-white/5 text-sm">
+          <p className="text-[10px] uppercase tracking-[0.25em] text-[#293027]/50 dark:text-white/50 mb-3">Mot de bienvenue, par formulaire</p>
+          <ul className="divide-y divide-[#293027]/5 dark:divide-white/5 text-sm">
             {bySource.map(([k, v]) => (
               <li key={k} className="py-2 flex justify-between gap-3">
-                <span className="truncate text-[#2a2015]/80 dark:text-white/80">{k ? sourceLabel(k) : 'Sans source'}</span>
-                <span className="shrink-0 text-[#7d6330] text-xs">{v.welcomed} / {v.total}</span>
+                <span className="truncate text-[#293027]/80 dark:text-white/80">{k ? sourceLabel(k) : 'Sans source'}</span>
+                <span className="shrink-0 text-[#8B4A2F] text-xs">{v.welcomed} / {v.total}</span>
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-[11px] text-[#2a2015]/50 dark:text-white/50">Envoyés / inscrits. Les inscrits d'avant le 26 août 2026 n'ont pas reçu le mot de bienvenue : il n'existait pas encore.</p>
+          <p className="mt-3 text-[11px] text-[#293027]/50 dark:text-white/50">Envoyés / inscrits. Les inscrits d'avant le 26 août 2026 n'ont pas reçu le mot de bienvenue : il n'existait pas encore.</p>
         </Card>
       </div>
 
       <div className="space-y-3">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.25em] text-[#2a2015]/50 dark:text-white/50">{current.title}</p>
-          <p className="text-sm text-[#2a2015]/70 dark:text-white/70">{current.who}. {current.when}.</p>
+          <p className="text-[10px] uppercase tracking-[0.25em] text-[#293027]/50 dark:text-white/50">{current.title}</p>
+          <p className="text-sm text-[#293027]/70 dark:text-white/70">{current.who}. {current.when}.</p>
         </div>
         <PreviewFrame kind={current.kind} height={1100} />
       </div>

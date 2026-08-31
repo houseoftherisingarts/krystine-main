@@ -14,12 +14,12 @@ const MurSocial: React.FC<{ fil: FilMur; titre: string }> = ({ fil, titre }) => 
 
   return (
     <div className="space-y-5">
-      <h2 className="font-serif text-xl text-[#2a2015] dark:text-white">{titre}</h2>
+      <h2 className="font-serif text-xl text-[#293027] dark:text-white">{titre}</h2>
 
       <Composeur fil={fil} contexte="feed" />
 
       {posts.length === 0 ? (
-        <p className="text-sm text-[#3a3126]/50 dark:text-white/45">
+        <p className="text-sm text-[#38403a]/50 dark:text-white/45">
           {fil === 'krystine' ? 'Rien de publié pour le moment.' : fil.startsWith('formation:') ? 'Le feed de cette formation est encore vide. Partagez votre parcours.' : 'Le fil est encore vide. Soyez la première voix.'}
         </p>
       ) : posts.map((p, i) => (

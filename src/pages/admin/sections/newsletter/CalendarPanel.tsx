@@ -10,7 +10,7 @@ type Item = { date: Date; kind: 'scheduled' | 'sent' | 'draft' | 'live' | 'faile
 const KIND: Record<Item['kind'], { dot: string; text: string }> = {
   scheduled: { dot: 'bg-blue-500', text: 'Programmée' },
   sent: { dot: 'bg-green-500', text: 'Envoyée' },
-  draft: { dot: 'bg-[#bb9a5e]', text: 'Brouillon' },
+  draft: { dot: 'bg-[#BA7B39]', text: 'Brouillon' },
   failed: { dot: 'bg-red-500', text: 'Échec' },
   live: { dot: 'bg-[#141311] dark:bg-[#e0b060]', text: 'Direct du podcast' },
 };
@@ -50,25 +50,25 @@ const CalendarPanel: React.FC<{ onOpen: (id: string) => void; onNew: () => void 
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <GhostButton onClick={() => setCursor(new Date(year, month - 1, 1))}><i className="fa-solid fa-chevron-left" /></GhostButton>
-            <h3 className="font-serif text-2xl text-[#2a2015] dark:text-white capitalize min-w-[200px] text-center">{cursor.toLocaleDateString('fr-CA', { month: 'long', year: 'numeric' })}</h3>
+            <h3 className="font-serif text-2xl text-[#293027] dark:text-white capitalize min-w-[200px] text-center">{cursor.toLocaleDateString('fr-CA', { month: 'long', year: 'numeric' })}</h3>
             <GhostButton onClick={() => setCursor(new Date(year, month + 1, 1))}><i className="fa-solid fa-chevron-right" /></GhostButton>
           </div>
           <PrimaryButton onClick={onNew}><i className="fa-solid fa-plus mr-2" />Nouvelle infolettre</PrimaryButton>
         </div>
-        <div className="grid grid-cols-7 gap-px bg-[#2a2015]/10 dark:bg-white/10 rounded-xl overflow-hidden">
+        <div className="grid grid-cols-7 gap-px bg-[#293027]/10 dark:bg-white/10 rounded-xl overflow-hidden">
           {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(d => (
-            <div key={d} className="bg-[#f6f3ee] dark:bg-[#16100a] px-2 py-1.5 text-[10px] uppercase tracking-widest text-[#2a2015]/50 dark:text-white/50">{d}</div>
+            <div key={d} className="bg-[#EEE7DB] dark:bg-[#151d19] px-2 py-1.5 text-[10px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50">{d}</div>
           ))}
           {cells.map((d, i) => {
             const dayItems = d ? items.filter(it => sameDay(it.date, d)) : [];
             const isToday = d ? sameDay(d, today) : false;
             return (
-              <div key={i} className={`min-h-[92px] p-1.5 bg-white dark:bg-[#2a2015] ${d ? '' : 'opacity-40'}`}>
-                {d && <div className={`text-[11px] mb-1 ${isToday ? 'inline-block px-1.5 rounded-full bg-[#bb9a5e] text-[#2a2015] font-bold' : 'text-[#2a2015]/50 dark:text-white/50'}`}>{d.getDate()}</div>}
+              <div key={i} className={`min-h-[92px] p-1.5 bg-white dark:bg-[#293027] ${d ? '' : 'opacity-40'}`}>
+                {d && <div className={`text-[11px] mb-1 ${isToday ? 'inline-block px-1.5 rounded-full bg-[#BA7B39] text-[#293027] font-bold' : 'text-[#293027]/50 dark:text-white/50'}`}>{d.getDate()}</div>}
                 <div className="space-y-1">
                   {dayItems.map(it => (
                     <button key={it.id} onClick={() => !it.id.startsWith('live:') && onOpen(it.id)} title={`${KIND[it.kind].text} · ${it.date.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })}`}
-                      className="w-full text-left flex items-center gap-1.5 text-[11px] leading-tight text-[#2a2015]/80 dark:text-white/80 hover:text-[#7d6330]">
+                      className="w-full text-left flex items-center gap-1.5 text-[11px] leading-tight text-[#293027]/80 dark:text-white/80 hover:text-[#8B4A2F]">
                       <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${KIND[it.kind].dot}`} />
                       <span className="truncate">{it.label}</span>
                     </button>
@@ -78,20 +78,20 @@ const CalendarPanel: React.FC<{ onOpen: (id: string) => void; onNew: () => void 
             );
           })}
         </div>
-        <div className="flex flex-wrap gap-4 mt-3 text-[11px] text-[#2a2015]/60 dark:text-white/60">
+        <div className="flex flex-wrap gap-4 mt-3 text-[11px] text-[#293027]/60 dark:text-white/60">
           {(Object.keys(KIND) as Item['kind'][]).map(k => <span key={k} className="flex items-center gap-1.5"><span className={`w-2 h-2 rounded-full ${KIND[k].dot}`} />{KIND[k].text}</span>)}
         </div>
       </Card>
 
       <Card className="p-5">
-        <p className="text-[10px] uppercase tracking-[0.25em] text-[#2a2015]/50 dark:text-white/50 mb-3">À venir</p>
-        {upcoming.length === 0 && <p className="text-sm text-[#2a2015]/50 dark:text-white/50">Rien de programmé. Le calendrier est à vous.</p>}
-        <ul className="divide-y divide-[#2a2015]/5 dark:divide-white/5">
+        <p className="text-[10px] uppercase tracking-[0.25em] text-[#293027]/50 dark:text-white/50 mb-3">À venir</p>
+        {upcoming.length === 0 && <p className="text-sm text-[#293027]/50 dark:text-white/50">Rien de programmé. Le calendrier est à vous.</p>}
+        <ul className="divide-y divide-[#293027]/5 dark:divide-white/5">
           {upcoming.map(it => (
             <li key={it.id} className="py-2.5">
               <button onClick={() => !it.id.startsWith('live:') && onOpen(it.id)} className="w-full text-left">
-                <div className="flex items-center gap-2 text-sm text-[#2a2015] dark:text-white"><span className={`w-2 h-2 rounded-full ${KIND[it.kind].dot}`} /><span className="truncate">{it.label}</span></div>
-                <div className="text-[11px] text-[#2a2015]/50 dark:text-white/50 pl-4">{it.date.toLocaleString('fr-CA', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })} · {KIND[it.kind].text}</div>
+                <div className="flex items-center gap-2 text-sm text-[#293027] dark:text-white"><span className={`w-2 h-2 rounded-full ${KIND[it.kind].dot}`} /><span className="truncate">{it.label}</span></div>
+                <div className="text-[11px] text-[#293027]/50 dark:text-white/50 pl-4">{it.date.toLocaleString('fr-CA', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })} · {KIND[it.kind].text}</div>
               </button>
             </li>
           ))}

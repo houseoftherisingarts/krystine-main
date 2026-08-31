@@ -58,11 +58,11 @@ export const PUBS: Pub[] = [
 const PubCarte: React.FC<{ index: number }> = ({ index }) => {
   const pub = PUBS[index % PUBS.length];
   const contenu = (
-    <div className="rounded-[20px] border border-[#bb9a5e]/35 bg-gradient-to-br from-[#bb9a5e]/12 to-transparent p-5 transition-colors hover:border-[#bb9a5e]/60 dark:from-[#bb9a5e]/10">
-      <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-[#7d6330]/70 dark:text-[#dcb874]/70">Suggestion · {pub.etiquette}</p>
-      <p className="mt-2 font-serif text-xl text-[#2a2015] dark:text-white">{pub.titre}</p>
-      <p className="mt-1.5 text-sm leading-relaxed text-[#3a3126]/70 dark:text-white/65">{pub.texte}</p>
-      <span className="mt-3 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#7d6330] dark:text-[#dcb874]">
+    <div className="rounded-[20px] border border-[#BA7B39]/35 bg-gradient-to-br from-[#BA7B39]/12 to-transparent p-5 transition-colors hover:border-[#BA7B39]/60 dark:from-[#BA7B39]/10">
+      <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]/70 dark:text-[#d9a05b]/70">Suggestion · {pub.etiquette}</p>
+      <p className="mt-2 font-serif text-xl text-[#293027] dark:text-white">{pub.titre}</p>
+      <p className="mt-1.5 text-sm leading-relaxed text-[#38403a]/70 dark:text-white/65">{pub.texte}</p>
+      <span className="mt-3 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]">
         {pub.cta} <i className="fa-solid fa-arrow-right" />
       </span>
     </div>

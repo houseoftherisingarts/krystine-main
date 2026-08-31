@@ -47,13 +47,13 @@ const LiveSection: React.FC = () => {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
               <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
             </span>
-            <p className="font-serif text-xl text-[#2a2015] dark:text-white">Live en cours : {live.titre}</p>
+            <p className="font-serif text-xl text-[#293027] dark:text-white">Live en cours : {live.titre}</p>
           </div>
-          <p className="mt-2 text-sm text-[#2a2015]/60 dark:text-white/60">
+          <p className="mt-2 text-sm text-[#293027]/60 dark:text-white/60">
             {live.formationId
               ? `Exclusif à la formation « ${nomFormation(live.formationId)} ». La pastille mène à la page du cours; qui ne l'a pas se voit offrir l'achat.`
               : 'Public. La pastille du site mène directement à la diffusion.'}
-            {live.url ? <> Lien : <a href={live.url} target="_blank" rel="noopener noreferrer" className="text-[#7d6330] underline">{live.url}</a></> : null}
+            {live.url ? <> Lien : <a href={live.url} target="_blank" rel="noopener noreferrer" className="text-[#8B4A2F] underline">{live.url}</a></> : null}
           </p>
           <div className="mt-5">
             <DangerButton onClick={arreter} disabled={occupe}><i className="fa-solid fa-stop" /> Terminer le live</DangerButton>
@@ -61,8 +61,8 @@ const LiveSection: React.FC = () => {
         </Card>
       ) : (
         <Card className="p-6">
-          <p className="font-serif text-xl text-[#2a2015] dark:text-white">Lancer un live</p>
-          <p className="mt-1 text-sm text-[#2a2015]/60 dark:text-white/60">
+          <p className="font-serif text-xl text-[#293027] dark:text-white">Lancer un live</p>
+          <p className="mt-1 text-sm text-[#293027]/60 dark:text-white/60">
             La pastille « Live en cours » s'allume aussitôt en haut du site, et chaque visiteuse peut cliquer pour rejoindre.
           </p>
           <div className="mt-5 space-y-4">
@@ -79,7 +79,7 @@ const LiveSection: React.FC = () => {
               <select
                 value={portee}
                 onChange={e => setPortee(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-[#3a3126]/10 dark:border-white/10 focus:border-[#bb9a5e] outline-none bg-white/60 dark:bg-white/5 text-[#2a2015] dark:text-white"
+                className="w-full px-4 py-3 rounded-xl border border-[#38403a]/10 dark:border-white/10 focus:border-[#BA7B39] outline-none bg-white/60 dark:bg-white/5 text-[#293027] dark:text-white"
               >
                 <option value="">Public · le feed de la communauté</option>
                 {formations.map(f => (

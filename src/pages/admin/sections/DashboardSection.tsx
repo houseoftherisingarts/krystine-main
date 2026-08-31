@@ -57,7 +57,7 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
   });
 
   const stats: (Stat & { section: string })[] = [
-    { label: 'Événements à venir', value: upcoming, icon: 'fa-calendar', accent: 'text-[#7d6330]', section: 'events' },
+    { label: 'Événements à venir', value: upcoming, icon: 'fa-calendar', accent: 'text-[#8B4A2F]', section: 'events' },
     { label: 'Articles publiés', value: posts.filter(p => p.isPublished !== false).length, icon: 'fa-pen-nib', accent: 'text-[#4A7C9D]', section: 'blog' },
     { label: 'Demandes nouvelles', value: newBookings, icon: 'fa-inbox', accent: 'text-[#BC4A3C]', section: 'bookings', hint: bookings.length > 0 ? `${bookings.length} au total` : undefined },
     { label: 'Infolettre', value: subs.length, icon: 'fa-envelope', accent: 'text-[#2D4A3E]', section: 'newsletter' },
@@ -68,10 +68,10 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
     <div className="space-y-8">
       {/* Edit-site callout — routes to /accueil where the floating edit bar
           lets Krystine flip the site into edit mode and update text/images. */}
-      <Card className="p-6 bg-gradient-to-br from-[#2a2015] to-[#4A3228] text-white border-[#bb9a5e]/20">
+      <Card className="p-6 bg-gradient-to-br from-[#293027] to-[#4A3228] text-white border-[#BA7B39]/20">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#7d6330] block mb-2">
+            <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#8B4A2F] block mb-2">
               Contenu du site
             </span>
             <h2 className="text-2xl font-serif mb-1">Modifier le site en direct</h2>
@@ -83,7 +83,7 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
           <button
             type="button"
             onClick={openInEditMode}
-            className="shrink-0 inline-flex items-center gap-2 bg-[#bb9a5e] text-[#2a2015] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-white transition-colors"
+            className="shrink-0 inline-flex items-center gap-2 bg-[#BA7B39] text-[#293027] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-white transition-colors"
           >
             <i className="fa-solid fa-pen" /> Ouvrir en édition
           </button>
@@ -96,9 +96,9 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
           <Card key={s.label} className="p-5 cursor-pointer hover:shadow-md transition-shadow" >
             <button onClick={() => onNavigate(s.section)} className="w-full text-left">
               <i className={`fa-solid ${s.icon} text-2xl ${s.accent} mb-3 block`} />
-              <p className="text-3xl font-serif text-[#2a2015] dark:text-white">{s.value}</p>
-              <p className="text-[10px] uppercase tracking-[0.15em] text-[#2a2015]/50 dark:text-white/50 mt-1 font-bold">{s.label}</p>
-              {s.hint && <p className="text-[10px] text-[#2a2015]/40 dark:text-white/40 mt-2">{s.hint}</p>}
+              <p className="text-3xl font-serif text-[#293027] dark:text-white">{s.value}</p>
+              <p className="text-[10px] uppercase tracking-[0.15em] text-[#293027]/50 dark:text-white/50 mt-1 font-bold">{s.label}</p>
+              {s.hint && <p className="text-[10px] text-[#293027]/40 dark:text-white/40 mt-2">{s.hint}</p>}
             </button>
           </Card>
         ))}
@@ -110,25 +110,25 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
           <div className="flex items-center gap-3">
             <span className="relative flex h-3 w-3">
               {enDirect.length > 0 && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#BC4A3C] opacity-70" />}
-              <span className={`relative inline-flex h-3 w-3 rounded-full ${enDirect.length > 0 ? 'bg-[#BC4A3C]' : 'bg-[#2a2015]/20 dark:bg-white/20'}`} />
+              <span className={`relative inline-flex h-3 w-3 rounded-full ${enDirect.length > 0 ? 'bg-[#BC4A3C]' : 'bg-[#293027]/20 dark:bg-white/20'}`} />
             </span>
-            <h3 className="text-sm font-bold uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60">Podcast sur la page</h3>
+            <h3 className="text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">Podcast sur la page</h3>
           </div>
-          <p className="text-sm text-[#2a2015] dark:text-white">
+          <p className="text-sm text-[#293027] dark:text-white">
             <span className="font-serif text-2xl">{enDirect.length}</span>
-            <span className="ml-2 text-[#2a2015]/50 dark:text-white/50">{enDirect.length === 1 ? 'personne écoute en ce moment' : 'personnes écoutent en ce moment'}</span>
+            <span className="ml-2 text-[#293027]/50 dark:text-white/50">{enDirect.length === 1 ? 'personne écoute en ce moment' : 'personnes écoutent en ce moment'}</span>
           </p>
-          <p className="text-sm text-[#2a2015] dark:text-white">
+          <p className="text-sm text-[#293027] dark:text-white">
             <span className="font-serif text-2xl">{ecoutes.total}</span>
-            <span className="ml-2 text-[#2a2015]/50 dark:text-white/50">écoutes depuis le début</span>
+            <span className="ml-2 text-[#293027]/50 dark:text-white/50">écoutes depuis le début</span>
           </p>
         </div>
         {ecoutes.parEpisode.length > 0 && (
           <ul className="mt-5 space-y-2">
             {ecoutes.parEpisode.slice(0, 5).map(e => (
               <li key={e.episodeId} className="flex items-center justify-between gap-4 text-sm">
-                <span className="truncate text-[#2a2015]/70 dark:text-white/70">{e.episodeTitle || e.episodeId}</span>
-                <span className="shrink-0 font-bold tabular-nums text-[#7d6330]">{e.n}</span>
+                <span className="truncate text-[#293027]/70 dark:text-white/70">{e.episodeTitle || e.episodeId}</span>
+                <span className="shrink-0 font-bold tabular-nums text-[#8B4A2F]">{e.n}</span>
               </li>
             ))}
           </ul>
@@ -138,7 +138,7 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
       {/* Dosha breakdown */}
       {dosha.length > 0 && (
         <Card className="p-6">
-          <h3 className="text-sm uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-4">Répartition des résultats Dosha</h3>
+          <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-4">Répartition des résultats Dosha</h3>
           <div className="grid grid-cols-3 gap-3">
             {(['vata', 'pitta', 'kapha'] as const).map(k => {
               const n = doshaBreakdown[k];
@@ -146,11 +146,11 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
               const color = k === 'vata' ? 'bg-[#8F9779]' : k === 'pitta' ? 'bg-[#BC4A3C]' : 'bg-[#4A7C9D]';
               return (
                 <div key={k}>
-                  <div className="flex justify-between text-xs mb-1 text-[#2a2015] dark:text-white">
+                  <div className="flex justify-between text-xs mb-1 text-[#293027] dark:text-white">
                     <span className="capitalize font-serif">{k}</span>
                     <span className="font-bold">{n} · {pct}%</span>
                   </div>
-                  <div className="h-2 rounded-full bg-[#2a2015]/5 dark:bg-white/5 overflow-hidden">
+                  <div className="h-2 rounded-full bg-[#293027]/5 dark:bg-white/5 overflow-hidden">
                     <div className={`h-full ${color} transition-all`} style={{ width: `${pct}%` }} />
                   </div>
                 </div>
@@ -163,22 +163,22 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
       {/* Recent activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="p-6">
-          <h3 className="text-sm uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-4">Dernières demandes</h3>
+          <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-4">Dernières demandes</h3>
           {bookings.slice(0, 5).length === 0 ? (
-            <p className="text-sm text-[#2a2015]/40 dark:text-white/40 italic">Aucune demande pour le moment.</p>
+            <p className="text-sm text-[#293027]/40 dark:text-white/40 italic">Aucune demande pour le moment.</p>
           ) : (
             <ul className="space-y-3">
               {bookings.slice(0, 5).map(b => (
                 <li key={b.id} className="flex items-center justify-between text-sm">
                   <div className="min-w-0">
-                    <p className="font-serif text-[#2a2015] dark:text-white truncate">{b.name}</p>
-                    <p className="text-xs text-[#2a2015]/50 dark:text-white/50 truncate">{b.eventType || b.organization || b.email}</p>
+                    <p className="font-serif text-[#293027] dark:text-white truncate">{b.name}</p>
+                    <p className="text-xs text-[#293027]/50 dark:text-white/50 truncate">{b.eventType || b.organization || b.email}</p>
                   </div>
                   <span className={`text-[10px] uppercase tracking-widest font-bold px-2.5 py-0.5 rounded-full ${
                     b.status === 'accepted' ? 'bg-green-50 text-green-600'
                     : b.status === 'declined' ? 'bg-red-50 text-red-500'
                     : b.status === 'in_progress' ? 'bg-yellow-50 text-yellow-600'
-                    : 'bg-[#bb9a5e]/10 text-[#7d6330]'
+                    : 'bg-[#BA7B39]/10 text-[#8B4A2F]'
                   }`}>{b.status || 'new'}</span>
                 </li>
               ))}
@@ -187,18 +187,18 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
         </Card>
 
         <Card className="p-6">
-          <h3 className="text-sm uppercase tracking-widest text-[#2a2015]/60 dark:text-white/60 font-bold mb-4">Prochains événements</h3>
+          <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-4">Prochains événements</h3>
           {events.filter(e => new Date(e.date) >= new Date()).slice(0, 5).length === 0 ? (
-            <p className="text-sm text-[#2a2015]/40 dark:text-white/40 italic">Aucun événement planifié.</p>
+            <p className="text-sm text-[#293027]/40 dark:text-white/40 italic">Aucun événement planifié.</p>
           ) : (
             <ul className="space-y-3">
               {events.filter(e => new Date(e.date) >= new Date()).slice(0, 5).map(e => (
                 <li key={e.id} className="flex items-center justify-between text-sm">
                   <div className="min-w-0">
-                    <p className="font-serif text-[#2a2015] dark:text-white truncate">{e.title}</p>
-                    <p className="text-xs text-[#2a2015]/50 dark:text-white/50 truncate">{e.date}{e.location ? ` · ${e.location}` : ''}</p>
+                    <p className="font-serif text-[#293027] dark:text-white truncate">{e.title}</p>
+                    <p className="text-xs text-[#293027]/50 dark:text-white/50 truncate">{e.date}{e.location ? ` · ${e.location}` : ''}</p>
                   </div>
-                  {e.isFeatured && <span className="text-[10px] uppercase tracking-widest font-bold px-2.5 py-0.5 rounded-full bg-[#bb9a5e]/10 text-[#7d6330]">Vedette</span>}
+                  {e.isFeatured && <span className="text-[10px] uppercase tracking-widest font-bold px-2.5 py-0.5 rounded-full bg-[#BA7B39]/10 text-[#8B4A2F]">Vedette</span>}
                 </li>
               ))}
             </ul>

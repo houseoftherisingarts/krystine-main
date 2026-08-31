@@ -68,7 +68,7 @@ const LivePanel: React.FC = () => {
       <div className="flex flex-wrap items-center gap-2">
         {events.map(ev => (
           <button key={ev.id} onClick={() => pick(ev)}
-            className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest border transition-colors ${sel?.id === ev.id ? 'bg-[#2a2015] text-white border-[#2a2015]' : 'bg-white text-[#2a2015]/60 border-[#2a2015]/10 hover:text-[#7d6330]'}`}>
+            className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest border transition-colors ${sel?.id === ev.id ? 'bg-[#293027] text-white border-[#293027]' : 'bg-white text-[#293027]/60 border-[#293027]/10 hover:text-[#8B4A2F]'}`}>
             {ev.startsAt.toDate().toLocaleDateString('fr-CA', { day: 'numeric', month: 'short' })} · {ev.title}
           </button>
         ))}
@@ -94,31 +94,31 @@ const LivePanel: React.FC = () => {
               <Label>Lien de la rediffusion (à poser après le direct : déclenche le dernier courriel)</Label>
               <Input value={sel.replayUrl || ''} onChange={e => setSel({ ...sel, replayUrl: e.target.value || undefined })} placeholder="https://www.youtube.com/watch?v=…" />
             </div>
-            <p className="text-[11px] text-[#2a2015]/50 dark:text-white/50">Étiquette CRM : <code className="bg-[#bb9a5e]/10 px-1 rounded">{sel.tag}</code></p>
+            <p className="text-[11px] text-[#293027]/50 dark:text-white/50">Étiquette CRM : <code className="bg-[#BA7B39]/10 px-1 rounded">{sel.tag}</code></p>
             <div className="flex items-center gap-3">
               <PrimaryButton onClick={save} disabled={saving}>{saving ? 'Enregistrement…' : 'Enregistrer'}</PrimaryButton>
-              {msg && <span className="text-xs text-[#7d6330]">{msg}</span>}
+              {msg && <span className="text-xs text-[#8B4A2F]">{msg}</span>}
             </div>
           </Card>
 
           <Card className="p-6 space-y-5">
             <div className="flex items-baseline justify-between">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.25em] text-[#2a2015]/50 dark:text-white/50">Inscrits au direct</p>
-                <p className="font-serif text-4xl text-[#2a2015] dark:text-white">{uniq.length} <span className="text-base text-[#7d6330]">· {uniq.filter(s => s.question).length} question{uniq.filter(s => s.question).length > 1 ? 's' : ''}</span></p>
+                <p className="text-[10px] uppercase tracking-[0.25em] text-[#293027]/50 dark:text-white/50">Inscrits au direct</p>
+                <p className="font-serif text-4xl text-[#293027] dark:text-white">{uniq.length} <span className="text-base text-[#8B4A2F]">· {uniq.filter(s => s.question).length} question{uniq.filter(s => s.question).length > 1 ? 's' : ''}</span></p>
               </div>
               <GhostButton onClick={() => downloadCsv(`${sel.tag}.csv`, uniq.map(s => ({ email: s.email, firstName: s.firstName || '', question: s.question || '', subscribedAt: s.subscribedAt?.toDate?.().toISOString() || '' })))} disabled={uniq.length === 0}>
                 <i className="fa-solid fa-download mr-2" />CSV
               </GhostButton>
             </div>
-            <ul className="divide-y divide-[#2a2015]/5 dark:divide-white/5">
+            <ul className="divide-y divide-[#293027]/5 dark:divide-white/5">
               {STEPS.map(st => {
                 const at = sel.reminders?.[st.key];
                 const n = sel.stats?.[st.key];
                 return (
                   <li key={st.key} className="flex items-center justify-between py-2.5 text-sm">
-                    <span className="text-[#2a2015]/80 dark:text-white/80">{st.label}</span>
-                    <span className={`text-xs ${at ? 'text-[#7d6330]' : 'text-[#2a2015]/40 dark:text-white/40'}`}>
+                    <span className="text-[#293027]/80 dark:text-white/80">{st.label}</span>
+                    <span className={`text-xs ${at ? 'text-[#8B4A2F]' : 'text-[#293027]/40 dark:text-white/40'}`}>
                       {at ? `Envoyé le ${at.toDate().toLocaleString('fr-CA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}${typeof n === 'number' ? ` · ${n}` : ''}` : 'À venir'}
                     </span>
                   </li>
@@ -127,12 +127,12 @@ const LivePanel: React.FC = () => {
             </ul>
             <ul className="max-h-72 overflow-auto text-xs space-y-1.5">
               {uniq.map(s => (
-                <li key={s.id} className="text-[#2a2015]/70 dark:text-white/70">
+                <li key={s.id} className="text-[#293027]/70 dark:text-white/70">
                   <div className="flex justify-between gap-3">
                     <span className="truncate">{s.firstName ? `${s.firstName} · ` : ''}{s.email}</span>
-                    <span className="shrink-0 text-[#2a2015]/40 dark:text-white/40">{s.subscribedAt?.toDate?.().toLocaleDateString('fr-CA')}</span>
+                    <span className="shrink-0 text-[#293027]/40 dark:text-white/40">{s.subscribedAt?.toDate?.().toLocaleDateString('fr-CA')}</span>
                   </div>
-                  {s.question && <p className="mt-1 pl-3 border-l-2 border-[#bb9a5e]/60 text-[#2a2015]/80 dark:text-white/80 whitespace-pre-wrap">{s.question}</p>}
+                  {s.question && <p className="mt-1 pl-3 border-l-2 border-[#BA7B39]/60 text-[#293027]/80 dark:text-white/80 whitespace-pre-wrap">{s.question}</p>}
                 </li>
               ))}
             </ul>
