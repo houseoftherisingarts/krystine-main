@@ -15,13 +15,14 @@ import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } fr
 import { findOilForDosha } from '../lib/shopifyOil';
 import { ritualForDosha } from '../lib/doshaRituals';
 import { jsPDF } from 'jspdf';
-import ClientSupport from './client/ClientSupport';
+import ClientMessagerie from './client/ClientMessagerie';
+import MurSocial from '../components/communaute/MurSocial';
 import ClientArchives from './client/ClientArchives';
 import ClientLoyalty from './client/ClientLoyalty';
 import ClientFormations from './client/ClientFormations';
 import { subscribeToMemberPoints, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
 
-type Tab = 'profile' | 'amis' | 'orders' | 'formations' | 'loyalty' | 'dosha' | 'archives' | 'support';
+type Tab = 'feed' | 'profile' | 'amis' | 'orders' | 'formations' | 'loyalty' | 'dosha' | 'archives' | 'messagerie';
 
 // L'onglet Profil en lecture : la fiche (courriel, téléphone, dosha, badges)
 // et surtout LE MUR de la personne. L'édition s'ouvre en cliquant sur la
@@ -59,7 +60,7 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
         </div>
         {posts.length === 0 ? (
           <p className="mt-3 text-sm text-[#3a3126]/50 dark:text-white/50">
-            {lang === 'FR' ? 'Vous n\'avez encore rien publié. Ce que vous publiez ici paraît aussi sur le mur de la communauté.' : 'Nothing posted yet. What you post here also appears on the community wall.'}
+            {lang === 'FR' ? 'Vous n\'avez encore rien publié. Ce que vous publiez ici paraît aussi sur le feed.' : 'Nothing posted yet. What you post here also appears on the feed.'}
           </p>
         ) : (
           <div className="mt-3 space-y-3">
@@ -207,7 +208,7 @@ const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) 
           </div>
         )}
         <Link to="/espace" className="mt-4 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#7d6330] hover:text-[#bb9a5e]">
-          {lang === 'FR' ? 'Voir le mur de la communauté' : 'See the community wall'} <i className="fa-solid fa-arrow-right" />
+          {lang === 'FR' ? 'Voir le feed' : 'See the feed'} <i className="fa-solid fa-arrow-right" />
         </Link>
       </div>
       <div className="rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#2a2015]/55">
@@ -227,7 +228,8 @@ const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) 
 
 const ClientPortal: React.FC = () => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
-  const [tab, setTab] = useState<Tab>('profile');
+  // Par défaut, l'espace s'ouvre sur le feed de la communauté, pas sur le mur personnel.
+  const [tab, setTab] = useState<Tab>('feed');
   const [editOuvert, setEditOuvert] = useState(false);
   // Live points balance for the header chip. Subscribed here once so all
   // tabs share the same stream rather than each re-subscribing.
@@ -266,14 +268,15 @@ const ClientPortal: React.FC = () => {
   // que par /admin (ou le lien discret dans l'en-tête ci-dessous).
 
   const tabs: { id: Tab; label: string; icon: string }[] = [
+    { id: 'feed',     label: 'Feed', icon: 'fa-newspaper' },
     { id: 'profile',  label: lang === 'FR' ? 'Profil' : 'Profile', icon: 'fa-user' },
     { id: 'amis',     label: lang === 'FR' ? 'Amis' : 'Friends', icon: 'fa-user-group' },
     { id: 'orders',   label: lang === 'FR' ? 'Commandes' : 'Orders', icon: 'fa-box' },
     { id: 'formations', label: lang === 'FR' ? 'Mes formations' : 'My courses', icon: 'fa-graduation-cap' },
     { id: 'loyalty',  label: lang === 'FR' ? 'Points' : 'Points', icon: 'fa-seedling' },
     { id: 'dosha',    label: lang === 'FR' ? 'Dosha' : 'Dosha', icon: 'fa-circle-nodes' },
-    { id: 'archives', label: lang === 'FR' ? 'Archives' : 'Archives', icon: 'fa-envelope-open-text' },
-    { id: 'support',  label: lang === 'FR' ? 'Support' : 'Support', icon: 'fa-comments' },
+    { id: 'archives', label: lang === 'FR' ? 'Infolettres' : 'Newsletters', icon: 'fa-envelope-open-text' },
+    { id: 'messagerie', label: lang === 'FR' ? 'Messagerie' : 'Messages', icon: 'fa-comments' },
   ];
 
   const banniere = member?.bannerURL || '/krystine-bg.jpg';
@@ -365,6 +368,7 @@ const ClientPortal: React.FC = () => {
       {/* Le contenu en deux colonnes : l'onglet à gauche, le rail vivant à droite */}
       <div className="mx-auto mt-8 grid max-w-7xl gap-6 px-6 lg:grid-cols-[1fr_320px]">
         <div className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-[#2a2015]/55">
+          {tab === 'feed'     && <MurSocial fil="communaute" titre="Feed" />}
           {tab === 'profile'  && <ProfilVue uid={user.uid} member={member} email={user.email || ''} lang={lang} />}
           {tab === 'amis'     && <ClientAmis uid={user.uid} lang={lang} />}
           {tab === 'orders'   && <OrdersTab />}
@@ -372,7 +376,7 @@ const ClientPortal: React.FC = () => {
           {tab === 'loyalty'  && <ClientLoyalty />}
           {tab === 'dosha'    && <DoshaTab />}
           {tab === 'archives' && <ClientArchives />}
-          {tab === 'support'  && <ClientSupport />}
+          {tab === 'messagerie' && <ClientMessagerie />}
         </div>
         <RailCommunaute lang={lang} uid={user.uid} />
       </div>

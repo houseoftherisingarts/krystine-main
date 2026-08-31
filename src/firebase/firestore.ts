@@ -122,6 +122,7 @@ export interface NewsletterSubscriber {
   unsubscribeToken?: string;      // hash used by the /desinscription public route
   subscribedAt?: Timestamp;
   unsubscribedAt?: Timestamp;
+  derniereReponseLe?: Timestamp;  // posé par la fonction repondreAbonne à chaque courriel de Krystine
 }
 
 // Generate a URL-safe random token. Used as the subscriber's unsubscribe key

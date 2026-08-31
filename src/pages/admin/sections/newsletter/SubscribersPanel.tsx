@@ -5,6 +5,7 @@ import {
 } from '../../../../firebase/firestore';
 import { parseCsv, mapCsvToSubscribers } from '../../../../lib/csv';
 import { Card, DangerButton, EmptyState, GhostButton, downloadCsv } from '../../primitives';
+import ReponsePanel from './ReponsePanel';
 
 // Sentinel value for the "All contacts" option — an empty string would collide
 // with records that genuinely have no source set, which we surface separately.
@@ -61,6 +62,7 @@ const SubscribersPanel: React.FC = () => {
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState<BulkImportResult | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
+  const [ouvert, setOuvert] = useState<string | null>(null);   // abonné dont le tiroir de réponse est ouvert
   const fileRef = useRef<HTMLInputElement>(null);
 
   const refresh = () => { setLoading(true); getNewsletterSubscribers().then(setSubs).finally(() => setLoading(false)); };
@@ -260,8 +262,13 @@ const SubscribersPanel: React.FC = () => {
             </thead>
             <tbody>
               {filtered.map(s => (
-                <tr key={s.id} className="border-t border-[#2a2015]/5 dark:border-white/5 hover:bg-[#bb9a5e]/5">
-                  <td className="px-4 py-3 text-[#2a2015] dark:text-white">{s.email}</td>
+                <React.Fragment key={s.id}>
+                <tr className={`border-t border-[#2a2015]/5 dark:border-white/5 hover:bg-[#bb9a5e]/5 ${ouvert === s.id ? 'bg-[#bb9a5e]/10' : ''}`}>
+                  <td className="px-4 py-3 text-[#2a2015] dark:text-white">
+                    {s.email}
+                    {s.question && <i className="fa-solid fa-circle-question ml-2 text-[#7d6330]" title="A posé une question" />}
+                    {s.derniereReponseLe && <i className="fa-solid fa-reply ml-2 text-[#7d6330]/70" title={`Dernière réponse le ${s.derniereReponseLe.toDate().toLocaleDateString('fr-CA')}`} />}
+                  </td>
                   <td className="px-4 py-3 text-[#2a2015]/70 dark:text-white/70 hidden md:table-cell">{[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'}</td>
                   <td className="px-4 py-3 hidden lg:table-cell">
                     {(s.tags && s.tags.length > 0) ? (
@@ -282,10 +289,27 @@ const SubscribersPanel: React.FC = () => {
                   </td>
                   <td className="px-4 py-3 text-[#2a2015]/50 dark:text-white/50 hidden md:table-cell">{s.source || '—'}</td>
                   <td className="px-4 py-3 text-[#2a2015]/50 dark:text-white/50 hidden md:table-cell">{s.subscribedAt?.toDate().toLocaleDateString('fr-CA') || '—'}</td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-4 py-3 text-right whitespace-nowrap">
+                    <button
+                      type="button"
+                      onClick={() => setOuvert(ouvert === s.id ? null : (s.id || null))}
+                      title="Répondre par courriel"
+                      aria-expanded={ouvert === s.id}
+                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-colors mr-2 ${ouvert === s.id ? 'bg-[#bb9a5e] text-[#2a2015]' : 'bg-[#bb9a5e]/15 text-[#7d6330] hover:bg-[#bb9a5e]/30'}`}
+                    >
+                      <i className="fa-solid fa-reply" /> Répondre
+                    </button>
                     <DangerButton onClick={() => del(s)}><i className="fa-solid fa-trash" /></DangerButton>
                   </td>
                 </tr>
+                {ouvert === s.id && (
+                  <tr className="bg-[#bb9a5e]/5">
+                    <td colSpan={7} className="p-0">
+                      <ReponsePanel abonne={s} onClose={() => setOuvert(null)} onSent={refresh} />
+                    </td>
+                  </tr>
+                )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { subscribeToConversations } from '../../firebase/firestore';
 import { logout } from '../../firebase/auth';
 import type { User } from 'firebase/auth';
 
@@ -72,6 +73,10 @@ interface Props {
 const AdminShell: React.FC<Props> = ({ user, section, onSectionChange, children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const current = NAV.find(n => n.id === section);
+  // Messages du soutien pas encore lus par l'admin : pastille sur « Messages »
+  // et sur le bouton du menu mobile, en direct.
+  const [nonLus, setNonLus] = useState(0);
+  useEffect(() => subscribeToConversations(list => setNonLus(list.reduce((n, c) => n + (c.unreadByAdmin || 0), 0))), []);
 
   return (
     <div
@@ -101,6 +106,14 @@ const AdminShell: React.FC<Props> = ({ user, section, onSectionChange, children 
                 >
                   <i className={`fa-solid ${item.icon} w-4 text-center ${active ? '' : 'text-[#7d6330]/70'}`} />
                   <span className="text-xs font-semibold uppercase tracking-wider">{item.label}</span>
+                  {item.id === 'messages' && nonLus > 0 && (
+                    <span
+                      aria-label={`${nonLus} message${nonLus > 1 ? 's' : ''} non lu${nonLus > 1 ? 's' : ''}`}
+                      className={`ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold tabular-nums ${active ? 'bg-[#2a2015] text-[#dcb874]' : 'bg-[#bb9a5e] text-[#2a2015] shadow-[0_0_0_3px_rgba(187,154,94,0.25)]'}`}
+                    >
+                      {nonLus > 99 ? '99+' : nonLus}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -128,6 +141,7 @@ const AdminShell: React.FC<Props> = ({ user, section, onSectionChange, children 
         <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-white/50 bg-[#f6f3ee]/60 px-6 py-4 backdrop-blur-xl dark:border-white/10 dark:bg-[#16100a]/60">
           <button onClick={() => setMobileOpen(true)} className="h-8 w-8 text-[#3a3126] lg:hidden dark:text-white">
             <i className="fa-solid fa-bars text-lg" />
+            {nonLus > 0 && <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-[#bb9a5e] ring-2 ring-[#f6f3ee]" />}
           </button>
           <div className="flex-1">
             <h1 className="font-serif text-xl text-[#2a2015] md:text-2xl dark:text-white" style={{ letterSpacing: '-0.01em' }}>{current?.label}</h1>

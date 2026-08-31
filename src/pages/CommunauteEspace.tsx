@@ -57,7 +57,7 @@ const CommunauteEspace: React.FC = () => {
             <MurSocial fil="krystine" titre="Krystine" />
           </div>
           <div className={onglet === 'communaute' ? 'block' : 'hidden md:block'}>
-            <MurSocial fil="communaute" titre="Communauté" />
+            <MurSocial fil="communaute" titre="Feed" />
           </div>
         </div>
       </div>

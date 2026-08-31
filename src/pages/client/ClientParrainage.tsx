@@ -88,7 +88,7 @@ const ClientParrainage: React.FC<{ uid: string; lang: string }> = ({ uid, lang }
         </div>
         <div className="rounded-2xl bg-[#bb9a5e]/12 px-3 py-2.5">
           <p className="font-['Cormorant_Garamond'] lining-nums text-[28px] leading-none text-[#3a3126] dark:text-white">{acheteuses}</p>
-          <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[#7d6330]">{fr ? (acheteuses === 1 ? 'Filleule acheteuse' : 'Filleules acheteuses') : (acheteuses === 1 ? 'Paying invitee' : 'Paying invitees')}</p>
+          <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[#7d6330]">{fr ? (acheteuses === 1 ? 'Filleule' : 'Filleules') : (acheteuses === 1 ? 'Invitee' : 'Invitees')}</p>
         </div>
       </div>
 
@@ -127,7 +127,7 @@ const ClientParrainage: React.FC<{ uid: string; lang: string }> = ({ uid, lang }
               titre={fr ? c.fr : c.en}
               sous={atteint
                 ? (fr ? 'Offert, déjà dans vos formations' : 'Yours, already in your courses')
-                : encore(reste, fr ? (reste > 1 ? 'filleules acheteuses' : 'filleule acheteuse') : (reste > 1 ? 'paying invitees' : 'paying invitee'))}
+                : encore(reste, fr ? (reste > 1 ? 'filleules' : 'filleule') : (reste > 1 ? 'invitees' : 'invitee'))}
             />
           );
         })}
@@ -135,8 +135,8 @@ const ClientParrainage: React.FC<{ uid: string; lang: string }> = ({ uid, lang }
       {prochainCadeau && acheteuses > 0 && (
         <p className="mt-2 text-[10.5px] text-[#7d6330]">
           {fr
-            ? `Prochain cadeau à ${prochainCadeau.seuil} filleules acheteuses.`
-            : `Next gift at ${prochainCadeau.seuil} paying invitees.`}
+            ? `Prochain cadeau à ${prochainCadeau.seuil} filleules.`
+            : `Next gift at ${prochainCadeau.seuil} invitees.`}
         </p>
       )}
 

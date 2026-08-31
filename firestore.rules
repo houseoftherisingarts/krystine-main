@@ -171,6 +171,12 @@ service cloud.firestore {
                     && request.resource.data.email is string;
       allow read, update, delete: if isAdmin();
     }
+    // Réponses envoyées par Krystine à un abonné (écrites par la fonction
+    // repondreAbonne avec l'Admin SDK; l'admin les relit, personne ne les écrit).
+    match /newsletter/{id}/reponses/{r} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
 
     // ── Newsletter campaigns ──
     // Only admins can create, update, delete. Bodies are readable by anyone
