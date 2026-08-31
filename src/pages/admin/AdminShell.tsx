@@ -33,6 +33,7 @@ export type AdminSectionId =
   | 'dosha'
   | 'media'
   | 'live'
+  | 'feedpublic'
   | 'settings';
 
 interface NavItem {
@@ -51,6 +52,7 @@ const NAV: NavItem[] = [
   { id: 'submissions', label: 'Formulaires',     icon: 'fa-clipboard-list' },
   { id: 'groups',     label: 'Groupes',          icon: 'fa-users-rectangle' },
   { id: 'live',       label: 'Live',             icon: 'fa-tower-broadcast' },
+  { id: 'feedpublic', label: 'Feed public',      icon: 'fa-newspaper' },
   { id: 'events',     label: 'Événements & Conférences', icon: 'fa-calendar' },
   { id: 'blog',       label: 'Blogue',           icon: 'fa-pen-nib' },
   { id: 'splash',     label: 'Écran d\'accueil', icon: 'fa-wand-magic-sparkles' },

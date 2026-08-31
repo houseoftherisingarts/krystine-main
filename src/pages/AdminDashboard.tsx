@@ -31,6 +31,7 @@ import DashboardSection from './admin/sections/DashboardSection';
 import AnalyticsSection from './admin/sections/AnalyticsSection';
 import EventsSection from './admin/sections/EventsSection';
 import LiveSection from './admin/sections/LiveSection';
+import FeedPublicSection from './admin/sections/FeedPublicSection';
 import BlogSection from './admin/sections/BlogSection';
 import SplashSection from './admin/sections/SplashSection';
 import FoyerSection from './admin/sections/FoyerSection';
@@ -71,6 +72,7 @@ const AdminDashboard: React.FC = () => {
         {section === 'members'    && <MembersSection />}
         {section === 'messages'   && <MessagesSection user={BYPASS_USER} />}
         {section === 'live'       && <LiveSection />}
+        {section === 'feedpublic' && <FeedPublicSection />}
         {section === 'events'     && <EventsSection />}
         {section === 'blog'       && <BlogSection />}
         {section === 'splash'     && <SplashSection />}
