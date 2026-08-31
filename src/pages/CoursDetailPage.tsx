@@ -30,13 +30,14 @@ const CoursDetailPage: React.FC = () => {
   const [achete, setAchete] = useState(false);
   const [verifAcces, setVerifAcces] = useState(true);   // le temps de savoir si la personne possède le cours
   const [accesVie, setAccesVie] = useState(false);
-  // Les petits sons des portes (hover) : le feu pour l'ouverte, le verrou
-  // pour les barrées. Fabriqués maison (ffmpeg), volume discret.
+  // Les petits sons des portes (hover) : le son de survol du Festival
+  // Médiéval (orb/sfx/hover.mp3) pour l'ouverte, le petit verrou maison pour
+  // les barrées. Volumes très discrets.
   const sonFeu = useRef<HTMLAudioElement | null>(null);
   const sonVerrou = useRef<HTMLAudioElement | null>(null);
   const jouerSon = (ouverte: boolean) => {
-    if (!sonFeu.current) { sonFeu.current = new Audio('/foyer/sons/porte-feu.m4a'); sonFeu.current.volume = 0.22; }
-    if (!sonVerrou.current) { sonVerrou.current = new Audio('/foyer/sons/porte-verrou.m4a'); sonVerrou.current.volume = 0.28; }
+    if (!sonFeu.current) { sonFeu.current = new Audio('/foyer/sons/porte-feu.mp3'); sonFeu.current.volume = 0.12; }
+    if (!sonVerrou.current) { sonVerrou.current = new Audio('/foyer/sons/porte-verrou.m4a'); sonVerrou.current.volume = 0.15; }
     const el = ouverte ? sonFeu.current : sonVerrou.current;
     try { el.currentTime = 0; void el.play(); } catch { /* geste requis */ }
   };
