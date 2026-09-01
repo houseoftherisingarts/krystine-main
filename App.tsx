@@ -79,6 +79,7 @@ const KrystineV3 = lazy(() => import('./src/pages/concepts/KrystineV3'));
 const FormationsV2 = lazy(() => import('./src/pages/concepts/FormationsV2'));
 const MediasV2 = lazy(() => import('./src/pages/concepts/MediasV2'));
 const PodcastV2 = lazy(() => import('./src/pages/concepts/PodcastV2'));
+const QuestionLive = lazy(() => import('./src/pages/podcast/QuestionLive'));
 
 // On-palette loader (crème V2 + laiton). Le site est magazine crème :
 // un loader espresso flashait un écran brun entre deux pages claires.
@@ -108,6 +109,7 @@ const Chrome: React.FC = () => {
     || location.pathname === '/v1'
     || location.pathname === '/v2'
     || location.pathname === '/v3'
+    || location.pathname === '/podcast/question'
     || location.pathname === '/foyer';
   if (hidden) return null;
   return (
@@ -133,6 +135,7 @@ const Footing: React.FC = () => {
     || location.pathname === '/formations'
     || location.pathname === '/medias'
     || location.pathname === '/podcast'
+    || location.pathname === '/podcast/question'
     || location.pathname === '/foyer'
   ) return null;
   return (
@@ -167,6 +170,14 @@ const PageMeta: React.FC = () => {
   return null;
 };
 
+// Les pastilles flottantes gênent la page où quelqu'un écrit sa question
+// pendant le direct : elles se retirent de celle-là.
+const Flottants: React.FC = () => {
+  const location = useLocation();
+  if (location.pathname === '/podcast/question') return null;
+  return (<><LangPill /><LiveBadge /><ChatKrystine /></>);
+};
+
 const App: React.FC = () => (
   <AppProvider>
     <SiteFlagsProvider>
@@ -175,9 +186,7 @@ const App: React.FC = () => (
       <AnalyticsPageViews />
       <PageMeta />
       <Chrome />
-      <LangPill />
-      <LiveBadge />
-      <ChatKrystine />
+      <Flottants />
       <EditModeBar />
       <EditOverlay />
       <EditImageOverlay />
@@ -203,6 +212,8 @@ const App: React.FC = () => (
           <Route path="/foyer" element={<FoyerPage />} />
           {/* Podcast porté en React (remplace le bundle statique /podcast) */}
           <Route path="/podcast" element={<PodcastV2 />} />
+          {/* Questions posées pendant le direct : la carte se pose en temps réel dans l'admin */}
+          <Route path="/podcast/question" element={<QuestionLive />} />
           {/* Vata porté en React (remplace le bundle statique /vata) */}
           <Route path="/vata" element={<VataExperience />} />
           <Route path="/krystine"        element={<KrystineV2 />} />

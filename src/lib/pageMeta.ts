@@ -34,6 +34,10 @@ const ROUTES: Record<string, PageMeta> = {
     title: `Podcast Au-delà des tendances · ${SITE}`,
     description: 'Au-delà des tendances, le podcast de Krystine St-Laurent: conversations sur le corps, les saisons et la sagesse ayurvédique.',
   },
+  '/podcast/question': {
+    title: `Posez votre question · ${SITE}`,
+    description: 'Écrivez votre question à Krystine St-Laurent pendant le direct du podcast. Elle y répond en ondes.',
+  },
   '/boutique': {
     title: `Boutique Inspirata Ayurveda · ${SITE}`,
     description: 'Huiles infusées à la main, rituels et soins ayurvédiques formulés par Krystine St-Laurent. Plantes locales, pression lente.',

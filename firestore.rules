@@ -27,6 +27,25 @@ service cloud.firestore {
     match /events/{id}        { allow read: if true; allow write: if isAdmin(); }
     // Directs du podcast : la page publique lit la date et le lien; l'admin écrit.
     match /liveEvents/{id}    { allow read: if true; allow write: if isAdmin(); }
+    // Questions posées pendant le direct depuis /podcast/question : n'importe
+    // qui écrit la sienne (champs et longueurs vérifiés), Krystine seule les lit
+    // et les projette dans le paquet de cartes de l'admin.
+    match /liveQuestions/{id} {
+      allow read: if isAdmin();
+      allow create: if request.resource.data.keys().hasOnly(['eventTag', 'name', 'email', 'question', 'createdAt'])
+                    && request.resource.data.eventTag is string
+                    && request.resource.data.eventTag.size() > 0
+                    && request.resource.data.eventTag.size() <= 120
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.name.size() <= 80
+                    && request.resource.data.question is string
+                    && request.resource.data.question.size() > 2
+                    && request.resource.data.question.size() <= 1000
+                    && (!('email' in request.resource.data)
+                        || (request.resource.data.email is string && request.resource.data.email.size() <= 120));
+      allow update, delete: if isAdmin();
+    }
     match /blogPosts/{id}     { allow read: if true; allow write: if isAdmin(); }
     match /mediaLibrary/{id}  { allow read: if true; allow write: if isAdmin(); }
     match /formations/{id}    { allow read: if true; allow write: if isAdmin(); }

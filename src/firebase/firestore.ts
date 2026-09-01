@@ -198,6 +198,45 @@ export async function saveLiveEvent(ev: LiveEvent) {
   return setDoc(doc(db!, 'liveEvents', id), clean, { merge: true });
 }
 
+// ─── Questions posées en direct (page publique /podcast/question) ────────────
+// Un document par question. La page publique écrit, l'admin lit en temps réel
+// et la carte se pose à la fin du paquet pendant le podcast.
+export interface LiveQuestion {
+  id?: string;
+  eventTag: string;               // étiquette du direct (LiveEvent.tag)
+  name: string;
+  email?: string;
+  question: string;
+  createdAt?: Timestamp;
+}
+
+export async function addLiveQuestion(q: Omit<LiveQuestion, 'id' | 'createdAt'>) {
+  if (!db) noDb();
+  const name = q.name.trim().slice(0, 80);
+  const question = q.question.trim().slice(0, 1000);
+  const email = q.email?.trim().toLowerCase().slice(0, 120);
+  if (!name || question.length < 3) throw new Error('Nom et question requis');
+  return addDoc(collection(db!, 'liveQuestions'), {
+    eventTag: q.eventTag,
+    name,
+    question,
+    ...(email ? { email } : {}),
+    createdAt: serverTimestamp(),
+  });
+}
+
+// Tri côté client (pas d'index composite à déployer). Une écriture locale pas
+// encore confirmée n'a pas de createdAt : elle reste à la fin, à sa place.
+export function subscribeToLiveQuestions(eventTag: string, cb: (rows: LiveQuestion[]) => void): Unsubscribe {
+  if (!db) { cb([]); return () => {}; }
+  const qy = query(collection(db, 'liveQuestions'), where('eventTag', '==', eventTag));
+  return onSnapshot(qy, snap => {
+    const rows = snap.docs.map(d => ({ id: d.id, ...d.data() } as LiveQuestion));
+    rows.sort((a, b) => (a.createdAt?.toMillis?.() ?? Number.MAX_SAFE_INTEGER) - (b.createdAt?.toMillis?.() ?? Number.MAX_SAFE_INTEGER));
+    cb(rows);
+  }, () => cb([]));
+}
+
 // ─── Bulk import (CSV flow) ──────────────────────────────────────────────────
 // Skips emails that already exist (case-insensitive). Writes in batches of 400
 // to stay under Firestore's 500-op batch limit.

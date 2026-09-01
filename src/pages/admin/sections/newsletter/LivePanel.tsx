@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Timestamp } from 'firebase/firestore';
 import {
-  getLiveEvents, saveLiveEvent, getNewsletterSubscribers,
-  type LiveEvent, type NewsletterSubscriber,
+  getLiveEvents, saveLiveEvent, getNewsletterSubscribers, getAllMembers,
+  type LiveEvent, type NewsletterSubscriber, type MemberDoc,
 } from '../../../../firebase/firestore';
 import { Card, Input, Label, PrimaryButton, GhostButton, downloadCsv } from '../../primitives';
+import QuestionCards, { type QuestionCard } from './QuestionCards';
 
 // Onglet « Direct » : un direct du podcast à la fois. Krystine règle la date,
 // le lien YouTube et, après coup, le lien de rediffusion (ce qui déclenche le
@@ -27,6 +28,8 @@ const toLocalInput = (t?: Timestamp) => {
 const LivePanel: React.FC = () => {
   const [events, setEvents] = useState<LiveEvent[]>([]);
   const [subs, setSubs] = useState<NewsletterSubscriber[]>([]);
+  const [members, setMembers] = useState<MemberDoc[]>([]);
+  const [cartes, setCartes] = useState(false);
   const [sel, setSel] = useState<LiveEvent | null>(null);
   const [when, setWhen] = useState('');
   const [saving, setSaving] = useState(false);
@@ -38,9 +41,14 @@ const LivePanel: React.FC = () => {
     // laissait le panneau à zéro inscrit : Krystine croyait que personne ne
     // s'était inscrit alors que la liste n'avait tout simplement pas chargé.
     try {
-      const [ev, s] = await Promise.all([getLiveEvents(), getNewsletterSubscribers()]);
+      const [ev, s, m] = await Promise.all([
+        getLiveEvents(),
+        getNewsletterSubscribers(),
+        getAllMembers().catch(() => [] as MemberDoc[]),
+      ]);
       setEvents(ev);
       setSubs(s);
+      setMembers(m);
       setLoadErr(null);
       if (ev[0]) { setSel(ev[0]); setWhen(toLocalInput(ev[0].startsAt)); }
     } catch (e: any) {
@@ -90,6 +98,34 @@ const LivePanel: React.FC = () => {
   }) : [];
   const uniq = registered.filter((s, i, a) => a.findIndex(o => o.email === s.email) === i);
   const nbSansDate = uniq.filter(s => !(s.tags || []).includes(sel?.tag || '')).length;
+
+  // Le paquet de cartes du direct : une carte par question posée à
+  // l'inscription, la photo et le dosha récupérés sur la fiche du membre quand
+  // la personne en a une. Les questions posées pendant le direct s'ajoutent
+  // toutes seules à la fin, elles arrivent de /podcast/question.
+  const cartesQuestions = useMemo<QuestionCard[]>(() => {
+    const parUid = new Map(members.map(m => [m.uid, m]));
+    const parEmail = new Map(members.map(m => [(m.email || '').toLowerCase(), m]));
+    return uniq
+      .filter(s => s.question && s.question.trim())
+      .sort((a, b) => (a.subscribedAt?.toMillis?.() || 0) - (b.subscribedAt?.toMillis?.() || 0))
+      .map(s => {
+        const m = (s.uid && parUid.get(s.uid)) || parEmail.get(s.email.toLowerCase());
+        const nom = [s.firstName, s.lastName].filter(Boolean).join(' ').trim()
+          || m?.displayName
+          || s.email.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        const meta = [s.region || s.province, m?.dosha ? `Dosha ${m.dosha}` : ''].filter(Boolean).join(' · ');
+        return {
+          id: s.id || s.email,
+          name: nom,
+          email: s.email,
+          question: s.question!.trim(),
+          photoURL: m?.photoURL,
+          meta: meta || undefined,
+          at: s.subscribedAt?.toDate?.(),
+        };
+      });
+  }, [uniq, members]);
 
   return (
     <div className="space-y-6">
@@ -149,9 +185,14 @@ const LivePanel: React.FC = () => {
                   </p>
                 )}
               </div>
+              <div className="flex items-center gap-2">
+              <GhostButton onClick={() => setCartes(true)} disabled={cartesQuestions.length === 0}>
+                <i className="fa-solid fa-id-card mr-2" />Cartes
+              </GhostButton>
               <GhostButton onClick={() => downloadCsv(`${sel.tag}.csv`, uniq.map(s => ({ email: s.email, firstName: s.firstName || '', question: s.question || '', subscribedAt: s.subscribedAt?.toDate?.().toISOString() || '' })))} disabled={uniq.length === 0}>
                 <i className="fa-solid fa-download mr-2" />CSV
               </GhostButton>
+              </div>
             </div>
             <ul className="divide-y divide-[#293027]/5 dark:divide-white/5">
               {STEPS.map(st => {
@@ -180,6 +221,15 @@ const LivePanel: React.FC = () => {
             </ul>
           </Card>
         </div>
+      )}
+
+      {cartes && sel && (
+        <QuestionCards
+          cards={cartesQuestions}
+          eventTag={sel.tag}
+          eventTitle={`${sel.title} · ${sel.startsAt.toDate().toLocaleDateString('fr-CA', { day: 'numeric', month: 'long' })}`}
+          onClose={() => setCartes(false)}
+        />
       )}
     </div>
   );

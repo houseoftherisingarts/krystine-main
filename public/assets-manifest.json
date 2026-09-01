@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T01:00:13.941Z",
+  "generatedAt": "2026-09-01T22:24:08.232Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -546,6 +546,27 @@
       "folder": "foyer",
       "kind": "image",
       "size": 109650
+    },
+    {
+      "path": "/foyer/sons/ambiance-feu.mp3",
+      "name": "ambiance-feu.mp3",
+      "folder": "foyer/sons",
+      "kind": "audio",
+      "size": 481626
+    },
+    {
+      "path": "/foyer/sons/porte-feu.mp3",
+      "name": "porte-feu.mp3",
+      "folder": "foyer/sons",
+      "kind": "audio",
+      "size": 50460
+    },
+    {
+      "path": "/foyer/sons/porte-verrou.m4a",
+      "name": "porte-verrou.m4a",
+      "folder": "foyer/sons",
+      "kind": "audio",
+      "size": 3736
     },
     {
       "path": "/podcast/krystine.jpg",
