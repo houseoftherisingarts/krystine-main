@@ -150,9 +150,14 @@ export async function addNewsletterSubscriber(data: Omit<NewsletterSubscriber, '
 
 export async function getNewsletterSubscribers(): Promise<NewsletterSubscriber[]> {
   if (!db) return [];
-  const q = query(collection(db, 'newsletter'), orderBy('subscribedAt', 'desc'));
-  const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() } as NewsletterSubscriber));
+  // PAS de orderBy ici : Firestore écarte silencieusement tout document qui
+  // n'a pas le champ trié. Un inscrit sans `subscribedAt` (import manuel,
+  // écriture par une fonction, document créé à la main dans la console)
+  // disparaissait alors de TOUTES les vues de l'admin. On lit tout, puis on
+  // trie côté client — les sans-date passent à la fin plutôt que d'être perdus.
+  const snap = await getDocs(collection(db, 'newsletter'));
+  const subs = snap.docs.map(d => ({ id: d.id, ...d.data() } as NewsletterSubscriber));
+  return subs.sort((a, b) => (b.subscribedAt?.toMillis?.() ?? 0) - (a.subscribedAt?.toMillis?.() ?? 0));
 }
 
 export async function deleteNewsletterSubscriber(id: string) {

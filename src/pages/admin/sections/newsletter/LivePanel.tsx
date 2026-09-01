@@ -31,12 +31,21 @@ const LivePanel: React.FC = () => {
   const [when, setWhen] = useState('');
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [loadErr, setLoadErr] = useState<string | null>(null);
 
   const load = async () => {
-    const [ev, s] = await Promise.all([getLiveEvents(), getNewsletterSubscribers()]);
-    setEvents(ev);
-    setSubs(s);
-    if (ev[0]) { setSel(ev[0]); setWhen(toLocalInput(ev[0].startsAt)); }
+    // Sans ce filet, un échec de lecture (droits, réseau, règles Firestore)
+    // laissait le panneau à zéro inscrit : Krystine croyait que personne ne
+    // s'était inscrit alors que la liste n'avait tout simplement pas chargé.
+    try {
+      const [ev, s] = await Promise.all([getLiveEvents(), getNewsletterSubscribers()]);
+      setEvents(ev);
+      setSubs(s);
+      setLoadErr(null);
+      if (ev[0]) { setSel(ev[0]); setWhen(toLocalInput(ev[0].startsAt)); }
+    } catch (e: any) {
+      setLoadErr(e?.message || 'Impossible de charger les inscrits. Réessayez ou vérifiez votre connexion.');
+    }
   };
   useEffect(() => { load(); }, []);
 
@@ -65,6 +74,15 @@ const LivePanel: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {loadErr && (
+        <Card className="p-4 border-2 border-red-500/40">
+          <p className="text-sm text-red-600">
+            <i className="fa-solid fa-triangle-exclamation mr-2" />
+            {loadErr}
+          </p>
+          <div className="mt-3"><GhostButton onClick={load}><i className="fa-solid fa-rotate-right mr-2" />Réessayer</GhostButton></div>
+        </Card>
+      )}
       <div className="flex flex-wrap items-center gap-2">
         {events.map(ev => (
           <button key={ev.id} onClick={() => pick(ev)}
