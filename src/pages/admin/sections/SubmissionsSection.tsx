@@ -23,7 +23,7 @@ import AdminClientView from '../AdminClientView';
 // type-specific sections still exist for deeper actions (status changes,
 // mailing CSVs, etc.) — this view is the single "inbox" for what came in.
 
-type FormCategory = 'booking' | 'newsletter' | 'waitlist' | 'dosha' | 'guide';
+type FormCategory = 'booking' | 'newsletter' | 'waitlist' | 'podcastLive' | 'dosha' | 'guide';
 
 interface Submission {
   id: string;
@@ -49,6 +49,7 @@ const CATEGORY_META: Record<FormCategory, { label: string; icon: string; badge: 
   booking:    { label: 'Réservations',  icon: 'fa-handshake',     badge: 'bg-[#BA7B39]/15 text-[#8B4A2F]' },
   newsletter: { label: 'Infolettre',    icon: 'fa-envelope',      badge: 'bg-[#293027]/10 text-[#293027]/80 dark:bg-white/10 dark:text-white/80' },
   waitlist:   { label: "Listes d'attente", icon: 'fa-hourglass-half', badge: 'bg-[#BC4A3C]/10 text-[#BC4A3C]' },
+  podcastLive:{ label: 'Podcast live',  icon: 'fa-tower-broadcast', badge: 'bg-[#8B4A2F]/15 text-[#8B4A2F]' },
   dosha:      { label: 'Quiz Dosha',    icon: 'fa-circle-nodes',  badge: 'bg-[#5a4a37]/15 text-[#5a4a37]' },
   guide:      { label: 'Laissez-vous guider', icon: 'fa-compass', badge: 'bg-[#4A7C9D]/15 text-[#4A7C9D]' },
 };
@@ -145,6 +146,15 @@ function normalizeBooking(b: BookingRequest): Submission {
 
 function normalizeNewsletter(n: NewsletterSubscriber): Submission {
   const isWaitlist = (n.source || '').startsWith('waitlist-') || (n.tags || []).some(t => t.startsWith('waitlist-'));
+  // Inscriptions au podcast en direct : le bloc public pose 'podcast-live'
+  // plus l'étiquette datée du direct (podcast-live-AAAA-MM-JJ). Elles se
+  // perdaient dans les 6800 lignes de l'infolettre; elles ont maintenant
+  // leur propre onglet.
+  const srcBase = (n.source || '').replace(/_google$/, '');
+  const isPodcastLive = !isWaitlist && (
+    srcBase === 'podcast-live'
+    || (n.tags || []).some(t => t === 'podcast-live' || t.startsWith('podcast-live-'))
+  );
   const name = [n.firstName, n.lastName].filter(Boolean).join(' ').trim() || '(sans nom)';
   const details: Submission['details'] = [];
   if (n.firstName) details.push({ label: 'Prénom', value: n.firstName });
@@ -156,7 +166,7 @@ function normalizeNewsletter(n: NewsletterSubscriber): Submission {
 
   return {
     id: `newsletter-${n.id}`,
-    category: isWaitlist ? 'waitlist' : 'newsletter',
+    category: isWaitlist ? 'waitlist' : isPodcastLive ? 'podcastLive' : 'newsletter',
     name,
     email: n.email,
     source: n.source || 'newsletter',
@@ -164,7 +174,12 @@ function normalizeNewsletter(n: NewsletterSubscriber): Submission {
     createdAt: n.subscribedAt,
     summary: isWaitlist
       ? prettySource(n.source || '')
-      : (n.status === 'unsubscribed' ? 'Désabonné·e' : 'Abonné·e'),
+      : isPodcastLive
+        ? (n.question ? 'Inscrite au direct · a posé une question' : 'Inscrite au direct')
+        : (n.status === 'unsubscribed' ? 'Désabonné·e' : 'Abonné·e'),
+    // La question posée à l'inscription s'affiche en clair sous la ligne :
+    // c'est ce que Krystine lit avant de passer en ondes.
+    message: isPodcastLive ? n.question : undefined,
     details,
   };
 }
@@ -220,6 +235,7 @@ const CATEGORY_TABS: { id: CategoryFilter; label: string }[] = [
   { id: 'booking',    label: 'Réservations' },
   { id: 'newsletter', label: 'Infolettre' },
   { id: 'waitlist',   label: "Listes d'attente" },
+  { id: 'podcastLive', label: 'Podcast live' },
   { id: 'dosha',      label: 'Dosha' },
   { id: 'guide',      label: 'Guide' },
 ];
@@ -252,17 +268,26 @@ const SubmissionsSection: React.FC = () => {
   // column becomes a button only for submissions whose email matches a
   // known members/* record.
   const [viewingUid, setViewingUid] = useState<string | null>(null);
+  // Sources qui n'ont pas répondu au chargement : la liste est alors partielle.
+  const [loadWarn, setLoadWarn] = useState<string[]>([]);
 
   useEffect(() => {
     let cancelled = false;
+    // Chaque source avalait son erreur et renvoyait une liste vide : la page
+    // affichait alors un flux incomplet sans rien dire, ce qui se lit comme
+    // « il n'y a personne ». On note ce qui a échoué pour le signaler.
+    const echecs: string[] = [];
+    const essaie = <T,>(p: Promise<T[]>, nom: string): Promise<T[]> =>
+      p.catch(() => { echecs.push(nom); return [] as T[]; });
     Promise.all([
-      getBookingRequests().catch(() => [] as BookingRequest[]),
-      getNewsletterSubscribers().catch(() => [] as NewsletterSubscriber[]),
-      getDoshaResults().catch(() => [] as DoshaResult[]),
-      getGuideResponses().catch(() => [] as GuideResponse[]),
-      getAllMembers().catch(() => [] as MemberDoc[]),
+      essaie(getBookingRequests(), 'Réservations'),
+      essaie(getNewsletterSubscribers(), 'Infolettre et Podcast live'),
+      essaie(getDoshaResults(), 'Quiz Dosha'),
+      essaie(getGuideResponses(), 'Laissez-vous guider'),
+      essaie(getAllMembers(), 'Membres'),
     ]).then(([bookings, subscribers, doshas, guides, members]) => {
       if (cancelled) return;
+      setLoadWarn(echecs);
 
       // Build email → uid map for member reconciliation. Stored lowercase
       // so casing drift between the form payload and the members doc
@@ -330,7 +355,7 @@ const SubmissionsSection: React.FC = () => {
   }, [subs, cat, time, dosha, sourceFilter, search]);
 
   const counts = useMemo(() => {
-    const c: Record<CategoryFilter, number> = { all: subs.length, booking: 0, newsletter: 0, waitlist: 0, dosha: 0, guide: 0 };
+    const c: Record<CategoryFilter, number> = { all: subs.length, booking: 0, newsletter: 0, waitlist: 0, podcastLive: 0, dosha: 0, guide: 0 };
     subs.forEach(s => { c[s.category]++; });
     return c;
   }, [subs]);
@@ -363,11 +388,22 @@ const SubmissionsSection: React.FC = () => {
       <Card className="p-5">
         <p className="text-sm text-[#293027]/70 dark:text-white/70 leading-relaxed">
           Toutes les réponses aux formulaires du site — Réserver Krystine, Tournée de conférences,
-          Pulsation, listes d'attente, Quiz Dosha et Laissez-vous guider — atterrissent ici dans un
+          Pulsation, listes d'attente, Podcast en direct, Quiz Dosha et Laissez-vous guider — atterrissent ici dans un
           seul flux filtrable. Les sections spécialisées (Demandes, Infolettre, Quiz Dosha, Parcours
           guidés) restent disponibles pour les actions ciblées.
         </p>
       </Card>
+
+      {/* Liste partielle : le dire plutôt que de laisser croire au vide */}
+      {loadWarn.length > 0 && (
+        <Card className="p-4 border-2 border-red-500/40">
+          <p className="text-sm text-red-600">
+            <i className="fa-solid fa-triangle-exclamation mr-2" />
+            Cette liste est incomplète : {loadWarn.join(', ')} n'a pas pu être chargé.
+            Rechargez la page — les compteurs ci-dessous ne montrent pas tout le monde.
+          </p>
+        </Card>
+      )}
 
       {/* Filter bar — category tabs */}
       <div className="flex flex-wrap items-center gap-2">
