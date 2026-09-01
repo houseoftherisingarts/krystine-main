@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { subscribeToAuthState, isAdminUser, isAdminBypassActive } from '../firebase/auth';
 import type { User } from 'firebase/auth';
 
@@ -25,7 +26,7 @@ const BYPASS_USER = {
   phoneNumber: null,
   providerId: 'bypass',
 } as unknown as User;
-import AdminShell, { type AdminSectionId } from './admin/AdminShell';
+import AdminShell, { type AdminSectionId, slugToSection, sectionToSlug } from './admin/AdminShell';
 import AdminLogin from './admin/AdminLogin';
 import DashboardSection from './admin/sections/DashboardSection';
 import AnalyticsSection from './admin/sections/AnalyticsSection';
@@ -52,12 +53,57 @@ import SettingsSection from './admin/sections/SettingsSection';
 
 const AdminDashboard: React.FC = () => {
   const [user, setUser] = useState<User | null | undefined>(undefined);
-  const [section, setSection] = useState<AdminSectionId>('dashboard');
+  const { section: slug } = useParams();
+  const navigate = useNavigate();
+
+  // La section n'est plus un état local mais l'adresse elle-même : on peut
+  // partager /admin/formulaires, le mettre en favori, et le rafraîchir sans
+  // retomber sur le tableau de bord.
+  const section = slugToSection(slug) ?? 'dashboard';
+  const setSection = (s: AdminSectionId) => navigate(`/admin/${sectionToSlug(s)}`);
 
   useEffect(() => {
     const unsub = subscribeToAuthState(u => setUser(u));
     return unsub;
   }, []);
+
+  // Adresse inconnue (/admin/nimportequoi) : on revient au tableau de bord
+  // plutôt que d'afficher une coquille vide.
+  useEffect(() => {
+    if (slug && !slugToSection(slug)) navigate('/admin', { replace: true });
+  }, [slug, navigate]);
+
+  // ─── Une seule liste de sections ───────────────────────────────────────
+  // Les deux rendus (bypass local et admin authentifié) étaient recopiés à
+  // la main et avaient divergé : « Live » et « Feed public » manquaient au
+  // rendu authentifié, donc Krystine tombait sur une page blanche en
+  // cliquant dessus. Un seul switch, plus de dérive possible.
+  const renderSection = (u: User) => {
+    switch (section) {
+      case 'dashboard':   return <DashboardSection onNavigate={setSection} />;
+      case 'analytics':   return <AnalyticsSection />;
+      case 'orders':      return <OrdersSection />;
+      case 'boutique':    return <BoutiqueSection />;
+      case 'members':     return <MembersSection />;
+      case 'messages':    return <MessagesSection user={u} />;
+      case 'live':        return <LiveSection />;
+      case 'feedpublic':  return <FeedPublicSection />;
+      case 'events':      return <EventsSection />;
+      case 'blog':        return <BlogSection />;
+      case 'splash':      return <SplashSection />;
+      case 'foyer':       return <FoyerSection />;
+      case 'submissions': return <SubmissionsSection />;
+      case 'groups':      return <GroupsSection />;
+      case 'bookings':    return <BookingsSection />;
+      case 'newsletter':  return <NewsletterSection />;
+      case 'guide':       return <GuideSection />;
+      case 'dosha':       return <DoshaSection />;
+      case 'media':       return <MediaSection />;
+      case 'assets':      return <AssetsSection />;
+      case 'formations':  return <FormationsSection />;
+      case 'settings':    return <SettingsSection user={u} />;
+    }
+  };
 
   // Local bypass short-circuit: when `__adminBypass === '1'` we skip the
   // Firebase auth check entirely and render the dashboard with a
@@ -65,29 +111,7 @@ const AdminDashboard: React.FC = () => {
   if (isAdminBypassActive()) {
     return (
       <AdminShell user={BYPASS_USER} section={section} onSectionChange={setSection}>
-        {section === 'dashboard'  && <DashboardSection onNavigate={setSection} />}
-        {section === 'analytics'  && <AnalyticsSection />}
-        {section === 'orders'     && <OrdersSection />}
-        {section === 'boutique'   && <BoutiqueSection />}
-        {section === 'members'    && <MembersSection />}
-        {section === 'messages'   && <MessagesSection user={BYPASS_USER} />}
-        {section === 'live'       && <LiveSection />}
-        {section === 'feedpublic' && <FeedPublicSection />}
-        {section === 'events'     && <EventsSection />}
-        {section === 'blog'       && <BlogSection />}
-        {section === 'splash'     && <SplashSection />}
-      {section === 'foyer'      && <FoyerSection />}
-        {section === 'submissions' && <SubmissionsSection />}
-        {section === 'groups'     && <GroupsSection />}
-        {section === 'bookings'   && <BookingsSection />}
-        {section === 'newsletter' && <NewsletterSection />}
-        {section === 'guide'      && <GuideSection />}
-        {section === 'dosha'      && <DoshaSection />}
-        {section === 'media'      && <MediaSection />}
-        {section === 'assets'     && <AssetsSection />}
-      {section === 'formations' && <FormationsSection />}
-        {section === 'formations' && <FormationsSection />}
-        {section === 'settings'   && <SettingsSection user={BYPASS_USER} />}
+        {renderSection(BYPASS_USER)}
       </AdminShell>
     );
   }
@@ -104,26 +128,7 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <AdminShell user={user} section={section} onSectionChange={setSection}>
-      {section === 'dashboard'  && <DashboardSection onNavigate={setSection} />}
-      {section === 'analytics'  && <AnalyticsSection />}
-      {section === 'orders'     && <OrdersSection />}
-      {section === 'boutique'   && <BoutiqueSection />}
-      {section === 'members'    && <MembersSection />}
-      {section === 'messages'   && <MessagesSection user={user} />}
-      {section === 'events'     && <EventsSection />}
-      {section === 'blog'       && <BlogSection />}
-      {section === 'splash'     && <SplashSection />}
-        {section === 'foyer'      && <FoyerSection />}
-      {section === 'submissions' && <SubmissionsSection />}
-      {section === 'groups'     && <GroupsSection />}
-      {section === 'bookings'   && <BookingsSection />}
-      {section === 'newsletter' && <NewsletterSection />}
-      {section === 'guide'      && <GuideSection />}
-      {section === 'dosha'      && <DoshaSection />}
-      {section === 'media'      && <MediaSection />}
-      {section === 'assets'     && <AssetsSection />}
-      {section === 'formations' && <FormationsSection />}
-      {section === 'settings'   && <SettingsSection user={user} />}
+      {renderSection(user)}
     </AdminShell>
   );
 };

@@ -244,6 +244,9 @@ const App: React.FC = () => (
           <Route path="/messages" element={<MessagesPage />} />
           <Route path="/messages/:autreUid" element={<MessagesPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          {/* Chaque section de l'admin a son adresse : /admin/formulaires,
+              /admin/infolettre, /admin/live… (voir SECTION_SLUGS). */}
+          <Route path="/admin/:section" element={<AdminDashboard />} />
           <Route path="/desinscription" element={<UnsubscribePage />} />
           {/* Hidden / unlisted — slide-style background of the home hero */}
           <Route path="/slidebg" element={<SlideBg />} />

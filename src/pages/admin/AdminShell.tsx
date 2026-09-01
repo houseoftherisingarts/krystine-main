@@ -36,6 +36,46 @@ export type AdminSectionId =
   | 'feedpublic'
   | 'settings';
 
+// ─── L'adresse de chaque section ─────────────────────────────────────────────
+// Chaque onglet vit à sa propre adresse (/admin/formulaires, /admin/infolettre…)
+// : Krystine peut mettre un onglet en favori, l'envoyer par courriel, revenir
+// en arrière et rafraîchir sans retomber sur le tableau de bord.
+export const SECTION_SLUGS: Record<AdminSectionId, string> = {
+  dashboard:  'tableau-de-bord',
+  analytics:  'analytics',
+  orders:     'commandes',
+  boutique:   'boutique',
+  members:    'clients',
+  messages:   'messages',
+  submissions:'formulaires',
+  groups:     'groupes',
+  live:       'live',
+  feedpublic: 'feed-public',
+  events:     'evenements',
+  blog:       'blogue',
+  splash:     'ecran-accueil',
+  foyer:      'foyer',
+  bookings:   'demandes',
+  newsletter: 'infolettre',
+  guide:      'parcours-guides',
+  dosha:      'quiz-dosha',
+  media:      'mediatheque',
+  formations: 'formations',
+  assets:     'assets',
+  settings:   'parametres',
+};
+
+const PAR_SLUG = Object.entries(SECTION_SLUGS).reduce<Record<string, AdminSectionId>>(
+  (acc, [id, slug]) => { acc[slug] = id as AdminSectionId; return acc; }, {},
+);
+
+/** L'adresse d'une section : sectionToSlug('submissions') → 'formulaires'. */
+export const sectionToSlug = (s: AdminSectionId): string => SECTION_SLUGS[s];
+
+/** La section d'une adresse, ou null si l'adresse ne correspond à rien. */
+export const slugToSection = (slug?: string): AdminSectionId | null =>
+  (slug && PAR_SLUG[slug]) || null;
+
 interface NavItem {
   id: AdminSectionId;
   label: string;
