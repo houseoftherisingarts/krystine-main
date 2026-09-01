@@ -69,8 +69,27 @@ const LivePanel: React.FC = () => {
     finally { setSaving(false); }
   };
 
-  const registered = sel ? subs.filter(s => s.status !== 'unsubscribed' && (s.tags || []).includes(sel.tag)) : [];
+  // Le bloc public LiveSignup pose trois étiquettes : 'podcast',
+  // 'podcast-live' et celle du direct (podcast-live-AAAA-MM-JJ). Un
+  // formulaire monté à la main ne pose souvent que 'podcast-live' : ces
+  // inscrites, faute d'étiquette datée, n'apparaissaient nulle part dans cet
+  // onglet — seulement dans « toutes » chez les abonnés. On les rattache au
+  // direct le plus proche (events est trié du plus récent au plus ancien).
+  const GENERIQUE = 'podcast-live';
+  const estGenerique = (s: NewsletterSubscriber) =>
+    (s.tags || []).includes(GENERIQUE) || (s.source || '').replace(/_google$/, '') === GENERIQUE;
+  const porteUneDate = (s: NewsletterSubscriber) =>
+    (s.tags || []).some(t => t.startsWith(`${GENERIQUE}-`));
+  const principal = events[0]?.id;
+
+  const registered = sel ? subs.filter(s => {
+    if (s.status === 'unsubscribed') return false;
+    if ((s.tags || []).includes(sel.tag)) return true;
+    // Inscrite sans date : elle revient au direct à venir, pas aux anciens.
+    return sel.id === principal && estGenerique(s) && !porteUneDate(s);
+  }) : [];
   const uniq = registered.filter((s, i, a) => a.findIndex(o => o.email === s.email) === i);
+  const nbSansDate = uniq.filter(s => !(s.tags || []).includes(sel?.tag || '')).length;
 
   return (
     <div className="space-y-6">
@@ -124,6 +143,11 @@ const LivePanel: React.FC = () => {
               <div>
                 <p className="text-[10px] uppercase tracking-[0.25em] text-[#293027]/50 dark:text-white/50">Inscrits au direct</p>
                 <p className="font-serif text-4xl text-[#293027] dark:text-white">{uniq.length} <span className="text-base text-[#8B4A2F]">· {uniq.filter(s => s.question).length} question{uniq.filter(s => s.question).length > 1 ? 's' : ''}</span></p>
+                {nbSansDate > 0 && (
+                  <p className="mt-1 text-[11px] text-[#293027]/50 dark:text-white/50">
+                    dont {nbSansDate} inscrite{nbSansDate > 1 ? 's' : ''} par le formulaire « Podcast en direct » (sans date)
+                  </p>
+                )}
               </div>
               <GhostButton onClick={() => downloadCsv(`${sel.tag}.csv`, uniq.map(s => ({ email: s.email, firstName: s.firstName || '', question: s.question || '', subscribedAt: s.subscribedAt?.toDate?.().toISOString() || '' })))} disabled={uniq.length === 0}>
                 <i className="fa-solid fa-download mr-2" />CSV
