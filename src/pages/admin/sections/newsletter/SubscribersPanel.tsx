@@ -57,6 +57,7 @@ const SubscribersPanel: React.FC = () => {
   const [filter, setFilter] = useState('');
   const [source, setSource] = useState<string>(ALL_SOURCES);
   const [tag, setTag] = useState<string>('');
+  const [statut, setStatut] = useState<'tous' | 'actifs' | 'desabonnes'>('tous');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [importing, setImporting] = useState(false);
@@ -98,6 +99,8 @@ const SubscribersPanel: React.FC = () => {
   }, [subs]);
 
   const filtered = subs.filter(s => {
+    if (statut === 'actifs' && s.status === 'unsubscribed') return false;
+    if (statut === 'desabonnes' && s.status !== 'unsubscribed') return false;
     if (tag && !(s.tags || []).includes(tag)) return false;
     if (dateFrom || dateTo) {
       // Dates locales inclusives sur la date d'ajout (subscribedAt).
@@ -191,6 +194,16 @@ const SubscribersPanel: React.FC = () => {
         >
           <option value="">Toutes les listes</option>
           {tagOptions.map(([t, n]) => <option key={t} value={t}>{t} ({n})</option>)}
+        </select>
+        <select
+          value={statut}
+          onChange={e => setStatut(e.target.value as 'tous' | 'actifs' | 'desabonnes')}
+          title="Filtrer par statut"
+          className="px-4 py-2 rounded-full border border-[#293027]/10 dark:border-white/10 bg-white dark:bg-[#293027]/60 text-sm text-[#293027] dark:text-white outline-none focus:border-[#BA7B39]"
+        >
+          <option value="tous">Tous les statuts</option>
+          <option value="actifs">Abonnés actifs ({subs.filter(s => s.status !== 'unsubscribed').length})</option>
+          <option value="desabonnes">Désabonnés ({subs.filter(s => s.status === 'unsubscribed').length})</option>
         </select>
         <label className="inline-flex items-center gap-2 text-sm text-[#293027]/60 dark:text-white/60">
           Ajoutés du

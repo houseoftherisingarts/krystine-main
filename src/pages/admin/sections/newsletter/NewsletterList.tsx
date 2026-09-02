@@ -49,6 +49,7 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
                 <th className="text-left px-4 py-3 hidden md:table-cell">Sujet</th>
                 <th className="text-left px-4 py-3 hidden lg:table-cell">Statut</th>
                 <th className="text-left px-4 py-3 hidden lg:table-cell">Destinataires</th>
+                <th className="text-left px-4 py-3 hidden lg:table-cell" title="Part des personnes qui ont ouvert le courriel (les messageries qui bloquent les images ne comptent pas)">Ouvertures</th>
                 <th className="text-left px-4 py-3 hidden md:table-cell">Mise à jour</th>
                 <th className="px-4 py-3"></th>
               </tr>
@@ -64,6 +65,14 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
                       <span className={`text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 rounded-full ${st.color}`}>{st.label}</span>
                     </td>
                     <td className="px-4 py-3 text-[#293027]/60 dark:text-white/60 hidden lg:table-cell">{n.stats?.recipients ?? '—'}</td>
+                    <td className="px-4 py-3 hidden lg:table-cell">
+                      {n.status === 'sent' && (n.stats?.recipients || 0) > 0 ? (
+                        <span className="text-[#8B4A2F]">
+                          {Math.round(((n.stats?.opens || 0) / (n.stats!.recipients || 1)) * 100)} %
+                          <span className="ml-1 text-[11px] text-[#293027]/45 dark:text-white/45">({n.stats?.opens || 0})</span>
+                        </span>
+                      ) : <span className="text-[#293027]/35 dark:text-white/35">—</span>}
+                    </td>
                     <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden md:table-cell">{n.updatedAt?.toDate().toLocaleDateString('fr-CA') || '—'}</td>
                     <td className="px-4 py-3 text-right whitespace-nowrap">
                       <GhostButton onClick={() => onOpen(n.id!)}><i className="fa-solid fa-pen" /> {n.status === 'sent' ? 'Voir' : 'Modifier'}</GhostButton>

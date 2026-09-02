@@ -27,7 +27,8 @@ const CHARTE = {
   sans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
 };
 
-const IMAGE_URL = `${PUBLIC_BASE_URL}/foyer/livre-fleurs-mail.jpg`;
+export const WELCOME_IMAGE_URL = `${PUBLIC_BASE_URL}/foyer/livre-fleurs-mail.jpg`;
+const IMAGE_URL = WELCOME_IMAGE_URL;
 
 // Photo embarquée en pièce inline : visible même quand le client bloque les
 // images distantes (leçon des tests du 26 août).

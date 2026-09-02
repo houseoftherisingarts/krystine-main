@@ -49,6 +49,8 @@ export interface RenderEmailOptions {
   postalAddress: string;
   firstName?: string;
   showCover?: boolean;   // défaut : vrai
+  /** Pixel de mesure d'ouverture, posé en toute fin de courriel. */
+  pixelUrl?: string;
 }
 
 function esc(s: unknown): string {
@@ -170,6 +172,7 @@ export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOpti
       </table>
     </td></tr>
   </table>
+${opts.pixelUrl ? `  <img src="${opts.pixelUrl}" width="1" height="1" alt="" style="display:block;width:1px;height:1px;border:0;opacity:0" />` : ''}
 </body>
 </html>`;
 }

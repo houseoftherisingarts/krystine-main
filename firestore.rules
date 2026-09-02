@@ -50,6 +50,33 @@ service cloud.firestore {
     match /mediaLibrary/{id}  { allow read: if true; allow write: if isAdmin(); }
     match /formations/{id}    { allow read: if true; allow write: if isAdmin(); }
     match /livesEnCours/{id}  { allow read: if true; allow write: if isAdmin(); }
+    // La salle du direct : le clavardage, les cœurs et les présences.
+    // Tout le monde lit, seules les personnes connectées écrivent, et chacune
+    // n'écrit que sous son propre nom. Krystine retire ce qu'il faut retirer.
+    match /directs/{directId}/messages/{mid} {
+      allow read: if true;
+      allow create: if isSignedIn()
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.texte is string
+                    && request.resource.data.texte.size() > 0
+                    && request.resource.data.texte.size() <= 400;
+      allow update: if isAdmin();
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+    }
+    match /directs/{directId}/coeurs/{cid} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+    match /directs/{directId}/presences/{uid} {
+      allow read: if true;
+      allow write: if isSelf(uid) || isAdmin();
+    }
+    // Les pourboires : écrits par le serveur après paiement, jamais par le navigateur.
+    match /pourboires/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
     // Le plan des leçons est lisible (titres et durées pour la fiche du cours);
     // le FICHIER passe par la fonction obtenirLecon qui vérifie l'achat.
     match /formations/{id}/lecons/{lid} { allow read: if true; allow write: if isAdmin(); }

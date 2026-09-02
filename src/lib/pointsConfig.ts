@@ -16,6 +16,7 @@ export type PointsKind =
   | 'share'
   | 'formation'
   | 'origine'
+  | 'direct'          // participation au direct : présence, message, cœur, pourboire
   | 'redeem'          // negative, subtracts on reward redemption
   | 'adjust';         // manual correction by admin
 
@@ -30,6 +31,11 @@ export const POINTS = {
   share:       2,
   formation:  50,
   origine:   100,
+  // Le direct : la présence se salue une fois, la parole et les cœurs
+  // se comptent au geste, le pourboire donne dix points par dollar.
+  directPresence: 5,
+  directMessage:  2,
+  directCoeur:    1,
 } as const;
 
 // ─── Tiers (cosmetic + milestone) ────────────────────────────────────────────

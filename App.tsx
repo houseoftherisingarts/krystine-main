@@ -80,6 +80,7 @@ const FormationsV2 = lazy(() => import('./src/pages/concepts/FormationsV2'));
 const MediasV2 = lazy(() => import('./src/pages/concepts/MediasV2'));
 const PodcastV2 = lazy(() => import('./src/pages/concepts/PodcastV2'));
 const QuestionLive = lazy(() => import('./src/pages/podcast/QuestionLive'));
+const DirectPage = lazy(() => import('./src/pages/DirectPage'));
 
 // On-palette loader (crème V2 + laiton). Le site est magazine crème :
 // un loader espresso flashait un écran brun entre deux pages claires.
@@ -110,6 +111,7 @@ const Chrome: React.FC = () => {
     || location.pathname === '/v2'
     || location.pathname === '/v3'
     || location.pathname === '/podcast/question'
+    || location.pathname === '/direct'
     || location.pathname === '/foyer';
   if (hidden) return null;
   return (
@@ -136,6 +138,7 @@ const Footing: React.FC = () => {
     || location.pathname === '/medias'
     || location.pathname === '/podcast'
     || location.pathname === '/podcast/question'
+    || location.pathname === '/direct'
     || location.pathname === '/foyer'
   ) return null;
   return (
@@ -214,6 +217,8 @@ const App: React.FC = () => (
           <Route path="/podcast" element={<PodcastV2 />} />
           {/* Questions posées pendant le direct : la carte se pose en temps réel dans l'admin */}
           <Route path="/podcast/question" element={<QuestionLive />} />
+          {/* La salle du direct : diffusion YouTube, clavardage, cœurs et pourboire */}
+          <Route path="/direct" element={<DirectPage />} />
           {/* Vata porté en React (remplace le bundle statique /vata) */}
           <Route path="/vata" element={<VataExperience />} />
           <Route path="/krystine"        element={<KrystineV2 />} />

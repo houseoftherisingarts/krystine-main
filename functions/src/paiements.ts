@@ -67,6 +67,52 @@ export const creerSessionPaiement = onCall(
   },
 );
 
+// ─── Pourboire pendant le direct ─────────────────────────────────────────────
+// Montants fixes, jamais un montant libre venu du navigateur. Les points se
+// créditent au retour du webhook, une fois le paiement confirmé.
+const MONTANTS_POURBOIRE = [5, 10, 25, 50];
+
+export const creerPourboire = onCall(
+  { region: 'us-central1', secrets: [STRIPE_SECRET_KEY] },
+  async (req) => {
+    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour envoyer un pourboire.');
+    const montant = Number(req.data?.montant || 0);
+    if (!MONTANTS_POURBOIRE.includes(montant)) throw new HttpsError('invalid-argument', 'Montant non permis.');
+    const directId = String(req.data?.directId || 'direct');
+    const titre = String(req.data?.titre || 'Le direct de Krystine').slice(0, 120);
+
+    const body = new URLSearchParams({
+      mode: 'payment',
+      'line_items[0][price_data][currency]': 'cad',
+      'line_items[0][price_data][product_data][name]': `Pourboire · ${titre}`,
+      'line_items[0][price_data][unit_amount]': String(Math.round(montant * 100)),
+      'line_items[0][quantity]': '1',
+      success_url: `${SITE}/direct?merci=1`,
+      cancel_url: `${SITE}/direct`,
+      'metadata[uid]': req.auth.uid,
+      'metadata[type]': 'pourboire',
+      'metadata[directId]': directId,
+    });
+    const email = req.auth.token.email;
+    if (email) body.set('customer_email', String(email));
+
+    const r = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${STRIPE_SECRET_KEY.value()}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body,
+    });
+    const session = (await r.json()) as { url?: string; error?: { message?: string } };
+    if (!r.ok || !session.url) {
+      console.error('[paiements] pourboire refusé', session.error?.message);
+      throw new HttpsError('internal', 'Le paiement n\'a pas pu démarrer. Réessayez.');
+    }
+    return { url: session.url };
+  },
+);
+
 // Vérification de signature Stripe (schéma t=...,v1=... ; HMAC-SHA256 de "t.corps").
 function verifierSignatureStripe(rawBody: Buffer, header: string | undefined, secret: string): boolean {
   if (!header) return false;
@@ -95,6 +141,33 @@ export const stripeWebhook = onRequest(
     const session = event.data?.object || {};
     const uid = session.metadata?.uid;
     const formationId = session.metadata?.formationId;
+
+    // Un pourboire du direct : on garde la trace et on crédite les points.
+    if (uid && session.metadata?.type === 'pourboire' && session.payment_status === 'paid') {
+      const db = getFirestore();
+      const montant = (session.amount_total || 0) / 100;
+      const directId = String(session.metadata?.directId || 'direct');
+      const membre = await db.doc(`members/${uid}`).get();
+      const nom = (membre.data() as { displayName?: string } | undefined)?.displayName || 'Une auditrice';
+      await db.doc(`pourboires/${session.id}`).set({
+        uid, nom, montant, directId, at: FieldValue.serverTimestamp(),
+      }, { merge: true });
+      // Dix points par dollar, une seule fois par paiement.
+      const points = Math.round(montant * 10);
+      const cle = `pourboire:${session.id}`;
+      const evt = db.doc(`pointsEvents/${cle}`);
+      if (!(await evt.get()).exists) {
+        await evt.set({ uid, kind: 'direct', amount: points, dedupKey: cle, meta: { montant, directId }, at: FieldValue.serverTimestamp() });
+        await db.doc(`memberPoints/${uid}`).set({
+          balance: FieldValue.increment(points),
+          lifetime: FieldValue.increment(points),
+          updatedAt: FieldValue.serverTimestamp(),
+        }, { merge: true });
+      }
+      console.log(`[paiements] pourboire ${montant} $ de ${uid}, ${points} points`);
+      res.status(200).send('ok'); return;
+    }
+
     if (!uid || !formationId || session.payment_status !== 'paid') { res.status(200).send('incomplete'); return; }
 
     const db = getFirestore();

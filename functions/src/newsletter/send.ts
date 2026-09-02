@@ -3,7 +3,7 @@ import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { renderEmailHtml, renderEmailText, newsletterAttachments, inlineForPreview, type NewsletterBlock } from './renderer';
 import { MAIL_SECRETS, NEWSLETTER_POSTAL_ADDRESS, REPLY_TO, createTransporter, fromAddr as buildFrom, unsubscribeUrl as buildUnsub } from './mail';
-import { renderWelcomeHtml, WELCOME_SUBJECT } from './welcome';
+import { renderWelcomeHtml, WELCOME_SUBJECT , WELCOME_IMAGE_URL } from './welcome';
 import { buildMail, renderLiveHtml, type LiveEvent } from './live';
 
 // Secrets, transport SMTP et adresses de base vivent dans ./mail.ts, partagés
@@ -104,7 +104,10 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
   for (const sub of subscribers) {
     try {
       const unsubscribeUrl = buildUnsub(sub.unsubscribeToken || '');
-      const opts = { subject: doc.subject, preheader: doc.preheader, unsubscribeUrl, postalAddress, firstName: sub.firstName };
+      // Le pixel de mesure : une image d'un point, propre à cette personne et
+      // à cette infolettre. Il dit qui a ouvert, sans rien demander de plus.
+      const pixelUrl = `https://us-central1-${process.env.GCLOUD_PROJECT || 'krystinestlaurent-87566'}.cloudfunctions.net/ouverture?n=${encodeURIComponent(newsletterId)}&s=${encodeURIComponent(sub.id)}`;
+      const opts = { subject: doc.subject, preheader: doc.preheader, unsubscribeUrl, postalAddress, firstName: sub.firstName, pixelUrl };
       await transporter.sendMail({
         from: fromAddr,
         replyTo: REPLY_TO,
@@ -139,7 +142,7 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
     status: 'sent',
     sentAt: Timestamp.now(),
     updatedAt: FieldValue.serverTimestamp(),
-    stats: { recipients: subscribers.length, delivered, bounces: bounced },
+    stats: { recipients: subscribers.length, delivered, bounces: bounced, opens: 0 },
   });
 
   return { recipients: subscribers.length, delivered, bounces: bounced };
@@ -220,7 +223,10 @@ export const previewNewsletter = onCall(
     const firstName = 'Krystine';
 
     if (data.kind === 'welcome') {
-      return { html: renderWelcomeHtml({ firstName, unsubscribeUrl, postalAddress }), subject: WELCOME_SUBJECT };
+      return {
+        html: inlineForPreview(renderWelcomeHtml({ firstName, unsubscribeUrl, postalAddress }).replace(/cid:photo/g, WELCOME_IMAGE_URL)),
+        subject: WELCOME_SUBJECT,
+      };
     }
     if (data.kind?.startsWith('live-')) {
       const step = data.kind.slice(5) as 'confirm' | 'd3' | 'veille' | 'h1' | 'replay';
