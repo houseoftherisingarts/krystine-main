@@ -6,6 +6,7 @@ import {
 } from '../../../../firebase/firestore';
 import { Card, Input, Label, PrimaryButton, GhostButton, downloadCsv } from '../../primitives';
 import QuestionCards, { type QuestionCard } from './QuestionCards';
+import { envoyerRappelDirect, type EtapeDirect, type AudienceDirect } from '../../../../firebase/live';
 
 // Onglet « Direct » : un direct du podcast à la fois. Krystine règle la date,
 // le lien YouTube et, après coup, le lien de rediffusion (ce qui déclenche le
@@ -16,6 +17,14 @@ const STEPS: Array<{ key: 'd3' | 'veille' | 'h1' | 'replay'; label: string }> = 
   { key: 'veille', label: 'La veille' },
   { key: 'h1', label: 'Une heure avant' },
   { key: 'replay', label: 'Rediffusion' },
+];
+
+// Les trois rappels partent un certain nombre d'heures avant le direct.
+// Krystine règle ces heures ici; sans réglage, la série garde 72, 24 et 1.
+const DELAIS: Array<{ key: 'd3' | 'veille' | 'h1'; label: string; defaut: number }> = [
+  { key: 'd3', label: 'Premier rappel', defaut: 72 },
+  { key: 'veille', label: 'Deuxième rappel', defaut: 24 },
+  { key: 'h1', label: 'Dernier rappel', defaut: 1 },
 ];
 
 const toLocalInput = (t?: Timestamp) => {
@@ -30,6 +39,8 @@ const LivePanel: React.FC = () => {
   const [subs, setSubs] = useState<NewsletterSubscriber[]>([]);
   const [members, setMembers] = useState<MemberDoc[]>([]);
   const [cartes, setCartes] = useState(false);
+  const [envoi, setEnvoi] = useState<string | null>(null);
+  const [envoiMsg, setEnvoiMsg] = useState<string | null>(null);
   const [sel, setSel] = useState<LiveEvent | null>(null);
   const [when, setWhen] = useState('');
   const [saving, setSaving] = useState(false);
@@ -57,7 +68,23 @@ const LivePanel: React.FC = () => {
   };
   useEffect(() => { load(); }, []);
 
-  const pick = (ev: LiveEvent) => { setSel(ev); setWhen(toLocalInput(ev.startsAt)); setMsg(null); };
+  const pick = (ev: LiveEvent) => { setSel(ev); setWhen(toLocalInput(ev.startsAt)); setMsg(null); setEnvoiMsg(null); };
+
+  // Envoi immédiat d'une étape, aux inscrits de ce direct ou à toute la liste.
+  const envoyer = async (step: EtapeDirect, audience: AudienceDirect) => {
+    if (!sel || envoi) return;
+    const qui = audience === 'tous' ? 'toute la liste' : 'les inscrits au direct';
+    const etape = STEPS.find(x => x.key === step)?.label.toLowerCase() || step;
+    if (!window.confirm(`Envoyer « ${etape} » à ${qui}, maintenant ?`)) return;
+    setEnvoi(`${step}-${audience}`); setEnvoiMsg(null);
+    try {
+      const r = await envoyerRappelDirect(sel.id, step, audience);
+      setEnvoiMsg(`Parti à ${r.sent} personne${r.sent > 1 ? 's' : ''} sur ${r.total}.`);
+      await load();
+    } catch (e: any) {
+      setEnvoiMsg(e?.message || 'L\'envoi n\'a pas fonctionné.');
+    } finally { setEnvoi(null); }
+  };
 
   const fresh = () => {
     const d = new Date(); d.setDate(d.getDate() + 7); d.setHours(12, 0, 0, 0);
@@ -167,6 +194,27 @@ const LivePanel: React.FC = () => {
               <Label>Lien de la rediffusion (à poser après le direct : déclenche le dernier courriel)</Label>
               <Input value={sel.replayUrl || ''} onChange={e => setSel({ ...sel, replayUrl: e.target.value || undefined })} placeholder="https://www.youtube.com/watch?v=…" />
             </div>
+            <div>
+              <Label>Quand partent les rappels (heures avant le direct)</Label>
+              <div className="grid grid-cols-3 gap-3">
+                {DELAIS.map(d => (
+                  <div key={d.key}>
+                    <Input
+                      type="number" min={1} max={336}
+                      value={String(sel.offsets?.[d.key] ?? d.defaut)}
+                      onChange={e => setSel({
+                        ...sel,
+                        offsets: { ...(sel.offsets || {}), [d.key]: Math.max(1, Number(e.target.value) || d.defaut) },
+                      })}
+                    />
+                    <p className="mt-1 text-[10px] uppercase tracking-widest text-[#293027]/45 dark:text-white/45">{d.label}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-2 text-[11px] text-[#293027]/50 dark:text-white/50">
+                Le serveur vérifie toutes les quinze minutes, donc un rappel part dans le quart d'heure qui suit l'heure réglée. Enregistrez pour appliquer.
+              </p>
+            </div>
             <p className="text-[11px] text-[#293027]/50 dark:text-white/50">Étiquette CRM : <code className="bg-[#BA7B39]/10 px-1 rounded">{sel.tag}</code></p>
             <div className="flex items-center gap-3">
               <PrimaryButton onClick={save} disabled={saving}>{saving ? 'Enregistrement…' : 'Enregistrer'}</PrimaryButton>
@@ -199,15 +247,32 @@ const LivePanel: React.FC = () => {
                 const at = sel.reminders?.[st.key];
                 const n = sel.stats?.[st.key];
                 return (
-                  <li key={st.key} className="flex items-center justify-between py-2.5 text-sm">
-                    <span className="text-[#293027]/80 dark:text-white/80">{st.label}</span>
-                    <span className={`text-xs ${at ? 'text-[#8B4A2F]' : 'text-[#293027]/40 dark:text-white/40'}`}>
-                      {at ? `Envoyé le ${at.toDate().toLocaleString('fr-CA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}${typeof n === 'number' ? ` · ${n}` : ''}` : 'À venir'}
-                    </span>
+                  <li key={st.key} className="py-2.5 text-sm">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-[#293027]/80 dark:text-white/80">{st.label}</span>
+                      <span className={`text-xs shrink-0 ${at ? 'text-[#8B4A2F]' : 'text-[#293027]/40 dark:text-white/40'}`}>
+                        {at ? `Envoyé le ${at.toDate().toLocaleString('fr-CA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}${typeof n === 'number' ? ` · ${n}` : ''}` : 'À venir'}
+                      </span>
+                    </div>
+                    <div className="mt-1.5 flex flex-wrap gap-2">
+                      <button
+                        onClick={() => envoyer(st.key, 'inscrits')}
+                        disabled={!!envoi}
+                        className="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[#BA7B39]/50 text-[#8B4A2F] hover:bg-[#BA7B39]/10 disabled:opacity-40 transition-colors">
+                        {envoi === `${st.key}-inscrits` ? 'Envoi…' : 'Envoyer aux inscrits'}
+                      </button>
+                      <button
+                        onClick={() => envoyer(st.key, 'tous')}
+                        disabled={!!envoi}
+                        className="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[#293027] text-white hover:bg-[#8B4A2F] disabled:opacity-40 transition-colors">
+                        {envoi === `${st.key}-tous` ? 'Envoi…' : 'Envoyer à tous'}
+                      </button>
+                    </div>
                   </li>
                 );
               })}
             </ul>
+            {envoiMsg && <p className="text-xs text-[#8B4A2F]">{envoiMsg}</p>}
             <ul className="max-h-72 overflow-auto text-xs space-y-1.5">
               {uniq.map(s => (
                 <li key={s.id} className="text-[#293027]/70 dark:text-white/70">

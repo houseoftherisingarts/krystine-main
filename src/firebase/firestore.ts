@@ -182,6 +182,9 @@ export interface LiveEvent {
   tag: string;
   reminders?: Partial<Record<'d3' | 'veille' | 'h1' | 'replay', Timestamp>>;
   stats?: Partial<Record<'d3' | 'veille' | 'h1' | 'replay', number>>;
+  // Combien d'heures avant le direct chaque rappel part. Sans réglage, la
+  // série garde 72 h, 24 h et 1 h.
+  offsets?: Partial<Record<'d3' | 'veille' | 'h1', number>>;
 }
 
 export async function getLiveEvents(): Promise<LiveEvent[]> {
