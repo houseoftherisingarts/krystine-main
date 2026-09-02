@@ -163,13 +163,16 @@
   .rp-grid{display:grid;grid-template-columns:repeat(5,1fr);margin-top:3.2rem}
   .rp-item{position:relative;text-align:center;padding:.4rem 1.3rem}
   .rp-item+.rp-item::before{content:"";position:absolute;left:0;top:10%;bottom:10%;width:1px;background:rgba(187,154,94,.3)}
-  .rp-ic{display:inline-flex;width:92px;height:92px;border-radius:50%;border:1px solid rgba(58,49,38,.4);align-items:center;justify-content:center;
-    transition:border-color .35s,box-shadow .35s,transform .45s cubic-bezier(.2,.7,.2,1)}
-  .rp-ic svg{width:46px;height:46px;stroke:var(--ink);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;transition:stroke .35s}
+  /* Pastilles pleines : chaque repère porte sa couleur, jamais le fond de la page. */
+  .rp-ic{display:inline-flex;width:92px;height:92px;border-radius:50%;align-items:center;justify-content:center;
+    background:linear-gradient(160deg,var(--rc) 0%,color-mix(in srgb,var(--rc) 74%,#241a12) 100%);
+    border:1px solid color-mix(in srgb,var(--rc) 70%,#241a12);
+    box-shadow:0 10px 24px color-mix(in srgb,var(--rc) 26%,transparent), inset 0 1px 0 rgba(255,244,230,.28);
+    transition:box-shadow .35s,transform .45s cubic-bezier(.2,.7,.2,1)}
+  .rp-ic svg{width:46px;height:46px;stroke:#F7F1E6;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
   .rp-item h3{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);font-weight:600;margin-top:1.35rem}
   .rp-item p{font-family:var(--serif);font-size:1.05rem;line-height:1.5;color:var(--ink-soft);margin-top:.65rem}
-  .rp-item:hover .rp-ic{border-color:var(--rc);transform:translateY(-6px);box-shadow:0 16px 32px color-mix(in srgb,var(--rc) 22%,transparent)}
-  .rp-item:hover .rp-ic svg{stroke:var(--rc)}
+  .rp-item:hover .rp-ic{transform:translateY(-6px);box-shadow:0 20px 40px color-mix(in srgb,var(--rc) 42%,transparent), inset 0 1px 0 rgba(255,244,230,.35)}
   .rp-item:hover .an-leaf{animation:rpSway 1.7s ease-in-out infinite}
   .rp-item:hover .an-sun{animation:rpSpin 8s linear infinite}
   .rp-item:hover .an-rings{animation:rpPulse 1.6s ease-in-out infinite}
