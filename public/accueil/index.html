@@ -437,53 +437,53 @@
   .o-eyebrow{font-family:var(--serif);font-size:.78rem;letter-spacing:.24em;text-transform:uppercase;color:var(--brass-bright)}
   .plus-sur{text-align:center;font-family:var(--sans);font-size:.72rem;font-weight:600;letter-spacing:.3em;
     text-transform:uppercase;color:var(--brass-deep);margin-bottom:.9rem}
-  .plus-grid{margin-top:2.6rem}
+  .plus-grid{margin-top:2.2rem}
   .offer{position:relative;display:flex;border-radius:22px;overflow:hidden;text-decoration:none;
     transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s}
   .offer:hover{transform:translateY(-4px)}
   /* Origine : les tokens de sa propre page (papier, cuivre bruni, verre poli),
      au même format que la bande du Foyer juste dessous. */
   .offer-origine{display:block;position:relative;overflow:hidden;border-radius:26px;aspect-ratio:16/9;
-    background:var(--o-paper);border:1px solid rgba(154,107,73,.24);
-    box-shadow:0 18px 46px rgba(44,36,32,.14);text-decoration:none}
+    background:linear-gradient(150deg,#2A332B 0%,#1A1F1B 62%,#141a16 100%);
+    border:1px solid rgba(220,200,179,.22);
+    box-shadow:0 20px 52px rgba(16,23,19,.32);text-decoration:none}
   .offer-origine:hover{transform:translateY(-4px)}
   .o-halo{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
   .o-halo span{position:absolute;border-radius:50%;filter:blur(110px)}
-  .o-halo span:nth-child(1){top:-30%;left:-12%;width:56%;height:130%;background:rgba(230,163,116,.26)}
-  .o-halo span:nth-child(2){bottom:-34%;right:-8%;width:52%;height:130%;background:rgba(212,160,74,.22)}
+  .o-halo span:nth-child(1){top:-30%;left:-12%;width:56%;height:130%;background:rgba(230,163,116,.20)}
+  .o-halo span:nth-child(2){bottom:-34%;right:-8%;width:52%;height:130%;background:rgba(212,160,74,.16)}
   .offer-origine .o-body{position:relative;z-index:1;height:100%;display:grid;
     grid-template-columns:1.12fr .88fr;gap:clamp(1.6rem,4vw,3.4rem);align-items:stretch;
     padding:clamp(1.6rem,3.6vw,3.4rem)}
   .offer-origine .o-body > div:first-child{align-self:center}
   .offer-origine .o-eyebrow{font-family:var(--sans);font-weight:600;font-size:clamp(.6rem,.82vw,.72rem);
-    letter-spacing:.28em;text-transform:uppercase;color:var(--o-copper)}
+    letter-spacing:.28em;text-transform:uppercase;color:#DCC8B3}
   .offer-origine .o-title{font-family:var(--serif);font-weight:500;text-transform:uppercase;
-    font-size:clamp(1.6rem,3.4vw,3rem);line-height:1.02;letter-spacing:.07em;color:var(--o-ink);margin-top:.8rem}
+    font-size:clamp(1.6rem,3.4vw,3rem);line-height:1.02;letter-spacing:.07em;color:#F2EFE9;margin-top:.8rem}
   .o-filet{width:64px;height:1px;background:rgba(212,160,74,.6);margin:clamp(.7rem,1.4vw,1.2rem) 0}
-  .offer-origine .o-tag{font-family:var(--serif);font-size:clamp(.95rem,1.35vw,1.2rem);color:var(--o-copper);letter-spacing:.06em;margin:0}
-  .offer-origine .o-desc{color:#5c5148;line-height:1.8;font-size:clamp(.76rem,1vw,.94rem);margin-top:.8rem;max-width:52ch}
-  .o-porte{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:clamp(2.2rem,3vw,3rem) clamp(1.2rem,2vw,2rem) clamp(1.4rem,2vw,2.2rem);
-    border-radius:26px;text-align:center;background:rgba(255,252,245,.7);border:1px solid rgba(154,107,73,.2);
-    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 8px 32px rgba(44,36,32,.08);
-    transition:background .3s,box-shadow .3s}
-  .offer-origine:hover .o-porte{background:rgba(255,252,245,.92);box-shadow:0 14px 44px rgba(44,36,32,.15)}
-  .o-sceau{position:absolute;top:-24px;left:50%;transform:translateX(-50%);width:48px;height:48px;border-radius:50%;
-    background:var(--o-copper);border:4px solid var(--o-paper);display:flex;align-items:center;justify-content:center;
-    box-shadow:0 10px 24px rgba(44,36,32,.22)}
-  .o-sceau svg{width:19px;height:19px;stroke:#F7F1E6;stroke-width:1.3;fill:none}
-  .o-lead{font-family:var(--serif);font-size:clamp(1.1rem,1.9vw,1.6rem);line-height:1.3;color:var(--o-ink)}
-  .o-sep{width:56px;height:1px;background:rgba(212,160,74,.5);margin:clamp(.7rem,1.2vw,1rem) auto}
+  .offer-origine .o-tag{font-family:var(--serif);font-size:clamp(.95rem,1.35vw,1.2rem);color:#E6A374;letter-spacing:.06em;margin:0}
+  .offer-origine .o-desc{color:rgba(242,239,233,.76);line-height:1.8;font-size:clamp(.76rem,1vw,.94rem);margin-top:.8rem;max-width:52ch}
+  .o-porte{position:relative;height:100%;min-height:0;border-radius:22px;overflow:hidden;
+    border:1px solid rgba(220,200,179,.22);background:#1A1F1B;
+    box-shadow:0 14px 40px rgba(16,23,19,.35);transition:box-shadow .3s}
+  .offer-origine:hover .o-porte{box-shadow:0 20px 52px rgba(16,23,19,.5)}
+  .o-porte img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:58% center}
+  .o-voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,26,22,0) 44%,rgba(20,26,22,.62) 72%,rgba(20,26,22,.95) 100%)}
+  .o-pied{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:2rem 1.2rem 1.4rem;text-align:center;background:linear-gradient(180deg,rgba(20,26,22,0),rgba(20,26,22,.9) 45%)}
+  .o-sceau{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:3;width:44px;height:44px;border-radius:50%;
+    background:var(--o-copper);border:3px solid rgba(242,239,233,.85);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 10px 24px rgba(16,23,19,.45)}
+  .o-sceau svg{width:18px;height:18px;stroke:#F7F1E6;stroke-width:1.3;fill:none}
   .o-cta{display:inline-flex;align-items:center;gap:.7rem;font-family:var(--sans);font-weight:600;
     text-transform:uppercase;letter-spacing:.22em}
   .o-cta svg{width:18px;height:10px;flex:0 0 auto;stroke:currentColor;stroke-width:1.4;fill:none;transition:transform .3s}
   .offer:hover .o-cta svg{transform:translateX(4px)}
-  .o-porte .o-cta{color:var(--o-copper);font-size:clamp(.6rem,.8vw,.7rem);letter-spacing:.22em;justify-content:center}
-  .o-porte .o-cta svg{stroke:var(--o-copper)}
-  .o-porte .o-meta{display:block;margin-top:.9rem;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(92,81,72,.7)}
+  .o-porte .o-cta{color:#E6C79B;font-size:clamp(.6rem,.8vw,.7rem);letter-spacing:.22em;justify-content:center}
+  .o-porte .o-cta svg{stroke:#E6C79B}
+  .o-porte .o-meta{display:block;margin-top:.6rem;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,239,233,.6)}
 
   /* Le Foyer d'Origine : le visuel paysage, le formulaire dans l'espace libre */
-  .foyer-band{position:relative;margin-top:2.2rem;border-radius:26px;overflow:hidden;
+  .foyer-band{position:relative;margin-top:2.6rem;border-radius:26px;overflow:hidden;
     border:1px solid rgba(187,154,94,.32);box-shadow:0 18px 46px rgba(16,23,19,.14);background:#efe8db}
   .foyer-band .fy-visuel{position:relative;width:100%;aspect-ratio:16/9;display:block}
   .foyer-band .fy-visuel video,.foyer-band .fy-visuel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -515,6 +515,7 @@
   @media(max-width:860px){
     .plus{padding:4rem 0 4.5rem} .plus-grid{grid-template-columns:1fr;gap:1.4rem;margin-top:2rem}
     .offer-origine{aspect-ratio:auto} .offer-origine .o-body{grid-template-columns:1fr;gap:2rem;padding:2.2rem 1.7rem}
+    .o-porte{height:auto;aspect-ratio:4/3}
     .foyer-band .fy-visuel{aspect-ratio:16/10}
     .fy-panneau{position:static;width:auto;max-width:none;max-height:none;padding:1.6rem 1.5rem 2rem;background:#efe8db}
     .fy-lede{display:block}
@@ -771,30 +772,6 @@
       <h2 class="sec-title reveal">Devenez votre premier repère</h2>
       <div class="rule reveal d1"></div>
 
-      <div class="plus-grid">
-        <a class="offer offer-origine reveal" href="/origine">
-          <span class="o-halo" aria-hidden="true"><span></span><span></span></span>
-          <div class="o-body">
-            <div>
-              <span class="o-eyebrow">Traversée accompagnée</span>
-              <h3 class="o-title">Expérience Origine</h3>
-              <div class="o-filet" aria-hidden="true"></div>
-              <p class="o-tag">Lire · Trier · Ancrer</p>
-              <p class="o-desc">Pour celles qui veulent entreprendre une véritable traversée accompagnée. Douze semaines pour revenir à un repère intérieur plus stable et transformer sa relation à soi, au corps et à la vie.</p>
-            </div>
-            <div class="o-porte">
-              <span class="o-sceau" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v10M7 12h10"/></svg>
-              </span>
-              <p class="o-lead">La porte s'ouvre ici.</p>
-              <div class="o-sep" aria-hidden="true"></div>
-              <span class="o-cta">Découvrir Expérience Origine <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></span>
-              <span class="o-meta">12 semaines · Accompagnée</span>
-            </div>
-          </div>
-        </a>
-      </div>
-
       <div class="foyer-band reveal d2" id="foyer-attente">
         <div class="fy-visuel">
           <video id="fyfeu" poster="/assets/foyer-visuel-16x9.jpg" data-src="/assets/foyer-visuel-16x9.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
@@ -817,6 +794,32 @@
           <p class="fy-msg" id="fymsg" role="status" aria-live="polite"></p>
         </div>
       </div>
+      <div class="plus-grid">
+        <a class="offer offer-origine reveal" href="/origine">
+          <span class="o-halo" aria-hidden="true"><span></span><span></span></span>
+          <div class="o-body">
+            <div>
+              <span class="o-eyebrow">Traversée accompagnée</span>
+              <h3 class="o-title">Expérience Origine</h3>
+              <div class="o-filet" aria-hidden="true"></div>
+              <p class="o-tag">Lire · Trier · Ancrer</p>
+              <p class="o-desc">Pour celles qui veulent entreprendre une véritable traversée accompagnée. Douze semaines pour revenir à un repère intérieur plus stable et transformer sa relation à soi, au corps et à la vie.</p>
+            </div>
+            <div class="o-porte">
+              <img src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg" alt="L'enveloppe d'Expérience Origine" loading="lazy" decoding="async" />
+              <span class="o-voile" aria-hidden="true"></span>
+              <span class="o-sceau" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v10M7 12h10"/></svg>
+              </span>
+              <div class="o-pied">
+                <span class="o-cta">Découvrir Expérience Origine <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></span>
+                <span class="o-meta">12 semaines · Accompagnée</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+
     </div>
   </section>
 

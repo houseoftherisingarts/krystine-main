@@ -1,4 +1,5 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { FieldValue, Timestamp, getFirestore } from 'firebase-admin/firestore';
 import type { Transporter } from 'nodemailer';
 import {
@@ -33,6 +34,9 @@ export interface LiveEvent {
   replayUrl?: string;
   tag: string;
   reminders?: Partial<Record<Step, unknown>>;
+  // Le nombre d'heures avant le direct où chaque rappel part. Krystine les
+  // règle dans l'admin; sans réglage, la série garde 72 h, 24 h et 1 h.
+  offsets?: Partial<Record<'d3' | 'veille' | 'h1', number>>;
 }
 
 type Step = 'd3' | 'veille' | 'h1' | 'replay';
@@ -312,7 +316,9 @@ export const sendLiveReminders = onSchedule(
         const done = ev.reminders || {};
 
         const due: Step[] = [];
-        for (const [step, before] of PRE_STEPS) {
+        for (const [step, defaut] of PRE_STEPS) {
+          const regle = ev.offsets?.[step as 'd3' | 'veille' | 'h1'];
+          const before = typeof regle === 'number' && regle > 0 ? regle * H : defaut;
           const at = start - before;
           if (!done[step] && now >= at && now < start && now < at + GRACE) due.push(step);
         }
@@ -350,5 +356,72 @@ export const sendLiveReminders = onSchedule(
     } finally {
       transporter?.close();
     }
+  },
+);
+
+// ─── Envoi immédiat, déclenché depuis l'admin ────────────────────────────────
+// Krystine choisit l'étape et à qui elle part : les inscrits de ce direct, ou
+// toute la liste active. L'étape reste marquée comme partie, donc la fonction
+// planifiée ne la renverra pas.
+const ADMINS = [
+  'admin@krystinestlaurent.ca',
+  'krystine@inspiratanature.com',
+  'alex@lesalondesinconnus.com',
+  'krystinestlaurent@gmail.com',
+  'houseoftherisingarts@gmail.com',
+  'krystinestterredhysope@gmail.com',
+];
+
+export const envoyerRappelDirect = onCall(
+  { secrets: MAIL_SECRETS, timeoutSeconds: 540, memory: '256MiB' },
+  async (request) => {
+    const email = request.auth?.token?.email as string | undefined;
+    if (!email || !ADMINS.includes(email)) {
+      throw new HttpsError('permission-denied', 'Réservé à l\'administration.');
+    }
+    const eventId = String((request.data as { eventId?: string })?.eventId || '');
+    const step = String((request.data as { step?: string })?.step || '') as Step;
+    const audience = String((request.data as { audience?: string })?.audience || 'inscrits');
+    if (!eventId) throw new HttpsError('invalid-argument', 'Direct manquant.');
+    if (!['d3', 'veille', 'h1', 'replay'].includes(step)) throw new HttpsError('invalid-argument', 'Étape inconnue.');
+
+    const db = getFirestore();
+    const ref = db.collection('liveEvents').doc(eventId);
+    const snap = await ref.get();
+    if (!snap.exists) throw new HttpsError('not-found', 'Ce direct n\'existe plus.');
+    const ev = { id: snap.id, ...(snap.data() as Omit<LiveEvent, 'id'>) };
+    if (step === 'replay' && !ev.replayUrl) {
+      throw new HttpsError('failed-precondition', 'Posez le lien de rediffusion avant d\'envoyer ce courriel.');
+    }
+
+    const col = db.collection('newsletter');
+    const subsSnap = audience === 'tous'
+      ? await col.get()
+      : await col.where('tags', 'array-contains', ev.tag).get();
+    const seen = new Set<string>();
+    const subs = subsSnap.docs
+      .map(d => d.data() as { email?: string; firstName?: string; unsubscribeToken?: string; status?: string })
+      .filter(s => s.email && (!s.status || s.status === 'active') && !seen.has(s.email) && seen.add(s.email));
+
+    const transporter = createTransporter();
+    let sent = 0;
+    try {
+      for (const s of subs) {
+        try {
+          await sendLiveMail(transporter, step, ev, s as { email: string; firstName?: string; unsubscribeToken?: string });
+          sent++;
+        } catch (err) {
+          console.error('[envoyerRappelDirect]', ev.id, step, s.email, err);
+        }
+      }
+    } finally {
+      transporter.close();
+    }
+    await ref.update({
+      [`reminders.${step}`]: FieldValue.serverTimestamp(),
+      [`stats.${step}`]: sent,
+    });
+    console.log('[envoyerRappelDirect]', ev.id, step, audience, `${sent}/${subs.length}`);
+    return { ok: true, sent, total: subs.length };
   },
 );
