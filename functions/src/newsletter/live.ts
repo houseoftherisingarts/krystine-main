@@ -32,6 +32,10 @@ export interface LiveEvent {
   startsAt: Timestamp;
   youtubeUrl: string;
   replayUrl?: string;
+  /** L'envoi de la rediffusion n'a pas lieu avant cette date (réglée dans l'admin). */
+  replayAt?: Timestamp;
+  /** Krystine coupe tous les envois automatiques de ce direct. */
+  envoisDesactives?: boolean;
   tag: string;
   reminders?: Partial<Record<Step, unknown>>;
   // Le nombre d'heures avant le direct où chaque rappel part. Krystine les
@@ -312,6 +316,7 @@ export const sendLiveReminders = onSchedule(
       for (const evDoc of events.docs) {
         const ev = { id: evDoc.id, ...(evDoc.data() as Omit<LiveEvent, 'id'>) };
         if (!ev.startsAt || !ev.tag) continue;
+        if (ev.envoisDesactives) continue;   // coupés depuis l'admin
         const start = ev.startsAt.toMillis();
         const done = ev.reminders || {};
 
@@ -322,7 +327,8 @@ export const sendLiveReminders = onSchedule(
           const at = start - before;
           if (!done[step] && now >= at && now < start && now < at + GRACE) due.push(step);
         }
-        if (!done.replay && ev.replayUrl && now > start) due.push('replay');
+        const replayPret = !ev.replayAt || now >= ev.replayAt.toMillis();
+        if (!done.replay && ev.replayUrl && now > start && replayPret) due.push('replay');
         if (due.length === 0) continue;
 
         // Verrou avant tout envoi : la prochaine exécution voit l'étape faite.

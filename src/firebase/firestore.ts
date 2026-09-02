@@ -179,6 +179,8 @@ export interface LiveEvent {
   startsAt: Timestamp;
   youtubeUrl: string;
   replayUrl?: string;
+  replayAt?: Timestamp;              // l'envoi de la rediffusion ne part pas avant cette date
+  envoisDesactives?: boolean;        // coupe tous les envois automatiques du direct
   tag: string;
   reminders?: Partial<Record<'d3' | 'veille' | 'h1' | 'replay', Timestamp>>;
   stats?: Partial<Record<'d3' | 'veille' | 'h1' | 'replay', number>>;

@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp, doc, updateDoc, deleteField } from 'firebase/firestore';
+import { db } from '../../../../firebase';
 import {
   getLiveEvents, saveLiveEvent, getNewsletterSubscribers, getAllMembers,
   type LiveEvent, type NewsletterSubscriber, type MemberDoc,
 } from '../../../../firebase/firestore';
-import { Card, Input, Label, PrimaryButton, GhostButton, downloadCsv } from '../../primitives';
+import { Card, Input, Label, PrimaryButton, GhostButton, ToggleSwitch, downloadCsv } from '../../primitives';
 import QuestionCards, { type QuestionCard } from './QuestionCards';
 import { envoyerRappelDirect, type EtapeDirect, type AudienceDirect } from '../../../../firebase/live';
 
@@ -43,6 +44,7 @@ const LivePanel: React.FC = () => {
   const [envoiMsg, setEnvoiMsg] = useState<string | null>(null);
   const [sel, setSel] = useState<LiveEvent | null>(null);
   const [when, setWhen] = useState('');
+  const [whenReplay, setWhenReplay] = useState('');   // date d'envoi de la rediffusion
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [loadErr, setLoadErr] = useState<string | null>(null);
@@ -61,14 +63,14 @@ const LivePanel: React.FC = () => {
       setSubs(s);
       setMembers(m);
       setLoadErr(null);
-      if (ev[0]) { setSel(ev[0]); setWhen(toLocalInput(ev[0].startsAt)); }
+      if (ev[0]) { setSel(ev[0]); setWhen(toLocalInput(ev[0].startsAt)); setWhenReplay(toLocalInput(ev[0].replayAt)); }
     } catch (e: any) {
       setLoadErr(e?.message || 'Impossible de charger les inscrits. Réessayez ou vérifiez votre connexion.');
     }
   };
   useEffect(() => { load(); }, []);
 
-  const pick = (ev: LiveEvent) => { setSel(ev); setWhen(toLocalInput(ev.startsAt)); setMsg(null); setEnvoiMsg(null); };
+  const pick = (ev: LiveEvent) => { setSel(ev); setWhen(toLocalInput(ev.startsAt)); setWhenReplay(toLocalInput(ev.replayAt)); setMsg(null); setEnvoiMsg(null); };
 
   // Envoi immédiat d'une étape, aux inscrits de ce direct ou à toute la liste.
   const envoyer = async (step: EtapeDirect, audience: AudienceDirect) => {
@@ -101,7 +103,11 @@ const LivePanel: React.FC = () => {
     if (!sel || !when) return;
     setSaving(true); setMsg(null);
     try {
-      await saveLiveEvent({ ...sel, startsAt: Timestamp.fromDate(new Date(when)) });
+      await saveLiveEvent({
+        ...sel,
+        startsAt: Timestamp.fromDate(new Date(when)),
+        ...(whenReplay ? { replayAt: Timestamp.fromDate(new Date(whenReplay)) } : {}),
+      });
       setMsg('Enregistré.');
       await load();
     } catch (e: any) { setMsg(e?.message || 'Échec de l\'enregistrement'); }
@@ -197,6 +203,38 @@ const LivePanel: React.FC = () => {
             <div>
               <Label>Lien de la rediffusion (à poser après le direct : déclenche le dernier courriel)</Label>
               <Input value={sel.replayUrl || ''} onChange={e => setSel({ ...sel, replayUrl: e.target.value || undefined })} placeholder="https://www.youtube.com/watch?v=…" />
+            </div>
+            <div>
+              <Label>Envoi de la rediffusion (pas avant)</Label>
+              <Input type="datetime-local" value={whenReplay} onChange={e => setWhenReplay(e.target.value)} />
+              <p className="mt-1 text-[11px] text-[#293027]/50 dark:text-white/50">
+                Vide : le courriel part dès que le lien de rediffusion est posé, après le direct.
+              </p>
+              {!!sel.reminders?.replay && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!db || !confirm('Ré-armer la rediffusion ? Le courriel repartira à la prochaine fenêtre (lien et date ci-dessus).')) return;
+                    await updateDoc(doc(db, 'liveEvents', sel.id), { 'reminders.replay': deleteField() });
+                    setMsg('Rediffusion ré-armée.');
+                    await load();
+                  }}
+                  className="mt-2 inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/40 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:bg-[#BA7B39]/10"
+                >
+                  <i className="fa-solid fa-rotate-left" /> Ré-armer la rediffusion (déjà envoyée)
+                </button>
+              )}
+            </div>
+            <div>
+              <ToggleSwitch
+                checked={!sel.envoisDesactives}
+                onChange={async v => {
+                  setSel({ ...sel, envoisDesactives: !v });
+                  await saveLiveEvent({ ...sel, envoisDesactives: !v });
+                  setMsg(v ? 'Envois automatiques réactivés.' : 'Envois automatiques coupés.');
+                }}
+                label={sel.envoisDesactives ? 'Envois automatiques coupés' : 'Envois automatiques actifs'}
+              />
             </div>
             <div>
               <Label>Quand partent les rappels (heures avant le direct)</Label>
