@@ -17,7 +17,10 @@ export const MAIL_SECRETS = [RESEND_API_KEY, NEWSLETTER_POSTAL_ADDRESS];
 export const PUBLIC_BASE_URL = 'https://www.krystinestlaurent.ca';
 export const BRAND_LOGO_URL = 'https://storage.googleapis.com/inspirata/Vata/1%20(1).png';
 export const SENDER_EMAIL = 'infolettre@krystinestlaurent.ca';
-export const REPLY_TO = 'krystine@inspiratanature.com';
+// Les réponses vont à la boîte d'équipe, jamais à la boîte personnelle de
+// Krystine (ordre d'Alex, 2026-09-02). Le From passera aussi à teamksl@
+// dès que les 3 DNS Resend d'inspiratanature.com seront posés chez rapidenet.
+export const REPLY_TO = 'teamksl@inspiratanature.com';
 
 export function createTransporter() {
   return nodemailer.createTransport({
