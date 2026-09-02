@@ -335,22 +335,34 @@ export const sendLiveReminders = onSchedule(
         const subsSnap = await db.collection('newsletter').where('tags', 'array-contains', ev.tag).get();
         const seen = new Set<string>();
         const subs = subsSnap.docs
-          .map(d => d.data() as { email?: string; firstName?: string; unsubscribeToken?: string; status?: string })
+          .map(d => ({ ref: d.ref, ...(d.data() as { email?: string; firstName?: string; unsubscribeToken?: string; status?: string }) }))
           .filter(s => s.email && (!s.status || s.status === 'active') && !seen.has(s.email) && seen.add(s.email));
 
         transporter = transporter || createTransporter();
         for (const step of due) {
           let sent = 0;
+          let coupe = false;
+          let lot = db.batch();
+          let enAttente = 0;
           for (const s of subs) {
             try {
               await sendLiveMail(transporter, step, ev, s as { email: string; firstName?: string; unsubscribeToken?: string });
               sent++;
+              lot.update(s.ref, { [cleLivraison(ev.tag, step)]: FieldValue.serverTimestamp() });
+              if (++enAttente >= 400) { await lot.commit(); lot = db.batch(); enAttente = 0; }
             } catch (err) {
+              if (estQuota(err)) {
+                coupe = true;
+                console.error('[sendLiveReminders] quota du fournisseur atteint', ev.id, step, `${sent} partis`);
+                break;
+              }
               console.error('[sendLiveReminders]', ev.id, step, s.email, err);
             }
           }
+          if (enAttente > 0) await lot.commit().catch(e => console.error('[sendLiveReminders] marques', e));
           await evDoc.ref.update({ [`stats.${step}`]: sent });
-          console.log('[sendLiveReminders]', ev.id, step, `${sent}/${subs.length}`);
+          console.log('[sendLiveReminders]', ev.id, step, `${sent}/${subs.length}`, coupe ? 'QUOTA' : '');
+          if (coupe) break;
         }
       }
     } finally {
@@ -358,6 +370,20 @@ export const sendLiveReminders = onSchedule(
     }
   },
 );
+
+// ─── Quota du fournisseur ────────────────────────────────────────────────────
+// Resend refuse au-delà de son quota quotidien. Sans ce garde-fou, la boucle
+// continuait à cogner des milliers de fois pour rien et l'étape passait pour
+// envoyée alors que presque personne n'avait reçu le courriel.
+function estQuota(err: unknown): boolean {
+  const e = err as { responseCode?: number; response?: string; message?: string };
+  const texte = `${e?.response || ''} ${e?.message || ''}`.toLowerCase();
+  return e?.responseCode === 550 || /quota|rate limit|too many|daily limit/.test(texte);
+}
+
+// Une marque par personne et par étape : la reprise du lendemain ne renvoie
+// jamais le même courriel deux fois.
+const cleLivraison = (tag: string, step: Step) => `rappelsEnvoyes.${tag}__${step}`;
 
 // ─── Envoi immédiat, déclenché depuis l'admin ────────────────────────────────
 // Krystine choisit l'étape et à qui elle part : les inscrits de ce direct, ou
@@ -398,30 +424,50 @@ export const envoyerRappelDirect = onCall(
     const subsSnap = audience === 'tous'
       ? await col.get()
       : await col.where('tags', 'array-contains', ev.tag).get();
+    const marque = `${ev.tag}__${step}`;
     const seen = new Set<string>();
-    const subs = subsSnap.docs
-      .map(d => d.data() as { email?: string; firstName?: string; unsubscribeToken?: string; status?: string })
+    const tous = subsSnap.docs
+      .map(d => ({ ref: d.ref, ...(d.data() as {
+        email?: string; firstName?: string; unsubscribeToken?: string; status?: string;
+        rappelsEnvoyes?: Record<string, unknown>;
+      }) }))
       .filter(s => s.email && (!s.status || s.status === 'active') && !seen.has(s.email) && seen.add(s.email));
+    // La reprise saute celles et ceux qui ont déjà reçu cette étape.
+    const subs = tous.filter(s => !s.rappelsEnvoyes?.[marque]);
+    const dejaServis = tous.length - subs.length;
 
     const transporter = createTransporter();
     let sent = 0;
+    let quotaAtteint = false;
+    let lot = db.batch();
+    let enAttente = 0;
     try {
       for (const s of subs) {
         try {
           await sendLiveMail(transporter, step, ev, s as { email: string; firstName?: string; unsubscribeToken?: string });
           sent++;
+          lot.update(s.ref, { [cleLivraison(ev.tag, step)]: FieldValue.serverTimestamp() });
+          if (++enAttente >= 400) { await lot.commit(); lot = db.batch(); enAttente = 0; }
         } catch (err) {
+          if (estQuota(err)) {
+            quotaAtteint = true;
+            console.error('[envoyerRappelDirect] quota du fournisseur atteint', ev.id, step, `${sent} partis`);
+            break;
+          }
           console.error('[envoyerRappelDirect]', ev.id, step, s.email, err);
         }
       }
     } finally {
+      if (enAttente > 0) await lot.commit().catch(e => console.error('[envoyerRappelDirect] marques', e));
       transporter.close();
     }
+
+    const restants = subs.length - sent;
     await ref.update({
       [`reminders.${step}`]: FieldValue.serverTimestamp(),
-      [`stats.${step}`]: sent,
+      [`stats.${step}`]: FieldValue.increment(sent),
     });
-    console.log('[envoyerRappelDirect]', ev.id, step, audience, `${sent}/${subs.length}`);
-    return { ok: true, sent, total: subs.length };
+    console.log('[envoyerRappelDirect]', ev.id, step, audience, `${sent}/${subs.length}`, quotaAtteint ? 'QUOTA' : '');
+    return { ok: true, sent, total: subs.length, restants, dejaServis, quotaAtteint };
   },
 );

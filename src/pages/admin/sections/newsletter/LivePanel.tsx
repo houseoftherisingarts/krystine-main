@@ -79,7 +79,11 @@ const LivePanel: React.FC = () => {
     setEnvoi(`${step}-${audience}`); setEnvoiMsg(null);
     try {
       const r = await envoyerRappelDirect(sel.id, step, audience);
-      setEnvoiMsg(`Parti à ${r.sent} personne${r.sent > 1 ? 's' : ''} sur ${r.total}.`);
+      const base = `Parti à ${r.sent} personne${r.sent > 1 ? 's' : ''} sur ${r.total}.`;
+      const deja = r.dejaServis > 0 ? ` ${r.dejaServis} l'avaient déjà reçu.` : '';
+      setEnvoiMsg(r.quotaAtteint
+        ? `${base}${deja} Le fournisseur de courriel a atteint son quota du jour, ${r.restants} personne${r.restants > 1 ? 's attendent' : ' attend'} encore. Reprenez demain avec le même bouton, celles qui ont reçu sont sautées.`
+        : `${base}${deja}`);
       await load();
     } catch (e: any) {
       setEnvoiMsg(e?.message || 'L\'envoi n\'a pas fonctionné.');
