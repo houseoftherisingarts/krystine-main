@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { jsPDF } from 'jspdf';
 import { subscribeToLiveQuestions, type LiveQuestion } from '../../../../firebase/firestore';
 
 // Le paquet de cartes du direct. Krystine ouvre ça en plein écran pendant le
@@ -57,6 +58,62 @@ const PARCHMENT = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000
 const EASE = [0.16, 0.8, 0.24, 1] as const;
 
 const initial = (name: string) => (name.trim()[0] || '?').toUpperCase();
+
+// Le paquet en PDF : une question par page paysage, la teinte de la carte en
+// bandeau, le tout lisible sur papier comme sur un iPad posé à côté du micro.
+function paquetEnPdf(deck: QuestionCard[], titre: string) {
+  const doc = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'landscape' });
+  const L = doc.internal.pageSize.getWidth();
+  const H = doc.internal.pageSize.getHeight();
+  const M = 56;
+
+  deck.forEach((c, i) => {
+    if (i > 0) doc.addPage();
+    const teinte: [number, number, number] = c.live ? [46, 96, 136] : [168, 70, 40];
+
+    doc.setFillColor(247, 241, 228);
+    doc.rect(0, 0, L, H, 'F');
+    doc.setFillColor(...teinte);
+    doc.rect(0, 0, L, 10, 'F');
+    doc.setDrawColor(...teinte);
+    doc.setLineWidth(0.8);
+    doc.rect(M - 18, M - 18, L - 2 * (M - 18), H - 2 * (M - 18));
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...teinte);
+    doc.text((c.live ? 'POSÉE PENDANT LE DIRECT' : 'REÇUE À L’INSCRIPTION').split('').join(' '), M, M + 6);
+
+    doc.setFont('times', 'normal');
+    doc.setFontSize(30);
+    doc.setTextColor(41, 48, 39);
+    doc.text(doc.splitTextToSize(c.name, L - 2 * M)[0], M, M + 52);
+
+    const meta = [c.email, c.meta, c.at ? c.at.toLocaleDateString('fr-CA', { day: 'numeric', month: 'long', year: 'numeric' }) : '']
+      .filter(Boolean).join('   ·   ');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9.5);
+    doc.setTextColor(120, 112, 100);
+    doc.text(meta, M, M + 74);
+
+    doc.setDrawColor(200, 168, 106);
+    doc.setLineWidth(1);
+    doc.line(M, M + 92, M + 90, M + 92);
+
+    doc.setFont('times', 'normal');
+    doc.setFontSize(18);
+    doc.setTextColor(41, 48, 39);
+    doc.text(doc.splitTextToSize(c.question, L - 2 * M), M, M + 132, { lineHeightFactor: 1.5 });
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(150, 142, 130);
+    doc.text(`${String(i + 1).padStart(2, '0')} / ${String(deck.length).padStart(2, '0')}`, M, H - M + 10);
+    doc.text(titre, L - M, H - M + 10, { align: 'right' });
+  });
+
+  doc.save(`questions-du-direct-${deck.length}.pdf`);
+}
 
 const dateFr = (d?: Date) =>
   d ? d.toLocaleDateString('fr-CA', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
@@ -162,6 +219,10 @@ const QuestionCards: React.FC<{
             <span className="text-[#EEE7DB]">{String(Math.min(i + 1, total)).padStart(2, '0')}</span>
             <span className="mx-1.5 text-[#EEE7DB]/30">/</span>{String(total).padStart(2, '0')}
           </p>
+          <button onClick={() => paquetEnPdf(deck, eventTitle || 'Podcast en direct')} disabled={total === 0}
+            className="px-4 h-11 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/15 bg-white/5 backdrop-blur-md text-[#EEE7DB]/75 hover:text-[#EEE7DB] hover:border-white/35 disabled:opacity-30 transition-colors">
+            <i className="fa-solid fa-file-arrow-down mr-2" />PDF
+          </button>
           <button onClick={onClose} aria-label="Fermer"
             className="w-11 h-11 rounded-full grid place-items-center text-[#EEE7DB]/70 border border-white/15 bg-white/5 backdrop-blur-md hover:text-[#EEE7DB] hover:border-white/35 transition-colors">
             <i className="fa-solid fa-xmark" />

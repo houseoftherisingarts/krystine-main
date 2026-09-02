@@ -486,11 +486,12 @@
   .o-porte .o-meta{display:block;margin-top:.6rem;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,239,233,.6)}
 
   /* Le Foyer d'Origine : le visuel paysage, le formulaire dans l'espace libre */
-  .foyer-band{position:relative;margin-top:2.6rem;border-radius:26px;overflow:hidden;
-    border:1px solid rgba(187,154,94,.32);box-shadow:0 18px 46px rgba(16,23,19,.14);background:#efe8db}
-  .foyer-band .fy-visuel{position:relative;width:100%;aspect-ratio:16/9;display:block}
-  .foyer-band .fy-visuel video,.foyer-band .fy-visuel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-  .fy-panneau{position:absolute;left:4.5%;top:6%;width:44%;max-width:520px;max-height:72%;z-index:2}
+  .foyer-band{position:relative;margin:2.8rem 0 0;border-radius:0;overflow:hidden;
+    border-top:1px solid rgba(187,154,94,.32);border-bottom:1px solid rgba(187,154,94,.32);background:#efe8db}
+  .foyer-band .fy-visuel{position:relative;width:100%;aspect-ratio:16/9;max-height:min(72vh,660px);display:block}
+  .foyer-band .fy-visuel video,.foyer-band .fy-visuel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 82%}
+  .fy-panneau{position:absolute;left:max(3rem,calc((100% - 1280px) / 2 + 3rem));top:8%;
+    width:min(44%,520px);max-height:74%;z-index:2}
   .fy-panneau .o-eyebrow{color:var(--brass-deep);font-size:clamp(.78rem,1.1vw,.95rem);letter-spacing:.26em}
   .fy-panneau h3{font-family:var(--serif);font-weight:500;text-transform:uppercase;letter-spacing:.02em;
     font-size:clamp(1.35rem,2.5vw,2.1rem);line-height:1.06;color:var(--ink);margin-top:.35rem}
@@ -514,7 +515,7 @@
   .fy-msg.show{opacity:1;transform:none}
   .fy-msg.err{color:#c2603a}
   .fy-msg.ok{font-family:var(--serif);font-size:1.05rem;color:var(--brass-deep)}
-  @media(max-width:1100px){ .fy-panneau{width:50%;left:4%;top:5%} .fyform{gap:.4rem} .fy-lede{display:none} }
+  @media(max-width:1100px){ .fy-panneau{width:50%;left:1.6rem;top:5%} .fyform{gap:.4rem} .fy-lede{display:none} }
   @media(max-width:860px){
     .plus{padding:4rem 0 4.5rem} .plus-grid{grid-template-columns:1fr;gap:1.4rem;margin-top:2rem}
     .offer-origine{aspect-ratio:auto} .offer-origine .o-body{grid-template-columns:1fr;gap:2rem;padding:2.2rem 1.7rem}
@@ -775,28 +776,29 @@
       <h2 class="sec-title reveal">Devenez votre premier repère</h2>
       <div class="rule reveal d1"></div>
 
-      <div class="foyer-band reveal d2" id="foyer-attente">
-        <div class="fy-visuel">
-          <video id="fyfeu" poster="/assets/foyer-visuel-16x9.jpg" data-src="/assets/foyer-visuel-16x9.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
-        </div>
-        <div class="fy-panneau">
-            <span class="o-eyebrow">Liste d'attente</span>
-            <h3>Le Foyer d'Origine</h3>
-            <p class="fy-lede">Un lieu pour découvrir, relier et rencontrer ce que nous n'aurions pas pensé chercher.</p>
-            <p class="fy-braise">Quelque chose se prépare autour du feu.</p>
-            <form class="fyform" id="fyform" novalidate>
-              <div class="fy-row">
-                <input id="fyprenom" type="text" placeholder="Prénom" autocomplete="given-name" aria-label="Prénom" />
-                <input id="fynom" type="text" placeholder="Nom" autocomplete="family-name" aria-label="Nom" />
-              </div>
-              <input id="fymail" type="email" placeholder="Votre courriel" autocomplete="email" aria-label="Votre courriel" aria-describedby="fymsg" />
-              <label class="fy-q" for="fybesoin">Quel est votre plus grand besoin en ce moment ?</label>
-              <textarea id="fybesoin" rows="2" placeholder="Quel est votre plus grand besoin en ce moment ?"></textarea>
-              <button type="submit">Rejoindre la liste d'attente</button>
-            </form>
-          <p class="fy-msg" id="fymsg" role="status" aria-live="polite"></p>
-        </div>
+    </div>
+
+    <div class="foyer-band reveal d2" id="foyer-attente">
+      <div class="fy-visuel">
+        <video id="fyfeu" poster="/assets/foyer-visuel-16x9.jpg" data-src="/assets/foyer-visuel-16x9.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
       </div>
+      <div class="fy-panneau">
+          <span class="o-eyebrow">Liste d'attente</span>
+          <h3>Le Foyer d'Origine</h3>
+          <p class="fy-lede">Un lieu pour découvrir, relier et rencontrer ce que nous n'aurions pas pensé chercher.</p>
+          <p class="fy-braise">Quelque chose se prépare autour du feu.</p>
+          <form class="fyform" id="fyform" novalidate>
+            <div class="fy-row">
+              <input id="fyprenom" type="text" placeholder="Prénom" autocomplete="given-name" aria-label="Prénom" />
+              <input id="fynom" type="text" placeholder="Nom" autocomplete="family-name" aria-label="Nom" />
+            </div>
+            <input id="fymail" type="email" placeholder="Votre courriel" autocomplete="email" aria-label="Votre courriel" aria-describedby="fymsg" />
+            <button type="submit">Rejoindre la liste d'attente</button>
+          </form>
+        <p class="fy-msg" id="fymsg" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+    <div class="mx">
       <div class="plus-grid">
         <a class="offer offer-origine reveal" href="/origine">
           <span class="o-halo" aria-hidden="true"><span></span><span></span></span>
@@ -1036,8 +1038,7 @@
     const f=document.getElementById('fyform'); if(!f) return;
     const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const mail=document.getElementById('fymail'), prenom=document.getElementById('fyprenom'),
-          nom=document.getElementById('fynom'), besoin=document.getElementById('fybesoin'),
-          msg=document.getElementById('fymsg');
+          nom=document.getElementById('fynom'), msg=document.getElementById('fymsg');
     const setMsg=(t,c)=>{ msg.textContent=t; msg.className='fy-msg show '+(c||''); };
     mail.addEventListener('input',()=>{ if(mail.getAttribute('aria-invalid')==='true' && ok.test(mail.value.trim())){ mail.removeAttribute('aria-invalid'); msg.className='fy-msg'; } });
     f.addEventListener('submit',(e)=>{
@@ -1052,7 +1053,7 @@
           if(window.__nlSubscribe){
             await window.__nlSubscribe(v,'accueil-foyer-attente',
               ['accueil-loeuvre','waitlist-foyer-origine','foyer-origine'],
-              { firstName: prenom.value.trim().slice(0,80), lastName: nom.value.trim().slice(0,80), question: besoin.value.trim().slice(0,1000) });
+              { firstName: prenom.value.trim().slice(0,80), lastName: nom.value.trim().slice(0,80) });
           }
           f.style.display='none';
           setMsg('C’est noté. Vous serez prévenue avant l’ouverture des portes.','ok');
