@@ -12,7 +12,9 @@ const SHOPIFY_API_VERSION = '2025-01';
 const ADMIN_EMAILS = [
   'admin@krystinestlaurent.ca',
   'krystine@inspiratanature.com',
+  'alex@lesalondesinconnus.com',
   'krystinestlaurent@gmail.com',
+  'houseoftherisingarts@gmail.com',
   'krystinestterredhysope@gmail.com',
 ];
 

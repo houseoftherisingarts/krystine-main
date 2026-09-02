@@ -5,6 +5,7 @@ import {
   getDoshaResults,
   getGuideResponses,
   getAllMembers,
+  getLiveEvents,
   type BookingRequest,
   type NewsletterSubscriber,
   type DoshaResult,
@@ -12,8 +13,9 @@ import {
   type MemberDoc,
 } from '../../../firebase/firestore';
 import type { Timestamp } from 'firebase/firestore';
-import { Card, EmptyState, GhostButton, downloadCsv } from '../primitives';
+import { Card, EmptyState, GhostButton, PrimaryButton, downloadCsv } from '../primitives';
 import AdminClientView from '../AdminClientView';
+import QuestionCards, { type QuestionCard } from './newsletter/QuestionCards';
 
 // ─── Unified CRM inbox ──────────────────────────────────────────────────────
 // Every public-facing form on the site writes into one of four Firestore
@@ -173,13 +175,13 @@ function normalizeNewsletter(n: NewsletterSubscriber): Submission {
     tags: n.tags || [],
     createdAt: n.subscribedAt,
     summary: isWaitlist
-      ? prettySource(n.source || '')
+      ? `${prettySource(n.source || '')}${n.question ? ' · a nommé son besoin' : ''}`
       : isPodcastLive
         ? (n.question ? 'Inscrite au direct · a posé une question' : 'Inscrite au direct')
         : (n.status === 'unsubscribed' ? 'Désabonné·e' : 'Abonné·e'),
-    // La question posée à l'inscription s'affiche en clair sous la ligne :
-    // c'est ce que Krystine lit avant de passer en ondes.
-    message: isPodcastLive ? n.question : undefined,
+    // Le champ libre s'affiche en clair sous la ligne : la question du direct
+    // pour le podcast, le besoin du moment pour la liste d'attente du Foyer.
+    message: (isPodcastLive || isWaitlist) ? n.question : undefined,
     details,
   };
 }
@@ -270,6 +272,10 @@ const SubmissionsSection: React.FC = () => {
   const [viewingUid, setViewingUid] = useState<string | null>(null);
   // Sources qui n'ont pas répondu au chargement : la liste est alors partielle.
   const [loadWarn, setLoadWarn] = useState<string[]>([]);
+  // Le paquet de cartes du direct, ouvert depuis l'onglet « Podcast live ».
+  const [cartes, setCartes] = useState(false);
+  const [fiches, setFiches] = useState<Map<string, MemberDoc>>(new Map());
+  const [tagDirect, setTagDirect] = useState<string>('');
 
   useEffect(() => {
     let cancelled = false;
@@ -293,9 +299,14 @@ const SubmissionsSection: React.FC = () => {
       // so casing drift between the form payload and the members doc
       // doesn't break the link.
       const emailToUid = new Map<string, string>();
+      const parCourriel = new Map<string, MemberDoc>();
       members.forEach(m => {
-        if (m.email) emailToUid.set(m.email.trim().toLowerCase(), m.uid);
+        if (m.email) {
+          emailToUid.set(m.email.trim().toLowerCase(), m.uid);
+          parCourriel.set(m.email.trim().toLowerCase(), m);
+        }
       });
+      setFiches(parCourriel);
       const withMember = (s: Submission): Submission => {
         const key = s.email.trim().toLowerCase();
         const uid = key ? emailToUid.get(key) : undefined;
@@ -316,8 +327,42 @@ const SubmissionsSection: React.FC = () => {
       setSubs(rows);
       setLoading(false);
     });
+    // Le direct visé par les cartes : celui dont l'heure est la plus proche
+    // du moment présent. C'est son étiquette qui reçoit les questions posées
+    // en ondes depuis /podcast/question.
+    getLiveEvents()
+      .then(ev => {
+        if (cancelled || !ev.length) return;
+        const now = Date.now();
+        const proche = [...ev].sort((a, b) =>
+          Math.abs(a.startsAt.toMillis() - now) - Math.abs(b.startsAt.toMillis() - now))[0];
+        setTagDirect(proche.tag);
+      })
+      .catch(() => {});
     return () => { cancelled = true; };
   }, []);
+
+  // Une carte par question reçue à l'inscription, la plus ancienne en premier.
+  const cartesDirect = useMemo<QuestionCard[]>(() => (
+    subs
+      .filter(s => s.category === 'podcastLive' && s.message && s.message.trim())
+      .slice()
+      .sort((a, b) => (a.createdAt?.toMillis?.() ?? 0) - (b.createdAt?.toMillis?.() ?? 0))
+      .map(s => {
+        const m = fiches.get(s.email.trim().toLowerCase());
+        const lieu = s.details.find(d => d.label === 'Région' || d.label === 'Province / pays')?.value;
+        const meta = [lieu, m?.dosha ? `Dosha ${m.dosha}` : ''].filter(Boolean).join(' · ');
+        return {
+          id: s.id,
+          name: s.name === '(sans nom)' ? s.email.split('@')[0] : s.name,
+          email: s.email,
+          question: s.message!.trim(),
+          photoURL: m?.photoURL,
+          meta: meta || undefined,
+          at: s.createdAt?.toDate?.(),
+        };
+      })
+  ), [subs, fiches]);
 
   // Unique source options for the dropdown — refreshed whenever the base
   // list changes so new sources appear without a code push.
@@ -426,6 +471,24 @@ const SubmissionsSection: React.FC = () => {
           );
         })}
       </div>
+
+      {/* Le paquet de cartes du direct : ce que Krystine projette en ondes. */}
+      {cartesDirect.length > 0 && (
+        <Card className="p-5 flex flex-wrap items-center justify-between gap-4 border border-[#BA7B39]/30">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.25em] text-[#293027]/50 dark:text-white/50">Podcast en direct</p>
+            <p className="font-serif text-2xl text-[#293027] dark:text-white">
+              {cartesDirect.length} question{cartesDirect.length > 1 ? 's' : ''} prête{cartesDirect.length > 1 ? 's' : ''} à lire en ondes
+            </p>
+            <p className="text-xs text-[#293027]/60 dark:text-white/60 mt-1">
+              Les cartes s'ouvrent en plein écran, une personne à la fois. Celles qui arrivent de la page publique pendant l'émission se posent à la fin toutes seules.
+            </p>
+          </div>
+          <PrimaryButton onClick={() => setCartes(true)}>
+            <i className="fa-solid fa-id-card mr-2" />Ouvrir les cartes
+          </PrimaryButton>
+        </Card>
+      )}
 
       {/* Dosha secondary filter — only visible when the current scope could
           include dosha rows (All or Dosha). Keeps the filter bar clean for
@@ -608,6 +671,15 @@ const SubmissionsSection: React.FC = () => {
             );
           })}
         </div>
+      )}
+
+      {cartes && (
+        <QuestionCards
+          cards={cartesDirect}
+          eventTag={tagDirect}
+          eventTitle="Podcast en direct"
+          onClose={() => setCartes(false)}
+        />
       )}
 
       {viewingUid && (
