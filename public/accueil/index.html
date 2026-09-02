@@ -32,6 +32,8 @@
     --ink:#3a3126; --ink-soft:#665746;
     --brass:#bb9a5e; --brass-deep:#a3823f; --brass-bright:#dcb874; --ochre:#c79a52; --terracotta:#b06a3f;
     --ctext:#f4ece0; --ctext-soft:#cdbfa9;
+    /* Tokens repris de la page Expérience Origine, pour sa carte */
+    --o-paper:#F2EFE9; --o-ink:#1A1614; --o-copper:#9A6B49; --o-honey:#D4A04A;
     --serif:"Cormorant Garamond",Georgia,serif; --sans:"Inter",system-ui,sans-serif; --script:"Pinyon Script",cursive;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -291,8 +293,8 @@
   .tri-btns{display:flex;gap:1rem;margin-top:2.1rem;flex-wrap:wrap}
   .btn-solid{padding:.95rem 1.7rem;background:var(--brass);color:#fbf6ec;font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;transition:background .3s}
   .btn-solid:hover{background:var(--brass-deep)}
-  .btn-outline{padding:.95rem 1.7rem;border:1px solid var(--brass);color:var(--ink);font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;transition:background .3s,color .3s}
-  .btn-outline:hover{background:var(--brass);color:#fbf6ec}
+  .btn-outline{padding:.95rem 1.7rem;background:var(--espresso-soft);border:1px solid var(--espresso-soft);color:var(--ctext);font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;transition:background .3s,border-color .3s,color .3s}
+  .btn-outline:hover{background:var(--espresso-deep);border-color:var(--espresso-deep);color:var(--brass-bright)}
   .tri-foot{position:absolute;left:0;right:0;bottom:2rem;z-index:2;text-align:center;font-family:var(--serif);font-style:italic;color:#8a7152;font-size:1.05rem;line-height:1.5;padding:0 1.5rem}
 
   /* ---------- responsive ---------- */
@@ -432,36 +434,53 @@
 
   /* ---------- aller plus loin : Origine en vedette, le Foyer dessous ---------- */
   .plus{position:relative;z-index:5;background:var(--cream-2);padding:5.5rem 0 6rem}
-  .plus-grid{display:grid;grid-template-columns:1.22fr .78fr;gap:2.2rem;align-items:stretch;margin-top:2.6rem}
+  .o-eyebrow{font-family:var(--serif);font-size:.78rem;letter-spacing:.24em;text-transform:uppercase;color:var(--brass-bright)}
+  .plus-sur{text-align:center;font-family:var(--sans);font-size:.72rem;font-weight:600;letter-spacing:.3em;
+    text-transform:uppercase;color:var(--brass-deep);margin-bottom:.9rem}
+  .plus-grid{margin-top:2.6rem}
   .offer{position:relative;display:flex;border-radius:22px;overflow:hidden;text-decoration:none;
     transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s}
   .offer:hover{transform:translateY(-4px)}
-  /* Origine : la traversée accompagnée, en encre de forêt et lumière ambrée */
-  .offer-origine{background:linear-gradient(150deg,var(--espresso-soft),var(--espresso-deep));
-    box-shadow:0 20px 50px rgba(16,23,19,.28);border:1px solid rgba(187,154,94,.24)}
-  .offer-origine .o-glow{position:absolute;inset:0;z-index:0;pointer-events:none;
-    background:radial-gradient(80% 70% at 86% 16%, rgba(220,184,116,.34), rgba(187,154,94,.10) 40%, transparent 68%);
-    transition:opacity .6s;opacity:.9}
-  .offer-origine:hover .o-glow{opacity:1}
-  .offer-origine .o-body{position:relative;z-index:1;padding:3rem 3.2rem;display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
-  .o-eyebrow{font-family:var(--serif);font-size:.78rem;letter-spacing:.24em;text-transform:uppercase;color:var(--brass-bright)}
-  .offer-origine .o-title{font-family:var(--serif);font-weight:500;font-size:clamp(1.9rem,3.2vw,2.7rem);line-height:1.05;color:var(--ctext);margin-top:.9rem;text-transform:uppercase;letter-spacing:.01em}
-  .o-tag{font-family:var(--serif);font-size:1.15rem;color:#e8c894;margin-top:.8rem;letter-spacing:.04em}
-  .o-desc{color:var(--ctext-soft);line-height:1.8;font-size:.9rem;margin-top:1.1rem;max-width:430px}
-  .o-foot{display:flex;align-items:center;gap:1.6rem;margin-top:2rem;flex-wrap:wrap}
-  .o-cta{display:inline-flex;align-items:center;gap:.7rem;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--brass-bright)}
-  .o-cta svg{width:18px;height:10px;stroke:currentColor;stroke-width:1.4;fill:none;transition:transform .3s}
+  /* Origine : les tokens de sa propre page (papier, cuivre bruni, verre poli),
+     au même format que la bande du Foyer juste dessous. */
+  .offer-origine{display:block;position:relative;overflow:hidden;border-radius:26px;aspect-ratio:16/9;
+    background:var(--o-paper);border:1px solid rgba(154,107,73,.24);
+    box-shadow:0 18px 46px rgba(44,36,32,.14);text-decoration:none}
+  .offer-origine:hover{transform:translateY(-4px)}
+  .o-halo{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .o-halo span{position:absolute;border-radius:50%;filter:blur(110px)}
+  .o-halo span:nth-child(1){top:-30%;left:-12%;width:56%;height:130%;background:rgba(230,163,116,.26)}
+  .o-halo span:nth-child(2){bottom:-34%;right:-8%;width:52%;height:130%;background:rgba(212,160,74,.22)}
+  .offer-origine .o-body{position:relative;z-index:1;height:100%;display:grid;
+    grid-template-columns:1.12fr .88fr;gap:clamp(1.6rem,4vw,3.4rem);align-items:stretch;
+    padding:clamp(1.6rem,3.6vw,3.4rem)}
+  .offer-origine .o-body > div:first-child{align-self:center}
+  .offer-origine .o-eyebrow{font-family:var(--sans);font-weight:600;font-size:clamp(.6rem,.82vw,.72rem);
+    letter-spacing:.28em;text-transform:uppercase;color:var(--o-copper)}
+  .offer-origine .o-title{font-family:var(--serif);font-weight:500;text-transform:uppercase;
+    font-size:clamp(1.6rem,3.4vw,3rem);line-height:1.02;letter-spacing:.07em;color:var(--o-ink);margin-top:.8rem}
+  .o-filet{width:64px;height:1px;background:rgba(212,160,74,.6);margin:clamp(.7rem,1.4vw,1.2rem) 0}
+  .offer-origine .o-tag{font-family:var(--serif);font-size:clamp(.95rem,1.35vw,1.2rem);color:var(--o-copper);letter-spacing:.06em;margin:0}
+  .offer-origine .o-desc{color:#5c5148;line-height:1.8;font-size:clamp(.76rem,1vw,.94rem);margin-top:.8rem;max-width:52ch}
+  .o-porte{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:clamp(2.2rem,3vw,3rem) clamp(1.2rem,2vw,2rem) clamp(1.4rem,2vw,2.2rem);
+    border-radius:26px;text-align:center;background:rgba(255,252,245,.7);border:1px solid rgba(154,107,73,.2);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 8px 32px rgba(44,36,32,.08);
+    transition:background .3s,box-shadow .3s}
+  .offer-origine:hover .o-porte{background:rgba(255,252,245,.92);box-shadow:0 14px 44px rgba(44,36,32,.15)}
+  .o-sceau{position:absolute;top:-24px;left:50%;transform:translateX(-50%);width:48px;height:48px;border-radius:50%;
+    background:var(--o-copper);border:4px solid var(--o-paper);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 10px 24px rgba(44,36,32,.22)}
+  .o-sceau svg{width:19px;height:19px;stroke:#F7F1E6;stroke-width:1.3;fill:none}
+  .o-lead{font-family:var(--serif);font-size:clamp(1.1rem,1.9vw,1.6rem);line-height:1.3;color:var(--o-ink)}
+  .o-sep{width:56px;height:1px;background:rgba(212,160,74,.5);margin:clamp(.7rem,1.2vw,1rem) auto}
+  .o-cta{display:inline-flex;align-items:center;gap:.7rem;font-family:var(--sans);font-weight:600;
+    text-transform:uppercase;letter-spacing:.22em}
+  .o-cta svg{width:18px;height:10px;flex:0 0 auto;stroke:currentColor;stroke-width:1.4;fill:none;transition:transform .3s}
   .offer:hover .o-cta svg{transform:translateX(4px)}
-  .o-meta{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ctext-soft)}
-  /* La saison en cours : carte parchemin, en retrait de la vedette */
-  .offer-saison{flex-direction:column;justify-content:center;background:var(--card);
-    border:1px solid rgba(187,154,94,.3);box-shadow:0 16px 40px rgba(16,23,19,.10);padding:2.8rem 2.6rem}
-  .offer-saison .o-eyebrow{color:var(--brass-deep)}
-  .offer-saison .o-title{font-family:var(--serif);font-weight:500;font-size:clamp(1.6rem,2.6vw,2.1rem);line-height:1.1;color:var(--ink);margin-top:.8rem}
-  .offer-saison .o-tag{color:var(--terracotta);font-size:1.02rem}
-  .offer-saison .o-desc{color:var(--ink-soft);max-width:none}
-  .offer-saison .o-cta{color:var(--brass-deep)}
-  .offer-saison .o-meta{color:rgba(102,87,70,.75)}
+  .o-porte .o-cta{color:var(--o-copper);font-size:clamp(.6rem,.8vw,.7rem);letter-spacing:.22em;justify-content:center}
+  .o-porte .o-cta svg{stroke:var(--o-copper)}
+  .o-porte .o-meta{display:block;margin-top:.9rem;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(92,81,72,.7)}
 
   /* Le Foyer d'Origine : le visuel paysage, le formulaire dans l'espace libre */
   .foyer-band{position:relative;margin-top:2.2rem;border-radius:26px;overflow:hidden;
@@ -469,11 +488,11 @@
   .foyer-band .fy-visuel{position:relative;width:100%;aspect-ratio:16/9;display:block}
   .foyer-band .fy-visuel video,.foyer-band .fy-visuel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .fy-panneau{position:absolute;left:4.5%;top:6%;width:44%;max-width:520px;max-height:72%;z-index:2}
-  .fy-panneau .o-eyebrow{color:var(--brass-deep)}
+  .fy-panneau .o-eyebrow{color:var(--brass-deep);font-size:clamp(.78rem,1.1vw,.95rem);letter-spacing:.26em}
   .fy-panneau h3{font-family:var(--serif);font-weight:500;text-transform:uppercase;letter-spacing:.02em;
     font-size:clamp(1.35rem,2.5vw,2.1rem);line-height:1.06;color:var(--ink);margin-top:.35rem}
   .fy-lede{margin-top:.6rem;color:var(--ink-soft);line-height:1.62;font-size:clamp(.7rem,.95vw,.86rem);max-width:44ch}
-  .fy-braise{margin-top:.55rem;font-family:var(--serif);font-size:clamp(.9rem,1.35vw,1.2rem);color:var(--brass-deep)}
+  .fy-braise{margin-top:.7rem;font-family:var(--serif);font-size:clamp(1.15rem,1.9vw,1.72rem);line-height:1.25;color:var(--brass-deep)}
   .fyform{display:grid;gap:.45rem;margin-top:clamp(.6rem,1.1vw,.9rem)}
   .fy-row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
   .fyform input,.fyform textarea{width:100%;min-width:0;padding:.62rem .8rem;border-radius:9px;
@@ -495,7 +514,7 @@
   @media(max-width:1100px){ .fy-panneau{width:50%;left:4%;top:5%} .fyform{gap:.4rem} .fy-lede{display:none} }
   @media(max-width:860px){
     .plus{padding:4rem 0 4.5rem} .plus-grid{grid-template-columns:1fr;gap:1.4rem;margin-top:2rem}
-    .offer-origine .o-body{padding:2.3rem 2rem} .offer-saison{padding:2.3rem 2rem}
+    .offer-origine{aspect-ratio:auto} .offer-origine .o-body{grid-template-columns:1fr;gap:2rem;padding:2.2rem 1.7rem}
     .foyer-band .fy-visuel{aspect-ratio:16/10}
     .fy-panneau{position:static;width:auto;max-width:none;max-height:none;padding:1.6rem 1.5rem 2rem;background:#efe8db}
     .fy-lede{display:block}
@@ -748,32 +767,30 @@
   <!-- ===== OFFRES (saison + premiers rituels) ===== -->
   <section class="plus" id="offres">
     <div class="mx">
-      <h2 class="sec-title reveal">Vous souhaitez aller plus loin ?</h2>
+      <p class="plus-sur reveal">Vous souhaitez aller plus loin ?</p>
+      <h2 class="sec-title reveal">Devenez votre premier repère</h2>
       <div class="rule reveal d1"></div>
 
       <div class="plus-grid">
         <a class="offer offer-origine reveal" href="/origine">
-          <span class="o-glow" aria-hidden="true"></span>
+          <span class="o-halo" aria-hidden="true"><span></span><span></span></span>
           <div class="o-body">
-            <span class="o-eyebrow">Traversée accompagnée</span>
-            <h3 class="o-title">Expérience Origine</h3>
-            <p class="o-tag">Lire · Trier · Ancrer</p>
-            <p class="o-desc">Pour celles qui veulent entreprendre une véritable traversée accompagnée. Douze semaines pour revenir à un repère intérieur plus stable et transformer sa relation à soi, au corps et à la vie.</p>
-            <div class="o-foot">
+            <div>
+              <span class="o-eyebrow">Traversée accompagnée</span>
+              <h3 class="o-title">Expérience Origine</h3>
+              <div class="o-filet" aria-hidden="true"></div>
+              <p class="o-tag">Lire · Trier · Ancrer</p>
+              <p class="o-desc">Pour celles qui veulent entreprendre une véritable traversée accompagnée. Douze semaines pour revenir à un repère intérieur plus stable et transformer sa relation à soi, au corps et à la vie.</p>
+            </div>
+            <div class="o-porte">
+              <span class="o-sceau" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v10M7 12h10"/></svg>
+              </span>
+              <p class="o-lead">La porte s'ouvre ici.</p>
+              <div class="o-sep" aria-hidden="true"></div>
               <span class="o-cta">Découvrir Expérience Origine <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></span>
               <span class="o-meta">12 semaines · Accompagnée</span>
             </div>
-          </div>
-        </a>
-
-        <a class="offer offer-saison reveal d2" href="https://krystinestlaurent.mykajabi.com/experience-ayurveda-saison-estivale" target="_blank" rel="noopener noreferrer">
-          <span class="o-eyebrow">Saison en cours · Pitta</span>
-          <h3 class="o-title">L'Expérience Ayurveda · Été</h3>
-          <p class="o-tag">Rafraîchir · Apaiser · Adoucir</p>
-          <p class="o-desc">Quand la chaleur monte, le feu intérieur s'emballe. Un parcours de 7 semaines pour traverser la saison Pitta avec clarté, sans se brûler.</p>
-          <div class="o-foot">
-            <span class="o-cta">Découvrir l'expérience <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></span>
-            <span class="o-meta">7 semaines · Disponible</span>
           </div>
         </a>
       </div>
@@ -804,14 +821,6 @@
   </section>
 
   <!-- ===== FOOTER / INFOLETTRE ===== -->
-  <!-- ===== ÉCHO FINAL ===== -->
-  <section class="echo" id="repere">
-    <div class="mx">
-      <p class="echo-line reveal">Redevenez votre <em>premier repère.</em></p>
-      <a class="cta reveal d2" href="/origine">Découvrir l'Expérience Origine <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a>
-    </div>
-  </section>
-
   <footer class="foot" id="contact">
     <canvas id="dust2" class="foot-dust"></canvas>
     <div class="mx">
