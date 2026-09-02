@@ -26,7 +26,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --espresso-deep:#16100a; --espresso:#1d1604; --espresso-soft:#2a2015;
+    /* Encre de forêt : le brun a été retiré du site (canon KSL, jamais de brun de fond). */
+    --espresso-deep:#101713; --espresso:#161f1a; --espresso-soft:#25322c;
     --cream:#f6f3ee; --cream-2:#f1ebe0; --cream-3:#ede5d7; --card:#faf7f0;
     --ink:#3a3126; --ink-soft:#665746;
     --brass:#bb9a5e; --brass-deep:#a3823f; --brass-bright:#dcb874; --ochre:#c79a52; --terracotta:#b06a3f;
@@ -71,7 +72,7 @@
     @keyframes ovFade{to{opacity:0;transform:translateY(-10%)}}
   }
   .wc{animation:none!important}
-  .hero .scene{position:absolute;top:0;bottom:0;right:0;left:auto;width:84%;z-index:0;overflow:hidden;background:#16100a}
+  .hero .scene{position:absolute;top:0;bottom:0;right:0;left:auto;width:84%;z-index:0;overflow:hidden;background:#101713}
   .hero .scene video{position:absolute;top:50%;left:0;transform:translateY(-50%);height:100%;width:auto;min-width:100%}
   .hero .veil{position:absolute;inset:0;z-index:1;
     background:linear-gradient(90deg, rgba(16,11,7,.95) 0%, rgba(16,11,7,.86) 20%, rgba(16,11,7,.6) 38%, rgba(16,11,7,.3) 58%, rgba(16,11,7,.12) 74%, rgba(16,11,7,0) 90%)}
@@ -263,8 +264,8 @@
   .nlform input{flex:1;padding:1rem 1.1rem;background:rgba(244,236,224,.12);border:1px solid rgba(187,154,94,.55);color:var(--ctext);font-family:var(--sans);font-size:.82rem;transition:border-color .25s,background .25s}
   .nlform input:focus{outline:none;border-color:var(--brass);background:rgba(244,236,224,.16)}
   .nlform input::placeholder{color:var(--ctext-soft)}
-  .nlform button{padding:1rem 1.7rem;background:#9a5a32;color:#fbf6ec;border:none;font-weight:600;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;transition:background .3s}
-  .nlform button:hover{background:#854a27}
+  .nlform button{padding:1rem 1.7rem;background:var(--brass);color:var(--espresso-deep);border:none;font-weight:600;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;transition:background .3s}
+  .nlform button:hover{background:var(--brass-bright)}
   .nlform input[aria-invalid="true"]{border-color:#e0925f}
   .nl-fine{margin-top:.8rem;font-size:.7rem;line-height:1.6;color:var(--ctext-soft);opacity:.85;max-width:380px}
   .nl-msg{min-height:1.1em;margin-top:.7rem;font-size:.76rem;letter-spacing:.01em;opacity:0;transform:translateY(-3px);transition:opacity .35s,transform .35s}
@@ -429,64 +430,76 @@
   .t-bridge{margin-top:1.3rem;font-family:var(--serif);font-style:italic;color:var(--terracotta);font-size:1.15rem;line-height:1.4}
   .t-bridge em{font-style:italic;color:var(--brass-deep)}
 
-  /* ---------- offres (saison + premiers rituels) ---------- */
-  .offers{position:relative;z-index:5;background:var(--cream-2);padding:5.5rem 0 6rem}
-  .offers .mx{display:grid;grid-template-columns:1.25fr .85fr;gap:2.2rem;align-items:stretch}
+  /* ---------- aller plus loin : Origine en vedette, le Foyer dessous ---------- */
+  .plus{position:relative;z-index:5;background:var(--cream-2);padding:5.5rem 0 6rem}
+  .plus-grid{display:grid;grid-template-columns:1.22fr .78fr;gap:2.2rem;align-items:stretch;margin-top:2.6rem}
   .offer{position:relative;display:flex;border-radius:22px;overflow:hidden;text-decoration:none;
     transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s}
   .offer:hover{transform:translateY(-4px)}
-  /* Saison : bande espresso chaude (Pitta = chaleur dorée) */
-  .offer-saison{background:linear-gradient(150deg,var(--espresso-deep),var(--espresso-soft));
-    box-shadow:0 20px 50px rgba(40,28,16,.26);border:1px solid rgba(187,154,94,.22)}
-  .offer-saison .o-glow{position:absolute;inset:0;z-index:0;pointer-events:none;
-    background:radial-gradient(80% 70% at 88% 18%, rgba(232,168,90,.42), rgba(199,154,82,.12) 38%, transparent 66%);
+  /* Origine : la traversée accompagnée, en encre de forêt et lumière ambrée */
+  .offer-origine{background:linear-gradient(150deg,var(--espresso-soft),var(--espresso-deep));
+    box-shadow:0 20px 50px rgba(16,23,19,.28);border:1px solid rgba(187,154,94,.24)}
+  .offer-origine .o-glow{position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(80% 70% at 86% 16%, rgba(220,184,116,.34), rgba(187,154,94,.10) 40%, transparent 68%);
     transition:opacity .6s;opacity:.9}
-  .offer-saison:hover .o-glow{opacity:1}
-  .offer-saison .o-body{position:relative;z-index:1;padding:3rem 3.2rem;display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
+  .offer-origine:hover .o-glow{opacity:1}
+  .offer-origine .o-body{position:relative;z-index:1;padding:3rem 3.2rem;display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
   .o-eyebrow{font-family:var(--serif);font-size:.78rem;letter-spacing:.24em;text-transform:uppercase;color:var(--brass-bright)}
-  .offer-saison .o-title{font-family:var(--serif);font-weight:500;font-size:clamp(1.9rem,3.2vw,2.7rem);line-height:1.05;color:var(--ctext);margin-top:.9rem;text-transform:uppercase;letter-spacing:.01em}
-  .o-tag{font-family:var(--serif);font-style:italic;font-size:1.15rem;color:var(--terracotta);margin-top:.8rem}
-  .offer-saison .o-tag{color:#e8b07a}
+  .offer-origine .o-title{font-family:var(--serif);font-weight:500;font-size:clamp(1.9rem,3.2vw,2.7rem);line-height:1.05;color:var(--ctext);margin-top:.9rem;text-transform:uppercase;letter-spacing:.01em}
+  .o-tag{font-family:var(--serif);font-size:1.15rem;color:#e8c894;margin-top:.8rem;letter-spacing:.04em}
   .o-desc{color:var(--ctext-soft);line-height:1.8;font-size:.9rem;margin-top:1.1rem;max-width:430px}
   .o-foot{display:flex;align-items:center;gap:1.6rem;margin-top:2rem;flex-wrap:wrap}
   .o-cta{display:inline-flex;align-items:center;gap:.7rem;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--brass-bright)}
   .o-cta svg{width:18px;height:10px;stroke:currentColor;stroke-width:1.4;fill:none;transition:transform .3s}
   .offer:hover .o-cta svg{transform:translateX(4px)}
   .o-meta{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ctext-soft)}
-  /* Le Foyer d'Origine : le feu en haut, la liste d'attente dans le parchemin */
-  .offer-foyer{flex-direction:column;background:var(--card);border:1px solid rgba(187,154,94,.3);
-    box-shadow:0 16px 40px rgba(40,28,16,.12);overflow:hidden}
-  .offer-foyer:hover{transform:none}
-  .fy-media{position:relative;height:216px;flex:0 0 auto;background:#1a1210;overflow:hidden}
-  .fy-media video,.fy-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-  .fy-veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(26,18,16,.10) 0%,rgba(26,18,16,.30) 58%,rgba(250,247,240,.92) 100%)}
-  .fy-name{padding:0 0 .2rem}
-  .fy-name .o-eyebrow{color:var(--brass-deep)}
-  .fy-name h3{font-family:var(--serif);font-weight:500;font-size:clamp(1.7rem,2.8vw,2.3rem);line-height:1.06;
-    letter-spacing:.02em;color:var(--ink);margin-top:.35rem;text-transform:uppercase}
-  .fy-body{display:flex;flex-direction:column;padding:1.5rem 2.2rem 2.3rem}
-  .fy-lede{margin-top:.9rem}
-  .fy-lede{color:var(--ink-soft);line-height:1.75;font-size:.86rem;max-width:44ch}
-  .fyform{display:grid;gap:.65rem;margin-top:1.3rem}
-  .fy-row{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
-  .fyform input,.fyform textarea{width:100%;min-width:0;padding:.92rem 1rem;border-radius:10px;
-    background:rgba(255,255,255,.62);border:1px solid rgba(187,154,94,.42);color:var(--ink);
-    font-family:var(--sans);font-size:.85rem;transition:border-color .25s,background .25s}
-  .fyform textarea{resize:vertical;line-height:1.6}
+  /* La saison en cours : carte parchemin, en retrait de la vedette */
+  .offer-saison{flex-direction:column;justify-content:center;background:var(--card);
+    border:1px solid rgba(187,154,94,.3);box-shadow:0 16px 40px rgba(16,23,19,.10);padding:2.8rem 2.6rem}
+  .offer-saison .o-eyebrow{color:var(--brass-deep)}
+  .offer-saison .o-title{font-family:var(--serif);font-weight:500;font-size:clamp(1.6rem,2.6vw,2.1rem);line-height:1.1;color:var(--ink);margin-top:.8rem}
+  .offer-saison .o-tag{color:var(--terracotta);font-size:1.02rem}
+  .offer-saison .o-desc{color:var(--ink-soft);max-width:none}
+  .offer-saison .o-cta{color:var(--brass-deep)}
+  .offer-saison .o-meta{color:rgba(102,87,70,.75)}
+
+  /* Le Foyer d'Origine : le visuel paysage, le formulaire dans l'espace libre */
+  .foyer-band{position:relative;margin-top:2.2rem;border-radius:26px;overflow:hidden;
+    border:1px solid rgba(187,154,94,.32);box-shadow:0 18px 46px rgba(16,23,19,.14);background:#efe8db}
+  .foyer-band .fy-visuel{position:relative;width:100%;aspect-ratio:16/9;display:block}
+  .foyer-band .fy-visuel video,.foyer-band .fy-visuel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .fy-panneau{position:absolute;left:4.5%;top:6%;width:44%;max-width:520px;max-height:72%;z-index:2}
+  .fy-panneau .o-eyebrow{color:var(--brass-deep)}
+  .fy-panneau h3{font-family:var(--serif);font-weight:500;text-transform:uppercase;letter-spacing:.02em;
+    font-size:clamp(1.35rem,2.5vw,2.1rem);line-height:1.06;color:var(--ink);margin-top:.35rem}
+  .fy-lede{margin-top:.6rem;color:var(--ink-soft);line-height:1.62;font-size:clamp(.7rem,.95vw,.86rem);max-width:44ch}
+  .fy-braise{margin-top:.55rem;font-family:var(--serif);font-size:clamp(.9rem,1.35vw,1.2rem);color:var(--brass-deep)}
+  .fyform{display:grid;gap:.45rem;margin-top:clamp(.6rem,1.1vw,.9rem)}
+  .fy-row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+  .fyform input,.fyform textarea{width:100%;min-width:0;padding:.62rem .8rem;border-radius:9px;
+    background:rgba(255,255,255,.72);border:1px solid rgba(187,154,94,.45);color:var(--ink);
+    font-family:var(--sans);font-size:clamp(.72rem,.95vw,.84rem);transition:border-color .25s,background .25s}
+  .fyform textarea{resize:none;line-height:1.5}
   .fyform input::placeholder,.fyform textarea::placeholder{color:rgba(58,49,38,.45)}
   .fyform input:focus,.fyform textarea:focus{outline:none;border-color:var(--brass);background:#fff}
   .fyform input[aria-invalid="true"]{border-color:#c2603a}
-  .fy-q{display:block;margin-top:.35rem;font-family:var(--serif);font-size:1.02rem;line-height:1.4;color:var(--ink)}
-  .fyform button{margin-top:.35rem;justify-self:start;padding:1rem 1.9rem;border-radius:10px;border:none;cursor:pointer;
+  .fy-q{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .fyform button{margin-top:.15rem;justify-self:start;padding:.8rem 1.6rem;border-radius:9px;border:none;cursor:pointer;
     background:var(--brass);color:var(--espresso-deep);font-family:var(--sans);font-weight:600;
-    font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;transition:background .3s,transform .3s}
+    font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;transition:background .3s,transform .3s}
   .fyform button:hover{background:var(--brass-bright);transform:translateY(-2px)}
-  .fy-msg{min-height:1.1em;margin-top:.9rem;font-size:.82rem;color:var(--ink-soft);opacity:0;transform:translateY(-3px);transition:opacity .35s,transform .35s}
+  .fy-msg{min-height:1.1em;margin-top:.6rem;font-size:.8rem;color:var(--ink-soft);opacity:0;transform:translateY(-3px);transition:opacity .35s,transform .35s}
   .fy-msg.show{opacity:1;transform:none}
   .fy-msg.err{color:#c2603a}
-  .fy-msg.ok{font-family:var(--serif);font-size:1.08rem;color:var(--brass-deep)}
-  @media(max-width:760px){ .offers{padding:4rem 0 4.5rem} .offers .mx{grid-template-columns:1fr;gap:1.4rem}
-    .offer-saison .o-body{padding:2.3rem 2rem} .fy-body{padding:1.4rem 1.6rem 2rem} .fy-name{left:1.6rem;right:1.6rem} }
+  .fy-msg.ok{font-family:var(--serif);font-size:1.05rem;color:var(--brass-deep)}
+  @media(max-width:1100px){ .fy-panneau{width:50%;left:4%;top:5%} .fyform{gap:.4rem} .fy-lede{display:none} }
+  @media(max-width:860px){
+    .plus{padding:4rem 0 4.5rem} .plus-grid{grid-template-columns:1fr;gap:1.4rem;margin-top:2rem}
+    .offer-origine .o-body{padding:2.3rem 2rem} .offer-saison{padding:2.3rem 2rem}
+    .foyer-band .fy-visuel{aspect-ratio:16/10}
+    .fy-panneau{position:static;width:auto;max-width:none;max-height:none;padding:1.6rem 1.5rem 2rem;background:#efe8db}
+    .fy-lede{display:block}
+  }
 
   /* ---------- tome 3 · capture au pic d'intérêt ---------- */
   .tome{position:relative;z-index:5;background:var(--espresso-deep);color:var(--ctext);padding:5.2rem 0 5.6rem;overflow:hidden}
@@ -534,7 +547,9 @@
   }
 
 </style>
-<style>/* no-italic-rule */ em,i,.italic{font-style:normal!important}</style>
+<style>/* no-italic-rule : règle dure d'Alex, l'accent passe par la couleur et le poids */
+  em,i,.italic,.foot .q,.echo-line em,.tri-foot,.fan .card .fn,.fan .card .verb,.fan-cap .fc-num,
+  .trilogy h2 b,.t-bridge,.nl-msg.ok,.tm-msg.ok,.rotate-hint span,.o-tag{font-style:normal!important}</style>
 </head>
 <body>
 
@@ -731,11 +746,27 @@
   </section>
 
   <!-- ===== OFFRES (saison + premiers rituels) ===== -->
-  <section class="offers" id="offres">
+  <section class="plus" id="offres">
     <div class="mx">
-      <a class="offer offer-saison reveal" href="https://krystinestlaurent.mykajabi.com/experience-ayurveda-saison-estivale" target="_blank" rel="noopener noreferrer">
-        <span class="o-glow" aria-hidden="true"></span>
-        <div class="o-body">
+      <h2 class="sec-title reveal">Vous souhaitez aller plus loin ?</h2>
+      <div class="rule reveal d1"></div>
+
+      <div class="plus-grid">
+        <a class="offer offer-origine reveal" href="/origine">
+          <span class="o-glow" aria-hidden="true"></span>
+          <div class="o-body">
+            <span class="o-eyebrow">Traversée accompagnée</span>
+            <h3 class="o-title">Expérience Origine</h3>
+            <p class="o-tag">Lire · Trier · Ancrer</p>
+            <p class="o-desc">Pour celles qui veulent entreprendre une véritable traversée accompagnée. Douze semaines pour revenir à un repère intérieur plus stable et transformer sa relation à soi, au corps et à la vie.</p>
+            <div class="o-foot">
+              <span class="o-cta">Découvrir Expérience Origine <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></span>
+              <span class="o-meta">12 semaines · Accompagnée</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="offer offer-saison reveal d2" href="https://krystinestlaurent.mykajabi.com/experience-ayurveda-saison-estivale" target="_blank" rel="noopener noreferrer">
           <span class="o-eyebrow">Saison en cours · Pitta</span>
           <h3 class="o-title">L'Expérience Ayurveda · Été</h3>
           <p class="o-tag">Rafraîchir · Apaiser · Adoucir</p>
@@ -744,30 +775,28 @@
             <span class="o-cta">Découvrir l'expérience <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></span>
             <span class="o-meta">7 semaines · Disponible</span>
           </div>
-        </div>
-      </a>
+        </a>
+      </div>
 
-      <div class="offer offer-foyer reveal d2" id="foyer-attente">
-        <div class="fy-media">
-          <video id="fyfeu" poster="/foyer/hero-atre.webp" data-src="/foyer/atre-feu.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
-          <span class="fy-veil" aria-hidden="true"></span>
+      <div class="foyer-band reveal d2" id="foyer-attente">
+        <div class="fy-visuel">
+          <video id="fyfeu" poster="/assets/foyer-visuel-16x9.jpg" data-src="/assets/foyer-visuel-16x9.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
         </div>
-        <div class="fy-body">
-          <div class="fy-name">
+        <div class="fy-panneau">
             <span class="o-eyebrow">Liste d'attente</span>
             <h3>Le Foyer d'Origine</h3>
-          </div>
-          <p class="fy-lede">Le feu reprend bientôt et les places se donnent d'abord à celles qui attendent. Laissez vos coordonnées, vous serez prévenue avant l'ouverture des portes.</p>
-          <form class="fyform" id="fyform" novalidate>
-            <div class="fy-row">
-              <input id="fyprenom" type="text" placeholder="Prénom" autocomplete="given-name" aria-label="Prénom" />
-              <input id="fynom" type="text" placeholder="Nom" autocomplete="family-name" aria-label="Nom" />
-            </div>
-            <input id="fymail" type="email" placeholder="Votre courriel" autocomplete="email" aria-label="Votre courriel" aria-describedby="fymsg" />
-            <label class="fy-q" for="fybesoin">Quel est votre plus grand besoin en ce moment ?</label>
-            <textarea id="fybesoin" rows="3" placeholder="Écrivez-le en quelques mots."></textarea>
-            <button type="submit">M'inscrire à la liste</button>
-          </form>
+            <p class="fy-lede">Un lieu pour découvrir, relier et rencontrer ce que nous n'aurions pas pensé chercher.</p>
+            <p class="fy-braise">Quelque chose se prépare autour du feu.</p>
+            <form class="fyform" id="fyform" novalidate>
+              <div class="fy-row">
+                <input id="fyprenom" type="text" placeholder="Prénom" autocomplete="given-name" aria-label="Prénom" />
+                <input id="fynom" type="text" placeholder="Nom" autocomplete="family-name" aria-label="Nom" />
+              </div>
+              <input id="fymail" type="email" placeholder="Votre courriel" autocomplete="email" aria-label="Votre courriel" aria-describedby="fymsg" />
+              <label class="fy-q" for="fybesoin">Quel est votre plus grand besoin en ce moment ?</label>
+              <textarea id="fybesoin" rows="2" placeholder="Quel est votre plus grand besoin en ce moment ?"></textarea>
+              <button type="submit">Rejoindre la liste d'attente</button>
+            </form>
           <p class="fy-msg" id="fymsg" role="status" aria-live="polite"></p>
         </div>
       </div>
