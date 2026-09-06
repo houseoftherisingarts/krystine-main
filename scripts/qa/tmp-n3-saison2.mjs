@@ -35,19 +35,19 @@ await page.evaluate(([key, val]) => new Promise((res, rej) => {
 const fermerRoue = async () => { const r = page.locator('.fixed.inset-0.z-\\[125\\]'); if (await r.count()) { await r.first().click({ position: { x: 8, y: 8 } }); await page.waitForTimeout(500); } };
 try {
   await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(2000); await fermerRoue();
+  await page.waitForTimeout(2500); await fermerRoue(); await page.waitForTimeout(500); await fermerRoue();
   // Accept cookie banner if present so it doesn't cover things
   const accepte = page.locator('button', { hasText: /J.ACCEPTE|J.accepte/i }).first();
   if (await accepte.count()) { await accepte.click().catch(()=>{}); await page.waitForTimeout(400); }
   const saison2 = page.locator('text=/Saison 2/i').first();
   await saison2.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(700);
+  await page.waitForTimeout(700); await fermerRoue();
   await page.screenshot({ path: `${OUT}/n3-saison-2.png` });
   // videos section full capture too, mobile 390 for a fuller look
   await page.setViewportSize({ width: 390, height: 900 });
   const videosH = page.locator('p', { hasText: 'Les vidéos publiques de Krystine' }).first();
   await videosH.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(700);
+  await page.waitForTimeout(700); await fermerRoue();
   await page.screenshot({ path: `${OUT}/n4-videos-mobile.png` });
 } finally {
   await browser.close();
