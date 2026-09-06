@@ -75,7 +75,7 @@ const Coffres: React.FC<{ solde: number; onChange?: () => void }> = ({ solde, on
   const [reponse, setReponse] = useState('');
   const [grandOk, setGrandOk] = useState(false);
   const [avis, setAvis] = useState<string | null>(null);
-  const revelerRef = React.useRef<() => void>(() => {});
+  const revelerRef = useRef<() => void>(() => {});
 
   useEffect(() => (user ? suivreMesCoffres(user.uid, setInv) : undefined), [user]);
 
