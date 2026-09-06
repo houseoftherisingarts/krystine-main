@@ -106,8 +106,16 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
         lien: `/membre/${a.de}`,
         quand: 0,
       }));
-    return [...msgs, ...demandes].sort((a, b) => b.quand - a.quand);
-  }, [fils, amities, uid]);
+    const nouveauxBillets: Item[] = billets
+      .filter((b) => (b.creeLe?.toMillis?.() ?? 0) > vu)
+      .map((b) => ({
+        id: `billet-${b.id}`,
+        titre: `Krystine a publié : ${b.texte.length > 50 ? `${b.texte.slice(0, 50)}…` : b.texte}`,
+        lien: '/compte',
+        quand: b.creeLe?.toMillis?.() ?? 0,
+      }));
+    return [...msgs, ...demandes, ...nouveauxBillets].sort((a, b) => b.quand - a.quand);
+  }, [fils, amities, billets, vu, uid]);
 
   const total = items.length;
   const bouton = 'relative inline-flex items-center justify-center w-10 h-10 rounded-full border transition-colors';
