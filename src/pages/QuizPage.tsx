@@ -610,6 +610,7 @@ const QuizPage: React.FC = () => {
             </div>
           </div>
         </div>
+        </Portail>
         );
       })()}
     </div>
