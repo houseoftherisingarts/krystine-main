@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { reclamerQuotidien, type Quotidien } from '../../firebase/points';
 import { ROUE_QUOTIDIENNE, journee, niskas } from '../../lib/pointsConfig';
 import PieceNiska from './PieceNiska';
+import Portail from '../Portail';
 
 // La roue des sept jours (sur le modèle du Festival médiéval). À la première
 // visite de la journée, la récompense tombe d'elle-même et le panneau se
