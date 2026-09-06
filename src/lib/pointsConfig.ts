@@ -121,8 +121,22 @@ export const SANTE_LA_VIE_ID = 'kajabi-2148754050';
 export const BANNIERE_DEFAUT = '/compte/bienvenue-bureau.webp';
 export const BANNIERE_NATURE = '/compte/bienvenue-bureau-nature.webp';
 
+export type CategorieBoutique = 'banniere' | 'musique' | 'skin';
+export const CATEGORIES_BOUTIQUE: { id: CategorieBoutique; titreFR: string; titreEN: string; texteFR: string; texteEN: string; icone: string }[] = [
+  { id: 'banniere', icone: 'fa-image', titreFR: 'Les bannières', titreEN: 'Banners',
+    texteFR: 'La bannière est la grande image en haut de votre espace. Vous pouvez y mettre votre propre photo, ou une des images de la boutique.',
+    texteEN: 'The banner is the large picture at the top of your space. You can put your own photo there, or one of the shop’s pictures.' },
+  { id: 'musique', icone: 'fa-music', titreFR: 'Les musiques', titreEN: 'Music',
+    texteFR: 'Une musique achetée se télécharge sur votre ordinateur et peut devenir la musique d’ambiance de tout le site, celle du petit bouton en haut de page.',
+    texteEN: 'A purchased piece downloads to your computer and can become the ambient music of the whole site, the one behind the little button at the top of the page.' },
+  { id: 'skin', icone: 'fa-palette', titreFR: 'Les skins', titreEN: 'Skins',
+    texteFR: 'Un skin, c’est l’habillage de votre espace : les mêmes pages et les mêmes boutons, mais dans d’autres couleurs, comme une nappe neuve sur la même table. Passez la souris sur une carte pour voir votre espace s’habiller, et enlevez le skin quand vous voulez.',
+    texteEN: 'A skin is the dress of your space: the same pages and buttons in other colours, like a new tablecloth on the same table. Hover over a card to see your space dressed, and take the skin off whenever you like.' },
+];
+
 export interface ArticleBoutique {
-  id: 'banniere-nature' | 'musique-origine' | 'skin-medzo' | 'skin-nuit';
+  id: 'banniere-nature' | 'musique-origine' | 'skin-medzo' | 'skin-nuit' | 'skin-coffee';
+  categorie: CategorieBoutique;
   cout: number;
   nomFR: string; nomEN: string;
   descFR: string; descEN: string;
@@ -131,28 +145,34 @@ export interface ArticleBoutique {
 
 export const BOUTIQUE: ArticleBoutique[] = [
   {
-    id: 'banniere-nature', cout: COUT_COSMETIQUE, icone: 'fa-image',
+    id: 'banniere-nature', categorie: 'banniere', cout: COUT_COSMETIQUE, icone: 'fa-image',
     nomFR: 'Bannière Nature & Ayurveda', nomEN: 'Nature & Ayurveda banner',
     descFR: 'La même scène que votre bannière, avec Nature & Ayurveda posé sur la table.',
     descEN: 'The same scene as your banner, with Nature & Ayurveda on the table.',
   },
   {
-    id: 'musique-origine', cout: COUT_COSMETIQUE, icone: 'fa-music',
+    id: 'musique-origine', categorie: 'musique', cout: COUT_COSMETIQUE, icone: 'fa-music',
     nomFR: "La musique d'Origine", nomEN: 'The Origin music',
     descFR: 'La pièce composée pour l’Expérience Origine. Téléchargez-la et faites-en la musique de tout le site.',
     descEN: 'The piece composed for the Origin Experience. Download it and make it the music of the whole site.',
   },
   {
-    id: 'skin-medzo', cout: COUT_COSMETIQUE, icone: 'fa-mug-hot',
+    id: 'skin-medzo', categorie: 'skin', cout: COUT_COSMETIQUE, icone: 'fa-mug-hot',
     nomFR: 'Skin Medzo Café', nomEN: 'Medzo Café skin',
-    descFR: 'Un skin, c’est l’habillage de votre espace : les mêmes pages et les mêmes boutons, mais dans d’autres couleurs, comme une nappe neuve sur la même table. Celui-ci est dans des bruns de café au lait. Passez la souris sur la carte pour le voir, et enlevez-le quand vous voulez.',
-    descEN: 'A skin is the dress of your space: the same pages and buttons in other colours, like a new tablecloth on the same table. This one comes in café au lait browns. Hover over the card to see it, and take it off whenever you like.',
+    descFR: 'Des bruns de café au lait, chauds et calmes, comme une table de bistro en fin d’après-midi.',
+    descEN: 'Warm, calm café au lait browns, like a bistro table late in the afternoon.',
   },
   {
-    id: 'skin-nuit', cout: COUT_COSMETIQUE, icone: 'fa-moon',
+    id: 'skin-nuit', categorie: 'skin', cout: COUT_COSMETIQUE, icone: 'fa-moon',
     nomFR: 'Skin Nuit', nomEN: 'Night skin',
-    descFR: 'L’espace passe en pleine nuit : vert profond et encre, ivoire pour les mots, ambre pour la lumière. Le même espace, les yeux reposés. Survolez la carte pour voir l’espace s’habiller.',
-    descEN: 'Your space goes into deep night: deep green and ink, ivory for the words, amber for the light. The same space, eyes at rest. Hover over the card to see it dressed.',
+    descFR: 'L’espace passe en pleine nuit : vert profond et encre, ivoire pour les mots, ambre pour la lumière. Le même espace, les yeux reposés.',
+    descEN: 'Your space goes into deep night: deep green and ink, ivory for the words, amber for the light. The same space, eyes at rest.',
+  },
+  {
+    id: 'skin-coffee', categorie: 'skin', cout: COUT_COSMETIQUE, icone: 'fa-coffee',
+    nomFR: 'Skin Dark Coffee', nomEN: 'Dark Coffee skin',
+    descFR: 'Un café noir, serré : fonds brun profond, crème pour les mots, cuivre pour la lumière. Le skin sombre et chaud.',
+    descEN: 'A short black coffee: deep brown grounds, cream for the words, copper for the light. The dark, warm skin.',
   },
 ];
 

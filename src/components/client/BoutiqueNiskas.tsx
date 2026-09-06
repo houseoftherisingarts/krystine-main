@@ -5,6 +5,7 @@ import { updateMember } from '../../firebase/firestore';
 import { getLecons, type Lecon } from '../../firebase/formations';
 import { acheterAvecNiskas, acheterNiskas, subscribeToMemberPoints, suivreBoutique, type PointsBalance } from '../../firebase/points';
 import {
+  CATEGORIES_BOUTIQUE,
   BANNIERE_NATURE, BOUTIQUE, COUT_EPISODE, PAQUET_NISKAS, SANTE_LA_VIE_ID, niskas,
 } from '../../lib/pointsConfig';
 import PieceNiska from './PieceNiska';
@@ -206,8 +207,17 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
         </p>
       )}
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {BOUTIQUE.map((a) => {
+      {CATEGORIES_BOUTIQUE.map((cat) => (
+      <div key={cat.id} className="mt-8" id={`boutique-${cat.id}`}>
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 inline-flex h-9 w-9 flex-none items-center justify-center rounded-full bg-[#BA7B39]/15 text-[#8B4A2F] dark:text-[#d9a05b]"><i className={`fa-solid ${cat.icone}`} /></span>
+          <div>
+            <h4 className="font-serif text-xl text-[#293027] dark:text-white">{fr ? cat.titreFR : cat.titreEN}</h4>
+            <p className="mt-1 max-w-2xl text-sm text-[#293027]/65 dark:text-white/65">{fr ? cat.texteFR : cat.texteEN}</p>
+          </div>
+        </div>
+      <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {BOUTIQUE.filter((a) => a.categorie === cat.id).map((a) => {
           const nom = fr ? a.nomFR : a.nomEN;
           const desc = fr ? a.descFR : a.descEN;
           let visuel: React.ReactNode;
@@ -232,6 +242,21 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
                   </a>
                 </div>
               )
+              : boutonAchat(a.id, nom, a.cout);
+          } else if (a.id === 'skin-coffee') {
+            visuel = (
+              <div className="h-28 overflow-hidden bg-[#1b120c] p-3" aria-hidden="true">
+                <div className="h-7 rounded-md bg-gradient-to-r from-[#3a2417] to-[#b8733f]" />
+                <div className="mt-1.5 flex gap-1.5">
+                  <span className="h-2 w-10 rounded-full bg-[#b8733f]" /><span className="h-2 w-6 rounded-full bg-[#f1e6d6]/30" /><span className="h-2 w-6 rounded-full bg-[#f1e6d6]/30" />
+                </div>
+                <div className="mt-2 grid grid-cols-[1fr_60px] gap-1.5">
+                  <div className="h-9 rounded-md bg-[#2a1c13]" /><div className="h-9 rounded-md bg-[#2a1c13]" />
+                </div>
+              </div>
+            );
+            etat = possede['skin-coffee']
+              ? bascule(perso.skin === 'coffee', () => activer({ skin: perso.skin === 'coffee' ? '' : 'coffee' }), fr ? 'Skin actif' : 'Skin on', fr ? 'Activer le skin' : 'Turn the skin on')
               : boutonAchat(a.id, nom, a.cout);
           } else if (a.id === 'skin-nuit') {
             // Un aperçu miniature de l'espace en pleine nuit : vert profond, encre, ivoire, ambre.
@@ -279,6 +304,8 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
           ));
         })}
       </div>
+      </div>
+      ))}
 
       {/* Les vidéos de Krystine : gratuites, une fois la section ouverte pour dix niskas */}
       <div className="mt-10" id="videos-krystine">
@@ -290,10 +317,13 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
             : `${catalogue ? catalogue.videos.length : ''} videos, lives and capsules by Krystine. The videos are free: opening the section costs ${niskas(COUT_ACCES_VIDEOS, 'EN')}, once, and everything then plays in “My videos”.`}
         </p>
         {!aAccesVideos && (
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-[18px] border border-[#BA7B39]/50 bg-[#BA7B39]/10 p-5">
-            <div>
-              <p className="font-serif text-lg text-[#293027] dark:text-white">{fr ? 'Ouvrir la section des vidéos' : 'Open the video section'}</p>
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-[18px] border-2 border-[#BA7B39] bg-[#BA7B39]/15 p-5 shadow-[0_18px_40px_-24px_rgba(139,74,47,0.6)]">
+            <div className="flex items-start gap-4">
+              <span className="inline-flex h-12 w-12 flex-none items-center justify-center rounded-full bg-[#293027] text-[#d9a05b] dark:bg-[#BA7B39] dark:text-[#293027]"><i className="fa-solid fa-lock text-lg" /></span>
+              <div>
+              <p className="font-serif text-xl text-[#293027] dark:text-white">{fr ? `Cette section est fermée : ouvrez-la pour ${niskas(COUT_ACCES_VIDEOS, 'FR')}` : `This section is locked: open it for ${niskas(COUT_ACCES_VIDEOS, 'EN')}`}</p>
               <p className="mt-1 text-sm text-[#293027]/60 dark:text-white/60">{fr ? 'Une seule fois, pour toutes les vidéos, celles d’aujourd’hui et celles qui viendront.' : 'Once, for every video, today’s and the ones to come.'}</p>
+              </div>
             </div>
             {boutonAchat('acces-videos', fr ? 'Les vidéos de Krystine' : 'Krystine’s videos', COUT_ACCES_VIDEOS)}
           </div>
@@ -318,6 +348,14 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
           />
         </div>
         {!catalogue && <p className="mt-4 text-sm text-[#293027]/50 dark:text-white/50">{fr ? 'Le catalogue arrive.' : 'The catalogue is on its way.'}</p>}
+        <div className="relative">
+        {!aAccesVideos && (
+          <div className="absolute inset-0 z-[3] flex items-start justify-center rounded-[16px] bg-[#EEE7DB]/55 pt-16 backdrop-blur-[2px] dark:bg-[#151d19]/55">
+            <div className="rounded-full bg-[#293027] px-6 py-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#EEE7DB] shadow-2xl dark:bg-[#BA7B39] dark:text-[#293027]">
+              <i className="fa-solid fa-lock mr-2" />{fr ? `Ouvrir la section · ${niskas(COUT_ACCES_VIDEOS, 'FR')}` : `Open the section · ${niskas(COUT_ACCES_VIDEOS, 'EN')}`}
+            </div>
+          </div>
+        )}
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {videosVisibles.slice(0, nbVisibles).map((v) => {
             const aMoi = !!possede[`video:${v.id}`];
@@ -355,6 +393,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
             </button>
           </div>
         )}
+        </div>
       </div>
 
       <div className="mt-10 grid gap-6 md:grid-cols-[220px_1fr]">
