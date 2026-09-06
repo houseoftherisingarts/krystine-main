@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import Portail from '../Portail';
 
 // La fenêtre du fond d'écran : l'image en 1920 × 1080, le bouton pour la
 // garder sur son ordinateur, et la marche à suivre sur Mac ou sur PC (au
@@ -18,6 +19,7 @@ const FondEcran: React.FC<{ ouvert: boolean; onFermer: () => void; image: string
   return (
     <AnimatePresence>
       {ouvert && (
+        <Portail>
         <motion.div className="fixed inset-0 z-[130] flex items-center justify-center bg-[#151d19]/70 p-4 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onFermer}>
           <motion.div
             initial={{ scale: 0.94, y: 14, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.96, opacity: 0 }} transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
@@ -53,6 +55,7 @@ const FondEcran: React.FC<{ ouvert: boolean; onFermer: () => void; image: string
             </ol>
           </motion.div>
         </motion.div>
+        </Portail>
       )}
     </AnimatePresence>
   );

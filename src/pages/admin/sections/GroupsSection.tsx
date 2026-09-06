@@ -15,6 +15,7 @@ import {
 } from '../../../firebase/firestore';
 import { getMemberPoints, type PointsBalance } from '../../../firebase/points';
 import { buildContactMetrics, evaluateSegment, type Segment } from '../../../lib/segments';
+import Portail from '../../../components/Portail';
 
 // ─── Messaging groups section ────────────────────────────────────────────────
 // Krystine curates segments of her audience (e.g. "VIP retraites", "Origine
