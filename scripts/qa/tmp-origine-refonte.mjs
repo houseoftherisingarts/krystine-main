@@ -12,6 +12,8 @@ const p = await b.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleF
 await p.goto(URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
 await p.waitForSelector('div.bg-cream section', { timeout: 30000 });
 await p.addStyleTag({ content: 'html{scroll-behavior:auto !important}' });
+// Bannière témoins : hors du chemin pour lire les captures.
+await p.getByRole('button', { name: /non merci|j'accepte/i }).first().click({ timeout: 5000 }).catch(() => {});
 await p.evaluate(() => document.fonts.ready);
 await p.waitForTimeout(1500);
 
