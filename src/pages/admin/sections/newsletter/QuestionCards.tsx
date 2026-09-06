@@ -198,7 +198,8 @@ const QuestionCards: React.FC<{
       };
 
   return (
-    <div className="fixed inset-0 z-[140] flex flex-col" style={{ backgroundColor: '#161311' }}>
+    <Portail>
+    <div className="fixed inset-0 z-[140] flex flex-col overflow-y-auto overscroll-contain" style={{ backgroundColor: '#161311' }}>
       {/* Halo de fond, teinté par la carte affichée */}
       <motion.div
         aria-hidden
