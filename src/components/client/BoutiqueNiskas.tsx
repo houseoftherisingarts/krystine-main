@@ -246,19 +246,46 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
           let etat: React.ReactNode;
           if (a.categorie === 'banniere') {
             const b = banniereParCle(a.id.slice(9));
-            visuel = <img src={b?.image || BANNIERE_NATURE} alt="" className="h-28 w-full object-cover" loading="lazy" />;
-            etat = possede[a.id] && b
+            const cleB = b?.cle || '';
+            // Un clic sur l'image ouvre l'aperçu plein écran, avant même l'achat.
+            visuel = (
+              <button type="button" onClick={() => b && setApercuOuvert(b.cle)} className="group/img relative block w-full overflow-hidden text-left" aria-label={fr ? `Voir ${nom} en plein écran` : `See ${nom} full screen`}>
+                <AvecSignature signe={signee(cleB)}>
+                  <img src={b?.image || BANNIERE_NATURE} alt="" className="h-28 w-full object-cover transition-transform duration-500 group-hover/img:scale-[1.03]" loading="lazy" />
+                </AvecSignature>
+                <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#151d19]/0 transition-colors group-hover/img:bg-[#151d19]/30">
+                  <span className="translate-y-1 rounded-full bg-white/90 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#293027] opacity-0 shadow transition-all group-hover/img:translate-y-0 group-hover/img:opacity-100"><i className="fa-solid fa-expand mr-1 text-[9px]" /> {fr ? 'Aperçu' : 'Preview'}</span>
+                </span>
+              </button>
+            );
+            const boutonSecondaire = 'inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] disabled:opacity-50 dark:border-white/15 dark:text-white/70';
+            etat = b && possedeBanniere(b.cle)
               ? (
                 <div className="flex flex-wrap gap-2">
-                  {bascule(perso.banniere === b.cle, () => activer({ banniere: perso.banniere === b.cle ? 'defaut' : b.cle }), fr ? 'En place' : 'In place', fr ? 'Mettre en bannière' : 'Set as banner')}
-                  <a href={b.image} download className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
-                    <i className="fa-solid fa-download text-[9px]" /> {fr ? 'Télécharger' : 'Download'}
-                  </a>
+                  {bascule(perso.banniere === b.cle || (b.cle === 'defaut' && (!perso.banniere || perso.banniere === 'defaut')), () => activer({ banniere: perso.banniere === b.cle ? 'defaut' : b.cle }), fr ? 'En place' : 'In place', fr ? 'Mettre en bannière' : 'Set as banner')}
+                  <button type="button" onClick={() => telecharger(b.cle)} disabled={occupe !== null} className={boutonSecondaire}>
+                    <i className={`fa-solid ${occupe === `telecharger-${b.cle}` ? 'fa-circle-notch fa-spin' : 'fa-download'} text-[9px]`} /> {fr ? 'Télécharger' : 'Download'}
+                  </button>
                   {b.fond && (
-                    <button type="button" onClick={() => setFondOuvert(b.cle)} className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
+                    <button type="button" onClick={() => setFondOuvert(b.cle)} className={boutonSecondaire}>
                       <i className="fa-solid fa-desktop text-[9px]" /> {fr ? 'Fond d’écran' : 'Wallpaper'}
                     </button>
                   )}
+                  {signee(b.cle)
+                    ? (
+                      <button
+                        type="button"
+                        onClick={() => acheter(`sanslogo-${b.cle}`, fr ? 'La version sans signature' : 'The signature-free version')}
+                        disabled={occupe !== null || solde.balance < COUT_COSMETIQUE}
+                        title={fr ? 'Retire la signature de Krystine en bas à droite, sur la bannière et le fond d’écran.' : 'Removes Krystine’s signature bottom right, on the banner and the wallpaper.'}
+                        className={boutonSecondaire}
+                      >
+                        <i className="fa-solid fa-signature text-[9px]" /> {fr ? 'Sans signature' : 'No signature'} · <PieceNiska size={12} /> {COUT_COSMETIQUE}
+                      </button>
+                    )
+                    : (
+                      <span className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39] bg-[#BA7B39]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]"><i className="fa-solid fa-check text-[9px]" /> {fr ? 'Sans signature' : 'No signature'}</span>
+                    )}
                 </div>
               )
               : boutonAchat(a.id, nom, a.cout);
