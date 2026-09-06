@@ -29,7 +29,7 @@ const LiveBadge: React.FC = () => {
   if (live.url) {
     return <a href={live.url} target="_blank" rel="noopener noreferrer" className={classes} aria-label={`Live en cours : ${live.titre}`}>{contenu}</a>;
   }
-  return <Link to="/espace" className={classes} aria-label={`Live en cours : ${live.titre}`}>{contenu}</Link>;
+  return <Link to="/direct" className={classes} aria-label={`Live en cours : ${live.titre}`}>{contenu}</Link>;
 };
 
 export default LiveBadge;

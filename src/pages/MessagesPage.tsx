@@ -138,8 +138,8 @@ const MessagesPage: React.FC = () => {
     <div className="min-h-screen bg-[#EEE7DB] dark:bg-[#151d19] pt-24 pb-10">
       <div className="max-w-screen-xl mx-auto px-3 md:px-6">
         <div className="flex items-center gap-3 mb-4">
-          <Link to="/espace" className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-[#38403a]/60 dark:text-white/60 hover:text-[#8B4A2F] dark:hover:text-[#BA7B39] transition-colors">
-            <ArrowLeft size={12} /> Communauté
+          <Link to="/compte?onglet=messagerie" className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-[#38403a]/60 dark:text-white/60 hover:text-[#8B4A2F] dark:hover:text-[#BA7B39] transition-colors">
+            <ArrowLeft size={12} /> Mon espace
           </Link>
         </div>
 

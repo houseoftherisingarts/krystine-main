@@ -15,7 +15,8 @@ import { suivreLeMur, type PostMur } from '../../firebase/mur';
 // n'existent pas ici). NavBar.tsx pose ce composant, pas ce fichier.
 //
 // Trois boutons ronds : Profil (→ /compte), Notifications (cloche +
-// pastille, dépliable), Messages (pastille, → /messages).
+// pastille, dépliable), Messages (pastille, pop-up des conversations qui mène
+// à la messagerie de l'espace client, jamais à une autre page).
 //
 // Les billets « vus » se suivent en localStorage (pas de compteur serveur
 // pour ça) : à l'ouverture on retient le moment, et on ne l'écrit dans la
@@ -47,6 +48,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
   const [cadeaux, setCadeaux] = useState<Cadeau[]>([]);
   const [vu, setVu] = useState<number>(lireVu);
   const [ouverte, setOuverte] = useState(false);
+  const [messagesOuverts, setMessagesOuverts] = useState(false);
   const boite = useRef<HTMLDivElement>(null);
   const ouvertureLe = useRef<number | null>(null);
 
@@ -64,11 +66,11 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
   useEffect(() => (uid ? suivreMesCadeaux(uid, setCadeaux) : undefined), [uid]);
 
   useEffect(() => {
-    if (!ouverte) return;
-    const fermer = (e: MouseEvent) => { if (!boite.current?.contains(e.target as Node)) setOuverte(false); };
+    if (!ouverte && !messagesOuverts) return;
+    const fermer = (e: MouseEvent) => { if (!boite.current?.contains(e.target as Node)) { setOuverte(false); setMessagesOuverts(false); } };
     document.addEventListener('mousedown', fermer);
     return () => document.removeEventListener('mousedown', fermer);
-  }, [ouverte]);
+  }, [ouverte, messagesOuverts]);
 
   // On note le moment de l'ouverture, et on ne le fige dans la clé (donc
   // dans le seuil « vu ») qu'à la fermeture : la liste reste stable tant
@@ -97,7 +99,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
         return {
           id: `dm-${f.id}`,
           titre: `${n > 1 ? `${n} messages de` : 'Un message de'} ${nom}`,
-          lien: `/messages/${autre}`,
+          lien: '/compte?onglet=messagerie',
           quand: f.lastMessageAt?.toMillis?.() ?? 0,
         };
       });
@@ -106,7 +108,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
       .map((a) => ({
         id: `amitie-${a.de}`,
         titre: 'Quelqu’un vous demande en ami',
-        lien: `/membre/${a.de}`,
+        lien: '/compte?onglet=amis',
         quand: 0,
       }));
     const nouveauxBillets: Item[] = billets
@@ -119,7 +121,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
       }));
     const dons: Item[] = cadeaux.map((c) => ({
       id: `cadeau-${c.id}`,
-      titre: c.pourcent >= 100 ? `${c.deNom} vous offre « ${c.formationTitre} »` : `${c.deNom} vous offre ${c.pourcent} % sur « ${c.formationTitre} »`,
+      titre: c.pourcent >= 100 ? `Krystine vous offre « ${c.formationTitre} »` : `Krystine vous offre ${c.pourcent} % sur « ${c.formationTitre} »`,
       lien: '/compte',
       quand: c.creeLe?.toMillis?.() ?? Date.now(),
     }));
@@ -133,7 +135,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
   return (
     <div ref={boite} className="relative flex items-center gap-2">
       <button
-        type="button" onClick={() => setOuverte((v) => !v)} className={bouton} style={style}
+        type="button" onClick={() => { setOuverte((v) => !v); setMessagesOuverts(false); }} className={bouton} style={style}
         aria-haspopup="true" aria-expanded={ouverte}
         aria-label={`Notifications${total ? `, ${total}` : ''}`} title="Notifications"
       >
@@ -143,13 +145,60 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
         <Pastille n={total} />
       </button>
 
-      <Link
-        to="/messages" className={bouton} style={style}
+      <button
+        type="button" onClick={() => { setMessagesOuverts((v) => !v); setOuverte(false); }} className={bouton} style={style}
+        aria-haspopup="true" aria-expanded={messagesOuverts}
         aria-label={`Messages${messagesNonLus ? `, ${messagesNonLus} non lus` : ''}`} title="Messagerie"
       >
         <MessageCircle size={16} />
         <Pastille n={messagesNonLus} />
-      </Link>
+      </button>
+
+      {/* Le pop-up des messages : un raccourci vers la messagerie de l'espace, jamais une autre page */}
+      <AnimatePresence>
+        {messagesOuverts && (
+          <motion.div
+            initial={{ opacity: 0, y: -6, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -6, scale: 0.98 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute right-0 top-[calc(100%+10px)] z-30 w-[min(22rem,calc(100vw-2rem))] rounded-[20px] overflow-hidden bg-white/90 dark:bg-[#293027]/95 backdrop-blur-md border border-[#BA7B39]/25 shadow-[0_18px_50px_-20px_rgba(41,48,39,0.45)]"
+            role="menu"
+          >
+            <p className="px-4 pt-3.5 pb-2 text-[10px] uppercase tracking-[0.18em] text-[#38403a]/50 dark:text-white/45 border-b border-[#38403a]/10 dark:border-white/10">
+              Vos conversations
+            </p>
+            {fils.length === 0 ? (
+              <p className="px-4 py-5 text-sm text-[#38403a]/60 dark:text-white/60">Aucune conversation pour l’instant.</p>
+            ) : (
+              <ul className="max-h-[60vh] overflow-y-auto py-1">
+                {fils.slice(0, 8).map((f) => {
+                  const autre = f.participantUids.find((x) => x !== uid) || '';
+                  const n = f.unread?.[uid] || 0;
+                  return (
+                    <li key={f.id}>
+                      <Link
+                        to="/compte?onglet=messagerie" role="menuitem" onClick={() => setMessagesOuverts(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-[#BA7B39]/10 transition-colors"
+                      >
+                        <span className="min-w-0 flex-1">
+                          <span className={`block text-sm ${n ? 'font-semibold' : ''} text-[#293027] dark:text-white`}>{f.participantNames?.[autre] || 'Un membre'}</span>
+                          <span className="block truncate text-xs text-[#38403a]/55 dark:text-white/55">{f.lastMessage || ''}</span>
+                        </span>
+                        {n > 0 && <span className="rounded-full bg-[#BA7B39] px-2 py-0.5 text-[10px] font-bold text-[#293027]">{n}</span>}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+            <Link
+              to="/compte?onglet=messagerie" onClick={() => setMessagesOuverts(false)}
+              className="block px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-[#8B4A2F] dark:text-[#BA7B39] hover:bg-[#BA7B39]/10 transition-colors border-t border-[#38403a]/10 dark:border-white/10"
+            >
+              Ouvrir ma messagerie
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {ouverte && (
@@ -183,10 +232,10 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
               </ul>
             )}
             <Link
-              to="/messages" onClick={() => setOuverte(false)}
+              to="/compte?onglet=messagerie" onClick={() => setOuverte(false)}
               className="block px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-[#8B4A2F] dark:text-[#BA7B39] hover:bg-[#BA7B39]/10 transition-colors border-t border-[#38403a]/10 dark:border-white/10"
             >
-              Ouvrir ma boîte de réception
+              Ouvrir ma messagerie
             </Link>
           </motion.div>
         )}

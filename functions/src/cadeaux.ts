@@ -57,7 +57,8 @@ export const offrirCadeau = onCall(
     const f = formation.data() as { titre?: string; imageUrl?: string; prix?: number | null };
     const m = membre.data() as { displayName?: string; photoURL?: string };
     const a = admin.data() as { displayName?: string; photoURL?: string } | undefined;
-    const deNom = (a?.displayName || 'Krystine').trim();
+    // Le cadeau vient toujours de Krystine, peu importe quel admin l'envoie.
+    const deNom = 'Krystine';
 
     const cadeau: Cadeau = {
       uid, formationId,

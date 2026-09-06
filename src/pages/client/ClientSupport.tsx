@@ -51,7 +51,7 @@ const ClientSupport: React.FC = () => {
     <div className="flex flex-col h-[60vh] min-h-[400px]">
       <div className="mb-4">
         <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold">
-          {lang === 'FR' ? 'Écrire au soutien' : 'Write to support'}
+          {lang === 'FR' ? 'Écrire à l’équipe' : 'Write to support'}
         </h3>
         <p className="text-xs text-[#293027]/40 dark:text-white/40 mt-1">
           {lang === 'FR' ? "L'équipe Inspirata vous répondra dès que possible." : 'The Inspirata team will reply as soon as possible.'}

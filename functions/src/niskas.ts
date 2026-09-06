@@ -18,6 +18,7 @@ const COSMETIQUES: Record<string, { cout: number; nom: string }> = {
   'musique-origine': { cout: 5, nom: "La musique d'Origine" },
   'skin-medzo': { cout: 5, nom: 'Skin Medzo Café' },
   'skin-nuit': { cout: 5, nom: 'Skin Nuit' },
+  'skin-coffee': { cout: 5, nom: 'Skin Dark Coffee' },
   // Toutes les vidéos de Krystine, débloquées d'un coup : les vidéos sont
   // gratuites, c'est l'ouverture de la section qui coûte dix niskas.
   'acces-videos': { cout: 10, nom: 'Les vidéos de Krystine' },

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
-import { suivrePublicationsDe, type PostMur } from '../firebase/mur';
 import { retenirCodeDepuisUrl, reclamerCodeRetenu } from '../firebase/parrainage';
 import ClientParrainage from './client/ClientParrainage';
 import Composeur from '../components/communaute/Composeur';
@@ -29,6 +28,7 @@ import PieceNiska from '../components/client/PieceNiska';
 import RoueQuotidienne from '../components/client/RoueQuotidienne';
 import BienvenueJeu from '../components/client/BienvenueJeu';
 import CadeauCarte from '../components/client/CadeauCarte';
+import ReserveAuFoyer from '../components/communaute/ReserveAuFoyer';
 import { suivreMesCadeaux, type Cadeau } from '../firebase/cadeaux';
 import '../components/client/skins.css';
 
@@ -72,9 +72,7 @@ type Tab = 'profile' | 'amis' | 'orders' | 'formations' | 'rediffusions' | 'tele
 // et surtout LE MUR de la personne. L'édition s'ouvre en cliquant sur la
 // photo de la bannière.
 const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string; lang: string; solde: PointsBalance; onBoutique: () => void }> = ({ uid, member, email, lang, solde, onBoutique }) => {
-  const [posts, setPosts] = useState<PostMur[]>([]);
   const [badges, setBadges] = useState<string[]>([]);
-  useEffect(() => suivrePublicationsDe(uid, setPosts), [uid]);
   useEffect(() => { getBadgesDe(uid).then(setBadges).catch(() => {}); }, [uid]);
   return (
     <div className="space-y-8">
@@ -140,32 +138,6 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
           </div>
         </div>
       )}
-      <div>
-        <div className="flex items-baseline justify-between gap-3">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Mon mur' : 'My wall'}</p>
-        </div>
-        <div className="mt-3">
-          <Composeur fil="communaute" compact contexte="monmur" />
-        </div>
-        {posts.length === 0 ? (
-          <p className="mt-3 text-sm text-[#38403a]/50 dark:text-white/50">
-            {lang === 'FR' ? 'Vous n\'avez encore rien publié. Ce que vous publiez ici paraît sur votre mur, et sur le feed quand Krystine l\'ouvre aux membres.' : 'Nothing posted yet. What you post here also appears on the feed.'}
-          </p>
-        ) : (
-          <div className="mt-3 space-y-3">
-            {posts.map(p => (
-              <div key={p.id} className="rounded-[15px] border border-[#38403a]/10 p-4 dark:border-white/10">
-                <p className="whitespace-pre-line text-sm text-[#293027] dark:text-white">{p.texte}</p>
-                {p.photoUrl && <img src={p.photoUrl} alt="" className="mt-3 max-h-72 rounded-[12px] object-cover" />}
-                {p.videoUrl && <video src={p.videoUrl} controls playsInline preload="metadata" className="mt-3 max-h-72 w-full rounded-[12px] bg-black" />}
-                <p className="mt-2 text-[11px] text-[#38403a]/40 dark:text-white/40">
-                  {p.creeLe?.toDate?.().toLocaleDateString('fr-CA')} · {(p.pour || 0)} <i className="fa-solid fa-heart text-[#BA7B39]" /> · {p.nbCommentaires || 0} <i className="fa-solid fa-comment" />
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
       <ClientPreferences uid={uid} member={member} lang={lang} />
     </div>
   );
@@ -372,7 +344,13 @@ const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) 
 const ClientPortal: React.FC = () => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
   // Par défaut, l'espace s'ouvre sur les formations : le fil participatif vit au Foyer d'Origine.
+  const location = useLocation();
   const [tab, setTab] = useState<Tab>('formations');
+  // ?onglet=messagerie (cloche, bulle des messages, menu de la musique) ouvre l'onglet voulu.
+  useEffect(() => {
+    const voulu = new URLSearchParams(location.search).get('onglet') as Tab | null;
+    if (voulu && ['profile', 'amis', 'orders', 'formations', 'rediffusions', 'telechargements', 'loyalty', 'dosha', 'archives', 'messagerie'].includes(voulu)) setTab(voulu);
+  }, [location.search]);
   // Une carte « Lettre d'or » dans la messagerie mène à l'onglet Lettres.
   useEffect(() => {
     const aller = () => setTab('archives');
@@ -482,7 +460,7 @@ const ClientPortal: React.FC = () => {
   const perso = member?.personnalisation || {};
   const banniere = perso.banniere === 'nature' ? BANNIERE_NATURE : perso.banniere === 'defaut' ? BANNIERE_DEFAUT : (member?.bannerURL || BANNIERE_DEFAUT);
   const skinActif = apercuSkin || perso.skin || '';
-  const skin = skinActif === 'medzo' ? 'skin-medzo' : skinActif === 'nuit' ? 'skin-nuit' : '';
+  const skin = skinActif === 'medzo' ? 'skin-medzo' : skinActif === 'nuit' ? 'skin-nuit' : skinActif === 'coffee' ? 'skin-coffee' : '';
 
 
   return (
@@ -490,7 +468,7 @@ const ClientPortal: React.FC = () => {
       {/* La bannière pleine largeur, l'avatar qui la chevauche, le nom et les
           points par-dessus la photo : le patron du FMM et de la référence
           d'Alex, dans le canon L'Œuvre. */}
-      <div className="relative h-64 w-full overflow-hidden md:h-80">
+      <div className="relative h-80 w-full overflow-hidden md:h-[25rem]">
         <img src={banniere} alt="" className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#151d19]/75 via-[#151d19]/20 to-transparent" />
         {!member?.bannerURL && (
@@ -591,7 +569,7 @@ const ClientPortal: React.FC = () => {
             </div>
           )}
           {tab === 'profile'  && <ProfilVue uid={user.uid} member={member} email={user.email || ''} lang={lang} solde={pointsBalance} onBoutique={() => { setTab('telechargements'); window.setTimeout(() => document.getElementById('boutique')?.scrollIntoView({ behavior: 'smooth' }), 150); }} />}
-          {tab === 'amis'     && <ClientAmis uid={user.uid} lang={lang} />}
+          {tab === 'amis'     && <ReserveAuFoyer lang={lang} quoi={lang === 'FR' ? 'Les amies et l’annuaire des membres sont exclusifs aux membres du Foyer d’Origine.' : 'Friends and the member directory are reserved for members of the Origine Hearth.'}><ClientAmis uid={user.uid} lang={lang} /></ReserveAuFoyer>}
           {tab === 'orders'   && <OrdersTab />}
           {tab === 'formations' && <ClientFormations />}
           {tab === 'rediffusions' && <ClientRediffusions />}

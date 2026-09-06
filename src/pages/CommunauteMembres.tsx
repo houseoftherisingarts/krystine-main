@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AppContext';
 import { getAllMembers, type MemberDoc } from '../firebase/firestore';
 import Avatar from '../components/communaute/Avatar';
+import ReserveAuFoyer from '../components/communaute/ReserveAuFoyer';
 
 // ─── L'annuaire des membres ──────────────────────────────────────────
 // Porté du mur social du FMM 2026 (le registre de l'Ordre), adapté à la
@@ -42,6 +43,7 @@ const CommunauteMembres: React.FC = () => {
   }
 
   return (
+    <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] px-6 pt-32 pb-24"><div className="mx-auto max-w-3xl"><ReserveAuFoyer>
     <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-28 pb-24">
       <div className="max-w-4xl mx-auto px-6">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
@@ -84,6 +86,7 @@ const CommunauteMembres: React.FC = () => {
         )}
       </div>
     </div>
+  </ReserveAuFoyer></div></div>
   );
 };
 

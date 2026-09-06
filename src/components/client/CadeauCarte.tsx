@@ -37,7 +37,7 @@ const CadeauCarte: React.FC<{ cadeau: Cadeau; lang: string; compact?: boolean }>
       )}
       <div className="min-w-0 flex-1">
         <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F] dark:text-[#d9a05b]">
-          <i className="fa-solid fa-gift mr-1" /> {fr ? `Un cadeau de ${cadeau.deNom}` : `A gift from ${cadeau.deNom}`}
+          <i className="fa-solid fa-gift mr-1" /> {fr ? 'Un cadeau de Krystine' : 'A gift from Krystine'}
         </p>
         <p className="mt-1 font-serif text-xl text-[#293027] dark:text-white">
           {entier

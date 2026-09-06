@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, User, Music, Moon, Sun, Menu, X } from 'lucide-react';
+import { ShoppingBag, User, Menu, X } from 'lucide-react';
 import { useUI, useAuth, useCart, useBoutique } from '../../contexts/AppContext';
 import Cloche from '../communaute/Cloche';
+import MenuMusique from './MenuMusique';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 
@@ -19,7 +20,7 @@ const NAV: NavItem[] = [
 ];
 
 const NavBar: React.FC = () => {
-  const { lang, setLang, theme, toggleTheme, audioPlaying, toggleAudio } = useUI();
+  const { lang, setLang } = useUI();
   const { user, member, isAdmin, setSignInOpen } = useAuth();
   // Accès profil/compte : caché au public tant que le flag n'est pas activé
   // dans l'admin. Les administrateurs le voient toujours pour travailler.
@@ -55,8 +56,8 @@ const NavBar: React.FC = () => {
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className={`fixed top-0 w-full z-40 transition-[background,border,box-shadow] duration-500 ${
         scrolled
-          ? 'bg-cream/90 dark:bg-espressoDeep/95 backdrop-blur-xl border-b border-brass/15 shadow-[0_6px_34px_rgba(58,49,38,0.10)]'
-          : 'bg-cream/55 dark:bg-espressoDeep/70 backdrop-blur-xl border-b border-transparent'
+          ? 'bg-[#e8e0d1]/95 dark:bg-[#1e2823]/95 backdrop-blur-xl border-b border-brass/30 shadow-[0_6px_34px_rgba(58,49,38,0.14)]'
+          : 'bg-[#e8e0d1]/85 dark:bg-[#1e2823]/85 backdrop-blur-xl border-b border-brass/25 shadow-[0_4px_24px_rgba(58,49,38,0.08)]'
       }`}
     >
       <div className="max-w-[1800px] mx-auto px-6 md:px-8 py-3.5 flex justify-between items-center gap-4">
@@ -85,8 +86,8 @@ const NavBar: React.FC = () => {
           {NAV.map((item, i) => {
             const active = isActive(item.href);
             const resolved = resolveHref(item.href);
-            const cls = `group relative whitespace-nowrap text-[0.68rem] uppercase tracking-[0.17em] font-sans transition-colors duration-[250ms] ${
-              active ? 'text-brassInk dark:text-brassBright' : 'text-ink/75 dark:text-ctext/70 hover:text-brassInk dark:hover:text-brassBright'
+            const cls = `group relative whitespace-nowrap rounded-full px-3 py-2 text-[0.68rem] uppercase tracking-[0.17em] font-sans transition-colors duration-[250ms] ${
+              active ? 'bg-brass/15 text-brassInk dark:text-brassBright' : 'text-ink/80 dark:text-ctext/75 hover:bg-white/60 hover:text-brassInk dark:hover:bg-white/10 dark:hover:text-brassBright'
             }`;
             const underline = (
               <span
@@ -114,19 +115,8 @@ const NavBar: React.FC = () => {
 
         {/* Controls */}
         <div className="flex items-center gap-1 md:gap-1.5 flex-shrink-0">
-          <IconButton className="hidden sm:flex" onClick={toggleAudio} title={audioPlaying ? 'Pause' : 'Play'} ariaLabel={audioPlaying ? (lang === 'FR' ? 'Mettre la musique en pause' : 'Pause music') : (lang === 'FR' ? 'Jouer la musique' : 'Play music')}>
-            {audioPlaying ? (
-              <div className="flex gap-[2px] items-end h-3" aria-hidden>
-                {[1, 1.4, 0.8].map((d, i) => (
-                  <span key={i} className="w-[2px] bg-brass rounded-full animate-bounce motion-reduce:animate-none" style={{ height: i === 1 ? '12px' : '8px', animationDelay: `${i * 0.15}s` }} />
-                ))}
-              </div>
-            ) : <Music size={15} strokeWidth={1.75} />}
-          </IconButton>
+          <MenuMusique className="hidden sm:block" />
 
-          <IconButton className="hidden sm:flex" onClick={toggleTheme} title={theme === 'light' ? 'Mode sombre' : 'Mode clair'} ariaLabel={theme === 'light' ? (lang === 'FR' ? 'Activer le mode sombre' : 'Switch to dark mode') : (lang === 'FR' ? 'Activer le mode clair' : 'Switch to light mode')}>
-            {theme === 'light' ? <Moon size={16} strokeWidth={1.75} /> : <Sun size={16} strokeWidth={1.75} />}
-          </IconButton>
 
           <IconButton onClick={() => setCartOpen(true)} title="Panier" ariaLabel={lang === 'FR' ? `Panier, ${cartItems.length} article${cartItems.length > 1 ? 's' : ''}` : `Cart, ${cartItems.length} item${cartItems.length > 1 ? 's' : ''}`}>
             <ShoppingBag size={17} strokeWidth={1.75} />
@@ -261,7 +251,7 @@ const IconButton: React.FC<{ onClick: () => void; title: string; ariaLabel?: str
     onClick={onClick}
     title={title}
     aria-label={ariaLabel ?? title}
-    className={`relative w-11 h-11 flex items-center justify-center rounded-full text-ink/70 dark:text-ctext/70 hover:text-brassInk dark:hover:text-brassBright hover:bg-brass/8 transition-colors ${className}`}
+    className={`relative w-11 h-11 flex items-center justify-center rounded-full border border-brass/25 bg-white/55 text-ink/70 dark:border-white/15 dark:bg-white/5 dark:text-ctext/70 hover:text-brassInk dark:hover:text-brassBright hover:bg-brass/10 transition-colors ${className}`}
   >
     {children}
   </button>

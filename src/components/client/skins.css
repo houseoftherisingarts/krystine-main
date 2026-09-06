@@ -93,3 +93,55 @@
 .skin-nuit .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(13, 19, 16, 0.85) !important; }
 .skin-nuit .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(13, 19, 16, 0.3) !important; }
 .skin-nuit input, .skin-nuit textarea, .skin-nuit select { color: var(--nuit-encre); background-color: rgba(255, 255, 255, 0.06); }
+
+/* Le skin Dark Coffee : un café noir serré, brun profond, crème et cuivre. Mêmes cibles que Nuit. */
+.skin-coffee {
+  --coffee-fond: #1b120c;
+  --coffee-panneau: #2a1c13;
+  --coffee-encre: #f1e6d6;
+  --coffee-accent: #b8733f;
+  --coffee-accent-clair: #d99a5f;
+  --coffee-accent-profond: #d99a5f;
+  color-scheme: dark;
+}
+.skin-coffee.bg-\[\#EEE7DB\],
+.skin-coffee .bg-\[\#EEE7DB\] { background-color: var(--coffee-fond) !important; }
+.skin-coffee .bg-\[\#293027\],
+.skin-coffee .bg-\[\#151d19\]\/40,
+.skin-coffee .bg-\[\#151d19\]\/60 { background-color: #120b07 !important; }
+.skin-coffee .text-\[\#293027\] { color: var(--coffee-encre) !important; }
+.skin-coffee .text-\[\#293027\]\/85,
+.skin-coffee .text-\[\#293027\]\/80,
+.skin-coffee .text-\[\#293027\]\/70 { color: rgba(241, 230, 214, 0.82) !important; }
+.skin-coffee .text-\[\#293027\]\/60,
+.skin-coffee .text-\[\#293027\]\/55,
+.skin-coffee .text-\[\#293027\]\/50,
+.skin-coffee .text-\[\#293027\]\/40 { color: rgba(241, 230, 214, 0.6) !important; }
+.skin-coffee .text-\[\#8B4A2F\] { color: var(--coffee-accent-profond) !important; }
+.skin-coffee .text-\[\#38403a\]\/80,
+.skin-coffee .text-\[\#38403a\]\/70,
+.skin-coffee .text-\[\#38403a\]\/60,
+.skin-coffee .text-\[\#38403a\]\/55,
+.skin-coffee .text-\[\#38403a\]\/50 { color: rgba(241, 230, 214, 0.66) !important; }
+.skin-coffee .bg-\[\#BA7B39\] { background-color: var(--coffee-accent) !important; color: #151d19 !important; }
+.skin-coffee .hover\:bg-\[\#d9a05b\]:hover { background-color: var(--coffee-accent-clair) !important; }
+.skin-coffee .border-\[\#BA7B39\] { border-color: var(--coffee-accent) !important; }
+.skin-coffee .bg-\[\#BA7B39\]\/10,
+.skin-coffee .bg-\[\#BA7B39\]\/15,
+.skin-coffee .bg-\[\#BA7B39\]\/8 { background-color: rgba(184, 115, 63, 0.2) !important; }
+.skin-coffee .bg-white\/55,
+.skin-coffee .bg-white\/45,
+.skin-coffee .bg-white\/40,
+.skin-coffee .bg-white\/50,
+.skin-coffee .bg-white\/60,
+.skin-coffee .bg-white\/70,
+.skin-coffee .bg-white\/25 { background-color: rgba(42, 28, 19, 0.82) !important; }
+.skin-coffee .border-white\/60 { border-color: rgba(241, 230, 214, 0.12) !important; }
+.skin-coffee .border-\[\#293027\]\/10,
+.skin-coffee .border-\[\#293027\]\/15,
+.skin-coffee .border-\[\#38403a\]\/10,
+.skin-coffee .border-\[\#38403a\]\/15,
+.skin-coffee .divide-\[\#293027\]\/10 > * { border-color: rgba(241, 230, 214, 0.12) !important; }
+.skin-coffee .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(18, 11, 7, 0.88) !important; }
+.skin-coffee .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(18, 11, 7, 0.32) !important; }
+.skin-coffee input, .skin-coffee textarea, .skin-coffee select { color: var(--coffee-encre); background-color: rgba(255, 255, 255, 0.06); }
