@@ -4,6 +4,7 @@ import { loginWithEmail, loginWithGoogle, signUpWithEmail, sendPasswordReset } f
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import app from '../../firebase';
 import { codeRetenu, retenirCode, codeParrainExiste, retenirCodeDepuisUrl } from '../../firebase/parrainage';
+import Portail from '../Portail';
 
 type Mode = 'signin' | 'signup' | 'reset';
 
