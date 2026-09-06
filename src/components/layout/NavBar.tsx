@@ -137,7 +137,9 @@ const NavBar: React.FC = () => {
             )}
           </IconButton>
 
-          {profilVisible && user && <Cloche uid={user.uid} />}
+          {/* La cloche vit dès qu'on est connecté, même si le profil public
+              (avatar → /compte) est encore caché derrière le flag admin. */}
+          {user && <Cloche uid={user.uid} />}
           {profilVisible && (user ? (
             <Link
               to="/compte"
