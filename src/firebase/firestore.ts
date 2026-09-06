@@ -157,7 +157,10 @@ export async function addNewsletterSubscriber(data: Omit<NewsletterSubscriber, '
 // seule lecture : les appels simultanés reçoivent la même promesse, et le
 // résultat reste valable deux minutes. Toute écriture sur la collection vide
 // le cache, donc un import ou une suppression se voit tout de suite.
-const CACHE_ABONNES_MS = 2 * 60_000;
+// Quinze minutes : chaque onglet de l'admin qui a besoin de la liste la
+// partage au lieu de retélécharger 13 Mo. Toute écriture depuis l'admin
+// invalide le cache; le bouton « Rafraîchir » des Abonnés aussi.
+const CACHE_ABONNES_MS = 15 * 60_000;
 let cacheAbonnes: { at: number; p: Promise<NewsletterSubscriber[]> } | null = null;
 
 export function invalidateNewsletterSubscribers() { cacheAbonnes = null; }
@@ -386,6 +389,11 @@ export interface NewsletterDoc {
   segmentTag?: string | null;  // ancien champ, lu pour compatibilité
   audience?: NewsletterAudience | null;
   scheduledFor?: Timestamp | null;
+  // En-tête du courriel : la couverture du podcast, une image de la
+  // médiathèque, ou rien (défaut). Signature de Krystine au bas : oui par défaut.
+  couverture?: 'podcast' | 'image' | 'aucune';
+  couvertureUrl?: string | null;
+  signature?: boolean;
   sentAt?: Timestamp;
   stats?: NewsletterStats;
   createdBy?: string;

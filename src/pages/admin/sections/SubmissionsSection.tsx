@@ -146,6 +146,17 @@ function normalizeBooking(b: BookingRequest): Submission {
   };
 }
 
+// Les imports en bloc (Kajabi, Shopify, CSV) ne sont pas des formulaires : ces
+// contacts vivent dans Clients et dans Infolettre. Ici, seulement ce que des
+// gens ont rempli eux-mêmes. Sans ce tri, les 26 000 fiches Shopify du
+// 6 septembre 2026 figeaient l'onglet plusieurs secondes.
+const SOURCES_IMPORT = new Set(['csv-import', 'import-kajabi', 'import']);
+const estUneSoumission = (n: NewsletterSubscriber): boolean =>
+  !SOURCES_IMPORT.has(n.source || '') && !(n.tags || []).some(t => t === 'shopify-import' || t === 'import');
+
+// Nombre de fiches dessinées d'un coup; le reste vient au clic.
+const PAGE = 60;
+
 function normalizeNewsletter(n: NewsletterSubscriber): Submission {
   const isWaitlist = (n.source || '').startsWith('waitlist-') || (n.tags || []).some(t => t.startsWith('waitlist-'));
   // Inscriptions au podcast en direct : le bloc public pose 'podcast-live'
@@ -276,6 +287,7 @@ const SubmissionsSection: React.FC = () => {
   const [cartes, setCartes] = useState(false);
   const [fiches, setFiches] = useState<Map<string, MemberDoc>>(new Map());
   const [tagDirect, setTagDirect] = useState<string>('');
+  const [visibles, setVisibles] = useState(PAGE);
 
   useEffect(() => {
     let cancelled = false;
@@ -315,7 +327,7 @@ const SubmissionsSection: React.FC = () => {
 
       const rows: Submission[] = [
         ...bookings.map(normalizeBooking).map(withMember),
-        ...subscribers.map(normalizeNewsletter).map(withMember),
+        ...subscribers.filter(estUneSoumission).map(normalizeNewsletter).map(withMember),
         ...doshas.map(normalizeDosha).map(withMember),
         ...guides.map(normalizeGuide).map(withMember),
       ];
@@ -398,6 +410,8 @@ const SubmissionsSection: React.FC = () => {
       return true;
     });
   }, [subs, cat, time, dosha, sourceFilter, search]);
+  useEffect(() => { setVisibles(PAGE); }, [cat, time, dosha, sourceFilter, search]);
+  const affichees = filtered.slice(0, visibles);
 
   const counts = useMemo(() => {
     const c: Record<CategoryFilter, number> = { all: subs.length, booking: 0, newsletter: 0, waitlist: 0, podcastLive: 0, dosha: 0, guide: 0 };
@@ -569,7 +583,7 @@ const SubmissionsSection: React.FC = () => {
         <EmptyState icon="fa-inbox">Aucune soumission ne correspond à ces filtres.</EmptyState>
       ) : (
         <div className="space-y-2">
-          {filtered.map(s => {
+          {affichees.map(s => {
             const meta = CATEGORY_META[s.category];
             const isOpen = expanded === s.id;
             const dateStr = s.createdAt?.toDate?.().toLocaleDateString('fr-CA', {
@@ -670,6 +684,12 @@ const SubmissionsSection: React.FC = () => {
               </Card>
             );
           })}
+          {visibles < filtered.length && (
+            <div className="flex items-center justify-between pt-2">
+              <p className="text-xs text-[#293027]/50 dark:text-white/50">{affichees.length} affichées sur {filtered.length}</p>
+              <GhostButton onClick={() => setVisibles(v => v + PAGE * 2)}>Afficher {Math.min(PAGE * 2, filtered.length - visibles)} de plus</GhostButton>
+            </div>
+          )}
         </div>
       )}
 

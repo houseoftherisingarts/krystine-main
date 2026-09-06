@@ -129,8 +129,13 @@ function mergeContacts(members: MemberDoc[], subs: NewsletterSubscriber[]): Cont
   });
 }
 
+// Lignes dessinées d'un coup; le reste vient au clic. Dessiner les 33 000
+// contacts d'une traite figeait l'onglet une dizaine de secondes.
+const PAGE = 60;
+
 const MembersSection: React.FC = () => {
   const [contacts, setContacts] = useState<ContactRow[]>([]);
+  const [visibles, setVisibles] = useState(PAGE);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
   const [view, setView] = useState<string>(ALL_CONTACTS);
@@ -200,6 +205,7 @@ const MembersSection: React.FC = () => {
     return { memberCount, noSource, sources };
   }, [contacts]);
 
+  useEffect(() => { setVisibles(PAGE); }, [filter, view]);
   const filtered = contacts.filter(c => {
     if (view !== ALL_CONTACTS) {
       if (view === MEMBERS_ONLY) {
@@ -313,7 +319,7 @@ const MembersSection: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {filtered.map(c => {
+            {filtered.slice(0, visibles).map(c => {
               const name = c.displayName || [c.firstName, c.lastName].filter(Boolean).join(' ') || c.displayEmail.split('@')[0];
               // Only member-backed rows can drill into the portal preview —
               // newsletter-only contacts have no members/<uid> doc.
@@ -394,6 +400,12 @@ const MembersSection: React.FC = () => {
             })}
           </tbody>
         </table>
+        {visibles < filtered.length && (
+          <div className="flex items-center justify-between px-4 py-3 border-t border-[#293027]/10 dark:border-white/10">
+            <p className="text-xs text-[#293027]/50 dark:text-white/50">{Math.min(visibles, filtered.length)} affichés sur {filtered.length}</p>
+            <GhostButton onClick={() => setVisibles(v => v + PAGE * 2)}>Afficher {Math.min(PAGE * 2, filtered.length - visibles)} de plus</GhostButton>
+          </div>
+        )}
       </Card>
 
       {viewingUid && (

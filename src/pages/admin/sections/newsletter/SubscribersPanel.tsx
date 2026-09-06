@@ -1,7 +1,7 @@
 import React, { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { PALIERS, STATUTS, statsDepuisFiches, libelleTag, explicationTag } from '../../../../lib/paliers';
 import {
-  getNewsletterSubscribers, deleteNewsletterSubscriber, bulkAddNewsletterSubscribers,
+  getNewsletterSubscribers, invalidateNewsletterSubscribers, deleteNewsletterSubscriber, bulkAddNewsletterSubscribers,
   type NewsletterSubscriber, type BulkImportResult,
 } from '../../../../firebase/firestore';
 import { parseCsv, mapCsvToSubscribers } from '../../../../lib/csv';
@@ -78,7 +78,7 @@ const SubscribersPanel: React.FC = () => {
   // redessin passent en tâche de fond.
   const recherche = useDeferredValue(filter);
 
-  const refresh = () => { setLoading(true); getNewsletterSubscribers().then(setSubs).finally(() => setLoading(false)); };
+  const refresh = () => { setLoading(true); invalidateNewsletterSubscribers(); return getNewsletterSubscribers().then(setSubs).finally(() => setLoading(false)); };
   useEffect(() => { refresh(); }, []);
 
   const del = async (s: NewsletterSubscriber) => {

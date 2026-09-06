@@ -1,7 +1,7 @@
 import { onCall, HttpsError, type CallableRequest } from 'firebase-functions/v2/https';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
-import { renderEmailHtml, renderEmailText, newsletterAttachments, inlineForPreview, type NewsletterBlock } from './renderer';
+import { renderEmailHtml, renderEmailText, newsletterAttachments, inlineForPreview, type NewsletterBlock, type Couverture } from './renderer';
 import { MAIL_SECRETS, NEWSLETTER_POSTAL_ADDRESS, REPLY_TO, createTransporter, fromAddr as buildFrom, unsubscribeUrl as buildUnsub } from './mail';
 import { renderWelcomeHtml, WELCOME_SUBJECT , WELCOME_IMAGE_URL } from './welcome';
 import { buildMail, renderLiveHtml, type LiveEvent } from './live';
@@ -54,7 +54,14 @@ interface NewsletterRecord {
   segmentTag?: string | null;
   audience?: NewsletterAudience | null;
   scheduledFor?: Timestamp;
+  couverture?: Couverture;
+  couvertureUrl?: string | null;
+  signature?: boolean;
 }
+
+// L'en-tête et la signature choisis dans le composeur, tels quels.
+const enTete = (doc: Pick<NewsletterRecord, 'couverture' | 'couvertureUrl' | 'signature'>) =>
+  ({ couverture: doc.couverture, couvertureUrl: doc.couvertureUrl, signature: doc.signature });
 
 export function selectRecipients<T extends SubscriberDoc>(subs: T[], doc: Pick<NewsletterRecord, 'audience' | 'segmentTag'>): T[] {
   const a: NewsletterAudience = doc.audience || (doc.segmentTag ? { mode: 'tags', tags: [doc.segmentTag] } : { mode: 'all' });
@@ -194,7 +201,7 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
     // Le pixel de mesure : une image d'un point, propre à cette personne et
     // à cette infolettre. Il dit qui a ouvert, sans rien demander de plus.
     const pixelUrl = `${pixelBase}?n=${encodeURIComponent(newsletterId)}&s=${encodeURIComponent(sub.id)}`;
-    const opts = { subject: doc.subject, preheader: doc.preheader, unsubscribeUrl, postalAddress, firstName: sub.firstName, pixelUrl };
+    const opts = { subject: doc.subject, preheader: doc.preheader, unsubscribeUrl, postalAddress, firstName: sub.firstName, pixelUrl, ...enTete(doc) };
     const message = {
       from: fromAddr,
       replyTo: REPLY_TO,
@@ -206,7 +213,7 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
         'List-Unsubscribe': `<${unsubscribeUrl}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
-      attachments: newsletterAttachments(),
+      attachments: newsletterAttachments(opts),
     };
     // Un refus passager (limite de débit, connexion) se retente une fois.
     try {
@@ -280,7 +287,7 @@ export const sendNewsletter = onCall(
       const doc = snap.data() as NewsletterRecord;
       if (!doc.blocks?.length || !doc.subject) throw new HttpsError('failed-precondition', 'Newsletter is missing subject or content');
       const transporter = createTransporter();
-      const opts = { subject: doc.subject, preheader: doc.preheader, unsubscribeUrl: buildUnsub('TEST'), postalAddress: NEWSLETTER_POSTAL_ADDRESS.value(), firstName: 'Test' };
+      const opts = { subject: doc.subject, preheader: doc.preheader, unsubscribeUrl: buildUnsub('TEST'), postalAddress: NEWSLETTER_POSTAL_ADDRESS.value(), firstName: 'Test', ...enTete(doc) };
       try {
         await transporter.sendMail({
           from: buildFrom(doc.fromName || 'Krystine St-Laurent'),
@@ -289,7 +296,7 @@ export const sendNewsletter = onCall(
           subject: `[TEST] ${doc.subject}`,
           html: renderEmailHtml(doc.blocks, opts),
           text: renderEmailText(doc.blocks, opts),
-          attachments: newsletterAttachments(),
+          attachments: newsletterAttachments(opts),
         });
       } finally {
         transporter.close();
@@ -335,7 +342,7 @@ export const previewNewsletter = onCall(
   { secrets: MAIL_SECRETS, timeoutSeconds: 60 },
   async (request) => {
     assertAdmin(request);
-    const data = (request.data || {}) as { blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string };
+    const data = (request.data || {}) as { blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string; couverture?: Couverture; couvertureUrl?: string | null; signature?: boolean };
     const postalAddress = NEWSLETTER_POSTAL_ADDRESS.value();
     const unsubscribeUrl = buildUnsub('APERCU');
     const firstName = 'Krystine';
@@ -358,7 +365,7 @@ export const previewNewsletter = onCall(
       return { html: inlineForPreview(renderLiveHtml(m, { unsubscribeUrl, postalAddress, ev })), subject: m.subject };
     }
 
-    const html = renderEmailHtml(data.blocks || [], { subject: data.subject || '(sans sujet)', preheader: data.preheader, unsubscribeUrl, postalAddress, firstName });
+    const html = renderEmailHtml(data.blocks || [], { subject: data.subject || '(sans sujet)', preheader: data.preheader, unsubscribeUrl, postalAddress, firstName, ...enTete(data) });
     return { html: inlineForPreview(html), subject: data.subject || '' };
   },
 );

@@ -49,7 +49,12 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
   const [audience, setAudience] = useState<NewsletterAudience>({ mode: 'all' });
   const [when, setWhen] = useState('');          // datetime-local, heure du Québec
   const [side, setSide] = useState<'reglages' | 'preview' | 'iris'>('reglages');
-  const [pickFor, setPickFor] = useState<number | null>(null);   // bloc image en attente d'une image
+  const [pickFor, setPickFor] = useState<number | 'entete' | null>(null);   // bloc image (ou l'en-tête) en attente d'une image
+  // En-tête du courriel : rien par défaut. La couverture du podcast ne part
+  // que si Krystine la choisit; une image de la médiathèque est possible aussi.
+  const [couverture, setCouverture] = useState<'podcast' | 'image' | 'aucune'>('aucune');
+  const [couvertureUrl, setCouvertureUrl] = useState<string>('');
+  const [signature, setSignature] = useState(true);
 
   // datetime-local <-> Date
   const toLocal = (d: Date) => { const p = (n: number) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; };
@@ -68,6 +73,9 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
         setStatus(n.status || 'draft');
         setAudience(n.audience || (n.segmentTag ? { mode: 'tags', tags: [n.segmentTag] } : { mode: 'all' }));
         setWhen(n.scheduledFor ? toLocal(n.scheduledFor.toDate()) : '');
+        setCouverture(n.couverture || 'aucune');
+        setCouvertureUrl(n.couvertureUrl || '');
+        setSignature(n.signature !== false);
       })
       .finally(() => setLoading(false));
   }, [newsletterId, onBack]);
@@ -108,10 +116,11 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
     setSaving(true);
     try {
       const scheduledFor = when ? Timestamp.fromDate(new Date(when)) : null;
+      const enTete = { couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, signature };
       if (id) {
-        await updateNewsletter(id, { title, subject, preheader, fromName, blocks, audience, scheduledFor });
+        await updateNewsletter(id, { title, subject, preheader, fromName, blocks, audience, scheduledFor, ...enTete });
       } else {
-        const ref = await createNewsletter({ title, subject, preheader, fromName, blocks, status: 'draft', audience, scheduledFor });
+        const ref = await createNewsletter({ title, subject, preheader, fromName, blocks, status: 'draft', audience, scheduledFor, ...enTete });
         if (ref) setId(ref.id);
         setSavedAt(new Date());
         return ref?.id || null;
@@ -349,7 +358,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
             ) : side === 'preview' ? (
               <div className="p-4">
                 <p className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/50 dark:text-white/50 mb-3">Le courriel tel qu’il partira</p>
-                <PreviewFrame blocks={blocks} subject={subject} preheader={preheader} height={Math.max(700, window.innerHeight - 160)} />
+                <PreviewFrame blocks={blocks} subject={subject} preheader={preheader} couverture={couverture} couvertureUrl={couvertureUrl} signature={signature} height={Math.max(700, window.innerHeight - 160)} />
               </div>
             ) : (
               <div className="p-5 space-y-5">
@@ -359,6 +368,34 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
                 </div>
                 <AudiencePicker value={audience} onChange={setAudience} disabled={isReadOnly || status === 'scheduled'} />
                 {audienceVide && <p className="text-xs text-[#8B4A2F] bg-[#BA7B39]/10 rounded-xl px-3 py-2"><i className="fa-solid fa-circle-info mr-1" /> Cochez au moins une liste pour pouvoir envoyer.</p>}
+                <h3 className="pt-4 border-t border-[#293027]/10 dark:border-white/10 text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60">En-tête du courriel</h3>
+                <div className="space-y-2" onClick={e => e.stopPropagation()}>
+                  {([
+                    { v: 'aucune',  icon: 'fa-minus',      label: 'Aucune image',            aide: 'Le sujet sur le bandeau, puis vos blocs.' },
+                    { v: 'podcast', icon: 'fa-podcast',    label: 'Couverture du podcast',   aide: 'Au-delà des tendances, saison 2.' },
+                    { v: 'image',   icon: 'fa-images',     label: 'Une image à moi',         aide: 'Choisie dans la médiathèque, en pleine largeur.' },
+                  ] as const).map(o => (
+                    <label key={o.v} className={`flex items-start gap-3 rounded-2xl border px-3 py-2.5 cursor-pointer transition-colors ${couverture === o.v ? 'border-[#BA7B39] bg-[#BA7B39]/10' : 'border-[#293027]/10 dark:border-white/10 hover:border-[#BA7B39]/50'} ${isReadOnly ? 'opacity-60 cursor-default' : ''}`}>
+                      <input type="radio" name="couverture" value={o.v} checked={couverture === o.v} disabled={isReadOnly} onChange={() => { setCouverture(o.v); if (o.v === 'image' && !couvertureUrl) setPickFor('entete'); }} className="mt-1 accent-[#BA7B39]" />
+                      <span className="min-w-0">
+                        <span className="block text-sm text-[#293027] dark:text-white"><i className={`fa-solid ${o.icon} mr-2 text-[#8B4A2F]`} />{o.label}</span>
+                        <span className="block text-xs text-[#293027]/55 dark:text-white/55">{o.aide}</span>
+                      </span>
+                    </label>
+                  ))}
+                  {couverture === 'image' && (
+                    <div className="flex items-center gap-3 pl-1">
+                      {couvertureUrl
+                        ? <img src={couvertureUrl} alt="" className="h-14 w-24 rounded-xl object-cover border border-[#293027]/10 dark:border-white/10" />
+                        : <span className="text-xs text-[#8B4A2F]">Aucune image choisie : le courriel partira sans en-tête.</span>}
+                      <GhostButton onClick={() => setPickFor('entete')} disabled={isReadOnly}><i className="fa-solid fa-images" /> {couvertureUrl ? 'Changer' : 'Choisir'}</GhostButton>
+                    </div>
+                  )}
+                  <label className={`flex items-center gap-3 pl-1 pt-1 text-sm text-[#293027] dark:text-white ${isReadOnly ? 'opacity-60' : 'cursor-pointer'}`}>
+                    <input type="checkbox" checked={signature} disabled={isReadOnly} onChange={e => setSignature(e.target.checked)} className="accent-[#BA7B39]" />
+                    Signature de Krystine au bas du courriel
+                  </label>
+                </div>
                 <h3 className="pt-4 border-t border-[#293027]/10 dark:border-white/10 text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60">Envoi</h3>
                 <div>
                   <Label>Titre interne (non envoyé)</Label>
@@ -381,7 +418,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
       <MediathequePicker
         open={pickFor !== null}
         onClose={() => setPickFor(null)}
-        onSelect={url => { if (pickFor !== null) updateBlock(pickFor, { url }); }}
+        onSelect={url => { if (pickFor === 'entete') setCouvertureUrl(url); else if (pickFor !== null) updateBlock(pickFor, { url }); }}
       />
     </div>
   );

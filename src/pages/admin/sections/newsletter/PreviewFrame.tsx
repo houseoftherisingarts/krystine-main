@@ -6,25 +6,27 @@ import type { NewsletterBlock } from '../../../../firebase/firestore';
 // L'aperçu exact du courriel : le serveur rend le même HTML que celui qui
 // part (previewNewsletter), l'admin l'affiche dans une iframe. Un seul moteur.
 
-export async function fetchPreview(input: { blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string }): Promise<{ html: string; subject: string }> {
+export interface EnTete { couverture?: 'podcast' | 'image' | 'aucune'; couvertureUrl?: string | null; signature?: boolean }
+
+export async function fetchPreview(input: EnTete & { blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string }): Promise<{ html: string; subject: string }> {
   if (!app) throw new Error('Firebase non configuré');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'previewNewsletter');
   const res: any = await call(input);
   return res.data;
 }
 
-const PreviewFrame: React.FC<{ blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string; height?: number }> = ({ blocks, subject, preheader, kind, height = 900 }) => {
+const PreviewFrame: React.FC<EnTete & { blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string; height?: number }> = ({ blocks, subject, preheader, kind, couverture, couvertureUrl, signature, height = 900 }) => {
   const [html, setHtml] = useState('');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const timer = useRef<number | null>(null);
-  const key = JSON.stringify({ blocks, subject, preheader, kind });
+  const key = JSON.stringify({ blocks, subject, preheader, kind, couverture, couvertureUrl, signature });
 
   useEffect(() => {
     if (timer.current) window.clearTimeout(timer.current);
     timer.current = window.setTimeout(() => {
       setBusy(true); setErr(null);
-      fetchPreview({ blocks, subject, preheader, kind })
+      fetchPreview({ blocks, subject, preheader, kind, couverture, couvertureUrl, signature })
         .then(r => setHtml(r.html))
         .catch(e => setErr(e?.message || 'Aperçu indisponible'))
         .finally(() => setBusy(false));

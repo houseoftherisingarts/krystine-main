@@ -29,12 +29,16 @@ const COVER_URL = `${PUBLIC_BASE_URL}/podcast/live-cover.jpg`;
 const SIGNATURE_URL = 'https://storage.googleapis.com/inspirata/Vata/1%20(1).png';
 const PORTRAIT_URL = `${PUBLIC_BASE_URL}/podcast/krystine.jpg`;
 
+export type Couverture = 'podcast' | 'image' | 'aucune';
+
 // Pièces inline : visibles même quand le client bloque les images distantes.
-export function newsletterAttachments() {
-  return [
-    { filename: 'couverture.jpg', href: COVER_URL, cid: 'cover' },
-    { filename: 'signature.png', href: SIGNATURE_URL, cid: 'signature' },
-  ];
+// Seulement celles que le courriel montre vraiment : une infolettre sans
+// couverture du podcast ne transporte pas la couverture du podcast.
+export function newsletterAttachments(opts: Pick<RenderEmailOptions, 'couverture' | 'signature'> = {}) {
+  const out: { filename: string; href: string; cid: string }[] = [];
+  if (opts.couverture === 'podcast') out.push({ filename: 'couverture.jpg', href: COVER_URL, cid: 'cover' });
+  if (opts.signature !== false) out.push({ filename: 'signature.png', href: SIGNATURE_URL, cid: 'signature' });
+  return out;
 }
 
 // Pour l'aperçu dans l'admin (iframe), les cid: deviennent des URL publiques.
@@ -48,7 +52,11 @@ export interface RenderEmailOptions {
   unsubscribeUrl: string;
   postalAddress: string;
   firstName?: string;
-  showCover?: boolean;   // défaut : vrai
+  /** En-tête : couverture du podcast, image choisie (couvertureUrl), ou rien (défaut). */
+  couverture?: Couverture;
+  couvertureUrl?: string | null;
+  /** Signature de Krystine au bas du corps. Défaut : vrai. */
+  signature?: boolean;
   /** Pixel de mesure d'ouverture, posé en toute fin de courriel. */
   pixelUrl?: string;
 }
@@ -134,7 +142,10 @@ function blockToEmail(block: NewsletterBlock, firstName?: string): string {
 
 export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOptions): string {
   const blockRows = blocks.map(b => blockToEmail(b, opts.firstName)).join('\n');
-  const showCover = opts.showCover !== false;
+  const couverture: Couverture = opts.couverture === 'image' && !opts.couvertureUrl ? 'aucune' : (opts.couverture || 'aucune');
+  const showCover = couverture !== 'aucune';
+  const coverSrc = couverture === 'podcast' ? 'cid:cover' : esc(opts.couvertureUrl);
+  const coverAlt = couverture === 'podcast' ? 'Au-delà des tendances, avec Krystine St-Laurent' : esc(opts.subject);
 
   return `<!doctype html>
 <html lang="fr">
@@ -146,7 +157,7 @@ export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOpti
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;">
 
         ${showCover ? `<tr><td style="padding:0;border-radius:15px 15px 0 0;overflow:hidden;background:${CHARTE.night};">
-          <img src="cid:cover" width="600" alt="Au-delà des tendances, avec Krystine St-Laurent" style="display:block;width:100%;max-width:600px;height:auto;border-radius:15px 15px 0 0;" />
+          <img src="${coverSrc}" width="600" alt="${coverAlt}" style="display:block;width:100%;max-width:600px;height:auto;border-radius:15px 15px 0 0;" />
         </td></tr>` : ''}
 
         <tr><td style="background:${CHARTE.night};padding:30px 40px 28px;${showCover ? '' : 'border-radius:15px 15px 0 0;'}">
@@ -160,7 +171,7 @@ export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOpti
         <tr><td style="background:#ffffff;padding:40px 40px 14px;border-left:1px solid rgba(41,48,39,0.08);border-right:1px solid rgba(41,48,39,0.08);">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
             ${blockRows}
-            <tr><td style="padding:6px 0 8px;"><img src="cid:signature" width="170" alt="Krystine St-Laurent" style="display:block;width:170px;height:auto;" /></td></tr>
+            ${opts.signature !== false ? `<tr><td style="padding:6px 0 8px;"><img src="cid:signature" width="170" alt="Krystine St-Laurent" style="display:block;width:170px;height:auto;" /></td></tr>` : ''}
           </table>
         </td></tr>
 
@@ -200,6 +211,7 @@ export function renderEmailText(blocks: NewsletterBlock[], opts: RenderEmailOpti
         break;
     }
   }
-  lines.push('Krystine St-Laurent', '', opts.postalAddress, `Se désabonner : ${opts.unsubscribeUrl}`);
+  if (opts.signature !== false) lines.push('Krystine St-Laurent');
+  lines.push('', opts.postalAddress, `Se désabonner : ${opts.unsubscribeUrl}`);
   return lines.join('\n\n');
 }
