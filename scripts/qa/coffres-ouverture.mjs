@@ -184,7 +184,6 @@ async function scenarioOuverture(browser, type) {
   attendu(Number(inv?.boites?.[type] || 0) === 0, `coffres/${uid}.boites.${type} = 0 après ouverture`);
   attendu(Number(inv?.cles || 0) === 0, `coffres/${uid}.cles = 0 après ouverture (clé consommée)`);
 
-  const evts = decodeRows((await fsquery('pointsEvents', uid)).map(r => r).flat ? (await fsquery('pointsEvents', uid)) : []);
   const events = decodeRows(await fsquery('pointsEvents', uid));
   const kinds = events.map(e => e.kind);
   attendu(kinds.filter(k => k === 'coffre').length >= 2, `pointsEvents : débit coffre + débit clé présents (${kinds.filter(k => k === 'coffre').length})`);
