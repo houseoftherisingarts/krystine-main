@@ -680,6 +680,7 @@ const ConferenciereLoeuvre: React.FC = () => {
                   <p className="text-center text-[0.78rem] italic font-serif text-inkSoft pt-1">
                     Vos réponses sont enregistrées de manière confidentielle. L'équipe revient vers vous avec une proposition adaptée.
                   </p>
+                  {!user && <CompteUpsell variant="light" />}
                 </form>
               )}
             </div>
