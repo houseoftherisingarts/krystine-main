@@ -508,7 +508,11 @@ const InspiratHome: React.FC = () => {
               <EditableImage
                 fieldKey={card.key}
                 defaultSrc={card.image}
-                className="absolute inset-0 rounded-[28px] origine-image-soft transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
+                // Tuile Formations (bannière enveloppe) : on cadre à droite
+                // pour garder le sceau et la lavande entiers dans le ratio
+                // 3:2. `!important` nécessaire pour battre le
+                // background-position inline posé par EditableImage.
+                className={`absolute inset-0 rounded-[28px] origine-image-soft transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04] ${card.key === 'home.cards.formations' ? '!bg-right' : ''}`}
                 alt={card.title}
               >
                 <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(58,37,30,0.45)_0%,rgba(58,37,30,0.22)_35%,rgba(58,37,30,0.08)_60%,transparent_85%)] pointer-events-none" />
