@@ -22,7 +22,7 @@ for (const t of TAILLES) {
   page.on('console', m => { if (m.type() === 'error') erreurs.push(m.text()); });
 
   for (const skin of SKINS) {
-    await page.goto(`http://localhost:5301/demo-skins?skin=${skin}`, { waitUntil: 'networkidle' });
+    await page.goto(`http://localhost:5301/demo-skins?skin=${skin}`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('canvas[aria-hidden]', { timeout: 8000 });
     await page.waitForTimeout(1500);
     await page.screenshot({ path: `${OUT}/${skin}-${t.nom}-1500ms.png` });

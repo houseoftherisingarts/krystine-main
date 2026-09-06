@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { jsPDF } from 'jspdf';
 import { subscribeToLiveQuestions, type LiveQuestion } from '../../../../firebase/firestore';
+import Portail from '../../../../components/Portail';
 
 // Le paquet de cartes du direct. Krystine ouvre ça en plein écran pendant le
 // podcast et lit une question à la fois. Les cartes rougeâtres viennent des

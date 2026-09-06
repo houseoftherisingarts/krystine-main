@@ -25,8 +25,8 @@ for (const ecran of ECRANS) {
   page.on('console', (m) => { if (m.type() === 'error') erreurs.push(m.text()); });
 
   for (const skin of SKINS) {
-    await page.goto(`http://localhost:5302/demo-skins?skin=${skin}`, { waitUntil: 'networkidle' });
-    await dormir(1500);
+    await page.goto(`http://localhost:5302/demo-skins?skin=${skin}`, { waitUntil: 'domcontentloaded' });
+    await dormir(1800);
     await page.screenshot({ path: `${DOSSIER}/${skin}-${ecran.nom}-1500ms.png` });
     await dormir(2500);
     await page.screenshot({ path: `${DOSSIER}/${skin}-${ecran.nom}-4000ms.png` });
