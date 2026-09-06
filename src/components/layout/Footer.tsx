@@ -45,7 +45,6 @@ const Footer: React.FC = () => {
     { href: '/medias', label: nav.medias },
     { href: '/formations', label: nav.formations },
     { href: '/boutique', label: nav.boutique },
-    { href: '/blogue', label: nav.blogue },
     { href: '/points-de-vente', label: nav.pointsDeVente },
     { href: '/conferenciere', label: nav.conferenciere },
   ];
