@@ -45,9 +45,10 @@ const MediathequePicker: React.FC<Props> = ({ open, onClose, onSelect }) => {
 
   if (!open) return null;
   return (
+    <Portail>
     <div
       data-edit-ui
-      className="fixed inset-0 z-[300] bg-[#2a2015]/70 backdrop-blur-sm flex items-center justify-center p-4"
+      className="fixed inset-0 z-[300] overflow-y-auto overscroll-contain bg-[#2a2015]/70 backdrop-blur-sm flex items-center justify-center p-4"
       onClick={onClose}
     >
       <div
