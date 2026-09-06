@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { addBookingRequest } from '../firebase/firestore';
+import CompteUpsell from './CompteUpsell';
 
 // "Demander une tournée de conférences" form.
 // ─────────────────────────────────────────────────────────────────────────────
