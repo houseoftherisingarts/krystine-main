@@ -530,3 +530,59 @@
 .skin-kapha ::placeholder { color: rgba(228, 244, 251, 0.45) !important; }
 
 /* Les motifs et les scènes animées des skins riches vivent dans skins/motifs.css et skins/effets.css. */
+/* ═══ Le dernier mot sur les boutons (6 septembre 2026, soir) ═══
+   Les sélecteurs d'attribut avec :not() sont plus spécifiques que `.skin .bg-*`,
+   donc les lettres d'un bouton doré redevenaient l'encre du skin (crème sur or,
+   contraste 1,03 mesuré sur Or pur). Ces règles portent une spécificité d'id
+   (:not(#_)) : elles passent devant tout, pour chaque skin. */
+.skin-defaut .bg-\[\#BA7B39\]:not(#_), .skin-defaut .bg-\[\#BA7B39\]:not(#_) * { color: #fffaf3 !important; }
+.skin-defaut .bg-\[\#293027\]:not(#_), .skin-defaut .bg-\[\#293027\]:not(#_) * { color: var(--sk-panneau, #fffaf3) !important; }
+.skin-defaut .bg-white:not(#_), .skin-defaut .bg-white:not(#_) * { color: #293027 !important; }
+.skin-nuit .bg-\[\#BA7B39\]:not(#_), .skin-nuit .bg-\[\#BA7B39\]:not(#_) * { color: #151d19 !important; }
+.skin-nuit .bg-\[\#293027\]:not(#_), .skin-nuit .bg-\[\#293027\]:not(#_) * { color: #EEE7DB !important; }
+.skin-nuit .bg-white:not(#_), .skin-nuit .bg-white:not(#_) * { color: #293027 !important; }
+.skin-coffee .bg-\[\#BA7B39\]:not(#_), .skin-coffee .bg-\[\#BA7B39\]:not(#_) * { color: #151d19 !important; }
+.skin-coffee .bg-\[\#293027\]:not(#_), .skin-coffee .bg-\[\#293027\]:not(#_) * { color: #f1e6d6 !important; }
+.skin-coffee .bg-white:not(#_), .skin-coffee .bg-white:not(#_) * { color: #293027 !important; }
+.skin-aube .bg-\[\#BA7B39\]:not(#_), .skin-aube .bg-\[\#BA7B39\]:not(#_) * { color: #fffaf3 !important; }
+.skin-aube .bg-\[\#293027\]:not(#_), .skin-aube .bg-\[\#293027\]:not(#_) * { color: var(--sk-panneau, #fffaf3) !important; }
+.skin-aube .bg-white:not(#_), .skin-aube .bg-white:not(#_) * { color: #293027 !important; }
+.skin-terre .bg-\[\#BA7B39\]:not(#_), .skin-terre .bg-\[\#BA7B39\]:not(#_) * { color: #fffaf3 !important; }
+.skin-terre .bg-\[\#293027\]:not(#_), .skin-terre .bg-\[\#293027\]:not(#_) * { color: var(--sk-panneau, #fffaf3) !important; }
+.skin-terre .bg-white:not(#_), .skin-terre .bg-white:not(#_) * { color: #293027 !important; }
+.skin-foret .bg-\[\#BA7B39\]:not(#_), .skin-foret .bg-\[\#BA7B39\]:not(#_) * { color: #151d19 !important; }
+.skin-foret .bg-\[\#293027\]:not(#_), .skin-foret .bg-\[\#293027\]:not(#_) * { color: var(--sk-encre, #EEE7DB) !important; }
+.skin-foret .bg-white:not(#_), .skin-foret .bg-white:not(#_) * { color: #293027 !important; }
+.skin-ocean .bg-\[\#BA7B39\]:not(#_), .skin-ocean .bg-\[\#BA7B39\]:not(#_) * { color: #151d19 !important; }
+.skin-ocean .bg-\[\#293027\]:not(#_), .skin-ocean .bg-\[\#293027\]:not(#_) * { color: var(--sk-encre, #EEE7DB) !important; }
+.skin-ocean .bg-white:not(#_), .skin-ocean .bg-white:not(#_) * { color: #293027 !important; }
+.skin-encre .bg-\[\#BA7B39\]:not(#_), .skin-encre .bg-\[\#BA7B39\]:not(#_) * { color: #151d19 !important; }
+.skin-encre .bg-\[\#293027\]:not(#_), .skin-encre .bg-\[\#293027\]:not(#_) * { color: var(--sk-encre, #EEE7DB) !important; }
+.skin-encre .bg-white:not(#_), .skin-encre .bg-white:not(#_) * { color: #293027 !important; }
+.skin-lotus .bg-\[\#BA7B39\]:not(#_), .skin-lotus .bg-\[\#BA7B39\]:not(#_) * { color: #151d19 !important; }
+.skin-lotus .bg-\[\#293027\]:not(#_), .skin-lotus .bg-\[\#293027\]:not(#_) * { color: var(--sk-encre, #EEE7DB) !important; }
+.skin-lotus .bg-white:not(#_), .skin-lotus .bg-white:not(#_) * { color: #293027 !important; }
+.skin-feminite .bg-\[\#BA7B39\]:not(#_), .skin-feminite .bg-\[\#BA7B39\]:not(#_) * { color: #151d19 !important; }
+.skin-feminite .bg-\[\#293027\]:not(#_), .skin-feminite .bg-\[\#293027\]:not(#_) * { color: var(--sk-encre, #EEE7DB) !important; }
+.skin-feminite .bg-white:not(#_), .skin-feminite .bg-white:not(#_) * { color: #293027 !important; }
+.skin-nature .bg-\[\#BA7B39\]:not(#_), .skin-nature .bg-\[\#BA7B39\]:not(#_) * { color: #fffaf3 !important; }
+.skin-nature .bg-\[\#293027\]:not(#_), .skin-nature .bg-\[\#293027\]:not(#_) * { color: var(--sk-panneau, #fffaf3) !important; }
+.skin-nature .bg-white:not(#_), .skin-nature .bg-white:not(#_) * { color: #293027 !important; }
+.skin-aurore .bg-\[\#BA7B39\]:not(#_), .skin-aurore .bg-\[\#BA7B39\]:not(#_) * { color: #151d19 !important; }
+.skin-aurore .bg-\[\#293027\]:not(#_), .skin-aurore .bg-\[\#293027\]:not(#_) * { color: var(--sk-encre, #EEE7DB) !important; }
+.skin-aurore .bg-white:not(#_), .skin-aurore .bg-white:not(#_) * { color: #293027 !important; }
+.skin-or-pur .bg-\[\#BA7B39\]:not(#_), .skin-or-pur .bg-\[\#BA7B39\]:not(#_) * { color: #151d19 !important; }
+.skin-or-pur .bg-\[\#293027\]:not(#_), .skin-or-pur .bg-\[\#293027\]:not(#_) * { color: var(--sk-encre, #EEE7DB) !important; }
+.skin-or-pur .bg-white:not(#_), .skin-or-pur .bg-white:not(#_) * { color: #293027 !important; }
+.skin-vata .bg-\[\#BA7B39\]:not(#_), .skin-vata .bg-\[\#BA7B39\]:not(#_) * { color: #151d19 !important; }
+.skin-vata .bg-\[\#293027\]:not(#_), .skin-vata .bg-\[\#293027\]:not(#_) * { color: var(--sk-encre, #EEE7DB) !important; }
+.skin-vata .bg-white:not(#_), .skin-vata .bg-white:not(#_) * { color: #293027 !important; }
+.skin-pitta .bg-\[\#BA7B39\]:not(#_), .skin-pitta .bg-\[\#BA7B39\]:not(#_) * { color: #151d19 !important; }
+.skin-pitta .bg-\[\#293027\]:not(#_), .skin-pitta .bg-\[\#293027\]:not(#_) * { color: var(--sk-encre, #EEE7DB) !important; }
+.skin-pitta .bg-white:not(#_), .skin-pitta .bg-white:not(#_) * { color: #293027 !important; }
+.skin-kapha .bg-\[\#BA7B39\]:not(#_), .skin-kapha .bg-\[\#BA7B39\]:not(#_) * { color: #151d19 !important; }
+.skin-kapha .bg-\[\#293027\]:not(#_), .skin-kapha .bg-\[\#293027\]:not(#_) * { color: var(--sk-encre, #EEE7DB) !important; }
+.skin-kapha .bg-white:not(#_), .skin-kapha .bg-white:not(#_) * { color: #293027 !important; }
+.skin-medzo .bg-\[\#BA7B39\]:not(#_), .skin-medzo .bg-\[\#BA7B39\]:not(#_) * { color: #fffaf3 !important; }
+.skin-medzo .bg-\[\#293027\]:not(#_), .skin-medzo .bg-\[\#293027\]:not(#_) * { color: #f4ebdf !important; }
+.skin-medzo .bg-white:not(#_), .skin-medzo .bg-white:not(#_) * { color: #293027 !important; }
