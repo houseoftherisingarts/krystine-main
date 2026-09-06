@@ -581,8 +581,8 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
                         ? 'Désabonnement en un clic · vos coordonnées ne sont jamais partagées.'
                         : 'One-click unsubscribe · your details are never shared.'}
                     </p>
-                    {!user && <CompteUpsell variant="light" className="text-center" />}
                   </form>
+                  </>
                 )}
               </div>
             </div>

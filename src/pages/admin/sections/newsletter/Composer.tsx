@@ -470,6 +470,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
         onSelect={url => { if (pickFor === 'entete') setCouvertureUrl(url); else if (pickFor !== null) updateBlock(pickFor, { url }); }}
       />
     </div>
+    </Portail>
   );
 };
 
