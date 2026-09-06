@@ -3,7 +3,8 @@ import { useApp } from '../contexts/AppContext';
 import { addNewsletterSubscriber } from '../firebase/firestore';
 import { points } from '../firebase/points';
 import { trackLead } from '../lib/track';
-import CompteUpsell from './CompteUpsell';
+import BoutonCompte from './BoutonCompte';
+import InscriptionAvecCompte from './InscriptionAvecCompte';
 import Portail from './Portail';
 
 export interface WaitlistTarget {
