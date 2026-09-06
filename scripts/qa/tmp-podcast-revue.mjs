@@ -145,8 +145,8 @@ const browser = await chromium.launch();
 // ---------- MOBILE 390 ----------
 {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-  await page.goto(URL, { waitUntil: 'networkidle', timeout: 60000 });
-  await page.waitForTimeout(1500);
+  await page.goto(URL, { waitUntil: 'load', timeout: 60000 });
+  await page.waitForTimeout(3000);
   await page.screenshot({ path: `${OUT}/d5-mobile-full.png`, fullPage: true });
   const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
   const innerWidth = await page.evaluate(() => window.innerWidth);
