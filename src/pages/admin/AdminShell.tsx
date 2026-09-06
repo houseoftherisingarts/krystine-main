@@ -57,6 +57,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   splash:     'ecran-accueil',
   foyer:      'foyer',
   bookings:   'demandes',
+  demande:    'demander-un-changement',
   newsletter: 'infolettre',
   guide:      'parcours-guides',
   dosha:      'quiz-dosha',
