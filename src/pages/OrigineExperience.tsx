@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Check, ChevronDown, BookOpen, ArrowRight, Headphones, Activity, Sparkles, Download } from 'lucide-react';
-import { Atmosphere, Parallax } from '../components/motion/loeuvre';
+import { Atmosphere, Parallax, Seam } from '../components/motion/loeuvre';
 import { useUI, useAuth } from '../contexts/AppContext';
 import BoutonCompte from '../components/BoutonCompte';
 
@@ -223,6 +223,9 @@ const OrigineExperience: React.FC = () => {
   // légèrement pendant que le hero sort de l'écran. Transform seulement.
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '-6%']);
   const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
+  // Feuilles empilées (canon L'Œuvre) : le hero reste épinglé sous la page et
+  // s'éteint doucement pendant que la première section monte par-dessus.
+  const heroDim = useTransform(scrollYProgress, [0, 1], ['brightness(1)', 'brightness(0.45)']);
 
   const heroCopy = (
     <>
@@ -240,14 +243,14 @@ const OrigineExperience: React.FC = () => {
     <div className="bg-cream text-ink font-sans antialiased">
 
       {/* ─────────── HERO (enveloppe pleine largeur, image entière, parallaxe vertical) ─────────── */}
-      <section ref={heroRef} className="relative w-full overflow-hidden bg-espressoDeep">
+      <section ref={heroRef} className="relative z-0 w-full overflow-hidden bg-espressoDeep md:sticky md:top-0">
         {/* DESKTOP : bande pleine largeur, image complète (jamais croppée en largeur), texte par-dessus */}
         <div className="relative hidden md:block w-full overflow-hidden aspect-[2528/1015]">
           <motion.img
             src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg"
             alt="Enveloppe Expérience Origine, sceau boussole, sauge et lavande"
             className="absolute left-0 top-[-6%] h-[112%] w-full object-cover"
-            style={{ y: heroY, scale: heroScale }}
+            style={{ y: heroY, scale: heroScale, filter: heroDim }}
             referrerPolicy="no-referrer"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -285,7 +288,7 @@ const OrigineExperience: React.FC = () => {
       </section>
 
       {/* ─────────── CURRICULUM ─────────── */}
-      <section id="curriculum" className="bg-cream py-24 md:py-36">
+      <section id="curriculum" className="relative z-10 bg-cream py-24 md:py-36 md:rounded-t-[26px] md:shadow-[0_-30px_80px_rgba(22,16,10,0.45)]">
         <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
           <Reveal className="text-center">
             <Eyebrow>12 semaines · trois piliers</Eyebrow>
@@ -297,7 +300,8 @@ const OrigineExperience: React.FC = () => {
       </section>
 
       {/* ─────────── CTA BAND (panneau éditorial clair, filets pleine largeur) ─────────── */}
-      <section className="bg-cream2 py-16 md:py-20">
+      <section className="relative z-10 bg-cream2 py-16 md:py-20">
+        <Seam from="#f6f3ee" height={90} />
         <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
           <Reveal>
             <div className="border-y border-ink/12 py-14 md:py-16 text-center">
@@ -309,7 +313,7 @@ const OrigineExperience: React.FC = () => {
       </section>
 
       {/* ─────────── TRILOGIE ─────────── */}
-      <section className="bg-cream2 py-24 md:py-32">
+      <section className="relative z-10 bg-cream2 py-24 md:py-32">
         <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12 grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <Reveal>
             <Eyebrow>L'Œuvre fondatrice</Eyebrow>
@@ -329,7 +333,8 @@ const OrigineExperience: React.FC = () => {
       </section>
 
       {/* ─────────── COMMENT ÇA MARCHE ─────────── */}
-      <section className="bg-cream py-24 md:py-32">
+      <section className="relative z-10 bg-cream py-24 md:py-32">
+        <Seam from="#f1ebe0" height={90} />
         <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
           <Reveal className="text-center mb-16">
             <Eyebrow>Chaque semaine</Eyebrow>
@@ -356,7 +361,8 @@ const OrigineExperience: React.FC = () => {
       </section>
 
       {/* ─────────── GRIMOIRE / JOURNAL ─────────── */}
-      <section className="bg-cream3 py-24 md:py-32">
+      <section className="relative z-10 bg-cream3 py-24 md:py-32">
+        <Seam from="#f6f3ee" height={90} />
         <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12 grid lg:grid-cols-2 gap-14 items-center">
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full border border-brass/30 text-brassInk px-3 py-1 text-[0.6rem] uppercase tracking-[0.18em]"><BookOpen size={12} /> Journal d'observation</span>
@@ -381,7 +387,8 @@ const OrigineExperience: React.FC = () => {
       </section>
 
       {/* ─────────── BIO KRYSTINE (clair, planche portrait encadrée) ─────────── */}
-      <section id="about" className="bg-cream2 py-24 md:py-32">
+      <section id="about" className="relative z-10 bg-cream2 py-24 md:py-32">
+        <Seam from="#ede5d7" height={90} />
         <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <Reveal className="order-last lg:order-first">
             <div className="relative border border-brass/45 p-2.5 bg-card shadow-[0_30px_70px_rgba(58,49,38,0.14)]">
@@ -408,7 +415,8 @@ const OrigineExperience: React.FC = () => {
       </section>
 
       {/* ─────────── CE QUI EST INCLUS + LISTE D'ATTENTE ─────────── */}
-      <section id="liste-attente" className="bg-cream py-24 md:py-32">
+      <section id="liste-attente" className="relative z-10 bg-cream py-24 md:py-32">
+        <Seam from="#f1ebe0" height={90} />
         <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12">
           <Reveal className="text-center mb-12">
             <Eyebrow>Prochaine cohorte</Eyebrow>
@@ -478,7 +486,7 @@ const OrigineExperience: React.FC = () => {
 
       {/* ─────────── FRÉQUENCE D'ORIGINE — le seul moment sombre de la page,
            sur le brun chaud back-cover de la charte (#34241a), pas l'espresso boueux ─────────── */}
-      <section className="relative py-24 md:py-32 overflow-hidden" style={{ backgroundColor: '#34241a' }}>
+      <section className="relative z-10 py-24 md:py-32 overflow-hidden md:sticky md:top-0" style={{ backgroundColor: '#34241a' }}>
         <Atmosphere light="30% 32%" />
         <div className="relative mx-auto w-full max-w-[1100px] px-6 md:px-12 grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
           {/* Disque + écouteurs flottants */}
@@ -546,7 +554,7 @@ const OrigineExperience: React.FC = () => {
       </section>
 
       {/* ─────────── CONTACT ─────────── */}
-      <section className="bg-cream py-16 md:py-20 text-center">
+      <section className="relative z-20 bg-cream py-16 md:py-20 text-center md:rounded-t-[26px] md:shadow-[0_-30px_80px_rgba(22,16,10,0.35)]">
         <a href="mailto:teamksl@inspiratanature.com" className="font-serif italic text-brassInk hover:text-brassBright transition-colors text-lg md:text-xl border-b border-brass/30 pb-1">Une question ? Écrivez à teamksl@inspiratanature.com</a>
       </section>
 

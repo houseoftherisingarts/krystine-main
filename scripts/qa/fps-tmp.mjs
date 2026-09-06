@@ -19,7 +19,7 @@ const mesurer = async (reduit, passes) => {
   }
   return best;
 };
-const anime = await mesurer(false, 6);
+const anime = await mesurer(false, 14);
 const fige = await mesurer(true, 2);
 for (const s of SKINS) console.log(`${s.padEnd(7)} ${String(anime[s]).padStart(3)} fps   (plafond mouvement réduit ${fige[s]})`);
 await b.close();
