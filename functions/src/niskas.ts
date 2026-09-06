@@ -140,6 +140,10 @@ export const acheterAvecNiskas = onCall(
     let saison = '';
     if (COSMETIQUES[article]) {
       ({ cout, nom } = COSMETIQUES[article]);
+      if (article.startsWith('sanslogo-') && article !== 'sanslogo-defaut') {
+        const possede = ((await db.doc(`boutique/${uid}`).get()).data() as { possede?: Record<string, unknown> } | undefined)?.possede || {};
+        if (!possede[`banniere-${article.slice('sanslogo-'.length)}`]) throw new HttpsError('failed-precondition', 'Cette bannière n\'est pas encore à vous.');
+      }
     } else if (article.startsWith('video:')) {
       const t = await titreVideo(article.slice('video:'.length));
       if (!t) throw new HttpsError('not-found', 'Cette vidéo n\'est pas au catalogue.');
