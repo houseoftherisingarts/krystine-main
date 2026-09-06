@@ -151,19 +151,21 @@ export const acheterCoffre = onCall({ region: 'us-central1' }, async (req) => {
   if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour acheter.');
   const uid = req.auth.uid;
   const type = req.data?.type; const quoi = req.data?.quoi as 'boite' | 'cle';
-  if (!estType(type) || (quoi !== 'boite' && quoi !== 'cle')) throw new HttpsError('invalid-argument', 'Coffre inconnu.');
-  const cout = PRIX_COFFRES[type][quoi];
-  const nom = quoi === 'boite' ? PRIX_COFFRES[type].nom : `Clé ${type === 'or' ? 'd’or' : type === 'argent' ? 'd’argent' : 'de bronze'}`;
+  if ((quoi !== 'boite' && quoi !== 'cle') || (quoi === 'boite' && !estType(type))) throw new HttpsError('invalid-argument', 'Coffre inconnu.');
+  const cout = quoi === 'boite' ? PRIX_COFFRES[type].boite : PRIX_CLE;
+  const nom = quoi === 'boite' ? PRIX_COFFRES[type].nom : 'Clé';
   const db = getFirestore();
   const balRef = db.doc(`memberPoints/${uid}`);
-  const cle = `coffre:${quoi}:${type}:${uid}:${Date.now()}`;
+  const cle = `coffre:${quoi}:${quoi === 'boite' ? type : 'unique'}:${uid}:${Date.now()}`;
   await db.runTransaction(async (tx) => {
     const bal = await tx.get(balRef);
     const solde = Number((bal.data() as { balance?: number } | undefined)?.balance || 0);
     if (solde < cout) throw new HttpsError('failed-precondition', `Il vous manque ${cout - solde} niska${cout - solde > 1 ? 's' : ''}.`);
-    tx.set(db.doc(`pointsEvents/${cle}`), { uid, kind: 'coffre', amount: -cout, dedupKey: cle, meta: { type, quoi, nom }, at: FieldValue.serverTimestamp() });
+    tx.set(db.doc(`pointsEvents/${cle}`), { uid, kind: 'coffre', amount: -cout, dedupKey: cle, meta: { type: type || null, quoi, nom }, at: FieldValue.serverTimestamp() });
     tx.set(balRef, { balance: FieldValue.increment(-cout), updatedAt: FieldValue.serverTimestamp() }, { merge: true });
-    tx.set(db.doc(`coffres/${uid}`), { [quoi === 'boite' ? 'boites' : 'cles']: { [type]: FieldValue.increment(1) }, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+    // La clé est plate (un seul compteur, elle ouvre n'importe quel coffre);
+    // le coffre reste par couleur.
+    tx.set(db.doc(`coffres/${uid}`), quoi === 'boite' ? { boites: { [type]: FieldValue.increment(1) }, updatedAt: FieldValue.serverTimestamp() } : { cles: FieldValue.increment(1), updatedAt: FieldValue.serverTimestamp() }, { merge: true });
   });
   const { balance } = await recalculerSolde(uid);
   return { solde: balance, nom };
