@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-06T16:07:17.844Z",
+  "generatedAt": "2026-09-06T16:34:56.871Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -177,11 +177,11 @@
       "size": 190998
     },
     {
-      "path": "/compte/comment-gagner-des-mohurs.pdf",
-      "name": "comment-gagner-des-mohurs.pdf",
+      "path": "/compte/comment-gagner-des-fanams.pdf",
+      "name": "comment-gagner-des-fanams.pdf",
       "folder": "compte",
       "kind": "document",
-      "size": 302113
+      "size": 309942
     },
     {
       "path": "/foyer/allumage-fond.webp",
