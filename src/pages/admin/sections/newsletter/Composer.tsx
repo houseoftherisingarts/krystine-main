@@ -139,8 +139,15 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
       if (testEmail) {
         setSendInfo(`Test envoyé à ${testEmail}.`);
       } else {
-        setSendInfo(`Envoyée à ${data.recipients ?? '?'} personne(s) (${data.delivered ?? '?'} livrées, ${data.bounces ?? 0} échecs).`);
-        setStatus('sent');
+        if (data.done === false) {
+          // Grande liste : le premier passage a rendu la main, le calendrier
+          // du site reprend la suite tout seul toutes les 5 minutes.
+          setSendInfo(`Envoi en cours : ${data.delivered ?? 0} sur ${data.recipients ?? '?'} parties (${data.bounces ?? 0} échecs). La suite part toute seule, le statut passera à « envoyée » quand tout sera parti.`);
+          setStatus('sending');
+        } else {
+          setSendInfo(`Envoyée à ${data.recipients ?? '?'} personne(s) (${data.delivered ?? '?'} livrées, ${data.bounces ?? 0} échecs).`);
+          setStatus('sent');
+        }
       }
     } catch (e: any) {
       setSendErr(e?.message || 'Envoi échoué.');

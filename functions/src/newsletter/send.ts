@@ -68,84 +68,147 @@ export function selectRecipients<T extends SubscriberDoc>(subs: T[], doc: Pick<N
       return true;
     })
     // Une adresse inscrite par deux formulaires ne reçoit qu'un courriel.
-    .filter((s, i, arr) => arr.findIndex(o => norm(o.email) === norm(s.email)) === i);
+    .filter(dedupeBy(s => norm(s.email)));
+}
+
+function dedupeBy<T>(key: (x: T) => string): (x: T) => boolean {
+  const vus = new Set<string>();
+  return (x) => { const k = key(x); if (vus.has(k)) return false; vus.add(k); return true; };
 }
 
 // ─── Envoi réel d'une infolettre (appel direct ou planifié) ─────────────────
-export async function deliverNewsletter(newsletterId: string): Promise<{ recipients: number; delivered: number; bounces: number }> {
+// Reprenable et parallèle (révision du 6 septembre 2026). Une Cloud Function
+// vit au plus 9 minutes; à un courriel à la fois, 30 000 abonnés prenaient
+// plus d'une heure et l'envoi mourait en chemin avec le statut « sending »
+// figé. Maintenant : CONCURRENCY courriels en vol sur la connexion SMTP
+// mutualisée, un budget de temps par passage, et un curseur `progress.lastId`
+// dans le document. Quand le budget est épuisé, la fonction rend la main et le
+// calendrier (toutes les 5 minutes) reprend là où elle s'est arrêtée.
+const CONCURRENCY = 5;
+const BUDGET_MS = 7 * 60 * 1000;       // sur les 9 minutes permises
+const LOCK_MS = 9.5 * 60 * 1000;       // un seul passage à la fois par infolettre
+
+interface Progress {
+  done: number;
+  failed: number;
+  lastId: string | null;
+  lockUntil?: Timestamp;
+  startedAt?: Timestamp;
+}
+
+const delai = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+export async function deliverNewsletter(newsletterId: string): Promise<{ recipients: number; delivered: number; bounces: number; done: boolean }> {
   const db = getFirestore();
   const ref = db.doc(`newsletters/${newsletterId}`);
   const snap = await ref.get();
   if (!snap.exists) throw new HttpsError('not-found', 'Newsletter not found');
-  const doc = snap.data() as NewsletterRecord;
-  if (doc.status !== 'draft' && doc.status !== 'scheduled') {
+  const doc = snap.data() as NewsletterRecord & { progress?: Progress };
+  if (doc.status !== 'draft' && doc.status !== 'scheduled' && doc.status !== 'sending') {
     throw new HttpsError('failed-precondition', `Cannot send a newsletter in status "${doc.status}"`);
   }
   if (!doc.blocks?.length) throw new HttpsError('failed-precondition', 'Newsletter has no content');
   if (!doc.subject) throw new HttpsError('failed-precondition', 'Newsletter is missing a subject');
 
-  await ref.update({ status: 'sending', updatedAt: FieldValue.serverTimestamp() });
+  const now = Date.now();
+  const prog: Progress = doc.status === 'sending' && doc.progress
+    ? doc.progress
+    : { done: 0, failed: 0, lastId: null, startedAt: Timestamp.now() };
+  if (prog.lockUntil && prog.lockUntil.toMillis() > now) {
+    // Un autre passage est encore en cours : ne rien doubler.
+    return { recipients: 0, delivered: prog.done, bounces: prog.failed, done: false };
+  }
+  prog.lockUntil = Timestamp.fromMillis(now + LOCK_MS);
+  await ref.update({ status: 'sending', progress: prog, updatedAt: FieldValue.serverTimestamp() });
 
-  const transporter = createTransporter();
   const fromAddr = buildFrom(doc.fromName || 'Krystine St-Laurent');
   const postalAddress = NEWSLETTER_POSTAL_ADDRESS.value();
 
   // Un seul filtre côté Firestore (statut); l'audience se règle en code.
+  // Tri par identifiant : c'est l'ordre du curseur de reprise.
   const subsSnap = await db.collection('newsletter').where('status', '==', 'active').get();
-  const subscribers = selectRecipients(
+  const all = selectRecipients(
     subsSnap.docs.map(d => ({ id: d.id, ...(d.data() as SubscriberDoc) })),
     doc,
-  );
+  ).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  const restants = prog.lastId ? all.filter(s => s.id > (prog.lastId as string)) : all;
 
-  let delivered = 0;
-  let bounced = 0;
+  const transporter = createTransporter();
+  const pixelBase = `https://us-central1-${process.env.GCLOUD_PROJECT || 'krystinestlaurent-87566'}.cloudfunctions.net/ouverture`;
 
-  // Un envoi à la fois sur la connexion SMTP mutualisée.
-  for (const sub of subscribers) {
+  const envoyer = async (sub: typeof all[number]) => {
+    const unsubscribeUrl = buildUnsub(sub.unsubscribeToken || '');
+    // Le pixel de mesure : une image d'un point, propre à cette personne et
+    // à cette infolettre. Il dit qui a ouvert, sans rien demander de plus.
+    const pixelUrl = `${pixelBase}?n=${encodeURIComponent(newsletterId)}&s=${encodeURIComponent(sub.id)}`;
+    const opts = { subject: doc.subject, preheader: doc.preheader, unsubscribeUrl, postalAddress, firstName: sub.firstName, pixelUrl };
+    const message = {
+      from: fromAddr,
+      replyTo: REPLY_TO,
+      to: sub.email,
+      subject: doc.subject,
+      html: renderEmailHtml(doc.blocks, opts),
+      text: renderEmailText(doc.blocks, opts),
+      headers: {
+        'List-Unsubscribe': `<${unsubscribeUrl}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
+      attachments: newsletterAttachments(),
+    };
+    // Un refus passager (limite de débit, connexion) se retente une fois.
     try {
-      const unsubscribeUrl = buildUnsub(sub.unsubscribeToken || '');
-      // Le pixel de mesure : une image d'un point, propre à cette personne et
-      // à cette infolettre. Il dit qui a ouvert, sans rien demander de plus.
-      const pixelUrl = `https://us-central1-${process.env.GCLOUD_PROJECT || 'krystinestlaurent-87566'}.cloudfunctions.net/ouverture?n=${encodeURIComponent(newsletterId)}&s=${encodeURIComponent(sub.id)}`;
-      const opts = { subject: doc.subject, preheader: doc.preheader, unsubscribeUrl, postalAddress, firstName: sub.firstName, pixelUrl };
-      await transporter.sendMail({
-        from: fromAddr,
-        replyTo: REPLY_TO,
-        to: sub.email,
-        subject: doc.subject,
-        html: renderEmailHtml(doc.blocks, opts),
-        text: renderEmailText(doc.blocks, opts),
-        headers: {
-          'List-Unsubscribe': `<${unsubscribeUrl}>`,
-          'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-        },
-        attachments: newsletterAttachments(),
-      });
-      delivered++;
-
-      if (sub.uid) {
-        await db.doc(`members/${sub.uid}/inbox/${newsletterId}`).set({
-          newsletterId,
-          title: doc.title || doc.subject,
-          subject: doc.subject,
-          receivedAt: FieldValue.serverTimestamp(),
-        }, { merge: true });
-      }
-    } catch (err) {
-      bounced++;
-      console.warn('[deliverNewsletter] delivery failed', sub.email, err);
+      await transporter.sendMail(message);
+    } catch (e1) {
+      await delai(2000);
+      await transporter.sendMail(message);
     }
-  }
+    if (sub.uid) {
+      await db.doc(`members/${sub.uid}/inbox/${newsletterId}`).set({
+        newsletterId,
+        title: doc.title || doc.subject,
+        subject: doc.subject,
+        receivedAt: FieldValue.serverTimestamp(),
+      }, { merge: true });
+    }
+  };
+
+  // Ouvriers parallèles : chacun prend le prochain abonné tant qu'il reste du
+  // budget. Tout ce qui est assigné se termine (succès ou échec) avant que le
+  // curseur avance, donc aucun abonné n'est sauté ni doublé.
+  let next = 0;
+  const ouvrier = async () => {
+    while (next < restants.length && Date.now() - now < BUDGET_MS) {
+      const sub = restants[next++];
+      try {
+        await envoyer(sub);
+        prog.done++;
+      } catch (err) {
+        prog.failed++;
+        console.warn('[deliverNewsletter] delivery failed', sub.email, err);
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: CONCURRENCY }, ouvrier));
   transporter.close();
 
-  await ref.update({
-    status: 'sent',
-    sentAt: Timestamp.now(),
-    updatedAt: FieldValue.serverTimestamp(),
-    stats: { recipients: subscribers.length, delivered, bounces: bounced, opens: 0 },
-  });
+  const fini = next >= restants.length;
+  prog.lastId = next > 0 ? restants[next - 1].id : prog.lastId;
+  delete prog.lockUntil;
 
-  return { recipients: subscribers.length, delivered, bounces: bounced };
+  if (fini) {
+    await ref.update({
+      status: 'sent',
+      sentAt: Timestamp.now(),
+      updatedAt: FieldValue.serverTimestamp(),
+      progress: FieldValue.delete(),
+      stats: { recipients: all.length, delivered: prog.done, bounces: prog.failed, opens: 0 },
+    });
+  } else {
+    await ref.update({ progress: prog, updatedAt: FieldValue.serverTimestamp() });
+    console.log('[deliverNewsletter] passage partiel', newsletterId, `${prog.done + prog.failed}/${all.length}`);
+  }
+
+  return { recipients: all.length, delivered: prog.done, bounces: prog.failed, done: fini };
 }
 
 // ─── sendNewsletter : appel admin (test ou envoi immédiat) ──────────────────
@@ -186,18 +249,20 @@ export const sendNewsletter = onCall(
   },
 );
 
-// ─── sendScheduledNewsletters : le calendrier ───────────────────────────────
+// ─── sendScheduledNewsletters : le calendrier et la reprise ─────────────────
 // Toutes les 5 minutes : chaque infolettre « scheduled » dont l'heure est
-// passée part. Le passage à « sending » dans deliverNewsletter sert de verrou.
+// passée part, et chaque infolettre « sending » (passage précédent interrompu
+// par le budget de temps ou par un plantage) reprend à son curseur. Le verrou
+// `progress.lockUntil` empêche deux passages simultanés sur la même.
 export const sendScheduledNewsletters = onSchedule(
   { schedule: 'every 5 minutes', timeZone: 'America/Toronto', secrets: MAIL_SECRETS, timeoutSeconds: 540, memory: '512MiB' },
   async () => {
     const db = getFirestore();
-    const due = await db.collection('newsletters')
-      .where('status', '==', 'scheduled')
-      .where('scheduledFor', '<=', Timestamp.now())
-      .get();
-    for (const d of due.docs) {
+    const [due, enCours] = await Promise.all([
+      db.collection('newsletters').where('status', '==', 'scheduled').where('scheduledFor', '<=', Timestamp.now()).get(),
+      db.collection('newsletters').where('status', '==', 'sending').get(),
+    ]);
+    for (const d of [...enCours.docs, ...due.docs]) {
       try {
         const r = await deliverNewsletter(d.id);
         console.log('[sendScheduledNewsletters]', d.id, r);

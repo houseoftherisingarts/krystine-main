@@ -29,7 +29,7 @@ export function createTransporter() {
     secure: true,
     auth: { user: 'resend', pass: RESEND_API_KEY.value() },
     pool: true,
-    maxConnections: 2,
+    maxConnections: 5,
     maxMessages: 100,
   });
 }
