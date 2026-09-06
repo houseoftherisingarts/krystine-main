@@ -4,11 +4,31 @@
 
 @property --motif-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
 
+/* Sous ces quatre skins, les panneaux sont déjà presque opaques : le flou
+   d'arrière-plan ne se voit pas, mais il oblige le navigateur à refaire tout le
+   flou dès qu'un pixel bouge derrière. On le coupe, et les motifs deviennent
+   gratuits. */
+.skin-ocean .backdrop-blur-md,
+.skin-ocean .backdrop-blur-sm,
+.skin-ocean .backdrop-blur,
+.skin-encre .backdrop-blur-md,
+.skin-encre .backdrop-blur-sm,
+.skin-encre .backdrop-blur,
+.skin-lotus .backdrop-blur-md,
+.skin-lotus .backdrop-blur-sm,
+.skin-lotus .backdrop-blur,
+.skin-or-pur .backdrop-blur-md,
+.skin-or-pur .backdrop-blur-sm,
+.skin-or-pur .backdrop-blur {
+  -webkit-backdrop-filter: none !important;
+          backdrop-filter: none !important;
+}
+
 @keyframes motif-houle    { to { background-position-x: -240px; } }
-@keyframes motif-respire  { 0%, 100% { opacity: .5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.09); } }
+@keyframes motif-respire  { 0%, 100% { opacity: .48; } 50% { opacity: 1; } }
 @keyframes motif-tour     { to { --motif-angle: 360deg; } }
 @keyframes motif-reflet   { 0%, 64% { background-position: 100% 0; } 100% { background-position: 0% 0; } }
-@keyframes motif-lueur    { 0%, 100% { transform: translate3d(-9%, -5%, 0) scale(1); } 50% { transform: translate3d(9%, 6%, 0) scale(1.16); } }
+@keyframes motif-lueur    { 0%, 100% { transform: translate3d(-11%, -6%, 0); } 50% { transform: translate3d(11%, 7%, 0); } }
 @keyframes motif-balayage { from { transform: translateX(-130%); } to { transform: translateX(130%); } }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -19,6 +39,7 @@
   background:
     radial-gradient(130% 85% at 50% -12%, rgba(79, 163, 168, .17), transparent 62%),
     radial-gradient(95% 72% at 18% 112%, rgba(10, 38, 56, .92), transparent 66%);
+  will-change: opacity;
   animation: motif-respire 30s ease-in-out infinite;
 }
 
@@ -126,6 +147,7 @@
    ───────────────────────────────────────────────────────────────────────── */
 .skin-lotus .motif-voile {
   background: radial-gradient(44% 38% at 50% 44%, rgba(212, 140, 168, .22), rgba(212, 140, 168, .07) 55%, transparent 72%);
+  will-change: transform;
   animation: motif-lueur 26s ease-in-out infinite;
 }
 

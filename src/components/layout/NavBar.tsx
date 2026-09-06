@@ -5,6 +5,7 @@ import { ShoppingBag, User, Menu, X } from 'lucide-react';
 import { useUI, useAuth, useCart, useBoutique } from '../../contexts/AppContext';
 import Cloche from '../communaute/Cloche';
 import MenuMusique from './MenuMusique';
+import BoutonCompte from '../BoutonCompte';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 
