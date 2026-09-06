@@ -47,14 +47,17 @@ const ClientFormations: React.FC = () => {
           </div>
         ) : (
           <div className="mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {achats.map(a => (
+            {achats.map(a => {
+              // La couverture 16:9 : celle de la preuve d'achat, sinon celle de la fiche.
+              const cover = a.imageUrl || catalogue.find(f => f.id === a.id)?.imageUrl || '';
+              return (
               <Link
                 key={a.id}
                 to={`/cours/${a.id}`}
                 className="group overflow-hidden rounded-[15px] border border-[#293027]/10 transition-transform duration-300 hover:-translate-y-0.5 dark:border-white/10"
               >
-                {a.imageUrl ? (
-                  <img src={a.imageUrl} alt={a.titre} className="aspect-video w-full object-cover" />
+                {cover ? (
+                  <img src={cover} alt={a.titre} className="aspect-video w-full object-cover" />
                 ) : (
                   <div className="flex aspect-video w-full items-center justify-center bg-[#BA7B39]/10">
                     <i className="fa-solid fa-graduation-cap text-2xl text-[#8B4A2F]" />
@@ -67,7 +70,8 @@ const ClientFormations: React.FC = () => {
                   </span>
                 </div>
               </Link>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>
