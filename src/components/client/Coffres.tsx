@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useApp } from '../../contexts/AppContext';
 import { COFFRES, ORDRE_COFFRES, OUVERTURES_PAR_JOUR, NISKAS_MUSIQUE_DEJA, PRIX_CLE, chanceLisible, type TypeCoffre } from '../../lib/coffresConfig';
