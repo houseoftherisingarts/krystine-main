@@ -602,7 +602,8 @@ const ContactPicker: React.FC<{
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-[#293027]/60 backdrop-blur-md" onClick={onCancel}>
+    <Portail>
+    <div className="fixed inset-0 z-[120] flex items-center justify-center overflow-y-auto overscroll-contain p-4 bg-[#293027]/60 backdrop-blur-md" onClick={onCancel}>
       <div className="relative w-full max-w-xl bg-white dark:bg-[#293027] rounded-[24px] shadow-2xl border border-[#BA7B39]/20 p-6 max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-serif text-lg text-[#293027] dark:text-white">Ajouter des membres</h3>
