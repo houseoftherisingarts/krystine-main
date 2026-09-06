@@ -75,8 +75,10 @@ try {
   await carteApercu.click();
   await page.waitForTimeout(700);
   await mesurer('.fixed.inset-0.z-\\[140\\]', 'Aperçu plein écran', '02-apercu-image.png');
-  await page.locator('.fixed.inset-0.z-\\[140\\]').first().click({ position: { x: 8, y: 8 } });
+  await page.keyboard.press('Escape'); // ApercuImage écoute Escape (code vérifié)
   await page.waitForTimeout(500);
+  const resteOuvert = await page.locator('.fixed.inset-0.z-\\[140\\]').count();
+  console.log('aperçu encore ouvert après Escape ?', resteOuvert > 0);
 
   // 3. Achat d'un coffre (200 niskas seedés : une clé à 10, un coffre de bronze à 60) puis ouverture
   const coffresSection = page.locator('#boutique-coffres');
@@ -84,6 +86,13 @@ try {
   await page.waitForTimeout(400);
   await page.screenshot({ path: `${OUT}/03-avant-achat-coffre.png` });
   const boutonCle = page.getByRole('button', { name: /Acheter une clé/i });
+  await boutonCle.waitFor({ state: 'attached', timeout: 10000 });
+  const desactive = await boutonCle.isDisabled();
+  console.log('bouton « Acheter une clé » désactivé ?', desactive);
+  if (desactive) await page.waitForFunction(() => {
+    const b = [...document.querySelectorAll('button')].find(x => /Acheter une clé/i.test(x.textContent || ''));
+    return b && !b.disabled;
+  }, { timeout: 8000 }).catch(() => console.log('reste désactivé après 8s'));
   await boutonCle.click();
   await page.waitForTimeout(1200);
   const boutonCoffreBronze = page.getByRole('button', { name: /^Coffre ·/i }).first();
