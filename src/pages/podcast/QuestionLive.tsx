@@ -62,6 +62,7 @@ const Champ: React.FC<{
 );
 
 const QuestionLive: React.FC = () => {
+  const { user } = useAuth();
   const [events, setEvents] = useState<LiveEvent[] | null>(null);
   const [nom, setNom] = useState('');
   const [courriel, setCourriel] = useState('');
