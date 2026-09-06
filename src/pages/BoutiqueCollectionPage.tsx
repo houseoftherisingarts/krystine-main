@@ -388,6 +388,7 @@ const BoutiqueCollectionPage: React.FC = () => {
                 </div>
               </div>
             </div>
+            </Portail>
           );
         })()}
       </div>
