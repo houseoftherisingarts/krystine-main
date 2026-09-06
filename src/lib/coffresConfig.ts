@@ -47,7 +47,7 @@ export const COFFRES: Record<TypeCoffre, {
     },
   },
   or: {
-    boite: 420, cle: 30, nomFR: 'Coffre d’or', nomEN: 'Gold chest', cleFR: 'Clé d’or', cleEN: 'Gold key',
+    boite: 420, nomFR: 'Coffre d’or', nomEN: 'Gold chest',
     image: '/compte/coffres/or.webp', teinte: '#C9A052', teinteClaire: '#F3DFA2', teinteSombre: '#7A5C22',
     contenu: {
       legendaire: 80, raresFR: 'les skins Aurore et Or pur', raresEN: 'the Aurora and Pure Gold skins',
