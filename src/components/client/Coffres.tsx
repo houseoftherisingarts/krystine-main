@@ -55,15 +55,13 @@ const Coffre: React.FC<{ type: TypeCoffre; ouvert?: boolean; taille?: number; tr
   );
 };
 
-const Cle: React.FC<{ type: TypeCoffre; taille?: number }> = ({ type, taille = 18 }) => {
-  const c = COFFRES[type];
-  return (
-    <svg viewBox="0 0 24 24" width={taille} height={taille} aria-hidden="true">
-      <circle cx="8" cy="8" r="5" fill="none" stroke={c.teinte} strokeWidth="2.4" />
-      <path d="M11.5 11.5 L20 20 M17 17 L19.5 14.5 M14.5 14.5 L17 12" stroke={c.teinte} strokeWidth="2.4" strokeLinecap="round" fill="none" />
-    </svg>
-  );
-};
+// La clé est unique (plus de couleur par coffre) : un ton neutre, le même partout.
+const Cle: React.FC<{ taille?: number }> = ({ taille = 18 }) => (
+  <svg viewBox="0 0 24 24" width={taille} height={taille} aria-hidden="true">
+    <circle cx="8" cy="8" r="5" fill="none" stroke="#8B4A2F" strokeWidth="2.4" />
+    <path d="M11.5 11.5 L20 20 M17 17 L19.5 14.5 M14.5 14.5 L17 12" stroke="#8B4A2F" strokeWidth="2.4" strokeLinecap="round" fill="none" />
+  </svg>
+);
 
 const Coffres: React.FC<{ solde: number; onChange?: () => void }> = ({ solde, onChange }) => {
   const { user, lang } = useApp();
