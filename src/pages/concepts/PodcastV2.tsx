@@ -297,7 +297,7 @@ export default function PodcastV2() {
             </div>
 
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-              {([2, 1] as const).map((s) => {
+              {([1, 2] as const).map((s) => {
                 const list = episodes.filter((e) => e.season === s);
                 if (!list.length) return null;
                 const open = openSeason === s;
