@@ -141,7 +141,8 @@ const FormationsLanding: React.FC = () => {
   const [formations, setFormations] = useState<Formation[]>([]);
   const events = getUpcomingEvents({ hideTedx: true });
 
-  useEffect(() => { getFormationsPubliees().then(setFormations).catch(() => setFormations([])); }, []);
+  // Les documents de test (titre commençant par TEST) restent hors de la vitrine.
+  useEffect(() => { getFormationsPubliees().then(l => setFormations(l.filter(f => !/^test\b/i.test(f.titre)))).catch(() => setFormations([])); }, []);
   useEffect(() => {
     if (window.location.hash === '#evenements') {
       window.setTimeout(() => document.getElementById('evenements')?.scrollIntoView({ behavior: 'smooth' }), 300);
@@ -374,7 +375,7 @@ const FormationsLanding: React.FC = () => {
       {/* ─────────── INFOLETTRE ─────────── */}
       <section className="px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(4rem,9vh,7rem)]">
         <div className="mx-auto max-w-[1040px]">
-          <NewsletterSignup source="formations" tags={['formations']} />
+          <NewsletterSignup source="formations" tags={['formations']} variant="light" />
         </div>
       </section>
 

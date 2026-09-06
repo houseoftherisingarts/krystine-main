@@ -76,7 +76,7 @@ const KrystineV1 = lazy(() => import('./src/pages/concepts/KrystineV1'));
 const KrystineV2 = lazy(() => import('./src/pages/concepts/KrystineV2'));
 const KrystineV3 = lazy(() => import('./src/pages/concepts/KrystineV3'));
 // Formations en langage V2 (magazine crème), même branding que /krystine.
-const FormationsV2 = lazy(() => import('./src/pages/concepts/FormationsV2'));
+const FormationsLanding = lazy(() => import('./src/pages/FormationsLanding'));
 const MediasV2 = lazy(() => import('./src/pages/concepts/MediasV2'));
 const PodcastV2 = lazy(() => import('./src/pages/concepts/PodcastV2'));
 const QuestionLive = lazy(() => import('./src/pages/podcast/QuestionLive'));
@@ -245,7 +245,7 @@ const App: React.FC = () => (
           <Route path="/evenements" element={<Navigate to="/formations#evenements"   replace />} />
 
           {/* ── Programmes / ex-dist ──────────────────────────────────── */}
-          <Route path="/formations"        element={<FormationsV2 />} />
+          <Route path="/formations"        element={<FormationsLanding />} />
           <Route path="/liste-attente"     element={<ListeAttenteLoeuvre />} />
           {/* /origine, /podcast, /vata are served as-is from public/ — see firebase.json */}
 
