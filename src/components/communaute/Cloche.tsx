@@ -42,8 +42,11 @@ const Pastille: React.FC<{ n: number }> = ({ n }) => (n > 0 ? (
 const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
   const [fils, setFils] = useState<DMThread[]>([]);
   const [amities, setAmities] = useState<Amitie[]>([]);
+  const [billets, setBillets] = useState<PostMur[]>([]);
+  const [vu, setVu] = useState<number>(lireVu);
   const [ouverte, setOuverte] = useState(false);
   const boite = useRef<HTMLDivElement>(null);
+  const ouvertureLe = useRef<number | null>(null);
 
   useEffect(() => {
     if (!uid) return;
@@ -55,11 +58,25 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
     return suivreMesAmities(uid, setAmities);
   }, [uid]);
 
+  useEffect(() => suivreLeMur('communaute', setBillets, 10), []);
+
   useEffect(() => {
     if (!ouverte) return;
     const fermer = (e: MouseEvent) => { if (!boite.current?.contains(e.target as Node)) setOuverte(false); };
     document.addEventListener('mousedown', fermer);
     return () => document.removeEventListener('mousedown', fermer);
+  }, [ouverte]);
+
+  // On note le moment de l'ouverture, et on ne le fige dans la clé (donc
+  // dans le seuil « vu ») qu'à la fermeture : la liste reste stable tant
+  // que la cliente la regarde.
+  useEffect(() => {
+    if (ouverte) { ouvertureLe.current = Date.now(); return; }
+    if (ouvertureLe.current == null) return;
+    const t = ouvertureLe.current;
+    ouvertureLe.current = null;
+    try { localStorage.setItem(CLE_VU, String(t)); } catch { /* noop */ }
+    setVu(t);
   }, [ouverte]);
 
   const messagesNonLus = useMemo(
