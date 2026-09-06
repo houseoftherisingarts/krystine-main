@@ -270,7 +270,8 @@ const BoutiqueCollectionPage: React.FC = () => {
           const unique = Array.from(new Map(gallery.map(g => [g.url, g])).values());
           const displayImage = activeImage || unique[0]?.url || ASSETS.productVata;
           return (
-            <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 bg-[#2a2015]/50 backdrop-blur-md" onClick={closeProduct}>
+            <Portail>
+            <div className="fixed inset-0 z-[90] flex items-center justify-center overflow-y-auto overscroll-contain p-4 bg-[#2a2015]/50 backdrop-blur-md" onClick={closeProduct}>
               <div
                 className="relative bg-white dark:bg-[#2a2015] w-full max-w-5xl max-h-[90vh] rounded-[30px] shadow-2xl border border-[#bb9a5e]/20 overflow-hidden grid grid-cols-1 md:grid-cols-2"
                 onClick={e => e.stopPropagation()}
