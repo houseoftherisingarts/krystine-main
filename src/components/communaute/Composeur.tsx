@@ -32,19 +32,13 @@ const Composeur: React.FC<{ fil: FilMur; onPublie?: () => void; compact?: boolea
   const champPhoto = useRef<HTMLInputElement>(null);
   const champVideo = useRef<HTMLInputElement>(null);
 
-  const [membresOk, setMembresOk] = useState<boolean | null>(null);
-  useEffect(() => {
-    if (fil !== 'communaute' || !db) return;
-    return onSnapshot(doc(db, 'settings', 'community'), s => setMembresOk(!!s.data()?.membresPeuventPublier), () => setMembresOk(false));
-  }, [fil]);
-
   if (!user) return null;
   if (fil === 'krystine' && !isAdmin) return null;
-  const filEffectif: FilMur = (fil === 'communaute' && !isAdmin && membresOk === false && contexte === 'monmur') ? 'perso' : fil;
-  if (fil === 'communaute' && !isAdmin && membresOk !== true && contexte === 'feed') {
+  const filEffectif: FilMur = (fil === 'communaute' && !isAdmin && contexte === 'monmur') ? 'perso' : fil;
+  if (fil === 'communaute' && !isAdmin && contexte === 'feed') {
     return (
       <p className="text-sm italic text-[#38403a]/50 dark:text-white/45">
-        Seule Krystine publie sur ce fil pour le moment.
+        Seule Krystine publie sur ce fil.
       </p>
     );
   }
