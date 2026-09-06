@@ -440,6 +440,7 @@ const ListeAttentePage: React.FC = () => {
                         ? "Désabonnement en un clic · jamais de partage"
                         : 'One-click unsubscribe · never shared'}
                     </p>
+                    {!user && <CompteUpsell variant="light" className="text-center" />}
                   </form>
                 )}
               </div>
