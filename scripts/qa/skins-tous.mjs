@@ -24,7 +24,7 @@ page.on('pageerror', e => console.log(`  [erreur] ${e.message}`));
 
 const lents = [];
 for (const skin of SKINS) {
-  await page.goto(`${BASE}/demo-skins?skin=${skin}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/demo-skins?skin=${skin}`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(3500);
   await page.screenshot({ path: `${SORTIE}/${skin}.png` });
 

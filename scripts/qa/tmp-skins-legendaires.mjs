@@ -26,7 +26,7 @@ for (const ecran of ECRANS) {
   page.on('pageerror', e => console.log(`  [pageerror] ${e.message}`));
 
   for (const skin of SKINS) {
-    await page.goto(`${BASE}/demo-skins?skin=${skin}`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE}/demo-skins?skin=${skin}`, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(4000);
     await page.screenshot({ path: `${OUT}/${skin}-${ecran.nom}-repos.png` });
 
