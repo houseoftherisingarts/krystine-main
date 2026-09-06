@@ -28,6 +28,7 @@ export type AdminSectionId =
   | 'submissions'
   | 'groups'
   | 'bookings'
+  | 'demande'
   | 'newsletter'
   | 'guide'
   | 'dosha'
