@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useApp } from '../contexts/AppContext';
 import { loginWithGoogle } from '../firebase/auth';
