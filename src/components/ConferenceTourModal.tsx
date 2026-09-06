@@ -248,6 +248,8 @@ const ConferenceTourModal: React.FC<Props> = ({ open, onClose }) => {
                 : "Your request guides the choice of upcoming cities. The team will reach out if a stop lands near you."}
             </p>
           </form>
+          {!user && <CompteUpsell variant="light" />}
+          </>
         )}
       </div>
     </div>
