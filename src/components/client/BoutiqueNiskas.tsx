@@ -219,8 +219,10 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
               const parDollar = (pq.niskas / pq.prix).toFixed(0);
               const phare = i === PAQUETS_NISKAS.length - 1;
               return (
-                <li key={pq.id} className={`flex flex-col rounded-[14px] border p-4 ${phare ? 'border-[#BA7B39] bg-[#BA7B39]/10' : 'border-[#293027]/10 bg-white/50 dark:border-white/10 dark:bg-white/5'}`}>
-                  <span className="inline-flex items-center gap-2 font-serif text-2xl text-[#293027] dark:text-white"><PieceNiska size={18} /> {pq.niskas.toLocaleString('fr-CA')}</span>
+                <li key={pq.id} className={`flex flex-col rounded-[14px] border p-4 text-center ${phare ? 'border-[#BA7B39] bg-[#BA7B39]/10' : 'border-[#293027]/10 bg-white/50 dark:border-white/10 dark:bg-white/5'}`}>
+                  {/* La gradation des trésors : du petit tas de pièces à l'opulence (Higgsfield, 6 sept. 2026) */}
+                  <img src={`/compte/paquets/${pq.id}.webp`} alt="" aria-hidden="true" width={512} height={512} loading="lazy" className={`mx-auto mb-3 h-auto object-contain drop-shadow-[0_10px_18px_rgba(58,40,20,0.35)] transition-transform duration-500 hover:scale-105 ${i >= 6 ? 'w-36' : i >= 4 ? 'w-32' : i >= 2 ? 'w-28' : 'w-24'}`} />
+                  <span className="inline-flex items-center justify-center gap-2 font-serif text-2xl text-[#293027] dark:text-white"><PieceNiska size={18} /> {pq.niskas.toLocaleString('fr-CA')}</span>
                   <span className="mt-1 text-[10px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50">{fr ? `${parDollar} niskas par dollar` : `${parDollar} niskas per dollar`}</span>
                   <button
                     type="button"

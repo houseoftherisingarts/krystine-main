@@ -19,11 +19,15 @@ import { crediterNiskas, recalculerSolde, MUSIQUE_ORIGINE_ID } from './niskas';
 // (Code criminel, art. 206; Loi sur la concurrence, art. 74.06).
 
 export type TypeCoffre = 'bronze' | 'argent' | 'or';
-export const PRIX_COFFRES: Record<TypeCoffre, { boite: number; cle: number; nom: string }> = {
-  bronze: { boite: 60, cle: 10, nom: 'Coffre de bronze' },
-  argent: { boite: 160, cle: 20, nom: 'Coffre d’argent' },
-  or:     { boite: 420, cle: 30, nom: 'Coffre d’or' },
+export const PRIX_COFFRES: Record<TypeCoffre, { boite: number; nom: string }> = {
+  bronze: { boite: 60, nom: 'Coffre de bronze' },
+  argent: { boite: 160, nom: 'Coffre d’argent' },
+  or:     { boite: 420, nom: 'Coffre d’or' },
 };
+// La clé est unique (Alex, 6 septembre 2026) : un seul prix, elle ouvre
+// n'importe quel coffre. Le stock se compte à plat (`coffres/{uid}.cles`),
+// plus par couleur.
+export const PRIX_CLE = 10;
 
 // ─── Le contenu d'un coffre (Alex, 6 septembre 2026, soirée) ─────────────────
 // Chaque coffre donne plusieurs choses à la fois, tirées indépendamment :
