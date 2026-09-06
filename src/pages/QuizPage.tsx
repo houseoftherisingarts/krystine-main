@@ -409,7 +409,8 @@ const QuizPage: React.FC = () => {
       {quizState.isOpen && (() => {
         const q = quizState.step < QUIZ_DATA.length ? QUIZ_DATA[quizState.step] : null;
         return (
-        <div className="fixed inset-0 z-50 bg-[#2a2015]/40 backdrop-blur-md flex items-center justify-center p-4">
+        <Portail>
+        <div className="fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-[#2a2015]/40 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white dark:bg-[#2a2015] w-full max-w-2xl rounded-[30px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="p-6 border-b border-[#2a2015]/10 dark:border-white/10 flex justify-between items-center bg-[#f6f3ee] dark:bg-white/5">
               <div>
