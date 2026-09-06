@@ -23,7 +23,7 @@ await page.locator('input[type=password]').fill(pass);
 await page.locator('button[type=submit]').click();
 
 // La roue du jour se lève d'elle-même.
-const roue = page.getByRole('dialog', { name: /tombent dans votre bourse|déjà tombée|drop into your purse|already dropped/ });
+const roue = page.getByRole('dialog', { name: /tombent? dans votre bourse|déjà tombée|drops? into your purse|already dropped/ });
 await roue.waitFor({ timeout: 40000 });
 await page.waitForTimeout(600);
 await page.screenshot({ path: `${S}/m1-roue.png` });
@@ -80,11 +80,5 @@ await page.screenshot({ path: `${S}/m5-banniere.png` });
 const ep = page.locator('#boutique li').filter({ hasText: /Épisode|Emission|Émission/ }).first().getByRole('button');
 console.log('episode desactive', await ep.isDisabled());
 
-// La porte Stripe rend une adresse (sans y aller).
-const urlStripe = await page.evaluate(async () => {
-  const { getFunctions, httpsCallable } = await import('https://www.gstatic.com/firebasejs/12.12.0/firebase-functions.js');
-  return 'import-ok';
-}).catch(() => 'import-ko');
-console.log('stripe', urlStripe);
 console.log('logs', JSON.stringify(logs.slice(0, 6)));
 await browser.close();

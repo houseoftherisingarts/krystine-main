@@ -57,7 +57,7 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
         <h2 id="roue-titre" className="mt-1 font-serif text-2xl text-[#293027] dark:text-white" style={{ letterSpacing: '-0.01em' }}>
           {etat.deja
             ? (fr ? 'Votre récompense du jour est déjà tombée.' : 'Today’s reward already dropped.')
-            : (fr ? `${mohurs(etat.montant, 'FR')} tombent dans votre bourse.` : `${mohurs(etat.montant, 'EN')} drop into your purse.`)}
+            : (fr ? `${mohurs(etat.montant, 'FR')} ${etat.montant > 1 ? 'tombent' : 'tombe'} dans votre bourse.` : `${mohurs(etat.montant, 'EN')} drop${etat.montant > 1 ? '' : 's'} into your purse.`)}
         </h2>
         <p className="mt-2 text-sm text-[#293027]/70 dark:text-white/70">
           {fr

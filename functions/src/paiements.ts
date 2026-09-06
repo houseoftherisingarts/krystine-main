@@ -251,7 +251,10 @@ export const obtenirLecon = onCall(
     const estAdmin = ADMIN_EMAILS.includes(String(req.auth.token.email || ''));
     if (!estAdmin) {
       const fSnap = await db.doc(`formations/${formationId}`).get();
-      const paywall = !!(fSnap.data() as { paywall?: boolean } | undefined)?.paywall;
+      const fiche = fSnap.data() as { paywall?: boolean; statut?: string } | undefined;
+      // Une formation payante, ou une formation qui n'est pas publiée (Santé
+      // la vie, vendue à l'épisode en mohurs), ne se sert qu'à qui la possède.
+      const paywall = !!fiche?.paywall || fiche?.statut !== 'publie';
       if (paywall) {
         const achat = await db.doc(`achatsFormations/${req.auth.uid}/formations/${formationId}`).get();
         // Un achat à l'épisode (Santé la vie, en mohurs) n'ouvre que ses épisodes.

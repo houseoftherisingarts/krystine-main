@@ -300,6 +300,21 @@ const ClientPortal: React.FC = () => {
   // Par défaut, l'espace s'ouvre sur le feed de la communauté, pas sur le mur personnel.
   const [tab, setTab] = useState<Tab>('feed');
   const [editOuvert, setEditOuvert] = useState(false);
+  // Profil complété (photo, nom, dosha) : cinq mohurs, une fois.
+  useEffect(() => {
+    if (user && member?.photoURL && member?.displayName && member?.dosha) points.profilComplete(user.uid).catch(() => {});
+  }, [user, member?.photoURL, member?.displayName, member?.dosha]);
+
+  // Retour de Stripe : le paquet de mohurs arrive par le webhook, on le dit.
+  const [merciMohurs, setMerciMohurs] = useState(() => {
+    try {
+      if (new URLSearchParams(window.location.search).get('mohurs') === 'ok') {
+        window.history.replaceState(null, '', window.location.pathname);
+        return true;
+      }
+    } catch { /* noop */ }
+    return false;
+  });
   // Live points balance for the header chip. Subscribed here once so all
   // tabs share the same stream rather than each re-subscribing.
   const [pointsBalance, setPointsBalance] = useState<PointsBalance>(DEFAULT_POINTS_BALANCE);
@@ -367,21 +382,6 @@ const ClientPortal: React.FC = () => {
   const banniere = perso.banniere === 'nature' ? BANNIERE_NATURE : (member?.bannerURL || BANNIERE_DEFAUT);
   const skin = perso.skin === 'medzo' ? 'skin-medzo' : '';
 
-  // Profil complété (photo, nom, dosha) : cinq mohurs, une fois.
-  useEffect(() => {
-    if (user && member?.photoURL && member?.displayName && member?.dosha) points.profilComplete(user.uid).catch(() => {});
-  }, [user, member?.photoURL, member?.displayName, member?.dosha]);
-
-  // Retour de Stripe : le paquet de mohurs arrive par le webhook, on le dit.
-  const [merciMohurs, setMerciMohurs] = useState(() => {
-    try {
-      if (new URLSearchParams(window.location.search).get('mohurs') === 'ok') {
-        window.history.replaceState(null, '', window.location.pathname);
-        return true;
-      }
-    } catch { /* noop */ }
-    return false;
-  });
 
   return (
     <div className={`min-h-screen bg-[#EEE7DB] dark:bg-[#151d19] pt-16 pb-24 ${skin}`}>

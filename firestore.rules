@@ -391,8 +391,10 @@ service cloud.firestore {
                         && request.resource.data.amount <= 100
                         && request.resource.data.amount >= -1000
                         && !(request.resource.data.kind in ['boutique', 'achat-mohurs', 'billet', 'amitie', 'parrainage', 'adjust']));
+      // La lecture d'un document absent (la transaction d'awardPoints vérifie
+      // la clé avant d'écrire) ne révèle rien : elle passe.
       allow read: if isAdmin()
-                  || (isSignedIn() && resource.data.uid == request.auth.uid);
+                  || (isSignedIn() && (resource == null || resource.data.uid == request.auth.uid));
       allow update, delete: if isAdmin();
     }
 
