@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, User, Menu, X } from 'lucide-react';
+import { ShoppingBag, Menu, X } from 'lucide-react';
 import { useUI, useAuth, useCart, useBoutique } from '../../contexts/AppContext';
 import Cloche from '../communaute/Cloche';
 import MenuMusique from './MenuMusique';
