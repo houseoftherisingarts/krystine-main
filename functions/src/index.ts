@@ -10,7 +10,7 @@ export { sendWelcomeEmail } from './newsletter/welcome';
 export { sendLiveReminders, envoyerRappelDirect } from './newsletter/live';
 export { ouverture } from './newsletter/ouverture';
 export { resendWebhook } from './newsletter/webhook';
-export { sendScheduledNewsletters, previewNewsletter } from './newsletter/send';
+export { sendScheduledNewsletters, previewNewsletter, audienceInfolettre } from './newsletter/send';
 export { newsletterAssistant } from './newsletter/assistant';
 export { repondreAbonne } from './newsletter/reponse';
 export { notifierSoutien } from './newsletter/soutien';

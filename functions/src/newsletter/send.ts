@@ -76,6 +76,59 @@ function dedupeBy<T>(key: (x: T) => string): (x: T) => boolean {
   return (x) => { const k = key(x); if (vus.has(k)) return false; vus.add(k); return true; };
 }
 
+// ─── Audience du composeur : compte, listes et recherche, sans rapatrier la
+// collection dans le navigateur. Avant le 6 septembre 2026, l'admin lisait les
+// 33 000 documents `newsletter` (30 Mo) à chaque ouverture d'une infolettre,
+// et l'onglet gelait. La fonction garde une projection légère en mémoire deux
+// minutes et applique la même règle que l'envoi (selectRecipients).
+interface AudienceAbonne { email: string; firstName?: string; lastName?: string; status?: string; tags?: string[] }
+let cacheAudience: { at: number; subs: AudienceAbonne[] } | null = null;
+const CACHE_AUDIENCE_MS = 2 * 60e3;
+
+async function chargerAudience(): Promise<AudienceAbonne[]> {
+  if (cacheAudience && Date.now() - cacheAudience.at < CACHE_AUDIENCE_MS) return cacheAudience.subs;
+  const snap = await getFirestore().collection('newsletter')
+    .where('status', '==', 'active')
+    .select('email', 'firstName', 'lastName', 'status', 'tags')
+    .get();
+  const subs = snap.docs.map(d => d.data() as AudienceAbonne).filter(s => typeof s.email === 'string');
+  cacheAudience = { at: Date.now(), subs };
+  return subs;
+}
+
+export const audienceInfolettre = onCall(
+  { timeoutSeconds: 60, memory: '512MiB' },
+  async (request) => {
+    assertAdmin(request);
+    const data = (request.data || {}) as { audience?: NewsletterAudience; q?: string };
+    const subs = await chargerAudience();
+    const audience: NewsletterAudience = data.audience || { mode: 'all' };
+
+    const parTag = new Map<string, number>();
+    for (const s of subs) for (const t of s.tags || []) parTag.set(t, (parTag.get(t) || 0) + 1);
+    const tags = [...parTag.entries()].sort((a, b) => a[0].localeCompare(b[0], 'fr')).map(([tag, n]) => ({ tag, n }));
+
+    const total = selectRecipients(subs, { audience }).length;
+
+    const f = (data.q || '').trim().toLowerCase();
+    const personnes: Array<{ email: string; nom: string }> = [];
+    if (f.length >= 2) {
+      const vus = new Set<string>();
+      for (const s of subs) {
+        const nom = `${s.firstName || ''} ${s.lastName || ''}`.trim();
+        const email = s.email.toLowerCase();
+        if (vus.has(email)) continue;
+        if (email.includes(f) || nom.toLowerCase().includes(f)) {
+          vus.add(email);
+          personnes.push({ email: s.email, nom });
+          if (personnes.length >= 40) break;
+        }
+      }
+    }
+    return { total, tags, personnes };
+  },
+);
+
 // ─── Envoi réel d'une infolettre (appel direct ou planifié) ─────────────────
 // Reprenable et parallèle (révision du 6 septembre 2026). Une Cloud Function
 // vit au plus 9 minutes; à un courriel à la fois, 30 000 abonnés prenaient

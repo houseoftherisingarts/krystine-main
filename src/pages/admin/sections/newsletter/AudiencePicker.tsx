@@ -1,70 +1,60 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { getNewsletterSubscribers, type NewsletterAudience, type NewsletterSubscriber } from '../../../../firebase/firestore';
+import React, { useEffect, useRef, useState } from 'react';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import app from '../../../../firebase';
+import type { NewsletterAudience } from '../../../../firebase/firestore';
 import { Label } from '../../primitives';
 
 // Qui reçoit l'infolettre : tout le monde, une ou plusieurs listes
-// (étiquettes), ou des personnes choisies une à une. Le compte se calcule
-// ici, avec la même règle que le serveur (actifs, une adresse = un envoi).
+// (étiquettes), ou des personnes choisies une à une. Le compte, les listes et
+// la recherche viennent de la fonction `audienceInfolettre`, qui applique la
+// même règle que l'envoi (abonnés actifs, une adresse = un envoi). Le
+// navigateur ne rapatrie plus la collection des 33 000 abonnés : c'est ce qui
+// gelait l'onglet à chaque ouverture d'une infolettre.
 
-export function countRecipients(subs: NewsletterSubscriber[], a: NewsletterAudience): number {
-  const norm = (e: string) => e.trim().toLowerCase();
-  const wanted = new Set((a.emails || []).map(norm));
-  const seen = new Set<string>();
-  for (const s of subs) {
-    if (s.status === 'unsubscribed') continue;
-    const ok = a.mode === 'all' || (a.mode === 'tags' ? (s.tags || []).some(t => (a.tags || []).includes(t)) : wanted.has(norm(s.email)));
-    if (ok) seen.add(norm(s.email));
-  }
-  return seen.size;
+export interface AudienceInfo { total: number; tags: Array<{ tag: string; n: number }>; personnes: Array<{ email: string; nom: string }> }
+
+export async function fetchAudience(input: { audience?: NewsletterAudience; q?: string }): Promise<AudienceInfo> {
+  if (!app) throw new Error('Firebase non configuré');
+  const call = httpsCallable(getFunctions(app, 'us-central1'), 'audienceInfolettre');
+  const res: any = await call(input);
+  return res.data as AudienceInfo;
 }
 
 const chip = (on: boolean) =>
   `px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest border transition-colors ${on ? 'bg-[#293027] text-white border-[#293027] dark:bg-[#BA7B39] dark:text-[#293027]' : 'bg-white dark:bg-white/5 text-[#293027]/60 dark:text-white/60 border-[#293027]/10 dark:border-white/10 hover:text-[#8B4A2F]'}`;
 
 const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: NewsletterAudience) => void; disabled?: boolean }> = ({ value, onChange, disabled }) => {
-  const [subs, setSubs] = useState<NewsletterSubscriber[]>([]);
+  const [info, setInfo] = useState<AudienceInfo | null>(null);
   const [q, setQ] = useState('');
-  useEffect(() => { getNewsletterSubscribers().then(setSubs); }, []);
+  const [personnes, setPersonnes] = useState<Array<{ email: string; nom: string }>>([]);
+  const [busy, setBusy] = useState(false);
+  const timer = useRef<number | null>(null);
+  const key = JSON.stringify(value);
 
-  const tags = useMemo(() => {
-    const m = new Map<string, number>();
-    for (const s of subs) if (s.status !== 'unsubscribed') for (const t of s.tags || []) m.set(t, (m.get(t) || 0) + 1);
-    return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0], 'fr'));
-  }, [subs]);
+  // Le compte se recalcule à chaque changement d'audience, avec un court délai
+  // pour ne pas appeler la fonction à chaque clic sur une liste.
+  useEffect(() => {
+    if (timer.current) window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => {
+      setBusy(true);
+      fetchAudience({ audience: value }).then(setInfo).catch(() => null).finally(() => setBusy(false));
+    }, info ? 400 : 0);
+    return () => { if (timer.current) window.clearTimeout(timer.current); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
 
-  // Le dédoublonnage se fait en une passe avec un Set, et une seule fois par
-  // chargement de la liste. L'ancienne version rappelait `findIndex` pour
-  // chaque abonné : sur 33 000 contacts, ça faisait un demi-milliard de
-  // comparaisons, près de quatre secondes de fil principal bloqué, refaites à
-  // chaque frappe dans le champ de recherche. C'est ce qui déclenchait le
-  // « la page ne répond pas » de Chrome.
-  const uniques = useMemo(() => {
-    const vus = new Set<string>();
-    const out: NewsletterSubscriber[] = [];
-    for (const s of subs) {
-      if (s.status === 'unsubscribed') continue;
-      if (vus.has(s.email)) continue;
-      vus.add(s.email);
-      out.push(s);
-    }
-    return out;
-  }, [subs]);
+  useEffect(() => {
+    const f = q.trim();
+    if (f.length < 2) { setPersonnes([]); return; }
+    const t = window.setTimeout(() => {
+      fetchAudience({ audience: value, q: f }).then(r => setPersonnes(r.personnes)).catch(() => setPersonnes([]));
+    }, 350);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q]);
 
-  const people = useMemo(() => {
-    const f = q.trim().toLowerCase();
-    if (!f) return uniques.slice(0, 40);
-    // On s'arrête aux 40 premières trouvailles au lieu de balayer les 33 000.
-    const out: NewsletterSubscriber[] = [];
-    for (const s of uniques) {
-      if (s.email.toLowerCase().includes(f) || `${s.firstName || ''} ${s.lastName || ''}`.toLowerCase().includes(f)) {
-        out.push(s);
-        if (out.length >= 40) break;
-      }
-    }
-    return out;
-  }, [uniques, q]);
-
-  const total = useMemo(() => countRecipients(subs, value), [subs, value]);
+  const total = info?.total ?? null;
+  const tags = info?.tags ?? [];
   const toggleTag = (t: string) => {
     const cur = value.tags || [];
     onChange({ ...value, mode: 'tags', tags: cur.includes(t) ? cur.filter(x => x !== t) : [...cur, t] });
@@ -78,7 +68,10 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
     <div className="space-y-3">
       <div className="flex items-baseline justify-between">
         <Label>Destinataires</Label>
-        <span className="font-serif text-2xl text-[#293027] dark:text-white">{total} <span className="text-xs text-[#8B4A2F]">personne{total > 1 ? 's' : ''}</span></span>
+        <span className="font-serif text-2xl text-[#293027] dark:text-white">
+          {total === null ? <i className="fa-solid fa-circle-notch fa-spin text-sm text-[#8B4A2F]" /> : total}
+          {' '}<span className="text-xs text-[#8B4A2F]">{busy && total !== null ? '…' : `personne${(total || 0) > 1 ? 's' : ''}`}</span>
+        </span>
       </div>
       <div className="flex flex-wrap gap-2">
         <button disabled={disabled} className={chip(value.mode === 'all')} onClick={() => onChange({ mode: 'all' })}>Tout le monde</button>
@@ -88,8 +81,8 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
 
       {value.mode === 'tags' && (
         <div className="flex flex-wrap gap-1.5 max-h-48 overflow-auto">
-          {tags.length === 0 && <p className="text-xs text-[#293027]/50 dark:text-white/50">Aucune liste pour le moment.</p>}
-          {tags.map(([t, n]) => (
+          {info && tags.length === 0 && <p className="text-xs text-[#293027]/50 dark:text-white/50">Aucune liste pour le moment.</p>}
+          {tags.map(({ tag: t, n }) => (
             <button key={t} disabled={disabled} onClick={() => toggleTag(t)}
               className={`px-2.5 py-1 rounded-full text-[11px] border transition-colors ${(value.tags || []).includes(t) ? 'bg-[#BA7B39] text-[#293027] border-[#BA7B39]' : 'bg-[#EEE7DB] dark:bg-white/5 text-[#293027]/70 dark:text-white/70 border-transparent hover:border-[#BA7B39]'}`}>
               {t} <span className="opacity-60">· {n}</span>
@@ -107,15 +100,15 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
               ))}
             </div>
           )}
-          <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Chercher une personne…" disabled={disabled}
+          <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Chercher une personne (deux lettres au moins)…" disabled={disabled}
             className="w-full px-3 py-2 rounded-xl border border-[#293027]/10 dark:border-white/10 bg-[#EEE7DB] dark:bg-white/5 text-sm outline-none focus:border-[#BA7B39]" />
           <ul className="max-h-48 overflow-auto divide-y divide-[#293027]/5 dark:divide-white/5 text-xs">
-            {people.map(s => {
+            {personnes.map(s => {
               const on = (value.emails || []).includes(s.email);
               return (
                 <li key={s.email}>
                   <button disabled={disabled} onClick={() => toggleEmail(s.email)} className={`w-full text-left px-2 py-1.5 flex justify-between gap-2 hover:bg-[#BA7B39]/10 ${on ? 'text-[#8B4A2F]' : 'text-[#293027]/80 dark:text-white/80'}`}>
-                    <span className="truncate">{[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'} · {s.email}</span>
+                    <span className="truncate">{s.nom || '—'} · {s.email}</span>
                     {on && <i className="fa-solid fa-check shrink-0" />}
                   </button>
                 </li>
