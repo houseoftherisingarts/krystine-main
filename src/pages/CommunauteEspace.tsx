@@ -31,7 +31,7 @@ const CommunauteEspace: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-28 pb-24">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="w-full px-6 md:px-8 lg:px-10">
         <h1 className="font-serif text-3xl md:text-4xl text-[#2a2015] dark:text-white mb-8">Communauté</h1>
 
         {/* Onglets — mobile seulement, les deux colonnes restent visibles ensemble sur bureau. */}
