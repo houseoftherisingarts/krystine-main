@@ -337,7 +337,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
             <>
               {visuel}
               <div className="flex flex-1 flex-col p-4">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]"><i className={`fa-solid ${a.icone} mr-1`} /> {a.categorie === 'skin' && skinParCle(a.id.slice(5))?.cout === null ? (skinParCle(a.id.slice(5))?.rarete === 'legendaire' ? (fr ? 'Légendaire · coffre d’or' : 'Legendary · gold chest') : (fr ? `Rare · coffre ${skinParCle(a.id.slice(5))?.coffre === 'argent' ? 'd’argent' : 'd’or'}` : `Rare · ${skinParCle(a.id.slice(5))?.coffre} chest`)) : niskas(a.cout, lang)}</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]"><i className={`fa-solid ${a.icone} mr-1`} /> {a.categorie === 'skin' && skinParCle(a.id.slice(5))?.cout === null ? (skinParCle(a.id.slice(5))?.rarete === 'legendaire' ? (fr ? 'Légendaire · coffre d’or' : 'Legendary · gold chest') : (fr ? `Rare · coffre ${skinParCle(a.id.slice(5))?.coffre === 'argent' ? 'd’argent' : 'd’or'}` : `Rare · ${skinParCle(a.id.slice(5))?.coffre} chest`)) : a.cout === 0 ? (fr ? 'Offerte' : 'Included') : niskas(a.cout, lang)}</p>
                 <p className="mt-1 font-serif text-lg text-[#293027] dark:text-white">{nom}</p>
                 <p className="mt-1 flex-1 text-sm text-[#293027]/60 dark:text-white/60">{desc}</p>
                 <div className="mt-4">{etat}</div>
