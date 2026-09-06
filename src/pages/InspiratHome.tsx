@@ -953,8 +953,9 @@ const InspiratHome: React.FC = () => {
           YouTube controls (volume, quality, captions, fullscreen button),
           closes on backdrop click or Escape. */}
       {videoOpen && (
+        <Portail>
         <div
-          className="fixed inset-0 z-[95] bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+          className="fixed inset-0 z-[95] overflow-y-auto overscroll-contain bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
           onClick={() => setVideoOpen(false)}
         >
           <button
