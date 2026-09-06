@@ -76,12 +76,13 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
       </div>
       <div className="flex flex-wrap gap-2">
         <button disabled={disabled} className={chip(value.mode === 'all')} onClick={() => onChange({ mode: 'all' })}>Tout le monde</button>
-        <button disabled={disabled} className={chip(value.mode === 'tags')} onClick={() => onChange({ ...value, mode: 'tags', tags: value.tags || [] })}>Des listes</button>
+        <button disabled={disabled} className={chip(value.mode === 'tags')} onClick={() => onChange({ ...value, mode: 'tags', tags: value.tags || [] })}>Certaines listes</button>
         <button disabled={disabled} className={chip(value.mode === 'emails')} onClick={() => onChange({ ...value, mode: 'emails', emails: value.emails || [] })}>Des personnes</button>
       </div>
 
       {value.mode === 'tags' && (
-        <div className="flex flex-wrap gap-1.5 max-h-48 overflow-auto">
+        <div className="flex flex-wrap gap-1.5 max-h-64 overflow-auto">
+          {!info && !failed && <p className="text-xs text-[#293027]/50 dark:text-white/50"><i className="fa-solid fa-circle-notch fa-spin mr-1" />Les listes arrivent…</p>}
           {info && tags.length === 0 && <p className="text-xs text-[#293027]/50 dark:text-white/50">Aucune liste pour le moment.</p>}
           {tags.map(({ tag: t, n }) => (
             <button key={t} disabled={disabled} onClick={() => toggleTag(t)}

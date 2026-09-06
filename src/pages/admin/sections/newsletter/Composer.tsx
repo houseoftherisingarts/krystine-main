@@ -167,7 +167,13 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
     await triggerSend(email);
   };
 
+  // Une audience « Des listes » sans liste cochée (ou « Des personnes » sans
+  // personne) n'enverrait à personne : le geste est refusé avec un mot clair.
+  const audienceVide = (audience.mode === 'tags' && !(audience.tags || []).length) || (audience.mode === 'emails' && !(audience.emails || []).length);
+  const audienceLibelle = audience.mode === 'all' ? 'tout le monde' : audience.mode === 'tags' ? `${(audience.tags || []).length} liste${(audience.tags || []).length > 1 ? 's' : ''}` : `${(audience.emails || []).length} personne${(audience.emails || []).length > 1 ? 's' : ''}`;
+
   const sendLive = async () => {
+    if (audienceVide) { setSendErr(audience.mode === 'tags' ? 'Cochez au moins une liste dans « À qui l’envoyer », ou choisissez « Tout le monde ».' : 'Choisissez au moins une personne, ou une autre audience.'); return; }
     const who = audience.mode === 'all' ? 'tous les abonnés actifs' : audience.mode === 'tags' ? `les listes ${(audience.tags || []).join(', ')}` : `${(audience.emails || []).length} personne(s) choisie(s)`;
     if (!confirm(`Envoyer cette infolettre maintenant à ${who} ? Cette action est irréversible.`)) return;
     await triggerSend();
@@ -180,6 +186,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
     if (!when) { setSendErr('Choisissez une date et une heure d’envoi.'); return; }
     if (new Date(when).getTime() < Date.now() + 5 * 60e3) { setSendErr('La date d’envoi doit être dans au moins cinq minutes.'); return; }
     if (!subject || !blocks.length) { setSendErr('Le sujet et au moins un bloc sont requis.'); return; }
+    if (audienceVide) { setSendErr('Cochez au moins une liste dans « À qui l’envoyer », ou choisissez « Tout le monde ».'); return; }
     const savedId = await save();
     if (!savedId) return;
     await updateNewsletter(savedId, { status: 'scheduled' });
@@ -246,9 +253,12 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
           <GhostButton onClick={sendTest} disabled={sendBusy !== 'idle' || isReadOnly || !subject}>
             <i className="fa-solid fa-paper-plane" /> {sendBusy === 'test' ? 'Envoi…' : 'Envoyer un test'}
           </GhostButton>
+          <button onClick={() => setSide('reglages')} className="hidden xl:inline-flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-[#8B4A2F] hover:underline" title="Changer l’audience">
+            <i className="fa-solid fa-users" /> {audienceLibelle}
+          </button>
           <button
             onClick={sendLive}
-            disabled={sendBusy !== 'idle' || isReadOnly || !subject || !blocks.length}
+            disabled={sendBusy !== 'idle' || isReadOnly || !subject || !blocks.length || audienceVide}
             className="inline-flex items-center justify-center gap-2 bg-[#BA7B39] text-[#293027] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-md hover:bg-[#293027] hover:text-[#8B4A2F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <i className="fa-solid fa-rocket" /> {sendBusy === 'live' ? 'Envoi…' : 'Envoyer maintenant'}
@@ -326,7 +336,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
           </main>
 
           {/* Rail de droite : réglages d'envoi, aperçu exact, ou Iris */}
-          <aside className={`shrink-0 border-t lg:border-t-0 lg:border-l border-[#293027]/10 dark:border-white/10 bg-white/40 dark:bg-white/[0.03] overflow-y-auto ${railWide ? 'lg:w-[640px]' : 'lg:w-[380px]'}`}>
+          <aside className={`shrink-0 max-h-[45vh] lg:max-h-none border-t lg:border-t-0 lg:border-l border-[#293027]/10 dark:border-white/10 bg-white/40 dark:bg-white/[0.03] overflow-y-auto ${railWide ? 'lg:w-[640px]' : 'lg:w-[380px]'}`}>
             {side === 'iris' ? (
               <div className="p-4">
                 <AssistantPanel
@@ -342,7 +352,13 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
               </div>
             ) : (
               <div className="p-5 space-y-5">
-                <h3 className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60">Envoi</h3>
+                <div>
+                  <h3 className="font-serif text-xl text-[#293027] dark:text-white">À qui l’envoyer</h3>
+                  <p className="text-xs text-[#293027]/60 dark:text-white/60 mt-1">Tout le monde, ou seulement les listes que vous cochez.</p>
+                </div>
+                <AudiencePicker value={audience} onChange={setAudience} disabled={isReadOnly || status === 'scheduled'} />
+                {audienceVide && <p className="text-xs text-[#8B4A2F] bg-[#BA7B39]/10 rounded-xl px-3 py-2"><i className="fa-solid fa-circle-info mr-1" /> Cochez au moins une liste pour pouvoir envoyer.</p>}
+                <h3 className="pt-4 border-t border-[#293027]/10 dark:border-white/10 text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60">Envoi</h3>
                 <div>
                   <Label>Titre interne (non envoyé)</Label>
                   <Input value={title} onChange={e => setTitle(e.target.value)} placeholder="ex. Infolettre d’octobre" disabled={isReadOnly} />
@@ -354,9 +370,6 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
                 <div>
                   <Label>Date et heure d’envoi (heure du Québec)</Label>
                   <Input type="datetime-local" value={when} onChange={e => setWhen(e.target.value)} disabled={isReadOnly || status === 'scheduled'} />
-                </div>
-                <div className="pt-4 border-t border-[#293027]/10 dark:border-white/10">
-                  <AudiencePicker value={audience} onChange={setAudience} disabled={isReadOnly || status === 'scheduled'} />
                 </div>
               </div>
             )}

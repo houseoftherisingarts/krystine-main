@@ -104,7 +104,7 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
               className="group/img relative block w-full rounded-2xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#BA7B39]">
               {c.url
                 ? <img src={c.url} alt={c.alt || ''} className="w-full block" />
-                : <div className="aspect-[16/9] w-full border-2 border-dashed border-[#B8532F]/40 bg-[#B8532F]/5 flex flex-col items-center justify-center gap-2 text-[#B8532F]"><i className="fa-solid fa-image text-3xl" /><span className="text-xs uppercase tracking-widest font-bold">Choisir une image</span></div>}
+                : <div className="aspect-[21/9] max-h-64 w-full border-2 border-dashed border-[#B8532F]/40 bg-[#B8532F]/5 flex flex-col items-center justify-center gap-2 text-[#B8532F]"><i className="fa-solid fa-image text-3xl" /><span className="text-xs uppercase tracking-widest font-bold">Choisir une image</span></div>}
               <span className="absolute inset-0 flex items-center justify-center bg-[#3A251E]/0 group-hover/img:bg-[#3A251E]/40 transition-colors">
                 <span className="opacity-0 group-hover/img:opacity-100 transition-opacity bg-white text-[#3A251E] px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest shadow-lg"><i className="fa-solid fa-images mr-2" />Changer l'image</span>
               </span>

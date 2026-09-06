@@ -50,3 +50,12 @@ assert.ok(duree < BUDGET_MS, `dédoublonnage trop lent : ${duree.toFixed(0)} ms 
 assert.equal(uniques.slice(0, FENETRE).length, FENETRE, 'la fenêtre de rendu ne tient plus');
 
 console.log(`OK — ${N} abonnés, ${uniques.length} destinataires uniques en ${duree.toFixed(0)} ms, fenêtre de ${FENETRE} lignes.`);
+
+// Depuis le 6 septembre (après-midi), le composeur ne rapatrie plus la
+// collection : l'audience passe par la fonction `audienceInfolettre`.
+import { readFileSync } from 'node:fs';
+for (const f of ['src/pages/admin/sections/newsletter/AudiencePicker.tsx', 'src/pages/admin/sections/newsletter/Composer.tsx', 'src/pages/admin/sections/newsletter/AssistantPanel.tsx']) {
+  assert.ok(!readFileSync(new URL(`../../${f}`, import.meta.url), 'utf8').includes('getNewsletterSubscribers'),
+    `${f} relit toute la collection newsletter : le composeur regèlera sur 33 000 abonnés.`);
+}
+console.log('OK — le composeur ne lit plus la collection des abonnés.');
