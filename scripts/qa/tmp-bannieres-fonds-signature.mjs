@@ -172,6 +172,17 @@ try {
   await pageA.locator('.fixed.inset-0.z-\\[130\\] button[aria-label="Fermer"]').click();
   await pageA.locator('.fixed.inset-0.z-\\[130\\]').waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
 
+  // B2 (hero) : le hero affiche la signature quand la bannière active est
+  // signée. Le compte A a "nature" en bannière active, déjà sans signature ;
+  // on bascule sur Iris (encore signée) et on relit le hero.
+  await fsdoc(`members/${compteA.uid}`, { personnalisation: { mapValue: { fields: { banniere: { stringValue: 'iris' } } } } });
+  await pageA.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded' });
+  await pageA.waitForSelector('#boutique, [class*="h-80"] img', { timeout: 20000 }).catch(() => {});
+  await pageA.waitForTimeout(2000);
+  await fermerRoue(pageA);
+  await pageA.screenshot({ path: `${OUT}/b2-hero-iris-signe.png` });
+  resultats.B2_hero_iris_signe = await pageA.locator('img[src*="signature-krystine"]').count();
+
   await ctxA.close();
 
   // ── Compte B : vierge (ne possède AUCUNE bannière payante). Sert à la
