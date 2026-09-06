@@ -1,4 +1,5 @@
 import React, { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
+import { PALIERS, STATUTS, statsDepuisFiches } from '../../../../lib/paliers';
 import {
   getNewsletterSubscribers, deleteNewsletterSubscriber, bulkAddNewsletterSubscribers,
   type NewsletterSubscriber, type BulkImportResult,
@@ -109,6 +110,8 @@ const SubscribersPanel: React.FC = () => {
     return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0], 'fr'));
   }, [subs]);
 
+  const communaute = useMemo(() => statsDepuisFiches(subs), [subs]);
+
   const filtered = useMemo(() => subs.filter(s => {
     if (statut === 'actifs' && s.status === 'unsubscribed') return false;
     if (statut === 'desabonnes' && s.status !== 'unsubscribed') return false;
@@ -185,6 +188,32 @@ const SubscribersPanel: React.FC = () => {
 
   return (
     <div className="space-y-4">
+      {/* Statuts et paliers de la liste; un palier cliqué devient le filtre d'étiquette */}
+      {subs.length > 0 && (
+        <div className="rounded-[15px] border border-[#293027]/10 dark:border-white/10 bg-white/60 dark:bg-[#293027]/40 p-4">
+          <div className="flex flex-wrap gap-x-6 gap-y-2 mb-3">
+            {STATUTS.map(st => (
+              <div key={st.key} className="leading-tight">
+                <span className="text-xl font-serif text-[#293027] dark:text-white">{(communaute.statuts[st.key] || 0).toLocaleString('fr-CA')}</span>
+                <span className="ml-2 text-[10px] uppercase tracking-[0.15em] font-bold text-[#BA7B39]">{st.nom}</span>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {PALIERS.map(p => {
+              const n = communaute.paliers[p.tag] || 0; const actif = tag === p.tag;
+              return (
+                <button key={p.tag} type="button" title={p.detail} onClick={() => setTag(actif ? '' : p.tag)}
+                  className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs transition-colors ${actif ? 'bg-[#293027] text-white border-[#293027]' : 'bg-white dark:bg-[#293027]/60 text-[#293027] dark:text-white border-[#293027]/10 dark:border-white/10 hover:border-[#BA7B39]'}`}>
+                  <span className="inline-block w-2 h-2 rounded-full" style={{ background: p.couleur, opacity: p.envoi ? 1 : 0.5 }} />
+                  {p.n} · {p.nom}
+                  <span className="font-serif text-sm tabular-nums">{n.toLocaleString('fr-CA')}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-3">
         <select

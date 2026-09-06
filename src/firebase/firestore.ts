@@ -171,6 +171,24 @@ export async function countNewsletterSubscribers(): Promise<number> {
   return snap.data().count;
 }
 
+// Statuts et paliers de toute la liste par requêtes d'agrégation (11 comptes
+// côté serveur), pour le tableau de bord qui ne doit pas charger les fiches.
+export async function countNewsletterCommunaute(): Promise<{ statuts: Record<string, number>; paliers: Record<string, number>; total: number }> {
+  if (!db) return { statuts: {}, paliers: {}, total: 0 };
+  const col = collection(db, 'newsletter');
+  const statutsKeys = ['active', 'pending', 'unsubscribed', 'bounced'];
+  const paliersKeys = [1, 2, 3, 4, 5, 6, 7].map(n => `palier-${n}`);
+  const [total, ...rest] = await Promise.all([
+    getCountFromServer(col),
+    ...statutsKeys.map(k => getCountFromServer(query(col, where('status', '==', k)))),
+    ...paliersKeys.map(k => getCountFromServer(query(col, where('tags', 'array-contains', k)))),
+  ]);
+  const statuts: Record<string, number> = {}; const paliers: Record<string, number> = {};
+  statutsKeys.forEach((k, i) => { statuts[k] = rest[i].data().count; });
+  paliersKeys.forEach((k, i) => { paliers[k] = rest[statutsKeys.length + i].data().count; });
+  return { statuts, paliers, total: total.data().count };
+}
+
 export async function getNewsletterSubscribers(): Promise<NewsletterSubscriber[]> {
   if (!db) return [];
   if (cacheAbonnes && Date.now() - cacheAbonnes.at < CACHE_ABONNES_MS) return cacheAbonnes.p;

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  getEvents, getBlogPosts, getBookingRequests, countNewsletterSubscribers, getDoshaResults,
+  getEvents, getBlogPosts, getBookingRequests, countNewsletterSubscribers, countNewsletterCommunaute, getDoshaResults,
   type EventDoc, type BlogPost, type BookingRequest, type DoshaResult,
 } from '../../../firebase/firestore';
 import { useEditMode } from '../../../contexts/EditModeContext';
 import { subscribeLiveListeners, subscribeListenTotals, type PresenceRow } from '../../../lib/podcastStats';
 import { Card } from '../primitives';
+import { PALIERS, STATUTS, type CommunauteStats } from '../../../lib/paliers';
 
 interface Stat { label: string; value: number; icon: string; accent: string; hint?: string; }
 
@@ -17,6 +18,7 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [bookings, setBookings] = useState<BookingRequest[]>([]);
   const [nbAbonnes, setNbAbonnes] = useState(0);
+  const [communaute, setCommunaute] = useState<CommunauteStats | null>(null);
   const [dosha, setDosha] = useState<DoshaResult[]>([]);
   const [enDirect, setEnDirect] = useState<PresenceRow[]>([]);
   const [ecoutes, setEcoutes] = useState<{ total: number; parEpisode: { episodeId: string; episodeTitle: string; n: number }[] }>({ total: 0, parEpisode: [] });
@@ -39,6 +41,7 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
     // suffit. Rapatrier les 33 000 fiches d'abonnés ici ajoutait une trentaine
     // de mégaoctets et plusieurs secondes de blocage à l'ouverture de l'admin.
     countNewsletterSubscribers().then(setNbAbonnes).catch(() => {});
+    countNewsletterCommunaute().then(setCommunaute).catch(() => {});
     getDoshaResults().then(setDosha).catch(() => {});
   }, []);
 
@@ -63,7 +66,7 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
     { label: 'Événements à venir', value: upcoming, icon: 'fa-calendar', accent: 'text-[#8B4A2F]', section: 'events' },
     { label: 'Articles publiés', value: posts.filter(p => p.isPublished !== false).length, icon: 'fa-pen-nib', accent: 'text-[#4A7C9D]', section: 'blog' },
     { label: 'Demandes nouvelles', value: newBookings, icon: 'fa-inbox', accent: 'text-[#BC4A3C]', section: 'bookings', hint: bookings.length > 0 ? `${bookings.length} au total` : undefined },
-    { label: 'Infolettre', value: nbAbonnes, icon: 'fa-envelope', accent: 'text-[#2D4A3E]', section: 'newsletter' },
+    { label: 'Infolettre', value: communaute?.statuts.active ?? nbAbonnes, icon: 'fa-envelope', accent: 'text-[#2D4A3E]', section: 'newsletter', hint: communaute ? `${communaute.total.toLocaleString('fr-CA')} contacts au total` : undefined },
     { label: 'Quiz Dosha', value: dosha.length, icon: 'fa-circle-nodes', accent: 'text-[#8F9779]', section: 'dosha' },
   ];
 
@@ -106,6 +109,47 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
           </Card>
         ))}
       </div>
+
+      {/* Communauté : statuts et paliers de la liste, par agrégation */}
+      {communaute && (() => {
+        const max = Math.max(1, ...PALIERS.map(p => communaute.paliers[p.tag] || 0));
+        const fmt = (n: number) => n.toLocaleString('fr-CA');
+        return (
+          <Card className="p-6">
+            <div className="flex flex-wrap items-baseline justify-between gap-3 mb-5">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">Votre communauté</h3>
+              <button type="button" onClick={() => onNavigate('newsletter')} className="text-xs font-bold uppercase tracking-widest text-[#BA7B39] hover:underline">Voir les abonnées</button>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+              {STATUTS.map(st => (
+                <div key={st.key} className="rounded-[15px] border border-[#293027]/10 dark:border-white/10 p-4">
+                  <p className="text-2xl font-serif text-[#293027] dark:text-white">{fmt(communaute.statuts[st.key] || 0)}</p>
+                  <p className="text-[10px] uppercase tracking-[0.15em] font-bold text-[#BA7B39] mt-1">{st.nom}</p>
+                  <p className="text-[11px] text-[#293027]/50 dark:text-white/50 mt-1">{st.detail}</p>
+                </div>
+              ))}
+            </div>
+            <div className="space-y-2">
+              {PALIERS.map(p => {
+                const n = communaute.paliers[p.tag] || 0;
+                return (
+                  <div key={p.tag} className="grid grid-cols-[minmax(120px,180px)_1fr_auto] items-center gap-3">
+                    <div className="leading-tight">
+                      <span className="text-sm font-serif text-[#293027] dark:text-white">{p.n} · {p.nom}</span>
+                      <span className="block text-[10px] text-[#293027]/45 dark:text-white/45">{p.detail}</span>
+                    </div>
+                    <div className="h-2.5 rounded-full bg-[#293027]/8 dark:bg-white/10 overflow-hidden">
+                      <div className="h-full rounded-full" style={{ width: `${Math.max(1, (n / max) * 100)}%`, background: p.couleur, opacity: p.envoi ? 1 : 0.45 }} />
+                    </div>
+                    <span className="text-sm font-serif tabular-nums text-[#293027] dark:text-white w-14 text-right">{fmt(n)}</span>
+                  </div>
+                );
+              })}
+              <p className="text-[11px] text-[#293027]/50 dark:text-white/50 pt-2">Les paliers 1 à 4 reçoivent les infolettres, dans cet ordre. Les paliers 5 à 7 ne reçoivent rien.</p>
+            </div>
+          </Card>
+        );
+      })()}
 
       {/* Écoutes du podcast sur la page */}
       <Card className="p-6">
