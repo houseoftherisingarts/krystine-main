@@ -35,6 +35,7 @@ const LiveSignup: React.FC = () => {
   const { lang } = useApp();
   const reduce = useReducedMotion();
   const [ev, setEv] = useState<LiveEvent | null>(null);
+  const [lecteurOuvert, setLecteurOuvert] = useState(false);
 
   useEffect(() => {
     getLiveEvents().then(list => {
