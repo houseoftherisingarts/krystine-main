@@ -255,6 +255,7 @@ const Coffres: React.FC<{ solde: number; onChange?: () => void }> = ({ solde, on
               )}
             </motion.div>
           </motion.div>
+          </Portail>
         )}
       </AnimatePresence>
     </div>
