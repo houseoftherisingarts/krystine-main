@@ -131,7 +131,8 @@ const SegmentBuilder: React.FC<Props> = ({ onClose, onCreated }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-start justify-center p-4 bg-[#293027]/60 backdrop-blur-md overflow-y-auto" onClick={onClose}>
+    <Portail>
+    <div className="fixed inset-0 z-[120] flex items-start justify-center overscroll-contain p-4 bg-[#293027]/60 backdrop-blur-md overflow-y-auto" onClick={onClose}>
       <div className="relative w-full max-w-4xl my-8 bg-white dark:bg-[#293027] rounded-[28px] shadow-2xl border border-[#BA7B39]/20" onClick={e => e.stopPropagation()}>
 
         {/* Header */}
