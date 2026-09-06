@@ -42,17 +42,31 @@ echo "   Python est là."
 
 dit "3. Claude Code"
 export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
-if ! command -v claude >/dev/null 2>&1; then
-  echo "   Installation de Claude Code…"
-  curl -fsSL https://claude.ai/install.sh | bash
+if ! command -v claude >/dev/null 2>&1 || ! claude auth status >/dev/null 2>&1; then
+  echo "   Installation (ou mise à jour) de Claude Code…"
+  curl -fsSL https://claude.ai/install.sh | bash >/dev/null 2>&1 || true
   export PATH="$HOME/.local/bin:$PATH"
 fi
-CLAUDE_BIN="$(command -v claude)"
+CLAUDE_BIN="$(command -v claude || true)"
+if [ -z "$CLAUDE_BIN" ]; then
+  echo "   Claude Code ne s'est pas installé. Envoyez ce message à Alex."; exit 1
+fi
 echo "   Claude Code : $($CLAUDE_BIN --version 2>/dev/null | head -1)"
-if ! $CLAUDE_BIN auth status 2>/dev/null | grep -q '"loggedIn": true'; then
-  echo "   Claude Code n'est pas encore connecté à votre compte. Une fenêtre de navigateur va s'ouvrir :"
-  echo "   connectez-vous avec votre compte Claude (abonnement Max), puis revenez ici."
+connecte() { $CLAUDE_BIN auth status 2>/dev/null | grep -q '"loggedIn": *true'; }
+if ! connecte; then
+  echo
+  echo "   Claude Code doit être relié à votre compte Claude (abonnement Max)."
+  echo "   Une page va s'ouvrir dans votre navigateur : connectez-vous, puis collez ici le code qu'elle vous donne."
+  echo
   $CLAUDE_BIN auth login </dev/tty || true
+fi
+if connecte; then
+  echo "   Claude Code est connecté à votre compte."
+else
+  echo
+  echo "   ⚠️  Claude Code n'est toujours pas connecté. Quand ce script aura fini, tapez  claude  dans le Terminal,"
+  echo "      puis  /login  et suivez la page qui s'ouvre. Iris fonctionnera dès que ce sera fait."
+  echo
 fi
 
 dit "4. La commande « iris » dans votre Terminal"
@@ -62,7 +76,7 @@ cat > "$HOME/.local/bin/iris" <<EOF
 export PATH="\$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:\$PATH"
 SITE="\$HOME/Documents/Inspira Nature"
 [ -d "\$SITE" ] && cd "\$SITE"
-exec claude --model opus --append-system-prompt "\$(cat "\$HOME/.iris/iris_system.md" "\$HOME/.iris/iris_site.md")" "\$@"
+exec claude --model opus --append-system-prompt "\$(cat "\$HOME/.iris/iris_system.md" "\$HOME/.iris/iris_site.md" "\$HOME/.iris/regles.md" 2>/dev/null)" "\$@"
 EOF
 chmod +x "$HOME/.local/bin/iris"
 for rc in "$HOME/.zshrc" "$HOME/.bash_profile"; do
@@ -102,6 +116,12 @@ launchctl bootstrap "gui/$(id -u)" "$PLIST"
 sleep 4
 if grep -q "démarre" "$DIR/iris.log" 2>/dev/null; then
   echo "   Iris tourne. Retournez dans l'onglet Terminal de votre admin : la pastille passe au vert dans la minute."
+  sleep 12
+  if [ -f "$DIR/vault.json" ]; then
+    echo "   Le paquet d'Alex (notes, règles, skills) est dans Obsidian, dossier « Krystine · Vexel » ($(/usr/bin/python3 -c 'import json;print(json.load(open("'"$DIR"'/vault.json"))["dossier"])')). Il se met à jour seul, et ses skills sont installés dans votre Claude Code."
+  else
+    echo "   Les notes d'Alex arriveront dans votre Obsidian (dossier « Krystine · Vexel ») dans les prochaines minutes."
+  fi
 else
   echo "   Iris n'a pas donné signe de vie. Le journal est dans ~/.iris/launchd.log ; envoyez-le à Alex."
 fi

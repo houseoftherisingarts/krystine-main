@@ -18,6 +18,8 @@ seuls depuis https://krystinestlaurent.ca/iris/ une fois l'heure.
 
 import datetime
 import hashlib
+import io
+import zipfile
 import json
 import os
 import socket
@@ -35,7 +37,7 @@ try:
 except ImportError:
     _SSL = ssl.create_default_context()
 
-VERSION = "2.0.0"
+VERSION = "2.1.0"
 PROJECT = "krystinestlaurent-87566"
 BASE = f"https://firestore.googleapis.com/v1/projects/{PROJECT}/databases/(default)/documents"
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -50,6 +52,11 @@ MISE_A_JOUR = 3600  # secondes entre deux vérifications des fichiers distants
 CLAUDE_TIMEOUT = 300
 VEXEL = "https://us-central1-vexel-integrations.cloudfunctions.net/recevoirDemande"
 VEXEL_CLIENT = {"client": "krystine", "cle": "aT_yMR68NLyEW3weNDjwYdW_"}
+BUCKET = f"{PROJECT}.firebasestorage.app"
+VAULT_OBJET = "vault/krystine.zip"
+VAULT_DOSSIER = "Krystine · Vexel"          # le dossier géré dans son Obsidian
+VAULT_ETAT = os.path.join(HERE, "vault.json")
+CONNEXION_TOUTES_LES = 300                   # secondes entre deux « claude auth status »
 
 
 def premier(*noms):
@@ -209,8 +216,28 @@ def hote():
     return config().get("hote") or socket.gethostname().replace(".local", "")
 
 
+_cx = {"v": "inconnue", "t": 0}
+
+
+def connexion():
+    """« connecte » quand Claude Code de cette machine est lié à un compte."""
+    if time.time() - _cx["t"] < CONNEXION_TOUTES_LES:
+        return _cx["v"]
+    try:
+        out = subprocess.run(["claude", "auth", "status"], capture_output=True, text=True, timeout=30)
+        d = json.loads(out.stdout or "{}")
+        _cx["v"] = "connecte" if d.get("loggedIn") else "non connecte"
+    except FileNotFoundError:
+        _cx["v"] = "claude absent"
+    except Exception:  # noqa: BLE001
+        _cx["v"] = "inconnue"
+    _cx["t"] = time.time()
+    return _cx["v"]
+
+
 def heartbeat():
-    st, d = patch("/etat/iris", {"battement": {"__ts": True}, "hote": hote(), "version": VERSION, "modele": MODEL})
+    st, d = patch("/etat/iris", {"battement": {"__ts": True}, "hote": hote(), "version": VERSION, "modele": MODEL,
+                                 "connexion": connexion(), "vault": vault_etat().get("version") or ""})
     if st != 200:
         log(f"battement refusé {st} : {json.dumps(d)[:200]}")
     return st
@@ -263,6 +290,127 @@ def mise_a_jour():
         sys.exit(0)
 
 
+# ─── Le paquet Obsidian de Krystine ─────────────────────────────────────────
+def vault_etat():
+    try:
+        with open(VAULT_ETAT) as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+
+
+def obsidian_vault():
+    """Le coffre Obsidian de cette machine (le premier ouvert), sinon un dossier
+    dans Documents qu'Obsidian peut ouvrir tel quel."""
+    c = config()
+    if c.get("obsidian"):
+        return os.path.expanduser(c["obsidian"])
+    cand = os.path.expanduser("~/Library/Application Support/obsidian/obsidian.json")
+    try:
+        with open(cand) as f:
+            vaults = json.load(f).get("vaults", {})
+        ouverts = [v for v in vaults.values() if v.get("open")] or list(vaults.values())
+        ouverts.sort(key=lambda v: -(v.get("ts") or 0))
+        for v in ouverts:
+            if v.get("path") and os.path.isdir(v["path"]):
+                return v["path"]
+    except (OSError, ValueError):
+        pass
+    return os.path.expanduser("~/Documents/Krystine (Obsidian)")
+
+
+def vault_sync():
+    """Rapatrie vault/krystine.zip (Storage, lecture réservée au compte Iris)
+    quand son empreinte change, et remplace le dossier géré dans Obsidian.
+    Les notes de Krystine hors de ce dossier ne sont jamais touchées."""
+    if not config().get("motDePasse") or not config().get("vault", True):
+        return
+    url = f"https://firebasestorage.googleapis.com/v0/b/{BUCKET}/o/{urllib.parse.quote(VAULT_OBJET, safe='')}"
+    req = urllib.request.Request(url, headers={"Authorization": "Firebase " + token()})
+    try:
+        with urllib.request.urlopen(req, context=_SSL, timeout=60) as r:
+            meta = json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return
+        log(f"paquet Obsidian : métadonnées {e.code}")
+        return
+    empreinte = meta.get("md5Hash") or meta.get("etag") or ""
+    if not empreinte or empreinte == vault_etat().get("empreinte"):
+        return
+    req = urllib.request.Request(url + "?alt=media", headers={"Authorization": "Firebase " + token()})
+    with urllib.request.urlopen(req, context=_SSL, timeout=300) as r:
+        contenu = r.read()
+    racine = obsidian_vault()
+    cible = os.path.join(racine, VAULT_DOSSIER)
+    os.makedirs(racine, exist_ok=True)
+    tmp = cible + ".nouveau"
+    if os.path.isdir(tmp):
+        import shutil; shutil.rmtree(tmp)
+    with zipfile.ZipFile(io.BytesIO(contenu)) as z:
+        for m in z.infolist():
+            if m.filename.startswith("/") or ".." in m.filename:
+                continue
+            z.extract(m, tmp)
+    if os.path.isdir(cible):
+        import shutil; shutil.rmtree(cible)
+    os.rename(tmp, cible)
+    version = (meta.get("metadata") or {}).get("version") or meta.get("updated", "")[:10]
+    with open(VAULT_ETAT, "w") as f:
+        json.dump({"empreinte": empreinte, "version": version, "dossier": cible, "quand": now_iso()}, f)
+    log(f"paquet Obsidian {version} posé dans {cible}")
+    installer_skills(cible)
+    ecrire_regles(cible)
+
+
+def installer_skills(cible):
+    """Chaque dossier Skills/<nom> qui porte un SKILL.md va dans ~/.claude/skills,
+    où Claude Code de cette machine l'active de lui-même."""
+    if not config().get("skills", True):
+        return
+    import shutil
+    src = os.path.join(cible, "Skills")
+    dst = os.path.expanduser("~/.claude/skills")
+    if not os.path.isdir(src):
+        return
+    os.makedirs(dst, exist_ok=True)
+    n = 0
+    for nom in sorted(os.listdir(src)):
+        d = os.path.join(src, nom)
+        if not os.path.exists(os.path.join(d, "SKILL.md")):
+            continue
+        cible_skill = os.path.join(dst, nom)
+        if os.path.islink(cible_skill):
+            os.unlink(cible_skill)
+        elif os.path.isdir(cible_skill):
+            shutil.rmtree(cible_skill)
+        shutil.copytree(d, cible_skill)
+        n += 1
+    log(f"{n} skills installés dans {dst}")
+
+
+def ecrire_regles(cible):
+    """Concatène Règles/*.md et Règles/mémoires/*.md dans regles.md, que la
+    commande « iris » ajoute à son prompt."""
+    src = os.path.join(cible, "Règles")
+    if not os.path.isdir(src):
+        return
+    morceaux = []
+    for f in sorted(os.listdir(src)):  # les CLAUDE.md seulement : les mémoires se lisent à la demande
+        if f.endswith(".md"):
+            with open(os.path.join(src, f), encoding="utf-8", errors="replace") as fh:
+                morceaux.append(f"\n\n===== {f} =====\n" + fh.read())
+    mem = os.path.join(src, "mémoires")
+    n_mem = len([f for f in os.listdir(mem) if f.endswith(".md")]) if os.path.isdir(mem) else 0
+    tete = ("[LES RÈGLES D'ALEX ET DE VEXEL WEBSTUDIO, À RESPECTER DANS TOUT TRAVAIL]\n"
+            f"Les {n_mem} mémoires de travail d'Alex (design, écriture, méthode) sont dans « {mem} » : "
+            "lis celles qui touchent la tâche avant d'agir (ls puis cat). Le paquet complet (Site, Bibliothèque, Skills) est dans "
+            f"« {cible} ».")
+    with open(os.path.join(HERE, "regles.md"), "w", encoding="utf-8") as f:
+        f.write(tete + "".join(morceaux))
+    log(f"regles.md écrit ({len(morceaux)} fichiers)")
+
+
 # ─── Claude ─────────────────────────────────────────────────────────────────
 def build_prompt(d):
     tags = d.get("tags") or []
@@ -294,7 +442,10 @@ def run_claude(prompt):
         raise RuntimeError((out.stderr or out.stdout).strip()[:400] or f"claude a rendu {out.returncode}")
     data = json.loads(out.stdout)
     if data.get("is_error"):
-        raise RuntimeError(str(data.get("result"))[:400])
+        r = str(data.get("result") or "")
+        if not r.strip() or "login" in r.lower() or "logged" in r.lower() or "auth" in r.lower():
+            r = "Claude Code n'est pas connecté sur cet ordinateur : ouvrez le Terminal, tapez « claude », puis « /login ». " + r
+        raise RuntimeError(r[:400])
     so = data.get("structured_output")
     if not so:
         so = json.loads(data.get("result") or "{}")
@@ -359,6 +510,10 @@ def main():
     last_maj = time.time()
     if not once:
         mise_a_jour()
+    try:
+        vault_sync()
+    except Exception as e:  # noqa: BLE001
+        log(f"paquet Obsidian : {str(e)[:200]}")
     while True:
         try:
             if time.time() - last_beat > HEARTBEAT:
@@ -367,7 +522,7 @@ def main():
                 handle(doc_id, d, ut)
                 heartbeat(); last_beat = time.time()
             if time.time() - last_maj > MISE_A_JOUR:
-                last_maj = time.time(); mise_a_jour()
+                last_maj = time.time(); mise_a_jour(); vault_sync()
         except Exception as e:  # noqa: BLE001
             log(f"tour en erreur : {str(e)[:300]}")
         if once:

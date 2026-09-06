@@ -41,6 +41,8 @@ const AssistantPanel: React.FC<Props> = ({ draft, onProposal, onClose }) => {
   const [tags, setTags] = useState<Array<{ tag: string; count: number }>>([]);
   const [battement, setBattement] = useState<Date | null>(null);
   const [hote, setHote] = useState<string>('');
+  const [connexion, setConnexion] = useState<string>('');
+  const [vaultVersion, setVaultVersion] = useState<string>('');
   const [installation, setInstallation] = useState<{ courriel: string; motDePasse: string } | null>(null);
   const [voirInstallation, setVoirInstallation] = useState(false);
   const [tick, setTick] = useState(0);
@@ -59,6 +61,8 @@ const AssistantPanel: React.FC<Props> = ({ draft, onProposal, onClose }) => {
       const b = s.data()?.battement;
       setBattement(b?.toDate ? b.toDate() : null);
       setHote(String(s.data()?.hote || ''));
+      setConnexion(String(s.data()?.connexion || ''));
+      setVaultVersion(String(s.data()?.vault || ''));
     }, () => setBattement(null));
     const offInstall = onSnapshot(doc(db, 'etat', 'irisInstallation'), s => {
       const d = s.data();
@@ -140,11 +144,17 @@ const AssistantPanel: React.FC<Props> = ({ draft, onProposal, onClose }) => {
         </div>
       </div>
 
+      {enLigne && connexion && connexion !== 'connecte' && (
+        <div className="px-5 py-3 border-b border-amber-300/20 bg-amber-400/10 text-xs text-amber-100">
+          <i className="fa-solid fa-triangle-exclamation mr-2" />
+          Iris tourne sur {hote || 'son ordinateur'}, mais Claude Code n'y est pas encore relié à votre compte. Sur cet ordinateur, ouvrez le Terminal, tapez <code className="text-[#e0b060]">claude</code>, puis <code className="text-[#e0b060]">/login</code>, et suivez la page qui s'ouvre. Iris répondra dès que ce sera fait.
+        </div>
+      )}
       {voirInstallation && installation && (
         <div className="px-5 py-4 border-b border-white/10 bg-white/[0.03] text-xs text-white/70 space-y-2">
           <p>Iris tourne sur l'ordinateur qui l'héberge. Pour qu'elle réponde depuis le vôtre, avec votre abonnement Claude, ouvrez l'application Terminal de votre Mac, collez cette ligne et appuyez sur Entrée. Le reste s'installe seul : votre navigateur vous demandera une seule fois de vous connecter à votre compte Claude.</p>
           <code className="block select-all break-all rounded-lg bg-black/40 border border-white/10 px-3 py-2 text-[#e0b060]">{`curl -fsSL https://krystinestlaurent.ca/iris/install.sh | bash -s -- ${installation.motDePasse}`}</code>
-          <p className="text-white/50">Une fois installée, Iris reste en ligne tant que votre ordinateur est allumé, se met à jour seule, et la commande « iris » dans votre Terminal ouvre une conversation avec elle sur tout votre site.</p>
+          <p className="text-white/50">Une fois installée, Iris reste en ligne tant que votre ordinateur est allumé, se met à jour seule, et la commande « iris » dans votre Terminal ouvre une conversation avec elle sur tout votre site. Elle dépose aussi dans votre Obsidian, dossier « Krystine · Vexel », les notes qu'Alex vous destine{vaultVersion ? ` (version ${vaultVersion})` : ''}, et les rafraîchit à chaque mise à jour.</p>
         </div>
       )}
 

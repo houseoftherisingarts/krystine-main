@@ -43,8 +43,15 @@ service firebase.storage {
                    && request.resource.contentType.matches('image/.*');
     }
 
+    // Le paquet Obsidian de Krystine (notes du vault d'Alex, zip publié par
+    // krystine_vault_publier) : lecture par l'admin ou par le relais Iris.
+    match /vault/{fichier} {
+      allow read: if isAdmin() || (request.auth != null && request.auth.token.email == 'iris@krystinestlaurent.ca');
+      allow write: if false;
+    }
+
     match /{dossier}/{allPaths=**} {
-      allow read: if dossier != 'formations-contenu';
+      allow read: if dossier != 'formations-contenu' && dossier != 'vault';
       allow write: if isAdmin()
                    && request.resource.size < 500 * 1024 * 1024  // 500 MB
                    && request.resource.contentType.matches('(image|video|audio)/.*|application/pdf');
