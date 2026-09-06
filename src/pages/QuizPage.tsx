@@ -9,6 +9,7 @@ import { findOilForDosha } from '../lib/shopifyOil';
 import { RITUALS } from '../lib/doshaRituals';
 import { trackLead } from '../lib/track';
 import AyurvedaIkigai from '../components/AyurvedaIkigai';
+import Portail from '../components/Portail';
 
 // ─── Quiz data ────────────────────────────────────────────────────────────────
 // 10 dimensions from "Expérience Origine — Semaine préparatoire". For each
