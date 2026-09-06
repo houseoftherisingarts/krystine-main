@@ -148,9 +148,11 @@ const Footer: React.FC = () => {
           <button
             type="button"
             onClick={() => setSalonOpen(true)}
-            className="group inline-flex items-center gap-1 transition-colors"
+            className="group inline-flex items-center gap-2 transition-colors"
             aria-haspopup="dialog"
           >
+            {/* Le sceau du Salon des Inconnus à côté de la mention (Alex, 6 sept. 2026) */}
+            <img src="/salon/logo.svg" alt="" aria-hidden="true" width={14} height={30} className="h-[30px] w-auto opacity-70 transition-opacity group-hover:opacity-100" loading="lazy" />
             <span className="text-ctextSoft/45 group-hover:text-ctextSoft/80 transition-colors">{foot.madeBy}</span>{' '}
             <span
               className="font-semibold"
