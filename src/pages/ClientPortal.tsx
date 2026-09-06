@@ -879,7 +879,7 @@ const DoshaTab: React.FC = () => {
 
             const primaryPct = latest ? (latest[dominant.toLowerCase() as 'vata' | 'pitta' | 'kapha'] ?? null) : null;
             return (
-              <div className="mb-4">
+              <div className={`mb-4 ${secondary ? 'grid gap-6 md:grid-cols-2 xl:grid-cols-3' : ''}`}>
                 {renderRitualCard(dominant, 'primary', primaryPct)}
                 {secondary && renderRitualCard(secondary.name, 'secondary', secondary.pct)}
               </div>
