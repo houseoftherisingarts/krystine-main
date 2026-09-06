@@ -622,7 +622,8 @@ const ClientPortal: React.FC = () => {
 
       {/* Le module d'édition du profil, ouvert par la photo de la bannière */}
       {editOuvert && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-[#151d19]/60 p-4 backdrop-blur-sm" onClick={() => setEditOuvert(false)}>
+        <Portail>
+        <div className="fixed inset-0 z-[120] flex items-center justify-center overflow-y-auto overscroll-contain bg-[#151d19]/60 p-4 backdrop-blur-sm" onClick={() => setEditOuvert(false)}>
           <div className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-[24px] border border-white/60 bg-[#EEE7DB] p-6 md:p-8 dark:border-white/10 dark:bg-[#293027]" onClick={e => e.stopPropagation()}>
             <div className="mb-4 flex items-center justify-between">
               <h2 className="font-serif text-2xl text-[#293027] dark:text-white">{lang === 'FR' ? 'Modifier mon profil' : 'Edit my profile'}</h2>
@@ -633,6 +634,7 @@ const ClientPortal: React.FC = () => {
             <ProfileTab />
           </div>
         </div>
+        </Portail>
       )}
     </div>
   );
