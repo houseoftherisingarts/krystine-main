@@ -67,7 +67,8 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ target, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-[#2a2015]/60 backdrop-blur-md" onClick={close}>
+    <Portail>
+    <div className="fixed inset-0 z-[120] flex items-center justify-center overflow-y-auto overscroll-contain p-4 bg-[#2a2015]/60 backdrop-blur-md" onClick={close}>
       <div
         className="relative w-full max-w-md bg-white dark:bg-[#2a2015] rounded-[30px] shadow-2xl border border-[#bb9a5e]/20 p-8 md:p-10"
         onClick={e => e.stopPropagation()}
