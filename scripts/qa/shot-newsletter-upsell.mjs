@@ -21,7 +21,7 @@ const browser = await chromium.launch();
 for (const shot of shots) {
   for (const vp of viewports) {
     const page = await browser.newPage({ viewport: { width: vp.w, height: vp.h } });
-    await page.goto(shot.url, { waitUntil: 'networkidle' });
+    await page.goto(shot.url, { waitUntil: 'load', timeout: 45000 });
     if (shot.anchor) {
       await page.locator(shot.anchor).scrollIntoViewIfNeeded();
     } else {
