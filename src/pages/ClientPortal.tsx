@@ -975,22 +975,22 @@ const DoshaTab: React.FC = () => {
 
             const primaryPct = latest ? (latest[dominant.toLowerCase() as 'vata' | 'pitta' | 'kapha'] ?? null) : null;
             return (
-              <>
+              <div className={secondary ? 'grid gap-6 mb-10 md:grid-cols-2 xl:grid-cols-3' : ''}>
                 {renderOilCard(
                   dominant,
                   'Huile recommandée pour vous',
                   'Oil recommended for you',
                   primaryPct,
-                  secondary ? 'mb-4' : 'mb-10',
+                  secondary ? '' : 'mb-10',
                 )}
                 {secondary && renderOilCard(
                   secondary.name,
                   'En accompagnement · votre second dosha',
                   'As a companion · your second dosha',
                   secondary.pct,
-                  'mb-10',
+                  '',
                 )}
-              </>
+              </div>
             );
           })()}
         </>
