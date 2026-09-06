@@ -425,7 +425,7 @@ export default function MediasV2() {
             <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">Santé la vie</h2>
             <p className="mt-3 v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] text-[#7d6330]">Trois saisons sur les ondes de MAtv</p>
             <p className="mt-7 text-[1rem] leading-[1.85] text-[#3a2f23] max-w-[56ch]">
-              Pendant trois saisons, Krystine a conçu, produit et animé Santé la vie sur MAtv, avec son complice François Lemay. Le fil conducteur : relier les sagesses anciennes, l’Ayurveda en tête, aux réalités d’aujourd’hui. Mieux respirer, mieux manger, ralentir et revenir à son équilibre, par gestes simples, sans dogme, une chose à la fois. Plusieurs de ces épisodes vivent encore en ligne, prêts à être redécouverts.
+              Pendant trois saisons, Krystine a conçu, produit et animé Santé la vie sur MAtv, avec son complice François Lemay. Le fil conducteur : relier les sagesses anciennes, l’Ayurveda en tête, aux réalités d’aujourd’hui. Mieux respirer, mieux manger, ralentir et revenir à son équilibre, par gestes simples, sans dogme, une chose à la fois. Ces épisodes vivent aujourd’hui dans votre espace, saison après saison.
             </p>
           </div>
           <div className="relative w-full">
