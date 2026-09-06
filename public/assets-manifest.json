@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-06T19:04:52.804Z",
+  "generatedAt": "2026-09-06T19:50:28.219Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -195,7 +195,7 @@
       "name": "comment-gagner-des-niskas.pdf",
       "folder": "compte",
       "kind": "document",
-      "size": 475634
+      "size": 475809
     },
     {
       "path": "/compte/niska.svg",
