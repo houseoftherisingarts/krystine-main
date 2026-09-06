@@ -146,11 +146,8 @@ os.makedirs(sys.argv[3], exist_ok=True)
 if v("envLocal"):
     open(os.path.join(sys.argv[3], ".env.local"), "w").write(v("envLocal"))
 EOF2
-if ! grep -q "Host github-krystine" "$HOME/.ssh/config" 2>/dev/null; then
-  printf '\nHost github-krystine\n  HostName github.com\n  User git\n  IdentityFile ~/.ssh/iris_krystine\n  IdentitiesOnly yes\n' >> "$HOME/.ssh/config"
-fi
-chmod 600 "$HOME/.ssh/config"
 ssh-keyscan -t ed25519 github.com 2>/dev/null >> "$HOME/.ssh/known_hosts"
+export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/iris_krystine -o IdentitiesOnly=yes"
 echo "   Clé du dépôt en place."
 export PATH="$DIR/node/bin:$DIR/tools/node_modules/.bin:$PATH"
 if ! command -v node >/dev/null 2>&1; then
@@ -161,14 +158,14 @@ if ! command -v node >/dev/null 2>&1; then
 fi
 echo "   Node : $(node --version 2>/dev/null || echo absent)"
 if [ -d "$SITE/.git" ]; then
-  echo "   Le site est déjà là : mise à jour…"; (cd "$SITE" && git remote set-url origin git@github-krystine:houseoftherisingarts/krystine-main.git && git pull --rebase -q) || true
+  echo "   Le site est déjà là : mise à jour…"; (cd "$SITE" && git remote set-url origin git@github.com:houseoftherisingarts/krystine-main.git && git pull --rebase -q) || true
 else
   echo "   Copie du site dans « $SITE »…"
   TMPCLONE="$SITE.clone"; rm -rf "$TMPCLONE"
-  git clone -q git@github-krystine:houseoftherisingarts/krystine-main.git "$TMPCLONE" && cp -a "$TMPCLONE/." "$SITE/" && rm -rf "$TMPCLONE"
+  git clone -q git@github.com:houseoftherisingarts/krystine-main.git "$TMPCLONE" && cp -a "$TMPCLONE/." "$SITE/" && rm -rf "$TMPCLONE"
 fi
 cd "$SITE"
-git config user.name "Krystine St-Laurent" && git config user.email "krystine@inspiratanature.com"
+git config user.name "Krystine St-Laurent" && git config user.email "krystine@inspiratanature.com" && git config core.sshCommand "$GIT_SSH_COMMAND"
 echo "   Installation des dépendances du site (quelques minutes la première fois)…"
 npm install --no-audit --no-fund --loglevel=error >/dev/null 2>&1 && echo "   Dépendances prêtes." || echo "   ⚠️  npm install a échoué : envoyez ~/.iris/launchd.log et ce message à Alex."
 if ! command -v firebase >/dev/null 2>&1; then
