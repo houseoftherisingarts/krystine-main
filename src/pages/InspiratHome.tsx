@@ -240,7 +240,7 @@ const InspiratHome: React.FC = () => {
     { title: 'Nature & Ayurveda',   year: '2018',                                                cover: 'https://storage.googleapis.com/inspirata/Livres/nature%20ayurveda%20front.jpg', mystery: false },
     { title: 'Féminité & Ayurveda', year: '2022',                                                cover: 'https://storage.googleapis.com/inspirata/Livres/feminite%20ayurveda%20front.jpg', mystery: false },
     { title: '', /* third title kept secret until release — see mystery flag */
-      year: lang === 'FR' ? 'février 2027' : 'February 2027',                                  cover: null as string | null, mystery: true },
+      year: lang === 'FR' ? 'février 2027' : 'February 2027',                                  cover: '/livres/titre-a-reveler.webp' as string | null, mystery: true },
   ];
 
   return (
