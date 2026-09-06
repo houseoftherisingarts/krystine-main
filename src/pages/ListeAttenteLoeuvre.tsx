@@ -34,7 +34,7 @@ const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: 
 };
 
 /* ── Programme copy (préservé, mot pour mot) ── */
-type ProgrammeKey = 'origine' | 'kapha' | 'pitta';
+type ProgrammeKey = 'origine' | 'foyer' | 'kapha' | 'pitta';
 
 interface ProgrammeMeta {
   source: string;
@@ -48,18 +48,28 @@ interface ProgrammeMeta {
 const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
   origine: {
     source: 'waitlist-origine',
-    kicker: 'Parcours signature · Prochaine cohorte en octobre',
+    kicker: 'Parcours signature · Prochaine cohorte en janvier',
     title: "L'Expérience Origine",
     subtitle: 'Retrouver votre boussole intérieure',
     promise:
       "L'Expérience Origine est un parcours de 12 semaines au cœur de l'Ayurveda. " +
-      "La cohorte en cours est fermée : la prochaine s'ouvre en octobre prochain. " +
+      "La cohorte en cours est fermée : la prochaine s'ouvre en janvier. " +
       "Inscrivez-vous à la liste d'attente et vous serez parmi les premières à " +
       "savoir lorsque les portes rouvriront, avec un accès privilégié et des " +
       "conditions réservées à la liste.",
     citation:
       "Jamais il n'y a eu autant d'informations, et jamais autant de dispersion. " +
       "L'exigence actuelle est de retrouver des repères intérieurs fiables.",
+  },
+  foyer: {
+    source: 'waitlist-foyer-origine',
+    kicker: "Liste d'attente · Le Foyer d'Origine",
+    title: "Le Foyer d'Origine",
+    subtitle: 'Quelque chose se prépare autour du feu',
+    promise:
+      "Un lieu pour découvrir, relier et rencontrer ce que nous n'aurions pas pensé chercher. " +
+      "Le foyer se prépare. Inscrivez-vous à la liste d'attente et vous recevrez l'invitation " +
+      "avant toute annonce publique.",
   },
   kapha: {
     source: 'waitlist-kapha',
@@ -93,7 +103,7 @@ const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
 };
 
 const isKnownProgramme = (key: string): key is ProgrammeKey =>
-  key === 'origine' || key === 'kapha' || key === 'pitta';
+  key === 'origine' || key === 'foyer' || key === 'kapha' || key === 'pitta';
 
 /* ── Planche photo du hero (par programme) ── */
 interface HeroArt { src: string; alt: string; caption: string; pos: string }
@@ -103,6 +113,12 @@ const HERO_ART: Record<ProgrammeKey | 'default', HeroArt> = {
     alt: "L'enveloppe scellée de l'Expérience Origine, sceau boussole, sauge et lavande",
     caption: "L'invitation scellée · sceau boussole, sauge et lavande",
     pos: '74% 48%',
+  },
+  foyer: {
+    src: '/assets/foyer-visuel-16x9.jpg',
+    alt: 'Le feu du Foyer d’Origine',
+    caption: 'Autour du feu · le foyer se prépare',
+    pos: '50% 82%',
   },
   kapha: {
     src: '/accueil/assets/portes/origine.png',
@@ -329,7 +345,7 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
           </motion.div>
 
           <div className="max-w-[440px] w-full mx-auto lg:mx-0 lg:justify-self-end">
-            <HeroPlate art={HERO_ART[programmeKey]} tab={lang === 'FR' ? 'Octobre 2026' : 'October 2026'} />
+            <HeroPlate art={HERO_ART[programmeKey]} tab={lang === 'FR' ? 'Janvier 2027' : 'January 2027'} />
           </div>
         </div>
       </section>

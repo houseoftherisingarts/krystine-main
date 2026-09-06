@@ -6,7 +6,7 @@ import Lenis from 'lenis';
 import SplitType from 'split-type';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
-  ArrowUpRight, ArrowDown, ArrowRight, Compass, Wind, Sun, Plant, Hourglass, Leaf,
+  ArrowUpRight, ArrowDown, ArrowRight, Compass, Wind, Fire, Hourglass, Leaf,
 } from '@phosphor-icons/react';
 import NewsletterSignup from '../../components/NewsletterSignup';
 import LiveEventsSection from '../../components/LiveEvents';
@@ -20,7 +20,7 @@ gsap.registerPlugin(ScrollTrigger);
  * système de couleur par saison ayurvédique pour casser le tout-beige et
  * créer une vraie hiérarchie (passe Impeccable + UI/UX Pro Max).
  * Cover photo-menée (Expérience Origine), Origine en vedette pleine largeur,
- * trois saisons colorées avec micro-interactions Framer (hover lift, médaillon,
+ * deux cartes colorées (Foyer, Vata) avec micro-interactions Framer (hover lift, médaillon,
  * stagger). Back-end préservé : navigation programmes, événements live, infolettre.
  * Animations transform/opacity uniquement (Poids-plume).
  */
@@ -28,7 +28,7 @@ gsap.registerPlugin(ScrollTrigger);
 const EASE = 'cubic-bezier(0.22,1,0.36,1)';
 const SPRING = { type: 'spring' as const, stiffness: 220, damping: 24, mass: 0.8 };
 
-const COVERLINES = ['Quatre saisons', 'L’Expérience Origine', 'Au rythme du corps'];
+const COVERLINES = ['L’Expérience Origine', 'Le Foyer d’Origine', 'Programme Vata'];
 
 /* ════════════════════════ Données · programmes saisonniers ════════════════════════ */
 
@@ -55,54 +55,41 @@ const PROGRAMMES: Programme[] = [
   {
     key: 'origine',
     Icon: Compass,
-    tag: 'Parcours signature · Prochaine cohorte',
+    tag: 'Parcours signature · Prochaine cohorte en janvier',
     title: 'L’Expérience Origine',
     subtitle: 'Retrouver votre boussole intérieure',
-    body: "Un parcours de 12 semaines au cœur de l’Ayurveda. La cohorte en cours est complète. Inscrivez-vous à la liste d’attente pour la prochaine ouverture.",
-    status: "Liste d’attente ouverte",
-    cta: "Rejoindre la liste d’attente",
-    href: '/liste-attente?programme=origine',
-    kind: 'waitlist',
+    body: "Un parcours de 12 semaines au cœur de l’Ayurveda. La prochaine cohorte s’ouvre en janvier. La liste d’attente reçoit les détails et l’accès avant toute annonce publique.",
+    status: 'Liste d’attente · Janvier',
+    cta: 'Découvrir l’Expérience Origine',
+    href: '/origine',
+    kind: 'internal',
     accent: '#9c7a44', accentInk: '#7d6330', tint: '#faf6ee',
+  },
+  {
+    key: 'foyer',
+    Icon: Fire,
+    tag: 'Liste d’attente · Le Foyer d’Origine',
+    title: 'Le Foyer d’Origine',
+    subtitle: 'Quelque chose se prépare autour du feu',
+    body: 'Un lieu pour découvrir, relier et rencontrer ce que nous n’aurions pas pensé chercher.',
+    status: 'Le foyer se prépare',
+    cta: 'Rejoindre la liste d’attente',
+    href: '/liste-attente?programme=foyer',
+    kind: 'waitlist',
+    accent: '#b4533a', accentInk: '#8f3d29', tint: '#f1ddcf',
   },
   {
     key: 'vata',
     Icon: Wind,
-    tag: 'Saison Vata · Disponible',
-    title: 'L’Automne',
+    tag: 'Saison Vata · En autonomie',
+    title: 'Programme Vata',
     subtitle: 'Enraciner · Réchauffer · Apaiser',
-    body: "Vent, sécheresse, dispersion : la saison Vata teste les nerfs. Un programme pour ancrer le corps et la tête avant l’hiver.",
-    status: 'Programme disponible',
+    body: "Vent, sécheresse, dispersion : la saison Vata teste les nerfs. Un programme de sept semaines pour ancrer le corps et la tête avant l’hiver, à suivre à votre rythme.",
+    status: 'En autonomie · dès cette semaine',
     cta: 'Découvrir le programme',
     href: '/vata',
     kind: 'internal',
     accent: '#b9822f', accentInk: '#8a5e1f', tint: '#efe1c6',
-  },
-  {
-    key: 'pitta',
-    Icon: Sun,
-    tag: 'Saison Pitta · En cours',
-    title: 'L’Été',
-    subtitle: 'Rafraîchir · Apaiser · Adoucir',
-    body: "Quand la chaleur monte, le feu intérieur s’emballe. Un programme pour traverser la saison Pitta sans se brûler.",
-    status: 'Programme disponible',
-    cta: 'Accéder au programme',
-    href: 'https://krystinestlaurent.mykajabi.com/experience-ayurveda-saison-estivale',
-    kind: 'external',
-    accent: '#b4533a', accentInk: '#8f3d29', tint: '#f1ddcf',
-  },
-  {
-    key: 'kapha',
-    Icon: Plant,
-    tag: 'Saison Kapha · Bientôt',
-    title: 'Le Printemps',
-    subtitle: 'Activer · Alléger · Stimuler',
-    body: "L’éveil du printemps demande de bouger, drainer, alléger. Un programme pour traverser la saison Kapha avec élan et clarté.",
-    status: "Liste d’attente ouverte",
-    cta: "Rejoindre la liste d’attente",
-    href: '/liste-attente?programme=kapha',
-    kind: 'waitlist',
-    accent: '#74824a', accentInk: '#55602f', tint: '#e6e8cf',
   },
 ];
 
@@ -406,8 +393,8 @@ export default function FormationsV2() {
             </ul>
 
             <p data-fade className="v2-serif text-[clamp(1.35rem,2.4vw,1.95rem)] font-light leading-[1.32] text-[#3a2f23] max-w-[36ch]">
-              Quatre parcours saisonniers et un accompagnement signature, pensés pour intégrer
-              la sagesse ayurvédique à votre mesure.
+              Une cohorte qui s’ouvre en janvier, un foyer qui se prépare et un programme
+              d’automne à suivre à votre rythme.
             </p>
 
             <div data-fade className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-4">
@@ -433,7 +420,7 @@ export default function FormationsV2() {
             <ArrowDown size={13} weight="regular" />
             Faire défiler
           </span>
-          <span className="hidden sm:inline">Origine &middot; Vata &middot; Pitta &middot; Kapha</span>
+          <span className="hidden sm:inline">Origine &middot; Foyer &middot; Vata</span>
         </div>
       </section>
 
@@ -445,10 +432,10 @@ export default function FormationsV2() {
         <div data-reveal className="max-w-[760px] mb-14">
           <Kicker className="mb-5">Chapitre 01 · Au rythme des saisons</Kicker>
           <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">
-            Les programmes saisonniers
+            Les programmes de la saison
           </h2>
           <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] text-[#3a2f23] max-w-[46ch] leading-snug">
-            Chaque saison demande un geste différent. Choisissez la vôtre.
+            Trois portes cet automne. Choisissez la vôtre.
           </p>
         </div>
 
@@ -457,13 +444,13 @@ export default function FormationsV2() {
           <FeaturedOrigine p={featured} onOpen={openProgramme} />
         </div>
 
-        {/* Trois saisons · colorées + stagger */}
+        {/* Le Foyer et Vata · colorés + stagger */}
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}
-          className="grid gap-6 md:grid-cols-3"
+          className="grid gap-6 md:grid-cols-2"
         >
           {seasonal.map((p) => (
             <SeasonCard key={p.key} p={p} onOpen={openProgramme} />

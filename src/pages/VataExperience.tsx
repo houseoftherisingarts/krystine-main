@@ -15,8 +15,13 @@ import { Atmosphere } from '../components/motion/loeuvre';
 const ease = [0.22, 1, 0.36, 1] as const;
 const SPRING = { type: 'spring' as const, stiffness: 220, damping: 24, mass: 0.8 };
 
+// VATA Essentiel se vend et se suit ici même (Stripe + leçons natives, 84 leçons
+// importées de Kajabi). Le palier Grande Bibliothèque reste sur le checkout Kajabi
+// tant que la bibliothèque n'est pas migrée.
+const COURS = '/cours/kajabi-2148727800';
 const CHECKOUT = 'https://www.krystinestlaurent.com/VATAETPREMIUMOPTIONSDEPAIEMENT';
-const go = () => window.open(CHECKOUT, '_blank', 'noopener,noreferrer');
+const go = () => { window.location.href = COURS; };
+const goPremium = () => window.open(CHECKOUT, '_blank', 'noopener,noreferrer');
 
 /* Tokens V2 + accent sauge de la page */
 const C = {
@@ -531,7 +536,7 @@ const Tiers: React.FC = () => (
               </ul>
               <button
                 type="button"
-                onClick={go}
+                onClick={tier.name.includes('Bibliothèque') ? goPremium : go}
                 className="group mt-10 inline-flex items-center justify-center gap-2.5 w-full py-4 min-h-[44px] text-[0.7rem] uppercase tracking-[0.2em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
                 style={{ background: C.ink, color: C.cream, outlineColor: C.sage }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = C.sage; e.currentTarget.style.color = C.card; }}
