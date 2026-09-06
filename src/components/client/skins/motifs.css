@@ -142,6 +142,14 @@
     background-size: 300% 100%;
     background-position: 130% 0;
     background-repeat: no-repeat;
+    /* Sans cette couleur de fond, le titre DISPARAÎT. Le dégradé est en
+       `no-repeat` et part se garer à 130 % pendant les deux tiers du cycle;
+       la lettre, elle, est déjà en `text-fill-color: transparent`, donc partout
+       où le dégradé n'est pas, il n'y a plus rien à voir. Mesuré le 6 septembre
+       2026 sur Encre & or : « Bienvenue dans votre espace » n'affichait que ses
+       dix premières lettres. La couleur de fond remplit dessous et ne se voit
+       que là où le dégradé manque. */
+    background-color: var(--sk-encre);
     -webkit-background-clip: text;
             background-clip: text;
     -webkit-text-fill-color: transparent;

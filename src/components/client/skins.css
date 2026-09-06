@@ -580,6 +580,68 @@
 .skin-teal-orange ::placeholder { color: rgba(246, 236, 226, 0.55) !important; }
 
 /* Les motifs et les scènes animées des skins riches vivent dans skins/motifs.css et skins/effets.css. */
+/* ═══ La profondeur des skins communs ═══
+   Les six communs sans motif ne sont qu'un aplat : le même gris de peinture
+   du haut au bas de l'écran, ce qui donne à l'espace l'air d'un gabarit. Un
+   voile posé sous le contenu suffit à leur donner un sol et un ciel. Il est
+   peint une fois, ne bouge jamais, ne coûte rien, et il vit DERRIÈRE les
+   panneaux : le contraste des textes ne change pas d'un centième.
+   Le sélecteur vise l'enveloppe de l'espace, celle qui porte la couleur de
+   fond, et jamais un autre élément qui porterait la classe du skin. */
+.skin-medzo.bg-\[\#EEE7DB\],
+.skin-nuit.bg-\[\#EEE7DB\],
+.skin-coffee.bg-\[\#EEE7DB\],
+.skin-aube.bg-\[\#EEE7DB\],
+.skin-terre.bg-\[\#EEE7DB\],
+.skin-foret.bg-\[\#EEE7DB\] { position: relative; }
+
+.skin-medzo.bg-\[\#EEE7DB\]::before,
+.skin-nuit.bg-\[\#EEE7DB\]::before,
+.skin-coffee.bg-\[\#EEE7DB\]::before,
+.skin-aube.bg-\[\#EEE7DB\]::before,
+.skin-terre.bg-\[\#EEE7DB\]::before,
+.skin-foret.bg-\[\#EEE7DB\]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Les trois clairs : la lumière tombe du haut, les angles bas se referment. */
+.skin-medzo.bg-\[\#EEE7DB\]::before {
+  background:
+    radial-gradient(88% 58% at 50% -8%, rgba(255, 250, 240, .8), transparent 66%),
+    radial-gradient(120% 96% at 50% 104%, rgba(107, 63, 30, .22), transparent 62%);
+}
+.skin-aube.bg-\[\#EEE7DB\]::before {
+  background:
+    radial-gradient(90% 60% at 50% -10%, rgba(255, 246, 244, .85), transparent 66%),
+    radial-gradient(120% 96% at 50% 106%, rgba(150, 60, 86, .18), transparent 62%);
+}
+.skin-terre.bg-\[\#EEE7DB\]::before {
+  background:
+    radial-gradient(88% 58% at 50% -8%, rgba(255, 244, 228, .78), transparent 66%),
+    radial-gradient(120% 96% at 50% 106%, rgba(133, 54, 26, .2), transparent 62%);
+}
+
+/* Les trois sombres : une lueur d'accent en haut, la nuit qui s'épaissit au bas. */
+.skin-nuit.bg-\[\#EEE7DB\]::before {
+  background:
+    radial-gradient(78% 52% at 50% -6%, rgba(186, 123, 57, .16), transparent 68%),
+    radial-gradient(120% 96% at 50% 106%, rgba(0, 0, 0, .46), transparent 62%);
+}
+.skin-coffee.bg-\[\#EEE7DB\]::before {
+  background:
+    radial-gradient(78% 52% at 50% -6%, rgba(184, 115, 63, .17), transparent 68%),
+    radial-gradient(120% 96% at 50% 106%, rgba(0, 0, 0, .48), transparent 62%);
+}
+.skin-foret.bg-\[\#EEE7DB\]::before {
+  background:
+    radial-gradient(78% 52% at 50% -6%, rgba(169, 198, 143, .15), transparent 68%),
+    radial-gradient(120% 96% at 50% 106%, rgba(0, 0, 0, .46), transparent 62%);
+}
+
 /* ═══ L'espace sans skin, en clair ═══
    Mesuré le 6 septembre 2026 : les textes secondaires de l'espace par défaut
    descendaient à 2,83 pour 1 sur le panneau crème (« Gagnés en tout », le
