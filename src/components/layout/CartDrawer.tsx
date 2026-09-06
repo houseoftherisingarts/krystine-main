@@ -4,6 +4,7 @@ import { ASSETS } from '../../content';
 import { createCheckout, formatMoney, isShopifyConfigured } from '../../shopify';
 import { addClientOrder } from '../../firebase/firestore';
 import { points } from '../../firebase/points';
+import Portail from '../Portail';
 
 const CartDrawer: React.FC = () => {
   const { lang } = useUI();
