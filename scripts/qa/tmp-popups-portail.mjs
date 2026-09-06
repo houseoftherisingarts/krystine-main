@@ -66,8 +66,8 @@ try {
   await boutonFond.click();
   await page.waitForTimeout(700);
   await mesurer('.fixed.inset-0.z-\\[130\\]', 'Fond d’écran', '01-fond-ecran.png');
-  await page.keyboard.press('Escape');
-  await page.waitForTimeout(400);
+  await page.locator('.fixed.inset-0.z-\\[130\\] button[aria-label*="Fermer" i]').first().click();
+  await page.waitForTimeout(500);
 
   // 2. Aperçu plein écran de la même bannière (clic sur l'image)
   const carteApercu = page.locator('button[aria-label*="iris" i]').first();
@@ -75,8 +75,8 @@ try {
   await carteApercu.click();
   await page.waitForTimeout(700);
   await mesurer('.fixed.inset-0.z-\\[140\\]', 'Aperçu plein écran', '02-apercu-image.png');
-  await page.keyboard.press('Escape');
-  await page.waitForTimeout(400);
+  await page.locator('.fixed.inset-0.z-\\[140\\]').first().click({ position: { x: 8, y: 8 } });
+  await page.waitForTimeout(500);
 
   // 3. Achat d'un coffre (200 niskas seedés : une clé à 10, un coffre de bronze à 60) puis ouverture
   const coffresSection = page.locator('#boutique-coffres');
