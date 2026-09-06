@@ -199,7 +199,6 @@ async function scenarioOuverture(browser, type) {
 
   if (logs.length) console.log('  console/pageerror :', logs.slice(0, 5).join(' | '));
   await ctx.close();
-  return { avant: 1000, cout: (resultat?.type ? null : null) };
 }
 
 // ─── 4. Pas de clé : le bouton reste inactif ─────────────────────────────────
