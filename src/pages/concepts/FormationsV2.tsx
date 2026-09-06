@@ -68,7 +68,7 @@ const PROGRAMMES: Programme[] = [
   {
     key: 'foyer',
     Icon: Fire,
-    tag: 'Liste d’attente · Le Foyer d’Origine',
+    tag: 'Autour du feu · Bientôt',
     title: 'Le Foyer d’Origine',
     subtitle: 'Quelque chose se prépare autour du feu',
     body: 'Un lieu pour découvrir, relier et rencontrer ce que nous n’aurions pas pensé chercher.',
