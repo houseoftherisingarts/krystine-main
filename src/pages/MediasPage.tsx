@@ -303,7 +303,7 @@ const MediasPage: React.FC = () => {
               return (
                 <div
                   key={idx}
-                  className={`flex flex-col items-center text-center group ${item.status === 'locked' ? 'opacity-60' : 'cursor-pointer'}`}
+                  className={`flex flex-col items-center text-center group ${item.status === 'locked' ? (item.cover ? '' : 'opacity-60') : 'cursor-pointer'}`}
                   onClick={() => item.status !== 'locked' && setBookOpen(bookOpen === idx ? null : idx)}
                 >
                   <div className={`w-full aspect-[1/1.3] rounded-r-[16px] rounded-l-[3px] mb-8 overflow-hidden relative shadow-2xl border-l-4 border-[#2a2015]/10 transition-all duration-500 ${bookOpen === idx ? 'rotate-3 translate-y-[-12px] shadow-[0_30px_60px_rgba(0,0,0,0.3)]' : 'group-hover:-translate-y-4 group-hover:rotate-1'}`}>
