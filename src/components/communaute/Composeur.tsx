@@ -12,10 +12,10 @@ import { publierSurLeMur, LONGUEUR_MAX_POST, type FilMur } from '../../firebase/
 const TAILLE_MAX_PHOTO = 15 * 1024 * 1024;   // 15 Mo
 const TAILLE_MAX_VIDEO = 200 * 1024 * 1024;  // 200 Mo
 
-// contexte 'feed' : dans le fil public, si Krystine n'a pas ouvert le mur aux
-// membres, le composeur se retire (elle seule publie). contexte 'monmur' : le
-// billet part alors dans le fil 'perso' (visible sur le mur de la personne,
-// jamais dans le feed public).
+// contexte 'feed' : dans le fil public ('communaute'), seule Krystine publie ;
+// pour tout autre membre, le composeur se retire. contexte 'monmur' : le
+// billet d'un membre non-admin part alors dans le fil 'perso' (visible sur
+// son mur personnel, jamais dans le feed public).
 const Composeur: React.FC<{ fil: FilMur; onPublie?: () => void; compact?: boolean; contexte?: 'feed' | 'monmur' }> = ({ fil, onPublie, compact, contexte = 'feed' }) => {
   const { user, member, isAdmin } = useAuth();
   const nom = member?.displayName || user?.displayName || user?.email?.split('@')[0] || 'Un membre';
