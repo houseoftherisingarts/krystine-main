@@ -166,7 +166,6 @@ const LiveSignup: React.FC = () => {
                 ctaLabel={t.cta}
                 placeholder={t.placeholder}
                 success={{ title: t.okTitle, body: t.okBody }}
-                accountUpsell={false}
               />
             )}
           </motion.div>
