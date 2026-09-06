@@ -315,7 +315,7 @@ const SalonContactCard: React.FC<Props> = ({ open, onClose, sourceSite = 'krysti
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={submit} className="flex-1 min-h-0 flex flex-col gap-3">
+                  <form onSubmit={submit} className="flex-1 min-h-0 flex flex-col gap-3 overflow-y-auto">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <Field label="Nom complet" required>
                         <input type="text" required value={name} onChange={e => setName(e.target.value)} className={inputCls} autoComplete="name" />
