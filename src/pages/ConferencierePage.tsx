@@ -11,7 +11,7 @@
 //   4. Stats row (count-up, editable via t.founder.stats)
 //   5. Mission card (L'Art de vivre conscient)
 //   6. Signature talks
-//   7. Testimonials
+//   7. (Témoignages retirés le 2026-09-06 : citations inventées, jamais recueillies)
 //   8. Process timeline
 //   9. Booking form
 //   10. FAQ
@@ -179,29 +179,6 @@ const PRESS_LIST = [
   'Éditions de l\'Homme',
 ];
 
-const TESTIMONIALS = [
-  {
-    quote: {
-      fr: "Krystine a une voix rare — celle d'une femme qui sait, qui a vu, et qui sait nommer ce que le public n'a jamais osé dire. Notre événement n'a pas été le même après son passage.",
-      en: "Krystine has a rare voice — a woman who knows, who has seen, and who can name what the room never dared say. Our event wasn't the same after she walked off stage.",
-    },
-    by: 'Productrice · Festival Mondial',
-  },
-  {
-    quote: {
-      fr: 'Un mélange parfait de rigueur scientifique et de sagesse ancestrale. Notre équipe est repartie avec des outils concrets et une nouvelle perspective.',
-      en: 'A perfect blend of scientific rigour and ancestral wisdom. Our team left with practical tools and a new perspective.',
-    },
-    by: 'Directrice RH · Entreprise québécoise',
-  },
-  {
-    quote: {
-      fr: 'Krystine ne fait pas une conférence — elle ouvre un espace. Le public écoute différemment, comme s\'il rentrait à la maison.',
-      en: 'Krystine doesn\'t give a talk — she opens a space. The audience listens differently, like coming home.',
-    },
-    by: 'Animatrice · Salut Bonjour',
-  },
-];
 
 const PROCESS_STEPS = [
   { n: '01', titleFR: 'Vous nous écrivez',   titleEN: 'You reach out',        bodyFR: "Quelques minutes pour répondre au formulaire ci-dessous. Plus on en sait sur votre vision, mieux on prépare la rencontre.", bodyEN: 'A few minutes to fill the form below. The more we know about your vision, the better we prepare.' },
@@ -737,72 +714,6 @@ const SignatureTalks: React.FC = () => {
   );
 };
 
-// ── Testimonials ───────────────────────────────────────────────────────────
-const Testimonials: React.FC = () => {
-  const { lang } = useApp();
-  const reduce = useReducedMotion();
-  const [tIndex, setTIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  useEffect(() => {
-    if (paused || reduce) return;
-    const id = window.setInterval(() => setTIndex(i => (i + 1) % TESTIMONIALS.length), 8000);
-    return () => window.clearInterval(id);
-  }, [paused, reduce]);
-
-  return (
-    <section className="relative py-14 md:py-20 px-6">
-      <div className="max-w-[1200px] mx-auto">
-        <div
-          className="relative rounded-[28px] px-6 md:px-12 py-12 md:py-16 text-center overflow-hidden"
-          style={{
-            background: 'rgba(244,231,221,0.7)',
-            border: '1px solid rgba(187, 154, 94,0.20)',
-            boxShadow: '0 10px 30px rgba(107,74,47,0.10)',
-            backdropFilter: 'blur(6px)',
-            WebkitBackdropFilter: 'blur(6px)',
-          }}
-        >
-          <i className="fa-solid fa-quote-left text-[#7d6330]/40 text-3xl mb-5" />
-          <div className="relative min-h-[140px] md:min-h-[120px]">
-            {TESTIMONIALS.map((tm, i) => (
-              <motion.blockquote
-                key={i}
-                initial={false}
-                animate={{ opacity: i === tIndex ? 1 : 0, y: i === tIndex ? 0 : 6 }}
-                transition={{ duration: 0.6, ease: [0.2, 0.8, 0.2, 1] }}
-                className="absolute inset-0 flex flex-col justify-center"
-                style={{ pointerEvents: i === tIndex ? 'auto' : 'none' }}
-              >
-                <p className="font-serif italic text-[#2a2015] dark:text-white text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-                  « {lang === 'FR' ? tm.quote.fr : tm.quote.en} »
-                </p>
-                <p className="mt-5 text-[10px] uppercase tracking-[0.35em] font-bold text-[#5a4a37]">{tm.by}</p>
-              </motion.blockquote>
-            ))}
-          </div>
-          <div className="mt-8 inline-flex items-center gap-2.5">
-            {TESTIMONIALS.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={`${lang === 'FR' ? 'Témoignage' : 'Testimonial'} ${i + 1}`}
-                onClick={() => { setTIndex(i); setPaused(true); }}
-                className="block transition-all duration-300"
-                style={{
-                  width: i === tIndex ? 26 : 8,
-                  height: 8,
-                  borderRadius: 999,
-                  background: i === tIndex ? '#bb9a5e' : 'rgba(187, 154, 94,0.3)',
-                }}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
 // ── Process Timeline ───────────────────────────────────────────────────────
 const ProcessTimeline: React.FC = () => {
   const { lang } = useApp();
@@ -1245,7 +1156,6 @@ const ConferencierePage: React.FC = () => {
       <StatsRow />
       <MissionCard />
       <SignatureTalks />
-      <Testimonials />
       <ProcessTimeline />
 
       {/* ── Booking Form ────────────────────────────────────────────────── */}
