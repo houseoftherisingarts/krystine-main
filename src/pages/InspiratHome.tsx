@@ -492,7 +492,12 @@ const InspiratHome: React.FC = () => {
                 border: '1px solid rgba(187, 154, 94,0.35)',
                 boxShadow: '0 14px 32px rgba(0,0,0, 0.22), 0 2px 6px rgba(107,74,47,0.08)',
               }}
-              className={`block w-full aspect-square relative group rounded-[28px] overflow-hidden transition-[box-shadow,transform] duration-500 ${editMode ? '' : 'cursor-pointer hover:-translate-y-2'}`}
+              // Ratio 3:2 (au lieu du carré 1:1) : la bannière enveloppe de
+              // l'Expérience Origine est un format large (2528×1117); un
+              // carré n'en montrait que 44 % de la largeur et coupait le
+              // sceau et la lavande à droite. Appliqué aux trois tuiles pour
+              // garder la rangée alignée.
+              className={`block w-full aspect-[3/2] relative group rounded-[28px] overflow-hidden transition-[box-shadow,transform] duration-500 ${editMode ? '' : 'cursor-pointer hover:-translate-y-2'}`}
               onMouseEnter={e => {
                 e.currentTarget.style.boxShadow = '0 22px 44px rgba(0,0,0,0.30), 0 4px 10px rgba(107,74,47,0.12)';
               }}
