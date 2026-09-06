@@ -223,7 +223,7 @@ const Coffres: React.FC<{ solde: number; onChange?: () => void }> = ({ solde, on
                       )}
                     </ul>
                     <p className="mt-2 border-t border-[#38403a]/10 pt-2 text-[11px] text-[#293027]/55 dark:border-white/10 dark:text-white/55">
-                      {fr ? `Tirage au sort sur le serveur, jamais dans votre navigateur. ${OUVERTURES_PAR_JOUR} ouvertures par jour au plus.` : `Drawn on the server, never in your browser. At most ${OUVERTURES_PAR_JOUR} openings a day.`}
+                      {fr ? `Tirage au sort sur le serveur, jamais dans votre navigateur. ${OUVERTURES_PAR_JOUR} ouvertures par jour au plus. Un lot que vous avez déjà se transforme en niskas, sa valeur plus 5 %.` : `Drawn on the server, never in your browser. At most ${OUVERTURES_PAR_JOUR} openings a day. A prize you already own turns into niskas, its value plus 5%.`}
                     </p>
                   </motion.div>
                 )}
