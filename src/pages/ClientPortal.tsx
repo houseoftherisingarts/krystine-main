@@ -31,6 +31,7 @@ import RoueQuotidienne from '../components/client/RoueQuotidienne';
 import BienvenueJeu from '../components/client/BienvenueJeu';
 import ReserveAuFoyer, { MotDuFoyer, useAmiesDOrigine } from '../components/communaute/ReserveAuFoyer';
 import '../components/client/skins.css';
+import Portail from '../components/Portail';
 
 // Le texte du niṣka, écrit par Alex le 6 septembre 2026, lu sous la bourse.
 const HISTOIRE_NISKA_FR = [

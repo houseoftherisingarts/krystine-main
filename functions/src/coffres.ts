@@ -1,7 +1,7 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { randomInt } from 'node:crypto';
-import { crediterNiskas, recalculerSolde } from './niskas';
+import { crediterNiskas, recalculerSolde, MUSIQUE_ORIGINE_ID } from './niskas';
 
 // ─── Les coffres ─────────────────────────────────────────────────────────────
 // Trois coffres (bronze, argent, or) et leurs clés. Un coffre s'achète en
@@ -25,41 +25,63 @@ export const PRIX_COFFRES: Record<TypeCoffre, { boite: number; cle: number; nom:
   or:     { boite: 420, cle: 30, nom: 'Coffre d’or' },
 };
 
-export type Lot =
-  | { genre: 'niskas'; montant: number; poids: number; nom: string }
-  | { genre: 'cosmetique'; poids: number; nom: string; pool: string[]; sinon: number } // un cosmétique du bassin qu'on n'a pas encore (sinon des niskas)
-  | { genre: 'recompense'; rewardId: string; poids: number; nom: string } // un rabais de la boutique, honoré par Krystine comme une récompense
-  | { genre: 'grand'; poids: number; nom: string };                      // le Foyer d'Origine, offert
-
-const COMMUNS = ['skin-medzo', 'skin-nuit', 'skin-coffee', 'banniere-nature', 'skin-aube', 'skin-terre', 'skin-foret', 'skin-ocean', 'skin-encre', 'banniere-iris', 'banniere-pivoine', 'banniere-huiles', 'banniere-jardin', 'banniere-soir'];
-
-// Les poids sont des pour cent : chaque table fait cent.
-export const TABLES: Record<TypeCoffre, Lot[]> = {
-  bronze: [
-    { genre: 'niskas', montant: 20, poids: 50, nom: '20 niskas' },
-    { genre: 'niskas', montant: 40, poids: 30, nom: '40 niskas' },
-    { genre: 'cosmetique', poids: 12, nom: 'Un skin ou une bannière', pool: COMMUNS, sinon: 30 },
-    { genre: 'niskas', montant: 100, poids: 7, nom: '100 niskas' },
-    { genre: 'recompense', rewardId: 'reb-10-boutique', poids: 1, nom: '10 % sur la boutique' },
-  ],
-  argent: [
-    { genre: 'niskas', montant: 60, poids: 40, nom: '60 niskas' },
-    { genre: 'niskas', montant: 120, poids: 28, nom: '120 niskas' },
-    { genre: 'recompense', rewardId: 'reb-huiles', poids: 14, nom: '15 % sur les Huiles Corporelles' },
-    { genre: 'niskas', montant: 300, poids: 9, nom: '300 niskas' },
-    { genre: 'cosmetique', poids: 8, nom: 'Le skin Lotus (rare)', pool: ['skin-lotus'], sinon: 120 },
-    { genre: 'recompense', rewardId: 'reb-10-boutique', poids: 1, nom: '10 % sur la boutique' },
-  ],
-  or: [
-    { genre: 'niskas', montant: 150, poids: 36, nom: '150 niskas' },
-    { genre: 'niskas', montant: 300, poids: 28, nom: '300 niskas' },
-    { genre: 'recompense', rewardId: 'reb-formation', poids: 16, nom: '50 $ sur une formation' },
-    { genre: 'niskas', montant: 750, poids: 10, nom: '750 niskas' },
-    { genre: 'cosmetique', poids: 6, nom: 'Le skin Aurore (rare)', pool: ['skin-aurore'], sinon: 300 },
-    { genre: 'cosmetique', poids: 2, nom: 'Le skin Or pur (légendaire)', pool: ['skin-or-pur'], sinon: 450 },
-    { genre: 'grand', poids: 2, nom: 'Le Foyer d’Origine, offert' },
-  ],
+// ─── Le contenu d'un coffre (Alex, 6 septembre 2026, soirée) ─────────────────
+// Chaque coffre donne plusieurs choses à la fois, tirées indépendamment :
+//  1. toujours un cosmétique (skin ou bannière). Une part de ces tirages tombe
+//     sur un skin légendaire (Vata, Pitta, Kapha) : 50 % au bronze, 65 % à
+//     l'argent, 80 % à l'or; le reste va aux skins rares du coffre, puis aux
+//     communs. Quand tout est déjà possédé, des niskas à la place;
+//  2. toujours la musique d'Origine; si elle est déjà à vous, dix niskas de bonus;
+//  3. des niskas (parfois plus que le coffre a coûté, quelles que soient les chances);
+//  4. des rabais de la boutique, chacun à sa propre chance (bronze : 10 % à 1
+//     sur 50, 20 % à 1 sur 100, 50 % à 1 sur 500; plus prononcé à l'argent et à l'or);
+//  5. le grand lot, le Foyer d'Origine offert : 1 sur 89 au coffre d'or.
+// Les nombres ci-dessous sont recopiés mot pour mot dans src/lib/coffresConfig.ts.
+export interface Chance { unSur: number; nom: string }
+export interface Contenu {
+  legendaire: number;                       // pour cent des cosmétiques qui sont un skin légendaire
+  rares: string[];                          // les skins rares propres à ce coffre
+  niskas: Array<{ montant: number; poids: number }>; // toujours un montant, poids en pour cent (total 100)
+  rabais: Array<Chance & { rewardId: string }>;
+  grandLot: Chance | null;
+}
+export const CONTENUS: Record<TypeCoffre, Contenu> = {
+  bronze: {
+    legendaire: 50, rares: [],
+    niskas: [{ montant: 10, poids: 55 }, { montant: 25, poids: 30 }, { montant: 60, poids: 12 }, { montant: 120, poids: 3 }],
+    rabais: [
+      { rewardId: 'reb-10-boutique', unSur: 50, nom: '10 % sur la boutique' },
+      { rewardId: 'reb-20-boutique', unSur: 100, nom: '20 % sur la boutique' },
+      { rewardId: 'reb-50-boutique', unSur: 500, nom: '50 % sur la boutique' },
+    ],
+    grandLot: null,
+  },
+  argent: {
+    legendaire: 65, rares: ['skin-lotus'],
+    niskas: [{ montant: 30, poids: 50 }, { montant: 70, poids: 30 }, { montant: 150, poids: 15 }, { montant: 300, poids: 5 }],
+    rabais: [
+      { rewardId: 'reb-10-boutique', unSur: 20, nom: '10 % sur la boutique' },
+      { rewardId: 'reb-20-boutique', unSur: 40, nom: '20 % sur la boutique' },
+      { rewardId: 'reb-50-boutique', unSur: 200, nom: '50 % sur la boutique' },
+      { rewardId: 'reb-huiles', unSur: 25, nom: '15 % sur les Huiles Corporelles' },
+    ],
+    grandLot: { unSur: 400, nom: 'Le Foyer d’Origine, offert' },
+  },
+  or: {
+    legendaire: 80, rares: ['skin-aurore', 'skin-or-pur'],
+    niskas: [{ montant: 80, poids: 45 }, { montant: 180, poids: 30 }, { montant: 400, poids: 18 }, { montant: 800, poids: 7 }],
+    rabais: [
+      { rewardId: 'reb-10-boutique', unSur: 8, nom: '10 % sur la boutique' },
+      { rewardId: 'reb-20-boutique', unSur: 15, nom: '20 % sur la boutique' },
+      { rewardId: 'reb-50-boutique', unSur: 60, nom: '50 % sur la boutique' },
+      { rewardId: 'reb-formation', unSur: 12, nom: '50 $ sur une formation' },
+    ],
+    grandLot: { unSur: 89, nom: 'Le Foyer d’Origine, offert' },
+  },
 };
+const LEGENDAIRES = ['skin-vata', 'skin-pitta', 'skin-kapha'];
+const COMMUNS = ['skin-medzo', 'skin-nuit', 'skin-coffee', 'skin-aube', 'skin-terre', 'skin-foret', 'skin-ocean', 'skin-encre', 'banniere-nature', 'banniere-iris', 'banniere-pivoine', 'banniere-huiles', 'banniere-jardin', 'banniere-soir'];
+const NISKAS_MUSIQUE_DEJA = 10;
 
 const NOMS_COSMETIQUES: Record<string, string> = {
   'skin-medzo': 'Skin Medzo Café', 'skin-nuit': 'Skin Nuit', 'skin-coffee': 'Skin Dark Coffee', 'banniere-nature': 'Bannière Nature & Ayurveda',
@@ -83,20 +105,23 @@ const journee = (ms = Date.now()) => {
 };
 const threadId = (a: string, b: string) => [a, b].sort().join('__');
 
-/** Le tirage : un entier de 0 à 99 (crypto), puis la table cumulée. */
-export function tirer(table: Lot[], de = randomInt(0, 100)): Lot {
+/** Un tirage pondéré : `de` va de 0 à 99 (crypto), la table cumule des pour cent. */
+export function tirerPondere<T extends { poids: number }>(table: T[], de = randomInt(0, 100)): T {
   let cumul = 0;
   for (const lot of table) { cumul += lot.poids; if (de < cumul) return lot; }
   return table[table.length - 1];
 }
+/** « une chance sur n » : vrai quand le dé (0 à n-1) tombe sur zéro. */
+export const uneChanceSur = (n: number, de = randomInt(0, Math.max(1, n))): boolean => de === 0;
 
-/** Auto-test : chaque table fait cent, et le tirage tombe sur le bon lot. */
+/** Auto-test : chaque table de niskas fait cent et les tirages suivent la table. */
 export function verifierTables(): void {
-  for (const t of Object.keys(TABLES) as TypeCoffre[]) {
-    const somme = TABLES[t].reduce((s, l) => s + l.poids, 0);
-    if (somme !== 100) throw new Error(`La table ${t} fait ${somme}, pas 100.`);
+  for (const t of Object.keys(CONTENUS) as TypeCoffre[]) {
+    const somme = CONTENUS[t].niskas.reduce((a, l) => a + l.poids, 0);
+    if (somme !== 100) throw new Error(`La table des niskas du coffre ${t} fait ${somme}, pas 100.`);
   }
-  if (tirer(TABLES.or, 0).nom !== '150 niskas' || tirer(TABLES.or, 99).genre !== 'grand' || tirer(TABLES.argent, 91).genre !== 'cosmetique') throw new Error('Le tirage ne suit pas la table.');
+  if (tirerPondere(CONTENUS.or.niskas, 0).montant !== 80 || tirerPondere(CONTENUS.or.niskas, 99).montant !== 800) throw new Error('Le tirage ne suit pas la table.');
+  if (!uneChanceSur(89, 0) || uneChanceSur(89, 1)) throw new Error('uneChanceSur ne suit pas le dé.');
 }
 
 async function ecrireMessageKrystine(db: FirebaseFirestore.Firestore, deUid: string, uid: string, corps: string, extra: Record<string, unknown> = {}) {
@@ -154,7 +179,7 @@ export const ouvrirCoffre = onCall({ region: 'us-central1' }, async (req) => {
   const jour = await db.collection('coffresOuvertures').where('uid', '==', uid).where('jour', '==', aujourdhui).count().get();
   if (jour.data().count >= OUVERTURES_PAR_JOUR) throw new HttpsError('resource-exhausted', `Cinq coffres par jour, c’est le maximum. À demain.`);
 
-  const lot = tirer(TABLES[type]);
+  const contenu = CONTENUS[type];
   const ouverture = db.collection('coffresOuvertures').doc();
   await db.runTransaction(async (tx) => {
     const snap = await tx.get(ref);
@@ -162,43 +187,70 @@ export const ouvrirCoffre = onCall({ region: 'us-central1' }, async (req) => {
     if ((d.boites?.[type] || 0) < 1) throw new HttpsError('failed-precondition', 'Vous n’avez pas ce coffre.');
     if ((d.cles?.[type] || 0) < 1) throw new HttpsError('failed-precondition', 'Il vous manque la clé de ce coffre.');
     tx.set(ref, { boites: { [type]: FieldValue.increment(-1) }, cles: { [type]: FieldValue.increment(-1) }, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
-    tx.set(ouverture, { uid, type, jour, lot: { genre: lot.genre, nom: lot.nom }, at: FieldValue.serverTimestamp() });
+    tx.set(ouverture, { uid, type, jour, at: FieldValue.serverTimestamp() });
   });
 
-  // Le lot, pour vrai.
-  let resultat: Record<string, unknown> = { genre: lot.genre, nom: lot.nom };
-  if (lot.genre === 'niskas') {
-    await crediterNiskas(uid, 'coffre-gain', lot.montant, `coffre-gain:${ouverture.id}`, { type, nom: lot.nom });
-    const { balance } = await recalculerSolde(uid);
-    resultat = { ...resultat, montant: lot.montant, solde: balance };
-  } else if (lot.genre === 'cosmetique') {
-    const b = await db.doc(`boutique/${uid}`).get();
-    const possede = ((b.data() || {}) as { possede?: Record<string, unknown> }).possede || {};
-    const libres = lot.pool.filter((c) => !possede[c]);
-    if (libres.length === 0) {
-      await crediterNiskas(uid, 'coffre-gain', lot.sinon, `coffre-gain:${ouverture.id}`, { type, nom: `${lot.sinon} niskas (déjà à vous : ${lot.nom})` });
-      const { balance } = await recalculerSolde(uid);
-      resultat = { genre: 'niskas', nom: `${lot.sinon} niskas`, montant: lot.sinon, solde: balance, note: `${lot.nom} est déjà à vous : ${lot.sinon} niskas à la place.` };
-    } else {
-      const article = libres[randomInt(0, libres.length)];
-      await db.doc(`boutique/${uid}`).set({ possede: { [article]: FieldValue.serverTimestamp() } }, { merge: true });
-      resultat = { genre: 'cosmetique', nom: NOMS_COSMETIQUES[article], article };
-    }
-    await ouverture.set({ lot: { genre: resultat.genre, nom: resultat.nom } }, { merge: true });
-  } else if (lot.genre === 'recompense') {
-    // Comme une récompense échangée, mais sans coût : Krystine l'honore depuis
-    // l'admin (onglet Récompenses en attente) avec un code de la boutique.
-    const email = req.auth.token.email || null;
-    await db.collection('rewardRedemptions').add({ uid, email, rewardId: lot.rewardId, rewardLabel: `${lot.nom} (coffre ${type})`, cost: 0, status: 'pending', source: 'coffre', createdAt: FieldValue.serverTimestamp() });
-  } else if (lot.genre === 'grand') {
-    // Le grand lot se réclame avec la question d'habileté : le cadeau n'existe
-    // qu'après la bonne réponse (reclamerGrandLot).
-    const a = randomInt(11, 40), b = randomInt(2, 9), c = randomInt(3, 12), d = randomInt(2, 6);
-    await ouverture.set({ grandLot: { enAttente: true, a, b, c, d, reponse: (a * b + c) - d } }, { merge: true });
-    resultat = { ...resultat, ouvertureId: ouverture.id, question: `(${a} × ${b} + ${c}) − ${d}` };
+  const lots: Array<Record<string, unknown>> = [];
+  let niskasGagnes = 0;
+
+  // 1. Le cosmétique, toujours. Légendaire selon la part du coffre, puis rare, puis commun.
+  const b = await db.doc(`boutique/${uid}`).get();
+  const possede = ((b.data() || {}) as { possede?: Record<string, unknown> }).possede || {};
+  const libres = (liste: string[]) => liste.filter((c) => !possede[c]);
+  let bassin: string[] = [];
+  let rarete: 'legendaire' | 'rare' | 'commun' = 'commun';
+  if (randomInt(0, 100) < contenu.legendaire && libres(LEGENDAIRES).length) { bassin = libres(LEGENDAIRES); rarete = 'legendaire'; }
+  else if (libres(contenu.rares).length) { bassin = libres(contenu.rares); rarete = 'rare'; }
+  else if (libres(LEGENDAIRES).length) { bassin = libres(LEGENDAIRES); rarete = 'legendaire'; }
+  else if (libres(COMMUNS).length) { bassin = libres(COMMUNS); rarete = 'commun'; }
+  if (bassin.length) {
+    const article = bassin[randomInt(0, bassin.length)];
+    await db.doc(`boutique/${uid}`).set({ possede: { [article]: FieldValue.serverTimestamp() } }, { merge: true });
+    lots.push({ genre: 'cosmetique', rarete, article, nom: NOMS_COSMETIQUES[article] || article });
+  } else {
+    // Tout est déjà à vous : le coffre paie en niskas à la place.
+    const bonus = type === 'or' ? 250 : type === 'argent' ? 120 : 50;
+    niskasGagnes += bonus;
+    lots.push({ genre: 'niskas', montant: bonus, nom: `${bonus} niskas`, note: 'Tous les skins et bannières sont déjà à vous.' });
   }
-  console.log(`[coffres] ${uid} ouvre ${type} : ${lot.nom}`);
-  return { ouvertureId: ouverture.id, type, lot: resultat };
+
+  // 2. La musique d'Origine, toujours; dix niskas si elle est déjà à vous.
+  const musique = await db.doc(`achatsFormations/${uid}/formations/${MUSIQUE_ORIGINE_ID}`).get();
+  if (musique.exists || possede['musique-origine']) {
+    niskasGagnes += NISKAS_MUSIQUE_DEJA;
+    lots.push({ genre: 'niskas', montant: NISKAS_MUSIQUE_DEJA, nom: `${NISKAS_MUSIQUE_DEJA} niskas`, note: 'La musique d’Origine est déjà à vous.' });
+  } else {
+    const f = (await db.doc(`formations/${MUSIQUE_ORIGINE_ID}`).get()).data() as { titre?: string; imageUrl?: string } | undefined;
+    await db.doc(`achatsFormations/${uid}/formations/${MUSIQUE_ORIGINE_ID}`).set({ titre: f?.titre || 'Expérience Origine · La musique', imageUrl: f?.imageUrl || '', categorie: 'musique', source: 'coffre', accordeLe: FieldValue.serverTimestamp() }, { merge: true });
+    await db.doc(`boutique/${uid}`).set({ possede: { 'musique-origine': FieldValue.serverTimestamp() } }, { merge: true });
+    lots.push({ genre: 'musique', nom: 'La musique d’Origine' });
+  }
+
+  // 3. Les niskas du coffre.
+  const n = tirerPondere(contenu.niskas);
+  niskasGagnes += n.montant;
+  lots.push({ genre: 'niskas', montant: n.montant, nom: `${n.montant} niskas` });
+
+  // 4. Les rabais, chacun à sa chance.
+  for (const r of contenu.rabais) {
+    if (uneChanceSur(r.unSur)) {
+      await db.collection('rewardRedemptions').add({ uid, email: req.auth.token.email || null, rewardId: r.rewardId, rewardLabel: `${r.nom} (coffre ${type})`, cost: 0, status: 'pending', source: 'coffre', createdAt: FieldValue.serverTimestamp() });
+      lots.push({ genre: 'recompense', rewardId: r.rewardId, nom: r.nom });
+    }
+  }
+
+  // 5. Le grand lot, qui se réclame avec la question d'habileté.
+  if (contenu.grandLot && uneChanceSur(contenu.grandLot.unSur)) {
+    const a = randomInt(11, 40), bb = randomInt(2, 9), c = randomInt(3, 12), dd = randomInt(2, 6);
+    await ouverture.set({ grandLot: { enAttente: true, a, b: bb, c, d: dd, reponse: (a * bb + c) - dd } }, { merge: true });
+    lots.push({ genre: 'grand', nom: contenu.grandLot.nom, ouvertureId: ouverture.id, question: `(${a} × ${bb} + ${c}) − ${dd}` });
+  }
+
+  await crediterNiskas(uid, 'coffre-gain', niskasGagnes, `coffre-gain:${ouverture.id}`, { type, lots: lots.map((l) => l.nom) });
+  const { balance } = await recalculerSolde(uid);
+  await ouverture.set({ lots: lots.map((l) => ({ genre: l.genre, nom: l.nom })), niskas: niskasGagnes }, { merge: true });
+  console.log(`[coffres] ${uid} ouvre ${type} : ${lots.map((l) => l.nom).join(', ')}`);
+  return { ouvertureId: ouverture.id, type, lots, solde: balance };
 });
 
 // ─── Le grand lot : la question d'habileté, puis le Foyer offert ─────────────
