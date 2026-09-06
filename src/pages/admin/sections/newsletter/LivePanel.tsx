@@ -127,13 +127,26 @@ const LivePanel: React.FC = () => {
     (s.tags || []).some(t => t.startsWith(`${GENERIQUE}-`));
   const principal = events[0]?.id;
 
-  const registered = sel ? subs.filter(s => {
-    if (s.status === 'unsubscribed') return false;
-    if ((s.tags || []).includes(sel.tag)) return true;
-    // Inscrite sans date : elle revient au direct à venir, pas aux anciens.
-    return sel.id === principal && estGenerique(s) && !porteUneDate(s);
-  }) : [];
-  const uniq = registered.filter((s, i, a) => a.findIndex(o => o.email === s.email) === i);
+  // Balayer les 33 000 abonnés à chaque rendu (une frappe dans un champ de
+  // date suffisait) coûtait une dizaine de millisecondes pour rien, et rendait
+  // le mémo des cartes inutile puisque `uniq` était un nouveau tableau chaque
+  // fois. Le tri se fait une fois par direct choisi.
+  const uniq = useMemo(() => {
+    if (!sel) return [] as NewsletterSubscriber[];
+    const vus = new Set<string>();
+    const out: NewsletterSubscriber[] = [];
+    for (const s of subs) {
+      if (s.status === 'unsubscribed') continue;
+      const inscrit = (s.tags || []).includes(sel.tag)
+        // Inscrite sans date : elle revient au direct à venir, pas aux anciens.
+        || (sel.id === principal && estGenerique(s) && !porteUneDate(s));
+      if (!inscrit || vus.has(s.email)) continue;
+      vus.add(s.email);
+      out.push(s);
+    }
+    return out;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subs, sel, principal]);
   const nbSansDate = uniq.filter(s => !(s.tags || []).includes(sel?.tag || '')).length;
 
   // Le paquet de cartes du direct : une carte par question posée à

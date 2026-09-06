@@ -2,7 +2,7 @@ import { db } from '../firebase';
 import {
   collection, addDoc, getDocs, deleteDoc, doc, updateDoc, setDoc, getDoc,
   query, orderBy, where, serverTimestamp, onSnapshot, Timestamp,
-  writeBatch, limit,
+  writeBatch, limit, getCountFromServer,
   type Unsubscribe,
 } from 'firebase/firestore';
 
@@ -145,28 +145,60 @@ export async function addNewsletterSubscriber(data: Omit<NewsletterSubscriber, '
   clean.email = String(clean.email).trim().toLowerCase();
   if (!clean.status) clean.status = 'active';
   if (!clean.unsubscribeToken) clean.unsubscribeToken = genUnsubToken();
+  invalidateNewsletterSubscribers();
   return addDoc(collection(db, 'newsletter'), { ...clean, subscribedAt: serverTimestamp() });
+}
+
+// La collection `newsletter` dépasse les 33 000 documents depuis l'import
+// Shopify. Une lecture complète pèse une trentaine de mégaoctets et occupe le
+// fil principal le temps de la désérialisation. Treize écrans de l'admin
+// appellent cette fonction, et le composeur la déclenche deux fois d'un coup
+// (AudiencePicker au montage, Iris quand elle s'ouvre). On partage donc une
+// seule lecture : les appels simultanés reçoivent la même promesse, et le
+// résultat reste valable deux minutes. Toute écriture sur la collection vide
+// le cache, donc un import ou une suppression se voit tout de suite.
+const CACHE_ABONNES_MS = 2 * 60_000;
+let cacheAbonnes: { at: number; p: Promise<NewsletterSubscriber[]> } | null = null;
+
+export function invalidateNewsletterSubscribers() { cacheAbonnes = null; }
+
+// Compte les abonnés sans rapatrier un seul document. Pour les écrans qui
+// n'affichent qu'un total (le tableau de bord), c'est une requête d'agrégation
+// au lieu de trente mégaoctets.
+export async function countNewsletterSubscribers(): Promise<number> {
+  if (!db) return 0;
+  const snap = await getCountFromServer(collection(db, 'newsletter'));
+  return snap.data().count;
 }
 
 export async function getNewsletterSubscribers(): Promise<NewsletterSubscriber[]> {
   if (!db) return [];
+  if (cacheAbonnes && Date.now() - cacheAbonnes.at < CACHE_ABONNES_MS) return cacheAbonnes.p;
   // PAS de orderBy ici : Firestore écarte silencieusement tout document qui
   // n'a pas le champ trié. Un inscrit sans `subscribedAt` (import manuel,
   // écriture par une fonction, document créé à la main dans la console)
   // disparaissait alors de TOUTES les vues de l'admin. On lit tout, puis on
   // trie côté client — les sans-date passent à la fin plutôt que d'être perdus.
-  const snap = await getDocs(collection(db, 'newsletter'));
-  const subs = snap.docs.map(d => ({ id: d.id, ...d.data() } as NewsletterSubscriber));
-  return subs.sort((a, b) => (b.subscribedAt?.toMillis?.() ?? 0) - (a.subscribedAt?.toMillis?.() ?? 0));
+  const p = (async () => {
+    const snap = await getDocs(collection(db!, 'newsletter'));
+    const subs = snap.docs.map(d => ({ id: d.id, ...d.data() } as NewsletterSubscriber));
+    return subs.sort((a, b) => (b.subscribedAt?.toMillis?.() ?? 0) - (a.subscribedAt?.toMillis?.() ?? 0));
+  })();
+  cacheAbonnes = { at: Date.now(), p };
+  // Une lecture ratée ne se met pas en cache : le prochain appel réessaie.
+  p.catch(() => { cacheAbonnes = null; });
+  return p;
 }
 
 export async function deleteNewsletterSubscriber(id: string) {
   if (!db) noDb();
+  invalidateNewsletterSubscribers();
   return deleteDoc(doc(db!, 'newsletter', id));
 }
 
 export async function updateNewsletterSubscriber(id: string, patch: Partial<NewsletterSubscriber>) {
   if (!db) noDb();
+  invalidateNewsletterSubscribers();
   return updateDoc(doc(db!, 'newsletter', id), patch as any);
 }
 
@@ -294,6 +326,7 @@ export async function bulkAddNewsletterSubscribers(
     }
   }
   if (ops > 0) await batch.commit();
+  invalidateNewsletterSubscribers();
   return { inserted, skippedDuplicates: skipped, invalid };
 }
 
@@ -1082,7 +1115,7 @@ export async function tagSubscribersForGroup(groupId: string, emails: string[]):
       updated++;
     }
   }
-  if (updated > 0) await batch.commit();
+  if (updated > 0) { await batch.commit(); invalidateNewsletterSubscribers(); }
   return updated;
 }
 

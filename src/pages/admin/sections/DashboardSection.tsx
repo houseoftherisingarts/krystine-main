@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  getEvents, getBlogPosts, getBookingRequests, getNewsletterSubscribers, getDoshaResults,
-  type EventDoc, type BlogPost, type BookingRequest, type NewsletterSubscriber, type DoshaResult,
+  getEvents, getBlogPosts, getBookingRequests, countNewsletterSubscribers, getDoshaResults,
+  type EventDoc, type BlogPost, type BookingRequest, type DoshaResult,
 } from '../../../firebase/firestore';
 import { useEditMode } from '../../../contexts/EditModeContext';
 import { subscribeLiveListeners, subscribeListenTotals, type PresenceRow } from '../../../lib/podcastStats';
@@ -16,7 +16,7 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
   const [events, setEvents] = useState<EventDoc[]>([]);
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [bookings, setBookings] = useState<BookingRequest[]>([]);
-  const [subs, setSubs] = useState<NewsletterSubscriber[]>([]);
+  const [nbAbonnes, setNbAbonnes] = useState(0);
   const [dosha, setDosha] = useState<DoshaResult[]>([]);
   const [enDirect, setEnDirect] = useState<PresenceRow[]>([]);
   const [ecoutes, setEcoutes] = useState<{ total: number; parEpisode: { episodeId: string; episodeTitle: string; n: number }[] }>({ total: 0, parEpisode: [] });
@@ -35,7 +35,10 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
     getEvents().then(setEvents).catch(() => {});
     getBlogPosts().then(setPosts).catch(() => {});
     getBookingRequests().then(setBookings).catch(() => {});
-    getNewsletterSubscribers().then(setSubs).catch(() => {});
+    // Le tableau de bord n'affiche qu'un total : une requête d'agrégation
+    // suffit. Rapatrier les 33 000 fiches d'abonnés ici ajoutait une trentaine
+    // de mégaoctets et plusieurs secondes de blocage à l'ouverture de l'admin.
+    countNewsletterSubscribers().then(setNbAbonnes).catch(() => {});
     getDoshaResults().then(setDosha).catch(() => {});
   }, []);
 
@@ -60,7 +63,7 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
     { label: 'Événements à venir', value: upcoming, icon: 'fa-calendar', accent: 'text-[#8B4A2F]', section: 'events' },
     { label: 'Articles publiés', value: posts.filter(p => p.isPublished !== false).length, icon: 'fa-pen-nib', accent: 'text-[#4A7C9D]', section: 'blog' },
     { label: 'Demandes nouvelles', value: newBookings, icon: 'fa-inbox', accent: 'text-[#BC4A3C]', section: 'bookings', hint: bookings.length > 0 ? `${bookings.length} au total` : undefined },
-    { label: 'Infolettre', value: subs.length, icon: 'fa-envelope', accent: 'text-[#2D4A3E]', section: 'newsletter' },
+    { label: 'Infolettre', value: nbAbonnes, icon: 'fa-envelope', accent: 'text-[#2D4A3E]', section: 'newsletter' },
     { label: 'Quiz Dosha', value: dosha.length, icon: 'fa-circle-nodes', accent: 'text-[#8F9779]', section: 'dosha' },
   ];
 

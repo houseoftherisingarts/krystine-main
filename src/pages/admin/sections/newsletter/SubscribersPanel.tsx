@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import {
   getNewsletterSubscribers, deleteNewsletterSubscriber, bulkAddNewsletterSubscribers,
   type NewsletterSubscriber, type BulkImportResult,
@@ -11,6 +11,13 @@ import ReponsePanel from './ReponsePanel';
 // with records that genuinely have no source set, which we surface separately.
 const ALL_SOURCES = '__all__';
 const NO_SOURCE = '__none__';
+
+// Combien de lignes on dessine d'un coup. La liste compte plus de 33 000
+// abonnés depuis l'import Shopify : les dessiner toutes faisait un demi-million
+// de nœuds DOM et figeait l'onglet jusqu'au « la page ne répond pas » de
+// Chrome. Les filtres, les compteurs et l'export CSV continuent de porter sur
+// la liste entière, seul le dessin est fenêtré.
+const PAGE = 50;
 
 // Pretty label for well-known source keys. Unknown sources fall through to the
 // raw key so new lists appear in the dropdown automatically.
@@ -64,7 +71,11 @@ const SubscribersPanel: React.FC = () => {
   const [importResult, setImportResult] = useState<BulkImportResult | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [ouvert, setOuvert] = useState<string | null>(null);   // abonné dont le tiroir de réponse est ouvert
+  const [visibles, setVisibles] = useState(PAGE);              // combien de lignes sont réellement dessinées
   const fileRef = useRef<HTMLInputElement>(null);
+  // La recherche est différée : la frappe reste fluide, le filtrage et le
+  // redessin passent en tâche de fond.
+  const recherche = useDeferredValue(filter);
 
   const refresh = () => { setLoading(true); getNewsletterSubscribers().then(setSubs).finally(() => setLoading(false)); };
   useEffect(() => { refresh(); }, []);
@@ -98,7 +109,7 @@ const SubscribersPanel: React.FC = () => {
     return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0], 'fr'));
   }, [subs]);
 
-  const filtered = subs.filter(s => {
+  const filtered = useMemo(() => subs.filter(s => {
     if (statut === 'actifs' && s.status === 'unsubscribed') return false;
     if (statut === 'desabonnes' && s.status !== 'unsubscribed') return false;
     if (tag && !(s.tags || []).includes(tag)) return false;
@@ -113,15 +124,19 @@ const SubscribersPanel: React.FC = () => {
       const k = s.source?.trim() || '';
       if (source === NO_SOURCE ? !!k : k !== source) return false;
     }
-    if (!filter) return true;
-    const f = filter.toLowerCase();
+    if (!recherche) return true;
+    const f = recherche.toLowerCase();
     return (
       s.email?.toLowerCase().includes(f)
       || s.firstName?.toLowerCase().includes(f)
       || s.lastName?.toLowerCase().includes(f)
       || (s.tags || []).some(t => t.toLowerCase().includes(f))
     );
-  });
+  }), [subs, statut, tag, dateFrom, dateTo, source, recherche]);
+
+  // Changer un filtre ramène la fenêtre à sa taille de départ.
+  useEffect(() => { setVisibles(PAGE); }, [statut, tag, dateFrom, dateTo, source, recherche]);
+  const affichees = filtered.slice(0, visibles);
 
   const exportCsv = () => {
     // Export the currently-filtered view so Krystine can pull per-list CSVs
@@ -274,7 +289,7 @@ const SubscribersPanel: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(s => (
+              {affichees.map(s => (
                 <React.Fragment key={s.id}>
                 <tr className={`border-t border-[#293027]/5 dark:border-white/5 hover:bg-[#BA7B39]/5 ${ouvert === s.id ? 'bg-[#BA7B39]/10' : ''}`}>
                   <td className="px-4 py-3 text-[#293027] dark:text-white">
@@ -326,6 +341,15 @@ const SubscribersPanel: React.FC = () => {
               ))}
             </tbody>
           </table>
+          {visibles < filtered.length && (
+            <div className="flex items-center justify-center gap-3 py-4 border-t border-[#293027]/5 dark:border-white/5">
+              <p className="text-xs text-[#293027]/50 dark:text-white/50">{affichees.length} affichés sur {filtered.length}</p>
+              <GhostButton onClick={() => setVisibles(v => v + PAGE * 4)}>
+                <i className="fa-solid fa-chevron-down" /> Afficher 200 de plus
+              </GhostButton>
+              <span className="text-[11px] text-[#293027]/40 dark:text-white/40">Pour la liste entière, passez par « Exporter CSV ».</span>
+            </div>
+          )}
         </Card>
       )}
     </div>

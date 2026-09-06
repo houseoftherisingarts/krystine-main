@@ -32,13 +32,39 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
     return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0], 'fr'));
   }, [subs]);
 
+  // Le dédoublonnage se fait en une passe avec un Set, et une seule fois par
+  // chargement de la liste. L'ancienne version rappelait `findIndex` pour
+  // chaque abonné : sur 33 000 contacts, ça faisait un demi-milliard de
+  // comparaisons, près de quatre secondes de fil principal bloqué, refaites à
+  // chaque frappe dans le champ de recherche. C'est ce qui déclenchait le
+  // « la page ne répond pas » de Chrome.
+  const uniques = useMemo(() => {
+    const vus = new Set<string>();
+    const out: NewsletterSubscriber[] = [];
+    for (const s of subs) {
+      if (s.status === 'unsubscribed') continue;
+      if (vus.has(s.email)) continue;
+      vus.add(s.email);
+      out.push(s);
+    }
+    return out;
+  }, [subs]);
+
   const people = useMemo(() => {
     const f = q.trim().toLowerCase();
-    const uniq = subs.filter((s, i, a) => s.status !== 'unsubscribed' && a.findIndex(o => o.email === s.email) === i);
-    return (f ? uniq.filter(s => s.email.toLowerCase().includes(f) || `${s.firstName || ''} ${s.lastName || ''}`.toLowerCase().includes(f)) : uniq).slice(0, 40);
-  }, [subs, q]);
+    if (!f) return uniques.slice(0, 40);
+    // On s'arrête aux 40 premières trouvailles au lieu de balayer les 33 000.
+    const out: NewsletterSubscriber[] = [];
+    for (const s of uniques) {
+      if (s.email.toLowerCase().includes(f) || `${s.firstName || ''} ${s.lastName || ''}`.toLowerCase().includes(f)) {
+        out.push(s);
+        if (out.length >= 40) break;
+      }
+    }
+    return out;
+  }, [uniques, q]);
 
-  const total = countRecipients(subs, value);
+  const total = useMemo(() => countRecipients(subs, value), [subs, value]);
   const toggleTag = (t: string) => {
     const cur = value.tags || [];
     onChange({ ...value, mode: 'tags', tags: cur.includes(t) ? cur.filter(x => x !== t) : [...cur, t] });
