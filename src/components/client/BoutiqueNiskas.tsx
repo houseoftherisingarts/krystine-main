@@ -42,6 +42,23 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
   const [paquetsOuverts, setPaquetsOuverts] = useState(false);
   const [message, setMessage] = useState<{ ton: 'ok' | 'err'; texte: string } | null>(null);
   const [fondOuvert, setFondOuvert] = useState<string | null>(null); // la clé de la bannière dont on montre le fond d'écran
+  const [apercuOuvert, setApercuOuvert] = useState<string | null>(null); // la clé de la bannière en aperçu plein écran (avant achat aussi)
+  // La signature de Krystine reste sur une bannière tant que sa version sans
+  // signature (cinq niskas) n'a pas été prise; la bannière d'origine est à tous.
+  const possedeBanniere = (cle: string) => cle === 'defaut' || !!possede[`banniere-${cle}`];
+  const signee = (cle: string) => !possede[`sanslogo-${cle}`];
+  const telecharger = async (cle: string) => {
+    const b = banniereParCle(cle);
+    if (!b || occupe) return;
+    setOccupe(`telecharger-${cle}`);
+    try {
+      await telechargerImage(b.image, `${(fr ? b.nomFR : b.nomEN).replace(/^Bannière\s+|\s+banner$/i, '').replace(/[^\p{L}\p{N}]+/gu, '-').toLowerCase()}.webp`, signee(cle));
+    } catch {
+      dire('err', fr ? 'Le téléchargement n’a pas fonctionné. Réessayez dans un instant.' : 'The download did not work. Try again in a moment.');
+    } finally {
+      setOccupe(null);
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
