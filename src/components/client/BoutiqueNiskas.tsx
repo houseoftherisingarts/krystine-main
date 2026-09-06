@@ -5,10 +5,12 @@ import { updateMember } from '../../firebase/firestore';
 import { getLecons, type Lecon } from '../../firebase/formations';
 import { acheterAvecNiskas, acheterNiskas, subscribeToMemberPoints, suivreBoutique, type PointsBalance } from '../../firebase/points';
 import {
-  CATEGORIES_BOUTIQUE,
+  CATEGORIES_BOUTIQUE, skinParCle,
   BANNIERE_NATURE, BOUTIQUE, COUT_EPISODE, COUT_SAISON, SAISONS_SANTE_LA_VIE, PAQUET_NISKAS, SANTE_LA_VIE_ID, niskas,
 } from '../../lib/pointsConfig';
+import { COFFRES } from '../../lib/coffresConfig';
 import PieceNiska from './PieceNiska';
+import Coffres from './Coffres';
 
 // La petite boutique, dans l'onglet Téléchargements. Quatre façons de
 // personnaliser son espace pour cinq niskas chacune (une bannière, la
@@ -243,59 +245,39 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
                 </div>
               )
               : boutonAchat(a.id, nom, a.cout);
-          } else if (a.id === 'skin-coffee') {
-            visuel = (
-              <div className="h-28 overflow-hidden bg-[#1b120c] p-3" aria-hidden="true">
-                <div className="h-7 rounded-md bg-gradient-to-r from-[#3a2417] to-[#b8733f]" />
-                <div className="mt-1.5 flex gap-1.5">
-                  <span className="h-2 w-10 rounded-full bg-[#b8733f]" /><span className="h-2 w-6 rounded-full bg-[#f1e6d6]/30" /><span className="h-2 w-6 rounded-full bg-[#f1e6d6]/30" />
-                </div>
-                <div className="mt-2 grid grid-cols-[1fr_60px] gap-1.5">
-                  <div className="h-9 rounded-md bg-[#2a1c13]" /><div className="h-9 rounded-md bg-[#2a1c13]" />
-                </div>
-              </div>
-            );
-            etat = possede['skin-coffee']
-              ? bascule(perso.skin === 'coffee', () => activer({ skin: perso.skin === 'coffee' ? '' : 'coffee' }), fr ? 'Skin actif' : 'Skin on', fr ? 'Activer le skin' : 'Turn the skin on')
-              : boutonAchat(a.id, nom, a.cout);
-          } else if (a.id === 'skin-nuit') {
-            // Un aperçu miniature de l'espace en pleine nuit : vert profond, encre, ivoire, ambre.
-            visuel = (
-              <div className="h-28 overflow-hidden bg-[#151d19] p-3" aria-hidden="true">
-                <div className="h-7 rounded-md bg-gradient-to-r from-[#28352F] to-[#BA7B39]" />
-                <div className="mt-1.5 flex gap-1.5">
-                  <span className="h-2 w-10 rounded-full bg-[#BA7B39]" /><span className="h-2 w-6 rounded-full bg-[#EEE7DB]/30" /><span className="h-2 w-6 rounded-full bg-[#EEE7DB]/30" />
-                </div>
-                <div className="mt-2 grid grid-cols-[1fr_60px] gap-1.5">
-                  <div className="h-9 rounded-md bg-[#1e2823]" /><div className="h-9 rounded-md bg-[#1e2823]" />
-                </div>
-              </div>
-            );
-            etat = possede['skin-nuit']
-              ? bascule(perso.skin === 'nuit', () => activer({ skin: perso.skin === 'nuit' ? '' : 'nuit' }), fr ? 'Skin actif' : 'Skin on', fr ? 'Activer le skin' : 'Turn the skin on')
-              : boutonAchat(a.id, nom, a.cout);
           } else {
-            // Un aperçu miniature de l'espace en Medzo Café : bannière, puce, onglets, carte.
-            visuel = (
-              <div className="h-28 overflow-hidden bg-[#e6d7c3] p-3" aria-hidden="true">
-                <div className="h-7 rounded-md bg-gradient-to-r from-[#3b2417] to-[#8a5a2b]" />
+            // Un skin : l'aperçu miniature se dessine depuis sa palette (bannière,
+            // puces, deux cartes). Un skin rare ne s'achète pas : il montre le coffre
+            // où il se trouve, et le bouton d'activation dès qu'il est à vous.
+            const k = skinParCle(a.id.slice(5));
+            const pal = k?.palette;
+            visuel = pal ? (
+              <div className="h-28 overflow-hidden p-3" style={{ background: pal.fond }} aria-hidden="true">
+                <div className="h-7 rounded-md" style={{ background: `linear-gradient(90deg, ${pal.sombre ? pal.panneau : pal.encre}, ${pal.accent})` }} />
                 <div className="mt-1.5 flex gap-1.5">
-                  <span className="h-2 w-10 rounded-full bg-[#8a5a2b]" /><span className="h-2 w-6 rounded-full bg-[#3b2417]/40" /><span className="h-2 w-6 rounded-full bg-[#3b2417]/40" />
+                  <span className="h-2 w-10 rounded-full" style={{ background: pal.accent }} /><span className="h-2 w-6 rounded-full" style={{ background: pal.encre, opacity: 0.3 }} /><span className="h-2 w-6 rounded-full" style={{ background: pal.encre, opacity: 0.3 }} />
                 </div>
                 <div className="mt-2 grid grid-cols-[1fr_60px] gap-1.5">
-                  <div className="h-9 rounded-md bg-[#faf3e8]/70" /><div className="h-9 rounded-md bg-[#faf3e8]/70" />
+                  <div className="h-9 rounded-md" style={{ background: pal.panneau, opacity: pal.sombre ? 1 : 0.75 }} /><div className="h-9 rounded-md" style={{ background: pal.panneau, opacity: pal.sombre ? 1 : 0.75 }} />
                 </div>
               </div>
-            );
-            etat = possede['skin-medzo']
-              ? bascule(perso.skin === 'medzo', () => activer({ skin: perso.skin === 'medzo' ? '' : 'medzo' }), fr ? 'Skin actif' : 'Skin on', fr ? 'Activer le skin' : 'Turn the skin on')
-              : boutonAchat(a.id, nom, a.cout);
+            ) : null;
+            const cle = a.id.slice(5);
+            etat = possede[a.id]
+              ? bascule(perso.skin === cle, () => activer({ skin: perso.skin === cle ? '' : cle }), fr ? 'Skin actif' : 'Skin on', fr ? 'Activer le skin' : 'Turn the skin on')
+              : k && k.cout === null
+                ? (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-dashed border-[#38403a]/25 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/60 dark:border-white/25 dark:text-white/60" title={fr ? 'Ce skin ne s’achète pas : il se trouve dans un coffre.' : 'This skin cannot be bought: it is found in a chest.'}>
+                    <i className="fa-solid fa-lock text-[9px]" /> {fr ? `Dans le ${COFFRES[k.coffre || 'or'].nomFR.toLowerCase()}` : `In the ${COFFRES[k.coffre || 'or'].nomEN.toLowerCase()}`}
+                  </span>
+                )
+                : boutonAchat(a.id, nom, a.cout);
           }
           return carte(a.id, (
             <>
               {visuel}
               <div className="flex flex-1 flex-col p-4">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]"><i className={`fa-solid ${a.icone} mr-1`} /> {niskas(a.cout, lang)}</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]"><i className={`fa-solid ${a.icone} mr-1`} /> {a.categorie === 'skin' && skinParCle(a.id.slice(5))?.cout === null ? (skinParCle(a.id.slice(5))?.rarete === 'legendaire' ? (fr ? 'Légendaire · coffre d’or' : 'Legendary · gold chest') : (fr ? `Rare · coffre ${skinParCle(a.id.slice(5))?.coffre === 'argent' ? 'd’argent' : 'd’or'}` : `Rare · ${skinParCle(a.id.slice(5))?.coffre} chest`)) : niskas(a.cout, lang)}</p>
                 <p className="mt-1 font-serif text-lg text-[#293027] dark:text-white">{nom}</p>
                 <p className="mt-1 flex-1 text-sm text-[#293027]/60 dark:text-white/60">{desc}</p>
                 <div className="mt-4">{etat}</div>
@@ -306,6 +288,8 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
       </div>
       </div>
       ))}
+
+      <Coffres solde={solde.balance} onChange={onAchat} />
 
       {/* Les vidéos de Krystine : gratuites, une fois la section ouverte pour dix niskas */}
       <div className="mt-10" id="videos-krystine">

@@ -131,11 +131,40 @@ export const SANTE_LA_VIE_ID = 'kajabi-2148754050';
 export const BANNIERE_DEFAUT = '/compte/bienvenue-bureau.webp';
 export const BANNIERE_NATURE = '/compte/bienvenue-bureau-nature.webp';
 
+// ─── Les bannières ───────────────────────────────────────────────────────────
+// Chaque bannière achetée se met en haut de l'espace et se télécharge; son
+// fond d'écran (1920 × 1080) s'ouvre dans une fenêtre avec la marche à suivre
+// Mac ou PC (Alex, 6 septembre 2026). Les cinq nouvelles gardent le thème du
+// bureau, sous d'autres angles, avec des fleurs (l'iris versicolore de Krystine).
+export interface Banniere { cle: string; cout: number; nomFR: string; nomEN: string; descFR: string; descEN: string; image: string; fond: string | null }
+export const BANNIERES: Banniere[] = [
+  { cle: 'nature', cout: 5, nomFR: 'Bannière Nature & Ayurveda', nomEN: 'Nature & Ayurveda banner',
+    descFR: 'La même scène que votre bannière, avec Nature & Ayurveda posé sur la table.', descEN: 'The same scene as your banner, with Nature & Ayurveda on the table.',
+    image: BANNIERE_NATURE, fond: '/compte/fonds/nature.webp' },
+  { cle: 'iris', cout: 8, nomFR: 'Bannière L’iris du matin', nomEN: 'Morning Iris banner',
+    descFR: 'Le bureau de trois quarts, au soleil du matin, avec un iris versicolore en pot et le carnet ouvert.', descEN: 'The desk at a three-quarter angle in morning sun, a potted iris versicolor and the open journal.',
+    image: '/compte/bannieres/iris.webp', fond: '/compte/fonds/iris.webp' },
+  { cle: 'pivoine', cout: 12, nomFR: 'Bannière La pivoine', nomEN: 'Peony banner',
+    descFR: 'Une tisane qui fume, deux livres de lin, une pivoine dans un verre et la lumière de fin d’après-midi.', descEN: 'Steaming herbal tea, two linen books, a peony in a glass and late-afternoon light.',
+    image: '/compte/bannieres/pivoine.webp', fond: '/compte/fonds/pivoine.webp' },
+  { cle: 'huiles', cout: 12, nomFR: 'Bannière Les huiles', nomEN: 'The Oils banner',
+    descFR: 'Au ras du bureau de noyer : les flacons d’ambre, un bol d’herbes séchées et une chandelle qui veille.', descEN: 'Low across the walnut desk: amber bottles, a bowl of dried herbs and a candle keeping watch.',
+    image: '/compte/bannieres/huiles.webp', fond: '/compte/fonds/huiles.webp' },
+  { cle: 'jardin', cout: 15, nomFR: 'Bannière Le jardin après la pluie', nomEN: 'Garden After Rain banner',
+    descFR: 'Le bureau devant la grande fenêtre, le jardin mouillé derrière, et l’iris en terre cuite au premier plan.', descEN: 'The desk before the big window, the wet garden behind, the iris in terracotta up front.',
+    image: '/compte/bannieres/jardin.webp', fond: '/compte/fonds/jardin.webp' },
+  { cle: 'soir', cout: 18, nomFR: 'Bannière Le soir à la lampe', nomEN: 'Evening Lamp banner',
+    descFR: 'La lampe de laiton allumée, le carnet ouvert et un bouquet de fleurs sauvages dans la cruche de grès.', descEN: 'The brass lamp lit, the journal open and a jug of wildflowers on the desk.',
+    image: '/compte/bannieres/soir.webp', fond: '/compte/fonds/soir.webp' },
+];
+export const banniereParCle = (cle: string) => BANNIERES.find(b => b.cle === cle);
+export const FOND_DEFAUT = '/compte/fonds/defaut.webp';
+
 export type CategorieBoutique = 'banniere' | 'musique' | 'skin';
 export const CATEGORIES_BOUTIQUE: { id: CategorieBoutique; titreFR: string; titreEN: string; texteFR: string; texteEN: string; icone: string }[] = [
   { id: 'banniere', icone: 'fa-image', titreFR: 'Les bannières', titreEN: 'Banners',
-    texteFR: 'La bannière est la grande image en haut de votre espace. Vous pouvez y mettre votre propre photo, ou une des images de la boutique.',
-    texteEN: 'The banner is the large picture at the top of your space. You can put your own photo there, or one of the shop’s pictures.' },
+    texteFR: 'La bannière est la grande image en haut de votre espace. Vous pouvez y mettre votre propre photo, ou une des images de la boutique. Chaque bannière achetée se télécharge aussi en fond d’écran (1920 × 1080) pour votre ordinateur.',
+    texteEN: 'The banner is the large picture at the top of your space. You can put your own photo there, or one of the shop’s pictures. Every banner you buy also downloads as a desktop wallpaper (1920 × 1080).' },
   { id: 'musique', icone: 'fa-music', titreFR: 'Les musiques', titreEN: 'Music',
     texteFR: 'Une musique achetée se télécharge sur votre ordinateur et peut devenir la musique d’ambiance de tout le site, celle du petit bouton en haut de page.',
     texteEN: 'A purchased piece downloads to your computer and can become the ambient music of the whole site, the one behind the little button at the top of the page.' },
@@ -144,8 +173,68 @@ export const CATEGORIES_BOUTIQUE: { id: CategorieBoutique; titreFR: string; titr
     texteEN: 'A skin is the dress of your space: the same pages and buttons in other colours, like a new tablecloth on the same table. Hover over a card to see your space dressed, and take the skin off whenever you like.' },
 ];
 
+// ─── Les skins ───────────────────────────────────────────────────────────────
+// Chaque skin est une palette : le CSS (skins.css) et l'aperçu de la boutique
+// en découlent. `cout` null = skin rare, qui ne s'obtient que dans un coffre
+// (Alex, 6 septembre 2026). Les identifiants d'article sont `skin-${cle}`.
+export type RareteSkin = 'commun' | 'rare' | 'legendaire';
+export interface PaletteSkin { fond: string; panneau: string; encre: string; accent: string; accentClair: string; accentProfond: string; sombre: boolean }
+export interface Skin {
+  cle: string; nomFR: string; nomEN: string; descFR: string; descEN: string; icone: string;
+  cout: number | null; rarete: RareteSkin; coffre?: 'bronze' | 'argent' | 'or'; palette: PaletteSkin;
+}
+export const SKINS: Skin[] = [
+  { cle: 'medzo', cout: 5, rarete: 'commun', icone: 'fa-mug-hot', nomFR: 'Skin Medzo Café', nomEN: 'Medzo Café skin',
+    descFR: 'Des bruns de café au lait, chauds et calmes, comme une table de bistro en fin d’après-midi.',
+    descEN: 'Warm, calm café au lait browns, like a bistro table late in the afternoon.',
+    palette: { fond: '#e6d7c3', panneau: '#faf3e8', encre: '#3b2417', accent: '#8a5a2b', accentClair: '#c99a5b', accentProfond: '#6b3f1e', sombre: false } },
+  { cle: 'nuit', cout: 5, rarete: 'commun', icone: 'fa-moon', nomFR: 'Skin Nuit', nomEN: 'Night skin',
+    descFR: 'L’espace passe en pleine nuit : vert profond et encre, ivoire pour les mots, ambre pour la lumière. Le même espace, les yeux reposés.',
+    descEN: 'Your space goes into deep night: deep green and ink, ivory for the words, amber for the light. The same space, eyes at rest.',
+    palette: { fond: '#151d19', panneau: '#1e2823', encre: '#EEE7DB', accent: '#BA7B39', accentClair: '#d9a05b', accentProfond: '#d9a05b', sombre: true } },
+  { cle: 'coffee', cout: 5, rarete: 'commun', icone: 'fa-coffee', nomFR: 'Skin Dark Coffee', nomEN: 'Dark Coffee skin',
+    descFR: 'Un café noir, serré : fonds brun profond, crème pour les mots, cuivre pour la lumière. Le skin sombre et chaud.',
+    descEN: 'A short black coffee: deep brown grounds, cream for the words, copper for the light. The dark, warm skin.',
+    palette: { fond: '#1b120c', panneau: '#2a1c13', encre: '#f1e6d6', accent: '#b8733f', accentClair: '#d99a5f', accentProfond: '#d99a5f', sombre: true } },
+  { cle: 'aube', cout: 15, rarete: 'commun', icone: 'fa-sun', nomFR: 'Skin Aube rose', nomEN: 'Rose Dawn skin',
+    descFR: 'Le rose pâle du ciel juste avant le soleil, et un vieux rose pour les boutons. Un espace qui se réveille doucement.',
+    descEN: 'The pale pink of the sky right before sunrise, dusty rose for the buttons. A space that wakes up gently.',
+    palette: { fond: '#f6e7e3', panneau: '#fff6f3', encre: '#4a2e33', accent: '#c9788a', accentClair: '#e4a5b3', accentProfond: '#8e4a5c', sombre: false } },
+  { cle: 'terre', cout: 20, rarete: 'commun', icone: 'fa-fire-flame-simple', nomFR: 'Skin Terre cuite', nomEN: 'Terracotta skin',
+    descFR: 'La chaleur d’un pot de terre au soleil : sable, argile et brique. Le skin des après-midi d’été.',
+    descEN: 'The warmth of a clay pot in the sun: sand, clay and brick. The skin of summer afternoons.',
+    palette: { fond: '#eed9c4', panneau: '#f8ece0', encre: '#4a2b1c', accent: '#b95f3b', accentClair: '#d98b62', accentProfond: '#7e3a20', sombre: false } },
+  { cle: 'foret', cout: 25, rarete: 'commun', icone: 'fa-tree', nomFR: 'Skin Forêt', nomEN: 'Forest skin',
+    descFR: 'Le sous-bois à la tombée du jour : vert sombre, mousse et lichen clair pour la lumière.',
+    descEN: 'The undergrowth at dusk: dark green, moss, pale lichen for the light.',
+    palette: { fond: '#0f1a14', panneau: '#182620', encre: '#e6ebdd', accent: '#7fa36a', accentClair: '#a9c68f', accentProfond: '#a9c68f', sombre: true } },
+  { cle: 'ocean', cout: 35, rarete: 'commun', icone: 'fa-water', nomFR: 'Skin Océan', nomEN: 'Ocean skin',
+    descFR: 'Le bleu profond du large et l’écume turquoise. Un espace frais, qui respire.',
+    descEN: 'The deep blue of open water and turquoise foam. A cool space that breathes.',
+    palette: { fond: '#0b1620', panneau: '#122232', encre: '#e3eef2', accent: '#4fa3a8', accentClair: '#8dd3d6', accentProfond: '#8dd3d6', sombre: true } },
+  { cle: 'encre', cout: 55, rarete: 'commun', icone: 'fa-feather-pointed', nomFR: 'Skin Encre & or', nomEN: 'Ink & Gold skin',
+    descFR: 'Du noir d’encre et de l’or pour chaque bouton. Le skin le plus habillé de la boutique.',
+    descEN: 'Ink black and gold on every button. The most dressed-up skin in the shop.',
+    palette: { fond: '#0e0d0b', panneau: '#1b1916', encre: '#f2ecdf', accent: '#c9a052', accentClair: '#f3dfa2', accentProfond: '#e4c46e', sombre: true } },
+  // Les skins rares : ils ne s'achètent pas, ils se trouvent dans un coffre.
+  { cle: 'lotus', cout: null, rarete: 'rare', coffre: 'argent', icone: 'fa-spa', nomFR: 'Skin Lotus', nomEN: 'Lotus skin',
+    descFR: 'Un mauve de crépuscule et le rose du lotus. Rare : il se trouve dans le coffre d’argent seulement.',
+    descEN: 'Dusk mauve and lotus pink. Rare: found in the silver chest only.',
+    palette: { fond: '#1a1420', panneau: '#261d2e', encre: '#f4e9f1', accent: '#d48ca8', accentClair: '#f2bfd2', accentProfond: '#f2bfd2', sombre: true } },
+  { cle: 'aurore', cout: null, rarete: 'rare', coffre: 'or', icone: 'fa-wind', nomFR: 'Skin Aurore', nomEN: 'Aurora skin',
+    descFR: 'La nuit polaire et ses voiles verts qui dansent en fond d’espace. Rare : dans le coffre d’or seulement.',
+    descEN: 'The polar night and its green veils dancing behind your space. Rare: in the gold chest only.',
+    palette: { fond: '#071019', panneau: '#0f1c28', encre: '#e6f3f0', accent: '#58d3b0', accentClair: '#a5f0da', accentProfond: '#a5f0da', sombre: true } },
+  { cle: 'or-pur', cout: null, rarete: 'legendaire', coffre: 'or', icone: 'fa-crown', nomFR: 'Skin Or pur', nomEN: 'Pure Gold skin',
+    descFR: 'Du noir profond et de l’or qui miroite sur chaque bouton. Légendaire : une chance sur cinquante dans le coffre d’or.',
+    descEN: 'Deep black and gold that shimmers on every button. Legendary: one chance in fifty in the gold chest.',
+    palette: { fond: '#0b0a08', panneau: '#171410', encre: '#fbf3df', accent: '#e0b94f', accentClair: '#fff0b8', accentProfond: '#f0cf6a', sombre: true } },
+];
+export const skinParCle = (cle: string) => SKINS.find(s => s.cle === cle);
+export const SKINS_RARES = SKINS.filter(s => s.cout === null);
+
 export interface ArticleBoutique {
-  id: 'banniere-nature' | 'musique-origine' | 'skin-medzo' | 'skin-nuit' | 'skin-coffee';
+  id: string;
   categorie: CategorieBoutique;
   cout: number;
   nomFR: string; nomEN: string;
@@ -154,36 +243,14 @@ export interface ArticleBoutique {
 }
 
 export const BOUTIQUE: ArticleBoutique[] = [
-  {
-    id: 'banniere-nature', categorie: 'banniere', cout: COUT_COSMETIQUE, icone: 'fa-image',
-    nomFR: 'Bannière Nature & Ayurveda', nomEN: 'Nature & Ayurveda banner',
-    descFR: 'La même scène que votre bannière, avec Nature & Ayurveda posé sur la table.',
-    descEN: 'The same scene as your banner, with Nature & Ayurveda on the table.',
-  },
+  ...BANNIERES.map((b): ArticleBoutique => ({ id: `banniere-${b.cle}`, categorie: 'banniere', cout: b.cout, icone: 'fa-image', nomFR: b.nomFR, nomEN: b.nomEN, descFR: b.descFR, descEN: b.descEN })),
   {
     id: 'musique-origine', categorie: 'musique', cout: COUT_COSMETIQUE, icone: 'fa-music',
     nomFR: "La musique d'Origine", nomEN: 'The Origin music',
     descFR: 'La pièce composée pour l’Expérience Origine. Téléchargez-la et faites-en la musique de tout le site.',
     descEN: 'The piece composed for the Origin Experience. Download it and make it the music of the whole site.',
   },
-  {
-    id: 'skin-medzo', categorie: 'skin', cout: COUT_COSMETIQUE, icone: 'fa-mug-hot',
-    nomFR: 'Skin Medzo Café', nomEN: 'Medzo Café skin',
-    descFR: 'Des bruns de café au lait, chauds et calmes, comme une table de bistro en fin d’après-midi.',
-    descEN: 'Warm, calm café au lait browns, like a bistro table late in the afternoon.',
-  },
-  {
-    id: 'skin-nuit', categorie: 'skin', cout: COUT_COSMETIQUE, icone: 'fa-moon',
-    nomFR: 'Skin Nuit', nomEN: 'Night skin',
-    descFR: 'L’espace passe en pleine nuit : vert profond et encre, ivoire pour les mots, ambre pour la lumière. Le même espace, les yeux reposés.',
-    descEN: 'Your space goes into deep night: deep green and ink, ivory for the words, amber for the light. The same space, eyes at rest.',
-  },
-  {
-    id: 'skin-coffee', categorie: 'skin', cout: COUT_COSMETIQUE, icone: 'fa-coffee',
-    nomFR: 'Skin Dark Coffee', nomEN: 'Dark Coffee skin',
-    descFR: 'Un café noir, serré : fonds brun profond, crème pour les mots, cuivre pour la lumière. Le skin sombre et chaud.',
-    descEN: 'A short black coffee: deep brown grounds, cream for the words, copper for the light. The dark, warm skin.',
-  },
+  ...SKINS.map((k): ArticleBoutique => ({ id: `skin-${k.cle}`, categorie: 'skin', cout: k.cout ?? 0, icone: k.icone, nomFR: k.nomFR, nomEN: k.nomEN, descFR: k.descFR, descEN: k.descEN })),
 ];
 
 // ─── Comment gagner des niskas ───────────────────────────────────────────────

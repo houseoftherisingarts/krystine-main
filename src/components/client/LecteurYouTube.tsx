@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { chargerApiYouTube, partEcoutee } from '../../lib/youtube';
+import { chargerApiYouTube, partEcoutee } from '../../lib/youtubeApi';
 import { PART_ECOUTEE } from '../../lib/pointsConfig';
 
 // Un lecteur YouTube qui sait quand la vidéo a été regardée pour vrai :

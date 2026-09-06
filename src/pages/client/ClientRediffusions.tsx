@@ -16,7 +16,7 @@ import {
 
 type Lang = 'FR' | 'EN';
 
-import { chargerApiYouTube, partEcoutee } from '../../lib/youtube';
+import { chargerApiYouTube, partEcoutee } from '../../lib/youtubeApi';
 import { PART_ECOUTEE } from '../../lib/pointsConfig';
 
 const mmss = (s: number) => {

@@ -16,10 +16,21 @@ export const MUSIQUE_ORIGINE_ID = 'kajabi-2149362766';
 
 const COSMETIQUES: Record<string, { cout: number; nom: string }> = {
   'banniere-nature': { cout: 5, nom: 'Bannière Nature & Ayurveda' },
+  'banniere-iris': { cout: 8, nom: 'Bannière L’iris du matin' },
+  'banniere-pivoine': { cout: 12, nom: 'Bannière La pivoine' },
+  'banniere-huiles': { cout: 12, nom: 'Bannière Les huiles' },
+  'banniere-jardin': { cout: 15, nom: 'Bannière Le jardin après la pluie' },
+  'banniere-soir': { cout: 18, nom: 'Bannière Le soir à la lampe' },
   'musique-origine': { cout: 5, nom: "La musique d'Origine" },
   'skin-medzo': { cout: 5, nom: 'Skin Medzo Café' },
   'skin-nuit': { cout: 5, nom: 'Skin Nuit' },
   'skin-coffee': { cout: 5, nom: 'Skin Dark Coffee' },
+  'skin-aube': { cout: 15, nom: 'Skin Aube rose' },
+  'skin-terre': { cout: 20, nom: 'Skin Terre cuite' },
+  'skin-foret': { cout: 25, nom: 'Skin Forêt' },
+  'skin-ocean': { cout: 35, nom: 'Skin Océan' },
+  'skin-encre': { cout: 55, nom: 'Skin Encre & or' },
+  // Les skins rares (lotus, aurore, or-pur) ne s'achètent pas : coffres.ts.
   // Toutes les vidéos de Krystine, débloquées d'un coup : les vidéos sont
   // gratuites, c'est l'ouverture de la section qui coûte dix niskas.
   'acces-videos': { cout: 10, nom: 'Les vidéos de Krystine' },

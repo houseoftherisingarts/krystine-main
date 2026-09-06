@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../contexts/AppContext';
-import { partEcoutee } from '../lib/youtube';
+import { partEcoutee } from '../lib/youtubeApi';
 import { PART_ECOUTEE } from '../lib/pointsConfig';
 import { motion } from 'framer-motion';
 import { Headphones, Calendar, Clock, Play, Loader2, ExternalLink } from 'lucide-react';

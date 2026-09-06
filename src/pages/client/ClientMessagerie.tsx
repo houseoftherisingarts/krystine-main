@@ -6,7 +6,7 @@ import { LONGUEUR_MAX } from '../../firebase/moderation';
 import Avatar from '../../components/communaute/Avatar';
 import ClientSupport from './ClientSupport';
 import CadeauCarte from '../../components/client/CadeauCarte';
-import ReserveAuFoyer from '../../components/communaute/ReserveAuFoyer';
+import { MotDuFoyer, useAmiesDOrigine } from '../../components/communaute/ReserveAuFoyer';
 import { suivreMesCadeaux, type Cadeau } from '../../firebase/cadeaux';
 
 // ─── Onglet Messagerie de l'espace client ────────────────────────────────────
@@ -40,6 +40,8 @@ const ClientMessagerie: React.FC<{ voletInitial?: Volet }> = ({ voletInitial = '
   const [cadeaux, setCadeaux] = useState<Cadeau[]>([]);
 
   const monUid = user?.uid || '';
+  const origine = useAmiesDOrigine();
+  const filsVisibles = useMemo(() => fils.filter(f => origine.foyer || f.participantUids.some(u => u !== monUid && origine.permis?.has(u))), [fils, origine.foyer, origine.permis, monUid]);
   const monNom = (member?.displayName || user?.displayName || '').trim() || (fr ? 'Un membre' : 'A member');
 
   useEffect(() => {
@@ -123,17 +125,23 @@ const ClientMessagerie: React.FC<{ voletInitial?: Volet }> = ({ voletInitial = '
       {volet === 'support' ? (
         <ClientSupport />
       ) : (
-        <ReserveAuFoyer lang={lang} quoi={fr ? 'S’écrire de boîte à boîte est exclusif aux membres du Foyer d’Origine. L’équipe Inspirata vous répond ici, à toutes.' : 'Writing to each other is reserved for members of the Origine Hearth. The Inspirata team answers everyone here.'}>
+        !origine.pret ? null : (!origine.foyer && !(origine.permis && origine.permis.size > 0)) ? (
+          <MotDuFoyer lang={lang} quoi={fr ? 'S’écrire de boîte à boîte est exclusif aux membres du Foyer d’Origine. L’équipe Inspirata vous répond ici, à toutes.' : 'Writing to each other is reserved for members of the Origine Hearth. The Inspirata team answers everyone here.'} />
+        ) : (
+        <>
+        {!origine.foyer && (
+          <div className="mb-4"><MotDuFoyer compact lang={lang} quoi={fr ? 'Sans le Foyer d’Origine, votre messagerie ne s’ouvre qu’à votre marraine et à vos filleules.' : 'Without the Origine Hearth, your inbox opens only to your sponsor and your referrals.'} /></div>
+        )}
         <div className="grid h-[60vh] min-h-[420px] grid-cols-1 overflow-hidden rounded-[20px] border border-[#38403a]/10 bg-[#EEE7DB] dark:border-white/10 dark:bg-white/5 md:grid-cols-[260px_1fr]">
           {/* La liste des fils */}
           <div className={`${filActif ? 'hidden md:flex' : 'flex'} flex-col overflow-y-auto border-[#38403a]/10 dark:border-white/10 md:border-r`}>
-            {fils.length === 0 ? (
+            {filsVisibles.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center px-6 text-center text-[#293027]/40 dark:text-white/40">
                 <i className="fa-regular fa-comments mb-3 text-3xl" />
                 <p className="text-sm">{fr ? 'Aucune conversation pour l’instant.' : 'No conversation yet.'}</p>
                 <p className="mt-2 text-xs">{fr ? 'Ouvrez le profil d’une amie et écrivez-lui : le fil apparaîtra ici.' : 'Open a friend’s profile and write to her: the thread will show up here.'}</p>
               </div>
-            ) : fils.map(f => {
+            ) : filsVisibles.map(f => {
               const u = f.participantUids.find(x => x !== monUid) || '';
               const nom = f.participantNames?.[u] || (fr ? 'Un membre' : 'A member');
               const neuf = (f.unread?.[monUid] || 0) > 0;
@@ -216,7 +224,8 @@ const ClientMessagerie: React.FC<{ voletInitial?: Volet }> = ({ voletInitial = '
             )}
           </div>
         </div>
-        </ReserveAuFoyer>
+        </>
+        )
       )}
     </div>
   );

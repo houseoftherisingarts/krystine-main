@@ -27,37 +27,46 @@ export const PRIX_COFFRES: Record<TypeCoffre, { boite: number; cle: number; nom:
 
 export type Lot =
   | { genre: 'niskas'; montant: number; poids: number; nom: string }
-  | { genre: 'cosmetique'; poids: number; nom: string }                 // un skin ou une bannière qu'on n'a pas encore (sinon 30 niskas)
+  | { genre: 'cosmetique'; poids: number; nom: string; pool: string[]; sinon: number } // un cosmétique du bassin qu'on n'a pas encore (sinon des niskas)
   | { genre: 'recompense'; rewardId: string; poids: number; nom: string } // un rabais de la boutique, honoré par Krystine comme une récompense
   | { genre: 'grand'; poids: number; nom: string };                      // le Foyer d'Origine, offert
+
+const COMMUNS = ['skin-medzo', 'skin-nuit', 'skin-coffee', 'banniere-nature', 'skin-aube', 'skin-terre', 'skin-foret', 'skin-ocean', 'skin-encre', 'banniere-iris', 'banniere-pivoine', 'banniere-huiles', 'banniere-jardin', 'banniere-soir'];
 
 // Les poids sont des pour cent : chaque table fait cent.
 export const TABLES: Record<TypeCoffre, Lot[]> = {
   bronze: [
     { genre: 'niskas', montant: 20, poids: 50, nom: '20 niskas' },
     { genre: 'niskas', montant: 40, poids: 30, nom: '40 niskas' },
-    { genre: 'cosmetique', poids: 12, nom: 'Un skin ou une bannière' },
+    { genre: 'cosmetique', poids: 12, nom: 'Un skin ou une bannière', pool: COMMUNS, sinon: 30 },
     { genre: 'niskas', montant: 100, poids: 7, nom: '100 niskas' },
     { genre: 'recompense', rewardId: 'reb-10-boutique', poids: 1, nom: '10 % sur la boutique' },
   ],
   argent: [
-    { genre: 'niskas', montant: 60, poids: 45, nom: '60 niskas' },
-    { genre: 'niskas', montant: 120, poids: 30, nom: '120 niskas' },
-    { genre: 'recompense', rewardId: 'reb-huiles', poids: 15, nom: '15 % sur les Huiles Corporelles' },
+    { genre: 'niskas', montant: 60, poids: 40, nom: '60 niskas' },
+    { genre: 'niskas', montant: 120, poids: 28, nom: '120 niskas' },
+    { genre: 'recompense', rewardId: 'reb-huiles', poids: 14, nom: '15 % sur les Huiles Corporelles' },
     { genre: 'niskas', montant: 300, poids: 9, nom: '300 niskas' },
+    { genre: 'cosmetique', poids: 8, nom: 'Le skin Lotus (rare)', pool: ['skin-lotus'], sinon: 120 },
     { genre: 'recompense', rewardId: 'reb-10-boutique', poids: 1, nom: '10 % sur la boutique' },
   ],
   or: [
-    { genre: 'niskas', montant: 150, poids: 40, nom: '150 niskas' },
-    { genre: 'niskas', montant: 300, poids: 30, nom: '300 niskas' },
-    { genre: 'recompense', rewardId: 'reb-formation', poids: 18, nom: '50 $ sur une formation' },
+    { genre: 'niskas', montant: 150, poids: 36, nom: '150 niskas' },
+    { genre: 'niskas', montant: 300, poids: 28, nom: '300 niskas' },
+    { genre: 'recompense', rewardId: 'reb-formation', poids: 16, nom: '50 $ sur une formation' },
     { genre: 'niskas', montant: 750, poids: 10, nom: '750 niskas' },
+    { genre: 'cosmetique', poids: 6, nom: 'Le skin Aurore (rare)', pool: ['skin-aurore'], sinon: 300 },
+    { genre: 'cosmetique', poids: 2, nom: 'Le skin Or pur (légendaire)', pool: ['skin-or-pur'], sinon: 450 },
     { genre: 'grand', poids: 2, nom: 'Le Foyer d’Origine, offert' },
   ],
 };
 
-const COSMETIQUES = ['skin-medzo', 'skin-nuit', 'skin-coffee', 'banniere-nature'];
-const NOMS_COSMETIQUES: Record<string, string> = { 'skin-medzo': 'Skin Medzo Café', 'skin-nuit': 'Skin Nuit', 'skin-coffee': 'Skin Dark Coffee', 'banniere-nature': 'Bannière Nature & Ayurveda' };
+const NOMS_COSMETIQUES: Record<string, string> = {
+  'skin-medzo': 'Skin Medzo Café', 'skin-nuit': 'Skin Nuit', 'skin-coffee': 'Skin Dark Coffee', 'banniere-nature': 'Bannière Nature & Ayurveda',
+  'skin-aube': 'Skin Aube rose', 'skin-terre': 'Skin Terre cuite', 'skin-foret': 'Skin Forêt', 'skin-ocean': 'Skin Océan', 'skin-encre': 'Skin Encre & or',
+  'skin-lotus': 'Skin Lotus', 'skin-aurore': 'Skin Aurore', 'skin-or-pur': 'Skin Or pur',
+  'banniere-iris': 'Bannière L’iris du matin', 'banniere-pivoine': 'Bannière La pivoine', 'banniere-huiles': 'Bannière Les huiles', 'banniere-jardin': 'Bannière Le jardin après la pluie', 'banniere-soir': 'Bannière Le soir à la lampe',
+};
 const OUVERTURES_PAR_JOUR = 5;
 const FOYER_ID = 'foyer';
 const FUSEAU = 'America/Toronto';
@@ -87,7 +96,7 @@ export function verifierTables(): void {
     const somme = TABLES[t].reduce((s, l) => s + l.poids, 0);
     if (somme !== 100) throw new Error(`La table ${t} fait ${somme}, pas 100.`);
   }
-  if (tirer(TABLES.or, 0).nom !== '150 niskas' || tirer(TABLES.or, 99).genre !== 'grand') throw new Error('Le tirage ne suit pas la table.');
+  if (tirer(TABLES.or, 0).nom !== '150 niskas' || tirer(TABLES.or, 99).genre !== 'grand' || tirer(TABLES.argent, 91).genre !== 'cosmetique') throw new Error('Le tirage ne suit pas la table.');
 }
 
 async function ecrireMessageKrystine(db: FirebaseFirestore.Firestore, deUid: string, uid: string, corps: string, extra: Record<string, unknown> = {}) {
@@ -112,7 +121,7 @@ async function ecrireMessageKrystine(db: FirebaseFirestore.Firestore, deUid: str
 export const acheterCoffre = onCall({ region: 'us-central1' }, async (req) => {
   if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour acheter.');
   const uid = req.auth.uid;
-  const type = req.data?.type; const quoi = req.data?.quoi;
+  const type = req.data?.type; const quoi = req.data?.quoi as 'boite' | 'cle';
   if (!estType(type) || (quoi !== 'boite' && quoi !== 'cle')) throw new HttpsError('invalid-argument', 'Coffre inconnu.');
   const cout = PRIX_COFFRES[type][quoi];
   const nom = quoi === 'boite' ? PRIX_COFFRES[type].nom : `Clé ${type === 'or' ? 'd’or' : type === 'argent' ? 'd’argent' : 'de bronze'}`;
@@ -165,11 +174,11 @@ export const ouvrirCoffre = onCall({ region: 'us-central1' }, async (req) => {
   } else if (lot.genre === 'cosmetique') {
     const b = await db.doc(`boutique/${uid}`).get();
     const possede = ((b.data() || {}) as { possede?: Record<string, unknown> }).possede || {};
-    const libres = COSMETIQUES.filter((c) => !possede[c]);
+    const libres = lot.pool.filter((c) => !possede[c]);
     if (libres.length === 0) {
-      await crediterNiskas(uid, 'coffre-gain', 30, `coffre-gain:${ouverture.id}`, { type, nom: '30 niskas (tous les skins sont déjà à vous)' });
+      await crediterNiskas(uid, 'coffre-gain', lot.sinon, `coffre-gain:${ouverture.id}`, { type, nom: `${lot.sinon} niskas (déjà à vous : ${lot.nom})` });
       const { balance } = await recalculerSolde(uid);
-      resultat = { genre: 'niskas', nom: '30 niskas', montant: 30, solde: balance, note: 'Tous les skins et bannières sont déjà à vous : trente niskas à la place.' };
+      resultat = { genre: 'niskas', nom: `${lot.sinon} niskas`, montant: lot.sinon, solde: balance, note: `${lot.nom} est déjà à vous : ${lot.sinon} niskas à la place.` };
     } else {
       const article = libres[randomInt(0, libres.length)];
       await db.doc(`boutique/${uid}`).set({ possede: { [article]: FieldValue.serverTimestamp() } }, { merge: true });

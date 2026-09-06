@@ -12,10 +12,49 @@ import {
 import { tierFromLifetime } from '../../lib/pointsConfig';
 import { getFormations, type Formation } from '../../firebase/formations';
 import { offrirCadeau } from '../../firebase/cadeaux';
+import { offrirCoffre } from '../../firebase/coffres';
+import { COFFRES, ORDRE_COFFRES, type TypeCoffre } from '../../lib/coffresConfig';
 
 // « Offrir un cadeau » : depuis la fiche d'une cliente, Krystine lui envoie
 // un rabais (1 à 99 %) ou une formation entière (100 %). Le cadeau part dans
 // sa messagerie et s'affiche en bannière dans son espace (functions/src/cadeaux.ts).
+// « Offrir un coffre » : un coffre (et sa clé) déposé chez la membre, avec un
+// mot de Krystine dans sa messagerie (functions/src/coffres.ts).
+const CoffreAdmin: React.FC<{ uid: string; nom: string }> = ({ uid, nom }) => {
+  const [type, setType] = useState<TypeCoffre>('bronze');
+  const [avecCle, setAvecCle] = useState(true);
+  const [message, setMessage] = useState('');
+  const [envoi, setEnvoi] = useState(false);
+  const [dit, setDit] = useState<string | null>(null);
+  const envoyer = async () => {
+    if (envoi) return;
+    setEnvoi(true); setDit(null);
+    try {
+      await offrirCoffre(uid, type, avecCle, message.trim());
+      setDit(`${COFFRES[type].nomFR}${avecCle ? ' et sa clé' : ''} offert à ${nom}. Elle le trouve dans la petite boutique, section « Les coffres », et le mot dans sa messagerie.`);
+      setMessage('');
+    } catch (e) { setDit((e as { message?: string }).message || 'L’envoi n’a pas fonctionné.'); }
+    finally { setEnvoi(false); }
+  };
+  const champ = 'rounded-[12px] border border-[#293027]/15 bg-white px-3 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/15 dark:bg-[#293027] dark:text-white';
+  return (
+    <div className="mx-6 mt-4 rounded-[18px] border border-[#293027]/10 bg-white/50 p-4 md:mx-8 dark:border-white/10 dark:bg-white/5">
+      <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]"><i className="fa-solid fa-box-open mr-1" /> Offrir un coffre à {nom}</p>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        {ORDRE_COFFRES.map(t => (
+          <button key={t} type="button" onClick={() => setType(t)} className={`rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest ${type === t ? 'border-[#BA7B39] bg-[#BA7B39]/20 text-[#8B4A2F]' : 'border-[#293027]/15 text-[#293027]/60 dark:border-white/15 dark:text-white/60'}`}>{COFFRES[t].nomFR}</button>
+        ))}
+        <label className="ml-2 inline-flex items-center gap-2 text-xs text-[#293027]/70 dark:text-white/70"><input type="checkbox" checked={avecCle} onChange={e => setAvecCle(e.target.checked)} className="accent-[#BA7B39]" /> avec sa clé</label>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <input value={message} onChange={e => setMessage(e.target.value)} placeholder="Un mot pour elle (facultatif)" className={`${champ} min-w-[240px] flex-1`} />
+        <button type="button" onClick={envoyer} disabled={envoi} className="rounded-full bg-[#293027] px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] hover:bg-[#3a453a] disabled:opacity-50 dark:bg-[#BA7B39] dark:text-[#293027]">{envoi ? 'Envoi…' : 'Offrir le coffre'}</button>
+      </div>
+      {dit && <p className="mt-3 text-sm text-[#293027] dark:text-white">{dit}</p>}
+    </div>
+  );
+};
+
 const CadeauAdmin: React.FC<{ uid: string; nom: string }> = ({ uid, nom }) => {
   const [ouvert, setOuvert] = useState(false);
   const [formations, setFormations] = useState<Formation[]>([]);
@@ -39,7 +78,7 @@ const CadeauAdmin: React.FC<{ uid: string; nom: string }> = ({ uid, nom }) => {
     setEnvoi(true); setDit(null);
     try {
       await offrirCadeau(uid, formationId, pourcent, message.trim());
-      setDit(`Cadeau envoyé à ${nom} : ${pourcent >= 100 ? 'la formation offerte' : `${pourcent} % de rabais`} sur « ${f?.titre || formationId} ». Elle le voit dans sa messagerie et en bannière dans son espace.`);
+      setDit(`Cadeau envoyé à ${nom} : ${pourcent >= 100 ? 'la formation offerte' : `${pourcent} % de rabais`} sur « ${f?.titre || formationId} ». Elle le voit dans sa messagerie et dans sa cloche.`);
       setMessage('');
     } catch (e) {
       setDit((e as { message?: string }).message || 'L’envoi n’a pas fonctionné.');
@@ -178,6 +217,7 @@ const AdminClientView: React.FC<Props> = ({ uid, onClose }) => {
           </div>
 
           <CadeauAdmin uid={uid} nom={member?.displayName || 'cette cliente'} />
+          <CoffreAdmin uid={uid} nom={member?.displayName || 'cette cliente'} />
 
           {/* Header — same layout as ClientPortal's profile card */}
           <div className="p-6 md:p-8">

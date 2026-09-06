@@ -61,8 +61,8 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
         </h2>
         <p className="mt-2 text-sm text-[#293027]/70 dark:text-white/70">
           {fr
-            ? `Jour ${jour} sur ${ROUE_QUOTIDIENNE.length}. Revenez demain et la roue avance; sautez une journée et elle repart au premier jour.`
-            : `Day ${jour} of ${ROUE_QUOTIDIENNE.length}. Come back tomorrow and the wheel moves on; skip a day and it starts over.`}
+            ? `Jour ${jour} sur ${ROUE_QUOTIDIENNE.length}. Revenez demain et la roue avance; sautez une journée et elle repart au premier jour. Le septième jour ouvre aussi un coffre de bronze, avec sa clé.`
+            : `Day ${jour} of ${ROUE_QUOTIDIENNE.length}. Come back tomorrow and the wheel moves on; skip a day and it starts over. The seventh day also brings a bronze chest, with its key.`}
         </p>
 
         <ol className="mt-6 grid grid-cols-7 gap-1.5 sm:gap-2">
@@ -84,6 +84,7 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
                 <span className="text-[9px] font-bold uppercase tracking-widest text-[#38403a]/60 dark:text-white/60">{fr ? 'Jour' : 'Day'} {n}</span>
                 <PieceNiska size={actuel ? 30 : 24} eteinte={passe} />
                 <span className={`font-serif text-base ${actuel ? 'text-[#8B4A2F] dark:text-[#d9a05b]' : 'text-[#293027] dark:text-white'}`}>+{montant}</span>
+                {n === ROUE_QUOTIDIENNE.length && <span className="text-[8px] font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]" title={fr ? 'Un coffre de bronze et sa clé' : 'A bronze chest and its key'}><i className="fa-solid fa-box-open" /> {fr ? 'coffre' : 'chest'}</span>}
                 {passe && <i className="fa-solid fa-check text-[10px] text-[#8B4A2F]" aria-hidden="true" />}
               </li>
             );

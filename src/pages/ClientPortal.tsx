@@ -23,11 +23,11 @@ import ClientRediffusions from './client/ClientRediffusions';
 import ProblemeTechnique from '../components/client/ProblemeTechnique';
 import ClientPreferences from './client/ClientPreferences';
 import { subscribeToMemberPoints, suivreBoutique, points, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
-import { BANNIERE_DEFAUT, BANNIERE_NATURE, FACONS_DE_GAGNER, niskas } from '../lib/pointsConfig';
+import { BANNIERE_DEFAUT, BANNIERE_NATURE, FACONS_DE_GAGNER, niskas, skinParCle } from '../lib/pointsConfig';
 import PieceNiska from '../components/client/PieceNiska';
 import RoueQuotidienne from '../components/client/RoueQuotidienne';
 import BienvenueJeu from '../components/client/BienvenueJeu';
-import ReserveAuFoyer from '../components/communaute/ReserveAuFoyer';
+import ReserveAuFoyer, { MotDuFoyer, useAmiesDOrigine } from '../components/communaute/ReserveAuFoyer';
 import '../components/client/skins.css';
 
 // Le texte du niṣka, écrit par Alex le 6 septembre 2026, lu sous la bourse.
@@ -142,12 +142,12 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
 };
 
 // L'onglet Amis : les demandes reçues à accepter, puis le cercle.
-const ClientAmis: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
+const ClientAmis: React.FC<{ uid: string; lang: string; seulement?: Set<string> }> = ({ uid, lang, seulement }) => {
   const [liens, setLiens] = useState<Amitie[]>([]);
   const [fiches, setFiches] = useState<Record<string, MemberDoc | null>>({});
   useEffect(() => suivreMesAmities(uid, setLiens), [uid]);
   useEffect(() => {
-    const autres = [...new Set(liens.map(l => l.paire.find(u => u !== uid)!).filter(Boolean))];
+    const autres = [...new Set([...liens.map(l => l.paire.find(u => u !== uid)!).filter(Boolean), ...(seulement ? [...seulement] : [])])];
     autres.forEach(autre => {
       if (fiches[autre] !== undefined) return;
       getMember(autre).then(m => setFiches(f => ({ ...f, [autre]: m }))).catch(() => {});
@@ -178,6 +178,24 @@ const ClientAmis: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
       {enfant}
     </div>
   );
+
+  if (seulement) {
+    return (
+      <div className="mt-3 space-y-2">
+        {[...seulement].map(autre => {
+          const m = fiches[autre] ?? null;
+          const nom = m?.displayName || (lang === 'FR' ? 'Membre' : 'Member');
+          return (
+            <Rangee key={autre} autre={autre} nom={nom} m={m} enfant={
+              <Link to={`/messages/${autre}`} className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
+                <i className="fa-solid fa-envelope text-[9px]" /> {lang === 'FR' ? 'Écrire' : 'Write'}
+              </Link>
+            } />
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -328,6 +346,28 @@ const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) 
   </aside>
 );
 
+// L'onglet Amis : tout le cercle pour une membre du Foyer d'Origine; pour les
+// autres, le mot d'invitation, puis la marraine et les filleules seulement
+// (le parrainage ouvre la porte à ces personnes-là, Alex, 6 septembre 2026).
+const AmisDOrigine: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
+  const { foyer, permis, pret } = useAmiesDOrigine();
+  const fr = lang === 'FR';
+  if (!pret) return null;
+  if (foyer) return <ClientAmis uid={uid} lang={lang} />;
+  return (
+    <div className="space-y-6">
+      <MotDuFoyer lang={lang} quoi={fr ? 'Les amies d’origine et l’annuaire des membres sont exclusifs aux membres du Foyer d’Origine.' : 'Origine friends and the member directory are reserved for members of the Origine Hearth.'} />
+      {permis && permis.size > 0 && (
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'Votre marraine et vos filleules' : 'Your sponsor and your referrals'}</p>
+          <p className="mt-1 text-xs text-[#293027]/55 dark:text-white/55">{fr ? 'Le parrainage vous relie déjà à elles : vous pouvez leur écrire.' : 'Referral already links you to them: you can write to them.'}</p>
+          <ClientAmis uid={uid} lang={lang} seulement={permis} />
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ClientPortal: React.FC = () => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
   // Par défaut, l'espace s'ouvre sur les formations : le fil participatif vit au Foyer d'Origine.
@@ -446,7 +486,7 @@ const ClientPortal: React.FC = () => {
   const perso = member?.personnalisation || {};
   const banniere = perso.banniere === 'nature' ? BANNIERE_NATURE : perso.banniere === 'defaut' ? BANNIERE_DEFAUT : (member?.bannerURL || BANNIERE_DEFAUT);
   const skinActif = apercuSkin || perso.skin || '';
-  const skin = skinActif === 'medzo' ? 'skin-medzo' : skinActif === 'nuit' ? 'skin-nuit' : skinActif === 'coffee' ? 'skin-coffee' : '';
+  const skin = skinActif && skinParCle(skinActif) ? `skin-${skinActif}` : '';
 
 
   return (
@@ -554,7 +594,7 @@ const ClientPortal: React.FC = () => {
             </div>
           )}
           {tab === 'profile'  && <ProfilVue uid={user.uid} member={member} email={user.email || ''} lang={lang} solde={pointsBalance} onBoutique={() => { setTab('telechargements'); window.setTimeout(() => document.getElementById('boutique')?.scrollIntoView({ behavior: 'smooth' }), 150); }} />}
-          {tab === 'amis'     && <ReserveAuFoyer lang={lang} quoi={lang === 'FR' ? 'Les amies et l’annuaire des membres sont exclusifs aux membres du Foyer d’Origine.' : 'Friends and the member directory are reserved for members of the Origine Hearth.'}><ClientAmis uid={user.uid} lang={lang} /></ReserveAuFoyer>}
+          {tab === 'amis'     && <AmisDOrigine uid={user.uid} lang={lang} />}
           {tab === 'orders'   && <OrdersTab />}
           {tab === 'formations' && <ClientFormations />}
           {tab === 'rediffusions' && <ClientRediffusions />}

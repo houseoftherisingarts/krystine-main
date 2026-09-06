@@ -110,7 +110,16 @@ const ClientArchives: React.FC = () => {
             }`}
           >
             <div className="flex items-start gap-4">
-              <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${unread ? (or ? 'bg-[#c9a24a]' : 'bg-[#BA7B39]') : 'bg-transparent'}`} />
+              {/* L'enveloppe : scellée de cire rouge (la goutte d'Inspirata) tant que la
+                  lettre n'est pas ouverte, décachetée ensuite. Deux photographies de la
+                  même enveloppe (/compte/lettre-scellee.webp, /compte/lettre-ouverte.webp). */}
+              <img
+                src={unread ? '/compte/lettre-scellee.webp' : '/compte/lettre-ouverte.webp'}
+                alt={unread ? (lang === 'FR' ? 'Lettre scellée' : 'Sealed letter') : (lang === 'FR' ? 'Lettre ouverte' : 'Opened letter')}
+                width={72} height={72}
+                className={`h-14 w-[72px] shrink-0 object-contain transition-transform duration-500 sm:h-[72px] sm:w-24 ${unread ? 'drop-shadow-[0_6px_10px_rgba(120,20,20,0.25)]' : 'drop-shadow-[0_4px_8px_rgba(41,48,39,0.18)]'}`}
+                draggable={false}
+              />
               <div className="flex-1 min-w-0">
                 {or && <EtiquetteOr lang={lang} className="mb-1.5" />}
                 <div className="flex items-baseline justify-between gap-4">
