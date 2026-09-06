@@ -118,7 +118,7 @@ const HERO_ART: Record<ProgrammeKey | 'default', HeroArt> = {
     src: '/assets/foyer-visuel-16x9.jpg',
     alt: 'Le feu du Foyer d’Origine',
     caption: 'Autour du feu · le foyer se prépare',
-    pos: '50% 82%',
+    pos: '76% 42%',
   },
   kapha: {
     src: '/accueil/assets/portes/origine.png',
@@ -345,7 +345,7 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
           </motion.div>
 
           <div className="max-w-[440px] w-full mx-auto lg:mx-0 lg:justify-self-end">
-            <HeroPlate art={HERO_ART[programmeKey]} tab={lang === 'FR' ? 'Janvier 2027' : 'January 2027'} />
+            <HeroPlate art={HERO_ART[programmeKey]} tab={programmeKey === 'origine' ? (lang === 'FR' ? 'Janvier 2027' : 'January 2027') : programmeKey === 'foyer' ? (lang === 'FR' ? 'Le foyer se prépare' : 'The hearth is being prepared') : (lang === 'FR' ? 'Bientôt' : 'Soon')} />
           </div>
         </div>
       </section>
