@@ -44,7 +44,8 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
   const jour = etat.jour;
 
   return (
-    <div data-bug-ignore className="fixed inset-0 z-[125] flex items-end justify-center bg-[#151d19]/55 p-4 backdrop-blur-sm sm:items-center" onClick={() => setOuvert(false)}>
+    <Portail>
+    <div data-bug-ignore className="fixed inset-0 z-[125] flex items-end justify-center overflow-y-auto overscroll-contain bg-[#151d19]/55 p-4 backdrop-blur-sm sm:items-center" onClick={() => setOuvert(false)}>
       <div
         role="dialog"
         aria-modal="true"
