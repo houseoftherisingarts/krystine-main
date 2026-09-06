@@ -132,8 +132,9 @@ interface Feuille {
 const sceneVata: Fabrique = (ctx, w, h, pal, vue) => {
   const clair = pal.accentClair;
   const sombre = melange(pal.accent, [12, 44, 26], 0.6);
-  const nb = Math.round(Math.min(46, Math.max(28, (w * h) / 26000)));
+  const nb = Math.round(Math.min(48, Math.max(30, (w * h) / 23000)));
   const shaft = halo(256, clair, 0.62, 0.16);
+  const taches = nappeDeMotif(w, h, melange(pal.accent, clair, 0.5), false);
   const ptr = { x: -9999, y: -9999 };
 
   const semer = (f: Feuille, gauche: boolean): Feuille => {
