@@ -255,6 +255,19 @@ export const SKINS: Skin[] = [
     descFR: 'Du noir profond et de l’or qui miroite sur chaque bouton, avec une pluie de paillettes d’or. Rare : dans le coffre d’or seulement.',
     descEN: 'Deep black and gold that shimmers on every button, with a drift of gold flecks. Rare: in the gold chest only.',
     palette: { fond: '#0b0a08', panneau: '#171410', encre: '#fbf3df', accent: '#e0b94f', accentClair: '#fff0b8', accentProfond: '#f0cf6a', sombre: true } },
+  // L'heure dorée : vert et or, jamais brun. La lumière de fin de journée est
+  // mesurée entre 2 000 et 3 000 K, elle arrive de côté et traverse le feuillage
+  // à contre-jour; le feuillage vire alors au vert olive à sous-ton doré et les
+  // hautes lumières partent dans l'ambre. D'où le fond vert profond, l'or
+  // ambré des rais et la crème chaude de l'encre.
+  // Sources : naturettl.com/editing-guide-golden-hour-photography (température
+  // et virage des jaunes-verts), colordrop.io/palette/95262 (#ffeb85 #f3c94c
+  // #e8a024 #c97b1f), colorseasonai.com/color-palette/olive-green (l'olive est
+  // un vert à sous-ton doré).
+  { cle: 'golden-hour', cout: null, rarete: 'rare', coffre: 'or', icone: 'fa-sun', nomFR: 'Skin Heure dorée', nomEN: 'Golden Hour skin',
+    descFR: 'La dernière heure avant le coucher du soleil : la lumière entre de biais, traverse le feuillage vert et pose de l’or sur tout. La poussière reste en suspension dans les rais. Rare : dans le coffre d’or seulement.',
+    descEN: 'The last hour before sunset: light comes in sideways, crosses the green leaves and lays gold over everything. Dust hangs in the shafts. Rare: in the gold chest only.',
+    palette: { fond: '#16210f', panneau: '#22301a', encre: '#f7f0dd', accent: '#e0a83c', accentClair: '#ffda9e', accentProfond: '#f3c94c', sombre: true } },
   // Les trois légendaires : un dosha chacun, et une vraie scène animée derrière
   // l'espace (feu, eau, vent), des survols et des gestes de souris qui leur sont
   // propres. Ils ne se trouvent que dans les coffres.
