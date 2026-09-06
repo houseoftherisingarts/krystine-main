@@ -13,7 +13,8 @@ import {
   FAQ,
 } from './content';
 import AllumetteDuFoyer from './AllumetteDuFoyer';
-import { Cta } from './Cta';
+import { Cta, useRejoindreFoyer } from './Cta';
+import PlancheFilm from './PlancheFilm';
 
 /**
  * Le Foyer d'Origine · sections de CORPS (copie du doc « PAGE DE VENTE FINALE »).
@@ -152,6 +153,7 @@ const Halo: React.FC<{
 );
 
 const CalendrierAnnee: React.FC = () => {
+  const { rejoindre } = useRejoindreFoyer();
   const [hoverDoor, setHoverDoor] = useState<string | null>(null);
   const [openDoor, setOpenDoor] = useState<string | null>(null);
   const [helpOpen, setHelpOpen] = useState(false);
@@ -288,12 +290,13 @@ const CalendrierAnnee: React.FC = () => {
             </p>
             <h3 className="fy-h mt-4 font-serif font-medium text-fyH3 text-espresso">{ouverte.theme}</h3>
             <p className="mt-4 font-sans text-fyBody text-ink">{ouverte.question}</p>
-            <a
-              href="/liste-attente?programme=foyer"
+            <button
+              type="button"
+              onClick={rejoindre}
               className="mt-6 inline-block border-b border-brassInk/60 pb-1 font-sans text-fyLabel uppercase text-brassInk transition-colors hover:text-espresso focus:outline-none focus-visible:ring-2 focus-visible:ring-brassInk"
             >
               {PORTES_INTRO.cta}
-            </a>
+            </button>
           </Halo>
         )}
         {helpOpen && (
@@ -1077,16 +1080,8 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
                 />
               </Parallax>
               <Parallax speed={0.08} className="relative">
-                <img
-                  src="/foyer/krystine-scene.webp"
-                  alt="Krystine St-Laurent en conférence, les mains ouvertes, un châle tissé sur les épaules"
-                  width={670}
-                  height={954}
-                  loading="lazy"
-                  className="block h-auto w-full"
-                />
+                <PlancheFilm nom={SECTION7.photoCaption} role="En conférence" />
               </Parallax>
-              <p className="mt-4 text-right font-sans text-fyLabel uppercase text-brassInk">{SECTION7.photoCaption}</p>
             </div>
           </div>
         </div>

@@ -5,6 +5,8 @@ import { type DMThread, type DM, subscribeInbox, subscribeDMThread, sendDM, mark
 import { LONGUEUR_MAX } from '../../firebase/moderation';
 import Avatar from '../../components/communaute/Avatar';
 import ClientSupport from './ClientSupport';
+import CadeauCarte from '../../components/client/CadeauCarte';
+import { suivreMesCadeaux, type Cadeau } from '../../firebase/cadeaux';
 
 // ─── Onglet Messagerie de l'espace client ────────────────────────────────────
 // Deux volets dans la même fenêtre : les conversations entre amies (fils DM de
@@ -34,6 +36,7 @@ const ClientMessagerie: React.FC<{ voletInitial?: Volet }> = ({ voletInitial = '
   const [envoi, setEnvoi] = useState(false);
   const [avis, setAvis] = useState('');
   const zoneRef = useRef<HTMLDivElement>(null);
+  const [cadeaux, setCadeaux] = useState<Cadeau[]>([]);
 
   const monUid = user?.uid || '';
   const monNom = (member?.displayName || user?.displayName || '').trim() || (fr ? 'Un membre' : 'A member');
@@ -42,6 +45,7 @@ const ClientMessagerie: React.FC<{ voletInitial?: Volet }> = ({ voletInitial = '
     if (!monUid) return;
     return subscribeInbox(monUid, setFils);
   }, [monUid]);
+  useEffect(() => (monUid ? suivreMesCadeaux(monUid, setCadeaux) : undefined), [monUid]);
 
   useEffect(() => {
     if (!filActif) { setMsgs([]); return; }
@@ -108,6 +112,12 @@ const ClientMessagerie: React.FC<{ voletInitial?: Volet }> = ({ voletInitial = '
           {onglet('support', fr ? 'Soutien' : 'Support', 'fa-life-ring')}
         </div>
       </div>
+
+      {volet === 'amies' && cadeaux.length > 0 && (
+        <div className="mb-4 space-y-3">
+          {cadeaux.map(c => <CadeauCarte key={c.id} cadeau={c} lang={lang} />)}
+        </div>
+      )}
 
       {volet === 'support' ? (
         <ClientSupport />

@@ -10,6 +10,79 @@ import {
   type PointsBalance, type PointsEvent, type RewardRedemption,
 } from '../../firebase/points';
 import { tierFromLifetime } from '../../lib/pointsConfig';
+import { getFormations, type Formation } from '../../firebase/formations';
+import { offrirCadeau } from '../../firebase/cadeaux';
+
+// « Offrir un cadeau » : depuis la fiche d'une cliente, Krystine lui envoie
+// un rabais (1 à 99 %) ou une formation entière (100 %). Le cadeau part dans
+// sa messagerie et s'affiche en bannière dans son espace (functions/src/cadeaux.ts).
+const CadeauAdmin: React.FC<{ uid: string; nom: string }> = ({ uid, nom }) => {
+  const [ouvert, setOuvert] = useState(false);
+  const [formations, setFormations] = useState<Formation[]>([]);
+  const [formationId, setFormationId] = useState('');
+  const [pourcent, setPourcent] = useState(50);
+  const [message, setMessage] = useState('');
+  const [envoi, setEnvoi] = useState(false);
+  const [dit, setDit] = useState<string | null>(null);
+  useEffect(() => {
+    if (!ouvert || formations.length) return;
+    getFormations().then(l => {
+      const tri = l.filter(f => (f.categorie || 'cours') === 'cours').sort((a, b) => (a.statut === 'publie' ? 0 : 1) - (b.statut === 'publie' ? 0 : 1) || a.titre.localeCompare(b.titre));
+      setFormations(tri);
+      if (!formationId && tri[0]) setFormationId(tri[0].id);
+    }).catch(() => setFormations([]));
+  }, [ouvert, formations.length, formationId]);
+  const f = formations.find(x => x.id === formationId);
+  const reduit = f?.prix ? Math.round(f.prix * (100 - pourcent)) / 100 : 0;
+  const envoyer = async () => {
+    if (!formationId || envoi) return;
+    setEnvoi(true); setDit(null);
+    try {
+      await offrirCadeau(uid, formationId, pourcent, message.trim());
+      setDit(`Cadeau envoyé à ${nom} : ${pourcent >= 100 ? 'la formation offerte' : `${pourcent} % de rabais`} sur « ${f?.titre || formationId} ». Elle le voit dans sa messagerie et en bannière dans son espace.`);
+      setMessage('');
+    } catch (e) {
+      setDit((e as { message?: string }).message || 'L’envoi n’a pas fonctionné.');
+    } finally { setEnvoi(false); }
+  };
+  const champ = 'rounded-[12px] border border-[#293027]/15 bg-white px-3 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/15 dark:bg-[#293027] dark:text-white';
+  return (
+    <div className="mx-6 mt-6 rounded-[18px] border border-[#BA7B39]/40 bg-[#BA7B39]/10 p-4 md:mx-8">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]"><i className="fa-solid fa-gift mr-1" /> Offrir un cadeau ou un rabais à {nom}</p>
+        <button type="button" onClick={() => setOuvert(o => !o)} className="rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] hover:bg-[#3a453a] dark:bg-[#BA7B39] dark:text-[#293027]">
+          {ouvert ? 'Fermer' : 'Offrir'}
+        </button>
+      </div>
+      {ouvert && (
+        <div className="mt-4 grid gap-3 md:grid-cols-[1fr_140px]">
+          <select value={formationId} onChange={e => setFormationId(e.target.value)} className={champ}>
+            {formations.map(x => <option key={x.id} value={x.id}>{x.titre}{x.statut !== 'publie' ? ' (masquée)' : ''}{x.prix ? ` · ${x.prix} $` : ''}</option>)}
+          </select>
+          <div className="flex items-center gap-2">
+            <input type="number" min={1} max={100} value={pourcent} onChange={e => setPourcent(Math.max(1, Math.min(100, Number(e.target.value) || 1)))} className={`${champ} w-full`} />
+            <span className="text-sm text-[#293027] dark:text-white">%</span>
+          </div>
+          <div className="flex flex-wrap gap-2 md:col-span-2">
+            {[25, 50, 75, 99, 100].map(n => (
+              <button key={n} type="button" onClick={() => setPourcent(n)} className={`rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest ${pourcent === n ? 'border-[#BA7B39] bg-[#BA7B39]/20 text-[#8B4A2F]' : 'border-[#293027]/15 text-[#293027]/60 dark:border-white/15 dark:text-white/60'}`}>
+                {n === 100 ? 'Offerte' : `${n} %`}
+              </button>
+            ))}
+            {f?.prix ? <span className="ml-auto self-center text-sm text-[#293027]/70 dark:text-white/70">Elle paiera {pourcent >= 100 ? '0 $' : `${reduit} $`} au lieu de {f.prix} $</span> : null}
+          </div>
+          <textarea value={message} onChange={e => setMessage(e.target.value)} rows={3} placeholder="Un mot pour elle (il part dans sa messagerie avec le cadeau)" className={`${champ} md:col-span-2`} />
+          <div className="flex items-center gap-3 md:col-span-2">
+            <button type="button" onClick={envoyer} disabled={envoi || !formationId} className="rounded-full bg-[#BA7B39] px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest text-[#293027] hover:bg-[#d9a05b] disabled:opacity-50">
+              {envoi ? 'Envoi…' : 'Envoyer le cadeau'}
+            </button>
+            {dit && <p className="text-sm text-[#293027]/75 dark:text-white/75">{dit}</p>}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Read-only admin view of a client's portal — the same visual language as the
 // real ClientPortal (profile card + tabs + cards) but served from the admin
@@ -103,6 +176,8 @@ const AdminClientView: React.FC<Props> = ({ uid, onClose }) => {
             <i className="fa-solid fa-eye" />
             Aperçu admin · Espace client en lecture seule
           </div>
+
+          <CadeauAdmin uid={uid} nom={member?.displayName || 'cette cliente'} />
 
           {/* Header — same layout as ClientPortal's profile card */}
           <div className="p-6 md:p-8">

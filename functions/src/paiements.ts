@@ -244,7 +244,11 @@ export const stripeWebhook = onRequest(
       montant: (session.amount_total || 0) / 100,
       sessionId: session.id || '',
       acheteLe: FieldValue.serverTimestamp(),
+      ...(session.metadata?.cadeauId ? { source: 'cadeau', cadeauId: session.metadata.cadeauId } : {}),
     }, { merge: true });
+    if (session.metadata?.cadeauId) {
+      await db.doc(`cadeaux/${session.metadata.cadeauId}`).set({ statut: 'utilise', utiliseLe: FieldValue.serverTimestamp(), sessionId: session.id || '' }, { merge: true });
+    }
     console.log(`[paiements] achat enregistré: ${uid} -> ${formationId}`);
     res.status(200).send('ok');
   },

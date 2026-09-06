@@ -12,10 +12,9 @@ import { Volume2, VolumeX } from 'lucide-react';
 import { Atmosphere } from '../components/motion/loeuvre';
 import BodySections from './foyer/BodySections';
 import MusiqueOrigine from './foyer/MusiqueOrigine';
-import { Cta } from './foyer/Cta';
+import { Cta, useRejoindreFoyer } from './foyer/Cta';
 import { OFFRE, FINAL } from './foyer/content';
-import { useAuth } from '../contexts/AppContext';
-import { getFormation, aAchete, acheterFormation, type Formation } from '../firebase/formations';
+import { getFormation, type Formation } from '../firebase/formations';
 
 /**
  * Le Foyer d'Origine · page de vente (URL dédiée /foyer).
@@ -338,6 +337,15 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
             >
               Le Foyer d’Origine
             </motion.h1>
+            <motion.p
+              initial={reduce ? {} : { opacity: 0, y: 20 }}
+              animate={ready ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 1.1, ease, delay: 0.39 }}
+              className="mt-5 inline-flex items-center gap-3 font-sans text-fyLabel uppercase text-brassBright"
+            >
+              <span className="h-px w-8 bg-brassBright" aria-hidden />
+              <span>Début le 1<sup>er</sup> octobre</span>
+            </motion.p>
             <motion.p
               initial={reduce ? {} : { opacity: 0, y: 24 }}
               animate={ready ? { opacity: 1, y: 0 } : {}}
@@ -818,17 +826,11 @@ const FoyerPage: React.FC = () => {
 // La pilule d'achat flottante : rejoindre le Foyer par Stripe. Une fois la
 // formation achetée, elle devient la porte vers le lecteur.
 const AchatFoyer: React.FC = () => {
-  const { user, setSignInOpen } = useAuth();
+  const { rejoindre, possede, busy } = useRejoindreFoyer();
   const [formation, setFormation] = useState<Formation | null>(null);
-  const [possede, setPossede] = useState(false);
-  const [busy, setBusy] = useState(false);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => { getFormation('foyer').then(setFormation).catch(() => {}); }, []);
-  useEffect(() => {
-    if (user) aAchete(user.uid, 'foyer').then(setPossede).catch(() => {});
-    else setPossede(false);
-  }, [user]);
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 600);
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -836,13 +838,6 @@ const AchatFoyer: React.FC = () => {
   }, []);
 
   if (!formation || formation.statut !== 'publie' || !visible) return null;
-
-  const rejoindre = async () => {
-    if (possede) { window.location.href = '/cours/foyer'; return; }
-    if (!user) { setSignInOpen(true); return; }
-    setBusy(true);
-    try { window.location.href = await acheterFormation('foyer'); } catch { setBusy(false); }
-  };
 
   return (
     <button

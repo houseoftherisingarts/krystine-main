@@ -147,7 +147,7 @@ export const CONTENU = {
 export const OFFRE = {
   eyebrow: 'L’offre',
   title: 'Le Foyer d’Origine',
-  subtitle: '12 mois d’accès à partir de l’inscription',
+  subtitle: 'Début le 1er octobre · 12 mois d’accès à partir de l’inscription',
   items: [
     '12 portes',
     '48 ouvertures au fil de l’année',

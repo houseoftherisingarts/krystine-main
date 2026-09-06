@@ -234,6 +234,12 @@ service cloud.firestore {
     }
     // La preuve d'achat d'une formation : le membre lit la sienne; l'écriture
     // vient du serveur (webhook Stripe) ou de l'admin (tests, cadeaux).
+    // `cadeaux/{id}` : un rabais ou une formation offerte par Krystine à une
+    // cliente précise (offrirCadeau). Elle le lit; le serveur seul l'écrit.
+    match /cadeaux/{id} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow write: if isAdmin();
+    }
     match /achatsFormations/{uid}/formations/{fid} {
       allow read: if isSelf(uid) || isAdmin();
       allow write: if isAdmin();

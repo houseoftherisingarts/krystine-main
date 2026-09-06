@@ -29,6 +29,12 @@ export const PORTES: Porte[] = [
   { n: 'septembre', mois: 'Septembre', b: [1328, 638, 1572, 907], src: 'porte-sept-cutout', mouvement: 'Le rythme change', theme: 'Revenir à son propre rythme', question: 'Et si le premier signe que nous allons trop vite n’était pas celui que nous croyons?' },
 ];
 
+// Le cycle ouvre le 1er octobre 2026 (ordre d'Alex du 6 septembre) : avant
+// cette date, aucune porte n'est ouverte et celle d'octobre affiche sa date.
+export const OUVERTURE = new Date(2026, 9, 1);
+export const foyerOuvert = (date = new Date()) => date >= OUVERTURE;
+export const DEBUT_LABEL = 'Début le 1er octobre';
+
 // La porte du mois en cours (0 = janvier … 11 = décembre).
 const ORDRE_CIVIL = ['janvier','fevrier','mars','avril','mai','juin','juillet','aout','septembre','octobre','novembre','decembre'];
 export function porteDuMois(date = new Date()): Porte {

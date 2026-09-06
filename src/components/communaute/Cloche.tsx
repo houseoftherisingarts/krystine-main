@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { suivreMesCadeaux, type Cadeau } from '../../firebase/cadeaux';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Bell, MessageCircle, User as UserIcon } from 'lucide-react';
@@ -43,6 +44,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
   const [fils, setFils] = useState<DMThread[]>([]);
   const [amities, setAmities] = useState<Amitie[]>([]);
   const [billets, setBillets] = useState<PostMur[]>([]);
+  const [cadeaux, setCadeaux] = useState<Cadeau[]>([]);
   const [vu, setVu] = useState<number>(lireVu);
   const [ouverte, setOuverte] = useState(false);
   const boite = useRef<HTMLDivElement>(null);
@@ -59,6 +61,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
   }, [uid]);
 
   useEffect(() => suivreLeMur('communaute', setBillets, 10), []);
+  useEffect(() => (uid ? suivreMesCadeaux(uid, setCadeaux) : undefined), [uid]);
 
   useEffect(() => {
     if (!ouverte) return;
@@ -114,8 +117,14 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
         lien: '/compte',
         quand: b.creeLe?.toMillis?.() ?? 0,
       }));
-    return [...msgs, ...demandes, ...nouveauxBillets].sort((a, b) => b.quand - a.quand);
-  }, [fils, amities, billets, vu, uid]);
+    const dons: Item[] = cadeaux.map((c) => ({
+      id: `cadeau-${c.id}`,
+      titre: c.pourcent >= 100 ? `${c.deNom} vous offre « ${c.formationTitre} »` : `${c.deNom} vous offre ${c.pourcent} % sur « ${c.formationTitre} »`,
+      lien: '/compte',
+      quand: c.creeLe?.toMillis?.() ?? Date.now(),
+    }));
+    return [...dons, ...msgs, ...demandes, ...nouveauxBillets].sort((a, b) => b.quand - a.quand);
+  }, [fils, amities, billets, cadeaux, vu, uid]);
 
   const total = items.length;
   const bouton = 'relative inline-flex items-center justify-center w-10 h-10 rounded-full border transition-colors';

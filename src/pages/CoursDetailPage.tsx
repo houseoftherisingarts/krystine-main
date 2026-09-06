@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import EspaceGroupe from '../components/communaute/EspaceGroupe';
 import { suivreLiveEnCours, type LiveEnCours } from '../firebase/lives';
-import { PORTES, porteDuMois } from './foyer/portesData';
+import { PORTES, porteDuMois, foyerOuvert, DEBUT_LABEL } from './foyer/portesData';
 import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, type QuestionLecon } from '../firebase/formations';
+import { suivreMesCadeaux, type Cadeau } from '../firebase/cadeaux';
+import CadeauCarte from '../components/client/CadeauCarte';
 import { Navigate, useParams, Link } from 'react-router-dom';
 import {
   getFormation, getLecons, getProgression, marquerLecon, aAchete,
@@ -66,6 +68,10 @@ const CoursDetailPage: React.FC = () => {
   const [courante, setCourante] = useState<Lecon | null>(null);
   // L'aperçu d'un PDF de la leçon, ouvert dans un volet à droite.
   const [apercuPdf, setApercu] = useState<{ nom: string; url: string } | null>(null);
+  // Un cadeau de Krystine pour cette formation, s'il y en a un : il remplace le bouton d'achat.
+  const [cadeaux, setCadeaux] = useState<Cadeau[]>([]);
+  useEffect(() => (user ? suivreMesCadeaux(user.uid, setCadeaux) : undefined), [user]);
+  const cadeau = cadeaux.find(c => c.formationId === id) || null;
   const [urlCourante, setUrlCourante] = useState('');
   const [chargeLecon, setChargeLecon] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -99,8 +105,10 @@ const CoursDetailPage: React.FC = () => {
     [isAdmin, apercu, achete, accesVie, formation],
   );
 
-  const porteOuverteRang = rangPorte(porteDuMois().n);
-  const verrouillee = (l: Lecon) => !isAdmin && rangPorte(l.mois) > porteOuverteRang;
+  // Avant le 1er octobre 2026, aucune porte n'est ouverte : tout reste barré.
+  const ouvert = foyerOuvert();
+  const porteOuverteRang = ouvert ? rangPorte(porteDuMois().n) : -1;
+  const verrouillee = (l: Lecon) => !isAdmin && ((id === 'foyer' && !ouvert) || rangPorte(l.mois) > porteOuverteRang);
 
   const ouvrir = async (l: Lecon) => {
     if (verrouillee(l)) return;
@@ -202,15 +210,18 @@ const CoursDetailPage: React.FC = () => {
             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#d9a05b]">Espace VIP</p>
             <h2 className="mt-2 max-w-3xl font-serif text-3xl leading-tight md:text-4xl">Bienvenue dans votre espace VIP du Foyer d'Origine</h2>
             <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-white/80">
-              Vous avez pris place autour du feu. Douze portes vous attendent, une par mois, et chacune ouvre sur son rituel,
-              ses leçons et sa question à porter. L'année se nourrit de l'Ayurveda, des saisons, des plantes et des savoirs,
-              et la communauté chemine avec vous : le feed du groupe, les membres à votre droite, et Krystine qui y vit aussi.
+              Vous avez pris place autour du feu. Douze portes vous attendent, une par mois. Quand une porte s'ouvre,
+              elle reçoit quatre dépôts au fil du mois, un par semaine : un texte, un audio ou une vidéo qui vient
+              élargir ce que nous regardons. Chaque mois, une méditation guidée se vit en direct, et sa rediffusion
+              reste dans le Foyer. Rien à rattraper, rien à terminer. Vous revenez quand vous en avez envie,
+              et tout ce qui a été déposé reste là pendant vos douze mois d'accès.
             </p>
             <div className="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-[12px] font-bold uppercase tracking-widest text-[#d9a05b]">
               <span><i className="fa-solid fa-door-open mr-2" />Douze portes, une par mois</span>
+              <span><i className="fa-solid fa-tower-broadcast mr-2" />Une méditation en direct par mois</span>
+              <span><i className="fa-solid fa-feather mr-2" />Quatre dépôts par porte, un par semaine</span>
               <span><i className="fa-solid fa-fire mr-2" />Le feu et les saisons</span>
               <span><i className="fa-solid fa-users mr-2" />La communauté du Foyer</span>
-              <span><i className="fa-solid fa-tower-broadcast mr-2" />Les directs de Krystine</span>
             </div>
           </section>
         )}
@@ -221,25 +232,43 @@ const CoursDetailPage: React.FC = () => {
             <div className="mt-10">
               <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">Les douze portes</p>
               <h2 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">
-                La porte de {ouverte.mois.toLowerCase()} est ouverte
+                {ouvert ? `La porte de ${ouverte.mois.toLowerCase()} est ouverte` : 'La porte d\'octobre s\'ouvre le 1er octobre'}
               </h2>
               <p className="mt-1 max-w-2xl text-sm text-[#38403a]/60 dark:text-white/60">
-                Une seule porte s'ouvre à la fois, celle du mois en cours. Les autres attendent leur tour.
+                {ouvert
+                  ? 'Une seule porte s\'ouvre à la fois, celle du mois en cours. Les autres attendent leur tour.'
+                  : 'Votre place est prise. La première porte reste barrée jusqu\'au matin du 1er octobre, puis une seule porte s\'ouvre à la fois, celle du mois en cours.'}
               </p>
 
               <div className="mt-6 grid gap-6 rounded-[24px] border border-[#BA7B39]/40 bg-white/55 p-6 backdrop-blur-md md:grid-cols-[220px_1fr] md:p-8 dark:border-[#BA7B39]/30 dark:bg-[#293027]/55">
-                <img
-                  src={`/foyer/${ouverte.src}.webp`}
-                  alt={`La porte de ${ouverte.mois}`}
-                  className="mx-auto w-44 max-w-full drop-shadow-[0_18px_30px_rgba(41,48,39,0.35)] md:w-full"
-                  loading="lazy"
-                />
+                <div className="relative mx-auto w-44 max-w-full md:w-full">
+                  <img
+                    src={`/foyer/${ouverte.src}.webp`}
+                    alt={`La porte de ${ouverte.mois}`}
+                    className={`w-full drop-shadow-[0_18px_30px_rgba(41,48,39,0.35)] ${ouvert ? '' : 'opacity-80 saturate-[.7]'}`}
+                    loading="lazy"
+                  />
+                  {!ouvert && (
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#293027]/75 text-[#d9a05b] shadow-[0_8px_24px_rgba(41,48,39,0.45)]">
+                        <i className="fa-solid fa-lock" />
+                      </span>
+                    </span>
+                  )}
+                </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{ouverte.mois} · {ouverte.mouvement}</p>
                   <h3 className="mt-2 font-serif text-2xl text-[#293027] dark:text-white">{ouverte.theme}</h3>
-                  <p className="mt-4 max-w-xl font-serif text-lg italic leading-relaxed text-[#38403a]/80 dark:text-white/75">« {ouverte.question} »</p>
+                  {!ouvert && (
+                    <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/50 bg-[#BA7B39]/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-[#8B4A2F] dark:text-[#d9a05b]">
+                      <i className="fa-solid fa-lock text-[10px]" />{DEBUT_LABEL}
+                    </p>
+                  )}
+                  <p className="mt-4 max-w-xl font-serif text-lg leading-relaxed text-[#38403a]/80 dark:text-white/75">« {ouverte.question} »</p>
                   <p className="mt-4 text-sm text-[#38403a]/60 dark:text-white/60">
-                    Le rituel du mois se vit ici : gardez la question près de vous, revenez-y chaque matin, et partagez ce qu'elle remue dans le feed plus bas.
+                    {ouvert
+                      ? 'Le rituel du mois se vit ici : gardez la question près de vous, revenez-y chaque matin, et partagez ce qu\'elle remue dans le feed plus bas.'
+                      : 'Le premier dépôt arrive le 1er octobre. D\'ici là, la question de la porte peut déjà vous accompagner.'}
                   </p>
                 </div>
               </div>
@@ -253,7 +282,7 @@ const CoursDetailPage: React.FC = () => {
               `}</style>
               <div className="mt-6 grid grid-cols-3 gap-4 sm:grid-cols-4 lg:grid-cols-6">
                 {PORTES.map(pt => {
-                  const estOuverte = pt.n === ouverte.n;
+                  const estOuverte = ouvert && pt.n === ouverte.n;
                   return (
                     <div key={pt.n} className="text-center" onMouseEnter={() => jouerSon(estOuverte)}>
                       <div className={`porte-carte relative overflow-hidden rounded-[16px] border p-2 transition-all duration-300 ${estOuverte ? 'porte-ouverte border-[#BA7B39]/60 bg-[#BA7B39]/10' : 'porte-barree border-[#38403a]/10 bg-white/40 dark:border-white/10 dark:bg-white/5'}`}>
@@ -272,6 +301,9 @@ const CoursDetailPage: React.FC = () => {
                         )}
                       </div>
                       <p className={`mt-2 text-[10px] font-bold uppercase tracking-widest ${estOuverte ? 'text-[#8B4A2F]' : 'text-[#38403a]/40 dark:text-white/40'}`}>{pt.mois}</p>
+                      {!ouvert && pt.n === ouverte.n && (
+                        <p className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-[#8B4A2F] dark:text-[#d9a05b]">{DEBUT_LABEL}</p>
+                      )}
                     </div>
                   );
                 })}
@@ -350,15 +382,19 @@ const CoursDetailPage: React.FC = () => {
               {formation.description && (
                 <p className="whitespace-pre-line text-[#38403a]/80 dark:text-white/80">{formation.description}</p>
               )}
+              {cadeau ? (
+                <div className="mt-6"><CadeauCarte cadeau={cadeau} lang={lang} /></div>
+              ) : (
               <p className="mt-6 font-serif text-3xl text-[#293027] dark:text-white">{formation.prix} $ CA</p>
-              <button
+              )}
+              {!cadeau && <button
                 onClick={acheter}
                 disabled={paiement}
                 className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-[#293027] shadow-[0_8px_22px_-10px_rgba(186,123,57,0.8)] transition-colors hover:bg-[#9c6630] disabled:opacity-50"
               >
                 <i className="fa-solid fa-lock-open" />
                 {paiement ? (lang === 'FR' ? 'Redirection…' : 'Redirecting…') : (lang === 'FR' ? 'Rejoindre la formation' : 'Join the course')}
-              </button>
+              </button>}
               <p className="mt-3 text-xs text-[#38403a]/50 dark:text-white/50">
                 {lang === 'FR' ? 'Paiement sécurisé par Stripe. La formation apparaît dans votre espace dès le paiement.' : 'Secure payment by Stripe. The course appears in your space right after payment.'}
               </p>
