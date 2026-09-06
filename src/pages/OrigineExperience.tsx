@@ -215,6 +215,8 @@ const FaqSection: React.FC = () => {
 };
 
 const OrigineExperience: React.FC = () => {
+  const { lang } = useUI();
+  const { user } = useAuth();
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
   // Parallax réel : l'image déborde du cadre (bleed 12%) et glisse + grossit
