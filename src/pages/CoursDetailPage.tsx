@@ -256,7 +256,7 @@ const CoursDetailPage: React.FC = () => {
                           src={`/foyer/${pt.src}.webp`}
                           alt={`Porte de ${pt.mois}`}
                           loading="lazy"
-                          className={`mx-auto h-28 w-auto object-contain transition-all ${estOuverte ? '' : 'opacity-45 grayscale'}`}
+                          className={`mx-auto h-28 w-auto object-contain transition-all ${estOuverte ? '' : 'opacity-85'}`}
                         />
                         {!estOuverte && (
                           <span className="absolute inset-0 flex items-center justify-center">

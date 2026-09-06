@@ -169,6 +169,7 @@ const CalendrierAnnee: React.FC = () => {
   }, [openDoor, helpOpen]);
 
   return (
+    <>
     <div className="relative w-full">
       <img
         src="/foyer/calendrier-annee.webp"
@@ -273,27 +274,6 @@ const CalendrierAnnee: React.FC = () => {
       <span className="absolute bottom-4 left-1/2 hidden -translate-x-1/2 font-sans text-fyLabel uppercase text-brassInk md:block">
         {ouverte ? ouverte.mois : 'Ouvrir une porte'}
       </span>
-      {/* Sur le téléphone, les portes de l'image font 50 px : trop petites pour
-          le pouce. La même grille des douze mois, en boutons pleine largeur,
-          ouvre la même porte. */}
-      <div className="mt-5 grid grid-cols-3 gap-2 md:hidden" role="group" aria-label="Les douze portes">
-        {PORTES.map((d) => {
-          const isOpen = openDoor === d.n;
-          return (
-            <button
-              key={d.n}
-              type="button"
-              onClick={() => { setHelpOpen(false); setOpenDoor(isOpen ? null : d.n); }}
-              aria-expanded={isOpen}
-              className={`min-h-[44px] rounded-[10px] border px-2 py-2.5 font-sans text-[0.62rem] uppercase tracking-[0.14em] transition-colors ${
-                isOpen ? 'border-brass bg-brass text-espresso' : 'border-brass/40 text-brassInk'
-              }`}
-            >
-              {d.mois}
-            </button>
-          );
-        })}
-      </div>
 
       <AnimatePresence>
         {ouverte && (
@@ -333,6 +313,28 @@ const CalendrierAnnee: React.FC = () => {
         )}
       </AnimatePresence>
     </div>
+      {/* Sur le téléphone, les portes de l'image font 50 px : trop petites pour
+          le pouce. La même grille des douze mois, en boutons pleine largeur,
+          ouvre la même porte. */}
+      <div className="mt-5 grid grid-cols-3 gap-2 md:hidden" role="group" aria-label="Les douze portes">
+        {PORTES.map((d) => {
+          const isOpen = openDoor === d.n;
+          return (
+            <button
+              key={d.n}
+              type="button"
+              onClick={() => { setHelpOpen(false); setOpenDoor(isOpen ? null : d.n); }}
+              aria-expanded={isOpen}
+              className={`min-h-[44px] rounded-[10px] border px-2 py-2.5 font-sans text-[0.62rem] uppercase tracking-[0.14em] transition-colors ${
+                isOpen ? 'border-brass bg-brass text-espresso' : 'border-brass/40 text-brassInk'
+              }`}
+            >
+              {d.mois}
+            </button>
+          );
+        })}
+      </div>
+    </>
   );
 };
 
