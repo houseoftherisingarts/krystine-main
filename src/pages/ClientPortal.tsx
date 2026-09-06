@@ -25,24 +25,24 @@ import ClientRediffusions from './client/ClientRediffusions';
 import ProblemeTechnique from '../components/client/ProblemeTechnique';
 import ClientPreferences from './client/ClientPreferences';
 import { subscribeToMemberPoints, suivreBoutique, points, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
-import { BANNIERE_DEFAUT, BANNIERE_NATURE, FACONS_DE_GAGNER, fanams } from '../lib/pointsConfig';
-import PieceFanam from '../components/client/PieceFanam';
+import { BANNIERE_DEFAUT, BANNIERE_NATURE, FACONS_DE_GAGNER, niskas } from '../lib/pointsConfig';
+import PieceNiska from '../components/client/PieceNiska';
 import RoueQuotidienne from '../components/client/RoueQuotidienne';
 import '../components/client/skins.css';
 
-// L'histoire du fanam, lue sous la bourse. Faits vérifiés le 6 septembre 2026
-// (Wikipédia : Fanam, Travancore fanam, Madras fanam).
-const HISTOIRE_FANAM_FR = [
-  'Le mot vient du tamoul paṇam, qui veut dire « argent ». Le fanam est né dans le sud de l’Inde, au Kerala et au pays tamoul, et il circulait déjà largement au treizième siècle.',
-  'C’était d’abord une petite pièce d’or, puis d’argent. Au dix-huitième siècle, la pièce était devenue si menue que personne ne la comptait plus une à une : les pièces se versaient sur une planche percée de trous, le palaka, secouée jusqu’à ce que chaque trou tienne la sienne.',
-  'À Madras, sous la Compagnie des Indes, il fallait douze fanams pour une roupie et un fanam valait quatre-vingts cash de cuivre. La ville a cessé d’en frapper en 1815. Les comptoirs danois et français avaient leur cousin, le fano et le fanon.',
-  'Le royaume de Travancore l’a gardé le plus longtemps : sept fanams pour une roupie, quatre chuckrams par fanam. Les dernières pièces sont sorties en 1946 et 1947, et le fanam a quitté la circulation en 1949, remplacé par la roupie indienne.',
+// L'histoire du niska, lue sous la bourse. Faits vérifiés le 6 septembre 2026
+// (wisdomlib.org, entrée niṣka : Rig-Véda, Pañcaviṃśa-brāhmaṇa, Arthaśāstra, Manusmṛti).
+const HISTOIRE_NISKA_FR = [
+  'Le niska est le plus vieux mot d’argent de l’Inde. Il apparaît dans le Rig-Véda, le plus ancien des textes sacrés indiens, où il désigne d’abord un ornement d’or porté au cou : les hymnes parlent de gens « au cou orné d’un niska ».',
+  'Très tôt, l’ornement sert aussi à compter la richesse. Un poète du Rig-Véda remercie son protecteur pour un don de cent niskas, bien plus qu’il n’aurait pu en porter : le bijou était déjà une monnaie.',
+  'Dans les textes qui suivent, le niska devient une mesure de poids et le nom d’une pièce. Un niska d’argent paraît dans le Pañcaviṃśa-brāhmaṇa, et au quatrième siècle avant notre ère, l’Arthaśāstra en fait une pièce d’or frappée et réglée par l’État. Les Lois de Manu fixent son poids à seize māṣas d’or.',
+  'Le mot a traversé les siècles comme nom de la pièce d’or, jusqu’aux textes du Moyen Âge indien. C’est cette mémoire-là que porte votre bourse : un peu d’or au cou, qui compte.',
 ];
-const HISTOIRE_FANAM_EN = [
-  'The word comes from the Tamil paṇam, meaning money. The fanam was born in southern India, in Kerala and the Tamil country, and was already widely used by the thirteenth century.',
-  'It began as a tiny gold coin, later struck in silver. By the eighteenth century it had grown so small that nobody counted it one by one: coins were poured onto a board pierced with holes, the palaka, and shaken until every hole held its coin.',
-  'In Madras, under the East India Company, twelve fanams made a rupee and one fanam was worth eighty copper cash. The city stopped striking them in 1815. The Danish and French trading posts had their cousins, the fano and the fanon.',
-  'The kingdom of Travancore kept it longest: seven fanams to the rupee, four chuckrams to the fanam. The last coins came out in 1946 and 1947, and the fanam left circulation in 1949, replaced by the Indian rupee.',
+const HISTOIRE_NISKA_EN = [
+  'The niska is India’s oldest word for money. It appears in the Rigveda, the most ancient of the Indian sacred texts, where it first means a gold ornament worn at the neck: the hymns speak of people “with a niska at the throat”.',
+  'Very early, the ornament also served to count wealth. A Rigvedic poet thanks his patron for a gift of a hundred niskas, far more than he could ever wear: the jewel was already a currency.',
+  'In the texts that followed, the niska became a unit of weight and the name of a coin. A silver niska appears in the Pañcaviṃśa-brāhmaṇa, and in the fourth century BCE the Arthaśāstra makes it a gold coin struck and regulated by the state. The Laws of Manu set its weight at sixteen māṣas of gold.',
+  'The word travelled through the centuries as the name of the gold coin, down to the texts of medieval India. That is the memory your purse carries: a little gold at the throat, that counts.',
 ];
 
 type Tab = 'feed' | 'profile' | 'amis' | 'orders' | 'formations' | 'rediffusions' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie';
@@ -62,13 +62,13 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
         {member?.phone && <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Téléphone</span>{member.phone}</p>}
         {member?.dosha && <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Dosha</span><span className="capitalize">{member.dosha}</span></p>}
       </div>
-      {/* Les fanams : le solde, la porte de la boutique, et toutes les façons d'en gagner */}
+      {/* Les niskas : le solde, la porte de la boutique, et toutes les façons d'en gagner */}
       <div className="rounded-[20px] border border-[#BA7B39]/30 bg-gradient-to-br from-[#BA7B39]/15 to-transparent p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Vos fanams' : 'Your fanams'}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Vos niskas' : 'Your niskas'}</p>
             <p className="mt-1 flex items-center gap-3 font-serif text-4xl text-[#293027] dark:text-white">
-              <PieceFanam size={34} /> {solde.balance}
+              <PieceNiska size={34} /> {solde.balance}
               <span className="text-base text-[#293027]/50 dark:text-white/50">{lang === 'FR' ? `· ${solde.lifetime} gagnés en tout` : `· ${solde.lifetime} earned overall`}</span>
             </p>
           </div>
@@ -76,22 +76,22 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
             <button type="button" onClick={onBoutique} className="inline-flex items-center gap-2 rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] hover:bg-[#3a453a] dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]">
               <i className="fa-solid fa-bag-shopping" /> {lang === 'FR' ? 'La petite boutique' : 'The little shop'}
             </button>
-            <a href="/compte/comment-gagner-des-fanams.pdf" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
+            <a href="/compte/comment-gagner-des-niskas.pdf" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
               <i className="fa-solid fa-file-pdf" /> PDF
             </a>
           </div>
         </div>
         <p className="mt-4 text-sm text-[#293027]/70 dark:text-white/70">
           {lang === 'FR'
-            ? 'Le fanam est la monnaie de votre espace. Chaque compte s’ouvre avec dix fanams, et la bourse grossit à mesure que vous revenez et que vous participez. Voici tout ce qui en donne.'
-            : 'The fanam is the currency of your space. Every account opens with ten fanams, and the purse grows as you come back and take part. Here is everything that earns some.'}
+            ? 'Le niska est la monnaie de votre espace. Chaque compte s’ouvre avec dix niskas, et la bourse grossit à mesure que vous revenez et que vous participez. Voici tout ce qui en donne.'
+            : 'The niska is the currency of your space. Every account opens with ten niskas, and the purse grows as you come back and take part. Here is everything that earns some.'}
         </p>
         <details className="mt-4 rounded-[14px] border border-[#BA7B39]/25 bg-white/40 px-4 py-3 dark:bg-white/5">
           <summary className="cursor-pointer text-[10px] font-bold uppercase tracking-[0.22em] text-[#8B4A2F] dark:text-[#d9a05b]">
-            {lang === 'FR' ? 'L’histoire du fanam dans le monde' : 'The fanam through history'}
+            {lang === 'FR' ? 'L’histoire du niska dans le monde' : 'The niska through history'}
           </summary>
           <div className="mt-3 space-y-2 text-sm leading-relaxed text-[#293027]/75 dark:text-white/75">
-            {(lang === 'FR' ? HISTOIRE_FANAM_FR : HISTOIRE_FANAM_EN).map((par) => <p key={par.slice(0, 24)}>{par}</p>)}
+            {(lang === 'FR' ? HISTOIRE_NISKA_FR : HISTOIRE_NISKA_EN).map((par) => <p key={par.slice(0, 24)}>{par}</p>)}
           </div>
         </details>
         <ul className="mt-3 grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-2">
@@ -302,7 +302,7 @@ const BanniereChoix: React.FC<{
           ) : (
             <button type="button" className={ligne} onClick={() => { setOuvert(false); window.dispatchEvent(new Event('krystine:ouvrir-boutique')); }}>
               <i className="fa-solid fa-lock text-sm text-[#293027]/30 dark:text-white/30" />
-              <span className="flex-1">Nature & Ayurveda <span className="text-[#293027]/50 dark:text-white/50">· {fr ? '5 fanams à la petite boutique' : '5 fanams at the little shop'}</span></span>
+              <span className="flex-1">Nature & Ayurveda <span className="text-[#293027]/50 dark:text-white/50">· {fr ? '5 niskas à la petite boutique' : '5 niskas at the little shop'}</span></span>
             </button>
           )}
         </div>
@@ -384,22 +384,22 @@ const ClientPortal: React.FC = () => {
     if (!user) return;
     return suivreBoutique(user.uid, (p) => setPossedeNature(!!p.possede['banniere-nature']));
   }, [user]);
-  // Profil complété (photo, nom, dosha) : cinq fanams, une fois.
+  // Profil complété (photo, nom, dosha) : cinq niskas, une fois.
   useEffect(() => {
     if (user && member?.photoURL && member?.displayName && member?.dosha) points.profilComplete(user.uid).catch(() => {});
   }, [user, member?.photoURL, member?.displayName, member?.dosha]);
 
-  // « Acheter des fanams » (onglet Points) mène à la petite boutique.
+  // « Acheter des niskas » (onglet Points) mène à la petite boutique.
   useEffect(() => {
     const ouvrir = () => { setTab('telechargements'); window.setTimeout(() => document.getElementById('boutique')?.scrollIntoView({ behavior: 'smooth' }), 150); };
     window.addEventListener('krystine:ouvrir-boutique', ouvrir);
     return () => window.removeEventListener('krystine:ouvrir-boutique', ouvrir);
   }, []);
 
-  // Retour de Stripe : le paquet de fanams arrive par le webhook, on le dit.
-  const [merciFanams, setMerciFanams] = useState(() => {
+  // Retour de Stripe : le paquet de niskas arrive par le webhook, on le dit.
+  const [merciNiskas, setMerciNiskas] = useState(() => {
     try {
-      if (new URLSearchParams(window.location.search).get('fanams') === 'ok') {
+      if (new URLSearchParams(window.location.search).get('niskas') === 'ok') {
         window.history.replaceState(null, '', window.location.pathname);
         return true;
       }
@@ -529,8 +529,8 @@ const ClientPortal: React.FC = () => {
                   onClick={() => setTab('loyalty')}
                   className="rounded-full bg-[#BA7B39] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#293027] transition-colors hover:bg-[#d9a05b]"
                 >
-                  <PieceFanam size={14} className="mr-1 inline-block align-[-2px]" />
-                  {fanams(pointsBalance.balance, lang)}
+                  <PieceNiska size={14} className="mr-1 inline-block align-[-2px]" />
+                  {niskas(pointsBalance.balance, lang)}
                 </button>
                 <span className="hidden truncate text-xs text-white/70 sm:inline">{user.email}</span>
               </div>
@@ -573,10 +573,10 @@ const ClientPortal: React.FC = () => {
       <div className="mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 lg:grid-cols-[1fr_320px]">
         <div className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-[#293027]/55">
           {tab === 'feed'     && <MurSocial fil="communaute" titre="Feed" />}
-          {merciFanams && (
+          {merciNiskas && (
             <div className="mb-5 flex items-center justify-between gap-3 rounded-[16px] border border-[#BA7B39]/40 bg-[#BA7B39]/15 px-4 py-3 text-sm text-[#293027] dark:text-white">
-              <span><PieceFanam size={16} className="mr-2 inline-block align-[-3px]" />{lang === 'FR' ? 'Merci. Vos cent fanams arrivent dans votre bourse d’ici une minute.' : 'Thank you. Your hundred fanams land in your purse within a minute.'}</span>
-              <button type="button" onClick={() => setMerciFanams(false)} aria-label={lang === 'FR' ? 'Fermer' : 'Close'} className="text-[#293027]/50 hover:text-[#293027] dark:text-white/50"><i className="fa-solid fa-times" /></button>
+              <span><PieceNiska size={16} className="mr-2 inline-block align-[-3px]" />{lang === 'FR' ? 'Merci. Vos cent niskas arrivent dans votre bourse d’ici une minute.' : 'Thank you. Your hundred niskas land in your purse within a minute.'}</span>
+              <button type="button" onClick={() => setMerciNiskas(false)} aria-label={lang === 'FR' ? 'Fermer' : 'Close'} className="text-[#293027]/50 hover:text-[#293027] dark:text-white/50"><i className="fa-solid fa-times" /></button>
             </div>
           )}
           {tab === 'profile'  && <ProfilVue uid={user.uid} member={member} email={user.email || ''} lang={lang} solde={pointsBalance} onBoutique={() => { setTab('telechargements'); window.setTimeout(() => document.getElementById('boutique')?.scrollIntoView({ behavior: 'smooth' }), 150); }} />}

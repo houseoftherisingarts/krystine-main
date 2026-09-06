@@ -1,8 +1,8 @@
-// Vérification de bout en bout de la petite boutique et des fanams : un
-// membre de test se connecte, reçoit ses dix fanams et sa récompense du jour,
+// Vérification de bout en bout de la petite boutique et des niskas : un
+// membre de test se connecte, reçoit ses dix niskas et sa récompense du jour,
 // achète le skin Medzo Café, l'active, met la bannière Nature, et la porte
 // Stripe rend une adresse de paiement. Lancer avec `npx vite preview --port
-// 4173` : BUG_EMAIL=… BUG_PASS=… BUG_OUT=/tmp node scripts/qa-fanams.mjs
+// 4173` : BUG_EMAIL=… BUG_PASS=… BUG_OUT=/tmp node scripts/qa-niskas.mjs
 import { chromium } from 'playwright';
 
 const [email, pass] = [process.env.BUG_EMAIL, process.env.BUG_PASS];
@@ -30,12 +30,12 @@ await page.screenshot({ path: `${S}/m1-roue.png` });
 console.log('roue', (await roue.locator('h2').innerText()).slice(0, 80));
 await roue.getByRole('button', { name: /Merci|Thanks/ }).click();
 
-// La puce du haut dit le solde en fanams.
-const puce = page.locator('button:has-text("fanam")').first();
+// La puce du haut dit le solde en niskas.
+const puce = page.locator('button:has-text("niska")').first();
 await puce.waitFor({ timeout: 15000 });
 console.log('puce', await puce.innerText());
 
-// Profil : le bloc des fanams et la liste des façons.
+// Profil : le bloc des niskas et la liste des façons.
 await page.getByRole('button', { name: /^\S*\s*Profil$|Profile/ }).first().click().catch(() => {});
 await page.waitForTimeout(800);
 await page.screenshot({ path: `${S}/m2-profil.png`, fullPage: false });
@@ -76,7 +76,7 @@ await page.evaluate(() => window.scrollTo(0, 0));
 await page.waitForTimeout(500);
 await page.screenshot({ path: `${S}/m5-banniere.png` });
 
-// Un épisode à 100 : le bouton est désactivé faute de fanams.
+// Un épisode à 100 : le bouton est désactivé faute de niskas.
 const ep = page.locator('#boutique li').filter({ hasText: /Épisode|Emission|Émission/ }).first().getByRole('button');
 console.log('episode desactive', await ep.isDisabled());
 

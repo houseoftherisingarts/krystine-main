@@ -390,7 +390,7 @@ service cloud.firestore {
                         && request.resource.data.amount is number
                         && request.resource.data.amount <= 100
                         && request.resource.data.amount >= -1000
-                        && !(request.resource.data.kind in ['boutique', 'achat-fanams', 'quotidien', 'billet', 'amitie', 'parrainage', 'adjust']));
+                        && !(request.resource.data.kind in ['boutique', 'achat-niskas', 'quotidien', 'billet', 'amitie', 'parrainage', 'adjust']));
       // La lecture d'un document absent (la transaction d'awardPoints vérifie
       // la clé avant d'écrire) ne révèle rien : elle passe.
       allow read: if isAdmin()
@@ -399,7 +399,7 @@ service cloud.firestore {
     }
 
     // `boutique/{uid}` — ce que la membre possède (bannière, musique, skin,
-    // épisodes) : écrit par acheterAvecFanams seulement, lu par elle.
+    // épisodes) : écrit par acheterAvecNiskas seulement, lu par elle.
     match /boutique/{uid} {
       allow read: if isSelf(uid) || isAdmin();
       allow write: if isAdmin();

@@ -3,7 +3,7 @@ import { onCall, onRequest, HttpsError } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
-import { crediterFanams } from './fanams';
+import { crediterNiskas } from './niskas';
 
 // Le paywall des formations natives (migration Kajabi, 2026-08-28).
 // Trois portes : créer la session Stripe Checkout, encaisser le webhook qui
@@ -114,27 +114,27 @@ export const creerPourboire = onCall(
   },
 );
 
-// ─── Les fanams : 100 pour 10 $ ──────────────────────────────────────────────
+// ─── Les niskas : 100 pour 10 $ ──────────────────────────────────────────────
 // Un seul paquet, jamais un montant libre venu du navigateur. Le crédit se
 // fait au retour du webhook, une seule fois par paiement.
-const FANAMS_PAR_PAQUET = 100;
+const NISKAS_PAR_PAQUET = 100;
 const PRIX_PAQUET_CENTS = 1000;
 
-export const creerSessionFanams = onCall(
+export const creerSessionNiskas = onCall(
   { region: 'us-central1', secrets: [STRIPE_SECRET_KEY] },
   async (req) => {
-    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour acheter des fanams.');
+    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour acheter des niskas.');
     const body = new URLSearchParams({
       mode: 'payment',
       'line_items[0][price_data][currency]': 'cad',
-      'line_items[0][price_data][product_data][name]': `${FANAMS_PAR_PAQUET} fanams · votre espace chez Krystine`,
+      'line_items[0][price_data][product_data][name]': `${NISKAS_PAR_PAQUET} niskas · votre espace chez Krystine`,
       'line_items[0][price_data][unit_amount]': String(PRIX_PAQUET_CENTS),
       'line_items[0][quantity]': '1',
-      success_url: `${SITE}/compte?fanams=ok`,
+      success_url: `${SITE}/compte?niskas=ok`,
       cancel_url: `${SITE}/compte`,
       'metadata[uid]': req.auth.uid,
-      'metadata[type]': 'fanams',
-      'metadata[fanams]': String(FANAMS_PAR_PAQUET),
+      'metadata[type]': 'niskas',
+      'metadata[niskas]': String(NISKAS_PAR_PAQUET),
     });
     const email = req.auth.token.email;
     if (email) body.set('customer_email', String(email));
@@ -149,7 +149,7 @@ export const creerSessionFanams = onCall(
     });
     const session = (await r.json()) as { url?: string; error?: { message?: string } };
     if (!r.ok || !session.url) {
-      console.error('[paiements] session fanams refusée', session.error?.message);
+      console.error('[paiements] session niskas refusée', session.error?.message);
       throw new HttpsError('internal', 'Le paiement n\'a pas pu démarrer. Réessayez.');
     }
     return { url: session.url };
@@ -185,12 +185,12 @@ export const stripeWebhook = onRequest(
     const uid = session.metadata?.uid;
     const formationId = session.metadata?.formationId;
 
-    // Un paquet de fanams : cent pièces, une seule fois par paiement.
-    if (uid && session.metadata?.type === 'fanams' && session.payment_status === 'paid') {
-      const n = Number(session.metadata?.fanams || FANAMS_PAR_PAQUET);
+    // Un paquet de niskas : cent pièces, une seule fois par paiement.
+    if (uid && session.metadata?.type === 'niskas' && session.payment_status === 'paid') {
+      const n = Number(session.metadata?.niskas || NISKAS_PAR_PAQUET);
       const montant = (session.amount_total || 0) / 100;
-      const credite = await crediterFanams(uid, 'achat-fanams', n, `stripe:${session.id}`, { montant });
-      console.log(`[paiements] ${n} fanams pour ${uid} (${montant} $) ${credite ? 'crédités' : 'déjà crédités'}`);
+      const credite = await crediterNiskas(uid, 'achat-niskas', n, `stripe:${session.id}`, { montant });
+      console.log(`[paiements] ${n} niskas pour ${uid} (${montant} $) ${credite ? 'crédités' : 'déjà crédités'}`);
       res.status(200).send('ok'); return;
     }
 
@@ -253,11 +253,11 @@ export const obtenirLecon = onCall(
       const fSnap = await db.doc(`formations/${formationId}`).get();
       const fiche = fSnap.data() as { paywall?: boolean; statut?: string } | undefined;
       // Une formation payante, ou une formation qui n'est pas publiée (Santé
-      // la vie, vendue à l'épisode en fanams), ne se sert qu'à qui la possède.
+      // la vie, vendue à l'épisode en niskas), ne se sert qu'à qui la possède.
       const paywall = !!fiche?.paywall || fiche?.statut !== 'publie';
       if (paywall) {
         const achat = await db.doc(`achatsFormations/${req.auth.uid}/formations/${formationId}`).get();
-        // Un achat à l'épisode (Santé la vie, en fanams) n'ouvre que ses épisodes.
+        // Un achat à l'épisode (Santé la vie, en niskas) n'ouvre que ses épisodes.
         const episodes = (achat.data() as { episodes?: Record<string, unknown> } | undefined)?.episodes;
         if (achat.exists && episodes && !episodes[leconId]) {
           throw new HttpsError('permission-denied', 'Cet épisode ne vous appartient pas encore.');

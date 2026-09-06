@@ -5,23 +5,23 @@
 // amounts here without touching any UI code.
 
 // ─── La monnaie ──────────────────────────────────────────────────────────────
-// Les points s'appellent des fanams (Alex, 2026-09-06) : le fanam, petite pièce
-// d'or puis d'argent du sud de l'Inde, née vers le treizième siècle et retirée en 1949. Les
+// Les points s'appellent des niskas (Alex, 2026-09-06) : le niska du Rig-Véda,
+// l'ornement d'or porté au cou qui servait à compter la richesse, puis pièce d'or. Les
 // identifiants de code gardent « points »; seul ce que la personne lit change.
 export const MONNAIE = {
-  fr: { un: 'fanam', plusieurs: 'fanams' },
-  en: { un: 'fanam', plusieurs: 'fanams' },
+  fr: { un: 'niska', plusieurs: 'niskas' },
+  en: { un: 'niska', plusieurs: 'niskas' },
 } as const;
 
-/** « 1 fanam », « 12 fanams ». */
-export function fanams(n: number, lang: 'FR' | 'EN' | string = 'FR'): string {
+/** « 1 niska », « 12 niskas ». */
+export function niskas(n: number, lang: 'FR' | 'EN' | string = 'FR'): string {
   const m = lang === 'EN' ? MONNAIE.en : MONNAIE.fr;
   return `${n} ${Math.abs(n) === 1 ? m.un : m.plusieurs}`;
 }
 
 export type PointsKind =
   | 'welcome'         // legacy — auto-granted on older accounts; no longer written
-  | 'welcome-claim'   // dix fanams offerts à la création du compte (auto depuis le 2026-09-06)
+  | 'welcome-claim'   // dix niskas offerts à la création du compte (auto depuis le 2026-09-06)
   | 'quotidien'       // la roue des sept jours : une réclamation par journée civile
   | 'profil'          // profil complété (photo, nom, dosha), une fois
   | 'billet'          // premier billet sur le fil (serveur)
@@ -31,7 +31,7 @@ export type PointsKind =
   | 'rediffusion'     // rediffusion regardée, une par rediffusion
   | 'commentaire'     // commentaire sous un billet, un par billet
   | 'boutique'        // negative : achat dans la petite boutique (serveur)
-  | 'achat-fanams'    // cent fanams achetés pour dix dollars (serveur, Stripe)
+  | 'achat-niskas'    // cent niskas achetés pour dix dollars (serveur, Stripe)
   | 'quiz'
   | 'newsletter'
   | 'order'           // awarded once per order; `amount` derived from item count
@@ -86,11 +86,22 @@ export function journee(ms = Date.now()): string {
 export const veilleDe = (j: string): string => journee(new Date(`${j}T12:00:00-04:00`).getTime() - 86_400_000);
 
 // ─── La petite boutique ──────────────────────────────────────────────────────
-// Jumelle du catalogue serveur (functions/src/fanams.ts). Le serveur seul
+// Jumelle du catalogue serveur (functions/src/niskas.ts). Le serveur seul
 // débite; ceci ne sert qu'à afficher.
 export const COUT_COSMETIQUE = 5;
 export const COUT_EPISODE = 100;
-export const PAQUET_FANAMS = { fanams: 100, prix: 10 } as const;
+export const COUT_VIDEO = 10;
+export const CATALOGUE_VIDEOS = '/compte/videos-krystine.json';
+
+/** Une vidéo de la chaîne YouTube, telle que scripts/youtube-catalogue.mjs l'écrit. */
+export interface VideoKrystine { id: string; titre: string; duree: number; publieLe: string; vues: number; onglet: string; listes: string[] }
+export interface CatalogueVideos { chaine: string; genereLe: string; listes: { id: string; titre: string; nb: number }[]; videos: VideoKrystine[] }
+export const vignetteYoutube = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+export function dureeLisible(s: number): string {
+  const m = Math.floor(s / 60); const h = Math.floor(m / 60);
+  return h ? `${h} h ${String(m % 60).padStart(2, '0')}` : `${m} min`;
+}
+export const PAQUET_NISKAS = { niskas: 100, prix: 10 } as const;
 export const SANTE_LA_VIE_ID = 'kajabi-2148754050';
 export const BANNIERE_DEFAUT = '/compte/bienvenue-bureau.webp';
 export const BANNIERE_NATURE = '/compte/bienvenue-bureau-nature.webp';
@@ -124,8 +135,8 @@ export const BOUTIQUE: ArticleBoutique[] = [
   },
 ];
 
-// ─── Comment gagner des fanams ───────────────────────────────────────────────
-// La liste que lisent le profil, l'onglet Fanams et le PDF. Une ligne = une
+// ─── Comment gagner des niskas ───────────────────────────────────────────────
+// La liste que lisent le profil, l'onglet Niskas et le PDF. Une ligne = une
 // façon, dans l'ordre où une nouvelle membre les rencontre.
 export interface FaconDeGagner { pts: string; fr: string; en: string; noteFR?: string; noteEN?: string }
 export const FACONS_DE_GAGNER: FaconDeGagner[] = [
@@ -150,7 +161,7 @@ export const FACONS_DE_GAGNER: FaconDeGagner[] = [
   { pts: '10 par dollar', fr: 'Laisser un pourboire pendant le direct', en: 'Tip during the live', noteFR: '10 par dollar', noteEN: '10 per dollar' },
   { pts: `${POINTS.formation}`, fr: 'S’inscrire à une formation', en: 'Enrol in a program' },
   { pts: `${POINTS.origine}`, fr: 'Rejoindre l’Expérience Origine', en: 'Join the Origin Experience' },
-  { pts: `${PAQUET_FANAMS.fanams}`, fr: `Acheter un paquet de ${PAQUET_FANAMS.fanams} fanams`, en: `Buy a pack of ${PAQUET_FANAMS.fanams} fanams`, noteFR: `${PAQUET_FANAMS.prix} $`, noteEN: `$${PAQUET_FANAMS.prix}` },
+  { pts: `${PAQUET_NISKAS.niskas}`, fr: `Acheter un paquet de ${PAQUET_NISKAS.niskas} niskas`, en: `Buy a pack of ${PAQUET_NISKAS.niskas} niskas`, noteFR: `${PAQUET_NISKAS.prix} $`, noteEN: `$${PAQUET_NISKAS.prix}` },
 ];
 
 // ─── Tiers (cosmetic + milestone) ────────────────────────────────────────────

@@ -334,7 +334,7 @@ export async function adjustPoints(uid: string, delta: number, note?: string) {
 }
 
 // ─── La roue des sept jours ──────────────────────────────────────────────────
-// Le serveur juge la journée (functions/src/fanams.ts) : une réclamation par
+// Le serveur juge la journée (functions/src/niskas.ts) : une réclamation par
 // journée civile de Montréal, jamais deux, quelle que soit l'horloge du
 // navigateur. Le solde revient recalculé depuis le journal.
 export interface Quotidien { deja: boolean; jour: number; montant: number; serie: number; balance: number }
@@ -347,7 +347,7 @@ export async function reclamerQuotidien(uid: string): Promise<Quotidien> {
 }
 
 // ─── La petite boutique ──────────────────────────────────────────────────────
-// Le serveur débite (functions/src/fanams.ts); ici, l'appel et ce qu'on possède.
+// Le serveur débite (functions/src/niskas.ts); ici, l'appel et ce qu'on possède.
 export interface Possessions { possede: Record<string, unknown> }
 
 export function suivreBoutique(uid: string, cb: (p: Possessions) => void): Unsubscribe {
@@ -355,17 +355,17 @@ export function suivreBoutique(uid: string, cb: (p: Possessions) => void): Unsub
   return onSnapshot(doc(db, 'boutique', uid), snap => cb({ possede: (snap.data()?.possede as Record<string, unknown>) || {} }), () => cb({ possede: {} }));
 }
 
-export async function acheterAvecFanams(article: string): Promise<{ solde: number; article: string; nom: string }> {
-  if (!app) throw new Error('[Fanams] Firebase not configured');
-  const call = httpsCallable(getFunctions(app, 'us-central1'), 'acheterAvecFanams');
+export async function acheterAvecNiskas(article: string): Promise<{ solde: number; article: string; nom: string }> {
+  if (!app) throw new Error('[Niskas] Firebase not configured');
+  const call = httpsCallable(getFunctions(app, 'us-central1'), 'acheterAvecNiskas');
   const res = await call({ article });
   return res.data as { solde: number; article: string; nom: string };
 }
 
-/** Ouvre Stripe Checkout pour un paquet de cent fanams (dix dollars). */
-export async function acheterFanams(): Promise<string> {
-  if (!app) throw new Error('[Fanams] Firebase not configured');
-  const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionFanams');
+/** Ouvre Stripe Checkout pour un paquet de cent niskas (dix dollars). */
+export async function acheterNiskas(): Promise<string> {
+  if (!app) throw new Error('[Niskas] Firebase not configured');
+  const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionNiskas');
   const res = await call({});
   return (res.data as { url: string }).url;
 }

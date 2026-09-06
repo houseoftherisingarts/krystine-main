@@ -4,8 +4,8 @@ import {
   subscribeToMemberPoints, getMemberPoints, listPointsEvents, listMyRewardRedemptions, redeemReward, points, reconcileBalance,
   type PointsBalance, type PointsEvent, type RewardRedemption,
 } from '../../firebase/points';
-import { POINTS, TIERS, REWARDS, FACONS_DE_GAGNER, tierFromLifetime, rewardMinThreshold, fanams, type Reward } from '../../lib/pointsConfig';
-import PieceFanam from '../../components/client/PieceFanam';
+import { POINTS, TIERS, REWARDS, FACONS_DE_GAGNER, tierFromLifetime, rewardMinThreshold, niskas, type Reward } from '../../lib/pointsConfig';
+import PieceNiska from '../../components/client/PieceNiska';
 import PointsPlant, { type Stage } from '../../components/PointsPlant';
 
 // Labels for every PointsKind surfaced in the activity history. Kept here
@@ -34,7 +34,7 @@ const EVENT_LABELS: Record<string, { fr: string; en: string; icon: string }> = {
   rediffusion:{ fr: 'Rediffusion regardée',    en: 'Replay watched',          icon: 'fa-circle-play' },
   commentaire:{ fr: 'Commentaire laissé',      en: 'Comment left',            icon: 'fa-comment' },
   boutique:   { fr: 'Achat à la petite boutique', en: 'Little shop purchase', icon: 'fa-bag-shopping' },
-  'achat-fanams': { fr: 'Paquet de fanams acheté', en: 'Fanam pack bought',   icon: 'fa-coins' },
+  'achat-niskas': { fr: 'Paquet de niskas acheté', en: 'Niska pack bought',   icon: 'fa-coins' },
 };
 
 const ClientLoyalty: React.FC = () => {
@@ -90,7 +90,7 @@ const ClientLoyalty: React.FC = () => {
     try {
       const res = await points.welcomeBonus(user.uid);
       if (res.awarded > 0) {
-        setToast({ kind: 'ok', msg: lang === 'FR' ? `Bienvenue ! ${fanams(POINTS.welcome, 'FR')} ajoutés à votre bourse.` : `Welcome! ${fanams(POINTS.welcome, 'EN')} added to your purse.` });
+        setToast({ kind: 'ok', msg: lang === 'FR' ? `Bienvenue ! ${niskas(POINTS.welcome, 'FR')} ajoutés à votre bourse.` : `Welcome! ${niskas(POINTS.welcome, 'EN')} added to your purse.` });
       } else {
         // Server says the event is already recorded but the UI didn't have
         // it — reconcile the balance from the full event log (heals drift
@@ -142,7 +142,7 @@ const ClientLoyalty: React.FC = () => {
         setToast({ kind: 'ok', msg: lang === 'FR' ? 'Récompense demandée — vous recevrez votre code par courriel sous 24 h.' : 'Reward requested — you will receive your code by email within 24 h.' });
         await refreshHistory();
       } else if (res.reason === 'insufficient') {
-        setToast({ kind: 'err', msg: lang === 'FR' ? "Pas assez de fanams pour cette récompense." : 'Not enough fanams for this reward.' });
+        setToast({ kind: 'err', msg: lang === 'FR' ? "Pas assez de niskas pour cette récompense." : 'Not enough niskas for this reward.' });
       } else if (res.reason === 'one-shot') {
         setToast({ kind: 'err', msg: lang === 'FR' ? "Cette récompense a déjà été réclamée." : 'This reward has already been claimed.' });
       } else {
@@ -191,7 +191,7 @@ const ClientLoyalty: React.FC = () => {
           <div className="text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-3 mb-3">
               <p className="text-[10px] uppercase tracking-[0.3em] font-bold" style={{ color: current.accent }}>
-                {lang === 'FR' ? 'Vos fanams' : 'Your fanams'}
+                {lang === 'FR' ? 'Vos niskas' : 'Your niskas'}
               </p>
               {/* One-shot refresh — bypasses any wedged onSnapshot. */}
               <button
@@ -211,13 +211,13 @@ const ClientLoyalty: React.FC = () => {
             <div className="flex items-baseline justify-center md:justify-start gap-2 mb-3">
               <span className="text-6xl md:text-7xl font-serif text-[#293027] dark:text-white">{balance.balance}</span>
               <span className="inline-flex items-center gap-2 text-lg text-[#293027]/50 dark:text-white/50 uppercase tracking-widest font-bold">
-                <PieceFanam size={22} /> fanams
+                <PieceNiska size={22} /> niskas
               </span>
             </div>
             <p className="mb-2 max-w-md text-sm text-[#293027]/70 dark:text-white/70">
               {lang === 'FR'
-                ? 'Le fanam est la monnaie de votre espace : il se gagne en participant et se dépense à la petite boutique.'
-                : 'The fanam is the currency of your space: you earn it by taking part and spend it at the little shop.'}
+                ? 'Le niska est la monnaie de votre espace : il se gagne en participant et se dépense à la petite boutique.'
+                : 'The niska is the currency of your space: you earn it by taking part and spend it at the little shop.'}
             </p>
             <p className="text-[11px] text-[#293027]/50 dark:text-white/50 uppercase tracking-widest mb-4">
               {lang === 'FR' ? `Gagnés en tout · ${balance.lifetime} · c’est ce total qui fait pousser votre plante` : `Earned overall · ${balance.lifetime} · this total grows your plant`}
@@ -227,7 +227,7 @@ const ClientLoyalty: React.FC = () => {
                 <i className="fa-solid fa-sun" /> {lang === 'FR' ? 'Ma récompense du jour' : 'My reward of the day'}
               </button>
               <button type="button" onClick={() => window.dispatchEvent(new Event('krystine:ouvrir-boutique'))} className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] hover:bg-[#d9a05b]">
-                <i className="fa-solid fa-bag-shopping" /> {lang === 'FR' ? 'Acheter des fanams' : 'Buy fanams'}
+                <i className="fa-solid fa-bag-shopping" /> {lang === 'FR' ? 'Acheter des niskas' : 'Buy niskas'}
               </button>
             </div>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 dark:bg-white/10 backdrop-blur-sm text-[10px] uppercase tracking-[0.25em] font-bold" style={{ color: current.accent }}>
@@ -286,8 +286,8 @@ const ClientLoyalty: React.FC = () => {
             </p>
             <p className="font-serif text-[#293027] dark:text-white">
               {lang === 'FR'
-                ? `Réclamez vos ${fanams(POINTS.welcome, 'FR')} de bienvenue.`
-                : `Claim your ${fanams(POINTS.welcome, 'EN')} welcome gift.`}
+                ? `Réclamez vos ${niskas(POINTS.welcome, 'FR')} de bienvenue.`
+                : `Claim your ${niskas(POINTS.welcome, 'EN')} welcome gift.`}
             </p>
           </div>
           <span className="shrink-0 inline-flex items-center gap-2 bg-[#293027] dark:bg-[#BA7B39] text-white dark:text-[#293027] px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px]">
@@ -299,11 +299,11 @@ const ClientLoyalty: React.FC = () => {
       ) : (
         <div className="mb-6 px-5 py-3 rounded-2xl border border-[#293027]/5 dark:border-white/5 bg-white/50 dark:bg-white/5 flex items-center gap-3 text-sm text-[#293027]/70 dark:text-white/70">
           <i className="fa-solid fa-check-circle text-[#8B4A2F]" />
-          {lang === 'FR' ? `Cadeau de bienvenue reçu (+${fanams(POINTS.welcome, 'FR')})` : `Welcome gift received (+${fanams(POINTS.welcome, 'EN')})`}
+          {lang === 'FR' ? `Cadeau de bienvenue reçu (+${niskas(POINTS.welcome, 'FR')})` : `Welcome gift received (+${niskas(POINTS.welcome, 'EN')})`}
         </div>
       )}
 
-      {/* La plante : ce que les fanams gagnés font pousser */}
+      {/* La plante : ce que les niskas gagnés font pousser */}
       {next && (
         <div className="mb-8 rounded-2xl border border-[#293027]/10 bg-white/60 p-5 dark:border-white/10 dark:bg-white/5">
           <p className="text-[10px] uppercase tracking-[0.25em] font-bold" style={{ color: current.accent }}>
@@ -311,8 +311,8 @@ const ClientLoyalty: React.FC = () => {
           </p>
           <p className="mt-2 text-sm leading-relaxed text-[#293027]/80 dark:text-white/80">
             {lang === 'FR'
-              ? `Chaque fanam gagné fait pousser votre plante, et elle ne rapetisse jamais quand vous dépensez. Avec ${fanams(balance.lifetime, 'FR')} gagnés, elle est au stade ${current.labelFR}. Encore ${fanams(pointsToNext, 'FR')} et elle devient ${next.labelFR}.`
-              : `Every fanam you earn makes your plant grow, and it never shrinks when you spend. With ${fanams(balance.lifetime, 'EN')} earned, it is at the ${current.labelEN} stage. ${fanams(pointsToNext, 'EN')} more and it becomes ${next.labelEN}.`}
+              ? `Chaque niska gagné fait pousser votre plante, et elle ne rapetisse jamais quand vous dépensez. Avec ${niskas(balance.lifetime, 'FR')} gagnés, elle est au stade ${current.labelFR}. Encore ${niskas(pointsToNext, 'FR')} et elle devient ${next.labelFR}.`
+              : `Every niska you earn makes your plant grow, and it never shrinks when you spend. With ${niskas(balance.lifetime, 'EN')} earned, it is at the ${current.labelEN} stage. ${niskas(pointsToNext, 'EN')} more and it becomes ${next.labelEN}.`}
           </p>
           <div className="relative mt-4 h-2 rounded-full bg-[#293027]/5 dark:bg-white/10 overflow-hidden">
             <div
@@ -322,7 +322,7 @@ const ClientLoyalty: React.FC = () => {
           </div>
           <div className="mt-2 flex items-baseline justify-between text-[10px] uppercase tracking-widest font-bold text-[#293027]/50 dark:text-white/50">
             <span>{lang === 'FR' ? current.labelFR : current.labelEN} · {current.threshold}</span>
-            <span>{lang === 'FR' ? next.labelFR : next.labelEN} · {lang === 'FR' ? `${next.threshold} fanams gagnés` : `${next.threshold} fanams earned`}</span>
+            <span>{lang === 'FR' ? next.labelFR : next.labelEN} · {lang === 'FR' ? `${next.threshold} niskas gagnés` : `${next.threshold} niskas earned`}</span>
           </div>
         </div>
       )}
@@ -354,7 +354,7 @@ const ClientLoyalty: React.FC = () => {
               >
                 <div className="flex items-baseline justify-between mb-2 gap-2 flex-wrap">
                   <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#8B4A2F]">
-                    {fanams(r.cost, lang)}
+                    {niskas(r.cost, lang)}
                     {r.oneShot && (
                       <span className="text-[#293027]/50 dark:text-white/50 font-normal tracking-normal normal-case ml-2">
                         · {lang === 'FR' ? 'unique' : 'one-time'}
@@ -373,7 +373,7 @@ const ClientLoyalty: React.FC = () => {
                     </span>
                   ) : !canAfford ? (
                     <span className="text-[10px] uppercase tracking-[0.25em] text-[#293027]/40 dark:text-white/40">
-                      {lang === 'FR' ? `Encore ${fanams(r.cost - balance.balance, 'FR')}` : `${fanams(r.cost - balance.balance, 'EN')} away`}
+                      {lang === 'FR' ? `Encore ${niskas(r.cost - balance.balance, 'FR')}` : `${niskas(r.cost - balance.balance, 'EN')} away`}
                     </span>
                   ) : null}
                 </div>
@@ -413,7 +413,7 @@ const ClientLoyalty: React.FC = () => {
           <span className="flex items-center gap-3">
             <i className="fa-solid fa-circle-info text-[#8B4A2F]" />
             <span className="font-serif text-[#293027] dark:text-white">
-              {lang === 'FR' ? 'Comment gagner des fanams' : 'How to earn fanams'}
+              {lang === 'FR' ? 'Comment gagner des niskas' : 'How to earn niskas'}
             </span>
           </span>
           <i className={`fa-solid fa-chevron-down text-[#293027]/40 dark:text-white/40 text-xs transition-transform ${guideOpen ? 'rotate-180' : ''}`} />
@@ -424,7 +424,7 @@ const ClientLoyalty: React.FC = () => {
               <GuideRow key={f.fr} pts={f.pts} label={lang === 'FR' ? f.fr : f.en} note={lang === 'FR' ? f.noteFR : f.noteEN} />
             ))}
             <li className="pt-2">
-              <a href="/compte/comment-gagner-des-fanams.pdf" target="_blank" rel="noreferrer" className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F] underline-offset-4 hover:underline">
+              <a href="/compte/comment-gagner-des-niskas.pdf" target="_blank" rel="noreferrer" className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F] underline-offset-4 hover:underline">
                 <i className="fa-solid fa-file-pdf mr-2" />{lang === 'FR' ? 'Le guide en PDF' : 'The guide as a PDF'}
               </a>
             </li>
@@ -461,7 +461,7 @@ const ClientLoyalty: React.FC = () => {
                     {isCurrent && <span className="ml-2 text-[10px] uppercase tracking-widest font-bold text-[#8B4A2F]">· {lang === 'FR' ? 'Actuel' : 'Current'}</span>}
                   </p>
                   <p className="text-[11px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50">
-                    {lang === 'FR' ? `à partir de ${fanams(t.threshold, 'FR')} gagnés` : `from ${fanams(t.threshold, 'EN')} earned`}
+                    {lang === 'FR' ? `à partir de ${niskas(t.threshold, 'FR')} gagnés` : `from ${niskas(t.threshold, 'EN')} earned`}
                   </p>
                 </div>
               </li>

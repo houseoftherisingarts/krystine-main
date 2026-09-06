@@ -1,8 +1,8 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue, AggregateField } from 'firebase-admin/firestore';
 
-// Les fanams : la monnaie de l'espace client (le fanam, petite pièce d'or puis d'argent
-// du sud de l'Inde, née vers le treizième siècle et retirée en 1949). Le solde vit dans
+// Les niskas : la monnaie de l'espace client (le niska du Rig-Véda : l'ornement d'or
+// porté au cou qui servait déjà à compter la richesse, puis pièce d'or). Le solde vit dans
 // `memberPoints/{uid}` avec le journal `pointsEvents/{cle}`, comme les points
 // d'avant : seul le nom change. Ce module tient ce qui doit rester côté
 // serveur : les achats de la petite boutique (jamais un débit depuis le
@@ -19,6 +19,21 @@ const COSMETIQUES: Record<string, { cout: number; nom: string }> = {
   'skin-medzo': { cout: 5, nom: 'Skin Medzo Café' },
 };
 const COUT_EPISODE = 100;
+const COUT_VIDEO = 10;
+const CATALOGUE_VIDEOS = 'https://krystinestlaurent.ca/compte/videos-krystine.json';
+
+/** Le titre d'une vidéo de la chaîne, ou null si elle n'est pas au catalogue. */
+let cacheCatalogue: { lu: number; videos: Map<string, string> } | null = null;
+async function titreVideo(id: string): Promise<string | null> {
+  if (!/^[A-Za-z0-9_-]{11}$/.test(id)) return null;
+  if (!cacheCatalogue || Date.now() - cacheCatalogue.lu > 10 * 60 * 1000) {
+    const r = await fetch(CATALOGUE_VIDEOS);
+    if (!r.ok) throw new HttpsError('unavailable', 'Le catalogue des vidéos ne répond pas.');
+    const d = (await r.json()) as { videos?: Array<{ id: string; titre: string }> };
+    cacheCatalogue = { lu: Date.now(), videos: new Map((d.videos || []).map((v) => [v.id, v.titre])) };
+  }
+  return cacheCatalogue.videos.get(id) ?? null;
+}
 const ROUE_QUOTIDIENNE = [1, 1, 2, 2, 3, 3, 5];
 const FUSEAU = 'America/Toronto';
 
@@ -45,8 +60,8 @@ export async function recalculerSolde(uid: string): Promise<{ balance: number; l
 }
 
 
-/** Crédite des fanams une seule fois par clé (journal + solde), avec l'Admin SDK. */
-export async function crediterFanams(
+/** Crédite des niskas une seule fois par clé (journal + solde), avec l'Admin SDK. */
+export async function crediterNiskas(
   uid: string,
   kind: string,
   amount: number,
@@ -76,12 +91,12 @@ async function soldeVerifie(uid: string, balanceDoc: number): Promise<number> {
     const total = Number(agg.data().total || 0);
     return Math.min(balanceDoc, total);
   } catch (e) {
-    console.warn('[fanams] somme du journal indisponible', e);
+    console.warn('[niskas] somme du journal indisponible', e);
     return balanceDoc;
   }
 }
 
-export const acheterAvecFanams = onCall(
+export const acheterAvecNiskas = onCall(
   { region: 'us-central1' },
   async (req) => {
     if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour acheter.');
@@ -94,6 +109,11 @@ export const acheterAvecFanams = onCall(
     let leconId = '';
     if (COSMETIQUES[article]) {
       ({ cout, nom } = COSMETIQUES[article]);
+    } else if (article.startsWith('video:')) {
+      const t = await titreVideo(article.slice('video:'.length));
+      if (!t) throw new HttpsError('not-found', 'Cette vidéo n\'est pas au catalogue.');
+      cout = COUT_VIDEO;
+      nom = t;
     } else if (article.startsWith('episode:')) {
       leconId = article.slice('episode:'.length);
       const lecon = await db.doc(`formations/${SANTE_LA_VIE_ID}/lecons/${leconId}`).get();
@@ -110,7 +130,7 @@ export const acheterAvecFanams = onCall(
     const balDoc = Number(((await balRef.get()).data() as { balance?: number } | undefined)?.balance || 0);
     const solde = await soldeVerifie(uid, balDoc);
     if (solde < cout) {
-      throw new HttpsError('failed-precondition', `Il vous manque ${cout - solde} fanam${cout - solde > 1 ? 's' : ''}.`);
+      throw new HttpsError('failed-precondition', `Il vous manque ${cout - solde} niska${cout - solde > 1 ? 's' : ''}.`);
     }
 
     const [emission, formation] = leconId
@@ -132,7 +152,7 @@ export const acheterAvecFanams = onCall(
           titre: f.titre || 'Émission Santé! La Vie!',
           imageUrl: f.imageUrl || '',
           categorie: 'video',
-          source: 'fanams',
+          source: 'niskas',
           episodes: { [leconId]: FieldValue.serverTimestamp() },
           accordeLe: FieldValue.serverTimestamp(),
         }, { merge: true });
@@ -143,14 +163,14 @@ export const acheterAvecFanams = onCall(
           titre: f.titre || 'Expérience Origine · La musique',
           imageUrl: f.imageUrl || '',
           categorie: 'musique',
-          source: 'fanams',
+          source: 'niskas',
           accordeLe: FieldValue.serverTimestamp(),
         }, { merge: true });
       }
     });
 
     const { balance } = await recalculerSolde(uid);
-    console.log(`[fanams] ${uid} achète ${article} pour ${cout}, solde ${balance}`);
+    console.log(`[niskas] ${uid} achète ${article} pour ${cout}, solde ${balance}`);
     return { solde: balance, article, nom };
   },
 );

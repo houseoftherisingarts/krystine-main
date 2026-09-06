@@ -1,6 +1,6 @@
 import { onDocumentCreated, onDocumentUpdated } from 'firebase-functions/v2/firestore';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import { crediterFanams } from './fanams';
+import { crediterNiskas } from './niskas';
 
 // Les badges honorifiques se posent côté serveur seulement (anti-triche),
 // sur le patron du FMM : badges/{uid}.obtenus.{badgeId} = date.
@@ -44,7 +44,7 @@ export const badgePremierBillet = onDocumentCreated(
     const data = event.data?.data() as { uid?: string; fil?: string } | undefined;
     if (!data?.uid || data.fil !== 'communaute') return;
     await poserBadge(data.uid, 'premiere-etincelle');
-    await crediterFanams(data.uid, 'billet', 5, `billet:${data.uid}`);
+    await crediterNiskas(data.uid, 'billet', 5, `billet:${data.uid}`);
   },
 );
 
@@ -57,7 +57,7 @@ export const badgeAmitieAcceptee = onDocumentUpdated(
     if (avant?.statut === 'amis' || apres?.statut !== 'amis' || !apres.paire) return;
     for (const uid of apres.paire) {
       await poserBadge(uid, 'main-tendue');
-      await crediterFanams(uid, 'amitie', 2, `amitie:${event.params.id}:${uid}`);
+      await crediterNiskas(uid, 'amitie', 2, `amitie:${event.params.id}:${uid}`);
     }
   },
 );
