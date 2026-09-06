@@ -37,7 +37,7 @@ try:
 except ImportError:
     _SSL = ssl.create_default_context()
 
-VERSION = "2.1.0"
+VERSION = "2.1.1"
 PROJECT = "krystinestlaurent-87566"
 BASE = f"https://firestore.googleapis.com/v1/projects/{PROJECT}/databases/(default)/documents"
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -436,16 +436,18 @@ def system_prompt():
 
 def run_claude(prompt):
     cmd = ["claude", "-p", "--output-format", "json", "--json-schema", json.dumps(SCHEMA),
-           "--system-prompt", system_prompt(), "--model", MODEL, "--no-session-persistence", "--tools", ""]
+           "--system-prompt", system_prompt(), "--model", MODEL, "--no-session-persistence", "--tools", "",
+           "--strict-mcp-config"]  # aucun serveur MCP de la machine (Serena et compagnie restent fermés)
     out = subprocess.run(cmd, input=prompt, capture_output=True, text=True, timeout=CLAUDE_TIMEOUT, cwd=HERE)
-    if out.returncode != 0:
-        raise RuntimeError((out.stderr or out.stdout).strip()[:400] or f"claude a rendu {out.returncode}")
-    data = json.loads(out.stdout)
-    if data.get("is_error"):
-        r = str(data.get("result") or "")
-        if not r.strip() or "login" in r.lower() or "logged" in r.lower() or "auth" in r.lower():
-            r = "Claude Code n'est pas connecté sur cet ordinateur : ouvrez le Terminal, tapez « claude », puis « /login ». " + r
-        raise RuntimeError(r[:400])
+    try:
+        data = json.loads(out.stdout)
+    except ValueError:
+        data = {}
+    if out.returncode != 0 or data.get("is_error") or data.get("subtype", "").startswith("error"):
+        r = str(data.get("result") or "").strip() or out.stderr.strip() or out.stdout.strip()[:300] or f"claude a rendu {out.returncode}"
+        if not data.get("result") or any(m in r.lower() for m in ("login", "logged", "auth", "api key", "billing", "plan")):
+            r = "Claude Code de cet ordinateur n'a pas répondu (compte non relié, ou forfait sans accès à Claude Code). Ouvrez le Terminal, tapez « claude », puis « /login ». Détail : " + r
+        raise RuntimeError(r[:500])
     so = data.get("structured_output")
     if not so:
         so = json.loads(data.get("result") or "{}")
@@ -498,7 +500,7 @@ def handle(doc_id, d, update_time):
         patch(f"/irisDemandes/{doc_id}", champs)
         log(f"✓ {doc_id} en {round(time.time() - t0)} s{' · infolettre proposée' if prop else ''}{' · demande vers Vexel' if demande else ''}")
     except Exception as e:  # noqa: BLE001
-        msg = str(e)[:400]
+        msg = str(e)[:600]
         patch(f"/irisDemandes/{doc_id}", {"statut": "echec", "erreur": msg, "repondue": {"__ts": True}})
         log(f"✗ {doc_id} : {msg}")
 
