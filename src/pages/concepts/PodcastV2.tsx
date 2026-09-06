@@ -39,11 +39,20 @@ type Episode = {
   season: 1 | 2;
 };
 
-// La saison 2 a été lancée en 2026. Les épisodes publiés à partir de cette
-// année sont classés Saison 2, les autres Saison 1.
-function seasonFromDate(pubDate: string): 1 | 2 {
-  const y = new Date(pubDate).getFullYear();
-  return y >= 2026 ? 2 : 1;
+// La saison 2 vient de commencer (25 août 2026) avec un seul épisode à ce
+// jour, « Saison 2, épisode 0 : Quand le vide crée le plein », et la
+// rediffusion du live d'intuition les rejoint. Tout le reste de l'archive
+// (l'année complète de la saison 1) reste en Saison 1. Un classement par
+// année aurait mis presque tous les épisodes 2026 en Saison 2 — faux, donc
+// on classe par titre, pas par date.
+function seasonFromTitle(title: string): 1 | 2 {
+  const t = title
+    .toUpperCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '');
+  if (t.includes('REDIFFUSION')) return 2;
+  if (t.includes('VIDE CREE LE PLEIN')) return 2;
+  return 1;
 }
 
 async function fetchFeedXml(): Promise<string> {
