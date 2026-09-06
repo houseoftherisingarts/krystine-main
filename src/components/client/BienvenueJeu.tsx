@@ -45,7 +45,8 @@ const BienvenueJeu: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
     ];
 
   return (
-    <div data-bug-ignore className="fixed inset-0 z-[130] flex items-end justify-center bg-[#151d19]/60 p-4 backdrop-blur-sm sm:items-center" onClick={fermer}>
+    <Portail>
+    <div data-bug-ignore className="fixed inset-0 z-[130] flex items-end justify-center overflow-y-auto overscroll-contain bg-[#151d19]/60 p-4 backdrop-blur-sm sm:items-center" onClick={fermer}>
       <div
         role="dialog"
         aria-modal="true"
