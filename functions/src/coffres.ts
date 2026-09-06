@@ -182,18 +182,18 @@ export const ouvrirCoffre = onCall({ region: 'us-central1' }, async (req) => {
   const aujourdhui = journee();
 
   // Au plus cinq ouvertures par jour : le jeu reste un jeu.
-  const jour = await db.collection('coffresOuvertures').where('uid', '==', uid).where('jour', '==', aujourdhui).count().get();
-  if (jour.data().count >= OUVERTURES_PAR_JOUR) throw new HttpsError('resource-exhausted', `Cinq coffres par jour, c’est le maximum. À demain.`);
+  const dejaAujourdhui = await db.collection('coffresOuvertures').where('uid', '==', uid).where('jour', '==', aujourdhui).count().get();
+  if (dejaAujourdhui.data().count >= OUVERTURES_PAR_JOUR) throw new HttpsError('resource-exhausted', `Cinq coffres par jour, c’est le maximum. À demain.`);
 
   const contenu = CONTENUS[type];
   const ouverture = db.collection('coffresOuvertures').doc();
   await db.runTransaction(async (tx) => {
     const snap = await tx.get(ref);
-    const d = (snap.data() || {}) as { boites?: Record<string, number>; cles?: Record<string, number> };
+    const d = (snap.data() || {}) as { boites?: Record<string, number>; cles?: number };
     if ((d.boites?.[type] || 0) < 1) throw new HttpsError('failed-precondition', 'Vous n’avez pas ce coffre.');
-    if ((d.cles?.[type] || 0) < 1) throw new HttpsError('failed-precondition', 'Il vous manque la clé de ce coffre.');
-    tx.set(ref, { boites: { [type]: FieldValue.increment(-1) }, cles: { [type]: FieldValue.increment(-1) }, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
-    tx.set(ouverture, { uid, type, jour, at: FieldValue.serverTimestamp() });
+    if ((d.cles || 0) < 1) throw new HttpsError('failed-precondition', 'Achetez une clé : la même ouvre n’importe quel coffre.');
+    tx.set(ref, { boites: { [type]: FieldValue.increment(-1) }, cles: FieldValue.increment(-1), updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+    tx.set(ouverture, { uid, type, jour: aujourdhui, at: FieldValue.serverTimestamp() });
   });
 
   const lots: Array<Record<string, unknown>> = [];
