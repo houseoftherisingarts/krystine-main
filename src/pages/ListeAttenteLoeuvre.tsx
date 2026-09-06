@@ -6,6 +6,7 @@ import { useApp } from '../contexts/AppContext';
 import { addNewsletterSubscriber } from '../firebase/firestore';
 import { points } from '../firebase/points';
 import { COUNTRIES, findCountry } from '../lib/regions';
+import CompteUpsell from '../components/CompteUpsell';
 
 /**
  * /liste-attente — capture liste d'attente, langage V2 « magazine crème »
