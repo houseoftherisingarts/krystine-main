@@ -14,11 +14,11 @@ export interface ContenuCoffre {
 }
 
 export const COFFRES: Record<TypeCoffre, {
-  boite: number; cle: number; nomFR: string; nomEN: string; cleFR: string; cleEN: string;
+  boite: number; nomFR: string; nomEN: string;
   image: string; teinte: string; teinteClaire: string; teinteSombre: string; contenu: ContenuCoffre;
 }> = {
   bronze: {
-    boite: 60, cle: 10, nomFR: 'Coffre de bronze', nomEN: 'Bronze chest', cleFR: 'Clé de bronze', cleEN: 'Bronze key',
+    boite: 60, nomFR: 'Coffre de bronze', nomEN: 'Bronze chest',
     image: '/compte/coffres/bronze.webp', teinte: '#B0703F', teinteClaire: '#DCA678', teinteSombre: '#5E3A1E',
     contenu: {
       legendaire: 50, raresFR: 'aucun skin rare propre à ce coffre', raresEN: 'no rare skin of its own',
