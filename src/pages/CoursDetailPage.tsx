@@ -87,9 +87,11 @@ const CoursDetailPage: React.FC = () => {
     }).catch(() => {});
   }, [user, id]);
 
+  // ?acheter force le parcours d'achat, même pour une admin : sert à tester Stripe.
+  const forcerAchat = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('acheter');
   const accessible = useMemo(
-    () => isAdmin || achete || accesVie || (formation ? !formation.paywall : false),
-    [isAdmin, achete, accesVie, formation],
+    () => !forcerAchat && (isAdmin || achete || accesVie || (formation ? !formation.paywall : false)),
+    [forcerAchat, isAdmin, achete, accesVie, formation],
   );
 
   const porteOuverteRang = rangPorte(porteDuMois().n);
