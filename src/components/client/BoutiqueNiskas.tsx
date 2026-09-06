@@ -5,12 +5,13 @@ import { updateMember } from '../../firebase/firestore';
 import { getLecons, type Lecon } from '../../firebase/formations';
 import { acheterAvecNiskas, acheterNiskas, subscribeToMemberPoints, suivreBoutique, type PointsBalance } from '../../firebase/points';
 import {
-  CATEGORIES_BOUTIQUE, skinParCle,
+  CATEGORIES_BOUTIQUE, skinParCle, banniereParCle,
   BANNIERE_NATURE, BOUTIQUE, COUT_EPISODE, COUT_SAISON, SAISONS_SANTE_LA_VIE, PAQUET_NISKAS, SANTE_LA_VIE_ID, niskas,
 } from '../../lib/pointsConfig';
 import { COFFRES } from '../../lib/coffresConfig';
 import PieceNiska from './PieceNiska';
 import Coffres from './Coffres';
+import FondEcran from './FondEcran';
 
 // La petite boutique, dans l'onglet Téléchargements. Quatre façons de
 // personnaliser son espace pour cinq niskas chacune (une bannière, la
@@ -38,6 +39,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
   const [occupe, setOccupe] = useState<string | null>(null);
   const [paquetsOuverts, setPaquetsOuverts] = useState(false);
   const [message, setMessage] = useState<{ ton: 'ok' | 'err'; texte: string } | null>(null);
+  const [fondOuvert, setFondOuvert] = useState<string | null>(null); // la clé de la bannière dont on montre le fond d'écran
 
   useEffect(() => {
     if (!user) return;
@@ -80,7 +82,6 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
   };
 
   const perso = member?.personnalisation || {};
-  const aBanniere = !!possede['banniere-nature'];
   const aMusique = !!possede['musique-origine'] || possedeMusiqueDeja;
   const aAccesVideos = !!possede['acces-videos'];
 
@@ -224,10 +225,23 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
           const desc = fr ? a.descFR : a.descEN;
           let visuel: React.ReactNode;
           let etat: React.ReactNode;
-          if (a.id === 'banniere-nature') {
-            visuel = <img src={BANNIERE_NATURE} alt="" className="h-28 w-full object-cover" />;
-            etat = aBanniere
-              ? bascule(perso.banniere === 'nature', () => activer({ banniere: perso.banniere === 'nature' ? 'defaut' : 'nature' }), fr ? 'En place' : 'In place', fr ? 'Mettre en bannière' : 'Set as banner')
+          if (a.categorie === 'banniere') {
+            const b = banniereParCle(a.id.slice(9));
+            visuel = <img src={b?.image || BANNIERE_NATURE} alt="" className="h-28 w-full object-cover" loading="lazy" />;
+            etat = possede[a.id] && b
+              ? (
+                <div className="flex flex-wrap gap-2">
+                  {bascule(perso.banniere === b.cle, () => activer({ banniere: perso.banniere === b.cle ? 'defaut' : b.cle }), fr ? 'En place' : 'In place', fr ? 'Mettre en bannière' : 'Set as banner')}
+                  <a href={b.image} download className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
+                    <i className="fa-solid fa-download text-[9px]" /> {fr ? 'Télécharger' : 'Download'}
+                  </a>
+                  {b.fond && (
+                    <button type="button" onClick={() => setFondOuvert(b.cle)} className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
+                      <i className="fa-solid fa-desktop text-[9px]" /> {fr ? 'Fond d’écran' : 'Wallpaper'}
+                    </button>
+                  )}
+                </div>
+              )
               : boutonAchat(a.id, nom, a.cout);
           } else if (a.id === 'musique-origine') {
             visuel = (
@@ -288,6 +302,10 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
       </div>
       </div>
       ))}
+
+      {fondOuvert && banniereParCle(fondOuvert)?.fond && (
+        <FondEcran ouvert onFermer={() => setFondOuvert(null)} image={banniereParCle(fondOuvert)!.fond!} nom={fr ? banniereParCle(fondOuvert)!.nomFR : banniereParCle(fondOuvert)!.nomEN} lang={lang} />
+      )}
 
       <Coffres solde={solde.balance} onChange={onAchat} />
 

@@ -23,7 +23,7 @@ import ClientRediffusions from './client/ClientRediffusions';
 import ProblemeTechnique from '../components/client/ProblemeTechnique';
 import ClientPreferences from './client/ClientPreferences';
 import { subscribeToMemberPoints, suivreBoutique, points, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
-import { BANNIERE_DEFAUT, BANNIERE_NATURE, FACONS_DE_GAGNER, niskas, skinParCle } from '../lib/pointsConfig';
+import { BANNIERE_DEFAUT, BANNIERES, banniereParCle, FACONS_DE_GAGNER, niskas, skinParCle } from '../lib/pointsConfig';
 import PieceNiska from '../components/client/PieceNiska';
 import RoueQuotidienne from '../components/client/RoueQuotidienne';
 import BienvenueJeu from '../components/client/BienvenueJeu';
@@ -248,10 +248,10 @@ const BanniereChoix: React.FC<{
   uid: string;
   isDefaultBanner?: boolean;
   perso: NonNullable<MemberDoc['personnalisation']>;
-  possedeNature: boolean;
+  possede: Record<string, unknown>;
   aPhoto: boolean;
   lang: string;
-}> = ({ uid, isDefaultBanner, perso, possedeNature, aPhoto, lang }) => {
+}> = ({ uid, isDefaultBanner, perso, possede, aPhoto, lang }) => {
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState(false);
   const [ouvert, setOuvert] = useState(false);
@@ -264,7 +264,7 @@ const BanniereChoix: React.FC<{
       localStorage.setItem(FLASH_KEY, '1');
     } catch { /* stockage indisponible, tant pis pour le flash */ }
   }, [isDefaultBanner]);
-  const choisir = async (banniere: 'defaut' | 'nature' | 'photo') => {
+  const choisir = async (banniere: string) => {
     setOuvert(false);
     await updateMember(uid, { personnalisation: { ...perso, banniere } });
   };
@@ -307,16 +307,16 @@ const BanniereChoix: React.FC<{
           <button type="button" className={ligne} onClick={() => choisir('defaut')}>
             {coche('defaut')}<span className="flex-1">{fr ? 'Féminité & Ayurveda (bannière d’origine)' : 'Féminité & Ayurveda (original banner)'}</span>
           </button>
-          {possedeNature ? (
-            <button type="button" className={ligne} onClick={() => choisir('nature')}>
-              {coche('nature')}<span className="flex-1">Nature & Ayurveda</span>
+          {BANNIERES.map(b => possede[`banniere-${b.cle}`] ? (
+            <button key={b.cle} type="button" className={ligne} onClick={() => choisir(b.cle)}>
+              {coche(b.cle)}<span className="flex-1">{(fr ? b.nomFR : b.nomEN).replace(/^Bannière\s+|\s+banner$/i, '')}</span>
             </button>
           ) : (
-            <button type="button" className={ligne} onClick={() => { setOuvert(false); window.dispatchEvent(new Event('krystine:ouvrir-boutique')); }}>
+            <button key={b.cle} type="button" className={ligne} onClick={() => { setOuvert(false); window.dispatchEvent(new Event('krystine:ouvrir-boutique')); }}>
               <i className="fa-solid fa-lock text-sm text-[#293027]/30 dark:text-white/30" />
-              <span className="flex-1">Nature & Ayurveda <span className="text-[#293027]/50 dark:text-white/50">· {fr ? '5 niskas à la petite boutique' : '5 niskas at the little shop'}</span></span>
+              <span className="flex-1">{(fr ? b.nomFR : b.nomEN).replace(/^Bannière\s+|\s+banner$/i, '')} <span className="text-[#293027]/50 dark:text-white/50">· {fr ? `${b.cout} niskas à la boutique` : `${b.cout} niskas at the shop`}</span></span>
             </button>
-          )}
+          ))}
         </div>
       )}
       {flash && (
@@ -385,7 +385,7 @@ const ClientPortal: React.FC = () => {
     return () => window.removeEventListener('ksl:ouvrir-lettres', aller);
   }, []);
   const [editOuvert, setEditOuvert] = useState(false);
-  const [possedeNature, setPossedeNature] = useState(false);
+  const [possedeBoutique, setPossedeBoutique] = useState<Record<string, unknown>>({});
   // L'aperçu d'un skin, le temps d'un survol dans la petite boutique.
   const [apercuSkin, setApercuSkin] = useState<string | null>(null);
   // Les cadeaux de Krystine ne s'affichent que dans la messagerie et dans la
@@ -397,7 +397,7 @@ const ClientPortal: React.FC = () => {
   }, []);
   useEffect(() => {
     if (!user) return;
-    return suivreBoutique(user.uid, (p) => setPossedeNature(!!p.possede['banniere-nature']));
+    return suivreBoutique(user.uid, (p) => setPossedeBoutique(p.possede));
   }, [user]);
   // Profil complété (photo, nom, dosha) : cinq niskas, une fois.
   useEffect(() => {
@@ -484,7 +484,9 @@ const ClientPortal: React.FC = () => {
   ];
 
   const perso = member?.personnalisation || {};
-  const banniere = perso.banniere === 'nature' ? BANNIERE_NATURE : perso.banniere === 'defaut' ? BANNIERE_DEFAUT : (member?.bannerURL || BANNIERE_DEFAUT);
+  const banniere = perso.banniere && perso.banniere !== 'defaut' && perso.banniere !== 'photo' && banniereParCle(perso.banniere)
+    ? banniereParCle(perso.banniere)!.image
+    : perso.banniere === 'defaut' ? BANNIERE_DEFAUT : (member?.bannerURL || BANNIERE_DEFAUT);
   const skinActif = apercuSkin || perso.skin || '';
   const skin = skinActif && skinParCle(skinActif) ? `skin-${skinActif}` : '';
 
@@ -507,7 +509,7 @@ const ClientPortal: React.FC = () => {
             </p>
           </div>
         )}
-        <BanniereChoix uid={user.uid} isDefaultBanner={!member?.bannerURL && perso.banniere !== 'nature'} perso={perso} possedeNature={possedeNature} aPhoto={!!member?.bannerURL} lang={lang} />
+        <BanniereChoix uid={user.uid} isDefaultBanner={!member?.bannerURL && (!perso.banniere || perso.banniere === 'defaut')} perso={perso} possede={possedeBoutique} aPhoto={!!member?.bannerURL} lang={lang} />
         <div className="absolute inset-x-0 bottom-0">
           <div className="flex items-end gap-5 px-6 pb-5 md:px-8 lg:px-10">
             <button

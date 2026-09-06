@@ -32,7 +32,7 @@ const jour = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Toronto', yea
 await fsdoc(`pointsEvents/adjust:${uid}:qa`, { uid: { stringValue: uid }, kind: { stringValue: 'adjust' }, amount: { integerValue: '1610' }, dedupKey: { stringValue: `adjust:${uid}:qa` }, at: { timestampValue: new Date().toISOString() } });
 await fsdoc(`pointsEvents/redeem:${uid}:qa`, { uid: { stringValue: uid }, kind: { stringValue: 'redeem' }, amount: { integerValue: '-398' }, dedupKey: { stringValue: `redeem:${uid}:qa` }, at: { timestampValue: new Date().toISOString() } });
 await fsdoc(`memberPoints/${uid}`, { balance: { integerValue: '1212' }, lifetime: { integerValue: '1610' }, dernierJour: { stringValue: jour }, serie: { integerValue: '3' } });
-await fsdoc(`boutique/${uid}`, { possede: { mapValue: { fields: { 'skin-coffee': { timestampValue: new Date().toISOString() } } } } });
+await fsdoc(`boutique/${uid}`, { possede: { mapValue: { fields: { 'skin-coffee': { timestampValue: new Date().toISOString() }, 'banniere-iris': { timestampValue: new Date().toISOString() } } } } });
 await fsdoc(`coffres/${uid}`, { boites: { mapValue: { fields: { bronze: { integerValue: '1' }, argent: { integerValue: '0' }, or: { integerValue: '0' } } } }, cles: { mapValue: { fields: { bronze: { integerValue: '1' }, argent: { integerValue: '0' }, or: { integerValue: '0' } } } } });
 
 const authUser = {
@@ -66,6 +66,9 @@ const shoot = async (largeur, hauteur, suffixe) => {
   const skins = page.locator('#boutique-skin');
   if (await skins.count()) { await skins.scrollIntoViewIfNeeded(); await page.waitForTimeout(500); await page.screenshot({ path: `${OUT}/qa-skins-coffee-${suffixe}.png` }); }
   else await page.screenshot({ path: `${OUT}/qa-skins-coffee-${suffixe}.png`, fullPage: false });
+  const ban = page.locator('#boutique-banniere');
+  if (await ban.count()) { await ban.scrollIntoViewIfNeeded(); await page.waitForTimeout(400); await page.screenshot({ path: `${OUT}/qa-bannieres-${suffixe}.png` });
+    const fond = page.getByRole('button', { name: /Fond d’écran|Wallpaper/ }).first(); if (await fond.count()) { await fond.click({ force: true }).catch(() => {}); await page.waitForTimeout(700); await page.screenshot({ path: `${OUT}/qa-fond-${suffixe}.png` }); await page.keyboard.press('Escape'); await page.mouse.click(5, 5); await page.waitForTimeout(300); } }
   const coffres = page.locator('#boutique-coffres');
   if (await coffres.count()) {
     await coffres.scrollIntoViewIfNeeded(); await page.waitForTimeout(400);
