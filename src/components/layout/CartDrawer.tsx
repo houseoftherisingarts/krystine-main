@@ -80,6 +80,7 @@ const CartDrawer: React.FC = () => {
   };
 
   return (
+    <Portail>
     <>
       {/* Backdrop */}
       <div
@@ -88,7 +89,7 @@ const CartDrawer: React.FC = () => {
       />
 
       {/* Drawer */}
-      <div className={`fixed right-0 top-0 h-full w-full max-w-md bg-white dark:bg-[#2a2015] shadow-2xl z-[101] transform transition-transform duration-500 ease-out flex flex-col ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`fixed right-0 top-0 h-full w-full max-w-md overflow-y-auto overscroll-contain bg-white dark:bg-[#2a2015] shadow-2xl z-[101] transform transition-transform duration-500 ease-out flex flex-col ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         
         {/* Header */}
         <div className="p-6 border-b border-[#2a2015]/10 dark:border-white/10 flex justify-between items-center bg-[#f6f3ee] dark:bg-[#16100a]">
