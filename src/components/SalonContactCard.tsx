@@ -25,6 +25,7 @@ import { motion } from 'framer-motion';
 import { addVexelInquiry } from '../firebase/firestore';
 import { useAuth } from '../contexts/AppContext';
 import CompteUpsell from './CompteUpsell';
+import Portail from './Portail';
 
 interface Props {
   open: boolean;
