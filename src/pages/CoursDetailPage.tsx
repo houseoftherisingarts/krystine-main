@@ -62,6 +62,7 @@ const CoursDetailPage: React.FC = () => {
   };
   const [live, setLive] = useState<LiveEnCours | null>(null);
   useEffect(() => suivreLiveEnCours(setLive), []);
+  const [liveOuvert, setLiveOuvert] = useState(false);
   const [terminees, setTerminees] = useState<Record<string, boolean>>({});
   // La dernière leçon ouverte, pour y revenir d'emblée à la prochaine visite.
   const [derniere, setDerniere] = useState<string | null>(null);
