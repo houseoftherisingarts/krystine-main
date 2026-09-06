@@ -153,7 +153,7 @@ async function scenarioC5(browser) {
     const { uid, email, u } = await nouveauCompte('c5-sanscle');
     const { ctx, page } = await pageAvecSession(browser, u, uid, email, 'c5a');
     await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(2200); await fermerBienvenue(page); await page.waitForTimeout(500);
+    await page.waitForTimeout(2200); await fermerBienvenue(page); await fermerRoueSiPresente(page); await page.waitForTimeout(500);
     await carte(page, 'bronze').scrollIntoViewIfNeeded();
     await clic(page, boutonCoffre(page, 'bronze'));
     await page.getByText(/c’est fait|done\./i).first().waitFor({ timeout: 6000 });
