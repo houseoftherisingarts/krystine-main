@@ -142,10 +142,10 @@ export const BANNIERES: Banniere[] = [
   // boutique pour son fond d'écran, son aperçu et sa version sans signature.
   { cle: 'defaut', cout: 0, nomFR: 'Bannière Féminité & Ayurveda', nomEN: 'Féminité & Ayurveda banner',
     descFR: 'La bannière d’origine de votre espace : le bureau, le carnet et Féminité & Ayurveda. Offerte à toutes.', descEN: 'Your space’s original banner: the desk, the journal and Féminité & Ayurveda. Yours from the start.',
-    image: BANNIERE_DEFAUT, fond: '/compte/fonds/defaut.webp' },
+    image: BANNIERE_DEFAUT, fond: '/compte/fonds/defaut-1920.webp' },
   { cle: 'nature', cout: 5, nomFR: 'Bannière Nature & Ayurveda', nomEN: 'Nature & Ayurveda banner',
     descFR: 'La même scène que votre bannière, avec Nature & Ayurveda posé sur la table.', descEN: 'The same scene as your banner, with Nature & Ayurveda on the table.',
-    image: BANNIERE_NATURE, fond: '/compte/fonds/nature.webp' },
+    image: BANNIERE_NATURE, fond: '/compte/fonds/nature-1920.webp' },
   { cle: 'iris', cout: 8, nomFR: 'Bannière L’iris du matin', nomEN: 'Morning Iris banner',
     descFR: 'Le bureau de trois quarts, au soleil du matin, avec un iris versicolore en pot et le carnet ouvert.', descEN: 'The desk at a three-quarter angle in morning sun, a potted iris versicolor and the open journal.',
     image: '/compte/bannieres/iris.webp', fond: '/compte/fonds/iris.webp' },
@@ -163,7 +163,7 @@ export const BANNIERES: Banniere[] = [
     image: '/compte/bannieres/soir.webp', fond: '/compte/fonds/soir.webp' },
 ];
 export const banniereParCle = (cle: string) => BANNIERES.find(b => b.cle === cle);
-export const FOND_DEFAUT = '/compte/fonds/defaut.webp';
+export const FOND_DEFAUT = '/compte/fonds/defaut-1920.webp';
 
 export type CategorieBoutique = 'banniere' | 'musique' | 'skin';
 export const CATEGORIES_BOUTIQUE: { id: CategorieBoutique; titreFR: string; titreEN: string; texteFR: string; texteEN: string; icone: string }[] = [

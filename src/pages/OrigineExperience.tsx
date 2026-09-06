@@ -431,7 +431,7 @@ const OrigineExperience: React.FC = () => {
           <div className={`relative w-full ${GUT} ${G12} gap-y-12 items-center`}>
             <Reveal className="col-span-12 md:col-span-6 md:col-start-7">
               <span className="inline-flex items-center gap-2 rounded-full border border-brass/30 text-brassInk px-3 py-1 text-[0.6rem] uppercase tracking-[0.18em]"><BookOpen size={12} /> Journal d'observation</span>
-              <SectionTitle className="mt-5">L'accompagnement pour réfléchir, noter, observer, intégrer.</SectionTitle>
+              <SectionTitle className="mt-5">Un journal pour ce qui se dépose en vous.</SectionTitle>
               <ul className="mt-8 space-y-4 max-w-[62ch]">
                 {["L'observation des repères saisonniers pour s'ajuster au fil des semaines.", "L'intégration de rituels ancrés dans la sagesse ayurvédique.", "L'espace d'écriture pour suivre ce qui se dépose en vous."].map((li) => (
                   <li key={li} className="flex items-start gap-3 text-inkSoft font-sans text-[0.98rem] leading-relaxed">

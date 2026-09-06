@@ -9,6 +9,11 @@
 import { chromium } from 'playwright';
 import { mkdirSync } from 'node:fs';
 
+// Sans ces trois drapeaux, Chromium sans tête plafonne à trente images par
+// seconde et toutes les scènes se ressemblent. Débridé, une page vide monte à
+// plus de quatre cents : le chiffre mesure alors le vrai coût de la scène.
+const ARGS = ['--disable-gpu-vsync', '--disable-frame-rate-limit', '--disable-features=CalculateNativeWinOcclusion'];
+
 const BASE = process.env.BASE || 'http://localhost:5199';
 const SORTIE = process.env.SORTIE || 'scripts/qa/shots/skins';
 const TOUS = ['medzo', 'nuit', 'coffee', 'aube', 'terre', 'foret', 'ocean', 'encre',
@@ -17,7 +22,7 @@ const SKINS = process.argv.slice(2).length ? process.argv.slice(2) : TOUS;
 const PLANCHER = 50;
 
 mkdirSync(SORTIE, { recursive: true });
-const navigateur = await chromium.launch();
+const navigateur = await chromium.launch({ args: ARGS });
 const ctx = await navigateur.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
 const page = await ctx.newPage();
 page.on('pageerror', e => console.log(`  [erreur] ${e.message}`));

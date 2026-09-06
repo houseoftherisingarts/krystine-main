@@ -6,6 +6,11 @@
 import { chromium } from 'playwright';
 import { mkdirSync } from 'node:fs';
 
+// Sans ces trois drapeaux, Chromium sans tête plafonne à trente images par
+// seconde et toutes les scènes se ressemblent. Débridé, une page vide monte à
+// plus de quatre cents : le chiffre mesure alors le vrai coût de la scène.
+const ARGS = ['--disable-gpu-vsync', '--disable-frame-rate-limit', '--disable-features=CalculateNativeWinOcclusion'];
+
 const BASE = process.env.BASE || 'http://localhost:5199';
 const OUT = '/private/tmp/claude-501/-Users-lesalondesinconnus/3a548c8f-1fba-4e35-b513-f459846a1c9b/scratchpad/skins-legendaires';
 const SKINS = ['vata', 'pitta', 'kapha'];
@@ -16,7 +21,7 @@ const ECRANS = [
 
 mkdirSync(OUT, { recursive: true });
 
-const navigateur = await chromium.launch();
+const navigateur = await chromium.launch({ args: ARGS });
 const resultats = [];
 
 for (const ecran of ECRANS) {

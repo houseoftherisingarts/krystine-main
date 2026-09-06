@@ -9,7 +9,8 @@ mkdirSync(OUT, { recursive: true });
 
 const b = await chromium.launch();
 const p = await b.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
-await p.goto(URL, { waitUntil: 'networkidle', timeout: 60000 });
+await p.goto(URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
+await p.waitForSelector('div.bg-cream section', { timeout: 30000 });
 await p.addStyleTag({ content: 'html{scroll-behavior:auto !important}' });
 await p.evaluate(() => document.fonts.ready);
 await p.waitForTimeout(1500);
@@ -90,7 +91,8 @@ for (let i = 0; i < 10; i++) {
 
 // ── Mobile ─────────────────────────────────────────────────────────────────
 const m = await b.newPage({ viewport: { width: 390, height: 844 } });
-await m.goto(URL, { waitUntil: 'networkidle', timeout: 60000 });
+await m.goto(URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
+await m.waitForSelector('div.bg-cream section', { timeout: 30000 });
 await m.evaluate(() => document.fonts.ready);
 await m.waitForTimeout(1500);
 await m.screenshot({ path: `${OUT}/m-fullpage.png`, fullPage: true });
