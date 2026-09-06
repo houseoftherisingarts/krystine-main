@@ -1100,9 +1100,8 @@
     var B='https://storage.googleapis.com/inspirata/Base%20site/promo-2024/';
     function go(){ if(pl.classList.contains('on')) return; pl.classList.add('on');
       var v=document.createElement('video'); v.controls=true; v.playsInline=true; v.preload='auto';
-      // Le film commence à 11,5 s : les cartons-titres du début restent hors champ.
-      v.src=B+(window.innerWidth>900?'promo-ksl-1080.mp4':'promo-ksl-720.mp4')+'#t=11.5'; pl.appendChild(v);
-      v.addEventListener('loadedmetadata',function(){ if(v.currentTime<11) v.currentTime=11.5; },{once:true});
+      // Le film est coupé après ses cartons-titres : il commence directement sur la salle.
+      v.src=B+(window.innerWidth>900?'promo-ksl-v2-1080.mp4':'promo-ksl-v2-720.mp4'); pl.appendChild(v);
       var amb=document.getElementById('amb'); if(amb&&!amb.paused){ amb.pause(); var t=document.getElementById('ambtoggle'); if(t){ t.classList.add('muted'); t.setAttribute('aria-pressed','false'); } }
       var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
     pl.addEventListener('click',go); pl.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } });
