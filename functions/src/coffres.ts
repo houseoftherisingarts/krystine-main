@@ -87,6 +87,18 @@ const LEGENDAIRES = ['skin-vata', 'skin-pitta', 'skin-kapha'];
 const COMMUNS = ['skin-medzo', 'skin-nuit', 'skin-coffee', 'skin-aube', 'skin-terre', 'skin-foret', 'skin-ocean', 'skin-encre', 'banniere-nature', 'banniere-iris', 'banniere-pivoine', 'banniere-huiles', 'banniere-jardin', 'banniere-soir'];
 const NISKAS_MUSIQUE_DEJA = 10;
 
+// La valeur d'un cosmétique déjà possédé, pour le convertir en niskas (× 1,05,
+// arrondi au niska supérieur). Les communs et bannières reprennent leur coût
+// exact de la petite boutique (COSMETIQUES, functions/src/niskas.ts); les
+// skins légendaires et rares, exclusifs aux coffres, n'ont pas de prix boutique
+// — valeur publiée ici, choisie par palier de rareté.
+const VALEUR_COSMETIQUE: Record<string, number> = {
+  'skin-medzo': 5, 'skin-nuit': 5, 'skin-coffee': 5, 'skin-aube': 15, 'skin-terre': 20, 'skin-foret': 25, 'skin-ocean': 35, 'skin-encre': 55,
+  'banniere-nature': 5, 'banniere-iris': 8, 'banniere-pivoine': 12, 'banniere-huiles': 12, 'banniere-jardin': 15, 'banniere-soir': 18,
+  'skin-vata': 75, 'skin-pitta': 75, 'skin-kapha': 75,
+  'skin-lotus': 100, 'skin-feminite': 100, 'skin-nature': 100,
+  'skin-aurore': 180, 'skin-or-pur': 180,
+};
 const NOMS_COSMETIQUES: Record<string, string> = {
   'skin-medzo': 'Skin Medzo Café', 'skin-nuit': 'Skin Nuit', 'skin-coffee': 'Skin Dark Coffee', 'banniere-nature': 'Bannière Nature & Ayurveda',
   'skin-aube': 'Skin Aube rose', 'skin-terre': 'Skin Terre cuite', 'skin-foret': 'Skin Forêt', 'skin-ocean': 'Skin Océan', 'skin-encre': 'Skin Encre & or',

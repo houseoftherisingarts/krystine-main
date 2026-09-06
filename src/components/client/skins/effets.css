@@ -227,12 +227,68 @@
 .skin-aurore .rounded-\[24px\] > *,
 .skin-aurore .rounded-\[18px\] > * { position: relative; z-index: 3; }
 
+/* Vata · les cartes frémissent au passage, comme sous une brise. Le mouvement
+   est minuscule et se joue une seule fois : à deux degrés près il deviendrait
+   du gadget, et à répétition il empêcherait de lire. */
+@keyframes sk-vata-fremir {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  22%  { transform: translate3d(1.5px, -2px, 0) rotate(0.22deg); }
+  52%  { transform: translate3d(-1px, -0.5px, 0) rotate(-0.16deg); }
+  78%  { transform: translate3d(0.6px, -1px, 0) rotate(0.08deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+@media (hover: hover) and (pointer: fine) {
+  .skin-vata .rounded-\[24px\]:hover,
+  .skin-vata .rounded-\[18px\]:hover { animation: sk-vata-fremir 1400ms cubic-bezier(0.33, 1, 0.68, 1); }
+}
+
+/* ── Heure dorée ───────────────────────────────────────────────────────────
+   Le survol fait monter la lumière du bas du bouton, comme un rayon qui
+   remonte, et pose un liseré ambré sur son bord haut. Les cartes prennent la
+   même lumière rasante, de biais. */
+@media (hover: hover) and (pointer: fine) {
+  .skin-golden-hour button::after,
+  .skin-golden-hour a::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      linear-gradient(to top, rgba(255, 218, 158, 0.42), transparent 58%),
+      linear-gradient(to bottom, rgba(255, 240, 205, 0.5), transparent 22%);
+    opacity: 0;
+    transform: translateY(5px);
+    transition: opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+                transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .skin-golden-hour button:hover::after,
+  .skin-golden-hour a:hover::after { opacity: 1; transform: translateY(0); }
+  .skin-golden-hour button:hover,
+  .skin-golden-hour a:hover {
+    box-shadow: 0 12px 34px -14px rgba(224, 168, 60, 0.85),
+                0 0 0 1px rgba(243, 201, 76, 0.4);
+  }
+  .skin-golden-hour .rounded-\[24px\],
+  .skin-golden-hour .rounded-\[18px\] {
+    transition: box-shadow 520ms cubic-bezier(0.22, 1, 0.36, 1), border-color 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .skin-golden-hour .rounded-\[24px\]:hover,
+  .skin-golden-hour .rounded-\[18px\]:hover {
+    border-color: rgba(255, 218, 158, 0.34) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 240, 205, 0.28),
+                inset 24px 0 48px -46px rgba(255, 218, 158, 0.9),
+                0 18px 40px -26px rgba(224, 168, 60, 0.6);
+  }
+}
+
 /* Moins d'animations : les scènes se figent côté canevas, et ici tout ce qui
    bat, tourne ou balaie s'arrête. Les états de survol restent lisibles. */
 @media (prefers-reduced-motion: reduce) {
   .skin-vata button::after, .skin-vata a::after,
   .skin-pitta button::after, .skin-pitta a::after,
-  .skin-aurore button::after, .skin-aurore a::after {
+  .skin-aurore button::after, .skin-aurore a::after,
+  .skin-golden-hour button::after, .skin-golden-hour a::after {
     animation: none;
     transition: opacity 200ms ease;
     background-position: 50% 0;
@@ -242,6 +298,10 @@
     box-shadow: 0 0 0 1px rgba(255, 122, 47, 0.5), 0 8px 24px -14px rgba(255, 122, 47, 0.7);
   }
   .skin-vata button:hover, .skin-vata a:hover { transform: none; }
+  .skin-vata .rounded-\[24px\]:hover,
+  .skin-vata .rounded-\[18px\]:hover { animation: none !important; }
+  .skin-golden-hour button::after, .skin-golden-hour a::after { transform: none; }
+  .skin-video, .skin-voile { transition: none; }
   .skin-aurore .rounded-\[24px\]::before, .skin-aurore .rounded-\[18px\]::before,
   .skin-aurore .rounded-\[24px\]::after, .skin-aurore .rounded-\[18px\]::after {
     transition: none;
