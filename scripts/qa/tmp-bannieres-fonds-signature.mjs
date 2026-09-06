@@ -132,7 +132,9 @@ try {
   if (bascVisible) { await boutonFondDialog.click(); await pageA.waitForTimeout(800); await pageA.screenshot({ path: `${OUT}/b4-apercu-fond.png` }); }
   await pageA.keyboard.press('Escape');
   await pageA.waitForTimeout(500);
-  const dialogFermeApresEscape = await pageA.locator('[role="dialog"]').count();
+  // Scopé sur la fenêtre d'aperçu (z-[140]) : [role="dialog"] tout court
+  // attrape aussi le bandeau de consentement de cookies, toujours présent.
+  const dialogFermeApresEscape = await pageA.locator('.fixed.inset-0.z-\\[140\\]').count();
   resultats.B4 = { bascVisible: !!bascVisible, dialogFermeApresEscape: dialogFermeApresEscape === 0 };
 
   // B1 + B2 : la fenêtre du fond d'écran de Nature (possédée, sanslogo-nature
