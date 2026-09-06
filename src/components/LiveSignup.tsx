@@ -172,6 +172,14 @@ const LiveSignup: React.FC = () => {
           </motion.div>
         </div>
       </motion.div>
+
+      {lecteurOuvert && (
+        <LecteurVideoPleinEcran
+          url={ev.replayUrl || ev.youtubeUrl}
+          titre={t.title}
+          onFermer={() => setLecteurOuvert(false)}
+        />
+      )}
     </section>
   );
 };
