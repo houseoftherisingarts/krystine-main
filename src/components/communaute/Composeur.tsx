@@ -1,10 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Image as ImageIcon, Loader2, Send, Video, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AppContext';
 import { uploadMediaMur } from '../../firebase/storage';
 import { publierSurLeMur, LONGUEUR_MAX_POST, type FilMur } from '../../firebase/mur';
-import { onSnapshot, doc } from 'firebase/firestore';
-import { db } from '../../firebase';
 
 // Le composeur du mur, façon Facebook : l'avatar, une zone de texte qui
 // grandit, un bouton Photo, un bouton Vidéo, l'aperçu du média choisi et
