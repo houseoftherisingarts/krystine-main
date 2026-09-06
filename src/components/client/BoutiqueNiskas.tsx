@@ -12,6 +12,8 @@ import { COFFRES } from '../../lib/coffresConfig';
 import PieceNiska from './PieceNiska';
 import Coffres from './Coffres';
 import FondEcran from './FondEcran';
+import ApercuImage from './ApercuImage';
+import { AvecSignature, telechargerImage } from './Signature';
 
 // La petite boutique, dans l'onglet Téléchargements. Quatre façons de
 // personnaliser son espace pour cinq niskas chacune (une bannière, la
