@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-06T10:05:35.641Z",
+  "generatedAt": "2026-09-06T10:18:35.930Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -665,6 +665,41 @@
       "folder": "salon",
       "kind": "image",
       "size": 354347
+    },
+    {
+      "path": "/speaking/assets/krystine-smile-640.webp",
+      "name": "krystine-smile-640.webp",
+      "folder": "speaking/assets",
+      "kind": "image",
+      "size": 47918
+    },
+    {
+      "path": "/speaking/assets/krystine-smile.webp",
+      "name": "krystine-smile.webp",
+      "folder": "speaking/assets",
+      "kind": "image",
+      "size": 144596
+    },
+    {
+      "path": "/speaking/assets/krystine-stage-560.webp",
+      "name": "krystine-stage-560.webp",
+      "folder": "speaking/assets",
+      "kind": "image",
+      "size": 39822
+    },
+    {
+      "path": "/speaking/assets/krystine-stage.webp",
+      "name": "krystine-stage.webp",
+      "folder": "speaking/assets",
+      "kind": "image",
+      "size": 101042
+    },
+    {
+      "path": "/speaking/assets/og-speaking.jpg",
+      "name": "og-speaking.jpg",
+      "folder": "speaking/assets",
+      "kind": "image",
+      "size": 65882
     }
   ]
 }
