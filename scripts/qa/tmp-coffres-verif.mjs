@@ -131,10 +131,11 @@ async function scenarioC3(browser) {
   const { ctx, page } = await pageAvecSession(browser, u, uid, email, 'c3');
   await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(2200); await fermerBienvenue(page); await page.waitForTimeout(500);
+  await fermerRoueSiPresente(page);
   for (const type of ORDRE) {
     await carte(page, type).scrollIntoViewIfNeeded();
     const toggle = carte(page, type).getByText(/Ce que le coffre contient/i);
-    await toggle.click(); await page.waitForTimeout(450);
+    await clic(page, toggle); await page.waitForTimeout(450);
     const panneau = carte(page, type);
     await panneau.screenshot({ path: `${OUT}/c3-${type}-contenu.png` });
     const texte = ((await panneau.textContent()) || '').replace(/\s+/g, ' ');
