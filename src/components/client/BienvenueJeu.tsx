@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PAQUETS_NISKAS, POINTS, ROUE_QUOTIDIENNE } from '../../lib/pointsConfig';
 import PieceNiska from './PieceNiska';
+import Portail from '../Portail';
 
 // Le pop-up de bienvenue de l'espace : comment le jeu fonctionne (les niskas,
 // la roue, la boutique, la plante, le parrainage). Il s'ouvre une fois, à la

@@ -1,3 +1,5 @@
+@import './skins/motifs.css';
+@import './skins/effets.css';
 /* Les skins de l'espace client. Le premier, Medzo Café : les mêmes formes
    dans des bruns de café au lait. Les classes ciblées sont celles que
    Tailwind (CDN) génère pour les couleurs de l'espace; le skin les
@@ -184,59 +186,62 @@
 .skin-medzo .bg-\[\#BA7B39\], .skin-medzo .bg-\[\#BA7B39\] * { color: #f4ebdf !important; }
 .skin-medzo .bg-\[\#293027\], .skin-medzo .bg-\[\#293027\] * { color: #f4ebdf !important; }
 
-/* ═══ Les skins de la boutique et des coffres (6 septembre 2026) ═══ */
+/* ═══ Les skins de la boutique et des coffres (6 septembre 2026) ═══
+   Règle : sur un skin clair, un bouton « encre » (fond sombre) garde des lettres
+   claires; sur un skin sombre, les lettres sont l'encre du skin. Les chiffres des
+   boutons d'achat restent lisibles partout (retour d'Alex sur Terre cuite). */
 
 /* Le skin aube : généré depuis sa palette (pointsConfig.ts, SKINS). */
-.skin-aube { --sk-fond: #f6e7e3; --sk-panneau: #fff6f3; --sk-encre: #4a2e33; --sk-accent: #c9788a; --sk-accent-clair: #e4a5b3; --sk-accent-profond: #8e4a5c; }
+.skin-aube { --sk-fond: #f8dcd6; --sk-panneau: #fff4f0; --sk-encre: #4a2630; --sk-accent: #d2657f; --sk-accent-clair: #ea9bb0; --sk-accent-profond: #963c56; }
 .skin-aube.bg-\[\#EEE7DB\], .skin-aube .bg-\[\#EEE7DB\] { background-color: var(--sk-fond) !important; }
-.skin-aube .bg-\[\#293027\], .skin-aube .bg-\[\#151d19\]\/40, .skin-aube .bg-\[\#151d19\]\/60 { background-color: #4a2e33 !important; }
+.skin-aube .bg-\[\#293027\], .skin-aube .bg-\[\#151d19\]\/40, .skin-aube .bg-\[\#151d19\]\/60 { background-color: #4a2630 !important; }
 .skin-aube [class^="text-[#293027]"]:not([class*="text-[#293027]/"]), .skin-aube [class*=" text-[#293027]"]:not([class*="text-[#293027]/"]) { color: var(--sk-encre) !important; }
 .skin-aube [class^="text-[#293027]/"], .skin-aube [class*=" text-[#293027]/"],
 .skin-aube [class^="text-[#38403a]"], .skin-aube [class*=" text-[#38403a]"],
 .skin-aube [class^="text-[#3a3126]"], .skin-aube [class*=" text-[#3a3126]"],
-.skin-aube [class^="text-[#2a2015]"], .skin-aube [class*=" text-[#2a2015]"] { color: rgba(74, 46, 51, 0.72) !important; }
+.skin-aube [class^="text-[#2a2015]"], .skin-aube [class*=" text-[#2a2015]"] { color: rgba(74, 38, 48, 0.74) !important; }
 .skin-aube .text-\[\#8B4A2F\], .skin-aube .dark\:text-\[\#d9a05b\] { color: var(--sk-accent-profond) !important; }
 .skin-aube .bg-\[\#BA7B39\] { background-color: var(--sk-accent) !important; }
 .skin-aube .bg-\[\#BA7B39\], .skin-aube .bg-\[\#BA7B39\] * { color: #fffaf3 !important; }
 .skin-aube .hover\:bg-\[\#d9a05b\]:hover, .skin-aube .hover\:bg-\[\#9c6630\]:hover { background-color: var(--sk-accent-clair) !important; }
 .skin-aube .border-\[\#BA7B39\], .skin-aube .hover\:border-\[\#BA7B39\]:hover { border-color: var(--sk-accent) !important; }
-.skin-aube .bg-\[\#BA7B39\]\/10, .skin-aube .bg-\[\#BA7B39\]\/15, .skin-aube .bg-\[\#BA7B39\]\/8, .skin-aube .bg-\[\#BA7B39\]\/20 { background-color: rgba(201, 120, 138, 0.18) !important; }
-.skin-aube .border-\[\#BA7B39\]\/40, .skin-aube .border-\[\#BA7B39\]\/50 { border-color: rgba(201, 120, 138, 0.5) !important; }
-.skin-aube .bg-white\/55, .skin-aube .bg-white\/45, .skin-aube .bg-white\/40, .skin-aube .bg-white\/50, .skin-aube .bg-white\/60, .skin-aube .bg-white\/70, .skin-aube .bg-white\/25 { background-color: rgba(255, 246, 243, 0.7) !important; }
-.skin-aube .border-white\/60, .skin-aube .border-\[\#293027\]\/10, .skin-aube .border-\[\#293027\]\/15, .skin-aube .border-\[\#38403a\]\/10, .skin-aube .border-\[\#38403a\]\/15, .skin-aube .divide-\[\#293027\]\/10 > * { border-color: rgba(74, 46, 51, 0.14) !important; }
-.skin-aube .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(74, 46, 51, 0.85) !important; }
-.skin-aube .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(74, 46, 51, 0.3) !important; }
-.skin-aube .bg-\[\#293027\], .skin-aube .bg-\[\#293027\] * { color: var(--sk-encre) !important; }
+.skin-aube .bg-\[\#BA7B39\]\/10, .skin-aube .bg-\[\#BA7B39\]\/15, .skin-aube .bg-\[\#BA7B39\]\/8, .skin-aube .bg-\[\#BA7B39\]\/20 { background-color: rgba(210, 101, 127, 0.18) !important; }
+.skin-aube .border-\[\#BA7B39\]\/40, .skin-aube .border-\[\#BA7B39\]\/50 { border-color: rgba(210, 101, 127, 0.5) !important; }
+.skin-aube .bg-white\/55, .skin-aube .bg-white\/45, .skin-aube .bg-white\/40, .skin-aube .bg-white\/50, .skin-aube .bg-white\/60, .skin-aube .bg-white\/70, .skin-aube .bg-white\/25 { background-color: rgba(255, 244, 240, 0.7) !important; }
+.skin-aube .border-white\/60, .skin-aube .border-\[\#293027\]\/10, .skin-aube .border-\[\#293027\]\/15, .skin-aube .border-\[\#38403a\]\/10, .skin-aube .border-\[\#38403a\]\/15, .skin-aube .divide-\[\#293027\]\/10 > * { border-color: rgba(74, 38, 48, 0.14) !important; }
+.skin-aube .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(74, 38, 48, 0.85) !important; }
+.skin-aube .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(74, 38, 48, 0.3) !important; }
+.skin-aube .bg-\[\#293027\], .skin-aube .bg-\[\#293027\] * { color: #fff4f0 !important; }
 .skin-aube .bg-white, .skin-aube .bg-white * { color: #293027 !important; }
 .skin-aube .bg-white { background-color: #ffffff !important; }
 .skin-aube input, .skin-aube textarea, .skin-aube select { color: var(--sk-encre); background-color: rgba(255, 255, 255, 0.6); }
-.skin-aube ::placeholder { color: rgba(74, 46, 51, 0.45) !important; }
+.skin-aube ::placeholder { color: rgba(74, 38, 48, 0.45) !important; }
 
 /* Le skin terre : généré depuis sa palette (pointsConfig.ts, SKINS). */
-.skin-terre { --sk-fond: #eed9c4; --sk-panneau: #f8ece0; --sk-encre: #4a2b1c; --sk-accent: #b95f3b; --sk-accent-clair: #d98b62; --sk-accent-profond: #7e3a20; }
+.skin-terre { --sk-fond: #f0cfae; --sk-panneau: #faebdc; --sk-encre: #4a2617; --sk-accent: #c4552a; --sk-accent-clair: #e08a58; --sk-accent-profond: #85361a; }
 .skin-terre.bg-\[\#EEE7DB\], .skin-terre .bg-\[\#EEE7DB\] { background-color: var(--sk-fond) !important; }
-.skin-terre .bg-\[\#293027\], .skin-terre .bg-\[\#151d19\]\/40, .skin-terre .bg-\[\#151d19\]\/60 { background-color: #4a2b1c !important; }
+.skin-terre .bg-\[\#293027\], .skin-terre .bg-\[\#151d19\]\/40, .skin-terre .bg-\[\#151d19\]\/60 { background-color: #4a2617 !important; }
 .skin-terre [class^="text-[#293027]"]:not([class*="text-[#293027]/"]), .skin-terre [class*=" text-[#293027]"]:not([class*="text-[#293027]/"]) { color: var(--sk-encre) !important; }
 .skin-terre [class^="text-[#293027]/"], .skin-terre [class*=" text-[#293027]/"],
 .skin-terre [class^="text-[#38403a]"], .skin-terre [class*=" text-[#38403a]"],
 .skin-terre [class^="text-[#3a3126]"], .skin-terre [class*=" text-[#3a3126]"],
-.skin-terre [class^="text-[#2a2015]"], .skin-terre [class*=" text-[#2a2015]"] { color: rgba(74, 43, 28, 0.72) !important; }
+.skin-terre [class^="text-[#2a2015]"], .skin-terre [class*=" text-[#2a2015]"] { color: rgba(74, 38, 23, 0.74) !important; }
 .skin-terre .text-\[\#8B4A2F\], .skin-terre .dark\:text-\[\#d9a05b\] { color: var(--sk-accent-profond) !important; }
 .skin-terre .bg-\[\#BA7B39\] { background-color: var(--sk-accent) !important; }
 .skin-terre .bg-\[\#BA7B39\], .skin-terre .bg-\[\#BA7B39\] * { color: #fffaf3 !important; }
 .skin-terre .hover\:bg-\[\#d9a05b\]:hover, .skin-terre .hover\:bg-\[\#9c6630\]:hover { background-color: var(--sk-accent-clair) !important; }
 .skin-terre .border-\[\#BA7B39\], .skin-terre .hover\:border-\[\#BA7B39\]:hover { border-color: var(--sk-accent) !important; }
-.skin-terre .bg-\[\#BA7B39\]\/10, .skin-terre .bg-\[\#BA7B39\]\/15, .skin-terre .bg-\[\#BA7B39\]\/8, .skin-terre .bg-\[\#BA7B39\]\/20 { background-color: rgba(185, 95, 59, 0.18) !important; }
-.skin-terre .border-\[\#BA7B39\]\/40, .skin-terre .border-\[\#BA7B39\]\/50 { border-color: rgba(185, 95, 59, 0.5) !important; }
-.skin-terre .bg-white\/55, .skin-terre .bg-white\/45, .skin-terre .bg-white\/40, .skin-terre .bg-white\/50, .skin-terre .bg-white\/60, .skin-terre .bg-white\/70, .skin-terre .bg-white\/25 { background-color: rgba(248, 236, 224, 0.7) !important; }
-.skin-terre .border-white\/60, .skin-terre .border-\[\#293027\]\/10, .skin-terre .border-\[\#293027\]\/15, .skin-terre .border-\[\#38403a\]\/10, .skin-terre .border-\[\#38403a\]\/15, .skin-terre .divide-\[\#293027\]\/10 > * { border-color: rgba(74, 43, 28, 0.14) !important; }
-.skin-terre .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(74, 43, 28, 0.85) !important; }
-.skin-terre .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(74, 43, 28, 0.3) !important; }
-.skin-terre .bg-\[\#293027\], .skin-terre .bg-\[\#293027\] * { color: var(--sk-encre) !important; }
+.skin-terre .bg-\[\#BA7B39\]\/10, .skin-terre .bg-\[\#BA7B39\]\/15, .skin-terre .bg-\[\#BA7B39\]\/8, .skin-terre .bg-\[\#BA7B39\]\/20 { background-color: rgba(196, 85, 42, 0.18) !important; }
+.skin-terre .border-\[\#BA7B39\]\/40, .skin-terre .border-\[\#BA7B39\]\/50 { border-color: rgba(196, 85, 42, 0.5) !important; }
+.skin-terre .bg-white\/55, .skin-terre .bg-white\/45, .skin-terre .bg-white\/40, .skin-terre .bg-white\/50, .skin-terre .bg-white\/60, .skin-terre .bg-white\/70, .skin-terre .bg-white\/25 { background-color: rgba(250, 235, 220, 0.7) !important; }
+.skin-terre .border-white\/60, .skin-terre .border-\[\#293027\]\/10, .skin-terre .border-\[\#293027\]\/15, .skin-terre .border-\[\#38403a\]\/10, .skin-terre .border-\[\#38403a\]\/15, .skin-terre .divide-\[\#293027\]\/10 > * { border-color: rgba(74, 38, 23, 0.14) !important; }
+.skin-terre .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(74, 38, 23, 0.85) !important; }
+.skin-terre .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(74, 38, 23, 0.3) !important; }
+.skin-terre .bg-\[\#293027\], .skin-terre .bg-\[\#293027\] * { color: #faebdc !important; }
 .skin-terre .bg-white, .skin-terre .bg-white * { color: #293027 !important; }
 .skin-terre .bg-white { background-color: #ffffff !important; }
 .skin-terre input, .skin-terre textarea, .skin-terre select { color: var(--sk-encre); background-color: rgba(255, 255, 255, 0.6); }
-.skin-terre ::placeholder { color: rgba(74, 43, 28, 0.45) !important; }
+.skin-terre ::placeholder { color: rgba(74, 38, 23, 0.45) !important; }
 
 /* Le skin foret : généré depuis sa palette (pointsConfig.ts, SKINS). */
 .skin-foret { --sk-fond: #0f1a14; --sk-panneau: #182620; --sk-encre: #e6ebdd; --sk-accent: #7fa36a; --sk-accent-clair: #a9c68f; --sk-accent-profond: #a9c68f; color-scheme: dark; }
@@ -246,7 +251,7 @@
 .skin-foret [class^="text-[#293027]/"], .skin-foret [class*=" text-[#293027]/"],
 .skin-foret [class^="text-[#38403a]"], .skin-foret [class*=" text-[#38403a]"],
 .skin-foret [class^="text-[#3a3126]"], .skin-foret [class*=" text-[#3a3126]"],
-.skin-foret [class^="text-[#2a2015]"], .skin-foret [class*=" text-[#2a2015]"] { color: rgba(230, 235, 221, 0.72) !important; }
+.skin-foret [class^="text-[#2a2015]"], .skin-foret [class*=" text-[#2a2015]"] { color: rgba(230, 235, 221, 0.74) !important; }
 .skin-foret .text-\[\#8B4A2F\], .skin-foret .dark\:text-\[\#d9a05b\] { color: var(--sk-accent-profond) !important; }
 .skin-foret .bg-\[\#BA7B39\] { background-color: var(--sk-accent) !important; }
 .skin-foret .bg-\[\#BA7B39\], .skin-foret .bg-\[\#BA7B39\] * { color: #151d19 !important; }
@@ -258,7 +263,7 @@
 .skin-foret .border-white\/60, .skin-foret .border-\[\#293027\]\/10, .skin-foret .border-\[\#293027\]\/15, .skin-foret .border-\[\#38403a\]\/10, .skin-foret .border-\[\#38403a\]\/15, .skin-foret .divide-\[\#293027\]\/10 > * { border-color: rgba(230, 235, 221, 0.14) !important; }
 .skin-foret .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(15, 26, 20, 0.85) !important; }
 .skin-foret .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(15, 26, 20, 0.3) !important; }
-.skin-foret .bg-\[\#293027\], .skin-foret .bg-\[\#293027\] * { color: var(--sk-encre) !important; }
+.skin-foret .bg-\[\#293027\], .skin-foret .bg-\[\#293027\] * { color: #e6ebdd !important; }
 .skin-foret .bg-white, .skin-foret .bg-white * { color: #293027 !important; }
 .skin-foret .bg-white { background-color: rgba(230, 235, 221, 0.92) !important; }
 .skin-foret input, .skin-foret textarea, .skin-foret select { color: var(--sk-encre); background-color: rgba(255, 255, 255, 0.06); }
@@ -272,7 +277,7 @@
 .skin-ocean [class^="text-[#293027]/"], .skin-ocean [class*=" text-[#293027]/"],
 .skin-ocean [class^="text-[#38403a]"], .skin-ocean [class*=" text-[#38403a]"],
 .skin-ocean [class^="text-[#3a3126]"], .skin-ocean [class*=" text-[#3a3126]"],
-.skin-ocean [class^="text-[#2a2015]"], .skin-ocean [class*=" text-[#2a2015]"] { color: rgba(227, 238, 242, 0.72) !important; }
+.skin-ocean [class^="text-[#2a2015]"], .skin-ocean [class*=" text-[#2a2015]"] { color: rgba(227, 238, 242, 0.74) !important; }
 .skin-ocean .text-\[\#8B4A2F\], .skin-ocean .dark\:text-\[\#d9a05b\] { color: var(--sk-accent-profond) !important; }
 .skin-ocean .bg-\[\#BA7B39\] { background-color: var(--sk-accent) !important; }
 .skin-ocean .bg-\[\#BA7B39\], .skin-ocean .bg-\[\#BA7B39\] * { color: #151d19 !important; }
@@ -284,7 +289,7 @@
 .skin-ocean .border-white\/60, .skin-ocean .border-\[\#293027\]\/10, .skin-ocean .border-\[\#293027\]\/15, .skin-ocean .border-\[\#38403a\]\/10, .skin-ocean .border-\[\#38403a\]\/15, .skin-ocean .divide-\[\#293027\]\/10 > * { border-color: rgba(227, 238, 242, 0.14) !important; }
 .skin-ocean .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(11, 22, 32, 0.85) !important; }
 .skin-ocean .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(11, 22, 32, 0.3) !important; }
-.skin-ocean .bg-\[\#293027\], .skin-ocean .bg-\[\#293027\] * { color: var(--sk-encre) !important; }
+.skin-ocean .bg-\[\#293027\], .skin-ocean .bg-\[\#293027\] * { color: #e3eef2 !important; }
 .skin-ocean .bg-white, .skin-ocean .bg-white * { color: #293027 !important; }
 .skin-ocean .bg-white { background-color: rgba(227, 238, 242, 0.92) !important; }
 .skin-ocean input, .skin-ocean textarea, .skin-ocean select { color: var(--sk-encre); background-color: rgba(255, 255, 255, 0.06); }
@@ -298,7 +303,7 @@
 .skin-encre [class^="text-[#293027]/"], .skin-encre [class*=" text-[#293027]/"],
 .skin-encre [class^="text-[#38403a]"], .skin-encre [class*=" text-[#38403a]"],
 .skin-encre [class^="text-[#3a3126]"], .skin-encre [class*=" text-[#3a3126]"],
-.skin-encre [class^="text-[#2a2015]"], .skin-encre [class*=" text-[#2a2015]"] { color: rgba(242, 236, 223, 0.72) !important; }
+.skin-encre [class^="text-[#2a2015]"], .skin-encre [class*=" text-[#2a2015]"] { color: rgba(242, 236, 223, 0.74) !important; }
 .skin-encre .text-\[\#8B4A2F\], .skin-encre .dark\:text-\[\#d9a05b\] { color: var(--sk-accent-profond) !important; }
 .skin-encre .bg-\[\#BA7B39\] { background-color: var(--sk-accent) !important; }
 .skin-encre .bg-\[\#BA7B39\], .skin-encre .bg-\[\#BA7B39\] * { color: #151d19 !important; }
@@ -310,7 +315,7 @@
 .skin-encre .border-white\/60, .skin-encre .border-\[\#293027\]\/10, .skin-encre .border-\[\#293027\]\/15, .skin-encre .border-\[\#38403a\]\/10, .skin-encre .border-\[\#38403a\]\/15, .skin-encre .divide-\[\#293027\]\/10 > * { border-color: rgba(242, 236, 223, 0.14) !important; }
 .skin-encre .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(14, 13, 11, 0.85) !important; }
 .skin-encre .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(14, 13, 11, 0.3) !important; }
-.skin-encre .bg-\[\#293027\], .skin-encre .bg-\[\#293027\] * { color: var(--sk-encre) !important; }
+.skin-encre .bg-\[\#293027\], .skin-encre .bg-\[\#293027\] * { color: #f2ecdf !important; }
 .skin-encre .bg-white, .skin-encre .bg-white * { color: #293027 !important; }
 .skin-encre .bg-white { background-color: rgba(242, 236, 223, 0.92) !important; }
 .skin-encre input, .skin-encre textarea, .skin-encre select { color: var(--sk-encre); background-color: rgba(255, 255, 255, 0.06); }
@@ -324,7 +329,7 @@
 .skin-lotus [class^="text-[#293027]/"], .skin-lotus [class*=" text-[#293027]/"],
 .skin-lotus [class^="text-[#38403a]"], .skin-lotus [class*=" text-[#38403a]"],
 .skin-lotus [class^="text-[#3a3126]"], .skin-lotus [class*=" text-[#3a3126]"],
-.skin-lotus [class^="text-[#2a2015]"], .skin-lotus [class*=" text-[#2a2015]"] { color: rgba(244, 233, 241, 0.72) !important; }
+.skin-lotus [class^="text-[#2a2015]"], .skin-lotus [class*=" text-[#2a2015]"] { color: rgba(244, 233, 241, 0.74) !important; }
 .skin-lotus .text-\[\#8B4A2F\], .skin-lotus .dark\:text-\[\#d9a05b\] { color: var(--sk-accent-profond) !important; }
 .skin-lotus .bg-\[\#BA7B39\] { background-color: var(--sk-accent) !important; }
 .skin-lotus .bg-\[\#BA7B39\], .skin-lotus .bg-\[\#BA7B39\] * { color: #151d19 !important; }
@@ -336,7 +341,7 @@
 .skin-lotus .border-white\/60, .skin-lotus .border-\[\#293027\]\/10, .skin-lotus .border-\[\#293027\]\/15, .skin-lotus .border-\[\#38403a\]\/10, .skin-lotus .border-\[\#38403a\]\/15, .skin-lotus .divide-\[\#293027\]\/10 > * { border-color: rgba(244, 233, 241, 0.14) !important; }
 .skin-lotus .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(26, 20, 32, 0.85) !important; }
 .skin-lotus .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(26, 20, 32, 0.3) !important; }
-.skin-lotus .bg-\[\#293027\], .skin-lotus .bg-\[\#293027\] * { color: var(--sk-encre) !important; }
+.skin-lotus .bg-\[\#293027\], .skin-lotus .bg-\[\#293027\] * { color: #f4e9f1 !important; }
 .skin-lotus .bg-white, .skin-lotus .bg-white * { color: #293027 !important; }
 .skin-lotus .bg-white { background-color: rgba(244, 233, 241, 0.92) !important; }
 .skin-lotus input, .skin-lotus textarea, .skin-lotus select { color: var(--sk-encre); background-color: rgba(255, 255, 255, 0.06); }
@@ -350,7 +355,7 @@
 .skin-aurore [class^="text-[#293027]/"], .skin-aurore [class*=" text-[#293027]/"],
 .skin-aurore [class^="text-[#38403a]"], .skin-aurore [class*=" text-[#38403a]"],
 .skin-aurore [class^="text-[#3a3126]"], .skin-aurore [class*=" text-[#3a3126]"],
-.skin-aurore [class^="text-[#2a2015]"], .skin-aurore [class*=" text-[#2a2015]"] { color: rgba(230, 243, 240, 0.72) !important; }
+.skin-aurore [class^="text-[#2a2015]"], .skin-aurore [class*=" text-[#2a2015]"] { color: rgba(230, 243, 240, 0.74) !important; }
 .skin-aurore .text-\[\#8B4A2F\], .skin-aurore .dark\:text-\[\#d9a05b\] { color: var(--sk-accent-profond) !important; }
 .skin-aurore .bg-\[\#BA7B39\] { background-color: var(--sk-accent) !important; }
 .skin-aurore .bg-\[\#BA7B39\], .skin-aurore .bg-\[\#BA7B39\] * { color: #151d19 !important; }
@@ -362,7 +367,7 @@
 .skin-aurore .border-white\/60, .skin-aurore .border-\[\#293027\]\/10, .skin-aurore .border-\[\#293027\]\/15, .skin-aurore .border-\[\#38403a\]\/10, .skin-aurore .border-\[\#38403a\]\/15, .skin-aurore .divide-\[\#293027\]\/10 > * { border-color: rgba(230, 243, 240, 0.14) !important; }
 .skin-aurore .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(7, 16, 25, 0.85) !important; }
 .skin-aurore .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(7, 16, 25, 0.3) !important; }
-.skin-aurore .bg-\[\#293027\], .skin-aurore .bg-\[\#293027\] * { color: var(--sk-encre) !important; }
+.skin-aurore .bg-\[\#293027\], .skin-aurore .bg-\[\#293027\] * { color: #e6f3f0 !important; }
 .skin-aurore .bg-white, .skin-aurore .bg-white * { color: #293027 !important; }
 .skin-aurore .bg-white { background-color: rgba(230, 243, 240, 0.92) !important; }
 .skin-aurore input, .skin-aurore textarea, .skin-aurore select { color: var(--sk-encre); background-color: rgba(255, 255, 255, 0.06); }
@@ -376,7 +381,7 @@
 .skin-or-pur [class^="text-[#293027]/"], .skin-or-pur [class*=" text-[#293027]/"],
 .skin-or-pur [class^="text-[#38403a]"], .skin-or-pur [class*=" text-[#38403a]"],
 .skin-or-pur [class^="text-[#3a3126]"], .skin-or-pur [class*=" text-[#3a3126]"],
-.skin-or-pur [class^="text-[#2a2015]"], .skin-or-pur [class*=" text-[#2a2015]"] { color: rgba(251, 243, 223, 0.72) !important; }
+.skin-or-pur [class^="text-[#2a2015]"], .skin-or-pur [class*=" text-[#2a2015]"] { color: rgba(251, 243, 223, 0.74) !important; }
 .skin-or-pur .text-\[\#8B4A2F\], .skin-or-pur .dark\:text-\[\#d9a05b\] { color: var(--sk-accent-profond) !important; }
 .skin-or-pur .bg-\[\#BA7B39\] { background-color: var(--sk-accent) !important; }
 .skin-or-pur .bg-\[\#BA7B39\], .skin-or-pur .bg-\[\#BA7B39\] * { color: #151d19 !important; }
@@ -388,22 +393,88 @@
 .skin-or-pur .border-white\/60, .skin-or-pur .border-\[\#293027\]\/10, .skin-or-pur .border-\[\#293027\]\/15, .skin-or-pur .border-\[\#38403a\]\/10, .skin-or-pur .border-\[\#38403a\]\/15, .skin-or-pur .divide-\[\#293027\]\/10 > * { border-color: rgba(251, 243, 223, 0.14) !important; }
 .skin-or-pur .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(11, 10, 8, 0.85) !important; }
 .skin-or-pur .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(11, 10, 8, 0.3) !important; }
-.skin-or-pur .bg-\[\#293027\], .skin-or-pur .bg-\[\#293027\] * { color: var(--sk-encre) !important; }
+.skin-or-pur .bg-\[\#293027\], .skin-or-pur .bg-\[\#293027\] * { color: #fbf3df !important; }
 .skin-or-pur .bg-white, .skin-or-pur .bg-white * { color: #293027 !important; }
 .skin-or-pur .bg-white { background-color: rgba(251, 243, 223, 0.92) !important; }
 .skin-or-pur input, .skin-or-pur textarea, .skin-or-pur select { color: var(--sk-encre); background-color: rgba(255, 255, 255, 0.06); }
 .skin-or-pur ::placeholder { color: rgba(251, 243, 223, 0.45) !important; }
 
-/* Aurore : les voiles verts dansent doucement derrière l'espace. */
-.skin-aurore.bg-\[\#EEE7DB\], .skin-aurore .bg-\[\#EEE7DB\] {
-  background-image: linear-gradient(120deg, #071019 0%, #0b2a2a 35%, #16103a 70%, #071019 100%) !important;
-  background-size: 300% 300% !important; animation: sk-aurore 26s ease-in-out infinite;
-}
-@keyframes sk-aurore { 0%, 100% { background-position: 0% 50% } 50% { background-position: 100% 50% } }
-/* Or pur : l'or miroite sur les boutons. */
-.skin-or-pur .bg-\[\#BA7B39\] {
-  background-image: linear-gradient(110deg, #b8902e 0%, #f5dc86 30%, #e0b94f 50%, #fff0b8 70%, #b8902e 100%) !important;
-  background-size: 250% 100% !important; animation: sk-or 5s linear infinite;
-}
-@keyframes sk-or { 0% { background-position: 0% 0 } 100% { background-position: 250% 0 } }
-@media (prefers-reduced-motion: reduce) { .skin-aurore.bg-\[\#EEE7DB\], .skin-aurore .bg-\[\#EEE7DB\], .skin-or-pur .bg-\[\#BA7B39\] { animation: none; } }
+/* Le skin vata : généré depuis sa palette (pointsConfig.ts, SKINS). */
+.skin-vata { --sk-fond: #0e1f17; --sk-panneau: #173024; --sk-encre: #eaf3e6; --sk-accent: #8fd17a; --sk-accent-clair: #c6f0b0; --sk-accent-profond: #b6ea9c; color-scheme: dark; }
+.skin-vata.bg-\[\#EEE7DB\], .skin-vata .bg-\[\#EEE7DB\] { background-color: var(--sk-fond) !important; }
+.skin-vata .bg-\[\#293027\], .skin-vata .bg-\[\#151d19\]\/40, .skin-vata .bg-\[\#151d19\]\/60 { background-color: rgba(14, 31, 23, 0.94) !important; }
+.skin-vata [class^="text-[#293027]"]:not([class*="text-[#293027]/"]), .skin-vata [class*=" text-[#293027]"]:not([class*="text-[#293027]/"]) { color: var(--sk-encre) !important; }
+.skin-vata [class^="text-[#293027]/"], .skin-vata [class*=" text-[#293027]/"],
+.skin-vata [class^="text-[#38403a]"], .skin-vata [class*=" text-[#38403a]"],
+.skin-vata [class^="text-[#3a3126]"], .skin-vata [class*=" text-[#3a3126]"],
+.skin-vata [class^="text-[#2a2015]"], .skin-vata [class*=" text-[#2a2015]"] { color: rgba(234, 243, 230, 0.74) !important; }
+.skin-vata .text-\[\#8B4A2F\], .skin-vata .dark\:text-\[\#d9a05b\] { color: var(--sk-accent-profond) !important; }
+.skin-vata .bg-\[\#BA7B39\] { background-color: var(--sk-accent) !important; }
+.skin-vata .bg-\[\#BA7B39\], .skin-vata .bg-\[\#BA7B39\] * { color: #151d19 !important; }
+.skin-vata .hover\:bg-\[\#d9a05b\]:hover, .skin-vata .hover\:bg-\[\#9c6630\]:hover { background-color: var(--sk-accent-clair) !important; }
+.skin-vata .border-\[\#BA7B39\], .skin-vata .hover\:border-\[\#BA7B39\]:hover { border-color: var(--sk-accent) !important; }
+.skin-vata .bg-\[\#BA7B39\]\/10, .skin-vata .bg-\[\#BA7B39\]\/15, .skin-vata .bg-\[\#BA7B39\]\/8, .skin-vata .bg-\[\#BA7B39\]\/20 { background-color: rgba(143, 209, 122, 0.18) !important; }
+.skin-vata .border-\[\#BA7B39\]\/40, .skin-vata .border-\[\#BA7B39\]\/50 { border-color: rgba(143, 209, 122, 0.5) !important; }
+.skin-vata .bg-white\/55, .skin-vata .bg-white\/45, .skin-vata .bg-white\/40, .skin-vata .bg-white\/50, .skin-vata .bg-white\/60, .skin-vata .bg-white\/70, .skin-vata .bg-white\/25 { background-color: rgba(23, 48, 36, 0.82) !important; }
+.skin-vata .border-white\/60, .skin-vata .border-\[\#293027\]\/10, .skin-vata .border-\[\#293027\]\/15, .skin-vata .border-\[\#38403a\]\/10, .skin-vata .border-\[\#38403a\]\/15, .skin-vata .divide-\[\#293027\]\/10 > * { border-color: rgba(234, 243, 230, 0.14) !important; }
+.skin-vata .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(14, 31, 23, 0.85) !important; }
+.skin-vata .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(14, 31, 23, 0.3) !important; }
+.skin-vata .bg-\[\#293027\], .skin-vata .bg-\[\#293027\] * { color: #eaf3e6 !important; }
+.skin-vata .bg-white, .skin-vata .bg-white * { color: #293027 !important; }
+.skin-vata .bg-white { background-color: rgba(234, 243, 230, 0.92) !important; }
+.skin-vata input, .skin-vata textarea, .skin-vata select { color: var(--sk-encre); background-color: rgba(255, 255, 255, 0.06); }
+.skin-vata ::placeholder { color: rgba(234, 243, 230, 0.45) !important; }
+
+/* Le skin pitta : généré depuis sa palette (pointsConfig.ts, SKINS). */
+.skin-pitta { --sk-fond: #1a0b06; --sk-panneau: #2b140c; --sk-encre: #fbe9dc; --sk-accent: #ff7a2f; --sk-accent-clair: #ffb36b; --sk-accent-profond: #ffa45c; color-scheme: dark; }
+.skin-pitta.bg-\[\#EEE7DB\], .skin-pitta .bg-\[\#EEE7DB\] { background-color: var(--sk-fond) !important; }
+.skin-pitta .bg-\[\#293027\], .skin-pitta .bg-\[\#151d19\]\/40, .skin-pitta .bg-\[\#151d19\]\/60 { background-color: rgba(26, 11, 6, 0.94) !important; }
+.skin-pitta [class^="text-[#293027]"]:not([class*="text-[#293027]/"]), .skin-pitta [class*=" text-[#293027]"]:not([class*="text-[#293027]/"]) { color: var(--sk-encre) !important; }
+.skin-pitta [class^="text-[#293027]/"], .skin-pitta [class*=" text-[#293027]/"],
+.skin-pitta [class^="text-[#38403a]"], .skin-pitta [class*=" text-[#38403a]"],
+.skin-pitta [class^="text-[#3a3126]"], .skin-pitta [class*=" text-[#3a3126]"],
+.skin-pitta [class^="text-[#2a2015]"], .skin-pitta [class*=" text-[#2a2015]"] { color: rgba(251, 233, 220, 0.74) !important; }
+.skin-pitta .text-\[\#8B4A2F\], .skin-pitta .dark\:text-\[\#d9a05b\] { color: var(--sk-accent-profond) !important; }
+.skin-pitta .bg-\[\#BA7B39\] { background-color: var(--sk-accent) !important; }
+.skin-pitta .bg-\[\#BA7B39\], .skin-pitta .bg-\[\#BA7B39\] * { color: #151d19 !important; }
+.skin-pitta .hover\:bg-\[\#d9a05b\]:hover, .skin-pitta .hover\:bg-\[\#9c6630\]:hover { background-color: var(--sk-accent-clair) !important; }
+.skin-pitta .border-\[\#BA7B39\], .skin-pitta .hover\:border-\[\#BA7B39\]:hover { border-color: var(--sk-accent) !important; }
+.skin-pitta .bg-\[\#BA7B39\]\/10, .skin-pitta .bg-\[\#BA7B39\]\/15, .skin-pitta .bg-\[\#BA7B39\]\/8, .skin-pitta .bg-\[\#BA7B39\]\/20 { background-color: rgba(255, 122, 47, 0.18) !important; }
+.skin-pitta .border-\[\#BA7B39\]\/40, .skin-pitta .border-\[\#BA7B39\]\/50 { border-color: rgba(255, 122, 47, 0.5) !important; }
+.skin-pitta .bg-white\/55, .skin-pitta .bg-white\/45, .skin-pitta .bg-white\/40, .skin-pitta .bg-white\/50, .skin-pitta .bg-white\/60, .skin-pitta .bg-white\/70, .skin-pitta .bg-white\/25 { background-color: rgba(43, 20, 12, 0.82) !important; }
+.skin-pitta .border-white\/60, .skin-pitta .border-\[\#293027\]\/10, .skin-pitta .border-\[\#293027\]\/15, .skin-pitta .border-\[\#38403a\]\/10, .skin-pitta .border-\[\#38403a\]\/15, .skin-pitta .divide-\[\#293027\]\/10 > * { border-color: rgba(251, 233, 220, 0.14) !important; }
+.skin-pitta .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(26, 11, 6, 0.85) !important; }
+.skin-pitta .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(26, 11, 6, 0.3) !important; }
+.skin-pitta .bg-\[\#293027\], .skin-pitta .bg-\[\#293027\] * { color: #fbe9dc !important; }
+.skin-pitta .bg-white, .skin-pitta .bg-white * { color: #293027 !important; }
+.skin-pitta .bg-white { background-color: rgba(251, 233, 220, 0.92) !important; }
+.skin-pitta input, .skin-pitta textarea, .skin-pitta select { color: var(--sk-encre); background-color: rgba(255, 255, 255, 0.06); }
+.skin-pitta ::placeholder { color: rgba(251, 233, 220, 0.45) !important; }
+
+/* Le skin kapha : généré depuis sa palette (pointsConfig.ts, SKINS). */
+.skin-kapha { --sk-fond: #061a2b; --sk-panneau: #0c2740; --sk-encre: #e4f4fb; --sk-accent: #3fb7d9; --sk-accent-clair: #9fe4f5; --sk-accent-profond: #8ddcf0; color-scheme: dark; }
+.skin-kapha.bg-\[\#EEE7DB\], .skin-kapha .bg-\[\#EEE7DB\] { background-color: var(--sk-fond) !important; }
+.skin-kapha .bg-\[\#293027\], .skin-kapha .bg-\[\#151d19\]\/40, .skin-kapha .bg-\[\#151d19\]\/60 { background-color: rgba(6, 26, 43, 0.94) !important; }
+.skin-kapha [class^="text-[#293027]"]:not([class*="text-[#293027]/"]), .skin-kapha [class*=" text-[#293027]"]:not([class*="text-[#293027]/"]) { color: var(--sk-encre) !important; }
+.skin-kapha [class^="text-[#293027]/"], .skin-kapha [class*=" text-[#293027]/"],
+.skin-kapha [class^="text-[#38403a]"], .skin-kapha [class*=" text-[#38403a]"],
+.skin-kapha [class^="text-[#3a3126]"], .skin-kapha [class*=" text-[#3a3126]"],
+.skin-kapha [class^="text-[#2a2015]"], .skin-kapha [class*=" text-[#2a2015]"] { color: rgba(228, 244, 251, 0.74) !important; }
+.skin-kapha .text-\[\#8B4A2F\], .skin-kapha .dark\:text-\[\#d9a05b\] { color: var(--sk-accent-profond) !important; }
+.skin-kapha .bg-\[\#BA7B39\] { background-color: var(--sk-accent) !important; }
+.skin-kapha .bg-\[\#BA7B39\], .skin-kapha .bg-\[\#BA7B39\] * { color: #151d19 !important; }
+.skin-kapha .hover\:bg-\[\#d9a05b\]:hover, .skin-kapha .hover\:bg-\[\#9c6630\]:hover { background-color: var(--sk-accent-clair) !important; }
+.skin-kapha .border-\[\#BA7B39\], .skin-kapha .hover\:border-\[\#BA7B39\]:hover { border-color: var(--sk-accent) !important; }
+.skin-kapha .bg-\[\#BA7B39\]\/10, .skin-kapha .bg-\[\#BA7B39\]\/15, .skin-kapha .bg-\[\#BA7B39\]\/8, .skin-kapha .bg-\[\#BA7B39\]\/20 { background-color: rgba(63, 183, 217, 0.18) !important; }
+.skin-kapha .border-\[\#BA7B39\]\/40, .skin-kapha .border-\[\#BA7B39\]\/50 { border-color: rgba(63, 183, 217, 0.5) !important; }
+.skin-kapha .bg-white\/55, .skin-kapha .bg-white\/45, .skin-kapha .bg-white\/40, .skin-kapha .bg-white\/50, .skin-kapha .bg-white\/60, .skin-kapha .bg-white\/70, .skin-kapha .bg-white\/25 { background-color: rgba(12, 39, 64, 0.82) !important; }
+.skin-kapha .border-white\/60, .skin-kapha .border-\[\#293027\]\/10, .skin-kapha .border-\[\#293027\]\/15, .skin-kapha .border-\[\#38403a\]\/10, .skin-kapha .border-\[\#38403a\]\/15, .skin-kapha .divide-\[\#293027\]\/10 > * { border-color: rgba(228, 244, 251, 0.14) !important; }
+.skin-kapha .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(6, 26, 43, 0.85) !important; }
+.skin-kapha .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(6, 26, 43, 0.3) !important; }
+.skin-kapha .bg-\[\#293027\], .skin-kapha .bg-\[\#293027\] * { color: #e4f4fb !important; }
+.skin-kapha .bg-white, .skin-kapha .bg-white * { color: #293027 !important; }
+.skin-kapha .bg-white { background-color: rgba(228, 244, 251, 0.92) !important; }
+.skin-kapha input, .skin-kapha textarea, .skin-kapha select { color: var(--sk-encre); background-color: rgba(255, 255, 255, 0.06); }
+.skin-kapha ::placeholder { color: rgba(228, 244, 251, 0.45) !important; }
+
+/* Les motifs et les scènes animées des skins riches vivent dans skins/motifs.css et skins/effets.css. */

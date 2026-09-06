@@ -43,6 +43,7 @@ const InspiratHome     = lazy(() => import('./src/pages/InspiratHome'));
 const BoutiqueCollectionPage = lazy(() => import('./src/pages/BoutiqueCollectionPage'));
 const TVPage           = lazy(() => import('./src/pages/TVPage'));
 const ClientPortal     = lazy(() => import('./src/pages/ClientPortal'));
+const DemoSkins        = lazy(() => import('./src/pages/DemoSkins'));
 const AdminDashboard   = lazy(() => import('./src/pages/AdminDashboard'));
 const UnsubscribePage  = lazy(() => import('./src/pages/UnsubscribePage'));
 const SlideBg          = lazy(() => import('./src/pages/SlideBg'));
@@ -257,6 +258,7 @@ const App: React.FC = () => (
           <Route path="/cours/:id" element={<CoursDetailPage />} />
           <Route path="/espace" element={<Navigate to="/compte" replace />} />
           <Route path="/membres" element={<CommunauteMembres />} />
+          <Route path="/demo-skins" element={<DemoSkins />} />
           <Route path="/membre/:uid" element={<MembreProfilPage />} />
           <Route path="/messages" element={<MessagesPage />} />
           <Route path="/messages/:autreUid" element={<MessagesPage />} />

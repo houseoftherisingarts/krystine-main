@@ -24,6 +24,8 @@ import ProblemeTechnique from '../components/client/ProblemeTechnique';
 import ClientPreferences from './client/ClientPreferences';
 import { subscribeToMemberPoints, suivreBoutique, points, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
 import { BANNIERE_DEFAUT, BANNIERES, banniereParCle, FACONS_DE_GAGNER, niskas, skinParCle } from '../lib/pointsConfig';
+import EffetsSkin from '../components/client/skins/EffetsSkin';
+import MotifsSkin from '../components/client/skins/MotifsSkin';
 import PieceNiska from '../components/client/PieceNiska';
 import RoueQuotidienne from '../components/client/RoueQuotidienne';
 import BienvenueJeu from '../components/client/BienvenueJeu';
@@ -477,7 +479,7 @@ const ClientPortal: React.FC = () => {
     { id: 'formations', label: lang === 'FR' ? 'Mes formations' : 'My courses', icon: 'fa-graduation-cap' },
     { id: 'rediffusions', label: lang === 'FR' ? 'Rediffusions' : 'Replays', icon: 'fa-circle-play' },
     { id: 'telechargements', label: lang === 'FR' ? 'Téléchargements' : 'Downloads', icon: 'fa-download' },
-    { id: 'loyalty',  label: lang === 'FR' ? 'Points' : 'Points', icon: 'fa-seedling' },
+    { id: 'loyalty',  label: 'Niskas', icon: 'fa-seedling' },
     { id: 'dosha',    label: lang === 'FR' ? 'Dosha' : 'Dosha', icon: 'fa-circle-nodes' },
     { id: 'archives', label: lang === 'FR' ? 'Lettres' : 'Letters', icon: 'fa-envelope-open-text' },
     { id: 'messagerie', label: lang === 'FR' ? 'Messagerie' : 'Messages', icon: 'fa-comments' },
@@ -492,7 +494,10 @@ const ClientPortal: React.FC = () => {
 
 
   return (
-    <div className={`min-h-screen bg-[#EEE7DB] dark:bg-[#151d19] pt-16 pb-24 ${skin}`}>
+    <div className={`relative isolate min-h-screen bg-[#EEE7DB] dark:bg-[#151d19] pt-16 pb-24 ${skin}`}>
+      {/* Les scènes animées et les motifs des skins riches, derrière tout, sans capter les clics */}
+      {skinActif && <EffetsSkin skin={skinActif} />}
+      {skinActif && <MotifsSkin skin={skinActif} />}
       {/* La bannière pleine largeur, l'avatar qui la chevauche, le nom et les
           points par-dessus la photo : le patron du FMM et de la référence
           d'Alex, dans le canon L'Œuvre. */}

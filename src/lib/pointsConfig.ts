@@ -187,7 +187,7 @@ export const SKINS: Skin[] = [
   { cle: 'medzo', cout: 5, rarete: 'commun', icone: 'fa-mug-hot', nomFR: 'Skin Medzo Café', nomEN: 'Medzo Café skin',
     descFR: 'Des bruns de café au lait, chauds et calmes, comme une table de bistro en fin d’après-midi.',
     descEN: 'Warm, calm café au lait browns, like a bistro table late in the afternoon.',
-    palette: { fond: '#e6d7c3', panneau: '#faf3e8', encre: '#3b2417', accent: '#8a5a2b', accentClair: '#c99a5b', accentProfond: '#6b3f1e', sombre: false } },
+    palette: { fond: '#e9d2b6', panneau: '#fbf1e2', encre: '#3b2214', accent: '#96592a', accentClair: '#d29a52', accentProfond: '#6d3d1a', sombre: false } },
   { cle: 'nuit', cout: 5, rarete: 'commun', icone: 'fa-moon', nomFR: 'Skin Nuit', nomEN: 'Night skin',
     descFR: 'L’espace passe en pleine nuit : vert profond et encre, ivoire pour les mots, ambre pour la lumière. Le même espace, les yeux reposés.',
     descEN: 'Your space goes into deep night: deep green and ink, ivory for the words, amber for the light. The same space, eyes at rest.',
@@ -199,11 +199,11 @@ export const SKINS: Skin[] = [
   { cle: 'aube', cout: 15, rarete: 'commun', icone: 'fa-sun', nomFR: 'Skin Aube rose', nomEN: 'Rose Dawn skin',
     descFR: 'Le rose pâle du ciel juste avant le soleil, et un vieux rose pour les boutons. Un espace qui se réveille doucement.',
     descEN: 'The pale pink of the sky right before sunrise, dusty rose for the buttons. A space that wakes up gently.',
-    palette: { fond: '#f6e7e3', panneau: '#fff6f3', encre: '#4a2e33', accent: '#c9788a', accentClair: '#e4a5b3', accentProfond: '#8e4a5c', sombre: false } },
+    palette: { fond: '#f8dcd6', panneau: '#fff4f0', encre: '#4a2630', accent: '#d2657f', accentClair: '#ea9bb0', accentProfond: '#963c56', sombre: false } },
   { cle: 'terre', cout: 20, rarete: 'commun', icone: 'fa-fire-flame-simple', nomFR: 'Skin Terre cuite', nomEN: 'Terracotta skin',
     descFR: 'La chaleur d’un pot de terre au soleil : sable, argile et brique. Le skin des après-midi d’été.',
     descEN: 'The warmth of a clay pot in the sun: sand, clay and brick. The skin of summer afternoons.',
-    palette: { fond: '#eed9c4', panneau: '#f8ece0', encre: '#4a2b1c', accent: '#b95f3b', accentClair: '#d98b62', accentProfond: '#7e3a20', sombre: false } },
+    palette: { fond: '#f0cfae', panneau: '#faebdc', encre: '#4a2617', accent: '#c4552a', accentClair: '#e08a58', accentProfond: '#85361a', sombre: false } },
   { cle: 'foret', cout: 25, rarete: 'commun', icone: 'fa-tree', nomFR: 'Skin Forêt', nomEN: 'Forest skin',
     descFR: 'Le sous-bois à la tombée du jour : vert sombre, mousse et lichen clair pour la lumière.',
     descEN: 'The undergrowth at dusk: dark green, moss, pale lichen for the light.',
@@ -225,12 +225,28 @@ export const SKINS: Skin[] = [
     descFR: 'La nuit polaire et ses voiles verts qui dansent en fond d’espace. Rare : dans le coffre d’or seulement.',
     descEN: 'The polar night and its green veils dancing behind your space. Rare: in the gold chest only.',
     palette: { fond: '#071019', panneau: '#0f1c28', encre: '#e6f3f0', accent: '#58d3b0', accentClair: '#a5f0da', accentProfond: '#a5f0da', sombre: true } },
-  { cle: 'or-pur', cout: null, rarete: 'legendaire', coffre: 'or', icone: 'fa-crown', nomFR: 'Skin Or pur', nomEN: 'Pure Gold skin',
-    descFR: 'Du noir profond et de l’or qui miroite sur chaque bouton. Légendaire : une chance sur cinquante dans le coffre d’or.',
-    descEN: 'Deep black and gold that shimmers on every button. Legendary: one chance in fifty in the gold chest.',
+  { cle: 'or-pur', cout: null, rarete: 'rare', coffre: 'or', icone: 'fa-crown', nomFR: 'Skin Or pur', nomEN: 'Pure Gold skin',
+    descFR: 'Du noir profond et de l’or qui miroite sur chaque bouton, avec une pluie de paillettes d’or. Rare : dans le coffre d’or seulement.',
+    descEN: 'Deep black and gold that shimmers on every button, with a drift of gold flecks. Rare: in the gold chest only.',
     palette: { fond: '#0b0a08', panneau: '#171410', encre: '#fbf3df', accent: '#e0b94f', accentClair: '#fff0b8', accentProfond: '#f0cf6a', sombre: true } },
+  // Les trois légendaires : un dosha chacun, et une vraie scène animée derrière
+  // l'espace (feu, eau, vent), des survols et des gestes de souris qui leur sont
+  // propres. Ils ne se trouvent que dans les coffres.
+  { cle: 'vata', cout: null, rarete: 'legendaire', coffre: 'bronze', icone: 'fa-wind', nomFR: 'Skin Vata · le vent', nomEN: 'Vata skin · the wind',
+    descFR: 'Un sous-bois vert traversé de vent : des feuilles passent derrière votre espace et s’écartent sous votre souris. Légendaire.',
+    descEN: 'A green undergrowth crossed by wind: leaves drift behind your space and scatter under your mouse. Legendary.',
+    palette: { fond: '#0e1f17', panneau: '#173024', encre: '#eaf3e6', accent: '#8fd17a', accentClair: '#c6f0b0', accentProfond: '#b6ea9c', sombre: true } },
+  { cle: 'pitta', cout: null, rarete: 'legendaire', coffre: 'bronze', icone: 'fa-fire', nomFR: 'Skin Pitta · le feu', nomEN: 'Pitta skin · the fire',
+    descFR: 'La nuit près du feu : des braises montent derrière votre espace et s’avivent quand vous survolez un bouton. Légendaire.',
+    descEN: 'Night by the fire: embers rise behind your space and flare when you hover a button. Legendary.',
+    palette: { fond: '#1a0b06', panneau: '#2b140c', encre: '#fbe9dc', accent: '#ff7a2f', accentClair: '#ffb36b', accentProfond: '#ffa45c', sombre: true } },
+  { cle: 'kapha', cout: null, rarete: 'legendaire', coffre: 'bronze', icone: 'fa-water', nomFR: 'Skin Kapha · l’eau', nomEN: 'Kapha skin · the water',
+    descFR: 'Le fond d’un aquarium : la lumière ondule sur les murs, des bulles montent, et l’eau frémit sous vos gestes. Légendaire.',
+    descEN: 'The bottom of an aquarium: light ripples on the walls, bubbles rise, and the water quivers under your gestures. Legendary.',
+    palette: { fond: '#061a2b', panneau: '#0c2740', encre: '#e4f4fb', accent: '#3fb7d9', accentClair: '#9fe4f5', accentProfond: '#8ddcf0', sombre: true } },
 ];
 export const skinParCle = (cle: string) => SKINS.find(s => s.cle === cle);
+export const SKINS_LEGENDAIRES = SKINS.filter(s => s.rarete === 'legendaire');
 export const SKINS_RARES = SKINS.filter(s => s.cout === null);
 
 export interface ArticleBoutique {
