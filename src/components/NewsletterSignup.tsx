@@ -51,6 +51,7 @@ const NewsletterSignup: React.FC<Props> = ({
   askFirstName = false,
   askQuestion,
   success,
+  accountUpsell = true,
 }) => {
   const { lang, user } = useApp();
   const [email, setEmail] = useState('');
