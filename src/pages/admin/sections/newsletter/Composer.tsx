@@ -14,6 +14,7 @@ import AssistantPanel, { type Proposal } from './AssistantPanel';
 import MediathequePicker from '../../../../components/edit/MediathequePicker';
 import { RenderBlockWeb } from '../../../../lib/newsletterRenderer';
 import { Input, Label, PrimaryButton, GhostButton } from '../../primitives';
+import Portail from '../../../../components/Portail';
 
 interface Props {
   newsletterId: string | null;  // null → fresh draft
