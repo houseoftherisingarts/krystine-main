@@ -109,6 +109,7 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ target, onClose }) => {
             </button>
           </div>
         ) : (
+          <>
           <form onSubmit={submit} className="space-y-3">
             <input
               type="text"
