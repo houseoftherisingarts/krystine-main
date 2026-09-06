@@ -66,13 +66,16 @@ const Cle: React.FC<{ taille?: number }> = ({ taille = 18 }) => (
 const Coffres: React.FC<{ solde: number; onChange?: () => void }> = ({ solde, onChange }) => {
   const { user, lang } = useApp();
   const fr = lang === 'FR';
-  const [inv, setInv] = useState<Inventaire>({ boites: { bronze: 0, argent: 0, or: 0 }, cles: { bronze: 0, argent: 0, or: 0 } });
+  const reduceGlobal = useReducedMotion();
+  const [inv, setInv] = useState<Inventaire>({ boites: { bronze: 0, argent: 0, or: 0 }, cles: 0 });
   const [occupe, setOccupe] = useState<string | null>(null);
   const [contenuOuvert, setContenuOuvert] = useState<TypeCoffre | null>(null);
   const [ouverture, setOuverture] = useState<{ type: TypeCoffre; lots: LotGagne[] | null; solde?: number } | null>(null);
+  const [videoEchouee, setVideoEchouee] = useState(false);
   const [reponse, setReponse] = useState('');
   const [grandOk, setGrandOk] = useState(false);
   const [avis, setAvis] = useState<string | null>(null);
+  const revelerRef = React.useRef<() => void>(() => {});
 
   useEffect(() => (user ? suivreMesCoffres(user.uid, setInv) : undefined), [user]);
 
@@ -93,13 +96,22 @@ const Coffres: React.FC<{ solde: number; onChange?: () => void }> = ({ solde, on
   const ouvrir = async (type: TypeCoffre) => {
     if (!user || occupe) return;
     setOccupe(`${type}-ouvrir`);
-    setGrandOk(false); setReponse('');
+    setGrandOk(false); setReponse(''); setVideoEchouee(false);
     setOuverture({ type, lots: null });
+    // La vidéo d'ouverture pilote la révélation : les lots ne paraissent qu'à
+    // sa fin (onEnded), après 4,5 s si elle ne joue pas, ou tout de suite en
+    // mouvement réduit. `pret`/`fini` couvrent les deux ordres d'arrivée
+    // (le serveur répond avant ou après la vidéo).
+    let resultat: { lots: LotGagne[]; solde: number } | null = null;
+    let fini = reduceGlobal;
+    const finirSiPret = () => { if (resultat && fini) setOuverture(o => (o && o.type === type && !o.lots) ? { type, ...resultat! } : o); };
+    revelerRef.current = () => { fini = true; finirSiPret(); };
+    if (!reduceGlobal) window.setTimeout(revelerRef.current, 4500);
     try {
       const r = await ouvrirCoffre(type);
-      // Le coffre s'ouvre, puis les lots paraissent l'un après l'autre.
-      window.setTimeout(() => setOuverture({ type, lots: r.lots, solde: r.solde }), 800);
+      resultat = { lots: r.lots, solde: r.solde };
       onChange?.();
+      if (reduceGlobal) window.setTimeout(finirSiPret, 800); else finirSiPret();
     } catch (e) { setOuverture(null); dire(erreur(e) || (fr ? 'Le coffre n’a pas pu s’ouvrir.' : 'The chest could not open.')); }
     finally { setOccupe(null); }
   };
