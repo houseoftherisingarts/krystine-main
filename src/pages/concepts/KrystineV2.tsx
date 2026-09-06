@@ -9,6 +9,7 @@ import {
 } from '@phosphor-icons/react';
 import { useApp } from '../../contexts/AppContext';
 import NewsletterSignup from '../../components/NewsletterSignup';
+import CompteUpsell from '../../components/CompteUpsell';
 import LiveEventsSection from '../../components/LiveEvents';
 import { getEvents, addBookingRequest, type EventDoc } from '../../firebase/firestore';
 import type {
