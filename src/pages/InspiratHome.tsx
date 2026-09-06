@@ -18,6 +18,7 @@ import CompassOfYou from '../components/CompassOfYou';
 import ScrollDecorations from '../components/ScrollDecorations';
 import RevealSection from '../components/RevealSection';
 import EditorialSectionHeader from '../components/EditorialSectionHeader';
+import CompteUpsell from '../components/CompteUpsell';
 import Sprig from '../components/Sprig';
 import OrigineHomeSection from '../components/OrigineHomeSection';
 import TodayConferenceBanner from '../components/TodayConferenceBanner';
