@@ -21,6 +21,16 @@ const COSMETIQUES: Record<string, { cout: number; nom: string }> = {
   'banniere-huiles': { cout: 12, nom: 'Bannière Les huiles' },
   'banniere-jardin': { cout: 15, nom: 'Bannière Le jardin après la pluie' },
   'banniere-soir': { cout: 18, nom: 'Bannière Le soir à la lampe' },
+  // La signature de Krystine en bas à droite d'une bannière se retire contre
+  // cinq niskas, une fois la bannière à soi (Alex, 6 septembre 2026). La
+  // bannière d'origine (defaut) est à tout le monde.
+  'sanslogo-defaut': { cout: 5, nom: 'Sans signature · Féminité & Ayurveda' },
+  'sanslogo-nature': { cout: 5, nom: 'Sans signature · Nature & Ayurveda' },
+  'sanslogo-iris': { cout: 5, nom: 'Sans signature · L’iris du matin' },
+  'sanslogo-pivoine': { cout: 5, nom: 'Sans signature · La pivoine' },
+  'sanslogo-huiles': { cout: 5, nom: 'Sans signature · Les huiles' },
+  'sanslogo-jardin': { cout: 5, nom: 'Sans signature · Le jardin après la pluie' },
+  'sanslogo-soir': { cout: 5, nom: 'Sans signature · Le soir à la lampe' },
   'musique-origine': { cout: 5, nom: "La musique d'Origine" },
   'skin-medzo': { cout: 5, nom: 'Skin Medzo Café' },
   'skin-nuit': { cout: 5, nom: 'Skin Nuit' },
