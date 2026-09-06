@@ -374,35 +374,31 @@ const OrigineHomeSection: React.FC = () => {
           </p>
         </div>
 
-        {/* CTA column — shine sweep on hover, scale-feedback */}
-        <div className="flex flex-col items-start lg:items-end">
+        {/* CTA column — le compte d'abord (bouton or, l'attrait du duo),
+            la liste d'attente ensuite, en lien sobre. */}
+        <div className="flex flex-col items-start lg:items-end gap-3">
+          <BoutonCompte taille="lg" />
+          <p className="text-[11px] md:text-[12px] text-[#5a4a37]/80 max-w-[26rem] lg:text-right">
+            <EditableText
+              fieldKey="home.origine.status.compteHint"
+              defaultValue={lang === 'FR'
+                ? 'Créer un compte donne accès à des niskas de bienvenue et ouvre la porte à la prochaine cohorte.'
+                : 'Creating an account grants welcome niskas and opens the door to the next cohort.'}
+              multiline
+            />
+          </p>
           <a
             href="/liste-attente?programme=origine"
-            className="group relative inline-flex items-center gap-3 overflow-hidden px-8 md:px-10 py-4 md:py-5 rounded-full text-[11px] md:text-[12px] uppercase font-semibold tracking-[0.28em] transition-[transform] duration-300 hover:scale-[1.015] active:scale-[0.98]"
-            style={{
-              background: '#2a2015',
-              color: '#f6f3ee',
-              border: '1px solid rgba(187, 154, 94,0.55)',
-              boxShadow: '0 14px 32px rgba(58,37,30,0.28)',
-            }}
+            className="mt-2 inline-flex items-center gap-2 text-[11px] md:text-[12px] uppercase font-semibold tracking-[0.22em] text-[#5a4a37] underline decoration-[#5a4a37]/40 underline-offset-4 hover:text-[#2a2015] hover:decoration-[#2a2015] transition-colors"
           >
-            {/* Shine sweep — copper-tinted diagonal that glides across
-                the button on hover. Pure CSS, no JS. */}
-            <span
-              aria-hidden
-              className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[1100ms] ease-out pointer-events-none"
-              style={{
-                background: 'linear-gradient(115deg, transparent 40%, rgba(244,212,154,0.22) 50%, transparent 60%)',
-              }}
-            />
             <EditableText
               fieldKey="home.origine.status.cta"
               defaultValue={lang === 'FR' ? "Rejoindre la liste d'attente" : 'Join the waitlist'}
               as="span"
             />
-            <i className="fa-solid fa-arrow-right text-[9px] transition-transform duration-300 group-hover:translate-x-1" />
+            <i className="fa-solid fa-arrow-right text-[9px]" />
           </a>
-          <p className="mt-3 text-[10px] uppercase tracking-[0.3em] font-bold text-[#5a4a37]/75">
+          <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#5a4a37]/60">
             <EditableText
               fieldKey="home.origine.status.ctaHint"
               defaultValue={lang === 'FR' ? 'Prochaine cohorte · accès prioritaire' : 'Next cohort · priority access'}
