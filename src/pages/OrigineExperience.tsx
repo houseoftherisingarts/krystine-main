@@ -517,7 +517,30 @@ const OrigineExperience: React.FC = () => {
                 <span className="font-serif text-xl text-brassBright">Studio haute résolution</span>
               </div>
             </div>
-            <a href="/foyer#musique" className="mt-9 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-serif text-lg text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]"><Download size={20} /> Télécharger la musique</a>
+            {/* La musique vit dans la boutique de l'espace membre (5 niskas),
+                pas au Foyer d'Origine : visiteuse non connectée → créer un
+                compte (niskas de bienvenue offertes); membre connectée →
+                lien direct sur la boutique, onglet Téléchargements. */}
+            {user ? (
+              <a
+                href="/compte?onglet=telechargements#boutique"
+                className="mt-9 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-serif text-lg text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]"
+              >
+                <Download size={20} /> {lang === 'FR' ? 'L\'obtenir dans ma boutique · 5 niskas' : 'Get it in my shop · 5 niskas'}
+              </a>
+            ) : (
+              <div className="mt-9">
+                <BoutonCompte
+                  taille="lg"
+                  libelle={lang === 'FR' ? "Créer mon compte pour l'obtenir" : 'Create my account to get it'}
+                />
+                <p className="mt-4 font-sans text-sm leading-relaxed text-ctextSoft max-w-md mx-auto lg:mx-0">
+                  {lang === 'FR'
+                    ? "Cette fréquence vous attend dans votre espace membre, pour 5 niskas. Votre compte vous offre des niskas de bienvenue dès sa création, de quoi l'obtenir sans attendre."
+                    : 'This frequency is waiting in your member space, for 5 niskas. Your account comes with welcome niskas the moment you create it, enough to get it right away.'}
+                </p>
+              </div>
+            )}
           </Reveal>
         </div>
       </section>
