@@ -44,7 +44,11 @@ const largeurs = await p.evaluate(() => {
       if (el.getAttribute('aria-hidden') === 'true') continue;
       const txt = (el.textContent || '').trim();
       if (!txt && el.tagName !== 'IMG') continue;
-      const w = el.getBoundingClientRect().width;
+      // Boîte de CONTENU : les gouttières px-* ne doivent pas gonfler la mesure.
+      const cs = getComputedStyle(el);
+      const w = el.getBoundingClientRect().width
+        - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)
+        - parseFloat(cs.borderLeftWidth) - parseFloat(cs.borderRightWidth);
       if (w > max) { max = w; gagnant = el.tagName.toLowerCase() + '.' + String(el.className).split(' ')[0]; }
     }
     return {
