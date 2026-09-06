@@ -106,7 +106,7 @@ try {
   const conteneurNature = carteNature.locator('xpath=ancestor::div[contains(@class,"rounded-[18px]")][1]');
   const sigDansNature = await conteneurNature.locator('img[src*="signature-krystine"]').count();
   const texteNature = await conteneurNature.innerText().catch(() => '');
-  resultats.B3_vignette_nature_sans_signature = { imgSignature: sigDansNature, aBoutonSansSignatureCoche: /Sans signature/.test(texteNature) };
+  resultats.B3_vignette_nature_sans_signature = { imgSignature: sigDansNature, texte: texteNature.replace(/\n+/g, ' | '), aBoutonSansSignatureCoche: /Sans signature/i.test(texteNature) };
   await conteneurNature.scrollIntoViewIfNeeded();
   await pageA.waitForTimeout(400);
   await conteneurNature.screenshot({ path: `${OUT}/b3-carte-nature-sans-signature.png` });
