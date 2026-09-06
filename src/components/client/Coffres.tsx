@@ -5,6 +5,7 @@ import { COFFRES, ORDRE_COFFRES, OUVERTURES_PAR_JOUR, chanceLisible, type TypeCo
 import { niskas } from '../../lib/pointsConfig';
 import { acheterCoffre, ouvrirCoffre, reclamerGrandLot, suivreMesCoffres, type Inventaire, type LotGagne } from '../../firebase/coffres';
 import PieceNiska from './PieceNiska';
+import Portail from '../Portail';
 
 // ─── Les coffres ─────────────────────────────────────────────────────────────
 // Trois coffres, leurs clés, et les chances de chaque lot écrites en toutes
