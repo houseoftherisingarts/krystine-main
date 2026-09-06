@@ -6,7 +6,7 @@ import { getLecons, type Lecon } from '../../firebase/formations';
 import { acheterAvecNiskas, acheterNiskas, subscribeToMemberPoints, suivreBoutique, type PointsBalance } from '../../firebase/points';
 import {
   CATEGORIES_BOUTIQUE, skinParCle, banniereParCle,
-  BANNIERE_NATURE, BOUTIQUE, COUT_EPISODE, COUT_SAISON, SAISONS_SANTE_LA_VIE, PAQUET_NISKAS, SANTE_LA_VIE_ID, niskas,
+  BANNIERE_NATURE, BOUTIQUE, COUT_COSMETIQUE, COUT_EPISODE, COUT_SAISON, SAISONS_SANTE_LA_VIE, PAQUET_NISKAS, SANTE_LA_VIE_ID, niskas,
 } from '../../lib/pointsConfig';
 import { COFFRES } from '../../lib/coffresConfig';
 import PieceNiska from './PieceNiska';
