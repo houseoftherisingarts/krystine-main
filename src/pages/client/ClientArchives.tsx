@@ -61,7 +61,7 @@ const ClientArchives: React.FC = () => {
         <button onClick={() => { setOpenId(null); setOpenDoc(null); }} className="mb-6 text-xs uppercase tracking-widest text-[#8B4A2F] hover:underline">
           <i className="fa-solid fa-arrow-left mr-2" /> {lang === 'FR' ? 'Retour aux archives' : 'Back to archives'}
         </button>
-        <article className="max-w-2xl mx-auto bg-white dark:bg-[#293027] rounded-[24px] border border-[#293027]/5 dark:border-white/5 p-6 md:p-10">
+        <article className="bg-white dark:bg-[#293027] rounded-[24px] border border-[#293027]/5 dark:border-white/5 p-6 md:p-10">
           <p className="text-[10px] uppercase tracking-[0.3em] text-[#8B4A2F] font-bold mb-3">
             {openDoc.sentAt?.toDate().toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA', { year: 'numeric', month: 'long', day: 'numeric' }) || ''}
           </p>
