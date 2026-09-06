@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import NewsletterSignup from '../components/NewsletterSignup';
+import CompteUpsell from '../components/CompteUpsell';
 import LiveEventsSection from '../components/LiveEvents';
 import { Seam } from '../components/motion/loeuvre';
 import { getEvents, type EventDoc } from '../firebase/firestore';
