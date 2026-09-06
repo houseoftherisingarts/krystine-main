@@ -638,7 +638,7 @@ const OrigineExperience: React.FC = () => {
 
       {/* ─────────── FEUILLE 11 · CLÔTURE (citation à gauche, gestes à droite) ─────────── */}
       <Feuille z={11}>
-        <section className="relative bg-cream min-h-screen flex items-center py-24 md:py-28">
+        <section className="relative bg-cream py-24 md:py-32">
           <Seam from="#34241a" height={110} />
           <div className={`relative w-full ${GUT} ${G12} gap-y-12 items-end`}>
             <Reveal className="col-span-12 md:col-span-8">
