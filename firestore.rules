@@ -278,6 +278,12 @@ service cloud.firestore {
       allow read: if resource.data.status == 'sent' || isAdmin();
       allow write: if isAdmin();
     }
+    // ── Iris (terminal de l'infolettre) ──
+    // Krystine dépose sa demande; le démon krystine-iris (sur la machine
+    // d'Alex, abonnement Claude Max) répond par REST avec un jeton IAM, donc
+    // hors règles. Le battement etat/iris dit à l'admin si Iris est en ligne.
+    match /irisDemandes/{id} { allow read, write: if isAdmin(); }
+    match /etat/{id}         { allow read: if isAdmin(); allow write: if false; }
     match /bookingRequests/{id} {
       allow create: if request.resource.data.keys().hasAll(['name', 'email']);
       allow read, update, delete: if isAdmin();

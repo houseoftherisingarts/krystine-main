@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import app from '../../../../firebase';
+import { addDoc, collection, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { db } from '../../../../firebase';
 import type { NewsletterAudience, NewsletterBlock } from '../../../../firebase/firestore';
 import { fetchAudience } from './AudiencePicker';
 
 // La « version terminale » : Krystine parle à Iris comme à une collègue.
-// Iris répond, et quand elle propose une infolettre, le composeur l'applique
-// au brouillon et l'aperçu se met à jour. Krystine garde le dernier geste
-// (enregistrer, programmer, envoyer).
+// La demande se dépose dans Firestore (irisDemandes); le démon krystine-iris,
+// sur l'ordinateur d'Alex, la fait répondre par Claude Code sur l'abonnement
+// Claude Max (aucune clé d'API), puis la réponse remonte ici en direct.
+// Quand Iris propose une infolettre, le parent l'applique. Krystine garde le
+// dernier geste (enregistrer, programmer, envoyer).
 
 export interface Proposal {
   title: string; subject: string; preheader: string;
@@ -28,18 +30,38 @@ const STARTERS = [
   'Retouche le deuxième paragraphe, plus court et plus chaleureux.',
 ];
 
+const HORS_LIGNE_APRES_MS = 90_000;   // trois battements manqués
+const ATTENTE_MAX_MS = 6 * 60_000;    // au-delà, la demande reste en file mais l'écran se libère
+
 const AssistantPanel: React.FC<Props> = ({ draft, onProposal, onClose }) => {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [tags, setTags] = useState<Array<{ tag: string; count: number }>>([]);
+  const [battement, setBattement] = useState<Date | null>(null);
+  const [tick, setTick] = useState(0);
   const endRef = useRef<HTMLDivElement>(null);
+  const stopRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     fetchAudience({}).then(r => setTags(r.tags.map(t => ({ tag: t.tag, count: t.n })))).catch(() => null);
   }, []);
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs, busy]);
+
+  // Le cœur d'Iris : etat/iris.battement, posé par le démon toutes les 30 s.
+  useEffect(() => {
+    if (!db) return;
+    const off = onSnapshot(doc(db, 'etat', 'iris'), s => {
+      const b = s.data()?.battement;
+      setBattement(b?.toDate ? b.toDate() : null);
+    }, () => setBattement(null));
+    const t = window.setInterval(() => setTick(x => x + 1), 15_000);
+    return () => { off(); window.clearInterval(t); stopRef.current?.(); };
+  }, []);
+
+  void tick;
+  const enLigne = !!battement && Date.now() - battement.getTime() < HORS_LIGNE_APRES_MS;
 
   const send = async (text: string) => {
     const t = text.trim();
@@ -48,17 +70,39 @@ const AssistantPanel: React.FC<Props> = ({ draft, onProposal, onClose }) => {
     const next: Msg[] = [...msgs, { role: 'user', content: t }];
     setMsgs(next); setInput(''); setBusy(true);
     try {
-      if (!app) throw new Error('Firebase non configuré');
-      const call = httpsCallable(getFunctions(app, 'us-central1'), 'newsletterAssistant');
-      const res: any = await call({
+      if (!db) throw new Error('Firebase non configuré');
+      const ref = await addDoc(collection(db, 'irisDemandes'), {
+        statut: 'nouvelle',
         messages: next.map(m => ({ role: m.role, content: m.content })),
         draft,
         tags,
         now: new Date().toLocaleString('sv-SE', { timeZone: 'America/Toronto' }).replace(' ', 'T'),
+        cree: serverTimestamp(),
       });
-      const { reply, proposal } = res.data || {};
-      setMsgs(prev => [...prev, { role: 'assistant', content: reply || '', proposal: proposal || undefined }]);
-      if (proposal) onProposal(proposal);
+      await new Promise<void>((resolve) => {
+        const timer = window.setTimeout(() => {
+          off();
+          setErr(enLigne
+            ? 'Iris met plus de temps que prévu. Votre demande reste en file : la réponse apparaîtra dans « Infolettres » si elle arrive plus tard.'
+            : 'Iris est hors ligne : l\'ordinateur d\'Alex est fermé. Votre demande reste en file et sera traitée à son retour.');
+          resolve();
+        }, ATTENTE_MAX_MS);
+        const off = onSnapshot(doc(db!, 'irisDemandes', ref.id), s => {
+          const d = s.data();
+          if (!d) return;
+          if (d.statut === 'repondue') {
+            let proposal: Proposal | undefined;
+            try { proposal = d.proposalJson ? JSON.parse(d.proposalJson) : undefined; } catch { proposal = undefined; }
+            setMsgs(prev => [...prev, { role: 'assistant', content: d.reply || '', proposal }]);
+            if (proposal) onProposal(proposal);
+            window.clearTimeout(timer); off(); resolve();
+          } else if (d.statut === 'echec') {
+            setErr(`Iris n'a pas pu répondre : ${d.erreur || 'erreur inconnue'}.`);
+            window.clearTimeout(timer); off(); resolve();
+          }
+        }, e => { setErr(e.message); window.clearTimeout(timer); off(); resolve(); });
+        stopRef.current = () => { window.clearTimeout(timer); off(); };
+      });
     } catch (e: any) {
       setErr(e?.message || 'Iris ne répond pas.');
     } finally {
@@ -73,7 +117,13 @@ const AssistantPanel: React.FC<Props> = ({ draft, onProposal, onClose }) => {
           <p className="text-[10px] uppercase tracking-[0.3em] text-[#e0b060] font-bold">Iris</p>
           <p className="text-xs text-white/50">Dites-lui ce que vous voulez dire, à qui, et quand.</p>
         </div>
-        {onClose && <button onClick={onClose} className="text-white/50 hover:text-white text-sm" title="Fermer"><i className="fa-solid fa-xmark" /></button>}
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-2 text-[11px] text-white/60" title={battement ? `Dernier signe de vie : ${battement.toLocaleTimeString('fr-CA')}` : 'Aucun signe de vie'}>
+            <span className={`inline-block w-2 h-2 rounded-full ${enLigne ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]' : 'bg-amber-400'}`} />
+            {enLigne ? 'En ligne sur l\'ordinateur d\'Alex' : 'Hors ligne : l\'ordinateur d\'Alex est fermé'}
+          </span>
+          {onClose && <button onClick={onClose} className="text-white/50 hover:text-white text-sm" title="Fermer"><i className="fa-solid fa-xmark" /></button>}
+        </div>
       </div>
 
       <div className="flex-1 overflow-auto px-5 py-4 space-y-4 font-mono text-[13px] leading-relaxed">
@@ -83,6 +133,7 @@ const AssistantPanel: React.FC<Props> = ({ draft, onProposal, onClose }) => {
             {STARTERS.map(s => (
               <button key={s} onClick={() => send(s)} className="block w-full text-left px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 border border-white/10">› {s}</button>
             ))}
+            {!enLigne && <p className="text-amber-200/80 text-xs">Iris répond depuis l'ordinateur d'Alex. S'il est fermé, votre demande attend son retour.</p>}
           </div>
         )}
         {msgs.map((m, i) => (
@@ -98,7 +149,7 @@ const AssistantPanel: React.FC<Props> = ({ draft, onProposal, onClose }) => {
             )}
           </div>
         ))}
-        {busy && <p className="text-white/40"><i className="fa-solid fa-circle-notch fa-spin mr-2" />Iris écrit…</p>}
+        {busy && <p className="text-white/40"><i className="fa-solid fa-circle-notch fa-spin mr-2" />{enLigne ? 'Iris écrit sur l\'ordinateur d\'Alex… (une à deux minutes)' : 'Demande déposée. Iris répondra quand l\'ordinateur d\'Alex sera rallumé.'}</p>}
         {err && <p className="text-red-300">{err}</p>}
         <div ref={endRef} />
       </div>
