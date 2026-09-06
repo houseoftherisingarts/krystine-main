@@ -310,7 +310,7 @@ const BanniereChoix: React.FC<{
           <button type="button" className={ligne} onClick={() => choisir('defaut')}>
             {coche('defaut')}<span className="flex-1">{fr ? 'Féminité & Ayurveda (bannière d’origine)' : 'Féminité & Ayurveda (original banner)'}</span>
           </button>
-          {BANNIERES.map(b => possede[`banniere-${b.cle}`] ? (
+          {BANNIERES.filter(b => b.cle !== 'defaut').map(b => possede[`banniere-${b.cle}`] ? (
             <button key={b.cle} type="button" className={ligne} onClick={() => choisir(b.cle)}>
               {coche(b.cle)}<span className="flex-1">{(fr ? b.nomFR : b.nomEN).replace(/^Bannière\s+|\s+banner$/i, '')}</span>
             </button>
