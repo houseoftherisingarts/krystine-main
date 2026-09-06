@@ -88,11 +88,7 @@ const MusiqueOrigine: React.FC = () => {
                       ? 'La musique est aussi dans votre espace, section Téléchargements.'
                       : 'Le lien reste valide deux heures. Avec un compte, la musique vous attend pour toujours dans votre espace.'}
                   </p>
-                  {!user && (
-                    <button type="button" onClick={() => setSignInOpen(true)} className="mt-3 border-b border-brass/60 pb-1 font-sans text-fyLabel uppercase text-brassBright transition-colors hover:text-ctext">
-                      Créer mon compte
-                    </button>
-                  )}
+                  {!user && <CompteUpsell variant="dark" texte="Avec un compte, la musique vous attend pour toujours dans votre espace." />}
                 </div>
               ) : user ? (
                 <div>
