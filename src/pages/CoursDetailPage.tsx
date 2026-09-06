@@ -65,6 +65,9 @@ const CoursDetailPage: React.FC = () => {
   const [live, setLive] = useState<LiveEnCours | null>(null);
   useEffect(() => suivreLiveEnCours(setLive), []);
   const [terminees, setTerminees] = useState<Record<string, boolean>>({});
+  // La dernière leçon ouverte, pour y revenir d'emblée à la prochaine visite.
+  const [derniere, setDerniere] = useState<string | null>(null);
+  const [progressionLue, setProgressionLue] = useState(false);
   const [courante, setCourante] = useState<Lecon | null>(null);
   // L'aperçu d'un PDF de la leçon, ouvert dans un volet à droite.
   const [apercuPdf, setApercu] = useState<{ nom: string; url: string } | null>(null);
@@ -91,9 +94,11 @@ const CoursDetailPage: React.FC = () => {
     setVerifAcces(true);
     aAchete(user.uid, id).then(setAchete).catch(() => {}).finally(() => setVerifAcces(false));
     getMember(user.uid).then(m => setAccesVie(!!m?.accesVie)).catch(() => {});
+    setProgressionLue(false);
     getProgression(user.uid, id).then(p => {
       setTerminees(p.terminees || {});
-    }).catch(() => {});
+      setDerniere((p as { derniereLecon?: string }).derniereLecon || null);
+    }).catch(() => {}).finally(() => setProgressionLue(true));
   }, [user, id]);
 
   // Le contenu s'ouvre à qui a acheté (ou reçu) la formation. L'admin voit
@@ -109,6 +114,15 @@ const CoursDetailPage: React.FC = () => {
   const ouvert = foyerOuvert();
   const porteOuverteRang = ouvert ? rangPorte(porteDuMois().n) : -1;
   const verrouillee = (l: Lecon) => !isAdmin && ((id === 'foyer' && !ouvert) || rangPorte(l.mois) > porteOuverteRang);
+
+  // La page s'ouvre d'elle-même : sur la dernière leçon commencée, sinon sur
+  // la première leçon ouverte (l'introduction). Plus de « choisissez une leçon ».
+  useEffect(() => {
+    if (courante || !accessible || lecons.length === 0 || (user && !progressionLue)) return;
+    const cible = (derniere && lecons.find(l => l.id === derniere && !verrouillee(l))) || lecons.find(l => !verrouillee(l));
+    if (cible) void ouvrir(cible);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courante, accessible, lecons, derniere, progressionLue, user]);
 
   const ouvrir = async (l: Lecon) => {
     if (verrouillee(l)) return;
@@ -218,7 +232,7 @@ const CoursDetailPage: React.FC = () => {
             </p>
             <div className="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-[12px] font-bold uppercase tracking-widest text-[#d9a05b]">
               <span><i className="fa-solid fa-door-open mr-2" />Douze portes, une par mois</span>
-              <span><i className="fa-solid fa-tower-broadcast mr-2" />Une méditation en direct par mois</span>
+              <span><i className="fa-solid fa-broadcast-tower mr-2" />Une méditation en direct par mois</span>
               <span><i className="fa-solid fa-feather mr-2" />Quatre dépôts par porte, un par semaine</span>
               <span><i className="fa-solid fa-fire mr-2" />Le feu et les saisons</span>
               <span><i className="fa-solid fa-users mr-2" />La communauté du Foyer</span>

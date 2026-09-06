@@ -247,8 +247,12 @@ const BoutiqueProvider: React.FC<{ children: React.ReactNode }> = ({ children })
     return unsub;
   }, []);
 
+  // La redirection de la boutique ne touche QUE la boutique. Avant le 6
+  // septembre 2026, elle avalait tout lien passé ici (Origine, Formations,
+  // Médias) et envoyait toute la barre de navigation vers l'ancien site.
   const resolveHref = useCallback<BoutiqueContextType['resolveHref']>((href) => {
-    if (settings.redirectEnabled && settings.redirectUrl) {
+    const estBoutique = href === '/boutique' || href.startsWith('/boutique/') || href.startsWith('/boutique?') || href.startsWith('/boutique#');
+    if (estBoutique && settings.redirectEnabled && settings.redirectUrl) {
       return { href: settings.redirectUrl, external: true };
     }
     return { href, external: false };
