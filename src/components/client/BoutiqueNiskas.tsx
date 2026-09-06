@@ -278,9 +278,9 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
                         onClick={() => acheter(`sanslogo-${b.cle}`, fr ? 'La version sans signature' : 'The signature-free version')}
                         disabled={occupe !== null || solde.balance < COUT_COSMETIQUE}
                         title={fr ? 'Retire la signature de Krystine en bas à droite, sur la bannière et le fond d’écran.' : 'Removes Krystine’s signature bottom right, on the banner and the wallpaper.'}
-                        className={boutonSecondaire}
+                        className={`${boutonSecondaire} whitespace-nowrap`}
                       >
-                        <i className="fa-solid fa-signature text-[9px]" /> {fr ? 'Sans signature' : 'No signature'} · <PieceNiska size={12} /> {COUT_COSMETIQUE}
+                        <i className="fa-solid fa-signature text-[9px]" /> {fr ? 'Sans signature' : 'No signature'} <PieceNiska size={12} /> {COUT_COSMETIQUE}
                       </button>
                     )
                     : (

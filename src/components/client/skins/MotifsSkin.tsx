@@ -26,7 +26,7 @@ const semer = (mode: Mode, w: number, h: number): Grain[] => {
   return Array.from({ length: n }, () => ({
     x: Math.random() * w,
     y: Math.random() * h,
-    r: mode === 'lotus' ? entre(7, 15) : mode === 'or-pur' ? entre(1.1, 2.4) : entre(1.6, 4.2),
+    r: mode === 'lotus' ? entre(9, 19) : mode === 'or-pur' ? entre(1.1, 2.4) : entre(2, 5),
     v: mode === 'lotus' ? entre(11, 26) : mode === 'or-pur' ? entre(4, 12) : entre(9, 22),
     d: entre(0, Math.PI * 2),
     p: entre(0, Math.PI * 2),
@@ -73,8 +73,11 @@ const peindre = (ctx: CanvasRenderingContext2D, mode: Mode, grains: Grain[], w: 
       ctx.moveTo(0, -g.r);
       ctx.quadraticCurveTo(g.r * 0.74, 0, 0, g.r);
       ctx.quadraticCurveTo(-g.r * 0.74, 0, 0, -g.r);
-      ctx.fillStyle = `rgba(230, 168, 194, ${(0.07 + g.a * 0.11).toFixed(3)})`;
+      ctx.fillStyle = `rgba(236, 178, 202, ${(0.12 + g.a * 0.16).toFixed(3)})`;
       ctx.fill();
+      ctx.lineWidth = 0.8;
+      ctx.strokeStyle = `rgba(255, 214, 231, ${(0.08 + g.a * 0.12).toFixed(3)})`;
+      ctx.stroke();
       ctx.restore();
     }
     return;

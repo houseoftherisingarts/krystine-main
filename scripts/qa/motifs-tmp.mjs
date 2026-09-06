@@ -26,12 +26,21 @@ for (const ecran of ECRANS) {
 
   for (const skin of SKINS) {
     await page.goto(`http://localhost:5302/demo-skins?skin=${skin}`, { waitUntil: 'domcontentloaded' });
-    await dormir(1800);
+    await dormir(700);
+    const temoins = page.getByRole('button', { name: /Non merci|J.accepte/i });
+    if (await temoins.count()) await temoins.first().click().catch(() => {});
+    await dormir(1100);
     await page.screenshot({ path: `${DOSSIER}/${skin}-${ecran.nom}-1500ms.png` });
     await dormir(2500);
     await page.screenshot({ path: `${DOSSIER}/${skin}-${ecran.nom}-4000ms.png` });
 
-    // Survol du bouton doré « Ouvrir le coffre » puis d'une carte interne.
+    // Survol du bouton doré, à mi-balayage, puis du bouton « Ouvrir le coffre ».
+    const dore = page.getByRole('button', { name: /Acheter des niskas/ });
+    if (await dore.count()) {
+      await dore.first().hover();
+      await dormir(330);
+      await page.screenshot({ path: `${DOSSIER}/${skin}-${ecran.nom}-survol-bouton-dore.png` });
+    }
     const bouton = page.getByRole('button', { name: /Ouvrir le coffre/ });
     if (await bouton.count()) {
       await bouton.first().hover();

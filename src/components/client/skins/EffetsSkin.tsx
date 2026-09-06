@@ -56,9 +56,72 @@ const halo = (taille: number, c: RGB, force: number, coeur = 0.3) =>
     x.fillRect(0, 0, s, s);
   });
 
+// Une tuile de lumière, cuite pixel par pixel une seule fois. Les coefficients
+// portant u, v et la phase sont entiers : la tuile se répète sans couture et la
+// boucle des huit images se referme exactement sur elle-même.
+//   résille  → des lignes claires là où la somme des ondes passe par zéro,
+//              exactement la lumière au fond d'un bassin;
+//   taches   → les crêtes seulement, plus basses en fréquence : le soleil qui
+//              tombe à travers le feuillage.
+const tuile = (taille: number, phase: number, c: RGB, resille: boolean) =>
+  carre(taille, (x, s) => {
+    const img = x.createImageData(s, s);
+    const d = img.data;
+    const TAU = Math.PI * 2;
+    const a = resille ? 2 : 1;
+    const b = resille ? 3 : 2;
+    for (let j = 0; j < s; j++) {
+      const v = (j / s) * TAU;
+      for (let i = 0; i < s; i++) {
+        const u = (i / s) * TAU;
+        const n = (Math.sin(a * u + phase) + Math.sin(b * v - phase) +
+          Math.sin(a * u + b * v + 2 * phase) + Math.sin((a + b) * v - a * u - phase)) / 4;
+        const f = resille ? Math.max(0, 1 - Math.abs(n) * 5.2) ** 1.9 : Math.max(0, n) ** 1.8;
+        const p = (j * s + i) * 4;
+        d[p] = c[0]; d[p + 1] = c[1]; d[p + 2] = c[2];
+        d[p + 3] = Math.min(255, f * (resille ? 235 : 150));
+      }
+    }
+    x.putImageData(img, 0, 0);
+  });
+
+// La nappe : les huit tuiles étalées en motif sur un canevas de moitié de
+// taille, puis agrandies. L'agrandissement fait le flou, et remplir la nappe
+// coûte deux `fillRect` au lieu d'un dessin par tache.
+const nappeDeMotif = (w: number, h: number, c: RGB, resille: boolean) => {
+  const N = 8;
+  const dw = Math.max(2, Math.round(w / 2));
+  const dh = Math.max(2, Math.round(h / 2));
+  const cv = document.createElement('canvas');
+  cv.width = dw; cv.height = dh;
+  const cx = cv.getContext('2d');
+  const motifs = cx
+    ? Array.from({ length: N }, (_, i) => cx.createPattern(tuile(resille ? 112 : 96, (i / N) * Math.PI * 2, c, resille), 'repeat'))
+    : [];
+  const poser = (idx: number, alpha: number, echelle: number, tx: number, ty: number) => {
+    const m = motifs[idx];
+    if (!cx || !m) return;
+    m.setTransform(new DOMMatrix().translateSelf(tx, ty).scaleSelf(echelle));
+    cx.globalAlpha = alpha;
+    cx.fillStyle = m;
+    cx.fillRect(0, 0, dw, dh);
+  };
+  // Une couche = deux images voisines fondues l'une dans l'autre, ce qui fait
+  // l'ondulation. `vitesse` règle la respiration, `echelle` la finesse.
+  const couche = (t: number, vitesse: number, alpha: number, echelle: number, tx: number, ty: number) => {
+    const tt = ((t * vitesse) % 1) * N;
+    const i0 = Math.floor(tt) % N;
+    const f = tt - Math.floor(tt);
+    poser(i0, (1 - f) * alpha, echelle, tx, ty);
+    poser((i0 + 1) % N, f * alpha, echelle, tx, ty);
+  };
+  return { cv, cx, dw, dh, couche };
+};
+
 // ── Vata · le vent ──────────────────────────────────────────────────────────
 // Trois plans de feuilles, du lointain au tout proche : les grandes passent
-// vite et pâles, les petites traînent au fond. La souris les écarte et les
+// vite et pâles, les petites traînent au fond. Derrière elles, la lumière
+// tachetée du sous-bois glisse lentement. La souris écarte les feuilles et les
 // fait tourner sur elles-mêmes.
 interface Feuille {
   x: number; y: number; vx: number; vy: number; plan: number;
