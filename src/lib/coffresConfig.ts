@@ -32,7 +32,7 @@ export const COFFRES: Record<TypeCoffre, {
     },
   },
   argent: {
-    boite: 160, cle: 20, nomFR: 'Coffre d’argent', nomEN: 'Silver chest', cleFR: 'Clé d’argent', cleEN: 'Silver key',
+    boite: 160, nomFR: 'Coffre d’argent', nomEN: 'Silver chest',
     image: '/compte/coffres/argent.webp', teinte: '#9AA3AD', teinteClaire: '#DDE3E8', teinteSombre: '#4B535B',
     contenu: {
       legendaire: 65, raresFR: 'les skins Lotus, Féminité et Nature', raresEN: 'the Lotus, Féminité and Nature skins',
