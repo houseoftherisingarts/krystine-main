@@ -86,7 +86,7 @@ const NISKAS_MUSIQUE_DEJA = 10;
 const NOMS_COSMETIQUES: Record<string, string> = {
   'skin-medzo': 'Skin Medzo Café', 'skin-nuit': 'Skin Nuit', 'skin-coffee': 'Skin Dark Coffee', 'banniere-nature': 'Bannière Nature & Ayurveda',
   'skin-aube': 'Skin Aube rose', 'skin-terre': 'Skin Terre cuite', 'skin-foret': 'Skin Forêt', 'skin-ocean': 'Skin Océan', 'skin-encre': 'Skin Encre & or',
-  'skin-lotus': 'Skin Lotus', 'skin-aurore': 'Skin Aurore', 'skin-or-pur': 'Skin Or pur',
+  'skin-lotus': 'Skin Lotus', 'skin-feminite': 'Skin Féminité & Ayurveda', 'skin-nature': 'Skin Nature & Ayurveda', 'skin-aurore': 'Skin Aurore', 'skin-or-pur': 'Skin Or pur',
   'banniere-iris': 'Bannière L’iris du matin', 'banniere-pivoine': 'Bannière La pivoine', 'banniere-huiles': 'Bannière Les huiles', 'banniere-jardin': 'Bannière Le jardin après la pluie', 'banniere-soir': 'Bannière Le soir à la lampe',
 };
 const OUVERTURES_PAR_JOUR = 5;
