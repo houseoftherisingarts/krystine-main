@@ -35,6 +35,9 @@ interface Props {
   askQuestion?: { placeholder: string; hint?: string };
   /** Écran de succès sur mesure (titre + phrase), à la place du message infolettre. */
   success?: { title: string; body: string };
+  /** Ligne secondaire « Créer mon compte » sous le formulaire. Par défaut affichée ;
+   * mise à false pour les listes d'attente d'événement (ex. LiveSignup), qui ne sont pas l'infolettre. */
+  accountUpsell?: boolean;
 }
 
 const NewsletterSignup: React.FC<Props> = ({
