@@ -191,6 +191,7 @@ const QuestionLive: React.FC = () => {
                       </button>
                     </div>
                     {erreur && <p className="font-sans text-sm text-[#8B4A2F]">{erreur}</p>}
+                    {!user && <CompteUpsell variant="light" />}
                   </form>
                 ) : (
                   <p className="mt-9 font-sans text-[#293027]/65 text-[0.95rem] leading-[1.85]">
