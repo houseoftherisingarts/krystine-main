@@ -4,15 +4,24 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Bell, MessageCircle, User as UserIcon } from 'lucide-react';
 import { subscribeInbox, type DMThread } from '../../firebase/dms';
 import { suivreMesAmities, type Amitie } from '../../firebase/amities';
+import { suivreLeMur, type PostMur } from '../../firebase/mur';
 
 // ─── La cloche ────────────────────────────────────────────────────────
-// Porté du FMM 2026 (src/components/compte/Cloche.tsx), simplifié : deux
-// sources seulement, les messages non lus et les demandes d'amitié en
-// attente (pas de badges, pas de pages, pas de parties : ces systèmes
+// Porté du FMM 2026 (src/components/compte/Cloche.tsx), simplifié : trois
+// sources, les messages non lus, les demandes d'amitié en attente, et les
+// billets du feed public de Krystine publiés depuis la dernière ouverture
+// de la cloche (pas de badges, pas de pages, pas de parties : ces systèmes
 // n'existent pas ici). NavBar.tsx pose ce composant, pas ce fichier.
 //
 // Trois boutons ronds : Profil (→ /compte), Notifications (cloche +
 // pastille, dépliable), Messages (pastille, → /messages).
+//
+// Les billets « vus » se suivent en localStorage (pas de compteur serveur
+// pour ça) : à l'ouverture on retient le moment, et on ne l'écrit dans la
+// clé qu'à la fermeture pour ne pas faire disparaître la liste sous les
+// yeux de la cliente pendant qu'elle la consulte.
+const CLE_VU = 'krystine-cloche-vu';
+const lireVu = (): number => { try { return Number(localStorage.getItem(CLE_VU)) || 0; } catch { return 0; } };
 
 interface Item {
   id: string;
