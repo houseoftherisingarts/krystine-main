@@ -318,6 +318,6 @@ export async function donnerCoffreDuJour7(uid: string, jour: string): Promise<vo
   await db.runTransaction(async (tx) => {
     if ((await tx.get(don)).exists) return;
     tx.set(don, { uid, type: 'bronze', avecCle: true, deUid: 'roue', jour, at: FieldValue.serverTimestamp() });
-    tx.set(db.doc(`coffres/${uid}`), { boites: { bronze: FieldValue.increment(1) }, cles: { bronze: FieldValue.increment(1) }, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+    tx.set(db.doc(`coffres/${uid}`), { boites: { bronze: FieldValue.increment(1) }, cles: FieldValue.increment(1), updatedAt: FieldValue.serverTimestamp() }, { merge: true });
   });
 }
