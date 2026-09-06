@@ -1,19 +1,34 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Check, ChevronDown, BookOpen, ArrowRight, Headphones, Activity, Sparkles, Download } from 'lucide-react';
-import { Atmosphere, Parallax, Seam } from '../components/motion/loeuvre';
+import { Atmosphere, Feuille, Parallax, Seam } from '../components/motion/loeuvre';
 import { useUI, useAuth } from '../contexts/AppContext';
 import BoutonCompte from '../components/BoutonCompte';
 
 /**
- * Expérience Origine — page React au style L'Œuvre (espresso/cream/brass)
+ * Expérience Origine — page de vente au canon L'Œuvre (espresso/crème/laiton)
  * avec un accent botanique vert forêt préservé de l'identité du cours.
- * Contenu extrait à 100% du sous-app statique src/pages/origine/.
- * Skills: premium-web (orchestrateur) + ui-ux-pro-max (tokens/contraste) + impeccable (craft).
+ *
+ * Deux lois de mise en page, posées par Alex le 6 septembre 2026 :
+ *  1. FEUILLES. Chaque section vit dans une <Feuille> : elle s'épingle, la
+ *     suivante monte par-dessus avec ses coins arrondis et son ombre. Une
+ *     section plus haute que l'écran s'épingle par le bas, donc elle se lit
+ *     entièrement avant d'être recouverte. Rien ne se perd.
+ *  2. PLEINE LARGEUR. L'écran est en 16:9. Aucun conteneur borné, aucun bloc
+ *     centré avec du vide sur les côtés : gouttières fluides + grille
+ *     éditoriale asymétrique de 12 colonnes, repliée en une colonne sous md.
+ *
+ * Skills : premium-web (orchestrateur) · impeccable (craft) · gsap-scrolltrigger
+ * (culture de l'épinglage; la page reste en framer-motion et CSS sticky).
  */
 
 const ease = [0.16, 0.8, 0.24, 1] as const;
+
+/* Gouttières fluides : 4vw, plancher 20px (= px-5 sur mobile), plafond 72px. */
+const GUT = 'px-[clamp(1.25rem,4vw,4.5rem)]';
+/* Grille éditoriale : 12 colonnes pleine largeur, une seule colonne sous md. */
+const G12 = 'grid grid-cols-12 gap-x-[clamp(1rem,2.5vw,3rem)]';
 
 const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: string }> = ({
   children, delay = 0, className,
@@ -32,44 +47,55 @@ const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: 
   );
 };
 
-/* ── Timeline des piliers : le rail laiton se dessine au fil du scroll
-   (scaleY ← scrollYProgress), les points éclosent à l'entrée. ── */
+/* ── Timeline des piliers : le rail laiton court au centre de la grille et se
+   dessine au fil du scroll, les piliers s'ouvrent de part et d'autre jusqu'aux
+   gouttières. La course se termine avant l'épinglage de la feuille, sinon le
+   rail se figerait à mi-course. ── */
 const PillarsTimeline: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.78', 'end 0.55'] });
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.85', 'end 0.95'] });
   return (
-    <div ref={ref} className="relative mt-24">
+    <div ref={ref} className="relative mt-20 md:mt-28">
       <motion.div
         className="pointer-events-none absolute left-[7px] md:left-1/2 top-2 bottom-2 w-px bg-gradient-to-b from-brass/0 via-brass/50 to-brass/0 md:-translate-x-1/2"
         style={reduce ? undefined : { scaleY: scrollYProgress, transformOrigin: 'top center' }}
         aria-hidden
       />
-      <div className="space-y-24 md:space-y-32">
-        {PILLARS.map((p, i) => (
-          <Reveal key={p.roman}>
-            <article className="relative grid md:grid-cols-2 gap-x-16 gap-y-6 items-start">
-              <span className="absolute left-0 md:left-1/2 top-2 md:-translate-x-1/2" aria-hidden>
-                <motion.span
-                  className="block h-3.5 w-3.5 rounded-full bg-brass ring-4 ring-cream"
-                  initial={reduce ? false : { scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true, amount: 1 }}
-                  transition={{ duration: 0.7, ease, delay: 0.35 }}
-                />
-              </span>
-              <div className={`pl-9 md:pl-0 ${i % 2 === 0 ? 'md:text-right md:pr-16' : 'md:order-2 md:pl-16'}`}>
-                <p className="font-sans text-[0.6rem] uppercase tracking-[0.26em] text-brassInk">{p.range}</p>
-                <p className="mt-3 font-serif text-forestDeep text-[0.95rem] uppercase tracking-[0.18em]">{p.roman}</p>
-                <h3 className="mt-2 font-serif font-medium text-ink leading-[1.05] text-[clamp(1.7rem,2.8vw,2.4rem)]">{p.subtitle}</h3>
-              </div>
-              <div className={`pl-9 md:pl-0 ${i % 2 === 0 ? '' : 'md:order-1 md:text-right md:pr-16'}`}>
-                <p className="font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[46ch]">{p.body}</p>
-                <p className={`mt-7 font-serif italic text-brassInk text-[clamp(1.15rem,1.7vw,1.45rem)] leading-snug max-w-[42ch] ${i % 2 === 0 ? '' : 'md:ml-auto'}`}>{p.reflection}</p>
-              </div>
-            </article>
-          </Reveal>
-        ))}
+      <div className="space-y-20 md:space-y-32">
+        {PILLARS.map((p, i) => {
+          const gauche = i % 2 === 0;
+          const titre = gauche
+            ? 'md:col-span-6 md:col-start-1 md:text-right md:pr-14'
+            : 'md:col-span-6 md:col-start-7 md:pl-14';
+          const corps = gauche
+            ? 'md:col-span-6 md:col-start-7 md:pl-14'
+            : 'md:col-span-6 md:col-start-1 md:row-start-1 md:text-right md:pr-14';
+          return (
+            <Reveal key={p.roman}>
+              <article className={`relative ${G12} gap-y-6 items-start`}>
+                <span className="absolute left-0 md:left-1/2 top-2 md:-translate-x-1/2" aria-hidden>
+                  <motion.span
+                    className="block h-3.5 w-3.5 rounded-full bg-brass ring-4 ring-cream"
+                    initial={reduce ? false : { scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: true, amount: 1 }}
+                    transition={{ duration: 0.7, ease, delay: 0.35 }}
+                  />
+                </span>
+                <div className={`col-span-12 pl-9 md:pl-0 ${titre}`}>
+                  <p className="font-sans text-[0.6rem] uppercase tracking-[0.26em] text-brassInk">{p.range}</p>
+                  <p className="mt-3 font-serif text-forestDeep text-[0.95rem] uppercase tracking-[0.18em]">{p.roman}</p>
+                  <h3 className="mt-2 font-serif font-medium text-ink leading-[1.05] text-[clamp(1.7rem,2.8vw,2.4rem)]">{p.subtitle}</h3>
+                </div>
+                <div className={`col-span-12 pl-9 md:pl-0 ${corps}`}>
+                  <p className={`font-sans text-[0.95rem] leading-[1.85] text-inkSoft max-w-[62ch] ${gauche ? '' : 'md:ml-auto'}`}>{p.body}</p>
+                  <p className={`mt-7 font-serif font-medium text-brassInk text-[clamp(1.15rem,1.7vw,1.45rem)] leading-snug max-w-[44ch] ${gauche ? '' : 'md:ml-auto'}`}>{p.reflection}</p>
+                </div>
+              </article>
+            </Reveal>
+          );
+        })}
       </div>
     </div>
   );
@@ -174,7 +200,7 @@ const FAQItem: React.FC<{ q: string; a: string; i: number; open: boolean; onClic
     <AnimatePresence initial={false}>
       {open && (
         <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease }}>
-          <p className="px-6 md:px-8 pb-7 text-inkSoft leading-[1.8] font-sans text-[0.95rem] max-w-[60ch]">{a}</p>
+          <p className="px-6 md:px-8 pb-7 text-inkSoft leading-[1.8] font-sans text-[0.95rem] max-w-[62ch]">{a}</p>
         </motion.div>
       )}
     </AnimatePresence>
@@ -183,23 +209,25 @@ const FAQItem: React.FC<{ q: string; a: string; i: number; open: boolean; onClic
 
 const FaqSection: React.FC = () => {
   const [open, setOpen] = useState<number | null>(0);
-  // Pleine largeur, 2 colonnes indépendantes (règle full-width : jamais de
-  // colonne étroite centrée). Chaque colonne garde son flux : ouvrir un item
-  // ne fait bouger que sa colonne.
+  // Deux colonnes indépendantes sur la grille de 12 : ouvrir un item ne fait
+  // bouger que sa colonne. Titre à gauche, jamais centré.
   const mid = Math.ceil(FAQS.length / 2);
   const columns = [FAQS.slice(0, mid), FAQS.slice(mid)];
   return (
-    <section id="faq" className="bg-cream2 py-24 md:py-32">
-      <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
-        <Reveal className="text-center mb-14">
-          <Eyebrow>Vos questions</Eyebrow>
-          <SectionTitle className="mt-4 uppercase tracking-[0.02em] text-[clamp(1.7rem,3.2vw,2.5rem)]">
-            Questions fréquentes
-          </SectionTitle>
-        </Reveal>
-        <div className="grid lg:grid-cols-2 gap-x-8 items-start">
+    <section id="faq" className="relative bg-cream2 py-24 md:py-32">
+      <div className={`w-full ${GUT}`}>
+        <div className={G12}>
+          <Reveal className="col-span-12 md:col-span-6 mb-12 md:mb-14">
+            <Eyebrow>Vos questions</Eyebrow>
+            <SectionTitle className="mt-4 uppercase tracking-[0.02em] text-[clamp(1.7rem,3.2vw,2.5rem)]">
+              Questions fréquentes
+            </SectionTitle>
+            <DrawRule className="mt-6 w-24" />
+          </Reveal>
+        </div>
+        <div className={`${G12} items-start`}>
           {columns.map((col, c) => (
-            <Reveal key={c} delay={c * 0.08}>
+            <Reveal key={c} delay={c * 0.08} className="col-span-12 md:col-span-6">
               {col.map((f, j) => {
                 const i = c * mid + j;
                 return (
@@ -217,346 +245,416 @@ const FaqSection: React.FC = () => {
 const OrigineExperience: React.FC = () => {
   const { lang } = useUI();
   const { user } = useAuth();
+
+  // Le hero est épinglé par la Feuille : son propre rect ne bouge plus une fois
+  // pinné, donc la parallaxe et l'extinction se pilotent sur le scroll de page,
+  // ramené à la hauteur mesurée du hero (mesure vivante, desktop et mobile).
   const heroRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  // Parallax réel : l'image déborde du cadre (bleed 12%) et glisse + grossit
-  // légèrement pendant que le hero sort de l'écran. Transform seulement.
-  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '-6%']);
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
-  // Feuilles empilées (canon L'Œuvre) : le hero reste épinglé sous la page et
-  // s'éteint doucement pendant que la première section monte par-dessus.
-  const heroDim = useTransform(scrollYProgress, [0, 1], ['brightness(1)', 'brightness(0.45)']);
+  const heroSpan = useRef(1);
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const mesurer = () => { heroSpan.current = Math.max(el.offsetHeight, 1); };
+    mesurer();
+    const ro = new ResizeObserver(mesurer);
+    ro.observe(el);
+    window.addEventListener('resize', mesurer);
+    return () => { ro.disconnect(); window.removeEventListener('resize', mesurer); };
+  }, []);
+  const { scrollY } = useScroll();
+  const avance = (v: number) => Math.min(1, Math.max(0, v / heroSpan.current));
+  const heroY = useTransform(scrollY, (v) => `${(-6 * avance(v)).toFixed(2)}%`);
+  const heroScale = useTransform(scrollY, (v) => 1 + 0.06 * avance(v));
+  const heroDim = useTransform(scrollY, (v) => `brightness(${(1 - 0.55 * avance(v)).toFixed(3)})`);
 
   const heroCopy = (
     <>
       <p className="font-sans text-[0.62rem] md:text-[0.7rem] uppercase tracking-[0.32em] text-brass mb-7 md:mb-8">Expérience Origine</p>
-      <h1 className="font-serif font-medium text-ctext leading-[0.98] text-[clamp(2.1rem,4.6vw,4rem)] max-w-[15ch] [text-shadow:0_2px_30px_rgba(0,0,0,0.55)]">Vous n'avez pas besoin de plus d'information.</h1>
-      <p className="mt-6 md:mt-7 font-serif italic text-[clamp(1.3rem,2.6vw,2.1rem)] leading-snug text-ctextSoft max-w-[20ch]">Vous avez besoin de revenir à <span className="text-brassBright not-italic">votre point d'origine.</span></p>
+      <h1 className="font-serif font-medium text-ctext leading-[0.98] text-[clamp(2.1rem,4.6vw,4rem)] max-w-[24ch] [text-shadow:0_2px_30px_rgba(0,0,0,0.55)]">Vous n'avez pas besoin de plus d'information.</h1>
+      <p className="mt-6 md:mt-7 font-serif text-[clamp(1.3rem,2.6vw,2.1rem)] leading-snug text-ctextSoft max-w-[26ch]">Vous avez besoin de revenir à <span className="text-brassBright">votre point d'origine.</span></p>
       <div className="mt-9 md:mt-11 flex flex-wrap items-center gap-5 md:gap-6">
         <a href="#curriculum" className="inline-flex items-center gap-3 rounded-full bg-brass px-8 py-3.5 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-espressoDeep transition-colors duration-300 hover:bg-brassBright min-h-[44px]">Découvrir le parcours <ArrowRight size={16} /></a>
-        <span className="font-serif italic text-ctextSoft/80 text-base">« Catherine, participante fondatrice »</span>
+        <span className="font-serif text-ctextSoft/80 text-base">« Catherine, participante fondatrice »</span>
       </div>
     </>
   );
 
   return (
+    /* Aucun overflow sur ce conteneur : c'est lui le bloc englobant des feuilles
+       sticky. Un overflow autre que visible tuerait l'épinglage. */
     <div className="bg-cream text-ink font-sans antialiased">
 
-      {/* ─────────── HERO (enveloppe pleine largeur, image entière, parallaxe vertical) ─────────── */}
-      <section ref={heroRef} className="relative z-0 w-full overflow-hidden bg-espressoDeep md:sticky md:top-0">
-        {/* DESKTOP : bande pleine largeur, image complète (jamais croppée en largeur), texte par-dessus */}
-        <div className="relative hidden md:block w-full overflow-hidden aspect-[2528/1015]">
-          <motion.img
-            src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg"
-            alt="Enveloppe Expérience Origine, sceau boussole, sauge et lavande"
-            className="absolute left-0 top-[-6%] h-[112%] w-full object-cover"
-            style={{ y: heroY, scale: heroScale, filter: heroDim }}
-            referrerPolicy="no-referrer"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.2, ease }}
-          />
-          {/* Voiles : assombrir la gauche pour le texte, laisser l'enveloppe (droite) claire */}
-          <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(90deg, rgba(22,16,10,0.90) 0%, rgba(22,16,10,0.72) 26%, rgba(22,16,10,0.28) 50%, transparent 72%)' }} />
-          <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(22,16,10,0.28) 0%, transparent 28%, transparent 70%, rgba(22,16,10,0.42) 100%)' }} />
-          <Atmosphere strength={0} vignette={false} />
-          <div className="absolute inset-0 z-10 flex items-center">
-            <div className="mx-auto w-full max-w-[1280px] px-12">
-              <motion.div className="max-w-[34rem]" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }}>
+      {/* ─────────── FEUILLE 1 · HERO ─────────── */}
+      <Feuille z={1} premiere>
+        <section ref={heroRef} className="relative w-full overflow-hidden bg-espressoDeep">
+          {/* DESKTOP : bande pleine largeur, image complète, texte sur les colonnes 1 à 7 */}
+          <div className="relative hidden md:block w-full overflow-hidden aspect-[2528/1015]">
+            <motion.img
+              src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg"
+              alt="Enveloppe Expérience Origine, sceau boussole, sauge et lavande"
+              className="absolute left-0 top-[-6%] h-[112%] w-full object-cover"
+              style={{ y: heroY, scale: heroScale, filter: heroDim }}
+              referrerPolicy="no-referrer"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.2, ease }}
+            />
+            {/* Voiles : assombrir la gauche pour le texte, laisser l'enveloppe (droite) claire */}
+            <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(90deg, rgba(22,16,10,0.90) 0%, rgba(22,16,10,0.72) 30%, rgba(22,16,10,0.30) 54%, transparent 74%)' }} />
+            <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(22,16,10,0.28) 0%, transparent 28%, transparent 70%, rgba(22,16,10,0.42) 100%)' }} />
+            <Atmosphere strength={0} vignette={false} />
+            <div className="absolute inset-0 z-10 flex items-center">
+              <div className={`w-full ${GUT} ${G12}`}>
+                <motion.div className="col-span-12 md:col-span-7" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease }}>
+                  {heroCopy}
+                </motion.div>
+              </div>
+            </div>
+          </div>
+          {/* MOBILE : image pleine largeur complète (aucun crop), texte dessous, lu
+              avant tout recouvrement puisque la feuille s'épingle par le bas */}
+          <div className="md:hidden">
+            <motion.img
+              src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg"
+              alt="Enveloppe Expérience Origine, sceau boussole, sauge et lavande"
+              className="w-full h-auto block"
+              referrerPolicy="no-referrer"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, ease }}
+            />
+            <div className={`${GUT} pt-10 pb-14`}>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease }}>
                 {heroCopy}
               </motion.div>
             </div>
           </div>
-        </div>
-        {/* MOBILE : image pleine largeur complète (aucun crop), texte dessous */}
-        <div className="md:hidden">
-          <motion.img
-            src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg"
-            alt="Enveloppe Expérience Origine, sceau boussole, sauge et lavande"
-            className="w-full h-auto block"
-            referrerPolicy="no-referrer"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, ease }}
-          />
-          <div className="px-6 pt-10 pb-14">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease }}>
-              {heroCopy}
-            </motion.div>
-          </div>
-        </div>
-      </section>
+        </section>
+      </Feuille>
 
-      {/* ─────────── CURRICULUM ─────────── */}
-      <section id="curriculum" className="relative z-10 bg-cream py-24 md:py-36 md:rounded-t-[26px] md:shadow-[0_-30px_80px_rgba(22,16,10,0.45)]">
-        <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
-          <Reveal className="text-center">
-            <Eyebrow>12 semaines · trois piliers</Eyebrow>
-            <SectionTitle className="mt-5 uppercase tracking-[0.02em]">Retour au Point d'Origine</SectionTitle>
-            <p className="mt-6 font-serif italic text-[clamp(1.1rem,2vw,1.5rem)] text-inkSoft max-w-[40ch] mx-auto">Une sagesse de 5 000 ans, dans votre réalité d'aujourd'hui.</p>
-          </Reveal>
-          <PillarsTimeline />
-        </div>
-      </section>
-
-      {/* ─────────── CTA BAND (panneau éditorial clair, filets pleine largeur) ─────────── */}
-      <section className="relative z-10 bg-cream2 py-16 md:py-20">
-        <Seam from="#f6f3ee" height={90} />
-        <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
-          <Reveal>
-            <div className="border-y border-ink/12 py-14 md:py-16 text-center">
-              <p className="mx-auto max-w-[46ch] font-serif text-[clamp(1.35rem,2.5vw,2.1rem)] leading-[1.35] text-ink">12 semaines pour comprendre les messages du corps, retrouver ce qui nous appartient, ancrer les rituels qui tiennent, et revenir <span className="italic text-brassInk">au point d'origine.</span></p>
-              <Link to={WAITLIST} className="mt-10 inline-flex items-center gap-3 bg-ink px-9 py-4 font-sans text-[0.7rem] uppercase tracking-[0.2em] text-cream transition-colors duration-300 hover:bg-brass hover:text-espressoDeep min-h-[44px]">Rejoindre la liste d'attente <ArrowRight size={16} /></Link>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ─────────── TRILOGIE ─────────── */}
-      <section className="relative z-10 bg-cream2 py-24 md:py-32">
-        <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12 grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          <Reveal>
-            <Eyebrow>L'Œuvre fondatrice</Eyebrow>
-            <SectionTitle className="mt-4">La Trilogie d'Origine</SectionTitle>
-            <DrawRule className="mt-5 w-16" />
-            <p className="mt-7 font-sans text-[1.05rem] leading-[1.85] text-inkSoft max-w-[46ch]">Trois livres. 8 ans. 1200 pages inspirées de l'Ayurveda, <span className="text-brassInk font-medium">et une partie de leur contenu inédit nourrit Expérience Origine avant même sa publication.</span></p>
-            <p className="mt-8 font-script text-[2rem] text-brassInk leading-none" style={{ fontFamily: '"Pinyon Script", cursive' }}>Krystine</p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <div className="rounded-[2rem] border border-cream3 bg-card p-5 md:p-8 shadow-xl overflow-hidden">
-              <Parallax speed={0.08}>
-                <img src="https://wsrv.nl/?url=https%3A%2F%2Fstorage.googleapis.com%2Forigine1%2FA%25CC%2580%2520venir%2520biento%25CC%2582t!.png&w=1200&output=webp" alt="La Trilogie d'Origine" loading="lazy" className="w-full h-auto object-contain max-h-[560px] mx-auto" referrerPolicy="no-referrer" />
-              </Parallax>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ─────────── COMMENT ÇA MARCHE ─────────── */}
-      <section className="relative z-10 bg-cream py-24 md:py-32">
-        <Seam from="#f1ebe0" height={90} />
-        <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
-          <Reveal className="text-center mb-16">
-            <Eyebrow>Chaque semaine</Eyebrow>
-            <SectionTitle className="mt-4">Ce qui travaille pour vous chaque semaine</SectionTitle>
-            <DrawRule className="mt-5 w-24 mx-auto" center />
-          </Reveal>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {WORKS.map((w, i) => (
-              <Reveal key={w.title} delay={(i % 3) * 0.06}>
-                <div className="h-full rounded-3xl bg-card border border-cream3 p-8 md:p-9 transition-[transform,box-shadow] duration-500 hover:shadow-xl hover:-translate-y-1.5">
-                  <div className="flex items-center gap-4 mb-4">
-                    <span className="w-2.5 h-2.5 rounded-full bg-brass shrink-0" />
-                    <h3 className="font-serif text-xl md:text-2xl text-ink">{w.title}</h3>
-                  </div>
-                  <p className="font-sans text-[0.95rem] leading-[1.8] text-inkSoft md:pl-7">{w.body}</p>
-                </div>
+      {/* ─────────── FEUILLE 2 · CURRICULUM ─────────── */}
+      <Feuille z={2}>
+        <section id="curriculum" className="relative bg-cream py-24 md:py-36">
+          <div className={`w-full ${GUT}`}>
+            <div className={`${G12} gap-y-8 items-end`}>
+              <Reveal className="col-span-12 md:col-span-6">
+                <Eyebrow>12 semaines · trois piliers</Eyebrow>
+                <SectionTitle className="mt-5 uppercase tracking-[0.02em]">Retour au Point d'Origine</SectionTitle>
+                <DrawRule className="mt-6 w-24" />
               </Reveal>
-            ))}
-          </div>
-          <Reveal className="text-center mt-16">
-            <p className="font-serif italic text-brassInk text-[clamp(1.3rem,2.4vw,2rem)] max-w-[44ch] mx-auto leading-snug">12 semaines pour comprendre les messages du corps, retrouver ce qui nous appartient et revenir <span className="uppercase tracking-[0.12em] not-italic font-medium">au point d'Origine</span>.</p>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ─────────── GRIMOIRE / JOURNAL ─────────── */}
-      <section className="relative z-10 bg-cream3 py-24 md:py-32">
-        <Seam from="#f6f3ee" height={90} />
-        <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12 grid lg:grid-cols-2 gap-14 items-center">
-          <Reveal>
-            <span className="inline-flex items-center gap-2 rounded-full border border-brass/30 text-brassInk px-3 py-1 text-[0.6rem] uppercase tracking-[0.18em]"><BookOpen size={12} /> Journal d'observation</span>
-            <SectionTitle className="mt-5">L'accompagnement pour réfléchir, noter, observer, intégrer.</SectionTitle>
-            <ul className="mt-8 space-y-4">
-              {["L'observation des repères saisonniers pour s'ajuster au fil des semaines.", "L'intégration de rituels ancrés dans la sagesse ayurvédique.", "L'espace d'écriture pour suivre ce qui se dépose en vous."].map((li) => (
-                <li key={li} className="flex items-start gap-3 text-inkSoft font-sans text-[0.98rem] leading-relaxed">
-                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-forest shrink-0" />{li}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-8 inline-flex items-center gap-2 text-brassInk font-medium text-sm"><Check size={16} /> Inclus dans Expérience Origine</p>
-          </Reveal>
-          <Reveal delay={0.1} className="flex justify-center">
-            <div className="relative w-full max-w-[400px] aspect-[3/4] rounded-l-md rounded-r-2xl border-l-[8px] border-brass shadow-2xl overflow-hidden bg-card">
-              <Parallax speed={0.1} className="h-full" innerClassName="h-full">
-                <img src="https://storage.googleapis.com/origine1/Livre%20cover%20origine.jpeg" alt="Journal d'observation et de rituels" loading="lazy" className="w-full h-full object-cover scale-110" referrerPolicy="no-referrer" />
-              </Parallax>
+              <Reveal delay={0.08} className="col-span-12 md:col-span-5 md:col-start-8">
+                <p className="font-serif text-[clamp(1.1rem,2vw,1.5rem)] leading-snug text-inkSoft max-w-[34ch]">Une sagesse de 5 000 ans, dans votre réalité d'aujourd'hui.</p>
+              </Reveal>
             </div>
-          </Reveal>
-        </div>
-      </section>
+            <PillarsTimeline />
+          </div>
+        </section>
+      </Feuille>
 
-      {/* ─────────── BIO KRYSTINE (clair, planche portrait encadrée) ─────────── */}
-      <section id="about" className="relative z-10 bg-cream2 py-24 md:py-32">
-        <Seam from="#ede5d7" height={90} />
-        <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <Reveal className="order-last lg:order-first">
-            <div className="relative border border-brass/45 p-2.5 bg-card shadow-[0_30px_70px_rgba(58,49,38,0.14)]">
-              <div className="relative overflow-hidden aspect-[4/5]">
-                <Parallax speed={0.1} className="h-full" innerClassName="h-full">
-                  <img src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" className="w-full h-full object-cover scale-110" referrerPolicy="no-referrer" />
+      {/* ─────────── FEUILLE 3 · BANDE CTA ─────────── */}
+      <Feuille z={3}>
+        <section className="relative bg-cream2 py-16 md:py-24">
+          <Seam from="#f6f3ee" height={90} />
+          <div className={`relative w-full ${GUT}`}>
+            <Reveal>
+              <div className={`${G12} gap-y-8 items-end border-y border-ink/12 py-14 md:py-16`}>
+                <p className="col-span-12 md:col-span-8 font-serif text-[clamp(1.35rem,2.5vw,2.1rem)] leading-[1.35] text-ink max-w-[48ch]">12 semaines pour comprendre les messages du corps, retrouver ce qui nous appartient, ancrer les rituels qui tiennent, et revenir <span className="text-brassInk">au point d'origine.</span></p>
+                <div className="col-span-12 md:col-span-4 md:flex md:justify-end">
+                  <Link to={WAITLIST} className="inline-flex items-center gap-3 bg-ink px-9 py-4 font-sans text-[0.7rem] uppercase tracking-[0.2em] text-cream transition-colors duration-300 hover:bg-brass hover:text-espressoDeep min-h-[44px]">Rejoindre la liste d'attente <ArrowRight size={16} /></Link>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      </Feuille>
+
+      {/* ─────────── FEUILLE 4 · TRILOGIE (texte à gauche, planche à droite) ─────────── */}
+      <Feuille z={4}>
+        <section className="relative bg-cream2 py-24 md:py-32">
+          <div className={`w-full ${GUT} ${G12} gap-y-12 items-center`}>
+            <Reveal className="col-span-12 md:col-span-5">
+              <Eyebrow>L'Œuvre fondatrice</Eyebrow>
+              <SectionTitle className="mt-4">La Trilogie d'Origine</SectionTitle>
+              <DrawRule className="mt-5 w-16" />
+              <p className="mt-7 font-sans text-[1.05rem] leading-[1.85] text-inkSoft max-w-[62ch]">Trois livres. 8 ans. 1200 pages inspirées de l'Ayurveda, <span className="text-brassInk font-medium">et une partie de leur contenu inédit nourrit Expérience Origine avant même sa publication.</span></p>
+              <p className="mt-8 text-[2rem] text-brassInk leading-none" style={{ fontFamily: '"Pinyon Script", cursive' }}>Krystine</p>
+            </Reveal>
+            <Reveal delay={0.1} className="col-span-12 md:col-span-6 md:col-start-7">
+              <div className="rounded-[2rem] border border-cream3 bg-card p-5 md:p-8 shadow-xl overflow-hidden">
+                <Parallax speed={0.08}>
+                  <img src="https://wsrv.nl/?url=https%3A%2F%2Fstorage.googleapis.com%2Forigine1%2FA%25CC%2580%2520venir%2520biento%25CC%2582t!.png&w=1200&output=webp" alt="La Trilogie d'Origine" loading="lazy" className="w-full h-auto object-contain max-h-[560px]" referrerPolicy="no-referrer" />
                 </Parallax>
               </div>
+            </Reveal>
+          </div>
+        </section>
+      </Feuille>
+
+      {/* ─────────── FEUILLE 5 · CE QUI TRAVAILLE CHAQUE SEMAINE ─────────── */}
+      <Feuille z={5}>
+        <section className="relative bg-cream py-24 md:py-32">
+          <Seam from="#f1ebe0" height={90} />
+          <div className={`relative w-full ${GUT}`}>
+            <div className={G12}>
+              <Reveal className="col-span-12 md:col-span-6">
+                <Eyebrow>Chaque semaine</Eyebrow>
+                <SectionTitle className="mt-4">Ce qui travaille pour vous chaque semaine</SectionTitle>
+                <DrawRule className="mt-5 w-24" />
+              </Reveal>
             </div>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <SectionTitle>Krystine St-Laurent</SectionTitle>
-            <p className="mt-6 font-sans text-[1.02rem] leading-[1.85] text-inkSoft max-w-[52ch]">Près de 40 ans à traverser les milieux de la santé, soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de la série télé Santé la vie et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle laisse les gens seuls. Les rituels qu'elle enseigne, elle les pratique chaque matin.</p>
-            <div className="mt-8 space-y-5 pt-6 border-t border-ink/12">
-              {TESTIMONIALS.map((t) => (
-                <p key={t.who} className="text-ink">
-                  <span className="font-serif italic text-[1.05rem] leading-snug">« {t.quote} »</span>
-                  <span className="block mt-1 text-inkSoft/80 text-sm not-italic">— {t.who}</span>
-                </p>
+            <div className={`${G12} gap-y-6 mt-14 md:mt-16`}>
+              {WORKS.map((w, i) => (
+                <Reveal key={w.title} delay={(i % 3) * 0.06} className="col-span-12 md:col-span-6 lg:col-span-4">
+                  <div className="h-full rounded-3xl bg-card border border-cream3 p-8 md:p-9 transition-[transform,box-shadow] duration-500 hover:shadow-xl hover:-translate-y-1.5">
+                    <div className="flex items-center gap-4 mb-4">
+                      <span className="w-2.5 h-2.5 rounded-full bg-brass shrink-0" />
+                      <h3 className="font-serif text-xl md:text-2xl text-ink">{w.title}</h3>
+                    </div>
+                    <p className="font-sans text-[0.95rem] leading-[1.8] text-inkSoft md:pl-7 max-w-[62ch]">{w.body}</p>
+                  </div>
+                </Reveal>
               ))}
             </div>
-          </Reveal>
-        </div>
-      </section>
+            <div className={`${G12} mt-16`}>
+              <Reveal className="col-span-12 md:col-span-8 md:col-start-5">
+                <p className="font-serif font-medium text-brassInk text-[clamp(1.3rem,2.4vw,2rem)] leading-snug max-w-[48ch]">12 semaines pour comprendre les messages du corps, retrouver ce qui nous appartient et revenir <span className="uppercase tracking-[0.12em]">au point d'Origine</span>.</p>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+      </Feuille>
 
-      {/* ─────────── CE QUI EST INCLUS + LISTE D'ATTENTE ─────────── */}
-      <section id="liste-attente" className="relative z-10 bg-cream py-24 md:py-32">
-        <Seam from="#f1ebe0" height={90} />
-        <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12">
-          <Reveal className="text-center mb-12">
-            <Eyebrow>Prochaine cohorte</Eyebrow>
-            <SectionTitle className="mt-4">Expérience Origine</SectionTitle>
-            <p className="mt-6 font-script text-[clamp(1.8rem,3.5vw,2.6rem)] text-brassInk" style={{ fontFamily: '"Pinyon Script", cursive' }}>Le corps sait. Il manquait la carte pour le lire.</p>
-          </Reveal>
-
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-            {/* Table de valeur */}
-            <Reveal className="lg:col-span-7">
-              <div className="rounded-[2rem] border border-cream3 bg-card p-6 md:p-9 shadow-lg">
-                <div className="border-b border-brass/20 pb-4 mb-5">
-                  <h3 className="font-serif font-medium text-lg md:text-xl uppercase tracking-[0.08em] text-ink">Ce qui est inclus</h3>
-                </div>
-                <div>
-                  {VALUE_ITEMS.map((it, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, y: 14 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, amount: 0.5 }}
-                      transition={{ duration: 0.8, ease, delay: 0.1 + i * 0.06 }}
-                      className={`flex items-start gap-3 py-4 ${i < VALUE_ITEMS.length - 1 ? 'border-b border-cream3' : ''}`}
-                    >
-                      <Check size={16} className="text-brass mt-1 shrink-0" />
-                      <div>
-                        <p className="font-sans text-[0.95rem] font-semibold text-ink leading-snug">{it.title}</p>
-                        <p className="mt-1 font-sans text-[0.82rem] italic text-inkSoft leading-relaxed max-w-[54ch]">{it.detail}</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-                <div className="mt-6 rounded-2xl bg-forest/8 border border-forest/20 p-5 flex items-start gap-3">
-                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-forestDeep mt-0.5 whitespace-nowrap">Boni</span>
-                  <span className="font-sans text-[0.9rem] text-inkSoft">15 % sur toute la boutique Inspirata Ayurveda (huiles, aromathérapie, rituels douceur), pendant les 12 semaines, sans limite de fréquence.</span>
-                </div>
+      {/* ─────────── FEUILLE 6 · JOURNAL (planche à gauche, texte à droite) ─────────── */}
+      <Feuille z={6}>
+        <section className="relative bg-cream3 py-24 md:py-32">
+          <Seam from="#f6f3ee" height={90} />
+          <div className={`relative w-full ${GUT} ${G12} gap-y-12 items-center`}>
+            <Reveal className="col-span-12 md:col-span-6 md:col-start-7">
+              <span className="inline-flex items-center gap-2 rounded-full border border-brass/30 text-brassInk px-3 py-1 text-[0.6rem] uppercase tracking-[0.18em]"><BookOpen size={12} /> Journal d'observation</span>
+              <SectionTitle className="mt-5">L'accompagnement pour réfléchir, noter, observer, intégrer.</SectionTitle>
+              <ul className="mt-8 space-y-4 max-w-[62ch]">
+                {["L'observation des repères saisonniers pour s'ajuster au fil des semaines.", "L'intégration de rituels ancrés dans la sagesse ayurvédique.", "L'espace d'écriture pour suivre ce qui se dépose en vous."].map((li) => (
+                  <li key={li} className="flex items-start gap-3 text-inkSoft font-sans text-[0.98rem] leading-relaxed">
+                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-forest shrink-0" />{li}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-8 inline-flex items-center gap-2 text-brassInk font-medium text-sm"><Check size={16} /> Inclus dans Expérience Origine</p>
+            </Reveal>
+            <Reveal delay={0.1} className="col-span-12 md:col-span-5 md:col-start-1 md:row-start-1">
+              <div className="relative w-full aspect-[3/4] rounded-l-md rounded-r-2xl border-l-[8px] border-brass shadow-2xl overflow-hidden bg-card">
+                <Parallax speed={0.1} className="h-full" innerClassName="h-full">
+                  <img src="https://storage.googleapis.com/origine1/Livre%20cover%20origine.jpeg" alt="Journal d'observation et de rituels" loading="lazy" className="w-full h-full object-cover scale-110" referrerPolicy="no-referrer" />
+                </Parallax>
               </div>
             </Reveal>
+          </div>
+        </section>
+      </Feuille>
 
-            {/* Panneau liste d'attente (pré-ouverture : ni prix, ni inscription) */}
-            <Reveal delay={0.1} className="lg:col-span-5">
-              <div className="relative border border-brass/45 bg-card p-8 md:p-12 text-center">
-                <span className="pointer-events-none absolute inset-3 border border-brass/25" aria-hidden />
-                <div className="relative">
-                  <p className="font-sans text-[0.65rem] uppercase tracking-[0.3em] text-brassInk">Prochaine cohorte<br /><span className="mt-1.5 inline-block tracking-[0.2em] text-inkSoft/80 normal-case font-serif italic text-base">Expérience Origine</span></p>
-                  <p className="mt-8 font-serif text-[1.7rem] md:text-[2rem] leading-[1.25] text-ink">Les portes de la prochaine traversée ne sont pas encore ouvertes.</p>
-                  <p className="mt-5 font-sans text-[0.95rem] leading-[1.8] text-inkSoft">Le cercle est limité à 350 personnes. Les personnes sur la liste d'attente reçoivent les détails et l'accès en premier, avant toute annonce publique.</p>
-                  <Link to={WAITLIST} className="mt-9 block w-full bg-ink py-4 font-sans text-[0.72rem] tracking-[0.2em] uppercase text-cream transition-colors duration-300 hover:bg-brass hover:text-espressoDeep min-h-[44px]">Rejoindre la liste d'attente</Link>
-                  <p className="mt-5 font-serif italic text-[0.88rem] text-inkSoft/75">Sans engagement. Vous choisirez librement à l'ouverture des portes.</p>
+      {/* ─────────── FEUILLE 7 · KRYSTINE (texte à gauche, portrait à droite) ─────────── */}
+      <Feuille z={7}>
+        <section id="about" className="relative bg-cream2 py-24 md:py-32">
+          <Seam from="#ede5d7" height={90} />
+          <div className={`relative w-full ${GUT} ${G12} gap-y-12 items-center`}>
+            <Reveal className="col-span-12 md:col-span-6">
+              <Eyebrow>Celle qui enseigne</Eyebrow>
+              <SectionTitle className="mt-4">Krystine St-Laurent</SectionTitle>
+              <DrawRule className="mt-5 w-16" />
+              <p className="mt-7 font-sans text-[1.02rem] leading-[1.85] text-inkSoft max-w-[62ch]">Près de 40 ans à traverser les milieux de la santé, soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de la série télé Santé la vie et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle laisse les gens seuls. Les rituels qu'elle enseigne, elle les pratique chaque matin.</p>
+              <div className="mt-8 space-y-5 pt-6 border-t border-ink/12 max-w-[62ch]">
+                {TESTIMONIALS.map((t) => (
+                  <p key={t.who} className="text-ink">
+                    <span className="font-serif text-[1.05rem] leading-snug">« {t.quote} »</span>
+                    <span className="block mt-1 text-inkSoft/80 text-sm">— {t.who}</span>
+                  </p>
+                ))}
+              </div>
+            </Reveal>
+            <Reveal delay={0.08} className="col-span-12 md:col-span-5 md:col-start-8">
+              <div className="relative border border-brass/45 p-2.5 bg-card shadow-[0_30px_70px_rgba(58,49,38,0.14)]">
+                <div className="relative overflow-hidden aspect-[4/5]">
+                  <Parallax speed={0.1} className="h-full" innerClassName="h-full">
+                    <img src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" className="w-full h-full object-cover scale-110" referrerPolicy="no-referrer" />
+                  </Parallax>
                 </div>
               </div>
             </Reveal>
           </div>
+        </section>
+      </Feuille>
 
-          {/* Garantie */}
-          <Reveal className="mt-10">
-            <div className="mx-auto max-w-[760px] rounded-3xl border border-cream3 bg-card p-8 md:p-10 text-center shadow-sm">
-              <h4 className="font-serif font-medium text-xl md:text-2xl text-ink uppercase tracking-[0.08em] mb-4">Notre garantie cœur léger, 30 jours</h4>
-              <p className="font-sans text-[1.02rem] italic leading-relaxed text-inkSoft max-w-[60ch] mx-auto">Si après <span className="text-brassInk font-medium not-italic">30 jours</span> vous sentez que ce cadre ne vous convient pas, nous vous <span className="text-brassInk font-medium not-italic">remboursons</span>. Sans question. Cela enlève le risque.</p>
+      {/* ─────────── FEUILLE 8 · CE QUI EST INCLUS + LISTE D'ATTENTE ─────────── */}
+      <Feuille z={8}>
+        <section id="liste-attente" className="relative bg-cream py-24 md:py-32">
+          <Seam from="#f1ebe0" height={90} />
+          <div className={`relative w-full ${GUT}`}>
+            <div className={`${G12} gap-y-6 items-end`}>
+              <Reveal className="col-span-12 md:col-span-6">
+                <Eyebrow>Prochaine cohorte</Eyebrow>
+                <SectionTitle className="mt-4">Ce qui est inclus</SectionTitle>
+                <DrawRule className="mt-5 w-24" />
+              </Reveal>
+              <Reveal delay={0.08} className="col-span-12 md:col-span-5 md:col-start-8">
+                <p className="font-serif text-[clamp(1.05rem,1.8vw,1.4rem)] leading-snug text-inkSoft max-w-[34ch]">Le cercle est limité à 350 personnes, et les portes ne sont pas encore ouvertes.</p>
+              </Reveal>
             </div>
-          </Reveal>
-        </div>
-      </section>
 
-      {/* ─────────── FAQ ─────────── */}
-      <FaqSection />
+            <div className={`${G12} gap-y-10 mt-12 md:mt-16 items-start`}>
+              {/* Argumentaire, colonnes 1 à 7 */}
+              <Reveal className="col-span-12 md:col-span-7">
+                <div className="rounded-[2rem] border border-cream3 bg-card p-6 md:p-9 shadow-lg">
+                  <div className="border-b border-brass/20 pb-4 mb-5">
+                    <h3 className="font-serif font-medium text-lg md:text-xl uppercase tracking-[0.08em] text-ink">Le contenu du parcours</h3>
+                  </div>
+                  <div>
+                    {VALUE_ITEMS.map((it, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 14 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.5 }}
+                        transition={{ duration: 0.8, ease, delay: 0.1 + i * 0.06 }}
+                        className={`flex items-start gap-3 py-4 ${i < VALUE_ITEMS.length - 1 ? 'border-b border-cream3' : ''}`}
+                      >
+                        <Check size={16} className="text-brass mt-1 shrink-0" />
+                        <div>
+                          <p className="font-sans text-[0.95rem] font-semibold text-ink leading-snug">{it.title}</p>
+                          <p className="mt-1 font-sans text-[0.85rem] text-inkSoft leading-relaxed max-w-[62ch]">{it.detail}</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                  <div className="mt-6 rounded-2xl bg-forest/8 border border-forest/20 p-5 flex items-start gap-3">
+                    <span className="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-forestDeep mt-0.5 whitespace-nowrap">Boni</span>
+                    <span className="font-sans text-[0.9rem] text-inkSoft">15 % sur toute la boutique Inspirata Ayurveda (huiles, aromathérapie, rituels douceur), pendant les 12 semaines, sans limite de fréquence.</span>
+                  </div>
+                </div>
+              </Reveal>
 
-      {/* ─────────── FRÉQUENCE D'ORIGINE — le seul moment sombre de la page,
-           sur le brun chaud back-cover de la charte (#34241a), pas l'espresso boueux ─────────── */}
-      <section className="relative z-10 py-24 md:py-32 overflow-hidden" style={{ backgroundColor: '#34241a' }}>
-        <Atmosphere light="30% 32%" />
-        <div className="relative mx-auto w-full max-w-[1100px] px-6 md:px-12 grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
-          {/* Disque + écouteurs flottants */}
-          <Reveal className="relative flex flex-col items-center">
-            <div className="relative w-64 h-64 md:w-[380px] md:h-[380px] flex items-center justify-center">
-              <motion.div animate={{ rotate: 360 }} transition={{ duration: 28, repeat: Infinity, ease: 'linear' }} className="absolute inset-[-8%] rounded-full border border-dashed border-brass/30" />
-              <motion.div animate={{ rotate: -360 }} transition={{ duration: 38, repeat: Infinity, ease: 'linear' }} className="absolute inset-[6%] rounded-full border border-brass/15" />
-              <div className="absolute inset-[14%] rounded-full bg-brass/12 blur-2xl" />
-              <motion.img
-                src="https://storage.googleapis.com/origine1/headphones.png"
-                alt="Écouteurs · Expérience Origine"
-                draggable={false}
-                referrerPolicy="no-referrer"
-                animate={{ y: [-14, 14, -14] }}
-                transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
-                className="relative z-10 w-[64%] h-[64%] object-contain drop-shadow-[0_30px_55px_rgba(0,0,0,0.55)]"
-              />
+              {/* Formulaire / porte d'entrée, colonnes 8 à 12 */}
+              <Reveal delay={0.1} className="col-span-12 md:col-span-5">
+                <div className="relative border border-brass/45 bg-card p-8 md:p-10">
+                  <span className="pointer-events-none absolute inset-3 border border-brass/25" aria-hidden />
+                  <div className="relative">
+                    <p className="font-sans text-[0.65rem] uppercase tracking-[0.3em] text-brassInk">Prochaine cohorte</p>
+                    <p className="mt-8 font-serif text-[clamp(1.5rem,2.2vw,2rem)] leading-[1.25] text-ink max-w-[22ch]">Les portes de la prochaine traversée ne sont pas encore ouvertes.</p>
+                    <p className="mt-5 font-sans text-[0.95rem] leading-[1.8] text-inkSoft max-w-[46ch]">Les personnes sur la liste d'attente reçoivent les détails et l'accès en premier, avant toute annonce publique.</p>
+                    <Link to={WAITLIST} className="mt-9 block w-full bg-ink py-4 text-center font-sans text-[0.72rem] tracking-[0.2em] uppercase text-cream transition-colors duration-300 hover:bg-brass hover:text-espressoDeep min-h-[44px]">Rejoindre la liste d'attente</Link>
+                    <p className="mt-5 font-serif text-[0.95rem] text-inkSoft/80">Sans engagement. Vous choisirez librement à l'ouverture des portes.</p>
+                  </div>
+                </div>
+              </Reveal>
             </div>
-            <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-cream text-espressoDeep px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl">
-              <span className="h-1.5 w-1.5 rounded-full bg-brass animate-pulse" /> Souffle d'Origine
+
+            {/* Garantie */}
+            <div className={`${G12} mt-12`}>
+              <Reveal className="col-span-12 md:col-span-8">
+                <div className="rounded-3xl border border-cream3 bg-card p-8 md:p-10 shadow-sm">
+                  <h4 className="font-serif font-medium text-xl md:text-2xl text-ink uppercase tracking-[0.08em] mb-4">Notre garantie cœur léger, 30 jours</h4>
+                  <p className="font-sans text-[1.02rem] leading-relaxed text-inkSoft max-w-[62ch]">Si après <span className="text-brassInk font-medium">30 jours</span> vous sentez que ce cadre ne vous convient pas, nous vous <span className="text-brassInk font-medium">remboursons</span>. Sans question. Cela enlève le risque.</p>
+                </div>
+              </Reveal>
             </div>
-          </Reveal>
-          {/* Contenu */}
-          <Reveal delay={0.1} className="text-center lg:text-left">
-            <p className="inline-flex items-center gap-2 text-brass text-xs font-bold uppercase tracking-[0.2em] mb-4"><Headphones size={14} /> Trame sonore originale</p>
-            <h2 className="font-serif font-medium text-ctext text-[clamp(2.2rem,4.4vw,3.4rem)] leading-[1.05]">Fréquence <br /><span className="text-brassBright">d'Origine</span></h2>
-            <p className="mt-6 font-sans text-[1rem] leading-relaxed text-ctextSoft max-w-md mx-auto lg:mx-0">La musique qui vous accompagne sur cette page a été composée pour réaligner votre système nerveux. Emportez cette fréquence avec vous pour retrouver votre centre à tout moment.</p>
-            <div className="mt-8 flex gap-8 border-y border-brass/20 py-4 max-w-md mx-auto lg:mx-0 justify-center lg:justify-start">
-              <div className="flex flex-col gap-1">
-                <span className="flex items-center gap-2 text-[0.7rem] uppercase tracking-widest text-ctextSoft/70"><Activity size={12} /> Fréquence</span>
-                <span className="font-serif text-xl text-brassBright">432 Hz</span>
-              </div>
-              <div className="w-px h-10 bg-brass/20" />
-              <div className="flex flex-col gap-1">
-                <span className="flex items-center gap-2 text-[0.7rem] uppercase tracking-widest text-ctextSoft/70"><Sparkles size={12} /> Qualité</span>
-                <span className="font-serif text-xl text-brassBright">Studio haute résolution</span>
-              </div>
-            </div>
-            {/* La musique vit dans la boutique de l'espace membre (5 niskas),
-                pas au Foyer d'Origine : visiteuse non connectée → créer un
-                compte (niskas de bienvenue offertes); membre connectée →
-                lien direct sur la boutique, onglet Téléchargements. */}
-            {user ? (
-              <a
-                href="/compte?onglet=telechargements#boutique"
-                className="mt-9 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-serif text-lg text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]"
-              >
-                <Download size={20} /> {lang === 'FR' ? 'L\'obtenir dans ma boutique · 5 niskas' : 'Get it in my shop · 5 niskas'}
-              </a>
-            ) : (
-              <div className="mt-9">
-                <BoutonCompte
-                  taille="lg"
-                  libelle={lang === 'FR' ? "Créer mon compte pour l'obtenir" : 'Create my account to get it'}
+          </div>
+        </section>
+      </Feuille>
+
+      {/* ─────────── FEUILLE 9 · FAQ ─────────── */}
+      <Feuille z={9}>
+        <FaqSection />
+      </Feuille>
+
+      {/* ─────────── FEUILLE 10 · FRÉQUENCE D'ORIGINE (le seul moment sombre,
+           sur le brun chaud back-cover de la charte #34241a) ─────────── */}
+      <Feuille z={10}>
+        <section className="relative py-24 md:py-32 overflow-hidden" style={{ backgroundColor: '#34241a' }}>
+          <Atmosphere light="30% 32%" />
+          <div className={`relative w-full ${GUT} ${G12} gap-y-14 items-center`}>
+            {/* Disque + écouteurs flottants */}
+            <Reveal className="col-span-12 md:col-span-5 flex flex-col items-start">
+              <div className="relative w-full max-w-[420px] aspect-square flex items-center justify-center">
+                <motion.div animate={{ rotate: 360 }} transition={{ duration: 28, repeat: Infinity, ease: 'linear' }} className="absolute inset-[-8%] rounded-full border border-dashed border-brass/30" />
+                <motion.div animate={{ rotate: -360 }} transition={{ duration: 38, repeat: Infinity, ease: 'linear' }} className="absolute inset-[6%] rounded-full border border-brass/15" />
+                <div className="absolute inset-[14%] rounded-full bg-brass/12 blur-2xl" />
+                <motion.img
+                  src="https://storage.googleapis.com/origine1/headphones.png"
+                  alt="Écouteurs · Expérience Origine"
+                  draggable={false}
+                  referrerPolicy="no-referrer"
+                  animate={{ y: [-14, 14, -14] }}
+                  transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
+                  className="relative z-10 w-[64%] h-[64%] object-contain drop-shadow-[0_30px_55px_rgba(0,0,0,0.55)]"
                 />
-                <p className="mt-4 font-sans text-sm leading-relaxed text-ctextSoft max-w-md mx-auto lg:mx-0">
-                  {lang === 'FR'
-                    ? "Cette fréquence vous attend dans votre espace membre, pour 5 niskas. Votre compte vous offre des niskas de bienvenue dès sa création, de quoi l'obtenir sans attendre."
-                    : 'This frequency is waiting in your member space, for 5 niskas. Your account comes with welcome niskas the moment you create it, enough to get it right away.'}
-                </p>
               </div>
-            )}
-          </Reveal>
-        </div>
-      </section>
+              <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-cream text-espressoDeep px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl">
+                <span className="h-1.5 w-1.5 rounded-full bg-brass animate-pulse" /> Souffle d'Origine
+              </div>
+            </Reveal>
+            {/* Contenu */}
+            <Reveal delay={0.1} className="col-span-12 md:col-span-6 md:col-start-7">
+              <p className="inline-flex items-center gap-2 text-brass text-xs font-bold uppercase tracking-[0.2em] mb-4"><Headphones size={14} /> Trame sonore originale</p>
+              <h2 className="font-serif font-medium text-ctext text-[clamp(2.2rem,4.4vw,3.4rem)] leading-[1.05] max-w-[16ch]">Fréquence <span className="text-brassBright">d'Origine</span></h2>
+              <p className="mt-6 font-sans text-[1rem] leading-relaxed text-ctextSoft max-w-[62ch]">La musique qui vous accompagne sur cette page a été composée pour réaligner votre système nerveux. Emportez cette fréquence avec vous pour retrouver votre centre à tout moment.</p>
+              <div className="mt-8 flex gap-10 border-y border-brass/20 py-4 max-w-[34rem]">
+                <div className="flex flex-col gap-1">
+                  <span className="flex items-center gap-2 text-[0.7rem] uppercase tracking-widest text-ctextSoft/70"><Activity size={12} /> Fréquence</span>
+                  <span className="font-serif text-xl text-brassBright">432 Hz</span>
+                </div>
+                <div className="w-px h-10 bg-brass/20" />
+                <div className="flex flex-col gap-1">
+                  <span className="flex items-center gap-2 text-[0.7rem] uppercase tracking-widest text-ctextSoft/70"><Sparkles size={12} /> Qualité</span>
+                  <span className="font-serif text-xl text-brassBright">Studio haute résolution</span>
+                </div>
+              </div>
+              {/* La musique vit dans la boutique de l'espace membre (5 niskas),
+                  pas au Foyer d'Origine : visiteuse non connectée → créer un
+                  compte (niskas de bienvenue offertes); membre connectée →
+                  lien direct sur la boutique, onglet Téléchargements. */}
+              {user ? (
+                <a
+                  href="/compte?onglet=telechargements#boutique"
+                  className="mt-9 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-serif text-lg text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]"
+                >
+                  <Download size={20} /> {lang === 'FR' ? 'L\'obtenir dans ma boutique · 5 niskas' : 'Get it in my shop · 5 niskas'}
+                </a>
+              ) : (
+                <div className="mt-9">
+                  <BoutonCompte
+                    taille="lg"
+                    libelle={lang === 'FR' ? "Créer mon compte pour l'obtenir" : 'Create my account to get it'}
+                  />
+                  <p className="mt-4 font-sans text-sm leading-relaxed text-ctextSoft max-w-[62ch]">
+                    {lang === 'FR'
+                      ? "Cette fréquence vous attend dans votre espace membre, pour 5 niskas. Votre compte vous offre des niskas de bienvenue dès sa création, de quoi l'obtenir sans attendre."
+                      : 'This frequency is waiting in your member space, for 5 niskas. Your account comes with welcome niskas the moment you create it, enough to get it right away.'}
+                  </p>
+                </div>
+              )}
+            </Reveal>
+          </div>
+        </section>
+      </Feuille>
 
-      {/* ─────────── CONTACT ─────────── */}
-      <section className="relative z-20 bg-cream py-16 md:py-20 text-center md:rounded-t-[26px] md:shadow-[0_-30px_80px_rgba(22,16,10,0.35)]">
-        <a href="mailto:teamksl@inspiratanature.com" className="font-serif italic text-brassInk hover:text-brassBright transition-colors text-lg md:text-xl border-b border-brass/30 pb-1">Une question ? Écrivez à teamksl@inspiratanature.com</a>
-      </section>
+      {/* ─────────── FEUILLE 11 · CLÔTURE (citation à gauche, gestes à droite) ─────────── */}
+      <Feuille z={11}>
+        <section className="relative bg-cream min-h-screen flex items-center py-24 md:py-28">
+          <Seam from="#34241a" height={110} />
+          <div className={`relative w-full ${GUT} ${G12} gap-y-12 items-end`}>
+            <Reveal className="col-span-12 md:col-span-8">
+              <Eyebrow>Expérience Origine</Eyebrow>
+              <p className="mt-7 font-serif font-medium text-ink leading-[1.02] text-[clamp(2.2rem,5vw,4rem)] max-w-[26ch]">Le corps sait. Il manquait la carte pour le lire.</p>
+              <DrawRule className="mt-10 w-32" />
+            </Reveal>
+            <Reveal delay={0.08} className="col-span-12 md:col-span-4">
+              <Link to={WAITLIST} className="block w-full bg-ink py-4 text-center font-sans text-[0.72rem] tracking-[0.2em] uppercase text-cream transition-colors duration-300 hover:bg-brass hover:text-espressoDeep min-h-[44px]">Rejoindre la liste d'attente</Link>
+              <a href="mailto:teamksl@inspiratanature.com" className="mt-7 block font-serif text-brassInk hover:text-brassDeep transition-colors text-lg md:text-xl">
+                Une question ? teamksl@inspiratanature.com
+              </a>
+            </Reveal>
+          </div>
+        </section>
+      </Feuille>
 
     </div>
   );
