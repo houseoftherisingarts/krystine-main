@@ -3,6 +3,7 @@ import { useApp } from '../contexts/AppContext';
 import { addNewsletterSubscriber } from '../firebase/firestore';
 import { points } from '../firebase/points';
 import { trackLead } from '../lib/track';
+import CompteUpsell from './CompteUpsell';
 
 export interface WaitlistTarget {
   id: string;            // stable key, used for source + tag (e.g. "waitlist-pitta")

@@ -28,17 +28,18 @@ await page.waitForTimeout(1500);
 await page.screenshot({ path: `${S}/01-portail${mobile ? '-m' : ''}.png` });
 
 await page.getByRole('button', { name: /Problème technique|Technical issue/ }).click();
-await page.getByRole('dialog').waitFor();
+const dlg = page.getByRole('dialog', { name: /Signaler|Report/ });
+await dlg.waitFor();
 await page.screenshot({ path: `${S}/02-popup${mobile ? '-m' : ''}.png` });
 
 await page.getByRole('button', { name: /Capturer l’écran|Take a screenshot/ }).click();
-await page.locator('[role=dialog] img').waitFor({ timeout: 30000 });
+await dlg.locator('img').waitFor({ timeout: 30000 });
 await page.waitForTimeout(400);
 await page.screenshot({ path: `${S}/03-capture${mobile ? '-m' : ''}.png` });
-const dims = await page.locator('[role=dialog] img').evaluate((img) => ({ w: img.naturalWidth, h: img.naturalHeight, src: img.src.slice(0, 30) }));
+const dims = await dlg.locator('img').evaluate((img) => ({ w: img.naturalWidth, h: img.naturalHeight, src: img.src.slice(0, 30) }));
 console.log('capture', JSON.stringify(dims));
 
-await page.locator('[role=dialog] textarea').fill(`Test automatisé du bouton Problème technique (${new Date().toISOString()}). À supprimer.`);
+await dlg.locator('textarea').fill(`Test automatisé du bouton Problème technique (${new Date().toISOString()}). À supprimer.`);
 await page.getByRole('button', { name: /^Envoyer$|^Send$/ }).click();
 await page.getByText(/Merci\. Le rapport est parti|Thank you\. The report/).waitFor({ timeout: 40000 });
 await page.screenshot({ path: `${S}/04-merci${mobile ? '-m' : ''}.png` });
