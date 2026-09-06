@@ -27,9 +27,7 @@ import { BANNIERE_DEFAUT, BANNIERE_NATURE, FACONS_DE_GAGNER, niskas } from '../l
 import PieceNiska from '../components/client/PieceNiska';
 import RoueQuotidienne from '../components/client/RoueQuotidienne';
 import BienvenueJeu from '../components/client/BienvenueJeu';
-import CadeauCarte from '../components/client/CadeauCarte';
 import ReserveAuFoyer from '../components/communaute/ReserveAuFoyer';
-import { suivreMesCadeaux, type Cadeau } from '../firebase/cadeaux';
 import '../components/client/skins.css';
 
 // Le texte du niṣka, écrit par Alex le 6 septembre 2026, lu sous la bourse.
@@ -159,7 +157,7 @@ const ClientAmis: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
   const ligne = (l: Amitie) => {
     const autre = l.paire.find(u => u !== uid)!;
     const m = fiches[autre];
-    const nom = m?.displayName || m?.email?.split('@')[0] || '…';
+    const nom = m?.displayName || (lang === 'FR' ? 'Membre' : 'Member');
     return { autre, m, nom };
   };
   const recues = liens.filter(l => l.statut === 'demande' && l.de !== uid);
@@ -320,26 +318,15 @@ const BanniereChoix: React.FC<{
   );
 };
 
-// Le rail droit : les raccourcis et le parrainage. Le feed de la communauté
-// n'entre pas ici : le fil participatif vit seulement au Foyer d'Origine
-// (/cours/foyer), et la vie publique de Krystine sur /espace.
-const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) => {
-  return (
-    <aside className="space-y-4">
-      <div className="rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55">
-        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
-          {lang === 'FR' ? 'Raccourcis' : 'Shortcuts'}
-        </p>
-        <div className="mt-3 space-y-2 text-sm">
-          <Link to="/cours" className="flex items-center gap-3 text-[#38403a]/80 hover:text-[#8B4A2F] dark:text-white/80"><i className="fa-solid fa-graduation-cap w-4 text-[#8B4A2F]" />{lang === 'FR' ? 'Les formations' : 'Courses'}</Link>
-          <Link to="/membres" className="flex items-center gap-3 text-[#38403a]/80 hover:text-[#8B4A2F] dark:text-white/80"><i className="fa-solid fa-users w-4 text-[#8B4A2F]" />{lang === 'FR' ? 'Voir la communauté' : 'See the community'}</Link>
-          <Link to="/messages" className="flex items-center gap-3 text-[#38403a]/80 hover:text-[#8B4A2F] dark:text-white/80"><i className="fa-solid fa-envelope w-4 text-[#8B4A2F]" />{lang === 'FR' ? 'Mes messages' : 'My messages'}</Link>
-        </div>
-      </div>
-      <ClientParrainage uid={uid} lang={lang} />
-    </aside>
-  );
-};
+// Le rail droit : le parrainage seul. Les raccourcis (formations, communauté,
+// messages) ont été retirés le 6 septembre 2026 : la barre du haut et les
+// onglets font déjà ce travail. Le feed de la communauté n'entre pas ici : le
+// fil participatif vit seulement au Foyer d'Origine (/cours/foyer).
+const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) => (
+  <aside className="space-y-4">
+    <ClientParrainage uid={uid} lang={lang} />
+  </aside>
+);
 
 const ClientPortal: React.FC = () => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
@@ -361,9 +348,8 @@ const ClientPortal: React.FC = () => {
   const [possedeNature, setPossedeNature] = useState(false);
   // L'aperçu d'un skin, le temps d'un survol dans la petite boutique.
   const [apercuSkin, setApercuSkin] = useState<string | null>(null);
-  // Les cadeaux de Krystine encore à utiliser : en bannière, sur tous les onglets.
-  const [cadeaux, setCadeaux] = useState<Cadeau[]>([]);
-  useEffect(() => (user ? suivreMesCadeaux(user.uid, setCadeaux) : undefined), [user]);
+  // Les cadeaux de Krystine ne s'affichent que dans la messagerie et dans la
+  // cloche (Alex, 6 septembre 2026) : aucune bannière ici.
   useEffect(() => {
     const onApercu = (e: Event) => setApercuSkin((e as CustomEvent<string | null>).detail);
     window.addEventListener('krystine:apercu-skin', onApercu);
@@ -558,10 +544,9 @@ const ClientPortal: React.FC = () => {
         </div>
       </div>
 
-      {/* Le contenu en deux colonnes : l'onglet à gauche, les raccourcis et le parrainage à droite */}
+      {/* Le contenu en deux colonnes : l'onglet à gauche, le parrainage à droite */}
       <div className="mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 lg:grid-cols-[1fr_320px]">
         <div className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-[#293027]/55">
-          {cadeaux.map(c => <div key={c.id} className="mb-5"><CadeauCarte cadeau={c} lang={lang} /></div>)}
           {merciNiskas && (
             <div className="mb-5 flex items-center justify-between gap-3 rounded-[16px] border border-[#BA7B39]/40 bg-[#BA7B39]/15 px-4 py-3 text-sm text-[#293027] dark:text-white">
               <span><PieceNiska size={16} className="mr-2 inline-block align-[-3px]" />{lang === 'FR' ? 'Merci. Vos cent niskas arrivent dans votre bourse d’ici une minute.' : 'Thank you. Your hundred niskas land in your purse within a minute.'}</span>

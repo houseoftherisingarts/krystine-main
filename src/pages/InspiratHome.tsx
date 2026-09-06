@@ -433,11 +433,6 @@ const InspiratHome: React.FC = () => {
                 aria-label={lang === 'FR' ? 'Lire avec le son' : 'Play with sound'}
                 onClick={() => {
                   setVideoOpen(true);
-                  if (user?.uid) {
-                    import('../firebase/points').then(({ points }) => {
-                      points.videoWatched(user.uid, 'fxzVTt5RfBw').catch(() => { /* non-fatal */ });
-                    });
-                  }
                 }}
                 className="absolute inset-0 z-10 flex items-center justify-center bg-black/0 hover:bg-black/25 transition-colors group"
               >

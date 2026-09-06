@@ -145,3 +145,41 @@
 .skin-coffee .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(18, 11, 7, 0.88) !important; }
 .skin-coffee .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(18, 11, 7, 0.32) !important; }
 .skin-coffee input, .skin-coffee textarea, .skin-coffee select { color: var(--coffee-encre); background-color: rgba(255, 255, 255, 0.06); }
+
+/* ── Lisibilité : toute nuance d'encre, quelle que soit son opacité ──────────
+   Les listes ci-dessus énumèrent des opacités précises (/85, /70, /50…). Dès
+   qu'un composant en emploie une autre (/65, /45, /30), l'encre verte reste
+   posée sur le fond sombre et le texte devient illisible (Alex, 6 septembre
+   2026 : la description des skins sous Dark Coffee). Ces sélecteurs
+   d'attribut attrapent la famille entière, présente et à venir. Ils
+   précèdent la règle des boutons `.bg-[#BA7B39]` pour lui laisser le
+   dernier mot sur la couleur du texte des boutons. */
+.skin-nuit [class^="text-[#293027]/"], .skin-nuit [class*=" text-[#293027]/"],
+.skin-nuit [class^="text-[#38403a]"], .skin-nuit [class*=" text-[#38403a]"],
+.skin-nuit [class^="text-[#3a3126]"], .skin-nuit [class*=" text-[#3a3126]"],
+.skin-nuit [class^="text-[#2a2015]"], .skin-nuit [class*=" text-[#2a2015]"] { color: rgba(238, 231, 219, 0.72) !important; }
+.skin-nuit [class^="text-[#293027]"]:not([class*="text-[#293027]/"]), .skin-nuit [class*=" text-[#293027]"]:not([class*="text-[#293027]/"]) { color: var(--nuit-encre) !important; }
+.skin-nuit [class^="placeholder:text-"], .skin-nuit [class*=" placeholder:text-"] { --tw-placeholder-opacity: 1; }
+.skin-nuit ::placeholder { color: rgba(238, 231, 219, 0.45) !important; }
+.skin-nuit .bg-\[\#BA7B39\], .skin-nuit .bg-\[\#BA7B39\] * { color: #151d19 !important; }
+.skin-nuit .bg-\[\#293027\], .skin-nuit .bg-\[\#293027\] * { color: var(--nuit-encre) !important; }
+.skin-nuit .bg-white, .skin-nuit .bg-white * { color: #293027 !important; }
+.skin-nuit .bg-white { background-color: rgba(238, 231, 219, 0.92) !important; }
+
+.skin-coffee [class^="text-[#293027]/"], .skin-coffee [class*=" text-[#293027]/"],
+.skin-coffee [class^="text-[#38403a]"], .skin-coffee [class*=" text-[#38403a]"],
+.skin-coffee [class^="text-[#3a3126]"], .skin-coffee [class*=" text-[#3a3126]"],
+.skin-coffee [class^="text-[#2a2015]"], .skin-coffee [class*=" text-[#2a2015]"] { color: rgba(241, 230, 214, 0.72) !important; }
+.skin-coffee [class^="text-[#293027]"]:not([class*="text-[#293027]/"]), .skin-coffee [class*=" text-[#293027]"]:not([class*="text-[#293027]/"]) { color: var(--coffee-encre) !important; }
+.skin-coffee ::placeholder { color: rgba(241, 230, 214, 0.45) !important; }
+.skin-coffee .bg-\[\#BA7B39\], .skin-coffee .bg-\[\#BA7B39\] * { color: #151d19 !important; }
+.skin-coffee .bg-\[\#293027\], .skin-coffee .bg-\[\#293027\] * { color: var(--coffee-encre) !important; }
+.skin-coffee .bg-white, .skin-coffee .bg-white * { color: #293027 !important; }
+.skin-coffee .bg-white { background-color: rgba(241, 230, 214, 0.92) !important; }
+
+/* Medzo est un skin clair : l'encre reste sombre, seules les nuances trop
+   pâles du vert d'origine se réchauffent pour rester lisibles sur le café au lait. */
+.skin-medzo [class^="text-[#293027]/"], .skin-medzo [class*=" text-[#293027]/"],
+.skin-medzo [class^="text-[#38403a]"], .skin-medzo [class*=" text-[#38403a]"] { color: rgba(59, 36, 23, 0.72) !important; }
+.skin-medzo .bg-\[\#BA7B39\], .skin-medzo .bg-\[\#BA7B39\] * { color: #f4ebdf !important; }
+.skin-medzo .bg-\[\#293027\], .skin-medzo .bg-\[\#293027\] * { color: #f4ebdf !important; }

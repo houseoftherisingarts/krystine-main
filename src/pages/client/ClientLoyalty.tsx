@@ -543,11 +543,16 @@ const ClientLoyalty: React.FC = () => {
   );
 };
 
+// La note (« une fois », « par amitié acceptée ») descend sous le libellé au
+// lieu de se serrer à droite : sur un petit écran elle débordait et se lisait
+// mal (Alex, 6 septembre 2026).
 const GuideRow: React.FC<{ pts: number | string; label: string; note?: string }> = ({ pts, label, note }) => (
-  <li className="flex items-center gap-3">
-    <span className="w-16 shrink-0 text-right font-serif text-[#8B4A2F] font-bold">+{pts}</span>
-    <span className="flex-1">{label}</span>
-    {note && <span className="text-[9px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40 whitespace-nowrap">{note}</span>}
+  <li className="flex items-start gap-3">
+    <span className="w-12 shrink-0 text-right font-serif text-[#8B4A2F] font-bold sm:w-16">+{pts}</span>
+    <span className="min-w-0 flex-1">
+      <span className="block">{label}</span>
+      {note && <span className="mt-0.5 block text-[10px] uppercase tracking-[0.14em] text-[#293027]/50 dark:text-white/50">{note}</span>}
+    </span>
   </li>
 );
 

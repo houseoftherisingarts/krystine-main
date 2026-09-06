@@ -68,10 +68,10 @@ const CommunauteMembres: React.FC = () => {
                 to={`/membre/${m.uid}`}
                 className="flex items-center gap-4 bg-white/55 backdrop-blur-md dark:bg-[#2a2015]/55 rounded-[20px] border border-white/60 dark:border-white/10 shadow-[0_10px_30px_-18px_rgba(58,49,38,0.3)] p-4 hover:border-[#bb9a5e]/60 transition-colors"
               >
-                <Avatar nom={m.displayName || m.email} url={m.photoURL} taille={52} />
+                <Avatar nom={m.displayName || 'Membre'} url={m.photoURL} taille={52} />
                 <div className="min-w-0">
                   <p className="flex items-center gap-1.5 font-serif text-base text-[#2a2015] dark:text-white truncate">
-                    <span className="truncate">{m.displayName || m.email.split('@')[0]}</span>
+                    <span className="truncate">{m.displayName || 'Membre'}</span>
                     {m.verifie && <i className="fa-solid fa-circle-check shrink-0 text-[13px] text-[#3b82f6]" title="Profil vérifié" />}
                   </p>
                   {m.dosha && (

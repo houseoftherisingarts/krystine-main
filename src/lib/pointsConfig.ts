@@ -70,7 +70,14 @@ export const POINTS = {
   directPresence: 5,
   directMessage:  2,
   directCoeur:    1,
+  // Au plus vingt niskas de clavardage par direct (dix messages), pour que
+  // personne ne se fasse spammer (Alex, 6 septembre 2026).
+  directMessageMax: 20,
 } as const;
+
+// Une rediffusion, une vidéo ou un épisode de podcast ne rapporte qu'à la
+// fin : il faut en avoir écouté plus de 80 %.
+export const PART_ECOUTEE = 0.8;
 
 // ─── La roue des sept jours ──────────────────────────────────────────────────
 // Une récompense par journée civile (fuseau de Montréal), la roue avance tant
@@ -193,13 +200,13 @@ export const FACONS_DE_GAGNER: FaconDeGagner[] = [
   { pts: `${POINTS.commentaire}`, fr: 'Commenter un billet', en: 'Comment on a note', noteFR: 'un par billet', noteEN: 'one per note' },
   { pts: `${POINTS.amitie}`, fr: 'Se faire une amie', en: 'Make a friend', noteFR: 'par amitié acceptée', noteEN: 'per accepted friendship' },
   { pts: `${POINTS.parrainage}`, fr: 'Inviter une amie qui crée son compte', en: 'Invite a friend who creates an account', noteFR: 'par filleule', noteEN: 'per referral' },
-  { pts: `${POINTS.parrainageBienvenue}`, fr: 'S’inscrire avec le code d’une amie', en: 'Sign up with a friend’s code', noteFR: 'une fois, à l’ouverture', noteEN: 'once, at signup' },
+  { pts: `${POINTS.parrainageBienvenue}`, fr: 'S’inscrire avec le code d’une amie d’origine', en: 'Sign up with an Origine friend’s code', noteFR: 'une fois, à l’ouverture', noteEN: 'once, at signup' },
   { pts: `${POINTS.directPresence}`, fr: 'Être présente au direct', en: 'Attend the live', noteFR: 'par direct', noteEN: 'per live' },
-  { pts: `${POINTS.directMessage}`, fr: 'Écrire dans le clavardage du direct', en: 'Write in the live chat', noteFR: 'par message', noteEN: 'per message' },
+  { pts: `${POINTS.directMessage}`, fr: 'Écrire dans le clavardage du direct', en: 'Write in the live chat', noteFR: `par message, ${POINTS.directMessageMax} au plus par direct`, noteEN: `per message, up to ${POINTS.directMessageMax} per live` },
   { pts: `${POINTS.question}`, fr: 'Poser une question pour le direct', en: 'Ask a question for the live', noteFR: 'une par direct', noteEN: 'one per live' },
-  { pts: `${POINTS.rediffusion}`, fr: 'Regarder une rediffusion', en: 'Watch a replay', noteFR: 'une par rediffusion', noteEN: 'one per replay' },
-  { pts: `${POINTS.video}`, fr: 'Regarder une vidéo', en: 'Watch a video', noteFR: 'une par vidéo', noteEN: 'one per video' },
-  { pts: `${POINTS.podcast}`, fr: 'Écouter un épisode du podcast', en: 'Listen to a podcast episode', noteFR: 'un par épisode', noteEN: 'one per episode' },
+  { pts: `${POINTS.rediffusion}`, fr: 'Regarder une rediffusion jusqu’au bout', en: 'Watch a replay to the end', noteFR: 'plus de 80 %, une par rediffusion', noteEN: 'over 80%, one per replay' },
+  { pts: `${POINTS.video}`, fr: 'Regarder une vidéo jusqu’au bout', en: 'Watch a video to the end', noteFR: 'plus de 80 %, une par vidéo', noteEN: 'over 80%, one per video' },
+  { pts: `${POINTS.podcast}`, fr: 'Écouter un épisode du podcast jusqu’au bout', en: 'Listen to a podcast episode to the end', noteFR: 'plus de 80 %, un par épisode', noteEN: 'over 80%, one per episode' },
   { pts: `${POINTS.share}`, fr: 'Partager une page sur les réseaux', en: 'Share a page on social media' },
   { pts: `${POINTS.nav}`, fr: 'Explorer une section du site', en: 'Explore a section of the site', noteFR: 'une par section', noteEN: 'one per section' },
   { pts: `${POINTS.orderPerItem}`, fr: 'Chaque produit commandé à la boutique', en: 'Each product ordered from the shop' },
@@ -228,6 +235,10 @@ export const TIERS: Tier[] = [
   { id: 'tige',   threshold:  150, labelFR: 'Tige',     labelEN: 'Stem',   accent: '#B8532F' },
   { id: 'fleur',  threshold:  350, labelFR: 'Fleur',    labelEN: 'Bloom',  accent: '#BC4A3C' },
   { id: 'source', threshold:  700, labelFR: 'Source',   labelEN: 'Source', accent: '#4A7C9D' },
+  // Après l'arbre (Alex, 6 septembre 2026) : des lotus poussent dans ses
+  // branches, puis l'arbre s'allume de lucioles.
+  { id: 'lotus',   threshold: 1500, labelFR: 'Lotus',    labelEN: 'Lotus',  accent: '#C97B9B' },
+  { id: 'lumiere', threshold: 3500, labelFR: 'Lumière',  labelEN: 'Light',  accent: '#D9A05B' },
 ];
 
 // Given a lifetime point total, return the tier they currently sit in and
@@ -246,6 +257,12 @@ export function tierFromLifetime(lifetime: number): { current: Tier; next: Tier 
 }
 
 // ─── Rewards catalog ─────────────────────────────────────────────────────────
+// La grille des prix (Alex, 6 septembre 2026, « inspirée de League of
+// Legends ») : cent niskas valent dix dollars. Un article coûte un peu moins
+// en niskas que sa valeur en dollars (huit à neuf niskas par dollar), donc
+// les utiliser reste un petit avantage sans jamais devenir la façon d'acheter
+// tout à la boutique. Aucun prix n'est rond par rapport aux paquets (100,
+// 180, 400, 750…) : il reste toujours un fond de bourse, qui sert aux skins.
 // Each reward has a point cost and a short description shown to the client.
 // Redemption is currently manual — "Échanger" writes a pending redemption
 // record to Firestore that Krystine fulfills by emailing a Shopify code.
@@ -273,7 +290,7 @@ export const REWARDS: Reward[] = [
   // Repeatable rebates — any tier, no uniqueness.
   {
     id: 'reb-10-boutique',
-    cost: 50,
+    cost: 500,
     labelFR: '10% sur la boutique',
     labelEN: '10% off the shop',
     descFR: "Un rabais de 10% applicable sur votre prochaine commande en boutique.",
@@ -281,7 +298,7 @@ export const REWARDS: Reward[] = [
   },
   {
     id: 'reb-huiles',
-    cost: 120,
+    cost: 650,
     labelFR: "15% sur les Huiles Corporelles",
     labelEN: '15% off the Body Oils',
     descFR: "Rabais de 15% sur toute la collection des Huiles Corporelles.",
@@ -291,7 +308,7 @@ export const REWARDS: Reward[] = [
   // Tree-gated, one-shot gifts — unlocked as the plant matures.
   {
     id: 'rituel-offert',
-    cost: 250,
+    cost: 275,
     labelFR: "Un livret de rituels offert",
     labelEN: 'A complimentary rituals booklet',
     descFR: "Le Guide Rituels Inspirata en version imprimée, envoyé chez vous. Se réclame une seule fois.",
@@ -301,7 +318,7 @@ export const REWARDS: Reward[] = [
   },
   {
     id: 'reb-formation',
-    cost: 500,
+    cost: 435,
     labelFR: "50 $ sur une formation Inspirata",
     labelEN: '$50 off an Inspirata program',
     descFR: "Un crédit de 50 $ applicable à l'Expérience Origine ou au Programme Vata. Une seule fois.",
@@ -313,7 +330,7 @@ export const REWARDS: Reward[] = [
   // 6 septembre 2026), donc une formation courte et un produit de la boutique.
   {
     id: 'masterclass-source',
-    cost: 700,
+    cost: 725,
     labelFR: 'La masterclass Santé Parfaite, offerte',
     labelEN: 'The Perfect Health masterclass, on us',
     descFR: "L'accès complet à la masterclass Santé Parfaite. Offert une seule fois, aux membres du palier Source.",
@@ -323,7 +340,7 @@ export const REWARDS: Reward[] = [
   },
   {
     id: 'huile-source',
-    cost: 900,
+    cost: 395,
     labelFR: 'Une Huile Corporelle offerte',
     labelEN: 'A complimentary Body Oil',
     descFR: "L'huile corporelle de votre dosha, envoyée chez vous. Se réclame une seule fois.",

@@ -1,4 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useApp } from '../contexts/AppContext';
+import { partEcoutee } from '../lib/youtube';
+import { PART_ECOUTEE } from '../lib/pointsConfig';
 import { motion } from 'framer-motion';
 import { Headphones, Calendar, Clock, Play, Loader2, ExternalLink } from 'lucide-react';
 import NewsletterSignup from '../components/NewsletterSignup';
@@ -87,6 +90,7 @@ const fmtDur = (d: string) => {
 };
 
 const PodcastEpisodes: React.FC = () => {
+  const { user } = useApp();
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [cover, setCover] = useState('');
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
@@ -153,7 +157,16 @@ const PodcastEpisodes: React.FC = () => {
           <div className="mx-auto w-full max-w-[1180px] px-6 md:px-12">
             <p className="text-brass text-[0.6rem] uppercase tracking-[0.22em] mb-2">À l'écoute</p>
             <h2 className="font-serif text-ctext text-xl md:text-2xl mb-4 leading-snug">{current.title}</h2>
-            <audio key={current.id} controls preload="none" className="w-full max-w-[760px]">
+            <audio
+              key={current.id} controls preload="none" className="w-full max-w-[760px]"
+              onTimeUpdate={(e) => {
+                // Deux niskas par épisode, donnés après 80 % d'écoute, une fois.
+                const a = e.currentTarget;
+                if (user?.uid && partEcoutee(a.currentTime, a.duration, PART_ECOUTEE)) {
+                  import('../firebase/points').then(({ points }) => points.podcastListened(user.uid, current.id).catch(() => {}));
+                }
+              }}
+            >
               <source src={current.audio} type="audio/mpeg" />
             </audio>
           </div>

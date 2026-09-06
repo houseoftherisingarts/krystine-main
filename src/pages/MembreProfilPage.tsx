@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { UserPlus, Check, MessageCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AppContext';
 import { getMember, type MemberDoc } from '../firebase/firestore';
@@ -8,6 +8,7 @@ import {
   estAmi, amitieEnAttente, type Amitie,
 } from '../firebase/amities';
 import Avatar from '../components/communaute/Avatar';
+import { useAmiesDOrigine } from '../components/communaute/ReserveAuFoyer';
 import { suivrePublicationsDe, type PostMur } from '../firebase/mur';
 import { getBadgesDe, CATALOGUE_BADGES } from '../firebase/badgesCatalogue';
 
@@ -20,6 +21,7 @@ const MembreProfilPage: React.FC = () => {
   const navigate = useNavigate();
   const { user, setSignInOpen } = useAuth();
 
+  const amiesDOrigine = useAmiesDOrigine();
   const [profil, setProfil] = useState<MemberDoc | null>(null);
   const [chargement, setChargement] = useState(true);
   const [amities, setAmities] = useState<Amitie[]>([]);
@@ -76,6 +78,9 @@ const MembreProfilPage: React.FC = () => {
   // ne doit fuiter sur un profil public.
   const nom = profil.displayName || 'Membre';
   const soi = user.uid === uid;
+  // L'amitié et la messagerie de boîte à boîte se débloquent avec le Foyer
+  // d'Origine; la marraine et les filleules passent toujours (Alex, 6 sept. 2026).
+  const origine = amiesDOrigine.pret && amiesDOrigine.peutEcrire(uid);
   const amis = estAmi(amities, user.uid, uid);
   const enAttente = amitieEnAttente(amities, user.uid, uid);
   const jeLaiEnvoyee = enAttente?.de === user.uid;
@@ -118,18 +123,24 @@ const MembreProfilPage: React.FC = () => {
             </div>
           </div>
 
-          {!soi && (
+          {!soi && amiesDOrigine.pret && !origine && (
+            <div className="mt-6 rounded-[16px] border border-[#bb9a5e]/40 bg-[#bb9a5e]/10 px-5 py-4 text-sm text-[#3a3126]/80 dark:text-white/80">
+              <p><i className="fa-solid fa-fire mr-2 text-[#7d6330]" />L’amitié d’origine et les messages de boîte à boîte se débloquent avec le Foyer d’Origine.</p>
+              <Link to="/foyer" className="mt-3 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#7d6330] hover:underline dark:text-[#bb9a5e]">Rejoindre la communauté vivante <i className="fa-solid fa-arrow-right text-[9px]" /></Link>
+            </div>
+          )}
+          {!soi && origine && (
             <div className="mt-6 flex flex-wrap items-center gap-3">
               {amis ? (
                 <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#bb9a5e]/40 text-xs font-bold uppercase tracking-widest text-[#7d6330] dark:text-[#bb9a5e]">
-                  <Check size={13} /> Vous êtes amis
+                  <Check size={13} /> Amies d’origine
                 </span>
               ) : jeLaiRecue ? (
                 <button
                   type="button" onClick={accepter} disabled={envoi}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#bb9a5e] text-[#2a2015] text-xs font-bold uppercase tracking-widest hover:bg-[#a3823f] transition-colors disabled:opacity-50"
                 >
-                  {envoi ? <Loader2 size={13} className="animate-spin" /> : <UserPlus size={13} />} Accepter la demande
+                  {envoi ? <Loader2 size={13} className="animate-spin" /> : <UserPlus size={13} />} Accepter l’amie d’origine
                 </button>
               ) : jeLaiEnvoyee ? (
                 <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#3a3126]/15 dark:border-white/10 text-xs font-bold uppercase tracking-widest text-[#3a3126]/50 dark:text-white/50">
@@ -140,7 +151,7 @@ const MembreProfilPage: React.FC = () => {
                   type="button" onClick={demander} disabled={envoi}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] text-xs font-bold uppercase tracking-widest hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors disabled:opacity-50"
                 >
-                  {envoi ? <Loader2 size={13} className="animate-spin" /> : <UserPlus size={13} />} Demander l’amitié
+                  {envoi ? <Loader2 size={13} className="animate-spin" /> : <UserPlus size={13} />} Amie d’origine
                 </button>
               )}
               <button

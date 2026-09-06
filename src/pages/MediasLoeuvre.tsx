@@ -5,7 +5,6 @@ import { Mic, Tv, BookOpen, ArrowRight, Youtube, Lock, Star, Quote } from 'lucid
 import { useApp } from '../contexts/AppContext';
 import { CONTENT } from '../content';
 import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../shopify';
-import { points } from '../firebase/points';
 import NewsletterSignup from '../components/NewsletterSignup';
 import WaitlistModal, { type WaitlistTarget } from '../components/WaitlistModal';
 import { Seam, Parallax } from '../components/motion/loeuvre';
@@ -189,7 +188,6 @@ const MediasLoeuvre: React.FC = () => {
             </ul>
             <a
               href="/podcast"
-              onClick={() => { if (user?.uid) points.podcastListened(user.uid, 'overall').catch(() => {}); }}
               className="mt-10 inline-flex items-center gap-3 rounded-full bg-espresso px-8 py-3.5 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-ctext transition-colors duration-300 hover:bg-espressoDeep min-h-[44px]"
             >
               {pod.cta} <ArrowRight size={16} />
@@ -393,7 +391,6 @@ const MediasLoeuvre: React.FC = () => {
               href="https://www.youtube.com/@KrystineStLaurent"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => { if (user?.uid) points.videoWatched(user.uid, 'youtube-channel').catch(() => {}); }}
               className="group inline-flex items-center gap-3.5 rounded-full bg-brass px-9 py-5 font-sans text-[0.72rem] uppercase tracking-[0.18em] text-espressoDeep shadow-xl transition-all duration-300 hover:bg-brassBright hover:-translate-y-0.5 min-h-[44px]"
             >
               <Youtube size={18} />

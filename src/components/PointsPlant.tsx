@@ -6,7 +6,7 @@ import React from 'react';
 // with layered gradients, drop shadows and subtle motion to get a
 // dimensional (almost 3D) feel without actually shipping a 3D engine.
 
-type Stage = 'graine' | 'pousse' | 'tige' | 'fleur' | 'source';
+type Stage = 'graine' | 'pousse' | 'tige' | 'fleur' | 'source' | 'lotus' | 'lumiere';
 
 interface Props {
   stage: Stage;
@@ -69,9 +69,9 @@ const PointsPlant: React.FC<Props> = ({ stage, accent = '#bb9a5e', className = '
             base reads as a little garden rather than a flowerpot. */}
         <ellipse
           cx="100"
-          cy={stage === 'source' ? 168 : 162}
-          rx={stage === 'source' ? 72 : 60}
-          ry={stage === 'source' ? 14 : 10}
+          cy={stage === 'source' || stage === 'lotus' || stage === 'lumiere' ? 168 : 162}
+          rx={stage === 'source' || stage === 'lotus' || stage === 'lumiere' ? 72 : 60}
+          ry={stage === 'source' || stage === 'lotus' || stage === 'lumiere' ? 14 : 10}
           fill="url(#pp-soil)"
           filter="url(#pp-shadow)"
         />
@@ -82,12 +82,18 @@ const PointsPlant: React.FC<Props> = ({ stage, accent = '#bb9a5e', className = '
         {stage === 'tige' && <StageStem />}
         {stage === 'fleur' && <StageBloom accent={accent} />}
         {stage === 'source' && <StageTree accent={accent} />}
+        {stage === 'lotus' && <StageLotus accent={accent} />}
+        {stage === 'lumiere' && <StageLumiere accent={accent} />}
       </svg>
 
       {/* Gentle idle float */}
       <style>{`
         @keyframes pp-float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-3px) } }
         .pp-float { animation: pp-float 4.5s ease-in-out infinite; transform-origin: center bottom; }
+        @keyframes pp-luciole { 0%,100% { opacity: .35; transform: translateY(0) } 50% { opacity: 1; transform: translateY(-2px) } }
+        .pp-luciole { animation: pp-luciole 2.6s ease-in-out infinite; }
+        .pp-luciole:nth-child(2n) { animation-delay: .8s } .pp-luciole:nth-child(3n) { animation-delay: 1.5s }
+        @media (prefers-reduced-motion: reduce) { .pp-float, .pp-luciole { animation: none } }
       `}</style>
     </div>
   );
@@ -165,6 +171,63 @@ const StageTree: React.FC<{ accent: string }> = ({ accent }) => (
     <circle cx="124" cy="74" r="3"   fill={accent} opacity="0.9" />
     <circle cx="108" cy="98" r="2.8" fill={accent} opacity="0.85" />
     <circle cx="92"  cy="58" r="2.5" fill={accent} opacity="0.8" />
+  </g>
+);
+
+// Un lotus : cinq pétales rose pâle ouverts autour d'un cœur d'or, posé dans
+// la ramure comme sur l'eau.
+const Lotus: React.FC<{ x: number; y: number; r?: number; accent: string }> = ({ x, y, r = 1, accent }) => (
+  <g transform={`translate(${x} ${y}) scale(${r})`}>
+    {[-40, -20, 0, 20, 40].map((a) => (
+      <ellipse key={a} cx="0" cy="-5" rx="3.2" ry="6.5" fill="#F3D6E0" stroke="#C97B9B" strokeWidth="0.6" transform={`rotate(${a} 0 2)`} />
+    ))}
+    <ellipse cx="0" cy="-3" rx="2.6" ry="5" fill="#FBEAF0" opacity="0.9" />
+    <circle cx="0" cy="0.5" r="1.6" fill={accent} />
+  </g>
+);
+
+// Le stade Lotus : l'arbre de Source, et des lotus qui poussent dans ses branches.
+const StageLotus: React.FC<{ accent: string }> = ({ accent }) => (
+  <g className="pp-float" filter="url(#pp-shadow)">
+    <path d="M100 165 L 96 115 L 104 115 Z" fill="#6B402E" />
+    <rect x="96" y="115" width="8" height="52" rx="3" fill="#5A3D24" />
+    <ellipse cx="100" cy="80" rx="50" ry="38" fill="url(#pp-canopy)" />
+    <ellipse cx="74"  cy="92" rx="34" ry="28" fill="url(#pp-canopy)" opacity="0.9" />
+    <ellipse cx="126" cy="92" rx="34" ry="28" fill="url(#pp-canopy)" opacity="0.9" />
+    <ellipse cx="100" cy="62" rx="28" ry="22" fill="url(#pp-canopy)" opacity="0.95" />
+    <Lotus x={100} y={52} r={1.1} accent={accent} />
+    <Lotus x={70}  y={82} r={0.9} accent={accent} />
+    <Lotus x={130} y={78} r={0.9} accent={accent} />
+    <Lotus x={92}  y={104} r={0.75} accent={accent} />
+    <Lotus x={118} y={106} r={0.7} accent={accent} />
+  </g>
+);
+
+// Le stade Lumière : le même arbre fleuri, et des lucioles qui s'allument
+// dans la ramure et autour.
+const StageLumiere: React.FC<{ accent: string }> = ({ accent }) => (
+  <g filter="url(#pp-shadow)">
+    <g className="pp-float">
+      <path d="M100 165 L 96 115 L 104 115 Z" fill="#6B402E" />
+      <rect x="96" y="115" width="8" height="52" rx="3" fill="#5A3D24" />
+      <ellipse cx="100" cy="80" rx="50" ry="38" fill="url(#pp-canopy)" />
+      <ellipse cx="74"  cy="92" rx="34" ry="28" fill="url(#pp-canopy)" opacity="0.9" />
+      <ellipse cx="126" cy="92" rx="34" ry="28" fill="url(#pp-canopy)" opacity="0.9" />
+      <ellipse cx="100" cy="62" rx="28" ry="22" fill="url(#pp-canopy)" opacity="0.95" />
+      <Lotus x={100} y={52} r={1.1} accent="#C97B9B" />
+      <Lotus x={70}  y={82} r={0.9} accent="#C97B9B" />
+      <Lotus x={130} y={78} r={0.9} accent="#C97B9B" />
+      <Lotus x={92}  y={104} r={0.75} accent="#C97B9B" />
+      <Lotus x={118} y={106} r={0.7} accent="#C97B9B" />
+    </g>
+    <g>
+      {[[58, 60], [142, 56], [84, 40], [120, 36], [50, 100], [150, 104], [100, 128], [66, 124], [136, 126], [100, 22]].map(([x, y], i) => (
+        <g key={i} className="pp-luciole">
+          <circle cx={x} cy={y} r="4.5" fill={accent} opacity="0.25" />
+          <circle cx={x} cy={y} r="1.6" fill="#FFF3C4" />
+        </g>
+      ))}
+    </g>
   </g>
 );
 

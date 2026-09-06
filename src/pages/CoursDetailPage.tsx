@@ -3,8 +3,6 @@ import EspaceGroupe from '../components/communaute/EspaceGroupe';
 import { suivreLiveEnCours, type LiveEnCours } from '../firebase/lives';
 import { PORTES, porteDuMois, foyerOuvert, DEBUT_LABEL } from './foyer/portesData';
 import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, type QuestionLecon } from '../firebase/formations';
-import { suivreMesCadeaux, type Cadeau } from '../firebase/cadeaux';
-import CadeauCarte from '../components/client/CadeauCarte';
 import { Navigate, useParams, Link } from 'react-router-dom';
 import {
   getFormation, getLecons, getProgression, marquerLecon, aAchete,
@@ -71,10 +69,8 @@ const CoursDetailPage: React.FC = () => {
   const [courante, setCourante] = useState<Lecon | null>(null);
   // L'aperçu d'un PDF de la leçon, ouvert dans un volet à droite.
   const [apercuPdf, setApercu] = useState<{ nom: string; url: string } | null>(null);
-  // Un cadeau de Krystine pour cette formation, s'il y en a un : il remplace le bouton d'achat.
-  const [cadeaux, setCadeaux] = useState<Cadeau[]>([]);
-  useEffect(() => (user ? suivreMesCadeaux(user.uid, setCadeaux) : undefined), [user]);
-  const cadeau = cadeaux.find(c => c.formationId === id) || null;
+  // Les cadeaux de Krystine se réclament dans la messagerie ou la cloche
+  // seulement (Alex, 6 septembre 2026) : la fiche garde son bouton d'achat.
   const [urlCourante, setUrlCourante] = useState('');
   const [chargeLecon, setChargeLecon] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -396,19 +392,15 @@ const CoursDetailPage: React.FC = () => {
               {formation.description && (
                 <p className="whitespace-pre-line text-[#38403a]/80 dark:text-white/80">{formation.description}</p>
               )}
-              {cadeau ? (
-                <div className="mt-6"><CadeauCarte cadeau={cadeau} lang={lang} /></div>
-              ) : (
               <p className="mt-6 font-serif text-3xl text-[#293027] dark:text-white">{formation.prix} $ CA</p>
-              )}
-              {!cadeau && <button
+              <button
                 onClick={acheter}
                 disabled={paiement}
                 className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-[#293027] shadow-[0_8px_22px_-10px_rgba(186,123,57,0.8)] transition-colors hover:bg-[#9c6630] disabled:opacity-50"
               >
                 <i className="fa-solid fa-lock-open" />
                 {paiement ? (lang === 'FR' ? 'Redirection…' : 'Redirecting…') : (lang === 'FR' ? 'Rejoindre la formation' : 'Join the course')}
-              </button>}
+              </button>
               <p className="mt-3 text-xs text-[#38403a]/50 dark:text-white/50">
                 {lang === 'FR' ? 'Paiement sécurisé par Stripe. La formation apparaît dans votre espace dès le paiement.' : 'Secure payment by Stripe. The course appears in your space right after payment.'}
               </p>

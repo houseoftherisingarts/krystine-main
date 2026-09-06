@@ -4,7 +4,8 @@ import { getMesFormations, getLecons, urlDeLecon, type AchatFormation, type Leco
 import { estTelechargement, MUSIQUE_ORIGINE_ID } from '../../firebase/musique';
 import BoutiqueNiskas from '../../components/client/BoutiqueNiskas';
 import { SANTE_LA_VIE_ID, CATALOGUE_VIDEOS, dureeLisible, vignetteYoutube, type CatalogueVideos } from '../../lib/pointsConfig';
-import { suivreBoutique } from '../../firebase/points';
+import { suivreBoutique, points } from '../../firebase/points';
+import LecteurYouTube from '../../components/client/LecteurYouTube';
 
 // « Téléchargements » : la musique d'Origine et les autres fichiers offerts
 // ou achetés, servis par URL signée (les fichiers vivent en Storage privé).
@@ -143,12 +144,10 @@ const ClientTelechargements: React.FC = () => {
           {enLecture && (
             <div className="mb-4 overflow-hidden rounded-[16px] bg-black">
               <div className="aspect-video">
-                <iframe
-                  src={`https://www.youtube-nocookie.com/embed/${enLecture}?autoplay=1&rel=0`}
-                  title={lang === 'FR' ? 'Lecteur vidéo' : 'Video player'}
-                  className="h-full w-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
+                <LecteurYouTube
+                  videoId={enLecture}
+                  titre={lang === 'FR' ? 'Lecteur vidéo' : 'Video player'}
+                  onEcoutee={(id) => { if (user?.uid) points.videoWatched(user.uid, id).catch(() => {}); }}
                 />
               </div>
             </div>

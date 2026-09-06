@@ -13,29 +13,11 @@ import {
 // commentaires laissés sous la vidéo suivent. Les archives viennent de
 // scripts/rediffusions/archiver.mjs.
 
-declare global {
-  interface Window { YT?: any; onYouTubeIframeAPIReady?: () => void }
-}
 
 type Lang = 'FR' | 'EN';
 
-// L'API IFrame de YouTube, chargée une seule fois : elle donne la position de
-// lecture, sans laquelle le fil ne peut pas suivre la vidéo.
-let apiYouTube: Promise<any> | null = null;
-function chargerApiYouTube(): Promise<any> {
-  if (window.YT?.Player) return Promise.resolve(window.YT);
-  if (!apiYouTube) {
-    apiYouTube = new Promise(resolve => {
-      const avant = window.onYouTubeIframeAPIReady;
-      window.onYouTubeIframeAPIReady = () => { avant?.(); resolve(window.YT); };
-      const s = document.createElement('script');
-      s.src = 'https://www.youtube.com/iframe_api';
-      s.async = true;
-      document.head.appendChild(s);
-    });
-  }
-  return apiYouTube;
-}
+import { chargerApiYouTube, partEcoutee } from '../../lib/youtube';
+import { PART_ECOUTEE } from '../../lib/pointsConfig';
 
 const mmss = (s: number) => {
   const t = Math.max(0, Math.floor(s));
@@ -163,6 +145,7 @@ const Lecture: React.FC<{ r: Rediffusion; lang: Lang; retour: () => void }> = ({
   const [descOuverte, setDescOuverte] = useState(false);
   const scene = useRef<HTMLDivElement>(null);
   const lecteur = useRef<any>(null);
+  const crediteRef = useRef(false);
   const modeRef = useRef(mode);
   const fil = useRef<HTMLOListElement>(null);
   modeRef.current = mode;
@@ -191,8 +174,18 @@ const Lecture: React.FC<{ r: Rediffusion; lang: Lang; retour: () => void }> = ({
           onStateChange: (e: any) => {
             window.clearInterval(horloge);
             const lire = () => setTemps(lecteur.current?.getCurrentTime?.() || 0);
-            if (e.data === YT.PlayerState.PLAYING) { horloge = window.setInterval(lire, 500); if (user) points.rediffusionVue(user.uid, r.id).catch(() => {}); }
-            else lire();
+            // Le crédit de la rediffusion tombe quand plus de 80 % a été vu,
+            // jamais au premier clic (Alex, 6 septembre 2026).
+            const lireEtCrediter = () => {
+              const pos = lecteur.current?.getCurrentTime?.() || 0;
+              setTemps(pos);
+              if (user && !crediteRef.current && partEcoutee(pos, lecteur.current?.getDuration?.() || 0, PART_ECOUTEE)) {
+                crediteRef.current = true;
+                points.rediffusionVue(user.uid, r.id).catch(() => {});
+              }
+            };
+            if (e.data === YT.PlayerState.PLAYING) horloge = window.setInterval(lireEtCrediter, 500);
+            else lireEtCrediter();
           },
         },
       });

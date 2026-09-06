@@ -12,7 +12,6 @@ import {
 import { useApp } from '../../contexts/AppContext';
 import { CONTENT } from '../../content';
 import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../../shopify';
-import { points } from '../../firebase/points';
 import NewsletterSignup from '../../components/NewsletterSignup';
 import WaitlistModal, { type WaitlistTarget } from '../../components/WaitlistModal';
 
@@ -240,7 +239,6 @@ export default function MediasV2() {
             </ul>
             <a
               href="/podcast"
-              onClick={() => { if (user?.uid) points.podcastListened(user.uid, 'overall').catch(() => {}); }}
               className="group mt-10 inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44]"
             >
               {pod.cta} <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -252,7 +250,6 @@ export default function MediasV2() {
                 s'écoutent; plus de lecteur tiers ni de fond rouge ici. */}
             <a
               href="/podcast"
-              onClick={() => { if (user?.uid) points.podcastListened(user.uid, 'overall').catch(() => {}); }}
               className="group relative block overflow-hidden rounded-[15px] bg-[#28352F] text-[#EEE7DB] shadow-[0_40px_80px_-50px_rgba(41,48,39,0.8)]"
             >
               <span className="pointer-events-none absolute inset-3 rounded-[11px] border border-[#BA7B39]/35" aria-hidden />
@@ -457,7 +454,6 @@ export default function MediasV2() {
               href="https://www.youtube.com/@KrystineStLaurent"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => { if (user?.uid) points.videoWatched(user.uid, 'youtube-channel').catch(() => {}); }}
               className="group mt-8 inline-flex w-fit items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44]"
             >
               Voir la chaîne YouTube

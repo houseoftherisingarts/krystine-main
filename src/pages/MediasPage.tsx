@@ -4,7 +4,6 @@ import { useApp } from '../contexts/AppContext';
 import { CONTENT, ASSETS } from '../content';
 import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../shopify';
 import { goToRoute } from '../lib/staticRoutes';
-import { points } from '../firebase/points';
 import { useTVPlaylists } from '../lib/youtube';
 import EditableText from '../components/edit/EditableText';
 import WaitlistModal, { type WaitlistTarget } from '../components/WaitlistModal';
@@ -164,15 +163,6 @@ const MediasPage: React.FC = () => {
             <div className="flex justify-center">
               <a
                 href="/podcast"
-                onClick={() => {
-                  // Loyalty — 2 pts when a member engages with the podcast.
-                  // Without per-episode tracking (the Spotify embed doesn't
-                  // expose play events), we cap this at once per lifetime
-                  // via the `podcast:overall:{uid}` dedup key.
-                  if (user?.uid) {
-                    points.podcastListened(user.uid, 'overall').catch(() => { /* non-fatal */ });
-                  }
-                }}
                 className="bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors inline-flex items-center gap-2"
               >
                 {pod.cta} <i className="fa-solid fa-arrow-right" />
@@ -239,9 +229,6 @@ const MediasPage: React.FC = () => {
                   onClick={() => {
                     const nextId = activeListId === p.listId ? null : p.listId;
                     setActiveListId(nextId);
-                    if (nextId && user?.uid) {
-                      points.videoWatched(user.uid, p.videoId).catch(() => { /* non-fatal */ });
-                    }
                   }}
                 >
                   {activeListId === p.listId ? (

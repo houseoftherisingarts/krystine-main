@@ -77,7 +77,11 @@ const DirectPage: React.FC = () => {
     if (!directId || !moi) return;
     setImpulsion(x => x + 1);
     marquerPresence(directId, { uid: moi.uid, nom: moi.nom, photoURL: moi.photoURL, messages: total });
-    await awardPoints(moi.uid, 'direct', POINTS.directMessage, `direct:${directId}:msg:${moi.uid}:${total}`, { directId });
+    // Deux niskas par message, vingt au plus par direct : au-delà de dix
+    // messages, la parole reste libre mais ne rapporte plus (anti-spam).
+    if (total * POINTS.directMessage <= POINTS.directMessageMax) {
+      await awardPoints(moi.uid, 'direct', POINTS.directMessage, `direct:${directId}:msg:${moi.uid}:${total}`, { directId });
+    }
   }, [directId, moi?.uid]);
 
   const coeur = async () => {
@@ -194,7 +198,7 @@ const DirectPage: React.FC = () => {
               <i className="fa-solid fa-heart" />Envoyer un cœur
             </button>
             <span className="text-[11px] uppercase tracking-[0.18em] text-[#EEE7DB]/40">
-              {POINTS.directCoeur} point par cœur · {POINTS.directMessage} par message · {POINTS.directPresence} pour votre présence
+              {POINTS.directCoeur} point par cœur · {POINTS.directMessage} par message ({POINTS.directMessageMax} au plus) · {POINTS.directPresence} pour votre présence
             </span>
           </div>
 
