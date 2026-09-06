@@ -546,15 +546,11 @@ const OrigineExperience: React.FC = () => {
                     <p className="mt-5 font-serif text-[0.95rem] text-inkSoft/80">Sans engagement. Vous choisirez librement à l'ouverture des portes.</p>
                   </div>
                 </div>
-              </Reveal>
-            </div>
-
-            {/* Garantie */}
-            <div className={`${G12} mt-12`}>
-              <Reveal className="col-span-12 md:col-span-8">
-                <div className="rounded-3xl border border-cream3 bg-card p-8 md:p-10 shadow-sm">
-                  <h4 className="font-serif font-medium text-xl md:text-2xl text-ink uppercase tracking-[0.08em] mb-4">Notre garantie cœur léger, 30 jours</h4>
-                  <p className="font-sans text-[1.02rem] leading-relaxed text-inkSoft max-w-[62ch]">Si après <span className="text-brassInk font-medium">30 jours</span> vous sentez que ce cadre ne vous convient pas, nous vous <span className="text-brassInk font-medium">remboursons</span>. Sans question. Cela enlève le risque.</p>
+                {/* Garantie, sous la porte d'entrée : elle équilibre la colonne
+                    de droite au lieu de laisser un vide sous le panneau. */}
+                <div className="mt-8 rounded-3xl border border-cream3 bg-card p-8 md:p-9 shadow-sm">
+                  <h4 className="font-serif font-medium text-lg md:text-xl text-ink uppercase tracking-[0.08em] mb-4">Notre garantie cœur léger, 30 jours</h4>
+                  <p className="font-sans text-[0.98rem] leading-relaxed text-inkSoft max-w-[62ch]">Si après <span className="text-brassInk font-medium">30 jours</span> vous sentez que ce cadre ne vous convient pas, nous vous <span className="text-brassInk font-medium">remboursons</span>. Sans question. Cela enlève le risque.</p>
                 </div>
               </Reveal>
             </div>
