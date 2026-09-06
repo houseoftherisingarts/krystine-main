@@ -292,11 +292,17 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     // ── Iris (terminal de l'infolettre) ──
-    // Krystine dépose sa demande; le démon krystine-iris (sur la machine
-    // d'Alex, abonnement Claude Max) répond par REST avec un jeton IAM, donc
-    // hors règles. Le battement etat/iris dit à l'admin si Iris est en ligne.
-    match /irisDemandes/{id} { allow read, write: if isAdmin(); }
+    // Krystine dépose sa demande; le relais iris.py (sur son ordinateur ou
+    // celui d'Alex, abonnement Claude Max) la lit et répond, connecté comme
+    // iris@krystinestlaurent.ca : ce compte ne touche à rien d'autre.
+    // Le battement etat/iris dit à l'admin si Iris est en ligne;
+    // etat/irisInstallation garde le mot de passe du relais (admin seulement).
+    function isIris() {
+      return request.auth != null && request.auth.token.email == 'iris@krystinestlaurent.ca';
+    }
+    match /irisDemandes/{id} { allow read, write: if isAdmin() || isIris(); }
     match /etat/{id}         { allow read: if isAdmin(); allow write: if false; }
+    match /etat/iris         { allow write: if isIris(); }
     match /bookingRequests/{id} {
       allow create: if request.resource.data.keys().hasAll(['name', 'email']);
       allow read, update, delete: if isAdmin();
