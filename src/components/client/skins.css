@@ -1,0 +1,41 @@
+/* Les skins de l'espace client. Le premier, Medzo Café : les mêmes formes
+   dans des bruns de café au lait. Les classes ciblées sont celles que
+   Tailwind (CDN) génère pour les couleurs de l'espace; le skin les
+   repeint sans toucher au balisage. */
+.skin-medzo {
+  --medzo-fond: #e6d7c3;
+  --medzo-fond-sombre: #2b1a10;
+  --medzo-encre: #3b2417;
+  --medzo-accent: #8a5a2b;
+  --medzo-accent-clair: #c99a5b;
+  --medzo-accent-profond: #6b3f1e;
+}
+.skin-medzo.bg-\[\#EEE7DB\],
+.skin-medzo .bg-\[\#EEE7DB\] { background-color: var(--medzo-fond) !important; }
+.skin-medzo.dark\:bg-\[\#151d19\]:is(.dark *),
+.skin-medzo .dark\:bg-\[\#151d19\]:is(.dark *),
+.skin-medzo .dark\:bg-\[\#293027\]:is(.dark *),
+.skin-medzo .dark\:bg-\[\#293027\]\/55:is(.dark *),
+.skin-medzo .dark\:bg-\[\#293027\]\/45:is(.dark *) { background-color: var(--medzo-fond-sombre) !important; }
+.skin-medzo .bg-\[\#293027\],
+.skin-medzo .bg-\[\#151d19\]\/40,
+.skin-medzo .bg-\[\#151d19\]\/60 { background-color: var(--medzo-encre) !important; }
+.skin-medzo .text-\[\#293027\] { color: var(--medzo-encre) !important; }
+.skin-medzo .text-\[\#8B4A2F\] { color: var(--medzo-accent-profond) !important; }
+.skin-medzo .text-\[\#38403a\]\/55,
+.skin-medzo .text-\[\#38403a\]\/70,
+.skin-medzo .text-\[\#38403a\]\/50 { color: rgba(59, 36, 23, 0.65) !important; }
+.skin-medzo .bg-\[\#BA7B39\] { background-color: var(--medzo-accent) !important; color: #f4ebdf !important; }
+.skin-medzo .hover\:bg-\[\#d9a05b\]:hover { background-color: var(--medzo-accent-clair) !important; }
+.skin-medzo .border-\[\#BA7B39\] { border-color: var(--medzo-accent) !important; }
+.skin-medzo .bg-\[\#BA7B39\]\/10,
+.skin-medzo .bg-\[\#BA7B39\]\/15,
+.skin-medzo .bg-\[\#BA7B39\]\/8 { background-color: rgba(138, 90, 43, 0.14) !important; }
+.skin-medzo .bg-white\/55,
+.skin-medzo .bg-white\/45 { background-color: rgba(250, 243, 232, 0.6) !important; }
+.skin-medzo .bg-white\/40,
+.skin-medzo .bg-white\/60,
+.skin-medzo .bg-white\/70 { background-color: rgba(250, 243, 232, 0.72) !important; }
+.skin-medzo .border-white\/60 { border-color: rgba(250, 243, 232, 0.7) !important; }
+.skin-medzo .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(43, 26, 16, 0.78) !important; }
+.skin-medzo .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(43, 26, 16, 0.22) !important; }
