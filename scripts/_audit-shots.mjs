@@ -33,17 +33,39 @@ const routes = [
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 
+async function autoScroll(page) {
+  await page.evaluate(async () => {
+    await new Promise((resolve) => {
+      let total = 0;
+      const step = 400;
+      const timer = setInterval(() => {
+        window.scrollBy(0, step);
+        total += step;
+        if (total >= document.body.scrollHeight) {
+          clearInterval(timer);
+          resolve();
+        }
+      }, 120);
+    });
+  });
+  await page.waitForTimeout(600);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(600);
+}
+
 for (const route of routes) {
   const fname = route === '/' ? 'root' : route.replace(/^\//, '').replace(/\//g, '_');
   try {
-    await page.goto(`${BASE}${route}`, { waitUntil: 'networkidle', timeout: 30000 });
-    await page.waitForTimeout(1200); // settle motion/animations
+    await page.goto(`${BASE}${route}`, { waitUntil: 'load', timeout: 30000 });
+    await page.waitForTimeout(1000);
+    await autoScroll(page);
     await page.screenshot({ path: `${OUT}/${fname}.png`, fullPage: true });
     console.log('OK', route);
   } catch (err) {
     console.log('FAIL', route, err.message);
     try {
-      await page.screenshot({ path: `${OUT}/${fname}.error.png`, fullPage: true });
+      await page.screenshot({ path: `${OUT}/${fname}.png`, fullPage: true });
+      console.log('OK(fallback)', route);
     } catch {}
   }
 }

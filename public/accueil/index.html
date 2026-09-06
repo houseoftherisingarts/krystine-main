@@ -544,10 +544,13 @@
   .fyform input:focus,.fyform textarea:focus{outline:none;border-color:var(--brass);background:#fff}
   .fyform input[aria-invalid="true"]{border-color:#c2603a}
   .fy-q{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-  .fyform button{margin-top:.15rem;justify-self:start;padding:.8rem 1.6rem;border-radius:9px;border:none;cursor:pointer;
-    background:var(--brass);color:var(--espresso-deep);font-family:var(--sans);font-weight:600;
-    font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;transition:background .3s,transform .3s}
-  .fyform button:hover{background:var(--brass-bright);transform:translateY(-2px)}
+  /* Sobre par choix : le compte (bouton or juste en dessous) est le geste
+     mis de l'avant ici, la liste d'attente reste une option discrète. */
+  .fyform button{margin-top:.15rem;justify-self:start;padding:.62rem 1.3rem;border-radius:9px;
+    border:1px solid rgba(58,49,38,.25);cursor:pointer;background:transparent;color:var(--ink-soft);
+    font-family:var(--sans);font-weight:600;
+    font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;transition:border-color .3s,color .3s}
+  .fyform button:hover{border-color:var(--brass);color:var(--ink)}
   .fy-msg{min-height:1.1em;margin-top:.6rem;font-size:.8rem;color:var(--ink-soft);opacity:0;transform:translateY(-3px);transition:opacity .35s,transform .35s}
   .fy-msg.show{opacity:1;transform:none}
   .fy-msg.err{color:#c2603a}
