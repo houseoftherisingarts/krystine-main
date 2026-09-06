@@ -111,8 +111,20 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ target, onClose }) => {
               {lang === 'FR' ? 'Fermer' : 'Close'}
             </button>
           </div>
+        ) : user ? (
+          <InscriptionAvecCompte sourceTag={sourceTag} onSuccess={() => setDone(true)} variant="pill" />
         ) : (
           <>
+          <BoutonCompte
+            libelle={lang === 'FR' ? 'Créer mon compte et m\'inscrire' : 'Create my account and join'}
+            taille="md"
+            className="w-full"
+          />
+          <p className="text-xs text-center text-[#2a2015]/50 dark:text-white/50 mt-3 mb-6">
+            {lang === 'FR'
+              ? "Un compte évite de retaper vos informations à chaque liste d'attente."
+              : 'An account means you never retype your details for the next waitlist.'}
+          </p>
           <form onSubmit={submit} className="space-y-3">
             <input
               type="text"
@@ -145,7 +157,6 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ target, onClose }) => {
                 : 'Unsubscribe in one click. Your address is never resold.'}
             </p>
           </form>
-          {!user && <CompteUpsell variant="light" />}
           </>
         )}
       </div>
