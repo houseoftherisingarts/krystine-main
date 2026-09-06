@@ -445,23 +445,20 @@ const sceneKapha: Fabrique = (ctx, w, h, pal, vue) => {
       ptr.dx += ((ptr.lx / w - 0.5) * 30 - ptr.dx) * 0.03 * k;
       ptr.dy += ((ptr.ly / h - 0.5) * 22 - ptr.dy) * 0.03 * k;
 
-      if (nctx) {
-        nctx.clearRect(0, 0, dw, dh);
-        nctx.globalCompositeOperation = 'lighter';
-        const tt = ((t * 0.00075) % 1) * N;
-        const i0 = Math.floor(tt) % N;
-        const f = tt - Math.floor(tt);
-        const d1x = t * 0.004 + ptr.dx, d1y = -t * 0.0026 + ptr.dy;
-        nappeur(i0, (1 - f) * 0.72, 1.5, d1x, d1y);
-        nappeur((i0 + 1) % N, f * 0.72, 1.5, d1x, d1y);
-        const t2 = ((t * 0.00031) % 1) * N;
-        const j0 = Math.floor(t2) % N;
-        const g = t2 - Math.floor(t2);
-        const d2x = -t * 0.0016 - ptr.dx * 0.6, d2y = -t * 0.0009 - ptr.dy * 0.6;
-        nappeur(j0, (1 - g) * 0.42, 3.2, d2x, d2y);
-        nappeur((j0 + 1) % N, g * 0.42, 3.2, d2x, d2y);
-        nctx.globalAlpha = 1;
-        ctx.drawImage(nappe, 0, 0, w, h);
+      if (nappe.cx) {
+        nappe.cx.clearRect(0, 0, nappe.dw, nappe.dh);
+        nappe.cx.globalCompositeOperation = 'lighter';
+        nappe.couche(t, 0.00075, 0.44, 2.2, t * 0.004 + ptr.dx, -t * 0.0026 + ptr.dy);
+        nappe.couche(t, 0.00031, 0.24, 4.4, -t * 0.0016 - ptr.dx * 0.6, -t * 0.0009 - ptr.dy * 0.6);
+        if (chute) {
+          nappe.cx.globalCompositeOperation = 'destination-in';
+          nappe.cx.globalAlpha = 1;
+          nappe.cx.fillStyle = chute;
+          nappe.cx.fillRect(0, 0, nappe.dw, nappe.dh);
+        }
+        nappe.cx.globalAlpha = 1;
+        ctx.globalAlpha = 1;
+        ctx.drawImage(nappe.cv, 0, 0, w, h);
       }
 
       ctx.globalCompositeOperation = 'lighter';

@@ -33,6 +33,8 @@ for (const ecran of ECRANS) {
     await page.screenshot({ path: `${DOSSIER}/${skin}-${ecran.nom}-1500ms.png` });
     await dormir(2500);
     await page.screenshot({ path: `${DOSSIER}/${skin}-${ecran.nom}-4000ms.png` });
+    await dormir(2600);
+    await page.screenshot({ path: `${DOSSIER}/${skin}-${ecran.nom}-6600ms.png` });
 
     // Survol du bouton doré, à mi-balayage, puis du bouton « Ouvrir le coffre ».
     const dore = page.getByRole('button', { name: /Acheter des niskas/ });

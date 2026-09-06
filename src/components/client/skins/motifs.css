@@ -177,18 +177,21 @@
           mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, .3) 44%, transparent 74%);
 }
 
-.skin-or-pur .bg-\[\#BA7B39\] { position: relative; overflow: hidden; }
+/* Le reflet passe DERRIÈRE le libellé (z-index -1 sous isolation) : l'or
+   s'allume, le texte garde son contraste du début à la fin. */
+.skin-or-pur .bg-\[\#BA7B39\] { position: relative; overflow: hidden; isolation: isolate; }
 .skin-or-pur .bg-\[\#BA7B39\]::after {
   content: '';
   position: absolute;
+  z-index: -1;
   inset: -1px;
   pointer-events: none;
   transform: translateX(-130%);
   background: linear-gradient(104deg,
-    transparent 34%,
-    rgba(255, 247, 214, .42) 48%,
-    rgba(255, 255, 255, .2) 54%,
-    transparent 68%);
+    transparent 32%,
+    rgba(255, 248, 222, .5) 47%,
+    rgba(255, 255, 255, .3) 55%,
+    transparent 70%);
 }
 .skin-or-pur .bg-\[\#BA7B39\]:hover::after { animation: motif-balayage .95s cubic-bezier(.22, 1, .36, 1); }
 
