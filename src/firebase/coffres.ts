@@ -18,15 +18,18 @@ export function suivreMesCoffres(uid: string, cb: (i: Inventaire) => void): Unsu
 }
 
 export interface LotGagne {
-  genre: 'niskas' | 'cosmetique' | 'recompense' | 'grand';
+  genre: 'niskas' | 'cosmetique' | 'musique' | 'recompense' | 'grand';
   nom: string;
   montant?: number;
-  solde?: number;
   article?: string;
+  rarete?: 'legendaire' | 'rare' | 'commun';
+  rewardId?: string;
   note?: string;
   ouvertureId?: string;
   question?: string;
 }
+
+export interface Ouverture { ouvertureId: string; type: TypeCoffre; lots: LotGagne[]; solde: number }
 
 const fn = (nom: string) => {
   if (!app) throw new Error('[Coffres] Firebase not configured');
@@ -37,8 +40,8 @@ export async function acheterCoffre(type: TypeCoffre, quoi: 'boite' | 'cle'): Pr
   return (await fn('acheterCoffre')({ type, quoi })).data as { solde: number; nom: string };
 }
 
-export async function ouvrirCoffre(type: TypeCoffre): Promise<{ ouvertureId: string; type: TypeCoffre; lot: LotGagne }> {
-  return (await fn('ouvrirCoffre')({ type })).data as { ouvertureId: string; type: TypeCoffre; lot: LotGagne };
+export async function ouvrirCoffre(type: TypeCoffre): Promise<Ouverture> {
+  return (await fn('ouvrirCoffre')({ type })).data as Ouverture;
 }
 
 export async function reclamerGrandLot(ouvertureId: string, reponse: number): Promise<{ bon: boolean; essais?: number; cadeauId?: string }> {

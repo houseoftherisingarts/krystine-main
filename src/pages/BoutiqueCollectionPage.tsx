@@ -7,6 +7,7 @@ import {
   ALL_PRODUCTS_SLUG, COLLECTIONS, findCollection,
   type CollectionManifest,
 } from '../lib/collections';
+import Portail from '../components/Portail';
 
 // Synthetic manifest used when the route is /boutique/tous — not a real
 // collection, but reuses the same editorial layout so the safety-valve page

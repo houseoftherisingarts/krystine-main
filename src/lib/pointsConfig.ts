@@ -321,16 +321,20 @@ export interface Tier {
 }
 
 export const TIERS: Tier[] = [
-  { id: 'graine', threshold:    0, labelFR: 'Graine',   labelEN: 'Seed',   accent: '#8F9779' },
-  { id: 'pousse', threshold:   50, labelFR: 'Pousse',   labelEN: 'Sprout', accent: '#6E8E4B' },
-  { id: 'tige',   threshold:  150, labelFR: 'Tige',     labelEN: 'Stem',   accent: '#B8532F' },
-  { id: 'fleur',  threshold:  350, labelFR: 'Fleur',    labelEN: 'Bloom',  accent: '#BC4A3C' },
-  { id: 'source', threshold:  700, labelFR: 'Source',   labelEN: 'Source', accent: '#4A7C9D' },
-  // Après l'arbre (Alex, 6 septembre 2026) : des lotus poussent dans ses
-  // branches, puis l'arbre s'allume de lucioles.
-  { id: 'lotus',   threshold: 1500, labelFR: 'Lotus',    labelEN: 'Lotus',  accent: '#C97B9B' },
-  { id: 'lumiere', threshold: 3500, labelFR: 'Lumière',  labelEN: 'Light',  accent: '#D9A05B' },
+  // Dix stades, de la graine au grand jardin avec sa source (Alex, 6 septembre
+  // 2026). Chaque stade a sa figurine (/compte/plante/{id}.webp).
+  { id: 'graine',     threshold:     0, labelFR: 'Graine',       labelEN: 'Seed',        accent: '#8F9779' },
+  { id: 'pousse',     threshold:    50, labelFR: 'Pousse',       labelEN: 'Sprout',      accent: '#6E8E4B' },
+  { id: 'tige',       threshold:   150, labelFR: 'Tige',         labelEN: 'Stem',        accent: '#5E7A3E' },
+  { id: 'fleur',      threshold:   350, labelFR: 'Fleur',        labelEN: 'Bloom',       accent: '#D9A05B' },
+  { id: 'arbrisseau', threshold:   700, labelFR: 'Arbrisseau',   labelEN: 'Sapling',     accent: '#7FA36A' },
+  { id: 'arbre',      threshold:  1500, labelFR: 'Arbre',        labelEN: 'Tree',        accent: '#4A7C9D' },
+  { id: 'lotus',      threshold:  3500, labelFR: 'Arbre aux lotus', labelEN: 'Lotus tree', accent: '#C97B9B' },
+  { id: 'bosquet',    threshold:  7500, labelFR: 'Bosquet',      labelEN: 'Grove',       accent: '#B8532F' },
+  { id: 'foret',      threshold: 18000, labelFR: 'Forêt',        labelEN: 'Forest',      accent: '#BC4A3C' },
+  { id: 'jardin',     threshold: 50000, labelFR: 'Grand jardin', labelEN: 'Grand garden', accent: '#BA7B39' },
 ];
+
 
 // Given a lifetime point total, return the tier they currently sit in and
 // the next tier they're working toward (if any). Lifetime is append-only
@@ -417,16 +421,16 @@ export const REWARDS: Reward[] = [
     minTier: 'fleur',
     oneShot: true,
   },
-  // Le palier Source : Krystine ne donne pas de consultation privée (Alex,
+  // Le palier Arbre : Krystine ne donne pas de consultation privée (Alex,
   // 6 septembre 2026), donc une formation courte et un produit de la boutique.
   {
     id: 'masterclass-source',
     cost: 725,
     labelFR: 'La masterclass Santé Parfaite, offerte',
     labelEN: 'The Perfect Health masterclass, on us',
-    descFR: "L'accès complet à la masterclass Santé Parfaite. Offert une seule fois, aux membres du palier Source.",
-    descEN: 'Full access to the Perfect Health masterclass. Offered once, for Source-tier members.',
-    minTier: 'source',
+    descFR: "L'accès complet à la masterclass Santé Parfaite. Offert une seule fois, aux membres du palier Arbre.",
+    descEN: 'Full access to the Perfect Health masterclass. Offered once, for Tree-tier members.',
+    minTier: 'arbre',
     oneShot: true,
   },
   {
@@ -436,7 +440,7 @@ export const REWARDS: Reward[] = [
     labelEN: 'A complimentary Body Oil',
     descFR: "L'huile corporelle de votre dosha, envoyée chez vous. Se réclame une seule fois.",
     descEN: 'The body oil of your dosha, sent to you. One-time claim.',
-    minTier: 'source',
+    minTier: 'arbre',
     oneShot: true,
   },
 ];
