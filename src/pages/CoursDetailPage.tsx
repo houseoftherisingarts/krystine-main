@@ -12,6 +12,7 @@ import {
 import { useAuth, useUI } from '../contexts/AppContext';
 import { getMember } from '../firebase/firestore';
 import TexteLecon from '../lib/texteLecon';
+import { LecteurVideoPleinEcran } from '../components/LecteurVideoEmbarque';
 
 // La fiche d'un cours et son lecteur, sur le patron de l'Académie Zéro
 // Limite : liste des leçons et progression à gauche, contenu à droite,
