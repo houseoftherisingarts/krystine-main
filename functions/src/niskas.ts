@@ -30,7 +30,7 @@ const COSMETIQUES: Record<string, { cout: number; nom: string }> = {
   'skin-foret': { cout: 25, nom: 'Skin Forêt' },
   'skin-ocean': { cout: 35, nom: 'Skin Océan' },
   'skin-encre': { cout: 55, nom: 'Skin Encre & or' },
-  // Les skins rares (lotus, aurore, or-pur) ne s'achètent pas : coffres.ts.
+  // Les skins rares (lotus, feminite, nature, aurore, or-pur) ne s'achètent pas : coffres.ts.
   // Toutes les vidéos de Krystine, débloquées d'un coup : les vidéos sont
   // gratuites, c'est l'ouverture de la section qui coûte dix niskas.
   'acces-videos': { cout: 10, nom: 'Les vidéos de Krystine' },
