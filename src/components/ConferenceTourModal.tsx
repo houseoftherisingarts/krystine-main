@@ -255,6 +255,7 @@ const ConferenceTourModal: React.FC<Props> = ({ open, onClose }) => {
         )}
       </div>
     </div>
+    </Portail>
   );
 };
 
