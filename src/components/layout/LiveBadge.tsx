@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { suivreLiveEnCours, type LiveEnCours } from '../../firebase/lives';
 
 // La pastille « Live en cours », en haut à droite de tout le site React.
-// Live public : le clic ouvre la diffusion (ou le feed). Live de formation :
-// le clic mène à la page du cours, qui accueille ou propose l'achat.
+// Live public : le clic mène à la salle du direct (/direct), qui embarque
+// la diffusion. Live de formation : le clic mène à la page du cours, qui
+// accueille ou propose l'achat. Jamais de nouvel onglet vers YouTube.
 
 const LiveBadge: React.FC = () => {
   const [live, setLive] = useState<LiveEnCours | null>(null);
