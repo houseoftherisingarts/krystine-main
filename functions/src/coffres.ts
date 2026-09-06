@@ -57,7 +57,7 @@ export const CONTENUS: Record<TypeCoffre, Contenu> = {
     grandLot: null,
   },
   argent: {
-    legendaire: 65, rares: ['skin-lotus'],
+    legendaire: 65, rares: ['skin-lotus', 'skin-feminite', 'skin-nature'],
     niskas: [{ montant: 30, poids: 50 }, { montant: 70, poids: 30 }, { montant: 150, poids: 15 }, { montant: 300, poids: 5 }],
     rabais: [
       { rewardId: 'reb-10-boutique', unSur: 20, nom: '10 % sur la boutique' },
