@@ -196,7 +196,8 @@ const AdminClientView: React.FC<Props> = ({ uid, onClose }) => {
   const name = member?.displayName || member?.email?.split('@')[0] || '—';
 
   return (
-    <div className="fixed inset-0 z-[85] bg-[#293027]/55 backdrop-blur-md overflow-y-auto" onClick={onClose}>
+    <Portail>
+    <div className="fixed inset-0 z-[85] overscroll-contain bg-[#293027]/55 backdrop-blur-md overflow-y-auto" onClick={onClose}>
       <div
         className="min-h-full flex items-start justify-center p-4 md:p-8"
         onClick={e => e.stopPropagation()}
