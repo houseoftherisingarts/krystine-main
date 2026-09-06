@@ -176,7 +176,7 @@ const Coffres: React.FC<{ solde: number; onChange?: () => void }> = ({ solde, on
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.25em]" style={{ color: c.teinteSombre }}>{fr ? c.nomFR : c.nomEN}</p>
                   <p className="mt-1 text-xs text-[#293027]/60 dark:text-white/60">
-                    {fr ? `${nb} coffre${nb > 1 ? 's' : ''} · ${cles} clé${cles > 1 ? 's' : ''}` : `${nb} chest${nb > 1 ? 's' : ''} · ${cles} key${cles > 1 ? 's' : ''}`}
+                    {fr ? `${nb} coffre${nb > 1 ? 's' : ''}` : `${nb} chest${nb > 1 ? 's' : ''}`}
                   </p>
                 </div>
                 <Coffre type={type} taille={96} />
@@ -186,15 +186,12 @@ const Coffres: React.FC<{ solde: number; onChange?: () => void }> = ({ solde, on
                 <button type="button" onClick={() => acheter(type, 'boite')} disabled={occupe !== null || solde < c.boite} className={`${bouton} border border-[#38403a]/15 text-[#38403a]/80 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/80`}>
                   <PieceNiska size={13} /> {fr ? 'Coffre' : 'Chest'} · {c.boite}
                 </button>
-                <button type="button" onClick={() => acheter(type, 'cle')} disabled={occupe !== null || solde < c.cle} className={`${bouton} border border-[#38403a]/15 text-[#38403a]/80 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/80`}>
-                  <Cle type={type} taille={13} /> {fr ? 'Clé' : 'Key'} · {c.cle}
-                </button>
               </div>
               <button
                 type="button" onClick={() => ouvrir(type)} disabled={!pret || occupe !== null}
                 className={`${bouton} mt-2 w-full justify-center bg-[#293027] text-[#EEE7DB] hover:bg-[#3a453a] dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]`}
               >
-                <i className="fa-solid fa-key" /> {pret ? (fr ? 'Ouvrir le coffre' : 'Open the chest') : (fr ? (nb ? 'Il manque la clé' : 'Aucun coffre à ouvrir') : (nb ? 'Key missing' : 'No chest to open'))}
+                <i className="fa-solid fa-key" /> {pret ? (fr ? 'Ouvrir le coffre' : 'Open the chest') : (fr ? (nb ? 'Il manque une clé' : 'Aucun coffre à ouvrir') : (nb ? 'Key missing' : 'No chest to open'))}
               </button>
 
               <button type="button" onClick={() => setContenuOuvert(contenuOuvert === type ? null : type)} className="mt-3 flex w-full items-center justify-between text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]">
