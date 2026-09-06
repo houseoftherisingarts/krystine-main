@@ -40,7 +40,7 @@ const dims = await dlg.locator('img').evaluate((img) => ({ w: img.naturalWidth, 
 console.log('capture', JSON.stringify(dims));
 
 await dlg.locator('textarea').fill(`Test automatisé du bouton Problème technique (${new Date().toISOString()}). À supprimer.`);
-await page.getByRole('button', { name: /^Envoyer$|^Send$/ }).click();
+await dlg.getByRole('button', { name: /Envoyer|Send/ }).click();
 try {
   await page.getByText(/Merci\. Le rapport est parti|Thank you\. The report/).waitFor({ timeout: 40000 });
 } catch (e) {

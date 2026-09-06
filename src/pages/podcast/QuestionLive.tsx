@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { getLiveEvents, addLiveQuestion, type LiveEvent } from '../../firebase/firestore';
+import { useAuth } from '../../contexts/AppContext';
+import CompteUpsell from '../../components/CompteUpsell';
 
 // /podcast/question — la page que Krystine donne en ondes. Chaque question
 // envoyée d'ici se pose en direct à la fin du paquet de cartes de l'admin,
