@@ -27,6 +27,7 @@ import { BANNIERE_DEFAUT, BANNIERES, banniereParCle, FACONS_DE_GAGNER, niskas, s
 import EffetsSkin from '../components/client/skins/EffetsSkin';
 import MotifsSkin from '../components/client/skins/MotifsSkin';
 import PieceNiska from '../components/client/PieceNiska';
+import { AvecSignature } from '../components/client/Signature';
 import RoueQuotidienne from '../components/client/RoueQuotidienne';
 import BienvenueJeu from '../components/client/BienvenueJeu';
 import ReserveAuFoyer, { MotDuFoyer, useAmiesDOrigine } from '../components/communaute/ReserveAuFoyer';
