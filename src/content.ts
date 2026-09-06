@@ -462,6 +462,7 @@ export const CONTENT = {
           {
             title: 'Title to be revealed',
             subtitle: '',
+            cover: '/livres/titre-a-reveler.webp',
             releaseDate: 'February 2027',
             publisher: "Éditions de l'Homme",
             captureCta: 'Notify me when it releases',
