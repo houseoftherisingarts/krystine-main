@@ -12,8 +12,8 @@ const browser = await chromium.launch();
 // ---------- DESKTOP 1440 ----------
 {
   const page = await browser.newPage({ viewport: { width: 1440, height: 810 } });
-  await page.goto(URL, { waitUntil: 'networkidle', timeout: 60000 });
-  await page.waitForTimeout(1500);
+  await page.goto(URL, { waitUntil: 'load', timeout: 60000 });
+  await page.waitForTimeout(3000);
 
   // D1 — carte de rediffusion : capture pleine page desktop (état initial)
   await page.screenshot({ path: `${OUT}/d1-desktop-full.png`, fullPage: true });
