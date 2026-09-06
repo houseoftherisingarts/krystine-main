@@ -410,13 +410,13 @@ const ClientPortal: React.FC = () => {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3 py-3.5 text-xs font-bold uppercase tracking-wider transition-colors ${
+              className={`flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-2 py-3.5 text-[10px] font-bold uppercase tracking-wide transition-colors 2xl:px-3 2xl:text-[11px] 2xl:tracking-wider ${
                 tab === t.id
                   ? 'border-[#BA7B39] text-[#8B4A2F] dark:text-[#d9a05b]'
                   : 'border-transparent text-[#38403a]/55 hover:text-[#8B4A2F] dark:text-white/55 dark:hover:text-[#d9a05b]'
               }`}
             >
-              <i className={`fa-solid ${t.icon}`} /> {t.label}
+              <i className={`fa-solid ${t.icon} hidden 2xl:inline`} /> {t.label}
             </button>
           ))}
         </div>
