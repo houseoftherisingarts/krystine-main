@@ -377,6 +377,7 @@ const SalonContactCard: React.FC<Props> = ({ open, onClose, sourceSite = 'krysti
                         Vos coordonnées ne servent qu'à cette correspondance.
                       </p>
                     </div>
+                    {!user && <CompteUpsell variant="light" />}
                   </form>
                 )}
               </div>
