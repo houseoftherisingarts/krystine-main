@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { libelleTag } from '../../../../lib/paliers';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import app from '../../../../firebase';
 import { Timestamp } from 'firebase/firestore';
@@ -174,7 +175,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
 
   const sendLive = async () => {
     if (audienceVide) { setSendErr(audience.mode === 'tags' ? 'Cochez au moins une liste dans « À qui l’envoyer », ou choisissez « Tout le monde ».' : 'Choisissez au moins une personne, ou une autre audience.'); return; }
-    const who = audience.mode === 'all' ? 'tous les abonnés actifs' : audience.mode === 'tags' ? `les listes ${(audience.tags || []).join(', ')}` : `${(audience.emails || []).length} personne(s) choisie(s)`;
+    const who = audience.mode === 'all' ? 'tous les abonnés actifs' : audience.mode === 'tags' ? `les listes ${(audience.tags || []).map(libelleTag).join(', ')}` : `${(audience.emails || []).length} personne(s) choisie(s)`;
     if (!confirm(`Envoyer cette infolettre maintenant à ${who} ? Cette action est irréversible.`)) return;
     await triggerSend();
   };

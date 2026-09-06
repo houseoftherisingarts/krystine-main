@@ -1,5 +1,5 @@
 import React, { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
-import { PALIERS, STATUTS, statsDepuisFiches } from '../../../../lib/paliers';
+import { PALIERS, STATUTS, statsDepuisFiches, libelleTag, explicationTag } from '../../../../lib/paliers';
 import {
   getNewsletterSubscribers, deleteNewsletterSubscriber, bulkAddNewsletterSubscribers,
   type NewsletterSubscriber, type BulkImportResult,
@@ -237,7 +237,7 @@ const SubscribersPanel: React.FC = () => {
           className="px-4 py-2 rounded-full border border-[#293027]/10 dark:border-white/10 bg-white dark:bg-[#293027]/60 text-sm text-[#293027] dark:text-white outline-none focus:border-[#BA7B39]"
         >
           <option value="">Toutes les listes</option>
-          {tagOptions.map(([t, n]) => <option key={t} value={t}>{t} ({n})</option>)}
+          {tagOptions.map(([t, n]) => <option key={t} value={t}>{libelleTag(t)} ({n})</option>)}
         </select>
         <select
           value={statut}
@@ -331,7 +331,7 @@ const SubscribersPanel: React.FC = () => {
                     {(s.tags && s.tags.length > 0) ? (
                       <div className="flex flex-wrap gap-1">
                         {s.tags.slice(0, 3).map(t => (
-                          <span key={t} className="text-[10px] uppercase tracking-widest bg-[#BA7B39]/10 text-[#8B4A2F] px-2 py-0.5 rounded-full">{t}</span>
+                          <span key={t} title={explicationTag(t) || t} className="text-[10px] uppercase tracking-widest bg-[#BA7B39]/10 text-[#8B4A2F] px-2 py-0.5 rounded-full">{libelleTag(t)}</span>
                         ))}
                       </div>
                     ) : <span className="text-[#293027]/40 dark:text-white/40">—</span>}

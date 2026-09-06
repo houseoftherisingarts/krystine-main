@@ -30,3 +30,40 @@ export function statsDepuisFiches(fiches: { status?: string; tags?: string[] }[]
   }
   return { statuts, paliers, total: fiches.length };
 }
+
+// Libellé lisible d'une étiquette technique, pour que Krystine comprenne ce
+// qu'une liste veut dire sans connaître les noms internes.
+const LIBELLES: Record<string, string> = {
+  'shopify-import': 'Import Shopify',
+  'shopify-abonne': 'Shopify · abonnées',
+  'shopify-sans-consentement': 'Shopify · sans consentement',
+  'shopify-desinscrit': 'Shopify · désinscrites',
+  'shopify-invalide': 'Shopify · adresses invalides',
+  'kajabi-abonne': 'Kajabi · abonnées',
+  'kajabi-sans-consentement': 'Kajabi · sans consentement',
+  'kajabi-desinscrit': 'Kajabi · désinscrites',
+  'podcast': 'Podcast',
+  'podcast-live': 'Direct du podcast',
+  'quiz': 'Quiz dosha',
+  'formations': 'Formations',
+  'origine': 'Expérience Origine',
+  'foyer-origine': 'Foyer d’Origine',
+  'accueil-loeuvre': 'Accueil · L’Œuvre',
+  'accueil-pulsation': 'Accueil · Pulsation',
+  'medias': 'Médias',
+  'conferenciere': 'Conférencière',
+};
+export function libelleTag(tag: string): string {
+  const p = PALIERS.find(x => x.tag === tag);
+  if (p) return `Palier ${p.n} · ${p.nom}`;
+  const sp = /^shopify-palier-(\d)$/.exec(tag);
+  if (sp) { const q = PALIERS.find(x => x.n === Number(sp[1])); return `Shopify · palier ${sp[1]}${q ? ' · ' + q.nom : ''}`; }
+  if (tag.startsWith('waitlist-')) return `Liste d’attente · ${tag.slice(9).replace(/-/g, ' ')}`;
+  if (tag.startsWith('podcast-live-')) return `Direct du ${tag.slice(13)}`;
+  return LIBELLES[tag] || tag;
+}
+// Explication courte (infobulle) : le détail du palier, sinon rien.
+export function explicationTag(tag: string): string | undefined {
+  const p = PALIERS.find(x => x.tag === tag);
+  return p ? `${p.detail}${p.envoi ? '' : ' · ne reçoit pas les infolettres'}` : undefined;
+}

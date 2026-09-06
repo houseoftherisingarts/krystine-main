@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { libelleTag, explicationTag } from '../../../../lib/paliers';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import app from '../../../../firebase';
 import type { NewsletterAudience } from '../../../../firebase/firestore';
@@ -85,9 +86,9 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
           {!info && !failed && <p className="text-xs text-[#293027]/50 dark:text-white/50"><i className="fa-solid fa-circle-notch fa-spin mr-1" />Les listes arrivent…</p>}
           {info && tags.length === 0 && <p className="text-xs text-[#293027]/50 dark:text-white/50">Aucune liste pour le moment.</p>}
           {tags.map(({ tag: t, n }) => (
-            <button key={t} disabled={disabled} onClick={() => toggleTag(t)}
+            <button key={t} disabled={disabled} onClick={() => toggleTag(t)} title={explicationTag(t) || t}
               className={`px-2.5 py-1 rounded-full text-[11px] border transition-colors ${(value.tags || []).includes(t) ? 'bg-[#BA7B39] text-[#293027] border-[#BA7B39]' : 'bg-[#EEE7DB] dark:bg-white/5 text-[#293027]/70 dark:text-white/70 border-transparent hover:border-[#BA7B39]'}`}>
-              {t} <span className="opacity-60">· {n}</span>
+              {libelleTag(t)} <span className="opacity-60">· {n}</span>
             </button>
           ))}
         </div>
