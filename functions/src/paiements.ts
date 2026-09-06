@@ -126,6 +126,7 @@ const PAQUETS: Record<string, { niskas: number; cents: number }> = {
   p400: { niskas: 400, cents: 3000 },
   p750: { niskas: 750, cents: 5000 },
   p1600: { niskas: 1600, cents: 10000 },
+  p2800: { niskas: 2800, cents: 16000 },
   p4500: { niskas: 4500, cents: 25000 },
   p10000: { niskas: 10000, cents: 50000 },
 };

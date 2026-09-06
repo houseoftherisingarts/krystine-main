@@ -61,6 +61,15 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
     }
   };
 
+  // « Acheter des niskas » depuis le profil ou l'onglet Niskas : la boutique
+  // s'ouvre avec le panneau des paquets déjà déplié, un seul clic (Alex, 6 sept. 2026).
+  useEffect(() => {
+    const ouvrir = () => { setPaquetsOuverts(true); window.setTimeout(() => document.getElementById('paquets-niskas')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 350); };
+    window.addEventListener('krystine:ouvrir-paquets', ouvrir);
+    if (window.location.hash === '#paquets-niskas') ouvrir();
+    return () => window.removeEventListener('krystine:ouvrir-paquets', ouvrir);
+  }, []);
+
   useEffect(() => {
     if (!user) return;
     const a = subscribeToMemberPoints(user.uid, setSolde);

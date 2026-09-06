@@ -101,7 +101,19 @@ await m.goto(URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
 await m.waitForSelector('div.bg-cream section', { timeout: 30000 });
 await m.evaluate(() => document.fonts.ready);
 await m.waitForTimeout(1500);
+await m.addStyleTag({ content: 'html{scroll-behavior:auto !important}' });
+await m.getByRole('button', { name: /non merci|j'accepte/i }).first().click({ timeout: 5000 }).catch(() => {});
 await m.screenshot({ path: `${OUT}/m-fullpage.png`, fullPage: true });
+// fullPage écrase les sticky : les vraies vues mobiles se prennent au scroll.
+const mTotal = await m.evaluate(() => document.documentElement.scrollHeight);
+for (let i = 0; i < 8; i++) {
+  const y = Math.round(((mTotal - 844) * i) / 7);
+  await m.evaluate((yy) => window.scrollTo(0, yy), y);
+  await m.waitForTimeout(700);
+  await m.screenshot({ path: `${OUT}/m${String(i).padStart(2, '0')}-y${y}.png` });
+}
+await m.evaluate(() => window.scrollTo(0, 0));
+await m.waitForTimeout(500);
 const mFeuilles = await m.evaluate(() => {
   const root = document.querySelector('div.bg-cream');
   return [...root.children].map((el, i) => {

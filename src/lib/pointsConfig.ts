@@ -124,6 +124,7 @@ export const PAQUETS_NISKAS: PaquetNiskas[] = [
   { id: 'p400', niskas: 400, prix: 30 },
   { id: 'p750', niskas: 750, prix: 50 },
   { id: 'p1600', niskas: 1600, prix: 100 },
+  { id: 'p2800', niskas: 2800, prix: 160 },
   { id: 'p4500', niskas: 4500, prix: 250 },
   { id: 'p10000', niskas: 10000, prix: 500 },
 ];
