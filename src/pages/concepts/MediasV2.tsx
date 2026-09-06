@@ -308,7 +308,7 @@ export default function MediasV2() {
                   onClick={() => !isLocked && setBookOpen(isOpen ? null : idx)}
                   whileHover={isLocked ? undefined : { y: -8 }}
                   transition={{ type: 'spring', stiffness: 220, damping: 24 }}
-                  className={`group relative w-full aspect-[1/1.3] overflow-hidden shadow-[0_18px_50px_rgba(28,23,18,0.18)] ${isLocked ? 'opacity-90' : 'cursor-pointer'}`}
+                  className={`group relative w-full aspect-[1/1.3] overflow-hidden shadow-[0_18px_50px_rgba(28,23,18,0.18)] ${isLocked ? (item.cover ? '' : 'opacity-90') : 'cursor-pointer'}`}
                 >
                   <span className="pointer-events-none absolute inset-0 z-10 border border-[#9c7a44]/30" aria-hidden />
                   {item.cover ? (
@@ -321,7 +321,7 @@ export default function MediasV2() {
                   )}
                   {isLocked && (
                     <span className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-[#9c7a44] text-[#1c1712] px-3 py-1 text-[0.56rem] uppercase tracking-[0.18em] whitespace-nowrap">
-                      Parution · 4 nov. 2026
+                      {lang === 'FR' ? 'Parution · février 2027' : 'Release · February 2027'}
                     </span>
                   )}
                 </motion.div>

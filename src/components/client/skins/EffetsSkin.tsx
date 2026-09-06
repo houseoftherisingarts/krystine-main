@@ -402,45 +402,18 @@ const scenePitta: Fabrique = (ctx, w, h, pal, vue) => {
 interface Bulle { x: number; y: number; r: number; v: number; phase: number; a: number }
 interface Onde { x: number; y: number; r: number; max: number; vie: number; anneau: number }
 
-const tuileCaustique = (taille: number, phase: number, c: RGB) =>
-  carre(taille, (x, s) => {
-    const img = x.createImageData(s, s);
-    const d = img.data;
-    const TAU = Math.PI * 2;
-    for (let j = 0; j < s; j++) {
-      const v = (j / s) * TAU;
-      for (let i = 0; i < s; i++) {
-        const u = (i / s) * TAU;
-        // Coefficients entiers sur u, v et la phase : la tuile se répète sans
-        // couture et la boucle des huit images se referme exactement.
-        const somme =
-          Math.sin(2 * u + phase) +
-          Math.sin(3 * v - phase) +
-          Math.sin(2 * u + 3 * v + 2 * phase) +
-          Math.sin(5 * v - 2 * u - phase);
-        const f = Math.max(0, 1 - Math.abs(somme / 4) * 5.2) ** 1.9;
-        const p = (j * s + i) * 4;
-        d[p] = c[0]; d[p + 1] = c[1]; d[p + 2] = c[2];
-        d[p + 3] = Math.min(255, f * 235);
-      }
-    }
-    x.putImageData(img, 0, 0);
-  });
-
 const sceneKapha: Fabrique = (ctx, w, h, pal, vue) => {
   const clair = pal.accentClair;
-  const N = 8;
-  const dw = Math.max(2, Math.round(w / 2));
-  const dh = Math.max(2, Math.round(h / 2));
-  const nappe = document.createElement('canvas');
-  nappe.width = dw; nappe.height = dh;
-  const nctx = nappe.getContext('2d');
-  const motifs: (CanvasPattern | null)[] = [];
-  if (nctx) {
-    for (let i = 0; i < N; i++) {
-      motifs.push(nctx.createPattern(tuileCaustique(112, (i / N) * Math.PI * 2, clair), 'repeat'));
-    }
-  }
+  const nappe = nappeDeMotif(w, h, clair, true);
+  // La lumière vient de la surface : la résille s'éteint vers le fond.
+  const chute = (() => {
+    if (!nappe.cx) return null;
+    const g = nappe.cx.createLinearGradient(0, 0, 0, nappe.dh);
+    g.addColorStop(0, 'rgba(0,0,0,1)');
+    g.addColorStop(0.45, 'rgba(0,0,0,0.72)');
+    g.addColorStop(1, 'rgba(0,0,0,0.3)');
+    return g;
+  })();
   const lueur = halo(128, clair, 0.45, 0.24);
   const nbBulles = Math.round(Math.min(28, Math.max(13, (w * h) / 42000)));
   const bulles: Bulle[] = Array.from({ length: nbBulles }, () => ({
