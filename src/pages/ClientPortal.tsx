@@ -167,8 +167,21 @@ const ClientAmis: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
 };
 
 // Le bouton discret en haut à droite de la bannière : téléverser la sienne.
-const BanniereUpload: React.FC<{ uid: string }> = ({ uid }) => {
+// Il flashe une fois — trois pulsations dorées — la toute première fois que
+// la personne ouvre son espace avec la bannière par défaut, puis plus jamais
+// (clé localStorage, jamais si une bannière personnelle est déjà en place).
+const FLASH_KEY = 'krystine-banniere-flash-vu';
+const BanniereUpload: React.FC<{ uid: string; isDefaultBanner?: boolean }> = ({ uid, isDefaultBanner }) => {
   const [busy, setBusy] = useState(false);
+  const [flash, setFlash] = useState(false);
+  useEffect(() => {
+    if (!isDefaultBanner) return;
+    try {
+      if (localStorage.getItem(FLASH_KEY)) return;
+      setFlash(true);
+      localStorage.setItem(FLASH_KEY, '1');
+    } catch { /* stockage indisponible, tant pis pour le flash */ }
+  }, [isDefaultBanner]);
   const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -180,10 +193,23 @@ const BanniereUpload: React.FC<{ uid: string }> = ({ uid }) => {
     } finally { setBusy(false); }
   };
   return (
-    <label className="absolute right-4 top-4 inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-[#151d19]/40 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md transition-colors hover:bg-[#151d19]/60">
+    <label className={`absolute right-4 top-4 inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-[#151d19]/40 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md transition-colors hover:bg-[#151d19]/60 ${flash ? 'banniere-flash' : ''}`}>
       <i className="fa-solid fa-image" />
       {busy ? 'Téléversement…' : 'Changer la bannière'}
       <input type="file" accept="image/*" className="hidden" onChange={onFile} disabled={busy} />
+      {flash && (
+        <style>{`
+          @keyframes banniere-flash-ring {
+            0%   { box-shadow: 0 0 0 0 rgba(186,123,57,0.65); }
+            70%  { box-shadow: 0 0 0 14px rgba(186,123,57,0); }
+            100% { box-shadow: 0 0 0 0 rgba(186,123,57,0); }
+          }
+          .banniere-flash { animation: banniere-flash-ring 0.8s ease-out 3; }
+          @media (prefers-reduced-motion: reduce) {
+            .banniere-flash { animation: none; }
+          }
+        `}</style>
+      )}
     </label>
   );
 };
