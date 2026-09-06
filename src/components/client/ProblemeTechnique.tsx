@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import app, { db } from '../../firebase';
+import Portail from '../Portail';
 
 // Le bouton « Problème technique » de l'espace client et sa fenêtre.
 //
