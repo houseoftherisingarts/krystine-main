@@ -32,19 +32,38 @@ import CadeauCarte from '../components/client/CadeauCarte';
 import { suivreMesCadeaux, type Cadeau } from '../firebase/cadeaux';
 import '../components/client/skins.css';
 
-// L'histoire du niska, lue sous la bourse. Faits vérifiés le 6 septembre 2026
-// (wisdomlib.org, entrée niṣka : Rig-Véda, Pañcaviṃśa-brāhmaṇa, Arthaśāstra, Manusmṛti).
+// Le texte du niṣka, écrit par Alex le 6 septembre 2026, lu sous la bourse.
 const HISTOIRE_NISKA_FR = [
-  'Le niska est le plus vieux mot d’argent de l’Inde. Il apparaît dans le Rig-Véda, le plus ancien des textes sacrés indiens, où il désigne d’abord un ornement d’or porté au cou : les hymnes parlent de gens « au cou orné d’un niska ».',
-  'Très tôt, l’ornement sert aussi à compter la richesse. Un poète du Rig-Véda remercie son protecteur pour un don de cent niskas, bien plus qu’il n’aurait pu en porter : le bijou était déjà une monnaie.',
-  'Dans les textes qui suivent, le niska devient une mesure de poids et le nom d’une pièce. Un niska d’argent paraît dans le Pañcaviṃśa-brāhmaṇa, et au quatrième siècle avant notre ère, l’Arthaśāstra en fait une pièce d’or frappée et réglée par l’État. Les Lois de Manu fixent son poids à seize māṣas d’or.',
-  'Le mot a traversé les siècles comme nom de la pièce d’or, jusqu’aux textes du Moyen Âge indien. C’est cette mémoire-là que porte votre bourse : un peu d’or au cou, qui compte.',
+  'Bien avant que la monnaie prenne la forme que nous lui connaissons, l’Inde ancienne possédait déjà une manière singulière de représenter la valeur.',
+  'On l’appelait le niṣka.',
+  'Le niṣka était fait d’or. Il pouvait être porté autour du cou, transmis, offert ou échangé. Il n’était pas encore une pièce frappée d’un chiffre ou du visage d’un souverain. Sa valeur ne venait pas d’une inscription. Elle résidait dans la matière elle-même et dans ce qu’elle représentait.',
+  'Dans les textes védiques, recevoir des niṣkas témoignait de la reconnaissance accordée à une personne. Posséder un niṣka, c’était porter avec soi quelque chose de précieux, acquis ou transmis.',
+  'C’est cette ancienne idée que nous avons choisi de faire renaître ici.',
+  'Au fil de votre exploration, vous recueillerez des niṣkas.',
+  'Non pas pour vous pousser à accumuler davantage.',
+  'Mais pour rendre visible ce que vous aurez pris le temps de découvrir, de reconnaître et de relier.',
+  'Chaque niṣka marque un passage.',
+  'Une question rencontrée.',
+  'Un repère retrouvé.',
+  'Une porte ouverte dans l’œuvre.',
+  'Car toute richesse ne se mesure pas à ce que l’on possède.',
+  'Certaines richesses apparaissent dans la manière dont nous regardons, discernons et choisissons.',
 ];
 const HISTOIRE_NISKA_EN = [
-  'The niska is India’s oldest word for money. It appears in the Rigveda, the most ancient of the Indian sacred texts, where it first means a gold ornament worn at the neck: the hymns speak of people “with a niska at the throat”.',
-  'Very early, the ornament also served to count wealth. A Rigvedic poet thanks his patron for a gift of a hundred niskas, far more than he could ever wear: the jewel was already a currency.',
-  'In the texts that followed, the niska became a unit of weight and the name of a coin. A silver niska appears in the Pañcaviṃśa-brāhmaṇa, and in the fourth century BCE the Arthaśāstra makes it a gold coin struck and regulated by the state. The Laws of Manu set its weight at sixteen māṣas of gold.',
-  'The word travelled through the centuries as the name of the gold coin, down to the texts of medieval India. That is the memory your purse carries: a little gold at the throat, that counts.',
+  'Long before money took the shape we know, ancient India already had a singular way of representing value.',
+  'It was called the niṣka.',
+  'The niṣka was made of gold. It could be worn around the neck, handed down, offered or exchanged. It was not yet a coin struck with a number or a sovereign’s face. Its value did not come from an inscription. It lay in the material itself and in what it stood for.',
+  'In the Vedic texts, receiving niṣkas showed the recognition granted to a person. To own a niṣka was to carry something precious with you, earned or handed down.',
+  'It is this ancient idea we have chosen to bring back to life here.',
+  'As you explore, you will gather niṣkas.',
+  'Not to push you to accumulate more.',
+  'But to make visible what you will have taken the time to discover, to recognise and to connect.',
+  'Each niṣka marks a passage.',
+  'A question met.',
+  'A bearing found again.',
+  'A door opened in the work.',
+  'For not all wealth is measured by what we own.',
+  'Some wealth appears in the way we look, discern and choose.',
 ];
 
 type Tab = 'profile' | 'amis' | 'orders' | 'formations' | 'rediffusions' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie';
@@ -93,7 +112,7 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
         </p>
         <details className="mt-4 rounded-[14px] border border-[#BA7B39]/25 bg-white/40 px-4 py-3 dark:bg-white/5">
           <summary className="cursor-pointer text-[10px] font-bold uppercase tracking-[0.22em] text-[#8B4A2F] dark:text-[#d9a05b]">
-            {lang === 'FR' ? 'L’histoire du niska dans le monde' : 'The niska through history'}
+            {lang === 'FR' ? 'Le niṣka : une valeur que l’on emportait avec soi' : 'The niṣka: a value you carried with you'}
           </summary>
           <div className="mt-3 space-y-2 text-sm leading-relaxed text-[#293027]/75 dark:text-white/75">
             {(lang === 'FR' ? HISTOIRE_NISKA_FR : HISTOIRE_NISKA_EN).map((par) => <p key={par.slice(0, 24)}>{par}</p>)}
