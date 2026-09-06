@@ -520,12 +520,15 @@
   .o-porte .o-meta{display:block;margin-top:.6rem;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,239,233,.6)}
 
   /* Le Foyer d'Origine : le visuel paysage, le formulaire dans l'espace libre */
-  .foyer-band{position:relative;margin:0;border-radius:0;overflow:hidden;
+  /* Deux colonnes : le formulaire à gauche, la vidéo entière à droite (16:9,
+     jamais recouverte, visages au centre). Avant, le panneau chevauchait la
+     vidéo et coupait les visages en deux. */
+  .foyer-band{position:relative;margin:0;border-radius:0;overflow:hidden;display:grid;grid-template-columns:minmax(340px,42%) 1fr;align-items:stretch;
     border-top:1px solid rgba(187,154,94,.32);border-bottom:1px solid rgba(187,154,94,.32);background:#efe8db}
-  .foyer-band .fy-visuel{position:relative;width:100%;aspect-ratio:16/9;display:block}
-  .foyer-band .fy-visuel video,.foyer-band .fy-visuel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 82%}
-  .fy-panneau{position:absolute;left:max(3rem,calc((100% - 1280px) / 2 + 3rem));top:8%;
-    width:min(44%,520px);max-height:74%;z-index:2}
+  .foyer-band .fy-visuel{position:relative;width:100%;aspect-ratio:16/9;display:block;order:2;align-self:center;background:#1b120c}
+  .foyer-band .fy-visuel video,.foyer-band .fy-visuel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%}
+  .fy-panneau{position:static;order:1;width:auto;max-height:none;z-index:2;
+    padding:clamp(1.6rem,3vw,3rem) clamp(1.5rem,3vw,3rem);align-self:center;box-sizing:border-box}
   .fy-panneau .o-eyebrow{color:var(--brass-deep);font-size:clamp(.78rem,1.1vw,.95rem);letter-spacing:.26em}
   .fy-panneau h3{font-family:var(--serif);font-weight:500;text-transform:uppercase;letter-spacing:.02em;
     font-size:clamp(1.35rem,2.5vw,2.1rem);line-height:1.06;color:var(--ink);margin-top:.35rem}
@@ -553,13 +556,14 @@
   .fy-panneau .acct-upsell p{color:var(--ink-soft);font-size:clamp(.7rem,.95vw,.8rem)}
   .fy-panneau .acct-upsell a{color:var(--brass-deep);border-color:rgba(187,154,94,.7)}
   .fy-panneau .acct-upsell a:hover{background:rgba(187,154,94,.16);color:var(--ink)}
-  @media(max-width:1100px){ .fy-panneau{width:50%;left:1.6rem;top:5%} .fyform{gap:.4rem} .fy-lede{display:none} }
+  @media(max-width:1100px){ .foyer-band{grid-template-columns:minmax(300px,46%) 1fr} .fyform{gap:.4rem} .fy-lede{display:none} }
   @media(max-width:860px){
     .plus{padding:4rem 0 4.5rem} .plus-grid{grid-template-columns:1fr;gap:1.4rem;margin-top:2rem}
     .offer-origine{aspect-ratio:auto} .offer-origine .o-body{grid-template-columns:1fr;gap:2rem;padding:2.2rem 1.7rem}
     .o-porte{height:auto;aspect-ratio:4/3}
-    .foyer-band .fy-visuel{aspect-ratio:16/10}
-    .fy-panneau{position:static;width:auto;max-width:none;max-height:none;padding:1.6rem 1.5rem 2rem;background:#efe8db}
+    .foyer-band{grid-template-columns:1fr}
+    .foyer-band .fy-visuel{aspect-ratio:16/9;order:1}
+    .fy-panneau{order:2;position:static;width:auto;max-width:none;max-height:none;padding:1.6rem 1.5rem 2rem;background:#efe8db}
     .fy-lede{display:block}
   }
 
