@@ -51,6 +51,7 @@ const BUDGET_BANDS: Array<{ value: string; label: string }> = [
 ];
 
 const SalonContactCard: React.FC<Props> = ({ open, onClose, sourceSite = 'krystine' }) => {
+  const { user } = useAuth();
   const [flipped, setFlipped] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
