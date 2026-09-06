@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { reclamerQuotidien, type Quotidien } from '../../firebase/points';
-import { ROUE_QUOTIDIENNE, journee, mohurs } from '../../lib/pointsConfig';
-import PieceMohur from './PieceMohur';
+import { ROUE_QUOTIDIENNE, journee, fanams } from '../../lib/pointsConfig';
+import PieceFanam from './PieceFanam';
 
 // La roue des sept jours (sur le modèle du Festival médiéval). À la première
 // visite de la journée, la récompense tombe d'elle-même et le panneau se
@@ -57,7 +57,7 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
         <h2 id="roue-titre" className="mt-1 font-serif text-2xl text-[#293027] dark:text-white" style={{ letterSpacing: '-0.01em' }}>
           {etat.deja
             ? (fr ? 'Votre récompense du jour est déjà tombée.' : 'Today’s reward already dropped.')
-            : (fr ? `${mohurs(etat.montant, 'FR')} ${etat.montant > 1 ? 'tombent' : 'tombe'} dans votre bourse.` : `${mohurs(etat.montant, 'EN')} drop${etat.montant > 1 ? '' : 's'} into your purse.`)}
+            : (fr ? `${fanams(etat.montant, 'FR')} ${etat.montant > 1 ? 'tombent' : 'tombe'} dans votre bourse.` : `${fanams(etat.montant, 'EN')} drop${etat.montant > 1 ? '' : 's'} into your purse.`)}
         </h2>
         <p className="mt-2 text-sm text-[#293027]/70 dark:text-white/70">
           {fr
@@ -82,7 +82,7 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
                 }`}
               >
                 <span className="text-[9px] font-bold uppercase tracking-widest text-[#38403a]/60 dark:text-white/60">{fr ? 'Jour' : 'Day'} {n}</span>
-                <PieceMohur size={actuel ? 30 : 24} eteinte={passe} />
+                <PieceFanam size={actuel ? 30 : 24} eteinte={passe} />
                 <span className={`font-serif text-base ${actuel ? 'text-[#8B4A2F] dark:text-[#d9a05b]' : 'text-[#293027] dark:text-white'}`}>+{montant}</span>
                 {passe && <i className="fa-solid fa-check text-[10px] text-[#8B4A2F]" aria-hidden="true" />}
               </li>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useApp } from '../../contexts/AppContext';
 import { getMesFormations, getLecons, urlDeLecon, type AchatFormation, type Lecon } from '../../firebase/formations';
 import { estTelechargement, MUSIQUE_ORIGINE_ID } from '../../firebase/musique';
-import BoutiqueMohurs from '../../components/client/BoutiqueMohurs';
+import BoutiqueFanams from '../../components/client/BoutiqueFanams';
 import { SANTE_LA_VIE_ID } from '../../lib/pointsConfig';
 
 // « Téléchargements » : la musique d'Origine et les autres fichiers offerts
@@ -16,7 +16,7 @@ const ClientTelechargements: React.FC = () => {
   const [tour, setTour] = useState(0);
 
   // Les téléchargements : la musique d'Origine et les émissions de Santé la
-  // vie achetées à l'unité en mohurs (le document d'achat porte `episodes`,
+  // vie achetées à l'unité en fanams (le document d'achat porte `episodes`,
   // seules ces leçons-là se montrent).
   useEffect(() => {
     if (!user) return;
@@ -95,7 +95,7 @@ const ClientTelechargements: React.FC = () => {
           ))}
         </div>
       )}
-      <BoutiqueMohurs possedeMusiqueDeja={possedeMusique} episodesPossedes={episodesPossedes} onAchat={() => setTour((t) => t + 1)} />
+      <BoutiqueFanams possedeMusiqueDeja={possedeMusique} episodesPossedes={episodesPossedes} onAchat={() => setTour((t) => t + 1)} />
     </section>
   );
 };

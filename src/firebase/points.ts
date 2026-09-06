@@ -16,7 +16,7 @@ import {
   type Unsubscribe,
 } from 'firebase/firestore';
 
-import { POINTS, ROUE_QUOTIDIENNE, journee, veilleDe, type PointsKind } from '../lib/pointsConfig';
+import { POINTS, type PointsKind } from '../lib/pointsConfig';
 
 const noDb = () => { throw new Error('[Firestore] Firebase not configured.'); };
 
@@ -334,41 +334,20 @@ export async function adjustPoints(uid: string, delta: number, note?: string) {
 }
 
 // ─── La roue des sept jours ──────────────────────────────────────────────────
-// Une réclamation par journée civile de Montréal. La suite avance si la
-// dernière réclamation date d'hier, repart à un sinon; le jour de la roue
-// est la suite modulo sept. Le journal porte `quotidien:{uid}:{journée}`.
+// Le serveur juge la journée (functions/src/fanams.ts) : une réclamation par
+// journée civile de Montréal, jamais deux, quelle que soit l'horloge du
+// navigateur. Le solde revient recalculé depuis le journal.
 export interface Quotidien { deja: boolean; jour: number; montant: number; serie: number; balance: number }
 
 export async function reclamerQuotidien(uid: string): Promise<Quotidien> {
-  if (!db || !uid) return { deja: true, jour: 1, montant: 0, serie: 0, balance: 0 };
-  const aujourdhui = journee();
-  const balanceRef = doc(db, 'memberPoints', uid);
-  const eventRef = doc(db, 'pointsEvents', `quotidien:${uid}:${aujourdhui}`);
-  return runTransaction(db, async tx => {
-    const bal = await tx.get(balanceRef);
-    const prev = (bal.exists() ? bal.data() : DEFAULT_POINTS_BALANCE) as PointsBalance;
-    const serieAvant = Number(prev.serie || 0);
-    if (prev.dernierJour === aujourdhui || (await tx.get(eventRef)).exists()) {
-      const jourDeja = ((Math.max(1, serieAvant) - 1) % ROUE_QUOTIDIENNE.length) + 1;
-      return { deja: true, jour: jourDeja, montant: ROUE_QUOTIDIENNE[jourDeja - 1], serie: serieAvant, balance: prev.balance || 0 };
-    }
-    const serie = prev.dernierJour === veilleDe(aujourdhui) ? serieAvant + 1 : 1;
-    const jour = ((serie - 1) % ROUE_QUOTIDIENNE.length) + 1;
-    const montant = ROUE_QUOTIDIENNE[jour - 1];
-    tx.set(eventRef, { uid, kind: 'quotidien', amount: montant, dedupKey: `quotidien:${uid}:${aujourdhui}`, meta: { jour, serie }, at: serverTimestamp() });
-    tx.set(balanceRef, {
-      balance: (prev.balance || 0) + montant,
-      lifetime: (prev.lifetime || 0) + montant,
-      dernierJour: aujourdhui,
-      serie,
-      updatedAt: serverTimestamp(),
-    }, { merge: true });
-    return { deja: false, jour, montant, serie, balance: (prev.balance || 0) + montant };
-  });
+  if (!app || !uid) return { deja: true, jour: 1, montant: 0, serie: 0, balance: 0 };
+  const call = httpsCallable(getFunctions(app, 'us-central1'), 'reclamerQuotidien');
+  const res = await call({});
+  return res.data as Quotidien;
 }
 
 // ─── La petite boutique ──────────────────────────────────────────────────────
-// Le serveur débite (functions/src/mohurs.ts); ici, l'appel et ce qu'on possède.
+// Le serveur débite (functions/src/fanams.ts); ici, l'appel et ce qu'on possède.
 export interface Possessions { possede: Record<string, unknown> }
 
 export function suivreBoutique(uid: string, cb: (p: Possessions) => void): Unsubscribe {
@@ -376,17 +355,17 @@ export function suivreBoutique(uid: string, cb: (p: Possessions) => void): Unsub
   return onSnapshot(doc(db, 'boutique', uid), snap => cb({ possede: (snap.data()?.possede as Record<string, unknown>) || {} }), () => cb({ possede: {} }));
 }
 
-export async function acheterAvecMohurs(article: string): Promise<{ solde: number; article: string; nom: string }> {
-  if (!app) throw new Error('[Mohurs] Firebase not configured');
-  const call = httpsCallable(getFunctions(app, 'us-central1'), 'acheterAvecMohurs');
+export async function acheterAvecFanams(article: string): Promise<{ solde: number; article: string; nom: string }> {
+  if (!app) throw new Error('[Fanams] Firebase not configured');
+  const call = httpsCallable(getFunctions(app, 'us-central1'), 'acheterAvecFanams');
   const res = await call({ article });
   return res.data as { solde: number; article: string; nom: string };
 }
 
-/** Ouvre Stripe Checkout pour un paquet de cent mohurs (dix dollars). */
-export async function acheterMohurs(): Promise<string> {
-  if (!app) throw new Error('[Mohurs] Firebase not configured');
-  const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionMohurs');
+/** Ouvre Stripe Checkout pour un paquet de cent fanams (dix dollars). */
+export async function acheterFanams(): Promise<string> {
+  if (!app) throw new Error('[Fanams] Firebase not configured');
+  const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionFanams');
   const res = await call({});
   return (res.data as { url: string }).url;
 }

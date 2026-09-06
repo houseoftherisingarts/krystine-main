@@ -4,9 +4,9 @@ import {
   subscribeToMemberPoints, getMemberPoints, listPointsEvents, listMyRewardRedemptions, redeemReward, points, reconcileBalance,
   type PointsBalance, type PointsEvent, type RewardRedemption,
 } from '../../firebase/points';
-import { POINTS, TIERS, REWARDS, FACONS_DE_GAGNER, PAQUET_MOHURS, tierFromLifetime, rewardMinThreshold, mohurs, type Reward } from '../../lib/pointsConfig';
-import { acheterMohurs } from '../../firebase/points';
-import PieceMohur from '../../components/client/PieceMohur';
+import { POINTS, TIERS, REWARDS, FACONS_DE_GAGNER, PAQUET_FANAMS, tierFromLifetime, rewardMinThreshold, fanams, type Reward } from '../../lib/pointsConfig';
+import { acheterFanams } from '../../firebase/points';
+import PieceFanam from '../../components/client/PieceFanam';
 import PointsPlant, { type Stage } from '../../components/PointsPlant';
 
 // Labels for every PointsKind surfaced in the activity history. Kept here
@@ -35,7 +35,7 @@ const EVENT_LABELS: Record<string, { fr: string; en: string; icon: string }> = {
   rediffusion:{ fr: 'Rediffusion regardée',    en: 'Replay watched',          icon: 'fa-circle-play' },
   commentaire:{ fr: 'Commentaire laissé',      en: 'Comment left',            icon: 'fa-comment' },
   boutique:   { fr: 'Achat à la petite boutique', en: 'Little shop purchase', icon: 'fa-bag-shopping' },
-  'achat-mohurs': { fr: 'Paquet de mohurs acheté', en: 'Mohur pack bought',   icon: 'fa-coins' },
+  'achat-fanams': { fr: 'Paquet de fanams acheté', en: 'Fanam pack bought',   icon: 'fa-coins' },
 };
 
 const ClientLoyalty: React.FC = () => {
@@ -91,7 +91,7 @@ const ClientLoyalty: React.FC = () => {
     try {
       const res = await points.welcomeBonus(user.uid);
       if (res.awarded > 0) {
-        setToast({ kind: 'ok', msg: lang === 'FR' ? `Bienvenue ! ${mohurs(POINTS.welcome, 'FR')} ajoutés à votre bourse.` : `Welcome! ${mohurs(POINTS.welcome, 'EN')} added to your purse.` });
+        setToast({ kind: 'ok', msg: lang === 'FR' ? `Bienvenue ! ${fanams(POINTS.welcome, 'FR')} ajoutés à votre bourse.` : `Welcome! ${fanams(POINTS.welcome, 'EN')} added to your purse.` });
       } else {
         // Server says the event is already recorded but the UI didn't have
         // it — reconcile the balance from the full event log (heals drift
@@ -143,7 +143,7 @@ const ClientLoyalty: React.FC = () => {
         setToast({ kind: 'ok', msg: lang === 'FR' ? 'Récompense demandée — vous recevrez votre code par courriel sous 24 h.' : 'Reward requested — you will receive your code by email within 24 h.' });
         await refreshHistory();
       } else if (res.reason === 'insufficient') {
-        setToast({ kind: 'err', msg: lang === 'FR' ? "Pas assez de mohurs pour cette récompense." : 'Not enough mohurs for this reward.' });
+        setToast({ kind: 'err', msg: lang === 'FR' ? "Pas assez de fanams pour cette récompense." : 'Not enough fanams for this reward.' });
       } else if (res.reason === 'one-shot') {
         setToast({ kind: 'err', msg: lang === 'FR' ? "Cette récompense a déjà été réclamée." : 'This reward has already been claimed.' });
       } else {
@@ -192,7 +192,7 @@ const ClientLoyalty: React.FC = () => {
           <div className="text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-3 mb-3">
               <p className="text-[10px] uppercase tracking-[0.3em] font-bold" style={{ color: current.accent }}>
-                {lang === 'FR' ? 'Vos mohurs' : 'Your mohurs'}
+                {lang === 'FR' ? 'Vos fanams' : 'Your fanams'}
               </p>
               {/* One-shot refresh — bypasses any wedged onSnapshot. */}
               <button
@@ -212,7 +212,7 @@ const ClientLoyalty: React.FC = () => {
             <div className="flex items-baseline justify-center md:justify-start gap-2 mb-3">
               <span className="text-6xl md:text-7xl font-serif text-[#293027] dark:text-white">{balance.balance}</span>
               <span className="inline-flex items-center gap-2 text-lg text-[#293027]/50 dark:text-white/50 uppercase tracking-widest font-bold">
-                <PieceMohur size={22} /> mohurs
+                <PieceFanam size={22} /> fanams
               </span>
             </div>
             <p className="text-[11px] text-[#293027]/50 dark:text-white/50 uppercase tracking-widest mb-4">
@@ -222,8 +222,8 @@ const ClientLoyalty: React.FC = () => {
               <button type="button" onClick={() => window.dispatchEvent(new Event('krystine:ouvrir-roue'))} className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/50 bg-white/60 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:bg-white dark:bg-white/10 dark:text-[#d9a05b]">
                 <i className="fa-solid fa-sun" /> {lang === 'FR' ? 'Ma récompense du jour' : 'My reward of the day'}
               </button>
-              <button type="button" onClick={() => acheterMohurs().then((u) => { window.location.href = u; }).catch(() => setToast({ kind: 'err', msg: lang === 'FR' ? 'Le paiement n’a pas pu démarrer.' : 'The payment could not start.' }))} className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] hover:bg-[#d9a05b]">
-                <i className="fa-solid fa-plus" /> {PAQUET_MOHURS.mohurs} {lang === 'FR' ? 'mohurs pour' : 'mohurs for'} {PAQUET_MOHURS.prix} $
+              <button type="button" onClick={() => acheterFanams().then((u) => { window.location.href = u; }).catch(() => setToast({ kind: 'err', msg: lang === 'FR' ? 'Le paiement n’a pas pu démarrer.' : 'The payment could not start.' }))} className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] hover:bg-[#d9a05b]">
+                <i className="fa-solid fa-plus" /> {PAQUET_FANAMS.fanams} {lang === 'FR' ? 'fanams pour' : 'fanams for'} {PAQUET_FANAMS.prix} $
               </button>
             </div>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 dark:bg-white/10 backdrop-blur-sm text-[10px] uppercase tracking-[0.25em] font-bold" style={{ color: current.accent }}>
@@ -282,8 +282,8 @@ const ClientLoyalty: React.FC = () => {
             </p>
             <p className="font-serif text-[#293027] dark:text-white">
               {lang === 'FR'
-                ? `Réclamez vos ${mohurs(POINTS.welcome, 'FR')} de bienvenue.`
-                : `Claim your ${mohurs(POINTS.welcome, 'EN')} welcome gift.`}
+                ? `Réclamez vos ${fanams(POINTS.welcome, 'FR')} de bienvenue.`
+                : `Claim your ${fanams(POINTS.welcome, 'EN')} welcome gift.`}
             </p>
           </div>
           <span className="shrink-0 inline-flex items-center gap-2 bg-[#293027] dark:bg-[#BA7B39] text-white dark:text-[#293027] px-5 py-2.5 rounded-full font-bold uppercase tracking-widest text-[11px]">
@@ -295,7 +295,7 @@ const ClientLoyalty: React.FC = () => {
       ) : (
         <div className="mb-6 px-5 py-3 rounded-2xl border border-[#293027]/5 dark:border-white/5 bg-white/50 dark:bg-white/5 flex items-center gap-3 text-sm text-[#293027]/70 dark:text-white/70">
           <i className="fa-solid fa-check-circle text-[#8B4A2F]" />
-          {lang === 'FR' ? `Cadeau de bienvenue reçu (+${mohurs(POINTS.welcome, 'FR')})` : `Welcome gift received (+${mohurs(POINTS.welcome, 'EN')})`}
+          {lang === 'FR' ? `Cadeau de bienvenue reçu (+${fanams(POINTS.welcome, 'FR')})` : `Welcome gift received (+${fanams(POINTS.welcome, 'EN')})`}
         </div>
       )}
 
@@ -306,8 +306,8 @@ const ClientLoyalty: React.FC = () => {
             <span>{current.labelFR}</span>
             <span>
               {lang === 'FR'
-                ? `${mohurs(pointsToNext, 'FR')} vers ${next.labelFR}`
-                : `${mohurs(pointsToNext, 'EN')} to ${next.labelEN}`}
+                ? `${fanams(pointsToNext, 'FR')} vers ${next.labelFR}`
+                : `${fanams(pointsToNext, 'EN')} to ${next.labelEN}`}
             </span>
           </div>
           <div className="relative h-2 rounded-full bg-[#293027]/5 dark:bg-white/10 overflow-hidden">
@@ -346,7 +346,7 @@ const ClientLoyalty: React.FC = () => {
               >
                 <div className="flex items-baseline justify-between mb-2 gap-2 flex-wrap">
                   <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#8B4A2F]">
-                    {mohurs(r.cost, lang)}
+                    {fanams(r.cost, lang)}
                     {r.oneShot && (
                       <span className="text-[#293027]/50 dark:text-white/50 font-normal tracking-normal normal-case ml-2">
                         · {lang === 'FR' ? 'unique' : 'one-time'}
@@ -365,7 +365,7 @@ const ClientLoyalty: React.FC = () => {
                     </span>
                   ) : !canAfford ? (
                     <span className="text-[10px] uppercase tracking-[0.25em] text-[#293027]/40 dark:text-white/40">
-                      {lang === 'FR' ? `Encore ${mohurs(r.cost - balance.balance, 'FR')}` : `${mohurs(r.cost - balance.balance, 'EN')} away`}
+                      {lang === 'FR' ? `Encore ${fanams(r.cost - balance.balance, 'FR')}` : `${fanams(r.cost - balance.balance, 'EN')} away`}
                     </span>
                   ) : null}
                 </div>
@@ -405,7 +405,7 @@ const ClientLoyalty: React.FC = () => {
           <span className="flex items-center gap-3">
             <i className="fa-solid fa-circle-info text-[#8B4A2F]" />
             <span className="font-serif text-[#293027] dark:text-white">
-              {lang === 'FR' ? 'Comment gagner des mohurs' : 'How to earn mohurs'}
+              {lang === 'FR' ? 'Comment gagner des fanams' : 'How to earn fanams'}
             </span>
           </span>
           <i className={`fa-solid fa-chevron-down text-[#293027]/40 dark:text-white/40 text-xs transition-transform ${guideOpen ? 'rotate-180' : ''}`} />
@@ -416,7 +416,7 @@ const ClientLoyalty: React.FC = () => {
               <GuideRow key={f.fr} pts={f.pts} label={lang === 'FR' ? f.fr : f.en} note={lang === 'FR' ? f.noteFR : f.noteEN} />
             ))}
             <li className="pt-2">
-              <a href="/compte/comment-gagner-des-mohurs.pdf" target="_blank" rel="noreferrer" className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F] underline-offset-4 hover:underline">
+              <a href="/compte/comment-gagner-des-fanams.pdf" target="_blank" rel="noreferrer" className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F] underline-offset-4 hover:underline">
                 <i className="fa-solid fa-file-pdf mr-2" />{lang === 'FR' ? 'Le guide en PDF' : 'The guide as a PDF'}
               </a>
             </li>
@@ -453,7 +453,7 @@ const ClientLoyalty: React.FC = () => {
                     {isCurrent && <span className="ml-2 text-[10px] uppercase tracking-widest font-bold text-[#8B4A2F]">· {lang === 'FR' ? 'Actuel' : 'Current'}</span>}
                   </p>
                   <p className="text-[11px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50">
-                    {mohurs(t.threshold, lang)}
+                    {fanams(t.threshold, lang)}
                   </p>
                 </div>
               </li>

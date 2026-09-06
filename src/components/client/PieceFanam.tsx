@@ -1,24 +1,24 @@
 import React from 'react';
 
-// La pièce de mohur : un disque d'or à bord grené et une fleur de lotus au
+// La pièce de fanam : un disque d'or à bord grené et une fleur de lotus au
 // centre, dessinée en SVG pour vivre à toutes les tailles (puce du haut,
 // boutique, roue des sept jours). Un seul accent, le laiton de L'Œuvre.
-const PieceMohur: React.FC<{ size?: number; className?: string; eteinte?: boolean }> = ({ size = 22, className = '', eteinte }) => (
+const PieceFanam: React.FC<{ size?: number; className?: string; eteinte?: boolean }> = ({ size = 22, className = '', eteinte }) => (
   <svg width={size} height={size} viewBox="0 0 48 48" className={className} aria-hidden="true" style={eteinte ? { filter: 'grayscale(1)', opacity: 0.45 } : undefined}>
     <defs>
-      <radialGradient id="mohur-or" cx="35%" cy="30%" r="75%">
+      <radialGradient id="fanam-or" cx="35%" cy="30%" r="75%">
         <stop offset="0" stopColor="#f3dfa6" />
         <stop offset="0.55" stopColor="#d4ac5c" />
         <stop offset="1" stopColor="#8a6a2c" />
       </radialGradient>
-      <radialGradient id="mohur-creux" cx="50%" cy="45%" r="60%">
+      <radialGradient id="fanam-creux" cx="50%" cy="45%" r="60%">
         <stop offset="0" stopColor="#c9a052" />
         <stop offset="1" stopColor="#a67f38" />
       </radialGradient>
     </defs>
-    <circle cx="24" cy="24" r="23" fill="url(#mohur-or)" />
+    <circle cx="24" cy="24" r="23" fill="url(#fanam-or)" />
     <circle cx="24" cy="24" r="23" fill="none" stroke="#6f5320" strokeWidth="1" strokeDasharray="1.2 1.6" opacity="0.7" />
-    <circle cx="24" cy="24" r="17.5" fill="url(#mohur-creux)" stroke="#f1dca4" strokeWidth="0.8" opacity="0.95" />
+    <circle cx="24" cy="24" r="17.5" fill="url(#fanam-creux)" stroke="#f1dca4" strokeWidth="0.8" opacity="0.95" />
     {/* La fleur de lotus, cinq pétales */}
     <g fill="#f6e7bd" stroke="#7a5c22" strokeWidth="0.6" strokeLinejoin="round">
       <path d="M24 14c3 3.4 3 9.4 0 12.8-3-3.4-3-9.4 0-12.8z" />
@@ -31,4 +31,4 @@ const PieceMohur: React.FC<{ size?: number; className?: string; eteinte?: boolea
   </svg>
 );
 
-export default PieceMohur;
+export default PieceFanam;

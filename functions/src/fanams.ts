@@ -1,8 +1,8 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue, AggregateField } from 'firebase-admin/firestore';
 
-// Les mohurs : la monnaie de l'espace client (le mohur, pièce d'or de l'Inde
-// moghole puis britannique, n'a plus cours depuis 1918). Le solde vit dans
+// Les fanams : la monnaie de l'espace client (le fanam, petite pièce d'or puis d'argent
+// du sud de l'Inde, née vers le treizième siècle et retirée en 1949). Le solde vit dans
 // `memberPoints/{uid}` avec le journal `pointsEvents/{cle}`, comme les points
 // d'avant : seul le nom change. Ce module tient ce qui doit rester côté
 // serveur : les achats de la petite boutique (jamais un débit depuis le
@@ -19,9 +19,34 @@ const COSMETIQUES: Record<string, { cout: number; nom: string }> = {
   'skin-medzo': { cout: 5, nom: 'Skin Medzo Café' },
 };
 const COUT_EPISODE = 100;
+const ROUE_QUOTIDIENNE = [1, 1, 2, 2, 3, 3, 5];
+const FUSEAU = 'America/Toronto';
 
-/** Crédite des mohurs une seule fois par clé (journal + solde), avec l'Admin SDK. */
-export async function crediterMohurs(
+/** La journée civile de Montréal, « AAAA-MM-JJ », jugée par l'horloge du serveur. */
+function journee(ms = Date.now()): string {
+  const p = new Intl.DateTimeFormat('en-CA', { timeZone: FUSEAU, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date(ms));
+  const v = (t: string) => p.find((x) => x.type === t)?.value ?? '';
+  return `${v('year')}-${v('month')}-${v('day')}`;
+}
+const veilleDe = (j: string): string => journee(new Date(`${j}T12:00:00-04:00`).getTime() - 86_400_000);
+
+/** Le solde et le total gagné se recalculent depuis le journal (append-only) :
+ *  après chaque opération serveur, le document redevient la somme exacte. */
+export async function recalculerSolde(uid: string): Promise<{ balance: number; lifetime: number }> {
+  const db = getFirestore();
+  const evts = await db.collection('pointsEvents').where('uid', '==', uid).select('amount').get();
+  let balance = 0; let lifetime = 0;
+  for (const d of evts.docs) {
+    const a = Number((d.data() as { amount?: number }).amount || 0);
+    balance += a; if (a > 0) lifetime += a;
+  }
+  await db.doc(`memberPoints/${uid}`).set({ balance, lifetime, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+  return { balance, lifetime };
+}
+
+
+/** Crédite des fanams une seule fois par clé (journal + solde), avec l'Admin SDK. */
+export async function crediterFanams(
   uid: string,
   kind: string,
   amount: number,
@@ -51,12 +76,12 @@ async function soldeVerifie(uid: string, balanceDoc: number): Promise<number> {
     const total = Number(agg.data().total || 0);
     return Math.min(balanceDoc, total);
   } catch (e) {
-    console.warn('[mohurs] somme du journal indisponible', e);
+    console.warn('[fanams] somme du journal indisponible', e);
     return balanceDoc;
   }
 }
 
-export const acheterAvecMohurs = onCall(
+export const acheterAvecFanams = onCall(
   { region: 'us-central1' },
   async (req) => {
     if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour acheter.');
@@ -85,7 +110,7 @@ export const acheterAvecMohurs = onCall(
     const balDoc = Number(((await balRef.get()).data() as { balance?: number } | undefined)?.balance || 0);
     const solde = await soldeVerifie(uid, balDoc);
     if (solde < cout) {
-      throw new HttpsError('failed-precondition', `Il vous manque ${cout - solde} mohur${cout - solde > 1 ? 's' : ''}.`);
+      throw new HttpsError('failed-precondition', `Il vous manque ${cout - solde} fanam${cout - solde > 1 ? 's' : ''}.`);
     }
 
     const [emission, formation] = leconId
@@ -107,7 +132,7 @@ export const acheterAvecMohurs = onCall(
           titre: f.titre || 'Émission Santé! La Vie!',
           imageUrl: f.imageUrl || '',
           categorie: 'video',
-          source: 'mohurs',
+          source: 'fanams',
           episodes: { [leconId]: FieldValue.serverTimestamp() },
           accordeLe: FieldValue.serverTimestamp(),
         }, { merge: true });
@@ -118,13 +143,48 @@ export const acheterAvecMohurs = onCall(
           titre: f.titre || 'Expérience Origine · La musique',
           imageUrl: f.imageUrl || '',
           categorie: 'musique',
-          source: 'mohurs',
+          source: 'fanams',
           accordeLe: FieldValue.serverTimestamp(),
         }, { merge: true });
       }
     });
 
-    console.log(`[mohurs] ${uid} achète ${article} pour ${cout}`);
-    return { solde: solde - cout, article, nom };
+    const { balance } = await recalculerSolde(uid);
+    console.log(`[fanams] ${uid} achète ${article} pour ${cout}, solde ${balance}`);
+    return { solde: balance, article, nom };
+  },
+);
+
+// ─── La roue des sept jours ──────────────────────────────────────────────────
+// Une réclamation par journée civile de Montréal, jugée ici et non dans le
+// navigateur. La suite avance si la dernière réclamation date d'hier, repart
+// à un sinon; le jour de la roue est la suite modulo sept.
+export const reclamerQuotidien = onCall(
+  { region: 'us-central1' },
+  async (req) => {
+    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour votre récompense du jour.');
+    const uid = req.auth.uid;
+    const db = getFirestore();
+    const aujourdhui = journee();
+    const balRef = db.doc(`memberPoints/${uid}`);
+    const evt = db.doc(`pointsEvents/quotidien:${uid}:${aujourdhui}`);
+
+    const r = await db.runTransaction(async (tx) => {
+      const [bal, e] = await Promise.all([tx.get(balRef), tx.get(evt)]);
+      const prev = (bal.data() || {}) as { balance?: number; serie?: number; dernierJour?: string };
+      const serieAvant = Number(prev.serie || 0);
+      if (e.exists || prev.dernierJour === aujourdhui) {
+        const jour = ((Math.max(1, serieAvant) - 1) % ROUE_QUOTIDIENNE.length) + 1;
+        return { deja: true, jour, montant: ROUE_QUOTIDIENNE[jour - 1], serie: serieAvant };
+      }
+      const serie = prev.dernierJour === veilleDe(aujourdhui) ? serieAvant + 1 : 1;
+      const jour = ((serie - 1) % ROUE_QUOTIDIENNE.length) + 1;
+      const montant = ROUE_QUOTIDIENNE[jour - 1];
+      tx.set(evt, { uid, kind: 'quotidien', amount: montant, dedupKey: `quotidien:${uid}:${aujourdhui}`, meta: { jour, serie }, at: FieldValue.serverTimestamp() });
+      tx.set(balRef, { dernierJour: aujourdhui, serie, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+      return { deja: false, jour, montant, serie };
+    });
+    const { balance } = await recalculerSolde(uid);
+    return { ...r, balance };
   },
 );

@@ -25,10 +25,25 @@ import ClientRediffusions from './client/ClientRediffusions';
 import ProblemeTechnique from '../components/client/ProblemeTechnique';
 import ClientPreferences from './client/ClientPreferences';
 import { subscribeToMemberPoints, points, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
-import { BANNIERE_DEFAUT, BANNIERE_NATURE, FACONS_DE_GAGNER, mohurs } from '../lib/pointsConfig';
-import PieceMohur from '../components/client/PieceMohur';
+import { BANNIERE_DEFAUT, BANNIERE_NATURE, FACONS_DE_GAGNER, fanams } from '../lib/pointsConfig';
+import PieceFanam from '../components/client/PieceFanam';
 import RoueQuotidienne from '../components/client/RoueQuotidienne';
 import '../components/client/skins.css';
+
+// L'histoire du fanam, lue sous la bourse. Faits vérifiés le 6 septembre 2026
+// (Wikipédia : Fanam, Travancore fanam, Madras fanam).
+const HISTOIRE_FANAM_FR = [
+  'Le mot vient du tamoul paṇam, qui veut dire « argent ». Le fanam est né dans le sud de l’Inde, au Kerala et au pays tamoul, et il circulait déjà largement au treizième siècle.',
+  'C’était d’abord une petite pièce d’or, puis d’argent. Au dix-huitième siècle, la pièce était devenue si menue que personne ne la comptait plus une à une : les pièces se versaient sur une planche percée de trous, le palaka, secouée jusqu’à ce que chaque trou tienne la sienne.',
+  'À Madras, sous la Compagnie des Indes, il fallait douze fanams pour une roupie et un fanam valait quatre-vingts cash de cuivre. La ville a cessé d’en frapper en 1815. Les comptoirs danois et français avaient leur cousin, le fano et le fanon.',
+  'Le royaume de Travancore l’a gardé le plus longtemps : sept fanams pour une roupie, quatre chuckrams par fanam. Les dernières pièces sont sorties en 1946 et 1947, et le fanam a quitté la circulation en 1949, remplacé par la roupie indienne.',
+];
+const HISTOIRE_FANAM_EN = [
+  'The word comes from the Tamil paṇam, meaning money. The fanam was born in southern India, in Kerala and the Tamil country, and was already widely used by the thirteenth century.',
+  'It began as a tiny gold coin, later struck in silver. By the eighteenth century it had grown so small that nobody counted it one by one: coins were poured onto a board pierced with holes, the palaka, and shaken until every hole held its coin.',
+  'In Madras, under the East India Company, twelve fanams made a rupee and one fanam was worth eighty copper cash. The city stopped striking them in 1815. The Danish and French trading posts had their cousins, the fano and the fanon.',
+  'The kingdom of Travancore kept it longest: seven fanams to the rupee, four chuckrams to the fanam. The last coins came out in 1946 and 1947, and the fanam left circulation in 1949, replaced by the Indian rupee.',
+];
 
 type Tab = 'feed' | 'profile' | 'amis' | 'orders' | 'formations' | 'rediffusions' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie';
 
@@ -47,13 +62,13 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
         {member?.phone && <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Téléphone</span>{member.phone}</p>}
         {member?.dosha && <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Dosha</span><span className="capitalize">{member.dosha}</span></p>}
       </div>
-      {/* Les mohurs : le solde, la porte de la boutique, et toutes les façons d'en gagner */}
+      {/* Les fanams : le solde, la porte de la boutique, et toutes les façons d'en gagner */}
       <div className="rounded-[20px] border border-[#BA7B39]/30 bg-gradient-to-br from-[#BA7B39]/15 to-transparent p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Vos mohurs' : 'Your mohurs'}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Vos fanams' : 'Your fanams'}</p>
             <p className="mt-1 flex items-center gap-3 font-serif text-4xl text-[#293027] dark:text-white">
-              <PieceMohur size={34} /> {solde.balance}
+              <PieceFanam size={34} /> {solde.balance}
               <span className="text-base text-[#293027]/50 dark:text-white/50">{lang === 'FR' ? `· ${solde.lifetime} gagnés en tout` : `· ${solde.lifetime} earned overall`}</span>
             </p>
           </div>
@@ -61,16 +76,24 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
             <button type="button" onClick={onBoutique} className="inline-flex items-center gap-2 rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] hover:bg-[#3a453a] dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]">
               <i className="fa-solid fa-bag-shopping" /> {lang === 'FR' ? 'La petite boutique' : 'The little shop'}
             </button>
-            <a href="/compte/comment-gagner-des-mohurs.pdf" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
+            <a href="/compte/comment-gagner-des-fanams.pdf" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
               <i className="fa-solid fa-file-pdf" /> PDF
             </a>
           </div>
         </div>
         <p className="mt-4 text-sm text-[#293027]/70 dark:text-white/70">
           {lang === 'FR'
-            ? 'Le mohur est la monnaie de votre espace. Chaque compte s’ouvre avec dix mohurs, et la bourse grossit à mesure que vous revenez et que vous participez. Voici tout ce qui en donne.'
-            : 'The mohur is the currency of your space. Every account opens with ten mohurs, and the purse grows as you come back and take part. Here is everything that earns some.'}
+            ? 'Le fanam est la monnaie de votre espace. Chaque compte s’ouvre avec dix fanams, et la bourse grossit à mesure que vous revenez et que vous participez. Voici tout ce qui en donne.'
+            : 'The fanam is the currency of your space. Every account opens with ten fanams, and the purse grows as you come back and take part. Here is everything that earns some.'}
         </p>
+        <details className="mt-4 rounded-[14px] border border-[#BA7B39]/25 bg-white/40 px-4 py-3 dark:bg-white/5">
+          <summary className="cursor-pointer text-[10px] font-bold uppercase tracking-[0.22em] text-[#8B4A2F] dark:text-[#d9a05b]">
+            {lang === 'FR' ? 'L’histoire du fanam dans le monde' : 'The fanam through history'}
+          </summary>
+          <div className="mt-3 space-y-2 text-sm leading-relaxed text-[#293027]/75 dark:text-white/75">
+            {(lang === 'FR' ? HISTOIRE_FANAM_FR : HISTOIRE_FANAM_EN).map((par) => <p key={par.slice(0, 24)}>{par}</p>)}
+          </div>
+        </details>
         <ul className="mt-3 grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-2">
           {FACONS_DE_GAGNER.map((f) => (
             <li key={f.fr} className="flex items-baseline gap-2">
@@ -300,15 +323,15 @@ const ClientPortal: React.FC = () => {
   // Par défaut, l'espace s'ouvre sur le feed de la communauté, pas sur le mur personnel.
   const [tab, setTab] = useState<Tab>('feed');
   const [editOuvert, setEditOuvert] = useState(false);
-  // Profil complété (photo, nom, dosha) : cinq mohurs, une fois.
+  // Profil complété (photo, nom, dosha) : cinq fanams, une fois.
   useEffect(() => {
     if (user && member?.photoURL && member?.displayName && member?.dosha) points.profilComplete(user.uid).catch(() => {});
   }, [user, member?.photoURL, member?.displayName, member?.dosha]);
 
-  // Retour de Stripe : le paquet de mohurs arrive par le webhook, on le dit.
-  const [merciMohurs, setMerciMohurs] = useState(() => {
+  // Retour de Stripe : le paquet de fanams arrive par le webhook, on le dit.
+  const [merciFanams, setMerciFanams] = useState(() => {
     try {
-      if (new URLSearchParams(window.location.search).get('mohurs') === 'ok') {
+      if (new URLSearchParams(window.location.search).get('fanams') === 'ok') {
         window.history.replaceState(null, '', window.location.pathname);
         return true;
       }
@@ -438,8 +461,8 @@ const ClientPortal: React.FC = () => {
                   onClick={() => setTab('loyalty')}
                   className="rounded-full bg-[#BA7B39] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#293027] transition-colors hover:bg-[#d9a05b]"
                 >
-                  <PieceMohur size={14} className="mr-1 inline-block align-[-2px]" />
-                  {mohurs(pointsBalance.balance, lang)}
+                  <PieceFanam size={14} className="mr-1 inline-block align-[-2px]" />
+                  {fanams(pointsBalance.balance, lang)}
                 </button>
                 <span className="hidden truncate text-xs text-white/70 sm:inline">{user.email}</span>
               </div>
@@ -482,10 +505,10 @@ const ClientPortal: React.FC = () => {
       <div className="mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 lg:grid-cols-[1fr_320px]">
         <div className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-[#293027]/55">
           {tab === 'feed'     && <MurSocial fil="communaute" titre="Feed" />}
-          {merciMohurs && (
+          {merciFanams && (
             <div className="mb-5 flex items-center justify-between gap-3 rounded-[16px] border border-[#BA7B39]/40 bg-[#BA7B39]/15 px-4 py-3 text-sm text-[#293027] dark:text-white">
-              <span><PieceMohur size={16} className="mr-2 inline-block align-[-3px]" />{lang === 'FR' ? 'Merci. Vos cent mohurs arrivent dans votre bourse d’ici une minute.' : 'Thank you. Your hundred mohurs land in your purse within a minute.'}</span>
-              <button type="button" onClick={() => setMerciMohurs(false)} aria-label={lang === 'FR' ? 'Fermer' : 'Close'} className="text-[#293027]/50 hover:text-[#293027] dark:text-white/50"><i className="fa-solid fa-times" /></button>
+              <span><PieceFanam size={16} className="mr-2 inline-block align-[-3px]" />{lang === 'FR' ? 'Merci. Vos cent fanams arrivent dans votre bourse d’ici une minute.' : 'Thank you. Your hundred fanams land in your purse within a minute.'}</span>
+              <button type="button" onClick={() => setMerciFanams(false)} aria-label={lang === 'FR' ? 'Fermer' : 'Close'} className="text-[#293027]/50 hover:text-[#293027] dark:text-white/50"><i className="fa-solid fa-times" /></button>
             </div>
           )}
           {tab === 'profile'  && <ProfilVue uid={user.uid} member={member} email={user.email || ''} lang={lang} solde={pointsBalance} onBoutique={() => { setTab('telechargements'); window.setTimeout(() => document.getElementById('boutique')?.scrollIntoView({ behavior: 'smooth' }), 150); }} />}

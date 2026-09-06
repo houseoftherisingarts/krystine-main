@@ -2,17 +2,17 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../../contexts/AppContext';
 import { updateMember } from '../../firebase/firestore';
 import { getLecons, type Lecon } from '../../firebase/formations';
-import { acheterAvecMohurs, acheterMohurs, subscribeToMemberPoints, suivreBoutique, type PointsBalance } from '../../firebase/points';
+import { acheterAvecFanams, acheterFanams, subscribeToMemberPoints, suivreBoutique, type PointsBalance } from '../../firebase/points';
 import {
-  BANNIERE_NATURE, BOUTIQUE, COUT_EPISODE, PAQUET_MOHURS, SANTE_LA_VIE_ID, mohurs,
+  BANNIERE_NATURE, BOUTIQUE, COUT_EPISODE, PAQUET_FANAMS, SANTE_LA_VIE_ID, fanams,
 } from '../../lib/pointsConfig';
-import PieceMohur from './PieceMohur';
+import PieceFanam from './PieceFanam';
 
 // La petite boutique, dans l'onglet Téléchargements. Trois façons de
-// personnaliser son espace pour cinq mohurs chacune (une bannière, la
+// personnaliser son espace pour cinq fanams chacune (une bannière, la
 // musique d'Origine, le skin Medzo Café), les intégrales de Santé la vie à
-// cent mohurs l'émission, et le paquet de cent mohurs pour dix dollars.
-// Le serveur seul débite (acheterAvecMohurs); ici, on montre et on active.
+// cent fanams l'émission, et le paquet de cent fanams pour dix dollars.
+// Le serveur seul débite (acheterAvecFanams); ici, on montre et on active.
 
 interface Props {
   possedeMusiqueDeja: boolean;   // la musique déjà offerte par le Foyer
@@ -20,7 +20,7 @@ interface Props {
   onAchat?: () => void;
 }
 
-const BoutiqueMohurs: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes, onAchat }) => {
+const BoutiqueFanams: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes, onAchat }) => {
   const { user, member, lang } = useApp();
   const fr = lang === 'FR';
   const [solde, setSolde] = useState<PointsBalance>({ balance: 0, lifetime: 0 });
@@ -46,8 +46,8 @@ const BoutiqueMohurs: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
     if (!user || occupe) return;
     setOccupe(article);
     try {
-      const r = await acheterAvecMohurs(article);
-      dire('ok', fr ? `${nom} est à vous. Il vous reste ${mohurs(r.solde, 'FR')}.` : `${nom} is yours. You have ${mohurs(r.solde, 'EN')} left.`);
+      const r = await acheterAvecFanams(article);
+      dire('ok', fr ? `${nom} est à vous. Il vous reste ${fanams(r.solde, 'FR')}.` : `${nom} is yours. You have ${fanams(r.solde, 'EN')} left.`);
       onAchat?.();
     } catch (e) {
       const m = (e as { message?: string }).message || '';
@@ -61,7 +61,7 @@ const BoutiqueMohurs: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
     if (!user || occupe) return;
     setOccupe('paquet');
     try {
-      window.location.href = await acheterMohurs();
+      window.location.href = await acheterFanams();
     } catch {
       dire('err', fr ? 'Le paiement n’a pas pu démarrer. Réessayez dans un instant.' : 'The payment could not start. Try again in a moment.');
       setOccupe(null);
@@ -93,10 +93,10 @@ const BoutiqueMohurs: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
         type="button"
         onClick={() => acheter(article, nom)}
         disabled={occupe !== null || manque > 0}
-        title={manque > 0 ? (fr ? `Il vous manque ${mohurs(manque, 'FR')}.` : `You need ${mohurs(manque, 'EN')} more.`) : undefined}
+        title={manque > 0 ? (fr ? `Il vous manque ${fanams(manque, 'FR')}.` : `You need ${fanams(manque, 'EN')} more.`) : undefined}
         className="inline-flex items-center gap-2 rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] transition-colors hover:bg-[#3a453a] disabled:cursor-not-allowed disabled:opacity-40 dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]"
       >
-        <PieceMohur size={16} />
+        <PieceFanam size={16} />
         {occupe === article ? (fr ? 'Un instant' : 'One moment') : `${cout}`}
       </button>
     );
@@ -124,13 +124,13 @@ const BoutiqueMohurs: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
           <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">{fr ? 'Personnalisez votre espace' : 'Personalise your space'}</h3>
           <p className="mt-1 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
             {fr
-              ? 'Chaque objet se paie en mohurs, la monnaie de votre espace. Vous en gagnez en revenant, en participant, en invitant vos amies.'
-              : 'Everything here is paid in mohurs, the currency of your space. You earn them by coming back, taking part and inviting friends.'}
+              ? 'Chaque objet se paie en fanams, la monnaie de votre espace. Vous en gagnez en revenant, en participant, en invitant vos amies.'
+              : 'Everything here is paid in fanams, the currency of your space. You earn them by coming back, taking part and inviting friends.'}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <span className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/40 bg-white/60 px-4 py-2 font-serif text-lg text-[#293027] dark:bg-white/10 dark:text-white">
-            <PieceMohur size={20} /> {solde.balance}
+            <PieceFanam size={20} /> {solde.balance}
           </span>
           <button
             type="button"
@@ -138,7 +138,7 @@ const BoutiqueMohurs: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
             disabled={occupe !== null}
             className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#d9a05b] disabled:opacity-50"
           >
-            <i className="fa-solid fa-plus" /> {PAQUET_MOHURS.mohurs} {fr ? 'mohurs pour' : 'mohurs for'} {PAQUET_MOHURS.prix} $
+            <i className="fa-solid fa-plus" /> {PAQUET_FANAMS.fanams} {fr ? 'fanams pour' : 'fanams for'} {PAQUET_FANAMS.prix} $
           </button>
         </div>
       </div>
@@ -190,7 +190,7 @@ const BoutiqueMohurs: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
             <>
               {visuel}
               <div className="flex flex-1 flex-col p-4">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]"><i className={`fa-solid ${a.icone} mr-1`} /> {mohurs(a.cout, lang)}</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]"><i className={`fa-solid ${a.icone} mr-1`} /> {fanams(a.cout, lang)}</p>
                 <p className="mt-1 font-serif text-lg text-[#293027] dark:text-white">{nom}</p>
                 <p className="mt-1 flex-1 text-sm text-[#293027]/60 dark:text-white/60">{desc}</p>
                 <div className="mt-4">{etat}</div>
@@ -209,8 +209,8 @@ const BoutiqueMohurs: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
           <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">Santé la vie</h3>
           <p className="mt-1 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
             {fr
-              ? `Les émissions complètes, telles que diffusées sur MAtv. Chaque émission coûte ${mohurs(COUT_EPISODE, 'FR')} et rejoint vos téléchargements pour de bon.`
-              : `The complete shows, as aired on MAtv. Each one costs ${mohurs(COUT_EPISODE, 'EN')} and joins your downloads for good.`}
+              ? `Les émissions complètes, telles que diffusées sur MAtv. Chaque émission coûte ${fanams(COUT_EPISODE, 'FR')} et rejoint vos téléchargements pour de bon.`
+              : `The complete shows, as aired on MAtv. Each one costs ${fanams(COUT_EPISODE, 'EN')} and joins your downloads for good.`}
           </p>
           <ul className="mt-4 divide-y divide-[#293027]/10 rounded-[16px] border border-[#293027]/10 bg-white/50 dark:divide-white/10 dark:border-white/10 dark:bg-white/5">
             {episodesTries.length === 0 && (
@@ -236,4 +236,4 @@ const BoutiqueMohurs: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
   );
 };
 
-export default BoutiqueMohurs;
+export default BoutiqueFanams;
