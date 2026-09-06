@@ -335,9 +335,19 @@ const ClientPortal: React.FC = () => {
       <div className="relative h-64 w-full overflow-hidden md:h-80">
         <img src={banniere} alt="" className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#151d19]/75 via-[#151d19]/20 to-transparent" />
-        <BanniereUpload uid={user.uid} />
+        {!member?.bannerURL && (
+          <div className="absolute left-6 top-5 md:left-8 md:top-6">
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/75" style={{ textShadow: '0 1px 10px rgba(0,0,0,0.4)' }}>
+              {lang === 'FR' ? 'Votre espace' : 'Your space'}
+            </p>
+            <p className="mt-1 font-serif text-xl text-[#EEE7DB] md:text-2xl" style={{ textShadow: '0 2px 14px rgba(0,0,0,0.5)' }}>
+              {lang === 'FR' ? 'Bienvenue dans votre espace' : 'Welcome to your space'}
+            </p>
+          </div>
+        )}
+        <BanniereUpload uid={user.uid} isDefaultBanner={!member?.bannerURL} />
         <div className="absolute inset-x-0 bottom-0">
-          <div className="mx-auto flex max-w-7xl items-end gap-5 px-6 pb-5">
+          <div className="flex items-end gap-5 px-6 pb-5 md:px-8 lg:px-10">
             <button
               type="button"
               onClick={() => setEditOuvert(true)}
