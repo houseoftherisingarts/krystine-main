@@ -141,16 +141,11 @@ const sceneVata: Fabrique = (ctx, w, h, pal, vue) => {
     // Le plan : 0 tout au fond, 1 juste devant les yeux.
     const plan = Math.random() ** 1.5;
     f.plan = plan;
-    f.x = gauche ? hasard(-60, -14) : Math.random() * w;
-    f.y = Math.random() * h;
-    f.vx = 0.22 + plan * 1.5;
-    f.vy = hasard(-0.16, 0.24);
-    f.ang = Math.random() * Math.PI * 2;
-    f.spin = hasard(-0.016, 0.016);
-    f.taille = 3.6 + plan * 13;
-    f.face = Math.random() * Math.PI * 2;
-    f.vFace = hasard(0.005, 0.022);
-    f.opacite = 0.16 + plan * 0.5;
+    f.x = gauche ? hasard(-60, -14) : Math.random() * w; f.y = Math.random() * h;
+    f.vx = 0.22 + plan * 1.5; f.vy = hasard(-0.16, 0.24);
+    f.ang = Math.random() * Math.PI * 2; f.spin = hasard(-0.016, 0.016);
+    f.face = Math.random() * Math.PI * 2; f.vFace = hasard(0.005, 0.022);
+    f.taille = 3.6 + plan * 13; f.opacite = 0.16 + plan * 0.5;
     const teinte = melange(sombre, clair, plan * plan);
     f.teinte = rgba(teinte, 1);
     f.nervure = rgba(melange(teinte, [6, 22, 13], 0.55), 0.75);
@@ -166,14 +161,10 @@ const sceneVata: Fabrique = (ctx, w, h, pal, vue) => {
       // vers le haut. Le nombre de feuilles ne bouge jamais, donc le coût non plus.
       for (let i = 0; i < 3; i++) {
         const f = semer(feuilles[prochaine = (prochaine + 1) % feuilles.length], false);
-        f.x = z.x + Math.random() * z.w;
-        f.y = z.y + z.h * 0.5;
-        f.taille = 7 + Math.random() * 7;
-        f.opacite = 0.5;
-        f.vx = hasard(0.8, 2.6);
-        f.vy = hasard(-1.8, -0.6);
-        f.spin = hasard(-0.1, 0.1);
-        f.vFace = hasard(0.05, 0.11);
+        f.x = z.x + Math.random() * z.w; f.y = z.y + z.h * 0.5;
+        f.taille = 7 + Math.random() * 7; f.opacite = 0.5;
+        f.vx = hasard(0.8, 2.6); f.vy = hasard(-1.8, -0.6);
+        f.spin = hasard(-0.1, 0.1); f.vFace = hasard(0.05, 0.11);
       }
     },
     frame(t, k) {
@@ -218,20 +209,15 @@ const sceneVata: Fabrique = (ctx, w, h, pal, vue) => {
         if (d2 < 29000) {
           const d = Math.sqrt(d2) || 1;
           const force = (1 - d / 170) ** 2 * 1.7;
-          f.vx += (dx / d) * force * k;
-          f.vy += (dy / d) * force * k;
+          f.vx += (dx / d) * force * k; f.vy += (dy / d) * force * k;
           f.spin += (dx / d) * force * 0.022;
           f.vFace = Math.min(0.13, f.vFace + force * 0.007);
         }
 
-        f.vx *= 1 - 0.012 * k;
-        f.vy *= 1 - 0.012 * k;
-        f.x += f.vx * k;
-        f.y += f.vy * k;
-        f.ang += f.spin * k;
-        f.spin *= 1 - 0.015 * k;
-        f.face += f.vFace * k;
-        f.vFace += (0.013 - f.vFace) * 0.01 * k;
+        f.vx *= 1 - 0.012 * k; f.vy *= 1 - 0.012 * k;
+        f.x += f.vx * k; f.y += f.vy * k;
+        f.ang += f.spin * k; f.spin *= 1 - 0.015 * k;
+        f.face += f.vFace * k; f.vFace += (0.013 - f.vFace) * 0.01 * k;
         if (f.x > w + 46 || f.y < -56 || f.y > h + 56) semer(f, true);
         if (f.y + 40 < vue.y || f.y - 40 > bas) continue;
 
@@ -246,16 +232,12 @@ const sceneVata: Fabrique = (ctx, w, h, pal, vue) => {
         ctx.beginPath();
         ctx.moveTo(0, -s);
         ctx.quadraticCurveTo(s * 0.66, -s * 0.12, 0, s);
-        ctx.quadraticCurveTo(-s * 0.66, -s * 0.12, 0, -s);
-        ctx.fill();
+        ctx.quadraticCurveTo(-s * 0.66, -s * 0.12, 0, -s); ctx.fill();
         if (s > 6) {
           ctx.globalAlpha = f.opacite * large * 0.75;
           ctx.strokeStyle = f.nervure;
           ctx.lineWidth = Math.max(0.5, s * 0.07);
-          ctx.beginPath();
-          ctx.moveTo(0, -s * 0.86);
-          ctx.lineTo(0, s * 0.86);
-          ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(0, -s * 0.86); ctx.lineTo(0, s * 0.86); ctx.stroke();
         }
         ctx.restore();
       }
@@ -282,14 +264,10 @@ const scenePitta: Fabrique = (ctx, w, h, pal, vue) => {
   let bandeH = 0;
 
   const semer = (b: Braise, depart: boolean): Braise => {
-    b.max = 5200 + Math.random() * 4400;
-    b.x = Math.random() * w;
-    b.y = depart ? Math.random() * h : h + Math.random() * 60;
-    b.vx = (Math.random() - 0.5) * 0.22;
-    b.vy = -(0.22 + Math.random() * 0.52) * Math.max(1, h / 640);
-    b.r = 0.55 + Math.random() ** 1.6 * 2.6;
-    b.vie = depart ? Math.random() * b.max * 0.85 : 0;
-    b.chaud = Math.random();
+    b.max = 5200 + Math.random() * 4400; b.chaud = Math.random();
+    b.x = Math.random() * w; b.y = depart ? Math.random() * h : h + Math.random() * 60;
+    b.vx = (Math.random() - 0.5) * 0.22; b.vy = -(0.22 + Math.random() * 0.52) * Math.max(1, h / 640);
+    b.r = 0.55 + Math.random() ** 1.6 * 2.6; b.vie = depart ? Math.random() * b.max * 0.85 : 0;
     return b;
   };
   const braises: Braise[] = Array.from({ length: nb }, () => semer({} as Braise, true));
@@ -302,12 +280,9 @@ const scenePitta: Fabrique = (ctx, w, h, pal, vue) => {
       // de son bord bas, plus grosses et plus rapides, et un halo bat.
       for (let i = 0; i < 8; i++) {
         const b = semer(braises[prochaine = (prochaine + 1) % braises.length], false);
-        b.x = z.x + Math.random() * z.w;
-        b.y = z.y + z.h * (0.6 + Math.random() * 0.5);
-        b.vy = -(0.9 + Math.random() * 1.4);
-        b.vx = (Math.random() - 0.5) * 0.6;
-        b.r = 1.2 + Math.random() * 1.9;
-        b.max = 2600 + Math.random() * 1800;
+        b.x = z.x + Math.random() * z.w; b.y = z.y + z.h * (0.6 + Math.random() * 0.5);
+        b.vx = (Math.random() - 0.5) * 0.6; b.vy = -(0.9 + Math.random() * 1.4);
+        b.r = 1.2 + Math.random() * 1.9; b.max = 2600 + Math.random() * 1800;
       }
       if (flares.length < 4) flares.push({ x: z.x + z.w / 2, y: z.y + z.h / 2, r: Math.max(z.w, z.h) * 1.2, vie: 0 });
     },
@@ -363,8 +338,7 @@ const scenePitta: Fabrique = (ctx, w, h, pal, vue) => {
         b.vie += k * 16.7;
         if (b.vie > b.max || b.y < -25) { semer(b, false); continue; }
         b.vx += Math.sin(b.vie / 640 + b.x * 0.01) * 0.004 * k;
-        b.x += b.vx * k;
-        b.y += b.vy * k;
+        b.x += b.vx * k; b.y += b.vy * k;
         if (b.y + 60 < vue.y || b.y - 60 > bas) continue;
         const p = b.vie / b.max;
         const a = p < 0.14 ? p / 0.14 : p > 0.84 ? (1 - p) / 0.16 : 1;
@@ -379,10 +353,8 @@ const scenePitta: Fabrique = (ctx, w, h, pal, vue) => {
         const e = etincelles[i];
         e.vie -= 0.018 * k;
         if (e.vie <= 0) { etincelles.splice(i, 1); continue; }
-        e.vx *= 1 - 0.03 * k;
-        e.vy += 0.07 * k;
-        e.x += e.vx * k;
-        e.y += e.vy * k;
+        e.vx *= 1 - 0.03 * k; e.vy += 0.07 * k;
+        e.x += e.vx * k; e.y += e.vy * k;
         const r = 1.6 + e.vie * 2.6;
         ctx.globalAlpha = e.vie * 0.9;
         ctx.drawImage(gCoeur, e.x - r, e.y - r, r * 2, r * 2);
@@ -438,8 +410,7 @@ const sceneKapha: Fabrique = (ctx, w, h, pal, vue) => {
     },
     frame(t, k) {
       ctx.clearRect(0, 0, w, h);
-      ptr.lx += (ptr.x - ptr.lx) * 0.06 * k;
-      ptr.ly += (ptr.y - ptr.ly) * 0.06 * k;
+      ptr.lx += (ptr.x - ptr.lx) * 0.06 * k; ptr.ly += (ptr.y - ptr.ly) * 0.06 * k;
       // Le décalage de la nappe vers la main : la lumière se déforme un peu là
       // où la personne passe, sans jamais partir en vrille.
       ptr.dx += ((ptr.lx / w - 0.5) * 30 - ptr.dx) * 0.03 * k;
@@ -477,37 +448,26 @@ const sceneKapha: Fabrique = (ctx, w, h, pal, vue) => {
         if (o.vie <= 0) { ondes.splice(i, 1); continue; }
         o.r += (o.max - o.r) * 0.045 * k;
         ctx.globalAlpha = o.vie * o.vie * 0.45;
-        ctx.strokeStyle = bord;
-        ctx.lineWidth = o.anneau * (0.4 + o.vie);
-        ctx.beginPath();
-        ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.strokeStyle = bord; ctx.lineWidth = o.anneau * (0.4 + o.vie);
+        ctx.beginPath(); ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2); ctx.stroke();
         ctx.globalAlpha = o.vie * 0.17;
         ctx.lineWidth = o.anneau * 3 * o.vie;
-        ctx.beginPath();
-        ctx.arc(o.x, o.y, o.r * 0.72, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.beginPath(); ctx.arc(o.x, o.y, o.r * 0.72, 0, Math.PI * 2); ctx.stroke();
       }
 
       ctx.globalCompositeOperation = 'source-over';
       const bas = vue.y + vue.h;
       for (const b of bulles) {
-        b.y -= b.v * k;
-        b.phase += 0.02 * k;
+        b.y -= b.v * k; b.phase += 0.02 * k;
         if (b.y < -12) { b.y = h + hasard(6, 60); b.x = Math.random() * w; }
         if (b.y + 12 < vue.y || b.y - 12 > bas) continue;
         const x = b.x + Math.sin(b.phase) * (5 + b.r);
         ctx.globalAlpha = b.a;
-        ctx.strokeStyle = bord;
-        ctx.lineWidth = Math.max(0.6, b.r * 0.2);
-        ctx.beginPath();
-        ctx.arc(x, b.y, b.r, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.strokeStyle = bord; ctx.lineWidth = Math.max(0.6, b.r * 0.2);
+        ctx.beginPath(); ctx.arc(x, b.y, b.r, 0, Math.PI * 2); ctx.stroke();
         ctx.globalAlpha = Math.min(0.9, b.a * 1.6);
-        ctx.beginPath();
-        ctx.arc(x - b.r * 0.34, b.y - b.r * 0.36, Math.max(0.5, b.r * 0.2), 0, Math.PI * 2);
-        ctx.fillStyle = bord;
-        ctx.fill();
+        ctx.beginPath(); ctx.fillStyle = bord;
+        ctx.arc(x - b.r * 0.34, b.y - b.r * 0.36, Math.max(0.5, b.r * 0.2), 0, Math.PI * 2); ctx.fill();
       }
       ctx.globalAlpha = 1;
     },
@@ -541,9 +501,7 @@ const sceneAurore: Fabrique = (ctx, w, h, pal, vue) => {
     for (let i = 0; i < nb; i++) {
       c.globalAlpha = hasard(0.14, 0.7);
       c.fillStyle = i % 6 === 0 ? rgba(glace, 1) : '#ffffff';
-      c.beginPath();
-      c.arc(Math.random() * w, Math.random() * h, hasard(0.35, 1.2), 0, Math.PI * 2);
-      c.fill();
+      c.beginPath(); c.arc(Math.random() * w, Math.random() * h, hasard(0.35, 1.2), 0, Math.PI * 2); c.fill();
     }
     return c;
   })();
@@ -600,8 +558,7 @@ const sceneAurore: Fabrique = (ctx, w, h, pal, vue) => {
       }
 
       if (ptr.vu) {
-        ptr.lx += (ptr.x - ptr.lx) * 0.09 * k;
-        ptr.ly += (ptr.y - ptr.ly) * 0.09 * k;
+        ptr.lx += (ptr.x - ptr.lx) * 0.09 * k; ptr.ly += (ptr.y - ptr.ly) * 0.09 * k;
         const r = 200 + 16 * Math.sin(t * 0.0016);
         ctx.globalAlpha = 0.42;
         ctx.drawImage(neon, ptr.lx - r, ptr.ly - r, r * 2, r * 2);
@@ -668,10 +625,8 @@ const EffetsSkin: React.FC<{ skin: string }> = ({ skin }) => {
 
     const monter = () => {
       const r = boite.getBoundingClientRect();
-      w = Math.max(1, Math.round(r.width));
-      h = Math.max(1, Math.round(r.height));
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
+      w = Math.max(1, Math.round(r.width)); h = Math.max(1, Math.round(r.height));
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       replacer();
       scene = fabrique(ctx, w, h, pal, vue);
@@ -726,8 +681,7 @@ const EffetsSkin: React.FC<{ skin: string }> = ({ skin }) => {
       }
     };
     const surPointeur = (e: PointerEvent) => {
-      px = e.clientX - rect.left;
-      py = e.clientY - rect.top;
+      px = e.clientX - rect.left; py = e.clientY - rect.top;
       if (attente || calme.matches) return;
       attente = true;
       requestAnimationFrame(versLaScene);
@@ -767,8 +721,7 @@ const EffetsSkin: React.FC<{ skin: string }> = ({ skin }) => {
       document.removeEventListener('visibilitychange', surVisible);
       calme.removeEventListener('change', refaire);
       for (const carte of cartes) {
-        carte.style.removeProperty('--sk-gx');
-        carte.style.removeProperty('--sk-gy');
+        carte.style.removeProperty('--sk-gx'); carte.style.removeProperty('--sk-gy');
         carte.style.removeProperty('--sk-gi');
       }
       scene = null;

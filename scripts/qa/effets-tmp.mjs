@@ -65,6 +65,20 @@ for (const t of TAILLES) {
     await page.waitForTimeout(200);
     await page.screenshot({ path: `${OUT}/${skin}-${t.nom}-clic.png` });
 
+    // Le bouton de près, pour juger le survol propre à chaque skin.
+    const box = await bouton.boundingBox();
+    await bouton.hover();
+    await page.waitForTimeout(700);
+    await page.screenshot({ path: `${OUT}/${skin}-${t.nom}-bouton.png`,
+      clip: { x: box.x - 26, y: box.y - 22, width: box.width + 52, height: box.height + 44 } });
+
+    // Ce qui est accroché à l'écran doit suivre le défilement.
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForTimeout(800);
+    await page.screenshot({ path: `${OUT}/${skin}-${t.nom}-defile.png` });
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(400);
+
     await page.evaluate(mesureFps);              // chauffe
     const c0 = await cpu();
     const perf = await page.evaluate(mesureFps); // mesure

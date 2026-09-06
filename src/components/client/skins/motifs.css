@@ -27,9 +27,9 @@
 @keyframes motif-houle    { to { background-position-x: -240px; } }
 @keyframes motif-respire  { 0%, 100% { opacity: .48; } 50% { opacity: 1; } }
 @keyframes motif-tour     { to { --motif-angle: 360deg; } }
-@keyframes motif-reflet   { 0%, 64% { background-position: 100% 0; } 100% { background-position: 0% 0; } }
+@keyframes motif-reflet   { 0%, 62% { background-position: 130% 0; } 100% { background-position: -30% 0; } }
 @keyframes motif-lueur    { 0%, 100% { transform: translate3d(-11%, -6%, 0); } 50% { transform: translate3d(11%, 7%, 0); } }
-@keyframes motif-balayage { from { transform: translateX(-130%); } to { transform: translateX(130%); } }
+@keyframes motif-balayage { from { background-position: 130% 0; } to { background-position: -30% 0; } }
 
 /* ─────────────────────────────────────────────────────────────────────────
    Océan · la houle en haut des panneaux, l'écume au survol, la profondeur
@@ -127,12 +127,13 @@
   .skin-encre .font-serif.text-6xl,
   .skin-encre .font-serif.text-7xl {
     background-image: linear-gradient(100deg,
-      var(--sk-encre) 0 40%,
-      #fff8e2 49%,
-      #ffe9b0 52%,
+      var(--sk-encre) 0 38%,
+      #ffffff 47%,
+      #ffd98c 50%,
+      #fff3d2 53%,
       var(--sk-encre) 62% 100%);
-    background-size: 260% 100%;
-    background-position: 100% 0;
+    background-size: 300% 100%;
+    background-position: 130% 0;
     background-repeat: no-repeat;
     -webkit-background-clip: text;
             background-clip: text;
@@ -177,23 +178,20 @@
           mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, .3) 44%, transparent 74%);
 }
 
-/* Le reflet passe DERRIÈRE le libellé (z-index -1 sous isolation) : l'or
-   s'allume, le texte garde son contraste du début à la fin. */
-.skin-or-pur .bg-\[\#BA7B39\] { position: relative; overflow: hidden; isolation: isolate; }
-.skin-or-pur .bg-\[\#BA7B39\]::after {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  inset: -1px;
-  pointer-events: none;
-  transform: translateX(-130%);
-  background: linear-gradient(104deg,
-    transparent 32%,
-    rgba(255, 248, 222, .5) 47%,
-    rgba(255, 255, 255, .3) 55%,
-    transparent 70%);
+/* Le reflet est une couche de fond, pas un calque posé par-dessus : il passe
+   sous le libellé, qui garde son contraste du début à la fin du balayage. */
+.skin-or-pur .bg-\[\#BA7B39\] {
+  background-image: linear-gradient(104deg,
+    transparent 0 44%,
+    rgba(168, 118, 26, .36) 47.4%,
+    rgba(255, 255, 255, .8) 50%,
+    rgba(168, 118, 26, .3) 52.6%,
+    transparent 56% 100%);
+  background-repeat: no-repeat;
+  background-size: 400% 100%;
+  background-position: 130% 0;
 }
-.skin-or-pur .bg-\[\#BA7B39\]:hover::after { animation: motif-balayage .95s cubic-bezier(.22, 1, .36, 1); }
+.skin-or-pur .bg-\[\#BA7B39\]:hover { animation: motif-balayage .95s cubic-bezier(.22, 1, .36, 1); }
 
 .skin-or-pur .bg-white\/60,
 .skin-or-pur .bg-white\/70,
@@ -227,5 +225,21 @@
   .skin-encre .font-serif.text-6xl,
   .skin-encre .font-serif.text-7xl,
   .skin-lotus .motif-voile,
-  .skin-or-pur .bg-\[\#BA7B39\]:hover::after { animation: none !important; }
+  .skin-or-pur .bg-\[\#BA7B39\]:hover { animation: none !important; }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Le bouton d'appel de ces quatre skins reçoit un accent très clair, et son
+   libellé restait crème sur crème (1,0 à 2,5 pour 1, illisible). L'encre
+   foncée du skin le remet bien au-dessus de la barre, au repos comme au
+   survol. Le [class][class] n'est pas une coquetterie : la règle de couleur
+   générale du skin est plus spécifique, il faut passer devant elle.
+   ───────────────────────────────────────────────────────────────────────── */
+.skin-ocean .bg-\[\#BA7B39\][class][class],
+.skin-ocean .bg-\[\#BA7B39\][class][class] * { color: #05161f !important; }
+.skin-encre .bg-\[\#BA7B39\][class][class],
+.skin-encre .bg-\[\#BA7B39\][class][class] * { color: #17140d !important; }
+.skin-lotus .bg-\[\#BA7B39\][class][class],
+.skin-lotus .bg-\[\#BA7B39\][class][class] * { color: #1f1526 !important; }
+.skin-or-pur .bg-\[\#BA7B39\][class][class],
+.skin-or-pur .bg-\[\#BA7B39\][class][class] * { color: #17120a !important; }
