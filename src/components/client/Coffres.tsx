@@ -250,7 +250,20 @@ const Coffres: React.FC<{ solde: number; onChange?: () => void }> = ({ solde, on
               className="w-full max-w-md rounded-[24px] border border-white/60 bg-[#EEE7DB] p-7 text-center dark:border-white/10 dark:bg-[#293027]"
             >
               <p className="text-[10px] font-bold uppercase tracking-[0.25em]" style={{ color: COFFRES[ouverture.type].teinteSombre }}>{fr ? COFFRES[ouverture.type].nomFR : COFFRES[ouverture.type].nomEN}</p>
-              <div className="mx-auto mt-3 w-fit"><Coffre type={ouverture.type} taille={170} ouvert={!!ouverture.lots} tremble={!ouverture.lots} /></div>
+              {!ouverture.lots && !reduceGlobal && !videoEchouee ? (
+                <video
+                  key={ouverture.type}
+                  autoPlay muted playsInline preload="auto"
+                  poster={`/compte/coffres/ouverture-${ouverture.type}.webp`}
+                  onEnded={() => revelerRef.current()}
+                  onError={() => { setVideoEchouee(true); revelerRef.current(); }}
+                  className="mx-auto mt-3 aspect-square w-full max-w-[220px] rounded-[18px] bg-[#0b0d0b] object-cover"
+                >
+                  <source src={`/compte/coffres/ouverture-${ouverture.type}.mp4`} type="video/mp4" />
+                </video>
+              ) : (
+                <div className="mx-auto mt-3 w-fit"><Coffre type={ouverture.type} taille={170} ouvert={!!ouverture.lots} tremble={!ouverture.lots} /></div>
+              )}
               {!ouverture.lots ? (
                 <p className="mt-3 font-serif text-xl text-[#293027] dark:text-white">{fr ? 'La clé tourne…' : 'The key turns…'}</p>
               ) : (
