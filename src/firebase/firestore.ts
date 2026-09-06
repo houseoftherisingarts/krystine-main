@@ -721,6 +721,9 @@ export interface MemberDoc {
   prefs?: { courrielBillets?: boolean; courrielChangements?: boolean };
   /** Les choix de la petite boutique : bannière, skin, musique du site. Ce qu'on possède vit dans boutique/{uid}. */
   personnalisation?: { banniere?: string; skin?: string; musiqueSite?: boolean };
+  /** Clés `waitlist-<id>` déjà rejointes depuis le compte — évite une double
+   *  inscription et une relecture de la collection `newsletter` (admin-only). */
+  waitlists?: string[];
   joinedAt?: Timestamp;
   lastSeenAt?: Timestamp;
 }
