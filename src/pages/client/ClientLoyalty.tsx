@@ -4,8 +4,7 @@ import {
   subscribeToMemberPoints, getMemberPoints, listPointsEvents, listMyRewardRedemptions, redeemReward, points, reconcileBalance,
   type PointsBalance, type PointsEvent, type RewardRedemption,
 } from '../../firebase/points';
-import { POINTS, TIERS, REWARDS, FACONS_DE_GAGNER, PAQUET_FANAMS, tierFromLifetime, rewardMinThreshold, fanams, type Reward } from '../../lib/pointsConfig';
-import { acheterFanams } from '../../firebase/points';
+import { POINTS, TIERS, REWARDS, FACONS_DE_GAGNER, tierFromLifetime, rewardMinThreshold, fanams, type Reward } from '../../lib/pointsConfig';
 import PieceFanam from '../../components/client/PieceFanam';
 import PointsPlant, { type Stage } from '../../components/PointsPlant';
 
@@ -215,15 +214,20 @@ const ClientLoyalty: React.FC = () => {
                 <PieceFanam size={22} /> fanams
               </span>
             </div>
+            <p className="mb-2 max-w-md text-sm text-[#293027]/70 dark:text-white/70">
+              {lang === 'FR'
+                ? 'Le fanam est la monnaie de votre espace : il se gagne en participant et se dépense à la petite boutique.'
+                : 'The fanam is the currency of your space: you earn it by taking part and spend it at the little shop.'}
+            </p>
             <p className="text-[11px] text-[#293027]/50 dark:text-white/50 uppercase tracking-widest mb-4">
-              {lang === 'FR' ? 'Total accumulé' : 'Lifetime'} · {balance.lifetime}
+              {lang === 'FR' ? `Gagnés en tout · ${balance.lifetime} · c’est ce total qui fait pousser votre plante` : `Earned overall · ${balance.lifetime} · this total grows your plant`}
             </p>
             <div className="mb-4 flex flex-wrap gap-2">
               <button type="button" onClick={() => window.dispatchEvent(new Event('krystine:ouvrir-roue'))} className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/50 bg-white/60 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:bg-white dark:bg-white/10 dark:text-[#d9a05b]">
                 <i className="fa-solid fa-sun" /> {lang === 'FR' ? 'Ma récompense du jour' : 'My reward of the day'}
               </button>
-              <button type="button" onClick={() => acheterFanams().then((u) => { window.location.href = u; }).catch(() => setToast({ kind: 'err', msg: lang === 'FR' ? 'Le paiement n’a pas pu démarrer.' : 'The payment could not start.' }))} className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] hover:bg-[#d9a05b]">
-                <i className="fa-solid fa-plus" /> {PAQUET_FANAMS.fanams} {lang === 'FR' ? 'fanams pour' : 'fanams for'} {PAQUET_FANAMS.prix} $
+              <button type="button" onClick={() => window.dispatchEvent(new Event('krystine:ouvrir-boutique'))} className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] hover:bg-[#d9a05b]">
+                <i className="fa-solid fa-bag-shopping" /> {lang === 'FR' ? 'Acheter des fanams' : 'Buy fanams'}
               </button>
             </div>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 dark:bg-white/10 backdrop-blur-sm text-[10px] uppercase tracking-[0.25em] font-bold" style={{ color: current.accent }}>
@@ -299,22 +303,26 @@ const ClientLoyalty: React.FC = () => {
         </div>
       )}
 
-      {/* Progress bar to next tier */}
+      {/* La plante : ce que les fanams gagnés font pousser */}
       {next && (
-        <div className="mb-8">
-          <div className="flex items-baseline justify-between mb-2 text-[11px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60">
-            <span>{current.labelFR}</span>
-            <span>
-              {lang === 'FR'
-                ? `${fanams(pointsToNext, 'FR')} vers ${next.labelFR}`
-                : `${fanams(pointsToNext, 'EN')} to ${next.labelEN}`}
-            </span>
-          </div>
-          <div className="relative h-2 rounded-full bg-[#293027]/5 dark:bg-white/10 overflow-hidden">
+        <div className="mb-8 rounded-2xl border border-[#293027]/10 bg-white/60 p-5 dark:border-white/10 dark:bg-white/5">
+          <p className="text-[10px] uppercase tracking-[0.25em] font-bold" style={{ color: current.accent }}>
+            <i className="fa-solid fa-seedling mr-2" />{lang === 'FR' ? 'Votre plante' : 'Your plant'}
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-[#293027]/80 dark:text-white/80">
+            {lang === 'FR'
+              ? `Chaque fanam gagné fait pousser votre plante, et elle ne rapetisse jamais quand vous dépensez. Avec ${fanams(balance.lifetime, 'FR')} gagnés, elle est au stade ${current.labelFR}. Encore ${fanams(pointsToNext, 'FR')} et elle devient ${next.labelFR}.`
+              : `Every fanam you earn makes your plant grow, and it never shrinks when you spend. With ${fanams(balance.lifetime, 'EN')} earned, it is at the ${current.labelEN} stage. ${fanams(pointsToNext, 'EN')} more and it becomes ${next.labelEN}.`}
+          </p>
+          <div className="relative mt-4 h-2 rounded-full bg-[#293027]/5 dark:bg-white/10 overflow-hidden">
             <div
               className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 ease-out"
               style={{ width: `${progressPct}%`, backgroundColor: current.accent }}
             />
+          </div>
+          <div className="mt-2 flex items-baseline justify-between text-[10px] uppercase tracking-widest font-bold text-[#293027]/50 dark:text-white/50">
+            <span>{lang === 'FR' ? current.labelFR : current.labelEN} · {current.threshold}</span>
+            <span>{lang === 'FR' ? next.labelFR : next.labelEN} · {lang === 'FR' ? `${next.threshold} fanams gagnés` : `${next.threshold} fanams earned`}</span>
           </div>
         </div>
       )}
@@ -427,7 +435,7 @@ const ClientLoyalty: React.FC = () => {
       {/* Tier ladder */}
       <section className="mb-10">
         <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-4">
-          {lang === 'FR' ? 'Votre parcours' : 'Your journey'}
+          {lang === 'FR' ? 'Votre plante, stade par stade' : 'Your plant, stage by stage'}
         </h3>
         <ol className="space-y-3">
           {TIERS.map(t => {
@@ -453,7 +461,7 @@ const ClientLoyalty: React.FC = () => {
                     {isCurrent && <span className="ml-2 text-[10px] uppercase tracking-widest font-bold text-[#8B4A2F]">· {lang === 'FR' ? 'Actuel' : 'Current'}</span>}
                   </p>
                   <p className="text-[11px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50">
-                    {fanams(t.threshold, lang)}
+                    {lang === 'FR' ? `à partir de ${fanams(t.threshold, 'FR')} gagnés` : `from ${fanams(t.threshold, 'EN')} earned`}
                   </p>
                 </div>
               </li>

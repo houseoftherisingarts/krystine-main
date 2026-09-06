@@ -179,7 +179,9 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   }, []);
 
   useEffect(() => {
-    if (!user || isAdminUser(user)) { setMember(null); return; }
+    // Les administratrices suivent aussi leur fiche : leur espace client
+    // (bannière, skin, boutique) lit les mêmes champs que celui des membres.
+    if (!user) { setMember(null); return; }
     const unsub = subscribeToMember(user.uid, setMember);
     return unsub;
   }, [user]);

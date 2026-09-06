@@ -24,7 +24,7 @@ import ClientTelechargements from './client/ClientTelechargements';
 import ClientRediffusions from './client/ClientRediffusions';
 import ProblemeTechnique from '../components/client/ProblemeTechnique';
 import ClientPreferences from './client/ClientPreferences';
-import { subscribeToMemberPoints, points, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
+import { subscribeToMemberPoints, suivreBoutique, points, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
 import { BANNIERE_DEFAUT, BANNIERE_NATURE, FACONS_DE_GAGNER, fanams } from '../lib/pointsConfig';
 import PieceFanam from '../components/client/PieceFanam';
 import RoueQuotidienne from '../components/client/RoueQuotidienne';
@@ -232,9 +232,18 @@ const ClientAmis: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
 // la personne ouvre son espace avec la bannière par défaut, puis plus jamais
 // (clé localStorage, jamais si une bannière personnelle est déjà en place).
 const FLASH_KEY = 'krystine-banniere-flash-vu';
-const BanniereUpload: React.FC<{ uid: string; isDefaultBanner?: boolean }> = ({ uid, isDefaultBanner }) => {
+const BanniereChoix: React.FC<{
+  uid: string;
+  isDefaultBanner?: boolean;
+  perso: NonNullable<MemberDoc['personnalisation']>;
+  possedeNature: boolean;
+  aPhoto: boolean;
+  lang: string;
+}> = ({ uid, isDefaultBanner, perso, possedeNature, aPhoto, lang }) => {
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState(false);
+  const [ouvert, setOuvert] = useState(false);
+  const fr = lang === 'FR';
   useEffect(() => {
     if (!isDefaultBanner) return;
     try {
@@ -243,21 +252,61 @@ const BanniereUpload: React.FC<{ uid: string; isDefaultBanner?: boolean }> = ({ 
       localStorage.setItem(FLASH_KEY, '1');
     } catch { /* stockage indisponible, tant pis pour le flash */ }
   }, [isDefaultBanner]);
+  const choisir = async (banniere: 'defaut' | 'nature' | 'photo') => {
+    setOuvert(false);
+    await updateMember(uid, { personnalisation: { ...perso, banniere } });
+  };
   const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setBusy(true);
     try {
       const { url } = await uploadImage(file, 'bannieres');
-      await updateMember(uid, { bannerURL: url });
-      window.location.reload();
+      await updateMember(uid, { bannerURL: url, personnalisation: { ...perso, banniere: 'photo' } });
+      setOuvert(false);
     } finally { setBusy(false); }
   };
+  const actif = perso.banniere || (aPhoto ? 'photo' : 'defaut');
+  const ligne = 'flex w-full items-center gap-3 rounded-[12px] px-3 py-2.5 text-left text-xs text-[#293027] transition-colors hover:bg-[#BA7B39]/15 dark:text-white';
+  const coche = (b: string) => <i className={`fa-solid ${actif === b ? 'fa-circle-check text-[#8B4A2F]' : 'fa-circle text-[#293027]/20 dark:text-white/20'} text-sm`} />;
   return (
-    <label className={`absolute right-4 top-4 inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-[#151d19]/40 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md transition-colors hover:bg-[#151d19]/60 ${flash ? 'banniere-flash' : ''}`}>
-      <i className="fa-solid fa-image" />
-      {busy ? 'Téléversement…' : 'Changer la bannière'}
-      <input type="file" accept="image/*" className="hidden" onChange={onFile} disabled={busy} />
+    <div className="absolute right-4 top-4 z-[5]">
+      <button
+        type="button"
+        onClick={() => setOuvert((o) => !o)}
+        aria-expanded={ouvert}
+        className={`inline-flex items-center gap-2 rounded-full border border-white/30 bg-[#151d19]/40 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md transition-colors hover:bg-[#151d19]/60 ${flash ? 'banniere-flash' : ''}`}
+      >
+        <i className="fa-solid fa-image" />
+        {busy ? (fr ? 'Téléversement…' : 'Uploading…') : (fr ? 'Changer la bannière' : 'Change the banner')}
+      </button>
+      {ouvert && (
+        <div className="mt-2 w-72 rounded-[16px] border border-white/60 bg-[#EEE7DB] p-2 shadow-2xl dark:border-white/10 dark:bg-[#293027]" onMouseLeave={() => setOuvert(false)}>
+          <label className={`${ligne} cursor-pointer`}>
+            <i className="fa-solid fa-upload text-sm text-[#8B4A2F]" />
+            <span className="flex-1">{fr ? 'Téléverser ma photo' : 'Upload my photo'}</span>
+            <input type="file" accept="image/*" className="hidden" onChange={onFile} disabled={busy} />
+          </label>
+          {aPhoto && (
+            <button type="button" className={ligne} onClick={() => choisir('photo')}>
+              {coche('photo')}<span className="flex-1">{fr ? 'Ma photo' : 'My photo'}</span>
+            </button>
+          )}
+          <button type="button" className={ligne} onClick={() => choisir('defaut')}>
+            {coche('defaut')}<span className="flex-1">{fr ? 'Féminité & Ayurveda (bannière d’origine)' : 'Féminité & Ayurveda (original banner)'}</span>
+          </button>
+          {possedeNature ? (
+            <button type="button" className={ligne} onClick={() => choisir('nature')}>
+              {coche('nature')}<span className="flex-1">Nature & Ayurveda</span>
+            </button>
+          ) : (
+            <button type="button" className={ligne} onClick={() => { setOuvert(false); window.dispatchEvent(new Event('krystine:ouvrir-boutique')); }}>
+              <i className="fa-solid fa-lock text-sm text-[#293027]/30 dark:text-white/30" />
+              <span className="flex-1">Nature & Ayurveda <span className="text-[#293027]/50 dark:text-white/50">· {fr ? '5 fanams à la petite boutique' : '5 fanams at the little shop'}</span></span>
+            </button>
+          )}
+        </div>
+      )}
       {flash && (
         <style>{`
           @keyframes banniere-flash-ring {
@@ -271,7 +320,7 @@ const BanniereUpload: React.FC<{ uid: string; isDefaultBanner?: boolean }> = ({ 
           }
         `}</style>
       )}
-    </label>
+    </div>
   );
 };
 
@@ -323,10 +372,29 @@ const ClientPortal: React.FC = () => {
   // Par défaut, l'espace s'ouvre sur le feed de la communauté, pas sur le mur personnel.
   const [tab, setTab] = useState<Tab>('feed');
   const [editOuvert, setEditOuvert] = useState(false);
+  const [possedeNature, setPossedeNature] = useState(false);
+  // L'aperçu d'un skin, le temps d'un survol dans la petite boutique.
+  const [apercuSkin, setApercuSkin] = useState<string | null>(null);
+  useEffect(() => {
+    const onApercu = (e: Event) => setApercuSkin((e as CustomEvent<string | null>).detail);
+    window.addEventListener('krystine:apercu-skin', onApercu);
+    return () => window.removeEventListener('krystine:apercu-skin', onApercu);
+  }, []);
+  useEffect(() => {
+    if (!user) return;
+    return suivreBoutique(user.uid, (p) => setPossedeNature(!!p.possede['banniere-nature']));
+  }, [user]);
   // Profil complété (photo, nom, dosha) : cinq fanams, une fois.
   useEffect(() => {
     if (user && member?.photoURL && member?.displayName && member?.dosha) points.profilComplete(user.uid).catch(() => {});
   }, [user, member?.photoURL, member?.displayName, member?.dosha]);
+
+  // « Acheter des fanams » (onglet Points) mène à la petite boutique.
+  useEffect(() => {
+    const ouvrir = () => { setTab('telechargements'); window.setTimeout(() => document.getElementById('boutique')?.scrollIntoView({ behavior: 'smooth' }), 150); };
+    window.addEventListener('krystine:ouvrir-boutique', ouvrir);
+    return () => window.removeEventListener('krystine:ouvrir-boutique', ouvrir);
+  }, []);
 
   // Retour de Stripe : le paquet de fanams arrive par le webhook, on le dit.
   const [merciFanams, setMerciFanams] = useState(() => {
@@ -402,8 +470,8 @@ const ClientPortal: React.FC = () => {
   ];
 
   const perso = member?.personnalisation || {};
-  const banniere = perso.banniere === 'nature' ? BANNIERE_NATURE : (member?.bannerURL || BANNIERE_DEFAUT);
-  const skin = perso.skin === 'medzo' ? 'skin-medzo' : '';
+  const banniere = perso.banniere === 'nature' ? BANNIERE_NATURE : perso.banniere === 'defaut' ? BANNIERE_DEFAUT : (member?.bannerURL || BANNIERE_DEFAUT);
+  const skin = (perso.skin === 'medzo' || apercuSkin === 'medzo') ? 'skin-medzo' : '';
 
 
   return (
@@ -424,7 +492,7 @@ const ClientPortal: React.FC = () => {
             </p>
           </div>
         )}
-        <BanniereUpload uid={user.uid} isDefaultBanner={!member?.bannerURL} />
+        <BanniereChoix uid={user.uid} isDefaultBanner={!member?.bannerURL && perso.banniere !== 'nature'} perso={perso} possedeNature={possedeNature} aPhoto={!!member?.bannerURL} lang={lang} />
         <div className="absolute inset-x-0 bottom-0">
           <div className="flex items-end gap-5 px-6 pb-5 md:px-8 lg:px-10">
             <button

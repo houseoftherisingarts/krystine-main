@@ -80,8 +80,16 @@ const BoutiqueFanams: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
 
   const episodesTries = useMemo(() => episodes.slice().sort((a, b) => a.ordre - b.ordre), [episodes]);
 
+  // La carte du skin habille tout l'espace le temps du survol : l'aperçu, c'est
+  // l'espace lui-même. Le portail écoute l'événement et pose la classe.
+  const apercu = (skin: string | null) => window.dispatchEvent(new CustomEvent('krystine:apercu-skin', { detail: skin }));
   const carte = (id: string, enfant: React.ReactNode) => (
-    <div key={id} className="flex flex-col overflow-hidden rounded-[18px] border border-[#293027]/10 bg-white/60 dark:border-white/10 dark:bg-white/5">
+    <div
+      key={id}
+      className="flex flex-col overflow-hidden rounded-[18px] border border-[#293027]/10 bg-white/60 transition-shadow hover:shadow-[0_18px_40px_-24px_rgba(41,48,39,0.5)] dark:border-white/10 dark:bg-white/5"
+      onMouseEnter={id === 'skin-medzo' ? () => apercu('medzo') : undefined}
+      onMouseLeave={id === 'skin-medzo' ? () => apercu(null) : undefined}
+    >
       {enfant}
     </div>
   );
@@ -124,8 +132,8 @@ const BoutiqueFanams: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
           <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">{fr ? 'Personnalisez votre espace' : 'Personalise your space'}</h3>
           <p className="mt-1 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
             {fr
-              ? 'Chaque objet se paie en fanams, la monnaie de votre espace. Vous en gagnez en revenant, en participant, en invitant vos amies.'
-              : 'Everything here is paid in fanams, the currency of your space. You earn them by coming back, taking part and inviting friends.'}
+              ? `Chaque objet se paie en fanams, la monnaie de votre espace. Vous en gagnez en revenant, en participant et en invitant vos amies. Quand la bourse est courte, un paquet de ${PAQUET_FANAMS.fanams} fanams coûte ${PAQUET_FANAMS.prix} $.`
+              : `Everything here is paid in fanams, the currency of your space. You earn them by coming back, taking part and inviting friends. When the purse runs low, a pack of ${PAQUET_FANAMS.fanams} fanams costs $${PAQUET_FANAMS.prix}.`}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -138,7 +146,7 @@ const BoutiqueFanams: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
             disabled={occupe !== null}
             className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#d9a05b] disabled:opacity-50"
           >
-            <i className="fa-solid fa-plus" /> {PAQUET_FANAMS.fanams} {fr ? 'fanams pour' : 'fanams for'} {PAQUET_FANAMS.prix} $
+            <i className="fa-solid fa-bag-shopping" /> {fr ? 'Acheter des fanams' : 'Buy fanams'}
           </button>
         </div>
       </div>
@@ -177,9 +185,16 @@ const BoutiqueFanams: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
               )
               : boutonAchat(a.id, nom, a.cout);
           } else {
+            // Un aperçu miniature de l'espace en Medzo Café : bannière, puce, onglets, carte.
             visuel = (
-              <div className="flex h-28 items-center justify-center gap-2 bg-[#e6d7c3]">
-                {['#e6d7c3', '#c99a5b', '#8a5a2b', '#3b2417'].map((c) => <span key={c} className="h-10 w-10 rounded-full border border-white/70 shadow" style={{ background: c }} />)}
+              <div className="h-28 overflow-hidden bg-[#e6d7c3] p-3" aria-hidden="true">
+                <div className="h-7 rounded-md bg-gradient-to-r from-[#3b2417] to-[#8a5a2b]" />
+                <div className="mt-1.5 flex gap-1.5">
+                  <span className="h-2 w-10 rounded-full bg-[#8a5a2b]" /><span className="h-2 w-6 rounded-full bg-[#3b2417]/40" /><span className="h-2 w-6 rounded-full bg-[#3b2417]/40" />
+                </div>
+                <div className="mt-2 grid grid-cols-[1fr_60px] gap-1.5">
+                  <div className="h-9 rounded-md bg-[#faf3e8]/70" /><div className="h-9 rounded-md bg-[#faf3e8]/70" />
+                </div>
               </div>
             );
             etat = aSkin
@@ -202,7 +217,7 @@ const BoutiqueFanams: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
 
       <div className="mt-10 grid gap-6 md:grid-cols-[220px_1fr]">
         <div className="overflow-hidden rounded-[18px]">
-          <img src="/sante-la-vie.jpg" alt="Krystine St-Laurent sur le plateau de Santé la vie" className="h-full w-full object-cover" />
+          <img src="/sante-la-vie.jpg" alt="Krystine St-Laurent sur le plateau de Santé la vie" className="h-full w-full object-cover" style={{ objectPosition: '63% 38%' }} />
         </div>
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'Les intégrales' : 'The full episodes'}</p>

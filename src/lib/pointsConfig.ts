@@ -119,8 +119,8 @@ export const BOUTIQUE: ArticleBoutique[] = [
   {
     id: 'skin-medzo', cout: COUT_COSMETIQUE, icone: 'fa-mug-hot',
     nomFR: 'Skin Medzo Café', nomEN: 'Medzo Café skin',
-    descFR: 'Votre espace dans des bruns de café au lait. Le premier d’une série de skins.',
-    descEN: 'Your space in café au lait browns. The first of a series of skins.',
+    descFR: 'Un skin, c’est l’habillage de votre espace : les mêmes pages et les mêmes boutons, mais dans d’autres couleurs, comme une nappe neuve sur la même table. Celui-ci est dans des bruns de café au lait. Passez la souris sur la carte pour le voir, et enlevez-le quand vous voulez.',
+    descEN: 'A skin is the dress of your space: the same pages and buttons in other colours, like a new tablecloth on the same table. This one comes in café au lait browns. Hover over the card to see it, and take it off whenever you like.',
   },
 ];
 
