@@ -1277,6 +1277,8 @@ const ConferencierePage: React.FC = () => {
                     : 'Your answers are stored confidentially. The team will reply with a tailored proposal.'}
                 </p>
               </form>
+              {!user && <CompteUpsell variant="light" />}
+              </>
             )}
           </div>
         </div>

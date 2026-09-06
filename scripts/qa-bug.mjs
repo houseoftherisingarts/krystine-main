@@ -41,7 +41,14 @@ console.log('capture', JSON.stringify(dims));
 
 await dlg.locator('textarea').fill(`Test automatisé du bouton Problème technique (${new Date().toISOString()}). À supprimer.`);
 await page.getByRole('button', { name: /^Envoyer$|^Send$/ }).click();
-await page.getByText(/Merci\. Le rapport est parti|Thank you\. The report/).waitFor({ timeout: 40000 });
+try {
+  await page.getByText(/Merci\. Le rapport est parti|Thank you\. The report/).waitFor({ timeout: 40000 });
+} catch (e) {
+  console.log('ERREUR dialogue :', (await dlg.innerText()).replace(/\s+/g, ' ').slice(0, 400));
+  console.log('logs', JSON.stringify(logs.slice(-8)));
+  await page.screenshot({ path: `${S}/04-erreur.png` });
+  throw e;
+}
 await page.screenshot({ path: `${S}/04-merci${mobile ? '-m' : ''}.png` });
 console.log('vexel', JSON.stringify(vexelRep));
 console.log('logs', JSON.stringify(logs.filter((l) => !/favicon|Tracking Prevention|third-party cookie/i.test(l)).slice(0, 8)));
