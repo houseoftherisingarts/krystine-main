@@ -388,6 +388,7 @@ const SalonContactCard: React.FC<Props> = ({ open, onClose, sourceSite = 'krysti
         </motion.div>
       </div>
     </div>
+    </Portail>
   );
 };
 
