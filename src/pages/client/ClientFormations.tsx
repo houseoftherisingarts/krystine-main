@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
 import { getMesFormations, getFormationsPubliees, type AchatFormation, type Formation } from '../../firebase/formations';
+import { estTelechargement } from '../../firebase/musique';
 
 // « Mes formations » : les cours que la cliente a achetés. La preuve d'achat
 // est écrite par le serveur au paiement; l'admin peut aussi en accorder.
@@ -15,7 +16,8 @@ const ClientFormations: React.FC = () => {
   useEffect(() => {
     if (!user) return;
     Promise.all([getMesFormations(user.uid), getFormationsPubliees()])
-      .then(([a, c]) => { setAchats(a); setCatalogue(c); })
+      // Les téléchargements (musique) vivent dans leur propre onglet.
+      .then(([a, c]) => { setAchats(a.filter(x => !estTelechargement(x))); setCatalogue(c); })
       .finally(() => setLoading(false));
   }, [user]);
 

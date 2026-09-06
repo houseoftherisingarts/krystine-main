@@ -11,6 +11,7 @@ import {
 import { Volume2, VolumeX } from 'lucide-react';
 import { Atmosphere } from '../components/motion/loeuvre';
 import BodySections from './foyer/BodySections';
+import MusiqueOrigine from './foyer/MusiqueOrigine';
 import { Cta } from './foyer/Cta';
 import { OFFRE, FINAL } from './foyer/content';
 import { useAuth } from '../contexts/AppContext';
@@ -804,6 +805,8 @@ const FoyerPage: React.FC = () => {
         {/* la feuille des portes monte SUR le feu : aucune coupure crème */}
         <BodySections overlap={!reduce} />
         <Offre />
+        {/* la musique d'Origine offerte, juste avant les braises */}
+        <MusiqueOrigine />
         {/* le feu des braises est le point le plus bas de la page : rien après */}
         <AppelFinal />
       </div>

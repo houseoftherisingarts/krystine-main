@@ -21,3 +21,4 @@ export { murVoteBillet, murVoteCommentaire, murCommentaireCompte } from './mur';
 export { badgeAchatFormation, badgePremierBillet, badgeAmitieAcceptee } from './badges';
 export { parrainageFilleule, parrainageAchat } from './parrainage';
 export { groupeMembre } from './groupe';
+export { musiqueOrigine } from './musique';
