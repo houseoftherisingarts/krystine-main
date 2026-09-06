@@ -149,6 +149,7 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ target, onClose }) => {
         )}
       </div>
     </div>
+    </Portail>
   );
 };
 
