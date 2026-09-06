@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { Check, ChevronDown, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
