@@ -29,9 +29,9 @@ console.log('compte', uid);
 // Le profil, les niskas (Lotus = 1500 gagnés), le skin Dark Coffee, un coffre.
 await fsdoc(`members/${uid}`, { uid: { stringValue: uid }, email: { stringValue: email }, displayName: { stringValue: 'Test QA' }, personnalisation: { mapValue: { fields: { skin: { stringValue: 'coffee' } } } } });
 const jour = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Toronto', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
-await fsdoc(`pointsEvents/adjust:${uid}:qa`, { uid: { stringValue: uid }, kind: { stringValue: 'adjust' }, amount: { integerValue: '1610' }, dedupKey: { stringValue: `adjust:${uid}:qa` }, at: { timestampValue: new Date().toISOString() } });
-await fsdoc(`pointsEvents/redeem:${uid}:qa`, { uid: { stringValue: uid }, kind: { stringValue: 'redeem' }, amount: { integerValue: '-398' }, dedupKey: { stringValue: `redeem:${uid}:qa` }, at: { timestampValue: new Date().toISOString() } });
-await fsdoc(`memberPoints/${uid}`, { balance: { integerValue: '1212' }, lifetime: { integerValue: '1610' }, dernierJour: { stringValue: jour }, serie: { integerValue: '3' } });
+await fsdoc(`pointsEvents/adjust:${uid}:qa`, { uid: { stringValue: uid }, kind: { stringValue: 'adjust' }, amount: { integerValue: '50000' }, dedupKey: { stringValue: `adjust:${uid}:qa` }, at: { timestampValue: new Date().toISOString() } });
+await fsdoc(`pointsEvents/redeem:${uid}:qa`, { uid: { stringValue: uid }, kind: { stringValue: 'redeem' }, amount: { integerValue: '-48788' }, dedupKey: { stringValue: `redeem:${uid}:qa` }, at: { timestampValue: new Date().toISOString() } });
+await fsdoc(`memberPoints/${uid}`, { balance: { integerValue: '1212' }, lifetime: { integerValue: '50000' }, dernierJour: { stringValue: jour }, serie: { integerValue: '3' } });
 await fsdoc(`boutique/${uid}`, { possede: { mapValue: { fields: { 'skin-coffee': { timestampValue: new Date().toISOString() }, 'banniere-iris': { timestampValue: new Date().toISOString() } } } } });
 await fsdoc(`coffres/${uid}`, { boites: { mapValue: { fields: { bronze: { integerValue: '1' }, argent: { integerValue: '0' }, or: { integerValue: '0' } } } }, cles: { mapValue: { fields: { bronze: { integerValue: '1' }, argent: { integerValue: '0' }, or: { integerValue: '0' } } } } });
 
