@@ -111,9 +111,11 @@ async function pageAvecSession(browser, u, uid, email, label) {
   const logs = [];
   page.on('console', m => { if (m.type() === 'error' || m.type() === 'warning') logs.push(`[console:${m.type()}] ${m.text()}`); });
   page.on('pageerror', e => logs.push(`[pageerror] ${e.message}`));
+  const jourMontreal = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Toronto', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
   await page.goto(`${BASE}/robots.txt`);
-  await page.evaluate(([key, value]) => new Promise((res, rej) => {
+  await page.evaluate(([key, value, jour]) => new Promise((res, rej) => {
     localStorage.setItem('krystine-jeu-vu', new Date().toISOString().slice(0, 10));
+    localStorage.setItem('krystine-roue-vue', jour); // la roue du jour ne doit pas bloquer les clics du QA
     const req = indexedDB.open('firebaseLocalStorageDb', 1);
     req.onupgradeneeded = () => req.result.createObjectStore('firebaseLocalStorage', { keyPath: 'fbase_key' });
     req.onsuccess = () => { const tx = req.result.transaction('firebaseLocalStorage', 'readwrite'); tx.objectStore('firebaseLocalStorage').put({ fbase_key: key, value }); tx.oncomplete = () => res(true); tx.onerror = rej; };

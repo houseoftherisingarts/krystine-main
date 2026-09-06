@@ -104,7 +104,7 @@ const navigateur = await chromium.launch({ args: ARGS });
 const ctx = await navigateur.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
 // Le bandeau de témoins couvrait le coin bas droit de toutes les captures.
 await ctx.addInitScript(() => {
-  try { localStorage.setItem('inspirata.consent.v1', 'all'); } catch { /* mode privé */ }
+  try { localStorage.setItem('inspirata.consent.v1', 'rejected'); } catch { /* mode privé */ }
 });
 const page = await ctx.newPage();
 page.on('pageerror', e => console.log(`  [erreur] ${e.message}`));
