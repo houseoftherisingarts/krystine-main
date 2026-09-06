@@ -120,7 +120,7 @@ async function pageAvecSession(browser, u, uid, email, label) {
     req.onupgradeneeded = () => req.result.createObjectStore('firebaseLocalStorage', { keyPath: 'fbase_key' });
     req.onsuccess = () => { const tx = req.result.transaction('firebaseLocalStorage', 'readwrite'); tx.objectStore('firebaseLocalStorage').put({ fbase_key: key, value }); tx.oncomplete = () => res(true); tx.onerror = rej; };
     req.onerror = rej;
-  }), [`firebase:authUser:${API_KEY}:[DEFAULT]`, authUser]);
+  }), [`firebase:authUser:${API_KEY}:[DEFAULT]`, authUser, jourMontreal]);
   return { ctx, page, logs };
 }
 
