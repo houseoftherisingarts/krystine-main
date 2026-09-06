@@ -101,7 +101,8 @@ const ConferenceTourModal: React.FC<Props> = ({ open, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-[#2a2015]/60 backdrop-blur-md overflow-y-auto" onClick={close}>
+    <Portail>
+    <div className="fixed inset-0 z-[120] flex items-center justify-center overscroll-contain p-4 bg-[#2a2015]/60 backdrop-blur-md overflow-y-auto" onClick={close}>
       <div
         className="relative w-full max-w-lg bg-white dark:bg-[#2a2015] rounded-[30px] shadow-2xl border border-[#bb9a5e]/20 p-8 md:p-10 my-8"
         onClick={e => e.stopPropagation()}
