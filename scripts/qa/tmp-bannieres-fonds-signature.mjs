@@ -91,10 +91,10 @@ try {
   const conteneurDefaut = carteDefaut.locator('xpath=ancestor::div[contains(@class,"rounded-[18px]")][1]');
   const texteDefaut = await conteneurDefaut.innerText().catch(() => '');
   resultats.B5 = {
-    offerte: /Offerte/.test(texteDefaut),
-    telecharger: /Télécharger/.test(texteDefaut),
-    fondEcran: /Fond d.écran/.test(texteDefaut),
-    sansSignature: /Sans signature/.test(texteDefaut),
+    offerte: /Offerte/i.test(texteDefaut),
+    telecharger: /Télécharger/i.test(texteDefaut),
+    fondEcran: /Fond d.écran/i.test(texteDefaut),
+    sansSignature: /Sans signature/i.test(texteDefaut),
     texte: texteDefaut.replace(/\n+/g, ' | '),
   };
   await conteneurDefaut.scrollIntoViewIfNeeded();
