@@ -222,9 +222,10 @@ const ProblemeTechnique: React.FC<Props> = ({ uid, nom, courriel, lang }) => {
       </button>
 
       {ouvert && (
+        <Portail>
         <div
           data-bug-ignore
-          className="fixed inset-0 z-[130] flex items-center justify-center bg-[#151d19]/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[130] flex items-center justify-center overflow-y-auto overscroll-contain bg-[#151d19]/60 p-4 backdrop-blur-sm"
           style={enCapture ? { visibility: 'hidden' } : undefined}
           onClick={fermer}
         >
