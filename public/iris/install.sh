@@ -3,6 +3,7 @@
 #   curl -fsSL https://krystinestlaurent.ca/iris/install.sh | bash -s -- MOT_DE_PASSE
 # Tout vit dans ~/.iris ; le relais tourne en arrière-plan (launchd) et se met à jour seul.
 set -e
+main() {
 SOURCE="https://krystinestlaurent.ca/iris"
 DIR="$HOME/.iris"
 PW="${1:-}"
@@ -34,7 +35,7 @@ dit "2. Python"
 if ! /usr/bin/python3 -c 'import ssl, json' >/dev/null 2>&1; then
   echo "   macOS demande d'installer ses outils de ligne de commande. Cliquez « Installer » dans la fenêtre qui s'ouvre,"
   echo "   attendez la fin, puis relancez cette même commande."
-  xcode-select --install >/dev/null 2>&1 || true
+  xcode-select --install </dev/tty >/dev/null 2>&1 || true
   exit 1
 fi
 echo "   Python est là."
@@ -51,7 +52,7 @@ echo "   Claude Code : $($CLAUDE_BIN --version 2>/dev/null | head -1)"
 if ! $CLAUDE_BIN auth status 2>/dev/null | grep -q '"loggedIn": true'; then
   echo "   Claude Code n'est pas encore connecté à votre compte. Une fenêtre de navigateur va s'ouvrir :"
   echo "   connectez-vous avec votre compte Claude (abonnement Max), puis revenez ici."
-  $CLAUDE_BIN auth login || true
+  $CLAUDE_BIN auth login </dev/tty || true
 fi
 
 dit "4. La commande « iris » dans votre Terminal"
@@ -106,3 +107,7 @@ else
 fi
 echo
 echo "Iris reste en ligne tant que cet ordinateur est allumé et connecté. Pour l'arrêter :  launchctl bootout gui/\$(id -u)/$LABEL"
+}
+
+# Tout le script est lu avant de s'exécuter : un « curl | bash » ne se fait pas manger par une commande interactive.
+main "$@"
