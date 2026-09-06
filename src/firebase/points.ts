@@ -345,8 +345,8 @@ export async function reclamerQuotidien(uid: string): Promise<Quotidien> {
   const balanceRef = doc(db, 'memberPoints', uid);
   const eventRef = doc(db, 'pointsEvents', `quotidien:${uid}:${aujourdhui}`);
   return runTransaction(db, async tx => {
-    const bal = tx.get ? await tx.get(balanceRef) : null;
-    const prev = (bal && bal.exists() ? bal.data() : DEFAULT_POINTS_BALANCE) as PointsBalance;
+    const bal = await tx.get(balanceRef);
+    const prev = (bal.exists() ? bal.data() : DEFAULT_POINTS_BALANCE) as PointsBalance;
     const serieAvant = Number(prev.serie || 0);
     if (prev.dernierJour === aujourdhui || (await tx.get(eventRef)).exists()) {
       const jourDeja = ((Math.max(1, serieAvant) - 1) % ROUE_QUOTIDIENNE.length) + 1;

@@ -711,6 +711,8 @@ export interface MemberDoc {
   newsletterSubscribed?: boolean; // true once the member is on the newsletter list
   newsletterSource?: string;      // page/context that triggered the subscription
   prefs?: { courrielBillets?: boolean; courrielChangements?: boolean };
+  /** Les choix de la petite boutique : bannière, skin, musique du site. Ce qu'on possède vit dans boutique/{uid}. */
+  personnalisation?: { banniere?: 'defaut' | 'nature' | 'photo'; skin?: '' | 'medzo'; musiqueSite?: boolean };
   joinedAt?: Timestamp;
   lastSeenAt?: Timestamp;
 }

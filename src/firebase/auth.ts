@@ -12,6 +12,7 @@ import {
   onAuthStateChanged,
   User,
 } from 'firebase/auth';
+import { points } from './points';
 import { ensureMemberProfile } from './firestore';
 
 // Hard cap on the post-auth bootstrap so a hung Firestore call (rules issue,
@@ -157,6 +158,7 @@ async function bootstrapMember(user: User, provider: 'google' | 'email') {
   } catch (e) {
     console.warn('[auth] ensureMemberProfile failed', e);
   }
-  // Welcome bonus is now claim-once via a button in the client space (Points
-  // tab) rather than auto-granted on sign-in — see `ClientLoyalty.tsx`.
+  // Dix mohurs à l'ouverture du compte (Alex, 2026-09-06). La clé `welcome-claim`
+  // déduplique : la deuxième connexion ne donne rien de plus.
+  points.welcomeBonus(user.uid).catch(() => {});
 }

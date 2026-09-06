@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useApp } from '../../contexts/AppContext';
+import { points } from '../../firebase/points';
 import {
   getRediffusions, getArchivesRediffusion,
   type Rediffusion, type MessageDirect, type Commentaire, type ArchivesRediffusion,
@@ -189,7 +190,7 @@ const Lecture: React.FC<{ r: Rediffusion; lang: Lang; retour: () => void }> = ({
           onStateChange: (e: any) => {
             window.clearInterval(horloge);
             const lire = () => setTemps(lecteur.current?.getCurrentTime?.() || 0);
-            if (e.data === YT.PlayerState.PLAYING) horloge = window.setInterval(lire, 500);
+            if (e.data === YT.PlayerState.PLAYING) { horloge = window.setInterval(lire, 500); if (user) points.rediffusionVue(user.uid, r.id).catch(() => {}); }
             else lire();
           },
         },

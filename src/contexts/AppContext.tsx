@@ -37,6 +37,8 @@ interface UIContextType {
   toggleTheme: () => void;
   audioPlaying: boolean;
   toggleAudio: () => void;
+  /** Remplace la musique d'ambiance (null = la musique de base). */
+  setAudioUrl: (url: string | null) => void;
 }
 
 interface AuthContextType {
@@ -108,13 +110,20 @@ const UIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     else document.documentElement.classList.remove('dark');
   }, [theme]);
 
+  const [audioUrl, setAudioUrlState] = useState<string | null>(null);
+  const setAudioUrl = useCallback((url: string | null) => setAudioUrlState(url), []);
+
+  // Le lecteur se rebâtit quand la musique change; s'il jouait, il reprend.
   useEffect(() => {
-    const audio = new Audio(AUDIO_URL);
+    const jouait = audioRef.current ? !audioRef.current.paused : false;
+    audioRef.current?.pause();
+    const audio = new Audio(audioUrl || AUDIO_URL);
     audio.loop = true;
-    audio.volume = 0;
+    audio.volume = jouait ? 0.4 : 0;
     audioRef.current = audio;
+    if (jouait) audio.play().catch(() => {});
     return () => { audio.pause(); };
-  }, []);
+  }, [audioUrl]);
 
   const toggleTheme = useCallback(() => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
@@ -134,8 +143,8 @@ const UIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }, []);
 
   const value = useMemo<UIContextType>(() => ({
-    lang, setLang, theme, setTheme, toggleTheme, audioPlaying, toggleAudio,
-  }), [lang, theme, toggleTheme, audioPlaying, toggleAudio]);
+    lang, setLang, theme, setTheme, toggleTheme, audioPlaying, toggleAudio, setAudioUrl,
+  }), [lang, theme, toggleTheme, audioPlaying, toggleAudio, setAudioUrl]);
 
   return (
     <UIContext.Provider value={value}>

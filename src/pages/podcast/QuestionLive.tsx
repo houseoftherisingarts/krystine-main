@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { getLiveEvents, addLiveQuestion, type LiveEvent } from '../../firebase/firestore';
 import { useAuth } from '../../contexts/AppContext';
+import { points } from '../../firebase/points';
 import CompteUpsell from '../../components/CompteUpsell';
 
 // /podcast/question — la page que Krystine donne en ondes. Chaque question
@@ -82,6 +83,7 @@ const QuestionLive: React.FC = () => {
     setEnvoi(true); setErreur(null);
     try {
       await addLiveQuestion({ eventTag: direct.tag, name: nom, email: courriel || undefined, question });
+      if (user) points.questionPosee(user.uid, direct.tag).catch(() => {});
       setFait(true);
       setQuestion('');
     } catch {

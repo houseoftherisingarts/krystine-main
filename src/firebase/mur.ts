@@ -35,6 +35,7 @@ import {
   limit as fsLimit, where, serverTimestamp, updateDoc, getDoc, type Timestamp,
 } from 'firebase/firestore';
 import { db } from '../firebase';
+import { points } from './points';
 import { deleteStoredImage } from './storage';
 
 // Un fil par formation s'écrit `formation:{id}` (le feed commun d'un cours).
@@ -111,6 +112,7 @@ export async function publierSurLeMur(opts: {
     chaleur: calculerChaleur(0, Date.now()),
     creeLe: serverTimestamp(),
   });
+  points.commentaireLaisse(opts.uid, postId).catch(() => {});
   return id;
 }
 

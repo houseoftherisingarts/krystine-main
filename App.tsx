@@ -8,6 +8,7 @@ import Footer from './src/components/layout/Footer';
 import CartDrawer from './src/components/layout/CartDrawer';
 import ConsentBanner from './src/components/layout/ConsentBanner';
 import SignInModal from './src/components/layout/SignInModal';
+import MusiqueDuSite from './src/components/client/MusiqueDuSite';
 import LangPill from './src/components/layout/LangPill';
 import LiveBadge from './src/components/layout/LiveBadge';
 import ChatKrystine from './src/components/layout/ChatKrystine';
@@ -274,6 +275,7 @@ const App: React.FC = () => (
       </ErrorBoundary>
       <Footing />
       <SignInModal />
+      <MusiqueDuSite />
     </BrowserRouter>
     </EditModeProvider>
     </SiteFlagsProvider>
