@@ -199,7 +199,9 @@ async function scenarioC2(browser) {
   await page.getByText(/c’est fait|done\./i).first().waitFor({ timeout: 6000 });
   await page.waitForTimeout(300);
 
-  attendu(await boutonOuvrir(page, 'bronze').isEnabled(), `bouton « Ouvrir » actif (clé + coffre en main)`);
+  let actifApresAchat = false;
+  try { await boutonOuvrir(page, 'bronze').locator('..').waitFor(); for (let i = 0; i < 20 && !actifApresAchat; i++) { actifApresAchat = await boutonOuvrir(page, 'bronze').isEnabled(); if (!actifApresAchat) await page.waitForTimeout(250); } } catch {}
+  attendu(actifApresAchat, `bouton « Ouvrir » actif (clé + coffre en main), délai de mise à jour du snapshot Firestore inclus`);
 
   const [reponse] = await Promise.all([
     page.waitForResponse(r => r.url().includes('ouvrirCoffre') && r.request().method() === 'POST', { timeout: 15000 }),
