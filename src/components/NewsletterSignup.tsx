@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useApp } from '../contexts/AppContext';
 import { loginWithGoogle } from '../firebase/auth';
 import { addNewsletterSubscriber, getMember, updateMember } from '../firebase/firestore';
 import { points } from '../firebase/points';
+import CompteUpsell from './CompteUpsell';
 
 type Variant = 'dark' | 'light';
 type Status = 'idle' | 'sending' | 'email-success' | 'google-success' | 'error';
