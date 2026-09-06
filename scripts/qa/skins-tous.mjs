@@ -6,7 +6,7 @@ import fs from 'node:fs';
 const API_KEY = fs.readFileSync('.env.local', 'utf8').match(/VITE_FIREBASE_API_KEY=(.+)/)[1].trim();
 const PROJET = 'krystinestlaurent-87566';
 const BASE = process.env.BASE || 'http://localhost:5199';
-const SKINS = ['medzo','nuit','coffee','aube','terre','foret','ocean','encre','lotus','aurore','or-pur'];
+const SKINS = ['medzo','nuit','coffee','aube','terre','foret','ocean','encre','lotus','feminite','nature','aurore','or-pur'];
 const email = `qa-${Date.now()}@vexel-qa.test`; const password = 'Qa!' + Math.random().toString(36).slice(2, 12);
 const rest = async (url, body) => (await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })).json();
 const gtoken = execSync('gcloud auth print-access-token').toString().trim();
