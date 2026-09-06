@@ -87,8 +87,8 @@ const fermerBienvenue = async (page) => {
   await page.keyboard.press('Escape');
 };
 const fermerRoueSiPresente = async (page) => {
-  const dialogue = page.locator('[aria-labelledby="roue-titre"]');
-  if (await dialogue.isVisible().catch(() => false)) { await page.getByRole('button', { name: /Merci|Thanks/ }).first().click({ timeout: 2000 }).catch(() => {}); await page.waitForTimeout(200); }
+  const r = page.locator('.fixed.inset-0.z-\\[125\\]');
+  if (await r.count()) { await r.first().click({ position: { x: 8, y: 8 } }).catch(() => {}); await page.waitForTimeout(400); }
 };
 const clic = async (page, locator) => { await fermerRoueSiPresente(page); await locator.click(); };
 
