@@ -7,7 +7,7 @@
 @keyframes motif-houle    { to { background-position-x: -240px; } }
 @keyframes motif-respire  { 0%, 100% { opacity: .5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.09); } }
 @keyframes motif-tour     { to { --motif-angle: 360deg; } }
-@keyframes motif-reflet   { 0%, 64% { background-position: 130% 0; } 100% { background-position: -30% 0; } }
+@keyframes motif-reflet   { 0%, 64% { background-position: 100% 0; } 100% { background-position: 0% 0; } }
 @keyframes motif-lueur    { 0%, 100% { transform: translate3d(-9%, -5%, 0) scale(1); } 50% { transform: translate3d(9%, 6%, 0) scale(1.16); } }
 @keyframes motif-balayage { from { transform: translateX(-130%); } to { transform: translateX(130%); } }
 
@@ -111,7 +111,7 @@
       #ffe9b0 52%,
       var(--sk-encre) 62% 100%);
     background-size: 260% 100%;
-    background-position: 130% 0;
+    background-position: 100% 0;
     background-repeat: no-repeat;
     -webkit-background-clip: text;
             background-clip: text;

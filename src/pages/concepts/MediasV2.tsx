@@ -21,7 +21,8 @@ gsap.registerPlugin(ScrollTrigger);
 /**
  * Médias — même langage que /krystine (V2 « magazine crème »).
  * Cover photo-menée (la trilogie), podcast (embed Spotify), bibliothèque
- * (trilogie + Shopify/commande + Tome 3 en liste d'attente), YouTube/TV,
+ * (trilogie + Shopify/commande + Tome 3 en liste d'attente), Santé la vie
+ * (TV, épisodes en niskas dans l'espace client, coffret 3 saisons à venir),
  * infolettre. Back-end préservé : CONTENT[lang].media, Shopify (getProducts +
  * addToCart), points, NewsletterSignup source="medias", WaitlistModal Tome 3,
  * scroll vers #livres. Animations transform/opacity (Poids-plume).
