@@ -112,7 +112,6 @@ export async function publierSurLeMur(opts: {
     chaleur: calculerChaleur(0, Date.now()),
     creeLe: serverTimestamp(),
   });
-  points.commentaireLaisse(opts.uid, postId).catch(() => {});
   return id;
 }
 
@@ -191,6 +190,7 @@ export async function publierCommentaire(postId: string, opts: {
     chaleur: calculerChaleur(0, Date.now()),
     creeLe: serverTimestamp(),
   });
+  points.commentaireLaisse(opts.uid, postId).catch(() => {});
   return id;
 }
 
