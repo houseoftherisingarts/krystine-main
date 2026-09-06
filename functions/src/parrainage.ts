@@ -1,5 +1,6 @@
 import { onDocumentCreated } from 'firebase-functions/v2/firestore';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { crediterMohurs } from './mohurs';
 
 // Le parrainage à paliers (porté du FMM). Deux compteurs, posés côté serveur
 // seulement :
@@ -38,6 +39,7 @@ export const parrainageFilleule = onDocumentCreated(
     const filleules = await db.collection('parrainages').where('parrainUid', '==', parrainUid).count().get();
     const n = filleules.data().count;
     await db.doc(`members/${parrainUid}`).set({ filleules: n }, { merge: true });
+    await crediterMohurs(parrainUid, 'parrainage', 20, `parrainage:${event.params.filleulUid}`, { filleulUid: event.params.filleulUid });
 
     for (const [seuil, badgeId] of PALIERS) {
       if (n >= seuil) {
@@ -58,7 +60,7 @@ export const parrainageAchat = onDocumentCreated(
   { document: 'achatsFormations/{uid}/formations/{formationId}', region: 'us-central1' },
   async (event) => {
     const achat = event.data?.data() as { source?: string } | undefined;
-    if (achat?.source === 'parrainage') return;
+    if (achat?.source === 'parrainage' || achat?.source === 'mohurs') return;
     const filleulUid = event.params.uid;
 
     const db = getFirestore();

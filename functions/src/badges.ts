@@ -1,5 +1,6 @@
 import { onDocumentCreated, onDocumentUpdated } from 'firebase-functions/v2/firestore';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { crediterMohurs } from './mohurs';
 
 // Les badges honorifiques se posent côté serveur seulement (anti-triche),
 // sur le patron du FMM : badges/{uid}.obtenus.{badgeId} = date.
@@ -43,6 +44,7 @@ export const badgePremierBillet = onDocumentCreated(
     const data = event.data?.data() as { uid?: string; fil?: string } | undefined;
     if (!data?.uid || data.fil !== 'communaute') return;
     await poserBadge(data.uid, 'premiere-etincelle');
+    await crediterMohurs(data.uid, 'billet', 5, `billet:${data.uid}`);
   },
 );
 
@@ -53,6 +55,9 @@ export const badgeAmitieAcceptee = onDocumentUpdated(
     const avant = event.data?.before.data() as { statut?: string } | undefined;
     const apres = event.data?.after.data() as { statut?: string; paire?: string[] } | undefined;
     if (avant?.statut === 'amis' || apres?.statut !== 'amis' || !apres.paire) return;
-    for (const uid of apres.paire) await poserBadge(uid, 'main-tendue');
+    for (const uid of apres.paire) {
+      await poserBadge(uid, 'main-tendue');
+      await crediterMohurs(uid, 'amitie', 2, `amitie:${event.params.id}:${uid}`);
+    }
   },
 );

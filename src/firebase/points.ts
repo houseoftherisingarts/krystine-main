@@ -8,20 +8,24 @@
 // - `rewardRedemptions/{auto}` — pending reward redemptions for Krystine to
 //   fulfill manually. Each doc records the uid, reward id, cost, and status.
 
-import { db } from '../firebase';
+import app, { db } from '../firebase';
+import { httpsCallable, getFunctions } from 'firebase/functions';
 import {
   doc, collection, query, where, orderBy, limit as fbLimit,
   onSnapshot, getDoc, getDocs, runTransaction, addDoc, serverTimestamp, Timestamp,
   type Unsubscribe,
 } from 'firebase/firestore';
 
-import type { PointsKind } from '../lib/pointsConfig';
+import { POINTS, ROUE_QUOTIDIENNE, journee, veilleDe, type PointsKind } from '../lib/pointsConfig';
 
 const noDb = () => { throw new Error('[Firestore] Firebase not configured.'); };
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface PointsBalance {
+  /** La roue des sept jours : la journée de la dernière réclamation et la suite en cours. */
+  dernierJour?: string;
+  serie?: number;
   balance: number;   // spendable
   lifetime: number;  // total ever earned (drives tier progression)
   updatedAt?: Timestamp;
@@ -289,7 +293,15 @@ export const points = {
   // old auto-grant path — accounts that saw the earlier 100-pt auto-grant
   // can still claim the 50-pt welcome button once.
   welcomeBonus:       (uid: string) =>
-    awardPoints(uid, 'welcome-claim', 50, `welcome-claim:${uid}`),
+    awardPoints(uid, 'welcome-claim', POINTS.welcome, `welcome-claim:${uid}`),
+  profilComplete:     (uid: string) =>
+    awardPoints(uid, 'profil', POINTS.profil, `profil:${uid}`),
+  questionPosee:      (uid: string, direct: string) =>
+    awardPoints(uid, 'question', POINTS.question, `question:${direct}:${uid}`, { direct }),
+  rediffusionVue:     (uid: string, rediffusionId: string) =>
+    awardPoints(uid, 'rediffusion', POINTS.rediffusion, `rediffusion:${rediffusionId}:${uid}`, { rediffusionId }),
+  commentaireLaisse:  (uid: string, postId: string) =>
+    awardPoints(uid, 'commentaire', POINTS.commentaire, `commentaire:${postId}:${uid}`, { postId }),
   quizCompleted:      (uid: string) =>
     awardPoints(uid, 'quiz', 5, `quiz:${uid}`),
   newsletterSigned:   (uid: string, source?: string) =>
@@ -319,4 +331,62 @@ export const points = {
 export async function adjustPoints(uid: string, delta: number, note?: string) {
   const key = `adjust:${uid}:${Date.now()}`;
   return awardPoints(uid, 'adjust', delta, key, note ? { note } : undefined);
+}
+
+// ─── La roue des sept jours ──────────────────────────────────────────────────
+// Une réclamation par journée civile de Montréal. La suite avance si la
+// dernière réclamation date d'hier, repart à un sinon; le jour de la roue
+// est la suite modulo sept. Le journal porte `quotidien:{uid}:{journée}`.
+export interface Quotidien { deja: boolean; jour: number; montant: number; serie: number; balance: number }
+
+export async function reclamerQuotidien(uid: string): Promise<Quotidien> {
+  if (!db || !uid) return { deja: true, jour: 1, montant: 0, serie: 0, balance: 0 };
+  const aujourdhui = journee();
+  const balanceRef = doc(db, 'memberPoints', uid);
+  const eventRef = doc(db, 'pointsEvents', `quotidien:${uid}:${aujourdhui}`);
+  return runTransaction(db, async tx => {
+    const bal = tx.get ? await tx.get(balanceRef) : null;
+    const prev = (bal && bal.exists() ? bal.data() : DEFAULT_POINTS_BALANCE) as PointsBalance;
+    const serieAvant = Number(prev.serie || 0);
+    if (prev.dernierJour === aujourdhui || (await tx.get(eventRef)).exists()) {
+      const jourDeja = ((Math.max(1, serieAvant) - 1) % ROUE_QUOTIDIENNE.length) + 1;
+      return { deja: true, jour: jourDeja, montant: ROUE_QUOTIDIENNE[jourDeja - 1], serie: serieAvant, balance: prev.balance || 0 };
+    }
+    const serie = prev.dernierJour === veilleDe(aujourdhui) ? serieAvant + 1 : 1;
+    const jour = ((serie - 1) % ROUE_QUOTIDIENNE.length) + 1;
+    const montant = ROUE_QUOTIDIENNE[jour - 1];
+    tx.set(eventRef, { uid, kind: 'quotidien', amount: montant, dedupKey: `quotidien:${uid}:${aujourdhui}`, meta: { jour, serie }, at: serverTimestamp() });
+    tx.set(balanceRef, {
+      balance: (prev.balance || 0) + montant,
+      lifetime: (prev.lifetime || 0) + montant,
+      dernierJour: aujourdhui,
+      serie,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+    return { deja: false, jour, montant, serie, balance: (prev.balance || 0) + montant };
+  });
+}
+
+// ─── La petite boutique ──────────────────────────────────────────────────────
+// Le serveur débite (functions/src/mohurs.ts); ici, l'appel et ce qu'on possède.
+export interface Possessions { possede: Record<string, unknown> }
+
+export function suivreBoutique(uid: string, cb: (p: Possessions) => void): Unsubscribe {
+  if (!db) { cb({ possede: {} }); return () => {}; }
+  return onSnapshot(doc(db, 'boutique', uid), snap => cb({ possede: (snap.data()?.possede as Record<string, unknown>) || {} }), () => cb({ possede: {} }));
+}
+
+export async function acheterAvecMohurs(article: string): Promise<{ solde: number; article: string; nom: string }> {
+  if (!app) throw new Error('[Mohurs] Firebase not configured');
+  const call = httpsCallable(getFunctions(app, 'us-central1'), 'acheterAvecMohurs');
+  const res = await call({ article });
+  return res.data as { solde: number; article: string; nom: string };
+}
+
+/** Ouvre Stripe Checkout pour un paquet de cent mohurs (dix dollars). */
+export async function acheterMohurs(): Promise<string> {
+  if (!app) throw new Error('[Mohurs] Firebase not configured');
+  const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionMohurs');
+  const res = await call({});
+  return (res.data as { url: string }).url;
 }
