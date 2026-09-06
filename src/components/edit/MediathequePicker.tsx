@@ -126,6 +126,7 @@ const MediathequePicker: React.FC<Props> = ({ open, onClose, onSelect }) => {
         </div>
       </div>
     </div>
+    </Portail>
   );
 };
 
