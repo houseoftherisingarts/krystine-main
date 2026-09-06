@@ -227,10 +227,22 @@ export const SKINS: Skin[] = [
     descFR: 'Un mauve de crépuscule et le rose du lotus. Rare : il se trouve dans le coffre d’argent seulement.',
     descEN: 'Dusk mauve and lotus pink. Rare: found in the silver chest only.',
     palette: { fond: '#1a1420', panneau: '#261d2e', encre: '#f4e9f1', accent: '#d48ca8', accentClair: '#f2bfd2', accentProfond: '#f2bfd2', sombre: true } },
+  // Le rose et le vert du livre : le sarcelle profond de la couverture, et le
+  // rose de la couronne de fleurs qui court autour du titre. L'« accentProfond »
+  // est le rose CLAIR, parce que sur un skin sombre c'est lui qui porte les
+  // libellés : le rose foncé (#b8657f) tombait à 2,4 pour 1 sur le panneau. Il
+  // reste dans la maison, en ombre des pétales et en liseré de carte.
   { cle: 'feminite', cout: null, rarete: 'rare', coffre: 'argent', icone: 'fa-leaf', nomFR: 'Skin Féminité & Ayurveda', nomEN: 'Féminité & Ayurveda skin',
-    descFR: 'Le vert sarcelle profond de la couverture enveloppe tout l’espace, et l’or calligraphié du titre éclaire chaque bouton. Rare : dans le coffre d’argent seulement.',
-    descEN: 'The deep teal green of the book’s cover wraps around the whole space, and the gold of its lettered title lights up every button. Rare: in the silver chest only.',
-    palette: { fond: '#1d3a35', panneau: '#274a44', encre: '#f3f1e8', accent: '#c9a34a', accentClair: '#e2c877', accentProfond: '#e2c877', sombre: true } },
+    descFR: 'Le vert sarcelle profond de la couverture enveloppe tout l’espace, et le rose de la couronne de fleurs éclaire chaque bouton. Des pétales roses et des feuilles blanches dérivent derrière votre espace. Rare : dans le coffre d’argent seulement.',
+    descEN: 'The deep teal green of the book’s cover wraps around the whole space, and the pink of its flower crown lights up every button. Pink petals and white leaves drift behind your space. Rare: in the silver chest only.',
+    palette: { fond: '#1d3a35', panneau: '#274a44', encre: '#f3f1e8', accent: '#d98aa3', accentClair: '#efb7c6', accentProfond: '#efb7c6', sombre: true } },
+  // Sarcelle et orange brûlé : l'étalonnage que le cinéma pose sur presque
+  // toutes ses affiches depuis vingt ans, la peau chaude détachée d'un fond
+  // froid. Halos de bokeh et grain de pellicule, rien de plus.
+  { cle: 'teal-orange', cout: null, rarete: 'rare', coffre: 'argent', icone: 'fa-film', nomFR: 'Skin Sarcelle & Orange', nomEN: 'Teal & Orange skin',
+    descFR: 'L’étalonnage du cinéma : un fond sarcelle profond, des halos chauds qui traversent le champ et le grain d’une pellicule. Rare : dans le coffre d’argent seulement.',
+    descEN: 'The cinema colour grade: a deep teal ground, warm halos drifting across the frame, and the grain of real film. Rare: in the silver chest only.',
+    palette: { fond: '#08252b', panneau: '#0e3740', encre: '#f6ece2', accent: '#e2753a', accentClair: '#f3a56b', accentProfond: '#f0995c', sombre: true } },
   { cle: 'nature', cout: null, rarete: 'rare', coffre: 'argent', icone: 'fa-seedling', nomFR: 'Skin Nature & Ayurveda', nomEN: 'Nature & Ayurveda skin',
     descFR: 'Le blanc cassé de la couverture s’ouvre sur une aquarelle olive et l’esperluette dorée du titre. Rare : dans le coffre d’argent seulement.',
     descEN: 'The off-white cover opens onto an olive watercolor and the gilded ampersand of the title. Rare: in the silver chest only.',
