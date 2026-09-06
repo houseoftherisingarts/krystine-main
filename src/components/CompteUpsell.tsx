@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import BoutonCompte from './BoutonCompte';
 
 interface Props {
   /** "dark" for navy backgrounds, "light" for cream/white. */
