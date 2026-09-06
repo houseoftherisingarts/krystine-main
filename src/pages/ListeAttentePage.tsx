@@ -20,6 +20,7 @@ import React, { useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useApp } from '../contexts/AppContext';
+import CompteUpsell from '../components/CompteUpsell';
 import { addNewsletterSubscriber } from '../firebase/firestore';
 import { points } from '../firebase/points';
 import { COUNTRIES, findCountry } from '../lib/regions';
