@@ -149,14 +149,13 @@ const LiveSignup: React.FC = () => {
 
           <motion.div {...fade(0.35)} className="rounded-[15px] border border-[#EEE7DB]/12 bg-[#211c18]/60 p-[clamp(1.5rem,3.5vw,3rem)] backdrop-blur-sm">
             {isPast ? (
-              <a
-                href={ev.replayUrl || ev.youtubeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => setLecteurOuvert(true)}
                 className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#BA7B39] px-10 py-5 text-sm font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#EEE7DB]"
               >
                 <YouTubeMark className="h-6 w-6" /> {t.watch}
-              </a>
+              </button>
             ) : (
               <NewsletterSignup
                 source="podcast-live"
