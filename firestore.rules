@@ -100,6 +100,21 @@ service cloud.firestore {
       allow read, write: if isSelf(uid) || isAdmin();
     }
 
+    // Les problèmes techniques signalés depuis l'espace client : chacun
+    // écrit le sien (champs et tailles vérifiés), Krystine les lit et les
+    // règle. La copie du studio part par recevoirDemande, côté Vexel.
+    match /bugs/{id} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isSignedIn()
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.keys().hasOnly(['uid', 'nom', 'courriel', 'texte', 'page', 'capture', 'capturePath', 'agent', 'ecran', 'statut', 'vexel', 'cree'])
+                    && request.resource.data.texte is string
+                    && request.resource.data.texte.size() > 0
+                    && request.resource.data.texte.size() <= 4000
+                    && request.resource.data.statut == 'nouveau';
+      allow update, delete: if isAdmin();
+    }
+
     // ── Le mur social (porté du FMM) ─────────────────────────────────────
     // Les compteurs (pour/contre/score/chaleur/nbCommentaires) ne s'écrivent
     // JAMAIS depuis le navigateur : les fonctions mur.ts recomptent avec

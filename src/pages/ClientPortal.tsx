@@ -22,6 +22,7 @@ import ClientLoyalty from './client/ClientLoyalty';
 import ClientFormations from './client/ClientFormations';
 import ClientTelechargements from './client/ClientTelechargements';
 import ClientRediffusions from './client/ClientRediffusions';
+import ProblemeTechnique from '../components/client/ProblemeTechnique';
 import { subscribeToMemberPoints, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
 
 type Tab = 'feed' | 'profile' | 'amis' | 'orders' | 'formations' | 'rediffusions' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie';
@@ -399,6 +400,9 @@ const ClientPortal: React.FC = () => {
         </div>
         <RailCommunaute lang={lang} uid={user.uid} />
       </div>
+
+      {/* Le bouton « Problème technique », fixe en bas à droite, et sa fenêtre */}
+      <ProblemeTechnique uid={user.uid} nom={member?.displayName || user.displayName || ''} courriel={user.email || ''} lang={lang} />
 
       {/* Le module d'édition du profil, ouvert par la photo de la bannière */}
       {editOuvert && (

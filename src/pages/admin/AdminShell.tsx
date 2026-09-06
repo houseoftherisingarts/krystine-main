@@ -29,6 +29,7 @@ export type AdminSectionId =
   | 'groups'
   | 'bookings'
   | 'demande'
+  | 'bugs'
   | 'newsletter'
   | 'guide'
   | 'dosha'
@@ -58,6 +59,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   foyer:      'foyer',
   bookings:   'demandes',
   demande:    'demander-un-changement',
+  bugs:       'problemes-techniques',
   newsletter: 'infolettre',
   guide:      'parcours-guides',
   dosha:      'quiz-dosha',
@@ -119,6 +121,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'assets',     label: 'Assets et téléchargements', icon: 'fa-download', groupe: 'reglages' },
   { id: 'settings',   label: 'Paramètres',       icon: 'fa-gear',             groupe: 'reglages' },
   { id: 'demande',    label: 'Demander un changement', icon: 'fa-bolt',       groupe: 'reglages' },
+  { id: 'bugs',       label: 'Problèmes techniques', icon: 'fa-bug',         groupe: 'reglages' },
 ];
 const CLE_OUVERTS = 'admin.nav.ouverts';
 const lireOuverts = (): GroupeId[] => {
