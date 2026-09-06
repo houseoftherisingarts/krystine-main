@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc, type Timestamp } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import { Card, DangerButton, EmptyState, GhostButton } from '../primitives';
+import Portail from '../../../components/Portail';
 
 // Les problèmes techniques signalés depuis l'espace client (bouton « Problème
 // technique »). Chaque rapport porte le texte, la page, l'écran, le navigateur
