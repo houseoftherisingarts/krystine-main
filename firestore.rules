@@ -309,6 +309,7 @@ service cloud.firestore {
     match /irisDemandes/{id} { allow read, write: if isAdmin() || isIris(); }
     match /etat/{id}         { allow read: if isAdmin(); allow write: if false; }
     match /etat/iris         { allow write: if isIris(); }
+    match /etat/irisInstallation { allow read: if isIris(); }
     match /bookingRequests/{id} {
       allow create: if request.resource.data.keys().hasAll(['name', 'email']);
       allow read, update, delete: if isAdmin();
@@ -402,7 +403,7 @@ service cloud.firestore {
                         && request.resource.data.amount is number
                         && request.resource.data.amount <= 100
                         && request.resource.data.amount >= -1000
-                        && !(request.resource.data.kind in ['boutique', 'achat-niskas', 'quotidien', 'billet', 'amitie', 'parrainage', 'adjust']));
+                        && !(request.resource.data.kind in ['boutique', 'achat-niskas', 'quotidien', 'billet', 'amitie', 'parrainage', 'parrainage-bienvenue', 'adjust']));
       // La lecture d'un document absent (la transaction d'awardPoints vérifie
       // la clé avant d'écrire) ne révèle rien : elle passe.
       allow read: if isAdmin()

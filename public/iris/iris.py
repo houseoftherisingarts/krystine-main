@@ -37,14 +37,14 @@ try:
 except ImportError:
     _SSL = ssl.create_default_context()
 
-VERSION = "2.1.1"
+VERSION = "2.1.2"
 PROJECT = "krystinestlaurent-87566"
 BASE = f"https://firestore.googleapis.com/v1/projects/{PROJECT}/databases/(default)/documents"
 HERE = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE = os.path.join(HERE, "iris_config.json")
 LOG = os.path.join(HERE, "iris.log")
 SOURCE = "https://krystinestlaurent.ca/iris/"
-FICHIERS_DISTANTS = {"iris.py": os.path.abspath(__file__), "iris_system.md": None, "iris_site.md": None}
+FICHIERS_DISTANTS = {"iris.py": os.path.abspath(__file__), "iris_system.md": None, "iris_site.md": None, "iris_terminal.md": None}
 MODEL = os.environ.get("IRIS_MODEL", "opus")
 POLL = 8            # secondes entre deux tours
 HEARTBEAT = 30      # secondes entre deux battements
