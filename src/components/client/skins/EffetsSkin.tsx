@@ -425,15 +425,6 @@ const sceneKapha: Fabrique = (ctx, w, h, pal, vue) => {
   const ptr = { x: w / 2, y: h / 2, lx: w / 2, ly: h / 2, dx: 0, dy: 0 };
   const bord = rgba(melange(clair, [255, 255, 255], 0.45), 1);
 
-  const nappeur = (idx: number, alpha: number, echelle: number, tx: number, ty: number) => {
-    const m = motifs[idx];
-    if (!nctx || !m) return;
-    m.setTransform(new DOMMatrix().translateSelf(tx, ty).scaleSelf(echelle));
-    nctx.globalAlpha = alpha;
-    nctx.fillStyle = m;
-    nctx.fillRect(0, 0, dw, dh);
-  };
-
   return {
     pointeur(x, y) {
       const d = Math.hypot(x - ptr.x, y - ptr.y);
