@@ -703,6 +703,7 @@ export interface MemberDoc {
   accesVie?: boolean;              // compteur de parrainage, écrit par le serveur
   newsletterSubscribed?: boolean; // true once the member is on the newsletter list
   newsletterSource?: string;      // page/context that triggered the subscription
+  prefs?: { courrielBillets?: boolean; courrielChangements?: boolean };
   joinedAt?: Timestamp;
   lastSeenAt?: Timestamp;
 }
