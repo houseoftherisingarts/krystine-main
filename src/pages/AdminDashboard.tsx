@@ -45,6 +45,7 @@ import MessagesSection from './admin/sections/MessagesSection';
 import SubmissionsSection from './admin/sections/SubmissionsSection';
 import GroupsSection from './admin/sections/GroupsSection';
 import BookingsSection from './admin/sections/BookingsSection';
+import DemandeSection from './admin/sections/DemandeSection';
 import NewsletterSection from './admin/sections/NewsletterSection';
 import GuideSection from './admin/sections/GuideSection';
 import DoshaSection from './admin/sections/DoshaSection';
