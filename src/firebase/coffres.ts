@@ -6,14 +6,16 @@ import type { TypeCoffre } from '../lib/coffresConfig';
 // Les coffres (functions/src/coffres.ts) : ce que la membre possède, l'achat
 // en niskas, l'ouverture, le grand lot et le don par l'admin.
 
-export interface Inventaire { boites: Record<TypeCoffre, number>; cles: Record<TypeCoffre, number> }
-const VIDE: Inventaire = { boites: { bronze: 0, argent: 0, or: 0 }, cles: { bronze: 0, argent: 0, or: 0 } };
+// La clé est unique (dix niskas) : un seul compteur, elle ouvre n'importe
+// quel coffre. Les coffres, eux, restent par couleur.
+export interface Inventaire { boites: Record<TypeCoffre, number>; cles: number }
+const VIDE: Inventaire = { boites: { bronze: 0, argent: 0, or: 0 }, cles: 0 };
 
 export function suivreMesCoffres(uid: string, cb: (i: Inventaire) => void): Unsubscribe {
   if (!db || !uid) { cb(VIDE); return () => {}; }
   return onSnapshot(doc(db, 'coffres', uid), snap => {
-    const d = (snap.data() || {}) as Partial<Inventaire>;
-    cb({ boites: { ...VIDE.boites, ...(d.boites || {}) }, cles: { ...VIDE.cles, ...(d.cles || {}) } });
+    const d = (snap.data() || {}) as { boites?: Partial<Record<TypeCoffre, number>>; cles?: number };
+    cb({ boites: { ...VIDE.boites, ...(d.boites || {}) }, cles: Number(d.cles || 0) });
   }, () => cb(VIDE));
 }
 
