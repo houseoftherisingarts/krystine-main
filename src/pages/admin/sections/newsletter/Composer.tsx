@@ -246,7 +246,8 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
   const railWide = side === 'preview';
 
   return (
-    <div className="fixed inset-0 z-[120] flex flex-col bg-[#EEE7DB] dark:bg-[#151d19] text-[#293027] dark:text-white">
+    <Portail>
+    <div className="fixed inset-0 z-[120] flex flex-col overflow-y-auto overscroll-contain bg-[#EEE7DB] dark:bg-[#151d19] text-[#293027] dark:text-white">
       <style>{`
         .nl-inline{outline:none;cursor:text;min-width:2ch;border-radius:6px;transition:box-shadow .15s}
         .nl-inline:hover{box-shadow:0 0 0 2px rgba(186,123,57,.35)}
