@@ -178,10 +178,22 @@ const sceneVata: Fabrique = (ctx, w, h, pal, vue) => {
     },
     frame(t, k) {
       ctx.clearRect(0, 0, w, h);
-      // Deux fûts de lumière verte entrent en biais dans la partie visible,
-      // très lents. Sans eux le fond vert reste plat.
       ctx.globalCompositeOperation = 'lighter';
       const bas = vue.y + vue.h;
+
+      // La lumière du sous-bois : deux nappes de taches, l'une fine qui glisse
+      // avec le vent, l'autre large et lente. Sans elles, le vert reste plat.
+      if (taches.cx) {
+        taches.cx.clearRect(0, 0, taches.dw, taches.dh);
+        taches.cx.globalCompositeOperation = 'lighter';
+        taches.couche(t, 0.00019, 0.5, 3.4, t * 0.0022, -t * 0.0004);
+        taches.couche(t, 0.00007, 0.32, 6.8, t * 0.0009, t * 0.0003);
+        taches.cx.globalAlpha = 1;
+        ctx.globalAlpha = 0.62;
+        ctx.drawImage(taches.cv, 0, 0, w, h);
+      }
+
+      // Deux fûts de lumière verte entrent en biais dans la partie visible.
       for (let i = 0; i < 2; i++) {
         const p = t * 0.00007 + i * 2.4;
         const cx = w * (0.24 + 0.5 * Math.sin(p));
