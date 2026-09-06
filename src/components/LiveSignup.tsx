@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { useApp } from '../contexts/AppContext';
 import { getLiveEvents, type LiveEvent } from '../firebase/firestore';
 import NewsletterSignup from './NewsletterSignup';
+import { LecteurVideoPleinEcran } from './LecteurVideoEmbarque';
 
 /**
  * Bloc « podcast en direct » : lit le prochain document `liveEvents`, affiche
