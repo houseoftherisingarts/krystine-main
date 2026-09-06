@@ -507,7 +507,9 @@ const OrigineExperience: React.FC = () => {
                   <div className="border-b border-brass/20 pb-4 mb-5">
                     <h3 className="font-serif font-medium text-lg md:text-xl uppercase tracking-[0.08em] text-ink">Le contenu du parcours</h3>
                   </div>
-                  <div>
+                  {/* Deux colonnes de pièces : la colonne de gauche cesse d'être
+                      deux fois plus haute que le panneau de droite. */}
+                  <div className="md:grid md:grid-cols-2 md:gap-x-10">
                     {VALUE_ITEMS.map((it, i) => (
                       <motion.div
                         key={i}
