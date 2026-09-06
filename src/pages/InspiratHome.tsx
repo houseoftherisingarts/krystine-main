@@ -25,6 +25,7 @@ import TodayConferenceBanner from '../components/TodayConferenceBanner';
 import { motion, useReducedMotion } from 'framer-motion';
 import { getUpcomingEvents } from '../lib/liveEvents';
 import { useSiteFlags } from '../contexts/SiteFlagsContext';
+import Portail from '../components/Portail';
 
 // ParchmentBackdrop previously composited an SVG palm-frond + fibre
 // noise + vignettes on top of an ivoire body. Since `krystine-bg.jpg`
