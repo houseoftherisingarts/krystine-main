@@ -94,6 +94,7 @@ const BienvenueJeu: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
         </div>
       </div>
     </div>
+    </Portail>
   );
 };
 
