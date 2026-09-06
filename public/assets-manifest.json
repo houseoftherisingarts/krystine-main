@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-06T13:12:30.058Z",
+  "generatedAt": "2026-09-06T15:08:44.756Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -147,6 +147,20 @@
       "folder": "assets",
       "kind": "video",
       "size": 1105558
+    },
+    {
+      "path": "/compte/bienvenue-bureau-720.webp",
+      "name": "bienvenue-bureau-720.webp",
+      "folder": "compte",
+      "kind": "image",
+      "size": 32260
+    },
+    {
+      "path": "/compte/bienvenue-bureau.webp",
+      "name": "bienvenue-bureau.webp",
+      "folder": "compte",
+      "kind": "image",
+      "size": 190998
     },
     {
       "path": "/foyer/allumage-fond.webp",

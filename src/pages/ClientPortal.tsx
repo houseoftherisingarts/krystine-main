@@ -23,6 +23,7 @@ import ClientFormations from './client/ClientFormations';
 import ClientTelechargements from './client/ClientTelechargements';
 import ClientRediffusions from './client/ClientRediffusions';
 import ProblemeTechnique from '../components/client/ProblemeTechnique';
+import ClientPreferences from './client/ClientPreferences';
 import { subscribeToMemberPoints, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
 
 type Tab = 'feed' | 'profile' | 'amis' | 'orders' | 'formations' | 'rediffusions' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie';
