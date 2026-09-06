@@ -24,4 +24,5 @@ export { parrainageFilleule, parrainageAchat } from './parrainage';
 export { groupeMembre } from './groupe';
 export { musiqueOrigine } from './musique';
 export { offrirCadeau, utiliserCadeau } from './cadeaux';
+export { acheterCoffre, ouvrirCoffre, reclamerGrandLot, offrirCoffre } from './coffres';
 export { notifierBillet, annoncerChangement } from './notifs';

@@ -403,7 +403,7 @@ service cloud.firestore {
                         && request.resource.data.amount is number
                         && request.resource.data.amount <= 100
                         && request.resource.data.amount >= -1000
-                        && !(request.resource.data.kind in ['boutique', 'achat-niskas', 'quotidien', 'billet', 'amitie', 'parrainage', 'parrainage-bienvenue', 'adjust']));
+                        && !(request.resource.data.kind in ['boutique', 'achat-niskas', 'quotidien', 'billet', 'amitie', 'parrainage', 'parrainage-bienvenue', 'adjust', 'coffre', 'coffre-gain']));
       // La lecture d'un document absent (la transaction d'awardPoints vérifie
       // la clé avant d'écrire) ne révèle rien : elle passe.
       allow read: if isAdmin()
@@ -417,6 +417,18 @@ service cloud.firestore {
       allow read: if isSelf(uid) || isAdmin();
       allow write: if isAdmin();
     }
+
+    // Les coffres : `coffres/{uid}` (boîtes et clés possédées) et le journal
+    // des ouvertures ne s'écrivent que par le serveur (functions/src/coffres.ts).
+    match /coffres/{uid} {
+      allow read: if isSelf(uid) || isAdmin();
+      allow write: if isAdmin();
+    }
+    match /coffresOuvertures/{id} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow write: if false;
+    }
+    match /coffresDons/{id} { allow read: if isAdmin(); allow write: if false; }
 
     // `rewardRedemptions/{id}` — client creates a pending redemption; admin
     // fulfills / cancels.

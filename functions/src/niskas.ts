@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue, AggregateField } from 'firebase-admin/firestore';
+import { donnerCoffreDuJour7 } from './coffres';
 
 // Les niskas : la monnaie de l'espace client (le niska du Rig-Véda : l'ornement d'or
 // porté au cou qui servait déjà à compter la richesse, puis pièce d'or). Le solde vit dans
@@ -248,7 +249,13 @@ export const reclamerQuotidien = onCall(
       tx.set(balRef, { dernierJour: aujourdhui, serie, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
       return { deja: false, jour, montant, serie };
     });
+    // Le septième jour ouvre aussi un coffre de bronze, avec sa clé.
+    let coffre = false;
+    if (!r.deja && r.jour === ROUE_QUOTIDIENNE.length) {
+      await donnerCoffreDuJour7(uid, aujourdhui).catch((e) => console.warn('[niskas] coffre du jour 7', e));
+      coffre = true;
+    }
     const { balance } = await recalculerSolde(uid);
-    return { ...r, balance };
+    return { ...r, balance, coffre };
   },
 );
