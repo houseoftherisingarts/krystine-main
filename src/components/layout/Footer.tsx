@@ -110,7 +110,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               {links.map(({ href, label }) => (
                 <li key={href}>
-                  <NavLink href={href} className="text-xs text-ctextSoft hover:text-brassBright transition-colors uppercase tracking-[0.12em]">{label}</NavLink>
+                  <NavLink href={href} className="inline-block py-2 text-xs text-ctextSoft hover:text-brassBright transition-colors uppercase tracking-[0.12em]">{label}</NavLink>
                 </li>
               ))}
             </ul>
@@ -122,7 +122,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               {programmes.map(({ href, label }) => (
                 <li key={href}>
-                  <NavLink href={href} className="text-xs text-ctextSoft hover:text-brassBright transition-colors uppercase tracking-[0.12em]">{label}</NavLink>
+                  <NavLink href={href} className="inline-block py-2 text-xs text-ctextSoft hover:text-brassBright transition-colors uppercase tracking-[0.12em]">{label}</NavLink>
                 </li>
               ))}
             </ul>

@@ -125,7 +125,7 @@ const FeaturedOrigine: React.FC<{ p: Programme; onOpen: (p: Programme) => void }
         <button
           type="button"
           onClick={() => onOpen(p)}
-          className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:border-[#9c7a44] hover:text-[#7d6330]"
+          className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 pt-2.5 transition-colors duration-300 hover:border-[#9c7a44] hover:text-[#7d6330]"
         >
           {p.cta}
           <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -178,7 +178,7 @@ const SeasonCard: React.FC<{ p: Programme; onOpen: (p: Programme) => void }> = (
       <p className="mt-5 text-[0.95rem] leading-[1.8] text-[#3a2f23] flex-1">{p.body}</p>
 
       <div className="mt-8 pt-6 flex flex-wrap items-center gap-x-7 gap-y-3 border-t border-[#1c1712]/10">
-        <span className="group/cta inline-flex items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300">
+        <span className="group/cta inline-flex items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 pt-2.5 transition-colors duration-300">
           {p.cta}
           {p.kind === 'external'
             ? <ArrowUpRight size={14} weight="regular" className="transition-transform duration-300 group-hover/cta:translate-x-0.5 group-hover/cta:-translate-y-0.5" />
@@ -400,7 +400,7 @@ export default function FormationsV2() {
             <div data-fade className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-4">
               <a
                 href="#programmes"
-                className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44]"
+                className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 pt-2.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44]"
               >
                 Voir les programmes
                 <ArrowDown size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-y-0.5" />

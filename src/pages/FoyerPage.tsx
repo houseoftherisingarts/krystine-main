@@ -849,10 +849,15 @@ const AchatFoyer: React.FC = () => {
       type="button"
       onClick={rejoindre}
       disabled={busy}
-      className="fixed bottom-6 right-6 z-[90] inline-flex items-center gap-2 rounded-full bg-[#bb9a5e] px-6 py-3.5 text-xs font-bold uppercase tracking-widest text-[#2a2015] shadow-[0_12px_35px_-10px_rgba(163,130,63,0.9)] backdrop-blur transition-transform hover:scale-[1.03] disabled:opacity-60"
+      className="fixed bottom-[5.5rem] right-5 z-[90] inline-flex items-center gap-2 rounded-full bg-[#bb9a5e] px-5 py-3 sm:bottom-6 sm:right-6 sm:px-6 sm:py-3.5 text-xs font-bold uppercase tracking-widest text-[#2a2015] shadow-[0_12px_35px_-10px_rgba(163,130,63,0.9)] backdrop-blur transition-transform hover:scale-[1.03] disabled:opacity-60"
     >
       <i className={`fa-solid ${possede ? 'fa-door-open' : 'fa-fire'}`} />
-      {busy ? 'Redirection…' : possede ? 'Ouvrir ma formation' : `Rejoindre le Foyer${formation.paywall && formation.prix ? ` · ${formation.prix} $` : ''}`}
+      {busy ? 'Redirection…' : possede ? 'Ouvrir ma formation' : (
+        <>
+          Rejoindre<span className="hidden sm:inline"> le Foyer</span>
+          {formation.paywall && formation.prix ? ` · ${formation.prix} $` : ''}
+        </>
+      )}
     </button>
   );
 };

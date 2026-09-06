@@ -100,8 +100,8 @@
   .hero-inner{position:relative;z-index:3;width:100%;max-width:1280px;margin:0 auto;padding:7rem 3rem 3rem}
   .copy{max-width:560px}
   h1{font-family:var(--serif);font-weight:500;font-size:clamp(1.8rem,3.2vw,2.45rem);line-height:1.22;letter-spacing:.05em;color:var(--ctext);text-transform:uppercase}
-  .h1-a{display:block}
-  .h1-b{display:block;margin-top:1.15rem}
+  .h1-lead{font-family:var(--serif);font-weight:500;font-size:clamp(1.05rem,1.6vw,1.3rem);line-height:1.35;letter-spacing:.06em;text-transform:uppercase;color:var(--ctext);opacity:.82;margin:0 0 1rem}
+  .h1-b{display:block}
   .h1-em{font-style:normal;font-weight:500;color:var(--brass-bright);font-size:1.35em;letter-spacing:.03em}
   .sub{font-family:var(--serif);font-size:clamp(1.3rem,1.9vw,1.55rem);line-height:1.55;letter-spacing:.02em;
     color:var(--ctext);margin:0;font-weight:500;max-width:500px}
@@ -385,7 +385,7 @@
     .hero-inner{padding:14rem 1.5rem 5.6rem}
     .hero .copy{max-width:none}
     .hero h1{font-size:clamp(1.45rem,6.2vw,2rem);line-height:1.22;letter-spacing:.06em}
-    .h1-b{margin-top:.8rem}
+    .h1-lead{font-size:.95rem;margin-bottom:.8rem}
     .hero .sub{font-size:1.08rem;line-height:1.5;max-width:none}
     .hero .lede-row{max-width:none;gap:.9rem}
     .hero .lede-row .lede{font-size:.98rem;line-height:1.6}
@@ -648,7 +648,8 @@
     <canvas id="dust"></canvas>
     <div class="hero-inner">
       <div class="copy">
-        <h1 class="reveal d1"><span class="h1-a">Il n'y a jamais eu<br/>autant d'information…</span><span class="h1-b">Et jamais autant<br/>besoin de <em class="h1-em">repères.</em></span></h1>
+        <p class="h1-lead reveal d1">Il n'y a jamais eu autant d'information…</p>
+        <h1 class="reveal d1"><span class="h1-b">Et jamais autant<br/>besoin de <em class="h1-em">repères.</em></span></h1>
         <div class="h-rule reveal d2" aria-hidden="true"><span></span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></svg><span></span></div>
         <div class="sub reveal d2">Nous avons appris à chercher les réponses à l'extérieur. Pourtant, le corps et la nature parlent un langage que nous avons simplement oublié de lire.</div>
         <div class="h-rule plain reveal d3" aria-hidden="true"><span></span></div>
