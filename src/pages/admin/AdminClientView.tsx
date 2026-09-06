@@ -310,6 +310,7 @@ const AdminClientView: React.FC<Props> = ({ uid, onClose }) => {
         </div>
       </div>
     </div>
+    </Portail>
   );
 };
 
