@@ -319,7 +319,7 @@ const MediasPage: React.FC = () => {
                     {/* Launch date banner on the unreleased third volume. */}
                     {item.status === 'locked' && (
                       <span className="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#bb9a5e] text-[#2a2015] text-[10px] uppercase tracking-[0.25em] font-bold shadow-md whitespace-nowrap">
-                        {lang === 'FR' ? 'Lancement le 14 octobre' : 'Launch Oct. 14'}
+                        {lang === 'FR' ? 'Parution · février 2027' : 'Release · February 2027'}
                       </span>
                     )}
                   </div>
