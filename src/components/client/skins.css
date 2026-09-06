@@ -580,6 +580,18 @@
 .skin-teal-orange ::placeholder { color: rgba(246, 236, 226, 0.55) !important; }
 
 /* Les motifs et les scènes animées des skins riches vivent dans skins/motifs.css et skins/effets.css. */
+/* ═══ L'espace sans skin, en clair ═══
+   Mesuré le 6 septembre 2026 : les textes secondaires de l'espace par défaut
+   descendaient à 2,83 pour 1 sur le panneau crème (« Gagnés en tout », le
+   corps des cartes de coffre, le mot du parrainage). C'est sous la barre WCAG
+   de 4,5, et c'est le seul skin qui y tombait. L'encre remonte à 80 % : le
+   texte reste visiblement secondaire, et il se lit. Rien ici ne touche au mode
+   sombre, qui a ses propres valeurs. */
+html:not(.dark) .skin-defaut [class*="text-[#293027]/"],
+html:not(.dark) .skin-defaut [class*="text-[#38403a]/"],
+html:not(.dark) .skin-defaut [class*="text-[#3a3126]/"],
+html:not(.dark) .skin-defaut [class*="text-[#2a2015]/"] { color: rgba(41, 48, 39, 0.8) !important; }
+
 /* ═══ Le dernier mot sur les boutons (6 septembre 2026, soir) ═══
    Les sélecteurs d'attribut avec :not() sont plus spécifiques que `.skin .bg-*`,
    donc les lettres d'un bouton doré redevenaient l'encre du skin (crème sur or,

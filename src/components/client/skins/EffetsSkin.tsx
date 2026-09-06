@@ -174,10 +174,15 @@ const tuile = (taille: number, phase: number, c: RGB) =>
 // La nappe : les huit tuiles étalées en motif sur un canevas réduit, puis
 // agrandies. L'agrandissement fait le flou, et remplir la nappe coûte deux
 // `fillRect` au lieu d'un dessin par tache.
+const NAPPE_DIV = 4;
 const nappeDeMotif = (w: number, h: number, c: RGB) => {
   const N = 8;
-  const dw = Math.max(2, Math.round(w / 2));
-  const dh = Math.max(2, Math.round(h / 2));
+  // Le quart de la définition : la nappe est agrandie ensuite, et c'est cet
+  // agrandissement qui fait le flou de l'eau. Remplir au quart plutôt qu'à la
+  // moitié divise par quatre le coût de la seule chose vraiment chère de la
+  // scène, quatre `fillRect` à motif par image.
+  const dw = Math.max(2, Math.round(w / NAPPE_DIV));
+  const dh = Math.max(2, Math.round(h / NAPPE_DIV));
   const cv = document.createElement('canvas');
   cv.width = dw; cv.height = dh;
   const cx = cv.getContext('2d');
@@ -666,8 +671,8 @@ const sceneKapha: Fabrique = (ctx, w, h, pal, vue) => {
         const n = nappe.cx;
         n.clearRect(0, 0, nappe.dw, nappe.dh);
         n.globalCompositeOperation = 'lighter';
-        nappe.couche(t, 0.00052, 0.5, 2.6, t * 0.0032 + ptr.dx, -t * 0.002 + ptr.dy);
-        nappe.couche(t, 0.00023, 0.28, 5.2, -t * 0.0013 - ptr.dx * 0.6, -t * 0.0007 - ptr.dy * 0.6);
+        nappe.couche(t, 0.00052, 0.52, 1.3, t * 0.0016 + ptr.dx * 0.5, -t * 0.001 + ptr.dy * 0.5);
+        nappe.couche(t, 0.00023, 0.3, 2.6, -t * 0.00065 - ptr.dx * 0.3, -t * 0.00035 - ptr.dy * 0.3);
         if (chute) {
           n.globalCompositeOperation = 'destination-in';
           n.globalAlpha = 1;
