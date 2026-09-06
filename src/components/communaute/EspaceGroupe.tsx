@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AppContext';
 import MurSocial from './MurSocial';
 import BilletCarte from './BilletCarte';
 import Avatar from './Avatar';
+import BadgeVedette from './BadgeVedette';
 import { getOngletsFormation, getMembresGroupe, type OngletFormation } from '../../firebase/formations';
 import { getMember, type MemberDoc } from '../../firebase/firestore';
 import { suivreMesSauvegardes, getPost, type PostMur } from '../../firebase/mur';
@@ -104,6 +105,7 @@ const EspaceGroupe: React.FC<{ formationId: string }> = ({ formationId }) => {
                 <Link to={`/membre/${m.uid}`} className="flex min-w-0 flex-1 items-center gap-2.5">
                   <Avatar nom={nom} url={m.fiche?.photoURL || undefined} taille={34} />
                   <span className="truncate text-sm text-[#293027] dark:text-white">{nom}</span>
+                  <BadgeVedette uid={m.uid} />
                 </Link>
                 {user && user.uid !== m.uid && (
                   <Link

@@ -187,9 +187,11 @@ service cloud.firestore {
     match /badges/{uid} {
       allow read: if isSignedIn();
       allow update: if isSelf(uid)
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['exposes'])
-        && request.resource.data.exposes is list
-        && request.resource.data.exposes.size() <= 5;
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['exposes', 'vedette'])
+        && (!('exposes' in request.resource.data.diff(resource.data).affectedKeys())
+            || (request.resource.data.exposes is list && request.resource.data.exposes.size() <= 5))
+        && (!('vedette' in request.resource.data.diff(resource.data).affectedKeys())
+            || (request.resource.data.vedette is string && request.resource.data.vedette in resource.data.obtenus));
       allow create, delete: if false;
     }
     // ── Parrainage : le code est public en lecture (résolution du lien);

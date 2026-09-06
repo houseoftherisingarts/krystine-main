@@ -3,7 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { useApp } from '../contexts/AppContext';
 import { getLiveEvents, type LiveEvent } from '../firebase/firestore';
 import NewsletterSignup from './NewsletterSignup';
-import { LecteurVideoPleinEcran } from './LecteurVideoEmbarque';
+import LecteurVideoEmbarque from './LecteurVideoEmbarque';
 
 /**
  * Bloc « podcast en direct » : lit le prochain document `liveEvents`, affiche
@@ -35,7 +35,6 @@ const LiveSignup: React.FC = () => {
   const { lang } = useApp();
   const reduce = useReducedMotion();
   const [ev, setEv] = useState<LiveEvent | null>(null);
-  const [lecteurOuvert, setLecteurOuvert] = useState(false);
 
   useEffect(() => {
     getLiveEvents().then(list => {
@@ -147,15 +146,10 @@ const LiveSignup: React.FC = () => {
             </motion.div>
           </div>
 
-          <motion.div {...fade(0.35)} className="rounded-[15px] border border-[#EEE7DB]/12 bg-[#211c18]/60 p-[clamp(1.5rem,3.5vw,3rem)] backdrop-blur-sm">
+          <motion.div {...fade(0.35)} className={isPast ? 'overflow-hidden rounded-[15px] border border-[#EEE7DB]/12 bg-black shadow-[0_20px_60px_rgba(0,0,0,0.5)]' : 'rounded-[15px] border border-[#EEE7DB]/12 bg-[#211c18]/60 p-[clamp(1.5rem,3.5vw,3rem)] backdrop-blur-sm'}>
             {isPast ? (
-              <button
-                type="button"
-                onClick={() => setLecteurOuvert(true)}
-                className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#BA7B39] px-10 py-5 text-sm font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#EEE7DB]"
-              >
-                <YouTubeMark className="h-6 w-6" /> {t.watch}
-              </button>
+              // La rediffusion se regarde ici même, embarquée dans la carte : jamais un bouton, jamais un nouvel onglet (Alex, 6 sept. 2026).
+              <LecteurVideoEmbarque url={ev.replayUrl || ev.youtubeUrl} titre={t.title} />
             ) : (
               <NewsletterSignup
                 source="podcast-live"
@@ -173,13 +167,6 @@ const LiveSignup: React.FC = () => {
         </div>
       </motion.div>
 
-      {lecteurOuvert && (
-        <LecteurVideoPleinEcran
-          url={ev.replayUrl || ev.youtubeUrl}
-          titre={t.title}
-          onFermer={() => setLecteurOuvert(false)}
-        />
-      )}
     </section>
   );
 };

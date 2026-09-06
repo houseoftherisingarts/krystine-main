@@ -4,7 +4,7 @@ import { useApp } from '../contexts/AppContext';
 import { retenirCodeDepuisUrl, reclamerCodeRetenu } from '../firebase/parrainage';
 import ClientParrainage from './client/ClientParrainage';
 import Composeur from '../components/communaute/Composeur';
-import { getBadgesDe, CATALOGUE_BADGES } from '../firebase/badgesCatalogue';
+import { getBadgesDe, getBadgeVedetteDe, choisirBadgeVedette, oublierVedette, CATALOGUE_BADGES, COMMENT_GAGNER_BADGES } from '../firebase/badgesCatalogue';
 import { suivreMesAmities, accepterAmitie, refuserAmitie, type Amitie } from '../firebase/amities';
 import { getMember, type MemberDoc } from '../firebase/firestore';
 import { logout } from '../firebase/auth';
@@ -75,7 +75,14 @@ type Tab = 'profile' | 'amis' | 'orders' | 'formations' | 'rediffusions' | 'tele
 // photo de la bannière.
 const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string; lang: string; solde: PointsBalance; onBoutique: () => void }> = ({ uid, member, email, lang, solde, onBoutique }) => {
   const [badges, setBadges] = useState<string[]>([]);
-  useEffect(() => { getBadgesDe(uid).then(setBadges).catch(() => {}); }, [uid]);
+  const [vedette, setVedette] = useState<string | null>(null);
+  useEffect(() => { getBadgesDe(uid).then(setBadges).catch(() => {}); getBadgeVedetteDe(uid).then(setVedette).catch(() => {}); }, [uid]);
+  // Le badge en vedette s'affiche à côté du nom dans les clavardages et le fil.
+  const mettreEnVedette = async (id: string) => {
+    setVedette(id);
+    try { await choisirBadgeVedette(uid, id); oublierVedette(uid); } catch { /* la fiche n'a pas encore de badges */ }
+  };
+  const aGagner = Object.keys(COMMENT_GAGNER_BADGES).filter(id => !badges.includes(id));
   return (
     <div className="space-y-8">
       <div className="grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2">
@@ -128,18 +135,41 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
           ))}
         </ul>
       </div>
-      {badges.length > 0 && (
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">Badges</p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {badges.map(id => (
-              <span key={id} className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/40 bg-[#BA7B39]/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">
-                <i className={`fa-solid ${CATALOGUE_BADGES[id].icone}`} /> {CATALOGUE_BADGES[id].nom}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">Badges</p>
+        {badges.length > 0 ? (
+          <>
+            <p className="mt-1 text-xs text-[#293027]/55 dark:text-white/55">{lang === 'FR' ? 'Choisissez celui qui s’affiche à côté de votre nom dans les clavardages et le fil.' : 'Choose the one shown next to your name in chats and the feed.'}</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {badges.map(id => {
+                const enVedette = vedette === id;
+                return (
+                  <button
+                    key={id} type="button" onClick={() => mettreEnVedette(id)}
+                    aria-pressed={enVedette}
+                    title={lang === 'FR' ? (enVedette ? 'En vedette à côté de votre nom' : 'Mettre en vedette') : (enVedette ? 'Featured next to your name' : 'Feature this badge')}
+                    className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest transition-colors ${enVedette ? 'border-[#BA7B39] bg-[#BA7B39] text-[#293027] shadow-[0_8px_20px_-10px_rgba(186,123,57,0.9)]' : 'border-[#BA7B39]/40 bg-[#BA7B39]/10 text-[#8B4A2F] hover:border-[#BA7B39] dark:text-[#d9a05b]'}`}
+                  >
+                    <i className={`fa-solid ${enVedette ? 'fa-star' : CATALOGUE_BADGES[id].icone}`} /> {CATALOGUE_BADGES[id].nom}
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          <p className="mt-1 text-xs text-[#293027]/55 dark:text-white/55">{lang === 'FR' ? 'Vos badges apparaîtront ici, et celui de votre choix à côté de votre nom dans les clavardages.' : 'Your badges will appear here, and the one you choose next to your name in chats.'}</p>
+        )}
+        {aGagner.length > 0 && (
+          <details className="mt-3 text-xs text-[#293027]/60 dark:text-white/60">
+            <summary className="cursor-pointer text-[10px] font-bold uppercase tracking-[0.2em] text-[#8B4A2F]/80 dark:text-[#d9a05b]/80">{lang === 'FR' ? 'Badges à gagner' : 'Badges to earn'}</summary>
+            <ul className="mt-2 space-y-1.5">
+              {aGagner.map(id => (
+                <li key={id} className="flex items-center gap-2"><i className={`fa-solid ${CATALOGUE_BADGES[id].icone} w-4 text-center text-[#8B4A2F]/60 dark:text-[#d9a05b]/60`} /><span className="font-bold">{CATALOGUE_BADGES[id].nom}</span><span>· {lang === 'FR' ? COMMENT_GAGNER_BADGES[id].fr : COMMENT_GAGNER_BADGES[id].en}</span></li>
+              ))}
+            </ul>
+          </details>
+        )}
+      </div>
       <ClientPreferences uid={uid} member={member} lang={lang} />
     </div>
   );

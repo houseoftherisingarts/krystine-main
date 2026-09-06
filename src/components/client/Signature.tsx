@@ -1,5 +1,8 @@
 import React from 'react';
 
+// La signature manuscrite de Krystine (son logo script, version claire).
+export const SIGNATURE_URL = '/compte/signature-krystine.png';
+
 // La signature de Krystine St-Laurent en bas à droite de chaque bannière et
 // de chaque fond d'écran : le wordmark du site (Cormorant, capitales
 // espacées), qui se retire contre cinq niskas (Alex, 6 septembre 2026).
@@ -9,18 +12,18 @@ export const AvecSignature: React.FC<{ signe: boolean; className?: string; child
   <div className={`relative ${className}`} style={{ containerType: 'inline-size' }}>
     {children}
     {signe && (
-      <span
+      <img
+        src={SIGNATURE_URL}
+        alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute font-serif font-semibold uppercase whitespace-nowrap leading-none select-none"
+        className="pointer-events-none absolute select-none"
         style={{
-          right: '3.2cqw', bottom: '3.2cqw',
-          fontSize: 'clamp(7px, 1.9cqw, 30px)', letterSpacing: '0.14em',
-          color: 'rgba(255, 250, 236, 0.92)',
-          textShadow: '0 1px 2px rgba(20, 16, 10, 0.55), 0 0 14px rgba(20, 16, 10, 0.35)',
+          right: '3.2cqw', bottom: '2.6cqw',
+          width: 'clamp(54px, 15cqw, 300px)', height: 'auto',
+          filter: 'drop-shadow(0 1px 2px rgba(20,16,10,0.55)) drop-shadow(0 0 10px rgba(20,16,10,0.35))',
+          opacity: 0.94,
         }}
-      >
-        Krystine St-Laurent
-      </span>
+      />
     )}
   </div>
 );
@@ -34,33 +37,18 @@ const chargerImage = (url: string) => new Promise<HTMLImageElement>((ok, ko) => 
   im.src = url;
 });
 
-/** Dessine la signature sur un canvas, aux mêmes proportions que AvecSignature. */
+/** Dessine la signature manuscrite sur un canvas, aux mêmes proportions que AvecSignature. */
 export const signerCanvas = async (ctx: CanvasRenderingContext2D, w: number, h: number) => {
-  const taille = Math.round(w * 0.019);
-  const police = `600 ${taille}px "Cormorant Garamond", serif`;
-  try { await document.fonts.load(police); } catch { /* police de secours */ }
-  ctx.save();
-  ctx.font = police;
-  ctx.textAlign = 'right';
-  ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = 'rgba(255, 250, 236, 0.92)';
-  ctx.shadowColor = 'rgba(20, 16, 10, 0.55)';
-  ctx.shadowBlur = Math.max(2, taille * 0.35);
-  ctx.shadowOffsetY = 1;
-  const texte = 'KRYSTINE ST-LAURENT';
+  const logo = await chargerImage(SIGNATURE_URL);
+  const largeur = Math.round(Math.min(Math.max(w * 0.15, 54), 300 * (w / 1920) * 6.4));
+  const hauteur = Math.round(largeur * (logo.naturalHeight / logo.naturalWidth));
   const marge = w * 0.032;
-  const c = ctx as CanvasRenderingContext2D & { letterSpacing?: string };
-  if ('letterSpacing' in c) {
-    c.letterSpacing = `${(taille * 0.14).toFixed(2)}px`;
-    ctx.fillText(texte, w - marge, h - marge);
-  } else {
-    // Sans letterSpacing natif : lettre par lettre, de la droite vers la gauche.
-    let x = w - marge;
-    for (const l of texte.split('').reverse()) {
-      ctx.fillText(l, x, h - marge);
-      x -= ctx.measureText(l).width + taille * 0.14;
-    }
-  }
+  ctx.save();
+  ctx.globalAlpha = 0.94;
+  ctx.shadowColor = 'rgba(20, 16, 10, 0.55)';
+  ctx.shadowBlur = Math.max(4, w * 0.005);
+  ctx.shadowOffsetY = 1;
+  ctx.drawImage(logo, w - marge - largeur, h - marge * 0.8 - hauteur, largeur, hauteur);
   ctx.restore();
 };
 

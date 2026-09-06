@@ -320,7 +320,7 @@ export default function MediasV2() {
                     </div>
                   )}
                   {isLocked && (
-                    <span className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-[#9c7a44] text-[#1c1712] px-3 py-1 text-[0.56rem] uppercase tracking-[0.18em] whitespace-nowrap">
+                    <span className="absolute top-[19%] left-1/2 -translate-x-1/2 z-20 bg-[#9c7a44] text-[#1c1712] px-3 py-1 text-[0.56rem] uppercase tracking-[0.18em] whitespace-nowrap">
                       {lang === 'FR' ? 'Parution · février 2027' : 'Release · February 2027'}
                     </span>
                   )}

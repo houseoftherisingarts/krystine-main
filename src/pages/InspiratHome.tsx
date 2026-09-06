@@ -783,7 +783,7 @@ const InspiratHome: React.FC = () => {
                     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     {/* Launch date banner — only on the mystery (third) book. */}
                     {b.mystery && (
-                      <span className="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#bb9a5e] text-[#2a2015] text-[9px] uppercase tracking-[0.25em] font-bold shadow-md whitespace-nowrap">
+                      <span className="absolute top-[19%] left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#bb9a5e] text-[#2a2015] text-[9px] uppercase tracking-[0.25em] font-bold shadow-md whitespace-nowrap">
                         {lang === 'FR' ? 'Parution en février 2027' : 'Out February 2027'}
                       </span>
                     )}

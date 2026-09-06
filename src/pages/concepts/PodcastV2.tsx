@@ -230,7 +230,7 @@ export default function PodcastV2() {
       {/* ─────────── Lecteur sticky de l'épisode sélectionné ─────────── */}
       {status === 'ready' && current && (
         <section className="sticky top-[64px] z-40 bg-[#efe6d7]/95 backdrop-blur-sm border-y border-[#1c1712]/12 py-6">
-          <div className="mx-auto w-full max-w-[1180px] px-[clamp(1.5rem,5vw,5.5rem)]">
+          <div className="w-full px-[clamp(1rem,3vw,3rem)]">
             <div className="flex items-start gap-4">
               {current.image && (
                 <img
@@ -248,7 +248,7 @@ export default function PodcastV2() {
                   key={current.id}
                   controls
                   preload="none"
-                  className="w-full max-w-[760px]"
+                  className="w-full"
                   onPlay={e => {
                     // Première lecture de cet épisode dans ce rendu : trace permanente.
                     const el = e.currentTarget;
@@ -267,7 +267,7 @@ export default function PodcastV2() {
       )}
 
       {/* ─────────── Liste / états ─────────── */}
-      <section className="mx-auto w-full max-w-[1180px] px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(4rem,10vh,7rem)]">
+      <section className="w-full px-[clamp(1rem,3vw,3rem)] py-[clamp(4rem,10vh,7rem)]">
         {status === 'loading' && (
           <div className="flex flex-col items-center justify-center py-24 text-[#3a2f23]">
             <CircleNotch className="animate-spin text-[#7d6330]" size={28} weight="bold" />
@@ -317,7 +317,8 @@ export default function PodcastV2() {
                       <div>
                         {list.map((ep) => {
                           const active = ep.id === selected;
-                          const num = list.length - list.indexOf(ep);
+                          // La saison 2 commence à l'épisode zéro (« Quand le vide crée le plein »), puis 1 (Alex, 6 sept. 2026).
+                          const num = list.length - list.indexOf(ep) - (s === 2 ? 1 : 0);
                           return (
                             <button
                               key={ep.id}
@@ -339,7 +340,7 @@ export default function PodcastV2() {
                                 )}
                                 <div className="min-w-0 flex-1">
                                   <div className="flex items-baseline gap-2.5">
-                                    <span className="v2-serif text-[#7d6330] tabular-nums text-xs shrink-0">{String(num).padStart(2, '0')}</span>
+                                    <span className="v2-serif text-[#7d6330] tabular-nums text-xs shrink-0">{s === 2 ? String(num) : String(num).padStart(2, '0')}</span>
                                     <h3 className="v2-serif font-light text-[#1c1712] text-[clamp(1.05rem,1.6vw,1.3rem)] leading-snug">{ep.title}</h3>
                                   </div>
                                   <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 pl-6 text-[0.58rem] uppercase tracking-[0.14em] text-[#1c1712]/55">
@@ -366,7 +367,7 @@ export default function PodcastV2() {
           chaque côté à 1440px) : même grille éditoriale 1.1fr/0.9fr et
           même mesure de 1180px que le hero et l'archive, texte à gauche. */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#efe6d7]">
-        <div className="max-w-[1180px] mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 items-center">
+        <div className="w-full px-[clamp(1rem,3vw,3rem)] grid lg:grid-cols-[1.1fr_0.9fr] gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 items-center">
           <div>
             <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-5">Rester dans le fil</p>
             <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
@@ -391,7 +392,7 @@ export default function PodcastV2() {
 
       {/* ─────────── CLÔTURE · back-cover ─────────── */}
       <footer className="relative w-full bg-[#34241a] text-[#f4efe6] px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(5rem,12vh,9rem)] pb-12">
-        <div className="max-w-[860px] mx-auto text-center">
+        <div className="w-full px-[clamp(1rem,3vw,3rem)] text-left">
           <p className="v2-serif italic font-light text-[clamp(1.6rem,3.6vw,2.8rem)] leading-[1.24] text-[#f4efe6]">
             « Revenir à l’essentiel, un épisode à la fois. »
           </p>

@@ -9,7 +9,7 @@
 // Motion convention (Motionsites Maison): entrances 0.8-1.4s,
 // ease cubic-bezier(0.22,1,0.36,1), no bounce, prefers-reduced-motion respected.
 
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -65,6 +65,43 @@ export const Parallax: React.FC<{
   return (
     <div ref={ref} className={className}>
       <motion.div className={innerClassName} style={reduce ? undefined : { y }}>{children}</motion.div>
+    </div>
+  );
+};
+
+
+/* ── Feuille ──────────────────────────────────────────────────────────
+   Les sections empilées comme des feuilles (canon L'Œuvre) : chaque
+   section s'épingle et la suivante monte par-dessus, coins arrondis et
+   ombre portée. Une section plus haute que l'écran s'épingle par le BAS
+   (top négatif = 100vh moins sa hauteur) : elle se lit entièrement avant
+   de se faire recouvrir, rien n'est perdu. `z` monte d'une feuille à
+   l'autre. Alex, 6 septembre 2026. */
+export const Feuille: React.FC<{
+  children: React.ReactNode;
+  z: number;
+  className?: string;
+  premiere?: boolean;
+}> = ({ children, z, className = '', premiere = false }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [top, setTop] = useState(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const mesurer = () => setTop(Math.min(0, window.innerHeight - el.offsetHeight));
+    mesurer();
+    const ro = new ResizeObserver(mesurer);
+    ro.observe(el);
+    window.addEventListener('resize', mesurer);
+    return () => { ro.disconnect(); window.removeEventListener('resize', mesurer); };
+  }, []);
+  return (
+    <div
+      ref={ref}
+      className={`sticky ${premiere ? '' : 'rounded-t-[22px] md:rounded-t-[30px] shadow-[0_-30px_80px_rgba(22,16,10,0.38)]'} overflow-hidden ${className}`}
+      style={{ top, zIndex: z }}
+    >
+      {children}
     </div>
   );
 };
@@ -164,4 +201,4 @@ export const Atmosphere: React.FC<{
   </div>
 );
 
-export default { Seam, Reveal, Parallax, KenBurns, HeroVideo, Atmosphere };
+export default { Seam, Reveal, Parallax, KenBurns, HeroVideo, Atmosphere, Feuille };

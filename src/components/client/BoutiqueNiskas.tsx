@@ -14,6 +14,7 @@ import Coffres from './Coffres';
 import FondEcran from './FondEcran';
 import ApercuImage from './ApercuImage';
 import { AvecSignature, telechargerImage } from './Signature';
+import '../bouton-compte.css';
 
 // La petite boutique, dans l'onglet Téléchargements. Quatre façons de
 // personnaliser son espace pour cinq niskas chacune (une bannière, la
@@ -135,7 +136,9 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
     </div>
   );
 
-  const boutonAchat = (article: string, nom: string, cout: number) => {
+  // `or` : le bouton or métallique (même habit que « Créer mon compte ») pour
+  // une saison complète de Santé la vie (Alex, 6 sept. 2026).
+  const boutonAchat = (article: string, nom: string, cout: number, or = false) => {
     const manque = cout - solde.balance;
     return (
       <button
@@ -143,7 +146,9 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
         onClick={() => acheter(article, nom)}
         disabled={occupe !== null || manque > 0}
         title={manque > 0 ? (fr ? `Il vous manque ${niskas(manque, 'FR')}.` : `You need ${niskas(manque, 'EN')} more.`) : undefined}
-        className="inline-flex items-center gap-2 rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] transition-colors hover:bg-[#3a453a] disabled:cursor-not-allowed disabled:opacity-40 dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]"
+        className={or
+          ? 'bouton-compte inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest disabled:cursor-not-allowed disabled:opacity-40'
+          : 'inline-flex items-center gap-2 rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] transition-colors hover:bg-[#3a453a] disabled:cursor-not-allowed disabled:opacity-40 dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]'}
       >
         <PieceNiska size={16} />
         {occupe === article ? (fr ? 'Un instant' : 'One moment') : `${cout}`}
@@ -363,9 +368,9 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
 
       <Coffres solde={solde.balance} onChange={onAchat} />
 
-      {/* Les vidéos de Krystine : gratuites, une fois la section ouverte pour dix niskas */}
+      {/* Les vidéos publiques de Krystine : gratuites, une fois la section ouverte pour trente niskas */}
       <div className="mt-10" id="videos-krystine">
-        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'Les vidéos de Krystine' : 'Krystine’s videos'}</p>
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'Les vidéos publiques de Krystine' : 'Krystine’s public videos'}</p>
         <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">{fr ? 'Toutes ses vidéos, dans votre espace' : 'All her videos, in your space'}</h3>
         <p className="mt-1 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
           {fr
@@ -381,7 +386,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
               <p className="mt-1 text-sm text-[#293027]/60 dark:text-white/60">{fr ? 'Une seule fois, pour toutes les vidéos, celles d’aujourd’hui et celles qui viendront.' : 'Once, for every video, today’s and the ones to come.'}</p>
               </div>
             </div>
-            {boutonAchat('acces-videos', fr ? 'Les vidéos de Krystine' : 'Krystine’s videos', COUT_ACCES_VIDEOS)}
+            {boutonAchat('acces-videos', fr ? 'Les vidéos publiques de Krystine' : 'Krystine’s public videos', COUT_ACCES_VIDEOS)}
           </div>
         )}
         <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -477,7 +482,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
                   <p className="font-serif text-lg text-[#293027] dark:text-white"><i className="fa-solid fa-clapperboard mr-2 text-[#BA7B39]" />{fr ? `Saison ${sais.n}` : `Season ${sais.n}`} <span className="text-sm text-[#293027]/50 dark:text-white/50">· {eps.length} {fr ? 'émissions' : 'shows'}</span></p>
                   {touteLaSaison
                     ? <span className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]"><i className="fa-solid fa-check mr-1" />{fr ? 'Saison complète à vous' : 'Whole season yours'}</span>
-                    : <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">{fr ? 'Toute la saison' : 'Whole season'} {boutonAchat(`saison:${cle}`, fr ? `Santé la vie · saison ${sais.n}` : `Santé la vie · season ${sais.n}`, COUT_SAISON)}</span>}
+                    : <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">{fr ? 'Toute la saison' : 'Whole season'} {boutonAchat(`saison:${cle}`, fr ? `Santé la vie · saison ${sais.n}` : `Santé la vie · season ${sais.n}`, COUT_SAISON, true)}</span>}
                 </div>
                 <ul className="mt-2 divide-y divide-[#293027]/10 rounded-[16px] border border-[#293027]/10 bg-white/50 dark:divide-white/10 dark:border-white/10 dark:bg-white/5">
                   {eps.map((l) => {

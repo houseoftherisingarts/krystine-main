@@ -8,6 +8,7 @@ import {
   estAmi, amitieEnAttente, type Amitie,
 } from '../firebase/amities';
 import Avatar from '../components/communaute/Avatar';
+import BadgeVedette from '../components/communaute/BadgeVedette';
 import { useAmiesDOrigine } from '../components/communaute/ReserveAuFoyer';
 import { suivrePublicationsDe, type PostMur } from '../firebase/mur';
 import { getBadgesDe, CATALOGUE_BADGES } from '../firebase/badgesCatalogue';
@@ -113,6 +114,7 @@ const MembreProfilPage: React.FC = () => {
             <div className="min-w-0">
               <h1 className="flex items-center gap-2 font-serif text-2xl text-[#2a2015] dark:text-white truncate">
                 <span className="truncate">{nom}</span>
+                <BadgeVedette uid={uid} />
                 {profil.verifie && <i className="fa-solid fa-circle-check shrink-0 text-lg text-[#3b82f6]" title="Profil vérifié" />}
               </h1>
               {profil.dosha && (

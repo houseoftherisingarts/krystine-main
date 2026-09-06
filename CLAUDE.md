@@ -192,6 +192,10 @@ npx @claude-flow/cli@latest doctor --fix
 
 **Agent tool** handles execution (agents, files, code, git). **MCP tools** handle coordination (swarm, memory, hooks). **CLI** is the same via Bash.
 
+
+# 🚨 VÉRIFICATION VISUELLE OBLIGATOIRE À CHAQUE LIVRAISON (posée 2026-09-06)
+Avant de dire « fait » sur toute page ou section : capture Playwright headless à 1440 et 390 (scripts dans `scripts/qa/`, serveur `npx vite --port 5199`), captures REGARDÉES avec la grille de `boucle-verdict` : pleine largeur 16:9 d'abord (jamais de bloc centré avec du vide sur les côtés), rien ne cache rien, titres sur deux lignes au plus, vidéos embarquées (jamais bouton ni nouvel onglet), sections en feuilles empilées (`Feuille` de `src/components/motion/loeuvre.tsx`), pop-ups via `src/components/Portail.tsx`, texte lisible sur chaque skin. Trois tours au plus. Un sous-agent sans capture regardée n'a pas livré.
+
 # 🚨 BRANDING L'ŒUVRE — règles dures, à charger AVANT tout pixel (posées 2026-08-17 après 3e rappel d'Alex)
 Canon complet : `~/Documents/Onyx/30_library/loeuvre-design-system.md`. Résumé non négociable :
 1. **Titres : JAMAIS plus de 2 lignes**, desktop ET mobile. Trop long = raccourcir la copie, pas rapetisser la police.

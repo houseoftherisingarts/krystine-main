@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import BadgeVedette from '../communaute/BadgeVedette';
 import {
   BADGES, badgePour, envoyerMessage, retirerMessage, suivreMessages, suivrePresences,
   type MessageDirect, type PresenceDirect,
@@ -92,6 +93,7 @@ const ChatDirect: React.FC<{
               <div className="min-w-0">
                 <p className="flex flex-wrap items-baseline gap-x-2 text-[12px]">
                   <span className={m.animatrice ? 'font-bold text-[#E8A85C]' : 'text-[#EEE7DB]/80'}>{m.nom}</span>
+                  {!m.animatrice && <BadgeVedette uid={m.uid} sombre />}
                   {m.animatrice
                     ? <span className="rounded-full bg-[#BA7B39] px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-[#161f1a]">Krystine</span>
                     : b && <span className="text-[10px] uppercase tracking-widest" style={{ color: b.couleur }}>{b.nom}</span>}

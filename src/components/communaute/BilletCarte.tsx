@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import BadgeVedette from './BadgeVedette';
 import { motion } from 'framer-motion';
 import { Loader2, MessageCircle, Send, Trash2, Pin, Bookmark, Share2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AppContext';
@@ -51,6 +52,7 @@ const LigneCommentaire: React.FC<{ postId: string; postAuteurUid: string; c: Com
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="font-serif text-[13px] text-[#293027] dark:text-white">{c.nom}</span>
+          <BadgeVedette uid={c.uid} />
           <span className="text-[10px] text-[#38403a]/45 dark:text-white/40">{quandTexte(c.creeLe?.toMillis?.() ?? Date.now())}</span>
         </div>
         <p className="text-[13px] text-[#38403a] dark:text-white/85 leading-relaxed whitespace-pre-line mt-0.5">{c.texte}</p>
@@ -121,6 +123,7 @@ const BilletCarte: React.FC<{ post: PostMur; delaiIndex: number; estSauvegarde?:
         <div className="min-w-0 flex-1">
           <p className="font-serif text-base text-[#293027] dark:text-white truncate">
             {post.nom}
+            {!post.officiel && <BadgeVedette uid={post.uid} className="ml-2" />}
             {post.officiel && <span className="ml-2 align-middle rounded-full bg-[#BA7B39]/15 px-2 py-0.5 text-[9px] font-sans font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]">Krystine</span>}
             {post.epingle && <span className="ml-1.5 align-middle text-[#8B4A2F] dark:text-[#d9a05b]"><Pin size={12} className="inline" /></span>}
           </p>
