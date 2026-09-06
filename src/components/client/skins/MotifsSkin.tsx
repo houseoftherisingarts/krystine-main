@@ -105,28 +105,37 @@ const MotifsSkin: React.FC<{ skin: string }> = ({ skin }) => {
     const ctx = cv.getContext('2d');
     if (!ctx) return;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    // La toile est peinte à la moitié de la définition de l'écran puis étirée
+    // par le CSS : les formes sont floues et lentes, personne ne voit la
+    // différence, et le coût par image tombe d'un facteur quatre. Elle ne se
+    // redessine qu'environ trente fois par seconde, jamais à chaque image.
+    const ECHELLE = 0.5;
+    const PAS = 1000 / 30;
     let w = 0;
     let h = 0;
     let grains: Grain[] = [];
     let raf = 0;
     let dernier = 0;
+    let cumul = 0;
 
     const mesurer = () => {
       w = window.innerWidth;
       h = window.innerHeight;
-      cv.width = Math.round(w * dpr);
-      cv.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      cv.width = Math.max(1, Math.round(w * ECHELLE));
+      cv.height = Math.max(1, Math.round(h * ECHELLE));
+      ctx.setTransform(ECHELLE, 0, 0, ECHELLE, 0, 0);
       grains = semer(mode, w, h);
     };
 
     const boucle = (t: number) => {
+      raf = requestAnimationFrame(boucle);
       const dt = Math.min((t - dernier) / 1000, 0.05);
       dernier = t;
+      cumul += dt * 1000;
+      if (cumul < PAS) { avancer(mode, grains, dt, w, h); return; }
+      cumul = 0;
       avancer(mode, grains, dt, w, h);
       peindre(ctx, mode, grains, w, h, t);
-      raf = requestAnimationFrame(boucle);
     };
 
     const partir = () => {
