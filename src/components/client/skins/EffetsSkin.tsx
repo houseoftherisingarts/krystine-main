@@ -273,8 +273,11 @@ const sceneVata: Fabrique = (ctx, w, h, pal, vue) => {
     f.ang = Math.random() * TAU; f.spin = hasard(-0.02, 0.02);
     f.face = Math.random() * TAU; f.vFace = hasard(0.006, 0.026);
     f.taille = f.graine ? 5 + plan * 9 : 9 + plan * 26;
-    f.opacite = 0.24 + plan * 0.58;
-    const teinte = melange(sombre, clair, plan * plan);
+    f.opacite = 0.32 + plan * 0.6;
+    // Le mélange suivait `plan²`, donc tout ce qui n'était pas au premier plan
+    // restait à la couleur du fond et disparaissait. En linéaire, une feuille
+    // de plan moyen est déjà à mi-chemin de la clarté et se voit.
+    const teinte = melange(sombre, clair, 0.2 + plan * 0.8);
     f.teinte = rgba(teinte, 1);
     f.nervure = rgba(melange(teinte, [5, 20, 12], 0.6), 0.8);
     return f;
@@ -319,7 +322,7 @@ const sceneVata: Fabrique = (ctx, w, h, pal, vue) => {
         const r = Math.max(w, vue.h) * (0.5 + 0.14 * Math.sin(p * 1.7 + i));
         const cx = w * (0.2 + 0.3 * i + 0.16 * Math.sin(p * 1.1 + i * 2));
         const cy = vue.y + vue.h * (0.3 + 0.3 * Math.sin(p * 0.9 + i * 1.7));
-        ctx.globalAlpha = (0.2 - i * 0.04) * force;
+        ctx.globalAlpha = (0.27 - i * 0.05) * force;
         ctx.drawImage(mare, cx - r, cy - r, r * 2, r * 2);
       }
 
@@ -632,7 +635,7 @@ const sceneKapha: Fabrique = (ctx, w, h, pal, vue) => {
   })();
   const creux = halo(128, [0, 0, 0], 1, 0.42);
   const lueur = halo(128, clair, 0.5, 0.24);
-  const colonne = rai(200, 800, melange(clair, [255, 255, 255], 0.4), 0.34);
+  const colonne = rai(200, 800, melange(clair, [255, 255, 255], 0.45), 0.62);
   const nbBulles = Math.round(Math.min(18, Math.max(9, (w * h) / 62000)));
   const bulles: Bulle[] = Array.from({ length: nbBulles }, () => ({
     x: Math.random() * w, y: Math.random() * h,
@@ -705,8 +708,8 @@ const sceneKapha: Fabrique = (ctx, w, h, pal, vue) => {
         ctx.save();
         ctx.translate(cx, vue.y);
         ctx.rotate(0.13 * Math.sin(p * 0.9 + i * 1.6));
-        ctx.globalAlpha = (0.19 + 0.08 * Math.sin(p * 1.7 + i)) * force;
-        ctx.drawImage(colonne, -lr * 0.28, -vue.h * 0.12, lr * 0.56, vue.h * 1.25);
+        ctx.globalAlpha = (0.3 + 0.12 * Math.sin(p * 1.7 + i)) * force;
+        ctx.drawImage(colonne, -lr * 0.4, -vue.h * 0.12, lr * 0.8, vue.h * 1.25);
         ctx.restore();
       }
 
@@ -802,6 +805,25 @@ const sceneAurore: Fabrique = (ctx, w, h, pal, vue) => {
     return cv;
   };
   const teintes = [colonneDe(menthe), colonneDe(cyan), colonneDe(violet)];
+
+  // Les raies verticales. Une aurore n'est pas un dégradé : elle est faite de
+  // rais parallèles alignés sur les lignes du champ magnétique. Les tirer
+  // colonne par colonne demanderait de quadrupler la définition du voile; une
+  // seule bande rayée, passée en `destination-out` sur le voile fini, donne le
+  // même résultat pour un seul drawImage. La bande fait deux fois la largeur
+  // du voile : c'est ce qui permet de la faire glisser.
+  const raies = carre(2, () => undefined);
+  (() => {
+    raies.width = COL * 2; raies.height = 1;
+    const x = raies.getContext('2d');
+    if (!x) return;
+    const img = x.createImageData(COL * 2, 1);
+    for (let i = 0; i < COL * 2; i++) {
+      const v = (0.5 + 0.5 * Math.sin(i * 1.97)) * (0.55 + 0.45 * Math.sin(i * 0.31 + 1.7));
+      img.data[i * 4 + 3] = Math.round(v * 190);
+    }
+    x.putImageData(img, 0, 0);
+  })();
   const neon = halo(256, melange(menthe, cyan, 0.35), 0.6, 0.18);
   const ptr = { x: w * 0.5, y: h * 0.3, lx: w * 0.5, ly: h * 0.3, vu: false };
   const brille: { z: Zone; vie: number }[] = [];
@@ -847,6 +869,12 @@ const sceneAurore: Fabrique = (ctx, w, h, pal, vue) => {
             vctx.drawImage(teintes[seg + 1], i, sommet, 1.6, longueur);
           }
         }
+        // Les rais se creusent dans le voile, et glissent lentement.
+        vctx.globalCompositeOperation = 'destination-out';
+        vctx.globalAlpha = 0.5;
+        const gliss = (t * 0.0022) % COL;
+        vctx.drawImage(raies, gliss, 0, COL, 1, 0, 0, COL, RANG);
+        vctx.globalCompositeOperation = 'source-over';
         vctx.globalAlpha = 1;
         // Le voile couvre la partie visible : les deux tiers hauts sont
         // l'aurore, le bas se perd dans la nuit.

@@ -128,6 +128,17 @@ const fermerBienvenue = async (page) => {
   for (const t of ['Fermer', 'Plus tard', 'Commencer', 'Merci']) { const b = page.getByRole('button', { name: new RegExp(t, 'i') }).first(); if (await b.count()) { try { await b.click({ timeout: 800 }); } catch {} } }
   await page.keyboard.press('Escape');
 };
+// La roue des sept jours s'ouvre toute seule (premier appel reclamerQuotidien
+// sur un compte neuf), à un instant imprévisible : à vérifier avant chaque
+// clic, pas seulement une fois au chargement.
+const fermerRoueSiPresente = async (page) => {
+  const dialogue = page.locator('[aria-labelledby="roue-titre"]');
+  if (await dialogue.isVisible().catch(() => false)) {
+    await page.getByRole('button', { name: /Merci|Thanks/ }).first().click({ timeout: 2000 }).catch(() => {});
+    await page.waitForTimeout(200);
+  }
+};
+const clic = async (page, locator) => { await fermerRoueSiPresente(page); await locator.click(); };
 
 const ORDRE = ['bronze', 'argent', 'or'];
 const carte = (page, type) => page.locator('#boutique-coffres div.grid.gap-4 > div').nth(ORDRE.indexOf(type));
