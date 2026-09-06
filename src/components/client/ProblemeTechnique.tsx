@@ -320,6 +320,7 @@ const ProblemeTechnique: React.FC<Props> = ({ uid, nom, courriel, lang }) => {
             )}
           </div>
         </div>
+        </Portail>
       )}
     </>
   );
