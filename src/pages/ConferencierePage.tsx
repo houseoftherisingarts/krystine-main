@@ -1207,6 +1207,7 @@ const ConferencierePage: React.FC = () => {
                 </p>
               </motion.div>
             ) : (
+              <>
               <form onSubmit={handleSubmit} className="space-y-7">
                 <FormSection step="1" titleFR="Qui êtes-vous ?" titleEN="Who are you?">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
