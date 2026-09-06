@@ -5,7 +5,8 @@ import { useInView, useReducedMotion } from 'framer-motion';
    revenir à soi ») : le film promo 2024 en boucle muette derrière un voile
    vert profond, une lampe cuivrée, le grain, et la légende en carte d'ivoire.
    Le film ne se charge qu'à l'entrée dans l'écran, et se met en pause dès
-   qu'il en sort; sous prefers-reduced-motion, l'affiche seule reste. ── */
+   qu'il en sort; sous prefers-reduced-motion, l'affiche seule reste. Le cadre
+   est 16:9 comme le film : rien n'est recadré, les visages restent entiers. ── */
 const B = 'https://storage.googleapis.com/inspirata/Base%20site/promo-2024/';
 const POSTER = B + 'promo-ksl-poster-1920.webp';
 const GRAIN =
@@ -31,7 +32,7 @@ export const PlancheFilm: React.FC<{ nom: string; role: string }> = ({ nom, role
   return (
     <div
       ref={ref}
-      className="relative aspect-[4/5] w-full overflow-hidden rounded-[15px] bg-[#1b2622] shadow-[0_40px_80px_rgba(15,22,19,0.38)]"
+      className="relative aspect-video w-full overflow-hidden rounded-[15px] bg-[#1b2622] shadow-[0_40px_80px_rgba(15,22,19,0.38)]"
     >
       <video
         ref={vid}
@@ -41,7 +42,7 @@ export const PlancheFilm: React.FC<{ nom: string; role: string }> = ({ nom, role
         playsInline
         preload="none"
         aria-hidden
-        className="absolute inset-0 h-full w-full object-cover object-[28%_40%]"
+        className="absolute inset-0 h-full w-full object-cover object-center"
       />
       {/* le voile, du sombre vers la transparence, comme sur /speaking */}
       <div
