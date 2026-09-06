@@ -91,7 +91,7 @@
   .hero .lamp{position:absolute;width:70vw;height:70vw;max-width:900px;max-height:900px;border-radius:50%;left:-18vw;top:-24vw;background:radial-gradient(circle,rgba(217,154,82,.42) 0%,rgba(186,123,57,.18) 32%,rgba(40,53,47,0) 68%);filter:blur(30px);will-change:transform;transition:opacity 1.6s}
   .hero .lamp2{position:absolute;width:44vw;height:44vw;border-radius:50%;right:-8vw;bottom:-18vw;background:radial-gradient(circle,rgba(139,74,47,.35) 0%,rgba(40,53,47,0) 65%);filter:blur(40px)}
   .hero .mx{position:relative;z-index:2;display:grid;grid-template-columns:7fr 5fr;gap:4rem;align-items:center;width:100%}
-  .hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(2.7rem,5.4vw,5rem);line-height:1.02;letter-spacing:-.015em;margin-top:1.2rem;max-width:12ch}
+  .hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(2.7rem,5.4vw,5rem);line-height:1.02;letter-spacing:-.015em;margin-top:1.2rem;max-width:11em}
   .hero h1 b{font-weight:500;color:var(--amber-bright)}
   .hero .sub{font-family:var(--serif);font-size:clamp(1.15rem,1.55vw,1.45rem);line-height:1.5;color:rgba(238,231,219,.86);max-width:36rem;margin-top:1.6rem}
   .hero .ctas{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:2.2rem}
@@ -146,7 +146,7 @@
   .who{background:var(--ivory);padding:6rem 0}
   .who .mx{display:grid;grid-template-columns:5fr 7fr;gap:5rem;align-items:center}
   .who .ph{position:relative}
-  .who .ph img{aspect-ratio:1/1;object-fit:cover;border-radius:2px}
+  .who .ph img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;object-position:50% 30%;border-radius:2px}
   .who .ph::before{content:"";position:absolute;inset:0;border:1px solid var(--copper);transform:translate(-14px,14px);pointer-events:none}
   .who .ph .q{position:absolute;right:-1.4rem;bottom:2rem;background:var(--green);color:var(--ivory);padding:1.1rem 1.3rem;max-width:260px;font-family:var(--serif);font-size:1.15rem;line-height:1.35;box-shadow:0 18px 40px rgba(0,0,0,.22)}
   .who .ph .q small{display:block;margin-top:.6rem;font:600 .6rem/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--amber-bright)}
@@ -228,7 +228,7 @@
     .mx{padding:0 2rem}
     .hero .mx{grid-template-columns:1fr;gap:3rem}
     .portrait{justify-self:start;width:min(100%,380px)}
-    .hero h1{max-width:14ch}
+    .hero h1{max-width:none}
     .talks .head,.who .mx,.formats .mx,.book .mx{grid-template-columns:1fr;gap:2.5rem}
     .voices .grid{grid-template-columns:1fr}
     .steps{grid-template-columns:1fr 1fr}
@@ -291,8 +291,8 @@
   <div class="mx">
     <div class="copy">
       <div class="kicker reveal d1" data-t="hero.kicker">Keynote speaker · Author · Registered nurse</div>
-      <h1 class="reveal d2" data-t="hero.h1" data-html="1">Bring your audience back to what <b>the body knows.</b></h1>
-      <p class="sub reveal d3" data-t="hero.sub">For close to forty years, Krystine St-Laurent has been bridging Ayurveda, nursing science and the rhythms of nature. On stage, she turns that into practical bearings your audience can use the very next morning.</p>
+      <h1 class="reveal d2" data-t="hero.h1" data-html="1">Bring your audience back <b>to the body.</b></h1>
+      <p class="sub reveal d3" data-t="hero.sub">For close to forty years, Krystine St-Laurent has been bridging Ayurveda, nursing science and the rhythms of nature. On stage, she turns what the body already knows into practical bearings your audience can use the very next morning.</p>
       <div class="ctas reveal d4">
         <a class="btn btn-amber" href="#book" data-t="cta.book">Book Krystine <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a>
         <a class="btn btn-line" href="#talks" data-t="cta.talks">See the talks</a>
@@ -520,7 +520,7 @@
             </select>
           </div>
         </div>
-        <label for="bkmsg" data-t="f.msg">Your event, your audience, what you hope they leave with</label>
+        <label for="bkmsg" data-t="f.msg">Tell us about your event and what you hope the audience leaves with</label>
         <textarea id="bkmsg"></textarea>
         <button class="btn btn-amber" type="submit" data-t="f.send">Send the request <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></button>
       </div>
@@ -538,8 +538,8 @@
     </div>
     <div class="cols reveal d1">
       <div>
-        <details><summary data-t="q1.q">What topics does Krystine cover?</summary><p data-t="q1.a">Ayurveda, women's health, integrative medicine, work and life balance, transmission between generations, inner ecology. Every talk is tailored to the audience.</p></details>
-        <details><summary data-t="q2.q">Does she travel outside Quebec?</summary><p data-t="q2.a">Yes. Canada, the United States, France, Belgium and Switzerland, depending on her schedule. Give us the city in the form and we confirm feasibility.</p></details>
+        <details><summary data-t="q1.q">What topics does Krystine cover?</summary><p data-t="q1.a">She speaks about Ayurveda and women's health, about integrative medicine and the balance between work and life, and about what passes from one generation to the next. Every talk is tailored to the audience.</p></details>
+        <details><summary data-t="q2.q">Does she travel outside Quebec?</summary><p data-t="q2.a">Yes. Depending on her schedule she travels across Canada and to the United States, France, Belgium and Switzerland. Give us the city in the form and we confirm feasibility.</p></details>
         <details><summary data-t="q3.q">In which languages?</summary><p data-t="q3.a">French and English, bilingual when the room asks for it.</p></details>
       </div>
       <div>
@@ -578,8 +578,8 @@
     'intro.sig':'Conférences',
     'cta.book':'Réserver Krystine','cta.talks':'Voir les conférences',
     'hero.kicker':'Conférencière · Autrice · Infirmière',
-    'hero.h1':'Ramener votre public à ce que <b>le corps sait.</b>',
-    'hero.sub':"Depuis près de quarante ans, Krystine St-Laurent relie l'Ayurveda, la science infirmière et les rythmes de la nature. Sur scène, elle en tire des repères concrets que votre public peut utiliser dès le lendemain matin.",
+    'hero.h1':'Ramener votre public <b>au corps.</b>',
+    'hero.sub':"Depuis près de quarante ans, Krystine St-Laurent relie l'Ayurveda, la science infirmière et les rythmes de la nature. Sur scène, elle transforme ce que le corps sait déjà en repères concrets que votre public peut utiliser dès le lendemain matin.",
     'hero.langs':'Conférences en français · anglais · bilingue','hero.cap':'Ayurveda · Corps · Cycles','hero.scroll':'Défiler',
     'seen.lbl':'Tel que vu à','seen.tv':'Télévision','seen.mag':'Magazine','seen.show':'Émission','seen.radio':'Radio','seen.series':'Série télé · 3 saisons',
     'years.what':'années à relier la science et les sagesses anciennes, à l\'hôpital, dans les livres et sur scène.',
@@ -610,11 +610,11 @@
     'bk.kicker':'Réserver Krystine','bk.title':'Parlez-nous de votre événement.',
     'bk.p':"Donnez-nous l'essentiel et l'équipe vous revient sous 48 h ouvrables avec une proposition taillée pour votre salle.",
     'bk.note':"Krystine se déplace partout au Canada, aux États-Unis et en Europe selon son calendrier. Huit à seize semaines d'avance donnent la meilleure préparation; les demandes plus serrées s'étudient au cas par cas.",
-    'f.name':'Votre nom','f.email':'Courriel','f.org':'Organisation','f.city':'Ville','f.kind':"Type d'intervention",'f.format':'Format','f.date':'Date souhaitée','f.lang':'Langue de la conférence','f.msg':"Votre événement, votre public, ce que vous souhaitez qu'ils emportent",'f.send':'Envoyer la demande',
+    'f.name':'Votre nom','f.email':'Courriel','f.org':'Organisation','f.city':'Ville','f.kind':"Type d'intervention",'f.format':'Format','f.date':'Date souhaitée','f.lang':'Langue de la conférence','f.msg':"Parlez-nous de votre événement et de ce que vous souhaitez que votre public emporte",'f.send':'Envoyer la demande',
     'f.other':'Autre','f.inperson':'Présentiel','f.virtual':'Virtuel','f.hybrid':'Hybride','f.open':'Ouvert, à discuter','f.en':'Anglais','f.fr':'Français','f.bi':'Bilingue',
     'faq.kicker':'Bon à savoir','faq.title':'Les questions des organisateurs',
-    'q1.q':'Quels sujets Krystine aborde-t-elle ?','q1.a':"Ayurveda, santé féminine, médecine intégrative, équilibre travail et vie, transmission entre générations, écologie intérieure. Chaque conférence est adaptée au public.",
-    'q2.q':"Se déplace-t-elle à l'extérieur du Québec ?",'q2.a':"Oui. Canada, États-Unis, France, Belgique et Suisse, selon l'agenda. Indiquez la ville dans le formulaire et nous confirmons la faisabilité.",
+    'q1.q':'Quels sujets Krystine aborde-t-elle ?','q1.a':"Elle parle d'Ayurveda et de santé féminine, de médecine intégrative et d'équilibre entre le travail et la vie, et de ce qui se transmet d'une génération à l'autre. Chaque conférence est adaptée au public.",
+    'q2.q':"Se déplace-t-elle à l'extérieur du Québec ?",'q2.a':"Oui. Selon son agenda, elle se déplace partout au Canada ainsi qu'aux États-Unis, en France, en Belgique et en Suisse. Indiquez la ville dans le formulaire et nous confirmons la faisabilité.",
     'q3.q':'En quelles langues ?','q3.a':'Français et anglais, bilingue quand la salle le demande.',
     'q4.q':'Quels sont les délais habituels ?','q4.a':"Huit à seize semaines avant l'événement permettent une préparation idéale. Les demandes plus serrées s'étudient au cas par cas.",
     'q5.q':'Quelle est la fourchette tarifaire ?','q5.a':"Elle varie selon le format, la durée, le public et le déplacement. Décrivez votre événement dans le formulaire et l'équipe répond avec une proposition bâtie pour lui.",

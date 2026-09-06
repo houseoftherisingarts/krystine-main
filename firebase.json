@@ -31,6 +31,14 @@
         "destination": "/communaute/index.html"
       },
       {
+        "source": "/speaking",
+        "destination": "/speaking/index.html"
+      },
+      {
+        "source": "/speaking/**",
+        "destination": "/speaking/index.html"
+      },
+      {
         "source": "/liste-attente-origine",
         "destination": "/liste-attente-origine/index.html"
       },

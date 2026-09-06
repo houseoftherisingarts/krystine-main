@@ -155,6 +155,24 @@
   .fan-cap.swap .fc-inner{opacity:0;transform:translateY(6px)}
 
   /* ---------- les grands reperes + echo final ---------- */
+  /* ── Tel que vu à : la bande des médias, sous le hero ── */
+  .seen{position:relative;z-index:3;background:var(--cream);padding:2.2rem 0 2.4rem;border-bottom:1px solid rgba(58,49,38,.08)}
+  .seen .lbl{text-align:center;font-size:.64rem;letter-spacing:.3em;text-transform:uppercase;font-weight:600;color:var(--brass-deep);display:flex;align-items:center;justify-content:center;gap:1rem}
+  .seen .lbl::before,.seen .lbl::after{content:"";width:48px;height:1px;background:rgba(187,154,94,.55)}
+  .seen .row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;gap:1rem}
+  .seen .wm{flex:1;text-align:center;font-family:var(--serif);font-weight:600;font-size:clamp(1.05rem,1.5vw,1.45rem);letter-spacing:.06em;color:var(--ink);opacity:.3;transform:translateY(6px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,.8,.24,1);line-height:1;white-space:nowrap}
+  .seen .wm small{display:block;font:500 .54rem/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin-top:.45rem}
+  .seen .wm+.wm{border-left:1px solid rgba(58,49,38,.12)}
+  .seen.lit .wm{opacity:1;transform:none}
+  .seen .wm:nth-child(1){transition-delay:.05s}.seen .wm:nth-child(2){transition-delay:.15s}.seen .wm:nth-child(3){transition-delay:.25s}.seen .wm:nth-child(4){transition-delay:.35s}.seen .wm:nth-child(5){transition-delay:.45s}.seen .wm:nth-child(6){transition-delay:.55s}.seen .wm:nth-child(7){transition-delay:.65s}
+  @media (max-width:1024px){
+    .seen .row{margin-top:1.2rem;overflow:hidden;justify-content:flex-start;gap:0}
+    .seen .track{display:flex;gap:0;animation:seenmq 26s linear infinite;width:max-content}
+    .seen .wm{flex:0 0 auto;padding:0 1.6rem;opacity:1;transform:none}
+  }
+  @media (min-width:1025px){ .seen .track{display:contents} .seen .track.dup{display:none} }
+  @keyframes seenmq{to{transform:translateX(-50%)}}
+  @media (prefers-reduced-motion:reduce){ .seen .track{animation:none} .seen .wm{opacity:1;transform:none} }
   .reperes{position:sticky;top:0;z-index:2;min-height:100vh;display:flex;flex-direction:column;justify-content:center;background:var(--cream-2);padding:4rem 0 4.5rem}
   .rp-title{text-align:center;font-family:var(--serif);font-weight:500;font-size:clamp(1.4rem,2.5vw,2.05rem);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
   .rp-orn{display:flex;align-items:center;justify-content:center;gap:.75rem;margin:1.1rem auto 0;max-width:300px}
@@ -621,6 +639,33 @@
     <span>Prenez le temps de tourner votre téléphone</span>
   </div>
 
+  <!-- ===== TEL QUE VU À ===== -->
+  <section class="seen" id="medias-vus" aria-label="Médias">
+    <div class="mx">
+      <div class="lbl">Tel que vu à</div>
+      <div class="row">
+        <div class="track">
+        <div class="wm">MAtv<small>Télévision</small></div>
+        <div class="wm">Salut Bonjour<small>TVA</small></div>
+        <div class="wm">Mieux-Être<small>Magazine</small></div>
+        <div class="wm">Coup de Pouce<small>Magazine</small></div>
+        <div class="wm">Bien<small>Émission</small></div>
+        <div class="wm">98.5 FM<small>Radio</small></div>
+        <div class="wm">Santé la Vie<small>Série télé · 3 saisons</small></div>
+        </div>
+        <div class="track dup" aria-hidden="true">
+        <div class="wm">MAtv<small>Télévision</small></div>
+        <div class="wm">Salut Bonjour<small>TVA</small></div>
+        <div class="wm">Mieux-Être<small>Magazine</small></div>
+        <div class="wm">Coup de Pouce<small>Magazine</small></div>
+        <div class="wm">Bien<small>Émission</small></div>
+        <div class="wm">98.5 FM<small>Radio</small></div>
+        <div class="wm">Santé la Vie<small>Série télé · 3 saisons</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== FIL CENTRAL ===== -->
   <section class="reperes" id="origine">
     <div class="mx">
@@ -997,6 +1042,9 @@
   })();
 
   // Newsletter: inline validation + success state.
+  // Tel que vu à : les noms s'allument l'un après l'autre à l'entrée dans l'écran.
+  (function(){ var s=document.getElementById('medias-vus'); if(!s||!('IntersectionObserver' in window)){ if(s) s.classList.add('lit'); return; }
+    new IntersectionObserver(function(es,o){ es.forEach(function(e){ if(e.isIntersecting){ s.classList.add('lit'); o.disconnect(); } }); },{threshold:.4}).observe(s); })();
   // Two capture points on the page (tome 3 block + footer); each one tags its own
   // source so we can see which one actually converts.
   (function(){
