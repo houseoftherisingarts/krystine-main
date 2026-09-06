@@ -517,7 +517,7 @@ const OrigineExperience: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.5 }}
                         transition={{ duration: 0.8, ease, delay: 0.1 + i * 0.06 }}
-                        className={`flex items-start gap-3 py-4 ${i < VALUE_ITEMS.length - 1 ? 'border-b border-cream3' : ''}`}
+                        className="flex items-start gap-3 py-4 border-b border-cream3 last:border-b-0"
                       >
                         <Check size={16} className="text-brass mt-1 shrink-0" />
                         <div>
