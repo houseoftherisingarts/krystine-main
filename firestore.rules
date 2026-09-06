@@ -125,9 +125,7 @@ service cloud.firestore {
                     && request.resource.data.uid == request.auth.uid
                     && request.resource.data.texte is string
                     && request.resource.data.texte.size() <= 5000
-                    && ((request.resource.data.fil == 'communaute'
-                         && get(/databases/$(database)/documents/settings/community).data.membresPeuventPublier == true)
-                        || request.resource.data.fil == 'perso'
+                    && (request.resource.data.fil == 'perso'
                         || isAdmin()
                         // Feed d'une formation : réservé à qui a le cours
                         // (achat, accès à vie, ou formation sans paywall).
