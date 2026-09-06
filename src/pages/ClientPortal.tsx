@@ -493,6 +493,11 @@ const ClientPortal: React.FC = () => {
     : perso.banniere === 'defaut' ? BANNIERE_DEFAUT : (member?.bannerURL || BANNIERE_DEFAUT);
   const skinActif = apercuSkin || perso.skin || '';
   const skin = skinActif && skinParCle(skinActif) ? `skin-${skinActif}` : '';
+  // La signature de Krystine sur la bannière : jamais sur une photo
+  // personnelle, retirée quand la version sans signature a été prise.
+  const cleBanniere = perso.banniere && perso.banniere !== 'photo' && banniereParCle(perso.banniere) ? perso.banniere
+    : perso.banniere === 'photo' || (!perso.banniere && member?.bannerURL) ? 'photo' : 'defaut';
+  const signeBanniere = cleBanniere !== 'photo' && !possedeBoutique[`sanslogo-${cleBanniere}`];
 
 
   return (
