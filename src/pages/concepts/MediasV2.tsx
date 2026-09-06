@@ -441,46 +441,65 @@ export default function MediasV2() {
         </div>
 
         <div data-reveal className="grid md:grid-cols-2 gap-px bg-[#1c1712]/12 border border-[#1c1712]/12">
-          {/* Redécouvrir sur YouTube · accès libre */}
+          {/* Regarder les épisodes · espace client, en niskas */}
           <div className="flex flex-col p-[clamp(1.75rem,3vw,2.75rem)] bg-[#faf6ee]">
             <span className="inline-grid place-items-center w-12 h-12 rounded-full border border-[#9c7a44]/40 text-[#7d6330] mb-7">
-              <YoutubeLogo size={22} weight="light" />
+              <Coins size={22} weight="light" />
             </span>
-            <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-4">En accès libre</span>
-            <h3 className="v2-serif text-[1.6rem] font-light leading-[1.12] text-[#1c1712]">Redécouvrir les épisodes</h3>
+            <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-4">
+              {lang === 'FR' ? 'Dans votre espace' : 'In your space'}
+            </span>
+            <h3 className="v2-serif text-[1.6rem] font-light leading-[1.12] text-[#1c1712]">
+              {lang === 'FR' ? 'Regarder les épisodes' : 'Watch the episodes'}
+            </h3>
             <p className="mt-4 text-[0.95rem] leading-[1.8] text-[#3a2f23] flex-1">
-              Des épisodes de Santé la vie, des capsules et des passages télé sont rassemblés sur sa chaîne YouTube, à revoir librement, quand vous voulez.
+              {lang === 'FR'
+                ? 'Les épisodes de Santé la vie se regardent dans votre espace : 25 niskas l’épisode, ou 175 niskas pour une saison complète. Les niskas se gagnent en visitant votre espace, et s’achètent aussi directement là.'
+                : 'The episodes of Santé la vie are watched in your space: 25 niskas per episode, or 175 niskas for a full season. Niskas are earned by visiting your space, and can also be bought there directly.'}
             </p>
-            <a
-              href="https://www.youtube.com/@KrystineStLaurent"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group mt-8 inline-flex w-fit items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44]"
-            >
-              Voir la chaîne YouTube
-              <ArrowUpRight size={14} weight="regular" className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
+            {user ? (
+              <a
+                href="/compte?onglet=telechargements"
+                className="group mt-8 inline-flex w-fit items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44]"
+              >
+                {lang === 'FR' ? 'Ouvrir mon espace' : 'Open my space'}
+                <ArrowRight size={14} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
+            ) : (
+              <BoutonCompte taille="md" className="mt-8 w-fit" />
+            )}
           </div>
 
-          {/* Coffret des 3 saisons · 30 $ */}
+          {/* Coffret des 3 saisons · bientôt, 30 $ ou 250 niskas */}
           <div className="flex flex-col p-[clamp(1.75rem,3vw,2.75rem)] bg-[#faf6ee]">
             <span className="inline-grid place-items-center w-12 h-12 rounded-full bg-[#9c7a44] text-[#faf6ee] mb-7">
               <Television size={22} weight="light" />
             </span>
-            <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-4">Le coffret complet</span>
-            <h3 className="v2-serif text-[1.6rem] font-light leading-[1.12] text-[#1c1712]">Les trois saisons réunies</h3>
+            <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-4">
+              {lang === 'FR' ? 'Bientôt disponible' : 'Coming soon'}
+            </span>
+            <h3 className="v2-serif text-[1.6rem] font-light leading-[1.12] text-[#1c1712]">
+              {lang === 'FR' ? 'Les trois saisons réunies' : 'All three seasons together'}
+            </h3>
             <p className="mt-4 text-[0.95rem] leading-[1.8] text-[#3a2f23] flex-1">
-              L’intégrale de Santé la vie, les trois saisons réunies en un coffret, à revoir à votre rythme, où que vous soyez.
+              {lang === 'FR'
+                ? 'L’intégrale de Santé la vie, les trois saisons réunies en un seul accès. Elle sera offerte dans votre espace dès sa sortie.'
+                : 'The complete Santé la vie, all three seasons together in a single access. It will be offered in your space once it launches.'}
             </p>
             <div className="mt-8 pt-6 border-t border-[#1c1712]/12 flex items-end justify-between gap-4">
-              <span className="v2-serif text-[clamp(2rem,4vw,2.8rem)] font-light leading-none text-[#7d6330] tabular-nums">30&nbsp;$</span>
+              <div>
+                <span className="v2-serif text-[clamp(2rem,4vw,2.8rem)] font-light leading-none text-[#7d6330] tabular-nums">30&nbsp;$</span>
+                <span className="block mt-1.5 text-[0.68rem] uppercase tracking-[0.16em] text-[#1c1712]/45">
+                  {lang === 'FR' ? 'ou 250 niskas' : 'or 250 niskas'}
+                </span>
+              </div>
               <button
                 type="button"
                 disabled
                 aria-disabled="true"
                 className="inline-flex items-center gap-2.5 bg-[#1c1712]/15 px-7 py-3.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712]/45 cursor-not-allowed"
               >
-                Bientôt disponible
+                {lang === 'FR' ? 'Bientôt disponible' : 'Coming soon'}
               </button>
             </div>
           </div>

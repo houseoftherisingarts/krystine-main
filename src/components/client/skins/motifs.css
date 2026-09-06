@@ -1,3 +1,206 @@
 /* Les motifs des skins riches (Océan, Encre & or, Lotus, Or pur) : rempli par
    l'agent « motifs ». Ce fichier ne doit contenir que du CSS portant sur les
    classes .skin-ocean, .skin-encre, .skin-lotus, .skin-or-pur. */
+
+@property --motif-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
+@keyframes motif-houle    { to { background-position-x: -240px; } }
+@keyframes motif-respire  { 0%, 100% { opacity: .5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.09); } }
+@keyframes motif-tour     { to { --motif-angle: 360deg; } }
+@keyframes motif-reflet   { 0%, 64% { background-position: 130% 0; } 100% { background-position: -30% 0; } }
+@keyframes motif-lueur    { 0%, 100% { transform: translate3d(-9%, -5%, 0) scale(1); } 50% { transform: translate3d(9%, 6%, 0) scale(1.16); } }
+@keyframes motif-balayage { from { transform: translateX(-130%); } to { transform: translateX(130%); } }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Océan · la houle en haut des panneaux, l'écume au survol, la profondeur
+   qui respire. Les bulles montent sur la toile (MotifsSkin).
+   ───────────────────────────────────────────────────────────────────────── */
+.skin-ocean .motif-voile {
+  background:
+    radial-gradient(130% 85% at 50% -12%, rgba(79, 163, 168, .17), transparent 62%),
+    radial-gradient(95% 72% at 18% 112%, rgba(10, 38, 56, .92), transparent 66%);
+  animation: motif-respire 30s ease-in-out infinite;
+}
+
+.skin-ocean .bg-white\/55,
+.skin-ocean .bg-white\/50,
+.skin-ocean .bg-white\/45 { position: relative; isolation: isolate; }
+
+.skin-ocean .bg-white\/55::before,
+.skin-ocean .bg-white\/50::before,
+.skin-ocean .bg-white\/45::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 0; left: 0;
+  width: 100%;
+  height: 94px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: .62;
+  background-repeat: repeat-x;
+  background-size: 240px 60px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='60'%3E%3Cg fill='none' stroke='%238dd3d6' stroke-linecap='round'%3E%3Cpath d='M0 13 q30 -9 60 0 t60 0 t60 0 t60 0' stroke-width='1' opacity='.55'/%3E%3Cpath d='M0 28 q30 8 60 0 t60 0 t60 0 t60 0' stroke-width='.9' opacity='.36'/%3E%3Cpath d='M0 44 q30 -7 60 0 t60 0 t60 0 t60 0' stroke-width='.8' opacity='.22'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, .45) 52%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, .45) 52%, transparent 100%);
+  animation: motif-houle 44s linear infinite;
+}
+
+.skin-ocean .bg-white\/60,
+.skin-ocean .bg-white\/70,
+.skin-ocean .bg-white\/40,
+.skin-ocean .bg-white\/25 {
+  transition: box-shadow .5s cubic-bezier(.22, 1, .36, 1), border-color .5s cubic-bezier(.22, 1, .36, 1);
+}
+.skin-ocean .bg-white\/60:hover,
+.skin-ocean .bg-white\/70:hover,
+.skin-ocean .bg-white\/40:hover,
+.skin-ocean .bg-white\/25:hover {
+  border-color: rgba(141, 211, 214, .45) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(141, 211, 214, .38),
+    inset 0 -1px 0 rgba(141, 211, 214, .16),
+    0 0 0 1px rgba(79, 163, 168, .16),
+    0 14px 34px -20px rgba(79, 163, 168, .6);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Encre & or · le filigrane gravé sur le fond, le liseré qui parcourt le
+   bord des cartes au survol, le reflet qui traverse les grands titres.
+   ───────────────────────────────────────────────────────────────────────── */
+.skin-encre .motif-voile {
+  background-repeat: repeat;
+  background-size: 132px 132px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='none' stroke='%23c9a052' stroke-width='.9' stroke-linecap='round' opacity='.055'%3E%3Cpath d='M60 22 C74 38 74 50 60 60 C46 50 46 38 60 22 Z'/%3E%3Cpath d='M60 98 C74 82 74 70 60 60 C46 70 46 82 60 98 Z'/%3E%3Cpath d='M22 60 C38 46 50 46 60 60 C50 74 38 74 22 60 Z'/%3E%3Cpath d='M98 60 C82 46 70 46 60 60 C70 74 82 74 98 60 Z'/%3E%3Ccircle cx='60' cy='60' r='3.4'/%3E%3Cpath d='M0 0 C14 8 14 22 0 30 M0 0 C8 14 22 14 30 0'/%3E%3Cpath d='M120 0 C106 8 106 22 120 30 M120 0 C112 14 98 14 90 0'/%3E%3Cpath d='M0 120 C14 112 14 98 0 90 M0 120 C8 106 22 106 30 120'/%3E%3Cpath d='M120 120 C106 112 106 98 120 90 M120 120 C112 106 98 106 90 120'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.skin-encre .bg-white\/55,
+.skin-encre .bg-white\/60,
+.skin-encre .bg-white\/50,
+.skin-encre .bg-white\/45,
+.skin-encre .bg-white\/40 {
+  border-color: transparent !important;
+  background-image:
+    linear-gradient(var(--sk-panneau), var(--sk-panneau)),
+    conic-gradient(from var(--motif-angle), transparent 0 58%, rgba(201, 160, 82, .3) 74%, rgba(243, 223, 162, .34) 80%, transparent 90%);
+  background-origin: padding-box, border-box;
+  background-clip: padding-box, border-box;
+  background-repeat: no-repeat;
+}
+.skin-encre .bg-white\/55:hover,
+.skin-encre .bg-white\/60:hover,
+.skin-encre .bg-white\/50:hover,
+.skin-encre .bg-white\/45:hover,
+.skin-encre .bg-white\/40:hover {
+  background-image:
+    linear-gradient(var(--sk-panneau), var(--sk-panneau)),
+    conic-gradient(from var(--motif-angle), transparent 0 52%, rgba(201, 160, 82, .55) 70%, rgba(255, 240, 190, .95) 79%, rgba(201, 160, 82, .5) 86%, transparent 95%);
+  animation: motif-tour 3.6s linear infinite;
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .skin-encre .font-serif.text-2xl,
+  .skin-encre .font-serif.text-3xl,
+  .skin-encre .font-serif.text-4xl,
+  .skin-encre .font-serif.text-5xl,
+  .skin-encre .font-serif.text-6xl,
+  .skin-encre .font-serif.text-7xl {
+    background-image: linear-gradient(100deg,
+      var(--sk-encre) 0 40%,
+      #fff8e2 49%,
+      #ffe9b0 52%,
+      var(--sk-encre) 62% 100%);
+    background-size: 260% 100%;
+    background-position: 130% 0;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: motif-reflet 8s ease-in-out infinite;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Lotus · la lueur rose qui se déplace derrière le panneau principal. Les
+   pétales tombent sur la toile (MotifsSkin).
+   ───────────────────────────────────────────────────────────────────────── */
+.skin-lotus .motif-voile {
+  background: radial-gradient(44% 38% at 50% 44%, rgba(212, 140, 168, .22), rgba(212, 140, 168, .07) 55%, transparent 72%);
+  animation: motif-lueur 26s ease-in-out infinite;
+}
+
+.skin-lotus .bg-white\/60,
+.skin-lotus .bg-white\/70,
+.skin-lotus .bg-white\/40,
+.skin-lotus .bg-white\/25 {
+  transition: box-shadow .5s cubic-bezier(.22, 1, .36, 1), border-color .5s cubic-bezier(.22, 1, .36, 1);
+}
+.skin-lotus .bg-white\/60:hover,
+.skin-lotus .bg-white\/70:hover,
+.skin-lotus .bg-white\/40:hover,
+.skin-lotus .bg-white\/25:hover {
+  border-color: rgba(242, 191, 210, .42) !important;
+  box-shadow: inset 0 1px 0 rgba(242, 191, 210, .32), 0 16px 36px -22px rgba(212, 140, 168, .75);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Or pur · les rayons derrière la bannière, le reflet balayé sur les
+   boutons dorés. Les paillettes scintillent sur la toile (MotifsSkin).
+   ───────────────────────────────────────────────────────────────────────── */
+.skin-or-pur .motif-voile {
+  background: repeating-conic-gradient(from 174deg at 50% -7%,
+    rgba(224, 185, 79, .07) 0deg 1.3deg,
+    transparent 1.3deg 6.4deg);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, .3) 44%, transparent 74%);
+          mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, .3) 44%, transparent 74%);
+}
+
+.skin-or-pur .bg-\[\#BA7B39\] { position: relative; overflow: hidden; }
+.skin-or-pur .bg-\[\#BA7B39\]::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  transform: translateX(-130%);
+  background: linear-gradient(104deg,
+    transparent 34%,
+    rgba(255, 247, 214, .42) 48%,
+    rgba(255, 255, 255, .2) 54%,
+    transparent 68%);
+}
+.skin-or-pur .bg-\[\#BA7B39\]:hover::after { animation: motif-balayage .95s cubic-bezier(.22, 1, .36, 1); }
+
+.skin-or-pur .bg-white\/60,
+.skin-or-pur .bg-white\/70,
+.skin-or-pur .bg-white\/40,
+.skin-or-pur .bg-white\/25 {
+  transition: box-shadow .5s cubic-bezier(.22, 1, .36, 1), border-color .5s cubic-bezier(.22, 1, .36, 1);
+}
+.skin-or-pur .bg-white\/60:hover,
+.skin-or-pur .bg-white\/70:hover,
+.skin-or-pur .bg-white\/40:hover,
+.skin-or-pur .bg-white\/25:hover {
+  border-color: rgba(240, 207, 106, .42) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 240, 184, .3), 0 16px 36px -22px rgba(224, 185, 79, .7);
+}
+
+/* Mouvement réduit : tout s'arrête, les motifs restent. */
+@media (prefers-reduced-motion: reduce) {
+  .skin-ocean .motif-voile,
+  .skin-ocean .bg-white\/55::before,
+  .skin-ocean .bg-white\/50::before,
+  .skin-ocean .bg-white\/45::before,
+  .skin-encre .bg-white\/55:hover,
+  .skin-encre .bg-white\/60:hover,
+  .skin-encre .bg-white\/50:hover,
+  .skin-encre .bg-white\/45:hover,
+  .skin-encre .bg-white\/40:hover,
+  .skin-encre .font-serif.text-2xl,
+  .skin-encre .font-serif.text-3xl,
+  .skin-encre .font-serif.text-4xl,
+  .skin-encre .font-serif.text-5xl,
+  .skin-encre .font-serif.text-6xl,
+  .skin-encre .font-serif.text-7xl,
+  .skin-lotus .motif-voile,
+  .skin-or-pur .bg-\[\#BA7B39\]:hover::after { animation: none !important; }
+}
