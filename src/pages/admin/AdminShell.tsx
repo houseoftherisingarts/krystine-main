@@ -100,6 +100,7 @@ const NAV: NavItem[] = [
   { id: 'splash',     label: 'Écran d\'accueil', icon: 'fa-wand-magic-sparkles' },
   { id: 'foyer',      label: 'Le Foyer',         icon: 'fa-fire' },
   { id: 'bookings',   label: 'Demandes',         icon: 'fa-inbox' },
+  { id: 'demande',    label: 'Demander un changement', icon: 'fa-bolt' },
   { id: 'newsletter', label: 'Infolettre',       icon: 'fa-envelope' },
   { id: 'guide',      label: 'Parcours guidés',  icon: 'fa-compass' },
   { id: 'dosha',      label: 'Quiz Dosha',       icon: 'fa-circle-nodes' },
