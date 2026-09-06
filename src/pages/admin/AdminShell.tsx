@@ -25,6 +25,7 @@ export type AdminSectionId =
   | 'boutique'
   | 'members'
   | 'messages'
+  | 'recompenses'
   | 'submissions'
   | 'groups'
   | 'bookings'
@@ -49,6 +50,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   boutique:   'boutique',
   members:    'clients',
   messages:   'messages',
+  recompenses:'recompenses',
   submissions:'formulaires',
   groups:     'groupes',
   live:       'live',
@@ -106,6 +108,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'submissions', label: 'Formulaires',     icon: 'fa-clipboard-list',   groupe: 'ventes' },
   { id: 'members',    label: 'Clients',          icon: 'fa-users',            groupe: 'communaute' },
   { id: 'messages',   label: 'Messages',         icon: 'fa-comments',         groupe: 'communaute' },
+  { id: 'recompenses', label: 'Récompenses',     icon: 'fa-seedling',         groupe: 'communaute' },
   { id: 'groups',     label: 'Groupes',          icon: 'fa-users-rectangle',  groupe: 'communaute' },
   { id: 'feedpublic', label: 'Feed public',      icon: 'fa-newspaper',        groupe: 'communaute' },
   { id: 'live',       label: 'Live',             icon: 'fa-tower-broadcast',  groupe: 'communaute' },

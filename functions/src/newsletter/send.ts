@@ -57,6 +57,57 @@ interface NewsletterRecord {
   couverture?: Couverture;
   couvertureUrl?: string | null;
   signature?: boolean;
+  lettreDor?: { messagerie?: boolean; section?: boolean } | null;
+}
+
+// ─── La lettre d'or : livrée à l'interne, aux membres, sans courriel ────────
+// Rien ne passe par Resend, donc rien ne coûte. Chaque membre du site reçoit
+// la lettre dans son onglet Lettres (pointeur members/{uid}/inbox, marqué
+// lettreDor) et, si Krystine l'a coché, une carte dorée dans son fil avec le
+// soutien (conversations/{uid}/messages, type lettreDor). Le document passe à
+// « sent » comme une infolettre ordinaire.
+async function deliverLettreDor(newsletterId: string, doc: NewsletterRecord): Promise<{ recipients: number; delivered: number; bounces: number; done: boolean }> {
+  const db = getFirestore();
+  const canaux = { section: doc.lettreDor?.section !== false, messagerie: !!doc.lettreDor?.messagerie };
+  const membres = await db.collection('members').select('email', 'displayName', 'photoURL').get();
+  const titre = doc.subject;
+  let livrees = 0;
+  let lot = db.batch();
+  let n = 0;
+  const flush = async () => { if (n) { await lot.commit(); lot = db.batch(); n = 0; } };
+  for (const m of membres.docs) {
+    const uid = m.id;
+    const md = m.data() as { email?: string; displayName?: string; photoURL?: string };
+    if (canaux.section) {
+      lot.set(db.doc(`members/${uid}/inbox/${newsletterId}`), {
+        newsletterId, title: doc.title || titre, subject: titre, lettreDor: true,
+        receivedAt: FieldValue.serverTimestamp(),
+      }, { merge: true });
+      n++;
+    }
+    if (canaux.messagerie) {
+      const corps = `Lettre d'or : ${titre}`;
+      lot.set(db.collection(`conversations/${uid}/messages`).doc(), {
+        sender: 'admin', type: 'lettreDor', newsletterId, subject: titre, body: corps,
+        createdAt: FieldValue.serverTimestamp(),
+      });
+      lot.set(db.doc(`conversations/${uid}`), {
+        uid, memberEmail: md.email || '', memberName: md.displayName || '', memberPhotoURL: md.photoURL || '',
+        lastMessage: corps, lastMessageAt: FieldValue.serverTimestamp(),
+        unreadByClient: FieldValue.increment(1),
+      }, { merge: true });
+      n += 2;
+    }
+    livrees++;
+    if (n >= 400) await flush();
+  }
+  await flush();
+  await db.doc(`newsletters/${newsletterId}`).update({
+    status: 'sent', sentAt: Timestamp.now(), updatedAt: FieldValue.serverTimestamp(),
+    stats: { recipients: livrees, delivered: livrees, bounces: 0, opens: 0 },
+  });
+  console.log('[deliverLettreDor]', newsletterId, livrees, 'membre(s)', canaux);
+  return { recipients: livrees, delivered: livrees, bounces: 0, done: true };
 }
 
 // L'en-tête et la signature choisis dans le composeur, tels quels.
@@ -169,6 +220,7 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
   }
   if (!doc.blocks?.length) throw new HttpsError('failed-precondition', 'Newsletter has no content');
   if (!doc.subject) throw new HttpsError('failed-precondition', 'Newsletter is missing a subject');
+  if (doc.lettreDor) return deliverLettreDor(newsletterId, doc);
 
   const now = Date.now();
   const prog: Progress = doc.status === 'sending' && doc.progress

@@ -354,6 +354,12 @@ const ClientPortal: React.FC = () => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
   // Par défaut, l'espace s'ouvre sur les formations : le fil participatif vit au Foyer d'Origine.
   const [tab, setTab] = useState<Tab>('formations');
+  // Une carte « Lettre d'or » dans la messagerie mène à l'onglet Lettres.
+  useEffect(() => {
+    const aller = () => setTab('archives');
+    window.addEventListener('ksl:ouvrir-lettres', aller);
+    return () => window.removeEventListener('ksl:ouvrir-lettres', aller);
+  }, []);
   const [editOuvert, setEditOuvert] = useState(false);
   const [possedeNature, setPossedeNature] = useState(false);
   // L'aperçu d'un skin, le temps d'un survol dans la petite boutique.
@@ -450,7 +456,7 @@ const ClientPortal: React.FC = () => {
     { id: 'telechargements', label: lang === 'FR' ? 'Téléchargements' : 'Downloads', icon: 'fa-download' },
     { id: 'loyalty',  label: lang === 'FR' ? 'Points' : 'Points', icon: 'fa-seedling' },
     { id: 'dosha',    label: lang === 'FR' ? 'Dosha' : 'Dosha', icon: 'fa-circle-nodes' },
-    { id: 'archives', label: lang === 'FR' ? 'Infolettres' : 'Newsletters', icon: 'fa-envelope-open-text' },
+    { id: 'archives', label: lang === 'FR' ? 'Lettres' : 'Letters', icon: 'fa-envelope-open-text' },
     { id: 'messagerie', label: lang === 'FR' ? 'Messagerie' : 'Messages', icon: 'fa-comments' },
   ];
 

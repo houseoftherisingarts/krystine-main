@@ -59,7 +59,10 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
                 const st = statusLabel[n.status] || statusLabel.draft;
                 return (
                   <tr key={n.id} className="border-t border-[#293027]/5 dark:border-white/5 hover:bg-[#BA7B39]/5">
-                    <td className="px-4 py-3 text-[#293027] dark:text-white font-serif">{n.title || '—'}</td>
+                    <td className="px-4 py-3 text-[#293027] dark:text-white font-serif">
+                      {n.lettreDor && <i className="fa-solid fa-crown mr-2 text-xs" style={{ color: '#c9a24a' }} title="Lettre d'or, à l'interne" />}
+                      {n.title || '—'}
+                    </td>
                     <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden md:table-cell truncate max-w-[280px]">{n.subject || '—'}</td>
                     <td className="px-4 py-3 hidden lg:table-cell">
                       <span className={`text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 rounded-full ${st.color}`}>{st.label}</span>

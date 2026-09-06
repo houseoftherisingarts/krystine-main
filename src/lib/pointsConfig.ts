@@ -26,7 +26,8 @@ export type PointsKind =
   | 'profil'          // profil complété (photo, nom, dosha), une fois
   | 'billet'          // premier billet sur le fil (serveur)
   | 'amitie'          // amitié acceptée (serveur)
-  | 'parrainage'      // filleule inscrite par le lien (serveur)
+  | 'parrainage'      // filleule inscrite par le lien ou le code (serveur)
+  | 'parrainage-bienvenue' // dix niskas à la filleule qui s'inscrit avec un code (serveur)
   | 'question'        // question posée pendant un direct, une par direct
   | 'rediffusion'     // rediffusion regardée, une par rediffusion
   | 'commentaire'     // commentaire sous un billet, un par billet
@@ -51,6 +52,7 @@ export const POINTS = {
   billet:      5,
   amitie:      2,
   parrainage: 20,
+  parrainageBienvenue: 10,
   question:    2,
   rediffusion: 3,
   commentaire: 1,
@@ -168,6 +170,7 @@ export const FACONS_DE_GAGNER: FaconDeGagner[] = [
   { pts: `${POINTS.commentaire}`, fr: 'Commenter un billet', en: 'Comment on a note', noteFR: 'un par billet', noteEN: 'one per note' },
   { pts: `${POINTS.amitie}`, fr: 'Se faire une amie', en: 'Make a friend', noteFR: 'par amitié acceptée', noteEN: 'per accepted friendship' },
   { pts: `${POINTS.parrainage}`, fr: 'Inviter une amie qui crée son compte', en: 'Invite a friend who creates an account', noteFR: 'par filleule', noteEN: 'per referral' },
+  { pts: `${POINTS.parrainageBienvenue}`, fr: 'S’inscrire avec le code d’une amie', en: 'Sign up with a friend’s code', noteFR: 'une fois, à l’ouverture', noteEN: 'once, at signup' },
   { pts: `${POINTS.directPresence}`, fr: 'Être présente au direct', en: 'Attend the live', noteFR: 'par direct', noteEN: 'per live' },
   { pts: `${POINTS.directMessage}`, fr: 'Écrire dans le clavardage du direct', en: 'Write in the live chat', noteFR: 'par message', noteEN: 'per message' },
   { pts: `${POINTS.question}`, fr: 'Poser une question pour le direct', en: 'Ask a question for the live', noteFR: 'une par direct', noteEN: 'one per live' },
@@ -239,6 +242,8 @@ export interface Reward {
   descEN: string;
   minTier?: string;
   oneShot?: boolean;
+  // false = retirée de l'espace client sans être effacée (admin, Récompenses).
+  actif?: boolean;
 }
 
 export const REWARDS: Reward[] = [
@@ -281,17 +286,33 @@ export const REWARDS: Reward[] = [
     minTier: 'fleur',
     oneShot: true,
   },
+  // Le palier Source : Krystine ne donne pas de consultation privée (Alex,
+  // 6 septembre 2026), donc une formation courte et un produit de la boutique.
   {
-    id: 'appel-krystine',
+    id: 'masterclass-source',
     cost: 700,
-    labelFR: "Appel privé avec Krystine (15 min)",
-    labelEN: 'Private call with Krystine (15 min)',
-    descFR: "Une rencontre virtuelle 1:1 de 15 minutes avec Krystine. Offerte une seule fois, aux membres du palier Source.",
-    descEN: 'A 15-minute 1:1 virtual meeting with Krystine. Offered once, for Source-tier members.',
+    labelFR: 'La masterclass Santé Parfaite, offerte',
+    labelEN: 'The Perfect Health masterclass, on us',
+    descFR: "L'accès complet à la masterclass Santé Parfaite. Offert une seule fois, aux membres du palier Source.",
+    descEN: 'Full access to the Perfect Health masterclass. Offered once, for Source-tier members.',
+    minTier: 'source',
+    oneShot: true,
+  },
+  {
+    id: 'huile-source',
+    cost: 900,
+    labelFR: 'Une Huile Corporelle offerte',
+    labelEN: 'A complimentary Body Oil',
+    descFR: "L'huile corporelle de votre dosha, envoyée chez vous. Se réclame une seule fois.",
+    descEN: 'The body oil of your dosha, sent to you. One-time claim.',
     minTier: 'source',
     oneShot: true,
   },
 ];
+
+// La liste que lit l'espace client : celle que Krystine a réglée dans l'admin
+// (settings/recompenses) quand elle existe, sinon le catalogue ci-dessus.
+// Voir src/firebase/recompenses.ts.
 
 // Resolve a reward's required tier threshold. Returns 0 when unset.
 export function rewardMinThreshold(reward: Reward): number {

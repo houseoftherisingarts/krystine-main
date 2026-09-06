@@ -44,6 +44,27 @@ export function retenirCodeDepuisUrl(): void {
   } catch { /* stockage bloqué */ }
 }
 
+// Le code tapé dans la fenêtre d'inscription (Google ou courriel) se retient
+// au même endroit que le code du lien, puis se réclame après la connexion
+// (auth.ts, bootstrapMember). Vide = on efface, pour ne pas garder un code
+// d'une visite précédente.
+export function retenirCode(code: string): void {
+  const c = code.trim().toUpperCase();
+  try { c ? sessionStorage.setItem(CLE_SESSION, c) : sessionStorage.removeItem(CLE_SESSION); } catch { /* stockage bloqué */ }
+}
+
+export function codeRetenu(): string {
+  try { return sessionStorage.getItem(CLE_SESSION) || ''; } catch { return ''; }
+}
+
+// Vérifie qu'un code existe avant de créer le compte (lecture publique).
+export async function codeParrainExiste(code: string): Promise<boolean> {
+  const c = code.trim().toUpperCase();
+  if (!c) return false;
+  const snap = await getDoc(doc(db(), 'codesParrain', c));
+  return snap.exists();
+}
+
 function genererCode(uid: string): string {
   let h = 0;
   for (const c of uid) h = (h * 31 + c.charCodeAt(0)) >>> 0;

@@ -56,6 +56,10 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
   const [couverture, setCouverture] = useState<'podcast' | 'image' | 'aucune'>(ENTETE_INFOLETTRE_PAR_DEFAUT.couverture);
   const [couvertureUrl, setCouvertureUrl] = useState<string>(ENTETE_INFOLETTRE_PAR_DEFAUT.couvertureUrl);
   const [signature, setSignature] = useState(true);
+  // La lettre d'or : à l'interne, aux membres, gratuite. Deux canaux au choix.
+  const [lettreDor, setLettreDor] = useState(false);
+  const [dorMessagerie, setDorMessagerie] = useState(true);
+  const [dorSection, setDorSection] = useState(true);
 
   // datetime-local <-> Date
   const toLocal = (d: Date) => { const p = (n: number) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; };
@@ -77,6 +81,9 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
         setCouverture(n.couverture || 'aucune');
         setCouvertureUrl(n.couvertureUrl || '');
         setSignature(n.signature !== false);
+        setLettreDor(!!n.lettreDor);
+        setDorMessagerie(n.lettreDor ? !!n.lettreDor.messagerie : true);
+        setDorSection(n.lettreDor ? n.lettreDor.section !== false : true);
       })
       .finally(() => setLoading(false));
   }, [newsletterId, onBack]);
@@ -117,7 +124,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
     setSaving(true);
     try {
       const scheduledFor = when ? Timestamp.fromDate(new Date(when)) : null;
-      const enTete = { couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, signature };
+      const enTete = { couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, signature, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null };
       if (id) {
         await updateNewsletter(id, { title, subject, preheader, fromName, blocks, audience, scheduledFor, ...enTete });
       } else {
@@ -154,6 +161,9 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
       const data = res.data || {};
       if (testEmail) {
         setSendInfo(`Test envoyé à ${testEmail}.`);
+      } else if (lettreDor) {
+        setSendInfo(`Lettre d'or déposée chez ${data.recipients ?? '?'} membre(s). Aucun courriel envoyé.`);
+        setStatus('sent');
       } else {
         if (data.done === false) {
           // Grande liste : le premier passage a rendu la main, le calendrier
@@ -180,10 +190,18 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
 
   // Une audience « Des listes » sans liste cochée (ou « Des personnes » sans
   // personne) n'enverrait à personne : le geste est refusé avec un mot clair.
-  const audienceVide = (audience.mode === 'tags' && !(audience.tags || []).length) || (audience.mode === 'emails' && !(audience.emails || []).length);
+  const dorSansCanal = lettreDor && !dorMessagerie && !dorSection;
+  const audienceVide = !lettreDor && (audience.mode === 'tags' && !(audience.tags || []).length) || (audience.mode === 'emails' && !(audience.emails || []).length);
   const audienceLibelle = audience.mode === 'all' ? 'tout le monde' : audience.mode === 'tags' ? `${(audience.tags || []).length} liste${(audience.tags || []).length > 1 ? 's' : ''}` : `${(audience.emails || []).length} personne${(audience.emails || []).length > 1 ? 's' : ''}`;
 
   const sendLive = async () => {
+    if (lettreDor) {
+      if (dorSansCanal) { setSendErr('Cochez au moins un canal : la messagerie, la section Lettres, ou les deux.'); return; }
+      const ou = dorMessagerie && dorSection ? 'dans leur messagerie et dans leur section Lettres' : dorMessagerie ? 'dans leur messagerie' : 'dans leur section Lettres';
+      if (!confirm(`Déposer cette lettre d'or chez tous les membres, ${ou} ? Aucun courriel ne part. Cette action est irréversible.`)) return;
+      await triggerSend();
+      return;
+    }
     if (audienceVide) { setSendErr(audience.mode === 'tags' ? 'Cochez au moins une liste dans « À qui l’envoyer », ou choisissez « Tout le monde ».' : 'Choisissez au moins une personne, ou une autre audience.'); return; }
     const who = audience.mode === 'all' ? 'tous les abonnés actifs' : audience.mode === 'tags' ? `les listes ${(audience.tags || []).map(libelleTag).join(', ')}` : `${(audience.emails || []).length} personne(s) choisie(s)`;
     if (!confirm(`Envoyer cette infolettre maintenant à ${who} ? Cette action est irréversible.`)) return;
@@ -198,6 +216,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
     if (new Date(when).getTime() < Date.now() + 5 * 60e3) { setSendErr('La date d’envoi doit être dans au moins cinq minutes.'); return; }
     if (!subject || !blocks.length) { setSendErr('Le sujet et au moins un bloc sont requis.'); return; }
     if (audienceVide) { setSendErr('Cochez au moins une liste dans « À qui l’envoyer », ou choisissez « Tout le monde ».'); return; }
+    if (dorSansCanal) { setSendErr('Cochez au moins un canal pour la lettre d’or.'); return; }
     const savedId = await save();
     if (!savedId) return;
     await updateNewsletter(savedId, { status: 'scheduled' });
@@ -265,14 +284,15 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
             <i className="fa-solid fa-paper-plane" /> {sendBusy === 'test' ? 'Envoi…' : 'Envoyer un test'}
           </GhostButton>
           <button onClick={() => setSide('reglages')} className="hidden xl:inline-flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-[#8B4A2F] hover:underline" title="Changer l’audience">
-            <i className="fa-solid fa-users" /> {audienceLibelle}
+            <i className={`fa-solid ${lettreDor ? 'fa-crown' : 'fa-users'}`} /> {lettreDor ? 'tous les membres, à l’interne' : audienceLibelle}
           </button>
           <button
             onClick={sendLive}
-            disabled={sendBusy !== 'idle' || isReadOnly || !subject || !blocks.length || audienceVide}
-            className="inline-flex items-center justify-center gap-2 bg-[#BA7B39] text-[#293027] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-md hover:bg-[#293027] hover:text-[#8B4A2F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={sendBusy !== 'idle' || isReadOnly || !subject || !blocks.length || audienceVide || dorSansCanal}
+            className={`inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${lettreDor ? 'text-[#293027]' : 'bg-[#BA7B39] text-[#293027] hover:bg-[#293027] hover:text-[#8B4A2F]'}`}
+            style={lettreDor ? { background: 'linear-gradient(115deg, #b8862b, #f6dd8a 45%, #c9a24a)' } : undefined}
           >
-            <i className="fa-solid fa-rocket" /> {sendBusy === 'live' ? 'Envoi…' : 'Envoyer maintenant'}
+            <i className={`fa-solid ${lettreDor ? 'fa-crown' : 'fa-rocket'}`} /> {sendBusy === 'live' ? 'Envoi…' : lettreDor ? 'Déposer la lettre d’or' : 'Envoyer maintenant'}
           </button>
         </div>
       </div>
@@ -363,12 +383,38 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
               </div>
             ) : (
               <div className="p-5 space-y-5">
+                <div className="rounded-2xl p-[2px]" style={{ background: 'linear-gradient(115deg, #6f4e15, #c9a24a 18%, #fff2b8 34%, #b8862b 50%, #f6dd8a 66%, #8a6420 82%, #d9b45c)' }} onClick={e => e.stopPropagation()}>
+                  <div className="rounded-[14px] bg-white dark:bg-[#293027] px-4 py-3.5">
+                    <label className={`flex items-start gap-3 ${isReadOnly ? 'opacity-60' : 'cursor-pointer'}`}>
+                      <input type="checkbox" checked={lettreDor} disabled={isReadOnly || status === 'scheduled'} onChange={e => setLettreDor(e.target.checked)} className="mt-1 accent-[#BA7B39]" />
+                      <span className="min-w-0">
+                        <span className="block font-serif text-lg text-[#293027] dark:text-white"><i className="fa-solid fa-crown mr-2" style={{ color: '#c9a24a' }} />Lettre d’or</span>
+                        <span className="block text-xs text-[#293027]/60 dark:text-white/60">Déposée à l’interne chez tous les membres du site, sans courriel et sans frais. Elle porte le cadre doré et reste exclusive aux membres.</span>
+                      </span>
+                    </label>
+                    {lettreDor && (
+                      <div className="mt-3 space-y-2 pl-7">
+                        <label className={`flex items-center gap-3 text-sm text-[#293027] dark:text-white ${isReadOnly ? 'opacity-60' : 'cursor-pointer'}`}>
+                          <input type="checkbox" checked={dorMessagerie} disabled={isReadOnly} onChange={e => setDorMessagerie(e.target.checked)} className="accent-[#BA7B39]" />
+                          Dans leur messagerie (le fil avec le soutien)
+                        </label>
+                        <label className={`flex items-center gap-3 text-sm text-[#293027] dark:text-white ${isReadOnly ? 'opacity-60' : 'cursor-pointer'}`}>
+                          <input type="checkbox" checked={dorSection} disabled={isReadOnly} onChange={e => setDorSection(e.target.checked)} className="accent-[#BA7B39]" />
+                          Dans leur section Lettres
+                        </label>
+                        {dorSansCanal && <p className="text-xs text-[#8B4A2F]">Cochez au moins un canal.</p>}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {!lettreDor && <>
                 <div>
                   <h3 className="font-serif text-xl text-[#293027] dark:text-white">À qui l’envoyer</h3>
                   <p className="text-xs text-[#293027]/60 dark:text-white/60 mt-1">Tout le monde, ou seulement les listes que vous cochez.</p>
                 </div>
                 <AudiencePicker value={audience} onChange={setAudience} disabled={isReadOnly || status === 'scheduled'} />
                 {audienceVide && <p className="text-xs text-[#8B4A2F] bg-[#BA7B39]/10 rounded-xl px-3 py-2"><i className="fa-solid fa-circle-info mr-1" /> Cochez au moins une liste pour pouvoir envoyer.</p>}
+                </>}
                 <h3 className="pt-4 border-t border-[#293027]/10 dark:border-white/10 text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60">En-tête du courriel</h3>
                 <div className="space-y-2" onClick={e => e.stopPropagation()}>
                   {([

@@ -14,6 +14,7 @@ import {
 } from 'firebase/auth';
 import { points } from './points';
 import { ensureMemberProfile } from './firestore';
+import { reclamerCodeRetenu } from './parrainage';
 
 // Hard cap on the post-auth bootstrap so a hung Firestore call (rules issue,
 // offline cache lockup, etc.) can never freeze the sign-in modal. The auth
@@ -161,4 +162,8 @@ async function bootstrapMember(user: User, provider: 'google' | 'email') {
   // Vingt niskas à l'ouverture du compte (Alex, 2026-09-06). La clé `welcome-claim`
   // déduplique : la deuxième connexion ne donne rien de plus.
   points.welcomeBonus(user.uid).catch(() => {});
+  // Le code de parrain (lien ou champ de la fenêtre) se réclame ici, donc
+  // autant pour Google que pour le courriel, redirection comprise. Le serveur
+  // (functions/parrainage.ts) crédite la marraine et la filleule.
+  reclamerCodeRetenu(user.uid, user.displayName || '').catch(() => {});
 }

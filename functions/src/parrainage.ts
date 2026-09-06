@@ -1,5 +1,6 @@
 import { onDocumentCreated } from 'firebase-functions/v2/firestore';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { getAuth } from 'firebase-admin/auth';
 import { crediterNiskas } from './niskas';
 
 // Le parrainage à paliers (porté du FMM). Deux compteurs, posés côté serveur
@@ -9,6 +10,14 @@ import { crediterNiskas } from './niskas';
 //  - les filleules qui ACHÈTENT une formation donnent des cadeaux réels
 //    (règle d'Alex du 2026-08-29 : jamais de cadeau pour une invitation
 //    qui n'achète rien).
+
+// Niskas à l'inscription d'une filleule (Alex, 2026-09-06). Miroir client :
+// src/lib/pointsConfig.ts (POINTS.parrainage, POINTS.parrainageBienvenue).
+const NISKAS_MARRAINE = 20;
+const NISKAS_FILLEULE = 10;
+// Un compte plus vieux que ça n'est pas une inscription : le parrainage est
+// effacé sans crédit (sinon un vieux compte réclame un code après coup).
+const COMPTE_NEUF_MS = 48 * 60 * 60 * 1000;
 
 const PALIERS: Array<[number, string]> = [
   [1, 'ambassadrice'],
@@ -34,12 +43,25 @@ export const parrainageFilleule = onDocumentCreated(
     const data = event.data?.data() as { parrainUid?: string } | undefined;
     const parrainUid = data?.parrainUid;
     if (!parrainUid || parrainUid === event.params.filleulUid) return;
+    const filleulUid = event.params.filleulUid;
 
     const db = getFirestore();
+    try {
+      const cree = Date.parse((await getAuth().getUser(filleulUid)).metadata.creationTime || '');
+      if (cree && Date.now() - cree > COMPTE_NEUF_MS) {
+        await db.doc(`parrainages/${filleulUid}`).delete();
+        console.log(`[parrainage] ${filleulUid} : compte trop ancien, parrainage refusé`);
+        return;
+      }
+    } catch (e) {
+      console.warn('[parrainage] âge du compte indisponible', e);
+    }
+
     const filleules = await db.collection('parrainages').where('parrainUid', '==', parrainUid).count().get();
     const n = filleules.data().count;
     await db.doc(`members/${parrainUid}`).set({ filleules: n }, { merge: true });
-    await crediterNiskas(parrainUid, 'parrainage', 20, `parrainage:${event.params.filleulUid}`, { filleulUid: event.params.filleulUid });
+    await crediterNiskas(parrainUid, 'parrainage', NISKAS_MARRAINE, `parrainage:${filleulUid}`, { filleulUid });
+    await crediterNiskas(filleulUid, 'parrainage-bienvenue', NISKAS_FILLEULE, `parrainage-bienvenue:${filleulUid}`, { parrainUid });
 
     for (const [seuil, badgeId] of PALIERS) {
       if (n >= seuil) {

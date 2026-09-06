@@ -3,8 +3,9 @@ import { useApp } from '../../contexts/AppContext';
 import {
   subscribeToMemberPoints, getMemberPoints, listPointsEvents, listMyRewardRedemptions, redeemReward, points, reconcileBalance,
   type PointsBalance, type PointsEvent, type RewardRedemption, bienvenueDejaVersee } from '../../firebase/points';
-import { POINTS, TIERS, REWARDS, FACONS_DE_GAGNER, tierFromLifetime, rewardMinThreshold, niskas, type Reward } from '../../lib/pointsConfig';
+import { POINTS, TIERS, FACONS_DE_GAGNER, tierFromLifetime, rewardMinThreshold, niskas, type Reward } from '../../lib/pointsConfig';
 import PieceNiska from '../../components/client/PieceNiska';
+import { suivreRecompenses, RECOMPENSES_PAR_DEFAUT } from '../../firebase/recompenses';
 import PointsPlant, { type Stage } from '../../components/PointsPlant';
 
 // Labels for every PointsKind surfaced in the activity history. Kept here
@@ -46,6 +47,9 @@ const ClientLoyalty: React.FC = () => {
   const [redeeming, setRedeeming] = useState<string | null>(null);
   const [claimingWelcome, setClaimingWelcome] = useState(false);
   const [toast, setToast] = useState<{ kind: 'ok' | 'err'; msg: string } | null>(null);
+  // Les récompenses réglées par Krystine dans l'admin; les éteintes n'apparaissent pas.
+  const [recompenses, setRecompenses] = useState<Reward[]>(RECOMPENSES_PAR_DEFAUT);
+  useEffect(() => suivreRecompenses(l => setRecompenses(l.filter(r => r.actif !== false))), []);
 
   // Hybrid balance read — one-shot getDoc for an immediate, accurate value
   // (which works even if the live subscription is misfiring), then attach
@@ -339,7 +343,7 @@ const ClientLoyalty: React.FC = () => {
           </h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {REWARDS.map(r => {
+          {recompenses.map(r => {
             const canAfford = balance.balance >= r.cost;
             const minThreshold = rewardMinThreshold(r);
             const tierReached = balance.lifetime >= minThreshold;

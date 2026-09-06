@@ -394,6 +394,10 @@ export interface NewsletterDoc {
   couverture?: 'podcast' | 'image' | 'aucune';
   couvertureUrl?: string | null;
   signature?: boolean;
+  // La lettre d'or : livrée à l'interne, aux membres, sans courriel ni Resend.
+  // `messagerie` la dépose dans leur fil avec le soutien, `section` dans leur
+  // onglet Lettres. Absent ou null = infolettre ordinaire par courriel.
+  lettreDor?: { messagerie: boolean; section: boolean } | null;
   sentAt?: Timestamp;
   stats?: NewsletterStats;
   createdBy?: string;
@@ -450,6 +454,7 @@ export interface InboxPointer {
   subject: string;
   receivedAt?: Timestamp;
   readAt?: Timestamp;
+  lettreDor?: boolean;
 }
 
 export async function getMemberInbox(uid: string): Promise<InboxPointer[]> {
@@ -831,6 +836,10 @@ export interface MessageDoc {
   sender: 'client' | 'admin';
   body: string;
   createdAt?: Timestamp;
+  // Une lettre d'or déposée dans le fil : la carte dorée ouvre la lettre.
+  type?: 'lettreDor';
+  newsletterId?: string;
+  subject?: string;
 }
 
 export async function ensureConversation(uid: string, profile: Pick<ConversationDoc, 'memberEmail' | 'memberName' | 'memberPhotoURL'>) {

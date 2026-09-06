@@ -3,6 +3,7 @@ import { useApp } from '../../contexts/AppContext';
 import { loginWithEmail, loginWithGoogle, signUpWithEmail, sendPasswordReset } from '../../firebase/auth';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import app from '../../firebase';
+import { codeRetenu, retenirCode, codeParrainExiste, retenirCodeDepuisUrl } from '../../firebase/parrainage';
 
 type Mode = 'signin' | 'signup' | 'reset';
 
@@ -49,22 +50,45 @@ const SignInModal: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+  // Prérempli par le lien /compte?parrain=CODE, modifiable à la main.
+  const [codeParrain, setCodeParrain] = useState(codeRetenu);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const captcha = useRecaptcha(signInOpen && mode === 'signup');
+  // À l'ouverture, reprendre le code du lien (/compte?parrain=CODE) s'il y en a un.
+  useEffect(() => {
+    if (!signInOpen) return;
+    retenirCodeDepuisUrl();
+    const c = codeRetenu();
+    if (c) setCodeParrain(c);
+  }, [signInOpen]);
 
   const reset = () => { setErr(null); setInfo(null); };
 
   const close = () => {
     setSignInOpen(false);
-    setEmail(''); setPassword(''); setDisplayName('');
+    setEmail(''); setPassword(''); setDisplayName(''); setCodeParrain(codeRetenu());
     setMode('signup'); reset();
+  };
+
+  // Retient le code pour la réclamation d'après connexion (auth.ts). Un code
+  // tapé qui n'existe pas arrête l'inscription au lieu de se perdre en silence.
+  const poserCodeParrain = async (): Promise<boolean> => {
+    if (mode !== 'signup') return true;
+    const code = codeParrain.trim().toUpperCase();
+    if (code && !(await codeParrainExiste(code))) {
+      setErr(lang === 'FR' ? 'Ce code de parrain est introuvable. Vérifiez-le ou laissez le champ vide.' : 'This referral code was not found. Check it or leave the field empty.');
+      return false;
+    }
+    retenirCode(code);
+    return true;
   };
 
   const handleGoogle = async () => {
     reset(); setBusy(true);
     try {
+      if (!(await poserCodeParrain())) return;
       const cred = await loginWithGoogle();
       // `cred === null` means the popup couldn't open (Safari ITP, blocked
       // popups, etc.) and we fell back to a full-page redirect to Google.
@@ -96,6 +120,7 @@ const SignInModal: React.FC = () => {
         await loginWithEmail(email.trim(), password);
         close();
       } else if (mode === 'signup') {
+        if (!(await poserCodeParrain())) return;
         if (RECAPTCHA_SITE_KEY) {
           const token = captcha.getToken();
           if (!token) {
@@ -142,6 +167,24 @@ const SignInModal: React.FC = () => {
         <p className="text-sm text-[#2a2015]/60 dark:text-white/60 mb-6">
           {lang === 'FR' ? 'Accédez à votre espace client Inspirata.' : 'Access your Inspirata client space.'}
         </p>
+
+        {mode === 'signup' && (
+          <label className="block mb-4">
+            <span className="block mb-1.5 text-[10px] uppercase tracking-widest text-[#2a2015]/50 dark:text-white/50">
+              {lang === 'FR' ? 'Code de parrain (facultatif)' : 'Referral code (optional)'}
+            </span>
+            <input
+              type="text"
+              autoComplete="off"
+              autoCapitalize="characters"
+              maxLength={12}
+              placeholder={lang === 'FR' ? 'ex. K7A2B9' : 'e.g. K7A2B9'}
+              value={codeParrain}
+              onChange={e => setCodeParrain(e.target.value.toUpperCase())}
+              className="w-full px-4 py-3 rounded-xl border border-[#2a2015]/10 dark:border-white/10 bg-[#f6f3ee] dark:bg-white/5 text-[#2a2015] dark:text-white outline-none focus:border-[#bb9a5e] font-mono tracking-[0.2em] placeholder:font-sans placeholder:tracking-normal"
+            />
+          </label>
+        )}
 
         {mode !== 'reset' && (
           <>

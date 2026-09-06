@@ -1,6 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useApp } from '../../contexts/AppContext';
 import { ensureConversation, sendMessage, subscribeToMessages, markConversationRead, type MessageDoc } from '../../firebase/firestore';
+import { CadreOr, EtiquetteOr } from '../../components/client/CadreOr';
+import { CLE_LETTRE_A_OUVRIR } from './ClientArchives';
+
+// Ouvre une lettre d'or : l'onglet Lettres du portail écoute cet événement
+// et lit la clé pour ouvrir la bonne lettre.
+const ouvrirLettreDor = (newsletterId: string) => {
+  try { sessionStorage.setItem(CLE_LETTRE_A_OUVRIR, newsletterId); } catch { /* noop */ }
+  window.dispatchEvent(new CustomEvent('ksl:ouvrir-lettres'));
+};
 
 const ClientSupport: React.FC = () => {
   const { user, member, lang } = useApp();
@@ -57,6 +66,27 @@ const ClientSupport: React.FC = () => {
           </div>
         ) : messages.map(m => {
           const me = m.sender === 'client';
+          if (m.type === 'lettreDor' && m.newsletterId) {
+            return (
+              <div key={m.id} className="flex justify-start">
+                <CadreOr fin className="max-w-[85%] rounded-2xl rounded-bl-sm px-4 py-3">
+                  <EtiquetteOr lang={lang} />
+                  <p className="mt-1.5 font-serif text-lg text-[#293027] dark:text-white">{m.subject || m.body}</p>
+                  <button
+                    type="button"
+                    onClick={() => ouvrirLettreDor(m.newsletterId!)}
+                    className="mt-3 inline-flex items-center gap-2 rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027]"
+                    style={{ background: 'linear-gradient(115deg, #b8862b, #f6dd8a 45%, #c9a24a)' }}
+                  >
+                    <i className="fa-solid fa-envelope-open" /> {lang === 'FR' ? 'Lire la lettre' : 'Read the letter'}
+                  </button>
+                  <span className="block text-[10px] opacity-50 mt-2 text-[#293027] dark:text-white">
+                    {m.createdAt?.toDate().toLocaleTimeString(lang === 'FR' ? 'fr-CA' : 'en-CA', { hour: '2-digit', minute: '2-digit' }) || ''}
+                  </span>
+                </CadreOr>
+              </div>
+            );
+          }
           return (
             <div key={m.id} className={`flex ${me ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
