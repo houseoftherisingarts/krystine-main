@@ -350,8 +350,16 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
       ))}
 
       {fondOuvert && banniereParCle(fondOuvert)?.fond && (
-        <FondEcran ouvert onFermer={() => setFondOuvert(null)} image={banniereParCle(fondOuvert)!.fond!} nom={fr ? banniereParCle(fondOuvert)!.nomFR : banniereParCle(fondOuvert)!.nomEN} lang={lang} />
+        <FondEcran ouvert onFermer={() => setFondOuvert(null)} image={banniereParCle(fondOuvert)!.fond!} nom={fr ? banniereParCle(fondOuvert)!.nomFR : banniereParCle(fondOuvert)!.nomEN} lang={lang} signe={signee(fondOuvert)} />
       )}
+      {(() => {
+        const b = apercuOuvert ? banniereParCle(apercuOuvert) : undefined;
+        const vues = b ? [
+          { cle: 'banniere', image: b.image, libelle: fr ? 'Bannière' : 'Banner', ratio: '1440 / 608' },
+          ...(b.fond ? [{ cle: 'fond', image: b.fond, libelle: fr ? 'Fond d’écran' : 'Wallpaper', ratio: '16 / 9' }] : []),
+        ] : [];
+        return <ApercuImage ouvert={!!b} onFermer={() => setApercuOuvert(null)} vues={vues} titre={b ? (fr ? b.nomFR : b.nomEN).replace(/^Bannière\s+|\s+banner$/i, '') : ''} signe={b ? signee(b.cle) : true} lang={lang} />;
+      })()}
 
       <Coffres solde={solde.balance} onChange={onAchat} />
 
