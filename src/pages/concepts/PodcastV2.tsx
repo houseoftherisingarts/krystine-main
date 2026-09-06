@@ -43,8 +43,8 @@ type Episode = {
 // jour, « Saison 2, épisode 0 : Quand le vide crée le plein », et la
 // rediffusion du live d'intuition les rejoint. Tout le reste de l'archive
 // (l'année complète de la saison 1) reste en Saison 1. Un classement par
-// année aurait mis presque tous les épisodes 2026 en Saison 2 — faux, donc
-// on classe par titre, pas par date.
+// année aurait mis presque tous les épisodes 2026 en Saison 2, ce qui est
+// faux : on classe par titre, pas par date.
 function seasonFromTitle(title: string): 1 | 2 {
   const t = title
     .toUpperCase()
