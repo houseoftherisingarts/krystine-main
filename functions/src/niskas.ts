@@ -43,7 +43,7 @@ const COSMETIQUES: Record<string, { cout: number; nom: string }> = {
   // Les skins rares (lotus, feminite, nature, aurore, or-pur) ne s'achètent pas : coffres.ts.
   // Toutes les vidéos de Krystine, débloquées d'un coup : les vidéos sont
   // gratuites, c'est l'ouverture de la section qui coûte dix niskas.
-  'acces-videos': { cout: 10, nom: 'Les vidéos de Krystine' },
+  'acces-videos': { cout: 30, nom: 'Les vidéos publiques de Krystine' },
 };
 const NISKAS_BIENVENUE = 20;
 const COUT_EPISODE = 25;

@@ -103,7 +103,7 @@ export const COUT_EPISODE = 25;
 export const COUT_SAISON = 175;
 export const SAISONS_SANTE_LA_VIE: Record<string, { module: string; n: number }> = { '1': { module: 'Module 1', n: 1 }, '2': { module: 'Module 2', n: 2 } };
 // Les vidéos sont gratuites; ouvrir la section « Les vidéos de Krystine » coûte dix niskas, une fois.
-export const COUT_ACCES_VIDEOS = 10;
+export const COUT_ACCES_VIDEOS = 30;
 export const CATALOGUE_VIDEOS = '/compte/videos-krystine.json';
 
 /** Une vidéo de Krystine, telle que scripts/youtube-catalogue.mjs l'écrit. */
