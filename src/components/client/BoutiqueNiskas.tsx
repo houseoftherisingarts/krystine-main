@@ -6,7 +6,7 @@ import { getLecons, type Lecon } from '../../firebase/formations';
 import { acheterAvecNiskas, acheterNiskas, subscribeToMemberPoints, suivreBoutique, type PointsBalance } from '../../firebase/points';
 import {
   CATEGORIES_BOUTIQUE,
-  BANNIERE_NATURE, BOUTIQUE, COUT_EPISODE, PAQUET_NISKAS, SANTE_LA_VIE_ID, niskas,
+  BANNIERE_NATURE, BOUTIQUE, COUT_EPISODE, COUT_SAISON, SAISONS_SANTE_LA_VIE, PAQUET_NISKAS, SANTE_LA_VIE_ID, niskas,
 } from '../../lib/pointsConfig';
 import PieceNiska from './PieceNiska';
 
@@ -405,27 +405,42 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
           <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">Santé la vie</h3>
           <p className="mt-1 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
             {fr
-              ? `Les émissions complètes, telles que diffusées sur MAtv. Chaque émission coûte ${niskas(COUT_EPISODE, 'FR')} et rejoint vos téléchargements pour de bon.`
-              : `The complete shows, as aired on MAtv. Each one costs ${niskas(COUT_EPISODE, 'EN')} and joins your downloads for good.`}
+              ? `Les émissions complètes, telles que diffusées sur MAtv, en deux saisons. Chaque émission coûte ${niskas(COUT_EPISODE, 'FR')}, une saison complète ${niskas(COUT_SAISON, 'FR')}, et tout rejoint vos téléchargements pour de bon.`
+              : `The complete shows, as aired on MAtv, in two seasons. Each one costs ${niskas(COUT_EPISODE, 'EN')}, a full season ${niskas(COUT_SAISON, 'EN')}, and everything joins your downloads for good.`}
           </p>
-          <ul className="mt-4 divide-y divide-[#293027]/10 rounded-[16px] border border-[#293027]/10 bg-white/50 dark:divide-white/10 dark:border-white/10 dark:bg-white/5">
-            {episodesTries.length === 0 && (
-              <li className="px-4 py-3 text-sm text-[#293027]/50 dark:text-white/50">{fr ? 'Les émissions arrivent.' : 'The shows are on their way.'}</li>
-            )}
-            {episodesTries.map((l) => {
-              const aMoi = episodesPossedes.has(l.id);
-              return (
-                <li key={l.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
-                  <span className="min-w-0 flex-1 text-sm text-[#293027]/85 dark:text-white/85">
-                    <i className="fa-solid fa-tv mr-2 text-[#BA7B39]" />{l.titre}
-                  </span>
-                  {aMoi
-                    ? <span className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]"><i className="fa-solid fa-check mr-1" />{fr ? 'Dans vos téléchargements' : 'In your downloads'}</span>
-                    : boutonAchat(`episode:${l.id}`, l.titre, COUT_EPISODE)}
-                </li>
-              );
-            })}
-          </ul>
+          {episodesTries.length === 0 && (
+            <p className="mt-4 text-sm text-[#293027]/50 dark:text-white/50">{fr ? 'Les émissions arrivent.' : 'The shows are on their way.'}</p>
+          )}
+          {Object.entries(SAISONS_SANTE_LA_VIE).map(([cle, sais]) => {
+            const eps = episodesTries.filter((l) => l.moduleNom === sais.module);
+            if (eps.length === 0) return null;
+            const touteLaSaison = eps.every((l) => episodesPossedes.has(l.id));
+            return (
+              <div key={cle} className="mt-5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <p className="font-serif text-lg text-[#293027] dark:text-white"><i className="fa-solid fa-clapperboard mr-2 text-[#BA7B39]" />{fr ? `Saison ${sais.n}` : `Season ${sais.n}`} <span className="text-sm text-[#293027]/50 dark:text-white/50">· {eps.length} {fr ? 'émissions' : 'shows'}</span></p>
+                  {touteLaSaison
+                    ? <span className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]"><i className="fa-solid fa-check mr-1" />{fr ? 'Saison complète à vous' : 'Whole season yours'}</span>
+                    : <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">{fr ? 'Toute la saison' : 'Whole season'} {boutonAchat(`saison:${cle}`, fr ? `Santé la vie · saison ${sais.n}` : `Santé la vie · season ${sais.n}`, COUT_SAISON)}</span>}
+                </div>
+                <ul className="mt-2 divide-y divide-[#293027]/10 rounded-[16px] border border-[#293027]/10 bg-white/50 dark:divide-white/10 dark:border-white/10 dark:bg-white/5">
+                  {eps.map((l) => {
+                    const aMoi = episodesPossedes.has(l.id);
+                    return (
+                      <li key={l.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                        <span className="min-w-0 flex-1 text-sm text-[#293027]/85 dark:text-white/85">
+                          <i className="fa-solid fa-tv mr-2 text-[#BA7B39]" />{l.titre}
+                        </span>
+                        {aMoi
+                          ? <span className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]"><i className="fa-solid fa-check mr-1" />{fr ? 'Dans vos téléchargements' : 'In your downloads'}</span>
+                          : boutonAchat(`episode:${l.id}`, l.titre, COUT_EPISODE)}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

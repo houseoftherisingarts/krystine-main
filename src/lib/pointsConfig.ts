@@ -91,7 +91,10 @@ export const veilleDe = (j: string): string => journee(new Date(`${j}T12:00:00-0
 // Jumelle du catalogue serveur (functions/src/niskas.ts). Le serveur seul
 // débite; ceci ne sert qu'à afficher.
 export const COUT_COSMETIQUE = 5;
-export const COUT_EPISODE = 100;
+export const COUT_EPISODE = 25;
+// Une saison complète de Santé la vie (Module 1 = saison 1, Module 2 = saison 2).
+export const COUT_SAISON = 175;
+export const SAISONS_SANTE_LA_VIE: Record<string, { module: string; n: number }> = { '1': { module: 'Module 1', n: 1 }, '2': { module: 'Module 2', n: 2 } };
 // Les vidéos sont gratuites; ouvrir la section « Les vidéos de Krystine » coûte dix niskas, une fois.
 export const COUT_ACCES_VIDEOS = 10;
 export const CATALOGUE_VIDEOS = '/compte/videos-krystine.json';

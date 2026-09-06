@@ -29,13 +29,21 @@ const ClientTelechargements: React.FC = () => {
   useEffect(() => {
     const regarder = (e: Event) => {
       setEnLecture((e as CustomEvent<string>).detail);
+      setChaineOuverte(true);
       window.setTimeout(() => document.getElementById('mes-videos')?.scrollIntoView({ behavior: 'smooth' }), 50);
     };
     window.addEventListener('krystine:regarder-video', regarder);
     return () => window.removeEventListener('krystine:regarder-video', regarder);
   }, []);
   const accesVideos = !!possede['acces-videos'];
-  const mesVideos = (catalogue?.videos || []).filter((v) => accesVideos || !!possede[`video:${v.id}`]);
+  // « Mes vidéos » = celles prises à l'unité. La chaîne entière, une fois la
+  // section ouverte, vit dans un bloc repliable à part : 549 vignettes d'un
+  // coup, on s'y perd.
+  const mesVideos = (catalogue?.videos || []).filter((v) => !!possede[`video:${v.id}`]);
+  const [chaineOuverte, setChaineOuverte] = useState(false);
+  const [rechercheChaine, setRechercheChaine] = useState('');
+  const [nbChaine, setNbChaine] = useState(24);
+  const videosChaine = (catalogue?.videos || []).filter((v) => !rechercheChaine.trim() || v.titre.toLowerCase().includes(rechercheChaine.trim().toLowerCase()));
 
   // Les téléchargements : la musique d'Origine et les émissions de Santé la
   // vie achetées à l'unité en niskas (le document d'achat porte `episodes`,
@@ -67,6 +75,19 @@ const ClientTelechargements: React.FC = () => {
       setBusy(null);
     }
   };
+
+  const carteVideo = (v: { id: string; titre: string; duree?: number; publieLe?: string }) => (
+    <button key={v.id} type="button" onClick={() => { setEnLecture(v.id); document.getElementById('mes-videos')?.scrollIntoView({ behavior: 'smooth' }); }} className="flex gap-3 rounded-[14px] border border-[#293027]/10 bg-white/50 p-2 text-left transition-colors hover:border-[#BA7B39] dark:border-white/10 dark:bg-white/5">
+      <span className="relative w-28 flex-none overflow-hidden rounded-[10px]">
+        <img src={vignetteYoutube(v.id)} alt="" className="aspect-video w-full object-cover" loading="lazy" />
+        <i className="fa-solid fa-play absolute inset-0 flex items-center justify-center text-white drop-shadow" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="line-clamp-2 text-sm text-[#293027] dark:text-white">{v.titre}</span>
+        <span className="mt-1 block text-[10px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">{v.duree ? dureeLisible(v.duree) : ''}{v.publieLe ? ` · ${v.publieLe}` : ''}</span>
+      </span>
+    </button>
+  );
 
   if (loading) return <p className="text-sm text-[#293027]/50 dark:text-white/50">{lang === 'FR' ? 'Chargement…' : 'Loading…'}</p>;
 
@@ -117,11 +138,10 @@ const ClientTelechargements: React.FC = () => {
           ))}
         </div>
       )}
-      {mesVideos.length > 0 && (
+      {(mesVideos.length > 0 || accesVideos) && (
         <div className="mt-8" id="mes-videos">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Mes vidéos' : 'My videos'} ({mesVideos.length})</p>
           {enLecture && (
-            <div className="mt-3 overflow-hidden rounded-[16px] bg-black">
+            <div className="mb-4 overflow-hidden rounded-[16px] bg-black">
               <div className="aspect-video">
                 <iframe
                   src={`https://www.youtube-nocookie.com/embed/${enLecture}?autoplay=1&rel=0`}
@@ -133,20 +153,47 @@ const ClientTelechargements: React.FC = () => {
               </div>
             </div>
           )}
-          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {mesVideos.map((v) => (
-              <button key={v.id} type="button" onClick={() => { setEnLecture(v.id); document.getElementById('mes-videos')?.scrollIntoView({ behavior: 'smooth' }); }} className={`flex gap-3 rounded-[14px] border p-2 text-left transition-colors hover:border-[#BA7B39] ${enLecture === v.id ? 'border-[#BA7B39] bg-[#BA7B39]/10' : 'border-[#293027]/10 dark:border-white/10'}`}>
-                <span className="relative w-28 flex-none overflow-hidden rounded-[10px]">
-                  <img src={vignetteYoutube(v.id)} alt="" className="aspect-video w-full object-cover" loading="lazy" />
-                  <i className="fa-solid fa-play absolute inset-0 flex items-center justify-center text-white drop-shadow" />
+          {mesVideos.length > 0 && (
+            <>
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Mes vidéos' : 'My videos'} ({mesVideos.length})</p>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{mesVideos.map(carteVideo)}</div>
+            </>
+          )}
+          {accesVideos && (
+            <div className={`${mesVideos.length > 0 ? 'mt-6' : ''} rounded-[18px] border border-[#BA7B39]/30 bg-white/40 dark:bg-white/5`}>
+              <button
+                type="button"
+                onClick={() => setChaineOuverte((o) => !o)}
+                aria-expanded={chaineOuverte}
+                className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+              >
+                <span>
+                  <span className="block text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Les vidéos de Krystine' : 'Krystine’s videos'}</span>
+                  <span className="block text-sm text-[#293027]/60 dark:text-white/60">{catalogue ? catalogue.videos.length : ''} {lang === 'FR' ? 'vidéos, directs et capsules, à regarder ici' : 'videos, lives and capsules, to watch here'}</span>
                 </span>
-                <span className="min-w-0 flex-1">
-                  <span className="line-clamp-2 text-sm text-[#293027] dark:text-white">{v.titre}</span>
-                  <span className="mt-1 block text-[10px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">{v.duree ? dureeLisible(v.duree) : ''}{v.publieLe ? ` · ${v.publieLe}` : ''}</span>
-                </span>
+                <i className={`fa-solid fa-chevron-down text-[#8B4A2F] transition-transform ${chaineOuverte ? '' : '-rotate-90'}`} aria-hidden="true" />
               </button>
-            ))}
-          </div>
+              {chaineOuverte && (
+                <div className="border-t border-[#293027]/10 p-4 dark:border-white/10">
+                  <input
+                    type="search"
+                    value={rechercheChaine}
+                    onChange={(e) => { setRechercheChaine(e.target.value); setNbChaine(24); }}
+                    placeholder={lang === 'FR' ? 'Chercher un titre' : 'Search a title'}
+                    className="w-full rounded-full border border-[#38403a]/15 bg-white/70 px-4 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] sm:w-72 dark:border-white/15 dark:bg-white/10 dark:text-white"
+                  />
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{videosChaine.slice(0, nbChaine).map(carteVideo)}</div>
+                  {videosChaine.length > nbChaine && (
+                    <div className="mt-4 text-center">
+                      <button type="button" onClick={() => setNbChaine((n) => n + 48)} className="rounded-full border border-[#38403a]/15 px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
+                        {lang === 'FR' ? `Voir plus (${videosChaine.length - nbChaine} autres)` : `See more (${videosChaine.length - nbChaine} more)`}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
       <BoutiqueNiskas possedeMusiqueDeja={possedeMusique} episodesPossedes={episodesPossedes} onAchat={() => setTour((t) => t + 1)} />
