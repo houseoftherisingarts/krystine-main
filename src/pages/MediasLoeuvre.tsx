@@ -256,7 +256,7 @@ const MediasLoeuvre: React.FC = () => {
                       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-cream/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                       {isLocked && (
                         <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-brass text-espressoDeep px-3 py-1 text-[0.58rem] uppercase tracking-[0.2em] font-bold shadow-md whitespace-nowrap">
-                          {lang === 'FR' ? 'Parution · 4 nov. 2026' : 'Release · Nov 4 2026'}
+                          {lang === 'FR' ? 'Parution · février 2027' : 'Release · February 2027'}
                         </span>
                       )}
                     </div>
