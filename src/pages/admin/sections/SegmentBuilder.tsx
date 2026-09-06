@@ -13,6 +13,7 @@ import {
   type Segment, type Criterion, type CriterionField, type Operator, type ContactMetrics,
 } from '../../../lib/segments';
 import { Card, GhostButton, PrimaryButton, DangerButton, Input, Label, Textarea } from '../primitives';
+import Portail from '../../../components/Portail';
 
 // ─── Segment builder modal ──────────────────────────────────────────────────
 // Loads every relevant collection once, then re-evaluates the criteria
