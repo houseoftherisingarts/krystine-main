@@ -16,10 +16,10 @@
 <meta property="og:title" content="Krystine St-Laurent · Keynote speaker" />
 <meta property="og:description" content="Talks that bring your audience back to what the body already knows. French and English. Conferences, corporate teams, health professionals." />
 <meta property="og:url" content="https://www.krystinestlaurent.ca/speaking" />
-<meta property="og:image" content="https://www.krystinestlaurent.ca/speaking/assets/og-speaking.jpg" />
+<meta property="og:image" content="https://storage.googleapis.com/inspirata/Base%20site/promo-2024/promo-ksl-poster.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","@id":"https://www.krystinestlaurent.ca/#person","name":"Krystine St-Laurent","url":"https://www.krystinestlaurent.ca/speaking","jobTitle":"Keynote speaker, author, registered nurse","knowsAbout":["Ayurveda","Integrative health","Women's health","Nature and cycles"],"image":"https://www.krystinestlaurent.ca/speaking/assets/krystine-stage.webp","knowsLanguage":["fr","en"]}</script>
-<link rel="preload" as="image" href="/speaking/assets/krystine-stage.webp" fetchpriority="high" />
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","@id":"https://www.krystinestlaurent.ca/#person","name":"Krystine St-Laurent","url":"https://www.krystinestlaurent.ca/speaking","jobTitle":"Keynote speaker, author, registered nurse","knowsAbout":["Ayurveda","Integrative health","Women's health","Nature and cycles"],"image":"https://storage.googleapis.com/inspirata/Base%20site/promo-2024/promo-ksl-poster.jpg","knowsLanguage":["fr","en"]}</script>
+<link rel="preload" as="image" href="https://storage.googleapis.com/inspirata/Base%20site/promo-2024/promo-ksl-poster-1920.webp" fetchpriority="high" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet" />
@@ -88,10 +88,24 @@
 
   /* ── hero ── */
   .hero{position:relative;min-height:100vh;background:var(--green);color:var(--ivory);overflow:hidden;display:flex;align-items:center;padding:8rem 0 5rem}
-  .hero .lamp{position:absolute;width:70vw;height:70vw;max-width:900px;max-height:900px;border-radius:50%;left:-18vw;top:-24vw;background:radial-gradient(circle,rgba(217,154,82,.42) 0%,rgba(186,123,57,.18) 32%,rgba(40,53,47,0) 68%);filter:blur(30px);will-change:transform;transition:opacity 1.6s}
-  .hero .lamp2{position:absolute;width:44vw;height:44vw;border-radius:50%;right:-8vw;bottom:-18vw;background:radial-gradient(circle,rgba(139,74,47,.35) 0%,rgba(40,53,47,0) 65%);filter:blur(40px)}
-  .hero .mx{position:relative;z-index:2;display:grid;grid-template-columns:7fr 5fr;gap:4rem;align-items:center;width:100%}
-  .hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(2.7rem,5.4vw,5rem);line-height:1.02;letter-spacing:-.015em;margin-top:1.2rem;max-width:11em}
+  .hero .scene{position:absolute;inset:0;z-index:0;background:var(--green-deep)}
+  .hero .scene video{width:100%;height:100%;object-fit:cover;object-position:80% 45%;opacity:0;transition:opacity 1.4s ease}
+  .hero .scene video.on{opacity:1}
+  .hero .scene video.on.dim{opacity:.22}
+  .hero .veil{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(27,38,34,.98) 0%,rgba(27,38,34,.95) 40%,rgba(27,38,34,.6) 62%,rgba(27,38,34,.22) 100%),linear-gradient(180deg,rgba(27,38,34,.55) 0%,rgba(27,38,34,0) 30%,rgba(27,38,34,.75) 100%)}
+  .hero .film{display:inline-flex;align-items:center;gap:.7rem;margin-top:1.4rem;color:var(--ivory);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;cursor:pointer;background:none;border:0;padding:0;font-family:var(--sans)}
+  .hero .film i{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;border:1px solid rgba(238,231,219,.5);transition:background .3s,border-color .3s,transform .4s var(--ease)}
+  .hero .film i svg{width:12px;height:12px;fill:var(--ivory);margin-left:2px}
+  .hero .film:hover i{background:var(--amber);border-color:var(--amber);transform:scale(1.08)}
+  dialog.lightbox{border:0;padding:0;background:transparent;max-width:min(96vw,1400px);width:100%}
+  dialog.lightbox::backdrop{background:rgba(17,23,20,.92);backdrop-filter:blur(8px)}
+  dialog.lightbox video{width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;box-shadow:0 40px 90px rgba(0,0,0,.6)}
+  dialog.lightbox .close{position:absolute;top:-52px;right:0;background:none;border:0;color:var(--ivory);font:600 .7rem/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;cursor:pointer;padding:.6rem 0}
+  dialog.lightbox form{position:relative}
+  .hero .lamp{z-index:1;position:absolute;width:70vw;height:70vw;max-width:900px;max-height:900px;border-radius:50%;left:-18vw;top:-24vw;background:radial-gradient(circle,rgba(217,154,82,.42) 0%,rgba(186,123,57,.18) 32%,rgba(40,53,47,0) 68%);filter:blur(30px);will-change:transform;transition:opacity 1.6s}
+  .hero .lamp2{z-index:1;position:absolute;width:44vw;height:44vw;border-radius:50%;right:-8vw;bottom:-18vw;background:radial-gradient(circle,rgba(139,74,47,.35) 0%,rgba(40,53,47,0) 65%);filter:blur(40px)}
+  .hero .mx{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,46rem) 1fr;gap:3rem;align-items:center;width:100%}
+  .hero h1{text-shadow:0 2px 24px rgba(27,38,34,.8);font-family:var(--serif);font-weight:500;font-size:clamp(2.7rem,5.4vw,5rem);line-height:1.02;letter-spacing:-.015em;margin-top:1.2rem;max-width:11em}
   .hero h1 b{font-weight:500;color:var(--amber-bright)}
   .hero .sub{font-family:var(--serif);font-size:clamp(1.15rem,1.55vw,1.45rem);line-height:1.5;color:rgba(238,231,219,.86);max-width:36rem;margin-top:1.6rem}
   .hero .ctas{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:2.2rem}
@@ -226,9 +240,15 @@
 
   @media (max-width:1024px){
     .mx{padding:0 2rem}
-    .hero .mx{grid-template-columns:1fr;gap:3rem}
-    .portrait{justify-self:start;width:min(100%,380px)}
+    .hero{display:flex;flex-direction:column;justify-content:flex-start;padding:7.5rem 0 4.5rem;min-height:0}
+    .hero .mx{order:1}
+    .hero .scene{order:2}
+    .hero .mx{grid-template-columns:1fr;gap:2rem}
     .hero h1{max-width:none}
+    .hero .scene{position:relative;inset:auto;aspect-ratio:16/9;width:auto;margin:2.4rem 2rem 0;border-radius:10px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.4);z-index:2}
+    .hero .scroll{display:none}
+    .hero .scene video{object-fit:contain;object-position:center;background:#000}
+    .hero .veil{background:linear-gradient(180deg,rgba(27,38,34,.2),rgba(27,38,34,0) 40%,rgba(27,38,34,.6))}
     .talks .head,.who .mx,.formats .mx,.book .mx{grid-template-columns:1fr;gap:2.5rem}
     .voices .grid{grid-template-columns:1fr}
     .steps{grid-template-columns:1fr 1fr}
@@ -242,7 +262,8 @@
     .mx{padding:0 1.3rem}
     .top{padding:.9rem 1.3rem}.top.solid{padding:.6rem 1.3rem}
     .top .btn{display:none}
-    .hero{padding:6.5rem 0 5rem}
+    .hero{padding:6.5rem 0 4rem}
+    .hero .scene{margin:2rem 1.3rem 0}
     .hero h1{font-size:2.55rem}
     .years .mx{grid-template-columns:1fr;gap:1.4rem}
     .talk{grid-template-columns:1fr;gap:.8rem}
@@ -285,6 +306,10 @@
 
 <!-- ===== HERO ===== -->
 <section class="hero" id="hero">
+  <div class="scene" id="scene">
+    <video id="heroVid" poster="https://storage.googleapis.com/inspirata/Base%20site/promo-2024/promo-ksl-poster-1920.webp" muted loop playsinline preload="metadata" aria-hidden="true"></video>
+  </div>
+  <div class="veil"></div>
   <div class="lamp" id="lamp"></div>
   <div class="lamp2"></div>
   <div class="grain"></div>
@@ -297,16 +322,17 @@
         <a class="btn btn-amber" href="#book" data-t="cta.book">Book Krystine <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a>
         <a class="btn btn-line" href="#talks" data-t="cta.talks">See the talks</a>
       </div>
+      <button type="button" class="film reveal d5" id="filmBtn"><i><svg viewBox="0 0 12 12"><path d="M1 0l11 6-11 6z"/></svg></i><span data-t="hero.film">Watch the film, with sound</span></button>
       <div class="langs reveal d5" data-t="hero.langs">Talks in French · English · Bilingual</div>
-    </div>
-    <div class="portrait reveal d3">
-      <div class="frame"></div>
-      <img id="heroImg" src="/speaking/assets/krystine-stage.webp" srcset="/speaking/assets/krystine-stage-560.webp 560w, /speaking/assets/krystine-stage.webp 869w" sizes="(max-width:640px) 90vw, 440px" width="869" height="1120" alt="Krystine St-Laurent, seated with an open book, in a deep green room" fetchpriority="high" />
-      <div class="cap"><span class="script">Krystine</span><span data-t="hero.cap">Ayurveda · Body · Cycles</span></div>
     </div>
   </div>
   <div class="scroll" aria-hidden="true"><span data-t="hero.scroll">Scroll</span><i></i></div>
 </section>
+
+<dialog class="lightbox" id="film" aria-label="Film">
+  <form method="dialog"><button class="close" type="submit" data-t="film.close">Close ✕</button>
+  <video id="filmVid" controls playsinline preload="none" poster="https://storage.googleapis.com/inspirata/Base%20site/promo-2024/promo-ksl-poster-1920.webp"></video></form>
+</dialog>
 
 <!-- ===== AS SEEN ON ===== -->
 <section class="seen" id="seen" aria-label="Media">
@@ -580,7 +606,7 @@
     'hero.kicker':'Conférencière · Autrice · Infirmière',
     'hero.h1':'Ramener votre public <b>au corps.</b>',
     'hero.sub':"Depuis près de quarante ans, Krystine St-Laurent relie l'Ayurveda, la science infirmière et les rythmes de la nature. Sur scène, elle transforme ce que le corps sait déjà en repères concrets que votre public peut utiliser dès le lendemain matin.",
-    'hero.langs':'Conférences en français · anglais · bilingue','hero.cap':'Ayurveda · Corps · Cycles','hero.scroll':'Défiler',
+    'hero.langs':'Conférences en français · anglais · bilingue','hero.film':'Voir le film, avec le son','film.close':'Fermer ✕','hero.cap':'Ayurveda · Corps · Cycles','hero.scroll':'Défiler',
     'seen.lbl':'Tel que vu à','seen.tv':'Télévision','seen.mag':'Magazine','seen.show':'Émission','seen.radio':'Radio','seen.series':'Série télé · 3 saisons',
     'years.what':'années à relier la science et les sagesses anciennes, à l\'hôpital, dans les livres et sur scène.',
     'years.books':'Best-sellers dans la francophonie','years.tv':'Saisons de Santé la Vie à la télé','years.icu':'Années en soins critiques',
@@ -670,12 +696,28 @@
   var co=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ count(e.target); co.unobserve(e.target);} }); },{threshold:.5});
   document.querySelectorAll('.count').forEach(function(el){ co.observe(el); });
 
-  /* ── Topbar, sticky CTA, portrait drift, lamp that follows the pointer. ── */
-  var top=document.getElementById('top'), sticky=document.getElementById('sticky'), heroImg=document.getElementById('heroImg'), lamp=document.getElementById('lamp'), hero=document.getElementById('hero'), book=document.getElementById('book');
+  /* ── Hero film : the 2024 promo, muted loop behind the copy; the button opens it with sound. ── */
+  var B='https://storage.googleapis.com/inspirata/Base%20site/promo-2024/', wide=window.innerWidth>900;
+  var hv=document.getElementById('heroVid'); hv.src=B+(wide?'promo-ksl-hero-muted.mp4':'promo-ksl-hero-muted-720.mp4');
+  hv.addEventListener('playing',function(){ hv.classList.add('on'); },{once:true});
+  /* The film opens on title cards (white text on black, 0 to 4.6 s). Behind the copy they read as text on text, so the loop is dimmed while they pass. Playback itself stays whole. */
+  hv.addEventListener('timeupdate',function(){ hv.classList.toggle('dim', hv.currentTime<4.6); });
+  function startHero(){ var p=hv.play(); if(p&&p.catch) p.catch(function(){}); }
+  if(reduce){ hv.removeAttribute('loop'); hv.classList.add('on'); } else setTimeout(startHero, 900);
+  var dlg=document.getElementById('film'), fv=document.getElementById('filmVid');
+  document.getElementById('filmBtn').addEventListener('click',function(){
+    if(!fv.src) fv.src=B+(wide?'promo-ksl-1080.mp4':'promo-ksl-720.mp4');
+    dlg.showModal(); hv.pause(); fv.currentTime=0; fv.muted=false; var p=fv.play(); if(p&&p.catch) p.catch(function(){});
+  });
+  dlg.addEventListener('close',function(){ fv.pause(); if(!reduce) startHero(); });
+  dlg.addEventListener('click',function(e){ if(e.target===dlg) dlg.close(); });
+
+  /* ── Topbar, sticky CTA, scene drift, lamp that follows the pointer. ── */
+  var top=document.getElementById('top'), sticky=document.getElementById('sticky'), heroImg=document.getElementById('scene'), lamp=document.getElementById('lamp'), hero=document.getElementById('hero'), book=document.getElementById('book');
   var tx=0,ty=0,cx=0,cy=0;
   function onScroll(){
     var y=window.scrollY; top.classList.toggle('solid',y>60);
-    var h=hero.offsetHeight; if(y<h && !reduce){ heroImg.style.transform='translateY('+(y*.12)+'px) scale('+(1+y/h*.05)+')'; }
+    var h=hero.offsetHeight; if(y<h && !reduce && wide){ heroImg.style.transform='translateY('+(y*.18)+'px)'; }
     var bTop=book.getBoundingClientRect().top; sticky.classList.toggle('show',y>h*.6 && bTop>window.innerHeight*.5);
   }
   window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
