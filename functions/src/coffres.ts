@@ -164,8 +164,9 @@ export const acheterCoffre = onCall({ region: 'us-central1' }, async (req) => {
   const uid = req.auth.uid;
   const type = req.data?.type; const quoi = req.data?.quoi as 'boite' | 'cle';
   if ((quoi !== 'boite' && quoi !== 'cle') || (quoi === 'boite' && !estType(type))) throw new HttpsError('invalid-argument', 'Coffre inconnu.');
-  const cout = quoi === 'boite' ? PRIX_COFFRES[type].boite : PRIX_CLE;
-  const nom = quoi === 'boite' ? PRIX_COFFRES[type].nom : 'Clé';
+  // Le garde ci-dessus assure que `type` est un TypeCoffre valide quand quoi==='boite'.
+  const cout = quoi === 'boite' ? PRIX_COFFRES[type as TypeCoffre].boite : PRIX_CLE;
+  const nom = quoi === 'boite' ? PRIX_COFFRES[type as TypeCoffre].nom : 'Clé';
   const db = getFirestore();
   const balRef = db.doc(`memberPoints/${uid}`);
   const cle = `coffre:${quoi}:${quoi === 'boite' ? type : 'unique'}:${uid}:${Date.now()}`;
