@@ -7,13 +7,14 @@ import SplitType from 'split-type';
 import { motion } from 'framer-motion';
 import {
   ArrowUpRight, ArrowDown, ArrowRight, Microphone, BookOpen, Television,
-  YoutubeLogo, Lock, Star,
+  Coins, Lock, Star,
 } from '@phosphor-icons/react';
 import { useApp } from '../../contexts/AppContext';
 import { CONTENT } from '../../content';
 import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../../shopify';
 import NewsletterSignup from '../../components/NewsletterSignup';
 import WaitlistModal, { type WaitlistTarget } from '../../components/WaitlistModal';
+import BoutonCompte from '../../components/BoutonCompte';
 
 gsap.registerPlugin(ScrollTrigger);
 

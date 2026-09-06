@@ -443,7 +443,6 @@ const sceneAurore = (ctx: CanvasRenderingContext2D, w: number, h: number, pal: P
   voile.width = qw; voile.height = qh;
   const vctx = voile.getContext('2d');
 
-  const etoiles = carre(1, () => undefined);
   const ciel = document.createElement('canvas');
   ciel.width = Math.max(2, Math.round(w)); ciel.height = Math.max(2, Math.round(h));
   const cctx = ciel.getContext('2d');
