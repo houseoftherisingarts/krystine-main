@@ -1,0 +1,12 @@
+import { chromium } from 'playwright';
+const outDir = '/private/tmp/claude-501/-Users-lesalondesinconnus/3a548c8f-1fba-4e35-b513-f459846a1c9b/scratchpad/attente';
+const base = 'http://localhost:4183';
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+await page.goto(base + '/liste-attente?programme=pitta&titre=Saison%20Pitta', { waitUntil: 'load', timeout: 45000 });
+await page.waitForSelector('#inscription', { timeout: 15000 });
+await page.locator('#inscription').scrollIntoViewIfNeeded();
+await page.waitForTimeout(1200);
+await page.screenshot({ path: outDir + '/02-liste-attente-visiteur.png' });
+await browser.close();
+console.log('done');

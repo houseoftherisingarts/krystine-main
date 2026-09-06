@@ -381,8 +381,8 @@ const MediasLoeuvre: React.FC = () => {
             </SectionTitle>
             <p className="mt-7 font-serif italic text-[clamp(1.15rem,2.1vw,1.6rem)] text-ctextSoft max-w-[46ch] mx-auto">
               {lang === 'FR'
-                ? 'Trois saisons de Santé la vie, Salut Bonjour, et toutes les capsules qui les ont précédées. Au même endroit, en accès libre.'
-                : 'Three seasons of Santé la vie, Salut Bonjour, and every capsule that came before. All in one place, freely.'}
+                ? 'Salut Bonjour et les capsules d’avant se retrouvent sur sa chaîne. Les trois saisons de Santé la vie, elles, s’écoutent dans l’espace client.'
+                : 'Salut Bonjour and the earlier capsules live on her channel. The three seasons of Santé la vie are watched in the client space.'}
             </p>
           </Reveal>
 
