@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import app from '../../../../firebase';
-import { getNewsletterSubscribers, type NewsletterAudience, type NewsletterBlock } from '../../../../firebase/firestore';
+import type { NewsletterAudience, NewsletterBlock } from '../../../../firebase/firestore';
+import { fetchAudience } from './AudiencePicker';
 
 // La « version terminale » : Krystine parle à Iris comme à une collègue.
 // Iris répond, et quand elle propose une infolettre, le composeur l'applique
@@ -36,11 +37,7 @@ const AssistantPanel: React.FC<Props> = ({ draft, onProposal, onClose }) => {
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    getNewsletterSubscribers().then(subs => {
-      const m = new Map<string, number>();
-      for (const s of subs) if (s.status !== 'unsubscribed') for (const t of s.tags || []) m.set(t, (m.get(t) || 0) + 1);
-      setTags([...m.entries()].map(([tag, count]) => ({ tag, count })));
-    });
+    fetchAudience({}).then(r => setTags(r.tags.map(t => ({ tag: t.tag, count: t.n })))).catch(() => null);
   }, []);
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs, busy]);
 

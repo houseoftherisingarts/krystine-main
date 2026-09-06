@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import type { NewsletterBlock } from '../firebase/firestore';
 
 // ─── Block content shapes (informational only — Firestore stores `any` here) ─
@@ -23,48 +23,114 @@ export const BRAND = {
   sans: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
 };
 
+// ─── Édition en place (composeur de l'admin) ────────────────────────────────
+// Quand `edit` est fourni, chaque texte devient modifiable au clic et une
+// image se remplace au clic. Les visiteurs (boîte du client, archive) ne
+// passent jamais par là : sans `edit`, le rendu est celui d'avant.
+export interface BlockEdit {
+  set: (patch: Record<string, any>) => void;
+  pickImage: () => void;
+}
+
+const Inline: React.FC<{
+  tag?: keyof React.JSX.IntrinsicElements;
+  className?: string;
+  value: string;
+  placeholder: string;
+  multiline?: boolean;
+  onCommit: (v: string) => void;
+}> = ({ tag = 'span', className = '', value, placeholder, multiline, onCommit }) => {
+  const ref = useRef<HTMLElement | null>(null);
+  // Le texte vit dans le DOM pendant la frappe; React ne le touche que si la
+  // valeur change ailleurs (Iris, annulation) et que le champ n'a pas le focus.
+  useEffect(() => {
+    const el = ref.current;
+    if (el && document.activeElement !== el && el.innerText !== value) el.innerText = value;
+  }, [value]);
+  const Tag = tag as any;
+  return (
+    <Tag
+      ref={ref}
+      contentEditable
+      suppressContentEditableWarning
+      spellCheck
+      data-placeholder={placeholder}
+      className={`nl-inline ${className}`}
+      onClick={(e: React.MouseEvent) => e.stopPropagation()}
+      onBlur={(e: React.FocusEvent<HTMLElement>) => {
+        const v = e.currentTarget.innerText.replace(/\n+$/, '');
+        if (v !== value) onCommit(v);
+      }}
+      onKeyDown={(e: React.KeyboardEvent<HTMLElement>) => {
+        if (e.key === 'Escape') { e.preventDefault(); e.currentTarget.blur(); }
+        if (e.key === 'Enter' && !multiline) { e.preventDefault(); e.currentTarget.blur(); }
+      }}
+      onPaste={(e: React.ClipboardEvent) => {
+        e.preventDefault();
+        document.execCommand('insertText', false, e.clipboardData.getData('text/plain'));
+      }}
+    />
+  );
+};
+
 // ─── Web preview renderer ────────────────────────────────────────────────────
 // Used by the admin composer and the client inbox. Inherits the site's
 // Tailwind styles — no inline styling needed.
-export const RenderBlockWeb: React.FC<{ block: NewsletterBlock }> = ({ block }) => {
+export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit }> = ({ block, edit }) => {
   const c = (block.content || {}) as any;
+  const set = (k: string) => (v: string) => edit?.set({ [k]: v });
   switch (block.type) {
     case 'heading': {
       const level = c.level || 1;
       const align = c.align === 'center' ? 'text-center' : 'text-left';
       const size = level === 1 ? 'text-4xl md:text-5xl' : level === 2 ? 'text-3xl md:text-4xl' : 'text-2xl md:text-3xl';
       const className = `font-serif text-[#3A251E] dark:text-white my-6 ${size} ${align}`;
+      if (edit) return <Inline tag={level === 1 ? 'h1' : level === 2 ? 'h2' : 'h3'} className={className} value={c.text || ''} placeholder="Votre titre" onCommit={set('text')} />;
       if (level === 1) return <h1 className={className}>{c.text || ''}</h1>;
       if (level === 2) return <h2 className={className}>{c.text || ''}</h2>;
       return <h3 className={className}>{c.text || ''}</h3>;
     }
-    case 'paragraph':
-      return (
-        <p className={`text-[#3A251E]/80 dark:text-white/80 leading-relaxed my-4 ${c.align === 'center' ? 'text-center' : 'text-left'}`}>
-          {c.text || ''}
-        </p>
-      );
-    case 'image':
+    case 'paragraph': {
+      const className = `text-[#3A251E]/80 dark:text-white/80 leading-relaxed my-4 whitespace-pre-line ${c.align === 'center' ? 'text-center' : 'text-left'}`;
+      if (edit) return <Inline tag="p" className={className} value={c.text || ''} placeholder="Écrivez votre texte ici." multiline onCommit={set('text')} />;
+      return <p className={className}>{c.text || ''}</p>;
+    }
+    case 'image': {
+      const capClass = 'text-xs uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 text-center mt-3';
+      if (edit) {
+        return (
+          <figure className="my-6">
+            <button type="button" onClick={e => { e.stopPropagation(); edit.pickImage(); }} title="Changer l'image"
+              className="group/img relative block w-full rounded-2xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#BA7B39]">
+              {c.url
+                ? <img src={c.url} alt={c.alt || ''} className="w-full block" />
+                : <div className="aspect-[16/9] w-full border-2 border-dashed border-[#B8532F]/40 bg-[#B8532F]/5 flex flex-col items-center justify-center gap-2 text-[#B8532F]"><i className="fa-solid fa-image text-3xl" /><span className="text-xs uppercase tracking-widest font-bold">Choisir une image</span></div>}
+              <span className="absolute inset-0 flex items-center justify-center bg-[#3A251E]/0 group-hover/img:bg-[#3A251E]/40 transition-colors">
+                <span className="opacity-0 group-hover/img:opacity-100 transition-opacity bg-white text-[#3A251E] px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest shadow-lg"><i className="fa-solid fa-images mr-2" />Changer l'image</span>
+              </span>
+            </button>
+            <Inline tag="figcaption" className={capClass} value={c.caption || ''} placeholder="Légende (facultative)" onCommit={set('caption')} />
+          </figure>
+        );
+      }
       return (
         <figure className="my-6">
           {c.url && <img src={c.url} alt={c.alt || ''} className="w-full rounded-2xl" />}
-          {c.caption && <figcaption className="text-xs uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 text-center mt-3">{c.caption}</figcaption>}
+          {c.caption && <figcaption className={capClass}>{c.caption}</figcaption>}
         </figure>
       );
+    }
     case 'button': {
       const primary = c.variant !== 'secondary';
+      const className = `inline-block px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-md transition-colors ${
+        primary
+          ? 'bg-[#3A251E] text-white hover:bg-[#B8532F] hover:text-[#3A251E]'
+          : 'border border-[#3A251E]/20 text-[#3A251E] dark:text-white hover:border-[#B8532F] hover:text-[#B8532F]'
+      }`;
+      if (edit) return <div className="my-6 text-center"><Inline className={className} value={c.label || ''} placeholder="Texte du bouton" onCommit={set('label')} /></div>;
       return (
         <div className="my-6 text-center">
-          <a
-            href={c.href || '#'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`inline-block px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-md transition-colors ${
-              primary
-                ? 'bg-[#3A251E] text-white hover:bg-[#B8532F] hover:text-[#3A251E]'
-                : 'border border-[#3A251E]/20 text-[#3A251E] dark:text-white hover:border-[#B8532F] hover:text-[#B8532F]'
-            }`}
-          >
+          <a href={c.href || '#'} target="_blank" rel="noopener noreferrer" className={className}>
             {c.label || 'En savoir plus'}
           </a>
         </div>
@@ -72,26 +138,52 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock }> = ({ block }) 
     }
     case 'divider':
       return <hr className="my-8 border-0 h-px bg-gradient-to-r from-transparent via-[#B8532F]/50 to-transparent" />;
-    case 'quote':
+    case 'quote': {
+      const citeClass = 'block mt-3 text-xs uppercase tracking-widest not-italic text-[#B8532F]';
+      if (edit) {
+        return (
+          <blockquote className="my-8 border-l-2 border-[#B8532F] pl-6 italic font-serif text-lg text-[#3A251E]/80 dark:text-white/80">
+            <p>« <Inline value={c.text || ''} placeholder="La citation" multiline onCommit={set('text')} /> »</p>
+            <span className={citeClass}>— <Inline value={c.attribution || ''} placeholder="Qui l'a dit" onCommit={set('attribution')} /></span>
+          </blockquote>
+        );
+      }
       return (
         <blockquote className="my-8 border-l-2 border-[#B8532F] pl-6 italic font-serif text-lg text-[#3A251E]/80 dark:text-white/80">
           <p>« {c.text || ''} »</p>
-          {c.attribution && <cite className="block mt-3 text-xs uppercase tracking-widest not-italic text-[#B8532F]">— {c.attribution}</cite>}
+          {c.attribution && <cite className={citeClass}>— {c.attribution}</cite>}
         </blockquote>
       );
-    case 'cta':
+    }
+    case 'cta': {
+      const box = 'my-8 rounded-[24px] bg-gradient-to-br from-[#3A251E] to-[#4A3228] text-white p-8 md:p-10 text-center border border-[#B8532F]/20';
+      const eyebrowClass = 'text-[10px] uppercase tracking-[0.3em] font-bold text-[#B8532F] block mb-3';
+      const titleClass = 'text-2xl md:text-3xl font-serif mb-3';
+      const bodyClass = 'text-white/70 mb-6 max-w-xl mx-auto';
+      const btnClass = 'inline-block bg-[#B8532F] text-[#3A251E] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-white transition-colors';
+      if (edit) {
+        return (
+          <div className={box}>
+            <Inline className={eyebrowClass} value={c.eyebrow || ''} placeholder="Petit texte au-dessus" onCommit={set('eyebrow')} />
+            <Inline tag="h3" className={titleClass} value={c.title || ''} placeholder="Titre fort" onCommit={set('title')} />
+            <Inline tag="p" className={bodyClass} value={c.body || ''} placeholder="Un court paragraphe." multiline onCommit={set('body')} />
+            <Inline className={btnClass} value={c.buttonLabel || ''} placeholder="Texte du bouton" onCommit={set('buttonLabel')} />
+          </div>
+        );
+      }
       return (
-        <div className="my-8 rounded-[24px] bg-gradient-to-br from-[#3A251E] to-[#4A3228] text-white p-8 md:p-10 text-center border border-[#B8532F]/20">
-          {c.eyebrow && <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#B8532F] block mb-3">{c.eyebrow}</span>}
-          {c.title && <h3 className="text-2xl md:text-3xl font-serif mb-3">{c.title}</h3>}
-          {c.body && <p className="text-white/70 mb-6 max-w-xl mx-auto">{c.body}</p>}
+        <div className={box}>
+          {c.eyebrow && <span className={eyebrowClass}>{c.eyebrow}</span>}
+          {c.title && <h3 className={titleClass}>{c.title}</h3>}
+          {c.body && <p className={bodyClass}>{c.body}</p>}
           {c.href && c.buttonLabel && (
-            <a href={c.href} target="_blank" rel="noopener noreferrer" className="inline-block bg-[#B8532F] text-[#3A251E] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-white transition-colors">
+            <a href={c.href} target="_blank" rel="noopener noreferrer" className={btnClass}>
               {c.buttonLabel}
             </a>
           )}
         </div>
       );
+    }
     case 'spacer': {
       const h = c.size === 'lg' ? 'h-16' : c.size === 'sm' ? 'h-4' : 'h-8';
       return <div className={h} />;

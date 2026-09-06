@@ -1,0 +1,13 @@
+import { chromium } from 'playwright';
+const out = '/private/tmp/claude-501/-Users-lesalondesinconnus/327fe91f-978a-469f-ae4e-33003fae73e5/scratchpad';
+const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1440, height: 900 } });
+const errs = []; p.on('pageerror', e => errs.push(String(e).slice(0, 160)));
+await p.goto('http://localhost:5179/formations', { waitUntil: 'networkidle' }).catch(() => {});
+await p.evaluate(() => localStorage.setItem('ksl.consent', '1')); await p.waitForTimeout(1500);
+await p.screenshot({ path: `${out}/formations.png`, fullPage: true });
+const h1 = await p.evaluate(() => { const h = document.querySelector('h1'); const r = h.getBoundingClientRect(); return { t: h.textContent, lines: Math.round(r.height / parseFloat(getComputedStyle(h).lineHeight)) }; });
+await p.setViewportSize({ width: 390, height: 900 }); await p.waitForTimeout(800);
+await p.screenshot({ path: `${out}/formations-m.png`, fullPage: true });
+const ov = await p.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+console.log(JSON.stringify({ h1, ov, errs }));
+await b.close();
