@@ -340,11 +340,14 @@ const CoursDetailPage: React.FC = () => {
               )}
             </p>
             {accessible && live.url && (
-              <a href={live.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-red-500 px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white hover:bg-red-400">
+              <button type="button" onClick={() => setLiveOuvert(true)} className="inline-flex items-center gap-2 rounded-full bg-red-500 px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white hover:bg-red-400">
                 {lang === 'FR' ? 'Rejoindre le live' : 'Join the live'} <i className="fa-solid fa-arrow-right" />
-              </a>
+              </button>
             )}
           </div>
+        )}
+        {liveOuvert && live?.url && (
+          <LecteurVideoPleinEcran url={live.url} titre={live.titre} onFermer={() => setLiveOuvert(false)} />
         )}
 
         {accessible && lecons.length > 0 && (
