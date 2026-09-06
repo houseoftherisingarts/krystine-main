@@ -43,7 +43,9 @@ function useRecaptcha(active: boolean) {
 
 const SignInModal: React.FC = () => {
   const { lang, signInOpen, setSignInOpen } = useApp();
-  const [mode, setMode] = useState<Mode>('signin');
+  // La fenêtre s'ouvre sur l'inscription : tout le site mène à se créer un
+  // compte. Qui en a déjà un bascule vers la connexion d'un lien.
+  const [mode, setMode] = useState<Mode>('signup');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -57,7 +59,7 @@ const SignInModal: React.FC = () => {
   const close = () => {
     setSignInOpen(false);
     setEmail(''); setPassword(''); setDisplayName('');
-    setMode('signin'); reset();
+    setMode('signup'); reset();
   };
 
   const handleGoogle = async () => {

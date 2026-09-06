@@ -410,10 +410,10 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
                         : 'You are on the list. You will be among the first to know.'}
                     </p>
                     <Link
-                      to="/accueil"
+                      to="/compte"
                       className="mt-10 inline-flex items-center gap-3 bg-[#1c1712] px-8 py-4 text-[0.72rem] uppercase tracking-[0.22em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] min-h-[44px]"
                     >
-                      {lang === 'FR' ? "Retour à l'accueil" : 'Back to home'} <ArrowRight size={14} />
+                      {lang === 'FR' ? 'Créer mon compte' : 'Create my account'} <ArrowRight size={14} />
                     </Link>
                   </div>
                 ) : (

@@ -140,7 +140,9 @@ const NavBar: React.FC = () => {
           {/* La cloche vit dès qu'on est connecté, même si le profil public
               (avatar → /compte) est encore caché derrière le flag admin. */}
           {user && <Cloche uid={user.uid} />}
-          {profilVisible && (user ? (
+          {/* Le bouton « Créer mon compte » se montre à toute visiteuse : tout le
+              site mène à se créer un compte. L'avatar reste derrière le drapeau. */}
+          {(profilVisible || !user) && (user ? (
             <Link
               to="/compte"
               title={member?.displayName || user.displayName || user.email || ''}
@@ -158,15 +160,15 @@ const NavBar: React.FC = () => {
             <>
               <button
                 onClick={() => setSignInOpen(true)}
-                title={lang === 'FR' ? 'Connexion' : 'Sign in'}
+                title={lang === 'FR' ? 'Créer mon compte' : 'Create my account'}
                 className="hidden md:inline-flex items-center gap-2 pl-3 pr-4 py-2 min-h-[44px] rounded-full border border-ink/15 dark:border-ctext/15 text-[10px] uppercase tracking-[0.18em] font-sans font-semibold text-ink/75 dark:text-ctext/80 hover:text-brassInk dark:hover:text-brassBright hover:border-brass transition-colors"
               >
                 <User size={13} strokeWidth={1.75} />
-                {lang === 'FR' ? 'Connexion' : 'Sign in'}
+                {lang === 'FR' ? 'Créer mon compte' : 'Create my account'}
               </button>
               <button
                 onClick={() => setSignInOpen(true)}
-                aria-label={lang === 'FR' ? 'Connexion' : 'Sign in'}
+                aria-label={lang === 'FR' ? 'Créer mon compte' : 'Create my account'}
                 className="md:hidden w-11 h-11 flex items-center justify-center rounded-full text-ink/70 dark:text-ctext/70 hover:text-brassInk hover:bg-brass/8 transition-colors"
               >
                 <User size={16} strokeWidth={1.75} />
