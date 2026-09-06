@@ -945,6 +945,7 @@ const InspiratHome: React.FC = () => {
             <p className="mt-6 text-sm text-[#2a2015]/60 dark:text-white/60">
               {lang === 'FR' ? "Désabonnement en un clic. Votre adresse n'est jamais revendue." : 'Unsubscribe in one click. Your address is never resold.'}
             </p>
+            {!user && <CompteUpsell variant="light" className="text-center" />}
           </div>
         </RevealSection>
 

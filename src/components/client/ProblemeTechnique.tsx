@@ -215,7 +215,7 @@ const ProblemeTechnique: React.FC<Props> = ({ uid, nom, courriel, lang }) => {
         type="button"
         data-bug-ignore
         onClick={() => setOuvert(true)}
-        className="fixed bottom-5 right-5 z-[110] flex items-center gap-2 rounded-full border border-white/60 bg-[#EEE7DB]/85 px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#8B4A2F] shadow-[0_10px_30px_-12px_rgba(41,48,39,0.45)] backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-[#EEE7DB] dark:border-white/10 dark:bg-[#293027]/85 dark:text-[#d9a05b] dark:hover:bg-[#293027]"
+        className="fixed bottom-5 left-5 z-[110] flex items-center gap-2 rounded-full border border-white/60 bg-[#EEE7DB]/85 px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#8B4A2F] shadow-[0_10px_30px_-12px_rgba(41,48,39,0.45)] backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-[#EEE7DB] dark:border-white/10 dark:bg-[#293027]/85 dark:text-[#d9a05b] dark:hover:bg-[#293027]"
       >
         <i className="fa-solid fa-bug" /> {t.bouton}
       </button>
