@@ -5,6 +5,7 @@ import app from '../../../../firebase';
 import { Timestamp } from 'firebase/firestore';
 import {
   createNewsletter, updateNewsletter, getNewsletter,
+  ENTETE_INFOLETTRE_PAR_DEFAUT,
   type NewsletterBlock, type BlockType, type NewsletterStatus, type NewsletterAudience,
 } from '../../../../firebase/firestore';
 import AudiencePicker from './AudiencePicker';
@@ -50,10 +51,10 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
   const [when, setWhen] = useState('');          // datetime-local, heure du Québec
   const [side, setSide] = useState<'reglages' | 'preview' | 'iris'>('reglages');
   const [pickFor, setPickFor] = useState<number | 'entete' | null>(null);   // bloc image (ou l'en-tête) en attente d'une image
-  // En-tête du courriel : rien par défaut. La couverture du podcast ne part
-  // que si Krystine la choisit; une image de la médiathèque est possible aussi.
-  const [couverture, setCouverture] = useState<'podcast' | 'image' | 'aucune'>('aucune');
-  const [couvertureUrl, setCouvertureUrl] = useState<string>('');
+  // En-tête du courriel : « La lettre de Krystine » par défaut (ENTETE_INFOLETTRE_PAR_DEFAUT).
+  // La couverture du podcast, une autre image de la médiathèque ou rien restent au choix.
+  const [couverture, setCouverture] = useState<'podcast' | 'image' | 'aucune'>(ENTETE_INFOLETTRE_PAR_DEFAUT.couverture);
+  const [couvertureUrl, setCouvertureUrl] = useState<string>(ENTETE_INFOLETTRE_PAR_DEFAUT.couvertureUrl);
   const [signature, setSignature] = useState(true);
 
   // datetime-local <-> Date

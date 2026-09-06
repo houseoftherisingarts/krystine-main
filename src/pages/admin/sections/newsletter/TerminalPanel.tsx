@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Timestamp } from 'firebase/firestore';
-import { createNewsletter, updateNewsletter } from '../../../../firebase/firestore';
+import { createNewsletter, updateNewsletter, ENTETE_INFOLETTRE_PAR_DEFAUT } from '../../../../firebase/firestore';
 import AssistantPanel, { type Proposal } from './AssistantPanel';
 import { PrimaryButton, GhostButton } from '../../primitives';
 
@@ -31,8 +31,7 @@ const TerminalPanel: React.FC<Props> = ({ onOpen }) => {
         blocks: p.blocks,
         audience: p.audience || { mode: 'all' as const },
         scheduledFor: p.scheduledFor ? Timestamp.fromDate(new Date(p.scheduledFor)) : null,
-        couverture: 'aucune' as const,
-        couvertureUrl: null,
+        ...ENTETE_INFOLETTRE_PAR_DEFAUT,
         signature: true,
       };
       if (id) {

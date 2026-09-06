@@ -401,6 +401,13 @@ export interface NewsletterDoc {
   updatedAt?: Timestamp;
 }
 
+// En-tête par défaut de toute nouvelle infolettre : l'image « La lettre de
+// Krystine » (choix de Krystine, 6 sept 2026). Le composeur permet d'en changer.
+export const ENTETE_INFOLETTRE_PAR_DEFAUT = {
+  couverture: 'image' as const,
+  couvertureUrl: 'https://firebasestorage.googleapis.com/v0/b/krystinestlaurent-87566.firebasestorage.app/o/site-edits%2F1788702513165_ChatGPT_Image_Sep_6__2026__09_48_02_AM.png?alt=media&token=20186c67-e55f-404e-ada6-612ecb8d1186',
+};
+
 export async function createNewsletter(data: Omit<NewsletterDoc, 'id' | 'createdAt' | 'updatedAt'>) {
   if (!db) noDb();
   return addDoc(collection(db!, 'newsletters'), {
