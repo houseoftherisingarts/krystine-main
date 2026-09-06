@@ -153,6 +153,7 @@ const ClientRediffusions: React.FC = () => {
 // ─── La lecture : vidéo, fil du direct, commentaires ─────────────────────────
 
 const Lecture: React.FC<{ r: Rediffusion; lang: Lang; retour: () => void }> = ({ r, lang, retour }) => {
+  const { user } = useApp();
   const fr = lang === 'FR';
   const reduce = useReducedMotion();
   const [archives, setArchives] = useState<ArchivesRediffusion | null>(null);

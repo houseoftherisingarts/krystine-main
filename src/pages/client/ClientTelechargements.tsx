@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useApp } from '../../contexts/AppContext';
 import { getMesFormations, getLecons, urlDeLecon, type AchatFormation, type Lecon } from '../../firebase/formations';
-import { estTelechargement } from '../../firebase/musique';
+import { estTelechargement, MUSIQUE_ORIGINE_ID } from '../../firebase/musique';
+import BoutiqueMohurs from '../../components/client/BoutiqueMohurs';
+import { SANTE_LA_VIE_ID } from '../../lib/pointsConfig';
 
 // « Téléchargements » : la musique d'Origine et les autres fichiers offerts
 // ou achetés, servis par URL signée (les fichiers vivent en Storage privé).
@@ -11,17 +13,28 @@ const ClientTelechargements: React.FC = () => {
   const [items, setItems] = useState<{ achat: AchatFormation; lecons: Lecon[] }[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
+  const [tour, setTour] = useState(0);
 
+  // Les téléchargements : la musique d'Origine et les émissions de Santé la
+  // vie achetées à l'unité en mohurs (le document d'achat porte `episodes`,
+  // seules ces leçons-là se montrent).
   useEffect(() => {
     if (!user) return;
     getMesFormations(user.uid)
       .then(async (achats) => {
-        const dl = achats.filter(estTelechargement);
-        const withLecons = await Promise.all(dl.map(async (achat) => ({ achat, lecons: await getLecons(achat.id).catch(() => []) })));
+        const dl = achats.filter((a) => estTelechargement(a) || a.id === SANTE_LA_VIE_ID);
+        const withLecons = await Promise.all(dl.map(async (achat) => {
+          const lecons = await getLecons(achat.id).catch(() => [] as Lecon[]);
+          const episodes = (achat as AchatFormation & { episodes?: Record<string, unknown> }).episodes;
+          return { achat, lecons: episodes ? lecons.filter((l) => !!episodes[l.id]) : lecons };
+        }));
         setItems(withLecons);
       })
       .finally(() => setLoading(false));
-  }, [user]);
+  }, [user, tour]);
+
+  const possedeMusique = items.some(({ achat }) => achat.id === MUSIQUE_ORIGINE_ID);
+  const episodesPossedes = new Set(items.filter(({ achat }) => achat.id === SANTE_LA_VIE_ID).flatMap(({ lecons }) => lecons.map((l) => l.id)));
 
   const telecharger = async (fid: string, l: Lecon) => {
     setBusy(l.id);
@@ -36,7 +49,7 @@ const ClientTelechargements: React.FC = () => {
   if (loading) return <p className="text-sm text-[#293027]/50 dark:text-white/50">{lang === 'FR' ? 'Chargement…' : 'Loading…'}</p>;
 
   return (
-    <section>
+    <section id="telechargements">
       <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
         {lang === 'FR' ? 'Vos téléchargements' : 'Your downloads'}
       </p>
@@ -47,10 +60,10 @@ const ClientTelechargements: React.FC = () => {
             {lang === 'FR' ? 'Aucun téléchargement pour le moment' : 'No downloads yet'}
           </p>
           <p className="mx-auto mt-1 max-w-md text-sm text-[#293027]/50 dark:text-white/50">
-            {lang === 'FR' ? "La musique d'Origine vous attend au bas de la page du Foyer." : 'The Origin music awaits at the bottom of the Hearth page.'}
+            {lang === 'FR' ? "La musique d'Origine et les émissions de Santé la vie s'ajoutent ici depuis la petite boutique, juste dessous." : 'The Origin music and the Santé la vie shows land here from the little shop, right below.'}
           </p>
-          <a href="/foyer#musique" className="mt-4 inline-block text-xs font-bold uppercase tracking-widest text-[#8B4A2F] underline-offset-4 hover:underline">
-            {lang === 'FR' ? 'Aller au Foyer' : 'Go to the Hearth'}
+          <a href="#boutique" className="mt-4 inline-block text-xs font-bold uppercase tracking-widest text-[#8B4A2F] underline-offset-4 hover:underline">
+            {lang === 'FR' ? 'Voir la boutique' : 'See the shop'}
           </a>
         </div>
       ) : (
@@ -64,7 +77,7 @@ const ClientTelechargements: React.FC = () => {
                   {lecons.map((l) => (
                     <li key={l.id} className="flex flex-wrap items-center justify-between gap-3">
                       <span className="text-sm text-[#293027]/70 dark:text-white/70">
-                        <i className={`fa-solid ${l.type === 'audio' ? 'fa-music' : l.type === 'pdf' ? 'fa-file-pdf' : 'fa-file'} mr-2 text-[#BA7B39]`} />{l.titre}
+                        <i className={`fa-solid ${l.type === 'audio' ? 'fa-music' : l.type === 'pdf' ? 'fa-file-pdf' : l.type === 'video' ? 'fa-tv' : 'fa-file'} mr-2 text-[#BA7B39]`} />{l.titre}
                       </span>
                       <button
                         type="button"
@@ -82,6 +95,7 @@ const ClientTelechargements: React.FC = () => {
           ))}
         </div>
       )}
+      <BoutiqueMohurs possedeMusiqueDeja={possedeMusique} episodesPossedes={episodesPossedes} onAchat={() => setTour((t) => t + 1)} />
     </section>
   );
 };

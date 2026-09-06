@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Comment gagner des mohurs</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  @page { size: Letter; margin: 0; }
+  :root {
+    --cream: #f6f3ee; --cream-2: #f1ebe0; --card: #faf7f0;
+    --ink: #3a3126; --ink-soft: #665746;
+    --brass: #bb9a5e; --brass-deep: #a3823f; --brass-ink: #7d6330;
+    --espresso: #1d1604;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--cream); color: var(--ink); font-family: 'Inter', sans-serif; }
+  .page { position: relative; width: 8.5in; height: 11in; padding: 0.7in 0.75in 0.6in; page-break-after: always; overflow: hidden; }
+  .page:last-child { page-break-after: auto; }
+  .cadre { position: absolute; inset: 0.32in; border: 1px solid rgba(187,154,94,.55); pointer-events: none; }
+  .cadre::after { content: ''; position: absolute; inset: 4px; border: 1px solid rgba(187,154,94,.25); }
+  .sur { font-size: 9.5px; letter-spacing: .28em; text-transform: uppercase; color: var(--brass-ink); font-weight: 600; }
+  h1 { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 46px; line-height: 1; margin: 10px 0 0; color: var(--ink); letter-spacing: -.01em; }
+  h2 { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 24px; text-transform: uppercase; letter-spacing: .04em; margin: 0 0 8px; color: var(--ink); }
+  p { font-size: 11.5px; line-height: 1.75; color: var(--ink-soft); margin: 0 0 10px; }
+  .lede { font-family: 'Cormorant Garamond', serif; font-size: 18px; line-height: 1.45; color: var(--ink); margin: 18px 0 0; max-width: 34em; }
+  .filet { width: 56px; height: 1px; background: var(--brass); margin: 22px 0; }
+  .piece { display: inline-block; vertical-align: middle; }
+  .colonnes { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; margin-top: 8px; }
+  .facon { display: grid; grid-template-columns: 62px 1fr; gap: 10px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid rgba(187,154,94,.25); }
+  .facon .n { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--brass-ink); text-align: right; white-space: nowrap; }
+  .facon .n small { font-size: 11px; font-weight: 500; letter-spacing: .04em; }
+  .facon .t { font-size: 11px; color: var(--ink); line-height: 1.4; }
+  .facon .t span { display: block; font-size: 8.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); margin-top: 2px; }
+  .encadre { margin-top: 16px; background: var(--card); border: 1px solid rgba(187,154,94,.4); border-radius: 12px; padding: 14px 18px; }
+  .encadre p { margin: 0; }
+  .pied { position: absolute; left: 0.75in; right: 0.75in; bottom: 0.5in; display: flex; justify-content: space-between; font-size: 8.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-soft); }
+  /* La rupture : un seul chiffre, très gros, sur une page à part */
+  .rupture { background: var(--espresso); color: #f4ece0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .rupture .cadre { border-color: rgba(187,154,94,.7); }
+  .rupture .gros { font-family: 'Cormorant Garamond', serif; font-size: 300px; line-height: .85; font-weight: 400; color: #dcb874; letter-spacing: -.04em; }
+  .rupture .sous { font-family: 'Cormorant Garamond', serif; font-size: 26px; margin-top: 18px; color: #f4ece0; max-width: 22em; line-height: 1.35; }
+  .rupture .sur { color: #dcb874; }
+  .boutique { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px; }
+  .article { background: var(--card); border: 1px solid rgba(187,154,94,.4); border-radius: 12px; padding: 12px 14px; }
+  .article .prix { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--brass-ink); font-weight: 600; }
+  .article .nom { font-size: 11px; font-weight: 600; color: var(--ink); margin-top: 2px; }
+  .article p { font-size: 10px; line-height: 1.55; margin: 4px 0 0; }
+  .roue { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 10px; }
+  .jour { background: var(--card); border: 1px solid rgba(187,154,94,.4); border-radius: 10px; text-align: center; padding: 8px 4px; }
+  .jour .j { font-size: 8px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); }
+  .jour .m { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--brass-ink); font-weight: 600; }
+  .jour.sept { background: rgba(187,154,94,.18); }
+</style>
+</head>
+<body>
+
+<section class="page">
+  <div class="cadre"></div>
+  <p class="sur">Krystine St-Laurent · votre espace</p>
+  <h1>Comment gagner<br/>des mohurs</h1>
+  <p class="lede">Le mohur est la monnaie de votre espace sur krystinestlaurent.ca. Il porte le nom d’une ancienne pièce d’or de l’Inde qui n’a plus cours depuis plus d’un siècle. Ici, il achète ce qui rend votre espace à vous.</p>
+  <div class="filet"></div>
+  <h2>Ce que le mohur achète</h2>
+  <p>La petite boutique vit dans l’onglet Téléchargements de votre espace. Trois objets y personnalisent votre profil, et les émissions complètes de Santé la vie s’y achètent à l’unité pour rejoindre vos téléchargements pour de bon.</p>
+  <div class="boutique">
+    <div class="article"><div class="prix">5 mohurs</div><div class="nom">Bannière Nature &amp; Ayurveda</div><p>La même scène que votre bannière d’accueil, avec Nature &amp; Ayurveda posé sur la table.</p></div>
+    <div class="article"><div class="prix">5 mohurs</div><div class="nom">La musique d’Origine</div><p>La pièce composée pour l’Expérience Origine. Vous la téléchargez et vous pouvez en faire la musique de tout le site.</p></div>
+    <div class="article"><div class="prix">5 mohurs</div><div class="nom">Skin Medzo Café</div><p>Votre espace dans des bruns de café au lait. Le premier d’une série de skins à venir.</p></div>
+  </div>
+  <div class="boutique" style="grid-template-columns:1fr 1fr">
+    <div class="article"><div class="prix">100 mohurs</div><div class="nom">Une émission complète de Santé la vie</div><p>Les intégrales telles que diffusées sur MAtv, dix-neuf émissions sur trois saisons, à regarder quand vous voulez.</p></div>
+    <div class="article"><div class="prix">10 $</div><div class="nom">Un paquet de 100 mohurs</div><p>Quand la bourse est courte, cent mohurs s’achètent d’un coup, par carte, depuis votre espace.</p></div>
+  </div>
+  <div class="encadre">
+    <p>Les mohurs ne s’échangent pas contre de l’argent et ne s’envoient pas à une autre personne. Ils restent dans votre bourse aussi longtemps que votre compte existe.</p>
+  </div>
+  <div class="pied"><span>krystinestlaurent.ca</span><span>Page 1 de 3</span></div>
+</section>
+
+<section class="page rupture">
+  <div class="cadre"></div>
+  <p class="sur">À l’ouverture de votre compte</p>
+  <div class="gros">10</div>
+  <p class="sous">Dix mohurs vous attendent dès que votre compte existe. Le reste se gagne en revenant, en participant et en invitant vos amies.</p>
+</section>
+
+<section class="page">
+  <div class="cadre"></div>
+  <p class="sur">Toutes les façons d’en gagner</p>
+  <h2 style="margin-top:8px">La roue des sept jours</h2>
+  <p>Chaque jour où vous ouvrez votre espace, une récompense tombe dans votre bourse. Elle grossit d’un jour à l’autre tant que vous revenez sans sauter de journée, et le septième jour vaut cinq mohurs. Passé ce jour, la roue repart.</p>
+  <div class="roue">
+    <div class="jour"><div class="j">Jour 1</div><div class="m">+1</div></div>
+    <div class="jour"><div class="j">Jour 2</div><div class="m">+1</div></div>
+    <div class="jour"><div class="j">Jour 3</div><div class="m">+2</div></div>
+    <div class="jour"><div class="j">Jour 4</div><div class="m">+2</div></div>
+    <div class="jour"><div class="j">Jour 5</div><div class="m">+3</div></div>
+    <div class="jour"><div class="j">Jour 6</div><div class="m">+3</div></div>
+    <div class="jour sept"><div class="j">Jour 7</div><div class="m">+5</div></div>
+  </div>
+  <div class="filet"></div>
+  <h2>Le reste, geste par geste</h2>
+  <div class="colonnes">
+    <div>
+      <div class="facon"><div class="n">10</div><div class="t">Créer son compte<span>offerts à l’ouverture</span></div></div>
+      <div class="facon"><div class="n">5</div><div class="t">Compléter son profil : photo, nom et dosha<span>une fois</span></div></div>
+      <div class="facon"><div class="n">5</div><div class="t">Faire le quiz Dosha<span>une fois</span></div></div>
+      <div class="facon"><div class="n">5</div><div class="t">S’abonner à l’infolettre<span>une fois</span></div></div>
+      <div class="facon"><div class="n">5</div><div class="t">Publier son premier billet sur le fil<span>une fois</span></div></div>
+      <div class="facon"><div class="n">1</div><div class="t">Commenter un billet<span>un par billet</span></div></div>
+      <div class="facon"><div class="n">2</div><div class="t">Se faire une amie<span>par amitié acceptée</span></div></div>
+      <div class="facon"><div class="n">20</div><div class="t">Inviter une amie qui crée son compte<span>par filleule</span></div></div>
+      <div class="facon"><div class="n">5</div><div class="t">Être présente au direct<span>par direct</span></div></div>
+      <div class="facon"><div class="n">2</div><div class="t">Écrire dans le clavardage du direct<span>par message</span></div></div>
+      <div class="facon"><div class="n">1</div><div class="t">Envoyer un cœur pendant le direct<span>par cœur</span></div></div>
+    </div>
+    <div>
+      <div class="facon"><div class="n">2</div><div class="t">Poser une question pour le direct<span>une par direct</span></div></div>
+      <div class="facon"><div class="n">3</div><div class="t">Regarder une rediffusion<span>une par rediffusion</span></div></div>
+      <div class="facon"><div class="n">3</div><div class="t">Regarder une vidéo<span>une par vidéo</span></div></div>
+      <div class="facon"><div class="n">2</div><div class="t">Écouter un épisode du podcast<span>un par épisode</span></div></div>
+      <div class="facon"><div class="n">2</div><div class="t">Partager une page sur les réseaux</div></div>
+      <div class="facon"><div class="n">1</div><div class="t">Explorer une section du site<span>une par section</span></div></div>
+      <div class="facon"><div class="n">10</div><div class="t">Chaque produit commandé à la boutique</div></div>
+      <div class="facon"><div class="n">10 <small>/ $</small></div><div class="t">Laisser un pourboire pendant le direct<span>dix par dollar</span></div></div>
+      <div class="facon"><div class="n">50</div><div class="t">S’inscrire à une formation</div></div>
+      <div class="facon"><div class="n">100</div><div class="t">Rejoindre l’Expérience Origine</div></div>
+      <div class="facon"><div class="n">100</div><div class="t">Acheter un paquet de mohurs<span>10 $</span></div></div>
+    </div>
+  </div>
+  <div class="encadre">
+    <p>Votre solde se lit en haut de votre espace et dans l’onglet Profil, avec l’historique de tout ce qui est entré et sorti de la bourse. Une question sur un mohur qui manque ? Le bouton Problème technique, en bas de votre espace, nous l’envoie directement.</p>
+  </div>
+  <div class="pied"><span>krystinestlaurent.ca</span><span>Page 3 de 3</span></div>
+</section>
+
+</body>
+</html>

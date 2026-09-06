@@ -381,11 +381,26 @@ service cloud.firestore {
     // events; owner + admin can read. Updates / deletes locked to admin so a
     // user can't rewrite history.
     match /pointsEvents/{id} {
-      allow create: if isSignedIn()
-                    && request.resource.data.uid == request.auth.uid;
+      // Depuis la petite boutique (2026-09-06) : le navigateur ne crée que de
+      // petits crédits d'engagement; les achats, les paquets Stripe et les
+      // crédits de parrainage ne s'écrivent que par le serveur.
+      allow create: if isAdmin()
+                    || (isSignedIn()
+                        && request.resource.data.uid == request.auth.uid
+                        && request.resource.data.amount is number
+                        && request.resource.data.amount <= 100
+                        && request.resource.data.amount >= -1000
+                        && !(request.resource.data.kind in ['boutique', 'achat-mohurs', 'billet', 'amitie', 'parrainage', 'adjust']));
       allow read: if isAdmin()
                   || (isSignedIn() && resource.data.uid == request.auth.uid);
       allow update, delete: if isAdmin();
+    }
+
+    // `boutique/{uid}` — ce que la membre possède (bannière, musique, skin,
+    // épisodes) : écrit par acheterAvecMohurs seulement, lu par elle.
+    match /boutique/{uid} {
+      allow read: if isSelf(uid) || isAdmin();
+      allow write: if isAdmin();
     }
 
     // `rewardRedemptions/{id}` — client creates a pending redemption; admin

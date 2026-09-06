@@ -24,14 +24,18 @@ import ClientTelechargements from './client/ClientTelechargements';
 import ClientRediffusions from './client/ClientRediffusions';
 import ProblemeTechnique from '../components/client/ProblemeTechnique';
 import ClientPreferences from './client/ClientPreferences';
-import { subscribeToMemberPoints, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
+import { subscribeToMemberPoints, points, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
+import { BANNIERE_DEFAUT, BANNIERE_NATURE, FACONS_DE_GAGNER, mohurs } from '../lib/pointsConfig';
+import PieceMohur from '../components/client/PieceMohur';
+import RoueQuotidienne from '../components/client/RoueQuotidienne';
+import '../components/client/skins.css';
 
 type Tab = 'feed' | 'profile' | 'amis' | 'orders' | 'formations' | 'rediffusions' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie';
 
 // L'onglet Profil en lecture : la fiche (courriel, téléphone, dosha, badges)
 // et surtout LE MUR de la personne. L'édition s'ouvre en cliquant sur la
 // photo de la bannière.
-const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string; lang: string }> = ({ uid, member, email, lang }) => {
+const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string; lang: string; solde: PointsBalance; onBoutique: () => void }> = ({ uid, member, email, lang, solde, onBoutique }) => {
   const [posts, setPosts] = useState<PostMur[]>([]);
   const [badges, setBadges] = useState<string[]>([]);
   useEffect(() => suivrePublicationsDe(uid, setPosts), [uid]);
@@ -42,6 +46,40 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
         <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Courriel</span>{email}</p>
         {member?.phone && <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Téléphone</span>{member.phone}</p>}
         {member?.dosha && <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Dosha</span><span className="capitalize">{member.dosha}</span></p>}
+      </div>
+      {/* Les mohurs : le solde, la porte de la boutique, et toutes les façons d'en gagner */}
+      <div className="rounded-[20px] border border-[#BA7B39]/30 bg-gradient-to-br from-[#BA7B39]/15 to-transparent p-5 md:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Vos mohurs' : 'Your mohurs'}</p>
+            <p className="mt-1 flex items-center gap-3 font-serif text-4xl text-[#293027] dark:text-white">
+              <PieceMohur size={34} /> {solde.balance}
+              <span className="text-base text-[#293027]/50 dark:text-white/50">{lang === 'FR' ? `· ${solde.lifetime} gagnés en tout` : `· ${solde.lifetime} earned overall`}</span>
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={onBoutique} className="inline-flex items-center gap-2 rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] hover:bg-[#3a453a] dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]">
+              <i className="fa-solid fa-bag-shopping" /> {lang === 'FR' ? 'La petite boutique' : 'The little shop'}
+            </button>
+            <a href="/compte/comment-gagner-des-mohurs.pdf" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
+              <i className="fa-solid fa-file-pdf" /> PDF
+            </a>
+          </div>
+        </div>
+        <p className="mt-4 text-sm text-[#293027]/70 dark:text-white/70">
+          {lang === 'FR'
+            ? 'Le mohur est la monnaie de votre espace. Chaque compte s’ouvre avec dix mohurs, et la bourse grossit à mesure que vous revenez et que vous participez. Voici tout ce qui en donne.'
+            : 'The mohur is the currency of your space. Every account opens with ten mohurs, and the purse grows as you come back and take part. Here is everything that earns some.'}
+        </p>
+        <ul className="mt-3 grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-2">
+          {FACONS_DE_GAGNER.map((f) => (
+            <li key={f.fr} className="flex items-baseline gap-2">
+              <span className="w-16 shrink-0 text-right font-serif font-bold text-[#8B4A2F] dark:text-[#d9a05b]">+{f.pts}</span>
+              <span className="text-[#293027]/85 dark:text-white/85">{lang === 'FR' ? f.fr : f.en}</span>
+              {(lang === 'FR' ? f.noteFR : f.noteEN) && <span className="text-[9px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">{lang === 'FR' ? f.noteFR : f.noteEN}</span>}
+            </li>
+          ))}
+        </ul>
       </div>
       {badges.length > 0 && (
         <div>
@@ -325,10 +363,28 @@ const ClientPortal: React.FC = () => {
     { id: 'messagerie', label: lang === 'FR' ? 'Messagerie' : 'Messages', icon: 'fa-comments' },
   ];
 
-  const banniere = member?.bannerURL || '/compte/bienvenue-bureau.webp';
+  const perso = member?.personnalisation || {};
+  const banniere = perso.banniere === 'nature' ? BANNIERE_NATURE : (member?.bannerURL || BANNIERE_DEFAUT);
+  const skin = perso.skin === 'medzo' ? 'skin-medzo' : '';
+
+  // Profil complété (photo, nom, dosha) : cinq mohurs, une fois.
+  useEffect(() => {
+    if (user && member?.photoURL && member?.displayName && member?.dosha) points.profilComplete(user.uid).catch(() => {});
+  }, [user, member?.photoURL, member?.displayName, member?.dosha]);
+
+  // Retour de Stripe : le paquet de mohurs arrive par le webhook, on le dit.
+  const [merciMohurs, setMerciMohurs] = useState(() => {
+    try {
+      if (new URLSearchParams(window.location.search).get('mohurs') === 'ok') {
+        window.history.replaceState(null, '', window.location.pathname);
+        return true;
+      }
+    } catch { /* noop */ }
+    return false;
+  });
 
   return (
-    <div className="min-h-screen bg-[#EEE7DB] dark:bg-[#151d19] pt-16 pb-24">
+    <div className={`min-h-screen bg-[#EEE7DB] dark:bg-[#151d19] pt-16 pb-24 ${skin}`}>
       {/* La bannière pleine largeur, l'avatar qui la chevauche, le nom et les
           points par-dessus la photo : le patron du FMM et de la référence
           d'Alex, dans le canon L'Œuvre. */}
@@ -382,8 +438,8 @@ const ClientPortal: React.FC = () => {
                   onClick={() => setTab('loyalty')}
                   className="rounded-full bg-[#BA7B39] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#293027] transition-colors hover:bg-[#d9a05b]"
                 >
-                  <i className="fa-solid fa-seedling mr-1" />
-                  {pointsBalance.balance} {lang === 'FR' ? 'points' : 'points'}
+                  <PieceMohur size={14} className="mr-1 inline-block align-[-2px]" />
+                  {mohurs(pointsBalance.balance, lang)}
                 </button>
                 <span className="hidden truncate text-xs text-white/70 sm:inline">{user.email}</span>
               </div>
@@ -426,7 +482,13 @@ const ClientPortal: React.FC = () => {
       <div className="mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 lg:grid-cols-[1fr_320px]">
         <div className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-[#293027]/55">
           {tab === 'feed'     && <MurSocial fil="communaute" titre="Feed" />}
-          {tab === 'profile'  && <ProfilVue uid={user.uid} member={member} email={user.email || ''} lang={lang} />}
+          {merciMohurs && (
+            <div className="mb-5 flex items-center justify-between gap-3 rounded-[16px] border border-[#BA7B39]/40 bg-[#BA7B39]/15 px-4 py-3 text-sm text-[#293027] dark:text-white">
+              <span><PieceMohur size={16} className="mr-2 inline-block align-[-3px]" />{lang === 'FR' ? 'Merci. Vos cent mohurs arrivent dans votre bourse d’ici une minute.' : 'Thank you. Your hundred mohurs land in your purse within a minute.'}</span>
+              <button type="button" onClick={() => setMerciMohurs(false)} aria-label={lang === 'FR' ? 'Fermer' : 'Close'} className="text-[#293027]/50 hover:text-[#293027] dark:text-white/50"><i className="fa-solid fa-times" /></button>
+            </div>
+          )}
+          {tab === 'profile'  && <ProfilVue uid={user.uid} member={member} email={user.email || ''} lang={lang} solde={pointsBalance} onBoutique={() => { setTab('telechargements'); window.setTimeout(() => document.getElementById('boutique')?.scrollIntoView({ behavior: 'smooth' }), 150); }} />}
           {tab === 'amis'     && <ClientAmis uid={user.uid} lang={lang} />}
           {tab === 'orders'   && <OrdersTab />}
           {tab === 'formations' && <ClientFormations />}
@@ -442,6 +504,7 @@ const ClientPortal: React.FC = () => {
 
       {/* Le bouton « Problème technique », fixe en bas à droite, et sa fenêtre */}
       <ProblemeTechnique uid={user.uid} nom={member?.displayName || user.displayName || ''} courriel={user.email || ''} lang={lang} />
+      <RoueQuotidienne uid={user.uid} lang={lang} />
 
       {/* Le module d'édition du profil, ouvert par la photo de la bannière */}
       {editOuvert && (
