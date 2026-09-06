@@ -509,7 +509,9 @@ const ClientPortal: React.FC = () => {
           points par-dessus la photo : le patron du FMM et de la référence
           d'Alex, dans le canon L'Œuvre. */}
       <div className="relative h-80 w-full overflow-hidden md:h-[25rem]">
-        <img src={banniere} alt="" className="h-full w-full object-cover" />
+        <AvecSignature signe={signeBanniere} className="h-full w-full">
+          <img src={banniere} alt="" className="h-full w-full object-cover" />
+        </AvecSignature>
         <div className="absolute inset-0 bg-gradient-to-t from-[#151d19]/75 via-[#151d19]/20 to-transparent" />
         {!member?.bannerURL && (
           <div className="absolute left-6 top-5 md:left-8 md:top-6">
