@@ -29,9 +29,10 @@ try {
   await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1500);
   // Ouvrir la fenêtre d'inscription : bouton "Créer mon compte" / icône compte de la nav.
-  const btnNav = page.locator('button, a').filter({ hasText: /CRÉER MON COMPTE/i }).first();
+  const btnNav = page.getByRole('button', { name: /Créer mon compte/i }).first();
   await btnNav.click();
   await page.waitForTimeout(1200);
+  console.log('url après clic nav:', page.url());
   await page.screenshot({ path: `${OUT}/n5-01-fenetre.png` });
   const champEmail = page.locator('input[type=email]').first();
   await champEmail.waitFor({ timeout: 10000 });
