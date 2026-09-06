@@ -138,6 +138,11 @@ export const BANNIERE_NATURE = '/compte/bienvenue-bureau-nature.webp';
 // bureau, sous d'autres angles, avec des fleurs (l'iris versicolore de Krystine).
 export interface Banniere { cle: string; cout: number; nomFR: string; nomEN: string; descFR: string; descEN: string; image: string; fond: string | null }
 export const BANNIERES: Banniere[] = [
+  // La bannière d'origine est à tout le monde (cout 0) : elle entre à la
+  // boutique pour son fond d'écran, son aperçu et sa version sans signature.
+  { cle: 'defaut', cout: 0, nomFR: 'Bannière Féminité & Ayurveda', nomEN: 'Féminité & Ayurveda banner',
+    descFR: 'La bannière d’origine de votre espace : le bureau, le carnet et Féminité & Ayurveda. Offerte à toutes.', descEN: 'Your space’s original banner: the desk, the journal and Féminité & Ayurveda. Yours from the start.',
+    image: BANNIERE_DEFAUT, fond: '/compte/fonds/defaut.webp' },
   { cle: 'nature', cout: 5, nomFR: 'Bannière Nature & Ayurveda', nomEN: 'Nature & Ayurveda banner',
     descFR: 'La même scène que votre bannière, avec Nature & Ayurveda posé sur la table.', descEN: 'The same scene as your banner, with Nature & Ayurveda on the table.',
     image: BANNIERE_NATURE, fond: '/compte/fonds/nature.webp' },
