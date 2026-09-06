@@ -145,19 +145,30 @@ const Coffres: React.FC<{ solde: number; onChange?: () => void }> = ({ solde, on
           <h4 className="font-serif text-xl text-[#293027] dark:text-white">{fr ? 'Les coffres' : 'The chests'}</h4>
           <p className="mt-1 max-w-2xl text-sm text-[#293027]/65 dark:text-white/65">
             {fr
-              ? `Un coffre s’achète en niskas, se reçoit de Krystine ou se gagne au septième jour de la roue. Sa clé s’achète à part. Chaque coffre donne plusieurs choses à la fois : toujours un skin ou une bannière, toujours la musique d’Origine, toujours des niskas, et parfois un rabais ou le grand lot. Tout est écrit ci-dessous, avant que vous n’achetiez quoi que ce soit. Cinq ouvertures par jour, pas plus.`
-              : `A chest is bought with niskas, given by Krystine or won on the seventh day of the wheel. Its key is bought separately. Every chest gives several things at once: always a skin or a banner, always the Origine music, always niskas, and sometimes a discount or the grand prize. Everything is written below, before you buy anything. Five openings a day, no more.`}
+              ? `Un coffre s’achète en niskas, se reçoit de Krystine ou se gagne au septième jour de la roue. La clé, elle, est unique : une seule sorte, un seul prix, elle ouvre n’importe lequel des trois coffres. Chaque coffre donne plusieurs choses à la fois : toujours un skin ou une bannière, toujours la musique d’Origine, toujours des niskas, et parfois un rabais ou le grand lot. Tout est écrit ci-dessous, avant que vous n’achetiez quoi que ce soit. Cinq ouvertures par jour, pas plus.`
+              : `A chest is bought with niskas, given by Krystine or won on the seventh day of the wheel. The key, though, is unique: one kind, one price, it opens any of the three chests. Every chest gives several things at once: always a skin or a banner, always the Origine music, always niskas, and sometimes a discount or the grand prize. Everything is written below, before you buy anything. Five openings a day, no more.`}
           </p>
         </div>
       </div>
 
       {avis && <p className="mt-4 rounded-[14px] bg-[#BA7B39]/15 px-4 py-3 text-sm text-[#293027] dark:text-white">{avis}</p>}
 
+      {/* La clé, unique : un seul compteur, un seul bouton, partagé par les trois coffres. */}
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-[16px] border border-[#38403a]/10 bg-white/60 px-4 py-3 dark:border-white/10 dark:bg-white/5">
+        <p className="flex items-center gap-2 text-sm text-[#293027] dark:text-white">
+          <Cle taille={16} />
+          {fr ? <>Vous avez <strong>{inv.cles}</strong> clé{inv.cles > 1 ? 's' : ''}, bonne{inv.cles > 1 ? 's' : ''} pour n’importe quel coffre.</> : <>You have <strong>{inv.cles}</strong> key{inv.cles > 1 ? 's' : ''}, good for any chest.</>}
+        </p>
+        <button type="button" onClick={() => acheter(ORDRE_COFFRES[0], 'cle')} disabled={occupe !== null || solde < PRIX_CLE} className={`${bouton} border border-[#38403a]/15 text-[#38403a]/80 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/80`}>
+          <PieceNiska size={13} /> {fr ? 'Acheter une clé' : 'Buy a key'} · {PRIX_CLE}
+        </button>
+      </div>
+
       <div className="mt-5 grid gap-4 md:grid-cols-3">
         {ORDRE_COFFRES.map((type) => {
           const c = COFFRES[type];
-          const nb = inv.boites[type]; const cles = inv.cles[type];
-          const pret = nb > 0 && cles > 0;
+          const nb = inv.boites[type];
+          const pret = nb > 0 && inv.cles > 0;
           return (
             <div key={type} className="relative overflow-hidden rounded-[20px] border border-[#38403a]/10 bg-white/60 p-5 dark:border-white/10 dark:bg-white/5" style={{ boxShadow: `inset 0 1px 0 ${c.teinteClaire}66` }}>
               <div className="absolute inset-x-0 top-0 h-1" style={{ background: `linear-gradient(90deg, ${c.teinteSombre}, ${c.teinteClaire}, ${c.teinteSombre})` }} />
