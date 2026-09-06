@@ -105,11 +105,12 @@ async function scenarioC1C4(browser) {
   const { ctx, page } = await pageAvecSession(browser, u, uid, email, 'c1c4');
   await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(2200); await fermerBienvenue(page); await page.waitForTimeout(500);
+  await fermerRoueSiPresente(page);
   const section = page.locator('#boutique-coffres');
   await section.scrollIntoViewIfNeeded(); await page.waitForTimeout(500);
   await page.screenshot({ path: `${OUT}/c1-c4-01-section-entiere.png`, fullPage: false });
 
-  const texteCle = await page.locator('#boutique-coffres p', { hasText: /clé/i }).first().textContent();
+  const texteCle = await page.locator('#boutique-coffres p', { hasText: /^Vous avez/i }).first().textContent();
   attendu(/Vous avez\s*0\s*clé, bonne pour n.importe quel coffre/.test((texteCle || '').replace(/\s+/g, ' ')), `texte clé unique conforme (« ${(texteCle || '').trim()} »)`);
   const boutons = await page.locator('#boutique-coffres button', { hasText: /Acheter une clé/ }).count();
   attendu(boutons === 1, `un seul bouton « Acheter une clé » sur la page (trouvés: ${boutons})`);
