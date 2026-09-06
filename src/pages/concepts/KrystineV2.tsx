@@ -384,6 +384,7 @@ const BookingSection: React.FC = () => {
                 <p className="text-center text-[0.82rem] italic v2-serif text-[#3a2f23]/80">
                   Vos réponses sont enregistrées de manière confidentielle. L’équipe revient vers vous avec une proposition adaptée.
                 </p>
+                {!user && <CompteUpsell variant="light" />}
               </form>
             )}
           </div>
