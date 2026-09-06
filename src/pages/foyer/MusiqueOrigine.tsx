@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useAuth } from '../../contexts/AppContext';
 import { telechargerMusiqueOrigine } from '../../firebase/musique';
+import CompteUpsell from '../../components/CompteUpsell';
 
 const ease = [0.16, 0.8, 0.24, 1] as const;
 
