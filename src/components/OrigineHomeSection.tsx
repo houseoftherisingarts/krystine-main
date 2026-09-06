@@ -33,6 +33,7 @@ import { motion, useReducedMotion, useScroll, useTransform, type Variants } from
 import { useApp } from '../contexts/AppContext';
 import EditableText from './edit/EditableText';
 import Sprig from './Sprig';
+import BoutonCompte from './BoutonCompte';
 
 const ORIGINE_IMAGE = '/origine-square.jpg';
 
