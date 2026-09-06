@@ -445,6 +445,14 @@ const FormationsSection: React.FC = () => {
                 >
                   {f.statut === 'publie' ? 'Masquer' : 'Publier'}
                 </button>
+                <a
+                  href={`/cours/${f.id}?apercu=1`}
+                  target="_blank" rel="noopener noreferrer"
+                  title="Voir le cours comme une membre qui l'a acheté"
+                  className="shrink-0 rounded-full border border-[#293027]/20 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027]/70 transition-colors hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/20 dark:text-white/70"
+                >
+                  <i className="fa-solid fa-eye mr-1" /> Aperçu
+                </a>
                 <button
                   type="button"
                   onClick={() => setOptionsOuvertes(optionsOuvertes === f.id ? null : f.id)}

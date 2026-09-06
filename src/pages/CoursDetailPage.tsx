@@ -87,11 +87,13 @@ const CoursDetailPage: React.FC = () => {
     }).catch(() => {});
   }, [user, id]);
 
-  // ?acheter force le parcours d'achat, même pour une admin : sert à tester Stripe.
-  const forcerAchat = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('acheter');
+  // Le contenu s'ouvre à qui a acheté (ou reçu) la formation. L'admin voit
+  // la même barrière que tout le monde; son aperçu passe par ?apercu (le
+  // bouton « Aperçu » de l'admin), jamais par défaut.
+  const apercu = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('apercu');
   const accessible = useMemo(
-    () => !forcerAchat && (isAdmin || achete || accesVie || (formation ? !formation.paywall : false)),
-    [forcerAchat, isAdmin, achete, accesVie, formation],
+    () => achete || accesVie || (formation ? !formation.paywall : false) || (isAdmin && apercu),
+    [isAdmin, apercu, achete, accesVie, formation],
   );
 
   const porteOuverteRang = rangPorte(porteDuMois().n);
@@ -357,6 +359,11 @@ const CoursDetailPage: React.FC = () => {
               <p className="mt-3 text-xs text-[#38403a]/50 dark:text-white/50">
                 {lang === 'FR' ? 'Paiement sécurisé par Stripe. La formation apparaît dans votre espace dès le paiement.' : 'Secure payment by Stripe. The course appears in your space right after payment.'}
               </p>
+              {isAdmin && (
+                <a href={`/cours/${id}?apercu=1`} className="mt-4 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]/80 hover:text-[#8B4A2F]">
+                  <i className="fa-solid fa-eye" /> Aperçu administratrice, sans acheter
+                </a>
+              )}
               {lecons.length > 0 && (
                 <div className="mt-8">
                   <p className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">{lecons.length} {lang === 'FR' ? 'leçons' : 'lessons'}</p>

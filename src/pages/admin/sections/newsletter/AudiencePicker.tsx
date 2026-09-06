@@ -28,6 +28,7 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
   const [q, setQ] = useState('');
   const [personnes, setPersonnes] = useState<Array<{ email: string; nom: string }>>([]);
   const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
   const timer = useRef<number | null>(null);
   const key = JSON.stringify(value);
 
@@ -36,8 +37,8 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
   useEffect(() => {
     if (timer.current) window.clearTimeout(timer.current);
     timer.current = window.setTimeout(() => {
-      setBusy(true);
-      fetchAudience({ audience: value }).then(setInfo).catch(() => null).finally(() => setBusy(false));
+      setBusy(true); setFailed(false);
+      fetchAudience({ audience: value }).then(setInfo).catch(() => setFailed(true)).finally(() => setBusy(false));
     }, info ? 400 : 0);
     return () => { if (timer.current) window.clearTimeout(timer.current); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -69,7 +70,7 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
       <div className="flex items-baseline justify-between">
         <Label>Destinataires</Label>
         <span className="font-serif text-2xl text-[#293027] dark:text-white">
-          {total === null ? <i className="fa-solid fa-circle-notch fa-spin text-sm text-[#8B4A2F]" /> : total}
+          {total !== null ? total : failed ? '?' : <i className="fa-solid fa-circle-notch fa-spin text-sm text-[#8B4A2F]" />}
           {' '}<span className="text-xs text-[#8B4A2F]">{busy && total !== null ? '…' : `personne${(total || 0) > 1 ? 's' : ''}`}</span>
         </span>
       </div>
