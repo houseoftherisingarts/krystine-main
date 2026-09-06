@@ -141,12 +141,14 @@ const BugsSection: React.FC = () => {
       )}
 
       {grande && (
-        <div className="fixed inset-0 z-[150] flex items-center justify-center bg-[#151d19]/85 p-4" onClick={() => setGrande('')}>
+        <Portail>
+        <div className="fixed inset-0 z-[150] flex items-center justify-center overflow-y-auto overscroll-contain bg-[#151d19]/85 p-4" onClick={() => setGrande('')}>
           <img src={grande} alt="" className="max-h-full max-w-full rounded-[12px] shadow-2xl" />
           <a href={grande} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="absolute bottom-6 right-6 rounded-full bg-white/15 px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-white backdrop-blur hover:bg-white/25">
             <i className="fa-solid fa-arrow-up-right-from-square mr-2" />Ouvrir en grand
           </a>
         </div>
+        </Portail>
       )}
     </div>
   );
