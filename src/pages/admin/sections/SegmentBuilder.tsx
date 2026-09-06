@@ -259,6 +259,7 @@ const SegmentBuilder: React.FC<Props> = ({ onClose, onCreated }) => {
         )}
       </div>
     </div>
+    </Portail>
   );
 };
 
