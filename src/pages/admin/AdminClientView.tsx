@@ -13,6 +13,7 @@ import { tierFromLifetime } from '../../lib/pointsConfig';
 import { getFormations, type Formation } from '../../firebase/formations';
 import { offrirCadeau } from '../../firebase/cadeaux';
 import { offrirCoffre } from '../../firebase/coffres';
+import Portail from '../../components/Portail';
 import { COFFRES, ORDRE_COFFRES, type TypeCoffre } from '../../lib/coffresConfig';
 
 // « Offrir un cadeau » : depuis la fiche d'une cliente, Krystine lui envoie
