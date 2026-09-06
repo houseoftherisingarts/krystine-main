@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useApp } from '../../contexts/AppContext';
-import { COFFRES, ORDRE_COFFRES, OUVERTURES_PAR_JOUR, NISKAS_MUSIQUE_DEJA, chanceLisible, type TypeCoffre } from '../../lib/coffresConfig';
+import { COFFRES, ORDRE_COFFRES, OUVERTURES_PAR_JOUR, NISKAS_MUSIQUE_DEJA, PRIX_CLE, chanceLisible, type TypeCoffre } from '../../lib/coffresConfig';
 import { niskas } from '../../lib/pointsConfig';
 import { acheterCoffre, ouvrirCoffre, reclamerGrandLot, suivreMesCoffres, type Inventaire, type LotGagne } from '../../firebase/coffres';
 import PieceNiska from './PieceNiska';
