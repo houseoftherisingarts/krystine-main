@@ -294,7 +294,7 @@ const NewsletterSignup: React.FC<Props> = ({
           : 'One-click unsubscribe. Your email is never resold.'}
       </p>
 
-      {accountUpsell && <CompteUpsell variant={variant} className="mt-6 pt-6 text-center" />}
+      {accountUpsell && <CompteUpsell variant={variant} className="text-center" />}
     </div>
   );
 };
