@@ -278,6 +278,8 @@ const scenePitta: Fabrique = (ctx, w, h, pal, vue) => {
   const gCoeur = halo(24, melange(vif, [255, 246, 214], 0.55), 0.95, 0.4);
   const nb = Math.round(Math.min(64, Math.max(26, (w * h) / 17000)));
   const flares: { x: number; y: number; r: number; vie: number }[] = [];
+  let bande: CanvasGradient | null = null;
+  let bandeH = 0;
 
   const semer = (b: Braise, depart: boolean): Braise => {
     b.max = 5200 + Math.random() * 4400;
