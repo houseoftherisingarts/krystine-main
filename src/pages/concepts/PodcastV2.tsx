@@ -84,15 +84,16 @@ function parseEpisodes(xml: string): { cover: string; episodes: Episode[] } {
       .replace(/<[^>]+>/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
+    const title = it.querySelector('title')?.textContent?.trim() || `Épisode ${i + 1}`;
     return {
       id: it.querySelector('guid')?.textContent || String(i),
-      title: it.querySelector('title')?.textContent?.trim() || `Épisode ${i + 1}`,
+      title,
       date: it.querySelector('pubDate')?.textContent || '',
       duration: it.getElementsByTagName('itunes:duration')[0]?.textContent?.trim() || '',
       description: desc,
       audio: it.querySelector('enclosure')?.getAttribute('url') || '',
       image: it.getElementsByTagName('itunes:image')[0]?.getAttribute('href') || cover,
-      season: seasonFromDate(it.querySelector('pubDate')?.textContent || ''),
+      season: seasonFromTitle(title),
     };
   });
   return { cover, episodes };
