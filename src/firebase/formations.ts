@@ -110,7 +110,8 @@ export async function getFormation(id: string): Promise<Formation | null> {
 // Le fichier vit dans Storage sous formations-contenu/ (illisible au public);
 // la lecture passe par la fonction obtenirLecon qui vérifie l'achat.
 
-export type LeconType = 'video' | 'audio' | 'pdf' | 'fichier';
+// 'texte' = une page sans fichier (accueil, consigne, exercice écrit), façon Kajabi.
+export type LeconType = 'video' | 'audio' | 'pdf' | 'fichier' | 'texte';
 
 export interface Lecon {
   id: string;
@@ -119,7 +120,9 @@ export interface Lecon {
   chemin: string;
   duree?: string;
   ordre: number;
+  /** La section du cours (module Kajabi, section Circle) qui regroupe la leçon. */
   moduleNom?: string;
+  /** Le texte d'accompagnement, mise en forme légère (## titre, **gras**, - liste, liens). */
   texte?: string;
   /** Le mois de la porte du Foyer (ex. 'septembre'). */
   mois?: string;
@@ -149,10 +152,28 @@ export async function ajouterLecon(formationId: string, file: File, titre: strin
   });
 }
 
+/** Une leçon sans fichier : une page de texte (accueil, consigne, exercice écrit). */
+export async function creerLeconTexte(formationId: string, titre: string, ordre: number): Promise<void> {
+  await setDoc(doc(collection(db(), 'formations', formationId, 'lecons')), {
+    titre: titre.trim().slice(0, 120) || 'Page de texte', type: 'texte', chemin: '', ordre, creeLe: serverTimestamp(),
+  });
+}
+
+/** Remplace (ou ajoute) le fichier média d'une leçon; l'ancien quitte Storage. */
+export async function remplacerFichierLecon(formationId: string, lecon: Lecon, file: File): Promise<void> {
+  if (!app) throw new Error('[Formations] Firebase not configured');
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+  const chemin = `formations-contenu/${formationId}/${Date.now()}_${safeName}`;
+  await uploadBytes(ref(getStorage(app), chemin), file);
+  await updateDoc(doc(db(), 'formations', formationId, 'lecons', lecon.id), { chemin, type: typeDeLecon(file) });
+  if (lecon.chemin) { try { await deleteObject(ref(getStorage(app), lecon.chemin)); } catch { /* déjà parti */ } }
+}
+
 export async function supprimerLecon(formationId: string, lecon: Lecon): Promise<void> {
   if (!app) throw new Error('[Formations] Firebase not configured');
   await deleteDoc(doc(db(), 'formations', formationId, 'lecons', lecon.id));
-  try { await deleteObject(ref(getStorage(app), lecon.chemin)); } catch { /* fichier deja parti */ }
+  if (lecon.chemin) { try { await deleteObject(ref(getStorage(app), lecon.chemin)); } catch { /* fichier deja parti */ } }
+  for (const d of lecon.docs || []) { try { await deleteObject(ref(getStorage(app), d.chemin)); } catch { /* déjà parti */ } }
 }
 
 export async function setLeconOrdre(formationId: string, leconId: string, ordre: number): Promise<void> {
@@ -234,7 +255,7 @@ export async function getMembresGroupe(formationId: string): Promise<MembreGroup
 }
 
 // ─── Le contenu riche d'une leçon (admin) ───────────────────────────────────
-export async function majLecon(formationId: string, leconId: string, champs: Partial<Pick<Lecon, 'titre' | 'texte' | 'mois' | 'duree'>>): Promise<void> {
+export async function majLecon(formationId: string, leconId: string, champs: Partial<Pick<Lecon, 'titre' | 'texte' | 'mois' | 'duree' | 'moduleNom'>>): Promise<void> {
   await updateDoc(doc(db(), 'formations', formationId, 'lecons', leconId), champs as Record<string, unknown>);
 }
 

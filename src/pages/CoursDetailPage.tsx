@@ -11,6 +11,7 @@ import {
 } from '../firebase/formations';
 import { useAuth, useUI } from '../contexts/AppContext';
 import { getMember } from '../firebase/firestore';
+import TexteLecon from '../lib/texteLecon';
 
 // La fiche d'un cours et son lecteur, sur le patron de l'Académie Zéro
 // Limite : liste des leçons et progression à gauche, contenu à droite,
@@ -18,8 +19,13 @@ import { getMember } from '../firebase/firestore';
 // serveur (URL signée après vérification de l'achat).
 
 const ICONES: Record<Lecon['type'], string> = {
-  video: 'fa-circle-play', audio: 'fa-music', pdf: 'fa-file-pdf', fichier: 'fa-file',
+  video: 'fa-circle-play', audio: 'fa-music', pdf: 'fa-file-pdf', fichier: 'fa-file', texte: 'fa-align-left',
 };
+
+// Une leçon rattachée à une porte reste verrouillée tant que cette porte
+// n'est pas ouverte (le mois en cours ou un mois déjà passé du cycle), comme
+// le drip de Kajabi. L'admin voit tout.
+const rangPorte = (n?: string) => (n ? PORTES.findIndex(p => p.n === n) : -1);
 
 const CoursDetailPage: React.FC = () => {
   const { id = '' } = useParams();
@@ -86,7 +92,11 @@ const CoursDetailPage: React.FC = () => {
     [isAdmin, achete, accesVie, formation],
   );
 
+  const porteOuverteRang = rangPorte(porteDuMois().n);
+  const verrouillee = (l: Lecon) => !isAdmin && rangPorte(l.mois) > porteOuverteRang;
+
   const ouvrir = async (l: Lecon) => {
+    if (verrouillee(l)) return;
     setCourante(l); setUrlCourante(''); setErreur(null);
     if (user) marquerLecon(user.uid, id, l.id, terminees[l.id] || false).catch(() => {});
     // Leçon sans fichier média : seul le texte s'affiche, pas d'appel serveur.
@@ -109,7 +119,8 @@ const CoursDetailPage: React.FC = () => {
   const suivante = () => {
     if (!courante) return;
     const i = lecons.findIndex(l => l.id === courante.id);
-    if (i >= 0 && i < lecons.length - 1) ouvrir(lecons[i + 1]);
+    const prochaine = lecons.slice(i + 1).find(l => !verrouillee(l));
+    if (prochaine) ouvrir(prochaine);
   };
 
   const acheter = async () => {
@@ -382,21 +393,29 @@ const CoursDetailPage: React.FC = () => {
                     {g.nom && (
                       <p className="px-3 pt-3 pb-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#8B4A2F]">{g.nom}</p>
                     )}
-                    {g.items.map(l => (
+                    {g.items.map(l => {
+                      const verrou = verrouillee(l);
+                      return (
                       <button
                         key={l.id}
                         onClick={() => ouvrir(l)}
+                        disabled={verrou}
+                        title={verrou ? (lang === 'FR' ? `S'ouvre avec la porte de ${l.mois}` : `Opens with the ${l.mois} door`) : undefined}
                         className={`flex w-full items-center gap-3 rounded-[14px] px-3 py-2.5 text-left text-sm transition-colors ${
                           courante?.id === l.id
                             ? 'bg-[#BA7B39] text-[#293027]'
-                            : 'text-[#38403a]/80 hover:bg-white/70 dark:text-white/80 dark:hover:bg-white/10'
+                            : verrou
+                              ? 'cursor-not-allowed text-[#38403a]/40 dark:text-white/35'
+                              : 'text-[#38403a]/80 hover:bg-white/70 dark:text-white/80 dark:hover:bg-white/10'
                         }`}
                       >
-                        <i className={`fa-solid ${terminees[l.id] ? 'fa-circle-check text-green-700' : ICONES[l.type]} w-4 ${courante?.id === l.id ? '' : 'text-[#8B4A2F]/70'}`} />
+                        <i className={`fa-solid ${verrou ? 'fa-lock' : terminees[l.id] ? 'fa-circle-check text-green-700' : ICONES[l.type] || 'fa-file'} w-4 ${courante?.id === l.id ? '' : verrou ? 'opacity-50' : 'text-[#8B4A2F]/70'}`} />
                         <span className="min-w-0 flex-1 truncate">{l.titre}</span>
-                        {l.duree && <span className="text-[11px] opacity-60">{l.duree}</span>}
+                        {verrou ? <span className="text-[10px] uppercase tracking-wider opacity-60">{l.mois}</span>
+                                : l.duree && <span className="text-[11px] opacity-60">{l.duree}</span>}
                       </button>
-                    ))}
+                      );
+                    })}
                   </div>
                 ));
               })()}
@@ -438,10 +457,8 @@ const CoursDetailPage: React.FC = () => {
                       )
                     ) : null}
                   </div>
-                  {courante.texte && courante.texte.trim().length > 40 && (
-                    <div className="mt-6 whitespace-pre-line text-[0.95rem] leading-relaxed text-[#3a2f23] dark:text-white/80">
-                      {courante.texte.trim()}
-                    </div>
+                  {courante.texte?.trim() && (
+                    <TexteLecon texte={courante.texte} className={`${courante.chemin ? 'mt-6' : 'mt-2'} max-w-[68ch] text-[#3a2f23] dark:text-white/80`} />
                   )}
 
                   {/* Les documents déposés par Krystine sous la leçon */}
@@ -458,7 +475,7 @@ const CoursDetailPage: React.FC = () => {
                               }}
                               className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/40 px-4 py-2 text-sm text-[#8B4A2F] transition-colors hover:bg-[#BA7B39]/10 dark:text-[#d9a05b]"
                             >
-                              <i className="fa-solid fa-file-arrow-down" /> {d.nom}
+                              <i className={`fa-solid ${/\.pdf$/i.test(d.nom) ? 'fa-file-pdf' : 'fa-file-arrow-down'}`} /> {d.nom}
                             </button>
                           </li>
                         ))}

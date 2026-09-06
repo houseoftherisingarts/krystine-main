@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   getFormations, setFormationStatut, deleteFormation, updateFormationOptions,
-  getLecons, ajouterLecon, supprimerLecon, setLeconOrdre,
+  getLecons, ajouterLecon, supprimerLecon, setLeconOrdre, creerLeconTexte, remplacerFichierLecon,
   majLecon, ajouterDocumentLecon, retirerDocumentLecon,
   type Formation, type FormationOptions, type Lecon,
 } from '../../../firebase/formations';
@@ -11,21 +11,33 @@ import { Card } from '../primitives';
 // ordre par flèches, suppression. Le fichier part dans formations-contenu/
 // (privé) et la leçon apparaît immédiatement dans le lecteur.
 const MOIS_PORTES = ['', 'septembre', 'octobre', 'novembre', 'decembre', 'janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout'];
+const ICONE_LECON: Record<Lecon['type'], string> = {
+  video: 'fa-circle-play', audio: 'fa-music', pdf: 'fa-file-pdf', fichier: 'fa-file', texte: 'fa-align-left',
+};
+const champ = 'rounded-xl border border-[#38403a]/10 bg-white/70 px-3 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/10 dark:bg-white/5 dark:text-white';
+const pastille = 'inline-flex cursor-pointer items-center gap-2 rounded-full border border-[#BA7B39]/40 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:bg-[#BA7B39]/10';
 
-// L'éditeur d'une leçon : le texte qui l'accompagne, sa porte (mois), sa durée
-// et les documents que Krystine dépose dessous.
-const LeconEditeur: React.FC<{ formationId: string; lecon: Lecon; onFerme: () => void; onMaj: () => void }> = ({ formationId, lecon, onFerme, onMaj }) => {
+// L'éditeur d'une leçon, sur le modèle d'une leçon Kajabi : le titre, la
+// section (module) qui la regroupe, le texte d'accompagnement avec sa mise en
+// forme légère, la porte du mois qui la libère, sa durée, le fichier média
+// qu'on peut remplacer, et les documents de support déposés dessous.
+export const LeconEditeur: React.FC<{ formationId: string; lecon: Lecon; modules: string[]; onFerme: () => void; onMaj: () => void }> = ({ formationId, lecon, modules, onFerme, onMaj }) => {
   const [titre, setTitre] = useState(lecon.titre);
+  const [moduleNom, setModuleNom] = useState(lecon.moduleNom || '');
   const [texte, setTexte] = useState(lecon.texte || '');
   const [mois, setMois] = useState(lecon.mois || '');
   const [duree, setDuree] = useState(lecon.duree || '');
   const [occupe, setOccupe] = useState(false);
+  const [enregistre, setEnregistre] = useState(false);
+  const [aide, setAide] = useState(false);
   const docRef = useRef<HTMLInputElement>(null);
+  const mediaRef = useRef<HTMLInputElement>(null);
 
   const enregistrer = async () => {
     setOccupe(true);
     try {
-      await majLecon(formationId, lecon.id, { titre: titre.trim() || lecon.titre, texte, mois, duree });
+      await majLecon(formationId, lecon.id, { titre: titre.trim() || lecon.titre, texte, mois, duree, moduleNom: moduleNom.trim() });
+      setEnregistre(true); setTimeout(() => setEnregistre(false), 2500);
       onMaj();
     } finally { setOccupe(false); }
   };
@@ -36,37 +48,83 @@ const LeconEditeur: React.FC<{ formationId: string; lecon: Lecon; onFerme: () =>
     try { for (const f of fs) await ajouterDocumentLecon(formationId, lecon.id, f); onMaj(); }
     finally { setOccupe(false); if (docRef.current) docRef.current.value = ''; }
   };
+  const remplacer = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setOccupe(true);
+    try { await remplacerFichierLecon(formationId, lecon, f); onMaj(); }
+    finally { setOccupe(false); if (mediaRef.current) mediaRef.current.value = ''; }
+  };
 
   return (
     <div className="mt-2 space-y-3 rounded-2xl border border-[#BA7B39]/30 bg-[#BA7B39]/6 p-4">
-      <input value={titre} onChange={e => setTitre(e.target.value)} placeholder="Titre de la leçon"
-        className="w-full rounded-xl border border-[#38403a]/10 bg-white/70 px-3 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/10 dark:bg-white/5 dark:text-white" />
-      <textarea value={texte} onChange={e => setTexte(e.target.value)} rows={4} placeholder="Le texte qui accompagne la leçon…"
-        className="w-full resize-y rounded-xl border border-[#38403a]/10 bg-white/70 px-3 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/10 dark:bg-white/5 dark:text-white" />
-      <div className="flex flex-wrap items-center gap-3">
-        <select value={mois} onChange={e => setMois(e.target.value)}
-          className="rounded-xl border border-[#38403a]/10 bg-white/70 px-3 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/10 dark:bg-white/5 dark:text-white">
-          {MOIS_PORTES.map(m => <option key={m} value={m}>{m ? `Porte de ${m}` : 'Sans porte (toujours visible)'}</option>)}
-        </select>
-        <input value={duree} onChange={e => setDuree(e.target.value)} placeholder="Durée (ex. 12 min)"
-          className="w-36 rounded-xl border border-[#38403a]/10 bg-white/70 px-3 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/10 dark:bg-white/5 dark:text-white" />
-        <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-[#BA7B39]/40 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">
-          <i className="fa-solid fa-paperclip" /> Déposer un document
-          <input ref={docRef} type="file" multiple className="hidden" onChange={deposer} disabled={occupe} />
+      <div className="grid gap-3 md:grid-cols-[1fr_220px]">
+        <input value={titre} onChange={e => setTitre(e.target.value)} placeholder="Titre de la leçon" className={`w-full ${champ}`} />
+        <input value={moduleNom} onChange={e => setModuleNom(e.target.value)} placeholder="Section (ex. Module 1)" list={`modules-${formationId}`} className={`w-full ${champ}`} />
+        <datalist id={`modules-${formationId}`}>{modules.map(m => <option key={m} value={m} />)}</datalist>
+      </div>
+
+      {/* Le fichier média : vidéo, audio ou PDF, remplaçable à tout moment. */}
+      <div className="flex flex-wrap items-center gap-3 rounded-xl bg-white/50 px-3 py-2 text-sm dark:bg-white/5">
+        <i className={`fa-solid ${ICONE_LECON[lecon.type]} text-[#8B4A2F]`} />
+        <span className="min-w-0 flex-1 truncate text-[#293027]/80 dark:text-white/80">
+          {lecon.chemin ? lecon.chemin.split('/').pop()!.replace(/^\d+_/, '') : 'Page de texte, sans vidéo'}
+        </span>
+        <label className={pastille}>
+          <i className={`fa-solid ${lecon.chemin ? 'fa-rotate' : 'fa-video'}`} /> {lecon.chemin ? 'Remplacer la vidéo' : 'Ajouter une vidéo'}
+          <input ref={mediaRef} type="file" className="hidden" accept="video/*,audio/*,.pdf,application/pdf" onChange={remplacer} disabled={occupe} />
         </label>
       </div>
-      {(lecon.docs?.length ?? 0) > 0 && (
-        <ul className="space-y-1">
-          {lecon.docs!.map(d => (
-            <li key={d.chemin} className="flex items-center gap-2 text-sm text-[#293027]/80 dark:text-white/80">
-              <i className="fa-solid fa-file text-[#8B4A2F]/70" /> <span className="min-w-0 flex-1 truncate">{d.nom}</span>
-              <button onClick={async () => { await retirerDocumentLecon(formationId, lecon.id, d.chemin); onMaj(); }}
-                className="text-[#38403a]/40 hover:text-red-500" aria-label={`Retirer ${d.nom}`}><i className="fa-solid fa-trash text-xs" /></button>
-            </li>
-          ))}
-        </ul>
-      )}
-      <div className="flex justify-end gap-2">
+
+      <div>
+        <textarea value={texte} onChange={e => setTexte(e.target.value)} rows={8}
+          placeholder={"Le texte qui accompagne la leçon : ce que la vidéo dit, la consigne, l'exercice…\n\n## Un titre\n**du gras**, une - liste, un lien https://…"}
+          className={`w-full resize-y ${champ}`} />
+        <button type="button" onClick={() => setAide(a => !a)} className="mt-1 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]/70 hover:text-[#8B4A2F]">
+          <i className="fa-solid fa-circle-question mr-1" /> Mise en forme
+        </button>
+        {aide && (
+          <p className="mt-1 rounded-xl bg-white/60 px-3 py-2 text-xs leading-relaxed text-[#293027]/70 dark:bg-white/5 dark:text-white/70">
+            Une ligne vide sépare deux paragraphes. <code>## Titre</code> fait un titre, <code>### Petit titre</code> un sous-titre,
+            <code>**mot**</code> met en gras, une ligne qui commence par <code>- </code> fait une liste, <code>1. </code> une liste numérotée,
+            <code>&gt; </code> une citation. Une adresse web devient un lien; <code>[mot](https://…)</code> nomme le lien.
+          </p>
+        )}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <select value={mois} onChange={e => setMois(e.target.value)} className={champ}>
+          {MOIS_PORTES.map(m => <option key={m} value={m}>{m ? `S'ouvre avec la porte de ${m}` : 'Sans porte (toujours visible)'}</option>)}
+        </select>
+        <input value={duree} onChange={e => setDuree(e.target.value)} placeholder="Durée (ex. 12 min)" className={`w-36 ${champ}`} />
+      </div>
+
+      {/* Les documents de support : PDF, fiches, audios complémentaires. */}
+      <div className="rounded-xl bg-white/50 p-3 dark:bg-white/5">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Documents de support ({lecon.docs?.length ?? 0})</p>
+          <label className={pastille}>
+            <i className="fa-solid fa-paperclip" /> Déposer un PDF ou un fichier
+            <input ref={docRef} type="file" multiple className="hidden" onChange={deposer} disabled={occupe} />
+          </label>
+        </div>
+        {(lecon.docs?.length ?? 0) > 0 ? (
+          <ul className="mt-2 space-y-1">
+            {lecon.docs!.map(d => (
+              <li key={d.chemin} className="flex items-center gap-2 text-sm text-[#293027]/80 dark:text-white/80">
+                <i className={`fa-solid ${/\.pdf$/i.test(d.nom) ? 'fa-file-pdf' : 'fa-file'} text-[#8B4A2F]/70`} /> <span className="min-w-0 flex-1 truncate">{d.nom}</span>
+                <button onClick={async () => { await retirerDocumentLecon(formationId, lecon.id, d.chemin); onMaj(); }}
+                  className="text-[#38403a]/40 hover:text-red-500" aria-label={`Retirer ${d.nom}`}><i className="fa-solid fa-trash text-xs" /></button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-2 text-xs text-[#293027]/50 dark:text-white/50">Les membres les téléchargent sous la vidéo : cahier d'exercices, fiche du rituel, texte à imprimer.</p>
+        )}
+      </div>
+
+      <div className="flex items-center justify-end gap-2">
+        {enregistre && <span className="mr-auto text-xs text-green-700">Enregistré.</span>}
         <button onClick={onFerme} className="rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/60 dark:text-white/60">Fermer</button>
         <button onClick={enregistrer} disabled={occupe}
           className="rounded-full bg-[#BA7B39] px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] disabled:opacity-50">
@@ -83,9 +141,18 @@ export const LeconsPanel: React.FC<{ formationId: string }> = ({ formationId }) 
   const [charge, setCharge] = useState(true);
   const [televersement, setTeleversement] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
+  const [nouvellePage, setNouvellePage] = useState<string | null>(null);   // titre en saisie
   const fichierRef = useRef<HTMLInputElement>(null);
+  const modules = Array.from(new Set(lecons.map(l => l.moduleNom).filter((m): m is string => !!m)));
 
   const refresh = () => getLecons(formationId).then(setLecons).finally(() => setCharge(false));
+  const creerPage = async () => {
+    const titre = (nouvellePage || '').trim();
+    if (!titre) return;
+    setErreur(null);
+    try { await creerLeconTexte(formationId, titre, lecons.length); setNouvellePage(null); await refresh(); }
+    catch (err: any) { setErreur(err?.message || 'La page n\'a pas pu être créée.'); }
+  };
   useEffect(() => { refresh(); }, [formationId]);
 
   const televerser = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,37 +196,57 @@ export const LeconsPanel: React.FC<{ formationId: string }> = ({ formationId }) 
         <p className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">
           Leçons ({lecons.length})
         </p>
-        <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#9c6630]">
-          <i className="fa-solid fa-upload text-[10px]" />
-          {televersement ? 'Téléversement…' : 'Ajouter des leçons'}
-          <input
-            ref={fichierRef} type="file" multiple className="hidden"
-            accept="video/*,audio/*,.pdf,application/pdf,*/*"
-            onChange={televerser} disabled={televersement}
-          />
-        </label>
+        <div className="flex flex-wrap items-center gap-2">
+          <button type="button" onClick={() => setNouvellePage(p => p === null ? '' : null)}
+            className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/50 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] transition-colors hover:bg-[#BA7B39]/10">
+            <i className="fa-solid fa-align-left text-[10px]" /> Page de texte
+          </button>
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#9c6630]">
+            <i className="fa-solid fa-upload text-[10px]" />
+            {televersement ? 'Téléversement…' : 'Ajouter des vidéos'}
+            <input
+              ref={fichierRef} type="file" multiple className="hidden"
+              accept="video/*,audio/*,.pdf,application/pdf,*/*"
+              onChange={televerser} disabled={televersement}
+            />
+          </label>
+        </div>
       </div>
+      {nouvellePage !== null && (
+        <div className="mb-3 flex gap-2">
+          <input autoFocus value={nouvellePage} onChange={e => setNouvellePage(e.target.value)} placeholder="Titre de la page (ex. Bienvenue, Exercice de la semaine)"
+            onKeyDown={e => { if (e.key === 'Enter') void creerPage(); if (e.key === 'Escape') setNouvellePage(null); }}
+            className={`flex-1 ${champ}`} />
+          <button type="button" onClick={creerPage} disabled={!nouvellePage.trim()}
+            className="rounded-full bg-[#BA7B39] px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] disabled:opacity-50">Créer</button>
+        </div>
+      )}
       {erreur && <p className="mb-3 text-xs text-red-600">{erreur}</p>}
       {charge ? (
         <p className="text-xs text-[#38403a]/50 dark:text-white/50">Chargement…</p>
       ) : lecons.length === 0 ? (
         <p className="text-xs text-[#38403a]/50 dark:text-white/50">
-          Aucune leçon. Téléversez des vidéos, des musiques ou des PDF : l'ordre de téléversement devient l'ordre du cours.
+          Aucune leçon. Téléversez des vidéos, des musiques ou des PDF, ou créez une page de texte : l'ordre d'ajout devient l'ordre du cours.
+          Chaque leçon s'ouvre ensuite au crayon pour son texte, sa section, sa porte et ses documents.
         </p>
       ) : (
         <div className="space-y-1.5">
           {lecons.map((l, i) => (
 <React.Fragment key={l.id}>
             <div className="flex items-center gap-3 rounded-[12px] bg-white/50 px-3 py-2 text-sm dark:bg-white/5">
-              <i className={`fa-solid ${l.type === 'video' ? 'fa-circle-play' : l.type === 'audio' ? 'fa-music' : l.type === 'pdf' ? 'fa-file-pdf' : 'fa-file'} w-4 text-[#8B4A2F]`} />
-              <span className="min-w-0 flex-1 truncate text-[#293027] dark:text-white">{i + 1}. {l.titre}</span>
+              <i className={`fa-solid ${ICONE_LECON[l.type] || 'fa-file'} w-4 text-[#8B4A2F]`} />
+              <span className="min-w-0 flex-1 truncate text-[#293027] dark:text-white">
+                {i + 1}. {l.titre}
+                {l.moduleNom && <span className="ml-2 rounded-full bg-[#BA7B39]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#8B4A2F]">{l.moduleNom}</span>}
+                {l.mois && <span className="ml-1 text-[10px] uppercase tracking-wider text-[#38403a]/40 dark:text-white/40"><i className="fa-solid fa-door-closed mr-1" />{l.mois}</span>}
+              </span>
               <button type="button" onClick={() => setEnEdition(e => e === l.id ? null : l.id)} title="Éditer la leçon" className="text-[#38403a]/40 hover:text-[#8B4A2F] dark:text-white/40"><i className="fa-solid fa-pen" /></button>
               <button type="button" onClick={() => bouger(i, -1)} disabled={i === 0} title="Monter" className="text-[#38403a]/40 hover:text-[#8B4A2F] disabled:opacity-20 dark:text-white/40"><i className="fa-solid fa-chevron-up" /></button>
               <button type="button" onClick={() => bouger(i, 1)} disabled={i === lecons.length - 1} title="Descendre" className="text-[#38403a]/40 hover:text-[#8B4A2F] disabled:opacity-20 dark:text-white/40"><i className="fa-solid fa-chevron-down" /></button>
               <button type="button" onClick={() => retirer(l)} title="Supprimer" className="text-red-400 hover:text-red-600"><i className="fa-solid fa-trash" /></button>
             </div>
               {enEdition === l.id && (
-                <LeconEditeur formationId={formationId} lecon={l} onFerme={() => setEnEdition(null)} onMaj={() => { void refresh(); }} />
+                <LeconEditeur formationId={formationId} lecon={l} modules={modules} onFerme={() => setEnEdition(null)} onMaj={() => { void refresh(); }} />
               )}
             </React.Fragment>
           ))}

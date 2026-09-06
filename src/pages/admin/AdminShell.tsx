@@ -84,31 +84,47 @@ interface NavItem {
   icon: string;
 }
 
-const NAV: NavItem[] = [
-  { id: 'dashboard',  label: 'Tableau de bord',  icon: 'fa-gauge-high' },
-  { id: 'analytics',  label: 'Analytics Shopify', icon: 'fa-chart-line' },
-  { id: 'orders',     label: 'Commandes',        icon: 'fa-box' },
-  { id: 'boutique',   label: 'Boutique',         icon: 'fa-basket-shopping' },
-  { id: 'members',    label: 'Clients',          icon: 'fa-users' },
-  { id: 'messages',   label: 'Messages',         icon: 'fa-comments' },
-  { id: 'submissions', label: 'Formulaires',     icon: 'fa-clipboard-list' },
-  { id: 'groups',     label: 'Groupes',          icon: 'fa-users-rectangle' },
-  { id: 'live',       label: 'Live',             icon: 'fa-tower-broadcast' },
-  { id: 'feedpublic', label: 'Feed public',      icon: 'fa-newspaper' },
-  { id: 'events',     label: 'Événements & Conférences', icon: 'fa-calendar' },
-  { id: 'blog',       label: 'Blogue',           icon: 'fa-pen-nib' },
-  { id: 'splash',     label: 'Écran d\'accueil', icon: 'fa-wand-magic-sparkles' },
-  { id: 'foyer',      label: 'Le Foyer',         icon: 'fa-fire' },
-  { id: 'bookings',   label: 'Demandes',         icon: 'fa-inbox' },
-  { id: 'demande',    label: 'Demander un changement', icon: 'fa-bolt' },
-  { id: 'newsletter', label: 'Infolettre',       icon: 'fa-envelope' },
-  { id: 'guide',      label: 'Parcours guidés',  icon: 'fa-compass' },
-  { id: 'dosha',      label: 'Quiz Dosha',       icon: 'fa-circle-nodes' },
-  { id: 'media',      label: 'Médiathèque',      icon: 'fa-photo-film' },
-  { id: 'formations', label: 'Formations',       icon: 'fa-graduation-cap' },
-  { id: 'assets',     label: 'Assets et téléchargements', icon: 'fa-download' },
-  { id: 'settings',   label: 'Paramètres',       icon: 'fa-gear' },
+// Le menu se lit en six familles repliables. Le tableau de bord reste seul en
+// haut; la famille de la section ouverte se déplie d'elle-même, les autres
+// gardent l'état que Krystine leur a laissé (mémorisé dans le navigateur).
+type GroupeId = 'ventes' | 'communaute' | 'formations' | 'contenu' | 'reglages';
+const GROUPES: { id: GroupeId; label: string; icon: string }[] = [
+  { id: 'ventes',     label: 'Ventes',     icon: 'fa-basket-shopping' },
+  { id: 'communaute', label: 'Communauté', icon: 'fa-users' },
+  { id: 'formations', label: 'Formations', icon: 'fa-graduation-cap' },
+  { id: 'contenu',    label: 'Contenu',    icon: 'fa-pen-nib' },
+  { id: 'reglages',   label: 'Réglages',   icon: 'fa-gear' },
 ];
+const NAV: (NavItem & { groupe?: GroupeId })[] = [
+  { id: 'dashboard',  label: 'Tableau de bord',  icon: 'fa-gauge-high' },
+  { id: 'orders',     label: 'Commandes',        icon: 'fa-box',              groupe: 'ventes' },
+  { id: 'boutique',   label: 'Boutique',         icon: 'fa-basket-shopping',  groupe: 'ventes' },
+  { id: 'analytics',  label: 'Analytics Shopify', icon: 'fa-chart-line',      groupe: 'ventes' },
+  { id: 'bookings',   label: 'Demandes',         icon: 'fa-inbox',            groupe: 'ventes' },
+  { id: 'submissions', label: 'Formulaires',     icon: 'fa-clipboard-list',   groupe: 'ventes' },
+  { id: 'members',    label: 'Clients',          icon: 'fa-users',            groupe: 'communaute' },
+  { id: 'messages',   label: 'Messages',         icon: 'fa-comments',         groupe: 'communaute' },
+  { id: 'groups',     label: 'Groupes',          icon: 'fa-users-rectangle',  groupe: 'communaute' },
+  { id: 'feedpublic', label: 'Feed public',      icon: 'fa-newspaper',        groupe: 'communaute' },
+  { id: 'live',       label: 'Live',             icon: 'fa-tower-broadcast',  groupe: 'communaute' },
+  { id: 'formations', label: 'Formations',       icon: 'fa-graduation-cap',   groupe: 'formations' },
+  { id: 'foyer',      label: 'Le Foyer',         icon: 'fa-fire',             groupe: 'formations' },
+  { id: 'guide',      label: 'Parcours guidés',  icon: 'fa-compass',          groupe: 'formations' },
+  { id: 'dosha',      label: 'Quiz Dosha',       icon: 'fa-circle-nodes',     groupe: 'formations' },
+  { id: 'blog',       label: 'Blogue',           icon: 'fa-pen-nib',          groupe: 'contenu' },
+  { id: 'events',     label: 'Événements & Conférences', icon: 'fa-calendar', groupe: 'contenu' },
+  { id: 'newsletter', label: 'Infolettre',       icon: 'fa-envelope',         groupe: 'contenu' },
+  { id: 'media',      label: 'Médiathèque',      icon: 'fa-photo-film',       groupe: 'contenu' },
+  { id: 'splash',     label: 'Écran d\'accueil', icon: 'fa-wand-magic-sparkles', groupe: 'contenu' },
+  { id: 'assets',     label: 'Assets et téléchargements', icon: 'fa-download', groupe: 'reglages' },
+  { id: 'settings',   label: 'Paramètres',       icon: 'fa-gear',             groupe: 'reglages' },
+  { id: 'demande',    label: 'Demander un changement', icon: 'fa-bolt',       groupe: 'reglages' },
+];
+const CLE_OUVERTS = 'admin.nav.ouverts';
+const lireOuverts = (): GroupeId[] => {
+  try { const v = JSON.parse(localStorage.getItem(CLE_OUVERTS) || 'null'); if (Array.isArray(v)) return v; } catch { /* noop */ }
+  return ['ventes', 'communaute', 'formations'];
+};
 
 interface Props {
   user: User;
@@ -124,6 +140,44 @@ const AdminShell: React.FC<Props> = ({ user, section, onSectionChange, children 
   // et sur le bouton du menu mobile, en direct.
   const [nonLus, setNonLus] = useState(0);
   useEffect(() => subscribeToConversations(list => setNonLus(list.reduce((n, c) => n + (c.unreadByAdmin || 0), 0))), []);
+  const [ouverts, setOuverts] = useState<GroupeId[]>(lireOuverts);
+  const basculerGroupe = (g: GroupeId) => setOuverts(o => {
+    const n = o.includes(g) ? o.filter(x => x !== g) : [...o, g];
+    try { localStorage.setItem(CLE_OUVERTS, JSON.stringify(n)); } catch { /* noop */ }
+    return n;
+  });
+  // La famille de la section courante se déplie toujours.
+  useEffect(() => {
+    const g = current?.groupe;
+    if (g) setOuverts(o => (o.includes(g) ? o : [...o, g]));
+  }, [current?.groupe]);
+  const nonLusGroupe = (g: GroupeId) => (g === 'communaute' && section !== 'messages' ? nonLus : 0);
+
+  const rendreItem = (item: NavItem, dansGroupe: boolean) => {
+    const active = section === item.id;
+    return (
+      <button
+        key={item.id}
+        onClick={() => { onSectionChange(item.id); setMobileOpen(false); }}
+        className={`mb-0.5 flex w-full items-center gap-3 rounded-full py-2.5 text-left text-sm transition-colors ${dansGroupe ? 'pl-7 pr-4' : 'px-4'} ${
+          active
+            ? 'bg-[#BA7B39] text-[#293027] shadow-[0_6px_18px_-8px_rgba(186,123,57,0.7)]'
+            : 'text-[#38403a]/70 hover:bg-white/60 hover:text-[#38403a] dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white'
+        }`}
+      >
+        <i className={`fa-solid ${item.icon} w-4 text-center ${active ? '' : 'text-[#8B4A2F]/70'}`} />
+        <span className="text-xs font-semibold uppercase tracking-wider">{item.label}</span>
+        {item.id === 'messages' && nonLus > 0 && (
+          <span
+            aria-label={`${nonLus} message${nonLus > 1 ? 's' : ''} non lu${nonLus > 1 ? 's' : ''}`}
+            className={`ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold tabular-nums ${active ? 'bg-[#293027] text-[#d9a05b]' : 'bg-[#BA7B39] text-[#293027] shadow-[0_0_0_3px_rgba(186,123,57,0.25)]'}`}
+          >
+            {nonLus > 99 ? '99+' : nonLus}
+          </span>
+        )}
+      </button>
+    );
+  };
 
   return (
     <div
@@ -139,29 +193,34 @@ const AdminShell: React.FC<Props> = ({ user, section, onSectionChange, children 
             <p className="mt-1 font-serif text-sm text-[#38403a]/80 dark:text-white/70">Krystine St-Laurent</p>
           </div>
           <nav className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
-            {NAV.map(item => {
-              const active = section === item.id;
+            {NAV.filter(i => !i.groupe).map(item => rendreItem(item, false))}
+            {GROUPES.map(g => {
+              const ouvert = ouverts.includes(g.id);
+              const contientActive = current?.groupe === g.id;
+              const pastille = nonLusGroupe(g.id);
               return (
-                <button
-                  key={item.id}
-                  onClick={() => { onSectionChange(item.id); setMobileOpen(false); }}
-                  className={`mb-0.5 flex w-full items-center gap-3 rounded-full px-4 py-2.5 text-left text-sm transition-colors ${
-                    active
-                      ? 'bg-[#BA7B39] text-[#293027] shadow-[0_6px_18px_-8px_rgba(186,123,57,0.7)]'
-                      : 'text-[#38403a]/70 hover:bg-white/60 hover:text-[#38403a] dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white'
-                  }`}
-                >
-                  <i className={`fa-solid ${item.icon} w-4 text-center ${active ? '' : 'text-[#8B4A2F]/70'}`} />
-                  <span className="text-xs font-semibold uppercase tracking-wider">{item.label}</span>
-                  {item.id === 'messages' && nonLus > 0 && (
-                    <span
-                      aria-label={`${nonLus} message${nonLus > 1 ? 's' : ''} non lu${nonLus > 1 ? 's' : ''}`}
-                      className={`ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold tabular-nums ${active ? 'bg-[#293027] text-[#d9a05b]' : 'bg-[#BA7B39] text-[#293027] shadow-[0_0_0_3px_rgba(186,123,57,0.25)]'}`}
-                    >
-                      {nonLus > 99 ? '99+' : nonLus}
-                    </span>
-                  )}
-                </button>
+                <div key={g.id} className="mt-1.5">
+                  <button
+                    type="button"
+                    onClick={() => basculerGroupe(g.id)}
+                    aria-expanded={ouvert}
+                    className={`flex w-full items-center gap-3 rounded-full px-4 py-2 text-left transition-colors hover:bg-white/40 dark:hover:bg-white/5 ${contientActive && !ouvert ? 'text-[#8B4A2F]' : 'text-[#38403a]/50 dark:text-white/45'}`}
+                  >
+                    <i className={`fa-solid ${g.icon} w-4 text-center text-[11px] ${contientActive ? 'text-[#8B4A2F]' : 'text-[#8B4A2F]/50'}`} />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.22em]">{g.label}</span>
+                    {!ouvert && pastille > 0 && (
+                      <span aria-hidden="true" className="ml-1 h-2 w-2 rounded-full bg-[#BA7B39] shadow-[0_0_0_3px_rgba(186,123,57,0.25)]" />
+                    )}
+                    <i className={`fa-solid fa-chevron-down ml-auto text-[10px] transition-transform duration-300 ${ouvert ? 'rotate-180' : ''}`} />
+                  </button>
+                  <div className="grid transition-[grid-template-rows] duration-300 ease-out" style={{ gridTemplateRows: ouvert ? '1fr' : '0fr' }}>
+                    <div className="min-h-0 overflow-hidden">
+                      <div className="pt-0.5 pb-1">
+                        {NAV.filter(i => i.groupe === g.id).map(item => rendreItem(item, true))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               );
             })}
           </nav>
