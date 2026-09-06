@@ -153,13 +153,24 @@ export const newsletterAssistant = onCall(
     const last = history.pop()!;
     history.push({ role: 'user', content: `[Contexte]\n${context}\n\n[Message de Krystine]\n${typeof last.content === 'string' ? last.content : ''}` });
 
-    const response = await client.messages.create({
-      model: 'claude-opus-5',
-      max_tokens: 16000,
-      system: [{ type: 'text', text: SYSTEM, cache_control: { type: 'ephemeral' } }],
-      tools: [TOOL],
-      messages: history,
-    });
+    let response: Anthropic.Message;
+    try {
+      response = await client.messages.create({
+        model: 'claude-opus-5',
+        max_tokens: 16000,
+        system: [{ type: 'text', text: SYSTEM, cache_control: { type: 'ephemeral' } }],
+        tools: [TOOL],
+        messages: history,
+      });
+    } catch (e: any) {
+      // Une erreur d'API se dit en clair à Krystine plutôt qu'en INTERNAL.
+      const msg = String(e?.error?.error?.message || e?.message || '');
+      console.error('newsletterAssistant: Anthropic', e?.status, msg);
+      if (/credit balance|billing/i.test(msg)) throw new HttpsError('failed-precondition', 'Iris est en pause : le crédit du compte Anthropic est épuisé. Alex le recharge et tout repart.');
+      if (e?.status === 401 || /invalid x-api-key|authentication/i.test(msg)) throw new HttpsError('failed-precondition', 'Iris est en pause : la clé Anthropic est refusée. Alex la remplace et tout repart.');
+      if (e?.status === 429 || /overloaded/i.test(msg)) throw new HttpsError('resource-exhausted', 'Iris est très sollicitée en ce moment. Réessayez dans une minute.');
+      throw new HttpsError('unavailable', `Iris n'a pas pu répondre (${msg.slice(0, 160) || 'erreur inconnue'}).`);
+    }
 
     if (response.stop_reason === 'refusal') {
       throw new HttpsError('aborted', response.stop_details?.explanation || 'Réponse refusée.');

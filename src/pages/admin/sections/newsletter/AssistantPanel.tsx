@@ -19,7 +19,7 @@ interface Msg { role: 'user' | 'assistant'; content: string; proposal?: Proposal
 interface Props {
   draft: { title: string; subject: string; preheader: string; blocks: NewsletterBlock[]; audience: NewsletterAudience; scheduledFor: string | null };
   onProposal: (p: Proposal) => void;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 const STARTERS = [
@@ -73,7 +73,7 @@ const AssistantPanel: React.FC<Props> = ({ draft, onProposal, onClose }) => {
           <p className="text-[10px] uppercase tracking-[0.3em] text-[#e0b060] font-bold">Iris</p>
           <p className="text-xs text-white/50">Dites-lui ce que vous voulez dire, à qui, et quand.</p>
         </div>
-        <button onClick={onClose} className="text-white/50 hover:text-white text-sm" title="Fermer"><i className="fa-solid fa-xmark" /></button>
+        {onClose && <button onClick={onClose} className="text-white/50 hover:text-white text-sm" title="Fermer"><i className="fa-solid fa-xmark" /></button>}
       </div>
 
       <div className="flex-1 overflow-auto px-5 py-4 space-y-4 font-mono text-[13px] leading-relaxed">
