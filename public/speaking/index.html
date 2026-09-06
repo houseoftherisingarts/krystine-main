@@ -123,12 +123,15 @@
   .seen{background:var(--ivory);padding:2.4rem 0 2.6rem;border-bottom:1px solid rgba(41,48,39,.08)}
   .seen .lbl{text-align:center;font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;font-weight:600;color:var(--amber);display:flex;align-items:center;justify-content:center;gap:1rem}
   .seen .lbl::before,.seen .lbl::after{content:"";width:48px;height:1px;background:rgba(186,123,57,.5)}
-  .seen .row{display:flex;justify-content:space-between;align-items:center;margin-top:1.6rem;gap:1rem}
-  .seen .wm{flex:1;text-align:center;font-family:var(--serif);font-weight:600;font-size:clamp(1.05rem,1.55vw,1.5rem);letter-spacing:.06em;color:var(--ink);opacity:.28;transform:translateY(6px);transition:opacity .9s var(--ease),transform .9s var(--ease);line-height:1;white-space:nowrap}
+  .seen .row{margin-top:1.6rem;overflow:hidden;display:flex;-webkit-mask:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+  .seen .marq{display:flex;width:max-content;animation:marquee 38s linear infinite;will-change:transform}
+  .seen .row:hover .marq{animation-play-state:paused}
+  .seen .track{display:flex}
+  .seen .wm{flex:0 0 auto;padding:0 2.6rem;text-align:center;font-family:var(--serif);font-weight:600;font-size:clamp(1.05rem,1.55vw,1.5rem);letter-spacing:.06em;color:var(--ink);opacity:.28;transform:translateY(6px);transition:opacity .9s var(--ease),transform .9s var(--ease);line-height:1;white-space:nowrap;border-left:1px solid rgba(41,48,39,.12)}
   .seen .wm small{display:block;font:500 .56rem/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin-top:.45rem}
-  .seen .wm+.wm{border-left:1px solid rgba(41,48,39,.12)}
   .seen.lit .wm{opacity:1;transform:none}
   .seen .wm:nth-child(1){transition-delay:.05s}.seen .wm:nth-child(2){transition-delay:.15s}.seen .wm:nth-child(3){transition-delay:.25s}.seen .wm:nth-child(4){transition-delay:.35s}.seen .wm:nth-child(5){transition-delay:.45s}.seen .wm:nth-child(6){transition-delay:.55s}.seen .wm:nth-child(7){transition-delay:.65s}
+  @keyframes marquee{to{transform:translateX(-50%)}}
 
   /* ── rupture (Von Restorff) : la bande ambre ── */
   .years{background:var(--amber);color:#fff8ee;padding:4.5rem 0;position:relative;overflow:hidden}
@@ -252,14 +255,10 @@
     .talks .head,.who .mx,.formats .mx,.book .mx{grid-template-columns:1fr;gap:2.5rem}
     .voices .grid{grid-template-columns:1fr}
     .steps{grid-template-columns:1fr 1fr}
-    .seen .row{margin-top:1.2rem;overflow:hidden;justify-content:flex-start;gap:0}
-    .seen .track{display:flex;gap:0;animation:marquee 26s linear infinite;width:max-content}
-    .seen .wm{flex:0 0 auto;padding:0 1.6rem;opacity:1;transform:none}
   }
-  @media (min-width:1025px){ .seen .track{display:contents} .seen .track.dup{display:none} }
-  @keyframes marquee{to{transform:translateX(-50%)}}
   @media (max-width:640px){
     .mx{padding:0 1.3rem}
+    .seen .wm{padding:0 1.5rem}
     .top{padding:.9rem 1.3rem}.top.solid{padding:.6rem 1.3rem}
     .top .btn{display:none}
     .hero{padding:6.5rem 0 4rem}
@@ -281,7 +280,7 @@
     .reveal{opacity:1!important;transform:none!important;transition:none}
     .intro{display:none}
     .hero .scroll i{animation:none}
-    .seen .track{animation:none}
+    .seen .marq{animation:none}
   }
 </style>
 </head>
@@ -339,6 +338,7 @@
   <div class="mx">
     <div class="lbl" data-t="seen.lbl">As seen on</div>
     <div class="row">
+<div class="marq">
       <div class="track">
         <div class="wm">MAtv<small data-t="seen.tv">Television</small></div>
         <div class="wm">Salut Bonjour<small>TVA</small></div>
@@ -357,6 +357,7 @@
         <div class="wm">98.5 FM<small data-t="seen.radio">Radio</small></div>
         <div class="wm">Santé la Vie<small data-t="seen.series">TV series · 3 seasons</small></div>
       </div>
+</div>
     </div>
   </div>
 </section>
@@ -698,16 +699,18 @@
 
   /* ── Hero film : the 2024 promo, muted loop behind the copy; the button opens it with sound. ── */
   var B='https://storage.googleapis.com/inspirata/Base%20site/promo-2024/', wide=window.innerWidth>900;
-  var hv=document.getElementById('heroVid'); hv.src=B+(wide?'promo-ksl-hero-muted.mp4':'promo-ksl-hero-muted-720.mp4');
+  /* The film starts at 11.5 s (past the opening title cards) and loops back to that point. */
+  var T0=11.5, hv=document.getElementById('heroVid'); hv.removeAttribute('loop');
+  hv.src=B+(wide?'promo-ksl-hero-muted.mp4':'promo-ksl-hero-muted-720.mp4')+'#t='+T0;
   hv.addEventListener('playing',function(){ hv.classList.add('on'); },{once:true});
-  /* The film opens on title cards (white text on black, 0 to 4.6 s). Behind the copy they read as text on text, so the loop is dimmed while they pass. Playback itself stays whole. */
-  hv.addEventListener('timeupdate',function(){ hv.classList.toggle('dim', hv.currentTime<4.6); });
+  hv.addEventListener('loadedmetadata',function(){ if(hv.currentTime<T0-1) hv.currentTime=T0; },{once:true});
+  hv.addEventListener('ended',function(){ if(reduce) return; hv.currentTime=T0; startHero(); });
   function startHero(){ var p=hv.play(); if(p&&p.catch) p.catch(function(){}); }
-  if(reduce){ hv.removeAttribute('loop'); hv.classList.add('on'); } else setTimeout(startHero, 900);
+  if(reduce){ hv.classList.add('on'); } else setTimeout(startHero, 900);
   var dlg=document.getElementById('film'), fv=document.getElementById('filmVid');
   document.getElementById('filmBtn').addEventListener('click',function(){
-    if(!fv.src) fv.src=B+(wide?'promo-ksl-1080.mp4':'promo-ksl-720.mp4');
-    dlg.showModal(); hv.pause(); fv.currentTime=0; fv.muted=false; var p=fv.play(); if(p&&p.catch) p.catch(function(){});
+    if(!fv.src) fv.src=B+(wide?'promo-ksl-1080.mp4':'promo-ksl-720.mp4')+'#t='+T0;
+    dlg.showModal(); hv.pause(); if(fv.readyState>0) fv.currentTime=T0; fv.muted=false; var p=fv.play(); if(p&&p.catch) p.catch(function(){});
   });
   dlg.addEventListener('close',function(){ fv.pause(); if(!reduce) startHero(); });
   dlg.addEventListener('click',function(e){ if(e.target===dlg) dlg.close(); });
