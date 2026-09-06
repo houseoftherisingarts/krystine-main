@@ -34,6 +34,7 @@ import EditableImage from '../components/edit/EditableImage';
 import EditorialSectionHeader from '../components/EditorialSectionHeader';
 import Sprig from '../components/Sprig';
 import NewsletterSignup from '../components/NewsletterSignup';
+import CompteUpsell from '../components/CompteUpsell';
 import LiveEventsSection from '../components/LiveEvents';
 import { getEvents, type EventDoc } from '../firebase/firestore';
 import { getUpcomingEvents } from '../lib/liveEvents';
