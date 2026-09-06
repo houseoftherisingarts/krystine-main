@@ -123,6 +123,9 @@ export interface NewsletterSubscriber {
   subscribedAt?: Timestamp;
   unsubscribedAt?: Timestamp;
   derniereReponseLe?: Timestamp;  // posé par la fonction repondreAbonne à chaque courriel de Krystine
+  phone?: string;                 // repris du profil membre, si le compte en a un
+  lang?: string;                  // "fr" | "en" — langue active au moment de l'inscription
+  consentement?: boolean;         // true quand une membre connectée coche la case de consentement
 }
 
 // Generate a URL-safe random token. Used as the subscriber's unsubscribe key
