@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { CATALOGUE_VIDEOS, COUT_VIDEO, dureeLisible, vignetteYoutube, type CatalogueVideos, type VideoKrystine } from '../../lib/pointsConfig';
 import { useApp } from '../../contexts/AppContext';
 import { updateMember } from '../../firebase/firestore';
 import { getLecons, type Lecon } from '../../firebase/formations';
@@ -26,6 +27,10 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
   const [solde, setSolde] = useState<PointsBalance>({ balance: 0, lifetime: 0 });
   const [possede, setPossede] = useState<Record<string, unknown>>({});
   const [episodes, setEpisodes] = useState<Lecon[]>([]);
+  const [catalogue, setCatalogue] = useState<CatalogueVideos | null>(null);
+  const [liste, setListe] = useState<string>('');
+  const [recherche, setRecherche] = useState('');
+  const [nbVisibles, setNbVisibles] = useState(12);
   const [occupe, setOccupe] = useState<string | null>(null);
   const [message, setMessage] = useState<{ ton: 'ok' | 'err'; texte: string } | null>(null);
 
@@ -34,6 +39,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
     const a = subscribeToMemberPoints(user.uid, setSolde);
     const b = suivreBoutique(user.uid, (p) => setPossede(p.possede));
     getLecons(SANTE_LA_VIE_ID).then(setEpisodes).catch(() => setEpisodes([]));
+    fetch(CATALOGUE_VIDEOS).then((r) => r.json()).then(setCatalogue).catch(() => setCatalogue(null));
     return () => { a(); b(); };
   }, [user]);
 
@@ -79,6 +85,16 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
   };
 
   const episodesTries = useMemo(() => episodes.slice().sort((a, b) => a.ordre - b.ordre), [episodes]);
+
+  // Les vidéos de la chaîne, filtrées par liste et par mot, les plus récentes d'abord.
+  const videosVisibles = useMemo(() => {
+    if (!catalogue) return [] as VideoKrystine[];
+    const mot = recherche.trim().toLowerCase();
+    return catalogue.videos.filter((v) =>
+      (!liste || (liste === 'directs' ? v.onglet === 'streams' : liste === 'courts' ? v.onglet === 'shorts' : v.listes.includes(liste)))
+      && (!mot || v.titre.toLowerCase().includes(mot)));
+  }, [catalogue, liste, recherche]);
+  useEffect(() => { setNbVisibles(12); }, [liste, recherche]);
 
   // La carte du skin habille tout l'espace le temps du survol : l'aperçu, c'est
   // l'espace lui-même. Le portail écoute l'événement et pose la classe.
@@ -213,6 +229,66 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
             </>
           ));
         })}
+      </div>
+
+      {/* Les vidéos de la chaîne YouTube : tout le contenu de Krystine, à dix niskas la vidéo */}
+      <div className="mt-10" id="videos-krystine">
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'Les vidéos de Krystine' : 'Krystine’s videos'}</p>
+        <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">{fr ? 'Toute la chaîne, dans vos vidéos' : 'The whole channel, in your videos'}</h3>
+        <p className="mt-1 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
+          {fr
+            ? `${catalogue ? catalogue.videos.length : ''} vidéos, directs et capsules de la chaîne de Krystine. Chaque vidéo coûte ${niskas(COUT_VIDEO, 'FR')} et rejoint vos vidéos avec son lecteur, pour la revoir sans chercher.`
+            : `${catalogue ? catalogue.videos.length : ''} videos, lives and capsules from Krystine’s channel. Each one costs ${niskas(COUT_VIDEO, 'EN')} and joins your videos with its player, to watch again without searching.`}
+        </p>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          {[{ id: '', t: fr ? 'Toutes' : 'All' }, { id: 'directs', t: fr ? 'Les directs' : 'Lives' }, { id: 'courts', t: fr ? 'Les capsules' : 'Shorts' }, ...(catalogue?.listes || []).filter((l) => l.nb > 0).map((l) => ({ id: l.id, t: l.titre }))].map((l) => (
+            <button
+              key={l.id || 'toutes'}
+              type="button"
+              onClick={() => setListe(l.id)}
+              className={`rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-colors ${liste === l.id ? 'border-[#BA7B39] bg-[#BA7B39]/15 text-[#8B4A2F] dark:text-[#d9a05b]' : 'border-[#38403a]/15 text-[#38403a]/60 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/60'}`}
+            >
+              {l.t.toLowerCase()}
+            </button>
+          ))}
+          <input
+            type="search"
+            value={recherche}
+            onChange={(e) => setRecherche(e.target.value)}
+            placeholder={fr ? 'Chercher un titre' : 'Search a title'}
+            className="ml-auto w-full rounded-full border border-[#38403a]/15 bg-white/70 px-4 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] sm:w-56 dark:border-white/15 dark:bg-white/10 dark:text-white"
+          />
+        </div>
+        {!catalogue && <p className="mt-4 text-sm text-[#293027]/50 dark:text-white/50">{fr ? 'Le catalogue arrive.' : 'The catalogue is on its way.'}</p>}
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {videosVisibles.slice(0, nbVisibles).map((v) => {
+            const aMoi = !!possede[`video:${v.id}`];
+            return (
+              <div key={v.id} className="flex flex-col overflow-hidden rounded-[16px] border border-[#293027]/10 bg-white/60 dark:border-white/10 dark:bg-white/5">
+                <div className="relative aspect-video bg-[#293027]/10">
+                  <img src={vignetteYoutube(v.id)} alt="" loading="lazy" className="h-full w-full object-cover" />
+                  {v.duree > 0 && <span className="absolute bottom-2 right-2 rounded-full bg-[#151d19]/75 px-2 py-0.5 text-[10px] font-bold text-white">{dureeLisible(v.duree)}</span>}
+                </div>
+                <div className="flex flex-1 flex-col p-3">
+                  <p className="line-clamp-2 flex-1 text-sm text-[#293027] dark:text-white" title={v.titre}>{v.titre}</p>
+                  <div className="mt-3 flex items-center justify-between gap-2">
+                    <span className="text-[10px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">{v.publieLe}</span>
+                    {aMoi
+                      ? <span className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]"><i className="fa-solid fa-check mr-1" />{fr ? 'Dans vos vidéos' : 'In your videos'}</span>
+                      : boutonAchat(`video:${v.id}`, v.titre, COUT_VIDEO)}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        {videosVisibles.length > nbVisibles && (
+          <div className="mt-4 text-center">
+            <button type="button" onClick={() => setNbVisibles((n) => n + 24)} className="rounded-full border border-[#38403a]/15 px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
+              {fr ? `Voir plus (${videosVisibles.length - nbVisibles} autres)` : `See more (${videosVisibles.length - nbVisibles} more)`}
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="mt-10 grid gap-6 md:grid-cols-[220px_1fr]">

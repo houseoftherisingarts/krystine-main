@@ -3,7 +3,8 @@ import { useApp } from '../../contexts/AppContext';
 import { getMesFormations, getLecons, urlDeLecon, type AchatFormation, type Lecon } from '../../firebase/formations';
 import { estTelechargement, MUSIQUE_ORIGINE_ID } from '../../firebase/musique';
 import BoutiqueNiskas from '../../components/client/BoutiqueNiskas';
-import { SANTE_LA_VIE_ID } from '../../lib/pointsConfig';
+import { SANTE_LA_VIE_ID, CATALOGUE_VIDEOS, dureeLisible, vignetteYoutube, type CatalogueVideos } from '../../lib/pointsConfig';
+import { suivreBoutique } from '../../firebase/points';
 
 // « Téléchargements » : la musique d'Origine et les autres fichiers offerts
 // ou achetés, servis par URL signée (les fichiers vivent en Storage privé).
@@ -14,6 +15,16 @@ const ClientTelechargements: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [tour, setTour] = useState(0);
+  // Mes vidéos : celles de la chaîne achetées en niskas, avec leur lecteur.
+  const [possede, setPossede] = useState<Record<string, unknown>>({});
+  const [catalogue, setCatalogue] = useState<CatalogueVideos | null>(null);
+  const [enLecture, setEnLecture] = useState<string | null>(null);
+  useEffect(() => {
+    if (!user) return;
+    fetch(CATALOGUE_VIDEOS).then((r) => r.json()).then(setCatalogue).catch(() => setCatalogue(null));
+    return suivreBoutique(user.uid, (p) => setPossede(p.possede));
+  }, [user]);
+  const mesVideos = (catalogue?.videos || []).filter((v) => !!possede[`video:${v.id}`]);
 
   // Les téléchargements : la musique d'Origine et les émissions de Santé la
   // vie achetées à l'unité en niskas (le document d'achat porte `episodes`,
@@ -93,6 +104,38 @@ const ClientTelechargements: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+      {mesVideos.length > 0 && (
+        <div className="mt-8" id="mes-videos">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Mes vidéos' : 'My videos'} ({mesVideos.length})</p>
+          {enLecture && (
+            <div className="mt-3 overflow-hidden rounded-[16px] bg-black">
+              <div className="aspect-video">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${enLecture}?autoplay=1&rel=0`}
+                  title={lang === 'FR' ? 'Lecteur vidéo' : 'Video player'}
+                  className="h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            </div>
+          )}
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {mesVideos.map((v) => (
+              <button key={v.id} type="button" onClick={() => { setEnLecture(v.id); document.getElementById('mes-videos')?.scrollIntoView({ behavior: 'smooth' }); }} className={`flex gap-3 rounded-[14px] border p-2 text-left transition-colors hover:border-[#BA7B39] ${enLecture === v.id ? 'border-[#BA7B39] bg-[#BA7B39]/10' : 'border-[#293027]/10 dark:border-white/10'}`}>
+                <span className="relative w-28 flex-none overflow-hidden rounded-[10px]">
+                  <img src={vignetteYoutube(v.id)} alt="" className="aspect-video w-full object-cover" loading="lazy" />
+                  <i className="fa-solid fa-play absolute inset-0 flex items-center justify-center text-white drop-shadow" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="line-clamp-2 text-sm text-[#293027] dark:text-white">{v.titre}</span>
+                  <span className="mt-1 block text-[10px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">{v.duree ? dureeLisible(v.duree) : ''}{v.publieLe ? ` · ${v.publieLe}` : ''}</span>
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       )}
       <BoutiqueNiskas possedeMusiqueDeja={possedeMusique} episodesPossedes={episodesPossedes} onAchat={() => setTour((t) => t + 1)} />
