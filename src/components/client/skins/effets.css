@@ -1,6 +1,45 @@
-/* Les scènes animées et les gestes des skins légendaires (Vata, Pitta, Kapha)
-   et d'Aurore : rempli par l'agent « effets ». Ce fichier ne doit contenir que
-   du CSS portant sur .skin-vata, .skin-pitta, .skin-kapha, .skin-aurore. */
+/* Les scènes animées et les gestes des skins qui en ont une : les trois
+   légendaires (Vata, Pitta, Kapha), Aurore et Heure dorée. Ce fichier ne doit
+   contenir que du CSS portant sur .skin-vata, .skin-pitta, .skin-kapha,
+   .skin-aurore, .skin-golden-hour. */
+
+/* ── Les trois couches de fond ─────────────────────────────────────────────
+   La vidéo en premier, le voile de la palette par-dessus pour rendre au texte
+   son contraste, le canevas en dernier parce que c'est lui qui vit. Les trois
+   sont derrière le contenu et aucune ne voit jamais le pointeur.
+   La vidéo arrive à zéro : c'est le code qui la révèle une fois qu'elle peut
+   jouer, et qui la laisse à zéro pour toujours si le fichier manque. */
+.skin-video,
+.skin-voile {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.skin-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Le voile : sombre en haut et en bas, où le texte se pose, presque rien au
+   milieu, où la scène doit rester visible. `--sk-fond` est la couleur du skin,
+   donc le voile n'introduit jamais un gris étranger à la palette. */
+.skin-voile {
+  opacity: 0.18;
+  transition: opacity 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+  background:
+    linear-gradient(to bottom,
+      var(--sk-fond) 0%,
+      color-mix(in srgb, var(--sk-fond) 62%, transparent) 26%,
+      color-mix(in srgb, var(--sk-fond) 44%, transparent) 54%,
+      color-mix(in srgb, var(--sk-fond) 88%, transparent) 100%);
+}
+@supports not (color: color-mix(in srgb, red 50%, transparent)) {
+  .skin-voile { background: linear-gradient(to bottom, var(--sk-fond), transparent 40%, var(--sk-fond)); }
+}
+.skin-scene { z-index: -1; }
 
 /* Ces quatre variables sont posées par EffetsSkin.tsx sur les cartes proches
    du curseur. `inherits: false` est la raison d'être de la déclaration : sans
@@ -15,14 +54,16 @@
 .skin-vata > canvas[aria-hidden],
 .skin-pitta > canvas[aria-hidden],
 .skin-kapha > canvas[aria-hidden],
-.skin-aurore > canvas[aria-hidden] { z-index: -1; }
+.skin-aurore > canvas[aria-hidden],
+.skin-golden-hour > canvas[aria-hidden] { z-index: -1; }
 
 /* Les quatre skins partagent la même réponse à l'appui : le bouton s'enfonce
    tout de suite, c'est ce qui donne l'impression que l'espace écoute. */
 .skin-vata button, .skin-vata a,
 .skin-pitta button, .skin-pitta a,
 .skin-kapha button, .skin-kapha a,
-.skin-aurore button, .skin-aurore a {
+.skin-aurore button, .skin-aurore a,
+.skin-golden-hour button, .skin-golden-hour a {
   position: relative;
   touch-action: manipulation;
   transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -30,7 +71,8 @@
               color 200ms ease;
 }
 .skin-vata button:active, .skin-pitta button:active,
-.skin-kapha button:active, .skin-aurore button:active { transform: scale(0.97); }
+.skin-kapha button:active, .skin-aurore button:active,
+.skin-golden-hour button:active { transform: scale(0.97); }
 
 /* ── Vata · le vent ────────────────────────────────────────────────────────
    Le bouton se soulève d'un cheveu et une clarté verte le traverse, comme une

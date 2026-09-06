@@ -199,25 +199,24 @@ export const ouvrirCoffre = onCall({ region: 'us-central1' }, async (req) => {
   const lots: Array<Record<string, unknown>> = [];
   let niskasGagnes = 0;
 
-  // 1. Le cosmétique, toujours. Légendaire selon la part du coffre, puis rare, puis commun.
+  // 1. Le cosmétique, toujours. Légendaire selon la part du coffre, puis rare,
+  //    puis commun. Un tirage qui tombe sur un article déjà possédé se change
+  //    en niskas : la valeur de cet article, majorée de 5 % (Alex, 6 septembre
+  //    2026 : « un lot déjà à vous devient sa valeur en niskas, plus 5 % »).
   const b = await db.doc(`boutique/${uid}`).get();
   const possede = ((b.data() || {}) as { possede?: Record<string, unknown> }).possede || {};
-  const libres = (liste: string[]) => liste.filter((c) => !possede[c]);
-  let bassin: string[] = [];
-  let rarete: 'legendaire' | 'rare' | 'commun' = 'commun';
-  if (randomInt(0, 100) < contenu.legendaire && libres(LEGENDAIRES).length) { bassin = libres(LEGENDAIRES); rarete = 'legendaire'; }
-  else if (libres(contenu.rares).length) { bassin = libres(contenu.rares); rarete = 'rare'; }
-  else if (libres(LEGENDAIRES).length) { bassin = libres(LEGENDAIRES); rarete = 'legendaire'; }
-  else if (libres(COMMUNS).length) { bassin = libres(COMMUNS); rarete = 'commun'; }
-  if (bassin.length) {
-    const article = bassin[randomInt(0, bassin.length)];
+  let bassin: string[]; let rarete: 'legendaire' | 'rare' | 'commun';
+  if (randomInt(0, 100) < contenu.legendaire) { bassin = LEGENDAIRES; rarete = 'legendaire'; }
+  else if (contenu.rares.length) { bassin = contenu.rares; rarete = 'rare'; }
+  else { bassin = COMMUNS; rarete = 'commun'; }
+  const article = bassin[randomInt(0, bassin.length)];
+  if (!possede[article]) {
     await db.doc(`boutique/${uid}`).set({ possede: { [article]: FieldValue.serverTimestamp() } }, { merge: true });
     lots.push({ genre: 'cosmetique', rarete, article, nom: NOMS_COSMETIQUES[article] || article });
   } else {
-    // Tout est déjà à vous : le coffre paie en niskas à la place.
-    const bonus = type === 'or' ? 250 : type === 'argent' ? 120 : 50;
-    niskasGagnes += bonus;
-    lots.push({ genre: 'niskas', montant: bonus, nom: `${bonus} niskas`, note: 'Tous les skins et bannières sont déjà à vous.' });
+    const montant = Math.ceil((VALEUR_COSMETIQUE[article] || 5) * 1.05);
+    niskasGagnes += montant;
+    lots.push({ genre: 'niskas', montant, article, nom: `${montant} niskas`, note: `Vous aviez déjà ${NOMS_COSMETIQUES[article] || article}.` });
   }
 
   // 2. La musique d'Origine, toujours; dix niskas si elle est déjà à vous.

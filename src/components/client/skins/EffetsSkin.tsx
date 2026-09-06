@@ -582,11 +582,11 @@ const scenePitta: Fabrique = (ctx, w, h, pal, vue) => {
         const m = ctx.getTransform();
         const hd = Math.min(vue.h * 0.34, 240);
         const y0 = bas - hd;
-        const dx0 = Math.round(y0 * m.d), dh0 = Math.round(hd * m.d), dw0 = Math.round(w * m.a);
+        const dy0 = Math.round(y0 * m.d), dh0 = Math.round(hd * m.d), dw0 = Math.round(w * m.a);
         if (dw0 > 1 && dh0 > 1) {
           if (service.width !== dw0 || service.height !== dh0) { service.width = dw0; service.height = dh0; }
           sctx.clearRect(0, 0, dw0, dh0);
-          sctx.drawImage(ctx.canvas, 0, dx0, dw0, dh0, 0, 0, dw0, dh0);
+          sctx.drawImage(ctx.canvas, 0, dy0, dw0, dh0, 0, 0, dw0, dh0);
           ctx.clearRect(0, y0, w, hd);
           const TR = 16;
           for (let i = 0; i < TR; i++) {
@@ -1121,7 +1121,7 @@ const EffetsSkin: React.FC<{ skin: string }> = ({ skin }) => {
       force.v = 1;
     };
     if (video && couche && !calme.matches) {
-      video.addEventListener('canplay', videoPrete);
+      video.addEventListener('loadeddata', videoPrete);
       video.addEventListener('error', videoMorte);
       video.load();
     } else if (video) {
@@ -1179,7 +1179,7 @@ const EffetsSkin: React.FC<{ skin: string }> = ({ skin }) => {
       boite.removeEventListener('pointerdown', surClic);
       document.removeEventListener('visibilitychange', surVisible);
       calme.removeEventListener('change', refaire);
-      video?.removeEventListener('canplay', videoPrete);
+      video?.removeEventListener('loadeddata', videoPrete);
       video?.removeEventListener('error', videoMorte);
       video?.pause();
       scene = null;
@@ -1194,6 +1194,7 @@ const EffetsSkin: React.FC<{ skin: string }> = ({ skin }) => {
           ref={vid}
           aria-hidden
           className="skin-video"
+          autoPlay
           muted
           loop
           playsInline
