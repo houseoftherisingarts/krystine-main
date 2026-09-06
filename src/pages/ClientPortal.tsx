@@ -21,9 +21,10 @@ import ClientArchives from './client/ClientArchives';
 import ClientLoyalty from './client/ClientLoyalty';
 import ClientFormations from './client/ClientFormations';
 import ClientTelechargements from './client/ClientTelechargements';
+import ClientRediffusions from './client/ClientRediffusions';
 import { subscribeToMemberPoints, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
 
-type Tab = 'feed' | 'profile' | 'amis' | 'orders' | 'formations' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie';
+type Tab = 'feed' | 'profile' | 'amis' | 'orders' | 'formations' | 'rediffusions' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie';
 
 // L'onglet Profil en lecture : la fiche (courriel, téléphone, dosha, badges)
 // et surtout LE MUR de la personne. L'édition s'ouvre en cliquant sur la
@@ -287,6 +288,7 @@ const ClientPortal: React.FC = () => {
     { id: 'amis',     label: lang === 'FR' ? 'Amis' : 'Friends', icon: 'fa-user-group' },
     { id: 'orders',   label: lang === 'FR' ? 'Commandes' : 'Orders', icon: 'fa-box' },
     { id: 'formations', label: lang === 'FR' ? 'Mes formations' : 'My courses', icon: 'fa-graduation-cap' },
+    { id: 'rediffusions', label: lang === 'FR' ? 'Rediffusions' : 'Replays', icon: 'fa-circle-play' },
     { id: 'telechargements', label: lang === 'FR' ? 'Téléchargements' : 'Downloads', icon: 'fa-download' },
     { id: 'loyalty',  label: lang === 'FR' ? 'Points' : 'Points', icon: 'fa-seedling' },
     { id: 'dosha',    label: lang === 'FR' ? 'Dosha' : 'Dosha', icon: 'fa-circle-nodes' },
@@ -388,6 +390,7 @@ const ClientPortal: React.FC = () => {
           {tab === 'amis'     && <ClientAmis uid={user.uid} lang={lang} />}
           {tab === 'orders'   && <OrdersTab />}
           {tab === 'formations' && <ClientFormations />}
+          {tab === 'rediffusions' && <ClientRediffusions />}
           {tab === 'telechargements' && <ClientTelechargements />}
           {tab === 'loyalty'  && <ClientLoyalty />}
           {tab === 'dosha'    && <DoshaTab />}

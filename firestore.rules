@@ -27,6 +27,13 @@ service cloud.firestore {
     match /events/{id}        { allow read: if true; allow write: if isAdmin(); }
     // Directs du podcast : la page publique lit la date et le lien; l'admin écrit.
     match /liveEvents/{id}    { allow read: if true; allow write: if isAdmin(); }
+    // Rediffusions des directs (fiche, puis pages de clavardage et de
+    // commentaires), écrites par scripts/rediffusions/archiver.mjs : les
+    // membres connectés lisent, l'admin écrit.
+    match /rediffusions/{id} {
+      allow read: if isSignedIn(); allow write: if isAdmin();
+      match /pages/{page} { allow read: if isSignedIn(); allow write: if isAdmin(); }
+    }
     // Questions posées pendant le direct depuis /podcast/question : n'importe
     // qui écrit la sienne (champs et longueurs vérifiés), Krystine seule les lit
     // et les projette dans le paquet de cartes de l'admin.
