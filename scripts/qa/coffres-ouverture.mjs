@@ -157,12 +157,12 @@ async function scenarioOuverture(browser, type) {
   await page.waitForTimeout(400);
   await page.screenshot({ path: `${OUT}/${type}-1-avant.png` });
 
-  await boutonCle(page).click();
+  await clic(page, boutonCle(page));
   await page.getByText(/c’est fait|done\./i).first().waitFor({ timeout: 6000 });
   await page.waitForTimeout(300);
   await page.screenshot({ path: `${OUT}/${type}-2-apres-cle.png` });
 
-  await boutonCoffre(page, type).click();
+  await clic(page, boutonCoffre(page, type));
   await page.getByText(/c’est fait|done\./i).first().waitFor({ timeout: 6000 });
   await page.waitForTimeout(300);
   await page.screenshot({ path: `${OUT}/${type}-3-apres-coffre.png` });
@@ -171,7 +171,7 @@ async function scenarioOuverture(browser, type) {
 
   const [reponse] = await Promise.all([
     page.waitForResponse(r => r.url().includes('ouvrirCoffre') && r.request().method() === 'POST', { timeout: 15000 }),
-    boutonOuvrir(page, type).click(),
+    clic(page, boutonOuvrir(page, type)),
   ]);
   await page.waitForTimeout(900);
   await page.screenshot({ path: `${OUT}/${type}-4-video.png` }); // pendant la vidéo d'ouverture, avant la révélation
@@ -222,7 +222,7 @@ async function scenarioSansCle(browser, type) {
   await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(2200); await fermerBienvenue(page); await page.waitForTimeout(500);
   await carte(page, type).scrollIntoViewIfNeeded();
-  await boutonCoffre(page, type).click();
+  await clic(page, boutonCoffre(page, type));
   await page.getByText(/c’est fait|done\./i).first().waitFor({ timeout: 6000 });
   await page.waitForTimeout(400);
   attendu(await boutonOuvrir(page, type).isDisabled(), `bouton « Ouvrir » inactif sans clé`);
@@ -240,7 +240,7 @@ async function scenarioSansCoffre(browser, type) {
   await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(2200); await fermerBienvenue(page); await page.waitForTimeout(500);
   await carte(page, type).scrollIntoViewIfNeeded();
-  await boutonCle(page).click();
+  await clic(page, boutonCle(page));
   await page.getByText(/c’est fait|done\./i).first().waitFor({ timeout: 6000 });
   await page.waitForTimeout(400);
   attendu(await boutonOuvrir(page, type).isDisabled(), `bouton « Ouvrir » inactif sans coffre`);
@@ -263,15 +263,15 @@ async function scenarioDejaPossede(browser, VALEUR_COSMETIQUE) {
   await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(2200); await fermerBienvenue(page); await page.waitForTimeout(500);
   await carte(page, 'bronze').scrollIntoViewIfNeeded();
-  await boutonCle(page).click();
+  await clic(page, boutonCle(page));
   await page.getByText(/c’est fait|done\./i).first().waitFor({ timeout: 6000 });
-  await boutonCoffre(page, 'bronze').click();
+  await clic(page, boutonCoffre(page, 'bronze'));
   await page.getByText(/c’est fait|done\./i).first().waitFor({ timeout: 6000 });
   await page.waitForTimeout(300);
 
   const [reponse] = await Promise.all([
     page.waitForResponse(r => r.url().includes('ouvrirCoffre') && r.request().method() === 'POST', { timeout: 15000 }),
-    boutonOuvrir(page, 'bronze').click(),
+    clic(page, boutonOuvrir(page, 'bronze')),
   ]);
   await page.getByText(/Le coffre contenait|The chest held/).first().waitFor({ timeout: 15000 });
   await page.waitForTimeout(500);

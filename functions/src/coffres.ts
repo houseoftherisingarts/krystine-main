@@ -100,6 +100,7 @@ const VALEUR_COSMETIQUE: Record<string, number> = {
   'skin-aurore': 180, 'skin-or-pur': 180, 'skin-golden-hour': 180,
 };
 const NOMS_COSMETIQUES: Record<string, string> = {
+  'skin-vata': 'Skin Vata · le vent', 'skin-pitta': 'Skin Pitta · le feu', 'skin-kapha': 'Skin Kapha · l’eau',
   'skin-medzo': 'Skin Medzo Café', 'skin-nuit': 'Skin Nuit', 'skin-coffee': 'Skin Dark Coffee', 'banniere-nature': 'Bannière Nature & Ayurveda',
   'skin-aube': 'Skin Aube rose', 'skin-terre': 'Skin Terre cuite', 'skin-foret': 'Skin Forêt', 'skin-ocean': 'Skin Océan', 'skin-encre': 'Skin Encre & or',
   'skin-lotus': 'Skin Lotus', 'skin-feminite': 'Skin Féminité & Ayurveda', 'skin-nature': 'Skin Nature & Ayurveda', 'skin-teal-orange': 'Skin Sarcelle & Orange',
