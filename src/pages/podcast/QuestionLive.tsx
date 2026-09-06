@@ -155,7 +155,7 @@ const QuestionLive: React.FC = () => {
                     En poser une autre
                   </button>
                   {direct?.youtubeUrl && (
-                    <a href={direct.youtubeUrl} target="_blank" rel="noopener noreferrer"
+                    <a href="/direct"
                        className="px-7 py-3.5 rounded-full font-sans text-xs font-bold uppercase tracking-[0.2em] border text-[#8B4A2F] hover:bg-[#BA7B39]/10 transition-colors"
                        style={{ borderColor: 'rgba(139,74,47,0.35)' }}>
                       Retourner au direct
