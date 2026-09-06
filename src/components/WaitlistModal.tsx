@@ -142,6 +142,8 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ target, onClose }) => {
                 : 'Unsubscribe in one click. Your address is never resold.'}
             </p>
           </form>
+          {!user && <CompteUpsell variant="light" />}
+          </>
         )}
       </div>
     </div>
