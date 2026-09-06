@@ -196,7 +196,25 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
     const raw = (params.get('programme') || '').trim().toLowerCase();
     return isKnownProgramme(raw) ? raw : 'default';
   }, [location.search, forcedProgramme]);
-  const meta = PROGRAMMES[programmeKey];
+  // Une formation à venir sans fiche dédiée : ?programme=<slug>&titre=<titre>
+  // (page /formations). Le slug devient la source de la liste d'attente.
+  const meta = useMemo<ProgrammeMeta>(() => {
+    const base = PROGRAMMES[programmeKey];
+    if (programmeKey !== 'default' || forcedProgramme) return base;
+    const params = new URLSearchParams(location.search);
+    const slug = (params.get('programme') || '').trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+    const titre = (params.get('titre') || '').trim().slice(0, 120);
+    if (!slug || !titre) return base;
+    return {
+      source: `waitlist-${slug}`,
+      kicker: "Liste d'attente · Formation à votre rythme",
+      title: titre,
+      subtitle: 'Cette formation revient bientôt sur le site',
+      promise:
+        "Les formations reviennent une à une sur le site. Inscrivez-vous à la liste d'attente " +
+        "et vous recevrez l'invitation dès que celle-ci ouvre, avant toute annonce publique.",
+    };
+  }, [programmeKey, forcedProgramme, location.search]);
 
   // ── État du formulaire (identique à l'original) ──
   const [firstName, setFirstName] = useState('');

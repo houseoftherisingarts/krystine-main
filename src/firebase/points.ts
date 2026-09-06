@@ -292,8 +292,12 @@ export const points = {
   // doesn't collide with legacy `welcome:{uid}` events written by the
   // old auto-grant path — accounts that saw the earlier 100-pt auto-grant
   // can still claim the 50-pt welcome button once.
-  welcomeBonus:       (uid: string) =>
-    awardPoints(uid, 'welcome-claim', POINTS.welcome, `welcome-claim:${uid}`),
+  // Le cadeau de bienvenue (vingt niskas) se réclame au serveur, une seule
+  // fois par compte (functions/src/niskas.ts, reclamerBienvenue).
+  welcomeBonus:       async (_uid: string) => {
+    const r = await reclamerBienvenue();
+    return { awarded: r.deja ? 0 : r.montant, alreadyAwarded: r.deja };
+  },
   profilComplete:     (uid: string) =>
     awardPoints(uid, 'profil', POINTS.profil, `profil:${uid}`),
   questionPosee:      (uid: string, direct: string) =>
@@ -362,10 +366,25 @@ export async function acheterAvecNiskas(article: string): Promise<{ solde: numbe
   return res.data as { solde: number; article: string; nom: string };
 }
 
-/** Ouvre Stripe Checkout pour un paquet de cent niskas (dix dollars). */
-export async function acheterNiskas(): Promise<string> {
+/** Ouvre Stripe Checkout pour un paquet de niskas (PAQUETS_NISKAS; p100 par défaut). */
+export async function acheterNiskas(paquet = 'p100'): Promise<string> {
   if (!app) throw new Error('[Niskas] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionNiskas');
-  const res = await call({});
+  const res = await call({ paquet });
   return (res.data as { url: string }).url;
+}
+
+/** Le cadeau de bienvenue, jugé par le serveur (une fois par compte). */
+export async function reclamerBienvenue(): Promise<{ deja: boolean; montant: number; balance: number }> {
+  if (!app) throw new Error('[Niskas] Firebase not configured');
+  const call = httpsCallable(getFunctions(app, 'us-central1'), 'reclamerBienvenue');
+  const res = await call({});
+  return res.data as { deja: boolean; montant: number; balance: number };
+}
+
+/** Le cadeau de bienvenue a-t-il déjà été versé (ancienne clé ou nouvelle) ? */
+export async function bienvenueDejaVersee(uid: string): Promise<boolean> {
+  if (!db) return true;
+  const [a, b] = await Promise.all([getDoc(doc(db, 'pointsEvents', `welcome-claim:${uid}`)), getDoc(doc(db, 'pointsEvents', `welcome:${uid}`))]);
+  return a.exists() || b.exists();
 }

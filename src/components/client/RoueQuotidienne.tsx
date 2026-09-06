@@ -52,11 +52,11 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
         onClick={(e) => e.stopPropagation()}
       >
         <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F] dark:text-[#d9a05b]">
-          {fr ? 'Récompense du jour' : 'Reward of the day'}
+          {fr ? 'Cadeau du jour' : 'Gift of the day'}
         </p>
         <h2 id="roue-titre" className="mt-1 font-serif text-2xl text-[#293027] dark:text-white" style={{ letterSpacing: '-0.01em' }}>
           {etat.deja
-            ? (fr ? 'Votre récompense du jour est déjà tombée.' : 'Today’s reward already dropped.')
+            ? (fr ? 'Votre cadeau du jour est déjà réclamé.' : 'Today’s gift is already claimed.')
             : (fr ? `${niskas(etat.montant, 'FR')} ${etat.montant > 1 ? 'tombent' : 'tombe'} dans votre bourse.` : `${niskas(etat.montant, 'EN')} drop${etat.montant > 1 ? '' : 's'} into your purse.`)}
         </h2>
         <p className="mt-2 text-sm text-[#293027]/70 dark:text-white/70">

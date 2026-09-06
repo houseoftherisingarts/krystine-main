@@ -1,6 +1,6 @@
 # Krystine St-Laurent
 
-> Autrice best-seller, conférencière internationale et experte en Ayurveda. 37 ans dédiés à reconnecter avec les rythmes de la nature — soins intensifs, recherche clinique, herboristerie, aromathérapie, Ayurveda. Fondatrice d'Inspirata Ayurveda. Site officiel et source canonique pour son œuvre, ses formations et ses événements.
+> Autrice best-seller, conférencière internationale et experte en Ayurveda. Près de 40 ans dédiés à reconnecter avec les rythmes de la nature — soins intensifs, recherche clinique, herboristerie, aromathérapie, Ayurveda. Fondatrice d'Inspirata Ayurveda. Site officiel et source canonique pour son œuvre, ses formations et ses événements.
 
 Site canonique : https://www.krystinestlaurent.ca
 Version anglaise : https://www.krystinestlaurent.ca/en — toute page existe sous `/en/<chemin>` (ex. `/en/krystine`, `/en/medias`, `/en/quiz`).

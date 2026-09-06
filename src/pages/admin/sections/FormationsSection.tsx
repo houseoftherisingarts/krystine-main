@@ -265,6 +265,7 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
   const [dateSortie, setDateSortie] = useState(f.dateSortie || '');
   const [lancement, setLancement] = useState(!!f.lancementOrchestre);
   const [message, setMessage] = useState(!!f.messageAcheteursEnvoye);
+  const [questionsFermees, setQuestionsFermees] = useState(!!f.questionsFermees);
   const [categorie, setCategorie] = useState<'cours' | 'musique'>(f.categorie || 'cours');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -279,6 +280,7 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
         dateSortie: evergreen ? null : (dateSortie || null),
         lancementOrchestre: lancement,
         messageAcheteursEnvoye: message,
+        questionsFermees,
         categorie,
       };
       await updateFormationOptions(f.id, options);
@@ -312,6 +314,10 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
         <label className={ligne}>
           <input type="checkbox" className={case_} checked={evergreen} onChange={e => setEvergreen(e.target.checked)} />
           Evergreen (toujours disponible)
+        </label>
+        <label className={ligne}>
+          <input type="checkbox" className={case_} checked={questionsFermees} onChange={e => setQuestionsFermees(e.target.checked)} />
+          Sans questions sous les leçons
         </label>
         {!evergreen && (
           <label className={ligne}>

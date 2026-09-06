@@ -227,7 +227,7 @@ export const CONTENT: GlobalContent = {
         promoPrice: { fr: "397 $", en: "$397" },
         promoLabel: { fr: "", en: "" },
         buttonText: { fr: "Rejoindre VATA Essentiel", en: "Join VATA Essential" },
-        url: "https://www.krystinestlaurent.com/VATAETPREMIUMOPTIONSDEPAIEMENT",
+        url: "/vata#tarifs",
         isPremium: false
       },
       {
@@ -249,7 +249,7 @@ export const CONTENT: GlobalContent = {
         promoPrice: { fr: "597 $", en: "$597" },
         promoLabel: { fr: "", en: "" },
         buttonText: { fr: "Rejoindre VATA + Grande Bibliothèque", en: "Join VATA + Great Library" },
-        url: "https://www.krystinestlaurent.com/VATAETPREMIUMOPTIONSDEPAIEMENT",
+        url: "/vata#tarifs",
         isPremium: true
       }
     ]
@@ -396,7 +396,7 @@ export const CONTENT: GlobalContent = {
           { fr: "Accès à la communauté", en: "Community access" }
         ],
         recommended: false,
-        checkoutUrl: "https://www.krystinestlaurent.com/VATAETPREMIUMOPTIONSDEPAIEMENT",
+        checkoutUrl: "/vata#tarifs",
         buttonText: { fr: "Rejoindre VATA Essentiel", en: "Join VATA Essential" }
       },
       {
@@ -419,7 +419,7 @@ export const CONTENT: GlobalContent = {
         ],
         highlight: "EXPÉRIENCE PROFONDE",
         recommended: true,
-        checkoutUrl: "https://www.krystinestlaurent.com/VATAETPREMIUMOPTIONSDEPAIEMENT",
+        checkoutUrl: "/vata#tarifs",
         buttonText: { fr: "Rejoindre VATA + Grande Bibliothèque", en: "Join VATA + Great Library" }
       }
     ]
@@ -435,8 +435,8 @@ export const CONTENT: GlobalContent = {
   bio: {
     title: { fr: "KRYSTINE ST-LAURENT", en: "KRYSTINE ST-LAURENT" },
     role: { 
-      fr: "Une expertise de 35 ans à la jonction de la rigueur clinique et de la santé globale.", 
-      en: "35 years of expertise at the junction of clinical rigor and holistic health." 
+      fr: "Une expertise de près de 40 ans à la jonction de la rigueur clinique et de la santé globale.", 
+      en: "Nearly 40 years of expertise at the junction of clinical rigor and holistic health." 
     },
     subtitle: {
       fr: "Fondatrice d’INSPIRATA AYURVEDA.",
@@ -448,8 +448,8 @@ export const CONTENT: GlobalContent = {
     },
     description: [
       {
-        fr: "Pendant 35 ans, Krystine a œuvré en soins intensifs et en recherche clinique, puis en herboristerie, Ayurveda et aromathérapie. Elle a vu ce que l’approche moderne fait bien. Et elle a vu où elle vous laisse seule.",
-        en: "For 35 years, Krystine worked in intensive care and clinical research, then in herbalism, Ayurveda and aromatherapy. She saw what the modern approach does well. And she saw where it leaves you alone."
+        fr: "Pendant près de 40 ans, Krystine a œuvré en soins intensifs et en recherche clinique, puis en herboristerie, Ayurveda et aromathérapie. Elle a vu ce que l’approche moderne fait bien. Et elle a vu où elle vous laisse seule.",
+        en: "For nearly 40 years, Krystine worked in intensive care and clinical research, then in herbalism, Ayurveda and aromatherapy. She saw what the modern approach does well. And she saw where it leaves you alone."
       },
       {
         fr: "Ce programme existe pour ce que le système ne vous a jamais appris : revenir au centre avant de vous perdre.",

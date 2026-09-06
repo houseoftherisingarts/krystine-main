@@ -247,18 +247,34 @@ export default function MediasV2() {
             </a>
           </div>
           <div data-reveal>
-            <div className="relative bg-[#faf6ee] p-3 md:p-4">
-              <span className="pointer-events-none absolute inset-2 border border-[#9c7a44]/25" aria-hidden />
-              <iframe
-                style={{ borderRadius: '4px', position: 'relative' }}
-                src={pod.spotifyUrl}
-                width="100%" height="352"
-                frameBorder={0}
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy"
-                title={pod.title}
-              />
-            </div>
+            {/* Le podcast dans le canon KSL : vert profond, fil ambre, ivoire.
+                La pochette et une invitation vers /podcast, où les épisodes
+                s'écoutent; plus de lecteur tiers ni de fond rouge ici. */}
+            <a
+              href="/podcast"
+              onClick={() => { if (user?.uid) points.podcastListened(user.uid, 'overall').catch(() => {}); }}
+              className="group relative block overflow-hidden rounded-[15px] bg-[#28352F] text-[#EEE7DB] shadow-[0_40px_80px_-50px_rgba(41,48,39,0.8)]"
+            >
+              <span className="pointer-events-none absolute inset-3 rounded-[11px] border border-[#BA7B39]/35" aria-hidden />
+              <span aria-hidden className="pointer-events-none absolute -right-[20%] -top-[30%] h-[80%] w-[70%] rounded-full blur-[50px]"
+                style={{ background: 'radial-gradient(circle, rgba(186,123,57,.38) 0%, rgba(40,53,47,0) 70%)' }} />
+              <div className="relative grid gap-6 p-6 sm:grid-cols-[minmax(0,180px)_1fr] sm:items-center md:p-8">
+                <img
+                  src="/assets/podcast-cover.webp"
+                  alt="Pochette du podcast Au-delà des tendances"
+                  loading="lazy"
+                  className="w-full max-w-[220px] rounded-[10px] shadow-[0_20px_40px_-20px_rgba(0,0,0,0.7)] transition-transform duration-700 group-hover:scale-[1.02]"
+                />
+                <div>
+                  <p className="text-[0.62rem] uppercase tracking-[0.28em] text-[#BA7B39]">Au-delà des tendances</p>
+                  <p className="mt-3 v2-serif text-[clamp(1.4rem,2.2vw,1.9rem)] font-light leading-[1.15]">Des conversations lentes, loin du bruit ambiant.</p>
+                  <p className="mt-3 text-[0.92rem] leading-[1.7] text-[#EEE7DB]/75">Les épisodes, les directs et les rediffusions vous attendent sur la page du podcast.</p>
+                  <span className="mt-6 inline-flex items-center gap-2.5 rounded-full bg-[#BA7B39] px-5 py-2.5 text-[0.66rem] font-semibold uppercase tracking-[0.2em] text-[#1c1712] transition-colors duration-300 group-hover:bg-[#d9a05b]">
+                    Écouter les épisodes <ArrowRight size={14} weight="bold" className="transition-transform duration-300 group-hover:translate-x-1" />
+                  </span>
+                </div>
+              </div>
+            </a>
           </div>
         </div>
       </section>

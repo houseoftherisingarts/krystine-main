@@ -294,7 +294,7 @@ const Hero: React.FC<{ scrollToForm: () => void }> = ({ scrollToForm }) => {
             className="mt-5 md:mt-7 flex flex-wrap items-center gap-2"
           >
             {[
-              { fr: '37+ ans', en: '37+ yrs' },
+              { fr: 'Près de 40 ans', en: 'Nearly 40 yrs' },
               { fr: '3 livres', en: '3 books' },
               { fr: 'TEDx', en: 'TEDx' },
               { fr: 'Salut Bonjour', en: 'Salut Bonjour' },

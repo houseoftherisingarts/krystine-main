@@ -32,7 +32,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const EASE = 'cubic-bezier(0.22,1,0.36,1)';
 
-const COVERLINES = ['37 ans de pratique', '3 livres · Éditions de l’Homme', 'USA, Canada & Europe'];
+const COVERLINES = ['Près de 40 ans de pratique', '3 livres · Éditions de l’Homme', 'USA, Canada & Europe'];
 
 /* ════════════════════════ Données éditoriales ════════════════════════ */
 
@@ -836,7 +836,7 @@ export default function KrystineV2() {
               data-statement
               className="v2-serif font-light leading-[1.18] text-[#1c1712] text-[clamp(1.9rem,4.4vw,3.6rem)] max-w-[20ch]"
             >
-              37 ans à traverser les milieux de la santé, avant de choisir
+              près de 40 ans à traverser les milieux de la santé, avant de choisir
               l&rsquo;herboristerie, l&rsquo;Ayurveda et l&rsquo;aromathérapie.
             </p>
 

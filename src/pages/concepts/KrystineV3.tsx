@@ -32,7 +32,7 @@ const C = {
 };
 
 const STORY = [
-  "37 ans à traverser les milieux de la santé : soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie.",
+  "Près de 40 ans à traverser les milieux de la santé : soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie.",
   "Auteure de trois livres aux Éditions de l'Homme. Créatrice de série télé et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien, et là où elle laisse les gens seuls.",
   "Sur scène, cette double appartenance devient une voix rare : la rigueur du clinicien rencontre la sagesse millénaire. Chaque conférence est cousue main pour le public qui l'attend.",
 ];

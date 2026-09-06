@@ -206,7 +206,7 @@ export const OUTCOMES: Record<OutcomeId, GuideRecommendation> = {
     blurbFR:   "Une porte d'entrée concrète dans l'Ayurveda sans s'engager dans un parcours complet : 10 capsules vidéo pour vos premiers gestes — introduction, auto-massage, soins du nez, de la bouche, des mains et des pieds. 27 $, accès immédiat.",
     blurbEN:   "A concrete entry into Ayurveda without committing to a full program: 10 video capsules for your first gestures — introduction, self-massage, care of the nose, mouth, hands and feet. $27, instant access.",
     ctaFR:     'Commencer — 27 $',                     ctaEN:     'Begin — $27',
-    href:      'https://www.krystinestlaurent.com/offers/2ksjqcW3/checkout',
+    href:      '/formations',
     secondaryCtaFR: "Voir d'abord le podcast",         secondaryCtaEN: 'Listen to the podcast first',
     secondaryHref:  '/podcast',
     accent:    '#7A8066',

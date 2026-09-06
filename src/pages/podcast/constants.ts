@@ -170,7 +170,7 @@ export const CONTENT: GlobalContent = {
         promoPrice: { fr: "397 $", en: "$397" },
         promoLabel: { fr: "prix spécial solstice jusqu'au 7 janvier", en: "special solstice price until January 7th" },
         buttonText: { fr: "Rejoindre VATA Essentiel", en: "Join VATA Essential" },
-        url: "https://www.krystinestlaurent.com/VATAETPREMIUMOPTIONSDEPAIEMENT",
+        url: "/vata#tarifs",
         isPremium: false
       },
       {
@@ -192,7 +192,7 @@ export const CONTENT: GlobalContent = {
         promoPrice: { fr: "597 $", en: "$597" },
         promoLabel: { fr: "Prix Solstice jusqu’au 7 janvier", en: "Solstice Price until January 7th" },
         buttonText: { fr: "Rejoindre VATA + Grande Bibliothèque", en: "Join VATA + Great Library" },
-        url: "https://www.krystinestlaurent.com/VATAETPREMIUMOPTIONSDEPAIEMENT",
+        url: "/vata#tarifs",
         isPremium: true
       }
     ]
@@ -339,7 +339,7 @@ export const CONTENT: GlobalContent = {
           { fr: "Accès à la communauté : Un espace d’échanges dédié", en: "Community access: A dedicated exchange space" }
         ],
         recommended: false,
-        checkoutUrl: "https://www.krystinestlaurent.com/VATAETPREMIUMOPTIONSDEPAIEMENT",
+        checkoutUrl: "/vata#tarifs",
         buttonText: { fr: "Rejoindre VATA Essentiel", en: "Join VATA Essential" }
       },
       {
@@ -362,7 +362,7 @@ export const CONTENT: GlobalContent = {
         ],
         highlight: "Expérience Profonde",
         recommended: true,
-        checkoutUrl: "https://www.krystinestlaurent.com/VATAETPREMIUMOPTIONSDEPAIEMENT",
+        checkoutUrl: "/vata#tarifs",
         buttonText: { fr: "Rejoindre VATA + Grande Bibliothèque", en: "Join VATA + Great Library" }
       }
     ]
@@ -391,8 +391,8 @@ export const CONTENT: GlobalContent = {
     },
     description: [
       {
-        fr: "Krystine St-Laurent accompagne depuis plus de 35 ans des personnes en quête d’une autre façon d’organiser leur temps, leur corps et leurs cycles.",
-        en: "Krystine St-Laurent has been accompanying people looking for another way to organize their time, body, and cycles for over 35 years."
+        fr: "Krystine St-Laurent accompagne depuis près de 40 ans des personnes en quête d’une autre façon d’organiser leur temps, leur corps et leurs cycles.",
+        en: "Krystine St-Laurent has been accompanying people looking for another way to organize their time, body, and cycles for nearly 40 years."
       },
       {
         fr: "Autrice et conférencière internationale, elle tisse les savoirs ancestraux, la science moderne et l’observation du quotidien pour proposer des rituels qui réduisent les fuites d’énergie et soutiennent les passages de cycle.",

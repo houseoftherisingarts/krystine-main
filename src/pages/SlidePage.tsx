@@ -201,7 +201,7 @@ const SLIDES: Slide[] = [
     imageAlt: 'Krystine St-Laurent · portrait de la conférencière',
     title: 'Krystine St-Laurent',
     description: [
-      "37 ans à reconnecter avec les rythmes de la nature — soins intensifs, recherche clinique, herboristerie, Ayurveda.",
+      "Près de 40 ans à reconnecter avec les rythmes de la nature — soins intensifs, recherche clinique, herboristerie, Ayurveda.",
       "Autrice best-seller, conférencière, fondatrice d'Inspirata Ayurveda.",
     ],
   },

@@ -12,7 +12,7 @@ type PageMeta = { title: string; description: string };
 const ROUTES: Record<string, PageMeta> = {
   '/krystine': {
     title: `${SITE} · Conférencière et auteure en ayurveda`,
-    description: 'Krystine St-Laurent, infirmière de formation, auteure et conférencière: 37 ans à traverser les milieux de la santé avant de choisir l’herboristerie, l’Ayurveda et l’aromathérapie.',
+    description: 'Krystine St-Laurent, infirmière de formation, auteure et conférencière: Près de 40 ans à traverser les milieux de la santé avant de choisir l’herboristerie, l’Ayurveda et l’aromathérapie.',
   },
   '/conferenciere': {
     title: `Conférences et ateliers · ${SITE}`,

@@ -12,7 +12,7 @@ import { ASSETS } from '../content';
 //       parchemin (sépia, faible opacité) → matière ancrée sans picto
 //       qui se bat avec le texte.
 
-const CHECKOUT_URL = 'https://www.krystinestlaurent.com/offers/2ksjqcW3/checkout';
+const CHECKOUT_URL = '/formations';
 
 // Rameau décoratif repris des deux coins du bloc. Même vocabulaire que
 // les sprigs apothicaires du reste du site.

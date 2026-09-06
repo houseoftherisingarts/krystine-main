@@ -17,7 +17,12 @@ const COSMETIQUES: Record<string, { cout: number; nom: string }> = {
   'banniere-nature': { cout: 5, nom: 'Bannière Nature & Ayurveda' },
   'musique-origine': { cout: 5, nom: "La musique d'Origine" },
   'skin-medzo': { cout: 5, nom: 'Skin Medzo Café' },
+  'skin-nuit': { cout: 5, nom: 'Skin Nuit' },
+  // Toutes les vidéos de Krystine, débloquées d'un coup : les vidéos sont
+  // gratuites, c'est l'ouverture de la section qui coûte dix niskas.
+  'acces-videos': { cout: 10, nom: 'Les vidéos de Krystine' },
 };
+const NISKAS_BIENVENUE = 20;
 const COUT_EPISODE = 100;
 const COUT_VIDEO = 10;
 const CATALOGUE_VIDEOS = 'https://krystinestlaurent.ca/compte/videos-krystine.json';
@@ -172,6 +177,29 @@ export const acheterAvecNiskas = onCall(
     const { balance } = await recalculerSolde(uid);
     console.log(`[niskas] ${uid} achète ${article} pour ${cout}, solde ${balance}`);
     return { solde: balance, article, nom };
+  },
+);
+
+// ─── Le cadeau de bienvenue ─────────────────────────────────────────────────
+// Vingt niskas, une seule fois par compte. Le navigateur les demande à la
+// création du compte (auth.ts) et le bouton de l'onglet Points sert de
+// rattrapage; les deux passent ici avec la même clé, donc jamais deux fois.
+export const reclamerBienvenue = onCall(
+  { region: 'us-central1' },
+  async (req) => {
+    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour votre cadeau de bienvenue.');
+    const uid = req.auth.uid;
+    const db = getFirestore();
+    const evt = db.doc(`pointsEvents/welcome-claim:${uid}`);
+    const ancien = db.doc(`pointsEvents/welcome:${uid}`);
+    const deja = await db.runTransaction(async (tx) => {
+      const [e, a] = await Promise.all([tx.get(evt), tx.get(ancien)]);
+      if (e.exists || a.exists) return true;
+      tx.set(evt, { uid, kind: 'welcome-claim', amount: NISKAS_BIENVENUE, dedupKey: `welcome-claim:${uid}`, meta: null, at: FieldValue.serverTimestamp() });
+      return false;
+    });
+    const { balance } = await recalculerSolde(uid);
+    return { deja, montant: NISKAS_BIENVENUE, balance };
   },
 );
 

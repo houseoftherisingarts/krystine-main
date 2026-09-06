@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
-import { suivreLeMur, suivrePublicationsDe, type PostMur } from '../firebase/mur';
+import { suivrePublicationsDe, type PostMur } from '../firebase/mur';
 import { retenirCodeDepuisUrl, reclamerCodeRetenu } from '../firebase/parrainage';
 import ClientParrainage from './client/ClientParrainage';
 import Composeur from '../components/communaute/Composeur';
@@ -16,7 +16,6 @@ import { findOilForDosha } from '../lib/shopifyOil';
 import { ritualForDosha } from '../lib/doshaRituals';
 import { jsPDF } from 'jspdf';
 import ClientMessagerie from './client/ClientMessagerie';
-import MurSocial from '../components/communaute/MurSocial';
 import ClientArchives from './client/ClientArchives';
 import ClientLoyalty from './client/ClientLoyalty';
 import ClientFormations from './client/ClientFormations';
@@ -28,6 +27,7 @@ import { subscribeToMemberPoints, suivreBoutique, points, type PointsBalance, DE
 import { BANNIERE_DEFAUT, BANNIERE_NATURE, FACONS_DE_GAGNER, niskas } from '../lib/pointsConfig';
 import PieceNiska from '../components/client/PieceNiska';
 import RoueQuotidienne from '../components/client/RoueQuotidienne';
+import BienvenueJeu from '../components/client/BienvenueJeu';
 import '../components/client/skins.css';
 
 // L'histoire du niska, lue sous la bourse. Faits vérifiés le 6 septembre 2026
@@ -45,7 +45,7 @@ const HISTOIRE_NISKA_EN = [
   'The word travelled through the centuries as the name of the gold coin, down to the texts of medieval India. That is the memory your purse carries: a little gold at the throat, that counts.',
 ];
 
-type Tab = 'feed' | 'profile' | 'amis' | 'orders' | 'formations' | 'rediffusions' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie';
+type Tab = 'profile' | 'amis' | 'orders' | 'formations' | 'rediffusions' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie';
 
 // L'onglet Profil en lecture : la fiche (courriel, téléphone, dosha, badges)
 // et surtout LE MUR de la personne. L'édition s'ouvre en cliquant sur la
@@ -79,12 +79,15 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
             <a href="/compte/comment-gagner-des-niskas.pdf" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
               <i className="fa-solid fa-file-pdf" /> PDF
             </a>
+            <button type="button" onClick={() => window.dispatchEvent(new Event('krystine:ouvrir-jeu'))} className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/50 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:bg-[#BA7B39]/10 dark:text-[#d9a05b]">
+              <i className="fa-solid fa-circle-question" /> {lang === 'FR' ? 'Revoir les explications' : 'Review the explanations'}
+            </button>
           </div>
         </div>
         <p className="mt-4 text-sm text-[#293027]/70 dark:text-white/70">
           {lang === 'FR'
-            ? 'Le niska est la monnaie de votre espace. Chaque compte s’ouvre avec dix niskas, et la bourse grossit à mesure que vous revenez et que vous participez. Voici tout ce qui en donne.'
-            : 'The niska is the currency of your space. Every account opens with ten niskas, and the purse grows as you come back and take part. Here is everything that earns some.'}
+            ? 'Le niska est la monnaie de votre espace. Chaque compte s’ouvre avec vingt niskas, et la bourse grossit à mesure que vous revenez et que vous participez. Voici tout ce qui en donne.'
+            : 'The niska is the currency of your space. Every account opens with twenty niskas, and the purse grows as you come back and take part. Here is everything that earns some.'}
         </p>
         <details className="mt-4 rounded-[14px] border border-[#BA7B39]/25 bg-white/40 px-4 py-3 dark:bg-white/5">
           <summary className="cursor-pointer text-[10px] font-bold uppercase tracking-[0.22em] text-[#8B4A2F] dark:text-[#d9a05b]">
@@ -324,34 +327,12 @@ const BanniereChoix: React.FC<{
   );
 };
 
-// Le rail droit : la vie de la communauté entre dans l'espace personnel.
+// Le rail droit : les raccourcis et le parrainage. Le feed de la communauté
+// n'entre pas ici : le fil participatif vit seulement au Foyer d'Origine
+// (/cours/foyer), et la vie publique de Krystine sur /espace.
 const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) => {
-  const [posts, setPosts] = useState<PostMur[]>([]);
-  useEffect(() => suivreLeMur('communaute', p => setPosts(p.slice(0, 5)), 5), []);
   return (
     <aside className="space-y-4">
-      <div className="rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55">
-        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
-          {lang === 'FR' ? 'La communauté' : 'Community'}
-        </p>
-        {posts.length === 0 ? (
-          <p className="mt-3 text-sm text-[#38403a]/50 dark:text-white/50">
-            {lang === 'FR' ? 'Les premières publications arrivent bientôt.' : 'First posts coming soon.'}
-          </p>
-        ) : (
-          <div className="mt-3 space-y-3">
-            {posts.map(p => (
-              <Link key={p.id} to="/espace" className="block rounded-[14px] bg-white/50 p-3 transition-colors hover:bg-white/80 dark:bg-white/5 dark:hover:bg-white/10">
-                <p className="text-xs font-semibold text-[#293027] dark:text-white">{p.nom}</p>
-                <p className="mt-0.5 line-clamp-2 text-xs text-[#38403a]/60 dark:text-white/60">{p.texte}</p>
-              </Link>
-            ))}
-          </div>
-        )}
-        <Link to="/espace" className="mt-4 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:text-[#BA7B39]">
-          {lang === 'FR' ? 'Voir le feed' : 'See the feed'} <i className="fa-solid fa-arrow-right" />
-        </Link>
-      </div>
       <div className="rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55">
         <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
           {lang === 'FR' ? 'Raccourcis' : 'Shortcuts'}
@@ -369,8 +350,8 @@ const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) 
 
 const ClientPortal: React.FC = () => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
-  // Par défaut, l'espace s'ouvre sur le feed de la communauté, pas sur le mur personnel.
-  const [tab, setTab] = useState<Tab>('feed');
+  // Par défaut, l'espace s'ouvre sur les formations : le fil participatif vit au Foyer d'Origine.
+  const [tab, setTab] = useState<Tab>('formations');
   const [editOuvert, setEditOuvert] = useState(false);
   const [possedeNature, setPossedeNature] = useState(false);
   // L'aperçu d'un skin, le temps d'un survol dans la petite boutique.
@@ -434,8 +415,8 @@ const ClientPortal: React.FC = () => {
           <div className="mx-auto mt-5 h-px w-16 bg-[#BA7B39]" aria-hidden="true" />
           <p className="mt-5 text-sm leading-relaxed text-[#38403a]/70 dark:text-white/65">
             {lang === 'FR'
-              ? 'Le feed de la communauté, vos formations, vos messages et vos cadeaux de parrainage vous attendent de l\'autre côté.'
-              : 'The community feed, your courses, your messages, and your referral gifts are waiting on the other side.'}
+              ? 'Vos formations, vos messages, vos vidéos et vos cadeaux de parrainage vous attendent de l\'autre côté.'
+              : 'Your courses, your messages, your videos, and your referral gifts are waiting on the other side.'}
           </p>
           <button
             onClick={() => setSignInOpen(true)}
@@ -456,7 +437,6 @@ const ClientPortal: React.FC = () => {
   // que par /admin (ou le lien discret dans l'en-tête ci-dessous).
 
   const tabs: { id: Tab; label: string; icon: string }[] = [
-    { id: 'feed',     label: 'Feed', icon: 'fa-newspaper' },
     { id: 'profile',  label: lang === 'FR' ? 'Profil' : 'Profile', icon: 'fa-user' },
     { id: 'amis',     label: lang === 'FR' ? 'Amis' : 'Friends', icon: 'fa-user-group' },
     { id: 'orders',   label: lang === 'FR' ? 'Commandes' : 'Orders', icon: 'fa-box' },
@@ -471,7 +451,8 @@ const ClientPortal: React.FC = () => {
 
   const perso = member?.personnalisation || {};
   const banniere = perso.banniere === 'nature' ? BANNIERE_NATURE : perso.banniere === 'defaut' ? BANNIERE_DEFAUT : (member?.bannerURL || BANNIERE_DEFAUT);
-  const skin = (perso.skin === 'medzo' || apercuSkin === 'medzo') ? 'skin-medzo' : '';
+  const skinActif = apercuSkin || perso.skin || '';
+  const skin = skinActif === 'medzo' ? 'skin-medzo' : skinActif === 'nuit' ? 'skin-nuit' : '';
 
 
   return (
@@ -569,10 +550,9 @@ const ClientPortal: React.FC = () => {
         </div>
       </div>
 
-      {/* Le contenu en deux colonnes : l'onglet à gauche, le rail vivant à droite */}
+      {/* Le contenu en deux colonnes : l'onglet à gauche, les raccourcis et le parrainage à droite */}
       <div className="mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 lg:grid-cols-[1fr_320px]">
         <div className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-[#293027]/55">
-          {tab === 'feed'     && <MurSocial fil="communaute" titre="Feed" />}
           {merciNiskas && (
             <div className="mb-5 flex items-center justify-between gap-3 rounded-[16px] border border-[#BA7B39]/40 bg-[#BA7B39]/15 px-4 py-3 text-sm text-[#293027] dark:text-white">
               <span><PieceNiska size={16} className="mr-2 inline-block align-[-3px]" />{lang === 'FR' ? 'Merci. Vos cent niskas arrivent dans votre bourse d’ici une minute.' : 'Thank you. Your hundred niskas land in your purse within a minute.'}</span>
@@ -596,6 +576,7 @@ const ClientPortal: React.FC = () => {
       {/* Le bouton « Problème technique », fixe en bas à droite, et sa fenêtre */}
       <ProblemeTechnique uid={user.uid} nom={member?.displayName || user.displayName || ''} courriel={user.email || ''} lang={lang} />
       <RoueQuotidienne uid={user.uid} lang={lang} />
+      <BienvenueJeu lang={lang} />
 
       {/* Le module d'édition du profil, ouvert par la photo de la bannière */}
       {editOuvert && (

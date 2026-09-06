@@ -32,6 +32,7 @@ const CoursDetailPage: React.FC = () => {
   const { user, isAdmin, setSignInOpen } = useAuth();
   const { lang } = useUI();
   const [formation, setFormation] = useState<Formation | null>(null);
+  const [replies, setReplies] = useState<Record<string, boolean>>({});
   const [lecons, setLecons] = useState<Lecon[]>([]);
   const [achete, setAchete] = useState(false);
   const [verifAcces, setVerifAcces] = useState(true);   // le temps de savoir si la personne possède le cours
@@ -63,6 +64,8 @@ const CoursDetailPage: React.FC = () => {
   useEffect(() => suivreLiveEnCours(setLive), []);
   const [terminees, setTerminees] = useState<Record<string, boolean>>({});
   const [courante, setCourante] = useState<Lecon | null>(null);
+  // L'aperçu d'un PDF de la leçon, ouvert dans un volet à droite.
+  const [apercuPdf, setApercu] = useState<{ nom: string; url: string } | null>(null);
   const [urlCourante, setUrlCourante] = useState('');
   const [chargeLecon, setChargeLecon] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -382,9 +385,11 @@ const CoursDetailPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="mt-8 grid gap-6 lg:grid-cols-[320px_1fr]">
+          <div className={`mt-8 grid gap-6 ${apercuPdf ? 'lg:grid-cols-[300px_minmax(0,1fr)_minmax(0,1fr)]' : 'lg:grid-cols-[320px_1fr]'}`}>
             {/* La liste des leçons */}
-            <aside className="rounded-[20px] border border-white/60 bg-white/55 p-3 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55">
+            {/* La liste colle en haut et défile seule : la page ne s'allonge plus
+                à cause d'elle, donc plus de vide à droite quand on descend. */}
+            <aside className="rounded-[20px] border border-white/60 bg-white/55 p-3 backdrop-blur-md lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto dark:border-white/10 dark:bg-[#293027]/55">
               {lecons.length === 0 && (
                 <p className="p-3 text-sm text-[#38403a]/50 dark:text-white/50">{lang === 'FR' ? 'Les leçons arrivent bientôt.' : 'Lessons coming soon.'}</p>
               )}
@@ -397,12 +402,27 @@ const CoursDetailPage: React.FC = () => {
                   if (g && g.nom === nom) g.items.push(l);
                   else groupes.push({ nom, items: [l] });
                 }
-                return groupes.map((g, gi) => (
+                return groupes.map((g, gi) => {
+                  // Chaque module se replie; celui de la leçon courante reste ouvert.
+                  const contientCourante = !!courante && g.items.some(l => l.id === courante.id);
+                  const ouvert = g.nom ? (replies[g.nom] === undefined ? contientCourante || gi === 0 : !replies[g.nom]) : true;
+                  return (
                   <div key={gi} className="mb-2">
                     {g.nom && (
-                      <p className="px-3 pt-3 pb-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#8B4A2F]">{g.nom}</p>
+                      <button
+                        type="button"
+                        onClick={() => setReplies(r => ({ ...r, [g.nom]: ouvert }))}
+                        aria-expanded={ouvert}
+                        className="flex w-full items-center justify-between gap-2 rounded-[12px] px-3 pt-3 pb-1.5 text-left text-[10px] font-bold uppercase tracking-[0.14em] text-[#8B4A2F] hover:bg-white/60 dark:hover:bg-white/10"
+                      >
+                        <span>{g.nom}</span>
+                        <span className="flex items-center gap-2 text-[#38403a]/50 dark:text-white/50">
+                          <span className="normal-case tracking-normal">{g.items.filter(l => terminees[l.id]).length}/{g.items.length}</span>
+                          <i className={`fa-solid fa-chevron-down transition-transform ${ouvert ? '' : '-rotate-90'}`} aria-hidden="true" />
+                        </span>
+                      </button>
                     )}
-                    {g.items.map(l => {
+                    {ouvert && g.items.map(l => {
                       const verrou = verrouillee(l);
                       return (
                       <button
@@ -426,7 +446,8 @@ const CoursDetailPage: React.FC = () => {
                       );
                     })}
                   </div>
-                ));
+                  );
+                });
               })()}
             </aside>
 
@@ -479,7 +500,11 @@ const CoursDetailPage: React.FC = () => {
                           <li key={d.chemin}>
                             <button
                               onClick={async () => {
-                                try { window.open(await urlDeDocumentLecon(id, courante.id, i), '_blank', 'noopener'); }
+                                try {
+                                  const url = await urlDeDocumentLecon(id, courante.id, i);
+                                  if (/\.pdf$/i.test(d.nom)) setApercu({ nom: d.nom, url });
+                                  else window.open(url, '_blank', 'noopener');
+                                }
                                 catch { setErreur(lang === 'FR' ? 'Document indisponible pour le moment.' : 'Document unavailable right now.'); }
                               }}
                               className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/40 px-4 py-2 text-sm text-[#8B4A2F] transition-colors hover:bg-[#BA7B39]/10 dark:text-[#d9a05b]"
@@ -492,7 +517,7 @@ const CoursDetailPage: React.FC = () => {
                     </div>
                   )}
 
-                  <QuestionsLecon formationId={id} lecon={courante} />
+                  {!formation?.questionsFermees && <QuestionsLecon formationId={id} lecon={courante} />}
                   <div className="mt-6 flex flex-wrap items-center gap-3">
                     <button
                       onClick={() => basculerTerminee(courante)}
@@ -520,6 +545,24 @@ const CoursDetailPage: React.FC = () => {
                 </>
               )}
             </section>
+
+            {/* Le volet d'aperçu du PDF, à droite, qui colle en haut et défile seul */}
+            {apercuPdf && (
+              <aside className="flex flex-col overflow-hidden rounded-[20px] border border-white/60 bg-white/55 backdrop-blur-md lg:sticky lg:top-24 lg:h-[calc(100vh-7rem)] dark:border-white/10 dark:bg-[#293027]/55">
+                <div className="flex items-center justify-between gap-3 border-b border-[#293027]/10 px-4 py-3 dark:border-white/10">
+                  <p className="min-w-0 truncate text-sm text-[#293027] dark:text-white"><i className="fa-solid fa-file-pdf mr-2 text-[#8B4A2F]" />{apercuPdf.nom}</p>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <a href={apercuPdf.url} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#BA7B39]/40 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:bg-[#BA7B39]/10 dark:text-[#d9a05b]">
+                      {lang === 'FR' ? 'Ouvrir' : 'Open'}
+                    </a>
+                    <button type="button" onClick={() => setApercu(null)} aria-label={lang === 'FR' ? 'Fermer l’aperçu' : 'Close preview'} className="h-8 w-8 rounded-full text-[#293027]/60 hover:bg-white/70 dark:text-white/60 dark:hover:bg-white/10">
+                      <i className="fa-solid fa-xmark" />
+                    </button>
+                  </div>
+                </div>
+                <iframe src={`${apercuPdf.url}#toolbar=0&view=FitH`} title={apercuPdf.nom} className="h-[70vh] w-full flex-1 bg-white lg:h-auto" />
+              </aside>
+            )}
           </div>
         )}
 

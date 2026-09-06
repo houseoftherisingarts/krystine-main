@@ -131,7 +131,7 @@ export const LeadMagnetMusic: React.FC = () => {
             variants={ANIMATIONS.item}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            href="https://www.krystinestlaurent.com/musiquedorigine"
+            href="/foyer#musique"
             target="_blank"
             rel="noopener noreferrer"
             className="group relative inline-flex items-center justify-center gap-3 px-10 py-5 bg-white dark:bg-copper-bruni text-ink-sureau dark:text-paper rounded-full font-serif text-xl font-medium overflow-hidden shadow-lg transition-all hover:shadow-xl"

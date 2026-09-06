@@ -17,7 +17,7 @@ export { notifierSoutien } from './newsletter/soutien';
 export { chatbotKrystine } from './newsletter/chatbot';
 export { verifierCaptcha } from './captcha';
 export { creerSessionPaiement, creerPourboire, creerSessionNiskas, stripeWebhook, obtenirLecon } from './paiements';
-export { acheterAvecNiskas, reclamerQuotidien } from './niskas';
+export { acheterAvecNiskas, reclamerQuotidien, reclamerBienvenue } from './niskas';
 export { murVoteBillet, murVoteCommentaire, murCommentaireCompte } from './mur';
 export { badgeAchatFormation, badgePremierBillet, badgeAmitieAcceptee } from './badges';
 export { parrainageFilleule, parrainageAchat } from './parrainage';

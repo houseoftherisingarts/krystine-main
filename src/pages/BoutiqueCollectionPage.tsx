@@ -143,7 +143,7 @@ const BoutiqueCollectionPage: React.FC = () => {
             { icon: 'fa-lock',  titleFR: 'Paiement sécurisé',       titleEN: 'Secure checkout',     descFR: 'Shopify + SSL',         descEN: 'Shopify + SSL' },
             { icon: 'fa-leaf',  titleFR: 'Formules ayurvédiques',   titleEN: 'Ayurvedic formulas',  descFR: 'Conçues par Krystine',  descEN: 'Crafted by Krystine' },
             { icon: 'fa-truck', titleFR: 'Livraison Canada',        titleEN: 'Ships across Canada', descFR: 'Expédition rapide',     descEN: 'Fast shipping' },
-            { icon: 'fa-heart', titleFR: 'Satisfaction',            titleEN: 'Satisfaction',        descFR: "37 ans d'expérience",   descEN: '37 years of expertise' },
+            { icon: 'fa-heart', titleFR: 'Satisfaction',            titleEN: 'Satisfaction',        descFR: "Près de 40 ans d'expérience",   descEN: 'Nearly 40 years of expertise' },
           ].map(b => (
             <div key={b.icon} className="flex flex-col items-center gap-2 p-4 rounded-[20px] bg-[#f6f3ee] dark:bg-[#2a2015] border border-[#bb9a5e]/10">
               <i className={`fa-solid ${b.icon} text-[#7d6330] text-lg`} />
@@ -320,7 +320,7 @@ const BoutiqueCollectionPage: React.FC = () => {
                     </span>
                     <span className="inline-flex items-center gap-1.5">
                       <i className="fa-solid fa-award text-[#7d6330]" />
-                      {lang === 'FR' ? "37 ans d'expertise" : '37 years of expertise'}
+                      {lang === 'FR' ? "Près de 40 ans d'expertise" : 'Nearly 40 years of expertise'}
                     </span>
                     <span className="inline-flex items-center gap-1.5">
                       <i className="fa-solid fa-truck-fast text-[#7d6330]" />

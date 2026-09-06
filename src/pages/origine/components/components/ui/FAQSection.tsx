@@ -69,7 +69,7 @@ export const FAQSection: React.FC = () => {
       <div className="max-w-4xl mx-auto relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-lg md:text-xl font-serif tracking-[0.15em] uppercase text-copper-bruni dark:text-copper-glow">
-            Ce qui se murmure avant de dire oui...
+            Questions fréquentes
           </h2>
         </div>
         <div className="w-full">

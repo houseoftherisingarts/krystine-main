@@ -15,13 +15,11 @@ import { Atmosphere } from '../components/motion/loeuvre';
 const ease = [0.22, 1, 0.36, 1] as const;
 const SPRING = { type: 'spring' as const, stiffness: 220, damping: 24, mass: 0.8 };
 
-// VATA Essentiel se vend et se suit ici même (Stripe + leçons natives, 50 leçons du produit Kajabi du 17 juillet 2024
-// importées de Kajabi). Le palier Grande Bibliothèque reste sur le checkout Kajabi
-// tant que la bibliothèque n'est pas migrée.
+// VATA Essentiel se vend et se suit ici même (Stripe + leçons natives, 50 leçons
+// du produit Kajabi du 17 juillet 2024). Un seul palier depuis septembre 2026 :
+// la Grande Bibliothèque n'est plus offerte.
 const COURS = '/cours/kajabi-2148687644';
-const CHECKOUT = 'https://www.krystinestlaurent.com/VATAETPREMIUMOPTIONSDEPAIEMENT';
 const go = () => { window.location.href = COURS; };
-const goPremium = () => window.open(CHECKOUT, '_blank', 'noopener,noreferrer');
 
 /* Tokens V2 + accent sauge de la page */
 const C = {
@@ -74,15 +72,9 @@ const PHASES = [
 const TIERS = [
   {
     name: 'VATA Essentiel', price: '497 $', promo: '397 $', plan: '',
-    intro: 'Le camp de base pour un système nerveux surchargé.',
-    features: ['7 modules · 7 semaines (plus 1 semaine d\'introduction)', '18 capsules d\'accompagnement audio', '7 méditations pré-enregistrées', '19 rituels guidés', 'Guide PDF de 204 pages', 'Accès à la communauté'],
+    intro: 'Une formation audio, avec son matériel de support. Le camp de base pour un système nerveux surchargé.',
+    features: ['Formation audio : capsules à écouter, matériel de support à télécharger', '7 modules · 7 semaines (plus 1 semaine d\'introduction)', '18 capsules d\'accompagnement audio', '7 méditations pré-enregistrées', '19 rituels guidés', 'Guide PDF de 204 pages', 'Accès à la communauté'],
     recommended: false,
-  },
-  {
-    name: 'VATA + Grande Bibliothèque', price: '797 $', promo: '597 $', plan: 'ou 2 × 327 $',
-    intro: "L'expérience enrichie pour approfondir votre pratique et votre compréhension.",
-    features: ['Tout ce qui est inclus dans VATA Essentiel', 'Série « Santé la vie » : 2 saisons complètes (19 épisodes)', 'Capsules « Rituels essentiels »', 'Masterclass Dharma', 'Masterclass Aromathérapie', 'Accès à la Grande Bibliothèque illimité'],
-    recommended: true,
   },
 ];
 
@@ -97,7 +89,6 @@ const FAQS = [
   ['Combien de temps ai-je accès au contenu ?', "Vous conservez l'accès à votre parcours VATA tant que la plateforme est en ligne. Vous pourrez donc y revenir l'an prochain si vous en ressentez le besoin."],
   ["Quel est l'investissement de temps requis ?", "C'est un programme qui respecte votre rythme. Les capsules audio font entre 5 et 15 minutes. L'idée n'est pas d'ajouter une corvée, mais de remplacer certaines habitudes stressantes par des rituels d'apaisement."],
   ['Est-ce que je peux suivre sur mobile ou tablette ?', "Oui. La plateforme est responsive et vous pouvez même écouter vos capsules en mode « podcast » pendant vos déplacements."],
-  ['Quelle est la différence entre les deux options ?', "L'option Essentiel contient tout le parcours de 7 semaines. L'option Premium ajoute un accès illimité à la Grande Bibliothèque : plus de 50 capsules, des séries télé et des Masterclasses exclusives."],
 ];
 
 const TOC = [
@@ -284,7 +275,7 @@ const Cover: React.FC = () => (
 
       <div className="relative flex items-center gap-5 mb-8">
         <Medallion Icon={Wind} size={46} />
-        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Expérience Ayurveda · 7 semaines</p>
+        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Expérience Ayurveda · Formation audio · 7 semaines</p>
       </div>
 
       <h1 className="relative v2-serif font-light leading-[0.94] text-[clamp(3rem,8.6vw,7.6rem)] max-w-[13ch]" style={{ color: C.ink }}>
@@ -311,7 +302,7 @@ const Cover: React.FC = () => (
         </Reveal>
         <Reveal delay={0.55} y={16} className="lg:justify-self-end">
           <ul className="space-y-2.5">
-            {['7 semaines + introduction', 'Automne · élément air', 'À votre rythme · accès immédiat'].map((m) => (
+            {['Formation audio + matériel de support', '7 semaines + introduction', 'Automne · élément air', 'À votre rythme · accès immédiat'].map((m) => (
               <li key={m} className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.2em]" style={{ color: 'rgba(28,23,18,0.62)' }}>
                 <span className="h-1 w-1 rounded-full shrink-0" style={{ background: C.sage }} />
                 {m}
@@ -497,14 +488,14 @@ const Tiers: React.FC = () => (
   <section id="tarifs" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5.5rem,13vh,9rem)] scroll-mt-24">
     <ChapterHead
       no="IV"
-      kicker="Choisissez votre parcours"
-      title="Deux façons de traverser la saison"
+      kicker="Votre parcours"
+      title="Traverser la saison avec VATA Essentiel"
       className="mb-[clamp(3rem,7vh,5rem)]"
     />
     <Reveal>
-      <div className="relative border" style={{ borderColor: 'rgba(156,122,68,0.45)', background: C.card }}>
+      <div className="relative mx-auto max-w-[760px] border" style={{ borderColor: 'rgba(156,122,68,0.45)', background: C.card }}>
         <span className="absolute inset-x-0 top-0 h-[3px]" style={{ background: C.sage }} aria-hidden />
-        <div className="grid md:grid-cols-2">
+        <div className="grid">
           {TIERS.map((tier, i) => (
             <article
               key={tier.name}
@@ -536,13 +527,13 @@ const Tiers: React.FC = () => (
               </ul>
               <button
                 type="button"
-                onClick={tier.name.includes('Bibliothèque') ? goPremium : go}
+                onClick={go}
                 className="group mt-10 inline-flex items-center justify-center gap-2.5 w-full py-4 min-h-[44px] text-[0.7rem] uppercase tracking-[0.2em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
                 style={{ background: C.ink, color: C.cream, outlineColor: C.sage }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = C.sage; e.currentTarget.style.color = C.card; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = C.ink; e.currentTarget.style.color = C.cream; }}
               >
-                {tier.name.includes('Bibliothèque') ? 'Rejoindre VATA + Bibliothèque' : 'Rejoindre VATA Essentiel'}
+                Rejoindre VATA Essentiel
                 <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </article>
@@ -621,14 +612,14 @@ const Bio: React.FC = () => (
           Krystine <span className="italic">St-Laurent</span>
         </h2>
         <p className="mt-5 v2-serif italic text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[38ch]" style={{ color: C.inkSoft }}>
-          35 ans à la jonction de la rigueur clinique et de la santé globale.
+          près de 40 ans à la jonction de la rigueur clinique et de la santé globale.
         </p>
         <DrawRule className="mt-6 w-20" color={C.brass} />
       </Reveal>
       <Reveal delay={0.1}>
         <div className="space-y-5 text-[1rem] leading-[1.9] max-w-[58ch] lg:pt-2" style={{ color: C.inkSoft }}>
           <p className="v2-dropcap">
-            Pendant 35 ans, Krystine a œuvré en soins intensifs et en recherche clinique, puis en herboristerie,
+            Pendant près de 40 ans, Krystine a œuvré en soins intensifs et en recherche clinique, puis en herboristerie,
             Ayurveda et aromathérapie. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle vous laisse seule.
           </p>
           <p>Trois livres aux Éditions de l'Homme. Finaliste au Prix de la Santé Intégrative (catégorie Pionnier). Récipiendaire du Prime Mover Award (Las Vegas).</p>
@@ -670,7 +661,7 @@ const Faq: React.FC = () => {
   const columns = [FAQS.slice(0, mid), FAQS.slice(mid)];
   return (
     <section id="faq" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5.5rem,13vh,9rem)] scroll-mt-24">
-      <ChapterHead no="V" kicker="Questions fréquentes" title="Avant de dire oui" className="mb-[clamp(2.5rem,6vh,4rem)]" />
+      <ChapterHead no="V" kicker="Vos questions" title="Questions fréquentes" className="mb-[clamp(2.5rem,6vh,4rem)]" />
       <div className="grid lg:grid-cols-2 gap-x-[clamp(3rem,6vw,6rem)] items-start border-t" style={{ borderColor: hairline }}>
         {columns.map((col, c) => (
           <Reveal key={c} delay={c * 0.08}>

@@ -122,7 +122,7 @@ const PROGRAMMES: Programme[] = [
     statusEN: 'Program available',
     ctaFR: 'Accéder au programme',
     ctaEN: 'Open the program',
-    href: 'https://krystinestlaurent.mykajabi.com/experience-ayurveda-saison-estivale',
+    href: '/liste-attente?programme=pitta',
     external: true,
   },
   {

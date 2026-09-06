@@ -54,7 +54,7 @@ export const CONTENT = {
     cards: {
       founder: {
         title: 'Krystine St-Laurent',
-        subtitle: "37 ans d'expérience, soins intensifs, recherche clinique, les coulisses du système, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie.",
+        subtitle: "Près de 40 ans d'expérience, soins intensifs, recherche clinique, les coulisses du système, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie.",
         link: '/krystine',
         banner: 'Autrice · Trilogie Ayurveda · Conférencière',
         cta: 'La rencontrer',
@@ -239,7 +239,7 @@ export const CONTENT = {
     founder: {
       bio: {
         intro: 'Dans un monde en accélération constante, il devient essentiel de ralentir. De revenir à ce qui soutient : le souffle, le corps, l\'énergie vivante.',
-        p1: 'Depuis plus de 37 ans, je tisse des rituels enracinés dans l\'Ayurveda, les plantes, la respiration, et l\'écoute intérieure.',
+        p1: 'Depuis près de 40 ans, je tisse des rituels enracinés dans l\'Ayurveda, les plantes, la respiration, et l\'écoute intérieure.',
         p2: 'Ce travail ne suit pas les tendances. Il s\'inscrit dans un art de vivre conscient.',
         highlight: 'Deux de mes livres ont été consacrés best-sellers.',
         expert: 'Infirmière d\'urgence (10 ans)',
@@ -247,7 +247,7 @@ export const CONTENT = {
         outro: 'Bienvenue dans un espace pour reconnecter.',
       },
       stats: [
-        { value: '37+', label: 'Années d\'Expérience', sub: 'Santé Holistique' },
+        { value: '40', label: 'Années d\'Expérience', sub: 'Santé Holistique' },
         { value: '2', label: 'Francophonie', sub: 'Best-Sellers' },
         { value: '3', label: 'Santé La Vie', sub: 'Saisons TV' },
         { value: '10', label: 'Soins Critiques', sub: 'Années' },
@@ -284,7 +284,7 @@ export const CONTENT = {
         title: 'Si votre corps réécrivait l\'agenda de décembre?',
         desc: 'Rejoignez nous pour un 21 jours de rituels, simples, 5 à 10 minutes par jour!',
         cta: 'Je rejoins le mouvement',
-        kajabiLink: 'https://kajabi.com/checkout-placeholder',
+        kajabiLink: '/liste-attente?programme=origine',
       },
     },
     evenements: {
@@ -313,7 +313,7 @@ export const CONTENT = {
       transition: 'Découvrir encore plus avec Krystine',
       about: {
         title: 'Krystine St-Laurent',
-        p1: '37 ans à traverser les milieux de la santé (soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque) avant de choisir l\'herboristerie, l\'Ayurveda et l\'aromathérapie.',
+        p1: 'Près de 40 ans à traverser les milieux de la santé (soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque) avant de choisir l\'herboristerie, l\'Ayurveda et l\'aromathérapie.',
         testimonials: [
           { text: 'Personne ne parle de ces choses-là comme Krystine. Quand elle explique, tout devient clair.', author: 'Annie' },
           { text: 'Je me suis rarement écoutée tout au long de ma vie. C\'est la première fois que quelqu\'un me donne les outils pour le faire.', author: 'Françoise' },
@@ -359,7 +359,7 @@ export const CONTENT = {
     cards: {
       founder: {
         title: 'Krystine St-Laurent',
-        subtitle: '37 years of experience (critical care, clinical research, behind the scenes of the system) before choosing herbalism, Ayurveda, and aromatherapy.',
+        subtitle: 'Nearly 40 years of experience (critical care, clinical research, behind the scenes of the system) before choosing herbalism, Ayurveda, and aromatherapy.',
         link: '/krystine',
         banner: 'Author · Ayurveda Trilogy · Speaker',
         cta: 'Meet her',
@@ -472,14 +472,14 @@ export const CONTENT = {
       },
     },
     founder: {
-      bio: { intro: 'In a world of constant acceleration, slowing down is essential.', p1: 'For more than 37 years, I have woven rituals rooted in Ayurveda, plants, breathing, and inner listening.', p2: 'This work does not follow trends.', highlight: 'Two of my books have been best-sellers.', expert: 'Emergency Nurse (10 years)', mission: 'I dedicate my life to the Art of Conscious Living.', outro: 'Welcome to a space to reconnect.' },
-      stats: [{ value: '37+', label: 'Years of Experience', sub: 'Holistic Health' }, { value: '2', label: 'Francophonie', sub: 'Best-Sellers' }, { value: '3', label: 'Santé La Vie', sub: 'TV Seasons' }, { value: '10', label: 'Critical Care', sub: 'Years' }],
+      bio: { intro: 'In a world of constant acceleration, slowing down is essential.', p1: 'For nearly 40 years, I have woven rituals rooted in Ayurveda, plants, breathing, and inner listening.', p2: 'This work does not follow trends.', highlight: 'Two of my books have been best-sellers.', expert: 'Emergency Nurse (10 years)', mission: 'I dedicate my life to the Art of Conscious Living.', outro: 'Welcome to a space to reconnect.' },
+      stats: [{ value: '40', label: 'Years of Experience', sub: 'Holistic Health' }, { value: '2', label: 'Francophonie', sub: 'Best-Sellers' }, { value: '3', label: 'Santé La Vie', sub: 'TV Seasons' }, { value: '10', label: 'Critical Care', sub: 'Years' }],
       story: { title: 'THE LOVE STORY', subtitle: 'BETWEEN KRYSTINE ST-LAURENT & AYURVEDA', p1: 'I have the immense privilege of living my dream life daily.', p2: 'Inspired by the history of the first nurses in America (the Augustinian sisters).', p3: 'I deeply believe our body is unique and made to regenerate.', p4: 'Imagine a vibrant, alive, conscious community.', p5: 'I wish to accompany you on this Ayurvedic path: a return to oneself.' },
       newsletter: { title: 'It\'s not a newsletter.', subtitle: 'It\'s a thread of wisdom.', intro: 'In a world that changes every second...', list: ['Sometimes: a meditation, a ritual', 'Sometimes: an excerpt from the next book', 'Sometimes: a simple reminder'], outro: 'For those who feel a call, even soft, even blurry.', formTitle: 'Stay Connected', cta: 'Join the thread' },
       footerBio: { title: 'WHO IS KRYSTINE ST-LAURENT?', text: 'Krystine St-Laurent is a best-selling author, international speaker, and recognized expert in Ayurveda.' },
       cta: 'Book Krystine',
     },
-    booking: { title: 'Book Krystine for your event!', bio: 'Recognized expert in Ayurveda, holistic health, and aligned living.', program: 'Internationally trained, best-selling author, and sought-after speaker.', ritual: { title: 'If your body rewrote the agenda?', desc: 'Join us for 21 days of rituals, simple, 5 to 10 minutes a day!', cta: 'I join the movement', kajabiLink: 'https://kajabi.com/checkout-placeholder' } },
+    booking: { title: 'Book Krystine for your event!', bio: 'Recognized expert in Ayurveda, holistic health, and aligned living.', program: 'Internationally trained, best-selling author, and sought-after speaker.', ritual: { title: 'If your body rewrote the agenda?', desc: 'Join us for 21 days of rituals, simple, 5 to 10 minutes a day!', cta: 'I join the movement', kajabiLink: '/liste-attente?programme=origine' } },
     evenements: {
       title: 'Events',
       subtitle: 'Meet Krystine in person',
@@ -494,7 +494,7 @@ export const CONTENT = {
     origine: {
       hero: { title: 'Origin Experience', subtitle: 'The problem is not a lack of discipline. It is the loss of a reliable inner reference.', cta: 'Join the Workshop' },
       transition: 'Discover even more with Krystine',
-      about: { title: 'Krystine St-Laurent', p1: '37 years traversing health environments before choosing herbalism, Ayurveda, and aromatherapy.', testimonials: [{ text: 'No one talks about these things like Krystine.', author: 'Annie' }, { text: 'This is the first time someone gives me the tools to listen to myself.', author: 'Françoise' }, { text: 'What I read in a hundred books without understanding, Krystine made obvious.', author: 'Marie' }] },
+      about: { title: 'Krystine St-Laurent', p1: 'Nearly 40 years traversing health environments before choosing herbalism, Ayurveda, and aromatherapy.', testimonials: [{ text: 'No one talks about these things like Krystine.', author: 'Annie' }, { text: 'This is the first time someone gives me the tools to listen to myself.', author: 'Françoise' }, { text: 'What I read in a hundred books without understanding, Krystine made obvious.', author: 'Marie' }] },
       timeline: { title: 'The Apothecary\'s Path', intro: 'A progressive 3-stage journey.', steps: [{ id: '01', title: 'Grounding (Earth)', duration: 'Weeks 1-4', desc: 'Installing the reference.', details: 'Sleep, nutrition, morning routines.' }, { id: '02', title: 'Alchemy (Fire)', duration: 'Weeks 5-8', desc: 'Digestive transformation.', details: 'Digestive fire (Agni) capacity.' }, { id: '03', title: 'Clarity (Ether)', duration: 'Weeks 9-12', desc: 'Embodying coherence.', details: 'When the noise settles, vision becomes clear.' }] },
       pricing: { title: 'Join the Circle', price: 'Founder Access', features: ['Full access to 3 Modules', 'Printable Workbooks', 'Monthly Q&A Sessions', 'Private Community'], cta: 'Start the Experience', guarantee: { badge: '30 Day Guarantee', title: 'Light Heart Guarantee', text: 'If you don\'t feel the promised grounding, we will refund you in full.' } },
     },

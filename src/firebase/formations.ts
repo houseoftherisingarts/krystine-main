@@ -24,12 +24,13 @@ export interface Formation {
   dateSortie?: string | null;      // AAAA-MM-JJ quand la sortie est datée
   lancementOrchestre?: boolean;
   messageAcheteursEnvoye?: boolean;
+  questionsFermees?: boolean;   // aucune question sous les leçons (ex. Vata)
   creeLe?: Timestamp;
   maj?: Timestamp;
 }
 
 export type FormationOptions = Pick<Formation,
-  'paywall' | 'prix' | 'evergreen' | 'dateSortie' | 'lancementOrchestre' | 'messageAcheteursEnvoye' | 'categorie'>;
+  'paywall' | 'prix' | 'evergreen' | 'dateSortie' | 'lancementOrchestre' | 'messageAcheteursEnvoye' | 'categorie' | 'questionsFermees'>;
 
 const db = () => {
   if (!app) throw new Error('[Formations] Firebase not configured');

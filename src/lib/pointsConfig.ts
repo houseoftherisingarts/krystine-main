@@ -21,7 +21,7 @@ export function niskas(n: number, lang: 'FR' | 'EN' | string = 'FR'): string {
 
 export type PointsKind =
   | 'welcome'         // legacy — auto-granted on older accounts; no longer written
-  | 'welcome-claim'   // dix niskas offerts à la création du compte (auto depuis le 2026-09-06)
+  | 'welcome-claim'   // vingt niskas offerts à la création du compte (serveur reclamerBienvenue)
   | 'quotidien'       // la roue des sept jours : une réclamation par journée civile
   | 'profil'          // profil complété (photo, nom, dosha), une fois
   | 'billet'          // premier billet sur le fil (serveur)
@@ -46,7 +46,7 @@ export type PointsKind =
   | 'adjust';         // manual correction by admin
 
 export const POINTS = {
-  welcome:    10,
+  welcome:    20,
   profil:      5,
   billet:      5,
   amitie:      2,
@@ -90,10 +90,11 @@ export const veilleDe = (j: string): string => journee(new Date(`${j}T12:00:00-0
 // débite; ceci ne sert qu'à afficher.
 export const COUT_COSMETIQUE = 5;
 export const COUT_EPISODE = 100;
-export const COUT_VIDEO = 10;
+// Les vidéos sont gratuites; ouvrir la section « Les vidéos de Krystine » coûte dix niskas, une fois.
+export const COUT_ACCES_VIDEOS = 10;
 export const CATALOGUE_VIDEOS = '/compte/videos-krystine.json';
 
-/** Une vidéo de la chaîne YouTube, telle que scripts/youtube-catalogue.mjs l'écrit. */
+/** Une vidéo de Krystine, telle que scripts/youtube-catalogue.mjs l'écrit. */
 export interface VideoKrystine { id: string; titre: string; duree: number; publieLe: string; vues: number; onglet: string; listes: string[] }
 export interface CatalogueVideos { chaine: string; genereLe: string; listes: { id: string; titre: string; nb: number }[]; videos: VideoKrystine[] }
 export const vignetteYoutube = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
@@ -102,12 +103,24 @@ export function dureeLisible(s: number): string {
   return h ? `${h} h ${String(m % 60).padStart(2, '0')}` : `${m} min`;
 }
 export const PAQUET_NISKAS = { niskas: 100, prix: 10 } as const;
+// L'échelle des paquets (miroir de PAQUETS dans functions/src/paiements.ts) :
+// plus le paquet est gros, plus le niska est doux.
+export interface PaquetNiskas { id: string; niskas: number; prix: number }
+export const PAQUETS_NISKAS: PaquetNiskas[] = [
+  { id: 'p100', niskas: 100, prix: 10 },
+  { id: 'p180', niskas: 180, prix: 15 },
+  { id: 'p400', niskas: 400, prix: 30 },
+  { id: 'p750', niskas: 750, prix: 50 },
+  { id: 'p1600', niskas: 1600, prix: 100 },
+  { id: 'p4500', niskas: 4500, prix: 250 },
+  { id: 'p10000', niskas: 10000, prix: 500 },
+];
 export const SANTE_LA_VIE_ID = 'kajabi-2148754050';
 export const BANNIERE_DEFAUT = '/compte/bienvenue-bureau.webp';
 export const BANNIERE_NATURE = '/compte/bienvenue-bureau-nature.webp';
 
 export interface ArticleBoutique {
-  id: 'banniere-nature' | 'musique-origine' | 'skin-medzo';
+  id: 'banniere-nature' | 'musique-origine' | 'skin-medzo' | 'skin-nuit';
   cout: number;
   nomFR: string; nomEN: string;
   descFR: string; descEN: string;
@@ -132,6 +145,12 @@ export const BOUTIQUE: ArticleBoutique[] = [
     nomFR: 'Skin Medzo Café', nomEN: 'Medzo Café skin',
     descFR: 'Un skin, c’est l’habillage de votre espace : les mêmes pages et les mêmes boutons, mais dans d’autres couleurs, comme une nappe neuve sur la même table. Celui-ci est dans des bruns de café au lait. Passez la souris sur la carte pour le voir, et enlevez-le quand vous voulez.',
     descEN: 'A skin is the dress of your space: the same pages and buttons in other colours, like a new tablecloth on the same table. This one comes in café au lait browns. Hover over the card to see it, and take it off whenever you like.',
+  },
+  {
+    id: 'skin-nuit', cout: COUT_COSMETIQUE, icone: 'fa-moon',
+    nomFR: 'Skin Nuit', nomEN: 'Night skin',
+    descFR: 'L’espace passe en pleine nuit : vert profond et encre, ivoire pour les mots, ambre pour la lumière. Le même espace, les yeux reposés. Survolez la carte pour voir l’espace s’habiller.',
+    descEN: 'Your space goes into deep night: deep green and ink, ivory for the words, amber for the light. The same space, eyes at rest. Hover over the card to see it dressed.',
   },
 ];
 

@@ -190,9 +190,9 @@ const FaqSection: React.FC = () => {
     <section id="faq" className="bg-cream2 py-24 md:py-32">
       <div className="mx-auto w-full max-w-[1280px] px-6 md:px-12">
         <Reveal className="text-center mb-14">
-          <Eyebrow>Avant de dire oui</Eyebrow>
+          <Eyebrow>Vos questions</Eyebrow>
           <SectionTitle className="mt-4 uppercase tracking-[0.02em] text-[clamp(1.7rem,3.2vw,2.5rem)]">
-            Ce qui se murmure avant de dire oui
+            Questions fréquentes
           </SectionTitle>
         </Reveal>
         <div className="grid lg:grid-cols-2 gap-x-8 items-start">
@@ -390,7 +390,7 @@ const OrigineExperience: React.FC = () => {
           </Reveal>
           <Reveal delay={0.08}>
             <SectionTitle>Krystine St-Laurent</SectionTitle>
-            <p className="mt-6 font-sans text-[1.02rem] leading-[1.85] text-inkSoft max-w-[52ch]">35 ans à traverser les milieux de la santé, soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de la série télé Santé la vie et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle laisse les gens seuls. Les rituels qu'elle enseigne, elle les pratique chaque matin.</p>
+            <p className="mt-6 font-sans text-[1.02rem] leading-[1.85] text-inkSoft max-w-[52ch]">Près de 40 ans à traverser les milieux de la santé, soins intensifs, industrie pharmaceutique, recherche clinique en insuffisance cardiaque, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de la série télé Santé la vie et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle laisse les gens seuls. Les rituels qu'elle enseigne, elle les pratique chaque matin.</p>
             <div className="mt-8 space-y-5 pt-6 border-t border-ink/12">
               {TESTIMONIALS.map((t) => (
                 <p key={t.who} className="text-ink">
@@ -513,7 +513,7 @@ const OrigineExperience: React.FC = () => {
                 <span className="font-serif text-xl text-brassBright">Studio haute résolution</span>
               </div>
             </div>
-            <a href="https://www.krystinestlaurent.com/musiquedorigine" target="_blank" rel="noopener noreferrer" className="mt-9 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-serif text-lg text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]"><Download size={20} /> Télécharger la musique</a>
+            <a href="/foyer#musique" className="mt-9 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-serif text-lg text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]"><Download size={20} /> Télécharger la musique</a>
           </Reveal>
         </div>
       </section>

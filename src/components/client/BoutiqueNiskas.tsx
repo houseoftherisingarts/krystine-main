@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { CATALOGUE_VIDEOS, COUT_VIDEO, dureeLisible, vignetteYoutube, type CatalogueVideos, type VideoKrystine } from '../../lib/pointsConfig';
+import { CATALOGUE_VIDEOS, COUT_ACCES_VIDEOS, PAQUETS_NISKAS, dureeLisible, vignetteYoutube, type CatalogueVideos, type VideoKrystine } from '../../lib/pointsConfig';
 import { useApp } from '../../contexts/AppContext';
 import { updateMember } from '../../firebase/firestore';
 import { getLecons, type Lecon } from '../../firebase/formations';
@@ -9,10 +9,11 @@ import {
 } from '../../lib/pointsConfig';
 import PieceNiska from './PieceNiska';
 
-// La petite boutique, dans l'onglet Téléchargements. Trois façons de
+// La petite boutique, dans l'onglet Téléchargements. Quatre façons de
 // personnaliser son espace pour cinq niskas chacune (une bannière, la
-// musique d'Origine, le skin Medzo Café), les intégrales de Santé la vie à
-// cent niskas l'émission, et le paquet de cent niskas pour dix dollars.
+// musique d'Origine, les skins Medzo Café et Nuit), toutes les vidéos de
+// Krystine pour dix niskas (une fois), les intégrales de Santé la vie à
+// cent niskas l'émission, et l'échelle des paquets de niskas (Stripe).
 // Le serveur seul débite (acheterAvecNiskas); ici, on montre et on active.
 
 interface Props {
@@ -32,6 +33,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
   const [recherche, setRecherche] = useState('');
   const [nbVisibles, setNbVisibles] = useState(12);
   const [occupe, setOccupe] = useState<string | null>(null);
+  const [paquetsOuverts, setPaquetsOuverts] = useState(false);
   const [message, setMessage] = useState<{ ton: 'ok' | 'err'; texte: string } | null>(null);
 
   useEffect(() => {
@@ -63,11 +65,11 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
     }
   };
 
-  const paquet = async () => {
+  const paquet = async (id: string) => {
     if (!user || occupe) return;
     setOccupe('paquet');
     try {
-      window.location.href = await acheterNiskas();
+      window.location.href = await acheterNiskas(id);
     } catch {
       dire('err', fr ? 'Le paiement n’a pas pu démarrer. Réessayez dans un instant.' : 'The payment could not start. Try again in a moment.');
       setOccupe(null);
@@ -77,7 +79,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
   const perso = member?.personnalisation || {};
   const aBanniere = !!possede['banniere-nature'];
   const aMusique = !!possede['musique-origine'] || possedeMusiqueDeja;
-  const aSkin = !!possede['skin-medzo'];
+  const aAccesVideos = !!possede['acces-videos'];
 
   const activer = async (patch: NonNullable<typeof member>['personnalisation']) => {
     if (!user) return;
@@ -103,8 +105,8 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
     <div
       key={id}
       className="flex flex-col overflow-hidden rounded-[18px] border border-[#293027]/10 bg-white/60 transition-shadow hover:shadow-[0_18px_40px_-24px_rgba(41,48,39,0.5)] dark:border-white/10 dark:bg-white/5"
-      onMouseEnter={id === 'skin-medzo' ? () => apercu('medzo') : undefined}
-      onMouseLeave={id === 'skin-medzo' ? () => apercu(null) : undefined}
+      onMouseEnter={id.startsWith('skin-') ? () => apercu(id.slice(5)) : undefined}
+      onMouseLeave={id.startsWith('skin-') ? () => apercu(null) : undefined}
     >
       {enfant}
     </div>
@@ -158,8 +160,9 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
           </span>
           <button
             type="button"
-            onClick={paquet}
+            onClick={() => setPaquetsOuverts((o) => !o)}
             disabled={occupe !== null}
+            aria-expanded={paquetsOuverts}
             className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#d9a05b] disabled:opacity-50"
           >
             <i className="fa-solid fa-bag-shopping" /> {fr ? 'Acheter des niskas' : 'Buy niskas'}
@@ -167,13 +170,43 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
         </div>
       </div>
 
+      {/* L'échelle des paquets : de cent pour dix dollars à dix mille pour cinq cents. */}
+      {paquetsOuverts && (
+        <div id="paquets-niskas" className="mt-6 rounded-[18px] border border-[#BA7B39]/40 bg-white/60 p-5 dark:border-[#BA7B39]/40 dark:bg-white/5">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'Les paquets de niskas' : 'Niska packs'}</p>
+          <p className="mt-1 text-sm text-[#293027]/60 dark:text-white/60">
+            {fr ? 'Plus le paquet est gros, plus le niska est doux. Le paiement passe par Stripe et les niskas tombent dans votre bourse au retour.' : 'The bigger the pack, the gentler the niska. Payment goes through Stripe and the niskas land in your purse when you come back.'}
+          </p>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {PAQUETS_NISKAS.map((pq, i) => {
+              const parDollar = (pq.niskas / pq.prix).toFixed(0);
+              const phare = i === PAQUETS_NISKAS.length - 1;
+              return (
+                <li key={pq.id} className={`flex flex-col rounded-[14px] border p-4 ${phare ? 'border-[#BA7B39] bg-[#BA7B39]/10' : 'border-[#293027]/10 bg-white/50 dark:border-white/10 dark:bg-white/5'}`}>
+                  <span className="inline-flex items-center gap-2 font-serif text-2xl text-[#293027] dark:text-white"><PieceNiska size={18} /> {pq.niskas.toLocaleString('fr-CA')}</span>
+                  <span className="mt-1 text-[10px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50">{fr ? `${parDollar} niskas par dollar` : `${parDollar} niskas per dollar`}</span>
+                  <button
+                    type="button"
+                    onClick={() => paquet(pq.id)}
+                    disabled={occupe !== null}
+                    className="mt-4 rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] transition-colors hover:bg-[#3a453a] disabled:opacity-50 dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]"
+                  >
+                    {occupe === 'paquet' ? (fr ? 'Un instant' : 'One moment') : `${pq.prix} $`}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
       {message && (
         <p className={`mt-4 rounded-[14px] px-4 py-3 text-sm ${message.ton === 'ok' ? 'bg-[#BA7B39]/15 text-[#293027] dark:text-white' : 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-200'}`}>
           {message.texte}
         </p>
       )}
 
-      <div className="mt-6 grid gap-4 md:grid-cols-3">
+      <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {BOUTIQUE.map((a) => {
           const nom = fr ? a.nomFR : a.nomEN;
           const desc = fr ? a.descFR : a.descEN;
@@ -200,6 +233,22 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
                 </div>
               )
               : boutonAchat(a.id, nom, a.cout);
+          } else if (a.id === 'skin-nuit') {
+            // Un aperçu miniature de l'espace en pleine nuit : vert profond, encre, ivoire, ambre.
+            visuel = (
+              <div className="h-28 overflow-hidden bg-[#151d19] p-3" aria-hidden="true">
+                <div className="h-7 rounded-md bg-gradient-to-r from-[#28352F] to-[#BA7B39]" />
+                <div className="mt-1.5 flex gap-1.5">
+                  <span className="h-2 w-10 rounded-full bg-[#BA7B39]" /><span className="h-2 w-6 rounded-full bg-[#EEE7DB]/30" /><span className="h-2 w-6 rounded-full bg-[#EEE7DB]/30" />
+                </div>
+                <div className="mt-2 grid grid-cols-[1fr_60px] gap-1.5">
+                  <div className="h-9 rounded-md bg-[#1e2823]" /><div className="h-9 rounded-md bg-[#1e2823]" />
+                </div>
+              </div>
+            );
+            etat = possede['skin-nuit']
+              ? bascule(perso.skin === 'nuit', () => activer({ skin: perso.skin === 'nuit' ? '' : 'nuit' }), fr ? 'Skin actif' : 'Skin on', fr ? 'Activer le skin' : 'Turn the skin on')
+              : boutonAchat(a.id, nom, a.cout);
           } else {
             // Un aperçu miniature de l'espace en Medzo Café : bannière, puce, onglets, carte.
             visuel = (
@@ -213,7 +262,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
                 </div>
               </div>
             );
-            etat = aSkin
+            etat = possede['skin-medzo']
               ? bascule(perso.skin === 'medzo', () => activer({ skin: perso.skin === 'medzo' ? '' : 'medzo' }), fr ? 'Skin actif' : 'Skin on', fr ? 'Activer le skin' : 'Turn the skin on')
               : boutonAchat(a.id, nom, a.cout);
           }
@@ -231,15 +280,24 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
         })}
       </div>
 
-      {/* Les vidéos de la chaîne YouTube : tout le contenu de Krystine, à dix niskas la vidéo */}
+      {/* Les vidéos de Krystine : gratuites, une fois la section ouverte pour dix niskas */}
       <div className="mt-10" id="videos-krystine">
         <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'Les vidéos de Krystine' : 'Krystine’s videos'}</p>
-        <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">{fr ? 'Toute la chaîne, dans vos vidéos' : 'The whole channel, in your videos'}</h3>
+        <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">{fr ? 'Toutes ses vidéos, dans votre espace' : 'All her videos, in your space'}</h3>
         <p className="mt-1 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
           {fr
-            ? `${catalogue ? catalogue.videos.length : ''} vidéos, directs et capsules de la chaîne de Krystine. Chaque vidéo coûte ${niskas(COUT_VIDEO, 'FR')} et rejoint vos vidéos avec son lecteur, pour la revoir sans chercher.`
-            : `${catalogue ? catalogue.videos.length : ''} videos, lives and capsules from Krystine’s channel. Each one costs ${niskas(COUT_VIDEO, 'EN')} and joins your videos with its player, to watch again without searching.`}
+            ? `${catalogue ? catalogue.videos.length : ''} vidéos, directs et capsules de Krystine. Les vidéos sont gratuites : ouvrir la section coûte ${niskas(COUT_ACCES_VIDEOS, 'FR')}, une seule fois, et tout se regarde ensuite dans « Mes vidéos ».`
+            : `${catalogue ? catalogue.videos.length : ''} videos, lives and capsules by Krystine. The videos are free: opening the section costs ${niskas(COUT_ACCES_VIDEOS, 'EN')}, once, and everything then plays in “My videos”.`}
         </p>
+        {!aAccesVideos && (
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-[18px] border border-[#BA7B39]/50 bg-[#BA7B39]/10 p-5">
+            <div>
+              <p className="font-serif text-lg text-[#293027] dark:text-white">{fr ? 'Ouvrir la section des vidéos' : 'Open the video section'}</p>
+              <p className="mt-1 text-sm text-[#293027]/60 dark:text-white/60">{fr ? 'Une seule fois, pour toutes les vidéos, celles d’aujourd’hui et celles qui viendront.' : 'Once, for every video, today’s and the ones to come.'}</p>
+            </div>
+            {boutonAchat('acces-videos', fr ? 'Les vidéos de Krystine' : 'Krystine’s videos', COUT_ACCES_VIDEOS)}
+          </div>
+        )}
         <div className="mt-4 flex flex-wrap items-center gap-2">
           {[{ id: '', t: fr ? 'Toutes' : 'All' }, { id: 'directs', t: fr ? 'Les directs' : 'Lives' }, { id: 'courts', t: fr ? 'Les capsules' : 'Shorts' }, ...(catalogue?.listes || []).filter((l) => l.nb > 0).map((l) => ({ id: l.id, t: l.titre }))].map((l) => (
             <button
@@ -273,9 +331,17 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
                   <p className="line-clamp-2 flex-1 text-sm text-[#293027] dark:text-white" title={v.titre}>{v.titre}</p>
                   <div className="mt-3 flex items-center justify-between gap-2">
                     <span className="text-[10px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">{v.publieLe}</span>
-                    {aMoi
-                      ? <span className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]"><i className="fa-solid fa-check mr-1" />{fr ? 'Dans vos vidéos' : 'In your videos'}</span>
-                      : boutonAchat(`video:${v.id}`, v.titre, COUT_VIDEO)}
+                    {(aMoi || aAccesVideos)
+                      ? (
+                        <button
+                          type="button"
+                          onClick={() => window.dispatchEvent(new CustomEvent('krystine:regarder-video', { detail: v.id }))}
+                          className="inline-flex items-center gap-2 rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] transition-colors hover:bg-[#3a453a] dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]"
+                        >
+                          <i className="fa-solid fa-play text-[9px]" /> {fr ? 'Regarder' : 'Watch'}
+                        </button>
+                      )
+                      : <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[#293027]/40 dark:text-white/40"><i className="fa-solid fa-lock text-[9px]" /> {fr ? 'Section fermée' : 'Section closed'}</span>}
                   </div>
                 </div>
               </div>

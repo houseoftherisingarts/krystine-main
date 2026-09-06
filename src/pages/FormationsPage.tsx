@@ -65,7 +65,7 @@ const FormationsPage: React.FC = () => {
           subtitle: 'Rafraîchir · Apaiser · Adoucir',
           description: "Quand la chaleur monte, le feu intérieur s'emballe. Un programme pour traverser la saison Pitta sans se brûler.",
           duration: 'Programme disponible',
-          href: 'https://krystinestlaurent.mykajabi.com/experience-ayurveda-saison-estivale',
+          href: '/liste-attente?programme=pitta',
           image: SEASON_IMG.summer,
         },
         {
@@ -106,7 +106,7 @@ const FormationsPage: React.FC = () => {
           subtitle: 'Cool · Soothe · Soften',
           description: 'When the heat rises, the inner fire flares. A program to walk through the Pitta season without burning out.',
           duration: 'Program available',
-          href: 'https://krystinestlaurent.mykajabi.com/experience-ayurveda-saison-estivale',
+          href: '/liste-attente?programme=pitta',
           image: SEASON_IMG.summer,
         },
         {

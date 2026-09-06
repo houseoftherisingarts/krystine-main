@@ -96,7 +96,7 @@ const FullExperience: React.FC = () => {
       "name": "Krystine St-Laurent",
       "jobTitle": "Experte en Ayurveda et Herboristerie",
       "award": "Auteure de la trilogie Ayurveda aux Éditions de l'Homme",
-      "hasCredential": "35 ans d'expérience en santé"
+      "hasCredential": "Près de 40 ans d'expérience en santé"
     },
     "keywords": "cheval de feu 2026, transformation énergétique 2026, autorité intérieure, ayurveda Québec, Krystine St-Laurent, écouter son corps, fatiguée d'être fatiguée, Francois Lemay, Tony Robbins, Kaizen, Défi 22 jours, Performance, Coaching de vie, Mindset, santé holistique, transformation",
     "mentions": [
@@ -193,7 +193,7 @@ const FullExperience: React.FC = () => {
             <div className="space-y-6">
               <h2 className="text-[clamp(2.5rem,6vw,3.5rem)] font-serif text-ink-sureau dark:text-paper">{t.about.title}</h2>
               <div className="space-y-6 text-lg text-ink-sureau/80 dark:text-paper/80 leading-relaxed font-light">
-                <p>35 ans en première ligne — soins intensifs, recherche clinique, les coulisses du système — avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de la série télé Santé la vie et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle laisse les gens seuls. Les rituels qu'elle enseigne, elle les pratique chaque matin.</p>
+                <p>Près de 40 ans en première ligne — soins intensifs, recherche clinique, les coulisses du système — avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de la série télé Santé la vie et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle laisse les gens seuls. Les rituels qu'elle enseigne, elle les pratique chaque matin.</p>
                 <div className="space-y-5 border-l-2 border-[#9E7B5A] pl-6 py-2">
                   <p className="font-medium text-[#9E7B5A] text-base lg:text-lg"><span className="italic">« Personne ne parle de ces choses-là comme Krystine. Quand elle explique, tout devient clair. »</span> <span className="not-italic opacity-80 text-sm block mt-1">— Annie</span></p>
                   <p className="font-medium text-[#9E7B5A] text-base lg:text-lg"><span className="italic">« Je me suis rarement écoutée tout au long de ma vie. C'est la première fois que quelqu'un me donne les outils pour le faire. »</span> <span className="not-italic opacity-80 text-sm block mt-1">— Françoise</span></p>
@@ -311,7 +311,7 @@ const FullExperience: React.FC = () => {
         <div className="space-y-6">
           <h2 className="text-4xl font-serif text-ink-sureau dark:text-paper">{t.about.title}</h2>
           <div className="space-y-6 text-lg text-ink-sureau/80 dark:text-paper/80 leading-relaxed font-light">
-            <p>35 ans en première ligne — soins intensifs, recherche clinique, les coulisses du système — avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de la série télé Santé la vie et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle laisse les gens seuls. Les rituels qu'elle enseigne, elle les pratique chaque matin.</p>
+            <p>Près de 40 ans en première ligne — soins intensifs, recherche clinique, les coulisses du système — avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de la série télé Santé la vie et du podcast Au-delà des tendances. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle laisse les gens seuls. Les rituels qu'elle enseigne, elle les pratique chaque matin.</p>
             <div className="space-y-5 border-l-2 border-[#9E7B5A] pl-6 py-2">
               <p className="font-medium text-[#9E7B5A] text-base"><span className="italic">« Personne ne parle de ces choses-là comme Krystine. Quand elle explique, tout devient clair. »</span> <span className="not-italic opacity-80 text-sm block mt-1">— Annie</span></p>
               <p className="font-medium text-[#9E7B5A] text-base"><span className="italic">« Je me suis rarement écoutée tout au long de ma vie. C'est la première fois que quelqu'un me donne les outils pour le faire. »</span> <span className="not-italic opacity-80 text-sm block mt-1">— Françoise</span></p>

@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useApp } from '../../contexts/AppContext';
 import {
   subscribeToMemberPoints, getMemberPoints, listPointsEvents, listMyRewardRedemptions, redeemReward, points, reconcileBalance,
-  type PointsBalance, type PointsEvent, type RewardRedemption,
-} from '../../firebase/points';
+  type PointsBalance, type PointsEvent, type RewardRedemption, bienvenueDejaVersee } from '../../firebase/points';
 import { POINTS, TIERS, REWARDS, FACONS_DE_GAGNER, tierFromLifetime, rewardMinThreshold, niskas, type Reward } from '../../lib/pointsConfig';
 import PieceNiska from '../../components/client/PieceNiska';
 import PointsPlant, { type Stage } from '../../components/PointsPlant';
@@ -25,7 +24,7 @@ const EVENT_LABELS: Record<string, { fr: string; en: string; icon: string }> = {
   redeem:     { fr: 'Récompense échangée',     en: 'Reward redeemed',         icon: 'fa-gift' },
   adjust:     { fr: 'Ajustement',              en: 'Adjustment',              icon: 'fa-scale-balanced' },
   direct:     { fr: 'Participation au direct', en: 'Live participation',      icon: 'fa-tower-broadcast' },
-  quotidien:  { fr: 'Récompense du jour',      en: 'Reward of the day',       icon: 'fa-sun' },
+  quotidien:  { fr: 'Cadeau du jour',          en: 'Gift of the day',         icon: 'fa-sun' },
   profil:     { fr: 'Profil complété',         en: 'Profile completed',       icon: 'fa-user-check' },
   billet:     { fr: 'Premier billet publié',   en: 'First note posted',       icon: 'fa-feather' },
   amitie:     { fr: 'Amitié acceptée',         en: 'Friendship accepted',     icon: 'fa-user-group' },
@@ -83,7 +82,11 @@ const ClientLoyalty: React.FC = () => {
   // `welcome-claim:{uid}` is the Firestore dedup key. Kept distinct from the
   // legacy `welcome:{uid}` grants that older accounts may have so the new
   // button is always actionable on those accounts.
-  const welcomeClaimed = events.some(e => e.kind === 'welcome-claim');
+  // Le cadeau est déjà versé si le journal le porte (nouvelle ou ancienne clé) :
+  // lu directement par clé, pas seulement dans les cinquante derniers billets.
+  const [bienvenueVersee, setBienvenueVersee] = useState(true);
+  useEffect(() => { if (user) bienvenueDejaVersee(user.uid).then(setBienvenueVersee).catch(() => setBienvenueVersee(true)); }, [user]);
+  const welcomeClaimed = bienvenueVersee || events.some(e => e.kind === 'welcome-claim' || e.kind === 'welcome');
   const claimWelcome = async () => {
     if (!user || welcomeClaimed) return;
     setClaimingWelcome(true);
@@ -99,6 +102,7 @@ const ClientLoyalty: React.FC = () => {
         await reconcileBalance(user.uid);
         setToast({ kind: 'ok', msg: lang === 'FR' ? 'Votre cadeau de bienvenue était déjà crédité. Votre solde a été rétabli.' : 'Your welcome gift was already credited. Balance reconciled.' });
       }
+      setBienvenueVersee(true);
       await refreshHistory();
     } finally {
       setClaimingWelcome(false);
@@ -224,7 +228,7 @@ const ClientLoyalty: React.FC = () => {
             </p>
             <div className="mb-4 flex flex-wrap gap-2">
               <button type="button" onClick={() => window.dispatchEvent(new Event('krystine:ouvrir-roue'))} className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/50 bg-white/60 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:bg-white dark:bg-white/10 dark:text-[#d9a05b]">
-                <i className="fa-solid fa-sun" /> {lang === 'FR' ? 'Ma récompense du jour' : 'My reward of the day'}
+                <i className="fa-solid fa-sun" /> {lang === 'FR' ? 'Mon cadeau du jour' : 'My gift of the day'}
               </button>
               <button type="button" onClick={() => window.dispatchEvent(new Event('krystine:ouvrir-boutique'))} className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] hover:bg-[#d9a05b]">
                 <i className="fa-solid fa-bag-shopping" /> {lang === 'FR' ? 'Acheter des niskas' : 'Buy niskas'}

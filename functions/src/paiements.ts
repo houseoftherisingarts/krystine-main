@@ -117,24 +117,37 @@ export const creerPourboire = onCall(
 // ─── Les niskas : 100 pour 10 $ ──────────────────────────────────────────────
 // Un seul paquet, jamais un montant libre venu du navigateur. Le crédit se
 // fait au retour du webhook, une seule fois par paiement.
-const NISKAS_PAR_PAQUET = 100;
-const PRIX_PAQUET_CENTS = 1000;
+// Sept paquets fixes, de 100 pour 10 $ à 10 000 pour 500 $ (plus le paquet est
+// gros, plus le niska est doux). Le navigateur nomme le paquet, le serveur
+// connaît le prix. Miroir client : PAQUETS_NISKAS dans src/lib/pointsConfig.ts.
+const PAQUETS: Record<string, { niskas: number; cents: number }> = {
+  p100: { niskas: 100, cents: 1000 },
+  p180: { niskas: 180, cents: 1500 },
+  p400: { niskas: 400, cents: 3000 },
+  p750: { niskas: 750, cents: 5000 },
+  p1600: { niskas: 1600, cents: 10000 },
+  p4500: { niskas: 4500, cents: 25000 },
+  p10000: { niskas: 10000, cents: 50000 },
+};
+const NISKAS_PAR_PAQUET = PAQUETS.p100.niskas;
 
 export const creerSessionNiskas = onCall(
   { region: 'us-central1', secrets: [STRIPE_SECRET_KEY] },
   async (req) => {
     if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour acheter des niskas.');
+    const paquet = PAQUETS[String(req.data?.paquet || 'p100')];
+    if (!paquet) throw new HttpsError('invalid-argument', 'Ce paquet n\'existe pas.');
     const body = new URLSearchParams({
       mode: 'payment',
       'line_items[0][price_data][currency]': 'cad',
-      'line_items[0][price_data][product_data][name]': `${NISKAS_PAR_PAQUET} niskas · votre espace chez Krystine`,
-      'line_items[0][price_data][unit_amount]': String(PRIX_PAQUET_CENTS),
+      'line_items[0][price_data][product_data][name]': `${paquet.niskas} niskas · votre espace chez Krystine`,
+      'line_items[0][price_data][unit_amount]': String(paquet.cents),
       'line_items[0][quantity]': '1',
       success_url: `${SITE}/compte?niskas=ok`,
       cancel_url: `${SITE}/compte`,
       'metadata[uid]': req.auth.uid,
       'metadata[type]': 'niskas',
-      'metadata[niskas]': String(NISKAS_PAR_PAQUET),
+      'metadata[niskas]': String(paquet.niskas),
     });
     const email = req.auth.token.email;
     if (email) body.set('customer_email', String(email));

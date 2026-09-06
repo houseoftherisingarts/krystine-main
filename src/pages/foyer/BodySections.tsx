@@ -1126,7 +1126,7 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       <section className={`relative bg-cream3 py-24 md:py-36 ${overlap ? 'z-[53]' : ''} ${cover}`}>
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Reveal className="mb-14">
-            <Eyebrow>Avant de dire oui</Eyebrow>
+            <Eyebrow>Vos questions</Eyebrow>
             <SectionTitle className="mt-5">Questions fréquentes</SectionTitle>
           </Reveal>
           <div className="grid gap-x-16 gap-y-14 lg:grid-cols-12 lg:items-start">

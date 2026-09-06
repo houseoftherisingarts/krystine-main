@@ -609,7 +609,7 @@ const InspiratHome: React.FC = () => {
             saison. */}
         <RevealSection className="w-full mb-12">
           <div
-            onClick={() => followHref('https://krystinestlaurent.mykajabi.com/experience-ayurveda-saison-estivale')}
+            onClick={() => followHref('/liste-attente?programme=pitta')}
             className="group relative w-full cursor-pointer rounded-[28px] overflow-hidden border border-[#bb9a5e]/20 shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:shadow-[0_0_40px_rgba(187, 154, 94,0.22)] transition-all"
           >
             <div className="grid grid-cols-1 md:grid-cols-[1fr_1.05fr] bg-[#2a2015]">

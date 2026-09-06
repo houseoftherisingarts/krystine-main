@@ -15,7 +15,8 @@ const ClientTelechargements: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [tour, setTour] = useState(0);
-  // Mes vidéos : celles de la chaîne achetées en niskas, avec leur lecteur.
+  // Mes vidéos : toutes les vidéos de Krystine dès que la section est ouverte
+  // (dix niskas, une fois), plus celles achetées à l'unité avant ce changement.
   const [possede, setPossede] = useState<Record<string, unknown>>({});
   const [catalogue, setCatalogue] = useState<CatalogueVideos | null>(null);
   const [enLecture, setEnLecture] = useState<string | null>(null);
@@ -24,7 +25,17 @@ const ClientTelechargements: React.FC = () => {
     fetch(CATALOGUE_VIDEOS).then((r) => r.json()).then(setCatalogue).catch(() => setCatalogue(null));
     return suivreBoutique(user.uid, (p) => setPossede(p.possede));
   }, [user]);
-  const mesVideos = (catalogue?.videos || []).filter((v) => !!possede[`video:${v.id}`]);
+  // Le bouton « Regarder » de la petite boutique ouvre le lecteur ici.
+  useEffect(() => {
+    const regarder = (e: Event) => {
+      setEnLecture((e as CustomEvent<string>).detail);
+      window.setTimeout(() => document.getElementById('mes-videos')?.scrollIntoView({ behavior: 'smooth' }), 50);
+    };
+    window.addEventListener('krystine:regarder-video', regarder);
+    return () => window.removeEventListener('krystine:regarder-video', regarder);
+  }, []);
+  const accesVideos = !!possede['acces-videos'];
+  const mesVideos = (catalogue?.videos || []).filter((v) => accesVideos || !!possede[`video:${v.id}`]);
 
   // Les téléchargements : la musique d'Origine et les émissions de Santé la
   // vie achetées à l'unité en niskas (le document d'achat porte `episodes`,

@@ -39,3 +39,57 @@
 .skin-medzo .border-white\/60 { border-color: rgba(250, 243, 232, 0.7) !important; }
 .skin-medzo .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(43, 26, 16, 0.78) !important; }
 .skin-medzo .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(43, 26, 16, 0.22) !important; }
+
+/* Le skin Nuit : l'espace en pleine nuit, dans le canon KSL (vert profond,
+   encre, ivoire, ambre). Mêmes cibles que Medzo, mais on inverse la
+   lumière : les fonds clairs deviennent sombres, l'encre devient ivoire. */
+.skin-nuit {
+  --nuit-fond: #151d19;
+  --nuit-panneau: #1e2823;
+  --nuit-encre: #EEE7DB;
+  --nuit-accent: #BA7B39;
+  --nuit-accent-clair: #d9a05b;
+  --nuit-accent-profond: #d9a05b;
+  color-scheme: dark;
+}
+.skin-nuit.bg-\[\#EEE7DB\],
+.skin-nuit .bg-\[\#EEE7DB\] { background-color: var(--nuit-fond) !important; }
+.skin-nuit .bg-\[\#293027\],
+.skin-nuit .bg-\[\#151d19\]\/40,
+.skin-nuit .bg-\[\#151d19\]\/60 { background-color: #0d1310 !important; }
+.skin-nuit .text-\[\#293027\] { color: var(--nuit-encre) !important; }
+.skin-nuit .text-\[\#293027\]\/85,
+.skin-nuit .text-\[\#293027\]\/80,
+.skin-nuit .text-\[\#293027\]\/70 { color: rgba(238, 231, 219, 0.82) !important; }
+.skin-nuit .text-\[\#293027\]\/60,
+.skin-nuit .text-\[\#293027\]\/55,
+.skin-nuit .text-\[\#293027\]\/50,
+.skin-nuit .text-\[\#293027\]\/40 { color: rgba(238, 231, 219, 0.6) !important; }
+.skin-nuit .text-\[\#8B4A2F\] { color: var(--nuit-accent-profond) !important; }
+.skin-nuit .text-\[\#38403a\]\/80,
+.skin-nuit .text-\[\#38403a\]\/70,
+.skin-nuit .text-\[\#38403a\]\/60,
+.skin-nuit .text-\[\#38403a\]\/55,
+.skin-nuit .text-\[\#38403a\]\/50 { color: rgba(238, 231, 219, 0.66) !important; }
+.skin-nuit .bg-\[\#BA7B39\] { background-color: var(--nuit-accent) !important; color: #151d19 !important; }
+.skin-nuit .hover\:bg-\[\#d9a05b\]:hover { background-color: var(--nuit-accent-clair) !important; }
+.skin-nuit .border-\[\#BA7B39\] { border-color: var(--nuit-accent) !important; }
+.skin-nuit .bg-\[\#BA7B39\]\/10,
+.skin-nuit .bg-\[\#BA7B39\]\/15,
+.skin-nuit .bg-\[\#BA7B39\]\/8 { background-color: rgba(186, 123, 57, 0.18) !important; }
+.skin-nuit .bg-white\/55,
+.skin-nuit .bg-white\/45,
+.skin-nuit .bg-white\/40,
+.skin-nuit .bg-white\/50,
+.skin-nuit .bg-white\/60,
+.skin-nuit .bg-white\/70,
+.skin-nuit .bg-white\/25 { background-color: rgba(30, 40, 35, 0.78) !important; }
+.skin-nuit .border-white\/60 { border-color: rgba(238, 231, 219, 0.12) !important; }
+.skin-nuit .border-\[\#293027\]\/10,
+.skin-nuit .border-\[\#293027\]\/15,
+.skin-nuit .border-\[\#38403a\]\/10,
+.skin-nuit .border-\[\#38403a\]\/15,
+.skin-nuit .divide-\[\#293027\]\/10 > * { border-color: rgba(238, 231, 219, 0.12) !important; }
+.skin-nuit .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(13, 19, 16, 0.85) !important; }
+.skin-nuit .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(13, 19, 16, 0.3) !important; }
+.skin-nuit input, .skin-nuit textarea, .skin-nuit select { color: var(--nuit-encre); background-color: rgba(255, 255, 255, 0.06); }

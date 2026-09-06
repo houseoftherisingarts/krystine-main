@@ -158,7 +158,7 @@ async function bootstrapMember(user: User, provider: 'google' | 'email') {
   } catch (e) {
     console.warn('[auth] ensureMemberProfile failed', e);
   }
-  // Dix niskas à l'ouverture du compte (Alex, 2026-09-06). La clé `welcome-claim`
+  // Vingt niskas à l'ouverture du compte (Alex, 2026-09-06). La clé `welcome-claim`
   // déduplique : la deuxième connexion ne donne rien de plus.
   points.welcomeBonus(user.uid).catch(() => {});
 }
