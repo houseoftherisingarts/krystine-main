@@ -22,3 +22,4 @@ export { badgeAchatFormation, badgePremierBillet, badgeAmitieAcceptee } from './
 export { parrainageFilleule, parrainageAchat } from './parrainage';
 export { groupeMembre } from './groupe';
 export { musiqueOrigine } from './musique';
+export { notifierBillet, annoncerChangement } from './notifs';

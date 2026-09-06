@@ -81,6 +81,7 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
           </div>
         )}
       </div>
+      <ClientPreferences uid={uid} member={member} lang={lang} />
     </div>
   );
 };
