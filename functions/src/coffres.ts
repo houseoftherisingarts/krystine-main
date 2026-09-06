@@ -304,7 +304,7 @@ export const offrirCoffre = onCall({ region: 'us-central1' }, async (req) => {
   if (!uid || !estType(type)) throw new HttpsError('invalid-argument', 'Membre et coffre requis.');
   const db = getFirestore();
   if (!(await db.doc(`members/${uid}`).get()).exists) throw new HttpsError('not-found', 'Cette membre n’existe pas.');
-  await db.doc(`coffres/${uid}`).set({ boites: { [type]: FieldValue.increment(1) }, ...(avecCle ? { cles: { [type]: FieldValue.increment(1) } } : {}), updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+  await db.doc(`coffres/${uid}`).set({ boites: { [type]: FieldValue.increment(1) }, ...(avecCle ? { cles: FieldValue.increment(1) } : {}), updatedAt: FieldValue.serverTimestamp() }, { merge: true });
   await db.collection('coffresDons').add({ uid, type, avecCle, deUid: req.auth.uid, at: FieldValue.serverTimestamp() });
   const corps = `${message ? message + '\n\n' : ''}🎁 Je vous offre un ${PRIX_COFFRES[type].nom.toLowerCase()}${avecCle ? ' et sa clé' : ''}. Il vous attend dans la petite boutique de votre espace, section « Les coffres ».`;
   await ecrireMessageKrystine(db, req.auth.uid, uid, corps);
