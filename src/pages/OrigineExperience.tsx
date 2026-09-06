@@ -3,6 +3,8 @@ import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } fr
 import { Link } from 'react-router-dom';
 import { Check, ChevronDown, BookOpen, ArrowRight, Headphones, Activity, Sparkles, Download } from 'lucide-react';
 import { Atmosphere, Parallax } from '../components/motion/loeuvre';
+import { useUI, useAuth } from '../contexts/AppContext';
+import BoutonCompte from '../components/BoutonCompte';
 
 /**
  * Expérience Origine — page React au style L'Œuvre (espresso/cream/brass)
