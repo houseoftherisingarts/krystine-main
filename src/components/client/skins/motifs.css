@@ -1,6 +1,7 @@
-/* Les motifs des skins riches (Océan, Encre & or, Lotus, Or pur) : rempli par
-   l'agent « motifs ». Ce fichier ne doit contenir que du CSS portant sur les
-   classes .skin-ocean, .skin-encre, .skin-lotus, .skin-or-pur. */
+/* Les motifs des skins riches (Océan, Encre & or, Lotus, Or pur, Féminité,
+   Sarcelle & Orange). Ce fichier ne doit contenir que du CSS portant sur les
+   classes .skin-ocean, .skin-encre, .skin-lotus, .skin-or-pur,
+   .skin-feminite, .skin-teal-orange. */
 
 @property --motif-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
 
@@ -19,7 +20,13 @@
 .skin-lotus .backdrop-blur,
 .skin-or-pur .backdrop-blur-md,
 .skin-or-pur .backdrop-blur-sm,
-.skin-or-pur .backdrop-blur {
+.skin-or-pur .backdrop-blur,
+.skin-feminite .backdrop-blur-md,
+.skin-feminite .backdrop-blur-sm,
+.skin-feminite .backdrop-blur,
+.skin-teal-orange .backdrop-blur-md,
+.skin-teal-orange .backdrop-blur-sm,
+.skin-teal-orange .backdrop-blur {
   -webkit-backdrop-filter: none !important;
           backdrop-filter: none !important;
 }
@@ -207,6 +214,80 @@
   box-shadow: inset 0 1px 0 rgba(255, 240, 184, .3), 0 16px 36px -22px rgba(224, 185, 79, .7);
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Féminité · le rose et le vert du livre. Le sarcelle de la couverture reste
+   le sol; deux lueurs roses passent dessus, à des rythmes différents, et les
+   pétales tombent sur la toile (MotifsSkin). Le rose foncé de la couronne
+   (#b8657f) ne sert qu'ici, en ombre, jamais en texte : sur ce vert il tombe
+   à 2,4 pour 1.
+   ───────────────────────────────────────────────────────────────────────── */
+.skin-feminite .motif-voile {
+  background:
+    radial-gradient(52% 42% at 26% 30%, rgba(239, 183, 198, .16), transparent 68%),
+    radial-gradient(46% 40% at 78% 74%, rgba(184, 101, 127, .18), transparent 70%),
+    radial-gradient(120% 90% at 50% 110%, rgba(11, 32, 29, .7), transparent 62%);
+  will-change: transform;
+  animation: motif-lueur 34s ease-in-out infinite;
+}
+
+.skin-feminite .bg-white\/60,
+.skin-feminite .bg-white\/70,
+.skin-feminite .bg-white\/40,
+.skin-feminite .bg-white\/25 {
+  transition: box-shadow .5s cubic-bezier(.22, 1, .36, 1), border-color .5s cubic-bezier(.22, 1, .36, 1);
+}
+.skin-feminite .bg-white\/60:hover,
+.skin-feminite .bg-white\/70:hover,
+.skin-feminite .bg-white\/40:hover,
+.skin-feminite .bg-white\/25:hover {
+  border-color: rgba(239, 183, 198, .44) !important;
+  box-shadow: inset 0 1px 0 rgba(239, 183, 198, .34), 0 16px 36px -22px rgba(217, 138, 163, .8);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Sarcelle & Orange · l'étalonnage du cinéma : le froid tient les ombres, le
+   chaud tient la lumière, et rien ne se rencontre au milieu. Le vignettage
+   ferme le cadre. Les halos et le grain passent sur la toile (MotifsSkin).
+   ───────────────────────────────────────────────────────────────────────── */
+.skin-teal-orange .motif-voile {
+  background:
+    radial-gradient(58% 46% at 82% 12%, rgba(226, 117, 58, .2), transparent 66%),
+    radial-gradient(50% 44% at 14% 84%, rgba(243, 165, 107, .1), transparent 70%),
+    radial-gradient(75% 62% at 50% 46%, rgba(9, 60, 71, .34), transparent 72%),
+    radial-gradient(130% 105% at 50% 50%, transparent 46%, rgba(3, 16, 20, .72) 100%);
+  will-change: opacity;
+  animation: motif-respire 26s ease-in-out infinite;
+}
+
+.skin-teal-orange .bg-white\/60,
+.skin-teal-orange .bg-white\/70,
+.skin-teal-orange .bg-white\/40,
+.skin-teal-orange .bg-white\/25 {
+  transition: box-shadow .5s cubic-bezier(.22, 1, .36, 1), border-color .5s cubic-bezier(.22, 1, .36, 1);
+}
+.skin-teal-orange .bg-white\/60:hover,
+.skin-teal-orange .bg-white\/70:hover,
+.skin-teal-orange .bg-white\/40:hover,
+.skin-teal-orange .bg-white\/25:hover {
+  border-color: rgba(243, 165, 107, .4) !important;
+  box-shadow: inset 0 1px 0 rgba(243, 165, 107, .3), 0 16px 38px -22px rgba(226, 117, 58, .7);
+}
+
+/* Le reflet chaud qui traverse le bouton, comme une lumière de plateau qui
+   passe devant l'objectif. Couche de fond, donc le libellé garde son contraste. */
+.skin-teal-orange .bg-\[\#BA7B39\] {
+  background-image: linear-gradient(104deg,
+    transparent 0 44%,
+    rgba(255, 214, 170, .3) 48%,
+    rgba(255, 244, 230, .62) 50%,
+    rgba(255, 214, 170, .26) 52%,
+    transparent 56% 100%);
+  background-repeat: no-repeat;
+  background-size: 400% 100%;
+  background-position: 130% 0;
+}
+.skin-teal-orange .bg-\[\#BA7B39\]:hover { animation: motif-balayage 1.05s cubic-bezier(.22, 1, .36, 1); }
+
 /* Mouvement réduit : tout s'arrête, les motifs restent. */
 @media (prefers-reduced-motion: reduce) {
   .skin-ocean .motif-voile,
@@ -225,6 +306,9 @@
   .skin-encre .font-serif.text-6xl,
   .skin-encre .font-serif.text-7xl,
   .skin-lotus .motif-voile,
+  .skin-feminite .motif-voile,
+  .skin-teal-orange .motif-voile,
+  .skin-teal-orange .bg-\[\#BA7B39\]:hover,
   .skin-or-pur .bg-\[\#BA7B39\]:hover { animation: none !important; }
 }
 

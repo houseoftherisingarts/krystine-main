@@ -35,7 +35,7 @@ export const COFFRES: Record<TypeCoffre, {
     boite: 160, nomFR: 'Coffre d’argent', nomEN: 'Silver chest',
     image: '/compte/coffres/argent.webp', teinte: '#9AA3AD', teinteClaire: '#DDE3E8', teinteSombre: '#4B535B',
     contenu: {
-      legendaire: 65, raresFR: 'les skins Lotus, Féminité et Nature', raresEN: 'the Lotus, Féminité and Nature skins',
+      legendaire: 65, raresFR: 'les skins Lotus, Féminité, Nature et Sarcelle & Orange', raresEN: 'the Lotus, Féminité, Nature and Teal & Orange skins',
       niskas: [{ montant: 30, poids: 50 }, { montant: 70, poids: 30 }, { montant: 150, poids: 15 }, { montant: 300, poids: 5 }],
       rabais: [
         { unSur: 20, fr: '10 % sur la boutique', en: '10% off the shop' },
@@ -50,7 +50,7 @@ export const COFFRES: Record<TypeCoffre, {
     boite: 420, nomFR: 'Coffre d’or', nomEN: 'Gold chest',
     image: '/compte/coffres/or.webp', teinte: '#C9A052', teinteClaire: '#F3DFA2', teinteSombre: '#7A5C22',
     contenu: {
-      legendaire: 80, raresFR: 'les skins Aurore et Or pur', raresEN: 'the Aurora and Pure Gold skins',
+      legendaire: 80, raresFR: 'les skins Aurore, Or pur et Heure dorée', raresEN: 'the Aurora, Pure Gold and Golden Hour skins',
       niskas: [{ montant: 80, poids: 45 }, { montant: 180, poids: 30 }, { montant: 400, poids: 18 }, { montant: 800, poids: 7 }],
       rabais: [
         { unSur: 8, fr: '10 % sur la boutique', en: '10% off the shop' },

@@ -61,7 +61,7 @@ export const CONTENUS: Record<TypeCoffre, Contenu> = {
     grandLot: null,
   },
   argent: {
-    legendaire: 65, rares: ['skin-lotus', 'skin-feminite', 'skin-nature'],
+    legendaire: 65, rares: ['skin-lotus', 'skin-feminite', 'skin-nature', 'skin-teal-orange'],
     niskas: [{ montant: 30, poids: 50 }, { montant: 70, poids: 30 }, { montant: 150, poids: 15 }, { montant: 300, poids: 5 }],
     rabais: [
       { rewardId: 'reb-10-boutique', unSur: 20, nom: '10 % sur la boutique' },
@@ -72,7 +72,7 @@ export const CONTENUS: Record<TypeCoffre, Contenu> = {
     grandLot: { unSur: 400, nom: 'Le Foyer d’Origine, offert' },
   },
   or: {
-    legendaire: 80, rares: ['skin-aurore', 'skin-or-pur'],
+    legendaire: 80, rares: ['skin-aurore', 'skin-or-pur', 'skin-golden-hour'],
     niskas: [{ montant: 80, poids: 45 }, { montant: 180, poids: 30 }, { montant: 400, poids: 18 }, { montant: 800, poids: 7 }],
     rabais: [
       { rewardId: 'reb-10-boutique', unSur: 8, nom: '10 % sur la boutique' },
@@ -96,13 +96,14 @@ const VALEUR_COSMETIQUE: Record<string, number> = {
   'skin-medzo': 5, 'skin-nuit': 5, 'skin-coffee': 5, 'skin-aube': 15, 'skin-terre': 20, 'skin-foret': 25, 'skin-ocean': 35, 'skin-encre': 55,
   'banniere-nature': 5, 'banniere-iris': 8, 'banniere-pivoine': 12, 'banniere-huiles': 12, 'banniere-jardin': 15, 'banniere-soir': 18,
   'skin-vata': 75, 'skin-pitta': 75, 'skin-kapha': 75,
-  'skin-lotus': 100, 'skin-feminite': 100, 'skin-nature': 100,
-  'skin-aurore': 180, 'skin-or-pur': 180,
+  'skin-lotus': 100, 'skin-feminite': 100, 'skin-nature': 100, 'skin-teal-orange': 100,
+  'skin-aurore': 180, 'skin-or-pur': 180, 'skin-golden-hour': 180,
 };
 const NOMS_COSMETIQUES: Record<string, string> = {
   'skin-medzo': 'Skin Medzo Café', 'skin-nuit': 'Skin Nuit', 'skin-coffee': 'Skin Dark Coffee', 'banniere-nature': 'Bannière Nature & Ayurveda',
   'skin-aube': 'Skin Aube rose', 'skin-terre': 'Skin Terre cuite', 'skin-foret': 'Skin Forêt', 'skin-ocean': 'Skin Océan', 'skin-encre': 'Skin Encre & or',
-  'skin-lotus': 'Skin Lotus', 'skin-feminite': 'Skin Féminité & Ayurveda', 'skin-nature': 'Skin Nature & Ayurveda', 'skin-aurore': 'Skin Aurore', 'skin-or-pur': 'Skin Or pur',
+  'skin-lotus': 'Skin Lotus', 'skin-feminite': 'Skin Féminité & Ayurveda', 'skin-nature': 'Skin Nature & Ayurveda', 'skin-teal-orange': 'Skin Sarcelle & Orange',
+  'skin-aurore': 'Skin Aurore', 'skin-or-pur': 'Skin Or pur', 'skin-golden-hour': 'Skin Heure dorée',
   'banniere-iris': 'Bannière L’iris du matin', 'banniere-pivoine': 'Bannière La pivoine', 'banniere-huiles': 'Bannière Les huiles', 'banniere-jardin': 'Bannière Le jardin après la pluie', 'banniere-soir': 'Bannière Le soir à la lampe',
 };
 const OUVERTURES_PAR_JOUR = 5;
