@@ -29,19 +29,9 @@ try {
   await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1500);
   // Ouvrir la fenêtre d'inscription : bouton "Créer mon compte" / icône compte de la nav.
-  const ouvreurs = [
-    page.locator('button, a').filter({ hasText: /Créer (mon|un) compte/i }).first(),
-    page.locator('[aria-label*="compte" i]').first(),
-  ];
-  let ouvert = false;
-  for (const loc of ouvreurs) {
-    if (await loc.count()) { await loc.click().catch(() => {}); await page.waitForTimeout(800); if (await page.locator('input[type=email]').count()) { ouvert = true; break; } }
-  }
-  if (!ouvert) {
-    // Repli : forcer l'ouverture par l'événement que la nav écoute peut-être, sinon /compte redirige vers la fenêtre.
-    await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(1200);
-  }
+  const btnNav = page.locator('button, a').filter({ hasText: /CRÉER MON COMPTE/i }).first();
+  await btnNav.click();
+  await page.waitForTimeout(1200);
   await page.screenshot({ path: `${OUT}/n5-01-fenetre.png` });
   const champEmail = page.locator('input[type=email]').first();
   await champEmail.waitFor({ timeout: 10000 });
