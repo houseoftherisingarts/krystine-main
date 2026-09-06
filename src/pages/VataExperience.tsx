@@ -41,21 +41,21 @@ const hairline = 'rgba(28,23,18,0.14)';
 /* ════════════════════════ Contenu (copie préservée) ════════════════════════ */
 
 const SIGNALS = [
-  ['La surchauffe mentale', '15 onglets ouverts en permanence. Vous ne « pensez » plus, vous subissez le bruit de vos pensées.'],
-  ['Le réveil de 3h du matin', "Le corps est épuisé, mais le mental vous réveille brutalement. Impossible de redescendre."],
-  ['Le vent intérieur', "Ballonnements et irrégularité. Une sensation d'inconfort, comme si la digestion était devenue laborieuse."],
-  ['La saturation temporelle', "Sensation d'étouffement. L'impression physique que le temps se contracte et vous écrase."],
-  ['La peau de papier', 'Tiraillements, frilosité. Votre enveloppe extérieure semble trop fine pour vous protéger.'],
-  ["L'envahissement sensoriel", 'Le moindre bruit vous agresse. La lumière vive fatigue. Vos filtres ne fonctionnent plus.'],
-  ['Mains et pieds glacés', 'Une sensation de froid persistante. Même sous la couette, la chaleur ne se rend pas au bout des doigts.'],
-  ['Le corps qui « grince »', "Raideurs et craquements. Le sentiment d'avoir perdu sa fluidité naturelle et son « huile » interne."],
-  ['La dispersion mentale', "Vous commencez dix tâches, n'en finissez aucune. Votre focus s'effrite et vous perdez le fil constamment."],
+  ['La surcharge sensorielle', "Le bruit, les écrans et la lumière s'additionnent dans un environnement qui change sans arrêt. Vos sens ne ferment plus la porte."],
+  ['Le réveil de 3 h du matin', "Le corps est épuisé, mais le mental vous réveille brutalement. Impossible de redescendre."],
+  ['Le manque de focus', "Vous perdez la clarté dans vos pensées et la direction dans vos journées, avec l'impression d'être submergée par ce qui vient de l'extérieur."],
+  ['La dispersion', "Vous commencez dix tâches et n'en finissez aucune. Le fil se perd, la profondeur aussi, et le lien à ce qui compte vraiment s'effrite."],
+  ['Les repères qui bougent', "Ce qui tenait hier ne tient plus. Vous vous demandez si vos références ont besoin d'être revalidées."],
+  ["L'épuisement physique et émotionnel", "Les transitions continues l'amplifient. Le corps suit de moins en moins, et le cœur aussi."],
+  ['La peau de papier', 'La peau tiraille, le froid s\'installe et les mains restent glacées. Votre enveloppe extérieure semble trop fine pour vous protéger.'],
+  ['Le vent intérieur', "Ballonnements et irrégularité. La digestion devient laborieuse, comme si le vent s'était installé dedans."],
+  ['Le corps qui « grince »', "Raideurs et craquements. Le sentiment d'avoir perdu sa fluidité naturelle et son huile interne."],
 ];
 
 const SYSTEMS: Array<[string, string, React.ComponentType<{ size?: number; weight?: any }>]> = [
-  ["Le système d'ancrage", "Avant de calmer le mental, il faut sécuriser le corps. Le souffle devient votre « bouton stop » accessible en 30 secondes, n'importe où.", Anchor],
-  ['Le filtrage sensoriel', 'Vos 5 sens sont actuellement des portes grandes ouvertes. Nous allons poser des filtres pour que le bruit extérieur cesse de vous envahir.', Ear],
-  ["La maintenance d'actif", "Votre corps est votre capital le plus précieux. Nous allons remettre de l'huile dans les rouages (sommeil, digestion) pour éviter la casse.", Drop],
+  ["Le système d'ancrage", "Avant de calmer le mental, il faut sécuriser le corps. Le souffle devient votre bouton d'arrêt, accessible en trente secondes, n'importe où. Reprendre les rênes de votre énergie, même en période de turbulences.", Anchor],
+  ['Le filtrage sensoriel', "Vos cinq sens sont actuellement des portes grandes ouvertes. Nous allons poser des filtres, un sens à la fois, pour que le bruit extérieur cesse de vous envahir et que la clarté mentale revienne.", Ear],
+  ["La maintenance d'actif", "Votre corps est votre capital le plus précieux. Des rituels simples et puissants remettent de l'huile dans les rouages (sommeil, digestion, chaleur) sans alourdir votre quotidien.", Drop],
 ];
 
 const PHASES = [
@@ -72,16 +72,17 @@ const PHASES = [
 const TIERS = [
   {
     name: 'VATA Essentiel', price: '497 $', promo: '397 $', plan: '',
-    intro: 'Une formation audio, avec son matériel de support. Le camp de base pour un système nerveux surchargé.',
-    features: ['Formation audio : capsules à écouter, matériel de support à télécharger', '7 modules · 7 semaines (plus 1 semaine d\'introduction)', '18 capsules d\'accompagnement audio', '7 méditations pré-enregistrées', '19 rituels guidés', 'Guide PDF de 204 pages', 'Accès à la communauté'],
+    intro: 'Une formation audio, avec son matériel de support. Un chemin clair, semaine après semaine, pour ancrer, restaurer et cultiver une sérénité qui tient malgré les turbulences.',
+    features: ['Formation audio : 16 capsules à écouter, matériel de support à télécharger', '7 semaines · 9 modules (plus une semaine d\'introduction)', '19 rituels d\'automne pour apaiser et honorer Vata', '7 méditations pré-enregistrées, à votre rythme', 'Le guide PDF de 204 pages, un vrai livre sur les cinq sens', 'Journal de bord et d\'observation', '4 capsules sur les rituels de base de l\'Ayurveda', 'Capsules supplémentaires : plantes, épices, aliments de saison, guidances ancestrales'],
     recommended: false,
   },
 ];
 
 const TESTIMONIALS = [
-  { quote: "J'étais en mode alerte en continu : proche aidante, travail, famille… La nuit, je me réveillais vers 3 h. Avec VATA, le simple fait d'avoir un fil sur 7 semaines m'a permis de reprendre prise sur mes soirées. Mes nuits sont plus réparatrices.", who: 'Sonia T.', role: "52 ans, maman d'ados et proche aidante" },
-  { quote: "Comme entrepreneure, je vivais avec 15 onglets ouverts dans mon cerveau. Les semaines sur les sens ont été un déclic. J'ai ajusté ce que je laisse entrer (bruits, écrans, lumières). C'est fou ce qu'un changement de 1 % peut faire !", who: 'Julie B.', role: 'Entrepreneure à grande tendance VATA' },
-  { quote: "J'ai fait beaucoup de formations. Krystine a une façon unique d'enseigner et d'accompagner. Ses connaissances ne partent pas du mental, mais du cœur. Je n'ai qu'un mot : GRATITUDE.", who: 'Caroline P.', role: 'Mère de 4 enfants au mental à tendance surchargé' },
+  { quote: "Avant de rejoindre le programme de Krystine, je me sentais épuisée, à concilier travail et vie personnelle sans me laisser de temps. J'avais l'impression que même si je courais plus vite, rien n'y faisait. Aujourd'hui, grâce à de petites pratiques ayurvédiques intégrées à ma routine, j'ai retrouvé de l'énergie et de la clarté sans ajouter de stress à ma journée. Et je sais que ce n'est que le commencement.", who: 'Marie-Claude', role: 'Une vie professionnelle débordante' },
+  { quote: "Je ne pensais jamais comprendre avec autant de facilité ce que l'Ayurveda, sous la guidance de Krystine, pouvait amener dans ma vie et celle de ma famille. J'avais ses deux livres, mais ce programme est tellement puissant : il nous aide à intégrer, à vivre la théorie.", who: 'Sophie', role: 'Lectrice des deux livres' },
+  { quote: "En tant que maman et aidante naturelle, je culpabilisais de prendre du temps pour moi. Les conseils de Krystine m'ont montré comment nourrir mon bien-être tout en prenant soin de ma famille. Mes proches le remarquent : je suis lumineuse.", who: 'Julie', role: 'Celle qui pense aux autres en premier' },
+  { quote: "La transition dans cette nouvelle phase de ma vie était plutôt difficile, jusqu'à ce que je rencontre Krystine. Son approche m'a aidée à me reconnecter à ma force intérieure et à aborder ce changement avec vitalité et sérénité, sans bouleverser mon mode de vie.", who: 'Nicole', role: 'Une transition de vie importante' },
 ];
 
 const FAQS = [
@@ -286,8 +287,8 @@ const Cover: React.FC = () => (
       <div className="relative mt-10 grid gap-y-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
         <Reveal delay={0.42} y={20}>
           <p className="v2-serif italic text-[clamp(1.2rem,2.2vw,1.7rem)] leading-[1.35] max-w-[40ch]" style={{ color: C.inkSoft }}>
-            Froid, sécheresse, surcharge mentale : la saison Vata teste vos limites.
-            Apprenez à sécuriser vos portes sensorielles pour ramener le calme à l'intérieur.
+            Créer une stabilité intérieure forte et une clarté mentale qui tient, malgré la puissance
+            des turbulences extérieures. Sept semaines d'audio et de rituels, à écouter à votre rythme.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-4">
             <UnderlineCta label="Apaiser mon système nerveux" />
@@ -354,7 +355,7 @@ const Signals: React.FC = () => (
           no="I"
           kicker="Les signaux d'alerte"
           title="Avez-vous perdu vos filtres ?"
-          lede="Si plus de trois de ces signaux vous ressemblent, votre vent intérieur est en turbulence."
+          lede="Nous traversons une période qui bouscule nos repères. Si plus de trois de ces signaux vous ressemblent, votre vent intérieur est en turbulence."
         />
       </div>
 
@@ -401,7 +402,7 @@ const Method: React.FC = () => (
       no="II"
       kicker="La méthode"
       title="Comment nous allons arrêter la fuite d'énergie"
-      lede="Pas de tâches en plus. Trois systèmes de régulation invisibles."
+      lede="L'Ayurveda agit comme un ancêtre bienveillant qui nous chuchote à l'oreille une sagesse bâtie il y a des milliers d'années. Pas de tâches en plus : trois systèmes de régulation, invisibles dans votre journée."
       className="mb-[clamp(3rem,7vh,5rem)]"
     />
     <div className="border-t" style={{ borderColor: 'rgba(28,23,18,0.16)' }}>
