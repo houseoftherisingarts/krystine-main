@@ -159,6 +159,15 @@
   .talk .meta{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);text-align:right;white-space:nowrap}
   .talk .meta b{display:block;color:var(--ink);font-weight:600;margin-bottom:.35rem}
 
+  /* ── thèmes ── */
+  .themes{background:var(--green);color:var(--ivory);padding:6.5rem 0;position:relative;overflow:hidden}
+  .themes .head{display:grid;grid-template-columns:5fr 7fr;gap:3rem;align-items:end}
+  .themes .head p{font-family:var(--serif);font-size:1.25rem;line-height:1.5;color:rgba(238,231,219,.82);max-width:34rem}
+  .themes ul{list-style:none;margin-top:3rem;display:grid;grid-template-columns:1fr 1fr;gap:0 4rem}
+  .themes li{position:relative;padding:1.05rem 0 1.05rem 1.6rem;border-top:1px solid rgba(238,231,219,.14);font-family:var(--serif);font-size:1.22rem;line-height:1.4}
+  .themes li::before{content:"";position:absolute;left:0;top:1.55rem;width:7px;height:7px;border-radius:50%;background:var(--amber-bright)}
+  .themes .close{margin-top:3rem;font-family:var(--serif);font-size:clamp(1.4rem,2.2vw,1.9rem);line-height:1.3;color:var(--amber-bright);max-width:30ch}
+  @media (max-width:1024px){ .themes .head{grid-template-columns:1fr;gap:1.4rem} .themes ul{grid-template-columns:1fr;gap:0} }
   /* ── who ── */
   .who{background:var(--ivory);padding:6rem 0}
   .who .mx{display:grid;grid-template-columns:5fr 7fr;gap:5rem;align-items:center}
@@ -168,6 +177,9 @@
   .who .ph .q{position:absolute;right:-1.4rem;bottom:2rem;background:var(--green);color:var(--ivory);padding:1.1rem 1.3rem;max-width:260px;font-family:var(--serif);font-size:1.15rem;line-height:1.35;box-shadow:0 18px 40px rgba(0,0,0,.22)}
   .who .ph .q small{display:block;margin-top:.6rem;font:600 .6rem/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--amber-bright)}
   .who p{font-family:var(--serif);font-size:1.25rem;line-height:1.55;margin-top:1.4rem;color:var(--ink)}
+  .who h2.title::before{content:open-quote}.who h2.title::after{content:close-quote}
+  html:lang(fr) .who h2.title{quotes:"«\00a0" "\00a0»"} html:lang(en) .who h2.title{quotes:"\201C" "\201D"}
+  .who .sig{font:2.2rem/1 var(--script);color:var(--copper);margin-top:1.6rem}
   .who ul{list-style:none;margin-top:2rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem 2rem}
   .who li{padding-left:1.2rem;position:relative;font-size:.92rem;line-height:1.5;color:var(--ink-soft)}
   .who li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--amber)}
@@ -316,13 +328,13 @@
     <div class="copy">
       <div class="kicker reveal d1" data-t="hero.kicker">Keynote speaker · Author · Registered nurse</div>
       <h1 class="reveal d2" data-t="hero.h1" data-html="1">One talk, <b>to come back to yourself.</b></h1>
-      <p class="sub reveal d3" data-t="hero.sub">For close to forty years I have been reconnecting what we were taught to keep apart: nursing, Ayurveda, plants and the wisdom of nature. On stage I do what I do in my books and in my gardens: simplify, make it accessible, and give everyone simple rituals to take care of themselves every day… starting the very next morning!</p>
+      <p class="sub reveal d3" data-t="hero.sub">For close to forty years, Krystine St-Laurent has been reconnecting what we were taught to keep apart: nursing, Ayurveda, plants and the wisdom of nature. On stage she does what she does in her books and in her gardens: simplify, make it accessible, and give everyone simple rituals to take care of themselves every day… starting the very next morning!</p>
       <div class="ctas reveal d4">
         <a class="btn btn-amber" href="#book" data-t="cta.book">Book Krystine <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a>
         <a class="btn btn-line" href="#talks" data-t="cta.talks">See the talks</a>
       </div>
       <button type="button" class="film reveal d5" id="filmBtn"><i><svg viewBox="0 0 12 12"><path d="M1 0l11 6-11 6z"/></svg></i><span data-t="hero.film">Watch the film, with sound</span></button>
-      <div class="langs reveal d5" data-t="hero.langs">I speak in French, in English, or in both</div>
+      <div class="langs reveal d5" data-t="hero.langs">Talks in French, in English, or both</div>
     </div>
   </div>
   <div class="scroll" aria-hidden="true"><span data-t="hero.scroll">Scroll</span><i></i></div>
@@ -368,7 +380,7 @@
   <div class="mx">
     <div class="big reveal"><span class="count" data-to="37">0</span><sup>+</sup></div>
     <div>
-      <p class="what reveal d1" data-t="years.what">years reconnecting science and the wisdom of nature, first in hospitals, then in my gardens, my books and on stage.</p>
+      <p class="what reveal d1" data-t="years.what">years reconnecting science and the wisdom of nature, first in hospitals, then in her gardens, her books and on stage.</p>
       <div class="stats reveal d2">
         <div class="st"><b class="count" data-to="2">0</b><span data-t="years.books">Best-sellers in the Francophonie</span></div>
         <div class="st"><b class="count" data-to="3">0</b><span data-t="years.tv">Seasons of Santé la Vie on TV</span></div>
@@ -383,19 +395,19 @@
   <div class="mx">
     <div class="head">
       <div class="reveal">
-        <div class="kicker" data-t="talks.kicker">My talks</div>
+        <div class="kicker" data-t="talks.kicker">Her talks</div>
         <h2 class="title" data-t="talks.title">Three talks, one same path: the return to the body.</h2>
         <div class="rule" aria-hidden="true"><span></span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg><span></span></div>
       </div>
-      <p class="reveal d1" data-t="talks.lede">I never give the same talk twice. The titles give you the ground. We then choose the angle, the examples and the length together, with the room you will have in front of you in mind.</p>
+      <p class="reveal d1" data-t="talks.lede">Krystine never gives the same talk twice. The titles give the ground. The angle, the examples and the length are then chosen with you, with the room you will have in front of you in mind.</p>
     </div>
 
     <article class="talk reveal">
       <div class="n">01</div>
       <div>
-        <div class="k" data-t="talk1.k">My most requested talk</div>
+        <div class="k" data-t="talk1.k">Her most requested talk</div>
         <h3 data-t="talk1.t">Beyond trends</h3>
-        <p data-t="talk1.p">We have never had so much information… and never needed our own bearings so much. In this talk I invite everyone to look inward rather than search outside for the miracle solution, and to listen to what the body already knows, beyond fashions and trends.</p>
+        <p data-t="talk1.p">We have never had so much information… and never needed our own bearings so much. In this talk, Krystine invites everyone to look inward rather than search outside for the miracle solution, and to listen to what the body already knows, beyond fashions and trends.</p>
       </div>
       <div class="meta"><b data-t="talk1.d">60 to 90 min</b><span data-t="talk1.f">In person · Virtual</span></div>
     </article>
@@ -404,7 +416,7 @@
       <div>
         <div class="k" data-t="talk2.k">Signature talk</div>
         <h3 data-t="talk2.t">Ayurveda as an inner compass</h3>
-        <p data-t="talk2.p">Ayurveda is the oldest living system of health, and I share it adapted to the reality of our hemisphere. The five elements become a simple map for reading what is going on in you, in your day and in your team. People leave with a few reference points they keep for a long time.</p>
+        <p data-t="talk2.p">Ayurveda is the oldest living system of health, and Krystine shares it adapted to the reality of our hemisphere. The five elements become a simple map for reading what is going on in you, in your day and in your team. People leave with a few reference points they keep for a long time.</p>
       </div>
       <div class="meta"><b data-t="talk2.d">90 min · half day</b><span data-t="talk2.f">In person · Hybrid</span></div>
     </article>
@@ -413,10 +425,38 @@
       <div>
         <div class="k" data-t="talk3.k">For women</div>
         <h3 data-t="talk3.t">A woman and her seasons</h3>
-        <p data-t="talk3.p">Just like nature, a woman is governed by cycles, influenced by the seasons, the light and many other factors that Ayurveda brings back to our attention. I offer a way of living in alliance with the body rather than behind its back. For women's groups, health professionals and wellness events.</p>
+        <p data-t="talk3.p">Just like nature, a woman is governed by cycles, influenced by the seasons, the light and many other factors that Ayurveda brings back to our attention. Krystine offers a way of living in alliance with the body rather than behind its back. For women's groups, health professionals and wellness events.</p>
       </div>
       <div class="meta"><b data-t="talk3.d">60 min</b><span data-t="talk3.f">In person</span></div>
     </article>
+  </div>
+</section>
+
+<!-- ===== THEMES ===== -->
+<section class="themes" id="themes">
+  <div class="grain"></div>
+  <div class="mx">
+    <div class="head">
+      <div class="reveal">
+        <div class="kicker" data-t="th.kicker">Themes</div>
+        <h2 class="title" data-t="th.title">Themes she can address</h2>
+      </div>
+      <p class="reveal d1" data-t="th.intro">Depending on the context of the event and the questions running through the audience, Krystine can address, among other things:</p>
+    </div>
+    <ul>
+      <li class="reveal" data-t="th.1">our ability to choose in a world saturated with answers;</li>
+      <li class="reveal" data-t="th.2">the hidden costs of trends, algorithms and universal rules;</li>
+      <li class="reveal" data-t="th.3">the body's messages and what sometimes keeps us from hearing them;</li>
+      <li class="reveal" data-t="th.4">the rhythms of the body, of nature and of the different cycles of life;</li>
+      <li class="reveal" data-t="th.5">Ayurveda as a map, rather than a system of labels;</li>
+      <li class="reveal" data-t="th.6">the links between body and consciousness, science and wisdom, nourishing and healing;</li>
+      <li class="reveal" data-t="th.7">plants, traditions and the knowledge passed down through generations;</li>
+      <li class="reveal" data-t="th.8">the seasons and the passages of women's lives;</li>
+      <li class="reveal" data-t="th.9">times of transition, the loss of old reference points and what is seeking to take shape;</li>
+      <li class="reveal" data-t="th.10">nourishing, transforming and regenerating;</li>
+      <li class="reveal" data-t="th.11">discernment and the place we keep in our own decisions.</li>
+    </ul>
+    <p class="close reveal" data-t="th.close">Reconnecting what we have learned to separate remains the common thread of all her talks.</p>
   </div>
 </section>
 
@@ -425,10 +465,10 @@
   <div class="mx">
     <div class="ph reveal">
       <img src="/speaking/assets/krystine-smile.webp" srcset="/speaking/assets/krystine-smile-640.webp 640w, /speaking/assets/krystine-smile.webp 1100w" sizes="(max-width:1024px) 90vw, 520px" width="1100" height="1100" loading="lazy" alt="Krystine St-Laurent laughing, seated on a sofa" />
-      <div class="q"><span data-t="who.q">Relier ce que nous avons appris à séparer.</span><small data-t="who.qs">My motto</small></div>
+      <div class="q"><span data-t="who.q">Relier ce que nous avons appris à séparer.</span><small data-t="who.qs">Her motto</small></div>
     </div>
     <div>
-      <div class="kicker reveal" data-t="who.kicker">Who I am</div>
+      <div class="kicker reveal" data-t="who.kicker">In her words</div>
       <h2 class="title reveal d1" data-t="who.title">I started in the hospital. Nature did the rest.</h2>
       <p class="reveal d2" data-t="who.p1">As a nurse I worked in intensive care, cardiology, surgery, the operating room and even flight medicine. I saw the best that science can do… and I also understood that science is never final. One day I caught myself counting the years to my retirement, well before forty. That is when plants, and then Ayurveda, came into my life, and an extraordinary world opened up: nature and everything it gives us.</p>
       <p class="reveal d3" data-t="who.p2">I left the city for a farm, planted gardens of medicinal plants there and created my oils. I wrote, produced and hosted three seasons of the television show Santé ! La Vie !, then my books came out with Éditions de l'Homme, and two of them became best-sellers. What I do on stage is what I do on television and in my pages: simplify the knowledge that lets us cultivate health and vitality every day, and make it accessible to everyone. I deeply believe that each of us is unique, and that the body is made to regenerate.</p>
@@ -438,6 +478,7 @@
         <li data-t="who.l3">Three books with Éditions de l'Homme, two of them best-sellers</li>
         <li data-t="who.l4">Three seasons of Santé ! La Vie ! and the podcast Au-delà des tendances</li>
       </ul>
+      <div class="sig reveal d5" aria-hidden="true">Krystine</div>
     </div>
   </div>
 </section>
@@ -448,15 +489,15 @@
     <div class="reveal">
       <div class="kicker" data-t="fmt.kicker">Formats</div>
       <h3 data-t="fmt.title">From a 30-minute talk to a retreat of several days</h3>
-      <p data-t="fmt.p">I adapt the length and the depth to your program, and every format exists in French, in English or in both.</p>
+      <p data-t="fmt.p">Krystine adapts the length and the depth to your program, and every format exists in French, in English or in both.</p>
       <div class="chips">
         <span class="chip" data-t="fmt.c1">Conference / Keynote</span><span class="chip" data-t="fmt.c2">Hands-on workshop</span><span class="chip" data-t="fmt.c3">Roundtable / Panel</span><span class="chip" data-t="fmt.c4">Event hosting</span><span class="chip" data-t="fmt.c5">Corporate training</span><span class="chip" data-t="fmt.c6">Retreat or residency</span><span class="chip" data-t="fmt.c7">Podcast / Media interview</span>
       </div>
     </div>
     <div class="reveal d1">
       <div class="kicker" data-t="aud.kicker">Audiences</div>
-      <h3 data-t="aud.title">Who I speak to</h3>
-      <p data-t="aud.p">I have spoken to twenty people in a small room and to several hundred at a large convention, in Quebec, across Canada and in Europe. What moves me most never changes: that moment when a whole room starts breathing together.</p>
+      <h3 data-t="aud.title">Who she speaks to</h3>
+      <p data-t="aud.p">She has spoken to twenty people in a small room and to several hundred at a large convention, in Quebec, across Canada and in Europe. What moves her most never changes: that moment when a whole room starts breathing together.</p>
       <div class="chips">
         <span class="chip" data-t="aud.c1">General public</span><span class="chip" data-t="aud.c2">Corporate teams</span><span class="chip" data-t="aud.c3">Healthcare professionals</span><span class="chip" data-t="aud.c4">Students and educators</span><span class="chip" data-t="aud.c5">Community and associations</span><span class="chip" data-t="aud.c6">Wellness and women's events</span>
       </div>
@@ -472,10 +513,10 @@
       <h2 class="title" data-t="pro.title">Four steps, and nothing off the shelf.</h2>
     </div>
     <div class="steps">
-      <div class="step reveal d1"><div class="n">01</div><h3 data-t="s1.t">You write to me</h3><p data-t="s1.p">A few minutes on the form below. The more I know about what you are preparing, the better I will be able to serve you.</p></div>
-      <div class="step reveal d2"><div class="n">02</div><h3 data-t="s2.t">We talk</h3><p data-t="s2.p">My team gets back to you within 48 business hours with a proposal. If it suits you, we take a moment on the phone to refine it together.</p></div>
-      <div class="step reveal d3"><div class="n">03</div><h3 data-t="s3.t">We build it together</h3><p data-t="s3.p">I shape the talk around your audience and your context. There is no ready-made module here: every room deserves its own!</p></div>
-      <div class="step reveal d4"><div class="n">04</div><h3 data-t="s4.t">On the day</h3><p data-t="s4.p">I arrive grounded, prepared and free. The rest belongs to the room.</p></div>
+      <div class="step reveal d1"><div class="n">01</div><h3 data-t="s1.t">You write to us</h3><p data-t="s1.p">A few minutes on the form below. The more we know about what you are preparing, the better Krystine can prepare.</p></div>
+      <div class="step reveal d2"><div class="n">02</div><h3 data-t="s2.t">We talk</h3><p data-t="s2.p">Our team gets back to you within 48 business hours with a proposal. If it suits you, we take a moment on the phone to refine it together.</p></div>
+      <div class="step reveal d3"><div class="n">03</div><h3 data-t="s3.t">Built together</h3><p data-t="s3.p">Krystine shapes the talk around your audience and your context. There is no ready-made module: every room deserves its own!</p></div>
+      <div class="step reveal d4"><div class="n">04</div><h3 data-t="s4.t">On the day</h3><p data-t="s4.p">Krystine arrives grounded, prepared and free. The rest belongs to the room.</p></div>
     </div>
   </div>
 </section>
@@ -484,10 +525,10 @@
 <section class="book" id="book">
   <div class="mx">
     <div class="side reveal">
-      <div class="kicker" data-t="bk.kicker">Invite me</div>
-      <h2 class="title" data-t="bk.title">Tell me about your event.</h2>
-      <p data-t="bk.p">Give me the essentials, and my team writes back within 48 business hours with a proposal thought out for your room. I look forward to working with you!</p>
-      <div class="note" data-t="bk.note">I travel across Canada, to the United States and to Europe, depending on my calendar. Eight to sixteen weeks of notice lets me prepare the meeting well. For shorter notice, write to me anyway and we will look at it together.</div>
+      <div class="kicker" data-t="bk.kicker">Invite Krystine</div>
+      <h2 class="title" data-t="bk.title">Tell us about your event.</h2>
+      <p data-t="bk.p">Give us the essentials, and the team writes back within 48 business hours with a proposal thought out for your room. We look forward to working with you!</p>
+      <div class="note" data-t="bk.note">Krystine travels across Canada, to the United States and to Europe, depending on her calendar. Eight to sixteen weeks of notice allows her to prepare the meeting well. For shorter notice, write to us anyway and we will look at it together.</div>
     </div>
     <form class="bk reveal d1" id="bkform" novalidate>
       <div class="fields">
@@ -531,9 +572,9 @@
             </select>
           </div>
         </div>
-        <label for="bkmsg" data-t="f.msg">Tell me about your event and what you would like your audience to take home</label>
+        <label for="bkmsg" data-t="f.msg">Tell us about your event and what you would like your audience to take home</label>
         <textarea id="bkmsg"></textarea>
-        <button class="btn btn-amber" type="submit" data-t="f.send">Send my request <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></button>
+        <button class="btn btn-amber" type="submit" data-t="f.send">Send the request <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></button>
       </div>
       <p class="msg" id="bkmsgline" role="status" aria-live="polite"></p>
     </form>
@@ -545,18 +586,18 @@
   <div class="mx">
     <div class="reveal">
       <div class="kicker" data-t="faq.kicker">Good to know</div>
-      <h2 class="title" data-t="faq.title">The questions I get asked most</h2>
+      <h2 class="title" data-t="faq.title">Questions organizers ask</h2>
     </div>
     <div class="cols reveal d1">
       <div>
-        <details><summary data-t="q1.q">What do you speak about?</summary><p data-t="q1.a">About Ayurveda and women's health, about integrative medicine and the balance between work and life, and about what passes from one generation to the next. I always adapt the talk to the room.</p></details>
-        <details><summary data-t="q2.q">Do you travel outside Quebec?</summary><p data-t="q2.a">Yes! Depending on my calendar I travel across Canada and also to the United States, France, Belgium or Switzerland. Tell me the city and we confirm quickly.</p></details>
+        <details><summary data-t="q1.q">What topics does Krystine cover?</summary><p data-t="q1.a">Krystine speaks, among other things, about the body, rhythms, Ayurveda, plants, women's seasons, transitions, discernment and our ability to choose in a world saturated with answers. Each talk draws on close to forty years of research, practice and observation, with one common thread: reconnecting what we have learned to separate.</p></details>
+        <details><summary data-t="q2.q">Does she travel outside Quebec?</summary><p data-t="q2.a">Yes! Depending on her calendar, Krystine travels across Canada and also to the United States, France, Belgium or Switzerland. Tell us the city and we confirm quickly.</p></details>
         <details><summary data-t="q3.q">In which languages?</summary><p data-t="q3.a">In French and in English, and in both when the room asks for it.</p></details>
       </div>
       <div>
-        <details><summary data-t="q4.q">How much notice do you need?</summary><p data-t="q4.a">Eight to sixteen weeks before the event is ideal. For shorter notice, write to me anyway: we look at what is possible.</p></details>
-        <details><summary data-t="q5.q">What are your fees?</summary><p data-t="q5.a">They depend on the format, the length, the audience and the travel. Describe your event to me and my team replies with a proposal made for it.</p></details>
-        <details><summary data-t="q6.q">Can we record the talk?</summary><p data-t="q6.a">Often yes, for internal use. Tell me in the form and we settle the terms with the proposal.</p></details>
+        <details><summary data-t="q4.q">How much notice is needed?</summary><p data-t="q4.a">Eight to sixteen weeks before the event is ideal. For shorter notice, write to us anyway: we look at what is possible.</p></details>
+        <details><summary data-t="q5.q">What are her fees?</summary><p data-t="q5.a">They depend on the format, the length, the audience and the travel. Describe your event to us and the team replies with a proposal made for it.</p></details>
+        <details><summary data-t="q6.q">Can we record the talk?</summary><p data-t="q6.a">Often yes, for internal use. Tell us in the form and we settle the terms with the proposal.</p></details>
       </div>
     </div>
   </div>
@@ -590,43 +631,44 @@
     'cta.book':'Réserver Krystine','cta.talks':'Voir les conférences',
     'hero.kicker':'Conférencière · Autrice · Infirmière',
     'hero.h1':"Une conférence <b>pour revenir à soi.</b>",
-    'hero.sub':"Depuis près de quarante ans, je relie ce que nous avons appris à séparer : les soins infirmiers, l'ayurveda, les plantes et la sagesse de la nature. Sur scène, je fais ce que je fais dans mes livres et dans mes jardins : simplifier, rendre accessible, et donner à chacun des rituels simples pour prendre soin de soi au quotidien… dès le lendemain matin !",
-    'hero.langs':"Je donne mes conférences en français, en anglais ou dans les deux",'hero.film':'Voir le film, avec le son','film.close':'Fermer ✕','hero.cap':'Ayurveda · Corps · Cycles','hero.scroll':'Défiler',
+    'hero.sub':"Depuis près de quarante ans, Krystine St-Laurent relie ce que nous avons appris à séparer : les soins infirmiers, l'ayurveda, les plantes et la sagesse de la nature. Sur scène, elle fait ce qu'elle fait dans ses livres et dans ses jardins : simplifier, rendre accessible, et donner à chacun des rituels simples pour prendre soin de soi au quotidien… dès le lendemain matin !",
+    'hero.langs':"Conférences en français, en anglais ou dans les deux",'hero.film':'Voir le film, avec le son','film.close':'Fermer ✕','hero.cap':'Ayurveda · Corps · Cycles','hero.scroll':'Défiler',
     'seen.lbl':'Tel que vu à','seen.tv':'Télévision','seen.mag':'Magazine','seen.show':'Émission','seen.radio':'Radio','seen.series':'Série télé · 3 saisons',
-    'years.what':"années à relier la science et la sagesse de la nature, à l'hôpital d'abord, puis dans mes jardins, mes livres et sur scène.",
+    'years.what':"années à relier la science et la sagesse de la nature, à l'hôpital d'abord, puis dans ses jardins, ses livres et sur scène.",
     'years.books':'Best-sellers dans la francophonie','years.tv':'Saisons de Santé la Vie à la télé','years.icu':'Années en soins critiques',
-    'talks.kicker':"Mes conférences",'talks.title':"Trois conférences, un même chemin : le retour au corps.",
-    'talks.lede':"Je ne donne jamais deux fois la même conférence. Les titres vous donnent le terrain. Nous choisissons ensuite ensemble l'angle, les exemples et la durée, en pensant à la salle que vous aurez devant vous.",
-    'talk1.k':"Ma conférence la plus demandée",'talk1.t':'Au-delà des tendances','talk1.p':"Nous n'avons jamais eu autant d'information… et jamais autant besoin de repères. Dans cette conférence, j'invite chacun à regarder vers l'intérieur plutôt que de chercher à l'extérieur la solution miracle, et à écouter ce que le corps sait déjà, au-delà des modes et des tendances.",'talk1.d':'60 à 90 min','talk1.f':'Présentiel · Virtuel',
-    'talk2.k':'Conférence signature','talk2.t':"L'Ayurveda comme boussole intérieure",'talk2.p':"L'ayurveda est le plus ancien système de santé encore vivant, et je le partage adapté à la réalité de notre hémisphère. Les cinq éléments deviennent une carte simple pour lire ce qui se passe en vous, dans votre journée et dans votre équipe. Les gens repartent avec quelques repères qu'ils gardent longtemps.",'talk2.d':'90 min · demi-journée','talk2.f':'Présentiel · Hybride',
-    'talk3.k':"Pour les femmes",'talk3.t':'La femme et ses saisons','talk3.p':"Tout comme la nature, la femme est régie par des cycles, influencés par les saisons, la lumière et bien d'autres facteurs que l'ayurveda ramène à notre attention. Je propose de vivre en alliance avec son corps plutôt qu'à son insu. Pour les groupes de femmes, les professionnels de la santé et les événements mieux-être.",'talk3.d':'60 min','talk3.f':'Présentiel',
-    'who.q':'Relier ce que nous avons appris à séparer.','who.qs':"Ma devise",
-    'who.kicker':"Qui je suis",'who.title':"J'ai commencé à l'hôpital. La nature a fait le reste.",
+    'talks.kicker':"Ses conférences",'talks.title':"Trois conférences, un même chemin : le retour au corps.",
+    'talks.lede':"Krystine ne donne jamais deux fois la même conférence. Les titres donnent le terrain. L'angle, les exemples et la durée se choisissent ensuite avec vous, en pensant à la salle que vous aurez devant vous.",
+    'talk1.k':"Sa conférence la plus demandée",'talk1.t':'Au-delà des tendances','talk1.p':"Nous n'avons jamais eu autant d'information… et jamais autant besoin de repères. Dans cette conférence, Krystine invite chacun à regarder vers l'intérieur plutôt que de chercher à l'extérieur la solution miracle, et à écouter ce que le corps sait déjà, au-delà des modes et des tendances.",'talk1.d':'60 à 90 min','talk1.f':'Présentiel · Virtuel',
+    'talk2.k':'Conférence signature','talk2.t':"L'Ayurveda comme boussole intérieure",'talk2.p':"L'ayurveda est le plus ancien système de santé encore vivant, et Krystine le partage adapté à la réalité de notre hémisphère. Les cinq éléments deviennent une carte simple pour lire ce qui se passe en vous, dans votre journée et dans votre équipe. Les gens repartent avec quelques repères qu'ils gardent longtemps.",'talk2.d':'90 min · demi-journée','talk2.f':'Présentiel · Hybride',
+    'talk3.k':"Pour les femmes",'talk3.t':'La femme et ses saisons','talk3.p':"Tout comme la nature, la femme est régie par des cycles, influencés par les saisons, la lumière et bien d'autres facteurs que l'ayurveda ramène à notre attention. Krystine propose de vivre en alliance avec son corps plutôt qu'à son insu. Pour les groupes de femmes, les professionnels de la santé et les événements mieux-être.",'talk3.d':'60 min','talk3.f':'Présentiel',
+    'who.q':'Relier ce que nous avons appris à séparer.','who.qs':"Sa devise",
+    'who.kicker':"Dans ses mots",'who.title':"J'ai commencé à l'hôpital. La nature a fait le reste.",
     'who.p1':"Infirmière, j'ai travaillé aux soins intensifs, en cardiologie, en chirurgie, en salle d'opération et même en médecine de vol. J'y ai vu ce que la science sait faire de mieux… et j'y ai aussi compris qu'elle n'a rien de final. Un jour, je me suis surprise à compter les années qui me séparaient de ma retraite, bien avant la quarantaine. C'est là que les plantes, puis l'ayurveda, sont entrées dans ma vie, et qu'un monde extraordinaire s'est ouvert : celui de la nature et de ses bienfaits.",
     'who.p2':"J'ai quitté la ville pour une terre agricole, j'y ai planté des jardins de plantes médicinales et créé mes huiles. J'ai écrit, produit et animé trois saisons de l'émission Santé ! La Vie !, puis mes livres sont parus aux Éditions de l'Homme, et deux d'entre eux sont devenus des best-sellers. Ce que je fais sur scène, je le fais aussi à la télé et dans mes pages : simplifier les savoirs qui permettent de cultiver santé et vitalité au quotidien, et les rendre accessibles à tous. Je crois profondément que chacun de nous est unique, et que le corps est fait pour se régénérer.",
     'who.l1':"Infirmière, des soins intensifs à la recherche clinique",'who.l2':"Une terre agricole où je cultive mes plantes médicinales",'who.l3':"Trois livres aux Éditions de l'Homme, dont deux best-sellers",'who.l4':"Trois saisons de Santé ! La Vie ! et le balado Au-delà des tendances",
-    'fmt.kicker':'Formats','fmt.title':"De la conférence de 30 minutes à la retraite de plusieurs jours",'fmt.p':"J'adapte la durée et la profondeur à votre programme, et chaque format existe en français, en anglais ou dans les deux langues.",
+    'fmt.kicker':'Formats','fmt.title':"De la conférence de 30 minutes à la retraite de plusieurs jours",'fmt.p':"Krystine adapte la durée et la profondeur à votre programme, et chaque format existe en français, en anglais ou dans les deux langues.",
     'fmt.c1':'Conférence / Keynote','fmt.c2':'Atelier pratique','fmt.c3':'Table ronde / Panel','fmt.c4':"Animation d'événement",'fmt.c5':'Formation en entreprise','fmt.c6':'Retraite ou résidence','fmt.c7':'Balado / Entrevue média',
-    'aud.kicker':'Publics','aud.title':"À qui je m'adresse",'aud.p':"J'ai parlé devant vingt personnes dans une petite salle et devant plusieurs centaines dans un grand congrès, au Québec, ailleurs au Canada et en Europe. Ce qui me touche le plus ne change pas : ce moment où toute une salle se met à respirer ensemble.",
+    'aud.kicker':'Publics','aud.title':"À qui elle s'adresse",'aud.p':"Elle a parlé devant vingt personnes dans une petite salle et devant plusieurs centaines dans un grand congrès, au Québec, ailleurs au Canada et en Europe. Ce qui la touche le plus ne change pas : ce moment où toute une salle se met à respirer ensemble.",
     'aud.c1':'Grand public','aud.c2':"Équipes d'entreprise",'aud.c3':'Professionnels de la santé','aud.c4':'Étudiants et milieu éducatif','aud.c5':'Communautés et associations','aud.c6':'Événements mieux-être et féminins',
     'pro.kicker':'Comment ça se passe','pro.title':"Quatre étapes, et rien de préfabriqué.",
-    's1.t':"Vous m'écrivez",'s1.p':"Quelques minutes sur le formulaire ci-dessous. Plus j'en sais sur ce que vous préparez, mieux je pourrai vous servir.",
-    's2.t':"Nous en parlons",'s2.p':"Mon équipe vous revient sous 48 heures ouvrables avec une proposition. Si elle vous convient, nous prenons un moment au téléphone pour l'affiner ensemble.",
-    's3.t':"Nous la bâtissons ensemble",'s3.p':"J'ajuste la conférence à votre public et à votre contexte. Il n'y a pas de module tout fait chez moi : chaque salle mérite le sien !",
-    's4.t':"Le jour venu",'s4.p':"J'arrive ancrée, préparée et libre. Le reste appartient à la salle.",
-    'bk.kicker':"M'inviter",'bk.title':"Parlez-moi de votre événement.",
-    'bk.p':"Donnez-moi l'essentiel, et mon équipe vous écrit sous 48 heures ouvrables avec une proposition pensée pour votre salle. Au plaisir de vous accompagner !",
-    'bk.note':"Je me déplace partout au Canada, aux États-Unis et en Europe, selon mon calendrier. Huit à seize semaines d'avance me permettent de bien préparer la rencontre. Pour un délai plus court, écrivez-moi quand même, nous regarderons ensemble.",
-    'f.name':'Votre nom','f.email':'Courriel','f.org':'Organisation','f.city':'Ville','f.kind':"Type d'intervention",'f.format':'Format','f.date':'Date souhaitée','f.lang':'Langue de la conférence','f.msg':"Parlez-moi de votre événement et de ce que vous souhaitez que votre public emporte",'f.send':"Envoyer ma demande",
+    's1.t':"Vous nous écrivez",'s1.p':"Quelques minutes sur le formulaire ci-dessous. Plus nous en savons sur ce que vous préparez, mieux Krystine pourra se préparer.",
+    's2.t':"Nous en parlons",'s2.p':"Notre équipe vous revient sous 48 heures ouvrables avec une proposition. Si elle vous convient, nous prenons un moment au téléphone pour l'affiner ensemble.",
+    's3.t':"Bâtie ensemble",'s3.p':"Krystine ajuste la conférence à votre public et à votre contexte. Il n'y a pas de module tout fait : chaque salle mérite le sien !",
+    's4.t':"Le jour venu",'s4.p':"Krystine arrive ancrée, préparée et libre. Le reste appartient à la salle.",
+    'bk.kicker':"Inviter Krystine",'bk.title':"Parlez-nous de votre événement.",
+    'bk.p':"Donnez-nous l'essentiel, et l'équipe vous écrit sous 48 heures ouvrables avec une proposition pensée pour votre salle. Au plaisir de vous accompagner !",
+    'bk.note':"Krystine se déplace partout au Canada, aux États-Unis et en Europe, selon son calendrier. Huit à seize semaines d'avance lui permettent de bien préparer la rencontre. Pour un délai plus court, écrivez-nous quand même, nous regarderons ensemble.",
+    'f.name':'Votre nom','f.email':'Courriel','f.org':'Organisation','f.city':'Ville','f.kind':"Type d'intervention",'f.format':'Format','f.date':'Date souhaitée','f.lang':'Langue de la conférence','f.msg':"Parlez-nous de votre événement et de ce que vous souhaitez que votre public emporte",'f.send':"Envoyer la demande",
     'f.other':'Autre','f.inperson':'Présentiel','f.virtual':'Virtuel','f.hybrid':'Hybride','f.open':'Ouvert, à discuter','f.en':'Anglais','f.fr':'Français','f.bi':'Bilingue',
-    'faq.kicker':'Bon à savoir','faq.title':"Les questions qu'on me pose souvent",
-    'q1.q':"De quoi parlez-vous ?",'q1.a':"D'Ayurveda et de santé des femmes, de médecine intégrative et de l'équilibre entre le travail et la vie, et de ce qui se transmet d'une génération à l'autre. J'adapte toujours le propos à la salle.",
-    'q2.q':"Vous déplacez-vous à l'extérieur du Québec ?",'q2.a':"Oui ! Selon mon agenda, je me rends partout au Canada et aussi aux États-Unis, en France, en Belgique ou en Suisse. Indiquez-moi la ville et nous vous confirmons rapidement.",
+    'faq.kicker':'Bon à savoir','faq.title':"Les questions des organisateurs",
+    'q1.q':"Quels sujets Krystine aborde-t-elle ?",'q1.a':"Krystine aborde notamment le corps, les rythmes, l'Ayurveda, les plantes, les saisons féminines, les transitions, le discernement et notre capacité à choisir dans un monde saturé de réponses. Chaque intervention puise dans près de quarante années de recherche, de pratique et d'observation, avec un même fil conducteur : relier ce que nous avons appris à séparer.",
+    'q2.q':"Se déplace-t-elle à l'extérieur du Québec ?",'q2.a':"Oui ! Selon son agenda, Krystine se rend partout au Canada et aussi aux États-Unis, en France, en Belgique ou en Suisse. Indiquez-nous la ville et nous vous confirmons rapidement.",
     'q3.q':'En quelles langues ?','q3.a':"En français et en anglais, et dans les deux quand la salle le demande.",
-    'q4.q':"Quels sont les délais ?",'q4.a':"Huit à seize semaines avant l'événement, c'est l'idéal. Pour un délai plus court, écrivez-moi quand même : nous regardons ce qui est possible.",
-    'q5.q':"Quels sont vos tarifs ?",'q5.a':"Ils dépendent du format, de la durée, du public et du déplacement. Décrivez-moi votre événement et mon équipe vous répond avec une proposition faite pour lui.",
-    'q6.q':'Pouvons-nous enregistrer la conférence ?','q6.a':"Souvent oui, pour un usage interne. Dites-le-moi dans le formulaire et nous réglons les modalités avec la proposition.",
+    'q4.q':"Quels sont les délais ?",'q4.a':"Huit à seize semaines avant l'événement, c'est l'idéal. Pour un délai plus court, écrivez-nous quand même : nous regardons ce qui est possible.",
+    'q5.q':"Quels sont ses tarifs ?",'q5.a':"Ils dépendent du format, de la durée, du public et du déplacement. Décrivez-nous votre événement et l'équipe vous répond avec une proposition faite pour lui.",
+    'q6.q':'Pouvons-nous enregistrer la conférence ?','q6.a':"Souvent oui, pour un usage interne. Dites-le-nous dans le formulaire et nous réglons les modalités avec la proposition.",
     'ft.home':'Accueil','ft.media':'Livres et médias','ft.courses':'Formations','ft.motto':'Relier ce que nous avons appris à séparer.',
+    'th.kicker':"Thèmes",'th.title':"Thèmes pouvant être abordés",'th.intro':"Selon le contexte de l'événement et les questions qui traversent le public, Krystine peut notamment aborder :",'th.close':"Relier ce que nous avons appris à séparer demeure le fil conducteur de toutes ses interventions.",'th.1':"notre capacité à choisir dans un monde saturé de réponses;",'th.2':"les coûts cachés des tendances, des algorithmes et des règles universelles;",'th.3':"les messages du corps et ce qui nous empêche parfois de les entendre;",'th.4':"les rythmes du corps, de la nature et des différents cycles de la vie;",'th.5':"l'Ayurveda comme cartographie, plutôt que comme système d'étiquettes;",'th.6':"les liens entre le corps et la conscience, la science et la sagesse, nourrir et soigner;",'th.7':"les plantes, les traditions et les savoirs transmis au fil des générations;",'th.8':"les saisons et les passages de la vie des femmes;",'th.9':"les périodes de transition, la perte des anciens repères et ce qui cherche à prendre forme;",'th.10':"nourrir, transformer et régénérer;",'th.11':"le discernement et la place que nous conservons dans nos propres décisions.",
     '_title':'Krystine St-Laurent · Conférencière · Ayurveda, corps et cycles',
     '_desc':"Réservez Krystine St-Laurent pour votre congrès, votre événement d'entreprise ou votre rassemblement en santé. Près de quarante ans à relier l'Ayurveda, la science infirmière et les rythmes de la nature. Conférences en français et en anglais.",
     '_langlabel':'Langue',
