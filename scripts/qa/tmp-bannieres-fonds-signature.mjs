@@ -135,11 +135,12 @@ try {
   const dialogFermeApresEscape = await pageA.locator('[role="dialog"]').count();
   resultats.B4 = { bascVisible: !!bascVisible, dialogFermeApresEscape: dialogFermeApresEscape === 0 };
 
-  // B1 + B2 : la fenêtre du fond d'écran d'une bannière possédée (Nature),
-  // signature retirée (sanslogo-nature déjà pris) → mesure du remplissage 16:9.
-  const boutonsFond = pageA.locator('button', { hasText: /^\s*Fond d.écran\s*$/ });
-  await boutonsFond.first().scrollIntoViewIfNeeded();
-  await boutonsFond.first().click();
+  // B1 + B2 : la fenêtre du fond d'écran de Nature (possédée, sanslogo-nature
+  // déjà pris) → mesure du remplissage 16:9 et absence de signature.
+  const boutonFondNature = conteneurNature.locator('button', { hasText: /^\s*Fond d.écran\s*$/ });
+  await boutonFondNature.scrollIntoViewIfNeeded();
+  await boutonFondNature.click();
+  await pageA.waitForSelector('.fixed.inset-0.z-\\[130\\]', { timeout: 10000 });
   await pageA.waitForTimeout(900);
   await pageA.screenshot({ path: `${OUT}/b1-fond-ecran-nature.png` });
   const mesureFond = await pageA.evaluate(() => {
@@ -153,18 +154,21 @@ try {
   resultats.B1_mesure_fond = mesureFond;
   const sigDansFenetreFond = await pageA.locator('.fixed.inset-0.z-\\[130\\] img[src*="signature-krystine"]').count();
   resultats.B2_fenetre_fond = sigDansFenetreFond; // 0 attendu : sanslogo-nature déjà pris
-  await pageA.keyboard.press('Escape');
+  await pageA.locator('.fixed.inset-0.z-\\[130\\] button[aria-label="Fermer"]').click();
+  await pageA.locator('.fixed.inset-0.z-\\[130\\]').waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
   await pageA.waitForTimeout(400);
 
   // Ouvrir le fond d'écran d'Iris (signature encore active) pour la preuve B2 positive.
-  const boutonsFond2 = pageA.locator('button', { hasText: /^\s*Fond d.écran\s*$/ });
-  await boutonsFond2.nth(1).scrollIntoViewIfNeeded();
-  await boutonsFond2.nth(1).click();
+  const boutonFondIris = conteneurIris.locator('button', { hasText: /^\s*Fond d.écran\s*$/ });
+  await boutonFondIris.scrollIntoViewIfNeeded();
+  await boutonFondIris.click();
+  await pageA.waitForSelector('.fixed.inset-0.z-\\[130\\]', { timeout: 10000 });
   await pageA.waitForTimeout(900);
   await pageA.screenshot({ path: `${OUT}/b2-fond-ecran-iris-signe.png` });
   const sigDansFenetreFondIris = await pageA.locator('.fixed.inset-0.z-\\[130\\] img[src*="signature-krystine"]').count();
   resultats.B2_fenetre_fond_iris_signe = sigDansFenetreFondIris; // 1 attendu
-  await pageA.keyboard.press('Escape');
+  await pageA.locator('.fixed.inset-0.z-\\[130\\] button[aria-label="Fermer"]').click();
+  await pageA.locator('.fixed.inset-0.z-\\[130\\]').waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
 
   await ctxA.close();
 
