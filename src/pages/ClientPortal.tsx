@@ -402,14 +402,15 @@ const ClientPortal: React.FC = () => {
         </div>
       </div>
 
-      {/* Les onglets, pleine largeur sous la bannière */}
+      {/* Les onglets, pleine largeur sous la bannière — une seule rangée qui
+          défile plutôt que de tomber sur deux lignes. */}
       <div className="border-b border-[#38403a]/10 bg-white/45 backdrop-blur-xl dark:border-white/10 dark:bg-[#293027]/45">
-        <div className="mx-auto flex max-w-7xl flex-wrap gap-1 px-6">
+        <div className="scrollbar-thin flex flex-nowrap gap-1 overflow-x-auto px-6 md:px-8 lg:px-10">
           {tabs.map(t => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`flex items-center gap-2 border-b-2 px-4 py-3.5 text-xs font-bold uppercase tracking-wider transition-colors ${
+              className={`flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3 py-3.5 text-xs font-bold uppercase tracking-wider transition-colors ${
                 tab === t.id
                   ? 'border-[#BA7B39] text-[#8B4A2F] dark:text-[#d9a05b]'
                   : 'border-transparent text-[#38403a]/55 hover:text-[#8B4A2F] dark:text-white/55 dark:hover:text-[#d9a05b]'
@@ -422,7 +423,7 @@ const ClientPortal: React.FC = () => {
       </div>
 
       {/* Le contenu en deux colonnes : l'onglet à gauche, le rail vivant à droite */}
-      <div className="mx-auto mt-8 grid max-w-7xl gap-6 px-6 lg:grid-cols-[1fr_320px]">
+      <div className="mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 lg:grid-cols-[1fr_320px]">
         <div className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-[#293027]/55">
           {tab === 'feed'     && <MurSocial fil="communaute" titre="Feed" />}
           {tab === 'profile'  && <ProfilVue uid={user.uid} member={member} email={user.email || ''} lang={lang} />}
