@@ -243,7 +243,7 @@ const MediasLoeuvre: React.FC = () => {
                     <Parallax speed={idx === 1 ? 0.16 : 0.08}>
                     <div
                       onClick={() => !isLocked && setBookOpen(isOpen ? null : idx)}
-                      className={`group relative w-full aspect-[1/1.3] rounded-l-[3px] rounded-r-[14px] overflow-hidden border-l-[6px] border-l-brass shadow-2xl transition-all duration-500 ${isLocked && !item.cover ? 'opacity-80' : 'cursor-pointer'} ${isOpen ? 'rotate-1 -translate-y-2' : 'hover:-translate-y-2 hover:rotate-1'}`}
+                      className={`group relative w-full aspect-[1/1.3] rounded-l-[3px] rounded-r-[14px] overflow-hidden border-l-[6px] border-l-brass shadow-2xl transition-all duration-500 ${isLocked ? (item.cover ? '' : 'opacity-80') : 'cursor-pointer'} ${isOpen ? 'rotate-1 -translate-y-2' : 'hover:-translate-y-2 hover:rotate-1'}`}
                     >
                       {item.cover ? (
                         <img src={item.cover} alt={item.fullTitle || item.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover" referrerPolicy="no-referrer" />
