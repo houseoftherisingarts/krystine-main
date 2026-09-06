@@ -430,7 +430,20 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
                     </p>
                     {!user && <BoutonCompte taille="md" className="mt-10" />}
                   </div>
+                ) : user ? (
+                  <InscriptionAvecCompte sourceTag={meta.source} onSuccess={() => setDone(true)} variant="editorial" />
                 ) : (
+                  <>
+                  <BoutonCompte
+                    libelle={lang === 'FR' ? "Créer mon compte et m'inscrire" : 'Create my account and join'}
+                    taille="md"
+                    className="w-full mb-3"
+                  />
+                  <p className="text-[0.82rem] text-[#3a2f23]/60 mb-7">
+                    {lang === 'FR'
+                      ? "Un compte évite de retaper vos informations à chaque liste d'attente."
+                      : 'An account means you never retype your details for the next waitlist.'}
+                  </p>
                   <form onSubmit={submit} className="space-y-7" noValidate>
                     <p className="text-[0.65rem] uppercase tracking-[0.3em] text-[#7d6330]">
                       {lang === 'FR' ? "Inscription · liste d'attente" : 'Sign-up · waitlist'}
