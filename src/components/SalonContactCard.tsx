@@ -109,6 +109,31 @@ const SalonContactCard: React.FC<Props> = ({ open, onClose, sourceSite = 'krysti
         message: message.trim() || undefined,
         sourceSite,
       });
+      // Une copie part au tableau de bord de Vexel (onglet Demandes), par la
+      // même porte que les signalements de bogue. Si la porte est fermée, la
+      // demande reste quand même chez Krystine (Alex, 6 septembre 2026).
+      fetch('https://us-central1-vexel-integrations.cloudfunctions.net/recevoirDemande', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client: 'krystine',
+          cle: 'aT_yMR68NLyEW3weNDjwYdW_',
+          type: 'contact',
+          auteurNom: name.trim(),
+          auteurCourriel: email.trim(),
+          texte: [
+            `Demande de contact reçue par la carte du Salon sur krystinestlaurent.ca (${sourceSite}).`,
+            `Nom : ${name.trim()}`,
+            `Courriel : ${email.trim()}`,
+            `Téléphone : ${phone.trim()}`,
+            projectType ? `Type de projet : ${projectType}` : '',
+            budget ? `Budget : ${budget}` : '',
+            timeline.trim() ? `Échéance : ${timeline.trim()}` : '',
+            message.trim() ? `Message : ${message.trim()}` : '',
+          ].filter(Boolean).join('\n'),
+          page: typeof window !== 'undefined' ? window.location.href : '',
+        }),
+      }).catch((e) => console.warn('[salon] porte Vexel injoignable', e));
       setDone(true);
     } catch (e: any) {
       setErr(e?.message || 'Une erreur est survenue. Réessayez ou écrivez à alex@lesalondesinconnus.com.');
