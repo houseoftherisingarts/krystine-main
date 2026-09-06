@@ -176,6 +176,7 @@ const CartDrawer: React.FC = () => {
         )}
       </div>
     </>
+    </Portail>
   );
 };
 
