@@ -325,7 +325,7 @@ const ClientPortal: React.FC = () => {
     { id: 'messagerie', label: lang === 'FR' ? 'Messagerie' : 'Messages', icon: 'fa-comments' },
   ];
 
-  const banniere = member?.bannerURL || '/krystine-bg.jpg';
+  const banniere = member?.bannerURL || '/compte/bienvenue-bureau.webp';
 
   return (
     <div className="min-h-screen bg-[#EEE7DB] dark:bg-[#151d19] pt-16 pb-24">
