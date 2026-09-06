@@ -321,15 +321,30 @@ const scenePitta: Fabrique = (ctx, w, h, pal, vue) => {
       ctx.clearRect(0, 0, w, h);
       ctx.globalCompositeOperation = 'lighter';
 
-      // Le foyer, accroché au bas de l'écran : trois nappes qui respirent à des
-      // rythmes différents, sinon la pulsation se voit comme un clignotant.
+      // Le foyer, accroché au bas de l'écran : une bande qui monte du bord, et
+      // deux mares de lumière qui respirent à des rythmes différents, sinon la
+      // pulsation se voit comme un clignotant.
       const bas = vue.y + vue.h;
-      const souffle = 0.5 + 0.28 * Math.sin(t * 0.00058) + 0.14 * Math.sin(t * 0.0016 + 0.9);
-      for (let i = 0; i < 3; i++) {
-        const r = vue.h * (0.34 + i * 0.2) * (0.92 + 0.08 * Math.sin(t * 0.0007 + i));
-        const cx = w * (0.5 + 0.16 * Math.sin(t * 0.00021 + i * 2.2));
-        ctx.globalAlpha = (0.2 - i * 0.05) * souffle;
-        ctx.drawImage(gHalo, cx - r * 1.5, bas - r * 0.72, r * 3, r * 1.44);
+      const souffle = 0.62 + 0.24 * Math.sin(t * 0.00058) + 0.12 * Math.sin(t * 0.0016 + 0.9);
+      const hb = vue.h * 0.46;
+      if (!bande || bandeH !== hb) {
+        bandeH = hb;
+        bande = ctx.createLinearGradient(0, 0, 0, hb);
+        bande.addColorStop(0, rgba(chaud, 0));
+        bande.addColorStop(0.55, rgba(chaud, 0.16));
+        bande.addColorStop(1, rgba(melange(chaud, vif, 0.5), 0.44));
+      }
+      ctx.save();
+      ctx.translate(0, bas - hb);
+      ctx.globalAlpha = souffle;
+      ctx.fillStyle = bande;
+      ctx.fillRect(0, 0, w, hb);
+      ctx.restore();
+      for (let i = 0; i < 2; i++) {
+        const r = vue.h * (0.42 + i * 0.26) * (0.92 + 0.08 * Math.sin(t * 0.0007 + i));
+        const cx = w * (0.38 + i * 0.3 + 0.14 * Math.sin(t * 0.00021 + i * 2.2));
+        ctx.globalAlpha = (0.3 - i * 0.11) * souffle;
+        ctx.drawImage(gHalo, cx - r * 1.4, bas - r * 0.8, r * 2.8, r * 1.6);
       }
 
       for (let i = flares.length - 1; i >= 0; i--) {
