@@ -361,24 +361,29 @@ export default function PodcastV2() {
         )}
       </section>
 
-      {/* ─────────── INFOLETTRE (back-end préservé) ─────────── */}
+      {/* ─────────── INFOLETTRE (back-end préservé) ───────────
+          Colonne unique centrée à 720px retirée (25% d'espace mort de
+          chaque côté à 1440px) : même grille éditoriale 1.1fr/0.9fr et
+          même mesure de 1180px que le hero et l'archive, texte à gauche. */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#efe6d7]">
-        <div className="max-w-[720px] mx-auto text-center">
-          <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-5">Rester dans le fil</p>
-          <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
-            Chaque épisode, dans votre boîte
-          </h2>
-          <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.45rem)] text-[#3a2f23] max-w-[46ch] mx-auto leading-snug">
-            Recevez chaque nouvel épisode et chaque parution directement par courriel, sans bruit.
-          </p>
-          <div className="mt-10">
+        <div className="max-w-[1180px] mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 items-center">
+          <div>
+            <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-5">Rester dans le fil</p>
+            <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
+              Chaque épisode, dans votre boîte
+            </h2>
+            <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.45rem)] text-[#3a2f23] max-w-[46ch] leading-snug">
+              Recevez chaque nouvel épisode et chaque parution directement par courriel, sans bruit.
+            </p>
+          </div>
+          <div>
             <NewsletterSignup
               source="podcast"
               variant="light"
               emailOnly
               ctaLabel="Rejoindre le fil"
               placeholder="Votre adresse courriel"
-              className="max-w-xl mx-auto"
+              className="w-full"
             />
           </div>
         </div>

@@ -549,9 +549,9 @@ const sceneAurore: Fabrique = (ctx, w, h, pal, vue) => {
   })();
 
   const rideaux = [
-    { c: menthe, c2: violet, x: 0.26, larg: 0.34, long: 0.62, pen: 0.22, v: 0.000047, d: 0, a: 0.26 },
-    { c: cyan, c2: menthe, x: 0.62, larg: 0.26, long: 0.46, pen: -0.16, v: 0.000071, d: 2.3, a: 0.2 },
-    { c: violet, c2: cyan, x: 0.86, larg: 0.4, long: 0.74, pen: 0.3, v: 0.000033, d: 4.7, a: 0.15 },
+    { c: menthe, c2: violet, x: 0.14, larg: 0.4, long: 0.62, pen: 0.24, v: 0.000047, d: 0, a: 0.26 },
+    { c: cyan, c2: menthe, x: 0.5, larg: 0.32, long: 0.44, pen: -0.18, v: 0.000071, d: 2.3, a: 0.19 },
+    { c: violet, c2: cyan, x: 0.84, larg: 0.44, long: 0.76, pen: 0.32, v: 0.000033, d: 4.7, a: 0.17 },
   ];
   const RAIS = 9;
   const neon = halo(256, melange(menthe, cyan, 0.35), 0.6, 0.18);
@@ -602,8 +602,8 @@ const sceneAurore: Fabrique = (ctx, w, h, pal, vue) => {
       if (ptr.vu) {
         ptr.lx += (ptr.x - ptr.lx) * 0.09 * k;
         ptr.ly += (ptr.y - ptr.ly) * 0.09 * k;
-        const r = 195 + 16 * Math.sin(t * 0.0016);
-        ctx.globalAlpha = 0.32;
+        const r = 200 + 16 * Math.sin(t * 0.0016);
+        ctx.globalAlpha = 0.42;
         ctx.drawImage(neon, ptr.lx - r, ptr.ly - r, r * 2, r * 2);
       }
 
