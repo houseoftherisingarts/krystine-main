@@ -139,7 +139,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
   return (
     <div ref={boite} className="relative flex items-center gap-2">
       <button
-        type="button" onClick={() => { setOuverte((v) => !v); setMessagesOuverts(false); }} className={bouton} style={style}
+        type="button" onClick={() => { setOuverte((v) => !v); setMessagesOuverts(false); }} className={`${bouton} inline-flex`} style={style}
         aria-haspopup="true" aria-expanded={ouverte}
         aria-label={`Notifications${total ? `, ${total}` : ''}`} title="Notifications"
       >
