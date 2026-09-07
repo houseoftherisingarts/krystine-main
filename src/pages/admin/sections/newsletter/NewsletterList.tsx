@@ -94,7 +94,7 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden md:table-cell truncate max-w-[220px]">{n.subject || '—'}</td>
+                    <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden md:table-cell truncate max-w-[150px]" title={n.subject || ''}>{n.subject || '—'}</td>
                     <td className="px-4 py-3 hidden lg:table-cell">
                       <span className={`text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 rounded-full ${st.color}`}>{st.label}</span>
                       {n.status === 'sending' && n.progress?.raisonPause && (
