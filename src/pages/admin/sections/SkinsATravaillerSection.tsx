@@ -37,22 +37,12 @@ const ouEllesEtaient = (s: Skin): string => {
 };
 
 const SkinsATravaillerSection: React.FC = () => {
-  const [overrides, setOverrides] = useState<SkinsSettings>({});
-  const [charge, setCharge] = useState(true);
-  const [occupe, setOccupe] = useState<string | null>(null);
-
-  useEffect(() => subscribeToSkinsSettings((s) => { setOverrides(s); setCharge(false); }), []);
+  const { overrides, charge, occupe, basculer } = useSkinsOverrides();
 
   // Le roster : les skins qu'Alex a nommées en travail par défaut. Un skin
   // remis en circulation reste listé ici (pour qu'on puisse la retravailler
   // et la recacher sans fouiller le code), seul son interrupteur bouge.
   const roster = SKINS.filter((s) => s.enTravail);
-
-  const basculer = async (cle: string, enCirculation: boolean) => {
-    const id = `skin-${cle}`;
-    setOccupe(id);
-    try { await setSkinEnTravail(id, !enCirculation); } finally { setOccupe(null); }
-  };
 
   if (charge) return <div className="flex justify-center py-12"><i className="fa-solid fa-circle-notch fa-spin text-2xl text-[#8B4A2F]" /></div>;
 
