@@ -25,7 +25,6 @@ export const COFFRES: Record<TypeCoffre, {
       legendaire: 50, rares: [], raresFR: 'aucun skin rare propre à ce coffre', raresEN: 'no rare skin of its own',
       niskas: [{ montant: 10, poids: 55 }, { montant: 25, poids: 30 }, { montant: 60, poids: 12 }, { montant: 120, poids: 3 }],
       rabais: [
-        { unSur: 50, fr: '10 % sur la boutique', en: '10% off the shop' },
         { unSur: 100, fr: '20 % sur la boutique', en: '20% off the shop' },
         { unSur: 500, fr: '50 % sur la boutique', en: '50% off the shop' },
       ],
@@ -40,7 +39,6 @@ export const COFFRES: Record<TypeCoffre, {
       raresFR: 'les skins Lotus, Féminité, Nature et Sarcelle & Orange', raresEN: 'the Lotus, Féminité, Nature and Teal & Orange skins',
       niskas: [{ montant: 30, poids: 50 }, { montant: 70, poids: 30 }, { montant: 150, poids: 15 }, { montant: 300, poids: 5 }],
       rabais: [
-        { unSur: 20, fr: '10 % sur la boutique', en: '10% off the shop' },
         { unSur: 40, fr: '20 % sur la boutique', en: '20% off the shop' },
         { unSur: 200, fr: '50 % sur la boutique', en: '50% off the shop' },
         // Le rabais huile a été retiré (Alex, 7 septembre 2026) : voir
@@ -57,7 +55,6 @@ export const COFFRES: Record<TypeCoffre, {
       raresFR: 'les skins Aurore, Or pur et Heure dorée', raresEN: 'the Aurora, Pure Gold and Golden Hour skins',
       niskas: [{ montant: 80, poids: 45 }, { montant: 180, poids: 30 }, { montant: 400, poids: 18 }, { montant: 800, poids: 7 }],
       rabais: [
-        { unSur: 8, fr: '10 % sur la boutique', en: '10% off the shop' },
         { unSur: 15, fr: '20 % sur la boutique', en: '20% off the shop' },
         { unSur: 60, fr: '50 % sur la boutique', en: '50% off the shop' },
         { unSur: 12, fr: '50 $ sur une formation', en: '$50 off a program' },

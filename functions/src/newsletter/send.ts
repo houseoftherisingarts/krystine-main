@@ -2,7 +2,7 @@ import { onCall, HttpsError, type CallableRequest } from 'firebase-functions/v2/
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { renderEmailHtml, renderEmailText, newsletterAttachments, inlineForPreview, type NewsletterBlock, type Couverture, type Lang, type Bandeau } from './renderer';
-import { MAIL_SECRETS, NEWSLETTER_POSTAL_ADDRESS, REPLY_TO, createTransporter, fromAddr as buildFrom, unsubscribeUrl as buildUnsub, unsubscribeOneClickUrl } from './mail';
+import { MAIL_SECRETS, NEWSLETTER_POSTAL_ADDRESS, REPLY_TO, createTransporter, fromAddr as buildFrom, unsubscribeUrl as buildUnsub, unsubscribeOneClickUrl, assurerJeton } from './mail';
 import { renderWelcomeHtml, WELCOME_SUBJECT , WELCOME_IMAGE_URL } from './welcome';
 import { buildMail, renderLiveHtml, type LiveEvent } from './live';
 
@@ -273,7 +273,8 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
   const pixelBase = `https://us-central1-${process.env.GCLOUD_PROJECT || 'krystinestlaurent-87566'}.cloudfunctions.net/ouverture`;
 
   const envoyer = async (sub: typeof all[number]) => {
-    const unsubscribeUrl = buildUnsub(sub.unsubscribeToken || '');
+    const jeton = await assurerJeton(db.doc(`newsletter/${sub.id}`), sub.unsubscribeToken);
+    const unsubscribeUrl = buildUnsub(jeton);
     // Le pixel de mesure : une image d'un point, propre à cette personne et
     // à cette infolettre. Il dit qui a ouvert, sans rien demander de plus.
     const pixelUrl = `${pixelBase}?n=${encodeURIComponent(newsletterId)}&s=${encodeURIComponent(sub.id)}`;
@@ -286,7 +287,7 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
       html: renderEmailHtml(doc.blocks, opts),
       text: renderEmailText(doc.blocks, opts),
       headers: {
-        'List-Unsubscribe': `<${unsubscribeOneClickUrl(sub.unsubscribeToken || '')}>`,
+        'List-Unsubscribe': `<${unsubscribeOneClickUrl(jeton)}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
       attachments: newsletterAttachments(opts),
@@ -363,7 +364,11 @@ export const sendNewsletter = onCall(
       const doc = snap.data() as NewsletterRecord;
       if (!doc.blocks?.length || !doc.subject) throw new HttpsError('failed-precondition', 'Newsletter is missing subject or content');
       const transporter = createTransporter();
-      const opts = { subject: doc.subject, preheader: doc.preheader, unsubscribeUrl: buildUnsub('TEST'), postalAddress: NEWSLETTER_POSTAL_ADDRESS.value(), firstName: 'Test', ...enTete(doc) };
+      // Le test porte le vrai lien de désabonnement de la destinataire si elle
+      // est abonnée; sinon un jeton « TEST » que la page nomme comme tel.
+      const abo = await getFirestore().collection('newsletter').where('email', '==', String(testEmail).trim().toLowerCase()).limit(1).get();
+      const jetonTest = abo.empty ? 'TEST' : await assurerJeton(abo.docs[0].ref, (abo.docs[0].data() as SubscriberDoc).unsubscribeToken);
+      const opts = { subject: doc.subject, preheader: doc.preheader, unsubscribeUrl: buildUnsub(jetonTest), postalAddress: NEWSLETTER_POSTAL_ADDRESS.value(), firstName: 'Test', ...enTete(doc) };
       try {
         await transporter.sendMail({
           from: buildFrom(doc.fromName || 'Krystine St-Laurent'),

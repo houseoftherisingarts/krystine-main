@@ -7,7 +7,7 @@ import {
   REPLY_TO,
   createTransporter,
   fromAddr,
-  unsubscribeUrl, unsubscribeOneClickUrl } from './mail';
+  unsubscribeUrl, unsubscribeOneClickUrl, assurerJeton } from './mail';
 import { findEventByTags, sendLiveMail } from './live';
 
 // ─── Courriel de bienvenue ───────────────────────────────────────────────────
@@ -127,7 +127,8 @@ export const sendWelcomeEmail = onDocumentCreated(
     // trouve le champ et s'arrête avant l'envoi.
     await snap.ref.update({ welcomeSentAt: FieldValue.serverTimestamp() });
 
-    const unsub = unsubscribeUrl(d.unsubscribeToken || '');
+    const jeton = await assurerJeton(snap.ref, d.unsubscribeToken);
+    const unsub = unsubscribeUrl(jeton);
     const postalAddress = NEWSLETTER_POSTAL_ADDRESS.value();
     const transporter = createTransporter();
     try {
@@ -136,7 +137,7 @@ export const sendWelcomeEmail = onDocumentCreated(
       if (d.source === 'podcast-live') {
         const ev = await findEventByTags(d.tags);
         if (ev) {
-          await sendLiveMail(transporter, 'confirm', ev, { email: d.email, firstName: d.firstName, unsubscribeToken: d.unsubscribeToken });
+          await sendLiveMail(transporter, 'confirm', ev, { email: d.email, firstName: d.firstName, unsubscribeToken: jeton });
           return;
         }
       }
@@ -148,7 +149,7 @@ export const sendWelcomeEmail = onDocumentCreated(
         html: renderWelcomeHtml({ firstName: d.firstName, unsubscribeUrl: unsub, postalAddress }),
         text: renderWelcomeText({ firstName: d.firstName, unsubscribeUrl: unsub, postalAddress }),
         headers: {
-          'List-Unsubscribe': `<${unsubscribeOneClickUrl(d.unsubscribeToken || '')}>`,
+          'List-Unsubscribe': `<${unsubscribeOneClickUrl(jeton)}>`,
           'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
         },
         attachments: welcomeAttachments(),

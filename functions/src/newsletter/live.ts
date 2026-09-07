@@ -9,7 +9,7 @@ import {
   REPLY_TO,
   createTransporter,
   fromAddr,
-  unsubscribeUrl, unsubscribeOneClickUrl } from './mail';
+  unsubscribeUrl, unsubscribeOneClickUrl, assurerJeton } from './mail';
 
 // ─── Podcast en direct : confirmation + rappels automatiques ─────────────────
 // Un document `liveEvents/{id}` décrit chaque direct (titre, date, lien
@@ -281,10 +281,11 @@ export async function sendLiveMail(
   transporter: Transporter,
   step: Step | 'confirm',
   ev: LiveEvent,
-  sub: { email: string; firstName?: string; unsubscribeToken?: string },
+  sub: { email: string; firstName?: string; unsubscribeToken?: string; ref?: { update: (d: Record<string, unknown>) => Promise<unknown> } },
 ): Promise<void> {
   const m = buildMail(step, ev, sub.firstName);
-  const unsub = unsubscribeUrl(sub.unsubscribeToken || '');
+  const jeton = await assurerJeton(sub.ref ?? null, sub.unsubscribeToken);
+  const unsub = unsubscribeUrl(jeton);
   const postalAddress = NEWSLETTER_POSTAL_ADDRESS.value();
   await transporter.sendMail({
         replyTo: REPLY_TO,
@@ -294,7 +295,7 @@ export async function sendLiveMail(
     html: renderLiveHtml(m, { unsubscribeUrl: unsub, postalAddress, ev }),
     text: renderLiveText(m, { unsubscribeUrl: unsub, postalAddress }),
     headers: {
-      'List-Unsubscribe': `<${unsubscribeOneClickUrl(sub.unsubscribeToken || '')}>`,
+      'List-Unsubscribe': `<${unsubscribeOneClickUrl(jeton)}>`,
       'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
     },
     attachments: liveAttachments(),

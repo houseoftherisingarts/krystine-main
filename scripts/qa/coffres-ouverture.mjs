@@ -125,7 +125,7 @@ async function pageAvecSession(browser, u, uid, email, label) {
 }
 
 const fermerBienvenue = async (page) => {
-  for (const t of ['Fermer', 'Plus tard', 'Commencer', 'Merci']) { const b = page.getByRole('button', { name: new RegExp(t, 'i') }).first(); if (await b.count()) { try { await b.click({ timeout: 800 }); } catch {} } }
+  for (const t of ['Fermer', 'Plus tard', 'Commencer', 'Merci', 'Entrer dans mon espace', 'Enter my space']) { const b = page.getByRole('button', { name: new RegExp(t, 'i') }).first(); if (await b.count()) { try { await b.click({ timeout: 800 }); } catch {} } }
   await page.keyboard.press('Escape');
 };
 // La roue des sept jours s'ouvre toute seule (premier appel reclamerQuotidien

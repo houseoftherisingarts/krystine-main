@@ -54,7 +54,6 @@ export const CONTENUS: Record<TypeCoffre, Contenu> = {
     legendaire: 50, rares: [],
     niskas: [{ montant: 10, poids: 55 }, { montant: 25, poids: 30 }, { montant: 60, poids: 12 }, { montant: 120, poids: 3 }],
     rabais: [
-      { rewardId: 'reb-10-boutique', unSur: 50, nom: '10 % sur la boutique' },
       { rewardId: 'reb-20-boutique', unSur: 100, nom: '20 % sur la boutique' },
       { rewardId: 'reb-50-boutique', unSur: 500, nom: '50 % sur la boutique' },
     ],
@@ -64,7 +63,6 @@ export const CONTENUS: Record<TypeCoffre, Contenu> = {
     legendaire: 65, rares: ['skin-lotus', 'skin-feminite', 'skin-nature', 'skin-teal-orange'],
     niskas: [{ montant: 30, poids: 50 }, { montant: 70, poids: 30 }, { montant: 150, poids: 15 }, { montant: 300, poids: 5 }],
     rabais: [
-      { rewardId: 'reb-10-boutique', unSur: 20, nom: '10 % sur la boutique' },
       { rewardId: 'reb-20-boutique', unSur: 40, nom: '20 % sur la boutique' },
       { rewardId: 'reb-50-boutique', unSur: 200, nom: '50 % sur la boutique' },
       // Le rabais huile a été retiré (Alex, 7 septembre 2026) : aucun rabais
@@ -76,7 +74,6 @@ export const CONTENUS: Record<TypeCoffre, Contenu> = {
     legendaire: 80, rares: ['skin-aurore', 'skin-or-pur', 'skin-golden-hour'],
     niskas: [{ montant: 80, poids: 45 }, { montant: 180, poids: 30 }, { montant: 400, poids: 18 }, { montant: 800, poids: 7 }],
     rabais: [
-      { rewardId: 'reb-10-boutique', unSur: 8, nom: '10 % sur la boutique' },
       { rewardId: 'reb-20-boutique', unSur: 15, nom: '20 % sur la boutique' },
       { rewardId: 'reb-50-boutique', unSur: 60, nom: '50 % sur la boutique' },
       { rewardId: 'reb-formation', unSur: 12, nom: '50 $ sur une formation' },

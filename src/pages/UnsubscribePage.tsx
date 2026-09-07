@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { unsubscribeByToken } from '../firebase/firestore';
 
-type State = 'pending' | 'ok' | 'invalid';
+type State = 'pending' | 'ok' | 'invalid' | 'test';
 
 const UnsubscribePage: React.FC = () => {
   const loc = useLocation();
@@ -12,6 +12,8 @@ const UnsubscribePage: React.FC = () => {
   useEffect(() => {
     const token = new URLSearchParams(loc.search).get('t');
     if (!token) { setState('invalid'); return; }
+    // Un courriel de test ou un aperçu porte un jeton témoin : rien à désabonner.
+    if (token === 'TEST' || token === 'APERCU') { setState('test'); return; }
     unsubscribeByToken(token)
       .then(r => {
         setEmail(r.email);
@@ -45,6 +47,17 @@ const UnsubscribePage: React.FC = () => {
             </a>
           </>
         )}
+        {state === 'test' && (
+          <>
+            <div className="w-16 h-16 rounded-full bg-[#bb9a5e]/15 border border-[#bb9a5e]/30 flex items-center justify-center mx-auto mb-6">
+              <i className="fa-solid fa-flask text-[#7d6330] text-xl" />
+            </div>
+            <h1 className="text-2xl font-serif text-[#2a2015] dark:text-white mb-3">Courriel de test</h1>
+            <p className="text-sm text-[#2a2015]/70 dark:text-white/70 leading-relaxed mb-8">
+              Ce courriel était un test envoyé depuis l’admin : il ne correspond à aucun abonnement. Dans un envoi réel, ce même lien désabonne la personne en un clic.
+            </p>
+          </>
+        )}
         {state === 'invalid' && (
           <>
             <div className="w-16 h-16 rounded-full bg-red-50 border border-red-200 flex items-center justify-center mx-auto mb-6">
@@ -53,7 +66,7 @@ const UnsubscribePage: React.FC = () => {
             <h1 className="text-2xl font-serif text-[#2a2015] dark:text-white mb-3">Lien invalide</h1>
             <p className="text-sm text-[#2a2015]/70 dark:text-white/70 leading-relaxed mb-8">
               Ce lien de désinscription est expiré ou incorrect. Écrivez-nous à
-              &nbsp;<a href="mailto:equipe@inspiratanature.com" className="text-[#7d6330] underline">equipe@inspiratanature.com</a>&nbsp; et nous réglerons cela manuellement.
+              &nbsp;<a href="mailto:teamksl@inspiratanature.com" className="text-[#7d6330] underline">teamksl@inspiratanature.com</a>&nbsp; et nous réglerons cela manuellement.
             </p>
             <a href="/accueil" className="inline-block bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors">
               Retour à l’accueil

@@ -1,5 +1,6 @@
 import { defineSecret } from 'firebase-functions/params';
 import * as nodemailer from 'nodemailer';
+import { randomBytes } from 'crypto';
 
 // ─── Transport SMTP partagé ──────────────────────────────────────────────────
 // Un seul endroit pour les secrets et la fabrique du transporteur, réutilisé par
@@ -36,6 +37,15 @@ export function createTransporter() {
 
 export function fromAddr(name = 'Krystine St-Laurent'): string {
   return `"${name}" <${SENDER_EMAIL}>`;
+}
+
+// Aucun courriel réel ne part avec un jeton vide : s'il manque sur la fiche,
+// on le fabrique et on l'écrit avant d'envoyer (cas vu le 7 septembre 2026).
+export async function assurerJeton(ref: { update: (d: Record<string, unknown>) => Promise<unknown> } | null, actuel?: string | null): Promise<string> {
+  if (actuel) return actuel;
+  const jeton = randomBytes(18).toString('base64url');
+  if (ref) { try { await ref.update({ unsubscribeToken: jeton }); } catch (e) { console.warn('[assurerJeton]', e); } }
+  return jeton;
 }
 
 export function unsubscribeUrl(token: string): string {
