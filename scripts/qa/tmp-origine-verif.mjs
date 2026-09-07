@@ -75,7 +75,7 @@ const browser = await chromium.launch();
     });
   });
   console.log('O2 — largeur du plus large enfant / 1440 par feuille :');
-  largeurs.forEach(l => console.log(`  #${l.i} largeurMax=${l.largeurMax}px ratio=${l.ratio} margeAutoSuspecte=${JSON.stringify(l.marge80)}`));
+  largeurs.forEach(l => console.log(`  #${l.i} largeurMax=${l.largeurMax}px ratio=${l.ratio} margeAutoSuspecte=${JSON.stringify(l.marge80)} maxEl=<${l.maxElTag} left=${l.maxElLeft}> ${l.maxElCls}`));
 
   const textCenterMain = await page.evaluate(() => {
     // Cherche .text-center sur un bloc large (>400px) qui n'est pas un simple bouton/lien
