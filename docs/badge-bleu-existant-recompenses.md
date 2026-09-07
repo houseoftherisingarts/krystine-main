@@ -34,7 +34,7 @@ Déroulement, dans une transaction (`niskas.ts:262-276`) :
 4. Le jour de la roue est `((serie - 1) % 7) + 1` (`:271`) et le montant `ROUE_QUOTIDIENNE[jour - 1]` (`:272`).
 5. Écriture de l'événement `{ uid, kind: 'quotidien', amount: montant, dedupKey, meta: { jour, serie } }` (`:273`) et de `{ dernierJour, serie }` sur `memberPoints` (`:274`). **La transaction n'incrémente pas `balance`** : le solde est refait juste après par `recalculerSolde` (`:283`). Doubler le montant revient donc à changer la seule valeur `amount` de l'événement.
 
-Après la transaction, le 7e jour de la roue déclenche `donnerCoffreDuJour7(uid, aujourdhui)` (`:277-282`, test `r.jour === ROUE_QUOTIDIENNE.length`), donc aux jours 7, 14, 21, 28… de la suite. Le retour est `{ deja, jour, montant, serie, balance, coffre }` (`:284`), typé côté client `Quotidien` (`src/firebase/points.ts:344`).
+Après la transaction, le 7e jour de la roue déclenche `donnerCoffreDuJour7(uid, aujourdhui)` (`:277-282`). Le test est `r.jour === ROUE_QUOTIDIENNE.length`, ce qui revient à dire que le coffre tombe aux jours 7, 14, 21 et 28 de la suite. La fonction renvoie ensuite `{ deja, jour, montant, serie, balance, coffre }` (`:284`), que le client lit sous le type `Quotidien` (`src/firebase/points.ts:344`).
 
 Ce que le `serie` ne fait pas : aucun test sur `serie === 30`, aucun cadeau autre que le coffre du 7e jour, aucune distinction Foyer.
 
