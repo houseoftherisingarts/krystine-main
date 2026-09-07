@@ -31,6 +31,8 @@ await page.evaluate(([key, val]) => new Promise((res, rej) => {
 }), [`firebase:authUser:${API_KEY}:[DEFAULT]`, authUser]);
 await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(5000);
+const texte = await page.evaluate(() => document.body.innerText.match(/.{0,20}niskas.{0,20}/gi));
+console.log('niskas mentions:', JSON.stringify(texte));
 console.log('done waiting');
 await browser.close();
 await rest(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${API_KEY}`, { idToken: u.idToken });
