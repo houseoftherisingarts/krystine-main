@@ -426,7 +426,20 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
                   <p className="font-serif text-lg text-[#293027] dark:text-white"><i className="fa-solid fa-clapperboard mr-2 text-[#BA7B39]" />{fr ? `Saison ${sais.n}` : `Season ${sais.n}`} <span className="text-sm text-[#293027]/50 dark:text-white/50">· {eps.length} {fr ? 'émissions' : 'shows'}</span></p>
                   {touteLaSaison
                     ? <span className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]"><i className="fa-solid fa-check mr-1" />{fr ? 'Saison complète à vous' : 'Whole season yours'}</span>
-                    : <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">{fr ? 'Toute la saison' : 'Whole season'} {boutonAchat(`saison:${cle}`, fr ? `Santé la vie · saison ${sais.n}` : `Santé la vie · season ${sais.n}`, COUT_SAISON, true)}</span>}
+                    : (
+                      <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">
+                        {fr ? 'Toute la saison' : 'Whole season'}
+                        <button
+                          type="button"
+                          onClick={() => saisonArgent(cle)}
+                          disabled={occupe !== null}
+                          className="inline-flex items-center gap-1.5 rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] transition-colors hover:bg-[#3a453a] disabled:cursor-not-allowed disabled:opacity-40 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
+                        >
+                          {occupe === `saison-argent-${cle}` ? (fr ? 'Un instant' : 'One moment') : `${PRIX_SAISON_CAD} $`}
+                        </button>
+                        {boutonAchat(`saison:${cle}`, fr ? `Santé la vie · saison ${sais.n}` : `Santé la vie · season ${sais.n}`, COUT_SAISON, true)}
+                      </span>
+                    )}
                 </div>
                 <ul className="mt-2 divide-y divide-[#293027]/10 rounded-[16px] border border-[#293027]/10 bg-white/50 dark:divide-white/10 dark:border-white/10 dark:bg-white/5">
                   {eps.map((l) => {
