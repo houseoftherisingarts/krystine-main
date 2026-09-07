@@ -27,7 +27,7 @@ const VoteBar: React.FC<{
         onClick={() => onVoter(monVote === 1 ? 0 : 1)}
         aria-label="Voter pour"
         aria-pressed={monVote === 1}
-        className={`p-1 rounded-full transition-colors hover:bg-[#BA7B39]/10 ${monVote === 1 ? 'text-[#BA7B39]' : 'text-[#38403a]/35 dark:text-white/35'}`}
+        className={`p-1 rounded-full transition-colors hover:bg-[#BA7B39]/10 ${monVote === 1 ? 'text-[#8B4A2F] dark:text-[#d9a05b]' : 'text-[#38403a]/35 dark:text-white/35'}`}
       >
         <ChevronUp size={taille} strokeWidth={2.5} />
       </button>
