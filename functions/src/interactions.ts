@@ -1,5 +1,6 @@
 import { onDocumentCreated } from 'firebase-functions/v2/firestore';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { lireGamification } from './gamification';
 
 // Les badges d'interaction (Alex, 6 sept. 2026) : comme dans les groupes
 // Facebook, ils récompensent la parole, le partage et la présence. Chaque
