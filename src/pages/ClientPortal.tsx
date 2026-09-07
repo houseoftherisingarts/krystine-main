@@ -29,7 +29,7 @@ import EffetsSkin from '../components/client/skins/EffetsSkin';
 import MotifsSkin from '../components/client/skins/MotifsSkin';
 import PieceNiska from '../components/client/PieceNiska';
 import { AvecSignature } from '../components/client/Signature';
-import RoueQuotidienne from '../components/client/RoueQuotidienne';
+import CadeauDuJour from '../components/client/CadeauDuJour';
 import BienvenueJeu from '../components/client/BienvenueJeu';
 import CoffreBeta from '../components/client/CoffreBeta';
 import { MotDuFoyer, useAmiesDOrigine } from '../components/communaute/ReserveAuFoyer';
