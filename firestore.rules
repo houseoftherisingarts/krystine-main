@@ -22,6 +22,16 @@ service cloud.firestore {
     }
     function isSignedIn() { return request.auth != null; }
     function isSelf(uid) { return isSignedIn() && request.auth.uid == uid; }
+    // Le paywall du Foyer d'Origine, jugé ici et pas seulement dans le
+    // navigateur (Alex, 7 septembre 2026) : le volet social (l'annuaire, le
+    // fil, le cercle) ne se lit qu'avec l'achat `foyer`, l'accès à vie, ou
+    // depuis l'admin. Le même jugement que estDuFoyer dans functions/src/niskas.ts.
+    function estDuFoyer() {
+      return isAdmin()
+        || (isSignedIn()
+            && (exists(/databases/$(database)/documents/achatsFormations/$(request.auth.uid)/formations/foyer)
+                || get(/databases/$(database)/documents/members/$(request.auth.uid)).data.get('accesVie', false) == true));
+    }
 
     // ── Public read, admin write ──
     match /events/{id}        { allow read: if true; allow write: if isAdmin(); }
@@ -120,7 +130,16 @@ service cloud.firestore {
     // JAMAIS depuis le navigateur : les fonctions mur.ts recomptent avec
     // l'Admin SDK, qui contourne ces règles.
     match /mur/{postId} {
-      allow read: if isSignedIn();
+      // Les fils du Foyer social (krystine, communaute, formation:foyer et les
+      // murs personnels) sont réservés aux membres du Foyer; le feed d'une
+      // autre formation reste ouvert à son groupe, et chacune lit ses billets.
+      allow read: if isAdmin()
+                  || (isSignedIn() && resource.data.uid == request.auth.uid)
+                  || (isSignedIn()
+                      && resource.data.fil is string
+                      && resource.data.fil.matches('formation:.*')
+                      && resource.data.fil != 'formation:foyer')
+                  || estDuFoyer();
       allow create: if isSignedIn()
                     && request.resource.data.uid == request.auth.uid
                     && request.resource.data.texte is string
@@ -143,6 +162,8 @@ service cloud.firestore {
       }
       match /commentaires/{cid} {
         allow read: if isSignedIn();
+        // ponytail : la barrière du Foyer tient sur le billet lui-même; sans le
+        // billet, un commentaire n'est ni listable ni trouvable.
         allow create: if isSignedIn()
                       && request.resource.data.uid == request.auth.uid
                       && request.resource.data.texte is string
@@ -228,7 +249,12 @@ service cloud.firestore {
     match /formations/{id}/onglets/{oid} { allow read: if isSignedIn(); allow write: if isAdmin(); }
 
     // Les membres d'un groupe de formation (miroir écrit par la fonction).
-    match /groupes/{fid}/membres/{uid} { allow read: if isSignedIn(); allow write: if false; }
+    // Celui du Foyer d'Origine est la liste du groupe VIP : elle ne se lit
+    // qu'entre membres du Foyer (Alex, 7 septembre 2026).
+    match /groupes/{fid}/membres/{uid} {
+      allow read: if isSignedIn() && (fid != 'foyer' || estDuFoyer());
+      allow write: if false;
+    }
 
     // Les billets sauvegardés d'une personne.
     match /members/{uid}/sauvegardes/{postId} {
@@ -352,9 +378,13 @@ service cloud.firestore {
 
     // ── Member profiles: user owns their own profile. Admins full. ──
     match /members/{uid} {
-      // L'annuaire de la communauté lit les fiches; la coche bleue et le rang
-      // de modératrice ne se donnent qu'à l'admin, jamais à soi-même.
-      allow read: if isSignedIn();
+      // L'annuaire du Foyer LISTE les fiches : réservé aux membres du Foyer.
+      // Une fiche seule reste lisible par toute personne connectée qui en
+      // connaît déjà l'uid (le nom sur un message, sa marraine, une filleule,
+      // son groupe de cours) : sans la liste, rien ne s'énumère. La coche
+      // bleue et le rang de modératrice ne se donnent qu'à l'admin.
+      allow get: if isSignedIn();
+      allow list: if isAdmin() || estDuFoyer();
       allow create: if isAdmin()
                     || (isSelf(uid)
                         && !request.resource.data.keys().hasAny(['verifie', 'moderateur', 'filleules', 'filleulesAcheteuses', 'accesVie']));
@@ -412,7 +442,7 @@ service cloud.firestore {
                         && request.resource.data.amount is number
                         && request.resource.data.amount <= 100
                         && request.resource.data.amount >= -1000
-                        && !(request.resource.data.kind in ['boutique', 'achat-niskas', 'quotidien', 'billet', 'amitie', 'parrainage', 'parrainage-bienvenue', 'adjust', 'coffre', 'coffre-gain', 'badge-bleu', 'foyer-hebdo', 'foyer-mois']));
+                        && !(request.resource.data.kind in ['boutique', 'achat-niskas', 'quotidien', 'billet', 'amitie', 'parrainage', 'parrainage-bienvenue', 'adjust', 'coffre', 'coffre-gain', 'badge-bleu', 'foyer-hebdo', 'foyer-roue', 'foyer-mois']));
       // La lecture d'un document absent (la transaction d'awardPoints vérifie
       // la clé avant d'écrire) ne révèle rien : elle passe.
       allow read: if isAdmin()

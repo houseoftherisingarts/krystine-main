@@ -426,48 +426,65 @@ export interface Reward {
   actif?: boolean;
 }
 
+// La grille (Alex, 7 septembre 2026, doc « gamify-cadeaux-niskas-priorites ») :
+// 80 % des récompenses à coût marginal quasi nul (numérique, livré tout
+// seul), 15 % liées à une transaction ou une autre porte de l'écosystème,
+// 5 % de physique rare et contrôlé. Rien qui parte seul à la poste : un
+// rabais ou un crédit qui mène à un envoi passe seulement en ajout à une
+// commande, jamais en cadeau autonome. Les récompenses marquées `actif:
+// false` n'ont pas encore leur fichier (audio, PDF) : elles attendent que
+// Krystine dépose le contenu et les rallume dans l'admin (Récompenses).
 export const REWARDS: Reward[] = [
-  // Repeatable rebates — any tier, no uniqueness.
+  // ── Priorité 1 : numérique, coût marginal nul ────────────────────────────
+  {
+    id: 'surprise-numerique',
+    cost: 150,
+    labelFR: 'Une découverte surprise (bientôt)',
+    labelEN: 'A surprise discovery (soon)',
+    descFR: "Un audio exclusif, une courte pratique guidée ou une petite ressource numérique, tirée au hasard. En préparation : s'allume dès que Krystine dépose le premier lot.",
+    descEN: 'An exclusive audio, a short guided practice, or a small digital resource, drawn at random. In progress: turns on once Krystine uploads the first batch.',
+    actif: false,
+  },
+  {
+    id: 'carnet-ksl',
+    cost: 275,
+    labelFR: 'Un carnet numérique KSL (bientôt)',
+    labelEN: 'A KSL digital notebook (soon)',
+    descFR: "Un carnet PDF téléchargeable, rituel ou recettes selon la saison. Remplace l'ancien livret imprimé envoyé par la poste. En préparation.",
+    descEN: 'A downloadable PDF notebook, seasonal rituals or recipes. Replaces the old printed booklet mailed to your door. In progress.',
+    actif: false,
+  },
+  {
+    id: 'masterclass-archives',
+    cost: 400,
+    labelFR: 'Une masterclass des archives (bientôt)',
+    labelEN: 'An archive masterclass (soon)',
+    descFR: "Gestion du stress : aromathérapie et Ayurveda, ou une autre masterclass des archives. En préparation : n'est pas encore importée au catalogue des formations (voir le rapport de l'agent).",
+    descEN: 'Stress management: aromatherapy and Ayurveda, or another archive masterclass. In progress: not yet imported into the formations catalog (see the agent's report).',
+    actif: false,
+  },
+
+  // ── Priorité 2 : liée à une transaction ou une autre porte ──────────────
   {
     id: 'reb-10-boutique',
     cost: 500,
-    labelFR: '10% sur la boutique',
-    labelEN: '10% off the shop',
-    descFR: "Un rabais de 10% applicable sur votre prochaine commande en boutique.",
-    descEN: 'A 10% discount on your next shop order.',
-  },
-  {
-    id: 'reb-huiles',
-    cost: 650,
-    labelFR: "15% sur les Huiles Corporelles",
-    labelEN: '15% off the Body Oils',
-    descFR: "Rabais de 15% sur toute la collection des Huiles Corporelles.",
-    descEN: '15% discount across the Body Oils collection.',
-  },
-
-  // Tree-gated, one-shot gifts — unlocked as the plant matures.
-  {
-    id: 'rituel-offert',
-    cost: 275,
-    labelFR: "Un livret de rituels offert",
-    labelEN: 'A complimentary rituals booklet',
-    descFR: "Le Guide Rituels Inspirata en version imprimée, envoyé chez vous. Se réclame une seule fois.",
-    descEN: 'The Inspirata Rituals Guide in print, sent to you. One-time claim.',
-    minTier: 'tige',
-    oneShot: true,
+    labelFR: '10 % sur la boutique, dès 75 $ d’achat',
+    labelEN: '10% off the shop, from $75 spent',
+    descFR: "Un rabais de 10 % applicable sur votre prochaine commande en boutique, à partir de 75 $ d'achat.",
+    descEN: 'A 10% discount on your next shop order, from $75 spent.',
   },
   {
     id: 'reb-formation',
     cost: 435,
-    labelFR: "50 $ sur une formation Inspirata",
-    labelEN: '$50 off an Inspirata program',
+    labelFR: '50 $ sur une formation Krystine St-Laurent',
+    labelEN: '$50 off a Krystine St-Laurent program',
     descFR: "Un crédit de 50 $ applicable à l'Expérience Origine ou au Programme Vata. Une seule fois.",
     descEN: 'A $50 credit for the Origin Experience or the Vata Program. One-time.',
     minTier: 'fleur',
     oneShot: true,
   },
   // Le palier Arbre : Krystine ne donne pas de consultation privée (Alex,
-  // 6 septembre 2026), donc une formation courte et un produit de la boutique.
+  // 6 septembre 2026), donc une formation numérique complète.
   {
     id: 'masterclass-source',
     cost: 725,
@@ -478,15 +495,27 @@ export const REWARDS: Reward[] = [
     minTier: 'arbre',
     oneShot: true,
   },
+
+  // ── Priorité 4 : hauts paliers ────────────────────────────────────────────
   {
-    id: 'huile-source',
-    cost: 395,
-    labelFR: 'Une Huile Corporelle offerte',
-    labelEN: 'A complimentary Body Oil',
-    descFR: "L'huile corporelle de votre dosha, envoyée chez vous. Se réclame une seule fois.",
-    descEN: 'The body oil of your dosha, sent to you. One-time claim.',
+    id: 'privilege-ksl',
+    cost: 850,
+    labelFR: 'Un privilège KSL (bientôt)',
+    labelEN: 'A KSL privilege (soon)',
+    descFR: "Accès anticipé au Foyer d'Origine ou à l'Expérience Origine, ou une collection premium. En préparation.",
+    descEN: 'Early access to the Origin Hearth or the Origin Experience, or a premium collection. In progress.',
+    minTier: 'arbrisseau',
+    actif: false,
+  },
+  {
+    id: 'grande-recompense',
+    cost: 1750,
+    labelFR: 'Une grande récompense numérique (bientôt)',
+    labelEN: 'A big digital reward (soon)',
+    descFR: "Une formation complète, la bibliothèque des archives ou un bundle de masterclasses. En préparation.",
+    descEN: 'A full program, the archive library, or a masterclass bundle. In progress.',
     minTier: 'arbre',
-    oneShot: true,
+    actif: false,
   },
 ];
 
