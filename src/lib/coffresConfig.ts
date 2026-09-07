@@ -7,7 +7,8 @@ export type TypeCoffre = 'bronze' | 'argent' | 'or';
 export interface Chance { unSur: number; fr: string; en: string }
 export interface ContenuCoffre {
   legendaire: number;                                   // pour cent des cosmétiques qui sont un skin légendaire
-  raresFR: string; raresEN: string;                     // les skins rares propres à ce coffre, en mots
+  rares: string[];                                      // les skins rares propres à ce coffre (miroir de functions/src/coffres.ts)
+  raresFR: string; raresEN: string;                     // les skins rares propres à ce coffre, en mots (tous en circulation)
   niskas: Array<{ montant: number; poids: number }>;    // toujours un montant (poids en pour cent)
   rabais: Chance[];
   grandLot: Chance | null;
