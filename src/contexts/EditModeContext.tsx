@@ -113,9 +113,12 @@ export const EditModeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     } catch { /* private mode / SSR — state still lives in memory for this tab */ }
   }, [isAdmin]);
 
+  // Le brouillon prime sur le publié : Krystine voit tout de suite son
+  // propre changement, personne d'autre ne le voit tant qu'elle n'a pas
+  // publié (le brouillon ne quitte jamais sessionStorage).
   const getText = useCallback(
-    (key: string, fallback: string) => overrides.text[key] ?? fallback,
-    [overrides],
+    (key: string, fallback: string) => pending[key] ?? overrides.text[key] ?? fallback,
+    [pending, overrides],
   );
 
   const getImage = useCallback(
@@ -123,16 +126,28 @@ export const EditModeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     [overrides],
   );
 
+  // Ne fait qu'empiler le changement en local — aucune écriture réseau ici.
+  // C'est publishPending() qui envoie tout d'un coup.
   const saveText = useCallback(async (key: string, value: string) => {
-    if (isLocalOverridesActive()) {
-      writeLocalText(key, value);
-      // Mirror to local state immediately — the storage event only
-      // fires for OTHER tabs, not the one that wrote.
-      setOverrides(prev => ({ ...prev, text: { ...prev.text, [key]: value } }));
-      return;
-    }
-    await setTextOverride(key, value);
+    setPendingState(prev => {
+      const next = { ...prev, [key]: value };
+      try { sessionStorage.setItem(PENDING_KEY, JSON.stringify(next)); } catch { /* noop */ }
+      return next;
+    });
   }, []);
+
+  const publishPending = useCallback(async () => {
+    const keys = Object.keys(pending);
+    if (keys.length === 0) return;
+    if (isLocalOverridesActive()) {
+      keys.forEach(k => writeLocalText(k, pending[k]));
+      setOverrides(prev => ({ ...prev, text: { ...prev.text, ...pending } }));
+    } else {
+      await setTextOverrides(pending);
+    }
+    setPendingState({});
+    try { sessionStorage.removeItem(PENDING_KEY); } catch { /* noop */ }
+  }, [pending]);
 
   const saveImage = useCallback(async (key: string, payload: ImageOverride) => {
     if (isLocalOverridesActive()) {
@@ -143,9 +158,11 @@ export const EditModeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     await setImageOverride(key, payload);
   }, []);
 
+  const pendingCount = useMemo(() => Object.keys(pending).length, [pending]);
+
   const value = useMemo<EditModeContextType>(() => ({
-    editMode, setEditMode, overrides, getText, getImage, saveText, saveImage,
-  }), [editMode, setEditMode, overrides, getText, getImage, saveText, saveImage]);
+    editMode, setEditMode, overrides, getText, getImage, pendingCount, saveText, publishPending, saveImage,
+  }), [editMode, setEditMode, overrides, getText, getImage, pendingCount, saveText, publishPending, saveImage]);
 
   return <EditModeContext.Provider value={value}>{children}</EditModeContext.Provider>;
 };
