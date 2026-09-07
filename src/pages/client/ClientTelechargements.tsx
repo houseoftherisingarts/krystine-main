@@ -13,6 +13,7 @@ import LecteurYouTube from '../../components/client/LecteurYouTube';
 
 const ClientTelechargements: React.FC = () => {
   const { user, lang } = useApp();
+  const gam = useGamification();
   const [items, setItems] = useState<{ achat: AchatFormation; lecons: Lecon[] }[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
