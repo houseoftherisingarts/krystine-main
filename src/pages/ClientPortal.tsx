@@ -659,6 +659,7 @@ const ClientPortal: React.FC = () => {
     { id: 'dosha',    label: lang === 'FR' ? 'Dosha' : 'Dosha', icon: 'fa-circle-nodes' },
     { id: 'archives', label: lang === 'FR' ? 'Lettres' : 'Letters', icon: 'fa-envelope-open-text' },
     { id: 'messagerie', label: lang === 'FR' ? 'Messagerie' : 'Messages', icon: 'fa-comments' },
+    { id: 'aider',    label: lang === 'FR' ? 'Aider' : 'Help', icon: 'fa-hand-holding-heart' },
   ];
 
   const perso = member?.personnalisation || {};
