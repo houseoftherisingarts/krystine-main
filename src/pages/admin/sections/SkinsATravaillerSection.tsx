@@ -4,6 +4,22 @@ import { SKINS, skinEnTravail, type Skin, type SkinsSettings } from '../../../li
 import { COFFRES } from '../../../lib/coffresConfig';
 import { subscribeToSkinsSettings, setSkinEnTravail } from '../../../firebase/points';
 
+// Le hook partagé : la lecture de settings/skins et le geste qui bascule une
+// skin, réemployés tels quels par l'onglet Gamification (sous-section
+// « Skins ») pour ne pas dupliquer l'abonnement Firestore.
+export function useSkinsOverrides() {
+  const [overrides, setOverrides] = useState<SkinsSettings>({});
+  const [charge, setCharge] = useState(true);
+  const [occupe, setOccupe] = useState<string | null>(null);
+  useEffect(() => subscribeToSkinsSettings((s) => { setOverrides(s); setCharge(false); }), []);
+  const basculer = async (cle: string, enCirculation: boolean) => {
+    const id = `skin-${cle}`;
+    setOccupe(id);
+    try { await setSkinEnTravail(id, !enCirculation); } finally { setOccupe(null); }
+  };
+  return { overrides, charge, occupe, basculer };
+}
+
 // Les skins qu'on retire de la circulation pendant qu'on les met au point
 // (Alex, 7 septembre 2026 : Vata, Pitta, Kapha, Aurore, Or pur, Féminité).
 // Elles disparaissent de la boutique, des coffres et de la roue; une membre
