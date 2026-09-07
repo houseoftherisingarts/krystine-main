@@ -40,7 +40,6 @@ function HardReload({ to }: { to: string }) {
 }
 
 // Lazy-loaded pages for code splitting
-const QAGamification   = lazy(() => import('./src/pages/__QAGamification'));
 const InspiratHome     = lazy(() => import('./src/pages/InspiratHome'));
 const BoutiqueCollectionPage = lazy(() => import('./src/pages/BoutiqueCollectionPage'));
 const TVPage           = lazy(() => import('./src/pages/TVPage'));
