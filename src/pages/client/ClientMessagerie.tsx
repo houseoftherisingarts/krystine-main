@@ -156,6 +156,8 @@ const ClientMessagerie: React.FC<{ voletInitial?: Volet; avec?: string; dansFoye
       ) : (
         !origine.pret ? null : (!origine.foyer && !(origine.permis && origine.permis.size > 0)) ? (
           <MotDuFoyer lang={lang} quoi={fr ? 'S’écrire de boîte à boîte est exclusif aux membres du Foyer d’Origine. L’équipe Inspirata vous répond ici, à toutes.' : 'Writing to each other is reserved for members of the Origine Hearth. The Inspirata team answers everyone here.'} />
+        ) : (avec && avec !== monUid && !peutAvec) ? (
+          <MotDuFoyer compact lang={lang} quoi={fr ? 'Sans le Foyer d’Origine, votre messagerie ne s’ouvre qu’à votre marraine et à vos filleules.' : 'Without the Origine Hearth, your inbox opens only to your sponsor and your referrals.'} />
         ) : (
         <>
         {!origine.foyer && (
