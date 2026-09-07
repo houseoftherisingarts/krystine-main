@@ -61,7 +61,7 @@ const NavBar: React.FC = () => {
           : 'bg-[#e8e0d1]/85 dark:bg-[#1e2823]/85 backdrop-blur-xl border-b border-brass/25 shadow-[0_4px_24px_rgba(58,49,38,0.08)]'
       }`}
     >
-      <div className="max-w-[1800px] mx-auto px-6 md:px-8 py-3.5 flex justify-between items-center gap-4">
+      <div className="max-w-[1800px] mx-auto px-4 sm:px-6 md:px-8 py-3.5 flex justify-between items-center gap-3 sm:gap-4">
 
         {/* Wordmark — Cormorant editorial wordmark, with logomark fallback */}
         <Link
