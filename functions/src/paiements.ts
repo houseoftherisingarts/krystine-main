@@ -155,6 +155,7 @@ export const creerSessionNiskas = onCall(
   { region: 'us-central1', secrets: [STRIPE_SECRET_KEY] },
   async (req) => {
     if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour acheter des niskas.');
+    await exigerModule('acheterNiskas');
     const paquet = PAQUETS[String(req.data?.paquet || 'p100')];
     if (!paquet) throw new HttpsError('invalid-argument', 'Ce paquet n\'existe pas.');
     const body = new URLSearchParams({
