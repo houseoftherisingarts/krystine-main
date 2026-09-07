@@ -252,6 +252,33 @@ export const reclamerBienvenue = onCall(
   },
 );
 
+// ─── Le coffre bêta ──────────────────────────────────────────────────────────
+// Cinquante niskas pour chaque compte créé entre le 7 septembre et le 1er
+// octobre 2026 inclus (Alex, 7 septembre 2026), pour saluer les
+// bêta-testeuses. La date qui compte est celle de la création du compte
+// (Firebase Auth), jugée en jour civil de Montréal, jamais l'horloge du
+// navigateur; `crediterNiskas` garantit qu'il ne se dépose qu'une fois.
+// `offert` ne revient vrai qu'à ce dépôt précis : le premier écran de
+// l'espace (CoffreBeta.tsx) s'en sert pour savoir s'il joue l'animation.
+const COFFRE_BETA_DEBUT = '2026-09-07';
+const COFFRE_BETA_FIN = '2026-10-01';
+export const NISKAS_BETA = 50;
+export const MESSAGE_BETA = 'Merci d’être bêta-testeuse';
+
+export const reclamerCoffreBeta = onCall(
+  { region: 'us-central1' },
+  async (req) => {
+    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour votre coffre.');
+    const uid = req.auth.uid;
+    let creationMs = Date.now();
+    try { creationMs = Date.parse((await getAuth().getUser(uid)).metadata.creationTime || '') || creationMs; } catch (e) { console.warn('[coffre-beta] création introuvable', e); }
+    const eligible = journee(creationMs) >= COFFRE_BETA_DEBUT && journee(creationMs) <= COFFRE_BETA_FIN;
+    const offert = eligible && await crediterNiskas(uid, 'coffre-beta', NISKAS_BETA, `coffre-beta:${uid}`, { message: MESSAGE_BETA });
+    const { balance } = await recalculerSolde(uid);
+    return { offert, montant: NISKAS_BETA, message: MESSAGE_BETA, balance };
+  },
+);
+
 // ─── La couche Foyer de la roue (docs/badge-bleu-plan.md, 2.3) ──────────────
 // Une membre du Foyer d'Origine tourne une SECONDE roue de sept jours au même
 // geste quotidien (ROUE_FOYER), et reçoit un plus gros cadeau à chaque mois
