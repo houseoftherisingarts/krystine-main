@@ -15,7 +15,7 @@ const VoteBar: React.FC<{
 }> = ({ score, monVote, onVoter, petit = false }) => {
   const taille = petit ? 12 : 16;
   const scoreClasse = score > 0
-    ? 'text-[#BA7B39]'
+    ? 'text-[#8B4A2F] dark:text-[#d9a05b]'
     : score < 0
       ? 'text-[#a3583f] dark:text-[#d18b6e]'
       : 'text-[#38403a]/50 dark:text-white/50';
