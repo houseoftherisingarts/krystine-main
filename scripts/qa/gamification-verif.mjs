@@ -11,24 +11,31 @@ const PW = readFileSync('/Users/lesalondesinconnus/.claude/scripts/.krystine_adm
 
 const browser = await chromium.launch();
 
-async function connecter(page, email, motDePasse, { creerCompte = false } = {}) {
+// Le modal de connexion (SignInModal.tsx) s'ouvre en mode « Créer un compte »
+// par défaut; « Se connecter » est un compte déjà existant (admin), donc on
+// bascule vers signin dans ce cas seulement.
+async function connecter(page, email, motDePasse, { compteExistant = false } = {}) {
   await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded' });
-  const bouton = page.getByText(/se connecter|créer mon compte|compte/i).first();
-  await bouton.click({ timeout: 8000 }).catch(() => {});
+  await page.waitForTimeout(1200);
+  const accepte = page.getByText(/j'accepte/i).first();
+  if (await accepte.isVisible().catch(() => false)) await accepte.click();
+  await page.waitForTimeout(300);
+  await page.getByText(/se connecter/i).first().click();
   await page.waitForSelector('input[type="email"]', { timeout: 8000 });
-  if (creerCompte) {
-    const inscription = page.getByText(/créer un compte|s'inscrire|sign up/i).first();
-    if (await inscription.isVisible().catch(() => false)) await inscription.click();
+  if (compteExistant) {
+    const bascule = page.getByText(/déjà un compte/i).first();
+    if (await bascule.isVisible().catch(() => false)) await bascule.click();
+    await page.waitForTimeout(300);
   }
   await page.fill('input[type="email"]', email);
   await page.fill('input[type="password"]', motDePasse);
-  await page.locator('form').locator('button[type="submit"], button:has-text("Continuer"), button:has-text("Se connecter"), button:has-text("Créer")').first().click();
-  await page.waitForTimeout(2500);
+  await page.locator('form button[type="submit"]').click();
+  await page.waitForTimeout(3000);
 }
 
 async function shots(page, url, nom) {
   await page.goto(`${BASE}${url}`, { waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(1200);
+  await page.waitForTimeout(1500);
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.screenshot({ path: `${OUT}/${nom}-1440.png`, fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
@@ -38,7 +45,7 @@ async function shots(page, url, nom) {
 // 1. Admin — l'onglet Gamification + la preuve Badge Bleu.
 {
   const page = await browser.newPage();
-  await connecter(page, 'admin@krystinestlaurent.ca', PW);
+  await connecter(page, 'admin@krystinestlaurent.ca', PW, { compteExistant: true });
   await shots(page, '/__gamification', 'admin-gamification');
   await page.close();
 }
@@ -47,7 +54,7 @@ async function shots(page, url, nom) {
 {
   const page = await browser.newPage();
   const email = `qa-gamification-${Date.now()}@example.com`;
-  await connecter(page, email, 'motdepasse-qa-123', { creerCompte: true });
+  await connecter(page, email, 'motdepasse-qa-123');
   await shots(page, '/compte', 'client-espace');
   await page.close();
 }
