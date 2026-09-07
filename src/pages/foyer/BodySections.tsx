@@ -341,69 +341,6 @@ const CalendrierAnnee: React.FC = () => {
   );
 };
 
-/* ═══════════ La fleur du Foyer : racines Ayurveda, huit pétales ═══════════ */
-const FLEUR_W = 1536;
-const FLEUR_H = 1024;
-interface Petale {
-  n: string;
-  b: [number, number, number, number];
-}
-const PETALES: Petale[] = [
-  { n: 'Plantes médicinales', b: [608, 30, 900, 330] },
-  { n: 'Aromathérapie', b: [860, 100, 1160, 380] },
-  { n: 'Ingrédients', b: [900, 330, 1270, 550] },
-  { n: 'Respiration', b: [880, 470, 1170, 740] },
-  { n: 'Méditation', b: [740, 560, 990, 860] },
-  { n: 'Histoires', b: [440, 480, 750, 800] },
-  { n: 'Œuvres', b: [290, 350, 650, 580] },
-  { n: 'Sages', b: [380, 130, 690, 400] },
-  { n: 'Le thème du mois', b: [615, 315, 920, 595] },
-];
-const pzone = (b: [number, number, number, number]) => ({
-  left: `${(b[0] / FLEUR_W) * 100}%`,
-  top: `${(b[1] / FLEUR_H) * 100}%`,
-  width: `${((b[2] - b[0]) / FLEUR_W) * 100}%`,
-  height: `${((b[3] - b[1]) / FLEUR_H) * 100}%`,
-});
-
-const FleurDuFoyer: React.FC = () => {
-  const [hover, setHover] = useState<string | null>(null);
-  return (
-    <div className="relative w-full">
-      <img
-        src="/foyer/fleur-foyer.webp"
-        alt="La fleur du Foyer : l'Ayurveda en racines, huit pétales autour du thème du mois"
-        width={FLEUR_W}
-        height={FLEUR_H}
-        loading="lazy"
-        className="block h-auto w-full"
-      />
-      {PETALES.map((p) => (
-        <div
-          key={p.n}
-          aria-hidden
-          className="absolute z-10"
-          style={pzone(p.b)}
-          onMouseEnter={() => setHover(p.n)}
-          onMouseLeave={() => setHover(null)}
-        >
-          <motion.span
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                'radial-gradient(50% 50% at 50% 50%, rgba(220,184,116,0.6), rgba(199,132,44,0.22) 55%, transparent 78%)',
-              filter: 'blur(14px)',
-              transform: 'scale(1.25)',
-            }}
-            animate={{ opacity: hover === p.n ? 1 : 0 }}
-            transition={{ duration: 0.45, ease }}
-          />
-        </div>
-      ))}
-    </div>
-  );
-};
-
 /* ═══════════ Progression maison : la position d'un bloc dans l'écran, de 0
    (son haut entre par le bas) à 1 (son centre atteint la hauteur voulue).
    useScroll({ target }) mesure mal dans cette page, on lit le rect nous-mêmes. ═══════════ */
@@ -882,7 +819,8 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       </section>
 
       {/* ═══════ SECTION 5 · Une année nourrie par l'Ayurveda : le plâtre chaud,
-          la fleur (validée), puis trois phrases sur trois taches de pigment ═══════ */}
+          puis trois phrases sur trois taches de pigment (la fleur des huit
+          pétales est retirée, Krystine, 7 septembre 2026) ═══════ */}
       <section className={`fy-plaster relative overflow-hidden py-24 md:py-36 ${overlap ? 'z-40' : ''} ${cover}`}>
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament className="mb-16" />
@@ -899,11 +837,6 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
             </Reveal>
           </div>
         </div>
-
-        {/* la fleur : l'Ayurveda en racines, huit pétales qui s'illuminent, pleine largeur */}
-        <Reveal className="mt-16">
-          <FleurDuFoyer />
-        </Reveal>
 
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           {/* trois manières dont les matières se répondent : chaque phrase pousse
