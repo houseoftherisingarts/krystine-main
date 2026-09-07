@@ -372,6 +372,20 @@ export function suivreBoutique(uid: string, cb: (p: Possessions) => void): Unsub
   return onSnapshot(doc(db, 'boutique', uid), snap => cb({ possede: (snap.data()?.possede as Record<string, unknown>) || {} }), () => cb({ possede: {} }));
 }
 
+// ─── Skins en travail (settings/skins) ────────────────────────────────────────
+// Lisible par tout le monde, écrit par l'admin seulement (firestore.rules,
+// `match /settings/{id}`). Fusionné côté client avec le drapeau par défaut de
+// chaque skin (voir skinEnTravail dans lib/pointsConfig.ts).
+export function subscribeToSkinsSettings(cb: (s: SkinsSettings) => void): Unsubscribe {
+  if (!db) { cb({}); return () => {}; }
+  return onSnapshot(doc(db, 'settings', 'skins'), snap => cb((snap.data() as SkinsSettings) || {}), () => cb({}));
+}
+
+export async function setSkinEnTravail(id: string, enTravail: boolean): Promise<void> {
+  if (!db) return noDb();
+  await setDoc(doc(db, 'settings', 'skins'), { [id]: { enTravail } }, { merge: true });
+}
+
 export async function acheterAvecNiskas(article: string): Promise<{ solde: number; article: string; nom: string }> {
   if (!app) throw new Error('[Niskas] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'acheterAvecNiskas');
