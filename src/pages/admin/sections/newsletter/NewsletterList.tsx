@@ -126,7 +126,7 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
                           )}
                         </div>
                         <GhostButton onClick={() => dupliquerEtTraduire(n)} disabled={traduction !== null} title={`Crée un brouillon traduit en ${n.lang === 'en' ? 'français' : 'anglais'} et l’ouvre`}>
-                          <i className={`fa-solid ${traduction === n.id ? 'fa-circle-notch fa-spin' : 'fa-language'}`} /> {traduction === n.id ? 'Traduction…' : 'Dupliquer et traduire'}
+                          <i className={`fa-solid ${traduction === n.id ? 'fa-circle-notch fa-spin' : 'fa-language'}`} /> <span className="hidden sm:inline">{traduction === n.id ? 'Traduction…' : 'Dupliquer et traduire'}</span>
                         </GhostButton>
                       </div>
                     </td>
