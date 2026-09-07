@@ -176,6 +176,17 @@ const ClientLoyalty: React.FC = () => {
 
   return (
     <div>
+      {/* Rouvre le panneau « On oublie souvent de jouer » (BienvenueJeu.tsx,
+          monté une fois dans ClientPortal) : le même composant partout,
+          jamais une copie (Alex, 7 septembre 2026). */}
+      <button
+        type="button"
+        onClick={() => window.dispatchEvent(new Event('krystine:ouvrir-jeu'))}
+        className="mb-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#BA7B39] px-10 py-4 text-xs font-bold uppercase tracking-widest text-[#293027] shadow-[0_10px_28px_-10px_rgba(186,123,57,0.8)] transition-colors hover:bg-[#d9a05b]"
+      >
+        <i className="fa-solid fa-circle-question" /> {lang === 'FR' ? 'Les niskas, c’est quoi ?' : 'What are niskas?'}
+      </button>
+
       {/* Toast */}
       {toast && (
         <div
