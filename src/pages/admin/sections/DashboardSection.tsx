@@ -10,6 +10,7 @@ import { Card } from '../primitives';
 import { PALIERS, STATUTS, type CommunauteStats } from '../../../lib/paliers';
 import CommandesStripeCard from './dashboard/CommandesStripeCard';
 import RapportDuJourCard from './dashboard/RapportDuJourCard';
+import NouveauxMembresCard from './dashboard/NouveauxMembresCard';
 
 interface Stat { label: string; value: number; icon: string; accent: string; hint?: string; }
 
@@ -114,6 +115,9 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
 
       {/* Le rapport du jour, en tête, juste à côté des ventes Stripe */}
       <RapportDuJourCard />
+
+      {/* Les nouveaux membres par jour, sur 14, 30 ou 90 jours */}
+      <NouveauxMembresCard />
 
       {/* Ventes Stripe : revenus et taxes (TPS + TVQ) séparés, pour la comptabilité */}
       <CommandesStripeCard />

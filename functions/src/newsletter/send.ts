@@ -237,14 +237,22 @@ interface Progress {
 
 const delai = (ms: number) => new Promise(r => setTimeout(r, ms));
 
-// Resend répond « 550 You have reached your daily email sending quota » quand
-// le compte est au palier gratuit (100 courriels par jour) ou au bout de son
-// forfait. Un 429 ou une limite de débit se traite pareil : on met la passe
-// en pause au lieu de compter des centaines d'échecs.
+// Deux refus différents chez Resend. « 550 Too many requests. You can only
+// make 10 requests per second » est une limite de débit : on ralentit et on
+// retente. « 550 You have reached your daily email sending quota » est un
+// quota épuisé (palier gratuit, 100 par jour) : on met la passe en pause au
+// lieu de compter des centaines d'échecs.
+const INTERVALLE_MS = 125;   // dix requêtes par seconde permises, on en vise huit
+function texteErreur(err: unknown): string {
+  const e = err as { response?: string; message?: string } | undefined;
+  return `${e?.response || ''} ${e?.message || ''}`;
+}
+function estLimiteDebit(err: unknown): boolean {
+  const e = err as { responseCode?: number } | undefined;
+  return e?.responseCode === 429 || /too many requests|rate limit|per second/i.test(texteErreur(err));
+}
 function estQuota(err: unknown): boolean {
-  const e = err as { responseCode?: number; response?: string; message?: string } | undefined;
-  const texte = `${e?.response || ''} ${e?.message || ''}`;
-  return e?.responseCode === 429 || /quota|rate limit|too many/i.test(texte);
+  return !estLimiteDebit(err) && /quota|daily/i.test(texteErreur(err));
 }
 
 export async function deliverNewsletter(newsletterId: string): Promise<{ recipients: number; delivered: number; bounces: number; done: boolean }> {

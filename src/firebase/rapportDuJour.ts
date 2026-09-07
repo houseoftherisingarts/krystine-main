@@ -1,4 +1,4 @@
-import { collection, getCountFromServer, query, where, Timestamp, type QueryConstraint } from 'firebase/firestore';
+import { collection, getCountFromServer, getDocs, query, where, Timestamp, type QueryConstraint } from 'firebase/firestore';
 import { db } from '../firebase';
 import { getCommandesStripe, type CommandeStripe } from './commandes';
 import { journee, veilleDe } from '../lib/pointsConfig';
@@ -70,4 +70,27 @@ export function ventesDuJour(commandes: CommandeStripe[], jour: string): { n: nu
     return t !== undefined && t >= debut.getTime() && t < fin.getTime();
   });
   return { n: duJour.length, total: duJour.reduce((s, c) => s + c.total, 0) };
+}
+
+export interface JourMembres { jour: string; n: number }
+
+/** Les nouveaux comptes par jour civil de Montréal sur les `nbJours`
+ *  derniers jours, aujourd'hui compris, les jours vides à zéro pour que
+ *  l'axe du temps ne mente pas (Krystine, 7 septembre 2026). Une seule
+ *  requête bornée sur members.joinedAt : quelques dizaines de fiches par
+ *  mois, jamais la collection entière. Les fiches importées sans joinedAt
+ *  n'y figurent pas. */
+export async function getNouveauxMembresParJour(nbJours: number): Promise<JourMembres[]> {
+  const jours: JourMembres[] = [];
+  for (let j = journee(), i = 0; i < nbJours; i++, j = veilleDe(j)) jours.unshift({ jour: j, n: 0 });
+  if (!db) return jours;
+  const [debut] = bornesDuJour(jours[0].jour);
+  const snap = await getDocs(query(collection(db, 'members'), where('joinedAt', '>=', Timestamp.fromDate(debut))));
+  const parJour = new Map(jours.map((x) => [x.jour, x]));
+  snap.forEach((d) => {
+    const t = d.get('joinedAt') as Timestamp | undefined;
+    const x = t && parJour.get(journee(t.toMillis()));
+    if (x) x.n++;
+  });
+  return jours;
 }
