@@ -12,10 +12,11 @@ for (const [label, width] of [['1440', 1440], ['390', 390]]) {
   const errors = [];
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
   page.on('pageerror', e => errors.push(String(e)));
-  await page.goto(URL, { waitUntil: 'networkidle', timeout: 30000 });
+  await page.goto(URL, { waitUntil: 'load', timeout: 30000 });
   // Le dashboard est la vue par défaut de /admin ; laisser le temps aux
   // requêtes Firestore (achatsFormations, pointsEvents, pourboires) de finir.
-  await page.waitForTimeout(3500);
+  // Les listeners temps réel de Firestore empêchent networkidle d'arriver.
+  await page.waitForTimeout(6000);
   await page.screenshot({ path: `${OUT}/dashboard-${label}-full.png`, fullPage: true });
   console.log(`[${label}] erreurs console:`, errors.length ? errors : 'aucune');
   await page.close();
