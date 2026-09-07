@@ -195,7 +195,7 @@ Dans les deux cas, le mot de Krystine dans `dms` reste le même geste (`coffres.
 
 ## 9. Pour la QA du lot
 
-- Patron de compte jetable : `scripts/qa/bannieres-signature.mjs` (Identity Toolkit `:19-20`, session dans IndexedDB `:32-38`, Firestore REST avec `gcloud auth print-access-token` `:13-18`, effacement `:78-80`). La roue se ferme par le voile `.fixed.inset-0.z-\[125\]` (`:41`, sélecteur de `RoueQuotidienne.tsx:48`).
+- Le patron de compte jetable est `scripts/qa/bannieres-signature.mjs`. Il crée le compte par Identity Toolkit (`:19-20`), pose la session dans IndexedDB (`:32-38`), écrit Firestore par REST avec `gcloud auth print-access-token` (`:13-18`) et efface tout à la fin (`:78-80`). La roue se ferme en cliquant le voile `.fixed.inset-0.z-\[125\]` (`:41`), qui est le sélecteur de `RoueQuotidienne.tsx:48`.
 - Simuler une 7e ou une 30e journée : écrire `memberPoints/{uid}` avec `dernierJour` = la veille de Montréal et `serie` = 6 ou 29 avant d'ouvrir `/compte`; le serveur passera à 7 ou 30 (`niskas.ts:270`).
 - Ouvrir le Foyer : `achatsFormations/{uid}/formations/foyer = { titre: "Le Foyer d'Origine", source: "qa" }`, ou `members/{uid}.accesVie = true` par l'Admin SDK (le client ne peut pas l'écrire).
 - Le mot déposé se lit dans `dms/{krystineUid}__{uid}` (ordre trié des deux uid, `coffres.ts:124`) et son fil dans l'onglet Messagerie de `/compte`.
