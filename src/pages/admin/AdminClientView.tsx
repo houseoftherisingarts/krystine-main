@@ -205,7 +205,9 @@ const AdminClientView: React.FC<Props> = ({ uid, onClose }) => {
 
   return (
     <Portail>
-    <div className="fixed inset-0 z-[85] overscroll-contain bg-[#293027]/55 backdrop-blur-md overflow-y-auto" onClick={onClose}>
+    {/* z-[135] : au-dessus du panneau de détail des compteurs (z-[130],
+        DetailCompteur.tsx) qui peut l'ouvrir sur « Voir la fiche membre ». */}
+    <div className="fixed inset-0 z-[135] overscroll-contain bg-[#293027]/55 backdrop-blur-md overflow-y-auto" onClick={onClose}>
       <div
         className="min-h-full flex items-start justify-center p-4 md:p-8"
         onClick={e => e.stopPropagation()}
