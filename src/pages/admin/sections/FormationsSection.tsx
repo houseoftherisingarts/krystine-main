@@ -318,6 +318,10 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
           Evergreen (toujours disponible)
         </label>
         <label className={ligne}>
+          <input type="checkbox" className={case_} checked={listeAttente} onChange={e => setListeAttente(e.target.checked)} />
+          En liste d'attente (pas encore ouverte)
+        </label>
+        <label className={ligne}>
           <input type="checkbox" className={case_} checked={questionsFermees} onChange={e => setQuestionsFermees(e.target.checked)} />
           Sans questions sous les leçons
         </label>
