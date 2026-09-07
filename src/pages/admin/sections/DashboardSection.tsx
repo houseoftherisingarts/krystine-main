@@ -111,6 +111,9 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
         ))}
       </div>
 
+      {/* Ventes Stripe : revenus et taxes (TPS + TVQ) séparés, pour la comptabilité */}
+      <CommandesStripeCard />
+
       {/* Communauté : statuts et paliers de la liste, par agrégation */}
       {communaute && (() => {
         const max = Math.max(1, ...PALIERS.map(p => communaute.paliers[p.tag] || 0));
