@@ -15,9 +15,10 @@ import { useMembreDuFoyer } from './ReserveAuFoyer';
 // de la cloche (pas de badges, pas de pages, pas de parties : ces systèmes
 // n'existent pas ici). NavBar.tsx pose ce composant, pas ce fichier.
 //
-// Trois boutons ronds : Profil (→ /compte), Notifications (cloche +
-// pastille, dépliable), Messages (pastille, pop-up des conversations qui mène
-// à la messagerie de l'espace client, jamais à une autre page).
+// Deux boutons ronds : Notifications (cloche + pastille, dépliable) et
+// Messages (pastille, pop-up des conversations). Une membre du Foyer
+// d'Origine est menée aux pages du Foyer (/messages, /membres, /fil); les
+// autres, à l'onglet correspondant de l'espace client.
 //
 // Les billets « vus » se suivent en localStorage (pas de compteur serveur
 // pour ça) : à l'ouverture on retient le moment, et on ne l'écrit dans la
