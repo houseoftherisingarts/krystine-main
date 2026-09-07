@@ -380,6 +380,9 @@ const ClientLoyalty: React.FC = () => {
         </div>
       )}
 
+      {/* Le Foyer d'Origine double la roue : visible pour ses membres seulement */}
+      {foyer === true && <FoyerEncart balance={balance} fr={lang === 'FR'} />}
+
       {/* La plante : ce que les niskas gagnés font pousser */}
       {next && (
         <div className="mb-8 rounded-2xl border border-[#293027]/10 bg-white/60 p-5 dark:border-white/10 dark:bg-white/5">
