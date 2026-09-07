@@ -125,8 +125,12 @@ async function pageAvecSession(browser, u, uid, email, label) {
 }
 
 const fermerBienvenue = async (page) => {
-  for (const t of ['Fermer', 'Plus tard', 'Commencer', 'Merci', 'Entrer dans mon espace', 'Enter my space']) { const b = page.getByRole('button', { name: new RegExp(t, 'i') }).first(); if (await b.count()) { try { await b.click({ timeout: 800 }); } catch {} } }
+  for (const t of ['Fermer', 'Plus tard', 'Commencer', 'Merci', 'Entrer dans mon espace', 'Enter my space']) { const b = page.getByRole('button', { name: new RegExp(t, 'i') }).first(); if (await b.count()) { try { await b.scrollIntoViewIfNeeded({ timeout: 1500 }); await b.click({ timeout: 1500, force: true }); } catch {} } }
   await page.keyboard.press('Escape');
+  // Repli : cliquer le fond du modal (BienvenueJeu.tsx ferme sur onClick du
+  // backdrop, hors du panneau) si le bouton n'a pas suffi.
+  const fond = page.locator('[data-bug-ignore="true"]').first();
+  if (await fond.count().catch(() => 0)) { try { await fond.click({ position: { x: 5, y: 5 }, timeout: 1000, force: true }); } catch {} }
 };
 // La roue des sept jours s'ouvre toute seule (premier appel reclamerQuotidien
 // sur un compte neuf), à un instant imprévisible : à vérifier avant chaque
