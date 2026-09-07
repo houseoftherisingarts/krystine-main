@@ -104,7 +104,9 @@ const ClientFormations: React.FC = () => {
                 <div className="flex items-center justify-between gap-3 p-4">
                   <p className="min-w-0 truncate font-medium text-[#293027] dark:text-white">{f.titre}</p>
                   <span className="shrink-0 rounded-full bg-[#BA7B39] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#293027]">
-                    {f.paywall && f.prix ? `${f.prix} $` : (lang === 'FR' ? 'Libre' : 'Free')}
+                    {f.listeAttente
+                      ? (lang === 'FR' ? "Liste d'attente" : 'Waitlist')
+                      : f.paywall && f.prix ? `${f.prix} $` : (lang === 'FR' ? 'Libre' : 'Free')}
                   </span>
                 </div>
               </Link>
