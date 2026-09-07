@@ -31,23 +31,28 @@ const shootAdmin = async (largeur, hauteur, suffixe) => {
 const shootBoutique = async (largeur, hauteur, suffixe) => {
   const ctx = await browser.newContext({ viewport: { width: largeur, height: hauteur }, deviceScaleFactor: 1 });
   const page = await ctx.newPage();
+  page.setDefaultTimeout(8000);
   page.on('pageerror', (e) => console.log('pageerror(boutique)', e.message));
   await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1500);
+  console.log(`[${suffixe}] page chargée`);
 
   // Connexion réelle : le bouton de la page vide ouvre la fenêtre, en mode
   // « Créer un compte » par défaut, un clic la bascule sur « Se connecter ».
   const ouvrir = page.getByRole('button', { name: /Se connecter/i }).first();
   if (await ouvrir.count()) {
     await ouvrir.click();
+    console.log(`[${suffixe}] modale ouverte`);
     await page.waitForTimeout(500);
     const versConnexion = page.getByRole('button', { name: /Déjà un compte/i }).first();
-    if (await versConnexion.count()) await versConnexion.click();
+    if (await versConnexion.count()) await versConnexion.click().catch((e) => console.log(`[${suffixe}] clic « déjà un compte »`, e.message));
     await page.waitForTimeout(300);
-    await page.locator('input[type="email"]').fill(EMAIL);
-    await page.locator('input[type="password"]').fill(PASSWORD);
-    await page.locator('form button[type="submit"]').click();
+    await page.locator('input[type="email"]').fill(EMAIL).catch((e) => console.log(`[${suffixe}] fill email`, e.message));
+    await page.locator('input[type="password"]').fill(PASSWORD).catch((e) => console.log(`[${suffixe}] fill password`, e.message));
+    console.log(`[${suffixe}] identifiants remplis, soumission`);
+    await page.locator('form button[type="submit"]').click().catch((e) => console.log(`[${suffixe}] clic submit`, e.message));
     await page.waitForTimeout(3000);
+    console.log(`[${suffixe}] connexion tentée`);
   }
 
   await page.waitForSelector('text=La petite boutique', { timeout: 15000 }).catch((e) => console.log('boutique introuvable', e.message));
