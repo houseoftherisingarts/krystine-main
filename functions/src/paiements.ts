@@ -199,6 +199,22 @@ function verifierSignatureStripe(rawBody: Buffer, header: string | undefined, se
   } catch { return false; }
 }
 
+// Répartit ce que Stripe a réellement facturé entre TPS (5 %) et TVQ
+// (9,975 %). Stripe ne détaille pas les deux composantes dans
+// total_details.amount_tax sans un appel API additionnel; les taux du Québec
+// étant fixes, on recalcule la TPS depuis le sous-total et la TVQ prend le
+// reliquat d'arrondi, pour que tps + tvq colle toujours exactement au montant
+// réellement chargé. Si Stripe n'a rien facturé (Stripe Tax pas encore actif
+// dans le tableau de bord), tout reste à zéro : jamais une taxe inventée.
+function detailTaxesQC(session: { amount_subtotal?: number; amount_total?: number; total_details?: { amount_tax?: number } }) {
+  const montantHT = session.amount_subtotal ?? session.amount_total ?? 0;
+  const total = session.amount_total ?? 0;
+  const taxes = session.total_details?.amount_tax ?? 0;
+  const tps = taxes > 0 ? Math.round(montantHT * 0.05) : 0;
+  const tvq = taxes > 0 ? taxes - tps : 0;
+  return { montantHT, tps, tvq, taxes, total };
+}
+
 export const stripeWebhook = onRequest(
   { region: 'us-central1', secrets: [STRIPE_WEBHOOK_SECRET], cors: false, maxInstances: 5 },
   async (req, res) => {
