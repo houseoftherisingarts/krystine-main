@@ -2,6 +2,9 @@ import { onDocumentCreated } from 'firebase-functions/v2/firestore';
 import { getFirestore, FieldValue, Firestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 import { crediterNiskas } from './niskas';
+import { SEUIL_ACCES_VIE_CENTS, SEUIL_ACCES_VIE_FILLEULES, filleuleCompte } from './parrainageRegles';
+
+export { SEUIL_ACCES_VIE_CENTS, SEUIL_ACCES_VIE_FILLEULES };
 
 // Le parrainage à paliers (porté du FMM). Deux compteurs, posés côté serveur
 // seulement :
