@@ -33,6 +33,9 @@ export type PointsKind =
   | 'commentaire'     // commentaire sous un billet, un par billet
   | 'boutique'        // negative : achat dans la petite boutique (serveur)
   | 'achat-niskas'    // cent niskas achetés pour dix dollars (serveur, Stripe)
+  | 'badge-bleu'      // deux cents niskas à l'approbation du Badge Bleu (serveur deciderBadgeBleu)
+  | 'foyer-hebdo'     // cadeau de la semaine complète du Foyer d'Origine (serveur reclamerQuotidien)
+  | 'foyer-mois'      // cadeau du mois complet du Foyer d'Origine (serveur reclamerQuotidien)
   | 'quiz'
   | 'newsletter'
   | 'order'           // awarded once per order; `amount` derived from item count
