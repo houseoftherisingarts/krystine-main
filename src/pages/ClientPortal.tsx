@@ -30,7 +30,8 @@ import PieceNiska from '../components/client/PieceNiska';
 import { AvecSignature } from '../components/client/Signature';
 import RoueQuotidienne from '../components/client/RoueQuotidienne';
 import BienvenueJeu from '../components/client/BienvenueJeu';
-import ReserveAuFoyer, { MotDuFoyer, useAmiesDOrigine } from '../components/communaute/ReserveAuFoyer';
+import { MotDuFoyer, useAmiesDOrigine } from '../components/communaute/ReserveAuFoyer';
+import { CHEMINS_FOYER } from '../components/communaute/chemins';
 import { RangeePersonne, PETITES_CAPITALES } from '../components/communaute/CarteSociale';
 import '../components/client/skins.css';
 import Portail from '../components/Portail';
@@ -337,7 +338,7 @@ const ClientAmis: React.FC<{ uid: string; lang: string; seulement?: Set<string> 
           const nom = m?.displayName || (lang === 'FR' ? 'Membre' : 'Member');
           return (
             <Rangee key={autre} autre={autre} nom={nom} m={m} enfant={
-              <Link to={`/messages/${autre}`} className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
+              <Link to={CHEMINS_FOYER.conversation(autre)} className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
                 <i className="fa-solid fa-envelope text-[9px]" /> {lang === 'FR' ? 'Écrire' : 'Write'}
               </Link>
             } />
@@ -369,7 +370,7 @@ const ClientAmis: React.FC<{ uid: string; lang: string; seulement?: Set<string> 
         {amis.length === 0 ? (
           <p className="mt-3 text-sm text-[#38403a]/50 dark:text-white/50">
             {lang === 'FR' ? 'Votre cercle commence dans l\'annuaire de la communauté.' : 'Your circle begins in the community directory.'}
-            {' '}<Link to="/membres" className="text-[#8B4A2F] underline-offset-2 hover:underline">{lang === 'FR' ? 'Voir les membres' : 'See members'}</Link>
+            {' '}<Link to={CHEMINS_FOYER.membres} className="text-[#8B4A2F] underline-offset-2 hover:underline">{lang === 'FR' ? 'Voir les membres' : 'See members'}</Link>
           </p>
         ) : (
           <div className="mt-3 space-y-2">
@@ -509,7 +510,7 @@ const AmisDOrigine: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) =>
       <div className="space-y-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className={PETITES_CAPITALES}><i className="fa-solid fa-fire mr-1" /> {fr ? 'Le Foyer d’Origine' : 'The Origine Hearth'}</p>
-          <Link to="/membres?vue=amies" className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
+          <Link to={CHEMINS_FOYER.amies} className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
             <i className="fa-solid fa-fire text-[9px]" /> {fr ? 'Ouvrir le cercle au Foyer' : 'Open the circle in the Hearth'}
           </Link>
         </div>

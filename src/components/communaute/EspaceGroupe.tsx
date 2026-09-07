@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
 import MurSocial from './MurSocial';
+import { CHEMINS_FOYER } from './chemins';
 import BilletCarte from './BilletCarte';
 import BadgeVedette from './BadgeVedette';
 import CarteSociale, { RangeePersonne } from './CarteSociale';
@@ -13,7 +14,7 @@ import { suivreMesSauvegardes, getPost, type PostMur } from '../../firebase/mur'
 // Deux habits. `page` (celui de /cours/:id) : trois colonnes pleine largeur,
 // les onglets à gauche (le fil, les onglets que Krystine crée, les billets
 // gardés), le fil au centre, les membres à droite en rangées de personne avec
-// l'écriture directe. `cadre` (celui de /groupes, dans le CadreFoyer) : la
+// l'écriture directe. `cadre` (celui de /foyer/groupes, dans le CadreFoyer) : la
 // colonne centrale seulement, une rangée de pilules puis le fil; le rail
 // « Autour du feu » de la coquille tient lieu de colonne Membres.
 // Réutilisable pour tout cours; le Foyer est le premier à s'en servir.
@@ -140,7 +141,7 @@ const EspaceGroupe: React.FC<{ formationId: string; variante?: 'page' | 'cadre' 
                 sousTitre={<BadgeVedette uid={m.uid} />}
                 action={user && user.uid !== m.uid ? (
                   <Link
-                    to={`/messages/${m.uid}`}
+                    to={CHEMINS_FOYER.conversation(m.uid)}
                     aria-label={fr ? `Écrire à ${nom}` : `Write to ${nom}`}
                     className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#8B4A2F] transition-colors hover:bg-[#BA7B39]/15 dark:text-[#d9a05b]"
                   >

@@ -8,6 +8,7 @@ import Avatar from '../../components/communaute/Avatar';
 import ClientSupport from './ClientSupport';
 import CadeauCarte from '../../components/client/CadeauCarte';
 import { MotDuFoyer, useAmiesDOrigine } from '../../components/communaute/ReserveAuFoyer';
+import { CHEMINS_FOYER } from '../../components/communaute/chemins';
 import { suivreMesCadeaux, type Cadeau } from '../../firebase/cadeaux';
 
 // ─── Onglet Messagerie de l'espace client ────────────────────────────────────
@@ -16,7 +17,7 @@ import { suivreMesCadeaux, type Cadeau } from '../../firebase/cadeaux';
 // (ClientSupport, collection conversations/{uid}). Rien de nouveau côté
 // données : l'onglet réunit ce qui existait déjà à deux endroits.
 //
-// Le même composant sert la messagerie d'origine du Foyer (/messages, dans
+// Le même composant sert la messagerie du Foyer (/foyer/messages, dans
 // CadreFoyer) : `avec` ouvre la conversation avec une personne (le fil se
 // crée au passage), `dansFoyer` retire le lien du bas qui y mène.
 
@@ -200,7 +201,7 @@ const ClientMessagerie: React.FC<{ voletInitial?: Volet; avec?: string; dansFoye
               );
             })}
             {!dansFoyer && (
-              <Link to="/messages" className="mt-auto flex items-center gap-2 px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:underline dark:text-[#d9a05b]">
+              <Link to={CHEMINS_FOYER.messages} className="mt-auto flex items-center gap-2 px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:underline dark:text-[#d9a05b]">
                 <i className="fa-solid fa-fire" /> {fr ? 'Ouvrir dans le Foyer' : 'Open in the Hearth'}
               </Link>
             )}
@@ -220,7 +221,7 @@ const ClientMessagerie: React.FC<{ voletInitial?: Volet; avec?: string; dansFoye
                     <i className="fa-solid fa-chevron-left" />
                   </button>
                   <Avatar nom={nomAutre} url={photoAutre} taille={36} />
-                  <Link to={`/membre/${autreUid}`} className="truncate text-sm font-bold text-[#293027] hover:text-[#8B4A2F] dark:text-white">{nomAutre}</Link>
+                  <Link to={CHEMINS_FOYER.profil(autreUid)} className="truncate text-sm font-bold text-[#293027] hover:text-[#8B4A2F] dark:text-white">{nomAutre}</Link>
                 </div>
                 <div ref={zoneRef} className="flex-1 space-y-2 overflow-y-auto px-4 py-4">
                   {msgs.map(m => {

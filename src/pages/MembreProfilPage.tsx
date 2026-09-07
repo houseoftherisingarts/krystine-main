@@ -6,21 +6,25 @@ import {
   demanderAmitie, accepterAmitie, suivreMesAmities,
   estAmi, amitieEnAttente, type Amitie,
 } from '../firebase/amities';
-import { MotDuFoyer, useAmiesDOrigine } from '../components/communaute/ReserveAuFoyer';
+import { useAmiesDOrigine, useCercleDuFoyer } from '../components/communaute/ReserveAuFoyer';
 import CadreFoyer from '../components/communaute/CadreFoyer';
+import { CHEMINS_FOYER } from '../components/communaute/chemins';
 import CarteSociale, { PETITES_CAPITALES } from '../components/communaute/CarteSociale';
 import BilletCarte from '../components/communaute/BilletCarte';
 import Composeur from '../components/communaute/Composeur';
 import { suivrePublicationsDe, type PostMur } from '../firebase/mur';
 import { getBadgesDe, badgeVedetteEnCache, CATALOGUE_BADGES } from '../firebase/badgesCatalogue';
 
-// ─── La fiche publique d'une membre, /membre/:uid ────────────────────────────
+// ─── La fiche d'une membre du Foyer, /foyer/membre/:uid ──────────────────────
 // La coquille du Foyer (CadreFoyer) porte la bannière et l'avatar de la
 // personne, comme la couverture d'un profil Facebook. Dessous, dans la
 // colonne centrale : la carte « À propos » (dosha, membre depuis, les gestes
 // d'amitié et d'écriture, les badges), le composeur pour soi, puis le mur en
-// billets. La marraine et les filleules y entrent sans le Foyer
-// (garde={false}); l'amitié et les messages restent derrière useAmiesDOrigine.
+// billets.
+//
+// La fiche n'est plus publique (Alex, 7 septembre 2026) : la coquille exige
+// l'achat du Foyer, et la personne regardée doit elle aussi être du Foyer.
+// Une membre du site qui n'y est pas n'a pas de fiche ici.
 
 // whitespace-nowrap : un bouton en pilule ne se plie jamais sur deux lignes; à 390 les gestes passent à la ligne l'un sous l'autre.
 const BOUTON_ENCRE = 'inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] transition-colors hover:bg-[#3a453a] disabled:opacity-50 dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]';
@@ -35,6 +39,7 @@ const MembreProfilPage: React.FC = () => {
   const fr = lang === 'FR';
 
   const amiesDOrigine = useAmiesDOrigine();
+  const cercle = useCercleDuFoyer();
   const [profil, setProfil] = useState<MemberDoc | null>(null);
   const [chargement, setChargement] = useState(true);
   const [amities, setAmities] = useState<Amitie[]>([]);
@@ -61,20 +66,22 @@ const MembreProfilPage: React.FC = () => {
   useEffect(() => { if (user) return suivreMesAmities(user.uid, setAmities); }, [user]);
 
   // La coquille porte la carte « Se connecter » : rien à rendre dedans.
-  if (!user) return <CadreFoyer garde={false}>{null}</CadreFoyer>;
+  if (!user) return <CadreFoyer>{null}</CadreFoyer>;
 
-  if (chargement) {
+  if (chargement || cercle.chargement) {
     return (
-      <CadreFoyer garde={false}>
+      <CadreFoyer>
         <div className="flex justify-center py-12"><i className="fa-solid fa-circle-notch fa-spin text-2xl text-[#8B4A2F]" /></div>
       </CadreFoyer>
     );
   }
 
-  if (!uid || !profil) {
+  // Hors du cercle du Foyer, la fiche n'existe pas, même avec l'adresse exacte.
+  const dansLeFoyer = !!uid && (uid === user.uid || cercle.membres.some(m => m.uid === uid));
+  if (!uid || !profil || !dansLeFoyer) {
     return (
-      <CadreFoyer garde={false}>
-        <CarteSociale><p className="text-sm text-[#38403a]/50 dark:text-white/50">{fr ? 'Ce membre est introuvable.' : 'This member cannot be found.'}</p></CarteSociale>
+      <CadreFoyer>
+        <CarteSociale><p className="text-sm text-[#38403a]/50 dark:text-white/50">{fr ? 'Cette membre est introuvable au Foyer.' : 'This member cannot be found in the Hearth.'}</p></CarteSociale>
       </CadreFoyer>
     );
   }
@@ -114,14 +121,14 @@ const MembreProfilPage: React.FC = () => {
           <i className={`fa-solid ${envoi ? 'fa-circle-notch fa-spin' : 'fa-user-plus'} text-[9px]`} /> {fr ? 'Amie d’origine' : 'Origine friend'}
         </button>
       )}
-      <Link to={`/messages/${uid}`} className={BOUTON_SECONDAIRE}>
+      <Link to={CHEMINS_FOYER.conversation(uid)} className={BOUTON_SECONDAIRE}>
         <i className="fa-solid fa-envelope text-[9px]" /> {fr ? 'Écrire' : 'Write'}
       </Link>
     </div>
   ) : undefined;
 
   return (
-    <CadreFoyer onglet={soi ? 'profil' : undefined} garde={false} personne={profil}>
+    <CadreFoyer onglet={soi ? 'profil' : undefined} personne={profil}>
       <CarteSociale titre={fr ? 'À propos' : 'About'} action={gestes}>
         <dl className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
           <div>
@@ -133,12 +140,6 @@ const MembreProfilPage: React.FC = () => {
             <dd className="mt-1 text-sm text-[#293027] dark:text-white">{depuis || (fr ? 'Les premiers jours' : 'The early days')}</dd>
           </div>
         </dl>
-
-        {!soi && amiesDOrigine.pret && !origine && (
-          <div className="mt-5">
-            <MotDuFoyer compact lang={lang} quoi={fr ? 'L’amitié d’origine et les messages de boîte à boîte se débloquent avec le Foyer d’Origine.' : 'Origine friendship and inbox-to-inbox messages unlock with the Origine Hearth.'} />
-          </div>
-        )}
 
         <div id="badges" className="mt-6 border-t border-[#38403a]/10 pt-5 dark:border-white/10">
           <p className={PETITES_CAPITALES}>Badges</p>

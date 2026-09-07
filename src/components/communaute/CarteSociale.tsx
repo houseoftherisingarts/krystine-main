@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Avatar from './Avatar';
+import { CHEMINS_FOYER } from './chemins';
 
 // ─── La carte du Foyer social ────────────────────────────────────────────────
 // La brique de tout écran social du Foyer d'Origine (fil, membres, fiche,
@@ -60,7 +61,7 @@ export const RangeePersonne: React.FC<{
   compact?: boolean;
 }> = ({ uid, nom, photo, verifie, sousTitre, action, compact }) => (
   <div className={`flex items-center gap-3 ${compact ? 'rounded-[12px] px-2 py-2 transition-colors hover:bg-[#BA7B39]/8' : 'rounded-[15px] border border-[#38403a]/10 p-3 dark:border-white/10'}`}>
-    <Link to={`/membre/${uid}`} className="flex min-w-0 flex-1 items-center gap-3">
+    <Link to={CHEMINS_FOYER.profil(uid)} className="flex min-w-0 flex-1 items-center gap-3">
       <Avatar nom={nom} url={photo} taille={compact ? 36 : 40} />
       <span className="min-w-0 flex-1">
         <span className="flex min-w-0 items-center gap-1.5 truncate text-sm font-medium text-[#293027] dark:text-white">

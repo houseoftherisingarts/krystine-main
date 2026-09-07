@@ -7,6 +7,7 @@ import { subscribeInbox, type DMThread } from '../../firebase/dms';
 import { suivreMesAmities, type Amitie } from '../../firebase/amities';
 import { suivreLeMur, type PostMur } from '../../firebase/mur';
 import { useMembreDuFoyer } from './ReserveAuFoyer';
+import { CHEMINS_FOYER } from './chemins';
 
 // ─── La cloche ────────────────────────────────────────────────────────
 // Porté du FMM 2026 (src/components/compte/Cloche.tsx), simplifié : trois
@@ -54,7 +55,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
   const boite = useRef<HTMLDivElement>(null);
   const ouvertureLe = useRef<number | null>(null);
   const foyer = useMembreDuFoyer();
-  const versMessages = foyer ? '/messages' : '/compte?onglet=messagerie';
+  const versMessages = foyer ? CHEMINS_FOYER.messages : '/compte?onglet=messagerie';
 
   useEffect(() => {
     if (!uid) return;
@@ -66,7 +67,9 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
     return suivreMesAmities(uid, setAmities);
   }, [uid]);
 
-  useEffect(() => suivreLeMur('communaute', setBillets, 10), []);
+  // Le fil de la communauté vit au Foyer : sans l'achat, les règles refusent
+  // la lecture, alors on ne s'y abonne même pas.
+  useEffect(() => (foyer ? suivreLeMur('communaute', setBillets, 10) : undefined), [foyer]);
   useEffect(() => (uid ? suivreMesCadeaux(uid, setCadeaux) : undefined), [uid]);
 
   useEffect(() => {
@@ -112,7 +115,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
       .map((a) => ({
         id: `amitie-${a.de}`,
         titre: 'Quelqu’un vous demande en ami',
-        lien: foyer ? '/membres?vue=demandes' : '/compte?onglet=amis',
+        lien: foyer ? CHEMINS_FOYER.demandes : '/compte?onglet=amis',
         quand: 0,
       }));
     const nouveauxBillets: Item[] = billets
@@ -120,7 +123,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
       .map((b) => ({
         id: `billet-${b.id}`,
         titre: `Krystine a publié : ${b.texte.length > 50 ? `${b.texte.slice(0, 50)}…` : b.texte}`,
-        lien: foyer ? '/fil?fil=communaute' : '/compte',
+        lien: foyer ? `${CHEMINS_FOYER.fil}?fil=communaute` : '/compte',
         quand: b.creeLe?.toMillis?.() ?? 0,
       }));
     const dons: Item[] = cadeaux.map((c) => ({

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
-import { getMember, type MemberDoc } from '../../firebase/firestore';
+import { type MemberDoc } from '../../firebase/firestore';
 import { logout } from '../../firebase/auth';
-import { getMembresGroupe } from '../../firebase/formations';
 import { subscribeToMemberPoints, suivreBoutique, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../../firebase/points';
 import { BANNIERE_DEFAUT, banniereParCle, niskas, skinParCle } from '../../lib/pointsConfig';
 import EffetsSkin from '../client/skins/EffetsSkin';
@@ -11,8 +10,9 @@ import MotifsSkin from '../client/skins/MotifsSkin';
 import PieceNiska from '../client/PieceNiska';
 import { AvecSignature } from '../client/Signature';
 import ClientParrainage from '../../pages/client/ClientParrainage';
-import ReserveAuFoyer, { useMembreDuFoyer } from './ReserveAuFoyer';
+import { useCercleDuFoyer, useMembreDuFoyer } from './ReserveAuFoyer';
 import CarteSociale, { RangeePersonne } from './CarteSociale';
+import { CHEMINS_FOYER } from './chemins';
 import '../client/skins.css';
 
 // ─── La coquille du Foyer social ─────────────────────────────────────────────
@@ -35,22 +35,11 @@ import '../client/skins.css';
 
 export type OngletFoyer = 'fil' | 'membres' | 'groupes' | 'messages' | 'profil';
 
-/** Les routes du Foyer social. Le fil vit à /fil : /communaute est une page statique de l'hébergement. */
-export const CHEMINS_FOYER = {
-  fil: '/fil',
-  membres: '/membres',
-  groupes: '/groupes',
-  messages: '/messages',
-  profil: (uid: string) => `/membre/${uid}`,
-} as const;
-
 interface Props {
   /** L'onglet allumé. Aucun sur la fiche d'une autre membre. */
   onglet?: OngletFoyer;
-  /** Vrai par défaut : le centre passe par le garde-fou du Foyer (ReserveAuFoyer). */
+  /** Vrai par défaut : sans achat du Foyer, la page entière renvoie à la vente. */
   garde?: boolean;
-  /** Le mot du garde-fou, quand la page en veut un plus précis. */
-  quoi?: string;
   /** La fiche publique d'une autre membre : la bannière montre cette personne, comme la couverture d'un profil Facebook. */
   personne?: MemberDoc | null;
   /** Remplace la colonne de droite (cercle + parrainage). */
@@ -58,31 +47,18 @@ interface Props {
   children: React.ReactNode;
 }
 
-const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, quoi, personne, droite, children }) => {
+const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, personne, droite, children }) => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
   const fr = lang === 'FR';
   const location = useLocation();
   const foyer = useMembreDuFoyer();
   const [solde, setSolde] = useState<PointsBalance>(DEFAULT_POINTS_BALANCE);
   const [possede, setPossede] = useState<Record<string, unknown>>({});
-  // Le cercle du Foyer : les membres du groupe `groupes/foyer/membres`, les
-  // plus récemment vues d'abord (le miroir est lisible par toute personne connectée).
-  const [cercle, setCercle] = useState<Array<{ uid: string; fiche: MemberDoc | null }>>([]);
+  // Le cercle du Foyer : les acheteuses du Foyer, et personne d'autre.
+  const { membres: cercle } = useCercleDuFoyer();
 
   useEffect(() => { if (!user) return; return subscribeToMemberPoints(user.uid, setSolde); }, [user]);
   useEffect(() => { if (!user) return; return suivreBoutique(user.uid, p => setPossede(p.possede)); }, [user]);
-  useEffect(() => {
-    if (!user) return;
-    let vivant = true;
-    getMembresGroupe('foyer')
-      .then(async liste => {
-        const fiches = await Promise.all(liste.map(async m => ({ uid: m.uid, fiche: await getMember(m.uid).catch(() => null) })));
-        fiches.sort((a, b) => (b.fiche?.lastSeenAt?.toMillis?.() || 0) - (a.fiche?.lastSeenAt?.toMillis?.() || 0));
-        if (vivant) setCercle(fiches);
-      })
-      .catch(() => { if (vivant) setCercle([]); });
-    return () => { vivant = false; };
-  }, [user]);
 
   if (!user) {
     // La carte « Se connecter » de l'espace client (ClientPortal.tsx:474-500), mot pour mot, avec le nom du lieu.
@@ -109,6 +85,14 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, quoi, personne, dro
         </div>
       </div>
     );
+  }
+
+  // Le paywall, en une porte : une page du Foyer ne s'ouvre pas sans l'achat.
+  // On attend de savoir (foyer === null) plutôt que de faire clignoter la
+  // page de vente sous les yeux d'une membre.
+  if (garde) {
+    if (foyer === null) return <div className="min-h-screen bg-[#EEE7DB] dark:bg-[#151d19]" />;
+    if (!foyer) return <Navigate to={CHEMINS_FOYER.vente} replace />;
   }
 
   const moi = user.uid;
@@ -140,10 +124,10 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, quoi, personne, dro
   ];
   const raccourcis: Array<{ cle: string; label: string; icon: string; to: string; actif: boolean }> = [
     { cle: 'profil',   label: fr ? 'Mon profil' : 'My profile', icon: 'fa-user',         to: CHEMINS_FOYER.profil(moi),  actif: onglet === 'profil' },
-    { cle: 'amies',    label: fr ? 'Amies' : 'Friends',         icon: 'fa-heart',        to: '/membres?vue=amies',       actif: onglet === 'membres' && vue === 'amies' },
+    { cle: 'amies',    label: fr ? 'Amies' : 'Friends',         icon: 'fa-heart',        to: CHEMINS_FOYER.amies,        actif: onglet === 'membres' && vue === 'amies' },
     { cle: 'groupes',  label: fr ? 'Groupes' : 'Groups',        icon: 'fa-people-group', to: CHEMINS_FOYER.groupes,      actif: onglet === 'groupes' },
     { cle: 'messages', label: 'Messages',                       icon: 'fa-comments',     to: CHEMINS_FOYER.messages,     actif: onglet === 'messages' },
-    { cle: 'badges',   label: 'Badges',                         icon: 'fa-award',        to: `/membre/${moi}#badges`,    actif: false },
+    { cle: 'badges',   label: 'Badges',                         icon: 'fa-award',        to: `${CHEMINS_FOYER.profil(moi)}#badges`, actif: false },
   ];
   const ongletClasse = (actif: boolean) => `flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-2 py-3.5 text-[10px] font-bold uppercase tracking-wide transition-colors 2xl:px-3 2xl:text-[11px] 2xl:tracking-wider ${
     actif ? 'border-[#BA7B39] text-[#8B4A2F] dark:text-[#d9a05b]' : 'border-transparent text-[#38403a]/55 hover:text-[#8B4A2F] dark:text-white/55 dark:hover:text-[#d9a05b]'
@@ -235,8 +219,11 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, quoi, personne, dro
               <i className={`fa-solid ${t.icon} hidden 2xl:inline`} /> {t.label}
             </Link>
           ))}
-          <Link to="/compte" className={`ml-auto ${ongletClasse(false)}`}>
-            <i className="fa-solid fa-arrow-left" /> {fr ? 'Retour à mon espace' : 'Back to my space'}
+          <Link to={CHEMINS_FOYER.programme} className={`ml-auto ${ongletClasse(false)}`}>
+            <i className="fa-solid fa-book-open hidden 2xl:inline" /> {fr ? 'Le programme' : 'The programme'}
+          </Link>
+          <Link to="/compte" className={ongletClasse(false)}>
+            <i className="fa-solid fa-arrow-left" /> {fr ? 'Mon espace' : 'My space'}
           </Link>
         </div>
       </div>
@@ -263,9 +250,7 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, quoi, personne, dro
 
         <main className="min-w-0">
           <div className="space-y-4 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-white/5">
-          {garde
-            ? <ReserveAuFoyer lang={lang} quoi={quoi || (fr ? 'Le Foyer social est exclusif aux membres du Foyer d’Origine.' : 'The social Hearth is reserved for members of the Origine Hearth.')}>{children}</ReserveAuFoyer>
-            : children}
+            {children}
           </div>
         </main>
 
@@ -282,18 +267,18 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, quoi, personne, dro
                 ) : (
                   <div className="space-y-0.5">
                     {cercle.slice(0, 8).map(c => {
-                      const nomC = (c.fiche?.displayName || '').trim() || (fr ? 'Membre' : 'Member');
+                      const nomC = (c.displayName || '').trim() || (fr ? 'Membre' : 'Member');
                       return (
                         <RangeePersonne
                           key={c.uid}
                           compact
                           uid={c.uid}
                           nom={nomC}
-                          photo={c.fiche?.photoURL}
-                          verifie={c.fiche?.verifie}
+                          photo={c.photoURL}
+                          verifie={c.verifie}
                           action={c.uid !== moi ? (
                             <Link
-                              to={`/messages/${c.uid}`}
+                              to={CHEMINS_FOYER.conversation(c.uid)}
                               aria-label={fr ? `Écrire à ${nomC}` : `Write to ${nomC}`}
                               className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#8B4A2F] transition-colors hover:bg-[#BA7B39]/15 dark:text-[#d9a05b]"
                             >

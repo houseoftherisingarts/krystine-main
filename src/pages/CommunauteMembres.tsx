@@ -1,16 +1,22 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
-import { getAllMembers, type MemberDoc } from '../firebase/firestore';
+import { type MemberDoc } from '../firebase/firestore';
 import { accepterAmitie, refuserAmitie, suivreMesAmities, type Amitie } from '../firebase/amities';
 import CadreFoyer from '../components/communaute/CadreFoyer';
 import CarteSociale, { PETITES_CAPITALES, RangeePersonne } from '../components/communaute/CarteSociale';
+import { useCercleDuFoyer } from '../components/communaute/ReserveAuFoyer';
+import { CHEMINS_FOYER } from '../components/communaute/chemins';
 
-// ─── L'annuaire des membres du Foyer, /membres ───────────────────────────────
+// ─── L'annuaire du Foyer, /foyer/membres ─────────────────────────────────────
 // Une seule carte dans la coquille du Foyer (CadreFoyer) : le titre en petites
 // capitales, la recherche en pilule, trois vues en pilules (Toutes, Mes amies,
 // Demandes) et les personnes en rangées de l'onglet Amis de /compte. Chaque
-// rangée mène à la fiche /membre/:uid; le geste à droite dépend de la vue.
+// rangée mène à la fiche /foyer/membre/:uid; le geste à droite dépend de la vue.
+//
+// La liste ne contient QUE les acheteuses du Foyer d'Origine (useCercleDuFoyer,
+// le miroir `groupes/foyer/membres`) : aucune autre membre du site n'y entre,
+// ni dans la recherche, ni dans les amies, ni dans les demandes.
 
 /** Le compte de l'équipe de modération : « Contacter l'équipe » ouvre une conversation avec lui. */
 const UID_MODERATION = 'kYorHEdND9bfk5A4I3oxVJJSquR2';
@@ -28,30 +34,23 @@ const CommunauteMembres: React.FC = () => {
   const fr = lang === 'FR';
   const [params, setParams] = useSearchParams();
   const vue: Vue = params.get('vue') === 'amies' ? 'amies' : params.get('vue') === 'demandes' ? 'demandes' : 'toutes';
-  const [membres, setMembres] = useState<MemberDoc[]>([]);
-  const [chargement, setChargement] = useState(true);
+  const { membres, chargement } = useCercleDuFoyer();
   const [amities, setAmities] = useState<Amitie[]>([]);
   const [recherche, setRecherche] = useState('');
   const [enCours, setEnCours] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!user) return;
-    let vivant = true;
-    getAllMembers()
-      .then((m) => { if (vivant) setMembres(m); })
-      .catch(() => { if (vivant) setMembres([]); })
-      .finally(() => { if (vivant) setChargement(false); });
-    return () => { vivant = false; };
-  }, [user]);
   useEffect(() => { if (user) return suivreMesAmities(user.uid, setAmities); }, [user]);
 
   const moi = user?.uid || '';
   const parUid = useMemo(() => new Map(membres.map(m => [m.uid, m])), [membres]);
   const ficheDe = (uid: string): MemberDoc => parUid.get(uid) || { uid, email: '', displayName: fr ? 'Membre' : 'Member' };
   const autreDe = (l: Amitie) => l.paire.find(u => u !== moi) || '';
-  const amies = useMemo(() => amities.filter(l => l.statut === 'amis').map(autreDe), [amities, moi]);
-  const recues = useMemo(() => amities.filter(l => l.statut === 'demande' && l.de !== moi).map(autreDe), [amities, moi]);
-  const envoyees = useMemo(() => amities.filter(l => l.statut === 'demande' && l.de === moi).map(autreDe), [amities, moi]);
+  // Une amitié nouée hors du Foyer (marraine, filleule) ne s'affiche pas ici :
+  // le Foyer ne montre que le Foyer.
+  const duFoyer = (uid: string) => parUid.has(uid);
+  const amies = useMemo(() => amities.filter(l => l.statut === 'amis').map(autreDe).filter(duFoyer), [amities, moi, parUid]);
+  const recues = useMemo(() => amities.filter(l => l.statut === 'demande' && l.de !== moi).map(autreDe).filter(duFoyer), [amities, moi, parUid]);
+  const envoyees = useMemo(() => amities.filter(l => l.statut === 'demande' && l.de === moi).map(autreDe).filter(duFoyer), [amities, moi, parUid]);
 
   const q = normaliser(recherche.trim());
   const toutes = q ? membres.filter(m => normaliser(m.displayName || '').includes(q)) : membres;
@@ -78,7 +77,7 @@ const CommunauteMembres: React.FC = () => {
   );
 
   const ecrire = (m: MemberDoc) => (
-    <Link to={`/messages/${m.uid}`} className={BOUTON_SECONDAIRE}>
+    <Link to={CHEMINS_FOYER.conversation(m.uid)} className={BOUTON_SECONDAIRE}>
       <i className="fa-solid fa-envelope text-[9px]" /> {fr ? 'Écrire' : 'Write'}
     </Link>
   );
@@ -126,7 +125,7 @@ const CommunauteMembres: React.FC = () => {
           <div className="flex justify-center py-12"><i className="fa-solid fa-circle-notch fa-spin text-2xl text-[#8B4A2F]" /></div>
         ) : vue === 'toutes' ? (
           toutes.length === 0
-            ? vide(q ? (fr ? 'Aucune membre ne porte ce nom.' : 'No member goes by that name.') : (fr ? 'Aucune membre pour le moment.' : 'No member yet.'))
+            ? vide(q ? (fr ? 'Aucune membre du Foyer ne porte ce nom.' : 'No Hearth member goes by that name.') : (fr ? 'Le cercle du Foyer se forme.' : 'The Hearth circle is forming.'))
             : grille(toutes.map(m => rangee(m, ecrire(m))))
         ) : vue === 'amies' ? (
           amies.length === 0
@@ -164,7 +163,7 @@ const CommunauteMembres: React.FC = () => {
         )}
 
         <div className="mt-6 flex justify-end">
-          <Link to={`/messages/${UID_MODERATION}`} className={`${BOUTON_SECONDAIRE} whitespace-nowrap`}>
+          <Link to={CHEMINS_FOYER.conversation(UID_MODERATION)} className={`${BOUTON_SECONDAIRE} whitespace-nowrap`}>
             <i className="fa-solid fa-shield-halved text-[9px]" /> {fr ? 'Écrire à la modération' : 'Write to moderation'}
           </Link>
         </div>

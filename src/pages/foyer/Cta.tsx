@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useAuth } from '../../contexts/AppContext';
 import { aAchete, acheterFormation } from '../../firebase/formations';
+import { CHEMINS_FOYER } from '../../components/communaute/chemins';
 
 /* ── Rejoindre le Foyer : Stripe Checkout (mise en vente le 6 septembre 2026,
    la liste d'attente est retirée). Qui possède déjà la formation entre
-   directement dans son espace. Partagé entre chaque CTA et la pilule. ── */
+   directement dans le Foyer social. Partagé entre chaque CTA et la pilule. ── */
 export function useRejoindreFoyer() {
   const { user, setSignInOpen } = useAuth();
   const [possede, setPossede] = useState(false);
@@ -15,7 +16,7 @@ export function useRejoindreFoyer() {
     else setPossede(false);
   }, [user]);
   const rejoindre = async () => {
-    if (possede) { window.location.href = '/cours/foyer'; return; }
+    if (possede) { window.location.href = CHEMINS_FOYER.fil; return; }
     if (!user) { setSignInOpen(true); return; }
     setBusy(true);
     try { window.location.href = await acheterFormation('foyer'); } catch { setBusy(false); }
