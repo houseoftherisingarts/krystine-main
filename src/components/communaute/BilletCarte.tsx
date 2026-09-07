@@ -29,6 +29,8 @@ const quandTexte = (ms: number): string => {
 /** Une ligne de commentaire : son propre vote, sa propre suppression. */
 const LigneCommentaire: React.FC<{ postId: string; postAuteurUid: string; c: CommentaireMur }> = ({ postId, postAuteurUid, c }) => {
   const { user, isAdmin } = useAuth();
+  const { lang } = useApp();
+  const fr = lang === 'FR';
   const [monVote, setMonVote] = useState<1 | -1 | 0>(0);
   useEffect(() => (user ? suivreMonVoteCommentaire(postId, c.id, user.uid, setMonVote) : undefined), [postId, c.id, user]);
 
