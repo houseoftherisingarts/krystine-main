@@ -105,9 +105,9 @@ for (const vp of VIEWPORTS) {
     await page.goto(`${BASE}${pg.url}?edit=1`, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(2500);
     headingLoc = page.locator(pg.selector, { hasText: pg.newText }).first();
-    await headingLoc.scrollIntoViewIfNeeded();
-    await page.waitForTimeout(300);
     handle = await headingLoc.elementHandle();
+    await handle.evaluate(el => el.scrollIntoView({ block: 'center' }));
+    await page.waitForTimeout(300);
     await handle.click();
     await page.waitForTimeout(250);
     await selectAllAndType(page, pg.match);
