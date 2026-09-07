@@ -379,7 +379,20 @@ const AmisDOrigine: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) =>
   const { foyer, permis, pret } = useAmiesDOrigine();
   const fr = lang === 'FR';
   if (!pret) return null;
-  if (foyer) return <ClientAmis uid={uid} lang={lang} />;
+  if (foyer) {
+    // Le cercle complet se tient au Foyer (/membres?vue=amies) : la ligne du haut y mène.
+    return (
+      <div className="space-y-8">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className={PETITES_CAPITALES}><i className="fa-solid fa-fire mr-1" /> {fr ? 'Le Foyer d’Origine' : 'The Origine Hearth'}</p>
+          <Link to="/membres?vue=amies" className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/70">
+            <i className="fa-solid fa-fire text-[9px]" /> {fr ? 'Ouvrir le cercle au Foyer' : 'Open the circle in the Hearth'}
+          </Link>
+        </div>
+        <ClientAmis uid={uid} lang={lang} />
+      </div>
+    );
+  }
   return (
     <div className="space-y-6">
       <MotDuFoyer lang={lang} quoi={fr ? 'Les amies d’origine et l’annuaire des membres sont exclusifs aux membres du Foyer d’Origine.' : 'Origine friends and the member directory are reserved for members of the Origine Hearth.'} />
