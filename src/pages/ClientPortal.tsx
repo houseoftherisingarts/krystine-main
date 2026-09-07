@@ -30,6 +30,7 @@ import PieceNiska from '../components/client/PieceNiska';
 import { AvecSignature } from '../components/client/Signature';
 import RoueQuotidienne from '../components/client/RoueQuotidienne';
 import BienvenueJeu from '../components/client/BienvenueJeu';
+import CoffreBeta from '../components/client/CoffreBeta';
 import { MotDuFoyer, useAmiesDOrigine } from '../components/communaute/ReserveAuFoyer';
 import { CHEMINS_FOYER } from '../components/communaute/chemins';
 import { RangeePersonne, PETITES_CAPITALES } from '../components/communaute/CarteSociale';
