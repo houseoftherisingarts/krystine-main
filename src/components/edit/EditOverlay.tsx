@@ -246,6 +246,7 @@ const EditOverlay: React.FC = () => {
       e.stopPropagation();
 
       if (editing && editing !== target) finish(true);
+      hidePencil();
 
       target.contentEditable = 'true';
       target.focus();
