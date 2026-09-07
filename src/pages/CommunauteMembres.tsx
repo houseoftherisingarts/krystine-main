@@ -1,92 +1,169 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AppContext';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { useApp } from '../contexts/AppContext';
 import { getAllMembers, type MemberDoc } from '../firebase/firestore';
-import Avatar from '../components/communaute/Avatar';
-import ReserveAuFoyer from '../components/communaute/ReserveAuFoyer';
+import { accepterAmitie, refuserAmitie, suivreMesAmities, type Amitie } from '../firebase/amities';
+import CadreFoyer from '../components/communaute/CadreFoyer';
+import CarteSociale, { PETITES_CAPITALES, RangeePersonne } from '../components/communaute/CarteSociale';
 
-// ─── L'annuaire des membres ──────────────────────────────────────────
-// Porté du mur social du FMM 2026 (le registre de l'Ordre), adapté à la
-// collection `members` déjà en place ici. Chaque carte mène à la fiche
-// publique du membre, /membre/:uid.
+// ─── L'annuaire des membres du Foyer, /membres ───────────────────────────────
+// Une seule carte dans la coquille du Foyer (CadreFoyer) : le titre en petites
+// capitales, la recherche en pilule, trois vues en pilules (Toutes, Mes amies,
+// Demandes) et les personnes en rangées de l'onglet Amis de /compte. Chaque
+// rangée mène à la fiche /membre/:uid; le geste à droite dépend de la vue.
+
+/** Le compte de l'équipe de modération : « Contacter l'équipe » ouvre une conversation avec lui. */
+const UID_MODERATION = 'kYorHEdND9bfk5A4I3oxVJJSquR2';
+
+type Vue = 'toutes' | 'amies' | 'demandes';
+
+const BOUTON_SECONDAIRE = 'inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] disabled:opacity-50 dark:border-white/15 dark:text-white/70';
+const BOUTON_LAITON = 'inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#9c6630] disabled:opacity-50';
+const BOUTON_REFUSER = 'rounded-full border border-[#38403a]/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/50 hover:text-red-500 dark:border-white/15 dark:text-white/50';
+
+const normaliser = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
 const CommunauteMembres: React.FC = () => {
-  const { user, setSignInOpen } = useAuth();
+  const { user, lang } = useApp();
+  const fr = lang === 'FR';
+  const [params, setParams] = useSearchParams();
+  const vue: Vue = params.get('vue') === 'amies' ? 'amies' : params.get('vue') === 'demandes' ? 'demandes' : 'toutes';
   const [membres, setMembres] = useState<MemberDoc[]>([]);
   const [chargement, setChargement] = useState(true);
+  const [amities, setAmities] = useState<Amitie[]>([]);
+  const [recherche, setRecherche] = useState('');
+  const [enCours, setEnCours] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
     let vivant = true;
     getAllMembers()
       .then((m) => { if (vivant) setMembres(m); })
+      .catch(() => { if (vivant) setMembres([]); })
       .finally(() => { if (vivant) setChargement(false); });
     return () => { vivant = false; };
   }, [user]);
+  useEffect(() => { if (user) return suivreMesAmities(user.uid, setAmities); }, [user]);
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-32 pb-24 px-6">
-        <div className="max-w-md mx-auto text-center">
-          <h1 className="font-serif text-3xl text-[#2a2015] dark:text-white mb-4">Membres</h1>
-          <p className="text-[#3a3126]/60 dark:text-white/60 mb-8">
-            Connectez-vous pour voir l’annuaire des membres.
-          </p>
-          <button
-            onClick={() => setSignInOpen(true)}
-            className="bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
-          >
-            Se connecter
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const moi = user?.uid || '';
+  const parUid = useMemo(() => new Map(membres.map(m => [m.uid, m])), [membres]);
+  const ficheDe = (uid: string): MemberDoc => parUid.get(uid) || { uid, email: '', displayName: fr ? 'Membre' : 'Member' };
+  const autreDe = (l: Amitie) => l.paire.find(u => u !== moi) || '';
+  const amies = useMemo(() => amities.filter(l => l.statut === 'amis').map(autreDe), [amities, moi]);
+  const recues = useMemo(() => amities.filter(l => l.statut === 'demande' && l.de !== moi).map(autreDe), [amities, moi]);
+  const envoyees = useMemo(() => amities.filter(l => l.statut === 'demande' && l.de === moi).map(autreDe), [amities, moi]);
+
+  const q = normaliser(recherche.trim());
+  const toutes = q ? membres.filter(m => normaliser(m.displayName || '').includes(q)) : membres;
+
+  const choisirVue = (v: Vue) => { const p = new URLSearchParams(params); if (v === 'toutes') p.delete('vue'); else p.set('vue', v); setParams(p, { replace: true }); };
+  const repondre = async (autre: string, oui: boolean) => {
+    if (!user) return;
+    setEnCours(autre);
+    try { if (oui) await accepterAmitie(user.uid, autre); else await refuserAmitie(user.uid, autre); } finally { setEnCours(null); }
+  };
+
+  const pilule = (v: Vue, label: string, n?: number) => (
+    <button
+      key={v}
+      type="button"
+      onClick={() => choisirVue(v)}
+      className={`relative flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-bold uppercase tracking-wider transition-colors ${
+        vue === v ? 'bg-[#BA7B39] text-[#293027]' : 'bg-[#BA7B39]/12 text-[#8B4A2F] hover:bg-[#BA7B39]/25 dark:text-[#d9a05b]'
+      }`}
+    >
+      {label}
+      {n !== undefined && n > 0 && <span className="ml-1 rounded-full bg-[#293027] px-1.5 py-0.5 text-[9px] text-[#d9a05b]">{n}</span>}
+    </button>
+  );
+
+  const ecrire = (m: MemberDoc) => (
+    <Link to={`/messages/${m.uid}`} className={BOUTON_SECONDAIRE}>
+      <i className="fa-solid fa-envelope text-[9px]" /> {fr ? 'Écrire' : 'Write'}
+    </Link>
+  );
+  const rangee = (m: MemberDoc, action?: React.ReactNode) => (
+    <RangeePersonne
+      key={m.uid}
+      uid={m.uid}
+      nom={m.displayName || (fr ? 'Membre' : 'Member')}
+      photo={m.photoURL}
+      verifie={m.verifie}
+      sousTitre={m.dosha ? `Dosha ${m.dosha}` : undefined}
+      action={m.uid === moi ? undefined : action}
+    />
+  );
+  const vide = (texte: string) => <p className="text-sm text-[#38403a]/50 dark:text-white/50">{texte}</p>;
+  const grille = (enfants: React.ReactNode) => <div className="grid gap-2 sm:grid-cols-2 2xl:grid-cols-3">{enfants}</div>;
 
   return (
-    <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] px-6 pt-32 pb-24"><div className="mx-auto max-w-3xl"><ReserveAuFoyer>
-    <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-28 pb-24">
-      <div className="max-w-4xl mx-auto px-6">
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-          <h1 className="font-serif text-3xl md:text-4xl text-[#2a2015] dark:text-white">Membres</h1>
-          <Link
-            to="/membre/kYorHEdND9bfk5A4I3oxVJJSquR2"
-            className="inline-flex items-center gap-2 rounded-full border border-[#bb9a5e]/50 bg-white/50 px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest text-[#7d6330] transition-colors hover:border-[#bb9a5e] hover:bg-[#bb9a5e] hover:text-[#2a2015] dark:bg-white/5"
-          >
-            <i className="fa-solid fa-shield-halved" /> Contacter l’équipe de modération
-          </Link>
+    <CadreFoyer onglet="membres">
+      <CarteSociale
+        titre={`${fr ? 'Membres' : 'Members'} · ${membres.length}`}
+        action={
+          <input
+            type="search"
+            value={recherche}
+            onChange={e => setRecherche(e.target.value)}
+            placeholder={fr ? 'Chercher une membre' : 'Search a member'}
+            aria-label={fr ? 'Chercher une membre' : 'Search a member'}
+            className="w-full rounded-full border border-[#38403a]/15 bg-white/70 px-4 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] sm:w-56 dark:border-white/15 dark:bg-white/10 dark:text-white"
+          />
+        }
+      >
+        <div className="mb-4 flex flex-wrap gap-2">
+          {pilule('toutes', fr ? 'Toutes' : 'All')}
+          {pilule('amies', fr ? 'Mes amies' : 'My friends', amies.length)}
+          {pilule('demandes', fr ? 'Demandes' : 'Requests', recues.length)}
         </div>
 
         {chargement ? (
-          <p className="text-sm text-[#3a3126]/50 dark:text-white/45">Un instant.</p>
-        ) : membres.length === 0 ? (
-          <p className="text-sm text-[#3a3126]/50 dark:text-white/45">Aucun membre pour le moment.</p>
+          <div className="flex justify-center py-12"><i className="fa-solid fa-circle-notch fa-spin text-2xl text-[#8B4A2F]" /></div>
+        ) : vue === 'toutes' ? (
+          toutes.length === 0
+            ? vide(q ? (fr ? 'Aucune membre ne porte ce nom.' : 'No member goes by that name.') : (fr ? 'Aucune membre pour le moment.' : 'No member yet.'))
+            : grille(toutes.map(m => rangee(m, ecrire(m))))
+        ) : vue === 'amies' ? (
+          amies.length === 0
+            ? vide(fr ? 'Votre cercle commence dans l’annuaire.' : 'Your circle starts in the directory.')
+            : grille(amies.map(uid => { const m = ficheDe(uid); return rangee(m, ecrire(m)); }))
         ) : (
-          <div className="grid sm:grid-cols-2 gap-4">
-            {membres.map((m) => (
-              <Link
-                key={m.uid}
-                to={`/membre/${m.uid}`}
-                className="flex items-center gap-4 bg-white/55 backdrop-blur-md dark:bg-[#2a2015]/55 rounded-[20px] border border-white/60 dark:border-white/10 shadow-[0_10px_30px_-18px_rgba(58,49,38,0.3)] p-4 hover:border-[#bb9a5e]/60 transition-colors"
-              >
-                <Avatar nom={m.displayName || 'Membre'} url={m.photoURL} taille={52} />
-                <div className="min-w-0">
-                  <p className="flex items-center gap-1.5 font-serif text-base text-[#2a2015] dark:text-white truncate">
-                    <span className="truncate">{m.displayName || 'Membre'}</span>
-                    {m.verifie && <i className="fa-solid fa-circle-check shrink-0 text-[13px] text-[#3b82f6]" title="Profil vérifié" />}
-                  </p>
-                  {m.dosha && (
-                    <p className="text-[11px] uppercase tracking-[0.14em] text-[#7d6330] dark:text-[#bb9a5e] mt-0.5">
-                      Dosha {m.dosha}
-                    </p>
-                  )}
+          <>
+            {recues.length === 0
+              ? vide(fr ? 'Aucune demande en attente.' : 'No pending request.')
+              : grille(recues.map(uid => {
+                const m = ficheDe(uid);
+                return rangee(m, (
+                  <div className="flex shrink-0 items-center gap-2">
+                    <button type="button" disabled={enCours === uid} onClick={() => repondre(uid, true)} className={BOUTON_LAITON}>
+                      <i className="fa-solid fa-check text-[9px]" /> {fr ? 'Accepter' : 'Accept'}
+                    </button>
+                    <button type="button" disabled={enCours === uid} onClick={() => repondre(uid, false)} className={BOUTON_REFUSER}>
+                      {fr ? 'Refuser' : 'Decline'}
+                    </button>
+                  </div>
+                ));
+              }))}
+            {envoyees.length > 0 && (
+              <div className="mt-6">
+                <p className={PETITES_CAPITALES}>{fr ? 'Demandes envoyées' : 'Requests sent'}</p>
+                <div className="mt-3">
+                  {grille(envoyees.map(uid => rangee(ficheDe(uid), (
+                    <span className="shrink-0 text-[10px] uppercase tracking-widest text-[#38403a]/40 dark:text-white/40">{fr ? 'En attente' : 'Pending'}</span>
+                  ))))}
                 </div>
-              </Link>
-            ))}
-          </div>
+              </div>
+            )}
+          </>
         )}
-      </div>
-    </div>
-  </ReserveAuFoyer></div></div>
+
+        <div className="mt-6 flex justify-end">
+          <Link to={`/messages/${UID_MODERATION}`} className={BOUTON_SECONDAIRE}>
+            <i className="fa-solid fa-shield-halved text-[9px]" /> {fr ? 'Contacter l’équipe de modération' : 'Contact the moderation team'}
+          </Link>
+        </div>
+      </CarteSociale>
+    </CadreFoyer>
   );
 };
 
