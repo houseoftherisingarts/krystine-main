@@ -4,6 +4,14 @@ import { updateMember, type MemberDoc } from '../../firebase/firestore';
 // Deux interrupteurs, un seul document : members/{uid}.prefs. Les deux
 // émetteurs (notifierBillet, annoncerChangement) lisent ces mêmes champs
 // côté serveur — voir functions/src/notifs.ts.
+//
+// Le bloc « À propos de vous » (pays, région, année de naissance) écrit dans
+// les mêmes champs sur members/{uid} (Krystine, 7 septembre 2026) : facultatif,
+// pour que le tableau de bord admin puisse un jour regrouper sa communauté
+// par pays ou par tranche d'âge (voir firebase/detailsCompteurs.ts).
+
+const PAYS_OPTIONS = ['Canada', 'France', 'Belgique', 'Suisse', 'États-Unis', 'Autre'];
+const ANNEE_MIN = 1920;
 
 const Interrupteur: React.FC<{ actif: boolean; occupe: boolean; onToggle: () => void; titre: string; sous: string }> = ({ actif, occupe, onToggle, titre, sous }) => (
   <div className="flex items-center justify-between gap-4 py-3.5 border-b border-[#38403a]/8 dark:border-white/10 last:border-b-0">
