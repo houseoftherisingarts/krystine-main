@@ -55,6 +55,10 @@ export const creerSessionPaiement = onCall(
       'line_items[0][price_data][tax_behavior]': 'exclusive',
       'line_items[0][quantity]': '1',
       ...TAXES_QC,
+      // Le code de la récompense « 50 $ sur une formation » se tape ici
+      // (echangerRecompense, functions/src/recompenses.ts) : il porte déjà
+      // sa propre restriction de 50 $ minimum côté Stripe.
+      allow_promotion_codes: 'true',
       success_url: `${SITE}/compte?achat=ok`,
       cancel_url: `${SITE}/cours/${formationId}`,
       'metadata[uid]': req.auth.uid,
