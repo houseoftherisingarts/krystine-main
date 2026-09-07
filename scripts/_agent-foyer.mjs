@@ -27,13 +27,23 @@ const dodo = (ms) => new Promise((r) => setTimeout(r, ms));
 async function connecter(page, { email, pw }) {
   await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded' });
   await dodo(2500);
+  // Le bandeau de consentement (Loi 25) couvre le bas de l'écran : on répond.
+  const consent = page.getByRole('button', { name: /j'accepte/i }).first();
+  if (await consent.count()) await consent.click().catch(() => {});
   // La carte « Se connecter » de /compte ouvre la fenêtre d'authentification.
-  const bouton = page.getByRole('button', { name: /se connecter|sign in/i }).first();
-  await bouton.click();
+  // Elle s'ouvre en mode inscription : le lien du bas ramène à la connexion
+  // (l'inscription exige un reCAPTCHA, la connexion non).
+  await page.getByRole('button', { name: /se connecter|sign in/i }).first().click();
+  await dodo(1200);
+  const versConnexion = page.getByRole('button', { name: /déjà un compte/i }).first();
+  if (await versConnexion.count()) await versConnexion.click();
+  await dodo(600);
   await page.locator('input[type="email"]').first().fill(email);
   await page.locator('input[type="password"]').first().fill(pw);
   await page.locator('form button[type="submit"]').first().click();
-  await dodo(5000);
+  await dodo(6000);
+  const erreur = await page.locator('p.text-red-500').allTextContents();
+  if (erreur.length) throw new Error(`connexion refusée pour ${email} : ${erreur.join(' ')}`);
 }
 
 async function capturer(page, chemin, nom, ecran) {

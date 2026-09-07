@@ -124,6 +124,14 @@ if (await memEmailInput.count()) {
 }
 console.log('URL /compte après tentative login membre:', mem.url());
 await mem.screenshot({ path: `${OUT}/agent-compte-apres-login.png` });
+// Ferme le tutoriel de bienvenue (« On oublie souvent de jouer ») s'il est là.
+await mem.keyboard.press('Escape').catch(() => {});
+await mem.waitForTimeout(400);
+await mem.evaluate(() => {
+  const closeBtn = Array.from(document.querySelectorAll('button')).find(b => /fermer|compris|×|close/i.test(b.textContent || '') || b.querySelector('i.fa-xmark, i.fa-times'));
+  if (closeBtn) closeBtn.click();
+});
+await mem.waitForTimeout(500);
 const clickTab = async (page, iconClass) => page.evaluate((cls) => {
   const btn = Array.from(document.querySelectorAll('button')).find(b => b.querySelector(`i.${cls}`));
   if (btn) { btn.click(); return true; }
