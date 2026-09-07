@@ -55,7 +55,8 @@ const shootBoutique = async (largeur, hauteur, suffixe) => {
     console.log(`[${suffixe}] connexion tentée`);
   }
 
-  await page.waitForSelector('text=La petite boutique', { timeout: 15000 }).catch((e) => console.log('boutique introuvable', e.message));
+  await page.waitForSelector('text=La petite boutique', { timeout: 15000 }).catch((e) => console.log(`[${suffixe}] boutique introuvable`, e.message));
+  console.log(`[${suffixe}] boutique visible`);
   await page.waitForTimeout(800);
 
   // Deux popups peuvent s'ouvrir seules à l'arrivée sur /compte : la roue
