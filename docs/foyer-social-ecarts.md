@@ -50,7 +50,7 @@ Trou dans le garde-fou : `MessagesPage` n'a ni `ReserveAuFoyer` ni `useAmiesDOri
 
 ## 4. Les deux palettes en présence
 
-| Rôle | Espace client (KSL, 26 août) | Pages L'Œuvre de juin | Où l'on trouve la seconde |
+| Rôle | Espace client (KSL, 26 août) | Pages L'Œuvre de juin | Où la seconde apparaît |
 |---|---|---|---|
 | Fond de page | `#EEE7DB` | `#f6f3ee` | `/membres`, `/membre/:uid`, `CommunauteEspace` |
 | Texte principal | `#293027` | `#2a2015` | h1 et noms de ces trois pages |
