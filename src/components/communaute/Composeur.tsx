@@ -143,17 +143,17 @@ const Composeur: React.FC<{ fil: FilMur; onPublie?: () => void; compact?: boolea
             type="button"
             onClick={() => champPhoto.current?.click()}
             disabled={progression !== null}
-            className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-3.5 py-2 text-[10px] uppercase tracking-[0.18em] text-[#38403a]/70 transition-colors hover:border-[#BA7B39] hover:text-[#8B4A2F] disabled:opacity-50 dark:border-white/10 dark:text-white/70"
+            className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 transition-colors hover:border-[#BA7B39] hover:text-[#8B4A2F] disabled:opacity-50 dark:border-white/15 dark:text-white/70"
           >
-            <ImageIcon size={13} /> Photo
+            <ImageIcon size={12} /> Photo
           </button>
           <button
             type="button"
             onClick={() => champVideo.current?.click()}
             disabled={progression !== null}
-            className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-3.5 py-2 text-[10px] uppercase tracking-[0.18em] text-[#38403a]/70 transition-colors hover:border-[#BA7B39] hover:text-[#8B4A2F] disabled:opacity-50 dark:border-white/10 dark:text-white/70"
+            className="inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 transition-colors hover:border-[#BA7B39] hover:text-[#8B4A2F] disabled:opacity-50 dark:border-white/15 dark:text-white/70"
           >
-            <Video size={13} /> Vidéo
+            <Video size={12} /> {fr ? 'Vidéo' : 'Video'}
           </button>
           <input ref={champPhoto} type="file" accept="image/jpeg,image/png,image/webp,image/heic" className="hidden" onChange={choisir('photo')} />
           <input ref={champVideo} type="file" accept="video/mp4,video/quicktime,video/webm" className="hidden" onChange={choisir('video')} />
