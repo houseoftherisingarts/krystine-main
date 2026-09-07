@@ -28,6 +28,7 @@ export type AdminSectionId =
   | 'messages'
   | 'recompenses'
   | 'skinsATravailler'
+  | 'sondages'
   | 'submissions'
   | 'groups'
   | 'bookings'

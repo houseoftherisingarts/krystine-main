@@ -134,7 +134,7 @@ const PanneauDetail: React.FC<{ requete: RequeteCompteur; titre: string; definit
       desabonneeLe: l.unsubscribedAt?.toDate().toISOString() || '',
       ...(axe !== 'aucun' ? { groupe: libelleGroupe(axe, g.cle) } : {}),
     })));
-    const slug = titre.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const slug = titre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     downloadCsv(`${slug}_${new Date().toISOString().slice(0, 10)}.csv`, rows);
   };
 
