@@ -283,6 +283,7 @@ export const reclamerCoffreBeta = onCall(
   { region: 'us-central1' },
   async (req) => {
     if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour votre coffre.');
+    await exigerModule('coffreBeta');
     const uid = req.auth.uid;
     let creationMs = Date.now();
     try { creationMs = Date.parse((await getAuth().getUser(uid)).metadata.creationTime || '') || creationMs; } catch (e) { console.warn('[coffre-beta] création introuvable', e); }
