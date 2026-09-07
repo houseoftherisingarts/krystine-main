@@ -188,6 +188,35 @@ const EditOverlay: React.FC = () => {
     `;
     document.head.appendChild(style);
 
+    // Petit crayon qui suit la souris au survol — un seul badge réutilisé
+    // (pas un par élément) pour rester léger sur les pages à beaucoup de texte.
+    const pencil = document.createElement('div');
+    pencil.setAttribute('data-edit-ui', '');
+    pencil.style.cssText = 'position:fixed;display:none;align-items:center;justify-content:center;width:20px;height:20px;border-radius:9999px;background:#bb9a5e;color:#2a2015;font-size:9px;box-shadow:0 2px 10px rgba(0,0,0,.3);pointer-events:none;z-index:2147483000;';
+    pencil.innerHTML = '<i class="fa-solid fa-pen"></i>';
+    document.body.appendChild(pencil);
+
+    const showPencil = (el: HTMLElement) => {
+      const r = el.getBoundingClientRect();
+      pencil.style.left = `${Math.min(r.right - 8, window.innerWidth - 24)}px`;
+      pencil.style.top = `${Math.max(r.top - 8, 4)}px`;
+      pencil.style.display = 'flex';
+    };
+    const hidePencil = () => { pencil.style.display = 'none'; };
+
+    const onMouseOver = (e: MouseEvent) => {
+      const target = (e.target as Element | null)?.closest(`.${CLASS_TAG}`) as HTMLElement | null;
+      if (!target || target.isContentEditable) { hidePencil(); return; }
+      showPencil(target);
+    };
+    const onMouseOut = (e: MouseEvent) => {
+      const related = e.relatedTarget as Element | null;
+      if (related?.closest?.(`.${CLASS_TAG}`)) return; // reste sur un autre éditable voisin
+      hidePencil();
+    };
+    document.addEventListener('mouseover', onMouseOver);
+    document.addEventListener('mouseout', onMouseOut);
+
     let editing: HTMLElement | null = null;
 
     const finish = (commit: boolean) => {
