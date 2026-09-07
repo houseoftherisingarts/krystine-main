@@ -80,10 +80,14 @@ const session = async (c, viewport) => {
     req.onerror = rej;
   }), [`firebase:authUser:${API_KEY}:[DEFAULT]`, authUser]);
   const fermerRoue = async () => { const r = page.locator('.fixed.inset-0.z-\\[125\\]'); if (await r.count()) { await r.first().click({ position: { x: 8, y: 8 } }); await page.waitForTimeout(500); } };
+  // Le site défile en douceur (html { scroll-behavior: smooth }) : une capture prise
+  // pendant l'animation montre le fond du body au-dessus de l'en-tête. Défilement instantané pour la QA.
+  page.on('load', () => page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' }).catch(() => {}));
   return { ctx, page, fermerRoue };
 };
-const cadrer = async (page, sel) => { await page.locator(sel).first().evaluate(el => { const y = el.getBoundingClientRect().top + window.scrollY - 84; window.scrollTo(0, Math.max(0, y)); }); await page.waitForTimeout(500); };
+const cadrer = async (page, sel) => { await page.locator(sel).first().evaluate(el => { const y = el.getBoundingClientRect().top + window.scrollY - 84; window.scrollTo({ top: Math.max(0, y), behavior: 'instant' }); }); await page.waitForTimeout(500); };
 const VIEWS = [[1440, 900, '1440'], [390, 844, '390']];
+const ETAPES = (process.env.ETAPES || 'profil,boutique,demo').split(',');
 
 // La mesure de contraste : chaque élément porteur de texte, contre le fond
 // composé de ses ancêtres (les panneaux translucides s'empilent sur le fond du skin).
