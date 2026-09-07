@@ -3,6 +3,7 @@ import { getFirestore, FieldValue, Firestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 import { crediterNiskas } from './niskas';
 import { SEUIL_ACCES_VIE_CENTS, SEUIL_ACCES_VIE_FILLEULES, filleuleCompte } from './parrainageRegles';
+import { lireGamification } from './gamification';
 
 export { SEUIL_ACCES_VIE_CENTS, SEUIL_ACCES_VIE_FILLEULES };
 
