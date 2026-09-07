@@ -193,6 +193,59 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
     </button>
   );
 
+  // Cinq sections repliées par défaut (Alex, 7 sept. 2026) : bannières,
+  // musiques, skins, Santé la vie, vidéos. Un clic ouvre ou referme,
+  // plusieurs peuvent l'être à la fois, l'état ouvert vit le temps de
+  // l'onglet du navigateur (sessionStorage), jamais plus loin.
+  const CLE_ACCORDEON = 'krystine.boutique.ouverts';
+  const lireOuverts = (): Set<string> => {
+    try { const v = JSON.parse(sessionStorage.getItem(CLE_ACCORDEON) || '[]'); if (Array.isArray(v)) return new Set(v); } catch { /* noop */ }
+    return new Set();
+  };
+  const [ouverts, setOuverts] = useState<Set<string>>(lireOuverts);
+  const ecrireOuverts = (s: Set<string>) => { try { sessionStorage.setItem(CLE_ACCORDEON, JSON.stringify([...s])); } catch { /* noop */ } };
+  const basculerSection = (id: string) => setOuverts((prev) => {
+    const next = new Set(prev);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    ecrireOuverts(next);
+    return next;
+  });
+  const ouvrirSection = (id: string) => setOuverts((prev) => {
+    if (prev.has(id)) return prev;
+    const next = new Set(prev).add(id);
+    ecrireOuverts(next);
+    return next;
+  });
+
+  // « Voir le Skin Vérifié » (Badge Bleu, ClientPortal.tsx) déplie la
+  // section des skins avant d'y faire défiler la page.
+  useEffect(() => {
+    const ouvrir = (e: Event) => { if ((e as CustomEvent<string>).detail === 'skin') ouvrirSection('skin'); };
+    window.addEventListener('krystine:ouvrir-boutique', ouvrir);
+    return () => window.removeEventListener('krystine:ouvrir-boutique', ouvrir);
+  }, []);
+
+  const accordeon = (id: string, icone: string, titre: string, compte: number, enfant: React.ReactNode) => {
+    const ouvert = ouverts.has(id);
+    return (
+      <div className="mt-8" id={`boutique-${id}`}>
+        <button type="button" onClick={() => basculerSection(id)} aria-expanded={ouvert} className="flex w-full items-center justify-between gap-3 rounded-[14px] py-1 text-left">
+          <span className="flex items-center gap-3">
+            <span className="mt-0.5 inline-flex h-9 w-9 flex-none items-center justify-center rounded-full bg-[#BA7B39]/15 text-[#8B4A2F] dark:text-[#d9a05b]"><i className={`fa-solid ${icone}`} /></span>
+            <span className="font-serif text-xl text-[#293027] dark:text-white">{titre}</span>
+          </span>
+          <span className="flex items-center gap-3 text-[#293027]/50 dark:text-white/50">
+            <span className="text-[10px] font-bold uppercase tracking-widest">{compte} {fr ? (compte > 1 ? 'articles' : 'article') : (compte === 1 ? 'item' : 'items')}</span>
+            <i className={`fa-solid fa-chevron-down text-xs transition-transform duration-300 ${ouvert ? 'rotate-180' : ''}`} />
+          </span>
+        </button>
+        <div className="grid transition-[grid-template-rows] duration-300 ease-out" style={{ gridTemplateRows: ouvert ? '1fr' : '0fr' }}>
+          <div className="overflow-hidden">{enfant}</div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <section className="mt-10" id="boutique">
       <div className="flex flex-wrap items-end justify-between gap-4">
