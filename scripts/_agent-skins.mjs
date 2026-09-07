@@ -61,12 +61,18 @@ const shootBoutique = async (largeur, hauteur, suffixe) => {
   // Tout replié au chargement.
   await page.screenshot({ path: `${OUT}/boutique-replie-${suffixe}.png`, fullPage: true });
 
+  const fermerRoue = async () => {
+    const r = page.locator('[data-bug-ignore]').first();
+    if (await r.count()) { await r.click({ position: { x: 8, y: 8 } }).catch(() => {}); await page.waitForTimeout(300); }
+  };
+
   // La section « Les skins » ouverte : les six skins en travail ne doivent
   // plus y paraître (sauf si le compte les possède déjà).
+  await fermerRoue();
   const skins = page.locator('#boutique-skin');
   if (await skins.count()) {
     await skins.scrollIntoViewIfNeeded();
-    await skins.getByRole('button').first().click();
+    await skins.getByRole('button').first().click({ force: true });
     await page.waitForTimeout(500);
     await page.screenshot({ path: `${OUT}/boutique-skins-ouvert-${suffixe}.png`, fullPage: true });
   }
