@@ -1,0 +1,63 @@
+name: Publier si aucun conflit
+
+# Se déclenche quand "Vérifier une proposition" a fini de construire le code
+# d'une PR (venue d'une branche ou d'un fork, ex. le compte GitHub de
+# Krystine). Ce job tourne avec un jeton d'écriture sur le dépôt de base,
+# mais n'exécute JAMAIS le code de la proposition : il ne fait qu'appeler
+# l'API GitHub pour lire l'état de fusion et fusionner. Fusionne
+# automatiquement dans main si la construction a réussi ET qu'aucun conflit
+# n'existe. S'il y a un vrai conflit, la PR reste ouverte avec un commentaire.
+on:
+  workflow_run:
+    workflows: ["Vérifier une proposition"]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Trouver la PR par le commit construit
+        id: find
+        run: |
+          NUM=$(gh api "repos/$REPO/commits/$HEAD_SHA/pulls" \
+            -H "Accept: application/vnd.github.groot-preview+json" \
+            --jq '[.[] | select(.state=="open") | .number][0] // empty')
+          if [ -z "$NUM" ]; then
+            echo "Aucune PR ouverte pour ce commit ($HEAD_SHA), rien à faire."
+            echo "number=" >> "$GITHUB_OUTPUT"
+          else
+            echo "number=$NUM" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Attendre le calcul de l'état de fusion par GitHub
+        id: state
+        if: steps.find.outputs.number != ''
+        run: |
+          NUM="${{ steps.find.outputs.number }}"
+          STATE="UNKNOWN"
+          for i in 1 2 3 4 5 6; do
+            STATE=$(gh api "repos/$REPO/pulls/$NUM" --jq '.mergeable_state')
+            [ "$STATE" != "unknown" ] && break
+            sleep 5
+          done
+          echo "state=$STATE" >> "$GITHUB_OUTPUT"
+
+      - name: Fusionner (aucun conflit)
+        if: steps.find.outputs.number != '' && (steps.state.outputs.state == 'clean' || steps.state.outputs.state == 'unstable' || steps.state.outputs.state == 'has_hooks')
+        run: |
+          gh pr merge "${{ steps.find.outputs.number }}" --repo "$REPO" --squash --delete-branch=false
+
+      - name: Laisser ouverte et prévenir (vrai conflit)
+        if: steps.find.outputs.number != '' && steps.state.outputs.state == 'dirty'
+        run: |
+          gh pr comment "${{ steps.find.outputs.number }}" --repo "$REPO" \
+            --body "La construction a réussi, mais cette proposition entre en conflit avec ce qui a été publié entre-temps. Elle reste ouverte : quelqu'un doit la mettre à jour (récupérer main, régler le conflit) avant qu'elle publie automatiquement."

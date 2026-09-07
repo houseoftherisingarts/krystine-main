@@ -46,7 +46,9 @@ for (const [nom, viewport] of [['1440', { width: 1440, height: 900 }], ['390', {
       return boite.y < viewport.height ? 'visible' : `plus bas (${Math.round(boite.y)}px)`;
     };
     const onglets = await Promise.all(['Le programme', 'Fil', 'Membres', 'Messages', 'Mon profil'].map(visible));
-    const gauche = await Promise.all(['Amies', 'Badges', 'Autour du feu'].map(visible));
+    // « Autour du feu » ne se montre qu'à partir de lg : sous lg, la colonne
+    // se replie en rangée de pastilles et le cercle passe par l'onglet Membres.
+    const gauche = await Promise.all((nom === '1440' ? ['Amies', 'Badges', 'Autour du feu'] : ['Amies', 'Badges']).map(visible));
     console.log(`${nom} ${chemin} → ${page.url()}`);
     console.log(`   onglets [Le programme, Fil, Membres, Messages, Mon profil] : ${onglets.join(', ')}`);
     console.log(`   gauche  [Amies, Badges, Autour du feu] : ${gauche.join(', ')}`);
