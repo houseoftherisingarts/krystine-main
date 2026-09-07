@@ -248,7 +248,7 @@ export const SKINS: Skin[] = [
   // est le rose CLAIR, parce que sur un skin sombre c'est lui qui porte les
   // libellés : le rose foncé (#b8657f) tombait à 2,4 pour 1 sur le panneau. Il
   // reste dans la maison, en ombre des pétales et en liseré de carte.
-  { cle: 'feminite', cout: null, rarete: 'rare', coffre: 'argent', icone: 'fa-leaf', nomFR: 'Skin Féminité & Ayurveda', nomEN: 'Féminité & Ayurveda skin',
+  { cle: 'feminite', cout: null, rarete: 'rare', coffre: 'argent', icone: 'fa-leaf', enTravail: true, nomFR: 'Skin Féminité & Ayurveda', nomEN: 'Féminité & Ayurveda skin',
     descFR: 'Le vert sarcelle profond de la couverture enveloppe tout l’espace, et le rose de la couronne de fleurs éclaire chaque bouton. Des pétales roses et des feuilles blanches dérivent derrière votre espace. Rare : dans le coffre d’argent seulement.',
     descEN: 'The deep teal green of the book’s cover wraps around the whole space, and the pink of its flower crown lights up every button. Pink petals and white leaves drift behind your space. Rare: in the silver chest only.',
     palette: { fond: '#1d3a35', panneau: '#274a44', encre: '#f3f1e8', accent: '#d98aa3', accentClair: '#efb7c6', accentProfond: '#efb7c6', sombre: true } },
