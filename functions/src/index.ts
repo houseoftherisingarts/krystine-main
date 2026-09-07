@@ -22,7 +22,7 @@ export { acheterAvecNiskas, reclamerQuotidien, reclamerBienvenue, reclamerCoffre
 export { demanderBadgeBleu, deciderBadgeBleu } from './verification';
 export { murVoteBillet, murVoteCommentaire, murCommentaireCompte, murBilletSupprime, murCommentaireSupprime } from './mur';
 export { badgeAchatFormation, badgePremierBillet, badgeAmitieAcceptee } from './badges';
-export { parrainageFilleule, parrainageAchat } from './parrainage';
+export { parrainageFilleule, parrainageAchat, parrainagePourboire } from './parrainage';
 export { groupeMembre } from './groupe';
 export { musiqueOrigine } from './musique';
 export { offrirCadeau, utiliserCadeau } from './cadeaux';
