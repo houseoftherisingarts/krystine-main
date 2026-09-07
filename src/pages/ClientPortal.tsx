@@ -801,6 +801,7 @@ const ClientPortal: React.FC = () => {
           {tab === 'dosha'    && <DoshaTab />}
           {tab === 'archives' && <ClientArchives />}
           {tab === 'messagerie' && <ClientMessagerie />}
+          {tab === 'aider'     && <ClientAider />}
         </div>
         <RailCommunaute lang={lang} uid={user.uid} />
       </div>
