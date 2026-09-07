@@ -99,8 +99,27 @@ const ClientSupport: React.FC = () => {
               </div>
             );
           }
+          // Un mot de Krystine elle-même (marqué deKrystine, jamais la boîte
+          // générale) porte sa signature dorée, jamais sa photo.
+          if (m.deKrystine) {
+            return (
+              <div key={m.id} className="flex justify-start">
+                <div className="max-w-[85%] rounded-2xl rounded-bl-sm border border-[#BA7B39]/35 bg-white px-4 py-3 dark:bg-[#293027]">
+                  <span className="mb-1.5 block text-[9px] font-bold uppercase tracking-[0.2em] text-[#8B4A2F] dark:text-[#d9a05b]">
+                    {lang === 'FR' ? 'Un mot de Krystine' : 'A word from Krystine'}
+                  </span>
+                  <p className="text-sm leading-relaxed whitespace-pre-line text-[#293027] dark:text-white">{m.body}</p>
+                  <img src={SIGNATURE_URL} alt="" aria-hidden="true" className="mt-2 h-6 w-auto opacity-90" />
+                  <span className="block text-[10px] opacity-50 mt-1 text-[#293027] dark:text-white">
+                    {m.createdAt?.toDate().toLocaleTimeString(lang === 'FR' ? 'fr-CA' : 'en-CA', { hour: '2-digit', minute: '2-digit' }) || ''}
+                  </span>
+                </div>
+              </div>
+            );
+          }
           return (
-            <div key={m.id} className={`flex ${me ? 'justify-end' : 'justify-start'}`}>
+            <div key={m.id} className={`flex items-end gap-2 ${me ? 'justify-end' : 'justify-start'}`}>
+              {!me && <SceauKSL taille={26} className="mb-1" />}
               <div className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
                 me
                   ? 'bg-[#293027] text-white dark:bg-[#BA7B39] dark:text-[#293027] rounded-br-sm'
