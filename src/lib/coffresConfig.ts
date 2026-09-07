@@ -22,7 +22,7 @@ export const COFFRES: Record<TypeCoffre, {
     boite: 60, nomFR: 'Coffre de bronze', nomEN: 'Bronze chest',
     image: '/compte/coffres/bronze.webp', teinte: '#B0703F', teinteClaire: '#DCA678', teinteSombre: '#5E3A1E',
     contenu: {
-      legendaire: 50, raresFR: 'aucun skin rare propre à ce coffre', raresEN: 'no rare skin of its own',
+      legendaire: 50, rares: [], raresFR: 'aucun skin rare propre à ce coffre', raresEN: 'no rare skin of its own',
       niskas: [{ montant: 10, poids: 55 }, { montant: 25, poids: 30 }, { montant: 60, poids: 12 }, { montant: 120, poids: 3 }],
       rabais: [
         { unSur: 50, fr: '10 % sur la boutique', en: '10% off the shop' },
