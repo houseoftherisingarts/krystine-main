@@ -95,12 +95,12 @@ const Coffres: React.FC<{ solde: number; onChange?: () => void }> = ({ solde, on
   const ouvrir = async (type: TypeCoffre) => {
     if (!user || occupe) return;
     setOccupe(`${type}-ouvrir`);
-    setGrandOk(false); setReponse(''); setVideoEchouee(false);
+    setGrandOk(false); setReponse('');
     setOuverture({ type, lots: null });
-    // La vidéo d'ouverture pilote la révélation : les lots ne paraissent qu'à
-    // sa fin (onEnded), après 4,5 s si elle ne joue pas, ou tout de suite en
-    // mouvement réduit. `pret`/`fini` couvrent les deux ordres d'arrivée
-    // (le serveur répond avant ou après la vidéo).
+    // Le coffre tremble 4,5 s (l'image transparente déjà en place, jamais de
+    // fond sombre) avant de révéler les lots, ou tout de suite en mouvement
+    // réduit. `pret`/`fini` couvrent les deux ordres d'arrivée (le serveur
+    // répond avant ou après le délai).
     let resultat: { lots: LotGagne[]; solde: number } | null = null;
     let fini = reduceGlobal;
     const finirSiPret = () => { if (resultat && fini) setOuverture(o => (o && o.type === type && !o.lots) ? { type, ...resultat! } : o); };
