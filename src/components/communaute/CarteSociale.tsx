@@ -67,23 +67,30 @@ export const RangeePersonne: React.FC<{
   nom: string;
   photo?: string;
   verifie?: boolean;
+  /** Le courriel de la personne : seul moyen de savoir si elle est de
+   *  l'équipe (Krystine, Alex) quand le Badge Bleu est réservé (voir
+   *  montrerBadgeBleu, GamificationContext.tsx). */
+  email?: string;
   /** Une ligne discrète sous le nom : le dosha, la date, le badge en vedette. */
   sousTitre?: React.ReactNode;
   /** Le geste à droite : « Écrire », « Accepter », une icône ronde. */
   action?: React.ReactNode;
   compact?: boolean;
-}> = ({ uid, nom, photo, verifie, sousTitre, action, compact }) => (
+}> = ({ uid, nom, photo, verifie, email, sousTitre, action, compact }) => {
+  const { badgeBleuEquipeSeulement } = useGamification();
+  return (
   <div className={`flex items-center gap-3 ${compact ? 'rounded-[12px] px-2 py-2 transition-colors hover:bg-[#BA7B39]/8' : 'rounded-[15px] border border-[#38403a]/10 p-3 dark:border-white/10'}`}>
     <Link to={CHEMINS_FOYER.profil(uid)} className="flex min-w-0 flex-1 items-center gap-3">
       <Avatar nom={nom} url={photo} taille={compact ? 36 : 40} />
       <span className="min-w-0 flex-1">
         <span className="flex min-w-0 items-center gap-1.5 truncate text-sm font-medium text-[#293027] dark:text-white">
           <span className="truncate">{nom}</span>
-          {verifie && <i className="fa-solid fa-circle-check shrink-0 text-[12px] text-[#3b82f6]" />}
+          {montrerBadgeBleu(email, verifie, badgeBleuEquipeSeulement) && <i className="fa-solid fa-circle-check shrink-0 text-[12px] text-[#3b82f6]" />}
         </span>
         {sousTitre && <span className="mt-0.5 block truncate text-[10px] uppercase tracking-widest text-[#38403a]/50 dark:text-white/50">{sousTitre}</span>}
       </span>
     </Link>
     {action}
   </div>
-);
+  );
+};
