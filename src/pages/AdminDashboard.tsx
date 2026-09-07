@@ -45,6 +45,7 @@ import MembersSection from './admin/sections/MembersSection';
 import BadgeBleuSection from './admin/sections/BadgeBleuSection';
 import MessagesSection from './admin/sections/MessagesSection';
 import RecompensesSection from './admin/sections/RecompensesSection';
+import SkinsATravaillerSection from './admin/sections/SkinsATravaillerSection';
 import SubmissionsSection from './admin/sections/SubmissionsSection';
 import GroupsSection from './admin/sections/GroupsSection';
 import BookingsSection from './admin/sections/BookingsSection';
