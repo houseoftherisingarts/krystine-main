@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CATALOGUE_BADGES, badgeVedetteEnCache } from '../../firebase/badgesCatalogue';
+import { useGamification } from '../../contexts/GamificationContext';
 
 // Le badge en vedette d'une membre, à côté de son nom dans les clavardages,
 // le fil et l'annuaire (Alex, 6 sept. 2026, « comme All Star Contributor
