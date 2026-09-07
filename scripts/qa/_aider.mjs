@@ -152,6 +152,8 @@ await page2.locator('form button[type="submit"]').click();
 await page2.waitForTimeout(3000);
 await page2.goto(`${BASE}/compte?onglet=aider`, { waitUntil: 'domcontentloaded' });
 await page2.waitForTimeout(2000);
+await page2.keyboard.press('Escape').catch(() => {});
+await page2.waitForTimeout(300);
 await page2.screenshot({ path: `${OUT}/aider-apres-completion-1440.png`, fullPage: true });
 console.log('capture liste après complétion simulée (formations-2026-09 doit être absent)');
 await browser2.close();
