@@ -277,6 +277,7 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
       const options: FormationOptions = {
         paywall,
         prix: paywall && prix.trim() !== '' ? Math.max(0, Number(prix)) : null,
+        listeAttente,
         evergreen,
         dateSortie: evergreen ? null : (dateSortie || null),
         lancementOrchestre: lancement,
