@@ -27,6 +27,7 @@ const EVENT_LABELS: Record<string, { fr: string; en: string; icon: string }> = {
   adjust:     { fr: 'Ajustement',              en: 'Adjustment',              icon: 'fa-scale-balanced' },
   direct:     { fr: 'Participation au direct', en: 'Live participation',      icon: 'fa-tower-broadcast' },
   quotidien:  { fr: 'Cadeau du jour',          en: 'Gift of the day',         icon: 'fa-sun' },
+  cadeau:     { fr: 'Cadeau du jour',          en: "Today's gift",            icon: 'fa-gift' },
   profil:     { fr: 'Profil complété',         en: 'Profile completed',       icon: 'fa-user-check' },
   billet:     { fr: 'Premier billet publié',   en: 'First note posted',       icon: 'fa-feather' },
   amitie:     { fr: 'Amitié acceptée',         en: 'Friendship accepted',     icon: 'fa-user-group' },
