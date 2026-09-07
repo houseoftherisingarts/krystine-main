@@ -70,14 +70,17 @@ const NavBar: React.FC = () => {
           className="flex items-center gap-3 flex-shrink-0 group min-h-[44px]"
         >
           {/* Le mot-symbole de l'accueil, repris tel quel : deux lignes serif
-              en majuscules espacées. Un seul logo pour tout le site. */}
+              en majuscules espacées. Un seul logo pour tout le site. Sous 640 px
+              il reprend ses deux lignes : sur une seule, ses 277 px poussaient
+              la cloche, la langue et le menu hors de l'écran d'une membre
+              connectée. */}
           <motion.span
             initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-serif font-semibold uppercase whitespace-nowrap text-ink dark:text-ctext text-[1.32rem] leading-none tracking-[0.12em] transition-colors duration-300 group-hover:text-brassInk dark:group-hover:text-brassBright"
+            className="font-serif font-semibold uppercase text-ink dark:text-ctext text-[1rem] leading-[1.05] tracking-[0.1em] sm:whitespace-nowrap sm:text-[1.32rem] sm:leading-none sm:tracking-[0.12em] transition-colors duration-300 group-hover:text-brassInk dark:group-hover:text-brassBright"
           >
-            Krystine St-Laurent
+            Krystine <br className="sm:hidden" />St-Laurent
           </motion.span>
         </Link>
 
