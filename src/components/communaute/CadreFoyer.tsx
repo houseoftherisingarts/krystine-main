@@ -33,13 +33,17 @@ import '../client/skins.css';
 // docs/canon-espace-client.md, § 15). Jamais de `lg:bg-…` sur une couleur : les
 // variantes responsives ne sont pas repeintes.
 
-export type OngletFoyer = 'fil' | 'membres' | 'groupes' | 'messages' | 'profil';
+export type OngletFoyer = 'programme' | 'fil' | 'membres' | 'messages' | 'profil';
 
 interface Props {
   /** L'onglet allumé. Aucun sur la fiche d'une autre membre. */
   onglet?: OngletFoyer;
   /** Vrai par défaut : sans achat du Foyer, la page entière renvoie à la vente. */
   garde?: boolean;
+  /** L'entrée de la formation : le centre prend toute la largeur restante, sans
+   *  carte de verre autour (la page apporte ses propres surfaces) et sans
+   *  colonne de droite. Les onglets et la colonne de gauche restent. */
+  large?: boolean;
   /** La fiche publique d'une autre membre : la bannière montre cette personne, comme la couverture d'un profil Facebook. */
   personne?: MemberDoc | null;
   /** Remplace la colonne de droite (cercle + parrainage). */
@@ -47,7 +51,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, personne, droite, children }) => {
+const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, droite, children }) => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
   const fr = lang === 'FR';
   const location = useLocation();
@@ -116,16 +120,15 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, personne, droite, c
   const vue = new URLSearchParams(location.search).get('vue');
 
   const onglets: Array<{ id: OngletFoyer; label: string; icon: string; to: string }> = [
+    { id: 'programme', label: fr ? 'Le programme' : 'The programme', icon: 'fa-book-open', to: CHEMINS_FOYER.programme },
     { id: 'fil',      label: fr ? 'Fil' : 'Feed',            icon: 'fa-newspaper',    to: CHEMINS_FOYER.fil },
     { id: 'membres',  label: fr ? 'Membres' : 'Members',     icon: 'fa-user-group',   to: CHEMINS_FOYER.membres },
-    { id: 'groupes',  label: fr ? 'Groupes' : 'Groups',      icon: 'fa-people-group', to: CHEMINS_FOYER.groupes },
     { id: 'messages', label: 'Messages',                     icon: 'fa-comments',     to: CHEMINS_FOYER.messages },
     { id: 'profil',   label: fr ? 'Mon profil' : 'My profile', icon: 'fa-user',       to: CHEMINS_FOYER.profil(moi) },
   ];
   const raccourcis: Array<{ cle: string; label: string; icon: string; to: string; actif: boolean }> = [
     { cle: 'profil',   label: fr ? 'Mon profil' : 'My profile', icon: 'fa-user',         to: CHEMINS_FOYER.profil(moi),  actif: onglet === 'profil' },
     { cle: 'amies',    label: fr ? 'Amies' : 'Friends',         icon: 'fa-heart',        to: CHEMINS_FOYER.amies,        actif: onglet === 'membres' && vue === 'amies' },
-    { cle: 'groupes',  label: fr ? 'Groupes' : 'Groups',        icon: 'fa-people-group', to: CHEMINS_FOYER.groupes,      actif: onglet === 'groupes' },
     { cle: 'messages', label: 'Messages',                       icon: 'fa-comments',     to: CHEMINS_FOYER.messages,     actif: onglet === 'messages' },
     { cle: 'badges',   label: 'Badges',                         icon: 'fa-award',        to: `${CHEMINS_FOYER.profil(moi)}#badges`, actif: false },
   ];
@@ -219,19 +222,20 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, personne, droite, c
               <i className={`fa-solid ${t.icon} hidden 2xl:inline`} /> {t.label}
             </Link>
           ))}
-          <Link to={CHEMINS_FOYER.programme} className={`ml-auto ${ongletClasse(false)}`}>
-            <i className="fa-solid fa-book-open hidden 2xl:inline" /> {fr ? 'Le programme' : 'The programme'}
-          </Link>
-          <Link to="/compte" className={ongletClasse(false)}>
+          <Link to="/compte" className={`ml-auto ${ongletClasse(false)}`}>
             <i className="fa-solid fa-arrow-left" /> {fr ? 'Mon espace' : 'My space'}
           </Link>
         </div>
       </div>
       <div className="h-0.5 w-full bg-[#BA7B39]" aria-hidden="true" />
 
-      {/* Trois colonnes à la Facebook : raccourcis, la page, le cercle et le parrainage */}
-      <div className="mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 lg:grid-cols-[200px_minmax(0,1fr)_280px] xl:grid-cols-[240px_minmax(0,1fr)_320px]">
-        <aside className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-3 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55 lg:sticky lg:top-24 lg:self-start">
+      {/* La colonne de gauche suit partout : raccourcis puis le cercle. À droite,
+          le parrainage, sauf à l'entrée de la formation qui prend la largeur. */}
+      <div className={`mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 ${large
+        ? 'lg:grid-cols-[200px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)]'
+        : 'lg:grid-cols-[200px_minmax(0,1fr)_280px] xl:grid-cols-[240px_minmax(0,1fr)_320px]'}`}>
+        <aside className="min-w-0 space-y-4 lg:sticky lg:top-24 lg:self-start">
+        <div className="rounded-[24px] border border-white/60 bg-white/55 p-3 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55">
           <nav className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible" aria-label={fr ? 'Raccourcis du Foyer' : 'Hearth shortcuts'}>
             {raccourcis.map(r => (
               <Link
@@ -246,56 +250,59 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, personne, droite, c
               </Link>
             ))}
           </nav>
+        </div>
+
+        {/* Autour du feu : le cercle du Foyer, sous les raccourcis */}
+        <CarteSociale
+            panneau
+            titre={fr ? 'Autour du feu' : 'Around the fire'}
+            action={<Link to={CHEMINS_FOYER.membres} className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:underline dark:text-[#d9a05b]">{fr ? 'Toutes' : 'All'}</Link>}
+          >
+            {cercle.length === 0 ? (
+              <p className="text-sm text-[#38403a]/50 dark:text-white/50">{fr ? 'Le cercle se forme.' : 'The circle is forming.'}</p>
+            ) : (
+              <div className="space-y-0.5">
+                {cercle.slice(0, 8).map(c => {
+                  const nomC = c.nom;
+                  return (
+                    <RangeePersonne
+                      key={c.uid}
+                      compact
+                      uid={c.uid}
+                      nom={nomC}
+                      photo={c.photo}
+                      verifie={c.verifie}
+                      sousTitre={c.espaceOuvert ? undefined : (fr ? 'N’a pas encore ouvert son espace' : 'Has not opened her space yet')}
+                      action={c.uid !== moi ? (
+                        <Link
+                          to={CHEMINS_FOYER.conversation(c.uid)}
+                          aria-label={fr ? `Écrire à ${nomC}` : `Write to ${nomC}`}
+                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#8B4A2F] transition-colors hover:bg-[#BA7B39]/15 dark:text-[#d9a05b]"
+                        >
+                          <i className="fa-regular fa-comment" />
+                        </Link>
+                      ) : undefined}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </CarteSociale>
         </aside>
 
         <main className="min-w-0">
-          <div className="space-y-4 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-white/5">
-            {children}
-          </div>
+          {large ? children : (
+            <div className="space-y-4 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-white/5">
+              {children}
+            </div>
+          )}
         </main>
 
-        <aside className="min-w-0 space-y-4">
-          {droite ?? (
-            <>
-              <CarteSociale
-                panneau
-                titre={fr ? 'Autour du feu' : 'Around the fire'}
-                action={<Link to={CHEMINS_FOYER.membres} className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:underline dark:text-[#d9a05b]">{fr ? 'Toutes' : 'All'}</Link>}
-              >
-                {cercle.length === 0 ? (
-                  <p className="text-sm text-[#38403a]/50 dark:text-white/50">{fr ? 'Le cercle se forme.' : 'The circle is forming.'}</p>
-                ) : (
-                  <div className="space-y-0.5">
-                    {cercle.slice(0, 8).map(c => {
-                      const nomC = c.nom;
-                      return (
-                        <RangeePersonne
-                          key={c.uid}
-                          compact
-                          uid={c.uid}
-                          nom={nomC}
-                          photo={c.photo}
-                          verifie={c.verifie}
-                          sousTitre={c.espaceOuvert ? undefined : (fr ? 'N’a pas encore ouvert son espace' : 'Has not opened her space yet')}
-                          action={c.uid !== moi ? (
-                            <Link
-                              to={CHEMINS_FOYER.conversation(c.uid)}
-                              aria-label={fr ? `Écrire à ${nomC}` : `Write to ${nomC}`}
-                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#8B4A2F] transition-colors hover:bg-[#BA7B39]/15 dark:text-[#d9a05b]"
-                            >
-                              <i className="fa-regular fa-comment" />
-                            </Link>
-                          ) : undefined}
-                        />
-                      );
-                    })}
-                  </div>
-                )}
-              </CarteSociale>
-              <ClientParrainage uid={moi} lang={lang} />
-            </>
-          )}
-        </aside>
+        {!large && (
+          <aside className="min-w-0 space-y-4">
+            {droite ?? <ClientParrainage uid={moi} lang={lang} />}
+          </aside>
+        )}
       </div>
     </div>
   );

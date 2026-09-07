@@ -19,7 +19,7 @@ const CLE_VU = 'krystine-roue-vue';
 function phraseRoueFoyer(etat: Quotidien, fr: boolean): string | null {
   const c = etat.cadeauRoue;
   if (!c) return null;
-  if (c.genre === 'musique') return fr ? 'La musique d’Origine est à vous : elle vous attend dans l’onglet Téléchargements.' : 'The Origin music is yours: it waits in the Downloads tab.';
+  if (c.genre === 'musique') return fr ? 'La musique d’Origine est à vous : elle vous attend dans l’onglet Téléchargements et petite boutique.' : 'The Origin music is yours: it waits in the Downloads tab.';
   if (c.genre === 'cle') return fr ? 'Une clé de coffre entre dans votre trousseau.' : 'A chest key joins your keyring.';
   if (c.genre === 'coffre') return fr ? `Vous trouverez ${c.nom} dans la petite boutique.` : `You will find ${c.nom} in the little shop.`;
   return fr ? `${niskas(c.montant ?? 0, 'FR')} de plus dans votre bourse.` : `${niskas(c.montant ?? 0, 'EN')} more in your purse.`;

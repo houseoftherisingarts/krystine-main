@@ -640,7 +640,7 @@ const ClientPortal: React.FC = () => {
     { id: 'orders',   label: lang === 'FR' ? 'Commandes' : 'Orders', icon: 'fa-box' },
     { id: 'formations', label: lang === 'FR' ? 'Mes formations' : 'My courses', icon: 'fa-graduation-cap' },
     { id: 'rediffusions', label: lang === 'FR' ? 'Rediffusions' : 'Replays', icon: 'fa-circle-play' },
-    { id: 'telechargements', label: lang === 'FR' ? 'Téléchargements' : 'Downloads', icon: 'fa-download' },
+    { id: 'telechargements', label: lang === 'FR' ? 'Téléchargements et petite boutique' : 'Downloads and little shop', icon: 'fa-download' },
     { id: 'loyalty',  label: 'Niskas', icon: 'fa-seedling' },
     { id: 'dosha',    label: lang === 'FR' ? 'Dosha' : 'Dosha', icon: 'fa-circle-nodes' },
     { id: 'archives', label: lang === 'FR' ? 'Lettres' : 'Letters', icon: 'fa-envelope-open-text' },
