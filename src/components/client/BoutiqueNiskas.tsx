@@ -81,6 +81,15 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
     return () => { a(); b(); };
   }, [user]);
 
+  // Public : n'importe qui peut lire quelles skins sont en travail (les
+  // trois légendaires, Aurore, Or pur, Féminité par défaut), pour qu'elles
+  // disparaissent de la boutique et des coffres sans attendre une connexion.
+  useEffect(() => subscribeToSkinsSettings(setSkinsSettings), []);
+  const skinsCachees = useMemo(
+    () => new Set(SKINS.filter((s) => skinEnTravail(`skin-${s.cle}`, skinsSettings)).map((s) => `skin-${s.cle}`)),
+    [skinsSettings],
+  );
+
   const dire = (ton: 'ok' | 'err', texte: string) => {
     setMessage({ ton, texte });
     window.setTimeout(() => setMessage(null), 5000);
