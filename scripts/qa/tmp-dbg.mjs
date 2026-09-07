@@ -33,6 +33,8 @@ await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domconten
 await page.waitForTimeout(5000);
 const texte = await page.evaluate(() => document.body.innerText.match(/.{0,20}niskas.{0,20}/gi));
 console.log('niskas mentions:', JSON.stringify(texte));
+await page.screenshot({ path: '/private/tmp/claude-501/-Users-lesalondesinconnus/3a548c8f-1fba-4e35-b513-f459846a1c9b/scratchpad/dbg-top.png' });
+console.log('url actuelle', page.url());
 console.log('done waiting');
 await browser.close();
 await rest(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${API_KEY}`, { idToken: u.idToken });
