@@ -180,9 +180,10 @@ async function scenarioInscriptionEtAnimation(browser) {
     await p.screenshot({ path: `${OUT}/1-avant-${nom}.png` });
 
     await fermerBienvenue(p);
-    // CoffreBeta attend que « krystine-jeu-vu » soit posé avant de révéler
-    // (le sondage tourne toutes les 400 ms) : laisser le temps de jouer.
-    await p.waitForTimeout(1200);
+    // Fermer BienvenueJeu écrit member.bienvenueVu sur Firestore; CoffreBeta
+    // le lit par onSnapshot (AuthProvider) avant de démarrer sa réclamation :
+    // laisser le temps de l'aller-retour réseau, plus le tremblement (1,6 s).
+    await p.waitForTimeout(2400);
     await p.screenshot({ path: `${OUT}/2-tremble-${nom}.png` }); // le coffre doré tremble, avant révélation
 
     await p.getByText('Merci d’être bêta-testeuse').first().waitFor({ timeout: 8000 }).catch(() => {});
