@@ -420,6 +420,15 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // La demande de Badge Bleu (`verifications/{uid}`, une seule par membre) :
+    // la membre lit la sienne, l'admin lit et liste les demandes en attente;
+    // le serveur seul écrit (functions/src/verification.ts, Admin SDK). La
+    // pièce d'identité vit dans Storage, jamais ici.
+    match /verifications/{uid} {
+      allow read: if isSelf(uid) || isAdmin();
+      allow write: if isAdmin();
+    }
+
     // Les coffres : `coffres/{uid}` (boîtes et clés possédées) et le journal
     // des ouvertures ne s'écrivent que par le serveur (functions/src/coffres.ts).
     match /coffres/{uid} {
