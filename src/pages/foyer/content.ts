@@ -53,20 +53,21 @@ export const SECTION5 = {
   eyebrow: 'Au fil des mois',
   title: 'Une année nourrie par l’Ayurveda, les saisons, les plantes, les œuvres et les savoirs',
   intro: 'Au fil des mois, nous rencontrons des matières différentes et faisons des liens entre elles.',
-  items: [
-    'Une plante peut nous faire remarquer une saison autrement.',
-    'Une œuvre peut éclairer une question actuelle.',
-    'Un savoir ancien peut donner un autre angle à quelque chose que nous vivons aujourd’hui.',
+  // « Le Foyer, c'est quoi? » : la question et sa réponse en quatre temps
+  // remplacent les trois phrases de matières et le bloc « Recevoir à sa
+  // manière » (Krystine, 7 septembre 2026).
+  quoiTitle: 'Le Foyer, c’est quoi?',
+  quoi: [
+    'Un espace privé où, chaque mois, une nouvelle porte s’ouvre autour d’un thème.',
+    'Chaque semaine, une nouvelle matière vient l’habiter : une plante, une œuvre, une histoire, un savoir, une méditation, une perspective ou une découverte.',
+    'Le Foyer n’est pas un programme à suivre. Il n’y a pas de modules ni de progression à compléter.',
+    'Vous venez pour découvrir, faire des liens et ressentir ce que certaines rencontres ouvrent en vous.',
   ],
   rhythmLead: 'Chaque semaine,',
   rhythm: ' une nouvelle ouverture est proposée, en texte, en audio ou en vidéo.',
   meditations:
     'De septembre à juin, dix méditations guidées sont offertes en direct et demeurent accessibles en rediffusion pendant vos 12 mois d’accès.',
   keep: 'Certaines découvertes passent. D’autres restent avec nous, nous touchent ou changent simplement notre manière de regarder quelque chose.',
-  receiveTitle: 'Recevoir à sa manière.',
-  receive: 'Lire. Écouter. Regarder. Cuisiner. Méditer. Revenir.',
-  release: 'Rien à rattraper, rien à publier, rien à prouver.',
-  closing: 'Pas de parcours à suivre. Vous revenez quand vous en avez envie.',
 };
 
 // SECTION 6 · Le regard qui compose Le Foyer

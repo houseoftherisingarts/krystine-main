@@ -819,8 +819,9 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
       </section>
 
       {/* ═══════ SECTION 5 · Une année nourrie par l'Ayurveda : le plâtre chaud,
-          puis trois phrases sur trois taches de pigment (la fleur des huit
-          pétales est retirée, Krystine, 7 septembre 2026) ═══════ */}
+          puis « Le Foyer, c'est quoi? » sur sa tache de pigment. Les trois
+          phrases de matières, le bloc « Recevoir à sa manière » et la fleur des
+          huit pétales sont retirés (Krystine, 7 septembre 2026) ═══════ */}
       <section className={`fy-plaster relative overflow-hidden py-24 md:py-36 ${overlap ? 'z-40' : ''} ${cover}`}>
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
           <Ornament className="mb-16" />
@@ -839,39 +840,22 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </div>
 
         <div className="relative mx-auto w-full max-w-[1360px] px-6 md:px-12">
-          {/* trois manières dont les matières se répondent : chaque phrase pousse
-              sur sa propre tache de pigment, en quinconce */}
-          <div className="mt-24 space-y-14 md:space-y-20">
-            {SECTION5.items.map((it, i) => (
-              <Reveal key={it.slice(0, 24)} delay={0.05}>
-                <div className={`relative grid lg:grid-cols-12 ${i % 2 ? 'lg:justify-items-end' : ''}`}>
-                  <div className={`relative lg:col-span-8 ${i % 2 ? 'lg:col-start-5' : ''}`}>
-                    <Tache
-                      n={i}
-                      className={`-top-16 w-[260px] md:-top-24 md:w-[380px] ${i % 2 ? '-right-12 md:-right-24' : '-left-12 md:-left-24'}`}
-                    />
-                    <p className="fy-h relative max-w-[46ch] font-serif font-medium leading-[1.2] text-[clamp(1.4rem,1.1rem+1.4vw,2.3rem)] text-espresso">{it}</p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
-          <Reveal className="mt-28 border-t border-brass/30 pt-16 md:mt-36">
-            {/* recevoir à sa manière : un seul axe, centré, une seule famille de titres */}
-            <div className="mx-auto max-w-[70ch] text-center">
-              <p className="font-sans text-fyLabel uppercase tracking-[0.24em] text-brassInk">{SECTION5.receiveTitle}</p>
-              <p className="fy-h mt-8 font-serif font-medium leading-[1.2] text-[clamp(1.6rem,1.1rem+2vw,2.9rem)] text-espresso">
-                {SECTION5.receive.split(' ').filter(Boolean).map((verbe, i, arr) => (
-                  <React.Fragment key={verbe}>
-                    {verbe.replace('.', '')}
-                    {i < arr.length - 1 && <span className="mx-4 text-brass" aria-hidden>·</span>}
-                  </React.Fragment>
-                ))}
-              </p>
+          {/* « Le Foyer, c'est quoi? » : la question, puis la réponse en quatre
+              temps, sur une tache de pigment (Krystine, 7 septembre 2026) */}
+          <Reveal className="mt-24 border-t border-brass/30 pt-16 md:mt-32">
+            <div className="relative mx-auto max-w-[64ch] text-center">
+              <Tache n={0} className="-top-28 -left-6 w-[260px] md:-top-36 md:-left-28 md:w-[420px]" />
+              <h3 className="fy-h relative font-serif font-medium leading-[1.15] text-[clamp(1.6rem,1.1rem+2vw,2.9rem)] text-espresso">
+                {SECTION5.quoiTitle}
+              </h3>
               <span className="mx-auto mt-10 block h-px w-16 bg-brass" aria-hidden />
-              <p className="mt-10 font-sans text-fyBody text-ink">{SECTION5.release}</p>
-              <p className="fy-h mt-6 font-serif font-medium text-fyH3 text-brassInk">{SECTION5.closing}</p>
+              <div className="relative mt-10 space-y-7">
+                {SECTION5.quoi.map((phrase) => (
+                  <p key={phrase.slice(0, 24)} className="mx-auto max-w-[58ch] font-sans text-fyBody text-ink">
+                    {phrase}
+                  </p>
+                ))}
+              </div>
             </div>
           </Reveal>
         </div>
