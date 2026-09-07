@@ -67,7 +67,7 @@ try {
   const pageAnon = await ctxAnon.newPage();
   await pageAnon.goto('https://krystinestlaurent.ca/liste-attente?programme=pitta', { waitUntil: 'domcontentloaded', timeout: 45000 });
   await pageAnon.waitForTimeout(2500);
-  await fermerRoue(pageAnon);
+  await fermerPopups(pageAnon);
   await pageAnon.screenshot({ path: `${OUT}/liste-attente/L1-visiteur.png`, fullPage: false });
   // Zoom sur le bouton + la phrase d'aide
   const compteBtn = pageAnon.locator('button', { hasText: /Créer mon compte et m.inscrire/i }).first();
@@ -79,7 +79,7 @@ try {
   await ctxAnon.close();
 
   // ── L2 : connectée sur localhost:5199 ──
-  const ctx = await browser.newContext({ viewport: { width: 1600, height: 900 } });
+  const ctx = await browser.newContext({ viewport: { width: 1600, height: 900 }, reducedMotion: 'reduce' });
   const page = await ctx.newPage();
   await page.goto(`${BASE}/robots.txt`);
   await page.evaluate(([key, val]) => new Promise((res, rej) => {
@@ -91,7 +91,7 @@ try {
 
   await page.goto(`${BASE}/liste-attente?programme=pitta`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForTimeout(2000);
-  await fermerRoue(page);
+  await fermerPopups(page);
   // Le formulaire à champs doit avoir disparu; la case unique doit être visible.
   const champPrenom = page.locator('input[placeholder="Prénom" i], input[autocomplete="given-name"]');
   const nbChampPrenom = await champPrenom.count();
@@ -125,7 +125,7 @@ try {
   await fsdoc(`badges/${uid}`, { obtenus: { mapValue: { fields: { 'voix-du-cercle': now } } }, vedette: { stringValue: 'voix-du-cercle' } });
   await page.goto(`${BASE}/membre/${uid}`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForTimeout(2000);
-  await fermerRoue(page);
+  await fermerPopups(page);
   await page.screenshot({ path: `${OUT}/badges/G2-membre-profil.png`, fullPage: true });
   const badgeVisible = await page.locator('text=Voix du cercle').count();
   console.log('G2 — pastille "Voix du cercle" visible sur /membre/{uid}:', badgeVisible);
@@ -133,7 +133,7 @@ try {
   // Onglet Profil de l'espace client : choisir le badge en vedette + Badges à gagner
   await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForTimeout(2500);
-  await fermerRoue(page);
+  await fermerPopups(page);
   await page.screenshot({ path: `${OUT}/badges/G2-compte-defaut.png`, fullPage: true });
   const badgesSection = page.locator('text=Badges').first();
   await badgesSection.scrollIntoViewIfNeeded().catch(() => {});
