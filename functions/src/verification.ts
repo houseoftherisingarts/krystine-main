@@ -4,6 +4,7 @@ import { getStorage } from 'firebase-admin/storage';
 import { assertAdmin } from './newsletter/send';
 import { crediterNiskas } from './niskas';
 import { ecrireMessageKrystine, uidKrystine } from './coffres';
+import { lireGamification } from './gamification';
 import {
   SEUIL_PROGRAMMES, NISKAS_BADGE_BLEU, ARTICLE_SKIN, ID_BADGE, KIND_BADGE_BLEU,
   cleBadgeBleu, cheminPieceValide, verifierCycleFoyer, StatutVerification,
