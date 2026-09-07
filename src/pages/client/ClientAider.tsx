@@ -42,7 +42,7 @@ const ClientAider: React.FC = () => {
   };
 
   if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#8B4A2F] text-2xl" /></div>;
-  if (ouvert) return <SondageForm sondage={ouvert} lang={lang as 'FR' | 'EN'} onTermine={(n) => termine(ouvert, n)} onRetour={() => setOuvert(null)} />;
+  if (ouvert) return <SondageForm sondage={ouvert} lang={lang} onTermine={(n) => termine(ouvert, n)} onRetour={() => setOuvert(null)} />;
 
   const visibles = sondages.filter((s) => !faits.has(s.id) || justFait?.id === s.id);
 
