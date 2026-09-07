@@ -156,14 +156,26 @@ try {
   console.log('onglet Téléchargements trouvé:', ok);
   await mem.waitForTimeout(2000);
   await shotsAtFractions(mem, 'agent-boutique-niskas', [['haut', 0], ['milieu', 0.35], ['coffres', 0.55], ['videos', 0.8]]);
-  // Déplie « ce que le coffre d'argent contient » et vérifie l'absence d'huile.
-  await mem.evaluate(() => {
-    const btn = Array.from(document.querySelectorAll('button')).find(b => /ce que le coffre contient/i.test(b.textContent || ''));
-    if (btn) btn.click();
+  // Déplie « ce que le coffre contient » pour bronze, argent ET or (argent
+  // est le second bouton : c'est celui qui portait le rabais huile).
+  const boutonsCoffre = await mem.evaluate(() => {
+    const btns = Array.from(document.querySelectorAll('button')).filter(b => /ce que le coffre contient/i.test(b.textContent || ''));
+    btns.forEach(b => b.click());
+    return btns.length;
   });
+  console.log('boutons « ce que le coffre contient » trouvés et cliqués:', boutonsCoffre);
   await mem.waitForTimeout(500);
   const coffreText = await mem.locator('body').innerText();
-  console.log('=== COFFRE ARGENT (client) : mention huile ?', /huile/i.test(coffreText), '===');
+  const argentIdx = coffreText.indexOf("COFFRE D'ARGENT") >= 0 ? coffreText.indexOf("COFFRE D'ARGENT") : coffreText.toUpperCase().indexOf('ARGENT');
+  const argentSlice = argentIdx >= 0 ? coffreText.slice(argentIdx, argentIdx + 1200) : coffreText;
+  console.log('=== COFFRE ARGENT (client) : mention huile dans son bloc ?', /huile/i.test(argentSlice), '===');
+  fs.writeFileSync(`${OUT}/agent-coffre-argent-texte.txt`, argentSlice);
+  const argentBtn = await mem.evaluate(() => {
+    const el = Array.from(document.querySelectorAll('*')).find(e => e.children.length === 0 && /coffre d.argent/i.test(e.textContent || ''));
+    if (el) { el.scrollIntoView({ block: 'center' }); return true; }
+    return false;
+  });
+  await mem.waitForTimeout(400);
   await mem.screenshot({ path: `${OUT}/agent-boutique-niskas-1440-coffre-contenu.png` });
   await mem.setViewportSize({ width: 390, height: 844 });
   await mem.waitForTimeout(500);
