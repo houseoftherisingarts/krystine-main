@@ -373,7 +373,7 @@ const ClientLoyalty: React.FC = () => {
       <section className="mb-10">
         <div className="flex items-baseline justify-between mb-4">
           <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold">
-            {lang === 'FR' ? 'Récompenses' : 'Rewards'}
+            {lang === 'FR' ? 'Cadeaux' : 'Gifts'}
           </h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
