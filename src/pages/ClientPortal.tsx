@@ -75,7 +75,7 @@ const HISTOIRE_NISKA_EN = [
   'Some wealth appears in the way we look, discern and choose.',
 ];
 
-type Tab = 'profile' | 'amis' | 'orders' | 'formations' | 'rediffusions' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie';
+type Tab = 'profile' | 'amis' | 'orders' | 'formations' | 'rediffusions' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie' | 'aider';
 
 // Le Badge Bleu : la coche qui dit à la communauté que ce compte est bien le
 // vôtre. Quatre états, jugés par members.verifie puis par verifications/{uid}
