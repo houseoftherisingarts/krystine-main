@@ -267,7 +267,7 @@ export const SKINS: Skin[] = [
     descFR: 'La nuit polaire et ses voiles verts qui dansent en fond d’espace. Rare : dans le coffre d’or seulement.',
     descEN: 'The polar night and its green veils dancing behind your space. Rare: in the gold chest only.',
     palette: { fond: '#071019', panneau: '#0f1c28', encre: '#e6f3f0', accent: '#58d3b0', accentClair: '#a5f0da', accentProfond: '#a5f0da', sombre: true } },
-  { cle: 'or-pur', cout: null, rarete: 'rare', coffre: 'or', icone: 'fa-crown', nomFR: 'Skin Or pur', nomEN: 'Pure Gold skin',
+  { cle: 'or-pur', cout: null, rarete: 'rare', coffre: 'or', icone: 'fa-crown', enTravail: true, nomFR: 'Skin Or pur', nomEN: 'Pure Gold skin',
     descFR: 'Du noir profond et de l’or qui miroite sur chaque bouton, avec une pluie de paillettes d’or. Rare : dans le coffre d’or seulement.',
     descEN: 'Deep black and gold that shimmers on every button, with a drift of gold flecks. Rare: in the gold chest only.',
     palette: { fond: '#0b0a08', panneau: '#171410', encre: '#fbf3df', accent: '#e0b94f', accentClair: '#fff0b8', accentProfond: '#f0cf6a', sombre: true } },
