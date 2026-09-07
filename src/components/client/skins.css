@@ -768,3 +768,20 @@ html:not(.dark) .skin-defaut [class*="text-[#2a2015]/"] { color: rgba(41, 48, 39
 .skin-verifie .bg-\[\#BA7B39\]:not(#_), .skin-verifie .bg-\[\#BA7B39\]:not(#_) * { color: #0f2540 !important; }
 .skin-verifie .bg-\[\#293027\]:not(#_), .skin-verifie .bg-\[\#293027\]:not(#_) * { color: var(--sk-encre, #f2f6fb) !important; }
 .skin-verifie .bg-white:not(#_), .skin-verifie .bg-white:not(#_) * { color: #293027 !important; }
+
+/* Champs de saisie clairs sous les skins sombres : l'invite reste lisible (6 sept. 2026). */
+.skin-nuit .bg-white::placeholder, .skin-nuit .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }
+.skin-coffee .bg-white::placeholder, .skin-coffee .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }
+.skin-foret .bg-white::placeholder, .skin-foret .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }
+.skin-ocean .bg-white::placeholder, .skin-ocean .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }
+.skin-encre .bg-white::placeholder, .skin-encre .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }
+.skin-lotus .bg-white::placeholder, .skin-lotus .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }
+.skin-feminite .bg-white::placeholder, .skin-feminite .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }
+.skin-aurore .bg-white::placeholder, .skin-aurore .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }
+.skin-or-pur .bg-white::placeholder, .skin-or-pur .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }
+.skin-golden-hour .bg-white::placeholder, .skin-golden-hour .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }
+.skin-teal-orange .bg-white::placeholder, .skin-teal-orange .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }
+.skin-vata .bg-white::placeholder, .skin-vata .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }
+.skin-pitta .bg-white::placeholder, .skin-pitta .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }
+.skin-kapha .bg-white::placeholder, .skin-kapha .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }
+.skin-verifie .bg-white::placeholder, .skin-verifie .bg-white *::placeholder { color: rgba(41, 48, 39, 0.5) !important; }

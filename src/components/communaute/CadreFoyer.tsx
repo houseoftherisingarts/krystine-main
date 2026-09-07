@@ -243,7 +243,7 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, quoi, personne, dro
       <div className="h-0.5 w-full bg-[#BA7B39]" aria-hidden="true" />
 
       {/* Trois colonnes à la Facebook : raccourcis, la page, le cercle et le parrainage */}
-      <div className="mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 lg:grid-cols-[240px_minmax(0,1fr)_320px]">
+      <div className="mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 lg:grid-cols-[200px_minmax(0,1fr)_280px] xl:grid-cols-[240px_minmax(0,1fr)_320px]">
         <aside className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-3 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55 lg:sticky lg:top-24 lg:self-start">
           <nav className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible" aria-label={fr ? 'Raccourcis du Foyer' : 'Hearth shortcuts'}>
             {raccourcis.map(r => (
@@ -261,10 +261,12 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, quoi, personne, dro
           </nav>
         </aside>
 
-        <main className="min-w-0 space-y-4">
+        <main className="min-w-0">
+          <div className="space-y-4 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-white/5">
           {garde
             ? <ReserveAuFoyer lang={lang} quoi={quoi || (fr ? 'Le Foyer social est exclusif aux membres du Foyer d’Origine.' : 'The social Hearth is reserved for members of the Origine Hearth.')}>{children}</ReserveAuFoyer>
             : children}
+          </div>
         </main>
 
         <aside className="min-w-0 space-y-4">

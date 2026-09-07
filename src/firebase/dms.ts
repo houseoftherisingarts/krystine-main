@@ -44,9 +44,15 @@ export const threadId = (a: string, b: string): string => [a, b].sort().join('__
 /** Vrai si `autreUid` a mis `moiUid` sur la liste des silences. */
 export async function estBloquePar(moiUid: string, autreUid: string): Promise<boolean> {
   if (!db) return false;
-  const snap = await getDoc(doc(db, 'blocages', autreUid));
-  const uids = (snap.data()?.uids as string[] | undefined) || [];
-  return uids.includes(moiUid);
+  // Les règles ne laissent lire ce document qu'à la personne qui y figure :
+  // un refus de lecture veut donc dire « pas bloquée ».
+  try {
+    const snap = await getDoc(doc(db, 'blocages', autreUid));
+    const uids = (snap.data()?.uids as string[] | undefined) || [];
+    return uids.includes(moiUid);
+  } catch {
+    return false;
+  }
 }
 
 /** Ouvre le fil, ou rafraîchit noms et photos s'il existe déjà. Une

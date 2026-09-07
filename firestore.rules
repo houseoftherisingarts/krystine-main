@@ -157,7 +157,12 @@ service cloud.firestore {
       }
     }
 
-    match /blocages/{uid} { allow read, write: if isSelf(uid); }
+    match /blocages/{uid} {
+      allow read, write: if isSelf(uid);
+      // La personne bloquée peut lire le document où elle figure (et rien d'autre) :
+      // sendDM vérifie ainsi le blocage sans exposer la liste aux autres.
+      allow get: if isSignedIn() && request.auth.uid in resource.data.uids;
+    }
 
     // ── Messagerie privée et amitiés (portées du FMM) ────────────────────
     match /dms/{filId} {
