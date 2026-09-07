@@ -437,6 +437,7 @@ const ClientLoyalty: React.FC = () => {
           })}
         </div>
       </section>
+      )}
 
       {/* Points guide — collapsible */}
       <section className="mb-10">
