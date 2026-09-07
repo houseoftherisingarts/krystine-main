@@ -476,7 +476,10 @@ service cloud.firestore {
                         && request.resource.data.amount is number
                         && request.resource.data.amount <= 100
                         && request.resource.data.amount >= -1000
-                        && !(request.resource.data.kind in ['boutique', 'achat-niskas', 'quotidien', 'billet', 'amitie', 'parrainage', 'parrainage-bienvenue', 'adjust', 'coffre', 'coffre-gain', 'badge-bleu', 'foyer-hebdo', 'foyer-roue', 'foyer-mois']));
+                        // 'redeem' (2026-09-07) : l'échange d'une récompense passe par
+                        // echangerRecompense (functions/src/recompenses.ts) depuis que le
+                        // code (Stripe, Shopify) part du serveur; le navigateur ne débite plus lui-même.
+                        && !(request.resource.data.kind in ['boutique', 'achat-niskas', 'quotidien', 'billet', 'amitie', 'parrainage', 'parrainage-bienvenue', 'adjust', 'coffre', 'coffre-gain', 'badge-bleu', 'foyer-hebdo', 'foyer-roue', 'foyer-mois', 'redeem']));
       // La lecture d'un document absent (la transaction d'awardPoints vérifie
       // la clé avant d'écrire) ne révèle rien : elle passe.
       allow read: if isAdmin()
