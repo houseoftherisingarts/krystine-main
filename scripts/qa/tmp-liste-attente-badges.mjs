@@ -131,14 +131,19 @@ try {
   console.log('G2 — pastille "Voix du cercle" visible sur /membre/{uid}:', badgeVisible);
 
   // Onglet Profil de l'espace client : choisir le badge en vedette + Badges à gagner
-  await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded', timeout: 45000 });
-  await page.waitForTimeout(2500);
+  await page.goto(`${BASE}/compte?onglet=profile`, { waitUntil: 'domcontentloaded', timeout: 45000 });
+  await page.waitForTimeout(2000);
   await fermerPopups(page);
+  const ongletProfil = page.locator('button, a', { hasText: /^Profil$/i });
+  if (await ongletProfil.count()) { await ongletProfil.first().click().catch(() => {}); await page.waitForTimeout(600); }
   await page.screenshot({ path: `${OUT}/badges/G2-compte-defaut.png`, fullPage: true });
-  const badgesSection = page.locator('text=Badges').first();
+  const badgesSection = page.locator('p', { hasText: /^Badges$/i }).first();
   await badgesSection.scrollIntoViewIfNeeded().catch(() => {});
   await page.waitForTimeout(400);
   await page.screenshot({ path: `${OUT}/badges/G2-compte-profil-badges.png`, fullPage: true });
+  const boutonVedette = page.locator('button', { hasText: /Voix du cercle/i });
+  const nbBoutonVedette = await boutonVedette.count();
+  console.log('G2 — bouton pour choisir "Voix du cercle" en vedette trouvé:', nbBoutonVedette);
   const aGagnerDetails = page.locator('summary', { hasText: /Badges à gagner/i });
   const nbAGagner = await aGagnerDetails.count();
   if (nbAGagner) { await aGagnerDetails.first().click(); await page.waitForTimeout(400); }
