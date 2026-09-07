@@ -28,6 +28,7 @@ const Palier: React.FC<{ atteint: boolean; icone: string; titre: string; sous: s
 );
 
 const ClientParrainage: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) => {
+  const gam = useGamification();
   const fr = lang === 'FR';
   const [code, setCode] = useState('');
   const [copie, setCopie] = useState(false);
