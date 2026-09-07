@@ -48,6 +48,11 @@ const EDITABLE_SELECTOR = EDITABLE_TAGS.map(t => t.toLowerCase()).join(',');
 const SKIP_ANCESTOR_SELECTOR = '[data-no-edit], [data-edit-ui], nav, header[role="banner"], [role="dialog"], input, textarea, select, code, pre, .__edit-skip';
 
 function isLeafText(el: HTMLElement): boolean {
+  // L'admin, l'infolettre et les courriels ne sont jamais éditables par ce
+  // mécanisme — même garde que EditImageOverlay.isSwappable. Vérifié en
+  // direct (pas via useLocation) : ce composant vit hors des routes, une
+  // navigation SPA ne le remonte pas.
+  if (window.location.pathname.startsWith('/admin')) return false;
   if (!EDITABLE_TAGS.includes(el.tagName as typeof EDITABLE_TAGS[number])) return false;
   if (el.closest(SKIP_ANCESTOR_SELECTOR)) return false;
   const text = el.textContent?.trim();

@@ -20,7 +20,7 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 // La figurine du coffre, avec son halo. Le coffre d'or porte une lueur
 // iridescente qui tourne lentement, le legs de la promesse du grand lot.
-const Coffre: React.FC<{ type: TypeCoffre; ouvert?: boolean; taille?: number; tremble?: boolean }> = ({ type, ouvert, taille = 120, tremble }) => {
+export const Coffre: React.FC<{ type: TypeCoffre; ouvert?: boolean; taille?: number; tremble?: boolean }> = ({ type, ouvert, taille = 120, tremble }) => {
   const c = COFFRES[type];
   const reduce = useReducedMotion();
   return (
