@@ -67,7 +67,7 @@ const EspaceGroupe: React.FC<{ formationId: string; variante?: 'page' | 'cadre' 
         ? `inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-colors ${
           actif === id ? 'border-[#BA7B39] bg-[#BA7B39]/15 text-[#8B4A2F] dark:text-[#d9a05b]' : 'border-[#38403a]/15 text-[#38403a]/60 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/60'
         }`
-        : `relative flex w-full items-center gap-2 rounded-full px-4 py-2 text-left text-[11px] font-bold uppercase tracking-wider transition-colors ${
+        : `relative flex items-center gap-2 rounded-full px-4 py-2 text-left text-[11px] font-bold uppercase tracking-wider transition-colors lg:w-full ${
           actif === id ? 'bg-[#BA7B39] text-[#293027]' : 'bg-[#BA7B39]/12 text-[#8B4A2F] hover:bg-[#BA7B39]/25 dark:text-[#d9a05b]'
         }`}
     >
