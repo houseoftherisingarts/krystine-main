@@ -17,6 +17,9 @@ await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(1500);
 await page.locator('button', { hasText: 'Se connecter' }).first().click();
 await page.waitForTimeout(700);
+// La modale ouvre en mode inscription par défaut — basculer sur connexion.
+await page.locator('button', { hasText: 'Se connecter' }).last().click();
+await page.waitForTimeout(400);
 await page.fill('input[type="email"]', EMAIL);
 await page.fill('input[type="password"]', PW);
 await page.locator('button[type="submit"]').click();
