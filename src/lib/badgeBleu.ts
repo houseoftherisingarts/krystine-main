@@ -31,6 +31,51 @@ export const cheminPieceValide = (uid: string, chemin: string) =>
 /** verifications/{uid}.statut */
 export type StatutVerification = 'en_attente' | 'approuvee' | 'refusee';
 
+// ─── Le cadeau du jour ────────────────────────────────────────────────────────
+// Plus de roue ni de hasard (Alex, 7 septembre 2026) : à la première visite
+// de chaque journée civile, un cadeau tombe (functions/src/niskas.ts,
+// reclamerQuotidien) et le compteur jourCadeau avance de un, sans jamais
+// reculer même si une journée est sautée. Cinq niskas les jours 1 à 6 d'un
+// cycle de sept; une bannière exclusive (src/lib/pointsConfig.ts, BANNIERES)
+// au septième jour de chacun des sept premiers cycles; quinze niskas au
+// septième jour de tous les cycles suivants.
+export const NISKAS_CADEAU_JOUR = 5;
+export const NISKAS_CADEAU_JOUR_TARDIF = 15;
+/** Les sept bannières du cadeau du jour, dans l'ordre exact de leur cycle. */
+export const CADEAUX_JOUR_BANNIERES = ['aube', 'sousbois', 'lavande', 'rivage', 'erables', 'verger', 'neige'] as const;
+
+export type CadeauDuJour =
+  | { type: 'niskas'; montant: number; jourCadeau: number; position: number }
+  | { type: 'banniere'; cle: string; jourCadeau: number; position: number };
+
+/** Le cadeau du jour n° `jourCadeau` (1, 2, 3…, jamais remis à zéro). Fonction pure, testée sans réseau ni serveur. */
+export function calculerCadeauDuJour(jourCadeau: number): CadeauDuJour {
+  const j = Math.max(1, Math.floor(jourCadeau));
+  const position = ((j - 1) % 7) + 1;
+  if (position !== 7) return { type: 'niskas', montant: NISKAS_CADEAU_JOUR, jourCadeau: j, position };
+  const cycle = j / 7; // entier, puisque position === 7
+  const cle = CADEAUX_JOUR_BANNIERES[cycle - 1];
+  return cle
+    ? { type: 'banniere', cle, jourCadeau: j, position }
+    : { type: 'niskas', montant: NISKAS_CADEAU_JOUR_TARDIF, jourCadeau: j, position };
+}
+
+/** Auto-test (appelé une fois au chargement du module serveur, comme verifierCycleFoyer). */
+export function verifierCadeauDuJour(): void {
+  const cas: Array<[number, 'niskas' | 'banniere', number]> = [
+    [1, 'niskas', 1], [6, 'niskas', 6], [7, 'banniere', 7], [14, 'banniere', 7],
+    [49, 'banniere', 7], [50, 'niskas', 1], [56, 'niskas', 7],
+  ];
+  for (const [jour, type, position] of cas) {
+    const c = calculerCadeauDuJour(jour);
+    if (c.type !== type || c.position !== position) throw new Error(`Le cadeau du jour ${jour} ne suit pas la mécanique attendue.`);
+  }
+  const j7 = calculerCadeauDuJour(7); const j49 = calculerCadeauDuJour(49); const j56 = calculerCadeauDuJour(56);
+  if (j7.type !== 'banniere' || j7.cle !== 'aube') throw new Error('Le jour 7 ne donne pas la bannière aube.');
+  if (j49.type !== 'banniere' || j49.cle !== 'neige') throw new Error('Le jour 49 ne donne pas la bannière neige.');
+  if (j56.type !== 'niskas' || j56.montant !== NISKAS_CADEAU_JOUR_TARDIF) throw new Error('Le jour 56 ne donne pas quinze niskas.');
+}
+
 // ─── La deuxième roue, celle du Foyer ────────────────────────────────────────
 // Le module « Le Foyer double vos jours » est retiré (Alex, 7 septembre 2026).
 // À sa place : au même geste quotidien, une membre du Foyer d'Origine
