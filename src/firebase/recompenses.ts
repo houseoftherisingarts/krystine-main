@@ -12,7 +12,10 @@ const REF = () => {
   return doc(getFirestore(app), 'settings', 'recompenses');
 };
 
-export const RECOMPENSES_PAR_DEFAUT: Reward[] = REWARDS.map(r => ({ ...r, actif: true }));
+// `actif` du catalogue codé respecté tel quel (une récompense « bientôt »
+// posée à actif:false dans pointsConfig.ts doit rester éteinte tant que
+// Krystine ne l'allume pas dans l'admin, même sans document Firestore encore).
+export const RECOMPENSES_PAR_DEFAUT: Reward[] = REWARDS.map(r => ({ ...r, actif: r.actif !== false }));
 
 export function suivreRecompenses(cb: (liste: Reward[]) => void): () => void {
   if (!app) { cb(RECOMPENSES_PAR_DEFAUT); return () => {}; }
