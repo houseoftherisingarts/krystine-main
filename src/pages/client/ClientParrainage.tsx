@@ -5,6 +5,7 @@ import {
 } from '../../firebase/parrainage';
 import { getMember } from '../../firebase/firestore';
 import { getBadgesDe, CATALOGUE_BADGES } from '../../firebase/badgesCatalogue';
+import { useGamification } from '../../contexts/GamificationContext';
 
 // Le panneau de parrainage de l'espace client (porté du FMM) : le code et le
 // lien à partager, les deux compteurs, les paliers de badges gagnés par les
