@@ -18,7 +18,7 @@ async function seConnecter(page) {
   await page.waitForTimeout(300);
   await page.getByPlaceholder('Courriel').fill(QA_EMAIL);
   await page.getByPlaceholder('Mot de passe').fill(QA_PASSWORD);
-  await page.getByRole('button', { name: 'Se connecter' }).click();
+  await page.locator('button[type="submit"]', { hasText: 'Se connecter' }).click();
   await page.waitForTimeout(3500);
 }
 
