@@ -675,6 +675,18 @@
     radial-gradient(120% 96% at 50% 106%, rgba(0, 0, 0, .46), transparent 62%);
 }
 
+/* Le Skin Vérifié : la lueur du bleu clair en haut, la nuit bleue au bas, et
+   sous les deux, la coche du Badge Bleu en motif discret (blanc à 5 %, une
+   tuile de 140 px). Le motif vit derrière les panneaux : le contraste des
+   textes ne change pas. */
+.skin-verifie.bg-\[\#EEE7DB\]::before {
+  background:
+    radial-gradient(78% 52% at 50% -6%, rgba(127, 180, 255, .22), transparent 68%),
+    radial-gradient(120% 96% at 50% 106%, rgba(10, 30, 56, .5), transparent 62%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-24 -24 72 72'%3E%3Cpath fill='%23ffffff' fill-opacity='.05' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E");
+  background-size: auto, auto, 140px 140px;
+}
+
 /* ═══ L'espace sans skin, en clair ═══
    Mesuré le 6 septembre 2026 : les textes secondaires de l'espace par défaut
    descendaient à 2,83 pour 1 sur le panneau crème (« Gagnés en tout », le
