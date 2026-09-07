@@ -30,7 +30,7 @@ Mesurée sur `compte-formations-1440.png` et `compte-formations-390.png` (le dé
 | Corps | Inter 12 à 14 px; petites capitales `text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]` | |
 | Fenêtres | `Portail` puis `fixed inset-0 z-[120]`, panneau `max-w-lg rounded-[24px] bg-[#EEE7DB]` | |
 
-## 3. Les routes du social et comment on y arrive
+## 3. Les routes du social et le chemin qui y mène
 
 Le routeur est `App.tsx` (react-router, `<Routes>` à partir de la ligne 201). Aucun lien de la barre de navigation ne mène au social : seule la cloche (`NavBar.tsx:133`) y vit, et l'avatar vers `/compte` reste derrière le drapeau `settings/community.profilPublic`.
 
