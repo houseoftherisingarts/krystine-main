@@ -362,6 +362,7 @@ const ClientLoyalty: React.FC = () => {
       )}
 
       {/* Rewards catalog */}
+      {gam.recompenses && (
       <section className="mb-10">
         <div className="flex items-baseline justify-between mb-4">
           <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold">
