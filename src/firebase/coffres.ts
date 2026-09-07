@@ -2,6 +2,7 @@ import { doc, onSnapshot, type Unsubscribe } from 'firebase/firestore';
 import { httpsCallable, getFunctions } from 'firebase/functions';
 import app, { db } from '../firebase';
 import type { TypeCoffre } from '../lib/coffresConfig';
+import type { RareteSkin } from '../lib/pointsConfig';
 
 // Les coffres (functions/src/coffres.ts) : ce que la membre possède, l'achat
 // en niskas, l'ouverture, le grand lot et le don par l'admin.
