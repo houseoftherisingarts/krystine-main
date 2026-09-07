@@ -29,6 +29,7 @@ export type AdminSectionId =
   | 'recompenses'
   | 'skinsATravailler'
   | 'sondages'
+  | 'gamification'
   | 'submissions'
   | 'groups'
   | 'bookings'
@@ -57,6 +58,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   recompenses:'recompenses',
   skinsATravailler: 'skins-a-travailler',
   sondages:   'sondages',
+  gamification: 'gamification',
   submissions:'formulaires',
   groups:     'groupes',
   live:       'live',
@@ -118,6 +120,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'recompenses', label: 'Récompenses',     icon: 'fa-seedling',         groupe: 'communaute' },
   { id: 'skinsATravailler', label: 'Skins à travailler', icon: 'fa-palette',  groupe: 'communaute' },
   { id: 'sondages',   label: 'Sondages répondus', icon: 'fa-clipboard-question', groupe: 'communaute' },
+  { id: 'gamification', label: 'Gamification', icon: 'fa-dice', groupe: 'communaute' },
   { id: 'groups',     label: 'Groupes',          icon: 'fa-users-rectangle',  groupe: 'communaute' },
   { id: 'feedpublic', label: 'Feed public',      icon: 'fa-newspaper',        groupe: 'communaute' },
   { id: 'live',       label: 'Live',             icon: 'fa-tower-broadcast',  groupe: 'communaute' },

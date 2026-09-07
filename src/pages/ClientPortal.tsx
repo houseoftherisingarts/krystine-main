@@ -40,6 +40,7 @@ import Portail from '../components/Portail';
 import { suivreVerification, compterProgrammesSuivis, televerserPiece, demanderBadgeBleu, type Verification } from '../firebase/verification';
 import { SEUIL_PROGRAMMES } from '../lib/badgeBleu';
 import EditModeToggleButton from '../components/edit/EditModeToggleButton';
+import { useGamification, montrerBadgeBleu } from '../contexts/GamificationContext';
 
 // Le texte du niṣka, écrit par Alex le 6 septembre 2026, lu sous la bourse.
 const HISTOIRE_NISKA_FR = [
@@ -205,6 +206,7 @@ const BadgeBleuBloc: React.FC<{ uid: string; verifie: boolean; lang: string }> =
 const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string; lang: string; solde: PointsBalance; onBoutique: () => void }> = ({ uid, member, email, lang, solde, onBoutique }) => {
   const [badges, setBadges] = useState<string[]>([]);
   const [vedette, setVedette] = useState<string | null>(null);
+  const gamification = useGamification();
   useEffect(() => { getBadgesDe(uid).then(setBadges).catch(() => {}); getBadgeVedetteDe(uid).then(setVedette).catch(() => {}); }, [uid]);
   // Le badge en vedette s'affiche à côté du nom dans les clavardages et le fil.
   const mettreEnVedette = async (id: string) => {
@@ -219,7 +221,7 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
         {member?.phone && <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Téléphone</span>{member.phone}</p>}
         {member?.dosha && <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Dosha</span><span className="capitalize">{member.dosha}</span></p>}
       </div>
-      <BadgeBleuBloc uid={uid} verifie={!!member?.verifie} lang={lang} />
+      {!gamification.badgeBleuEquipeSeulement && <BadgeBleuBloc uid={uid} verifie={!!member?.verifie} lang={lang} />}
       {/* Les niskas : le solde, la porte de la boutique, et toutes les façons d'en gagner */}
       <div className="rounded-[20px] border border-[#BA7B39]/30 bg-gradient-to-br from-[#BA7B39]/15 to-transparent p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -265,7 +267,7 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
           ))}
         </ul>
       </div>
-      <div>
+      {gamification.badges && <div>
         <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">Badges</p>
         {badges.length > 0 ? (
           <>
@@ -299,7 +301,7 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
             </ul>
           </details>
         )}
-      </div>
+      </div>}
       <ClientPreferences uid={uid} member={member} lang={lang} />
     </div>
   );
@@ -331,7 +333,7 @@ const ClientAmis: React.FC<{ uid: string; lang: string; seulement?: Set<string> 
   // La rangée d'ami est RangeePersonne (CarteSociale.tsx) : un seul dessin
   // d'avatar pour la même personne, ici comme au Foyer.
   const Rangee: React.FC<{ autre: string; nom: string; m: MemberDoc | null; enfant?: React.ReactNode }> = ({ autre, nom, m, enfant }) => (
-    <RangeePersonne uid={autre} nom={nom} photo={m?.photoURL} verifie={m?.verifie} action={enfant} />
+    <RangeePersonne uid={autre} nom={nom} photo={m?.photoURL} verifie={m?.verifie} email={m?.email} action={enfant} />
   );
 
   if (seulement) {
@@ -538,6 +540,7 @@ const AmisDOrigine: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) =>
 
 const ClientPortal: React.FC = () => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
+  const gamification = useGamification();
   // Par défaut, l'espace s'ouvre sur les formations : le fil participatif vit au Foyer d'Origine.
   const location = useLocation();
   const [tab, setTab] = useState<Tab>('formations');
@@ -720,7 +723,7 @@ const ClientPortal: React.FC = () => {
             <div className="min-w-0 flex-1 pb-1">
               <h1 className="flex items-center gap-2.5 truncate font-serif text-3xl text-white md:text-4xl" style={{ letterSpacing: '-0.01em', textShadow: '0 2px 18px rgba(0,0,0,0.45)' }}>
                 <span className="truncate">{member?.displayName || user.displayName || user.email?.split('@')[0]}</span>
-                {(member?.verifie || isAdmin) && (
+                {montrerBadgeBleu(user.email, member?.verifie, gamification.badgeBleuEquipeSeulement) && (
                   <i className="fa-solid fa-circle-check shrink-0 text-xl text-[#4da3ff]" title={lang === 'FR' ? 'Profil vérifié' : 'Verified profile'} />
                 )}
               </h1>

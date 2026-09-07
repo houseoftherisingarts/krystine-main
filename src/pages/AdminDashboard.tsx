@@ -47,6 +47,7 @@ import MessagesSection from './admin/sections/MessagesSection';
 import RecompensesSection from './admin/sections/RecompensesSection';
 import SkinsATravaillerSection from './admin/sections/SkinsATravaillerSection';
 import SondagesSection from './admin/sections/SondagesSection';
+import GamificationSection from './admin/sections/GamificationSection';
 import SubmissionsSection from './admin/sections/SubmissionsSection';
 import GroupsSection from './admin/sections/GroupsSection';
 import BookingsSection from './admin/sections/BookingsSection';
@@ -97,6 +98,7 @@ const AdminDashboard: React.FC = () => {
       case 'recompenses': return <RecompensesSection />;
       case 'skinsATravailler': return <SkinsATravaillerSection />;
       case 'sondages':    return <SondagesSection />;
+      case 'gamification': return <GamificationSection user={u} />;
       case 'live':        return <LiveSection />;
       case 'feedpublic':  return <FeedPublicSection />;
       case 'events':      return <EventsSection />;

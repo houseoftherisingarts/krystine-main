@@ -83,10 +83,15 @@ export const POINTS = {
 // fin : il faut en avoir écouté plus de 80 %.
 export const PART_ECOUTEE = 0.8;
 
-// ─── La roue des sept jours ──────────────────────────────────────────────────
-// Une récompense par journée civile (fuseau de Montréal), la roue avance tant
-// que la personne revient chaque jour et repart au jour 1 après un jour sauté.
-export const ROUE_QUOTIDIENNE = [1, 1, 2, 2, 3, 3, 5] as const;
+// ─── Le cadeau du jour ────────────────────────────────────────────────────────
+// Plus de roue ni de hasard (Alex, 7 septembre 2026) : à la première visite de
+// chaque journée civile (fuseau de Montréal), un cadeau tombe et le compteur
+// jourCadeau avance de un, sans jamais reculer même si une journée est
+// sautée. Cinq niskas les jours 1 à 6 d'un cycle de sept, une bannière
+// exclusive au septième, puis quinze niskas au septième jour une fois les
+// sept bannières distribuées. La mécanique vit dans
+// functions/src/badgeBleuConfig.ts (calculerCadeauDuJour) et son miroir
+// src/lib/badgeBleu.ts.
 export const FUSEAU = 'America/Toronto';
 
 /** La journée civile de Montréal, « AAAA-MM-JJ ». */
