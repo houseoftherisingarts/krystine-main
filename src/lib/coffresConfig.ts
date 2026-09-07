@@ -53,7 +53,8 @@ export const COFFRES: Record<TypeCoffre, {
     boite: 420, nomFR: 'Coffre d’or', nomEN: 'Gold chest',
     image: '/compte/coffres/or.webp', teinte: '#C9A052', teinteClaire: '#F3DFA2', teinteSombre: '#7A5C22',
     contenu: {
-      legendaire: 80, raresFR: 'les skins Aurore, Or pur et Heure dorée', raresEN: 'the Aurora, Pure Gold and Golden Hour skins',
+      legendaire: 80, rares: ['skin-aurore', 'skin-or-pur', 'skin-golden-hour'],
+      raresFR: 'les skins Aurore, Or pur et Heure dorée', raresEN: 'the Aurora, Pure Gold and Golden Hour skins',
       niskas: [{ montant: 80, poids: 45 }, { montant: 180, poids: 30 }, { montant: 400, poids: 18 }, { montant: 800, poids: 7 }],
       rabais: [
         { unSur: 8, fr: '10 % sur la boutique', en: '10% off the shop' },
