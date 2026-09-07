@@ -6,7 +6,7 @@ import { Timestamp } from 'firebase/firestore';
 import {
   createNewsletter, updateNewsletter, getNewsletter, saveNewsletterVersion, getNewsletterVersions,
   ENTETE_INFOLETTRE_PAR_DEFAUT, type NewsletterVersion,
-  type NewsletterBlock, type BlockType, type NewsletterStatus, type NewsletterAudience, type BandeauInfolettre,
+  type NewsletterBlock, type BlockType, type NewsletterStatus, type NewsletterAudience, type BandeauInfolettre, type NewsletterDoc,
 } from '../../../../firebase/firestore';
 import AudiencePicker from './AudiencePicker';
 import PreviewFrame from './PreviewFrame';
@@ -69,7 +69,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
   const [fond, setFond] = useState<string>('#FFFFFF');
   const sombre = estSombre(fond);
   const [traductionDe, setTraductionDe] = useState<string | null>(null);
-  const [translating, setTranslating] = useState(false);
+  const [translating, setTranslating] = useState<'copie' | 'surplace' | null>(null);
   // Historique : la date de la dernière version gardée (une par heure), et la liste quand le rail l'affiche.
   const [versionAt, setVersionAt] = useState<number>(0);
   const [versions, setVersions] = useState<NewsletterVersion[] | null>(null);
@@ -87,6 +87,16 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     getNewsletter(newsletterId)
       .then(n => {
         if (!n) { onBack(); return; }
+        chargerRef.current(n);
+      })
+      .finally(() => setLoading(false));
+  }, [newsletterId, onBack]);
+
+  // Pose l'état du composeur depuis un document (ouverture, et après une
+  // traduction sur place). Dans une ref pour que l'effet d'ouverture n'ait pas
+  // à dépendre de chaque setter.
+  const chargerRef = useRef<(n: NewsletterDoc) => void>(() => {});
+  chargerRef.current = (n: NewsletterDoc) => {
         setTitle(n.title || '');
         setSubject(n.subject || '');
         setPreheader(n.preheader || '');
@@ -106,9 +116,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
         setLettreDor(!!n.lettreDor);
         setDorMessagerie(n.lettreDor ? !!n.lettreDor.messagerie : true);
         setDorSection(n.lettreDor ? n.lettreDor.section !== false : true);
-      })
-      .finally(() => setLoading(false));
-  }, [newsletterId, onBack]);
+  };
 
   const isReadOnly = status === 'sent' || status === 'sending';
 
@@ -277,26 +285,34 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     }
   };
 
-  // « Dupliquer et traduire » : le brouillon s'enregistre, la fonction en fait
-  // une copie anglaise, et le composeur l'ouvre pour la relecture.
-  const dupliquerEtTraduire = async () => {
+  // Traduire vers l'autre langue. « copie » : la lettre s'enregistre, la
+  // fonction en fait un brouillon traduit, le composeur l'ouvre. « surplace » :
+  // les mots de ce brouillon changent (la version d'avant va dans l'historique).
+  const autreLangue = lang === 'en' ? 'français' : 'anglais';
+  const traduire = async (mode: 'copie' | 'surplace') => {
     setSendErr(null); setSendInfo(null);
     if (!subject || !blocks.length) { setSendErr('Le sujet et au moins un bloc sont requis avant de traduire.'); return; }
-    setTranslating(true);
+    if (mode === 'surplace' && !confirm(`Traduire cette lettre en ${autreLangue}, sur place ? La version actuelle est gardée dans l'historique.`)) return;
+    setTranslating(mode);
     try {
       const savedId = isReadOnly ? id : await save();
       if (!savedId) throw new Error('Impossible d’enregistrer le brouillon.');
       if (!app) throw new Error('Firebase n’est pas configuré.');
       const call = httpsCallable(getFunctions(app, 'us-central1'), 'traduireInfolettre');
-      const res: any = await call({ newsletterId: savedId });
+      const res: any = await call({ newsletterId: savedId, mode });
       const newId = res.data?.id as string | undefined;
       if (!newId) throw new Error('La traduction n’a pas rendu de brouillon.');
-      if (onOpen) onOpen(newId);
-      else setSendInfo('Le brouillon anglais est créé : retrouvez-le dans la liste des infolettres.');
+      if (mode === 'surplace') {
+        const n = await getNewsletter(newId);
+        if (n) { chargerRef.current(n); etatSauve.current = null; }
+        setSelectedIdx(null);
+        setSendInfo(`Lettre traduite en ${autreLangue}. Relisez chaque phrase avant l'envoi; la version d'avant est dans l'historique.`);
+      } else if (onOpen) onOpen(newId);
+      else setSendInfo(`Le brouillon en ${autreLangue} est créé : retrouvez-le dans la liste des infolettres.`);
     } catch (e: any) {
       setSendErr(e?.message || 'La traduction a échoué.');
     } finally {
-      setTranslating(false);
+      setTranslating(null);
     }
   };
 
@@ -391,8 +407,11 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
           <GhostButton onClick={() => setSide(side === 'iris' ? 'reglages' : 'iris')} disabled={isReadOnly}>
             <i className="fa-solid fa-terminal" /> {side === 'iris' ? 'Fermer Iris' : 'Rédiger avec Iris'}
           </GhostButton>
-          <GhostButton onClick={dupliquerEtTraduire} disabled={translating || !subject || !blocks.length} title="Copie toute la lettre en un brouillon anglais, à relire avant l’envoi">
-            <i className={`fa-solid ${translating ? 'fa-circle-notch fa-spin' : 'fa-language'}`} /> {translating ? 'Traduction…' : 'Dupliquer et traduire'}
+          <GhostButton onClick={() => traduire('surplace')} disabled={!!translating || isReadOnly || !subject || !blocks.length} title={`Traduit cette lettre en ${autreLangue}, dans ce brouillon (la version d’avant reste dans l’historique)`}>
+            <i className={`fa-solid ${translating === 'surplace' ? 'fa-circle-notch fa-spin' : 'fa-language'}`} /> {translating === 'surplace' ? 'Traduction…' : `Traduire en ${autreLangue}`}
+          </GhostButton>
+          <GhostButton onClick={() => traduire('copie')} disabled={!!translating || !subject || !blocks.length} title={`Copie toute la lettre en un brouillon en ${autreLangue}, à relire avant l’envoi`}>
+            <i className={`fa-solid ${translating === 'copie' ? 'fa-circle-notch fa-spin' : 'fa-clone'}`} /> {translating === 'copie' ? 'Copie…' : 'Dupliquer et traduire'}
           </GhostButton>
           <GhostButton onClick={() => setSide(side === 'preview' ? 'reglages' : 'preview')}>
             <i className={`fa-solid ${side === 'preview' ? 'fa-sliders' : 'fa-eye'}`} /> {side === 'preview' ? 'Réglages' : 'Aperçu du courriel'}
@@ -434,7 +453,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
           {/* La page, pleine largeur : on écrit dedans directement */}
           <main className="flex-1 min-w-0 lg:overflow-y-auto" onClick={() => setSelectedIdx(null)}>
             <div className="px-4 md:px-8 lg:px-10 py-6 md:py-8">
-              <div className={`w-full rounded-[24px] shadow-[0_20px_60px_-30px_rgba(41,48,39,0.35)] border border-[#293027]/5 dark:border-white/5 ${sombre ? 'dark' : ''}`} style={{ background: fond }}>
+              <div className={`nl-riche w-full rounded-[24px] shadow-[0_20px_60px_-30px_rgba(41,48,39,0.35)] border border-[#293027]/5 dark:border-white/5 ${sombre ? 'dark' : ''}`} style={{ background: fond }}>
                 {/* Le début de la lettre : sa langue, puis le bandeau tel qu'il partira */}
                 <div className="flex flex-wrap items-center gap-3 px-6 md:px-[8%] pt-5 pb-4" onClick={e => e.stopPropagation()}>
                   <span className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/50 dark:text-white/50">Langue de la lettre</span>
@@ -562,7 +581,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
                       <div className="min-w-0 flex-1">
                         <p className="text-sm text-[#293027] dark:text-white truncate">{v.subject || '(sans sujet)'}</p>
                         <p className="text-[11px] text-[#293027]/55 dark:text-white/55">
-                          {v.savedAt?.toDate().toLocaleString('fr-CA', { dateStyle: 'medium', timeStyle: 'short' }) || '…'} · {(v.blocks || []).length} bloc{(v.blocks || []).length > 1 ? 's' : ''}{v.lang === 'en' ? ' · anglais' : ''}{v.raison === 'restauration' ? ' · avant une restauration' : ''}
+                          {v.savedAt?.toDate().toLocaleString('fr-CA', { dateStyle: 'medium', timeStyle: 'short' }) || '…'} · {(v.blocks || []).length} bloc{(v.blocks || []).length > 1 ? 's' : ''}{v.lang === 'en' ? ' · anglais' : ''}{v.raison === 'restauration' ? ' · avant une restauration' : v.raison === 'traduction' ? ' · avant une traduction' : ''}
                         </p>
                       </div>
                       <GhostButton onClick={() => restaurer(v)} disabled={isReadOnly}><i className="fa-solid fa-rotate-left" /> Restaurer</GhostButton>

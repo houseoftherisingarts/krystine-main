@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getNewsletters, deleteNewsletter, type NewsletterDoc } from '../../../../firebase/firestore';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import app from '../../../../firebase';
 import { Card, PrimaryButton, DangerButton, EmptyState, GhostButton } from '../../primitives';
 
 interface Props {
@@ -21,6 +23,26 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
   const refresh = () => getNewsletters().then(setItems).finally(() => setLoading(false));
   useEffect(() => { refresh(); }, []);
 
+  // « Dupliquer et traduire » depuis la liste : la fonction crée le brouillon
+  // dans l'autre langue (anglais pour une lettre française, et l'inverse), et
+  // le composeur l'ouvre pour la relecture.
+  const [traduction, setTraduction] = useState<string | null>(null);
+  const [erreur, setErreur] = useState<string | null>(null);
+  const dupliquerEtTraduire = async (n: NewsletterDoc) => {
+    if (!n.id || !app) return;
+    setErreur(null); setTraduction(n.id);
+    try {
+      const res: any = await httpsCallable(getFunctions(app, 'us-central1'), 'traduireInfolettre')({ newsletterId: n.id, mode: 'copie' });
+      const newId = res.data?.id as string | undefined;
+      if (!newId) throw new Error('La traduction n’a pas rendu de brouillon.');
+      onOpen(newId);
+    } catch (e: any) {
+      setErreur(e?.message || 'La traduction a échoué.');
+    } finally {
+      setTraduction(null);
+    }
+  };
+
   const del = async (n: NewsletterDoc) => {
     if (!n.id) return;
     if (n.status === 'sent') { alert('Une infolettre déjà envoyée ne peut pas être supprimée.'); return; }
@@ -38,10 +60,12 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
         <PrimaryButton onClick={() => onOpen(null)} className="ml-auto"><i className="fa-solid fa-plus" /> Nouvelle infolettre</PrimaryButton>
       </div>
 
+      {erreur && <p className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-2">{erreur}</p>}
+
       {items.length === 0 ? (
         <EmptyState icon="fa-envelope-open-text">Aucune infolettre pour l'instant. Créez-en une pour commencer.</EmptyState>
       ) : (
-        <Card className="overflow-hidden">
+        <Card className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-[#EEE7DB] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#293027]/60 dark:text-white/60">
               <tr>
@@ -59,11 +83,12 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
                 const st = statusLabel[n.status] || statusLabel.draft;
                 return (
                   <tr key={n.id} className="border-t border-[#293027]/5 dark:border-white/5 hover:bg-[#BA7B39]/5">
-                    <td className="px-4 py-3 text-[#293027] dark:text-white font-serif">
+                    <td className="px-4 py-3 text-[#293027] dark:text-white font-serif min-w-[11rem]">
                       {n.lettreDor && <i className="fa-solid fa-crown mr-2 text-xs" style={{ color: '#c9a24a' }} title="Lettre d'or, à l'interne" />}
                       {n.title || '—'}
+                      {n.lang === 'en' && <span className="ml-2 text-[9px] uppercase tracking-widest font-bold px-1.5 py-0.5 rounded-full bg-[#293027]/10 text-[#293027]/70 dark:bg-white/10 dark:text-white/70 align-middle" title="Lettre en anglais">EN</span>}
                     </td>
-                    <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden md:table-cell truncate max-w-[280px]">{n.subject || '—'}</td>
+                    <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden md:table-cell truncate max-w-[220px]">{n.subject || '—'}</td>
                     <td className="px-4 py-3 hidden lg:table-cell">
                       <span className={`text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 rounded-full ${st.color}`}>{st.label}</span>
                     </td>
@@ -77,11 +102,18 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
                       ) : <span className="text-[#293027]/35 dark:text-white/35">—</span>}
                     </td>
                     <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden md:table-cell">{n.updatedAt?.toDate().toLocaleDateString('fr-CA') || '—'}</td>
-                    <td className="px-4 py-3 text-right whitespace-nowrap">
-                      <GhostButton onClick={() => onOpen(n.id!)}><i className="fa-solid fa-pen" /> {n.status === 'sent' ? 'Voir' : 'Modifier'}</GhostButton>
-                      {n.status !== 'sent' && (
-                        <DangerButton onClick={() => del(n)} className="ml-2"><i className="fa-solid fa-trash" /></DangerButton>
-                      )}
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col items-end gap-1.5 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <GhostButton onClick={() => onOpen(n.id!)}><i className="fa-solid fa-pen" /> {n.status === 'sent' ? 'Voir' : 'Modifier'}</GhostButton>
+                          {n.status !== 'sent' && (
+                            <DangerButton onClick={() => del(n)}><i className="fa-solid fa-trash" /></DangerButton>
+                          )}
+                        </div>
+                        <GhostButton onClick={() => dupliquerEtTraduire(n)} disabled={traduction !== null} title={`Crée un brouillon traduit en ${n.lang === 'en' ? 'français' : 'anglais'} et l’ouvre`}>
+                          <i className={`fa-solid ${traduction === n.id ? 'fa-circle-notch fa-spin' : 'fa-language'}`} /> {traduction === n.id ? 'Traduction…' : 'Dupliquer et traduire'}
+                        </GhostButton>
+                      </div>
                     </td>
                   </tr>
                 );

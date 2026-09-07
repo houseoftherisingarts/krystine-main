@@ -402,7 +402,7 @@ export interface BandeauInfolettre {
 export interface NewsletterVersion {
   id?: string;
   savedAt?: Timestamp;
-  raison?: 'heure' | 'restauration';
+  raison?: 'heure' | 'restauration' | 'traduction';
   title: string;
   subject: string;
   preheader?: string;

@@ -236,15 +236,19 @@ const TRADUCTION_TOOL: Anthropic.Tool = {
 };
 const CHAMPS_TEXTE = ['text', 'caption', 'alt', 'label', 'attribution', 'eyebrow', 'title', 'body', 'buttonLabel'] as const;
 
-const TRADUCTION_SYSTEM = `You translate Krystine St-Laurent's French newsletters into English for her English-speaking readers. Krystine has spent close to forty years connecting what we learned to separate: nourishing and healing, body and consciousness, science and wisdom (nursing, clinical research, Ayurveda, medicinal plants, writing). Her podcast is "Au-delà des tendances" (keep the French title, you may add "Beyond the Trends" once).
+const TRADUCTION_SYSTEM_EN = `You translate Krystine St-Laurent's French newsletters into English for her English-speaking readers. Krystine has spent close to forty years connecting what we learned to separate: nourishing and healing, body and consciousness, science and wisdom (nursing, clinical research, Ayurveda, medicinal plants, writing). Her podcast is "Au-delà des tendances" (keep the French title, you may add "Beyond the Trends" once).
 
 Rules: warm, natural English, written by a person and not by a machine. Keep every structure and every non-text value untouched: block order, URLs, image URLs, fonts, sizes, placeholders such as {{firstName}}, and the light markup <b>, <i>, <u>, <a href="…"> exactly where it stands. No em dashes. Never the "it's not X, it's Y" pattern. No rule-of-three lists by reflex, no rhetorical question answered right away, no inspirational closing line. Translate meaning, not word for word. Subject line under 60 characters. Return null for a field that was empty in the source. Answer only with the set_translation tool.`;
+
+const TRADUCTION_SYSTEM_FR = `Tu traduis en français les infolettres de Krystine St-Laurent (krystinestlaurent.ca) écrites en anglais, pour ses lectrices et lecteurs francophones du Québec. Krystine relie ce que nous avons appris à séparer : nourrir et soigner, corps et conscience, science et sagesses (soins infirmiers, recherche clinique, Ayurveda, plantes médicinales, écriture). Son podcast s'appelle « Au-delà des tendances ».
+
+Règles : un français naturel et chaleureux, vouvoiement toujours, « nous » et jamais « on » pour Krystine et son équipe, aucun tiret cadratin, presque jamais « ce n'est pas X, c'est Y », des phrases entières avec un sujet et un verbe, jamais de fragments empilés avec des virgules, pas de règle de trois par réflexe ni de conclusion inspirante. Garde intacts la structure et tout ce qui n'est pas du texte : ordre des blocs, adresses, images, polices, tailles, les gabarits comme {{firstName}}, et le balisage léger <b>, <i>, <u>, <a href="…"> exactement à sa place. Traduis le sens, pas mot à mot. Sujet de moins de 60 caractères. Renvoie null pour un champ vide à la source. Réponds seulement avec l'outil set_translation.`;
 
 export const traduireInfolettre = onCall(
   { secrets: [ANTHROPIC_API_KEY], timeoutSeconds: 300, memory: '512MiB' },
   async (request) => {
     assertAdmin(request);
-    const { newsletterId } = (request.data || {}) as { newsletterId?: string };
+    const { newsletterId, cible: cibleDemandee, mode } = (request.data || {}) as { newsletterId?: string; cible?: 'en' | 'fr'; mode?: 'copie' | 'surplace' };
     if (!newsletterId) throw new HttpsError('invalid-argument', 'newsletterId is required');
     if (!ANTHROPIC_API_KEY.value() || ANTHROPIC_API_KEY.value() === 'PLACEHOLDER') throw new HttpsError('failed-precondition', 'La traduction attend sa clé : firebase functions:secrets:set ANTHROPIC_API_KEY');
 
@@ -253,6 +257,10 @@ export const traduireInfolettre = onCall(
     if (!snap.exists) throw new HttpsError('not-found', 'Infolettre introuvable');
     const src = snap.data() as Record<string, any>;
     const blocks: NewsletterBlock[] = src.blocks || [];
+    // Vers l'autre langue par défaut : une lettre française devient anglaise, et l'inverse.
+    const cible: 'en' | 'fr' = cibleDemandee === 'fr' || cibleDemandee === 'en' ? cibleDemandee : (src.lang === 'en' ? 'fr' : 'en');
+    const surplace = mode === 'surplace';
+    if (surplace && (src.status === 'sent' || src.status === 'sending')) throw new HttpsError('failed-precondition', 'Une lettre déjà envoyée ne se traduit pas sur place : dupliquez-la.');
 
     const source = {
       title: src.title || '', subject: src.subject || '', preheader: src.preheader || '',
@@ -270,10 +278,10 @@ export const traduireInfolettre = onCall(
       response = await client.messages.create({
         model: 'claude-sonnet-5',
         max_tokens: 16000,
-        system: TRADUCTION_SYSTEM,
+        system: cible === 'en' ? TRADUCTION_SYSTEM_EN : TRADUCTION_SYSTEM_FR,
         tools: [TRADUCTION_TOOL],
         tool_choice: { type: 'tool', name: 'set_translation' },
-        messages: [{ role: 'user', content: `Translate this newsletter to English.\n${JSON.stringify(source)}` }],
+        messages: [{ role: 'user', content: `${cible === 'en' ? 'Translate this newsletter to English.' : 'Traduis cette infolettre en français.'}\n${JSON.stringify(source)}` }],
       });
     } catch (e: any) {
       const msg = String(e?.error?.error?.message || e?.message || '');
@@ -292,15 +300,32 @@ export const traduireInfolettre = onCall(
       for (const k of CHAMPS_TEXTE) if (content[k] && typeof t.blocks[i]?.[k] === 'string' && t.blocks[i][k]) content[k] = t.blocks[i][k];
       return { type: b.type, content };
     });
-    const { sentAt: _s, stats: _st, progress: _p, lastError: _e, createdAt: _c, updatedAt: _u, ...reste } = src;
-    const doc = {
-      ...reste,
-      title: t.title || `${src.title || src.subject} (EN)`,
+    const mots = {
+      title: t.title || `${src.title || src.subject} (${cible.toUpperCase()})`,
       subject: t.subject || src.subject,
       preheader: t.preheader || src.preheader || '',
       blocks: traduits,
       bandeau: src.bandeau ? { ...src.bandeau, etiquette: src.bandeau.etiquette ? (t.etiquette || src.bandeau.etiquette) : src.bandeau.etiquette } : src.bandeau ?? null,
-      lang: 'en',
+      lang: cible,
+    };
+
+    if (surplace) {
+      // Sur place : la version d'avant se garde dans l'historique, puis les
+      // mots changent dans le même brouillon.
+      await db.collection(`newsletters/${newsletterId}/versions`).add({
+        title: src.title || '', subject: src.subject || '', preheader: src.preheader || '', blocks, lang: src.lang || 'fr',
+        bandeau: src.bandeau ?? null, fond: src.fond ?? null, couverture: src.couverture ?? null, couvertureUrl: src.couvertureUrl ?? null, signature: src.signature !== false,
+        raison: 'traduction', savedAt: FieldValue.serverTimestamp(),
+      });
+      await snap.ref.update({ ...mots, title: src.title || mots.title, versionAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp() });
+      console.log('[traduireInfolettre] sur place', newsletterId, cible);
+      return { id: newsletterId, cible };
+    }
+
+    const { sentAt: _s, stats: _st, progress: _p, lastError: _e, createdAt: _c, updatedAt: _u, versionAt: _v, ...reste } = src;
+    const doc = {
+      ...reste,
+      ...mots,
       traductionDe: newsletterId,
       status: 'draft',
       scheduledFor: null,
@@ -309,7 +334,7 @@ export const traduireInfolettre = onCall(
       updatedAt: FieldValue.serverTimestamp(),
     };
     const ref = await db.collection('newsletters').add(doc);
-    console.log('[traduireInfolettre]', newsletterId, '→', ref.id);
-    return { id: ref.id };
+    console.log('[traduireInfolettre]', newsletterId, '→', ref.id, cible);
+    return { id: ref.id, cible };
   },
 );

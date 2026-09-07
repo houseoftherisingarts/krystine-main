@@ -371,7 +371,7 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
 };
 
 export const RenderBlocksWeb: React.FC<{ blocks: NewsletterBlock[] }> = ({ blocks }) => (
-  <>{blocks.map((b, i) => <RenderBlockWeb key={i} block={b} />)}</>
+  <div className="nl-riche">{blocks.map((b, i) => <RenderBlockWeb key={i} block={b} />)}</div>
 );
 
 // ─── Email HTML renderer ─────────────────────────────────────────────────────
