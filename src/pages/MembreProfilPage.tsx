@@ -158,6 +158,7 @@ const MembreProfilPage: React.FC = () => {
           </div>
         </dl>
 
+        {gam.badges && (
         <div id="badges" className="mt-6 border-t border-[#38403a]/10 pt-5 dark:border-white/10">
           <p className={PETITES_CAPITALES}>Badges</p>
           {badges.length === 0 ? (
@@ -179,6 +180,7 @@ const MembreProfilPage: React.FC = () => {
             </div>
           )}
         </div>
+        )}
       </CarteSociale>
 
       {soi && <Composeur fil="communaute" contexte="monmur" />}
