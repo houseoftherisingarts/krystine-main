@@ -26,11 +26,25 @@ await page.locator('button[type="submit"]').click();
 await page.waitForTimeout(3000);
 console.log('url after signin:', page.url());
 
+// Ferme toute pop-up d'accueil (cadeau du jour, roue, etc.) : ce sont des
+// popups d'engagement sans rapport avec le mode éditeur, hors de portée ici.
+async function fermerPopups() {
+  for (let i = 0; i < 4; i++) {
+    const overlay = page.locator('[class*="z-[125]"], [role="dialog"]').first();
+    if (!(await overlay.count())) break;
+    const bouton = overlay.locator('button', { hasText: /merci|fermer|continuer|plus tard/i }).first();
+    if (await bouton.count()) {
+      await bouton.click({ force: true }).catch(() => {});
+    } else {
+      await page.keyboard.press('Escape').catch(() => {});
+    }
+    await page.waitForTimeout(500);
+  }
+}
+
 // 1) Bannière du compte : le bouton à côté d'Espace admin / Déconnexion
 await page.waitForSelector('text=Déconnexion', { timeout: 15000 }).catch(() => {});
-// Ferme la pop-up « Cadeau du jour » qui s'ouvre au premier login du jour.
-const merci = page.locator('button', { hasText: 'Merci' }).first();
-if (await merci.count()) { await merci.click(); await page.waitForTimeout(500); }
+await fermerPopups();
 await page.waitForTimeout(500);
 await page.screenshot({ path: `${OUT}/bouton-01-compte-banniere.png` });
 
