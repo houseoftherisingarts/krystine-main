@@ -9,6 +9,7 @@ import { subscribeLiveListeners, subscribeListenTotals, type PresenceRow } from 
 import { Card } from '../primitives';
 import { PALIERS, STATUTS, type CommunauteStats } from '../../../lib/paliers';
 import CommandesStripeCard from './dashboard/CommandesStripeCard';
+import RapportDuJourCard from './dashboard/RapportDuJourCard';
 
 interface Stat { label: string; value: number; icon: string; accent: string; hint?: string; }
 
