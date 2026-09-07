@@ -186,7 +186,7 @@ Une écriture, **`coffres.ts:229`** : `boutique/{uid}.possede['skin-<cle>'] = se
 
 ### 8.5 Déposer un cadeau rabais
 
-Deux voies existent, selon ce que le rabais touche :
+Deux voies existent. Un rabais sur une formation passe par `cadeaux`, un rabais sur la boutique Shopify passe par `rewardRedemptions`.
 
 - **Rabais sur une formation** (Foyer, Origine, Vata…) : un document `cadeaux` au patron de **`cadeaux.ts:63-74`** avec `pourcent` de 1 à 99, plus le mot dans la messagerie (**`cadeaux.ts:76-91`** ou `ecrireMessageKrystine`). La carte cliquable apparaît d'elle-même dans la messagerie et la cloche (`ClientMessagerie.tsx:119-123`, `Cloche.tsx:122-127`) et le bouton ouvre Stripe au prix réduit (`cadeaux.ts:122-147`). Rien à construire côté client.
 - **Rabais sur les huiles ou la boutique Shopify** (`reb-huiles`, 15 %) : un document `rewardRedemptions` au patron de **`coffres.ts:257`** (`cost: 0`, `status: 'pending'`, `source` à nommer, `rewardId: 'reb-huiles'`, `rewardLabel` lisible), visible sous Points « Mes récompenses » et dans l'admin « à honorer ». Krystine remet le code à la main; pour lui donner un bouton « Honorée » il faudrait écrire `status: 'fulfilled'` et `fulfillmentNote` depuis `AdminClientView.tsx:742-752` (règle admin déjà permise, `firestore.rules:441-442`). Le schéma `cadeaux` ne convient pas ici sans l'étendre : il exige un `formationId` existant (`cadeaux.ts:56`) et son bouton ouvre Stripe pour une formation.
