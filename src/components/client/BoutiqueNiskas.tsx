@@ -598,6 +598,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
         )}
         </div>
       </div>
+      ))}
     </section>
   );
 };
