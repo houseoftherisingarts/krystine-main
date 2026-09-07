@@ -276,7 +276,7 @@ const browser = await chromium.launch();
 let compteBeta = null;
 try {
   compteBeta = await scenarioInscriptionEtAnimation(browser);
-  await scenarioCoffreReel(browser);
+  try { await scenarioCoffreReel(browser); } catch (e) { console.log('  scénario 4 en erreur :', e.message); echecs++; }
   await scenarioAdmin(browser);
 } finally {
   await browser.close();
