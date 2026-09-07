@@ -258,8 +258,11 @@ export const reclamerBienvenue = onCall(
 // bêta-testeuses. La date qui compte est celle de la création du compte
 // (Firebase Auth), jugée en jour civil de Montréal, jamais l'horloge du
 // navigateur; `crediterNiskas` garantit qu'il ne se dépose qu'une fois.
-// `offert` ne revient vrai qu'à ce dépôt précis : le premier écran de
-// l'espace (CoffreBeta.tsx) s'en sert pour savoir s'il joue l'animation.
+// `eligible` dit si le compte tombe dans la fenêtre (vrai à chaque appel);
+// `offert` ne revient vrai qu'au tout premier dépôt. Le client se fie à
+// `eligible`, jamais seulement `offert` : si l'animation n'a pas eu la
+// chance de se montrer (une autre fenêtre encore ouverte, l'onglet fermé
+// trop vite), le rappel au prochain écran la retrouve quand même.
 const COFFRE_BETA_DEBUT = '2026-09-07';
 const COFFRE_BETA_FIN = '2026-10-01';
 export const NISKAS_BETA = 50;
