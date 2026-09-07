@@ -81,7 +81,7 @@ const ClientFormations: React.FC = () => {
         <section>
           <div className="flex items-baseline justify-between gap-3">
             <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
-              {lang === 'FR' ? 'À découvrir' : 'Discover'}
+              {lang === 'FR' ? 'Formations à découvrir' : 'Courses to discover'}
             </p>
             <Link to="/cours" className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:text-[#BA7B39]">
               {lang === 'FR' ? 'Toutes les formations' : 'All courses'} <i className="fa-solid fa-arrow-right" />
