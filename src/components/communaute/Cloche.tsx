@@ -6,6 +6,7 @@ import { Bell, MessageCircle, User as UserIcon } from 'lucide-react';
 import { subscribeInbox, type DMThread } from '../../firebase/dms';
 import { suivreMesAmities, type Amitie } from '../../firebase/amities';
 import { suivreLeMur, type PostMur } from '../../firebase/mur';
+import { useMembreDuFoyer } from './ReserveAuFoyer';
 
 // ─── La cloche ────────────────────────────────────────────────────────
 // Porté du FMM 2026 (src/components/compte/Cloche.tsx), simplifié : trois
