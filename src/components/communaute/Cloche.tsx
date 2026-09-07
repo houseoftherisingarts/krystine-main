@@ -149,8 +149,9 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
         <Pastille n={total} />
       </button>
 
+      {/* Sous 640 px, les messages non lus vivent déjà dans la liste des notifications : la barre garde sa place. */}
       <button
-        type="button" onClick={() => { setMessagesOuverts((v) => !v); setOuverte(false); }} className={bouton} style={style}
+        type="button" onClick={() => { setMessagesOuverts((v) => !v); setOuverte(false); }} className={`${bouton} hidden sm:inline-flex`} style={style}
         aria-haspopup="true" aria-expanded={messagesOuverts}
         aria-label={`Messages${messagesNonLus ? `, ${messagesNonLus} non lus` : ''}`} title="Messagerie"
       >
