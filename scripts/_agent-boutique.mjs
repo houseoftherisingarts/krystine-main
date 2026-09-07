@@ -19,6 +19,18 @@ async function shot(page, route, w, h, name, opts = {}) {
   await page.setViewportSize({ width: w, height: h });
   await page.goto(BASE + route, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(opts.wait || 2500);
+  if (opts.full) {
+    // Défile en douceur pour déclencher les reveals au scroll (whileInView)
+    // avant la capture pleine page, sinon les sections hors écran restent
+    // à opacity:0 sur la capture.
+    const height = await page.evaluate(() => document.body.scrollHeight);
+    for (let y = 0; y < height; y += Math.round(h * 0.8)) {
+      await page.evaluate((py) => window.scrollTo(0, py), y);
+      await page.waitForTimeout(220);
+    }
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(400);
+  }
   await page.screenshot({ path: `${OUT}/${name}-${w}.png`, fullPage: !!opts.full });
 }
 
