@@ -103,7 +103,8 @@ const BadgeBleuBloc: React.FC<{ uid: string; verifie: boolean; lang: string }> =
       setErreur((e as { message?: string }).message || (fr ? 'La demande n’est pas partie. Réessayez dans un instant.' : 'The request did not go through. Try again in a moment.'));
     } finally { setEnvoi(false); }
   };
-  const voirSkin = () => { window.dispatchEvent(new Event('krystine:ouvrir-boutique')); window.setTimeout(() => document.getElementById('boutique-skin')?.scrollIntoView({ behavior: 'smooth' }), 450); };
+  // `detail: 'skin'` déplie aussi la section (repliée par défaut, BoutiqueNiskas.tsx) avant d'y faire défiler la page.
+  const voirSkin = () => { window.dispatchEvent(new CustomEvent('krystine:ouvrir-boutique', { detail: 'skin' })); window.setTimeout(() => document.getElementById('boutique-skin')?.scrollIntoView({ behavior: 'smooth' }), 450); };
   const pose = verifie || verif?.statut === 'approuvee';
   const etat: 'pose' | 'attente' | 'refusee' | 'aucune' = pose ? 'pose' : (succes || verif?.statut === 'en_attente') ? 'attente' : verif?.statut === 'refusee' ? 'refusee' : 'aucune';
   const charge = verif !== undefined;
