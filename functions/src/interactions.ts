@@ -28,7 +28,9 @@ async function compter(uid: string, champ: keyof Compteurs): Promise<void> {
   for (const s of SEUILS) {
     if (!data.obtenus?.[s.id] && s.ok(data.compteurs || {})) nouveaux[s.id] = FieldValue.serverTimestamp();
   }
-  if (Object.keys(nouveaux).length) {
+  // Le module « Badges » fermé arrête la pose, jamais le compteur : rouvert,
+  // les seuils déjà francs se posent au prochain geste.
+  if (Object.keys(nouveaux).length && (await lireGamification()).badges) {
     await ref.set({ obtenus: nouveaux }, { merge: true });
     console.log(`[interactions] ${Object.keys(nouveaux).join(', ')} -> ${uid}`);
   }
