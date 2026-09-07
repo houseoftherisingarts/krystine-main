@@ -56,6 +56,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   messages:   'messages',
   recompenses:'recompenses',
   skinsATravailler: 'skins-a-travailler',
+  sondages:   'sondages',
   submissions:'formulaires',
   groups:     'groupes',
   live:       'live',
