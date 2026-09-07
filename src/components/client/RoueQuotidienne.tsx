@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { reclamerQuotidien, type Quotidien } from '../../firebase/points';
 import { ROUE_QUOTIDIENNE, journee, niskas } from '../../lib/pointsConfig';
+import { FOYER_MULTIPLICATEUR, LIBELLE_FOYER, RABAIS_HUILE_FOYER, prochainsCadeauxFoyer } from '../../lib/badgeBleu';
 import PieceNiska from './PieceNiska';
 import Portail from '../Portail';
 
@@ -9,8 +10,29 @@ import Portail from '../Portail';
 // lève : sept cases, celle du jour allumée, les jours passés éteints, les
 // jours à venir dans la pénombre. Passé le septième jour, la roue repart.
 // Le solde se lit en direct ailleurs (memberPoints), rien à rafraîchir ici.
+// Au Foyer d'Origine, le serveur double le montant et dépose un cadeau à
+// chaque semaine et à chaque mois complets : la roue le dit, sans rien juger.
 
 const CLE_VU = 'krystine-roue-vue';
+
+/** La phrase du cadeau tombé aujourd'hui (semaine ou mois complet au Foyer), ou null. */
+function phraseCadeau(etat: Quotidien, fr: boolean): string | null {
+  const h = etat.cadeauHebdo;
+  const m = etat.cadeauMois;
+  if (m) {
+    const debut = fr ? 'Un mois complet : ' : 'A full month: ';
+    if (m.genre === 'musique') return debut + (fr ? 'la musique d’Origine est à vous.' : 'the Origin music is yours.');
+    if (m.genre === 'skin-rare') return debut + (fr ? `le ${m.nom ?? 'skin rare'} est à vous, dans la petite boutique.` : `the ${m.nom ?? 'rare skin'} is yours, in the little shop.`);
+    if (m.genre === 'rabais-huile') return debut + (fr ? `${RABAIS_HUILE_FOYER.pourcent} % sur une huile corporelle de votre choix, une seule. Krystine vous envoie le code par courriel.` : `${RABAIS_HUILE_FOYER.pourcent}% off one body oil of your choice, a single one. Krystine sends you the code by email.`);
+    return debut + (fr ? `${niskas(m.montant ?? 0, 'FR')} de plus dans votre bourse.` : `${niskas(m.montant ?? 0, 'EN')} more in your purse.`);
+  }
+  if (h) {
+    const debut = fr ? 'Une semaine complète : ' : 'A full week: ';
+    if (h.genre === 'musique') return debut + (fr ? 'la musique d’Origine est à vous.' : 'the Origin music is yours.');
+    return debut + (fr ? `${niskas(h.montant ?? 0, 'FR')} de plus dans votre bourse.` : `${niskas(h.montant ?? 0, 'EN')} more in your purse.`);
+  }
+  return null;
+}
 
 const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, lang }) => {
   const [etat, setEtat] = useState<Quotidien | null>(null);
