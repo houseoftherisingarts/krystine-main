@@ -460,7 +460,7 @@ export const REWARDS: Reward[] = [
     labelFR: 'Une masterclass des archives (bientôt)',
     labelEN: 'An archive masterclass (soon)',
     descFR: "Gestion du stress : aromathérapie et Ayurveda, ou une autre masterclass des archives. En préparation : n'est pas encore importée au catalogue des formations (voir le rapport de l'agent).",
-    descEN: 'Stress management: aromatherapy and Ayurveda, or another archive masterclass. In progress: not yet imported into the formations catalog (see the agent's report).',
+    descEN: "Stress management: aromatherapy and Ayurveda, or another archive masterclass. In progress: not yet imported into the formations catalog (see the agent's report).",
     actif: false,
   },
 

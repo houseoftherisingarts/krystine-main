@@ -42,7 +42,9 @@ export const creerSessionPaiement = onCall(
       'line_items[0][price_data][currency]': 'cad',
       'line_items[0][price_data][product_data][name]': f.titre,
       'line_items[0][price_data][unit_amount]': String(Math.round(f.prix * 100)),
+      'line_items[0][price_data][tax_behavior]': 'exclusive',
       'line_items[0][quantity]': '1',
+      ...TAXES_QC,
       success_url: `${SITE}/compte?achat=ok`,
       cancel_url: `${SITE}/cours/${formationId}`,
       'metadata[uid]': req.auth.uid,
@@ -69,6 +71,8 @@ export const creerSessionPaiement = onCall(
 );
 
 // ─── Pourboire pendant le direct ─────────────────────────────────────────────
+// Pas de taxe ici : un pourboire volontaire n'est pas la contrepartie d'un
+// bien ou d'un service, donc pas une fourniture taxable au sens TPS/TVQ.
 // Montants fixes, jamais un montant libre venu du navigateur. Les points se
 // créditent au retour du webhook, une fois le paiement confirmé.
 const MONTANTS_POURBOIRE = [5, 10, 25, 50];
