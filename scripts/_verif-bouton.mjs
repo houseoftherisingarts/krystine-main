@@ -62,8 +62,7 @@ if (await toggle.count()) {
 // 2) La coquille du Foyer (CadreFoyer) : même bouton dans sa bannière
 await page.goto(`${BASE}/foyer/fil`, { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(2000);
-const merci2 = page.locator('button', { hasText: 'Merci' }).first();
-if (await merci2.count()) { await merci2.click(); await page.waitForTimeout(500); }
+await fermerPopups();
 const toggleFoyer = page.locator('button', { hasText: /mode éditeur/i }).first();
 console.log('toggle count on /foyer/fil:', await toggleFoyer.count());
 await page.screenshot({ path: `${OUT}/bouton-03-foyer-fil-banniere.png` });
