@@ -196,9 +196,11 @@ const ClientMessagerie: React.FC<{ voletInitial?: Volet; avec?: string; dansFoye
                 </button>
               );
             })}
-            <Link to="/messages" className="mt-auto flex items-center gap-2 px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:underline dark:text-[#d9a05b]">
-              <i className="fa-solid fa-expand" /> {fr ? 'Plein écran' : 'Full screen'}
-            </Link>
+            {!dansFoyer && (
+              <Link to="/messages" className="mt-auto flex items-center gap-2 px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:underline dark:text-[#d9a05b]">
+                <i className="fa-solid fa-fire" /> {fr ? 'Ouvrir dans le Foyer' : 'Open in the Hearth'}
+              </Link>
+            )}
           </div>
 
           {/* La conversation */}
