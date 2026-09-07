@@ -5,6 +5,7 @@ import { niskas } from '../../lib/pointsConfig';
 import { Coffre } from './Coffres';
 import PieceNiska from './PieceNiska';
 import Portail from '../Portail';
+import { useGamification } from '../../contexts/GamificationContext';
 
 // Le coffre bêta : cinquante niskas et un mot de bienvenue pour les comptes
 // créés du 7 septembre au 1er octobre 2026 inclus (Alex, 7 septembre 2026).
