@@ -236,8 +236,8 @@ const Coffres: React.FC<{ solde: number; onChange?: () => void; enTravail?: Read
 
       <p className="mt-4 text-[11px] leading-relaxed text-[#293027]/55 dark:text-white/55">
         {fr
-          ? 'Le grand lot (le Foyer d’Origine, offert) se réclame en répondant à une question d’habileté, comme le veut la loi canadienne pour tout concours où le hasard entre en jeu. Les rabais gagnés sont honorés par Krystine avec un code de la boutique, comme les récompenses de la plante. Aucune valeur en argent, aucun remboursement.'
-          : 'The grand prize (the Origine Hearth, on us) is claimed by answering a skill-testing question, as Canadian law requires for any contest involving chance. Discounts won are honoured by Krystine with a shop code, like the plant rewards. No cash value, no refunds.'}
+          ? 'Le grand lot (le Foyer d’Origine, offert) se réclame en répondant à une question d’habileté, comme le veut la loi canadienne pour tout concours où le hasard entre en jeu. Les rabais gagnés sont honorés par Krystine avec un code de la boutique, comme les cadeaux de la plante. Aucune valeur en argent, aucun remboursement.'
+          : 'The grand prize (the Origine Hearth, on us) is claimed by answering a skill-testing question, as Canadian law requires for any contest involving chance. Discounts won are honoured by Krystine with a shop code, like the plant gifts. No cash value, no refunds.'}
       </p>
 
       {/* L'ouverture : le coffre tremble, s'ouvre, puis les lots paraissent l'un après l'autre */}
