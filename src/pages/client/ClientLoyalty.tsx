@@ -107,6 +107,7 @@ const FoyerEncart: React.FC<{ balance: PointsBalance; fr: boolean }> = ({ balanc
 
 const ClientLoyalty: React.FC = () => {
   const { user, lang } = useApp();
+  const foyer = useMembreDuFoyer();
   const [balance, setBalance] = useState<PointsBalance>({ balance: 0, lifetime: 0 });
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState<PointsEvent[]>([]);
