@@ -112,6 +112,9 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
         ))}
       </div>
 
+      {/* Le rapport du jour, en tête, juste à côté des ventes Stripe */}
+      <RapportDuJourCard />
+
       {/* Ventes Stripe : revenus et taxes (TPS + TVQ) séparés, pour la comptabilité */}
       <CommandesStripeCard />
 
