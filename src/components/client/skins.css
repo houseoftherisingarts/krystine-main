@@ -579,6 +579,37 @@
 .skin-teal-orange input, .skin-teal-orange textarea, .skin-teal-orange select { color: var(--sk-encre); background-color: rgba(255, 255, 255, 0.06); }
 .skin-teal-orange ::placeholder { color: rgba(246, 236, 226, 0.55) !important; }
 
+/* Le skin verifie : réservé au Badge Bleu, généré depuis sa palette (pointsConfig.ts, SKINS).
+   Mesures de docs/badge-bleu-plan.md : le texte secondaire monte à 96 % parce
+   qu'à 74 % il tomberait à 3,4 pour 1 sur ce panneau bleu moyen; l'accent
+   #7fb4ff ne sert qu'en fond de bouton, avec une encre de nuit #0f2540 dessus
+   (7,3); les teintes laiton deviennent une nuit bleue, car une teinte claire
+   ferait descendre les libellés #e4f1ff sous la barre de 4,5. */
+.skin-verifie { --sk-fond: #1e4a7a; --sk-panneau: #2f6fb0; --sk-encre: #f2f6fb; --sk-accent: #7fb4ff; --sk-accent-clair: #b5d4ff; --sk-accent-profond: #e4f1ff; color-scheme: dark; }
+.skin-verifie.bg-\[\#EEE7DB\], .skin-verifie .bg-\[\#EEE7DB\] { background-color: var(--sk-fond) !important; }
+.skin-verifie .bg-\[\#293027\], .skin-verifie .bg-\[\#151d19\]\/40, .skin-verifie .bg-\[\#151d19\]\/60 { background-color: rgba(30, 74, 122, 0.94) !important; }
+.skin-verifie [class^="text-[#293027]"]:not([class*="text-[#293027]/"]), .skin-verifie [class*=" text-[#293027]"]:not([class*="text-[#293027]/"]) { color: var(--sk-encre) !important; }
+.skin-verifie [class^="text-[#293027]/"], .skin-verifie [class*=" text-[#293027]/"],
+.skin-verifie [class^="text-[#38403a]"], .skin-verifie [class*=" text-[#38403a]"],
+.skin-verifie [class^="text-[#3a3126]"], .skin-verifie [class*=" text-[#3a3126]"],
+.skin-verifie [class^="text-[#2a2015]"], .skin-verifie [class*=" text-[#2a2015]"] { color: rgba(242, 246, 251, 0.96) !important; }
+.skin-verifie .text-\[\#8B4A2F\], .skin-verifie .dark\:text-\[\#d9a05b\] { color: var(--sk-accent-profond) !important; }
+.skin-verifie .bg-\[\#BA7B39\] { background-color: var(--sk-accent) !important; }
+.skin-verifie .bg-\[\#BA7B39\], .skin-verifie .bg-\[\#BA7B39\] * { color: #0f2540 !important; }
+.skin-verifie .hover\:bg-\[\#d9a05b\]:hover, .skin-verifie .hover\:bg-\[\#9c6630\]:hover { background-color: var(--sk-accent-clair) !important; }
+.skin-verifie .border-\[\#BA7B39\], .skin-verifie .hover\:border-\[\#BA7B39\]:hover { border-color: var(--sk-accent) !important; }
+.skin-verifie .bg-\[\#BA7B39\]\/10, .skin-verifie .bg-\[\#BA7B39\]\/15, .skin-verifie .bg-\[\#BA7B39\]\/8, .skin-verifie .bg-\[\#BA7B39\]\/20 { background-color: rgba(15, 37, 64, 0.35) !important; }
+.skin-verifie .border-\[\#BA7B39\]\/40, .skin-verifie .border-\[\#BA7B39\]\/50 { border-color: rgba(127, 180, 255, 0.5) !important; }
+.skin-verifie .bg-white\/55, .skin-verifie .bg-white\/45, .skin-verifie .bg-white\/40, .skin-verifie .bg-white\/50, .skin-verifie .bg-white\/60, .skin-verifie .bg-white\/70, .skin-verifie .bg-white\/25 { background-color: rgba(47, 111, 176, 0.82) !important; }
+.skin-verifie .border-white\/60, .skin-verifie .border-\[\#293027\]\/10, .skin-verifie .border-\[\#293027\]\/15, .skin-verifie .border-\[\#38403a\]\/10, .skin-verifie .border-\[\#38403a\]\/15, .skin-verifie .divide-\[\#293027\]\/10 > * { border-color: rgba(242, 246, 251, 0.16) !important; }
+.skin-verifie .from-\[\#151d19\]\/75 { --tw-gradient-from: rgba(30, 74, 122, 0.85) !important; }
+.skin-verifie .via-\[\#151d19\]\/20 { --tw-gradient-via: rgba(30, 74, 122, 0.3) !important; }
+.skin-verifie .bg-\[\#293027\], .skin-verifie .bg-\[\#293027\] * { color: #f2f6fb !important; }
+.skin-verifie .bg-white, .skin-verifie .bg-white * { color: #293027 !important; }
+.skin-verifie .bg-white { background-color: rgba(242, 246, 251, 0.92) !important; }
+.skin-verifie input, .skin-verifie textarea, .skin-verifie select { color: var(--sk-encre); background-color: rgba(255, 255, 255, 0.06); }
+.skin-verifie ::placeholder { color: rgba(242, 246, 251, 0.5) !important; }
+
 /* Les motifs et les scènes animées des skins riches vivent dans skins/motifs.css et skins/effets.css. */
 /* ═══ La profondeur des skins communs ═══
    Les six communs sans motif ne sont qu'un aplat : le même gris de peinture
