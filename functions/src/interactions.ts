@@ -64,7 +64,7 @@ export const interactionVoteCommentaire = onDocumentCreated(
 
 // Les événements de niskas disent le reste : une écoute complète
 // (rediffusion, vidéo, podcast crédités à 80 %), une question posée en direct,
-// une journée de retour (la roue quotidienne).
+// une journée de retour (le cadeau du jour).
 export const interactionPoints = onDocumentCreated(
   { document: 'pointsEvents/{id}', region: 'us-central1' },
   async (event) => {
