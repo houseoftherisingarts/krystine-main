@@ -41,7 +41,8 @@ export const COFFRES: Record<TypeCoffre, {
         { unSur: 20, fr: '10 % sur la boutique', en: '10% off the shop' },
         { unSur: 40, fr: '20 % sur la boutique', en: '20% off the shop' },
         { unSur: 200, fr: '50 % sur la boutique', en: '50% off the shop' },
-        { unSur: 25, fr: '15 % sur les Huiles Corporelles', en: '15% off the Body Oils' },
+        // Le rabais huile a été retiré (Alex, 7 septembre 2026) : voir
+        // functions/src/coffres.ts, le miroir exact de ce fichier.
       ],
       grandLot: { unSur: 400, fr: 'Le Foyer d’Origine, offert (497 $)', en: 'The Origine Hearth, on us ($497)' },
     },

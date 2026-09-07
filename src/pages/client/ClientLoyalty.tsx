@@ -4,8 +4,6 @@ import {
   subscribeToMemberPoints, getMemberPoints, listPointsEvents, listMyRewardRedemptions, redeemReward, points, reconcileBalance,
   type PointsBalance, type PointsEvent, type RewardRedemption, bienvenueDejaVersee } from '../../firebase/points';
 import { POINTS, TIERS, FACONS_DE_GAGNER, tierFromLifetime, rewardMinThreshold, niskas, journee, veilleDe, type Reward } from '../../lib/pointsConfig';
-import { CYCLE_FOYER_MOIS, FOYER_HEBDO_JOURS, FOYER_MOIS_JOURS, FOYER_NISKAS_HEBDO_SI_MUSIQUE, prochainsCadeauxFoyer } from '../../lib/badgeBleu';
-import { useMembreDuFoyer } from '../../components/communaute/ReserveAuFoyer';
 import PieceNiska from '../../components/client/PieceNiska';
 import { suivreRecompenses, RECOMPENSES_PAR_DEFAUT } from '../../firebase/recompenses';
 import PointsPlant, { type Stage } from '../../components/PointsPlant';
@@ -39,76 +37,12 @@ const EVENT_LABELS: Record<string, { fr: string; en: string; icon: string }> = {
   'achat-niskas': { fr: 'Paquet de niskas acheté', en: 'Niska pack bought',   icon: 'fa-coins' },
   'badge-bleu':   { fr: 'Badge Bleu posé',          en: 'Blue Badge granted',   icon: 'fa-circle-check' },
   'foyer-hebdo':  { fr: 'Semaine complète au Foyer', en: 'Full week at the Foyer', icon: 'fa-fire' },
+  'foyer-roue':   { fr: 'Roue du Foyer d’Origine',   en: 'Origine Hearth wheel',    icon: 'fa-fire' },
   'foyer-mois':   { fr: 'Mois complet au Foyer',     en: 'Full month at the Foyer', icon: 'fa-fire' },
-};
-
-// La suite de jours d'affilée ne vaut que si la dernière réclamation date
-// d'aujourd'hui ou d'hier (le serveur repart à un sinon, niskas.ts).
-function serieVive(b: PointsBalance): number {
-  const d = b.dernierJour;
-  if (!d || !b.serie) return 0;
-  const j = journee();
-  return d === j || d === veilleDe(j) ? b.serie : 0;
-}
-
-// L'encart du Foyer d'Origine sous le solde : la mécanique en trois phrases,
-// la progression vers les prochains cadeaux et le cycle des trois mois.
-// Uniquement des classes que skins.css repeint (docs/canon-espace-client.md, 15).
-const FoyerEncart: React.FC<{ balance: PointsBalance; fr: boolean }> = ({ balance, fr }) => {
-  const serie = serieVive(balance);
-  const p = prochainsCadeauxFoyer(serie);
-  const jours = (n: number) => (fr ? `${n} jour${n > 1 ? 's' : ''}` : `${n} day${n > 1 ? 's' : ''}`);
-  return (
-    <section className="mb-8 rounded-[20px] border border-[#BA7B39]/40 bg-[#BA7B39]/10 p-5 md:p-6">
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-[1fr_auto] md:items-start">
-        <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F] dark:text-[#d9a05b]">
-            <i className="fa-solid fa-fire mr-2" aria-hidden="true" />{fr ? 'Le Foyer d’Origine' : 'The Foyer d’Origine'}
-          </p>
-          <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">
-            {fr ? 'Le Foyer double vos jours' : 'The Foyer doubles your days'}
-          </h3>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#293027]/80 dark:text-white/80">
-            {fr
-              ? `Au Foyer, chaque cadeau du jour compte double. ${FOYER_HEBDO_JOURS} jours d’affilée vous valent un cadeau de Krystine : la musique d’Origine, ou ${FOYER_NISKAS_HEBDO_SI_MUSIQUE} niskas si elle est déjà à vous. ${FOYER_MOIS_JOURS} jours d’affilée ouvrent un plus grand cadeau, et le cycle des mois se lit ci-dessous.`
-              : `At the Foyer, every gift of the day counts double. ${FOYER_HEBDO_JOURS} days in a row earn you a gift from Krystine: the Origin music, or ${FOYER_NISKAS_HEBDO_SI_MUSIQUE} niskas if it is already yours. ${FOYER_MOIS_JOURS} days in a row open a bigger gift, and the cycle of months reads below.`}
-          </p>
-        </div>
-        <div className="rounded-[14px] border border-[#BA7B39]/40 bg-white/50 px-4 py-3 text-center dark:bg-white/5 md:min-w-[11rem]">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]">{fr ? 'Suite en cours' : 'Current streak'}</p>
-          <p className="mt-1 font-serif text-4xl leading-none text-[#293027] dark:text-white">{serie}</p>
-          <p className="mt-1 text-[10px] uppercase tracking-widest text-[#293027]/60 dark:text-white/60">{fr ? (serie > 1 ? 'jours d’affilée' : 'jour d’affilée') : (serie > 1 ? 'days in a row' : 'day in a row')}</p>
-        </div>
-      </div>
-      <p className="mt-4 text-sm text-[#293027]/70 dark:text-white/70">
-        {fr
-          ? `Prochain cadeau de semaine dans ${jours(p.hebdoDans)}, prochain cadeau de mois dans ${jours(p.moisDans)}.`
-          : `Next weekly gift in ${jours(p.hebdoDans)}, next monthly gift in ${jours(p.moisDans)}.`}
-      </p>
-      <ol className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        {CYCLE_FOYER_MOIS.map((etape, i) => {
-          const phare = etape.id === p.prochainMois.id;
-          return (
-            <li key={etape.id} className={`rounded-[14px] border p-4 ${phare ? 'border-[#BA7B39] bg-[#BA7B39]/15' : 'border-[#293027]/10 bg-white/50 dark:border-white/10 dark:bg-white/5'}`}>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]">
-                {fr ? `Mois ${i + 1} · ${(i + 1) * FOYER_MOIS_JOURS} jours` : `Month ${i + 1} · ${(i + 1) * FOYER_MOIS_JOURS} days`}
-                {phare && <span className="ml-2 text-[#293027]/60 dark:text-white/60">· {fr ? 'le prochain' : 'next up'}</span>}
-              </p>
-              <p className="mt-1 font-serif text-lg leading-snug text-[#293027] dark:text-white">{fr ? etape.fr : etape.en}</p>
-            </li>
-          );
-        })}
-      </ol>
-      <p className="mt-3 text-[10px] uppercase tracking-widest text-[#293027]/60 dark:text-white/60">
-        {fr ? 'Le cycle repart ensuite à la musique.' : 'The cycle then starts over at the music.'}
-      </p>
-    </section>
-  );
 };
 
 const ClientLoyalty: React.FC = () => {
   const { user, lang } = useApp();
-  const foyer = useMembreDuFoyer();
   const [balance, setBalance] = useState<PointsBalance>({ balance: 0, lifetime: 0 });
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState<PointsEvent[]>([]);
@@ -380,9 +314,6 @@ const ClientLoyalty: React.FC = () => {
           {lang === 'FR' ? `Cadeau de bienvenue reçu (+${niskas(POINTS.welcome, 'FR')})` : `Welcome gift received (+${niskas(POINTS.welcome, 'EN')})`}
         </div>
       )}
-
-      {/* Le Foyer d'Origine double la roue : visible pour ses membres seulement */}
-      {foyer === true && <FoyerEncart balance={balance} fr={lang === 'FR'} />}
 
       {/* La plante : ce que les niskas gagnés font pousser */}
       {next && (
