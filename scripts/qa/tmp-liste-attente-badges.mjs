@@ -40,7 +40,26 @@ const authUser = { uid, email, emailVerified: false, isAnonymous: false, display
   stsTokenManager: { refreshToken: u.refreshToken, accessToken: u.idToken, expirationTime: Date.now() + Number(u.expiresIn) * 1000 }, createdAt: String(Date.now()), lastLoginAt: String(Date.now()), apiKey: API_KEY, appName: '[DEFAULT]' };
 
 const browser = await chromium.launch();
-const fermerRoue = async (page) => { const r = page.locator('.fixed.inset-0.z-\\[125\\]'); if (await r.count()) { await r.first().click({ position: { x: 8, y: 8 } }); await page.waitForTimeout(500); } };
+// Ferme dans l'ordre : le bandeau de consentement (coin, pas un backdrop),
+// puis les fenêtres plein écran empilées, de la plus haute z-index à la
+// plus basse (BienvenueJeu/Coffres/FondEcran/ProblemeTechnique = z-130,
+// RoueQuotidienne = z-125) — la z-130 intercepte les clics sur la z-125.
+const fermerPopups = async (page) => {
+  const nonMerci = page.locator('button', { hasText: /Non merci/i });
+  if (await nonMerci.count()) { await nonMerci.first().click().catch(() => {}); await page.waitForTimeout(300); }
+  for (let pass = 0; pass < 3; pass++) {
+    let ferme = false;
+    for (const z of ['z-\\[130\\]', 'z-\\[125\\]']) {
+      const r = page.locator(`.fixed.inset-0.${z}`);
+      if (await r.count()) {
+        await r.first().click({ position: { x: 8, y: 8 } }).catch(() => {});
+        await page.waitForTimeout(400);
+        ferme = true;
+      }
+    }
+    if (!ferme) break;
+  }
+};
 
 try {
   // ── L1 : visiteur anonyme sur la production ──
