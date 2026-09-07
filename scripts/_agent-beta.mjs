@@ -230,7 +230,8 @@ async function scenarioCoffreReel(browser) {
   // La clé est unique : un seul bouton, PARTAGÉ par les trois coffres, hors
   // de la carte (coffres.tsx) — jamais scopé à `carte`.
   await page.getByRole('button', { name: /Acheter une clé|Buy a key/ }).click();
-  await page.getByText(/c’est fait|done\./i).first().waitFor({ timeout: 6000 });
+  await page.screenshot({ path: `${OUT}/debug-apres-clic-cle.png` });
+  await page.getByText(/c’est fait|done\./i).first().waitFor({ timeout: 12000 });
   await fermerRoueSiPresente(page);
   await carte.getByRole('button', { name: /Coffre ·|Chest ·/ }).click();
   await page.getByText(/c’est fait|done\./i).first().waitFor({ timeout: 6000 });
