@@ -197,6 +197,14 @@ const CoursDetailPage: React.FC = () => {
     return <Navigate to="/foyer" replace />;
   }
 
+  // Une formation en liste d'attente ne montre son pédigrée (leçons, modules
+  // de la première cohorte) à personne qui ne l'a pas : la fiche renvoie à
+  // sa page de vente, comme le Foyer ci-dessus. Qui la possède déjà (achat,
+  // accès à vie) ou l'admin en aperçu passe tout droit (Alex, 7 sept. 2026).
+  if (formation?.listeAttente && !accessible) {
+    return <Navigate to={formation.lienFiche || '/origine'} replace />;
+  }
+
   const masqueMaisPossede = formation && formation.statut !== 'publie' && (isAdmin || achete || accesVie);
   if (formation && formation.statut !== 'publie' && !masqueMaisPossede && user && verifAcces) {
     return <div className="min-h-screen bg-[#EEE7DB] pt-40 text-center text-sm text-[#38403a]/50 dark:bg-[#151d19] dark:text-white/50">…</div>;
