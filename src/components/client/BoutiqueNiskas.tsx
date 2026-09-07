@@ -510,12 +510,11 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
           })}
         </div>
       </div>
+      ))}
 
-      {/* Les vidéos publiques de Krystine : gratuites, une fois la section ouverte pour trente niskas */}
-      <div className="mt-10" id="videos-krystine">
-        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'Les vidéos publiques de Krystine' : 'Krystine’s public videos'}</p>
-        <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">{fr ? 'Toutes ses vidéos, dans votre espace' : 'All her videos, in your space'}</h3>
-        <p className="mt-1 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
+      {accordeon('videos', 'fa-play', fr ? 'Toutes ses vidéos, dans votre espace' : 'All her videos, in your space', catalogue?.videos.length || 0, (
+      <div className="pt-2">
+        <p className="max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
           {fr
             ? `${catalogue ? catalogue.videos.length : ''} vidéos, directs et capsules de Krystine. Les vidéos sont gratuites : ouvrir la section coûte ${niskas(COUT_ACCES_VIDEOS, 'FR')}, une seule fois, et tout se regarde ensuite dans « Mes vidéos ».`
             : `${catalogue ? catalogue.videos.length : ''} videos, lives and capsules by Krystine. The videos are free: opening the section costs ${niskas(COUT_ACCES_VIDEOS, 'EN')}, once, and everything then plays in “My videos”.`}
