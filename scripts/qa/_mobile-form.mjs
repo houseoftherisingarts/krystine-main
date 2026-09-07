@@ -30,6 +30,6 @@ await page.getByRole('button', { name: /Répondre/i }).first().click();
 await page.waitForTimeout(600);
 await page.locator('button', { hasText: 'Téléphone' }).first().click().catch(() => {});
 await page.waitForTimeout(300);
-await page.screenshot({ path: 'scripts/qa/shots/aider-formulaire-390.png', fullPage: true });
+await page.screenshot({ path: 'scripts/qa/shots/aider-formulaire-390.png', fullPage: false });
 console.log('capture formulaire mobile (propre)');
 await browser.close();
