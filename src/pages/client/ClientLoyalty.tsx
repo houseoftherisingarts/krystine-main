@@ -190,6 +190,7 @@ const ClientLoyalty: React.FC = () => {
       {/* Rouvre le panneau « On oublie souvent de jouer » (BienvenueJeu.tsx,
           monté une fois dans ClientPortal) : le même composant partout,
           jamais une copie (Alex, 7 septembre 2026). */}
+      {gam.panneauJouer && (
       <button
         type="button"
         onClick={() => window.dispatchEvent(new Event('krystine:ouvrir-jeu'))}
@@ -197,6 +198,7 @@ const ClientLoyalty: React.FC = () => {
       >
         <i className="fa-solid fa-circle-question" /> {lang === 'FR' ? 'Les niskas, c’est quoi ?' : 'What are niskas?'}
       </button>
+      )}
 
       {/* Toast */}
       {toast && (
