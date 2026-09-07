@@ -4,10 +4,10 @@ import { CATALOGUE_VIDEOS, COUT_ACCES_VIDEOS, PAQUETS_NISKAS, dureeLisible, vign
 import { useApp } from '../../contexts/AppContext';
 import { updateMember } from '../../firebase/firestore';
 import { getLecons, type Lecon } from '../../firebase/formations';
-import { acheterAvecNiskas, acheterNiskas, subscribeToMemberPoints, suivreBoutique, type PointsBalance } from '../../firebase/points';
+import { acheterAvecNiskas, acheterNiskas, acheterSaisonEnArgent, subscribeToMemberPoints, suivreBoutique, type PointsBalance } from '../../firebase/points';
 import {
   CATEGORIES_BOUTIQUE, skinParCle, banniereParCle,
-  BANNIERE_NATURE, BOUTIQUE, COUT_COSMETIQUE, COUT_EPISODE, COUT_SAISON, SAISONS_SANTE_LA_VIE, PAQUET_NISKAS, SANTE_LA_VIE_ID, niskas,
+  BANNIERE_NATURE, BOUTIQUE, COUT_COSMETIQUE, COUT_EPISODE, COUT_SAISON, PRIX_SAISON_CAD, SAISONS_SANTE_LA_VIE, PAQUET_NISKAS, SANTE_LA_VIE_ID, niskas,
 } from '../../lib/pointsConfig';
 import { COFFRES } from '../../lib/coffresConfig';
 import PieceNiska from './PieceNiska';
