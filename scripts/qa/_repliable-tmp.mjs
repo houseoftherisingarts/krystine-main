@@ -20,8 +20,8 @@ await page.waitForSelector('h3:has-text("Actives")', { timeout: 10000 });
 await page.waitForTimeout(2000);
 await page.selectOption('select[title="Regrouper par"]', 'langue');
 await page.waitForTimeout(500);
-// Replie le premier groupe (Inconnu)
-await page.locator('button[aria-expanded="true"]').first().click();
+// Replie le premier groupe (Inconnu) — scopé au panneau (portail en fin de body)
+await page.locator('.z-\\[130\\] button[aria-expanded="true"]').first().click();
 await page.waitForTimeout(400);
 await page.screenshot({ path: `${OUT}/9-groupe-replie-1440.jpg`, quality: 80 });
 await b.close();
