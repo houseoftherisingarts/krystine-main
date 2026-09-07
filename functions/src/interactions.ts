@@ -72,6 +72,6 @@ export const interactionPoints = onDocumentCreated(
     if (!d?.uid || !d.kind) return;
     if (d.kind === 'rediffusion' || d.kind === 'video' || d.kind === 'podcast') await compter(d.uid, 'ecoutes');
     else if (d.kind === 'question') await compter(d.uid, 'paroles');
-    else if (d.kind === 'quotidien') await compter(d.uid, 'jours');
+    else if (d.kind === 'quotidien' || d.kind === 'cadeau') await compter(d.uid, 'jours');
   },
 );
