@@ -790,6 +790,7 @@ const ClientPortal: React.FC = () => {
       <ProblemeTechnique uid={user.uid} nom={member?.displayName || user.displayName || ''} courriel={user.email || ''} lang={lang} />
       <RoueQuotidienne uid={user.uid} lang={lang} />
       <BienvenueJeu lang={lang} />
+      <CoffreBeta uid={user.uid} lang={lang} />
 
       {/* Le module d'édition du profil, ouvert par la photo de la bannière */}
       {editOuvert && (
