@@ -12,11 +12,11 @@ import app, { db } from '../firebase';
 import { httpsCallable, getFunctions } from 'firebase/functions';
 import {
   doc, collection, query, where, orderBy, limit as fbLimit,
-  onSnapshot, getDoc, getDocs, runTransaction, addDoc, serverTimestamp, Timestamp,
+  onSnapshot, getDoc, getDocs, setDoc, runTransaction, addDoc, serverTimestamp, Timestamp,
   type Unsubscribe,
 } from 'firebase/firestore';
 
-import { POINTS, type PointsKind } from '../lib/pointsConfig';
+import { POINTS, type PointsKind, type SkinsSettings } from '../lib/pointsConfig';
 
 const noDb = () => { throw new Error('[Firestore] Firebase not configured.'); };
 
