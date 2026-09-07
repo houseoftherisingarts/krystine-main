@@ -65,9 +65,9 @@ const RecompensesSection: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h2 className="font-serif text-3xl text-[#293027] dark:text-white">Récompenses de la plante</h2>
+          <h2 className="font-serif text-3xl text-[#293027] dark:text-white">Cadeaux de la plante</h2>
           <p className="mt-1 max-w-2xl text-sm text-[#293027]/60 dark:text-white/60">
-            Ce que les membres échangent contre leurs niskas, palier par palier. Une récompense éteinte disparaît de leur onglet Points sans rien effacer.
+            Ce que les membres échangent contre leurs niskas, palier par palier. Un cadeau éteint disparaît de leur onglet Points sans rien effacer.
           </p>
         </div>
         <div className="flex items-center gap-3">
