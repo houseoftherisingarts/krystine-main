@@ -33,8 +33,8 @@ for (const [nom, largeur, hauteur, echelle] of [['1440', 1440, 900, 1], ['390', 
   }), [`firebase:authUser:${API_KEY}:[DEFAULT]`, authUser]);
   await page.goto(`${BASE}/compte?onglet=loyalty`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(2200);
-  const roue = page.locator('[aria-labelledby="roue-titre"]');
-  if (await roue.isVisible().catch(() => false)) { await page.getByRole('button', { name: /Merci|Thanks/ }).first().click({ timeout: 2000 }).catch(() => {}); await page.waitForTimeout(400); }
+  const roueFond = page.locator('[data-bug-ignore].fixed.inset-0.z-\\[125\\]');
+  if (await roueFond.isVisible().catch(() => false)) { await roueFond.click({ position: { x: 10, y: 10 }, force: true }).catch(() => {}); await page.waitForTimeout(400); }
   await page.screenshot({ path: `${OUT}/7-loyalty-bouton-${nom}.png` });
   await page.getByRole('button', { name: /Les niskas, c.est quoi/i }).first().click({ timeout: 5000 });
   await page.waitForTimeout(500);

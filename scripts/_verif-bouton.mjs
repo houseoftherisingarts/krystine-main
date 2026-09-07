@@ -28,6 +28,9 @@ console.log('url after signin:', page.url());
 
 // 1) Bannière du compte : le bouton à côté d'Espace admin / Déconnexion
 await page.waitForSelector('text=Déconnexion', { timeout: 15000 }).catch(() => {});
+// Ferme la pop-up « Cadeau du jour » qui s'ouvre au premier login du jour.
+const merci = page.locator('button', { hasText: 'Merci' }).first();
+if (await merci.count()) { await merci.click(); await page.waitForTimeout(500); }
 await page.waitForTimeout(500);
 await page.screenshot({ path: `${OUT}/bouton-01-compte-banniere.png` });
 
