@@ -13,6 +13,7 @@ import ClientParrainage from '../../pages/client/ClientParrainage';
 import { useCercleDuFoyer, useMembreDuFoyer } from './ReserveAuFoyer';
 import CarteSociale, { RangeePersonne } from './CarteSociale';
 import { CHEMINS_FOYER } from './chemins';
+import EditModeToggleButton from '../edit/EditModeToggleButton';
 import '../client/skins.css';
 
 // ─── La coquille du Foyer social ─────────────────────────────────────────────
