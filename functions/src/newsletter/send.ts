@@ -323,14 +323,18 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
       },
       attachments: newsletterAttachments(opts),
     };
-    // Un refus passager (connexion) se retente une fois. Un quota épuisé ne
-    // se retente pas : la passe entière se met en pause.
-    try {
-      await transporter.sendMail(message);
-    } catch (e1) {
-      if (estQuota(e1)) throw e1;
-      await delai(2000);
-      await transporter.sendMail(message);
+    // Un créneau par envoi pour rester sous le débit permis. Un dépassement
+    // de débit ou un refus passager se retente après une courte attente; un
+    // quota épuisé ne se retente pas : la passe entière se met en pause.
+    for (let essai = 0; ; essai++) {
+      await attendreCreneau();
+      try {
+        await transporter.sendMail(message);
+        break;
+      } catch (e1) {
+        if (estQuota(e1) || essai >= 3) throw e1;
+        await delai(estLimiteDebit(e1) ? 1500 : 2000);
+      }
     }
     await ref.collection('envois').doc(sub.id).set({ email: sub.email, at: FieldValue.serverTimestamp() });
     if (sub.uid) {
