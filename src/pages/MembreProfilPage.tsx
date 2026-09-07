@@ -14,6 +14,7 @@ import BilletCarte from '../components/communaute/BilletCarte';
 import Composeur from '../components/communaute/Composeur';
 import { suivrePublicationsDe, type PostMur } from '../firebase/mur';
 import { getBadgesDe, badgeVedetteEnCache, CATALOGUE_BADGES } from '../firebase/badgesCatalogue';
+import { useGamification } from '../contexts/GamificationContext';
 
 // ─── La fiche d'une membre du Foyer, /foyer/membre/:uid ──────────────────────
 // La coquille du Foyer (CadreFoyer) porte la bannière et l'avatar de la
