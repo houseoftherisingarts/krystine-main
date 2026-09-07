@@ -64,7 +64,7 @@ for (const vp of VIEWPORTS) {
     await page.goto(`${BASE}${pg.url}?unlock=Alexisthebest2121!`, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(1400);
     await page.goto(`${BASE}${pg.url}?edit=1`, { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(1800);
+    await page.waitForTimeout(2500);
 
     let headingLoc = page.locator(pg.selector, { hasText: pg.match }).first();
     await headingLoc.scrollIntoViewIfNeeded();
@@ -103,7 +103,7 @@ for (const vp of VIEWPORTS) {
 
     // 8) Remettre le texte d'origine et publier (nettoyage)
     await page.goto(`${BASE}${pg.url}?edit=1`, { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(1800);
+    await page.waitForTimeout(2500);
     headingLoc = page.locator(pg.selector, { hasText: pg.newText }).first();
     await headingLoc.scrollIntoViewIfNeeded();
     await page.waitForTimeout(300);
