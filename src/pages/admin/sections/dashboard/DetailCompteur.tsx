@@ -250,7 +250,7 @@ const PanneauDetail: React.FC<{ requete: RequeteCompteur; titre: string; definit
               </div>
             )}
 
-            {!fin && (
+            {!fin && lignes.length > 0 && (
               <div className="mt-5 flex justify-center">
                 <GhostButton onClick={() => chargerSuite(false, curseur)} disabled={charge}>
                   {charge ? <i className="fa-solid fa-circle-notch fa-spin" /> : <i className="fa-solid fa-chevron-down" />} Charger 100 de plus
