@@ -72,7 +72,10 @@ const EditableText: React.FC<Props> = ({ fieldKey, defaultValue, as: Tag = 'span
   // of opening the inline editor. Using a <span> sidesteps the nesting
   // rule entirely; we keep accessibility via role + tabindex + keyboard.
   return (
-    <span className="relative inline-block group/edit align-baseline">
+    // data-no-edit : garde EditOverlay (le survol/clic universel) hors de ce
+    // bloc — sans quoi le <Tag> ci-dessous serait détecté deux fois (son
+    // propre crayon ici, plus l'overlay automatique par-dessus).
+    <span data-no-edit className="relative inline-block group/edit align-baseline">
       <Tag className={className}>{value}</Tag>
       <span
         role="button"
