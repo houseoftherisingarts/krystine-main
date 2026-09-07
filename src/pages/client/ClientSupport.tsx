@@ -44,7 +44,7 @@ const ClientSupport: React.FC = () => {
   }, [messages.length]);
 
   const send = async () => {
-    if (!user || !draft.trim()) return;
+    if (!user || !draft.trim() || reponseFermee) return;
     setSending(true);
     try {
       await sendMessage(user.uid, 'client', draft.trim(), {
