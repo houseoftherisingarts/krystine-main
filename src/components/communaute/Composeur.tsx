@@ -100,17 +100,15 @@ const Composeur: React.FC<{ fil: FilMur; onPublie?: () => void; compact?: boolea
       className={`rounded-[20px] border border-white/60 bg-white/55 backdrop-blur-md shadow-[0_10px_30px_-18px_rgba(41,48,39,0.3)] transition-shadow dark:border-white/10 dark:bg-[#293027]/55 ${compact ? 'p-4' : 'p-5 md:p-6'} ${ouvert ? 'shadow-[0_18px_40px_-20px_rgba(41,48,39,0.45)]' : ''}`}
     >
       <div className="flex items-start gap-3">
-        {avatarUrl
-          ? <img src={avatarUrl} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-white/70" />
-          : <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#BA7B39]/25 font-['Cormorant_Garamond'] text-lg text-[#8B4A2F]">{prenom.charAt(0).toUpperCase()}</span>}
+        <Avatar nom={nom} url={avatarUrl} taille={40} />
         <textarea
           ref={zoneTexte}
           value={texte}
           onFocus={() => setOuvert(true)}
           onChange={(e) => { setTexte(e.target.value.slice(0, LONGUEUR_MAX_POST)); ajuster(); }}
           rows={ouvert ? 3 : 1}
-          placeholder={`Quoi de neuf, ${prenom} ?`}
-          className="min-h-[44px] w-full resize-none rounded-2xl border border-[#38403a]/10 bg-white/60 px-4 py-2.5 text-sm leading-relaxed text-[#293027] outline-none transition-colors placeholder:text-[#38403a]/45 focus:border-[#BA7B39] dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-white/40"
+          placeholder={fr ? `Quoi de neuf, ${prenom} ?` : `What's new, ${prenom}?`}
+          className="min-h-[44px] w-full resize-none rounded-2xl border border-[#38403a]/10 bg-white px-4 py-2.5 text-sm leading-relaxed text-[#293027] outline-none transition-colors placeholder:text-[#38403a]/45 focus:border-[#BA7B39] dark:border-white/10 dark:bg-white/10 dark:text-white dark:placeholder:text-white/40"
         />
       </div>
 
