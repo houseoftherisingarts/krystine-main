@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { getCommandesStripe, type CommandeStripe } from '../../../../firebase/commandes';
 import { getRapportBornes, ventesDuJour, journee, veilleDe, type RapportBornes } from '../../../../firebase/rapportDuJour';
+import type { RequeteCompteur } from '../../../../firebase/detailsCompteurs';
 import { Card, GhostButton } from '../../primitives';
+import CompteurCliquable from './DetailCompteur';
 
 // Le rapport du jour : nouveaux contacts, comptes, désabonnements, ventes
 // Stripe, billets du mur et coffres bêta, pour aujourd'hui, hier ou une date
