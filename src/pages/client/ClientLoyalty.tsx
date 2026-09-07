@@ -51,6 +51,10 @@ const ClientLoyalty: React.FC = () => {
   const [redeeming, setRedeeming] = useState<string | null>(null);
   const [claimingWelcome, setClaimingWelcome] = useState(false);
   const [toast, setToast] = useState<{ kind: 'ok' | 'err'; msg: string } | null>(null);
+  const [codeCopie, setCodeCopie] = useState<string | null>(null);
+  const copierCode = async (code: string) => {
+    try { await navigator.clipboard.writeText(code); setCodeCopie(code); setTimeout(() => setCodeCopie(null), 2000); } catch { /* noop */ }
+  };
   // Les récompenses réglées par Krystine dans l'admin; les éteintes n'apparaissent pas.
   const [recompenses, setRecompenses] = useState<Reward[]>(RECOMPENSES_PAR_DEFAUT);
   useEffect(() => suivreRecompenses(l => setRecompenses(l.filter(r => r.actif !== false))), []);
