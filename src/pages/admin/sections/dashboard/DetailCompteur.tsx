@@ -109,7 +109,7 @@ const PanneauDetail: React.FC<{ requete: RequeteCompteur; titre: string; definit
   };
 
   useEffect(() => {
-    setLignes([]); setCurseur(null); setFin(false); setOuverte(null);
+    setLignes([]); setCurseur(null); setFin(false); setOuverte(null); setReplies(new Set());
     chargerSuite(true, null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clef]);
