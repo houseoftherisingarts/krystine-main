@@ -3,7 +3,9 @@ import { useApp } from '../../contexts/AppContext';
 import {
   subscribeToMemberPoints, getMemberPoints, listPointsEvents, listMyRewardRedemptions, redeemReward, points, reconcileBalance,
   type PointsBalance, type PointsEvent, type RewardRedemption, bienvenueDejaVersee } from '../../firebase/points';
-import { POINTS, TIERS, FACONS_DE_GAGNER, tierFromLifetime, rewardMinThreshold, niskas, type Reward } from '../../lib/pointsConfig';
+import { POINTS, TIERS, FACONS_DE_GAGNER, tierFromLifetime, rewardMinThreshold, niskas, journee, type Reward } from '../../lib/pointsConfig';
+import { CYCLE_FOYER_MOIS, FOYER_HEBDO_JOURS, FOYER_MOIS_JOURS, FOYER_NISKAS_HEBDO_SI_MUSIQUE, prochainsCadeauxFoyer } from '../../lib/badgeBleu';
+import { useMembreDuFoyer } from '../../components/communaute/ReserveAuFoyer';
 import PieceNiska from '../../components/client/PieceNiska';
 import { suivreRecompenses, RECOMPENSES_PAR_DEFAUT } from '../../firebase/recompenses';
 import PointsPlant, { type Stage } from '../../components/PointsPlant';
