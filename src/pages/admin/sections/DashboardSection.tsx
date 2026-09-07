@@ -148,16 +148,18 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
               {PALIERS.map(p => {
                 const n = communaute.paliers[p.tag] || 0;
                 return (
-                  <div key={p.tag} className="grid grid-cols-[minmax(120px,180px)_1fr_auto] items-center gap-3">
-                    <div className="leading-tight">
-                      <span className="text-sm font-serif text-[#293027] dark:text-white">{p.n} · {p.nom}</span>
-                      <span className="block text-[10px] text-[#293027]/45 dark:text-white/45">{p.detail}</span>
+                  <CompteurCliquable key={p.tag} requete={{ genre: 'newsletter-palier', tag: p.tag }} titre={`${p.n} · ${p.nom}`} definition={p.detail}>
+                    <div className="grid grid-cols-[minmax(120px,180px)_1fr_auto] items-center gap-3 -mx-2 rounded-[10px] px-2 py-1 transition-colors hover:bg-[#BA7B39]/5">
+                      <div className="leading-tight">
+                        <span className="text-sm font-serif text-[#293027] dark:text-white">{p.n} · {p.nom}</span>
+                        <span className="block text-[10px] text-[#293027]/45 dark:text-white/45">{p.detail}</span>
+                      </div>
+                      <div className="h-2.5 rounded-full bg-[#293027]/8 dark:bg-white/10 overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${Math.max(1, (n / max) * 100)}%`, background: p.couleur, opacity: p.envoi ? 1 : 0.45 }} />
+                      </div>
+                      <span className="text-sm font-serif tabular-nums text-[#293027] dark:text-white w-14 text-right">{fmt(n)}</span>
                     </div>
-                    <div className="h-2.5 rounded-full bg-[#293027]/8 dark:bg-white/10 overflow-hidden">
-                      <div className="h-full rounded-full" style={{ width: `${Math.max(1, (n / max) * 100)}%`, background: p.couleur, opacity: p.envoi ? 1 : 0.45 }} />
-                    </div>
-                    <span className="text-sm font-serif tabular-nums text-[#293027] dark:text-white w-14 text-right">{fmt(n)}</span>
-                  </div>
+                  </CompteurCliquable>
                 );
               })}
               <p className="text-[11px] text-[#293027]/50 dark:text-white/50 pt-2">Les paliers 1 à 4 reçoivent les infolettres, dans cet ordre. Les paliers 5 à 7 ne reçoivent rien.</p>
