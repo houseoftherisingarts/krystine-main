@@ -1,22 +1,27 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/AppContext';
 import MurSocial from './MurSocial';
 import BilletCarte from './BilletCarte';
-import Avatar from './Avatar';
 import BadgeVedette from './BadgeVedette';
+import CarteSociale, { RangeePersonne } from './CarteSociale';
 import { getOngletsFormation, getMembresGroupe, type OngletFormation } from '../../firebase/formations';
 import { getMember, type MemberDoc } from '../../firebase/firestore';
 import { suivreMesSauvegardes, getPost, type PostMur } from '../../firebase/mur';
 
 // ─── L'espace de groupe d'une formation, façon Circle ───────────────────────
-// Trois colonnes pleine largeur : les onglets à gauche (le feed, les billets
-// gardés, puis les onglets que Krystine crée), le fil au centre, les membres à
-// droite (avec l'écriture directe à une personne). Réutilisable pour tout
-// cours; le Foyer est le premier à s'en servir.
+// Deux habits. `page` (celui de /cours/:id) : trois colonnes pleine largeur,
+// les onglets à gauche (le fil, les onglets que Krystine crée, les billets
+// gardés), le fil au centre, les membres à droite en rangées de personne avec
+// l'écriture directe. `cadre` (celui de /groupes, dans le CadreFoyer) : la
+// colonne centrale seulement, une rangée de pilules puis le fil; le rail
+// « Autour du feu » de la coquille tient lieu de colonne Membres.
+// Réutilisable pour tout cours; le Foyer est le premier à s'en servir.
 
-const EspaceGroupe: React.FC<{ formationId: string }> = ({ formationId }) => {
-  const { user, isAdmin } = useAuth();
+const EspaceGroupe: React.FC<{ formationId: string; variante?: 'page' | 'cadre' }> = ({ formationId, variante = 'page' }) => {
+  const { user, isAdmin, lang } = useApp();
+  const fr = lang === 'FR';
+  const cadre = variante === 'cadre';
   const [onglets, setOnglets] = useState<OngletFormation[]>([]);
   const [actif, setActif] = useState<string>('feed');   // 'feed' | 'gardes' | id d'onglet
   const [membres, setMembres] = useState<Array<{ uid: string; fiche: MemberDoc | null }>>([]);
