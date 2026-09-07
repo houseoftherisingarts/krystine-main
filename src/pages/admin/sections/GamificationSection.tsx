@@ -94,7 +94,7 @@ const GamificationSection: React.FC<{ user?: User }> = ({ user }) => {
       <Card className="p-6">
         <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">Skins</p>
         <p className="mt-1 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
-          Chaque skin retirée de la circulation disparaît de la boutique, des coffres et de la roue; une membre qui l’a déjà la garde.
+          Chaque skin retirée de la circulation disparaît de la boutique, des coffres et du cadeau du jour; une membre qui l’a déjà la garde.
         </p>
         <ul className="mt-4 divide-y divide-[#293027]/10 dark:divide-white/10">
           {SKINS.filter(s => s.rarete !== 'exclusif').map(s => {
