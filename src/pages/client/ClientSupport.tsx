@@ -135,23 +135,29 @@ const ClientSupport: React.FC = () => {
         })}
       </div>
 
-      <div className="mt-4 flex gap-3">
-        <input
-          type="text"
-          value={draft}
-          onChange={e => setDraft(e.target.value)}
-          onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
-          placeholder={lang === 'FR' ? 'Votre message…' : 'Your message…'}
-          className="flex-1 px-4 py-3 rounded-full border border-[#293027]/10 dark:border-white/10 bg-[#EEE7DB] dark:bg-white/5 text-[#293027] dark:text-white outline-none focus:border-[#BA7B39]"
-        />
-        <button
-          onClick={send}
-          disabled={sending || !draft.trim()}
-          className="px-6 bg-[#293027] dark:bg-[#BA7B39] text-white dark:text-[#293027] rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#BA7B39] hover:text-[#293027] transition-colors disabled:opacity-50"
-        >
-          <i className="fa-solid fa-paper-plane" />
-        </button>
-      </div>
+      {reponseFermee ? (
+        <p className="mt-4 rounded-full border border-[#293027]/10 dark:border-white/10 bg-[#EEE7DB] dark:bg-white/5 px-4 py-3 text-center text-xs text-[#293027]/50 dark:text-white/50">
+          {lang === 'FR' ? 'Ce mot ne demande pas de réponse pour l’instant.' : 'This note does not call for a reply right now.'}
+        </p>
+      ) : (
+        <div className="mt-4 flex gap-3">
+          <input
+            type="text"
+            value={draft}
+            onChange={e => setDraft(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
+            placeholder={lang === 'FR' ? 'Votre message…' : 'Your message…'}
+            className="flex-1 px-4 py-3 rounded-full border border-[#293027]/10 dark:border-white/10 bg-[#EEE7DB] dark:bg-white/5 text-[#293027] dark:text-white outline-none focus:border-[#BA7B39]"
+          />
+          <button
+            onClick={send}
+            disabled={sending || !draft.trim()}
+            className="px-6 bg-[#293027] dark:bg-[#BA7B39] text-white dark:text-[#293027] rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#BA7B39] hover:text-[#293027] transition-colors disabled:opacity-50"
+          >
+            <i className="fa-solid fa-paper-plane" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
