@@ -64,6 +64,11 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
   if (!etat || !ouvert) return null;
   const fr = lang === 'FR';
   const jour = etat.jour;
+  const foyer = etat.foyer === true;
+  const mult = foyer ? FOYER_MULTIPLICATEUR : 1;
+  const cadeau = foyer ? phraseCadeau(etat, fr) : null;
+  const prochains = foyer ? prochainsCadeauxFoyer(etat.serie) : null;
+  const jours = (n: number) => (fr ? `${n} jour${n > 1 ? 's' : ''}` : `${n} day${n > 1 ? 's' : ''}`);
 
   return (
     <Portail>
@@ -75,22 +80,34 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
         className="w-full max-w-xl rounded-[24px] border border-white/60 bg-[#EEE7DB] p-6 shadow-2xl md:p-8 dark:border-white/10 dark:bg-[#293027]"
         onClick={(e) => e.stopPropagation()}
       >
-        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F] dark:text-[#d9a05b]">
-          {fr ? 'Cadeau du jour' : 'Gift of the day'}
-        </p>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F] dark:text-[#d9a05b]">
+            {fr ? 'Cadeau du jour' : 'Gift of the day'}
+          </p>
+          {foyer && (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#BA7B39] bg-[#BA7B39]/15 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]">
+              <i className="fa-solid fa-fire" aria-hidden="true" /> {fr ? LIBELLE_FOYER.fr : LIBELLE_FOYER.en}
+            </span>
+          )}
+        </div>
         <h2 id="roue-titre" className="mt-1 font-serif text-2xl text-[#293027] dark:text-white" style={{ letterSpacing: '-0.01em' }}>
           {etat.deja
             ? (fr ? 'Votre cadeau du jour est déjà réclamé.' : 'Today’s gift is already claimed.')
             : (fr ? `${niskas(etat.montant, 'FR')} ${etat.montant > 1 ? 'tombent' : 'tombe'} dans votre bourse.` : `${niskas(etat.montant, 'EN')} drop${etat.montant > 1 ? '' : 's'} into your purse.`)}
         </h2>
         <p className="mt-2 text-sm text-[#293027]/70 dark:text-white/70">
-          {fr
-            ? `Jour ${jour} sur ${ROUE_QUOTIDIENNE.length}. Revenez demain et la roue avance; sautez une journée et elle repart au premier jour. Le septième jour ouvre aussi un coffre de bronze, avec sa clé.`
-            : `Day ${jour} of ${ROUE_QUOTIDIENNE.length}. Come back tomorrow and the wheel moves on; skip a day and it starts over. The seventh day also brings a bronze chest, with its key.`}
+          {foyer
+            ? (fr
+              ? `Jour ${jour} sur ${ROUE_QUOTIDIENNE.length}. Au Foyer d’Origine, chaque jour compte double. Le septième jour ouvre un coffre de bronze, et chaque semaine complète vous vaut un cadeau de Krystine, un plus grand à chaque mois complet.`
+              : `Day ${jour} of ${ROUE_QUOTIDIENNE.length}. At the Foyer d’Origine, every day counts double. The seventh day opens a bronze chest, and every full week earns you a gift from Krystine, a bigger one at every full month.`)
+            : (fr
+              ? `Jour ${jour} sur ${ROUE_QUOTIDIENNE.length}. Revenez demain et la roue avance; sautez une journée et elle repart au premier jour. Le septième jour ouvre aussi un coffre de bronze, avec sa clé.`
+              : `Day ${jour} of ${ROUE_QUOTIDIENNE.length}. Come back tomorrow and the wheel moves on; skip a day and it starts over. The seventh day also brings a bronze chest, with its key.`)}
         </p>
 
         <ol className="mt-6 grid grid-cols-7 gap-1.5 sm:gap-2">
-          {ROUE_QUOTIDIENNE.map((montant, i) => {
+          {ROUE_QUOTIDIENNE.map((base, i) => {
+            const montant = base * mult;
             const n = i + 1;
             const passe = n < jour;
             const actuel = n === jour;
