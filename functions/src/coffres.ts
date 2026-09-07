@@ -248,12 +248,18 @@ export const ouvrirCoffre = onCall({ region: 'us-central1' }, async (req) => {
   //    puis commun. Un tirage qui tombe sur un article déjà possédé se change
   //    en niskas : la valeur de cet article, majorée de 5 % (Alex, 6 septembre
   //    2026 : « un lot déjà à vous devient sa valeur en niskas, plus 5 % »).
-  const b = await db.doc(`boutique/${uid}`).get();
+  const [b, enTravail] = await Promise.all([db.doc(`boutique/${uid}`).get(), skinsEnTravail(db)]);
   const possede = ((b.data() || {}) as { possede?: Record<string, unknown> }).possede || {};
+  // Une skin en travail ne se tire plus : son bassin l'exclut, et si ça vide
+  // le palier entier (les trois légendaires sont en travail à la fois, par
+  // exemple), le tirage retombe au palier suivant plutôt que de rien donner.
+  const legendairesDispo = LEGENDAIRES.filter((s) => !enTravail.has(s));
+  const raresDispo = contenu.rares.filter((s) => !enTravail.has(s));
+  const communsDispo = COMMUNS.filter((s) => !enTravail.has(s));
   let bassin: string[]; let rarete: 'legendaire' | 'rare' | 'commun';
-  if (randomInt(0, 100) < contenu.legendaire) { bassin = LEGENDAIRES; rarete = 'legendaire'; }
-  else if (contenu.rares.length) { bassin = contenu.rares; rarete = 'rare'; }
-  else { bassin = COMMUNS; rarete = 'commun'; }
+  if (randomInt(0, 100) < contenu.legendaire && legendairesDispo.length) { bassin = legendairesDispo; rarete = 'legendaire'; }
+  else if (raresDispo.length) { bassin = raresDispo; rarete = 'rare'; }
+  else { bassin = communsDispo; rarete = 'commun'; }
   const article = bassin[randomInt(0, bassin.length)];
   if (!possede[article]) {
     await db.doc(`boutique/${uid}`).set({ possede: { [article]: FieldValue.serverTimestamp() } }, { merge: true });
