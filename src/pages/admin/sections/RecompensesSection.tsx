@@ -41,7 +41,7 @@ const RecompensesSection: React.FC = () => {
   };
   const enregistrer = async () => {
     const vide = liste.find(r => !r.labelFR.trim());
-    if (vide) { setAvis('Chaque récompense a besoin d\'un nom en français.'); setOuvert(vide.id); return; }
+    if (vide) { setAvis('Chaque cadeau a besoin d\'un nom en français.'); setOuvert(vide.id); return; }
     setOccupe(true); setAvis(null);
     try {
       await enregistrerRecompenses(liste);
