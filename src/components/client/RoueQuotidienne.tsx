@@ -132,6 +132,21 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
           })}
         </ol>
 
+        {foyer && prochains && (
+          <div className="mt-4 rounded-[14px] border border-[#BA7B39]/40 bg-[#BA7B39]/10 px-4 py-3">
+            {cadeau && (
+              <p className="font-serif text-lg leading-snug text-[#293027] dark:text-white">
+                <i className="fa-solid fa-gift mr-2 text-[#8B4A2F] dark:text-[#d9a05b]" aria-hidden="true" />{cadeau}
+              </p>
+            )}
+            <p className={`text-xs leading-relaxed text-[#293027]/70 dark:text-white/70 ${cadeau ? 'mt-2' : ''}`}>
+              {fr
+                ? `Prochain cadeau de semaine dans ${jours(prochains.hebdoDans)}, prochain cadeau de mois dans ${jours(prochains.moisDans)} : ${prochains.prochainMois.fr}.`
+                : `Next weekly gift in ${jours(prochains.hebdoDans)}, next monthly gift in ${jours(prochains.moisDans)}: ${prochains.prochainMois.en}.`}
+            </p>
+          </div>
+        )}
+
         <div className="mt-6 flex items-center justify-between gap-3">
           <p className="text-xs text-[#293027]/55 dark:text-white/55">
             {fr ? `Suite en cours : ${etat.serie} jour${etat.serie > 1 ? 's' : ''} d’affilée.` : `Current streak: ${etat.serie} day${etat.serie > 1 ? 's' : ''} in a row.`}
