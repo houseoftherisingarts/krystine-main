@@ -124,12 +124,20 @@ const MessagesSection: React.FC<{ user: User }> = ({ user }) => {
     } finally { setSending(false); }
   };
 
-  if (convs.length === 0) return <EmptyState icon="fa-envelope">Aucune conversation.</EmptyState>;
+  if (convs.length === 0) {
+    return (
+      <div>
+        {estKrystine && <MotPriveKrystine />}
+        <EmptyState icon="fa-envelope">Aucune conversation.</EmptyState>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4 h-[calc(100vh-200px)] min-h-[500px]">
       {/* Conversations list */}
       <Card className="overflow-y-auto">
+        {estKrystine && <MotPriveKrystine />}
         {convs.map(c => {
           const isActive = c.uid === activeUid;
           const unread = c.unreadByAdmin || 0;
