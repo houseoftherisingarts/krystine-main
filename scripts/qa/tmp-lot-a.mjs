@@ -68,6 +68,7 @@ async function ouvrir(browser, c, mobile) {
     : { viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
   page.on('pageerror', e => console.log('PAGEERROR', e.message));
+  page.on('console', m => { if (m.type() === 'error' || m.type() === 'warning') console.log('CONSOLE', m.type(), m.text().slice(0, 300)); });
   await page.goto(`${BASE}/robots.txt`);
   await page.evaluate(([key, val]) => new Promise((res, rej) => {
     localStorage.setItem('krystine-jeu-vu', new Date().toISOString().slice(0, 10));
