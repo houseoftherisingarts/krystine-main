@@ -130,9 +130,6 @@ export const parrainageAchat = onDocumentCreated(
 // cadeau, jamais un achat en niskas) atteint cent dollars hors taxes. Le
 // verrou par personne (`achat100`) évite de recompter le seuil de la
 // marraine à chaque nouvel achat une fois la filleule déjà comptée.
-export const SEUIL_ACCES_VIE_CENTS = 10000; // 100 $ CA, hors taxes
-export const SEUIL_ACCES_VIE_FILLEULES = 20;
-
 /** Additionne les vraies ventes Stripe d'une personne, hors taxes, en cents :
  *  ses formations achetées (jamais un cadeau ni un achat en niskas — reconnus
  *  par l'absence de `sessionId`, comme src/firebase/commandes.ts côté admin)
