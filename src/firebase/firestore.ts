@@ -961,6 +961,41 @@ export async function markConversationRead(uid: string, role: 'admin' | 'client'
   return setDoc(doc(db, 'conversations', uid), { [key]: 0 }, { merge: true });
 }
 
+/** Le fil d'une seule membre (pas la liste) : la case « peut me répondre »
+ *  du mot privé de Krystine s'appuie dessus. */
+export function subscribeToConversation(uid: string, cb: (conv: ConversationDoc | null) => void): Unsubscribe {
+  if (!db) { cb(null); return () => {}; }
+  return onSnapshot(doc(db, 'conversations', uid), snap => cb(snap.exists() ? (snap.data() as ConversationDoc) : null));
+}
+
+/**
+ * Le mot privé de Krystine (MessagesSection, module visible sur son seul
+ * compte) : le message se marque `deKrystine`, et la case cochée pose
+ * `reponseAutorisee` sur le fil — les règles s'appuient dessus pour laisser
+ * ou refuser la réponse de la membre (firestore.rules, conversations/{uid}).
+ */
+export async function envoyerMessageKrystine(
+  uid: string, body: string, reponseAutorisee: boolean,
+  profile?: Pick<ConversationDoc, 'memberEmail' | 'memberName' | 'memberPhotoURL'>,
+) {
+  if (!db) noDb();
+  await addDoc(collection(db!, 'conversations', uid, 'messages'), {
+    sender: 'admin', body, deKrystine: true, createdAt: serverTimestamp(),
+  });
+  const convRef = doc(db!, 'conversations', uid);
+  const convSnap = await getDoc(convRef);
+  const prev = convSnap.exists() ? (convSnap.data() as ConversationDoc) : ({ uid, memberEmail: profile?.memberEmail || '' } as ConversationDoc);
+  await setDoc(convRef, {
+    ...prev,
+    ...(profile || {}),
+    uid,
+    lastMessage: body.slice(0, 200),
+    lastMessageAt: serverTimestamp(),
+    unreadByClient: (prev.unreadByClient || 0) + 1,
+    reponseAutorisee,
+  }, { merge: true });
+}
+
 // ─── Shopify Orders (mirrored from Shopify Admin API via Cloud Functions) ───
 export interface ShopifyOrderDoc {
   id: string;
