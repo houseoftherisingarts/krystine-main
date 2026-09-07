@@ -88,8 +88,17 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
                     <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden md:table-cell truncate max-w-[220px]">{n.subject || '—'}</td>
                     <td className="px-4 py-3 hidden lg:table-cell">
                       <span className={`text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 rounded-full ${st.color}`}>{st.label}</span>
+                      {n.status === 'sending' && n.progress?.raisonPause && (
+                        <div className="mt-1.5 max-w-[240px] text-[11px] leading-snug text-[#8B4A2F]" title={n.progress.raisonPause}>
+                          <i className="fa-solid fa-pause mr-1" />En pause : {n.progress.raisonPause}
+                        </div>
+                      )}
                     </td>
-                    <td className="px-4 py-3 text-[#293027]/60 dark:text-white/60 hidden lg:table-cell">{n.stats?.recipients ?? '—'}</td>
+                    <td className="px-4 py-3 text-[#293027]/60 dark:text-white/60 hidden lg:table-cell">
+                      {n.status === 'sending' && n.progress
+                        ? <span title="Courriels partis jusqu'ici">{n.progress.done} partis</span>
+                        : (n.stats?.recipients ?? '—')}
+                    </td>
                     <td className="px-4 py-3 hidden lg:table-cell">
                       {n.status === 'sent' && (n.stats?.recipients || 0) > 0 ? (
                         <span className="text-[#8B4A2F]">
