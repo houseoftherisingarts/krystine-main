@@ -46,14 +46,20 @@ export const DangerButton: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement
   />
 );
 
+// role="switch" + aria-checked : un vrai bouton, focusable et actionnable au
+// clavier (Entrée/Espace, comportement natif d'un <button>), piste crème
+// éteinte, bouton laiton quand allumé.
 export const ToggleSwitch: React.FC<{ checked: boolean; onChange: (v: boolean) => void; label?: string }> = ({ checked, onChange, label }) => (
   <label className="inline-flex items-center gap-3 cursor-pointer select-none">
-    <span
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className={`w-10 h-6 rounded-full relative transition-colors ${checked ? 'bg-[#BA7B39]' : 'bg-[#293027]/20 dark:bg-white/20'}`}
+      className={`w-10 h-6 rounded-full relative transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#BA7B39] focus-visible:ring-offset-2 ${checked ? 'bg-[#BA7B39]' : 'bg-[#293027]/20 dark:bg-white/20'}`}
     >
       <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-4' : ''}`} />
-    </span>
+    </button>
     {label && <span className="text-sm text-[#293027] dark:text-white">{label}</span>}
   </label>
 );
