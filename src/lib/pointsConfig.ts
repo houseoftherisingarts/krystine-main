@@ -374,7 +374,9 @@ export interface ArticleBoutique {
 }
 
 export const BOUTIQUE: ArticleBoutique[] = [
-  ...BANNIERES.map((b): ArticleBoutique => ({ id: `banniere-${b.cle}`, categorie: 'banniere', cout: b.cout, icone: 'fa-image', nomFR: b.nomFR, nomEN: b.nomEN, descFR: b.descFR, descEN: b.descEN })),
+  // Les bannières exclusives du cadeau du jour ne sont jamais en vente : le
+  // choix de bannière (ClientPortal.tsx) les montre seulement une fois possédées.
+  ...BANNIERES.filter(b => !b.exclusif).map((b): ArticleBoutique => ({ id: `banniere-${b.cle}`, categorie: 'banniere', cout: b.cout, icone: 'fa-image', nomFR: b.nomFR, nomEN: b.nomEN, descFR: b.descFR, descEN: b.descEN })),
   {
     id: 'musique-origine', categorie: 'musique', cout: COUT_COSMETIQUE, icone: 'fa-music',
     nomFR: "La musique d'Origine", nomEN: 'The Origin music',
