@@ -31,7 +31,7 @@ const quand = (ms: number, fr: boolean): string => {
   return new Date(ms).toLocaleDateString(fr ? 'fr-CA' : 'en-CA', { day: 'numeric', month: 'short' });
 };
 
-const ClientMessagerie: React.FC<{ voletInitial?: Volet }> = ({ voletInitial = 'amies' }) => {
+const ClientMessagerie: React.FC<{ voletInitial?: Volet; avec?: string; dansFoyer?: boolean }> = ({ voletInitial = 'amies', avec, dansFoyer }) => {
   const { user, member, lang } = useApp();
   const fr = lang === 'FR';
   const [volet, setVolet] = useState<Volet>(voletInitial);
@@ -43,17 +43,40 @@ const ClientMessagerie: React.FC<{ voletInitial?: Volet }> = ({ voletInitial = '
   const [avis, setAvis] = useState('');
   const zoneRef = useRef<HTMLDivElement>(null);
   const [cadeaux, setCadeaux] = useState<Cadeau[]>([]);
+  // La fiche de la personne demandée par `avec` : elle nomme la conversation
+  // tant que le fil n'est pas encore dans la boîte.
+  const [avecFiche, setAvecFiche] = useState<MemberDoc | null>(null);
 
   const monUid = user?.uid || '';
   const origine = useAmiesDOrigine();
   const filsVisibles = useMemo(() => fils.filter(f => origine.foyer || f.participantUids.some(u => u !== monUid && origine.permis?.has(u))), [fils, origine.foyer, origine.permis, monUid]);
   const monNom = (member?.displayName || user?.displayName || '').trim() || (fr ? 'Un membre' : 'A member');
+  const maPhoto = member?.photoURL || user?.photoURL || undefined;
+  const peutAvec = !!avec && avec !== monUid && origine.peutEcrire(avec);
 
   useEffect(() => {
     if (!monUid) return;
     return subscribeInbox(monUid, setFils);
   }, [monUid]);
   useEffect(() => (monUid ? suivreMesCadeaux(monUid, setCadeaux) : undefined), [monUid]);
+
+  // /messages/:autreUid : ouvrir (ou créer) le fil avec cette personne.
+  useEffect(() => {
+    if (!avec || !monUid || !origine.pret || !peutAvec) { setAvecFiche(null); return; }
+    let vivant = true;
+    (async () => {
+      let fiche: MemberDoc | null = null;
+      try { fiche = await getMember(avec); } catch { /* hors ligne */ }
+      if (!vivant) return;
+      setAvecFiche(fiche);
+      setVolet('amies');
+      setFilActif(threadId(monUid, avec));
+      try {
+        await ensureThread(monUid, monNom, maPhoto, avec, (fiche?.displayName || '').trim() || (fr ? 'Un membre' : 'A member'), fiche?.photoURL);
+      } catch { /* hors ligne, ou bloquée par l'autre */ }
+    })();
+    return () => { vivant = false; };
+  }, [avec, monUid, origine.pret, peutAvec]);
 
   useEffect(() => {
     if (!filActif) { setMsgs([]); return; }
