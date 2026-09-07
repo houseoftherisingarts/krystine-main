@@ -289,7 +289,7 @@ const Coffres: React.FC<{ solde: number; onChange?: () => void; enTravail?: Read
                     <p className="mt-4 rounded-[16px] border border-[#BA7B39]/50 bg-[#BA7B39]/10 p-4 text-center text-sm text-[#293027] dark:text-white">{fr ? 'Le cadeau est dans votre messagerie : un clic et le Foyer est à vous.' : 'The gift is in your messages: one click and the Hearth is yours.'}</p>
                   )}
                   <p className="mt-4 text-center text-xs text-[#293027]/60 dark:text-white/60">
-                    {fr ? `Les skins et bannières vous attendent dans la petite boutique; les rabais, sous Points dans « Mes récompenses ». Votre bourse : ${niskas(ouverture.solde ?? 0, 'FR')}.` : `Skins and banners wait in the little shop; discounts under Points in “My rewards”. Your purse: ${niskas(ouverture.solde ?? 0, 'EN')}.`}
+                    {fr ? `Les skins et bannières vous attendent dans la petite boutique; les rabais, sous Points dans « Mes cadeaux ». Votre bourse : ${niskas(ouverture.solde ?? 0, 'FR')}.` : `Skins and banners wait in the little shop; discounts under Points in “My gifts”. Your purse: ${niskas(ouverture.solde ?? 0, 'EN')}.`}
                   </p>
                   {!(grand && !grandOk) && (
                     <div className="mt-4 text-center"><button type="button" onClick={() => setOuverture(null)} className={`${bouton} bg-[#293027] text-[#EEE7DB] hover:bg-[#3a453a] dark:bg-[#BA7B39] dark:text-[#293027]`}>{fr ? 'Fermer' : 'Close'}</button></div>
