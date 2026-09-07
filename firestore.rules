@@ -22,6 +22,14 @@ service cloud.firestore {
     }
     function isSignedIn() { return request.auth != null; }
     function isSelf(uid) { return isSignedIn() && request.auth.uid == uid; }
+    // Un uid d'admin, pour fermer les portes de côté de la messagerie (Alex,
+    // 7 septembre 2026) : etat/admins porte la liste, posée par chaque admin
+    // à sa connexion (voir bootstrapAdminEtat dans src/firebase/auth.ts).
+    // exists() d'abord : le doc peut ne pas encore exister sur un projet neuf.
+    function esAdminUid(uid) {
+      return exists(/databases/$(database)/documents/etat/admins)
+        && uid in get(/databases/$(database)/documents/etat/admins).data.get('uids', []);
+    }
     // Le paywall du Foyer d'Origine, jugé ici et pas seulement dans le
     // navigateur (Alex, 7 septembre 2026) : le volet social (l'annuaire, le
     // fil, le cercle) ne se lit qu'avec l'achat `foyer`, l'accès à vie, ou
