@@ -3,12 +3,12 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 await page.goto('http://localhost:3034/accueil', { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(1500);
-const all = page.getByRole('button', { name: /Créer mon compte/i });
-console.log('count:', await all.count());
-for (let i = 0; i < await all.count(); i++) {
-  const el = all.nth(i);
-  console.log(i, 'visible:', await el.isVisible().catch(e => 'ERR ' + e.message));
-}
-const visibles = page.locator('button:visible', { hasText: /Créer mon compte/i });
-console.log('visible count:', await visibles.count());
+const info = await page.evaluate(() => {
+  const all = Array.from(document.querySelectorAll('*')).filter(el => el.textContent?.trim() === 'Créer mon compte' && el.children.length === 0);
+  return all.map(el => ({
+    tag: el.tagName, parentTag: el.parentElement?.tagName, parentClass: el.parentElement?.className,
+    grand: el.parentElement?.parentElement?.tagName, grandClass: el.parentElement?.parentElement?.className,
+  }));
+});
+console.log(JSON.stringify(info, null, 2));
 await browser.close();

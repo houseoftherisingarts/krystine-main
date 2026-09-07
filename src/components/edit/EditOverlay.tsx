@@ -230,11 +230,11 @@ const EditOverlay: React.FC = () => {
       const el = editing;
       if (!el) return;
       const original = el.dataset.editOriginal || '';
-      // Ce qui était affiché juste avant ce clic — la surcharge active s'il y
+      // Ce qui était affiché juste avant ce clic : la surcharge active s'il y
       // en a une, sinon l'original pristine. Comparer newText à CECI plutôt
       // qu'à `original` directement est ce qui permet de revenir au texte
-      // d'origine : si Krystine retape mot pour mot le texte pristine par
-      //-dessus une surcharge déjà publiée, ça reste un vrai changement (la
+      // d'origine : si Krystine retape mot pour mot le texte pristine
+      // par-dessus une surcharge déjà publiée, c'est un vrai changement (la
       // surcharge doit se mettre à jour) même si ça revient à égaler l'original.
       const previouslyShown = el.dataset.editApplied ?? original;
       const newText = (el.textContent || '').trim();
