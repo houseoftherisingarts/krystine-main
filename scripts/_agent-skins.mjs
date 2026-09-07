@@ -52,6 +52,12 @@ const shootBoutique = async (largeur, hauteur, suffixe) => {
 
   await page.waitForSelector('text=La petite boutique', { timeout: 15000 }).catch((e) => console.log('boutique introuvable', e.message));
   await page.waitForTimeout(800);
+
+  // La roue quotidienne (« Jour N ») s'ouvre parfois toute seule à l'arrivée
+  // sur /compte : un clic sur le fond (data-bug-ignore) la referme.
+  const roue = page.locator('[data-bug-ignore]').first();
+  if (await roue.count()) { await roue.click({ position: { x: 8, y: 8 } }).catch(() => {}); await page.waitForTimeout(400); }
+
   // Tout replié au chargement.
   await page.screenshot({ path: `${OUT}/boutique-replie-${suffixe}.png`, fullPage: true });
 
