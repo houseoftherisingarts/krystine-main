@@ -530,7 +530,13 @@ service cloud.firestore {
 
       match /messages/{mid} {
         allow read: if isSelf(uid) || isAdmin();
-        allow create: if (isSelf(uid) && request.resource.data.sender == 'client')
+        // Le mot privé de Krystine (src/pages/admin/sections/MessagesSection.tsx)
+        // peut fermer la porte de la réponse : reponseAutorisee: false sur
+        // le fil bloque l'écriture de la membre jusqu'à ce que Krystine la
+        // rouvre. Absente ou vraie, la porte reste ouverte comme avant.
+        allow create: if (isSelf(uid) && request.resource.data.sender == 'client'
+                          && (!exists(/databases/$(database)/documents/conversations/$(uid))
+                              || get(/databases/$(database)/documents/conversations/$(uid)).data.get('reponseAutorisee', true) != false))
                       || (isAdmin() && request.resource.data.sender == 'admin');
         allow update, delete: if isAdmin();
       }
