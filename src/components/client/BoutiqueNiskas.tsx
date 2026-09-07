@@ -448,16 +448,15 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
         return <ApercuImage ouvert={!!b} onFermer={() => setApercuOuvert(null)} vues={vues} titre={b ? (fr ? b.nomFR : b.nomEN).replace(/^Bannière\s+|\s+banner$/i, '') : ''} signe={b ? signee(b.cle) : true} lang={lang} />;
       })()}
 
-      <Coffres solde={solde.balance} onChange={onAchat} />
+      <Coffres solde={solde.balance} onChange={onAchat} enTravail={skinsCachees} />
 
-
-      <div className="mt-10 grid gap-6 md:grid-cols-[220px_1fr]">
+      {accordeon('sante', 'fa-clapperboard', 'Santé la vie', episodesTries.length, (
+      <div className="grid gap-6 pt-2 md:grid-cols-[220px_1fr]">
         <div className="overflow-hidden rounded-[18px]">
           <img src="/sante-la-vie.jpg" alt="Krystine St-Laurent sur le plateau de Santé la vie" className="h-full w-full object-cover" style={{ objectPosition: '63% 38%' }} />
         </div>
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'Les intégrales' : 'The full episodes'}</p>
-          <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">Santé la vie</h3>
           <p className="mt-1 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
             {fr
               ? `Les émissions complètes, telles que diffusées sur MAtv, en deux saisons. Chaque émission coûte ${niskas(COUT_EPISODE, 'FR')}, une saison complète ${niskas(COUT_SAISON, 'FR')} ou ${PRIX_SAISON_CAD} $ CA, et tout rejoint vos téléchargements pour de bon.`
