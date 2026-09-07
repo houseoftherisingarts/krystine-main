@@ -207,19 +207,16 @@ async function scenarioCoffreReel(browser) {
   const u = await rest(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`, { email, password, returnSecureToken: true });
   if (!u.localId) { console.log('  signUp a échoué :', JSON.stringify(u)); echecs++; return; }
   const uid = u.localId;
-  await fsdoc(`members/${uid}`, { uid: { stringValue: uid }, email: { stringValue: email }, displayName: { stringValue: 'QA fond' } });
+  // bienvenueVu/coffreBetaVu à true : ce scénario teste le fond de
+  // l'animation générale, pas la séquence des deux pop-up d'un compte neuf.
+  await fsdoc(`members/${uid}`, { uid: { stringValue: uid }, email: { stringValue: email }, displayName: { stringValue: 'QA fond' }, bienvenueVu: { booleanValue: true }, coffreBetaVu: { booleanValue: true } });
   await fsdoc(`pointsEvents/adjust:${uid}:qa`, { uid: { stringValue: uid }, kind: { stringValue: 'adjust' }, amount: { integerValue: '1000' }, dedupKey: { stringValue: `adjust:${uid}:qa` }, at: { timestampValue: new Date().toISOString() } });
   await fsdoc(`memberPoints/${uid}`, { balance: { integerValue: '1000' }, lifetime: { integerValue: '1000' } });
 
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
   const page = await ctx.newPage();
   await injecterSession(page, u, uid, email);
-  await page.evaluate(([uid2]) => {
-    const jour = new Date().toISOString().slice(0, 10);
-    localStorage.setItem('krystine-jeu-vu', jour);
-    localStorage.setItem('krystine-roue-vue', jour);
-    localStorage.setItem(`krystine-coffre-beta-vu:${uid2}`, '1'); // pas le sujet de ce scénario
-  }, [uid]);
+  await page.evaluate(() => { localStorage.setItem('krystine-roue-vue', new Date().toISOString().slice(0, 10)); });
 
   await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(2200);
