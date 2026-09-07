@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { CATALOGUE_VIDEOS, COUT_ACCES_VIDEOS, PAQUETS_NISKAS, dureeLisible, vignetteYoutube, type CatalogueVideos, type VideoKrystine } from '../../lib/pointsConfig';
 import { useApp } from '../../contexts/AppContext';
 import { updateMember } from '../../firebase/firestore';
