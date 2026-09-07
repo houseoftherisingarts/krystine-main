@@ -21,6 +21,9 @@ const ClientSupport: React.FC = () => {
   const [messages, setMessages] = useState<MessageDoc[]>([]);
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
+  // Fausse seulement quand Krystine a fermé la porte de la réponse depuis son
+  // mot privé (reponseAutorisee: false) : absente ou vraie, la porte reste ouverte.
+  const [reponseFermee, setReponseFermee] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -31,8 +34,9 @@ const ClientSupport: React.FC = () => {
       memberPhotoURL: member?.photoURL || user.photoURL || '',
     }).catch(() => {});
     const unsub = subscribeToMessages(user.uid, setMessages);
+    const unsubConv = subscribeToConversation(user.uid, conv => setReponseFermee(conv?.reponseAutorisee === false));
     markConversationRead(user.uid, 'client').catch(() => {});
-    return unsub;
+    return () => { unsub(); unsubConv(); };
   }, [user, member]);
 
   useEffect(() => {
