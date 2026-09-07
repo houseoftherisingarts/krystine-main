@@ -23,12 +23,18 @@ const uid = u.localId; console.log('compte', uid);
 const now = { timestampValue: new Date().toISOString() };
 await fsdoc(`members/${uid}`, { uid: { stringValue: uid }, email: { stringValue: email }, displayName: { stringValue: 'Test QA Popup' }, personnalisation: { mapValue: { fields: { banniere: { stringValue: 'iris' } } } } });
 await fsdoc(`boutique/${uid}`, { possede: { mapValue: { fields: { 'banniere-iris': now } } } });
-// Le niska seedé ici arrive AVANT la réclamation automatique de la roue
-// quotidienne (reclamerQuotidien, au montage de RoueQuotidienne) : cette
-// réclamation écrase le solde au lieu de l'incrémenter (constaté en QA,
-// balance retombée à 1). Le vrai seed à 200 se fait donc APRÈS avoir fermé
-// la roue, une fois ce premier geste automatique passé.
-const seederNiskas = () => fsdoc(`memberPoints/${uid}`, { balance: { integerValue: '200' }, lifetime: { integerValue: '200' } });
+// Le solde est recalculé côté serveur depuis le journal `pointsEvents`
+// (event-sourcing : functions/src/niskas.ts → recalculerSolde, appelée après
+// CHAQUE opération serveur — roue, achat de clé, ouverture de coffre — et qui
+// réécrase `memberPoints.balance` par la somme des events). Un simple PATCH
+// sur `memberPoints` tient donc jusqu'au prochain geste serveur puis se fait
+// écraser (constaté en QA : balance retombée à 1, puis à -9 après l'achat
+// d'une clé). Le seed correct écrit un vrai pointsEvent, comme demandé par
+// la revue (« niskas seedés dans pointsEvents ET memberPoints »).
+const seederNiskas = async () => {
+  await fsdoc(`pointsEvents/qa-seed-${uid}`, { uid: { stringValue: uid }, kind: { stringValue: 'promo' }, amount: { integerValue: '200' }, dedupKey: { stringValue: `qa-seed-${uid}` }, at: now });
+  await fsdoc(`memberPoints/${uid}`, { balance: { integerValue: '200' }, lifetime: { integerValue: '200' } });
+};
 const authUser = { uid, email, emailVerified: false, isAnonymous: false, displayName: 'Test QA Popup', providerData: [{ providerId: 'password', uid: email, displayName: null, email, phoneNumber: null, photoURL: null }],
   stsTokenManager: { refreshToken: u.refreshToken, accessToken: u.idToken, expirationTime: Date.now() + Number(u.expiresIn) * 1000 }, createdAt: String(Date.now()), lastLoginAt: String(Date.now()), apiKey: API_KEY, appName: '[DEFAULT]' };
 const browser = await chromium.launch();
