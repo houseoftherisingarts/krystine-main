@@ -162,9 +162,9 @@ const Composeur: React.FC<{ fil: FilMur; onPublie?: () => void; compact?: boolea
             type="button"
             onClick={publier}
             disabled={!pret}
-            className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#9c6630] disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#9c6630] disabled:opacity-50"
           >
-            {envoi ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />} Publier
+            {envoi ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />} {fr ? 'Publier' : 'Publish'}
           </button>
         </div>
       )}

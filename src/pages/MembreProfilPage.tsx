@@ -1,83 +1,83 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { UserPlus, Check, MessageCircle, Loader2 } from 'lucide-react';
-import { useAuth } from '../contexts/AppContext';
+import { Link, useParams } from 'react-router-dom';
+import { useApp } from '../contexts/AppContext';
 import { getMember, type MemberDoc } from '../firebase/firestore';
 import {
   demanderAmitie, accepterAmitie, suivreMesAmities,
   estAmi, amitieEnAttente, type Amitie,
 } from '../firebase/amities';
-import Avatar from '../components/communaute/Avatar';
-import BadgeVedette from '../components/communaute/BadgeVedette';
-import { useAmiesDOrigine } from '../components/communaute/ReserveAuFoyer';
+import { MotDuFoyer, useAmiesDOrigine } from '../components/communaute/ReserveAuFoyer';
+import CadreFoyer from '../components/communaute/CadreFoyer';
+import CarteSociale, { PETITES_CAPITALES } from '../components/communaute/CarteSociale';
+import BilletCarte from '../components/communaute/BilletCarte';
+import Composeur from '../components/communaute/Composeur';
 import { suivrePublicationsDe, type PostMur } from '../firebase/mur';
-import { getBadgesDe, CATALOGUE_BADGES } from '../firebase/badgesCatalogue';
+import { getBadgesDe, badgeVedetteEnCache, CATALOGUE_BADGES } from '../firebase/badgesCatalogue';
 
-// ─── Le profil public d'un membre ────────────────────────────────────
-// Porté du mur social du FMM 2026 (la fiche de l'Ordre), simplifié :
-// bannière si présente, photo, nom, dosha, et deux gestes — demander
-// l'amitié, écrire. Gated derrière la connexion comme CommunauteEspace.
+// ─── La fiche publique d'une membre, /membre/:uid ────────────────────────────
+// La coquille du Foyer (CadreFoyer) porte la bannière et l'avatar de la
+// personne, comme la couverture d'un profil Facebook. Dessous, dans la
+// colonne centrale : la carte « À propos » (dosha, membre depuis, les gestes
+// d'amitié et d'écriture, les badges), le composeur pour soi, puis le mur en
+// billets. La marraine et les filleules y entrent sans le Foyer
+// (garde={false}); l'amitié et les messages restent derrière useAmiesDOrigine.
+
+const BOUTON_ENCRE = 'inline-flex items-center gap-2 rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] transition-colors hover:bg-[#3a453a] disabled:opacity-50 dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]';
+const BOUTON_LAITON = 'inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#9c6630] disabled:opacity-50';
+const BOUTON_SECONDAIRE = 'inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] disabled:opacity-50 dark:border-white/15 dark:text-white/70';
+const PASTILLE_ETAT = 'inline-flex items-center gap-2 rounded-full border border-[#BA7B39] bg-[#BA7B39]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]';
+const LIBELLE = 'text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]';
+
 const MembreProfilPage: React.FC = () => {
   const { uid } = useParams<{ uid: string }>();
-  const navigate = useNavigate();
-  const { user, setSignInOpen } = useAuth();
+  const { user, lang } = useApp();
+  const fr = lang === 'FR';
 
   const amiesDOrigine = useAmiesDOrigine();
   const [profil, setProfil] = useState<MemberDoc | null>(null);
   const [chargement, setChargement] = useState(true);
   const [amities, setAmities] = useState<Amitie[]>([]);
   const [badges, setBadges] = useState<string[]>([]);
+  const [vedette, setVedette] = useState<string | null>(null);
   const [publications, setPublications] = useState<PostMur[]>([]);
-  useEffect(() => { if (uid) getBadgesDe(uid).then(setBadges).catch(() => {}); }, [uid]);
-  useEffect(() => (uid ? suivrePublicationsDe(uid, setPublications) : undefined), [uid]);
   const [envoi, setEnvoi] = useState(false);
 
   useEffect(() => {
     if (!uid) return;
     let vivant = true;
-    getMember(uid).then((m) => { if (vivant) setProfil(m); }).finally(() => { if (vivant) setChargement(false); });
+    getBadgesDe(uid).then(b => { if (vivant) setBadges(b); }).catch(() => {});
+    badgeVedetteEnCache(uid).then(v => { if (vivant) setVedette(v); });
     return () => { vivant = false; };
   }, [uid]);
-
+  useEffect(() => (uid ? suivrePublicationsDe(uid, setPublications) : undefined), [uid]);
   useEffect(() => {
-    if (!user) return;
-    return suivreMesAmities(user.uid, setAmities);
-  }, [user]);
+    if (!uid) return;
+    let vivant = true;
+    setChargement(true);
+    getMember(uid).then((m) => { if (vivant) setProfil(m); }).catch(() => { if (vivant) setProfil(null); }).finally(() => { if (vivant) setChargement(false); });
+    return () => { vivant = false; };
+  }, [uid]);
+  useEffect(() => { if (user) return suivreMesAmities(user.uid, setAmities); }, [user]);
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-32 pb-24 px-6">
-        <div className="max-w-md mx-auto text-center">
-          <h1 className="font-serif text-3xl text-[#2a2015] dark:text-white mb-4">Profil</h1>
-          <p className="text-[#3a3126]/60 dark:text-white/60 mb-8">Connectez-vous pour voir cette fiche.</p>
-          <button
-            onClick={() => setSignInOpen(true)}
-            className="bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
-          >
-            Se connecter
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // La coquille porte la carte « Se connecter » : rien à rendre dedans.
+  if (!user) return <CadreFoyer garde={false}>{null}</CadreFoyer>;
 
   if (chargement) {
-    return <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-32 pb-24" />;
+    return (
+      <CadreFoyer garde={false}>
+        <div className="flex justify-center py-12"><i className="fa-solid fa-circle-notch fa-spin text-2xl text-[#8B4A2F]" /></div>
+      </CadreFoyer>
+    );
   }
 
   if (!uid || !profil) {
     return (
-      <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-32 pb-24 px-6">
-        <div className="max-w-md mx-auto text-center">
-          <p className="text-[#3a3126]/60 dark:text-white/60">Ce membre est introuvable.</p>
-        </div>
-      </div>
+      <CadreFoyer garde={false}>
+        <CarteSociale><p className="text-sm text-[#38403a]/50 dark:text-white/50">{fr ? 'Ce membre est introuvable.' : 'This member cannot be found.'}</p></CarteSociale>
+      </CadreFoyer>
     );
   }
 
-  // Jamais dériver le nom du courriel : rien de contactable hors plateforme
-  // ne doit fuiter sur un profil public.
-  const nom = profil.displayName || 'Membre';
   const soi = user.uid === uid;
   // L'amitié et la messagerie de boîte à boîte se débloquent avec le Foyer
   // d'Origine; la marraine et les filleules passent toujours (Alex, 6 sept. 2026).
@@ -86,121 +86,90 @@ const MembreProfilPage: React.FC = () => {
   const enAttente = amitieEnAttente(amities, user.uid, uid);
   const jeLaiEnvoyee = enAttente?.de === user.uid;
   const jeLaiRecue = enAttente && enAttente.de === uid;
+  const depuis = profil.joinedAt?.toDate?.().toLocaleDateString(fr ? 'fr-CA' : 'en-CA', { month: 'long', year: 'numeric' });
 
   const demander = async () => {
     setEnvoi(true);
     try { await demanderAmitie(user.uid, uid); } finally { setEnvoi(false); }
   };
-
   const accepter = async () => {
     setEnvoi(true);
     try { await accepterAmitie(user.uid, uid); } finally { setEnvoi(false); }
   };
 
-  return (
-    <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pb-24">
-      {profil.bannerURL ? (
-        <div className="w-full h-48 md:h-64 overflow-hidden">
-          <img src={profil.bannerURL} alt="" className="w-full h-full object-cover" />
-        </div>
+  const gestes = !soi && origine ? (
+    <div className="flex flex-wrap items-center justify-end gap-2">
+      {amis ? (
+        <span className={PASTILLE_ETAT}><i className="fa-solid fa-check text-[9px]" /> {fr ? 'Amies d’origine' : 'Origine friends'}</span>
+      ) : jeLaiRecue ? (
+        <button type="button" onClick={accepter} disabled={envoi} className={BOUTON_LAITON}>
+          <i className={`fa-solid ${envoi ? 'fa-circle-notch fa-spin' : 'fa-user-plus'} text-[9px]`} /> {fr ? 'Accepter l’amie d’origine' : 'Accept the Origine friend'}
+        </button>
+      ) : jeLaiEnvoyee ? (
+        <span className="text-[10px] uppercase tracking-widest text-[#38403a]/40 dark:text-white/40">{fr ? 'Demande envoyée' : 'Request sent'}</span>
       ) : (
-        <div className="w-full h-24 md:h-28" />
+        <button type="button" onClick={demander} disabled={envoi} className={BOUTON_ENCRE}>
+          <i className={`fa-solid ${envoi ? 'fa-circle-notch fa-spin' : 'fa-user-plus'} text-[9px]`} /> {fr ? 'Amie d’origine' : 'Origine friend'}
+        </button>
       )}
+      <Link to={`/messages/${uid}`} className={BOUTON_SECONDAIRE}>
+        <i className="fa-solid fa-envelope text-[9px]" /> {fr ? 'Écrire' : 'Write'}
+      </Link>
+    </div>
+  ) : undefined;
 
-      <div className="max-w-2xl mx-auto px-6 -mt-12">
-        <div className="bg-white/55 backdrop-blur-md dark:bg-[#2a2015]/55 rounded-[20px] border border-white/60 dark:border-white/10 shadow-[0_10px_30px_-18px_rgba(58,49,38,0.3)] p-6 md:p-8">
-          <div className="flex items-center gap-4">
-            <Avatar nom={nom} url={profil.photoURL} taille={72} />
-            <div className="min-w-0">
-              <h1 className="flex items-center gap-2 font-serif text-2xl text-[#2a2015] dark:text-white truncate">
-                <span className="truncate">{nom}</span>
-                <BadgeVedette uid={uid} />
-                {profil.verifie && <i className="fa-solid fa-circle-check shrink-0 text-lg text-[#3b82f6]" title="Profil vérifié" />}
-              </h1>
-              {profil.dosha && (
-                <p className="text-[11px] uppercase tracking-[0.14em] text-[#7d6330] dark:text-[#bb9a5e] mt-1">
-                  Dosha {profil.dosha}
-                </p>
-              )}
-            </div>
+  return (
+    <CadreFoyer onglet={soi ? 'profil' : undefined} garde={false} personne={profil}>
+      <CarteSociale titre={fr ? 'À propos' : 'About'} action={gestes}>
+        <dl className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
+          <div>
+            <dt className={LIBELLE}>Dosha</dt>
+            <dd className="mt-1 text-sm text-[#293027] dark:text-white">{profil.dosha ? profil.dosha.charAt(0).toUpperCase() + profil.dosha.slice(1) : (fr ? 'Pas encore découvert' : 'Not discovered yet')}</dd>
           </div>
+          <div>
+            <dt className={LIBELLE}>{fr ? 'Membre depuis' : 'Member since'}</dt>
+            <dd className="mt-1 text-sm text-[#293027] dark:text-white">{depuis || (fr ? 'Les premiers jours' : 'The early days')}</dd>
+          </div>
+        </dl>
 
-          {!soi && amiesDOrigine.pret && !origine && (
-            <div className="mt-6 rounded-[16px] border border-[#bb9a5e]/40 bg-[#bb9a5e]/10 px-5 py-4 text-sm text-[#3a3126]/80 dark:text-white/80">
-              <p><i className="fa-solid fa-fire mr-2 text-[#7d6330]" />L’amitié d’origine et les messages de boîte à boîte se débloquent avec le Foyer d’Origine.</p>
-              <Link to="/foyer" className="mt-3 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#7d6330] hover:underline dark:text-[#bb9a5e]">Rejoindre la communauté vivante <i className="fa-solid fa-arrow-right text-[9px]" /></Link>
-            </div>
-          )}
-          {!soi && origine && (
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              {amis ? (
-                <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#bb9a5e]/40 text-xs font-bold uppercase tracking-widest text-[#7d6330] dark:text-[#bb9a5e]">
-                  <Check size={13} /> Amies d’origine
-                </span>
-              ) : jeLaiRecue ? (
-                <button
-                  type="button" onClick={accepter} disabled={envoi}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#bb9a5e] text-[#2a2015] text-xs font-bold uppercase tracking-widest hover:bg-[#a3823f] transition-colors disabled:opacity-50"
-                >
-                  {envoi ? <Loader2 size={13} className="animate-spin" /> : <UserPlus size={13} />} Accepter l’amie d’origine
-                </button>
-              ) : jeLaiEnvoyee ? (
-                <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#3a3126]/15 dark:border-white/10 text-xs font-bold uppercase tracking-widest text-[#3a3126]/50 dark:text-white/50">
-                  Demande envoyée
-                </span>
-              ) : (
-                <button
-                  type="button" onClick={demander} disabled={envoi}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] text-xs font-bold uppercase tracking-widest hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors disabled:opacity-50"
-                >
-                  {envoi ? <Loader2 size={13} className="animate-spin" /> : <UserPlus size={13} />} Amie d’origine
-                </button>
-              )}
-              <button
-                type="button" onClick={() => navigate(`/messages/${uid}`)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#3a3126]/15 dark:border-white/10 text-xs font-bold uppercase tracking-widest text-[#3a3126]/70 dark:text-white/70 hover:border-[#bb9a5e] hover:text-[#7d6330] transition-colors"
-              >
-                <MessageCircle size={13} /> Écrire
-              </button>
-            </div>
-          )}
+        {!soi && amiesDOrigine.pret && !origine && (
+          <div className="mt-5">
+            <MotDuFoyer compact lang={lang} quoi={fr ? 'L’amitié d’origine et les messages de boîte à boîte se débloquent avec le Foyer d’Origine.' : 'Origine friendship and inbox-to-inbox messages unlock with the Origine Hearth.'} />
+          </div>
+        )}
 
-          {badges.length > 0 && (
-            <div className="mt-6 border-t border-[#3a3126]/10 pt-5 dark:border-white/10">
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">Badges</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {badges.map(id => (
-                  <span key={id} className="inline-flex items-center gap-2 rounded-full border border-[#bb9a5e]/40 bg-[#bb9a5e]/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#7d6330]">
-                    <i className={`fa-solid ${CATALOGUE_BADGES[id].icone}`} /> {CATALOGUE_BADGES[id].nom}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Le mur de la personne, comme sur Facebook */}
-        <div className="mt-6">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7d6330]">Le mur de {nom}</p>
-          {publications.length === 0 ? (
-            <p className="mt-3 text-sm text-[#3a3126]/50 dark:text-white/50">Aucune publication pour le moment.</p>
+        <div id="badges" className="mt-6 border-t border-[#38403a]/10 pt-5 dark:border-white/10">
+          <p className={PETITES_CAPITALES}>Badges</p>
+          {badges.length === 0 ? (
+            <p className="mt-2 text-sm text-[#38403a]/50 dark:text-white/50">{fr ? 'Aucun badge pour le moment.' : 'No badge yet.'}</p>
           ) : (
-            <div className="mt-3 space-y-3">
-              {publications.map(p => (
-                <div key={p.id} className="rounded-[20px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#2a2015]/55">
-                  <p className="whitespace-pre-line text-sm text-[#2a2015] dark:text-white">{p.texte}</p>
-                  {p.photoUrl && <img src={p.photoUrl} alt="" className="mt-3 max-h-80 rounded-[14px] object-cover" />}
-                  {p.videoUrl && <video src={p.videoUrl} controls playsInline preload="metadata" className="mt-3 max-h-80 w-full rounded-[14px] bg-black" />}
-                  <p className="mt-2 text-[11px] text-[#3a3126]/40 dark:text-white/40">
-                    {p.creeLe?.toDate?.().toLocaleDateString('fr-CA')} · {p.pour || 0} <i className="fa-solid fa-heart text-[#bb9a5e]" /> · {p.nbCommentaires || 0} <i className="fa-solid fa-comment" />
-                  </p>
-                </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {badges.map(id => (
+                <span
+                  key={id}
+                  className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest transition-colors ${
+                    id === vedette
+                      ? 'border-[#BA7B39] bg-[#BA7B39] text-[#293027] shadow-[0_8px_20px_-10px_rgba(186,123,57,0.9)]'
+                      : 'border-[#BA7B39]/40 bg-[#BA7B39]/10 text-[#8B4A2F] dark:text-[#d9a05b]'
+                  }`}
+                >
+                  <i className={`fa-solid ${id === vedette ? 'fa-star' : CATALOGUE_BADGES[id].icone}`} /> {CATALOGUE_BADGES[id].nom}
+                </span>
               ))}
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </CarteSociale>
+
+      {soi && <Composeur fil="communaute" contexte="monmur" />}
+
+      <p className={PETITES_CAPITALES}>{fr ? 'Publications' : 'Posts'}</p>
+      {publications.length === 0 ? (
+        <CarteSociale><p className="text-sm text-[#38403a]/50 dark:text-white/50">{fr ? 'Aucune publication pour le moment.' : 'No post yet.'}</p></CarteSociale>
+      ) : (
+        publications.map((p, i) => <BilletCarte key={p.id} post={p} delaiIndex={i} />)
+      )}
+    </CadreFoyer>
   );
 };
 
