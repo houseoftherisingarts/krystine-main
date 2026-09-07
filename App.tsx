@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-route
 import { AppProvider } from './src/contexts/AppContext';
 import { EditModeProvider } from './src/contexts/EditModeContext';
 import { SiteFlagsProvider } from './src/contexts/SiteFlagsContext';
+import { GamificationProvider } from './src/contexts/GamificationContext';
 import NavBar from './src/components/layout/NavBar';
 import Footer from './src/components/layout/Footer';
 import CartDrawer from './src/components/layout/CartDrawer';
