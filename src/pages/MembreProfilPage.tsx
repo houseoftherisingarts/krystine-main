@@ -22,10 +22,11 @@ import { getBadgesDe, badgeVedetteEnCache, CATALOGUE_BADGES } from '../firebase/
 // billets. La marraine et les filleules y entrent sans le Foyer
 // (garde={false}); l'amitié et les messages restent derrière useAmiesDOrigine.
 
-const BOUTON_ENCRE = 'inline-flex items-center gap-2 rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] transition-colors hover:bg-[#3a453a] disabled:opacity-50 dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]';
-const BOUTON_LAITON = 'inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#9c6630] disabled:opacity-50';
-const BOUTON_SECONDAIRE = 'inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] disabled:opacity-50 dark:border-white/15 dark:text-white/70';
-const PASTILLE_ETAT = 'inline-flex items-center gap-2 rounded-full border border-[#BA7B39] bg-[#BA7B39]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]';
+// whitespace-nowrap : un bouton en pilule ne se plie jamais sur deux lignes; à 390 les gestes passent à la ligne l'un sous l'autre.
+const BOUTON_ENCRE = 'inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] transition-colors hover:bg-[#3a453a] disabled:opacity-50 dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]';
+const BOUTON_LAITON = 'inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#9c6630] disabled:opacity-50';
+const BOUTON_SECONDAIRE = 'inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] disabled:opacity-50 dark:border-white/15 dark:text-white/70';
+const PASTILLE_ETAT = 'inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#BA7B39] bg-[#BA7B39]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]';
 const LIBELLE = 'text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]';
 
 const MembreProfilPage: React.FC = () => {
