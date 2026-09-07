@@ -132,7 +132,10 @@ const BilletCarte: React.FC<{ post: PostMur; delaiIndex: number; estSauvegarde?:
         {user && (user.uid === post.uid || isAdmin) && (
           <button
             type="button"
-            onClick={() => { void retirerDuMur(post); }}
+            onClick={() => {
+              if (!window.confirm(fr ? 'Retirer ce billet ?' : 'Remove this post?')) return;
+              void retirerDuMur(post);
+            }}
             aria-label="Retirer"
             className="w-8 h-8 rounded-full flex items-center justify-center text-[#38403a]/40 dark:text-white/40 hover:text-red-500 transition-colors shrink-0"
           >
