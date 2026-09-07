@@ -33,6 +33,7 @@ interface Props {
 
 const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes, onAchat }) => {
   const { user, member, lang } = useApp();
+  const gam = useGamification();
   const fr = lang === 'FR';
   const [solde, setSolde] = useState<PointsBalance>({ balance: 0, lifetime: 0 });
   const [possede, setPossede] = useState<Record<string, unknown>>({});
