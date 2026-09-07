@@ -111,6 +111,19 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
     }
   };
 
+  // Une saison payée en argent : même destination qu'un achat en niskas
+  // (achatsFormations), juste un autre chemin de paiement (Alex, 7 sept. 2026).
+  const saisonArgent = async (cle: string) => {
+    if (!user || occupe) return;
+    setOccupe(`saison-argent-${cle}`);
+    try {
+      window.location.href = await acheterSaisonEnArgent(cle);
+    } catch {
+      dire('err', fr ? 'Le paiement n’a pas pu démarrer. Réessayez dans un instant.' : 'The payment could not start. Try again in a moment.');
+      setOccupe(null);
+    }
+  };
+
   const perso = member?.personnalisation || {};
   const aMusique = !!possede['musique-origine'] || possedeMusiqueDeja;
   const aAccesVideos = !!possede['acces-videos'];
