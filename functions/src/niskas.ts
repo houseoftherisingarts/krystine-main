@@ -55,7 +55,11 @@ const COSMETIQUES: Record<string, { cout: number; nom: string }> = {
 const NISKAS_BIENVENUE = 20;
 const COUT_EPISODE = 25;
 const COUT_SAISON = 175;
-const SAISONS: Record<string, string> = { '1': 'Module 1', '2': 'Module 2' };
+// Le prix en argent d'une saison complète (Stripe), jumeau du prix en niskas
+// ci-dessus : les deux mènent au même octroi (achatsFormations + episodes),
+// voir creerSessionSaison et son webhook dans paiements.ts.
+export const PRIX_SAISON_CAD = 30;
+export const SAISONS: Record<string, string> = { '1': 'Module 1', '2': 'Module 2' };
 const COUT_VIDEO = 10;
 const CATALOGUE_VIDEOS = 'https://krystinestlaurent.ca/compte/videos-krystine.json';
 
