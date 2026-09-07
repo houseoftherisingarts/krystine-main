@@ -261,6 +261,7 @@ export const LeconsPanel: React.FC<{ formationId: string }> = ({ formationId }) 
 const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSaved }) => {
   const [paywall, setPaywall] = useState(!!f.paywall);
   const [prix, setPrix] = useState(f.prix != null ? String(f.prix) : '');
+  const [listeAttente, setListeAttente] = useState(!!f.listeAttente);
   const [evergreen, setEvergreen] = useState(f.evergreen !== false);
   const [dateSortie, setDateSortie] = useState(f.dateSortie || '');
   const [lancement, setLancement] = useState(!!f.lancementOrchestre);
