@@ -34,7 +34,7 @@ export interface Formation {
 }
 
 export type FormationOptions = Pick<Formation,
-  'paywall' | 'prix' | 'evergreen' | 'dateSortie' | 'lancementOrchestre' | 'messageAcheteursEnvoye' | 'categorie' | 'questionsFermees'>;
+  'paywall' | 'prix' | 'listeAttente' | 'evergreen' | 'dateSortie' | 'lancementOrchestre' | 'messageAcheteursEnvoye' | 'categorie' | 'questionsFermees'>;
 
 const db = () => {
   if (!app) throw new Error('[Formations] Firebase not configured');
