@@ -15,6 +15,7 @@ import Coffres from './Coffres';
 import FondEcran from './FondEcran';
 import ApercuImage from './ApercuImage';
 import { AvecSignature, telechargerImage } from './Signature';
+import { useGamification } from '../../contexts/GamificationContext';
 import '../bouton-compte.css';
 
 // La petite boutique, dans l'onglet Téléchargements. Quatre façons de
