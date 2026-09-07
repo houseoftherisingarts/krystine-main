@@ -230,12 +230,14 @@ export const stripeWebhook = onRequest(
     const session = event.data?.object || {};
     const uid = session.metadata?.uid;
     const formationId = session.metadata?.formationId;
+    // Le détail des taxes, commun aux trois types de vente Stripe. En cents, CAD.
+    const detailTaxes = detailTaxesQC(session);
 
     // Un paquet de niskas : cent pièces, une seule fois par paiement.
     if (uid && session.metadata?.type === 'niskas' && session.payment_status === 'paid') {
       const n = Number(session.metadata?.niskas || NISKAS_PAR_PAQUET);
       const montant = (session.amount_total || 0) / 100;
-      const credite = await crediterNiskas(uid, 'achat-niskas', n, `stripe:${session.id}`, { montant });
+      const credite = await crediterNiskas(uid, 'achat-niskas', n, `stripe:${session.id}`, { montant, ...detailTaxes });
       console.log(`[paiements] ${n} niskas pour ${uid} (${montant} $) ${credite ? 'crédités' : 'déjà crédités'}`);
       res.status(200).send('ok'); return;
     }
