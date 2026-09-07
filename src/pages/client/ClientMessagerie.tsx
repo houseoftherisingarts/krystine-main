@@ -94,9 +94,10 @@ const ClientMessagerie: React.FC<{ voletInitial?: Volet; avec?: string; dansFoye
 
   const nonLus = useMemo(() => fils.reduce((n, f) => n + (f.unread?.[monUid] || 0), 0), [fils, monUid]);
   const fil = fils.find(f => f.id === filActif);
-  const autreUid = fil?.participantUids.find(u => u !== monUid) || '';
-  const nomAutre = (autreUid && fil?.participantNames?.[autreUid]) || (fr ? 'Un membre' : 'A member');
-  const photoAutre = autreUid ? fil?.participantPhotos?.[autreUid] : undefined;
+  const surAvec = !!avec && filActif === threadId(monUid, avec);
+  const autreUid = fil?.participantUids.find(u => u !== monUid) || (surAvec ? avec : '');
+  const nomAutre = (autreUid && fil?.participantNames?.[autreUid]) || (surAvec && avecFiche?.displayName?.trim()) || (fr ? 'Un membre' : 'A member');
+  const photoAutre = (autreUid ? fil?.participantPhotos?.[autreUid] : undefined) || (surAvec ? avecFiche?.photoURL : undefined);
 
   const envoyer = async (e: React.FormEvent) => {
     e.preventDefault();
