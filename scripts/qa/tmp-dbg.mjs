@@ -1,0 +1,37 @@
+import { chromium } from 'playwright';
+import { execSync } from 'node:child_process';
+import fs from 'node:fs';
+const API_KEY = fs.readFileSync('.env.local', 'utf8').match(/VITE_FIREBASE_API_KEY=(.+)/)[1].trim();
+const PROJET = 'krystinestlaurent-87566';
+const BASE = 'http://localhost:5199';
+const email = `qa-dbg-${Date.now()}@vexel-qa.test`; const password = 'Qa!' + Math.random().toString(36).slice(2, 12);
+const rest = async (url, body) => (await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })).json();
+const gtoken = execSync('gcloud auth print-access-token').toString().trim();
+const fsdoc = async (path, fields) => {
+  const u = `https://firestore.googleapis.com/v1/projects/${PROJET}/databases/(default)/documents/${path}`;
+  const r = await fetch(u, { method: 'PATCH', headers: { Authorization: `Bearer ${gtoken}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ fields }) });
+  console.log('write', path, r.status);
+};
+const u = await rest(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`, { email, password, returnSecureToken: true });
+const uid = u.localId; console.log('compte', uid);
+await fsdoc(`memberPoints/${uid}`, { balance: { integerValue: '200' }, lifetime: { integerValue: '200' } });
+const authUser = { uid, email, emailVerified: false, isAnonymous: false, displayName: 'Test QA', providerData: [{ providerId: 'password', uid: email, displayName: null, email, phoneNumber: null, photoURL: null }],
+  stsTokenManager: { refreshToken: u.refreshToken, accessToken: u.idToken, expirationTime: Date.now() + Number(u.expiresIn) * 1000 }, createdAt: String(Date.now()), lastLoginAt: String(Date.now()), apiKey: API_KEY, appName: '[DEFAULT]' };
+const browser = await chromium.launch();
+const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+const page = await ctx.newPage();
+page.on('console', msg => console.log('PAGE:', msg.type(), msg.text()));
+page.on('pageerror', e => console.log('PAGEERROR', e.message));
+await page.goto(`${BASE}/robots.txt`);
+await page.evaluate(([key, val]) => new Promise((res, rej) => {
+  const req = indexedDB.open('firebaseLocalStorageDb', 1);
+  req.onupgradeneeded = () => req.result.createObjectStore('firebaseLocalStorage', { keyPath: 'fbase_key' });
+  req.onsuccess = () => { const tx = req.result.transaction('firebaseLocalStorage', 'readwrite'); tx.objectStore('firebaseLocalStorage').put({ fbase_key: key, value: val }); tx.oncomplete = () => res(true); tx.onerror = rej; };
+  req.onerror = rej;
+}), [`firebase:authUser:${API_KEY}:[DEFAULT]`, authUser]);
+await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domcontentloaded' });
+await page.waitForTimeout(5000);
+console.log('done waiting');
+await browser.close();
+await rest(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${API_KEY}`, { idToken: u.idToken });
+await fetch(`https://firestore.googleapis.com/v1/projects/${PROJET}/databases/(default)/documents/memberPoints/${uid}`, { method: 'DELETE', headers: { Authorization: `Bearer ${gtoken}` } });
