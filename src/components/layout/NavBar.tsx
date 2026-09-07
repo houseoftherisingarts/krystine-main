@@ -86,11 +86,11 @@ const NavBar: React.FC = () => {
 
         {/* Desktop Links — Boutique rendered last as a filled brass pill to give
             the nav a single primary action (revenue-driving). */}
-        <ul className="hidden xl:flex items-center gap-[2.1rem]">
+        <ul className="hidden xl:flex h-11 items-center self-center gap-[2.1rem]">
           {NAV.map((item, i) => {
             const active = isActive(item.href);
             const resolved = resolveHref(item.href);
-            const cls = `group relative whitespace-nowrap rounded-full px-3 py-2 text-[0.68rem] uppercase tracking-[0.17em] font-sans transition-colors duration-[250ms] ${
+            const cls = `group relative inline-flex items-center whitespace-nowrap rounded-full px-3 py-2 text-[0.68rem] uppercase tracking-[0.17em] font-sans transition-colors duration-[250ms] ${
               active ? 'bg-brass/15 text-brassInk dark:text-brassBright' : 'text-ink/80 dark:text-ctext/75 hover:bg-white/60 hover:text-brassInk dark:hover:bg-white/10 dark:hover:text-brassBright'
             }`;
             const underline = (
