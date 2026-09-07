@@ -24,7 +24,8 @@ const krystineUid = (await fsquery('members', 'email', 'krystine@inspiratanature
 const browser = await chromium.launch();
 const comptes = [];
 try {
-  for (const [largeur, hauteur, nom] of [[1440, 900, '1440'], [390, 844, '390']]) {
+  const tailles = [[1440, 900, '1440'], [390, 844, '390']].filter(([, , n]) => (process.env.LARGEURS || '1440,390').split(',').includes(n));
+  for (const [largeur, hauteur, nom] of tailles) {
     const email = `qa-roue-${nom}-${Date.now()}@vexel-qa.test`; const password = 'Qa!' + Math.random().toString(36).slice(2, 12);
     const u = await rest(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`, { email, password, returnSecureToken: true });
     const uid = u.localId; comptes.push({ uid, idToken: u.idToken }); console.log('compte', nom, uid);
