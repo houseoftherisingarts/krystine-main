@@ -38,6 +38,7 @@ export const COMMENT_GAGNER_BADGES: Record<string, { fr: string; en: string }> =
   'coeur-genereux':   { fr: '50 votes donnés aux billets et commentaires des autres', en: '50 votes given to others’ posts and comments' },
   'oreille-fidele':   { fr: '20 rediffusions, vidéos ou épisodes écoutés jusqu’au bout', en: '20 replays, videos or episodes listened to the end' },
   'fidele-au-poste':  { fr: '30 journées de retour dans votre espace', en: '30 days back in your space' },
+  'badge-bleu':       { fr: 'Deux programmes suivis avec Krystine, puis votre identité confirmée depuis l’onglet Profil', en: 'Two programs followed with Krystine, then your identity confirmed from the Profile tab' },
 };
 
 export interface MesBadges { obtenus: Record<string, Timestamp>; exposes?: string[]; vedette?: string; }
