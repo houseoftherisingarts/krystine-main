@@ -68,6 +68,9 @@ export async function deciderBadgeBleuPour(uid: string, decision: 'approuvee' | 
   const ref = db.doc(`verifications/${uid}`);
   const v = (await ref.get()).data() as { statut?: StatutVerification } | undefined;
   if (v?.statut !== 'en_attente') throw new HttpsError('failed-precondition', 'Aucune demande en attente pour cette membre.');
+  if (decision === 'approuvee' && (await lireGamification()).badgeBleuEquipeSeulement) {
+    throw new HttpsError('failed-precondition', 'Le Badge Bleu est réservé à l’équipe : personne d’autre ne peut plus le gagner.');
+  }
 
   // D'abord la pièce : si la suite échoue, la demande reste en attente sans
   // pièce et l'admin redécide (approuver n'en a plus besoin).
