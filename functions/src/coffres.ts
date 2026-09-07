@@ -218,6 +218,7 @@ export const acheterCoffre = onCall({ region: 'us-central1' }, async (req) => {
 // ─── Ouvrir un coffre ────────────────────────────────────────────────────────
 export const ouvrirCoffre = onCall({ region: 'us-central1' }, async (req) => {
   if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour ouvrir un coffre.');
+  await exigerModule('coffres');
   const uid = req.auth.uid;
   const type = req.data?.type;
   if (!estType(type)) throw new HttpsError('invalid-argument', 'Coffre inconnu.');
