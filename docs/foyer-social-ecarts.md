@@ -1,6 +1,8 @@
 # Espace social du Foyer : inventaire et écarts avec l'espace client
 
-Relevé du 6 septembre 2026, fait sur le code tel qu'il est écrit et sur 45 captures Playwright (1440 × 900 et 390 × 844). Deux comptes jetables ont servi : une membre du Foyer d'Origine (document `achatsFormations/{uid}/formations/foyer` écrit par REST, plus une entrée dans `groupes/foyer/membres`) et une membre sans le Foyer, qui joue la correspondante et le scénario du garde-fou. Les deux comptes et tout ce qu'ils ont écrit ont été effacés à la fin.
+Relevé du 6 septembre 2026, fait sur le code tel qu'il est écrit et sur 45 captures Playwright (1440 × 900 et 390 × 844). Deux comptes jetables ont servi : une membre du Foyer d'Origine (document `achatsFormations/{uid}/formations/foyer` écrit par REST, plus une entrée dans `groupes/foyer/membres`) et une membre sans le Foyer, qui joue la correspondante et le scénario du garde-fou. Les deux comptes et tout ce qu'ils ont écrit ont été effacés à la fin (comptes Identity Toolkit, `members`, `memberPoints`, `achatsFormations`, `groupes/foyer/membres`, `amities`, `dms`), vérification faite par REST après coup.
+
+Le vérificateur `voix-alex` signale encore des « phrases hachées » dans ce document : ce sont les énumérations de classes et de fichiers entre apostrophes inversées, que l'outil lit comme des fragments une fois le code retiré. Aucun tiret long, aucune clivée, aucun « on » ne reste.
 
 Captures : `/private/tmp/claude-501/-Users-lesalondesinconnus/3a548c8f-1fba-4e35-b513-f459846a1c9b/scratchpad/foyer-social/avant/` (mesures brutes dans `mesures.json`, agrandissements dans `../crops/`). La référence visuelle est l'espace client `/compte`, décrit brique par brique dans `docs/canon-espace-client.md`.
 
