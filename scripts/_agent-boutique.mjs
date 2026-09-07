@@ -124,12 +124,11 @@ if (await memEmailInput.count()) {
 }
 console.log('URL /compte après tentative login membre:', mem.url());
 await mem.screenshot({ path: `${OUT}/agent-compte-apres-login.png` });
-// Ferme le tutoriel de bienvenue (« On oublie souvent de jouer ») s'il est là.
-await mem.keyboard.press('Escape').catch(() => {});
-await mem.waitForTimeout(400);
+// Ferme le tutoriel de bienvenue (« On oublie souvent de jouer ») : le clic
+// sur le fond (data-bug-ignore) appelle fermer() (BienvenueJeu.tsx).
 await mem.evaluate(() => {
-  const closeBtn = Array.from(document.querySelectorAll('button')).find(b => /fermer|compris|×|close/i.test(b.textContent || '') || b.querySelector('i.fa-xmark, i.fa-times'));
-  if (closeBtn) closeBtn.click();
+  const backdrop = document.querySelector('[data-bug-ignore]');
+  if (backdrop) backdrop.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 });
 await mem.waitForTimeout(500);
 const clickTab = async (page, iconClass) => page.evaluate((cls) => {
