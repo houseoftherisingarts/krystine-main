@@ -771,7 +771,7 @@ const LoyaltyView: React.FC<{
       {pending.length > 0 && (
         <div className="mb-6 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-900/40 p-4">
           <p className="text-sm font-bold text-yellow-800 dark:text-yellow-200 mb-2">
-            <i className="fa-solid fa-gift mr-2" /> {pending.length} {pending.length === 1 ? 'récompense à honorer' : 'récompenses à honorer'}
+            <i className="fa-solid fa-gift mr-2" /> {pending.length} {pending.length === 1 ? 'cadeau à honorer' : 'cadeaux à honorer'}
           </p>
           <ul className="space-y-1 text-sm text-yellow-900 dark:text-yellow-100">
             {pending.map(r => (
