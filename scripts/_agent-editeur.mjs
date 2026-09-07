@@ -19,9 +19,9 @@ const PAGES = [
   {
     // Le hero et la section prix de /foyer vivent sous des calques au
     // scroll (STANZAS, révélation du prix) qui laissent des div plein
-    // écran en z-10 par-dessus même à opacité 0 — interception de clic,
-    // pas un bug du mode éditeur. FINAL.title, tout en bas, est un simple
-    // whileInView (une fois, puis rien par-dessus) : cible sûre.
+    // écran en z-10 par-dessus même à opacité 0 — interception de clic
+    // dans Playwright, pas un bug du mode éditeur. FINAL.title, tout en
+    // bas, est un simple whileInView (une fois, rien par-dessus) : cible sûre.
     url: '/foyer',
     selector: 'h2',
     match: 'Plus on nous montre, moins on voit.',
@@ -37,6 +37,13 @@ const PAGES = [
 
 const browser = await chromium.launch();
 const rapport = [];
+
+async function selectAllAndType(page, texte) {
+  await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+  await page.waitForTimeout(120);
+  await page.keyboard.type(texte, { delay: 12 });
+  await page.waitForTimeout(150);
+}
 
 for (const vp of VIEWPORTS) {
   for (const pg of PAGES) {
@@ -59,21 +66,20 @@ for (const vp of VIEWPORTS) {
     await page.goto(`${BASE}${pg.url}?edit=1`, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(1800);
 
-    const heading = page.locator(pg.selector, { hasText: pg.match }).first();
-    await heading.scrollIntoViewIfNeeded();
+    let headingLoc = page.locator(pg.selector, { hasText: pg.match }).first();
+    await headingLoc.scrollIntoViewIfNeeded();
     await page.waitForTimeout(400);
+    let handle = await headingLoc.elementHandle();
 
     // 2) Survol : le crayon paraît
-    await heading.hover();
+    await handle.hover();
     await page.waitForTimeout(350);
     await page.screenshot({ path: `${OUT}/${slug}-${vp.tag}-01-survol-crayon.png` });
 
     // 3) Clic -> édition en place (contentEditable), sélection puis frappe
-    await heading.click();
+    await handle.click();
     await page.waitForTimeout(250);
-    await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
-    await page.keyboard.type(pg.newText, { delay: 12 });
-    await page.waitForTimeout(200);
+    await selectAllAndType(page, pg.newText);
     await page.screenshot({ path: `${OUT}/${slug}-${vp.tag}-02-edition.png` });
 
     // 4) Entrée -> valide (brouillon local, pas encore publié)
@@ -83,10 +89,11 @@ for (const vp of VIEWPORTS) {
     // 5) La barre, avec Publier (1)
     await page.waitForSelector('button:has-text("Publier")', { timeout: 5000 }).catch(() => {});
     await page.screenshot({ path: `${OUT}/${slug}-${vp.tag}-03-barre-publier.png` });
-    const texteBouton = await page.locator('button', { hasText: /^Publier/ }).first().textContent().catch(() => '');
+    const boutonPublier = page.locator('button', { hasText: /^Publier/ }).first();
+    const texteBouton = (await boutonPublier.textContent().catch(() => '')).trim();
 
     // 6) Publier
-    await page.locator('button', { hasText: /^Publier/ }).first().click();
+    await boutonPublier.click();
     await page.waitForTimeout(1200);
 
     // 7) Recharger SANS le mode : le nouveau texte doit être là
@@ -96,12 +103,14 @@ for (const vp of VIEWPORTS) {
 
     // 8) Remettre le texte d'origine et publier (nettoyage)
     await page.goto(`${BASE}${pg.url}?edit=1`, { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(1500);
-    const headingApres = page.locator(pg.selector, { hasText: pg.newText }).first();
-    await headingApres.click();
-    await page.waitForTimeout(200);
-    await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
-    await page.keyboard.type(pg.match, { delay: 12 });
+    await page.waitForTimeout(1800);
+    headingLoc = page.locator(pg.selector, { hasText: pg.newText }).first();
+    await headingLoc.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+    handle = await headingLoc.elementHandle();
+    await handle.click();
+    await page.waitForTimeout(250);
+    await selectAllAndType(page, pg.match);
     await page.keyboard.press('Enter');
     await page.waitForTimeout(600);
     await page.locator('button', { hasText: /^Publier/ }).first().click();
@@ -114,7 +123,7 @@ for (const vp of VIEWPORTS) {
 
     rapport.push({
       page: pg.url, viewport: vp.tag,
-      boutonPublier: texteBouton.trim(),
+      boutonPublier: texteBouton,
       texteApresPublicationEtRechargeSansMode: presentApresPublication > 0,
       texteOrigineRevenuApresNettoyage: origineRevenue > 0,
       erreursConsole: erreurs,
