@@ -20,6 +20,10 @@ export interface Formation {
   categorie?: 'cours' | 'musique';
   lienFiche?: string;   // page de vente dédiée (ex. /foyer) au lieu de /cours/:id
   paywall?: boolean;
+  // Formation publiée mais pas encore ouverte : la carte et la fiche montrent
+  // « Liste d'attente » au lieu du prix ou de « Accès libre », et la fiche
+  // n'ouvre aucun contenu tant que ce n'est pas passé à false.
+  listeAttente?: boolean;
   evergreen?: boolean;
   dateSortie?: string | null;      // AAAA-MM-JJ quand la sortie est datée
   lancementOrchestre?: boolean;
