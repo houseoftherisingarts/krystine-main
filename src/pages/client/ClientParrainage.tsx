@@ -58,6 +58,8 @@ const ClientParrainage: React.FC<{ uid: string; lang: string }> = ({ uid, lang }
   const encore = (n: number, mot: string) => (fr ? `Encore ${n} ${mot}` : `${n} more ${mot}`);
   const prochainCadeau = CADEAUX_PARRAINAGE.find(c => acheteuses < c.seuil);
 
+  if (!gam.parrainage) return null;
+
   return (
     <div className="rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55">
       <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
