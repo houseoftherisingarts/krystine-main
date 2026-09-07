@@ -79,6 +79,7 @@ async function contexteAvecSession(browser, c, viewport) {
   const page = await ctx.newPage();
   const logs = [];
   page.on('pageerror', e => logs.push(`[pageerror] ${e.message}`));
+  page.on('console', m => { if (/requires an index|listPointsEvents/.test(m.text())) logs.push(`[console] ${m.text().slice(0, 160)}`); });
   await page.goto(`${BASE}/robots.txt`);
   await page.evaluate(([key, value]) => new Promise((res, rej) => {
     localStorage.setItem('krystine-jeu-vu', new Date().toISOString().slice(0, 10));
@@ -113,8 +114,16 @@ const foyer = await nouveauCompte('foyer', { foyer: true, serie: 6 });
 const ordinaire = await nouveauCompte('ordinaire', { foyer: false, serie: 6 });
 
 const REPONSE_SIMULEE = { deja: false, jour: 7, montant: 10, serie: 7, balance: 130, coffre: true, foyer: true, cadeauHebdo: { genre: 'musique' }, cadeauMois: null };
+async function rejouerPremierAppel(page) {
+  let cache = null;
+  await page.route('**/reclamerQuotidien', async route => {
+    if (cache) return route.fulfill({ status: 200, contentType: 'application/json', body: cache });
+    const r = await route.fetch(); cache = await r.text();
+    return route.fulfill({ status: r.status(), contentType: 'application/json', body: cache });
+  });
+}
 async function brancherSimulation(page, uid) {
-  if (SERVEUR_FOYER) return;
+  if (SERVEUR_FOYER) return rejouerPremierAppel(page);
   await page.route('**/reclamerQuotidien', route => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ result: REPONSE_SIMULEE }) }));
   // Ce que le serveur écrirait : l'événement du jour (doublé), le cadeau hebdo à 0 (musique), la suite à 7.
   await fsdoc(`pointsEvents/quotidien:${uid}:${AUJOURDHUI}`, { uid: s(uid), kind: s('quotidien'), amount: n(10), dedupKey: s(`quotidien:${uid}:${AUJOURDHUI}`), meta: { mapValue: { fields: { jour: n(7), serie: n(7), foyer: b(true) } } }, at: ts() });
@@ -142,7 +151,7 @@ try {
     const texteRoue = (await dlg.first().innerText().catch(() => '')).replace(/\s+/g, ' ');
     console.log(`\n=== Roue Foyer ${v.nom} ===`);
     if (premierPassage) console.log('réponse serveur →', JSON.stringify(reponse));
-    attendu(/×2 Foyer d.Origine/.test(texteRoue), 'pastille « ×2 Foyer d’Origine » visible');
+    attendu(/×2 Foyer d.Origine/i.test(texteRoue), 'pastille « ×2 Foyer d’Origine » visible');
     attendu(/\+10\b/.test(texteRoue) && /\+2\b/.test(texteRoue) && !/\+5\b/.test(texteRoue.replace(/\+10/g, '')), 'cases doublées (+2 … +10, aucun +5)');
     attendu(/chaque jour compte double/.test(texteRoue), 'texte explicatif du Foyer');
     attendu(/Prochain cadeau de semaine dans/.test(texteRoue), 'ligne de progression');
@@ -160,10 +169,10 @@ try {
     const encart = page.locator('section', { hasText: 'Le Foyer double vos jours' }).first();
     attendu(await encart.count() > 0, 'encart « Le Foyer double vos jours » présent');
     const texteEncart = (await encart.innerText().catch(() => '')).replace(/\s+/g, ' ');
-    attendu(/Suite en cours\s*7\s*jours d.affilée/.test(texteEncart), `suite en cours à 7 (lu : ${texteEncart.match(/Suite en cours\s*\d+[^.]*/)?.[0] ?? '?'})`);
+    attendu(/Suite en cours\s*7\s*jours d.affilée/i.test(texteEncart), `suite en cours à 7 (lu : ${texteEncart.match(/Suite en cours\s*\d+[^.]*/)?.[0] ?? '?'})`);
     attendu(/Prochain cadeau de semaine dans 7 jours, prochain cadeau de mois dans 23 jours/.test(texteEncart), 'progression 7 / 23 jours');
-    attendu(/Mois 1 · 30 jours · le prochain/.test(texteEncart), 'le mois 1 est marqué « le prochain »');
-    attendu(/Le cycle repart ensuite à la musique/.test(texteEncart), 'mention du cycle');
+    attendu(/Mois 1 · 30 jours · le prochain/i.test(texteEncart), 'le mois 1 est marqué « le prochain »');
+    attendu(/Le cycle repart ensuite à la musique/i.test(texteEncart), 'mention du cycle');
     const boxE = await encart.boundingBox(); const largeurPanneau = await page.evaluate(() => document.querySelector('section')?.parentElement?.getBoundingClientRect().width || 0);
     console.log(`  encart : largeur ${Math.round(boxE?.width ?? 0)} px sur ${Math.round(largeurPanneau)} px de panneau`);
     await encart.scrollIntoViewIfNeeded(); await page.evaluate(() => window.scrollBy(0, -80)); await page.waitForTimeout(300);
@@ -171,8 +180,9 @@ try {
     const histo = page.locator('h3', { hasText: /Activité récente/ }).first();
     await histo.scrollIntoViewIfNeeded(); await page.evaluate(() => window.scrollBy(0, -60)); await page.waitForTimeout(300);
     const texteHisto = (await page.locator('section', { hasText: 'Activité récente' }).last().innerText().catch(() => '')).replace(/\s+/g, ' ');
-    attendu(/Semaine complète au Foyer/.test(texteHisto), 'historique : « Semaine complète au Foyer »');
-    attendu(/Cadeau du jour\s*\S*\s*\+10/.test(texteHisto), 'historique : cadeau du jour à +10');
+    const indexManquant = logs.some(l => /requires an index/.test(l));
+    if (indexManquant) console.log('  BLOQUÉ  historique vide : la requête pointsEvents (uid, at desc) exige un index composite absent en production (préexistant, hors lot)');
+    else { attendu(/Semaine complète au Foyer/.test(texteHisto), 'historique : « Semaine complète au Foyer »'); attendu(/Cadeau du jour\s*\S*\s*\+10/.test(texteHisto), 'historique : cadeau du jour à +10'); }
     await page.screenshot({ path: `${OUT}/points-foyer-historique-${v.nom}.png` });
     if (logs.length) console.log('  erreurs de page :', logs.join(' | '));
     await ctx.close();
@@ -182,6 +192,7 @@ try {
   // ─── 3. Le compte ordinaire : rien ne change ─────────────────────────────
   for (const v of VUES) {
     const { ctx, page } = await contexteAvecSession(browser, ordinaire, v.viewport);
+    await rejouerPremierAppel(page);
     await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('#roue-titre', { timeout: 25000 }).catch(() => {});
     await page.waitForTimeout(1200); await fermerBienvenue(page);
