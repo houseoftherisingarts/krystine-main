@@ -315,8 +315,17 @@ export default function MediasV2() {
                     <img src={item.cover} alt={item.fullTitle || item.title} loading="lazy" referrerPolicy="no-referrer" className="absolute inset-0 w-full h-full object-cover" />
                   ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#34241a] text-[#f4efe6] p-6 text-center">
-                      {isLocked ? <Lock size={32} weight="light" className="text-[#9c7a44]/60 mb-4" /> : <BookOpen size={28} weight="light" className="text-[#9c7a44]/60 mb-4" />}
-                      <h4 className="v2-serif text-xl">{item.title}</h4>
+                      {/* Livre verrouillé : le cadre reste nu, sans répéter le
+                          titre qui vit déjà sous la couverture (Krystine,
+                          7 septembre 2026). */}
+                      {isLocked ? (
+                        <Lock size={32} weight="light" className="text-[#9c7a44]/60" />
+                      ) : (
+                        <>
+                          <BookOpen size={28} weight="light" className="text-[#9c7a44]/60 mb-4" />
+                          <h4 className="v2-serif text-xl">{item.title}</h4>
+                        </>
+                      )}
                     </div>
                   )}
                   {isLocked && (

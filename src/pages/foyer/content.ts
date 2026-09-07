@@ -66,7 +66,7 @@ export const SECTION5 = {
   receiveTitle: 'Recevoir à sa manière.',
   receive: 'Lire. Écouter. Regarder. Cuisiner. Méditer. Revenir.',
   release: 'Rien à rattraper, rien à publier, rien à prouver.',
-  closing: 'On ne suit pas Le Foyer. On y revient.',
+  closing: 'Pas de parcours à suivre. Vous revenez quand vous en avez envie.',
 };
 
 // SECTION 6 · Le regard qui compose Le Foyer
@@ -231,7 +231,7 @@ export const FAQ: FaqItem[] = [
     a: [
       'Non.',
       'Le rythme hebdomadaire permet au Foyer de rester en mouvement, mais il n’y a aucune obligation de suivre chaque ouverture au moment où elle paraît.',
-      'On ne suit pas Le Foyer. On y revient.',
+      'Pas de parcours à suivre. Vous revenez quand vous en avez envie.',
     ],
   },
   {
