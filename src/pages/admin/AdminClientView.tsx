@@ -266,8 +266,8 @@ const AdminClientView: React.FC<Props> = ({ uid, onClose }) => {
                 )}
                 {verif && (
                   <p className="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-[#293027]/70 dark:text-white/70">
-                    <i className="fa-solid fa-circle-check text-[#3b82f6]" />
                     <span>
+                      <i className="fa-solid fa-circle-check mr-1 text-[#3b82f6]" />
                       {verif.statut === 'en_attente' ? `Badge Bleu : demande en attente depuis le ${dateFR(verif.demandeLe)}.`
                         : verif.statut === 'approuvee' ? `Badge Bleu : approuvé le ${dateFR(verif.decideLe)}.`
                         : `Badge Bleu : refusé le ${dateFR(verif.decideLe)}${verif.motif ? ` : ${verif.motif}` : '.'}`}

@@ -90,7 +90,7 @@ const BadgeBleuSection: React.FC = () => {
     return (
       <li key={v.uid} className="rounded-2xl border border-[#293027]/10 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
         <div className="flex flex-wrap items-center gap-3">
-          <div className="min-w-0 flex-1">
+          <div className="w-full min-w-0 sm:w-auto sm:flex-1">
             <p className="flex items-center gap-2 font-serif text-lg text-[#293027] dark:text-white">
               <span className="truncate">{nomDe(v.uid)}</span>
               {m?.verifie && <i className="fa-solid fa-circle-check shrink-0 text-sm text-[#3b82f6]" title="Badge Bleu posé" />}
