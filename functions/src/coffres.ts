@@ -111,6 +111,25 @@ export const NOMS_COSMETIQUES: Record<string, string> = {
   'banniere-iris': 'Bannière L’iris du matin', 'banniere-pivoine': 'Bannière La pivoine', 'banniere-huiles': 'Bannière Les huiles', 'banniere-jardin': 'Bannière Le jardin après la pluie', 'banniere-soir': 'Bannière Le soir à la lampe',
 };
 const OUVERTURES_PAR_JOUR = 5;
+
+// ─── Skins en travail ────────────────────────────────────────────────────────
+// Retirées de la circulation le temps qu'on les finisse (Alex, 7 septembre
+// 2026 : Vata, Pitta, Kapha, Aurore, Or pur, Féminité). Le drapeau par
+// défaut vit ici et dans src/lib/pointsConfig.ts (Skin.enTravail, le miroir
+// client); `settings/skins` (Firestore, écrit par l'admin) peut le fusionner
+// par-dessus sans déploiement. Aucun tirage (coffre, roue) ne les donne tant
+// qu'elles y sont; une membre qui les possède déjà les garde.
+const SKINS_EN_TRAVAIL_DEFAUT = ['skin-vata', 'skin-pitta', 'skin-kapha', 'skin-aurore', 'skin-or-pur', 'skin-feminite'];
+export async function skinsEnTravail(db: FirebaseFirestore.Firestore): Promise<Set<string>> {
+  const snap = await db.doc('settings/skins').get();
+  const overrides = (snap.data() || {}) as Record<string, { enTravail?: boolean }>;
+  const set = new Set(SKINS_EN_TRAVAIL_DEFAUT);
+  for (const [id, v] of Object.entries(overrides)) {
+    if (v?.enTravail === false) set.delete(id);
+    else if (v?.enTravail === true) set.add(id);
+  }
+  return set;
+}
 const FOYER_ID = 'foyer';
 const FUSEAU = 'America/Toronto';
 const ADMIN_EMAILS = [
