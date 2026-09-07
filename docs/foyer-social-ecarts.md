@@ -34,7 +34,7 @@ Mesurée sur `compte-formations-1440.png` et `compte-formations-390.png` (le dé
 
 Le routeur est `App.tsx` (react-router, `<Routes>` à partir de la ligne 201). Aucun lien de la barre de navigation ne mène au social : seule la cloche (`NavBar.tsx:133`) y vit, et l'avatar vers `/compte` reste derrière le drapeau `settings/community.profilPublic`.
 
-| Route | Composant | Coquille | Garde | Comment on y arrive depuis l'espace client |
+| Route | Composant | Coquille | Garde | Chemin depuis l'espace client |
 |---|---|---|---|---|
 | `/compte?onglet=amis` | `AmisDOrigine` puis `ClientAmis` (ClientPortal.tsx:178 et 386) | espace client | Foyer; sinon `MotDuFoyer` puis la marraine et les filleules seulement | onglet « Amis »; la cloche (« Quelqu'un vous demande en ami ») |
 | `/compte?onglet=messagerie` | `ClientMessagerie` (src/pages/client) | espace client | Foyer; sinon `MotDuFoyer` (la marraine et les filleules passent) | onglet « Messagerie »; la cloche et la bulle Messages; lien « Mon espace » de `/messages` |
