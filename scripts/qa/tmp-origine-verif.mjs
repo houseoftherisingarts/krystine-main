@@ -36,11 +36,11 @@ const browser = await chromium.launch();
   const maxScroll = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
   for (let i = 0; i < 10; i++) {
     const y = Math.round((i / 9) * maxScroll);
-    await page.evaluate((yy) => window.scrollTo(0, yy), y);
+    await page.evaluate((yy) => window.scrollTo({ top: yy, left: 0, behavior: 'instant' }), y);
     await page.waitForTimeout(350);
     await page.screenshot({ path: `${OUT}/o1-scroll-${String(i).padStart(2, '0')}-y${y}.png` });
   }
-  const y0a = await page.evaluate(() => { window.scrollTo(0, 0); return window.scrollY; });
+  const y0a = await page.evaluate(() => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); return window.scrollY; });
   const y0b = await page.evaluate(() => window.scrollY);
   await page.waitForTimeout(300);
   const y0c = await page.evaluate(() => window.scrollY);
@@ -136,7 +136,7 @@ const browser = await chromium.launch();
   console.log('O4 (non connecté) — extrait texte section musique :\n', musiqueTexte);
   await page.evaluate(() => {
     const el = [...document.querySelectorAll('h2')].find(h => h.textContent.includes('Fréquence'));
-    if (el) el.scrollIntoView({ block: 'center' });
+    if (el) el.scrollIntoView({ block: 'center', behavior: 'instant' });
   });
   await page.waitForTimeout(600);
   await page.screenshot({ path: `${OUT}/o4-non-connecte-musique.png` });
@@ -182,7 +182,7 @@ const browser = await chromium.launch();
   const maxScrollM = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
   for (let i = 0; i < 8; i++) {
     const y = Math.round((i / 7) * maxScrollM);
-    await page.evaluate((yy) => window.scrollTo(0, yy), y);
+    await page.evaluate((yy) => window.scrollTo({ top: yy, left: 0, behavior: 'instant' }), y);
     await page.waitForTimeout(350);
     const ov = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     await page.screenshot({ path: `${OUT}/o5-mobile-${String(i).padStart(2, '0')}-y${y}-debord${ov}.png` });
