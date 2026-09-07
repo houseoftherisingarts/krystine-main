@@ -17,14 +17,15 @@ const VIEWPORTS = [
 
 const PAGES = [
   {
-    // Le h1 du hero est sous une séquence de calques au scroll (STANZAS) qui
-    // laisse des div plein écran en z-10 par-dessus même à opacité 0 —
-    // interception de clic, pas un bug du mode éditeur. Le titre de l'offre,
-    // plus bas, est un h2 texte pur en dehors de cette séquence.
+    // Le hero et la section prix de /foyer vivent sous des calques au
+    // scroll (STANZAS, révélation du prix) qui laissent des div plein
+    // écran en z-10 par-dessus même à opacité 0 — interception de clic,
+    // pas un bug du mode éditeur. FINAL.title, tout en bas, est un simple
+    // whileInView (une fois, puis rien par-dessus) : cible sûre.
     url: '/foyer',
     selector: 'h2',
-    match: 'Le Foyer d’Origine',
-    newText: 'Le Foyer d’Origine (texte de vérification)',
+    match: 'Plus on nous montre, moins on voit.',
+    newText: 'Plus on nous montre, moins on voit (texte de vérification).',
   },
   {
     url: '/formations',
