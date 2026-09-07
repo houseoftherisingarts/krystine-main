@@ -109,30 +109,28 @@ try {
   await aller(page, '/fil');
   const zone = page.locator('textarea[placeholder^="Quoi de neuf"]');
   await zone.waitFor({ timeout: 20000 });
-  // Billet 1 : texte
-  await zone.click();
-  await zone.fill('Premier feu de la saison : je me lève avec le soleil depuis une semaine et le corps suit. Qui d’autre a repris le rituel du matin ?');
-  await page.getByRole('button', { name: /Publier/ }).click();
-  const b1 = page.locator('article', { hasText: 'Premier feu de la saison' });
-  await b1.waitFor({ timeout: 20000 }); await page.waitForTimeout(800);
-  // Billet 2 : texte + photo
+  // Le composeur ouvert : texte + photo en aperçu, les trois boutons visibles
   await zone.click();
   await zone.fill('La lumière de ce matin dans l’atelier. Une photo pour celles qui aiment les débuts de journée.');
   await page.locator('input[type="file"][accept^="image"]').setInputFiles(PHOTO);
   const composeur = page.locator('section', { has: zone });
   await composeur.locator('img').first().waitFor({ timeout: 60000 });
+  await page.waitForTimeout(600);
+  await capturer(page, 'fil-foyer-composeur-1440');
+  // Publier (le document se crée; le fil reste vide tant que l'index mur(fil, chaleur) n'existe pas)
   await page.getByRole('button', { name: /Publier/ }).click();
-  const b2 = page.locator('article', { hasText: 'La lumi' });
-  await b2.waitFor({ timeout: 20000 });
-  await b2.locator('img').first().waitFor({ timeout: 20000 });
-  await page.waitForTimeout(800);
-  // Vote et commentaire sur le premier billet
-  await b1.getByRole('button', { name: 'Voter pour' }).click();
-  await b1.getByRole('button', { name: /Commenter/ }).click();
-  await b1.locator('textarea[placeholder*="commentaire"]').fill('Oui ! Depuis lundi, et le café attend maintenant la fin de la respiration.');
-  await b1.getByRole('button', { name: 'Envoyer' }).click();
-  await b1.locator('text=Depuis lundi').waitFor({ timeout: 20000 });
-  await page.waitForTimeout(2500);
+  await page.waitForTimeout(3000);
+  const billets = await page.locator('article').count();
+  console.log('billets rendus après publication :', billets);
+  if (billets > 0) {
+    const b1 = page.locator('article').first();
+    await b1.getByRole('button', { name: 'Voter pour' }).click();
+    await b1.getByRole('button', { name: /Commenter/ }).click();
+    await b1.locator('textarea[placeholder*="commentaire"]').fill('Oui ! Depuis lundi, et le café attend maintenant la fin de la respiration.');
+    await b1.getByRole('button', { name: 'Envoyer' }).click();
+    await b1.locator('text=Depuis lundi').waitFor({ timeout: 20000 }).catch(() => {});
+    await page.waitForTimeout(2000);
+  }
   await capturer(page, 'fil-foyer-1440');
 
   await aller(page, '/fil?fil=krystine'); await capturer(page, 'fil-krystine-1440');

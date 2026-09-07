@@ -79,7 +79,7 @@ const session = async (compte, mobile) => {
     await page.waitForSelector('[class*="h-80"] img', { timeout: 20000 }).catch(() => {});
     await page.waitForTimeout(attente); await fermerRoue();
   };
-  const shot = async (nom, opts = {}) => { await page.screenshot({ path: `${OUT}/${nom}.png`, fullPage: true, ...opts }); console.log('capture', nom); };
+  const shot = async (nom, opts = {}) => { await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(350); await page.screenshot({ path: `${OUT}/${nom}.png`, fullPage: true, ...opts }); console.log('capture', nom); };
   const mesures = async () => page.evaluate(() => {
     const nav = document.querySelector('nav');
     const boutons = [...nav.querySelectorAll('button, a')].filter(b => b.getBoundingClientRect().width > 0);
