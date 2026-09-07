@@ -102,8 +102,8 @@ try {
   console.log('L2 — champs prénom présents:', nbChampPrenom, '| case à cocher présente:', nbCase, '| bouton "M\'inscrire" présent:', nbBoutonInscrire);
   const disabledAvant = await boutonInscrire.first().isDisabled().catch(() => null);
   console.log('L2 — bouton M\'inscrire désactivé avant coche:', disabledAvant);
-  await page.locator('#inscription, form, [class*="border-\\[\\#9c7a44\\]"]').first().scrollIntoViewIfNeeded().catch(() => {});
-  await page.waitForTimeout(400);
+  await page.locator('#inscription').scrollIntoViewIfNeeded().catch(() => {});
+  await page.waitForTimeout(800);
   await page.screenshot({ path: `${OUT}/liste-attente/L2-connectee-avant-coche.png`, fullPage: true });
 
   await caseUnique.first().check();
