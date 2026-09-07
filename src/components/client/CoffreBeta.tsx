@@ -16,7 +16,7 @@ import Portail from '../Portail';
 const CLE_VU = 'krystine-coffre-beta-vu';
 // La même clé que BienvenueJeu.tsx : on attend qu'elle se ferme avant de
 // superposer un second pop-up sur le premier écran d'un compte tout neuf.
-const CLE_JEU_VU = 'krystine-jeu-vue';
+const CLE_JEU_VU = 'krystine-jeu-vu';
 
 const CoffreBeta: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, lang }) => {
   const [cadeau, setCadeau] = useState<{ montant: number; message: string } | null>(null);
