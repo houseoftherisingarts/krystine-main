@@ -85,7 +85,7 @@ export const CONTENUS: Record<TypeCoffre, Contenu> = {
 };
 const LEGENDAIRES = ['skin-vata', 'skin-pitta', 'skin-kapha'];
 const COMMUNS = ['skin-medzo', 'skin-nuit', 'skin-coffee', 'skin-aube', 'skin-terre', 'skin-foret', 'skin-ocean', 'skin-encre', 'banniere-nature', 'banniere-iris', 'banniere-pivoine', 'banniere-huiles', 'banniere-jardin', 'banniere-soir'];
-const NISKAS_MUSIQUE_DEJA = 10;
+const NISKAS_MUSIQUE_DEJA = 6; // la musique vaut 5 niskas : valeur plus 5 %, arrondie au niska supérieur
 
 // La valeur d'un cosmétique déjà possédé, pour le convertir en niskas (× 1,05,
 // arrondi au niska supérieur). Les communs et bannières reprennent leur coût

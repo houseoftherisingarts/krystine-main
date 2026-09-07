@@ -99,16 +99,6 @@ const TVPage: React.FC = () => {
                     <i className="fa-solid fa-circle-play text-[#7d6330] text-[10px]" />
                     {lang === 'FR' ? 'Regarder la série' : 'Watch the series'}
                   </span>
-                  <a
-                    href={`https://www.youtube.com/playlist?list=${p.listId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={e => e.stopPropagation()}
-                    className="hover:text-[#7d6330] transition-colors"
-                    aria-label={lang === 'FR' ? 'Ouvrir sur YouTube' : 'Open on YouTube'}
-                  >
-                    <i className="fa-brands fa-youtube text-sm" />
-                  </a>
                 </div>
               </div>
             </article>

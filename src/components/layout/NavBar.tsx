@@ -154,10 +154,11 @@ const NavBar: React.FC = () => {
                   de la langue et du menu burger : version compacte, même
                   bouton or, sans icône. */}
               <BoutonCompte
+                // Sous 640 px, l'étoile seule : la rangée tient dans la barre
                 taille="sm"
                 icone={false}
                 libelle={lang === 'FR' ? 'Compte' : 'Account'}
-                className="md:hidden"
+                className="md:hidden [&>span]:hidden sm:[&>span]:inline"
               />
             </>
           ))}

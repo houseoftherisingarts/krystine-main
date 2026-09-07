@@ -65,7 +65,7 @@ export const COFFRES: Record<TypeCoffre, {
 
 export const ORDRE_COFFRES: TypeCoffre[] = ['bronze', 'argent', 'or'];
 export const OUVERTURES_PAR_JOUR = 5;
-export const NISKAS_MUSIQUE_DEJA = 10;
+export const NISKAS_MUSIQUE_DEJA = 6; // la musique vaut 5 niskas : valeur plus 5 %, arrondie au niska supérieur
 // La clé est unique, un seul prix, elle ouvre n'importe quel coffre.
 export const PRIX_CLE = 10;
 

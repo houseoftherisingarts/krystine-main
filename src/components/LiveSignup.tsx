@@ -149,7 +149,7 @@ const LiveSignup: React.FC = () => {
           <motion.div {...fade(0.35)} className={isPast ? 'overflow-hidden rounded-[15px] border border-[#EEE7DB]/12 bg-black shadow-[0_20px_60px_rgba(0,0,0,0.5)]' : 'rounded-[15px] border border-[#EEE7DB]/12 bg-[#211c18]/60 p-[clamp(1.5rem,3.5vw,3rem)] backdrop-blur-sm'}>
             {isPast ? (
               // La rediffusion se regarde ici même, embarquée dans la carte : jamais un bouton, jamais un nouvel onglet (Alex, 6 sept. 2026).
-              <LecteurVideoEmbarque url={ev.replayUrl || ev.youtubeUrl} titre={t.title} />
+              <div className="relative aspect-video w-full"><LecteurVideoEmbarque url={ev.replayUrl || ev.youtubeUrl} titre={t.title} className="absolute inset-0 h-full w-full" /></div>
             ) : (
               <NewsletterSignup
                 source="podcast-live"

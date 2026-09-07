@@ -639,7 +639,7 @@ const ClientPortal: React.FC = () => {
               <button type="button" onClick={() => setMerciNiskas(false)} aria-label={lang === 'FR' ? 'Fermer' : 'Close'} className="text-[#293027]/50 hover:text-[#293027] dark:text-white/50"><i className="fa-solid fa-times" /></button>
             </div>
           )}
-          {tab === 'profile'  && <ProfilVue uid={user.uid} member={member} email={user.email || ''} lang={lang} solde={pointsBalance} onBoutique={() => { setTab('telechargements'); window.setTimeout(() => document.getElementById('boutique')?.scrollIntoView({ behavior: 'smooth' }), 150); }} />}
+          {tab === 'profile'  && <ProfilVue uid={user.uid} member={member} email={user.email || ''} lang={lang} solde={pointsBalance} onBoutique={() => { window.location.hash = 'paquets-niskas'; window.setTimeout(() => window.dispatchEvent(new Event('krystine:ouvrir-paquets')), 400); setTab('telechargements'); window.setTimeout(() => document.getElementById('boutique')?.scrollIntoView({ behavior: 'smooth' }), 150); }} />}
           {tab === 'amis'     && <AmisDOrigine uid={user.uid} lang={lang} />}
           {tab === 'orders'   && <OrdersTab />}
           {tab === 'formations' && <ClientFormations />}

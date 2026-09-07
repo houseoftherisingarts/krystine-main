@@ -318,7 +318,7 @@ export default function PodcastV2() {
                         {list.map((ep) => {
                           const active = ep.id === selected;
                           // La saison 2 commence à l'épisode zéro (« Quand le vide crée le plein »), puis 1 (Alex, 6 sept. 2026).
-                          const num = list.length - list.indexOf(ep) - (s === 2 ? 1 : 0);
+                          const num = s === 2 ? list.indexOf(ep) : list.length - list.indexOf(ep);
                           return (
                             <button
                               key={ep.id}
@@ -366,8 +366,8 @@ export default function PodcastV2() {
           Colonne unique centrée à 720px retirée (25% d'espace mort de
           chaque côté à 1440px) : même grille éditoriale 1.1fr/0.9fr et
           même mesure de 1180px que le hero et l'archive, texte à gauche. */}
-      <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#efe6d7]">
-        <div className="w-full px-[clamp(1rem,3vw,3rem)] grid lg:grid-cols-[1.1fr_0.9fr] gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 items-center">
+      <section className="relative w-full px-[clamp(1rem,3vw,3rem)] py-[clamp(6rem,15vh,11rem)] bg-[#efe6d7]">
+        <div className="w-full grid lg:grid-cols-[1.1fr_0.9fr] gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 items-center">
           <div>
             <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-5">Rester dans le fil</p>
             <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
@@ -391,8 +391,8 @@ export default function PodcastV2() {
       </section>
 
       {/* ─────────── CLÔTURE · back-cover ─────────── */}
-      <footer className="relative w-full bg-[#34241a] text-[#f4efe6] px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(5rem,12vh,9rem)] pb-12">
-        <div className="w-full px-[clamp(1rem,3vw,3rem)] text-left">
+      <footer className="relative w-full bg-[#34241a] text-[#f4efe6] px-[clamp(1rem,3vw,3rem)] pt-[clamp(5rem,12vh,9rem)] pb-12">
+        <div className="w-full text-left">
           <p className="v2-serif italic font-light text-[clamp(1.6rem,3.6vw,2.8rem)] leading-[1.24] text-[#f4efe6]">
             « Revenir à l’essentiel, un épisode à la fois. »
           </p>
