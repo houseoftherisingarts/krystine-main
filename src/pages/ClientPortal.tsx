@@ -31,6 +31,7 @@ import { AvecSignature } from '../components/client/Signature';
 import RoueQuotidienne from '../components/client/RoueQuotidienne';
 import BienvenueJeu from '../components/client/BienvenueJeu';
 import ReserveAuFoyer, { MotDuFoyer, useAmiesDOrigine } from '../components/communaute/ReserveAuFoyer';
+import { RangeePersonne, PETITES_CAPITALES } from '../components/communaute/CarteSociale';
 import '../components/client/skins.css';
 import Portail from '../components/Portail';
 
