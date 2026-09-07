@@ -133,9 +133,9 @@ Le texte des coffres le dit aux membres : « Les rabais gagnés sont honorés pa
 
 ## 6. Le catalogue des huiles
 
-La boutique lit l'API Storefront publique de Shopify (`src/shopify.ts:1-25`, jeton public, version `2025-01`), `getProducts` avec cache (`:144-157`), panier et paiement par `cartCreate` sans champ de code de rabais (`:165-184`). Il n'existe pas de client Admin API dans le dépôt; le côté serveur ne reçoit que les webhooks de commande (`functions/src/shopify/webhook.ts:50-51`, normalisation `normalize.ts`).
+La boutique lit l'API Storefront publique de Shopify avec le jeton public et la version `2025-01` (`src/shopify.ts:1-25`). `getProducts` charge le catalogue avec un cache local (`:144-157`) et `createCheckout` ouvre le paiement par la mutation `cartCreate`, qui ne reçoit aucun code de rabais (`:165-184`). Le dépôt ne contient pas de client Admin API; le côté serveur ne reçoit que les webhooks de commande (`functions/src/shopify/webhook.ts:50-51`) qu'il normalise dans `normalize.ts`.
 
-La collection « Les Huiles Corporelles » est virtuelle : `src/lib/collections.ts:111-133`, slug `huiles-corporelles`, prédicat `match` sur titre, type et étiquettes (`huile corporelle`, `body oil`, `vata`, `pitta`, `kapha`, `feminite`, `sportive`, `defripante`…), page `/boutique/huiles-corporelles` (`ClientPortal.tsx:1160`, `QuizPage.tsx:202`). `findOilForDosha` (`src/lib/shopifyOil.ts:7-16`) retrouve l'huile d'un dosha. Un « 15 % sur les Huiles Corporelles » ne peut donc pas s'appliquer au panier depuis le site : il vit comme `reward` + code Shopify remis à la main.
+La collection « Les Huiles Corporelles » est virtuelle. Elle est déclarée dans `src/lib/collections.ts:111-133` sous le slug `huiles-corporelles`, et son prédicat `match` reconnaît un produit à son titre, à son type ou à ses étiquettes (huile corporelle, body oil, vata, pitta, kapha, feminite, sportive, defripante). Sa page est `/boutique/huiles-corporelles` (`ClientPortal.tsx:1160`, `QuizPage.tsx:202`), et `findOilForDosha` (`src/lib/shopifyOil.ts:7-16`) retrouve l'huile d'un dosha dans le catalogue. Un « 15 % sur les Huiles Corporelles » ne peut donc pas s'appliquer au panier depuis le site : il vit comme un `reward` en attente et un code Shopify remis à la main.
 
 ## 7. Savoir qu'une membre est du Foyer
 
