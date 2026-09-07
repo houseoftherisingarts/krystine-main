@@ -32,7 +32,10 @@ await page.evaluate(([key, val]) => new Promise((res, rej) => {
   req.onerror = rej;
 }), [`firebase:authUser:${API_KEY}:[DEFAULT]`, authUser]);
 await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domcontentloaded' });
-await page.waitForTimeout(5000);
+await page.waitForTimeout(2000);
+const roue = page.locator('.fixed.inset-0.z-\\[125\\]');
+if (await roue.count()) { await roue.first().click({ position: { x: 8, y: 8 } }); console.log('roue fermée'); }
+await page.waitForTimeout(2000);
 const texte = await page.evaluate(() => document.body.innerText.match(/.{0,20}niskas.{0,20}/gi));
 console.log('niskas mentions:', JSON.stringify(texte));
 await page.screenshot({ path: '/private/tmp/claude-501/-Users-lesalondesinconnus/3a548c8f-1fba-4e35-b513-f459846a1c9b/scratchpad/dbg-top.png' });
