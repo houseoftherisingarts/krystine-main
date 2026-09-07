@@ -110,16 +110,16 @@ console.log(SERVEUR_FOYER ? 'MODE RÉEL : le serveur renvoie la couche Foyer.' :
 void rSonde;
 
 // ─── 1. Les deux comptes ─────────────────────────────────────────────────────
-const foyer = await nouveauCompte('foyer', { foyer: true, serie: 6 });
 const ordinaire = await nouveauCompte('ordinaire', { foyer: false, serie: 6 });
+let foyer = null;
 
 const REPONSE_SIMULEE = { deja: false, jour: 7, montant: 10, serie: 7, balance: 130, coffre: true, foyer: true, cadeauHebdo: { genre: 'musique' }, cadeauMois: null };
 async function rejouerPremierAppel(page) {
-  let cache = null;
+  let premiere = null; // promesse partagée : le second appel (StrictMode, dev) attend la même réponse
   await page.route('**/reclamerQuotidien', async route => {
-    if (cache) return route.fulfill({ status: 200, contentType: 'application/json', body: cache });
-    const r = await route.fetch(); cache = await r.text();
-    return route.fulfill({ status: r.status(), contentType: 'application/json', body: cache });
+    if (!premiere) premiere = route.fetch().then(async r => ({ status: r.status(), body: await r.text() }));
+    const { status, body } = await premiere;
+    return route.fulfill({ status, contentType: 'application/json', body });
   });
 }
 async function brancherSimulation(page, uid) {
@@ -137,6 +137,7 @@ try {
   // ─── 2. Le compte Foyer : la roue puis l'onglet Niskas, aux deux largeurs ──
   let premierPassage = true;
   for (const v of VUES) {
+    foyer = await nouveauCompte(`foyer${v.nom}`, { foyer: true, serie: 6 });
     const { ctx, page, logs } = await contexteAvecSession(browser, foyer, v.viewport);
     await brancherSimulation(page, foyer.uid);
     let reponse = null;
@@ -155,7 +156,7 @@ try {
     attendu(/\+10\b/.test(texteRoue) && /\+2\b/.test(texteRoue) && !/\+5\b/.test(texteRoue.replace(/\+10/g, '')), 'cases doublées (+2 … +10, aucun +5)');
     attendu(/chaque jour compte double/.test(texteRoue), 'texte explicatif du Foyer');
     attendu(/Prochain cadeau de semaine dans/.test(texteRoue), 'ligne de progression');
-    if (premierPassage || !SERVEUR_FOYER) attendu(/Une semaine complète : la musique d.Origine est à vous/.test(texteRoue) || (SERVEUR_FOYER && !premierPassage), 'phrase du cadeau hebdo');
+    attendu(/Une semaine complète : la musique d.Origine est à vous/.test(texteRoue), 'phrase du cadeau hebdo');
     const titre = dlg.locator('#roue-titre').first();
     const boxT = await titre.boundingBox(); const lh = await titre.evaluate(el => parseFloat(getComputedStyle(el).lineHeight));
     attendu(boxT && boxT.height <= lh * 2 + 2, `titre sur ${boxT ? Math.round(boxT.height / lh) : '?'} ligne(s) au plus deux`);
@@ -171,7 +172,7 @@ try {
     const texteEncart = (await encart.innerText().catch(() => '')).replace(/\s+/g, ' ');
     attendu(/Suite en cours\s*7\s*jours d.affilée/i.test(texteEncart), `suite en cours à 7 (lu : ${texteEncart.match(/Suite en cours\s*\d+[^.]*/)?.[0] ?? '?'})`);
     attendu(/Prochain cadeau de semaine dans 7 jours, prochain cadeau de mois dans 23 jours/.test(texteEncart), 'progression 7 / 23 jours');
-    attendu(/Mois 1 · 30 jours · le prochain/i.test(texteEncart), 'le mois 1 est marqué « le prochain »');
+    attendu(/Mois 1 · 30 jours\s*· le prochain/i.test(texteEncart), 'le mois 1 est marqué « le prochain »');
     attendu(/Le cycle repart ensuite à la musique/i.test(texteEncart), 'mention du cycle');
     const boxE = await encart.boundingBox(); const largeurPanneau = await page.evaluate(() => document.querySelector('section')?.parentElement?.getBoundingClientRect().width || 0);
     console.log(`  encart : largeur ${Math.round(boxE?.width ?? 0)} px sur ${Math.round(largeurPanneau)} px de panneau`);
@@ -184,7 +185,14 @@ try {
     if (indexManquant) console.log('  BLOQUÉ  historique vide : la requête pointsEvents (uid, at desc) exige un index composite absent en production (préexistant, hors lot)');
     else { attendu(/Semaine complète au Foyer/.test(texteHisto), 'historique : « Semaine complète au Foyer »'); attendu(/Cadeau du jour\s*\S*\s*\+10/.test(texteHisto), 'historique : cadeau du jour à +10'); }
     await page.screenshot({ path: `${OUT}/points-foyer-historique-${v.nom}.png` });
-    if (logs.length) console.log('  erreurs de page :', logs.join(' | '));
+    if (logs.length) console.log('  console :', [...new Set(logs)].map(l => l.slice(0, 110)).join(' | '));
+    if (SERVEUR_FOYER) {
+      const q = await fsget(`pointsEvents/quotidien:${foyer.uid}:${AUJOURDHUI}`); const h = await fsget(`pointsEvents/foyer-hebdo:${foyer.uid}:${AUJOURDHUI}`);
+      const mus = await fsget(`achatsFormations/${foyer.uid}/formations/kajabi-2149362766`);
+      attendu(q?.fields?.amount?.integerValue === '10' && q?.fields?.meta?.mapValue?.fields?.foyer?.booleanValue === true, 'journal : quotidien à 10 avec meta.foyer');
+      attendu(h?.fields?.kind?.stringValue === 'foyer-hebdo' && h?.fields?.amount?.integerValue === '0', 'journal : foyer-hebdo à 0 (musique)');
+      attendu(mus?.fields?.source?.stringValue === 'foyer-hebdo', 'musique d’Origine déposée avec source foyer-hebdo');
+    }
     await ctx.close();
     premierPassage = false;
   }
@@ -215,18 +223,19 @@ try {
   }
 
   // ─── 4. Lisibilité sur un skin sombre (nuit) : même compte Foyer ─────────
-  await fsdoc(`members/${foyer.uid}`, { personnalisation: { mapValue: { fields: { skin: s('nuit') } } } }, ['personnalisation']);
   {
-    const { ctx, page } = await contexteAvecSession(browser, foyer, VUES[0].viewport);
-    await brancherSimulation(page, foyer.uid);
+    const nuit = await nouveauCompte('nuit', { foyer: true, serie: 6, skin: 'nuit' });
+    const { ctx, page } = await contexteAvecSession(browser, nuit, VUES[0].viewport);
+    await brancherSimulation(page, nuit.uid);
     await page.goto(`${BASE}/compte?onglet=loyalty`, { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('text=Le Foyer double vos jours', { timeout: 25000 }).catch(() => {});
-    await page.waitForTimeout(1500); await fermerBienvenue(page); await fermerRoue(page);
-    const encart = page.locator('section', { hasText: 'Le Foyer double vos jours' }).first();
-    await encart.scrollIntoViewIfNeeded(); await page.evaluate(() => window.scrollBy(0, -80)); await page.waitForTimeout(300);
-    await page.screenshot({ path: `${OUT}/points-foyer-nuit-1440.png` });
-    await page.evaluate(() => window.dispatchEvent(new Event('krystine:ouvrir-roue'))); await page.waitForTimeout(900);
+    await page.waitForSelector('#roue-titre', { timeout: 25000 }).catch(() => {});
+    await page.waitForTimeout(1200); await fermerBienvenue(page);
     await page.screenshot({ path: `${OUT}/roue-foyer-nuit-1440.png` });
+    await fermerRoue(page);
+    await page.waitForSelector('text=Le Foyer double vos jours', { timeout: 25000 }).catch(() => {});
+    const encart = page.locator('section', { hasText: 'Le Foyer double vos jours' }).first();
+    await encart.scrollIntoViewIfNeeded(); await page.evaluate(() => window.scrollBy(0, -80)); await page.waitForTimeout(400);
+    await page.screenshot({ path: `${OUT}/points-foyer-nuit-1440.png` });
     await ctx.close();
   }
   console.log(`\n${echecs === 0 ? 'Tout passe.' : echecs + ' échec(s).'}`);

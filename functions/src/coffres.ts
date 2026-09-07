@@ -144,10 +144,12 @@ export function verifierTables(): void {
   if (!uneChanceSur(89, 0) || uneChanceSur(89, 1)) throw new Error('uneChanceSur ne suit pas le dé.');
 }
 
-/** L'uid de Krystine dans `members`, ou null si sa fiche manque (le mot ne s'écrit alors pas). */
+/** L'uid de Krystine dans `members` (sa fiche vit sous l'une de ses deux adresses, la première d'abord), ou null si elle manque : le mot ne s'écrit alors pas. */
+const COURRIELS_KRYSTINE = ['krystine@inspiratanature.com', 'krystinestlaurent@gmail.com'];
 export async function uidKrystine(db: FirebaseFirestore.Firestore): Promise<string | null> {
-  const admin = await db.collection('members').where('email', '==', 'krystine@inspiratanature.com').limit(1).get();
-  return admin.docs[0]?.id || null;
+  const q = await db.collection('members').where('email', 'in', COURRIELS_KRYSTINE).get();
+  const docs = [...q.docs].sort((a, b) => COURRIELS_KRYSTINE.indexOf(a.get('email')) - COURRIELS_KRYSTINE.indexOf(b.get('email')));
+  return docs[0]?.id || null;
 }
 
 export async function ecrireMessageKrystine(db: FirebaseFirestore.Firestore, deUid: string, uid: string, corps: string, extra: Record<string, unknown> = {}) {
