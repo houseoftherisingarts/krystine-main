@@ -186,6 +186,7 @@ service cloud.firestore {
                       && request.resource.data.texte is string
                       && request.resource.data.texte.size() <= 2000;
         allow update: if false;
+        // Cascade des votes du commentaire : murCommentaireSupprime (Admin SDK).
         allow delete: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
 
         match /votes/{voterUid} {
