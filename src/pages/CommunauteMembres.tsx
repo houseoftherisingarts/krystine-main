@@ -139,7 +139,8 @@ const CommunauteMembres: React.FC = () => {
               : grille(recues.map(uid => {
                 const m = ficheDe(uid);
                 return rangee(m, (
-                  <div className="flex shrink-0 items-center gap-2">
+                  // L'un sous l'autre à 390 (le nom garde sa place), côte à côte dès sm.
+                  <div className="flex shrink-0 flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-2">
                     <button type="button" disabled={enCours === uid} onClick={() => repondre(uid, true)} className={BOUTON_LAITON}>
                       <i className="fa-solid fa-check text-[9px]" /> {fr ? 'Accepter' : 'Accept'}
                     </button>
