@@ -11,8 +11,8 @@ const browser = await chromium.launch();
 const shoot = async (viewport, name, url, fn) => {
   const ctx = await browser.newContext({ viewport });
   const page = await ctx.newPage();
-  await page.goto(url, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(600);
+  await page.goto(url, { waitUntil: 'load', timeout: 45000 });
+  await page.waitForTimeout(1200);
   if (fn) await fn(page);
   await page.screenshot({ path: `${OUT}/${name}.png` });
   await ctx.close();
