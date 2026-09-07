@@ -25,6 +25,7 @@ if (await nonMerci.count()) await nonMerci.click().catch(() => {});
 await page.waitForTimeout(300);
 await page.keyboard.press('Escape').catch(() => {});
 await page.waitForTimeout(300);
+await page.screenshot({ path: 'scripts/qa/shots/_debug-mobile.png', fullPage: true });
 await page.getByRole('button', { name: /Répondre/i }).first().click();
 await page.waitForTimeout(600);
 await page.locator('button', { hasText: 'Téléphone' }).first().click().catch(() => {});
