@@ -198,8 +198,8 @@ const BilletCarte: React.FC<{ post: PostMur; delaiIndex: number; estSauvegarde?:
                 value={texteComment}
                 onChange={(e) => setTexteComment(e.target.value.slice(0, LONGUEUR_MAX_COMMENTAIRE))}
                 rows={1}
-                placeholder="Écrivez un commentaire…"
-                className="flex-1 px-3 py-2 rounded-xl border border-[#38403a]/10 dark:border-white/10 bg-white/60 dark:bg-white/5 text-[#293027] dark:text-white text-[13px] outline-none focus:border-[#BA7B39] transition-colors"
+                placeholder={lang === 'FR' ? 'Écrivez un commentaire…' : 'Write a comment…'}
+                className="flex-1 px-3 py-2 rounded-xl border border-[#38403a]/10 dark:border-white/10 bg-white dark:bg-white/10 text-[#293027] dark:text-white text-[13px] outline-none focus:border-[#BA7B39] transition-colors"
               />
               <button
                 type="button"
