@@ -21,15 +21,15 @@ const BienvenueJeu: React.FC<{ uid: string; vu: boolean | undefined; lang: 'FR' 
     if (vu === false && gam.panneauJouer) setOuvert(true);
   }, [vu, gam.panneauJouer]);
   useEffect(() => {
-    const ouvrir = () => setOuvert(true);
+    const ouvrir = () => { if (gam.panneauJouer) setOuvert(true); };
     window.addEventListener('krystine:ouvrir-jeu', ouvrir);
     return () => window.removeEventListener('krystine:ouvrir-jeu', ouvrir);
-  }, []);
+  }, [gam.panneauJouer]);
   const fermer = () => {
     setOuvert(false);
     if (vu === false) updateMember(uid, { bienvenueVu: true }).catch(() => {});
   };
-  if (!ouvert) return null;
+  if (!gam.panneauJouer || !ouvert) return null;
   const fr = lang === 'FR';
   const premier = PAQUETS_NISKAS[0];
   const dernier = PAQUETS_NISKAS[PAQUETS_NISKAS.length - 1];
