@@ -186,11 +186,13 @@ export const CATEGORIES_BOUTIQUE: { id: CategorieBoutique; titreFR: string; titr
 // Chaque skin est une palette : le CSS (skins.css) et l'aperçu de la boutique
 // en découlent. `cout` null = skin rare, qui ne s'obtient que dans un coffre
 // (Alex, 6 septembre 2026). Les identifiants d'article sont `skin-${cle}`.
-export type RareteSkin = 'commun' | 'rare' | 'legendaire';
+// « exclusif » : ni boutique ni coffre, le serveur le pose lui-même (le Skin
+// Vérifié du Badge Bleu, `reserve: 'badge-bleu'`, docs/badge-bleu-plan.md).
+export type RareteSkin = 'commun' | 'rare' | 'legendaire' | 'exclusif';
 export interface PaletteSkin { fond: string; panneau: string; encre: string; accent: string; accentClair: string; accentProfond: string; sombre: boolean }
 export interface Skin {
   cle: string; nomFR: string; nomEN: string; descFR: string; descEN: string; icone: string;
-  cout: number | null; rarete: RareteSkin; coffre?: 'bronze' | 'argent' | 'or'; palette: PaletteSkin;
+  cout: number | null; rarete: RareteSkin; coffre?: 'bronze' | 'argent' | 'or'; reserve?: 'badge-bleu'; palette: PaletteSkin;
 }
 export const SKINS: Skin[] = [
   { cle: 'medzo', cout: 5, rarete: 'commun', icone: 'fa-mug-hot', nomFR: 'Skin Medzo Café', nomEN: 'Medzo Café skin',
