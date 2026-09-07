@@ -76,9 +76,11 @@ const CoursPage: React.FC = () => {
                     <p className="mt-2 line-clamp-2 text-sm text-[#3a3126]/60 dark:text-white/60">{f.description}</p>
                   )}
                   <p className="mt-4 text-[11px] font-bold uppercase tracking-widest text-[#7d6330]">
-                    {f.paywall && f.prix
-                      ? `${f.prix} $ CA`
-                      : (lang === 'FR' ? 'Accès libre' : 'Free access')}
+                    {f.listeAttente
+                      ? (lang === 'FR' ? "Liste d'attente" : 'Waitlist')
+                      : f.paywall && f.prix
+                        ? `${f.prix} $ CA`
+                        : (lang === 'FR' ? 'Accès libre' : 'Free access')}
                   </p>
                 </div>
               </Link>
