@@ -27,6 +27,7 @@ export type AdminSectionId =
   | 'badgeBleu'
   | 'messages'
   | 'recompenses'
+  | 'skinsATravailler'
   | 'submissions'
   | 'groups'
   | 'bookings'
