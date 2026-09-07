@@ -428,45 +428,50 @@ async function cadeauMoisFoyer(db: Firestore, uid: string, serie: number, jour: 
   return cadeau;
 }
 
-// ─── La roue des sept jours ──────────────────────────────────────────────────
-// Une réclamation par journée civile de Montréal, jugée ici et non dans le
-// navigateur. La suite avance si la dernière réclamation date d'hier, repart
-// à un sinon; le jour de la roue est la suite modulo sept. Au Foyer d'Origine,
-// le montant double (un seul événement `quotidien` par jour, jamais deux : le
-// compteur de journées des badges compte ces événements).
+// ─── Le cadeau du jour ────────────────────────────────────────────────────────
+// Plus de roue ni de hasard (Alex, 7 septembre 2026) : une ouverture par
+// journée civile de Montréal, jugée ici et non dans le navigateur. Le
+// compteur jourCadeau avance de un à chaque ouverture, sans jamais reculer
+// (un jour sauté n'efface rien) — calculerCadeauDuJour (badgeBleuConfig.ts)
+// dit ce qui tombe. La suite consécutive (`serie`) continue de vivre à côté,
+// seulement pour la roue du Foyer (ci-dessus) : un jour sauté la remet à un,
+// jourCadeau ne bouge pas.
 export const reclamerQuotidien = onCall(
   { region: 'us-central1' },
   async (req) => {
-    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour votre récompense du jour.');
+    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour votre cadeau du jour.');
     await exigerModule('roueQuotidienne');
     const roueFoyerActive = (await lireGamification()).roueFoyer;
     const uid = req.auth.uid;
     const db = getFirestore();
     const aujourdhui = journee();
     const balRef = db.doc(`memberPoints/${uid}`);
-    const evt = db.doc(`pointsEvents/quotidien:${uid}:${aujourdhui}`);
+    const evt = db.doc(`pointsEvents/cadeau:${uid}:${aujourdhui}`);
 
     const r = await db.runTransaction(async (tx) => {
       const [bal, e, foyer] = await Promise.all([tx.get(balRef), tx.get(evt), estDuFoyer(tx, uid)]);
-      const prev = (bal.data() || {}) as { balance?: number; serie?: number; dernierJour?: string };
+      const prev = (bal.data() || {}) as { balance?: number; serie?: number; dernierJour?: string; jourCadeau?: number };
       const serieAvant = Number(prev.serie || 0);
+      const jourCadeauAvant = Number(prev.jourCadeau || 0);
       if (e.exists || prev.dernierJour === aujourdhui) {
-        const jour = ((Math.max(1, serieAvant) - 1) % ROUE_QUOTIDIENNE.length) + 1;
-        return { deja: true, jour, montant: ROUE_QUOTIDIENNE[jour - 1], serie: serieAvant, foyer };
+        const cadeau = calculerCadeauDuJour(Math.max(1, jourCadeauAvant));
+        return { deja: true, cadeau, serie: serieAvant, foyer };
       }
       const serie = prev.dernierJour === veilleDe(aujourdhui) ? serieAvant + 1 : 1;
-      const jour = ((serie - 1) % ROUE_QUOTIDIENNE.length) + 1;
-      const montant = ROUE_QUOTIDIENNE[jour - 1];
-      tx.set(evt, { uid, kind: 'quotidien', amount: montant, dedupKey: `quotidien:${uid}:${aujourdhui}`, meta: { jour, serie, foyer }, at: FieldValue.serverTimestamp() });
-      tx.set(balRef, { dernierJour: aujourdhui, serie, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
-      return { deja: false, jour, montant, serie, foyer };
+      const jourCadeau = jourCadeauAvant + 1;
+      const cadeau = calculerCadeauDuJour(jourCadeau);
+      const montant = cadeau.type === 'niskas' ? cadeau.montant : 0;
+      tx.set(evt, {
+        uid, kind: 'cadeau', amount: montant, dedupKey: `cadeau:${uid}:${aujourdhui}`,
+        meta: { jourCadeau, position: cadeau.position, type: cadeau.type, cle: cadeau.type === 'banniere' ? cadeau.cle : null, serie, foyer, source: 'cadeau-du-jour' },
+        at: FieldValue.serverTimestamp(),
+      });
+      tx.set(balRef, { dernierJour: aujourdhui, serie, jourCadeau, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+      if (cadeau.type === 'banniere') {
+        tx.set(db.doc(`boutique/${uid}`), { possede: { [`banniere-${cadeau.cle}`]: FieldValue.serverTimestamp() } }, { merge: true });
+      }
+      return { deja: false, cadeau, serie, foyer };
     });
-    // Le septième jour ouvre aussi un coffre de bronze, avec sa clé.
-    let coffre = false;
-    if (!r.deja && r.jour === ROUE_QUOTIDIENNE.length) {
-      await donnerCoffreDuJour7(uid, aujourdhui).catch((e) => console.warn('[niskas] coffre du jour 7', e));
-      coffre = true;
-    }
     // Au Foyer : la deuxième roue tourne le même jour, et le mois complet
     // (30, 60, 90…) garde son grand cadeau.
     let cadeauRoue: CadeauRoue | null = null;
@@ -476,6 +481,19 @@ export const reclamerQuotidien = onCall(
       if (estJourMoisFoyer(r.serie)) cadeauMois = await cadeauMoisFoyer(db, uid, r.serie, aujourdhui).catch((e) => { console.warn('[niskas] cadeau du mois du Foyer', e); return null; });
     }
     const { balance } = await recalculerSolde(uid);
-    return { ...r, balance, coffre, jourFoyer: r.foyer ? jourDeRoue(r.serie) : null, cadeauRoue, cadeauMois };
+    return {
+      deja: r.deja,
+      type: r.cadeau.type,
+      montant: r.cadeau.type === 'niskas' ? r.cadeau.montant : undefined,
+      cle: r.cadeau.type === 'banniere' ? r.cadeau.cle : undefined,
+      jourCadeau: r.cadeau.jourCadeau,
+      position: r.cadeau.position,
+      serie: r.serie,
+      balance,
+      foyer: r.foyer,
+      jourFoyer: r.foyer ? jourDeRoue(r.serie) : null,
+      cadeauRoue,
+      cadeauMois,
+    };
   },
 );
