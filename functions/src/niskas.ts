@@ -3,6 +3,7 @@ import { getFirestore, FieldValue, AggregateField, Firestore, Transaction } from
 import { getAuth } from 'firebase-admin/auth';
 import { randomInt } from 'node:crypto';
 import { donnerCoffreDuJour7, ecrireMessageKrystine, uidKrystine, PRIX_COFFRES, SKINS_RARES_COFFRES, NOMS_COSMETIQUES, skinsEnTravail } from './coffres';
+import { lireGamification, exigerModule } from './gamification';
 import {
   KIND_FOYER_MOIS, KIND_FOYER_ROUE, ROUE_FOYER,
   cleFoyerMois, cleFoyerRoue, estJourMoisFoyer, cadeauFoyerDuMois, jourDeRoue,
