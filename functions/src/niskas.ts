@@ -278,7 +278,7 @@ export const reclamerCoffreBeta = onCall(
     const eligible = journee(creationMs) >= COFFRE_BETA_DEBUT && journee(creationMs) <= COFFRE_BETA_FIN;
     const offert = eligible && await crediterNiskas(uid, 'coffre-beta', NISKAS_BETA, `coffre-beta:${uid}`, { message: MESSAGE_BETA });
     const { balance } = await recalculerSolde(uid);
-    return { offert, montant: NISKAS_BETA, message: MESSAGE_BETA, balance };
+    return { eligible, offert, montant: NISKAS_BETA, message: MESSAGE_BETA, balance };
   },
 );
 
