@@ -100,72 +100,26 @@ export async function awardPoints(
   }
 }
 
-// Spend points on a reward. Unlike `awardPoints`, this always creates a new
-// event doc (auto-id) so the same reward can be redeemed multiple times. A
-// companion `rewardRedemptions` doc captures the intent for fulfillment.
-//
-// When `reward.oneShot` is true, we pre-scan the member's existing
-// redemptions (outside the transaction, since Firestore txns don't support
-// query reads) and reject the redemption if a non-cancelled one already
-// exists for the same rewardId. There's a tiny race window if the same
-// member clicks twice within milliseconds, but the UI button is disabled
-// after the first successful click and the pre-scan catches the second
-// server round-trip.
+// Échanger une récompense : tout se passe côté serveur maintenant
+// (echangerRecompense, functions/src/recompenses.ts) — solde vérifié,
+// niskas débitées en transaction, une seule fois par récompense « oneShot »,
+// et le code (Stripe, Shopify ou l'octroi direct de la masterclass) revient
+// tout de suite, avant même que « Mes récompenses » n'ait rafraîchi.
 export async function redeemReward(
   uid: string,
   email: string | undefined,
   reward: { id: string; cost: number; label: string; oneShot?: boolean },
-): Promise<{ ok: boolean; reason?: 'insufficient' | 'error' | 'one-shot'; redemptionId?: string }> {
-  if (!db || !uid) return { ok: false, reason: 'error' };
-
-  if (reward.oneShot) {
-    const existing = await listMyRewardRedemptions(uid);
-    const already = existing.some(r => r.rewardId === reward.id && r.status !== 'cancelled');
-    if (already) return { ok: false, reason: 'one-shot' };
-  }
-
-  const balanceRef = doc(db, 'memberPoints', uid);
+): Promise<{ ok: boolean; reason?: 'insufficient' | 'error' | 'one-shot'; redemptionId?: string; code?: string | null }> {
+  if (!app || !uid) return { ok: false, reason: 'error' };
   try {
-    const redemptionId = await runTransaction(db, async tx => {
-      const bal = await tx.get(balanceRef);
-      const prev = (bal.exists() ? bal.data() : DEFAULT_POINTS_BALANCE) as PointsBalance;
-      if ((prev.balance || 0) < reward.cost) throw new Error('insufficient');
-
-      // Redemption intent — admin fulfills and fills in fulfillmentNote.
-      const redemptionRef = doc(collection(db!, 'rewardRedemptions'));
-      tx.set(redemptionRef, {
-        uid, email: email || null,
-        rewardId: reward.id,
-        rewardLabel: reward.label,
-        cost: reward.cost,
-        status: 'pending' as RedemptionStatus,
-        createdAt: serverTimestamp(),
-      });
-
-      // Event log — dedup key is the redemption doc id, so a replayed call
-      // with the same redemptionRef wouldn't double-spend (though we never
-      // replay since we always generate a fresh ref above).
-      const eventRef = doc(db!, 'pointsEvents', `redeem:${redemptionRef.id}`);
-      tx.set(eventRef, {
-        uid,
-        kind: 'redeem' as PointsKind,
-        amount: -reward.cost,
-        dedupKey: `redeem:${redemptionRef.id}`,
-        meta: { rewardId: reward.id, rewardLabel: reward.label },
-        at: serverTimestamp(),
-      });
-
-      tx.set(balanceRef, {
-        balance: (prev.balance || 0) - reward.cost,
-        lifetime: prev.lifetime || 0, // unchanged — redemptions don't lower lifetime
-        updatedAt: serverTimestamp(),
-      }, { merge: true });
-
-      return redemptionRef.id;
-    });
-    return { ok: true, redemptionId };
+    const call = httpsCallable(getFunctions(app, 'us-central1'), 'echangerRecompense');
+    const res = await call({ rewardId: reward.id });
+    const data = res.data as { ok: boolean; redemptionId: string; code: string | null };
+    return { ok: true, redemptionId: data.redemptionId, code: data.code };
   } catch (e: any) {
-    if (e?.message === 'insufficient') return { ok: false, reason: 'insufficient' };
+    const code = e?.code as string | undefined;
+    if (code === 'functions/failed-precondition') return { ok: false, reason: 'insufficient' };
+    if (code === 'functions/already-exists') return { ok: false, reason: 'one-shot' };
     console.warn('[points] redeemReward failed', e);
     return { ok: false, reason: 'error' };
   }
