@@ -98,7 +98,7 @@ const SondageReponses: React.FC<{ sondage: Sondage; onRetour: () => void }> = ({
                       <li key={i} className="rounded-xl bg-[#EEE7DB] dark:bg-white/5 px-4 py-3">
                         <p className="text-sm text-[#293027] dark:text-white whitespace-pre-line">{formatValeur(r.reponses?.[q.id])}</p>
                         <p className="mt-1.5 text-[10px] uppercase tracking-widest text-[#293027]/45 dark:text-white/45">
-                          {r.email || 'anonyme'} · {r.at ? (r.at as any).toDate().toLocaleDateString('fr-CA') : ''}
+                          {r.email || 'anonyme'} · {dateLisible(r.at, { dateStyle: 'short' })}
                         </p>
                       </li>
                     ))}
