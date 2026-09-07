@@ -52,13 +52,39 @@ export function useAmiesDOrigine(): { foyer: boolean | null; permis: Set<string>
   return { foyer, permis, pret, peutEcrire: (uid: string) => !!foyer || !!liens?.has(uid) };
 }
 
-const ReserveAuFoyer: React.FC<{ lang?: string; quoi?: string; children: React.ReactNode }> = ({ lang = 'FR', quoi, children }) => {
-  const foyer = useMembreDuFoyer();
-  const fr = lang !== 'EN';
-  if (foyer === null) return null;
-  if (foyer) return <>{children}</>;
-  return <MotDuFoyer lang={lang} quoi={quoi || (fr ? 'L’annuaire des membres est exclusif aux membres du Foyer d’Origine.' : 'The member directory is reserved for members of the Origine Hearth.')} />;
-};
+// ─── Le cercle du Foyer : le groupe VIP, et rien d'autre ─────────────────────
+// Les seules personnes visibles dans le Foyer sont celles qui l'ont acheté :
+// le miroir `groupes/foyer/membres`, écrit par la fonction groupeMembre à
+// chaque achat. Aucune autre membre du site n'y apparaît, ni dans l'annuaire,
+// ni dans le rail « Autour du feu », ni dans la recherche (Alex, 7 septembre
+// 2026 : « c'est comme un groupe VIP »). Les fiches sont triées de la plus
+// récemment vue à la plus ancienne.
+export function useCercleDuFoyer(): { membres: MemberDoc[]; chargement: boolean } {
+  const { user, member } = useAuth();
+  const [membres, setMembres] = useState<MemberDoc[]>([]);
+  const [chargement, setChargement] = useState(true);
+  useEffect(() => {
+    if (!user) { setMembres([]); setChargement(false); return; }
+    let vivant = true;
+    const finir = (liste: MemberDoc[]) => { if (vivant) { setMembres(liste); setChargement(false); } };
+    getMembresGroupe('foyer')
+      .then(async liste => {
+        const fiches = (await Promise.all(liste.map(m => getMember(m.uid).catch(() => null))))
+          .filter((f): f is MemberDoc => !!f);
+        // L'accès à vie ouvre le Foyer sans passer par un achat : le miroir ne
+        // porte pas ces personnes, on ajoute au moins la sienne à sa liste.
+        if (!fiches.some(f => f.uid === user.uid)) {
+          const moi = member ?? await getMember(user.uid).catch(() => null);
+          if (moi) fiches.push(moi);
+        }
+        fiches.sort((a, b) => (b.lastSeenAt?.toMillis?.() || 0) - (a.lastSeenAt?.toMillis?.() || 0));
+        finir(fiches);
+      })
+      .catch(() => finir([]));
+    return () => { vivant = false; };
+  }, [user?.uid, member?.uid]);
+  return { membres, chargement };
+}
 
 /** Le mot d'invitation seul, à poser au-dessus d'un contenu partiel. */
 export const MotDuFoyer: React.FC<{ lang?: string; quoi: string; compact?: boolean }> = ({ lang = 'FR', quoi, compact }) => {
