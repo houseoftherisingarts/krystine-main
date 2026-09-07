@@ -1,0 +1,23 @@
+import { chromium } from 'playwright';
+const PW = process.argv[2];
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+const errs = [];
+page.on('pageerror', e => errs.push('pageerror: ' + e.message.slice(0, 300)));
+page.on('console', m => { if (m.type() === 'error') errs.push('console: ' + m.text().slice(0, 300)); });
+await page.goto('https://krystinestlaurent.ca/compte', { waitUntil: 'domcontentloaded' }); await page.waitForTimeout(5000);
+console.log('anonyme texte :', (await page.evaluate(() => document.body.innerText.replace(/\s+/g, ' ').slice(0, 160))));
+// connecté (compte admin) : c'est la page qu'Alex voit
+const cookie = page.getByRole('button', { name: /J'accepte/i }); if (await cookie.count()) await cookie.first().click().catch(() => {});
+await page.getByRole('button', { name: /Se connecter/i }).first().click().catch(() => {});
+await page.waitForTimeout(800);
+const deja = page.getByText(/Déjà un compte/); if (await deja.count()) await deja.first().click().catch(() => {});
+await page.waitForTimeout(400);
+await page.locator('input[type=email]').first().fill('admin@krystinestlaurent.ca');
+await page.locator('input[type=password]').first().fill(PW);
+await page.keyboard.press('Enter');
+await page.waitForTimeout(7000);
+console.log('connecté texte :', (await page.evaluate(() => document.body.innerText.replace(/\s+/g, ' ').slice(0, 200))));
+console.log('fond :', await page.evaluate(() => getComputedStyle(document.body).backgroundColor), '| racine vide ?', await page.evaluate(() => (document.getElementById('root')?.innerText || '').trim().length === 0));
+errs.slice(0, 6).forEach(e => console.log(e));
+await browser.close();

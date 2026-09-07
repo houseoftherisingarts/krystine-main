@@ -1,0 +1,12 @@
+import { chromium } from 'playwright';
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+const errs = [];
+page.on('pageerror', e => errs.push('pageerror: ' + (e.stack || e.message).slice(0, 900)));
+page.on('console', m => { if (m.type() === 'error') errs.push('console: ' + m.text().slice(0, 400)); });
+await page.goto('https://krystinestlaurent.ca/compte', { waitUntil: 'domcontentloaded' }); await page.waitForTimeout(6000);
+console.log('texte :', JSON.stringify((await page.evaluate(() => document.body.innerText.replace(/\s+/g, ' ').slice(0, 160)))));
+console.log('fond :', await page.evaluate(() => getComputedStyle(document.body).backgroundColor), '| enfants de #root :', await page.evaluate(() => document.getElementById('root')?.children.length));
+errs.slice(0, 8).forEach(e => console.log(e));
+await page.screenshot({ path: '/tmp/compte-prod.png' });
+await browser.close();
