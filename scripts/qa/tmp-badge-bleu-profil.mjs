@@ -133,7 +133,7 @@ const rapportContraste = (nom, liste) => {
 
 try {
   // 1. Profil, quatre états, deux largeurs.
-  for (const c of [A, B, C, D]) for (const [w, h, v] of VIEWS) {
+  if (ETAPES.includes('profil')) for (const c of [A, B, C, D]) for (const [w, h, v] of VIEWS) {
     const { ctx, page, fermerRoue } = await session(c, { width: w, height: h });
     await page.goto(`${BASE}/compte?onglet=profile`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('#badge-bleu', { timeout: 25000 }); await page.waitForTimeout(3000); await fermerRoue();
