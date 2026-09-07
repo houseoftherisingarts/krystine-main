@@ -8,6 +8,7 @@ import { useEditMode } from '../../../contexts/EditModeContext';
 import { subscribeLiveListeners, subscribeListenTotals, type PresenceRow } from '../../../lib/podcastStats';
 import { Card } from '../primitives';
 import { PALIERS, STATUTS, type CommunauteStats } from '../../../lib/paliers';
+import CommandesStripeCard from './dashboard/CommandesStripeCard';
 
 interface Stat { label: string; value: number; icon: string; accent: string; hint?: string; }
 
