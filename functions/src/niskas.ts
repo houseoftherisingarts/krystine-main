@@ -2,13 +2,17 @@ import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue, AggregateField, Firestore, Transaction } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 import { randomInt } from 'node:crypto';
-import { donnerCoffreDuJour7, ecrireMessageKrystine, uidKrystine, PRIX_COFFRES, SKINS_RARES_COFFRES, NOMS_COSMETIQUES, skinsEnTravail } from './coffres';
+import { ecrireMessageKrystine, uidKrystine, PRIX_COFFRES, SKINS_RARES_COFFRES, NOMS_COSMETIQUES, skinsEnTravail } from './coffres';
 import { lireGamification, exigerModule } from './gamification';
 import {
   KIND_FOYER_MOIS, KIND_FOYER_ROUE, ROUE_FOYER,
   cleFoyerMois, cleFoyerRoue, estJourMoisFoyer, cadeauFoyerDuMois, jourDeRoue,
+  calculerCadeauDuJour, verifierCadeauDuJour,
   type CadeauRoueFoyer,
 } from './badgeBleuConfig';
+
+// Auto-test du cadeau du jour (jours 1, 6, 7, 14, 49, 50, 56), une fois au chargement.
+verifierCadeauDuJour();
 
 // Les niskas : la monnaie de l'espace client (le niska du Rig-Véda : l'ornement d'or
 // porté au cou qui servait déjà à compter la richesse, puis pièce d'or). Le solde vit dans
