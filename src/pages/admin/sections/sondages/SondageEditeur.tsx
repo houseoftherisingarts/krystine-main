@@ -21,7 +21,7 @@ const TYPES: { id: TypeQuestion; label: string }[] = [
 ];
 
 const slugifier = (s: string) => s
-  .normalize('NFD').replace(/[̀-ͯ]/g, '')
+  .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 40) || 'sondage';
 
 const questionVide = (): Question => ({
