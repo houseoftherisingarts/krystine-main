@@ -406,7 +406,11 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
       sentAt: Timestamp.now(),
       updatedAt: FieldValue.serverTimestamp(),
       progress: FieldValue.delete(),
-      stats: { recipients: all.length, delivered: prog.done, bounces: prog.failed, opens: 0 },
+      // Champ par champ : les ouvertures déjà comptées par le pixel pendant
+      // l'envoi restent en place.
+      'stats.recipients': all.length,
+      'stats.delivered': prog.done,
+      'stats.bounces': prog.failed,
     });
   } else {
     await ref.update({ progress: prog, updatedAt: FieldValue.serverTimestamp() });
