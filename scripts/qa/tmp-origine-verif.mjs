@@ -51,16 +51,15 @@ const browser = await chromium.launch();
     return feuilles.map((f, i) => {
       const sec = f.querySelector('section') || f;
       let max = 0;
+      let maxEl = null;
       const marge80 = [];
       const walk = (el, depth) => {
         if (depth > 2) return; // enfants directs + petit-enfants du wrapper de contenu
         for (const child of el.children) {
           if (child.getAttribute('aria-hidden') === 'true') continue;
           const r = child.getBoundingClientRect();
-          if (r.width > max) max = r.width;
+          if (r.width > max) { max = r.width; maxEl = child; }
           const cs = getComputedStyle(child);
-          const gapGauche = r.left;
-          const gapDroite = window.innerWidth - r.right;
           if (r.width > 500 && cs.marginLeft === cs.marginRight && parseFloat(cs.marginLeft) > 80) {
             marge80.push({ tag: child.tagName, cls: child.className.toString().slice(0, 60), marginLeft: cs.marginLeft });
           }
@@ -68,7 +67,11 @@ const browser = await chromium.launch();
         }
       };
       walk(sec, 0);
-      return { i, largeurMax: Math.round(max), ratio: +(max / window.innerWidth).toFixed(3), marge80 };
+      return {
+        i, largeurMax: Math.round(max), ratio: +(max / window.innerWidth).toFixed(3), marge80,
+        maxElTag: maxEl?.tagName, maxElCls: maxEl?.className?.toString().slice(0, 90),
+        maxElLeft: maxEl ? Math.round(maxEl.getBoundingClientRect().left) : null,
+      };
     });
   });
   console.log('O2 — largeur du plus large enfant / 1440 par feuille :');
