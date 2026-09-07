@@ -53,14 +53,16 @@ await page.screenshot({ path: `${OUT}/aider-formulaire-echelle-1440.png`, fullPa
 console.log('capture formulaire échelle desktop');
 
 // Répondre au reste des questions obligatoires jusqu'à « Envoyer », en
-// choisissant toujours la première option/échelon pour avancer.
+// choisissant toujours la première option/échelon pour avancer. Les
+// pastilles de réponse vivent dans le conteneur .mt-6 (celui qui suit le
+// titre de la question) — jamais dans .mt-8 (Précédent/Suivant), pour ne
+// pas cliquer la mauvaise chose.
 for (let i = 0; i < 8; i++) {
   const boutonEnvoyer = page.getByRole('button', { name: /^Envoyer$/i });
   if (await boutonEnvoyer.count()) break;
-  // Répondre selon le type visible : pastille de choix, échelon, ou texte facultatif laissé vide.
-  const pastille = page.locator('button.rounded-full, button.h-11').first();
+  const pastille = page.locator('.mt-6 button').first();
   if (await pastille.count()) await pastille.click({ timeout: 1500 }).catch(() => {});
-  await page.getByRole('button', { name: /Suivant|Envoyer/i }).click();
+  await page.locator('button:has-text("Suivant"), button:has-text("Envoyer")').last().click();
   await page.waitForTimeout(350);
 }
 await page.screenshot({ path: `${OUT}/aider-derniere-question-1440.png`, fullPage: true });
