@@ -47,6 +47,7 @@ export type PointsKind =
   | 'origine'
   | 'direct'          // participation au direct : présence, message, cœur, pourboire
   | 'redeem'          // negative, subtracts on reward redemption
+  | 'sondage'         // dix niskas pour un sondage complété (serveur repondreSondage)
   | 'adjust';         // manual correction by admin
 
 export const POINTS = {
