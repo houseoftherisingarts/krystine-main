@@ -35,3 +35,18 @@ jobs:
           cd functions
           npm ci
           npx tsc --noEmit
+
+      # Le job de fusion (pr-automerge.yml) tourne dans un déclencheur
+      # workflow_run pour avoir un jeton d'écriture, mais ce déclencheur ne
+      # sait pas retrouver le numéro d'une PR venue d'un fork (l'API commit→PR
+      # ne cherche que dans CE dépôt). On le lui passe par artefact.
+      - name: Déposer le numéro de la PR (pour le job de fusion)
+        if: always()
+        run: echo "${{ github.event.pull_request.number }}" > pr_number.txt
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr_number
+          path: pr_number.txt
+          retention-days: 1

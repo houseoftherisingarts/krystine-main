@@ -137,7 +137,7 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, dr
       {skinActif && <MotifsSkin skin={skinActif} />}
 
       {/* La bannière du Foyer : LE feu du site (la même vidéo que la page de
-          vente, /foyer/atre-feu.mp4 avec son image fixe), la même sur toutes
+          vente, /foyer/firepit.mp4 avec son image fixe), la même sur toutes
           les pages du Foyer, quelle que soit la bannière choisie ailleurs.
           Aucun backdrop-blur par-dessus une scène animée : un voile en
           dégradé, du vert profond au noir chaud, porte le nom et les onglets.
@@ -148,7 +148,7 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, dr
         ) : (
           <video
             className="h-full w-full object-cover"
-            src="/foyer/atre-feu.mp4"
+            src="/foyer/firepit.mp4"
             poster="/foyer/firepit-poster.webp"
             autoPlay muted loop playsInline preload="metadata"
           />
@@ -156,7 +156,7 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, dr
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
-          style={{ background: 'linear-gradient(to top, rgba(20,19,17,0.9) 0%, rgba(20,19,17,0.68) 28%, rgba(40,53,47,0.45) 62%, rgba(40,53,47,0.3) 100%)' }}
+          style={{ background: 'linear-gradient(to top, rgba(20,19,17,0.9) 0%, rgba(20,19,17,0.68) 28%, rgba(40,53,47,0.42) 60%, rgba(40,53,47,0.58) 100%)' }}
         />
         {!autre && (
           <div className="absolute left-6 top-5 md:left-8 md:top-6">
