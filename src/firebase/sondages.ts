@@ -99,8 +99,10 @@ export async function repondreSondage(sondageId: string, reponses: Record<string
 // ─── Admin ────────────────────────────────────────────────────────────────
 
 /** Écrit (crée ou remplace) un sondage. L'admin a le droit par les règles
- *  Firestore; `id` est fourni par l'appelante (l'éditeur en propose un). */
-export async function enregistrerSondage(id: string, data: Omit<Sondage, 'id'>): Promise<void> {
+ *  Firestore; `id` est fourni par l'appelante (l'éditeur en propose un).
+ *  Typé en objet libre pour laisser passer `serverTimestamp()` (une
+ *  FieldValue, pas un Timestamp) sur createdAt / updatedAt. */
+export async function enregistrerSondage(id: string, data: Record<string, unknown>): Promise<void> {
   if (!db) throw new Error('[Sondages] Firebase not configured');
   await setDoc(doc(db, 'sondages', id), data);
 }
