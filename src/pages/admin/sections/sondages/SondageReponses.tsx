@@ -137,7 +137,7 @@ const SondageReponses: React.FC<{ sondage: Sondage; onRetour: () => void }> = ({
                     <tr className="border-t border-[#293027]/5 dark:border-white/5">
                       <td className="px-4 py-3 text-[#293027] dark:text-white">{r.email || 'anonyme'}</td>
                       <td className="px-4 py-3 hidden md:table-cell text-[#293027]/50 dark:text-white/50">
-                        {r.at ? (r.at as any).toDate().toLocaleString('fr-CA', { dateStyle: 'short', timeStyle: 'short' }) : '—'}
+                        {dateLisible(r.at, { dateStyle: 'short', timeStyle: 'short' })}
                       </td>
                       <td className="px-4 py-3 text-right">
                         <GhostButton onClick={() => setOuverte(ouverte === (r.email || String(i)) ? null : (r.email || String(i)))}>
