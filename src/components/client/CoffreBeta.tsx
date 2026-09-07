@@ -37,7 +37,7 @@ const CoffreBeta: React.FC<{ uid: string; lang: 'FR' | 'EN'; bienvenueVu: boolea
       window.setTimeout(() => setTremble(false), 1600);
     }).catch((e) => console.warn('[coffre-beta] réclamation ratée', e));
     return () => { vivant = false; };
-  }, [uid, bienvenueVu, coffreBetaVu]);
+  }, [uid, bienvenueVu, coffreBetaVu, gam.coffreBeta]);
 
   const fermer = () => {
     setCadeau(null);
