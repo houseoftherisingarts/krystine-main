@@ -26,13 +26,13 @@ page.on('console', (m) => { if (m.type() === 'error') consoleErr.push(m.text());
 
 let uid = null; let idToken = null;
 try {
-  await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(1500);
-  // Ouvrir la fenêtre d'inscription : bouton "Créer mon compte" / icône compte de la nav.
-  const btnNav = page.getByRole('button', { name: /Créer mon compte/i }).first();
-  await btnNav.click();
-  await page.waitForTimeout(1200);
-  console.log('url après clic nav:', page.url());
+  // /compte n'est pas derrière la porte « liste d'attente » de la page d'accueil.
+  await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(1800);
+  const btnConnecter = page.locator('button', { hasText: /Se connecter/i }).first();
+  await btnConnecter.click();
+  await page.waitForTimeout(1000);
+  console.log('url après clic:', page.url());
   await page.screenshot({ path: `${OUT}/n5-01-fenetre.png` });
   const champEmail = page.locator('input[type=email]').first();
   await champEmail.waitFor({ timeout: 10000 });
