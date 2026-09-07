@@ -18,11 +18,11 @@ import { useSkinsOverrides } from './SkinsATravaillerSection';
 
 const MODULES: Array<{ cle: keyof GamificationSettings; nom: string; description: string }> = [
   { cle: 'acheterNiskas', nom: 'Acheter des niskas', description: 'L’achat de niskas contre de l’argent (Stripe), dans la petite boutique. Fermé : le bouton et les paquets disparaissent; les niskas déjà gagnées restent dépensables.' },
-  { cle: 'coffres', nom: 'Coffres et clés', description: 'Achat et ouverture des coffres bronze, argent, or, et de leurs clés. Fermé : les coffres disparaissent de la boutique et de la roue; personne ne peut plus en ouvrir.' },
+  { cle: 'coffres', nom: 'Coffres et clés', description: 'Achat et ouverture des coffres bronze, argent, or, et de leurs clés. Fermé : les coffres disparaissent de la boutique et du cadeau du jour; personne ne peut plus en ouvrir.' },
   { cle: 'badges', nom: 'Badges', description: 'Tous les badges honorifiques (première flamme, ambassadrice, voix du cercle…), sur les profils, le mur et les clavardages. Fermé : plus aucun badge ne s’affiche ni ne se gagne.' },
-  { cle: 'roueQuotidienne', nom: 'Roue quotidienne', description: 'Le cadeau du jour, sept jours qui tournent. Fermé : la roue disparaît de l’espace client au complet, y compris la roue du Foyer.' },
-  { cle: 'roueFoyer', nom: 'Roue du Foyer', description: 'La deuxième roue, réservée aux membres du Foyer d’Origine, avec ses propres cadeaux. Fermé : seule la roue quotidienne reste.' },
-  { cle: 'recompenses', nom: 'Récompenses échangeables', description: 'Le catalogue de récompenses contre des niskas, dans l’onglet Niskas. Fermé : le catalogue disparaît de cet onglet.' },
+  { cle: 'roueQuotidienne', nom: 'Le cadeau du jour', description: 'Un cadeau qui se renouvelle chaque jour : des niskas, et une bannière exclusive tous les sept jours. Fermé : le cadeau du jour disparaît de l’espace client au complet, y compris le cadeau du Foyer.' },
+  { cle: 'roueFoyer', nom: 'Le cadeau du Foyer', description: 'Le second cadeau du jour, réservé aux membres du Foyer d’Origine, avec ses propres niskas et coffres. Fermé : seul le cadeau du jour reste.' },
+  { cle: 'recompenses', nom: 'Cadeaux à échanger', description: 'Le catalogue de cadeaux contre des niskas, dans l’onglet Niskas. Fermé : le catalogue disparaît de cet onglet.' },
   { cle: 'parrainage', nom: 'Parrainage', description: 'Le panneau d’invitation, le code personnel et les cadeaux de filleules. Fermé : le panneau disparaît de l’espace client.' },
   { cle: 'coffreBeta', nom: 'Coffre de bienvenue bêta', description: 'Le cadeau de bienvenue des comptes créés pendant la période bêta (7 sept.–1er oct. 2026). Fermé : plus aucun nouveau compte ne le reçoit.' },
   { cle: 'panneauJouer', nom: '« On oublie souvent de jouer »', description: 'Le pop-up d’explication du jeu au premier login, et son rappel dans l’onglet Niskas. Fermé : il ne s’affiche plus jamais.' },
