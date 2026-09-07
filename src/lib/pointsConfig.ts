@@ -574,8 +574,8 @@ export const REWARDS: Reward[] = [
   {
     id: 'grande-recompense',
     cost: 1750,
-    labelFR: 'Une grande récompense numérique (bientôt)',
-    labelEN: 'A big digital reward (soon)',
+    labelFR: 'Un grand cadeau numérique (bientôt)',
+    labelEN: 'A big digital gift (soon)',
     descFR: "Une formation complète, la bibliothèque des archives ou un bundle de masterclasses. En préparation.",
     descEN: 'A full program, the archive library, or a masterclass bundle. In progress.',
     minTier: 'arbre',
