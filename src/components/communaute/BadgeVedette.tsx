@@ -6,9 +6,10 @@ import { useGamification } from '../../contexts/GamificationContext';
 // le fil et l'annuaire (Alex, 6 sept. 2026, « comme All Star Contributor
 // dans les groupes Facebook »). Une pastille laiton, icône et nom.
 const BadgeVedette: React.FC<{ uid: string; sombre?: boolean; className?: string }> = ({ uid, sombre = false, className = '' }) => {
+  const { badges } = useGamification();
   const [id, setId] = useState<string | null>(null);
   useEffect(() => { let vivant = true; badgeVedetteEnCache(uid).then(b => { if (vivant) setId(b); }); return () => { vivant = false; }; }, [uid]);
-  if (!id || !CATALOGUE_BADGES[id]) return null;
+  if (!badges || !id || !CATALOGUE_BADGES[id]) return null;
   const b = CATALOGUE_BADGES[id];
   return (
     <span
