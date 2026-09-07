@@ -1,0 +1,46 @@
+name: Publier sur krystinestlaurent.ca
+
+# Se déclenche à chaque commit sur main, qu'il vienne d'un push direct ou
+# d'une fusion automatique (pr-automerge.yml). Construit puis déploie
+# Hosting, Functions et les règles Firestore/Storage. Ne construit jamais
+# le code d'une proposition non fusionnée : main est déjà passé par
+# pr-build.yml avant d'arriver ici.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Construire le site
+        run: |
+          npm ci
+          npm run build
+
+      - name: Construire les fonctions
+        run: |
+          cd functions
+          npm ci
+          npm run build
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Déployer
+        run: |
+          npx firebase-tools deploy \
+            --only hosting,functions,firestore:rules,storage \
+            --project krystinestlaurent-87566 \
+            --non-interactive
