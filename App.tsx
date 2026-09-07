@@ -195,6 +195,7 @@ const Flottants: React.FC = () => {
 const App: React.FC = () => (
   <AppProvider>
     <SiteFlagsProvider>
+    <GamificationProvider>
     <EditModeProvider>
     <BrowserRouter>
       <AnalyticsPageViews />
