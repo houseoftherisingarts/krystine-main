@@ -132,6 +132,25 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     setBlocks(prev => prev.map((b, i) => i === idx ? { ...b, content: { ...(b.content || {}), ...patch } } : b));
   };
 
+  // Glisser-déposer : `from` est le bloc saisi, `over` le bloc survolé et
+  // `before` dit si la ligne d'accueil est au-dessus ou au-dessous de lui.
+  const [drag, setDrag] = useState<{ from: number; over: number | null; before: boolean } | null>(null);
+  // Le bloc survolé : sa barre d'outils prend le dessus, et celle du bloc
+  // sélectionné s'efface le temps du survol pour ne pas couvrir le voisin.
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+  // Déplace le bloc `from` devant la position `to` (index d'insertion dans la
+  // liste d'origine). Rien ne bouge si la cible est sa propre place.
+  const moveBlockTo = (from: number, to: number) => {
+    if (from === to || from + 1 === to) return;
+    setBlocks(prev => {
+      const next = prev.slice();
+      const [b] = next.splice(from, 1);
+      next.splice(from < to ? to - 1 : to, 0, b);
+      return next;
+    });
+    setSelectedIdx(from < to ? to - 1 : to);
+  };
+
   const moveBlock = (idx: number, dir: -1 | 1) => {
     setBlocks(prev => {
       const next = prev.slice();
@@ -472,7 +491,13 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
                   )}
                   {blocks.map((block, idx) => (
                     <React.Fragment key={idx}>
-                      {!isReadOnly && <InsertPoint onAdd={t => addBlock(t, idx)} />}
+                      {!isReadOnly && (
+                        <InsertPoint
+                          onAdd={t => addBlock(t, idx)}
+                          onDragOver={() => setDrag(d => (d ? { ...d, over: idx, before: true } : d))}
+                          onDrop={() => { if (drag) moveBlockTo(drag.from, idx); setDrag(null); }}
+                        />
+                      )}
                       <BlockFrame
                         block={block}
                         selected={selectedIdx === idx}
@@ -485,6 +510,14 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
                         onRemove={() => removeBlock(idx)}
                         onDuplicate={() => duplicateBlock(idx)}
                         onPickImage={() => setPickFor(idx)}
+                        otherHovered={hoverIdx !== null && hoverIdx !== idx}
+                        onHoverChange={h => setHoverIdx(v => (h ? idx : v === idx ? null : v))}
+                        dragging={drag?.from === idx}
+                        dropLine={drag && drag.over === idx && drag.from !== idx ? (drag.before ? 'top' : 'bottom') : null}
+                        onDragStart={() => setDrag({ from: idx, over: null, before: true })}
+                        onDragOver={before => setDrag(d => (d ? { ...d, over: idx, before } : d))}
+                        onDrop={before => { if (drag) moveBlockTo(drag.from, before ? idx : idx + 1); setDrag(null); }}
+                        onDragEnd={() => setDrag(null)}
                       />
                     </React.Fragment>
                   ))}
@@ -692,9 +725,31 @@ const BlockFrame: React.FC<{
   onRemove: () => void;
   onDuplicate: () => void;
   onPickImage: () => void;
-}> = ({ block, selected, readOnly, first, last, onSelect, onPatch, onMove, onRemove, onDuplicate, onPickImage }) => {
+  otherHovered?: boolean;
+  onHoverChange?: (h: boolean) => void;
+  dragging?: boolean;
+  dropLine?: 'top' | 'bottom' | null;
+  onDragStart?: () => void;
+  onDragOver?: (before: boolean) => void;
+  onDrop?: (before: boolean) => void;
+  onDragEnd?: () => void;
+}> = ({ block, selected, readOnly, first, last, onSelect, onPatch, onMove, onRemove, onDuplicate, onPickImage, otherHovered, onHoverChange, dragging, dropLine, onDragStart, onDragOver, onDrop, onDragEnd }) => {
   const c = (block.content || {}) as any;
   const stop = (e: React.SyntheticEvent) => e.stopPropagation();
+  const frameRef = useRef<HTMLDivElement | null>(null);
+  // La barre d'outils vit au-dessus du bloc, hors de sa boîte : le survol se
+  // tient en JavaScript avec un délai de sortie, pour qu'on ait le temps
+  // d'aller cliquer une flèche sans que la barre s'efface en chemin.
+  const [hover, setHover] = useState(false);
+  const hoverTimer = useRef<number | null>(null);
+  const enter = () => { if (hoverTimer.current) window.clearTimeout(hoverTimer.current); setHover(true); onHoverChange?.(true); };
+  const leave = () => { if (hoverTimer.current) window.clearTimeout(hoverTimer.current); hoverTimer.current = window.setTimeout(() => { setHover(false); onHoverChange?.(false); }, 900); };
+  useEffect(() => () => { if (hoverTimer.current) window.clearTimeout(hoverTimer.current); }, []);
+  // Visible au survol, ou quand le bloc est sélectionné et qu'aucun autre bloc
+  // n'est survolé (sinon la barre couvrirait le texte du voisin du dessus).
+  const visible = hover || (selected && !otherHovered);
+  // Au-dessus ou au-dessous du bloc survolé, selon la moitié où est la souris.
+  const moitie = (e: React.DragEvent) => { const r = e.currentTarget.getBoundingClientRect(); return e.clientY < r.top + r.height / 2; };
   // Gras, italique, souligné, lien : le geste s'applique à la sélection dans le
   // paragraphe. Le mousedown est retenu pour que le champ garde le focus (et
   // la sélection) le temps du clic.
@@ -713,15 +768,42 @@ const BlockFrame: React.FC<{
 
   return (
     <div
+      ref={frameRef}
       onClick={e => { e.stopPropagation(); onSelect(); }}
-      className={`group/bloc relative rounded-xl border-2 px-3 -mx-3 transition-colors ${selected ? 'border-[#BA7B39]/70' : 'border-transparent hover:border-[#BA7B39]/30'}`}
+      onMouseEnter={enter}
+      onMouseLeave={leave}
+      onDragOver={readOnly || !onDragOver ? undefined : e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; onDragOver(moitie(e)); }}
+      onDrop={readOnly || !onDrop ? undefined : e => { e.preventDefault(); onDrop(moitie(e)); }}
+      className={`group/bloc relative rounded-xl border-2 px-3 -mx-3 transition-colors ${selected ? 'border-[#BA7B39]/70' : hover ? 'border-[#BA7B39]/30' : 'border-transparent'} ${dragging ? 'opacity-40' : ''}`}
     >
+      {/* La ligne d'accueil du glisser-déposer */}
+      {dropLine && <div className={`absolute left-0 right-0 h-[3px] rounded-full bg-[#BA7B39] shadow-[0_0_0_2px_rgba(186,123,57,0.25)] z-30 pointer-events-none ${dropLine === 'top' ? '-top-[3px]' : '-bottom-[3px]'}`} />}
       {readOnly ? <RenderBlockWeb block={block} /> : <RenderBlockWeb block={block} edit={{ set: onPatch, pickImage: onPickImage }} />}
+
+      {/* La poignée : on la saisit pour glisser le bloc ailleurs. Les flèches
+          restent pour le clavier et les écrans tactiles (le glisser natif ne
+          marche pas au doigt). ponytail: HTML5 DnD seulement, dnd-kit si le tactile devient une demande. */}
+      {!readOnly && (
+        <button
+          type="button"
+          draggable
+          title="Glisser pour déplacer ce bloc"
+          aria-label="Glisser pour déplacer ce bloc"
+          onClick={stop}
+          onDragStart={e => { e.stopPropagation(); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', 'bloc'); if (frameRef.current) e.dataTransfer.setDragImage(frameRef.current, 24, 24); onDragStart?.(); }}
+          onDragEnd={() => onDragEnd?.()}
+          className={`hidden lg:flex absolute -left-9 top-1/2 -translate-y-1/2 z-20 w-7 h-7 rounded-full bg-white dark:bg-[#293027] border border-[#293027]/10 dark:border-white/10 text-[#293027]/50 dark:text-white/50 hover:text-[#8B4A2F] hover:border-[#BA7B39] shadow-sm items-center justify-center cursor-grab active:cursor-grabbing transition-opacity ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        >
+          <i className="fa-solid fa-grip-vertical text-xs" />
+        </button>
+      )}
 
       {!readOnly && (
         <div
           onClick={stop}
-          className={`absolute bottom-full mb-1 left-2 right-2 lg:left-auto z-20 flex flex-wrap justify-end items-center gap-1.5 bg-[#EEE7DB] dark:bg-[#151d19] rounded-full px-2 py-1 shadow-md border border-[#293027]/10 dark:border-white/10 transition-opacity ${selected ? 'opacity-100' : 'opacity-0 pointer-events-none group-hover/bloc:opacity-100 group-hover/bloc:pointer-events-auto'}`}
+          onMouseEnter={enter}
+          onMouseLeave={leave}
+          className={`${visible ? 'flex' : 'hidden lg:flex'} relative w-fit ml-auto mb-2 lg:mb-0 lg:absolute lg:bottom-full lg:left-auto lg:right-2 z-20 flex-wrap justify-end items-center gap-1.5 bg-[#EEE7DB] dark:bg-[#151d19] rounded-full px-2 py-1 shadow-md border border-[#293027]/10 dark:border-white/10 lg:transition-opacity ${visible ? 'lg:opacity-100' : 'lg:opacity-0 lg:pointer-events-none'}`}
         >
           {block.type === 'heading' && (
             <>
@@ -808,10 +890,17 @@ const BlockFrame: React.FC<{
 
 // ─── Le « + » entre deux blocs : un titre (ou n'importe quel bloc) s'insère
 // là où l'on est, sans avoir à remonter un bloc depuis le bas de la page.
-const InsertPoint: React.FC<{ onAdd: (t: BlockType) => void }> = ({ onAdd }) => {
+// Le « + » chevauche le haut du bloc qui suit : il accueille aussi un bloc
+// glissé, sinon un dépôt près du bord haut tomberait dans le vide.
+const InsertPoint: React.FC<{ onAdd: (t: BlockType) => void; onDragOver?: () => void; onDrop?: () => void }> = ({ onAdd, onDragOver, onDrop }) => {
   const [open, setOpen] = useState(false);
   return (
-    <div className="group/plus relative z-10 h-6 -my-3 flex items-center justify-center" onClick={e => e.stopPropagation()}>
+    <div
+      className="group/plus relative z-10 h-6 -my-3 flex items-center justify-center"
+      onClick={e => e.stopPropagation()}
+      onDragOver={onDragOver ? e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; onDragOver(); } : undefined}
+      onDrop={onDrop ? e => { e.preventDefault(); onDrop(); } : undefined}
+    >
       <div className={`absolute inset-x-0 h-px transition-colors ${open ? 'bg-[#BA7B39]' : 'bg-transparent group-hover/plus:bg-[#BA7B39]/40'}`} />
       <button
         type="button"
