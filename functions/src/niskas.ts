@@ -393,7 +393,8 @@ async function cadeauMoisFoyer(db: Firestore, uid: string, serie: number, jour: 
   if (etape.id === 'musique') {
     cadeau = (await aLaMusique(db, uid, possede)) ? { genre: 'niskas', montant: etape.niskasSiDeja ?? 0 } : { genre: 'musique' };
   } else if (etape.id === 'skin-rare') {
-    const bassin = SKINS_RARES_COFFRES.filter((a) => !possede[a]);
+    const enTravail = await skinsEnTravail(db);
+    const bassin = SKINS_RARES_COFFRES.filter((a) => !possede[a] && !enTravail.has(a));
     if (bassin.length) { article = bassin[randomInt(0, bassin.length)]; cadeau = { genre: 'skin-rare', nom: NOMS_COSMETIQUES[article] || article }; }
     else cadeau = { genre: 'niskas', montant: etape.niskasSiDeja ?? 0 };
   } else {
