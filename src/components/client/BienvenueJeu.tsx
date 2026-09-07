@@ -15,10 +15,11 @@ import { useGamification } from '../../contexts/GamificationContext';
 // `undefined` veut dire que la fiche n'est pas encore chargée — on attend.
 
 const BienvenueJeu: React.FC<{ uid: string; vu: boolean | undefined; lang: 'FR' | 'EN' }> = ({ uid, vu, lang }) => {
+  const gam = useGamification();
   const [ouvert, setOuvert] = useState(false);
   useEffect(() => {
-    if (vu === false) setOuvert(true);
-  }, [vu]);
+    if (vu === false && gam.panneauJouer) setOuvert(true);
+  }, [vu, gam.panneauJouer]);
   useEffect(() => {
     const ouvrir = () => setOuvert(true);
     window.addEventListener('krystine:ouvrir-jeu', ouvrir);
