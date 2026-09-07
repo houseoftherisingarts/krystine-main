@@ -23,8 +23,10 @@ import { journee, veilleDe } from '../lib/pointsConfig';
 export { journee, veilleDe };
 
 /** Minuit à minuit du jour civil de Montréal (l'Est reste à -04:00 de
- *  septembre à début novembre, la fenêtre bêta au complet). */
-function bornesDuJour(jour: string): [Date, Date] {
+ *  septembre à début novembre, la fenêtre bêta au complet). Exportée : le
+ *  détail des compteurs (detailsCompteurs.ts) la réemploie pour paginer les
+ *  fiches d'un jour donné, plutôt que de la redéfinir. */
+export function bornesDuJour(jour: string): [Date, Date] {
   const debut = new Date(`${jour}T00:00:00-04:00`);
   return [debut, new Date(debut.getTime() + 86_400_000)];
 }
