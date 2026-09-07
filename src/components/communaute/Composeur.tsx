@@ -41,9 +41,11 @@ const Composeur: React.FC<{ fil: FilMur; onPublie?: () => void; compact?: boolea
   const filEffectif: FilMur = (fil === 'communaute' && !isAdmin && contexte === 'monmur') ? 'perso' : fil;
   if (fil === 'communaute' && !isAdmin && contexte === 'feed') {
     return (
-      <p className="text-sm italic text-[#38403a]/50 dark:text-white/45">
-        Seule Krystine publie sur ce fil.
-      </p>
+      <CarteSociale>
+        <p className="text-sm text-[#38403a]/50 dark:text-white/50">
+          {fr ? 'Seule Krystine publie sur ce fil.' : 'Only Krystine publishes on this feed.'}
+        </p>
+      </CarteSociale>
     );
   }
 
