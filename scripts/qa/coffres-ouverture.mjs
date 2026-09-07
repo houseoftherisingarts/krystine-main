@@ -142,7 +142,11 @@ const fermerRoueSiPresente = async (page) => {
     await page.waitForTimeout(200);
   }
 };
-const clic = async (page, locator) => { await fermerRoueSiPresente(page); await locator.click(); };
+// Le pop-up « On oublie souvent de jouer » (BienvenueJeu.tsx) reste parfois
+// en boucle d'animation et ignore les clics; on le retire du DOM directement
+// avant chaque geste plutôt que de lui courir après.
+const purgerPopups = (page) => page.evaluate(() => document.querySelectorAll('[data-bug-ignore]').forEach((el) => el.remove()));
+const clic = async (page, locator) => { await purgerPopups(page); await fermerRoueSiPresente(page); await locator.click(); };
 
 const ORDRE = ['bronze', 'argent', 'or'];
 const carte = (page, type) => page.locator('#boutique-coffres div.grid.gap-4 > div').nth(ORDRE.indexOf(type));
