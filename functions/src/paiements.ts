@@ -186,6 +186,52 @@ export const creerSessionNiskas = onCall(
   },
 );
 
+// ─── Une saison de Santé la vie, payée en argent ─────────────────────────────
+// Jumeau Stripe d'acheterAvecNiskas('saison:N') : même prix par saison affiché
+// partout (175 niskas), même octroi à l'arrivée (le webhook plus bas écrit
+// exactement les mêmes episodes que le chemin niskas), pour que obtenirLecon
+// n'ait jamais à savoir comment la saison a été payée.
+export const creerSessionSaison = onCall(
+  { region: 'us-central1', secrets: [STRIPE_SECRET_KEY] },
+  async (req) => {
+    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour acheter.');
+    const saison = String(req.data?.saison || '');
+    if (!SAISONS[saison]) throw new HttpsError('invalid-argument', 'Cette saison est introuvable.');
+
+    const body = new URLSearchParams({
+      mode: 'payment',
+      'line_items[0][price_data][currency]': 'cad',
+      'line_items[0][price_data][product_data][name]': `Santé la vie · saison ${saison} complète`,
+      'line_items[0][price_data][unit_amount]': String(PRIX_SAISON_CAD * 100),
+      'line_items[0][price_data][tax_behavior]': 'exclusive',
+      'line_items[0][quantity]': '1',
+      ...TAXES_QC,
+      success_url: `${SITE}/compte?onglet=telechargements&saison=ok`,
+      cancel_url: `${SITE}/compte?onglet=telechargements`,
+      'metadata[uid]': req.auth.uid,
+      'metadata[type]': 'saison',
+      'metadata[saison]': saison,
+    });
+    const email = req.auth.token.email;
+    if (email) body.set('customer_email', String(email));
+
+    const r = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${STRIPE_SECRET_KEY.value()}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body,
+    });
+    const session = (await r.json()) as { url?: string; error?: { message?: string } };
+    if (!r.ok || !session.url) {
+      console.error('[paiements] session saison refusée', session.error?.message);
+      throw new HttpsError('internal', 'Le paiement n\'a pas pu démarrer. Réessayez.');
+    }
+    return { url: session.url };
+  },
+);
+
 // Vérification de signature Stripe (schéma t=...,v1=... ; HMAC-SHA256 de "t.corps").
 function verifierSignatureStripe(rawBody: Buffer, header: string | undefined, secret: string): boolean {
   if (!header) return false;
