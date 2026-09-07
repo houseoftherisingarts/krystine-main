@@ -541,13 +541,31 @@ const ClientLoyalty: React.FC = () => {
         {redemptions.length > 0 && (
           <div className="mt-6">
             <h4 className="text-[11px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60 mb-3">
-              {lang === 'FR' ? 'Mes récompenses' : 'My rewards'}
+              {lang === 'FR' ? 'Mes codes' : 'My codes'}
             </h4>
             <ul className="space-y-2">
               {redemptions.map(r => (
-                <li key={r.id} className="flex items-center gap-3 border border-[#293027]/5 dark:border-white/5 rounded-xl p-3 text-sm">
+                <li key={r.id} className="flex flex-wrap items-center gap-3 border border-[#293027]/5 dark:border-white/5 rounded-xl p-3 text-sm">
                   <i className="fa-solid fa-gift text-[#8B4A2F]" />
-                  <span className="flex-1 text-[#293027] dark:text-white">{r.rewardLabel}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[#293027] dark:text-white">{r.rewardLabel}</span>
+                    {r.createdAt && (
+                      <span className="block text-[10px] text-[#293027]/45 dark:text-white/45">
+                        {r.createdAt.toDate().toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA', { year: 'numeric', month: 'short', day: 'numeric' })}
+                      </span>
+                    )}
+                  </span>
+                  {r.fulfillmentNote && (
+                    <button
+                      type="button"
+                      onClick={() => copierCode(r.fulfillmentNote!)}
+                      className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/50 bg-white/60 px-3 py-1.5 font-mono text-[11px] text-[#38403a] dark:bg-white/5 dark:text-white/85"
+                      title={lang === 'FR' ? 'Copier le code' : 'Copy the code'}
+                    >
+                      <span>{r.fulfillmentNote}</span>
+                      <i className={`fa-solid ${codeCopie === r.fulfillmentNote ? 'fa-check text-green-600' : 'fa-copy text-[#8B4A2F]'} text-[10px]`} />
+                    </button>
+                  )}
                   <span className={`text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full ${
                     r.status === 'fulfilled' ? 'bg-green-50 text-green-600'
                       : r.status === 'cancelled' ? 'bg-red-50 text-red-500'
