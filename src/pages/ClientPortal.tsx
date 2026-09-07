@@ -733,6 +733,7 @@ const ClientPortal: React.FC = () => {
                   <i className="fa-solid fa-gauge-high mr-2" />{lang === 'FR' ? 'Espace admin' : 'Admin space'}
                 </a>
               )}
+              <EditModeToggleButton />
               <button onClick={logout} className="text-xs uppercase tracking-widest text-white/60 hover:text-red-300">
                 <i className="fa-solid fa-right-from-bracket mr-2" />{lang === 'FR' ? 'Déconnexion' : 'Sign out'}
               </button>
