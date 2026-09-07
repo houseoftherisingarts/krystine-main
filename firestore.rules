@@ -149,6 +149,10 @@ service cloud.firestore {
                       && resource.data.fil.matches('formation:.*')
                       && resource.data.fil != 'formation:foyer')
                   || estDuFoyer();
+      // Le fil « krystine » n'entre dans AUCUNE des branches ci-dessous pour
+      // une non-admin (il n'est ni 'perso' ni 'formation:…') : seule
+      // isAdmin() l'ouvre, donc seule Krystine (et l'admin) y publie. Vérifié
+      // par le simulateur de règles (membre → DENY, admin → ALLOW).
       allow create: if isSignedIn()
                     && request.resource.data.uid == request.auth.uid
                     && request.resource.data.texte is string
@@ -163,6 +167,10 @@ service cloud.firestore {
                                 || get(/databases/$(database)/documents/members/$(request.auth.uid)).data.accesVie == true
                                 || get(/databases/$(database)/documents/formations/$(request.resource.data.formationId)).data.paywall != true)));
       allow update: if isAdmin();
+      // La modération : Krystine (et Alex) retirent le billet de n'importe
+      // qui, sur les deux fils. Les votes et commentaires rattachés
+      // s'effacent en cascade côté serveur (functions/src/mur.ts,
+      // murBilletSupprime), pas ici : les règles n'écrivent jamais elles-mêmes.
       allow delete: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
 
       match /votes/{voterUid} {
