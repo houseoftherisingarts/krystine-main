@@ -14,9 +14,16 @@
 //    changes (modal opens, list items add, etc.).
 //
 // 2. EDIT (admin only, edit-mode on): tag those same leaf elements with
-//    a class so a CSS hover rule shows a copper outline. A delegated
-//    click handler turns the element contentEditable, captures the new
-//    text on blur, and saves via the existing EditModeContext.saveText.
+//    a class so a CSS hover rule shows a copper outline plus a small
+//    pencil badge that follows the cursor. A delegated click handler
+//    turns the element contentEditable, captures the new text on blur
+//    (Enter also commits, Escape cancels), and stages it via
+//    EditModeContext.saveText — which is a local draft, not a network
+//    write. Nothing is visible to anyone else until the admin hits
+//    "Publier" in EditModeBar.
+//
+// Never active on /admin — the dashboard's own copy is not a public page
+// and must never be turned into click-to-edit copy by accident.
 //
 // LIMITATIONS / WHY IT'S NOT MAGIC
 // ────────────────────────────────
