@@ -23,6 +23,20 @@ const ICONES: Record<Lecon['type'], string> = {
   video: 'fa-circle-play', audio: 'fa-music', pdf: 'fa-file-pdf', fichier: 'fa-file', texte: 'fa-align-left',
 };
 
+// La bannière d'une formation ACHETÉE (Alex, 7 sept. 2026 : « très fade
+// visuellement »), sur le patron de CadreFoyer.tsx : média réel en fond,
+// voile en dégradé du noir chaud (#141311) au vert profond (#28352F),
+// jamais de backdrop-blur sur une image. Vata reprend son vrai fond de vente
+// (src/pages/vata/constants.ts, ASSETS.images.heroBg) : aucune vidéo de fond
+// n'existe pour ce programme. Les autres formations achetées retombent sur
+// leur imageUrl de fiche, même voile — jamais une image inventée.
+const BANNIERES_ACHETEES: Record<string, { image: string; duree?: { fr: string; en: string } }> = {
+  'kajabi-2148687644': {
+    image: 'https://storage.googleapis.com/inspirata/Vata/bg.png',
+    duree: { fr: '7 semaines', en: '7 weeks' },
+  },
+};
+
 // La petite image d'une capsule audio : celle de la leçon si elle en a une,
 // sinon la couverture de la formation (Alex, 7 sept 2026 : « un petit
 // thumbnail aux audio » de l'expérience Ayurveda).
