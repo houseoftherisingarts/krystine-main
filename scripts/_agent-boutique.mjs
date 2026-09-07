@@ -137,9 +137,12 @@ const clickTab = async (page, iconClass) => page.evaluate((cls) => {
   return false;
 }, iconClass);
 
-const shotsAt = async (page, name, positions) => {
-  for (const [label, y] of positions) {
-    await page.evaluate((py) => window.scrollTo(0, py), y);
+// Capture à des FRACTIONS de la hauteur réelle de page (0 = haut, 1 = bas),
+// pour ne jamais scroller au-delà du contenu.
+const shotsAtFractions = async (page, name, fractions) => {
+  const height = await page.evaluate(() => document.body.scrollHeight);
+  for (const [label, f] of fractions) {
+    await page.evaluate((py) => window.scrollTo(0, py), Math.round(height * f));
     await page.waitForTimeout(500);
     await page.screenshot({ path: `${OUT}/${name}-${page.viewportSize().width}-${label}.png` });
   }
@@ -150,10 +153,10 @@ try {
   const ok = await clickTab(mem, 'fa-download');
   console.log('onglet Téléchargements trouvé:', ok);
   await mem.waitForTimeout(2000);
-  await shotsAt(mem, 'agent-boutique-niskas', [['haut', 0], ['coffres', 4200], ['videos', 7800]]);
+  await shotsAtFractions(mem, 'agent-boutique-niskas', [['haut', 0], ['milieu', 0.35], ['coffres', 0.55], ['videos', 0.8]]);
   await mem.setViewportSize({ width: 390, height: 844 });
   await mem.waitForTimeout(500);
-  await shotsAt(mem, 'agent-boutique-niskas', [['haut', 0], ['coffres', 7000], ['videos', 13000]]);
+  await shotsAtFractions(mem, 'agent-boutique-niskas', [['haut', 0], ['milieu', 0.35], ['coffres', 0.55], ['videos', 0.8]]);
 } catch (e) { console.log('boutique niskas shot failed', e.message); }
 // Onglet Niskas (fa-seedling) = les récompenses (paliers).
 try {
@@ -161,10 +164,10 @@ try {
   const ok = await clickTab(mem, 'fa-seedling');
   console.log('onglet Niskas trouvé:', ok);
   await mem.waitForTimeout(2000);
-  await shotsAt(mem, 'agent-recompenses-client', [['haut', 0], ['recompenses', 900]]);
+  await shotsAtFractions(mem, 'agent-recompenses-client', [['haut', 0], ['recompenses', 0.25]]);
   await mem.setViewportSize({ width: 390, height: 844 });
   await mem.waitForTimeout(500);
-  await shotsAt(mem, 'agent-recompenses-client', [['haut', 0], ['recompenses', 1400]]);
+  await shotsAtFractions(mem, 'agent-recompenses-client', [['haut', 0], ['recompenses', 0.25]]);
 } catch (e) { console.log('recompenses client shot failed', e.message); }
 await memCtx.close();
 
