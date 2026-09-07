@@ -4,6 +4,7 @@ import { ROUE_QUOTIDIENNE, journee, niskas } from '../../lib/pointsConfig';
 import { LIBELLE_FOYER, ROUE_FOYER, prochainsCadeauxFoyer } from '../../lib/badgeBleu';
 import PieceNiska from './PieceNiska';
 import Portail from '../Portail';
+import { useGamification } from '../../contexts/GamificationContext';
 
 // La roue des sept jours (sur le modèle du Festival médiéval). À la première
 // visite de la journée, la récompense tombe d'elle-même et le panneau se
