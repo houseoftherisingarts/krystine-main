@@ -25,7 +25,7 @@ export interface LotGagne {
   nom: string;
   montant?: number;
   article?: string;
-  rarete?: 'legendaire' | 'rare' | 'commun';
+  rarete?: RareteSkin;
   rewardId?: string;
   note?: string;
   ouvertureId?: string;
