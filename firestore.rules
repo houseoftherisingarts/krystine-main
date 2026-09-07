@@ -435,6 +435,14 @@ service cloud.firestore {
         allow update: if isSelf(uid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readAt']);
         allow create, delete: if isAdmin();
       }
+
+      // Les sondages complétés : la personne lit la sienne (pour filtrer sa
+      // liste dans l'onglet Aider), l'admin lit tout. Seul le serveur écrit
+      // (repondreSondage), en même temps que le crédit de niskas.
+      match /sondagesFaits/{sid} {
+        allow read: if isSelf(uid) || isAdmin();
+        allow write: if false;
+      }
     }
 
     // ── Client orders: member reads own, admin full. Created at checkout. ──
