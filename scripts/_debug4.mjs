@@ -11,9 +11,9 @@ for (const vp of [{w:1440,h:900},{w:390,h:844}]) {
   const errs = [];
   page.on('pageerror', e => errs.push(e.message));
 
-  await page.goto(`${BASE}${url}?unlock=Alexisthebest2121!`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}${url}?unlock=Alexisthebest2121!`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1500);
-  await page.goto(`${BASE}${url}?edit=1`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}${url}?edit=1`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(2500);
 
   let loc = page.locator('h2', { hasText: match }).first();
@@ -27,13 +27,13 @@ for (const vp of [{w:1440,h:900},{w:390,h:844}]) {
   await page.locator('button', { hasText: /^Publier/ }).first().click();
   await page.waitForTimeout(2000);
 
-  await page.goto(`${BASE}${url}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}${url}`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(2000);
   const count = await page.locator('h2', { hasText: newText }).count();
   console.log(`vp=${vp.w} publish-persists=${count > 0} errors=${JSON.stringify(errs)}`);
 
   // cleanup revert
-  await page.goto(`${BASE}${url}?edit=1`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}${url}?edit=1`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(2500);
   loc = page.locator('h2', { hasText: newText }).first();
   handle = await loc.elementHandle();
@@ -47,7 +47,7 @@ for (const vp of [{w:1440,h:900},{w:390,h:844}]) {
     await page.locator('button', { hasText: /^Publier/ }).first().click();
     await page.waitForTimeout(2000);
   }
-  await page.goto(`${BASE}${url}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}${url}`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1500);
   const countOrig = await page.locator('h2', { hasText: match }).count();
   console.log(`vp=${vp.w} revert-ok=${countOrig > 0}`);

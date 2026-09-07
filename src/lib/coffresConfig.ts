@@ -76,3 +76,40 @@ export const PRIX_CLE = 10;
 /** « 1 chance sur 50 ». */
 export const chanceLisible = (unSur: number, lang: 'FR' | 'EN' | string = 'FR'): string =>
   lang === 'EN' ? `1 in ${unSur}` : `1 chance sur ${unSur}`;
+
+// ─── Ce que la ligne « Ce que le coffre contient » raconte, honnêtement ──────
+// `raresFR`/`raresEN` ci-dessus décrivent le coffre à pleine circulation.
+// Une skin en travail (settings/skins, pointsConfig.ts) ne s'y tire plus : le
+// texte se recalcule donc à partir de ce qui reste vraiment disponible.
+export const LEGENDAIRES_IDS = ['skin-vata', 'skin-pitta', 'skin-kapha'];
+const NOMS_COURTS: Record<string, { fr: string; en: string }> = {
+  'skin-vata': { fr: 'Vata', en: 'Vata' }, 'skin-pitta': { fr: 'Pitta', en: 'Pitta' }, 'skin-kapha': { fr: 'Kapha', en: 'Kapha' },
+  'skin-lotus': { fr: 'Lotus', en: 'Lotus' }, 'skin-feminite': { fr: 'Féminité', en: 'Féminité' }, 'skin-nature': { fr: 'Nature', en: 'Nature' },
+  'skin-teal-orange': { fr: 'Sarcelle & Orange', en: 'Teal & Orange' },
+  'skin-aurore': { fr: 'Aurore', en: 'Aurora' }, 'skin-or-pur': { fr: 'Or pur', en: 'Pure Gold' }, 'skin-golden-hour': { fr: 'Heure dorée', en: 'Golden Hour' },
+};
+const listeMots = (mots: string[], lang: 'FR' | 'EN', conjonction: 'et' | 'ou' = 'et'): string => {
+  if (mots.length <= 1) return mots[0] || '';
+  const sep = lang === 'EN' ? (conjonction === 'ou' ? ' or ' : ' and ') : (conjonction === 'ou' ? ' ou ' : ' et ');
+  return `${mots.slice(0, -1).join(', ')}${sep}${mots[mots.length - 1]}`;
+};
+
+/** La phrase « Un skin ou une bannière que vous n'avez pas encore, dont X %... », les skins en travail retirées. */
+export function texteCosmetique(type: TypeCoffre, enTravail: ReadonlySet<string>, lang: 'FR' | 'EN' = 'FR'): string {
+  const c = COFFRES[type].contenu;
+  const legendaires = LEGENDAIRES_IDS.filter((id) => !enTravail.has(id));
+  const rares = c.rares.filter((id) => !enTravail.has(id));
+  const nom = (id: string) => NOMS_COURTS[id]?.[lang === 'EN' ? 'en' : 'fr'] || id;
+  const clauseLegendaire = legendaires.length
+    ? (lang === 'EN' ? `, with a ${c.legendaire}% chance it is legendary (${listeMots(legendaires.map(nom), 'EN', 'ou')})`
+                      : `, dont ${c.legendaire} % de chances qu’il soit légendaire (${listeMots(legendaires.map(nom), 'FR', 'ou')})`)
+    : '';
+  const nomsRares = rares.map(nom);
+  const texteRares = rares.length
+    ? (lang === 'EN' ? `otherwise the ${listeMots(nomsRares, 'EN')} skin${rares.length > 1 ? 's' : ''}, then the common ones.`
+                      : `sinon ${rares.length > 1 ? 'les skins' : 'le skin'} ${listeMots(nomsRares, 'FR')}, puis les communs.`)
+    : (lang === 'EN' ? 'otherwise a common one.' : 'sinon un commun.');
+  return lang === 'EN'
+    ? `A skin or banner you do not own yet${clauseLegendaire}; ${texteRares}`
+    : `Un skin ou une bannière que vous n’avez pas encore${clauseLegendaire}; ${texteRares}`;
+}
