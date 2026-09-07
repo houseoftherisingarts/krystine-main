@@ -207,8 +207,6 @@ export const BANNIERES: Banniere[] = [
     image: '/compte/bannieres/cadeau-neige.webp', image720: '/compte/bannieres/cadeau-neige-720.webp', fond: '/compte/fonds/cadeau-neige.webp' },
 ];
 export const banniereParCle = (cle: string) => BANNIERES.find(b => b.cle === cle);
-/** Les sept bannières du cadeau du jour, dans l'ordre exact de leur cycle. */
-export const CADEAUX_JOUR_BANNIERES = ['aube', 'sousbois', 'lavande', 'rivage', 'erables', 'verger', 'neige'] as const;
 export const FOND_DEFAUT = '/compte/fonds/defaut-1920.webp';
 
 export type CategorieBoutique = 'banniere' | 'musique' | 'skin';
