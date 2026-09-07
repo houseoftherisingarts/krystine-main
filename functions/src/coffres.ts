@@ -2,6 +2,7 @@ import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { randomInt } from 'node:crypto';
 import { crediterNiskas, recalculerSolde, MUSIQUE_ORIGINE_ID } from './niskas';
+import { exigerModule } from './gamification';
 
 // ─── Les coffres ─────────────────────────────────────────────────────────────
 // Trois coffres (bronze, argent, or) et leurs clés. Un coffre s'achète en
