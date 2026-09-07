@@ -1,4 +1,4 @@
-import { onDocumentWritten } from 'firebase-functions/v2/firestore';
+import { onDocumentWritten, onDocumentDeleted } from 'firebase-functions/v2/firestore';
 import { getFirestore } from 'firebase-admin/firestore';
 
 // Les compteurs du mur social (portés du FMM). Le navigateur n'écrit jamais
