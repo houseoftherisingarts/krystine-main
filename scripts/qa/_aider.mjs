@@ -58,12 +58,13 @@ console.log('capture formulaire échelle desktop');
 // titre de la question) — jamais dans .mt-8 (Précédent/Suivant), pour ne
 // pas cliquer la mauvaise chose.
 for (let i = 0; i < 8; i++) {
-  const boutonEnvoyer = page.getByRole('button', { name: /^Envoyer$/i });
-  if (await boutonEnvoyer.count()) break;
   const pastille = page.locator('.mt-6 button').first();
   if (await pastille.count()) await pastille.click({ timeout: 1500 }).catch(() => {});
-  await page.locator('button:has-text("Suivant"), button:has-text("Envoyer")').last().click();
+  const bouton = page.locator('button:has-text("Suivant"), button:has-text("Envoyer")').last();
+  const libelle = (await bouton.textContent()) || '';
+  await bouton.click();
   await page.waitForTimeout(350);
+  if (/Envoyer/i.test(libelle)) break;
 }
 await page.screenshot({ path: `${OUT}/aider-derniere-question-1440.png`, fullPage: true });
 const boutonEnvoyer = page.getByRole('button', { name: /^Envoyer$/i });
