@@ -624,14 +624,16 @@
 .skin-coffee.bg-\[\#EEE7DB\],
 .skin-aube.bg-\[\#EEE7DB\],
 .skin-terre.bg-\[\#EEE7DB\],
-.skin-foret.bg-\[\#EEE7DB\] { position: relative; }
+.skin-foret.bg-\[\#EEE7DB\],
+.skin-verifie.bg-\[\#EEE7DB\] { position: relative; }
 
 .skin-medzo.bg-\[\#EEE7DB\]::before,
 .skin-nuit.bg-\[\#EEE7DB\]::before,
 .skin-coffee.bg-\[\#EEE7DB\]::before,
 .skin-aube.bg-\[\#EEE7DB\]::before,
 .skin-terre.bg-\[\#EEE7DB\]::before,
-.skin-foret.bg-\[\#EEE7DB\]::before {
+.skin-foret.bg-\[\#EEE7DB\]::before,
+.skin-verifie.bg-\[\#EEE7DB\]::before {
   content: '';
   position: fixed;
   inset: 0;
