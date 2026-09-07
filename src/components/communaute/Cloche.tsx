@@ -103,7 +103,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
         return {
           id: `dm-${f.id}`,
           titre: `${n > 1 ? `${n} messages de` : 'Un message de'} ${nom}`,
-          lien: '/compte?onglet=messagerie',
+          lien: versMessages,
           quand: f.lastMessageAt?.toMillis?.() ?? 0,
         };
       });
@@ -112,7 +112,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
       .map((a) => ({
         id: `amitie-${a.de}`,
         titre: 'Quelqu’un vous demande en ami',
-        lien: '/compte?onglet=amis',
+        lien: foyer ? '/membres?vue=demandes' : '/compte?onglet=amis',
         quand: 0,
       }));
     const nouveauxBillets: Item[] = billets
@@ -120,7 +120,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
       .map((b) => ({
         id: `billet-${b.id}`,
         titre: `Krystine a publié : ${b.texte.length > 50 ? `${b.texte.slice(0, 50)}…` : b.texte}`,
-        lien: '/compte',
+        lien: foyer ? '/fil?fil=communaute' : '/compte',
         quand: b.creeLe?.toMillis?.() ?? 0,
       }));
     const dons: Item[] = cadeaux.map((c) => ({
