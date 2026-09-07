@@ -287,7 +287,7 @@ export const SKINS: Skin[] = [
   // Les trois légendaires : un dosha chacun, et une vraie scène animée derrière
   // l'espace (feu, eau, vent), des survols et des gestes de souris qui leur sont
   // propres. Ils ne se trouvent que dans les coffres.
-  { cle: 'vata', cout: null, rarete: 'legendaire', coffre: 'bronze', icone: 'fa-wind', nomFR: 'Skin Vata · le vent', nomEN: 'Vata skin · the wind',
+  { cle: 'vata', cout: null, rarete: 'legendaire', coffre: 'bronze', icone: 'fa-wind', enTravail: true, nomFR: 'Skin Vata · le vent', nomEN: 'Vata skin · the wind',
     descFR: 'Un sous-bois vert traversé de vent : des feuilles passent derrière votre espace et s’écartent sous votre souris. Légendaire.',
     descEN: 'A green undergrowth crossed by wind: leaves drift behind your space and scatter under your mouse. Legendary.',
     palette: { fond: '#0e1f17', panneau: '#173024', encre: '#eaf3e6', accent: '#8fd17a', accentClair: '#c6f0b0', accentProfond: '#b6ea9c', sombre: true } },
