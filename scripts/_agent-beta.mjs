@@ -165,10 +165,6 @@ async function scenarioInscriptionEtAnimation(browser) {
     const logs = [];
     p.on('pageerror', (e) => logs.push(e.message));
     let appelIntercepte = false;
-    await p.route('**/reclamerCoffreBeta', async (route) => { appelIntercepte = true; await mockCoffreBeta(p)._handler?.(route); });
-    // page.route ne permet qu'un seul enregistrement par motif par page — on
-    // réenregistre proprement le vrai gestionnaire ci-dessous.
-    await p.unroute('**/reclamerCoffreBeta');
     await p.route('**/reclamerCoffreBeta', async (route) => {
       appelIntercepte = true;
       try {
