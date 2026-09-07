@@ -191,6 +191,7 @@ export async function ecrireMessageKrystine(db: FirebaseFirestore.Firestore, deU
 // ─── Acheter un coffre ou une clé, en niskas ─────────────────────────────────
 export const acheterCoffre = onCall({ region: 'us-central1' }, async (req) => {
   if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour acheter.');
+  await exigerModule('coffres');
   const uid = req.auth.uid;
   const type = req.data?.type; const quoi = req.data?.quoi as 'boite' | 'cle';
   if ((quoi !== 'boite' && quoi !== 'cle') || (quoi === 'boite' && !estType(type))) throw new HttpsError('invalid-argument', 'Coffre inconnu.');
