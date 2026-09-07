@@ -262,8 +262,10 @@ const PanneauDetail: React.FC<{ requete: RequeteCompteur; titre: string; definit
                         </li>
                       ))}
                     </ul>
+                    )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 
