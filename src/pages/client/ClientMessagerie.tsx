@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
-import { type DMThread, type DM, subscribeInbox, subscribeDMThread, sendDM, markThreadRead } from '../../firebase/dms';
+import { type DMThread, type DM, subscribeInbox, subscribeDMThread, sendDM, markThreadRead, ensureThread, threadId } from '../../firebase/dms';
+import { getMember, type MemberDoc } from '../../firebase/firestore';
 import { LONGUEUR_MAX } from '../../firebase/moderation';
 import Avatar from '../../components/communaute/Avatar';
 import ClientSupport from './ClientSupport';
