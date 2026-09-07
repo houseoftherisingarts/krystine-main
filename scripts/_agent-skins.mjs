@@ -54,17 +54,19 @@ const shootBoutique = async (largeur, hauteur, suffixe) => {
   await page.waitForTimeout(800);
 
   // La roue quotidienne (« Jour N ») s'ouvre parfois toute seule à l'arrivée
-  // sur /compte : un clic sur le fond (data-bug-ignore) la referme.
-  const roue = page.locator('[data-bug-ignore]').first();
-  if (await roue.count()) { await roue.click({ position: { x: 8, y: 8 } }).catch(() => {}); await page.waitForTimeout(400); }
+  // sur /compte, avec un léger délai (reclamerQuotidien) : plusieurs passes,
+  // un clic sur le fond (data-bug-ignore) la referme chaque fois qu'elle paraît.
+  const fermerRoue = async () => {
+    for (let i = 0; i < 5; i++) {
+      const r = page.locator('[data-bug-ignore]').first();
+      if (await r.count()) { await r.click({ position: { x: 8, y: 8 } }).catch(() => {}); await page.waitForTimeout(400); }
+      else await page.waitForTimeout(400);
+    }
+  };
+  await fermerRoue();
 
   // Tout replié au chargement.
   await page.screenshot({ path: `${OUT}/boutique-replie-${suffixe}.png`, fullPage: true });
-
-  const fermerRoue = async () => {
-    const r = page.locator('[data-bug-ignore]').first();
-    if (await r.count()) { await r.click({ position: { x: 8, y: 8 } }).catch(() => {}); await page.waitForTimeout(300); }
-  };
 
   // La section « Les skins » ouverte : les six skins en travail ne doivent
   // plus y paraître (sauf si le compte les possède déjà).
