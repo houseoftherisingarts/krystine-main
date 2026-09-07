@@ -86,7 +86,7 @@ const FoyerEncart: React.FC<{ balance: PointsBalance; fr: boolean }> = ({ balanc
       </p>
       <ol className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
         {CYCLE_FOYER_MOIS.map((etape, i) => {
-          const phare = i === moisEnCours;
+          const phare = etape.id === p.prochainMois.id;
           return (
             <li key={etape.id} className={`rounded-[14px] border p-4 ${phare ? 'border-[#BA7B39] bg-[#BA7B39]/15' : 'border-[#293027]/10 bg-white/50 dark:border-white/10 dark:bg-white/5'}`}>
               <p className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]">
