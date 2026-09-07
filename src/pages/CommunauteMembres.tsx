@@ -85,6 +85,7 @@ const CommunauteMembres: React.FC = () => {
       nom={m.nom}
       photo={m.photo}
       verifie={m.verifie}
+      email={m.fiche?.email}
       sousTitre={!m.espaceOuvert
         ? (fr ? 'N’a pas encore ouvert son espace' : 'Has not opened her space yet')
         : m.dosha ? `Dosha ${m.dosha}` : undefined}
