@@ -130,10 +130,18 @@ const SondageForm: React.FC<Props> = ({ sondage, lang, onTermine, onRetour }) =>
     }
   };
 
+  // À l'ouverture, remonter la carte en haut du viewport : sur mobile, le
+  // bandeau au-dessus est haut, et sans ce recentrage les pastilles de la
+  // première question finissent sous le bouton fixe « Problème technique »
+  // (bas-gauche, sitewide). Une seule fois par sondage ouvert, pas à chaque
+  // question : l'utilisateur qui a déjà scrollé garde sa position.
+  const racine = useRef<HTMLElement>(null);
+  useEffect(() => { racine.current?.scrollIntoView({ block: 'start' }); }, [sondage.id]);
+
   if (!q) return null;
 
   return (
-    <section>
+    <section ref={racine}>
       <button type="button" onClick={onRetour} className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] underline-offset-4 hover:underline dark:text-[#d9a05b]">
         <i className="fa-solid fa-arrow-left mr-2" />{fr ? 'Tous les sondages' : 'All surveys'}
       </button>
