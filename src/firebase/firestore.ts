@@ -785,6 +785,13 @@ export interface MemberDoc {
   waitlists?: string[];
   joinedAt?: Timestamp;
   lastSeenAt?: Timestamp;
+  /** Le pop-up « On oublie souvent de jouer » (BienvenueJeu) déjà vu, posé
+   *  ici et non seulement en localStorage : sur la fiche, il ne revient
+   *  jamais, sur aucun appareil (Alex, 7 septembre 2026). */
+  bienvenueVu?: boolean;
+  /** Le coffre bêta (CoffreBeta) déjà réglé pour ce compte — vu (offert
+   *  ou non éligible), même règle de persistance que bienvenueVu. */
+  coffreBetaVu?: boolean;
 }
 
 export async function ensureMemberProfile(profile: Omit<MemberDoc, 'joinedAt' | 'lastSeenAt'>) {
