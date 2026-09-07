@@ -63,7 +63,9 @@ const Cle: React.FC<{ taille?: number }> = ({ taille = 18 }) => (
   </svg>
 );
 
-const Coffres: React.FC<{ solde: number; onChange?: () => void }> = ({ solde, onChange }) => {
+const AUCUNE_SKIN_EN_TRAVAIL: ReadonlySet<string> = new Set();
+
+const Coffres: React.FC<{ solde: number; onChange?: () => void; enTravail?: ReadonlySet<string> }> = ({ solde, onChange, enTravail = AUCUNE_SKIN_EN_TRAVAIL }) => {
   const { user, lang } = useApp();
   const fr = lang === 'FR';
   const reduceGlobal = useReducedMotion();
