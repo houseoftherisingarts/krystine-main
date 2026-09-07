@@ -161,13 +161,13 @@ const ClientLoyalty: React.FC = () => {
           kind: 'ok',
           msg: res.code
             ? (lang === 'FR' ? `Voici votre code : ${res.code}` : `Here is your code: ${res.code}`)
-            : (lang === 'FR' ? 'Récompense échangée : elle vous attend dans vos formations.' : 'Reward redeemed: it is waiting in your courses.'),
+            : (lang === 'FR' ? 'Cadeau échangé : il vous attend dans vos formations.' : 'Gift redeemed: it is waiting in your courses.'),
         });
         await refreshHistory();
       } else if (res.reason === 'insufficient') {
-        setToast({ kind: 'err', msg: lang === 'FR' ? "Pas assez de niskas pour cette récompense." : 'Not enough niskas for this reward.' });
+        setToast({ kind: 'err', msg: lang === 'FR' ? "Pas assez de niskas pour ce cadeau." : 'Not enough niskas for this gift.' });
       } else if (res.reason === 'one-shot') {
-        setToast({ kind: 'err', msg: lang === 'FR' ? "Cette récompense a déjà été réclamée." : 'This reward has already been claimed.' });
+        setToast({ kind: 'err', msg: lang === 'FR' ? "Ce cadeau a déjà été réclamé." : 'This gift has already been claimed.' });
       } else {
         setToast({ kind: 'err', msg: lang === 'FR' ? "Échec de l'échange. Réessayez plus tard." : 'Redemption failed. Try again later.' });
       }
