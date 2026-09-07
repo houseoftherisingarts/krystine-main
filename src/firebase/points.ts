@@ -340,8 +340,18 @@ export async function adjustPoints(uid: string, delta: number, note?: string) {
 // ─── La roue des sept jours ──────────────────────────────────────────────────
 // Le serveur juge la journée (functions/src/niskas.ts) : une réclamation par
 // journée civile de Montréal, jamais deux, quelle que soit l'horloge du
-// navigateur. Le solde revient recalculé depuis le journal.
-export interface Quotidien { deja: boolean; jour: number; montant: number; serie: number; balance: number }
+// navigateur. Le solde revient recalculé depuis le journal. Une membre du
+// Foyer d'Origine reçoit `foyer: true`, un montant déjà doublé, et le cadeau
+// de la semaine ou du mois complet quand la suite y arrive (docs/badge-bleu-plan.md, 2.3).
+export interface CadeauHebdoFoyer { genre: 'musique' | 'niskas'; montant?: number }
+export interface CadeauMoisFoyer { genre: 'musique' | 'skin-rare' | 'rabais-huile' | 'niskas'; nom?: string; montant?: number }
+export interface Quotidien {
+  deja: boolean; jour: number; montant: number; serie: number; balance: number;
+  coffre?: boolean;
+  foyer?: boolean;
+  cadeauHebdo?: CadeauHebdoFoyer | null;
+  cadeauMois?: CadeauMoisFoyer | null;
+}
 
 export async function reclamerQuotidien(uid: string): Promise<Quotidien> {
   if (!app || !uid) return { deja: true, jour: 1, montant: 0, serie: 0, balance: 0 };
