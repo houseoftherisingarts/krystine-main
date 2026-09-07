@@ -20,6 +20,8 @@ const TAILLE_MAX_VIDEO = 200 * 1024 * 1024;  // 200 Mo
 // son mur personnel, jamais dans le feed public).
 const Composeur: React.FC<{ fil: FilMur; onPublie?: () => void; compact?: boolean; contexte?: 'feed' | 'monmur' }> = ({ fil, onPublie, compact, contexte = 'feed' }) => {
   const { user, member, isAdmin } = useAuth();
+  const { lang } = useApp();
+  const fr = lang === 'FR';
   const nom = member?.displayName || user?.displayName || user?.email?.split('@')[0] || 'Un membre';
   const prenom = nom.split(' ')[0];
   const avatarUrl = member?.photoURL || user?.photoURL || undefined;
