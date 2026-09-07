@@ -22,8 +22,13 @@ const u = await rest(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?
 const uid = u.localId; console.log('compte', uid);
 const now = { timestampValue: new Date().toISOString() };
 await fsdoc(`members/${uid}`, { uid: { stringValue: uid }, email: { stringValue: email }, displayName: { stringValue: 'Test QA Popup' }, personnalisation: { mapValue: { fields: { banniere: { stringValue: 'iris' } } } } });
-await fsdoc(`memberPoints/${uid}`, { balance: { integerValue: '200' }, lifetime: { integerValue: '200' } });
 await fsdoc(`boutique/${uid}`, { possede: { mapValue: { fields: { 'banniere-iris': now } } } });
+// Le niska seedé ici arrive AVANT la réclamation automatique de la roue
+// quotidienne (reclamerQuotidien, au montage de RoueQuotidienne) : cette
+// réclamation écrase le solde au lieu de l'incrémenter (constaté en QA,
+// balance retombée à 1). Le vrai seed à 200 se fait donc APRÈS avoir fermé
+// la roue, une fois ce premier geste automatique passé.
+const seederNiskas = () => fsdoc(`memberPoints/${uid}`, { balance: { integerValue: '200' }, lifetime: { integerValue: '200' } });
 const authUser = { uid, email, emailVerified: false, isAnonymous: false, displayName: 'Test QA Popup', providerData: [{ providerId: 'password', uid: email, displayName: null, email, phoneNumber: null, photoURL: null }],
   stsTokenManager: { refreshToken: u.refreshToken, accessToken: u.idToken, expirationTime: Date.now() + Number(u.expiresIn) * 1000 }, createdAt: String(Date.now()), lastLoginAt: String(Date.now()), apiKey: API_KEY, appName: '[DEFAULT]' };
 const browser = await chromium.launch();
