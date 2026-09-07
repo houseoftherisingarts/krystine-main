@@ -181,7 +181,7 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, dr
             <div className="min-w-0 flex-1 pb-1">
               <h1 className="flex items-center gap-2.5 truncate font-serif text-3xl text-white md:text-4xl" style={{ letterSpacing: '-0.01em', textShadow: '0 2px 18px rgba(0,0,0,0.45)' }}>
                 <span className="truncate">{nom}</span>
-                {(fiche?.verifie || (!autre && isAdmin)) && (
+                {montrerBadgeBleu(fiche?.email, fiche?.verifie, gam.badgeBleuEquipeSeulement) && (
                   <i className="fa-solid fa-circle-check shrink-0 text-xl text-[#4da3ff]" title={fr ? 'Profil vérifié' : 'Verified profile'} />
                 )}
               </h1>
