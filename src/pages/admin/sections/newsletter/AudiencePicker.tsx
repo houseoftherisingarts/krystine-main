@@ -12,9 +12,9 @@ import { Label } from '../../primitives';
 // navigateur ne rapatrie plus la collection des 33 000 abonnés : c'est ce qui
 // gelait l'onglet à chaque ouverture d'une infolettre.
 
-export interface AudienceInfo { total: number; tags: Array<{ tag: string; n: number }>; personnes: Array<{ email: string; nom: string }> }
+export interface AudienceInfo { total: number; tags: Array<{ tag: string; n: number }>; personnes: Array<{ email: string; nom: string }>; parLangue?: { fr: number; en: number } }
 
-export async function fetchAudience(input: { audience?: NewsletterAudience; q?: string }): Promise<AudienceInfo> {
+export async function fetchAudience(input: { audience?: NewsletterAudience; q?: string; lang?: 'fr' | 'en' }): Promise<AudienceInfo> {
   if (!app) throw new Error('Firebase non configuré');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'audienceInfolettre');
   const res: any = await call(input);
@@ -24,14 +24,14 @@ export async function fetchAudience(input: { audience?: NewsletterAudience; q?: 
 const chip = (on: boolean) =>
   `px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest border transition-colors ${on ? 'bg-[#293027] text-white border-[#293027] dark:bg-[#BA7B39] dark:text-[#293027]' : 'bg-white dark:bg-white/5 text-[#293027]/60 dark:text-white/60 border-[#293027]/10 dark:border-white/10 hover:text-[#8B4A2F]'}`;
 
-const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: NewsletterAudience) => void; disabled?: boolean }> = ({ value, onChange, disabled }) => {
+const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: NewsletterAudience) => void; disabled?: boolean; lang?: 'fr' | 'en' }> = ({ value, onChange, disabled, lang = 'fr' }) => {
   const [info, setInfo] = useState<AudienceInfo | null>(null);
   const [q, setQ] = useState('');
   const [personnes, setPersonnes] = useState<Array<{ email: string; nom: string }>>([]);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
   const timer = useRef<number | null>(null);
-  const key = JSON.stringify(value);
+  const key = JSON.stringify({ value, lang });
 
   // Le compte se recalcule à chaque changement d'audience, avec un court délai
   // pour ne pas appeler la fonction à chaque clic sur une liste.
@@ -39,7 +39,7 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
     if (timer.current) window.clearTimeout(timer.current);
     timer.current = window.setTimeout(() => {
       setBusy(true); setFailed(false);
-      fetchAudience({ audience: value }).then(setInfo).catch(() => setFailed(true)).finally(() => setBusy(false));
+      fetchAudience({ audience: value, lang }).then(setInfo).catch(() => setFailed(true)).finally(() => setBusy(false));
     }, info ? 400 : 0);
     return () => { if (timer.current) window.clearTimeout(timer.current); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -49,7 +49,7 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
     const f = q.trim();
     if (f.length < 2) { setPersonnes([]); return; }
     const t = window.setTimeout(() => {
-      fetchAudience({ audience: value, q: f }).then(r => setPersonnes(r.personnes)).catch(() => setPersonnes([]));
+      fetchAudience({ audience: value, q: f, lang }).then(r => setPersonnes(r.personnes)).catch(() => setPersonnes([]));
     }, 350);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,6 +80,25 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
         <button disabled={disabled} className={chip(value.mode === 'tags')} onClick={() => onChange({ ...value, mode: 'tags', tags: value.tags || [] })}>Certaines listes</button>
         <button disabled={disabled} className={chip(value.mode === 'emails')} onClick={() => onChange({ ...value, mode: 'emails', emails: value.emails || [] })}>Des personnes</button>
       </div>
+
+      {value.mode !== 'emails' && (
+        <div className="space-y-1.5">
+          <p className="text-[10px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50">Langue des destinataires</p>
+          <div className="flex flex-wrap gap-2">
+            {([
+              ['auto', `Celle de la lettre (${lang === 'en' ? 'anglais' : 'français'})`],
+              ['fr', 'Français'], ['en', 'Anglais'], ['toutes', 'Toutes'],
+            ] as const).map(([k, l]) => (
+              <button key={k} disabled={disabled} className={chip((value.langue || 'auto') === k)} onClick={() => onChange({ ...value, langue: k })}>{l}</button>
+            ))}
+          </div>
+          {info?.parLangue && (
+            <p className="text-xs text-[#293027]/55 dark:text-white/55">
+              Dans ce choix : {info.parLangue.fr} lisent en français, {info.parLangue.en} en anglais. Chaque personne reçoit la lettre dans sa langue.
+            </p>
+          )}
+        </div>
+      )}
 
       {value.mode === 'tags' && (
         <div className="flex flex-wrap gap-1.5 max-h-64 overflow-auto">

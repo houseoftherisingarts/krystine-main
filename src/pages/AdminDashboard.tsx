@@ -28,6 +28,7 @@ const BYPASS_USER = {
 } as unknown as User;
 import AdminShell, { type AdminSectionId, slugToSection, sectionToSlug } from './admin/AdminShell';
 import AdminLogin from './admin/AdminLogin';
+import { isDevAdminActive } from '../lib/devAdmin';
 import DashboardSection from './admin/sections/DashboardSection';
 import AnalyticsSection from './admin/sections/AnalyticsSection';
 import EventsSection from './admin/sections/EventsSection';
@@ -132,11 +133,15 @@ const AdminDashboard: React.FC = () => {
     );
   }
 
-  if (!user || !isAdminUser(user)) return <AdminLogin />;
+  // En dev seulement (`?unlock=…`, voir src/lib/devAdmin.ts) : l'admin s'ouvre
+  // sans compte Firebase, avec un utilisateur factice. Mort en production.
+  const devUser = import.meta.env.DEV && !user && isDevAdminActive() ? ({ uid: 'dev-admin', email: 'dev@local', displayName: 'Dev' } as any) : null;
+  const admin = user && isAdminUser(user) ? user : devUser;
+  if (!admin) return <AdminLogin />;
 
   return (
-    <AdminShell user={user} section={section} onSectionChange={setSection}>
-      {renderSection(user)}
+    <AdminShell user={admin} section={section} onSectionChange={setSection}>
+      {renderSection(admin)}
     </AdminShell>
   );
 };

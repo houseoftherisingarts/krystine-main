@@ -28,7 +28,7 @@ const NewsletterSection: React.FC = () => {
 
   // Le composeur prend toute la place : la barre d'onglets s'efface.
   if (view.kind === 'composer') {
-    return <Composer newsletterId={view.id} onBack={() => setView({ kind: 'list' })} />;
+    return <Composer key={view.id || 'new'} newsletterId={view.id} onBack={() => setView({ kind: 'list' })} onOpen={id => setView({ kind: 'composer', id })} />;
   }
   const open = (id: string | null) => setView({ kind: 'composer', id });
 

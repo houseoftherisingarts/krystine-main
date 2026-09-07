@@ -323,6 +323,7 @@ const SubscribersPanel: React.FC = () => {
                 <tr className={`border-t border-[#293027]/5 dark:border-white/5 hover:bg-[#BA7B39]/5 ${ouvert === s.id ? 'bg-[#BA7B39]/10' : ''}`}>
                   <td className="px-4 py-3 text-[#293027] dark:text-white">
                     {s.email}
+                    {s.lang === 'en' && <span className="ml-2 text-[9px] uppercase tracking-widest font-bold px-1.5 py-0.5 rounded-full bg-[#293027]/10 text-[#293027]/70 dark:bg-white/10 dark:text-white/70" title="Lit en anglais : reçoit les lettres en anglais">EN</span>}
                     {s.question && <i className="fa-solid fa-circle-question ml-2 text-[#8B4A2F]" title="A posé une question" />}
                     {s.derniereReponseLe && <i className="fa-solid fa-reply ml-2 text-[#8B4A2F]/70" title={`Dernière réponse le ${s.derniereReponseLe.toDate().toLocaleDateString('fr-CA')}`} />}
                   </td>

@@ -1,7 +1,7 @@
 import { onCall, HttpsError, type CallableRequest } from 'firebase-functions/v2/https';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
-import { renderEmailHtml, renderEmailText, newsletterAttachments, inlineForPreview, type NewsletterBlock, type Couverture } from './renderer';
+import { renderEmailHtml, renderEmailText, newsletterAttachments, inlineForPreview, type NewsletterBlock, type Couverture, type Lang, type Bandeau } from './renderer';
 import { MAIL_SECRETS, NEWSLETTER_POSTAL_ADDRESS, REPLY_TO, createTransporter, fromAddr as buildFrom, unsubscribeUrl as buildUnsub } from './mail';
 import { renderWelcomeHtml, WELCOME_SUBJECT , WELCOME_IMAGE_URL } from './welcome';
 import { buildMail, renderLiveHtml, type LiveEvent } from './live';
@@ -33,6 +33,7 @@ interface SubscriberDoc {
   uid?: string;
   status?: string;
   tags?: string[];
+  lang?: string;           // 'fr' | 'en'; absent = français
   unsubscribeToken?: string;
 }
 
@@ -42,6 +43,19 @@ export interface NewsletterAudience {
   mode: 'all' | 'tags' | 'emails';
   tags?: string[];
   emails?: string[];
+  // Langue des destinataires : « auto » (celle de la lettre, défaut), « fr »,
+  // « en », ou « toutes ». Les personnes choisies une à une ne sont jamais filtrées.
+  langue?: 'auto' | 'fr' | 'en' | 'toutes';
+}
+
+// Chaque abonné lit dans une langue (posée à l'inscription, suivie par le
+// compte). Une lettre part par défaut à ceux qui lisent dans sa langue :
+// la version française aux francophones, la traduction aux anglophones.
+export const langueAbonne = (s: { lang?: string }) => (s.lang === 'en' ? 'en' : 'fr');
+export function langueCible(doc: Pick<NewsletterRecord, 'audience' | 'lang'>): 'fr' | 'en' | 'toutes' {
+  const l = doc.audience?.langue || 'auto';
+  if (l === 'auto') return doc.lang === 'en' ? 'en' : 'fr';
+  return l;
 }
 
 interface NewsletterRecord {
@@ -57,6 +71,10 @@ interface NewsletterRecord {
   couverture?: Couverture;
   couvertureUrl?: string | null;
   signature?: boolean;
+  lang?: Lang;
+  bandeau?: Bandeau | null;
+  fond?: string | null;
+  traductionDe?: string | null;
   lettreDor?: { messagerie?: boolean; section?: boolean } | null;
 }
 
@@ -111,17 +129,19 @@ async function deliverLettreDor(newsletterId: string, doc: NewsletterRecord): Pr
 }
 
 // L'en-tête et la signature choisis dans le composeur, tels quels.
-const enTete = (doc: Pick<NewsletterRecord, 'couverture' | 'couvertureUrl' | 'signature'>) =>
-  ({ couverture: doc.couverture, couvertureUrl: doc.couvertureUrl, signature: doc.signature });
+const enTete = (doc: Pick<NewsletterRecord, 'couverture' | 'couvertureUrl' | 'signature' | 'lang' | 'bandeau' | 'fond'>) =>
+  ({ couverture: doc.couverture, couvertureUrl: doc.couvertureUrl, signature: doc.signature, lang: doc.lang, bandeau: doc.bandeau, fond: doc.fond });
 
-export function selectRecipients<T extends SubscriberDoc>(subs: T[], doc: Pick<NewsletterRecord, 'audience' | 'segmentTag'>): T[] {
+export function selectRecipients<T extends SubscriberDoc>(subs: T[], doc: Pick<NewsletterRecord, 'audience' | 'segmentTag' | 'lang'>): T[] {
   const a: NewsletterAudience = doc.audience || (doc.segmentTag ? { mode: 'tags', tags: [doc.segmentTag] } : { mode: 'all' });
   const norm = (e: string) => e.trim().toLowerCase();
   const wanted = new Set((a.emails || []).map(norm));
   const tags = a.tags || [];
+  const cible = langueCible({ audience: a, lang: doc.lang });
   return subs
     .filter(s => {
       if (a.mode === 'emails') return wanted.has(norm(s.email));
+      if (cible !== 'toutes' && langueAbonne(s) !== cible) return false;
       if (a.mode === 'tags') return (s.tags || []).some(t => tags.includes(t));
       return true;
     })
@@ -139,7 +159,7 @@ function dedupeBy<T>(key: (x: T) => string): (x: T) => boolean {
 // 33 000 documents `newsletter` (30 Mo) à chaque ouverture d'une infolettre,
 // et l'onglet gelait. La fonction garde une projection légère en mémoire deux
 // minutes et applique la même règle que l'envoi (selectRecipients).
-interface AudienceAbonne { email: string; firstName?: string; lastName?: string; status?: string; tags?: string[] }
+interface AudienceAbonne { email: string; firstName?: string; lastName?: string; status?: string; tags?: string[]; lang?: string }
 let cacheAudience: { at: number; subs: AudienceAbonne[] } | null = null;
 const CACHE_AUDIENCE_MS = 2 * 60e3;
 
@@ -147,7 +167,7 @@ async function chargerAudience(): Promise<AudienceAbonne[]> {
   if (cacheAudience && Date.now() - cacheAudience.at < CACHE_AUDIENCE_MS) return cacheAudience.subs;
   const snap = await getFirestore().collection('newsletter')
     .where('status', '==', 'active')
-    .select('email', 'firstName', 'lastName', 'status', 'tags')
+    .select('email', 'firstName', 'lastName', 'status', 'tags', 'lang')
     .get();
   const subs = snap.docs.map(d => d.data() as AudienceAbonne).filter(s => typeof s.email === 'string');
   cacheAudience = { at: Date.now(), subs };
@@ -158,15 +178,19 @@ export const audienceInfolettre = onCall(
   { timeoutSeconds: 60, memory: '512MiB' },
   async (request) => {
     assertAdmin(request);
-    const data = (request.data || {}) as { audience?: NewsletterAudience; q?: string };
+    const data = (request.data || {}) as { audience?: NewsletterAudience; q?: string; lang?: Lang };
     const subs = await chargerAudience();
     const audience: NewsletterAudience = data.audience || { mode: 'all' };
+    const lang: Lang = data.lang === 'en' ? 'en' : 'fr';
 
     const parTag = new Map<string, number>();
     for (const s of subs) for (const t of s.tags || []) parTag.set(t, (parTag.get(t) || 0) + 1);
     const tags = [...parTag.entries()].sort((a, b) => a[0].localeCompare(b[0], 'fr')).map(([tag, n]) => ({ tag, n }));
 
-    const total = selectRecipients(subs, { audience }).length;
+    const total = selectRecipients(subs, { audience, lang }).length;
+    // Le même choix, sans le filtre de langue : combien lisent en français, en anglais.
+    const sansLangue = selectRecipients(subs, { audience: { ...audience, langue: 'toutes' }, lang });
+    const parLangue = { fr: sansLangue.filter(s => langueAbonne(s) === 'fr').length, en: sansLangue.filter(s => langueAbonne(s) === 'en').length };
 
     const f = (data.q || '').trim().toLowerCase();
     const personnes: Array<{ email: string; nom: string }> = [];
@@ -183,7 +207,7 @@ export const audienceInfolettre = onCall(
         }
       }
     }
-    return { total, tags, personnes };
+    return { total, tags, personnes, parLangue };
   },
 );
 
@@ -394,7 +418,7 @@ export const previewNewsletter = onCall(
   { secrets: MAIL_SECRETS, timeoutSeconds: 60 },
   async (request) => {
     assertAdmin(request);
-    const data = (request.data || {}) as { blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string; couverture?: Couverture; couvertureUrl?: string | null; signature?: boolean };
+    const data = (request.data || {}) as { blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string; couverture?: Couverture; couvertureUrl?: string | null; signature?: boolean; lang?: Lang; bandeau?: Bandeau | null; fond?: string | null };
     const postalAddress = NEWSLETTER_POSTAL_ADDRESS.value();
     const unsubscribeUrl = buildUnsub('APERCU');
     const firstName = 'Krystine';

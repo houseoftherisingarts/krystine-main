@@ -303,6 +303,8 @@ service cloud.firestore {
     match /newsletters/{id} {
       allow read: if resource.data.status == 'sent' || isAdmin();
       allow write: if isAdmin();
+      // L'historique des versions du composeur (une par heure d'écriture).
+      match /versions/{v} { allow read, write: if isAdmin(); }
     }
     // ── Iris (terminal de l'infolettre) ──
     // Krystine dépose sa demande; le relais iris.py (sur son ordinateur ou

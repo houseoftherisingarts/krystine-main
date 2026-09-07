@@ -1,9 +1,10 @@
 import { getLang, setLang as persistLang } from '../lib/i18n/lang';
+import app from '../firebase';
 import React, { createContext, useContext, useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import type { User } from 'firebase/auth';
+import { getAuth, type User } from 'firebase/auth';
 import { subscribeToAuthState, isAdminUser, handleRedirectResult } from '../firebase/auth';
 import {
-  subscribeToMember, type MemberDoc,
+  subscribeToMember, updateMember, type MemberDoc,
   subscribeToBoutiqueSettings, DEFAULT_BOUTIQUE_SETTINGS, type BoutiqueSettings,
 } from '../firebase/firestore';
 
@@ -98,9 +99,29 @@ const AUDIO_URL = 'https://storage.googleapis.com/inspirata/Base%20site/homecomi
 // Slice providers
 // ───────────────────────────────────────────────────────────────────────────
 
+// À la connexion, le site s'ouvre dans la langue du compte. Une fois par
+// session : si la personne change ensuite de langue, le compte suit (setLang).
+function appliquerLangueDuCompte(m: MemberDoc | null) {
+  if (!m?.lang || (m.lang !== 'fr' && m.lang !== 'en')) return;
+  try {
+    if (sessionStorage.getItem('langue-compte-appliquee') === '1') return;
+    sessionStorage.setItem('langue-compte-appliquee', '1');
+  } catch { return; }
+  if (m.lang !== getLang()) persistLang(m.lang);
+}
+
 const UIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [lang] = useState<Lang>(() => getLang() === 'en' ? 'EN' : 'FR');
-  const setLang = useCallback((l: Lang) => { if (l !== lang) persistLang(l === 'EN' ? 'en' : 'fr'); }, [lang]);
+  // Changer la langue du site, c'est aussi changer celle du compte connecté
+  // (et donc de ses infolettres, voir la fonction membreLangue). Le compte
+  // s'écrit avant le rechargement de la page.
+  const setLang = useCallback((l: Lang) => {
+    if (l === lang) return;
+    const code = l === 'EN' ? 'en' : 'fr';
+    const u = app ? getAuth(app).currentUser : null;
+    const ecrire = u ? updateMember(u.uid, { lang: code }).catch(() => {}) : Promise.resolve();
+    ecrire.finally(() => persistLang(code));
+  }, [lang]);
   const [theme, setTheme] = useState<Theme>('light');
   const [audioPlaying, setAudioPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -182,7 +203,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     // Les administratrices suivent aussi leur fiche : leur espace client
     // (bannière, skin, boutique) lit les mêmes champs que celui des membres.
     if (!user) { setMember(null); return; }
-    const unsub = subscribeToMember(user.uid, setMember);
+    const unsub = subscribeToMember(user.uid, m => { setMember(m); appliquerLangueDuCompte(m); });
     return unsub;
   }, [user]);
 

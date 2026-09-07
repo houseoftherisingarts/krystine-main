@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { updateMember } from '../../firebase/firestore';
+import { getLang, setLang as persistLang } from '../../lib/i18n/lang';
 import { useApp } from '../../contexts/AppContext';
 import { loginWithEmail, loginWithGoogle, signUpWithEmail, sendPasswordReset } from '../../firebase/auth';
 import { getFunctions, httpsCallable } from 'firebase/functions';
@@ -65,7 +67,20 @@ const SignInModal: React.FC = () => {
     if (c) setCodeParrain(c);
   }, [signInOpen]);
 
+  // La langue du compte, choisie à l'inscription : le site s'ouvre dans cette
+  // langue et les infolettres partent dans cette langue. Préréglée sur la
+  // langue affichée, changée d'un clic.
+  const [langueCompte, setLangueCompte] = useState<'fr' | 'en'>(lang === 'EN' ? 'en' : 'fr');
+
   const reset = () => { setErr(null); setInfo(null); };
+
+  // Après la création : la langue s'écrit sur le compte, puis le site se
+  // recharge dans cette langue si elle diffère de celle affichée.
+  const poserLangue = async (uid: string | undefined) => {
+    if (!uid) return;
+    try { await updateMember(uid, { lang: langueCompte }); } catch { /* le compte se complète plus tard */ }
+    if (langueCompte !== getLang()) persistLang(langueCompte);
+  };
 
   const close = () => {
     setSignInOpen(false);
@@ -101,6 +116,7 @@ const SignInModal: React.FC = () => {
         setInfo(lang === 'FR' ? 'Redirection vers Google…' : 'Redirecting to Google…');
         return; // keep busy=true since we're navigating away
       }
+      if (mode === 'signup') await poserLangue(cred.user?.uid);
       close();
     } catch (e: any) {
       const code = e?.code || '';
@@ -138,7 +154,8 @@ const SignInModal: React.FC = () => {
             return;
           }
         }
-        await signUpWithEmail(email.trim(), password, displayName.trim() || undefined);
+        const cred = await signUpWithEmail(email.trim(), password, displayName.trim() || undefined);
+        await poserLangue((cred as any)?.user?.uid);
         close();
       } else if (mode === 'reset') {
         await sendPasswordReset(email.trim());
@@ -169,6 +186,23 @@ const SignInModal: React.FC = () => {
         <p className="text-sm text-[#2a2015]/60 dark:text-white/60 mb-6">
           {lang === 'FR' ? 'Accédez à votre espace client Inspirata.' : 'Access your Inspirata client space.'}
         </p>
+
+        {mode === 'signup' && (
+          <div className="mb-4">
+            <span className="block mb-1.5 text-[10px] uppercase tracking-widest text-[#2a2015]/50 dark:text-white/50">
+              {lang === 'FR' ? 'Votre langue' : 'Your language'}
+            </span>
+            <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label={lang === 'FR' ? 'Langue du compte' : 'Account language'}>
+              {([['fr', 'Français', 'Le site et les lettres en français'], ['en', 'English', 'Site and letters in English']] as const).map(([code, nom, aide]) => (
+                <button key={code} type="button" role="radio" aria-checked={langueCompte === code} onClick={() => setLangueCompte(code)}
+                  className={`text-left px-4 py-3 rounded-xl border transition-colors ${langueCompte === code ? 'border-[#bb9a5e] bg-[#bb9a5e]/10' : 'border-[#2a2015]/10 dark:border-white/10 bg-[#f6f3ee] dark:bg-white/5 hover:border-[#bb9a5e]/60'}`}>
+                  <span className="block text-sm font-bold text-[#2a2015] dark:text-white">{nom}</span>
+                  <span className="block text-[11px] text-[#2a2015]/55 dark:text-white/55">{aide}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {mode === 'signup' && (
           <label className="block mb-4">

@@ -1,41 +1,47 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { libelleTag } from '../../../../lib/paliers';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import app from '../../../../firebase';
 import { Timestamp } from 'firebase/firestore';
 import {
-  createNewsletter, updateNewsletter, getNewsletter,
-  ENTETE_INFOLETTRE_PAR_DEFAUT,
-  type NewsletterBlock, type BlockType, type NewsletterStatus, type NewsletterAudience,
+  createNewsletter, updateNewsletter, getNewsletter, saveNewsletterVersion, getNewsletterVersions,
+  ENTETE_INFOLETTRE_PAR_DEFAUT, type NewsletterVersion,
+  type NewsletterBlock, type BlockType, type NewsletterStatus, type NewsletterAudience, type BandeauInfolettre,
 } from '../../../../firebase/firestore';
 import AudiencePicker from './AudiencePicker';
 import PreviewFrame from './PreviewFrame';
 import AssistantPanel, { type Proposal } from './AssistantPanel';
 import MediathequePicker from '../../../../components/edit/MediathequePicker';
-import { RenderBlockWeb } from '../../../../lib/newsletterRenderer';
+import { RenderBlockWeb, POLICES, TAILLES, SEPARATEURS, FONDS_INFOLETTRE, estSombre } from '../../../../lib/newsletterRenderer';
 import { Input, Label, PrimaryButton, GhostButton } from '../../primitives';
 import Portail from '../../../../components/Portail';
 
 interface Props {
   newsletterId: string | null;  // null → fresh draft
   onBack: () => void;
+  onOpen?: (id: string) => void;   // ouvrir un autre brouillon (la traduction qui vient de naître)
 }
+
+// Le bandeau tel qu'il part quand rien n'est réglé : noir chaud, sujet crème.
+const BANDEAU_DEFAUT = { fond: '#141311', texte: '#EEE7DB' };
+const ETIQUETTE_DEFAUT = { fr: 'Infolettre', en: 'Newsletter' } as const;
 
 const BLOCK_PALETTE: Array<{ type: BlockType; icon: string; label: string; template: () => NewsletterBlock }> = [
   { type: 'heading',  icon: 'fa-heading',     label: 'Titre',      template: () => ({ type: 'heading',   content: { level: 2, text: '', align: 'center' } }) },
   { type: 'paragraph',icon: 'fa-paragraph',   label: 'Paragraphe', template: () => ({ type: 'paragraph', content: { text: '' } }) },
   { type: 'image',    icon: 'fa-image',       label: 'Image',      template: () => ({ type: 'image',     content: { url: '', caption: '' } }) },
   { type: 'button',   icon: 'fa-hand-pointer',label: 'Bouton',     template: () => ({ type: 'button',    content: { label: 'Découvrir', href: 'https://www.krystinestlaurent.ca', variant: 'primary' } }) },
+  { type: 'list',     icon: 'fa-list-ul',     label: 'Puces',      template: () => ({ type: 'list',      content: { text: '', style: 'puce' } }) },
   { type: 'quote',    icon: 'fa-quote-left',  label: 'Citation',   template: () => ({ type: 'quote',     content: { text: '', attribution: '' } }) },
   { type: 'cta',      icon: 'fa-star',        label: 'Appel fort', template: () => ({ type: 'cta',       content: { eyebrow: 'Nouveauté', title: '', body: '', href: 'https://www.krystinestlaurent.ca', buttonLabel: 'En savoir plus' } }) },
-  { type: 'divider',  icon: 'fa-minus',       label: 'Séparateur', template: () => ({ type: 'divider' }) },
+  { type: 'divider',  icon: 'fa-minus',       label: 'Séparateur', template: () => ({ type: 'divider',   content: { style: 'ligne' } }) },
   { type: 'spacer',   icon: 'fa-arrows-up-down', label: 'Espace', template: () => ({ type: 'spacer',    content: { size: 'md' } }) },
 ];
 
 // Le composeur prend tout l'écran (par-dessus le menu de l'admin) : la page
 // s'écrit comme elle sera lue, chaque texte se modifie au clic, chaque image
 // se remplace au clic. Les réglages d'envoi vivent dans le rail de droite.
-const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
+const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
   const [loading, setLoading] = useState(newsletterId !== null);
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
@@ -50,13 +56,23 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const [audience, setAudience] = useState<NewsletterAudience>({ mode: 'all' });
   const [when, setWhen] = useState('');          // datetime-local, heure du Québec
-  const [side, setSide] = useState<'reglages' | 'preview' | 'iris'>('reglages');
-  const [pickFor, setPickFor] = useState<number | 'entete' | null>(null);   // bloc image (ou l'en-tête) en attente d'une image
+  const [side, setSide] = useState<'reglages' | 'preview' | 'iris' | 'versions'>('reglages');
+  const [pickFor, setPickFor] = useState<number | 'entete' | 'bandeau' | null>(null);   // bloc image, l'en-tête ou le bandeau en attente d'une image
   // En-tête du courriel : « La lettre de Krystine » par défaut (ENTETE_INFOLETTRE_PAR_DEFAUT).
   // La couverture du podcast, une autre image de la médiathèque ou rien restent au choix.
   const [couverture, setCouverture] = useState<'podcast' | 'image' | 'aucune'>(ENTETE_INFOLETTRE_PAR_DEFAUT.couverture);
   const [couvertureUrl, setCouvertureUrl] = useState<string>(ENTETE_INFOLETTRE_PAR_DEFAUT.couvertureUrl);
   const [signature, setSignature] = useState(true);
+  // Langue de la lettre et bandeau : le gabarit du courriel les suit.
+  const [lang, setLang] = useState<'fr' | 'en'>('fr');
+  const [bandeau, setBandeau] = useState<BandeauInfolettre>({});
+  const [fond, setFond] = useState<string>('#FFFFFF');
+  const sombre = estSombre(fond);
+  const [traductionDe, setTraductionDe] = useState<string | null>(null);
+  const [translating, setTranslating] = useState(false);
+  // Historique : la date de la dernière version gardée (une par heure), et la liste quand le rail l'affiche.
+  const [versionAt, setVersionAt] = useState<number>(0);
+  const [versions, setVersions] = useState<NewsletterVersion[] | null>(null);
   // La lettre d'or : à l'interne, aux membres, gratuite. Deux canaux au choix.
   const [lettreDor, setLettreDor] = useState(false);
   const [dorMessagerie, setDorMessagerie] = useState(true);
@@ -82,6 +98,11 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
         setCouverture(n.couverture || 'aucune');
         setCouvertureUrl(n.couvertureUrl || '');
         setSignature(n.signature !== false);
+        setLang(n.lang === 'en' ? 'en' : 'fr');
+        setBandeau(n.bandeau || {});
+        setFond(n.fond || '#FFFFFF');
+        setTraductionDe(n.traductionDe || null);
+        setVersionAt(n.versionAt ? n.versionAt.toMillis() : 0);
         setLettreDor(!!n.lettreDor);
         setDorMessagerie(n.lettreDor ? !!n.lettreDor.messagerie : true);
         setDorSection(n.lettreDor ? n.lettreDor.section !== false : true);
@@ -91,13 +112,20 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
 
   const isReadOnly = status === 'sent' || status === 'sending';
 
-  const addBlock = (t: BlockType) => {
+  // `at` : la position où le bloc s'insère (le « + » entre deux blocs);
+  // sans `at`, il se pose à la fin.
+  const addBlock = (t: BlockType, at: number = blocks.length) => {
     if (isReadOnly) return;
     const template = BLOCK_PALETTE.find(b => b.type === t)?.template();
     if (!template) return;
-    setBlocks(prev => [...prev, template]);
-    setSelectedIdx(blocks.length);
-    if (t === 'image') setPickFor(blocks.length);
+    setBlocks(prev => [...prev.slice(0, at), template, ...prev.slice(at)]);
+    setSelectedIdx(at);
+    if (t === 'image') setPickFor(at);
+  };
+
+  const duplicateBlock = (idx: number) => {
+    setBlocks(prev => [...prev.slice(0, idx + 1), JSON.parse(JSON.stringify(prev[idx])), ...prev.slice(idx + 1)]);
+    setSelectedIdx(idx + 1);
   };
 
   const updateBlock = (idx: number, patch: Partial<NewsletterBlock['content']>) => {
@@ -120,25 +148,72 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
     setSelectedIdx(null);
   };
 
+  // Ce que la lettre contient, en une chaîne : la sauvegarde automatique
+  // compare à la dernière version enregistrée et ne part que si ça a changé.
+  const etat = JSON.stringify({ title, subject, preheader, fromName, blocks, audience, when, couverture, couvertureUrl, signature, lang, bandeau, fond, lettreDor, dorMessagerie, dorSection });
+  const etatSauve = useRef<string | null>(null);
+  useEffect(() => { if (!loading && etatSauve.current === null) etatSauve.current = etat; }, [loading, etat]);
+
+  // La version gardée dans l'historique : le contenu de la lettre, sans
+  // l'audience ni la date (qui ne se restaurent pas).
+  const contenuVersion = () => ({ title, subject, preheader, blocks, lang, bandeau, fond, couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, signature });
+
   const save = async (): Promise<string | null> => {
     if (isReadOnly) return id;
     setSaving(true);
+    const etatAuDepart = etat;
     try {
       const scheduledFor = when ? Timestamp.fromDate(new Date(when)) : null;
-      const enTete = { couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, signature, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null };
+      const enTete = { couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, signature, lang, bandeau, fond, traductionDe, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null };
+      let savedId = id;
       if (id) {
         await updateNewsletter(id, { title, subject, preheader, fromName, blocks, audience, scheduledFor, ...enTete });
       } else {
         const ref = await createNewsletter({ title, subject, preheader, fromName, blocks, status: 'draft', audience, scheduledFor, ...enTete });
         if (ref) setId(ref.id);
-        setSavedAt(new Date());
-        return ref?.id || null;
+        savedId = ref?.id || null;
       }
+      etatSauve.current = etatAuDepart;
       setSavedAt(new Date());
-      return id;
+      // Une version par heure d'écriture, au plus.
+      if (savedId && Date.now() - versionAt > 3600e3) {
+        try { await saveNewsletterVersion(savedId, { ...contenuVersion(), raison: 'heure' }); setVersionAt(Date.now()); } catch { /* l'historique n'empêche jamais la sauvegarde */ }
+      }
+      return savedId;
     } finally {
       setSaving(false);
     }
+  };
+
+  // Sauvegarde automatique : cinq secondes après le dernier changement, tant
+  // que la lettre est un brouillon et qu'elle a au moins un sujet ou un bloc.
+  useEffect(() => {
+    if (loading || saving || isReadOnly || status === 'scheduled') return;
+    if (etatSauve.current === null || etat === etatSauve.current) return;
+    if (!subject && !blocks.length) return;
+    const t = window.setTimeout(() => { save().catch(() => {}); }, 5000);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [etat, loading, saving, isReadOnly, status]);
+
+  const ouvrirVersions = async () => {
+    setSide('versions');
+    setVersions(null);
+    if (!id) { setVersions([]); return; }
+    try { setVersions(await getNewsletterVersions(id)); } catch { setVersions([]); }
+  };
+  // Restaurer : l'état actuel se garde d'abord (rien ne se perd), puis la
+  // version choisie prend la place. La sauvegarde automatique fait le reste.
+  const restaurer = async (v: NewsletterVersion) => {
+    if (!id || isReadOnly) return;
+    if (!confirm(`Revenir à la version du ${v.savedAt?.toDate().toLocaleString('fr-CA', { dateStyle: 'long', timeStyle: 'short' }) || '?'} ? La version actuelle est gardée dans l'historique.`)) return;
+    try { await saveNewsletterVersion(id, { ...contenuVersion(), raison: 'restauration' }); setVersionAt(Date.now()); } catch { /* noop */ }
+    setTitle(v.title || ''); setSubject(v.subject || ''); setPreheader(v.preheader || '');
+    setBlocks(v.blocks || []); setLang(v.lang === 'en' ? 'en' : 'fr'); setBandeau(v.bandeau || {}); setFond(v.fond || '#FFFFFF');
+    setCouverture(v.couverture || 'aucune'); setCouvertureUrl(v.couvertureUrl || ''); setSignature(v.signature !== false);
+    setSelectedIdx(null);
+    setSendInfo('Version restaurée. Elle s’enregistre toute seule dans quelques secondes.');
+    setVersions(await getNewsletterVersions(id).catch(() => []));
   };
 
   const [sendBusy, setSendBusy] = useState<'idle' | 'test' | 'live'>('idle');
@@ -180,6 +255,29 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
       setSendErr(e?.message || 'Envoi échoué.');
     } finally {
       setSendBusy('idle');
+    }
+  };
+
+  // « Dupliquer et traduire » : le brouillon s'enregistre, la fonction en fait
+  // une copie anglaise, et le composeur l'ouvre pour la relecture.
+  const dupliquerEtTraduire = async () => {
+    setSendErr(null); setSendInfo(null);
+    if (!subject || !blocks.length) { setSendErr('Le sujet et au moins un bloc sont requis avant de traduire.'); return; }
+    setTranslating(true);
+    try {
+      const savedId = isReadOnly ? id : await save();
+      if (!savedId) throw new Error('Impossible d’enregistrer le brouillon.');
+      if (!app) throw new Error('Firebase n’est pas configuré.');
+      const call = httpsCallable(getFunctions(app, 'us-central1'), 'traduireInfolettre');
+      const res: any = await call({ newsletterId: savedId });
+      const newId = res.data?.id as string | undefined;
+      if (!newId) throw new Error('La traduction n’a pas rendu de brouillon.');
+      if (onOpen) onOpen(newId);
+      else setSendInfo('Le brouillon anglais est créé : retrouvez-le dans la liste des infolettres.');
+    } catch (e: any) {
+      setSendErr(e?.message || 'La traduction a échoué.');
+    } finally {
+      setTranslating(false);
     }
   };
 
@@ -267,9 +365,15 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
         }`}>{status}</span>
         <span className="hidden md:inline text-xs text-[#293027]/50 dark:text-white/50 truncate max-w-[24ch]">{title || 'Nouvelle infolettre'}</span>
         <div className="ml-auto flex items-center gap-2 md:gap-3 flex-wrap">
-          {savedAt && <span className="text-xs text-[#293027]/50 dark:text-white/50">Enregistré à {savedAt.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })}</span>}
+          {savedAt && <span className="text-xs text-[#293027]/50 dark:text-white/50">{saving ? 'Enregistrement…' : `Enregistré à ${savedAt.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })}`}</span>}
+          <GhostButton onClick={() => (side === 'versions' ? setSide('reglages') : ouvrirVersions())} title="Les versions gardées pendant l’écriture, une par heure">
+            <i className="fa-solid fa-clock-rotate-left" /> {side === 'versions' ? 'Fermer l’historique' : 'Historique'}
+          </GhostButton>
           <GhostButton onClick={() => setSide(side === 'iris' ? 'reglages' : 'iris')} disabled={isReadOnly}>
             <i className="fa-solid fa-terminal" /> {side === 'iris' ? 'Fermer Iris' : 'Rédiger avec Iris'}
+          </GhostButton>
+          <GhostButton onClick={dupliquerEtTraduire} disabled={translating || !subject || !blocks.length} title="Copie toute la lettre en un brouillon anglais, à relire avant l’envoi">
+            <i className={`fa-solid ${translating ? 'fa-circle-notch fa-spin' : 'fa-language'}`} /> {translating ? 'Traduction…' : 'Dupliquer et traduire'}
           </GhostButton>
           <GhostButton onClick={() => setSide(side === 'preview' ? 'reglages' : 'preview')}>
             <i className={`fa-solid ${side === 'preview' ? 'fa-sliders' : 'fa-eye'}`} /> {side === 'preview' ? 'Réglages' : 'Aperçu du courriel'}
@@ -307,23 +411,55 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
       {loading ? (
         <div className="flex-1 flex items-center justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#8B4A2F] text-2xl" /></div>
       ) : (
-        <div className="flex-1 min-h-0 flex flex-col lg:flex-row">
+        <div className="flex-1 lg:min-h-0 flex flex-col lg:flex-row">
           {/* La page, pleine largeur : on écrit dedans directement */}
-          <main className="flex-1 min-w-0 overflow-y-auto" onClick={() => setSelectedIdx(null)}>
+          <main className="flex-1 min-w-0 lg:overflow-y-auto" onClick={() => setSelectedIdx(null)}>
             <div className="px-4 md:px-8 lg:px-10 py-6 md:py-8">
-              <div className="w-full bg-white dark:bg-[#293027] rounded-[24px] shadow-[0_20px_60px_-30px_rgba(41,48,39,0.35)] border border-[#293027]/5 dark:border-white/5">
-                {/* En-tête du courriel : sujet et pré-en-tête, modifiables au clic aussi */}
-                <div className="px-6 md:px-[8%] pt-8 pb-5 border-b border-[#293027]/5 dark:border-white/5" onClick={e => e.stopPropagation()}>
-                  <Label>Sujet du courriel *</Label>
+              <div className={`w-full rounded-[24px] shadow-[0_20px_60px_-30px_rgba(41,48,39,0.35)] border border-[#293027]/5 dark:border-white/5 ${sombre ? 'dark' : ''}`} style={{ background: fond }}>
+                {/* Le début de la lettre : sa langue, puis le bandeau tel qu'il partira */}
+                <div className="flex flex-wrap items-center gap-3 px-6 md:px-[8%] pt-5 pb-4" onClick={e => e.stopPropagation()}>
+                  <span className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/50 dark:text-white/50">Langue de la lettre</span>
+                  <div className="inline-flex rounded-full border border-[#293027]/10 dark:border-white/10 bg-[#EEE7DB] dark:bg-white/5 p-0.5">
+                    {(['fr', 'en'] as const).map(l => (
+                      <button key={l} type="button" disabled={isReadOnly} onClick={() => setLang(l)}
+                        className={`px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest transition-colors ${lang === l ? 'bg-[#293027] text-white dark:bg-[#BA7B39] dark:text-[#293027]' : 'text-[#293027]/60 dark:text-white/60 hover:text-[#8B4A2F]'}`}>
+                        {l === 'fr' ? 'Français' : 'English'}
+                      </button>
+                    ))}
+                  </div>
+                  {traductionDe && <span className="text-xs text-[#293027]/50 dark:text-white/50"><i className="fa-solid fa-language mr-1" /> Traduite d’une autre lettre : relisez chaque phrase avant l’envoi.</span>}
+                </div>
+                {!bandeau.masque && (
+                <div className="px-6 md:px-[8%] pt-8 pb-7 rounded-t-[24px]" style={{ backgroundColor: bandeau.fond || BANDEAU_DEFAUT.fond, backgroundImage: bandeau.image ? `linear-gradient(rgba(20,19,17,0.55), rgba(20,19,17,0.55)), url(${bandeau.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }} onClick={e => e.stopPropagation()}>
+                  <input
+                    value={bandeau.etiquette ?? ''} onChange={e => setBandeau(b => ({ ...b, etiquette: e.target.value }))} disabled={isReadOnly}
+                    placeholder={ETIQUETTE_DEFAUT[lang]} title="Le petit mot au-dessus du sujet"
+                    className="w-full bg-transparent outline-none text-[11px] uppercase tracking-[0.3em] font-semibold text-[#e0b060] placeholder:text-[#e0b060]/70 rounded-md focus:ring-2 focus:ring-[#BA7B39] px-1 -mx-1 mb-4"
+                  />
                   <input
                     value={subject} onChange={e => setSubject(e.target.value)} disabled={isReadOnly}
-                    placeholder="Cliquez ici pour écrire le sujet…"
-                    className="w-full bg-transparent outline-none font-serif text-2xl md:text-3xl text-[#3A251E] dark:text-white placeholder:text-[#3A251E]/30 dark:placeholder:text-white/30 rounded-md focus:ring-2 focus:ring-[#BA7B39] px-1 -mx-1"
+                    placeholder={lang === 'en' ? 'Click here to write the subject…' : 'Cliquez ici pour écrire le sujet…'}
+                    style={{ color: bandeau.texte || BANDEAU_DEFAUT.texte }}
+                    className="w-full bg-transparent outline-none font-serif text-2xl md:text-3xl placeholder:opacity-40 rounded-md focus:ring-2 focus:ring-[#BA7B39] px-1 -mx-1"
                   />
+                  <div className="mt-5 h-px w-16 bg-[#e0b060]" />
+                </div>
+                )}
+                <div className={`px-6 md:px-[8%] pt-6 pb-5 border-b border-[#293027]/5 dark:border-white/5 ${bandeau.masque ? '' : ''}`} onClick={e => e.stopPropagation()}>
+                  {bandeau.masque && (
+                    <>
+                      <Label>Sujet du courriel *</Label>
+                      <input
+                        value={subject} onChange={e => setSubject(e.target.value)} disabled={isReadOnly}
+                        placeholder="Cliquez ici pour écrire le sujet…"
+                        className="w-full bg-transparent outline-none font-serif text-2xl md:text-3xl text-[#3A251E] dark:text-white placeholder:text-[#3A251E]/30 dark:placeholder:text-white/30 rounded-md focus:ring-2 focus:ring-[#BA7B39] px-1 -mx-1"
+                      />
+                    </>
+                  )}
                   <input
                     value={preheader} onChange={e => setPreheader(e.target.value)} disabled={isReadOnly}
                     placeholder="Pré-en-tête : quelques mots d’intrigue vus dans la boîte de réception…"
-                    className="mt-2 w-full bg-transparent outline-none text-sm text-[#3A251E]/60 dark:text-white/60 placeholder:text-[#3A251E]/30 dark:placeholder:text-white/30 rounded-md focus:ring-2 focus:ring-[#BA7B39] px-1 -mx-1"
+                    className={`${bandeau.masque ? 'mt-2' : ''} w-full bg-transparent outline-none text-sm text-[#3A251E]/60 dark:text-white/60 placeholder:text-[#3A251E]/30 dark:placeholder:text-white/30 rounded-md focus:ring-2 focus:ring-[#BA7B39] px-1 -mx-1`}
                   />
                 </div>
 
@@ -335,19 +471,22 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
                     </div>
                   )}
                   {blocks.map((block, idx) => (
-                    <BlockFrame
-                      key={idx}
-                      block={block}
-                      selected={selectedIdx === idx}
-                      readOnly={isReadOnly}
-                      first={idx === 0}
-                      last={idx === blocks.length - 1}
-                      onSelect={() => setSelectedIdx(idx)}
-                      onPatch={patch => updateBlock(idx, patch)}
-                      onMove={dir => moveBlock(idx, dir)}
-                      onRemove={() => removeBlock(idx)}
-                      onPickImage={() => setPickFor(idx)}
-                    />
+                    <React.Fragment key={idx}>
+                      {!isReadOnly && <InsertPoint onAdd={t => addBlock(t, idx)} />}
+                      <BlockFrame
+                        block={block}
+                        selected={selectedIdx === idx}
+                        readOnly={isReadOnly}
+                        first={idx === 0}
+                        last={idx === blocks.length - 1}
+                        onSelect={() => setSelectedIdx(idx)}
+                        onPatch={patch => updateBlock(idx, patch)}
+                        onMove={dir => moveBlock(idx, dir)}
+                        onRemove={() => removeBlock(idx)}
+                        onDuplicate={() => duplicateBlock(idx)}
+                        onPickImage={() => setPickFor(idx)}
+                      />
+                    </React.Fragment>
                   ))}
 
                   {!isReadOnly && (
@@ -378,10 +517,30 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
                   onClose={() => setSide('reglages')}
                 />
               </div>
+            ) : side === 'versions' ? (
+              <div className="p-5 space-y-3">
+                <h3 className="font-serif text-xl text-[#293027] dark:text-white">Historique des versions</h3>
+                <p className="text-xs text-[#293027]/60 dark:text-white/60">La lettre s’enregistre toute seule cinq secondes après chaque changement. Une version se garde ici à chaque heure d’écriture, et juste avant une restauration.</p>
+                {versions === null && <p className="text-xs text-[#8B4A2F]"><i className="fa-solid fa-circle-notch fa-spin mr-1" />Les versions arrivent…</p>}
+                {versions && versions.length === 0 && <p className="text-xs text-[#293027]/50 dark:text-white/50">{id ? 'Aucune version encore : la première se garde à la prochaine sauvegarde.' : 'Le brouillon n’est pas encore créé.'}</p>}
+                <ul className="space-y-2">
+                  {(versions || []).map(v => (
+                    <li key={v.id} className="rounded-2xl border border-[#293027]/10 dark:border-white/10 bg-white dark:bg-[#293027] px-4 py-3 flex items-center gap-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm text-[#293027] dark:text-white truncate">{v.subject || '(sans sujet)'}</p>
+                        <p className="text-[11px] text-[#293027]/55 dark:text-white/55">
+                          {v.savedAt?.toDate().toLocaleString('fr-CA', { dateStyle: 'medium', timeStyle: 'short' }) || '…'} · {(v.blocks || []).length} bloc{(v.blocks || []).length > 1 ? 's' : ''}{v.lang === 'en' ? ' · anglais' : ''}{v.raison === 'restauration' ? ' · avant une restauration' : ''}
+                        </p>
+                      </div>
+                      <GhostButton onClick={() => restaurer(v)} disabled={isReadOnly}><i className="fa-solid fa-rotate-left" /> Restaurer</GhostButton>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ) : side === 'preview' ? (
               <div className="p-4">
                 <p className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/50 dark:text-white/50 mb-3">Le courriel tel qu’il partira</p>
-                <PreviewFrame blocks={blocks} subject={subject} preheader={preheader} couverture={couverture} couvertureUrl={couvertureUrl} signature={signature} height={Math.max(700, window.innerHeight - 160)} />
+                <PreviewFrame blocks={blocks} subject={subject} preheader={preheader} couverture={couverture} couvertureUrl={couvertureUrl} signature={signature} lang={lang} bandeau={bandeau} fond={fond} height={Math.max(700, window.innerHeight - 160)} />
               </div>
             ) : (
               <div className="p-5 space-y-5">
@@ -414,7 +573,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
                   <h3 className="font-serif text-xl text-[#293027] dark:text-white">À qui l’envoyer</h3>
                   <p className="text-xs text-[#293027]/60 dark:text-white/60 mt-1">Tout le monde, ou seulement les listes que vous cochez.</p>
                 </div>
-                <AudiencePicker value={audience} onChange={setAudience} disabled={isReadOnly || status === 'scheduled'} />
+                <AudiencePicker value={audience} onChange={setAudience} disabled={isReadOnly || status === 'scheduled'} lang={lang} />
                 {audienceVide && <p className="text-xs text-[#8B4A2F] bg-[#BA7B39]/10 rounded-xl px-3 py-2"><i className="fa-solid fa-circle-info mr-1" /> Cochez au moins une liste pour pouvoir envoyer.</p>}
                 </>}
                 <h3 className="pt-4 border-t border-[#293027]/10 dark:border-white/10 text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60">En-tête du courriel</h3>
@@ -445,6 +604,49 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
                     Signature de Krystine au bas du courriel
                   </label>
                 </div>
+                <h3 className="pt-4 border-t border-[#293027]/10 dark:border-white/10 text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60">Le bandeau</h3>
+                <div className="space-y-3" onClick={e => e.stopPropagation()}>
+                  <p className="text-xs text-[#293027]/55 dark:text-white/55">La bande sous la couverture qui porte le sujet. Son petit mot se change directement sur la page.</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {([
+                      { k: 'fond',  label: 'Couleur du fond',  defaut: BANDEAU_DEFAUT.fond },
+                      { k: 'texte', label: 'Couleur du sujet', defaut: BANDEAU_DEFAUT.texte },
+                    ] as const).map(o => (
+                      <label key={o.k} className={`flex items-center gap-2 rounded-2xl border border-[#293027]/10 dark:border-white/10 px-3 py-2 ${isReadOnly || bandeau.masque ? 'opacity-60' : 'cursor-pointer'}`}>
+                        <input type="color" value={bandeau[o.k] || o.defaut} disabled={isReadOnly || !!bandeau.masque}
+                          onChange={e => setBandeau(b => ({ ...b, [o.k]: e.target.value }))}
+                          className="w-8 h-8 rounded-lg border-0 bg-transparent p-0 cursor-pointer" />
+                        <span className="text-xs text-[#293027] dark:text-white">{o.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-3 pl-1">
+                    <GhostButton onClick={() => setBandeau(b => ({ ...b, fond: BANDEAU_DEFAUT.fond, texte: BANDEAU_DEFAUT.texte, image: null }))} disabled={isReadOnly || !!bandeau.masque}>Noir chaud d’origine</GhostButton>
+                  </div>
+                  <div className="flex items-center gap-3 pl-1">
+                    {bandeau.image
+                      ? <img src={bandeau.image} alt="" className="h-14 w-24 rounded-xl object-cover border border-[#293027]/10 dark:border-white/10" />
+                      : <span className="text-xs text-[#293027]/55 dark:text-white/55">Une image de fond, par-dessus la couleur.</span>}
+                    <GhostButton onClick={() => setPickFor('bandeau')} disabled={isReadOnly || !!bandeau.masque}><i className="fa-solid fa-images" /> {bandeau.image ? 'Changer' : 'Image'}</GhostButton>
+                    {bandeau.image && <GhostButton onClick={() => setBandeau(b => ({ ...b, image: null }))} disabled={isReadOnly}>Retirer</GhostButton>}
+                  </div>
+                  <label className={`flex items-center gap-3 pl-1 text-sm text-[#293027] dark:text-white ${isReadOnly ? 'opacity-60' : 'cursor-pointer'}`}>
+                    <input type="checkbox" checked={!!bandeau.masque} disabled={isReadOnly} onChange={e => setBandeau(b => ({ ...b, masque: e.target.checked }))} className="accent-[#BA7B39]" />
+                    Sans bandeau : le corps suit tout de suite la couverture
+                  </label>
+                </div>
+                <h3 className="pt-4 border-t border-[#293027]/10 dark:border-white/10 text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60">Fond de la lettre</h3>
+                <div className="space-y-2" onClick={e => e.stopPropagation()}>
+                  <p className="text-xs text-[#293027]/55 dark:text-white/55">La couleur du corps, prise dans la palette du site. Sur un fond sombre, le texte passe à l’ivoire tout seul.</p>
+                  <div className="flex flex-wrap gap-2">
+                    {FONDS_INFOLETTRE.map(f => (
+                      <button key={f.hex} type="button" disabled={isReadOnly} title={f.label} onClick={() => setFond(f.hex)}
+                        className={`w-9 h-9 rounded-full border-2 transition-transform ${fond.toUpperCase() === f.hex ? 'border-[#BA7B39] scale-110' : 'border-[#293027]/15 dark:border-white/20 hover:scale-105'}`}
+                        style={{ background: f.hex }} aria-label={f.label} aria-pressed={fond.toUpperCase() === f.hex} />
+                    ))}
+                  </div>
+                  <p className="text-xs text-[#8B4A2F]">{FONDS_INFOLETTRE.find(f => f.hex === fond.toUpperCase())?.label || fond}{sombre ? ' · texte ivoire' : ' · texte encre'}</p>
+                </div>
                 <h3 className="pt-4 border-t border-[#293027]/10 dark:border-white/10 text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60">Envoi</h3>
                 <div>
                   <Label>Titre interne (non envoyé)</Label>
@@ -467,7 +669,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack }) => {
       <MediathequePicker
         open={pickFor !== null}
         onClose={() => setPickFor(null)}
-        onSelect={url => { if (pickFor === 'entete') setCouvertureUrl(url); else if (pickFor !== null) updateBlock(pickFor, { url }); }}
+        onSelect={url => { if (pickFor === 'entete') setCouvertureUrl(url); else if (pickFor === 'bandeau') setBandeau(b => ({ ...b, image: url })); else if (pickFor !== null) updateBlock(pickFor, { url }); }}
       />
     </div>
     </Portail>
@@ -488,10 +690,26 @@ const BlockFrame: React.FC<{
   onPatch: (patch: Record<string, any>) => void;
   onMove: (dir: -1 | 1) => void;
   onRemove: () => void;
+  onDuplicate: () => void;
   onPickImage: () => void;
-}> = ({ block, selected, readOnly, first, last, onSelect, onPatch, onMove, onRemove, onPickImage }) => {
+}> = ({ block, selected, readOnly, first, last, onSelect, onPatch, onMove, onRemove, onDuplicate, onPickImage }) => {
   const c = (block.content || {}) as any;
   const stop = (e: React.SyntheticEvent) => e.stopPropagation();
+  // Gras, italique, souligné, lien : le geste s'applique à la sélection dans le
+  // paragraphe. Le mousedown est retenu pour que le champ garde le focus (et
+  // la sélection) le temps du clic.
+  const keepFocus = (e: React.MouseEvent) => e.preventDefault();
+  const exec = (cmd: string, arg?: string) => document.execCommand(cmd, false, arg);
+  const lier = () => {
+    const url = window.prompt('Adresse du lien (https://…)', 'https://');
+    if (!url || !/^https?:\/\//.test(url)) return;
+    exec('createLink', url);
+  };
+  const policeSelect = (defaut: 'serif' | 'sans') => (
+    <select value={c.police || defaut} onChange={e => onPatch({ police: e.target.value })} className={selectClass} title="Police">
+      {Object.entries(POLICES).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+    </select>
+  );
 
   return (
     <div
@@ -503,7 +721,7 @@ const BlockFrame: React.FC<{
       {!readOnly && (
         <div
           onClick={stop}
-          className={`absolute -top-4 right-2 z-10 flex items-center gap-1.5 bg-[#EEE7DB] dark:bg-[#151d19] rounded-full px-2 py-1 shadow-md border border-[#293027]/10 dark:border-white/10 transition-opacity ${selected ? 'opacity-100' : 'opacity-0 group-hover/bloc:opacity-100'}`}
+          className={`absolute bottom-full mb-1 left-2 right-2 lg:left-auto z-20 flex flex-wrap justify-end items-center gap-1.5 bg-[#EEE7DB] dark:bg-[#151d19] rounded-full px-2 py-1 shadow-md border border-[#293027]/10 dark:border-white/10 transition-opacity ${selected ? 'opacity-100' : 'opacity-0 pointer-events-none group-hover/bloc:opacity-100 group-hover/bloc:pointer-events-auto'}`}
         >
           {block.type === 'heading' && (
             <>
@@ -512,15 +730,26 @@ const BlockFrame: React.FC<{
                 <option value={2}>Titre</option>
                 <option value={3}>Sous-titre</option>
               </select>
+              {policeSelect('serif')}
               <button className={iconBtn} title={c.align === 'center' ? 'Aligner à gauche' : 'Centrer'} onClick={() => onPatch({ align: c.align === 'center' ? 'left' : 'center' })}>
                 <i className={`fa-solid ${c.align === 'center' ? 'fa-align-left' : 'fa-align-center'} text-xs`} />
               </button>
             </>
           )}
           {block.type === 'paragraph' && (
-            <button className={iconBtn} title={c.align === 'center' ? 'Aligner à gauche' : 'Centrer'} onClick={() => onPatch({ align: c.align === 'center' ? 'left' : 'center' })}>
-              <i className={`fa-solid ${c.align === 'center' ? 'fa-align-left' : 'fa-align-center'} text-xs`} />
-            </button>
+            <>
+              {policeSelect('sans')}
+              <select value={c.taille || 'md'} onChange={e => onPatch({ taille: e.target.value })} className={selectClass} title="Taille du texte">
+                {Object.entries(TAILLES).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+              </select>
+              <button className={iconBtn} onMouseDown={keepFocus} onClick={() => exec('bold')} title="Gras (sélectionnez du texte d’abord)"><i className="fa-solid fa-bold text-xs" /></button>
+              <button className={iconBtn} onMouseDown={keepFocus} onClick={() => exec('italic')} title="Italique"><i className="fa-solid fa-italic text-xs" /></button>
+              <button className={iconBtn} onMouseDown={keepFocus} onClick={() => exec('underline')} title="Souligné"><i className="fa-solid fa-underline text-xs" /></button>
+              <button className={iconBtn} onMouseDown={keepFocus} onClick={lier} title="Lien sur la sélection"><i className="fa-solid fa-link text-xs" /></button>
+              <button className={iconBtn} title={c.align === 'center' ? 'Aligner à gauche' : 'Centrer'} onClick={() => onPatch({ align: c.align === 'center' ? 'left' : 'center' })}>
+                <i className={`fa-solid ${c.align === 'center' ? 'fa-align-left' : 'fa-align-center'} text-xs`} />
+              </button>
+            </>
           )}
           {block.type === 'image' && (
             <>
@@ -539,6 +768,26 @@ const BlockFrame: React.FC<{
               <option value="secondary">Contour</option>
             </select>
           )}
+          {block.type === 'list' && (
+            <>
+              <select value={c.style || 'puce'} onChange={e => onPatch({ style: e.target.value })} className={selectClass} title="Puces ou numéros">
+                <option value="puce">Puces</option>
+                <option value="numero">Numéros</option>
+              </select>
+              {policeSelect('sans')}
+              <select value={c.taille || 'md'} onChange={e => onPatch({ taille: e.target.value })} className={selectClass} title="Taille du texte">
+                {Object.entries(TAILLES).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+              </select>
+              <button className={iconBtn} onMouseDown={keepFocus} onClick={() => exec('bold')} title="Gras"><i className="fa-solid fa-bold text-xs" /></button>
+              <button className={iconBtn} onMouseDown={keepFocus} onClick={() => exec('italic')} title="Italique"><i className="fa-solid fa-italic text-xs" /></button>
+              <button className={iconBtn} onMouseDown={keepFocus} onClick={lier} title="Lien sur la sélection"><i className="fa-solid fa-link text-xs" /></button>
+            </>
+          )}
+          {block.type === 'divider' && (
+            <select value={c.style || 'ligne'} onChange={e => onPatch({ style: e.target.value })} className={selectClass} title="Style du séparateur">
+              {Object.entries(SEPARATEURS).map(([k, v]) => <option key={k} value={k}>{v.glyphe ? `${v.glyphe.replace(/\s+/g, ' ')}  ${v.label}` : v.label}</option>)}
+            </select>
+          )}
           {block.type === 'spacer' && (
             <select value={c.size || 'md'} onChange={e => onPatch({ size: e.target.value })} className={selectClass} title="Hauteur de l'espace">
               <option value="sm">Petit</option>
@@ -549,7 +798,37 @@ const BlockFrame: React.FC<{
           <span className="w-px h-5 bg-[#293027]/10 dark:bg-white/10 mx-0.5" />
           <button className={iconBtn} onClick={() => onMove(-1)} disabled={first} title="Monter"><i className="fa-solid fa-arrow-up text-xs" /></button>
           <button className={iconBtn} onClick={() => onMove(1)} disabled={last} title="Descendre"><i className="fa-solid fa-arrow-down text-xs" /></button>
+          <button className={iconBtn} onClick={onDuplicate} title="Dupliquer ce bloc"><i className="fa-solid fa-clone text-xs" /></button>
           <button className={`${iconBtn} text-red-400 hover:text-red-600 hover:border-red-300`} onClick={onRemove} title="Supprimer ce bloc"><i className="fa-solid fa-trash text-xs" /></button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ─── Le « + » entre deux blocs : un titre (ou n'importe quel bloc) s'insère
+// là où l'on est, sans avoir à remonter un bloc depuis le bas de la page.
+const InsertPoint: React.FC<{ onAdd: (t: BlockType) => void }> = ({ onAdd }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="group/plus relative z-10 h-6 -my-3 flex items-center justify-center" onClick={e => e.stopPropagation()}>
+      <div className={`absolute inset-x-0 h-px transition-colors ${open ? 'bg-[#BA7B39]' : 'bg-transparent group-hover/plus:bg-[#BA7B39]/40'}`} />
+      <button
+        type="button"
+        onClick={() => setOpen(v => !v)}
+        title="Insérer un bloc ici"
+        className={`relative z-10 w-6 h-6 rounded-full flex items-center justify-center text-[11px] shadow-sm border transition-all ${open ? 'bg-[#BA7B39] text-[#293027] border-[#BA7B39] rotate-45' : 'bg-white dark:bg-[#293027] text-[#8B4A2F] border-[#293027]/10 dark:border-white/10 opacity-0 group-hover/plus:opacity-100 focus:opacity-100'}`}
+      >
+        <i className="fa-solid fa-plus" />
+      </button>
+      {open && (
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-30 flex flex-wrap justify-center gap-1.5 max-w-[560px] bg-[#EEE7DB] dark:bg-[#151d19] rounded-2xl p-2 shadow-lg border border-[#293027]/10 dark:border-white/10">
+          {BLOCK_PALETTE.map(b => (
+            <button key={b.type} type="button" onClick={() => { onAdd(b.type); setOpen(false); }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-white/5 hover:bg-[#BA7B39]/15 border border-[#293027]/5 dark:border-white/5 hover:border-[#BA7B39] text-[10px] uppercase tracking-wider text-[#293027]/80 dark:text-white/80 transition-colors">
+              <i className={`fa-solid ${b.icon} text-[#8B4A2F]`} /> {b.label}
+            </button>
+          ))}
         </div>
       )}
     </div>

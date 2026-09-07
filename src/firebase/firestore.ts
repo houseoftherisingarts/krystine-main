@@ -1,4 +1,5 @@
 import { db } from '../firebase';
+import { getLang } from '../lib/i18n/lang';
 import {
   collection, addDoc, getDocs, deleteDoc, doc, updateDoc, setDoc, getDoc,
   query, orderBy, where, serverTimestamp, onSnapshot, Timestamp,
@@ -148,6 +149,9 @@ export async function addNewsletterSubscriber(data: Omit<NewsletterSubscriber, '
   clean.email = String(clean.email).trim().toLowerCase();
   if (!clean.status) clean.status = 'active';
   if (!clean.unsubscribeToken) clean.unsubscribeToken = genUnsubToken();
+  // La langue du site au moment de l'inscription : c'est elle qui décide
+  // quelle version d'une infolettre la personne reçoit.
+  if (clean.lang !== 'fr' && clean.lang !== 'en') clean.lang = getLang();
   invalidateNewsletterSubscribers();
   return addDoc(collection(db, 'newsletter'), { ...clean, subscribedAt: serverTimestamp() });
 }
@@ -356,7 +360,7 @@ export async function bulkAddNewsletterSubscribers(
 
 // ─── Newsletter messages (campaigns) ─────────────────────────────────────────
 export type NewsletterStatus = 'draft' | 'scheduled' | 'sending' | 'sent' | 'failed';
-export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer';
+export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer' | 'list';
 
 export interface NewsletterBlock {
   type: BlockType;
@@ -377,8 +381,51 @@ export interface NewsletterStats {
 // Qui reçoit : tout le monde, des listes (étiquettes) ou des personnes choisies.
 export interface NewsletterAudience {
   mode: 'all' | 'tags' | 'emails';
+  // Langue des destinataires : « auto » (celle de la lettre, défaut), une
+  // langue précise, ou « toutes ». Ne s'applique pas aux personnes choisies
+  // une à une. Voir selectRecipients (functions/src/newsletter/send.ts).
+  langue?: 'auto' | 'fr' | 'en' | 'toutes';
   tags?: string[];
   emails?: string[];
+}
+
+export interface BandeauInfolettre {
+  etiquette?: string;   // « Infolettre » par défaut (« Newsletter » en anglais)
+  fond?: string;        // couleur de fond, #141311 par défaut
+  texte?: string;       // couleur du sujet, #EEE7DB par défaut
+  image?: string | null; // image de fond (médiathèque), par-dessus la couleur
+  masque?: boolean;     // vrai = aucun bandeau, le corps suit la couverture
+}
+
+// Une version de l'infolettre, gardée au plus une fois par heure pendant
+// l'écriture (et juste avant une restauration). Sous newsletters/{id}/versions.
+export interface NewsletterVersion {
+  id?: string;
+  savedAt?: Timestamp;
+  raison?: 'heure' | 'restauration';
+  title: string;
+  subject: string;
+  preheader?: string;
+  blocks: NewsletterBlock[];
+  lang?: 'fr' | 'en';
+  bandeau?: BandeauInfolettre | null;
+  fond?: string | null;
+  couverture?: 'podcast' | 'image' | 'aucune';
+  couvertureUrl?: string | null;
+  signature?: boolean;
+}
+
+export async function saveNewsletterVersion(id: string, v: Omit<NewsletterVersion, 'id' | 'savedAt'>) {
+  if (!db) noDb();
+  await addDoc(collection(db!, 'newsletters', id, 'versions'), { ...v, savedAt: serverTimestamp() });
+  await updateDoc(doc(db!, 'newsletters', id), { versionAt: serverTimestamp() } as any);
+}
+
+export async function getNewsletterVersions(id: string): Promise<NewsletterVersion[]> {
+  if (!db) return [];
+  const q = query(collection(db, 'newsletters', id, 'versions'), orderBy('savedAt', 'desc'), limit(48));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as NewsletterVersion));
 }
 
 export interface NewsletterDoc {
@@ -401,6 +448,17 @@ export interface NewsletterDoc {
   // `messagerie` la dépose dans leur fil avec le soutien, `section` dans leur
   // onglet Lettres. Absent ou null = infolettre ordinaire par courriel.
   lettreDor?: { messagerie: boolean; section: boolean } | null;
+  // Langue de la lettre : le bandeau, le pied et les libellés du courriel la
+  // suivent. « fr » quand absent. `traductionDe` pointe la lettre d'origine
+  // quand celle-ci est née de « Dupliquer et traduire ».
+  lang?: 'fr' | 'en';
+  traductionDe?: string | null;
+  // Le bandeau (noir chaud par défaut) : étiquette, couleurs, ou masqué.
+  bandeau?: BandeauInfolettre | null;
+  // Couleur de fond du corps de la lettre, prise dans la palette du site
+  // (FONDS_INFOLETTRE). Blanc quand absent. Les couleurs de texte suivent.
+  fond?: string | null;
+  versionAt?: Timestamp;   // dernière version gardée dans /versions
   sentAt?: Timestamp;
   stats?: NewsletterStats;
   createdBy?: string;
@@ -716,6 +774,7 @@ export interface MemberDoc {
   filleules?: number;
   filleulesAcheteuses?: number;
   accesVie?: boolean;              // compteur de parrainage, écrit par le serveur
+  lang?: 'fr' | 'en';             // langue choisie à la création du compte; le site s'ouvre dans cette langue
   newsletterSubscribed?: boolean; // true once the member is on the newsletter list
   newsletterSource?: string;      // page/context that triggered the subscription
   prefs?: { courrielBillets?: boolean; courrielChangements?: boolean };
@@ -1161,6 +1220,7 @@ export async function tagSubscribersForGroup(groupId: string, emails: string[]):
         status: 'active',
         source: `group-${groupId}`,
         tags: [tag],
+        lang: getLang(),
         subscribedAt: serverTimestamp(),
       });
       updated++;
