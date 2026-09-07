@@ -97,7 +97,7 @@ await browser.close();
 // fonction : mêmes écritures que repondreSondage, sur le compte admin
 // (temporaires, nettoyées à la fin par _aider-nettoie.mjs).
 const gtoken = execSync('gcloud auth print-access-token').toString().trim();
-const H = { Authorization: `Bearer ${gtoken}`, 'Content-Type': 'application/json' };
+const H = { Authorization: `Bearer ${gtoken}`, 'Content-Type': 'application/json', 'x-goog-user-project': PROJET };
 const lookup = await fetch(`https://identitytoolkit.googleapis.com/v1/projects/${PROJET}/accounts:lookup`, { method: 'POST', headers: H, body: JSON.stringify({ email: [EMAIL] }) }).then((r) => r.json());
 const uid = lookup.users?.[0]?.localId;
 if (!uid) { console.error('uid admin introuvable', lookup); process.exit(1); }
