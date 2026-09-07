@@ -181,7 +181,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
                   return (
                     <li key={f.id}>
                       <Link
-                        to="/compte?onglet=messagerie" role="menuitem" onClick={() => setMessagesOuverts(false)}
+                        to={versMessages} role="menuitem" onClick={() => setMessagesOuverts(false)}
                         className="flex items-center gap-3 px-4 py-3 hover:bg-[#BA7B39]/10 transition-colors"
                       >
                         <span className="min-w-0 flex-1">
