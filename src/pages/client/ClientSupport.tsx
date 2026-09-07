@@ -58,13 +58,16 @@ const ClientSupport: React.FC = () => {
 
   return (
     <div className="flex flex-col h-[60vh] min-h-[400px]">
-      <div className="mb-4">
-        <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold">
-          {lang === 'FR' ? 'Écrire à l’équipe' : 'Write to support'}
-        </h3>
-        <p className="text-xs text-[#293027]/40 dark:text-white/40 mt-1">
-          {lang === 'FR' ? "L'équipe Inspirata vous répondra dès que possible." : 'The Inspirata team will reply as soon as possible.'}
-        </p>
+      <div className="mb-4 flex items-center gap-3">
+        <SceauKSL taille={38} />
+        <div>
+          <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold">
+            {lang === 'FR' ? 'Équipe KSL' : 'KSL Team'}
+          </h3>
+          <p className="text-xs text-[#293027]/40 dark:text-white/40 mt-1">
+            {lang === 'FR' ? 'L’équipe KSL vous répond ici, dès que possible.' : 'The KSL team answers here, as soon as possible.'}
+          </p>
+        </div>
       </div>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto bg-[#EEE7DB] dark:bg-white/5 rounded-[20px] p-5 space-y-3">
