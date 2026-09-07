@@ -294,6 +294,8 @@ const App: React.FC = () => (
           {/* Chaque section de l'admin a son adresse : /admin/formulaires,
               /admin/infolettre, /admin/live… (voir SECTION_SLUGS). */}
           <Route path="/admin/:section" element={<AdminDashboard />} />
+          {/* TEMPORAIRE — QA de l'onglet Gamification, retiré après les captures. */}
+          <Route path="/__gamification" element={<QAGamification />} />
           <Route path="/desinscription" element={<UnsubscribePage />} />
           {/* Hidden / unlisted — slide-style background of the home hero */}
           <Route path="/slidebg" element={<SlideBg />} />
