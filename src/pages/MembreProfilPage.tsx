@@ -37,6 +37,7 @@ const LIBELLE = 'text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]'
 const MembreProfilPage: React.FC = () => {
   const { uid } = useParams<{ uid: string }>();
   const { user, lang } = useApp();
+  const gam = useGamification();
   const fr = lang === 'FR';
 
   const amiesDOrigine = useAmiesDOrigine();
