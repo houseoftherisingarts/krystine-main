@@ -392,7 +392,7 @@ export const BOUTIQUE: ArticleBoutique[] = [
 export interface FaconDeGagner { pts: string; fr: string; en: string; noteFR?: string; noteEN?: string }
 export const FACONS_DE_GAGNER: FaconDeGagner[] = [
   { pts: `${POINTS.welcome}`, fr: 'Créer son compte', en: 'Create your account', noteFR: 'offerts à l’ouverture', noteEN: 'offered at signup' },
-  { pts: `${ROUE_QUOTIDIENNE[0]} à ${ROUE_QUOTIDIENNE[6]}`, fr: 'Revenir chaque jour', en: 'Come back every day', noteFR: 'la roue des sept jours', noteEN: 'the seven-day wheel' },
+  { pts: '5', fr: 'Revenir chaque jour', en: 'Come back every day', noteFR: 'le cadeau du jour, une bannière exclusive au 7e jour', noteEN: "today's gift, an exclusive banner every 7th day" },
   { pts: `${POINTS.profil}`, fr: 'Compléter son profil (photo, nom, dosha)', en: 'Complete your profile (photo, name, dosha)', noteFR: 'une fois', noteEN: 'once' },
   { pts: `${POINTS.quiz}`, fr: 'Faire le quiz Dosha', en: 'Take the Dosha quiz', noteFR: 'une fois', noteEN: 'once' },
   { pts: `${POINTS.newsletter}`, fr: 'S’abonner à l’infolettre', en: 'Subscribe to the newsletter', noteFR: 'une fois', noteEN: 'once' },
