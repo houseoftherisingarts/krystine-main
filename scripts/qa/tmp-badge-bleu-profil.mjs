@@ -177,13 +177,13 @@ try {
   }
 
   // 5. La section skins de la boutique : sans le skin (B) et avec le skin actif (D).
-  for (const c of [B, D]) for (const [w, h, v] of VIEWS) {
+  if (ETAPES.includes('boutique')) for (const c of [B, D]) for (const [w, h, v] of VIEWS) {
     const { ctx, page, fermerRoue } = await session(c, { width: w, height: h });
     await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('#boutique-skin', { timeout: 25000 }); await page.waitForTimeout(2500); await fermerRoue();
     const carte = page.locator('#boutique-skin .rounded-\\[18px\\]', { hasText: 'Skin Vérifié' }).first();
-    await carte.evaluate(el => { const y = el.getBoundingClientRect().top + window.scrollY - (window.innerWidth < 500 ? 84 : 300); window.scrollTo(0, Math.max(0, y)); });
-    await page.waitForTimeout(600);
+    await carte.evaluate(el => el.scrollIntoView({ block: 'center', behavior: 'instant' }));
+    await page.waitForTimeout(900);
     await page.screenshot({ path: `${OUT}/boutique-${c.nom}-${v}.png` });
     await carte.screenshot({ path: `${OUT}/boutique-${c.nom}-${v}-carte.png` });
     console.log(`boutique ${c.nom} ${v} : carte « ${(await carte.textContent()).replace(/\s+/g, ' ').slice(0, 120)} »`);
