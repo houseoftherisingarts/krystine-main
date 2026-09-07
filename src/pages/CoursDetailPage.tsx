@@ -405,18 +405,37 @@ const CoursDetailPage: React.FC = () => {
               {formation.description && (
                 <p className="whitespace-pre-line text-[#38403a]/80 dark:text-white/80">{formation.description}</p>
               )}
-              <p className="mt-6 font-serif text-3xl text-[#293027] dark:text-white">{formation.prix} $ CA</p>
-              <button
-                onClick={acheter}
-                disabled={paiement}
-                className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-[#293027] shadow-[0_8px_22px_-10px_rgba(186,123,57,0.8)] transition-colors hover:bg-[#9c6630] disabled:opacity-50"
-              >
-                <i className="fa-solid fa-lock-open" />
-                {paiement ? (lang === 'FR' ? 'Redirection…' : 'Redirecting…') : (lang === 'FR' ? 'Rejoindre la formation' : 'Join the course')}
-              </button>
-              <p className="mt-3 text-xs text-[#38403a]/50 dark:text-white/50">
-                {lang === 'FR' ? 'Paiement sécurisé par Stripe. La formation apparaît dans votre espace dès le paiement.' : 'Secure payment by Stripe. The course appears in your space right after payment.'}
-              </p>
+              {formation.listeAttente ? (
+                <>
+                  <p className="mt-6 text-sm text-[#38403a]/70 dark:text-white/70">
+                    {lang === 'FR'
+                      ? "Cette formation n'est pas encore ouverte. Inscrivez-vous à la liste d'attente pour être avisée dès son ouverture."
+                      : "This course isn't open yet. Join the waitlist to be notified as soon as it opens."}
+                  </p>
+                  <Link
+                    to={`/liste-attente?programme=${id}&titre=${encodeURIComponent(formation.titre)}`}
+                    className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-[#293027] shadow-[0_8px_22px_-10px_rgba(186,123,57,0.8)] transition-colors hover:bg-[#9c6630]"
+                  >
+                    <i className="fa-solid fa-hourglass-half" />
+                    {lang === 'FR' ? "Rejoindre la liste d'attente" : 'Join the waitlist'}
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <p className="mt-6 font-serif text-3xl text-[#293027] dark:text-white">{formation.prix} $ CA</p>
+                  <button
+                    onClick={acheter}
+                    disabled={paiement}
+                    className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-[#293027] shadow-[0_8px_22px_-10px_rgba(186,123,57,0.8)] transition-colors hover:bg-[#9c6630] disabled:opacity-50"
+                  >
+                    <i className="fa-solid fa-lock-open" />
+                    {paiement ? (lang === 'FR' ? 'Redirection…' : 'Redirecting…') : (lang === 'FR' ? 'Rejoindre la formation' : 'Join the course')}
+                  </button>
+                  <p className="mt-3 text-xs text-[#38403a]/50 dark:text-white/50">
+                    {lang === 'FR' ? 'Paiement sécurisé par Stripe. La formation apparaît dans votre espace dès le paiement.' : 'Secure payment by Stripe. The course appears in your space right after payment.'}
+                  </p>
+                </>
+              )}
               {isAdmin && (
                 <a href={`/cours/${id}?apercu=1`} className="mt-4 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]/80 hover:text-[#8B4A2F]">
                   <i className="fa-solid fa-eye" /> Aperçu administratrice, sans acheter
