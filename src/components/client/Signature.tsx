@@ -1,11 +1,14 @@
 import React from 'react';
 
-// La signature manuscrite de Krystine (son logo script, version claire).
-export const SIGNATURE_URL = '/compte/signature-krystine.png';
+// La signature manuscrite de Krystine, version dorée (Krystine, 7 septembre
+// 2026). Elle remplace l'ancien wordmark ivoire. La version vert foncé vit à
+// côté, /compte/signature-krystine-noire.webp, pour un fond clair : il suffit
+// de changer l'adresse ci-dessous.
+export const SIGNATURE_URL = '/compte/signature-krystine-or.webp';
 
 // La signature de Krystine St-Laurent en bas à droite de chaque bannière et
-// de chaque fond d'écran : le wordmark du site (Cormorant, capitales
-// espacées), qui se retire contre cinq niskas (Alex, 6 septembre 2026).
+// de chaque fond d'écran, qui se retire contre cinq niskas (Alex, 6 septembre
+// 2026).
 // Le conteneur mesure sa propre largeur (container query) : la signature
 // garde la même proportion sur une vignette, dans le hero ou plein écran.
 export const AvecSignature: React.FC<{ signe: boolean; className?: string; children: React.ReactNode }> = ({ signe, className = '', children }) => (

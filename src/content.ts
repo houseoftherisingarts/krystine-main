@@ -225,7 +225,7 @@ export const CONTENT = {
             {
               title: 'Titre à révéler',
               subtitle: '',
-              cover: '/livres/titre-a-reveler.webp',
+              cover: null, // aucune image tant que le titre n'est pas révélé (Krystine, 7 septembre 2026)
               releaseDate: 'février 2027',
               publisher: "Éditions de l'Homme",
               captureCta: 'Être prévenue de la parution',
@@ -462,7 +462,7 @@ export const CONTENT = {
           {
             title: 'Title to be revealed',
             subtitle: '',
-            cover: '/livres/titre-a-reveler.webp',
+            cover: null, // no cover until the title is revealed (Krystine, 7 September 2026)
             releaseDate: 'February 2027',
             publisher: "Éditions de l'Homme",
             captureCta: 'Notify me when it releases',
