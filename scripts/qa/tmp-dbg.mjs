@@ -24,6 +24,8 @@ page.on('console', msg => console.log('PAGE:', msg.type(), msg.text()));
 page.on('pageerror', e => console.log('PAGEERROR', e.message));
 await page.goto(`${BASE}/robots.txt`);
 await page.evaluate(([key, val]) => new Promise((res, rej) => {
+  localStorage.setItem('krystine-jeu-vu', new Date().toISOString().slice(0, 10));
+  localStorage.setItem('krystine-banniere-flash-vu', '1');
   const req = indexedDB.open('firebaseLocalStorageDb', 1);
   req.onupgradeneeded = () => req.result.createObjectStore('firebaseLocalStorage', { keyPath: 'fbase_key' });
   req.onsuccess = () => { const tx = req.result.transaction('firebaseLocalStorage', 'readwrite'); tx.objectStore('firebaseLocalStorage').put({ fbase_key: key, value: val }); tx.oncomplete = () => res(true); tx.onerror = rej; };
