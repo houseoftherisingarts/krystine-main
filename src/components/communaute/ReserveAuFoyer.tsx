@@ -93,11 +93,9 @@ export const MotDuFoyer: React.FC<{ lang?: string; quoi: string; compact?: boole
     <div className={`rounded-[20px] border border-[#BA7B39]/40 bg-[#BA7B39]/10 text-center ${compact ? 'p-4' : 'p-6 md:p-8'}`}>
       <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F] dark:text-[#d9a05b]"><i className="fa-solid fa-fire mr-1" /> {fr ? 'Le Foyer d’Origine' : 'The Origine Hearth'}</p>
       <p className={`mx-auto mt-3 max-w-md font-serif text-[#293027] dark:text-white ${compact ? 'text-lg' : 'text-xl'}`}>{quoi}</p>
-      <Link to="/foyer" className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#293027] px-6 py-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#EEE7DB] hover:bg-[#3a453a] dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]">
+      <Link to={CHEMINS_FOYER.vente} className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#293027] px-6 py-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#EEE7DB] hover:bg-[#3a453a] dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]">
         {fr ? 'Rejoindre la communauté vivante' : 'Join the living community'} <i className="fa-solid fa-arrow-right text-[10px]" />
       </Link>
     </div>
   );
 };
-
-export default ReserveAuFoyer;
