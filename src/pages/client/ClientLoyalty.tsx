@@ -259,12 +259,16 @@ const ClientLoyalty: React.FC = () => {
               {lang === 'FR' ? `Gagnés en tout · ${balance.lifetime} · c’est ce total qui fait pousser votre plante` : `Earned overall · ${balance.lifetime} · this total grows your plant`}
             </p>
             <div className="mb-4 flex flex-wrap gap-2">
+              {gam.roueQuotidienne && (
               <button type="button" onClick={() => window.dispatchEvent(new Event('krystine:ouvrir-roue'))} className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/50 bg-white/60 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:bg-white dark:bg-white/10 dark:text-[#d9a05b]">
                 <i className="fa-solid fa-sun" /> {lang === 'FR' ? 'Mon cadeau du jour' : 'My gift of the day'}
               </button>
+              )}
+              {gam.acheterNiskas && (
               <button type="button" onClick={() => { window.location.hash = 'paquets-niskas'; window.dispatchEvent(new Event('krystine:ouvrir-boutique')); window.setTimeout(() => window.dispatchEvent(new Event('krystine:ouvrir-paquets')), 400); }} className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] hover:bg-[#d9a05b]">
                 <i className="fa-solid fa-bag-shopping" /> {lang === 'FR' ? 'Acheter des niskas' : 'Buy niskas'}
               </button>
+              )}
             </div>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 dark:bg-white/10 backdrop-blur-sm text-[10px] uppercase tracking-[0.25em] font-bold" style={{ color: current.accent }}>
               <i className="fa-solid fa-seedling" />
