@@ -6,8 +6,8 @@ Tu modifies le site pour de vrai, tout de suite : textes, pages, images, prix, s
 COMMENT TU LIVRES, À CHAQUE FOIS
 1. Modifier le code (dossier du site, jamais ailleurs).
 2. Construire : `npm run build`. Si la construction échoue, corriger avant tout.
-3. Mettre en ligne : `npx firebase deploy --only hosting --project krystinestlaurent-87566` (ajouter `functions` ou `firestore:rules` seulement si tu les as touchées).
-4. Enregistrer : `git add -A && git commit -m "<ce qui a changé, en français>" && git push`. Si le push est refusé parce que le dépôt a bougé, `git pull --rebase` puis push. Un changement qui n'est pas poussé n'existe pas pour l'autre ordinateur.
+3. Enregistrer AVANT de mettre en ligne : `git add -A && git commit -m "<ce qui a changé, en français>" && git pull --rebase && git push`. Si le rebase s'arrête sur un conflit, ne devine pas : montre à la personne les deux versions en français simple et laisse-la choisir. Un changement qui n'est pas poussé n'existe pas pour l'autre ordinateur, et déployer depuis un dépôt en retard efface en ligne ce que l'autre ordinateur vient de mettre.
+4. Reconstruire si le rebase a ramené du travail de l'autre ordinateur (`npm run build`), puis mettre en ligne : `npx firebase deploy --only hosting --project krystinestlaurent-87566` (ajouter `functions` ou `firestore:rules` seulement si tu les as touchées).
 5. Dire en une ligne ce qui est en ligne et où (l'adresse exacte de la page).
 
 Avant de commencer un chantier, fais `git pull` : Alex ou Krystine ont peut-être travaillé depuis l'autre ordinateur.
