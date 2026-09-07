@@ -609,6 +609,9 @@
 .skin-verifie .bg-white { background-color: rgba(242, 246, 251, 0.92) !important; }
 .skin-verifie input, .skin-verifie textarea, .skin-verifie select { color: var(--sk-encre); background-color: rgba(255, 255, 255, 0.06); }
 .skin-verifie ::placeholder { color: rgba(242, 246, 251, 0.5) !important; }
+/* Le bouton flottant « Problème technique » (bg-[#EEE7DB]/85) restait crème sous un
+   libellé repeint en bleu pâle : illisible. Ici il prend la nuit du skin. */
+.skin-verifie .bg-\[\#EEE7DB\]\/85, .skin-verifie .hover\:bg-\[\#EEE7DB\]:hover { background-color: rgba(30, 74, 122, 0.92) !important; }
 
 /* Les motifs et les scènes animées des skins riches vivent dans skins/motifs.css et skins/effets.css. */
 /* ═══ La profondeur des skins communs ═══
