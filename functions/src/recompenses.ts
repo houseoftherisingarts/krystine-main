@@ -143,7 +143,7 @@ export const echangerRecompense = onCall(
         const data = d.data() as { rewardId?: string; status?: string };
         return data.rewardId === rewardId && data.status !== 'cancelled';
       });
-      if (deja) throw new HttpsError('already-exists', 'Cette récompense a déjà été réclamée.');
+      if (deja) throw new HttpsError('already-exists', 'Ce cadeau a déjà été réclamé.');
     }
 
     const balRef = db.doc(`memberPoints/${uid}`);
