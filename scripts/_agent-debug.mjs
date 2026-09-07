@@ -1,0 +1,13 @@
+import { chromium } from 'playwright';
+const b = await chromium.launch();
+const c = await b.newContext({ viewport: { width: 1440, height: 1000 } });
+const p = await c.newPage();
+p.on('console', (msg) => console.log('[console]', msg.type(), msg.text()));
+p.on('pageerror', (err) => console.log('[pageerror]', err.message));
+await p.goto('http://localhost:3033/medias', { waitUntil: 'domcontentloaded' });
+await p.waitForTimeout(2500);
+const btns = await p.getByRole('button', { name: /Créer mon compte/i }).count();
+console.log('boutons trouvés:', btns);
+const html = await p.locator('body').innerHTML();
+console.log('body length:', html.length);
+await b.close();
