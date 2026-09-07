@@ -58,7 +58,9 @@ export async function offrirCoffre(uid: string, type: TypeCoffre, avecCle: boole
 
 /** Le coffre bêta (functions/src/niskas.ts) : jugé et crédité côté serveur,
  *  une seule fois, pour les comptes créés du 7 septembre au 1er octobre 2026.
- *  `offert` ne revient vrai qu'au tout premier appel qui le dépose. */
-export async function reclamerCoffreBeta(): Promise<{ offert: boolean; montant: number; message: string; balance: number }> {
-  return (await fn('reclamerCoffreBeta')({})).data as { offert: boolean; montant: number; message: string; balance: number };
+ *  `eligible` reste vrai à chaque appel pour ce compte; `offert` ne revient
+ *  vrai qu'au tout premier appel qui dépose les niskas. */
+export interface CoffreBetaReponse { eligible: boolean; offert: boolean; montant: number; message: string; balance: number }
+export async function reclamerCoffreBeta(): Promise<CoffreBetaReponse> {
+  return (await fn('reclamerCoffreBeta')({})).data as CoffreBetaReponse;
 }
