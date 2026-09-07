@@ -342,6 +342,13 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
             const cle = a.id.slice(5);
             etat = possede[a.id]
               ? bascule(perso.skin === cle, () => activer({ skin: perso.skin === cle ? '' : cle }), fr ? 'Skin actif' : 'Skin on', fr ? 'Activer le skin' : 'Turn the skin on')
+              : k?.reserve === 'badge-bleu'
+                ? (
+                  // Le Skin Vérifié ne se tire dans aucun coffre : il vient avec le Badge Bleu, demandé depuis l'onglet Profil.
+                  <Link to="/compte?onglet=profile" className="inline-flex items-center gap-2 rounded-full border border-dashed border-[#38403a]/25 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/60 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/25 dark:text-white/60" title={fr ? 'Ce skin se gagne avec le Badge Bleu, depuis l’onglet Profil de votre espace.' : 'This skin comes with the Blue Badge, requested from the Profile tab of your space.'}>
+                    <i className="fa-solid fa-circle-check text-[9px]" /> {fr ? 'Réservé au Badge Bleu' : 'Reserved for the Blue Badge'}
+                  </Link>
+                )
               : k && k.cout === null
                 ? (
                   <span className="inline-flex items-center gap-2 rounded-full border border-dashed border-[#38403a]/25 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/60 dark:border-white/25 dark:text-white/60" title={fr ? 'Ce skin ne s’achète pas : il se trouve dans un coffre.' : 'This skin cannot be bought: it is found in a chest.'}>
