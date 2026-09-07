@@ -91,7 +91,8 @@ const capter = async (page, nom, vp, { plein = true, attendre = 2500, avant } = 
   const fichier = `${OUT}/${nom}-${vp}.png`;
   await page.screenshot({ path: fichier, fullPage: plein });
   mesures[`${nom}-${vp}`] = await mesurer(page);
-  console.log('capture', nom, vp, mesures[`${nom}-${vp}`].contenu);
+  fs.writeFileSync(`${OUT}/mesures.json`, JSON.stringify(mesures, null, 2));
+  console.log('capture', nom, vp, JSON.stringify(mesures[`${nom}-${vp}`].contenu));
 };
 
 try {
@@ -109,7 +110,8 @@ try {
     await ctx.close();
   }
 
-  for (const [vp, viewport] of [['1440', { width: 1440, height: 900 }], ['390', { width: 390, height: 844 }]]) {
+  const VPS = (process.env.VPS || '1440,390').split(',');
+  for (const [vp, viewport] of [['1440', { width: 1440, height: 900 }], ['390', { width: 390, height: 844 }]].filter(([v]) => VPS.includes(v))) {
     // ── 2. qa1, membre du Foyer ──
     const { ctx, page } = await ouvrirSession(viewport, q1, 'Test QA Foyer');
     const aller = async (url) => { await page.goto(`${BASE}${url}`, { waitUntil: 'domcontentloaded' }); };
@@ -122,10 +124,13 @@ try {
     } });
     // La cloche et la bulle des messages, dans la barre du haut
     await aller('/compte'); await page.waitForTimeout(3000); await fermerRoue(page);
-    await page.locator('button[aria-label^="Notifications"]').click(); await page.waitForTimeout(700);
-    await page.screenshot({ path: `${OUT}/cloche-notifications-${vp}.png` });
-    await page.locator('button[aria-label^="Messages"]').click(); await page.waitForTimeout(700);
-    await page.screenshot({ path: `${OUT}/cloche-messages-${vp}.png` });
+    await page.screenshot({ path: `${OUT}/entete-${vp}.png`, clip: { x: 0, y: 0, width: viewport.width, height: 120 } });
+    for (const [aria, nomC] of [['Notifications', 'cloche-notifications'], ['Messages', 'cloche-messages']]) {
+      const b = page.locator(`button[aria-label^="${aria}"]`).first();
+      const boite = await b.boundingBox().catch(() => null);
+      console.log('bouton', aria, vp, JSON.stringify(boite));
+      try { await b.click({ force: true, timeout: 5000 }); await page.waitForTimeout(700); await page.screenshot({ path: `${OUT}/${nomC}-${vp}.png` }); } catch (e) { console.log('clic impossible', aria, vp, String(e).split('\n')[0]); }
+    }
     await page.keyboard.press('Escape');
 
     await aller('/membres'); await capter(page, 'membres', vp, { attendre: 3500 });
@@ -159,7 +164,6 @@ try {
     await aller2('/cours/foyer'); await s2.page.waitForTimeout(3500); console.log('qa2 /cours/foyer →', s2.page.url());
     await s2.ctx.close();
   }
-  fs.writeFileSync(`${OUT}/mesures.json`, JSON.stringify(mesures, null, 2));
 } finally {
   await browser.close();
   for (const u of [q1, q2]) await rest(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${API_KEY}`, { idToken: u.idToken });
