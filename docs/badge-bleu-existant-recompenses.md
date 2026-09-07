@@ -77,7 +77,7 @@ Côté client, l'onglet Téléchargements liste toute entrée d'`achatsFormation
 
 ### 3.4 Les rabais tirés d'un coffre (`coffres.ts:254-260`)
 
-Un rabais gagné n'est pas un code : c'est un document `rewardRedemptions` `{ uid, email, rewardId, rewardLabel: '15 % sur les Huiles Corporelles (coffre argent)', cost: 0, status: 'pending', source: 'coffre', createdAt }` (`:257`). Il apparaît sous Points, « Mes récompenses », en attente, et dans l'admin comme récompense à honorer (section 5). Le `rewardId` `reb-huiles` est tiré 1 fois sur 25 au coffre d'argent (`:70`).
+Un rabais gagné dans un coffre ne produit aucun code. Le serveur ajoute un document dans `rewardRedemptions` avec `cost: 0`, `status: 'pending'`, `source: 'coffre'`, le `rewardId` du rabais et un libellé du genre « 15 % sur les Huiles Corporelles (coffre argent) » (`:257`). Ce document apparaît ensuite sous Points dans « Mes récompenses » comme une demande en attente, et dans l'admin comme une récompense à honorer (section 5). Le `rewardId` `reb-huiles` sort une fois sur vingt-cinq au coffre d'argent (`:70`).
 
 ### 3.5 Le grand lot passe par `cadeaux` (`coffres.ts:293-307`)
 
