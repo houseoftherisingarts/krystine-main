@@ -258,17 +258,27 @@ const App: React.FC = () => (
           <Route path="/cours" element={<CoursPage />} />
           <Route path="/cours/:id" element={<CoursDetailPage />} />
           <Route path="/espace" element={<Navigate to="/compte" replace />} />
-          {/* Le Foyer social : le fil, l'annuaire, la fiche, les groupes et la
-              messagerie vivent dans la coquille CadreFoyer. /communaute reste
-              la page statique de l'hébergement (HardReload plus haut). */}
-          <Route path="/fil" element={<CommunauteEspace />} />
-          <Route path="/membres" element={<CommunauteMembres />} />
+          {/* Le Foyer social vit SOUS /foyer (Alex, 7 septembre 2026) : le fil,
+              l'annuaire, la fiche, les groupes et la messagerie s'ouvrent dans
+              la coquille CadreFoyer, réservée aux membres du Foyer d'Origine.
+              /communaute reste la page statique de l'hébergement (HardReload
+              plus haut). */}
+          <Route path="/foyer/fil" element={<CommunauteEspace />} />
+          <Route path="/foyer/membres" element={<CommunauteMembres />} />
+          <Route path="/foyer/membre/:uid" element={<MembreProfilPage />} />
+          <Route path="/foyer/groupes" element={<GroupesPage />} />
+          <Route path="/foyer/groupes/:id" element={<GroupesPage />} />
+          <Route path="/foyer/messages" element={<MessagesPage />} />
+          <Route path="/foyer/messages/:autreUid" element={<MessagesPage />} />
+          {/* Les anciennes adresses publiques mènent au Foyer, paramètres compris. */}
+          <Route path="/fil" element={<VersFoyer />} />
+          <Route path="/membres" element={<VersFoyer />} />
+          <Route path="/membre/:uid" element={<VersFoyer />} />
+          <Route path="/groupes" element={<VersFoyer />} />
+          <Route path="/groupes/:id" element={<VersFoyer />} />
+          <Route path="/messages" element={<VersFoyer />} />
+          <Route path="/messages/:autreUid" element={<VersFoyer />} />
           <Route path="/demo-skins" element={<DemoSkins />} />
-          <Route path="/membre/:uid" element={<MembreProfilPage />} />
-          <Route path="/groupes" element={<GroupesPage />} />
-          <Route path="/groupes/:id" element={<GroupesPage />} />
-          <Route path="/messages" element={<MessagesPage />} />
-          <Route path="/messages/:autreUid" element={<MessagesPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
           {/* Chaque section de l'admin a son adresse : /admin/formulaires,
               /admin/infolettre, /admin/live… (voir SECTION_SLUGS). */}
