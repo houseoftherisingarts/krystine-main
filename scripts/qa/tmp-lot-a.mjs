@@ -133,6 +133,23 @@ try {
   }
   await capturer(page, 'fil-foyer-1440');
 
+  // Les billets de la membre lus par suivrePublicationsDe (where uid ==, sans index composite) :
+  // si la fiche rend déjà BilletCarte (LOT B), on y voit la carte, le vote et un commentaire.
+  await aller(page, `/membre/${A.uid}`);
+  const commenter = page.getByRole('button', { name: /Commenter/ });
+  if (await commenter.count() > 0) {
+    const art = page.locator('article', { has: commenter.first() }).first();
+    await art.getByRole('button', { name: 'Voter pour' }).click().catch(() => {});
+    await commenter.first().click();
+    await art.locator('textarea[placeholder*="commentaire"]').fill('Oui ! Depuis lundi, et le café attend maintenant la fin de la respiration.');
+    await art.getByRole('button', { name: 'Envoyer' }).click();
+    await art.locator('text=Depuis lundi').waitFor({ timeout: 20000 }).catch(() => {});
+    await page.waitForTimeout(2500);
+    await capturer(page, 'billet-sur-fiche-1440');
+  } else {
+    console.log('fiche : aucune BilletCarte rendue (la fiche n’emploie pas encore BilletCarte)');
+  }
+
   await aller(page, '/fil?fil=krystine'); await capturer(page, 'fil-krystine-1440');
   await aller(page, '/fil?fil=communaute'); await capturer(page, 'fil-communaute-1440');
 
