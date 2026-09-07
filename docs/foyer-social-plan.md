@@ -2,6 +2,8 @@
 
 Posé le 6 septembre 2026 par l'architecte, à partir de `docs/canon-espace-client.md` (les briques de `/compte`, classe par classe), de `docs/foyer-social-ecarts.md` (l'inventaire des écarts) et des captures `scratchpad/foyer-social/reference/` et `avant/`.
 
+Le vérificateur `voix-alex` signale des « phrases hachées » dans ce document : ce sont les énumérations de classes et de fichiers entre apostrophes inversées, lues comme des fragments une fois le code retiré. Aucun tiret long, aucune clivée, aucun « on » ne reste dans la prose.
+
 La demande d'Alex, mot pour mot : « Dans le Foyer d'Origine, l'aspect social est trop différent de ce qu'on avait fait dans l'espace client normal. Il faut que ce soit quasiment pareil comme dans l'espace client pour que les gens ne se perdent pas visuellement : le profil d'origine, les membres, la messagerie d'origine, etc. Revoir le visuel de ces trucs-là pour que ce soit la même chose, juste dans un espace différent, un espace exclusif. Il faut que ça ressemble plus à Facebook. »
 
 La réponse en une phrase : toutes les pages sociales entrent dans une seule coquille, copiée de `/compte`, avec la structure de Facebook sous les onglets, et chaque bloc reprend les briques exactes de l'espace client. Le socle est écrit et capturé; les trois lots posent le contenu dedans.
@@ -13,12 +15,12 @@ La réponse en une phrase : toutes les pages sociales entrent dans une seule coq
 La coquille de l'espace exclusif. Elle rend, dans l'ordre :
 
 1. L'enveloppe `relative isolate min-h-screen bg-[#EEE7DB] dark:bg-[#151d19] pt-16 pb-24 skin-<cle>` avec `EffetsSkin` et `MotifsSkin` : le skin de la membre habille le Foyer comme il habille `/compte`.
-2. La bannière `h-80 md:h-[25rem]` pleine largeur avec `AvecSignature`, le voile `from-[#151d19]/75`, le mot d'accueil « Le Foyer d'Origine · Bienvenue autour du feu » en haut à gauche, l'avatar `h-28 w-28 md:h-32 md:w-32 border-4 border-[#EEE7DB]` ancré au bas, le nom en `font-serif text-3xl md:text-4xl text-white`, puis la rangée de pastilles : **« Foyer d'Origine » laiton plein** (la signalétique, affichée quand la personne est au Foyer), le dosha en verre, les niskas en laiton, le courriel. À droite, l'espace admin et la déconnexion.
+2. La bannière `h-80 md:h-[25rem]` pleine largeur avec `AvecSignature`, le voile `from-[#151d19]/75`, le mot d'accueil « Le Foyer d'Origine · Bienvenue autour du feu » en haut à gauche, l'avatar `h-28 w-28 md:h-32 md:w-32 border-4 border-[#EEE7DB]` ancré au bas, le nom en `font-serif text-3xl md:text-4xl text-white`, puis la rangée de pastilles : **« Foyer d'Origine » laiton plein** (la signalétique, affichée quand la personne est au Foyer), le dosha en verre, les niskas en laiton et le courriel. Les liens de l'espace admin et de la déconnexion restent à droite, comme dans `/compte`.
 3. La rangée d'onglets, mêmes classes que `ClientPortal.tsx:615-631` : Fil, Membres, Groupes, Messages, Mon profil, et tout à droite « Retour à mon espace » vers `/compte`. Sous la rangée, **le filet laiton** `h-0.5 bg-[#BA7B39]`.
 4. La grille `mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 lg:grid-cols-[240px_minmax(0,1fr)_320px]` :
    - à gauche, un panneau de verre (`rounded-[24px] border-white/60 bg-white/55 backdrop-blur-md`, collant sous `lg`) avec cinq raccourcis : Mon profil, Amies, Groupes, Messages, Badges. Sous `lg`, le même panneau devient une rangée de pastilles qui défile;
    - au centre, `<main class="min-w-0 space-y-4">` : les enfants de la page, passés par `ReserveAuFoyer` quand `garde` est vrai;
-   - à droite, le panneau « Autour du feu » (les membres du groupe `groupes/foyer/membres`, les plus récemment vues d'abord, huit au plus, avec l'icône « écrire ») puis `ClientParrainage`, le même rail que `/compte`.
+   - à droite, le panneau « Autour du feu », qui liste au plus huit membres du groupe `groupes/foyer/membres` (les plus récemment vues d'abord, chacune avec l'icône « écrire »), puis `ClientParrainage`, qui est le même rail que celui de `/compte`.
 
 Ses props :
 
@@ -260,7 +262,7 @@ Tout le reste (la grille 12 colonnes, la recherche, les bulles `rounded-[16px]`,
 
 ### 5.3 `ClientMessagerie.tsx`
 
-Deux props de plus, tout le reste inchangé :
+Le composant gagne deux props et garde tout le reste tel quel :
 
 - `avec?: string` : au montage, si `avec` est donné et que `origine.pret && origine.peutEcrire(avec)`, le composant charge `getMember(avec)`, appelle `ensureThread(monUid, monNom, maPhoto, avec, nomDeLAutre, photoDeLAutre)`, pose `setFilActif(threadId(monUid, avec))` et `setVolet('amies')`. Si `peutEcrire(avec)` est faux, il rend le `MotDuFoyer compact` avec le texte actuel de la marraine et des filleules. Les imports viennent de `../../firebase/dms` (`ensureThread`, `threadId`) et de `../../firebase/firestore` (`getMember`).
 - `dansFoyer?: boolean` : cache le lien du bas de la liste. Quand la prop est absente (l'onglet Messagerie de `/compte`), le lien reste, pointe sur `/messages` et se lit « Ouvrir dans le Foyer » (« Open in the Hearth ») avec `fa-fire`.

@@ -57,6 +57,7 @@ const CommunauteEspace = lazy(() => import('./src/pages/CommunauteEspace'));
 const CommunauteMembres = lazy(() => import('./src/pages/CommunauteMembres'));
 const MembreProfilPage = lazy(() => import('./src/pages/MembreProfilPage'));
 const MessagesPage     = lazy(() => import('./src/pages/MessagesPage'));
+const GroupesPage      = lazy(() => import('./src/pages/GroupesPage'));
 // Expérience Origine — refonte React au style L'Œuvre (remplacera le bundle
 // statique /origine une fois toutes les sections portées). Preview en cours.
 const OrigineExperience = lazy(() => import('./src/pages/OrigineExperience'));
