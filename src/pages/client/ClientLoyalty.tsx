@@ -7,6 +7,7 @@ import { POINTS, TIERS, FACONS_DE_GAGNER, tierFromLifetime, rewardMinThreshold, 
 import PieceNiska from '../../components/client/PieceNiska';
 import { suivreRecompenses, RECOMPENSES_PAR_DEFAUT } from '../../firebase/recompenses';
 import PointsPlant, { type Stage } from '../../components/PointsPlant';
+import { useGamification } from '../../contexts/GamificationContext';
 
 // Labels for every PointsKind surfaced in the activity history. Kept here
 // rather than in pointsConfig because the wording is UI-facing.
