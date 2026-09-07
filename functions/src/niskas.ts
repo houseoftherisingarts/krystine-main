@@ -467,7 +467,7 @@ export const reclamerQuotidien = onCall(
     // (30, 60, 90…) garde son grand cadeau.
     let cadeauRoue: CadeauRoue | null = null;
     let cadeauMois: CadeauMois | null = null;
-    if (!r.deja && r.foyer) {
+    if (!r.deja && r.foyer && roueFoyerActive) {
       cadeauRoue = await cadeauRoueDuFoyer(db, uid, r.serie, aujourdhui).catch((e) => { console.warn('[niskas] roue du Foyer', e); return null; });
       if (estJourMoisFoyer(r.serie)) cadeauMois = await cadeauMoisFoyer(db, uid, r.serie, aujourdhui).catch((e) => { console.warn('[niskas] cadeau du mois du Foyer', e); return null; });
     }
