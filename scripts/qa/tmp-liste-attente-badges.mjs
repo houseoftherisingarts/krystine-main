@@ -46,8 +46,8 @@ try {
   // ── L1 : visiteur anonyme sur la production ──
   const ctxAnon = await browser.newContext({ viewport: { width: 1600, height: 900 } });
   const pageAnon = await ctxAnon.newPage();
-  await pageAnon.goto('https://krystinestlaurent.ca/liste-attente?programme=pitta', { waitUntil: 'networkidle' });
-  await pageAnon.waitForTimeout(1500);
+  await pageAnon.goto('https://krystinestlaurent.ca/liste-attente?programme=pitta', { waitUntil: 'domcontentloaded', timeout: 45000 });
+  await pageAnon.waitForTimeout(2500);
   await fermerRoue(pageAnon);
   await pageAnon.screenshot({ path: `${OUT}/liste-attente/L1-visiteur.png`, fullPage: false });
   // Zoom sur le bouton + la phrase d'aide
