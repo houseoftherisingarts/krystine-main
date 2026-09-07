@@ -103,6 +103,14 @@ const RouteFade: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return <div key={location.pathname}>{children}</div>;
 };
 
+// Les anciens chemins du social (/fil, /membres, /membre/:uid, /groupes,
+// /messages) sont passés sous /foyer. Un seul composant les y mène, en
+// gardant le reste de l'adresse : /membre/abc → /foyer/membre/abc.
+const VersFoyer: React.FC = () => {
+  const { pathname, search, hash } = useLocation();
+  return <Navigate to={`/foyer${pathname}${search}${hash}`} replace />;
+};
+
 const Chrome: React.FC = () => {
   const location = useLocation();
   const hidden = location.pathname.startsWith('/admin')

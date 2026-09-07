@@ -2,7 +2,7 @@ import { chromium } from 'playwright';
 const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 page.on('pageerror', e => console.log('pageerror', e.message.slice(0, 120)));
-await page.goto('http://localhost:3011/', { waitUntil: 'domcontentloaded' });
+await page.goto('http://localhost:3011/compte', { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(4000);
 const cookie = page.getByRole('button', { name: /J'accepte/i }); if (await cookie.count()) await cookie.first().click().catch(() => {});
 
