@@ -140,6 +140,6 @@ try {
 } finally {
   await browser.close();
   await rest(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${API_KEY}`, { idToken: u.idToken });
-  for (const p of [`members/${uid}`, `memberPoints/${uid}`, `boutique/${uid}`]) await fsdel(p);
+  for (const p of [`members/${uid}`, `memberPoints/${uid}`, `boutique/${uid}`, `pointsEvents/qa-seed-${uid}`]) await fsdel(p);
   console.log('fini, compte supprimé');
 }
