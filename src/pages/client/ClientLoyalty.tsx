@@ -411,7 +411,7 @@ const ClientLoyalty: React.FC = () => {
                   ) : alreadyClaimed ? (
                     <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#8B4A2F]">
                       <i className="fa-solid fa-check mr-1" />
-                      {lang === 'FR' ? 'Récompense obtenue' : 'Claimed'}
+                      {lang === 'FR' ? 'Cadeau obtenu' : 'Claimed'}
                     </span>
                   ) : !canAfford ? (
                     <span className="text-[10px] uppercase tracking-[0.25em] text-[#293027]/40 dark:text-white/40">
