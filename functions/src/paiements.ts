@@ -15,6 +15,16 @@ const STRIPE_WEBHOOK_SECRET = defineSecret('STRIPE_WEBHOOK_SECRET');
 
 const SITE = 'https://www.krystinestlaurent.ca';
 
+// TPS + TVQ du Québec, via Stripe Tax (calcul automatique selon l'adresse de
+// facturation). Tant que l'enregistrement fiscal Québec n'est pas activé dans
+// le tableau de bord Stripe (Paramètres > Fiscalité), Stripe ne facture 0 $
+// de taxe : jamais de taxe inventée côté code. Voir stripeWebhook plus bas
+// pour la répartition TPS/TVQ enregistrée dans la commande.
+const TAXES_QC = {
+  'automatic_tax[enabled]': 'true',
+  billing_address_collection: 'required',
+} as const;
+
 const ADMIN_EMAILS = [
   'admin@krystinestlaurent.ca',
   'krystine@inspiratanature.com',
