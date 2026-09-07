@@ -434,6 +434,8 @@ export const reclamerQuotidien = onCall(
   { region: 'us-central1' },
   async (req) => {
     if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour votre récompense du jour.');
+    await exigerModule('roueQuotidienne');
+    const roueFoyerActive = (await lireGamification()).roueFoyer;
     const uid = req.auth.uid;
     const db = getFirestore();
     const aujourdhui = journee();
