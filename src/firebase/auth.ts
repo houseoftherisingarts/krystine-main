@@ -1,4 +1,4 @@
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -12,6 +12,7 @@ import {
   onAuthStateChanged,
   User,
 } from 'firebase/auth';
+import { doc, setDoc, arrayUnion } from 'firebase/firestore';
 import { points } from './points';
 import { ensureMemberProfile } from './firestore';
 import { reclamerCodeRetenu } from './parrainage';
