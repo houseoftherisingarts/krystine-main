@@ -894,6 +894,10 @@ export interface ConversationDoc {
   lastMessageAt?: Timestamp;
   unreadByAdmin?: number;
   unreadByClient?: number;
+  /** Posée par le mot privé de Krystine (MessagesSection) : absente ou vraie,
+   *  la membre écrit comme toujours; fausse, les règles refusent son
+   *  écriture jusqu'à ce que Krystine la rouvre. */
+  reponseAutorisee?: boolean;
 }
 
 export interface MessageDoc {
@@ -905,6 +909,9 @@ export interface MessageDoc {
   type?: 'lettreDor';
   newsletterId?: string;
   subject?: string;
+  /** Écrit par le mot privé de Krystine (jamais par la boîte générale
+   *  Équipe KSL) : le message se signe à son nom dans la messagerie de la membre. */
+  deKrystine?: boolean;
 }
 
 export async function ensureConversation(uid: string, profile: Pick<ConversationDoc, 'memberEmail' | 'memberName' | 'memberPhotoURL'>) {
