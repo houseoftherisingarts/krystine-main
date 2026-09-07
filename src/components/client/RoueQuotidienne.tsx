@@ -65,10 +65,10 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
     return () => window.removeEventListener('krystine:ouvrir-roue', ouvrir);
   }, []);
 
-  if (!etat || !ouvert) return null;
+  if (!gam.roueQuotidienne || !etat || !ouvert) return null;
   const fr = lang === 'FR';
   const jour = etat.jour;
-  const foyer = etat.foyer === true;
+  const foyer = etat.foyer === true && gam.roueFoyer;
   const jourFoyer = etat.jourFoyer ?? jour;
   const cadeau = foyer ? phraseRoueFoyer(etat, fr) : null;
   const cadeauMois = foyer ? phraseMoisFoyer(etat, fr) : null;
