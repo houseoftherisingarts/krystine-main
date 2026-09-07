@@ -43,8 +43,13 @@ await admin.screenshot({ path: `${OUT}/agent-admin-apres-login.png` });
 try {
   await admin.goto(BASE + '/admin', { waitUntil: 'domcontentloaded' });
   await admin.waitForTimeout(1500);
-  const formationsNav = admin.getByText('Formations', { exact: false }).first();
-  if (await formationsNav.count()) { await formationsNav.click(); await admin.waitForTimeout(1500); }
+  const clicked = await admin.evaluate(() => {
+    const btn = Array.from(document.querySelectorAll('button')).find(b => b.querySelector('i.fa-graduation-cap'));
+    if (btn) { btn.click(); return true; }
+    return false;
+  });
+  console.log('bouton Formations trouvé et cliqué:', clicked);
+  await admin.waitForTimeout(1800);
   const bodyText = await admin.locator('body').innerText();
   const hit = /stress|aromath/i.test(bodyText);
   console.log('=== FORMATIONS: mention stress/aromathérapie dans /admin?', hit, '===');
