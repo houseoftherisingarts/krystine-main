@@ -39,6 +39,7 @@ async function compterProgrammes(db: Firestore, uid: string): Promise<number> {
 
 export const demanderBadgeBleu = onCall(REGION, async (req) => {
   if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour demander votre Badge Bleu.');
+  if ((await lireGamification()).badgeBleuEquipeSeulement) throw new HttpsError('failed-precondition', 'Le Badge Bleu est réservé à l’équipe pour le moment.');
   const uid = req.auth.uid;
   const pieceChemin = String(req.data?.pieceChemin || '');
   if (!cheminPieceValide(uid, pieceChemin)) throw new HttpsError('invalid-argument', 'Le chemin de la pièce est invalide.');
