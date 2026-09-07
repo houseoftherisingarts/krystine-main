@@ -105,20 +105,6 @@ const fermerRoueSiPresente = async (page) => {
   }
 };
 
-const mockCoffreBeta = (page) => page.route('**/reclamerCoffreBeta', async (route) => {
-  try {
-    const reponse = await route.fetch();
-    if (reponse.ok()) return route.fulfill({ response: reponse });
-    console.log(`  reclamerCoffreBeta réelle a répondu ${reponse.status()} (fonction non déployée, attendu) → réponse simulée`);
-  } catch (e) {
-    console.log(`  reclamerCoffreBeta réelle injoignable (${e.message}) → réponse simulée`);
-  }
-  await route.fulfill({
-    status: 200, contentType: 'application/json',
-    body: JSON.stringify({ result: { eligible: true, offert: true, montant: 50, message: 'Merci d’être bêta-testeuse', balance: 70 } }),
-  });
-});
-
 // ─── 2 + 3. Inscription (vraie fenêtre, puis repli REST) + l'animation ──────
 async function scenarioInscriptionEtAnimation(browser) {
   console.log('\n=== 2. Inscription par la vraie fenêtre du site ===');
