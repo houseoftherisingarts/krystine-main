@@ -147,8 +147,22 @@ export function isMember(user: User | null): boolean {
   return !!user && !isAdminUser(user);
 }
 
+// Pose son propre uid dans etat/admins à chaque connexion admin (Alex, 7
+// septembre 2026) : les règles s'en servent (esAdminUid, firestore.rules)
+// pour fermer les portes de côté de la messagerie — aucune conversation
+// directe (dms) vers Krystine ou Alex — sans avoir à connaître les emails
+// côté règles. Écriture posée par l'admin seul (isAdmin() dans les règles).
+async function bootstrapAdminEtat(uid: string) {
+  if (!db) return;
+  try {
+    await setDoc(doc(db, 'etat', 'admins'), { uids: arrayUnion(uid) }, { merge: true });
+  } catch (e) {
+    console.warn('[auth] bootstrapAdminEtat', e);
+  }
+}
+
 async function bootstrapMember(user: User, provider: 'google' | 'email') {
-  if (isAdminUser(user)) return; // admin profiles live elsewhere
+  if (isAdminUser(user)) { bootstrapAdminEtat(user.uid).catch(() => {}); return; } // admin profiles live elsewhere
   try {
     await ensureMemberProfile({
       uid: user.uid,
