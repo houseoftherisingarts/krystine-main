@@ -20,6 +20,7 @@ import ClientLoyalty from './client/ClientLoyalty';
 import ClientFormations from './client/ClientFormations';
 import ClientTelechargements from './client/ClientTelechargements';
 import ClientRediffusions from './client/ClientRediffusions';
+import ClientAider from './client/ClientAider';
 import ProblemeTechnique from '../components/client/ProblemeTechnique';
 import ClientPreferences from './client/ClientPreferences';
 import { subscribeToMemberPoints, suivreBoutique, points, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../firebase/points';
