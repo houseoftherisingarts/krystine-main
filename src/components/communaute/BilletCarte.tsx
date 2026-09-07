@@ -69,6 +69,7 @@ const LigneCommentaire: React.FC<{ postId: string; postAuteurUid: string; c: Com
 
 const BilletCarte: React.FC<{ post: PostMur; delaiIndex: number; estSauvegarde?: boolean }> = ({ post, delaiIndex, estSauvegarde }) => {
   const { user, member, isAdmin } = useAuth();
+  const { lang } = useApp();
   const [garde, setGarde] = useState(false);
   useEffect(() => { if (estSauvegarde !== undefined) setGarde(estSauvegarde); }, [estSauvegarde]);
   const [partage, setPartage] = useState(false);
