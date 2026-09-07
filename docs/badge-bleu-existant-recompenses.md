@@ -91,7 +91,7 @@ Le Foyer offert s'écrit comme un cadeau à 100 % dans `cadeaux` (`:294-298`, `f
 
 ### 4.1 Offrir (`cadeaux.ts:38-94`)
 
-Réservé aux courriels admin (`:14-21`, `:41-42`; la même liste est recopiée dans `coffres.ts:113-116`). Entrées `uid`, `formationId`, `pourcent` (1 à 100), `message` (`:43-47`). Le cadeau s'écrit dans `cadeaux/{auto}` avec la forme `Cadeau` (`:25-36`) : `uid`, `formationId`, `formationTitre`, `formationImage`, `prix`, `pourcent`, `message`, `deUid`, `deNom: 'Krystine'` (toujours, `:61`), `statut: 'offert'`, `creeLe` (`:63-74`). Puis le mot dans la messagerie, écrit à la main (mêmes champs que `ecrireMessageKrystine`) avec `cadeauId: ref.id` sur le message (`:76-91`).
+La fonction n'accepte que les courriels de la liste admin (`:14-21`, `:41-42`); cette liste est recopiée telle quelle dans `coffres.ts:113-116`. Elle reçoit `uid`, `formationId`, un `pourcent` de 1 à 100 et un `message` (`:43-47`). Le cadeau s'écrit dans `cadeaux/{auto}` sous la forme `Cadeau` (`:25-36`), qui garde l'uid de la cliente, la formation avec son titre, son image et son prix, le pourcentage, le message, l'uid de l'admin qui offre, le nom `Krystine` quel que soit l'admin (`:61`), le `statut: 'offert'` et la date (`:63-74`). Le mot part ensuite dans la messagerie, écrit à la main avec les mêmes champs que `ecrireMessageKrystine`, et le message porte `cadeauId: ref.id` (`:76-91`).
 
 Le cadeau est **lié à une formation** : `formations/{formationId}` doit exister (`:56`). Il n'y a pas de cadeau « produit Shopify » ni « code de rabais » dans ce schéma.
 
