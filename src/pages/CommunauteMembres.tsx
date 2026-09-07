@@ -144,7 +144,7 @@ const CommunauteMembres: React.FC = () => {
                     </button>
                   </div>
                 ));
-              }))}
+              }), true)}
             {envoyees.length > 0 && (
               <div className="mt-6">
                 <p className={PETITES_CAPITALES}>{fr ? 'Demandes envoyées' : 'Requests sent'}</p>
