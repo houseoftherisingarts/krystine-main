@@ -41,7 +41,7 @@ const LigneCommentaire: React.FC<{ postId: string; postAuteurUid: string; c: Com
 
   return (
     <div className="flex gap-2.5 py-2.5 first:pt-0">
-      <Medaillon nom={c.nom} url={c.avatarUrl} taille={30} />
+      <Avatar nom={c.nom} url={c.avatarUrl} taille={30} />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="font-serif text-[13px] text-[#293027] dark:text-white">{c.nom}</span>
