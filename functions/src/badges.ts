@@ -1,6 +1,7 @@
 import { onDocumentCreated, onDocumentUpdated } from 'firebase-functions/v2/firestore';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { crediterNiskas } from './niskas';
+import { lireGamification } from './gamification';
 
 // Les badges honorifiques se posent côté serveur seulement (anti-triche),
 // sur le patron du FMM : badges/{uid}.obtenus.{badgeId} = date.
