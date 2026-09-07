@@ -37,15 +37,15 @@ for (const w of [1440, 390]) {
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 1200 } });
 const page = await ctx.newPage();
 await page.goto(BASE + '/compte', { waitUntil: 'domcontentloaded' });
-await page.waitForTimeout(1200);
-await page.getByRole('button', { name: /Créer mon compte/i }).first().click();
+await page.waitForTimeout(1500);
+await page.getByRole('button', { name: /Créer mon compte/i }).first().click({ timeout: 10000 });
+await page.waitForTimeout(600);
+await page.getByText('Déjà un compte').click({ timeout: 10000 });
 await page.waitForTimeout(500);
-await page.getByText('Déjà un compte').click();
-await page.waitForTimeout(400);
 await page.getByPlaceholder(/Courriel/i).fill('admin@krystinestlaurent.ca');
 await page.getByPlaceholder(/Mot de passe/i).fill('cJOOAoXbEsKBuoTVMDBs4CYI');
 await page.getByRole('button', { name: /^Se connecter$/i }).click();
-await page.waitForTimeout(3000);
+await page.waitForTimeout(3500);
 console.log('connectée');
 
 // 3a) Saisons : les deux boutons côte à côte.
