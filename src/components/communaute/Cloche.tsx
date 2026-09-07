@@ -130,10 +130,10 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
       quand: c.creeLe?.toMillis?.() ?? Date.now(),
     }));
     return [...dons, ...msgs, ...demandes, ...nouveauxBillets].sort((a, b) => b.quand - a.quand);
-  }, [fils, amities, billets, cadeaux, vu, uid]);
+  }, [fils, amities, billets, cadeaux, vu, uid, foyer, versMessages]);
 
   const total = items.length;
-  const bouton = 'relative inline-flex items-center justify-center w-10 h-10 rounded-full border transition-colors';
+  const bouton = 'relative items-center justify-center w-10 h-10 rounded-full border transition-colors';
   const style = { background: 'rgba(246,243,238,0.9)', borderColor: 'rgba(186,123,57,0.35)', color: '#8B4A2F' };
 
   return (
