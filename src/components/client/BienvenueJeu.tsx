@@ -1,28 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { PAQUETS_NISKAS, POINTS, ROUE_QUOTIDIENNE } from '../../lib/pointsConfig';
+import { updateMember } from '../../firebase/firestore';
 import PieceNiska from './PieceNiska';
 import Portail from '../Portail';
 
 // Le pop-up de bienvenue de l'espace : comment le jeu fonctionne (les niskas,
-// la roue, la boutique, la plante, le parrainage). Il s'ouvre une fois, à la
-// première visite, puis se rappelle par « Revoir les explications » dans le
-// profil (événement krystine:ouvrir-jeu).
+// la roue, la boutique, la plante, le parrainage). Il s'ouvre une fois, au
+// premier login d'un compte tout neuf, puis se rappelle par « Revoir les
+// explications » dans le profil (événement krystine:ouvrir-jeu). Le drapeau
+// « vu » vit sur la fiche members (bienvenueVu), jamais seulement en
+// localStorage : sur un autre appareil, le pop-up ne revient pas non plus
+// (Alex, 7 septembre 2026). `vu` vient de ClientPortal (member.bienvenueVu);
+// `undefined` veut dire que la fiche n'est pas encore chargée — on attend.
 
-const CLE_VU = 'krystine-jeu-vu';
-
-const BienvenueJeu: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
+const BienvenueJeu: React.FC<{ uid: string; vu: boolean | undefined; lang: 'FR' | 'EN' }> = ({ uid, vu, lang }) => {
   const [ouvert, setOuvert] = useState(false);
   useEffect(() => {
-    let vu = '';
-    try { vu = localStorage.getItem(CLE_VU) || ''; } catch { /* noop */ }
-    if (!vu) setOuvert(true);
+    if (vu === false) setOuvert(true);
+  }, [vu]);
+  useEffect(() => {
     const ouvrir = () => setOuvert(true);
     window.addEventListener('krystine:ouvrir-jeu', ouvrir);
     return () => window.removeEventListener('krystine:ouvrir-jeu', ouvrir);
   }, []);
   const fermer = () => {
     setOuvert(false);
-    try { localStorage.setItem(CLE_VU, new Date().toISOString().slice(0, 10)); } catch { /* noop */ }
+    if (vu === false) updateMember(uid, { bienvenueVu: true }).catch(() => {});
   };
   if (!ouvert) return null;
   const fr = lang === 'FR';
