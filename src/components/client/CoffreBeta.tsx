@@ -21,13 +21,14 @@ import { useGamification } from '../../contexts/GamificationContext';
 // ni au rechargement, ni sur un autre appareil (Alex, 7 septembre 2026).
 
 const CoffreBeta: React.FC<{ uid: string; lang: 'FR' | 'EN'; bienvenueVu: boolean | undefined; coffreBetaVu: boolean | undefined }> = ({ uid, lang, bienvenueVu, coffreBetaVu }) => {
+  const gam = useGamification();
   const [cadeau, setCadeau] = useState<{ montant: number; message: string } | null>(null);
   const [tremble, setTremble] = useState(true);
 
   useEffect(() => {
     // On attend que la fiche soit chargée, que BienvenueJeu se soit fermée
     // (bienvenueVu === true) et que ce coffre-ci n'ait pas déjà été réglé.
-    if (!uid || bienvenueVu !== true || coffreBetaVu !== false) return;
+    if (!uid || !gam.coffreBeta || bienvenueVu !== true || coffreBetaVu !== false) return;
     let vivant = true;
     reclamerCoffreBeta().then((r) => {
       if (!vivant) return;
