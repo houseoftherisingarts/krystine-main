@@ -258,9 +258,15 @@ const App: React.FC = () => (
           <Route path="/cours" element={<CoursPage />} />
           <Route path="/cours/:id" element={<CoursDetailPage />} />
           <Route path="/espace" element={<Navigate to="/compte" replace />} />
+          {/* Le Foyer social : le fil, l'annuaire, la fiche, les groupes et la
+              messagerie vivent dans la coquille CadreFoyer. /communaute reste
+              la page statique de l'hébergement (HardReload plus haut). */}
+          <Route path="/fil" element={<CommunauteEspace />} />
           <Route path="/membres" element={<CommunauteMembres />} />
           <Route path="/demo-skins" element={<DemoSkins />} />
           <Route path="/membre/:uid" element={<MembreProfilPage />} />
+          <Route path="/groupes" element={<GroupesPage />} />
+          <Route path="/groupes/:id" element={<GroupesPage />} />
           <Route path="/messages" element={<MessagesPage />} />
           <Route path="/messages/:autreUid" element={<MessagesPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
