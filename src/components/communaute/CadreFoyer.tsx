@@ -58,6 +58,7 @@ interface Props {
 
 const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, droite, children }) => {
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
+  const gam = useGamification();
   const fr = lang === 'FR';
   const location = useLocation();
   const reduce = useReducedMotion();
