@@ -80,7 +80,6 @@ async function titreVideo(id: string): Promise<string | null> {
   }
   return cacheCatalogue.videos.get(id) ?? null;
 }
-const ROUE_QUOTIDIENNE = [1, 1, 2, 2, 3, 3, 5];
 const FUSEAU = 'America/Toronto';
 
 /** La journée civile de Montréal, « AAAA-MM-JJ », jugée par l'horloge du serveur. */
