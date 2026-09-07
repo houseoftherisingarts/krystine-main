@@ -313,6 +313,19 @@ export const skinParCle = (cle: string) => SKINS.find(s => s.cle === cle);
 export const SKINS_LEGENDAIRES = SKINS.filter(s => s.rarete === 'legendaire');
 export const SKINS_RARES = SKINS.filter(s => s.cout === null && s.rarete !== 'exclusif');
 
+// ─── Skins en travail (Firestore `settings/skins`) ───────────────────────────
+// Le document, écrit par l'admin (section « Skins à travailler »), fusionné
+// par-dessus le drapeau par défaut de chaque skin (`Skin.enTravail` ci-dessus).
+// Clé : l'article (`skin-${cle}`), comme partout ailleurs dans la boutique.
+export type SkinsSettings = Record<string, { enTravail?: boolean }>;
+
+/** Une skin est en travail si Firestore le dit, sinon si son drapeau par défaut le dit. */
+export function skinEnTravail(id: string, overrides: SkinsSettings = {}): boolean {
+  const override = overrides[id]?.enTravail;
+  if (override !== undefined) return override;
+  return skinParCle(id.startsWith('skin-') ? id.slice(5) : id)?.enTravail ?? false;
+}
+
 export interface ArticleBoutique {
   id: string;
   categorie: CategorieBoutique;
