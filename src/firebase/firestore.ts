@@ -795,6 +795,13 @@ export interface MemberDoc {
   /** Le coffre bêta (CoffreBeta) déjà réglé pour ce compte — vu (offert
    *  ou non éligible), même règle de persistance que bienvenueVu. */
   coffreBetaVu?: boolean;
+  /** Champs facultatifs du profil (ClientPreferences), pour que Krystine
+   *  puisse un jour regrouper sa communauté par pays et par tranche d'âge
+   *  dans le tableau de bord — vides tant que la personne ne les remplit
+   *  pas elle-même (Krystine, 7 septembre 2026). */
+  pays?: string;
+  region?: string;
+  anneeNaissance?: number;
 }
 
 export async function ensureMemberProfile(profile: Omit<MemberDoc, 'joinedAt' | 'lastSeenAt'>) {
