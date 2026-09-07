@@ -109,8 +109,10 @@ const CoursDetailPage: React.FC = () => {
   // la même barrière que tout le monde; son aperçu passe par ?apercu (le
   // bouton « Aperçu » de l'admin), jamais par défaut.
   const apercu = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('apercu');
+  // Une formation en liste d'attente ne s'ouvre à personne, même sans
+  // paywall : le prix ou l'accès libre laissent place au bouton d'attente.
   const accessible = useMemo(
-    () => achete || accesVie || (formation ? !formation.paywall : false) || (isAdmin && apercu),
+    () => achete || accesVie || (formation ? !formation.paywall && !formation.listeAttente : false) || (isAdmin && apercu),
     [isAdmin, apercu, achete, accesVie, formation],
   );
 
