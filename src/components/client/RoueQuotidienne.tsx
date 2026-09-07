@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { reclamerQuotidien, type Quotidien } from '../../firebase/points';
 import { ROUE_QUOTIDIENNE, journee, niskas } from '../../lib/pointsConfig';
-import { FOYER_MULTIPLICATEUR, LIBELLE_FOYER, RABAIS_HUILE_FOYER, prochainsCadeauxFoyer } from '../../lib/badgeBleu';
+import { LIBELLE_FOYER, RABAIS_HUILE_FOYER, ROUE_FOYER, prochainsCadeauxFoyer } from '../../lib/badgeBleu';
 import PieceNiska from './PieceNiska';
 import Portail from '../Portail';
 
@@ -10,28 +10,30 @@ import Portail from '../Portail';
 // lève : sept cases, celle du jour allumée, les jours passés éteints, les
 // jours à venir dans la pénombre. Passé le septième jour, la roue repart.
 // Le solde se lit en direct ailleurs (memberPoints), rien à rafraîchir ici.
-// Au Foyer d'Origine, le serveur double le montant et dépose un cadeau à
-// chaque semaine et à chaque mois complets : la roue le dit, sans rien juger.
+// Au Foyer d'Origine, une SECONDE roue de sept jours tourne dessous, avec ses
+// cadeaux à elle (Alex, 7 septembre 2026) : le multiplicateur ×2 est retiré.
 
 const CLE_VU = 'krystine-roue-vue';
 
-/** La phrase du cadeau tombé aujourd'hui (semaine ou mois complet au Foyer), ou null. */
-function phraseCadeau(etat: Quotidien, fr: boolean): string | null {
-  const h = etat.cadeauHebdo;
+/** La phrase du cadeau que la roue du Foyer vient de donner, ou null. */
+function phraseRoueFoyer(etat: Quotidien, fr: boolean): string | null {
+  const c = etat.cadeauRoue;
+  if (!c) return null;
+  if (c.genre === 'musique') return fr ? 'La musique d’Origine est à vous : elle vous attend dans l’onglet Téléchargements.' : 'The Origin music is yours: it waits in the Downloads tab.';
+  if (c.genre === 'cle') return fr ? 'Une clé de coffre entre dans votre trousseau.' : 'A chest key joins your keyring.';
+  if (c.genre === 'coffre') return fr ? `${c.nom} vous attend dans la petite boutique.` : `${c.nom} waits for you in the little shop.`;
+  return fr ? `${niskas(c.montant ?? 0, 'FR')} de plus dans votre bourse.` : `${niskas(c.montant ?? 0, 'EN')} more in your purse.`;
+}
+
+/** La phrase du grand cadeau d'un mois complet au Foyer, ou null. */
+function phraseMoisFoyer(etat: Quotidien, fr: boolean): string | null {
   const m = etat.cadeauMois;
-  if (m) {
-    const debut = fr ? 'Un mois complet : ' : 'A full month: ';
-    if (m.genre === 'musique') return debut + (fr ? 'la musique d’Origine est à vous.' : 'the Origin music is yours.');
-    if (m.genre === 'skin-rare') return debut + (fr ? `le ${m.nom ?? 'skin rare'} est à vous, dans la petite boutique.` : `the ${m.nom ?? 'rare skin'} is yours, in the little shop.`);
-    if (m.genre === 'rabais-huile') return debut + (fr ? `${RABAIS_HUILE_FOYER.pourcent} % sur une huile corporelle de votre choix, une seule. Krystine vous envoie le code par courriel.` : `${RABAIS_HUILE_FOYER.pourcent}% off one body oil of your choice, a single one. Krystine sends you the code by email.`);
-    return debut + (fr ? `${niskas(m.montant ?? 0, 'FR')} de plus dans votre bourse.` : `${niskas(m.montant ?? 0, 'EN')} more in your purse.`);
-  }
-  if (h) {
-    const debut = fr ? 'Une semaine complète : ' : 'A full week: ';
-    if (h.genre === 'musique') return debut + (fr ? 'la musique d’Origine est à vous.' : 'the Origin music is yours.');
-    return debut + (fr ? `${niskas(h.montant ?? 0, 'FR')} de plus dans votre bourse.` : `${niskas(h.montant ?? 0, 'EN')} more in your purse.`);
-  }
-  return null;
+  if (!m) return null;
+  const debut = fr ? 'Un mois complet : ' : 'A full month: ';
+  if (m.genre === 'musique') return debut + (fr ? 'la musique d’Origine est à vous.' : 'the Origin music is yours.');
+  if (m.genre === 'skin-rare') return debut + (fr ? `le ${m.nom ?? 'skin rare'} est à vous, dans la petite boutique.` : `the ${m.nom ?? 'rare skin'} is yours, in the little shop.`);
+  if (m.genre === 'rabais-huile') return debut + (fr ? `${RABAIS_HUILE_FOYER.pourcent} % sur une huile corporelle de votre choix, une seule. Krystine vous envoie le code par courriel.` : `${RABAIS_HUILE_FOYER.pourcent}% off one body oil of your choice, a single one. Krystine sends you the code by email.`);
+  return debut + (fr ? `${niskas(m.montant ?? 0, 'FR')} de plus dans votre bourse.` : `${niskas(m.montant ?? 0, 'EN')} more in your purse.`);
 }
 
 const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, lang }) => {
@@ -65,8 +67,9 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
   const fr = lang === 'FR';
   const jour = etat.jour;
   const foyer = etat.foyer === true;
-  const mult = foyer ? FOYER_MULTIPLICATEUR : 1;
-  const cadeau = foyer ? phraseCadeau(etat, fr) : null;
+  const jourFoyer = etat.jourFoyer ?? jour;
+  const cadeau = foyer ? phraseRoueFoyer(etat, fr) : null;
+  const cadeauMois = foyer ? phraseMoisFoyer(etat, fr) : null;
   const prochains = foyer ? prochainsCadeauxFoyer(etat.serie) : null;
   const jours = (n: number) => (fr ? `${n} jour${n > 1 ? 's' : ''}` : `${n} day${n > 1 ? 's' : ''}`);
   const minuscule = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
@@ -99,16 +102,15 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
         <p className="mt-2 text-sm text-[#293027]/70 dark:text-white/70">
           {foyer
             ? (fr
-              ? `Jour ${jour} sur ${ROUE_QUOTIDIENNE.length}. Au Foyer d’Origine, chaque jour compte double. Le septième jour ouvre un coffre de bronze, et chaque semaine complète vous vaut un cadeau de Krystine, un plus grand à chaque mois complet.`
-              : `Day ${jour} of ${ROUE_QUOTIDIENNE.length}. At the Foyer d’Origine, every day counts double. The seventh day opens a bronze chest, and every full week earns you a gift from Krystine, a bigger one at every full month.`)
+              ? `Jour ${jour} sur ${ROUE_QUOTIDIENNE.length}. Le Foyer d’Origine vous ouvre une deuxième roue, juste en dessous, avec des cadeaux qui n’existent que là.`
+              : `Day ${jour} of ${ROUE_QUOTIDIENNE.length}. The Origine Hearth opens a second wheel for you, right below, with gifts that exist nowhere else.`)
             : (fr
               ? `Jour ${jour} sur ${ROUE_QUOTIDIENNE.length}. Revenez demain et la roue avance; sautez une journée et elle repart au premier jour. Le septième jour ouvre aussi un coffre de bronze, avec sa clé.`
               : `Day ${jour} of ${ROUE_QUOTIDIENNE.length}. Come back tomorrow and the wheel moves on; skip a day and it starts over. The seventh day also brings a bronze chest, with its key.`)}
         </p>
 
         <ol className="mt-6 grid grid-cols-7 gap-1.5 sm:gap-2">
-          {ROUE_QUOTIDIENNE.map((base, i) => {
-            const montant = base * mult;
+          {ROUE_QUOTIDIENNE.map((montant, i) => {
             const n = i + 1;
             const passe = n < jour;
             const actuel = n === jour;
@@ -133,17 +135,56 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
           })}
         </ol>
 
+        {/* La deuxième roue : sept cases à elle, avec les cadeaux du Foyer */}
         {foyer && prochains && (
-          <div className="mt-4 rounded-[14px] border border-[#BA7B39]/40 bg-[#BA7B39]/10 px-4 py-3">
-            {cadeau && (
-              <p className="font-serif text-lg leading-snug text-[#293027] dark:text-white">
-                <i className="fa-solid fa-gift mr-2 text-[#8B4A2F] dark:text-[#d9a05b]" aria-hidden="true" />{cadeau}
+          <div className="mt-6 rounded-[18px] border border-[#BA7B39]/40 bg-[#BA7B39]/10 p-4 md:p-5">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F] dark:text-[#d9a05b]">
+                <i className="fa-solid fa-fire mr-1.5" aria-hidden="true" />{fr ? 'La roue du Foyer' : 'The Hearth wheel'}
+              </p>
+              <p className="text-[11px] text-[#293027]/60 dark:text-white/60">{fr ? `Jour ${jourFoyer} sur ${ROUE_FOYER.length}` : `Day ${jourFoyer} of ${ROUE_FOYER.length}`}</p>
+            </div>
+
+            <ol className="mt-4 grid grid-cols-7 gap-1.5 sm:gap-2">
+              {ROUE_FOYER.map((etape, i) => {
+                const n = i + 1;
+                const passe = n < jourFoyer;
+                const actuel = n === jourFoyer;
+                const icone = etape.cadeau.genre === 'niskas' ? 'fa-coins'
+                  : etape.cadeau.genre === 'cle' ? 'fa-key'
+                    : etape.cadeau.genre === 'coffre' ? 'fa-box-open' : 'fa-music';
+                return (
+                  <li
+                    key={n}
+                    title={fr ? etape.fr : etape.en}
+                    className={`flex flex-col items-center gap-1.5 rounded-[14px] border px-1 py-3 text-center transition-all ${
+                      actuel
+                        ? 'border-[#BA7B39] bg-[#BA7B39]/25 shadow-[0_0_0_3px_rgba(186,123,57,0.25)]'
+                        : passe
+                          ? 'border-[#38403a]/10 bg-white/40 opacity-60 dark:border-white/10 dark:bg-white/5'
+                          : 'border-[#38403a]/10 bg-white/25 dark:border-white/10 dark:bg-white/[0.03]'
+                    }`}
+                  >
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-[#38403a]/60 dark:text-white/60">{fr ? 'Jour' : 'Day'} {n}</span>
+                    <i className={`fa-solid ${icone} ${actuel ? 'text-lg text-[#8B4A2F] dark:text-[#d9a05b]' : 'text-base text-[#293027]/45 dark:text-white/45'}`} aria-hidden="true" />
+                    <span className={`text-[9px] leading-tight ${actuel ? 'text-[#8B4A2F] dark:text-[#d9a05b]' : 'text-[#293027]/70 dark:text-white/70'}`}>
+                      {etape.cadeau.genre === 'niskas' ? `+${etape.cadeau.montant}` : (fr ? etape.fr : etape.en)}
+                    </span>
+                    {passe && <i className="fa-solid fa-check text-[10px] text-[#8B4A2F]" aria-hidden="true" />}
+                  </li>
+                );
+              })}
+            </ol>
+
+            {(cadeau || cadeauMois) && (
+              <p className="mt-4 font-serif text-lg leading-snug text-[#293027] dark:text-white">
+                <i className="fa-solid fa-gift mr-2 text-[#8B4A2F] dark:text-[#d9a05b]" aria-hidden="true" />{cadeauMois ?? cadeau}
               </p>
             )}
-            <p className={`text-xs leading-relaxed text-[#293027]/70 dark:text-white/70 ${cadeau ? 'mt-2' : ''}`}>
+            <p className="mt-2 text-xs leading-relaxed text-[#293027]/70 dark:text-white/70">
               {fr
-                ? `Prochain cadeau de semaine dans ${jours(prochains.hebdoDans)}, prochain cadeau de mois dans ${jours(prochains.moisDans)} : ${minuscule(prochains.prochainMois.fr)}.`
-                : `Next weekly gift in ${jours(prochains.hebdoDans)}, next monthly gift in ${jours(prochains.moisDans)}: ${minuscule(prochains.prochainMois.en)}.`}
+                ? `Prochain grand cadeau du Foyer dans ${jours(prochains.moisDans)} : ${minuscule(prochains.prochainMois.fr)}.`
+                : `Next big Hearth gift in ${jours(prochains.moisDans)}: ${minuscule(prochains.prochainMois.en)}.`}
             </p>
           </div>
         )}

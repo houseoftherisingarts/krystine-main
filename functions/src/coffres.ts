@@ -67,7 +67,8 @@ export const CONTENUS: Record<TypeCoffre, Contenu> = {
       { rewardId: 'reb-10-boutique', unSur: 20, nom: '10 % sur la boutique' },
       { rewardId: 'reb-20-boutique', unSur: 40, nom: '20 % sur la boutique' },
       { rewardId: 'reb-50-boutique', unSur: 200, nom: '50 % sur la boutique' },
-      { rewardId: 'reb-huiles', unSur: 25, nom: '15 % sur les Huiles Corporelles' },
+      // Le rabais huile a été retiré (Alex, 7 septembre 2026) : aucun rabais
+      // du coffre ne doit plus mener à un produit physique expédié par la poste.
     ],
     grandLot: { unSur: 400, nom: 'Le Foyer d’Origine, offert' },
   },

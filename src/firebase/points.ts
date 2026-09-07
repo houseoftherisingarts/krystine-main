@@ -341,15 +341,18 @@ export async function adjustPoints(uid: string, delta: number, note?: string) {
 // Le serveur juge la journée (functions/src/niskas.ts) : une réclamation par
 // journée civile de Montréal, jamais deux, quelle que soit l'horloge du
 // navigateur. Le solde revient recalculé depuis le journal. Une membre du
-// Foyer d'Origine reçoit `foyer: true`, un montant déjà doublé, et le cadeau
-// de la semaine ou du mois complet quand la suite y arrive (docs/badge-bleu-plan.md, 2.3).
-export interface CadeauHebdoFoyer { genre: 'musique' | 'niskas'; montant?: number }
+// Foyer d'Origine reçoit `foyer: true`, le jour de sa deuxième roue et le
+// cadeau qu'elle vient de donner, plus celui du mois complet quand la suite y
+// arrive (docs/badge-bleu-plan.md, 2.3).
+export interface CadeauRoueFoyerRecu { jour: number; genre: 'niskas' | 'cle' | 'coffre' | 'musique'; montant?: number; nom?: string }
 export interface CadeauMoisFoyer { genre: 'musique' | 'skin-rare' | 'rabais-huile' | 'niskas'; nom?: string; montant?: number }
 export interface Quotidien {
   deja: boolean; jour: number; montant: number; serie: number; balance: number;
   coffre?: boolean;
   foyer?: boolean;
-  cadeauHebdo?: CadeauHebdoFoyer | null;
+  /** Le jour (1 à 7) de la roue du Foyer, quand la membre en est. */
+  jourFoyer?: number | null;
+  cadeauRoue?: CadeauRoueFoyerRecu | null;
   cadeauMois?: CadeauMoisFoyer | null;
 }
 

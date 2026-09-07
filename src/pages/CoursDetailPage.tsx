@@ -23,6 +23,12 @@ const ICONES: Record<Lecon['type'], string> = {
   video: 'fa-circle-play', audio: 'fa-music', pdf: 'fa-file-pdf', fichier: 'fa-file', texte: 'fa-align-left',
 };
 
+// La petite image d'une capsule audio : celle de la leçon si elle en a une,
+// sinon la couverture de la formation (Alex, 7 sept 2026 : « un petit
+// thumbnail aux audio » de l'expérience Ayurveda).
+const vignetteAudio = (l: { imageUrl?: string } & Record<string, any>, formation?: { imageUrl?: string }): string | undefined =>
+  l.imageUrl || l.vignette || l.image || formation?.imageUrl;
+
 // Une leçon rattachée à une porte reste verrouillée tant que cette porte
 // n'est pas ouverte (le mois en cours ou un mois déjà passé du cycle), comme
 // le drip de Kajabi. L'admin voit tout.
@@ -420,7 +426,11 @@ const CoursDetailPage: React.FC = () => {
                   <ul className="mt-3 space-y-2">
                     {lecons.map(l => (
                       <li key={l.id} className="flex items-center gap-3 text-sm text-[#38403a]/70 dark:text-white/70">
-                        <i className={`fa-solid ${ICONES[l.type]} w-4 text-[#8B4A2F]/70`} />
+                        {l.type === 'audio' && vignetteAudio(l, formation || undefined) ? (
+                          <img src={vignetteAudio(l, formation || undefined)} alt="" className="h-9 w-9 shrink-0 rounded-[9px] object-cover border border-[#BA7B39]/25" />
+                        ) : (
+                          <i className={`fa-solid ${ICONES[l.type]} w-4 text-[#8B4A2F]/70`} />
+                        )}
                         {l.titre}
                         {l.duree && <span className="ml-auto text-xs text-[#38403a]/40 dark:text-white/40">{l.duree}</span>}
                       </li>
@@ -485,7 +495,11 @@ const CoursDetailPage: React.FC = () => {
                               : 'text-[#38403a]/80 hover:bg-white/70 dark:text-white/80 dark:hover:bg-white/10'
                         }`}
                       >
-                        <i className={`fa-solid ${verrou ? 'fa-lock' : terminees[l.id] ? 'fa-circle-check text-green-700' : ICONES[l.type] || 'fa-file'} w-4 ${courante?.id === l.id ? '' : verrou ? 'opacity-50' : 'text-[#8B4A2F]/70'}`} />
+                        {l.type === 'audio' && !verrou && !terminees[l.id] && vignetteAudio(l, formation || undefined) ? (
+                          <img src={vignetteAudio(l, formation || undefined)} alt="" className={`h-9 w-9 shrink-0 rounded-[9px] object-cover border border-[#BA7B39]/25 ${courante?.id === l.id ? 'ring-2 ring-[#BA7B39]' : ''}`} />
+                        ) : (
+                          <i className={`fa-solid ${verrou ? 'fa-lock' : terminees[l.id] ? 'fa-circle-check text-green-700' : ICONES[l.type] || 'fa-file'} w-4 ${courante?.id === l.id ? '' : verrou ? 'opacity-50' : 'text-[#8B4A2F]/70'}`} />
+                        )}
                         <span className="min-w-0 flex-1 truncate">{l.titre}</span>
                         {verrou ? <span className="text-[10px] uppercase tracking-wider opacity-60">{l.mois}</span>
                                 : l.duree && <span className="text-[11px] opacity-60">{l.duree}</span>}
@@ -522,7 +536,10 @@ const CoursDetailPage: React.FC = () => {
                       courante.type === 'video' ? (
                         <video src={urlCourante} controls playsInline className="w-full rounded-[15px] bg-black" />
                       ) : courante.type === 'audio' ? (
-                        <audio src={urlCourante} controls className="w-full" />
+                        <div className="flex items-center gap-4 rounded-[15px] border border-[#BA7B39]/20 bg-white/70 p-3 dark:bg-white/5">
+                          {vignetteAudio(courante, formation || undefined) && <img src={vignetteAudio(courante, formation || undefined)} alt="" className="h-20 w-20 shrink-0 rounded-[12px] object-cover" />}
+                          <audio src={urlCourante} controls className="w-full min-w-0" />
+                        </div>
                       ) : (
                         <a
                           href={urlCourante} target="_blank" rel="noopener noreferrer"

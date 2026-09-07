@@ -1,10 +1,11 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue, AggregateField, Firestore, Transaction } from 'firebase-admin/firestore';
 import { randomInt } from 'node:crypto';
-import { donnerCoffreDuJour7, ecrireMessageKrystine, uidKrystine, SKINS_RARES_COFFRES, NOMS_COSMETIQUES } from './coffres';
+import { donnerCoffreDuJour7, ecrireMessageKrystine, uidKrystine, PRIX_COFFRES, SKINS_RARES_COFFRES, NOMS_COSMETIQUES } from './coffres';
 import {
-  FOYER_MULTIPLICATEUR, FOYER_NISKAS_HEBDO_SI_MUSIQUE, KIND_FOYER_HEBDO, KIND_FOYER_MOIS, RABAIS_HUILE_FOYER,
-  cleFoyerHebdo, cleFoyerMois, estJourHebdoFoyer, estJourMoisFoyer, cadeauFoyerDuMois,
+  KIND_FOYER_MOIS, KIND_FOYER_ROUE, RABAIS_HUILE_FOYER, ROUE_FOYER,
+  cleFoyerMois, cleFoyerRoue, estJourMoisFoyer, cadeauFoyerDuMois, jourDeRoue,
+  type CadeauRoueFoyer,
 } from './badgeBleuConfig';
 
 // Les niskas : la monnaie de l'espace client (le niska du Rig-Véda : l'ornement d'or
@@ -251,10 +252,11 @@ export const reclamerBienvenue = onCall(
 );
 
 // ─── La couche Foyer de la roue (docs/badge-bleu-plan.md, 2.3) ──────────────
-// Une membre du Foyer d'Origine gagne le double à la roue, un cadeau à chaque
-// semaine complète de présence (la musique d'Origine, puis des niskas) et un
-// plus gros à chaque mois complet (musique, skin rare, rabais sur une huile).
-// Le verrou de chaque cadeau est son entrée du journal (crediterNiskas).
+// Une membre du Foyer d'Origine tourne une SECONDE roue de sept jours au même
+// geste quotidien (ROUE_FOYER), et reçoit un plus gros cadeau à chaque mois
+// complet (musique, skin rare, rabais sur une huile). Le multiplicateur ×2 est
+// retiré (Alex, 7 septembre 2026). Le verrou de chaque cadeau est son entrée du
+// journal (crediterNiskas) : le navigateur ne s'offre jamais rien lui-même.
 
 /** Membre du Foyer d'Origine : l'achat `foyer` ou l'accès à vie, le même jugement que notifs.ts. */
 export async function estDuFoyer(lecteur: Transaction | Firestore, uid: string): Promise<boolean> {
@@ -264,7 +266,6 @@ export async function estDuFoyer(lecteur: Transaction | Firestore, uid: string):
   return achat.exists || (membre.data() as { accesVie?: boolean } | undefined)?.accesVie === true;
 }
 
-type CadeauHebdo = { genre: 'musique' | 'niskas'; montant?: number };
 type CadeauMois = { genre: 'musique' | 'skin-rare' | 'rabais-huile' | 'niskas'; nom?: string; montant?: number };
 const MOT_MUSIQUE = 'La musique d’Origine est à vous : vous la trouverez dans l’onglet Téléchargements, et vous pourrez en faire la musique de tout le site.';
 
@@ -285,15 +286,41 @@ async function motDuFoyer(db: Firestore, uid: string, serie: number, phrase: str
   if (krystine) await ecrireMessageKrystine(db, krystine, uid, `${serie} jours d’affilée au Foyer. ${phrase}`);
 }
 
-/** Semaine complète : la musique d'Origine si elle manque, sinon FOYER_NISKAS_HEBDO_SI_MUSIQUE. Null si le cadeau du jour est déjà tombé. */
-async function cadeauHebdoFoyer(db: Firestore, uid: string, serie: number, jour: string): Promise<CadeauHebdo | null> {
-  const cadeau: CadeauHebdo = (await aLaMusique(db, uid, await possedeDe(db, uid)))
-    ? { genre: 'niskas', montant: FOYER_NISKAS_HEBDO_SI_MUSIQUE } : { genre: 'musique' };
-  if (!(await crediterNiskas(uid, KIND_FOYER_HEBDO, cadeau.montant || 0, cleFoyerHebdo(uid, jour), { serie, cadeau: cadeau.genre }))) return null;
-  if (cadeau.genre === 'musique') await offrirMusique(db, uid, KIND_FOYER_HEBDO);
-  await motDuFoyer(db, uid, serie, cadeau.genre === 'musique' ? MOT_MUSIQUE
-    : `${cadeau.montant} niskas viennent d’entrer dans votre bourse, puisque la musique d’Origine est déjà à vous.`);
-  return cadeau;
+// ─── La roue du Foyer : un cadeau exclusif par jour de présence ──────────────
+// Sept cases (ROUE_FOYER), la même journée que la roue du site, un seul
+// événement par journée civile (cleFoyerRoue). Le cadeau tombe côté serveur :
+// niskas, clé, coffre, musique. La membre ne peut ni le choisir ni le répéter.
+export type CadeauRoue = { jour: number; genre: CadeauRoueFoyer['genre']; montant?: number; nom?: string };
+
+async function cadeauRoueDuFoyer(db: Firestore, uid: string, serie: number, jour: string): Promise<CadeauRoue | null> {
+  const index = jourDeRoue(serie);
+  const prevu = ROUE_FOYER[index - 1].cadeau;
+  // La musique déjà possédée se change en niskas : on décide AVANT d'écrire au journal.
+  const cadeau: CadeauRoueFoyer = prevu.genre === 'musique' && (await aLaMusique(db, uid, await possedeDe(db, uid)))
+    ? { genre: 'niskas', montant: prevu.niskasSiDeja }
+    : prevu;
+  const montant = cadeau.genre === 'niskas' ? cadeau.montant : 0;
+  if (!(await crediterNiskas(uid, KIND_FOYER_ROUE, montant, cleFoyerRoue(uid, jour), { serie, jour: index, cadeau: cadeau.genre }))) return null;
+
+  if (cadeau.genre === 'cle') {
+    await db.doc(`coffres/${uid}`).set({ cles: FieldValue.increment(1), updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+    return { jour: index, genre: 'cle', nom: 'Une clé de coffre' };
+  }
+  if (cadeau.genre === 'coffre') {
+    await db.doc(`coffres/${uid}`).set({
+      boites: { [cadeau.coffre]: FieldValue.increment(1) },
+      ...(cadeau.avecCle ? { cles: FieldValue.increment(1) } : {}),
+      updatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true });
+    const nom = `${PRIX_COFFRES[cadeau.coffre].nom}${cadeau.avecCle ? ' et sa clé' : ''}`;
+    return { jour: index, genre: 'coffre', nom };
+  }
+  if (cadeau.genre === 'musique') {
+    await offrirMusique(db, uid, KIND_FOYER_ROUE);
+    await motDuFoyer(db, uid, serie, MOT_MUSIQUE);
+    return { jour: index, genre: 'musique', nom: 'La musique d’Origine' };
+  }
+  return { jour: index, genre: 'niskas', montant: cadeau.montant };
 }
 
 /** Mois complet : l'étape du cycle (musique, skin rare, rabais huile), ou ses niskas de remplacement. Null si déjà tombé. */
@@ -350,16 +377,15 @@ export const reclamerQuotidien = onCall(
 
     const r = await db.runTransaction(async (tx) => {
       const [bal, e, foyer] = await Promise.all([tx.get(balRef), tx.get(evt), estDuFoyer(tx, uid)]);
-      const mult = foyer ? FOYER_MULTIPLICATEUR : 1;
       const prev = (bal.data() || {}) as { balance?: number; serie?: number; dernierJour?: string };
       const serieAvant = Number(prev.serie || 0);
       if (e.exists || prev.dernierJour === aujourdhui) {
         const jour = ((Math.max(1, serieAvant) - 1) % ROUE_QUOTIDIENNE.length) + 1;
-        return { deja: true, jour, montant: ROUE_QUOTIDIENNE[jour - 1] * mult, serie: serieAvant, foyer };
+        return { deja: true, jour, montant: ROUE_QUOTIDIENNE[jour - 1], serie: serieAvant, foyer };
       }
       const serie = prev.dernierJour === veilleDe(aujourdhui) ? serieAvant + 1 : 1;
       const jour = ((serie - 1) % ROUE_QUOTIDIENNE.length) + 1;
-      const montant = ROUE_QUOTIDIENNE[jour - 1] * mult;
+      const montant = ROUE_QUOTIDIENNE[jour - 1];
       tx.set(evt, { uid, kind: 'quotidien', amount: montant, dedupKey: `quotidien:${uid}:${aujourdhui}`, meta: { jour, serie, foyer }, at: FieldValue.serverTimestamp() });
       tx.set(balRef, { dernierJour: aujourdhui, serie, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
       return { deja: false, jour, montant, serie, foyer };
@@ -370,14 +396,15 @@ export const reclamerQuotidien = onCall(
       await donnerCoffreDuJour7(uid, aujourdhui).catch((e) => console.warn('[niskas] coffre du jour 7', e));
       coffre = true;
     }
-    // Au Foyer : le cadeau de la semaine complète (7, 14, 21…) et celui du mois complet (30, 60, 90…).
-    let cadeauHebdo: CadeauHebdo | null = null;
+    // Au Foyer : la deuxième roue tourne le même jour, et le mois complet
+    // (30, 60, 90…) garde son grand cadeau.
+    let cadeauRoue: CadeauRoue | null = null;
     let cadeauMois: CadeauMois | null = null;
     if (!r.deja && r.foyer) {
-      if (estJourHebdoFoyer(r.serie)) cadeauHebdo = await cadeauHebdoFoyer(db, uid, r.serie, aujourdhui).catch((e) => { console.warn('[niskas] cadeau hebdo du Foyer', e); return null; });
+      cadeauRoue = await cadeauRoueDuFoyer(db, uid, r.serie, aujourdhui).catch((e) => { console.warn('[niskas] roue du Foyer', e); return null; });
       if (estJourMoisFoyer(r.serie)) cadeauMois = await cadeauMoisFoyer(db, uid, r.serie, aujourdhui, req.auth.token.email || null).catch((e) => { console.warn('[niskas] cadeau du mois du Foyer', e); return null; });
     }
     const { balance } = await recalculerSolde(uid);
-    return { ...r, balance, coffre, cadeauHebdo, cadeauMois };
+    return { ...r, balance, coffre, jourFoyer: r.foyer ? jourDeRoue(r.serie) : null, cadeauRoue, cadeauMois };
   },
 );
