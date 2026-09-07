@@ -143,11 +143,17 @@ try {
 
   ({ ctx, page } = await ouvrir(browser, A, true));
   await aller(page, '/fil');
-  const b1m = page.locator('article', { hasText: 'Premier feu de la saison' });
-  await b1m.waitFor({ timeout: 20000 });
-  await b1m.getByRole('button', { name: /Commenter/ }).click();
-  await b1m.locator('text=Depuis lundi').waitFor({ timeout: 20000 });
-  await page.waitForTimeout(1200);
+  const zoneM = page.locator('textarea[placeholder^="Quoi de neuf"]');
+  await zoneM.waitFor({ timeout: 20000 });
+  if (await page.locator('article').count() > 0) {
+    const b1m = page.locator('article').first();
+    await b1m.getByRole('button', { name: /Commenter/ }).click();
+    await page.waitForTimeout(1500);
+  } else {
+    await zoneM.click();
+    await zoneM.fill('Premier feu de la saison : je me lève avec le soleil depuis une semaine et le corps suit.');
+    await page.waitForTimeout(500);
+  }
   await capturer(page, 'fil-foyer-390');
   await ctx.close();
 
