@@ -345,9 +345,59 @@ const CoursDetailPage: React.FC = () => {
             </div>
           );
         })()}
-        <h1 className="mt-3 max-w-3xl font-serif text-3xl leading-tight text-[#293027] md:text-4xl dark:text-white" style={{ letterSpacing: '-0.01em' }}>
-          {formation.titre}
-        </h1>
+        {(() => {
+          if (id === 'foyer' || !accessible || lecons.length === 0) {
+            return (
+              <h1 className="mt-3 max-w-3xl font-serif text-3xl leading-tight text-[#293027] md:text-4xl dark:text-white" style={{ letterSpacing: '-0.01em' }}>
+                {formation.titre}
+              </h1>
+            );
+          }
+          const banniere = BANNIERES_ACHETEES[id];
+          const image = banniere?.image || formation.imageUrl;
+          if (!image) {
+            return (
+              <h1 className="mt-3 max-w-3xl font-serif text-3xl leading-tight text-[#293027] md:text-4xl dark:text-white" style={{ letterSpacing: '-0.01em' }}>
+                {formation.titre}
+              </h1>
+            );
+          }
+          const duree = banniere?.duree ? (lang === 'FR' ? banniere.duree.fr : banniere.duree.en) : null;
+          const prochaineLecon = lecons.find(l => !terminees[l.id]);
+          return (
+            <div className="relative mt-4 h-64 w-full overflow-hidden rounded-[20px] border border-white/60 shadow-[0_24px_60px_-24px_rgba(41,48,39,0.5)] dark:border-white/10 md:h-80">
+              <img src={image} alt="" className="h-full w-full object-cover" />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0"
+                style={{ background: 'linear-gradient(to top, rgba(20,19,17,0.9) 0%, rgba(20,19,17,0.68) 28%, rgba(40,53,47,0.42) 60%, rgba(40,53,47,0.58) 100%)' }}
+              />
+              <div className="absolute inset-x-0 bottom-0 px-6 pb-5 md:px-10 md:pb-7">
+                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/75" style={{ textShadow: '0 1px 10px rgba(0,0,0,0.4)' }}>
+                  {(lang === 'FR' ? 'Formation' : 'Course') + (duree ? ` · ${duree}` : '')}
+                </p>
+                <h1 className="mt-1.5 max-w-2xl font-serif text-2xl leading-[1.15] text-[#EEE7DB] md:text-4xl" style={{ textShadow: '0 2px 14px rgba(0,0,0,0.5)', letterSpacing: '-0.01em' }}>
+                  {formation.titre}
+                </h1>
+                <p className="mt-3 text-sm text-white/85" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.4)' }}>
+                  {lang === 'FR' ? `${nbTerminees} leçons sur ${lecons.length}` : `${nbTerminees} of ${lecons.length} lessons`}
+                  {prochaineLecon && (
+                    <>
+                      {' · '}
+                      <button
+                        type="button"
+                        onClick={() => ouvrir(prochaineLecon)}
+                        className="underline decoration-white/40 underline-offset-2 transition-colors hover:text-[#d9a05b]"
+                      >
+                        {lang === 'FR' ? `Reprendre : ${prochaineLecon.titre}` : `Resume: ${prochaineLecon.titre}`}
+                      </button>
+                    </>
+                  )}
+                </p>
+              </div>
+            </div>
+          );
+        })()}
 
         {live?.formationId === id && (
           <div className="mt-5 flex flex-wrap items-center gap-4 rounded-[20px] border border-red-500/30 bg-[#293027] px-5 py-4 text-white">
