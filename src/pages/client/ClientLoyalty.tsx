@@ -44,6 +44,7 @@ const EVENT_LABELS: Record<string, { fr: string; en: string; icon: string }> = {
 
 const ClientLoyalty: React.FC = () => {
   const { user, lang } = useApp();
+  const gam = useGamification();
   const [balance, setBalance] = useState<PointsBalance>({ balance: 0, lifetime: 0 });
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState<PointsEvent[]>([]);
