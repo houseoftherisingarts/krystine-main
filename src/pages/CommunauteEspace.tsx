@@ -12,8 +12,8 @@ import type { FilMur } from '../firebase/mur';
 // seule publie. Le fil public « communaute » est retiré. Le choix vit dans
 // ?fil= pour que la cloche puisse y mener. Porté du mur social du FMM 2026.
 const FILS: ReadonlyArray<{ cle: string; fil: FilMur; fr: string; en: string }> = [
-  { cle: 'foyer', fil: 'formation:foyer', fr: 'Le mur', en: 'The wall' },
   { cle: 'krystine', fil: 'krystine', fr: 'Krystine', en: 'Krystine' },
+  { cle: 'foyer', fil: 'formation:foyer', fr: 'Mur commun', en: 'Common wall' },
 ];
 
 const CommunauteEspace: React.FC = () => {

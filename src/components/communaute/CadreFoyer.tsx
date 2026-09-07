@@ -230,7 +230,7 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, dr
             </Link>
           ))}
           <Link to="/compte" className={`ml-auto ${ongletClasse(false)}`}>
-            <i className="fa-solid fa-arrow-left" /> {fr ? 'Mon espace' : 'My space'}
+            <i className="fa-solid fa-arrow-left" /> {fr ? 'Retour au compte' : 'Back to my account'}
           </Link>
         </div>
       </div>
