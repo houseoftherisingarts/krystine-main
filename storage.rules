@@ -51,8 +51,21 @@ service firebase.storage {
       allow write: if false;
     }
 
+    // La pièce d'identité du Badge Bleu : la membre dépose (et peut retirer)
+    // `piece.<ext>` dans son propre dossier, image ou PDF, 8 Mo au plus.
+    // L'admin seul la lit, par son chemin exact : personne ne liste le dossier.
+    // Le serveur la supprime à la décision (functions/src/verification.ts).
+    match /verifications/{uid}/{fichier} {
+      allow get: if isAdmin();
+      allow delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+                   && fichier.matches('piece\\.(jpg|png|webp|heic|pdf)')
+                   && request.resource.size < 8 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*|application/pdf');
+    }
+
     match /{dossier}/{allPaths=**} {
-      allow read: if dossier != 'formations-contenu' && dossier != 'vault';
+      allow read: if dossier != 'formations-contenu' && dossier != 'vault' && dossier != 'verifications';
       allow write: if isAdmin()
                    && request.resource.size < 500 * 1024 * 1024  // 500 MB
                    && request.resource.contentType.matches('(image|video|audio)/.*|application/pdf');
