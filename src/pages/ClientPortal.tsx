@@ -490,7 +490,7 @@ const BanniereChoix: React.FC<{
 // Le rail droit : le parrainage seul. Les raccourcis (formations, communauté,
 // messages) ont été retirés le 6 septembre 2026 : la barre du haut et les
 // onglets font déjà ce travail. Le feed de la communauté n'entre pas ici : le
-// fil participatif vit seulement au Foyer d'Origine (/cours/foyer).
+// fil participatif vit seulement au Foyer d'Origine (/foyer/fil).
 const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) => (
   <aside className="space-y-4">
     <ClientParrainage uid={uid} lang={lang} />

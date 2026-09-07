@@ -5,7 +5,7 @@ import CadreFoyer from '../components/communaute/CadreFoyer';
 import MurSocial from '../components/communaute/MurSocial';
 import type { FilMur } from '../firebase/mur';
 
-// ─── Le fil du Foyer d'Origine (/fil) ────────────────────────────────
+// ─── Le fil du Foyer d'Origine (/foyer/fil) ──────────────────────────
 // La page du fil dans la coquille du Foyer social (CadreFoyer) : trois fils
 // au choix, en pilules. « Foyer » est le fil participatif de la formation
 // (formation:foyer, où les membres publient), « Krystine » porte ses annonces

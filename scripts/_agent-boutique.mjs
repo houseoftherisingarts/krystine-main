@@ -124,12 +124,9 @@ if (await memEmailInput.count()) {
 }
 console.log('URL /compte après tentative login membre:', mem.url());
 await mem.screenshot({ path: `${OUT}/agent-compte-apres-login.png` });
-// Ferme le tutoriel de bienvenue (« On oublie souvent de jouer ») : le clic
-// sur le fond (data-bug-ignore) appelle fermer() (BienvenueJeu.tsx).
-await mem.evaluate(() => {
-  const backdrop = document.querySelector('[data-bug-ignore]');
-  if (backdrop) backdrop.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-});
+// Ferme le tutoriel de bienvenue (« On oublie souvent de jouer ») : clic
+// souris réel tout en haut à gauche, hors de la carte (fermer() sur le fond).
+await mem.mouse.click(5, 5);
 await mem.waitForTimeout(500);
 const clickTab = async (page, iconClass) => page.evaluate((cls) => {
   const btn = Array.from(document.querySelectorAll('button')).find(b => b.querySelector(`i.${cls}`));
