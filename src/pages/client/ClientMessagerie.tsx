@@ -145,7 +145,7 @@ const ClientMessagerie: React.FC<{ voletInitial?: Volet; avec?: string; dansFoye
         </div>
         <div className="flex gap-2">
           {onglet('amies', fr ? 'Amies' : 'Friends', 'fa-user-group', nonLus)}
-          {onglet('support', fr ? 'Équipe' : 'Team', 'fa-people-group')}
+          {onglet('support', fr ? 'Équipe KSL' : 'KSL Team', 'fa-people-group')}
         </div>
       </div>
 
