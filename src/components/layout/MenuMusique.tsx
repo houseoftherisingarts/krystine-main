@@ -14,7 +14,7 @@ import { MUSIQUE_ORIGINE_ID } from '../../firebase/musique';
 // que MusiqueDuSite écoute pour changer la piste du lecteur.
 
 const MenuMusique: React.FC<{ className?: string }> = ({ className = '' }) => {
-  const { lang, audioPlaying, toggleAudio } = useUI();
+  const { lang, audioPlaying, toggleAudio, setAudioUrl } = useUI();
   const { user, member } = useAuth();
   const fr = lang === 'FR';
   const [ouvert, setOuvert] = useState(false);
@@ -37,8 +37,12 @@ const MenuMusique: React.FC<{ className?: string }> = ({ className = '' }) => {
   }, [ouvert]);
 
   const origineChoisie = !!member?.personnalisation?.musiqueSite;
+  // Choisir une piste la fait jouer tout de suite. Sans compte, seule
+  // l'ambiance du site existe : elle part directement. Reprendre la piste
+  // déjà choisie la relance si elle était en pause.
   const choisir = async (origine: boolean) => {
-    if (!user || origine === origineChoisie) return;
+    if (!user) { setAudioUrl(null, { jouer: true }); return; }
+    if (origine === origineChoisie) { if (!audioPlaying) toggleAudio(); return; }
     await updateMember(user.uid, { personnalisation: { ...(member?.personnalisation || {}), musiqueSite: origine } });
   };
 

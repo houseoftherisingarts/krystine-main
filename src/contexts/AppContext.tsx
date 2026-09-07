@@ -39,7 +39,7 @@ interface UIContextType {
   audioPlaying: boolean;
   toggleAudio: () => void;
   /** Remplace la musique d'ambiance (null = la musique de base). */
-  setAudioUrl: (url: string | null) => void;
+  setAudioUrl: (url: string | null, opts?: { jouer?: boolean }) => void;
 }
 
 interface AuthContextType {
@@ -123,44 +123,52 @@ const UIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     ecrire.finally(() => persistLang(code));
   }, [lang]);
   const [theme, setTheme] = useState<Theme>('light');
+  // Un seul lecteur pour tout le site, gardé dans une ref. L'état « joue »
+  // vient des événements du lecteur lui-même (play, pause, ended), jamais
+  // d'une supposition : le bouton reflète toujours ce qui sort des
+  // haut-parleurs. Choisir une piste la fait jouer tout de suite.
   const [audioPlaying, setAudioPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  if (!audioRef.current && typeof Audio !== 'undefined') {
+    const a = new Audio(AUDIO_URL);
+    a.loop = true; a.preload = 'auto'; a.volume = 0.4;
+    audioRef.current = a;
+  }
+  useEffect(() => {
+    const a = audioRef.current;
+    if (!a) return;
+    const sync = () => setAudioPlaying(!a.paused && !a.ended);
+    a.addEventListener('play', sync); a.addEventListener('playing', sync); a.addEventListener('pause', sync); a.addEventListener('ended', sync);
+    return () => { a.removeEventListener('play', sync); a.removeEventListener('playing', sync); a.removeEventListener('pause', sync); a.removeEventListener('ended', sync); a.pause(); };
+  }, []);
 
   useEffect(() => {
     if (theme === 'dark') document.documentElement.classList.add('dark');
     else document.documentElement.classList.remove('dark');
   }, [theme]);
 
-  const [audioUrl, setAudioUrlState] = useState<string | null>(null);
-  const setAudioUrl = useCallback((url: string | null) => setAudioUrlState(url), []);
-
-  // Le lecteur se rebâtit quand la musique change; s'il jouait, il reprend.
-  useEffect(() => {
-    const jouait = audioRef.current ? !audioRef.current.paused : false;
-    audioRef.current?.pause();
-    const audio = new Audio(audioUrl || AUDIO_URL);
-    audio.loop = true;
-    audio.volume = jouait ? 0.4 : 0;
-    audioRef.current = audio;
-    if (jouait) audio.play().catch(() => {});
-    return () => { audio.pause(); };
-  }, [audioUrl]);
+  // Changer de piste. `jouer: true` quand c'est un choix de la personne (le
+  // geste autorise la lecture) : la nouvelle piste joue tout de suite. Sans
+  // `jouer`, la piste change en silence, sauf si la musique jouait déjà.
+  // `null` ramène la musique par défaut du site.
+  const setAudioUrl = useCallback((url: string | null, opts?: { jouer?: boolean }) => {
+    const a = audioRef.current;
+    if (!a) return;
+    const jouait = !a.paused;
+    const next = new URL(url || AUDIO_URL, window.location.href).href;
+    if (a.src !== next) { a.src = next; a.load(); }
+    if (opts?.jouer || jouait) { a.volume = 0.4; a.play().catch(() => setAudioPlaying(false)); }
+  }, []);
 
   const toggleTheme = useCallback(() => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   }, []);
 
   const toggleAudio = useCallback(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (audio.paused) {
-      audio.volume = 0.4;
-      audio.play().catch(() => {});
-      setAudioPlaying(true);
-    } else {
-      audio.pause();
-      setAudioPlaying(false);
-    }
+    const a = audioRef.current;
+    if (!a) return;
+    if (a.paused) { a.volume = 0.4; a.play().catch(() => setAudioPlaying(false)); }
+    else a.pause();
   }, []);
 
   const value = useMemo<UIContextType>(() => ({
@@ -169,7 +177,6 @@ const UIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <UIContext.Provider value={value}>
-      <audio ref={audioRef} src={AUDIO_URL} loop preload="auto" style={{ display: 'none' }} />
       {children}
     </UIContext.Provider>
   );
