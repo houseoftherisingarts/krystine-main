@@ -1,7 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useApp } from '../../contexts/AppContext';
-import { ensureConversation, sendMessage, subscribeToMessages, markConversationRead, type MessageDoc } from '../../firebase/firestore';
+import {
+  ensureConversation, sendMessage, subscribeToMessages, subscribeToConversation,
+  markConversationRead, type MessageDoc,
+} from '../../firebase/firestore';
 import { CadreOr, EtiquetteOr } from '../../components/client/CadreOr';
+import { SIGNATURE_URL } from '../../components/client/Signature';
+import SceauKSL from '../../components/communaute/SceauKSL';
 import { CLE_LETTRE_A_OUVRIR } from './ClientArchives';
 
 // Ouvre une lettre d'or : l'onglet Lettres du portail écoute cet événement
