@@ -83,6 +83,8 @@ export const CONTENUS: Record<TypeCoffre, Contenu> = {
     grandLot: { unSur: 89, nom: 'Le Foyer d’Origine, offert' },
   },
 };
+/** Les skins rares des coffres d'argent et d'or : le bassin du cadeau du 60e jour au Foyer (niskas.ts). */
+export const SKINS_RARES_COFFRES = [...CONTENUS.argent.rares, ...CONTENUS.or.rares];
 const LEGENDAIRES = ['skin-vata', 'skin-pitta', 'skin-kapha'];
 const COMMUNS = ['skin-medzo', 'skin-nuit', 'skin-coffee', 'skin-aube', 'skin-terre', 'skin-foret', 'skin-ocean', 'skin-encre', 'banniere-nature', 'banniere-iris', 'banniere-pivoine', 'banniere-huiles', 'banniere-jardin', 'banniere-soir'];
 const NISKAS_MUSIQUE_DEJA = 6; // la musique vaut 5 niskas : valeur plus 5 %, arrondie au niska supérieur
@@ -99,7 +101,7 @@ const VALEUR_COSMETIQUE: Record<string, number> = {
   'skin-lotus': 100, 'skin-feminite': 100, 'skin-nature': 100, 'skin-teal-orange': 100,
   'skin-aurore': 180, 'skin-or-pur': 180, 'skin-golden-hour': 180,
 };
-const NOMS_COSMETIQUES: Record<string, string> = {
+export const NOMS_COSMETIQUES: Record<string, string> = {
   'skin-vata': 'Skin Vata · le vent', 'skin-pitta': 'Skin Pitta · le feu', 'skin-kapha': 'Skin Kapha · l’eau',
   'skin-medzo': 'Skin Medzo Café', 'skin-nuit': 'Skin Nuit', 'skin-coffee': 'Skin Dark Coffee', 'banniere-nature': 'Bannière Nature & Ayurveda',
   'skin-aube': 'Skin Aube rose', 'skin-terre': 'Skin Terre cuite', 'skin-foret': 'Skin Forêt', 'skin-ocean': 'Skin Océan', 'skin-encre': 'Skin Encre & or',
@@ -142,7 +144,13 @@ export function verifierTables(): void {
   if (!uneChanceSur(89, 0) || uneChanceSur(89, 1)) throw new Error('uneChanceSur ne suit pas le dé.');
 }
 
-async function ecrireMessageKrystine(db: FirebaseFirestore.Firestore, deUid: string, uid: string, corps: string, extra: Record<string, unknown> = {}) {
+/** L'uid de Krystine dans `members`, ou null si sa fiche manque (le mot ne s'écrit alors pas). */
+export async function uidKrystine(db: FirebaseFirestore.Firestore): Promise<string | null> {
+  const admin = await db.collection('members').where('email', '==', 'krystine@inspiratanature.com').limit(1).get();
+  return admin.docs[0]?.id || null;
+}
+
+export async function ecrireMessageKrystine(db: FirebaseFirestore.Firestore, deUid: string, uid: string, corps: string, extra: Record<string, unknown> = {}) {
   const [membre, admin] = await Promise.all([db.doc(`members/${uid}`).get(), db.doc(`members/${deUid}`).get()]);
   const m = (membre.data() || {}) as { displayName?: string; photoURL?: string };
   const a = (admin.data() || {}) as { photoURL?: string };
