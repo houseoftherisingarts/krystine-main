@@ -35,6 +35,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
   const fr = lang === 'FR';
   const [solde, setSolde] = useState<PointsBalance>({ balance: 0, lifetime: 0 });
   const [possede, setPossede] = useState<Record<string, unknown>>({});
+  const [skinsSettings, setSkinsSettings] = useState<SkinsSettings>({});
   const [episodes, setEpisodes] = useState<Lecon[]>([]);
   const [catalogue, setCatalogue] = useState<CatalogueVideos | null>(null);
   const [liste, setListe] = useState<string>('');
