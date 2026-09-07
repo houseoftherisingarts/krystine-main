@@ -73,6 +73,127 @@ const HISTOIRE_NISKA_EN = [
 
 type Tab = 'profile' | 'amis' | 'orders' | 'formations' | 'rediffusions' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie';
 
+// Le Badge Bleu : la coche qui dit à la communauté que ce compte est bien le
+// vôtre. Quatre états, jugés par members.verifie puis par verifications/{uid}
+// (docs/badge-bleu-plan.md, 4.2). Le serveur compte les programmes et juge la
+// pièce; ici, uniquement les classes que skins.css repeint.
+const BadgeBleuBloc: React.FC<{ uid: string; verifie: boolean; lang: string }> = ({ uid, verifie, lang }) => {
+  const fr = lang === 'FR';
+  const [verif, setVerif] = useState<Verification | null | undefined>(undefined);
+  const [programmes, setProgrammes] = useState<number | null>(null);
+  const [fichier, setFichier] = useState<File | null>(null);
+  const [envoi, setEnvoi] = useState(false);
+  const [erreur, setErreur] = useState('');
+  const [succes, setSucces] = useState(false);
+  useEffect(() => suivreVerification(uid, setVerif), [uid]);
+  useEffect(() => { compterProgrammesSuivis(uid).then(setProgrammes).catch(() => setProgrammes(0)); }, [uid]);
+  const date = (t?: { toDate(): Date } | null) => t?.toDate().toLocaleDateString(fr ? 'fr-CA' : 'en-CA', { year: 'numeric', month: 'long', day: 'numeric' }) || '';
+  const choisir = (e: React.ChangeEvent<HTMLInputElement>) => { const f = e.target.files?.[0]; e.target.value = ''; setErreur(''); if (f) setFichier(f); };
+  const envoyer = async () => {
+    if (!fichier || envoi) return;
+    setEnvoi(true); setErreur('');
+    try {
+      const chemin = await televerserPiece(uid, fichier, lang);
+      await demanderBadgeBleu(chemin);
+      setSucces(true); setFichier(null);
+    } catch (e) {
+      setErreur((e as { message?: string }).message || (fr ? 'La demande n’est pas partie. Réessayez dans un instant.' : 'The request did not go through. Try again in a moment.'));
+    } finally { setEnvoi(false); }
+  };
+  const voirSkin = () => { window.dispatchEvent(new Event('krystine:ouvrir-boutique')); window.setTimeout(() => document.getElementById('boutique-skin')?.scrollIntoView({ behavior: 'smooth' }), 450); };
+  const pose = verifie || verif?.statut === 'approuvee';
+  const etat: 'pose' | 'attente' | 'refusee' | 'aucune' = pose ? 'pose' : (succes || verif?.statut === 'en_attente') ? 'attente' : verif?.statut === 'refusee' ? 'refusee' : 'aucune';
+  const charge = verif !== undefined;
+  const n = programmes ?? 0;
+  const okProg = programmes !== null && n >= SEUIL_PROGRAMMES;
+  const manque = Math.max(0, SEUIL_PROGRAMMES - n);
+  const titre = etat === 'pose' ? (fr ? 'Votre Badge Bleu est posé' : 'Your Blue Badge is on')
+    : etat === 'attente' ? (fr ? 'Votre demande est chez Krystine' : 'Your request is with Krystine')
+    : (fr ? 'Le Badge Bleu' : 'The Blue Badge');
+  const texte = etat === 'pose'
+    ? (fr
+      ? `${verif?.decideLe ? `Depuis le ${date(verif.decideLe)}, la` : 'La'} coche bleue paraît à côté de votre nom partout dans l’espace. Le Skin Vérifié vous attend dans la petite boutique, section « Les skins », où il s’active d’un clic.`
+      : `${verif?.decideLe ? `Since ${date(verif.decideLe)}, the` : 'The'} blue check appears next to your name everywhere in the space. The Verified skin is waiting for you in the little shop, under “Skins”, where it turns on with one click.`)
+    : etat === 'attente'
+      ? (succes || !verif?.demandeLe
+        ? (fr ? 'Votre demande est partie. Krystine vous répondra dans votre messagerie.' : 'Your request is on its way. Krystine will answer you in your messages.')
+        : (fr ? `Votre demande est chez Krystine depuis le ${date(verif.demandeLe)}. Elle vous répondra dans votre messagerie.` : `Your request has been with Krystine since ${date(verif.demandeLe)}. She will answer you in your messages.`))
+      : etat === 'refusee'
+        ? (fr ? 'Krystine n’a pas pu poser votre Badge Bleu cette fois-ci. Vous pouvez refaire une demande dès maintenant.' : 'Krystine could not grant your Blue Badge this time. You can send a new request right away.')
+        : (fr
+          ? 'La coche bleue à côté de votre nom dit à toute la communauté que ce compte est bien le vôtre. Une fois posée, elle vient avec deux cents niskas et le Skin Vérifié, réservé aux membres qui la portent.'
+          : 'The blue check next to your name tells the whole community that this account is really yours. Once granted, it comes with two hundred niskas and the Verified skin, reserved for members who carry it.');
+  const formulaire = charge && (etat === 'aucune' || etat === 'refusee');
+  const condition = (ok: boolean, libelle: React.ReactNode) => (
+    <li className="flex items-start gap-3">
+      <i className={`mt-0.5 w-4 shrink-0 text-center ${ok ? 'fa-solid fa-circle-check text-[#3b82f6]' : 'fa-regular fa-circle text-[#8B4A2F] dark:text-[#d9a05b]'}`} />
+      <span className="text-[#293027]/85 dark:text-white/85">{libelle}</span>
+    </li>
+  );
+  return (
+    <div id="badge-bleu" className="rounded-[20px] border border-[#BA7B39]/30 bg-gradient-to-br from-[#BA7B39]/15 to-transparent p-5 md:p-6">
+      <div className="flex flex-col gap-5 md:flex-row md:items-start">
+        <div className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-full border bg-white/40 dark:bg-white/5 ${etat === 'pose' ? 'border-[#3b82f6]/50' : 'border-[#BA7B39]/40'}`} aria-hidden="true">
+          <i className={`fa-solid fa-circle-check text-3xl ${etat === 'pose' ? 'text-[#3b82f6]' : 'text-[#8B4A2F] dark:text-[#d9a05b]'}`} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'Badge Bleu' : 'Blue Badge'}</p>
+          <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white md:text-3xl">{titre}</h3>
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#293027]/70 dark:text-white/70">{texte}</p>
+          {etat === 'pose' && (
+            <button type="button" onClick={voirSkin} className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] hover:bg-[#3a453a] dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]">
+              <i className="fa-solid fa-wand-magic-sparkles" /> {fr ? 'Voir le Skin Vérifié' : 'See the Verified skin'}
+            </button>
+          )}
+          {etat === 'refusee' && verif?.motif && (
+            <div className="mt-3 rounded-[14px] border border-[#BA7B39]/25 bg-white/40 px-4 py-3 dark:bg-white/5">
+              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#8B4A2F] dark:text-[#d9a05b]">{fr ? `Le mot de Krystine${verif.decideLe ? `, le ${date(verif.decideLe)}` : ''}` : `Krystine’s note${verif.decideLe ? `, ${date(verif.decideLe)}` : ''}`}</p>
+              <p className="mt-1 text-sm leading-relaxed text-[#293027]/75 dark:text-white/75">{verif.motif}</p>
+            </div>
+          )}
+          {formulaire && (
+            <>
+              <ul className="mt-4 space-y-2 text-sm">
+                {condition(okProg, fr ? <>Deux programmes suivis avec Krystine : <span className="font-bold">{programmes === null ? '…' : n} sur {SEUIL_PROGRAMMES}</span></> : <>Two programs followed with Krystine: <span className="font-bold">{programmes === null ? '…' : n} of {SEUIL_PROGRAMMES}</span></>)}
+                {condition(!!fichier, fr ? 'Une pièce d’identité, pour confirmer que ce compte est bien le vôtre' : 'A piece of ID, to confirm this account is really yours')}
+              </ul>
+              {programmes !== null && !okProg && (
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <p className="text-sm text-[#293027]/70 dark:text-white/70">{fr ? `Il vous manque ${manque} programme${manque > 1 ? 's' : ''}.` : `You are ${manque} program${manque > 1 ? 's' : ''} short.`}</p>
+                  <Link to="/formations" className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/50 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:bg-[#BA7B39]/10 dark:text-[#d9a05b]">
+                    <i className="fa-solid fa-book-open" /> {fr ? 'Voir les formations' : 'See the programs'}
+                  </Link>
+                </div>
+              )}
+              {okProg && (
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-[#BA7B39]/50 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:bg-[#BA7B39]/10 dark:text-[#d9a05b]">
+                    <i className="fa-solid fa-id-card" /> {fichier ? (fr ? 'Changer de fichier' : 'Change the file') : (fr ? 'Choisir ma pièce' : 'Choose my ID')}
+                    <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" className="sr-only" onChange={choisir} disabled={envoi} />
+                  </label>
+                  {fichier && <span className="max-w-[16rem] truncate text-xs text-[#293027]/70 dark:text-white/70">{fichier.name}</span>}
+                  <button type="button" onClick={envoyer} disabled={!fichier || envoi} className="inline-flex items-center gap-2 rounded-full bg-[#293027] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] hover:bg-[#3a453a] disabled:cursor-not-allowed disabled:opacity-40 dark:bg-[#BA7B39] dark:text-[#293027] dark:hover:bg-[#d9a05b]">
+                    <i className="fa-solid fa-paper-plane" /> {envoi ? (fr ? 'Envoi en cours' : 'Sending') : (fr ? 'Envoyer ma demande' : 'Send my request')}
+                  </button>
+                </div>
+              )}
+              {erreur && <p className="mt-3 text-sm text-[#8B4A2F] dark:text-[#d9a05b]" role="alert">{erreur}</p>}
+            </>
+          )}
+          {etat !== 'pose' && (
+            <p className="mt-4 max-w-3xl text-xs leading-relaxed text-[#293027]/55 dark:text-white/55">
+              <i className="fa-solid fa-lock mr-1.5 text-[10px]" />
+              {fr
+                ? 'Votre pièce sert uniquement à confirmer que ce compte est bien le vôtre. Krystine seule peut la voir, et elle est supprimée de nos serveurs dès que la décision est prise.'
+                : 'Your ID is used only to confirm that this account is really yours. Krystine alone can see it, and it is deleted from our servers as soon as the decision is made.'}
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // L'onglet Profil en lecture : la fiche (courriel, téléphone, dosha, badges)
 // et surtout LE MUR de la personne. L'édition s'ouvre en cliquant sur la
 // photo de la bannière.
