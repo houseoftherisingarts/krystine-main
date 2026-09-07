@@ -151,7 +151,12 @@ const ClientLoyalty: React.FC = () => {
         oneShot: reward.oneShot,
       });
       if (res.ok) {
-        setToast({ kind: 'ok', msg: lang === 'FR' ? 'Récompense demandée — vous recevrez votre code par courriel sous 24 h.' : 'Reward requested — you will receive your code by email within 24 h.' });
+        setToast({
+          kind: 'ok',
+          msg: res.code
+            ? (lang === 'FR' ? `Voici votre code : ${res.code}` : `Here is your code: ${res.code}`)
+            : (lang === 'FR' ? 'Récompense échangée : elle vous attend dans vos formations.' : 'Reward redeemed: it is waiting in your courses.'),
+        });
         await refreshHistory();
       } else if (res.reason === 'insufficient') {
         setToast({ kind: 'err', msg: lang === 'FR' ? "Pas assez de niskas pour cette récompense." : 'Not enough niskas for this reward.' });
