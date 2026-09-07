@@ -201,7 +201,7 @@ const CoursDetailPage: React.FC = () => {
   // de la première cohorte) à personne qui ne l'a pas : la fiche renvoie à
   // sa page de vente, comme le Foyer ci-dessus. Qui la possède déjà (achat,
   // accès à vie) ou l'admin en aperçu passe tout droit (Alex, 7 sept. 2026).
-  if (formation?.listeAttente && !accessible) {
+  if (formation?.listeAttente && !accessible && (!user || !verifAcces)) {
     return <Navigate to={formation.lienFiche || '/origine'} replace />;
   }
 
