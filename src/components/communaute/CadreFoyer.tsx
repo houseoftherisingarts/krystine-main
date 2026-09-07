@@ -213,6 +213,7 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, dr
                     <i className="fa-solid fa-gauge-high mr-2" />{fr ? 'Espace admin' : 'Admin space'}
                   </a>
                 )}
+                <EditModeToggleButton />
                 <button onClick={logout} className="text-xs uppercase tracking-widest text-white/60 hover:text-red-300">
                   <i className="fa-solid fa-right-from-bracket mr-2" />{fr ? 'Déconnexion' : 'Sign out'}
                 </button>
