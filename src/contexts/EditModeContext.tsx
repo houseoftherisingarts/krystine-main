@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react';
 import {
   subscribeToOverrides,
-  setTextOverride,
+  setTextOverrides,
   setImageOverride,
   type OverridesDoc,
   type ImageOverride,
