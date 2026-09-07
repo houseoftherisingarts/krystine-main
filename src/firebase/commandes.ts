@@ -46,7 +46,11 @@ export async function getCommandesStripe(): Promise<CommandeStripe[]> {
   ]);
 
   const achats: CommandeStripe[] = formationsSnap.docs
-    .filter(d => d.ref.parent.parent?.parent.id === 'achatsFormations')
+    // Seules les vraies ventes Stripe : plusieurs chemins (coffre, parrainage,
+    // musique offerte, accès à vie) écrivent aussi dans achatsFormations sans
+    // passer par Stripe; ils n'ont jamais de sessionId et n'appartiennent pas
+    // à un tableau de revenus.
+    .filter(d => d.ref.parent.parent?.parent.id === 'achatsFormations' && !!(d.data() as { sessionId?: string }).sessionId)
     .map(d => {
       const data = d.data() as DetailTaxes & { titre?: string; montant?: number; acheteLe?: Timestamp; sessionId?: string };
       return {

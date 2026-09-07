@@ -84,15 +84,13 @@ for (const ecran of ECRANS) {
   //    cliente : l'annuaire doit être refusé.
   if (ecran.nom === '1440') {
     const essai = await pageSans.evaluate(async () => {
-      const { getFirestore, collection, getDocs } = await import('/node_modules/.vite/deps/firebase_firestore.js');
-      const { getApps } = await import('/node_modules/.vite/deps/firebase_app.js');
-      const app = getApps()[0];
-      const db = getFirestore(app);
       const essais = {};
-      for (const col of ['members', 'mur']) {
-        try { const s = await getDocs(collection(db, col)); essais[col] = `LU ${s.size} documents`; }
-        catch (e) { essais[col] = `REFUS ${e.code || e.message}`; }
-      }
+      const fs = await import('/src/firebase/firestore.ts');
+      try { const l = await fs.getAllMembers(); essais['members (list)'] = `LU ${l.length} fiches`; }
+      catch (e) { essais['members (list)'] = `REFUS ${e.code || e.message}`; }
+      const fo = await import('/src/firebase/formations.ts');
+      try { const g = await fo.getMembresGroupe('foyer'); essais['groupes/foyer/membres (list)'] = `LU ${g.length} membres`; }
+      catch (e) { essais['groupes/foyer/membres (list)'] = `REFUS ${e.code || e.message}`; }
       return essais;
     }).catch((e) => ({ erreur: String(e).slice(0, 200) }));
     journal.push(`FIRESTORE DIRECT (sans Foyer) : ${JSON.stringify(essai)}`);
