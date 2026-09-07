@@ -259,17 +259,13 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
         </p>
       )}
 
-      {CATEGORIES_BOUTIQUE.map((cat) => (
-      <div key={cat.id} className="mt-8" id={`boutique-${cat.id}`}>
-        <div className="flex items-start gap-3">
-          <span className="mt-0.5 inline-flex h-9 w-9 flex-none items-center justify-center rounded-full bg-[#BA7B39]/15 text-[#8B4A2F] dark:text-[#d9a05b]"><i className={`fa-solid ${cat.icone}`} /></span>
-          <div>
-            <h4 className="font-serif text-xl text-[#293027] dark:text-white">{fr ? cat.titreFR : cat.titreEN}</h4>
-            <p className="mt-1 max-w-2xl text-sm text-[#293027]/65 dark:text-white/65">{fr ? cat.texteFR : cat.texteEN}</p>
-          </div>
-        </div>
+      {CATEGORIES_BOUTIQUE.map((cat) => {
+        const items = BOUTIQUE.filter((a) => a.categorie === cat.id && (a.categorie !== 'skin' || !skinsCachees.has(a.id) || !!possede[a.id]));
+        return accordeon(cat.id, cat.icone, fr ? cat.titreFR : cat.titreEN, items.length, (
+        <>
+        <p className="max-w-2xl text-sm text-[#293027]/65 dark:text-white/65">{fr ? cat.texteFR : cat.texteEN}</p>
       <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {BOUTIQUE.filter((a) => a.categorie === cat.id).map((a) => {
+        {items.map((a) => {
           const nom = fr ? a.nomFR : a.nomEN;
           const desc = fr ? a.descFR : a.descEN;
           let visuel: React.ReactNode;
