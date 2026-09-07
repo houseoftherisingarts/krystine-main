@@ -151,6 +151,12 @@ export const acheterAvecNiskas = onCall(
     let saison = '';
     if (COSMETIQUES[article]) {
       ({ cout, nom } = COSMETIQUES[article]);
+      // Une skin en travail (settings/skins, fusionnée au drapeau par défaut
+      // de coffres.ts) ne s'achète plus, même si elle reste dans le
+      // catalogue : garde-fou, au cas où une skin commune y entrerait un jour.
+      if (article.startsWith('skin-') && (await skinsEnTravail(db)).has(article)) {
+        throw new HttpsError('not-found', 'Ce skin n\'est pas disponible pour le moment.');
+      }
       if (article.startsWith('sanslogo-') && article !== 'sanslogo-defaut') {
         const possede = ((await db.doc(`boutique/${uid}`).get()).data() as { possede?: Record<string, unknown> } | undefined)?.possede || {};
         if (!possede[`banniere-${article.slice('sanslogo-'.length)}`]) throw new HttpsError('failed-precondition', 'Cette bannière n\'est pas encore à vous.');
