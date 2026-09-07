@@ -263,7 +263,7 @@ export const SKINS: Skin[] = [
     descFR: 'Le blanc cassé de la couverture s’ouvre sur une aquarelle olive et l’esperluette dorée du titre. Rare : dans le coffre d’argent seulement.',
     descEN: 'The off-white cover opens onto an olive watercolor and the gilded ampersand of the title. Rare: in the silver chest only.',
     palette: { fond: '#efeae0', panneau: '#fbf9f4', encre: '#2f3a2c', accent: '#6e7f4f', accentClair: '#9aa97a', accentProfond: '#4d5c37', sombre: false } },
-  { cle: 'aurore', cout: null, rarete: 'rare', coffre: 'or', icone: 'fa-wind', nomFR: 'Skin Aurore', nomEN: 'Aurora skin',
+  { cle: 'aurore', cout: null, rarete: 'rare', coffre: 'or', icone: 'fa-wind', enTravail: true, nomFR: 'Skin Aurore', nomEN: 'Aurora skin',
     descFR: 'La nuit polaire et ses voiles verts qui dansent en fond d’espace. Rare : dans le coffre d’or seulement.',
     descEN: 'The polar night and its green veils dancing behind your space. Rare: in the gold chest only.',
     palette: { fond: '#071019', panneau: '#0f1c28', encre: '#e6f3f0', accent: '#58d3b0', accentClair: '#a5f0da', accentProfond: '#a5f0da', sombre: true } },
