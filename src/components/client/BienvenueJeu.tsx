@@ -3,6 +3,7 @@ import { PAQUETS_NISKAS, POINTS, ROUE_QUOTIDIENNE } from '../../lib/pointsConfig
 import { updateMember } from '../../firebase/firestore';
 import PieceNiska from './PieceNiska';
 import Portail from '../Portail';
+import { useGamification } from '../../contexts/GamificationContext';
 
 // Le pop-up de bienvenue de l'espace : comment le jeu fonctionne (les niskas,
 // la roue, la boutique, la plante, le parrainage). Il s'ouvre une fois, au
