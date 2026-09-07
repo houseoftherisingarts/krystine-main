@@ -251,6 +251,7 @@ export const stripeWebhook = onRequest(
       const nom = (membre.data() as { displayName?: string } | undefined)?.displayName || 'Une auditrice';
       await db.doc(`pourboires/${session.id}`).set({
         uid, nom, montant, directId, at: FieldValue.serverTimestamp(),
+        ...detailTaxes, // pas de taxe sur un pourboire : taxes/tps/tvq restent à 0
       }, { merge: true });
       // Dix points par dollar, une seule fois par paiement.
       const points = Math.round(montant * 10);
