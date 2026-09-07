@@ -90,7 +90,7 @@ absolute inset-x-0 bottom-0
       déconnexion : text-xs uppercase tracking-widest text-white/60 hover:text-red-300
 ```
 
-L'avatar ne « déborde » pas de la bannière au sens géométrique : il est ancré au bas de la bannière (`absolute inset-x-0 bottom-0`), la bordure crème de 4 px le détache du voile sombre et la rangée d'onglets vient juste dessous. Sur la capture 1440 la photo occupe 400 px, sur 390 elle occupe 320 px avec le nom et les pastilles qui passent sur deux lignes sous l'avatar de 112 px.
+L'avatar ne « déborde » pas de la bannière au sens géométrique : il est ancré au bas de la bannière (`absolute inset-x-0 bottom-0`), la bordure crème de 4 px le détache du voile sombre et la rangée d'onglets vient juste dessous. Sur la capture 1440 la photo occupe 400 px; sur 390 elle occupe 320 px, l'avatar de 112 px et le nom restent côte à côte, les deux pastilles passent sous le nom et seul le courriel disparaît (`hidden sm:inline`).
 
 ## 3. La rangée d'onglets
 
@@ -131,7 +131,7 @@ Filtres en pilules bordées (vidéos, `BoutiqueNiskas.tsx:458`) : `rounded-full 
 </div>
 ```
 
-Le panneau principal est le verre clair de l'espace : `border-white/60 bg-white/55 backdrop-blur-md`. Sous `lg` la colonne de droite passe sous le panneau (une seule colonne, capture 390).
+Le panneau principal est le verre clair de l'espace : `border-white/60 bg-white/55 backdrop-blur-md`. Sous `lg` la colonne de droite passe sous le panneau (une seule colonne, capture 390). La grille étire le panneau à la hauteur du rail (`align-items: stretch` par défaut) : un onglet court, comme Amis vide, laisse un grand panneau presque vide à côté du rail (capture `amis-1440.png`); un nouvel onglet gagne à remplir cette hauteur plutôt qu'à la laisser blanche.
 
 Avis en tête de panneau (retour de Stripe, `:637`) : `mb-5 flex items-center justify-between gap-3 rounded-[16px] border border-[#BA7B39]/40 bg-[#BA7B39]/15 px-4 py-3 text-sm text-[#293027] dark:text-white`, croix `text-[#293027]/50 hover:text-[#293027] dark:text-white/50`.
 
@@ -391,4 +391,5 @@ Observation : les règles `.skin-defaut` (`skins.css:642-660`) n'ont aucune pris
 - `profile-1440.png` : bannière 400 px, avatar 128 px bordé crème posé sur le voile sombre, nom en Cormorant blanc 36 px, pastille laiton « 120 niskas » et pastille verre « pitta », rangée d'onglets sur une ligne, panneau de verre à gauche (encart laiton des niskas avec les trois boutons, bloc Badges, Préférences) et rail de 320 px à droite (Invitez vos proches, code en grand, deux tuiles, Les badges, Les cadeaux).
 - `amis-1440.png` : titre « Mes amis (0) » en petites capitales laiton et phrase d'état vide avec lien vers l'annuaire; le rail reste identique.
 - `messagerie-1440.png` : deux pilules « Amies » et « Équipe », boîte crème de 60vh avec la liste à gauche (état vide) et le volet « Choisissez une conversation » à droite, lien « Plein écran » au bas de la liste.
-- `*-390.png` : bannière 320 px, avatar 112 px, nom et pastilles sur deux lignes sous la photo, onglets qui défilent, panneau puis rail empilés en une colonne, gouttières de 24 px.
+- `*-390.png` : bannière 320 px, avatar 112 px et nom côte à côte, pastilles sous le nom, courriel masqué, onglets qui défilent (Profil à Mes formations visibles), panneau puis rail empilés en une colonne, gouttières de 24 px; la liste des gains passe en une colonne avec ses notes repliées sous chaque libellé.
+- Sur toutes les captures : la carte de consentement Loi 25 (« En toute transparence ») recouvre le haut du rail et le bouton flottant « Problème technique » se pose à gauche; ce sont des couches de la page, pas des briques de l'espace client.
