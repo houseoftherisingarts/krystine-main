@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { reclamerQuotidien, type Quotidien } from '../../firebase/points';
 import { ROUE_QUOTIDIENNE, journee, niskas } from '../../lib/pointsConfig';
-import { LIBELLE_FOYER, RABAIS_HUILE_FOYER, ROUE_FOYER, prochainsCadeauxFoyer } from '../../lib/badgeBleu';
+import { LIBELLE_FOYER, ROUE_FOYER, prochainsCadeauxFoyer } from '../../lib/badgeBleu';
 import PieceNiska from './PieceNiska';
 import Portail from '../Portail';
 
@@ -32,7 +32,7 @@ function phraseMoisFoyer(etat: Quotidien, fr: boolean): string | null {
   const debut = fr ? 'Un mois complet : ' : 'A full month: ';
   if (m.genre === 'musique') return debut + (fr ? 'la musique d’Origine est à vous.' : 'the Origin music is yours.');
   if (m.genre === 'skin-rare') return debut + (fr ? `le ${m.nom ?? 'skin rare'} est à vous, dans la petite boutique.` : `the ${m.nom ?? 'rare skin'} is yours, in the little shop.`);
-  if (m.genre === 'rabais-huile') return debut + (fr ? `${RABAIS_HUILE_FOYER.pourcent} % sur une huile corporelle de votre choix, une seule. Krystine vous envoie le code par courriel.` : `${RABAIS_HUILE_FOYER.pourcent}% off one body oil of your choice, a single one. Krystine sends you the code by email.`);
+  if (m.genre === 'saison') return debut + (fr ? `${m.nom ?? 'une saison complète'} est à vous, dans l’onglet Formations.` : `${m.nom ?? 'a full season'} is yours, in the Programmes tab.`);
   return debut + (fr ? `${niskas(m.montant ?? 0, 'FR')} de plus dans votre bourse.` : `${niskas(m.montant ?? 0, 'EN')} more in your purse.`);
 }
 

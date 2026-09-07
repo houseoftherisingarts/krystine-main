@@ -44,6 +44,18 @@ const CarteSociale: React.FC<{
 
 export default CarteSociale;
 
+/** Le nom qu'on montre pour une personne : celui qu'elle s'est donné, sinon la
+ *  partie avant le @ de son courriel, en majuscules d'imprimerie au début.
+ *  Rend une chaîne vide quand on ne sait rien d'elle : la rangée ne s'affiche
+ *  pas plutôt que d'écrire « Une membre » trente fois de suite (Alex,
+ *  7 septembre 2026). */
+export function nomDeMembre(source: { displayName?: string; email?: string } | null | undefined): string {
+  const nom = (source?.displayName || '').trim();
+  if (nom) return nom;
+  const local = (source?.email || '').split('@')[0].replace(/[._+-]+/g, ' ').trim();
+  return local ? local.replace(/\b\p{L}/gu, c => c.toUpperCase()) : '';
+}
+
 // ─── La rangée de personne ───────────────────────────────────────────────────
 // La rangée d'ami de l'onglet Amis (ClientPortal.tsx:202-213), avec le
 // médaillon partagé (Avatar.tsx) à la place du rond à `bg-cover`. Sert à

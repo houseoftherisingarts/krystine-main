@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
-import { type MemberDoc } from '../firebase/firestore';
+
 import { accepterAmitie, refuserAmitie, suivreMesAmities, type Amitie } from '../firebase/amities';
 import CadreFoyer from '../components/communaute/CadreFoyer';
 import CarteSociale, { PETITES_CAPITALES, RangeePersonne } from '../components/communaute/CarteSociale';
-import { useCercleDuFoyer } from '../components/communaute/ReserveAuFoyer';
+import { useCercleDuFoyer, type MembreDuFoyer } from '../components/communaute/ReserveAuFoyer';
 import { CHEMINS_FOYER } from '../components/communaute/chemins';
 
 // ─── L'annuaire du Foyer, /foyer/membres ─────────────────────────────────────
@@ -43,7 +43,7 @@ const CommunauteMembres: React.FC = () => {
 
   const moi = user?.uid || '';
   const parUid = useMemo(() => new Map(membres.map(m => [m.uid, m])), [membres]);
-  const ficheDe = (uid: string): MemberDoc => parUid.get(uid) || { uid, email: '', displayName: fr ? 'Membre' : 'Member' };
+  const ficheDe = (uid: string): MembreDuFoyer => parUid.get(uid) || { uid, nom: fr ? 'Membre' : 'Member', espaceOuvert: false, fiche: null };
   const autreDe = (l: Amitie) => l.paire.find(u => u !== moi) || '';
   // Une amitié nouée hors du Foyer (marraine, filleule) ne s'affiche pas ici :
   // le Foyer ne montre que le Foyer.
@@ -53,7 +53,7 @@ const CommunauteMembres: React.FC = () => {
   const envoyees = useMemo(() => amities.filter(l => l.statut === 'demande' && l.de === moi).map(autreDe).filter(duFoyer), [amities, moi, parUid]);
 
   const q = normaliser(recherche.trim());
-  const toutes = q ? membres.filter(m => normaliser(m.displayName || '').includes(q)) : membres;
+  const toutes = q ? membres.filter(m => normaliser(m.nom).includes(q)) : membres;
 
   const choisirVue = (v: Vue) => { const p = new URLSearchParams(params); if (v === 'toutes') p.delete('vue'); else p.set('vue', v); setParams(p, { replace: true }); };
   const repondre = async (autre: string, oui: boolean) => {
@@ -76,19 +76,21 @@ const CommunauteMembres: React.FC = () => {
     </button>
   );
 
-  const ecrire = (m: MemberDoc) => (
+  const ecrire = (m: MembreDuFoyer) => (
     <Link to={CHEMINS_FOYER.conversation(m.uid)} className={BOUTON_SECONDAIRE}>
       <i className="fa-solid fa-envelope text-[9px]" /> {fr ? 'Écrire' : 'Write'}
     </Link>
   );
-  const rangee = (m: MemberDoc, action?: React.ReactNode) => (
+  const rangee = (m: MembreDuFoyer, action?: React.ReactNode) => (
     <RangeePersonne
       key={m.uid}
       uid={m.uid}
-      nom={m.displayName || (fr ? 'Membre' : 'Member')}
-      photo={m.photoURL}
+      nom={m.nom}
+      photo={m.photo}
       verifie={m.verifie}
-      sousTitre={m.dosha ? `Dosha ${m.dosha}` : undefined}
+      sousTitre={!m.espaceOuvert
+        ? (fr ? 'N’a pas encore ouvert son espace' : 'Has not opened her space yet')
+        : m.dosha ? `Dosha ${m.dosha}` : undefined}
       action={m.uid === moi ? undefined : action}
     />
   );

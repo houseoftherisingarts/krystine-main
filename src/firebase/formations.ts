@@ -248,6 +248,10 @@ export async function supprimerOngletFormation(formationId: string, ongletId: st
 export interface MembreGroupe {
   uid: string;
   ajouteLe?: Timestamp;
+  /** Le nom et le courriel du compte, écrits par la fonction groupeMembre :
+   *  une acheteuse qui n'a jamais ouvert son espace porte quand même son nom. */
+  nom?: string;
+  courriel?: string;
 }
 
 export async function getMembresGroupe(formationId: string): Promise<MembreGroupe[]> {

@@ -267,15 +267,16 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, personne, droite, c
                 ) : (
                   <div className="space-y-0.5">
                     {cercle.slice(0, 8).map(c => {
-                      const nomC = (c.displayName || '').trim() || (fr ? 'Membre' : 'Member');
+                      const nomC = c.nom;
                       return (
                         <RangeePersonne
                           key={c.uid}
                           compact
                           uid={c.uid}
                           nom={nomC}
-                          photo={c.photoURL}
+                          photo={c.photo}
                           verifie={c.verifie}
+                          sousTitre={c.espaceOuvert ? undefined : (fr ? 'N’a pas encore ouvert son espace' : 'Has not opened her space yet')}
                           action={c.uid !== moi ? (
                             <Link
                               to={CHEMINS_FOYER.conversation(c.uid)}

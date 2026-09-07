@@ -5,6 +5,7 @@ import { aAchete, getMembresGroupe } from '../../firebase/formations';
 import { getMember, type MemberDoc } from '../../firebase/firestore';
 import { listerMesFilleules, maMarraine } from '../../firebase/parrainage';
 import { CHEMINS_FOYER } from './chemins';
+import { nomDeMembre } from './CarteSociale';
 
 // L'annuaire des membres, le cercle d'amies et la messagerie de boîte à boîte
 // sont réservés aux membres du Foyer d'Origine. Ce fichier tient le jugement
@@ -67,26 +68,52 @@ export function useAmiesDOrigine(): { foyer: boolean | null; permis: Set<string>
 // ni dans le rail « Autour du feu », ni dans la recherche (Alex, 7 septembre
 // 2026 : « c'est comme un groupe VIP »). Les fiches sont triées de la plus
 // récemment vue à la plus ancienne.
-export function useCercleDuFoyer(): { membres: MemberDoc[]; chargement: boolean } {
+/** Une personne du cercle. `espaceOuvert` est faux quand elle a le Foyer mais
+ *  n'a jamais ouvert son espace : elle porte quand même son nom, pris dans le
+ *  miroir du groupe. Une ligne sans aucune identité ne sort pas d'ici. */
+export interface MembreDuFoyer {
+  uid: string;
+  nom: string;
+  photo?: string;
+  verifie?: boolean;
+  dosha?: string;
+  espaceOuvert: boolean;
+  fiche: MemberDoc | null;
+}
+
+export function useCercleDuFoyer(): { membres: MembreDuFoyer[]; chargement: boolean } {
   const { user, member } = useAuth();
-  const [membres, setMembres] = useState<MemberDoc[]>([]);
+  const [membres, setMembres] = useState<MembreDuFoyer[]>([]);
   const [chargement, setChargement] = useState(true);
   useEffect(() => {
     if (!user) { setMembres([]); setChargement(false); return; }
     let vivant = true;
-    const finir = (liste: MemberDoc[]) => { if (vivant) { setMembres(liste); setChargement(false); } };
+    const finir = (liste: MembreDuFoyer[]) => { if (vivant) { setMembres(liste); setChargement(false); } };
     getMembresGroupe('foyer')
       .then(async liste => {
-        const fiches = (await Promise.all(liste.map(m => getMember(m.uid).catch(() => null))))
-          .filter((f): f is MemberDoc => !!f);
+        const rangees = await Promise.all(liste.map(async (m): Promise<MembreDuFoyer | null> => {
+          const fiche = await getMember(m.uid).catch(() => null);
+          // Le nom vient de sa fiche; à défaut, du miroir du groupe. Une ligne
+          // dont on ne connaît ni nom ni courriel n'est pas une personne :
+          // c'est un uid resté derrière un import, et elle ne s'affiche pas.
+          const nom = nomDeMembre(fiche) || nomDeMembre({ displayName: m.nom, email: m.courriel });
+          return nom ? {
+            uid: m.uid, nom, photo: fiche?.photoURL, verifie: fiche?.verifie,
+            dosha: fiche?.dosha, espaceOuvert: !!fiche, fiche,
+          } : null;
+        }));
+        const cercle = rangees.filter((r): r is MembreDuFoyer => !!r);
         // L'accès à vie ouvre le Foyer sans passer par un achat : le miroir ne
         // porte pas ces personnes, on ajoute au moins la sienne à sa liste.
-        if (!fiches.some(f => f.uid === user.uid)) {
+        if (!cercle.some(c => c.uid === user.uid)) {
           const moi = member ?? await getMember(user.uid).catch(() => null);
-          if (moi) fiches.push(moi);
+          const nom = nomDeMembre(moi) || nomDeMembre({ email: user.email || '' });
+          if (nom) cercle.push({ uid: user.uid, nom, photo: moi?.photoURL, verifie: moi?.verifie, dosha: moi?.dosha, espaceOuvert: true, fiche: moi });
         }
-        fiches.sort((a, b) => (b.lastSeenAt?.toMillis?.() || 0) - (a.lastSeenAt?.toMillis?.() || 0));
-        finir(fiches);
+        // Les plus récemment vues d'abord; celles qui n'ont pas encore ouvert
+        // leur espace ferment la marche.
+        cercle.sort((a, b) => (b.fiche?.lastSeenAt?.toMillis?.() || 0) - (a.fiche?.lastSeenAt?.toMillis?.() || 0));
+        finir(cercle);
       })
       .catch(() => finir([]));
     return () => { vivant = false; };

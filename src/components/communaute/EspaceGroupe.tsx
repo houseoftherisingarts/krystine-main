@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
 import MurSocial from './MurSocial';
 import { CHEMINS_FOYER } from './chemins';
+import { nomDeMembre } from './CarteSociale';
 import BilletCarte from './BilletCarte';
 import BadgeVedette from './BadgeVedette';
 import CarteSociale, { RangeePersonne } from './CarteSociale';
@@ -25,7 +26,7 @@ const EspaceGroupe: React.FC<{ formationId: string; variante?: 'page' | 'cadre' 
   const cadre = variante === 'cadre';
   const [onglets, setOnglets] = useState<OngletFormation[]>([]);
   const [actif, setActif] = useState<string>('feed');   // 'feed' | 'gardes' | id d'onglet
-  const [membres, setMembres] = useState<Array<{ uid: string; fiche: MemberDoc | null }>>([]);
+  const [membres, setMembres] = useState<Array<{ uid: string; nom: string; fiche: MemberDoc | null; espaceOuvert: boolean }>>([]);
   const [sauvegardes, setSauvegardes] = useState<Set<string>>(new Set());
   const [gardes, setGardes] = useState<PostMur[]>([]);
 
@@ -33,10 +34,22 @@ const EspaceGroupe: React.FC<{ formationId: string; variante?: 'page' | 'cadre' 
   useEffect(() => {
     getMembresGroupe(formationId)
       .then(async liste => {
-        const fiches = await Promise.all(liste.map(async m => ({ uid: m.uid, fiche: await getMember(m.uid).catch(() => null) })));
-        // Krystine (les comptes admin) d'abord, puis l'ordre d'arrivée.
-        fiches.sort((a, b) => Number(!!b.fiche?.isAdmin) - Number(!!a.fiche?.isAdmin));
-        setMembres(fiches);
+        const rangees = await Promise.all(liste.map(async m => {
+          const fiche = await getMember(m.uid).catch(() => null);
+          // Le nom vient de sa fiche, sinon du miroir du groupe. Une ligne sans
+          // nom ni courriel est un uid resté derrière un import : elle ne
+          // s'affiche pas, plutôt que d'écrire « Une membre » trente fois
+          // (Alex, 7 septembre 2026).
+          const nom = nomDeMembre(fiche) || nomDeMembre({ displayName: m.nom, email: m.courriel });
+          return nom ? { uid: m.uid, nom, fiche, espaceOuvert: !!fiche } : null;
+        }));
+        const gens = rangees.filter((r): r is { uid: string; nom: string; fiche: MemberDoc | null; espaceOuvert: boolean } => !!r);
+        // Les modératrices d'abord, puis celles qui ont ouvert leur espace,
+        // puis l'ordre d'arrivée. (`isAdmin` n'existe pas sur une fiche : le
+        // tri d'avant ne comparait rien.)
+        gens.sort((a, b) => Number(!!b.fiche?.moderateur) - Number(!!a.fiche?.moderateur)
+          || Number(b.espaceOuvert) - Number(a.espaceOuvert));
+        setMembres(gens);
       })
       .catch(() => setMembres([]));
   }, [formationId]);
@@ -129,7 +142,7 @@ const EspaceGroupe: React.FC<{ formationId: string; variante?: 'page' | 'cadre' 
         <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F] dark:text-[#d9a05b]">{fr ? 'Membres' : 'Members'} · {membres.length}</p>
         <div className="mt-3 max-h-[520px] space-y-0.5 overflow-y-auto pr-1">
           {membres.map(m => {
-            const nom = (m.fiche?.displayName || '').trim() || (fr ? 'Une membre' : 'A member');
+            const nom = m.nom;
             return (
               <RangeePersonne
                 key={m.uid}
@@ -138,7 +151,9 @@ const EspaceGroupe: React.FC<{ formationId: string; variante?: 'page' | 'cadre' 
                 nom={nom}
                 photo={m.fiche?.photoURL || undefined}
                 verifie={m.fiche?.verifie}
-                sousTitre={<BadgeVedette uid={m.uid} />}
+                sousTitre={m.espaceOuvert
+                  ? <BadgeVedette uid={m.uid} />
+                  : (fr ? 'N’a pas encore ouvert son espace' : 'Has not opened her space yet')}
                 action={user && user.uid !== m.uid ? (
                   <Link
                     to={CHEMINS_FOYER.conversation(m.uid)}

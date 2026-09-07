@@ -71,7 +71,10 @@ export const ROUE_FOYER: JourRoueFoyer[] = [
 /** Le jour de la roue (1 à 7) pour une suite de `serie` jours consécutifs. */
 export const jourDeRoue = (serie: number) => ((Math.max(1, serie) - 1) % ROUE_FOYER.length) + 1;
 
-export type CadeauFoyerMois = 'musique' | 'skin-rare' | 'rabais-huile';
+// Rien de physique et rien qui parte par la poste (Alex, 7 septembre 2026) :
+// les trois cadeaux du cycle sont des biens numériques, livrés dans l'espace
+// client à la seconde où ils tombent.
+export type CadeauFoyerMois = 'musique' | 'skin-rare' | 'saison';
 export interface EtapeCycleFoyer { id: CadeauFoyerMois; niskasSiDeja: number | null; fr: string; en: string }
 /** Le cycle des mois complets : 30 j → musique, 60 j → skin rare, 90 j → rabais, puis il repart à la musique. */
 export const CYCLE_FOYER_MOIS: EtapeCycleFoyer[] = [
@@ -81,20 +84,10 @@ export const CYCLE_FOYER_MOIS: EtapeCycleFoyer[] = [
   { id: 'skin-rare', niskasSiDeja: 100,
     fr: 'Un skin rare que vous n’avez pas encore, ou 100 niskas si vous les avez tous',
     en: 'A rare skin you do not have yet, or 100 niskas if you own them all' },
-  { id: 'rabais-huile', niskasSiDeja: null,
-    fr: '30 % sur une huile corporelle, une seule, honoré par Krystine avec un code',
-    en: '30% off one body oil, a single one, honoured by Krystine with a code' },
+  { id: 'saison', niskasSiDeja: 150,
+    fr: 'Une saison complète de « Santé ! La Vie ! », ou 150 niskas si vous les avez toutes',
+    en: 'A full season of “Santé ! La Vie !”, or 150 niskas if you own them all' },
 ];
-
-/** Le rabais du troisième mois : plafond dur de 30 %, un seul article, jamais plus. */
-export const RABAIS_HUILE_FOYER = {
-  rewardId: 'reb-huile-foyer-30',
-  pourcent: 30,
-  plafondPourcent: 30,
-  articles: 1,
-  labelFR: '30 % sur une huile corporelle (Foyer d’Origine, un seul article)',
-  labelEN: '30% off one body oil (Foyer d’Origine, a single item)',
-} as const;
 
 export const estJourMoisFoyer = (serie: number) => serie > 0 && serie % FOYER_MOIS_JOURS === 0;
 
@@ -113,11 +106,13 @@ export function prochainsCadeauxFoyer(serie: number): { moisDans: number; procha
 
 /** Auto-test du cycle (appelé une fois au chargement du module serveur). */
 export function verifierCycleFoyer(): void {
-  if (cadeauFoyerDuMois(30).id !== 'musique' || cadeauFoyerDuMois(60).id !== 'skin-rare' || cadeauFoyerDuMois(90).id !== 'rabais-huile' || cadeauFoyerDuMois(120).id !== 'musique') throw new Error('Le cycle des mois du Foyer ne suit pas 30/60/90.');
+  if (cadeauFoyerDuMois(30).id !== 'musique' || cadeauFoyerDuMois(60).id !== 'skin-rare' || cadeauFoyerDuMois(90).id !== 'saison' || cadeauFoyerDuMois(120).id !== 'musique') throw new Error('Le cycle des mois du Foyer ne suit pas 30/60/90.');
   if (!estJourMoisFoyer(30) || estJourMoisFoyer(29)) throw new Error('Les jours de cadeau du Foyer ne tombent pas au bon multiple.');
   const p = prochainsCadeauxFoyer(6);
   if (p.moisDans !== 24 || p.prochainMois.id !== 'musique') throw new Error('La progression vers le prochain cadeau du Foyer est fausse.');
   if (ROUE_FOYER.length !== 7) throw new Error('La roue du Foyer ne compte pas sept jours.');
   if (jourDeRoue(1) !== 1 || jourDeRoue(7) !== 7 || jourDeRoue(8) !== 1 || jourDeRoue(0) !== 1) throw new Error('Le jour de la roue du Foyer ne tourne pas sur sept.');
-  if (RABAIS_HUILE_FOYER.pourcent > RABAIS_HUILE_FOYER.plafondPourcent) throw new Error('Le rabais du Foyer dépasse son plafond.');
+  // Aucun cadeau du Foyer ne part par la poste : ni article, ni rabais sur un envoi.
+  if (CYCLE_FOYER_MOIS.some(e => e.id !== 'musique' && e.id !== 'skin-rare' && e.id !== 'saison')) throw new Error('Un cadeau du cycle du Foyer n’est pas numérique.');
+  if (ROUE_FOYER.some(j => !['niskas', 'cle', 'coffre', 'musique'].includes(j.cadeau.genre))) throw new Error('Un cadeau de la roue du Foyer n’est pas numérique.');
 }

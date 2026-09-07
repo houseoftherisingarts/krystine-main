@@ -3,7 +3,7 @@ import { getFirestore, FieldValue, AggregateField, Firestore, Transaction } from
 import { randomInt } from 'node:crypto';
 import { donnerCoffreDuJour7, ecrireMessageKrystine, uidKrystine, PRIX_COFFRES, SKINS_RARES_COFFRES, NOMS_COSMETIQUES } from './coffres';
 import {
-  KIND_FOYER_MOIS, KIND_FOYER_ROUE, RABAIS_HUILE_FOYER, ROUE_FOYER,
+  KIND_FOYER_MOIS, KIND_FOYER_ROUE, ROUE_FOYER,
   cleFoyerMois, cleFoyerRoue, estJourMoisFoyer, cadeauFoyerDuMois, jourDeRoue,
   type CadeauRoueFoyer,
 } from './badgeBleuConfig';
@@ -254,7 +254,8 @@ export const reclamerBienvenue = onCall(
 // ─── La couche Foyer de la roue (docs/badge-bleu-plan.md, 2.3) ──────────────
 // Une membre du Foyer d'Origine tourne une SECONDE roue de sept jours au même
 // geste quotidien (ROUE_FOYER), et reçoit un plus gros cadeau à chaque mois
-// complet (musique, skin rare, rabais sur une huile). Le multiplicateur ×2 est
+// complet (musique, skin rare, saison de l'émission). Tous les cadeaux sont
+// numériques : rien ne part par la poste. Le multiplicateur ×2 est
 // retiré (Alex, 7 septembre 2026). Le verrou de chaque cadeau est son entrée du
 // journal (crediterNiskas) : le navigateur ne s'offre jamais rien lui-même.
 
@@ -266,7 +267,7 @@ export async function estDuFoyer(lecteur: Transaction | Firestore, uid: string):
   return achat.exists || (membre.data() as { accesVie?: boolean } | undefined)?.accesVie === true;
 }
 
-type CadeauMois = { genre: 'musique' | 'skin-rare' | 'rabais-huile' | 'niskas'; nom?: string; montant?: number };
+type CadeauMois = { genre: 'musique' | 'skin-rare' | 'saison' | 'niskas'; nom?: string; montant?: number };
 const MOT_MUSIQUE = 'La musique d’Origine est à vous : vous la trouverez dans l’onglet Téléchargements, et vous pourrez en faire la musique de tout le site.';
 
 const possedeDe = async (db: Firestore, uid: string) =>
@@ -279,6 +280,26 @@ async function offrirMusique(db: Firestore, uid: string, source: string): Promis
   const f = (await db.doc(`formations/${MUSIQUE_ORIGINE_ID}`).get()).data() as { titre?: string; imageUrl?: string } | undefined;
   await db.doc(`achatsFormations/${uid}/formations/${MUSIQUE_ORIGINE_ID}`).set({ titre: f?.titre || 'Expérience Origine · La musique', imageUrl: f?.imageUrl || '', categorie: 'musique', source, accordeLe: FieldValue.serverTimestamp() }, { merge: true });
   await db.doc(`boutique/${uid}`).set({ possede: { 'musique-origine': FieldValue.serverTimestamp() } }, { merge: true });
+}
+
+/** Offre la première saison de l'émission que la membre n'a pas encore, ou null si elle les a toutes.
+ *  Cadeau entièrement numérique : les épisodes s'ouvrent dans son espace, rien ne part par la poste. */
+async function offrirSaison(db: Firestore, uid: string, source: string): Promise<{ saison: string; nom: string } | null> {
+  const deja = ((await db.doc(`achatsFormations/${uid}/formations/${SANTE_LA_VIE_ID}`).get()).data() as { episodes?: Record<string, unknown> } | undefined)?.episodes || {};
+  for (const saison of Object.keys(SAISONS)) {
+    const lecons = await db.collection(`formations/${SANTE_LA_VIE_ID}/lecons`).where('moduleNom', '==', SAISONS[saison]).get();
+    const ids = lecons.docs.map((d) => d.id);
+    if (!ids.length || ids.every((id) => deja[id])) continue;
+    const f = (await db.doc(`formations/${SANTE_LA_VIE_ID}`).get()).data() as { titre?: string; imageUrl?: string } | undefined;
+    const episodes: Record<string, FieldValue> = {};
+    for (const id of ids) episodes[id] = FieldValue.serverTimestamp();
+    await db.doc(`achatsFormations/${uid}/formations/${SANTE_LA_VIE_ID}`).set({
+      titre: f?.titre || 'Émission Santé! La Vie!', imageUrl: f?.imageUrl || '',
+      categorie: 'video', source, episodes, accordeLe: FieldValue.serverTimestamp(),
+    }, { merge: true });
+    return { saison, nom: `Santé! La Vie!, saison ${saison} complète` };
+  }
+  return null;
 }
 
 async function motDuFoyer(db: Firestore, uid: string, serie: number, phrase: string): Promise<void> {
@@ -323,11 +344,11 @@ async function cadeauRoueDuFoyer(db: Firestore, uid: string, serie: number, jour
   return { jour: index, genre: 'niskas', montant: cadeau.montant };
 }
 
-/** Mois complet : l'étape du cycle (musique, skin rare, rabais huile), ou ses niskas de remplacement. Null si déjà tombé. */
-async function cadeauMoisFoyer(db: Firestore, uid: string, serie: number, jour: string, email: string | null): Promise<CadeauMois | null> {
+/** Mois complet : l'étape du cycle (musique, skin rare, saison de l'émission), ou ses niskas de remplacement. Null si déjà tombé. */
+async function cadeauMoisFoyer(db: Firestore, uid: string, serie: number, jour: string): Promise<CadeauMois | null> {
   const etape = cadeauFoyerDuMois(serie);
   const possede = await possedeDe(db, uid);
-  let cadeau: CadeauMois; let article = '';
+  let cadeau: CadeauMois; let article = ''; let saison: { saison: string; nom: string } | null = null;
   if (etape.id === 'musique') {
     cadeau = (await aLaMusique(db, uid, possede)) ? { genre: 'niskas', montant: etape.niskasSiDeja ?? 0 } : { genre: 'musique' };
   } else if (etape.id === 'skin-rare') {
@@ -335,7 +356,10 @@ async function cadeauMoisFoyer(db: Firestore, uid: string, serie: number, jour: 
     if (bassin.length) { article = bassin[randomInt(0, bassin.length)]; cadeau = { genre: 'skin-rare', nom: NOMS_COSMETIQUES[article] || article }; }
     else cadeau = { genre: 'niskas', montant: etape.niskasSiDeja ?? 0 };
   } else {
-    cadeau = { genre: 'rabais-huile', nom: RABAIS_HUILE_FOYER.labelFR };
+    // La saison se réserve AVANT le journal : si elle est déjà à elle, le
+    // cadeau devient des niskas plutôt qu'une promesse vide.
+    saison = await offrirSaison(db, uid, KIND_FOYER_MOIS);
+    cadeau = saison ? { genre: 'saison', nom: saison.nom } : { genre: 'niskas', montant: etape.niskasSiDeja ?? 0 };
   }
   if (!(await crediterNiskas(uid, KIND_FOYER_MOIS, cadeau.montant || 0, cleFoyerMois(uid, jour), { serie, etape: etape.id, cadeau: cadeau.genre, ...(article ? { article } : {}) }))) return null;
   let phrase: string;
@@ -345,15 +369,13 @@ async function cadeauMoisFoyer(db: Firestore, uid: string, serie: number, jour: 
   } else if (cadeau.genre === 'skin-rare') {
     await db.doc(`boutique/${uid}`).set({ possede: { [article]: FieldValue.serverTimestamp() } }, { merge: true });
     phrase = `Le ${cadeau.nom} est à vous : il vous attend dans la petite boutique, section « Les skins ».`;
-  } else if (cadeau.genre === 'rabais-huile') {
-    // Le plafond (30 %) et le nombre d'articles (1) sont écrits dans le document : l'admin n'a aucun champ pour les monter.
-    await db.collection('rewardRedemptions').add({
-      uid, email, rewardId: RABAIS_HUILE_FOYER.rewardId, rewardLabel: RABAIS_HUILE_FOYER.labelFR, cost: 0, status: 'pending', source: KIND_FOYER_MOIS,
-      plafondPourcent: RABAIS_HUILE_FOYER.plafondPourcent, articles: RABAIS_HUILE_FOYER.articles, createdAt: FieldValue.serverTimestamp(),
-    });
-    phrase = `Je vous offre ${RABAIS_HUILE_FOYER.pourcent} % sur une huile corporelle de votre choix, une seule. Je vous envoie le code par courriel sous peu, et la demande est notée dans votre onglet Niskas, section « Mes récompenses ».`;
+  } else if (cadeau.genre === 'saison') {
+    phrase = `Je vous offre ${cadeau.nom} : les épisodes vous attendent dans votre espace, onglet Formations.`;
   } else {
-    phrase = `${cadeau.montant} niskas viennent d’entrer dans votre bourse, puisque ${etape.id === 'musique' ? 'la musique d’Origine est déjà à vous' : 'tous les skins rares sont déjà à vous'}.`;
+    const raison = etape.id === 'musique' ? 'la musique d’Origine est déjà à vous'
+      : etape.id === 'skin-rare' ? 'tous les skins rares sont déjà à vous'
+        : 'toutes les saisons de l’émission sont déjà à vous';
+    phrase = `${cadeau.montant} niskas viennent d’entrer dans votre bourse, puisque ${raison}.`;
   }
   await motDuFoyer(db, uid, serie, phrase);
   return cadeau;
@@ -402,7 +424,7 @@ export const reclamerQuotidien = onCall(
     let cadeauMois: CadeauMois | null = null;
     if (!r.deja && r.foyer) {
       cadeauRoue = await cadeauRoueDuFoyer(db, uid, r.serie, aujourdhui).catch((e) => { console.warn('[niskas] roue du Foyer', e); return null; });
-      if (estJourMoisFoyer(r.serie)) cadeauMois = await cadeauMoisFoyer(db, uid, r.serie, aujourdhui, req.auth.token.email || null).catch((e) => { console.warn('[niskas] cadeau du mois du Foyer', e); return null; });
+      if (estJourMoisFoyer(r.serie)) cadeauMois = await cadeauMoisFoyer(db, uid, r.serie, aujourdhui).catch((e) => { console.warn('[niskas] cadeau du mois du Foyer', e); return null; });
     }
     const { balance } = await recalculerSolde(uid);
     return { ...r, balance, coffre, jourFoyer: r.foyer ? jourDeRoue(r.serie) : null, cadeauRoue, cadeauMois };

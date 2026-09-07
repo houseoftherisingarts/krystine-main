@@ -77,11 +77,26 @@ const MembreProfilPage: React.FC = () => {
   }
 
   // Hors du cercle du Foyer, la fiche n'existe pas, même avec l'adresse exacte.
-  const dansLeFoyer = !!uid && (uid === user.uid || cercle.membres.some(m => m.uid === uid));
-  if (!uid || !profil || !dansLeFoyer) {
+  const rangee = uid ? cercle.membres.find(m => m.uid === uid) : undefined;
+  const dansLeFoyer = !!uid && (uid === user.uid || !!rangee);
+  if (!uid || !dansLeFoyer) {
     return (
       <CadreFoyer>
         <CarteSociale><p className="text-sm text-[#38403a]/50 dark:text-white/50">{fr ? 'Cette membre est introuvable au Foyer.' : 'This member cannot be found in the Hearth.'}</p></CarteSociale>
+      </CadreFoyer>
+    );
+  }
+
+  // Elle a le Foyer, mais n'a jamais ouvert son espace : il n'y a pas de fiche
+  // à montrer, et le dire vaut mieux que de la déclarer introuvable.
+  if (!profil) {
+    return (
+      <CadreFoyer>
+        <CarteSociale titre={rangee?.nom}>
+          <p className="text-sm text-[#38403a]/60 dark:text-white/60">
+            {fr ? 'Elle fait partie du Foyer d’Origine, mais n’a pas encore ouvert son espace.' : 'She belongs to the Origine Hearth but has not opened her space yet.'}
+          </p>
+        </CarteSociale>
       </CadreFoyer>
     );
   }
