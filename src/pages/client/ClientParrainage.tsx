@@ -96,6 +96,8 @@ const ClientParrainage: React.FC<{ uid: string; lang: string }> = ({ uid, lang }
         </div>
       </div>
 
+      {gam.badges && (
+      <>
       <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#8B4A2F]">{fr ? 'Les badges' : 'Badges'}</p>
       <ul className="mt-2 space-y-1.5">
         {PALIERS_BADGES.map(p => {
@@ -114,6 +116,8 @@ const ClientParrainage: React.FC<{ uid: string; lang: string }> = ({ uid, lang }
           );
         })}
       </ul>
+      </>
+      )}
 
       <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#8B4A2F]">{fr ? 'Les cadeaux' : 'Gifts'}</p>
       <p className="mt-1 text-[10.5px] text-[#38403a]/55 dark:text-white/50">
