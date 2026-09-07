@@ -76,6 +76,7 @@ const shootBoutique = async (largeur, hauteur, suffixe) => {
 
   // Tout replié au chargement.
   await page.screenshot({ path: `${OUT}/boutique-replie-${suffixe}.png`, fullPage: true });
+  console.log(`[${suffixe}] capture repliée faite`);
 
   // La section « Les skins » ouverte : les six skins en travail ne doivent
   // plus y paraître (sauf si le compte les possède déjà). Capture cadrée
