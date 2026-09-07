@@ -811,7 +811,7 @@ const ClientPortal: React.FC = () => {
 
       {/* Le bouton « Problème technique », fixe en bas à droite, et sa fenêtre */}
       <ProblemeTechnique uid={user.uid} nom={member?.displayName || user.displayName || ''} courriel={user.email || ''} lang={lang} />
-      <RoueQuotidienne uid={user.uid} lang={lang} />
+      <CadeauDuJour uid={user.uid} lang={lang} />
       {/* `member` charge de façon asynchrone : tant qu'il est null, les deux
           drapeaux restent undefined (« on ne sait pas encore »), jamais false
           par erreur — sinon les deux pop-up flasheraient à chaque connexion
