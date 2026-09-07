@@ -285,6 +285,7 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, dr
                       nom={nomC}
                       photo={c.photo}
                       verifie={c.verifie}
+                      email={c.fiche?.email}
                       sousTitre={c.espaceOuvert ? undefined : (fr ? 'N’a pas encore ouvert son espace' : 'Has not opened her space yet')}
                       action={c.uid !== moi ? (
                         <Link
