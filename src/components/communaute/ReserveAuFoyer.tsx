@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AppContext';
-import { aAchete } from '../../firebase/formations';
+import { aAchete, getMembresGroupe } from '../../firebase/formations';
+import { getMember, type MemberDoc } from '../../firebase/firestore';
 import { listerMesFilleules, maMarraine } from '../../firebase/parrainage';
+import { CHEMINS_FOYER } from './chemins';
 
 // L'annuaire des membres, le cercle d'amies et la messagerie de boîte à boîte
-// sont réservés aux membres du Foyer d'Origine. Ce garde-fou affiche le mot
-// d'invitation à qui n'y est pas encore, et laisse passer les membres du
-// Foyer, l'accès à vie et l'admin.
+// sont réservés aux membres du Foyer d'Origine. Ce fichier tient le jugement
+// (qui en est), le cercle (qui d'autre en est) et le mot d'invitation posé
+// au-dessus d'un contenu partiel. La barrière de page, elle, est dans
+// CadreFoyer : sans achat, la coquille renvoie à la page de vente.
 
 export function useMembreDuFoyer(): boolean | null {
   const { user, member, isAdmin } = useAuth();
