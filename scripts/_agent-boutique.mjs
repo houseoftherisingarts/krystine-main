@@ -44,11 +44,14 @@ try {
   await admin.goto(BASE + '/admin', { waitUntil: 'domcontentloaded' });
   await admin.waitForTimeout(1500);
   const clicked = await admin.evaluate(() => {
-    const btn = Array.from(document.querySelectorAll('button')).find(b => b.querySelector('i.fa-graduation-cap'));
-    if (btn) { btn.click(); return true; }
-    return false;
+    const btns = Array.from(document.querySelectorAll('button')).filter(b => b.querySelector('i.fa-graduation-cap'));
+    // Le premier bouton est l'en-tête de groupe (replie/déplie), le second est
+    // l'item de nav « Formations » lui-même (même icône, même libellé).
+    const target = btns[1] || btns[0];
+    if (target) { target.click(); return btns.length; }
+    return 0;
   });
-  console.log('bouton Formations trouvé et cliqué:', clicked);
+  console.log('boutons fa-graduation-cap trouvés:', clicked);
   await admin.waitForTimeout(1800);
   const bodyText = await admin.locator('body').innerText();
   const hit = /stress|aromath/i.test(bodyText);
