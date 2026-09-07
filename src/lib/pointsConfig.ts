@@ -295,7 +295,7 @@ export const SKINS: Skin[] = [
     descFR: 'La nuit près du feu : des braises montent derrière votre espace et s’avivent quand vous survolez un bouton. Légendaire.',
     descEN: 'Night by the fire: embers rise behind your space and flare when you hover a button. Legendary.',
     palette: { fond: '#1a0b06', panneau: '#2b140c', encre: '#fbe9dc', accent: '#ff7a2f', accentClair: '#ffb36b', accentProfond: '#ffa45c', sombre: true } },
-  { cle: 'kapha', cout: null, rarete: 'legendaire', coffre: 'bronze', icone: 'fa-water', nomFR: 'Skin Kapha · l’eau', nomEN: 'Kapha skin · the water',
+  { cle: 'kapha', cout: null, rarete: 'legendaire', coffre: 'bronze', icone: 'fa-water', enTravail: true, nomFR: 'Skin Kapha · l’eau', nomEN: 'Kapha skin · the water',
     descFR: 'Le fond d’un aquarium : la lumière ondule sur les murs, des bulles montent, et l’eau frémit sous vos gestes. Légendaire.',
     descEN: 'The bottom of an aquarium: light ripples on the walls, bubbles rise, and the water quivers under your gestures. Legendary.',
     palette: { fond: '#061a2b', panneau: '#0c2740', encre: '#e4f4fb', accent: '#3fb7d9', accentClair: '#9fe4f5', accentProfond: '#8ddcf0', sombre: true } },
