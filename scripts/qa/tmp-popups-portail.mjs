@@ -59,6 +59,8 @@ try {
   await page.waitForSelector('#boutique', { timeout: 20000 });
   await page.waitForTimeout(1500);
   await fermerRoue();
+  await seederNiskas();
+  await page.waitForTimeout(800); // laisse l'écoute Firestore (onSnapshot) rattraper le solde
   // Scroll de 1500px demandé par la revue.
   await page.evaluate(() => window.scrollTo(0, 1500));
   await page.waitForTimeout(600);
