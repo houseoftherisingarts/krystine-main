@@ -30,10 +30,15 @@ const RapportDuJourCard: React.FC = () => {
     [jour],
   );
 
-  const lignes: { label: string; value: number | string }[] = bornes ? [
-    { label: 'Nouveaux abonnés à l’infolettre', value: bornes.nouveauxAbonnes },
-    { label: 'Nouveaux comptes', value: bornes.nouveauxComptes },
-    { label: 'Désabonnements', value: bornes.desabonnements },
+  // Trois des six chiffres pointent vers une personne précise (nouvelle
+  // abonnée, nouveau compte, désabonnement) : ceux-là portent une `requete`
+  // et s'ouvrent au survol/clic (DetailCompteur). Les ventes Stripe, les
+  // billets du mur et les coffres bêta ne désignent pas une seule personne
+  // de la même façon — ils restent de simples chiffres pour l'instant.
+  const lignes: { label: string; value: number | string; requete?: RequeteCompteur; definition?: string }[] = bornes ? [
+    { label: 'Nouveaux abonnés à l’infolettre', value: bornes.nouveauxAbonnes, requete: { genre: 'newsletter-date', champ: 'subscribedAt', jour }, definition: `Les personnes inscrites à l’infolettre le ${dateLisible}.` },
+    { label: 'Nouveaux comptes', value: bornes.nouveauxComptes, requete: { genre: 'membres-date', jour }, definition: `Les comptes créés le ${dateLisible}.` },
+    { label: 'Désabonnements', value: bornes.desabonnements, requete: { genre: 'newsletter-date', champ: 'unsubscribedAt', jour }, definition: `Les personnes qui se sont désabonnées le ${dateLisible}.` },
     { label: 'Ventes Stripe', value: `${ventes.n} · ${argent(ventes.total)}` },
     { label: 'Nouveaux billets du mur', value: bornes.nouveauxBillets },
     { label: 'Coffres bêta déposés', value: bornes.coffresBeta },
