@@ -84,6 +84,7 @@ if (await boutonEnvoyer.count()) {
 // Retour à la liste pour la suite.
 await page.goto(`${BASE}/compte?onglet=aider`, { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(1500);
+await page.keyboard.press('Escape').catch(() => {});
 
 // ── Mobile, même session ────────────────────────────────────────────────
 await page.setViewportSize({ width: 390, height: 844 });
