@@ -157,15 +157,18 @@ const Composeur: React.FC<{ fil: FilMur; onPublie?: () => void; compact?: boolea
           </button>
           <input ref={champPhoto} type="file" accept="image/jpeg,image/png,image/webp,image/heic" className="hidden" onChange={choisir('photo')} />
           <input ref={champVideo} type="file" accept="video/mp4,video/quicktime,video/webm" className="hidden" onChange={choisir('video')} />
-          <span className="ml-auto text-[10px] text-[#38403a]/40 dark:text-white/40">{texte.length}/{LONGUEUR_MAX_POST}</span>
-          <button
-            type="button"
-            onClick={publier}
-            disabled={!pret}
-            className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#9c6630] disabled:opacity-50"
-          >
-            {envoi ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />} {fr ? 'Publier' : 'Publish'}
-          </button>
+          {/* Le compteur et « Publier » restent ensemble à droite, même quand la rangée se replie à 390. */}
+          <span className="ml-auto flex items-center gap-2">
+            <span className="text-[10px] text-[#38403a]/40 dark:text-white/40">{texte.length}/{LONGUEUR_MAX_POST}</span>
+            <button
+              type="button"
+              onClick={publier}
+              disabled={!pret}
+              className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#9c6630] disabled:opacity-50"
+            >
+              {envoi ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />} {fr ? 'Publier' : 'Publish'}
+            </button>
+          </span>
         </div>
       )}
       {erreur && <p className="mt-2 text-xs text-red-500">{erreur}</p>}
