@@ -142,8 +142,8 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
             )}
             <p className={`text-xs leading-relaxed text-[#293027]/70 dark:text-white/70 ${cadeau ? 'mt-2' : ''}`}>
               {fr
-                ? `Prochain cadeau de semaine dans ${jours(prochains.hebdoDans)}, prochain cadeau de mois dans ${jours(prochains.moisDans)} : ${prochains.prochainMois.fr}.`
-                : `Next weekly gift in ${jours(prochains.hebdoDans)}, next monthly gift in ${jours(prochains.moisDans)}: ${prochains.prochainMois.en}.`}
+                ? `Prochain cadeau de semaine dans ${jours(prochains.hebdoDans)}, prochain cadeau de mois dans ${jours(prochains.moisDans)} : ${minuscule(prochains.prochainMois.fr)}.`
+                : `Next weekly gift in ${jours(prochains.hebdoDans)}, next monthly gift in ${jours(prochains.moisDans)}: ${minuscule(prochains.prochainMois.en)}.`}
             </p>
           </div>
         )}
