@@ -387,6 +387,14 @@ export async function acheterNiskas(paquet = 'p100'): Promise<string> {
   return (res.data as { url: string }).url;
 }
 
+/** Ouvre Stripe Checkout pour une saison de Santé la vie payée en argent (jumeau d'acheterAvecNiskas('saison:N')). */
+export async function acheterSaisonEnArgent(saison: string): Promise<string> {
+  if (!app) throw new Error('[Niskas] Firebase not configured');
+  const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionSaison');
+  const res = await call({ saison });
+  return (res.data as { url: string }).url;
+}
+
 /** Le cadeau de bienvenue, jugé par le serveur (une fois par compte). */
 export async function reclamerBienvenue(): Promise<{ deja: boolean; montant: number; balance: number }> {
   if (!app) throw new Error('[Niskas] Firebase not configured');
