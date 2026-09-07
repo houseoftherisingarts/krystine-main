@@ -789,8 +789,13 @@ const ClientPortal: React.FC = () => {
       {/* Le bouton « Problème technique », fixe en bas à droite, et sa fenêtre */}
       <ProblemeTechnique uid={user.uid} nom={member?.displayName || user.displayName || ''} courriel={user.email || ''} lang={lang} />
       <RoueQuotidienne uid={user.uid} lang={lang} />
-      <BienvenueJeu lang={lang} />
-      <CoffreBeta uid={user.uid} lang={lang} />
+      {/* `member` charge de façon asynchrone : tant qu'il est null, les deux
+          drapeaux restent undefined (« on ne sait pas encore »), jamais false
+          par erreur — sinon les deux pop-up flasheraient à chaque connexion
+          d'une membre qui les a déjà vus. Une fois la fiche là, un champ
+          jamais écrit (compte tout neuf) vaut false : à montrer. */}
+      <BienvenueJeu uid={user.uid} vu={member ? !!member.bienvenueVu : undefined} lang={lang} />
+      <CoffreBeta uid={user.uid} lang={lang} bienvenueVu={member ? !!member.bienvenueVu : undefined} coffreBetaVu={member ? !!member.coffreBetaVu : undefined} />
 
       {/* Le module d'édition du profil, ouvert par la photo de la bannière */}
       {editOuvert && (
