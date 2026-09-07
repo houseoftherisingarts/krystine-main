@@ -244,7 +244,7 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, quoi, personne, dro
 
       {/* Trois colonnes à la Facebook : raccourcis, la page, le cercle et le parrainage */}
       <div className="mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 lg:grid-cols-[240px_minmax(0,1fr)_320px]">
-        <aside className="rounded-[24px] border border-white/60 bg-white/55 p-3 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55 lg:sticky lg:top-24 lg:self-start">
+        <aside className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-3 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55 lg:sticky lg:top-24 lg:self-start">
           <nav className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible" aria-label={fr ? 'Raccourcis du Foyer' : 'Hearth shortcuts'}>
             {raccourcis.map(r => (
               <Link
@@ -267,7 +267,7 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, quoi, personne, dro
             : children}
         </main>
 
-        <aside className="space-y-4">
+        <aside className="min-w-0 space-y-4">
           {droite ?? (
             <>
               <CarteSociale
