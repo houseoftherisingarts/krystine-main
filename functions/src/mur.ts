@@ -61,3 +61,39 @@ export const murCommentaireCompte = onDocumentWritten(
     }
   },
 );
+
+// ── La modération : retirer un billet ou un commentaire nettoie sa trace ────
+// Les règles (firestore.rules) laissent Krystine et Alex supprimer n'importe
+// quel billet ou commentaire, mais jamais les votes ou les commentaires
+// rattachés — la barrière du client ne sait pas les toucher. Ces deux
+// déclencheurs le font avec l'Admin SDK, qui contourne les règles.
+
+async function viderCollection(col: FirebaseFirestore.CollectionReference): Promise<void> {
+  const snap = await col.get();
+  if (snap.empty) return;
+  const lot = getFirestore().batch();
+  snap.docs.forEach((d) => lot.delete(d.ref));
+  await lot.commit();
+}
+
+// Retirer un billet efface ses votes, puis ses commentaires — dont la
+// suppression déclenche à son tour murCommentaireSupprime pour leurs
+// propres votes : pas besoin de les énumérer ici.
+export const murBilletSupprime = onDocumentDeleted(
+  { document: 'mur/{postId}', region: 'us-central1' },
+  async (event) => {
+    const db = getFirestore();
+    const { postId } = event.params;
+    await viderCollection(db.collection(`mur/${postId}/votes`));
+    await viderCollection(db.collection(`mur/${postId}/commentaires`));
+  },
+);
+
+export const murCommentaireSupprime = onDocumentDeleted(
+  { document: 'mur/{postId}/commentaires/{cid}', region: 'us-central1' },
+  async (event) => {
+    const db = getFirestore();
+    const { postId, cid } = event.params;
+    await viderCollection(db.collection(`mur/${postId}/commentaires/${cid}/votes`));
+  },
+);
