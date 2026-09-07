@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { Question, Sondage, ValeurReponse } from '../../firebase/sondages';
 import { repondreSondage } from '../../firebase/sondages';
 
