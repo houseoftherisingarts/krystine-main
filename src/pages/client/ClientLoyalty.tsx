@@ -56,7 +56,6 @@ function serieVive(b: PointsBalance): number {
 const FoyerEncart: React.FC<{ balance: PointsBalance; fr: boolean }> = ({ balance, fr }) => {
   const serie = serieVive(balance);
   const p = prochainsCadeauxFoyer(serie);
-  const moisEnCours = Math.floor(serie / FOYER_MOIS_JOURS) % CYCLE_FOYER_MOIS.length; // l'étape qui vient
   const jours = (n: number) => (fr ? `${n} jour${n > 1 ? 's' : ''}` : `${n} day${n > 1 ? 's' : ''}`);
   return (
     <section className="mb-8 rounded-[20px] border border-[#BA7B39]/40 bg-[#BA7B39]/10 p-5 md:p-6">
