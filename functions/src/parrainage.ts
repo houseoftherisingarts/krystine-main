@@ -161,7 +161,7 @@ export async function verifierSeuilAccesVie(db: Firestore, filleulUid: string): 
   if (!pSnap.exists || !p?.parrainUid || p.achat100) return;
 
   const total = await totalStripeHT(db, filleulUid);
-  if (total < SEUIL_ACCES_VIE_CENTS) return;
+  if (!filleuleCompte(total)) return;
   await pRef.update({ achat100: true, achat100Le: FieldValue.serverTimestamp() });
 
   const parrainUid = p.parrainUid;
