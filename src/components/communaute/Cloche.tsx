@@ -237,7 +237,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
               </ul>
             )}
             <Link
-              to="/compte?onglet=messagerie" onClick={() => setOuverte(false)}
+              to={versMessages} onClick={() => setOuverte(false)}
               className="block px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-[#8B4A2F] dark:text-[#BA7B39] hover:bg-[#BA7B39]/10 transition-colors border-t border-[#38403a]/10 dark:border-white/10"
             >
               Ouvrir ma messagerie
