@@ -36,7 +36,8 @@ export const COFFRES: Record<TypeCoffre, {
     boite: 160, nomFR: 'Coffre d’argent', nomEN: 'Silver chest',
     image: '/compte/coffres/argent.webp', teinte: '#9AA3AD', teinteClaire: '#DDE3E8', teinteSombre: '#4B535B',
     contenu: {
-      legendaire: 65, raresFR: 'les skins Lotus, Féminité, Nature et Sarcelle & Orange', raresEN: 'the Lotus, Féminité, Nature and Teal & Orange skins',
+      legendaire: 65, rares: ['skin-lotus', 'skin-feminite', 'skin-nature', 'skin-teal-orange'],
+      raresFR: 'les skins Lotus, Féminité, Nature et Sarcelle & Orange', raresEN: 'the Lotus, Féminité, Nature and Teal & Orange skins',
       niskas: [{ montant: 30, poids: 50 }, { montant: 70, poids: 30 }, { montant: 150, poids: 15 }, { montant: 300, poids: 5 }],
       rabais: [
         { unSur: 20, fr: '10 % sur la boutique', en: '10% off the shop' },
