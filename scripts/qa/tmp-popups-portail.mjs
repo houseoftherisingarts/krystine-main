@@ -108,7 +108,12 @@ try {
   console.log('memberPoints après achat de clé :', await apresCle.text());
   const boutonCoffreBronze = page.getByRole('button', { name: /^Coffre ·/i }).first();
   await boutonCoffreBronze.waitFor({ state: 'attached', timeout: 10000 });
-  console.log('bouton coffre bronze désactivé ?', await boutonCoffreBronze.isDisabled());
+  const coffreDesactive = await boutonCoffreBronze.isDisabled();
+  console.log('bouton coffre bronze désactivé ?', coffreDesactive);
+  if (coffreDesactive) await page.waitForFunction(() => {
+    const b = [...document.querySelectorAll('button')].find(x => /^Coffre ·/.test(x.textContent || ''));
+    return b && !b.disabled;
+  }, { timeout: 8000 }).catch(() => console.log('coffre reste désactivé après 8s'));
   await boutonCoffreBronze.click();
   await page.waitForTimeout(1200);
   await page.screenshot({ path: `${OUT}/04-apres-achats.png` });
