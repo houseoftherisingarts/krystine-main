@@ -285,7 +285,12 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
     subsSnap.docs.map(d => ({ id: d.id, ...(d.data() as SubscriberDoc) })),
     doc,
   ).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
-  const restants = prog.lastId ? all.filter(s => s.id > (prog.lastId as string)) : all;
+  // Chaque envoi réussi est marqué dans la sous-collection `envois` : après
+  // une pause (quota du fournisseur) ou une remise à zéro du curseur, personne
+  // ne reçoit la lettre deux fois.
+  const dejaSnap = await ref.collection('envois').select().get();
+  const deja = new Set(dejaSnap.docs.map(d => d.id));
+  const restants = (prog.lastId ? all.filter(s => s.id > (prog.lastId as string)) : all).filter(s => !deja.has(s.id));
 
   const transporter = createTransporter();
   const pixelBase = `https://us-central1-${process.env.GCLOUD_PROJECT || 'krystinestlaurent-87566'}.cloudfunctions.net/ouverture`;
