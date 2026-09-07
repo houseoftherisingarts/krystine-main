@@ -113,9 +113,18 @@ Le shell (`AdminShell.tsx:142-271`) gère le menu replié par famille (mémoire 
 
 `src/pages/admin/AdminClientView.tsx`, 788 lignes. Ouverte par `MembersSection.tsx:330, 411-413` et `SubmissionsSection.tsx:706`, avec `uid` et `onClose`. Rendue dans `Portail` (`:199`) comme fenêtre plein écran `z-[85]` fermée par Escape (`:183-187`).
 
-Ce qu'elle charge (`:171-180`) : `getMember`, `getClientOrdersForMember`, `getDoshaResultsForMember`, `getMemberPoints`, `listPointsEvents(uid, 50)`, `listMyRewardRedemptions`, `getGuideResponsesForMember`, les produits Shopify.
+Ce qu'elle charge au montage (`:171-180`) :
 
-Ses quatre onglets (`type Tab :132`, `tabs :189-194`) : `profile` (`ProfileView :318-345`, champs en lecture par `ReadField :347-356`), `orders` (`:359-402`), `loyalty` (`LoyaltyView :574-786`), `dosha` (`:405-571`).
+- la fiche par `getMember`, les commandes par `getClientOrdersForMember`, les résultats du quiz par `getDoshaResultsForMember`;
+- les niskas par `getMemberPoints`, les cinquante derniers événements par `listPointsEvents(uid, 50)`, les récompenses par `listMyRewardRedemptions`;
+- les parcours guidés par `getGuideResponsesForMember` et les produits Shopify quand la boutique est branchée.
+
+Ses quatre onglets (`type Tab :132`, `tabs :189-194`) se rendent chacun par un composant du même fichier :
+
+- `profile` par `ProfileView` (`:318-345`), dont chaque champ passe par `ReadField` (`:347-356`);
+- `orders` par `OrdersView` (`:359-402`);
+- `loyalty` par `LoyaltyView` (`:574-786`);
+- `dosha` par `DoshaView` (`:405-571`).
 
 Les niskas : `LoyaltyView` montre le solde et le palier (`:634-651`), la progression (`:654-664`), la détection de dérive avec bouton « Rétablir » (`reconcileBalance :600-610`, `:666-686`), l'ajustement manuel signé (`adjustPoints :612-629`, `:691-740`), les récompenses à honorer (`:743-754`) et l'historique des cinquante derniers événements (`:757-783`).
 
