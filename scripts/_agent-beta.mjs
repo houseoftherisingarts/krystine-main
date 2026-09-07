@@ -181,9 +181,10 @@ async function scenarioInscriptionEtAnimation(browser) {
 
     await fermerBienvenue(p);
     // Fermer BienvenueJeu écrit member.bienvenueVu sur Firestore; CoffreBeta
-    // le lit par onSnapshot (AuthProvider) avant de démarrer sa réclamation :
-    // laisser le temps de l'aller-retour réseau, plus le tremblement (1,6 s).
-    await p.waitForTimeout(2400);
+    // le lit par onSnapshot (AuthProvider) avant de démarrer sa réclamation —
+    // on attend le pop-up lui-même plutôt qu'un délai à l'aveugle.
+    await p.getByText(/Un coffre pour vous/i).first().waitFor({ timeout: 10000 }).catch(() => {});
+    await p.waitForTimeout(250);
     await p.screenshot({ path: `${OUT}/2-tremble-${nom}.png` }); // le coffre doré tremble, avant révélation
 
     await p.getByText('Merci d’être bêta-testeuse').first().waitFor({ timeout: 8000 }).catch(() => {});
