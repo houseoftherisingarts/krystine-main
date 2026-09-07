@@ -37,7 +37,18 @@ const Composeur: React.FC<{ fil: FilMur; onPublie?: () => void; compact?: boolea
   const champVideo = useRef<HTMLInputElement>(null);
 
   if (!user) return null;
-  if (fil === 'krystine' && !isAdmin) return null;
+  // Le fil « krystine » porte sa parole à elle : personne d'autre n'y publie
+  // (règle miroir côté serveur, firestore.rules, mur/{postId} create). Le
+  // mur commun (formation:foyer) accueille les billets des membres.
+  if (fil === 'krystine' && !isAdmin) {
+    return (
+      <CarteSociale>
+        <p className="text-sm text-[#38403a]/50 dark:text-white/50">
+          {fr ? 'Ce fil porte la parole de Krystine. Vos billets à vous ont leur place sur le mur commun.' : 'This feed carries Krystine’s own words. Your posts belong on the common wall.'}
+        </p>
+      </CarteSociale>
+    );
+  }
   const filEffectif: FilMur = (fil === 'communaute' && !isAdmin && contexte === 'monmur') ? 'perso' : fil;
   if (fil === 'communaute' && !isAdmin && contexte === 'feed') {
     return (
