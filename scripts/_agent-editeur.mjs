@@ -67,9 +67,9 @@ for (const vp of VIEWPORTS) {
     await page.waitForTimeout(2500);
 
     let headingLoc = page.locator(pg.selector, { hasText: pg.match }).first();
-    await headingLoc.scrollIntoViewIfNeeded();
-    await page.waitForTimeout(400);
     let handle = await headingLoc.elementHandle();
+    await handle.evaluate(el => el.scrollIntoView({ block: 'center' }));
+    await page.waitForTimeout(400);
 
     // 2) Survol : le crayon paraît
     await handle.hover();
