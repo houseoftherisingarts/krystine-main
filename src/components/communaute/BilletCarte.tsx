@@ -2,19 +2,21 @@ import React, { useEffect, useState } from 'react';
 import BadgeVedette from './BadgeVedette';
 import { motion } from 'framer-motion';
 import { Loader2, MessageCircle, Send, Trash2, Pin, Bookmark, Share2 } from 'lucide-react';
-import { useAuth } from '../../contexts/AppContext';
+import { useApp, useAuth } from '../../contexts/AppContext';
 import {
   retirerDuMur, voter, suivreMonVote, epinglerPost, sauvegarderPost,
   publierCommentaire, suivreCommentaires, retirerCommentaire,
   voterCommentaire, suivreMonVoteCommentaire,
   LONGUEUR_MAX_COMMENTAIRE, type PostMur, type CommentaireMur,
 } from '../../firebase/mur';
+import Avatar from './Avatar';
 import VoteBar from './VoteBar';
 
 // ─── La carte d'un billet ────────────────────────────────────────────
-// Porté du FMM 2026 (src/components/mur/BilletCarte.tsx), simplifié :
-// avatar, nom, date, texte, photo, votes, commentaires repliés. Pas de
-// vidéo, pas de partage, pas d'aperçu de lien, pas d'épinglage.
+// Porté du FMM 2026 (src/components/mur/BilletCarte.tsx) : avatar, nom,
+// date, texte, photo ou vidéo, votes, sauvegarde, partage, épinglage (admin)
+// et commentaires repliés. Pas d'aperçu de lien. La carte est le verre de
+// l'espace client et vit directement sur la crème, jamais dans une CarteSociale.
 
 const quandTexte = (ms: number): string => {
   const ecart = Date.now() - ms;
@@ -23,15 +25,6 @@ const quandTexte = (ms: number): string => {
   if (ecart < 86_400_000) return `${Math.floor(ecart / 3_600_000)} h`;
   return new Date(ms).toLocaleDateString('fr-CA', { day: 'numeric', month: 'long', year: 'numeric' });
 };
-
-const Medaillon: React.FC<{ nom: string; url?: string; taille?: number }> = ({ nom, url, taille = 44 }) => (
-  <span
-    className="rounded-full overflow-hidden shrink-0 border border-[#BA7B39]/30 bg-[#EEE7DB] dark:bg-white/10 flex items-center justify-center font-serif text-[#8B4A2F] dark:text-white/80"
-    style={{ width: taille, height: taille, fontSize: taille * 0.4 }}
-  >
-    {url ? <img src={url} alt="" className="w-full h-full object-cover" /> : (nom || '?').slice(0, 1).toUpperCase()}
-  </span>
-);
 
 /** Une ligne de commentaire : son propre vote, sa propre suppression. */
 const LigneCommentaire: React.FC<{ postId: string; postAuteurUid: string; c: CommentaireMur }> = ({ postId, postAuteurUid, c }) => {
