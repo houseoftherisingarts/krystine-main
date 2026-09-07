@@ -95,7 +95,8 @@ const CommunauteMembres: React.FC = () => {
   );
   const vide = (texte: string) => <p className="text-sm text-[#38403a]/50 dark:text-white/50">{texte}</p>;
   // Deux colonnes dès sm; une seule pour les demandes reçues, dont la rangée porte deux boutons.
-  const grille = (enfants: React.ReactNode, large = false) => <div className={`grid gap-2 ${large ? '' : 'sm:grid-cols-2 2xl:grid-cols-3'}`}>{enfants}</div>;
+  // grid-cols-1 explicite (minmax(0,1fr)) : une piste implicite `auto` prendrait la largeur du plus long nom et déborderait à 390.
+  const grille = (enfants: React.ReactNode, large = false) => <div className={`grid grid-cols-1 gap-2 ${large ? '' : 'sm:grid-cols-2 2xl:grid-cols-3'}`}>{enfants}</div>;
 
   return (
     <CadreFoyer onglet="membres">
