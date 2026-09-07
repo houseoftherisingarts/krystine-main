@@ -587,6 +587,16 @@ const ClientPortal: React.FC = () => {
     } catch { /* noop */ }
     return false;
   });
+  // Retour de Stripe : une saison de Santé la vie payée en argent (creerSessionSaison).
+  const [merciSaison, setMerciSaison] = useState(() => {
+    try {
+      if (new URLSearchParams(window.location.search).get('saison') === 'ok') {
+        window.history.replaceState(null, '', window.location.pathname);
+        return true;
+      }
+    } catch { /* noop */ }
+    return false;
+  });
   // Live points balance for the header chip. Subscribed here once so all
   // tabs share the same stream rather than each re-subscribing.
   const [pointsBalance, setPointsBalance] = useState<PointsBalance>(DEFAULT_POINTS_BALANCE);
