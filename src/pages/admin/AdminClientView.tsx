@@ -251,11 +251,29 @@ const AdminClientView: React.FC<Props> = ({ uid, onClose }) => {
                       <i className="fa-solid fa-circle-nodes mr-1" /> {member.dosha}
                     </span>
                   )}
+                  {member?.verifie && (
+                    <i className="fa-solid fa-circle-check text-lg text-[#3b82f6]" title="Badge Bleu posé" aria-label="Badge Bleu posé" />
+                  )}
                 </div>
                 <p className="text-sm text-[#293027]/50 dark:text-white/50 mt-1">{member?.email || '—'}</p>
                 {member?.joinedAt && (
                   <p className="text-[10px] uppercase tracking-[0.25em] text-[#293027]/40 dark:text-white/40 mt-1">
                     Inscrit · {member.joinedAt.toDate().toLocaleDateString('fr-CA', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  </p>
+                )}
+                {verif && (
+                  <p className="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-[#293027]/70 dark:text-white/70">
+                    <i className="fa-solid fa-circle-check text-[#3b82f6]" />
+                    <span>
+                      {verif.statut === 'en_attente' ? `Badge Bleu : demande en attente depuis le ${dateFR(verif.demandeLe)}.`
+                        : verif.statut === 'approuvee' ? `Badge Bleu : approuvé le ${dateFR(verif.decideLe)}.`
+                        : `Badge Bleu : refusé le ${dateFR(verif.decideLe)}${verif.motif ? ` : ${verif.motif}` : '.'}`}
+                    </span>
+                    {verif.statut === 'en_attente' && (
+                      <Link to="/admin/badge-bleu" className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:underline">
+                        Traiter dans Badge Bleu <i className="fa-solid fa-arrow-right ml-1" />
+                      </Link>
+                    )}
                   </p>
                 )}
               </div>
