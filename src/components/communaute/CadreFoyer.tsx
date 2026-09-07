@@ -12,6 +12,7 @@ import PieceNiska from '../client/PieceNiska';
 import ClientParrainage from '../../pages/client/ClientParrainage';
 import { useCercleDuFoyer, useMembreDuFoyer } from './ReserveAuFoyer';
 import CarteSociale, { RangeePersonne } from './CarteSociale';
+import { useGamification, montrerBadgeBleu } from '../../contexts/GamificationContext';
 import { CHEMINS_FOYER } from './chemins';
 import EditModeToggleButton from '../edit/EditModeToggleButton';
 import '../client/skins.css';
