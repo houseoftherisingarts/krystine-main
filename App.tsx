@@ -307,6 +307,7 @@ const App: React.FC = () => (
       <MusiqueDuSite />
     </BrowserRouter>
     </EditModeProvider>
+    </GamificationProvider>
     </SiteFlagsProvider>
   </AppProvider>
 );
