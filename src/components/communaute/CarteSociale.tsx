@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Avatar from './Avatar';
 import { CHEMINS_FOYER } from './chemins';
+import { useGamification, montrerBadgeBleu } from '../../contexts/GamificationContext';
 
 // ─── La carte du Foyer social ────────────────────────────────────────────────
 // La brique de tout écran social du Foyer d'Origine (fil, membres, fiche,
