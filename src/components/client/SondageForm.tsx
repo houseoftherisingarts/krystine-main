@@ -148,6 +148,11 @@ const SondageForm: React.FC<Props> = ({ sondage, lang, onTermine, onRetour }) =>
         {fr ? `Question ${etape + 1} sur ${questions.length}` : `Question ${etape + 1} of ${questions.length}`}
       </p>
 
+      {/* L'erreur se montre ici, juste sous l'avancement : en bas de carte,
+          sur une question courte, elle finirait cachée derrière le bouton
+          fixe « Problème technique » (bas-gauche de l'écran, sitewide). */}
+      {erreur && <p className="mt-3 text-xs text-red-500">{erreur}</p>}
+
       <h2 className="mt-3 max-w-2xl font-serif text-2xl leading-snug text-[#293027] dark:text-white">
         {q.texte}
         {!q.obligatoire && <span className="ml-2 text-sm font-sans text-[#293027]/40 dark:text-white/40">({fr ? 'facultatif' : 'optional'})</span>}
@@ -156,8 +161,6 @@ const SondageForm: React.FC<Props> = ({ sondage, lang, onTermine, onRetour }) =>
       <div className="mt-6">
         <QuestionVue q={q} valeur={valeur} onChange={changer} lang={lang} />
       </div>
-
-      {erreur && <p className="mt-4 text-xs text-red-500">{erreur}</p>}
 
       <div className="mt-8 flex items-center justify-between gap-3">
         <button
