@@ -148,7 +148,14 @@ export const BANNIERE_NATURE = '/compte/bienvenue-bureau-nature.webp';
 // fond d'écran (1920 × 1080) s'ouvre dans une fenêtre avec la marche à suivre
 // Mac ou PC (Alex, 6 septembre 2026). Les cinq nouvelles gardent le thème du
 // bureau, sous d'autres angles, avec des fleurs (l'iris versicolore de Krystine).
-export interface Banniere { cle: string; cout: number; nomFR: string; nomEN: string; descFR: string; descEN: string; image: string; fond: string | null }
+export interface Banniere {
+  cle: string; cout: number; nomFR: string; nomEN: string; descFR: string; descEN: string; image: string; fond: string | null;
+  /** Vraie seulement pour les sept bannières du cadeau du jour : jamais en vente, jamais dans un coffre,
+   *  posées par le serveur (functions/src/niskas.ts). Elles n'entrent dans BOUTIQUE que si `!exclusif`. */
+  exclusif?: boolean;
+  /** Variante 720 px, plus légère, pour la petite carte de révélation du cadeau du jour. */
+  image720?: string;
+}
 export const BANNIERES: Banniere[] = [
   // La bannière d'origine est à tout le monde (cout 0) : elle entre à la
   // boutique pour son fond d'écran, son aperçu et sa version sans signature.
