@@ -466,7 +466,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
         return <ApercuImage ouvert={!!b} onFermer={() => setApercuOuvert(null)} vues={vues} titre={b ? (fr ? b.nomFR : b.nomEN).replace(/^Bannière\s+|\s+banner$/i, '') : ''} signe={b ? signee(b.cle) : true} lang={lang} />;
       })()}
 
-      <Coffres solde={solde.balance} onChange={onAchat} enTravail={skinsCachees} />
+      {gam.coffres && <Coffres solde={solde.balance} onChange={onAchat} enTravail={skinsCachees} />}
 
       {accordeon('sante', 'fa-clapperboard', 'Santé la vie', episodesTries.length, (
       <div className="grid gap-6 pt-2 md:grid-cols-[220px_1fr]">
