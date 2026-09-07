@@ -112,23 +112,32 @@ async function scenarioInscriptionEtAnimation(browser) {
   const password = 'Qa!' + Math.random().toString(36).slice(2, 12);
   console.log(`  adresse de test : ${email} (à effacer — le ménage en fin de script s’en charge, notée ici quand même)`);
 
+  // /accueil est une page statique à part (public/accueil/index.html, servie
+  // par le middleware Vite pour le SEO) : aucun rapport avec la vraie appli
+  // React. /compte, non loggée, montre le vrai bouton « Se connecter » qui
+  // ouvre SignInModal — celui-ci s'ouvre déjà en mode inscription par défaut.
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
   const page = await ctx.newPage();
-  await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
+  await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1000);
-  await page.getByRole('button', { name: /Créer mon compte/i }).first().click({ timeout: 6000 });
-  await page.waitForTimeout(500);
+  await page.getByRole('button', { name: /Se connecter/i }).first().click({ timeout: 6000 });
+  await page.waitForTimeout(600);
   const captchaPresent = await page.locator('.g-recaptcha, iframe[title*="recaptcha" i], iframe[src*="recaptcha"]').count() > 0;
-  await page.locator('input[type="email"]').first().fill(email);
-  await page.locator('input[type="password"]').first().fill(password);
-  await page.getByRole('button', { name: /^S'inscrire$/i }).click();
-  await page.waitForTimeout(1800);
-  const bloqueParCaptcha = await page.getByText(/Cochez la case/i).first().isVisible().catch(() => false);
-  let viaUI = !bloqueParCaptcha && !captchaPresent;
-  // Un reCAPTCHA rendu mais non coché passe la validation JS locale seulement
-  // si RECAPTCHA_SITE_KEY est vide; ici il ne l'est pas (.env.local) — donc
-  // la présence du widget suffit à prédire l'échec, inutile d'attendre plus.
-  if (captchaPresent) console.log('  reCAPTCHA v2 détecté sur le formulaire (clé configurée dans .env.local) : un navigateur headless ne peut pas le cocher.');
+  let viaUI = !captchaPresent;
+  if (captchaPresent) {
+    // Confirmé en amont (capture manuelle) : reCAPTCHA v2 présente un vrai
+    // défi ("Select all images with a bus") à ce navigateur headless — le
+    // cocher automatiquement serait tricher un anti-robot, donc on ne tente
+    // même pas de le cliquer, on consigne et on bascule tout de suite.
+    console.log('  reCAPTCHA v2 détecté sur le formulaire (clé configurée dans .env.local) : un navigateur headless ne peut pas le cocher (vérifié : un vrai défi d’images apparaît).');
+  } else {
+    await page.locator('input[type="email"]').first().fill(email);
+    await page.locator('input[type="password"]').first().fill(password);
+    await page.getByRole('button', { name: /^S'inscrire$/i }).click();
+    await page.waitForTimeout(1800);
+    const bloqueParCaptcha = await page.getByText(/Cochez la case/i).first().isVisible().catch(() => false);
+    viaUI = !bloqueParCaptcha;
+  }
   await ctx.close();
 
   let u;
