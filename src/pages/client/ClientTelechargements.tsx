@@ -3,6 +3,7 @@ import { useApp } from '../../contexts/AppContext';
 import { getMesFormations, getLecons, urlDeLecon, type AchatFormation, type Lecon } from '../../firebase/formations';
 import { estTelechargement, MUSIQUE_ORIGINE_ID } from '../../firebase/musique';
 import BoutiqueNiskas from '../../components/client/BoutiqueNiskas';
+import { useGamification } from '../../contexts/GamificationContext';
 import { SANTE_LA_VIE_ID, CATALOGUE_VIDEOS, dureeLisible, vignetteYoutube, type CatalogueVideos } from '../../lib/pointsConfig';
 import { suivreBoutique, points } from '../../firebase/points';
 import LecteurYouTube from '../../components/client/LecteurYouTube';
