@@ -18,11 +18,16 @@ interface EditModeContextType {
   editMode: boolean;
   setEditMode: (v: boolean) => void;
   overrides: OverridesDoc;
-  /** Read helper — returns the override if any, else the default. */
+  /** Read helper — returns the pending draft if any, else the published override, else the default. */
   getText: (key: string, fallback: string) => string;
   getImage: (key: string, fallbackUrl: string) => ImageOverride;
-  /** Write helpers — persist to Firestore. */
+  /** Nombre de textes modifiés en attente de publication. */
+  pendingCount: number;
+  /** Stage un texte — reste local (brouillon) tant que publishPending() n'a pas été appelé. */
   saveText: (key: string, value: string) => Promise<void>;
+  /** Écrit le brouillon en un seul geste : tout le monde voit les changements après. */
+  publishPending: () => Promise<void>;
+  /** Les images restent en publication immédiate — pas de brouillon pour ce type. */
   saveImage: (key: string, payload: ImageOverride) => Promise<void>;
 }
 
@@ -35,6 +40,18 @@ const EMPTY: OverridesDoc = { text: {}, images: {} };
 // /podcast, /vata, which reload the whole app), so Krystine stays in edit
 // mode until she explicitly clicks "Terminer".
 const STORAGE_KEY = 'inspirata.editMode';
+// Brouillon des textes modifiés, pas encore publiés. Vit dans ce navigateur
+// seulement (sessionStorage) : Krystine seule les voit tant qu'elle n'a pas
+// cliqué « Publier ». Survit à la navigation SPA (le Provider ne démonte
+// jamais) et à un rechargement de page dans la même session.
+const PENDING_KEY = 'inspirata.editMode.pending';
+
+function readPending(): Record<string, string> {
+  try {
+    const raw = sessionStorage.getItem(PENDING_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
 
 export const EditModeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAdmin } = useAuth();
