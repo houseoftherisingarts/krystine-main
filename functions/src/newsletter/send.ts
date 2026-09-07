@@ -303,6 +303,14 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
   const transporter = createTransporter();
   const pixelBase = `https://us-central1-${process.env.GCLOUD_PROJECT || 'krystinestlaurent-87566'}.cloudfunctions.net/ouverture`;
 
+  // Cadence partagée par tous les ouvriers : au plus un envoi par créneau.
+  let prochainCreneau = 0;
+  const attendreCreneau = async () => {
+    const t = Math.max(Date.now(), prochainCreneau);
+    prochainCreneau = t + INTERVALLE_MS;
+    if (t > Date.now()) await delai(t - Date.now());
+  };
+
   const envoyer = async (sub: typeof all[number]) => {
     const jeton = await assurerJeton(db.doc(`newsletter/${sub.id}`), sub.unsubscribeToken);
     const unsubscribeUrl = buildUnsub(jeton);
