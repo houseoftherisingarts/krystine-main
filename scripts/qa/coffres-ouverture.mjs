@@ -145,7 +145,10 @@ const fermerRoueSiPresente = async (page) => {
 // Le pop-up « On oublie souvent de jouer » (BienvenueJeu.tsx) reste parfois
 // en boucle d'animation et ignore les clics; on le retire du DOM directement
 // avant chaque geste plutôt que de lui courir après.
-const purgerPopups = (page) => page.evaluate(() => document.querySelectorAll('[data-bug-ignore]').forEach((el) => el.remove()));
+// Tout overlay plein écran (bienvenue, coffre-surprise, etc.) : les vrais
+// dialogues du site sont tous des `.fixed.inset-0` en z-index élevé; on les
+// retire du DOM avant chaque clic plutôt que de nommer chacun.
+const purgerPopups = (page) => page.evaluate(() => document.querySelectorAll('div.fixed.inset-0').forEach((el) => el.remove()));
 const clic = async (page, locator) => { await purgerPopups(page); await fermerRoueSiPresente(page); await locator.click(); };
 
 const ORDRE = ['bronze', 'argent', 'or'];
