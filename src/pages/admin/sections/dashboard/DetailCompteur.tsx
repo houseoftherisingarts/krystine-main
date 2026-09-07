@@ -199,19 +199,30 @@ const PanneauDetail: React.FC<{ requete: RequeteCompteur; titre: string; definit
               <p className="py-12 text-center text-sm text-[#293027]/40 dark:text-white/40">Personne à afficher ici.</p>
             ) : (
               <div className="space-y-6">
-                {groupes.map(g => (
+                {groupes.map(g => {
+                  const repliee = axe !== 'aucun' && repliees.has(g.cle);
+                  return (
                   <div key={g.cle || '_'}>
                     {axe !== 'aucun' && (
-                      <div className="mb-2">
+                      <button
+                        type="button"
+                        onClick={() => basculerGroupe(g.cle)}
+                        aria-expanded={!repliee}
+                        className="mb-2 block w-full text-left"
+                      >
                         <div className="flex items-baseline justify-between gap-3">
-                          <span className="font-serif text-base text-[#293027] dark:text-white">{libelleGroupe(axe, g.cle)}</span>
+                          <span className="flex items-center gap-2 font-serif text-base text-[#293027] dark:text-white">
+                            <i className={`fa-solid fa-chevron-right text-[10px] text-[#293027]/40 transition-transform dark:text-white/40 ${repliee ? '' : 'rotate-90'}`} />
+                            {libelleGroupe(axe, g.cle)}
+                          </span>
                           <span className="text-xs font-bold tabular-nums text-[#BA7B39]">{g.lignes.length}</span>
                         </div>
                         <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#293027]/8 dark:bg-white/10">
                           <div className="h-full rounded-full bg-[#BA7B39]" style={{ width: `${(g.lignes.length / plusGrand) * 100}%` }} />
                         </div>
-                      </div>
+                      </button>
                     )}
+                    {!repliee && (
                     <ul className="divide-y divide-[#293027]/8 overflow-hidden rounded-[15px] border border-[#293027]/10 dark:divide-white/10 dark:border-white/10">
                       {g.lignes.map(l => (
                         <li key={l.id}>
