@@ -258,7 +258,6 @@ const App: React.FC = () => (
           <Route path="/cours/:id" element={<CoursDetailPage />} />
           <Route path="/espace" element={<Navigate to="/compte" replace />} />
           <Route path="/membres" element={<CommunauteMembres />} />
-          <Route path="/tmp-fil-qa" element={<CommunauteEspace />} />
           <Route path="/demo-skins" element={<DemoSkins />} />
           <Route path="/membre/:uid" element={<MembreProfilPage />} />
           <Route path="/messages" element={<MessagesPage />} />
