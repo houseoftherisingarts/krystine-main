@@ -94,7 +94,8 @@ const CommunauteMembres: React.FC = () => {
     />
   );
   const vide = (texte: string) => <p className="text-sm text-[#38403a]/50 dark:text-white/50">{texte}</p>;
-  const grille = (enfants: React.ReactNode) => <div className="grid gap-2 sm:grid-cols-2 2xl:grid-cols-3">{enfants}</div>;
+  // Deux colonnes dès sm; une seule pour les demandes reçues, dont la rangée porte deux boutons.
+  const grille = (enfants: React.ReactNode, large = false) => <div className={`grid gap-2 ${large ? '' : 'sm:grid-cols-2 2xl:grid-cols-3'}`}>{enfants}</div>;
 
   return (
     <CadreFoyer onglet="membres">
