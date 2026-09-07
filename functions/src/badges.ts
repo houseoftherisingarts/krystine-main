@@ -9,6 +9,7 @@ import { lireGamification } from './gamification';
 // automatiques arrivent ici au fur et à mesure que leurs sources existent.
 
 async function poserBadge(uid: string, badgeId: string): Promise<void> {
+  if (!(await lireGamification()).badges) return; // module fermé : on ne pose plus de badge, les points restent intacts
   const db = getFirestore();
   const ref = db.doc(`badges/${uid}`);
   const snap = await ref.get();

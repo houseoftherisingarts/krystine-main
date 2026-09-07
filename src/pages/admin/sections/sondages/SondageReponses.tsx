@@ -58,7 +58,7 @@ const SondageReponses: React.FC<{ sondage: Sondage; onRetour: () => void }> = ({
     downloadCsv(`sondage-${sondage.id}.csv`, reponses.map((r) => {
       const row: Record<string, string> = {
         email: r.email || '',
-        date: r.at ? (r.at as any).toDate().toISOString() : '',
+        date: (r.at as { toDate?: () => Date } | undefined)?.toDate?.().toISOString() || '',
       };
       for (const q of sondage.questions || []) row[q.texte] = formatValeur(r.reponses?.[q.id]);
       return row;
