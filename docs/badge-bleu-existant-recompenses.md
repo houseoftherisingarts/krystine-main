@@ -174,7 +174,7 @@ Le compteur existe : `memberPoints.serie`, calculé à **`niskas.ts:270`**, repa
 - 7e journée : déjà détectée par `r.jour === ROUE_QUOTIDIENNE.length` (`:279`). Ce test tombe aussi aux jours 14, 21, 28. Pour « la 7e journée consécutive » au sens strict, tester `r.serie === 7`; pour « chaque 7e », garder le test actuel.
 - 30e journée : tester `!r.deja && r.serie === 30` au même endroit. Le jour de roue affiché ce jour-là est le 2 (`((30 - 1) % 7) + 1`). Rendre le geste idempotent avec une clé par journée, sur le patron de `coffresDons/roue:{uid}:{jour}` (`coffres.ts:331-334`) ou une clé `pointsEvents/serie30:{uid}:{aujourdhui}` par `crediterNiskas` (`niskas.ts:94`).
 - Signaler au client : ajouter le drapeau au retour (`:284`) comme `coffre` l'est déjà, et l'afficher dans `RoueQuotidienne.tsx:64-68` et sur la 7e case (`:89`).
-- Ne pas confondre avec `badges/{uid}.compteurs.jours` (`interactions.ts:72`), cumulatif.
+- Le compteur `badges/{uid}.compteurs.jours` (`interactions.ts:72`) est cumulatif et ne sert pas à cette détection.
 
 ### 8.3 Déposer un cadeau musique
 
