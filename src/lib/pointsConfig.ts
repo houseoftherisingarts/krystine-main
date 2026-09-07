@@ -180,8 +180,35 @@ export const BANNIERES: Banniere[] = [
   { cle: 'soir', cout: 18, nomFR: 'Bannière Le soir à la lampe', nomEN: 'Evening Lamp banner',
     descFR: 'La lampe de laiton allumée, le carnet ouvert et un bouquet de fleurs sauvages dans la cruche de grès.', descEN: 'The brass lamp lit, the journal open and a jug of wildflowers on the desk.',
     image: '/compte/bannieres/soir.webp', fond: '/compte/fonds/soir.webp' },
+  // Les sept bannières du cadeau du jour (Alex, 7 septembre 2026) : jamais à
+  // la boutique, jamais dans un coffre. Le septième jour de chaque cycle de
+  // sept (jourCadeau 7, 14, 21…49) en pose une, dans cet ordre exact —
+  // calculerCadeauDuJour (functions/src/badgeBleuConfig.ts) en décide.
+  { cle: 'aube', cout: 0, exclusif: true, nomFR: 'L’aube sur le lac', nomEN: 'Dawn on the lake',
+    descFR: 'Le premier jour de lumière sur l’eau immobile, un canot au bord des roseaux.', descEN: 'The first light of day on still water, a canoe at the edge of the reeds.',
+    image: '/compte/bannieres/cadeau-aube.webp', image720: '/compte/bannieres/cadeau-aube-720.webp', fond: '/compte/fonds/cadeau-aube.webp' },
+  { cle: 'sousbois', cout: 0, exclusif: true, nomFR: 'Le sous-bois', nomEN: 'The undergrowth',
+    descFR: 'Fougères, mousse et un bouleau couché, dans les rayons du matin.', descEN: 'Ferns, moss and a fallen birch, in the morning light.',
+    image: '/compte/bannieres/cadeau-sousbois.webp', image720: '/compte/bannieres/cadeau-sousbois-720.webp', fond: '/compte/fonds/cadeau-sousbois.webp' },
+  { cle: 'lavande', cout: 0, exclusif: true, nomFR: 'La lavande au crépuscule', nomEN: 'Lavender at dusk',
+    descFR: 'Un champ de lavande et de sauge sur la colline, sous un ciel de lilas.', descEN: 'A field of lavender and sage on the hillside, under a lilac sky.',
+    image: '/compte/bannieres/cadeau-lavande.webp', image720: '/compte/bannieres/cadeau-lavande-720.webp', fond: '/compte/fonds/cadeau-lavande.webp' },
+  { cle: 'rivage', cout: 0, exclusif: true, nomFR: 'Le rivage du fleuve', nomEN: 'The river shore',
+    descFR: 'Les galets du Saint-Laurent à marée basse, la brume et le bois flotté.', descEN: 'The pebbles of the St. Lawrence at low tide, the mist and the driftwood.',
+    image: '/compte/bannieres/cadeau-rivage.webp', image720: '/compte/bannieres/cadeau-rivage-720.webp', fond: '/compte/fonds/cadeau-rivage.webp' },
+  { cle: 'erables', cout: 0, exclusif: true, nomFR: 'Les érables d’octobre', nomEN: 'October maples',
+    descFR: 'Un sentier couvert de feuilles rouges et or, la lumière entre les troncs.', descEN: 'A path covered in red and gold leaves, light between the trunks.',
+    image: '/compte/bannieres/cadeau-erables.webp', image720: '/compte/bannieres/cadeau-erables-720.webp', fond: '/compte/fonds/cadeau-erables.webp' },
+  { cle: 'verger', cout: 0, exclusif: true, nomFR: 'Le verger en fleurs', nomEN: 'The orchard in bloom',
+    descFR: 'Les pommiers en pleine floraison et une vieille ruche de bois dans l’herbe.', descEN: 'Apple trees in full bloom and an old wooden hive in the grass.',
+    image: '/compte/bannieres/cadeau-verger.webp', image720: '/compte/bannieres/cadeau-verger-720.webp', fond: '/compte/fonds/cadeau-verger.webp' },
+  { cle: 'neige', cout: 0, exclusif: true, nomFR: 'La cabane sous la neige', nomEN: 'The cabin in the snow',
+    descFR: 'Une cabane de bois au petit matin d’hiver, la fumée et une lanterne allumée.', descEN: 'A wooden cabin on a winter morning, smoke rising and a lantern lit.',
+    image: '/compte/bannieres/cadeau-neige.webp', image720: '/compte/bannieres/cadeau-neige-720.webp', fond: '/compte/fonds/cadeau-neige.webp' },
 ];
 export const banniereParCle = (cle: string) => BANNIERES.find(b => b.cle === cle);
+/** Les sept bannières du cadeau du jour, dans l'ordre exact de leur cycle. */
+export const CADEAUX_JOUR_BANNIERES = ['aube', 'sousbois', 'lavande', 'rivage', 'erables', 'verger', 'neige'] as const;
 export const FOND_DEFAUT = '/compte/fonds/defaut-1920.webp';
 
 export type CategorieBoutique = 'banniere' | 'musique' | 'skin';
