@@ -78,6 +78,7 @@ const shootBoutique = async (largeur, hauteur, suffixe) => {
   }
 
   // Les coffres : la ligne des chances ne doit plus nommer une skin en travail.
+  await fermerRoue();
   const coffres = page.locator('#boutique-coffres');
   if (await coffres.count()) {
     await coffres.scrollIntoViewIfNeeded();
