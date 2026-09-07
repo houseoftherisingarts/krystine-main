@@ -19,5 +19,8 @@ export const CHEMINS_FOYER = {
   demandes: '/foyer/membres?vue=demandes',
   messages: '/foyer/messages',
   conversation: (uid: string) => `/foyer/messages/${uid}`,
+  /** La seule porte vers l'équipe (Krystine, Alex) : jamais un uid d'admin
+   *  en boîte à boîte, toujours conversations/{uid} (Alex, 7 septembre 2026). */
+  equipe: '/foyer/messages?volet=support',
   profil: (uid: string) => `/foyer/membre/${uid}`,
 } as const;
