@@ -97,8 +97,9 @@ const MembreProfilPage: React.FC = () => {
     try { await accepterAmitie(user.uid, uid); } finally { setEnvoi(false); }
   };
 
+  // flex-1 : le titre « À propos » garde sa ligne, les gestes prennent le reste et passent à la ligne sous sm.
   const gestes = !soi && origine ? (
-    <div className="flex flex-wrap items-center justify-end gap-2">
+    <div className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-2">
       {amis ? (
         <span className={PASTILLE_ETAT}><i className="fa-solid fa-check text-[9px]" /> {fr ? 'Amies d’origine' : 'Origine friends'}</span>
       ) : jeLaiRecue ? (
