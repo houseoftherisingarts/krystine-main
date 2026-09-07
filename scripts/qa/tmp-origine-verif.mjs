@@ -40,8 +40,13 @@ const browser = await chromium.launch();
     await page.waitForTimeout(350);
     await page.screenshot({ path: `${OUT}/o1-scroll-${String(i).padStart(2, '0')}-y${y}.png` });
   }
-  await page.evaluate(() => window.scrollTo(0, 0));
+  const y0a = await page.evaluate(() => { window.scrollTo(0, 0); return window.scrollY; });
+  const y0b = await page.evaluate(() => window.scrollY);
   await page.waitForTimeout(300);
+  const y0c = await page.evaluate(() => window.scrollY);
+  await page.waitForTimeout(500);
+  const y0d = await page.evaluate(() => window.scrollY);
+  console.log('DEBUG reset scroll: immédiat=%d, +0ms=%d, +300ms=%d, +800ms=%d', y0a, y0b, y0c, y0d);
 
   const debugHero = await page.evaluate(() => {
     const img = document.querySelector('.relative.hidden.md\\:block img');
