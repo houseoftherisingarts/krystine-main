@@ -71,7 +71,6 @@ const Coffres: React.FC<{ solde: number; onChange?: () => void }> = ({ solde, on
   const [occupe, setOccupe] = useState<string | null>(null);
   const [contenuOuvert, setContenuOuvert] = useState<TypeCoffre | null>(null);
   const [ouverture, setOuverture] = useState<{ type: TypeCoffre; lots: LotGagne[] | null; solde?: number } | null>(null);
-  const [videoEchouee, setVideoEchouee] = useState(false);
   const [reponse, setReponse] = useState('');
   const [grandOk, setGrandOk] = useState(false);
   const [avis, setAvis] = useState<string | null>(null);
