@@ -165,7 +165,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
           <motion.div
             initial={{ opacity: 0, y: -6, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -6, scale: 0.98 }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute right-0 top-[calc(100%+10px)] z-30 w-[min(22rem,calc(100vw-2rem))] rounded-[20px] overflow-hidden bg-white/90 dark:bg-[#293027]/95 backdrop-blur-md border border-[#BA7B39]/25 shadow-[0_18px_50px_-20px_rgba(41,48,39,0.45)]"
+            className="absolute right-0 top-[calc(100%+10px)] z-30 w-[min(22rem,calc(100vw-2rem))] rounded-[20px] overflow-hidden bg-[#EEE7DB] dark:bg-[#293027] border border-[#BA7B39]/25 shadow-[0_18px_50px_-20px_rgba(41,48,39,0.45)]"
             role="menu"
           >
             <p className="px-4 pt-3.5 pb-2 text-[10px] uppercase tracking-[0.18em] text-[#38403a]/50 dark:text-white/45 border-b border-[#38403a]/10 dark:border-white/10">
@@ -212,7 +212,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.98 }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute right-0 top-[calc(100%+10px)] z-30 w-[min(22rem,calc(100vw-2rem))] rounded-[20px] overflow-hidden bg-white/90 dark:bg-[#293027]/95 backdrop-blur-md border border-[#BA7B39]/25 shadow-[0_20px_50px_-20px_rgba(41,48,39,0.4)]"
+            className="absolute right-0 top-[calc(100%+10px)] z-30 w-[min(22rem,calc(100vw-2rem))] rounded-[20px] overflow-hidden bg-[#EEE7DB] dark:bg-[#293027] border border-[#BA7B39]/25 shadow-[0_20px_50px_-20px_rgba(41,48,39,0.4)]"
             role="menu"
           >
             <p className="px-4 pt-3.5 pb-2 text-[10px] uppercase tracking-[0.18em] text-[#38403a]/50 dark:text-white/45 border-b border-[#38403a]/10 dark:border-white/10">
