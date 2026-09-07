@@ -3,8 +3,8 @@ import { Card, Input, Textarea, Label, PrimaryButton, GhostButton, ToggleSwitch 
 import { TIERS, type Reward } from '../../../lib/pointsConfig';
 import { suivreRecompenses, enregistrerRecompenses, nouvelleRecompense } from '../../../firebase/recompenses';
 
-// Les récompenses de la plante, palier par palier. Krystine allume ou éteint
-// chaque récompense, change son prix en niskas et ses mots, en ajoute une à
+// Les cadeaux de la plante, palier par palier. Krystine allume ou éteint
+// chaque cadeau, change son prix en niskas et ses mots, en ajoute un à
 // n'importe quel palier. Tout part dans settings/recompenses au clic sur
 // « Enregistrer », et l'onglet Points des membres suit aussitôt.
 
