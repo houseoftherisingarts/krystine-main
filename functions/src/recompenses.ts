@@ -110,16 +110,18 @@ async function creerCodeShopifyBoutique(uid: string): Promise<string> {
 }
 
 /** Le code boutique : unique par Shopify si l'API répond, sinon le code fixe
- *  que Krystine crée elle-même dans Shopify et pose dans settings/recompenses
- *  (champ codeBoutique10) : NISKAS10, 10 % sur toute commande, minimum
- *  75 $ CA, réutilisable (une seule promo pour tout le monde). */
+ *  que Krystine crée elle-même dans Shopify et pose dans
+ *  settings/recompensesCodes (champ codeBoutique10), un document séparé de
+ *  settings/recompenses exprès : celui-là se réécrit en entier (setDoc sans
+ *  merge) à chaque sauvegarde des récompenses dans l'admin — y poser le code
+ *  l'aurait effacé à la première édition. */
 async function codeBoutique10(db: Firestore, uid: string): Promise<string> {
   try {
     return await creerCodeShopifyBoutique(uid);
   } catch (e) {
     console.warn('[recompenses] Shopify indisponible, repli sur le code fixe', e);
   }
-  const s = await db.doc('settings/recompenses').get();
+  const s = await db.doc('settings/recompensesCodes').get();
   const code = (s.data() as { codeBoutique10?: string } | undefined)?.codeBoutique10;
   if (!code) throw new HttpsError('failed-precondition', 'Le code boutique n’est pas encore prêt. Écrivez à Krystine, elle vous l’enverra.');
   return code;
