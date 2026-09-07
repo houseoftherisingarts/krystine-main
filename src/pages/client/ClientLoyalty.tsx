@@ -23,7 +23,7 @@ const EVENT_LABELS: Record<string, { fr: string; en: string; icon: string }> = {
   share:      { fr: 'Partage sur les réseaux', en: 'Shared on social',        icon: 'fa-share-nodes' },
   formation:  { fr: 'Inscription à une formation', en: 'Program subscription', icon: 'fa-graduation-cap' },
   origine:    { fr: 'Inscription à Origine',   en: "Origin subscription",      icon: 'fa-sun' },
-  redeem:     { fr: 'Récompense échangée',     en: 'Reward redeemed',         icon: 'fa-gift' },
+  redeem:     { fr: 'Cadeau échangé',          en: 'Gift redeemed',           icon: 'fa-gift' },
   adjust:     { fr: 'Ajustement',              en: 'Adjustment',              icon: 'fa-scale-balanced' },
   direct:     { fr: 'Participation au direct', en: 'Live participation',      icon: 'fa-tower-broadcast' },
   quotidien:  { fr: 'Cadeau du jour',          en: 'Gift of the day',         icon: 'fa-sun' },
