@@ -292,7 +292,7 @@
   "Ce qui entre dans chaque flacon": "What goes into every bottle",
   "Ce qui est inclus": "What's included",
   "Ce qui est vrai": "What's true",
-      "Ce qui travaille pour vous chaque semaine": "What works for you every week",
+  "Ce qui travaille pour vous chaque semaine": "What works for you every week",
   "Ce qui vous amène": "What brings you here",
   "Ce qui vous appartient vraiment": "What truly belongs to you",
   "Ce qui vous attend": "What awaits you",
@@ -2156,7 +2156,6 @@
   "Vos données sont stockées sur des serveurs sécurisés. Nous mettons en œuvre des mesures de sécurité physiques, techniques et administratives rigoureuses pour prévenir tout accès non autorisé, perte ou vol de vos renseignements. Nous conservons vos données uniquement pour la durée nécessaire à la finalité pour laquelle elles ont été recueillies.": "Your data is stored on secure servers. We apply rigorous physical, technical, and administrative safeguards to prevent unauthorized access, loss, or theft of your information. We keep your data only as long as needed for the purpose it was collected for.",
   "Vos parcours suggérés": "Your suggested programs",
   "Vos points": "Your points",
-  "Vos questions": "Your questions",
   "Vos questions sont soumises trois jours avant. Krystine et son équipe les lisent, préparent, et le rendez-vous": "Your questions are submitted three days ahead. Krystine and her team read them, prepare, and the session",
   "Vos questions — le privilège fondatrice": "Your questions, the founding privilege",
   "Vos questions, le privilège fondatrice": "Your questions, the founding privilege",
@@ -3066,5 +3065,8 @@
   "Ayurveda · Corps · Cycles": "Ayurveda · Body · Cycles",
   "Trois façons de revenir au corps avec Krystine : une cohorte accompagnée, un foyer qui s'ouvre porte après porte, et un programme de saison à suivre à votre rythme.": "Three ways back to the body with Krystine: a guided cohort, a hearth that opens one door at a time, and a seasonal program to follow at your own pace.",
   "Douze semaines accompagnées au cœur de l'Ayurveda, avec un audio, un guide et un direct chaque semaine. La prochaine cohorte s'annonce d'abord à la liste d'attente.": "Twelve guided weeks at the heart of Ayurveda, with an audio, a guide and a live session every week. The next cohort is announced to the waiting list first.",
-  "Avec un compte, la musique vous attend pour toujours dans votre espace.": "With an account, the music waits for you forever in your space."
+  "Avec un compte, la musique vous attend pour toujours dans votre espace.": "With an account, the music waits for you forever in your space.",
+  "Les Formations": "The Programs",
+  "Des parcours en ligne, saison après saison, pour apprendre l'Ayurveda et l'appliquer chez soi : alimentation, plantes, rituels et gestion du stress.": "Online paths, season after season, to learn Ayurveda and bring it home: food, plants, rituals and stress relief.",
+  "Krystine à sa table, ses livres devant elle": "Krystine at her table, her books in front of her"
 }
