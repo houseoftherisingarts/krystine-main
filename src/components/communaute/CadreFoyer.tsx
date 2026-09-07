@@ -124,7 +124,7 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, dr
   const raccourcis: Array<{ cle: string; label: string; icon: string; to: string; actif: boolean }> = [
     { cle: 'amies',    label: fr ? 'Amies' : 'Friends',         icon: 'fa-heart',        to: CHEMINS_FOYER.amies,        actif: onglet === 'membres' && vue === 'amies' },
     { cle: 'messages', label: 'Messages',                       icon: 'fa-comments',     to: CHEMINS_FOYER.messages,     actif: onglet === 'messages' },
-    { cle: 'badges',   label: 'Badges',                         icon: 'fa-award',        to: `${CHEMINS_FOYER.profil(moi)}#badges`, actif: false },
+    ...(gam.badges ? [{ cle: 'badges', label: 'Badges', icon: 'fa-award', to: `${CHEMINS_FOYER.profil(moi)}#badges`, actif: false }] : []),
   ];
   const ongletClasse = (actif: boolean) => `flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-2 py-3.5 text-[10px] font-bold uppercase tracking-wide transition-colors 2xl:px-3 2xl:text-[11px] 2xl:tracking-wider ${
     actif ? 'border-[#BA7B39] text-[#8B4A2F] dark:text-[#d9a05b]' : 'border-transparent text-[#38403a]/55 hover:text-[#8B4A2F] dark:text-white/55 dark:hover:text-[#d9a05b]'
