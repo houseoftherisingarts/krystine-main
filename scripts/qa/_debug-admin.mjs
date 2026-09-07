@@ -21,6 +21,7 @@ await page.goto(`${BASE}/admin/sondages`, { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(2500);
 await page.keyboard.press('Escape').catch(() => {});
 await page.waitForTimeout(300);
+await page.screenshot({ path: 'scripts/qa/shots/_debug-admin-avant.png', fullPage: true });
 const ligneFormations = page.locator('tr', { hasText: 'Ce que vous voulez apprendre' });
 await ligneFormations.getByRole('button', { name: /Réponses/i }).click({ timeout: 15000 });
 await page.waitForTimeout(1500);
