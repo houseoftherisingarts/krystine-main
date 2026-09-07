@@ -105,7 +105,7 @@ const MembreProfilPage: React.FC = () => {
         <span className={PASTILLE_ETAT}><i className="fa-solid fa-check text-[9px]" /> {fr ? 'Amies d’origine' : 'Origine friends'}</span>
       ) : jeLaiRecue ? (
         <button type="button" onClick={accepter} disabled={envoi} className={BOUTON_LAITON}>
-          <i className={`fa-solid ${envoi ? 'fa-circle-notch fa-spin' : 'fa-user-plus'} text-[9px]`} /> {fr ? 'Accepter l’amie d’origine' : 'Accept the Origine friend'}
+          <i className={`fa-solid ${envoi ? 'fa-circle-notch fa-spin' : 'fa-user-plus'} text-[9px]`} /> {fr ? 'Accepter l’amitié' : 'Accept friendship'}
         </button>
       ) : jeLaiEnvoyee ? (
         <span className="text-[10px] uppercase tracking-widest text-[#38403a]/40 dark:text-white/40">{fr ? 'Demande envoyée' : 'Request sent'}</span>
