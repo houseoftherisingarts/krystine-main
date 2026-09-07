@@ -162,8 +162,10 @@ const CommunauteMembres: React.FC = () => {
         )}
 
         <div className="mt-6 flex justify-end">
-          <Link to={CHEMINS_FOYER.conversation(UID_MODERATION)} className={`${BOUTON_SECONDAIRE} whitespace-nowrap`}>
-            <i className="fa-solid fa-shield-halved text-[9px]" /> {fr ? 'Écrire à la modération' : 'Write to moderation'}
+          {/* Jamais une boîte à boîte vers un uid d'admin : la seule porte
+              vers l'équipe est Équipe KSL (Alex, 7 septembre 2026). */}
+          <Link to={CHEMINS_FOYER.equipe} className={`${BOUTON_SECONDAIRE} whitespace-nowrap`}>
+            <i className="fa-solid fa-shield-halved text-[9px]" /> {fr ? 'Écrire à l’équipe KSL' : 'Write to the KSL team'}
           </Link>
         </div>
       </CarteSociale>
