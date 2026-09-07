@@ -53,42 +53,48 @@ const shootBoutique = async (largeur, hauteur, suffixe) => {
   await page.waitForSelector('text=La petite boutique', { timeout: 15000 }).catch((e) => console.log('boutique introuvable', e.message));
   await page.waitForTimeout(800);
 
-  // La roue quotidienne (« Jour N ») s'ouvre parfois toute seule à l'arrivée
-  // sur /compte, avec un léger délai (reclamerQuotidien) : plusieurs passes,
-  // un clic sur le fond (data-bug-ignore) la referme chaque fois qu'elle paraît.
-  const fermerRoue = async () => {
+  // Deux popups peuvent s'ouvrir seules à l'arrivée sur /compte : la roue
+  // quotidienne (« Jour N », data-bug-ignore) et le bandeau de consentement
+  // (Loi 25). Plusieurs passes, avec un léger délai (reclamerQuotidien).
+  const fermerPopups = async () => {
     for (let i = 0; i < 5; i++) {
+      let ferme = false;
       const r = page.locator('[data-bug-ignore]').first();
-      if (await r.count()) { await r.click({ position: { x: 8, y: 8 } }).catch(() => {}); await page.waitForTimeout(400); }
-      else await page.waitForTimeout(400);
+      if (await r.count()) { await r.click({ position: { x: 8, y: 8 } }).catch(() => {}); ferme = true; }
+      const consent = page.getByRole('button', { name: /Non merci|No thanks/i }).first();
+      if (await consent.count()) { await consent.click().catch(() => {}); ferme = true; }
+      await page.waitForTimeout(ferme ? 400 : 500);
     }
   };
-  await fermerRoue();
+  await fermerPopups();
 
   // Tout replié au chargement.
   await page.screenshot({ path: `${OUT}/boutique-replie-${suffixe}.png`, fullPage: true });
 
   // La section « Les skins » ouverte : les six skins en travail ne doivent
-  // plus y paraître (sauf si le compte les possède déjà).
-  await fermerRoue();
+  // plus y paraître (sauf si le compte les possède déjà). Capture cadrée
+  // (pas fullPage) : une capture pleine page après un scroll juxtapose
+  // parfois deux fois l'entête sticky (artefact Playwright, pas un bug du site).
+  await fermerPopups();
   const skins = page.locator('#boutique-skin');
   if (await skins.count()) {
     await skins.scrollIntoViewIfNeeded();
-    await skins.getByRole('button').first().click({ force: true });
+    await page.waitForTimeout(200);
+    await skins.getByRole('button').first().click();
     await page.waitForTimeout(500);
-    await page.screenshot({ path: `${OUT}/boutique-skins-ouvert-${suffixe}.png`, fullPage: true });
+    await page.screenshot({ path: `${OUT}/boutique-skins-ouvert-${suffixe}.png` });
   }
 
   // Les coffres : la ligne des chances ne doit plus nommer une skin en travail.
-  await fermerRoue();
+  await fermerPopups();
   const coffres = page.locator('#boutique-coffres');
   if (await coffres.count()) {
     await coffres.scrollIntoViewIfNeeded();
     await page.waitForTimeout(300);
     const chances = page.getByText(/Ce que le coffre contient/i).first();
-    if (await chances.count()) await chances.click({ force: true }).catch(() => {});
+    if (await chances.count()) await chances.click().catch(() => {});
     await page.waitForTimeout(500);
-    await page.screenshot({ path: `${OUT}/boutique-coffres-${suffixe}.png`, fullPage: true });
+    await page.screenshot({ path: `${OUT}/boutique-coffres-${suffixe}.png` });
   }
 
   await ctx.close();
