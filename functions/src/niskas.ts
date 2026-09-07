@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue, AggregateField, Firestore, Transaction } from 'firebase-admin/firestore';
+import { getAuth } from 'firebase-admin/auth';
 import { randomInt } from 'node:crypto';
 import { donnerCoffreDuJour7, ecrireMessageKrystine, uidKrystine, PRIX_COFFRES, SKINS_RARES_COFFRES, NOMS_COSMETIQUES } from './coffres';
 import {
