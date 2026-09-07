@@ -515,14 +515,13 @@ service cloud.firestore {
     }
     match /coffresDons/{id} { allow read: if isAdmin(); allow write: if false; }
 
-    // `rewardRedemptions/{id}` — client creates a pending redemption; admin
-    // fulfills / cancels.
+    // `rewardRedemptions/{id}` — depuis echangerRecompense (2026-09-07), le
+    // serveur seul écrit (Admin SDK, contourne ces règles) : le débit, le
+    // statut et le code n'ont plus à se fier au navigateur.
     match /rewardRedemptions/{id} {
-      allow create: if isSignedIn()
-                    && request.resource.data.uid == request.auth.uid;
       allow read: if isAdmin()
                   || (isSignedIn() && resource.data.uid == request.auth.uid);
-      allow update, delete: if isAdmin();
+      allow write: if isAdmin();
     }
 
     // ── Support messaging ──
