@@ -138,16 +138,23 @@ const clickTab = async (page, iconClass) => page.evaluate((cls) => {
   return false;
 }, iconClass);
 
+const shotsAt = async (page, name, positions) => {
+  for (const [label, y] of positions) {
+    await page.evaluate((py) => window.scrollTo(0, py), y);
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: `${OUT}/${name}-${page.viewportSize().width}-${label}.png` });
+  }
+};
+
 // Onglet Téléchargements (fa-download) = la boutique en niskas.
 try {
   const ok = await clickTab(mem, 'fa-download');
   console.log('onglet Téléchargements trouvé:', ok);
   await mem.waitForTimeout(2000);
-  await mem.evaluate(() => window.scrollTo(0, 0));
-  await mem.screenshot({ path: `${OUT}/agent-boutique-niskas-1440.png`, fullPage: true });
+  await shotsAt(mem, 'agent-boutique-niskas', [['haut', 0], ['coffres', 4200], ['videos', 7800]]);
   await mem.setViewportSize({ width: 390, height: 844 });
   await mem.waitForTimeout(500);
-  await mem.screenshot({ path: `${OUT}/agent-boutique-niskas-390.png`, fullPage: true });
+  await shotsAt(mem, 'agent-boutique-niskas', [['haut', 0], ['coffres', 7000], ['videos', 13000]]);
 } catch (e) { console.log('boutique niskas shot failed', e.message); }
 // Onglet Niskas (fa-seedling) = les récompenses (paliers).
 try {
@@ -155,10 +162,10 @@ try {
   const ok = await clickTab(mem, 'fa-seedling');
   console.log('onglet Niskas trouvé:', ok);
   await mem.waitForTimeout(2000);
-  await mem.screenshot({ path: `${OUT}/agent-recompenses-client-1440.png`, fullPage: true });
+  await shotsAt(mem, 'agent-recompenses-client', [['haut', 0], ['recompenses', 900]]);
   await mem.setViewportSize({ width: 390, height: 844 });
   await mem.waitForTimeout(500);
-  await mem.screenshot({ path: `${OUT}/agent-recompenses-client-390.png`, fullPage: true });
+  await shotsAt(mem, 'agent-recompenses-client', [['haut', 0], ['recompenses', 1400]]);
 } catch (e) { console.log('recompenses client shot failed', e.message); }
 await memCtx.close();
 
