@@ -120,20 +120,29 @@ if (await memEmailInput.count()) {
 }
 console.log('URL /compte après tentative login membre:', mem.url());
 await mem.screenshot({ path: `${OUT}/agent-compte-apres-login.png` });
-// Onglet Téléchargements = la boutique en niskas.
+const clickTab = async (page, iconClass) => page.evaluate((cls) => {
+  const btn = Array.from(document.querySelectorAll('button')).find(b => b.querySelector(`i.${cls}`));
+  if (btn) { btn.click(); return true; }
+  return false;
+}, iconClass);
+
+// Onglet Téléchargements (fa-download) = la boutique en niskas.
 try {
-  const dl = mem.getByText('Téléchargements', { exact: false }).first();
-  if (await dl.count()) { await dl.click(); await mem.waitForTimeout(2000); }
+  const ok = await clickTab(mem, 'fa-download');
+  console.log('onglet Téléchargements trouvé:', ok);
+  await mem.waitForTimeout(2000);
+  await mem.evaluate(() => window.scrollTo(0, 0));
   await mem.screenshot({ path: `${OUT}/agent-boutique-niskas-1440.png`, fullPage: true });
   await mem.setViewportSize({ width: 390, height: 844 });
   await mem.waitForTimeout(500);
   await mem.screenshot({ path: `${OUT}/agent-boutique-niskas-390.png`, fullPage: true });
 } catch (e) { console.log('boutique niskas shot failed', e.message); }
-// Onglet Points/Fidélité = les récompenses (paliers).
+// Onglet Niskas (fa-seedling) = les récompenses (paliers).
 try {
   await mem.setViewportSize({ width: 1440, height: 900 });
-  const pts = mem.getByText('Points', { exact: false }).first();
-  if (await pts.count()) { await pts.click(); await mem.waitForTimeout(2000); }
+  const ok = await clickTab(mem, 'fa-seedling');
+  console.log('onglet Niskas trouvé:', ok);
+  await mem.waitForTimeout(2000);
   await mem.screenshot({ path: `${OUT}/agent-recompenses-client-1440.png`, fullPage: true });
   await mem.setViewportSize({ width: 390, height: 844 });
   await mem.waitForTimeout(500);
