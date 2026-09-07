@@ -56,7 +56,10 @@ const LigneCommentaire: React.FC<{ postId: string; postAuteurUid: string; c: Com
           {peutSupprimer && (
             <button
               type="button"
-              onClick={() => { void retirerCommentaire(postId, c.id); }}
+              onClick={() => {
+                if (!window.confirm(fr ? 'Retirer ce commentaire ?' : 'Remove this comment?')) return;
+                void retirerCommentaire(postId, c.id);
+              }}
               aria-label="Retirer"
               className="text-[#38403a]/35 dark:text-white/35 hover:text-red-500 transition-colors"
             >
