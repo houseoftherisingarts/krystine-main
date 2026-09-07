@@ -114,6 +114,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'badgeBleu',  label: 'Badge Bleu',       icon: 'fa-circle-check',     groupe: 'communaute' },
   { id: 'messages',   label: 'Messages',         icon: 'fa-comments',         groupe: 'communaute' },
   { id: 'recompenses', label: 'Récompenses',     icon: 'fa-seedling',         groupe: 'communaute' },
+  { id: 'skinsATravailler', label: 'Skins à travailler', icon: 'fa-palette',  groupe: 'communaute' },
   { id: 'groups',     label: 'Groupes',          icon: 'fa-users-rectangle',  groupe: 'communaute' },
   { id: 'feedpublic', label: 'Feed public',      icon: 'fa-newspaper',        groupe: 'communaute' },
   { id: 'live',       label: 'Live',             icon: 'fa-tower-broadcast',  groupe: 'communaute' },

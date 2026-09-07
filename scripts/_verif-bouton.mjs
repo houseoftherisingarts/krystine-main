@@ -15,7 +15,7 @@ page.on('pageerror', e => console.log('[pageerror]', e.message));
 
 await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(1500);
-await page.getByText('Se connecter', { exact: true }).first().click();
+await page.locator('button', { hasText: 'Se connecter' }).first().click();
 await page.waitForTimeout(700);
 await page.fill('input[type="email"]', EMAIL);
 await page.fill('input[type="password"]', PW);
