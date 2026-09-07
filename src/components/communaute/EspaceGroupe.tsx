@@ -108,7 +108,7 @@ const EspaceGroupe: React.FC<{ formationId: string; variante?: 'page' | 'cadre' 
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[220px_minmax(0,1fr)_320px]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[220px_minmax(0,1fr)_340px]">
       {/* Les onglets, à gauche */}
       <aside className="min-w-0 h-fit rounded-[24px] border border-white/60 bg-white/55 p-3 backdrop-blur-md lg:sticky lg:top-24 dark:border-white/10 dark:bg-[#293027]/55">
         {/* Une rangée de pilules sous lg, une colonne à partir de lg */}
