@@ -214,6 +214,7 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
         {member?.phone && <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Téléphone</span>{member.phone}</p>}
         {member?.dosha && <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Dosha</span><span className="capitalize">{member.dosha}</span></p>}
       </div>
+      <BadgeBleuBloc uid={uid} verifie={!!member?.verifie} lang={lang} />
       {/* Les niskas : le solde, la porte de la boutique, et toutes les façons d'en gagner */}
       <div className="rounded-[20px] border border-[#BA7B39]/30 bg-gradient-to-br from-[#BA7B39]/15 to-transparent p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
