@@ -268,6 +268,10 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
     // Un autre passage est encore en cours : ne rien doubler.
     return { recipients: 0, delivered: prog.done, bounces: prog.failed, done: false };
   }
+  if (prog.pauseJusqua && prog.pauseJusqua.toMillis() > now) {
+    // Le fournisseur a refusé pour quota : on attend l'heure de reprise.
+    return { recipients: 0, delivered: prog.done, bounces: prog.failed, done: false };
+  }
   prog.lockUntil = Timestamp.fromMillis(now + LOCK_MS);
   await ref.update({ status: 'sending', progress: prog, updatedAt: FieldValue.serverTimestamp() });
 
