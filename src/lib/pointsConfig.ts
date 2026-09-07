@@ -22,7 +22,8 @@ export function niskas(n: number, lang: 'FR' | 'EN' | string = 'FR'): string {
 export type PointsKind =
   | 'welcome'         // legacy — auto-granted on older accounts; no longer written
   | 'welcome-claim'   // vingt niskas offerts à la création du compte (serveur reclamerBienvenue)
-  | 'quotidien'       // la roue des sept jours : une réclamation par journée civile
+  | 'quotidien'       // legacy — le cadeau du jour d'avant le 7 septembre 2026, gardé pour l'historique
+  | 'cadeau'          // le cadeau du jour : une ouverture par journée civile (serveur reclamerQuotidien)
   | 'profil'          // profil complété (photo, nom, dosha), une fois
   | 'billet'          // premier billet sur le fil (serveur)
   | 'amitie'          // amitié acceptée (serveur)
