@@ -88,6 +88,8 @@ try {
   console.log('aperçu encore ouvert après Escape ?', resteOuvert > 0);
 
   // 3. Achat d'un coffre (200 niskas seedés : une clé à 10, un coffre de bronze à 60) puis ouverture
+  await seederNiskas(); // re-seed au cas où un autre bonus automatique (profil complété, etc.) aurait aussi écrasé le solde
+  await page.waitForTimeout(800);
   const coffresSection = page.locator('#boutique-coffres');
   await coffresSection.scrollIntoViewIfNeeded();
   await page.waitForTimeout(400);
