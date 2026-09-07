@@ -34,6 +34,8 @@ import ReserveAuFoyer, { MotDuFoyer, useAmiesDOrigine } from '../components/comm
 import { RangeePersonne, PETITES_CAPITALES } from '../components/communaute/CarteSociale';
 import '../components/client/skins.css';
 import Portail from '../components/Portail';
+import { suivreVerification, compterProgrammesSuivis, televerserPiece, demanderBadgeBleu, type Verification } from '../firebase/verification';
+import { SEUIL_PROGRAMMES } from '../lib/badgeBleu';
 
 // Le texte du niṣka, écrit par Alex le 6 septembre 2026, lu sous la bourse.
 const HISTOIRE_NISKA_FR = [
