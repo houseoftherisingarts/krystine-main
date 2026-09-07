@@ -94,7 +94,7 @@ for (const vp of VIEWPORTS) {
 
     // 6) Publier
     await boutonPublier.click();
-    await page.waitForTimeout(1200);
+    await page.waitForTimeout(1800);
 
     // 7) Recharger SANS le mode : le nouveau texte doit être là
     await page.goto(`${BASE}${pg.url}`, { waitUntil: 'domcontentloaded' });
@@ -114,11 +114,11 @@ for (const vp of VIEWPORTS) {
     await page.keyboard.press('Enter');
     await page.waitForTimeout(600);
     await page.locator('button', { hasText: /^Publier/ }).first().click();
-    await page.waitForTimeout(1200);
+    await page.waitForTimeout(1800);
 
     // Vérifie que le texte d'origine est bien revenu après le nettoyage
     await page.goto(`${BASE}${pg.url}`, { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(1200);
+    await page.waitForTimeout(1800);
     const origineRevenue = await page.locator(pg.selector, { hasText: pg.match }).count();
 
     rapport.push({
