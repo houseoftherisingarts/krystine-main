@@ -164,8 +164,8 @@ const CommunauteMembres: React.FC = () => {
         )}
 
         <div className="mt-6 flex justify-end">
-          <Link to={`/messages/${UID_MODERATION}`} className={BOUTON_SECONDAIRE}>
-            <i className="fa-solid fa-shield-halved text-[9px]" /> {fr ? 'Contacter l’équipe de modération' : 'Contact the moderation team'}
+          <Link to={`/messages/${UID_MODERATION}`} className={`${BOUTON_SECONDAIRE} whitespace-nowrap`}>
+            <i className="fa-solid fa-shield-halved text-[9px]" /> {fr ? 'Écrire à la modération' : 'Write to moderation'}
           </Link>
         </div>
       </CarteSociale>
