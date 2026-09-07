@@ -24,7 +24,7 @@ const ClientAider: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [ouvert, setOuvert] = useState<Sondage | null>(null);
   const [justFait, setJustFait] = useState<{ id: string; niskas: number } | null>(null);
-  const minuterie = useRef<number>();
+  const minuterie = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     getSondagesActifs().then(setSondages).finally(() => setLoading(false));
