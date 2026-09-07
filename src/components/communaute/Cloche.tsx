@@ -53,6 +53,8 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
   const [messagesOuverts, setMessagesOuverts] = useState(false);
   const boite = useRef<HTMLDivElement>(null);
   const ouvertureLe = useRef<number | null>(null);
+  const foyer = useMembreDuFoyer();
+  const versMessages = foyer ? '/messages' : '/compte?onglet=messagerie';
 
   useEffect(() => {
     if (!uid) return;
