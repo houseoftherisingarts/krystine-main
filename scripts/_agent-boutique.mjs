@@ -107,6 +107,10 @@ const nonMerci = mem.getByText('Non merci', { exact: false });
 if (await nonMerci.count()) { await nonMerci.first().click().catch(() => {}); await mem.waitForTimeout(300); }
 const seConnecter = mem.getByText('Se connecter', { exact: false }).first();
 if (await seConnecter.count()) { await seConnecter.click(); await mem.waitForTimeout(1000); }
+// La fenêtre s'ouvre toujours en mode « Créer un compte » : basculer vers
+// « Déjà un compte ? Se connecter » pour éviter le reCAPTCHA de l'inscription.
+const dejaCompte = mem.getByText('Déjà un compte', { exact: false }).first();
+if (await dejaCompte.count()) { await dejaCompte.click().catch(() => {}); await mem.waitForTimeout(500); }
 await mem.screenshot({ path: `${OUT}/agent-compte-avant-login.png` });
 const memEmailInput = mem.locator('input[type="email"]');
 if (await memEmailInput.count()) {
