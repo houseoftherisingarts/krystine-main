@@ -86,10 +86,10 @@ const RecompensesSection: React.FC = () => {
                 <p className="text-[10px] font-bold uppercase tracking-[0.25em]" style={{ color: g.accent }}>{g.titre}</p>
                 <p className="mt-1 text-sm text-[#293027]/60 dark:text-white/60">{g.sousTitre}</p>
               </div>
-              <GhostButton onClick={() => ajouter(g.minTier)}><i className="fa-solid fa-plus" /> Ajouter une récompense</GhostButton>
+              <GhostButton onClick={() => ajouter(g.minTier)}><i className="fa-solid fa-plus" /> Ajouter un cadeau</GhostButton>
             </div>
             <ul className="mt-4 space-y-2">
-              {siennes.length === 0 && <li className="px-3 py-3 text-sm text-[#293027]/45 dark:text-white/45">Aucune récompense à ce palier pour l'instant.</li>}
+              {siennes.length === 0 && <li className="px-3 py-3 text-sm text-[#293027]/45 dark:text-white/45">Aucun cadeau à ce palier pour l'instant.</li>}
               {siennes.map(r => {
                 const eteinte = r.actif === false;
                 const estOuvert = ouvert === r.id;
