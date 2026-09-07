@@ -70,10 +70,13 @@ const ClientMessagerie: React.FC<{ voletInitial?: Volet; avec?: string; dansFoye
       if (!vivant) return;
       setAvecFiche(fiche);
       setVolet('amies');
-      setFilActif(threadId(monUid, avec));
+      // Le fil d'abord, l'écoute ensuite : les règles refusent de lire les
+      // messages d'un fil qui n'existe pas encore, et une écoute refusée ne
+      // se relance pas d'elle-même.
       try {
         await ensureThread(monUid, monNom, maPhoto, avec, (fiche?.displayName || '').trim() || (fr ? 'Un membre' : 'A member'), fiche?.photoURL);
       } catch { /* hors ligne, ou bloquée par l'autre */ }
+      if (vivant) setFilActif(threadId(monUid, avec));
     })();
     return () => { vivant = false; };
   }, [avec, monUid, origine.pret, peutAvec]);
