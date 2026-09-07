@@ -69,7 +69,7 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
                 <th className="text-left px-4 py-3">Titre</th>
                 <th className="text-left px-4 py-3 hidden md:table-cell">Sujet</th>
                 <th className="text-left px-4 py-3 hidden lg:table-cell">Statut</th>
-                <th className="text-left px-4 py-3 hidden lg:table-cell">Destinataires</th>
+                <th className="text-left px-4 py-3 hidden lg:table-cell" title="Destinataires">Envois</th>
                 <th className="text-left px-4 py-3 hidden lg:table-cell" title="Part des personnes qui ont ouvert le courriel (les messageries qui bloquent les images ne comptent pas)">Ouvertures</th>
                 <th className="text-left px-4 py-3 hidden md:table-cell">Mise à jour</th>
                 <th className="px-4 py-3"></th>
