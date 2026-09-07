@@ -78,7 +78,9 @@ const CommandesStripeCard: React.FC = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      {/* Tableau dès sm : en dessous, les colonnes revenus/taxes sortiraient de
+          l'écran dans un défilement caché. Une carte empilée les garde visibles. */}
+      <div className="hidden overflow-x-auto sm:block">
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-[10px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50 border-b border-[#293027]/10 dark:border-white/10">
@@ -106,6 +108,25 @@ const CommandesStripeCard: React.FC = () => {
           </tbody>
         </table>
       </div>
+      <ul className="space-y-3 sm:hidden">
+        {visibles.map(c => (
+          <li key={c.id} className="rounded-[15px] border border-[#293027]/10 dark:border-white/10 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[#293027] dark:text-white font-serif">{c.libelle}</p>
+              <span className="shrink-0 text-[10px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">{SOURCE_LABEL[c.source]}</span>
+            </div>
+            <p className="text-[11px] text-[#293027]/50 dark:text-white/50 mt-0.5">
+              {c.date?.toDate().toLocaleDateString('fr-CA') || '—'}
+              {c.sansTaxes && <span className="ml-2 uppercase tracking-widest text-[#8B4A2F] bg-[#BA7B39]/10 rounded-full px-2 py-0.5">Sans taxes</span>}
+            </p>
+            <div className="mt-2 grid grid-cols-3 gap-2 text-right">
+              <div><p className="text-[9px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">Revenus</p><p className="tabular-nums text-[#293027] dark:text-white">{argent(c.montantHT)}</p></div>
+              <div><p className="text-[9px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">Taxes</p><p className="tabular-nums text-[#293027] dark:text-white">{argent(c.taxes)}</p></div>
+              <div><p className="text-[9px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">Total</p><p className="tabular-nums font-bold text-[#293027] dark:text-white">{argent(c.total)}</p></div>
+            </div>
+          </li>
+        ))}
+      </ul>
       {commandes.length > visibles.length && (
         <p className="mt-3 text-[11px] text-[#293027]/50 dark:text-white/50">{visibles.length} des {commandes.length} commandes affichées. L'export CSV contient tout.</p>
       )}
