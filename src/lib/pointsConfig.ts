@@ -291,7 +291,7 @@ export const SKINS: Skin[] = [
     descFR: 'Un sous-bois vert traversé de vent : des feuilles passent derrière votre espace et s’écartent sous votre souris. Légendaire.',
     descEN: 'A green undergrowth crossed by wind: leaves drift behind your space and scatter under your mouse. Legendary.',
     palette: { fond: '#0e1f17', panneau: '#173024', encre: '#eaf3e6', accent: '#8fd17a', accentClair: '#c6f0b0', accentProfond: '#b6ea9c', sombre: true } },
-  { cle: 'pitta', cout: null, rarete: 'legendaire', coffre: 'bronze', icone: 'fa-fire', nomFR: 'Skin Pitta · le feu', nomEN: 'Pitta skin · the fire',
+  { cle: 'pitta', cout: null, rarete: 'legendaire', coffre: 'bronze', icone: 'fa-fire', enTravail: true, nomFR: 'Skin Pitta · le feu', nomEN: 'Pitta skin · the fire',
     descFR: 'La nuit près du feu : des braises montent derrière votre espace et s’avivent quand vous survolez un bouton. Légendaire.',
     descEN: 'Night by the fire: embers rise behind your space and flare when you hover a button. Legendary.',
     palette: { fond: '#1a0b06', panneau: '#2b140c', encre: '#fbe9dc', accent: '#ff7a2f', accentClair: '#ffb36b', accentProfond: '#ffa45c', sombre: true } },
