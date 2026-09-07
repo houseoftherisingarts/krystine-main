@@ -223,15 +223,29 @@ const CONCURRENCY = 5;
 const BUDGET_MS = 7 * 60 * 1000;       // sur les 9 minutes permises
 const LOCK_MS = 9.5 * 60 * 1000;       // un seul passage à la fois par infolettre
 
+const PAUSE_QUOTA_MS = 60 * 60 * 1000;  // quota du fournisseur épuisé : on réessaie dans une heure
+
 interface Progress {
   done: number;
   failed: number;
   lastId: string | null;
   lockUntil?: Timestamp;
   startedAt?: Timestamp;
+  pauseJusqua?: Timestamp;
+  raisonPause?: string;
 }
 
 const delai = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+// Resend répond « 550 You have reached your daily email sending quota » quand
+// le compte est au palier gratuit (100 courriels par jour) ou au bout de son
+// forfait. Un 429 ou une limite de débit se traite pareil : on met la passe
+// en pause au lieu de compter des centaines d'échecs.
+function estQuota(err: unknown): boolean {
+  const e = err as { responseCode?: number; response?: string; message?: string } | undefined;
+  const texte = `${e?.response || ''} ${e?.message || ''}`;
+  return e?.responseCode === 429 || /quota|rate limit|too many/i.test(texte);
+}
 
 export async function deliverNewsletter(newsletterId: string): Promise<{ recipients: number; delivered: number; bounces: number; done: boolean }> {
   const db = getFirestore();
