@@ -47,7 +47,8 @@ const EVENT_LABELS: Record<string, { fr: string; en: string; icon: string }> = {
 function serieVive(b: PointsBalance): number {
   const d = b.dernierJour;
   if (!d || !b.serie) return 0;
-  return d === journee() || d === journee(Date.now() - 864e5) ? b.serie : 0;
+  const j = journee();
+  return d === j || d === veilleDe(j) ? b.serie : 0;
 }
 
 // L'encart du Foyer d'Origine sous le solde : la mécanique en trois phrases,
