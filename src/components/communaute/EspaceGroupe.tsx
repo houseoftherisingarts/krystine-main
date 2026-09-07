@@ -110,8 +110,9 @@ const EspaceGroupe: React.FC<{ formationId: string; variante?: 'page' | 'cadre' 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[220px_minmax(0,1fr)_280px]">
       {/* Les onglets, à gauche */}
-      <aside className="min-w-0 h-fit space-y-1 rounded-[24px] border border-white/60 bg-white/55 p-3 backdrop-blur-md lg:sticky lg:top-24 dark:border-white/10 dark:bg-[#293027]/55">
-        {pilules}
+      <aside className="min-w-0 h-fit rounded-[24px] border border-white/60 bg-white/55 p-3 backdrop-blur-md lg:sticky lg:top-24 dark:border-white/10 dark:bg-[#293027]/55">
+        {/* Une rangée de pilules sous lg, une colonne à partir de lg */}
+        <div className="flex flex-wrap gap-1 lg:flex-col">{pilules}</div>
         {isAdmin && (
           <p className="mt-2 px-4 text-[10px] leading-relaxed text-[#38403a]/45 dark:text-white/40">
             {fr ? 'Les onglets se créent dans l’admin, section Foyer.' : 'Tabs are created in the admin, Hearth section.'}
