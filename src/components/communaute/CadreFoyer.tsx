@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
 import { type MemberDoc } from '../../firebase/firestore';
 import { logout } from '../../firebase/auth';
-import { subscribeToMemberPoints, suivreBoutique, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../../firebase/points';
-import { BANNIERE_DEFAUT, banniereParCle, niskas, skinParCle } from '../../lib/pointsConfig';
+import { subscribeToMemberPoints, type PointsBalance, DEFAULT_POINTS_BALANCE } from '../../firebase/points';
+import { niskas, skinParCle } from '../../lib/pointsConfig';
 import EffetsSkin from '../client/skins/EffetsSkin';
 import MotifsSkin from '../client/skins/MotifsSkin';
 import PieceNiska from '../client/PieceNiska';
-import { AvecSignature } from '../client/Signature';
 import ClientParrainage from '../../pages/client/ClientParrainage';
 import { useCercleDuFoyer, useMembreDuFoyer } from './ReserveAuFoyer';
 import CarteSociale, { RangeePersonne } from './CarteSociale';
@@ -34,6 +34,9 @@ import '../client/skins.css';
 // variantes responsives ne sont pas repeintes.
 
 export type OngletFoyer = 'programme' | 'fil' | 'membres' | 'messages' | 'profil';
+// 'profil' n'a plus d'onglet ni de raccourci : la fiche d'une membre s'ouvre
+// depuis la liste, et chacune modifie la sienne dans /compte. La valeur reste
+// pour que la fiche sache qu'aucun onglet n'est allumé.
 
 interface Props {
   /** L'onglet allumé. Aucun sur la fiche d'une autre membre. */
@@ -55,14 +58,13 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, dr
   const { user, member, isAdmin, setSignInOpen, lang } = useApp();
   const fr = lang === 'FR';
   const location = useLocation();
+  const reduce = useReducedMotion();
   const foyer = useMembreDuFoyer();
   const [solde, setSolde] = useState<PointsBalance>(DEFAULT_POINTS_BALANCE);
-  const [possede, setPossede] = useState<Record<string, unknown>>({});
   // Le cercle du Foyer : les acheteuses du Foyer, et personne d'autre.
   const { membres: cercle } = useCercleDuFoyer();
 
   useEffect(() => { if (!user) return; return subscribeToMemberPoints(user.uid, setSolde); }, [user]);
-  useEffect(() => { if (!user) return; return suivreBoutique(user.uid, p => setPossede(p.possede)); }, [user]);
 
   if (!user) {
     // La carte « Se connecter » de l'espace client (ClientPortal.tsx:474-500), mot pour mot, avec le nom du lieu.
@@ -102,15 +104,6 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, dr
   const moi = user.uid;
   const autre = personne && personne.uid !== moi ? personne : null;
   const fiche = autre ?? member;
-  const perso = fiche?.personnalisation || {};
-  // La bannière : celle choisie dans la boutique, sinon la photo personnelle, sinon celle de la maison (ClientPortal.tsx:521-531).
-  const banniere = perso.banniere && perso.banniere !== 'defaut' && perso.banniere !== 'photo' && banniereParCle(perso.banniere)
-    ? banniereParCle(perso.banniere)!.image
-    : perso.banniere === 'defaut' ? BANNIERE_DEFAUT : (fiche?.bannerURL || BANNIERE_DEFAUT);
-  const cleBanniere = perso.banniere && perso.banniere !== 'photo' && banniereParCle(perso.banniere) ? perso.banniere
-    : perso.banniere === 'photo' || (!perso.banniere && fiche?.bannerURL) ? 'photo' : 'defaut';
-  // La signature de Krystine : jamais sur une photo personnelle; sur sa propre bannière, retirée si la version sans signature a été prise.
-  const signe = cleBanniere !== 'photo' && (autre ? true : !possede[`sanslogo-${cleBanniere}`]);
   // Le skin est toujours le mien, même sur la fiche d'une autre : c'est mon décor.
   const skinActif = member?.personnalisation?.skin || '';
   const skin = skinActif && skinParCle(skinActif) ? `skin-${skinActif}` : '';
@@ -124,10 +117,8 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, dr
     { id: 'fil',      label: fr ? 'Fil' : 'Feed',            icon: 'fa-newspaper',    to: CHEMINS_FOYER.fil },
     { id: 'membres',  label: fr ? 'Membres' : 'Members',     icon: 'fa-user-group',   to: CHEMINS_FOYER.membres },
     { id: 'messages', label: 'Messages',                     icon: 'fa-comments',     to: CHEMINS_FOYER.messages },
-    { id: 'profil',   label: fr ? 'Mon profil' : 'My profile', icon: 'fa-user',       to: CHEMINS_FOYER.profil(moi) },
   ];
   const raccourcis: Array<{ cle: string; label: string; icon: string; to: string; actif: boolean }> = [
-    { cle: 'profil',   label: fr ? 'Mon profil' : 'My profile', icon: 'fa-user',         to: CHEMINS_FOYER.profil(moi),  actif: onglet === 'profil' },
     { cle: 'amies',    label: fr ? 'Amies' : 'Friends',         icon: 'fa-heart',        to: CHEMINS_FOYER.amies,        actif: onglet === 'membres' && vue === 'amies' },
     { cle: 'messages', label: 'Messages',                       icon: 'fa-comments',     to: CHEMINS_FOYER.messages,     actif: onglet === 'messages' },
     { cle: 'badges',   label: 'Badges',                         icon: 'fa-award',        to: `${CHEMINS_FOYER.profil(moi)}#badges`, actif: false },
@@ -145,13 +136,29 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, dr
       {skinActif && <EffetsSkin skin={skinActif} />}
       {skinActif && <MotifsSkin skin={skinActif} />}
 
-      {/* La bannière pleine largeur, l'avatar qui la chevauche, le nom et les pastilles par-dessus la photo */}
+      {/* La bannière du Foyer : LE feu du site (la même vidéo que la page de
+          vente, /foyer/atre-feu.mp4 avec son image fixe), la même sur toutes
+          les pages du Foyer, quelle que soit la bannière choisie ailleurs.
+          Aucun backdrop-blur par-dessus une scène animée : un voile en
+          dégradé, du vert profond au noir chaud, porte le nom et les onglets.
+          Sous prefers-reduced-motion, l'image fixe remplace la vidéo. */}
       <div className="relative h-80 w-full overflow-hidden md:h-[25rem]">
-        <AvecSignature signe={signe} className="h-full w-full">
-          <img src={banniere} alt="" className="h-full w-full object-cover" />
-        </AvecSignature>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#151d19]/75 via-[#151d19]/20 to-transparent" />
-        {!autre && !member?.bannerURL && (
+        {reduce ? (
+          <img src="/foyer/firepit-poster.webp" alt="" className="h-full w-full object-cover" />
+        ) : (
+          <video
+            className="h-full w-full object-cover"
+            src="/foyer/atre-feu.mp4"
+            poster="/foyer/firepit-poster.webp"
+            autoPlay muted loop playsInline preload="metadata"
+          />
+        )}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{ background: 'linear-gradient(to top, rgba(20,19,17,0.9) 0%, rgba(20,19,17,0.68) 28%, rgba(40,53,47,0.45) 62%, rgba(40,53,47,0.3) 100%)' }}
+        />
+        {!autre && (
           <div className="absolute left-6 top-5 md:left-8 md:top-6">
             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/75" style={{ textShadow: '0 1px 10px rgba(0,0,0,0.4)' }}>
               {fr ? 'Le Foyer d’Origine' : 'The Origine Hearth'}

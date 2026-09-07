@@ -7,10 +7,10 @@ import Composeur from './Composeur';
 import PubCarte from './PubCarte';
 
 // ─── Le mur d'un seul fil ────────────────────────────────────────────
-// Porté du FMM 2026 (src/components/mur/MurSocial.tsx). Le fil du Foyer
-// (CommunauteEspace) le pose sans titre dans la coquille du Foyer social,
-// un fil à la fois : « formation:foyer » (les membres publient),
-// « krystine » (Krystine seule publie) et « communaute » (le fil public).
+// Porté du FMM 2026 (src/components/mur/MurSocial.tsx). Le Foyer d'Origine
+// est le seul groupe social du site : « formation:foyer » est LE mur, où les
+// membres publient, et « krystine » porte ses annonces à elle. Le fil public
+// « communaute » ne se montre plus qu'à l'admin.
 const MurSocial: React.FC<{ fil: FilMur; titre?: string }> = ({ fil, titre }) => {
   const { user } = useAuth();
   const { lang } = useApp();
@@ -22,9 +22,7 @@ const MurSocial: React.FC<{ fil: FilMur; titre?: string }> = ({ fil, titre }) =>
 
   const vide = fil === 'krystine' || fil === 'communaute'
     ? (fr ? 'Rien de publié pour le moment.' : 'Nothing published yet.')
-    : fil.startsWith('formation:')
-      ? (fr ? 'Le feed de cette formation est encore vide. Partagez votre parcours.' : 'This course feed is still empty. Share your journey.')
-      : (fr ? 'Le fil est encore vide. Soyez la première voix.' : 'The feed is still empty. Be the first voice.');
+    : (fr ? 'Le mur est encore vide. Soyez la première voix.' : 'The wall is still empty. Be the first voice.');
 
   return (
     <div className="space-y-4">

@@ -4,9 +4,20 @@ name: Publier si aucun conflit
 # d'une PR (venue d'une branche ou d'un fork, ex. le compte GitHub de
 # Krystine). Ce job tourne avec un jeton d'écriture sur le dépôt de base,
 # mais n'exécute JAMAIS le code de la proposition : il ne fait qu'appeler
-# l'API GitHub pour lire l'état de fusion et fusionner. Fusionne
-# automatiquement dans main si la construction a réussi ET qu'aucun conflit
-# n'existe. S'il y a un vrai conflit, la PR reste ouverte avec un commentaire.
+# l'API GitHub pour lire l'état de fusion et fusionner.
+#
+# Le dépôt est PUBLIC : n'importe qui peut en faire une copie et proposer un
+# changement. Fusionner automatiquement n'est permis que pour Alex ou
+# Krystine (association GitHub owner/membre/collaborateur sur CE dépôt) —
+# une proposition venue d'ailleurs, même si elle construit sans accroc,
+# attend toujours une décision humaine.
+#
+# Fusionne dans main seulement si : l'auteure ou l'auteur est autorisé, la
+# construction a réussi, et GitHub rapporte l'état "clean" (propre, sans
+# conflit ET sans vérification en attente). La fusion cible exactement le
+# commit vérifié (paramètre `sha`) : si quelqu'un pousse un nouveau commit
+# entre la vérification et la fusion, GitHub refuse plutôt que de fusionner
+# du code jamais construit.
 on:
   workflow_run:
     workflows: ["Vérifier une proposition"]
@@ -38,12 +49,23 @@ jobs:
             echo "number=$NUM" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Attendre le calcul de l'état de fusion par GitHub
-        id: state
+      - name: Vérifier qui propose le changement
+        id: auth
         if: steps.find.outputs.number != ''
         run: |
+          ASSOC=$(gh api "repos/$REPO/pulls/${{ steps.find.outputs.number }}" --jq '.author_association')
+          echo "association: $ASSOC"
+          case "$ASSOC" in
+            OWNER|MEMBER|COLLABORATOR) echo "autorisee=1" >> "$GITHUB_OUTPUT" ;;
+            *) echo "autorisee=" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - name: Attendre le calcul de l'état de fusion par GitHub
+        id: state
+        if: steps.find.outputs.number != '' && steps.auth.outputs.autorisee == '1'
+        run: |
           NUM="${{ steps.find.outputs.number }}"
-          STATE="UNKNOWN"
+          STATE="unknown"
           for i in 1 2 3 4 5 6; do
             STATE=$(gh api "repos/$REPO/pulls/$NUM" --jq '.mergeable_state')
             [ "$STATE" != "unknown" ] && break
@@ -51,13 +73,15 @@ jobs:
           done
           echo "state=$STATE" >> "$GITHUB_OUTPUT"
 
-      - name: Fusionner (aucun conflit)
-        if: steps.find.outputs.number != '' && (steps.state.outputs.state == 'clean' || steps.state.outputs.state == 'unstable' || steps.state.outputs.state == 'has_hooks')
+      - name: Fusionner (propre, sans conflit, exactement le commit vérifié)
+        if: steps.find.outputs.number != '' && steps.auth.outputs.autorisee == '1' && steps.state.outputs.state == 'clean'
         run: |
-          gh pr merge "${{ steps.find.outputs.number }}" --repo "$REPO" --squash --delete-branch=false
+          gh api "repos/$REPO/pulls/${{ steps.find.outputs.number }}/merge" -X PUT \
+            -f merge_method=squash \
+            -f sha="$HEAD_SHA"
 
       - name: Laisser ouverte et prévenir (vrai conflit)
-        if: steps.find.outputs.number != '' && steps.state.outputs.state == 'dirty'
+        if: steps.find.outputs.number != '' && steps.auth.outputs.autorisee == '1' && steps.state.outputs.state == 'dirty'
         run: |
           gh pr comment "${{ steps.find.outputs.number }}" --repo "$REPO" \
             --body "La construction a réussi, mais cette proposition entre en conflit avec ce qui a été publié entre-temps. Elle reste ouverte : quelqu'un doit la mettre à jour (récupérer main, régler le conflit) avant qu'elle publie automatiquement."
