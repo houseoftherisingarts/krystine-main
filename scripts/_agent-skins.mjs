@@ -39,8 +39,10 @@ const shootBoutique = async (largeur, hauteur, suffixe) => {
 
   // Connexion réelle : le bouton de la page vide ouvre la fenêtre, en mode
   // « Créer un compte » par défaut, un clic la bascule sur « Se connecter ».
+  // waitFor (pas count() à froid) : React peut hydrater après le délai fixe.
   const ouvrir = page.getByRole('button', { name: /Se connecter/i }).first();
-  if (await ouvrir.count()) {
+  const trouve = await ouvrir.waitFor({ state: 'visible', timeout: 6000 }).then(() => true).catch(() => false);
+  if (trouve) {
     await ouvrir.click();
     console.log(`[${suffixe}] modale ouverte`);
     await page.waitForTimeout(500);
