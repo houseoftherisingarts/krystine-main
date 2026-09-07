@@ -762,3 +762,6 @@ html:not(.dark) .skin-defaut [class*="text-[#2a2015]/"] { color: rgba(41, 48, 39
 .skin-teal-orange .bg-\[\#BA7B39\]:not(#_), .skin-teal-orange .bg-\[\#BA7B39\]:not(#_) * { color: #08252b !important; }
 .skin-teal-orange .bg-\[\#293027\]:not(#_), .skin-teal-orange .bg-\[\#293027\]:not(#_) * { color: var(--sk-encre, #EEE7DB) !important; }
 .skin-teal-orange .bg-white:not(#_), .skin-teal-orange .bg-white:not(#_) * { color: #293027 !important; }
+.skin-verifie .bg-\[\#BA7B39\]:not(#_), .skin-verifie .bg-\[\#BA7B39\]:not(#_) * { color: #0f2540 !important; }
+.skin-verifie .bg-\[\#293027\]:not(#_), .skin-verifie .bg-\[\#293027\]:not(#_) * { color: var(--sk-encre, #f2f6fb) !important; }
+.skin-verifie .bg-white:not(#_), .skin-verifie .bg-white:not(#_) * { color: #293027 !important; }
