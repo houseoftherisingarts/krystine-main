@@ -87,12 +87,19 @@ const RapportDuJourCard: React.FC = () => {
         <i className="fa-solid fa-circle-notch fa-spin text-[#8B4A2F]" />
       ) : (
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-          {lignes.map((l) => (
-            <div key={l.label} className="rounded-[15px] border border-[#293027]/10 p-4 dark:border-white/10">
-              <p className="text-2xl font-serif text-[#293027] dark:text-white">{l.value}</p>
-              <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.15em] text-[#BA7B39]">{l.label}</p>
-            </div>
-          ))}
+          {lignes.map((l) => {
+            const contenu = (
+              <div className={`rounded-[15px] border border-[#293027]/10 p-4 dark:border-white/10 ${l.requete ? 'transition-colors hover:border-[#BA7B39]/40' : ''}`}>
+                <p className="text-2xl font-serif text-[#293027] dark:text-white">{l.value}</p>
+                <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.15em] text-[#BA7B39]">{l.label}</p>
+              </div>
+            );
+            return l.requete ? (
+              <CompteurCliquable key={l.label} requete={l.requete} titre={l.label} definition={l.definition || ''}>
+                {contenu}
+              </CompteurCliquable>
+            ) : <React.Fragment key={l.label}>{contenu}</React.Fragment>;
+          })}
         </div>
       )}
       <p className="mt-4 text-[11px] text-[#293027]/50 dark:text-white/50">
