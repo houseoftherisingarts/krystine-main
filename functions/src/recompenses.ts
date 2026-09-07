@@ -130,11 +130,11 @@ async function codeBoutique10(db: Firestore, uid: string): Promise<string> {
 export const echangerRecompense = onCall(
   { region: 'us-central1', secrets: [STRIPE_SECRET_KEY, SHOPIFY_ADMIN_TOKEN, SHOPIFY_SHOP_DOMAIN] },
   async (req) => {
-    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour échanger une récompense.');
+    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour échanger un cadeau.');
     const uid = req.auth.uid;
     const rewardId = String(req.data?.rewardId || '');
     const recompense = RECOMPENSES_ECHANGEABLES[rewardId];
-    if (!recompense) throw new HttpsError('invalid-argument', 'Cette récompense n’existe pas.');
+    if (!recompense) throw new HttpsError('invalid-argument', 'Ce cadeau n’existe pas.');
     const db = getFirestore();
 
     if (recompense.oneShot) {
