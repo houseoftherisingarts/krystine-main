@@ -170,7 +170,9 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       const caption = c.caption
         ? `<tr><td align="center" style="padding:8px 0 4px;font-family:${CHARTE.sans};font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:${pal.accent};">${esc(c.caption)}</td></tr>`
         : '';
-      return `<tr><td style="padding:10px 0 12px;"><img src="${esc(c.url)}" alt="${esc(c.alt || '')}" style="display:block;width:100%;max-width:520px;height:auto;border-radius:15px;" /></td></tr>${caption}`;
+      // Chaque photo mène quelque part : au lien choisi, sinon au site.
+      const lien = typeof c.href === 'string' && /^https?:\/\//.test(c.href) ? c.href : PUBLIC_BASE_URL;
+      return `<tr><td style="padding:10px 0 12px;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;"><img src="${esc(c.url)}" alt="${esc(c.alt || '')}" style="display:block;width:100%;max-width:520px;height:auto;border-radius:15px;border:0;" /></a></td></tr>${caption}`;
     }
     case 'button': {
       const primary = c.variant !== 'secondary';
@@ -262,7 +264,7 @@ export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOpti
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;">
 
         ${showCover ? `<tr><td style="padding:0;border-radius:15px 15px 0 0;overflow:hidden;background:${fond};">
-          <img src="${coverSrc}" width="600" alt="${coverAlt}" style="display:block;width:100%;max-width:600px;height:auto;border-radius:15px 15px 0 0;" />
+          <a href="${PUBLIC_BASE_URL}" target="_blank" style="display:block;text-decoration:none;"><img src="${coverSrc}" width="600" alt="${coverAlt}" style="display:block;width:100%;max-width:600px;height:auto;border-radius:15px 15px 0 0;border:0;" /></a>
         </td></tr>` : ''}
 
         ${showBandeau ? `<tr><td background="${image}" bgcolor="${fond}" style="background:${fondBandeau};padding:0;${showCover ? '' : 'border-radius:15px 15px 0 0;'}">
@@ -276,7 +278,7 @@ export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOpti
         <tr><td bgcolor="${pal.fond}" style="background:${pal.fond};padding:40px 40px 14px;${showCover || showBandeau ? '' : 'border-radius:15px 15px 0 0;border-top:1px solid rgba(41,48,39,0.08);'}border-left:1px solid rgba(41,48,39,0.08);border-right:1px solid rgba(41,48,39,0.08);">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
             ${blockRows}
-            ${opts.signature !== false ? `<tr><td style="padding:6px 0 8px;"><img src="cid:signature" width="170" alt="Krystine St-Laurent" style="display:block;width:170px;height:auto;${pal.sombre ? `background:${CHARTE.cream};border-radius:12px;padding:8px 12px;` : ''}" /></td></tr>` : ''}
+            ${opts.signature !== false ? `<tr><td style="padding:6px 0 8px;"><a href="${PUBLIC_BASE_URL}" target="_blank" style="display:inline-block;text-decoration:none;"><img src="cid:signature" width="170" alt="Krystine St-Laurent" style="display:block;width:170px;height:auto;border:0;${pal.sombre ? `background:${CHARTE.cream};border-radius:12px;padding:8px 12px;` : ''}" /></a></td></tr>` : ''}
           </table>
         </td></tr>
 

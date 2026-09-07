@@ -8,7 +8,7 @@ export interface HeadingContent   { level?: 1 | 2 | 3; text?: string; align?: 'l
 // `text` accepte une mise en forme légère : <b>, <i>, <u>, <a href>, retours à
 // la ligne. Tout le reste est échappé (voir richToHtml).
 export interface ParagraphContent { text?: string; align?: 'left' | 'center'; police?: Police; taille?: Taille }
-export interface ImageContent     { url?: string; caption?: string; alt?: string }
+export interface ImageContent     { url?: string; caption?: string; alt?: string; href?: string }   // href : où mène la photo (le site par défaut)
 export interface ButtonContent    { label?: string; href?: string; variant?: 'primary' | 'secondary' }
 export interface QuoteContent     { text?: string; attribution?: string }
 export interface CTAContent       { eyebrow?: string; title?: string; body?: string; href?: string; buttonLabel?: string }
@@ -267,7 +267,7 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
       }
       return (
         <figure className="my-6">
-          {c.url && <img src={c.url} alt={c.alt || ''} className="w-full rounded-2xl" />}
+          {c.url && <a href={/^https?:\/\//.test(c.href || '') ? c.href : 'https://www.krystinestlaurent.ca'} target="_blank" rel="noopener noreferrer" className="block"><img src={c.url} alt={c.alt || ''} className="w-full rounded-2xl" /></a>}
           {c.caption && <figcaption className={capClass}>{c.caption}</figcaption>}
         </figure>
       );

@@ -71,7 +71,7 @@ const TOOL: Anthropic.Tool = {
                 url: { type: ['string', 'null'], description: 'image : laisser vide' },
                 caption: { type: ['string', 'null'] },
                 label: { type: ['string', 'null'], description: 'button' },
-                href: { type: ['string', 'null'], description: 'button, cta' },
+                href: { type: ['string', 'null'], description: 'button, cta, image (lien de la photo; sans lien, la photo mène au site)' },
                 variant: { type: ['string', 'null'], enum: ['primary', 'secondary', null] },
                 attribution: { type: ['string', 'null'], description: 'quote' },
                 eyebrow: { type: ['string', 'null'], description: 'cta' },

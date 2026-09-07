@@ -316,6 +316,8 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     }
   };
 
+  // Le test part chez Krystine d'un clic; une autre adresse se tape au besoin.
+  const COURRIEL_KRYSTINE = 'krystine@inspiratanature.com';
   const sendTest = async () => {
     const email = window.prompt('Adresse courriel pour le test :');
     if (!email) return;
@@ -424,8 +426,11 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
           ) : (
             <GhostButton onClick={schedule} disabled={isReadOnly || !subject || !blocks.length}><i className="fa-solid fa-calendar-check" /> Programmer</GhostButton>
           )}
-          <GhostButton onClick={sendTest} disabled={sendBusy !== 'idle' || isReadOnly || !subject}>
-            <i className="fa-solid fa-paper-plane" /> {sendBusy === 'test' ? 'Envoi…' : 'Envoyer un test'}
+          <GhostButton onClick={() => triggerSend(COURRIEL_KRYSTINE)} disabled={sendBusy !== 'idle' || isReadOnly || !subject} title={`Envoie un test à ${COURRIEL_KRYSTINE}`}>
+            <i className="fa-solid fa-paper-plane" /> {sendBusy === 'test' ? 'Envoi…' : 'Test à Krystine'}
+          </GhostButton>
+          <GhostButton onClick={sendTest} disabled={sendBusy !== 'idle' || isReadOnly || !subject} title="Envoie un test à l’adresse que vous tapez">
+            <i className="fa-solid fa-at" /> Test à une autre adresse
           </GhostButton>
           <button onClick={() => setSide('reglages')} className="hidden xl:inline-flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-[#8B4A2F] hover:underline" title="Changer l’audience">
             <i className={`fa-solid ${lettreDor ? 'fa-crown' : 'fa-users'}`} /> {lettreDor ? 'tous les membres, à l’interne' : audienceLibelle}
@@ -858,6 +863,7 @@ const BlockFrame: React.FC<{
                 <i className="fa-solid fa-images text-xs" /> Image
               </button>
               <input value={c.alt || ''} onChange={e => onPatch({ alt: e.target.value })} placeholder="Description (accessibilité)" className={`${selectClass} w-44`} />
+              <input value={c.href || ''} onChange={e => onPatch({ href: e.target.value })} placeholder="https://… (où mène la photo; le site par défaut)" title="La photo est cliquable : vers ce lien, sinon vers le site" className={`${selectClass} w-64`} />
             </>
           )}
           {(block.type === 'button' || block.type === 'cta') && (
