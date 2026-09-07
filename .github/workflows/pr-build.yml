@@ -1,0 +1,37 @@
+name: Vérifier une proposition
+
+# Construit le code exact d'une proposition de changement (branche ou fork),
+# sans jamais lui donner de jeton d'écriture. C'est la seule étape qui
+# exécute du code venu de l'extérieur (Krystine ou toute autre personne).
+# Si ça construit, pr-automerge.yml prend le relais avec un jeton d'écriture,
+# sans jamais exécuter le code lui-même.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Site
+        run: |
+          npm ci
+          npm run build
+
+      - name: Fonctions (typage seulement)
+        run: |
+          cd functions
+          npm ci
+          npx tsc --noEmit

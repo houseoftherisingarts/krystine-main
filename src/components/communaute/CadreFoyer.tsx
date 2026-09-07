@@ -252,11 +252,15 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, dr
           </nav>
         </div>
 
-        {/* Autour du feu : le cercle du Foyer, sous les raccourcis */}
+        {/* Autour du feu : le cercle du Foyer, sous les raccourcis. Sous lg, la
+            colonne devient une rangée de pastilles et le cercle se retire :
+            il repousserait la page de deux écrans, et l'onglet Membres, juste
+            au-dessus, mène à la liste entière. Le lien « Toutes » se cognait
+            au titre dans une colonne de 200 px : l'onglet fait ce travail. */}
         <CarteSociale
             panneau
+            className="hidden lg:block"
             titre={fr ? 'Autour du feu' : 'Around the fire'}
-            action={<Link to={CHEMINS_FOYER.membres} className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:underline dark:text-[#d9a05b]">{fr ? 'Toutes' : 'All'}</Link>}
           >
             {cercle.length === 0 ? (
               <p className="text-sm text-[#38403a]/50 dark:text-white/50">{fr ? 'Le cercle se forme.' : 'The circle is forming.'}</p>
