@@ -169,9 +169,12 @@ const AdminClientView: React.FC<Props> = ({ uid, onClose }) => {
   const [pointsEvents, setPointsEvents] = useState<PointsEvent[]>([]);
   const [redemptions, setRedemptions] = useState<RewardRedemption[]>([]);
   const [guideResponses, setGuideResponses] = useState<GuideResponse[]>([]);
+  // La demande de Badge Bleu de cette membre, s'il y en a une (verifications/{uid}).
+  const [verif, setVerif] = useState<Verification | null>(null);
 
   useEffect(() => {
     getMember(uid).then(setMember);
+    getVerification(uid).then(setVerif).catch(() => setVerif(null));
     getClientOrdersForMember(uid).then(setOrders);
     getDoshaResultsForMember(uid).then(setDoshaResults);
     getMemberPoints(uid).then(setPointsBalance);
