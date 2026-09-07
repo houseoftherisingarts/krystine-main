@@ -12,17 +12,25 @@ import { CHEMINS_FOYER } from './chemins';
 // au-dessus d'un contenu partiel. La barrière de page, elle, est dans
 // CadreFoyer : sans achat, la coquille renvoie à la page de vente.
 
+// `null` tant qu'on ne sait pas encore. La réponse porte l'uid auquel elle
+// appartient : à la seconde où la session se rétablit (uid null → uid réel),
+// la réponse d'avant cesse d'être lue, dans le même rendu. Sans cela, la
+// coquille lisait un « non » périmé et renvoyait une membre du Foyer à la
+// page de vente le temps que Firebase finisse de restaurer sa session.
 export function useMembreDuFoyer(): boolean | null {
   const { user, member, isAdmin } = useAuth();
-  const [foyer, setFoyer] = useState<boolean | null>(null);
+  const [reponse, setReponse] = useState<{ uid: string | null; valeur: boolean } | null>(null);
+  const uid = user?.uid ?? null;
   useEffect(() => {
-    if (!user) { setFoyer(false); return; }
-    if (isAdmin || member?.accesVie) { setFoyer(true); return; }
+    if (!user) { setReponse({ uid: null, valeur: false }); return; }
+    if (isAdmin || member?.accesVie) { setReponse({ uid: user.uid, valeur: true }); return; }
     let vivant = true;
-    aAchete(user.uid, 'foyer').then(v => { if (vivant) setFoyer(v); }).catch(() => { if (vivant) setFoyer(false); });
+    aAchete(user.uid, 'foyer')
+      .then(v => { if (vivant) setReponse({ uid: user.uid, valeur: v }); })
+      .catch(() => { if (vivant) setReponse({ uid: user.uid, valeur: false }); });
     return () => { vivant = false; };
   }, [user, isAdmin, member?.accesVie]);
-  return foyer;
+  return reponse && reponse.uid === uid ? reponse.valeur : null;
 }
 
 // Les « amies d'origine » : avec qui une membre peut être amie et s'écrire.

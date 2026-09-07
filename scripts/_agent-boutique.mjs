@@ -128,6 +128,11 @@ await mem.screenshot({ path: `${OUT}/agent-compte-apres-login.png` });
 // souris réel tout en haut à gauche, hors de la carte (fermer() sur le fond).
 await mem.mouse.click(5, 5);
 await mem.waitForTimeout(500);
+// Ferme la pop-up « Cadeau du jour » (roue quotidienne) si elle apparaît.
+const merci = mem.getByRole('button', { name: 'Merci', exact: true });
+if (await merci.count()) { await merci.click().catch(() => {}); await mem.waitForTimeout(500); }
+await mem.mouse.click(5, 5);
+await mem.waitForTimeout(300);
 const clickTab = async (page, iconClass) => page.evaluate((cls) => {
   const btn = Array.from(document.querySelectorAll('button')).find(b => b.querySelector(`i.${cls}`));
   if (btn) { btn.click(); return true; }
