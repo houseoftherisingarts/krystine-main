@@ -54,6 +54,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   badgeBleu:  'badge-bleu',
   messages:   'messages',
   recompenses:'recompenses',
+  skinsATravailler: 'skins-a-travailler',
   submissions:'formulaires',
   groups:     'groupes',
   live:       'live',
