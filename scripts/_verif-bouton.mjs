@@ -51,11 +51,11 @@ await page.screenshot({ path: `${OUT}/bouton-01-compte-banniere.png` });
 const toggle = page.locator('button', { hasText: /mode éditeur/i }).first();
 console.log('toggle count on /compte:', await toggle.count());
 if (await toggle.count()) {
-  await toggle.click();
+  await toggle.click({ force: true });
   await page.waitForTimeout(700);
   await page.screenshot({ path: `${OUT}/bouton-02-compte-mode-actif.png` });
   // repasse en mode non-éditeur pour la suite
-  await page.locator('button', { hasText: /quitter le mode éditeur/i }).first().click();
+  await page.locator('button', { hasText: /quitter le mode éditeur/i }).first().click({ force: true });
   await page.waitForTimeout(500);
 }
 
