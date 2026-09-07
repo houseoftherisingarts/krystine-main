@@ -379,8 +379,9 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
           ));
         })}
       </div>
-      </div>
-      ))}
+      </>
+      ));
+      })}
 
       {fondOuvert && banniereParCle(fondOuvert)?.fond && (
         <FondEcran ouvert onFermer={() => setFondOuvert(null)} image={banniereParCle(fondOuvert)!.fond!} nom={fr ? banniereParCle(fondOuvert)!.nomFR : banniereParCle(fondOuvert)!.nomEN} lang={lang} signe={signee(fondOuvert)} />
