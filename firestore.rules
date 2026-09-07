@@ -374,6 +374,11 @@ service cloud.firestore {
     match /etat/{id}         { allow read: if isAdmin(); allow write: if false; }
     match /etat/iris         { allow write: if isIris(); }
     match /etat/irisInstallation { allow read: if isIris(); }
+    // La liste des uids admin (voir esAdminUid ci-dessus), pour fermer les
+    // portes de côté de la messagerie. Chaque admin pose le sien à sa
+    // connexion (bootstrapAdminEtat, src/firebase/auth.ts) : jamais de
+    // lecture, jamais d'écriture côté membre.
+    match /etat/admins { allow read: if isAdmin(); allow write: if isAdmin(); }
     match /bookingRequests/{id} {
       allow create: if request.resource.data.keys().hasAll(['name', 'email']);
       allow read, update, delete: if isAdmin();
