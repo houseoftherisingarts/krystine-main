@@ -20,6 +20,11 @@ async function seConnecter(page) {
   await page.getByPlaceholder('Mot de passe').fill(QA_PASSWORD);
   await page.locator('button[type="submit"]', { hasText: 'Se connecter' }).click();
   await page.waitForTimeout(3500);
+  // Bandeau de consentement (Loi 25), première visite seulement : on l'écarte
+  // pour ne pas cacher le contenu vérifié sous une pop-up.
+  const accepte = page.getByRole('button', { name: 'J’accepte' }).or(page.getByRole('button', { name: "J'accepte" }));
+  if (await accepte.count()) await accepte.first().click().catch(() => {});
+  await page.waitForTimeout(300);
 }
 
 async function capture(viewport, suffix) {
