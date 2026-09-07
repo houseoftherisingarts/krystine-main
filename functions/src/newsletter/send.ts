@@ -339,13 +339,22 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
   // budget. Tout ce qui est assigné se termine (succès ou échec) avant que le
   // curseur avance, donc aucun abonné n'est sauté ni doublé.
   let next = 0;
+  let indexQuota = -1;   // premier abonné refusé pour quota épuisé, s'il y a lieu
   const ouvrier = async () => {
-    while (next < restants.length && Date.now() - now < BUDGET_MS) {
-      const sub = restants[next++];
+    while (next < restants.length && indexQuota < 0 && Date.now() - now < BUDGET_MS) {
+      const i = next++;
+      const sub = restants[i];
       try {
         await envoyer(sub);
         prog.done++;
       } catch (err) {
+        if (estQuota(err)) {
+          // Le fournisseur n'accepte plus rien : les ouvriers s'arrêtent, rien
+          // n'est compté en échec, la reprise se fera plus tard.
+          if (indexQuota < 0 || i < indexQuota) indexQuota = i;
+          console.warn('[deliverNewsletter] quota du fournisseur atteint', sub.email, String((err as { response?: string })?.response || err));
+          continue;
+        }
         prog.failed++;
         console.warn('[deliverNewsletter] delivery failed', sub.email, err);
       }
@@ -353,10 +362,23 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
   };
   await Promise.all(Array.from({ length: CONCURRENCY }, ouvrier));
   transporter.close();
+  delete prog.lockUntil;
+
+  if (indexQuota >= 0) {
+    // Le curseur recule juste avant le premier refus; les réussites passées
+    // après lui sont dans `envois` et ne repartiront pas.
+    prog.lastId = indexQuota > 0 ? restants[indexQuota - 1].id : prog.lastId;
+    prog.pauseJusqua = Timestamp.fromMillis(Date.now() + PAUSE_QUOTA_MS);
+    prog.raisonPause = 'Quota d’envoi du fournisseur atteint. Reprise automatique dans une heure.';
+    await ref.update({ progress: prog, updatedAt: FieldValue.serverTimestamp() });
+    console.log('[deliverNewsletter] pause quota', newsletterId, `${prog.done}/${all.length}`);
+    return { recipients: all.length, delivered: prog.done, bounces: prog.failed, done: false };
+  }
 
   const fini = next >= restants.length;
   prog.lastId = next > 0 ? restants[next - 1].id : prog.lastId;
-  delete prog.lockUntil;
+  delete prog.pauseJusqua;
+  delete prog.raisonPause;
 
   if (fini) {
     await ref.update({
