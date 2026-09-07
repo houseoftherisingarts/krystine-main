@@ -55,3 +55,10 @@ export async function reclamerGrandLot(ouvertureId: string, reponse: number): Pr
 export async function offrirCoffre(uid: string, type: TypeCoffre, avecCle: boolean, message: string): Promise<void> {
   await fn('offrirCoffre')({ uid, type, avecCle, message });
 }
+
+/** Le coffre bêta (functions/src/niskas.ts) : jugé et crédité côté serveur,
+ *  une seule fois, pour les comptes créés du 7 septembre au 1er octobre 2026.
+ *  `offert` ne revient vrai qu'au tout premier appel qui le dépose. */
+export async function reclamerCoffreBeta(): Promise<{ offert: boolean; montant: number; message: string; balance: number }> {
+  return (await fn('reclamerCoffreBeta')({})).data as { offert: boolean; montant: number; message: string; balance: number };
+}
