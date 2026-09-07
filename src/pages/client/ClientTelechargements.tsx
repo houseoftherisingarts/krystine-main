@@ -197,7 +197,9 @@ const ClientTelechargements: React.FC = () => {
           )}
         </div>
       )}
-      <BoutiqueNiskas possedeMusiqueDeja={possedeMusique} episodesPossedes={episodesPossedes} onAchat={() => setTour((t) => t + 1)} />
+      {gam.petiteBoutique && (
+        <BoutiqueNiskas possedeMusiqueDeja={possedeMusique} episodesPossedes={episodesPossedes} onAchat={() => setTour((t) => t + 1)} />
+      )}
     </section>
   );
 };
