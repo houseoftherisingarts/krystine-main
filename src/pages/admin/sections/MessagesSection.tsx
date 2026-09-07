@@ -1,10 +1,91 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   subscribeToConversations, subscribeToMessages, sendMessage, markConversationRead,
+  envoyerMessageKrystine, getMember,
   type ConversationDoc, type MessageDoc,
 } from '../../../firebase/firestore';
+import { getMembresGroupe, type MembreGroupe } from '../../../firebase/formations';
 import type { User } from 'firebase/auth';
 import { Card, EmptyState } from '../primitives';
+
+// Le mot privé de Krystine, visible sur son seul compte (Alex, 7 septembre
+// 2026) : elle choisit une membre du Foyer, écrit, et coche si la membre
+// peut répondre. Le message porte deKrystine et paraît signé dans sa
+// messagerie (src/pages/client/ClientSupport.tsx); la case pose
+// reponseAutorisee sur le fil, que les règles font respecter.
+const MotPriveKrystine: React.FC = () => {
+  const [ouvert, setOuvert] = useState(false);
+  const [membres, setMembres] = useState<MembreGroupe[]>([]);
+  const [uidChoisi, setUidChoisi] = useState('');
+  const [texte, setTexte] = useState('');
+  const [reponseAutorisee, setReponseAutorisee] = useState(true);
+  const [envoi, setEnvoi] = useState(false);
+  const [avis, setAvis] = useState('');
+
+  useEffect(() => {
+    if (!ouvert || membres.length) return;
+    getMembresGroupe('foyer').then(setMembres).catch(() => setMembres([]));
+  }, [ouvert, membres.length]);
+
+  const envoyer = async () => {
+    if (!uidChoisi || !texte.trim()) return;
+    setEnvoi(true);
+    setAvis('');
+    try {
+      const fiche = await getMember(uidChoisi).catch(() => null);
+      await envoyerMessageKrystine(uidChoisi, texte.trim(), reponseAutorisee, {
+        memberEmail: fiche?.email || '',
+        memberName: fiche?.displayName || '',
+        memberPhotoURL: fiche?.photoURL || '',
+      });
+      setTexte(''); setUidChoisi(''); setReponseAutorisee(true);
+      setAvis('Envoyé.');
+    } catch (e) {
+      setAvis(e instanceof Error ? e.message : 'Le mot n’est pas parti.');
+    } finally { setEnvoi(false); }
+  };
+
+  return (
+    <Card className="p-4 mb-4">
+      <button type="button" onClick={() => setOuvert(v => !v)} className="flex w-full items-center justify-between text-left">
+        <span className="font-serif text-sm text-[#293027] dark:text-white">Mot privé de Krystine</span>
+        <i className={`fa-solid fa-chevron-${ouvert ? 'up' : 'down'} text-xs text-[#293027]/40 dark:text-white/40`} />
+      </button>
+      {ouvert && (
+        <div className="mt-3 space-y-3">
+          <select
+            value={uidChoisi}
+            onChange={e => setUidChoisi(e.target.value)}
+            className="w-full px-3 py-2 rounded-lg border border-[#293027]/10 dark:border-white/10 bg-[#EEE7DB] dark:bg-white/5 text-[#293027] dark:text-white text-sm outline-none focus:border-[#BA7B39]"
+          >
+            <option value="">Choisir une membre du Foyer…</option>
+            {membres.map(m => <option key={m.uid} value={m.uid}>{m.nom || m.courriel || m.uid}</option>)}
+          </select>
+          <textarea
+            value={texte}
+            onChange={e => setTexte(e.target.value)}
+            rows={3}
+            placeholder="Votre mot…"
+            className="w-full px-3 py-2 rounded-lg border border-[#293027]/10 dark:border-white/10 bg-[#EEE7DB] dark:bg-white/5 text-[#293027] dark:text-white text-sm outline-none focus:border-[#BA7B39] resize-none"
+          />
+          <label className="flex items-center gap-2 text-xs text-[#293027]/70 dark:text-white/70">
+            <input type="checkbox" checked={reponseAutorisee} onChange={e => setReponseAutorisee(e.target.checked)} />
+            Cette personne peut me répondre
+          </label>
+          {avis && <p className="text-xs text-[#8B4A2F] dark:text-[#d9a05b]">{avis}</p>}
+          <button
+            type="button"
+            onClick={envoyer}
+            disabled={envoi || !uidChoisi || !texte.trim()}
+            className="px-5 py-2 bg-[#293027] dark:bg-[#BA7B39] text-white dark:text-[#293027] rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#BA7B39] hover:text-[#293027] transition-colors disabled:opacity-50"
+          >
+            {envoi ? 'Envoi…' : 'Envoyer'}
+          </button>
+        </div>
+      )}
+    </Card>
+  );
+};
 
 const MessagesSection: React.FC<{ user: User }> = ({ user }) => {
   const [convs, setConvs] = useState<ConversationDoc[]>([]);
@@ -13,6 +94,8 @@ const MessagesSection: React.FC<{ user: User }> = ({ user }) => {
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  // Le module n'existe que sur le compte de Krystine (Alex, 7 septembre 2026).
+  const estKrystine = user.email === 'krystine@inspiratanature.com';
 
   useEffect(() => {
     const unsub = subscribeToConversations(setConvs);
