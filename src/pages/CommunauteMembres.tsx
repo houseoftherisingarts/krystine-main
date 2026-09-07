@@ -18,9 +18,6 @@ import { CHEMINS_FOYER } from '../components/communaute/chemins';
 // le miroir `groupes/foyer/membres`) : aucune autre membre du site n'y entre,
 // ni dans la recherche, ni dans les amies, ni dans les demandes.
 
-/** Le compte de l'équipe de modération : « Contacter l'équipe » ouvre une conversation avec lui. */
-const UID_MODERATION = 'kYorHEdND9bfk5A4I3oxVJJSquR2';
-
 type Vue = 'toutes' | 'amies' | 'demandes';
 
 const BOUTON_SECONDAIRE = 'inline-flex items-center gap-2 rounded-full border border-[#38403a]/15 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] disabled:opacity-50 dark:border-white/15 dark:text-white/70';
