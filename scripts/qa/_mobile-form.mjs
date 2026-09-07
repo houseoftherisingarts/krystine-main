@@ -15,9 +15,13 @@ await page.getByPlaceholder('Courriel').fill(EMAIL);
 await page.getByPlaceholder('Mot de passe').fill(PASSWORD);
 await page.locator('form button[type="submit"]').click();
 await page.waitForTimeout(3000);
-// Fermer le bandeau de consentement une fois pour la session.
+// Fermer le bandeau de consentement et la roue quotidienne (sitewide, sans
+// rapport avec Aider) une fois pour la session.
 const nonMerci = page.getByRole('button', { name: /Non merci/i });
 if (await nonMerci.count()) await nonMerci.click().catch(() => {});
+await page.waitForTimeout(300);
+await page.keyboard.press('Escape').catch(() => {});
+await page.mouse.click(5, 5).catch(() => {});
 await page.waitForTimeout(300);
 await page.goto(`${BASE}/compte?onglet=aider`, { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(1500);
