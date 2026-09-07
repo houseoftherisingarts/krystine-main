@@ -38,11 +38,12 @@ function phraseMoisFoyer(etat: Quotidien, fr: boolean): string | null {
 }
 
 const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, lang }) => {
+  const gam = useGamification();
   const [etat, setEtat] = useState<Quotidien | null>(null);
   const [ouvert, setOuvert] = useState(false);
 
   useEffect(() => {
-    if (!uid) return;
+    if (!uid || !gam.roueQuotidienne) return;
     let vivant = true;
     const aujourdhui = journee();
     let vu = '';
