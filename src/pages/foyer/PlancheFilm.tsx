@@ -94,6 +94,14 @@ export const SceneFilm: React.FC<{ children: React.ReactNode; className?: string
     >
       {/* la scène : le film, énorme, derrière tout (carte 16:9 sous 1024 px) */}
       <div className="relative z-[2] order-2 mx-6 mt-10 aspect-video overflow-hidden rounded-[10px] bg-black shadow-[0_30px_60px_rgba(0,0,0,0.4)] lg:absolute lg:inset-0 lg:z-0 lg:m-0 lg:aspect-auto lg:rounded-none lg:bg-[#1b2622] lg:shadow-none">
+        {/* l'affiche d'abord, visible tout de suite; le film se fond par-dessus dès qu'il joue */}
+        <img
+          src={POSTER}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-contain object-center lg:object-cover lg:object-[80%_45%]"
+        />
         <video
           ref={vid}
           poster={POSTER}
@@ -103,7 +111,7 @@ export const SceneFilm: React.FC<{ children: React.ReactNode; className?: string
           preload="none"
           aria-hidden
           onPlaying={() => setAllume(true)}
-          className={`h-full w-full object-contain object-center transition-opacity duration-[1400ms] ease-out lg:object-cover lg:object-[80%_45%] ${allume || reduce ? 'opacity-100' : 'opacity-0'}`}
+          className={`relative h-full w-full object-contain object-center transition-opacity duration-[1400ms] ease-out lg:object-cover lg:object-[80%_45%] ${allume || reduce ? 'opacity-100' : 'opacity-0'}`}
         />
         <div aria-hidden className="absolute inset-0 lg:hidden" style={{ background: VEIL_MOBILE }} />
       </div>

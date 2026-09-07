@@ -72,7 +72,7 @@ export const SECTION5 = {
 // SECTION 6 · Le regard qui compose Le Foyer
 export const SECTION7 = {
   eyebrow: 'Pourquoi ces histoires, ces matières et ces rencontres?',
-  title: 'Près de 40 ans à relier ce que nous avons appris à séparer',
+  title: 'Près de 40 ans à relier ce que nous séparons',
   paragraphs: [
     'Soins infirmiers et recherche clinique. Ayurveda, plantes médicinales et aromathérapie. Cuisine, saisons et rythmes du corps. Écriture, enseignement, voyages et transmission.',
     'Trois livres écrits. Près de 1 200 pages publiées. Une émission de télévision. Des dizaines d’entrevues. Des articles écrits dans de multiples magazines. Des années de conférences, de recherche, d’étude et de transmission.',
