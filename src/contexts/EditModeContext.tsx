@@ -57,6 +57,7 @@ export const EditModeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const { isAdmin } = useAuth();
   const [editMode, setEditModeState] = useState(false);
   const [overrides, setOverrides] = useState<OverridesDoc>(EMPTY);
+  const [pending, setPendingState] = useState<Record<string, string>>(readPending);
 
   // Stream overrides live so every visitor sees the latest edits
   // without reload. In dev-admin local mode we bypass Firestore
