@@ -264,7 +264,7 @@ La règle de contraste du canon (`CarteSociale.tsx:12-15`, `docs/canon-espace-cl
 - `:384-409` `NewsletterDoc` : `title` (libellé interne), `subject`, `preheader`, `fromName`, `blocks`, `status`, `segmentTag` (ancien), `audience`, `scheduledFor`, `couverture: 'podcast' | 'image' | 'aucune'`, `couvertureUrl`, `signature`, `lettreDor: { messagerie, section } | null` (la lettre d'or, livrée à l'interne sans courriel), `sentAt`, `stats`, `createdBy`, `createdAt`, `updatedAt`.
 - `:413-416` `ENTETE_INFOLETTRE_PAR_DEFAUT` (l'image « La lettre de Krystine »).
 - `:418-448` `createNewsletter` (`addDoc` + horodatages), `updateNewsletter`, `deleteNewsletter`, `getNewsletter`, `getNewsletters` (tri `updatedAt` décroissant).
-- `:453-474` la boîte de réception d'une membre : `members/{uid}/inbox/{newsletterId}` avec `title, subject, receivedAt, readAt, lettreDor`; règles `firestore.rules:364-369` (le serveur crée, la membre marque `readAt`).
+- `:453-474` la boîte de réception d'une membre : `members/{uid}/inbox/{newsletterId}` avec `title, subject, receivedAt, readAt, lettreDor`; règles `firestore.rules:362-368` (le serveur crée, la membre marque `readAt`).
 
 `firestore.rules:298-301` : une infolettre se lit par tous quand `status == 'sent'`, sinon par l'admin; l'écriture est admin. Iris possède son propre compte `iris@krystinestlaurent.ca` (`:308-311`), qui ne touche qu'à `irisDemandes`.
 
