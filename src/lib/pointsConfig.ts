@@ -190,11 +190,20 @@ export const CATEGORIES_BOUTIQUE: { id: CategorieBoutique; titreFR: string; titr
 // (Alex, 6 septembre 2026). Les identifiants d'article sont `skin-${cle}`.
 // « exclusif » : ni boutique ni coffre, le serveur le pose lui-même (le Skin
 // Vérifié du Badge Bleu, `reserve: 'badge-bleu'`, docs/badge-bleu-plan.md).
+// `enTravail` : le drapeau par défaut d'une skin qu'on retire de la
+// circulation le temps de la finir (Alex, 7 septembre 2026 : Vata, Pitta,
+// Kapha, Aurore, Or pur, Féminité). Une skin en travail ne se propose plus
+// nulle part (boutique, coffres, roue), mais une membre qui l'a déjà la
+// garde et peut l'activer. `settings/skins` dans Firestore (écrit depuis
+// l'admin, section « Skins à travailler ») peut fusionner par-dessus ce
+// drapeau, sans déploiement : voir `skinEnTravail` plus bas et son miroir
+// serveur, `skinsEnTravail` dans functions/src/coffres.ts.
 export type RareteSkin = 'commun' | 'rare' | 'legendaire' | 'exclusif';
 export interface PaletteSkin { fond: string; panneau: string; encre: string; accent: string; accentClair: string; accentProfond: string; sombre: boolean }
 export interface Skin {
   cle: string; nomFR: string; nomEN: string; descFR: string; descEN: string; icone: string;
   cout: number | null; rarete: RareteSkin; coffre?: 'bronze' | 'argent' | 'or'; reserve?: 'badge-bleu'; palette: PaletteSkin;
+  enTravail?: boolean;
 }
 export const SKINS: Skin[] = [
   { cle: 'medzo', cout: 5, rarete: 'commun', icone: 'fa-mug-hot', nomFR: 'Skin Medzo Café', nomEN: 'Medzo Café skin',
