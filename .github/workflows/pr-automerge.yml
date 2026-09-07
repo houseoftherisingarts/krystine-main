@@ -36,14 +36,23 @@ jobs:
       REPO: ${{ github.repository }}
       HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
     steps:
-      - name: Trouver la PR par le commit construit
+      # "Vérifier une proposition" a déposé son numéro de PR en artefact :
+      # pour une PR venue d'un fork, l'API commit→PR ne trouve rien (elle ne
+      # cherche que dans ce dépôt, pas dans le fork où vit le commit), et le
+      # champ workflow_run.pull_requests a la même limite.
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr_number
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: .
+
+      - name: Lire le numéro de la PR
         id: find
         run: |
-          NUM=$(gh api "repos/$REPO/commits/$HEAD_SHA/pulls" \
-            -H "Accept: application/vnd.github.groot-preview+json" \
-            --jq '[.[] | select(.state=="open") | .number][0] // empty')
+          NUM=$(cat pr_number.txt | tr -dc '0-9')
           if [ -z "$NUM" ]; then
-            echo "Aucune PR ouverte pour ce commit ($HEAD_SHA), rien à faire."
+            echo "Numéro de PR introuvable dans l'artefact, rien à faire."
             echo "number=" >> "$GITHUB_OUTPUT"
           else
             echo "number=$NUM" >> "$GITHUB_OUTPUT"
