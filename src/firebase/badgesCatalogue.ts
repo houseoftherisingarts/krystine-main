@@ -25,6 +25,9 @@ export const CATALOGUE_BADGES: Record<string, BadgeInfo> = {
   'coeur-genereux':      { nom: 'Cœur généreux',        icone: 'fa-heart' },
   'oreille-fidele':      { nom: 'Oreille fidèle',       icone: 'fa-headphones' },
   'fidele-au-poste':     { nom: 'Fidèle au poste',      icone: 'fa-calendar-check' },
+  // Le Badge Bleu (docs/badge-bleu-plan.md) : posé par deciderBadgeBleu avec la
+  // coche members.verifie, les 200 niskas et le Skin Vérifié.
+  'badge-bleu':          { nom: 'Badge Bleu',           icone: 'fa-circle-check' },
 };
 
 // Comment chaque badge d'interaction se gagne (miroir des seuils serveur).
