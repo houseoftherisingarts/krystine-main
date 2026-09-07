@@ -90,6 +90,11 @@ const mem = await memCtx.newPage();
 await mem.goto(BASE + '/compte', { waitUntil: 'domcontentloaded' });
 await mem.waitForTimeout(1500);
 console.log('URL /compte avant login membre:', mem.url());
+// Ferme le bandeau cookies s'il est là.
+const nonMerci = mem.getByText('Non merci', { exact: false });
+if (await nonMerci.count()) { await nonMerci.first().click().catch(() => {}); await mem.waitForTimeout(300); }
+const seConnecter = mem.getByText('Se connecter', { exact: false }).first();
+if (await seConnecter.count()) { await seConnecter.click(); await mem.waitForTimeout(1000); }
 await mem.screenshot({ path: `${OUT}/agent-compte-avant-login.png` });
 const memEmailInput = mem.locator('input[type="email"]');
 if (await memEmailInput.count()) {
@@ -103,6 +108,25 @@ if (await memEmailInput.count()) {
 }
 console.log('URL /compte après tentative login membre:', mem.url());
 await mem.screenshot({ path: `${OUT}/agent-compte-apres-login.png` });
+// Onglet Téléchargements = la boutique en niskas.
+try {
+  const dl = mem.getByText('Téléchargements', { exact: false }).first();
+  if (await dl.count()) { await dl.click(); await mem.waitForTimeout(2000); }
+  await mem.screenshot({ path: `${OUT}/agent-boutique-niskas-1440.png`, fullPage: true });
+  await mem.setViewportSize({ width: 390, height: 844 });
+  await mem.waitForTimeout(500);
+  await mem.screenshot({ path: `${OUT}/agent-boutique-niskas-390.png`, fullPage: true });
+} catch (e) { console.log('boutique niskas shot failed', e.message); }
+// Onglet Points/Fidélité = les récompenses (paliers).
+try {
+  await mem.setViewportSize({ width: 1440, height: 900 });
+  const pts = mem.getByText('Points', { exact: false }).first();
+  if (await pts.count()) { await pts.click(); await mem.waitForTimeout(2000); }
+  await mem.screenshot({ path: `${OUT}/agent-recompenses-client-1440.png`, fullPage: true });
+  await mem.setViewportSize({ width: 390, height: 844 });
+  await mem.waitForTimeout(500);
+  await mem.screenshot({ path: `${OUT}/agent-recompenses-client-390.png`, fullPage: true });
+} catch (e) { console.log('recompenses client shot failed', e.message); }
 await memCtx.close();
 
 await browser.close();
