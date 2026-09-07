@@ -120,7 +120,7 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
                     <td className="px-4 py-3">
                       <div className="flex flex-col items-end gap-1.5 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <GhostButton onClick={() => onOpen(n.id!)}><i className="fa-solid fa-pen" /> {n.status === 'sent' ? 'Voir' : 'Modifier'}</GhostButton>
+                          <GhostButton onClick={() => onOpen(n.id!)} title={n.status === 'sent' ? 'Voir' : 'Modifier'}><i className="fa-solid fa-pen" /> <span className="hidden sm:inline">{n.status === 'sent' ? 'Voir' : 'Modifier'}</span></GhostButton>
                           {n.status !== 'sent' && (
                             <DangerButton onClick={() => del(n)}><i className="fa-solid fa-trash" /></DangerButton>
                           )}
