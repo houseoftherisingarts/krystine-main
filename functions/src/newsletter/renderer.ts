@@ -126,7 +126,8 @@ function esc(s: unknown): string {
 }
 
 function personalize(text: string, firstName?: string): string {
-  return text.replace(/\{\{\s*firstName\s*\}\}/g, firstName || '');
+  // Sans prénom, « Bonjour {{firstName}}, » devient « Bonjour, » (l'espace part avec le gabarit).
+  return text.replace(/ ?\{\{\s*firstName\s*\}\}/g, firstName ? ` ${firstName}` : '');
 }
 
 // Paragraphes : les retours à la ligne du composeur deviennent des <br />.
@@ -151,7 +152,7 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
   const c = (block.content || {}) as any;
   switch (block.type) {
     case 'heading': {
-      const level = c.level || 1;
+      const level = Number(c.level) || 1;
       const align = c.align === 'center' ? 'center' : 'left';
       const fontSize = level === 1 ? '32px' : level === 2 ? '26px' : '22px';
       const text = personalize(esc(c.text || ''), firstName);

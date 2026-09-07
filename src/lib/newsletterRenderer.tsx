@@ -228,7 +228,7 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
   const set = (k: string) => (v: string) => edit?.set({ [k]: v });
   switch (block.type) {
     case 'heading': {
-      const level = c.level || 1;
+      const level = Number(c.level) || 1;
       const align = c.align === 'center' ? 'text-center' : 'text-left';
       const size = level === 1 ? 'text-4xl md:text-5xl' : level === 2 ? 'text-3xl md:text-4xl' : 'text-2xl md:text-3xl';
       const police = POLICES[(c.police as Police) || 'serif'];
@@ -407,7 +407,7 @@ function blockToEmail(block: NewsletterBlock, firstName?: string): string {
   const c = (block.content || {}) as any;
   switch (block.type) {
     case 'heading': {
-      const level = c.level || 1;
+      const level = Number(c.level) || 1;
       const align = c.align === 'center' ? 'center' : 'left';
       const fontSize = level === 1 ? '32px' : level === 2 ? '26px' : '22px';
       const text = personalize(esc(c.text || ''), firstName);
