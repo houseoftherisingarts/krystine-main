@@ -37,6 +37,12 @@ console.log('connecté, url =', page.url());
 // ── La liste, desktop ───────────────────────────────────────────────────
 await page.goto(`${BASE}/compte?onglet=aider`, { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(2000);
+// Fermer la roue quotidienne et le consentement (sitewide, sans rapport
+// avec Aider) avant d'interagir, sinon ils interceptent les clics.
+await page.keyboard.press('Escape').catch(() => {});
+const nonMerci = page.getByRole('button', { name: /Non merci/i });
+if (await nonMerci.count()) await nonMerci.click().catch(() => {});
+await page.waitForTimeout(400);
 await page.screenshot({ path: `${OUT}/aider-liste-1440.png`, fullPage: true });
 console.log('capture liste desktop');
 
