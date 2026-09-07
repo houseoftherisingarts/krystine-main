@@ -265,29 +265,35 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'La petite boutique' : 'The little shop'}</p>
           <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">{fr ? 'Personnalisez votre espace' : 'Personalise your space'}</h3>
           <p className="mt-1 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
-            {fr
-              ? `Chaque objet se paie en niskas, la monnaie de votre espace. Vous en gagnez en revenant, en participant et en invitant vos amies. Quand la bourse est courte, un paquet de ${PAQUET_NISKAS.niskas} niskas coûte ${PAQUET_NISKAS.prix} $.`
-              : `Everything here is paid in niskas, the currency of your space. You earn them by coming back, taking part and inviting friends. When the purse runs low, a pack of ${PAQUET_NISKAS.niskas} niskas costs $${PAQUET_NISKAS.prix}.`}
+            {gam.acheterNiskas
+              ? (fr
+                ? `Chaque objet se paie en niskas, la monnaie de votre espace. Vous en gagnez en revenant, en participant et en invitant vos amies. Quand la bourse est courte, un paquet de ${PAQUET_NISKAS.niskas} niskas coûte ${PAQUET_NISKAS.prix} $.`
+                : `Everything here is paid in niskas, the currency of your space. You earn them by coming back, taking part and inviting friends. When the purse runs low, a pack of ${PAQUET_NISKAS.niskas} niskas costs $${PAQUET_NISKAS.prix}.`)
+              : (fr
+                ? 'Chaque objet se paie en niskas, la monnaie de votre espace. Vous en gagnez en revenant, en participant et en invitant vos amies.'
+                : 'Everything here is paid in niskas, the currency of your space. You earn them by coming back, taking part and inviting friends.')}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <span className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/40 bg-white/60 px-4 py-2 font-serif text-lg text-[#293027] dark:bg-white/10 dark:text-white">
             <PieceNiska size={20} /> {solde.balance}
           </span>
-          <button
-            type="button"
-            onClick={() => setPaquetsOuverts((o) => !o)}
-            disabled={occupe !== null}
-            aria-expanded={paquetsOuverts}
-            className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#d9a05b] disabled:opacity-50"
-          >
-            <i className="fa-solid fa-bag-shopping" /> {fr ? 'Acheter des niskas' : 'Buy niskas'}
-          </button>
+          {gam.acheterNiskas && (
+            <button
+              type="button"
+              onClick={() => setPaquetsOuverts((o) => !o)}
+              disabled={occupe !== null}
+              aria-expanded={paquetsOuverts}
+              className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027] transition-colors hover:bg-[#d9a05b] disabled:opacity-50"
+            >
+              <i className="fa-solid fa-bag-shopping" /> {fr ? 'Acheter des niskas' : 'Buy niskas'}
+            </button>
+          )}
         </div>
       </div>
 
       {/* L'échelle des paquets : de cent pour dix dollars à dix mille pour cinq cents. */}
-      {paquetsOuverts && (
+      {gam.acheterNiskas && paquetsOuverts && (
         <div id="paquets-niskas" className="mt-6 rounded-[18px] border border-[#BA7B39]/40 bg-white/60 p-5 dark:border-[#BA7B39]/40 dark:bg-white/5">
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'Les paquets de niskas' : 'Niska packs'}</p>
           <p className="mt-1 text-sm text-[#293027]/60 dark:text-white/60">
