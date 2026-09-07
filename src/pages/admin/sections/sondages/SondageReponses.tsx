@@ -19,6 +19,14 @@ const formatValeur = (v: ValeurReponse | undefined): string => {
   return Array.isArray(v) ? v.join(' · ') : String(v);
 };
 
+// `at` est un Timestamp Firestore en temps normal (serverTimestamp() côté
+// repondreSondage); une donnée abîmée ou un doc écrit à la main ne doit
+// jamais faire planter toute la page admin pour autant.
+const dateLisible = (at: unknown, opts: Intl.DateTimeFormatOptions): string => {
+  const d = (at as { toDate?: () => Date } | undefined)?.toDate?.();
+  return d ? d.toLocaleString('fr-CA', opts) : '—';
+};
+
 const SondageReponses: React.FC<{ sondage: Sondage; onRetour: () => void }> = ({ sondage, onRetour }) => {
   const [reponses, setReponses] = useState<ReponseSondage[]>([]);
   const [loading, setLoading] = useState(true);
