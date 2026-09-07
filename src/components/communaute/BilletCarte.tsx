@@ -113,7 +113,7 @@ const BilletCarte: React.FC<{ post: PostMur; delaiIndex: number; estSauvegarde?:
       className="bg-white/55 backdrop-blur-md dark:bg-[#293027]/55 rounded-[20px] border border-white/60 dark:border-white/10 shadow-[0_10px_30px_-18px_rgba(41,48,39,0.3)] p-5 md:p-6"
     >
       <div className="flex items-center gap-3 mb-3">
-        <Medaillon nom={post.nom} url={post.avatarUrl} />
+        <Avatar nom={post.nom} url={post.avatarUrl} />
         <div className="min-w-0 flex-1">
           <p className="font-serif text-base text-[#293027] dark:text-white truncate">
             {post.nom}
