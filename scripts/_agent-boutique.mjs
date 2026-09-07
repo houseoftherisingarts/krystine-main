@@ -170,10 +170,9 @@ try {
   const argentSlice = argentIdx >= 0 ? coffreText.slice(argentIdx, argentIdx + 1200) : coffreText;
   console.log('=== COFFRE ARGENT (client) : mention huile dans son bloc ?', /huile/i.test(argentSlice), '===');
   fs.writeFileSync(`${OUT}/agent-coffre-argent-texte.txt`, argentSlice);
-  const argentBtn = await mem.evaluate(() => {
-    const el = Array.from(document.querySelectorAll('*')).find(e => e.children.length === 0 && /coffre d.argent/i.test(e.textContent || ''));
-    if (el) { el.scrollIntoView({ block: 'center' }); return true; }
-    return false;
+  await mem.evaluate(() => {
+    const btns = Array.from(document.querySelectorAll('button')).filter(b => /ce que le coffre contient/i.test(b.textContent || ''));
+    (btns[1] || btns[0])?.scrollIntoView({ block: 'start' });
   });
   await mem.waitForTimeout(400);
   await mem.screenshot({ path: `${OUT}/agent-boutique-niskas-1440-coffre-contenu.png` });

@@ -14,7 +14,7 @@ import {
 } from './content';
 import AllumetteDuFoyer from './AllumetteDuFoyer';
 import { Cta, useRejoindreFoyer } from './Cta';
-import PlancheFilm from './PlancheFilm';
+import SceneFilm from './PlancheFilm';
 
 /**
  * Le Foyer d'Origine · sections de CORPS (copie du doc « PAGE DE VENTE FINALE »).
@@ -1041,50 +1041,39 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
         </div>
       </section>
 
-      {/* ═══════ SECTION 6 · Le regard qui compose Le Foyer : Krystine détourée
-          sur une tache de terre, en profondeur (deux vitesses), plein jour ═══════ */}
+      {/* ═══════ SECTION 6 · Le regard qui compose Le Foyer : le même module que
+          le hero de /speaking, le film promo énorme derrière un voile vert profond,
+          la copie posée à gauche (Alex, 7 septembre 2026) ═══════ */}
       <section className={`overflow-hidden bg-cream ${overlap ? 'z-[51]' : 'relative'} ${cover}`} style={pin} data-pin-sheet>
-        <div className="mx-auto w-full max-w-[1360px] px-6 pt-24 md:px-12 md:pt-32">
-          <div className="grid gap-x-16 gap-y-14 lg:grid-cols-12 lg:items-center">
-            <div className="lg:col-span-7">
-              <Reveal>
-                <Eyebrow>{SECTION7.eyebrow}</Eyebrow>
-                <h2 className="fy-h mt-8 max-w-[30ch] font-serif font-medium leading-[1.06] text-[clamp(1.7rem,1.1rem+2.8vw,3.2rem)] text-espresso">{SECTION7.title}</h2>
+        <SceneFilm>
+          <Reveal>
+            <Eyebrow on="dark">{SECTION7.eyebrow}</Eyebrow>
+            <h2
+              className="fy-h mt-5 font-serif font-medium leading-[1.04] tracking-[-0.015em] text-ctext text-[clamp(2.2rem,1.3rem+2.6vw,3.6rem)] [text-shadow:0_2px_24px_rgba(27,38,34,0.8)]"
+            >
+              {SECTION7.title.split(/ (?=relier)/)[0]}{' '}
+              <b
+                className="font-medium [text-shadow:none]"
+                style={{
+                  backgroundImage: 'linear-gradient(110deg,#c47a4e 0%,#e6a678 35%,#f8d7b8 50%,#e6a678 65%,#c47a4e 100%)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                  filter: 'drop-shadow(0 2px 18px rgba(27,38,34,0.85))',
+                }}
+              >
+                {SECTION7.title.split(/ (?=relier)/)[1]}
+              </b>
+            </h2>
+          </Reveal>
+          <div className="mt-7 space-y-5">
+            {SECTION7.paragraphs.map((par) => (
+              <Reveal key={par.slice(0, 24)}>
+                <p className="max-w-[36rem] font-serif text-[clamp(1.1rem,1rem+0.45vw,1.4rem)] leading-[1.5] text-ctext/85">{par}</p>
               </Reveal>
-              <div className="mt-12 space-y-7">
-                {SECTION7.paragraphs.map((par) => (
-                  <Reveal key={par.slice(0, 24)}>
-                    <p className="max-w-[64ch] font-sans text-fyBody text-ink">{par}</p>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-
-            {/* la planche : la tache de terre derrière, Krystine devant, à deux vitesses */}
-            <div className="relative mx-auto w-full max-w-[520px] lg:col-span-5">
-              <Parallax speed={0.22} className="absolute inset-x-[-12%] top-[-6%]">
-                <img
-                  aria-hidden
-                  src="/foyer/pigment-terre.webp"
-                  alt=""
-                  width={800}
-                  height={800}
-                  loading="lazy"
-                  className="block h-auto w-full"
-                  style={{
-                    mixBlendMode: 'multiply',
-                    opacity: 0.9,
-                    maskImage: 'radial-gradient(closest-side, black 55%, transparent 100%)',
-                    WebkitMaskImage: 'radial-gradient(closest-side, black 55%, transparent 100%)',
-                  }}
-                />
-              </Parallax>
-              <Parallax speed={0.08} className="relative">
-                <PlancheFilm nom={SECTION7.photoCaption} role="En conférence" />
-              </Parallax>
-            </div>
+            ))}
           </div>
-        </div>
+        </SceneFilm>
 
         <div className="mx-auto w-full max-w-[1360px] px-6 pb-28 pt-24 md:px-12 md:pb-36 md:pt-32">
           {/* le fil : trois piliers, trois colonnes */}
