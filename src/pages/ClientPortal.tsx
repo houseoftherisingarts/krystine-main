@@ -199,19 +199,10 @@ const ClientAmis: React.FC<{ uid: string; lang: string; seulement?: Set<string> 
   const envoyees = liens.filter(l => l.statut === 'demande' && l.de === uid);
   const amis = liens.filter(l => l.statut === 'amis');
 
+  // La rangée d'ami est RangeePersonne (CarteSociale.tsx) : un seul dessin
+  // d'avatar pour la même personne, ici comme au Foyer.
   const Rangee: React.FC<{ autre: string; nom: string; m: MemberDoc | null; enfant?: React.ReactNode }> = ({ autre, nom, m, enfant }) => (
-    <div className="flex items-center gap-3 rounded-[15px] border border-[#38403a]/10 p-3 dark:border-white/10">
-      <Link to={`/membre/${autre}`} className="flex min-w-0 flex-1 items-center gap-3">
-        <div className="h-10 w-10 shrink-0 rounded-full bg-cover bg-center bg-[#BA7B39]/15" style={{ backgroundImage: m?.photoURL ? `url(${m.photoURL})` : undefined }}>
-          {!m?.photoURL && <div className="flex h-full w-full items-center justify-center text-[#8B4A2F]"><i className="fa-solid fa-user text-sm" /></div>}
-        </div>
-        <span className="flex min-w-0 items-center gap-1.5 truncate text-sm font-medium text-[#293027] dark:text-white">
-          <span className="truncate">{nom}</span>
-          {m?.verifie && <i className="fa-solid fa-circle-check shrink-0 text-[12px] text-[#3b82f6]" />}
-        </span>
-      </Link>
-      {enfant}
-    </div>
+    <RangeePersonne uid={autre} nom={nom} photo={m?.photoURL} verifie={m?.verifie} action={enfant} />
   );
 
   if (seulement) {
