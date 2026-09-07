@@ -27,10 +27,8 @@ for (const w of [1440, 390]) {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
   const page = await ctx.newPage();
   await page.goto(BASE + '/medias', { waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(1200);
-  await page.evaluate(() => document.getElementById('tv')?.scrollIntoView({ block: 'start' }));
-  await page.waitForTimeout(400);
-  await page.getByRole('button', { name: /Créer mon compte/i }).first().click();
+  await page.waitForTimeout(1500);
+  await page.getByRole('button', { name: /Créer mon compte/i }).first().click({ timeout: 10000 });
   await shoot(page, 'medias-inscription-1440');
   await ctx.close();
 }
