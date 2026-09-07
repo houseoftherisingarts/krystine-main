@@ -70,7 +70,7 @@ try {
     req.onerror = rej;
   }), [`firebase:authUser:${API_KEY}:[DEFAULT]`, authUser]);
 
-  await page.goto(`${BASE}/liste-attente?programme=pitta`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/liste-attente?programme=pitta`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForTimeout(2000);
   await fermerRoue(page);
   // Le formulaire à champs doit avoir disparu; la case unique doit être visible.
@@ -104,7 +104,7 @@ try {
 
   // ── G2 : badge vedette ──
   await fsdoc(`badges/${uid}`, { obtenus: { mapValue: { fields: { 'voix-du-cercle': now } } }, vedette: { stringValue: 'voix-du-cercle' } });
-  await page.goto(`${BASE}/membre/${uid}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/membre/${uid}`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForTimeout(2000);
   await fermerRoue(page);
   await page.screenshot({ path: `${OUT}/badges/G2-membre-profil.png`, fullPage: true });
@@ -112,7 +112,7 @@ try {
   console.log('G2 — pastille "Voix du cercle" visible sur /membre/{uid}:', badgeVisible);
 
   // Onglet Profil de l'espace client : choisir le badge en vedette + Badges à gagner
-  await page.goto(`${BASE}/compte`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForTimeout(2500);
   await fermerRoue(page);
   await page.screenshot({ path: `${OUT}/badges/G2-compte-defaut.png`, fullPage: true });
