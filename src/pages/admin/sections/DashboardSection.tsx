@@ -11,6 +11,7 @@ import { PALIERS, STATUTS, type CommunauteStats } from '../../../lib/paliers';
 import CommandesStripeCard from './dashboard/CommandesStripeCard';
 import RapportDuJourCard from './dashboard/RapportDuJourCard';
 import NouveauxMembresCard from './dashboard/NouveauxMembresCard';
+import CompteurCliquable from './dashboard/DetailCompteur';
 
 interface Stat { label: string; value: number; icon: string; accent: string; hint?: string; }
 
