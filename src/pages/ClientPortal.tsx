@@ -540,7 +540,7 @@ const ClientPortal: React.FC = () => {
   useEffect(() => {
     const voulu = new URLSearchParams(location.search).get('onglet') as Tab | null;
     if (voulu && ['profile', 'amis', 'orders', 'formations', 'rediffusions', 'telechargements', 'loyalty', 'dosha', 'archives', 'messagerie'].includes(voulu)) setTab(voulu);
-  }, [location.search]);
+  }, [location.search, location.key]);
   // Une carte « Lettre d'or » dans la messagerie mène à l'onglet Lettres.
   useEffect(() => {
     const aller = () => setTab('archives');
