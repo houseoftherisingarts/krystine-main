@@ -198,7 +198,7 @@ try {
   }
 
   // 6. La maquette sans compte, pour la mesure globale du skin.
-  {
+  if (ETAPES.includes('demo')) {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } }); const page = await ctx.newPage();
     await page.goto(`${BASE}/demo-skins?skin=verifie`, { waitUntil: 'domcontentloaded' }); await page.waitForTimeout(1500);
     rapportContraste('demo-skins verifie', await page.evaluate(mesurer, ['.skin-verifie .grid']));
