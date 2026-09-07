@@ -135,11 +135,13 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
               {STATUTS.map(st => (
-                <div key={st.key} className="rounded-[15px] border border-[#293027]/10 dark:border-white/10 p-4">
-                  <p className="text-2xl font-serif text-[#293027] dark:text-white">{fmt(communaute.statuts[st.key] || 0)}</p>
-                  <p className="text-[10px] uppercase tracking-[0.15em] font-bold text-[#BA7B39] mt-1">{st.nom}</p>
-                  <p className="text-[11px] text-[#293027]/50 dark:text-white/50 mt-1">{st.detail}</p>
-                </div>
+                <CompteurCliquable key={st.key} requete={{ genre: 'newsletter-statut', statut: st.key }} titre={st.nom} definition={st.detail}>
+                  <div className="rounded-[15px] border border-[#293027]/10 dark:border-white/10 p-4 transition-colors hover:border-[#BA7B39]/40">
+                    <p className="text-2xl font-serif text-[#293027] dark:text-white">{fmt(communaute.statuts[st.key] || 0)}</p>
+                    <p className="text-[10px] uppercase tracking-[0.15em] font-bold text-[#BA7B39] mt-1">{st.nom}</p>
+                    <p className="text-[11px] text-[#293027]/50 dark:text-white/50 mt-1">{st.detail}</p>
+                  </div>
+                </CompteurCliquable>
               ))}
             </div>
             <div className="space-y-2">
