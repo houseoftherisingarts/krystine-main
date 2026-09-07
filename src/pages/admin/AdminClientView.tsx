@@ -153,6 +153,9 @@ const STATUS_COLORS: Record<string, string> = {
   cancelled: 'bg-red-50 text-red-500',
 };
 
+const dateFR = (t?: { toDate(): Date } | null) =>
+  t ? t.toDate().toLocaleDateString('fr-CA', { year: 'numeric', month: 'long', day: 'numeric' }) : '…';
+
 const DOSHA_GUIDANCE: Record<string, { fr: string; color: string }> = {
   Vata:  { fr: 'Enraciner · Réchauffer · Apaiser',  color: '#8F9779' },
   Pitta: { fr: 'Rafraîchir · Apaiser · Adoucir',    color: '#BC4A3C' },
