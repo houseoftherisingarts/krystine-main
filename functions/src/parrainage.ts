@@ -67,12 +67,15 @@ export const parrainageFilleule = onDocumentCreated(
     await crediterNiskas(parrainUid, 'parrainage', NISKAS_MARRAINE, `parrainage:${filleulUid}`, { filleulUid });
     await crediterNiskas(filleulUid, 'parrainage-bienvenue', NISKAS_FILLEULE, `parrainage-bienvenue:${filleulUid}`, { parrainUid });
 
-    for (const [seuil, badgeId] of PALIERS) {
-      if (n >= seuil) {
-        await db.doc(`badges/${parrainUid}`).set(
-          { obtenus: { [badgeId]: FieldValue.serverTimestamp() } },
-          { merge: true },
-        );
+    // Le module « Badges » fermé arrête la pose, jamais les niskas ci-dessus.
+    if ((await lireGamification()).badges) {
+      for (const [seuil, badgeId] of PALIERS) {
+        if (n >= seuil) {
+          await db.doc(`badges/${parrainUid}`).set(
+            { obtenus: { [badgeId]: FieldValue.serverTimestamp() } },
+            { merge: true },
+          );
+        }
       }
     }
     console.log(`[parrainage] ${parrainUid} compte ${n} filleule(s)`);
