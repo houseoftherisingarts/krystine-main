@@ -1,67 +1,47 @@
-import React, { useState } from 'react';
-import { useAuth } from '../contexts/AppContext';
+import React from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useApp } from '../contexts/AppContext';
+import CadreFoyer from '../components/communaute/CadreFoyer';
 import MurSocial from '../components/communaute/MurSocial';
+import type { FilMur } from '../firebase/mur';
 
-// ─── L'espace Communauté ─────────────────────────────────────────────
-// Deux fils côte à côte sur bureau, deux onglets sur mobile : « Krystine »
-// (annonces officielles, elle seule y publie) et « Communauté » (tout
-// membre connecté). Porté du mur social du FMM 2026.
+// ─── Le fil du Foyer d'Origine (/fil) ────────────────────────────────
+// La page du fil dans la coquille du Foyer social (CadreFoyer) : trois fils
+// au choix, en pilules. « Foyer » est le fil participatif de la formation
+// (formation:foyer, où les membres publient), « Krystine » porte ses annonces
+// (elle seule y publie) et « Communauté » est le fil public. Le choix vit
+// dans ?fil= pour que la cloche puisse y mener. Porté du mur social du FMM 2026.
+const FILS: ReadonlyArray<{ cle: string; fil: FilMur; fr: string; en: string }> = [
+  { cle: 'foyer', fil: 'formation:foyer', fr: 'Foyer', en: 'Hearth' },
+  { cle: 'krystine', fil: 'krystine', fr: 'Krystine', en: 'Krystine' },
+  { cle: 'communaute', fil: 'communaute', fr: 'Communauté', en: 'Community' },
+];
+
 const CommunauteEspace: React.FC = () => {
-  const { user, setSignInOpen } = useAuth();
-  const [onglet, setOnglet] = useState<'krystine' | 'communaute'>('krystine');
-
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-32 pb-24 px-6">
-        <div className="max-w-md mx-auto text-center">
-          <h1 className="font-serif text-3xl text-[#2a2015] dark:text-white mb-4">Communauté</h1>
-          <p className="text-[#3a3126]/60 dark:text-white/60 mb-8">
-            Connectez-vous pour lire et publier dans la communauté.
-          </p>
-          <button
-            onClick={() => setSignInOpen(true)}
-            className="bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-10 py-4 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
-          >
-            Se connecter
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const { lang } = useApp();
+  const fr = lang === 'FR';
+  const [params, setParams] = useSearchParams();
+  const actif = FILS.find(f => f.cle === params.get('fil')) ?? FILS[0];
 
   return (
-    <div className="min-h-screen bg-[#f6f3ee] dark:bg-[#16100a] pt-28 pb-24">
-      <div className="w-full px-6 md:px-8 lg:px-10">
-        <h1 className="font-serif text-3xl md:text-4xl text-[#2a2015] dark:text-white mb-8">Communauté</h1>
-
-        {/* Onglets — mobile seulement, les deux colonnes restent visibles ensemble sur bureau. */}
-        <div className="flex md:hidden gap-2 mb-6">
-          {(['krystine', 'communaute'] as const).map((o) => (
-            <button
-              key={o}
-              type="button"
-              onClick={() => setOnglet(o)}
-              className={`flex-1 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-colors ${
-                onglet === o
-                  ? 'bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015]'
-                  : 'bg-white/60 dark:bg-white/5 text-[#3a3126]/60 dark:text-white/60 border border-[#3a3126]/10 dark:border-white/10'
-              }`}
-            >
-              {o === 'krystine' ? 'Krystine' : 'Communauté'}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className={onglet === 'krystine' ? 'block' : 'hidden md:block'}>
-            <MurSocial fil="krystine" titre="Krystine" />
-          </div>
-          <div className={onglet === 'communaute' ? 'block' : 'hidden md:block'}>
-            <MurSocial fil="communaute" titre="Feed" />
-          </div>
-        </div>
+    <CadreFoyer onglet="fil">
+      <div className="flex flex-wrap gap-2">
+        {FILS.map(f => (
+          <button
+            key={f.cle}
+            type="button"
+            onClick={() => setParams({ fil: f.cle }, { replace: true })}
+            aria-pressed={f === actif}
+            className={`relative flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-bold uppercase tracking-wider transition-colors ${
+              f === actif ? 'bg-[#BA7B39] text-[#293027]' : 'bg-[#BA7B39]/12 text-[#8B4A2F] hover:bg-[#BA7B39]/25 dark:text-[#d9a05b]'
+            }`}
+          >
+            {fr ? f.fr : f.en}
+          </button>
+        ))}
       </div>
-    </div>
+      <MurSocial fil={actif.fil} />
+    </CadreFoyer>
   );
 };
 
