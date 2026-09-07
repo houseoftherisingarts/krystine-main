@@ -289,10 +289,19 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
   // Un seul filtre côté Firestore (statut); l'audience se règle en code.
   // Tri par identifiant : c'est l'ordre du curseur de reprise.
   const subsSnap = await db.collection('newsletter').where('status', '==', 'active').get();
+  // Une même adresse peut vivre sous deux fiches (double inscription) :
+  // une seule reçoit la lettre, la première par identifiant.
+  const adressesVues = new Set<string>();
   const all = selectRecipients(
     subsSnap.docs.map(d => ({ id: d.id, ...(d.data() as SubscriberDoc) })),
     doc,
-  ).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  ).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+    .filter(s => {
+      const e = String(s.email || '').trim().toLowerCase();
+      if (!e || adressesVues.has(e)) return false;
+      adressesVues.add(e);
+      return true;
+    });
   // Chaque envoi réussi est marqué dans la sous-collection `envois` : après
   // une pause (quota du fournisseur) ou une remise à zéro du curseur, personne
   // ne reçoit la lettre deux fois.
