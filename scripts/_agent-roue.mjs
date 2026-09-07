@@ -11,6 +11,16 @@ for (const [nom, viewport] of [['1440', { width: 1440, height: 1200 }], ['390', 
   const nav = await chromium.launch();
   const ctx = await nav.newContext({ viewport });
   const page = await ctx.newPage();
+  // La fonction déployée est encore l'ancienne (rien n'est déployé) : on lui
+  // substitue la réponse que rend la nouvelle, pour regarder la deuxième roue.
+  await page.route('**/reclamerQuotidien', (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({ result: {
+      deja: false, jour: 4, montant: 2, serie: 4, balance: 128, coffre: false, foyer: true,
+      jourFoyer: 4, cadeauRoue: { jour: 4, genre: 'coffre', nom: 'Coffre de bronze' }, cadeauMois: null,
+    } }),
+  }));
   await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded' });
   await dodo(2500);
   const consent = page.getByRole('button', { name: /j'accepte/i }).first();
@@ -28,7 +38,7 @@ for (const [nom, viewport] of [['1440', { width: 1440, height: 1200 }], ['390', 
   await page.evaluate(() => {
     const j = new Date().toISOString().slice(0, 10);
     localStorage.setItem('krystine-jeu-vu', j);
-    localStorage.setItem('krystine-roue-vue', j);
+    localStorage.removeItem('krystine-roue-vue');
   });
   await page.goto(`${BASE}/compte?onglet=loyalty`, { waitUntil: 'domcontentloaded' });
   await dodo(5000);

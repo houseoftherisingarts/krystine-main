@@ -53,17 +53,19 @@ export type CadeauRoueFoyer =
   | { genre: 'coffre'; coffre: 'bronze' | 'argent'; avecCle: boolean }
   | { genre: 'musique'; niskasSiDeja: number };
 
-export interface JourRoueFoyer { cadeau: CadeauRoueFoyer; fr: string; en: string }
+/** `fr`/`en` : la phrase entière (survol, message). `court` : ce qui tient dans
+ *  une case de la roue à 390 px, où sept cases se partagent la largeur. */
+export interface JourRoueFoyer { cadeau: CadeauRoueFoyer; fr: string; en: string; court: string; courtEn: string }
 
 /** Les sept jours de la roue du Foyer, du plus petit au plus gros. */
 export const ROUE_FOYER: JourRoueFoyer[] = [
-  { cadeau: { genre: 'niskas', montant: 8 },  fr: '8 niskas', en: '8 niskas' },
-  { cadeau: { genre: 'cle' },                 fr: 'Une clé de coffre', en: 'A chest key' },
-  { cadeau: { genre: 'niskas', montant: 15 }, fr: '15 niskas', en: '15 niskas' },
-  { cadeau: { genre: 'coffre', coffre: 'bronze', avecCle: false }, fr: 'Un coffre de bronze', en: 'A bronze chest' },
-  { cadeau: { genre: 'niskas', montant: 25 }, fr: '25 niskas', en: '25 niskas' },
-  { cadeau: { genre: 'musique', niskasSiDeja: 40 }, fr: 'La musique d’Origine', en: 'The Origin music' },
-  { cadeau: { genre: 'coffre', coffre: 'argent', avecCle: true }, fr: 'Un coffre d’argent et sa clé', en: 'A silver chest and its key' },
+  { cadeau: { genre: 'niskas', montant: 8 },  fr: '8 niskas', en: '8 niskas', court: '+8', courtEn: '+8' },
+  { cadeau: { genre: 'cle' },                 fr: 'Une clé de coffre', en: 'A chest key', court: 'Clé', courtEn: 'Key' },
+  { cadeau: { genre: 'niskas', montant: 15 }, fr: '15 niskas', en: '15 niskas', court: '+15', courtEn: '+15' },
+  { cadeau: { genre: 'coffre', coffre: 'bronze', avecCle: false }, fr: 'Un coffre de bronze', en: 'A bronze chest', court: 'Coffre', courtEn: 'Chest' },
+  { cadeau: { genre: 'niskas', montant: 25 }, fr: '25 niskas', en: '25 niskas', court: '+25', courtEn: '+25' },
+  { cadeau: { genre: 'musique', niskasSiDeja: 40 }, fr: 'La musique d’Origine', en: 'The Origin music', court: 'Musique', courtEn: 'Music' },
+  { cadeau: { genre: 'coffre', coffre: 'argent', avecCle: true }, fr: 'Un coffre d’argent et sa clé', en: 'A silver chest and its key', court: 'Grand coffre', courtEn: 'Big chest' },
 ];
 
 /** Le jour de la roue (1 à 7) pour une suite de `serie` jours consécutifs. */

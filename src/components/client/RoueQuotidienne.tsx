@@ -21,7 +21,7 @@ function phraseRoueFoyer(etat: Quotidien, fr: boolean): string | null {
   if (!c) return null;
   if (c.genre === 'musique') return fr ? 'La musique d’Origine est à vous : elle vous attend dans l’onglet Téléchargements.' : 'The Origin music is yours: it waits in the Downloads tab.';
   if (c.genre === 'cle') return fr ? 'Une clé de coffre entre dans votre trousseau.' : 'A chest key joins your keyring.';
-  if (c.genre === 'coffre') return fr ? `${c.nom} vous attend dans la petite boutique.` : `${c.nom} waits for you in the little shop.`;
+  if (c.genre === 'coffre') return fr ? `Vous trouverez ${c.nom} dans la petite boutique.` : `You will find ${c.nom} in the little shop.`;
   return fr ? `${niskas(c.montant ?? 0, 'FR')} de plus dans votre bourse.` : `${niskas(c.montant ?? 0, 'EN')} more in your purse.`;
 }
 
@@ -128,7 +128,7 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
                 <span className="text-[9px] font-bold uppercase tracking-widest text-[#38403a]/60 dark:text-white/60">{fr ? 'Jour' : 'Day'} {n}</span>
                 <PieceNiska size={actuel ? 30 : 24} eteinte={passe} />
                 <span className={`font-serif text-base ${actuel ? 'text-[#8B4A2F] dark:text-[#d9a05b]' : 'text-[#293027] dark:text-white'}`}>+{montant}</span>
-                {n === ROUE_QUOTIDIENNE.length && <span className="text-[8px] font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]" title={fr ? 'Un coffre de bronze et sa clé' : 'A bronze chest and its key'}><i className="fa-solid fa-box-open" /> {fr ? 'coffre' : 'chest'}</span>}
+                {n === ROUE_QUOTIDIENNE.length && <span className="w-full text-[8px] font-bold uppercase leading-tight text-[#8B4A2F] dark:text-[#d9a05b]" title={fr ? 'Un coffre de bronze et sa clé' : 'A bronze chest and its key'}><i className="fa-solid fa-box-open" /> <span className="hidden sm:inline">{fr ? 'coffre' : 'chest'}</span></span>}
                 {passe && <i className="fa-solid fa-check text-[10px] text-[#8B4A2F]" aria-hidden="true" />}
               </li>
             );
@@ -150,9 +150,14 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
                 const n = i + 1;
                 const passe = n < jourFoyer;
                 const actuel = n === jourFoyer;
+                // Sous sm, sept cases se partagent 390 px : le mot ne rentre pas
+                // sans se casser en deux, l'icône dit alors le cadeau. Le grand
+                // coffre du septième jour porte sa propre icône pour qu'on ne le
+                // confonde pas avec celui du quatrième.
                 const icone = etape.cadeau.genre === 'niskas' ? 'fa-coins'
                   : etape.cadeau.genre === 'cle' ? 'fa-key'
-                    : etape.cadeau.genre === 'coffre' ? 'fa-box-open' : 'fa-music';
+                    : etape.cadeau.genre === 'musique' ? 'fa-music'
+                      : etape.cadeau.coffre === 'argent' ? 'fa-gem' : 'fa-box-open';
                 return (
                   <li
                     key={n}
@@ -167,8 +172,8 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
                   >
                     <span className="text-[9px] font-bold uppercase tracking-widest text-[#38403a]/60 dark:text-white/60">{fr ? 'Jour' : 'Day'} {n}</span>
                     <i className={`fa-solid ${icone} ${actuel ? 'text-lg text-[#8B4A2F] dark:text-[#d9a05b]' : 'text-base text-[#293027]/45 dark:text-white/45'}`} aria-hidden="true" />
-                    <span className={`text-[9px] leading-tight ${actuel ? 'text-[#8B4A2F] dark:text-[#d9a05b]' : 'text-[#293027]/70 dark:text-white/70'}`}>
-                      {etape.cadeau.genre === 'niskas' ? `+${etape.cadeau.montant}` : (fr ? etape.fr : etape.en)}
+                    <span className={`w-full text-[9px] leading-tight ${etape.cadeau.genre === 'niskas' ? '' : 'hidden sm:block'} ${actuel ? 'text-[#8B4A2F] dark:text-[#d9a05b]' : 'text-[#293027]/70 dark:text-white/70'}`}>
+                      {fr ? etape.court : etape.courtEn}
                     </span>
                     {passe && <i className="fa-solid fa-check text-[10px] text-[#8B4A2F]" aria-hidden="true" />}
                   </li>

@@ -312,8 +312,8 @@ async function cadeauRoueDuFoyer(db: Firestore, uid: string, serie: number, jour
       ...(cadeau.avecCle ? { cles: FieldValue.increment(1) } : {}),
       updatedAt: FieldValue.serverTimestamp(),
     }, { merge: true });
-    const nom = `${PRIX_COFFRES[cadeau.coffre].nom}${cadeau.avecCle ? ' et sa clé' : ''}`;
-    return { jour: index, genre: 'coffre', nom };
+    const nom = `${PRIX_COFFRES[cadeau.coffre].nom.toLowerCase()}${cadeau.avecCle ? ' et sa clé' : ''}`;
+    return { jour: index, genre: 'coffre', nom: `un ${nom}` };
   }
   if (cadeau.genre === 'musique') {
     await offrirMusique(db, uid, KIND_FOYER_ROUE);

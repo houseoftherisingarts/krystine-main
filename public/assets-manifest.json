@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-06T19:50:28.219Z",
+  "generatedAt": "2026-09-07T14:11:38.475Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -198,11 +198,410 @@
       "size": 475809
     },
     {
+      "path": "/compte/lettre-ouverte.webp",
+      "name": "lettre-ouverte.webp",
+      "folder": "compte",
+      "kind": "image",
+      "size": 29294
+    },
+    {
+      "path": "/compte/lettre-scellee.webp",
+      "name": "lettre-scellee.webp",
+      "folder": "compte",
+      "kind": "image",
+      "size": 19418
+    },
+    {
       "path": "/compte/niska.svg",
       "name": "niska.svg",
       "folder": "compte",
       "kind": "image",
       "size": 2163
+    },
+    {
+      "path": "/compte/signature-krystine.png",
+      "name": "signature-krystine.png",
+      "folder": "compte",
+      "kind": "image",
+      "size": 8854
+    },
+    {
+      "path": "/compte/bannieres/huiles-720.webp",
+      "name": "huiles-720.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 23494
+    },
+    {
+      "path": "/compte/bannieres/huiles.webp",
+      "name": "huiles.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 73628
+    },
+    {
+      "path": "/compte/bannieres/iris-720.webp",
+      "name": "iris-720.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 21386
+    },
+    {
+      "path": "/compte/bannieres/iris.webp",
+      "name": "iris.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 76094
+    },
+    {
+      "path": "/compte/bannieres/jardin-720.webp",
+      "name": "jardin-720.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 34674
+    },
+    {
+      "path": "/compte/bannieres/jardin.webp",
+      "name": "jardin.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 100502
+    },
+    {
+      "path": "/compte/bannieres/pivoine-720.webp",
+      "name": "pivoine-720.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 21546
+    },
+    {
+      "path": "/compte/bannieres/pivoine.webp",
+      "name": "pivoine.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 79236
+    },
+    {
+      "path": "/compte/bannieres/soir-720.webp",
+      "name": "soir-720.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 29082
+    },
+    {
+      "path": "/compte/bannieres/soir.webp",
+      "name": "soir.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 96058
+    },
+    {
+      "path": "/compte/coffres/argent.webp",
+      "name": "argent.webp",
+      "folder": "compte/coffres",
+      "kind": "image",
+      "size": 94594
+    },
+    {
+      "path": "/compte/coffres/bronze.webp",
+      "name": "bronze.webp",
+      "folder": "compte/coffres",
+      "kind": "image",
+      "size": 112272
+    },
+    {
+      "path": "/compte/coffres/or.webp",
+      "name": "or.webp",
+      "folder": "compte/coffres",
+      "kind": "image",
+      "size": 80706
+    },
+    {
+      "path": "/compte/coffres/ouverture-argent.mp4",
+      "name": "ouverture-argent.mp4",
+      "folder": "compte/coffres",
+      "kind": "video",
+      "size": 227963
+    },
+    {
+      "path": "/compte/coffres/ouverture-argent.webp",
+      "name": "ouverture-argent.webp",
+      "folder": "compte/coffres",
+      "kind": "image",
+      "size": 61078
+    },
+    {
+      "path": "/compte/coffres/ouverture-bronze.mp4",
+      "name": "ouverture-bronze.mp4",
+      "folder": "compte/coffres",
+      "kind": "video",
+      "size": 280134
+    },
+    {
+      "path": "/compte/coffres/ouverture-bronze.webp",
+      "name": "ouverture-bronze.webp",
+      "folder": "compte/coffres",
+      "kind": "image",
+      "size": 79936
+    },
+    {
+      "path": "/compte/coffres/ouverture-or.mp4",
+      "name": "ouverture-or.mp4",
+      "folder": "compte/coffres",
+      "kind": "video",
+      "size": 542879
+    },
+    {
+      "path": "/compte/coffres/ouverture-or.webp",
+      "name": "ouverture-or.webp",
+      "folder": "compte/coffres",
+      "kind": "image",
+      "size": 63136
+    },
+    {
+      "path": "/compte/fonds/defaut-1920.webp",
+      "name": "defaut-1920.webp",
+      "folder": "compte/fonds",
+      "kind": "image",
+      "size": 362276
+    },
+    {
+      "path": "/compte/fonds/huiles.webp",
+      "name": "huiles.webp",
+      "folder": "compte/fonds",
+      "kind": "image",
+      "size": 125304
+    },
+    {
+      "path": "/compte/fonds/iris.webp",
+      "name": "iris.webp",
+      "folder": "compte/fonds",
+      "kind": "image",
+      "size": 139660
+    },
+    {
+      "path": "/compte/fonds/jardin.webp",
+      "name": "jardin.webp",
+      "folder": "compte/fonds",
+      "kind": "image",
+      "size": 182752
+    },
+    {
+      "path": "/compte/fonds/nature-1920.webp",
+      "name": "nature-1920.webp",
+      "folder": "compte/fonds",
+      "kind": "image",
+      "size": 235518
+    },
+    {
+      "path": "/compte/fonds/pivoine.webp",
+      "name": "pivoine.webp",
+      "folder": "compte/fonds",
+      "kind": "image",
+      "size": 143796
+    },
+    {
+      "path": "/compte/fonds/soir.webp",
+      "name": "soir.webp",
+      "folder": "compte/fonds",
+      "kind": "image",
+      "size": 182900
+    },
+    {
+      "path": "/compte/paquets/p100.webp",
+      "name": "p100.webp",
+      "folder": "compte/paquets",
+      "kind": "image",
+      "size": 67782
+    },
+    {
+      "path": "/compte/paquets/p10000.webp",
+      "name": "p10000.webp",
+      "folder": "compte/paquets",
+      "kind": "image",
+      "size": 86118
+    },
+    {
+      "path": "/compte/paquets/p1600.webp",
+      "name": "p1600.webp",
+      "folder": "compte/paquets",
+      "kind": "image",
+      "size": 104314
+    },
+    {
+      "path": "/compte/paquets/p180.webp",
+      "name": "p180.webp",
+      "folder": "compte/paquets",
+      "kind": "image",
+      "size": 38484
+    },
+    {
+      "path": "/compte/paquets/p2800.webp",
+      "name": "p2800.webp",
+      "folder": "compte/paquets",
+      "kind": "image",
+      "size": 137956
+    },
+    {
+      "path": "/compte/paquets/p400.webp",
+      "name": "p400.webp",
+      "folder": "compte/paquets",
+      "kind": "image",
+      "size": 100364
+    },
+    {
+      "path": "/compte/paquets/p4500.webp",
+      "name": "p4500.webp",
+      "folder": "compte/paquets",
+      "kind": "image",
+      "size": 67920
+    },
+    {
+      "path": "/compte/paquets/p750.webp",
+      "name": "p750.webp",
+      "folder": "compte/paquets",
+      "kind": "image",
+      "size": 61380
+    },
+    {
+      "path": "/compte/plante/arbre.webp",
+      "name": "arbre.webp",
+      "folder": "compte/plante",
+      "kind": "image",
+      "size": 43464
+    },
+    {
+      "path": "/compte/plante/arbrisseau.webp",
+      "name": "arbrisseau.webp",
+      "folder": "compte/plante",
+      "kind": "image",
+      "size": 27872
+    },
+    {
+      "path": "/compte/plante/bosquet.webp",
+      "name": "bosquet.webp",
+      "folder": "compte/plante",
+      "kind": "image",
+      "size": 55114
+    },
+    {
+      "path": "/compte/plante/fleur.webp",
+      "name": "fleur.webp",
+      "folder": "compte/plante",
+      "kind": "image",
+      "size": 36086
+    },
+    {
+      "path": "/compte/plante/foret.webp",
+      "name": "foret.webp",
+      "folder": "compte/plante",
+      "kind": "image",
+      "size": 78762
+    },
+    {
+      "path": "/compte/plante/graine.webp",
+      "name": "graine.webp",
+      "folder": "compte/plante",
+      "kind": "image",
+      "size": 41226
+    },
+    {
+      "path": "/compte/plante/jardin.webp",
+      "name": "jardin.webp",
+      "folder": "compte/plante",
+      "kind": "image",
+      "size": 68908
+    },
+    {
+      "path": "/compte/plante/lotus.webp",
+      "name": "lotus.webp",
+      "folder": "compte/plante",
+      "kind": "image",
+      "size": 57100
+    },
+    {
+      "path": "/compte/plante/pousse.webp",
+      "name": "pousse.webp",
+      "folder": "compte/plante",
+      "kind": "image",
+      "size": 39594
+    },
+    {
+      "path": "/compte/plante/tige.webp",
+      "name": "tige.webp",
+      "folder": "compte/plante",
+      "kind": "image",
+      "size": 39874
+    },
+    {
+      "path": "/compte/skins/aurore.mp4",
+      "name": "aurore.mp4",
+      "folder": "compte/skins",
+      "kind": "video",
+      "size": 110532
+    },
+    {
+      "path": "/compte/skins/aurore.webp",
+      "name": "aurore.webp",
+      "folder": "compte/skins",
+      "kind": "image",
+      "size": 10112
+    },
+    {
+      "path": "/compte/skins/golden-hour.mp4",
+      "name": "golden-hour.mp4",
+      "folder": "compte/skins",
+      "kind": "video",
+      "size": 437579
+    },
+    {
+      "path": "/compte/skins/golden-hour.webp",
+      "name": "golden-hour.webp",
+      "folder": "compte/skins",
+      "kind": "image",
+      "size": 58410
+    },
+    {
+      "path": "/compte/skins/kapha-eau.mp4",
+      "name": "kapha-eau.mp4",
+      "folder": "compte/skins",
+      "kind": "video",
+      "size": 109599
+    },
+    {
+      "path": "/compte/skins/kapha-eau.webp",
+      "name": "kapha-eau.webp",
+      "folder": "compte/skins",
+      "kind": "image",
+      "size": 9516
+    },
+    {
+      "path": "/compte/skins/pitta-feu.mp4",
+      "name": "pitta-feu.mp4",
+      "folder": "compte/skins",
+      "kind": "video",
+      "size": 298930
+    },
+    {
+      "path": "/compte/skins/pitta-feu.webp",
+      "name": "pitta-feu.webp",
+      "folder": "compte/skins",
+      "kind": "image",
+      "size": 20064
+    },
+    {
+      "path": "/compte/skins/vata-vent.mp4",
+      "name": "vata-vent.mp4",
+      "folder": "compte/skins",
+      "kind": "video",
+      "size": 192408
+    },
+    {
+      "path": "/compte/skins/vata-vent.webp",
+      "name": "vata-vent.webp",
+      "folder": "compte/skins",
+      "kind": "image",
+      "size": 42482
     },
     {
       "path": "/foyer/allumage-fond.webp",
@@ -625,6 +1024,13 @@
       "size": 3736
     },
     {
+      "path": "/livres/titre-a-reveler.webp",
+      "name": "titre-a-reveler.webp",
+      "folder": "livres",
+      "kind": "image",
+      "size": 101016
+    },
+    {
       "path": "/podcast/krystine.jpg",
       "name": "krystine.jpg",
       "folder": "podcast",
@@ -665,6 +1071,13 @@
       "folder": "racine",
       "kind": "image",
       "size": 414420
+    },
+    {
+      "path": "/niska.webp",
+      "name": "niska.webp",
+      "folder": "racine",
+      "kind": "image",
+      "size": 48938
     },
     {
       "path": "/og-image.jpg",
