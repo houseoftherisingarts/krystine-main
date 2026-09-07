@@ -280,6 +280,7 @@ export const stripeWebhook = onRequest(
       montant: (session.amount_total || 0) / 100,
       sessionId: session.id || '',
       acheteLe: FieldValue.serverTimestamp(),
+      ...detailTaxes,
       ...(session.metadata?.cadeauId ? { source: 'cadeau', cadeauId: session.metadata.cadeauId } : {}),
     }, { merge: true });
     if (session.metadata?.cadeauId) {
