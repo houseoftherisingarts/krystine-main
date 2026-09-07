@@ -43,6 +43,13 @@ const browser = await chromium.launch();
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(300);
 
+  const debugHero = await page.evaluate(() => {
+    const img = document.querySelector('.relative.hidden.md\\:block img');
+    const cs = img ? getComputedStyle(img) : null;
+    return { scrollY: window.scrollY, transform: cs?.transform, width: img?.getBoundingClientRect().width, naturalWidth: img?.naturalWidth, complete: img?.complete };
+  });
+  console.log('DEBUG hero img après reset scroll:', JSON.stringify(debugHero));
+
   // ── O2 : pleine largeur ──
   const largeurs = await page.evaluate(() => {
     const sections = Array.from(document.querySelectorAll('.sticky > section, .sticky > div > section'));
