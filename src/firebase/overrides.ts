@@ -45,6 +45,17 @@ export async function setTextOverride(key: string, value: string): Promise<void>
   await setDoc(ref, { text: { [key]: value } }, { merge: true });
 }
 
+// Publie plusieurs textes en une seule écriture — le bouton « Publier » de la
+// barre d'édition envoie tout le brouillon d'un coup plutôt qu'un write par
+// champ modifié. `{ merge: true }` fusionne récursivement les clés du sous-objet
+// `text` (documenté Firestore) : les autres clés existantes ne bougent pas.
+export async function setTextOverrides(values: Record<string, string>): Promise<void> {
+  if (!db) throw new Error('[Overrides] Firebase not configured');
+  if (Object.keys(values).length === 0) return;
+  const ref = doc(db, 'siteOverrides', DOC_ID);
+  await setDoc(ref, { text: values }, { merge: true });
+}
+
 export async function setImageOverride(key: string, payload: ImageOverride): Promise<void> {
   if (!db) throw new Error('[Overrides] Firebase not configured');
   const ref = doc(db, 'siteOverrides', DOC_ID);
