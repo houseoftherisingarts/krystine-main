@@ -19,6 +19,7 @@ export { chatbotKrystine } from './newsletter/chatbot';
 export { verifierCaptcha } from './captcha';
 export { creerSessionPaiement, creerPourboire, creerSessionNiskas, creerSessionSaison, stripeWebhook, obtenirLecon } from './paiements';
 export { acheterAvecNiskas, reclamerQuotidien, reclamerBienvenue, reclamerCoffreBeta } from './niskas';
+export { echangerRecompense } from './recompenses';
 export { demanderBadgeBleu, deciderBadgeBleu } from './verification';
 export { murVoteBillet, murVoteCommentaire, murCommentaireCompte, murBilletSupprime, murCommentaireSupprime } from './mur';
 export { badgeAchatFormation, badgePremierBillet, badgeAmitieAcceptee } from './badges';
