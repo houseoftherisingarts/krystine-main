@@ -41,6 +41,8 @@ console.log('niskas mentions:', JSON.stringify(texte));
 await page.screenshot({ path: '/private/tmp/claude-501/-Users-lesalondesinconnus/3a548c8f-1fba-4e35-b513-f459846a1c9b/scratchpad/dbg-top.png' });
 console.log('url actuelle', page.url());
 console.log('done waiting');
+const apres = await fetch(`https://firestore.googleapis.com/v1/projects/${PROJET}/databases/(default)/documents/memberPoints/${uid}`, { headers: { Authorization: `Bearer ${gtoken}` } });
+console.log('memberPoints après réclamation quotidienne:', await apres.text());
 await browser.close();
 await rest(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${API_KEY}`, { idToken: u.idToken });
 await fetch(`https://firestore.googleapis.com/v1/projects/${PROJET}/databases/(default)/documents/memberPoints/${uid}`, { method: 'DELETE', headers: { Authorization: `Bearer ${gtoken}` } });
