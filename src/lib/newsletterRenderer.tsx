@@ -400,7 +400,7 @@ function esc(s: string): string {
 }
 
 function personalize(text: string, firstName?: string): string {
-  return text.replace(/\{\{\s*firstName\s*\}\}/g, firstName || '');
+  return text.replace(/ ?\{\{\s*firstName\s*\}\}/g, firstName ? ` ${firstName}` : '');
 }
 
 function blockToEmail(block: NewsletterBlock, firstName?: string): string {
