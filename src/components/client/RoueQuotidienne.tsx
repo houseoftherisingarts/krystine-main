@@ -69,6 +69,7 @@ const RoueQuotidienne: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, la
   const cadeau = foyer ? phraseCadeau(etat, fr) : null;
   const prochains = foyer ? prochainsCadeauxFoyer(etat.serie) : null;
   const jours = (n: number) => (fr ? `${n} jour${n > 1 ? 's' : ''}` : `${n} day${n > 1 ? 's' : ''}`);
+  const minuscule = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 
   return (
     <Portail>
