@@ -31,7 +31,7 @@ const BoutonCompte: React.FC<{
       className={`bouton-compte inline-flex ${taille === 'sm' ? 'self-center align-middle' : 'min-h-[44px]'} items-center justify-center gap-2 rounded-full font-sans font-bold uppercase ${gabarit} ${className}`}
     >
       {icone && <i className="fa-solid fa-star text-[0.7em]" aria-hidden="true" />}
-      <span>{libelle || (fr ? 'Créer mon compte' : 'Create my account')}</span>
+      <span>{libelle || (fr ? 'Accéder à mon compte' : 'Access my account')}</span>
     </motion.button>
   );
 };
