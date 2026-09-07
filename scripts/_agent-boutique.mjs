@@ -156,6 +156,15 @@ try {
   console.log('onglet Téléchargements trouvé:', ok);
   await mem.waitForTimeout(2000);
   await shotsAtFractions(mem, 'agent-boutique-niskas', [['haut', 0], ['milieu', 0.35], ['coffres', 0.55], ['videos', 0.8]]);
+  // Déplie « ce que le coffre d'argent contient » et vérifie l'absence d'huile.
+  await mem.evaluate(() => {
+    const btn = Array.from(document.querySelectorAll('button')).find(b => /ce que le coffre contient/i.test(b.textContent || ''));
+    if (btn) btn.click();
+  });
+  await mem.waitForTimeout(500);
+  const coffreText = await mem.locator('body').innerText();
+  console.log('=== COFFRE ARGENT (client) : mention huile ?', /huile/i.test(coffreText), '===');
+  await mem.screenshot({ path: `${OUT}/agent-boutique-niskas-1440-coffre-contenu.png` });
   await mem.setViewportSize({ width: 390, height: 844 });
   await mem.waitForTimeout(500);
   await shotsAtFractions(mem, 'agent-boutique-niskas', [['haut', 0], ['milieu', 0.35], ['coffres', 0.55], ['videos', 0.8]]);
@@ -175,3 +184,4 @@ await memCtx.close();
 
 await browser.close();
 console.log('DONE');
+
