@@ -459,6 +459,9 @@ export interface NewsletterDoc {
   // (FONDS_INFOLETTRE). Blanc quand absent. Les couleurs de texte suivent.
   fond?: string | null;
   versionAt?: Timestamp;   // dernière version gardée dans /versions
+  // Avancement d'un envoi en cours (écrit par les fonctions) : compte des
+  // courriels partis, et la raison si la passe est en pause (quota Resend).
+  progress?: { done: number; failed: number; lastId: string | null; raisonPause?: string; pauseJusqua?: Timestamp } | null;
   sentAt?: Timestamp;
   stats?: NewsletterStats;
   createdBy?: string;
