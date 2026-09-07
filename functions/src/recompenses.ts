@@ -28,7 +28,7 @@ export function corpsCouponFormation(): URLSearchParams {
     amount_off: '5000',
     currency: 'cad',
     duration: 'once',
-    name: 'Récompense niskas · 50 $ sur une formation',
+    name: 'Cadeau niskas · 50 $ sur une formation',
   });
 }
 
