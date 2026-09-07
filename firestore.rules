@@ -249,11 +249,12 @@ service cloud.firestore {
     // Les onglets d'un espace de formation (Krystine les gère).
     match /formations/{id}/onglets/{oid} { allow read: if isSignedIn(); allow write: if isAdmin(); }
 
-    // Les membres d'un groupe de formation (miroir écrit par la fonction).
-    // Celui du Foyer d'Origine est la liste du groupe VIP : elle ne se lit
-    // qu'entre membres du Foyer (Alex, 7 septembre 2026).
+    // Le seul groupe social du site est le Foyer d'Origine (Alex, 7 septembre
+    // 2026) : son miroir est la liste du groupe VIP, et elle ne se lit
+    // qu'entre membres du Foyer. Les miroirs des autres formations ne se
+    // lisent plus du tout; les documents restent en base, personne n'y touche.
     match /groupes/{fid}/membres/{uid} {
-      allow read: if isSignedIn() && (fid != 'foyer' || estDuFoyer());
+      allow read: if fid == 'foyer' && estDuFoyer();
       allow write: if false;
     }
 

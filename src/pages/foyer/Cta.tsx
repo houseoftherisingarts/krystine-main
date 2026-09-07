@@ -6,7 +6,7 @@ import { CHEMINS_FOYER } from '../../components/communaute/chemins';
 
 /* ── Rejoindre le Foyer : Stripe Checkout (mise en vente le 6 septembre 2026,
    la liste d'attente est retirée). Qui possède déjà la formation entre
-   directement dans le Foyer social. Partagé entre chaque CTA et la pilule. ── */
+   directement à l'entrée du Foyer. Partagé entre chaque CTA et la pilule. ── */
 export function useRejoindreFoyer() {
   const { user, setSignInOpen } = useAuth();
   const [possede, setPossede] = useState(false);
@@ -16,7 +16,7 @@ export function useRejoindreFoyer() {
     else setPossede(false);
   }, [user]);
   const rejoindre = async () => {
-    if (possede) { window.location.href = CHEMINS_FOYER.fil; return; }
+    if (possede) { window.location.href = CHEMINS_FOYER.programme; return; }
     if (!user) { setSignInOpen(true); return; }
     setBusy(true);
     try { window.location.href = await acheterFormation('foyer'); } catch { setBusy(false); }

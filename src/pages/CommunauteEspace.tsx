@@ -6,15 +6,14 @@ import MurSocial from '../components/communaute/MurSocial';
 import type { FilMur } from '../firebase/mur';
 
 // ─── Le fil du Foyer d'Origine (/foyer/fil) ──────────────────────────
-// La page du fil dans la coquille du Foyer social (CadreFoyer) : trois fils
-// au choix, en pilules. « Foyer » est le fil participatif de la formation
-// (formation:foyer, où les membres publient), « Krystine » porte ses annonces
-// (elle seule y publie) et « Communauté » est le fil public. Le choix vit
-// dans ?fil= pour que la cloche puisse y mener. Porté du mur social du FMM 2026.
+// LE mur du site : le Foyer d'Origine est le seul groupe social (Alex,
+// 7 septembre 2026). « Le mur » est le fil participatif où les membres
+// publient (formation:foyer); « Krystine » porte ses annonces à elle, où elle
+// seule publie. Le fil public « communaute » est retiré. Le choix vit dans
+// ?fil= pour que la cloche puisse y mener. Porté du mur social du FMM 2026.
 const FILS: ReadonlyArray<{ cle: string; fil: FilMur; fr: string; en: string }> = [
-  { cle: 'foyer', fil: 'formation:foyer', fr: 'Foyer', en: 'Hearth' },
+  { cle: 'foyer', fil: 'formation:foyer', fr: 'Le mur', en: 'The wall' },
   { cle: 'krystine', fil: 'krystine', fr: 'Krystine', en: 'Krystine' },
-  { cle: 'communaute', fil: 'communaute', fr: 'Communauté', en: 'Community' },
 ];
 
 const CommunauteEspace: React.FC = () => {

@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
-import EspaceGroupe from '../components/communaute/EspaceGroupe';
 import { suivreLiveEnCours, type LiveEnCours } from '../firebase/lives';
 import { PORTES, porteDuMois, foyerOuvert, DEBUT_LABEL } from './foyer/portesData';
 import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, type QuestionLecon } from '../firebase/formations';
@@ -10,6 +9,7 @@ import {
   type Formation, type Lecon,
 } from '../firebase/formations';
 import { useAuth, useUI } from '../contexts/AppContext';
+import CadreFoyer from '../components/communaute/CadreFoyer';
 import { getMember } from '../firebase/firestore';
 import TexteLecon from '../lib/texteLecon';
 import { LecteurVideoPleinEcran } from '../components/LecteurVideoEmbarque';
@@ -194,9 +194,9 @@ const CoursDetailPage: React.FC = () => {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-[#EEE7DB] pt-28 pb-24 dark:bg-[#151d19]">
-      <div className="mx-auto max-w-[1720px] px-5 md:px-10">
+  const page = (
+    <div className={id === 'foyer' && accessible ? '' : 'min-h-screen bg-[#EEE7DB] pt-28 pb-24 dark:bg-[#151d19]'}>
+      <div className={id === 'foyer' && accessible ? '' : 'mx-auto max-w-[1720px] px-5 md:px-10'}>
         <Link to="/cours" className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">
           <i className="fa-solid fa-arrow-left mr-2" />{lang === 'FR' ? 'Toutes les formations' : 'All courses'}
         </Link>
@@ -630,17 +630,18 @@ const CoursDetailPage: React.FC = () => {
           </div>
         )}
 
-        {/* L'espace de groupe : onglets, feed et membres, pleine largeur. */}
-        {accessible && user && (
-          <div className="mt-14">
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">La communauté</p>
-            <h2 className="mt-1 mb-6 font-serif text-2xl text-[#293027] dark:text-white">{lang === 'FR' ? 'Autour du feu' : 'Around the fire'}</h2>
-            <EspaceGroupe formationId={id} />
-          </div>
-        )}
       </div>
     </div>
   );
+
+  // L'entrée du Foyer d'Origine porte la coquille sociale : les onglets en
+  // haut (Le programme allumé) et la colonne de gauche se voient dès le
+  // premier clic, sans rien chercher (Alex, 7 septembre 2026). Les autres
+  // formations gardent leur page telle quelle.
+  if (id === 'foyer' && accessible) {
+    return <CadreFoyer onglet="programme" large>{page}</CadreFoyer>;
+  }
+  return page;
 };
 
 

@@ -51,7 +51,7 @@ const ChatKrystine: React.FC = () => {
         type="button"
         onClick={() => setOuvert(o => !o)}
         aria-label={ouvert ? 'Fermer la conversation' : 'Poser une question'}
-        className="fixed bottom-5 right-5 z-[90] flex h-13 w-13 items-center justify-center rounded-full border border-[#BA7B39]/60 bg-[#293027]/90 p-4 text-[#d9a05b] shadow-[0_14px_40px_-12px_rgba(41,48,39,0.8)] backdrop-blur-md transition-transform hover:scale-105"
+        className="fixed bottom-5 right-5 z-[90] flex h-11 w-11 items-center justify-center rounded-full border border-[#BA7B39]/60 bg-[#293027]/90 text-[#d9a05b] shadow-[0_14px_40px_-12px_rgba(41,48,39,0.8)] backdrop-blur-md transition-transform hover:scale-105"
       >
         <i className={`fa-solid ${ouvert ? 'fa-xmark' : 'fa-feather-pointed'} text-lg`} />
       </button>

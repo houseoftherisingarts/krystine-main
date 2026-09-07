@@ -12,7 +12,9 @@ import { Volume2, VolumeX } from 'lucide-react';
 import { Atmosphere } from '../components/motion/loeuvre';
 import BodySections from './foyer/BodySections';
 import MusiqueOrigine from './foyer/MusiqueOrigine';
+import { Navigate } from 'react-router-dom';
 import { Cta, useRejoindreFoyer } from './foyer/Cta';
+import { CHEMINS_FOYER } from '../components/communaute/chemins';
 import { OFFRE, FINAL } from './foyer/content';
 import { getFormation, type Formation } from '../firebase/formations';
 
@@ -780,6 +782,10 @@ const AppelFinal: React.FC = () => {
 
 /* ── Page ── */
 const FoyerPage: React.FC = () => {
+  // Une acheteuse n'a plus rien à lire ici : la page de vente la renvoie à
+  // l'entrée du Foyer (Alex, 7 septembre 2026). Krystine et l'admin ne
+  // possèdent pas la formation, alors la page de vente leur reste ouverte.
+  const { possede } = useRejoindreFoyer();
   const [ready, setReady] = useState(false);
   const reduce = useReducedMotion();
   useEffect(() => {
@@ -803,6 +809,7 @@ const FoyerPage: React.FC = () => {
       window.history.scrollRestoration = prevRestore;
     };
   }, []);
+  if (possede) return <Navigate to={CHEMINS_FOYER.programme} replace />;
   return (
     <div className="bg-cream overflow-x-clip">
       <Preloader done={ready} />
@@ -844,7 +851,7 @@ const AchatFoyer: React.FC = () => {
       type="button"
       onClick={rejoindre}
       disabled={busy}
-      className="fixed bottom-[5.5rem] right-5 z-[90] inline-flex items-center gap-2 rounded-full bg-[#bb9a5e] px-5 py-3 sm:bottom-6 sm:right-6 sm:px-6 sm:py-3.5 text-xs font-bold uppercase tracking-widest text-[#2a2015] shadow-[0_12px_35px_-10px_rgba(163,130,63,0.9)] backdrop-blur transition-transform hover:scale-[1.03] disabled:opacity-60"
+      className="fixed bottom-[4.75rem] right-5 z-[90] inline-flex h-11 items-center gap-2 rounded-full bg-[#bb9a5e] px-5 sm:bottom-5 sm:right-[4.75rem] sm:px-6 text-xs font-bold uppercase tracking-widest leading-none text-[#2a2015] shadow-[0_12px_35px_-10px_rgba(163,130,63,0.9)] backdrop-blur transition-transform hover:scale-[1.03] disabled:opacity-60"
     >
       <i className={`fa-solid ${possede ? 'fa-door-open' : 'fa-fire'}`} />
       {busy ? 'Redirection…' : possede ? 'Ouvrir ma formation' : (

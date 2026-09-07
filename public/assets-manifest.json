@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-07T14:20:21.315Z",
+  "generatedAt": "2026-09-07T14:52:00.979Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -657,7 +657,7 @@
       "name": "calendrier-annee.webp",
       "folder": "foyer",
       "kind": "image",
-      "size": 121728
+      "size": 123338
     },
     {
       "path": "/foyer/chandelle.mp4",
@@ -825,84 +825,84 @@
       "name": "porte-aout-cutout.webp",
       "folder": "foyer",
       "kind": "image",
-      "size": 12784
+      "size": 17622
     },
     {
       "path": "/foyer/porte-avril-cutout.webp",
       "name": "porte-avril-cutout.webp",
       "folder": "foyer",
       "kind": "image",
-      "size": 11318
+      "size": 14780
     },
     {
       "path": "/foyer/porte-decembre-cutout.webp",
       "name": "porte-decembre-cutout.webp",
       "folder": "foyer",
       "kind": "image",
-      "size": 11290
+      "size": 14632
     },
     {
       "path": "/foyer/porte-fevrier-cutout.webp",
       "name": "porte-fevrier-cutout.webp",
       "folder": "foyer",
       "kind": "image",
-      "size": 14464
+      "size": 18968
     },
     {
       "path": "/foyer/porte-janvier-cutout.webp",
       "name": "porte-janvier-cutout.webp",
       "folder": "foyer",
       "kind": "image",
-      "size": 10954
+      "size": 14616
     },
     {
       "path": "/foyer/porte-juillet-cutout.webp",
       "name": "porte-juillet-cutout.webp",
       "folder": "foyer",
       "kind": "image",
-      "size": 13962
+      "size": 18582
     },
     {
       "path": "/foyer/porte-juin-cutout.webp",
       "name": "porte-juin-cutout.webp",
       "folder": "foyer",
       "kind": "image",
-      "size": 14340
+      "size": 19130
     },
     {
       "path": "/foyer/porte-mai-cutout.webp",
       "name": "porte-mai-cutout.webp",
       "folder": "foyer",
       "kind": "image",
-      "size": 11348
+      "size": 15396
     },
     {
       "path": "/foyer/porte-mars-cutout.webp",
       "name": "porte-mars-cutout.webp",
       "folder": "foyer",
       "kind": "image",
-      "size": 14854
+      "size": 20058
     },
     {
       "path": "/foyer/porte-novembre-cutout.webp",
       "name": "porte-novembre-cutout.webp",
       "folder": "foyer",
       "kind": "image",
-      "size": 12752
+      "size": 16976
     },
     {
       "path": "/foyer/porte-octobre-cutout.webp",
       "name": "porte-octobre-cutout.webp",
       "folder": "foyer",
       "kind": "image",
-      "size": 13930
+      "size": 18142
     },
     {
       "path": "/foyer/porte-sept-cutout.webp",
       "name": "porte-sept-cutout.webp",
       "folder": "foyer",
       "kind": "image",
-      "size": 11408
+      "size": 15170
     },
     {
       "path": "/foyer/porte-septembre.glb",

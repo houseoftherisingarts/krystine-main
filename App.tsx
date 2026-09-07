@@ -57,7 +57,6 @@ const CommunauteEspace = lazy(() => import('./src/pages/CommunauteEspace'));
 const CommunauteMembres = lazy(() => import('./src/pages/CommunauteMembres'));
 const MembreProfilPage = lazy(() => import('./src/pages/MembreProfilPage'));
 const MessagesPage     = lazy(() => import('./src/pages/MessagesPage'));
-const GroupesPage      = lazy(() => import('./src/pages/GroupesPage'));
 // Expérience Origine — refonte React au style L'Œuvre (remplacera le bundle
 // statique /origine une fois toutes les sections portées). Preview en cours.
 const OrigineExperience = lazy(() => import('./src/pages/OrigineExperience'));
@@ -274,16 +273,17 @@ const App: React.FC = () => (
           <Route path="/foyer/fil" element={<CommunauteEspace />} />
           <Route path="/foyer/membres" element={<CommunauteMembres />} />
           <Route path="/foyer/membre/:uid" element={<MembreProfilPage />} />
-          <Route path="/foyer/groupes" element={<GroupesPage />} />
-          <Route path="/foyer/groupes/:id" element={<GroupesPage />} />
+          {/* Un seul groupe social, le Foyer : son fil est le mur. */}
+          <Route path="/foyer/groupes" element={<Navigate to="/foyer/fil" replace />} />
+          <Route path="/foyer/groupes/:id" element={<Navigate to="/foyer/fil" replace />} />
           <Route path="/foyer/messages" element={<MessagesPage />} />
           <Route path="/foyer/messages/:autreUid" element={<MessagesPage />} />
           {/* Les anciennes adresses publiques mènent au Foyer, paramètres compris. */}
           <Route path="/fil" element={<VersFoyer />} />
           <Route path="/membres" element={<VersFoyer />} />
           <Route path="/membre/:uid" element={<VersFoyer />} />
-          <Route path="/groupes" element={<VersFoyer />} />
-          <Route path="/groupes/:id" element={<VersFoyer />} />
+          <Route path="/groupes" element={<Navigate to="/foyer/fil" replace />} />
+          <Route path="/groupes/:id" element={<Navigate to="/foyer/fil" replace />} />
           <Route path="/messages" element={<VersFoyer />} />
           <Route path="/messages/:autreUid" element={<VersFoyer />} />
           <Route path="/demo-skins" element={<DemoSkins />} />

@@ -4,6 +4,9 @@
 // (/fil, /membres, /membre/:uid, /groupes, /messages) redirigent ici, dans
 // App.tsx. Un seul endroit écrit ces adresses : personne ne recolle un
 // « /membres » à la main.
+//
+// Il n'y a plus de groupes : le Foyer d'Origine EST le seul groupe social du
+// site, et son fil est le mur (Alex, 7 septembre 2026).
 
 export const CHEMINS_FOYER = {
   /** La page de vente du Foyer d'Origine, la seule porte publique. */
@@ -14,8 +17,6 @@ export const CHEMINS_FOYER = {
   membres: '/foyer/membres',
   amies: '/foyer/membres?vue=amies',
   demandes: '/foyer/membres?vue=demandes',
-  groupes: '/foyer/groupes',
-  groupe: (id: string) => `/foyer/groupes/${id}`,
   messages: '/foyer/messages',
   conversation: (uid: string) => `/foyer/messages/${uid}`,
   profil: (uid: string) => `/foyer/membre/${uid}`,

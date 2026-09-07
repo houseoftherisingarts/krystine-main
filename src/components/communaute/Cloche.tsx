@@ -67,9 +67,9 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
     return suivreMesAmities(uid, setAmities);
   }, [uid]);
 
-  // Le fil de la communauté vit au Foyer : sans l'achat, les règles refusent
-  // la lecture, alors on ne s'y abonne même pas.
-  useEffect(() => (foyer ? suivreLeMur('communaute', setBillets, 10) : undefined), [foyer]);
+  // Les annonces de Krystine vivent au Foyer : sans l'achat, les règles
+  // refusent la lecture, alors on ne s'y abonne même pas.
+  useEffect(() => (foyer ? suivreLeMur('krystine', setBillets, 10) : undefined), [foyer]);
   useEffect(() => (uid ? suivreMesCadeaux(uid, setCadeaux) : undefined), [uid]);
 
   useEffect(() => {
@@ -123,7 +123,7 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
       .map((b) => ({
         id: `billet-${b.id}`,
         titre: `Krystine a publié : ${b.texte.length > 50 ? `${b.texte.slice(0, 50)}…` : b.texte}`,
-        lien: foyer ? `${CHEMINS_FOYER.fil}?fil=communaute` : '/compte',
+        lien: foyer ? `${CHEMINS_FOYER.fil}?fil=krystine` : '/compte',
         quand: b.creeLe?.toMillis?.() ?? 0,
       }));
     const dons: Item[] = cadeaux.map((c) => ({
