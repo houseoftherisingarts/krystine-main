@@ -524,6 +524,21 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // L'onglet « Aider » : les sondages de Krystine. Toute personne connectée
+    // les lit (pour voir la liste, filtrée côté client par sondagesFaits);
+    // seule l'admin les écrit depuis l'éditeur. Les réponses individuelles
+    // (sondages/{id}/reponses/{uid}) ne s'écrivent que par le serveur
+    // (repondreSondage, Admin SDK, contourne ces règles) : jamais depuis le
+    // navigateur, pour que le crédit de niskas ne se fasse jamais côté client.
+    match /sondages/{id} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+      match /reponses/{uid} {
+        allow read: if isAdmin();
+        allow write: if false;
+      }
+    }
+
     // ── Support messaging ──
     // Conversation doc keyed by member uid; only the owner and admins can read/write.
     match /conversations/{uid} {
