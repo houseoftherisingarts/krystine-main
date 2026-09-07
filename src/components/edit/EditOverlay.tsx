@@ -296,6 +296,9 @@ const EditOverlay: React.FC = () => {
       document.removeEventListener('click', onClickCapture, true);
       document.removeEventListener('focusout', onFocusOut, true);
       document.removeEventListener('keydown', onKeyDown, true);
+      document.removeEventListener('mouseover', onMouseOver);
+      document.removeEventListener('mouseout', onMouseOut);
+      pencil.remove();
       tagObs.disconnect();
       document.getElementById(STYLE_ID)?.remove();
     };
