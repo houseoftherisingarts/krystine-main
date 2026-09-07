@@ -61,18 +61,14 @@ const shootBoutique = async (largeur, hauteur, suffixe) => {
 
   // Deux popups peuvent s'ouvrir seules à l'arrivée sur /compte : la roue
   // quotidienne (« Jour N », data-bug-ignore) et le bandeau de consentement
-  // (Loi 25). Plusieurs passes, avec un léger délai (reclamerQuotidien).
-  const fermerPopups = async () => {
-    for (let i = 0; i < 5; i++) {
-      let ferme = false;
-      const r = page.locator('[data-bug-ignore]').first();
-      if (await r.count()) { await r.click({ position: { x: 8, y: 8 } }).catch(() => {}); ferme = true; }
-      const consent = page.getByRole('button', { name: /Non merci|No thanks/i }).first();
-      if (await consent.count()) { await consent.click().catch(() => {}); ferme = true; }
-      await page.waitForTimeout(ferme ? 400 : 500);
-    }
-  };
+  // (Loi 25). Retirées du DOM par script (pas de clic Playwright : la roue
+  // reste « not stable » assez longtemps pour faire expirer l'action).
+  const fermerPopups = () => page.evaluate(() => {
+    document.querySelectorAll('[data-bug-ignore]').forEach((el) => el.remove());
+    document.querySelectorAll('button').forEach((b) => { if (/Non merci|No thanks/i.test(b.textContent || '')) b.click(); });
+  });
   await fermerPopups();
+  await page.waitForTimeout(300);
 
   // Tout replié au chargement.
   await page.screenshot({ path: `${OUT}/boutique-replie-${suffixe}.png`, fullPage: true });

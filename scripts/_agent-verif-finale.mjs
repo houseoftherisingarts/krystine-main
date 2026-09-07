@@ -32,7 +32,7 @@ await step('medias-inscription (bouton Creer mon compte)', async () => {
   const page = await ctx.newPage();
   await page.goto(BASE + '/medias', { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1800);
-  await page.getByRole('button', { name: /Créer mon compte/i }).first().click({ timeout: 15000 });
+  await page.getByRole('button', { name: /Accéder à mon compte/i }).first().click({ timeout: 15000 });
   await shoot(page, 'medias-inscription-1440');
   await ctx.close();
 });
@@ -43,7 +43,7 @@ let connectee = false;
 await step('connexion admin', async () => {
   await page.goto(BASE + '/compte', { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1800);
-  await page.getByRole('button', { name: /Créer mon compte/i }).first().click({ timeout: 15000 });
+  await page.getByRole('button', { name: /Accéder à mon compte/i }).first().click({ timeout: 15000 });
   await page.waitForTimeout(700);
   await page.getByText('Déjà un compte').click({ timeout: 10000 });
   await page.waitForTimeout(600);
