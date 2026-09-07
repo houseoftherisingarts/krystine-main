@@ -85,7 +85,13 @@ const PanneauDetail: React.FC<{ requete: RequeteCompteur; titre: string; definit
   const [axe, setAxe] = useState<AxeRegroupement>('aucun');
   const [ouverte, setOuverte] = useState<string | null>(null);
   const [ficheUid, setFicheUid] = useState<string | null>(null);
+  const [repliees, setReplies] = useState<Set<string>>(new Set());
   const clef = JSON.stringify(requete);
+  const basculerGroupe = (cle: string) => setReplies((s) => {
+    const n = new Set(s);
+    if (n.has(cle)) n.delete(cle); else n.add(cle);
+    return n;
+  });
 
   const chargerSuite = async (premiere: boolean, curseurActuel: QueryDocumentSnapshot<DocumentData> | null) => {
     setCharge(true); setErreur(null);
