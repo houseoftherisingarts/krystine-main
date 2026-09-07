@@ -157,8 +157,11 @@ try {
   await aller(page, '/fil'); await capturer(page, 'fil-garde-1440');
   await ctx.close();
 } catch (e) {
-  console.log('ERREUR', e.message);
-  throw e;
+  console.log('ERREUR', e.message.split('\n')[0]);
+  for (const c of browser.contexts()) for (const p of c.pages()) {
+    await p.screenshot({ path: `${OUT}/_erreur.png`, fullPage: true }).catch(() => {});
+    console.log('état', await p.evaluate(() => ({ url: location.href, articles: document.querySelectorAll('article').length, main: document.querySelector('main')?.innerText.slice(0, 400) })).catch(() => null));
+  }
 } finally {
   await browser.close();
   await effacerCompte(A); await effacerCompte(B);
