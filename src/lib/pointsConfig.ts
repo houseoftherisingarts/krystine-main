@@ -288,10 +288,19 @@ export const SKINS: Skin[] = [
     descFR: 'Le fond d’un aquarium : la lumière ondule sur les murs, des bulles montent, et l’eau frémit sous vos gestes. Légendaire.',
     descEN: 'The bottom of an aquarium: light ripples on the walls, bubbles rise, and the water quivers under your gestures. Legendary.',
     palette: { fond: '#061a2b', panneau: '#0c2740', encre: '#e4f4fb', accent: '#3fb7d9', accentClair: '#9fe4f5', accentProfond: '#8ddcf0', sombre: true } },
+  // Le Skin Vérifié : réservé au Badge Bleu. Ni en boutique, ni dans un coffre :
+  // deciderBadgeBleu le pose à l'approbation. Bleu profond et blanc cassé, une
+  // coche en motif discret (skins.css). L'accentProfond est très pâle parce que
+  // c'est lui qui porte les libellés sur le panneau bleu : #e4f1ff sur #2f6fb0
+  // donne 4,6 pour 1, l'accent #7fb4ff n'y donnerait que 2,5.
+  { cle: 'verifie', cout: null, rarete: 'exclusif', reserve: 'badge-bleu', icone: 'fa-circle-check', nomFR: 'Skin Vérifié', nomEN: 'Verified skin',
+    descFR: 'Le bleu profond du Badge Bleu sur tout l’espace, du blanc cassé pour les mots et une coche discrète qui court en motif. Réservé aux membres qui portent le Badge Bleu.',
+    descEN: 'The deep blue of the Blue Badge over the whole space, off-white for the words and a discreet check running as a pattern. Reserved for members who carry the Blue Badge.',
+    palette: { fond: '#1e4a7a', panneau: '#2f6fb0', encre: '#f2f6fb', accent: '#7fb4ff', accentClair: '#b5d4ff', accentProfond: '#e4f1ff', sombre: true } },
 ];
 export const skinParCle = (cle: string) => SKINS.find(s => s.cle === cle);
 export const SKINS_LEGENDAIRES = SKINS.filter(s => s.rarete === 'legendaire');
-export const SKINS_RARES = SKINS.filter(s => s.cout === null);
+export const SKINS_RARES = SKINS.filter(s => s.cout === null && s.rarete !== 'exclusif');
 
 export interface ArticleBoutique {
   id: string;
