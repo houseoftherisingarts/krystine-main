@@ -102,14 +102,17 @@ const CommunauteMembres: React.FC = () => {
       <CarteSociale
         titre={`${fr ? 'Membres' : 'Members'} · ${membres.length}`}
         action={
-          <input
-            type="search"
-            value={recherche}
-            onChange={e => setRecherche(e.target.value)}
-            placeholder={fr ? 'Chercher une membre' : 'Search a member'}
-            aria-label={fr ? 'Chercher une membre' : 'Search a member'}
-            className="w-full rounded-full border border-[#38403a]/15 bg-white/70 px-4 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] sm:w-56 dark:border-white/15 dark:bg-white/10 dark:text-white"
-          />
+          // flex-1 sous sm : le titre garde sa ligne, le champ prend le reste.
+          <div className="flex min-w-0 flex-1 justify-end sm:flex-none">
+            <input
+              type="search"
+              value={recherche}
+              onChange={e => setRecherche(e.target.value)}
+              placeholder={fr ? 'Chercher une membre' : 'Search a member'}
+              aria-label={fr ? 'Chercher une membre' : 'Search a member'}
+              className="w-full rounded-full border border-[#38403a]/15 bg-white/70 px-4 py-2 text-sm text-[#293027] outline-none focus:border-[#BA7B39] sm:w-56 dark:border-white/15 dark:bg-white/10 dark:text-white"
+            />
+          </div>
         }
       >
         <div className="mb-4 flex flex-wrap gap-2">
