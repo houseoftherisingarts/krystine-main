@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-07T14:52:00.979Z",
+  "generatedAt": "2026-09-07T15:13:02.864Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -217,6 +217,20 @@
       "folder": "compte",
       "kind": "image",
       "size": 2163
+    },
+    {
+      "path": "/compte/signature-krystine-noire.webp",
+      "name": "signature-krystine-noire.webp",
+      "folder": "compte",
+      "kind": "image",
+      "size": 51702
+    },
+    {
+      "path": "/compte/signature-krystine-or.webp",
+      "name": "signature-krystine-or.webp",
+      "folder": "compte",
+      "kind": "image",
+      "size": 62738
     },
     {
       "path": "/compte/signature-krystine.png",
