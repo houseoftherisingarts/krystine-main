@@ -12,7 +12,7 @@ const PW = readFileSync('/Users/lesalondesinconnus/.claude/scripts/.krystine_adm
 const browser = await chromium.launch();
 
 async function connecter(page, email, motDePasse, { creerCompte = false } = {}) {
-  await page.goto(`${BASE}/compte`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded' });
   const bouton = page.getByText(/se connecter|créer mon compte|compte/i).first();
   await bouton.click({ timeout: 8000 }).catch(() => {});
   await page.waitForSelector('input[type="email"]', { timeout: 8000 });
@@ -27,7 +27,7 @@ async function connecter(page, email, motDePasse, { creerCompte = false } = {}) 
 }
 
 async function shots(page, url, nom) {
-  await page.goto(`${BASE}${url}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}${url}`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1200);
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.screenshot({ path: `${OUT}/${nom}-1440.png`, fullPage: true });
