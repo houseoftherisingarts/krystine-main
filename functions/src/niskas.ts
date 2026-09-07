@@ -125,7 +125,7 @@ export async function crediterNiskas(
 
 /** Le solde qu'on croit : le document, plafonné par la somme du journal
  *  (le journal ne se réécrit jamais, le document se corrige au besoin). */
-async function soldeVerifie(uid: string, balanceDoc: number): Promise<number> {
+export async function soldeVerifie(uid: string, balanceDoc: number): Promise<number> {
   try {
     const agg = await getFirestore().collection('pointsEvents').where('uid', '==', uid)
       .aggregate({ total: AggregateField.sum('amount') }).get();
