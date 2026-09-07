@@ -15,6 +15,19 @@ const PROJET = 'krystinestlaurent-87566';
 const EMAIL = 'admin@krystinestlaurent.ca';
 const PASSWORD = readFileSync(`${process.env.HOME}/.claude/scripts/.krystine_admin_pw`, 'utf8').trim();
 
+// Ferme la roue quotidienne et le bandeau de consentement (sitewide, sans
+// rapport avec Aider) : ils interceptent les clics tant qu'ils sont ouverts.
+async function fermerPopups(page) {
+  for (let i = 0; i < 3; i++) {
+    await page.keyboard.press('Escape').catch(() => {});
+    const nonMerci = page.getByRole('button', { name: /Non merci/i });
+    if (await nonMerci.count()) await nonMerci.click({ timeout: 1000 }).catch(() => {});
+    const overlay = page.locator('[data-bug-ignore="true"]');
+    if (!(await overlay.count())) break;
+    await page.waitForTimeout(400);
+  }
+}
+
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
 const page = await ctx.newPage();
@@ -33,20 +46,21 @@ await page.getByPlaceholder('Mot de passe').fill(PASSWORD);
 await page.locator('form button[type="submit"]').click();
 await page.waitForTimeout(3000);
 console.log('connecté, url =', page.url());
+if (await page.getByRole('button', { name: /Se connecter/i }).count()) {
+  console.error('la connexion a échoué (réseau ?) — relancer le script');
+  await browser.close();
+  process.exit(1);
+}
 
 // ── La liste, desktop ───────────────────────────────────────────────────
 await page.goto(`${BASE}/compte?onglet=aider`, { waitUntil: 'domcontentloaded' });
-await page.waitForTimeout(2000);
-// Fermer la roue quotidienne et le consentement (sitewide, sans rapport
-// avec Aider) avant d'interagir, sinon ils interceptent les clics.
-await page.keyboard.press('Escape').catch(() => {});
-const nonMerci = page.getByRole('button', { name: /Non merci/i });
-if (await nonMerci.count()) await nonMerci.click().catch(() => {});
-await page.waitForTimeout(400);
+await page.waitForTimeout(2500);
+await fermerPopups(page);
 await page.screenshot({ path: `${OUT}/aider-liste-1440.png`, fullPage: true });
 console.log('capture liste desktop');
 
 // ── Ouvrir le premier sondage, avancer jusqu'à une question échelle ────
+await fermerPopups(page);
 const premiereCarte = page.getByRole('button', { name: /Répondre/i }).first();
 await premiereCarte.click();
 await page.waitForTimeout(600);
@@ -83,14 +97,15 @@ if (await boutonEnvoyer.count()) {
 
 // Retour à la liste pour la suite.
 await page.goto(`${BASE}/compte?onglet=aider`, { waitUntil: 'domcontentloaded' });
-await page.waitForTimeout(1500);
-await page.keyboard.press('Escape').catch(() => {});
+await page.waitForTimeout(2000);
+await fermerPopups(page);
 
 // ── Mobile, même session ────────────────────────────────────────────────
 await page.setViewportSize({ width: 390, height: 844 });
 await page.waitForTimeout(500);
 await page.screenshot({ path: `${OUT}/aider-liste-390.png`, fullPage: true });
 console.log('capture liste mobile');
+await fermerPopups(page);
 await page.getByRole('button', { name: /Répondre/i }).first().click();
 await page.waitForTimeout(600);
 await page.locator('button', { hasText: 'Je découvre' }).first().click().catch(() => {});
@@ -151,9 +166,8 @@ await page2.getByPlaceholder('Mot de passe').fill(PASSWORD);
 await page2.locator('form button[type="submit"]').click();
 await page2.waitForTimeout(3000);
 await page2.goto(`${BASE}/compte?onglet=aider`, { waitUntil: 'domcontentloaded' });
-await page2.waitForTimeout(2000);
-await page2.keyboard.press('Escape').catch(() => {});
-await page2.waitForTimeout(300);
+await page2.waitForTimeout(2500);
+await fermerPopups(page2);
 await page2.screenshot({ path: `${OUT}/aider-apres-completion-1440.png`, fullPage: true });
 console.log('capture liste après complétion simulée (formations-2026-09 doit être absent)');
 await browser2.close();
