@@ -15,6 +15,10 @@ import { suivreMesCadeaux, type Cadeau } from '../../firebase/cadeaux';
 // dms.ts, les mêmes qu'à /messages) et le fil avec le soutien Inspirata
 // (ClientSupport, collection conversations/{uid}). Rien de nouveau côté
 // données : l'onglet réunit ce qui existait déjà à deux endroits.
+//
+// Le même composant sert la messagerie d'origine du Foyer (/messages, dans
+// CadreFoyer) : `avec` ouvre la conversation avec une personne (le fil se
+// crée au passage), `dansFoyer` retire le lien du bas qui y mène.
 
 type Volet = 'amies' | 'support';
 
