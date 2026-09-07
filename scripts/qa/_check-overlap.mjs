@@ -1,0 +1,36 @@
+import { chromium } from 'playwright';
+import { readFileSync } from 'node:fs';
+const BASE = 'http://localhost:5199';
+const EMAIL = 'admin@krystinestlaurent.ca';
+const PASSWORD = readFileSync(`${process.env.HOME}/.claude/scripts/.krystine_admin_pw`, 'utf8').trim();
+const browser = await chromium.launch();
+const page = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
+await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded' });
+await page.waitForTimeout(1200);
+await page.getByRole('button', { name: /Se connecter/i }).first().click();
+await page.waitForTimeout(500);
+await page.getByRole('button', { name: /Déjà un compte/i }).click();
+await page.waitForTimeout(300);
+await page.getByPlaceholder('Courriel').fill(EMAIL);
+await page.getByPlaceholder('Mot de passe').fill(PASSWORD);
+await page.locator('form button[type="submit"]').click();
+await page.waitForTimeout(3000);
+await page.goto(`${BASE}/compte?onglet=aider`, { waitUntil: 'domcontentloaded' });
+await page.waitForTimeout(2000);
+await page.getByRole('button', { name: /Répondre/i }).first().click();
+await page.waitForTimeout(600);
+// Avancer jusqu'à la dernière question (10) en répondant vite.
+for (let i = 0; i < 9; i++) {
+  const pastille = page.locator('.mt-6 button').first();
+  if (await pastille.count()) await pastille.click({ timeout: 1500 }).catch(() => {});
+  await page.locator('button:has-text("Suivant"), button:has-text("Envoyer")').last().click();
+  await page.waitForTimeout(300);
+}
+// Forcer l'affichage du message d'erreur sans dépendre du réseau : on
+// clique Envoyer (échouera, CORS/fonction non déployée) puis on capture
+// SANS fullPage, exactement ce qu'une personne voit sans faire défiler.
+await page.locator('button:has-text("Envoyer")').click();
+await page.waitForTimeout(2500);
+await page.screenshot({ path: 'scripts/qa/shots/aider-overlap-viewport-1440.png', fullPage: false });
+console.log('capture viewport (sans scroll stitching)');
+await browser.close();
