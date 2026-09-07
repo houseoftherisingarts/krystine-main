@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getNewsletters, deleteNewsletter, type NewsletterDoc } from '../../../../firebase/firestore';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import app from '../../../../firebase';
+import { traduireParIris } from '../../../../lib/traduction';
 import { Card, PrimaryButton, DangerButton, EmptyState, GhostButton } from '../../primitives';
 
 interface Props {
@@ -29,12 +28,10 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
   const [traduction, setTraduction] = useState<string | null>(null);
   const [erreur, setErreur] = useState<string | null>(null);
   const dupliquerEtTraduire = async (n: NewsletterDoc) => {
-    if (!n.id || !app) return;
+    if (!n.id) return;
     setErreur(null); setTraduction(n.id);
     try {
-      const res: any = await httpsCallable(getFunctions(app, 'us-central1'), 'traduireInfolettre')({ newsletterId: n.id, mode: 'copie' });
-      const newId = res.data?.id as string | undefined;
-      if (!newId) throw new Error('La traduction n’a pas rendu de brouillon.');
+      const { id: newId } = await traduireParIris({ newsletterId: n.id, mode: 'copie' });
       onOpen(newId);
     } catch (e: any) {
       setErreur(e?.message || 'La traduction a échoué.');

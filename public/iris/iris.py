@@ -37,7 +37,7 @@ try:
 except ImportError:
     _SSL = ssl.create_default_context()
 
-VERSION = "2.1.2"
+VERSION = "2.2.0"
 PROJECT = "krystinestlaurent-87566"
 BASE = f"https://firestore.googleapis.com/v1/projects/{PROJECT}/databases/(default)/documents"
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -246,7 +246,7 @@ def heartbeat():
 def nouvelles():
     st, data = fs("POST", ":runQuery", {"structuredQuery": {
         "from": [{"collectionId": "irisDemandes"}],
-        "where": {"fieldFilter": {"field": {"fieldPath": "statut"}, "op": "EQUAL", "value": {"stringValue": "nouvelle"}}},
+        "where": {"fieldFilter": {"field": {"fieldPath": "statut"}, "op": "IN", "value": {"arrayValue": {"values": [{"stringValue": "nouvelle"}, {"stringValue": "a_traduire"}]}}}},
         "limit": 5}})
     if st != 200:
         log(f"runQuery {st} : {json.dumps(data)[:200]}")
@@ -434,9 +434,72 @@ def system_prompt():
     return s
 
 
-def run_claude(prompt):
-    cmd = ["claude", "-p", "--output-format", "json", "--json-schema", json.dumps(SCHEMA),
-           "--system-prompt", system_prompt(), "--model", MODEL, "--no-session-persistence", "--tools", "",
+# ─── Traduction d'une infolettre (bouton « Traduire » de l'admin) ───────────
+# L'admin dépose une demande `type: traduction` avec le contenu source (le
+# compte Iris ne lit pas newsletters/), le relais rend traductionJson et
+# l'admin applique : copie ou sur place. Passe par Claude Code, donc par
+# l'abonnement Max de Krystine, jamais par l'API.
+TRADUCTION_SCHEMA = {
+    "type": "object",
+    "required": ["title", "subject", "preheader", "etiquette", "blocks"],
+    "properties": {
+        "title": {"type": "string"}, "subject": {"type": "string"}, "preheader": {"type": "string"},
+        "etiquette": {"type": "string"},
+        "blocks": {"type": "array", "items": {"type": "object", "properties": {
+            "text": {"type": ["string", "null"]}, "caption": {"type": ["string", "null"]}, "alt": {"type": ["string", "null"]},
+            "label": {"type": ["string", "null"]}, "attribution": {"type": ["string", "null"]}, "eyebrow": {"type": ["string", "null"]},
+            "title": {"type": ["string", "null"]}, "body": {"type": ["string", "null"]}, "buttonLabel": {"type": ["string", "null"]},
+        }}},
+    },
+}
+TRADUCTION_EN = (
+    "You translate Krystine St-Laurent's French newsletters into English for her English-speaking readers. Krystine has spent close to forty years "
+    "connecting what we learned to separate: nourishing and healing, body and consciousness, science and wisdom (nursing, clinical research, Ayurveda, "
+    "medicinal plants, writing). Her podcast is « Au-delà des tendances » (keep the French title, you may add « Beyond the Trends » once).\n"
+    "Rules: warm, natural English written by a person. Keep every structure and every non-text value untouched: block order, URLs, image URLs, fonts, "
+    "sizes, placeholders such as {{firstName}}, and the light markup <b>, <i>, <u>, <a href=\"…\"> exactly where it stands. No em dashes. Never the "
+    "\"it's not X, it's Y\" pattern. No rule-of-three lists by reflex, no rhetorical question answered right away, no inspirational closing line. "
+    "Translate meaning, not word for word. Subject line under 60 characters. Return null for a field that was empty in the source. "
+    "The blocks array must have exactly one entry per source block, in the same order."
+)
+TRADUCTION_FR = (
+    "Tu traduis en français les infolettres de Krystine St-Laurent (krystinestlaurent.ca) écrites en anglais, pour ses lectrices et lecteurs "
+    "francophones du Québec. Krystine relie ce que nous avons appris à séparer : nourrir et soigner, corps et conscience, science et sagesses. "
+    "Son podcast s'appelle « Au-delà des tendances ».\n"
+    "Règles : un français naturel et chaleureux, vouvoiement toujours, « nous » et jamais « on » pour Krystine et son équipe, aucun tiret cadratin, "
+    "presque jamais « ce n'est pas X, c'est Y », des phrases entières avec un sujet et un verbe, jamais de fragments empilés avec des virgules, pas de "
+    "règle de trois par réflexe ni de conclusion inspirante. Garde intacts la structure et tout ce qui n'est pas du texte : ordre des blocs, adresses, "
+    "images, polices, tailles, les gabarits comme {{firstName}}, et le balisage léger <b>, <i>, <u>, <a href=\"…\"> exactement à sa place. Traduis le "
+    "sens, pas mot à mot. Sujet de moins de 60 caractères. Renvoie null pour un champ vide à la source. Le tableau blocks a exactement une entrée par "
+    "bloc source, dans le même ordre."
+)
+CHAMPS_TEXTE = ("text", "caption", "alt", "label", "attribution", "eyebrow", "title", "body", "buttonLabel")
+
+
+def traduction_prompt(d):
+    src = d.get("source") or {}
+    cible = "en" if d.get("cible") != "fr" else "fr"
+    consigne = "Translate this newsletter to English." if cible == "en" else "Traduis cette infolettre en français."
+    return consigne + "\n" + json.dumps(src, ensure_ascii=False), (TRADUCTION_EN if cible == "en" else TRADUCTION_FR)
+
+
+def handle_traduction(doc_id, d, t0):
+    prompt, systeme = traduction_prompt(d)
+    so, ms = run_claude(prompt, schema=TRADUCTION_SCHEMA, system=systeme)
+    src_blocks = (d.get("source") or {}).get("blocks") or []
+    blocks = so.get("blocks") or []
+    if len(blocks) != len(src_blocks):
+        raise RuntimeError(f"la traduction compte {len(blocks)} bloc(s) pour {len(src_blocks)} à la source")
+    out = {k: so.get(k) for k in ("title", "subject", "preheader", "etiquette")}
+    out["blocks"] = [{k: b.get(k) for k in CHAMPS_TEXTE if b.get(k)} for b in blocks]
+    patch(f"/irisDemandes/{doc_id}", {"statut": "repondue", "traductionJson": json.dumps(out, ensure_ascii=False),
+                                       "repondue": {"__ts": True}, "dureeMs": int(ms or (time.time() - t0) * 1000)})
+    log(f"✓ {doc_id} traduction ({d.get('cible') or 'en'}, {d.get('mode') or 'copie'}) en {round(time.time() - t0)} s")
+
+
+def run_claude(prompt, schema=None, system=None):
+    cmd = ["claude", "-p", "--output-format", "json", "--json-schema", json.dumps(schema or SCHEMA),
+           "--system-prompt", system or system_prompt(), "--model", MODEL, "--no-session-persistence", "--tools", "",
            "--strict-mcp-config"]  # aucun serveur MCP de la machine (Serena et compagnie restent fermés)
     out = subprocess.run(cmd, input=prompt, capture_output=True, text=True, timeout=CLAUDE_TIMEOUT, cwd=HERE)
     try:
@@ -476,8 +539,17 @@ def handle(doc_id, d, update_time):
     st, _ = patch(f"/irisDemandes/{doc_id}", {"statut": "en_cours", "prise": {"__ts": True}, "hote": hote()}, update_time)
     if st != 200:
         return  # une autre instance l'a prise
-    log(f"→ {doc_id} : {str((d.get('messages') or [{}])[-1].get('content'))[:80]}")
     t0 = time.time()
+    if d.get("type") == "traduction":
+        log(f"→ {doc_id} : traduction de « {str((d.get('source') or {}).get('subject') or '')[:60]} »")
+        try:
+            handle_traduction(doc_id, d, t0)
+        except Exception as e:  # noqa: BLE001
+            msg = str(e)[:600]
+            patch(f"/irisDemandes/{doc_id}", {"statut": "echec", "erreur": msg, "repondue": {"__ts": True}})
+            log(f"✗ {doc_id} : {msg}")
+        return
+    log(f"→ {doc_id} : {str((d.get('messages') or [{}])[-1].get('content'))[:80]}")
     try:
         so, ms = run_claude(build_prompt(d))
         prop = so.get("proposal")

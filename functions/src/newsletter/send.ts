@@ -2,7 +2,7 @@ import { onCall, HttpsError, type CallableRequest } from 'firebase-functions/v2/
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { renderEmailHtml, renderEmailText, newsletterAttachments, inlineForPreview, type NewsletterBlock, type Couverture, type Lang, type Bandeau } from './renderer';
-import { MAIL_SECRETS, NEWSLETTER_POSTAL_ADDRESS, REPLY_TO, createTransporter, fromAddr as buildFrom, unsubscribeUrl as buildUnsub } from './mail';
+import { MAIL_SECRETS, NEWSLETTER_POSTAL_ADDRESS, REPLY_TO, createTransporter, fromAddr as buildFrom, unsubscribeUrl as buildUnsub, unsubscribeOneClickUrl } from './mail';
 import { renderWelcomeHtml, WELCOME_SUBJECT , WELCOME_IMAGE_URL } from './welcome';
 import { buildMail, renderLiveHtml, type LiveEvent } from './live';
 
@@ -286,7 +286,7 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
       html: renderEmailHtml(doc.blocks, opts),
       text: renderEmailText(doc.blocks, opts),
       headers: {
-        'List-Unsubscribe': `<${unsubscribeUrl}>`,
+        'List-Unsubscribe': `<${unsubscribeOneClickUrl(sub.unsubscribeToken || '')}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
       attachments: newsletterAttachments(opts),

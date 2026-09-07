@@ -15,6 +15,7 @@ import MediathequePicker from '../../../../components/edit/MediathequePicker';
 import { RenderBlockWeb, POLICES, TAILLES, SEPARATEURS, FONDS_INFOLETTRE, estSombre } from '../../../../lib/newsletterRenderer';
 import { Input, Label, PrimaryButton, GhostButton } from '../../primitives';
 import Portail from '../../../../components/Portail';
+import { traduireParIris } from '../../../../lib/traduction';
 
 interface Props {
   newsletterId: string | null;  // null → fresh draft
@@ -297,11 +298,8 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     try {
       const savedId = isReadOnly ? id : await save();
       if (!savedId) throw new Error('Impossible d’enregistrer le brouillon.');
-      if (!app) throw new Error('Firebase n’est pas configuré.');
-      const call = httpsCallable(getFunctions(app, 'us-central1'), 'traduireInfolettre');
-      const res: any = await call({ newsletterId: savedId, mode });
-      const newId = res.data?.id as string | undefined;
-      if (!newId) throw new Error('La traduction n’a pas rendu de brouillon.');
+      // Par Iris (Claude Code sur l'ordinateur de Krystine), jamais par l'API.
+      const { id: newId } = await traduireParIris({ newsletterId: savedId, mode });
       if (mode === 'surplace') {
         const n = await getNewsletter(newId);
         if (n) { chargerRef.current(n); etatSauve.current = null; }

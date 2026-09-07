@@ -9,8 +9,7 @@ import {
   REPLY_TO,
   createTransporter,
   fromAddr,
-  unsubscribeUrl,
-} from './mail';
+  unsubscribeUrl, unsubscribeOneClickUrl } from './mail';
 
 // ─── Podcast en direct : confirmation + rappels automatiques ─────────────────
 // Un document `liveEvents/{id}` décrit chaque direct (titre, date, lien
@@ -295,7 +294,7 @@ export async function sendLiveMail(
     html: renderLiveHtml(m, { unsubscribeUrl: unsub, postalAddress, ev }),
     text: renderLiveText(m, { unsubscribeUrl: unsub, postalAddress }),
     headers: {
-      'List-Unsubscribe': `<${unsub}>`,
+      'List-Unsubscribe': `<${unsubscribeOneClickUrl(sub.unsubscribeToken || '')}>`,
       'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
     },
     attachments: liveAttachments(),

@@ -41,3 +41,10 @@ export function fromAddr(name = 'Krystine St-Laurent'): string {
 export function unsubscribeUrl(token: string): string {
   return `${PUBLIC_BASE_URL}/desinscription?t=${encodeURIComponent(token)}`;
 }
+
+// L'en-tête List-Unsubscribe (un clic dans Gmail, Yahoo, Apple Mail) est un
+// POST sans page : il doit viser la fonction elle-même, pas la page du site,
+// qui répondait 200 sans rien désabonner (vérifié le 7 septembre 2026).
+export function unsubscribeOneClickUrl(token: string): string {
+  return `https://us-central1-${process.env.GCLOUD_PROJECT || 'krystinestlaurent-87566'}.cloudfunctions.net/unsubscribeByToken?t=${encodeURIComponent(token)}`;
+}

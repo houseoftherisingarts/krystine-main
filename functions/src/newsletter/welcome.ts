@@ -7,8 +7,7 @@ import {
   REPLY_TO,
   createTransporter,
   fromAddr,
-  unsubscribeUrl,
-} from './mail';
+  unsubscribeUrl, unsubscribeOneClickUrl } from './mail';
 import { findEventByTags, sendLiveMail } from './live';
 
 // ─── Courriel de bienvenue ───────────────────────────────────────────────────
@@ -149,7 +148,7 @@ export const sendWelcomeEmail = onDocumentCreated(
         html: renderWelcomeHtml({ firstName: d.firstName, unsubscribeUrl: unsub, postalAddress }),
         text: renderWelcomeText({ firstName: d.firstName, unsubscribeUrl: unsub, postalAddress }),
         headers: {
-          'List-Unsubscribe': `<${unsub}>`,
+          'List-Unsubscribe': `<${unsubscribeOneClickUrl(d.unsubscribeToken || '')}>`,
           'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
         },
         attachments: welcomeAttachments(),
