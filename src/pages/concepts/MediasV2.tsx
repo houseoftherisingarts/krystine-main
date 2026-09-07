@@ -464,8 +464,8 @@ export default function MediasV2() {
             </h3>
             <p className="mt-4 text-[0.95rem] leading-[1.8] text-[#3a2f23] flex-1">
               {lang === 'FR'
-                ? 'Les épisodes de Santé la vie se regardent dans votre espace : 25 niskas l’épisode, ou 175 niskas pour une saison complète. Les niskas se gagnent en visitant votre espace, et s’achètent aussi directement là.'
-                : 'The episodes of Santé la vie are watched in your space: 25 niskas per episode, or 175 niskas for a full season. Niskas are earned by visiting your space, and can also be bought there directly.'}
+                ? 'Les épisodes de Santé la vie se regardent dans votre espace : 25 niskas l’épisode, et une saison complète pour 175 niskas ou 30 $ CA, au choix. Les niskas se gagnent en visitant votre espace, et s’achètent aussi directement là.'
+                : 'The episodes of Santé la vie are watched in your space: 25 niskas per episode, and a full season for 175 niskas or $30 CAD, your choice. Niskas are earned by visiting your space, and can also be bought there directly.'}
             </p>
             {user ? (
               <a
