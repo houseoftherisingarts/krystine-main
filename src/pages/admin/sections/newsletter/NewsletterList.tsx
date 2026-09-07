@@ -84,6 +84,15 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
                       {n.lettreDor && <i className="fa-solid fa-crown mr-2 text-xs" style={{ color: '#c9a24a' }} title="Lettre d'or, à l'interne" />}
                       {n.title || '—'}
                       {n.lang === 'en' && <span className="ml-2 text-[9px] uppercase tracking-widest font-bold px-1.5 py-0.5 rounded-full bg-[#293027]/10 text-[#293027]/70 dark:bg-white/10 dark:text-white/70 align-middle" title="Lettre en anglais">EN</span>}
+                      {/* Sur petit écran, la colonne Statut est masquée : le statut et l'avancement vivent ici. */}
+                      <div className="mt-1.5 lg:hidden font-sans">
+                        <span className={`text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full ${st.color}`}>{st.label}</span>
+                        {n.status === 'sending' && n.progress && (
+                          <div className="mt-1 max-w-[200px] text-[11px] leading-snug text-[#8B4A2F]">
+                            {n.progress.done} partis{n.progress.raisonPause ? ` · en pause : ${n.progress.raisonPause}` : ''}
+                          </div>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden md:table-cell truncate max-w-[220px]">{n.subject || '—'}</td>
                     <td className="px-4 py-3 hidden lg:table-cell">
