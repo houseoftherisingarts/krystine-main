@@ -204,10 +204,18 @@ service cloud.firestore {
     }
 
     // ── Messagerie privée et amitiés (portées du FMM) ────────────────────
+    // Aucune conversation directe vers un admin (Alex, 7 septembre 2026) :
+    // « Écrire à l'équipe » (conversations/{uid}) est la seule porte vers
+    // Krystine et Alex. La boîte à boîte entre membres reste ouverte entre
+    // elles, jamais avec un uid de etat/admins.
     match /dms/{filId} {
       allow read: if isSignedIn() && request.auth.uid in resource.data.participantUids;
-      allow create: if isSignedIn() && request.auth.uid in request.resource.data.participantUids;
-      allow update: if isSignedIn() && request.auth.uid in resource.data.participantUids;
+      allow create: if isSignedIn() && request.auth.uid in request.resource.data.participantUids
+                    && !esAdminUid(request.resource.data.participantUids[0])
+                    && !esAdminUid(request.resource.data.participantUids[1]);
+      allow update: if isSignedIn() && request.auth.uid in resource.data.participantUids
+                    && !esAdminUid(resource.data.participantUids[0])
+                    && !esAdminUid(resource.data.participantUids[1]);
       allow delete: if false;
 
       match /messages/{mid} {
@@ -215,7 +223,9 @@ service cloud.firestore {
           && request.auth.uid in get(/databases/$(database)/documents/dms/$(filId)).data.participantUids;
         allow create: if isSignedIn()
           && request.resource.data.senderUid == request.auth.uid
-          && request.auth.uid in get(/databases/$(database)/documents/dms/$(filId)).data.participantUids;
+          && request.auth.uid in get(/databases/$(database)/documents/dms/$(filId)).data.participantUids
+          && !esAdminUid(get(/databases/$(database)/documents/dms/$(filId)).data.participantUids[0])
+          && !esAdminUid(get(/databases/$(database)/documents/dms/$(filId)).data.participantUids[1]);
         allow update, delete: if false;
       }
     }
