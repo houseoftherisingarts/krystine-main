@@ -315,6 +315,33 @@ export const stripeWebhook = onRequest(
       res.status(200).send('ok'); return;
     }
 
+    // Une saison de Santé la vie payée en argent : même octroi que le chemin
+    // niskas (acheterAvecNiskas), les episodes de la saison, jamais toute l'émission.
+    if (uid && session.metadata?.type === 'saison' && session.payment_status === 'paid') {
+      const db = getFirestore();
+      const saison = String(session.metadata?.saison || '');
+      const moduleNom = SAISONS[saison];
+      if (moduleNom) {
+        const lecons = await db.collection(`formations/${SANTE_LA_VIE_ID}/lecons`).where('moduleNom', '==', moduleNom).get();
+        const episodes: Record<string, FieldValue> = {};
+        for (const d of lecons.docs) episodes[d.id] = FieldValue.serverTimestamp();
+        const f = (await db.doc(`formations/${SANTE_LA_VIE_ID}`).get()).data() as { titre?: string; imageUrl?: string } | undefined;
+        await db.doc(`achatsFormations/${uid}/formations/${SANTE_LA_VIE_ID}`).set({
+          titre: f?.titre || 'Émission Santé! La Vie!',
+          imageUrl: f?.imageUrl || '',
+          categorie: 'video',
+          source: 'stripe',
+          episodes,
+          montant: (session.amount_total || 0) / 100,
+          sessionId: session.id || '',
+          accordeLe: FieldValue.serverTimestamp(),
+          ...detailTaxes,
+        }, { merge: true });
+        console.log(`[paiements] saison ${saison} de Santé la vie pour ${uid} via Stripe`);
+      }
+      res.status(200).send('ok'); return;
+    }
+
     if (!uid || !formationId || session.payment_status !== 'paid') { res.status(200).send('incomplete'); return; }
 
     const db = getFirestore();
