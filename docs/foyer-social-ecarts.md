@@ -170,7 +170,7 @@ Grille `lg:grid-cols-[220px_minmax(0,1fr)_280px] gap-6`. Les deux colonnes laté
 
 - À 1440, la colonne de droite fait 280 px et le badge vedette prend la place du nom : le `truncate` réduit « Un membre » à « U » ou à rien, et la pilule chevauche l'icône d'écriture (agrandissement). Les noms deviennent illisibles.
 - À 390, les trois blocs débordent du viewport à droite : la pilule « Le feed », le composeur et la colonne Membres sont coupés, et `overflow-x: clip` sur le body empêche de les rejoindre.
-- La collection `formations/foyer/onglets` est vide en production : il n'y a que « Le feed » et « Gardés ». `groupes/foyer/membres` compte 5 entrées.
+- La collection `formations/foyer/onglets` est vide en production : il n'y a que « Le feed » et « Gardés ». `groupes/foyer/membres` compte 4 entrées, écrites par la fonction `groupeMembre` (functions/src/groupe.ts) à chaque création d'un `achatsFormations/{uid}/formations/{id}`; le compte jetable y est entré par ce chemin et en a été retiré.
 - Les photos Google des membres s'affichent cassées comme dans l'annuaire.
 
 ### 5.7 Le fil de la communauté (`CommunauteEspace`) et `/communaute`
