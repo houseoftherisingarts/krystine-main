@@ -361,7 +361,7 @@ export default function PodcastV2() {
                                   </div>
                                 </div>
                                 <span className={`hidden sm:inline-flex shrink-0 self-center items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[0.7rem] uppercase tracking-[0.14em] transition-colors duration-300 ${active ? 'border-[#9c7a44] bg-[#9c7a44] text-[#faf6ee]' : 'border-[#9c7a44]/45 text-[#7d6330] group-hover:bg-[#9c7a44] group-hover:border-[#9c7a44] group-hover:text-[#faf6ee]'}`}>
-                                  <Play size={10} weight="fill" />{active ? 'En écoute' : 'Écouter'}
+                                  <Play size={10} weight="fill" />{active ? 'Sélectionné' : 'Écouter'}
                                 </span>
                               </div>
                             </button>
