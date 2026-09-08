@@ -122,11 +122,10 @@ async function runJour7(viewport, tag) {
   await shot(page, `scripts/qa/shots/cadeau-choix-banniere-${tag}.png`);
   await page.keyboard.press('Escape').catch(() => {});
 
-  // ── Absente de la boutique (jamais à vendre) ────────────────────────────
-  await page.goto(`${BASE}/compte?onglet=points`, { waitUntil: 'domcontentloaded' });
+  // ── Absente de la boutique (jamais à vendre) : la petite boutique vit
+  // dans l'onglet Téléchargements (BoutiqueNiskas.tsx, ClientTelechargements.tsx).
+  await page.goto(`${BASE}/compte?onglet=telechargements`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1500);
-  const boutiqueBtn = page.getByRole('button', { name: /petite boutique|boutique/i }).first();
-  if (await boutiqueBtn.count()) { await boutiqueBtn.click(); await page.waitForTimeout(400); }
   const bannieresAccordeon = page.getByText(/les bannières/i).first();
   if (await bannieresAccordeon.count()) { await bannieresAccordeon.click(); await page.waitForTimeout(400); }
   await shot(page, `scripts/qa/shots/cadeau-boutique-sans-exclusif-${tag}.png`, { fullPage: true });
