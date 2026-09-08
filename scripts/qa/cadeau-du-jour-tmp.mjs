@@ -44,8 +44,11 @@ async function clearBanniereAube() {
 
 async function connecter(page) {
   await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded' });
-  await page.getByRole('button', { name: /se connecter/i }).click();
-  await page.waitForTimeout(400);
+  await page.getByRole('button', { name: /se connecter/i }).first().click();
+  await page.waitForTimeout(500);
+  // Le modal ouvre par défaut sur « Créer un compte » : basculer vers la connexion.
+  const lienConnexion = page.getByRole('button', { name: /déjà un compte/i });
+  if (await lienConnexion.count()) { await lienConnexion.click(); await page.waitForTimeout(300); }
   await page.getByPlaceholder(/courriel/i).fill(EMAIL);
   await page.getByPlaceholder(/mot de passe/i).fill(PW);
   await page.getByRole('button', { name: /^se connecter$/i }).last().click();
