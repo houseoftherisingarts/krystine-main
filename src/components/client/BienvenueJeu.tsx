@@ -34,11 +34,10 @@ const BienvenueJeu: React.FC<{ uid: string; vu: boolean | undefined; lang: 'FR' 
   const fr = lang === 'FR';
   const premier = PAQUETS_NISKAS[0];
   const dernier = PAQUETS_NISKAS[PAQUETS_NISKAS.length - 1];
-  const maxRoue = Math.max(...ROUE_QUOTIDIENNE);
 
   const chapitres: { icone: string; titre: string; texte: string }[] = fr
     ? [
-      { icone: 'fa-coins', titre: 'La bourse', texte: `Votre compte s'ouvre avec ${POINTS.welcome} niskas. Vous en gagnez en revenant chaque jour, grâce à la roue des sept jours qui monte jusqu'à ${maxRoue} niskas quand la suite tient, puis en publiant au Foyer, en vous faisant des amies et en invitant vos proches.` },
+      { icone: 'fa-coins', titre: 'La bourse', texte: `Votre compte s'ouvre avec ${POINTS.welcome} niskas. Vous en gagnez en revenant chaque jour pour votre cadeau du jour (${NISKAS_CADEAU_JOUR} niskas, une bannière exclusive au septième jour), puis en publiant au Foyer, en vous faisant des amies et en invitant vos proches.` },
       { icone: 'fa-bag-shopping', titre: 'La petite boutique', texte: `Les niskas s'y dépensent : une bannière, la musique d'Origine, un skin pour habiller votre espace, toutes les vidéos de Krystine, les intégrales de Santé la vie. Quand la bourse est courte, des paquets s'achètent, de ${premier.niskas} niskas pour ${premier.prix} $ à ${dernier.niskas.toLocaleString('fr-CA')} pour ${dernier.prix} $.` },
       { icone: 'fa-seedling', titre: 'La plante', texte: 'Tout ce que vous gagnez fait pousser la plante de votre profil. Elle ne redescend jamais, même quand vous dépensez : elle raconte le chemin parcouru.' },
       { icone: 'fa-gift', titre: 'Le parrainage', texte: "Quand une amie que vous avez invitée achète une formation, un cadeau tombe pour vous, et les cadeaux grossissent avec le nombre d'amies, jusqu'à l'accès à vie." },
