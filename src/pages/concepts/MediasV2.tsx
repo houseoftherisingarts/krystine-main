@@ -266,7 +266,7 @@ export default function MediasV2() {
                 />
                 <div>
                   <p className="text-[0.62rem] uppercase tracking-[0.28em] text-[#BA7B39]">Au-delà des tendances</p>
-                  <p className="mt-3 v2-serif text-[clamp(1.4rem,2.2vw,1.9rem)] font-light leading-[1.15]">Des conversations lentes, loin du bruit ambiant.</p>
+                  <p className="mt-3 v2-serif text-[clamp(1.4rem,2.2vw,1.9rem)] font-light leading-[1.15]">Nous n’avons jamais eu autant de choix. Et jamais autant besoin de revenir à ce qui est authentique.</p>
                   <p className="mt-3 text-[0.92rem] leading-[1.7] text-[#EEE7DB]/75">Les épisodes, les directs et les rediffusions vous attendent sur la page du podcast.</p>
                   <span className="mt-6 inline-flex items-center gap-2.5 rounded-full bg-[#BA7B39] px-5 py-2.5 text-[0.66rem] font-semibold uppercase tracking-[0.2em] text-[#1c1712] transition-colors duration-300 group-hover:bg-[#d9a05b]">
                     Écouter les épisodes <ArrowRight size={14} weight="bold" className="transition-transform duration-300 group-hover:translate-x-1" />

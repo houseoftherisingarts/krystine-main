@@ -117,9 +117,9 @@ const fmtDur = (d: string) => {
 
 export default function PodcastV2() {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
-  // La couverture de la page reste le visuel officiel Saison 2 (noir + or),
-  // indépendamment de la pochette du flux RSS.
-  const [cover, setCover] = useState('/podcast/live-cover.jpg');
+  // La couverture de la page = le visuel Saison 2 envoyé par Krystine le 8 sept. 2026
+  // (« Visuel et phrases clés », vignette 16:9), indépendamment de la pochette du flux RSS.
+  const [cover, setCover] = useState('/podcast/saison2-cover.webp');
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [selected, setSelected] = useState<string | null>(null);
   const [openSeason, setOpenSeason] = useState<1 | 2 | null>(2);
@@ -190,8 +190,19 @@ export default function PodcastV2() {
             </motion.h1>
             <motion.p variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 1, ease } } }}
               className="mt-7 v2-serif italic text-[clamp(1.3rem,2.4vw,1.95rem)] font-light leading-[1.32] text-[#3a2f23] max-w-[38ch]">
-              Des conversations pour revenir à l’essentiel, écouter le corps et questionner ce qu’on tient pour acquis.
+              Nous n’avons jamais eu autant de choix. Et jamais autant de choses n’ont choisi à notre place.
             </motion.p>
+            <motion.div variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease } } }}
+              className="mt-8 border-l border-[#9c7a44]/60 pl-5">
+              <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#7d6330] mb-3">Saison 2 · les questions que nous ouvrons</p>
+              <ul className="space-y-1.5 v2-serif font-light text-[clamp(1rem,1.35vw,1.15rem)] leading-snug text-[#3a2f23]">
+                <li>Comment démêler le vrai du faux ?</li>
+                <li>À quoi et à qui se fier ?</li>
+                <li>Qu’est-ce qui mérite réellement notre attention ?</li>
+                <li>Comment savoir si une recommandation nous convient ?</li>
+                <li>Et si nous revenions à choisir avec discernement ce qui nous nourrit profondément ?</li>
+              </ul>
+            </motion.div>
             {status === 'ready' && (
               <motion.p variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease } } }}
                 className="mt-7 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712]/55">
@@ -203,7 +214,7 @@ export default function PodcastV2() {
           {cover && (
             <motion.div
               variants={{ hidden: { opacity: 0, scale: 1.04 }, show: { opacity: 1, scale: 1, transition: { duration: 1.1, ease } } }}
-              className="relative justify-self-center lg:justify-self-end w-[clamp(260px,46vw,420px)]"
+              className="relative justify-self-center lg:justify-self-end w-full max-w-[640px]"
             >
               <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
               <img
