@@ -136,11 +136,9 @@ async function runJour7(viewport, tag) {
 const DESKTOP = { width: 1440, height: 900 };
 const MOBILE = { width: 390, height: 844 };
 
-console.log('[1/4] jour 1 — desktop');
-await run(DESKTOP, '1440');
-console.log('[2/4] jour 1 — mobile');
-await run(MOBILE, '390');
-
+// Jour 1 déjà capturé et confirmé bon (screenshots existants) : on ne refait
+// que la passe jour 7, qui manquait les captures « déjà ouvert »/boutique.
+void run;
 console.log('[reset] retour à jourCadeau=6, dernierJour=hier, pour forcer le jour 7');
 await deleteEvent(`cadeau:${UID}:${AUJOURDHUI}`);
 await patchMemberPoints({ jourCadeau: 6, dernierJour: HIER, serie: 6 });
