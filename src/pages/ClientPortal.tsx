@@ -450,7 +450,12 @@ const BanniereChoix: React.FC<{
         {busy ? (fr ? 'Téléversement…' : 'Uploading…') : (fr ? 'Changer la bannière' : 'Change the banner')}
       </button>
       {ouvert && (
-        <div className="mt-2 w-72 rounded-[16px] border border-white/60 bg-[#EEE7DB] p-2 shadow-2xl dark:border-white/10 dark:bg-[#293027]" onMouseLeave={() => setOuvert(false)}>
+        // max-h + overflow-y : le parent (la bannière, ligne ~690) coupe tout
+        // ce qui dépasse sa hauteur (overflow-hidden, pour bien cadrer la
+        // photo). Sept bannières exclusives de plus par cycle du cadeau du
+        // jour, ça déborde vite : la liste défile plutôt que de couper les
+        // dernières bannières hors champ (Alex, 7 septembre 2026).
+        <div className="mt-2 max-h-[260px] w-72 overflow-y-auto overscroll-contain rounded-[16px] border border-white/60 bg-[#EEE7DB] p-2 shadow-2xl dark:border-white/10 dark:bg-[#293027]" onMouseLeave={() => setOuvert(false)}>
           <label className={`${ligne} cursor-pointer`}>
             <i className="fa-solid fa-upload text-sm text-[#8B4A2F]" />
             <span className="flex-1">{fr ? 'Téléverser ma photo' : 'Upload my photo'}</span>
