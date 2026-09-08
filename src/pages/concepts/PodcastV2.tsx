@@ -294,6 +294,9 @@ export default function PodcastV2() {
             <div className="mb-10">
               <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-4">Tous les épisodes</p>
               <h2 className="v2-serif font-light text-[#1c1712] text-[clamp(1.8rem,3.4vw,2.8rem)]">L’archive complète</h2>
+              <p className="mt-4 max-w-[52ch] text-[1rem] leading-relaxed text-[#3a2f23]">
+                Cliquez sur une saison pour voir ses épisodes, puis sur un épisode pour l’écouter.
+              </p>
             </div>
 
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
@@ -305,16 +308,25 @@ export default function PodcastV2() {
                   <div key={s}>
                     <button
                       onClick={() => setOpenSeason(open ? null : s)}
-                      className="group flex w-full items-center justify-between border-b border-[#1c1712]/25 pb-4 text-left"
+                      aria-expanded={open}
+                      aria-controls={`saison-${s}`}
+                      className="group flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-3 border-b border-[#1c1712]/25 pb-4 text-left"
                     >
                       <span className="flex items-baseline gap-3">
                         <span className="v2-serif font-light text-[#1c1712] text-[clamp(1.5rem,2.6vw,2.1rem)]">Saison {s}</span>
                         <span className="text-[0.62rem] uppercase tracking-[0.18em] text-[#7d6330]">{list.length} épisodes</span>
                       </span>
-                      <ArrowDown size={20} weight="light" className={`text-[#7d6330] transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+                      <span
+                        className={`inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-[0.8rem] sm:text-[0.85rem] uppercase tracking-[0.14em] transition-colors duration-300 ${open
+                          ? 'border-[#9c7a44]/50 bg-transparent text-[#7d6330] group-hover:bg-[#efe6d7]'
+                          : 'border-[#9c7a44] bg-[#9c7a44] text-[#faf6ee] group-hover:bg-[#7d6330] group-hover:border-[#7d6330]'}`}
+                      >
+                        {open ? 'Cliquer pour fermer' : 'Cliquer pour ouvrir'}
+                        <ArrowDown size={16} weight="bold" className={`transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+                      </span>
                     </button>
                     {open && (
-                      <div>
+                      <div id={`saison-${s}`}>
                         {list.map((ep) => {
                           const active = ep.id === selected;
                           // La saison 2 commence à l'épisode zéro (« Quand le vide crée le plein »), puis 1 (Alex, 6 sept. 2026).
@@ -329,7 +341,7 @@ export default function PodcastV2() {
                                 {ep.image ? (
                                   <span className="relative w-12 h-12 shrink-0 overflow-hidden rounded-[10px]">
                                     <img src={ep.image} alt="" referrerPolicy="no-referrer" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
-                                    <span className={`absolute inset-0 grid place-items-center transition-colors duration-300 ${active ? 'bg-[#1c1712]/45 text-[#faf6ee]' : 'bg-[#1c1712]/0 text-transparent group-hover:bg-[#1c1712]/45 group-hover:text-[#faf6ee]'}`}>
+                                    <span className={`absolute inset-0 grid place-items-center transition-colors duration-300 ${active ? 'bg-[#1c1712]/45 text-[#faf6ee]' : 'bg-[#1c1712]/45 text-[#faf6ee] sm:bg-[#1c1712]/0 sm:text-transparent group-hover:bg-[#1c1712]/45 group-hover:text-[#faf6ee]'}`}>
                                       <Play size={14} weight="fill" className="ml-0.5" />
                                     </span>
                                   </span>
@@ -348,6 +360,9 @@ export default function PodcastV2() {
                                     {ep.duration && <span className="inline-flex items-center gap-1.5"><Clock size={11} weight="light" className="text-[#7d6330]" />{fmtDur(ep.duration)}</span>}
                                   </div>
                                 </div>
+                                <span className={`hidden sm:inline-flex shrink-0 self-center items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[0.7rem] uppercase tracking-[0.14em] transition-colors duration-300 ${active ? 'border-[#9c7a44] bg-[#9c7a44] text-[#faf6ee]' : 'border-[#9c7a44]/45 text-[#7d6330] group-hover:bg-[#9c7a44] group-hover:border-[#9c7a44] group-hover:text-[#faf6ee]'}`}>
+                                  <Play size={10} weight="fill" />{active ? 'En écoute' : 'Écouter'}
+                                </span>
                               </div>
                             </button>
                           );
