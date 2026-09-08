@@ -9,7 +9,7 @@
 //   fulfill manually. Each doc records the uid, reward id, cost, and status.
 
 import app, { db } from '../firebase';
-import { httpsCallable, getFunctions } from 'firebase/functions';
+import { httpsCallable, getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 import {
   doc, collection, query, where, orderBy, limit as fbLimit,
   onSnapshot, getDoc, getDocs, setDoc, runTransaction, addDoc, serverTimestamp, Timestamp,
