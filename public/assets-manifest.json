@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-07T15:13:02.864Z",
+  "generatedAt": "2026-09-08T11:25:39.143Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -63,6 +63,13 @@
       "folder": "accueil/assets/portes",
       "kind": "image",
       "size": 35616
+    },
+    {
+      "path": "/accueil/assets/portes/formations.webp",
+      "name": "formations.webp",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 26660
     },
     {
       "path": "/accueil/assets/portes/inspirata.png",
@@ -240,6 +247,104 @@
       "size": 8854
     },
     {
+      "path": "/compte/bannieres/cadeau-aube-720.webp",
+      "name": "cadeau-aube-720.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 12268
+    },
+    {
+      "path": "/compte/bannieres/cadeau-aube.webp",
+      "name": "cadeau-aube.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 43438
+    },
+    {
+      "path": "/compte/bannieres/cadeau-erables-720.webp",
+      "name": "cadeau-erables-720.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 73342
+    },
+    {
+      "path": "/compte/bannieres/cadeau-erables.webp",
+      "name": "cadeau-erables.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 279912
+    },
+    {
+      "path": "/compte/bannieres/cadeau-lavande-720.webp",
+      "name": "cadeau-lavande-720.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 10824
+    },
+    {
+      "path": "/compte/bannieres/cadeau-lavande.webp",
+      "name": "cadeau-lavande.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 39360
+    },
+    {
+      "path": "/compte/bannieres/cadeau-neige-720.webp",
+      "name": "cadeau-neige-720.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 34564
+    },
+    {
+      "path": "/compte/bannieres/cadeau-neige.webp",
+      "name": "cadeau-neige.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 105982
+    },
+    {
+      "path": "/compte/bannieres/cadeau-rivage-720.webp",
+      "name": "cadeau-rivage-720.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 19304
+    },
+    {
+      "path": "/compte/bannieres/cadeau-rivage.webp",
+      "name": "cadeau-rivage.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 91170
+    },
+    {
+      "path": "/compte/bannieres/cadeau-sousbois-720.webp",
+      "name": "cadeau-sousbois-720.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 42454
+    },
+    {
+      "path": "/compte/bannieres/cadeau-sousbois.webp",
+      "name": "cadeau-sousbois.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 171996
+    },
+    {
+      "path": "/compte/bannieres/cadeau-verger-720.webp",
+      "name": "cadeau-verger-720.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 70314
+    },
+    {
+      "path": "/compte/bannieres/cadeau-verger.webp",
+      "name": "cadeau-verger.webp",
+      "folder": "compte/bannieres",
+      "kind": "image",
+      "size": 194094
+    },
+    {
       "path": "/compte/bannieres/huiles-720.webp",
       "name": "huiles-720.webp",
       "folder": "compte/bannieres",
@@ -371,6 +476,55 @@
       "folder": "compte/coffres",
       "kind": "image",
       "size": 63136
+    },
+    {
+      "path": "/compte/fonds/cadeau-aube.webp",
+      "name": "cadeau-aube.webp",
+      "folder": "compte/fonds",
+      "kind": "image",
+      "size": 112846
+    },
+    {
+      "path": "/compte/fonds/cadeau-erables.webp",
+      "name": "cadeau-erables.webp",
+      "folder": "compte/fonds",
+      "kind": "image",
+      "size": 554070
+    },
+    {
+      "path": "/compte/fonds/cadeau-lavande.webp",
+      "name": "cadeau-lavande.webp",
+      "folder": "compte/fonds",
+      "kind": "image",
+      "size": 76822
+    },
+    {
+      "path": "/compte/fonds/cadeau-neige.webp",
+      "name": "cadeau-neige.webp",
+      "folder": "compte/fonds",
+      "kind": "image",
+      "size": 180046
+    },
+    {
+      "path": "/compte/fonds/cadeau-rivage.webp",
+      "name": "cadeau-rivage.webp",
+      "folder": "compte/fonds",
+      "kind": "image",
+      "size": 185516
+    },
+    {
+      "path": "/compte/fonds/cadeau-sousbois.webp",
+      "name": "cadeau-sousbois.webp",
+      "folder": "compte/fonds",
+      "kind": "image",
+      "size": 307062
+    },
+    {
+      "path": "/compte/fonds/cadeau-verger.webp",
+      "name": "cadeau-verger.webp",
+      "folder": "compte/fonds",
+      "kind": "image",
+      "size": 335852
     },
     {
       "path": "/compte/fonds/defaut-1920.webp",

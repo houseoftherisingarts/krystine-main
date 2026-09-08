@@ -35,15 +35,18 @@ const BienvenueJeu: React.FC<{ uid: string; vu: boolean | undefined; lang: 'FR' 
   const premier = PAQUETS_NISKAS[0];
   const dernier = PAQUETS_NISKAS[PAQUETS_NISKAS.length - 1];
 
+  // Le cadeau du jour ne se promet que si son interrupteur est ouvert (settings/gamification).
+  const quotidienFR = gam.roueQuotidienne ? `en revenant chaque jour pour votre cadeau du jour (${NISKAS_CADEAU_JOUR} niskas, une bannière exclusive au septième jour), puis ` : '';
+  const quotidienEN = gam.roueQuotidienne ? `by coming back each day for your gift of the day (${NISKAS_CADEAU_JOUR} niskas, an exclusive banner on day seven), then ` : '';
   const chapitres: { icone: string; titre: string; texte: string }[] = fr
     ? [
-      { icone: 'fa-coins', titre: 'La bourse', texte: `Votre compte s'ouvre avec ${POINTS.welcome} niskas. Vous en gagnez en revenant chaque jour pour votre cadeau du jour (${NISKAS_CADEAU_JOUR} niskas, une bannière exclusive au septième jour), puis en publiant au Foyer, en vous faisant des amies et en invitant vos proches.` },
+      { icone: 'fa-coins', titre: 'La bourse', texte: `Votre compte s'ouvre avec ${POINTS.welcome} niskas. Vous en gagnez ${quotidienFR}en publiant au Foyer, en vous faisant des amies et en invitant vos proches.` },
       { icone: 'fa-bag-shopping', titre: 'La petite boutique', texte: `Les niskas s'y dépensent : une bannière, la musique d'Origine, un skin pour habiller votre espace, toutes les vidéos de Krystine, les intégrales de Santé la vie. Quand la bourse est courte, des paquets s'achètent, de ${premier.niskas} niskas pour ${premier.prix} $ à ${dernier.niskas.toLocaleString('fr-CA')} pour ${dernier.prix} $.` },
       { icone: 'fa-seedling', titre: 'La plante', texte: 'Tout ce que vous gagnez fait pousser la plante de votre profil. Elle ne redescend jamais, même quand vous dépensez : elle raconte le chemin parcouru.' },
       { icone: 'fa-gift', titre: 'Le parrainage', texte: "Quand une amie que vous avez invitée achète une formation, un cadeau tombe pour vous, et les cadeaux grossissent avec le nombre d'amies, jusqu'à l'accès à vie." },
     ]
     : [
-      { icone: 'fa-coins', titre: 'The purse', texte: `Your account opens with ${POINTS.welcome} niskas. You earn more by coming back each day for your gift of the day (${NISKAS_CADEAU_JOUR} niskas, an exclusive banner on day seven), then by posting at the Hearth, making friends and inviting the people close to you.` },
+      { icone: 'fa-coins', titre: 'The purse', texte: `Your account opens with ${POINTS.welcome} niskas. You earn more ${quotidienEN}by posting at the Hearth, making friends and inviting the people close to you.` },
       { icone: 'fa-bag-shopping', titre: 'The little shop', texte: `Niskas are spent there: a banner, the Origine music, a skin to dress your space, all of Krystine's videos, the full Santé la vie shows. When the purse runs low, packs can be bought, from ${premier.niskas} niskas for $${premier.prix} to ${dernier.niskas.toLocaleString('en-CA')} for $${dernier.prix}.` },
       { icone: 'fa-seedling', titre: 'The plant', texte: 'Everything you earn grows the plant on your profile. It never shrinks, even when you spend: it tells the road travelled.' },
       { icone: 'fa-gift', titre: 'Referrals', texte: 'When a friend you invited buys a course, a gift drops for you, and the gifts grow with the number of friends, all the way to lifetime access.' },

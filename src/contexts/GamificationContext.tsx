@@ -6,15 +6,20 @@ import { ADMIN_EMAILS } from '../firebase/auth';
 // « Gamification » (settings/gamification), lu en temps réel partout où un
 // module doit disparaître complètement de l'écran quand il est fermé.
 
-const GamificationContext = createContext<Required<GamificationSettings>>(DEFAUT_GAMIFICATION);
+// pret : les réglages sont arrivés de Firestore. Avant, tout est ON par défaut
+// et un module ne doit pas appeler le serveur (cadeau du jour) sur cette
+// supposition : il attend pret.
+export type Gamification = Required<GamificationSettings> & { pret: boolean };
+
+const GamificationContext = createContext<Gamification>({ ...DEFAUT_GAMIFICATION, pret: false });
 
 export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [g, setG] = useState<Required<GamificationSettings>>(DEFAUT_GAMIFICATION);
-  useEffect(() => subscribeToGamification(setG), []);
+  const [g, setG] = useState<Gamification>({ ...DEFAUT_GAMIFICATION, pret: false });
+  useEffect(() => subscribeToGamification(v => setG({ ...v, pret: true })), []);
   return <GamificationContext.Provider value={g}>{children}</GamificationContext.Provider>;
 };
 
-export const useGamification = (): Required<GamificationSettings> => useContext(GamificationContext);
+export const useGamification = (): Gamification => useContext(GamificationContext);
 
 /** L'équipe : les six courriels admin (voir isAdminUser, src/firebase/auth.ts) —
  *  Krystine et Alex, les seuls comptes qui portent le Badge Bleu réservé. */

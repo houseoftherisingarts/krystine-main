@@ -53,7 +53,7 @@ const CadeauDuJour: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, lang 
   const [justRevele, setJustRevele] = useState(false);
 
   useEffect(() => {
-    if (!uid || !gam.roueQuotidienne) return;
+    if (!uid || !gam.pret || !gam.roueQuotidienne) return;
     let vivant = true;
     const aujourdhui = journee();
     let vu = '';
@@ -66,7 +66,7 @@ const CadeauDuJour: React.FC<{ uid: string; lang: 'FR' | 'EN' }> = ({ uid, lang 
       if (!r.deja || !vuAujourdhui) setOuvert(true);
     }).catch((e) => console.warn('[cadeau-du-jour] réclamation ratée', e));
     return () => { vivant = false; };
-  }, [uid]);
+  }, [uid, gam.pret, gam.roueQuotidienne]);
 
   useEffect(() => {
     const ouvrir = () => setOuvert(true);
