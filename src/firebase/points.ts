@@ -321,9 +321,19 @@ export interface Quotidien {
   cadeauMois?: CadeauMoisFoyer | null;
 }
 
+// ponytail: bascule d'émulateur TEMPORAIRE pour la vérification du cadeau du
+// jour (7 septembre 2026) — s'active seulement si window.__KRYSTINE_FN_EMULATOR__
+// est posé (Playwright), inerte pour toute vraie visiteuse. À retirer une fois
+// le nouveau reclamerQuotidien déployé.
+let fnEmulatorConnectee = false;
 export async function reclamerQuotidien(uid: string): Promise<Quotidien> {
   if (!app || !uid) return { deja: true, type: 'niskas', montant: 0, jourCadeau: 0, position: 1, serie: 0, balance: 0 };
-  const call = httpsCallable(getFunctions(app, 'us-central1'), 'reclamerQuotidien');
+  const fn = getFunctions(app, 'us-central1');
+  if (!fnEmulatorConnectee && typeof window !== 'undefined' && (window as any).__KRYSTINE_FN_EMULATOR__) {
+    try { connectFunctionsEmulator(fn, '127.0.0.1', 5001); } catch { /* déjà connectée */ }
+    fnEmulatorConnectee = true;
+  }
+  const call = httpsCallable(fn, 'reclamerQuotidien');
   const res = await call({});
   return res.data as Quotidien;
 }
