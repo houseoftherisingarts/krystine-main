@@ -77,10 +77,10 @@ async function run(viewport, tag) {
   // ── Jour 1 : carte non ouverte, puis révélation +5 niskas ──────────────
   await page.waitForSelector('#cadeau-jour-titre', { timeout: 15000 });
   await page.waitForTimeout(600);
-  await page.screenshot({ path: `scripts/qa/shots/cadeau-jour1-attente-${tag}.png` });
+  await shot(page, `scripts/qa/shots/cadeau-jour1-attente-${tag}.png`);
   await page.getByRole('button', { name: /ouvrir mon cadeau/i }).click();
   await page.waitForTimeout(1300);
-  await page.screenshot({ path: `scripts/qa/shots/cadeau-jour1-reveal-niskas-${tag}.png` });
+  await shot(page, `scripts/qa/shots/cadeau-jour1-reveal-niskas-${tag}.png`);
   await page.getByRole('button', { name: /fermer/i }).click();
   await page.waitForTimeout(300);
 
@@ -95,21 +95,21 @@ async function runJour7(viewport, tag) {
 
   await page.waitForSelector('#cadeau-jour-titre', { timeout: 15000 });
   await page.waitForTimeout(600);
-  await page.screenshot({ path: `scripts/qa/shots/cadeau-jour7-attente-${tag}.png` });
+  await shot(page, `scripts/qa/shots/cadeau-jour7-attente-${tag}.png`);
   await page.getByRole('button', { name: /ouvrir mon cadeau/i }).click();
   await page.waitForTimeout(1300);
-  await page.screenshot({ path: `scripts/qa/shots/cadeau-jour7-reveal-banniere-${tag}.png` });
+  await shot(page, `scripts/qa/shots/cadeau-jour7-reveal-banniere-${tag}.png`);
   await page.getByRole('button', { name: /fermer/i }).click();
   await page.waitForTimeout(300);
 
   // ── « Déjà ouvert aujourd'hui » : rouvrir via le bouton du profil ──────
-  await page.goto(`${BASE}/compte?onglet=points`, { waitUntil: 'domcontentloaded' });
+  await page.goto(`${BASE}/compte?onglet=loyalty`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(2000);
   const bouton = page.getByRole('button', { name: /mon cadeau du jour/i });
   if (await bouton.count()) {
     await bouton.first().click();
     await page.waitForTimeout(700);
-    await page.screenshot({ path: `scripts/qa/shots/cadeau-deja-ouvert-${tag}.png` });
+    await shot(page, `scripts/qa/shots/cadeau-deja-ouvert-${tag}.png`);
     await page.getByRole('button', { name: /fermer/i }).click();
     await page.waitForTimeout(300);
   } else {
@@ -119,7 +119,7 @@ async function runJour7(viewport, tag) {
   // ── La bannière gagnée dans le choix de bannière ────────────────────────
   await page.getByRole('button', { name: /changer la bannière/i }).click();
   await page.waitForTimeout(500);
-  await page.screenshot({ path: `scripts/qa/shots/cadeau-choix-banniere-${tag}.png` });
+  await shot(page, `scripts/qa/shots/cadeau-choix-banniere-${tag}.png`);
   await page.keyboard.press('Escape').catch(() => {});
 
   // ── Absente de la boutique (jamais à vendre) ────────────────────────────
@@ -129,7 +129,7 @@ async function runJour7(viewport, tag) {
   if (await boutiqueBtn.count()) { await boutiqueBtn.click(); await page.waitForTimeout(400); }
   const bannieresAccordeon = page.getByText(/les bannières/i).first();
   if (await bannieresAccordeon.count()) { await bannieresAccordeon.click(); await page.waitForTimeout(400); }
-  await page.screenshot({ path: `scripts/qa/shots/cadeau-boutique-sans-exclusif-${tag}.png`, fullPage: true });
+  await shot(page, `scripts/qa/shots/cadeau-boutique-sans-exclusif-${tag}.png`, { fullPage: true });
 
   await b.close();
 }
