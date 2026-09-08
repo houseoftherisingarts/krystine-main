@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { PAQUETS_NISKAS, POINTS, ROUE_QUOTIDIENNE } from '../../lib/pointsConfig';
+import { PAQUETS_NISKAS, POINTS } from '../../lib/pointsConfig';
+import { NISKAS_CADEAU_JOUR } from '../../lib/badgeBleu';
 import { updateMember } from '../../firebase/firestore';
 import PieceNiska from './PieceNiska';
 import Portail from '../Portail';
