@@ -259,8 +259,8 @@ export default function MediasV2() {
                 style={{ background: 'radial-gradient(circle, rgba(186,123,57,.38) 0%, rgba(40,53,47,0) 70%)' }} />
               <div className="relative grid gap-6 p-6 sm:grid-cols-[minmax(0,180px)_1fr] sm:items-center md:p-8">
                 <img
-                  src="/assets/podcast-cover.webp"
-                  alt="Pochette du podcast Au-delà des tendances"
+                  src="/podcast/live-cover.jpg"
+                  alt="Au-delà des tendances, saison 2, avec Krystine St-Laurent"
                   loading="lazy"
                   className="w-full max-w-[220px] rounded-[10px] shadow-[0_20px_40px_-20px_rgba(0,0,0,0.7)] transition-transform duration-700 group-hover:scale-[1.02]"
                 />
