@@ -71,6 +71,7 @@ async function connecter(page) {
 async function run(viewport, tag) {
   const b = await chromium.launch();
   const c = await b.newContext({ viewport, deviceScaleFactor: 2 });
+  await c.addInitScript(() => { window.__KRYSTINE_FN_EMULATOR__ = true; });
   const page = await c.newPage();
   await connecter(page);
 
@@ -90,6 +91,7 @@ async function run(viewport, tag) {
 async function runJour7(viewport, tag) {
   const b = await chromium.launch();
   const c = await b.newContext({ viewport, deviceScaleFactor: 2 });
+  await c.addInitScript(() => { window.__KRYSTINE_FN_EMULATOR__ = true; });
   const page = await c.newPage();
   await connecter(page);
 
@@ -136,9 +138,11 @@ async function runJour7(viewport, tag) {
 const DESKTOP = { width: 1440, height: 900 };
 const MOBILE = { width: 390, height: 844 };
 
-// Jour 1 déjà capturé et confirmé bon (screenshots existants) : on ne refait
-// que la passe jour 7, qui manquait les captures « déjà ouvert »/boutique.
-void run;
+console.log('[1/4] jour 1 — desktop');
+await run(DESKTOP, '1440');
+console.log('[2/4] jour 1 — mobile');
+await run(MOBILE, '390');
+
 console.log('[reset] retour à jourCadeau=6, dernierJour=hier, pour forcer le jour 7');
 await deleteEvent(`cadeau:${UID}:${AUJOURDHUI}`);
 await patchMemberPoints({ jourCadeau: 6, dernierJour: HIER, serie: 6 });
