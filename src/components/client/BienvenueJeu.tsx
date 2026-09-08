@@ -43,7 +43,7 @@ const BienvenueJeu: React.FC<{ uid: string; vu: boolean | undefined; lang: 'FR' 
       { icone: 'fa-gift', titre: 'Le parrainage', texte: "Quand une amie que vous avez invitée achète une formation, un cadeau tombe pour vous, et les cadeaux grossissent avec le nombre d'amies, jusqu'à l'accès à vie." },
     ]
     : [
-      { icone: 'fa-coins', titre: 'The purse', texte: `Your account opens with ${POINTS.welcome} niskas. You earn more by coming back each day, with the seven-day wheel that climbs to ${maxRoue} niskas when the streak holds, then by posting at the Hearth, making friends and inviting the people close to you.` },
+      { icone: 'fa-coins', titre: 'The purse', texte: `Your account opens with ${POINTS.welcome} niskas. You earn more by coming back each day for your gift of the day (${NISKAS_CADEAU_JOUR} niskas, an exclusive banner on day seven), then by posting at the Hearth, making friends and inviting the people close to you.` },
       { icone: 'fa-bag-shopping', titre: 'The little shop', texte: `Niskas are spent there: a banner, the Origine music, a skin to dress your space, all of Krystine's videos, the full Santé la vie shows. When the purse runs low, packs can be bought, from ${premier.niskas} niskas for $${premier.prix} to ${dernier.niskas.toLocaleString('en-CA')} for $${dernier.prix}.` },
       { icone: 'fa-seedling', titre: 'The plant', texte: 'Everything you earn grows the plant on your profile. It never shrinks, even when you spend: it tells the road travelled.' },
       { icone: 'fa-gift', titre: 'Referrals', texte: 'When a friend you invited buys a course, a gift drops for you, and the gifts grow with the number of friends, all the way to lifetime access.' },
