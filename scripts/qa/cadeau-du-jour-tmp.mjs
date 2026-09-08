@@ -42,7 +42,20 @@ async function clearBanniereAube() {
   return r.ok;
 }
 
+/** Capture avec un retry (la première capture d'un nouveau contexte échoue
+ *  parfois sur « waiting for fonts to load », un aléa réseau, pas un bogue). */
+async function shot(page, path, opts = {}) {
+  try {
+    await page.screenshot({ path, timeout: 45000, ...opts });
+  } catch (e) {
+    console.warn('[retry] capture', path, e.message.slice(0, 80));
+    await page.waitForTimeout(1000);
+    await page.screenshot({ path, timeout: 45000, ...opts });
+  }
+}
+
 async function connecter(page) {
+  page.setDefaultTimeout(45000);
   await page.goto(`${BASE}/compte`, { waitUntil: 'domcontentloaded' });
   await page.getByRole('button', { name: /se connecter/i }).first().click();
   await page.waitForTimeout(500);
