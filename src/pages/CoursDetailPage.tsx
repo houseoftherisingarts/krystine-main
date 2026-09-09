@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { suivreLiveEnCours, type LiveEnCours } from '../firebase/lives';
 import { PORTES, porteDuMois, foyerOuvert, DEBUT_LABEL } from './foyer/portesData';
+import { rangSemaine, semaineOuverteRang } from './origine2/semaines';
+import SemainesOrigine2 from './origine2/SemainesOrigine2';
 import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, type QuestionLecon } from '../firebase/formations';
 import { Navigate, useParams, Link } from 'react-router-dom';
 import {
@@ -131,9 +133,13 @@ const CoursDetailPage: React.FC = () => {
   );
 
   // Avant le 1er octobre 2026, aucune porte n'est ouverte : tout reste barré.
-  const ouvert = foyerOuvert();
-  const porteOuverteRang = ouvert ? rangPorte(porteDuMois().n) : -1;
-  const verrouillee = (l: Lecon) => !isAdmin && ((id === 'foyer' && !ouvert) || rangPorte(l.mois) > porteOuverteRang);
+  // L'Expérience Origine 2 suit le même principe, une semaine à la fois, à
+  // partir de la date de départ posée dans l'admin (src/pages/origine2/semaines.ts).
+  const estOrigine2 = id === 'origine2';
+  const ouvert = estOrigine2 ? semaineOuverteRang(formation?.dateSortie) >= 0 : foyerOuvert();
+  const porteOuverteRang = estOrigine2 ? semaineOuverteRang(formation?.dateSortie) : (ouvert ? rangPorte(porteDuMois().n) : -1);
+  const rangDe = (n?: string) => (estOrigine2 ? rangSemaine(n) : rangPorte(n));
+  const verrouillee = (l: Lecon) => !isAdmin && ((id === 'foyer' && !ouvert) || rangDe(l.mois) > porteOuverteRang);
 
   // La page s'ouvre d'elle-même : sur la dernière leçon commencée, sinon sur
   // la première leçon ouverte (l'introduction). Plus de « choisissez une leçon ».
@@ -353,6 +359,7 @@ const CoursDetailPage: React.FC = () => {
             </div>
           );
         })()}
+        {estOrigine2 && accessible && <SemainesOrigine2 dateSortie={formation.dateSortie} />}
         {(() => {
           if (id === 'foyer' || !accessible || lecons.length === 0) {
             return (

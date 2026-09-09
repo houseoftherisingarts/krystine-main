@@ -131,7 +131,7 @@ const SectionTitle: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light';
 
 /* ════════════════════════ Données ════════════════════════ */
 
-const PILLARS = [
+export const PILLARS = [
   { roman: 'Pilier I', range: 'Semaines 1 à 4', subtitle: 'Ce que le corps essaie de dire',
     body: "Calmer le bruit pour entendre ce qui est là. D'où viennent vos décisions ? Qu'est-ce que le corps essaie de dire ? L'Ayurveda donne les premiers mots pour le nommer. Le premier geste : écouter avant d'agir.",
     reflection: "Après quatre semaines, les signaux que le corps envoie depuis des mois deviennent lisibles. La confusion se dissipe. Ce qui semblait flou porte un nom." },
@@ -143,7 +143,7 @@ const PILLARS = [
     reflection: "La lecture tient seule. Les saisons deviennent votre boussole. Le parcours se termine, la capacité reste. Le corps s'en souvient." },
 ];
 
-const WORKS = [
+export const WORKS = [
   { title: 'Les modules audios', body: "La lecture qui manquait. Chaque semaine, le corps devient plus lisible. Les signaux qui semblaient confus deviennent des réponses. À écouter en marchant, en cuisinant, à votre rythme." },
   { title: 'Les méditations guidées', body: "Ce qui a été reçu a besoin de se déposer. Un ancrage court, entre les rendez-vous, pour que la compréhension descende de la tête vers le corps." },
   { title: 'Vos questions', body: "Le privilège fondatrice. Vos questions sont soumises trois jours avant. Krystine et son équipe les lisent, préparent, et le rendez-vous s'ajuste à ce que vous vivez réellement. Pas un parcours générique. Votre réalité." },
@@ -152,7 +152,7 @@ const WORKS = [
   { title: "L'Espace", body: "Une communauté, mais pas comme vous les connaissez. Un endroit calme entre les rendez-vous. Sans notifications, sans obligation de publier. Pour ceux et celles qui ne veulent pas traverser seuls." },
 ];
 
-const VALUE_ITEMS = [
+export const VALUE_ITEMS = [
   { title: '12 rendez-vous en direct avec Krystine (24 h de présence)', detail: "Chaque semaine, en direct. Elle enseigne, elle écoute, elle ajuste, et chaque rendez-vous se termine par une méditation de groupe. Vingt-quatre heures de présence directe sur douze semaines.", value: '4 800 $' },
   { title: '12 modules audio, la grille de lecture du corps', detail: "Chaque semaine, un enseignement en audio. Une grille de lecture pour se comprendre quand le corps donne des signaux que l'on ne sait pas décoder.", value: '600 $' },
   { title: '12 méditations audio guidées', detail: "Un ancrage personnel, court et pré-enregistré, pour laisser se déposer ce qui a été reçu entre les rendez-vous.", value: '360 $' },
@@ -162,7 +162,7 @@ const VALUE_ITEMS = [
   { title: 'Liste de musique (spirale dorée, 432 Hz)', detail: "Une liste de musique qui fait voyager le cœur et l'âme, disponible avec un lien privé sur Spotify.", value: '97 $' },
 ];
 
-const FAQS = [
+export const FAQS = [
   { q: "Est-ce que c'est pour moi même si je ne connais rien à l'Ayurveda ?", a: "Absolument. Expérience Origine est conçu pour vous guider pas à pas, que vous soyez novice ou initié. L'Ayurveda n'est pas un prérequis, c'est l'outil que nous découvrirons ensemble pour lire votre corps." },
   { q: "Je connais déjà l'Ayurveda ou j'enseigne le yoga. Est-ce que c'est pour moi aussi ?", a: "Oui. Ce n'est pas un cours théorique, c'est une expérience d'intégration. Nous allons au-delà des concepts pour toucher le senti. De nombreux professionnels de la santé et du bien-être y trouvent une profondeur nouvelle pour leur pratique." },
   { q: "Est-ce que Krystine est vraiment présente ou ce sont des pré-enregistrements ?", a: "C'est un accompagnement hybride et vivant. Les enseignements fondamentaux sont des audios, mais le cœur du parcours bat lors des 12 rencontres en direct avec Krystine (les dimanches)." },
@@ -176,7 +176,7 @@ const FAQS = [
   { q: "À quelle heure ont lieu les rencontres en direct ?", a: "Les rencontres ont lieu le dimanche, en direct, et chacune est disponible en rediffusion dans les 24 heures. L'horaire précis de la prochaine cohorte sera transmis en priorité aux personnes de la liste d'attente." },
 ];
 
-const TESTIMONIALS = [
+export const TESTIMONIALS = [
   { quote: "Personne ne parle de ces choses-là comme Krystine. Quand elle explique, tout devient clair.", who: 'Annie' },
   { quote: "Je me suis rarement écoutée tout au long de ma vie. C'est la première fois que quelqu'un me donne les outils pour le faire.", who: 'Françoise' },
   { quote: "Ce que j'ai lu dans cent livres sans comprendre, Krystine l'a rendu évident.", who: 'Marie' },

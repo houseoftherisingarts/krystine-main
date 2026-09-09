@@ -133,6 +133,11 @@ export interface Lecon {
   mois?: string;
   /** Les documents déposés par Krystine sous la leçon. */
   docs?: Array<{ nom: string; chemin: string }>;
+  /** La source Kajabi (Wistia) d'une leçon importée. */
+  wistiaHash?: string;
+  /** Le verdict du bot scripts/kajabi/verifier-import.mjs : le fichier de
+   *  Storage comparé octet par octet à la source Wistia. */
+  integrite?: { etat: 'ok' | 'ecart' | 'absent' | 'source-introuvable'; detail: string; verifieLe: string; mode: 'taille' | 'md5' };
 }
 
 export function typeDeLecon(file: File): LeconType {

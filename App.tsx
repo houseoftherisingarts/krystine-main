@@ -64,6 +64,8 @@ const OrigineExperience = lazy(() => import('./src/pages/OrigineExperience'));
 // Le Foyer d'Origine — page de vente membership (work in progress, URL dédiée
 // non liée à la navigation, partageable à Krystine pour validation).
 const FoyerPage = lazy(() => import('./src/pages/FoyerPage'));
+// L'Expérience Origine 2 : page de vente native dans la langue du Foyer (9 sept. 2026)
+const OrigineDeuxPage = lazy(() => import('./src/pages/OrigineDeuxPage'));
 // Expérience Vata — portée du bundle statique vers React (style L'Œuvre)
 const VataExperience = lazy(() => import('./src/pages/VataExperience'));
 // Pages publiques rebâties from scratch en L'Œuvre (back-end préservé)
@@ -225,6 +227,7 @@ const App: React.FC = () => (
           <Route path="/origine-loeuvre" element={<Navigate to="/origine" replace />} />
           {/* Le Foyer d'Origine — page de vente WIP, accès par URL seulement */}
           <Route path="/foyer" element={<FoyerPage />} />
+          <Route path="/origine-2" element={<OrigineDeuxPage />} />
           {/* Podcast porté en React (remplace le bundle statique /podcast) */}
           <Route path="/podcast" element={<PodcastV2 />} />
           {/* Questions posées pendant le direct : la carte se pose en temps réel dans l'admin */}

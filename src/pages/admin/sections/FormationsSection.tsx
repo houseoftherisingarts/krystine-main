@@ -10,6 +10,7 @@ import { Card } from '../primitives';
 // Les leçons d'un cours : téléversement (vidéo, musique, PDF, autre fichier),
 // ordre par flèches, suppression. Le fichier part dans formations-contenu/
 // (privé) et la leçon apparaît immédiatement dans le lecteur.
+import { SEMAINES } from '../../origine2/semaines';
 const MOIS_PORTES = ['', 'septembre', 'octobre', 'novembre', 'decembre', 'janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout'];
 const ICONE_LECON: Record<Lecon['type'], string> = {
   video: 'fa-circle-play', audio: 'fa-music', pdf: 'fa-file-pdf', fichier: 'fa-file', texte: 'fa-align-left',
@@ -94,7 +95,9 @@ export const LeconEditeur: React.FC<{ formationId: string; lecon: Lecon; modules
 
       <div className="flex flex-wrap items-center gap-3">
         <select value={mois} onChange={e => setMois(e.target.value)} className={champ}>
-          {MOIS_PORTES.map(m => <option key={m} value={m}>{m ? `S'ouvre avec la porte de ${m}` : 'Sans porte (toujours visible)'}</option>)}
+          {formationId === 'origine2'
+            ? ['', ...SEMAINES.map(s => s.n)].map(m => <option key={m} value={m}>{m ? `S'ouvre avec la ${SEMAINES.find(s => s.n === m)!.label.toLowerCase()}` : 'Sans semaine (toujours visible)'}</option>)
+            : MOIS_PORTES.map(m => <option key={m} value={m}>{m ? `S'ouvre avec la porte de ${m}` : 'Sans porte (toujours visible)'}</option>)}
         </select>
         <input value={duree} onChange={e => setDuree(e.target.value)} placeholder="Durée (ex. 12 min)" className={`w-36 ${champ}`} />
       </div>
@@ -240,6 +243,14 @@ export const LeconsPanel: React.FC<{ formationId: string }> = ({ formationId }) 
                 {l.moduleNom && <span className="ml-2 rounded-full bg-[#BA7B39]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#8B4A2F]">{l.moduleNom}</span>}
                 {l.mois && <span className="ml-1 text-[10px] uppercase tracking-wider text-[#38403a]/40 dark:text-white/40"><i className="fa-solid fa-door-closed mr-1" />{l.mois}</span>}
               </span>
+              {/* Le verdict du bot d'import Kajabi (scripts/kajabi/verifier-import.mjs) */}
+              {l.integrite && (
+                <span title={`${l.integrite.detail} (${l.integrite.mode === 'md5' ? 'octet par octet' : 'taille'}, ${l.integrite.verifieLe.slice(0, 10)})`}
+                  className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${l.integrite.etat === 'ok' ? 'bg-emerald-600/12 text-emerald-700 dark:text-emerald-300' : 'bg-red-500/12 text-red-600 dark:text-red-300'}`}>
+                  <i className={`fa-solid ${l.integrite.etat === 'ok' ? 'fa-check' : 'fa-triangle-exclamation'}`} />
+                  {l.integrite.etat === 'ok' ? 'Import vérifié' : l.integrite.etat === 'ecart' ? 'Écart avec Kajabi' : l.integrite.etat === 'absent' ? 'Fichier absent' : 'Source disparue'}
+                </span>
+              )}
               <button type="button" onClick={() => setEnEdition(e => e === l.id ? null : l.id)} title="Éditer la leçon" className="text-[#38403a]/40 hover:text-[#8B4A2F] dark:text-white/40"><i className="fa-solid fa-pen" /></button>
               <button type="button" onClick={() => bouger(i, -1)} disabled={i === 0} title="Monter" className="text-[#38403a]/40 hover:text-[#8B4A2F] disabled:opacity-20 dark:text-white/40"><i className="fa-solid fa-chevron-up" /></button>
               <button type="button" onClick={() => bouger(i, 1)} disabled={i === lecons.length - 1} title="Descendre" className="text-[#38403a]/40 hover:text-[#8B4A2F] disabled:opacity-20 dark:text-white/40"><i className="fa-solid fa-chevron-down" /></button>
