@@ -7,17 +7,22 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { DEFAULT_FLAGS, subscribeToSiteFlags, type SiteFlags } from '../firebase/siteFlags';
 
-const SiteFlagsContext = createContext<SiteFlags>(DEFAULT_FLAGS);
+// `pret` passe à true à la première réponse de Firestore : une page qui
+// redirige selon un drapeau attend ce signal, sinon elle jugerait sur les
+// valeurs par défaut pendant le chargement.
+type SiteFlagsState = SiteFlags & { pret: boolean };
+
+const SiteFlagsContext = createContext<SiteFlagsState>({ ...DEFAULT_FLAGS, pret: false });
 
 export const SiteFlagsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [flags, setFlags] = useState<SiteFlags>(DEFAULT_FLAGS);
+  const [flags, setFlags] = useState<SiteFlagsState>({ ...DEFAULT_FLAGS, pret: false });
 
   useEffect(() => {
-    const unsub = subscribeToSiteFlags(setFlags);
+    const unsub = subscribeToSiteFlags(f => setFlags({ ...f, pret: true }));
     return unsub;
   }, []);
 
   return <SiteFlagsContext.Provider value={flags}>{children}</SiteFlagsContext.Provider>;
 };
 
-export const useSiteFlags = (): SiteFlags => useContext(SiteFlagsContext);
+export const useSiteFlags = (): SiteFlagsState => useContext(SiteFlagsContext);

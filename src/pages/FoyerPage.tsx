@@ -17,6 +17,8 @@ import { Cta, useRejoindreFoyer } from './foyer/Cta';
 import { CHEMINS_FOYER } from '../components/communaute/chemins';
 import { OFFRE, FINAL } from './foyer/content';
 import { getFormation, type Formation } from '../firebase/formations';
+import { useSiteFlags } from '../contexts/SiteFlagsContext';
+import { useAuth } from '../contexts/AppContext';
 
 /**
  * Le Foyer d'Origine · page de vente (URL dédiée /foyer).
@@ -786,6 +788,11 @@ const FoyerPage: React.FC = () => {
   // l'entrée du Foyer (Alex, 7 septembre 2026). Krystine et l'admin ne
   // possèdent pas la formation, alors la page de vente leur reste ouverte.
   const { possede } = useRejoindreFoyer();
+  // Le Foyer en interrupteur (Alex, 9 septembre 2026) : éteint dans l'admin,
+  // la page de vente n'existe plus pour le public et seule la liste
+  // d'attente reste. L'admin garde la page pour l'éditer et la relire.
+  const { foyerOuvert, pret } = useSiteFlags();
+  const { isAdmin } = useAuth();
   const [ready, setReady] = useState(false);
   const reduce = useReducedMotion();
   useEffect(() => {
@@ -810,6 +817,8 @@ const FoyerPage: React.FC = () => {
     };
   }, []);
   if (possede) return <Navigate to={CHEMINS_FOYER.programme} replace />;
+  if (!pret) return <div className="min-h-screen bg-cream" />;
+  if (!foyerOuvert && !isAdmin) return <Navigate to="/liste-attente?programme=foyer" replace />;
   return (
     <div className="bg-cream overflow-x-clip">
       <Preloader done={ready} />

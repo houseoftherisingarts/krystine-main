@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEditMode } from '../../../contexts/EditModeContext';
-import { Card, EmptyState } from '../primitives';
+import { Card, EmptyState, ToggleSwitch } from '../primitives';
+import { setSiteFlag, subscribeToSiteFlags } from '../../../firebase/siteFlags';
 import { getAcheteursDe, getOngletsFormation, ajouterOngletFormation, supprimerOngletFormation, type AcheteurFormation, type OngletFormation } from '../../../firebase/formations';
 import { LeconsPanel } from './FormationsSection';
 import { getMember, type MemberDoc } from '../../../firebase/firestore';
@@ -53,6 +54,30 @@ const OngletsPanel: React.FC = () => {
   );
 };
 
+// L'interrupteur du Foyer : allumé, /foyer vend; éteint, /foyer renvoie à la
+// liste d'attente et rien d'autre ne s'achète. Lu en direct depuis
+// siteSettings/flags, donc le site public suit dans la seconde.
+const InterrupteurFoyer: React.FC = () => {
+  const [ouvert, setOuvert] = useState(false);
+  const [pret, setPret] = useState(false);
+  useEffect(() => subscribeToSiteFlags(f => { setOuvert(f.foyerOuvert); setPret(true); }), []);
+  return (
+    <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+      <ToggleSwitch checked={ouvert} onChange={v => { setOuvert(v); void setSiteFlag('foyerOuvert', v); }} />
+      <div className="min-w-0">
+        <p className="text-sm font-semibold text-white">
+          {!pret ? 'Le Foyer…' : ouvert ? 'Le Foyer est ouvert' : 'Le Foyer est fermé'}
+        </p>
+        <p className="text-xs text-white/60">
+          {ouvert
+            ? 'La page /foyer vend. Éteignez pour ne laisser que la liste d’attente.'
+            : 'Le public qui ouvre /foyer arrive sur la liste d’attente. Vous gardez la page pour l’éditer.'}
+        </p>
+      </div>
+    </div>
+  );
+};
+
 const FoyerSection: React.FC = () => {
   const navigate = useNavigate();
   const { setEditMode } = useEditMode();
@@ -99,6 +124,7 @@ const FoyerSection: React.FC = () => {
             <i className="fa-solid fa-pen" /> Ouvrir en édition
           </button>
         </div>
+        <div className="mt-5"><InterrupteurFoyer /></div>
       </Card>
 
       {/* Le cours lui-même : les leçons, leurs textes, portes et documents */}

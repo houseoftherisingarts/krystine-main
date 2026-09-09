@@ -307,6 +307,9 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     match /settings/{id}      { allow read: if true; allow write: if isAdmin(); }
+    // Les drapeaux de visibilité du site (src/firebase/siteFlags.ts) : le
+    // public les lit au démarrage, l'admin les bascule (interrupteur du Foyer).
+    match /siteSettings/{id}  { allow read: if true; allow write: if isAdmin(); }
     match /siteOverrides/{id} { allow read: if true; allow write: if isAdmin(); }
 
     // ── Écoutes du podcast sur la page ──
