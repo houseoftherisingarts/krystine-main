@@ -81,7 +81,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ lang }) => {
             <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">6. Partage des données</h2>
             <p><strong>Nous ne vendons JAMAIS vos renseignements personnels.</strong></p>
             <p>
-              Vos données peuvent être partagées uniquement avec les partenaires techniques mentionnés à la section 4, strictement pour l'exécution des services. Ces partenaires sont tenus par contrat de respecter la confidentialité de vos données.
+              Vos données peuvent être partagées uniquement avec les partenaires techniques mentionnés à la section 5, strictement pour l'exécution des services. Ces partenaires sont tenus par contrat de respecter la confidentialité de vos données.
             </p>
           </section>
 
