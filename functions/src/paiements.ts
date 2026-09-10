@@ -349,6 +349,13 @@ export const stripeWebhook = onRequest(
       res.status(200).send('ok'); return;
     }
 
+    // Des billets pour un événement de la billetterie maison : fabrication
+    // des billets et envoi du courriel, tout dans functions/src/billetterie.ts.
+    if (uid && session.metadata?.type === 'billets') {
+      await traiterPaiementBillets(session);
+      res.status(200).send('ok'); return;
+    }
+
     if (!uid || !formationId || session.payment_status !== 'paid') { res.status(200).send('incomplete'); return; }
 
     const db = getFirestore();
