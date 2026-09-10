@@ -21,6 +21,19 @@ service firebase.storage {
     // lecture passe par la fonction obtenirLecon (URL signée après achat).
     // Les règles Storage s'additionnent par OU : le tout-venant ci-dessous
     // capture donc le premier segment pour EXCLURE formations-contenu.
+    // Le terrain d'essai du Foyer, où Krystine s'entraîne à déposer ses leçons.
+    // Écriture réservée à l'administration, comme partout, mais lecture fermée
+    // elle aussi : une vraie leçon déposée pendant un essai ne doit pas se
+    // retrouver ouverte à qui devine l'adresse du fichier. Le tout-venant plus
+    // bas laisserait la lecture publique, alors la règle est nommée ici, et les
+    // règles de Storage s'additionnent par OU.
+    match /foyer-essai/{allPaths=**} {
+      allow read: if isAdmin();
+      allow write: if isAdmin()
+                   && request.resource.size < 2 * 1024 * 1024 * 1024   // 2 Go par vidéo
+                   && request.resource.contentType.matches('video/.*');
+    }
+
     match /formations-contenu/{allPaths=**} {
       allow write: if isAdmin()
                    && request.resource.size < 2 * 1024 * 1024 * 1024;  // 2 GB par leçon
@@ -65,7 +78,7 @@ service firebase.storage {
     }
 
     match /{dossier}/{allPaths=**} {
-      allow read: if dossier != 'formations-contenu' && dossier != 'vault' && dossier != 'verifications';
+      allow read: if dossier != 'formations-contenu' && dossier != 'vault' && dossier != 'verifications' && dossier != 'foyer-essai';
       allow write: if isAdmin()
                    && request.resource.size < 500 * 1024 * 1024  // 500 MB
                    && request.resource.contentType.matches('(image|video|audio)/.*|application/pdf');
