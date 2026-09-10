@@ -62,6 +62,44 @@ const SITE_AUDIO: Array<{
   },
 ];
 
+// L'interrupteur de L'Expérience Origine 2 (Alex, 10 septembre 2026) : allumé,
+// /origine-2 vend au public; éteint, une visiteuse ordinaire arrive sur la
+// liste d'attente et l'administratrice garde seule la page, pour l'éditer et
+// la relire avant l'allumage.
+const PagesDuSiteCard: React.FC = () => {
+  const [origine2Ouvert, setOrigine2Ouvert] = useState(false);
+  const [charge, setCharge] = useState(true);
+  useEffect(() => subscribeToSiteFlags(f => { setOrigine2Ouvert(f.origine2Ouvert); setCharge(false); }), []);
+  return (
+    <Card className="p-6">
+      <h3 className="mb-2 text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">Pages du site</h3>
+      <p className="mb-4 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
+        Une fois allumé, l'interrupteur de L'Expérience Origine 2 ouvre /origine-2 à la vente pour tout le monde;
+        éteint, une visiteuse qui arrive sur cette adresse est redirigée vers la liste d'attente et vous restez
+        seule à voir la page, pour continuer à l'ajuster.
+      </p>
+      {!charge && (
+        <div className="flex flex-wrap items-center gap-4">
+          <ToggleSwitch
+            checked={origine2Ouvert}
+            onChange={v => { setOrigine2Ouvert(v); void setSiteFlag('origine2Ouvert', v); }}
+            label={origine2Ouvert ? "L'Expérience Origine 2 est ouverte" : "L'Expérience Origine 2 est fermée"}
+          />
+          <a
+            href="/origine-2?apercu=1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[11px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50 hover:text-[#8B4A2F]"
+          >
+            <i className="fa-solid fa-up-right-from-square mr-1.5" />
+            Voir la page avant de l'allumer
+          </a>
+        </div>
+      )}
+    </Card>
+  );
+};
+
 const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
   const firebaseProject = (import.meta.env.VITE_FIREBASE_PROJECT_ID as string) || 'non configuré';
   const shopifyDomain = (import.meta.env.VITE_SHOPIFY_DOMAIN as string) || 'non configuré';
