@@ -42,6 +42,7 @@ import FormationsSection from './admin/sections/FormationsSection';
 import OrdersSection from './admin/sections/OrdersSection';
 import BoutiqueSection from './admin/sections/BoutiqueSection';
 import MembersSection from './admin/sections/MembersSection';
+import HabitudesSection from './admin/sections/HabitudesSection';
 import BadgeBleuSection from './admin/sections/BadgeBleuSection';
 import MessagesSection from './admin/sections/MessagesSection';
 import RecompensesSection from './admin/sections/RecompensesSection';
