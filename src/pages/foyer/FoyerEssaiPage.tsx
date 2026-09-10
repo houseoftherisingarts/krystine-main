@@ -351,7 +351,7 @@ const FoyerEssaiPage: React.FC = () => {
   const porteActive = porteOuverte ? PORTES.find(p => p.n === porteOuverte) : null;
 
   return (
-    <div className="min-h-screen bg-cream pb-24 pt-28">
+    <div className="min-h-screen bg-cream pb-24 pt-40">
       <div className="mx-auto max-w-[1400px] px-5 md:px-10">
         <header className="flex flex-wrap items-start justify-between gap-6 border-b border-brass/30 pb-8">
           <div>
