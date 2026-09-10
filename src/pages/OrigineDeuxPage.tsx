@@ -654,16 +654,4 @@ const OrigineDeuxPage: React.FC = () => {
   );
 };
 
-/* `useRejoindreOrigine2` gère déjà sa propre lecture de `possede`; ce petit
-   relais évite de dupliquer l'appel Firestore rien que pour la garde de
-   redirection au sommet du composant (avant que `formation` soit connue). */
-function useRejoindreOrigine2Guard(user: ReturnType<typeof useAuth>['user']) {
-  const [possede, setPossede] = useState(false);
-  useEffect(() => {
-    if (user) aAchete(user.uid, 'origine2').then(setPossede).catch(() => {});
-    else setPossede(false);
-  }, [user]);
-  return { possede };
-}
-
 export default OrigineDeuxPage;
