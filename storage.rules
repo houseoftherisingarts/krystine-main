@@ -26,12 +26,13 @@ service firebase.storage {
     // elle aussi : une vraie leçon déposée pendant un essai ne doit pas se
     // retrouver ouverte à qui devine l'adresse du fichier. Le tout-venant plus
     // bas laisserait la lecture publique, alors la règle est nommée ici, et les
-    // règles de Storage s'additionnent par OU.
+    // règles de Storage s'additionnent par OU. Une leçon est un module Kajabi :
+    // plusieurs pièces par leçon, vidéo, audio, PDF ou image (Alex, 10 sept 2026).
     match /foyer-essai/{allPaths=**} {
       allow read: if isAdmin();
       allow write: if isAdmin()
-                   && request.resource.size < 2 * 1024 * 1024 * 1024   // 2 Go par vidéo
-                   && request.resource.contentType.matches('video/.*');
+                   && request.resource.size < 2 * 1024 * 1024 * 1024   // 2 Go par pièce
+                   && request.resource.contentType.matches('(video|audio|image)/.*|application/pdf');
     }
 
     match /formations-contenu/{allPaths=**} {
