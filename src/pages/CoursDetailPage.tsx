@@ -703,10 +703,33 @@ const CoursDetailPage: React.FC = () => {
                 </div>
               ) : (
                 <>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
-                    {lang === 'FR' ? 'Leçon' : 'Lesson'} {lecons.findIndex(l => l.id === courante.id) + 1} {lang === 'FR' ? 'de' : 'of'} {lecons.length}
-                  </p>
-                  <h2 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">{courante.titre}</h2>
+                  {(() => {
+                    // Sur Vata, la leçon se situe dans sa semaine et son sens
+                    // plutôt que dans un compte « 1 de 50 » qui ne dit rien.
+                    const s = estVata ? semaineDeModule(courante.moduleNom) : undefined;
+                    if (!s) {
+                      return (
+                        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
+                          {lang === 'FR' ? 'Leçon' : 'Lesson'} {lecons.findIndex(l => l.id === courante.id) + 1} {lang === 'FR' ? 'de' : 'of'} {lecons.length}
+                        </p>
+                      );
+                    }
+                    return (
+                      <div className="-mx-6 -mt-6 mb-6 overflow-hidden rounded-t-[20px]">
+                        <div className="relative h-36 w-full md:h-44">
+                          <img src={s.bandeau} alt="" className="h-full w-full object-cover" />
+                          <span aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(15,20,17,0.92) 6%, rgba(15,20,17,0.34) 60%, transparent 100%)' }} />
+                          <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 px-6 pb-4">
+                            <span className="font-serif text-2xl leading-none text-[#d9a05b]">{s.roman}</span>
+                            <span className="text-[10px] font-bold uppercase tracking-[0.26em] text-[#EEE7DB]/80">
+                              {lang === 'FR' ? 'Semaine' : 'Week'} {s.rang} · {lang === 'FR' ? s.sens.fr : s.sens.en}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                  <h2 className="mt-1 font-serif text-[clamp(1.5rem,2.4vw,2rem)] leading-[1.15] text-[#293027] dark:text-white">{courante.titre}</h2>
                   <div className="mt-5">
                     {chargeLecon ? (
                       <p className="text-sm text-[#38403a]/50 dark:text-white/50">{lang === 'FR' ? 'Chargement…' : 'Loading…'}</p>
