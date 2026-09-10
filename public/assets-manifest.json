@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T15:14:58.201Z",
+  "generatedAt": "2026-09-10T15:38:20.355Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -1197,6 +1197,20 @@
       "folder": "livres",
       "kind": "image",
       "size": 101016
+    },
+    {
+      "path": "/origine2/packshot-poster.jpg",
+      "name": "packshot-poster.jpg",
+      "folder": "origine2",
+      "kind": "image",
+      "size": 90252
+    },
+    {
+      "path": "/origine2/packshot.mp4",
+      "name": "packshot.mp4",
+      "folder": "origine2",
+      "kind": "video",
+      "size": 1247642
     },
     {
       "path": "/podcast/krystine.jpg",

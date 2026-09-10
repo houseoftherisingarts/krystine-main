@@ -53,7 +53,7 @@ const TicketScanner: React.FC<{ eventId: string; eventTitre: string; onEntree?: 
           autoFocus
           value={code}
           onChange={e => setCode(e.target.value)}
-          placeholder="KSL-XXXX-XXXX"
+          placeholder="KSL-XXXX-XXXX-XXXX"
           className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/15 focus:border-[#BA7B39] outline-none text-white text-lg tracking-widest uppercase placeholder:text-white/30"
         />
         <button type="submit" disabled={busy} className="px-6 py-3 rounded-xl bg-[#BA7B39] text-[#16100a] font-bold uppercase tracking-widest text-xs disabled:opacity-50">

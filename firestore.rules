@@ -317,6 +317,10 @@ service cloud.firestore {
     // SDK d'administration, qui passe outre ces règles. Le navigateur ne peut
     // donc rien créer ici : personne ne se fabrique un billet. Une acheteuse lit
     // les siens, l'administration les lit tous et marque l'entrée à la porte.
+    // La trace des sessions Stripe déjà encaissées, écrite par le webhook avec
+    // le SDK d'administration. Aucun navigateur n'a à la lire ni à l'écrire.
+    match /billetterieTraitees/{sessionId} { allow read, write: if false; }
+
     match /billets/{code} {
       allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
       allow create, delete: if false;

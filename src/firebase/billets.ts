@@ -7,7 +7,14 @@
 // immédiate et empêche deux billets de partager un code.
 //
 // Le code se lit à voix haute sans confusion : ni O ni I ni 0 ni 1 dans
-// l'alphabet, et deux groupes de quatre séparés par un trait d'union.
+// l'alphabet, et trois groupes de quatre séparés par des traits d'union, ce qui
+// donne soixante bits. Personne ne devine un billet valide.
+//
+// Sur l'autorisation : les deux fonctions ci-dessous appellent Firestore
+// directement, et c'est firestore.rules qui tranche, pas ce fichier. Une
+// visiteuse ne lit que les billets dont l'uid est le sien, et seule une
+// administratrice peut marquer une entrée. Un appel fait par quelqu'un d'autre
+// se solde par un refus du serveur, jamais par une lecture.
 import { db } from '../firebase';
 import {
   collection, doc, getDoc, getDocs, query, where, orderBy, updateDoc, serverTimestamp, Timestamp,
@@ -69,11 +76,11 @@ export async function marquerBilletUtilise(code: string): Promise<void> {
   });
 }
 
-/** « ksl 4h7k-9mtr » devient « KSL-4H7K-9MTR ». */
+/** « ksl 4h7k 9mtr-pq3v » devient « KSL-4H7K-9MTR-PQ3V ». */
 export function normaliserCode(brut: string): string {
   const propre = brut.toUpperCase().replace(/[^A-Z0-9]/g, '');
   const corps = propre.startsWith('KSL') ? propre.slice(3) : propre;
-  return `KSL-${corps.slice(0, 4)}-${corps.slice(4, 8)}`;
+  return `KSL-${corps.slice(0, 4)}-${corps.slice(4, 8)}-${corps.slice(8, 12)}`;
 }
 
 /** Le prix affiché : « 229,95 $ » à partir des cents. */

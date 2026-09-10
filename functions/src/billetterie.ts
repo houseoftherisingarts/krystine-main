@@ -24,6 +24,9 @@ const TAXES_QC = {
 } as const;
 
 const CHEMIN_BILLETS = 'billets';
+// Un document par session Stripe déjà encaissée : c'est lui qui empêche un
+// rejeu de fabriquer une deuxième fois les mêmes billets.
+const CHEMIN_TRAITEES = 'billetterieTraitees';
 const ALPHABET_BILLET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // ni O, ni I, ni 0, ni 1
 
 // Le sous-ensemble d'EventDoc (src/firebase/firestore.ts) dont ce fichier a
@@ -54,11 +57,15 @@ interface StripeSession {
   metadata?: Record<string, string>;
 }
 
+// Douze symboles tirés d'un alphabet de trente-deux, donc soixante bits : même
+// avec deux cents billets en circulation, deviner un code valide relève du
+// hasard pur. Les octets se prennent dans crypto, et 256 étant un multiple de
+// 32 le reste de la division ne penche vers aucune lettre.
 export function genererCodeBillet(): string {
-  const octets = randomBytes(8);
+  const octets = randomBytes(12);
   let corps = '';
-  for (let i = 0; i < 8; i++) corps += ALPHABET_BILLET[octets[i] % ALPHABET_BILLET.length];
-  return `KSL-${corps.slice(0, 4)}-${corps.slice(4, 8)}`;
+  for (let i = 0; i < 12; i++) corps += ALPHABET_BILLET[octets[i] % ALPHABET_BILLET.length];
+  return `KSL-${corps.slice(0, 4)}-${corps.slice(4, 8)}-${corps.slice(8, 12)}`;
 }
 
 export const creerSessionBillets = onCall(
@@ -132,17 +139,23 @@ export async function traiterPaiementBillets(session: StripeSession): Promise<vo
   if (!uid || !eventId || session.payment_status !== 'paid') return;
 
   const db = getFirestore();
-  const dejaServi = await db.collection(CHEMIN_BILLETS).where('sessionId', '==', session.id).limit(1).get();
-  if (!dejaServi.empty) {
-    console.log(`[billetterie] session ${session.id} déjà traitée`);
-    return;
-  }
-
+  // Le garde-fou contre le rejeu vit DANS la transaction, sur un document
+  // marqueur dont l'identifiant est celui de la session Stripe. Une requête
+  // faite avant la transaction laisserait une fenêtre ouverte : deux rejeux
+  // simultanés y liraient tous les deux « pas encore servi » et fabriqueraient
+  // deux jeux de billets pour un seul paiement. Firestore rejoue la
+  // transaction quand deux écritures se disputent ce même document, alors une
+  // seule des deux passe.
+  const marqueurRef = db.doc(`${CHEMIN_TRAITEES}/${session.id}`);
   const eventRef = db.doc(`events/${eventId}`);
   let event: EvenementBillets | undefined;
   let codes: string[] = [];
   try {
     await db.runTransaction(async (tx) => {
+      if ((await tx.get(marqueurRef)).exists) {
+        console.log(`[billetterie] session ${session.id} déjà traitée`);
+        return;
+      }
       const eSnap = await tx.get(eventRef);
       if (!eSnap.exists) throw new Error('événement introuvable');
       event = eSnap.data() as EvenementBillets;
@@ -164,6 +177,7 @@ export async function traiterPaiementBillets(session: StripeSession): Promise<vo
         nouveauxCodes.push(code);
       }
 
+      tx.set(marqueurRef, { eventId, uid, quantite, at: FieldValue.serverTimestamp() });
       tx.update(eventRef, { vendus: FieldValue.increment(quantite) });
       const montantUnitaire = Math.round((session.amount_total || 0) / quantite);
       const taxesUnitaire = Math.round((session.total_details?.amount_tax || 0) / quantite);
@@ -191,6 +205,9 @@ export async function traiterPaiementBillets(session: StripeSession): Promise<vo
     console.error('[billetterie] webhook refusé', session.id, err);
     return;
   }
+
+  // Un rejeu sort de la transaction sans code : rien à écrire, rien à envoyer.
+  if (!codes.length) return;
 
   console.log(`[billetterie] ${codes.length} billet(s) pour ${uid} · ${eventId} · ${session.id}`);
   try {

@@ -12,7 +12,7 @@
 // écrite dans le code. Les deux survivent aux redéploiements, et le jour où le
 // code change, la surcharge cesse d'être lue plutôt que d'écraser la nouveauté.
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { deleteField, doc, onSnapshot, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { deleteField, doc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { poserSurcharges } from './i18n/lang';
 import { poserPhotos, cadrePropre, type Cadre } from './i18n/photos';
@@ -183,9 +183,13 @@ export const EditionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     for (const champ of Object.keys(parClef) as (keyof Publie)[]) {
       if (Object.keys(parClef[champ]).length) patch[champ] = parClef[champ];
     }
-    // Un merge récursif garde les clés déjà en place et n'écrase que celles-ci.
-    await setDoc(ref, { _maj: serverTimestamp() }, { merge: true });
-    await updateDoc(ref, patch as never);
+    // setDoc en merge fusionne les cartes imbriquées clé par clé, alors que
+    // updateDoc sur « libre » remplacerait la carte entière et effacerait tout
+    // ce que Krystine a déjà écrit ailleurs. Les clés contiennent des points et
+    // des barres obliques (une phrase, une adresse d'image), donc elles ne
+    // peuvent pas voyager en chemin pointé : elles passent par leur objet
+    // parent, et deleteField() y reste compris.
+    await setDoc(ref, patch, { merge: true });
     setBrouillonTexte({});
     setBrouillonPhoto({});
   }, [brouillonTexte, brouillonPhoto]);

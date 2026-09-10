@@ -114,7 +114,7 @@ const EvenementVente: React.FC = () => {
     <div className="bg-cream text-ink font-sans antialiased">
       {isAdmin && apercu && ev.isPublished === false && (
         <div className="sticky top-0 z-50 bg-brass px-5 py-2 text-center font-sans text-[0.68rem] uppercase tracking-[0.18em] text-espressoDeep">
-          {fr ? "Aperçu administratrice — cette page n'est pas encore publiée." : 'Administrator preview — this page is not published yet.'}
+          {fr ? "Aperçu administratrice : cette page n'est pas encore publiée." : 'Administrator preview: this page is not published yet.'}
         </div>
       )}
 
@@ -138,7 +138,7 @@ const EvenementVente: React.FC = () => {
                     {ev.title}
                   </h1>
                   {ev.subtitle && (
-                    <p className="mt-5 font-serif italic text-[clamp(1.1rem,1.8vw,1.5rem)] text-ctextSoft max-w-[42ch]">{ev.subtitle}</p>
+                    <p className="mt-5 font-serif text-[clamp(1.1rem,1.8vw,1.5rem)] text-ctextSoft max-w-[42ch]">{ev.subtitle}</p>
                   )}
                   <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3 text-ctextSoft">
                     <span className="flex items-center gap-2 text-sm md:text-base"><i className="fa-solid fa-calendar-day text-brass" /> {dateStr}{ev.heure ? ` · ${ev.heure}` : ''}</span>
@@ -210,7 +210,7 @@ const EvenementVente: React.FC = () => {
                 {ev.title}
               </h2>
               <p className="mt-5 text-ctextSoft leading-[1.8] max-w-[46ch]">
-                {dateStr}{ev.heure ? `, ${ev.heure}` : ''}{(ev.adresse || ev.location) ? ` — ${ev.adresse || ev.location}` : ''}.
+                {dateStr}{ev.heure ? `, ${ev.heure}` : ''}{(ev.adresse || ev.location) ? `, ${ev.adresse || ev.location}` : ''}.
               </p>
             </Reveal>
 
@@ -250,7 +250,7 @@ const EvenementVente: React.FC = () => {
                       >
                         {busy
                           ? (fr ? 'Un instant…' : 'One moment…')
-                          : (fr ? `Réserver — ${enDollars(avecTaxes(prixTotal))}` : `Reserve — ${enDollars(avecTaxes(prixTotal))}`)}
+                          : (fr ? `Réserver, ${enDollars(avecTaxes(prixTotal))}` : `Reserve for ${enDollars(avecTaxes(prixTotal))}`)}
                       </button>
                       {erreur && <p className="mt-3 text-sm text-red-300">{erreur}</p>}
                       {ev.noteAchat && <p className="mt-5 text-[0.8rem] leading-relaxed text-ctextSoft/80">{ev.noteAchat}</p>}

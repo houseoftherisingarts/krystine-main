@@ -75,7 +75,7 @@ const BilletCard: React.FC<{ billet: Billet; nom: string; lang: string }> = ({ b
   const fr = lang === 'FR';
 
   const telecharger = () => {
-    // Un billet, une page A4, fond crème et filet laiton — le même esprit que
+    // Un billet, une page A4, fond crème et filet laiton, le même esprit que
     // les autres PDF du portail (ClientPortal.tsx, patron du rituel).
     const doc = new jsPDF({ unit: 'pt', format: 'a4' });
     const W = doc.internal.pageSize.getWidth();
@@ -119,7 +119,7 @@ const BilletCard: React.FC<{ billet: Billet; nom: string; lang: string }> = ({ b
     y = H - margin;
     doc.setDrawColor(187, 154, 94); doc.setLineWidth(0.5);
     doc.line(margin, y - 20, margin + 72, y - 20);
-    doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(130, 120, 105);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(130, 120, 105);
     doc.text('Krystine St-Laurent · krystinestlaurent.ca', margin, y);
 
     doc.save(`billet-${billet.code}.pdf`);

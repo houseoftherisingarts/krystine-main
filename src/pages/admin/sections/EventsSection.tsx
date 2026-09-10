@@ -231,7 +231,7 @@ const EventsSection: React.FC = () => {
                       rows={4}
                       value={(editing.argumentaire || []).join('\n')}
                       onChange={e => setEditing({ ...editing, argumentaire: lignes(e.target.value) })}
-                      placeholder="Un argument par ligne — remplacé par le message vocal de Krystine"
+                      placeholder="Un argument par ligne. Ce texte attend le message vocal de Krystine."
                     />
                   </div>
                   <div>
@@ -352,7 +352,7 @@ const EventsSection: React.FC = () => {
                             {billets.map(b => (
                               <tr key={b.id} className="border-t border-[#38403a]/5 dark:border-white/5">
                                 <td className="py-2 pr-4 font-mono text-xs">{b.code}</td>
-                                <td className="py-2 pr-4">{b.nom || '—'}</td>
+                                <td className="py-2 pr-4">{b.nom || 's.o.'}</td>
                                 <td className="py-2 pr-4 text-[#293027]/60 dark:text-white/60">{b.email}</td>
                                 <td className="py-2 pr-4 text-[#293027]/60 dark:text-white/60">{dateLisible(b.createdAt)}</td>
                                 <td className="py-2">

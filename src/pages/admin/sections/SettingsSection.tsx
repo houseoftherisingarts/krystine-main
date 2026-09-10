@@ -49,7 +49,7 @@ const SITE_AUDIO: Array<{
   {
     id: 'main-bg',
     labelFR: 'Musique de fond du site',
-    noteFR: "Jouée en boucle à faible volume via le bouton musique de la barre supérieure (Homecoming — Tranquilium).",
+    noteFR: "Jouée en boucle à faible volume via le bouton musique de la barre supérieure (Homecoming, de Tranquilium).",
     url: 'https://storage.googleapis.com/inspirata/Base%20site/homecoming-tranquilium-main-version-25793-03-28.mp3',
     filename: 'inspirata-musique-site.mp3',
   },
@@ -156,7 +156,7 @@ const SettingsSection: React.FC<{ user: User }> = ({ user }) => {
                 {/* Using an <a download> with a same-origin proxy would give a
                     cleaner filename, but GCS serves these with CORS open, so
                     the download attribute on a cross-origin URL still works
-                    in Chromium/Firefox — Safari falls back to "open in tab",
+                    in Chromium/Firefox; Safari falls back to "open in tab",
                     which is acceptable. */}
                 <a
                   href={a.url}

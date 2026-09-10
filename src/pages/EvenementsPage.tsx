@@ -73,8 +73,33 @@ const EvenementsPage: React.FC = () => {
       {/* ─────────── FEUILLE 1 · HERO ─────────── */}
       <Feuille z={1} premiere>
         <section className="relative w-full overflow-hidden bg-espressoDeep py-28 md:py-36">
+          {/* Le cinémagraphe de l'accueil et de la page conférencière : la même
+              image de marque plutôt qu'un rectangle sombre vide. */}
+          <div className="absolute inset-0 z-0" aria-hidden>
+            <video
+              className="absolute right-0 top-1/2 h-full w-auto min-w-full -translate-y-1/2 object-cover md:left-auto md:w-[82%]"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster="/accueil/assets/hero-ml-poster.jpg"
+            >
+              <source src="/accueil/assets/hero-motionleap.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div
+            className="absolute inset-0 z-[1]"
+            aria-hidden
+            style={{ background: 'linear-gradient(90deg, rgba(22,16,10,0.95) 0%, rgba(22,16,10,0.88) 22%, rgba(22,16,10,0.62) 42%, rgba(22,16,10,0.3) 62%, rgba(22,16,10,0.08) 80%, rgba(22,16,10,0) 94%)' }}
+          />
+          <div
+            className="absolute inset-x-0 bottom-0 z-[1] h-40"
+            aria-hidden
+            style={{ background: 'linear-gradient(180deg, rgba(22,16,10,0) 0%, rgba(22,16,10,0.55) 100%)' }}
+          />
           <Atmosphere strength={0.7} />
-          <div className={`relative w-full ${GUT}`}>
+          <div className={`relative z-[2] w-full ${GUT}`}>
             <Eyebrow on="dark">{fr ? 'Calendrier' : 'Calendar'}</Eyebrow>
             <h1 className="mt-6 font-serif font-medium text-ctext leading-[1.05] text-[clamp(2.2rem,5vw,4.2rem)] max-w-[18ch]">
               {t.title}
@@ -122,10 +147,24 @@ const EvenementsPage: React.FC = () => {
                       <Eyebrow>{t.upcoming}</Eyebrow>
                       <DrawRule className="mt-5 w-24" />
                     </Reveal>
+                    {/* La largeur d'une carte suit le nombre d'événements : un seul
+                        occupe la bande entière plutôt que de flotter dans un tiers
+                        d'écran, deux se partagent la largeur, trois et plus tiennent
+                        en colonnes. Rien ne reste jamais posé dans du vide. */}
                     <div className={`${G12} mt-14 gap-y-12`}>
                       {upcoming.map((event, i) => (
-                        <Reveal key={event.id} delay={Math.min(i * 0.08, 0.24)} className="col-span-12 md:col-span-6 lg:col-span-4">
-                          <EventCard event={event} lang={lang} t={t} />
+                        <Reveal
+                          key={event.id}
+                          delay={Math.min(i * 0.08, 0.24)}
+                          className={
+                            upcoming.length === 1
+                              ? 'col-span-12'
+                              : upcoming.length === 2
+                                ? 'col-span-12 md:col-span-6'
+                                : 'col-span-12 md:col-span-6 lg:col-span-4'
+                          }
+                        >
+                          <EventCard event={event} lang={lang} t={t} vedette={upcoming.length === 1} />
                         </Reveal>
                       ))}
                     </div>
@@ -161,9 +200,11 @@ interface EventCardProps {
   lang: string;
   t: any;
   compact?: boolean;
+  /** Seul événement à venir : la carte s'ouvre en bande, image à gauche, texte à droite. */
+  vedette?: boolean;
 }
 
-const EventCard: React.FC<EventCardProps> = ({ event, lang, t, compact }) => {
+const EventCard: React.FC<EventCardProps> = ({ event, lang, t, compact, vedette }) => {
   const fr = lang === 'FR';
   const dateObj = new Date(event.date);
   const dateStr = dateObj.toLocaleDateString(fr ? 'fr-CA' : 'en-CA', {
@@ -176,26 +217,34 @@ const EventCard: React.FC<EventCardProps> = ({ event, lang, t, compact }) => {
   const billetsFermes = !!event.billetterie && !!event.slug && !billetsOuverts;
 
   return (
-    <article className={`group relative overflow-hidden rounded-[15px] border border-cream3 bg-card shadow-sm transition-shadow duration-300 hover:shadow-[0_20px_50px_rgba(29,22,4,0.10)] ${compact ? 'p-6' : 'p-8'}`}>
-      {image && !compact && (
+    <article className={`group relative overflow-hidden rounded-[15px] border border-cream3 bg-card shadow-sm transition-shadow duration-300 hover:shadow-[0_20px_50px_rgba(29,22,4,0.10)] ${vedette ? 'md:grid md:grid-cols-12 md:items-stretch' : compact ? 'p-6' : 'p-8'}`}>
+      {/* En bande, la photo occupe vraiment la moitié gauche; en colonne, elle
+          reste un fond très pâle derrière le texte pour ne pas le brouiller. */}
+      {image && vedette && (
+        <div className="relative md:col-span-5 lg:col-span-6 min-h-[220px] md:min-h-[380px]">
+          <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" referrerPolicy="no-referrer" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-cream/90 hidden md:block" aria-hidden />
+        </div>
+      )}
+      {image && !compact && !vedette && (
         <div className="absolute inset-0 opacity-[0.06] bg-cover bg-center" style={{ backgroundImage: `url(${image})` }} aria-hidden />
       )}
-      <div className="relative">
+      <div className={`relative ${vedette ? 'md:col-span-7 lg:col-span-6 p-8 md:p-12 lg:p-16 flex flex-col justify-center' : ''}`}>
         <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 font-sans text-[0.62rem] uppercase tracking-widest font-medium ${event.isFeatured ? 'bg-brass/15 text-brassInk' : 'bg-ink/5 text-inkSoft'}`}>
           <i className={`fa-solid ${enLigne ? 'fa-video' : 'fa-map-marker-alt'} text-[10px]`} />
           {enLigne ? t.online : t.inPerson}
         </span>
 
         <p className="mt-4 font-sans text-[0.7rem] uppercase tracking-widest text-brassInk font-medium">{dateStr}{event.heure ? ` · ${event.heure}` : ''}</p>
-        <h3 className={`mt-2 font-serif font-medium text-ink leading-[1.1] line-clamp-2 ${compact ? 'text-lg' : 'text-2xl'}`}>{event.title}</h3>
-        {event.subtitle && !compact && <p className="mt-2 font-serif italic text-inkSoft line-clamp-1">{event.subtitle}</p>}
+        <h3 className={`mt-2 font-serif font-medium text-ink leading-[1.1] line-clamp-2 ${compact ? 'text-lg' : vedette ? 'text-[clamp(1.9rem,3.2vw,2.9rem)]' : 'text-2xl'}`}>{event.title}</h3>
+        {event.subtitle && !compact && <p className="mt-2 font-serif text-inkSoft line-clamp-1">{event.subtitle}</p>}
         {event.location && (
           <p className="mt-3 flex items-center gap-2 text-sm text-inkSoft">
             <i className="fa-solid fa-location-dot text-brassInk text-xs" /> {event.location}
           </p>
         )}
         {event.description && !compact && (
-          <p className="mt-4 text-sm leading-relaxed text-inkSoft line-clamp-3">{event.description}</p>
+          <p className={`mt-4 leading-relaxed text-inkSoft line-clamp-3 ${vedette ? 'text-[0.95rem] leading-[1.85] max-w-[52ch]' : 'text-sm'}`}>{event.description}</p>
         )}
 
         {/* ── Le geste, selon l'état réel de l'événement ── */}
@@ -214,7 +263,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, lang, t, compact }) => {
           )}
 
           {billetsFermes && (
-            <p className="text-[0.78rem] italic text-inkSoft">
+            <p className="text-[0.78rem] text-inkSoft">
               {fr ? 'Cet événement affiche complet pour le moment.' : 'This event is sold out for now.'}
             </p>
           )}
@@ -226,7 +275,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, lang, t, compact }) => {
           )}
 
           {!event.billetterie && !event.registrationLink && !compact && (
-            <p className="text-[0.78rem] italic text-inkSoft">
+            <p className="text-[0.78rem] text-inkSoft">
               {fr ? "L'inscription à cet événement s'ouvrira bientôt." : 'Registration for this event opens soon.'}
             </p>
           )}

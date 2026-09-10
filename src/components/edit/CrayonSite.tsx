@@ -279,7 +279,10 @@ const CrayonSite: React.FC = () => {
   let left = 12;
   if (rect && typeof window !== 'undefined') {
     const h = photo ? hauteurApercu + 240 : 300;
-    const plancher = 96;
+    // Jamais sous la barre de modification, qui vit en haut à droite sous la
+    // barre de navigation : une fenêtre ouverte depuis un lien du menu se
+    // poserait sinon par-dessus le bouton « Enregistrer ».
+    const plancher = 148;
     top = rect.bottom + 10 + h > window.innerHeight ? Math.max(plancher, rect.top - 10 - h) : Math.max(plancher, rect.bottom + 10);
     left = Math.min(Math.max(12, rect.left), window.innerWidth - largeur - 12);
   }
@@ -335,7 +338,7 @@ const CrayonSite: React.FC = () => {
       {edition && !cible && !photo && (
         <p
           role="status"
-          className="fixed z-[100] left-1/2 -translate-x-1/2 bottom-6 rounded-full bg-brass text-espresso text-xs px-4 py-2 shadow-xl pointer-events-none"
+          className="fixed z-[100] left-1/2 -translate-x-1/2 bottom-3 rounded-full bg-brass/95 text-espresso text-xs px-4 py-2 shadow-xl pointer-events-none"
         >
           Cliquez sur un texte pour le récrire, ou sur une photo pour la changer.
         </p>
