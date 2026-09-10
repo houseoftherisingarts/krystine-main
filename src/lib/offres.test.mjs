@@ -127,6 +127,55 @@ cas('Rien ne s’applique donne le repli doux', () => {
   assert.doesNotMatch(offre.texte, /\$/);
 });
 
+// Une cliente qui vient d'ouvrir son compte, sans dosha, sans une seule page
+// comptée nulle part : le cas le plus vide qui soit, jamais de crash ni
+// d'offre devinée à partir de rien.
+cas("Une cliente sans aucune habitude ne casse rien et reçoit le repli", () => {
+  const offre = offrePour({
+    dosha: undefined,
+    joinedAtMs: undefined,
+    maintenantMs: Date.now(),
+    familles: {},
+    formationsPubliees: [],
+    formationsPossedees: [],
+    aCommandeBoutique: false,
+  });
+  assert.equal(offre.id, 'origine2');
+});
+
+// Une cliente qui possède déjà tout ce que le moteur pourrait proposer :
+// aucune règle ne doit se déclencher, jamais une relance pour ce qu'elle a.
+cas('Une cliente qui possède déjà tout retombe sur le repli, jamais une relance', () => {
+  const offre = offrePour({
+    ...VIDE,
+    dosha: 'Vata',
+    familles: { Origine: 12, Boutique: 12, 'Podcast et médias': 12 },
+    formationsPossedees: [
+      { id: 'kajabi-2148687644', titre: 'Programme Vata' },
+      { id: 'origine-1', titre: "L'Expérience Origine" },
+    ],
+    aCommandeBoutique: true,
+  });
+  assert.equal(offre.id, 'origine2');
+});
+
+// Le prix affiché doit venir de la fiche formation, jamais être inventé ni
+// oublié quand il existe vraiment (déjà vérifié pour Pitta plus haut : ici
+// pour Vata, dont le prix vient de la même collection formationsPubliees).
+cas('Vata affiche le vrai prix de sa fiche formation', () => {
+  const offre = offrePour({
+    ...VIDE,
+    dosha: 'Vata',
+    formationsPubliees: [{ id: 'kajabi-2148687644', titre: 'Programme Vata', statut: 'publie', prix: 247 }],
+  });
+  assert.match(offre.texte, /247 \$/);
+});
+
+cas('Vata sans prix connu dans la fiche ne montre aucun prix', () => {
+  const offre = offrePour({ ...VIDE, dosha: 'Vata' });
+  assert.doesNotMatch(offre.texte, /\$/);
+});
+
 // L'ORDRE COMPTE : Vata gagne même si la famille Origine qualifie aussi.
 cas("L'ordre des règles est respecté : Vata avant Origine", () => {
   const offre = offrePour({ ...VIDE, dosha: 'Vata', familles: { Origine: 10 } });
