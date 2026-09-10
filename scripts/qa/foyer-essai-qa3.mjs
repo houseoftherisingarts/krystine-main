@@ -21,27 +21,33 @@ await p.waitForTimeout(2000);
 await p.locator('button:has(img)').first().click(); // octobre
 await p.waitForTimeout(600);
 
-// La leçon "Bienvenue dans ce cycle" (2 pièces) : l'ouvrir si elle est fermée.
-const ligneBienvenue = p.locator('div', { hasText: /^2\. Bienvenue dans ce cycle/ }).first();
-console.log('lignes trouvées avec "Bienvenue" en 2e position :', await ligneBienvenue.count());
-const crayon = p.locator('button[title="Éditer la leçon"]').nth(1);
-const dejaOuvert = await p.getByRole('button', { name: /^Fermer$/i }).count();
-console.log('panneau déjà ouvert ?', dejaOuvert > 0);
-if (dejaOuvert === 0) { await crayon.click(); await p.waitForTimeout(400); }
+// La carte de la leçon "Bienvenue dans ce cycle", scopée précisément (le site
+// porte d'autres boutons "Fermer" ailleurs — bandeau, notifications — donc un
+// sélecteur large les aurait confondus avec le panneau d'édition de la leçon).
+const carte = p.getByText('Bienvenue dans ce cycle', { exact: false }).first()
+  .locator('xpath=ancestor::div[contains(@class, "rounded-[15px]")][1]');
+
+const panneauOuvert = async () => (await carte.locator('textarea').count()) > 0;
+console.log('panneau ouvert au chargement ?', await panneauOuvert());
+if (!(await panneauOuvert())) {
+  await carte.locator('button[title="Éditer la leçon"]').click();
+  await p.waitForTimeout(400);
+}
+console.log('panneau ouvert après clic ?', await panneauOuvert());
 await p.screenshot({ path: `${OUT}/r1-panneau-ouvert.png`, fullPage: true });
 
-const piecesAvant = await p.locator('button[aria-label^="Retirer"]').count();
-console.log('pièces retirables visibles :', piecesAvant);
-await p.locator('button[aria-label^="Retirer"]').first().click();
+const piecesAvant = await carte.locator('button[aria-label^="Retirer"]').count();
+console.log('pièces retirables dans la carte :', piecesAvant);
+await carte.locator('button[aria-label^="Retirer"]').first().click();
 await p.waitForTimeout(800);
 await p.screenshot({ path: `${OUT}/r2-apres-retrait.png`, fullPage: true });
-const piecesApres = await p.locator('button[aria-label^="Retirer"]').count();
+const piecesApres = await carte.locator('button[aria-label^="Retirer"]').count();
 console.log('pièces retirables après retrait :', piecesApres);
-const badgePieces = await p.locator('text=/\\d PIÈCE/').first().textContent().catch(() => null);
-console.log('badge pièces restant :', badgePieces);
+const badgeApres = await carte.locator('text=/\\d PIÈCE/').first().textContent().catch(() => null);
+console.log('badge de pièces après retrait :', badgeApres);
 
-// Fermer, puis supprimer la leçon vide "Exercice de la semaine".
-await p.getByRole('button', { name: /^Fermer$/i }).click().catch(() => {});
+// Fermer le panneau de cette carte précisément, puis supprimer la leçon vide.
+await carte.getByRole('button', { name: /^Fermer$/i }).click();
 await p.waitForTimeout(300);
 p.once('dialog', d => d.accept());
 await p.locator('button[title="Supprimer la leçon"]').first().click();
