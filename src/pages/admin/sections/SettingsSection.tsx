@@ -4,6 +4,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import { ADMIN_EMAILS, logout } from '../../../firebase/auth';
 import { Card, DangerButton, GhostButton, ToggleSwitch } from '../primitives';
+import { setSiteFlag, subscribeToSiteFlags } from '../../../firebase/siteFlags';
 
 // L'accès profil/compte dans le header du site public. Tant que le toggle est
 // off, l'avatar, la cloche et la connexion sont cachés au public (les
