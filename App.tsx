@@ -53,6 +53,8 @@ const SlideBg          = lazy(() => import('./src/pages/SlideBg'));
 const VexelPage        = lazy(() => import('./src/pages/VexelPage'));
 const CoursPage        = lazy(() => import('./src/pages/CoursPage'));
 const CoursDetailPage  = lazy(() => import('./src/pages/CoursDetailPage'));
+const EvenementsPage   = lazy(() => import('./src/pages/EvenementsPage'));
+const EvenementVente   = lazy(() => import('./src/pages/EvenementVente'));
 const CommunauteEspace = lazy(() => import('./src/pages/CommunauteEspace'));
 const CommunauteMembres = lazy(() => import('./src/pages/CommunauteMembres'));
 const MembreProfilPage = lazy(() => import('./src/pages/MembreProfilPage'));
