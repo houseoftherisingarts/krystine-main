@@ -73,17 +73,17 @@ export function typeDePiece(file: File): PieceType {
 
 export const poids = (n: number) => (n < 1024 * 1024 ? `${Math.round(n / 1024)} ko` : `${(n / (1024 * 1024)).toFixed(1)} Mo`);
 
+export async function chargerLeconsPorte(porteId: string): Promise<LeconEssai[]> {
+  const snap = await getDocs(query(collection(db(), COLLECTION, porteId, 'lecons'), orderBy('ordre')));
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as LeconEssai));
+}
+
 /** Les leçons de chaque porte, en un seul aller : douze petites lectures en
  *  parallèle plutôt qu'une requête `collectionGroup` (qui capturerait aussi
  *  les leçons des vraies formations, puisqu'elles portent le même nom de
  *  sous-collection). */
 export async function chargerToutesLecons(): Promise<Record<string, LeconEssai[]>> {
-  const paires = await Promise.all(
-    PORTES.map(async porte => {
-      const snap = await getDocs(query(collection(db(), COLLECTION, porte.n, 'lecons'), orderBy('ordre')));
-      return [porte.n, snap.docs.map(d => ({ id: d.id, ...d.data() } as LeconEssai))] as const;
-    })
-  );
+  const paires = await Promise.all(PORTES.map(async porte => [porte.n, await chargerLeconsPorte(porte.n)] as const));
   return Object.fromEntries(paires);
 }
 
