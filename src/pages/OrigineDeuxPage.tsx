@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { Navigate } from 'react-router-dom';
-import { ArrowRight, ChevronDown, Lock, BookOpen, Headphones, Activity, Sparkles, Download } from 'lucide-react';
+import { ArrowRight, ChevronDown, Lock, BookOpen, Check, Headphones, Activity, Sparkles, Download } from 'lucide-react';
 import { Atmosphere, Feuille, Parallax, Seam } from '../components/motion/loeuvre';
 import { useUI, useAuth } from '../contexts/AppContext';
 import { useSiteFlags } from '../contexts/SiteFlagsContext';
