@@ -806,6 +806,7 @@ const ClientPortal: React.FC = () => {
           {tab === 'amis'     && <AmisDOrigine uid={user.uid} lang={lang} />}
           {tab === 'orders'   && <OrdersTab />}
           {tab === 'formations' && <ClientFormations />}
+          {tab === 'billets'   && <ClientBillets />}
           {tab === 'rediffusions' && <ClientRediffusions />}
           {tab === 'telechargements' && <ClientTelechargements />}
           {tab === 'loyalty'  && <ClientLoyalty />}
