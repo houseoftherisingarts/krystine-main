@@ -9,6 +9,7 @@
 // Aucun texte n'est écrit en base, seulement l'identifiant retenu : le texte
 // vient toujours du moteur, jamais d'une donnée qui pourrait dater.
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { getMember, getClientOrdersForMember } from '../firebase/firestore';
