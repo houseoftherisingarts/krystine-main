@@ -617,7 +617,12 @@ const CoursDetailPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className={`mt-8 grid gap-6 ${apercuPdf ? 'lg:grid-cols-[300px_minmax(0,1fr)_minmax(0,1fr)]' : 'lg:grid-cols-[320px_1fr]'}`}>
+          <div
+            ref={chapitre}
+            className={`mt-8 grid gap-6 ${apercuPdf ? 'lg:grid-cols-[300px_minmax(0,1fr)_minmax(0,1fr)]' : 'lg:grid-cols-[320px_1fr]'} ${
+              estVata ? 'mx-auto max-w-[1720px] scroll-mt-24 px-5 pt-6 md:px-10' : ''
+            }`}
+          >
             {/* La liste des leçons */}
             {/* La liste colle en haut et défile seule : la page ne s'allonge plus
                 à cause d'elle, donc plus de vide à droite quand on descend. */}
