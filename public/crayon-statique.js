@@ -34,9 +34,6 @@
  * traduction ne peut se produire avant qu'une requête réseau asynchrone ait
  * eu le temps de revenir.
  */
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc, deleteField, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const FIREBASE_CONFIG = {
   apiKey: 'AIzaSyCjxu7l0ZNpbLa5LJdTe5WdjlTmLhoNUNk',
@@ -63,10 +60,84 @@ const CADRE_NEUTRE = { x: 50, y: 50, z: 1 };
 const CRAYON_SEL = '[data-crayon]';
 const IGNORE_TEXTE_SEL = 'script,style,svg,noscript,textarea,code,' + CRAYON_SEL;
 
-const app = initializeApp(FIREBASE_CONFIG, 'crayonStatique');
-const auth = getAuth(app);
-const db = getFirestore(app);
-const REF_OVERRIDES = doc(db, 'siteOverrides', 'singleton');
+const CDN = 'https://www.gstatic.com/firebasejs/10.12.2/';
+const CHEMIN_REST =
+  `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}` +
+  '/databases/(default)/documents/siteOverrides/singleton';
+
+// Le SDK ne se charge que devant une administratrice. Une visiteuse ordinaire
+// lit les surcharges par un simple appel REST, parce que la lecture de
+// siteOverrides est publique et qu'un demi-mégaoctet de Firebase n'a rien à
+// faire sur la page d'accueil pour réécrire quelques phrases.
+let sdk = null;
+async function chargerSdk() {
+  if (sdk) return sdk;
+  const [mApp, mAuth, mDb] = await Promise.all([
+    import(CDN + 'firebase-app.js'),
+    import(CDN + 'firebase-auth.js'),
+    import(CDN + 'firebase-firestore.js'),
+  ]);
+  const app = mApp.initializeApp(FIREBASE_CONFIG, 'crayonStatique');
+  const db = mDb.getFirestore(app);
+  sdk = {
+    auth: mAuth.getAuth(app),
+    onAuthStateChanged: mAuth.onAuthStateChanged,
+    ref: mDb.doc(db, 'siteOverrides', 'singleton'),
+    setDoc: mDb.setDoc,
+    deleteField: mDb.deleteField,
+    serverTimestamp: mDb.serverTimestamp,
+  };
+  return sdk;
+}
+
+// Firebase Auth range la session ouverte dans IndexedDB, sous la base
+// firebaseLocalStorageDb. La lire coûte quelques millisecondes et dit si une
+// administratrice est connectée sur ce domaine, sans charger une seule ligne
+// du SDK. Ce n'est qu'un indice pour décider de charger le reste : la vraie
+// autorisation reste celle de firestore.rules, côté serveur.
+function sessionAdminProbable() {
+  return new Promise((resolve) => {
+    let repondu = false;
+    const fini = (v) => { if (!repondu) { repondu = true; resolve(v); } };
+    window.setTimeout(() => fini(false), 1200);
+    try {
+      const ouverture = indexedDB.open('firebaseLocalStorageDb');
+      ouverture.onerror = () => fini(false);
+      ouverture.onupgradeneeded = () => { try { ouverture.transaction.abort(); } catch { /* rien */ } fini(false); };
+      ouverture.onsuccess = () => {
+        const base = ouverture.result;
+        if (!base.objectStoreNames.contains('firebaseLocalStorage')) { base.close(); return fini(false); }
+        const req = base.transaction('firebaseLocalStorage', 'readonly').objectStore('firebaseLocalStorage').getAll();
+        req.onerror = () => { base.close(); fini(false); };
+        req.onsuccess = () => {
+          const trouve = (req.result || []).some((e) => {
+            const courriel = e && e.value && e.value.email;
+            return typeof courriel === 'string' && ADMIN_EMAILS.includes(courriel);
+          });
+          base.close();
+          fini(trouve);
+        };
+      };
+    } catch {
+      fini(false);
+    }
+  });
+}
+
+/** Une valeur du format REST de Firestore, ramenée en JavaScript ordinaire. */
+function depuisRest(v) {
+  if (!v || typeof v !== 'object') return undefined;
+  if ('stringValue' in v) return v.stringValue;
+  if ('booleanValue' in v) return v.booleanValue;
+  if ('integerValue' in v) return Number(v.integerValue);
+  if ('doubleValue' in v) return Number(v.doubleValue);
+  if ('mapValue' in v) {
+    const out = {};
+    for (const [k, x] of Object.entries((v.mapValue && v.mapValue.fields) || {})) out[k] = depuisRest(x);
+    return out;
+  }
+  return undefined;
+}
 
 const norm = (s) => s.replace(/\s+/g, ' ').trim();
 const lang = () => { try { return localStorage.getItem('krystine-lang') === 'en' ? 'en' : 'fr'; } catch { return 'fr'; } };
@@ -199,8 +270,10 @@ new MutationObserver(() => {
 
 async function chargerSurcharges() {
   try {
-    const snap = await getDoc(REF_OVERRIDES);
-    const data = snap.exists() ? snap.data() : {};
+    const r = await fetch(CHEMIN_REST, { cache: 'no-cache' });
+    // Un document absent rend 404, ce qui veut dire « aucune surcharge » et
+    // non pas une panne : la page reste telle que le code l'a écrite.
+    const data = r.ok ? (depuisRest({ mapValue: { fields: (await r.json()).fields || {} } }) || {}) : {};
     publie = {
       libre: objetTextes(data.libre),
       libreEN: objetTextes(data.libreEN),
@@ -412,6 +485,7 @@ async function enregistrer() {
   boutonEnregistrer.disabled = true;
   boutonEnregistrer.textContent = 'Enregistrement…';
   try {
+    const { ref, setDoc, deleteField, serverTimestamp } = await chargerSdk();
     const patch = { _maj: serverTimestamp() };
     const parClef = { libre: {}, libreEN: {}, photos: {}, cadres: {} };
     let utilise = false;
@@ -429,7 +503,7 @@ async function enregistrer() {
       // barres obliques, elle passe donc par son objet parent entier, où
       // deleteField() reste compris; updateDoc sur « libre » remplacerait la
       // carte entière et effacerait ce que Krystine a écrit ailleurs.
-      await setDoc(REF_OVERRIDES, patch, { merge: true });
+      await setDoc(ref, patch, { merge: true });
     }
     brouillonTexte = {};
     brouillonPhoto = {};
@@ -657,7 +731,12 @@ function detruireUI() {
   root = null;
 }
 
-onAuthStateChanged(auth, (user) => {
-  const admin = !!user && ADMIN_EMAILS.includes(user.email || '');
-  if (admin) construireUI(); else if (uiPresente) detruireUI();
+sessionAdminProbable().then((probable) => {
+  if (!probable) return;
+  chargerSdk().then(({ auth, onAuthStateChanged }) => {
+    onAuthStateChanged(auth, (user) => {
+      const admin = !!user && ADMIN_EMAILS.includes(user.email || '');
+      if (admin) construireUI(); else if (uiPresente) detruireUI();
+    });
+  }).catch(() => { /* le crayon ne s'ouvre pas, la page reste intacte */ });
 });
