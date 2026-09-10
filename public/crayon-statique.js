@@ -139,15 +139,20 @@ function peutRemettreTexte(source) {
 // ── Couche d'application : pour toute visiteuse ─────────────────────────────
 function appliquerTextes() {
   const langue = lang();
+  // En anglais, tant que le dictionnaire n'est pas arrivé, on ne sait pas
+  // encore quel est le texte de base : mieux vaut attendre une passe de plus
+  // que de réécrire par-dessus une traduction déjà juste posée par static.js.
+  if (langue === 'en' && !dictEN) return;
   const marche = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   let n;
   while ((n = marche.nextNode())) {
     if (n.parentElement && n.parentElement.closest(IGNORE_TEXTE_SEL)) continue;
     const source = sourceDeNoeud(n);
     if (!source) continue;
-    const b = brouillonTexte[source];
-    const pub = publie[langue === 'en' ? 'libreEN' : 'libre'][source];
-    if (b === undefined && pub === undefined) continue; // rien à faire, la page garde son texte
+    // Toujours recalculer la valeur voulue (brouillon, sinon surcharge
+    // publiée, sinon texte de base) et ne réécrire que si elle diffère :
+    // c'est ce qui permet de revenir au texte d'origine quand un brouillon
+    // est abandonné, sans jamais toucher un nœud qui n'a jamais changé.
     const valeur = valeurPourZone(source, langue);
     const v = n.nodeValue || '';
     const m = /^(\s*)[\s\S]*?(\s*)$/.exec(v) || ['', '', ''];
