@@ -19,6 +19,7 @@ import CrayonSite from './src/components/edit/CrayonSite';
 import { PageShareBar } from './src/components/ShareButtons';
 import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import { trackPageView } from './src/lib/track';
+import SuiviHabitudes from './src/lib/suiviHabitudes';
 import { applyPageMeta } from './src/lib/pageMeta';
 import { processDevAdminUrl } from './src/lib/devAdmin';
 
