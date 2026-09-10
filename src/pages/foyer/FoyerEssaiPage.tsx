@@ -187,9 +187,14 @@ const FoyerEssaiPage: React.FC = () => {
               const cours = enCours[porte.n];
               const erreur = erreurs[porte.n];
               return (
-                <div key={porte.n} className="flex flex-col overflow-hidden rounded-[15px] border border-brass/30 bg-cream2 p-5">
-                  <img src={`/foyer/${porte.src}.webp`} alt="" loading="lazy" className="mx-auto h-32 w-auto object-contain" />
-                  <p className="mt-3 text-center font-serif text-lg leading-snug text-espresso">{porte.theme}</p>
+                <div key={porte.n} className="flex flex-col overflow-hidden rounded-[15px] border border-brass/30 bg-cream2">
+                  {/* Le nom du mois est gravé dans l'image même de la porte (pas un
+                      texte séparé) : on ne montre que la poignée et la matière, en
+                      recadrant sur la moitié basse. Vérifié à l'œil sur les douze
+                      portes, aucune lettre ne dépasse jamais de ce cadrage. */}
+                  <img src={`/foyer/${porte.src}.webp`} alt="" loading="lazy" className="aspect-[2/1] w-full object-cover object-bottom" />
+                  <div className="flex flex-1 flex-col p-5">
+                  <p className="text-center font-serif text-lg leading-snug text-espresso">{porte.theme}</p>
 
                   {lecon && (
                     <div className="mt-4">
