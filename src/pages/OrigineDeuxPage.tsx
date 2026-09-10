@@ -280,7 +280,6 @@ const OrigineDeuxPage: React.FC = () => {
     return () => { document.title = prev; };
   }, []);
 
-  const { possede } = useRejoindreOrigine2Guard(user);
   if (!pret) return <div className="min-h-screen bg-cream" />;
   if (!origine2Ouvert && !isAdmin) return <Navigate to="/liste-attente?programme=origine2" replace />;
   if (possede) return <Navigate to="/cours/origine2" replace />;
