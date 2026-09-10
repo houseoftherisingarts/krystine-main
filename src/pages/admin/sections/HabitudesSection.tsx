@@ -10,7 +10,7 @@ import { getFormations, type Formation } from '../../../firebase/formations';
 import { Card, Input, EmptyState, GhostButton, downloadCsv } from '../primitives';
 
 // La fiche « une formation achetée » telle qu'écrite sous achatsFormations/{uid}/formations/{id}
-// par le webhook Stripe (functions/src/paiements.ts) — montant en dollars,
+// par le webhook Stripe (functions/src/paiements.ts), toujours en dollars,
 // jamais en cents. On la relit ici par collectionGroup, avec l'uid porteur.
 interface AchatFormation {
   uid: string;
