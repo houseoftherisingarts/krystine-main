@@ -177,7 +177,7 @@ const EventsSection: React.FC = () => {
                     <p className="text-xs text-[#293027]/50 dark:text-white/50 mt-1">
                       La page se trouvera à /evenement/{editing.slug || '…'}
                     </p>
-                    {slugDejaPris && <p className="text-xs text-red-500 mt-1">Une autre événement porte déjà cette adresse.</p>}
+                    {slugDejaPris && <p className="text-xs text-red-500 mt-1">Un autre événement porte déjà cette adresse.</p>}
                     {slugErreur && <p className="text-xs text-red-500 mt-1">{slugErreur}</p>}
                   </div>
 
