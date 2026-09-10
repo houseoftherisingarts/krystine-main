@@ -123,7 +123,7 @@ export function televerserPiece(porteId: string, leconId: string, file: File, on
         try {
           const url = await getDownloadURL(storageRef);
           resolve({
-            id: `${Date.now()}`, nom: file.name, type: typeDePiece(file),
+            id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, nom: file.name, type: typeDePiece(file),
             chemin, url, taille: file.size, contentType: file.type,
           });
         } catch (e) { reject(e); }
