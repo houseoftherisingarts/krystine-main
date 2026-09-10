@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { updateMember, type MemberDoc } from '../../firebase/firestore';
+import { getHabitudes, poserSuiviRefuse, effacerHabitudes } from '../../firebase/habitudes';
+import { marquerSuiviRefuse } from '../../lib/suiviHabitudes';
 
 // Deux interrupteurs, un seul document : members/{uid}.prefs. Les deux
 // émetteurs (notifierBillet, annoncerChangement) lisent ces mêmes champs
