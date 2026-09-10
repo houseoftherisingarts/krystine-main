@@ -65,6 +65,8 @@ const OrigineExperience = lazy(() => import('./src/pages/OrigineExperience'));
 // Le Foyer d'Origine — page de vente membership (work in progress, URL dédiée
 // non liée à la navigation, partageable à Krystine pour validation).
 const FoyerPage = lazy(() => import('./src/pages/FoyerPage'));
+// Page d'essai du Foyer (bac à sable admin, jamais liée) : Alex, 10 sept. 2026.
+const FoyerEssaiPage = lazy(() => import('./src/pages/foyer/FoyerEssaiPage'));
 // L'Expérience Origine 2 : page de vente native dans la langue du Foyer (9 sept. 2026)
 const OrigineDeuxPage = lazy(() => import('./src/pages/OrigineDeuxPage'));
 // Expérience Vata — portée du bundle statique vers React (style L'Œuvre)
