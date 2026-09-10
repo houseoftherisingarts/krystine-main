@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } fr
 import { Navigate } from 'react-router-dom';
 import { ArrowRight, ChevronDown, Lock, BookOpen, Check, Headphones, Activity, Sparkles, Download } from 'lucide-react';
 import { Atmosphere, Feuille, Parallax, Seam } from '../components/motion/loeuvre';
+import BandeauApercu from '../components/edit/BandeauApercu';
 import { useUI, useAuth } from '../contexts/AppContext';
 import { useSiteFlags } from '../contexts/SiteFlagsContext';
 import { aAchete, acheterFormation, getFormation, type Formation } from '../firebase/formations';
@@ -301,10 +302,7 @@ const OrigineDeuxPage: React.FC = () => {
   return (
     <div className="bg-cream text-ink font-sans antialiased">
       {isAdmin && !origine2Ouvert && (
-        <div className="relative z-[95] flex items-center justify-center gap-2 bg-espresso px-4 py-2 text-center font-sans text-[11px] uppercase tracking-[0.2em] text-cream">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brass" aria-hidden />
-          Cette page est encore éteinte : le public arrive sur la liste d’attente.
-        </div>
+        <BandeauApercu>Cette page est encore éteinte : le public arrive sur la liste d'attente.</BandeauApercu>
       )}
 
       {/* ─────────── FEUILLE 1 · HERO (vidéo desktop, image mobile) ─────────── */}

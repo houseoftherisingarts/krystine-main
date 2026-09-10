@@ -7,6 +7,7 @@ import { useApp } from '../contexts/AppContext';
 import { getEventParSlug, placesRestantes, enVente, type EventDoc } from '../firebase/firestore';
 import { enDollars, avecTaxes } from '../firebase/billets';
 import { Feuille, Atmosphere, Parallax, Seam } from '../components/motion/loeuvre';
+import BandeauApercu from '../components/edit/BandeauApercu';
 
 /**
  * La page de vente d'un événement, fabriquée entièrement à partir de son
@@ -113,9 +114,9 @@ const EvenementVente: React.FC = () => {
   return (
     <div className="bg-cream text-ink font-sans antialiased">
       {isAdmin && apercu && ev.isPublished === false && (
-        <div className="sticky top-0 z-50 bg-brass px-5 py-2 text-center font-sans text-[0.68rem] uppercase tracking-[0.18em] text-espressoDeep">
+        <BandeauApercu>
           {fr ? "Aperçu administratrice : cette page n'est pas encore publiée." : 'Administrator preview: this page is not published yet.'}
-        </div>
+        </BandeauApercu>
       )}
 
       {/* ─────────── FEUILLE 1 · HERO ─────────── */}
