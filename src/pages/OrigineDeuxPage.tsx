@@ -536,6 +536,17 @@ const OrigineDeuxPage: React.FC = () => {
             <div className={`${G12} gap-y-10 mt-12 md:mt-16 items-start`}>
               <Reveal className="col-span-12 md:col-span-7">
                 <SemainesGrid />
+                <div className="mt-10 rounded-3xl border border-cream3 bg-card p-6 md:p-8">
+                  <p className="font-serif font-medium text-lg text-ink uppercase tracking-[0.08em] mb-5">Ce qui est inclus</p>
+                  <ul className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
+                    {VALUE_ITEMS.map((it) => (
+                      <li key={it.title} className="flex items-start gap-2.5 text-inkSoft font-sans text-[0.88rem] leading-snug">
+                        <Check size={14} className="text-brass mt-0.5 shrink-0" />
+                        {it.title}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </Reveal>
 
               <Reveal delay={0.1} className="col-span-12 md:col-span-5">
