@@ -184,6 +184,11 @@ const OrigineDeuxPage: React.FC = () => {
   const [ready, setReady] = useState(false);
   const [formation, setFormation] = useState<Formation | null>(null);
   const { rejoindre, possede, busy, label } = useRejoindreOrigine2(formation);
+  // L'interrupteur (Alex, 10 septembre 2026) : éteint, le public arrive sur
+  // la liste d'attente et seule l'administratrice garde la page, pour
+  // l'éditer et la relire avant l'allumage.
+  const { origine2Ouvert, pret } = useSiteFlags();
+  const { isAdmin } = useAuth();
   useEffect(() => {
     const prev = document.title;
     document.title = "L'Expérience Origine 2 | Krystine St-Laurent";
@@ -194,12 +199,20 @@ const OrigineDeuxPage: React.FC = () => {
     getFormation('origine2').then(setFormation).catch(() => {});
     return () => { window.clearTimeout(t); document.title = prev; document.body.style.background = prevBg; };
   }, []);
+  if (!pret) return <div className="min-h-screen bg-cream" />;
+  if (!origine2Ouvert && !isAdmin) return <Navigate to="/liste-attente?programme=origine2" replace />;
   if (possede) return <Navigate to="/cours/origine2" replace />;
   const debut = labelDebut(formation?.dateSortie);
   const description = formation?.description || '12 semaines pour sortir du pilotage extérieur et retrouver vos propres repères.';
 
   return (
     <div className="bg-cream overflow-x-clip">
+      {isAdmin && !origine2Ouvert && (
+        <div className="relative z-[95] flex items-center justify-center gap-2 bg-espresso px-4 py-2 text-center font-sans text-[11px] uppercase tracking-[0.2em] text-cream">
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brass" aria-hidden />
+          Cette page est encore éteinte : le public arrive sur la liste d’attente.
+        </div>
+      )}
       <Preloader done={ready} />
       <div inert={ready ? undefined : true}>
         <Hero ready={ready} sousTitre={description} cta={<Bouton label={label} onClick={rejoindre} busy={busy} dark />} />
