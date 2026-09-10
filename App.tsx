@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AppProvider } from './src/contexts/AppContext';
 import { EditModeProvider } from './src/contexts/EditModeContext';
+import { EditionProvider } from './src/lib/edition';
 import { SiteFlagsProvider } from './src/contexts/SiteFlagsContext';
 import { GamificationProvider } from './src/contexts/GamificationContext';
 import NavBar from './src/components/layout/NavBar';
@@ -14,9 +15,7 @@ import LangPill from './src/components/layout/LangPill';
 import LiveBadge from './src/components/layout/LiveBadge';
 import ChatKrystine from './src/components/layout/ChatKrystine';
 import ErrorBoundary from './src/components/layout/ErrorBoundary';
-import EditModeBar from './src/components/edit/EditModeBar';
-import EditOverlay from './src/components/edit/EditOverlay';
-import EditImageOverlay from './src/components/edit/EditImageOverlay';
+import CrayonSite from './src/components/edit/CrayonSite';
 import { PageShareBar } from './src/components/ShareButtons';
 import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import { trackPageView } from './src/lib/track';
@@ -199,14 +198,13 @@ const App: React.FC = () => (
     <SiteFlagsProvider>
     <GamificationProvider>
     <EditModeProvider>
+    <EditionProvider>
     <BrowserRouter>
       <AnalyticsPageViews />
       <PageMeta />
       <Chrome />
       <Flottants />
-      <EditModeBar />
-      <EditOverlay />
-      <EditImageOverlay />
+      <CrayonSite />
       <ErrorBoundary>
       <Suspense fallback={<PageLoader />}>
         <RouteFade>
@@ -309,6 +307,7 @@ const App: React.FC = () => (
       <SignInModal />
       <MusiqueDuSite />
     </BrowserRouter>
+    </EditionProvider>
     </EditModeProvider>
     </GamificationProvider>
     </SiteFlagsProvider>

@@ -341,6 +341,14 @@
       .text-\[11px\] {
         font-size: 12px !important;
       }
+
+      /* Le crayon d'administration (src/components/edit/CrayonSite.tsx) : en
+         mode modification, chaque texte et chaque photo que le site reconnaît
+         porte un liseré laiton, et celui qui est ouvert passe en trait plein. */
+      .mode-crayon [data-tx] { outline: 1px dashed rgba(187, 154, 94, 0.65); outline-offset: 4px; cursor: text; border-radius: 2px; }
+      .mode-crayon [data-tx]:hover, .mode-crayon [data-tx-actif] { outline: 2px solid #bb9a5e; background-color: rgba(187, 154, 94, 0.08); }
+      .mode-crayon [data-cadre] { outline: 2px dashed rgba(187, 154, 94, 0.75); outline-offset: -2px; cursor: move; }
+      .mode-crayon [data-cadre]:hover, .mode-crayon [data-cadre-actif] { outline: 3px solid #bb9a5e; }
     </style>
   </head>
   <body class="bg-espressoDeep">

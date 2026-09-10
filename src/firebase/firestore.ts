@@ -58,6 +58,48 @@ export interface EventDoc {
   isFeatured?: boolean;
   isPublished?: boolean;
   createdAt?: Timestamp;
+
+  // ── Billetterie maison (septembre 2026) ──────────────────────────────────
+  // Un événement dont `billetterie` est vrai vend ses places lui-même, par
+  // Stripe, sans intermédiaire. Sa page de vente vit à /evenement/{slug} et
+  // se fabrique toute seule à partir des champs ci-dessous : rien à coder pour
+  // ajouter un événement. Les billets vendus s'écrivent dans la collection
+  // `billets` (src/firebase/billets.ts), et `vendus` est tenu par le webhook
+  // Stripe, jamais par le navigateur.
+  /** Adresse de la page de vente. Lettres, chiffres et traits d'union. */
+  slug?: string;
+  /** Vrai quand cet événement vend ses billets ici même. */
+  billetterie?: boolean;
+  /** Prix d'un billet AVANT taxes, en cents. Les taxes s'ajoutent chez Stripe. */
+  prixCents?: number;
+  /** Nombre total de places mises en vente. */
+  places?: number;
+  /** Places déjà vendues. Écrit par le webhook Stripe seulement. */
+  vendus?: number;
+  /** Billets qu'une même personne peut prendre d'un coup. Six par défaut. */
+  maxParAchat?: number;
+  /** Heure d'ouverture des portes, telle qu'elle s'affiche : « 19 h ». */
+  heure?: string;
+  /** Adresse civique complète du lieu. */
+  adresse?: string;
+  /** Grande image de la page de vente, si elle diffère de la vignette. */
+  imageHero?: string;
+  /** Les arguments de la page de vente, un paragraphe par entrée. */
+  argumentaire?: string[];
+  /** Ce que le billet donne, une ligne par entrée. */
+  inclus?: string[];
+  /** Note affichée sous le bouton d'achat, par exemple une politique de remboursement. */
+  noteAchat?: string;
+}
+
+/** Places encore à vendre. Jamais négatif, et zéro quand rien n'est en vente. */
+export function placesRestantes(e: Pick<EventDoc, 'places' | 'vendus'>): number {
+  return Math.max(0, (e.places ?? 0) - (e.vendus ?? 0));
+}
+
+/** Un événement se vend quand sa billetterie est ouverte et qu'il reste des places. */
+export function enVente(e: EventDoc): boolean {
+  return !!e.billetterie && e.isPublished !== false && !!e.prixCents && placesRestantes(e) > 0;
 }
 
 export async function getEvents(): Promise<EventDoc[]> {
@@ -65,6 +107,21 @@ export async function getEvents(): Promise<EventDoc[]> {
   const q = query(collection(db, 'events'), orderBy('date', 'asc'));
   const snap = await getDocs(q);
   return snap.docs.map(d => ({ id: d.id, ...d.data() } as EventDoc));
+}
+
+// Ce que le public a le droit de voir. L'interrupteur « Publié » de l'admin
+// existait déjà, mais rien ne le lisait : un événement éteint s'affichait
+// quand même sur le site. Une administratrice, elle, voit tout, pour relire
+// une page avant de l'allumer.
+export async function getEventsPublics(): Promise<EventDoc[]> {
+  return (await getEvents()).filter(e => e.isPublished !== false);
+}
+
+export async function getEventParSlug(slug: string): Promise<EventDoc | null> {
+  if (!db || !slug) return null;
+  const snap = await getDocs(query(collection(db, 'events'), where('slug', '==', slug)));
+  const d = snap.docs[0];
+  return d ? ({ id: d.id, ...d.data() } as EventDoc) : null;
 }
 
 export async function addEvent(event: Omit<EventDoc, 'id' | 'createdAt'>) {

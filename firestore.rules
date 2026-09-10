@@ -312,6 +312,17 @@ service cloud.firestore {
     match /siteSettings/{id}  { allow read: if true; allow write: if isAdmin(); }
     match /siteOverrides/{id} { allow read: if true; allow write: if isAdmin(); }
 
+    // ── Billetterie maison ──
+    // Un billet naît au retour du paiement, écrit par le webhook Stripe avec le
+    // SDK d'administration, qui passe outre ces règles. Le navigateur ne peut
+    // donc rien créer ici : personne ne se fabrique un billet. Une acheteuse lit
+    // les siens, l'administration les lit tous et marque l'entrée à la porte.
+    match /billets/{code} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create, delete: if false;
+      allow update: if isAdmin();
+    }
+
     // ── Écoutes du podcast sur la page ──
     // Chaque lancement de lecture laisse une trace permanente (create-only,
     // champs bornés). La présence en direct est un battement par session que

@@ -22,11 +22,17 @@ export interface SiteFlags {
    *  la liste d'attente (/liste-attente?programme=foyer). Interrupteur dans
    *  l'admin, section Foyer. Éteint par défaut (Alex, 9 septembre 2026). */
   foyerOuvert: boolean;
+  /** L'Expérience Origine 2 est ouverte à la vente. Éteint, /origine-2
+   *  renvoie le public à la liste d'attente (/liste-attente?programme=origine2);
+   *  l'admin garde la page pour la relire. Interrupteur dans l'admin,
+   *  Réglages → Pages du site. Éteint par défaut (Alex, 10 septembre 2026). */
+  origine2Ouvert: boolean;
 }
 
 export const DEFAULT_FLAGS: SiteFlags = {
   showTedx: false,
   foyerOuvert: false,
+  origine2Ouvert: false,
 };
 
 const FLAGS_COLLECTION = 'siteSettings';

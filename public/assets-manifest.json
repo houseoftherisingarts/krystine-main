@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T11:25:39.143Z",
+  "generatedAt": "2026-09-10T15:14:58.201Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -1211,6 +1211,13 @@
       "folder": "podcast",
       "kind": "image",
       "size": 78970
+    },
+    {
+      "path": "/podcast/saison2-cover.webp",
+      "name": "saison2-cover.webp",
+      "folder": "podcast",
+      "kind": "image",
+      "size": 66860
     },
     {
       "path": "/footer-jacques-cartier.jpg",
