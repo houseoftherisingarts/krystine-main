@@ -251,7 +251,7 @@ const OrigineDeuxPage: React.FC = () => {
   const { user, isAdmin } = useAuth();
   const { origine2Ouvert, pret } = useSiteFlags();
   const [formation, setFormation] = useState<Formation | null>(null);
-  const { rejoindre, busy, label } = useRejoindreOrigine2(formation);
+  const { rejoindre, possede, busy, label } = useRejoindreOrigine2(formation);
 
   const heroRef = useRef<HTMLElement>(null);
   const heroSpan = useRef(1);
