@@ -305,7 +305,7 @@ const HabitudesSection: React.FC = () => {
               {pagesTop.map(([label, n]) => <Barre key={label} label={label} n={n} max={pagesTop[0][1]} />)}
             </div>
           )}
-          <Couverture>Calculé sur {habitudesNaviguees.length} comptes qui ont navigué avec le suivi activé, sur {members.length} comptes au total{nbSuiviEteint > 0 ? ` (${nbSuiviEteint} l'ont éteint)` : ''}.</Couverture>
+          <Couverture>Calculé sur {habitudesNaviguees.length} comptes qui ont navigué avec le suivi activé, sur {members.length} comptes au total{nbSuiviEteint > 0 ? ` (${nbSuiviEteint} ${nbSuiviEteint === 1 ? "l'a éteint" : "l'ont éteint"})` : ''}.</Couverture>
         </Card>
 
         <Card className="p-6">
