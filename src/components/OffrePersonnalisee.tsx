@@ -23,7 +23,7 @@ import { offrePour, type ContexteOffre } from '../lib/offres';
  *
  * ponytail : la boutique physique (shopifyOrders, réservée à l'administration
  * par les règles) n'entre pas dans « aCommandeBoutique », seules les
- * commandes du site (clientOrders) comptent — à élargir si Krystine veut un
+ * commandes du site (clientOrders) comptent; à élargir si Krystine veut un
  * jour croiser aussi le comptoir.
  */
 export async function calculerEtEnregistrerOffre(uid: string): Promise<void> {
