@@ -43,6 +43,7 @@ import OrdersSection from './admin/sections/OrdersSection';
 import BoutiqueSection from './admin/sections/BoutiqueSection';
 import MembersSection from './admin/sections/MembersSection';
 import HabitudesSection from './admin/sections/HabitudesSection';
+import AcheteusesSection from './admin/sections/AcheteusesSection';
 import BadgeBleuSection from './admin/sections/BadgeBleuSection';
 import MessagesSection from './admin/sections/MessagesSection';
 import RecompensesSection from './admin/sections/RecompensesSection';
@@ -95,6 +96,7 @@ const AdminDashboard: React.FC = () => {
       case 'boutique':    return <BoutiqueSection />;
       case 'members':     return <MembersSection />;
       case 'habitudes':   return <HabitudesSection />;
+      case 'acheteuses': return <AcheteusesSection />;
       case 'badgeBleu':   return <BadgeBleuSection />;
       case 'messages':    return <MessagesSection user={u} />;
       case 'recompenses': return <RecompensesSection />;

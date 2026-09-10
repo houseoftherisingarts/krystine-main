@@ -316,6 +316,11 @@ service cloud.firestore {
     match /siteSettings/{id}  { allow read: if true; allow write: if isAdmin(); }
     match /siteOverrides/{id} { allow read: if true; allow write: if isAdmin(); }
 
+    // Les acheteuses venues de Kajabi, déposées par Krystine depuis son
+    // tableau de bord. Ce sont les coordonnées de tierces personnes, alors
+    // rien n'en sort vers le public : l'administration seule y accède.
+    match /acheteusesKajabi/{email} { allow read, write: if isAdmin(); }
+
     // ── Les habitudes de navigation d'une cliente ──
     // Une collection à part, et non un champ de members, parce que la règle de
     // members laisse toute personne connectée lire la fiche d'une autre dès
