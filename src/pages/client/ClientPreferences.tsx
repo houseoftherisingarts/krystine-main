@@ -127,12 +127,15 @@ const ClientPreferences: React.FC<{ uid: string; member: MemberDoc | null; lang:
 
   return (
     <div className="space-y-5">
-      <div className="w-full rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55">
-        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
+      <div className="w-full rounded-[24px] border-2 border-[#BA7B39]/35 bg-white/55 p-5 backdrop-blur-md dark:border-[#BA7B39]/30 dark:bg-[#293027]/55">
+        <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
+          <i className="fa-solid fa-compass" />
           {fr ? 'À propos de vous' : 'About you'}
         </p>
         <p className="mt-1 text-xs leading-relaxed text-[#38403a]/60 dark:text-white/55">
-          {fr ? 'Facultatif — aide Krystine à mieux comprendre qui la lit.' : 'Optional — helps Krystine understand who reads her.'}
+          {fr
+            ? "Facultatif. Ces trois champs permettent à Krystine de voir, de façon globale, d'où vient sa communauté et quel âge elle a, jamais de vous identifier une par une."
+            : 'Optional. These three fields let Krystine see, in broad strokes, where her community comes from and how old it is, never to single you out.'}
         </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <label className="block">
