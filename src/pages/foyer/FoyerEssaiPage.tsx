@@ -11,7 +11,7 @@ import { useAuth } from '../../contexts/AppContext';
 import { PORTES, type Porte } from './portesData';
 
 // ─────────────────────────────────────────────────────────────────────────
-// FOYER D'ORIGINE — PAGE D'ESSAI (bac à sable, hors page de vente réelle)
+// FOYER D'ORIGINE, PAGE D'ESSAI (bac à sable, hors page de vente réelle)
 // Demande d'Alex, 10 septembre 2026 : Krystine veut s'entraîner à déposer
 // ses leçons vidéo là où elle travaillera vraiment, dans l'espace tel
 // qu'une membre le voit, avant l'ouverture du vrai Foyer. Cette page vit à

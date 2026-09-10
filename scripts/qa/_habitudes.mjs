@@ -8,9 +8,11 @@ await p.goto('http://localhost:5199/admin', { waitUntil: 'domcontentloaded' });
 await p.waitForTimeout(5000);
 await p.locator('button:has-text("COMMUNAUTÉ")').first().click({ force: true }).catch(() => {});
 await p.waitForTimeout(800);
-const cible = p.locator('button:has-text("HABITUDES")').first();
+const cible = p.locator('button:has-text("Habitudes de tes clientes")').first();
 if (await cible.count()) { await cible.click({ force: true }); await p.waitForTimeout(4000); }
 else console.log('entrée de menu HABITUDES introuvable');
-await p.locator('main').first().screenshot({ path: '/tmp/habitudes.png' }).catch(async () => { await p.screenshot({ path: '/tmp/habitudes.png' }); });
+await p.evaluate(() => window.scrollTo(0,0));
+await p.waitForTimeout(700);
+await p.locator("main").first().screenshot({ path: '/tmp/habitudes.png' }).catch(async () => { await p.screenshot({ path: '/tmp/habitudes.png' }); });
 console.log('titre visible :', (await p.locator('body').innerText()).split('\n').filter(l => /habitude/i.test(l)).slice(0,3).join(' | '));
 await b.close();
