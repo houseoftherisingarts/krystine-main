@@ -119,10 +119,13 @@ const FoyerEssaiPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!isAdmin) return;
+    if (!pretAuth || !isAdmin) return;
     chargerLecons().then(setLecons).finally(() => setCharge(false));
-  }, [isAdmin]);
+  }, [pretAuth, isAdmin]);
 
+  // Tant que Firebase Auth n'a pas encore répondu, ne rien juger : un écran
+  // vide le temps d'un instant vaut mieux qu'un aller-retour vers l'accueil.
+  if (!pretAuth) return null;
   // Réservée aux administratrices : quiconque d'autre repart vers l'accueil,
   // sans qu'aucun lien du site ne mène jamais ici.
   if (!isAdmin) return <Navigate to="/accueil" replace />;
