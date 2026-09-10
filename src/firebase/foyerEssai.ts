@@ -1,6 +1,6 @@
 import app from '../firebase';
 import {
-  getFirestore, collection, doc, getDoc, getDocs, orderBy, query, setDoc,
+  getFirestore, collection, doc, getDocs, orderBy, query, setDoc,
   updateDoc, deleteDoc, serverTimestamp, type Timestamp,
 } from 'firebase/firestore';
 import {
