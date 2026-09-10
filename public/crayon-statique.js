@@ -498,6 +498,7 @@ const STYLE_CRAYON = `
 .cs-pencil:hover{background:#dcb874}
 .cs-editbar{display:flex;align-items:center;gap:6px;border:1px solid rgba(187,154,94,.4);background:rgba(246,243,238,.97);backdrop-filter:blur(6px);border-radius:999px;padding:6px 8px;box-shadow:0 10px 30px -8px rgba(0,0,0,.35)}
 .cs-editbar-label{font-size:12px;color:#1d1604;padding:0 6px;white-space:nowrap}
+@media (max-width:640px){.cs-editbar-label{display:none}}
 .cs-count{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(42,32,21,.7);padding:0 4px;white-space:nowrap}
 .cs-save{min-height:36px;padding:0 16px;border-radius:999px;border:0;background:#bb9a5e;color:#1d1604;font-size:13px;font-weight:500;cursor:pointer}
 .cs-save:hover{background:#dcb874}
