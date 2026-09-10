@@ -257,7 +257,8 @@ const App: React.FC = () => (
           <Route path="/ayurveda"   element={<Navigate to="/quiz"                    replace />} />
           <Route path="/dosha-quiz" element={<Navigate to="/quiz"                    replace />} />
           <Route path="/livres"     element={<Navigate to="/medias#livres"           replace />} />
-          <Route path="/evenements" element={<Navigate to="/formations#evenements"   replace />} />
+          <Route path="/evenements" element={<EvenementsPage />} />
+          <Route path="/evenement/:slug" element={<EvenementVente />} />
 
           {/* ── Programmes / ex-dist ──────────────────────────────────── */}
           <Route path="/formations"        element={<FormationsLanding />} />
