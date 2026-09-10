@@ -305,17 +305,25 @@ const HabitudesSection: React.FC = () => {
 
         <Card className="p-6">
           <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">Répartition par âge</h3>
-          <div className="space-y-2">
-            {agesTop.map(([label, n]) => <Barre key={label} label={label} n={n} max={agesTop[0][1]} />)}
-          </div>
+          {agesTop.length === 0 ? (
+            <p className="text-sm italic text-[#293027]/40 dark:text-white/40">Aucun compte client n'est encore enregistré.</p>
+          ) : (
+            <div className="space-y-2">
+              {agesTop.map(([label, n]) => <Barre key={label} label={label} n={n} max={agesTop[0][1]} />)}
+            </div>
+          )}
           <Couverture>Sur {members.length} comptes, à partir de l'année de naissance que chaque cliente a bien voulu donner.</Couverture>
         </Card>
 
         <Card className="p-6">
           <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">Répartition par région</h3>
-          <div className="space-y-2">
-            {regionsTop.map(([label, n]) => <Barre key={label} label={label} n={n} max={regionsTop[0][1]} />)}
-          </div>
+          {regionsTop.length === 0 ? (
+            <p className="text-sm italic text-[#293027]/40 dark:text-white/40">Aucun compte client n'est encore enregistré.</p>
+          ) : (
+            <div className="space-y-2">
+              {regionsTop.map(([label, n]) => <Barre key={label} label={label} n={n} max={regionsTop[0][1]} />)}
+            </div>
+          )}
           <Couverture>Sur {members.length} comptes.</Couverture>
         </Card>
 
