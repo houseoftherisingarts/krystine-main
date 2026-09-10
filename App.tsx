@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import { AppProvider } from './src/contexts/AppContext';
+import { AppProvider, useAuth } from './src/contexts/AppContext';
 import { EditModeProvider } from './src/contexts/EditModeContext';
 import { EditionProvider } from './src/lib/edition';
 import { SiteFlagsProvider, useSiteFlags } from './src/contexts/SiteFlagsContext';
@@ -20,6 +20,7 @@ import { PageShareBar } from './src/components/ShareButtons';
 import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import { trackPageView } from './src/lib/track';
 import SuiviHabitudes from './src/lib/suiviHabitudes';
+import OffrePersonnalisee from './src/components/OffrePersonnalisee';
 import { applyPageMeta } from './src/lib/pageMeta';
 import { processDevAdminUrl } from './src/lib/devAdmin';
 
@@ -192,6 +193,15 @@ const PageMeta: React.FC = () => {
 
 // Les pastilles flottantes gênent la page où quelqu'un écrit sa question
 // pendant le direct : elles se retirent de celle-là.
+// Le moteur d'offres tourne pour la personne connectée : sans ce montage, le
+// champ « offre » de ses habitudes resterait vide et la fleur de l'accueil
+// retomberait toujours sur son offre de repli.
+const CalculOffre: React.FC = () => {
+  const { user } = useAuth();
+  if (!user) return null;
+  return <OffrePersonnalisee uid={user.uid} />;
+};
+
 const Flottants: React.FC = () => {
   const location = useLocation();
   // L'assistante ne s'affiche que si l'interrupteur des Réglages l'allume, et
@@ -211,6 +221,7 @@ const App: React.FC = () => (
     <BrowserRouter>
       <AnalyticsPageViews />
       <SuiviHabitudes />
+      <CalculOffre />
       <PageMeta />
       <Chrome />
       <Flottants />
