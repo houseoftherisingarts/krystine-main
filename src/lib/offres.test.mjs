@@ -143,13 +143,15 @@ cas("Une cliente sans aucune habitude ne casse rien et reçoit le repli", () => 
   assert.equal(offre.id, 'origine2');
 });
 
-// Une cliente qui possède déjà tout ce que le moteur pourrait proposer :
-// aucune règle ne doit se déclencher, jamais une relance pour ce qu'elle a.
+// Une cliente qui possède déjà tout ce que le moteur pourrait lui relancer
+// (le podcast excepté : les rediffusions ne s'« achètent » jamais, la règle
+// e) n'a donc pas de condition de possession, et c'est voulu) retombe sur
+// le repli plutôt que de revoir une relance pour ce qu'elle a déjà.
 cas('Une cliente qui possède déjà tout retombe sur le repli, jamais une relance', () => {
   const offre = offrePour({
     ...VIDE,
     dosha: 'Vata',
-    familles: { Origine: 12, Boutique: 12, 'Podcast et médias': 12 },
+    familles: { Origine: 12, Boutique: 12 },
     formationsPossedees: [
       { id: 'kajabi-2148687644', titre: 'Programme Vata' },
       { id: 'origine-1', titre: "L'Expérience Origine" },
