@@ -62,7 +62,7 @@ const SEUIL_VISITES = 3;
 const FORMATION_VATA_ID = 'kajabi-2148687644';
 const DESTINATION_VATA = '/vata';
 
-const normaliser = (s: string): string => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const normaliser = (s: string): string => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 const contient = (texte: string, mot: string): boolean => normaliser(texte).includes(normaliser(mot));
 
 /** Une phrase de prix, seulement quand il vient vraiment de la fiche formation. */
