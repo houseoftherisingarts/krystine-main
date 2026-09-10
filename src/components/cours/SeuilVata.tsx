@@ -41,7 +41,7 @@ const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semaines
   const pct = total > 0 ? Math.round((terminees / total) * 100) : 0;
 
   return (
-    <section ref={cadre} className="relative h-[86vh] min-h-[520px] w-full overflow-hidden bg-[#151d19] md:h-[92vh]">
+    <section ref={cadre} className="relative h-[74vh] min-h-[460px] w-full overflow-hidden bg-[#151d19] md:h-[92vh] md:min-h-[560px]">
       <motion.div className="absolute inset-0" style={reduce ? undefined : { scale: echelle, y: monte }}>
         <KenBurns src={image} />
       </motion.div>
@@ -52,7 +52,7 @@ const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semaines
         className="pointer-events-none absolute inset-0"
         style={{
           opacity: reduce ? 0.6 : voile,
-          background: `linear-gradient(to top, rgba(21,29,25,0.96) 0%, rgba(21,29,25,${0.62 + 0.2 * chaleur}) 34%, rgba(${Math.round(30 + 40 * chaleur)},${Math.round(40 + 18 * chaleur)},${Math.round(45 - 10 * chaleur)},0.34) 68%, transparent 100%)`,
+          background: `linear-gradient(to top, rgba(18,25,21,0.99) 0%, rgba(18,25,21,0.94) 22%, rgba(21,29,25,${0.66 + 0.18 * chaleur}) 44%, rgba(${Math.round(30 + 40 * chaleur)},${Math.round(40 + 18 * chaleur)},${Math.round(45 - 10 * chaleur)},0.3) 74%, transparent 100%)`,
         }}
       />
       <Atmosphere light={`${Math.round(24 + 52 * chaleur)}% 18%`} strength={0.45 + 0.55 * chaleur} />
@@ -62,12 +62,12 @@ const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semaines
 
           {/* Le disque de laiton : les semaines refermées, pas 50 flammes grises. */}
           <motion.div
-            className="flex items-center gap-5"
+            className="flex items-center gap-4 rounded-[18px] border border-[#BA7B39]/20 bg-[#0d110f]/70 px-4 py-3.5 backdrop-blur-[3px] sm:gap-5 lg:border-transparent lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none"
             initial={reduce ? false : { opacity: 0, y: 26, filter: 'blur(6px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ duration: 1.1, ease: EASE, delay: 0.15 }}
           >
-            <div className="relative h-[104px] w-[104px] shrink-0">
+            <div className="relative h-[76px] w-[76px] shrink-0 md:h-[104px] md:w-[104px]">
               <svg viewBox="0 0 110 110" className="h-full w-full -rotate-90">
                 <circle cx="55" cy="55" r={rayon} fill="rgba(21,29,25,0.45)" stroke="rgba(238,231,219,0.18)" strokeWidth="3" />
                 <circle
@@ -78,7 +78,7 @@ const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semaines
                 />
               </svg>
               <span className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-serif text-2xl leading-none text-[#EEE7DB]">{pct}</span>
+                <span className="font-serif text-xl leading-none text-[#EEE7DB] md:text-2xl">{pct}</span>
                 <span className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[#d9a05b]">%</span>
               </span>
             </div>
@@ -86,10 +86,12 @@ const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semaines
               <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#d9a05b]">
                 {lang === 'FR' ? 'Expérience Ayurveda' : 'Ayurveda Experience'}
               </p>
-              <p className="mt-2 font-serif text-[clamp(1.6rem,3vw,2.4rem)] leading-[1.1] text-[#EEE7DB]">
+              <p className="mt-2 max-w-[16ch] font-serif text-[clamp(1.45rem,3vw,2.4rem)] leading-[1.1] text-[#EEE7DB]">
                 {lang === 'FR'
-                  ? `${semainesRefermees} porte${semainesRefermees > 1 ? 's' : ''} refermée${semainesRefermees > 1 ? 's' : ''} sur huit`
-                  : `${semainesRefermees} of eight doors closed`}
+                  ? (semainesRefermees === 0
+                      ? 'Huit portes vous attendent'
+                      : `${semainesRefermees} porte${semainesRefermees > 1 ? 's' : ''} refermée${semainesRefermees > 1 ? 's' : ''} sur huit`)
+                  : (semainesRefermees === 0 ? 'Eight doors are waiting' : `${semainesRefermees} of eight doors closed`)}
               </p>
               <p className="mt-1.5 text-[13px] text-[#EEE7DB]/60">
                 {lang === 'FR' ? `${terminees} leçons sur ${total}` : `${terminees} of ${total} lessons`}
@@ -106,7 +108,7 @@ const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semaines
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               transition={{ duration: 1.1, ease: EASE, delay: 0.32 }}
               whileHover={reduce ? undefined : { y: -3 }}
-              className="group flex w-full items-center gap-4 rounded-[18px] border border-[#BA7B39]/30 bg-[#151d19]/72 p-3 text-left backdrop-blur-md transition-colors hover:border-[#BA7B39]/60 lg:w-[min(30rem,42vw)]"
+              className="group flex w-full items-center gap-4 rounded-[18px] border border-[#BA7B39]/30 bg-[#151d19]/70 p-3 text-left backdrop-blur-md transition-colors hover:border-[#BA7B39]/60 lg:w-[min(30rem,42vw)]"
             >
               {reprise.vignette && (
                 <img src={reprise.vignette} alt="" className="h-16 w-16 shrink-0 rounded-[12px] border border-[#BA7B39]/25 object-cover" />

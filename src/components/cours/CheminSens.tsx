@@ -1,11 +1,11 @@
-import React, { useRef } from 'react';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import React from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { SEMAINES_VATA, type SemaineVata } from '../../pages/vata/semaines';
 
 // Le chemin des huit sens : chaque semaine devient une grande carte portrait
-// avec sa photo. En desktop le rail glisse horizontalement pendant que la page
-// descend, en mobile les cartes s'empilent. Remplace la liste de semaines en
-// petites capitales et le rail de cinquante flammes grises.
+// avec sa photo, et les cartes montent en cascade quand elles entrent dans
+// l'écran. Remplace la liste de semaines en petites capitales et le rail de
+// cinquante flammes grises, illisible en desktop et cassé en mobile.
 
 const EASE = [0.16, 0.8, 0.24, 1] as const;
 
@@ -40,7 +40,6 @@ const Carte: React.FC<{
     <motion.button
       type="button"
       onClick={onOuvrir}
-      layoutId={`semaine-vata-${s.rang}`}
       initial={reduce ? false : { opacity: 0, y: 40, filter: 'blur(5px)' }}
       whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
       viewport={{ once: true, amount: 0.25 }}
@@ -61,11 +60,11 @@ const Carte: React.FC<{
       <span
         aria-hidden
         className="absolute inset-0"
-        style={{ background: 'linear-gradient(to top, rgba(15,20,17,0.93) 4%, rgba(15,20,17,0.55) 38%, rgba(15,20,17,0.08) 72%)' }}
+        style={{ background: 'linear-gradient(to top, rgba(13,17,15,0.96) 2%, rgba(13,17,15,0.88) 30%, rgba(13,17,15,0.42) 58%, rgba(13,17,15,0.06) 86%)' }}
       />
 
       <span className="absolute left-4 top-4 flex items-center gap-2">
-        <span className="flex h-9 min-w-[2.25rem] items-center justify-center rounded-full border border-[#BA7B39]/45 bg-[#151d19]/60 px-2 font-serif text-sm text-[#d9a05b] backdrop-blur-sm">
+        <span className="flex h-9 min-w-[2.25rem] items-center justify-center rounded-full border border-[#BA7B39]/50 bg-[#0d110f]/80 px-2 font-serif text-sm text-[#d9a05b] backdrop-blur-sm">
           {s.roman}
         </span>
         {finie && (
@@ -79,7 +78,7 @@ const Carte: React.FC<{
         <span className="block font-serif text-[clamp(1.35rem,1.7vw,1.75rem)] leading-[1.1] text-[#EEE7DB]">
           {lang === 'FR' ? s.sens.fr : s.sens.en}
         </span>
-        <span className="mt-2 block text-[12.5px] leading-snug text-[#EEE7DB]/62 line-clamp-3">
+        <span className="mt-2 block text-[13px] leading-[1.45] text-[#EEE7DB]/80 line-clamp-3">
           {lang === 'FR' ? s.promesse.fr : s.promesse.en}
         </span>
         <span className="mt-3.5 block h-[3px] w-full overflow-hidden rounded-full bg-[#EEE7DB]/15">

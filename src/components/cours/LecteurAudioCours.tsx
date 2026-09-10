@@ -122,7 +122,7 @@ const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, l
 
   return (
     <div className="pointer-events-none sticky bottom-3 z-40 mt-6 px-1">
-      <div className="pointer-events-auto flex items-center gap-3 rounded-[18px] border border-[#BA7B39]/25 bg-[#151d19]/92 px-3 py-2.5 shadow-[0_18px_50px_-20px_rgba(20,19,17,0.85)] backdrop-blur-md sm:gap-4 sm:px-4">
+      <div className="pointer-events-auto flex items-center gap-3 rounded-[18px] border border-[#BA7B39]/25 bg-[#151d19]/95 px-3 py-2.5 shadow-[0_18px_50px_-20px_rgba(20,19,17,0.85)] backdrop-blur-md sm:gap-4 sm:px-4">
         <audio
           ref={audio}
           src={url}

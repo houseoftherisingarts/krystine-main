@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T23:19:03.848Z",
+  "generatedAt": "2026-09-10T23:43:06.182Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -1358,6 +1358,174 @@
       "folder": "speaking/assets",
       "kind": "image",
       "size": 65882
+    },
+    {
+      "path": "/vata/semaines/s0-large.webp",
+      "name": "s0-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 35026
+    },
+    {
+      "path": "/vata/semaines/s0-thumb.webp",
+      "name": "s0-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 10186
+    },
+    {
+      "path": "/vata/semaines/s0.webp",
+      "name": "s0.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 39446
+    },
+    {
+      "path": "/vata/semaines/s1-large.webp",
+      "name": "s1-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 110614
+    },
+    {
+      "path": "/vata/semaines/s1-thumb.webp",
+      "name": "s1-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 29558
+    },
+    {
+      "path": "/vata/semaines/s1.webp",
+      "name": "s1.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 116634
+    },
+    {
+      "path": "/vata/semaines/s2-large.webp",
+      "name": "s2-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 261490
+    },
+    {
+      "path": "/vata/semaines/s2-thumb.webp",
+      "name": "s2-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 60960
+    },
+    {
+      "path": "/vata/semaines/s2.webp",
+      "name": "s2.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 201186
+    },
+    {
+      "path": "/vata/semaines/s3-large.webp",
+      "name": "s3-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 76384
+    },
+    {
+      "path": "/vata/semaines/s3-thumb.webp",
+      "name": "s3-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 16616
+    },
+    {
+      "path": "/vata/semaines/s3.webp",
+      "name": "s3.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 60652
+    },
+    {
+      "path": "/vata/semaines/s4-large.webp",
+      "name": "s4-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 96262
+    },
+    {
+      "path": "/vata/semaines/s4-thumb.webp",
+      "name": "s4-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 25406
+    },
+    {
+      "path": "/vata/semaines/s4.webp",
+      "name": "s4.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 115620
+    },
+    {
+      "path": "/vata/semaines/s5-large.webp",
+      "name": "s5-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 120076
+    },
+    {
+      "path": "/vata/semaines/s5-thumb.webp",
+      "name": "s5-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 31724
+    },
+    {
+      "path": "/vata/semaines/s5.webp",
+      "name": "s5.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 149830
+    },
+    {
+      "path": "/vata/semaines/s6-large.webp",
+      "name": "s6-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 31474
+    },
+    {
+      "path": "/vata/semaines/s6-thumb.webp",
+      "name": "s6-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 8774
+    },
+    {
+      "path": "/vata/semaines/s6.webp",
+      "name": "s6.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 35586
+    },
+    {
+      "path": "/vata/semaines/s7-large.webp",
+      "name": "s7-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 111216
+    },
+    {
+      "path": "/vata/semaines/s7-thumb.webp",
+      "name": "s7-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 38008
+    },
+    {
+      "path": "/vata/semaines/s7.webp",
+      "name": "s7.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 150296
     }
   ]
 }

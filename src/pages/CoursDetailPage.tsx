@@ -265,7 +265,7 @@ const CoursDetailPage: React.FC = () => {
   // pas une carte posée dans une colonne (règle du plein cadre).
   const scenePleine = accessible && (id === 'foyer' || estVata);
   const page = (
-    <div className={scenePleine ? '' : 'min-h-screen bg-[#EEE7DB] pt-28 pb-24 dark:bg-[#151d19]'}>
+    <div className={scenePleine ? (estVata ? 'min-h-screen bg-[#EEE7DB] pb-24 dark:bg-[#151d19]' : '') : 'min-h-screen bg-[#EEE7DB] pt-28 pb-24 dark:bg-[#151d19]'}>
       <div className={scenePleine ? '' : 'mx-auto max-w-[1720px] px-5 md:px-10'}>
         <Link
           to="/cours"
