@@ -285,7 +285,7 @@ function etiqueter() {
     if (!source || dejaMarques.has(parent)) continue;
     dejaMarques.add(parent);
     const idx = textIndex.length;
-    textIndex.push(n);
+    textIndex.push(source);
     parent.setAttribute('data-tx', String(idx));
   }
   document.querySelectorAll('img').forEach((img) => {
