@@ -140,9 +140,3 @@ export async function retirerPieceLecon(porteId: string, leconId: string, lecon:
   await updateDoc(doc(db(), COLLECTION, porteId, 'lecons', leconId), { pieces: lecon.pieces.filter(p => p.id !== piece.id) });
   try { await deleteObject(ref(store(), piece.chemin)); } catch { /* déjà partie */ }
 }
-
-// Réexporté pour l'écran qui affiche le nombre de documents encore présents
-// avant de confirmer une suppression de porte entière (aucun usage pour
-// l'instant, gardé pour la même API que getDoc ailleurs dans le site).
-export const _getLeconEssai = async (porteId: string, leconId: string) =>
-  (await getDoc(doc(db(), COLLECTION, porteId, 'lecons', leconId))).data() as LeconEssai | undefined;
