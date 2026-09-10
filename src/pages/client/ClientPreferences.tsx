@@ -59,6 +59,46 @@ const ClientPreferences: React.FC<{ uid: string; member: MemberDoc | null; lang:
     }
   };
 
+  const [suiviRefuse, setSuiviRefuse] = useState(false);
+  const [occupeSuivi, setOccupeSuivi] = useState(false);
+  const [effacement, setEffacement] = useState<'repos' | 'occupe' | 'fait'>('repos');
+
+  useEffect(() => {
+    let annule = false;
+    getHabitudes(uid).then((h) => { if (!annule) setSuiviRefuse(h?.suiviRefuse === true); });
+    return () => { annule = true; };
+  }, [uid]);
+
+  const basculerSuivi = async () => {
+    const valeur = !suiviRefuse;
+    setOccupeSuivi(true);
+    setSuiviRefuse(valeur);
+    marquerSuiviRefuse(valeur);
+    try {
+      await poserSuiviRefuse(uid, valeur);
+    } catch {
+      setSuiviRefuse(!valeur);
+      marquerSuiviRefuse(!valeur);
+    } finally {
+      setOccupeSuivi(false);
+    }
+  };
+
+  const effacerMesHabitudes = async () => {
+    const question = fr
+      ? "Effacer les pages que le site a retenues pour vous ? Ce geste ne se défait pas."
+      : 'Erase the pages the site has kept for you? This cannot be undone.';
+    if (!window.confirm(question)) return;
+    setEffacement('occupe');
+    try {
+      await effacerHabitudes(uid);
+      setEffacement('fait');
+      setTimeout(() => setEffacement('repos'), 2000);
+    } catch {
+      setEffacement('repos');
+    }
+  };
+
   const anneeMax = new Date().getFullYear();
   const [profil, setProfil] = useState({
     pays: member?.pays || '',
