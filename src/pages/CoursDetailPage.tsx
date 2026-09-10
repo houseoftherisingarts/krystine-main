@@ -261,12 +261,47 @@ const CoursDetailPage: React.FC = () => {
     );
   }
 
+  // Le Foyer et Vata prennent toute la largeur : leur ouverture est une scène,
+  // pas une carte posée dans une colonne (règle du plein cadre).
+  const scenePleine = accessible && (id === 'foyer' || estVata);
   const page = (
-    <div className={id === 'foyer' && accessible ? '' : 'min-h-screen bg-[#EEE7DB] pt-28 pb-24 dark:bg-[#151d19]'}>
-      <div className={id === 'foyer' && accessible ? '' : 'mx-auto max-w-[1720px] px-5 md:px-10'}>
-        <Link to="/cours" className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">
+    <div className={scenePleine ? '' : 'min-h-screen bg-[#EEE7DB] pt-28 pb-24 dark:bg-[#151d19]'}>
+      <div className={scenePleine ? '' : 'mx-auto max-w-[1720px] px-5 md:px-10'}>
+        <Link
+          to="/cours"
+          className={`text-[11px] font-bold uppercase tracking-widest ${
+            estVata && accessible
+              ? 'absolute left-5 top-24 z-20 text-[#EEE7DB]/75 hover:text-[#d9a05b] md:left-10'
+              : 'text-[#8B4A2F]'
+          }`}
+        >
           <i className="fa-solid fa-arrow-left mr-2" />{lang === 'FR' ? 'Toutes les formations' : 'All courses'}
         </Link>
+        {estVata && accessible && (
+          <SeuilVata
+            image={BANNIERES_ACHETEES[FORMATION_VATA].image}
+            chaleur={chaleur}
+            terminees={nbTerminees}
+            total={lecons.length}
+            semainesRefermees={semainesRefermees}
+            lang={lang}
+            reprise={(() => {
+              const p = lecons.find(l => !terminees[l.id] && !verrouillee(l)) || lecons.find(l => !verrouillee(l));
+              if (!p) return undefined;
+              const s = semaineDeModule(p.moduleNom);
+              return {
+                titre: p.titre,
+                duree: p.duree,
+                vignette: vignetteAudio(p, formation || undefined) || s?.vignette,
+                soustitre: s ? `${lang === 'FR' ? 'Semaine' : 'Week'} ${s.rang} · ${lang === 'FR' ? s.sens.fr : s.sens.en}` : undefined,
+                onOuvrir: () => { void ouvrir(p); requestAnimationFrame(() => chapitre.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })); },
+              };
+            })()}
+          />
+        )}
+        {estVata && accessible && (
+          <CheminSens etats={etatsSemaines} courante={semaineCourante} lang={lang} onOuvrir={ouvrirSemaine} />
+        )}
         {id === 'foyer' && accessible && (
           <div className="mt-4 overflow-hidden rounded-[20px] border border-white/60 shadow-[0_24px_60px_-24px_rgba(41,48,39,0.5)] dark:border-white/10">
             <video
