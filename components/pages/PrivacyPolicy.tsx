@@ -78,7 +78,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ lang }) => {
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">5. Partage des données</h2>
+            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">6. Partage des données</h2>
             <p><strong>Nous ne vendons JAMAIS vos renseignements personnels.</strong></p>
             <p>
               Vos données peuvent être partagées uniquement avec les partenaires techniques mentionnés à la section 4, strictement pour l'exécution des services. Ces partenaires sont tenus par contrat de respecter la confidentialité de vos données.
@@ -86,21 +86,21 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ lang }) => {
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">6. Communication hors Québec</h2>
+            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">7. Communication hors Québec</h2>
             <p>
               Certains partenaires (Google LLC, Meta Platforms Inc.) peuvent traiter des renseignements à l'extérieur du Québec. Nous avons procédé à une évaluation des facteurs relatifs à la vie privée (EFVP) et nous assurons par contrat que ces partenaires offrent un niveau de protection équivalent à celui exigé par la Loi 25.
             </p>
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">7. Stockage et sécurité</h2>
+            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">8. Stockage et sécurité</h2>
             <p>
               Vos données sont stockées sur des serveurs sécurisés. Nous mettons en œuvre des mesures de sécurité physiques, techniques et administratives rigoureuses pour prévenir tout accès non autorisé, perte ou vol de vos renseignements. Nous conservons vos données uniquement pour la durée nécessaire à la finalité pour laquelle elles ont été recueillies.
             </p>
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">8. Vos droits</h2>
+            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">9. Vos droits</h2>
             <p>Conformément à la Loi 25 et aux lois applicables, vous disposez des droits suivants :</p>
             <ul className="list-disc pl-6 space-y-2 marker:text-[#BA7B39]">
               <li><strong>Droit d'accès et de rectification :</strong> Consulter ou corriger vos données.</li>
@@ -112,7 +112,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ lang }) => {
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">9. Responsable de la protection des renseignements personnels (PRP)</h2>
+            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">10. Responsable de la protection des renseignements personnels (PRP)</h2>
             <p>Pour toute question ou pour exercer vos droits, veuillez contacter notre Responsable de la protection des renseignements personnels :</p>
             <div className="bg-white dark:bg-white/5 p-8 rounded-2xl border border-[#BA7B39]/30 mt-6">
               <p className="font-bold text-[#293027] dark:text-[#EEE7DB]">Nom : Alex T. St-Laurent</p>
@@ -121,7 +121,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ lang }) => {
           </section>
 
           <footer className="pt-12 border-t border-[#BA7B39]/20 text-xs text-[#293027]/60 dark:text-[#EEE7DB]/60">
-            Dernière mise à jour : 20 avril 2026
+            Dernière mise à jour : 10 septembre 2026
           </footer>
         </div>
       </div>
