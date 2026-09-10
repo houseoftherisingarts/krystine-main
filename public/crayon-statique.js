@@ -487,6 +487,7 @@ function basculerEdition(on) {
 
 const STYLE_CRAYON = `
 [data-crayon],[data-crayon] *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,sans-serif}
+[data-crayon] [hidden]{display:none!important}
 .cs-bar{position:fixed;z-index:2147483000;top:76px;right:max(1rem,env(safe-area-inset-right));display:flex;align-items:center;gap:8px}
 .cs-pencil{width:44px;height:44px;border-radius:999px;border:0;background:#bb9a5e;color:#1d1604;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 30px -8px rgba(0,0,0,.45)}
 .cs-pencil:hover{background:#dcb874}
