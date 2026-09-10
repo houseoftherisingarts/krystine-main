@@ -24,12 +24,12 @@ const cadreCible = await page.evaluate(() => {
   return visible ? visible.getAttribute('data-cadre') : (els[0] ? els[0].getAttribute('data-cadre') : null);
 });
 console.log('cadreCible', cadreCible);
-// data-cadre contient une URL complète : on clique via un handle JS plutôt qu'un sélecteur CSS.
-await page.evaluate((cle) => {
-  const el = Array.from(document.querySelectorAll('[data-cadre]')).find((e) => e.getAttribute('data-cadre') === cle);
-  const r = el.getBoundingClientRect();
-  el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, clientX: r.left + 10, clientY: r.top + 10 }));
-}, cadreCible);
+// data-cadre contient une URL complète : on récupère un handle JS plutôt qu'un
+// sélecteur CSS, mais on clique avec .click() de Playwright pour obtenir le
+// défilement automatique jusqu'à l'élément, comme un vrai clic humain.
+const handle = await page.evaluateHandle((cle) => Array.from(document.querySelectorAll('[data-cadre]')).find((e) => e.getAttribute('data-cadre') === cle), cadreCible);
+await handle.asElement().scrollIntoViewIfNeeded();
+await handle.asElement().click();
 await page.waitForTimeout(300);
 const modalPhotoVisible = await page.evaluate(() => !document.querySelectorAll('.cs-modal')[1].hidden);
 await page.screenshot({ path: `${dir}/admin-photo-1-modal.png` });
