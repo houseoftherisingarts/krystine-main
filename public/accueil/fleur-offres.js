@@ -1,11 +1,15 @@
 // La fleur des offres (Alex, 9 septembre 2026). Un petit bouton vivant en bas
 // à droite, qui sautille comme une notification jusqu'à ce qu'on l'ouvre.
 // Le clic ouvre le panneau en effet génie et montre l'offre faite à cette
-// personne : sans compte, le coffre de bienvenue; avec compte, ce qui se
-// prépare. Fermer le panneau fait disparaître la fleur jusqu'au prochain
-// chargement de la page. Rien n'est mémorisé.
+// personne : sans compte, le coffre de bienvenue; avec compte, l'offre que le
+// moteur (src/lib/offres.ts, calculée côté application et écrite dans
+// habitudes/{uid}.offre) a retenue pour elle. Fermer le panneau fait
+// disparaître la fleur jusqu'au prochain chargement de la page. Rien n'est
+// mémorisé ici : la page ne fait que LIRE l'identifiant déjà calculé, jamais
+// le calcul lui-même, pour rester légère.
 import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, increment, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const CONFIG = {
   apiKey: 'AIzaSyCjxu7l0ZNpbLa5LJdTe5WdjlTmLhoNUNk',
@@ -17,6 +21,12 @@ const CONFIG = {
 };
 const FIN_COFFRE_BETA = new Date(2026, 9, 2); // le coffre de 50 niskas jusqu'au 1er octobre inclus
 
+// Le texte de chaque offre, à l'identique du moteur (src/lib/offres.ts) pour
+// les identifiants qu'il peut écrire. Une entrée manquante (un dosha encore
+// sans formation publiée, par exemple) retombe sur le repli 'origine2' :
+// le moteur ne pose jamais un identifiant que cette table ne couvre pas,
+// sauf pour dosha-pitta/dosha-kapha dont le titre exact vient de Krystine et
+// n'est pas encore figé; ceux-là aussi retombent sur le repli en attendant.
 const OFFRES = {
   coffre: {
     eyebrow: 'Une offre pour vous',
@@ -29,6 +39,36 @@ const OFFRES = {
     titre: 'Votre espace vous attend',
     texte: 'Créez votre compte et retrouvez vos formations, la communauté et les cadeaux de Krystine au même endroit.',
     cta: 'Créer mon compte', href: '/compte',
+  },
+  'dosha-vata': {
+    eyebrow: 'Ce qui vous ressemble',
+    titre: 'Le Programme Vata, pensé pour vous',
+    texte: "Votre quiz vous place du côté de Vata, le dosha du mouvement et de l'air. Ce programme reprend les rituels qui ancrent et réchauffent ce tempérament, avec les leçons audio et les guides de Krystine pour les suivre à votre rythme.",
+    cta: 'Découvrir le Programme Vata', href: '/vata',
+  },
+  origine: {
+    eyebrow: 'Ce qui vous ramène ici',
+    titre: "L'Expérience Origine vous attend",
+    texte: "Vous revenez souvent du côté d'Origine. Ce parcours de douze semaines reprend, avec Krystine, ce que vous êtes déjà venue chercher : lire, trier et retrouver ses propres repères.",
+    cta: "Découvrir l'Expérience Origine", href: '/origine',
+  },
+  boutique: {
+    eyebrow: 'Ce qui vous ramène ici',
+    titre: "Un coup d'œil sur la boutique",
+    texte: "La boutique vous a déjà arrêtée plus d'une fois. Les huiles et les rituels de Krystine s'y trouvent, prêts à commander quand le moment sera le vôtre.",
+    cta: 'Aller à la boutique', href: '/boutique',
+  },
+  podcast: {
+    eyebrow: 'Ce qui vous ramène ici',
+    titre: 'Les rediffusions vous attendent',
+    texte: 'Vous revenez souvent écouter Krystine. Les rediffusions de « Santé ! La Vie ! » et les saisons complètes se retrouvent au même endroit, pour continuer où vous en étiez.',
+    cta: 'Écouter les rediffusions', href: '/podcast',
+  },
+  bienvenue: {
+    eyebrow: 'Bienvenue chez vous',
+    titre: 'Votre coffre de bienvenue vous attend',
+    texte: "Votre compte vient tout juste de s'ouvrir. Le coffre de bienvenue et les premiers repères du site se trouvent dans votre espace, prêts à être découverts à votre rythme.",
+    cta: 'Ouvrir mon espace', href: '/compte',
   },
   origine2: {
     eyebrow: 'Ce qui se prépare pour vous',
