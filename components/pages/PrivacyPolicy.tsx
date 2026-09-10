@@ -55,7 +55,14 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ lang }) => {
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">4. Témoins (cookies) et outils tiers</h2>
+            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">4. Personnalisation selon votre navigation</h2>
+            <p>
+              Lorsque vous êtes connectée à votre compte et que vous avez accepté le bandeau de consentement, nous comptons les pages que vous ouvrez sur le site, sans jamais retenir l'heure exacte de chaque visite ni le détail minute par minute de votre parcours. Ce compte sert uniquement à vous proposer une offre ou un contenu qui vous ressemble davantage, et à laisser Krystine voir, de façon globale, ce que sa communauté explore vraiment. Il ne quitte jamais ce site, il n'est jamais vendu ni partagé avec un tiers, et une visiteuse qui n'a pas de compte n'est jamais comptée de cette façon. Vous pouvez éteindre cette personnalisation à tout moment depuis vos préférences de compte, sans perdre votre compte ni vos autres réglages, et en demander l'effacement complet par le même bouton. Nous conservons ces données vingt-quatre mois après votre dernière visite, puis elles s'effacent d'elles-mêmes.
+            </p>
+          </section>
+
+          <section className="space-y-4">
+            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">5. Témoins (cookies) et outils tiers</h2>
             <p>
               Conformément à la Loi 25, aucun témoin non essentiel n'est déposé avant que vous n'ayez donné votre consentement explicite via le bandeau prévu à cet effet.
             </p>
