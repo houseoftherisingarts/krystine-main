@@ -433,6 +433,9 @@ const CoursDetailPage: React.FC = () => {
         })()}
         {estOrigine2 && accessible && <SemainesOrigine2 dateSortie={formation.dateSortie} />}
         {(() => {
+          // Vata a son seuil plein cadre plus haut : ni bannière en carte, ni
+          // titre en double par-dessus une image qui le porte déjà.
+          if (estVata && accessible) return null;
           if (id === 'foyer' || !accessible || lecons.length === 0) {
             return (
               <h1 className="mt-3 max-w-3xl font-serif text-3xl leading-tight text-[#293027] md:text-4xl dark:text-white" style={{ letterSpacing: '-0.01em' }}>
