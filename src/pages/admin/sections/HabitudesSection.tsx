@@ -110,13 +110,16 @@ const HabitudesSection: React.FC = () => {
   useEffect(() => {
     let vivant = true;
     (async () => {
-      const [h, m, f, a, o, s] = await Promise.all([
-        getToutesHabitudes(), getAllMembers(), getFormations(),
-        chargerAchatsFormations(), getClientOrders(), getShopifyOrders(5000),
-      ]);
-      if (!vivant) return;
-      setHabitudesList(h); setMembers(m); setFormations(f); setAchats(a); setOrders(o); setShopify(s);
-      setLoading(false);
+      try {
+        const [h, m, f, a, o, s] = await Promise.all([
+          getToutesHabitudes(), getAllMembers(), getFormations(),
+          chargerAchatsFormations(), getClientOrders(), getShopifyOrders(5000),
+        ]);
+        if (!vivant) return;
+        setHabitudesList(h); setMembers(m); setFormations(f); setAchats(a); setOrders(o); setShopify(s);
+      } finally {
+        if (vivant) setLoading(false);
+      }
     })();
     return () => { vivant = false; };
   }, []);
