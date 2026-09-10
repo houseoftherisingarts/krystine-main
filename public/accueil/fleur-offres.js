@@ -72,7 +72,7 @@ const OFFRES = {
   },
   origine2: {
     eyebrow: 'Ce qui se prépare pour vous',
-    titre: 'L’Expérience Origine 2 ouvre en janvier',
+    titre: 'L’Expérience Origine 2 ouvre en novembre',
     texte: 'Douze semaines avec Krystine pour retrouver vos propres repères. Inscrivez-vous à la liste d’attente et vous recevrez l’invitation avant toute annonce publique.',
     cta: 'Découvrir l’Expérience', href: '/origine-2',
   },
