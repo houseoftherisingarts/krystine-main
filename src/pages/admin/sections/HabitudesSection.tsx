@@ -50,7 +50,7 @@ const formatMontant = (n: number, devise = 'CAD') =>
 const fmtDate = (ts?: Timestamp) =>
   ts ? ts.toDate().toLocaleDateString('fr-CA', { year: 'numeric', month: 'long', day: 'numeric' }) : null;
 
-// La tranche d'âge exacte demandée par Krystine pour cette page — distincte
+// La tranche d'âge exacte demandée par Krystine pour cette page, distincte
 // des dizaines utilisées ailleurs dans l'admin (detailsCompteurs.ts), qui
 // sert un autre panneau. Rien n'est deviné : sans année de naissance, la
 // personne tombe dans « Âge non renseigné », jamais dans une moyenne inventée.
