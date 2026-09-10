@@ -106,6 +106,10 @@ service cloud.firestore {
     // Le plan des leçons est lisible (titres et durées pour la fiche du cours);
     // le FICHIER passe par la fonction obtenirLecon qui vérifie l'achat.
     match /formations/{id}/lecons/{lid} { allow read: if true; allow write: if isAdmin(); }
+    // Foyer-essai : bac à sable de Krystine pour s'entraîner à déposer ses
+    // leçons avant l'ouverture du vrai Foyer (Alex, 10 sept. 2026). Cloisonné
+    // du vrai Foyer : admin seulement, rien pour une membre ordinaire.
+    match /foyerEssai/{id} { allow read, write: if isAdmin(); }
     // Les questions posées sous une leçon : le groupe les lit, chacune écrit
     // la sienne, Krystine répond (update), l'auteure ou l'admin retire.
     match /formations/{id}/lecons/{lid}/questions/{qid} {
