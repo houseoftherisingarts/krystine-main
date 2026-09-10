@@ -32,3 +32,4 @@ export { offrirCadeau, utiliserCadeau } from './cadeaux';
 export { acheterCoffre, ouvrirCoffre, reclamerGrandLot, offrirCoffre } from './coffres';
 export { notifierBillet, annoncerChangement } from './notifs';
 export { interactionMessageDirect, interactionBillet, interactionCommentaire, interactionVoteBillet, interactionVoteCommentaire, interactionPoints } from './interactions';
+export { purgerHabitudesInactives } from './habitudes';
