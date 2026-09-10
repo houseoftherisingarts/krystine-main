@@ -15,6 +15,10 @@ import CadreFoyer from '../components/communaute/CadreFoyer';
 import { getMember } from '../firebase/firestore';
 import TexteLecon from '../lib/texteLecon';
 import { LecteurVideoPleinEcran } from '../components/LecteurVideoEmbarque';
+import SeuilVata from '../components/cours/SeuilVata';
+import CheminSens, { type EtatSemaine } from '../components/cours/CheminSens';
+import LecteurAudioCours from '../components/cours/LecteurAudioCours';
+import { FORMATION_VATA, SEMAINES_VATA, rangDeModule, semaineDeModule } from './vata/semaines';
 
 // La fiche d'un cours et son lecteur, sur le patron de l'Académie Zéro
 // Limite : liste des leçons et progression à gauche, contenu à droite,
