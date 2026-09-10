@@ -554,7 +554,7 @@ const ClientPortal: React.FC = () => {
   // ?onglet=messagerie (cloche, bulle des messages, menu de la musique) ouvre l'onglet voulu.
   useEffect(() => {
     const voulu = new URLSearchParams(location.search).get('onglet') as Tab | null;
-    if (voulu && ['profile', 'amis', 'orders', 'formations', 'rediffusions', 'telechargements', 'loyalty', 'dosha', 'archives', 'messagerie', 'aider'].includes(voulu)) setTab(voulu);
+    if (voulu && ['profile', 'amis', 'orders', 'formations', 'billets', 'rediffusions', 'telechargements', 'loyalty', 'dosha', 'archives', 'messagerie', 'aider'].includes(voulu)) setTab(voulu);
   }, [location.search, location.key]);
   // Une carte « Lettre d'or » dans la messagerie mène à l'onglet Lettres.
   useEffect(() => {
