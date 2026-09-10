@@ -27,12 +27,18 @@ export interface SiteFlags {
    *  l'admin garde la page pour la relire. Interrupteur dans l'admin,
    *  Réglages → Pages du site. Éteint par défaut (Alex, 10 septembre 2026). */
   origine2Ouvert: boolean;
+  /** L'assistante de conversation flotte en bas à droite du site. Éteinte, le
+   *  bouton disparaît complètement et aucun appel n'est fait à la fonction.
+   *  Interrupteur dans l'admin, Réglages → Pages du site. Éteinte par défaut
+   *  (Alex, 10 septembre 2026). */
+  chatbotOuvert: boolean;
 }
 
 export const DEFAULT_FLAGS: SiteFlags = {
   showTedx: false,
   foyerOuvert: false,
   origine2Ouvert: false,
+  chatbotOuvert: false,
 };
 
 const FLAGS_COLLECTION = 'siteSettings';

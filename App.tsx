@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-route
 import { AppProvider } from './src/contexts/AppContext';
 import { EditModeProvider } from './src/contexts/EditModeContext';
 import { EditionProvider } from './src/lib/edition';
-import { SiteFlagsProvider } from './src/contexts/SiteFlagsContext';
+import { SiteFlagsProvider, useSiteFlags } from './src/contexts/SiteFlagsContext';
 import { GamificationProvider } from './src/contexts/GamificationContext';
 import NavBar from './src/components/layout/NavBar';
 import Footer from './src/components/layout/Footer';
@@ -191,8 +191,12 @@ const PageMeta: React.FC = () => {
 // pendant le direct : elles se retirent de celle-là.
 const Flottants: React.FC = () => {
   const location = useLocation();
+  // L'assistante ne s'affiche que si l'interrupteur des Réglages l'allume, et
+  // rien n'apparaît tant que Firestore n'a pas répondu, pour qu'elle ne
+  // clignote jamais à l'écran d'une visiteuse.
+  const { chatbotOuvert, pret } = useSiteFlags();
   if (location.pathname === '/podcast/question') return null;
-  return (<><LangPill /><LiveBadge /><ChatKrystine /></>);
+  return (<><LangPill /><LiveBadge />{pret && chatbotOuvert && <ChatKrystine />}</>);
 };
 
 const App: React.FC = () => (

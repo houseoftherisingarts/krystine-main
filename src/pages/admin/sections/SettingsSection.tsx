@@ -68,8 +68,13 @@ const SITE_AUDIO: Array<{
 // la relire avant l'allumage.
 const PagesDuSiteCard: React.FC = () => {
   const [origine2Ouvert, setOrigine2Ouvert] = useState(false);
+  const [chatbotOuvert, setChatbotOuvert] = useState(false);
   const [charge, setCharge] = useState(true);
-  useEffect(() => subscribeToSiteFlags(f => { setOrigine2Ouvert(f.origine2Ouvert); setCharge(false); }), []);
+  useEffect(() => subscribeToSiteFlags(f => {
+    setOrigine2Ouvert(f.origine2Ouvert);
+    setChatbotOuvert(f.chatbotOuvert);
+    setCharge(false);
+  }), []);
   return (
     <Card className="p-6">
       <h3 className="mb-2 text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">Pages du site</h3>
@@ -94,6 +99,19 @@ const PagesDuSiteCard: React.FC = () => {
             <i className="fa-solid fa-up-right-from-square mr-1.5" />
             Voir la page avant de l'allumer
           </a>
+        </div>
+      )}
+      {!charge && (
+        <div className="mt-6 border-t border-[#293027]/10 pt-6 dark:border-white/10">
+          <p className="mb-4 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
+            L'assistante de conversation flotte en bas à droite de chaque page et répond aux questions des
+            visiteuses. Éteinte, son bouton disparaît du site et plus aucune question ne part vers le serveur.
+          </p>
+          <ToggleSwitch
+            checked={chatbotOuvert}
+            onChange={v => { setChatbotOuvert(v); void setSiteFlag('chatbotOuvert', v); }}
+            label={chatbotOuvert ? "L'assistante répond aux visiteuses" : "L'assistante est éteinte"}
+          />
         </div>
       )}
     </Card>
