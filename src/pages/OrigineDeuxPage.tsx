@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } fr
 import { Link, Navigate } from 'react-router-dom';
 import { ArrowRight, ChevronDown, Lock } from 'lucide-react';
 import { useAuth } from '../contexts/AppContext';
+import { useSiteFlags } from '../contexts/SiteFlagsContext';
 import { aAchete, acheterFormation, getFormation, type Formation } from '../firebase/formations';
 import { PILLARS, WORKS, VALUE_ITEMS, FAQS, TESTIMONIALS } from './OrigineExperience';
 import { SEMAINES, PILIERS_ORIGINE2, labelDebut } from './origine2/semaines';
