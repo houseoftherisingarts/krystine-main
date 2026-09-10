@@ -106,6 +106,7 @@ await c.close();
 
 // 12) Mobile 390 : grille, module rempli, vue cliente.
 const cm = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+await cm.addInitScript(() => { try { localStorage.setItem('inspirata.consent.v1', 'accepted'); } catch {} });
 const pm = await cm.newPage();
 await pm.goto(`${BASE}/admin`, { waitUntil: 'domcontentloaded' });
 await pm.waitForTimeout(800);
