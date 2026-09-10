@@ -143,8 +143,11 @@ const CSS = `
 @media(max-width:640px){.fo-fleur{right:.9rem;bottom:4.4rem;width:58px;height:58px}.fo-panneau{right:.75rem;bottom:4.6rem;padding:1.4rem 1.25rem 1.3rem}.fo-titre{font-size:1.5rem}}
 `;
 
-function choisirOffre(user) {
-  if (user) return OFFRES.origine2;
+// offreId vient de habitudes/{uid}.offre.id (écrit par le moteur React,
+// src/lib/offres.ts). Sans compte, ou tant que rien n'a encore été calculé,
+// la fleur retombe sur l'offre de bienvenue existante.
+function choisirOffre(user, offreId) {
+  if (user) return OFFRES[offreId] || OFFRES.origine2;
   return new Date() < FIN_COFFRE_BETA ? OFFRES.coffre : OFFRES.compte;
 }
 
@@ -162,10 +165,31 @@ function monter() {
   document.body.appendChild(fleur);
 
   let user = null;
+  let offreId = null;
+  let db = null;
   try {
     const app = getApps().length ? getApp() : initializeApp(CONFIG);
-    onAuthStateChanged(getAuth(app), u => { user = u; });
+    db = getFirestore(app);
+    onAuthStateChanged(getAuth(app), u => {
+      user = u;
+      if (!u || !db) return;
+      // La fleur ne fait que LIRE l'offre déjà calculée par l'application :
+      // aucun calcul, aucune écriture de contenu ici.
+      getDoc(doc(db, 'habitudes', u.uid))
+        .then(snap => { offreId = snap.exists() ? snap.data()?.offre?.id ?? null : null; })
+        .catch(() => { /* pas grave, le repli tient */ });
+    });
   } catch { /* sans Firebase, l'offre sans compte reste juste */ }
+
+  // Compte une offre montrée, puis cliquée, par les mêmes chemins que
+  // noterOffre() (src/firebase/habitudes.ts) : un incrément fusionné sur le
+  // document habitudes de la personne.
+  const noterOffreVue = (geste) => {
+    if (!db || !user || !offreId) return;
+    const champ = geste === 'clic' ? 'offresCliquees' : 'offresVues';
+    setDoc(doc(db, 'habitudes', user.uid), { [champ]: { [offreId]: increment(1) }, maj: serverTimestamp() }, { merge: true })
+      .catch(() => { /* un compteur raté n'empêche jamais l'offre de s'afficher */ });
+  };
 
   const reduit = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let panneau = null;
@@ -187,7 +211,8 @@ function monter() {
     fleur.classList.remove('fo-vivante');
     fleur.querySelector('.fo-badge')?.remove();
     fleur.style.visibility = 'hidden';
-    const offre = choisirOffre(user);
+    const offre = choisirOffre(user, offreId);
+    noterOffreVue('vue');
 
     voile = document.createElement('div');
     voile.className = 'fo-voile';
@@ -204,6 +229,7 @@ function monter() {
       <p class="fo-texte">${offre.texte}</p>
       <a class="fo-cta" href="${offre.href}">${offre.cta}<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>`;
     panneau.querySelector('.fo-fermer').addEventListener('click', disparaitre);
+    panneau.querySelector('.fo-cta').addEventListener('click', () => noterOffreVue('clic'));
     document.body.appendChild(voile);
     document.body.appendChild(panneau);
     requestAnimationFrame(() => voile.classList.add('fo-ouvert'));

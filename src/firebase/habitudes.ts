@@ -15,13 +15,20 @@
 // 3. Le consentement d'abord. Rien ne s'écrit tant que la personne n'a pas
 //    accepté la bannière de la Loi 25, et une cliente peut éteindre la
 //    personnalisation depuis ses préférences sans perdre son compte.
-import { db } from '../firebase';
+import { auth, db } from '../firebase';
 import {
   collection, doc, getDoc, getDocs, setDoc, deleteDoc, increment,
   serverTimestamp, Timestamp,
 } from 'firebase/firestore';
 
 export const CHEMIN_HABITUDES = 'habitudes';
+
+// Les règles Firestore sont la vraie barrière : une cliente n'écrit que ses
+// propres habitudes et un appel sur l'identifiant d'une autre se solde par un
+// refus du serveur. Cette garde-ci ne remplace pas les règles, elle évite
+// qu'un appel mal branché parte pour rien et rende l'intention explicite à qui
+// relira le fichier.
+const cestElle = (uid: string): boolean => !!uid && auth?.currentUser?.uid === uid;
 
 export interface Habitudes {
   uid: string;
@@ -117,6 +124,7 @@ export const jourCourant = (): string => {
  */
 export async function noterPage(uid: string, chemin: string, dernierJourConnu?: string): Promise<void> {
   if (!db || !uid) return;
+  if (!cestElle(uid)) return;
   const jour = jourCourant();
   const patch: Record<string, unknown> = {
     uid,
@@ -136,6 +144,7 @@ export async function noterPage(uid: string, chemin: string, dernierJourConnu?: 
 /** Compte une offre montrée, puis une offre cliquée. */
 export async function noterOffre(uid: string, offreId: string, geste: 'vue' | 'clic'): Promise<void> {
   if (!db || !uid || !offreId) return;
+  if (!cestElle(uid)) return;
   const champ = geste === 'clic' ? 'offresCliquees' : 'offresVues';
   await setDoc(doc(db, CHEMIN_HABITUDES, uid), { [champ]: { [offreId]: increment(1) }, maj: serverTimestamp() }, { merge: true });
 }
@@ -156,12 +165,14 @@ export async function getToutesHabitudes(): Promise<Habitudes[]> {
 /** Éteindre ou rallumer la personnalisation, depuis les préférences de la cliente. */
 export async function poserSuiviRefuse(uid: string, refuse: boolean): Promise<void> {
   if (!db || !uid) return;
+  if (!cestElle(uid)) return;
   await setDoc(doc(db, CHEMIN_HABITUDES, uid), { uid, suiviRefuse: refuse, maj: serverTimestamp() }, { merge: true });
 }
 
 /** Le droit à l'effacement : la cliente jette ses propres habitudes. */
 export async function effacerHabitudes(uid: string): Promise<void> {
   if (!db || !uid) return;
+  if (!cestElle(uid)) return;
   await deleteDoc(doc(db, CHEMIN_HABITUDES, uid));
 }
 
