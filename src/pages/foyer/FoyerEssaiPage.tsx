@@ -245,6 +245,7 @@ const FoyerEssaiPage: React.FC = () => {
                       {erreur && <p className="mt-2 text-[11px] text-red-700">{erreur}</p>}
                     </div>
                   )}
+                  </div>
                 </div>
               );
             })}
