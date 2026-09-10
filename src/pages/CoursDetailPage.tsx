@@ -716,10 +716,20 @@ const CoursDetailPage: React.FC = () => {
                       courante.type === 'video' ? (
                         <video src={urlCourante} controls playsInline className="w-full rounded-[15px] bg-black" />
                       ) : courante.type === 'audio' ? (
-                        <div className="flex items-center gap-4 rounded-[15px] border border-[#BA7B39]/20 bg-white/70 p-3 dark:bg-white/5">
-                          {vignetteAudio(courante, formation || undefined) && <img src={vignetteAudio(courante, formation || undefined)} alt="" className="h-20 w-20 shrink-0 rounded-[12px] object-cover" />}
-                          <audio src={urlCourante} controls className="w-full min-w-0" />
-                        </div>
+                        <LecteurAudioCours
+                          key={courante.id}
+                          url={urlCourante}
+                          titre={courante.titre}
+                          duree={courante.duree}
+                          pochette={vignetteAudio(courante, formation || undefined) || semaineDeModule(courante.moduleNom)?.vignette}
+                          soustitre={(() => {
+                            const s = semaineDeModule(courante.moduleNom);
+                            return s ? `${lang === 'FR' ? 'Semaine' : 'Week'} ${s.rang} · ${lang === 'FR' ? s.sens.fr : s.sens.en}` : courante.moduleNom;
+                          })()}
+                          lang={lang}
+                          onFin={() => { if (!terminees[courante.id]) void basculerTerminee(courante); }}
+                          onSuivante={lecons.findIndex(l => l.id === courante.id) < lecons.length - 1 ? suivante : undefined}
+                        />
                       ) : (
                         <a
                           href={urlCourante} target="_blank" rel="noopener noreferrer"
