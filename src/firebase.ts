@@ -30,6 +30,17 @@ if (isConfigured) {
     _db = getFirestore(app);
     // Analytics intentionally NOT initialized here — gated behind user consent
     // (LOI 25, Quebec). Call enableAnalytics() from the consent banner.
+
+    // Émulateurs locaux, réservés à la QA (jamais en production) : le drapeau
+    // vient d'une variable d'environnement Vite passée au lancement
+    // (`VITE_USE_EMULATORS=1 npx vite`), jamais du .env.local du client, pour
+    // qu'un `npm run dev` ordinaire continue de parler au vrai projet.
+    if (import.meta.env.DEV && import.meta.env.VITE_USE_EMULATORS === '1') {
+      connectFirestoreEmulator(_db, '127.0.0.1', 8080);
+      connectAuthEmulator(_auth, 'http://127.0.0.1:9099', { disableWarnings: true });
+      connectStorageEmulator(getStorage(app), '127.0.0.1', 9199);
+      console.info('[Firebase] Connecté aux émulateurs locaux (QA).');
+    }
   } catch (e) {
     console.warn('[Firebase] Init failed, running in offline mode:', e);
   }
