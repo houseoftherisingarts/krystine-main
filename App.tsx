@@ -235,7 +235,7 @@ const App: React.FC = () => (
           <Route path="/origine-loeuvre" element={<Navigate to="/origine" replace />} />
           {/* Le Foyer d'Origine — page de vente WIP, accès par URL seulement */}
           <Route path="/foyer" element={<FoyerPage />} />
-          {/* Essai du Foyer — bac à sable admin pour tester le dépôt de leçons,
+          {/* Essai du Foyer : bac à sable admin pour tester le dépôt de leçons,
               accès par URL seulement, jamais lié nulle part (Alex, 10 sept. 2026) */}
           <Route path="/foyer-essai" element={<FoyerEssaiPage />} />
           <Route path="/origine-2" element={<OrigineDeuxPage />} />

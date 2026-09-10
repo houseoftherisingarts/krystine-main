@@ -6,7 +6,7 @@ const p = await c.newPage();
 p.on('pageerror', () => {});
 await p.goto('http://localhost:5199/admin', { waitUntil: 'domcontentloaded' });
 await p.waitForTimeout(5000);
-for (const t of ['COMMUNAUTÉ', 'Habitudes de tes clientes']) {
+for (const t of ['Habitudes de tes clientes']) {
   const el = p.locator(`button:has-text("${t}")`).first();
   if (await el.count()) { await el.click({ force: true }); await p.waitForTimeout(t.includes('Habitudes') ? 4500 : 800); }
   else console.log('introuvable :', t);
