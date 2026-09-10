@@ -98,14 +98,8 @@ const Carte: React.FC<{
   );
 };
 
-const CheminSens: React.FC<Props> = ({ etats, courante, lang, onOuvrir }) => {
-  const reduce = useReducedMotion();
-  const piste = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({ target: piste, offset: ['start start', 'end end'] });
-  // Huit cartes de 26rem : le rail glisse d'un peu plus de la moitié.
-  const x = useTransform(scrollYProgress, [0, 1], ['0%', '-62%']);
-
-  const titre = (
+const CheminSens: React.FC<Props> = ({ etats, courante, lang, onOuvrir }) => (
+  <section className="pt-16 pb-4 md:pt-20">
     <div className="mx-auto flex max-w-[1720px] flex-col gap-2 px-5 md:px-10">
       <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#8B4A2F] dark:text-[#d9a05b]">
         {lang === 'FR' ? 'Le chemin des sens' : 'The path of the senses'}
@@ -114,44 +108,20 @@ const CheminSens: React.FC<Props> = ({ etats, courante, lang, onOuvrir }) => {
         {lang === 'FR' ? 'Une porte se referme à la fois' : 'One door closes at a time'}
       </h2>
     </div>
-  );
 
-  return (
-    <>
-      {/* Desktop : le rail qui glisse pendant que la page descend. */}
-      <section ref={piste} className="relative hidden h-[280vh] lg:block">
-        <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden pt-24">
-          {titre}
-          <motion.div
-            className="mt-8 flex gap-6 px-10"
-            style={reduce ? undefined : { x }}
-          >
-            {SEMAINES_VATA.map((s, i) => (
-              <div key={s.rang} className="w-[26rem] shrink-0">
-                <Carte
-                  s={s} etat={etats[s.rang]} active={courante === s.rang}
-                  lang={lang} index={i} onOuvrir={() => onOuvrir(s.rang)}
-                />
-              </div>
-            ))}
-          </motion.div>
+    {/* Une rangée qui respire : les colonnes paires descendent d'un cran, pour
+        que la grille ne se lise pas comme un tableau. */}
+    <div className="mx-auto mt-8 grid max-w-[1720px] grid-cols-1 gap-5 px-5 sm:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-6">
+      {SEMAINES_VATA.map((s, i) => (
+        <div key={s.rang} className={i % 2 === 1 ? 'lg:mt-12' : ''}>
+          <Carte
+            s={s} etat={etats[s.rang]} active={courante === s.rang}
+            lang={lang} index={i} onOuvrir={() => onOuvrir(s.rang)}
+          />
         </div>
-      </section>
-
-      {/* Mobile et tablette : les cartes s'empilent, deux par rangée si la place y est. */}
-      <section className="pt-14 lg:hidden">
-        {titre}
-        <div className="mx-auto mt-6 grid max-w-[1720px] grid-cols-1 gap-5 px-5 sm:grid-cols-2 md:px-10">
-          {SEMAINES_VATA.map((s, i) => (
-            <Carte
-              key={s.rang} s={s} etat={etats[s.rang]} active={courante === s.rang}
-              lang={lang} index={i} onOuvrir={() => onOuvrir(s.rang)}
-            />
-          ))}
-        </div>
-      </section>
-    </>
-  );
-};
+      ))}
+    </div>
+  </section>
+);
 
 export default CheminSens;

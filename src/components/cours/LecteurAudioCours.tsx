@@ -105,7 +105,6 @@ const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, l
         ctx.beginPath();
         const x = i * pas + (pas - largeur) / 2;
         const y = (H - h) / 2;
-        // @ts-expect-error roundRect existe partout où le site tourne
         ctx.roundRect(x, y, largeur, h, largeur / 2);
         ctx.fill();
       }
