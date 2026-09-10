@@ -164,8 +164,19 @@ function monter() {
   fleur.innerHTML = FLEUR_SVG + '<span class="fo-badge" aria-hidden="true">1</span>';
   document.body.appendChild(fleur);
 
+  // Le même interrupteur que src/components/layout/ConsentBanner.tsx
+  // (getConsent()), lu directement dans le localStorage puisque cette page
+  // est un bundle statique séparé de la SPA React et ne peut pas importer
+  // son module. Sans ce test, une visiteuse qui clique « Non merci » sur le
+  // bandeau verrait quand même ses vues et ses clics comptés ici.
+  const consentAccepte = () => {
+    try { return window.localStorage.getItem('inspirata.consent.v1') === 'accepted'; }
+    catch { return false; }
+  };
+
   let user = null;
   let offreId = null;
+  let suiviRefuse = false;
   let db = null;
   try {
     const app = getApps().length ? getApp() : initializeApp(CONFIG);
@@ -176,16 +187,21 @@ function monter() {
       // La fleur ne fait que LIRE l'offre déjà calculée par l'application :
       // aucun calcul, aucune écriture de contenu ici.
       getDoc(doc(db, 'habitudes', u.uid))
-        .then(snap => { offreId = snap.exists() ? snap.data()?.offre?.id ?? null : null; })
+        .then(snap => {
+          const data = snap.exists() ? snap.data() : null;
+          offreId = data?.offre?.id ?? null;
+          suiviRefuse = data?.suiviRefuse === true;
+        })
         .catch(() => { /* pas grave, le repli tient */ });
     });
   } catch { /* sans Firebase, l'offre sans compte reste juste */ }
 
   // Compte une offre montrée, puis cliquée, par les mêmes chemins que
   // noterOffre() (src/firebase/habitudes.ts) : un incrément fusionné sur le
-  // document habitudes de la personne.
+  // document habitudes de la personne. Les trois mêmes conditions que
+  // src/lib/suiviHabitudes.ts : connectée, bandeau accepté, suivi non refusé.
   const noterOffreVue = (geste) => {
-    if (!db || !user || !offreId) return;
+    if (!db || !user || !offreId || suiviRefuse || !consentAccepte()) return;
     const champ = geste === 'clic' ? 'offresCliquees' : 'offresVues';
     setDoc(doc(db, 'habitudes', user.uid), { [champ]: { [offreId]: increment(1) }, maj: serverTimestamp() }, { merge: true })
       .catch(() => { /* un compteur raté n'empêche jamais l'offre de s'afficher */ });
