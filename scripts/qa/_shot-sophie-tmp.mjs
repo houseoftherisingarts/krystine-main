@@ -5,10 +5,10 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'mobile']]) {
   const ctx = await b.newContext({ viewport: { width: w, height: h }, isMobile: w < 600, hasTouch: w < 600, deviceScaleFactor: 2 });
   const p = await ctx.newPage();
   await p.goto('http://localhost:5199/admin/habitudes', { waitUntil: 'domcontentloaded' });
-  await p.waitForTimeout(1200);
   const emailTab = p.locator('button:has-text("Email")');
-  if (await emailTab.count()) await emailTab.click();
-  await p.waitForTimeout(300);
+  await emailTab.waitFor({ state: 'visible', timeout: 15000 });
+  await emailTab.click();
+  await p.locator('input[type="email"]').waitFor({ state: 'visible', timeout: 10000 });
   await p.fill('input[type="email"]', 'houseoftherisingarts@gmail.com');
   await p.fill('input[type="password"]', 'EssaiHabitudes2026!');
   await p.click('button[type="submit"]');
