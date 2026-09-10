@@ -88,7 +88,7 @@ const FoyerEssaiPage: React.FC = () => {
   // le même patron que FoyerPage.tsx (document.title restauré au départ).
   useEffect(() => {
     const prevTitle = document.title;
-    document.title = "Essai de dépôt — Foyer d'Origine | Krystine St-Laurent";
+    document.title = "Essai de dépôt · Foyer d'Origine | Krystine St-Laurent";
     let meta = document.head.querySelector<HTMLMetaElement>('meta[name="robots"]');
     const metaCree = !meta;
     if (!meta) {
