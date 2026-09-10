@@ -327,7 +327,6 @@ const OrigineDeuxPage: React.FC = () => {
                 loop
                 playsInline
                 preload="metadata"
-                referrerPolicy="no-referrer"
                 className="absolute left-0 top-[-6%] h-[112%] w-full object-cover"
                 style={{ y: heroY, scale: heroScale, filter: heroDim }}
                 initial={{ opacity: 0 }}
