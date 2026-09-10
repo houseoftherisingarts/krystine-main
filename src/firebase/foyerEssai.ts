@@ -132,11 +132,15 @@ export function televerserPiece(porteId: string, leconId: string, file: File, on
   return { task, done };
 }
 
-export async function enregistrerPiece(porteId: string, leconId: string, lecon: LeconEssai, piece: PieceEssai): Promise<void> {
-  await updateDoc(doc(db(), COLLECTION, porteId, 'lecons', leconId), { pieces: [...lecon.pieces, piece] });
+// `arrayUnion`/`arrayRemove` plutôt qu'un lire-puis-écrire sur `lecon.pieces` :
+// plusieurs pièces se déposent souvent en même temps (fichiers multiples
+// sélectionnés d'un coup) et un lire-puis-écrire sur une valeur locale figée
+// en aurait perdu une, la deuxième écriture écrasant la première.
+export async function enregistrerPiece(porteId: string, leconId: string, _lecon: LeconEssai, piece: PieceEssai): Promise<void> {
+  await updateDoc(doc(db(), COLLECTION, porteId, 'lecons', leconId), { pieces: arrayUnion(piece) });
 }
 
-export async function retirerPieceLecon(porteId: string, leconId: string, lecon: LeconEssai, piece: PieceEssai): Promise<void> {
-  await updateDoc(doc(db(), COLLECTION, porteId, 'lecons', leconId), { pieces: lecon.pieces.filter(p => p.id !== piece.id) });
+export async function retirerPieceLecon(porteId: string, leconId: string, _lecon: LeconEssai, piece: PieceEssai): Promise<void> {
+  await updateDoc(doc(db(), COLLECTION, porteId, 'lecons', leconId), { pieces: arrayRemove(piece) });
   try { await deleteObject(ref(store(), piece.chemin)); } catch { /* déjà partie */ }
 }
