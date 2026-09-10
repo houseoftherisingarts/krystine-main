@@ -121,7 +121,7 @@ const LeconCard: React.FC<{
       });
       setEnCours(c => ({ ...c, [tempId]: { pct: 0, nom: file.name, taille: file.size, task } }));
       done.then(async piece => {
-        await enregistrerPiece(porteId, lecon.id, lecon, piece);
+        await enregistrerPiece(porteId, lecon.id, piece);
         setEnCours(c => { const n = { ...c }; delete n[tempId]; return n; });
         onMaj();
       }).catch(() => {
