@@ -52,11 +52,24 @@ export async function calculerEtEnregistrerOffre(uid: string): Promise<void> {
   await setDoc(doc(db, CHEMIN_HABITUDES, uid), { offre: { id: offre.id, calculeeLe: serverTimestamp() } }, { merge: true });
 }
 
-/** Composant sans rendu : recalcule l'offre à chaque montage, silencieusement. */
+/**
+ * Composant sans rendu : recalcule l'offre au montage, puis chaque fois que
+ * la personne change de page. Les habitudes bougent à chaque page ouverte
+ * (src/lib/suiviHabitudes.ts) : un calcul figé au premier montage aurait
+ * laissé le champ `offre` retenir la toute première visite de la session,
+ * même après trois pages de plus dans une famille qui aurait fait basculer
+ * l'offre. Un court délai groupe les navigations rapprochées en un seul
+ * calcul plutôt que d'en lancer un par clic.
+ */
 export default function OffrePersonnalisee({ uid }: { uid: string }): null {
+  const { pathname } = useLocation();
   useEffect(() => {
     if (!uid) return;
-    calculerEtEnregistrerOffre(uid).catch((e) => console.warn('[offres] calcul raté', e));
-  }, [uid]);
+    let annule = false;
+    const t = setTimeout(() => {
+      if (!annule) calculerEtEnregistrerOffre(uid).catch((e) => console.warn('[offres] calcul raté', e));
+    }, 800);
+    return () => { annule = true; clearTimeout(t); };
+  }, [uid, pathname]);
   return null;
 }
