@@ -24,6 +24,7 @@ export type AdminSectionId =
   | 'orders'
   | 'boutique'
   | 'members'
+  | 'habitudes'
   | 'badgeBleu'
   | 'messages'
   | 'recompenses'
