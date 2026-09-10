@@ -18,6 +18,7 @@ import ClientMessagerie from './client/ClientMessagerie';
 import ClientArchives from './client/ClientArchives';
 import ClientLoyalty from './client/ClientLoyalty';
 import ClientFormations from './client/ClientFormations';
+import ClientBillets from './client/ClientBillets';
 import ClientTelechargements from './client/ClientTelechargements';
 import ClientRediffusions from './client/ClientRediffusions';
 import ClientAider from './client/ClientAider';
