@@ -94,6 +94,7 @@ const AdminDashboard: React.FC = () => {
       case 'orders':      return <OrdersSection />;
       case 'boutique':    return <BoutiqueSection />;
       case 'members':     return <MembersSection />;
+      case 'habitudes':   return <HabitudesSection />;
       case 'badgeBleu':   return <BadgeBleuSection />;
       case 'messages':    return <MessagesSection user={u} />;
       case 'recompenses': return <RecompensesSection />;
