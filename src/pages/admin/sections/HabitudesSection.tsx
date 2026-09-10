@@ -254,7 +254,7 @@ const HabitudesSection: React.FC = () => {
   const suiviEteintSel = !!habitudesSel?.suiviRefuse;
   const favoriteSel = habitudesSel && !suiviEteintSel ? pageFavorite(habitudesSel) : null;
   const offreSel = habitudesSel && !suiviEteintSel ? habitudesSel.offre : null;
-  const offreTitreSel = offreSel ? (formationParId.get(offreSel.id)?.titre || offreSel.id) : null;
+  const offreTitreSel = offreSel ? (OFFRE_LABELS[offreSel.id] || formationParId.get(offreSel.id)?.titre || offreSel.id) : null;
   const offreVuesSel = offreSel ? (habitudesSel?.offresVues?.[offreSel.id] || 0) : 0;
   const offreClicsSel = offreSel ? (habitudesSel?.offresCliquees?.[offreSel.id] || 0) : 0;
   const achatsSel = selected ? (achatsParUid.get(selected.uid) || []) : [];
