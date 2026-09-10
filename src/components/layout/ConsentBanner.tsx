@@ -77,8 +77,8 @@ const ConsentBanner: React.FC = () => {
           </p>
           <p className="hidden sm:block text-xs text-[#2a2015]/80 dark:text-white/80 leading-relaxed">
             {lang === 'FR'
-              ? "Quelques témoins discrets nous aident à améliorer votre expérience. Vous gardez le contrôle, comme le veut la Loi 25."
-              : "A few discreet cookies help us improve your experience. You stay in control, as Quebec's Law 25 intends."}
+              ? "Quelques témoins discrets nous aident à améliorer votre expérience, et si vous êtes connectée, les pages que vous consultez servent aussi à vous proposer une offre qui vous ressemble. Vous gardez le contrôle, comme le veut la Loi 25."
+              : "A few discreet cookies help us improve your experience, and if you're signed in, the pages you visit also help us suggest offers that fit you. You stay in control, as Quebec's Law 25 intends."}
           </p>
         </div>
       </div>
