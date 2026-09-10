@@ -23,7 +23,7 @@ async function run(viewport, tag) {
   await page.route('**/firebase-auth.js', (route) => route.fulfill({ status: 200, contentType: 'text/javascript', body: FAKE_AUTH_MODULE }));
 
   await page.goto(BASE + '/accueil/', { waitUntil: 'load', timeout: 20000 });
-  await page.waitForSelector('[data-crayon]', { timeout: 5000 });
+  await page.waitForSelector('.cs-pencil', { state: 'visible', timeout: 5000 });
   await page.waitForTimeout(400);
 
   const dir = '/private/tmp/claude-501/-Users-lesalondesinconnus/b888b2c7-f098-4036-8a5d-c76540f05b53/scratchpad/shots';
