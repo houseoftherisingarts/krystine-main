@@ -204,7 +204,7 @@ export const JOURNAL: EntreeJournal[] = [
     etapes: [
       "Deux battants s'ouvrent maintenant sur le cœur de la page, et l'année nourrie par l'Ayurveda a trouvé son rythme.",
       "Votre section personnelle repose sur le feu qui crépite, avec votre photo.",
-      "Le tarif régulier est barré au profit du tarif de lancement.",
+      "Le tarif régulier apparaît barré, et le tarif de lancement prend sa place juste à côté.",
       "L'allumette a remplacé le téléphone dans la scène finale, après plusieurs essais.",
     ],
   },
@@ -235,7 +235,7 @@ export const JOURNAL: EntreeJournal[] = [
     intro: "La journée où le Foyer est devenu un lieu qu'on visite plutôt qu'une page qu'on lit.",
     etapes: [
       "Les douze portes s'explorent au clic, chacune s'ouvrant lentement sur le panneau de son mois.",
-      "Un vrai feu de l'âtre, filmé, brûle au cœur de la page, avec un son de feu en boucle.",
+      "Un vrai feu de l'âtre, filmé chez vous, brûle au milieu de la page pendant qu'un son de feu tourne en boucle.",
       "Les portes verrouillées portent leur cadenas, et un halo lumineux monte de la porte du mois.",
       "Une fleur ayurvédique interactive occupe toute la largeur.",
     ],
@@ -253,7 +253,7 @@ export const JOURNAL: EntreeJournal[] = [
     titre: 'Le troisième tome annoncé',
     intro: "La date de parution du troisième tome est entrée sur le site, et l'accueil invite à s'inscrire pour la connaître.",
     etapes: [
-      "La parution est annoncée pour février 2027.",
+      "La parution du troisième tome est annoncée pour février 2027, en toutes lettres sur la page.",
       "Une capture d'infolettre attend au niveau du troisième tome, avec sa promesse écrite en clair.",
       "Les images de l'accueil sont passées à un format plus léger.",
     ],
@@ -409,9 +409,9 @@ export const JOURNAL: EntreeJournal[] = [
     titre: 'La fidélité, le guide et le quiz',
     intro: "Les trois premiers grands morceaux du site ont été montés le même jour.",
     etapes: [
-      "Le programme de fidélité a été bâti.",
-      "Le moteur des parcours guidés est né.",
-      "Le quiz interactif des doshas a été monté.",
+      "Le programme de fidélité a été bâti, avec ses points et ses paliers.",
+      "Le moteur des parcours guidés est né dans la foulée.",
+      "Le quiz interactif des doshas a été monté le même jour, avec son calcul et ses résultats.",
     ],
   },
   {

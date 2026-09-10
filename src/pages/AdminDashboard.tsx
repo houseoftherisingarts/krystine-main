@@ -54,6 +54,7 @@ import SubmissionsSection from './admin/sections/SubmissionsSection';
 import GroupsSection from './admin/sections/GroupsSection';
 import BookingsSection from './admin/sections/BookingsSection';
 import DemandeSection from './admin/sections/DemandeSection';
+import ChangelogSection from './admin/sections/ChangelogSection';
 import BugsSection from './admin/sections/BugsSection';
 import NewsletterSection from './admin/sections/NewsletterSection';
 import GuideSection from './admin/sections/GuideSection';
@@ -114,6 +115,7 @@ const AdminDashboard: React.FC = () => {
       case 'bookings':    return <BookingsSection />;
       case 'demande':     return <DemandeSection user={u} />;
       case 'bugs':        return <BugsSection />;
+      case 'changelog':   return <ChangelogSection />;
       case 'newsletter':  return <NewsletterSection />;
       case 'guide':       return <GuideSection />;
       case 'dosha':       return <DoshaSection />;
