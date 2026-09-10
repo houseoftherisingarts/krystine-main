@@ -312,6 +312,23 @@ service cloud.firestore {
     match /siteSettings/{id}  { allow read: if true; allow write: if isAdmin(); }
     match /siteOverrides/{id} { allow read: if true; allow write: if isAdmin(); }
 
+    // ── Les habitudes de navigation d'une cliente ──
+    // Une collection à part, et non un champ de members, parce que la règle de
+    // members laisse toute personne connectée lire la fiche d'une autre dès
+    // qu'elle en connaît l'identifiant. Ici, une cliente ne lit et n'écrit que
+    // les siennes, l'administration lit tout le monde, et personne ne peut
+    // consulter la navigation d'une autre.
+    match /habitudes/{uid} {
+      allow get: if isSelf(uid) || isAdmin();
+      allow list: if isAdmin();
+      allow create, update: if isSelf(uid)
+        && request.resource.data.diff(resource == null ? {} : resource.data).affectedKeys()
+             .hasOnly(['uid', 'visites', 'jours', 'dernierJour', 'premiereVisite',
+                       'derniereVisite', 'pages', 'familles', 'offresVues',
+                       'offresCliquees', 'offre', 'suiviRefuse', 'maj']);
+      allow delete: if isSelf(uid) || isAdmin();
+    }
+
     // ── Billetterie maison ──
     // Un billet naît au retour du paiement, écrit par le webhook Stripe avec le
     // SDK d'administration, qui passe outre ces règles. Le navigateur ne peut
