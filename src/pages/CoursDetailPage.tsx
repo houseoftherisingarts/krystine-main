@@ -720,7 +720,6 @@ const CoursDetailPage: React.FC = () => {
                           key={courante.id}
                           url={urlCourante}
                           titre={courante.titre}
-                          duree={courante.duree}
                           pochette={vignetteAudio(courante, formation || undefined) || semaineDeModule(courante.moduleNom)?.vignette}
                           soustitre={(() => {
                             const s = semaineDeModule(courante.moduleNom);
