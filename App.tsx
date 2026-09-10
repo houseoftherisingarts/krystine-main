@@ -210,6 +210,7 @@ const App: React.FC = () => (
     <EditionProvider>
     <BrowserRouter>
       <AnalyticsPageViews />
+      <SuiviHabitudes />
       <PageMeta />
       <Chrome />
       <Flottants />
