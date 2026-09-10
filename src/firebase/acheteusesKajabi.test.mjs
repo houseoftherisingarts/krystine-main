@@ -3,18 +3,17 @@
 // Il échoue si un export de Kajabi cesse d'être compris, ce qui enverrait un
 // mot de Krystine aux mauvaises personnes ou à personne.
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
-// Le module vit en TypeScript : les deux fonctions pures se relisent ici plutôt
-// que de traîner une chaîne de compilation dans un contrôle de trente lignes.
-const src = readFileSync(new URL('./acheteusesKajabi.ts', import.meta.url), 'utf8');
-const js = src
-  .replace(/import[^;]+;/g, '')
-  .replace(/export (interface|type)[\s\S]*?\n}\n/g, '')
-  .replace(/: [A-Za-z<>\[\]{}|, '"?.]+(?=[,)=])/g, '')
-  .replace(/export /g, '');
-const mod = await import(`data:text/javascript,${encodeURIComponent(js + '\nexport { lireCsvKajabi, personnaliser, cleCourriel };')}`);
-const { lireCsvKajabi, personnaliser, cleCourriel } = mod;
+// Le module est en TypeScript : esbuild, déjà présent avec Vite, le transpile
+// à la volée pour que le contrôle porte sur le vrai code plutôt que sur une
+// copie qui pourrait diverger.
+const fichier = fileURLToPath(new URL('./acheteusesKajabi.ts', import.meta.url));
+const js = execFileSync('node_modules/.bin/esbuild', [fichier, '--format=esm'], { encoding: 'utf8' })
+  .replace(/import[^;]+from\s+["'][^"']+["'];/g, '');   // Firestore n'est pas requis par les fonctions pures
+const { lireCsvKajabi, personnaliser, cleCourriel } =
+  await import(`data:text/javascript,${encodeURIComponent(js)}`);
 
 const csv = `﻿First Name,Last Name,Email 1,Purchase Date
 Marie,Tremblay,Marie.Tremblay@Example.COM ,2026-01-04

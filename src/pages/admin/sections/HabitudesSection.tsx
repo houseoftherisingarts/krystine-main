@@ -63,6 +63,23 @@ function trancheAge(anneeNaissance?: number): string {
   return '60 ans et plus';
 }
 
+// Le libellé de chaque offre, à partir de son identifiant (habitudes/{uid}.offre.id).
+// Ces identifiants (src/lib/offres.ts) ne sont jamais des identifiants de
+// formation : formationParId.get(offreSel.id) ne trouve donc jamais rien et
+// affichait l'identifiant brut (« origine2 », « bienvenue »…) à Krystine.
+// Pour dosha-pitta et dosha-kapha, la formation exacte retenue ce jour-là
+// n'est pas conservée : le libellé reste général plutôt que d'en deviner une.
+const OFFRE_LABELS: Record<string, string> = {
+  'dosha-vata': 'Le Programme Vata',
+  'dosha-pitta': 'Sa formation de dosha (Pitta)',
+  'dosha-kapha': 'Sa formation de dosha (Kapha)',
+  origine: "L'Expérience Origine",
+  boutique: 'Le coup d’œil boutique',
+  podcast: 'Les rediffusions du podcast',
+  bienvenue: 'Le coffre de bienvenue',
+  origine2: "L'Expérience Origine 2",
+};
+
 const STATUT_COMMANDE: Record<ClientOrderStatus, string> = {
   pending_payment: 'en attente de paiement',
   paid: 'payée',
