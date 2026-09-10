@@ -182,7 +182,6 @@ const HabitudesSection: React.FC = () => {
     .filter(x => x.montant > 0)
     .sort((a, b) => b.montant - a.montant)
     .slice(0, 10),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [members, achatsParUid, commandesParUid, boutiqueParEmail]);
 
   const formationsTop = useMemo(() => {
