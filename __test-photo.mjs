@@ -24,13 +24,12 @@ const cadreCible = await page.evaluate(() => {
   return visible ? visible.getAttribute('data-cadre') : (els[0] ? els[0].getAttribute('data-cadre') : null);
 });
 console.log('cadreCible', cadreCible);
-await page.click(`[data-cadre="${CSS.escape ? cadreCible : cadreCible}"]`).catch(async () => {
-  // data-cadre peut contenir des caractères spéciaux (URL) : cliquer via un handle JS à la place.
-  await page.evaluate((cle) => {
-    const el = Array.from(document.querySelectorAll('[data-cadre]')).find((e) => e.getAttribute('data-cadre') === cle);
-    el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, clientX: el.getBoundingClientRect().left + 10, clientY: el.getBoundingClientRect().top + 10 }));
-  }, cadreCible);
-});
+// data-cadre contient une URL complète : on clique via un handle JS plutôt qu'un sélecteur CSS.
+await page.evaluate((cle) => {
+  const el = Array.from(document.querySelectorAll('[data-cadre]')).find((e) => e.getAttribute('data-cadre') === cle);
+  const r = el.getBoundingClientRect();
+  el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, clientX: r.left + 10, clientY: r.top + 10 }));
+}, cadreCible);
 await page.waitForTimeout(300);
 const modalPhotoVisible = await page.evaluate(() => !document.querySelectorAll('.cs-modal')[1].hidden);
 await page.screenshot({ path: `${dir}/admin-photo-1-modal.png` });
