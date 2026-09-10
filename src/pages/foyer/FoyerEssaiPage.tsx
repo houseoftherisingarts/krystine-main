@@ -7,7 +7,7 @@ import {
   getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject, type UploadTask,
 } from 'firebase/storage';
 import app from '../../firebase';
-import { useAuth } from '../../contexts/AppContext';
+import { subscribeToAuthState, isAdminUser } from '../../firebase/auth';
 import { PORTES, type Porte } from './portesData';
 
 // ─────────────────────────────────────────────────────────────────────────
