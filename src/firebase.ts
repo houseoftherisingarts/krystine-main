@@ -1,8 +1,9 @@
 // Firebase configuration
 // Fill in your values in .env.local to enable Firebase features
 import { initializeApp, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth } from 'firebase/auth';
-import { getFirestore, Firestore } from 'firebase/firestore';
+import { getAuth, Auth, connectAuthEmulator } from 'firebase/auth';
+import { getFirestore, Firestore, connectFirestoreEmulator } from 'firebase/firestore';
+import { getStorage, connectStorageEmulator } from 'firebase/storage';
 import { getAnalytics, isSupported, logEvent, Analytics } from 'firebase/analytics';
 
 const firebaseConfig = {
