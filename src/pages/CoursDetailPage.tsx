@@ -513,8 +513,8 @@ const CoursDetailPage: React.FC = () => {
           <LecteurVideoPleinEcran url={live.url} titre={live.titre} onFermer={() => setLiveOuvert(false)} />
         )}
 
-        {accessible && lecons.length > 0 && (
-          <div className="mt-6 flex flex-wrap items-center gap-6 rounded-[20px] border border-white/60 bg-white/55 px-6 py-5 backdrop-blur-md dark:border-white/10 dark:bg-white/5">
+        {accessible && lecons.length > 0 && !estVata && (
+          <div className="mt-6 flex flex-col items-start gap-5 rounded-[20px] border border-white/60 bg-white/55 px-6 py-5 backdrop-blur-md sm:flex-row sm:flex-wrap sm:items-center sm:gap-6 dark:border-white/10 dark:bg-white/5">
             {/* L'anneau de progression */}
             <div className="relative h-20 w-20 shrink-0">
               <svg viewBox="0 0 80 80" className="h-20 w-20 -rotate-90">
