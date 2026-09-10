@@ -8,7 +8,7 @@ import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AppContext';
 import { getConsent } from '../components/layout/ConsentBanner';
-import { getHabitudes, noterPage, jourCourant } from '../firebase/habitudes';
+import { getHabitudes, noterPage, jourCourant, type Habitudes } from '../firebase/habitudes';
 
 // État partagé en mémoire, le temps de l'onglet : l'interrupteur des
 // préférences (ClientPreferences) écrit ici dès que la cliente bascule, pour
@@ -16,6 +16,23 @@ import { getHabitudes, noterPage, jourCourant } from '../firebase/habitudes';
 let suiviRefuseConnu: boolean | undefined;
 export function marquerSuiviRefuse(v: boolean): void {
   suiviRefuseConnu = v;
+}
+
+// Une seule lecture de habitudes/{uid} par personne, même si React (mode
+// strict, en développement) monte ce composant deux fois de suite pour le
+// même uid : sans ce partage, le second montage saute la lecture (le ref
+// dernierUidRef est déjà posé par le premier) mais ne connaît pas encore
+// suiviRefuse au moment de juger, et peut écrire une page alors que la
+// personne avait justement refusé le suivi. Les deux montages attendent donc
+// la même promesse avant de trancher.
+const lecturesEnCours = new Map<string, Promise<Habitudes | null>>();
+function lireUneFois(uid: string): Promise<Habitudes | null> {
+  let p = lecturesEnCours.get(uid);
+  if (!p) {
+    p = getHabitudes(uid).finally(() => lecturesEnCours.delete(uid));
+    lecturesEnCours.set(uid, p);
+  }
+  return p;
 }
 
 const SuiviHabitudes: React.FC = () => {
