@@ -6,14 +6,13 @@
 // Seul le champ `offre` bouge sur le document habitudes, exactement comme le
 // permettent les règles Firestore (affectedKeys().hasOnly([...'offre'...])) et
 // exactement comme le déclare l'interface Habitudes : { id, calculeeLe }.
-// Aucun texte n'est écrit en base, seulement l'identifiant retenu — le texte
+// Aucun texte n'est écrit en base, seulement l'identifiant retenu : le texte
 // vient toujours du moteur, jamais d'une donnée qui pourrait dater.
 import { useEffect } from 'react';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
-import { getMember } from '../firebase/firestore';
+import { getMember, getClientOrdersForMember } from '../firebase/firestore';
 import { getFormationsPubliees, getMesFormations } from '../firebase/formations';
-import { getClientOrdersForMember } from '../firebase/firestore';
 import { getHabitudes, CHEMIN_HABITUDES } from '../firebase/habitudes';
 import { offrePour, type ContexteOffre } from '../lib/offres';
 
