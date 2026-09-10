@@ -33,7 +33,7 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'mobile']]) {
   await recherche.fill('Sophie');
   await p.waitForTimeout(700);
   await p.screenshot({ path: `${OUT}/habitudes-${tag}-recherche.png`, fullPage: true });
-  const resultat = p.locator('button:has-text("Sophie Tremblay")').first();
+  const resultat = p.locator('button:has-text("sophie.tremblay@essai-krystine.ca")').first();
   if (await resultat.count()) {
     await resultat.click();
     await p.waitForTimeout(700);
