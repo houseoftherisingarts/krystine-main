@@ -46,7 +46,11 @@ export async function calculerEtEnregistrerOffre(uid: string): Promise<void> {
     familles: habitudes?.familles || {},
     formationsPubliees: formationsPubliees.map((f) => ({ id: f.id, titre: f.titre, statut: f.statut, prix: f.prix, lienFiche: f.lienFiche })),
     formationsPossedees: formationsPossedees.map((f) => ({ id: f.id, titre: f.titre })),
-    aCommandeBoutique: commandes.length > 0,
+    // Une commande annulée ou en attente de paiement n'est jamais une preuve
+    // d'achat (même filtre que la fiche « Celles qui ont le plus dépensé »
+    // de HabitudesSection.tsx) : sans ça, une commande annulée aurait éteint
+    // la relance boutique pour une personne qui n'a en réalité rien acheté.
+    aCommandeBoutique: commandes.some((c) => c.status === 'paid' || c.status === 'shipped' || c.status === 'delivered'),
   };
   const offre = offrePour(contexte);
   await setDoc(doc(db, CHEMIN_HABITUDES, uid), { offre: { id: offre.id, calculeeLe: serverTimestamp() } }, { merge: true });
