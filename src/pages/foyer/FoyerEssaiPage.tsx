@@ -76,7 +76,20 @@ function televerser(porteId: string, file: File, onProgress: (pct: number) => vo
 interface EnCours { pct: number; task: UploadTask; nom: string; taille: number }
 
 const FoyerEssaiPage: React.FC = () => {
-  const { isAdmin } = useAuth();
+  // Sa propre vérification d'authentification, sur le même patron que
+  // AdminDashboard.tsx : cette page ne vit derrière aucun lien du site, donc
+  // chaque visite est un chargement à froid (URL tapée, favori). Le drapeau
+  // `isAdmin` du contexte partagé (AppContext) part à `false` et ne se
+  // confirme qu'une fois Firebase Auth revenu, de façon asynchrone; le juger
+  // dès le premier rendu renvoyait une vraie administratrice vers l'accueil
+  // avant même que sa session ait eu la chance de se confirmer. `pretAuth`
+  // distingue « pas encore su » de « confirmée non admin ».
+  const [pretAuth, setPretAuth] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    const unsub = subscribeToAuthState((u) => { setIsAdmin(isAdminUser(u)); setPretAuth(true); });
+    return unsub;
+  }, []);
   const [lecons, setLecons] = useState<Record<string, LeconEssai>>({});
   const [charge, setCharge] = useState(true);
   const [vueCliente, setVueCliente] = useState(false);
