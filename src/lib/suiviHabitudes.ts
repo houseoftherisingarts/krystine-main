@@ -49,9 +49,15 @@ const SuiviHabitudes: React.FC = () => {
     (async () => {
       if (dernierUidRef.current !== uid) {
         dernierUidRef.current = uid;
-        const h = await getHabitudes(uid);
+        const h = await lireUneFois(uid);
         dernierJourRef.current = h?.dernierJour;
         if (suiviRefuseConnu === undefined) suiviRefuseConnu = h?.suiviRefuse === true;
+      } else {
+        // Le premier montage a déjà lancé la lecture (dernierUidRef est déjà
+        // posé) : ce second montage attend la même promesse plutôt que de
+        // juger sur un suiviRefuseConnu pas encore rempli.
+        const enCours = lecturesEnCours.get(uid);
+        if (enCours) await enCours;
       }
       if (annule || suiviRefuseConnu) return;
       const maintenant = Date.now();
