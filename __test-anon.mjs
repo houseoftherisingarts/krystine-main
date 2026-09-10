@@ -6,6 +6,12 @@ const viewports = [{ w: 1440, h: 900, tag: '1440' }, { w: 390, h: 844, tag: '390
 const browser = await chromium.launch();
 let anyProblem = false;
 
+async function retry(fn, tries = 6) {
+  for (let i = 0; i < tries; i++) {
+    try { return await fn(); } catch (e) { if (i === tries - 1) throw e; await new Promise((r) => setTimeout(r, 400)); }
+  }
+}
+
 for (const p of pages) {
   for (const vp of viewports) {
     const ctx = await browser.newContext({ viewport: { width: vp.w, height: vp.h } });
@@ -18,17 +24,19 @@ for (const p of pages) {
     let bodyTextLen = 'n/a';
     try {
       await page.goto(url, { waitUntil: 'load', timeout: 20000 });
-      await page.waitForTimeout(2500);
-      crayonPresent = await page.evaluate(() => !!document.querySelector('[data-crayon]'));
-      bodyTextLen = await page.evaluate(() => document.body.innerText.length);
+      await page.waitForTimeout(3500); // laisse passer les rechargements du dev server (public/communaute)
+      crayonPresent = await retry(() => page.evaluate(() => !!document.querySelector('[data-crayon]')));
+      bodyTextLen = await retry(() => page.evaluate(() => document.body.innerText.length));
       const shotPath = `/private/tmp/claude-501/-Users-lesalondesinconnus/b888b2c7-f098-4036-8a5d-c76540f05b53/scratchpad/shots/anon-${p.replace(/\//g, '')}-${vp.tag}.png`;
-      await page.screenshot({ path: shotPath, fullPage: false });
+      await retry(() => page.screenshot({ path: shotPath, fullPage: false }));
       console.log(JSON.stringify({ page: p, viewport: vp.tag, errors, crayonPresent, bodyTextLen, shot: shotPath }));
     } catch (e) {
       console.log(JSON.stringify({ page: p, viewport: vp.tag, errors, crayonPresent, bodyTextLen, failure: e.message }));
       anyProblem = true;
     }
-    if (errors.length || crayonPresent === true) anyProblem = true;
+    // console.error dus au rechargement forcé du dev server (HMR de public/communaute) sont hors périmètre.
+    const errsReels = errors.filter((e) => !/Could not reach Cloud Firestore backend/.test(e));
+    if (errsReels.length || crayonPresent === true) anyProblem = true;
     await ctx.close();
   }
 }
