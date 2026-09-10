@@ -208,6 +208,36 @@ const ClientPreferences: React.FC<{ uid: string; member: MemberDoc | null; lang:
           />
         </div>
       </div>
+
+      <div className="w-full rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55">
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
+          {fr ? 'Personnalisation' : 'Personalization'}
+        </p>
+        <p className="mt-1 text-xs leading-relaxed text-[#38403a]/60 dark:text-white/55">
+          {fr
+            ? "Le site retient les pages que vous ouvrez pour vous proposer ensuite une offre ou un contenu qui vous ressemble, et il ne sort jamais d'ici."
+            : "The site remembers the pages you open so it can later suggest an offer or content that fits you, and it never leaves this site."}
+        </p>
+        <div className="mt-3">
+          <Interrupteur
+            actif={!suiviRefuse}
+            occupe={occupeSuivi}
+            onToggle={basculerSuivi}
+            titre={fr ? 'Se souvenir de ma navigation' : 'Remember my browsing'}
+            sous={fr ? 'Éteindre ceci garde le reste de votre compte intact' : 'Turning this off leaves the rest of your account untouched'}
+          />
+        </div>
+        <button
+          type="button"
+          onClick={effacerMesHabitudes}
+          disabled={effacement === 'occupe'}
+          className="mt-4 text-[10px] font-bold uppercase tracking-widest text-[#38403a]/50 underline decoration-dotted underline-offset-4 hover:text-[#8B4A2F] disabled:opacity-50 dark:text-white/50"
+        >
+          {effacement === 'fait'
+            ? (fr ? 'Habitudes effacées' : 'History erased')
+            : (fr ? 'Effacer mes habitudes' : 'Erase my history')}
+        </button>
+      </div>
     </div>
   );
 };
