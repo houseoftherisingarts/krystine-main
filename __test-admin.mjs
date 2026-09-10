@@ -39,10 +39,11 @@ async function run(viewport, tag) {
   const nbCadre = await page.evaluate(() => document.querySelectorAll('[data-cadre]').length);
   await page.screenshot({ path: `${dir}/admin-${tag}-2-edition.png` });
 
-  // 3) Clic sur un texte connu : la fenêtre s'ouvre avec la bonne valeur
+  // 3) Clic sur un texte connu, visible à cette largeur : la fenêtre s'ouvre avec la bonne valeur
   const cible = await page.evaluate(() => {
-    const el = document.querySelector('h1[data-tx], [data-tx]');
-    return el ? el.getAttribute('data-tx') : null;
+    const els = Array.from(document.querySelectorAll('[data-tx]'));
+    const visible = els.find((el) => el.getClientRects().length > 0);
+    return visible ? visible.getAttribute('data-tx') : null;
   });
   let texteModalVisible = false;
   let zoneValeur = '';
