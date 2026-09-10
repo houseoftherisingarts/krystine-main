@@ -131,7 +131,7 @@ const LeconCard: React.FC<{
   };
 
   const retirerPiece = async (piece: PieceEssai) => {
-    await retirerPieceLecon(porteId, lecon.id, lecon, piece);
+    await retirerPieceLecon(porteId, lecon.id, piece);
     onMaj();
   };
 
