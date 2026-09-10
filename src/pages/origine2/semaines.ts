@@ -25,9 +25,10 @@ export const SEMAINES: Semaine[] = Array.from({ length: 12 }, (_, i) => ({
   pilier: (i < 4 ? 1 : i < 8 ? 2 : 3) as 1 | 2 | 3,
 }));
 
-// La cohorte ouvre en janvier 2027 (page /origine). Tant que l'admin n'a pas
-// posé de date exacte, le 10 janvier 2027 sert de repère.
-export const DEBUT_ORIGINE2_DEFAUT = '2027-01-10';
+// La cohorte ouvre en novembre 2026 (ordre d'Alex du 10 septembre 2026, la date
+// a été ramenée de janvier 2027 à novembre). Tant que l'admin n'a pas posé de
+// date exacte, le dimanche 8 novembre 2026 sert de repère.
+export const DEBUT_ORIGINE2_DEFAUT = '2026-11-08';
 
 export function dateDebut(dateSortie?: string | null): Date {
   const [a, m, j] = (dateSortie || DEBUT_ORIGINE2_DEFAUT).split('-').map(Number);
@@ -45,7 +46,7 @@ export function semaineOuverteRang(dateSortie?: string | null, date = new Date()
 export const rangSemaine = (n?: string) => (n ? SEMAINES.findIndex(s => s.n === n) : -1);
 
 export function labelDebut(dateSortie?: string | null): string {
-  if (!dateSortie) return 'Début en janvier 2027';
+  if (!dateSortie) return 'Début en novembre 2026';
   const d = dateDebut(dateSortie);
   return `Début le ${d.toLocaleDateString('fr-CA', { day: 'numeric', month: 'long', year: 'numeric' })}`;
 }

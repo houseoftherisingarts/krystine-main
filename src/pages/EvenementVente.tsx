@@ -57,7 +57,7 @@ const DrawRule: React.FC<{ className?: string }> = ({ className = '' }) => (
 const EvenementVente: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const location = useLocation();
-  const { lang, isAdmin } = useApp();
+  const { lang, isAdmin, user, setSignInOpen } = useApp();
   const fr = lang === 'FR';
   const apercu = new URLSearchParams(location.search).get('apercu') === '1';
 
@@ -99,6 +99,9 @@ const EvenementVente: React.FC = () => {
 
   const acheter = async () => {
     if (!ev.id || busy) return;
+    // Sans compte, la fonction refuserait avec un message technique. La porte
+    // de connexion s'ouvre plutôt, et l'achat reprend juste après.
+    if (!user) { setSignInOpen(true); return; }
     setBusy(true);
     setErreur('');
     try {

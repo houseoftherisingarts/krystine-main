@@ -68,7 +68,7 @@ const ROUTES: Record<string, PageMeta> = {
   },
   '/origine-2': {
     title: `L’Expérience Origine 2 · ${SITE}`,
-    description: 'Douze semaines avec Krystine St-Laurent pour sortir du pilotage extérieur et retrouver vos propres repères. Cohorte de janvier 2027.',
+    description: 'Douze semaines avec Krystine St-Laurent pour sortir du pilotage extérieur et retrouver vos propres repères. Cohorte de novembre 2026.',
   },
   '/liste-attente': {
     title: `Liste d’attente · ${SITE}`,

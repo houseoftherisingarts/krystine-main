@@ -6,6 +6,7 @@ import { getStorage } from 'firebase-admin/storage';
 import { crediterNiskas, SANTE_LA_VIE_ID, SAISONS, PRIX_SAISON_CAD } from './niskas';
 import { exigerModule } from './gamification';
 import { traiterPaiementBillets } from './billetterie';
+import { MAIL_SECRETS } from './newsletter/mail';
 
 // Le paywall des formations natives (migration Kajabi, 2026-08-28).
 // Trois portes : créer la session Stripe Checkout, encaisser le webhook qui
@@ -269,7 +270,11 @@ function detailTaxesQC(session: { amount_subtotal?: number; amount_total?: numbe
 }
 
 export const stripeWebhook = onRequest(
-  { region: 'us-central1', secrets: [STRIPE_WEBHOOK_SECRET], cors: false, maxInstances: 5 },
+  // Les secrets de la lettre voyagent avec le webhook : la branche des billets
+  // envoie le courriel qui les porte, et Firebase refuse à l'exécution la
+  // lecture d'un secret qui n'est pas déclaré ici. Sans cette ligne, les
+  // billets s'écriraient en base sans jamais atteindre l'acheteuse.
+  { region: 'us-central1', secrets: [STRIPE_WEBHOOK_SECRET, ...MAIL_SECRETS], cors: false, maxInstances: 5 },
   async (req, res) => {
     if (req.method !== 'POST') { res.status(405).send('Method not allowed'); return; }
     const rawBody: Buffer = (req as any).rawBody as Buffer;

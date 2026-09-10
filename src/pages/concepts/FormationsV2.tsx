@@ -55,11 +55,11 @@ const PROGRAMMES: Programme[] = [
   {
     key: 'origine',
     Icon: Compass,
-    tag: 'Parcours signature · Prochaine cohorte en janvier',
+    tag: 'Parcours signature · Prochaine cohorte en novembre',
     title: 'L’Expérience Origine',
     subtitle: 'Retrouver votre boussole intérieure',
-    body: "Un parcours de 12 semaines au cœur de l’Ayurveda. La prochaine cohorte s’ouvre en janvier. La liste d’attente reçoit les détails et l’accès avant toute annonce publique.",
-    status: 'Liste d’attente · Janvier',
+    body: "Un parcours de 12 semaines au cœur de l’Ayurveda. La prochaine cohorte s’ouvre en novembre. La liste d’attente reçoit les détails et l’accès avant toute annonce publique.",
+    status: 'Liste d’attente · Novembre',
     cta: 'Découvrir l’Expérience Origine',
     href: '/origine',
     kind: 'internal',
@@ -393,7 +393,7 @@ export default function FormationsV2() {
             </ul>
 
             <p data-fade className="v2-serif text-[clamp(1.35rem,2.4vw,1.95rem)] font-light leading-[1.32] text-[#3a2f23] max-w-[36ch]">
-              Une cohorte qui s’ouvre en janvier, un foyer qui se prépare et un programme
+              Une cohorte qui s’ouvre en novembre, un foyer qui se prépare et un programme
               d’automne à suivre à votre rythme.
             </p>
 
