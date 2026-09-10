@@ -14,9 +14,9 @@ Le texte de la leçon arrive en bloc brut, avec des tirets en guise de puces et 
 
 ## 2. Le parti pris
 
-Vata est le dosha de l'air, du froid et du sec, et le programme enseigne à refermer les portes des cinq sens pour ramener le calme à l'intérieur. Les semaines portent déjà ces noms dans le contenu de Krystine, puisqu'elles vont du souffle à l'ouïe, puis aux yeux, au nez, au goût et au toucher, avant la semaine de la présence.
+Vata est le dosha de l'air, du froid et du sec, et le programme enseigne à refermer les portes des cinq sens pour ramener le calme à l'intérieur. Les semaines portent déjà ces noms dans le contenu de Krystine, qui commence par le souffle et referme ensuite l'ouïe, la vue et l'odorat, avant de finir par le goût et le toucher et de laisser la dernière semaine à la présence.
 
-La refonte s'appuie là-dessus au lieu de plaquer une décoration. L'espace devient **un sanctuaire qui se referme sens par sens**, et la progression cesse d'être un compteur pour devenir la température de la page. Au départ, la scène est froide, bleutée, traversée de poussière qui bouge vite. À mesure que les leçons se terminent, la dominante se réchauffe vers le laiton, le grain s'apaise et la poussière ralentit jusqu'à s'immobiliser. Un seul jeton CSS porte cette valeur, calculé sur le pourcentage de leçons terminées, et tout le reste en découle.
+La refonte s'appuie là-dessus au lieu de plaquer une décoration. L'espace devient **un sanctuaire qui se referme sens par sens**, et la progression cesse d'être un compteur pour devenir la température de la page. Au départ, la scène reste froide et bleutée pendant qu'une poussière rapide la traverse. À mesure que les leçons se terminent, la dominante se réchauffe vers le laiton, le grain s'apaise et la poussière ralentit jusqu'à s'immobiliser. Un seul jeton CSS porte cette valeur, calculé sur le pourcentage de leçons terminées, et tout le reste en découle.
 
 C'est ce qui donne le « wow » sans nuire à l'usage quotidien, parce que la mécanique de travail ne change pas et que l'effet se lit sans rien lire.
 
