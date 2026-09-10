@@ -663,6 +663,7 @@ const ClientPortal: React.FC = () => {
     { id: 'amis',     label: lang === 'FR' ? 'Amis' : 'Friends', icon: 'fa-user-group' },
     { id: 'orders',   label: lang === 'FR' ? 'Commandes' : 'Orders', icon: 'fa-box' },
     { id: 'formations', label: lang === 'FR' ? 'Mes formations' : 'My courses', icon: 'fa-graduation-cap' },
+    { id: 'billets',  label: lang === 'FR' ? 'Mes billets' : 'My tickets', icon: 'fa-ticket' },
     { id: 'rediffusions', label: lang === 'FR' ? 'Rediffusions' : 'Replays', icon: 'fa-circle-play' },
     { id: 'telechargements', label: lang === 'FR' ? 'Téléchargements et petite boutique' : 'Downloads and little shop', icon: 'fa-download' },
     { id: 'loyalty',  label: 'Niskas', icon: 'fa-seedling' },
