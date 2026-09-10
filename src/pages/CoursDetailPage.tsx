@@ -196,6 +196,39 @@ const CoursDetailPage: React.FC = () => {
   const nbTerminees = lecons.filter(l => terminees[l.id]).length;
   const pct = lecons.length ? Math.round((nbTerminees / lecons.length) * 100) : 0;
 
+  // ── L'Expérience Vata : le seuil plein cadre et le chemin des huit sens ──
+  // La page se réchauffe à mesure que les portes se referment (plan complet :
+  // docs/vata-plan-visuel.md, ordre d'Alex du 10 septembre 2026).
+  const estVata = id === FORMATION_VATA;
+  const etatsSemaines = useMemo(() => {
+    const par: Record<number, EtatSemaine> = {};
+    for (const s of SEMAINES_VATA) par[s.rang] = { terminees: 0, total: 0, verrouillee: false };
+    for (const l of lecons) {
+      const r = rangDeModule(l.moduleNom);
+      if (r < 0) continue;
+      par[r].total += 1;
+      if (terminees[l.id]) par[r].terminees += 1;
+    }
+    return par;
+  }, [lecons, terminees]);
+  const semainesRefermees = SEMAINES_VATA.filter(
+    s => (etatsSemaines[s.rang]?.total ?? 0) > 0 && etatsSemaines[s.rang].terminees >= etatsSemaines[s.rang].total,
+  ).length;
+  const chaleur = lecons.length ? nbTerminees / lecons.length : 0;
+  const semaineCourante = courante ? rangDeModule(courante.moduleNom) : -1;
+  const chapitre = useRef<HTMLDivElement | null>(null);
+
+  /** Ouvrir une semaine du chemin : sa première leçon encore à faire. */
+  const ouvrirSemaine = (rang: number) => {
+    const duModule = lecons.filter(l => rangDeModule(l.moduleNom) === rang);
+    const cible = duModule.find(l => !terminees[l.id] && !verrouillee(l)) || duModule.find(l => !verrouillee(l));
+    if (cible) {
+      void ouvrir(cible);
+      setReplies(r => ({ ...r, [cible.moduleNom || '']: false }));
+    }
+    requestAnimationFrame(() => chapitre.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  };
+
   if (loading) {
     return <div className="min-h-screen bg-[#EEE7DB] pt-40 text-center text-sm text-[#38403a]/50 dark:bg-[#151d19] dark:text-white/50">…</div>;
   }
