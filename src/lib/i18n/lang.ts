@@ -58,8 +58,11 @@ let surEN: Record<string, string> = {};
 
 // Ce que le site AFFICHE en ce moment → la phrase française d'origine. Le
 // crayon s'en sert pour retrouver la clé d'un texte à partir du DOM, sans que
-// le moindre composant ait à se baliser lui-même.
+// le moindre composant ait à se baliser lui-même. Le registre ne se remplit que
+// devant une administratrice, pour que la visite ordinaire ne paie rien.
 const rendus = new Map<string, string>();
+let registreActif = false;
+export const activerRegistre = (): void => { registreActif = true; };
 const normal = (v: string): string => v.replace(/\s+/g, ' ').trim();
 
 let versionSurcharges = 0;
@@ -107,8 +110,10 @@ export function tr(s: string): string {
   const sortie = rendu(s);
   // Le registre relie ce qui s'affiche à la phrase du code, dans les deux sens,
   // pour que le crayon retrouve la clé même quand un texte est déjà surchargé.
-  const n = normal(sortie);
-  if (n) rendus.set(n, s);
+  if (registreActif) {
+    const n = normal(sortie);
+    if (n) rendus.set(n, s);
+  }
   return sortie;
 }
 

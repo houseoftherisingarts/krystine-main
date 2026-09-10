@@ -17,7 +17,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import { PencilLine, Check, X, RotateCcw, Image as ImageIcon } from 'lucide-react';
 import { useEdition } from '../../lib/edition';
 import { useAuth } from '../../contexts/AppContext';
-import { getLang, sourceDuRendu, texteDeBase, surchargeDe, type SiteLang } from '../../lib/i18n/lang';
+import { getLang, sourceDuRendu, texteDeBase, surchargeDe, activerRegistre, type SiteLang } from '../../lib/i18n/lang';
 import { ZOOM_MAX, CADRE_NEUTRE, type Cadre } from '../../lib/i18n/photos';
 import MediathequePicker from './MediathequePicker';
 
@@ -52,6 +52,10 @@ const CrayonSite: React.FC = () => {
   const parSource = useRef<Map<string, number>>(new Map());
 
   const edition = !!ed?.edition;
+
+  // Le registre qui relie ce qui s'affiche à la phrase du code ne se remplit
+  // que devant une administratrice : une visiteuse ordinaire n'en paie rien.
+  useEffect(() => { if (isAdmin) activerRegistre(); }, [isAdmin]);
 
   const indexer = useCallback((source: string): number => {
     const connu = parSource.current.get(source);

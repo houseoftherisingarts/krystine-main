@@ -14,7 +14,7 @@ const emptyEvent: Partial<EventDoc> = {
 
 /** « Le Lancement, à l'église ! » devient « le-lancement-a-l-eglise ». */
 const slugify = (s: string) => s
-  .normalize('NFD').replace(/[̀-ͯ]/g, '')
+  .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   .toLowerCase()
   .replace(/[^a-z0-9]+/g, '-')
   .replace(/^-+|-+$/g, '');
