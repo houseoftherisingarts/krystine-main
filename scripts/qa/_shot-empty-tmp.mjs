@@ -1,0 +1,18 @@
+import { chromium } from 'playwright';
+const OUT = '/private/tmp/claude-501/-Users-lesalondesinconnus/b888b2c7-f098-4036-8a5d-c76540f05b53/scratchpad/shots';
+const b = await chromium.launch();
+const ctx = await b.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 });
+const p = await ctx.newPage();
+const errs = [];
+p.on('pageerror', (e) => errs.push(e.message));
+p.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
+await p.goto('http://localhost:5199/admin/habitudes', { waitUntil: 'domcontentloaded' });
+await p.locator('button:has-text("Email")').click();
+await p.fill('input[type="email"]', 'houseoftherisingarts@gmail.com');
+await p.fill('input[type="password"]', 'EssaiHabitudes2026!');
+await p.click('button[type="submit"]');
+await p.waitForSelector('text=comptes au total', { timeout: 20000 });
+await p.waitForTimeout(1500);
+await p.screenshot({ path: `${OUT}/habitudes-desktop-collections-vides.png`, fullPage: true });
+console.log('erreurs JS:', errs);
+await b.close();
