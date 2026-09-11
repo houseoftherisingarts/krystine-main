@@ -36,6 +36,7 @@ export type AdminSectionId =
   | 'groups'
   | 'bookings'
   | 'demande'
+  | 'partenaireVexel'
   | 'bugs'
   | 'changelog'
   | 'newsletter'
