@@ -157,6 +157,8 @@ const Footing: React.FC = () => {
     || location.pathname === '/medias'
     || location.pathname === '/podcast'
     || location.pathname === '/podcast/question'
+    || location.pathname === '/evenements'
+    || location.pathname.startsWith('/evenement/')
     || location.pathname === '/direct'
     || location.pathname === '/foyer'
   ) return null;

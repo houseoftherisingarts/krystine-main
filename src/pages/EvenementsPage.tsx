@@ -250,8 +250,8 @@ const EvenementsPage: React.FC = () => {
             </p>
             <p className="mt-7 max-w-[56ch] text-[1rem] leading-[1.85] text-[#3a2f23]">
               {fr
-                ? 'Krystine donne des conférences et des ateliers aux entreprises, aux écoles et aux groupes, en salle comme en ligne. Dites-lui où et quand, et elle vous répond avec ses disponibilités et ce qu’elle propose pour votre monde.'
-                : 'Krystine gives talks and workshops to companies, schools and groups, in person and online. Tell her where and when, and she answers with her availability and what she proposes for your world.'}
+                ? 'Krystine donne des conférences et des ateliers aux entreprises, aux écoles et aux groupes, en salle comme en ligne. Dites-lui où et quand, et elle vous répond avec ses disponibilités et ce qu’elle propose pour votre groupe.'
+                : 'Krystine gives talks and workshops to companies, schools and groups, in person and online. Tell her where and when, and she answers with her availability and what she proposes for your group.'}
             </p>
           </div>
           <Planche
@@ -285,8 +285,8 @@ const EvenementsPage: React.FC = () => {
             <h3 className="v2-serif text-[1.6rem] font-light leading-[1.12] text-[#1c1712]">{fr ? 'Ce qu’elle apporte sur scène' : 'What she brings on stage'}</h3>
             <p className="mt-4 flex-1 text-[0.95rem] leading-[1.8] text-[#3a2f23]">
               {fr
-                ? 'Près de quarante ans à relier l’Ayurveda, les cycles et l’expérience de la nature, et les sujets qu’elle porte devant les entreprises, les écoles et les groupes.'
-                : 'Close to forty years linking Ayurveda, the cycles and the experience of nature, and the topics she carries before companies, schools and groups.'}
+                ? 'Près de quarante ans à relier l’Ayurveda, les cycles et l’expérience de la nature, et les sujets qu’elle porte sur scène, devant des publics de tous horizons.'
+                : 'Close to forty years linking Ayurveda, the cycles and the experience of nature, and the topics she carries on stage, before audiences of every kind.'}
             </p>
             <LienSouligne to="/krystine" className="mt-8 w-fit">{fr ? 'Découvrir la conférencière' : 'Discover the speaker'}</LienSouligne>
           </div>
@@ -315,7 +315,7 @@ const EvenementsPage: React.FC = () => {
       )}
 
       {/* ─────────── LA QUATRIÈME DE COUVERTURE ─────────── */}
-      <QuatriemeCouverture citation={fr ? '« Se retrouver quelque part, au fil des saisons. »' : '“Meeting somewhere, season after season.”'}>
+      <QuatriemeCouverture citation={fr ? '«\u00A0Se retrouver quelque part, au fil des saisons.\u00A0»' : '“Meeting somewhere, season after season.”'}>
         <BoutonIvoire onClick={() => setTournee(true)}>{fr ? 'Demander une date' : 'Request a date'}</BoutonIvoire>
         <a href="/krystine" className="inline-flex items-center gap-2.5 v2-serif text-lg font-light text-[#f4efe6]/80 transition-colors duration-300 hover:text-[#c8a86a]">
           {fr ? 'La conférencière' : 'The speaker'}

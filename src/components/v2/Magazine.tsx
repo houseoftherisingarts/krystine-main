@@ -70,7 +70,7 @@ export const Masthead: React.FC<{ gauche: React.ReactNode; droite?: React.ReactN
 
 /** Le grand titre du seuil, une ligne par entrée, qui monte depuis le bas à l'arrivée. */
 export const TitreV2: React.FC<{ lignes: string[]; className?: string }> = ({ lignes, className = '' }) => (
-  <h1 className={`v2-serif font-light leading-[0.9] text-[#1c1712] text-[clamp(3rem,9vw,8.4rem)] max-w-[14ch] ${className}`}>
+  <h1 className={`v2-serif font-light leading-[0.9] text-[#1c1712] ${/text-\[/.test(className) ? '' : 'text-[clamp(3rem,9vw,8.4rem)]'} ${/max-w-/.test(className) ? '' : 'max-w-[14ch]'} ${className}`}>
     {lignes.map((l, i) => (
       <span key={i} data-line className="block overflow-hidden pb-[0.06em]"><span className="block">{l}</span></span>
     ))}

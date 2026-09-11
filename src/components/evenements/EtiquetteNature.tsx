@@ -1,8 +1,8 @@
 import React from 'react';
 import type { Nature } from '../../lib/evenements';
 
-// Le sticker de nature d'un rendez-vous, cousin du sticker de format des
-// cours : il dit d'un coup d'œil si c'est un lancement, une retraite, une
+// Le sticker de nature d'un rendez-vous, dans le langage des pages V2 (chip
+// carrée, filet d'or), cousin du sticker de format des cours : il dit d'un coup d'œil si c'est un lancement, une retraite, une
 // conférence ou un rendez-vous en ligne.
 
 const LIBELLES: Record<Nature, { fr: string; en: string; icone: string }> = {
@@ -26,10 +26,10 @@ const EtiquetteNature: React.FC<{
   const l = LIBELLES[nature];
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] backdrop-blur-sm ${
+      className={`inline-flex items-center gap-2 border px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.2em] ${
         ton === 'sombre'
-          ? 'border-[#dcb874]/50 bg-[#16100a]/70 text-[#dcb874]'
-          : 'border-[#bb9a5e]/50 bg-[#f6f3ee]/85 text-[#7d6330]'
+          ? 'border-[#BA7B39]/50 text-[#d9a05b]'
+          : 'border-[#9c7a44]/35 bg-[#faf6ee]/85 text-[#7d6330]'
       } ${className}`}
     >
       <i className={`fa-solid ${l.icone} text-[12px]`} aria-hidden="true" />

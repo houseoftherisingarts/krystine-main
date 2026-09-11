@@ -57,23 +57,26 @@ const BilletCarte: React.FC<{
 
   return (
     <div id={id} className="relative scroll-mt-28">
-      <div className="relative rounded-[18px] border border-[#bb9a5e]/35 bg-[#1d1604]/92 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.75)] backdrop-blur-md">
+      <div className="relative overflow-hidden rounded-[15px] bg-[#28352F] shadow-[0_40px_80px_-50px_rgba(41,48,39,0.8)]">
+        {/* Le filet cuivre et le halo de la carte vert profond, comme sur la page Médias. */}
+        <span className="pointer-events-none absolute inset-3 z-0 rounded-[11px] border border-[#BA7B39]/35" aria-hidden />
+        <span aria-hidden className="pointer-events-none absolute -right-[20%] -top-[30%] z-0 h-[80%] w-[70%] rounded-full blur-[50px]" style={{ background: 'radial-gradient(circle, rgba(186,123,57,.38) 0%, rgba(40,53,47,0) 70%)' }} />
 
         {/* Le talon */}
-        <div className="px-6 pb-6 pt-7 md:px-9 md:pt-9">
+        <div className="relative z-10 px-6 pb-6 pt-7 md:px-9 md:pt-9">
           <div className="flex items-start justify-between gap-5">
             <div className="min-w-0">
-              <p className="text-[0.62rem] font-bold uppercase tracking-[0.28em] text-[#dcb874]">
+              <p className="text-[0.62rem] font-bold uppercase tracking-[0.28em] text-[#d9a05b]">
                 {fr ? 'Billet · admission générale' : 'Ticket · general admission'}
               </p>
-              <p className="mt-3 font-serif text-[clamp(1.4rem,2.3vw,1.9rem)] leading-[1.1] text-[#f4ece0]">{ev.title}</p>
-              <p className="mt-3 text-[0.85rem] leading-relaxed text-[#cdbfa9]">
+              <p className="mt-3 v2-serif font-light text-[clamp(1.4rem,2.3vw,1.9rem)] leading-[1.1] text-[#EEE7DB]">{ev.title}</p>
+              <p className="mt-3 text-[0.85rem] leading-relaxed text-[#EEE7DB]/70">
                 {dateStr}{ev.heure ? ` · ${ev.heure}` : ''}{ev.location ? ` · ${ev.location}` : ''}
               </p>
             </div>
             <div className="shrink-0 text-right">
-              <p className="font-serif text-[clamp(2.6rem,4vw,3.6rem)] leading-none text-[#dcb874]">{Number(j)}</p>
-              <p className="mt-1 text-[0.62rem] font-bold uppercase tracking-[0.24em] text-[#cdbfa9]">
+              <p className="v2-serif font-light text-[clamp(2.6rem,4vw,3.6rem)] leading-none text-[#d9a05b]">{Number(j)}</p>
+              <p className="mt-1 text-[0.62rem] font-bold uppercase tracking-[0.24em] text-[#EEE7DB]/70">
                 {fr ? MOIS[Number(m) - 1] : MONTHS[Number(m) - 1]} {a}
               </p>
             </div>
@@ -81,45 +84,45 @@ const BilletCarte: React.FC<{
         </div>
 
         {/* La perforation : deux encoches dans le bord et un pointillé */}
-        <div className="relative mx-4 h-0 border-t border-dashed border-[#bb9a5e]/40" aria-hidden>
-          <span className="absolute -left-[29px] -top-3 h-6 w-6 rounded-full bg-[#16100a]" />
-          <span className="absolute -right-[29px] -top-3 h-6 w-6 rounded-full bg-[#16100a]" />
+        <div className="relative z-10 mx-4 h-0 border-t border-dashed border-[#BA7B39]/40" aria-hidden>
+          <span className="absolute -left-[29px] -top-3 h-6 w-6 rounded-full bg-[#f4efe6]" />
+          <span className="absolute -right-[29px] -top-3 h-6 w-6 rounded-full bg-[#f4efe6]" />
         </div>
 
         {/* Le corps */}
-        <div className="px-6 pb-7 pt-6 md:px-9 md:pb-9">
+        <div className="relative z-10 px-6 pb-7 pt-6 md:px-9 md:pb-9">
           {ouverts ? (
             <>
               <div className="flex items-baseline justify-between gap-4">
-                <p className="font-serif text-[clamp(2rem,3.4vw,2.8rem)] leading-none text-[#f4ece0]">{enDollars(ev.prixCents!)}</p>
-                <p className="text-[0.62rem] uppercase tracking-[0.22em] text-[#cdbfa9]">{fr ? 'par billet, avant taxes' : 'per ticket, before tax'}</p>
+                <p className="v2-serif font-light text-[clamp(2rem,3.4vw,2.8rem)] leading-none text-[#EEE7DB]">{enDollars(ev.prixCents!)}</p>
+                <p className="text-[0.62rem] uppercase tracking-[0.22em] text-[#EEE7DB]/70">{fr ? 'par billet, avant taxes' : 'per ticket, before tax'}</p>
               </div>
-              <p className="mt-2 text-[0.82rem] text-[#cdbfa9]">
+              <p className="mt-2 text-[0.82rem] text-[#EEE7DB]/70">
                 {fr ? `${enDollars(avecTaxes(ev.prixCents!))} taxes incluses.` : `${enDollars(avecTaxes(ev.prixCents!))} tax included.`}
               </p>
 
               {total > 0 && (
                 <div className="mt-6">
                   <div className="flex items-baseline justify-between text-[0.72rem]">
-                    <span className="text-[#dcb874]">
+                    <span className="text-[#d9a05b]">
                       {restantes <= 1
                         ? (fr ? 'Il reste une place.' : 'One seat left.')
                         : (fr ? `Il reste ${restantes} places sur ${total}.` : `${restantes} of ${total} seats left.`)}
                     </span>
-                    <span className="text-[#cdbfa9]/70 tabular-nums">{pctVendu} %</span>
+                    <span className="text-[#EEE7DB]/50 tabular-nums">{pctVendu} %</span>
                   </div>
-                  <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-[#f4ece0]/10">
-                    <div className="h-full rounded-full bg-[#bb9a5e] transition-[width] duration-1000" style={{ width: `${Math.max(pctVendu, 2)}%` }} />
+                  <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-[#EEE7DB]/10">
+                    <div className="h-full rounded-full bg-[#BA7B39] transition-[width] duration-1000" style={{ width: `${Math.max(pctVendu, 2)}%` }} />
                   </div>
                 </div>
               )}
 
               <div className="mt-6 flex items-center justify-between gap-4">
-                <span className="text-[0.85rem] text-[#cdbfa9]">{fr ? 'Billets' : 'Tickets'}</span>
-                <div className="flex items-center gap-2 rounded-full border border-[#bb9a5e]/35 px-1.5 py-1">
-                  <button type="button" onClick={() => setQuantite(q => Math.max(1, q - 1))} disabled={quantite <= 1} aria-label={fr ? 'Retirer un billet' : 'Remove one ticket'} className="flex h-9 w-9 items-center justify-center rounded-full text-[#f4ece0] transition-colors hover:bg-[#bb9a5e]/15 disabled:opacity-30">−</button>
-                  <span className="w-7 text-center font-serif text-[1.25rem] tabular-nums text-[#f4ece0]">{quantite}</span>
-                  <button type="button" onClick={() => setQuantite(q => Math.min(maxAchat, q + 1))} disabled={quantite >= maxAchat} aria-label={fr ? 'Ajouter un billet' : 'Add one ticket'} className="flex h-9 w-9 items-center justify-center rounded-full text-[#f4ece0] transition-colors hover:bg-[#bb9a5e]/15 disabled:opacity-30">+</button>
+                <span className="text-[0.85rem] text-[#EEE7DB]/70">{fr ? 'Billets' : 'Tickets'}</span>
+                <div className="flex items-center gap-2 rounded-full border border-[#BA7B39]/35 px-1.5 py-1">
+                  <button type="button" onClick={() => setQuantite(q => Math.max(1, q - 1))} disabled={quantite <= 1} aria-label={fr ? 'Retirer un billet' : 'Remove one ticket'} className="flex h-9 w-9 items-center justify-center rounded-full text-[#EEE7DB] transition-colors hover:bg-[#BA7B39]/15 disabled:opacity-30">−</button>
+                  <span className="w-7 text-center v2-serif font-light text-[1.25rem] tabular-nums text-[#EEE7DB]">{quantite}</span>
+                  <button type="button" onClick={() => setQuantite(q => Math.min(maxAchat, q + 1))} disabled={quantite >= maxAchat} aria-label={fr ? 'Ajouter un billet' : 'Add one ticket'} className="flex h-9 w-9 items-center justify-center rounded-full text-[#EEE7DB] transition-colors hover:bg-[#BA7B39]/15 disabled:opacity-30">+</button>
                 </div>
               </div>
 
@@ -127,7 +130,7 @@ const BilletCarte: React.FC<{
                 type="button"
                 onClick={acheter}
                 disabled={busy || apercu}
-                className="mt-6 flex min-h-[52px] w-full items-center justify-center gap-3 rounded-full bg-[#bb9a5e] px-8 py-4 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-[#16100a] transition-colors duration-300 hover:bg-[#dcb874] disabled:opacity-60"
+                className="mt-6 flex min-h-[52px] w-full items-center justify-center gap-3 rounded-full bg-[#BA7B39] px-8 py-4 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-[#1c1712] transition-colors duration-300 hover:bg-[#d9a05b] disabled:opacity-60"
               >
                 {apercu
                   ? (fr ? 'En aperçu : la vente ouvre à la publication' : 'Preview: sales open at publication')
@@ -136,23 +139,23 @@ const BilletCarte: React.FC<{
                     : (fr ? `Réserver · ${enDollars(avecTaxes(prixTotal))}` : `Reserve · ${enDollars(avecTaxes(prixTotal))}`)}
               </button>
               {erreur && <p className="mt-3 text-sm text-red-300">{erreur}</p>}
-              {ev.noteAchat && <p className="mt-5 text-[0.8rem] leading-relaxed text-[#cdbfa9]/80">{ev.noteAchat}</p>}
+              {ev.noteAchat && <p className="mt-5 text-[0.8rem] leading-relaxed text-[#EEE7DB]/60">{ev.noteAchat}</p>}
             </>
           ) : complet ? (
-            <p className="font-serif text-[1.35rem] leading-snug text-[#f4ece0]">
+            <p className="v2-serif font-light text-[1.35rem] leading-snug text-[#EEE7DB]">
               {fr ? 'Complet. Toutes les places ont trouvé preneuse.' : 'Sold out. Every seat has found someone.'}
             </p>
           ) : ev.registrationLink ? (
             <>
-              <p className="font-serif text-[1.25rem] leading-snug text-[#f4ece0]">
+              <p className="v2-serif font-light text-[1.25rem] leading-snug text-[#EEE7DB]">
                 {fr ? 'L’inscription se fait chez notre partenaire.' : 'Registration happens with our partner.'}
               </p>
-              <a href={ev.registrationLink} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex min-h-[48px] items-center gap-3 rounded-full bg-[#bb9a5e] px-8 py-3.5 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-[#16100a] transition-colors hover:bg-[#dcb874]">
+              <a href={ev.registrationLink} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex min-h-[48px] items-center gap-3 rounded-full bg-[#BA7B39] px-8 py-3.5 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-[#1c1712] transition-colors hover:bg-[#d9a05b]">
                 {fr ? 'M’inscrire' : 'Register'} <i className="fa-solid fa-arrow-up-right-from-square text-[11px]" />
               </a>
             </>
           ) : (
-            <p className="font-serif text-[1.25rem] leading-snug text-[#f4ece0]">
+            <p className="v2-serif font-light text-[1.25rem] leading-snug text-[#EEE7DB]">
               {fr ? 'La réservation n’est pas encore ouverte.' : 'Reservations are not open yet.'}
             </p>
           )}

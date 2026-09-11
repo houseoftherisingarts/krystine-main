@@ -111,9 +111,9 @@ const EvenementVente: React.FC = () => {
         <div className="mt-[clamp(2rem,5vh,3.5rem)]">
           <div data-fade className="mb-6 flex flex-wrap items-center gap-x-5 gap-y-3">
             <Kicker>{ev.isFeatured ? (fr ? 'Lancement · Éditions de l’Homme' : 'Launch · Éditions de l’Homme') : (fr ? 'Rendez-vous' : 'Gathering')}</Kicker>
-            <EtiquetteNature nature={nature} lang={lang} />
+            {!ev.isFeatured && <EtiquetteNature nature={nature} lang={lang} />}
           </div>
-          <TitreV2 lignes={deuxLignes(ev.title)} className="text-[clamp(2.7rem,7.6vw,7rem)] max-w-[16ch]" />
+          <TitreV2 lignes={deuxLignes(ev.title)} className="text-[clamp(2rem,7.6vw,7rem)] max-w-none lg:max-w-[16ch]" />
           {ev.subtitle && <SousTitreV2>{ev.subtitle}</SousTitreV2>}
           <LiensChapitres liens={chapitres} />
         </div>
@@ -260,7 +260,7 @@ const EvenementVente: React.FC = () => {
 
       {/* ─────────── LA QUATRIÈME DE COUVERTURE ─────────── */}
       <QuatriemeCouverture
-        citation={ev.encart?.titre ? `« ${ev.encart.titre}. »` : (ev.subtitle ? `« ${ev.subtitle} »` : `« ${ev.title} »`)}
+        citation={`«\u00A0${ev.subtitle || ev.title}\u00A0»`}
         note={ev.credit ? <span className="normal-case tracking-normal text-[0.7rem] text-[#f4efe6]/50">{ev.credit}</span> : undefined}
       >
         {ev.billetterie && ouverts && <BoutonIvoire href="#billet">{fr ? 'Réserver ma place' : 'Reserve my seat'}</BoutonIvoire>}
