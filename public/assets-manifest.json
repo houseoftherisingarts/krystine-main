@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T03:58:50.562Z",
+  "generatedAt": "2026-09-11T04:25:32.785Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -1323,6 +1323,223 @@
       "folder": "salon",
       "kind": "image",
       "size": 354347
+    },
+    {
+      "path": "/sante-parfaite/couverture.webp",
+      "name": "couverture.webp",
+      "folder": "sante-parfaite",
+      "kind": "image",
+      "size": 74450
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c0-large.webp",
+      "name": "c0-large.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 62460
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c0-thumb.webp",
+      "name": "c0-thumb.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 17362
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c0.webp",
+      "name": "c0.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 114890
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c1-large.webp",
+      "name": "c1-large.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 101676
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c1-thumb.webp",
+      "name": "c1-thumb.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 26976
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c1.webp",
+      "name": "c1.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 197740
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c2-large.webp",
+      "name": "c2-large.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 125912
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c2-thumb.webp",
+      "name": "c2-thumb.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 18248
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c2.webp",
+      "name": "c2.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 323908
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c3-large.webp",
+      "name": "c3-large.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 74740
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c3-thumb.webp",
+      "name": "c3-thumb.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 11162
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c3.webp",
+      "name": "c3.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 79064
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c4-large.webp",
+      "name": "c4-large.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 44998
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c4-thumb.webp",
+      "name": "c4-thumb.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 17980
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c4.webp",
+      "name": "c4.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 101942
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c5-large.webp",
+      "name": "c5-large.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 88598
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c5-thumb.webp",
+      "name": "c5-thumb.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 18562
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c5.webp",
+      "name": "c5.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 102328
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c6-large.webp",
+      "name": "c6-large.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 134370
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c6-thumb.webp",
+      "name": "c6-thumb.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 11230
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c6.webp",
+      "name": "c6.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 184872
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c7-large.webp",
+      "name": "c7-large.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 65370
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c7-thumb.webp",
+      "name": "c7-thumb.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 11902
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c7.webp",
+      "name": "c7.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 84540
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c8-large.webp",
+      "name": "c8-large.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 98228
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c8-thumb.webp",
+      "name": "c8-thumb.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 13918
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c8.webp",
+      "name": "c8.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 133960
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c9-large.webp",
+      "name": "c9-large.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 42826
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c9-thumb.webp",
+      "name": "c9-thumb.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 11738
+    },
+    {
+      "path": "/sante-parfaite/chapitres/c9.webp",
+      "name": "c9.webp",
+      "folder": "sante-parfaite/chapitres",
+      "kind": "image",
+      "size": 58336
     },
     {
       "path": "/speaking/assets/krystine-smile-640.webp",

@@ -122,8 +122,20 @@ export const jourCourant = (): string => {
  * lorsque la date change, ce qui évite de gonfler le chiffre d'une visite qui
  * dure. L'écriture est un merge, donc le document naît tout seul.
  */
+// Les comptes de l'équipe (Krystine, Alex, les comptes de test) ne comptent
+// pas : ils essaient des choses et fausseraient les données (Alex, 11
+// septembre 2026). Identifiants Auth des six adresses admin.
+export const COMPTES_EQUIPE = new Set([
+  'CdPuIve5Y4NhdW6UsAZ4V88BtWG2', // krystine@inspiratanature.com
+  'Pvi24MyDg6ZXZSsTpy4g7E5rxTf1', // krystinestlaurent@gmail.com
+  'kYorHEdND9bfk5A4I3oxVJJSquR2', // krystinestterredhysope@gmail.com (test)
+  'O7BWcCj8BVSTrqBKYqcMZxPy0hc2', // alex@lesalondesinconnus.com
+  'IzH35eAu5JTMAXjaGjRmaZSaQlu2', // houseoftherisingarts@gmail.com
+]);
+export const estCompteEquipe = (uid?: string | null): boolean => !!uid && COMPTES_EQUIPE.has(uid);
+
 export async function noterPage(uid: string, chemin: string, dernierJourConnu?: string): Promise<void> {
-  if (!db || !uid) return;
+  if (!db || !uid || estCompteEquipe(uid)) return;
   if (!cestElle(uid)) return;
   const jour = jourCourant();
   const patch: Record<string, unknown> = {
@@ -143,6 +155,7 @@ export async function noterPage(uid: string, chemin: string, dernierJourConnu?: 
 
 /** Compte une offre montrée, puis une offre cliquée. */
 export async function noterOffre(uid: string, offreId: string, geste: 'vue' | 'clic'): Promise<void> {
+  if (estCompteEquipe(uid)) return;
   if (!db || !uid || !offreId) return;
   if (!cestElle(uid)) return;
   const champ = geste === 'clic' ? 'offresCliquees' : 'offresVues';
@@ -159,7 +172,9 @@ export async function getHabitudes(uid: string): Promise<Habitudes | null> {
 export async function getToutesHabitudes(): Promise<Habitudes[]> {
   if (!db) return [];
   const snap = await getDocs(collection(db, CHEMIN_HABITUDES));
-  return snap.docs.map((d) => ({ ...HABITUDES_VIDES, ...(d.data() as Habitudes), uid: d.id }));
+  return snap.docs
+    .filter((d) => !estCompteEquipe(d.id))
+    .map((d) => ({ ...HABITUDES_VIDES, ...(d.data() as Habitudes), uid: d.id }));
 }
 
 /** Éteindre ou rallumer la personnalisation, depuis les préférences de la cliente. */

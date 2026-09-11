@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { SEMAINES_VATA, type SemaineVata } from '../../pages/vata/semaines';
+import type { SemaineVata } from '../../pages/vata/semaines';
+import type { Programme } from '../../pages/cours/programmes';
 
 // Le chemin des huit portes de la perception : chaque semaine devient une grande carte portrait
 // avec sa photo, et les cartes montent en cascade quand elles entrent dans
@@ -16,6 +17,7 @@ export interface EtatSemaine {
 }
 
 interface Props {
+  programme: Programme;
   etats: Record<number, EtatSemaine>;
   courante: number;          // le rang de la semaine ouverte, -1 sinon
   lang: 'FR' | 'EN';
@@ -97,21 +99,21 @@ const Carte: React.FC<{
   );
 };
 
-const CheminSens: React.FC<Props> = ({ etats, courante, lang, onOuvrir }) => (
+const CheminSens: React.FC<Props> = ({ programme, etats, courante, lang, onOuvrir }) => (
   <section className="pt-16 pb-4 md:pt-20">
     <div className="mx-auto flex max-w-[1720px] flex-col gap-2 px-5 md:px-10">
       <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#8B4A2F] dark:text-[#d9a05b]">
-        {lang === 'FR' ? 'Le chemin des sens' : 'The path of the senses'}
+        {lang === 'FR' ? programme.chemin.etiquette.fr : programme.chemin.etiquette.en}
       </p>
       <h2 className="max-w-[24ch] font-serif text-[clamp(1.9rem,3.4vw,2.7rem)] leading-[1.08] text-[#293027] dark:text-[#EEE7DB]">
-        {lang === 'FR' ? 'Une porte s’ouvre à la fois' : 'One door opens at a time'}
+        {lang === 'FR' ? programme.chemin.titre.fr : programme.chemin.titre.en}
       </h2>
     </div>
 
     {/* Une rangée qui respire : les colonnes paires descendent d'un cran, pour
         que la grille ne se lise pas comme un tableau. */}
-    <div className="mx-auto mt-8 grid max-w-[1720px] grid-cols-1 gap-5 px-5 sm:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-6">
-      {SEMAINES_VATA.map((s, i) => (
+    <div className="mx-auto mt-8 grid max-w-[1720px] grid-cols-1 gap-5 px-5 sm:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-6 xl:grid-cols-5">
+      {programme.chapitres.map((s, i) => (
         <div key={s.rang} className={i % 2 === 1 ? 'lg:mt-12' : ''}>
           <Carte
             s={s} etat={etats[s.rang]} active={courante === s.rang}

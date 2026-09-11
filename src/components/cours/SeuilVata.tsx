@@ -1,6 +1,8 @@
 import React, { useRef } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { KenBurns, Atmosphere } from '../motion/loeuvre';
+import type { Programme } from '../../pages/cours/programmes';
+import StickerFormat, { type FormatCours } from './StickerFormat';
 
 // Le seuil de l'Expérience Vata : la couverture prend tout l'écran au lieu de
 // tenir dans une carte, et le premier défilement allume la scène. Plus le
@@ -17,6 +19,8 @@ interface Reprise {
 }
 
 interface Props {
+  programme: Programme;
+  format: FormatCours;
   image: string;
   /** 0 à 1 : la part du parcours accomplie. Réchauffe la scène. */
   chaleur: number;
@@ -27,7 +31,10 @@ interface Props {
   reprise?: Reprise;
 }
 
-const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semainesAchevees, lang, reprise }) => {
+const SeuilVata: React.FC<Props> = ({ programme, format, image, chaleur, terminees, total, semainesAchevees, lang, reprise }) => {
+  const fr = lang === 'FR';
+  const nb = programme.chapitres.length;
+  const [un, des] = fr ? programme.unite.fr : programme.unite.en;
   const reduce = useReducedMotion();
   const cadre = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({ target: cadre, offset: ['start start', 'end start'] });
@@ -69,10 +76,11 @@ const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semaines
           {/* En mobile le titre tombe sur les herbes : un verre crème le porte. */}
           <div className="rounded-[16px] bg-[#F7F3EA]/75 px-4 py-3 text-right backdrop-blur-sm md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
             <p className="text-[10px] font-bold uppercase tracking-[0.34em] text-[#8B4A2F] md:text-[11px]">
-              {lang === 'FR' ? 'Expérience Ayurveda' : 'Ayurveda Experience'}
+              {fr ? programme.surtitre.fr : programme.surtitre.en}
             </p>
+            <StickerFormat format={format} lang={lang} className="mt-2" />
             <h1 className="mt-3 font-serif text-[clamp(3.2rem,8.5vw,7.4rem)] leading-[0.9] text-[#293027]" style={{ letterSpacing: '-0.01em' }}>
-              {lang === 'FR' ? <>Saison<br />Vata</> : <>Vata<br />Season</>}
+              {(fr ? programme.titre.fr : programme.titre.en).split('\n').map((l, i) => <React.Fragment key={i}>{i > 0 && <br />}{l}</React.Fragment>)}
             </h1>
           </div>
         </div>
@@ -105,14 +113,14 @@ const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semaines
             </div>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#d9a05b]">
-                {lang === 'FR' ? 'Expérience Ayurveda' : 'Ayurveda Experience'}
+                {fr ? programme.surtitre.fr : programme.surtitre.en}
               </p>
               <p className="mt-2 max-w-[16ch] font-serif text-[clamp(1.45rem,3vw,2.4rem)] leading-[1.1] text-[#EEE7DB]">
-                {lang === 'FR'
+                {fr
                   ? (semainesAchevees === 0
-                      ? 'Huit portes vous attendent'
-                      : `${semainesAchevees} porte${semainesAchevees > 1 ? 's' : ''} ouverte${semainesAchevees > 1 ? 's' : ''} sur huit`)
-                  : (semainesAchevees === 0 ? 'Eight doors are waiting' : `${semainesAchevees} of eight doors opened`)}
+                      ? `${nb} ${des} vous attendent`
+                      : `${semainesAchevees} ${semainesAchevees > 1 ? des : un} ${semainesAchevees > 1 ? 'ouvertes' : 'ouverte'} sur ${nb}`)
+                  : (semainesAchevees === 0 ? `${nb} ${des} are waiting` : `${semainesAchevees} of ${nb} ${des} opened`)}
               </p>
               <p className="mt-1.5 text-[13px] text-[#EEE7DB]/60">
                 {lang === 'FR' ? `${terminees} leçons sur ${total}` : `${terminees} of ${total} lessons`}

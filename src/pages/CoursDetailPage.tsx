@@ -21,7 +21,8 @@ import LecteurAudioCours from '../components/cours/LecteurAudioCours';
 import BravoSemaine from '../components/cours/BravoSemaine';
 import BravoDiplome from '../components/cours/BravoDiplome';
 import type { DiplomeInfos } from '../components/cours/Diplome';
-import { FORMATION_VATA, SEMAINES_VATA, rangDeModule, semaineDeModule } from './vata/semaines';
+import { programmeDe } from './cours/programmes';
+import StickerFormat, { formatDe } from '../components/cours/StickerFormat';
 import { idDeCours, cheminCours, adresseADemenager } from '../lib/cheminCours';
 
 // La fiche d'un cours et son lecteur, sur le patron de l'Académie Zéro
@@ -70,6 +71,11 @@ const CoursDetailPage: React.FC = () => {
   const [formation, setFormation] = useState<Formation | null>(null);
   const [replies, setReplies] = useState<Record<string, boolean>>({});
   const [lecons, setLecons] = useState<Lecon[]>([]);
+  // Le programme refait (seuil, chemin, boîtes, diplôme) : tout cours sauf le Foyer.
+  const programme = useMemo(() => programmeDe(formation ? { id, titre: formation.titre, imageUrl: formation.imageUrl } : null, lecons), [formation, lecons, id]);
+  const rangDeModule = (nom?: string) => programme?.rangDeModule(nom) ?? -1;
+  const chapitreDeModule = (nom?: string) => programme?.chapitres[rangDeModule(nom)];
+  const CHAPITRES = programme?.chapitres ?? [];
   const [achete, setAchete] = useState(false);
   const [verifAcces, setVerifAcces] = useState(true);   // le temps de savoir si la personne possède le cours
   const [accesVie, setAccesVie] = useState(false);
@@ -200,7 +206,7 @@ const CoursDetailPage: React.FC = () => {
       const restait = duModule.some(x => !terminees[x.id]);
       const fini = duModule.every(x => apres[x.id]);
       if (restait && fini) {
-        const achevees = SEMAINES_VATA.filter(s => {
+        const achevees = CHAPITRES.filter(s => {
           const items = lecons.filter(x => rangDeModule(x.moduleNom) === s.rang);
           return items.length > 0 && items.every(x => apres[x.id]);
         }).length;
@@ -251,10 +257,10 @@ const CoursDetailPage: React.FC = () => {
   // ── L'Expérience Vata : le seuil plein cadre et le chemin des huit sens ──
   // La page se réchauffe à mesure que les portes s'ouvrent (plan complet :
   // docs/vata-plan-visuel.md, ordre d'Alex du 10 septembre 2026).
-  const estVata = id === FORMATION_VATA;
+  const estVata = !!programme;
   const etatsSemaines = useMemo(() => {
     const par: Record<number, EtatSemaine> = {};
-    for (const s of SEMAINES_VATA) par[s.rang] = { terminees: 0, total: 0, verrouillee: false };
+    for (const s of CHAPITRES) par[s.rang] = { terminees: 0, total: 0, verrouillee: false };
     for (const l of lecons) {
       const r = rangDeModule(l.moduleNom);
       if (r < 0) continue;
@@ -263,7 +269,7 @@ const CoursDetailPage: React.FC = () => {
     }
     return par;
   }, [lecons, terminees]);
-  const semainesAchevees = SEMAINES_VATA.filter(
+  const semainesAchevees = CHAPITRES.filter(
     s => (etatsSemaines[s.rang]?.total ?? 0) > 0 && etatsSemaines[s.rang].terminees >= etatsSemaines[s.rang].total,
   ).length;
   const chaleur = lecons.length ? nbTerminees / lecons.length : 0;
@@ -325,17 +331,19 @@ const CoursDetailPage: React.FC = () => {
       <div className={scenePleine ? '' : 'mx-auto max-w-[1720px] px-5 md:px-10'}>
         <Link
           to="/cours"
-          className={`text-[11px] font-bold uppercase tracking-widest ${
+          className={`inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest ${
             estVata && accessible
-              ? 'absolute left-5 top-24 z-20 text-[#293027]/70 hover:text-[#8B4A2F] md:left-10'
+              ? 'absolute left-5 top-24 z-20 rounded-full border border-[#BA7B39]/45 bg-[#F7F3EA]/85 px-4 py-2.5 text-[#8B4A2F] shadow-[0_8px_22px_-12px_rgba(41,48,39,0.5)] backdrop-blur-sm transition-colors hover:border-[#BA7B39] hover:bg-[#F7F3EA] md:left-10'
               : 'text-[#8B4A2F]'
           }`}
         >
-          <i className="fa-solid fa-arrow-left mr-2" />{lang === 'FR' ? 'Toutes les formations' : 'All courses'}
+          <i className="fa-solid fa-arrow-left" />{lang === 'FR' ? 'Toutes les formations' : 'All courses'}
         </Link>
         {estVata && accessible && (
           <SeuilVata
-            image={BANNIERES_ACHETEES[FORMATION_VATA].image}
+            programme={programme!}
+            format={formatDe(id, lecons)}
+            image={programme!.couverture}
             chaleur={chaleur}
             terminees={nbTerminees}
             total={lecons.length}
@@ -344,19 +352,19 @@ const CoursDetailPage: React.FC = () => {
             reprise={(() => {
               const p = lecons.find(l => !terminees[l.id] && !verrouillee(l)) || lecons.find(l => !verrouillee(l));
               if (!p) return undefined;
-              const s = semaineDeModule(p.moduleNom);
+              const s = chapitreDeModule(p.moduleNom);
               return {
                 titre: p.titre,
                 duree: p.duree,
                 vignette: vignetteAudio(p, formation || undefined) || s?.vignette,
-                soustitre: s ? `${lang === 'FR' ? 'Semaine' : 'Week'} ${s.rang} · ${lang === 'FR' ? s.sens.fr : s.sens.en}` : undefined,
+                soustitre: s ? `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${s.rang} · ${lang === 'FR' ? s.sens.fr : s.sens.en}` : undefined,
                 onOuvrir: () => { void ouvrir(p); requestAnimationFrame(() => chapitre.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })); },
               };
             })()}
           />
         )}
         {estVata && accessible && (
-          <CheminSens etats={etatsSemaines} courante={semaineCourante} lang={lang} onOuvrir={ouvrirSemaine} />
+          <CheminSens programme={programme!} etats={etatsSemaines} courante={semaineCourante} lang={lang} onOuvrir={ouvrirSemaine} />
         )}
         {id === 'foyer' && accessible && (
           <div className="mt-4 overflow-hidden rounded-[20px] border border-white/60 shadow-[0_24px_60px_-24px_rgba(41,48,39,0.5)] dark:border-white/10">
@@ -568,9 +576,10 @@ const CoursDetailPage: React.FC = () => {
         {liveOuvert && live?.url && (
           <LecteurVideoPleinEcran url={live.url} titre={live.titre} onFermer={() => setLiveOuvert(false)} />
         )}
-        {bravo && SEMAINES_VATA[bravo.rang] && (
+        {bravo && CHAPITRES[bravo.rang] && (
           <BravoSemaine
-            semaine={SEMAINES_VATA[bravo.rang]}
+            programme={programme!}
+            semaine={CHAPITRES[bravo.rang]}
             avant={bravo.avant}
             apres={bravo.apres}
             semainesAchevees={bravo.achevees}
@@ -623,6 +632,7 @@ const CoursDetailPage: React.FC = () => {
               <img src={formation.imageUrl} alt="" className="rounded-[20px] border border-white/60 shadow-[0_18px_50px_-25px_rgba(41,48,39,0.5)] dark:border-white/10" />
             )}
             <div>
+              <StickerFormat format={formatDe(id, lecons)} lang={lang} className="mb-4" />
               {formation.description && (
                 <p className="whitespace-pre-line text-[#38403a]/80 dark:text-white/80">{formation.description}</p>
               )}
@@ -713,7 +723,7 @@ const CoursDetailPage: React.FC = () => {
                   // Sur Vata, chaque semaine devient sa propre boîte, dans sa
                   // teinte, et la boîte se marque achevée quand toutes ses
                   // leçons sont faites (Alex, 10 septembre 2026).
-                  const sem = estVata ? semaineDeModule(g.nom) : undefined;
+                  const sem = estVata ? chapitreDeModule(g.nom) : undefined;
                   const faites = g.items.filter(l => terminees[l.id]).length;
                   const achevee = g.items.length > 0 && faites >= g.items.length;
                   return (
@@ -812,7 +822,7 @@ const CoursDetailPage: React.FC = () => {
                   {(() => {
                     // Sur Vata, la leçon se situe dans sa semaine et son sens
                     // plutôt que dans un compte « 1 de 50 » qui ne dit rien.
-                    const s = estVata ? semaineDeModule(courante.moduleNom) : undefined;
+                    const s = estVata ? chapitreDeModule(courante.moduleNom) : undefined;
                     if (!s) {
                       return (
                         <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
@@ -828,7 +838,7 @@ const CoursDetailPage: React.FC = () => {
                           <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 px-6 pb-4">
                             <span className="font-serif text-2xl leading-none text-[#d9a05b]">{s.roman}</span>
                             <span className="text-[10px] font-bold uppercase tracking-[0.26em] text-[#EEE7DB]/80">
-                              {lang === 'FR' ? 'Semaine' : 'Week'} {s.rang} · {lang === 'FR' ? s.sens.fr : s.sens.en}
+                              {lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} {s.rang} · {lang === 'FR' ? s.sens.fr : s.sens.en}
                             </span>
                           </div>
                         </div>
@@ -849,10 +859,10 @@ const CoursDetailPage: React.FC = () => {
                           key={courante.id}
                           url={urlCourante}
                           titre={courante.titre}
-                          pochette={vignetteAudio(courante, formation || undefined) || semaineDeModule(courante.moduleNom)?.vignette}
+                          pochette={vignetteAudio(courante, formation || undefined) || chapitreDeModule(courante.moduleNom)?.vignette}
                           soustitre={(() => {
-                            const s = semaineDeModule(courante.moduleNom);
-                            return s ? `${lang === 'FR' ? 'Semaine' : 'Week'} ${s.rang} · ${lang === 'FR' ? s.sens.fr : s.sens.en}` : courante.moduleNom;
+                            const s = chapitreDeModule(courante.moduleNom);
+                            return s ? `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${s.rang} · ${lang === 'FR' ? s.sens.fr : s.sens.en}` : courante.moduleNom;
                           })()}
                           lang={lang}
                           onFin={() => { if (!terminees[courante.id]) void basculerTerminee(courante); }}

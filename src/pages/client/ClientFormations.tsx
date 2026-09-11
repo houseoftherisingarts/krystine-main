@@ -1,4 +1,5 @@
 import { cheminCours } from '../../lib/cheminCours';
+import StickerFormat, { formatDe } from '../../components/cours/StickerFormat';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
@@ -58,7 +59,10 @@ const ClientFormations: React.FC = () => {
                 className="group overflow-hidden rounded-[15px] border border-[#293027]/10 transition-transform duration-300 hover:-translate-y-0.5 dark:border-white/10"
               >
                 {cover ? (
-                  <img src={cover} alt={a.titre} className="aspect-video w-full object-cover" />
+                  <span className="relative block">
+                    <img src={cover} alt={a.titre} className="aspect-video w-full object-cover" />
+                    <StickerFormat format={formatDe(a.id)} lang={lang} ton="sombre" className="absolute left-3 top-3" />
+                  </span>
                 ) : (
                   <div className="flex aspect-video w-full items-center justify-center bg-[#BA7B39]/10">
                     <i className="fa-solid fa-graduation-cap text-2xl text-[#8B4A2F]" />
@@ -96,7 +100,10 @@ const ClientFormations: React.FC = () => {
                 className="group overflow-hidden rounded-[15px] border border-[#BA7B39]/30 transition-transform duration-300 hover:-translate-y-0.5"
               >
                 {f.imageUrl ? (
-                  <img src={f.imageUrl} alt={f.titre} className="aspect-video w-full object-cover" />
+                  <span className="relative block">
+                    <img src={f.imageUrl} alt={f.titre} className="aspect-video w-full object-cover" />
+                    <StickerFormat format={formatDe(f.id)} lang={lang} ton="sombre" className="absolute left-3 top-3" />
+                  </span>
                 ) : (
                   <div className="flex aspect-video w-full items-center justify-center bg-[#BA7B39]/10">
                     <i className="fa-solid fa-graduation-cap text-2xl text-[#8B4A2F]" />

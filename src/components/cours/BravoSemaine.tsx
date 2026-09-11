@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import Portail from '../Portail';
 import type { SemaineVata } from '../../pages/vata/semaines';
+import type { Programme } from '../../pages/cours/programmes';
 
 // Le mot de bravo qui se lève quand une porte vient de s'ouvrir (Alex,
 // 10 septembre 2026). La barre de progression avance sous les yeux, de la
@@ -10,6 +11,7 @@ import type { SemaineVata } from '../../pages/vata/semaines';
 const EASE = [0.16, 0.8, 0.24, 1] as const;
 
 interface Props {
+  programme: Programme;
   semaine: SemaineVata;
   /** 0 à 1, la part du parcours avant que cette porte s'ouvre. */
   avant: number;
@@ -20,7 +22,10 @@ interface Props {
   onFermer: () => void;
 }
 
-const BravoSemaine: React.FC<Props> = ({ semaine, avant, apres, semainesAchevees, lang, onFermer }) => {
+const BravoSemaine: React.FC<Props> = ({ programme, semaine, avant, apres, semainesAchevees, lang, onFermer }) => {
+  const nb = programme.chapitres.length;
+  const [un, des] = lang === 'FR' ? programme.unite.fr : programme.unite.en;
+  void un;
   const reduce = useReducedMotion();
   const [largeur, setLargeur] = useState(avant);
   const fr = lang === 'FR';
@@ -64,7 +69,7 @@ const BravoSemaine: React.FC<Props> = ({ semaine, avant, apres, semainesAchevees
             <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 px-6 pb-4">
               <span className="font-serif text-3xl leading-none text-[#EEE7DB]">{semaine.roman}</span>
               <span className="pb-1 text-[10px] font-bold uppercase tracking-[0.26em] text-[#EEE7DB]/85">
-                {fr ? 'Porte ouverte' : 'Door opened'}
+                {fr ? `${programme.unite.fr[0][0].toUpperCase()}${programme.unite.fr[0].slice(1)} ouverte` : `${programme.unite.en[0][0].toUpperCase()}${programme.unite.en[0].slice(1)} opened`}
               </span>
             </div>
           </div>
@@ -80,10 +85,10 @@ const BravoSemaine: React.FC<Props> = ({ semaine, avant, apres, semainesAchevees
               {fr
                 ? (semainesAchevees === 1
                     ? 'Votre première porte est ouverte. La perception commence à s’éclaircir.'
-                    : `${semainesAchevees} portes sur huit sont maintenant ouvertes devant vous.`)
+                    : `${semainesAchevees} ${des} sur ${nb} sont maintenant ouvertes devant vous.`)
                 : (semainesAchevees === 1
                     ? 'Your first door is open. Perception is starting to clear.'
-                    : `${semainesAchevees} of eight doors now stand open before you.`)}
+                    : `${semainesAchevees} of ${nb} ${des} now stand open before you.`)}
             </p>
 
             {/* La barre qui avance sous les yeux */}

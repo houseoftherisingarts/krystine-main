@@ -51,6 +51,17 @@ service firebase.storage {
 
     // Les captures d'écran des problèmes techniques : chaque membre écrit
     // dans son dossier, image seulement, 10 Mo au plus; Krystine lit tout.
+    // La bannière personnelle de l'espace client : chaque membre dépose la
+    // sienne. Avant le 11 septembre 2026, le dossier tombait dans la règle
+    // générale réservée à l'admin et toute cliente échouait en silence
+    // (rapport de Caroline Jetté, 8 septembre).
+    match /bannieres/{uid}/{fichier} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid
+                   && request.resource.size < 15 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
     match /bugs/{uid}/{fichier} {
       allow read: if isAdmin() || (request.auth != null && request.auth.uid == uid);
       allow write: if request.auth != null && request.auth.uid == uid

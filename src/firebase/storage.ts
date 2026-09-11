@@ -41,3 +41,28 @@ export function uploadMediaMur(file: File, uid: string, onProgress?: (pct: numbe
       async () => { try { resolve({ url: await getDownloadURL(storageRef), path }); } catch (e) { reject(e); } });
   });
 }
+
+/**
+ * Réduit une photo avant l'envoi : un iPhone livre 4 000 pixels et plusieurs
+ * mégaoctets, parfois en HEIC. Le navigateur décode ce qu'il sait décoder et
+ * renvoie un JPEG de la taille demandée; s'il ne sait pas, le fichier part
+ * tel quel.
+ */
+export async function reduireImage(file: File, maxCote = 1920, qualite = 0.86): Promise<File> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const ratio = Math.min(1, maxCote / Math.max(bitmap.width, bitmap.height));
+    if (ratio === 1 && file.type === 'image/jpeg' && file.size < 2 * 1024 * 1024) return file;
+    const c = document.createElement('canvas');
+    c.width = Math.round(bitmap.width * ratio);
+    c.height = Math.round(bitmap.height * ratio);
+    const ctx = c.getContext('2d');
+    if (!ctx) return file;
+    ctx.drawImage(bitmap, 0, 0, c.width, c.height);
+    const blob = await new Promise<Blob | null>(ok => c.toBlob(ok, 'image/jpeg', qualite));
+    if (!blob) return file;
+    return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' });
+  } catch {
+    return file;
+  }
+}

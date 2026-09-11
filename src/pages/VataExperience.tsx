@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useReducedMotion } from 'framer-motion';
 import { Wind, ArrowRight, ArrowDown, Check, CaretDown, Anchor, Ear, Drop } from '@phosphor-icons/react';
 import { Atmosphere } from '../components/motion/loeuvre';
+import StickerFormat from '../components/cours/StickerFormat';
 
 /**
  * Expérience Ayurveda · Saison Vata. Refonte intégrale « revue d'automne » :

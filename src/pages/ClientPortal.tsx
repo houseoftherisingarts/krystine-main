@@ -9,7 +9,7 @@ import { suivreMesAmities, accepterAmitie, refuserAmitie, type Amitie } from '..
 import { getMember, type MemberDoc } from '../firebase/firestore';
 import { logout } from '../firebase/auth';
 import { updateMember, getClientOrdersForMember, getDoshaResultsForMember, getGuideResponsesForMember, type ClientOrder, type DoshaResult, type GuideResponse } from '../firebase/firestore';
-import { uploadImage } from '../firebase/storage';
+import { uploadImage, reduireImage } from '../firebase/storage';
 import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../shopify';
 import { findOilForDosha } from '../lib/shopifyOil';
 import { ritualForDosha } from '../lib/doshaRituals';
@@ -427,14 +427,19 @@ const BanniereChoix: React.FC<{
     setOuvert(false);
     await updateMember(uid, { personnalisation: { ...perso, banniere } });
   };
+  const [erreurPhoto, setErreurPhoto] = useState<string | null>(null);
   const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setBusy(true);
+    setBusy(true); setErreurPhoto(null);
     try {
-      const { url } = await uploadImage(file, 'bannieres');
+      // Le dossier porte l'identifiant du membre : c'est ce que les règles
+      // Storage vérifient. La photo est réduite avant de partir.
+      const { url } = await uploadImage(await reduireImage(file), `bannieres/${uid}`);
       await updateMember(uid, { bannerURL: url, personnalisation: { ...perso, banniere: 'photo' } });
       setOuvert(false);
+    } catch {
+      setErreurPhoto(fr ? 'La photo n’a pas pu être envoyée. Essayez une autre image, ou une plus petite.' : 'The photo could not be sent. Try another image, or a smaller one.');
     } finally { setBusy(false); }
   };
   const actif = perso.banniere || (aPhoto ? 'photo' : 'defaut');
@@ -463,6 +468,7 @@ const BanniereChoix: React.FC<{
             <span className="flex-1">{fr ? 'Téléverser ma photo' : 'Upload my photo'}</span>
             <input type="file" accept="image/*" className="hidden" onChange={onFile} disabled={busy} />
           </label>
+          {erreurPhoto && <p className="px-3 py-1.5 text-[11px] leading-snug text-red-700">{erreurPhoto}</p>}
           {aPhoto && (
             <button type="button" className={ligne} onClick={() => choisir('photo')}>
               {coche('photo')}<span className="flex-1">{fr ? 'Ma photo' : 'My photo'}</span>
