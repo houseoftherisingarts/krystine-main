@@ -145,6 +145,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'assets',     label: 'Assets et téléchargements', icon: 'fa-download', groupe: 'reglages' },
   { id: 'settings',   label: 'Paramètres',       icon: 'fa-gear',             groupe: 'reglages' },
   { id: 'demande',    label: 'Demander un changement', icon: 'fa-bolt',       groupe: 'reglages' },
+  { id: 'partenaireVexel', label: 'Devenir partenaire Vexel', icon: 'fa-handshake', groupe: 'reglages' },
   { id: 'bugs',       label: 'Problèmes techniques', icon: 'fa-bug',         groupe: 'reglages' },
   { id: 'changelog',  label: 'Journal des changements', icon: 'fa-clock-rotate-left', groupe: 'reglages' },
 ];
