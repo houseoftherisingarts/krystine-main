@@ -25,7 +25,7 @@ const SPRIG_BY_EVENT: Record<string, EventSprigVariant> = {
   'expo-manger-sante-2026':      'ticket',  // Au-delà des tendances — conférences
   'retraite-ayurveda-mai-2026':  'compass', // L'Ayurveda comme boussole intérieure
   'parution-livre-3':            'book',    // Parution du troisième livre
-  'lancement-anglicane':         'launch',  // Dévoilement de la trilogie · L'Anglicane
+  'lancement-anglicane':         'launch',  // Le lancement du troisième livre · L'Anglicane
   'lancement-montreal':          'launch',  // Dévoilement de la trilogie · Montréal
   'tournee-conferences':         'route',   // Tournée de conférences
   'retraite-val-morin-nov-2026': 'retreat', // Retraite Val-Morin (novembre 2026)

@@ -69,7 +69,11 @@ const EventsSection: React.FC = () => {
         ...editing,
         argumentaire: ligneNonVides(editing.argumentaire),
         inclus: ligneNonVides(editing.inclus),
+        lieuTexte: ligneNonVides(editing.lieuTexte),
+        programme: (editing.programme || []).filter(x => x.titre || x.texte),
       };
+      if (body.encart) body.encart = { ...body.encart, texte: ligneNonVides(body.encart.texte) };
+      if (!body.encart?.titre) delete (body as Partial<EventDoc>).encart;
       if (body.id) {
         const { id, createdAt, ...patch } = body;
         await updateEvent(id!, patch);
@@ -242,6 +246,42 @@ const EventsSection: React.FC = () => {
                       onChange={e => setEditing({ ...editing, inclus: lignes(e.target.value) })}
                       placeholder="Une ligne par élément inclus"
                     />
+                  </div>
+
+                  <div>
+                    <Label>Le déroulement de la soirée</Label>
+                    <Textarea
+                      rows={4}
+                      value={(editing.programme || []).map(x => `${x.titre} | ${x.texte}`).join('\n')}
+                      onChange={e => setEditing({ ...editing, programme: lignes(e.target.value).map(l => { const [titre, ...reste] = l.split('|'); return { titre: (titre || '').trim(), texte: reste.join('|').trim() }; }) })}
+                      placeholder="Un acte par ligne : Titre | ce qui s'y passe"
+                    />
+                  </div>
+                  <div>
+                    <Label>Le lieu, raconté</Label>
+                    <Textarea
+                      rows={3}
+                      value={(editing.lieuTexte || []).join('\n')}
+                      onChange={e => setEditing({ ...editing, lieuTexte: lignes(e.target.value) })}
+                      placeholder="Un paragraphe par ligne, sous la grande photo du lieu"
+                    />
+                  </div>
+                  <div>
+                    <Label>Grande photo du lieu</Label>
+                    <ImageUpload value={editing.lieuImage || ''} onChange={url => setEditing({ ...editing, lieuImage: url })} folder="events-lieu" />
+                  </div>
+                  <div>
+                    <Label>L'encart au cœur de la page</Label>
+                    <Textarea
+                      rows={4}
+                      value={editing.encart ? [editing.encart.surtitre, editing.encart.titre, ...editing.encart.texte].join('\n') : ''}
+                      onChange={e => { const [surtitre = '', titre = '', ...texte] = lignes(e.target.value); setEditing({ ...editing, encart: e.target.value.trim() ? { ...(editing.encart || {}), surtitre, titre, texte } : undefined }); }}
+                      placeholder="Ligne 1 : surtitre. Ligne 2 : titre. Ensuite, un paragraphe par ligne."
+                    />
+                  </div>
+                  <div>
+                    <Label>Crédit photo</Label>
+                    <Input value={editing.credit || ''} onChange={e => setEditing({ ...editing, credit: e.target.value })} placeholder="Quand la licence de la photo l'exige" />
                   </div>
 
                   <div>

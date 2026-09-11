@@ -90,6 +90,18 @@ export interface EventDoc {
   inclus?: string[];
   /** Note affichée sous le bouton d'achat, par exemple une politique de remboursement. */
   noteAchat?: string;
+
+  // ── Le programme de soirée (refonte du 11 septembre 2026) ─────────────────
+  /** Le déroulement, un acte par entrée : son titre et son texte. */
+  programme?: { titre: string; texte: string }[];
+  /** Le lieu raconté, un paragraphe par entrée, sous la grande photo du lieu. */
+  lieuTexte?: string[];
+  /** La grande photo du lieu, si elle diffère du hero. */
+  lieuImage?: string;
+  /** L'encart typographique au cœur de la page : surtitre, titre, puis paragraphes. */
+  encart?: { surtitre: string; titre: string; texte: string[]; images?: string[] };
+  /** Le crédit de la photo, affiché au pied de la page quand la licence l'exige. */
+  credit?: string;
 }
 
 /** Places encore à vendre. Jamais négatif, et zéro quand rien n'est en vente. */

@@ -146,14 +146,14 @@ export const LIVE_EVENTS: LiveEvent[] = [
     ctaLabelEN: 'Keep me posted on the tour',
   },
 
-  // ── Dévoilement · L'Anglicane (Lévis) ──
+  // ── Le lancement du troisième livre · L'Anglicane (Lévis) ──
   {
     id: 'lancement-anglicane',
     kind: 'launch-waitlist',
-    titleFR: 'L\'Anglicane · Lévis',
-    titleEN: 'L\'Anglicane · Lévis',
-    subtitleFR: 'Dévoilement de la trilogie',
-    subtitleEN: 'Trilogy unveiling',
+    titleFR: 'Le lancement du troisième livre',
+    titleEN: 'The third book launch',
+    subtitleFR: 'Une soirée de lancement et un atelier, à L\'Anglicane de Lévis',
+    subtitleEN: 'A launch evening and a workshop, at L\'Anglicane in Lévis',
     dateFR: '24 octobre 2026',
     dateEN: 'October 24, 2026',
     startDate: '2026-10-24',
@@ -173,8 +173,8 @@ export const LIVE_EVENTS: LiveEvent[] = [
   {
     id: 'lancement-montreal',
     kind: 'launch-waitlist',
-    titleFR: 'Dévoilement de la trilogie · Montréal',
-    titleEN: 'Trilogy unveiling · Montréal',
+    titleFR: 'Le lancement du troisième livre · Montréal',
+    titleEN: 'The third book launch · Montréal',
     subtitleFR: 'Événement public de lancement',
     subtitleEN: 'Public launch event',
     dateFR: 'Novembre 2026 · date à confirmer',
