@@ -489,11 +489,11 @@ export default function MediasV2() {
               {lang === 'FR' ? 'Bientôt disponible' : 'Coming soon'}
             </span>
             <h3 className="v2-serif text-[1.6rem] font-light leading-[1.12] text-[#1c1712]">
-              {lang === 'FR' ? 'Les trois saisons réunies' : 'All three seasons together'}
+              {lang === 'FR' ? 'Le coffret des trois saisons' : 'The three-season box set'}
             </h3>
             <p className="mt-4 text-[0.95rem] leading-[1.8] text-[#3a2f23] flex-1">
               {lang === 'FR'
-                ? 'L’intégrale de Santé la vie, les trois saisons réunies en un seul accès. Elle sera offerte dans votre espace dès sa sortie.'
+                ? 'L’intégrale de Santé la vie, le coffret des trois saisons en un seul accès. Elle sera offerte dans votre espace dès sa sortie.'
                 : 'The complete Santé la vie, all three seasons together in a single access. It will be offered in your space once it launches.'}
             </p>
             <div className="mt-8 pt-6 border-t border-[#1c1712]/12 flex items-end justify-between gap-4">

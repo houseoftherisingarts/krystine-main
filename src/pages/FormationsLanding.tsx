@@ -42,10 +42,10 @@ const PORTES: Porte[] = [
   {
     key: 'origine', n: '02',
     tag: 'Parcours signature · 12 semaines',
-    title: 'Expérience Origine',
+    title: 'Expérience Origine 2',
     subtitle: 'La transformation accompagnée.',
     body: 'Lire, trier, ancrer pour retrouver ses propres repères.',
-    cta: 'Découvrir Expérience Origine',
+    cta: 'Découvrir Expérience Origine 2',
     href: '/origine',
     image: 'https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg',
   },
@@ -77,6 +77,7 @@ const A_VOTRE_RYTHME: Formation[] = [
 ];
 
 const FormationsLanding: React.FC = () => {
+  const [rythmeOuvert, setRythmeOuvert] = React.useState(false);
   const navigate = useNavigate();
   const reduce = useReducedMotion();
   const go = (href: string) => {
@@ -148,7 +149,18 @@ const FormationsLanding: React.FC = () => {
       {/* ─────────── À VOTRE RYTHME : Vata maintenant, les autres en liste d'attente ─────────── */}
       <section id="a-votre-rythme" className="scroll-mt-24 px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(5rem,10vh,8rem)]">
         <div className="mx-auto max-w-[1320px]">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-[#BA7B39]">03 · Les formations à votre rythme</p>
+          <button
+            type="button"
+            onClick={() => setRythmeOuvert(o => !o)}
+            aria-expanded={rythmeOuvert}
+            className="flex w-full items-center justify-between gap-4 text-left"
+          >
+            <span className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-[#BA7B39]">03 · Les formations à votre rythme</span>
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#BA7B39]/45 text-[#8B4A2F] transition-transform duration-500" style={{ transform: rythmeOuvert ? 'rotate(180deg)' : 'none' }}>
+              <i className="fa-solid fa-chevron-down" aria-hidden="true" />
+            </span>
+          </button>
+          {rythmeOuvert && (<>
           <h2 className="mt-3 max-w-[22ch] font-serif text-[clamp(1.8rem,2.8vw,2.5rem)] font-medium leading-[1.08]">Le programme Vata se suit dès maintenant. Les autres reviennent une à une.</h2>
           <p className="mt-3 max-w-[46rem] leading-[1.7] text-[#5b5f55]">Chaque formation qui n'est pas encore de retour a sa liste d'attente. Inscrivez-vous et vous recevrez l'invitation avant toute annonce publique.</p>
           <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -177,6 +189,7 @@ const FormationsLanding: React.FC = () => {
               );
             })}
           </ul>
+          </>)}
         </div>
       </section>
     </div>
