@@ -256,11 +256,14 @@ export interface PartenaireVexelPanneauProps {
   slug: string;
   /** La clé de ce site, la même que celle déjà utilisée pour /demande/. */
   cle: string;
+  /** Appelé une fois le code actif : au site hôte d'écrire settings/vexel
+   * dans SA propre base pour que BadgeVexel le lise (voir README.md). */
+  onSucces?: (resultat: { code: string; lien: string; page: string }) => void;
 }
 
 type Etat = 'formulaire' | 'envoi' | 'fait' | 'erreur';
 
-export function PartenaireVexelPanneau({ slug, cle }: PartenaireVexelPanneauProps) {
+export function PartenaireVexelPanneau({ slug, cle, onSucces }: PartenaireVexelPanneauProps) {
   const [nom, setNom] = useState('');
   const [courriel, setCourriel] = useState('');
   const [signature, setSignature] = useState<string | null>(null);
@@ -290,6 +293,7 @@ export function PartenaireVexelPanneau({ slug, cle }: PartenaireVexelPanneauProp
       if (!rep.ok) throw new Error(corps?.erreur || 'L’inscription a échoué.');
       setResultat(corps);
       setEtat('fait');
+      onSucces?.(corps);
     } catch (e) {
       setErreur(e instanceof Error ? e.message : 'L’inscription a échoué.');
       setEtat('erreur');

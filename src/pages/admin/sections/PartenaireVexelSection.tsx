@@ -31,17 +31,6 @@ const PartenaireVexelSection: React.FC = () => {
       .finally(() => setCharge(false));
   }, []);
 
-  // Écoute le succès du panneau (voir onSuccess plus bas) pour écrire dans la
-  // base du site sans que le composant partagé n'ait à connaître Firestore.
-  useEffect(() => {
-    const onSucces = (e: Event) => {
-      const resultat = (e as CustomEvent).detail;
-      enregistrerPartenaire(resultat).then(() => setDejaPartenaire(resultat));
-    };
-    window.addEventListener('vexel-partenaire-fait', onSucces);
-    return () => window.removeEventListener('vexel-partenaire-fait', onSucces);
-  }, []);
-
   return (
     <Card className="p-6 md:p-8">
       <h2 className="font-serif text-2xl text-[#293027] dark:text-white mb-2">Devenir partenaire Vexel</h2>
