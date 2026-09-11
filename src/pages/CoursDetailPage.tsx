@@ -107,9 +107,9 @@ const CoursDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [paiement, setPaiement] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
-  // Les deux moments de fête : une semaine qui se referme, et le programme
+  // Les deux moments de fête : une porte qui s'ouvre, et le programme
   // mené jusqu'au bout (Alex, 10 septembre 2026).
-  const [bravo, setBravo] = useState<{ rang: number; avant: number; apres: number; refermees: number } | null>(null);
+  const [bravo, setBravo] = useState<{ rang: number; avant: number; apres: number; achevees: number } | null>(null);
   const [diplome, setDiplome] = useState<DiplomeInfos | null>(null);
 
   useEffect(() => {
@@ -183,7 +183,7 @@ const CoursDetailPage: React.FC = () => {
     await marquerLecon(user.uid, id, l.id, v).catch(() => {});
     if (!v) return;   // décocher ne déclenche aucune fête
 
-    // La semaine vient-elle de se refermer, et avec elle le programme ?
+    // La porte vient-elle de s'ouvrir, et avec elle tout le programme ?
     const total = lecons.length;
     const faitesAvant = lecons.filter(x => terminees[x.id]).length;
     const faitesApres = lecons.filter(x => apres[x.id]).length;
@@ -194,7 +194,7 @@ const CoursDetailPage: React.FC = () => {
       const restait = duModule.some(x => !terminees[x.id]);
       const fini = duModule.every(x => apres[x.id]);
       if (restait && fini) {
-        const refermees = SEMAINES_VATA.filter(s => {
+        const achevees = SEMAINES_VATA.filter(s => {
           const items = lecons.filter(x => rangDeModule(x.moduleNom) === s.rang);
           return items.length > 0 && items.every(x => apres[x.id]);
         }).length;
@@ -202,7 +202,7 @@ const CoursDetailPage: React.FC = () => {
           rang,
           avant: total ? faitesAvant / total : 0,
           apres: total ? faitesApres / total : 0,
-          refermees,
+          achevees,
         });
       }
     }
@@ -243,7 +243,7 @@ const CoursDetailPage: React.FC = () => {
   const pct = lecons.length ? Math.round((nbTerminees / lecons.length) * 100) : 0;
 
   // ── L'Expérience Vata : le seuil plein cadre et le chemin des huit sens ──
-  // La page se réchauffe à mesure que les portes se referment (plan complet :
+  // La page se réchauffe à mesure que les portes s'ouvrent (plan complet :
   // docs/vata-plan-visuel.md, ordre d'Alex du 10 septembre 2026).
   const estVata = id === FORMATION_VATA;
   const etatsSemaines = useMemo(() => {
@@ -257,7 +257,7 @@ const CoursDetailPage: React.FC = () => {
     }
     return par;
   }, [lecons, terminees]);
-  const semainesRefermees = SEMAINES_VATA.filter(
+  const semainesAchevees = SEMAINES_VATA.filter(
     s => (etatsSemaines[s.rang]?.total ?? 0) > 0 && etatsSemaines[s.rang].terminees >= etatsSemaines[s.rang].total,
   ).length;
   const chaleur = lecons.length ? nbTerminees / lecons.length : 0;
@@ -329,7 +329,7 @@ const CoursDetailPage: React.FC = () => {
             chaleur={chaleur}
             terminees={nbTerminees}
             total={lecons.length}
-            semainesRefermees={semainesRefermees}
+            semainesAchevees={semainesAchevees}
             lang={lang}
             reprise={(() => {
               const p = lecons.find(l => !terminees[l.id] && !verrouillee(l)) || lecons.find(l => !verrouillee(l));
@@ -563,7 +563,7 @@ const CoursDetailPage: React.FC = () => {
             semaine={SEMAINES_VATA[bravo.rang]}
             avant={bravo.avant}
             apres={bravo.apres}
-            semainesRefermees={bravo.refermees}
+            semainesAchevees={bravo.achevees}
             lang={lang}
             onFermer={() => setBravo(null)}
           />
@@ -701,18 +701,18 @@ const CoursDetailPage: React.FC = () => {
                   const contientCourante = !!courante && g.items.some(l => l.id === courante.id);
                   const ouvert = g.nom ? (replies[g.nom] === undefined ? contientCourante || gi === 0 : !replies[g.nom]) : true;
                   // Sur Vata, chaque semaine devient sa propre boîte, dans sa
-                  // teinte, et la boîte se referme visiblement quand toutes ses
+                  // teinte, et la boîte se marque achevée quand toutes ses
                   // leçons sont faites (Alex, 10 septembre 2026).
                   const sem = estVata ? semaineDeModule(g.nom) : undefined;
                   const faites = g.items.filter(l => terminees[l.id]).length;
-                  const refermee = g.items.length > 0 && faites >= g.items.length;
+                  const achevee = g.items.length > 0 && faites >= g.items.length;
                   return (
                   <div
                     key={gi}
                     className={`mb-2 ${sem ? 'overflow-hidden rounded-[16px] border transition-colors duration-500' : ''}`}
                     style={sem ? {
-                      borderColor: refermee ? sem.couleur.vive : `${sem.couleur.vive}44`,
-                      background: refermee ? `${sem.couleur.vive}14` : `${sem.couleur.vive}09`,
+                      borderColor: achevee ? sem.couleur.vive : `${sem.couleur.vive}44`,
+                      background: achevee ? `${sem.couleur.vive}14` : `${sem.couleur.vive}09`,
                     } : undefined}
                   >
                     {g.nom && (
@@ -729,9 +729,9 @@ const CoursDetailPage: React.FC = () => {
                           {sem && (
                             <span
                               className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-serif text-[11px] normal-case tracking-normal text-[#F7F3EA]"
-                              style={{ background: refermee ? sem.couleur.vive : `${sem.couleur.vive}bb` }}
+                              style={{ background: achevee ? sem.couleur.vive : `${sem.couleur.vive}bb` }}
                             >
-                              {refermee ? <i className="fa-solid fa-check text-[9px]" /> : sem.roman}
+                              {achevee ? <i className="fa-solid fa-check text-[9px]" /> : sem.roman}
                             </span>
                           )}
                           <span className="min-w-0 truncate">{sem ? (lang === 'FR' ? sem.sens.fr : sem.sens.en) : g.nom}</span>
@@ -859,8 +859,13 @@ const CoursDetailPage: React.FC = () => {
                       )
                     ) : null}
                   </div>
+                  {/* Sur Vata, le texte se justifie sous le lecteur (Krystine n'aime pas
+                      le drapeau à gauche); la coupure des mots évite les rivières de blanc. */}
                   {courante.texte?.trim() && (
-                    <TexteLecon texte={courante.texte} className={`${courante.chemin ? 'mt-6' : 'mt-2'} max-w-[68ch] text-[#3a2f23] dark:text-white/80`} />
+                    <TexteLecon
+                      texte={courante.texte}
+                      className={`${courante.chemin ? 'mt-6' : 'mt-2'} max-w-[68ch] text-[#3a2f23] dark:text-white/80 ${estVata ? 'text-justify hyphens-auto [&_h3]:text-left [&_h4]:text-left' : ''}`}
+                    />
                   )}
 
                   {/* Les documents déposés par Krystine sous la leçon */}

@@ -24,6 +24,18 @@ const inline = (s: string): React.ReactNode[] => {
 };
 
 const lignesVersNoeud = (lignes: string[], key: number): React.ReactNode => {
+  // Krystine écrit souvent une phrase d'amorce suivie de ses tirets, sans
+  // ligne vide entre les deux : l'amorce devient un paragraphe et les tirets
+  // une vraie liste, au lieu d'un seul bloc où chaque tiret se justifie mal.
+  const premierTiret = lignes.findIndex(l => /^\s*[-*•]\s/.test(l));
+  if (premierTiret > 0 && lignes.slice(premierTiret).every(l => /^\s*[-*•]\s/.test(l))) {
+    return (
+      <React.Fragment key={key}>
+        {lignesVersNoeud(lignes.slice(0, premierTiret), key * 1000)}
+        {lignesVersNoeud(lignes.slice(premierTiret), key * 1000 + 1)}
+      </React.Fragment>
+    );
+  }
   if (lignes.every(l => /^\s*[-*•]\s/.test(l)))
     return <ul key={key} className="list-disc space-y-1 pl-5">{lignes.map((l, j) => <li key={j}>{inline(l.replace(/^\s*[-*•]\s/, ''))}</li>)}</ul>;
   if (lignes.every(l => /^\s*\d+[.)]\s/.test(l)))

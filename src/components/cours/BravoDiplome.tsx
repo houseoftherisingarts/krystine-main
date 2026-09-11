@@ -5,7 +5,7 @@ import Portail from '../Portail';
 import Diplome, { type DiplomeInfos } from './Diplome';
 import { telechargerDiplome } from '../../lib/diplomePdf';
 
-// Le parchemin qui se déroule quand la dernière leçon se ferme (Alex, 10
+// Le parchemin qui se déroule quand la dernière leçon s'achève (Alex, 10
 // septembre 2026). Il montre le vrai diplôme, propose de le prendre en PDF,
 // et mène à « Mes diplômes » dans l'espace client, où il reste pour toujours.
 

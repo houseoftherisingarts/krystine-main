@@ -3,7 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import Portail from '../Portail';
 import type { SemaineVata } from '../../pages/vata/semaines';
 
-// Le mot de bravo qui s'ouvre quand une semaine vient de se refermer (Alex,
+// Le mot de bravo qui se lève quand une porte vient de s'ouvrir (Alex,
 // 10 septembre 2026). La barre de progression avance sous les yeux, de la
 // valeur d'avant vers celle d'après, pour que l'effort se voie.
 
@@ -11,16 +11,16 @@ const EASE = [0.16, 0.8, 0.24, 1] as const;
 
 interface Props {
   semaine: SemaineVata;
-  /** 0 à 1, la part du parcours avant que cette semaine se referme. */
+  /** 0 à 1, la part du parcours avant que cette porte s'ouvre. */
   avant: number;
   /** 0 à 1, la part du parcours maintenant. */
   apres: number;
-  semainesRefermees: number;
+  semainesAchevees: number;
   lang: 'FR' | 'EN';
   onFermer: () => void;
 }
 
-const BravoSemaine: React.FC<Props> = ({ semaine, avant, apres, semainesRefermees, lang, onFermer }) => {
+const BravoSemaine: React.FC<Props> = ({ semaine, avant, apres, semainesAchevees, lang, onFermer }) => {
   const reduce = useReducedMotion();
   const [largeur, setLargeur] = useState(avant);
   const fr = lang === 'FR';
@@ -64,7 +64,7 @@ const BravoSemaine: React.FC<Props> = ({ semaine, avant, apres, semainesRefermee
             <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 px-6 pb-4">
               <span className="font-serif text-3xl leading-none text-[#EEE7DB]">{semaine.roman}</span>
               <span className="pb-1 text-[10px] font-bold uppercase tracking-[0.26em] text-[#EEE7DB]/85">
-                {fr ? 'Semaine refermée' : 'Week closed'}
+                {fr ? 'Porte ouverte' : 'Door opened'}
               </span>
             </div>
           </div>
@@ -74,16 +74,16 @@ const BravoSemaine: React.FC<Props> = ({ semaine, avant, apres, semainesRefermee
               {fr ? 'Bravo' : 'Well done'}
             </p>
             <h2 className="mt-2 font-serif text-[clamp(1.5rem,3.4vw,2rem)] leading-[1.15] text-[#293027] dark:text-[#EEE7DB]">
-              {fr ? `${sens} vient de se refermer` : `${sens} has just closed`}
+              {fr ? `${sens} vient de s’ouvrir` : `${sens} has just opened`}
             </h2>
             <p className="mt-3 text-[15px] leading-relaxed text-[#38403a]/80 dark:text-white/70">
               {fr
-                ? (semainesRefermees === 1
-                    ? 'Votre première porte est refermée. Le sanctuaire commence à tenir tout seul.'
-                    : `${semainesRefermees} portes sur huit sont maintenant refermées derrière vous.`)
-                : (semainesRefermees === 1
-                    ? 'Your first door is closed. The sanctuary is starting to hold on its own.'
-                    : `${semainesRefermees} of eight doors are now closed behind you.`)}
+                ? (semainesAchevees === 1
+                    ? 'Votre première porte est ouverte. La perception commence à s’éclaircir.'
+                    : `${semainesAchevees} portes sur huit sont maintenant ouvertes devant vous.`)
+                : (semainesAchevees === 1
+                    ? 'Your first door is open. Perception is starting to clear.'
+                    : `${semainesAchevees} of eight doors now stand open before you.`)}
             </p>
 
             {/* La barre qui avance sous les yeux */}

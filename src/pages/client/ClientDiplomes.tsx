@@ -12,7 +12,7 @@ import { telechargerDiplome } from '../../lib/diplomePdf';
 // « Mes diplômes » : les parcours menés jusqu'au bout. Un diplôme ne se range
 // pas dans une collection à part, il se déduit de la progression : quand
 // toutes les leçons d'une formation sont fermées, le parchemin existe. La
-// date vient du champ termineeLe, écrit le jour où la dernière leçon se ferme.
+// date vient du champ termineeLe, écrit le jour où la dernière leçon s'achève.
 
 interface Obtenu {
   formation: AchatFormation;

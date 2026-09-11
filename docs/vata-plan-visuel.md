@@ -14,19 +14,19 @@ Le texte de la leçon arrive en bloc brut, avec des tirets en guise de puces et 
 
 ## 2. Le parti pris
 
-Vata est le dosha de l'air, du froid et du sec, et le programme enseigne à refermer les portes des cinq sens pour ramener le calme à l'intérieur. Les semaines portent déjà ces noms dans le contenu de Krystine, qui commence par le souffle et referme ensuite l'ouïe, la vue et l'odorat, avant de finir par le goût et le toucher et de laisser la dernière semaine à la présence.
+Vata est le dosha de l'air, du froid et du sec, et le programme enseigne à ouvrir une à une les portes de la perception, pour que le calme revienne à l'intérieur. Les semaines portent déjà ces noms dans le contenu de Krystine, qui commence par le souffle et ouvre ensuite l'ouïe, la vue et l'odorat, avant de finir par le goût et le toucher et de laisser la dernière semaine à la présence.
 
-La refonte s'appuie là-dessus au lieu de plaquer une décoration. L'espace devient **un sanctuaire qui se referme sens par sens**, et la progression cesse d'être un compteur pour devenir la température de la page. Au départ, la scène reste froide et bleutée pendant qu'une poussière rapide la traverse. À mesure que les leçons se terminent, la dominante se réchauffe vers le laiton, le grain s'apaise et la poussière ralentit jusqu'à s'immobiliser. Un seul jeton CSS porte cette valeur, calculé sur le pourcentage de leçons terminées, et tout le reste en découle.
+La refonte s'appuie là-dessus au lieu de plaquer une décoration. L'espace devient **une suite de portes de la perception qui s'ouvrent une à une**, et la progression cesse d'être un compteur pour devenir la température de la page. Au départ, la scène reste froide et bleutée pendant qu'une poussière rapide la traverse. À mesure que les leçons se terminent, la dominante se réchauffe vers le laiton, le grain s'apaise et la poussière ralentit jusqu'à s'immobiliser. Un seul jeton CSS porte cette valeur, calculé sur le pourcentage de leçons terminées, et tout le reste en découle.
 
 C'est ce qui donne le « wow » sans nuire à l'usage quotidien, parce que la mécanique de travail ne change pas et que l'effet se lit sans rien lire.
 
 ## 3. Les sept mouvements
 
-**Le seuil.** La couverture sort de sa carte et prend tout l'écran, en Ken Burns lent, sous un voile dégradé et la poussière chaude du composant `Atmosphere` déjà écrit dans `src/components/motion/loeuvre.tsx`. Le titre de la formation disparaît de l'image, puisque l'image le dit déjà, et laisse la place à une carte de reprise qui montre la pochette de la prochaine leçon, son titre et sa durée. L'anneau de progression quitte le rail plat et devient un disque de laiton posé sur le hero, gravé du nombre de semaines refermées.
+**Le seuil.** La couverture sort de sa carte et prend tout l'écran, en Ken Burns lent, sous un voile dégradé et la poussière chaude du composant `Atmosphere` déjà écrit dans `src/components/motion/loeuvre.tsx`. Le titre de la formation disparaît de l'image, puisque l'image le dit déjà, et laisse la place à une carte de reprise qui montre la pochette de la prochaine leçon, son titre et sa durée. L'anneau de progression quitte le rail plat et devient un disque de laiton posé sur le hero, gravé du nombre de portes ouvertes.
 
 **L'allumage au premier scroll.** Le hero se fixe sur la hauteur de l'écran, l'image recule et se désature légèrement, et les huit portes des sens montent depuis le bas en cascade décalée de cent millisecondes. La scène répond dans les cent premiers pixels de défilement, ce qui est la porte d'entrée obligatoire du skill `premium-web`.
 
-**Le chemin des sens.** La liste de semaines en petites capitales brunes cède la place à huit grandes cartes au format portrait, chacune avec sa photo plein cadre, son chiffre romain, le sens qu'elle referme et son état. En desktop, elles défilent sur un rail horizontal piloté par le scroll vertical avec GSAP ScrollTrigger, déjà installé dans le projet. En mobile, elles s'empilent en une colonne pleine largeur. Au survol, l'image respire vers 1,04 en une seconde et un liseré laiton se dessine autour de la carte.
+**Le chemin des sens.** La liste de semaines en petites capitales brunes cède la place à huit grandes cartes au format portrait, chacune avec sa photo plein cadre, son chiffre romain, le sens qu'elle ouvre et son état. En desktop, elles défilent sur un rail horizontal piloté par le scroll vertical avec GSAP ScrollTrigger, déjà installé dans le projet. En mobile, elles s'empilent en une colonne pleine largeur. Au survol, l'image respire vers 1,04 en une seconde et un liseré laiton se dessine autour de la carte.
 
 **La page qui tourne.** Choisir une semaine ne recharge rien et ne fait sauter personne en haut de la page. La carte s'agrandit vers la vue du chapitre par une transition d'élément partagé de framer-motion, en `layoutId`, avec un léger flou qui se dissipe. C'est le mouvement que demande Alex quand il parle de tourner les pages.
 
@@ -34,7 +34,7 @@ C'est ce qui donne le « wow » sans nuire à l'usage quotidien, parce que la m�
 
 **Le lecteur.** Le lecteur natif du navigateur disparaît au profit d'un lecteur maison qui reste collé en bas de la fenêtre et qui survit au passage d'une leçon à l'autre, comme celui d'un service d'écoute. Il montre la grande pochette, une onde dessinée en canvas qui bat pendant la lecture, une barre de lecture laiton, les sauts de quinze secondes en arrière et de trente en avant, et le réglage de vitesse. C'est le geste qui change le plus l'usage réel du programme, puisque les seize capsules audio sont le cœur du contenu.
 
-**Le texte et la fin de la leçon.** Le texte se pose sur une colonne de soixante-huit caractères, ouverte par une lettrine, avec de vraies puces dessinées à la place des tirets et des exergues sur fond crème pour les passages que Krystine met en valeur. Marquer une leçon terminée cesse d'être un bouton et devient un geste : une braise s'allume, la porte du sens se referme, et la température de la page monte d'un cran.
+**Le texte et la fin de la leçon.** Le texte se pose sur une colonne de soixante-huit caractères, ouverte par une lettrine, avec de vraies puces dessinées à la place des tirets et des exergues sur fond crème pour les passages que Krystine met en valeur. Marquer une leçon terminée cesse d'être un bouton et devient un geste : une braise s'allume, la porte du sens s'ouvre, et la température de la page monte d'un cran.
 
 ## 4. Les images
 

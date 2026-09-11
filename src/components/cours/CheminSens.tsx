@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { SEMAINES_VATA, type SemaineVata } from '../../pages/vata/semaines';
 
-// Le chemin des huit sens : chaque semaine devient une grande carte portrait
+// Le chemin des huit portes de la perception : chaque semaine devient une grande carte portrait
 // avec sa photo, et les cartes montent en cascade quand elles entrent dans
 // l'écran. Remplace la liste de semaines en petites capitales et le rail de
 // cinquante flammes grises, illisible en desktop et cassé en mobile.
@@ -104,7 +104,7 @@ const CheminSens: React.FC<Props> = ({ etats, courante, lang, onOuvrir }) => (
         {lang === 'FR' ? 'Le chemin des sens' : 'The path of the senses'}
       </p>
       <h2 className="max-w-[24ch] font-serif text-[clamp(1.9rem,3.4vw,2.7rem)] leading-[1.08] text-[#293027] dark:text-[#EEE7DB]">
-        {lang === 'FR' ? 'Une porte se referme à la fois' : 'One door closes at a time'}
+        {lang === 'FR' ? 'Une porte s’ouvre à la fois' : 'One door opens at a time'}
       </h2>
     </div>
 

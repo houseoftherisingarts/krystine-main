@@ -106,8 +106,8 @@ export async function telechargerDiplome(infos: DiplomeInfos, lang: 'FR' | 'EN')
 
   doc.setFont('times', 'normal'); doc.setFontSize(13); doc.setTextColor(...ENCRE_DOUCE);
   const phrase = fr
-    ? `pour avoir traversé ${infos.accompli} de l’${infos.programme},\net refermé une à une les portes de ses sens.`
-    : `for completing ${infos.accompli} of the ${infos.programme},\nclosing the doors of the senses one by one.`;
+    ? `pour avoir traversé ${infos.accompli} de l’${infos.programme},\net ouvert une à une les portes de sa perception.`
+    : `for completing ${infos.accompli} of the ${infos.programme},\nopening the doors of perception one by one.`;
   const lignes = doc.splitTextToSize(phrase, W - 300);
   doc.text(lignes, centre, y, { align: 'center', lineHeightFactor: 1.7 });
   y += lignes.length * 22 + 46;

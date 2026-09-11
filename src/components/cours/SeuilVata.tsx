@@ -18,16 +18,16 @@ interface Reprise {
 
 interface Props {
   image: string;
-  /** 0 à 1 : la part du parcours refermée. Réchauffe la scène. */
+  /** 0 à 1 : la part du parcours accomplie. Réchauffe la scène. */
   chaleur: number;
   terminees: number;
   total: number;
-  semainesRefermees: number;
+  semainesAchevees: number;
   lang: 'FR' | 'EN';
   reprise?: Reprise;
 }
 
-const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semainesRefermees, lang, reprise }) => {
+const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semainesAchevees, lang, reprise }) => {
   const reduce = useReducedMotion();
   const cadre = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({ target: cadre, offset: ['start start', 'end start'] });
@@ -60,7 +60,7 @@ const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semaines
       <div className="absolute inset-x-0 bottom-0 px-5 pb-8 md:px-10 md:pb-12">
         <div className="mx-auto flex max-w-[1720px] flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
 
-          {/* Le disque de laiton : les semaines refermées, pas 50 flammes grises. */}
+          {/* Le disque de laiton : les portes ouvertes, pas 50 flammes grises. */}
           <motion.div
             className="flex items-center gap-4 rounded-[18px] border border-[#BA7B39]/20 bg-[#0d110f]/70 px-4 py-3.5 backdrop-blur-[3px] sm:gap-5 lg:border-transparent lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none"
             initial={reduce ? false : { opacity: 0, y: 26, filter: 'blur(6px)' }}
@@ -88,10 +88,10 @@ const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semaines
               </p>
               <p className="mt-2 max-w-[16ch] font-serif text-[clamp(1.45rem,3vw,2.4rem)] leading-[1.1] text-[#EEE7DB]">
                 {lang === 'FR'
-                  ? (semainesRefermees === 0
+                  ? (semainesAchevees === 0
                       ? 'Huit portes vous attendent'
-                      : `${semainesRefermees} porte${semainesRefermees > 1 ? 's' : ''} refermée${semainesRefermees > 1 ? 's' : ''} sur huit`)
-                  : (semainesRefermees === 0 ? 'Eight doors are waiting' : `${semainesRefermees} of eight doors closed`)}
+                      : `${semainesAchevees} porte${semainesAchevees > 1 ? 's' : ''} ouverte${semainesAchevees > 1 ? 's' : ''} sur huit`)
+                  : (semainesAchevees === 0 ? 'Eight doors are waiting' : `${semainesAchevees} of eight doors opened`)}
               </p>
               <p className="mt-1.5 text-[13px] text-[#EEE7DB]/60">
                 {lang === 'FR' ? `${terminees} leçons sur ${total}` : `${terminees} of ${total} lessons`}

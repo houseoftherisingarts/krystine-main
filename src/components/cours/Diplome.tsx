@@ -91,8 +91,8 @@ const Diplome: React.FC<{ infos: DiplomeInfos; lang: 'FR' | 'EN' }> = ({ infos, 
 
         <p className="font-sans" style={{ fontSize: '1.42cqw', lineHeight: 1.85, marginTop: '2.2cqw', maxWidth: '62cqw', color: '#4a3d2c' }}>
           {fr
-            ? `pour avoir traversé ${infos.accompli} de l’${infos.programme}, et refermé une à une les portes de ses sens.`
-            : `for completing ${infos.accompli} of the ${infos.programme}, closing the doors of the senses one by one.`}
+            ? `pour avoir traversé ${infos.accompli} de l’${infos.programme}, et ouvert une à une les portes de sa perception.`
+            : `for completing ${infos.accompli} of the ${infos.programme}, opening the doors of perception one by one.`}
         </p>
 
         {/* La signature et la date, sur la même ligne de base */}

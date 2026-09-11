@@ -1,6 +1,6 @@
-// Les huit semaines de l'Expérience Ayurveda saison Vata, et le sens que
-// chacune apprend à refermer. Le programme va du souffle jusqu'à la présence,
-// et la page se réchauffe à mesure que les portes se ferment (plan :
+// Les huit semaines de l'Expérience Ayurveda saison Vata, et une porte de la
+// perception à ouvrir par semaine, du souffle jusqu'à la présence. La page se
+// réchauffe à mesure que les portes s'ouvrent (plan :
 // docs/vata-plan-visuel.md).
 //
 // Le rattachement se fait sur le numéro écrit dans le nom du module Kajabi
@@ -18,7 +18,7 @@ export interface SemaineVata {
   bandeau: string;       // tête de chapitre 16:7
   vignette: string;      // 480 px, pour les listes
   /** La teinte de la semaine, tirée du canon de Krystine. Le parcours va du
-   *  froid de l'ardoise au laiton chaud, comme le sanctuaire qui se réchauffe.
+   *  froid de l'ardoise au laiton chaud, comme la perception qui s'éclaircit.
    *  `encre` se lit sur le crème, `vive` sert de pastille, de liseré et de
    *  barre, et se lit sur les fonds sombres. */
   couleur: { encre: string; vive: string };
@@ -55,8 +55,8 @@ export const SEMAINES_VATA: SemaineVata[] = [
     rang: 2, roman: 'II',
     sens: { fr: 'L’ouïe', en: 'Hearing' },
     promesse: {
-      fr: 'Fermer les portes de l’écoute pour offrir au système nerveux le silence dont il a soif.',
-      en: 'Close the doors of hearing to give the nervous system the silence it craves.',
+      fr: 'Ouvrir l’écoute au silence dont le système nerveux a soif, et faire taire le bruit qui l’envahit.',
+      en: 'Open your hearing to the silence the nervous system craves, and quiet the noise that floods it.',
     },
     couleur: { encre: '#4E6349', vive: '#7A9270' },
     ...img(2),
