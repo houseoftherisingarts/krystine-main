@@ -18,7 +18,7 @@ const SPRING = { type: 'spring' as const, stiffness: 220, damping: 24, mass: 0.8
 // VATA Essentiel se vend et se suit ici même (Stripe + leçons natives, 50 leçons
 // du produit Kajabi du 17 juillet 2024). Un seul palier depuis septembre 2026 :
 // la Grande Bibliothèque n'est plus offerte.
-const COURS = '/cours/kajabi-2148687644';
+const COURS = '/cours/vata';
 const go = () => { window.location.href = COURS; };
 
 /* Tokens V2 + accent sauge de la page */

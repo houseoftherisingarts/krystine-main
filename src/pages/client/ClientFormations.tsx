@@ -1,3 +1,4 @@
+import { cheminCours } from '../../lib/cheminCours';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
@@ -53,7 +54,7 @@ const ClientFormations: React.FC = () => {
               return (
               <Link
                 key={a.id}
-                to={`/cours/${a.id}`}
+                to={cheminCours(a.id)}
                 className="group overflow-hidden rounded-[15px] border border-[#293027]/10 transition-transform duration-300 hover:-translate-y-0.5 dark:border-white/10"
               >
                 {cover ? (
@@ -91,7 +92,7 @@ const ClientFormations: React.FC = () => {
             {aDecouvrir.map(f => (
               <Link
                 key={f.id}
-                to={f.lienFiche || `/cours/${f.id}`}
+                to={f.lienFiche || cheminCours(f.id)}
                 className="group overflow-hidden rounded-[15px] border border-[#BA7B39]/30 transition-transform duration-300 hover:-translate-y-0.5"
               >
                 {f.imageUrl ? (

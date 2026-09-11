@@ -68,7 +68,7 @@ const A_VOTRE_RYTHME: Formation[] = [
   { slug: 'vata', titre: 'Programme Vata', sous: 'Une formation audio, avec son matériel de support. Sept semaines pour enraciner, réchauffer, apaiser.', href: '/vata' },
   { slug: 'pitta', titre: 'Saison Pitta', sous: 'Rafraîchir, apaiser, adoucir quand la chaleur monte' },
   { slug: 'kapha', titre: 'Saison Kapha', sous: "Bouger, drainer, alléger à l'éveil du printemps" },
-  { slug: 'sante-parfaite', titre: 'Parcours Santé Parfaite', sous: 'Masterclass Énergie et Clarté', href: '/cours/kajabi-2149362090' },
+  { slug: 'sante-parfaite', titre: 'Parcours Santé Parfaite', sous: 'Masterclass Énergie et Clarté', href: '/cours/sante-parfaite' },
   { slug: 'vitalite-clarte', titre: 'Vitalité et Clarté', sous: "Trente jours pour changer d'énergie" },
   { slug: 'cinq-rituels', titre: "Cinq rituels pour apaiser l'esprit", sous: 'Retrouver son centre en quelques gestes' },
   { slug: 'boussole', titre: "L'Ayurveda comme boussole ancestrale", sous: 'Les repères qui traversent les saisons' },

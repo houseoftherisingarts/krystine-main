@@ -1,3 +1,4 @@
+import { cheminCours } from '../../lib/cheminCours';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { suivreLiveEnCours, type LiveEnCours } from '../../firebase/lives';
@@ -25,7 +26,7 @@ const LiveBadge: React.FC = () => {
   );
 
   if (live.formationId) {
-    return <Link to={`/cours/${live.formationId}`} className={classes} aria-label={`Live en cours : ${live.titre}`}>{contenu}</Link>;
+    return <Link to={cheminCours(live.formationId)} className={classes} aria-label={`Live en cours : ${live.titre}`}>{contenu}</Link>;
   }
   return <Link to="/direct" className={classes} aria-label={`Live en cours : ${live.titre}`}>{contenu}</Link>;
 };

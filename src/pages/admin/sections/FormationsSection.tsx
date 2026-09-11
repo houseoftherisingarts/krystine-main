@@ -1,3 +1,4 @@
+import { cheminCours } from '../../../lib/cheminCours';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   getFormations, setFormationStatut, deleteFormation, updateFormationOptions,
@@ -244,7 +245,8 @@ export const LeconsPanel: React.FC<{ formationId: string }> = ({ formationId }) 
                 {l.moduleNom && <span className="ml-2 rounded-full bg-[#BA7B39]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#8B4A2F]">{l.moduleNom}</span>}
                 {l.mois && <span className="ml-1 text-[10px] uppercase tracking-wider text-[#38403a]/40 dark:text-white/40"><i className="fa-solid fa-door-closed mr-1" />{l.mois}</span>}
               </span>
-              {/* Le verdict du bot d'import Kajabi (scripts/kajabi/verifier-import.mjs) */}
+              {/* Le verdict du bot d'import 
+import Kajabi (scripts/kajabi/verifier-import.mjs) */}
               {l.integrite && (
                 <span title={`${l.integrite.detail} (${l.integrite.mode === 'md5' ? 'octet par octet' : 'taille'}, ${l.integrite.verifieLe.slice(0, 10)})`}
                   className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${l.integrite.etat === 'ok' ? 'bg-emerald-600/12 text-emerald-700 dark:text-emerald-300' : 'bg-red-500/12 text-red-600 dark:text-red-300'}`}>
@@ -471,7 +473,7 @@ const FormationsSection: React.FC = () => {
                   {f.statut === 'publie' ? 'Masquer' : 'Publier'}
                 </button>
                 <a
-                  href={`/cours/${f.id}?apercu=1`}
+                  href={cheminCours(f.id, '?apercu=1')}
                   target="_blank" rel="noopener noreferrer"
                   title="Voir le cours comme une membre qui l'a acheté"
                   className="shrink-0 rounded-full border border-[#293027]/20 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027]/70 transition-colors hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/20 dark:text-white/70"

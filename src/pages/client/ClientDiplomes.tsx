@@ -8,6 +8,7 @@ import {
 import { estTelechargement } from '../../firebase/musique';
 import Diplome, { type DiplomeInfos } from '../../components/cours/Diplome';
 import { telechargerDiplome } from '../../lib/diplomePdf';
+import { cheminCours } from '../../lib/cheminCours';
 
 // « Mes diplômes » : les parcours menés jusqu'au bout. Un diplôme ne se range
 // pas dans une collection à part, il se déduit de la progression : quand
@@ -133,7 +134,7 @@ const ClientDiplomes: React.FC = () => {
             {enCours.map(p => (
               <Link
                 key={p.id}
-                to={`/cours/${p.id}`}
+                to={cheminCours(p.id)}
                 className="flex items-center gap-4 rounded-[15px] border border-[#38403a]/10 bg-white/55 px-5 py-4 transition-colors hover:border-[#BA7B39]/50 dark:border-white/10 dark:bg-white/5"
               >
                 <span className="min-w-0 flex-1">

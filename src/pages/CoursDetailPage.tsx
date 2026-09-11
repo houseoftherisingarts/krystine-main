@@ -22,6 +22,7 @@ import BravoSemaine from '../components/cours/BravoSemaine';
 import BravoDiplome from '../components/cours/BravoDiplome';
 import type { DiplomeInfos } from '../components/cours/Diplome';
 import { FORMATION_VATA, SEMAINES_VATA, rangDeModule, semaineDeModule } from './vata/semaines';
+import { idDeCours, cheminCours, adresseADemenager } from '../lib/cheminCours';
 
 // La fiche d'un cours et son lecteur, sur le patron de l'Académie Zéro
 // Limite : liste des leçons et progression à gauche, contenu à droite,
@@ -61,7 +62,9 @@ const vignetteAudio = (l: { imageUrl?: string } & Record<string, any>, formation
 const rangPorte = (n?: string) => (n ? PORTES.findIndex(p => p.n === n) : -1);
 
 const CoursDetailPage: React.FC = () => {
-  const { id = '' } = useParams();
+  const { id: idAdresse = '' } = useParams();
+  // L'adresse dit « vata », la base dit l'identifiant d'import : on traduit.
+  const id = idDeCours(idAdresse);
   const { user, isAdmin, setSignInOpen } = useAuth();
   const { lang } = useUI();
   const [formation, setFormation] = useState<Formation | null>(null);
@@ -278,6 +281,10 @@ const CoursDetailPage: React.FC = () => {
     requestAnimationFrame(() => chapitre.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
   };
 
+  // Une adresse qui nomme encore l'identifiant d'import file vers la propre.
+  if (adresseADemenager(idAdresse)) {
+    return <Navigate to={cheminCours(idAdresse) + (typeof window !== 'undefined' ? window.location.search : '')} replace />;
+  }
   if (loading) {
     return <div className="min-h-screen bg-[#EEE7DB] pt-40 text-center text-sm text-[#38403a]/50 dark:bg-[#151d19] dark:text-white/50">…</div>;
   }
@@ -651,7 +658,7 @@ const CoursDetailPage: React.FC = () => {
                 </>
               )}
               {isAdmin && (
-                <a href={`/cours/${id}?apercu=1`} className="mt-4 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]/80 hover:text-[#8B4A2F]">
+                <a href={cheminCours(id, '?apercu=1')} className="mt-4 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]/80 hover:text-[#8B4A2F]">
                   <i className="fa-solid fa-eye" /> Aperçu administratrice, sans acheter
                 </a>
               )}

@@ -1,3 +1,4 @@
+import { cheminCours } from './cheminCours';
 // Le moteur d'offres : à partir de la fiche d'une membre, de ses habitudes de
 // navigation et de ce qu'elle possède déjà, calcule l'UNE offre qui lui revient.
 //
@@ -120,7 +121,7 @@ export function offrePour(ctx: ContexteOffre): Offre {
         titre: `${formation.titre}, pensé pour vous`,
         texte: `${TEXTES_DOSHA[dosha]}${phrasePrix(formation.prix)}`,
         bouton: `Découvrir ${formation.titre}`,
-        destination: formation.lienFiche || `/cours/${formation.id}`,
+        destination: formation.lienFiche || cheminCours(formation.id),
       };
     }
   }

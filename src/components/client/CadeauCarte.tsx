@@ -1,3 +1,4 @@
+import { cheminCours } from '../../lib/cheminCours';
 import React, { useState } from 'react';
 import { prixReduit, utiliserCadeau, type Cadeau } from '../../firebase/cadeaux';
 
@@ -19,7 +20,7 @@ const CadeauCarte: React.FC<{ cadeau: Cadeau; lang: string; compact?: boolean }>
       const r = await utiliserCadeau(cadeau.id);
       if (r.accorde) {
         setDit(fr ? `« ${cadeau.formationTitre} » est à vous. Elle vous attend dans « Mes formations ».` : `“${cadeau.formationTitre}” is yours. It is waiting in “My courses”.`);
-        window.setTimeout(() => window.location.assign(`/cours/${cadeau.formationId}`), 1600);
+        window.setTimeout(() => window.location.assign(cheminCours(cadeau.formationId)), 1600);
       } else if (r.url) {
         window.location.href = r.url;
       }

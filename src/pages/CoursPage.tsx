@@ -1,3 +1,4 @@
+import { cheminCours } from '../lib/cheminCours';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getFormationsPubliees, type Formation } from '../firebase/formations';
@@ -60,7 +61,7 @@ const CoursPage: React.FC = () => {
             {visibles.map(f => (
               <Link
                 key={f.id}
-                to={f.lienFiche || `/cours/${f.id}`}
+                to={f.lienFiche || cheminCours(f.id)}
                 className="group overflow-hidden rounded-[20px] border border-white/60 bg-white/55 shadow-[0_10px_30px_-18px_rgba(58,49,38,0.3)] backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 dark:border-white/10 dark:bg-[#2a2015]/55"
               >
                 {f.imageUrl ? (
