@@ -147,6 +147,20 @@ const Footer: React.FC = () => {
           <div className="flex items-center gap-6">
             <Link to="/politique-de-confidentialite" className="hover:text-brassBright transition-colors">{foot.privacy}</Link>
           </div>
+          {db && (
+            <div
+              style={{
+                ['--couleur-surface' as string]: '#2a2015',
+                ['--couleur-texte' as string]: '#f4ece0',
+                ['--couleur-muted' as string]: '#cdbfa9',
+                ['--couleur-bordure' as string]: 'rgba(187,154,94,0.35)',
+                ['--couleur-accent' as string]: '#bb9a5e',
+                ['--rayon-carte' as string]: '15px',
+              }}
+            >
+              <BadgeVexel db={db} />
+            </div>
+          )}
           <button
             type="button"
             onClick={() => setSalonOpen(true)}
