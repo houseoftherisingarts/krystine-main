@@ -30,11 +30,12 @@ async function signatureEnPng(): Promise<{ data: string; ratio: number } | null>
       i.src = SIGNATURE_NOIRE;
     });
     const c = document.createElement('canvas');
-    c.width = im.naturalWidth;
-    c.height = im.naturalHeight;
+    const large = Math.min(im.naturalWidth, 560);
+    c.width = large;
+    c.height = Math.round((im.naturalHeight / im.naturalWidth) * large);
     const ctx = c.getContext('2d');
     if (!ctx) return null;
-    ctx.drawImage(im, 0, 0);
+    ctx.drawImage(im, 0, 0, c.width, c.height);
     return { data: c.toDataURL('image/png'), ratio: im.naturalHeight / im.naturalWidth };
   } catch {
     return null;   // le diplôme s'imprime quand même, avec sa ligne seule
@@ -112,7 +113,7 @@ export async function telechargerDiplome(infos: DiplomeInfos, lang: 'FR' | 'EN')
   y += lignes.length * 22 + 46;
 
   // La signature à gauche, la date à droite, sur la même ligne de base
-  const baseY = Math.max(y + 40, H - 108);
+  const baseY = Math.min(H - 92, y + 92);
   const gauche = centre - 150;
   const droite = centre + 150;
 

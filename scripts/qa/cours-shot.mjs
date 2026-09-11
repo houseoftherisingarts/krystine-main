@@ -19,6 +19,24 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'mobile']]) {
   await p.waitForTimeout(1500);
   await p.goto(`${BASE}${route}`, { waitUntil: 'domcontentloaded' });
   await p.waitForTimeout(4000);
+  // Écarter les fenêtres qui couvrent la page (témoins, mot de bienvenue du
+  // jeu) : elles cachent ce qu'on vient justement regarder.
+  for (const texte of ["J'ACCEPTE", "J'accepte", 'Commencer', 'Fermer', 'Compris']) {
+    const b = p.locator(`button:has-text("${texte}")`).first();
+    if (await b.count().catch(() => 0)) { await b.click({ timeout: 1500 }).catch(() => {}); await p.waitForTimeout(400); }
+  }
+  await p.keyboard.press('Escape').catch(() => {});
+  // Ce qui couvre encore l'écran se retire du DOM le temps de la capture :
+  // c'est un geste de photographe, le site n'est pas modifié.
+  await p.evaluate(() => {
+    for (const el of document.querySelectorAll('body *')) {
+      const s = getComputedStyle(el);
+      if (s.position !== 'fixed') continue;
+      const r = el.getBoundingClientRect();
+      if (r.width > window.innerWidth * 0.55 && r.height > window.innerHeight * 0.45) el.remove();
+    }
+  });
+  await p.waitForTimeout(800);
   // Faire défiler toute la page : les sections se révèlent au scroll
   // (whileInView), et une capture fullPage seule ne les déclenche jamais.
   await p.evaluate(async () => {

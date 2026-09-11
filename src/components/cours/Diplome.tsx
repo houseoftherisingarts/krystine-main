@@ -51,20 +51,23 @@ const Diplome: React.FC<{ infos: DiplomeInfos; lang: 'FR' | 'EN' }> = ({ infos, 
       <span aria-hidden className="pointer-events-none absolute" style={{ inset: '2.6cqw', border: '1.5px solid #BA7B39' }} />
       <span aria-hidden className="pointer-events-none absolute" style={{ inset: '3.4cqw', border: '0.5px solid rgba(186,123,57,0.55)' }} />
 
-      {/* Les quatre coins ornés */}
+      {/* Les quatre coins ornés : un seul dessin, retourné en miroir. */}
       {[
-        { top: '2.6cqw', left: '2.6cqw', rotate: '0deg' },
-        { top: '2.6cqw', right: '2.6cqw', rotate: '90deg' },
-        { bottom: '2.6cqw', right: '2.6cqw', rotate: '180deg' },
-        { bottom: '2.6cqw', left: '2.6cqw', rotate: '270deg' },
-      ].map((coin, i) => (
-        <span key={i} aria-hidden className="pointer-events-none absolute" style={{ ...coin, width: '4.4cqw', height: '4.4cqw', transform: `rotate(${coin.rotate})` }}>
-          <svg viewBox="0 0 40 40" className="h-full w-full">
-            <path d="M0 14 C 0 6, 6 0, 14 0" fill="none" stroke="#BA7B39" strokeWidth="1.2" />
-            <circle cx="5.5" cy="5.5" r="1.6" fill="#BA7B39" />
-          </svg>
-        </span>
-      ))}
+        { top: '2.6cqw', left: '2.6cqw', t: 'none' },
+        { top: '2.6cqw', right: '2.6cqw', t: 'scaleX(-1)' },
+        { bottom: '2.6cqw', right: '2.6cqw', t: 'scale(-1,-1)' },
+        { bottom: '2.6cqw', left: '2.6cqw', t: 'scaleY(-1)' },
+      ].map((coin, i) => {
+        const { t: tr, ...pos } = coin;
+        return (
+          <span key={i} aria-hidden className="pointer-events-none absolute" style={{ ...pos, width: '4.4cqw', height: '4.4cqw', transform: tr }}>
+            <svg viewBox="0 0 40 40" className="h-full w-full">
+              <path d="M2 16 C 2 7, 7 2, 16 2" fill="none" stroke="#BA7B39" strokeWidth="1.3" />
+              <circle cx="7.5" cy="7.5" r="1.7" fill="#BA7B39" />
+            </svg>
+          </span>
+        );
+      })}
 
       <div className="absolute inset-0 flex flex-col items-center justify-center px-[9cqw] text-center">
         {/* Le monogramme */}

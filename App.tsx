@@ -46,6 +46,7 @@ const BoutiqueCollectionPage = lazy(() => import('./src/pages/BoutiqueCollection
 const TVPage           = lazy(() => import('./src/pages/TVPage'));
 const ClientPortal     = lazy(() => import('./src/pages/ClientPortal'));
 const DemoSkins        = lazy(() => import('./src/pages/DemoSkins'));
+const DemoDiplome      = lazy(() => import('./src/pages/DemoDiplome'));
 const AdminDashboard   = lazy(() => import('./src/pages/AdminDashboard'));
 const UnsubscribePage  = lazy(() => import('./src/pages/UnsubscribePage'));
 const SlideBg          = lazy(() => import('./src/pages/SlideBg'));
@@ -315,6 +316,7 @@ const App: React.FC = () => (
           <Route path="/messages" element={<VersFoyer />} />
           <Route path="/messages/:autreUid" element={<VersFoyer />} />
           <Route path="/demo-skins" element={<DemoSkins />} />
+          <Route path="/demo-diplome" element={<DemoDiplome />} />
           <Route path="/admin" element={<AdminDashboard />} />
           {/* Chaque section de l'admin a son adresse : /admin/formulaires,
               /admin/infolettre, /admin/live… (voir SECTION_SLUGS). */}

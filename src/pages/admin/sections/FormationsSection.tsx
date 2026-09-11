@@ -11,6 +11,7 @@ import { Card } from '../primitives';
 // ordre par flèches, suppression. Le fichier part dans formations-contenu/
 // (privé) et la leçon apparaît immédiatement dans le lecteur.
 import { SEMAINES } from '../../origine2/semaines';
+import ProgressionPanel from './ProgressionPanel';
 const MOIS_PORTES = ['', 'septembre', 'octobre', 'novembre', 'decembre', 'janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout'];
 const ICONE_LECON: Record<Lecon['type'], string> = {
   video: 'fa-circle-play', audio: 'fa-music', pdf: 'fa-file-pdf', fichier: 'fa-file', texte: 'fa-align-left',
@@ -375,6 +376,7 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
         {saved && <span className="text-xs text-green-600">Enregistré.</span>}
       </div>
       <LeconsPanel formationId={f.id} />
+      <ProgressionPanel formationId={f.id} />
     </div>
   );
 };

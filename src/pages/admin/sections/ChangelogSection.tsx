@@ -1,7 +1,8 @@
 // Le journal des changements, tel que Krystine le lit. Le contenu vit dans
 // src/lib/changelog.ts et s'ajoute en tête à chaque journée de travail.
 import React from 'react';
-import { JOURNAL, nombreEtapes } from '../../../lib/changelog';
+import { Link } from 'react-router-dom';
+import { JOURNAL, nombreEtapes, type Etape } from '../../../lib/changelog';
 
 const MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
 
@@ -69,12 +70,27 @@ const ChangelogSection: React.FC = () => {
               <p className="mb-6 leading-relaxed text-[#38403a]/80 dark:text-white/75">{entree.intro}</p>
 
               <ul className="space-y-3">
-                {entree.etapes.map((etape, j) => (
-                  <li key={j} className="flex gap-3 text-sm leading-relaxed text-[#38403a]/85 md:text-[15px] dark:text-white/75">
-                    <i className="fa-solid fa-check mt-1 shrink-0 text-[#BA7B39]" aria-hidden="true" />
-                    <span>{etape}</span>
-                  </li>
-                ))}
+                {entree.etapes.map((etape: Etape, j) => {
+                  const texte = typeof etape === 'string' ? etape : etape.texte;
+                  const ou = typeof etape === 'string' ? null : etape.ou;
+                  return (
+                    <li key={j} className="flex gap-3 text-sm leading-relaxed text-[#38403a]/85 md:text-[15px] dark:text-white/75">
+                      <i className="fa-solid fa-check mt-1 shrink-0 text-[#BA7B39]" aria-hidden="true" />
+                      <span>
+                        {texte}
+                        {ou && (
+                          <Link
+                            to={ou}
+                            className="ml-2 inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-[#BA7B39]/35 px-2.5 py-[3px] align-middle text-[11px] font-bold text-[#8B4A2F] transition-colors hover:border-[#BA7B39] hover:bg-[#BA7B39]/10 dark:text-[#d9a05b]"
+                          >
+                            <i className="fa-solid fa-arrow-up-right-from-square text-[9px]" aria-hidden="true" />
+                            {(typeof etape === 'string' ? '' : etape.libelle) || 'Voir'}
+                          </Link>
+                        )}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             </article>
           </li>
