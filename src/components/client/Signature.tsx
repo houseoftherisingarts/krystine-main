@@ -6,6 +6,9 @@ import React from 'react';
 // de changer l'adresse ci-dessous.
 export const SIGNATURE_URL = '/compte/signature-krystine-or.webp';
 
+/** La même signature en vert foncé, pour un papier clair : le diplôme, un PDF. */
+export const SIGNATURE_NOIRE = '/compte/signature-krystine-noire.webp';
+
 // La signature de Krystine St-Laurent en bas à droite de chaque bannière et
 // de chaque fond d'écran, qui se retire contre cinq niskas (Alex, 6 septembre
 // 2026).
