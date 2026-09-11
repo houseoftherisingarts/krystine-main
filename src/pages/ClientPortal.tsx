@@ -18,6 +18,7 @@ import ClientMessagerie from './client/ClientMessagerie';
 import ClientArchives from './client/ClientArchives';
 import ClientLoyalty from './client/ClientLoyalty';
 import ClientFormations from './client/ClientFormations';
+import ClientDiplomes from './client/ClientDiplomes';
 import ClientBillets from './client/ClientBillets';
 import ClientTelechargements from './client/ClientTelechargements';
 import ClientRediffusions from './client/ClientRediffusions';
@@ -77,7 +78,7 @@ const HISTOIRE_NISKA_EN = [
   'Some wealth appears in the way we look, discern and choose.',
 ];
 
-type Tab = 'profile' | 'amis' | 'orders' | 'formations' | 'billets' | 'rediffusions' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie' | 'aider';
+type Tab = 'profile' | 'amis' | 'orders' | 'formations' | 'diplomes' | 'billets' | 'rediffusions' | 'telechargements' | 'loyalty' | 'dosha' | 'archives' | 'messagerie' | 'aider';
 
 // Le Badge Bleu : la coche qui dit à la communauté que ce compte est bien le
 // vôtre. Quatre états, jugés par members.verifie puis par verifications/{uid}
@@ -554,7 +555,7 @@ const ClientPortal: React.FC = () => {
   // ?onglet=messagerie (cloche, bulle des messages, menu de la musique) ouvre l'onglet voulu.
   useEffect(() => {
     const voulu = new URLSearchParams(location.search).get('onglet') as Tab | null;
-    if (voulu && ['profile', 'amis', 'orders', 'formations', 'billets', 'rediffusions', 'telechargements', 'loyalty', 'dosha', 'archives', 'messagerie', 'aider'].includes(voulu)) setTab(voulu);
+    if (voulu && ['profile', 'amis', 'orders', 'formations', 'diplomes', 'billets', 'rediffusions', 'telechargements', 'loyalty', 'dosha', 'archives', 'messagerie', 'aider'].includes(voulu)) setTab(voulu);
   }, [location.search, location.key]);
   // Une carte « Lettre d'or » dans la messagerie mène à l'onglet Lettres.
   useEffect(() => {
@@ -663,6 +664,7 @@ const ClientPortal: React.FC = () => {
     { id: 'amis',     label: lang === 'FR' ? 'Amis' : 'Friends', icon: 'fa-user-group' },
     { id: 'orders',   label: lang === 'FR' ? 'Commandes' : 'Orders', icon: 'fa-box' },
     { id: 'formations', label: lang === 'FR' ? 'Mes formations' : 'My courses', icon: 'fa-graduation-cap' },
+    { id: 'diplomes', label: lang === 'FR' ? 'Mes diplômes' : 'My certificates', icon: 'fa-award' },
     { id: 'billets',  label: lang === 'FR' ? 'Mes billets' : 'My tickets', icon: 'fa-ticket' },
     { id: 'rediffusions', label: lang === 'FR' ? 'Rediffusions' : 'Replays', icon: 'fa-circle-play' },
     { id: 'telechargements', label: lang === 'FR' ? 'Téléchargements et petite boutique' : 'Downloads and little shop', icon: 'fa-download' },
@@ -806,6 +808,7 @@ const ClientPortal: React.FC = () => {
           {tab === 'amis'     && <AmisDOrigine uid={user.uid} lang={lang} />}
           {tab === 'orders'   && <OrdersTab />}
           {tab === 'formations' && <ClientFormations />}
+          {tab === 'diplomes' && <ClientDiplomes />}
           {tab === 'billets'   && <ClientBillets />}
           {tab === 'rediffusions' && <ClientRediffusions />}
           {tab === 'telechargements' && <ClientTelechargements />}

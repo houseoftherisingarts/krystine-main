@@ -7,7 +7,7 @@ import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, t
 import { Navigate, useParams, Link } from 'react-router-dom';
 import {
   getFormation, getLecons, getProgression, marquerLecon, aAchete,
-  acheterFormation, urlDeLecon,
+  acheterFormation, urlDeLecon, marquerFormationTerminee,
   type Formation, type Lecon,
 } from '../firebase/formations';
 import { useAuth, useUI } from '../contexts/AppContext';
@@ -18,6 +18,9 @@ import { LecteurVideoPleinEcran } from '../components/LecteurVideoEmbarque';
 import SeuilVata from '../components/cours/SeuilVata';
 import CheminSens, { type EtatSemaine } from '../components/cours/CheminSens';
 import LecteurAudioCours from '../components/cours/LecteurAudioCours';
+import BravoSemaine from '../components/cours/BravoSemaine';
+import BravoDiplome from '../components/cours/BravoDiplome';
+import type { DiplomeInfos } from '../components/cours/Diplome';
 import { FORMATION_VATA, SEMAINES_VATA, rangDeModule, semaineDeModule } from './vata/semaines';
 
 // La fiche d'un cours et son lecteur, sur le patron de l'Académie Zéro
@@ -104,6 +107,10 @@ const CoursDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [paiement, setPaiement] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
+  // Les deux moments de fête : une semaine qui se referme, et le programme
+  // mené jusqu'au bout (Alex, 10 septembre 2026).
+  const [bravo, setBravo] = useState<{ rang: number; avant: number; apres: number; refermees: number } | null>(null);
+  const [diplome, setDiplome] = useState<DiplomeInfos | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -171,8 +178,47 @@ const CoursDetailPage: React.FC = () => {
   const basculerTerminee = async (l: Lecon) => {
     if (!user) return;
     const v = !terminees[l.id];
-    setTerminees(t => ({ ...t, [l.id]: v }));
+    const apres = { ...terminees, [l.id]: v };
+    setTerminees(apres);
     await marquerLecon(user.uid, id, l.id, v).catch(() => {});
+    if (!v) return;   // décocher ne déclenche aucune fête
+
+    // La semaine vient-elle de se refermer, et avec elle le programme ?
+    const total = lecons.length;
+    const faitesAvant = lecons.filter(x => terminees[x.id]).length;
+    const faitesApres = lecons.filter(x => apres[x.id]).length;
+
+    const rang = rangDeModule(l.moduleNom);
+    if (rang >= 0) {
+      const duModule = lecons.filter(x => rangDeModule(x.moduleNom) === rang);
+      const restait = duModule.some(x => !terminees[x.id]);
+      const fini = duModule.every(x => apres[x.id]);
+      if (restait && fini) {
+        const refermees = SEMAINES_VATA.filter(s => {
+          const items = lecons.filter(x => rangDeModule(x.moduleNom) === s.rang);
+          return items.length > 0 && items.every(x => apres[x.id]);
+        }).length;
+        setBravo({
+          rang,
+          avant: total ? faitesAvant / total : 0,
+          apres: total ? faitesApres / total : 0,
+          refermees,
+        });
+      }
+    }
+
+    // Le programme entier : le parchemin, une seule fois.
+    if (total > 0 && faitesApres >= total && faitesAvant < total) {
+      const jour = new Date().toISOString().slice(0, 10);
+      marquerFormationTerminee(user.uid, id, jour).catch(() => {});
+      setDiplome({
+        nom: user.displayName || user.email || (lang === 'FR' ? 'Membre' : 'Member'),
+        programme: formation?.titre || 'Expérience Ayurveda',
+        accompli: lang === 'FR' ? `${total} leçons` : `${total} lessons`,
+        date: jour,
+        numero: `${id.slice(-6).toUpperCase()} · ${user.uid.slice(0, 6).toUpperCase()}`,
+      });
+    }
   };
 
   const suivante = () => {
@@ -512,6 +558,17 @@ const CoursDetailPage: React.FC = () => {
         {liveOuvert && live?.url && (
           <LecteurVideoPleinEcran url={live.url} titre={live.titre} onFermer={() => setLiveOuvert(false)} />
         )}
+        {bravo && SEMAINES_VATA[bravo.rang] && (
+          <BravoSemaine
+            semaine={SEMAINES_VATA[bravo.rang]}
+            avant={bravo.avant}
+            apres={bravo.apres}
+            semainesRefermees={bravo.refermees}
+            lang={lang}
+            onFermer={() => setBravo(null)}
+          />
+        )}
+        {diplome && <BravoDiplome infos={diplome} lang={lang} onFermer={() => setDiplome(null)} />}
 
         {accessible && lecons.length > 0 && !estVata && (
           <div className="mt-6 flex flex-col items-start gap-5 rounded-[20px] border border-white/60 bg-white/55 px-6 py-5 backdrop-blur-md sm:flex-row sm:flex-wrap sm:items-center sm:gap-6 dark:border-white/10 dark:bg-white/5">
@@ -643,23 +700,59 @@ const CoursDetailPage: React.FC = () => {
                   // Chaque module se replie; celui de la leçon courante reste ouvert.
                   const contientCourante = !!courante && g.items.some(l => l.id === courante.id);
                   const ouvert = g.nom ? (replies[g.nom] === undefined ? contientCourante || gi === 0 : !replies[g.nom]) : true;
+                  // Sur Vata, chaque semaine devient sa propre boîte, dans sa
+                  // teinte, et la boîte se referme visiblement quand toutes ses
+                  // leçons sont faites (Alex, 10 septembre 2026).
+                  const sem = estVata ? semaineDeModule(g.nom) : undefined;
+                  const faites = g.items.filter(l => terminees[l.id]).length;
+                  const refermee = g.items.length > 0 && faites >= g.items.length;
                   return (
-                  <div key={gi} className="mb-2">
+                  <div
+                    key={gi}
+                    className={`mb-2 ${sem ? 'overflow-hidden rounded-[16px] border transition-colors duration-500' : ''}`}
+                    style={sem ? {
+                      borderColor: refermee ? sem.couleur.vive : `${sem.couleur.vive}44`,
+                      background: refermee ? `${sem.couleur.vive}14` : `${sem.couleur.vive}09`,
+                    } : undefined}
+                  >
                     {g.nom && (
                       <button
                         type="button"
                         onClick={() => setReplies(r => ({ ...r, [g.nom]: ouvert }))}
                         aria-expanded={ouvert}
-                        className="flex w-full items-center justify-between gap-2 rounded-[12px] px-3 pt-3 pb-1.5 text-left text-[10px] font-bold uppercase tracking-[0.14em] text-[#8B4A2F] hover:bg-white/60 dark:hover:bg-white/10"
+                        className={`flex w-full items-center justify-between gap-2 text-left text-[10px] font-bold uppercase tracking-[0.14em] hover:bg-white/60 dark:hover:bg-white/10 ${
+                          sem ? 'px-3.5 py-3' : 'rounded-[12px] px-3 pt-3 pb-1.5 text-[#8B4A2F]'
+                        }`}
+                        style={sem ? { color: sem.couleur.encre } : undefined}
                       >
-                        <span>{g.nom}</span>
-                        <span className="flex items-center gap-2 text-[#38403a]/50 dark:text-white/50">
-                          <span className="normal-case tracking-normal">{g.items.filter(l => terminees[l.id]).length}/{g.items.length}</span>
+                        <span className="flex min-w-0 items-center gap-2">
+                          {sem && (
+                            <span
+                              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-serif text-[11px] normal-case tracking-normal text-[#F7F3EA]"
+                              style={{ background: refermee ? sem.couleur.vive : `${sem.couleur.vive}bb` }}
+                            >
+                              {refermee ? <i className="fa-solid fa-check text-[9px]" /> : sem.roman}
+                            </span>
+                          )}
+                          <span className="min-w-0 truncate">{sem ? (lang === 'FR' ? sem.sens.fr : sem.sens.en) : g.nom}</span>
+                        </span>
+                        <span className="flex shrink-0 items-center gap-2 text-[#38403a]/50 dark:text-white/50">
+                          <span className="normal-case tracking-normal">{faites}/{g.items.length}</span>
                           <i className={`fa-solid fa-chevron-down transition-transform ${ouvert ? '' : '-rotate-90'}`} aria-hidden="true" />
                         </span>
                       </button>
                     )}
-                    {ouvert && g.items.map(l => {
+                    {sem && (
+                      <span className="mx-3.5 mb-1 block h-[3px] overflow-hidden rounded-full bg-[#38403a]/10 dark:bg-white/10">
+                        <span
+                          className="block h-full rounded-full transition-[width] duration-1000 ease-out"
+                          style={{ width: `${g.items.length ? Math.round((faites / g.items.length) * 100) : 0}%`, background: sem.couleur.vive }}
+                        />
+                      </span>
+                    )}
+                    {ouvert && (
+                    <div className={sem ? 'px-1.5 pb-1.5' : ''}>
+                    {g.items.map(l => {
                       const verrou = verrouillee(l);
                       return (
                       <button
@@ -669,11 +762,12 @@ const CoursDetailPage: React.FC = () => {
                         title={verrou ? (lang === 'FR' ? `S'ouvre avec la porte de ${l.mois}` : `Opens with the ${l.mois} door`) : undefined}
                         className={`flex w-full items-center gap-3 rounded-[14px] px-3 py-2.5 text-left text-sm transition-colors ${
                           courante?.id === l.id
-                            ? 'bg-[#BA7B39] text-[#293027]'
+                            ? (sem ? 'text-[#F7F3EA]' : 'bg-[#BA7B39] text-[#293027]')
                             : verrou
                               ? 'cursor-not-allowed text-[#38403a]/40 dark:text-white/35'
                               : 'text-[#38403a]/80 hover:bg-white/70 dark:text-white/80 dark:hover:bg-white/10'
                         }`}
+                        style={sem && courante?.id === l.id ? { background: sem.couleur.encre } : undefined}
                       >
                         {l.type === 'audio' && !verrou && !terminees[l.id] && vignetteAudio(l, formation || undefined) ? (
                           <img src={vignetteAudio(l, formation || undefined)} alt="" className={`h-9 w-9 shrink-0 rounded-[9px] object-cover border border-[#BA7B39]/25 ${courante?.id === l.id ? 'ring-2 ring-[#BA7B39]' : ''}`} />
@@ -686,6 +780,8 @@ const CoursDetailPage: React.FC = () => {
                       </button>
                       );
                     })}
+                    </div>
+                    )}
                   </div>
                   );
                 });
