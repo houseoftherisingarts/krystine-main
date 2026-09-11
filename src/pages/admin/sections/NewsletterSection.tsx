@@ -6,15 +6,17 @@ import LivePanel from './newsletter/LivePanel';
 import CalendarPanel from './newsletter/CalendarPanel';
 import AutomaticsPanel from './newsletter/AutomaticsPanel';
 import TerminalPanel from './newsletter/TerminalPanel';
+import AvisPanel from './newsletter/AvisPanel';
 
 type View =
   | { kind: 'list' }
   | { kind: 'composer'; id: string | null };
 
-type Tab = 'newsletters' | 'terminal' | 'calendar' | 'subscribers' | 'live' | 'automatics';
+type Tab = 'newsletters' | 'avis' | 'terminal' | 'calendar' | 'subscribers' | 'live' | 'automatics';
 
 const TABS: Array<{ key: Tab; icon: string; label: string }> = [
   { key: 'newsletters', icon: 'fa-envelope-open-text', label: 'Infolettres' },
+  { key: 'avis', icon: 'fa-thumbtack', label: 'Avis épinglés' },
   { key: 'terminal', icon: 'fa-terminal', label: 'Terminal' },
   { key: 'calendar', icon: 'fa-calendar-days', label: 'Calendrier' },
   { key: 'subscribers', icon: 'fa-users', label: 'Abonnés' },
@@ -51,6 +53,7 @@ const NewsletterSection: React.FC = () => {
       </div>
 
       {tab === 'newsletters' && <NewsletterList onOpen={open} />}
+      {tab === 'avis' && <AvisPanel />}
       {tab === 'terminal' && <TerminalPanel onOpen={open} />}
       {tab === 'calendar' && <CalendarPanel onOpen={open} onNew={() => open(null)} />}
       {tab === 'subscribers' && <SubscribersPanel />}

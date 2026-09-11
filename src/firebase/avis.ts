@@ -88,8 +88,10 @@ export async function supprimerAvis(id: string): Promise<void> {
 /** Combien de personnes ont lu chaque avis (admin). */
 export async function compterLectures(): Promise<Record<string, number>> {
   if (!db) return {};
-  const snap = await getDocs(collection(db, LUS));
   const n: Record<string, number> = {};
-  for (const d of snap.docs) { const id = (d.data() as AvisLu).avisId; n[id] = (n[id] || 0) + 1; }
+  try {
+    const snap = await getDocs(collection(db, LUS));
+    for (const d of snap.docs) { const id = (d.data() as AvisLu).avisId; n[id] = (n[id] || 0) + 1; }
+  } catch { /* sans droit de lecture, la liste se montre quand même, sans les comptes */ }
   return n;
 }
