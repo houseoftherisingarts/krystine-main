@@ -144,6 +144,12 @@ const BookingsSection: React.FC = () => {
                   </span>
                 </div>
                 <p className="text-xs text-[#293027]/50 dark:text-white/50 mt-1">
+                  {/* L'horodatage de la demande (Alex, 11 septembre 2026). */}
+                  {(b as { createdAt?: { toDate?: () => Date } }).createdAt?.toDate && (
+                    <span className="mr-2 rounded-full bg-[#BA7B39]/12 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#8B4A2F]">
+                      {(b as { createdAt: { toDate: () => Date } }).createdAt.toDate().toLocaleString('fr-CA', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  )}
                   {b.email}
                   {b.phone ? ` · ${b.phone}` : ''}
                   {b.organization ? ` · ${b.organization}` : ''}
