@@ -409,6 +409,23 @@ service cloud.firestore {
       // L'historique des versions du composeur (une par heure d'écriture).
       match /versions/{v} { allow read, write: if isAdmin(); }
     }
+    // ── Les avis épinglés (le babillard, Alex 2026-09-11) ──
+    // Krystine écrit un avis; tout le monde lit ceux qui sont actifs (la
+    // bulle de l'accueil et la cloche les montrent), l'admin voit tout.
+    match /avis/{id} {
+      allow read: if resource.data.actif == true || isAdmin();
+      allow write: if isAdmin();
+    }
+    // « Lu » : la clé porte l'uid, personne ne lit un avis au nom d'une autre.
+    match /avisAcceptes/{docId} {
+      allow read:   if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create, update: if isSignedIn()
+                    && request.resource.data.uid == request.auth.uid
+                    && docId == request.auth.uid + '__' + request.resource.data.avisId
+                    && request.resource.data.keys().hasOnly(['uid', 'avisId', 'luLe']);
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+    }
+
     // ── Iris (terminal de l'infolettre) ──
     // Krystine dépose sa demande; le relais iris.py (sur son ordinateur ou
     // celui d'Alex, abonnement Claude Max) la lit et répond, connecté comme
