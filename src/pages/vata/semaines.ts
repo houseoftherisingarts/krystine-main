@@ -17,6 +17,11 @@ export interface SemaineVata {
   image: string;         // carte portrait 3:4
   bandeau: string;       // tête de chapitre 16:7
   vignette: string;      // 480 px, pour les listes
+  /** La teinte de la semaine, tirée du canon de Krystine. Le parcours va du
+   *  froid de l'ardoise au laiton chaud, comme le sanctuaire qui se réchauffe.
+   *  `encre` se lit sur le crème, `vive` sert de pastille, de liseré et de
+   *  barre, et se lit sur les fonds sombres. */
+  couleur: { encre: string; vive: string };
 }
 
 const img = (n: number) => ({
@@ -33,6 +38,7 @@ export const SEMAINES_VATA: SemaineVata[] = [
       fr: 'Poser le sanctuaire avant de ralentir, pour que le corps s’autorise à déposer les armes.',
       en: 'Set the sanctuary before slowing down, so the body finally lets go.',
     },
+    couleur: { encre: '#4F5C58', vive: '#7A8A85' },
     ...img(0),
   },
   {
@@ -42,6 +48,7 @@ export const SEMAINES_VATA: SemaineVata[] = [
       fr: 'L’air pour calmer l’air, et le geste invisible qui arrête le tourbillon en quelques secondes.',
       en: 'Air to calm air, the invisible gesture that stops the spin in seconds.',
     },
+    couleur: { encre: '#44626D', vive: '#6E93A0' },
     ...img(1),
   },
   {
@@ -51,6 +58,7 @@ export const SEMAINES_VATA: SemaineVata[] = [
       fr: 'Fermer les portes de l’écoute pour offrir au système nerveux le silence dont il a soif.',
       en: 'Close the doors of hearing to give the nervous system the silence it craves.',
     },
+    couleur: { encre: '#4E6349', vive: '#7A9270' },
     ...img(2),
   },
   {
@@ -60,6 +68,7 @@ export const SEMAINES_VATA: SemaineVata[] = [
       fr: 'Déposer ses yeux, libérer la vision de la fatigue des écrans et retrouver la clarté.',
       en: 'Rest the eyes, free your sight from screen fatigue and recover clarity.',
     },
+    couleur: { encre: '#3B4F63', vive: '#6A87A3' },
     ...img(3),
   },
   {
@@ -69,6 +78,7 @@ export const SEMAINES_VATA: SemaineVata[] = [
       fr: 'L’accès direct : une seule inspiration suffit pour changer d’état, par les essences.',
       en: 'The direct route: one breath of essence is enough to change your state.',
     },
+    couleur: { encre: '#6A6B41', vive: '#9BA067' },
     ...img(4),
   },
   {
@@ -78,6 +88,7 @@ export const SEMAINES_VATA: SemaineVata[] = [
       fr: 'La chaleur intérieure, avec les aliments et les épices qui calment les turbulences.',
       en: 'Inner warmth, with the foods and spices that settle the turbulence.',
     },
+    couleur: { encre: '#8F6526', vive: '#C79A52' },
     ...img(5),
   },
   {
@@ -87,6 +98,7 @@ export const SEMAINES_VATA: SemaineVata[] = [
       fr: 'Le cocon de soie : l’huile chaude recrée une protection et vous ne vivez plus à vif.',
       en: 'The silk cocoon: warm oil rebuilds a shield so you stop living raw.',
     },
+    couleur: { encre: '#8A4F2C', vive: '#BA7B39' },
     ...img(6),
   },
   {
@@ -96,6 +108,7 @@ export const SEMAINES_VATA: SemaineVata[] = [
       fr: 'La force tranquille, et un système d’auto-régulation qui vous appartient pour toujours.',
       en: 'Quiet strength, and a self-regulation system that stays yours for good.',
     },
+    couleur: { encre: '#7A3D26', vive: '#A9663C' },
     ...img(7),
   },
 ];
