@@ -75,6 +75,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   foyer:      'foyer',
   bookings:   'demandes',
   demande:    'demander-un-changement',
+  partenaireVexel: 'partenaire-vexel',
   bugs:       'problemes-techniques',
   changelog:  'journal-des-changements',
   newsletter: 'infolettre',
