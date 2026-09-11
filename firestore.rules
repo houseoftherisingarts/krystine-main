@@ -413,7 +413,7 @@ service cloud.firestore {
     // Krystine écrit un avis; tout le monde lit ceux qui sont actifs (la
     // bulle de l'accueil et la cloche les montrent), l'admin voit tout.
     match /avis/{id} {
-      allow read: if resource.data.actif == true || isAdmin();
+      allow read: if resource.data.actif == true || isSignedIn();
       allow write: if isAdmin();
     }
     // « Lu » : la clé porte l'uid, personne ne lit un avis au nom d'une autre.

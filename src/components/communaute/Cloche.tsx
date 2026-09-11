@@ -2,11 +2,12 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { suivreMesCadeaux, type Cadeau } from '../../firebase/cadeaux';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Bell, MessageCircle, User as UserIcon } from 'lucide-react';
+import { Bell, MessageCircle, FileWarning, User as UserIcon } from 'lucide-react';
 import { subscribeInbox, type DMThread } from '../../firebase/dms';
 import { suivreMesAmities, type Amitie } from '../../firebase/amities';
 import { suivreLeMur, type PostMur } from '../../firebase/mur';
 import { useMembreDuFoyer } from './ReserveAuFoyer';
+import { suivreAvisActifs, suivreMesAvisLus, marquerAvisLu, type Avis } from '../../firebase/avis';
 import { CHEMINS_FOYER } from './chemins';
 
 // ─── La cloche ────────────────────────────────────────────────────────
@@ -33,6 +34,8 @@ interface Item {
   titre: string;
   lien: string;
   quand: number;
+  /** Un avis épinglé de Krystine : icône à point d'exclamation et bouton « Lu » (Alex, 11 septembre 2026). */
+  avis?: Avis;
 }
 
 const Pastille: React.FC<{ n: number }> = ({ n }) => (n > 0 ? (
@@ -49,6 +52,8 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
   const [amities, setAmities] = useState<Amitie[]>([]);
   const [billets, setBillets] = useState<PostMur[]>([]);
   const [cadeaux, setCadeaux] = useState<Cadeau[]>([]);
+  const [avis, setAvis] = useState<Avis[]>([]);
+  const [avisLus, setAvisLus] = useState<string[]>([]);
   const [vu, setVu] = useState<number>(lireVu);
   const [ouverte, setOuverte] = useState(false);
   const [messagesOuverts, setMessagesOuverts] = useState(false);
@@ -71,6 +76,8 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
   // refusent la lecture, alors on ne s'y abonne même pas.
   useEffect(() => (foyer ? suivreLeMur('krystine', setBillets, 10) : undefined), [foyer]);
   useEffect(() => (uid ? suivreMesCadeaux(uid, setCadeaux) : undefined), [uid]);
+  useEffect(() => suivreAvisActifs(setAvis), []);
+  useEffect(() => (uid ? suivreMesAvisLus(uid, setAvisLus) : undefined), [uid]);
 
   useEffect(() => {
     if (!ouverte && !messagesOuverts) return;
@@ -132,8 +139,17 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
       lien: '/compte',
       quand: c.creeLe?.toMillis?.() ?? Date.now(),
     }));
-    return [...dons, ...msgs, ...demandes, ...nouveauxBillets].sort((a, b) => b.quand - a.quand);
-  }, [fils, amities, billets, cadeaux, vu, uid, foyer, versMessages]);
+    const epingles: Item[] = avis
+      .filter((a) => !avisLus.includes(a.id))
+      .map((a) => ({
+        id: `avis-${a.id}`,
+        titre: a.titre,
+        lien: `/compte?onglet=archives&avis=${a.id}`,
+        quand: a.creeLe?.toMillis?.() ?? Date.now(),
+        avis: a,
+      }));
+    return [...epingles, ...dons, ...msgs, ...demandes, ...nouveauxBillets].sort((a, b) => b.quand - a.quand);
+  }, [fils, amities, billets, cadeaux, avis, avisLus, vu, uid, foyer, versMessages]);
 
   const total = items.length;
   const bouton = 'relative items-center justify-center w-10 h-10 rounded-full border transition-colors';
@@ -229,12 +245,29 @@ const Cloche: React.FC<{ uid: string }> = ({ uid }) => {
               <ul className="max-h-[60vh] overflow-y-auto py-1">
                 {items.map((n) => (
                   <li key={n.id}>
-                    <Link
-                      to={n.lien} role="menuitem" onClick={() => setOuverte(false)}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-[#BA7B39]/10 transition-colors"
-                    >
-                      <span className="font-sans text-sm text-[#293027] dark:text-white">{n.titre}</span>
-                    </Link>
+                    {n.avis ? (
+                      <div className="flex items-start gap-3 px-4 py-3 hover:bg-[#BA7B39]/10 transition-colors">
+                        <FileWarning size={18} className="mt-0.5 shrink-0 text-[#8B4A2F] dark:text-[#d9a05b]" aria-hidden />
+                        <Link to={n.lien} role="menuitem" onClick={() => setOuverte(false)} className="min-w-0 flex-1">
+                          <span className="block text-[9px] uppercase tracking-[0.2em] text-[#8B4A2F] dark:text-[#BA7B39]">Avis épinglé</span>
+                          <span className="mt-0.5 block font-sans text-sm text-[#293027] dark:text-white">{n.titre}</span>
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => { void marquerAvisLu(uid, n.avis!.id); }}
+                          className="shrink-0 rounded-full bg-[#BA7B39] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#293027] transition-colors hover:bg-[#d9a05b]"
+                        >
+                          Lu
+                        </button>
+                      </div>
+                    ) : (
+                      <Link
+                        to={n.lien} role="menuitem" onClick={() => setOuverte(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-[#BA7B39]/10 transition-colors"
+                      >
+                        <span className="font-sans text-sm text-[#293027] dark:text-white">{n.titre}</span>
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

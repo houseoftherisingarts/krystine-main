@@ -158,6 +158,9 @@ const EvenementsPage: React.FC = () => {
               {vedette.sousTitre && (
                 <p className="mt-8 max-w-[52ch] text-[1rem] leading-[1.85] text-[#3a2f23]">{fr ? vedette.sousTitre.fr : vedette.sousTitre.en}</p>
               )}
+              {vedette.detailsAVenir && (
+                <p className="mt-5 text-[0.66rem] uppercase tracking-[0.22em] text-[#7d6330]">{fr ? 'Détails à venir · inscrivez-vous à la liste d’attente' : 'Details to come · join the waitlist'}</p>
+              )}
               {(vedette.geste.type === 'reserver' || vedette.geste.type === 'interne') && vedette.geste.href && (
                 <LienSouligne to={vedette.geste.href} className="mt-10">{fr ? 'Le programme de la soirée' : 'The evening programme'}</LienSouligne>
               )}
@@ -178,6 +181,7 @@ const EvenementsPage: React.FC = () => {
                   <p className="mt-3 v2-serif font-light text-[clamp(1.5rem,2.4vw,2.1rem)] leading-[1.12]">{titre(vedette)}</p>
                   <p className="mt-3 text-[0.92rem] leading-[1.7] text-[#EEE7DB]/75">
                     {quand(vedette)}{lieu(vedette) ? <> &middot; {lieu(vedette)}</> : null}
+                    {vedette.detailsAVenir && <><br />{fr ? 'Détails à venir.' : 'Details to come.'}</>}
                   </p>
                   <div className="mt-7">
                     <BoutonGeste geste={vedette.geste} lang={lang} ton="vert" onListe={setListe} onTournee={() => setTournee(true)} />
@@ -227,7 +231,11 @@ const EvenementsPage: React.FC = () => {
                     </div>
                     <h3 className="mt-3 line-clamp-2 v2-serif font-light leading-[1.08] text-[#1c1712] text-[clamp(1.4rem,2.4vw,2.1rem)]">{titre(r)}</h3>
                     {r.sousTitre && <p className="mt-1.5 line-clamp-2 max-w-[52ch] text-[0.95rem] leading-relaxed text-[#3a2f23]">{fr ? r.sousTitre.fr : r.sousTitre.en}</p>}
-                    {r.lieu && <p className="mt-2.5 text-[0.66rem] uppercase tracking-[0.18em] text-[#7d6330]">{lieu(r)}</p>}
+                    {(r.lieu || r.detailsAVenir) && (
+                      <p className="mt-2.5 text-[0.66rem] uppercase tracking-[0.18em] text-[#7d6330]">
+                        {lieu(r)}{r.lieu && r.detailsAVenir ? ' · ' : ''}{r.detailsAVenir ? (fr ? 'Détails à venir' : 'Details to come') : ''}
+                      </p>
+                    )}
                   </div>
                   <div className="col-span-12 md:col-span-4 md:text-right">
                     <BoutonGeste geste={r.geste} lang={lang} onListe={setListe} onTournee={() => setTournee(true)} />

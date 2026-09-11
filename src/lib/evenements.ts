@@ -38,6 +38,8 @@ export interface RendezVous {
   geste: Geste;
   brouillon?: boolean;
   vedette?: boolean;
+  /** Le rendez-vous s'annonce, mais ses détails ne sont pas encore publics : liste d'attente, jamais de porte vers la page de vente (Alex, 11 septembre 2026). */
+  detailsAVenir?: boolean;
 }
 
 const MOIS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
@@ -64,8 +66,14 @@ function depuisFirestore(e: EventDoc, admin: boolean): RendezVous {
   const brouillon = e.isPublished === false;
   const ouverts = enVente(e);
   let geste: Geste;
-  if (e.billetterie && e.slug && (ouverts || (brouillon && admin))) {
-    geste = { type: 'reserver', href: `/evenement/${e.slug}${brouillon ? '?apercu=1' : ''}`, libelle: { fr: 'Réserver ma place', en: 'Reserve my seat' } };
+  if (brouillon) {
+    // Tant que l'événement n'est pas publié, même une administratrice voit
+    // ce que le public voit : la liste d'attente, sans porte vers la page de
+    // vente. L'aperçu passe par le bouton Aperçu de l'admin.
+    const cle = e.slug || e.id || 'evenement';
+    geste = { type: 'liste', liste: { id: `evenement-${cle}`, labelFR: e.title, labelEN: e.title }, libelle: { fr: 'Liste d’attente pour réserver mon billet', en: 'Waitlist to reserve my ticket' } };
+  } else if (e.billetterie && e.slug && ouverts) {
+    geste = { type: 'reserver', href: `/evenement/${e.slug}`, libelle: { fr: 'Réserver ma place', en: 'Reserve my seat' } };
   } else if (e.billetterie && e.slug) {
     geste = { type: 'complet', href: `/evenement/${e.slug}`, libelle: { fr: 'Complet', en: 'Sold out' } };
   } else if (e.registrationLink) {
@@ -89,6 +97,7 @@ function depuisFirestore(e: EventDoc, admin: boolean): RendezVous {
     geste,
     brouillon,
     vedette: !!e.isFeatured,
+    detailsAVenir: brouillon,
   };
 }
 
@@ -133,6 +142,7 @@ function depuisCure(ev: LiveEvent): RendezVous {
     image: IMAGES_CUREES[ev.id],
     geste,
     vedette: !!ev.featured,
+    detailsAVenir: ev.kind === 'launch-waitlist' && geste.type === 'liste',
   };
 }
 
