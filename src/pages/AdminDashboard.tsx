@@ -115,6 +115,7 @@ const AdminDashboard: React.FC = () => {
       case 'groups':      return <GroupsSection />;
       case 'bookings':    return <BookingsSection />;
       case 'demande':     return <DemandeSection user={u} />;
+      case 'partenaireVexel': return <PartenaireVexelSection />;
       case 'bugs':        return <BugsSection />;
       case 'changelog':   return <ChangelogSection />;
       case 'newsletter':  return <NewsletterSection />;
