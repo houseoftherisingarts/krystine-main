@@ -58,7 +58,7 @@ const PartenaireVexelSection: React.FC = () => {
         <PartenaireVexelPanneau
           slug={SLUG}
           cle={CLE}
-          onSucces={(resultat) => window.dispatchEvent(new CustomEvent('vexel-partenaire-fait', { detail: resultat }))}
+          onSucces={(resultat) => enregistrerPartenaire(resultat).then(() => setDejaPartenaire(resultat))}
         />
       </div>
     </Card>
