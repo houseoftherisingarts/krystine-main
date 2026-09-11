@@ -1,61 +1,30 @@
 import React, { useEffect, useRef } from 'react';
-import { useParams, useLocation, Navigate, Link } from 'react-router-dom';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { useParams, useLocation, Navigate } from 'react-router-dom';
+import { Lock } from '@phosphor-icons/react';
 import { useApp } from '../contexts/AppContext';
 import { getEventParSlug, enVente, placesRestantes, type EventDoc } from '../firebase/firestore';
 import { enDollars } from '../firebase/billets';
-import { Feuille, Atmosphere, Parallax, Seam, KenBurns } from '../components/motion/loeuvre';
 import BandeauApercu from '../components/edit/BandeauApercu';
 import RideauEntree from '../components/evenements/RideauEntree';
 import BilletCarte from '../components/evenements/BilletCarte';
 import EtiquetteNature from '../components/evenements/EtiquetteNature';
 import { natureDe } from '../lib/evenements';
+import {
+  StyleV2, GOUTTIERE, Kicker, Masthead, TitreV2, SousTitreV2, LiensChapitres, Planche, LigneDefiler,
+  LienSouligne, BoutonNoir, BoutonIvoire, TitreChapitre, Filet, Reveal, QuatriemeCouverture, useMotionV2,
+} from '../components/v2/Magazine';
 
 /**
- * Le programme de soirée d'un événement (refonte du 11 septembre 2026). La
- * page se fabrique entièrement à partir du document Firestore (EventDoc) :
- * le hero plein écran avec le lieu photographié, la soirée en actes, le
- * lieu raconté, l'encart au cœur de la page, puis le billet dessiné comme
- * un billet. Le paiement passe toujours par creerSessionBillets.
+ * Le programme d'une soirée, dans le langage « magazine crème » des pages V2 :
+ * la ligne de tête, le titre sur deux lignes, la planche cadrée du lieu, puis
+ * les chapitres (la soirée acte par acte, le lieu, le livre, le billet). La
+ * page se fabrique entièrement à partir du document Firestore (EventDoc) et
+ * le paiement passe toujours par creerSessionBillets.
  */
 
-const EASE = [0.16, 0.8, 0.24, 1] as const;
-const GUT = 'px-[clamp(1.25rem,4vw,4.5rem)]';
-const G12 = 'grid grid-cols-12 gap-x-[clamp(1rem,2.5vw,3rem)]';
 const ROMAINS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
 const MOIS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
 const MOIS_EN = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: string }> = ({ children, delay = 0, className }) => {
-  const reduce = useReducedMotion();
-  return (
-    <motion.div
-      className={className}
-      initial={reduce ? { opacity: 1 } : { opacity: 0, y: 28, filter: 'blur(6px)' }}
-      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 1.1, ease: EASE, delay }}
-    >
-      {children}
-    </motion.div>
-  );
-};
-
-const Eyebrow: React.FC<{ children: React.ReactNode; on?: 'dark' | 'light' }> = ({ children, on = 'light' }) => (
-  <p className={`font-sans text-[0.62rem] font-bold uppercase tracking-[0.28em] ${on === 'dark' ? 'text-brass' : 'text-brassInk'}`}>{children}</p>
-);
-
-const DrawRule: React.FC<{ className?: string }> = ({ className = '' }) => (
-  <motion.div
-    aria-hidden
-    className={`h-px bg-brass ${className}`}
-    style={{ transformOrigin: 'left center' }}
-    initial={{ scaleX: 0 }}
-    whileInView={{ scaleX: 1 }}
-    viewport={{ once: true, amount: 0.7 }}
-    transition={{ duration: 1.2, ease: EASE, delay: 0.15 }}
-  />
-);
 
 /** « Le lancement du troisième livre » → « Le lancement » / « du troisième livre ». Deux lignes, jamais plus. */
 const deuxLignes = (titre: string): string[] => {
@@ -72,7 +41,7 @@ const EvenementVente: React.FC = () => {
   const { lang, isAdmin } = useApp();
   const fr = lang === 'FR';
   const apercu = new URLSearchParams(location.search).get('apercu') === '1';
-  const reduce = useReducedMotion();
+  const root = useRef<HTMLDivElement>(null);
 
   const [event, setEvent] = React.useState<EventDoc | null | undefined>(undefined);
   useEffect(() => {
@@ -80,17 +49,13 @@ const EvenementVente: React.FC = () => {
     getEventParSlug(slug).then(setEvent).catch(() => setEvent(null));
   }, [slug]);
 
-  // L'allumage : au premier défilement la photo recule et le voile se ferme.
-  const cadre = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({ target: cadre, offset: ['start start', 'end start'] });
-  const echelle = useTransform(scrollYProgress, [0, 1], [1, 0.93]);
-  const monte = useTransform(scrollYProgress, [0, 1], [0, -70]);
-  const voile = useTransform(scrollYProgress, [0, 0.8], [0.35, 0.9]);
+  // Le mouvement du seuil part quand la page a son événement, pas avant.
+  useMotionV2(root, !!event);
 
   if (event === undefined) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-cream">
-        <div className="h-9 w-9 animate-spin rounded-full border-2 border-brass border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-[#f4efe6]">
+        <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#9c7a44] border-t-transparent" />
       </div>
     );
   }
@@ -116,10 +81,21 @@ const EvenementVente: React.FC = () => {
   const inclus = ev.inclus || [];
   const adresse = ev.adresse || ev.location || '';
   const itineraire = adresse ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(adresse)}` : '';
-  let z = 1;
+  const chapitres: [string, string][] = [];
+  if (argumentaire.length || programme.length) chapitres.push([fr ? 'La soirée' : 'The evening', '#soiree']);
+  if (lieuTexte.length) chapitres.push([fr ? 'Le lieu' : 'The venue', '#lieu']);
+  if (ev.encart?.titre) chapitres.push([fr ? 'Le livre' : 'The book', '#livre']);
+  chapitres.push([fr ? 'Votre billet' : 'Your ticket', '#billet']);
+  let numero = 0;
+  const chapitre = () => `${fr ? 'Chapitre' : 'Chapter'} ${String(++numero).padStart(2, '0')}`;
 
   return (
-    <div className="bg-cream font-sans text-ink antialiased">
+    <div
+      ref={root}
+      className="relative min-h-screen w-full overflow-x-hidden bg-[#f4efe6] text-[#1c1712] antialiased"
+      style={{ fontFamily: '"Inter", system-ui, sans-serif' }}
+    >
+      <StyleV2 />
       <RideauEntree cle={`evenement-${slug}`} mot={`${jour} ${mois} ${a}`} />
 
       {enApercu && (
@@ -128,258 +104,178 @@ const EvenementVente: React.FC = () => {
         </BandeauApercu>
       )}
 
-      {/* ─────────── FEUILLE 1 · LE SEUIL ─────────── */}
-      <Feuille z={z++} premiere>
-        <section ref={cadre} className="relative h-[92vh] min-h-[600px] w-full overflow-hidden bg-espressoDeep">
-          <motion.div className="absolute inset-0" style={reduce ? undefined : { scale: echelle, y: monte }}>
-            {image ? <KenBurns src={image} className="object-[30%_50%] md:object-center" /> : <Atmosphere strength={1} />}
-          </motion.div>
-          <motion.div
-            aria-hidden
-            className="pointer-events-none absolute inset-0"
-            style={{ opacity: reduce ? 0.6 : voile, background: 'linear-gradient(to top, rgba(22,16,10,0.92) 0%, rgba(22,16,10,0.45) 34%, rgba(22,16,10,0.12) 60%, transparent 100%)' }}
-          />
-          <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(22,16,10,0.78) 0%, rgba(22,16,10,0.42) 34%, transparent 58%)' }} />
-          <Atmosphere strength={0.5} vignette={false} light="18% 22%" />
+      {/* ─────────── LE SEUIL ─────────── */}
+      <section data-hero className={`relative flex w-full flex-col ${GOUTTIERE} pt-[clamp(7rem,13vh,9.5rem)] pb-[clamp(2rem,5vh,4rem)]`}>
+        <Masthead gauche={<>N&deg; 05 &middot; {fr ? 'Les rendez-vous' : 'The gatherings'}</>} droite={<>{ev.location || 'Québec'} &middot; {a}</>} />
 
-          {/* Le titre, en haut à gauche, dans le ciel sombre de la photo. */}
-          <motion.div
-            className={`absolute inset-x-0 top-[6.5rem] md:top-[8rem] ${GUT}`}
-            initial={reduce ? false : { opacity: 0, y: 18, filter: 'blur(6px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            transition={{ duration: 1.2, ease: EASE, delay: 0.1 }}
-          >
-            <div className="flex flex-wrap items-center gap-3">
-              <Eyebrow on="dark">{ev.isFeatured ? (fr ? 'Lancement · Éditions de l’Homme' : 'Launch · Éditions de l’Homme') : (fr ? 'Rendez-vous' : 'Gathering')}</Eyebrow>
-              <EtiquetteNature nature={nature} lang={lang} ton="sombre" />
-            </div>
-            <h1 className="mt-5 font-serif font-medium text-ctext leading-[0.92] text-[clamp(2.7rem,7.2vw,6.6rem)] [text-shadow:0_2px_40px_rgba(0,0,0,0.55)]" style={{ letterSpacing: '-0.01em' }}>
-              {deuxLignes(ev.title).map((l, i) => <React.Fragment key={i}>{i > 0 && <br />}{l}</React.Fragment>)}
-            </h1>
-            {ev.subtitle && (
-              <p className="mt-5 max-w-[40ch] font-serif text-[clamp(1.1rem,1.8vw,1.5rem)] leading-snug text-ctextSoft [text-shadow:0_1px_20px_rgba(0,0,0,0.6)]">{ev.subtitle}</p>
-            )}
-          </motion.div>
-
-          {/* Les deux panneaux de verre : la date et le lieu, puis le prix et le geste. */}
-          <div className={`absolute inset-x-0 bottom-0 pb-7 md:pb-11 ${GUT}`}>
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-              <motion.div
-                className="flex items-center gap-5 rounded-[18px] border border-brass/30 bg-[#16100a]/70 px-5 py-4 backdrop-blur-md md:gap-7 md:px-6 md:py-5"
-                initial={reduce ? false : { opacity: 0, y: 26, filter: 'blur(6px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                transition={{ duration: 1.1, ease: EASE, delay: 0.25 }}
-              >
-                <div className="text-center">
-                  <p className="font-serif text-[clamp(3rem,5.4vw,4.8rem)] leading-none text-brassBright">{jour}</p>
-                  <p className="mt-1 text-[0.62rem] font-bold uppercase tracking-[0.26em] text-ctextSoft">{mois} {a}</p>
-                </div>
-                <div className="h-14 w-px bg-brass/30" aria-hidden />
-                <div>
-                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.28em] text-brass">{fr ? 'La soirée' : 'The evening'}</p>
-                  <p className="mt-1.5 font-serif text-[clamp(1.1rem,1.9vw,1.6rem)] leading-tight text-ctext">
-                    {dateLongue}{ev.heure ? ` · ${ev.heure}` : ''}
-                  </p>
-                  {(ev.location || ev.adresse) && (
-                    <p className="mt-1 text-[0.85rem] text-ctextSoft"><i className="fa-solid fa-location-dot mr-2 text-brass" />{ev.location}{ev.adresse && ev.location ? ' · ' : ''}{ev.adresse}</p>
-                  )}
-                </div>
-              </motion.div>
-
-              {ev.billetterie && (
-                <motion.a
-                  href="#billet"
-                  className="group flex items-center justify-between gap-6 rounded-[18px] border border-brass/30 bg-[#16100a]/70 px-5 py-4 backdrop-blur-md transition-colors hover:border-brass/60 md:px-6 md:py-5 lg:w-[min(30rem,40vw)]"
-                  initial={reduce ? false : { opacity: 0, y: 26, filter: 'blur(6px)' }}
-                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  transition={{ duration: 1.1, ease: EASE, delay: 0.4 }}
-                >
-                  <div>
-                    <p className="text-[0.62rem] font-bold uppercase tracking-[0.28em] text-brass">{fr ? 'Votre billet' : 'Your ticket'}</p>
-                    {ouverts ? (
-                      <>
-                        <p className="mt-1.5 font-serif text-[clamp(1.5rem,2.6vw,2.2rem)] leading-none text-ctext">{enDollars(ev.prixCents!)}</p>
-                        <p className="mt-1.5 text-[0.8rem] text-ctextSoft">
-                          {restantes <= 1 ? (fr ? 'Il reste une place.' : 'One seat left.') : (fr ? `Il reste ${restantes} places.` : `${restantes} seats left.`)}
-                        </p>
-                      </>
-                    ) : (
-                      <p className="mt-1.5 font-serif text-[1.2rem] leading-tight text-ctext">{fr ? 'Complet' : 'Sold out'}</p>
-                    )}
-                  </div>
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brass text-espressoDeep transition-colors group-hover:bg-brassBright">
-                    <i className="fa-solid fa-arrow-down text-[13px]" />
-                  </span>
-                </motion.a>
-              )}
-            </div>
+        <div className="mt-[clamp(2rem,5vh,3.5rem)]">
+          <div data-fade className="mb-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+            <Kicker>{ev.isFeatured ? (fr ? 'Lancement · Éditions de l’Homme' : 'Launch · Éditions de l’Homme') : (fr ? 'Rendez-vous' : 'Gathering')}</Kicker>
+            <EtiquetteNature nature={nature} lang={lang} />
           </div>
-        </section>
-      </Feuille>
+          <TitreV2 lignes={deuxLignes(ev.title)} className="text-[clamp(2.7rem,7.6vw,7rem)] max-w-[16ch]" />
+          {ev.subtitle && <SousTitreV2>{ev.subtitle}</SousTitreV2>}
+          <LiensChapitres liens={chapitres} />
+        </div>
 
-      {/* ─────────── FEUILLE 2 · LA SOIRÉE ─────────── */}
+        <Planche
+          seuil
+          className="mt-[clamp(2.5rem,6vh,4.5rem)]"
+          src={image}
+          alt={ev.location || ev.title}
+          position="object-[50%_40%]"
+          etiquette={ev.location || undefined}
+          legende={<>{dateLongue}{ev.heure ? <> &middot; {ev.heure}</> : null}{ev.adresse ? <> &middot; {ev.adresse}</> : null}</>}
+        />
+
+        <LigneDefiler droite={chapitres.map(c => c[0]).join(' · ')} />
+      </section>
+
+      {/* ─────────── LA SOIRÉE, ACTE PAR ACTE ─────────── */}
       {(argumentaire.length > 0 || programme.length > 0) && (
-        <Feuille z={z++}>
-          <section className="relative bg-cream py-20 md:py-28">
-            <Seam from="#16100a" height={90} />
-            <div className={`relative w-full ${GUT} ${G12} gap-y-12`}>
-              <div className="col-span-12 lg:col-span-5">
-                <div className="lg:sticky lg:top-28">
-                  <Reveal>
-                    <Eyebrow>{fr ? 'La soirée' : 'The evening'}</Eyebrow>
-                    <h2 className="mt-4 max-w-[16ch] font-serif font-medium leading-[1.02] text-ink text-[clamp(2rem,3.8vw,3.2rem)]">
-                      {fr ? 'Ce qui vous attend, acte par acte' : 'What awaits you, act by act'}
-                    </h2>
-                    <DrawRule className="mt-6 w-24" />
+        <section id="soiree" className={`relative w-full ${GOUTTIERE} scroll-mt-24 bg-[#efe6d7] py-[clamp(6rem,15vh,11rem)]`}>
+          <div className="grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-12 lg:grid-cols-[0.85fr_1.15fr]">
+            <div>
+              <div className="lg:sticky lg:top-28">
+                <Reveal>
+                  <Kicker className="mb-5">{chapitre()} · {fr ? 'La soirée' : 'The evening'}</Kicker>
+                  <TitreChapitre className="max-w-[14ch]">{fr ? 'Ce qui vous attend, acte par acte' : 'What awaits you, act by act'}</TitreChapitre>
+                  <Filet className="mt-7" />
+                </Reveal>
+                {image && (
+                  <Reveal className="mt-12 hidden lg:block">
+                    <Planche src={image} ratio="aspect-[4/5]" position="object-[42%_50%]" etiquette={ev.location || undefined} />
                   </Reveal>
-                  {image && (
-                    <Reveal delay={0.1} className="mt-10 hidden overflow-hidden rounded-[18px] lg:block">
-                      <div className="relative aspect-[4/5] w-full">
-                        <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover object-[36%_50%]" loading="lazy" referrerPolicy="no-referrer" />
+                )}
+              </div>
+            </div>
+            <div>
+              {argumentaire.length > 0 && (
+                <Reveal className="space-y-6">
+                  {argumentaire.map((p, i) => (
+                    <p key={i} className="max-w-[60ch] v2-serif font-light text-[clamp(1.15rem,1.7vw,1.45rem)] leading-[1.55] text-[#1c1712]">{p}</p>
+                  ))}
+                </Reveal>
+              )}
+              {programme.length > 0 && (
+                <div className={argumentaire.length ? 'mt-14' : ''}>
+                  {programme.map((acte, i) => (
+                    <Reveal key={i} delay={Math.min(i * 0.06, 0.2)} className="grid grid-cols-12 gap-x-5 border-t border-[#1c1712]/12 py-9 md:py-11">
+                      <p className="col-span-3 v2-serif font-light leading-none text-[#7d6330] text-[clamp(2.4rem,4.6vw,4.2rem)] md:col-span-2">{ROMAINS[i] || i + 1}</p>
+                      <div className="col-span-9 md:col-span-10">
+                        <h3 className="v2-serif font-light leading-[1.1] text-[#1c1712] text-[clamp(1.5rem,2.5vw,2.1rem)]">{acte.titre}</h3>
+                        <p className="mt-3 max-w-[58ch] text-[1rem] leading-[1.85] text-[#3a2f23]">{acte.texte}</p>
                       </div>
                     </Reveal>
-                  )}
-                </div>
-              </div>
-              <div className="col-span-12 lg:col-span-7">
-                {argumentaire.length > 0 && (
-                  <Reveal className="space-y-6">
-                    {argumentaire.map((p, i) => (
-                      <p key={i} className="max-w-[62ch] font-serif text-[clamp(1.15rem,1.7vw,1.45rem)] leading-[1.6] text-ink">{p}</p>
-                    ))}
-                  </Reveal>
-                )}
-                {programme.length > 0 && (
-                  <div className={argumentaire.length ? 'mt-14' : ''}>
-                    {programme.map((acte, i) => (
-                      <Reveal key={i} delay={Math.min(i * 0.06, 0.2)} className="grid grid-cols-12 gap-x-5 border-t border-ink/10 py-9 md:py-11">
-                        <p className="col-span-3 font-serif leading-none text-brass text-[clamp(2.6rem,5vw,4.6rem)] md:col-span-2">{ROMAINS[i] || i + 1}</p>
-                        <div className="col-span-9 md:col-span-10">
-                          <h3 className="font-serif font-medium leading-[1.1] text-ink text-[clamp(1.5rem,2.5vw,2.1rem)]">{acte.titre}</h3>
-                          <p className="mt-3 max-w-[58ch] text-[1rem] leading-[1.85] text-inkSoft">{acte.texte}</p>
-                        </div>
-                      </Reveal>
-                    ))}
-                    <DrawRule className="w-full" />
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
-        </Feuille>
-      )}
-
-      {/* ─────────── FEUILLE 3 · LE LIEU ─────────── */}
-      {lieuTexte.length > 0 && (
-        <Feuille z={z++}>
-          <section className="relative bg-cream2">
-            <div className="relative h-[54vh] min-h-[340px] w-full overflow-hidden md:h-[68vh]">
-              <Parallax speed={0.14} className="absolute inset-0" innerClassName="h-[130%] -mt-[15%]">
-                <img src={ev.lieuImage || image} alt="" className="h-full w-full object-cover" loading="lazy" referrerPolicy="no-referrer" />
-              </Parallax>
-              <div aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(241,235,224,0) 60%, rgba(241,235,224,1) 100%)' }} />
-            </div>
-            <div className={`relative w-full ${GUT} ${G12} -mt-10 pb-20 md:-mt-16 md:pb-28`}>
-              <Reveal className="col-span-12 md:col-span-5">
-                <Eyebrow>{fr ? 'Le lieu' : 'The venue'}</Eyebrow>
-                <h2 className="mt-4 max-w-[14ch] font-serif font-medium leading-[1.02] text-ink text-[clamp(2rem,3.8vw,3.2rem)]">{ev.location || (fr ? 'La salle' : 'The hall')}</h2>
-                <DrawRule className="mt-6 w-24" />
-                {ev.adresse && <p className="mt-6 text-[0.95rem] leading-relaxed text-inkSoft">{ev.adresse}</p>}
-                {itineraire && (
-                  <a href={itineraire} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex min-h-[44px] items-center gap-3 rounded-full border border-ink/25 px-6 py-3 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-ink transition-colors hover:border-brass hover:text-brassInk">
-                    {fr ? 'Itinéraire' : 'Directions'} <i className="fa-solid fa-arrow-up-right-from-square text-[10px]" />
-                  </a>
-                )}
-              </Reveal>
-              <Reveal delay={0.1} className="col-span-12 space-y-5 md:col-span-6 md:col-start-7 md:pt-8">
-                {lieuTexte.map((p, i) => <p key={i} className="max-w-[60ch] text-[1.02rem] leading-[1.85] text-inkSoft">{p}</p>)}
-              </Reveal>
-            </div>
-          </section>
-        </Feuille>
-      )}
-
-      {/* ─────────── FEUILLE 4 · L'ENCART ─────────── */}
-      {ev.encart?.titre && (
-        <Feuille z={z++}>
-          <section className="relative bg-cream py-20 md:py-28">
-            <div className={`w-full ${GUT}`}>
-              <div className="relative rounded-[22px] border border-brass/40 p-7 md:p-14">
-                <span aria-hidden className="absolute inset-3 rounded-[16px] border border-brass/20 md:inset-4" />
-                <div className={`relative ${G12} gap-y-10`}>
-                  <Reveal className="col-span-12 lg:col-span-7">
-                    <Eyebrow>{ev.encart.surtitre}</Eyebrow>
-                    <h2 className="mt-5 max-w-[14ch] font-serif font-medium leading-[0.98] text-ink text-[clamp(2.4rem,5.4vw,4.8rem)]" style={{ letterSpacing: '-0.01em' }}>{ev.encart.titre}</h2>
-                    <DrawRule className="mt-8 w-32" />
-                    <div className="mt-8 space-y-5">
-                      {ev.encart.texte.map((p, i) => <p key={i} className="max-w-[58ch] text-[1.02rem] leading-[1.85] text-inkSoft">{p}</p>)}
-                    </div>
-                  </Reveal>
-                  {ev.encart.images && ev.encart.images.length > 0 && (
-                    <Reveal delay={0.15} className="col-span-12 flex items-end justify-center gap-4 lg:col-span-5 lg:justify-end">
-                      {ev.encart.images.slice(0, 3).map((src, i) => (
-                        <motion.img
-                          key={src}
-                          src={src}
-                          alt=""
-                          loading="lazy"
-                          referrerPolicy="no-referrer"
-                          className="w-[38%] max-w-[220px] rounded-[6px] shadow-[0_30px_60px_-24px_rgba(29,22,4,0.55)]"
-                          style={{ rotate: i % 2 ? 3 : -3, y: i % 2 ? 0 : 14 }}
-                        />
-                      ))}
-                    </Reveal>
-                  )}
-                </div>
-              </div>
-            </div>
-          </section>
-        </Feuille>
-      )}
-
-      {/* ─────────── FEUILLE 5 · LE BILLET ─────────── */}
-      <Feuille z={z++}>
-        <section className="relative overflow-hidden bg-espressoDeep py-20 md:py-28">
-          <Atmosphere strength={0.8} light="72% 18%" />
-          <div className={`relative w-full ${GUT} ${G12} gap-y-12`}>
-            <Reveal className="col-span-12 lg:col-span-6">
-              <Eyebrow on="dark">{fr ? 'Votre place' : 'Your seat'}</Eyebrow>
-              <h2 className="mt-4 max-w-[16ch] font-serif font-medium leading-[1.02] text-ctext text-[clamp(2rem,3.8vw,3.2rem)]">
-                {fr ? 'Ce que votre billet vous donne' : 'What your ticket gives you'}
-              </h2>
-              <DrawRule className="mt-6 w-24" />
-              {inclus.length > 0 && (
-                <ol className="mt-10 max-w-[52ch]">
-                  {inclus.map((ligne, i) => (
-                    <li key={i} className="flex items-baseline gap-5 border-t border-ctext/10 py-5">
-                      <span className="w-8 shrink-0 font-serif text-[1.6rem] leading-none text-brass">{String(i + 1).padStart(2, '0')}</span>
-                      <span className="text-[1.02rem] leading-[1.7] text-ctext">{ligne}</span>
-                    </li>
                   ))}
-                </ol>
+                  <span className="block h-px w-full bg-[#1c1712]/12" aria-hidden />
+                </div>
               )}
-            </Reveal>
-            <Reveal delay={0.12} className="col-span-12 lg:col-span-5 lg:col-start-8">
-              <BilletCarte ev={ev} lang={lang} apercu={enApercu} id="billet" />
-            </Reveal>
+            </div>
           </div>
         </section>
-      </Feuille>
+      )}
 
-      <div className={`flex flex-wrap items-center justify-between gap-4 bg-espressoDeep pb-24 pt-2 md:pb-10 ${GUT}`}>
-        <Link to="/evenements" className="text-[0.68rem] font-bold uppercase tracking-widest text-ctextSoft transition-colors hover:text-brass">
-          <i className="fa-solid fa-arrow-left mr-2" />{fr ? 'Tous les rendez-vous' : 'All gatherings'}
-        </Link>
-        {ev.credit && <p className="text-[0.68rem] text-ctextSoft/60">{ev.credit}</p>}
-      </div>
+      {/* ─────────── LE LIEU ─────────── */}
+      {lieuTexte.length > 0 && (
+        <section id="lieu" className={`relative w-full ${GOUTTIERE} scroll-mt-24 bg-[#f4efe6] py-[clamp(6rem,15vh,11rem)]`}>
+          <Reveal className="grid items-center gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1fr_1fr]">
+            <div>
+              <Kicker className="mb-5">{chapitre()} · {fr ? 'Le lieu' : 'The venue'}</Kicker>
+              <TitreChapitre className="max-w-[14ch]">{ev.location || (fr ? 'La salle' : 'The hall')}</TitreChapitre>
+              {ev.adresse && <p className="mt-3 v2-serif font-light text-[clamp(1.1rem,2vw,1.5rem)] text-[#7d6330]">{ev.adresse}</p>}
+              <div className="mt-7 space-y-5">
+                {lieuTexte.map((p, i) => <p key={i} className="max-w-[56ch] text-[1rem] leading-[1.85] text-[#3a2f23]">{p}</p>)}
+              </div>
+              {itineraire && <LienSouligne href={itineraire} externe className="mt-9">{fr ? 'Itinéraire' : 'Directions'}</LienSouligne>}
+            </div>
+            <Planche src={ev.lieuImage || image} ratio="aspect-[4/3]" alt={ev.location || ''} etiquette={fr ? 'Vieux-Lévis' : 'Old Lévis'} />
+          </Reveal>
+        </section>
+      )}
+
+      {/* ─────────── LE LIVRE ─────────── */}
+      {ev.encart?.titre && (
+        <section id="livre" className={`relative w-full ${GOUTTIERE} scroll-mt-24 bg-[#efe6d7] py-[clamp(6rem,15vh,11rem)]`}>
+          <Reveal>
+            <div className="relative border border-[#9c7a44]/40 p-7 md:p-14">
+              <span aria-hidden className="pointer-events-none absolute inset-3 border border-[#9c7a44]/20 md:inset-4" />
+              <div className="relative grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.1fr_0.9fr]">
+                <div>
+                  <Kicker className="mb-5">{chapitre()} · {ev.encart.surtitre}</Kicker>
+                  <h2 className="v2-serif font-light leading-[0.98] text-[#1c1712] text-[clamp(2.4rem,5.4vw,4.8rem)] max-w-[14ch]">{ev.encart.titre}</h2>
+                  <Filet className="mt-8 w-20" />
+                  <div className="mt-8 space-y-5">
+                    {ev.encart.texte.map((p, i) => <p key={i} className="max-w-[56ch] text-[1rem] leading-[1.85] text-[#3a2f23]">{p}</p>)}
+                  </div>
+                </div>
+                {/* Les deux premiers tomes, et le troisième sous scellés, comme sur la page Médias. */}
+                <div className="flex items-end justify-center gap-4 lg:justify-end">
+                  {(ev.encart.images || []).slice(0, 2).map((src) => (
+                    <div key={src} className="relative w-[30%] max-w-[190px] overflow-hidden shadow-[0_18px_50px_rgba(28,23,18,0.18)]">
+                      <span className="pointer-events-none absolute inset-0 z-10 border border-[#9c7a44]/30" aria-hidden />
+                      <img src={src} alt="" loading="lazy" referrerPolicy="no-referrer" className="block aspect-[1/1.3] w-full object-cover" />
+                    </div>
+                  ))}
+                  <div className="relative flex aspect-[1/1.3] w-[30%] max-w-[190px] flex-col items-center justify-center bg-[#34241a] text-[#f4efe6] shadow-[0_18px_50px_rgba(28,23,18,0.18)]">
+                    <span className="pointer-events-none absolute inset-0 border border-[#9c7a44]/30" aria-hidden />
+                    <Lock size={30} weight="light" className="text-[#9c7a44]/70" />
+                    <span className="mt-4 text-[0.56rem] uppercase tracking-[0.22em] text-[#f4efe6]/70">{fr ? 'Tome III' : 'Volume III'}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </section>
+      )}
+
+      {/* ─────────── VOTRE BILLET ─────────── */}
+      <section id="billet" className={`relative w-full ${GOUTTIERE} scroll-mt-24 bg-[#f4efe6] py-[clamp(6rem,15vh,11rem)]`}>
+        <div className="grid items-start gap-x-[clamp(2rem,5vw,5rem)] gap-y-12 lg:grid-cols-[1fr_1fr]">
+          <Reveal>
+            <Kicker className="mb-5">{chapitre()} · {fr ? 'Votre billet' : 'Your ticket'}</Kicker>
+            <TitreChapitre className="max-w-[16ch]">{fr ? 'Ce que votre billet vous donne' : 'What your ticket gives you'}</TitreChapitre>
+            <p className="mt-3 v2-serif font-light text-[clamp(1.1rem,2vw,1.5rem)] text-[#7d6330]">
+              {ouverts
+                ? (restantes <= 1 ? (fr ? 'Il reste une place.' : 'One seat left.') : (fr ? `Il reste ${restantes} places.` : `${restantes} seats left.`))
+                : (fr ? 'La réservation ouvre bientôt.' : 'Reservations open soon.')}
+            </p>
+            <Filet className="mt-7" />
+            {inclus.length > 0 && (
+              <ol className="mt-8 max-w-[52ch] border-b border-[#1c1712]/12">
+                {inclus.map((ligne, i) => (
+                  <li key={i} className="flex items-baseline gap-5 border-t border-[#1c1712]/12 py-5">
+                    <span className="w-8 shrink-0 v2-serif font-light text-[1.5rem] leading-none text-[#7d6330]">{String(i + 1).padStart(2, '0')}</span>
+                    <span className="text-[1rem] leading-[1.7] text-[#3a2f23]">{ligne}</span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </Reveal>
+          <Reveal delay={0.1}>
+            <BilletCarte ev={ev} lang={lang} apercu={enApercu} />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ─────────── LA QUATRIÈME DE COUVERTURE ─────────── */}
+      <QuatriemeCouverture
+        citation={ev.encart?.titre ? `« ${ev.encart.titre}. »` : (ev.subtitle ? `« ${ev.subtitle} »` : `« ${ev.title} »`)}
+        note={ev.credit ? <span className="normal-case tracking-normal text-[0.7rem] text-[#f4efe6]/50">{ev.credit}</span> : undefined}
+      >
+        {ev.billetterie && ouverts && <BoutonIvoire href="#billet">{fr ? 'Réserver ma place' : 'Reserve my seat'}</BoutonIvoire>}
+        <a href="/evenements" className="inline-flex items-center gap-2.5 v2-serif text-lg font-light text-[#f4efe6]/80 transition-colors duration-300 hover:text-[#c8a86a]">
+          {fr ? 'Tous les rendez-vous' : 'All gatherings'}
+        </a>
+      </QuatriemeCouverture>
 
       {/* Sur mobile, le bouton reste sous le pouce. */}
       {ev.billetterie && ouverts && (
-        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-brass/25 bg-[#16100a]/85 px-4 py-3 backdrop-blur-md md:hidden">
-          <a href="#billet" className="flex min-h-[48px] items-center justify-between rounded-full bg-brass px-6 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-espressoDeep">
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-[#9c7a44]/30 bg-[#f4efe6]/92 px-4 py-3 backdrop-blur-md md:hidden">
+          <BoutonNoir href="#billet" className="w-full !justify-between">
             <span>{fr ? 'Réserver ma place' : 'Reserve my seat'}</span>
-            <span className="font-serif text-[1.1rem] normal-case tracking-normal">{enDollars(ev.prixCents!)}</span>
-          </a>
+            <span className="v2-serif text-[1.05rem] normal-case tracking-normal">{enDollars(ev.prixCents!)}</span>
+          </BoutonNoir>
         </div>
       )}
     </div>
