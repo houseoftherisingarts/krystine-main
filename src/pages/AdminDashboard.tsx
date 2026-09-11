@@ -54,6 +54,7 @@ import SubmissionsSection from './admin/sections/SubmissionsSection';
 import GroupsSection from './admin/sections/GroupsSection';
 import BookingsSection from './admin/sections/BookingsSection';
 import DemandeSection from './admin/sections/DemandeSection';
+import PartenaireVexelSection from './admin/sections/PartenaireVexelSection';
 import ChangelogSection from './admin/sections/ChangelogSection';
 import BugsSection from './admin/sections/BugsSection';
 import NewsletterSection from './admin/sections/NewsletterSection';
