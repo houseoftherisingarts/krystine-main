@@ -41,7 +41,10 @@ const ICONES: Record<Lecon['type'], string> = {
 // leur imageUrl de fiche, même voile — jamais une image inventée.
 const BANNIERES_ACHETEES: Record<string, { image: string; duree?: { fr: string; en: string } }> = {
   'kajabi-2148687644': {
-    image: 'https://storage.googleapis.com/inspirata/Vata/bg.png',
+    // La couverture au canon (crème, sauge, laiton mat), générée le 10
+    // septembre 2026 pour remplacer le visuel Kajabi de l'ancien branding. Le
+    // titre se pose dessus en Cormorant Garamond, comme sur le diplôme.
+    image: '/vata/couverture.webp',
     duree: { fr: '7 semaines', en: '7 weeks' },
   },
 };
@@ -317,7 +320,7 @@ const CoursDetailPage: React.FC = () => {
           to="/cours"
           className={`text-[11px] font-bold uppercase tracking-widest ${
             estVata && accessible
-              ? 'absolute left-5 top-24 z-20 text-[#EEE7DB]/75 hover:text-[#d9a05b] md:left-10'
+              ? 'absolute left-5 top-24 z-20 text-[#293027]/70 hover:text-[#8B4A2F] md:left-10'
               : 'text-[#8B4A2F]'
           }`}
         >

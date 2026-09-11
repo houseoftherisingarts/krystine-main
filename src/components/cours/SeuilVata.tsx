@@ -43,7 +43,7 @@ const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semaines
   return (
     <section ref={cadre} className="relative h-[74vh] min-h-[460px] w-full overflow-hidden bg-[#151d19] md:h-[92vh] md:min-h-[560px]">
       <motion.div className="absolute inset-0" style={reduce ? undefined : { scale: echelle, y: monte }}>
-        <KenBurns src={image} />
+        <KenBurns src={image} className="object-[28%_50%] md:object-center" />
       </motion.div>
 
       {/* Le voile : froid en haut, chaud en bas quand le parcours avance. */}
@@ -52,17 +52,38 @@ const SeuilVata: React.FC<Props> = ({ image, chaleur, terminees, total, semaines
         className="pointer-events-none absolute inset-0"
         style={{
           opacity: reduce ? 0.6 : voile,
-          background: `linear-gradient(to top, rgba(18,25,21,0.99) 0%, rgba(18,25,21,0.94) 22%, rgba(21,29,25,${0.66 + 0.18 * chaleur}) 44%, rgba(${Math.round(30 + 40 * chaleur)},${Math.round(40 + 18 * chaleur)},${Math.round(45 - 10 * chaleur)},0.3) 74%, transparent 100%)`,
+          background: `linear-gradient(to top, rgba(18,25,21,0.72) 0%, rgba(18,25,21,${0.28 + 0.1 * chaleur}) 22%, transparent 48%)`,
         }}
       />
-      <Atmosphere light={`${Math.round(24 + 52 * chaleur)}% 18%`} strength={0.45 + 0.55 * chaleur} />
+      <Atmosphere light={`${Math.round(24 + 52 * chaleur)}% 18%`} strength={0.3 + 0.4 * chaleur} vignette={false} />
+
+      {/* Le titre, en Cormorant Garamond comme sur le diplôme, dans le calme
+          de la droite de la couverture. Deux lignes, jamais plus. */}
+      <motion.div
+        className="absolute inset-x-0 top-[22%] px-5 md:top-[18%] md:px-10"
+        initial={reduce ? false : { opacity: 0, y: 18, filter: 'blur(6px)' }}
+        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+        transition={{ duration: 1.2, ease: EASE, delay: 0.05 }}
+      >
+        <div className="mx-auto flex max-w-[1720px] justify-end">
+          {/* En mobile le titre tombe sur les herbes : un verre crème le porte. */}
+          <div className="rounded-[16px] bg-[#F7F3EA]/75 px-4 py-3 text-right backdrop-blur-sm md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
+            <p className="text-[10px] font-bold uppercase tracking-[0.34em] text-[#8B4A2F] md:text-[11px]">
+              {lang === 'FR' ? 'Expérience Ayurveda' : 'Ayurveda Experience'}
+            </p>
+            <h1 className="mt-3 font-serif text-[clamp(3.2rem,8.5vw,7.4rem)] leading-[0.9] text-[#293027]" style={{ letterSpacing: '-0.01em' }}>
+              {lang === 'FR' ? <>Saison<br />Vata</> : <>Vata<br />Season</>}
+            </h1>
+          </div>
+        </div>
+      </motion.div>
 
       <div className="absolute inset-x-0 bottom-0 px-5 pb-8 md:px-10 md:pb-12">
         <div className="mx-auto flex max-w-[1720px] flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
 
           {/* Le disque de laiton : les portes ouvertes, pas 50 flammes grises. */}
           <motion.div
-            className="flex items-center gap-4 rounded-[18px] border border-[#BA7B39]/20 bg-[#0d110f]/70 px-4 py-3.5 backdrop-blur-[3px] sm:gap-5 lg:border-transparent lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none"
+            className="flex items-center gap-4 rounded-[18px] border border-[#BA7B39]/30 bg-[#151d19]/70 px-4 py-3.5 backdrop-blur-md sm:gap-5 md:px-5 md:py-4"
             initial={reduce ? false : { opacity: 0, y: 26, filter: 'blur(6px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ duration: 1.1, ease: EASE, delay: 0.15 }}

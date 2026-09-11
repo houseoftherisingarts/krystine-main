@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T03:03:47.732Z",
+  "generatedAt": "2026-09-11T03:42:55.963Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -1358,6 +1358,13 @@
       "folder": "speaking/assets",
       "kind": "image",
       "size": 65882
+    },
+    {
+      "path": "/vata/couverture.webp",
+      "name": "couverture.webp",
+      "folder": "vata",
+      "kind": "image",
+      "size": 273058
     },
     {
       "path": "/vata/semaines/s0-large.webp",
