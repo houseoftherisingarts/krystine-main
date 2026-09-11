@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T05:28:17.974Z",
+  "generatedAt": "2026-09-11T18:20:39.462Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -776,28 +776,28 @@
       "name": "anglicane-large.webp",
       "folder": "evenements",
       "kind": "image",
-      "size": 333690
+      "size": 239978
     },
     {
       "path": "/evenements/anglicane-portrait.webp",
       "name": "anglicane-portrait.webp",
       "folder": "evenements",
       "kind": "image",
-      "size": 137648
+      "size": 129646
     },
     {
       "path": "/evenements/anglicane-thumb.webp",
       "name": "anglicane-thumb.webp",
       "folder": "evenements",
       "kind": "image",
-      "size": 33386
+      "size": 33116
     },
     {
       "path": "/evenements/anglicane.webp",
       "name": "anglicane.webp",
       "folder": "evenements",
       "kind": "image",
-      "size": 302700
+      "size": 224982
     },
     {
       "path": "/foyer/allumage-fond.webp",
