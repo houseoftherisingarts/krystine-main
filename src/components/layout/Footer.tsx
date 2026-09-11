@@ -5,6 +5,8 @@ import { useApp, useBoutique } from '../../contexts/AppContext';
 import { CONTENT, ASSETS } from '../../content';
 import { isStaticRoute } from '../../lib/staticRoutes';
 import SalonContactCard from '../SalonContactCard';
+import { db } from '../../firebase';
+import { BadgeVexel } from '../../vexel/BadgeVexel';
 // Renders the right tag for a footer link:
 // - plain <a> for statically hosted bundles (/origine, /podcast, /vata)
 // - plain <a> when Krystine's boutique-redirect switch re-routes /boutique
