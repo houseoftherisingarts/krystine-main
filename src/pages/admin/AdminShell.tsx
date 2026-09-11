@@ -150,7 +150,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
 const CLE_OUVERTS = 'admin.nav.ouverts';
 const lireOuverts = (): GroupeId[] => {
   try { const v = JSON.parse(localStorage.getItem(CLE_OUVERTS) || 'null'); if (Array.isArray(v)) return v; } catch { /* noop */ }
-  return ['ventes', 'communaute', 'formations'];
+  return [];   // toutes les familles repliées par défaut (Alex, 11 septembre 2026)
 };
 
 interface Props {

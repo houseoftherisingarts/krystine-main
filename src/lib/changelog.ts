@@ -30,6 +30,23 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-09-11',
+    titre: 'Santé Parfaite refait, la signature commune à tous vos programmes, et la bannière réparée',
+    intro: "Une soirée qui a débordé sur la nuit : après Vata, tous vos programmes reçoivent la même signature visuelle, et deux rapports de clientes ont trouvé leur réponse.",
+    etapes: [
+      { texte: "Tous vos programmes, sauf le Foyer d'Origine, portent maintenant la signature de Vata : le seuil plein cadre, le chemin des chapitres en grandes cartes, le lecteur maison, les boîtes colorées, le mot de bravo et le diplôme. Vos clientes retrouvent le même environnement d'un parcours à l'autre.", ou: '/cours/vata', libelle: 'L’espace Vata' },
+      { texte: "La Masterclass Santé Parfaite a reçu sa couverture au canon et dix natures mortes, une par étape, et ses dix-sept leçons ont été nettoyées des résidus d'import qui traînaient dans les textes. Elle reste masquée jusqu'à votre OK.", ou: '/admin/formations', libelle: 'Vos formations' },
+      { texte: "Un petit sticker dit désormais ce qu'on va consommer, Expérience audio ou Expérience vidéo, sur le seuil du cours, sur la fiche d'achat et dans Mes formations.", ou: '/compte?onglet=formations', libelle: 'Mes formations' },
+      { texte: "Les adresses des cours ne portent plus l'identifiant d'import : /cours/vata plutôt qu'un numéro, et l'ancienne adresse redirige.", ou: '/cours/vata', libelle: 'L’espace Vata' },
+      { texte: "Le téléversement d'une bannière personnelle échouait en silence pour toute cliente, parce que le dossier était réservé à l'admin dans les règles. Il est ouvert, la photo est réduite avant l'envoi, et une erreur s'affiche s'il en reste une.", ou: '/compte', libelle: 'Votre espace' },
+      "Les comptes de l'équipe ne laissent plus de trace dans les habitudes de vos clientes, pour ne pas fausser vos chiffres.",
+      { texte: "Sur l'accueil, le bouton dit « Accéder à mon espace ».", ou: '/', libelle: 'La page d’accueil' },
+      { texte: "Sur la page des formations, l'Expérience Origine 2 porte son nom, et la section « à votre rythme » se replie derrière une flèche.", ou: '/formations', libelle: 'Les formations' },
+      { texte: "Sur Médias, le coffret des trois saisons de Santé la vie s'appelle par son nom.", ou: '/medias', libelle: 'Médias et livres' },
+      "Dans l'admin, toutes les familles du menu de gauche sont repliées par défaut.",
+    ],
+  },
+  {
     date: '2026-09-10',
     titre: 'Le crayon partout, la billetterie, et la saison Vata refaite',
     intro: "Une longue journée sur trois fronts : corriger votre site sans passer par l'admin, vendre vos billets sans intermédiaire, et redonner un visage à la saison Vata.",
