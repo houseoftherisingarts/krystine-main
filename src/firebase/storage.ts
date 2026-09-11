@@ -10,9 +10,13 @@ export async function uploadImage(file: File, folder = 'uploads'): Promise<{ url
   const storageRef = ref(storage, path);
   await uploadBytes(storageRef, file);
   const url = await getDownloadURL(storageRef);
-  // Register in Firestore media library for reuse.
+  // Register in Firestore media library for reuse. Les dossiers personnels des
+  // membres (photos de profil, bannières, mur, captures de bug) n'y entrent
+  // pas : ils n'ont rien à faire dans la médiathèque de Krystine (Alex, 11
+  // septembre 2026).
+  const prive = /^(profils|avatars|bannieres|members|mur|bugs|verifications)\//.test(path);
   try {
-    await addMediaItem({ url, path, name: file.name, contentType: file.type, size: file.size });
+    if (!prive) await addMediaItem({ url, path, name: file.name, contentType: file.type, size: file.size });
   } catch (e) {
     console.warn('[Storage] mediaLibrary register failed (non-fatal)', e);
   }
