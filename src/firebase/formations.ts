@@ -94,6 +94,36 @@ export async function getAcheteursDe(formationId: string): Promise<AcheteurForma
     }));
 }
 
+// L'avancement de toutes les personnes dans une formation (admin seulement,
+// même règle collection-group que getAcheteursDe). Le nom « formations » est
+// porté par trois chemins : le filtre sur le grand-parent est ce qui sépare la
+// progression des achats.
+// ponytail: balaie tout le groupe puis filtre, comme getAcheteursDe; à passer
+// sur un champ indexé le jour où le volume le demande.
+export async function getProgressionsDe(formationId: string): Promise<ProgressionDe[]> {
+  const snap = await getDocs(collectionGroup(db(), 'formations'));
+  return snap.docs
+    .filter(d => d.id === formationId && d.ref.parent.parent?.parent.id === 'progression')
+    .map(d => {
+      const p = d.data() as Progression & { maj?: Timestamp };
+      return {
+        uid: d.ref.parent.parent!.id,
+        terminees: Object.values(p.terminees || {}).filter(Boolean).length,
+        derniereLecon: p.derniereLecon,
+        termineeLe: p.termineeLe,
+        maj: p.maj,
+      };
+    });
+}
+
+/** Le jour où la dernière leçon s'est fermée. Écrit une seule fois. */
+export async function marquerFormationTerminee(uid: string, formationId: string, jour: string): Promise<void> {
+  await setDoc(doc(db(), 'progression', uid, 'formations', formationId), {
+    termineeLe: jour,
+    maj: serverTimestamp(),
+  }, { merge: true });
+}
+
 export async function aAchete(uid: string, formationId: string): Promise<boolean> {
   const snap = await getDoc(doc(db(), 'achatsFormations', uid, 'formations', formationId));
   return snap.exists();
@@ -195,6 +225,18 @@ export async function setLeconOrdre(formationId: string, leconId: string, ordre:
 export interface Progression {
   terminees: Record<string, boolean>;
   derniereLecon?: string;
+  /** AAAA-MM-JJ du jour où la dernière leçon s'est fermée. Porte le diplôme. */
+  termineeLe?: string;
+}
+
+/** L'avancement d'une personne dans une formation, vu de l'admin. */
+export interface ProgressionDe {
+  uid: string;
+  terminees: number;
+  derniereLecon?: string;
+  termineeLe?: string;
+  /** La dernière fois que la personne a touché au cours. */
+  maj?: Timestamp;
 }
 
 export async function getProgression(uid: string, formationId: string): Promise<Progression> {

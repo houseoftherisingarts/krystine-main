@@ -41,24 +41,14 @@ async function signatureEnPng(): Promise<{ data: string; ratio: number } | null>
   }
 }
 
-/** Un arc de coin, dessiné à la main faute d'API de courbe simple. */
+/** Une équerre de coin avec sa perle, le seul ornement du parchemin. */
 function coin(doc: jsPDF, x: number, y: number, sx: number, sy: number, taille: number) {
   doc.setDrawColor(...LAITON);
   doc.setLineWidth(1.1);
-  const n = 14;
-  let px = x + sx * taille, py = y;
-  for (let i = 1; i <= n; i++) {
-    const a = (i / n) * (Math.PI / 2);
-    const qx = x + sx * taille * Math.cos(a);
-    const qy = y + sy * taille * (1 - Math.cos(a + Math.PI / 2) - 1) * -1;
-    const rx = x + sx * taille * Math.cos(a);
-    const ry = y + sy * taille * Math.sin(a);
-    doc.line(px, py, rx, ry);
-    px = rx; py = ry;
-    void qx; void qy;
-  }
+  doc.line(x, y, x + sx * taille, y);
+  doc.line(x, y, x, y + sy * taille);
   doc.setFillColor(...LAITON);
-  doc.circle(x + sx * taille * 0.28, y + sy * taille * 0.28, 2.1, 'F');
+  doc.circle(x + sx * 7, y + sy * 7, 2.1, 'F');
 }
 
 export async function telechargerDiplome(infos: DiplomeInfos, lang: 'FR' | 'EN'): Promise<void> {
