@@ -30,6 +30,19 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-09-12',
+    titre: "Vos acheteuses de l'ancien système retrouvent leurs formations",
+    intro: "Une journée consacrée aux personnes qui ont acheté chez vous sur l'ancien site : les retrouver, leur écrire, et leur donner une façon simple de rapatrier leurs achats ici.",
+    etapes: [
+      { texte: "Une liste « Liste acheteuse de l'ancien système » existe dans votre infolettre : les 659 personnes qui ont déjà acheté une formation sur l'ancien site, retrouvées à partir de vos ventes passées. Les adresses désinscrites y sont marquées et ne recevront rien.", ou: '/admin/infolettre', libelle: 'Infolettre › Abonnés' },
+      { texte: "Un brouillon d'infolettre vous attend pour cette liste : il annonce que vos formations déménagent une à une, que rien ne change pour elles en attendant, et qu'un code personnel leur arrivera pour chaque formation arrivée. Vous le relisez, vous le modifiez si vous voulez, et c'est vous qui l'envoyez.", ou: '/admin/infolettre', libelle: 'Infolettre › Brouillons' },
+      { texte: "Une nouvelle page de l'admin, « Codes de l'ancien système », garde le registre de tous les achats de l'ancien site (1 083 achats, 24 offres). Vous y reliez chaque offre à la formation qu'elle ouvre sur le site; deux le sont déjà, la masterclass Gestion du stress et la saison Vata.", ou: '/admin/codes-ancien-systeme', libelle: 'Codes de l’ancien système' },
+      { texte: "Quand une formation est arrivée sur le site, un bouton de cette page envoie à chaque acheteuse un code personnel par courriel, et le même mot dans sa messagerie si elle a déjà un compte. Un bouton « code de test » vous permet de voir le courriel avant tout envoi.", ou: '/admin/codes-ancien-systeme', libelle: 'Envoyer les codes' },
+      { texte: "Dans « Mes formations », une case « J'ai reçu un code » attend vos clientes : elles entrent le code, et la formation revient dans leur espace, sans rien repayer. Un code ne sert qu'une fois et vaut 180 jours.", ou: '/compte?onglet=formations', libelle: 'Mes formations' },
+      "L'accès à l'ancien système par son API a été refusé (il demande un forfait que vous n'avez pas) : la liste vient donc de vos ventes Stripe, qui les contiennent toutes sauf celles payées par PayPal. Celles-là s'ajouteront depuis l'export de l'ancien site.",
+    ],
+  },
+  {
     date: '2026-09-11',
     titre: 'Santé Parfaite refait, la signature commune à tous vos programmes, et la bannière réparée',
     intro: "Une soirée qui a débordé sur la nuit : après Vata, tous vos programmes reçoivent la même signature visuelle, et deux rapports de clientes ont trouvé leur réponse.",
@@ -46,6 +59,9 @@ export const JOURNAL: EntreeJournal[] = [
       { texte: "Sur la page des formations, l'Expérience Origine 2 porte son nom, et la section « à votre rythme » se replie derrière une flèche.", ou: '/formations', libelle: 'Les formations' },
       { texte: "Sur Médias, le coffret des trois saisons de Santé la vie s'appelle par son nom.", ou: '/medias', libelle: 'Médias et livres' },
       "Dans l'admin, toutes les familles du menu de gauche sont repliées par défaut.",
+      { texte: "Plus tard dans la matinée, le calendrier des événements et la page de l'Anglicane ont été refaits une deuxième fois, dans le langage crème de vos pages Médias, parce que la version de la nuit tirait sur le brun. Le lancement reste en aperçu tant que vous n'avez pas donné l'heure, le prix et le nombre de places.", ou: '/evenements', libelle: 'Les événements' },
+      { texte: "Un avis que vous écrivez dans l'admin paraît maintenant en bulle sur l'accueil, dans la cloche de chaque cliente, puis se range dans ses Lettres quand elle l'a lu : un babillard séparé de la petite fleur.", ou: '/admin/infolettre', libelle: 'Infolettre › Avis épinglés' },
+      { texte: "Le programme partenaire de Vexel est entré dans votre admin et dans le pied de page du site : votre lien de parrainage, et ce que chaque site recommandé vous rapporte.", ou: '/admin/partenaire-vexel', libelle: 'Partenaire Vexel' },
     ],
   },
   {
