@@ -54,6 +54,7 @@ const SlideBg          = lazy(() => import('./src/pages/SlideBg'));
 // captured from the footer contact card. URL-only access — never linked
 // from the visible navigation.
 const VexelPage        = lazy(() => import('./src/pages/VexelPage'));
+const PageIntrouvable  = lazy(() => import('./src/pages/PageIntrouvable'));
 const CoursPage        = lazy(() => import('./src/pages/CoursPage'));
 const CoursDetailPage  = lazy(() => import('./src/pages/CoursDetailPage'));
 const EvenementsPage   = lazy(() => import('./src/pages/EvenementsPage'));
@@ -328,6 +329,9 @@ const App: React.FC = () => (
           <Route path="/slidebg" element={<SlideBg />} />
           {/* Hidden / unlisted — Salon des Inconnus inbound-leads inbox */}
           <Route path="/vexel" element={<VexelPage />} />
+          {/* Attrape-tout : toute adresse inconnue rend la 404 sur mesure,
+              plutôt qu'une page vide ou l'accueil. Doit rester la dernière route. */}
+          <Route path="*" element={<PageIntrouvable />} />
         </Routes>
         </RouteFade>
       </Suspense>
