@@ -59,7 +59,7 @@ function courrielHtml(o: { prenom: string; code: string; titre: string; postalAd
     <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:15px;overflow:hidden;">
       <tr><td style="padding:40px 40px 8px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         <tr><td style="padding:0 0 10px;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:${CHARTE.brassInk};font-weight:600;">Vos formations déménagent</td></tr>
-        <tr><td style="padding:0 0 22px;font-family:${CHARTE.serif};font-size:32px;line-height:1.1;color:${CHARTE.espresso};font-weight:500;">${esc(o.titre)} vous attend</td></tr>
+        <tr><td style="padding:0 0 22px;font-family:${CHARTE.serif};font-size:32px;line-height:1.1;color:${CHARTE.espresso};font-weight:500;">Votre code est arrivé</td></tr>
         <tr><td style="padding:0 0 26px;"><div style="height:1px;width:64px;background:${CHARTE.brass};"></div></td></tr>
         ${p(salut)}
         ${p(`Votre formation « ${esc(o.titre)} » vient d'arriver dans sa nouvelle maison, sur krystinestlaurent.ca. Voici votre code personnel pour la retrouver dans votre espace, sans rien repayer.`)}
