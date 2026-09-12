@@ -14,9 +14,19 @@ const CLE = 'aT_yMR68NLyEW3weNDjwYdW_';
 // à ce site d'écrire settings/vexel dans SA propre base une fois la réponse
 // reçue, pour que BadgeVexel (pied de page public) le lise.
 async function enregistrerPartenaire(resultat: { code: string; lien: string; page: string }) {
+  // Ne jamais stocker la réponse brute : seul le code (déjà validé par
+  // PartenaireVexelPanneau) est conservé, lien et page se reconstruisent ici.
+  const code = resultat.code;
   await setDoc(
     doc(db, 'settings', 'vexel'),
-    { partenaire: { code: resultat.code, lien: resultat.lien, page: resultat.page, signeLe: new Date().toISOString() } },
+    {
+      partenaire: {
+        code,
+        signeLe: new Date().toISOString(),
+        lien: `https://vexelwebstudio.com/compte?parrain=${encodeURIComponent(code)}`,
+        page: `https://vexelwebstudio.com/r/${encodeURIComponent(code)}`,
+      },
+    },
     { merge: true },
   );
 }
