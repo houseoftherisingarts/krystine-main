@@ -42,6 +42,7 @@ const LIBELLES: Record<string, string> = {
   'kajabi-abonne': 'Kajabi · abonnées',
   'kajabi-sans-consentement': 'Kajabi · sans consentement',
   'kajabi-desinscrit': 'Kajabi · désinscrites',
+  'acheteuse-ancien-systeme': 'Liste acheteuse de l’ancien système',
   'podcast': 'Podcast',
   'podcast-live': 'Direct du podcast',
   'quiz': 'Quiz dosha',
