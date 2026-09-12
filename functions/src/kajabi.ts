@@ -2,7 +2,13 @@ import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { randomInt } from 'node:crypto';
 import { MAIL_SECRETS, NEWSLETTER_POSTAL_ADDRESS, PUBLIC_BASE_URL, REPLY_TO, createTransporter, fromAddr } from './newsletter/mail';
-import { CHARTE, esc } from './newsletter/renderer';
+
+const CHARTE = {
+  cream: '#f6f3ee', espresso: '#2a2015', brass: '#BA7B39', brassInk: '#8B4A2F',
+  serif: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
+  sans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
+};
+const esc = (v: unknown) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 // Les achats de l'ancien système (Kajabi) retrouvent leur propriétaire sur le
 // site, formation par formation, avec un code personnel.

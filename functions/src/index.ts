@@ -29,6 +29,7 @@ export { parrainageFilleule, parrainageAchat, parrainagePourboire } from './parr
 export { groupeMembre } from './groupe';
 export { musiqueOrigine } from './musique';
 export { offrirCadeau, utiliserCadeau } from './cadeaux';
+export { kajabiEmettreCodes, kajabiUtiliserCode } from './kajabi';
 export { acheterCoffre, ouvrirCoffre, reclamerGrandLot, offrirCoffre } from './coffres';
 export { notifierBillet, annoncerChangement } from './notifs';
 export { interactionMessageDirect, interactionBillet, interactionCommentaire, interactionVoteBillet, interactionVoteCommentaire, interactionPoints } from './interactions';
