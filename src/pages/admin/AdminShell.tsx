@@ -26,6 +26,7 @@ export type AdminSectionId =
   | 'members'
   | 'habitudes'
   | 'acheteuses'
+  | 'kajabiCodes'
   | 'badgeBleu'
   | 'messages'
   | 'recompenses'
@@ -59,6 +60,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   members:    'clients',
   habitudes:  'habitudes',
   acheteuses: 'acheteuses',
+  kajabiCodes: 'codes-ancien-systeme',
   badgeBleu:  'badge-bleu',
   messages:   'messages',
   recompenses:'recompenses',
@@ -125,6 +127,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'members',    label: 'Clients',          icon: 'fa-users',            groupe: 'communaute' },
   { id: 'habitudes',  label: 'Habitudes de tes clientes', icon: 'fa-route',   groupe: 'communaute' },
   { id: 'acheteuses', label: 'Tes acheteuses d\'Origine', icon: 'fa-seedling', groupe: 'communaute' },
+  { id: 'kajabiCodes', label: 'Codes de l\'ancien système', icon: 'fa-key', groupe: 'communaute' },
   { id: 'badgeBleu',  label: 'Badge Bleu',       icon: 'fa-circle-check',     groupe: 'communaute' },
   { id: 'messages',   label: 'Messages',         icon: 'fa-comments',         groupe: 'communaute' },
   { id: 'recompenses', label: 'Cadeaux',         icon: 'fa-seedling',         groupe: 'communaute' },

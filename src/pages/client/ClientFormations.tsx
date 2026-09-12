@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
 import { getMesFormations, getFormationsPubliees, type AchatFormation, type Formation } from '../../firebase/formations';
 import { estTelechargement } from '../../firebase/musique';
+import { utiliserCodeKajabi } from '../../firebase/kajabi';
 
 // « Mes formations » : les cours que la cliente a achetés. La preuve d'achat
 // est écrite par le serveur au paiement; l'admin peut aussi en accorder.
@@ -14,14 +15,35 @@ const ClientFormations: React.FC = () => {
   const [achats, setAchats] = useState<AchatFormation[]>([]);
   const [catalogue, setCatalogue] = useState<Formation[]>([]);
   const [loading, setLoading] = useState(true);
+  // Le code reçu pour une formation achetée sur l'ancien site (Kajabi).
+  const [code, setCode] = useState('');
+  const [codeEtat, setCodeEtat] = useState<{ type: 'ok' | 'erreur'; texte: string } | null>(null);
+  const [codeEnvoi, setCodeEnvoi] = useState(false);
 
-  useEffect(() => {
+  const charger = () => {
     if (!user) return;
     Promise.all([getMesFormations(user.uid), getFormationsPubliees()])
       // Les téléchargements (musique) vivent dans leur propre onglet.
       .then(([a, c]) => { setAchats(a.filter(x => !estTelechargement(x))); setCatalogue(c); })
       .finally(() => setLoading(false));
-  }, [user]);
+  };
+  useEffect(charger, [user]);
+
+  const entrerCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!code.trim() || codeEnvoi) return;
+    setCodeEnvoi(true); setCodeEtat(null);
+    try {
+      const r = await utiliserCodeKajabi(code);
+      setCodeEtat({ type: 'ok', texte: lang === 'FR' ? `« ${r.titre} » est de retour dans vos formations.` : `"${r.titre}" is back in your courses.` });
+      setCode('');
+      charger();
+    } catch (err) {
+      setCodeEtat({ type: 'erreur', texte: (err as Error).message || (lang === 'FR' ? 'Ce code n’a pas fonctionné.' : 'That code did not work.') });
+    } finally {
+      setCodeEnvoi(false);
+    }
+  };
 
   if (loading) {
     return <p className="text-sm text-[#293027]/50 dark:text-white/50">{lang === 'FR' ? 'Chargement…' : 'Loading…'}</p>;
@@ -79,6 +101,28 @@ const ClientFormations: React.FC = () => {
             })}
           </div>
         )}
+
+        {/* La case du code : une formation achetée sur l'ancien site revient ici. */}
+        <form onSubmit={entrerCode} className="mt-6 rounded-[15px] border border-[#BA7B39]/30 bg-[#BA7B39]/5 p-4 dark:border-white/10 dark:bg-white/5">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'J’ai reçu un code' : 'I received a code'}</p>
+          <p className="mt-1 text-sm text-[#293027]/60 dark:text-white/60">
+            {lang === 'FR' ? 'Une formation suivie sur l’ancien site vous revient avec le code personnel reçu par courriel.' : 'A course from the former site comes back to you with the personal code you received by email.'}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <input
+              value={code}
+              onChange={e => setCode(e.target.value.toUpperCase())}
+              placeholder="KSL-XXXX-XXXX"
+              autoComplete="off"
+              spellCheck={false}
+              className="min-w-[200px] flex-1 rounded-[10px] border border-[#293027]/15 bg-white px-3 py-2 font-mono text-sm uppercase tracking-[0.15em] text-[#293027] dark:border-white/15 dark:bg-white/10 dark:text-white"
+            />
+            <button type="submit" disabled={codeEnvoi || !code.trim()} className="rounded-full bg-[#BA7B39] px-5 py-2 text-[11px] font-bold uppercase tracking-widest text-[#293027] disabled:opacity-50">
+              {codeEnvoi ? '…' : (lang === 'FR' ? 'Retrouver ma formation' : 'Recover my course')}
+            </button>
+          </div>
+          {codeEtat && <p className={`mt-2 text-sm ${codeEtat.type === 'ok' ? 'text-[#2f5d3a] dark:text-[#9fd3a8]' : 'text-[#8B4A2F]'}`}>{codeEtat.texte}</p>}
+        </form>
       </section>
 
       {/* La deuxième moitié : les formations à découvrir et à rejoindre */}
