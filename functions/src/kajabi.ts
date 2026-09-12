@@ -104,9 +104,11 @@ export const kajabiEmettreCodes = onCall(
     // Les achats à restaurer pour ces offres, regroupés par adresse.
     const parEmail = new Map<string, { ids: string[]; nom: string; offres: Set<string> }>();
     for (let i = 0; i < offerIds.length; i += 30) {
-      const q = await db.collection('kajabiRegistre').where('kjbOfferId', 'in', offerIds.slice(i, i + 30)).where('statut', '==', 'a_restaurer').get();
+      // Un seul filtre par requête : aucun index composé à déployer.
+      const q = await db.collection('kajabiRegistre').where('kjbOfferId', 'in', offerIds.slice(i, i + 30)).get();
       for (const d of q.docs) {
         const r = d.data() as Registre;
+        if (r.statut !== 'a_restaurer') continue;
         const e = parEmail.get(r.emailNormalise) || { ids: [], nom: '', offres: new Set<string>() };
         e.ids.push(d.id); e.offres.add(r.kjbOfferId); if (r.nom && !e.nom) e.nom = r.nom;
         parEmail.set(r.emailNormalise, e);
@@ -122,8 +124,9 @@ export const kajabiEmettreCodes = onCall(
     try {
       for (const [email, info] of cibles) {
         // Un code actif existe déjà pour cette adresse et cette formation : rien à refaire.
-        const existant = await db.collection('kajabiCodes').where('emailNormalise', '==', email).where('formationId', '==', formationId).where('statut', '==', 'actif').limit(1).get();
-        if (!existant.empty && !testEmail) { sautes++; continue; }
+        const existant = (await db.collection('kajabiCodes').where('emailNormalise', '==', email).get()).docs
+          .some(d => { const c = d.data() as { formationId?: string; statut?: string; test?: boolean }; return c.formationId === formationId && c.statut === 'actif' && !c.test; });
+        if (existant && !testEmail) { sautes++; continue; }
 
         let code = nouveauCode();
         while ((await db.doc(`kajabiCodes/${code}`).get()).exists) code = nouveauCode();
