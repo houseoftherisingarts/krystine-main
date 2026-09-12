@@ -38,6 +38,7 @@ const ADMIN_EMAILS = [
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sans 0/O ni 1/I
 const VALIDITE_JOURS = 180;
 const ESSAIS_PAR_JOUR = 10;
+const ESSAIS_GLOBAL_PAR_JOUR = 500; // ~660 acheteuses : largement assez pour les vraies, dérisoire pour une force brute sur 2^40
 
 const threadId = (a: string, b: string) => [a, b].sort().join('__');
 const normaliser = (e: string) => String(e || '').trim().toLowerCase();
@@ -193,13 +194,16 @@ export const kajabiUtiliserCode = onCall(
     const code = `KSL-${brut.slice(3, 7)}-${brut.slice(7, 11)}`;
     const db = getFirestore();
 
-    // Dix essais par jour et par compte : un code a 40 bits, personne ne le devine.
+    // Un code a 40 bits. Dix essais par jour et par compte, et un plafond
+    // global sur tout le site : même avec mille comptes, personne ne le devine.
     const jour = new Date().toISOString().slice(0, 10);
     const tRef = db.doc(`kajabiTentatives/${uid}`);
-    const t = (await tRef.get()).data() as { jour?: string; n?: number } | undefined;
+    const gRef = db.doc('kajabiTentatives/_global');
+    const [t, g] = (await db.getAll(tRef, gRef)).map(d => d.data() as { jour?: string; n?: number } | undefined);
     const n = t?.jour === jour ? (t.n || 0) : 0;
-    if (n >= ESSAIS_PAR_JOUR) throw new HttpsError('resource-exhausted', 'Trop d\'essais aujourd\'hui. Réessayez demain, ou écrivez-nous.');
-    await tRef.set({ jour, n: n + 1, maj: FieldValue.serverTimestamp() });
+    const ng = g?.jour === jour ? (g.n || 0) : 0;
+    if (n >= ESSAIS_PAR_JOUR || ng >= ESSAIS_GLOBAL_PAR_JOUR) throw new HttpsError('resource-exhausted', 'Trop d\'essais aujourd\'hui. Réessayez demain, ou écrivez-nous.');
+    await Promise.all([tRef.set({ jour, n: n + 1, maj: FieldValue.serverTimestamp() }), gRef.set({ jour, n: ng + 1, maj: FieldValue.serverTimestamp() })]);
 
     const cRef = db.doc(`kajabiCodes/${code}`);
     const donnees = await db.runTransaction(async (tx) => {
