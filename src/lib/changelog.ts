@@ -30,6 +30,16 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-09-13',
+    titre: "Vos infolettres partent toutes du même gabarit, avec des images",
+    intro: "Une journée courte, consacrée à l'allure de vos lettres : chaque brouillon qu'Iris vous prépare reprend désormais l'habillage de votre première infolettre, et il vient toujours avec des images choisies pour le sujet.",
+    etapes: [
+      { texte: "Chaque brouillon préparé pour vous repart du même gabarit que votre lettre du 6 septembre : l'en-tête « La Lettre de Krystine » avec votre signature, le bandeau « Choisir en conscience », votre signature au bas et le pied de page. Vous reconnaissez votre lettre au premier coup d'œil, et vous pouvez toujours changer l'en-tête ou le bandeau dans le composeur.", ou: '/admin/infolettre', libelle: 'Infolettre' },
+      { texte: "Chaque brouillon porte maintenant trois ou quatre images en rapport avec son sujet, réparties entre les paragraphes, chacune avec une courte légende et un lien vers la page du site qui correspond.", ou: '/admin/infolettre', libelle: 'Infolettre › Brouillons' },
+      { texte: "Vos deux brouillons en attente, « Vos formations déménagent avec vous » et « Le Foyer d'Origine ouvre le 1er octobre », ont reçu cet habillage : l'en-tête, le bandeau et quatre images chacun (votre table de travail, la roue de l'Ayurveda, la clé du code personnel et le livre aux fleurs pour l'un; l'âtre du Foyer, la fleur du thème du mois, le feu de l'antre et le cœur du Foyer pour l'autre). Rien n'est parti : vous les relisez et c'est vous qui envoyez.", ou: '/admin/infolettre', libelle: 'Infolettre › Brouillons' },
+    ],
+  },
+  {
     date: '2026-09-12',
     titre: "Vos acheteuses de l'ancien système retrouvent leurs formations",
     intro: "Une journée consacrée aux personnes qui ont acheté chez vous sur l'ancien site : les retrouver, leur écrire, et leur donner une façon simple de rapatrier leurs achats ici.",
