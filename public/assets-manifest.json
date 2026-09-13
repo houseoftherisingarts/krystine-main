@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T16:07:23.386Z",
+  "generatedAt": "2026-09-13T17:39:49.573Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -63,6 +63,13 @@
       "folder": "accueil/assets/portes",
       "kind": "image",
       "size": 35616
+    },
+    {
+      "path": "/accueil/assets/portes/formations.jpg",
+      "name": "formations.jpg",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 58213
     },
     {
       "path": "/accueil/assets/portes/formations.webp",
@@ -168,6 +175,13 @@
       "folder": "assets",
       "kind": "image",
       "size": 87270
+    },
+    {
+      "path": "/assets/infolettre/cle-code.jpg",
+      "name": "cle-code.jpg",
+      "folder": "assets/infolettre",
+      "kind": "image",
+      "size": 317408
     },
     {
       "path": "/compte/bienvenue-bureau-720.webp",
@@ -828,6 +842,13 @@
       "size": 2417099
     },
     {
+      "path": "/foyer/antre-foyer.jpg",
+      "name": "antre-foyer.jpg",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 109871
+    },
+    {
       "path": "/foyer/antre-foyer.mp4",
       "name": "antre-foyer.mp4",
       "folder": "foyer",
@@ -861,6 +882,13 @@
       "folder": "foyer",
       "kind": "video",
       "size": 346059
+    },
+    {
+      "path": "/foyer/coeur-foyer.jpg",
+      "name": "coeur-foyer.jpg",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 58628
     },
     {
       "path": "/foyer/coeur-foyer.webp",
@@ -917,6 +945,13 @@
       "folder": "foyer",
       "kind": "video",
       "size": 2616779
+    },
+    {
+      "path": "/foyer/fleur-foyer.jpg",
+      "name": "fleur-foyer.jpg",
+      "folder": "foyer",
+      "kind": "image",
+      "size": 379811
     },
     {
       "path": "/foyer/fleur-foyer.webp",
