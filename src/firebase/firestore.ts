@@ -299,6 +299,26 @@ export async function updateNewsletterSubscriber(id: string, patch: Partial<News
   return updateDoc(doc(db!, 'newsletter', id), patch as any);
 }
 
+// Krystine désabonne une adresse depuis Communauté › Clients (demande du 14
+// septembre 2026 : neuf personnes désabonnées sur Kajabi à retirer de la liste
+// sans effacer leur fiche). Une même adresse peut porter plusieurs inscriptions
+// (formulaires, imports) : on les ferme toutes d'un coup, on ne supprime rien,
+// et `sendNewsletter` ne cible que les `active`, donc elles ne reçoivent plus rien.
+export async function desabonnerAbonnements(ids: string[]): Promise<number> {
+  if (!db) noDb();
+  if (!ids.length) return 0;
+  // ponytail: 500 écritures par lot Firestore; une adresse n'en a jamais autant, on tranche quand même.
+  for (let i = 0; i < ids.length; i += 400) {
+    const lot = writeBatch(db!);
+    for (const id of ids.slice(i, i + 400)) {
+      lot.update(doc(db!, 'newsletter', id), { status: 'unsubscribed', unsubscribedAt: serverTimestamp(), desabonneePar: 'admin' });
+    }
+    await lot.commit();
+  }
+  invalidateNewsletterSubscribers();
+  return ids.length;
+}
+
 // ─── Directs du podcast ──────────────────────────────────────────────────────
 // Un document par direct. Les inscrits portent `tag` dans newsletter.tags;
 // les rappels partent de la fonction planifiée `sendLiveReminders`.
