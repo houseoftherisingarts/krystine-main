@@ -272,6 +272,7 @@ const MembersSection: React.FC = () => {
       dosha: c.dosha || '',
       provider: c.provider || '',
       isMember: c.isMember ? 'yes' : 'no',
+      infolettre: c.abonnements.length === 0 ? '' : c.abonnements.some(a => a.status === 'active') ? 'abonnee' : c.abonnements.every(a => a.status === 'unsubscribed') ? 'desabonnee' : c.abonnements[0].status,
       sources: c.sources.join('|'),
       tags: c.tags.join('|'),
       firstSeenAt: c.joinedAt?.toISOString() || '',
