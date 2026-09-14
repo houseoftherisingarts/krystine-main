@@ -430,6 +430,28 @@ const MembersSection: React.FC = () => {
                       <span className="text-[#293027]/30 dark:text-white/30">—</span>
                     )}
                   </td>
+                  <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
+                    {(() => {
+                      const ouvertes = c.abonnements.filter(a => a.status !== 'unsubscribed');
+                      if (c.abonnements.length === 0) return <span className="text-[#293027]/30 dark:text-white/30">—</span>;
+                      if (ouvertes.length === 0) return <span className="text-[10px] uppercase tracking-widest bg-red-50 text-red-500 px-2 py-0.5 rounded-full">Désabonnée</span>;
+                      const enCours = desabonnement === c.email;
+                      return (
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] uppercase tracking-widest bg-green-50 text-green-700 px-2 py-0.5 rounded-full">Abonnée</span>
+                          <button
+                            type="button"
+                            disabled={enCours}
+                            onClick={() => desabonner(c)}
+                            title={ouvertes.length === 1 ? "Fermer son inscription à l'infolettre, sans effacer sa fiche" : `Fermer ses ${ouvertes.length} inscriptions à l'infolettre, sans effacer sa fiche`}
+                            className="text-[11px] font-semibold text-[#8B4A2F] underline decoration-[#BA7B39]/50 underline-offset-2 hover:text-[#293027] dark:hover:text-white disabled:opacity-50"
+                          >
+                            {enCours ? 'Un instant…' : 'Désabonner'}
+                          </button>
+                        </div>
+                      );
+                    })()}
+                  </td>
                   <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden md:table-cell">{c.joinedAt?.toLocaleDateString('fr-CA') || '—'}</td>
                 </tr>
               );
