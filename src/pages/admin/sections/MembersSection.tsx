@@ -336,6 +336,9 @@ const MembersSection: React.FC = () => {
           Les nouveaux contacts apparaissent sous « Import manuel » dans le filtre vue ci-dessus.
         </div>
       )}
+      {avis && (
+        <div className="px-4 py-3 rounded-xl bg-[#BA7B39]/10 text-[#8B4A2F] text-sm">{avis}</div>
+      )}
 
       <Card className="overflow-hidden">
         <table className="w-full text-sm">
