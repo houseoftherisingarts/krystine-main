@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  getAllMembers, getNewsletterSubscribers, bulkAddNewsletterSubscribers, updateMember,
-  type MemberDoc, type NewsletterSubscriber, type BulkImportResult,
+  getAllMembers, getNewsletterSubscribers, bulkAddNewsletterSubscribers, updateMember, desabonnerAbonnements,
+  type MemberDoc, type NewsletterSubscriber, type BulkImportResult, type SubscriberStatus,
 } from '../../../firebase/firestore';
 import { parseCsv, mapCsvToSubscribers } from '../../../lib/csv';
 import { Card, EmptyState, GhostButton, downloadCsv } from '../primitives';
