@@ -154,6 +154,30 @@ const MembersSection: React.FC = () => {
   const [importResult, setImportResult] = useState<BulkImportResult | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  // L'adresse dont le désabonnement est en cours, et le dernier mot affiché.
+  const [desabonnement, setDesabonnement] = useState<string | null>(null);
+  const [avis, setAvis] = useState<string | null>(null);
+
+  // Ferme toutes les inscriptions à l'infolettre de cette adresse, sans rien
+  // effacer : la fiche reste, l'historique aussi, seuls les envois s'arrêtent.
+  const desabonner = async (c: ContactRow) => {
+    const ouvertes = c.abonnements.filter(a => a.status !== 'unsubscribed');
+    if (!ouvertes.length || desabonnement) return;
+    const nom = c.displayName || [c.firstName, c.lastName].filter(Boolean).join(' ') || c.displayEmail;
+    if (!confirm(`Désabonner ${nom} (${c.displayEmail}) de l'infolettre ?\n\n${ouvertes.length === 1 ? 'Son inscription sera fermée' : `Ses ${ouvertes.length} inscriptions seront fermées`}, rien ne sera effacé, et cette adresse ne recevra plus aucune lettre.`)) return;
+    setDesabonnement(c.email);
+    setAvis(null);
+    try {
+      await desabonnerAbonnements(ouvertes.map(a => a.id));
+      if (c.uid) await updateMember(c.uid, { newsletterSubscribed: false });
+      setContacts(prev => prev.map(x => (x.email === c.email ? { ...x, abonnements: x.abonnements.map(a => ({ ...a, status: 'unsubscribed' as SubscriberStatus })) } : x)));
+      setAvis(`${c.displayEmail} ne recevra plus l'infolettre. Sa fiche est restée telle quelle.`);
+    } catch (err: any) {
+      setAvis(err?.message || 'Le désabonnement n’a pas fonctionné.');
+    } finally {
+      setDesabonnement(null);
+    }
+  };
 
   const refresh = async () => {
     setLoading(true);
