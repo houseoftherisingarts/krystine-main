@@ -40,6 +40,24 @@ export async function getEtatRegistreKajabi(): Promise<Record<string, EtatRegist
   return out;
 }
 
+/** Une acheteuse de l'ancien système, telle que le registre la connaît. */
+export interface AcheteuseKajabi { nom: string; email: string; offreId: string; acheteLe: string; montant: number; statut: string }
+
+/** Admin : la liste des acheteuses des offres données (pour la télécharger,
+ *  demande de Krystine du 11 septembre 2026 : « tu peux m'extraire la liste des gens ? »). */
+export async function getAcheteusesKajabi(offerIds: string[]): Promise<AcheteuseKajabi[]> {
+  if (!db || !offerIds.length) return [];
+  const voulues = new Set(offerIds);
+  const snap = await getDocs(collection(db, 'kajabiRegistre'));
+  const out: AcheteuseKajabi[] = [];
+  for (const d of snap.docs) {
+    const r = d.data() as { kjbOfferId?: string; nom?: string; emailNormalise?: string; acheteLe?: string; montant?: number; statut?: string };
+    if (!r.kjbOfferId || !voulues.has(r.kjbOfferId)) continue;
+    out.push({ nom: r.nom || '', email: r.emailNormalise || '', offreId: r.kjbOfferId, acheteLe: r.acheteLe || '', montant: r.montant || 0, statut: r.statut || '' });
+  }
+  return out.sort((a, b) => a.acheteLe.localeCompare(b.acheteLe) || a.email.localeCompare(b.email));
+}
+
 /** Admin : envoyer les codes d'une formation migrée (ou un seul, à une adresse de test). */
 export async function emettreCodesKajabi(formationId: string, testEmail?: string): Promise<{ envoyes: number; sautes: number; erreurs: number; message?: string }> {
   if (!app) throw new Error('[Kajabi] Firebase not configured');
