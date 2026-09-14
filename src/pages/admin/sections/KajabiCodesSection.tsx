@@ -8,8 +8,10 @@
 //    (functions/src/kajabi.ts). Elle l'entre dans « Mes formations ».
 import React, { useEffect, useMemo, useState } from 'react';
 import { getFormations, type Formation } from '../../../firebase/formations';
-import { getOffresKajabi, relierOffreKajabi, getEtatRegistreKajabi, emettreCodesKajabi, type OffreKajabi, type EtatRegistre } from '../../../firebase/kajabi';
-import { Card, Input, PrimaryButton, GhostButton, EmptyState } from '../primitives';
+import { getOffresKajabi, relierOffreKajabi, getEtatRegistreKajabi, emettreCodesKajabi, getAcheteusesKajabi, type OffreKajabi, type EtatRegistre } from '../../../firebase/kajabi';
+import { Card, Input, PrimaryButton, GhostButton, EmptyState, downloadCsv } from '../primitives';
+
+const STATUT_LISIBLE: Record<string, string> = { a_restaurer: 'à restaurer', code_envoye: 'code envoyé', restaure: 'formation retrouvée' };
 
 const VIDE: EtatRegistre = { aRestaurer: 0, codeEnvoye: 0, restaure: 0 };
 
