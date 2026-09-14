@@ -30,6 +30,16 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-09-14',
+    titre: "Vos demandes de la semaine : désabonner une adresse, et la liste de vos acheteuses",
+    intro: "Une journée consacrée à ce que vous avez demandé depuis votre admin : le bouton qu'il manquait pour retirer quelqu'un de l'infolettre sans effacer sa fiche, et la liste des personnes qui avaient acheté une formation sur l'ancien système.",
+    etapes: [
+      { texte: "Dans Communauté › Clients, une colonne « Infolettre » dit si l'adresse est abonnée, et le lien « Désabonner » ferme toutes ses inscriptions d'un coup : sa fiche reste, son historique aussi, elle ne reçoit plus rien. C'est le geste qu'il fallait pour les neuf personnes désabonnées depuis Kajabi.", ou: '/admin/clients', libelle: 'Communauté › Clients' },
+      { texte: "Dans Communauté › Codes de l'ancien système, le bouton « Télécharger la liste » sort en fichier les noms et les courriels des acheteuses de la formation choisie, et chaque offre du tableau a son petit lien « liste ». La saison Vata en compte vingt-trois, toutes prêtes à recevoir leur code.", ou: '/admin/codes-ancien-systeme', libelle: "Codes de l'ancien système" },
+      "Le fichier des clients exporté en CSV porte maintenant l'état de l'infolettre pour chaque adresse.",
+    ],
+  },
+  {
     date: '2026-09-13',
     titre: "Vos infolettres partent toutes du même gabarit, avec des images",
     intro: "Une journée courte, consacrée à l'allure de vos lettres : chaque brouillon qu'Iris vous prépare reprend désormais l'habillage de votre première infolettre, et il vient toujours avec des images choisies pour le sujet.",
