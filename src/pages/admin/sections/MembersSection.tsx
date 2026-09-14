@@ -350,6 +350,7 @@ const MembersSection: React.FC = () => {
               <th className="text-left px-4 py-3 hidden md:table-cell">Téléphone</th>
               <th className="text-left px-4 py-3 hidden md:table-cell">Auth</th>
               <th className="text-left px-4 py-3">Communauté</th>
+              <th className="text-left px-4 py-3">Infolettre</th>
               <th className="text-left px-4 py-3 hidden md:table-cell">Premier contact</th>
             </tr>
           </thead>
