@@ -122,6 +122,7 @@ function mergeContacts(members: MemberDoc[], subs: NewsletterSubscriber[]): Cont
         isMember: false,
         sources: src ? [src] : [],
         tags: [...(s.tags || [])],
+        abonnements: abonnement,
         joinedAt: subDate,
       });
     }
