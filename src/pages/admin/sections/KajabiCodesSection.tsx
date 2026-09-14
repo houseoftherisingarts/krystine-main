@@ -43,6 +43,19 @@ const KajabiCodesSection: React.FC = () => {
     setOffres(prev => prev.map(x => (x.id === o.id ? { ...x, formationIds: ids } : x)));
   };
 
+  // La liste des acheteuses, en CSV : d'une formation (toutes les offres qui y
+  // mènent) ou d'une seule offre. Demande de Krystine du 11 septembre 2026.
+  const telecharger = async (offresVoulues: OffreKajabi[], nomFichier: string) => {
+    setAvis('');
+    const lignes = await getAcheteusesKajabi(offresVoulues.map(o => o.id));
+    if (!lignes.length) { setAvis('Aucune acheteuse dans le registre pour ce choix.'); return; }
+    const titreOffre = new Map(offresVoulues.map(o => [o.id, o.titre || `Offre ${o.id}`]));
+    downloadCsv(`acheteuses_${nomFichier}_${new Date().toISOString().slice(0, 10)}.csv`, lignes.map(l => ({
+      nom: l.nom, courriel: l.email, achete_le: l.acheteLe, montant: l.montant, offre: titreOffre.get(l.offreId) || l.offreId, etat: STATUT_LISIBLE[l.statut] || l.statut,
+    })));
+    setAvis(`${lignes.length} acheteuse${lignes.length > 1 ? 's' : ''} dans le fichier téléchargé.`);
+  };
+
   const envoyer = async (test: boolean) => {
     if (!formationChoisie || envoi) return;
     const n = acheteusesDe(formationChoisie);
