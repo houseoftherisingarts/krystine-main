@@ -121,7 +121,12 @@ const KajabiCodesSection: React.FC = () => {
                 return (
                   <tr key={o.id} className="border-t border-[#293027]/10 align-top">
                     <td className="py-3 pr-4"><div className="font-medium text-[#293027]">{o.titre || `Offre ${o.id}`}</div><div className="text-xs text-[#293027]/50">{o.id}</div></td>
-                    <td className="py-3 pr-4">{o.acheteuses}</td>
+                    <td className="py-3 pr-4 whitespace-nowrap">
+                      {o.acheteuses}
+                      {o.acheteuses > 0 && (
+                        <button type="button" onClick={() => telecharger([o], o.id)} title="Télécharger la liste de ces acheteuses (CSV)" className="ml-2 text-[11px] font-semibold text-[#8B4A2F] underline decoration-[#BA7B39]/50 underline-offset-2 hover:text-[#293027]">liste</button>
+                      )}
+                    </td>
                     <td className="py-3 pr-4 whitespace-nowrap">{e.aRestaurer} · {e.codeEnvoye} · {e.restaure}</td>
                     <td className="py-3">
                       <div className="flex flex-wrap gap-2">
