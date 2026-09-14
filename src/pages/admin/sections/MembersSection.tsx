@@ -103,8 +103,10 @@ function mergeContacts(members: MemberDoc[], subs: NewsletterSubscriber[]): Cont
     const key = s.email.toLowerCase();
     const src = s.source?.trim();
     const subDate = s.subscribedAt?.toDate();
+    const abonnement = s.id ? [{ id: s.id, status: s.status || 'active' }] : [];
     const existing = map.get(key);
     if (existing) {
+      existing.abonnements.push(...abonnement);
       if (src && !existing.sources.includes(src)) existing.sources.push(src);
       for (const t of s.tags || []) if (!existing.tags.includes(t)) existing.tags.push(t);
       if (!existing.firstName && s.firstName) existing.firstName = s.firstName;
