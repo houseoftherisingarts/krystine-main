@@ -90,6 +90,7 @@ function mergeContacts(members: MemberDoc[], subs: NewsletterSubscriber[]): Cont
       isMember: true,
       sources: [],
       tags: [],
+      abonnements: [],
       joinedAt: m.joinedAt?.toDate(),
       photoURL: m.photoURL,
       verifie: m.verifie,
