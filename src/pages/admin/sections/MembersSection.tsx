@@ -461,6 +461,7 @@ const MembersSection: React.FC = () => {
             })}
           </tbody>
         </table>
+        </div>
         {visibles < filtered.length && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-[#293027]/10 dark:border-white/10">
             <p className="text-xs text-[#293027]/50 dark:text-white/50">{Math.min(visibles, filtered.length)} affichés sur {filtered.length}</p>
