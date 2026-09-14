@@ -23,6 +23,9 @@ interface ContactRow {
   isMember: boolean;
   sources: string[];      // distinct newsletter `source` values for this contact
   tags: string[];         // union of newsletter tags
+  // Chaque inscription à l'infolettre portée par cette adresse (une par
+  // formulaire ou import). Le bouton « Désabonner » les ferme toutes d'un coup.
+  abonnements: { id: string; status: SubscriberStatus }[];
   joinedAt?: Date;        // earliest known first-seen (joinedAt or subscribedAt)
   photoURL?: string;
   verifie?: boolean;
