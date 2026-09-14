@@ -93,6 +93,13 @@ const KajabiCodesSection: React.FC = () => {
           <PrimaryButton disabled={!formationChoisie || envoi || acheteusesDe(formationChoisie) === 0} onClick={() => envoyer(false)}>
             {envoi ? 'Envoi…' : `Envoyer les codes (${formationChoisie ? acheteusesDe(formationChoisie) : 0})`}
           </PrimaryButton>
+          <GhostButton
+            disabled={!formationChoisie || !offres.some(o => o.formationIds.includes(formationChoisie))}
+            title="Les noms et les courriels des acheteuses de cette formation, en fichier CSV"
+            onClick={() => telecharger(offres.filter(o => o.formationIds.includes(formationChoisie)), formationChoisie)}
+          >
+            <i className="fa-solid fa-file-csv" /> Télécharger la liste
+          </GhostButton>
         </div>
         <div className="mt-3 flex flex-wrap items-end gap-3">
           <Input placeholder="Adresse de test" value={testEmail} onChange={e => setTestEmail(e.target.value)} className="max-w-xs" />
