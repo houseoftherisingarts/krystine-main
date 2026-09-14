@@ -341,6 +341,9 @@ const MembersSection: React.FC = () => {
       )}
 
       <Card className="overflow-hidden">
+        {/* Sur téléphone, les colonnes Communauté et Infolettre dépassent : le
+            tableau se fait glisser de côté au lieu d'être coupé par la carte. */}
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-[#EEE7DB] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#293027]/60 dark:text-white/60">
             <tr>
