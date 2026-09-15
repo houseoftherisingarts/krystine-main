@@ -24,7 +24,7 @@ const FIRESTORE = `https://firestore.googleapis.com/v1/projects/${PROJET}/databa
 // cherché est court et stable : un titre de section, un bouton, un nom.
 const PAGES = [
   { route: '/', attend: ['Krystine'], nom: 'Accueil' },
-  { route: '/origine-2', attend: ['Origine'], nom: 'Expérience Origine 2 (la page de vente)' },
+  { route: '/origine-2', attend: ['liste d’attente'], nom: 'Expérience Origine 2 (la page de vente)' },
   { route: '/foyer', attend: ['Foyer'], nom: 'Le Foyer d’Origine' },
   { route: '/cours', attend: [], nom: 'Les formations' },
   { route: '/podcast', attend: ['Au-delà des tendances'], nom: 'Le podcast' },
@@ -32,7 +32,7 @@ const PAGES = [
   { route: '/speaking', attend: ['Krystine'], nom: 'Conférencière (anglais)' },
   { route: '/evenements', attend: [], nom: 'Les rendez-vous' },
   { route: '/livres', attend: [], nom: 'Les livres' },
-  { route: '/boutique', attend: [], nom: 'La boutique' },
+  { route: '/boutique', attend: [], nom: 'La boutique', tiers: true },
   { route: '/medias', attend: [], nom: 'Les médias' },
   { route: '/quiz', attend: [], nom: 'Le quiz des doshas' },
   { route: '/compte', attend: [], nom: 'L’espace cliente' },
@@ -40,6 +40,11 @@ const PAGES = [
 
 // Les erreurs de console qui ne veulent rien dire (extensions, réseaux tiers).
 const BRUIT = /favicon|analytics|gtag|facebook|hotjar|ResizeObserver|third-party cookie|preload|Download the React DevTools|net::ERR_BLOCKED_BY_CLIENT/i;
+
+// Les titres du site sont mis en capitales par la feuille de style, et le
+// texte lu par le navigateur porte cette transformation : la comparaison se
+// fait donc à plat, sans casse ni accent.
+const aplat = (s) => String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\u2018\u2019\u02bc]/g, "'").replace(/\s+/g, ' ');
 
 const pannes = [];
 const signaler = (page, texte) => { pannes.push({ page, texte }); console.log(`  ✗ ${page} — ${texte}`); };
@@ -61,10 +66,14 @@ for (const p of PAGES) {
     await onglet.waitForTimeout(3500);
     const texte = await onglet.evaluate(() => document.body.innerText);
     if (texte.trim().length < 200) { signaler(p.nom, 'la page est vide ou ne s’est pas montée'); await onglet.close(); continue; }
-    const manque = p.attend.filter(m => !texte.includes(m));
+    const plat = aplat(texte);
+    const manque = p.attend.filter(m => !plat.includes(aplat(m)));
     if (manque.length) signaler(p.nom, `le texte attendu manque : ${manque.join(', ')}`);
-    if (erreurs.length) signaler(p.nom, `erreur dans la console : ${erreurs[0]}`);
-    if (!manque.length && !erreurs.length) console.log(`  ✓ ${p.nom}`);
+    // La boutique est servie par Shopify : son thème n'est pas notre code, et
+    // ses erreurs de console ne se rapportent pas ici.
+    const bruitTiers = p.tiers ? [] : erreurs;
+    if (bruitTiers.length) signaler(p.nom, `erreur dans la console : ${bruitTiers[0]}`);
+    if (!manque.length && !bruitTiers.length) console.log(`  ✓ ${p.nom}`);
   } catch (e) {
     signaler(p.nom, `la page n’a pas répondu : ${String(e).split('\n')[0].slice(0, 160)}`);
   }

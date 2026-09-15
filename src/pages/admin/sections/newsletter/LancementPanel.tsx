@@ -62,19 +62,19 @@ const LancementPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
       </Card>
 
       {/* La frise : une case par phase, la phase du jour en noir chaud et or. */}
-      <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${Math.max(1, data.phases.length)}, minmax(0, 1fr))` }}>
+      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 snap-x">
         {data.phases.map(p => (
-          <a key={p.n} href={`#phase-${p.n}`} className={`rounded-xl px-3 py-2 text-center transition-colors ${p.n === phaseDuJour ? 'bg-[#141311] text-[#EEE7DB]' : p.au < aujourdhui ? 'bg-[#293027]/10 text-[#293027]/50 dark:bg-white/10 dark:text-white/50' : 'bg-[#BA7B39]/10 text-[#293027] dark:text-white'}`}>
+          <a key={p.n} href={`#phase-${p.n}`} className={`shrink-0 basis-[9.5rem] md:shrink md:min-w-0 md:basis-0 md:flex-1 snap-start rounded-xl px-3 py-2 text-center transition-colors ${p.n === phaseDuJour ? 'bg-[#141311] text-[#EEE7DB]' : p.au < aujourdhui ? 'bg-[#293027]/10 text-[#293027]/50 dark:bg-white/10 dark:text-white/50' : 'bg-[#BA7B39]/10 text-[#293027] dark:text-white'}`}>
             <div className={`text-[10px] uppercase tracking-widest font-bold ${p.n === phaseDuJour ? 'text-[#e0b060]' : ''}`}>Phase {p.n}</div>
             <div className="font-serif text-sm leading-tight truncate" title={p.titre}>{p.titre}</div>
-            <div className="text-[10px] opacity-70">{lisible(p.du)} au {lisible(p.au)}</div>
+            <div className="text-[10px] opacity-70 whitespace-nowrap overflow-hidden text-ellipsis">{lisible(p.du)} au {lisible(p.au)}</div>
           </a>
         ))}
       </div>
 
       {data.phases.map(p => (
         <Card key={p.n} className={`p-5 space-y-4 ${p.n === phaseDuJour ? 'ring-2 ring-[#e0b060]' : ''}`}>
-          <div id={`phase-${p.n}`} className="grid gap-4 md:grid-cols-[auto_1fr_140px_140px] items-end">
+          <div id={`phase-${p.n}`} className="grid gap-4 md:grid-cols-[auto_1fr_11rem_11rem] items-end scroll-mt-24">
             <div className="font-serif text-4xl text-[#BA7B39] leading-none">{p.n}</div>
             <div>
               <Label>Phase</Label>
@@ -87,7 +87,7 @@ const LancementPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
           <div className="grid gap-4 md:grid-cols-2">
             <div>
               <Label>Ce qu'il faut faire (une ligne par point)</Label>
-              <Textarea rows={5} value={(p.objectifs || []).join('\n')} onChange={e => majPhase(p.n, { objectifs: e.target.value.split('\n') })} />
+              <Textarea rows={7} value={(p.objectifs || []).join('\n')} onChange={e => majPhase(p.n, { objectifs: e.target.value.split('\n') })} />
             </div>
             <div>
               <Label>Les lettres de la phase</Label>
