@@ -416,6 +416,12 @@ service cloud.firestore {
       // L'historique des versions du composeur (une par heure d'écriture).
       match /versions/{v} { allow read, write: if isAdmin(); }
     }
+    // ── Les séquences (courriels automatiques dans le temps, 15 sept 2026) ──
+    // Réservées à l'admin : la liste des inscrits porte des adresses.
+    match /sequences/{id} {
+      allow read, write: if isAdmin();
+      match /inscrits/{i} { allow read, write: if isAdmin(); }
+    }
     // ── Les avis épinglés (le babillard, Alex 2026-09-11) ──
     // Krystine écrit un avis; tout le monde lit ceux qui sont actifs (la
     // bulle de l'accueil et la cloche les montrent), l'admin voit tout.

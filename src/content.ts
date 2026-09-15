@@ -281,12 +281,6 @@ export const CONTENT = {
       title: 'Réserver Krystine pour votre évènement!',
       bio: 'Krystine St-Laurent est une experte reconnue en Ayurveda, santé holistique et art de vivre aligné.',
       program: 'Formée à l\'international, autrice de livres à succès et conférencière recherchée.',
-      ritual: {
-        title: 'Si votre corps réécrivait l\'agenda de décembre?',
-        desc: 'Rejoignez nous pour un 21 jours de rituels, simples, 5 à 10 minutes par jour!',
-        cta: 'Je rejoins le mouvement',
-        kajabiLink: '/liste-attente?programme=origine',
-      },
     },
     evenements: {
       title: 'Événements',
@@ -481,7 +475,7 @@ export const CONTENT = {
       footerBio: { title: 'WHO IS KRYSTINE ST-LAURENT?', text: 'Krystine St-Laurent is a best-selling author, international speaker, and recognized expert in Ayurveda.' },
       cta: 'Book Krystine',
     },
-    booking: { title: 'Book Krystine for your event!', bio: 'Recognized expert in Ayurveda, holistic health, and aligned living.', program: 'Internationally trained, best-selling author, and sought-after speaker.', ritual: { title: 'If your body rewrote the agenda?', desc: 'Join us for 21 days of rituals, simple, 5 to 10 minutes a day!', cta: 'I join the movement', kajabiLink: '/liste-attente?programme=origine' } },
+    booking: { title: 'Book Krystine for your event!', bio: 'Recognized expert in Ayurveda, holistic health, and aligned living.', program: 'Internationally trained, best-selling author, and sought-after speaker.' },
     evenements: {
       title: 'Events',
       subtitle: 'Meet Krystine in person',

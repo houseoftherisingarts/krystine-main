@@ -542,6 +542,9 @@ export interface NewsletterDoc {
   // quand celle-ci est née de « Dupliquer et traduire ».
   lang?: 'fr' | 'en';
   traductionDe?: string | null;
+  // « sequence » : lettre servie par une séquence automatique (onglet Séquences),
+  // à ne pas envoyer en masse par mégarde.
+  role?: 'sequence' | null;
   // Le bandeau (noir chaud par défaut) : étiquette, couleurs, ou masqué.
   bandeau?: BandeauInfolettre | null;
   // Couleur de fond du corps de la lettre, prise dans la palette du site

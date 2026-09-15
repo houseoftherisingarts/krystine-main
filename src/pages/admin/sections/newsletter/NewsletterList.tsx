@@ -83,6 +83,7 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
                     <td className="px-4 py-3 text-[#293027] dark:text-white font-serif min-w-[11rem]">
                       {n.lettreDor && <i className="fa-solid fa-crown mr-2 text-xs" style={{ color: '#c9a24a' }} title="Lettre d'or, à l'interne" />}
                       {n.title || '—'}
+                      {n.role === 'sequence' && <span className="ml-2 text-[9px] uppercase tracking-widest font-bold px-1.5 py-0.5 rounded-full bg-[#e0b060]/25 text-[#7d6330]" title="Servie par une séquence automatique">Séquence</span>}
                       {n.lang === 'en' && <span className="ml-2 text-[9px] uppercase tracking-widest font-bold px-1.5 py-0.5 rounded-full bg-[#293027]/10 text-[#293027]/70 dark:bg-white/10 dark:text-white/70 align-middle" title="Lettre en anglais">EN</span>}
                       {/* Sur petit écran, la colonne Statut est masquée : le statut et l'avancement vivent ici. */}
                       <div className="mt-1.5 lg:hidden font-sans">

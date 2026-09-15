@@ -5,6 +5,7 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import { crediterNiskas, SANTE_LA_VIE_ID, SAISONS, PRIX_SAISON_CAD } from './niskas';
 import { exigerModule } from './gamification';
+import { inscrireSequencesAchat } from './newsletter/sequences';
 import { traiterPaiementBillets } from './billetterie';
 import { MAIL_SECRETS } from './newsletter/mail';
 
@@ -379,6 +380,10 @@ export const stripeWebhook = onRequest(
       await db.doc(`cadeaux/${session.metadata.cadeauId}`).set({ statut: 'utilise', utiliseLe: FieldValue.serverTimestamp(), sessionId: session.id || '' }, { merge: true });
     }
     console.log(`[paiements] achat enregistré: ${uid} -> ${formationId}`);
+    // Les séquences déclenchées par cet achat (onboarding, suite de bienvenue) :
+    // l'inscription et la première étape, sans jamais faire échouer le webhook.
+    try { await inscrireSequencesAchat(uid, formationId, session.customer_details?.email || null); }
+    catch (err) { console.error('[paiements] séquences', err); }
     res.status(200).send('ok');
   },
 );
