@@ -33,7 +33,6 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
   useEffect(() => { setBrouillon(seqs.find(s => s.id === courante) || null); }, [courante, seqs]);
 
   const lettresChoisissables = useMemo(() => lettres.filter(l => l.status !== 'sending'), [lettres]);
-  const titreLettre = (id: string) => lettres.find(l => l.id === id)?.title || lettres.find(l => l.id === id)?.subject || id;
 
   const maj = (patch: Partial<Sequence>) => setBrouillon(b => (b ? { ...b, ...patch } : b));
   const majEtape = (i: number, patch: Partial<Etape>) => maj({ etapes: (brouillon?.etapes || []).map((e, j) => (j === i ? { ...e, ...patch } : e)) });
@@ -86,9 +85,11 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
     finally { setOccupe(false); }
   };
 
-  const declencheurTexte = (s: Sequence) => s.declencheur?.type === 'achat'
-    ? `À l'achat de « ${formations.find(f => f.id === s.declencheur?.type === 'achat' ? (s.declencheur as { formationId: string }).formationId : '')?.titre || (s.declencheur as { formationId: string }).formationId} »`
-    : 'À la main seulement';
+  const declencheurTexte = (s: Sequence) => {
+    if (s.declencheur?.type !== 'achat') return 'À la main seulement';
+    const fid = s.declencheur.formationId;
+    return `À l'achat de « ${formations.find(f => f.id === fid)?.titre || fid} »`;
+  };
 
   return (
     <div className="grid gap-6 lg:grid-cols-[320px_1fr]">

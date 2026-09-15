@@ -450,6 +450,8 @@ service cloud.firestore {
     }
     match /irisDemandes/{id} { allow read, write: if isAdmin() || isIris(); }
     match /etat/{id}         { allow read: if isAdmin(); allow write: if false; }
+    // Le calendrier maître du lancement (onglet Lancement) : l'admin l'écrit.
+    match /etat/lancementOrigine2 { allow read, write: if isAdmin(); }
     match /etat/iris         { allow write: if isIris(); }
     match /etat/irisInstallation { allow read: if isIris(); }
     // La liste des uids admin (voir esAdminUid ci-dessus), pour fermer les
