@@ -1,0 +1,109 @@
+{
+  "sequence": {
+    "id": "accueil-origine2",
+    "titre": "Accueil · Expérience Origine 2",
+    "declencheur": { "type": "achat", "formationId": "origine2" },
+    "actif": false
+  },
+  "lettres": [
+    {
+      "cle": "bienvenue",
+      "titre": "Étape 1 · Bienvenue dans Origine",
+      "delaiHeures": 0,
+      "subject": "Votre place est réservée dans Origine",
+      "preheader": "Vous y êtes. Voici la porte de votre espace, et ce qui vient ensuite.",
+      "bandeau": { "etiquette": "Expérience Origine 2", "fond": "#141311", "texte": "#EEE7DB" },
+      "blocs": [
+        { "type": "heading", "level": 1, "text": "Vous y êtes" },
+        { "type": "paragraph", "text": "Bonjour{{firstName}}," },
+        { "type": "paragraph", "text": "Votre place dans l'Expérience Origine est réservée, et je voulais vous écrire tout de suite, avant même que vous ayez le temps de vous demander ce qui vient ensuite. Ce que vous venez de faire, ce n'est pas acheter une formation de plus dans une liste qui s'allonge; c'est vous donner douze semaines pour écouter ce que votre corps essaie de vous dire depuis un moment déjà, et ça, ça mérite qu'on vous accueille comme il faut." },
+        { "type": "image", "url": "https://wsrv.nl/?url=storage.googleapis.com/origine1/Origine%20left%20wide.png&w=1100&output=jpg&q=82", "alt": "L'Expérience Origine, le programme en douze semaines", "href": "https://www.krystinestlaurent.ca/cours/origine2" },
+        { "type": "heading", "level": 2, "text": "Votre espace vous attend" },
+        { "type": "paragraph", "text": "Tout ce qui vous appartient maintenant vit au même endroit : les semaines qui s'ouvriront une à une, les rituels, les méditations, les enregistrements des rencontres. Entrez-y une première fois aujourd'hui, simplement pour savoir où c'est, sans rien avoir à faire d'autre. Vous y reviendrez souvent." },
+        { "type": "button", "label": "Ouvrir mon espace", "href": "https://www.krystinestlaurent.ca/cours/origine2" },
+        { "type": "divider", "style": "fleuron" },
+        { "type": "paragraph", "text": "Vous n'avez rien à préparer et rien à lire d'avance. Je vous écrirai demain avec la seule chose qui vaut la peine d'être faite avant le départ, et elle prend trois minutes." },
+        { "type": "paragraph", "text": "Au plaisir de vous accompagner à la redécouverte de votre vraie nature !" },
+        { "type": "paragraph", "text": "Krystine xx" }
+      ]
+    },
+    {
+      "cle": "premier-pas",
+      "titre": "Étape 2 · Le premier pas (J+1)",
+      "delaiHeures": 24,
+      "subject": "Trois minutes, avant tout le reste",
+      "preheader": "Le premier geste d'Origine tient dans un carnet et dans une question.",
+      "bandeau": { "etiquette": "Expérience Origine 2", "fond": "#141311", "texte": "#EEE7DB" },
+      "blocs": [
+        { "type": "heading", "level": 1, "text": "Le premier pas" },
+        { "type": "paragraph", "text": "Bonjour{{firstName}}," },
+        { "type": "paragraph", "text": "Il y a une chose que je demande à toutes celles qui entrent dans Origine, et c'est la plus simple de tout le parcours : prenez un carnet, n'importe lequel, celui qui traîne dans le tiroir fera très bien l'affaire, et écrivez en une page ce qui vous a amenée jusqu'ici. Pas ce que vous voudriez changer dans dix ans... ce qui, aujourd'hui, dans votre corps ou dans vos journées, vous a fait cliquer." },
+        { "type": "paragraph", "text": "Écrivez-le à la main si vous le pouvez. La main va moins vite que la tête, et c'est exactement ce qu'on cherche. Vous relirez cette page à la douzième semaine, et je vous promets que vous serez surprise de ce que vous y aurez écrit." },
+        { "type": "image", "url": "https://www.krystinestlaurent.ca/foyer/livre-fleurs-mail.jpg", "alt": "Un carnet ouvert, quelques fleurs séchées entre les pages" },
+        { "type": "heading", "level": 2, "text": "Pourquoi ça compte" },
+        { "type": "paragraph", "text": "Quand j'ai quitté les soins intensifs pour la terre et les plantes, personne ne m'avait dit que la partie la plus difficile serait de me souvenir, six mois plus tard, de la raison exacte qui m'avait fait partir. Les journées reprennent leur vitesse, les urgences des autres reviennent frapper à la porte, et le pourquoi s'efface avant le comment. Cette page dans votre carnet est votre garde-fou." },
+        { "type": "divider", "style": "fleuron" },
+        { "type": "paragraph", "text": "C'est tout pour aujourd'hui. Prenez vos trois minutes, et bienvenue encore." },
+        { "type": "paragraph", "text": "Krystine xx" }
+      ]
+    },
+    {
+      "cle": "la-forme",
+      "titre": "Étape 3 · La forme du parcours (J+3)",
+      "delaiHeures": 72,
+      "subject": "Comment Origine se déroule",
+      "preheader": "Douze semaines, trois piliers, et une seule règle : votre rythme.",
+      "bandeau": { "etiquette": "Expérience Origine 2", "fond": "#141311", "texte": "#EEE7DB" },
+      "blocs": [
+        { "type": "heading", "level": 1, "text": "Comment ça se déroule" },
+        { "type": "paragraph", "text": "Bonjour{{firstName}}," },
+        { "type": "paragraph", "text": "Maintenant que votre place est prise, laissez-moi vous raconter la forme que prendra l'automne, pour que rien ne vous surprenne et que vous puissiez vous organiser." },
+        { "type": "paragraph", "text": "Origine se déroule sur douze semaines, et une semaine s'ouvre à la fois, le dimanche. Ce n'est pas une bibliothèque où l'on se perd : c'est un chemin, et il avance au rythme où le corps assimile, pas au rythme où l'esprit veut tout savoir. Les trois piliers se succèdent ainsi." },
+        { "type": "list", "style": "numero", "text": "Ce que le corps essaie de dire, les quatre premières semaines, où l'on apprend à lire les signes au lieu de les faire taire.\nCe qui vous appartient vraiment, de la cinquième à la huitième, où l'on sépare ce qui vient de vous de ce qui vous a été mis sur les épaules.\nLe retour au point d'origine, les quatre dernières, où les rituels qui tiennent prennent leur place dans vos journées." },
+        { "type": "image", "url": "https://wsrv.nl/?url=storage.googleapis.com/origine1/Tuning%20fork%20png.png&w=900&output=jpg&q=82", "alt": "Le diapason, symbole de l'accord retrouvé" },
+        { "type": "heading", "level": 2, "text": "Et si vous prenez du retard" },
+        { "type": "paragraph", "text": "Vous prendrez du retard. Tout le monde en prend, moi la première quand j'écrivais mon premier livre en dormant quatre heures par nuit. Ce qui est ouvert vous reste ouvert, alors une semaine sautée ne se rattrape pas en doublant la suivante : elle se reprend quand la vie vous rend votre souffle. Personne ne compte les points ici." },
+        { "type": "button", "label": "Ouvrir mon espace", "href": "https://www.krystinestlaurent.ca/cours/origine2" },
+        { "type": "paragraph", "text": "Krystine xx" }
+      ]
+    },
+    {
+      "cle": "le-groupe",
+      "titre": "Étape 4 · Vous n'êtes pas seule (J+7)",
+      "delaiHeures": 168,
+      "subject": "Les autres femmes qui marchent avec vous",
+      "preheader": "L'espace, les rencontres, et la porte pour m'écrire quand ça coince.",
+      "bandeau": { "etiquette": "Expérience Origine 2", "fond": "#141311", "texte": "#EEE7DB" },
+      "blocs": [
+        { "type": "heading", "level": 1, "text": "Vous n'êtes pas seule" },
+        { "type": "paragraph", "text": "Bonjour{{firstName}}," },
+        { "type": "paragraph", "text": "Une semaine a passé depuis que vous avez pris votre place, et c'est en général le moment où une question commence à monter : est-ce que je vais vraiment y arriver, moi, avec mon horaire et ma fatigue... Je connais bien cette question, et voici ma réponse." },
+        { "type": "paragraph", "text": "Vous n'êtes pas seule dans Origine. D'autres femmes ont pris leur place en même temps que vous, elles ont les mêmes journées trop pleines et la même envie de revenir à quelque chose de plus juste, et vous les retrouverez dans l'espace, dans les rencontres et dans les échanges qui s'y tiennent. C'est souvent là que la bascule se produit, bien plus que dans un enseignement de plus." },
+        { "type": "image", "url": "https://www.krystinestlaurent.ca/podcast/krystine.jpg", "alt": "Krystine St-Laurent" },
+        { "type": "heading", "level": 2, "text": "Quand quelque chose coince" },
+        { "type": "paragraph", "text": "Si vous ne trouvez pas une leçon, si un lien refuse de s'ouvrir, ou si vous hésitez sur un rituel, répondez simplement à ce courriel. Votre message arrive à mon équipe, et quelqu'un vous répond. Il n'y a pas de petite question : celle que vous gardez pour vous est justement celle qui vous fera décrocher." },
+        { "type": "button", "label": "Ouvrir mon espace", "href": "https://www.krystinestlaurent.ca/cours/origine2" },
+        { "type": "paragraph", "text": "Krystine xx" }
+      ]
+    },
+    {
+      "cle": "ou-en-etes-vous",
+      "titre": "Étape 5 · Où en êtes-vous ? (J+21)",
+      "delaiHeures": 504,
+      "subject": "Où en êtes-vous ?",
+      "preheader": "Trois semaines plus tard, une question honnête et une porte ouverte.",
+      "bandeau": { "etiquette": "Expérience Origine 2", "fond": "#141311", "texte": "#EEE7DB" },
+      "blocs": [
+        { "type": "heading", "level": 1, "text": "Où en êtes-vous ?" },
+        { "type": "paragraph", "text": "Bonjour{{firstName}}," },
+        { "type": "paragraph", "text": "Trois semaines ont passé, et je pose la question pour vrai, pas par politesse : où en êtes-vous ? Il y a celles qui ont plongé et qui tiennent leurs rituels chaque matin, et il y a celles qui ont ouvert l'espace une fois puis que la vie a emportées ailleurs. Les deux sont normales, et aucune des deux ne dit quoi que ce soit sur vous." },
+        { "type": "paragraph", "text": "Si vous êtes dans le deuxième groupe, voici ce que je vous propose, et ce sera la seule chose que je vous demande : rouvrez la première semaine, choisissez un rituel, un seul, celui qui vous demande le moins d'effort, et faites-le demain matin. Cinq minutes suffisent. Le corps ne demande pas de la volonté, il demande de la répétition, et la répétition commence toujours par une seule fois." },
+        { "type": "image", "url": "https://wsrv.nl/?url=storage.googleapis.com/origine1/TRILOGIE.png&w=1100&output=jpg&q=82", "alt": "La trilogie de Krystine St-Laurent" },
+        { "type": "paragraph", "text": "Et si vous êtes dans le premier groupe, écrivez-moi pour me raconter ce qui a changé. Ces récits-là me nourrissent, et il m'arrive d'en lire des extraits dans les rencontres, toujours sans nom." },
+        { "type": "button", "label": "Reprendre là où j'étais", "href": "https://www.krystinestlaurent.ca/cours/origine2" },
+        { "type": "paragraph", "text": "Au plaisir de vous accompagner à la redécouverte de votre vraie nature !" },
+        { "type": "paragraph", "text": "Krystine xx" }
+      ]
+    }
+  ]
+}
