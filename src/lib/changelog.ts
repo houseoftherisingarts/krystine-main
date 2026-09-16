@@ -35,6 +35,7 @@ export const JOURNAL: EntreeJournal[] = [
     intro: "Une petite plaque a rejoint le pied de page : elle nomme le studio qui a bâti le site, à côté de la mention du Salon des Inconnus qui y était déjà.",
     etapes: [
       "Une plaque discrète en bas de chaque page dit qui a construit le site, en français comme en anglais, et s'ouvre sur une courte carte de présentation au clic.",
+      "Cette plaque porte maintenant le petit blason du studio et son nom dans une belle police à empattements, pour qu'elle se distingue mieux du reste du pied de page.",
     ],
   },
   {
