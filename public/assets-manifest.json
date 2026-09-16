@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-15T23:24:34.362Z",
+  "generatedAt": "2026-09-16T17:20:19.688Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -1344,6 +1344,13 @@
       "folder": "racine",
       "kind": "image",
       "size": 294335
+    },
+    {
+      "path": "/salon-logo-or.png",
+      "name": "salon-logo-or.png",
+      "folder": "racine",
+      "kind": "image",
+      "size": 44501
     },
     {
       "path": "/sante-la-vie.jpg",
