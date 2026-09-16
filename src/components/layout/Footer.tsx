@@ -186,6 +186,11 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
+      {/* Collant Vexel — pleine largeur, en dessous du bloc copyright/partenaire */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 mt-8 flex justify-center md:justify-start">
+        <CollantVexel lang={lang} />
+      </div>
+
       <SalonContactCard open={salonOpen} onClose={() => setSalonOpen(false)} sourceSite="krystine" />
     </footer>
   );
