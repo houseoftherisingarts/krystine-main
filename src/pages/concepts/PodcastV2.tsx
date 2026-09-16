@@ -6,6 +6,7 @@ import {
 import NewsletterSignup from '../../components/NewsletterSignup';
 import LiveSignup from '../../components/LiveSignup';
 import { trackListenStart, startPresence, stopPresence } from '../../lib/podcastStats';
+import { CollantVexel } from '../../vexel/CollantVexel';
 
 /**
  * Podcast « Au-delà des tendances » — branding V2 (magazine crème), même
@@ -437,6 +438,9 @@ export default function PodcastV2() {
             Krystine <span className="italic font-light">St-Laurent</span>
           </span>
           <span>Inspira Nature &middot; Québec &middot; MMXXVI</span>
+        </div>
+        <div className="mt-8 flex justify-center">
+          <CollantVexel lang="FR" />
         </div>
       </footer>
     </div>

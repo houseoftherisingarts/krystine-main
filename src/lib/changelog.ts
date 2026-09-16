@@ -36,6 +36,8 @@ export const JOURNAL: EntreeJournal[] = [
     etapes: [
       "Une plaque discrète en bas de chaque page dit qui a construit le site, en français comme en anglais, et s'ouvre sur une courte carte de présentation au clic.",
       "Cette plaque porte maintenant le petit blason du studio et son nom dans une belle police à empattements, pour qu'elle se distingue mieux du reste du pied de page.",
+      "Elle manquait encore sur les quelques pages qui gardent leur propre bas de page, à part de celui du reste du site. Elle est maintenant sur votre page d'accueil, sur Médias, sur Podcast, sur La conférencière et sur les pages de vos événements.",
+      "Le Foyer d'Origine la porte aussi, tout en bas de sa page, sans rien ajouter après le mot de la fin qui la termine déjà.",
     ],
   },
   {

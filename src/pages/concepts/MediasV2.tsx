@@ -13,6 +13,7 @@ import { useApp } from '../../contexts/AppContext';
 import { CONTENT } from '../../content';
 import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../../shopify';
 import NewsletterSignup from '../../components/NewsletterSignup';
+import { CollantVexel } from '../../vexel/CollantVexel';
 import WaitlistModal, { type WaitlistTarget } from '../../components/WaitlistModal';
 import BoutonCompte from '../../components/BoutonCompte';
 
@@ -563,6 +564,9 @@ export default function MediasV2() {
             Krystine <span className="italic font-light">St-Laurent</span>
           </span>
           <span>Inspira Nature &middot; Québec &middot; MMXXVI</span>
+        </div>
+        <div className="mt-8 flex justify-center">
+          <CollantVexel lang={lang} />
         </div>
       </footer>
 

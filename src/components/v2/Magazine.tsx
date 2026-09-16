@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import { ArrowDown, ArrowRight, ArrowUpRight } from '@phosphor-icons/react';
+import { CollantVexel } from '../../vexel/CollantVexel';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -213,7 +214,7 @@ export const Reveal: React.FC<{ children: React.ReactNode; className?: string; d
 };
 
 /** La quatrième de couverture : la citation, les gestes, puis la signature. */
-export const QuatriemeCouverture: React.FC<{ citation: React.ReactNode; children?: React.ReactNode; note?: React.ReactNode }> = ({ citation, children, note }) => (
+export const QuatriemeCouverture: React.FC<{ citation: React.ReactNode; children?: React.ReactNode; note?: React.ReactNode; lang?: 'FR' | 'EN' }> = ({ citation, children, note, lang = 'FR' }) => (
   <footer className={`relative w-full bg-[#34241a] text-[#f4efe6] ${GOUTTIERE} pt-[clamp(5rem,12vh,9rem)] pb-12`}>
     <div className="mx-auto max-w-[860px] text-center">
       <p className="v2-serif font-light text-[clamp(1.6rem,3.6vw,2.8rem)] leading-[1.24] text-[#f4efe6]">{citation}</p>
@@ -222,6 +223,9 @@ export const QuatriemeCouverture: React.FC<{ citation: React.ReactNode; children
     <div className="mt-[clamp(4rem,9vh,7rem)] flex flex-col items-center justify-between gap-4 border-t border-[#f4efe6]/15 pt-7 text-center text-[0.6rem] uppercase tracking-[0.24em] text-[#f4efe6]/45 sm:flex-row sm:text-left">
       <span className="v2-serif normal-case tracking-tight text-[0.95rem] text-[#f4efe6]/80">Krystine <span className="font-light">St-Laurent</span></span>
       <span className="normal-case tracking-[0.08em]">{note ?? <span className="uppercase tracking-[0.24em]">Inspira Nature &middot; Québec &middot; MMXXVI</span>}</span>
+    </div>
+    <div className="mt-8 flex justify-center">
+      <CollantVexel lang={lang} />
     </div>
   </footer>
 );

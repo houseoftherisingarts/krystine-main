@@ -19,6 +19,7 @@ import { OFFRE, FINAL } from './foyer/content';
 import { getFormation, type Formation } from '../firebase/formations';
 import { useSiteFlags } from '../contexts/SiteFlagsContext';
 import { useAuth } from '../contexts/AppContext';
+import { CollantVexel } from '../vexel/CollantVexel';
 
 /**
  * Le Foyer d'Origine · page de vente (URL dédiée /foyer).
@@ -776,6 +777,9 @@ const AppelFinal: React.FC = () => {
           >
             <Cta label={FINAL.cta} dark />
           </motion.div>
+          <div className="mt-14 flex justify-start">
+            <CollantVexel lang="FR" />
+          </div>
         </div>
       </div>
     </section>

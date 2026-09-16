@@ -438,6 +438,9 @@
     .foot .mx{grid-template-columns:1fr;gap:2.2rem}
     .foot .q{font-size:1.3rem}
     .amb-toggle{right:1rem;bottom:1rem;width:42px;height:42px}
+    /* le collant Vexel doit dégager la pastille de langue (bas-gauche) et le
+       rond de musique (bas-droit), tous deux fixes, sur un écran étroit */
+    .cv-wrap{padding-bottom:5rem!important}
     /* touch targets : give text links a 44px tap area */
     .more,.relie .more,.fan-cap a{padding-top:1rem;padding-bottom:1rem}
   }
@@ -981,7 +984,137 @@
       </div>
     </div>
     <div class="copyr">© Krystine St-Laurent · Inspira Nature · Tous droits réservés</div>
+
+    <!-- Collant Vexel : foil holographique, même dessin que la version React des
+         autres pages du site (src/vexel/CollantVexel.tsx). Vanille ici puisque
+         /accueil est un export statique. La carte suit la langue affichée par
+         /i18n/static.js (document.documentElement.lang). -->
+    <div class="cv-wrap" style="position:relative;z-index:1;display:flex;justify-content:center;padding-top:2.8rem">
+      <a id="cvFoil" class="cv-foil" href="https://vexelwebstudio.com" target="_blank" rel="noopener noreferrer" aria-haspopup="dialog" aria-label="Site créé par Vexel Webstudio : en savoir plus">
+        <span aria-hidden class="cv-sheen"></span>
+        <span aria-hidden class="cv-grain"></span>
+        <img src="/vexel-logo.png" alt="" width="329" height="320" style="height:2.5rem;width:auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));">
+        <span style="display:flex;flex-direction:column;line-height:1.15;">
+          <span id="cvKicker" style="font-size:0.625rem;font-weight:600;text-transform:uppercase;letter-spacing:0.22em;color:rgba(255,255,255,0.7);">Site créé par</span>
+          <span id="cvNom" style="margin-top:0.25rem;font-family:ui-serif,Georgia,Cambria,'Times New Roman',Times,serif;font-size:1.05rem;">Vexel Webstudio</span>
+        </span>
+      </a>
+    </div>
   </footer>
+
+  <div id="cvOverlay" class="cv-overlay" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="cv-titre" class="cv-carte">
+      <button type="button" id="cvFermer" class="cv-carte-fermer" aria-label="Fermer">✕</button>
+      <img src="/vexel-logo.png" alt="" width="329" height="320" style="height:3.5rem;width:auto;margin:0 auto 1rem;display:block;">
+      <p id="cvSousTitre" style="font-size:0.75rem;color:#9a9a9f;margin:0;">un projet créatif du Salon des Inconnus</p>
+      <h2 id="cv-titre" style="margin-top:0.5rem;font-family:ui-serif,Georgia,Cambria,'Times New Roman',Times,serif;font-size:1.25rem;">Un site comme celui-ci</h2>
+      <p id="cvCorps" style="margin-top:0.75rem;color:#c7c7cc;">Ce site a été bâti par Vexel Webstudio, un studio web fondé au Salon des Inconnus.</p>
+      <a id="cvOui" href="https://vexelwebstudio.com" target="_blank" rel="noopener noreferrer" class="cv-bouton">Voir Vexel Webstudio</a>
+      <a href="https://lesalondesinconnus.com/" target="_blank" rel="noopener noreferrer" aria-label="Le Salon des Inconnus" class="cv-salon">
+        <img src="/salon-logo-or.png" alt="Le Salon des Inconnus" style="height:2.5rem;width:auto;">
+      </a>
+    </div>
+  </div>
+
+  <style>
+    .cv-foil {
+      --mx: 30%; --my: 30%; --rx: 0deg; --ry: 0deg;
+      position: relative; display: inline-flex; align-items: center; gap: 0.75rem;
+      padding: 0.7rem 1.1rem; border-radius: 15px; border: 2px solid #fff; color: #fff;
+      text-decoration: none; overflow: hidden; isolation: isolate; cursor: pointer;
+      background: radial-gradient(120% 120% at var(--mx) var(--my), rgb(255 255 255 / 0.18), transparent 55%),
+        linear-gradient(135deg, #1b1b22 0%, #050505 60%, #14141a 100%);
+      box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35), 0 10px 24px -10px rgb(0 0 0 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.25);
+      transform: perspective(600px) rotateX(var(--rx)) rotateY(var(--ry));
+      transition: transform 220ms ease, box-shadow 220ms ease;
+    }
+    .cv-foil:hover { box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35), 0 18px 34px -12px rgb(0 0 0 / 0.65), inset 0 1px 0 rgb(255 255 255 / 0.35); }
+    .cv-sheen {
+      position: absolute; inset: -40%; pointer-events: none; z-index: 0;
+      background: repeating-conic-gradient(from 200deg at var(--mx) var(--my),
+        #ff9ecb 0deg, #ffe08a 24deg, #9bffcf 48deg, #8ad4ff 72deg, #c9a4ff 96deg, #ff9ecb 120deg);
+      opacity: 0.18; mix-blend-mode: color-dodge; filter: saturate(1.2) blur(2px);
+      transition: opacity 260ms ease;
+    }
+    .cv-foil:hover .cv-sheen { opacity: 0.34; }
+    .cv-grain {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/></svg>");
+      mix-blend-mode: soft-light; opacity: 0.35;
+    }
+    .cv-foil > *:not(.cv-sheen):not(.cv-grain) { position: relative; z-index: 1; }
+    @media (prefers-reduced-motion: reduce) { .cv-foil { transform: none; transition: none; } }
+    .cv-overlay { position: fixed; inset: 0; z-index: 900; display: none; align-items: center; justify-content: center; padding: 1rem; background: rgba(10,10,12,0.6); backdrop-filter: blur(4px); }
+    .cv-overlay.open { display: flex; }
+    .cv-carte { position: relative; width: 100%; max-width: 480px; border-radius: 15px; background: #101012; border: 1px solid rgba(255,255,255,0.14); color: #f2f2f2; padding: 2rem; text-align: center; }
+    .cv-carte-fermer { position: absolute; top: 0.75rem; right: 0.75rem; width: 2.25rem; height: 2.25rem; display: flex; align-items: center; justify-content: center; border-radius: 999px; border: none; background: transparent; color: #9a9a9f; cursor: pointer; font-size: 1rem; }
+    .cv-carte-fermer:hover { color: #f2f2f2; }
+    .cv-bouton { display: inline-flex; align-items: center; justify-content: center; margin-top: 1.25rem; min-height: 44px; padding: 0 1.4rem; border-radius: 999px; background: #bb9a5e; color: #101012; font-weight: 600; text-decoration: none; }
+    .cv-salon { display: inline-block; margin-top: 1.5rem; }
+  </style>
+
+  <script>
+  (function () {
+    var foil = document.getElementById('cvFoil');
+    var overlay = document.getElementById('cvOverlay');
+    var fermer = document.getElementById('cvFermer');
+    if (!foil || !overlay) return;
+    function ouvrir(e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      overlay.classList.add('open');
+    }
+    function fermerCarte() { overlay.classList.remove('open'); }
+    foil.addEventListener('click', ouvrir);
+    foil.addEventListener('pointermove', function (e) {
+      var r = foil.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      foil.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+      foil.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+      foil.style.setProperty('--rx', ((0.5 - y) * 10).toFixed(2) + 'deg');
+      foil.style.setProperty('--ry', ((x - 0.5) * 12).toFixed(2) + 'deg');
+    });
+    foil.addEventListener('pointerleave', function () {
+      foil.style.setProperty('--mx', '30%'); foil.style.setProperty('--my', '30%');
+      foil.style.setProperty('--rx', '0deg'); foil.style.setProperty('--ry', '0deg');
+    });
+    fermer.addEventListener('click', fermerCarte);
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) fermerCarte(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fermerCarte(); });
+
+    // La carte suit la langue affichée par /i18n/static.js, qui pose
+    // document.documentElement.lang à chaque bascule FR/EN.
+    var CV_TEXTES = {
+      fr: {
+        libelle: "Site créé par Vexel Webstudio : en savoir plus",
+        kicker: "Site créé par",
+        sousTitre: "un projet créatif du Salon des Inconnus",
+        titre: "Un site comme celui-ci",
+        corps: "Ce site a été bâti par Vexel Webstudio, un studio web fondé au Salon des Inconnus.",
+        oui: "Voir Vexel Webstudio",
+      },
+      en: {
+        libelle: "Site by Vexel Webstudio: learn more",
+        kicker: "Site by",
+        sousTitre: "a creative project of Le Salon des Inconnus",
+        titre: "A site like this one",
+        corps: "This site was built by Vexel Webstudio, a web studio founded at Le Salon des Inconnus.",
+        oui: "Visit Vexel Webstudio",
+      },
+    };
+    function appliquerLangueCollant() {
+      var t = CV_TEXTES[document.documentElement.lang === 'en' ? 'en' : 'fr'];
+      foil.setAttribute('aria-label', t.libelle);
+      document.getElementById('cvKicker').textContent = t.kicker;
+      document.getElementById('cvSousTitre').textContent = t.sousTitre;
+      document.getElementById('cv-titre').textContent = t.titre;
+      document.getElementById('cvCorps').textContent = t.corps;
+      document.getElementById('cvOui').textContent = t.oui;
+    }
+    appliquerLangueCollant();
+    new MutationObserver(appliquerLangueCollant).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+  })();
+  </script>
 
 <script>
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;

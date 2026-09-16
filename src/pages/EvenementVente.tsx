@@ -260,6 +260,7 @@ const EvenementVente: React.FC = () => {
 
       {/* ─────────── LA QUATRIÈME DE COUVERTURE ─────────── */}
       <QuatriemeCouverture
+        lang={lang}
         citation={`«\u00A0${ev.subtitle || ev.title}\u00A0»`}
         note={ev.credit ? <span className="normal-case tracking-normal text-[0.7rem] text-[#f4efe6]/50">{ev.credit}</span> : undefined}
       >

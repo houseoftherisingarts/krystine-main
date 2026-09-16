@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-16T17:20:19.688Z",
+  "generatedAt": "2026-09-16T18:40:22.569Z",
   "files": [
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
@@ -1358,6 +1358,13 @@
       "folder": "racine",
       "kind": "image",
       "size": 973546
+    },
+    {
+      "path": "/vexel-logo.png",
+      "name": "vexel-logo.png",
+      "folder": "racine",
+      "kind": "image",
+      "size": 51148
     },
     {
       "path": "/wheel-no-text.png",

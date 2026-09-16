@@ -10,6 +10,7 @@ import {
 import { useApp } from '../../contexts/AppContext';
 import NewsletterSignup from '../../components/NewsletterSignup';
 import CompteUpsell from '../../components/CompteUpsell';
+import { CollantVexel } from '../../vexel/CollantVexel';
 import LiveEventsSection from '../../components/LiveEvents';
 import { getEvents, addBookingRequest, type EventDoc } from '../../firebase/firestore';
 import type {
@@ -1022,6 +1023,9 @@ export default function KrystineV2() {
             Krystine <span className="italic font-light">St-Laurent</span>
           </span>
           <span>Inspira Nature &middot; Québec &middot; MMXXVI</span>
+        </div>
+        <div className="mt-8 flex justify-center">
+          <CollantVexel lang="FR" />
         </div>
       </footer>
     </div>
