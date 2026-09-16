@@ -30,6 +30,14 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-09-16',
+    titre: "La mention du studio, en bas de chaque page",
+    intro: "Une petite plaque a rejoint le pied de page : elle nomme le studio qui a bâti le site, à côté de la mention du Salon des Inconnus qui y était déjà.",
+    etapes: [
+      "Une plaque discrète en bas de chaque page dit qui a construit le site, en français comme en anglais, et s'ouvre sur une courte carte de présentation au clic.",
+    ],
+  },
+  {
     date: '2026-09-14',
     titre: "Vos demandes de la semaine : désabonner une adresse, et la liste de vos acheteuses",
     intro: "Une journée consacrée à ce que vous avez demandé depuis votre admin : le bouton qu'il manquait pour retirer quelqu'un de l'infolettre sans effacer sa fiche, et la liste des personnes qui avaient acheté une formation sur l'ancien système.",
