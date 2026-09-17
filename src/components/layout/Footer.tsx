@@ -1,8 +1,7 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { useApp, useBoutique } from '../../contexts/AppContext';
-import { CONTENT, ASSETS } from '../../content';
+import { CONTENT } from '../../content';
 import { isStaticRoute } from '../../lib/staticRoutes';
 import { db } from '../../firebase';
 import { BadgeVexel } from '../../vexel/BadgeVexel';
@@ -19,24 +18,18 @@ const NavLink: React.FC<{ href: string; className?: string; children: React.Reac
   return <Link to={resolved.href} className={className}>{children}</Link>;
 };
 
+/**
+ * Le pied de page unique du site, retracé sur celui de Vexel Webstudio et de
+ * Xena Horizon : un colophon plat (sans image de fond), la marque et sa
+ * phrase, deux colonnes de navigation, les coordonnées avec le collant Vexel,
+ * puis le nom géant en filigrane coupé par le bas de page. Un seul et même
+ * pied de page partout, identique.
+ */
 const Footer: React.FC = () => {
   const { lang } = useApp();
   const t = CONTENT[lang];
   const nav = t.nav;
   const foot = t.footer;
-
-  // Parallax on the Jacques-Cartier backdrop. Tracks the footer's position
-  // through the viewport; the image drifts ~40% of the footer's height in the
-  // opposite direction of scroll while the footer passes. The over-sized
-  // -inset-y on the image div gives the translation room to move without
-  // revealing any edge. Disabled when the user prefers reduced motion.
-  const reduce = useReducedMotion() ?? false;
-  const footerRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: footerRef,
-    offset: ['start end', 'end start'],
-  });
-  const mountainY = useTransform(scrollYProgress, [0, 1], ['-35%', '35%']);
 
   const links = [
     { href: '/krystine', label: nav.krystine },
@@ -54,34 +47,11 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer ref={footerRef} className="relative font-sans text-ctextSoft pt-28 md:pt-36 pb-10 mt-auto overflow-hidden md:min-h-[60vh]">
-      {/* Jacques-Cartier National Park backdrop — full-bleed horizontal
-          landscape behind the footer's espresso tint. The div is stretched
-          beyond its bounds on the Y axis so the parallax translate can move
-          without exposing the edges. */}
-      <motion.div
-        className="absolute -inset-y-[40%] inset-x-0 bg-cover bg-center bg-no-repeat pointer-events-none will-change-transform"
-        style={reduce
-          ? { backgroundImage: `url(${ASSETS.footerBg})` }
-          : { backgroundImage: `url(${ASSETS.footerBg})`, y: mountainY }}
-        aria-hidden
-      />
-      {/* Espresso wash over the mountain silhouette — espressoDeep at 88% so the
-          landscape shows through while copy contrast stays WCAG-AA. A subtle
-          top-down gradient deepens the brand colour where the type sits. */}
-      <div
-        className="absolute inset-0 bg-espressoDeep/88 pointer-events-none"
-        aria-hidden
-      />
-      <div
-        className="absolute inset-0 pointer-events-none bg-gradient-to-b from-espressoDeep/40 via-transparent to-espressoDeep/60"
-        aria-hidden
-      />
-
+    <footer className="relative font-sans text-ctextSoft border-t border-brass/15 bg-espressoDeep pt-16 md:pt-20 pb-10 mt-auto">
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
 
         {/* Top grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16 pb-16 border-b border-brass/15">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
 
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
@@ -163,8 +133,8 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* Nom géant en filigrane, coupé par le bas de page, à la façon de Xena Horizon,
-          MapChef et Vexel Webstudio : le même geste éditorial sur tout le site. */}
+      {/* Nom géant en filigrane, coupé par le bas de page, à la façon de Vexel
+          Webstudio, Xena Horizon et MapChef : le même geste éditorial partout. */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 mt-10">
         <p
           aria-hidden

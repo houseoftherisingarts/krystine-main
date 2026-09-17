@@ -11,7 +11,7 @@ import EtiquetteNature from '../components/evenements/EtiquetteNature';
 import { natureDe } from '../lib/evenements';
 import {
   StyleV2, GOUTTIERE, Kicker, Masthead, TitreV2, SousTitreV2, LiensChapitres, Planche, LigneDefiler,
-  LienSouligne, BoutonNoir, BoutonIvoire, TitreChapitre, Filet, Reveal, QuatriemeCouverture, useMotionV2,
+  LienSouligne, BoutonNoir, TitreChapitre, Filet, Reveal, useMotionV2,
 } from '../components/v2/Magazine';
 
 /**
@@ -257,18 +257,6 @@ const EvenementVente: React.FC = () => {
           </Reveal>
         </div>
       </section>
-
-      {/* ─────────── LA QUATRIÈME DE COUVERTURE ─────────── */}
-      <QuatriemeCouverture
-        lang={lang}
-        citation={`«\u00A0${ev.subtitle || ev.title}\u00A0»`}
-        note={ev.credit ? <span className="normal-case tracking-normal text-[0.7rem] text-[#f4efe6]/50">{ev.credit}</span> : undefined}
-      >
-        {ev.billetterie && ouverts && <BoutonIvoire href="#billet">{fr ? 'Réserver ma place' : 'Reserve my seat'}</BoutonIvoire>}
-        <a href="/evenements" className="inline-flex items-center gap-2.5 v2-serif text-lg font-light text-[#f4efe6]/80 transition-colors duration-300 hover:text-[#c8a86a]">
-          {fr ? 'Tous les rendez-vous' : 'All gatherings'}
-        </a>
-      </QuatriemeCouverture>
 
       {/* Sur mobile, le bouton reste sous le pouce. */}
       {ev.billetterie && ouverts && (

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight } from '@phosphor-icons/react';
 import { goToRoute } from '../lib/staticRoutes';
-import { CollantVexel } from '../vexel/CollantVexel';
 
 /**
  * /formations : les trois portes, dans l'ordre voulu par Krystine (septembre
@@ -193,33 +192,6 @@ const FormationsLanding: React.FC = () => {
           </>)}
         </div>
       </section>
-
-      {/* ─────────── CLÔTURE · back-cover + collant Vexel ─────────── */}
-      <footer className="relative w-full bg-[#34241a] text-[#f4efe6] px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(5rem,12vh,9rem)] pb-12">
-        <div className="mx-auto max-w-[860px] text-center">
-          <p className="font-serif font-light text-[clamp(1.6rem,3.6vw,2.8rem)] leading-[1.24] text-[#f4efe6]">
-            « Une porte à la fois. »
-          </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-9 gap-y-4">
-            <a href="/foyer" className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#34241a] bg-[#f4efe6] px-8 py-3.5 transition-colors duration-300 hover:bg-[#9c7a44]">
-              Découvrir le Foyer
-              <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
-            </a>
-            <a href="/krystine" className="inline-flex items-center gap-2.5 font-serif text-lg text-[#f4efe6]/80 hover:text-[#c8a86a] transition-colors duration-300">
-              La conférencière
-            </a>
-          </div>
-        </div>
-        <div className="mt-[clamp(4rem,9vh,7rem)] pt-7 border-t border-[#f4efe6]/15 flex flex-col sm:flex-row items-center justify-between gap-4 text-[0.6rem] uppercase tracking-[0.24em] text-[#f4efe6]/45">
-          <span className="font-serif normal-case tracking-tight text-[0.95rem] text-[#f4efe6]/80">
-            Krystine <span className="font-light">St-Laurent</span>
-          </span>
-          <span>Inspira Nature &middot; Québec &middot; MMXXVI</span>
-        </div>
-        <div className="mt-8 flex justify-end">
-          <CollantVexel lang="FR" />
-        </div>
-      </footer>
     </div>
   );
 };

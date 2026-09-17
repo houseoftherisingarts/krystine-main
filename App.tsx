@@ -152,14 +152,7 @@ const Footing: React.FC = () => {
     || location.pathname === '/v1'
     || location.pathname === '/v2'
     || location.pathname === '/v3'
-    || location.pathname === '/krystine'
-    || location.pathname === '/conferenciere'
-    || location.pathname === '/formations'
-    || location.pathname === '/medias'
-    || location.pathname === '/podcast'
     || location.pathname === '/podcast/question'
-    || location.pathname === '/evenements'
-    || location.pathname.startsWith('/evenement/')
     || location.pathname === '/direct'
     || location.pathname === '/foyer'
   ) return null;

@@ -20,7 +20,7 @@ import { OFFRE, FINAL } from './foyer/content';
 import { getFormation, type Formation } from '../firebase/formations';
 import { useSiteFlags } from '../contexts/SiteFlagsContext';
 import { useAuth } from '../contexts/AppContext';
-import Footer from '../components/layout/Footer';
+import { CollantVexel } from '../vexel/CollantVexel';
 
 /**
  * Le Foyer d'Origine · page de vente (URL dédiée /foyer).
@@ -778,6 +778,9 @@ const AppelFinal: React.FC = () => {
           >
             <Cta label={FINAL.cta} dark />
           </motion.div>
+          <div className="mt-14 flex justify-start">
+            <CollantVexel lang="FR" />
+          </div>
         </div>
       </div>
     </section>
@@ -838,8 +841,6 @@ const FoyerPage: React.FC = () => {
           <MusiqueOrigine />
           {/* le feu des braises est le point le plus bas de la page : rien après */}
           <AppelFinal />
-          {/* le pied de page unique du site, comme partout ailleurs (Xena/Vexel) */}
-          <Footer />
         </div>
         <AchatFoyer />
       </div>

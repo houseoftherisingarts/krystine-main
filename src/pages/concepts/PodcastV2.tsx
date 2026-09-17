@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Headphones, CalendarBlank, Clock, Play, CircleNotch, ArrowUpRight, ArrowDown, ArrowRight,
+  Headphones, CalendarBlank, Clock, Play, CircleNotch, ArrowUpRight, ArrowDown,
 } from '@phosphor-icons/react';
 import NewsletterSignup from '../../components/NewsletterSignup';
 import LiveSignup from '../../components/LiveSignup';
 import { trackListenStart, startPresence, stopPresence } from '../../lib/podcastStats';
-import { CollantVexel } from '../../vexel/CollantVexel';
 
 /**
  * Podcast « Au-delà des tendances » — branding V2 (magazine crème), même
@@ -416,33 +415,6 @@ export default function PodcastV2() {
           </div>
         </div>
       </section>
-
-      {/* ─────────── CLÔTURE · back-cover ─────────── */}
-      <footer className="relative w-full bg-[#34241a] text-[#f4efe6] px-[clamp(1rem,3vw,3rem)] pt-[clamp(5rem,12vh,9rem)] pb-12">
-        <div className="w-full text-left">
-          <p className="v2-serif italic font-light text-[clamp(1.6rem,3.6vw,2.8rem)] leading-[1.24] text-[#f4efe6]">
-            « Revenir à l’essentiel, un épisode à la fois. »
-          </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-9 gap-y-4">
-            <a href="/medias" className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#34241a] bg-[#f4efe6] px-8 py-3.5 transition-colors duration-300 hover:bg-[#9c7a44]">
-              Tous les médias
-              <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
-            </a>
-            <a href="/krystine" className="inline-flex items-center gap-2.5 v2-serif italic text-lg text-[#f4efe6]/80 hover:text-[#c8a86a] transition-colors duration-300">
-              La conférencière
-            </a>
-          </div>
-        </div>
-        <div className="mt-[clamp(4rem,9vh,7rem)] pt-7 border-t border-[#f4efe6]/15 flex flex-col sm:flex-row items-center justify-between gap-4 text-[0.6rem] uppercase tracking-[0.24em] text-[#f4efe6]/45">
-          <span className="v2-serif normal-case tracking-tight text-[0.95rem] text-[#f4efe6]/80">
-            Krystine <span className="italic font-light">St-Laurent</span>
-          </span>
-          <span>Inspira Nature &middot; Québec &middot; MMXXVI</span>
-        </div>
-        <div className="mt-8 flex justify-end">
-          <CollantVexel lang="FR" />
-        </div>
-      </footer>
     </div>
   );
 }

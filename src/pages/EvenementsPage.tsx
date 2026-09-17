@@ -9,8 +9,8 @@ import EtiquetteNature from '../components/evenements/EtiquetteNature';
 import { fondre, type RendezVous, type Geste } from '../lib/evenements';
 import {
   StyleV2, GOUTTIERE, Kicker, Masthead, TitreV2, SousTitreV2, LiensChapitres, Planche, LigneDefiler,
-  LienSouligne, BoutonNoir, BoutonCuivre, BoutonIvoire, CarteVerte, TitreChapitre, Filet, Reveal,
-  QuatriemeCouverture, useMotionV2,
+  LienSouligne, BoutonNoir, BoutonCuivre, CarteVerte, TitreChapitre, Filet, Reveal,
+  useMotionV2,
 } from '../components/v2/Magazine';
 
 /**
@@ -321,14 +321,6 @@ const EvenementsPage: React.FC = () => {
           </div>
         </section>
       )}
-
-      {/* ─────────── LA QUATRIÈME DE COUVERTURE ─────────── */}
-      <QuatriemeCouverture lang={lang} citation={fr ? '«\u00A0Se retrouver quelque part, au fil des saisons.\u00A0»' : '“Meeting somewhere, season after season.”'}>
-        <BoutonIvoire onClick={() => setTournee(true)}>{fr ? 'Demander une date' : 'Request a date'}</BoutonIvoire>
-        <a href="/krystine" className="inline-flex items-center gap-2.5 v2-serif text-lg font-light text-[#f4efe6]/80 transition-colors duration-300 hover:text-[#c8a86a]">
-          {fr ? 'La conférencière' : 'The speaker'}
-        </a>
-      </QuatriemeCouverture>
 
       {/* La vignette qui suit le curseur sur l'index, grand écran seulement */}
       {survol && (
