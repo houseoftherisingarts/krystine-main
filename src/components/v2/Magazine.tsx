@@ -224,7 +224,7 @@ export const QuatriemeCouverture: React.FC<{ citation: React.ReactNode; children
       <span className="v2-serif normal-case tracking-tight text-[0.95rem] text-[#f4efe6]/80">Krystine <span className="font-light">St-Laurent</span></span>
       <span className="normal-case tracking-[0.08em]">{note ?? <span className="uppercase tracking-[0.24em]">Inspira Nature &middot; Québec &middot; MMXXVI</span>}</span>
     </div>
-    <div className="mt-8 flex justify-center">
+    <div className="mt-8 flex justify-end">
       <CollantVexel lang={lang} />
     </div>
   </footer>

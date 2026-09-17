@@ -439,7 +439,7 @@ export default function PodcastV2() {
           </span>
           <span>Inspira Nature &middot; Québec &middot; MMXXVI</span>
         </div>
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 flex justify-end">
           <CollantVexel lang="FR" />
         </div>
       </footer>
