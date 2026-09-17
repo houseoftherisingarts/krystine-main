@@ -30,6 +30,15 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-09-17',
+    titre: 'La plaque du studio au bas de la page de vos formations',
+    intro: "La page qui présente vos trois portes, « Choisir votre prochaine porte », se terminait sans la plaque du studio qui clôt vos autres pages. Elle la porte maintenant, avec son mot de la fin.",
+    etapes: [
+      "La plaque du studio a rejoint le bas de la page de vos formations, sous un mot de la fin qui reprend l'idée de la page : « Une porte à la fois. »",
+      { texte: "Cette page se termine désormais comme les autres, avec le nom du studio et la mention du Salon des Inconnus, sans rien déranger de vos trois portes ni de la liste d'attente.", ou: '/formations', libelle: 'Les formations' },
+    ],
+  },
+  {
     date: '2026-09-16',
     titre: "La mention du studio, en bas de chaque page",
     intro: "Une petite plaque a rejoint le pied de page : elle nomme le studio qui a bâti le site, à côté de la mention du Salon des Inconnus qui y était déjà.",
