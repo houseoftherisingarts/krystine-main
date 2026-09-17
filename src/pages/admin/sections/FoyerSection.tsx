@@ -54,9 +54,10 @@ const OngletsPanel: React.FC = () => {
   );
 };
 
-// L'interrupteur du Foyer : allumé, /foyer vend; éteint, /foyer renvoie à la
-// liste d'attente et rien d'autre ne s'achète. Lu en direct depuis
-// siteSettings/flags, donc le site public suit dans la seconde.
+// L'interrupteur du Foyer : allumé, /foyer vend; éteint, /foyer garde sa page
+// de vente mais le geste d'achat ouvre la liste d'attente intégrée au lieu de
+// vendre. Lu en direct depuis siteSettings/flags, donc le site public suit dans
+// la seconde.
 const InterrupteurFoyer: React.FC = () => {
   const [ouvert, setOuvert] = useState(false);
   const [pret, setPret] = useState(false);
@@ -70,8 +71,8 @@ const InterrupteurFoyer: React.FC = () => {
         </p>
         <p className="text-xs text-white/60">
           {ouvert
-            ? 'La page /foyer vend. Éteignez pour ne laisser que la liste d’attente.'
-            : 'Le public qui ouvre /foyer arrive sur la liste d’attente. Vous gardez la page pour l’éditer.'}
+            ? 'La page /foyer vend. Éteignez pour basculer sur la liste d’attente.'
+            : 'La page /foyer reste visible : le geste d’achat ouvre la liste d’attente au lieu de vendre.'}
         </p>
       </div>
     </div>

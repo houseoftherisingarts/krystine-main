@@ -13,7 +13,8 @@ import { Atmosphere } from '../components/motion/loeuvre';
 import BodySections from './foyer/BodySections';
 import MusiqueOrigine from './foyer/MusiqueOrigine';
 import { Navigate } from 'react-router-dom';
-import { Cta, useRejoindreFoyer } from './foyer/Cta';
+import { Cta, useRejoindreFoyer, FoyerVenteProvider } from './foyer/Cta';
+import WaitlistModal from '../components/WaitlistModal';
 import { CHEMINS_FOYER } from '../components/communaute/chemins';
 import { OFFRE, FINAL } from './foyer/content';
 import { getFormation, type Formation } from '../firebase/formations';
@@ -792,11 +793,13 @@ const FoyerPage: React.FC = () => {
   // l'entrée du Foyer (Alex, 7 septembre 2026). Krystine et l'admin ne
   // possèdent pas la formation, alors la page de vente leur reste ouverte.
   const { possede } = useRejoindreFoyer();
-  // Le Foyer en interrupteur (Alex, 9 septembre 2026) : éteint dans l'admin,
-  // la page de vente n'existe plus pour le public et seule la liste
-  // d'attente reste. L'admin garde la page pour l'éditer et la relire.
+  // Le Foyer en interrupteur (Alex, 9 septembre 2026) : fermé dans l'admin,
+  // la page de vente reste en place et le geste d'achat cède la place à la
+  // liste d'attente intégrée, au lieu de renvoyer le public ailleurs.
+  // L'admin voit la page ouverte pour l'éditer et la relire.
   const { foyerOuvert, pret } = useSiteFlags();
   const { isAdmin } = useAuth();
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
   const [ready, setReady] = useState(false);
   const reduce = useReducedMotion();
   useEffect(() => {
@@ -822,31 +825,41 @@ const FoyerPage: React.FC = () => {
   }, []);
   if (possede) return <Navigate to={CHEMINS_FOYER.programme} replace />;
   if (!pret) return <div className="min-h-screen bg-cream" />;
-  if (!foyerOuvert && !isAdmin) return <Navigate to="/liste-attente?programme=foyer" replace />;
+  const ouvert = foyerOuvert || isAdmin;
   return (
-    <div className="bg-cream overflow-x-clip">
-      <Preloader done={ready} />
-      {/* inert tant que le preloader couvre : le clavier ne peut pas
-          atteindre le contenu invisible dessous */}
-      <div inert={ready ? undefined : true}>
-        <FoyerScene ready={ready} />
-        {/* la feuille des portes monte SUR le feu : aucune coupure crème */}
-        <BodySections overlap={!reduce} />
-        <Offre />
-        {/* la musique d'Origine offerte, juste avant les braises */}
-        <MusiqueOrigine />
-        {/* le feu des braises est le point le plus bas de la page : rien après */}
-        <AppelFinal />
+    <FoyerVenteProvider value={{ ouvert, demanderListeAttente: () => setWaitlistOpen(true) }}>
+      <div className="bg-cream overflow-x-clip">
+        <Preloader done={ready} />
+        {/* inert tant que le preloader couvre : le clavier ne peut pas
+            atteindre le contenu invisible dessous */}
+        <div inert={ready ? undefined : true}>
+          <FoyerScene ready={ready} />
+          {/* la feuille des portes monte SUR le feu : aucune coupure crème */}
+          <BodySections overlap={!reduce} />
+          <Offre />
+          {/* la musique d'Origine offerte, juste avant les braises */}
+          <MusiqueOrigine />
+          {/* le feu des braises est le point le plus bas de la page : rien après */}
+          <AppelFinal />
+        </div>
+        <AchatFoyer />
       </div>
-      <AchatFoyer />
-    </div>
+      <WaitlistModal
+        target={
+          waitlistOpen
+            ? { id: 'foyer-origine', labelFR: "Le Foyer d'Origine", labelEN: 'The Origine Hearth' }
+            : null
+        }
+        onClose={() => setWaitlistOpen(false)}
+      />
+    </FoyerVenteProvider>
   );
 };
 
 // La pilule d'achat flottante : rejoindre le Foyer par Stripe. Une fois la
 // formation achetée, elle devient la porte vers le lecteur.
 const AchatFoyer: React.FC = () => {
-  const { rejoindre, possede, busy } = useRejoindreFoyer();
+  const { rejoindre, possede, busy, ouvert } = useRejoindreFoyer();
   const [formation, setFormation] = useState<Formation | null>(null);
   const [visible, setVisible] = useState(false);
 
@@ -867,10 +880,14 @@ const AchatFoyer: React.FC = () => {
       className="fixed bottom-[4.75rem] right-5 z-[90] inline-flex h-11 items-center gap-2 rounded-full bg-[#bb9a5e] px-5 sm:bottom-5 sm:right-[4.75rem] sm:px-6 text-xs font-bold uppercase tracking-widest leading-none text-[#2a2015] shadow-[0_12px_35px_-10px_rgba(163,130,63,0.9)] backdrop-blur transition-transform hover:scale-[1.03] disabled:opacity-60"
     >
       <i className={`fa-solid ${possede ? 'fa-door-open' : 'fa-fire'}`} />
-      {busy ? 'Redirection…' : possede ? 'Ouvrir ma formation' : (
+      {busy ? 'Redirection…' : possede ? 'Ouvrir ma formation' : ouvert ? (
         <>
           Rejoindre<span className="hidden sm:inline"> le Foyer</span>
           {formation.paywall && formation.prix ? ` · ${formation.prix} $` : ''}
+        </>
+      ) : (
+        <>
+          Rejoindre<span className="hidden sm:inline"> la liste d'attente</span>
         </>
       )}
     </button>

@@ -153,7 +153,7 @@ const Halo: React.FC<{
 );
 
 const CalendrierAnnee: React.FC = () => {
-  const { rejoindre } = useRejoindreFoyer();
+  const { rejoindre, ouvert } = useRejoindreFoyer();
   const [hoverDoor, setHoverDoor] = useState<string | null>(null);
   const [openDoor, setOpenDoor] = useState<string | null>(null);
   const [helpOpen, setHelpOpen] = useState(false);
@@ -295,7 +295,7 @@ const CalendrierAnnee: React.FC = () => {
               onClick={rejoindre}
               className="mt-6 inline-block border-b border-brassInk/60 pb-1 font-sans text-fyLabel uppercase text-brassInk transition-colors hover:text-espresso focus:outline-none focus-visible:ring-2 focus-visible:ring-brassInk"
             >
-              {PORTES_INTRO.cta}
+              {ouvert ? PORTES_INTRO.cta : "Rejoindre la liste d'attente"}
             </button>
           </Halo>
         )}

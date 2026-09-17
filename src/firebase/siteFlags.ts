@@ -18,9 +18,10 @@ import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 export interface SiteFlags {
   /** Show the TEDx mentions across the site (events list, press marquee, hero pills). */
   showTedx: boolean;
-  /** Le Foyer d'Origine est ouvert à la vente. Éteint, /foyer ne montre que
-   *  la liste d'attente (/liste-attente?programme=foyer). Interrupteur dans
-   *  l'admin, section Foyer. Éteint par défaut (Alex, 9 septembre 2026). */
+  /** Le Foyer d'Origine est ouvert à la vente. Éteint, /foyer garde sa page
+   *  de vente mais le geste d'achat ouvre la liste d'attente intégrée au lieu
+   *  de vendre. Interrupteur dans l'admin, section Foyer. Éteint par défaut
+   *  (Alex, 9 septembre 2026). */
   foyerOuvert: boolean;
   /** L'Expérience Origine 2 est ouverte à la vente. Éteint, /origine-2
    *  renvoie le public à la liste d'attente (/liste-attente?programme=origine2);
