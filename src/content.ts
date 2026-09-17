@@ -296,7 +296,6 @@ export const CONTENT = {
       contact: 'Contact',
       newsletter: 'Infolettre',
       privacy: 'Politique de confidentialité',
-      madeBy: 'Plateforme développée par',
     },
     // Origine page content (from existing constants.ts)
     origine: {
@@ -486,7 +485,7 @@ export const CONTENT = {
       past: 'Past Events',
       upcoming: 'Upcoming',
     },
-    footer: { contact: 'Contact', newsletter: 'Newsletter', privacy: 'Privacy Policy', madeBy: 'Platform developed by' },
+    footer: { contact: 'Contact', newsletter: 'Newsletter', privacy: 'Privacy Policy' },
     origine: {
       hero: { title: 'Origin Experience', subtitle: 'The problem is not a lack of discipline. It is the loss of a reliable inner reference.', cta: 'Join the Workshop' },
       transition: 'Discover even more with Krystine',

@@ -252,7 +252,7 @@ const FullExperience: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="mt-20 text-center text-xs opacity-30"><p>© {new Date().getFullYear()} Krystine St-Laurent. Plateforme développée par le salon des inconnus.</p></div>
+          <div className="mt-20 text-center text-xs opacity-30"><p>© {new Date().getFullYear()} Krystine St-Laurent.</p></div>
         </footer>
       </div>
     </div>
@@ -367,7 +367,7 @@ const FullExperience: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="mt-20 text-center text-xs opacity-30"><p>© {new Date().getFullYear()} Krystine St-Laurent. Plateforme développée par le salon des inconnus.</p></div>
+        <div className="mt-20 text-center text-xs opacity-30"><p>© {new Date().getFullYear()} Krystine St-Laurent.</p></div>
       </footer>
     </div>
   );

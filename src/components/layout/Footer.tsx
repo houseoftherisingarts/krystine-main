@@ -1,10 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { useApp, useBoutique } from '../../contexts/AppContext';
 import { CONTENT, ASSETS } from '../../content';
 import { isStaticRoute } from '../../lib/staticRoutes';
-import SalonContactCard from '../SalonContactCard';
 import { db } from '../../firebase';
 import { BadgeVexel } from '../../vexel/BadgeVexel';
 import { CollantVexel } from '../../vexel/CollantVexel';
@@ -25,10 +24,6 @@ const Footer: React.FC = () => {
   const t = CONTENT[lang];
   const nav = t.nav;
   const foot = t.footer;
-  // Salon contact card — opens in place of the previous outbound link to
-  // www.lesalondesinconnus.com so curious visitors can reach Alex (or
-  // submit the website-needs form) without leaving the site.
-  const [salonOpen, setSalonOpen] = useState(false);
 
   // Parallax on the Jacques-Cartier backdrop. Tracks the footer's position
   // through the viewport; the image drifts ~40% of the footer's height in the
@@ -139,6 +134,9 @@ const Footer: React.FC = () => {
               <li><a href="https://www.facebook.com/Krystinestlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-ctextSoft hover:text-brassBright transition-colors"><i className="fa-brands fa-facebook" aria-hidden /> Facebook</a></li>
               <li><a href="https://www.youtube.com/@KrystineStLaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-ctextSoft hover:text-brassBright transition-colors"><i className="fa-brands fa-youtube" aria-hidden /> YouTube</a></li>
             </ul>
+            <div className="mt-8">
+              <CollantVexel lang={lang} />
+            </div>
           </div>
         </div>
 
@@ -162,36 +160,20 @@ const Footer: React.FC = () => {
               <BadgeVexel db={db} />
             </div>
           )}
-          <button
-            type="button"
-            onClick={() => setSalonOpen(true)}
-            className="group inline-flex items-center gap-2 transition-colors"
-            aria-haspopup="dialog"
-          >
-            {/* Le sceau du Salon des Inconnus à côté de la mention (Alex, 6 sept. 2026) */}
-            <img src="/salon/logo.svg" alt="" aria-hidden="true" width={14} height={30} className="h-[30px] w-auto opacity-70 transition-opacity group-hover:opacity-100" loading="lazy" />
-            <span className="text-ctextSoft/45 group-hover:text-ctextSoft/80 transition-colors">{foot.madeBy}</span>{' '}
-            <span
-              className="font-semibold"
-              style={{
-                backgroundImage: 'linear-gradient(95deg, #B07A3C 0%, #D7A858 35%, #8C5A28 70%, #B07A3C 100%)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                color: 'transparent',
-              }}
-            >
-              Le Salon des Inconnus
-            </span>
-          </button>
         </div>
       </div>
 
-      {/* Collant Vexel — pleine largeur, en dessous du bloc copyright/partenaire */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 mt-8 flex justify-center md:justify-start">
-        <CollantVexel lang={lang} />
+      {/* Nom géant en filigrane, coupé par le bas de page, à la façon de Xena Horizon,
+          MapChef et Vexel Webstudio : le même geste éditorial sur tout le site. */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 mt-10">
+        <p
+          aria-hidden
+          className="font-serif text-ctext/90 leading-none whitespace-nowrap select-none overflow-hidden"
+          style={{ fontSize: 'clamp(2.5rem, 8.5vw, 9.5rem)', height: '0.6em', transform: 'translateY(18%)' }}
+        >
+          Krystine St-Laurent
+        </p>
       </div>
-
-      <SalonContactCard open={salonOpen} onClose={() => setSalonOpen(false)} sourceSite="krystine" />
     </footer>
   );
 };
