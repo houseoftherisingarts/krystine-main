@@ -18,6 +18,7 @@ const LARGEUR = 360;       // la carte, sur grand écran
 const Spotlight: React.FC<{ etapes: EtapeSpotlight[]; onFermer: () => void }> = ({ etapes, onFermer }) => {
   const [i, setI] = useState(0);
   const [boite, setBoite] = useState<DOMRect | null>(null);
+  const [hauteur, setHauteur] = useState(260);
   const carte = useRef<HTMLDivElement>(null);
   const etape = etapes[i];
 

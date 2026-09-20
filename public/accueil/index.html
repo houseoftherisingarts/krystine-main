@@ -658,12 +658,11 @@
   /* ---------- espace membre : la roue aquarelle (vrai actif du site) et la clé ---------- */
   .membre{position:relative;z-index:5;background:#efe6d7;padding:5rem 0 5.5rem;border-top:1px solid rgba(187,154,94,.32);border-bottom:1px solid rgba(187,154,94,.32);overflow:hidden}
   .membre-grid{display:grid;grid-template-columns:minmax(280px,.9fr) 1.1fr;gap:clamp(2rem,5vw,5rem);align-items:center}
-  .membre-roue{position:relative;aspect-ratio:1;width:100%;max-width:520px;justify-self:center}
-  .membre-roue img{display:block;width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;
-    -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 56%,transparent 73%);mask-image:radial-gradient(circle at 50% 50%,#000 56%,transparent 73%);
-    animation:membre-tour 120s linear infinite}
+  .membre-roue{position:relative;aspect-ratio:1;width:100%;max-width:520px;justify-self:center;border-radius:50%;overflow:hidden;
+    -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 58%,transparent 70%);mask-image:radial-gradient(circle at 50% 50%,#000 58%,transparent 70%)}
+  .membre-roue img{display:block;width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;animation:membre-tour 120s linear infinite}
   @keyframes membre-tour{to{transform:rotate(360deg)}}
-  .membre-copy h2{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,3.6vw,2.9rem);line-height:1.04;text-transform:uppercase;letter-spacing:.01em;color:var(--ink);margin-top:.5rem}
+  .membre-copy h2{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,3.6vw,2.9rem);line-height:1.04;text-transform:uppercase;letter-spacing:.01em;color:var(--ink);margin-top:.5rem;text-wrap:balance;max-width:14ch}
   .membre-rule{width:60px;height:1px;background:var(--brass);margin:1.1rem 0 0}
   .membre-copy p{margin-top:1.2rem;color:var(--ink-soft);line-height:1.85;font-size:.92rem;max-width:52ch}
   .membre-copy .btn-gold{margin-top:1.8rem}
