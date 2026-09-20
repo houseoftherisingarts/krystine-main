@@ -396,9 +396,111 @@ export const LIBELLE_ITEM: Record<string, string> = Object.fromEntries(
 // bas; quand aucun repère public n'existe pour un geste, la mesure porte le mot
 // « proposition » et reste à ajuster selon ses propres chiffres.
 
-export const MESURES_DEFAUT: Record<string, string> = MESURES_PLACEHOLDER();
+export const MESURES_DEFAUT: Record<string, string> = {
+  // Chantier 1 · Expérience Origine
+  'c1.a1': 'Prix, inclusions et garantie écrits et figés avant le 27 septembre, et trois personnes les redisent sans se tromper.',
+  'c1.a2': 'Les 4 parcours existent sur papier, chacun avec sa promesse, son prix et sa durée, et chacun tient sur une page.',
+  'c1.a3': 'La page charge sous 2,5 secondes au 75e centile sur mobile (seuil LCP de Google) et l\'abandon de panier reste sous 70 %, la moyenne mesurée sur 50 études.',
+  'c1.a4': 'Un achat test passe de bout en bout sans intervention : paiement, reçu, accès ouvert, courriel de bienvenue reçu.',
+  'c1.a5': 'Les 7 phases ont chacune leur date et leur responsable au 27 septembre, et aucune case du calendrier ne reste vide.',
+  'c1.a6': 'Sur les trois premières lettres aux anciennes EO : clic au-dessus de 0,8 % des envoyés (médiane 2025 du secteur santé) et désabonnement sous 0,2 %.',
+  'c1.a7': 'Trois achats tests complets réussis sans une seule erreur avant le 27 septembre, sur mobile et sur ordinateur.',
 
-function MESURES_PLACEHOLDER(): Record<string, string> { return {}; }
+  // Chantier 2 · Manuscrit & IP
+  'c2.a1': 'Un plan daté par section, et une cadence tenue 4 semaines de suite : la fourchette des auteurs professionnels va de 500 à 3 000 mots par jour de travail.',
+  'c2.a2': 'Chaque rencontre repart avec une décision écrite, et un retour éditorial demandé arrive dans les 6 à 8 semaines d\'usage.',
+  'c2.a3': 'Les passages réécrits sont nommés un par un. Proposition : aucune cadence de révision publique n\'existe, alors prenez votre propre médiane sur 4 semaines.',
+  'c2.a4': 'Le dossier est complet (bio, photos, résumé, extraits) et chaque pièce s\'envoie telle quelle, sans retouche de dernière minute.',
+  'c2.a5': 'Proposition : au moins 5 angles écrits, chacun relié à un chapitre et à un public nommé.',
+
+  // Chantier 3 · Voix publique & autorité
+  'c3.a1': 'Chaque épisode dépasse 27 écoutes en 7 jours, la médiane des balados mesurée par Buzzsprout, et l\'avance ne descend jamais sous 3 épisodes enregistrés.',
+  'c3.a2': 'Proposition : 12 semaines de thèmes d\'avance au tableau, et aucune semaine sans thème d\'ici au 1er décembre.',
+  'c3.a3': 'Par envoi : clic au-dessus de 0,8 % des envoyés, désabonnement sous 0,2 %, et plaintes pour pourriel toujours sous 0,1 %, le plafond de Gmail.',
+  'c3.a4': '50 cibles dans la liste, chacune avec sa personne-contact nommée et sa date de relance inscrite.',
+  'c3.a5': 'Candidature déposée et accusée. Comptez de 5 à 8 mois entre le dépôt et la scène, et de 2 % à 7 % de candidats retenus selon les TEDx qui publient leurs chiffres.',
+  'c3.a6': 'Dossier déposé dans les délais annoncés, avec une relance datée au calendrier si le silence dépasse 6 semaines.',
+  'c3.a7': 'Le kit part en un seul envoi, sans retouche, et un organisateur confirme qu\'il a reçu tout ce dont il avait besoin.',
+  'c3.a8': 'Réponse au-dessus de 3,4 %, la moyenne du démarchage à froid en 2026. Proposition : aucun repère public n\'existe pour l\'approche de conférencières.',
+
+  // Chantier 4 · Opérations & technique
+  'c4.a1': 'Chaque demande porte un état visible, et aucune ne dort plus de 7 jours sans réponse.',
+  'c4.a2': 'Toutes les pages clés passent les trois signaux de Google au 75e centile : LCP sous 2,5 s, INP sous 200 ms, CLS sous 0,1.',
+  'c4.a3': 'Un paiement test réussit et l\'accès s\'ouvre tout seul, sans qu\'une main s\'en mêle nulle part dans la chaîne.',
+  'c4.a4': 'Premier envoi au seul segment engagé, comme le recommandent les guides de migration : rebond sous 3 %, plaintes sous 0,1 %, et jamais 0,3 %.',
+  'c4.a5': 'Le parcours complet passe au vert 9 fois sur 10 : le repère du métier pour une chaîne de tests est de 90 % de réussite.',
+  'c4.a6': 'Proposition : les 10 questions les plus fréquentes ont leur réponse écrite, et deux personnes différentes répondent la même chose.',
+  'c4.a7': 'Le lien ne mène plus nulle part, et aucune cliente n\'écrit à ce sujet dans les 30 jours qui suivent.',
+
+  // Chantier 5 · Tournée de conférences & speaker
+  'c5.a1': '50 à 60 cibles nommées, chacune avec sa personne-contact, son mois d\'approche et la raison pour laquelle elle est là.',
+  'c5.a2': 'Vos dates libres sont au calendrier jusqu\'en juin 2027, et aucun engagement ne vient les chevaucher.',
+  'c5.a3': 'Les deux versions partent sans retouche, et un organisateur anglophone confirme qu\'il a tout compris du premier coup.',
+  'c5.a4': 'Candidature déposée et accusée. De 2 % à 7 % des candidats sont retenus selon les TEDx qui publient leurs chiffres, alors la mesure qui compte est le nombre de candidatures déposées.',
+  'c5.a5': 'Dossier envoyé, réponse obtenue, et une relance datée si le silence dépasse 6 semaines.',
+  'c5.a6': 'Proposition : aucune occasion ne reste sans suite plus de 7 jours, faute de repère public sur le rythme de suivi.',
+  'c5.a7': 'Chaque engagement a son contrat, son cachet et son voyage réglés 30 jours d\'avance. La médiane du marché est de 2 500 $ US par conférence.',
+  'c5.a8': 'Les dates de scène tombent dans les 8 semaines autour de la sortie du livre, et pas après.',
+
+  // Phase 1 · Architecture + cash immédiat
+  'p1.1': 'Le prix et les 4 parcours sont figés au 27 septembre, et plus personne ne les rediscute après cette date.',
+  'p1.2': 'La page est en ligne et charge sous 2,5 secondes au 75e centile sur mobile, le seuil LCP de Google.',
+  'p1.3': 'Un paiement test de 1 $ entre pour vrai, et le reçu part tout seul.',
+  'p1.4': 'Les 7 phases ont chacune leur date et leur responsable, sans un seul trou.',
+
+  // Phase 2 · Réactivation des audiences
+  'p2.1': 'Ouverture au-dessus de 30 %, la médiane 2025 toutes catégories. Proposition : visez aussi 10 réponses personnelles sur le premier message.',
+  'p2.2': 'La liste importée ne garde que les engagés : rebond sous 3 % et plaintes sous 0,1 % sur le premier envoi.',
+  'p2.3': 'Proposition : 20 vraies conversations tenues, chacune close par une offre nommée, à réajuster sur votre médiane.',
+  'p2.4': 'Les premières ventes entrent avant le 11 octobre, et vous savez de quel message vient chacune.',
+  'p2.5': 'Une seule chose changée par semaine, mesurée sur le clic avant et après le changement.',
+
+  // Phase 3 · Nurture organisé
+  'p3.1': 'Chaque épisode dépasse 27 écoutes en 7 jours et chaque lettre garde son clic au-dessus de 0,8 % des envoyés.',
+  'p3.2': 'La FAQ répond aux questions qui reviennent vraiment, et les mêmes objections cessent d\'arriver par courriel.',
+  'p3.3': 'Les séquences automatiques tiennent leur promesse : clic au-dessus de 4,6 %, la médiane 2025 des courriels automatisés.',
+  'p3.4': 'Chaque nouvelle cliente reçoit son accès en moins d\'une heure, sans un seul courriel de rappel de sa part.',
+
+  // Phase 4 · Découverte et acquisition
+  'p4.1': 'Présence en direct au-dessus de 47,7 % des inscrits, la moyenne 2025, et le replay reste en accès libre : il récolte alors environ 3,7 fois plus de vues.',
+  'p4.2': 'Proposition : les nouvelles inscriptions dépassent les désabonnements chaque semaine d\'ici au 8 novembre.',
+  'p4.3': 'Une relance ciblée par segment tiède, et vous savez combien de personnes ont acheté après l\'avoir reçue.',
+  'p4.4': 'Chaque contact chaud porte un prochain geste daté, et aucun ne dort plus de 7 jours.',
+
+  // Phase 5 · Pré-lancement
+  'p5.1': 'Toute la séquence est programmée et testée avant le 22 novembre, sans une seule variable laissée vide.',
+  'p5.2': 'Proposition : au moins 5 témoignages nommés et datés, chacun relié à un parcours précis.',
+  'p5.3': 'Les objections entendues sont écrites et répondues, et aucune nouvelle n\'apparaît la dernière semaine.',
+  'p5.4': 'Trois achats tests réussis de bout en bout, sur mobile et sur ordinateur, avant le 22 novembre.',
+
+  // Phase 6 · Tallinn
+  'p6.1': 'Aucune intervention manuelle pendant les 5 jours, et tout ce qui devait partir est parti.',
+  'p6.2': 'Tous les envois de la semaine sont programmés et relus avant votre départ.',
+  'p6.3': 'Toute question reçoit une réponse en moins de 24 heures, même sans vous.',
+  'p6.4': 'Zéro changement au site et à l\'offre entre le 23 et le 27 novembre.',
+
+  // Phase 7 · Ouverture principale
+  'p7.1': 'Les ventes du 28 novembre au 1er décembre dépassent celles des phases 2 à 5 réunies.',
+  'p7.2': 'Si un direct a lieu : présence au-dessus de 47,7 % des inscrits, et replay laissé en accès libre.',
+  'p7.3': 'Chaque panier laissé reçoit sa relance, et l\'abandon reste sous 70 %, la moyenne mesurée sur 50 études.',
+  'p7.4': 'Chaque nouvelle cliente a son accès et son mot de bienvenue en moins d\'une heure.',
+
+  // La frise de la tournée
+  't.1': '50 à 60 cibles nommées, chacune avec son contact, son mois d\'approche et sa raison d\'être dans la liste.',
+  't.2': 'Chaque cible a une personne, un courriel valide et un dossier prêt à partir sans retouche.',
+  't.3': 'Réponse au-dessus de 3,4 %, la moyenne du démarchage à froid en 2026, avec deux relances par cible au maximum.',
+  't.4': 'Chaque date confirmée a son contrat, son cachet et son voyage réglés 30 jours d\'avance.',
+  't.5': 'Proposition : au moins 6 scènes confirmées. La médiane du marché est de 2 500 $ US par conférence.',
+
+  // Ce qui est parké : cocher veut dire « repris »
+  'parc.1': 'Proposition : repris seulement quand l\'Expérience Origine tourne sans vous pendant un mois complet.',
+  'parc.2': 'Proposition : repris quand le parcours d\'achat passe sans faute trois fois de suite.',
+  'parc.3': 'Proposition : repris quand le manuscrit est parti chez l\'éditeur.',
+  'parc.4': 'Proposition : repris après le 1er décembre, une fois la tournée confirmée.',
+  'parc.5': 'Proposition : repris seulement si EO2 dépasse son objectif de revenus.',
+  'parc.6': 'Proposition : repris quand les conférences donnent assez de retours pour trancher.',
+  'parc.7': 'Proposition : repris quand l\'espace anglophone a fait sa première vente.',
+};
 
 export interface SourceMesure {
   titre: string;
@@ -407,4 +509,113 @@ export interface SourceMesure {
   note: string;
 }
 
-export const SOURCES_MESURES: SourceMesure[] = [];
+export const SOURCES_MESURES: SourceMesure[] = [
+  {
+    titre: 'Webinar Benchmark Report 2026',
+    organisme: 'Livestorm',
+    url: 'https://livestorm.co/webinar-benchmark-report-2026',
+    note: '33 786 sessions et plus de 7 millions d\'inscriptions en 2025 : 47,7 % de présence en direct, et un replay libre d\'accès qui récolte environ 3,7 fois plus de vues.',
+  },
+  {
+    titre: 'Email Marketing Benchmarks',
+    organisme: 'Omnisend',
+    url: 'https://www.omnisend.com/blog/email-marketing-benchmarks/',
+    note: 'Plus de 20 milliards de courriels en 2025 : 30,4 % d\'ouverture et 0,74 % de clic en campagne, 4,66 % de clic en automatisé, et 0,79 % de clic pour le secteur santé.',
+  },
+  {
+    titre: 'Email Marketing Benchmarks by Industry',
+    organisme: 'GetResponse',
+    url: 'https://www.getresponse.com/resources/reports/email-marketing-benchmarks',
+    note: '4,4 milliards de messages : santé et beauté à 0,12 % de désabonnement et 3,06 % de rebond, soins de santé à 0,21 % et 3,17 %.',
+  },
+  {
+    titre: 'Email Marketing Benchmarks',
+    organisme: 'Mailchimp',
+    url: 'https://mailchimp.com/resources/email-marketing-benchmarks/',
+    note: 'Éducation et formation à 35,6 % d\'ouverture, 3,02 % de clic et 0,18 % de désabonnement.',
+  },
+  {
+    titre: 'Email sender guidelines FAQ',
+    organisme: 'Google, aide de Gmail',
+    url: 'https://support.google.com/mail/answer/14229414',
+    note: 'Le plafond dur de la délivrabilité : les plaintes pour pourriel restent sous 0,1 % et ne doivent jamais atteindre 0,3 %.',
+  },
+  {
+    titre: 'How to migrate from another email service provider',
+    organisme: 'Klaviyo, centre d\'aide',
+    url: 'https://help.klaviyo.com/hc/en-us/articles/115005082767',
+    note: 'La réputation d\'expéditeur ne se transfère pas : on importe une liste nettoyée et on n\'écrit d\'abord qu\'au segment engagé.',
+  },
+  {
+    titre: 'Podcast Stats',
+    organisme: 'Buzzsprout',
+    url: 'https://www.buzzsprout.com/stats',
+    note: 'Écoutes dans les 7 premiers jours : 27 pour la médiane, 96 pour le quart supérieur, 407 pour le dixième supérieur.',
+  },
+  {
+    titre: 'L\'écoute de balados au Québec',
+    organisme: 'Institut de la statistique du Québec',
+    url: 'https://statistique.quebec.ca/fr/document/ecoute-balados-au-quebec',
+    note: '49 % de la population écoute des balados; parmi ces personnes, 55 % écoutent surtout en français et 46 % surtout des balados d\'ici.',
+  },
+  {
+    titre: 'How Much Does a Keynote Speaker Cost',
+    organisme: 'Talkadot',
+    url: 'https://www.talkadot.com/resources/for-event-planners/how-much-does-a-keynote-speaker-cost',
+    note: 'Médiane du marché à 2 500 $ US, quartile supérieur à 5 000 $, et une relation en format atelier qui vaut 2,1 événements en moyenne.',
+  },
+  {
+    titre: 'Cold Email Benchmark Report 2026',
+    organisme: 'Instantly',
+    url: 'https://instantly.ai/cold-email-benchmark-report-2026',
+    note: 'Taux de réponse moyen d\'une approche à froid autour de 3,4 %, les meilleures campagnes dépassant 10 %.',
+  },
+  {
+    titre: 'Apply to Speak',
+    organisme: 'TEDxAtlanta',
+    url: 'https://tedxatlanta.com/apply-to-speak/',
+    note: 'Environ 700 candidatures par année pour 15 à 16 places, soit près de 2 % de retenus.',
+  },
+  {
+    titre: 'Speakers Guide',
+    organisme: 'TEDxLogan Circle',
+    url: 'https://tedxlogancircle.com/speakers/',
+    note: '178 candidatures et 12 conférenciers en 2024, soit 6,7 %, et de 5 à 8 mois entre le dépôt et la scène.',
+  },
+  {
+    titre: 'Daily Word Counts of Professional Authors',
+    organisme: 'Authorlytica',
+    url: 'https://authorlytica.com/daily-word-counts-of-authors/',
+    note: 'Cadence des auteurs en exercice : de 500 à 3 000 mots par jour de travail, la cible la plus citée étant 2 000.',
+  },
+  {
+    titre: 'Literary Agent Response Times',
+    organisme: 'Good Story Company',
+    url: 'https://www.goodstorycompany.com/blog/literary-agent-response-times',
+    note: 'De six à huit semaines pour une réponse à une sollicitation, le silence valant refus chez un nombre croissant d\'agents.',
+  },
+  {
+    titre: 'Web Vitals',
+    organisme: 'Google, web.dev',
+    url: 'https://web.dev/articles/vitals',
+    note: 'Les trois seuils d\'une page qui répond bien, évalués au 75e centile : LCP sous 2,5 s, INP sous 200 ms, CLS sous 0,1.',
+  },
+  {
+    titre: 'Cart Abandonment Rate',
+    organisme: 'Baymard Institute',
+    url: 'https://baymard.com/lists/cart-abandonment-rate',
+    note: 'Moyenne de 70,22 % d\'abandon de panier, calculée sur 50 études distinctes, mise à jour en septembre 2025.',
+  },
+  {
+    titre: 'State of Software Delivery 2026',
+    organisme: 'CircleCI',
+    url: 'https://circleci.com/blog/five-takeaways-2026-software-delivery-report/',
+    note: 'Plus de 28 millions d\'exécutions de tests : le repère recommandé pour une chaîne de tests reste 90 % de réussite.',
+  },
+  {
+    titre: '2026 Social Media Industry Benchmark Report',
+    organisme: 'Quid, anciennement Rival IQ',
+    url: 'https://www.quid.com/knowledge-hub/resource-library/blog/2026-social-media-industry-benchmark-report',
+    note: 'Engagement médian par abonné : 2,01 % sur TikTok, 0,30 % sur Instagram, 0,21 % sur YouTube. Aucune catégorie mieux-être n\'est publiée.',
+  },
+];
