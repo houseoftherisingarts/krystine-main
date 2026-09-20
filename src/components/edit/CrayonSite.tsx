@@ -97,6 +97,47 @@ const CrayonSite: React.FC = () => {
     }
   }, [edition, indexer]);
 
+  // Le reflet : porter tout de suite dans la page ce que Krystine vient
+  // d'écrire. Le shim jsx-runtime ne relit ses tables qu'au prochain rendu de
+  // React, et React n'a aucune raison de refaire un arbre dont l'élément n'a
+  // pas changé; sans ce reflet, « Appliquer » ne changeait donc rien à l'écran
+  // et Krystine en concluait que l'enregistrement ne marchait pas. Chaque
+  // élément déjà étiqueté reçoit sa valeur en vigueur, et la nouvelle phrase
+  // s'inscrit au registre pour que l'étiquette lui survive.
+  const refleter = useCallback(() => {
+    if (!ed) return;
+    const langue = getLang();
+    document.body.querySelectorAll<HTMLElement>('[data-tx]').forEach((el) => {
+      const source = parIndex.current[Number(el.getAttribute('data-tx'))];
+      if (!source) return;
+      const brouillon = ed.brouillonTexte[source];
+      const enCours = brouillon === null ? undefined : brouillon?.[langue];
+      const voulu = enCours ?? surchargeDe(source, langue) ?? texteDeBase(source, langue);
+      noterRendu(voulu, source);
+      if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+        if (el.placeholder && el.placeholder !== voulu) el.placeholder = voulu;
+        return;
+      }
+      if (el.getAttribute('aria-label') && norm(el.textContent ?? '') !== norm(voulu)) {
+        el.setAttribute('aria-label', voulu);
+        return;
+      }
+      // Un seul nœud de texte : le récrire sans toucher aux éléments enfants.
+      const noeuds = Array.from(el.childNodes).filter((n) => n.nodeType === Node.TEXT_NODE && norm(n.nodeValue ?? ''));
+      if (noeuds.length === 1) {
+        const n = noeuds[0];
+        const v = n.nodeValue ?? '';
+        const bords = /^(\s*)[\s\S]*?(\s*)$/.exec(v);
+        const avant = bords ? v.slice(0, v.length - v.trimStart().length) : '';
+        const apres = bords ? v.slice(v.trimEnd().length) : '';
+        const nouveau = avant + voulu + apres;
+        if (n.nodeValue !== nouveau) n.nodeValue = nouveau;
+      } else if (!el.children.length && norm(el.textContent ?? '') !== norm(voulu)) {
+        el.textContent = voulu;
+      }
+    });
+  }, [ed]);
+
   // Balisage à l'entrée en édition, puis à chaque mutation du DOM.
   useEffect(() => {
     if (!edition) {
