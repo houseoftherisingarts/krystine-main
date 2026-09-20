@@ -85,6 +85,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   changelog:  'journal-des-changements',
   publications: 'publications',
   growth:     'growth',
+  planAutomne: 'plan-automne',
   newsletter: 'infolettre',
   guide:      'parcours-guides',
   dosha:      'quiz-dosha',
