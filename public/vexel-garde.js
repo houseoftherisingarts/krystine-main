@@ -86,7 +86,11 @@
     setInterval(verifier, 3000);
   }
 
-  function pret() { setTimeout(demarrer, 1500); }
+  // L'admin et la salle du direct n'ont jamais eu de pied de page : le garde s'y tait.
+  function horsChamp() { return /^\/(admin|direct)(\/|$)/.test(location.pathname); }
+  var actif = false;
+  function pret() { setTimeout(function () { if (!horsChamp()) { actif = true; demarrer(); } }, 1500); }
+  setInterval(function () { if (!actif && !horsChamp()) { actif = true; demarrer(); } else if (actif && horsChamp()) retirer(); }, 3000);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pret);
   else pret();
 })();

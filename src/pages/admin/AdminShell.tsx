@@ -40,6 +40,7 @@ export type AdminSectionId =
   | 'partenaireVexel'
   | 'bugs'
   | 'changelog'
+  | 'publications'
   | 'newsletter'
   | 'guide'
   | 'dosha'
@@ -80,6 +81,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   partenaireVexel: 'partenaire-vexel',
   bugs:       'problemes-techniques',
   changelog:  'journal-des-changements',
+  publications: 'publications',
   newsletter: 'infolettre',
   guide:      'parcours-guides',
   dosha:      'quiz-dosha',
@@ -151,6 +153,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'partenaireVexel', label: 'Devenir partenaire Vexel', icon: 'fa-handshake', groupe: 'reglages' },
   { id: 'bugs',       label: 'Problèmes techniques', icon: 'fa-bug',         groupe: 'reglages' },
   { id: 'changelog',  label: 'Journal des changements', icon: 'fa-clock-rotate-left', groupe: 'reglages' },
+  { id: 'publications', label: 'Publications', icon: 'fa-book-open', groupe: 'reglages' },
 ];
 const CLE_OUVERTS = 'admin.nav.ouverts';
 const lireOuverts = (): GroupeId[] => {

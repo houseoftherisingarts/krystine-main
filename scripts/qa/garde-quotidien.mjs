@@ -114,6 +114,34 @@ for (const p of PAGES) {
   await onglet.close();
 }
 
+// Le collant Vexel : le garde d'exécution est servi, et chaque page montre le
+// collant « Site créé par Vexel Webstudio » (le vrai, ou celui que le garde
+// repose si un pied de page l'a perdu). S'il manque, Alex le sait le matin même.
+{
+  const onglet = await contexte.newPage();
+  try {
+    const r = await onglet.goto(BASE + '/vexel-garde.js', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    const corps = r && r.status() < 400 ? await r.text() : '';
+    if (!corps.includes('vexel-garde:v1')) signaler('Collant Vexel', 'le garde d’exécution /vexel-garde.js n’est plus servi');
+    for (const route of ['/', '/medias', '/foyer', '/compte']) {
+      await onglet.goto(BASE + route, { waitUntil: 'domcontentloaded', timeout: 45000 });
+      await onglet.waitForTimeout(6000);
+      const etat = await onglet.evaluate(() => {
+        const liens = [...document.querySelectorAll('a.cv-foil')];
+        const visibles = liens.filter(a => { const r = a.getBoundingClientRect(); const s = getComputedStyle(a); return r.width > 60 && r.height > 24 && s.display !== 'none' && s.visibility !== 'hidden'; });
+        return { total: liens.length, visibles: visibles.length, secours: visibles.some(a => a.id === 'vexel-garde-collant'), garde: !!document.querySelector('script[src="/vexel-garde.js"]') };
+      });
+      if (!etat.garde) signaler('Collant Vexel', `${route} ne charge plus /vexel-garde.js`);
+      if (!etat.visibles) signaler('Collant Vexel', `${route} n’affiche plus le collant « Site créé par Vexel Webstudio »`);
+      else if (etat.secours) signaler('Collant Vexel', `${route} : le pied de page a perdu son collant, le garde le repose en bas à droite`);
+      else console.log(`  ✓ Collant Vexel en place sur ${route}`);
+    }
+  } catch (e) {
+    signaler('Collant Vexel', `vérification impossible : ${String(e).split('\n')[0].slice(0, 140)}`);
+  }
+  await onglet.close();
+}
+
 await navigateur.close();
 
 console.log(`\n${pannes.length ? `${pannes.length} panne(s)` : 'Tout va bien'}`);
