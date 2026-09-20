@@ -78,6 +78,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang, t, handleAudioSa
              imageUrl="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg" 
              altText="parcours ayurveda en ligne Expérience Origine boussole" 
              alignment="bg-[85%_center] md:bg-[92%_center]"
+             editKey="origine.bande.haute"
            />
         </div>
 
@@ -229,6 +230,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang, t, handleAudioSa
              imageUrl="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg" 
              altText="parcours ayurveda en ligne Expérience Origine boussole" 
              alignment="bg-[85%_center]"
+             editKey="origine.bande.basse"
            />
         </div>
 

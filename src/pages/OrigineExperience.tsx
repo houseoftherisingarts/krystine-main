@@ -291,6 +291,7 @@ const OrigineExperience: React.FC = () => {
           <div className="relative hidden md:block w-full overflow-hidden aspect-[2528/1015]">
             <motion.img
               src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg"
+              data-edit-key="origine.hero.enveloppe"
               alt="Enveloppe Expérience Origine, sceau boussole, sauge et lavande"
               className="absolute left-0 top-[-6%] h-[112%] w-full object-cover"
               style={{ y: heroY, scale: heroScale, filter: heroDim }}
@@ -316,6 +317,7 @@ const OrigineExperience: React.FC = () => {
           <div className="md:hidden">
             <motion.img
               src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg"
+              data-edit-key="origine.hero.enveloppe.mobile"
               alt="Enveloppe Expérience Origine, sceau boussole, sauge et lavande"
               className="w-full h-auto block"
               referrerPolicy="no-referrer"

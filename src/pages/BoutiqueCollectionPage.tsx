@@ -117,7 +117,7 @@ const BoutiqueCollectionPage: React.FC = () => {
       {/* Editorial banner — full-bleed image, centered label/tagline over dark
           gradient. Same rhythm as the /formations featured hero. */}
       <div className="relative w-full h-[55vh] md:h-[60vh] overflow-hidden flex items-center justify-center">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${manifest.bannerImage})` }} />
+        <div className="absolute inset-0 bg-cover bg-center" data-edit-key={`boutique.collection.${manifest.slug}.banniere`} style={{ backgroundImage: `url(${manifest.bannerImage})` }} />
         <div className="absolute inset-0 bg-gradient-to-t from-[#16100a] via-[#16100a]/50 to-[#16100a]/20" />
         <div className="relative z-10 text-center text-white px-6 max-w-3xl">
           <Link to="/boutique" className="inline-flex items-center gap-2 text-[#7d6330] uppercase tracking-[0.3em] text-[10px] font-bold mb-6 hover:text-white transition-colors">

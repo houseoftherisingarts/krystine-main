@@ -81,6 +81,10 @@ const EditableImage: React.FC<Props> = ({ fieldKey, defaultSrc, className, alt, 
       <div
         ref={containerRef}
         className={wrapperClass}
+        // Le crayon prend cette clé plutôt que l'adresse de l'image : les tuiles
+        // de l'accueil partagent leurs fonds avec la boutique et /origine, et un
+        // réglage ne doit toucher que l'endroit où il est posé.
+        data-edit-key={fieldKey}
         style={{
           backgroundImage: `url(${current.url})`,
           backgroundSize: 'cover',

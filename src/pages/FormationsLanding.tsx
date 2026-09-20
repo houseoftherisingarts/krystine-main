@@ -124,7 +124,7 @@ const FormationsLanding: React.FC = () => {
             >
               <span className="font-serif text-[2.4rem] leading-none text-[#BA7B39]">{p.n}</span>
               <div className="overflow-hidden rounded-[14px] bg-[#1b2622]/5 shadow-[0_30px_60px_-40px_rgba(41,48,39,0.5)]">
-                <img src={p.image} alt="" loading={i === 0 ? 'eager' : 'lazy'}
+                <img src={p.image} data-edit-key={`formations.porte.${p.key}`} alt="" loading={i === 0 ? 'eager' : 'lazy'}
                   className="block h-auto w-full transition-transform duration-[900ms] group-hover:scale-[1.03]" />
               </div>
               <div>
