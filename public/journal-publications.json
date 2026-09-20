@@ -223,5 +223,44 @@
       "src/pages/admin/AdminShell.tsx",
       "src/pages/admin/sections/GrowthSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-20T23:37:13.974Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "4a4ac8e",
+    "message": "Growth refait : parcours en cinq étapes repliées (dont les quatre registres de contenu), Spotlight, fiche de résultat en accordéon avec les contenus par registre; crayon d'édition réparé (textes, sauvegarde, images, accueil statique, clé par emplacement); collant Vexel réduit de moitié",
+    "cibles": [
+      "hosting",
+      "functions",
+      "storage"
+    ],
+    "fichiers": [
+      "firebase.json",
+      "functions/src/growth/index.ts",
+      "package.json",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/crayon-statique.js",
+      "public/vexel-garde.js",
+      "scripts/og/pages-statiques.mjs",
+      "src/components/admin/Spotlight.tsx",
+      "src/components/edit/CrayonSite.tsx",
+      "src/components/edit/EditableImage.tsx",
+      "src/components/edit/MediathequePicker.tsx",
+      "src/firebase/growth.ts",
+      "src/lib/changelog.ts",
+      "src/lib/i18n/jsx-runtime.ts",
+      "src/lib/i18n/lang.ts",
+      "src/pages/BoutiqueCollectionPage.tsx",
+      "src/pages/FormationsLanding.tsx",
+      "src/pages/OrigineExperience.tsx",
+      "src/pages/admin/sections/GrowthSection.tsx",
+      "src/pages/admin/sections/growth/FicheResultat.tsx",
+      "src/pages/origine/components/components/ui/HeroSection.tsx",
+      "src/pages/origine/components/components/ui/ParallaxStrip.tsx",
+      "src/vexel/CollantVexel.tsx",
+      "storage.rules"
+    ]
   }
 ]
