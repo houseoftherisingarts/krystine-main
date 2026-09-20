@@ -554,8 +554,9 @@ async function televerserPhoto(fichier) {
 
 function remettrePhotoCourante() {
   if (!cleCadreCourant) return;
+  const el = document.querySelector(`[data-cadre="${CSS.escape(cleCadreCourant)}"]`);
   brouillonPhoto[cleCadreCourant] = null;
-  apercuImg.src = cleCadreCourant;
+  apercuImg.src = (el && (srcOrigine.get(el) || urlAffichee(el))) || cleCadreCourant;
   poserPoint(CADRE_NEUTRE);
   boutonResetPhoto.hidden = true;
   majCompteur();
