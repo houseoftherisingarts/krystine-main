@@ -58,7 +58,9 @@ const ADMIN_EMAILS = [
 const ZOOM_MAX = 3;
 const CADRE_NEUTRE = { x: 50, y: 50, z: 1 };
 const CRAYON_SEL = '[data-crayon]';
-const IGNORE_TEXTE_SEL = 'script,style,svg,noscript,textarea,code,' + CRAYON_SEL;
+// Le collant Vexel (a.cv-foil) et sa garde ne sont pas le site de Krystine :
+// le crayon ne les voit jamais.
+const IGNORE_TEXTE_SEL = 'script,style,svg,noscript,textarea,code,a.cv-foil,' + CRAYON_SEL;
 
 const CDN = 'https://www.gstatic.com/firebasejs/10.12.2/';
 const CHEMIN_REST =
