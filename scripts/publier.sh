@@ -20,14 +20,16 @@ QUI="$(git config user.name 2>/dev/null || echo inconnu)"
 
 node scripts/garde-collant.mjs
 
+if ! git pull --rebase --autostash -q; then
+  echo "Le rebase s'est arrêté sur un conflit. Ne devinez pas : montrez les deux versions en français simple (git status, git diff) et laissez la personne choisir."
+  exit 1
+fi
+
+npm run build
+
 if [ -n "$(git status --porcelain)" ]; then
   git add -A
   git commit -q -m "$MSG"
-fi
-
-if ! git pull --rebase -q; then
-  echo "Le rebase s'est arrêté sur un conflit. Ne devinez pas : montrez les deux versions en français simple (git status, git diff) et laissez la personne choisir."
-  exit 1
 fi
 
 CIBLES=hosting
@@ -36,7 +38,6 @@ grep -q '^functions/' <<<"$FICHIERS" && CIBLES="$CIBLES,functions"
 grep -q -E '^(firestore\.rules|firestore\.indexes\.json)$' <<<"$FICHIERS" && CIBLES="$CIBLES,firestore"
 grep -q '^storage\.rules$' <<<"$FICHIERS" && CIBLES="$CIBLES,storage"
 
-npm run build
 npx firebase deploy --only "$CIBLES" --project "$PROJET" --non-interactive
 
 SHA="$(git rev-parse --short HEAD)"
