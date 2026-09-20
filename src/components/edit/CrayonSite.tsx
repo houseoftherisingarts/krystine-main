@@ -462,9 +462,20 @@ const CrayonSite: React.FC = () => {
             <span className="w-12 text-right tabular-nums">{cadrePhoto.z.toFixed(2)}×</span>
           </label>
           <div className="flex items-center gap-2 flex-wrap">
-            <button type="button" onClick={() => setMediatheque(true)} className={boutonPlein}>
+            <button type="button" onClick={() => fichierRef.current?.click()} disabled={televersement} className={boutonPlein}>
+              <Upload className="w-4 h-4" aria-hidden="true" />
+              {televersement ? 'Téléversement…' : 'Téléverser une photo'}
+            </button>
+            <input
+              ref={fichierRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) void televerser(f); }}
+            />
+            <button type="button" onClick={() => setMediatheque(true)} className={boutonLiseré}>
               <ImageIcon className="w-4 h-4" aria-hidden="true" />
-              Choisir une autre photo
+              Médiathèque
             </button>
             {peutRemettrePhoto && (
               <button type="button" onClick={() => ed.remettrePhoto(photo.cle)} className={boutonLiseré}>
