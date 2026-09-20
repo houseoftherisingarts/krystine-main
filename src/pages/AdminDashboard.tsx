@@ -59,6 +59,7 @@ import PartenaireVexelSection from './admin/sections/PartenaireVexelSection';
 import ChangelogSection from './admin/sections/ChangelogSection';
 import PublicationsSection from './admin/sections/PublicationsSection';
 import GrowthSection from './admin/sections/GrowthSection';
+import PlanAutomneSection from './admin/sections/PlanAutomneSection';
 import BugsSection from './admin/sections/BugsSection';
 import NewsletterSection from './admin/sections/NewsletterSection';
 import GuideSection from './admin/sections/GuideSection';
