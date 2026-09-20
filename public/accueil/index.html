@@ -170,24 +170,49 @@
   @media (max-width:640px){ .seen .wm{padding:0 1.5rem} }
   @keyframes seenmq{to{transform:translateX(-50%)}}
   @media (prefers-reduced-motion:reduce){ .seen .marq{animation:none} .seen .wm{opacity:1;transform:none} }
-  /* ── Le film 2024 : Krystine sur scène, entre la bande des médias et le fil central ── */
-  .film{position:relative;z-index:3;background:var(--espresso);color:var(--ctext);padding:5rem 0 5.5rem;overflow:hidden}
-  .film .grid{display:grid;grid-template-columns:5fr 7fr;gap:3.5rem;align-items:center}
-  .film .k{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;font-weight:600;color:var(--brass)}
-  .film h2{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,3.6vw,2.9rem);line-height:1.04;text-transform:uppercase;letter-spacing:.01em;margin-top:.8rem}
-  .film p{font-family:var(--serif);font-size:1.15rem;line-height:1.55;color:var(--ctext-soft);margin-top:1.1rem;max-width:30rem}
-  .film .cta{margin-top:1.6rem;font-size:.9rem;padding:1rem 2rem}
-  .film .player{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;box-shadow:0 40px 90px rgba(0,0,0,.5);cursor:pointer}
-  .film .player img,.film .player video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-  .film .player video{object-fit:contain}
-  .film .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(16,23,19,.05),rgba(16,23,19,.45));transition:opacity .5s}
-  .film .play i{display:inline-flex;align-items:center;justify-content:center;width:84px;height:84px;border-radius:50%;background:rgba(246,243,238,.14);border:1px solid rgba(246,243,238,.55);backdrop-filter:blur(8px);transition:transform .45s cubic-bezier(.16,.8,.24,1),background .3s}
-  .film .play i svg{width:24px;height:24px;fill:var(--ctext);margin-left:4px}
-  .film .player:hover .play i{transform:scale(1.08);background:var(--brass)}
-  .film .player.on .play{opacity:0;pointer-events:none}
-  .film .dur{position:absolute;left:1rem;bottom:.9rem;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(246,243,238,.75)}
-  @media (max-width:1024px){ .film .grid{grid-template-columns:1fr;gap:2rem} .film .player{order:-1} }
-  @media (max-width:640px){ .film{padding:3.4rem 0 3.8rem} .film .play i{width:66px;height:66px} }
+  /* ── Krystine sur scène : le même module que le hero de /speaking (vidéo plein cadre, voile, lampe, copie à gauche) ── */
+  .film{--green:#28352F;--green-deep:#1b2622;--ivory:#EEE7DB;--cu-1:#4a2416;--cu-2:#8B4A2F;--cu-3:#c47a4e;--cu-4:#f2c39c;
+    --cu-grad:linear-gradient(135deg,var(--cu-1) 0%,var(--cu-2) 24%,var(--cu-3) 44%,var(--cu-4) 51%,var(--cu-3) 58%,var(--cu-2) 78%,var(--cu-1) 100%);
+    --cu-lum:linear-gradient(110deg,#c47a4e 0%,#e6a678 35%,#f8d7b8 50%,#e6a678 65%,#c47a4e 100%);--ease:cubic-bezier(.16,.8,.24,1);
+    position:relative;z-index:3;min-height:100vh;background:var(--green);color:var(--ivory);overflow:hidden;display:flex;align-items:center;padding:6rem 0 5rem}
+  .film .scene{position:absolute;inset:0;z-index:0;background:var(--green-deep)}
+  .film .scene video{width:100%;height:100%;object-fit:cover;object-position:80% 45%;opacity:0;transition:opacity 1.4s ease}
+  .film .scene video.on{opacity:1}
+  .film .veil{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(27,38,34,.98) 0%,rgba(27,38,34,.95) 40%,rgba(27,38,34,.6) 62%,rgba(27,38,34,.22) 100%),linear-gradient(180deg,rgba(27,38,34,.55) 0%,rgba(27,38,34,0) 30%,rgba(27,38,34,.75) 100%)}
+  .film .lamp{z-index:1;position:absolute;width:70vw;height:70vw;max-width:900px;max-height:900px;border-radius:50%;left:-18vw;top:-24vw;background:radial-gradient(circle,rgba(224,161,115,.42) 0%,rgba(139,74,47,.2) 32%,rgba(40,53,47,0) 68%);filter:blur(30px)}
+  .film .lamp2{z-index:1;position:absolute;width:44vw;height:44vw;border-radius:50%;right:-8vw;bottom:-18vw;background:radial-gradient(circle,rgba(139,74,47,.35) 0%,rgba(40,53,47,0) 65%);filter:blur(40px)}
+  .film .mx{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,46rem) 1fr;gap:3rem;align-items:center;width:100%}
+  .film .k{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:var(--cu-4)}
+  .film h2{text-shadow:0 2px 24px rgba(27,38,34,.8);font-family:var(--serif);font-weight:500;font-size:clamp(2.7rem,5.4vw,5rem);line-height:1.02;letter-spacing:-.015em;margin-top:1.2rem;max-width:11em;text-transform:none;color:var(--ivory)}
+  .film h2 b{font-weight:500;background:var(--cu-lum);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 2px 18px rgba(27,38,34,.85))}
+  .film .sub{font-family:var(--serif);font-size:clamp(1.15rem,1.55vw,1.45rem);line-height:1.5;color:rgba(238,231,219,.86);max-width:36rem;margin-top:1.6rem}
+  .film .ctas{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:2.2rem}
+  .film .btn{display:inline-flex;align-items:center;gap:.6rem;height:52px;padding:0 1.7rem;border-radius:999px;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;font-family:var(--sans);text-decoration:none;transition:transform .35s var(--ease),box-shadow .35s,background-position .8s var(--ease),border-color .3s}
+  .film .btn svg{width:16px;height:10px;stroke:currentColor;fill:none;stroke-width:1.5;transition:transform .35s var(--ease)}
+  .film .btn:hover svg{transform:translateX(4px)}
+  .film .btn-amber{background:var(--cu-grad);background-size:230% auto;background-position:0% 50%;color:#fff8ee;text-shadow:0 1px 0 rgba(60,25,10,.45);box-shadow:inset 0 1px 0 rgba(255,232,210,.55),inset 0 -1px 0 rgba(50,20,8,.55),0 12px 30px rgba(139,74,47,.35)}
+  .film .btn-amber:hover{background-position:100% 50%;transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,232,210,.65),inset 0 -1px 0 rgba(50,20,8,.55),0 18px 40px rgba(139,74,47,.45)}
+  .film .btn-line{border:1px solid rgba(238,231,219,.45);color:var(--ivory)}
+  .film .btn-line:hover{border-color:var(--ivory);transform:translateY(-2px)}
+  .film .filmbtn{display:inline-flex;align-items:center;gap:.7rem;margin-top:1.4rem;color:var(--ivory);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;cursor:pointer;background:none;border:0;padding:0;font-family:var(--sans)}
+  .film .filmbtn i{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;border:1px solid rgba(238,231,219,.5);transition:background .3s,border-color .3s,transform .4s var(--ease)}
+  .film .filmbtn i svg{width:12px;height:12px;fill:var(--ivory);margin-left:2px}
+  .film .filmbtn:hover i{background:var(--cu-grad);border-color:var(--cu-3);transform:scale(1.08)}
+  .film.on .filmbtn,.film.on .veil,.film.on .lamp,.film.on .lamp2{display:none}
+  .film.on .copy{display:none}
+  .film.on{min-height:0;padding:0;align-items:stretch}
+  .film.on .scene{position:relative;inset:auto;aspect-ratio:16/9;width:100%}
+  .film.on .scene video{object-fit:contain;object-position:center;background:#000;opacity:1}
+  .film .langs{margin-top:1.6rem;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(238,231,219,.55)}
+  @media (max-width:1024px){
+    .film{display:flex;flex-direction:column;justify-content:flex-start;padding:4.5rem 0 4rem;min-height:0}
+    .film .mx{order:1;grid-template-columns:1fr;gap:2rem}
+    .film .scene{order:2;position:relative;inset:auto;aspect-ratio:16/9;width:auto;margin:2.4rem 2rem 0;border-radius:10px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.4);z-index:2}
+    .film .scene video{object-fit:contain;object-position:center;background:#000}
+    .film .veil{background:linear-gradient(180deg,rgba(27,38,34,.2),rgba(27,38,34,0) 40%,rgba(27,38,34,.6))}
+    .film h2{max-width:none}
+  }
+  @media (max-width:640px){ .film{padding:3.6rem 0 3.4rem} .film .scene{margin:2rem 1.3rem 0} .film h2{font-size:2.55rem} }
   .reperes{position:sticky;top:0;z-index:2;min-height:100vh;display:flex;flex-direction:column;justify-content:center;background:var(--cream-2);padding:4rem 0 4.5rem}
   .rp-title{text-align:center;font-family:var(--serif);font-weight:500;font-size:clamp(1.4rem,2.5vw,2.05rem);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
   .rp-orn{display:flex;align-items:center;justify-content:center;gap:.75rem;margin:1.1rem auto 0;max-width:300px}
@@ -293,9 +318,23 @@
   .foot{position:relative;z-index:6;background:var(--espresso);color:var(--ctext);padding:4.8rem 0 0;overflow:hidden}
   .foot-dust{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
   .foot::before{content:"";position:absolute;inset:0;background:url('/accueil/assets/texture-cream.webp') center/cover;opacity:.09;mix-blend-mode:overlay}
-  .foot .mx{position:relative;display:grid;grid-template-columns:1fr 1.15fr;gap:3rem;align-items:center}
-  .foot .q{font-family:var(--serif);font-style:italic;font-size:1.55rem;line-height:1.42;color:var(--ctext)}
-  .foot .q .sig{font-family:var(--script);font-style:normal;font-size:2rem;color:var(--brass);display:block;margin-top:.5rem;letter-spacing:.02em}
+  .foot{background:#16100a;padding:4rem 0 0;border-top:1px solid rgba(187,154,94,.15)}
+  .foot .nlband{position:relative;display:grid;grid-template-columns:1fr 1.15fr;gap:3rem;align-items:center;padding-bottom:3.5rem;border-bottom:1px solid rgba(187,154,94,.15);margin-bottom:3.5rem}
+  .foot .colo{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:3rem;margin-bottom:4rem}
+  .foot .flogo{height:3.5rem;width:auto;margin-bottom:1.25rem;opacity:.9;filter:invert(1) brightness(1.5)}
+  .foot .fname{font-family:var(--serif);font-size:1.5rem;line-height:1;letter-spacing:.01em;color:var(--ctext)}
+  .foot .frule{display:block;height:1px;width:3rem;background:rgba(187,154,94,.5);margin:1rem 0 1.25rem}
+  .foot .ftag{font-size:.875rem;line-height:1.65;color:rgba(205,191,169,.8);max-width:34ch}
+  .foot h4{font-family:var(--sans);font-size:.68rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin-bottom:1.5rem}
+  .foot .colo ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.75rem}
+  .foot .colo ul a{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 0;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ctext-soft);text-decoration:none;transition:color .25s}
+  .foot .colo ul.plain a{font-size:.875rem;letter-spacing:0;text-transform:none}
+  .foot .colo ul a:hover{color:var(--brass-bright)}
+  .foot .colo ul a svg{width:16px;height:16px;fill:currentColor;flex:0 0 auto}
+  .foot .bottom{position:relative;display:flex;align-items:center;justify-content:space-between;gap:1rem;font-size:.625rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(205,191,169,.45)}
+  .foot .bottom a{color:inherit;text-decoration:none;transition:color .25s}
+  .foot .bottom a:hover{color:var(--brass-bright)}
+  .foot .giant{position:relative;z-index:1;margin:2.5rem 0 0;padding:0 3rem;font-family:var(--serif);font-weight:500;font-size:clamp(3rem,11vw,12.5rem);line-height:1;color:var(--ctext);opacity:.9;white-space:nowrap;overflow:hidden;height:.62em;transform:translateY(20%)}
   .foot .nl h3{font-family:var(--serif);font-weight:500;font-size:1.55rem;letter-spacing:.04em;text-transform:uppercase}
   .foot .nl p{color:var(--ctext-soft);font-size:.82rem;margin-top:.7rem;line-height:1.65;max-width:380px}
   .nlform{display:flex;margin-top:1.5rem;max-width:430px}
@@ -310,7 +349,6 @@
   .nl-msg.show{opacity:1;transform:none}
   .nl-msg.err{color:#dd8a5e}
   .nl-msg.ok{color:var(--brass-bright);font-family:var(--serif);font-style:italic;font-size:.95rem}
-  .copyr{position:relative;text-align:center;margin-top:3.6rem;padding:1.4rem 0;border-top:1px solid rgba(187,154,94,.16);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ctext-soft)}
 
   /* ---------- trilogie ---------- */
   .trilogy{position:sticky;top:0;z-index:2;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:#eae1d0;border-radius:18px 18px 0 0;box-shadow:0 -26px 60px rgba(40,28,16,.28)}
@@ -435,12 +473,14 @@
     .hcore{font-size:.52rem;padding:.5rem;line-height:1.2}
 
     /* FOOTER */
-    .foot .mx{grid-template-columns:1fr;gap:2.2rem}
-    .foot .q{font-size:1.3rem}
+    .foot .nlband{grid-template-columns:1fr;gap:2rem}
+    .foot .colo{grid-template-columns:1fr 1fr;gap:2.4rem}
+    .foot .colo .brand{grid-column:1/-1}
+    .foot .bottom{flex-direction:column;align-items:flex-start;gap:.8rem}
+    .foot .giant{padding:0 1.3rem}
     .amb-toggle{right:1rem;bottom:1rem;width:42px;height:42px}
     /* le collant Vexel doit dégager la pastille de langue (bas-gauche) et le
        rond de musique (bas-droit), tous deux fixes, sur un écran étroit */
-    .cv-wrap{padding-bottom:5rem!important}
     /* touch targets : give text links a 44px tap area */
     .more,.relie .more,.fan-cap a{padding-top:1rem;padding-bottom:1rem}
   }
@@ -455,8 +495,7 @@
     .relie .mx{grid-template-columns:.82fr 1.18fr;gap:2rem;text-align:left;align-items:center}
     .relie .copy2 p{margin-left:0;margin-right:0}.relie .more{justify-content:flex-start}
     .web{max-width:300px;margin:0 auto}
-    /* footer : two columns */
-    .foot .mx{grid-template-columns:1fr 1.1fr;gap:2.4rem}
+    .foot .colo{grid-template-columns:1fr 1fr;gap:2.4rem}
     .trilogy{padding:3.5rem 0 9rem}
   }
   @media(max-width:480px){
@@ -732,21 +771,23 @@
     </div>
   </section>
 
-  <!-- ===== LE FILM 2024 ===== -->
+  <!-- ===== KRYSTINE SUR SCÈNE : le module du hero de /speaking, tel quel ===== -->
   <section class="film" id="film">
+    <div class="scene"><video id="filmVid" poster="https://storage.googleapis.com/inspirata/Base%20site/promo-2024/promo-ksl-poster-1920.webp" muted loop playsinline preload="metadata" aria-label="Krystine St-Laurent en conférence"></video></div>
+    <div class="veil"></div>
+    <div class="lamp"></div>
+    <div class="lamp2"></div>
     <div class="mx">
-      <div class="grid">
-        <div>
-          <div class="k reveal">Le film 2024</div>
-          <h2 class="reveal d1">Krystine sur scène</h2>
-          <p class="reveal d2">Dix ans en soins critiques, puis l'Ayurveda, qu'elle enseigne et écrit depuis 1989. Quand Krystine monte sur scène, elle parle du corps comme quelqu'un qui l'a soigné de près, et la salle repart avec quelque chose à faire dès le lendemain matin. Elle le fait en français ou en anglais, devant vingt personnes comme devant plusieurs centaines.</p>
-          <a class="cta reveal d3" id="filmCta" href="/speaking?lang=fr">Réserver Krystine <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a>
+      <div class="copy">
+        <div class="k reveal d1">Conférencière · Autrice · Infirmière</div>
+        <h2 class="reveal d2">Une conférence <b>pour revenir à soi.</b></h2>
+        <p class="sub reveal d3">Depuis près de quarante ans, Krystine St-Laurent relie ce que nous avons appris à séparer : les soins infirmiers, l'ayurveda, les plantes et la sagesse de la nature. Sur scène, elle fait ce qu'elle fait dans ses livres et dans ses jardins : simplifier, rendre accessible, et donner à chacun des rituels simples pour prendre soin de soi au quotidien… dès le lendemain matin !</p>
+        <div class="ctas reveal d4">
+          <a class="btn btn-amber" id="filmCta" href="/speaking?lang=fr">Réserver Krystine <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a>
+          <a class="btn btn-line" id="filmTalks" href="/speaking?lang=fr#talks">Voir les conférences</a>
         </div>
-        <div class="player reveal d1" id="filmPlayer" role="button" tabindex="0" aria-label="Lire le film">
-          <img src="https://storage.googleapis.com/inspirata/Base%20site/promo-2024/promo-ksl-poster-960.webp" srcset="https://storage.googleapis.com/inspirata/Base%20site/promo-2024/promo-ksl-poster-960.webp 960w, https://storage.googleapis.com/inspirata/Base%20site/promo-2024/promo-ksl-poster-1920.webp 1920w" sizes="(max-width:1024px) 92vw, 760px" width="1920" height="1080" loading="lazy" alt="Krystine St-Laurent en conférence, devant une salle" />
-          <div class="play"><i><svg viewBox="0 0 24 24"><path d="M5 3l15 9-15 9z"/></svg></i></div>
-          <span class="dur">45 s · avec le son</span>
-        </div>
+        <button type="button" class="filmbtn reveal d5" id="filmPlay"><i><svg viewBox="0 0 12 12"><path d="M1 0l11 6-11 6z"/></svg></i><span>Voir le film, avec le son</span></button>
+        <div class="langs reveal d5">Conférences en français, en anglais ou dans les deux</div>
       </div>
     </div>
   </section>
@@ -965,44 +1006,79 @@
   <!-- ===== FOOTER / INFOLETTRE ===== -->
   <footer class="foot" id="contact">
     <canvas id="dust2" class="foot-dust"></canvas>
-    <div class="mx">
-      <div class="q reveal">« Le retour à soi<br/>est le plus grand acte<br/>de transformation. »<span class="sig">Krystine</span></div>
-      <div class="nl reveal d2" id="infolettre">
+    <div class="mx nlband reveal" id="infolettre">
+      <div class="nl">
         <h3>Rester reliée à L'Œuvre</h3>
         <p>Une lettre par mois environ : les repères de la saison, les nouveaux épisodes du podcast, et les dates de retraites avant leur annonce publique.</p>
-        <form class="nlform" id="nlform" novalidate>
+      </div>
+      <div class="nl">
+        <form class="nlform" id="nlform" novalidate style="margin-top:0">
           <label for="nlmail" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Votre courriel</label>
           <input id="nlmail" type="email" placeholder="Votre courriel" autocomplete="email" aria-describedby="nlmsg" />
           <button type="submit">Recevoir</button>
         </form>
         <p class="nl-fine">Désinscription en un clic. Votre courriel reste entre nous.</p>
         <p class="nl-msg" id="nlmsg" role="status" aria-live="polite"></p>
-        <div class="acct-upsell">
-          <p>Vous voulez plus qu'une infolettre ? Contenus exclusifs et promotions spéciales :</p>
-          <a href="/compte" class="btn-gold">Accéder à mon espace</a>
+      </div>
+    </div>
+
+    <!-- Le même colophon que le composant React Footer.tsx (/compte et toutes les pages) : marque, deux colonnes de liens, contact et collant, ligne ©, nom géant coupé -->
+    <div class="mx colo">
+      <div class="brand">
+        <img src="https://storage.googleapis.com/inspirata/Vata/1%20(1).png" alt="" aria-hidden="true" class="flogo" loading="lazy" decoding="async">
+        <p class="fname">Krystine St-Laurent</p>
+        <span class="frule" aria-hidden="true"></span>
+        <p class="ftag">Sagesse ayurvédique pour une vie consciente.</p>
+      </div>
+      <div>
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="/krystine">Krystine</a></li>
+          <li><a href="/medias">Podcasts, Médias & Livres</a></li>
+          <li><a href="/formations">Formations</a></li>
+          <li><a href="/boutique">Boutique Inspirata Ayurveda</a></li>
+          <li><a href="/points-de-vente">Points de Vente</a></li>
+          <li><a href="/conferenciere">Conférencière</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Formations</h4>
+        <ul>
+          <li><a href="/origine">Expérience Origine</a></li>
+          <li><a href="/vata">Programme Vata</a></li>
+          <li><a href="/podcast">Podcast</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul class="plain">
+          <li><a href="mailto:equipe@inspiratanature.com">equipe@inspiratanature.com</a></li>
+          <li><a href="https://www.instagram.com/krystinesaintlaurent" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4zM17.3 5.5a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4zM12 2c2.7 0 3 0 4.1.1 1.1.1 1.8.2 2.5.5.7.3 1.2.6 1.8 1.2.6.6.9 1.1 1.2 1.8.3.7.4 1.4.5 2.5.1 1.1.1 1.4.1 4.1s0 3-.1 4.1c-.1 1.1-.2 1.8-.5 2.5-.3.7-.6 1.2-1.2 1.8-.6.6-1.1.9-1.8 1.2-.7.3-1.4.4-2.5.5-1.1.1-1.4.1-4.1.1s-3 0-4.1-.1c-1.1-.1-1.8-.2-2.5-.5a4.6 4.6 0 0 1-1.8-1.2 4.6 4.6 0 0 1-1.2-1.8c-.3-.7-.4-1.4-.5-2.5C2 15 2 14.7 2 12s0-3 .1-4.1c.1-1.1.2-1.8.5-2.5.3-.7.6-1.2 1.2-1.8.6-.6 1.1-.9 1.8-1.2.7-.3 1.4-.4 2.5-.5C9 2 9.3 2 12 2zm0 1.8c-2.7 0-3 0-4 .1-1 0-1.5.2-1.9.3-.5.2-.8.4-1.2.8-.4.4-.6.7-.8 1.2-.1.4-.3.9-.3 1.9-.1 1-.1 1.3-.1 4s0 3 .1 4c0 1 .2 1.5.3 1.9.2.5.4.8.8 1.2.4.4.7.6 1.2.8.4.1.9.3 1.9.3 1 .1 1.3.1 4 .1s3 0 4-.1c1 0 1.5-.2 1.9-.3.5-.2.8-.4 1.2-.8.4-.4.6-.7.8-1.2.1-.4.3-.9.3-1.9.1-1 .1-1.3.1-4s0-3-.1-4c0-1-.2-1.5-.3-1.9a3 3 0 0 0-.8-1.2 3 3 0 0 0-1.2-.8c-.4-.1-.9-.3-1.9-.3-1-.1-1.3-.1-4-.1z"/></svg> Instagram</a></li>
+          <li><a href="https://www.facebook.com/Krystinestlaurent" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg> Facebook</a></li>
+          <li><a href="https://www.youtube.com/@KrystineStLaurent" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z"/></svg> YouTube</a></li>
+        </ul>
+        <!-- Collant Vexel : foil, même dessin que la version React (src/vexel/CollantVexel.tsx). Vanille ici puisque
+             /accueil est un export statique. La carte suit la langue affichée par /i18n/static.js (document.documentElement.lang). -->
+        <div class="cv-wrap" style="position:relative;z-index:1;margin-top:2rem">
+          <a id="cvFoil" class="cv-foil" href="https://vexelwebstudio.com" target="_blank" rel="noopener noreferrer" aria-haspopup="dialog" aria-label="Site créé par Vexel Webstudio : en savoir plus">
+            <span aria-hidden class="cv-sheen"></span>
+            <span aria-hidden class="cv-grain"></span>
+            <img src="/vexel-logo.png" alt="" width="329" height="320" style="height:1.75rem;width:auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));">
+            <span style="display:flex;flex-direction:column;line-height:1.15;">
+              <span id="cvKicker" style="font-size:0.625rem;font-weight:600;text-transform:uppercase;letter-spacing:0.22em;color:rgba(255,255,255,0.7);">Site créé par</span>
+              <span id="cvNom" style="margin-top:0.25rem;font-family:ui-serif,Georgia,Cambria,'Times New Roman',Times,serif;font-size:1.05rem;">Vexel Webstudio</span>
+            </span>
+          </a>
         </div>
       </div>
     </div>
-    <div class="copyr">© Krystine St-Laurent · Inspira Nature · Tous droits réservés</div>
-
-    <!-- Collant Vexel : foil holographique, même dessin que la version React des
-         autres pages du site (src/vexel/CollantVexel.tsx). Vanille ici puisque
-         /accueil est un export statique. La carte suit la langue affichée par
-         /i18n/static.js (document.documentElement.lang). -->
-    <div class="cv-wrap" style="position:relative;z-index:1;display:flex;justify-content:center;padding-top:2.8rem">
-      <a id="cvFoil" class="cv-foil" href="https://vexelwebstudio.com" target="_blank" rel="noopener noreferrer" aria-haspopup="dialog" aria-label="Site créé par Vexel Webstudio : en savoir plus">
-        <span aria-hidden class="cv-sheen"></span>
-        <span aria-hidden class="cv-grain"></span>
-        <img src="/vexel-logo.png" alt="" width="329" height="320" style="height:1.75rem;width:auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));">
-        <span style="display:flex;flex-direction:column;line-height:1.15;">
-          <span id="cvKicker" style="font-size:0.625rem;font-weight:600;text-transform:uppercase;letter-spacing:0.22em;color:rgba(255,255,255,0.7);">Site créé par</span>
-          <span id="cvNom" style="margin-top:0.25rem;font-family:ui-serif,Georgia,Cambria,'Times New Roman',Times,serif;font-size:1.05rem;">Vexel Webstudio</span>
-        </span>
-      </a>
+    <div class="mx bottom">
+      <p>© 2026 Krystine St-Laurent. Tous droits réservés.</p>
+      <a href="/politique-de-confidentialite">Politique de confidentialité</a>
     </div>
 
     <!-- Nom géant en filigrane, coupé par le bas de page, à la façon de Xena Horizon et Vexel Webstudio -->
-    <p aria-hidden="true" style="position:relative;z-index:1;margin:0;padding:0 3rem;font-family:var(--serif);font-weight:500;font-size:clamp(1.9rem,7.5vw,9.5rem);line-height:1;color:var(--ctext);opacity:.9;white-space:nowrap;overflow:hidden;height:.6em;transform:translateY(18%);">Krystine St-Laurent</p>
+    <p class="giant" aria-hidden="true">Krystine St-Laurent</p>
   </footer>
 
   <div id="cvOverlay" class="cv-overlay" role="presentation">
@@ -1271,17 +1347,22 @@
   // Tel que vu à : les noms s'allument l'un après l'autre à l'entrée dans l'écran.
   (function(){ var s=document.getElementById('medias-vus'); if(!s||!('IntersectionObserver' in window)){ if(s) s.classList.add('lit'); return; }
     new IntersectionObserver(function(es,o){ es.forEach(function(e){ if(e.isIntersecting){ s.classList.add('lit'); o.disconnect(); } }); },{threshold:.4}).observe(s); })();
-  // Le film 2024 : l'affiche devient le lecteur au clic, avec le son (geste de l'utilisatrice).
-  (function(){ var pl=document.getElementById('filmPlayer'); if(!pl) return;
-    var B='https://storage.googleapis.com/inspirata/Base%20site/promo-2024/';
-    function go(){ if(pl.classList.contains('on')) return; pl.classList.add('on');
-      var v=document.createElement('video'); v.controls=true; v.playsInline=true; v.preload='auto';
-      // Le film est coupé après ses cartons-titres : il commence directement sur la salle.
-      v.src=B+(window.innerWidth>900?'promo-ksl-v2-1080.mp4':'promo-ksl-v2-720.mp4'); pl.appendChild(v);
+  // Krystine sur scène : la boucle muette du film 2024 derrière la copie (comme sur /speaking); le bouton
+  // met le film complet, avec le son, dans le même cadre, embarqué dans la page.
+  (function(){ var sec=document.getElementById('film'), v=document.getElementById('filmVid'); if(!sec||!v) return;
+    var B='https://storage.googleapis.com/inspirata/Base%20site/promo-2024/', wide=window.innerWidth>900, plein=false;
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    v.src=B+(wide?'promo-ksl-v2-hero-muted.mp4':'promo-ksl-v2-hero-muted-720.mp4');
+    v.addEventListener('playing',function(){ v.classList.add('on'); },{once:true});
+    function boucle(){ if(plein) return; var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
+    if(reduce){ v.removeAttribute('loop'); v.classList.add('on'); }
+    else new IntersectionObserver(function(es){ es.forEach(function(e){ if(plein) return; if(e.isIntersecting) boucle(); else v.pause(); }); },{threshold:.2}).observe(sec);
+    document.getElementById('filmPlay').addEventListener('click',function(){
+      plein=true; sec.classList.add('on'); v.pause(); v.removeAttribute('loop'); v.muted=false; v.controls=true; v.preload='auto';
+      v.src=B+(wide?'promo-ksl-v2-1080.mp4':'promo-ksl-v2-720.mp4'); v.currentTime=0;
       var amb=document.getElementById('amb'); if(amb&&!amb.paused){ amb.pause(); var t=document.getElementById('ambtoggle'); if(t){ t.classList.add('muted'); t.setAttribute('aria-pressed','false'); } }
-      var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
-    pl.addEventListener('click',go); pl.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } });
-    try{ if(localStorage.getItem('krystine-lang')==='en'){ var a=document.getElementById('filmCta'); if(a) a.href='/speaking'; } }catch(e){}
+      var p=v.play(); if(p&&p.catch) p.catch(function(){}); });
+    try{ if(localStorage.getItem('krystine-lang')==='en'){ var a=document.getElementById('filmCta'); if(a) a.href='/speaking'; var b=document.getElementById('filmTalks'); if(b) b.href='/speaking#talks'; } }catch(e){}
   })();
   // Two capture points on the page (tome 3 block + footer); each one tags its own
   // source so we can see which one actually converts.

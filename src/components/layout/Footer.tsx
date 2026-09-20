@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="relative font-sans text-ctextSoft border-t border-brass/15 bg-espressoDeep pt-16 md:pt-20 pb-10 mt-auto">
+    <footer className="relative overflow-hidden font-sans text-ctextSoft border-t border-brass/15 bg-espressoDeep pt-16 md:pt-20 pb-0 mt-auto">
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
 
         {/* Top grid */}
