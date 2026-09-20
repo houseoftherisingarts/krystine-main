@@ -84,6 +84,9 @@ export interface Pitch { segment: string; titre: string; accroches: string[]; te
 export interface Offre { nom: string; colonne: 'A' | 'B'; marche: string; description: string; prixObserves: string; jalon: string }
 export interface Campagne { audiences: string[]; formats: string[]; budgetIndicatif: string; accroches: string[]; scripts: { duree: string; texte: string }[]; interdits: string[]; modeEmploi: string[] }
 export interface Source { titre: string; url: string; note?: string }
+export interface IdeeContenu { titre: string; angle: string; format: string; appel: string }
+export interface ContenuRegistre { registre: string; idees: IdeeContenu[] }
+export interface JourMix { jour: string; registre: string; quoi: string }
 
 export interface ResultatRun {
   segments: Segment[];
@@ -92,6 +95,8 @@ export interface ResultatRun {
   offres: Offre[];
   campagne: Campagne | null;
   sources: Source[];
+  contenus?: ContenuRegistre[];
+  mixSemaine?: JourMix[];
   avertissements?: string[];
 }
 
