@@ -14,14 +14,17 @@
  * bien qu'aucun composant n'a à baliser ses éléments un par un.
  */
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { PencilLine, Check, X, RotateCcw, Image as ImageIcon } from 'lucide-react';
+import { PencilLine, Check, X, RotateCcw, Image as ImageIcon, Upload } from 'lucide-react';
 import { useEdition } from '../../lib/edition';
 import { useAuth } from '../../contexts/AppContext';
-import { getLang, sourceDuRendu, texteDeBase, surchargeDe, activerRegistre, type SiteLang } from '../../lib/i18n/lang';
+import { getLang, sourceDuRendu, texteDeBase, surchargeDe, noterRendu, type SiteLang } from '../../lib/i18n/lang';
 import { ZOOM_MAX, CADRE_NEUTRE, type Cadre } from '../../lib/i18n/photos';
+import { uploadImage, reduireImage } from '../../firebase/storage';
 import MediathequePicker from './MediathequePicker';
 
 const norm = (s: string): string => s.replace(/\s+/g, ' ').trim();
+/** Le dossier du Storage où vivent les photos posées au crayon. */
+const DOSSIER_SURCHARGES = 'surcharges-site';
 
 /** Ce que l'élément montre en ce moment : la source d'une <img>, sinon son fond. */
 const urlAffichee = (el: HTMLElement): string => {
