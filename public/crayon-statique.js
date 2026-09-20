@@ -277,8 +277,12 @@ function appliquerFonds() {
     const cle = cleDeFond(el);
     if (!cle) return;
     const { url, cadre } = photoEffective(cle);
-    if (url) el.style.backgroundImage = `url(${url})`;
-    else if (/url\(/.test(el.style.backgroundImage || '') && !el.style.backgroundImage.includes(cle)) el.style.backgroundImage = `url(${cle})`;
+    // Le fond d'origine est souvent un dégradé PUIS une image : on remplace la
+    // seule adresse à l'intérieur, on ne récrit jamais la déclaration entière.
+    let fondOrigine = fondsOrigine.get(el);
+    if (fondOrigine === undefined) { fondOrigine = el.style.backgroundImage || ''; fondsOrigine.set(el, fondOrigine); }
+    const voulu = url ? fondOrigine.replace(cle, url) : fondOrigine;
+    if (voulu && el.style.backgroundImage !== voulu) el.style.backgroundImage = voulu;
     if (!cadre) return;
     el.style.backgroundPosition = `${cadre.x}% ${cadre.y}%`;
     if (cadre.z !== 1) el.style.backgroundSize = `${Math.round(cadre.z * 100)}%`;
