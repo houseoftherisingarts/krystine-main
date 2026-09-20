@@ -278,20 +278,51 @@ const CrayonSite: React.FC = () => {
       await ed.sauvegarder();
       fermerFenetre();
       ed.fermer();
-      setAvis('Changements enregistrés.');
-      window.setTimeout(() => setAvis(null), 2600);
+      setAvis({ texte: 'Changements enregistrés.', erreur: false });
+      window.setTimeout(() => setAvis(null), 4000);
     } catch (err) {
+      // Un échec ne se tait jamais : Krystine reste en mode modification, ses
+      // changements sont toujours là, et le message dit quoi faire. Le motif
+      // exact de Firestore (droits refusés, réseau) vaut la peine d'être lu.
       console.error('Enregistrement du crayon', err);
-      setAvis("L'enregistrement n'a pas fonctionné. Réessayez.");
+      const motif = err instanceof Error && /permission|insufficient/i.test(err.message)
+        ? "Ce compte n'a pas le droit d'écrire. Reconnectez-vous en administratrice."
+        : "L'enregistrement n'a pas fonctionné. Vos changements sont encore là : réessayez.";
+      setAvis({ texte: motif, erreur: true });
     } finally {
       setBusy(false);
     }
   };
 
   const annuler = () => {
+    // Le reflet doit d'abord remettre la page telle qu'elle était publiée; le
+    // mode se referme au tour suivant, une fois le brouillon vidé.
     ed.abandonner();
     fermerFenetre();
-    ed.fermer();
+    setAvis(null);
+    window.setTimeout(() => ed.fermer(), 0);
+  };
+
+  // Une photo téléversée depuis la fenêtre : réduite dans le navigateur avant
+  // l'envoi (un téléphone livre 4 000 pixels et plusieurs mégaoctets), puis
+  // posée comme surcharge de la clé, avec aperçu immédiat.
+  const televerser = async (fichier: File) => {
+    if (!photo) return;
+    setTeleversement(true);
+    setAvis(null);
+    try {
+      const reduite = await reduireImage(fichier, 2000, 0.88);
+      const { url } = await uploadImage(reduite, DOSSIER_SURCHARGES);
+      ed.ecrirePhoto(photo.cle, { url });
+      setAvis({ texte: 'Photo remplacée. Pensez à enregistrer.', erreur: false });
+      window.setTimeout(() => setAvis(null), 4000);
+    } catch (err) {
+      console.error('Téléversement du crayon', err);
+      setAvis({ texte: "Le téléversement n'a pas fonctionné. Réessayez avec une image plus légère.", erreur: true });
+    } finally {
+      setTeleversement(false);
+      if (fichierRef.current) fichierRef.current.value = '';
+    }
   };
 
   // ── Photo ouverte ───────────────────────────────────────────────────────
