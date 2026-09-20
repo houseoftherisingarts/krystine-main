@@ -118,5 +118,20 @@
       "src/pages/cours/programmes.ts",
       "src/vexel/CollantVexel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-20T21:07:35.900Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "b4fb430",
+    "message": "Carte du collant : le texte dit seulement que la personne gagne un rabais sur ce même forfait, sans pourcentage, sans commission, sans question",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "src/vexel/CollantVexel.tsx"
+    ]
   }
 ]
