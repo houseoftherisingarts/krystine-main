@@ -173,5 +173,19 @@
       "src/pages/admin/AdminShell.tsx",
       "src/pages/admin/sections/GrowthSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-20T22:06:20.557Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "b6f2333",
+    "message": "Growth : l'historique des recherches s'affiche (un seul filtre Firestore, tri côté client)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/firebase/growth.ts"
+    ]
   }
 ]
