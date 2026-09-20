@@ -33,7 +33,10 @@ const MediathequePicker: React.FC<Props> = ({ open, onClose, onSelect }) => {
     setError(null);
     setUploading(true);
     try {
-      const { url } = await uploadImage(file, 'site-edits');
+      // Réduite dans le navigateur avant l'envoi : une photo de téléphone fait
+      // 4 000 pixels et plusieurs mégaoctets, et le site n'en affiche jamais
+      // plus de 2 000 de côté.
+      const { url } = await uploadImage(await reduireImage(file, 2000, 0.88), 'surcharges-site');
       onSelect(url);
       onClose();
     } catch (e: any) {
