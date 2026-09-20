@@ -38,7 +38,7 @@ export const BRAND = {
 export const POLICES: Record<Police, { label: string; css: string; tw: string }> = {
   serif:  { label: 'Éditoriale', css: "'Cormorant Garamond', Georgia, 'Times New Roman', serif", tw: 'font-serif' },
   sans:   { label: 'Moderne',    css: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif", tw: 'font-sans' },
-  script: { label: 'Manuscrite', css: "'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive", tw: '' },
+  script: { label: 'Manuscrite', css: "'Pinyon Script', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive", tw: '' },
 };
 export const TAILLES: Record<Taille, { label: string; px: number; tw: string }> = {
   sm: { label: 'Petit',      px: 14, tw: 'text-sm' },

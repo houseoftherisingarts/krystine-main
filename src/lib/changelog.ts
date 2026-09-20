@@ -30,6 +30,23 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-09-20',
+    titre: "Vos demandes du jour, l'onglet Gabarits, et un site que vous publiez vous-même",
+    intro: "Une grande journée : ce que vous avez demandé depuis votre admin est en ligne, vos infolettres ont maintenant leurs gabarits, et vos propres changements se publient désormais sans passer par Alex, avec un journal qui garde la trace de chacun.",
+    etapes: [
+      { texte: "Dans Infolettre, un onglet « Gabarits » range vos modèles par catégorie (Inspirata, Krystine St-Laurent, Expérience Origine, Événements, et toute autre que vous tapez). Depuis une lettre ouverte, « Enregistrer comme gabarit » la garde comme modèle; chaque gabarit porte un bouton « Nouvelle infolettre » qui ouvre une lettre déjà remplie, dont la bannière du haut se change ensuite comme d'habitude.", ou: '/admin/infolettre', libelle: 'Infolettre' },
+      "Le bouton « Dupliquer », sans traduire, est maintenant à côté de « Dupliquer et traduire », dans la liste des infolettres comme dans le composeur.",
+      "La police « Manuscrite » du composeur (menu Police, sur un titre ou un paragraphe) prend maintenant la belle écriture de votre signature, pour les moments d'Ella et tout ce que vous voudrez écrire à la main.",
+      { texte: "Sur la page de l'extrait des 5 éléments, les quatre pages d'exemple sont plus petites, légèrement floutées et voilées de crème : on devine la matière, on ne la lit plus sans laisser son courriel. La vignette qui apparaît quand on partage cette page est maintenant la couverture de l'extrait.", ou: '/5elements', libelle: 'Voir la page' },
+      { texte: "La page de cours de l'Expérience Origine ne montre plus de grands vides : les cartes de modules ont leur couleur quand l'image manque, et le texte des leçons ne traîne plus les restes de l'ancien système.", ou: '/cours/kajabi-2149348838', libelle: 'Voir le cours' },
+      { texte: "Sur l'accueil, le pied de page est le même que partout ailleurs sur le site, votre nom en grand se lit en capitales coupées au centre, et la section « sur scène » est devenue le grand module de votre page de conférencière, avec le film qui tourne et un bouton qui allume ou coupe le son sur place.", ou: '/accueil', libelle: 'Accueil' },
+      { texte: "Vos directs YouTube sont à jour : les deux rediffusions depuis le 2 septembre sont dans l'onglet Rediffusions de l'espace membre, la plus récente en tête, et la carte de la page du podcast montre la dernière.", ou: '/podcast', libelle: 'Podcast' },
+      { texte: "Un onglet « Publications » dans Réglages garde la trace de chaque mise en ligne du site, la vôtre comme celle de Vexel, avec l'heure et de quoi revenir en arrière. Vous publiez maintenant vos changements vous-même depuis votre ordinateur, sans attendre l'accord d'Alex.", ou: '/admin/publications', libelle: 'Publications' },
+      "La petite plaque du studio au bas des pages est passée en foil or et cuivre, avec un logo plus discret, et sa carte de présentation vous nomme comme affiliée : quiconque ouvre un dossier chez Vexel à partir de votre site gagne un rabais sur son forfait.",
+      "Le dépôt de fichiers dans « Demander un changement » (images, PDF, documents) est prêt et arrive dans la prochaine mise en ligne de Vexel.",
+    ],
+  },
+  {
     date: '2026-09-17',
     titre: 'La plaque du studio au bas de la page de vos formations',
     intro: "La page qui présente vos trois portes, « Choisir votre prochaine porte », se terminait sans la plaque du studio qui clôt vos autres pages. Elle la porte maintenant, avec son mot de la fin.",

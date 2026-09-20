@@ -53,7 +53,7 @@ const MOTS: Record<Lang, { etiquette: string; desabonner: string; politique: str
 const POLICES: Record<string, string> = {
   serif: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
   sans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
-  script: "'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive",
+  script: "'Pinyon Script', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive",
 };
 const TAILLES: Record<string, number> = { sm: 14, md: 16, lg: 18, xl: 21 };
 
@@ -257,7 +257,7 @@ export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOpti
 
   return `<!doctype html>
 <html lang="${lang}">
-<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>${esc(opts.subject)}</title></head>
+<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>${esc(opts.subject)}</title><link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet" /></head>
 <body style="margin:0;padding:0;background:${CHARTE.cream};">
   <div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;font-size:1px;color:transparent;line-height:1px;">${esc(opts.preheader || '')}</div>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CHARTE.cream};padding:36px 16px;">
