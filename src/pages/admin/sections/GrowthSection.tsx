@@ -488,7 +488,7 @@ const Resultat: React.FC<{ run: GrowthRun; onFermer: () => void; onMessage: (m: 
           ['Produits', `${run.produits?.length || 0} retenu${(run.produits?.length || 0) > 1 ? 's' : ''}`],
           ['Lancée', quand(run.creeLe)],
           ['Durée', ecoule(run.creeLe, run.termineLe) || 'en cours'],
-          ['Coût', run.cout ? `${run.cout.dollars.toFixed(2)} $ (estimation, ${run.cout.entree + run.cout.sortie} jetons, ${run.cout.modele})` : 'à venir'],
+          ['Coût', run.cout ? `${dollars(run.cout.dollars)} (estimation, ${nombre(run.cout.entree + run.cout.sortie)} jetons, ${run.cout.modele})` : 'à venir'],
         ].map(([k, v]) => (
           <div key={k as string}>
             <dt className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#38403a]/45 dark:text-white/40">{k}</dt>
