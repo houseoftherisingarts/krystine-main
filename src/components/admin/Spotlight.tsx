@@ -90,8 +90,8 @@ const Spotlight: React.FC<{ etapes: EtapeSpotlight[]; onFermer: () => void }> = 
             top: boite.top - MARGE,
             width: boite.width + MARGE * 2,
             height: boite.height + MARGE * 2,
-            boxShadow: '0 0 0 9999px rgba(26,20,16,0.62)',
-            outline: '1px solid rgba(186,123,57,0.85)',
+            boxShadow: '0 0 0 9999px rgba(26,20,16,0.74)',
+            outline: '2px solid rgba(186,123,57,0.9)',
           }}
         />
       )}

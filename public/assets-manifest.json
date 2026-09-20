@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-20T22:08:40.917Z",
+  "generatedAt": "2026-09-20T22:36:10.840Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -98,6 +98,13 @@
       "folder": "accueil/assets",
       "kind": "image",
       "size": 720255
+    },
+    {
+      "path": "/accueil/assets/wheel-watercolor.webp",
+      "name": "wheel-watercolor.webp",
+      "folder": "accueil/assets",
+      "kind": "image",
+      "size": 57430
     },
     {
       "path": "/accueil/assets/portes/conferences.png",

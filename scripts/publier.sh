@@ -23,6 +23,14 @@ PROJET=krystinestlaurent-87566
 
 node scripts/garde-collant.mjs
 
+# GitHub doit répondre avant tout : sinon rien ne s'enregistre ni ne se publie, et on le dit tout de suite.
+if ! git ls-remote -q --exit-code origin main >/dev/null 2>&1; then
+  echo "GitHub refuse la connexion depuis cet ordinateur : rien ne peut être enregistré ni publié. La cause exacte :"
+  git ls-remote origin main 2>&1 | tail -3
+  echo "Recopiez ces lignes à Alex telles quelles (clé attendue : ~/.ssh/iris_krystine, posée par l'installation d'Iris)."
+  exit 1
+fi
+
 if ! git pull --rebase --autostash -q; then
   echo "Le rebase s'est arrêté sur un conflit. Ne devinez pas : montrez les deux versions en français simple (git status, git diff) et laissez la personne choisir."
   exit 1

@@ -132,18 +132,6 @@ const Footer: React.FC = () => {
           )}
         </div>
       </div>
-
-      {/* Nom géant en filigrane, coupé par le bas de page, à la façon de Vexel
-          Webstudio, Xena Horizon et MapChef : le même geste éditorial partout. */}
-      <div className="relative z-10 px-6 md:px-12 mt-10">
-        <p
-          aria-hidden
-          className="font-serif text-ctext/90 leading-none whitespace-nowrap select-none overflow-hidden"
-          style={{ fontSize: 'clamp(1.6rem, 7.6vw, 10rem)', height: '0.52em', transform: 'none', textTransform: 'uppercase', letterSpacing: '0.03em' }}
-        >
-          Krystine St-Laurent
-        </p>
-      </div>
     </footer>
   );
 };
