@@ -272,9 +272,12 @@ function appliquerImages() {
     const { url, cadre } = photoEffective(cle);
     // Le remplacement d'une photo manquait complètement : la page statique ne
     // lisait que le cadrage, si bien qu'une photo changée au crayon ne
-    // paraissait jamais sur l'accueil.
-    const voulu = url || cle;
-    if (img.getAttribute('src') !== voulu) img.setAttribute('src', voulu);
+    // paraissait jamais sur l'accueil. L'adresse d'origine se garde à part,
+    // parce que la clé peut être un nom d'emplacement et non une adresse.
+    let source = srcOrigine.get(img);
+    if (source === undefined) { source = img.getAttribute('src') || ''; srcOrigine.set(img, source); }
+    const voulu = url || source;
+    if (voulu && img.getAttribute('src') !== voulu) img.setAttribute('src', voulu);
     if (!cadre) return;
     img.style.objectPosition = `${cadre.x}% ${cadre.y}%`;
     if (cadre.z !== 1) { img.style.transformOrigin = `${cadre.x}% ${cadre.y}%`; img.style.scale = String(cadre.z); }
