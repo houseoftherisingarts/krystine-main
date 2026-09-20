@@ -5,6 +5,18 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
+    // Une pièce acceptable : image, vidéo, son ou PDF, sous la taille donnée.
+    // Sur une SUPPRESSION, `request.resource` est nul et toute lecture de
+    // `.size` fait échouer la règle : c'est ce qui empêchait une administratrice
+    // de retirer un fichier qu'elle venait elle-même de téléverser (constaté le
+    // 20 septembre 2026 sur les photos posées au crayon). Le cas se nomme donc
+    // explicitement, et la vérification ne porte que sur ce qui est déposé.
+    function pieceValide(maxOctets) {
+      return request.resource == null
+        || (request.resource.size < maxOctets
+            && request.resource.contentType.matches('(image|video|audio)/.*|application/pdf'));
+    }
+
     function isAdmin() {
       return request.auth != null
         && request.auth.token.email in [

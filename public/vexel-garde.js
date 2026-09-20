@@ -32,18 +32,18 @@
   }
 
   var CSS = [
-    '#' + ID + '{position:fixed;right:16px;bottom:16px;z-index:899;display:inline-flex;align-items:center;gap:.75rem;',
-    'padding:.7rem 1.1rem;border-radius:15px;border:2px solid #fff;color:#fff;text-decoration:none;overflow:hidden;isolation:isolate;',
+    '#' + ID + '{position:fixed;right:16px;bottom:16px;z-index:899;display:inline-flex;align-items:center;gap:.4rem;',
+    'padding:.35rem .6rem;border-radius:9px;border:1.5px solid #fff;color:#fff;text-decoration:none;overflow:hidden;isolation:isolate;',
     'font-family:Inter,ui-sans-serif,system-ui,sans-serif;',
     'background:radial-gradient(120% 120% at 30% 30%,rgb(255 236 200 / .22),transparent 55%),linear-gradient(135deg,#22180d 0%,#0b0805 60%,#1c130a 100%);',
     'box-shadow:0 0 0 1px rgb(0 0 0 / .35),0 10px 24px -10px rgb(0 0 0 / .55),inset 0 1px 0 rgb(255 255 255 / .25)}',
     '#' + ID + ' .vg-sheen{position:absolute;inset:-40%;pointer-events:none;z-index:0;',
     'background:repeating-conic-gradient(from 200deg at 30% 30%,#fff3d6 0deg,#ecc978 24deg,#c98f45 48deg,#a5642c 72deg,#f2d48f 96deg,#fff3d6 120deg);',
     'opacity:.24;mix-blend-mode:color-dodge;filter:saturate(.9) blur(2px)}',
-    '#' + ID + ' img{position:relative;z-index:1;height:1.75rem;width:auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}',
+    '#' + ID + ' img{position:relative;z-index:1;height:.9rem;width:auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}',
     '#' + ID + ' .vg-texte{position:relative;z-index:1;display:flex;flex-direction:column;line-height:1.15}',
-    '#' + ID + ' .vg-kicker{font-size:.625rem;font-weight:600;text-transform:uppercase;letter-spacing:.22em;color:rgba(255,255,255,.7)}',
-    '#' + ID + ' .vg-nom{margin-top:.25rem;font-family:ui-serif,Georgia,Cambria,"Times New Roman",Times,serif;font-size:1.05rem}',
+    '#' + ID + ' .vg-kicker{font-size:.35rem;font-weight:600;text-transform:uppercase;letter-spacing:.22em;color:rgba(255,255,255,.7)}',
+    '#' + ID + ' .vg-nom{margin-top:.1rem;font-family:ui-serif,Georgia,Cambria,"Times New Roman",Times,serif;font-size:.55rem}',
   ].join('');
 
   function poser() {

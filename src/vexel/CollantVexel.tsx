@@ -59,10 +59,10 @@ const style = `
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.7rem 1.1rem;
-  border-radius: 15px;
-  border: 2px solid #fff;
+  gap: 0.4rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 9px;
+  border: 1.5px solid #fff;
   color: #fff;
   text-decoration: none;
   overflow: hidden;
@@ -225,12 +225,12 @@ export function CollantVexel({ lang = 'FR', className = '', codeParrain = 'KSL-K
       >
         <span aria-hidden className="cv-sheen" />
         <span aria-hidden className="cv-grain" />
-        <img src={LOGO_VEXEL} alt="" width={329} height={320} style={{ height: '1.75rem', width: 'auto', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.6))' }} />
+        <img src={LOGO_VEXEL} alt="" width={329} height={320} style={{ height: '0.9rem', width: 'auto', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.6))' }} />
         <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
-          <span style={{ fontSize: '0.625rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.22em', color: 'rgba(255,255,255,0.7)' }}>
+          <span style={{ fontSize: '0.35rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.7)' }}>
             {t.kicker}
           </span>
-          <span style={{ marginTop: '0.25rem', fontFamily: SERIF, fontSize: '1.05rem' }}>{t.nom}</span>
+          <span style={{ marginTop: '0.1rem', fontFamily: SERIF, fontSize: '0.55rem' }}>{t.nom}</span>
         </span>
       </a>
 

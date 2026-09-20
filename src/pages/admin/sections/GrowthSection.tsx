@@ -10,7 +10,7 @@ import {
   ESPACES, INTENTIONS, JALONS_PLAN, PLAFOND_JOUR, REGISTRES,
   getPresets, savePreset, deletePreset, getCatalogue, saveProduit, semerDepart, ecouterRuns, compterAujourdhui,
   lancerRecherche,
-  type Espace, type Intention, type Preset, type PresetAudience, type PresetFormat, type ProduitCatalogue, type Registre,
+  type Espace, type Intention, type Preset, type PresetAudience, type PresetFormat, type ProduitCatalogue, type Registre, type GrowthRun,
 } from '../../../firebase/growth';
 
 const COLONNES: Record<ProduitCatalogue['colonne'], string> = { entree: 'Entrée gratuite', A: 'Cœur, colonne A (Krystine présente)', B: 'Cœur, colonne B (rapporte sans elle)', suite: 'Suite' };
@@ -78,7 +78,7 @@ const GrowthSection: React.FC = () => {
   const [espace, setEspace] = useState<Espace>('fr');
   const [presets, setPresets] = useState<Preset[]>([]);
   const [catalogue, setCatalogue] = useState<ProduitCatalogue[]>([]);
-  const [runs, setRuns] = useState<any[]>([]);
+  const [runs, setRuns] = useState<GrowthRun[]>([]);
   const [chargement, setChargement] = useState(true);
   const [audienceId, setAudienceId] = useState<string>('');
   const [formatId, setFormatId] = useState<string>('');
@@ -394,10 +394,10 @@ const GrowthSection: React.FC = () => {
                     <li key={r.id}>
                       <button type="button" onClick={() => setOuvert(r.id)} className="w-full py-3 text-left transition-opacity hover:opacity-70">
                         <div className="flex items-center gap-2">
-                          <Puce className={ETATS[r.statut as keyof typeof ETATS].classe}>{ETATS[r.statut as keyof typeof ETATS].label}</Puce>
+                          <Puce className={ETATS[r.statut].classe}>{ETATS[r.statut].label}</Puce>
                           <span className="truncate text-[11px] text-[#38403a]/55 dark:text-white/50">{quand(r.creeLe)}</span>
                         </div>
-                        <div className="mt-1.5 text-sm font-medium leading-snug text-[#293027] dark:text-white">{INTENTIONS[r.intention as Intention]?.label || r.intention}</div>
+                        <div className="mt-1.5 text-sm font-medium leading-snug text-[#293027] dark:text-white">{INTENTIONS[r.intention]?.label || r.intention}</div>
                         <div className="text-xs leading-relaxed text-[#38403a]/60 dark:text-white/55">
                           {r.audience?.nom}{r.cout ? ` · ${dollars(r.cout.dollars)}` : ''}
                         </div>
