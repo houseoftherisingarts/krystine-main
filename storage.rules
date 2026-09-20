@@ -101,17 +101,15 @@ service firebase.storage {
                    && request.resource.contentType.matches('image/(jpeg|png|webp|heic)|application/pdf');
     }
 
+    // C'est ici que vivent les photos posées au crayon (surcharges-site/) :
+    // lecture publique, écriture à l'administration seulement.
     match /{dossier}/{allPaths=**} {
       allow read: if dossier != 'formations-contenu' && dossier != 'vault' && dossier != 'verifications' && dossier != 'foyer-essai';
-      allow write: if isAdmin()
-                   && request.resource.size < 500 * 1024 * 1024  // 500 MB
-                   && request.resource.contentType.matches('(image|video|audio)/.*|application/pdf');
+      allow write: if isAdmin() && pieceValide(500 * 1024 * 1024);  // 500 Mo
     }
     match /{fichier} {
       allow read: if true;
-      allow write: if isAdmin()
-                   && request.resource.size < 500 * 1024 * 1024
-                   && request.resource.contentType.matches('(image|video|audio)/.*|application/pdf');
+      allow write: if isAdmin() && pieceValide(500 * 1024 * 1024);
     }
   }
 }
