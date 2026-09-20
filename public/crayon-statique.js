@@ -178,17 +178,21 @@ function sourceDeNoeud(n) {
   return s;
 }
 
+// Une clé par emplacement quand l'élément porte `data-edit-key`, sinon
+// l'adresse écrite dans la page. Même contrat que le shim de l'application :
+// une photo employée à plusieurs endroits se règle alors endroit par endroit.
 function cleDeImg(img) {
   let c = origPhoto.get(img);
-  if (c === undefined) { c = img.getAttribute('src') || ''; origPhoto.set(img, c); }
+  if (c === undefined) { c = img.getAttribute('data-edit-key') || img.getAttribute('src') || ''; origPhoto.set(img, c); }
   return c;
 }
 
 function cleDeFond(el) {
   let c = origPhoto.get(el);
   if (c === undefined) {
+    const propre = el.getAttribute('data-edit-key');
     const m = /url\(\s*['"]?([^'")]+)['"]?\s*\)/.exec(el.getAttribute('style') || '');
-    c = m ? m[1] : '';
+    c = propre || (m ? m[1] : '');
     origPhoto.set(el, c);
   }
   return c;
