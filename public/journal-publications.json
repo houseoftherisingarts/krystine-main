@@ -59,5 +59,19 @@
       "src/pages/admin/AdminShell.tsx",
       "src/pages/admin/sections/PublicationsSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-20T20:22:07.932Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "bb11635",
+    "message": "Règles d'Iris : tout changement de Krystine est commité et poussé sur GitHub dans la session, sans qu'elle le demande; les branches locales se fusionnent dans main au démarrage",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/iris/iris_terminal.md"
+    ]
   }
 ]
