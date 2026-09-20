@@ -244,13 +244,27 @@ function appliquerTextes() {
   }
 }
 
+/** L'adresse et le cadrage en vigueur pour une clé de photo. */
+function photoEffective(cle) {
+  const b = brouillonPhoto[cle];
+  if (b === null) return { url: undefined, cadre: undefined };
+  return {
+    url: (b && b.url !== undefined ? b.url : publie.photos[cle]) || undefined,
+    cadre: (b && b.cadre) || publie.cadres[cle] || undefined,
+  };
+}
+
 function appliquerImages() {
   document.querySelectorAll('img').forEach((img) => {
-    if (img.closest(CRAYON_SEL)) return;
+    if (img.closest(CRAYON_SEL) || img.closest('a.cv-foil')) return;
     const cle = cleDeImg(img);
     if (!cle) return;
-    const b = brouillonPhoto[cle];
-    const cadre = (b && b.cadre) || publie.cadres[cle];
+    const { url, cadre } = photoEffective(cle);
+    // Le remplacement d'une photo manquait complètement : la page statique ne
+    // lisait que le cadrage, si bien qu'une photo changée au crayon ne
+    // paraissait jamais sur l'accueil.
+    const voulu = url || cle;
+    if (img.getAttribute('src') !== voulu) img.setAttribute('src', voulu);
     if (!cadre) return;
     img.style.objectPosition = `${cadre.x}% ${cadre.y}%`;
     if (cadre.z !== 1) { img.style.transformOrigin = `${cadre.x}% ${cadre.y}%`; img.style.scale = String(cadre.z); }
@@ -259,11 +273,12 @@ function appliquerImages() {
 
 function appliquerFonds() {
   document.querySelectorAll('[style]').forEach((el) => {
-    if (el.tagName === 'IMG' || el.closest(CRAYON_SEL)) return;
+    if (el.tagName === 'IMG' || el.closest(CRAYON_SEL) || el.closest('a.cv-foil')) return;
     const cle = cleDeFond(el);
     if (!cle) return;
-    const b = brouillonPhoto[cle];
-    const cadre = (b && b.cadre) || publie.cadres[cle];
+    const { url, cadre } = photoEffective(cle);
+    if (url) el.style.backgroundImage = `url(${url})`;
+    else if (/url\(/.test(el.style.backgroundImage || '') && !el.style.backgroundImage.includes(cle)) el.style.backgroundImage = `url(${cle})`;
     if (!cadre) return;
     el.style.backgroundPosition = `${cadre.x}% ${cadre.y}%`;
     if (cadre.z !== 1) el.style.backgroundSize = `${Math.round(cadre.z * 100)}%`;
