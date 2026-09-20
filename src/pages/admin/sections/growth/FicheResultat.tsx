@@ -148,7 +148,8 @@ const FicheResultat: React.FC<{ run: GrowthRun; onFermer: () => void; onMessage:
 
           {/* Le sommaire ancré, qui défile à l'horizontale en mobile */}
           <div className="-mx-5 mt-5 overflow-x-auto px-5 md:-mx-7 md:px-7">
-            <div className="flex w-max gap-2 pb-1">
+            {/* Sept sections : il défile en mobile, il s'enroule sur grand écran. */}
+            <div className="flex w-max gap-2 pb-1 md:w-full md:flex-wrap">
               {SECTIONS.map(s => (
                 <button key={s.cle} type="button" onClick={() => aller(s.cle)}
                   className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] transition-colors ${deplie === s.cle ? 'border-[#BA7B39] bg-[#BA7B39]/15 text-[#8B4A2F] dark:text-[#d9a05b]' : 'border-[#38403a]/15 text-[#38403a]/60 hover:border-[#BA7B39] dark:border-white/15 dark:text-white/55'}`}>
