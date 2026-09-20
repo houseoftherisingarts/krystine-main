@@ -30,7 +30,7 @@ function translateProps(type: any, props: any): any {
       if (t !== v) { if (out === props) out = { ...out }; out[p] = t; }
     }
   }
-  if (type === 'img' && typeof props.src === 'string' && props.src) {
+  if (estUneImage(type, props.src)) {
     out = photoProps(out === props ? { ...props } : out, props.src);
   } else {
     const fond = urlDeFond(props.style);
