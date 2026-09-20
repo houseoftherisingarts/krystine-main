@@ -5,8 +5,16 @@
     "machine": "MacBook-Pro-Alex",
     "commit": "f648de3",
     "message": "Publication autonome pour Krystine : garde du collant Vexel avant chaque build, script scripts/publier.sh, journal des publications, règles d'Iris mises à jour (publier seule, sans branche ni approbation)",
-    "cibles": ["hosting"],
-    "fichiers": ["package.json", "public/iris/iris_system.md", "public/iris/iris_terminal.md", "scripts/garde-collant.mjs", "scripts/publier.sh"]
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "package.json",
+      "public/iris/iris_system.md",
+      "public/iris/iris_terminal.md",
+      "scripts/garde-collant.mjs",
+      "scripts/publier.sh"
+    ]
   },
   {
     "quand": "2026-09-20T19:32:00.000Z",
@@ -14,7 +22,42 @@
     "machine": "MacBook-Pro-Alex",
     "commit": "ccf94b4",
     "message": "publier.sh : tirer et construire avant de committer, pour que le manifeste des actifs parte avec le changement",
-    "cibles": ["hosting"],
-    "fichiers": ["public/assets-manifest.json", "scripts/publier.sh"]
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "scripts/publier.sh"
+    ]
+  },
+  {
+    "quand": "2026-09-20T20:04:06.109Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "71e20aa",
+    "message": "Collant Vexel intouchable (garde d'exécution, garde sur le paquet et avant chaque déploiement, sentinelle), onglet Publications dans l'admin avec le journal des mises en ligne, pied de page de l'accueil identique à /compte, nom géant plus gros sans vide dessous, module « sur scène » identique à /speaking",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "JOURNAL-PUBLICATIONS.md",
+      "firebase.json",
+      "index.html",
+      "package.json",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "public/iris/iris_terminal.md",
+      "public/journal-publications.json",
+      "public/vexel-garde.js",
+      "scripts/garde-collant.mjs",
+      "scripts/journal-publication.mjs",
+      "scripts/publier.sh",
+      "scripts/qa/garde-quotidien.mjs",
+      "src/components/layout/Footer.tsx",
+      "src/pages/AdminDashboard.tsx",
+      "src/pages/admin/AdminShell.tsx",
+      "src/pages/admin/sections/PublicationsSection.tsx"
+    ]
   }
 ]
