@@ -831,6 +831,9 @@ function construireUI() {
       zoneTexte.value = (b === null) ? texteDeBase(source, langEdit) : (b && b[langEdit] !== undefined ? b[langEdit] : valeurPourZone(source, langEdit));
     }
   }));
+  boutonTeleverser.addEventListener('click', () => champFichier.click());
+  champFichier.addEventListener('change', () => { const f = champFichier.files && champFichier.files[0]; if (f) televerserPhoto(f); });
+  boutonResetPhoto.addEventListener('click', remettrePhotoCourante);
   zoomInput.addEventListener('input', () => ecrireCadre({ z: Number(zoomInput.value) }));
   apercuBox.addEventListener('pointerdown', (e) => { apercuBox.setPointerCapture(e.pointerId); pointerVersCadre(e); });
   apercuBox.addEventListener('pointermove', (e) => { if (e.buttons & 1) pointerVersCadre(e); });
