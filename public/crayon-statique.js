@@ -471,6 +471,8 @@ function ouvrirPhoto(el) {
   const ratio = Math.max(0.4, Math.min(2.4, el.clientWidth / Math.max(1, el.clientHeight)));
   apercuBox.style.aspectRatio = String(ratio);
   poserPoint(cadre);
+  const b = brouillonPhoto[cle];
+  boutonResetPhoto.hidden = !(publie.photos[cle] || publie.cadres[cle] || (b !== undefined && b !== null));
   panneauTexte.hidden = true;
   panneauPhoto.hidden = false;
   majHint();
