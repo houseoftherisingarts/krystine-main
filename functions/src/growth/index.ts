@@ -235,7 +235,7 @@ export const growthTravailler = onDocumentCreated(
 
     await ref.update({
       statut: 'termine', progression: 'Terminé.',
-      resultat: { segments: r.segments || [], associations: r.associations || [], pitchs: r.pitchs || [], offres: r.offres || [], campagne: r.campagne || null, sources, avertissements },
+      resultat: { segments: r.segments || [], associations: r.associations || [], pitchs: r.pitchs || [], contenus: r.contenus || [], mixSemaine: r.mixSemaine || [], offres: r.offres || [], campagne: r.campagne || null, sources, avertissements },
       cout, termineLe: FieldValue.serverTimestamp(),
     });
   },
