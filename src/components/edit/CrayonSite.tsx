@@ -342,6 +342,11 @@ const CrayonSite: React.FC = () => {
   };
   const peutRemettrePhoto =
     !!photo && (!!ed.publie.photos[photo.cle] || !!ed.publie.cadres[photo.cle] || (brouillonPhoto !== undefined && brouillonPhoto !== null));
+  // L'aperçu suit le choix en cours : sans ça, il restait figé sur la photo
+  // d'origine et Krystine ne voyait jamais ce qu'elle venait de choisir.
+  const urlApercu = photo
+    ? ((brouillonPhoto === null ? undefined : brouillonPhoto?.url) ?? ed.publie.photos[photo.cle] ?? photo.url)
+    : '';
   const ratioPhoto = photo ? Math.max(0.4, Math.min(2.4, photo.el.clientWidth / Math.max(1, photo.el.clientHeight))) : 1;
 
   const brouillonTexteCle = cible ? ed.brouillonTexte[cible.source] : undefined;
