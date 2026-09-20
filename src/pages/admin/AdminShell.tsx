@@ -290,7 +290,20 @@ const AdminShell: React.FC<Props> = ({ user, section, onSectionChange, children 
           <div className="flex-1">
             <h1 className="font-serif text-xl text-[#293027] md:text-2xl dark:text-white" style={{ letterSpacing: '-0.01em' }}>{current?.label}</h1>
           </div>
-          <a href="/" target="_blank" rel="noopener noreferrer" className="text-xs uppercase tracking-widest text-[#38403a]/50 transition-colors hover:text-[#8B4A2F] dark:text-white/50">
+          {/* L'emplacement des actions de la section, à gauche de « Voir le site ».
+              La section concernée écoute l'événement et ouvre sa visite guidée :
+              la barre n'a donc rien à savoir de son état interne, et les autres
+              sections ne voient rien changer. */}
+          {section === 'growth' && (
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('growth:spotlight'))}
+              className="rounded-full border border-[#38403a]/20 px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#8B4A2F] transition-colors hover:border-[#BA7B39] dark:border-white/15 dark:text-[#d9a05b]"
+            >
+              <i className="fa-solid fa-wand-magic-sparkles mr-2" aria-hidden="true" /> Spotlight
+            </button>
+          )}
+          <a href="/" target="_blank" rel="noopener noreferrer" className="whitespace-nowrap text-xs uppercase tracking-widest text-[#38403a]/50 transition-colors hover:text-[#8B4A2F] dark:text-white/50">
             <i className="fa-solid fa-up-right-from-square mr-2" /> Voir le site
           </a>
         </header>
