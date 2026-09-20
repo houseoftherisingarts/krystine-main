@@ -5,7 +5,7 @@
 // Plan : Onyx › 10_projects/krystine/growth-module-plan-2026-09-20.md
 import app, { db } from '../firebase';
 import {
-  addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where, type Timestamp,
+  addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, serverTimestamp, setDoc, updateDoc, where, type Timestamp,
 } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 
@@ -239,8 +239,9 @@ export async function semerDepart(): Promise<{ presets: number; produits: number
 
 export function ecouterRuns(espace: Espace, cb: (runs: GrowthRun[]) => void) {
   if (!db) return () => {};
-  const q = query(collection(db, 'growthRuns'), where('espace', '==', espace), orderBy('creeLe', 'desc'));
-  return onSnapshot(q, snap => cb(snap.docs.map(d => ({ id: d.id, ...(d.data() as Omit<GrowthRun, 'id'>) }))), () => cb([]));
+  // Un seul filtre dans la requête : « espace » plus « creeLe » trié demanderait un index composé. Le tri se fait ici.
+  const q = query(collection(db, 'growthRuns'), where('espace', '==', espace));
+  return onSnapshot(q, snap => cb(snap.docs.map(d => ({ id: d.id, ...(d.data() as Omit<GrowthRun, 'id'>) })).sort((a, b) => (b.creeLe?.toMillis() || 0) - (a.creeLe?.toMillis() || 0))), () => cb([]));
 }
 
 export const supprimerRun = (id: string) => { if (!db) noDb(); return deleteDoc(doc(db!, 'growthRuns', id)); };
