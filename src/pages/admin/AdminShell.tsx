@@ -42,6 +42,7 @@ export type AdminSectionId =
   | 'changelog'
   | 'publications'
   | 'growth'
+  | 'planAutomne'
   | 'newsletter'
   | 'guide'
   | 'dosha'
