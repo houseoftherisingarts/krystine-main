@@ -5,7 +5,7 @@
 // reflet irisé qui suit le pointeur et reste visible au repos, léger basculement 3D, posé droit.
 // Chez Krystine, le foil est or et cuivre (Alex, 20 sept 2026). La carte qui s'ouvre au clic est
 // celle de Laurie (xena-horizon-platform/components/BadgeVexel.tsx, 20 sept 2026) : un volet foil
-// avec le grand logo, l'entente en clair (rabais de 10 % pour la personne, commission pour la
+// avec le grand logo, l'entente en clair (un rabais pour la personne, sans chiffre ni mention de commission, sur l'ordre d'Alex du 20 sept; la
 // propriétaire du site) et « Continuer vers Vexel » qui ouvre vexelwebstudio.com avec le code
 // partenaire déjà rempli (?parrain=CODE, lu par la page /compte).
 // Autonome (styles inline) pour ne dépendre d'aucun token Tailwind du site hôte.
@@ -21,8 +21,8 @@ const TEXTES = {
     libelle: "Site créé par Vexel Webstudio : en savoir plus sur l'entente",
     titre: 'Un site comme celui-ci, avec un coup de pouce',
     corps: (proprietaire: string, prenom: string) =>
-      `${proprietaire} est affiliée à Vexel Webstudio pour les sites Internet. Si vous ouvrez un dossier chez Vexel à partir d'ici, vous recevez un rabais de 10 % sur votre forfait et ${prenom} touche une commission de 10 % sur ce même forfait. Tout le monde y gagne.`,
-    question: 'Voulez-vous continuer ?',
+      `${proprietaire} est affiliée à Vexel Webstudio pour les sites Internet. Si vous ouvrez un dossier chez Vexel à partir d'ici, vous gagnez un rabais sur ce même forfait.`,
+    question: '',
     oui: 'Continuer vers Vexel',
     non: 'Pas maintenant',
     fermer: 'Fermer',
@@ -36,8 +36,8 @@ const TEXTES = {
     libelle: 'Site by Vexel Webstudio: learn about the partnership',
     titre: 'A site like this one, with a helping hand',
     corps: (proprietaire: string, prenom: string) =>
-      `${proprietaire} is affiliated with Vexel Webstudio for websites. If you open a file with Vexel from here, you get 10% off your plan and ${prenom} earns a 10% commission on that same plan. Everyone wins.`,
-    question: 'Would you like to continue?',
+      `${proprietaire} is affiliated with Vexel Webstudio for websites. If you open a file with Vexel from here, you earn a discount on that same plan.`,
+    question: '',
     oui: 'Continue to Vexel',
     non: 'Not now',
     fermer: 'Close',
@@ -265,7 +265,7 @@ export function CollantVexel({ lang = 'FR', className = '', codeParrain = 'KSL-K
               <p style={{ margin: '0.35rem 0 0', fontSize: '0.8125rem', color: '#7a6a58' }}>{t.sousTitre}</p>
               <h2 id="collant-vexel-titre" style={{ margin: '1rem 0 0', fontFamily: SERIF, fontWeight: 400, fontSize: 'clamp(1.35rem, 2.4vw, 1.75rem)', lineHeight: 1.15 }}>{t.titre}</h2>
               <p style={{ margin: '1rem 0 0', fontSize: '0.9375rem', lineHeight: 1.65 }}>{t.corps(proprietaire, prenom)}</p>
-              <p style={{ margin: '0.75rem 0 0', fontSize: '0.9375rem', fontWeight: 600 }}>{t.question}</p>
+              {t.question ? <p style={{ margin: '0.75rem 0 0', fontSize: '0.9375rem', fontWeight: 600 }}>{t.question}</p> : null}
               <div className="cv-boutons">
                 <a ref={ouiRef} href={lien} target="_blank" rel="noopener" onClick={() => setOuverte(false)} className="cv-bouton">
                   {t.oui}
