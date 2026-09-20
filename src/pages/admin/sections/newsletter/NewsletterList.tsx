@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getNewsletters, deleteNewsletter, type NewsletterDoc } from '../../../../firebase/firestore';
+import { getNewsletters, deleteNewsletter, nouvelleLettreDepuis, type NewsletterDoc } from '../../../../firebase/firestore';
 import { traduireParIris } from '../../../../lib/traduction';
 import { Card, PrimaryButton, DangerButton, EmptyState, GhostButton } from '../../primitives';
 
@@ -38,6 +38,14 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
     } finally {
       setTraduction(null);
     }
+  };
+
+  // « Dupliquer » : la même lettre, telle quelle, en brouillon neuf, sans traduction.
+  const dupliquer = async (n: NewsletterDoc) => {
+    setErreur(null); setTraduction(n.id || null);
+    try { onOpen(await nouvelleLettreDepuis(n, `${n.title || n.subject || 'Infolettre'} (copie)`)); }
+    catch (e: any) { setErreur(e?.message || 'La copie a échoué.'); }
+    finally { setTraduction(null); }
   };
 
   const del = async (n: NewsletterDoc) => {
@@ -126,6 +134,9 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
                             <DangerButton onClick={() => del(n)}><i className="fa-solid fa-trash" /></DangerButton>
                           )}
                         </div>
+                        <GhostButton onClick={() => dupliquer(n)} disabled={traduction !== null} title="Crée une copie identique, en brouillon, et l’ouvre">
+                          <i className="fa-solid fa-clone" /> <span className="hidden sm:inline">Dupliquer</span>
+                        </GhostButton>
                         <GhostButton onClick={() => dupliquerEtTraduire(n)} disabled={traduction !== null} title={`Crée un brouillon traduit en ${n.lang === 'en' ? 'français' : 'anglais'} et l’ouvre`}>
                           <i className={`fa-solid ${traduction === n.id ? 'fa-circle-notch fa-spin' : 'fa-language'}`} /> <span className="hidden sm:inline">{traduction === n.id ? 'Traduction…' : 'Dupliquer et traduire'}</span>
                         </GhostButton>

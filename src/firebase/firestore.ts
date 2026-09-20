@@ -593,6 +593,60 @@ export async function getNewsletter(id: string): Promise<NewsletterDoc | null> {
   return snap.exists() ? ({ id: snap.id, ...snap.data() } as NewsletterDoc) : null;
 }
 
+// ─── Gabarits d'infolettre (Krystine, 20 sept 2026) ───────────────────────────
+// Une lettre gardée comme modèle, rangée par catégorie. « Nouvelle infolettre à
+// partir de ce gabarit » recopie tout (sujet, pré-en-tête, blocs, en-tête, bandeau,
+// fond, audience) dans un brouillon neuf, dont la bannière du haut se change
+// ensuite comme d'habitude.
+export const CATEGORIES_GABARITS = ['Inspirata', 'Krystine St-Laurent', 'Expérience Origine', 'Événements'];
+
+type ContenuLettre = Pick<NewsletterDoc, 'title' | 'subject' | 'preheader' | 'fromName' | 'blocks' | 'audience' | 'couverture' | 'couvertureUrl' | 'signature' | 'lang' | 'bandeau' | 'fond' | 'lettreDor'>;
+
+export interface GabaritInfolettre extends ContenuLettre {
+  id?: string;
+  nom: string;
+  categorie: string;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+const contenuDe = (n: ContenuLettre): ContenuLettre => ({
+  title: n.title || '', subject: n.subject || '', preheader: n.preheader || '', fromName: n.fromName || 'Krystine St-Laurent',
+  blocks: n.blocks || [], audience: n.audience || { mode: 'all' },
+  couverture: n.couverture || 'aucune', couvertureUrl: n.couvertureUrl || null, signature: n.signature !== false,
+  lang: n.lang === 'en' ? 'en' : 'fr', bandeau: n.bandeau || null, fond: n.fond || null, lettreDor: n.lettreDor || null,
+});
+
+export async function getGabarits(): Promise<GabaritInfolettre[]> {
+  if (!db) return [];
+  const snap = await getDocs(query(collection(db, 'newsletterGabarits'), orderBy('updatedAt', 'desc')));
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as GabaritInfolettre));
+}
+
+export async function saveGabarit(nom: string, categorie: string, source: ContenuLettre, id?: string) {
+  if (!db) noDb();
+  const data = { nom, categorie, ...contenuDe(source), updatedAt: serverTimestamp() };
+  if (id) return updateDoc(doc(db!, 'newsletterGabarits', id), data as any);
+  return addDoc(collection(db!, 'newsletterGabarits'), { ...data, createdAt: serverTimestamp() });
+}
+
+export async function updateGabarit(id: string, patch: Partial<Pick<GabaritInfolettre, 'nom' | 'categorie'>>) {
+  if (!db) noDb();
+  return updateDoc(doc(db!, 'newsletterGabarits', id), { ...patch, updatedAt: serverTimestamp() } as any);
+}
+
+export async function deleteGabarit(id: string) {
+  if (!db) noDb();
+  return deleteDoc(doc(db!, 'newsletterGabarits', id));
+}
+
+/** Un brouillon neuf qui reprend le contenu d'une lettre ou d'un gabarit; rend son identifiant. */
+export async function nouvelleLettreDepuis(source: ContenuLettre, title: string): Promise<string> {
+  const ref = await createNewsletter({ ...contenuDe(source), title, status: 'draft', scheduledFor: null });
+  if (!ref) throw new Error('Impossible de créer le brouillon.');
+  return ref.id;
+}
+
 export async function getNewsletters(): Promise<NewsletterDoc[]> {
   if (!db) return [];
   const q = query(collection(db, 'newsletters'), orderBy('updatedAt', 'desc'));

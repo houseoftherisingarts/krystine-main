@@ -42,23 +42,29 @@ const PageExemple: React.FC<{ src: string; num: string; i: number }> = ({ src, n
   const reduce = useReducedMotion();
   return (
     <motion.figure
-      initial={reduce ? false : { opacity: 0, y: 72, rotate: i % 2 ? 1.4 : -1.4, scale: 0.98 }}
+      initial={reduce ? false : { opacity: 0, y: 48, rotate: i % 2 ? 1.2 : -1.2, scale: 0.98 }}
       whileInView={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 1.15, ease: EASE }}
-      className={`relative ${i % 2 ? 'lg:ml-[12%]' : 'lg:mr-[12%]'}`}
+      transition={{ duration: 1.05, ease: EASE }}
+      className={`relative ${i % 2 ? 'lg:mt-10' : ''}`}
     >
       <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#e7ddcb]">
+        {/* Un aperçu, pas une lecture : la page se devine derrière un léger flou et un voile crème
+            qui monte du bas; le texte complet arrive par courriel (Krystine, 20 sept 2026). */}
         <img
           src={src}
-          alt={`Extrait du livre Nature & Ayurveda, page ${num}`}
+          alt={`Extrait du livre Nature & Ayurveda, page ${num}, aperçu voilé`}
           loading="lazy"
           referrerPolicy="no-referrer"
-          className="h-full w-full object-cover"
+          className="h-full w-full scale-[1.02] object-cover blur-[1.8px]"
         />
+        <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#f4efe6] via-[#f4efe6]/85 to-transparent" style={{ backgroundImage: 'linear-gradient(to top, #f4efe6 0%, rgba(244,239,230,0.92) 38%, rgba(244,239,230,0.55) 62%, rgba(244,239,230,0) 100%)' }} />
         <span className="absolute top-0 left-0 bg-[#1c1712] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.24em] text-[#f4efe6]">
           Page {num}
+        </span>
+        <span className="absolute bottom-4 left-4 right-4 text-[0.62rem] uppercase tracking-[0.2em] text-[#7d6330]">
+          La page complète arrive par courriel
         </span>
       </div>
     </motion.figure>
@@ -164,11 +170,11 @@ const CinqElementsPage: React.FC = () => {
           <Kicker className="mb-5">Chapitre 02 · Feuilleter</Kicker>
           <TitreChapitre>Un aperçu de l'intérieur</TitreChapitre>
           <p className="mt-7 max-w-[56ch] text-[1rem] leading-[1.85] text-[#3a2f23]">
-            L'extrait se lit comme un carnet : une planche par élément, ses qualités, ce qu'il éveille. Voici quatre pages du PDF, dans leur mise en page originale, pour que vous voyiez exactement ce que vous recevez.
+            L'extrait se lit comme un carnet : une planche par élément, ses qualités, ce qu'il éveille. Voici quatre pages du PDF, telles qu'elles sont mises en page, entrevues seulement : la version complète et lisible vous arrive par courriel.
           </p>
         </Reveal>
 
-        <div className="mt-16 space-y-[clamp(2.5rem,5vw,4.5rem)]">
+        <div className="mt-16 grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-12 lg:mx-auto lg:max-w-[880px] lg:grid-cols-2">
           {PAGES_EXEMPLES.map((p, i) => (
             <PageExemple key={p.num} src={p.src} num={p.num} i={i} />
           ))}
