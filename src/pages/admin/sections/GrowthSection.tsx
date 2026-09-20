@@ -296,8 +296,10 @@ const GrowthSection: React.FC = () => {
                         <span className="mt-1 block text-sm leading-relaxed text-[#38403a]/75 dark:text-white/70">{f.description}</span>
                         <span className="mt-2 block text-[11px] text-[#38403a]/55 dark:text-white/50">{f.budgetJour} · {f.cout}</span>
                       </span>
-                      <button type="button" onClick={() => setEdition(f)} className="shrink-0 text-[10px] font-bold uppercase tracking-[0.18em] text-[#8B4A2F] hover:underline dark:text-[#d9a05b]">Modifier</button>
                     </label>
+                    <div className="mt-2 flex justify-end">
+                      <button type="button" onClick={() => setEdition(f)} className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#8B4A2F] hover:underline dark:text-[#d9a05b]">Modifier</button>
+                    </div>
                   </li>
                 ))}
               </ul>
