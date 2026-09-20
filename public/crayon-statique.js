@@ -404,12 +404,12 @@ function etiqueter() {
     parent.setAttribute('data-tx', String(idx));
   }
   document.querySelectorAll('img').forEach((img) => {
-    if (img.closest(CRAYON_SEL)) return;
+    if (img.closest(CRAYON_SEL) || img.closest('a.cv-foil')) return;
     const cle = cleDeImg(img);
     if (cle) img.setAttribute('data-cadre', cle);
   });
   document.querySelectorAll('[style]').forEach((el) => {
-    if (el.tagName === 'IMG' || el.closest(CRAYON_SEL)) return;
+    if (el.tagName === 'IMG' || el.closest(CRAYON_SEL) || el.closest('a.cv-foil')) return;
     const cle = cleDeFond(el);
     if (cle) el.setAttribute('data-cadre', cle);
   });
