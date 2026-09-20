@@ -175,6 +175,9 @@ export const growthTravailler = onDocumentCreated(
     const catalogue = (run.produits || []).map((p: any) => `- ${p.nom} (colonne ${p.colonne}${p.prix != null ? `, ${p.prix === 0 ? 'gratuit' : p.prix + ' $'}` : ', prix non public'}) : ${p.description}${p.adresse ? ` [krystinestlaurent.ca${p.adresse}]` : ''}`).join('\n');
     const a = run.audience || {};
     const f = run.format;
+    const demandes = Array.isArray(run.registres) ? run.registres.filter((k: string) => CLES_REGISTRES.includes(k)) : [];
+    const registresDemandes: string[] = demandes.length ? demandes : CLES_REGISTRES;
+    const dominantDuRun: string | null = run.registreDominant && registresDemandes.includes(run.registreDominant) ? run.registreDominant : null;
     const consigne = [
       `ESPACE : ${espace === 'fr' ? 'Francophonie (Québec, France, Belgique, Suisse romande). Textes publics en français.' : 'Anglophonie (Canada anglais, États-Unis, Royaume-Uni, Australie). Textes publics en anglais.'}`,
       `INTENTION PRINCIPALE : ${run.intention} (rends tout de même chaque partie du résultat, en soignant d'abord celle-ci).`,
