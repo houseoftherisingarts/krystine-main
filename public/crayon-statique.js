@@ -600,6 +600,8 @@ async function enregistrer() {
       if (val.en !== undefined) { parClef.libreEN[source] = val.en; utilise = true; }
     }
     for (const [cle, val] of Object.entries(brouillonPhoto)) {
+      if (val === null) { parClef.photos[cle] = deleteField(); parClef.cadres[cle] = deleteField(); utilise = true; continue; }
+      if (val && val.url !== undefined) { parClef.photos[cle] = val.url; utilise = true; }
       if (val && val.cadre !== undefined) { parClef.cadres[cle] = val.cadre; utilise = true; }
     }
     if (utilise) {
