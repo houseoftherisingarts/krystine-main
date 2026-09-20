@@ -271,7 +271,7 @@ export async function compterAujourdhui(): Promise<number> {
 }
 
 // ─── Fonctions ───────────────────────────────────────────────────────────────
-export async function lancerRecherche(payload: { espace: Espace; intention: Intention; audienceId: string; produitIds: string[]; formatId: string | null }): Promise<string> {
+export async function lancerRecherche(payload: { espace: Espace; intention: Intention; audienceId: string; produitIds: string[]; formatId: string | null; registres: Registre[]; registreDominant: Registre | null }): Promise<string> {
   const call = httpsCallable<typeof payload, { runId: string }>(getFunctions(app, 'us-central1'), 'growthLancer');
   const r = await call(payload);
   return r.data.runId;
