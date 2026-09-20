@@ -146,12 +146,13 @@ const CrayonSite: React.FC = () => {
       return;
     }
     document.body.classList.add('mode-crayon');
-    etiqueter();
+    const passe = () => { etiqueter(); refleter(); };
+    passe();
     let minuterie: number | undefined;
     const obs = new MutationObserver((mutations) => {
       if (mutations.every((m) => m.type === 'attributes' && (m.attributeName === 'data-tx' || m.attributeName === 'data-tx-actif'))) return;
       window.clearTimeout(minuterie);
-      minuterie = window.setTimeout(etiqueter, 150);
+      minuterie = window.setTimeout(passe, 150);
     });
     obs.observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['aria-label', 'placeholder'] });
     return () => {
