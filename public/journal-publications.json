@@ -1,0 +1,20 @@
+[
+  {
+    "quand": "2026-09-20T19:31:00.000Z",
+    "qui": "alextstlaurent",
+    "machine": "MacBook-Pro-Alex",
+    "commit": "f648de3",
+    "message": "Publication autonome pour Krystine : garde du collant Vexel avant chaque build, script scripts/publier.sh, journal des publications, règles d'Iris mises à jour (publier seule, sans branche ni approbation)",
+    "cibles": ["hosting"],
+    "fichiers": ["package.json", "public/iris/iris_system.md", "public/iris/iris_terminal.md", "scripts/garde-collant.mjs", "scripts/publier.sh"]
+  },
+  {
+    "quand": "2026-09-20T19:32:00.000Z",
+    "qui": "alextstlaurent",
+    "machine": "MacBook-Pro-Alex",
+    "commit": "ccf94b4",
+    "message": "publier.sh : tirer et construire avant de committer, pour que le manifeste des actifs parte avec le changement",
+    "cibles": ["hosting"],
+    "fichiers": ["public/assets-manifest.json", "scripts/publier.sh"]
+  }
+]
