@@ -389,8 +389,13 @@ const CrayonSite: React.FC = () => {
               <PencilLine className="w-4 h-4 text-brassInk" aria-hidden="true" />
               Modification du site
             </span>
+            {/* Sur un téléphone, la barre doit rester étroite : elle flotte
+                par-dessus la page et masquerait la première ligne. */}
             <span className="px-2 text-[0.68rem] uppercase tracking-[0.14em] text-espressoSoft/70">
-              {ed.nbModifs === 0 ? 'Aucun changement' : ed.nbModifs === 1 ? '1 changement' : `${ed.nbModifs} changements`}
+              <span className="hidden sm:inline">
+                {ed.nbModifs === 0 ? 'Aucun changement' : ed.nbModifs === 1 ? '1 changement' : `${ed.nbModifs} changements`}
+              </span>
+              <span className="sm:hidden tabular-nums">{ed.nbModifs}</span>
             </span>
             <button type="button" onClick={enregistrer} disabled={busy || ed.nbModifs === 0} className={boutonPlein}>
               <Check className="w-4 h-4" aria-hidden="true" />
