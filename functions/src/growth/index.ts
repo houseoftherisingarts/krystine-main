@@ -224,6 +224,7 @@ export const growthTravailler = onDocumentCreated(
     const avertissements: string[] = [];
     for (const p of r.pitchs || []) { if (INTERDITS.test(texteDe(p))) avertissements.push(`Le pitch « ${p.titre} » contient un mot d'allégation de santé : à relire avant usage.`); }
     for (const s of r.campagne?.scripts || []) { if (INTERDITS.test(String(s.texte))) avertissements.push(`Le script ${s.duree} de la campagne contient un mot d'allégation de santé : à relire.`); }
+    for (const bloc of r.contenus || []) { for (const idee of bloc.idees || []) { if (INTERDITS.test(texteDe(idee))) avertissements.push(`L'idée « ${idee.titre} » (registre ${bloc.registre}) contient un mot d'allégation de santé : à relire.`); } }
     // Les sources citées par la recherche web, en plus de celles du modèle.
     const vues = new Map<string, string>();
     for (const c of reponse.content as any[]) {
