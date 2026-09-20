@@ -418,8 +418,18 @@ const CrayonSite: React.FC = () => {
           </button>
         )}
         {avis && (
-          <span role="status" className="rounded-full border border-brass/40 bg-cream px-3 py-2 text-xs text-espresso shadow-xl">
-            {avis}
+          <span
+            role={avis.erreur ? 'alert' : 'status'}
+            className={`max-w-[18rem] rounded-[15px] px-3 py-2 text-xs shadow-xl ${
+              avis.erreur ? 'border border-[#8B4A2F] bg-[#8B4A2F] text-cream' : 'border border-brass/40 bg-cream text-espresso'
+            }`}
+          >
+            {avis.texte}
+            {avis.erreur && (
+              <button type="button" onClick={() => setAvis(null)} aria-label="Fermer le message" className="ml-2 underline">
+                Fermer
+              </button>
+            )}
           </span>
         )}
       </div>
