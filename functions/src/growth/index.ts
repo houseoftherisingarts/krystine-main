@@ -180,6 +180,7 @@ export const growthTravailler = onDocumentCreated(
       `INTENTION PRINCIPALE : ${run.intention} (rends tout de même chaque partie du résultat, en soignant d'abord celle-ci).`,
       `AUDIENCE DE DÉPART : ${a.nom}. ${a.description}\nPays et langue : ${a.pays}. Âges : ${a.ages}. Affinités : ${a.affinites}. Contextes : ${a.contextes}. Mots du quotidien : ${a.motsCles}.${a.remarketing ? ' Remarketing sur les listes autorisées du site.' : ''}`,
       f ? `FORMAT PUBLICITAIRE RETENU : ${f.nom} (${f.duree}; ${f.budgetJour}; ${f.cout}). Accroche : ${f.accroche}` : 'FORMAT PUBLICITAIRE : à proposer parmi Shorts, InStream désactivable et Demand Gen.',
+      `REGISTRES DE CONTENU DEMANDÉS (un bloc « contenus » pour chacun, dans cet ordre) :\n${registresDemandes.map(k => `- ${REGISTRES[k]}`).join('\n')}${dominantDuRun ? `\nRegistre dominant de ce cycle : ${REGISTRES[dominantDuRun]} Ses idées passent en premier et pèsent le plus dans la semaine.` : '\nAucun registre dominant : équilibre les quatre.'}\nFormats utilisables dans les idées : ${f ? f.nom : 'Shorts, InStream désactivable, Demand Gen'}, publication écrite, épisode de podcast, infolettre, direct.`,
       `PRODUITS À ASSOCIER (les seuls) :\n${catalogue}`,
       `LE PLAN DE KRYSTINE (jalons à citer dans les offres) :\n${JALONS.map(j => `- ${j}`).join('\n')}`,
       `Date du jour : ${new Date().toISOString().slice(0, 10)}.`,
