@@ -993,7 +993,7 @@
       <a id="cvFoil" class="cv-foil" href="https://vexelwebstudio.com" target="_blank" rel="noopener noreferrer" aria-haspopup="dialog" aria-label="Site créé par Vexel Webstudio : en savoir plus">
         <span aria-hidden class="cv-sheen"></span>
         <span aria-hidden class="cv-grain"></span>
-        <img src="/vexel-logo.png" alt="" width="329" height="320" style="height:2.5rem;width:auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));">
+        <img src="/vexel-logo.png" alt="" width="329" height="320" style="height:1.75rem;width:auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));">
         <span style="display:flex;flex-direction:column;line-height:1.15;">
           <span id="cvKicker" style="font-size:0.625rem;font-weight:600;text-transform:uppercase;letter-spacing:0.22em;color:rgba(255,255,255,0.7);">Site créé par</span>
           <span id="cvNom" style="margin-top:0.25rem;font-family:ui-serif,Georgia,Cambria,'Times New Roman',Times,serif;font-size:1.05rem;">Vexel Webstudio</span>
@@ -1025,8 +1025,8 @@
       position: relative; display: inline-flex; align-items: center; gap: 0.75rem;
       padding: 0.7rem 1.1rem; border-radius: 15px; border: 2px solid #fff; color: #fff;
       text-decoration: none; overflow: hidden; isolation: isolate; cursor: pointer;
-      background: radial-gradient(120% 120% at var(--mx) var(--my), rgb(255 255 255 / 0.18), transparent 55%),
-        linear-gradient(135deg, #1b1b22 0%, #050505 60%, #14141a 100%);
+      background: radial-gradient(120% 120% at var(--mx) var(--my), rgb(255 236 200 / 0.22), transparent 55%),
+        linear-gradient(135deg, #22180d 0%, #0b0805 60%, #1c130a 100%);
       box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35), 0 10px 24px -10px rgb(0 0 0 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.25);
       transform: perspective(600px) rotateX(var(--rx)) rotateY(var(--ry));
       transition: transform 220ms ease, box-shadow 220ms ease;
@@ -1035,11 +1035,11 @@
     .cv-sheen {
       position: absolute; inset: -40%; pointer-events: none; z-index: 0;
       background: repeating-conic-gradient(from 200deg at var(--mx) var(--my),
-        #ff9ecb 0deg, #ffe08a 24deg, #9bffcf 48deg, #8ad4ff 72deg, #c9a4ff 96deg, #ff9ecb 120deg);
-      opacity: 0.18; mix-blend-mode: color-dodge; filter: saturate(1.2) blur(2px);
+        #fff3d6 0deg, #ecc978 24deg, #c98f45 48deg, #a5642c 72deg, #f2d48f 96deg, #fff3d6 120deg);
+      opacity: 0.24; mix-blend-mode: color-dodge; filter: saturate(0.9) blur(2px);
       transition: opacity 260ms ease;
     }
-    .cv-foil:hover .cv-sheen { opacity: 0.34; }
+    .cv-foil:hover .cv-sheen { opacity: 0.4; }
     .cv-grain {
       position: absolute; inset: 0; pointer-events: none; z-index: 0;
       background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/></svg>");
