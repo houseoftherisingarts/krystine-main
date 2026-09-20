@@ -44,6 +44,7 @@ export const JOURNAL: EntreeJournal[] = [
       { texte: "Un onglet « Publications » dans Réglages garde la trace de chaque mise en ligne du site, la vôtre comme celle de Vexel, avec l'heure et de quoi revenir en arrière. Vous publiez maintenant vos changements vous-même depuis votre ordinateur, sans attendre l'accord d'Alex.", ou: '/admin/publications', libelle: 'Publications' },
       "La petite plaque du studio au bas des pages est passée en foil or et cuivre, avec un logo plus discret, et sa carte de présentation vous nomme comme affiliée : quiconque ouvre un dossier chez Vexel à partir de votre site gagne un rabais sur son forfait.",
       "Le dépôt de fichiers dans « Demander un changement » (images, PDF, documents) est prêt et arrive dans la prochaine mise en ligne de Vexel.",
+      { texte: "Un nouvel espace « Growth » dans Ventes : vous y choisissez une audience, vos produits et un format, en francophonie ou en anglophonie, puis « Lancer la recherche » travaille dans le Cloud et vous rend des portraits de femmes à rejoindre, vos produits reliés à chacune, un brouillon de pitch par segment (envoyable d'un clic vers vos gabarits d'infolettre), des idées d'offres reliées aux jalons de votre plan d'automne et une campagne YouTube prête à poser. Tout reste brouillon : rien ne part de là.", ou: '/admin/growth', libelle: 'Growth' },
     ],
   },
   {
