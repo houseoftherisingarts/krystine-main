@@ -187,5 +187,19 @@
       "public/assets-manifest.json",
       "src/firebase/growth.ts"
     ]
+  },
+  {
+    "quand": "2026-09-20T22:08:58.950Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "1907f20",
+    "message": "Journal des changements : l'espace Growth",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/changelog.ts"
+    ]
   }
 ]
