@@ -373,7 +373,11 @@ function nbModifs() { return Object.keys(brouillonTexte).length + Object.keys(br
 
 function majCompteur() {
   const n = nbModifs();
-  compteurEl.textContent = n === 0 ? 'Aucun changement' : n === 1 ? '1 changement' : `${n} changements`;
+  // Sur un téléphone la barre flotte par-dessus la page : le compte s'y réduit
+  // à son chiffre pour ne pas masquer la première ligne.
+  compteurEl.textContent = window.innerWidth < 640
+    ? String(n)
+    : (n === 0 ? 'Aucun changement' : n === 1 ? '1 changement' : `${n} changements`);
   boutonEnregistrer.disabled = busy || n === 0;
 }
 
