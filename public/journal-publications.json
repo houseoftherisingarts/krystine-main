@@ -73,5 +73,20 @@
       "public/assets-manifest.json",
       "public/iris/iris_terminal.md"
     ]
+  },
+  {
+    "quand": "2026-09-20T20:26:42.283Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "22f2159",
+    "message": "Pied de page : le nom géant passe en capitales, coupé au centre des lettres, pleine largeur, pour qu'on en voie davantage",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "src/components/layout/Footer.tsx"
+    ]
   }
 ]
