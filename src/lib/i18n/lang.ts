@@ -58,12 +58,28 @@ let surEN: Record<string, string> = {};
 
 // Ce que le site AFFICHE en ce moment → la phrase française d'origine. Le
 // crayon s'en sert pour retrouver la clé d'un texte à partir du DOM, sans que
-// le moindre composant ait à se baliser lui-même. Le registre ne se remplit que
-// devant une administratrice, pour que la visite ordinaire ne paie rien.
+// le moindre composant ait à se baliser lui-même.
+//
+// Le registre se remplit pour TOUT LE MONDE, dès le premier rendu. Il a
+// longtemps attendu qu'une administratrice soit reconnue (activerRegistre(),
+// appelé depuis un effet de CrayonSite), et c'est précisément ce qui cassait le
+// crayon : un effet ne tourne qu'après le premier affichage, si bien que toute
+// page déjà peinte à ce moment-là n'avait pas une seule phrase enregistrée et
+// le crayon la voyait vide. Sur une visite tiède, où le morceau de la page
+// arrive du cache, c'était le cas le plus courant (Krystine, 20 sept. 2026).
+// Le coût réel est une Map de quelques centaines de chaînes déjà en mémoire.
 const rendus = new Map<string, string>();
-let registreActif = false;
-export const activerRegistre = (): void => { registreActif = true; };
 const normal = (v: string): string => v.replace(/\s+/g, ' ').trim();
+
+/**
+ * Relie un texte affiché à sa phrase d'origine. Le crayon s'en sert après
+ * avoir récrit un élément dans le DOM : sans ça, la nouvelle phrase serait
+ * inconnue du registre et l'élément perdrait son étiquette au passage suivant.
+ */
+export const noterRendu = (affiche: string, source: string): void => {
+  const n = normal(affiche);
+  if (n) rendus.set(n, source);
+};
 
 let versionSurcharges = 0;
 const auditeurs = new Set<() => void>();
