@@ -122,7 +122,8 @@ export function programmeGenerique(
     sens: { fr: nom.replace(/^[^:]*\d+\s*:\s*/i, '').trim() || nom, en: nom },
     promesse: { fr: '', en: '' },
     couleur: { encre: T[rang % T.length][0], vive: T[rang % T.length][1] },
-    ...img('cours', rang % 10),
+    // Aucun dossier d'images pour un programme importé : les cartes se peignent de leur teinte.
+    image: '', bandeau: '', vignette: '',
   }));
   return {
     id: formation.id,

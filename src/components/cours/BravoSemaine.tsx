@@ -60,7 +60,9 @@ const BravoSemaine: React.FC<Props> = ({ programme, semaine, avant, apres, semai
         >
           {/* Le bandeau de la semaine, dans sa teinte */}
           <div className="relative h-40 w-full overflow-hidden md:h-48">
-            <img src={semaine.bandeau} alt="" className="h-full w-full object-cover" />
+            {semaine.bandeau
+              ? <img src={semaine.bandeau} alt="" className="h-full w-full object-cover" />
+              : <span aria-hidden className="absolute inset-0" style={{ background: `linear-gradient(160deg, ${semaine.couleur.vive} 0%, ${semaine.couleur.encre} 100%)` }} />}
             <span
               aria-hidden
               className="absolute inset-0"

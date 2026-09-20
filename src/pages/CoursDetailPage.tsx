@@ -22,6 +22,7 @@ import BravoSemaine from '../components/cours/BravoSemaine';
 import BravoDiplome from '../components/cours/BravoDiplome';
 import type { DiplomeInfos } from '../components/cours/Diplome';
 import { programmeDe } from './cours/programmes';
+import { nettoyerKajabi } from './cours/nettoyerKajabi';
 import StickerFormat, { formatDe } from '../components/cours/StickerFormat';
 import { idDeCours, cheminCours, adresseADemenager } from '../lib/cheminCours';
 
@@ -833,7 +834,9 @@ const CoursDetailPage: React.FC = () => {
                     return (
                       <div className="-mx-6 -mt-6 mb-6 overflow-hidden rounded-t-[20px]">
                         <div className="relative h-36 w-full md:h-44">
-                          <img src={s.bandeau} alt="" className="h-full w-full object-cover" />
+                          {s.bandeau
+                            ? <img src={s.bandeau} alt="" className="h-full w-full object-cover" />
+                            : <span aria-hidden className="absolute inset-0" style={{ background: `linear-gradient(160deg, ${s.couleur.vive} 0%, ${s.couleur.encre} 100%)` }} />}
                           <span aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(15,20,17,0.92) 6%, rgba(15,20,17,0.34) 60%, transparent 100%)' }} />
                           <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 px-6 pb-4">
                             <span className="font-serif text-2xl leading-none text-[#d9a05b]">{s.roman}</span>
@@ -883,7 +886,7 @@ const CoursDetailPage: React.FC = () => {
                       le drapeau à gauche); la coupure des mots évite les rivières de blanc. */}
                   {courante.texte?.trim() && (
                     <TexteLecon
-                      texte={courante.texte}
+                      texte={nettoyerKajabi(courante.texte, courante.titre, formation?.titre)}
                       className={`${courante.chemin ? 'mt-6' : 'mt-2'} max-w-[68ch] text-[#3a2f23] dark:text-white/80 ${estVata ? 'text-justify hyphens-auto [&_h3]:text-left [&_h4]:text-left' : ''}`}
                     />
                   )}

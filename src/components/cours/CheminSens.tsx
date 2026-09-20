@@ -51,14 +51,18 @@ const Carte: React.FC<{
         active ? 'border-[#BA7B39]' : 'border-[#EEE7DB]/15 hover:border-[#BA7B39]/70'
       }`}
     >
-      <img
-        src={s.image}
-        alt=""
-        loading={index < 3 ? 'eager' : 'lazy'}
-        className={`absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05] ${
-          finie ? '' : 'saturate-[0.92]'
-        }`}
-      />
+      {s.image ? (
+        <img
+          src={s.image}
+          alt=""
+          loading={index < 3 ? 'eager' : 'lazy'}
+          className={`absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05] ${
+            finie ? '' : 'saturate-[0.92]'
+          }`}
+        />
+      ) : (
+        <span aria-hidden className="absolute inset-0 transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05]" style={{ background: `linear-gradient(160deg, ${s.couleur.vive} 0%, ${s.couleur.encre} 100%)` }} />
+      )}
       <span
         aria-hidden
         className="absolute inset-0"
