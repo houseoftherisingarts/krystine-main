@@ -133,5 +133,22 @@
       "public/assets-manifest.json",
       "src/vexel/CollantVexel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-20T21:20:00.683Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "0f1266c",
+    "message": "Journal des changements du 20 septembre dans l'admin; la police Manuscrite du composeur prend l'écriture Pinyon Script de la signature, chargée aussi dans le courriel",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "src/lib/changelog.ts",
+      "src/lib/newsletterRenderer.tsx"
+    ]
   }
 ]
