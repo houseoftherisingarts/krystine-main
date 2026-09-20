@@ -1347,22 +1347,25 @@
   // Tel que vu à : les noms s'allument l'un après l'autre à l'entrée dans l'écran.
   (function(){ var s=document.getElementById('medias-vus'); if(!s||!('IntersectionObserver' in window)){ if(s) s.classList.add('lit'); return; }
     new IntersectionObserver(function(es,o){ es.forEach(function(e){ if(e.isIntersecting){ s.classList.add('lit'); o.disconnect(); } }); },{threshold:.4}).observe(s); })();
-  // Krystine sur scène : la boucle muette du film 2024 derrière la copie (comme sur /speaking); le bouton
-  // met le film complet, avec le son, dans le même cadre, embarqué dans la page.
-  (function(){ var sec=document.getElementById('film'), v=document.getElementById('filmVid'); if(!sec||!v) return;
-    var B='https://storage.googleapis.com/inspirata/Base%20site/promo-2024/', wide=window.innerWidth>900, plein=false;
+  // Krystine sur scène : le film 2024 tourne en boucle muette derrière la copie (comme sur /speaking).
+  // Le bouton active ou coupe le son, sur place : même vidéo, même cadre, rien d'autre ne bouge.
+  (function(){ var sec=document.getElementById('film'), v=document.getElementById('filmVid'), btn=document.getElementById('filmPlay'); if(!sec||!v||!btn) return;
+    var B='https://storage.googleapis.com/inspirata/Base%20site/promo-2024/', wide=window.innerWidth>900;
     var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    v.src=B+(wide?'promo-ksl-v2-hero-muted.mp4':'promo-ksl-v2-hero-muted-720.mp4');
+    v.src=B+(wide?'promo-ksl-v2-1080.mp4':'promo-ksl-v2-720.mp4');
     v.addEventListener('playing',function(){ v.classList.add('on'); },{once:true});
-    function boucle(){ if(plein) return; var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
+    function boucle(){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
     if(reduce){ v.removeAttribute('loop'); v.classList.add('on'); }
-    else new IntersectionObserver(function(es){ es.forEach(function(e){ if(plein) return; if(e.isIntersecting) boucle(); else v.pause(); }); },{threshold:.2}).observe(sec);
-    document.getElementById('filmPlay').addEventListener('click',function(){
-      plein=true; sec.classList.add('on'); v.pause(); v.removeAttribute('loop'); v.muted=false; v.controls=true; v.preload='auto';
-      v.src=B+(wide?'promo-ksl-v2-1080.mp4':'promo-ksl-v2-720.mp4'); v.currentTime=0;
-      var amb=document.getElementById('amb'); if(amb&&!amb.paused){ amb.pause(); var t=document.getElementById('ambtoggle'); if(t){ t.classList.add('muted'); t.setAttribute('aria-pressed','false'); } }
-      var p=v.play(); if(p&&p.catch) p.catch(function(){}); });
-    try{ if(localStorage.getItem('krystine-lang')==='en'){ var a=document.getElementById('filmCta'); if(a) a.href='/speaking'; var b=document.getElementById('filmTalks'); if(b) b.href='/speaking#talks'; } }catch(e){}
+    else new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting) boucle(); else if(v.muted) v.pause(); }); },{threshold:.2}).observe(sec);
+    var lbl=btn.querySelector('span'), en=false; try{ en=localStorage.getItem('krystine-lang')==='en'; }catch(e){}
+    var T=en?{son:'Watch the film, with sound',muet:'Mute the film'}:{son:'Voir le film, avec le son',muet:'Couper le son'};
+    function etat(){ var actif=!v.muted; if(lbl) lbl.textContent=actif?T.muet:T.son; btn.setAttribute('aria-pressed',actif?'true':'false'); }
+    btn.addEventListener('click',function(){
+      v.muted=!v.muted;
+      if(!v.muted){ var amb=document.getElementById('amb'); if(amb&&!amb.paused){ amb.pause(); var t=document.getElementById('ambtoggle'); if(t){ t.classList.add('muted'); t.setAttribute('aria-pressed','false'); } } boucle(); }
+      etat(); });
+    etat();
+    try{ if(en){ var a=document.getElementById('filmCta'); if(a) a.href='/speaking'; var b=document.getElementById('filmTalks'); if(b) b.href='/speaking#talks'; } }catch(e){}
   })();
   // Two capture points on the page (tome 3 block + footer); each one tags its own
   // source so we can see which one actually converts.
