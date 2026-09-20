@@ -22,3 +22,13 @@ En ligne : hosting
      scripts/garde-collant.mjs    | 29 ++++++++++++++++++++++++
      scripts/publier.sh           | 53 ++++++++++++++++++++++++++++++++++++++++++++
      6 files changed, 112 insertions(+), 8 deletions(-)
+
+## 2026-09-20 15:32 · alextstlaurent · ccf94b4
+
+publier.sh : tirer et construire avant de committer, pour que le manifeste des actifs parte avec le changement
+
+En ligne : hosting
+
+     public/assets-manifest.json |  2 +-
+     scripts/publier.sh          | 13 +++++++------
+     2 files changed, 8 insertions(+), 7 deletions(-)
