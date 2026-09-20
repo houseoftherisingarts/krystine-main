@@ -63,11 +63,11 @@ const style = `
 .cv-sheen {
   position: absolute; inset: -40%; pointer-events: none; z-index: 0;
   background: repeating-conic-gradient(from 200deg at var(--mx) var(--my),
-    #ffe9b8 0deg, #e2b25a 24deg, #b8712e 48deg, #7a4318 72deg, #d9a24b 96deg, #ffe9b8 120deg);
-  opacity: 0.26; mix-blend-mode: color-dodge; filter: saturate(1.15) blur(2px);
+    #fff3d6 0deg, #ecc978 24deg, #c98f45 48deg, #a5642c 72deg, #f2d48f 96deg, #fff3d6 120deg);
+  opacity: 0.24; mix-blend-mode: color-dodge; filter: saturate(0.9) blur(2px);
   transition: opacity 260ms ease;
 }
-.cv-foil:hover .cv-sheen { opacity: 0.44; }
+.cv-foil:hover .cv-sheen { opacity: 0.4; }
 .cv-grain {
   position: absolute; inset: 0; pointer-events: none; z-index: 0;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/></svg>");
