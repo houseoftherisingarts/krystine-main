@@ -350,7 +350,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 let uiPresente = false;
 let root, boutonCrayon, barreEdition, compteurEl, boutonEnregistrer, boutonQuitter, avisEl, hintEl;
 let panneauTexte, ongletFr, ongletEn, zoneTexte, boutonAppliquer, boutonResetTexte;
-let panneauPhoto, apercuBox, apercuImg, pointEl, zoomInput, zoomVal;
+let panneauPhoto, apercuBox, apercuImg, pointEl, zoomInput, zoomVal, boutonTeleverser, boutonResetPhoto, champFichier;
 
 let cibleTexteIdx = null; // index dans textIndex
 let textIndex = [];
