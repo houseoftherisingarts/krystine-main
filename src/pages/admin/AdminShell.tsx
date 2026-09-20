@@ -131,6 +131,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'bookings',   label: 'Demandes',         icon: 'fa-inbox',            groupe: 'ventes' },
   { id: 'submissions', label: 'Formulaires',     icon: 'fa-clipboard-list',   groupe: 'ventes' },
   { id: 'growth',     label: 'Growth',           icon: 'fa-rocket',           groupe: 'ventes' },
+  { id: 'planAutomne', label: 'Plan d\'automne', icon: 'fa-map',              groupe: 'ventes' },
   { id: 'members',    label: 'Clients',          icon: 'fa-users',            groupe: 'communaute' },
   { id: 'habitudes',  label: 'Habitudes de tes clientes', icon: 'fa-route',   groupe: 'communaute' },
   { id: 'acheteuses', label: 'Tes acheteuses d\'Origine', icon: 'fa-seedling', groupe: 'communaute' },
