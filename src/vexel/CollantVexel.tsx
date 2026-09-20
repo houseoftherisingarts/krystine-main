@@ -173,7 +173,7 @@ export function CollantVexel({ lang = 'FR', className = '' }: CollantVexelProps)
       >
         <span aria-hidden className="cv-sheen" />
         <span aria-hidden className="cv-grain" />
-        <img src={LOGO_VEXEL} alt="" width={329} height={320} style={{ height: '2.5rem', width: 'auto', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.6))' }} />
+        <img src={LOGO_VEXEL} alt="" width={329} height={320} style={{ height: '1.75rem', width: 'auto', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.6))' }} />
         <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
           <span style={{ fontSize: '0.625rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.22em', color: 'rgba(255,255,255,0.7)' }}>
             {t.kicker}
