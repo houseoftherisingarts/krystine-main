@@ -124,6 +124,7 @@ const AdminDashboard: React.FC = () => {
       case 'changelog':   return <ChangelogSection />;
       case 'publications': return <PublicationsSection />;
       case 'growth':      return <GrowthSection />;
+      case 'planAutomne': return <PlanAutomneSection />;
       case 'newsletter':  return <NewsletterSection />;
       case 'guide':       return <GuideSection />;
       case 'dosha':       return <DoshaSection />;
