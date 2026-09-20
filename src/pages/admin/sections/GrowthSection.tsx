@@ -213,8 +213,9 @@ const GrowthSection: React.FC = () => {
         <Resultat run={runOuvert} onFermer={() => setOuvert(null)} onMessage={setMessage} />
       ) : (
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-          {/* Le parcours, puis la carte qui lance */}
-          <div className="space-y-3">
+          {/* Le parcours, puis la carte qui lance. min-w-0 : sans lui, le résumé
+              tronqué d'une étape impose sa largeur entière à la colonne. */}
+          <div className="min-w-0 space-y-3">
             <Etape n={1} titre="Où chercher" spotlight="espaces" ouvert={etape === 1} onBasculer={() => basculer(1)}
               resume={`${ESPACES[espace].label} · ${ESPACES[espace].pays}`}>
               <div className="grid gap-3 sm:grid-cols-2">
