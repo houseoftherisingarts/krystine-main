@@ -161,9 +161,8 @@ const GrowthSection: React.FC = () => {
   const lancer = async () => {
     setMessage(null); setOccupe(true);
     try {
-      const id = await lancerRecherche({ espace, intention, audienceId, produitIds, formatId: formatId || null });
+      await lancerRecherche({ espace, intention, audienceId, produitIds, formatId: formatId || null });
       setAujourdhui(n => n + 1);
-      void id;
     } catch (e: any) { setMessage(e?.message || 'La recherche n\'a pas pu partir.'); }
     finally { setOccupe(false); }
   };
