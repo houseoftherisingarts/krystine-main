@@ -19,6 +19,15 @@ const PRIX = { entree: 3, sortie: 15, recherche: 10 };
 
 type Espace = 'fr' | 'en';
 
+// Les quatre registres de contenu qui font grandir une audience.
+const REGISTRES: Record<string, string> = {
+  educatif: 'Éducatif : elle apprend quelque chose d\'utile et d\'applicable tout de suite.',
+  inspirant: 'Inspirant : Krystine partage une vision, une vérité, un changement de perspective.',
+  personnel: 'Personnel : Krystine révèle son parcours, ses erreurs, ses apprentissages.',
+  preuve: 'Preuve : Krystine montre des résultats, des témoignages, des transformations.',
+};
+const CLES_REGISTRES = Object.keys(REGISTRES);
+
 const JALONS = [
   'Phase 1 (15 au 27 septembre) : architecture et cash immédiat, offre, prix, parcours, page de vente.',
   'Phase 2 (28 septembre au 11 octobre) : réactivation des audiences, anciennes EO, liste courriel, premières ventes.',
