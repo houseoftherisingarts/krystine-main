@@ -152,6 +152,7 @@ export const growthLancer = onCall({ timeoutSeconds: 60, memory: '256MiB' }, asy
   const ref = await db.collection('growthRuns').add({
     espace, intention, par: email,
     audience: aud.data(), produits, format: fmt && fmt.exists ? fmt.data() : null,
+    registres: registresRetenus, registreDominant: dominant,
     statut: 'en_attente', progression: 'En file, la recherche démarre dans quelques secondes.',
     creeLe: FieldValue.serverTimestamp(),
   });
