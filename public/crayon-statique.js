@@ -690,7 +690,8 @@ const STYLE_CRAYON = `
 .cs-save:disabled{opacity:.4;cursor:default}
 .cs-quit{width:36px;height:36px;border-radius:999px;border:1px solid rgba(187,154,94,.5);background:transparent;color:#1d1604;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .cs-quit:hover{border-color:#1d1604}
-.cs-avis{border-radius:999px;border:1px solid rgba(187,154,94,.4);background:#f6f3ee;color:#1d1604;font-size:12px;padding:8px 14px;box-shadow:0 10px 30px -8px rgba(0,0,0,.35)}
+.cs-avis{max-width:18rem;border-radius:15px;border:1px solid rgba(187,154,94,.4);background:#f6f3ee;color:#1d1604;font-size:12px;line-height:1.5;padding:8px 14px;box-shadow:0 10px 30px -8px rgba(0,0,0,.35)}
+.cs-avis-erreur{border-color:#8B4A2F;background:#8B4A2F;color:#f4efe6}
 .cs-hint{position:fixed;z-index:2147483000;left:50%;bottom:14px;transform:translateX(-50%);background:rgba(187,154,94,.95);color:#1d1604;font-size:12px;padding:8px 16px;border-radius:999px;box-shadow:0 10px 30px -8px rgba(0,0,0,.4);pointer-events:none}
 .cs-modal{position:fixed;z-index:2147483000;background:#f6f3ee;border:1px solid rgba(187,154,94,.4);border-radius:15px;box-shadow:0 25px 60px -15px rgba(0,0,0,.5);padding:16px;display:flex;flex-direction:column;gap:12px;color:#1d1604}
 .cs-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
