@@ -6,6 +6,7 @@ import { Timestamp } from 'firebase/firestore';
 import {
   createNewsletter, updateNewsletter, getNewsletter, saveNewsletterVersion, getNewsletterVersions,
   ENTETE_INFOLETTRE_PAR_DEFAUT, type NewsletterVersion,
+  getGabarits, saveGabarit, nouvelleLettreDepuis, CATEGORIES_GABARITS,
   type NewsletterBlock, type BlockType, type NewsletterStatus, type NewsletterAudience, type BandeauInfolettre, type NewsletterDoc,
 } from '../../../../firebase/firestore';
 import AudiencePicker from './AudiencePicker';
@@ -71,6 +72,34 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
   const sombre = estSombre(fond);
   const [traductionDe, setTraductionDe] = useState<string | null>(null);
   const [translating, setTranslating] = useState<'copie' | 'surplace' | null>(null);
+  // Gabarits : « Enregistrer comme gabarit » ouvre une petite fiche (nom, catégorie); « Dupliquer » copie la lettre telle quelle.
+  const [gabarit, setGabarit] = useState<{ nom: string; categorie: string } | null>(null);
+  const [gabaritCats, setGabaritCats] = useState<string[]>(CATEGORIES_GABARITS);
+  const [gabaritBusy, setGabaritBusy] = useState(false);
+  const ouvrirGabarit = async () => {
+    setGabarit({ nom: title || subject, categorie: CATEGORIES_GABARITS[1] });
+    try { const g = await getGabarits(); setGabaritCats([...new Set([...CATEGORIES_GABARITS, ...g.map(x => x.categorie).filter(Boolean)])]); } catch { /* la liste de départ suffit */ }
+  };
+  const enregistrerGabarit = async () => {
+    if (!gabarit || !gabarit.nom.trim() || !gabarit.categorie.trim()) return;
+    setGabaritBusy(true); setSendErr(null);
+    try {
+      await save();
+      await saveGabarit(gabarit.nom.trim(), gabarit.categorie.trim(), { title, subject, preheader, fromName, blocks, audience, couverture, couvertureUrl, signature, lang, bandeau, fond, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null });
+      setGabarit(null);
+      setSendInfo(`Gabarit « ${gabarit.nom.trim()} » enregistré dans « ${gabarit.categorie.trim()} ». Retrouvez-le dans l’onglet Gabarits.`);
+    } catch (e: any) { setSendErr(e?.message || 'Impossible d’enregistrer le gabarit.'); }
+    finally { setGabaritBusy(false); }
+  };
+  const dupliquer = async () => {
+    setGabaritBusy(true); setSendErr(null);
+    try {
+      await save();
+      const nid = await nouvelleLettreDepuis({ title, subject, preheader, fromName, blocks, audience, couverture, couvertureUrl, signature, lang, bandeau, fond, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null }, `${title || subject || 'Infolettre'} (copie)`);
+      onOpen?.(nid);
+    } catch (e: any) { setSendErr(e?.message || 'La copie a échoué.'); }
+    finally { setGabaritBusy(false); }
+  };
   // Historique : la date de la dernière version gardée (une par heure), et la liste quand le rail l'affiche.
   const [versionAt, setVersionAt] = useState<number>(0);
   const [versions, setVersions] = useState<NewsletterVersion[] | null>(null);
@@ -388,6 +417,30 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
         .nl-inline:empty:before{content:attr(data-placeholder);opacity:.4;pointer-events:none}
       `}</style>
 
+      {gabarit && (
+        <div className="fixed inset-0 z-[130] flex items-center justify-center bg-[#293027]/40 backdrop-blur-sm p-4" onClick={() => !gabaritBusy && setGabarit(null)}>
+          <div className="w-full max-w-md rounded-[20px] bg-white dark:bg-[#1f2823] p-6 shadow-2xl space-y-4" onClick={e => e.stopPropagation()}>
+            <h3 className="font-serif text-xl text-[#293027] dark:text-white">Enregistrer comme gabarit</h3>
+            <p className="text-sm text-[#293027]/65 dark:text-white/65">La lettre telle qu’elle est maintenant devient un modèle. Chaque nouvelle lettre créée à partir de lui reprend tout, et la bannière du haut se change ensuite comme d’habitude.</p>
+            <div>
+              <Label>Nom du gabarit</Label>
+              <Input value={gabarit.nom} onChange={e => setGabarit({ ...gabarit, nom: e.target.value })} placeholder="ex. Lettre du mois" autoFocus />
+            </div>
+            <div>
+              <Label>Catégorie</Label>
+              <Input list="gabarit-categories" value={gabarit.categorie} onChange={e => setGabarit({ ...gabarit, categorie: e.target.value })} placeholder="Inspirata, Événements…" />
+              <datalist id="gabarit-categories">{gabaritCats.map(c => <option key={c} value={c} />)}</datalist>
+              <p className="mt-1 text-xs text-[#293027]/50 dark:text-white/50">Choisissez une catégorie existante ou tapez-en une nouvelle.</p>
+            </div>
+            {sendErr && <p className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-2">{sendErr}</p>}
+            <div className="flex justify-end gap-2 pt-2">
+              <GhostButton onClick={() => setGabarit(null)} disabled={gabaritBusy}>Annuler</GhostButton>
+              <PrimaryButton onClick={enregistrerGabarit} disabled={gabaritBusy || !gabarit.nom.trim() || !gabarit.categorie.trim()}>{gabaritBusy ? 'Enregistrement…' : 'Enregistrer'}</PrimaryButton>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Barre du haut */}
       <div className="flex flex-wrap items-center gap-3 px-4 md:px-6 py-3 bg-white/70 dark:bg-[#293027]/70 backdrop-blur-xl border-b border-[#293027]/10 dark:border-white/10 shrink-0">
         <GhostButton onClick={onBack}><i className="fa-solid fa-arrow-left" /> Retour</GhostButton>
@@ -409,6 +462,12 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
           </GhostButton>
           <GhostButton onClick={() => traduire('surplace')} disabled={!!translating || isReadOnly || !subject || !blocks.length} title={`Traduit cette lettre en ${autreLangue}, dans ce brouillon (la version d’avant reste dans l’historique)`}>
             <i className={`fa-solid ${translating === 'surplace' ? 'fa-circle-notch fa-spin' : 'fa-language'}`} /> {translating === 'surplace' ? 'Traduction…' : `Traduire en ${autreLangue}`}
+          </GhostButton>
+          <GhostButton onClick={dupliquer} disabled={gabaritBusy || (!subject && !blocks.length)} title="Copie la lettre telle quelle en un brouillon neuf, sans traduction, et l’ouvre">
+            <i className="fa-solid fa-copy" /> Dupliquer
+          </GhostButton>
+          <GhostButton onClick={ouvrirGabarit} disabled={gabaritBusy || (!subject && !blocks.length)} title="Garde cette lettre comme modèle, dans l’onglet Gabarits">
+            <i className="fa-solid fa-layer-group" /> Enregistrer comme gabarit
           </GhostButton>
           <GhostButton onClick={() => traduire('copie')} disabled={!!translating || !subject || !blocks.length} title={`Copie toute la lettre en un brouillon en ${autreLangue}, à relire avant l’envoi`}>
             <i className={`fa-solid ${translating === 'copie' ? 'fa-circle-notch fa-spin' : 'fa-clone'}`} /> {translating === 'copie' ? 'Copie…' : 'Dupliquer et traduire'}

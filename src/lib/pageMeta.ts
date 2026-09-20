@@ -7,7 +7,7 @@ import { tr } from './i18n/lang';
 const SITE = 'Krystine St-Laurent';
 const ORIGIN = 'https://www.krystinestlaurent.ca';
 
-type PageMeta = { title: string; description: string };
+type PageMeta = { title: string; description: string; image?: string; imageAlt?: string };
 
 const ROUTES: Record<string, PageMeta> = {
   '/krystine': {
@@ -29,6 +29,8 @@ const ROUTES: Record<string, PageMeta> = {
   '/5elements': {
     title: `5 éléments · Extrait de livre · ${SITE}`,
     description: 'Téléchargez l’extrait « Les 5 éléments et leurs qualités » du livre Nature & Ayurveda de Krystine St-Laurent. Terre, eau, feu, air et éther, expliqués simplement.',
+    image: '/5elements/partage.jpg',
+    imageAlt: 'Les 5 éléments et leurs qualités, extrait du livre Nature & Ayurveda',
   },
   '/medias/tv': {
     title: `À la télé · ${SITE}`,
@@ -113,6 +115,13 @@ export function applyPageMeta(pathname: string) {
   setNamedMeta('name', 'description', meta.description);
   setNamedMeta('property', 'og:title', meta.title);
   setNamedMeta('property', 'og:description', meta.description);
+  // La vignette de partage suit la page; sans image propre, celle de l'accueil (index.html).
+  const image = ORIGIN + (raw.image || '/og-image.jpg');
+  const imageAlt = raw.imageAlt || 'Krystine St-Laurent, accueil du site';
+  setNamedMeta('property', 'og:image', image);
+  setNamedMeta('property', 'og:image:alt', imageAlt);
+  setNamedMeta('name', 'twitter:image', image);
+  setNamedMeta('name', 'twitter:image:alt', imageAlt);
 
   const canonicalHref = ORIGIN + (pathname === '/' ? '/' : pathname.replace(/\/$/, ''));
   let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
