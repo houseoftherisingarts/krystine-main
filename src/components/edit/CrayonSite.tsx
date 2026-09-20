@@ -185,47 +185,34 @@ const CrayonSite: React.FC = () => {
       // phrase posée par-dessus une image d'arrière-plan ouvrait la fenêtre des
       // photos et la modification du texte devenait impossible.
       const texte = target.closest<HTMLElement>('[data-tx]');
-      // La photo vit souvent sous un voile : chercher aussi sous le pointeur.
-      const image = texte
-        ? target.closest<HTMLElement>('[data-cadre]')
-        : (target.closest<HTMLElement>('[data-cadre]') ??
-           (document.elementsFromPoint(e.clientX, e.clientY).find((n) => n.matches('[data-cadre]')) as HTMLElement | undefined) ??
-           null);
-      // Les deux à la fois : le plus profond des deux répond au clic.
-      if (image && texte && image.contains(texte)) {
-        e.preventDefault();
-        e.stopPropagation();
-        oublierActifs();
-        texte.setAttribute('data-tx-actif', '');
-        setPhoto(null);
-        setCible({ source: parIndex.current[Number(texte.getAttribute('data-tx'))], el: texte });
-        setLangEdit(getLang());
-        setRect(texte.getBoundingClientRect());
-        return;
-      }
-      if (image) {
-        const cle = image.getAttribute('data-cadre') ?? '';
-        e.preventDefault();
-        e.stopPropagation();
-        oublierActifs();
-        image.setAttribute('data-cadre-actif', '');
-        setCible(null);
-        setPhoto({ cle, el: image, url: urlAffichee(image) || cle });
-        setRect(image.getBoundingClientRect());
-        return;
-      }
-      const el = target.closest<HTMLElement>('[data-tx]');
-      if (!el) return;
-      const source = parIndex.current[Number(el.getAttribute('data-tx'))];
-      if (!source) return;
+      // La photo vit souvent sous un voile : chercher aussi sous le pointeur,
+      // mais seulement quand aucun texte n'est en jeu. Un texte posé par-dessus
+      // une image d'arrière-plan ouvrait sinon la fenêtre des photos, et sa
+      // modification devenait impossible.
+      const sousLePointeur = texte
+        ? null
+        : (document.elementsFromPoint(e.clientX, e.clientY).find((n) => n.matches('[data-cadre]')) as HTMLElement | undefined) ?? null;
+      const image = target.closest<HTMLElement>('[data-cadre]') ?? sousLePointeur;
+      // Les deux à la fois (une <img> dans un lien éditable, un titre sur une
+      // image de fond) : le plus profond des deux répond au clic.
+      const gagnant = image && texte ? (image.contains(texte) ? texte : image) : (image ?? texte);
+      if (!gagnant) return;
+      const source = gagnant === texte ? parIndex.current[Number(texte.getAttribute('data-tx'))] : undefined;
+      if (gagnant === texte && !source) return;
       e.preventDefault();
       e.stopPropagation();
       oublierActifs();
-      el.setAttribute('data-tx-actif', '');
-      setPhoto(null);
-      setCible({ source, el });
-      setLangEdit(getLang());
-      setRect(el.getBoundingClientRect());
+      if (gagnant === texte && source) {
+        gagnant.setAttribute('data-tx-actif', '');
+        setPhoto(null);
+        setCible({ source, el: gagnant });
+        setLangEdit(getLang());
+      } else {
+        gagnant.setAttribute('data-cadre-actif', '');
+        setCible(null);
+        setPhoto({ cle: gagnant.getAttribute('data-cadre') ?? '', el: gagnant, url: urlAffichee(gagnant) || (gagnant.getAttribute('data-cadre') ?? '') });
+      }
+      setRect(gagnant.getBoundingClientRect());
     };
     document.addEventListener('click', onClick, true);
     return () => document.removeEventListener('click', onClick, true);
