@@ -124,11 +124,16 @@ function texteDe(v: unknown): string { return JSON.stringify(v ?? ''); }
 // ─── growthLancer ────────────────────────────────────────────────────────────
 export const growthLancer = onCall({ timeoutSeconds: 60, memory: '256MiB' }, async (request) => {
   const email = assertAdmin(request);
-  const { espace, intention, audienceId, produitIds, formatId } = (request.data || {}) as { espace: Espace; intention: string; audienceId: string; produitIds: string[]; formatId: string | null };
+  const { espace, intention, audienceId, produitIds, formatId, registres, registreDominant } = (request.data || {}) as
+    { espace: Espace; intention: string; audienceId: string; produitIds: string[]; formatId: string | null; registres?: string[]; registreDominant?: string | null };
   if (espace !== 'fr' && espace !== 'en') throw new HttpsError('invalid-argument', 'espace doit être fr ou en');
   if (!['segments', 'pitchs', 'offres', 'campagne'].includes(intention)) throw new HttpsError('invalid-argument', 'intention inconnue');
   if (!audienceId) throw new HttpsError('invalid-argument', 'Choisissez une audience.');
   if (!Array.isArray(produitIds) || !produitIds.length) throw new HttpsError('invalid-argument', 'Cochez au moins un produit.');
+  // Les registres : on garde ceux qu'on connaît, et les quatre par défaut.
+  const regs = (Array.isArray(registres) ? registres.filter(r => CLES_REGISTRES.includes(r)) : []);
+  const registresRetenus = regs.length ? regs : CLES_REGISTRES;
+  const dominant = registreDominant && registresRetenus.includes(registreDominant) ? registreDominant : null;
 
   const db = getFirestore();
   const debut = new Date(); debut.setHours(0, 0, 0, 0);
