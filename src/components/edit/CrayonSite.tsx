@@ -46,8 +46,10 @@ const CrayonSite: React.FC = () => {
   const [valeur, setValeur] = useState('');
   const [rect, setRect] = useState<DOMRect | null>(null);
   const [busy, setBusy] = useState(false);
-  const [avis, setAvis] = useState<string | null>(null);
+  const [avis, setAvis] = useState<{ texte: string; erreur: boolean } | null>(null);
   const [mediatheque, setMediatheque] = useState(false);
+  const [televersement, setTeleversement] = useState(false);
+  const fichierRef = useRef<HTMLInputElement>(null);
   const zoneRef = useRef<HTMLTextAreaElement>(null);
   const apercuRef = useRef<HTMLDivElement>(null);
   // index ↔ phrase du code : l'index seul voyage dans l'attribut du DOM.
