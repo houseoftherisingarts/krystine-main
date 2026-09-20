@@ -12,6 +12,16 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 export type Espace = 'fr' | 'en';
 export type TypePreset = 'audience' | 'format';
 export type Intention = 'segments' | 'pitchs' | 'offres' | 'campagne';
+export type Registre = 'educatif' | 'inspirant' | 'personnel' | 'preuve';
+
+// Les quatre registres qui font grandir une audience. Une audience fidèle se
+// construit avec les quatre; n'en publier qu'un seul fait plafonner.
+export const REGISTRES: Record<Registre, { label: string; definition: string }> = {
+  educatif: { label: 'Éducatif', definition: 'Elle apprend quelque chose d\'utile et d\'applicable.' },
+  inspirant: { label: 'Inspirant', definition: 'Vous partagez une vision, une vérité, un changement de perspective.' },
+  personnel: { label: 'Personnel', definition: 'Vous révélez votre parcours, vos erreurs, vos apprentissages.' },
+  preuve: { label: 'Preuve', definition: 'Vous montrez des résultats, des témoignages, des transformations.' },
+};
 
 export const ESPACES: Record<Espace, { label: string; pays: string; langue: string }> = {
   fr: { label: 'Francophonie', pays: 'Québec, France, Belgique, Suisse romande', langue: 'français' },
