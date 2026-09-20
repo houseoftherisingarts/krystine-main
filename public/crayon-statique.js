@@ -166,6 +166,7 @@ let edition = false;
 const origTexte = new WeakMap(); // Text → source française mémorisée à la première vue
 const origPhoto = new WeakMap(); // Element → adresse d'origine mémorisée à la première vue
 const fondsOrigine = new WeakMap(); // Element → sa déclaration background-image d'origine
+const srcOrigine = new WeakMap(); // img → son adresse d'origine, quand la clé est un nom d'emplacement
 
 // ── Mémorisation de l'adresse d'origine ─────────────────────────────────────
 function sourceDeNoeud(n) {
