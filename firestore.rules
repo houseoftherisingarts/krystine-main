@@ -73,6 +73,12 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
     match /blogPosts/{id}     { allow read: if true; allow write: if isAdmin(); }
+    // Le plan d'automne, version interactive de l'infographie de Krystine :
+    // les cases cochées, les mesures de succès qu'elle réécrit elle-même, les
+    // résultats et les verdicts d'impact. Rien de public là-dedans, c'est son
+    // tableau de bord : la porte est la même que celle des autres outils de
+    // l'admin (src/pages/admin/sections/PlanAutomneSection.tsx).
+    match /planAutomne/{annee} { allow read, write: if isAdmin(); }
     match /mediaLibrary/{id}  { allow read: if true; allow write: if isAdmin(); }
     match /formations/{id}    { allow read: if true; allow write: if isAdmin(); }
     match /livesEnCours/{id}  { allow read: if true; allow write: if isAdmin(); }
