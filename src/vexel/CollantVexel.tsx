@@ -53,7 +53,7 @@ const style = `
   isolation: isolate;
   background:
     radial-gradient(120% 120% at var(--mx) var(--my), rgb(255 236 200 / 0.22), transparent 55%),
-    linear-gradient(135deg, #2b1a0e 0%, #0d0805 60%, #241408 100%);
+    linear-gradient(135deg, #22180d 0%, #0b0805 60%, #1c130a 100%);
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35), 0 10px 24px -10px rgb(0 0 0 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.25);
   transform: perspective(600px) rotateX(var(--rx)) rotateY(var(--ry));
   transition: transform 220ms ease, box-shadow 220ms ease;
