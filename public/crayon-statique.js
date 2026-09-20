@@ -467,7 +467,7 @@ function ouvrirPhoto(el) {
   const cle = el.getAttribute('data-cadre') || '';
   cleCadreCourant = cle;
   const cadre = (brouillonPhoto[cle] && brouillonPhoto[cle].cadre) || publie.cadres[cle] || CADRE_NEUTRE;
-  apercuImg.src = urlAffichee(el) || cle;
+  apercuImg.src = photoEffective(cle).url || urlAffichee(el) || cle;
   const ratio = Math.max(0.4, Math.min(2.4, el.clientWidth / Math.max(1, el.clientHeight)));
   apercuBox.style.aspectRatio = String(ratio);
   poserPoint(cadre);
