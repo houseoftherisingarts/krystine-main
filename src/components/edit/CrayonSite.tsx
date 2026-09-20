@@ -75,7 +75,7 @@ const CrayonSite: React.FC = () => {
     // l'ancêtre qui contient la même phrase s'efface.
     for (let i = tous.length - 1; i >= 0; i--) {
       const el = tous[i];
-      if (IGNORES.has(el.tagName) || el.closest('[data-crayon]')) continue;
+      if (IGNORES.has(el.tagName) || el.closest('[data-crayon]') || el.closest('a.cv-foil')) continue;
       const candidats: string[] = [];
       const aria = el.getAttribute('aria-label');
       if (aria) candidats.push(aria);
