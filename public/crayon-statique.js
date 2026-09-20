@@ -691,6 +691,9 @@ function basculerEdition(on) {
   if (on) { document.addEventListener('click', onDocClick, true); document.addEventListener('keydown', onKeyDown); }
   else { document.removeEventListener('click', onDocClick, true); document.removeEventListener('keydown', onKeyDown); fermerPanneaux(); }
   etiqueter();
+  // Sans ça, « Enregistrer » avait l'air cliquable avant le moindre changement
+  // et un clic sans effet passait pour un enregistrement raté.
+  majCompteur();
   majHint();
 }
 
