@@ -121,15 +121,18 @@ export function surchargeDe(source: string, langue: SiteLang): string | undefine
 }
 
 export function tr(s: string): string {
-  if (s.length < 2 || SKIP.test(s)) return s;
-  if (collect) { const k = s.trim(); if (k) collect.add(k); }
-  const sortie = rendu(s);
+  if (s.length < 2) return s;
+  // Un prix, un numéro de section, une date : rien à traduire, mais Krystine
+  // doit pouvoir les récrire comme le reste. Ces chaînes sautent donc le
+  // dictionnaire anglais et gardent quand même leur surcharge et leur entrée
+  // au registre.
+  const sansDictionnaire = SKIP.test(s);
+  if (collect && !sansDictionnaire) { const k = s.trim(); if (k) collect.add(k); }
+  const sortie = sansDictionnaire ? ((active ? surEN[s] : surFR[s]) ?? s) : rendu(s);
   // Le registre relie ce qui s'affiche à la phrase du code, dans les deux sens,
   // pour que le crayon retrouve la clé même quand un texte est déjà surchargé.
-  if (registreActif) {
-    const n = normal(sortie);
-    if (n) rendus.set(n, s);
-  }
+  const n = normal(sortie);
+  if (n) rendus.set(n, s);
   return sortie;
 }
 
