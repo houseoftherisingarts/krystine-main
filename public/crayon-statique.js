@@ -295,7 +295,8 @@ function appliquerFonds() {
     // seule adresse à l'intérieur, on ne récrit jamais la déclaration entière.
     let fondOrigine = fondsOrigine.get(el);
     if (fondOrigine === undefined) { fondOrigine = el.style.backgroundImage || ''; fondsOrigine.set(el, fondOrigine); }
-    const voulu = url ? fondOrigine.replace(cle, url) : fondOrigine;
+    const adresse = (/url\(\s*['"]?([^'")]+)['"]?\s*\)/.exec(fondOrigine) || [])[1];
+    const voulu = url && adresse ? fondOrigine.replace(adresse, url) : fondOrigine;
     if (voulu && el.style.backgroundImage !== voulu) el.style.backgroundImage = voulu;
     if (!cadre) return;
     el.style.backgroundPosition = `${cadre.x}% ${cadre.y}%`;
