@@ -26,6 +26,10 @@ const ROUTES: Record<string, PageMeta> = {
     title: `Podcasts, médias et livres · ${SITE}`,
     description: 'Le podcast Au-delà des tendances, la trilogie Nature & Ayurveda, les passages télé et les entrevues de Krystine St-Laurent.',
   },
+  '/5elements': {
+    title: `5 éléments · Extrait de livre · ${SITE}`,
+    description: 'Téléchargez l’extrait « Les 5 éléments et leurs qualités » du livre Nature & Ayurveda de Krystine St-Laurent. Terre, eau, feu, air et éther, expliqués simplement.',
+  },
   '/medias/tv': {
     title: `À la télé · ${SITE}`,
     description: 'Les chroniques et passages télé de Krystine St-Laurent: santé globale, plantes et rituels de saison.',

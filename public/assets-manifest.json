@@ -1,6 +1,48 @@
 {
-  "generatedAt": "2026-09-17T18:40:08.353Z",
+  "generatedAt": "2026-09-20T17:49:50.926Z",
   "files": [
+    {
+      "path": "/5elements/couverture.webp",
+      "name": "couverture.webp",
+      "folder": "5elements",
+      "kind": "image",
+      "size": 97750
+    },
+    {
+      "path": "/5elements/page-1.webp",
+      "name": "page-1.webp",
+      "folder": "5elements",
+      "kind": "image",
+      "size": 263444
+    },
+    {
+      "path": "/5elements/page-2.webp",
+      "name": "page-2.webp",
+      "folder": "5elements",
+      "kind": "image",
+      "size": 401046
+    },
+    {
+      "path": "/5elements/page-3.webp",
+      "name": "page-3.webp",
+      "folder": "5elements",
+      "kind": "image",
+      "size": 171446
+    },
+    {
+      "path": "/5elements/page-4.webp",
+      "name": "page-4.webp",
+      "folder": "5elements",
+      "kind": "image",
+      "size": 187294
+    },
+    {
+      "path": "/5elements/page-5.webp",
+      "name": "page-5.webp",
+      "folder": "5elements",
+      "kind": "image",
+      "size": 27350
+    },
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
       "name": "hero-ml-poster.jpg",
