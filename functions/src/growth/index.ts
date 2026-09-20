@@ -69,7 +69,7 @@ const OUTIL: Anthropic.Tool = {
   description: 'Le résultat complet de la recherche, à afficher tel quel dans l\'admin de Krystine.',
   input_schema: {
     type: 'object',
-    required: ['segments', 'associations', 'pitchs', 'offres', 'campagne', 'sources'],
+    required: ['segments', 'associations', 'pitchs', 'contenus', 'mixSemaine', 'offres', 'campagne', 'sources'],
     properties: {
       segments: { type: 'array', minItems: 3, maxItems: 8, items: { type: 'object', required: ['nom', 'portrait', 'dejaEssaye', 'ceQuiFaitDireOui', 'taille', 'motsTapes', 'affinite'], properties: {
         nom: { type: 'string' }, portrait: { type: 'string', description: 'Ce qu\'elle vit à ce moment de sa vie, raconté comme une expérience' },
