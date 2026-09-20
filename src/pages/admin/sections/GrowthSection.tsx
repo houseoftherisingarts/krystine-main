@@ -83,7 +83,7 @@ const Etape: React.FC<{
         <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-serif text-lg ${ouvert ? 'bg-[#BA7B39]/20 text-[#8B4A2F] dark:text-[#d9a05b]' : 'bg-[#38403a]/8 text-[#38403a]/60 dark:bg-white/10 dark:text-white/60'}`}>{n}</span>
         <span className="min-w-0 flex-1">
           <span className="block font-serif text-lg leading-snug text-[#293027] dark:text-white">{titre}</span>
-          {!ouvert && <span className="mt-0.5 block truncate text-sm text-[#38403a]/70 dark:text-white/60">{resume}</span>}
+          {!ouvert && <span className="mt-0.5 line-clamp-2 block text-sm leading-snug text-[#38403a]/70 dark:text-white/60">{resume}</span>}
         </span>
         <span className="shrink-0 text-[10px] font-bold uppercase tracking-[0.18em] text-[#8B4A2F] dark:text-[#d9a05b]">{ouvert ? 'Replier' : 'Changer'}</span>
       </button>
