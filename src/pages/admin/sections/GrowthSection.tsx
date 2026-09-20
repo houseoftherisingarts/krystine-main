@@ -247,8 +247,12 @@ const GrowthSection: React.FC = () => {
                           ))}
                         </span>
                       </span>
-                      <button type="button" onClick={() => setEdition(a)} className="shrink-0 text-[10px] font-bold uppercase tracking-[0.18em] text-[#8B4A2F] hover:underline dark:text-[#d9a05b]">Modifier</button>
                     </label>
+                    {/* « Modifier » sur sa propre ligne : à côté du texte, il
+                        étranglait la colonne sur un téléphone. */}
+                    <div className="mt-2 flex justify-end">
+                      <button type="button" onClick={() => setEdition(a)} className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#8B4A2F] hover:underline dark:text-[#d9a05b]">Modifier</button>
+                    </div>
                   </li>
                 ))}
               </ul>
