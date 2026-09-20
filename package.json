@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "prebuild": "node scripts/garde-collant.mjs && node scripts/build-assets-manifest.mjs",
-    "postbuild": "node scripts/garde-collant.mjs --dist",
+    "postbuild": "node scripts/og/pages-statiques.mjs && node scripts/garde-collant.mjs --dist",
     "assets": "node scripts/build-assets-manifest.mjs"
   },
   "dependencies": {

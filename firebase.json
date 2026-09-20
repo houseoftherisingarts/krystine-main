@@ -50,6 +50,82 @@
         "destination": "/liste-attente-origine/index.html"
       },
       {
+        "source": "/krystine",
+        "destination": "/og/krystine.html"
+      },
+      {
+        "source": "/conferenciere",
+        "destination": "/og/conferenciere.html"
+      },
+      {
+        "source": "/formations",
+        "destination": "/og/formations.html"
+      },
+      {
+        "source": "/medias",
+        "destination": "/og/medias.html"
+      },
+      {
+        "source": "/5elements",
+        "destination": "/og/5elements.html"
+      },
+      {
+        "source": "/medias/tv",
+        "destination": "/og/medias-tv.html"
+      },
+      {
+        "source": "/podcast",
+        "destination": "/og/podcast.html"
+      },
+      {
+        "source": "/podcast/question",
+        "destination": "/og/podcast-question.html"
+      },
+      {
+        "source": "/boutique",
+        "destination": "/og/boutique.html"
+      },
+      {
+        "source": "/blogue",
+        "destination": "/og/blogue.html"
+      },
+      {
+        "source": "/points-de-vente",
+        "destination": "/og/points-de-vente.html"
+      },
+      {
+        "source": "/quiz",
+        "destination": "/og/quiz.html"
+      },
+      {
+        "source": "/guide",
+        "destination": "/og/guide.html"
+      },
+      {
+        "source": "/origine",
+        "destination": "/og/origine.html"
+      },
+      {
+        "source": "/vata",
+        "destination": "/og/vata.html"
+      },
+      {
+        "source": "/origine-2",
+        "destination": "/og/origine-2.html"
+      },
+      {
+        "source": "/liste-attente",
+        "destination": "/og/liste-attente.html"
+      },
+      {
+        "source": "/compte",
+        "destination": "/og/compte.html"
+      },
+      {
+        "source": "/politique-de-confidentialite",
+        "destination": "/og/politique-de-confidentialite.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
