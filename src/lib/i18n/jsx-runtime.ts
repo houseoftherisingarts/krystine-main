@@ -39,6 +39,22 @@ function translateProps(type: any, props: any): any {
   return out;
 }
 
+// Une image du site, quelle que soit la balise qui la porte. La vraie <img>
+// se reconnaît à son type; un <motion.img> de framer-motion, lui, arrive ici
+// comme un composant, et pendant longtemps le crayon ne le voyait pas du tout
+// (les treize portes du Foyer, par exemple). Un composant qui reçoit une
+// adresse d'image en `src` est donc traité comme une image, à l'exclusion des
+// balises qui portent du son ou de la vidéo.
+const PAS_UNE_IMAGE = new Set(['video', 'audio', 'source', 'track', 'iframe', 'embed', 'script', 'object']);
+const ADRESSE_IMAGE = /\.(png|jpe?g|webp|avif|gif|svg)(\?|#|$)/i;
+
+function estUneImage(type: any, src: unknown): src is string {
+  if (typeof src !== 'string' || !src) return false;
+  if (type === 'img') return true;
+  if (typeof type === 'string') return false;
+  return !PAS_UNE_IMAGE.has(String((type && (type.displayName || type.name)) || '').replace(/^motion\./, '')) && ADRESSE_IMAGE.test(src);
+}
+
 /** L'adresse derrière un `background-image: url(...)` posé en style en ligne. */
 function urlDeFond(style: unknown): string | null {
   if (!style || typeof style !== 'object') return null;
