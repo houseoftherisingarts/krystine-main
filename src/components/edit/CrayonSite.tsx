@@ -160,7 +160,11 @@ const CrayonSite: React.FC = () => {
       window.clearTimeout(minuterie);
       document.body.classList.remove('mode-crayon');
     };
-  }, [edition, etiqueter]);
+  }, [edition, etiqueter, refleter]);
+
+  // Le brouillon change (ou la surcharge publiée arrive de Firestore) : la page
+  // le montre aussitôt, sans attendre un rendu de React qui n'aura pas lieu.
+  useEffect(() => { if (edition) refleter(); }, [edition, refleter, ed?.brouillonTexte, ed?.publie]);
 
   const oublierActifs = () => {
     document.querySelectorAll('[data-tx-actif],[data-cadre-actif]').forEach((d) => {
