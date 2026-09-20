@@ -30,11 +30,16 @@ function translateProps(type: any, props: any): any {
       if (t !== v) { if (out === props) out = { ...out }; out[p] = t; }
     }
   }
+  // Une clé par emplacement quand l'élément en porte une. Sans elle, la clé
+  // reste l'adresse écrite dans le code, et une même photo employée à
+  // plusieurs endroits changeait partout d'un seul coup : l'enveloppe
+  // d'Expérience Origine sert sur l'accueil, sur /origine et sur /formations.
+  const propre = typeof props['data-edit-key'] === 'string' ? props['data-edit-key'] : null;
   if (estUneImage(type, props.src)) {
-    out = photoProps(out === props ? { ...props } : out, props.src);
+    out = photoProps(out === props ? { ...props } : out, propre || props.src);
   } else {
     const fond = urlDeFond(props.style);
-    if (fond) out = fondProps(out === props ? { ...props } : out, fond);
+    if (fond) out = fondProps(out === props ? { ...props } : out, propre || fond);
   }
   return out;
 }
