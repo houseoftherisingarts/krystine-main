@@ -350,7 +350,9 @@ const GrowthSection: React.FC = () => {
           </div>
 
           {/* L'historique, en colonne étroite */}
-          <div data-spotlight="historique" className="min-w-0">
+          {/* self-start : sans lui la colonne s'étire sur toute la hauteur de la
+              rangée, et le projecteur éclairerait un rectangle vide. */}
+          <div data-spotlight="historique" className="min-w-0 self-start">
             <Card className="p-5">
               <Titre>Vos recherches · {ESPACES[espace].label}</Titre>
               {!runs.length ? (
