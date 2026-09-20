@@ -616,10 +616,14 @@ async function enregistrer() {
     brouillonPhoto = {};
     fermerPanneaux();
     basculerEdition(false);
+    await chargerSurcharges(); // relire aussitôt : la page montre l'état publié
     afficherAvis('Changements enregistrés.');
   } catch (e) {
     console.error('Enregistrement du crayon statique', e);
-    afficherAvis("L'enregistrement n'a pas fonctionné. Réessayez.");
+    const motif = e && /permission|insufficient/i.test(String(e.message || e))
+      ? "Ce compte n'a pas le droit d'écrire. Reconnectez-vous en administratrice."
+      : "L'enregistrement n'a pas fonctionné. Vos changements sont encore là : réessayez.";
+    afficherAvis(motif, true);
   } finally {
     busy = false;
     boutonEnregistrer.textContent = 'Enregistrer';
