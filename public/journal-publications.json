@@ -150,5 +150,28 @@
       "src/lib/changelog.ts",
       "src/lib/newsletterRenderer.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-20T21:51:47.903Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "e37727d",
+    "message": "Growth module : section Ventes › Growth (Francophonie et Anglophonie, presets d'audiences, de produits et de formats, Lancer, résultats), fonctions growthLancer, growthTravailler et growthVersGabarit, règles des trois collections",
+    "cibles": [
+      "hosting",
+      "functions",
+      "firestore"
+    ],
+    "fichiers": [
+      "firestore.rules",
+      "functions/src/growth/index.ts",
+      "functions/src/index.ts",
+      "public/assets-manifest.json",
+      "src/firebase/firestore.ts",
+      "src/firebase/growth.ts",
+      "src/pages/AdminDashboard.tsx",
+      "src/pages/admin/AdminShell.tsx",
+      "src/pages/admin/sections/GrowthSection.tsx"
+    ]
   }
 ]
