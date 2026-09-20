@@ -809,6 +809,9 @@ function construireUI() {
   pointEl = panneauPhoto.querySelector('.cs-point');
   zoomInput = panneauPhoto.querySelector('input[type="range"]');
   zoomVal = panneauPhoto.querySelector('.cs-zoom-val');
+  boutonTeleverser = panneauPhoto.querySelector('.cs-upload');
+  boutonResetPhoto = panneauPhoto.querySelector('.cs-reset-photo');
+  champFichier = panneauPhoto.querySelector('.cs-file');
 
   boutonCrayon.addEventListener('click', () => basculerEdition(true));
   boutonQuitter.addEventListener('click', annuler);
