@@ -72,12 +72,20 @@ const CHEMIN_REST =
 let sdk = null;
 async function chargerSdk() {
   if (sdk) return sdk;
-  const [mApp, mAuth, mDb] = await Promise.all([
+  const [mApp, mAuth, mDb, mStore] = await Promise.all([
     import(CDN + 'firebase-app.js'),
     import(CDN + 'firebase-auth.js'),
     import(CDN + 'firebase-firestore.js'),
+    import(CDN + 'firebase-storage.js'),
   ]);
-  const app = mApp.initializeApp(FIREBASE_CONFIG, 'crayonStatique');
+  // L'application par défaut, jamais une application nommée. Firebase Auth
+  // range la session sous une clé qui porte le nom de l'application : un
+  // `initializeApp(config, 'crayonStatique')` ouvrait donc une session vide,
+  // `onAuthStateChanged` rendait toujours `null`, et le crayon ne s'affichait
+  // jamais sur la page d'accueil, même connectée en administratrice. C'est la
+  // cause du « ça ne marche pas sur la majorité des textes » de Krystine, le
+  // 20 septembre 2026 : sa page d'accueil n'avait pas de crayon du tout.
+  const app = mApp.getApps().find((a) => a.name === '[DEFAULT]') || mApp.initializeApp(FIREBASE_CONFIG);
   const db = mDb.getFirestore(app);
   sdk = {
     auth: mAuth.getAuth(app),
@@ -86,6 +94,10 @@ async function chargerSdk() {
     setDoc: mDb.setDoc,
     deleteField: mDb.deleteField,
     serverTimestamp: mDb.serverTimestamp,
+    storage: mStore.getStorage(app),
+    storageRef: mStore.ref,
+    uploadBytes: mStore.uploadBytes,
+    getDownloadURL: mStore.getDownloadURL,
   };
   return sdk;
 }
