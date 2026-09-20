@@ -239,8 +239,11 @@ function appliquerTextes() {
     // est abandonné, sans jamais toucher un nœud qui n'a jamais changé.
     const valeur = valeurPourZone(source, langue);
     const v = n.nodeValue || '';
-    const m = /^(\s*)[\s\S]*?(\s*)$/.exec(v) || ['', '', ''];
-    const nouveau = m[1] + valeur + m[2];
+    // Les espaces des deux bords se gardent tels quels : un mot collé à son
+    // voisin ou une espace perdue déplace des pixels dans la page.
+    const avant = v.slice(0, v.length - v.trimStart().length);
+    const apres = v.slice(v.trimEnd().length);
+    const nouveau = avant + valeur + apres;
     if (n.nodeValue !== nouveau) n.nodeValue = nouveau;
   }
 }
