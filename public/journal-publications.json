@@ -201,5 +201,27 @@
       "public/assets-manifest.json",
       "src/lib/changelog.ts"
     ]
+  },
+  {
+    "quand": "2026-09-20T22:49:08.472Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "b97936b",
+    "message": "Accueil : invitation à créer son espace membre (roue aquarelle et bouton or, entre « Par où commencer » et « Comment tout se relie »); pied de page : le nom géant retiré sur tout le site; le script de publication dit tout de suite si GitHub refuse la connexion",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/assets/wheel-watercolor.webp",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "public/iris/iris_terminal.md",
+      "scripts/publier.sh",
+      "src/components/admin/Spotlight.tsx",
+      "src/components/layout/Footer.tsx",
+      "src/pages/admin/AdminShell.tsx",
+      "src/pages/admin/sections/GrowthSection.tsx"
+    ]
   }
 ]
