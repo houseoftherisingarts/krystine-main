@@ -58,10 +58,6 @@ const CrayonSite: React.FC = () => {
 
   const edition = !!ed?.edition;
 
-  // Le registre qui relie ce qui s'affiche à la phrase du code ne se remplit
-  // que devant une administratrice : une visiteuse ordinaire n'en paie rien.
-  useEffect(() => { if (isAdmin) activerRegistre(); }, [isAdmin]);
-
   const indexer = useCallback((source: string): number => {
     const connu = parSource.current.get(source);
     if (connu !== undefined) return connu;
