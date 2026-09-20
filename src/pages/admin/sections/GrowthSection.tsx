@@ -55,7 +55,7 @@ const GrowthSection: React.FC = () => {
       const a = p.find(x => x.type === 'audience'); if (a?.id && !p.some(x => x.id === audienceId)) setAudienceId(a.id);
       const f = p.find(x => x.type === 'format'); if (f?.id && !p.some(x => x.id === formatId)) setFormatId(f.id);
       if (!produitIds.length) setProduitIds(c.filter(x => x.actif && x.colonne !== 'suite').map(x => x.id));
-    } catch (e: any) { setMessage(e?.message || 'Le chargement a échoué.'); }
+    } catch (e: any) { setMessage(/permission/i.test(String(e?.message)) ? 'Les règles du module ne sont pas encore en ligne : la prochaine publication du site les pose, puis cette page se remplit d\'elle-même.' : (e?.message || 'Le chargement a échoué.')); }
     finally { setChargement(false); }
   };
   useEffect(() => { charger(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [espace]);
