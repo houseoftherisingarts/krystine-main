@@ -644,22 +644,25 @@ function annuler() {
 function onDocClick(e) {
   if (!edition) return;
   const target = e.target;
-  if (!target || target.closest(CRAYON_SEL)) return;
-  const points = document.elementsFromPoint ? document.elementsFromPoint(e.clientX, e.clientY) : [];
-  const image = target.closest('[data-cadre]') || points.find((el) => el.matches && el.matches('[data-cadre]'));
-  if (image) {
+  if (!target || target.closest(CRAYON_SEL) || target.closest('a.cv-foil')) return;
+  const texte = target.closest('[data-tx]');
+  // Un texte posé sur une image de fond gagne sur elle : sinon la fenêtre des
+  // photos s'ouvrait et la phrase devenait impossible à récrire.
+  const points = texte || !document.elementsFromPoint ? [] : document.elementsFromPoint(e.clientX, e.clientY);
+  const image = target.closest('[data-cadre]') || points.find((el) => el.matches && el.matches('[data-cadre]')) || null;
+  const gagnant = image && texte ? (image.contains(texte) ? texte : image) : (image || texte);
+  if (!gagnant) return;
+  if (gagnant === texte) {
+    const idx = Number(texte.getAttribute('data-tx'));
+    if (!textIndex[idx]) return;
     e.preventDefault();
     e.stopPropagation();
-    ouvrirPhoto(image);
+    ouvrirTexte(texte, idx);
     return;
   }
-  const el = target.closest('[data-tx]');
-  if (!el) return;
-  const idx = Number(el.getAttribute('data-tx'));
-  if (!textIndex[idx]) return;
   e.preventDefault();
   e.stopPropagation();
-  ouvrirTexte(el, idx);
+  ouvrirPhoto(gagnant);
 }
 
 function onKeyDown(e) {
