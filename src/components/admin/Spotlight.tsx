@@ -65,13 +65,13 @@ const Spotlight: React.FC<{ etapes: EtapeSpotlight[]; onFermer: () => void }> = 
 
   if (!etape) return null;
 
-  // La carte se pose sous l'élément. Sur grand écran elle remonte au-dessus
-  // quand il n'y a plus de place dessous, et dans tous les cas elle est ramenée
-  // de force à l'intérieur de l'écran.
+  // La carte se pose sous l'élément, remonte au-dessus quand il n'y a plus de
+  // place dessous, et dans tous les cas elle est ramenée de force à
+  // l'intérieur de l'écran. En mobile elle est pleine largeur, jamais à côté.
   const mobile = typeof window !== 'undefined' && window.innerWidth < 700;
   const vue = typeof window === 'undefined' ? 800 : window.innerHeight;
   let haut = boite ? boite.bottom + 14 : (vue - hauteur) / 2;
-  if (boite && !mobile && vue - boite.bottom < hauteur + 28) haut = boite.top - 14 - hauteur;
+  if (boite && vue - boite.bottom < hauteur + 28 && boite.top > hauteur + 28) haut = boite.top - 14 - hauteur;
   haut = Math.min(Math.max(16, haut), Math.max(16, vue - hauteur - 16));
   const position: React.CSSProperties = {
     top: haut,
