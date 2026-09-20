@@ -298,9 +298,12 @@ const AdminShell: React.FC<Props> = ({ user, section, onSectionChange, children 
             <button
               type="button"
               onClick={() => window.dispatchEvent(new CustomEvent('growth:spotlight'))}
-              className="rounded-full border border-[#38403a]/20 px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#8B4A2F] transition-colors hover:border-[#BA7B39] dark:border-white/15 dark:text-[#d9a05b]"
+              aria-label="Lancer la visite guidée de Growth"
+              title="Lancer la visite guidée de Growth"
+              className="shrink-0 whitespace-nowrap rounded-full border border-[#38403a]/20 px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#8B4A2F] transition-colors hover:border-[#BA7B39] dark:border-white/15 dark:text-[#d9a05b]"
             >
-              <i className="fa-solid fa-wand-magic-sparkles mr-2" aria-hidden="true" /> Spotlight
+              <i className="fa-solid fa-wand-magic-sparkles sm:mr-2" aria-hidden="true" />
+              <span className="hidden sm:inline">Spotlight</span>
             </button>
           )}
           <a href="/" target="_blank" rel="noopener noreferrer" className="whitespace-nowrap text-xs uppercase tracking-widest text-[#38403a]/50 transition-colors hover:text-[#8B4A2F] dark:text-white/50">
