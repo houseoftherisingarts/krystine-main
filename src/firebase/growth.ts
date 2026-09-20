@@ -107,6 +107,8 @@ export interface GrowthRun {
   audience: Omit<PresetAudience, 'id'>;
   produits: ProduitCatalogue[];
   format: Omit<PresetFormat, 'id'> | null;
+  registres?: string[];
+  registreDominant?: string | null;
   statut: 'en_attente' | 'en_cours' | 'termine' | 'erreur';
   progression?: string;
   erreur?: string;
