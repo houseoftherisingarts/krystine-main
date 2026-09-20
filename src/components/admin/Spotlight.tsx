@@ -49,6 +49,10 @@ const Spotlight: React.FC<{ etapes: EtapeSpotlight[]; onFermer: () => void }> = 
 
   useEffect(() => { carte.current?.focus(); }, [i]);
 
+  // La hauteur réelle de la carte : c'est elle qui décide si la carte tient
+  // sous l'élément, et qui l'empêche de sortir de l'écran.
+  useEffect(() => { if (carte.current) setHauteur(carte.current.offsetHeight); }, [i, boite?.width]);
+
   useEffect(() => {
     const clavier = (e: KeyboardEvent) => {
       if (e.key === 'Escape') { e.preventDefault(); onFermer(); return; }
