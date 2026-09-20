@@ -477,7 +477,9 @@ const Resultat: React.FC<{ run: GrowthRun; onFermer: () => void; onMessage: (m: 
             <Puce className={ETATS[run.statut].classe}>{ETATS[run.statut].label}</Puce>
             <Titre>Recherche</Titre>
           </div>
-          <h2 className="mt-1.5 font-serif text-2xl leading-snug text-[#293027] dark:text-white">{INTENTIONS[run.intention]?.label} · {run.audience?.nom}</h2>
+          {/* Le titre reste sur une ligne : l'audience descend en sous-titre. */}
+          <h2 className="mt-1.5 font-serif text-2xl leading-snug text-[#293027] dark:text-white">{INTENTIONS[run.intention]?.label}</h2>
+          <p className="mt-1 text-sm leading-relaxed text-[#38403a]/70 dark:text-white/60">{run.audience?.nom}</p>
         </div>
         <GhostButton type="button" onClick={onFermer}>Fermer</GhostButton>
       </div>
