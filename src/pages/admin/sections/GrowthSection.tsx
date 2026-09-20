@@ -365,7 +365,7 @@ const GrowthSection: React.FC = () => {
                         </div>
                         <div className="mt-1.5 text-sm font-medium leading-snug text-[#293027] dark:text-white">{INTENTIONS[r.intention]?.label || r.intention}</div>
                         <div className="text-xs leading-relaxed text-[#38403a]/60 dark:text-white/55">
-                          {r.audience?.nom}{r.cout ? ` · ${r.cout.dollars.toFixed(2)} $` : ''}
+                          {r.audience?.nom}{r.cout ? ` · ${dollars(r.cout.dollars)}` : ''}
                         </div>
                       </button>
                     </li>
