@@ -572,10 +572,16 @@ function remettreTexteCourant() {
   appliquerTextes();
 }
 
-function afficherAvis(msg) {
+// Un message d'erreur ne s'efface pas de lui-même : Krystine doit le lire et
+// savoir que ses changements sont encore là.
+let minuterieAvis;
+function afficherAvis(msg, erreur) {
   avisEl.textContent = msg;
   avisEl.hidden = false;
-  window.setTimeout(() => { avisEl.hidden = true; }, 2600);
+  avisEl.setAttribute('role', erreur ? 'alert' : 'status');
+  avisEl.classList.toggle('cs-avis-erreur', !!erreur);
+  window.clearTimeout(minuterieAvis);
+  if (!erreur) minuterieAvis = window.setTimeout(() => { avisEl.hidden = true; }, 4000);
 }
 
 async function enregistrer() {
