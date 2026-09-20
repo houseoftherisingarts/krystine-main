@@ -780,6 +780,11 @@ function construireUI() {
         <input type="range" min="1" max="${ZOOM_MAX}" step="0.01" />
         <span class="cs-zoom-val">1.00×</span>
       </label>
+      <div class="cs-modal-actions">
+        <button type="button" class="cs-apply cs-upload">Téléverser une photo</button>
+        <input type="file" accept="image/*" class="cs-file" hidden />
+        <button type="button" class="cs-reset cs-reset-photo" hidden>Photo d'origine</button>
+      </div>
     </div>
   `;
   document.body.appendChild(root);
