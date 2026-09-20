@@ -41,6 +41,7 @@ export type AdminSectionId =
   | 'bugs'
   | 'changelog'
   | 'publications'
+  | 'growth'
   | 'newsletter'
   | 'guide'
   | 'dosha'
@@ -82,6 +83,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   bugs:       'problemes-techniques',
   changelog:  'journal-des-changements',
   publications: 'publications',
+  growth:     'growth',
   newsletter: 'infolettre',
   guide:      'parcours-guides',
   dosha:      'quiz-dosha',
@@ -126,6 +128,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'analytics',  label: 'Analytics Shopify', icon: 'fa-chart-line',      groupe: 'ventes' },
   { id: 'bookings',   label: 'Demandes',         icon: 'fa-inbox',            groupe: 'ventes' },
   { id: 'submissions', label: 'Formulaires',     icon: 'fa-clipboard-list',   groupe: 'ventes' },
+  { id: 'growth',     label: 'Growth',           icon: 'fa-rocket',           groupe: 'ventes' },
   { id: 'members',    label: 'Clients',          icon: 'fa-users',            groupe: 'communaute' },
   { id: 'habitudes',  label: 'Habitudes de tes clientes', icon: 'fa-route',   groupe: 'communaute' },
   { id: 'acheteuses', label: 'Tes acheteuses d\'Origine', icon: 'fa-seedling', groupe: 'communaute' },

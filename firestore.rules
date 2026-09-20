@@ -418,6 +418,9 @@ service cloud.firestore {
     }
     // ── Les gabarits d'infolettre (modèles rangés par catégorie, 20 sept 2026) ──
     match /newsletterGabarits/{id} { allow read, write: if isAdmin(); }
+    match /growthPresets/{id}   { allow read, write: if isAdmin(); }
+    match /growthCatalogue/{id} { allow read, write: if isAdmin(); }
+    match /growthRuns/{id}      { allow read, write: if isAdmin(); }
     // ── Les séquences (courriels automatiques dans le temps, 15 sept 2026) ──
     // Réservées à l'admin : la liste des inscrits porte des adresses.
     match /sequences/{id} {

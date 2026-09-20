@@ -598,7 +598,7 @@ export async function getNewsletter(id: string): Promise<NewsletterDoc | null> {
 // partir de ce gabarit » recopie tout (sujet, pré-en-tête, blocs, en-tête, bandeau,
 // fond, audience) dans un brouillon neuf, dont la bannière du haut se change
 // ensuite comme d'habitude.
-export const CATEGORIES_GABARITS = ['Inspirata', 'Krystine St-Laurent', 'Expérience Origine', 'Événements'];
+export const CATEGORIES_GABARITS = ['Inspirata', 'Krystine St-Laurent', 'Expérience Origine', 'Événements', 'Growth'];
 
 type ContenuLettre = Pick<NewsletterDoc, 'title' | 'subject' | 'preheader' | 'fromName' | 'blocks' | 'audience' | 'couverture' | 'couvertureUrl' | 'signature' | 'lang' | 'bandeau' | 'fond' | 'lettreDor'>;
 

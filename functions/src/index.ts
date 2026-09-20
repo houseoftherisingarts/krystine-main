@@ -12,6 +12,7 @@ export { ouverture } from './newsletter/ouverture';
 export { resendWebhook } from './newsletter/webhook';
 export { sendScheduledNewsletters, previewNewsletter, audienceInfolettre } from './newsletter/send';
 export { newsletterAssistant, traduireInfolettre } from './newsletter/assistant';
+export { growthLancer, growthTravailler, growthVersGabarit } from './growth';
 export { membreLangue } from './newsletter/langue';
 export { repondreAbonne } from './newsletter/reponse';
 export { notifierSoutien } from './newsletter/soutien';
