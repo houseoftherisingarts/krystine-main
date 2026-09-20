@@ -139,7 +139,7 @@ const Footer: React.FC = () => {
         <p
           aria-hidden
           className="font-serif text-ctext/90 leading-none whitespace-nowrap select-none overflow-hidden"
-          style={{ fontSize: 'clamp(2.5rem, 8.5vw, 9.5rem)', height: '0.6em', transform: 'translateY(18%)' }}
+          style={{ fontSize: 'clamp(3rem, 11vw, 12.5rem)', height: '0.62em', transform: 'translateY(20%)' }}
         >
           Krystine St-Laurent
         </p>
