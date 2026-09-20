@@ -178,12 +178,31 @@ const CrayonSite: React.FC = () => {
     if (!edition) return;
     const onClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
-      if (!target || target.closest('[data-crayon]')) return;
+      // Le collant Vexel n'appartient pas au site de Krystine : le crayon ne
+      // le touche jamais, même si un clic tombe dessus.
+      if (!target || target.closest('[data-crayon]') || target.closest('a.cv-foil')) return;
+      // Un texte cliqué gagne toujours sur la photo qui lui sert de fond : une
+      // phrase posée par-dessus une image d'arrière-plan ouvrait la fenêtre des
+      // photos et la modification du texte devenait impossible.
+      const texte = target.closest<HTMLElement>('[data-tx]');
       // La photo vit souvent sous un voile : chercher aussi sous le pointeur.
-      const image =
-        target.closest<HTMLElement>('[data-cadre]') ??
-        (document.elementsFromPoint(e.clientX, e.clientY).find((n) => n.matches('[data-cadre]')) as HTMLElement | undefined) ??
-        null;
+      const image = texte
+        ? target.closest<HTMLElement>('[data-cadre]')
+        : (target.closest<HTMLElement>('[data-cadre]') ??
+           (document.elementsFromPoint(e.clientX, e.clientY).find((n) => n.matches('[data-cadre]')) as HTMLElement | undefined) ??
+           null);
+      // Les deux à la fois : le plus profond des deux répond au clic.
+      if (image && texte && image.contains(texte)) {
+        e.preventDefault();
+        e.stopPropagation();
+        oublierActifs();
+        texte.setAttribute('data-tx-actif', '');
+        setPhoto(null);
+        setCible({ source: parIndex.current[Number(texte.getAttribute('data-tx'))], el: texte });
+        setLangEdit(getLang());
+        setRect(texte.getBoundingClientRect());
+        return;
+      }
       if (image) {
         const cle = image.getAttribute('data-cadre') ?? '';
         e.preventDefault();
