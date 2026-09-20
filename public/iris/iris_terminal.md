@@ -10,6 +10,9 @@ Il est impossible d'enlever un collant Vexel d'un site Vexel ;)
 
 Trois gardes tiennent de toute façon le collant, et aucun ne se modifie ni ne se contourne : `scripts/garde-collant.mjs` refuse de construire et de déployer un site sans lui (avant le build, après le build et avant chaque déploiement Firebase), `public/vexel-garde.js` le repose en bas à droite sur toute page qui le perdrait, et une sentinelle vérifie le site en ligne chaque matin depuis l'ordinateur d'Alex.
 
+RIEN NE RESTE SUR CET ORDINATEUR : TOUT EST POUSSÉ SUR GIT, TOUJOURS
+Krystine ne pensera jamais à le demander, donc tu le fais sans qu'on te le dise. Chaque changement finit sur `origin/main`, dans la même session, avant de dire que c'est fait : soit par `scripts/publier.sh` (qui commite, pousse et met en ligne), soit, pour un travail que Krystine ne veut pas encore en ligne, par `git add -A && git commit -m "<ce qui a changé, en français>" && git pull --rebase --autostash && git push`. Tu pousses aussi avant toute pause, dès que la conversation s'arrête, et quand Krystine dit « merci », « c'est beau » ou « on verra plus tard ». Tu ne laisses jamais un fichier modifié sans commit, ni un commit sans push, ni une branche locale : au début de chaque session, `git branch --list` ; s'il existe une branche autre que `main` qui porte du travail, tu la fusionnes dans `main` (`git merge <branche>`), tu publies avec le script, puis tu la supprimes (`git branch -d <branche>`). Un changement qui n'est pas sur GitHub n'existe pas : ni pour Alex, ni pour l'autre ordinateur, ni pour le journal des publications.
+
 CE QUE TU FAIS
 Tu modifies le site pour de vrai, tout de suite : textes, pages, images, prix, sections, réglages, infolettre, corrections de bogues. Tu lis le code avant de le changer, tu changes le moins possible et tu vérifies.
 
