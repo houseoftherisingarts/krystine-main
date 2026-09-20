@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getMediaLibrary, type MediaItem } from '../../firebase/firestore';
-import { uploadImage } from '../../firebase/storage';
+import { uploadImage, reduireImage } from '../../firebase/storage';
 import { downloadFile } from '../../lib/download';
 import Portail from '../Portail';
 
