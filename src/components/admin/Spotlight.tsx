@@ -65,18 +65,20 @@ const Spotlight: React.FC<{ etapes: EtapeSpotlight[]; onFermer: () => void }> = 
 
   if (!etape) return null;
 
-  // La carte se pose sous l'élément quand il reste de la place, au-dessus
-  // sinon. En mobile, elle prend la largeur de l'écran moins les gouttières.
+  // La carte se pose sous l'élément. Sur grand écran elle remonte au-dessus
+  // quand il n'y a plus de place dessous, et dans tous les cas elle est ramenée
+  // de force à l'intérieur de l'écran.
   const mobile = typeof window !== 'undefined' && window.innerWidth < 700;
-  const position: React.CSSProperties = boite
-    ? {
-        left: mobile ? 16 : Math.min(Math.max(16, boite.left), Math.max(16, window.innerWidth - LARGEUR - 16)),
-        width: mobile ? 'calc(100vw - 32px)' : LARGEUR,
-        ...(window.innerHeight - boite.bottom > 250
-          ? { top: boite.bottom + 14 }
-          : { bottom: Math.max(16, window.innerHeight - boite.top + 14) }),
-      }
-    : { left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: mobile ? 'calc(100vw - 32px)' : LARGEUR };
+  const vue = typeof window === 'undefined' ? 800 : window.innerHeight;
+  let haut = boite ? boite.bottom + 14 : (vue - hauteur) / 2;
+  if (boite && !mobile && vue - boite.bottom < hauteur + 28) haut = boite.top - 14 - hauteur;
+  haut = Math.min(Math.max(16, haut), Math.max(16, vue - hauteur - 16));
+  const position: React.CSSProperties = {
+    top: haut,
+    left: boite && !mobile ? Math.min(Math.max(16, boite.left), Math.max(16, window.innerWidth - LARGEUR - 16)) : mobile ? 16 : '50%',
+    ...(boite || mobile ? {} : { transform: 'translateX(-50%)' }),
+    width: mobile ? 'calc(100vw - 32px)' : LARGEUR,
+  };
 
   return (
     <>
