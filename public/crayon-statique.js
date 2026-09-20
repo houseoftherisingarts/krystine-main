@@ -479,10 +479,72 @@ function ouvrirPhoto(el) {
 
 function ecrireCadre(partiel) {
   if (!cleCadreCourant) return;
-  const actuel = (brouillonPhoto[cleCadreCourant] && brouillonPhoto[cleCadreCourant].cadre) || publie.cadres[cleCadreCourant] || CADRE_NEUTRE;
+  const courant = brouillonPhoto[cleCadreCourant];
+  const actuel = (courant && courant.cadre) || publie.cadres[cleCadreCourant] || CADRE_NEUTRE;
   const cadre = { ...actuel, ...partiel };
-  brouillonPhoto[cleCadreCourant] = { cadre };
+  brouillonPhoto[cleCadreCourant] = { ...(courant && courant !== null ? courant : {}), cadre };
   poserPoint(cadre);
+  majCompteur();
+  appliquerImages();
+  appliquerFonds();
+}
+
+/** Réduit une photo dans le navigateur avant l'envoi : 2 000 pixels de côté, JPEG. */
+async function reduireImage(fichier, maxCote, qualite) {
+  try {
+    const bitmap = await createImageBitmap(fichier);
+    const ratio = Math.min(1, maxCote / Math.max(bitmap.width, bitmap.height));
+    if (ratio === 1 && fichier.type === 'image/jpeg' && fichier.size < 2 * 1024 * 1024) return fichier;
+    const c = document.createElement('canvas');
+    c.width = Math.round(bitmap.width * ratio);
+    c.height = Math.round(bitmap.height * ratio);
+    const ctx = c.getContext('2d');
+    if (!ctx) return fichier;
+    ctx.drawImage(bitmap, 0, 0, c.width, c.height);
+    const blob = await new Promise((ok) => c.toBlob(ok, 'image/jpeg', qualite));
+    if (!blob) return fichier;
+    return new File([blob], fichier.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' });
+  } catch {
+    return fichier;
+  }
+}
+
+async function televerserPhoto(fichier) {
+  if (!cleCadreCourant || !fichier) return;
+  const cle = cleCadreCourant;
+  boutonTeleverser.disabled = true;
+  boutonTeleverser.textContent = 'Téléversement…';
+  try {
+    const reduite = await reduireImage(fichier, 2000, 0.88);
+    const { storage, storageRef, uploadBytes, getDownloadURL } = await chargerSdk();
+    const nom = reduite.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const objet = storageRef(storage, `surcharges-site/${Date.now()}_${nom}`);
+    await uploadBytes(objet, reduite);
+    const url = await getDownloadURL(objet);
+    const courant = brouillonPhoto[cle];
+    brouillonPhoto[cle] = { ...(courant && courant !== null ? courant : {}), url };
+    apercuImg.src = url;
+    boutonResetPhoto.hidden = false;
+    majCompteur();
+    appliquerImages();
+    appliquerFonds();
+    afficherAvis('Photo remplacée. Pensez à enregistrer.');
+  } catch (e) {
+    console.error('Téléversement du crayon statique', e);
+    afficherAvis("Le téléversement n'a pas fonctionné. Réessayez avec une image plus légère.", true);
+  } finally {
+    boutonTeleverser.disabled = false;
+    boutonTeleverser.textContent = 'Téléverser une photo';
+    if (champFichier) champFichier.value = '';
+  }
+}
+
+function remettrePhotoCourante() {
+  if (!cleCadreCourant) return;
+  brouillonPhoto[cleCadreCourant] = null;
+  apercuImg.src = cleCadreCourant;
+  poserPoint(CADRE_NEUTRE);
+  boutonResetPhoto.hidden = true;
   majCompteur();
   appliquerImages();
   appliquerFonds();
