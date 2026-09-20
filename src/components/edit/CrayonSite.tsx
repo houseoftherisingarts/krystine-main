@@ -444,7 +444,7 @@ const CrayonSite: React.FC = () => {
             onPointerMove={(e) => { if (e.buttons & 1) pointerVers(e); }}
           >
             <img
-              src={photo.url}
+              src={urlApercu}
               alt=""
               draggable={false}
               className="h-full w-full object-cover"
