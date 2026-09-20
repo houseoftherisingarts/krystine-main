@@ -86,6 +86,20 @@ const OUTIL: Anthropic.Tool = {
         texte: { type: 'string', description: 'Le brouillon complet, paragraphes séparés par une ligne vide, dans la voix de Krystine' },
         script15s: { type: 'string' },
       } } },
+      contenus: { type: 'array', description: 'Un bloc par registre demandé, dans l\'ordre reçu, le dominant en premier', items: { type: 'object', required: ['registre', 'idees'], properties: {
+        registre: { type: 'string', enum: CLES_REGISTRES },
+        idees: { type: 'array', minItems: 3, maxItems: 3, items: { type: 'object', required: ['titre', 'angle', 'format', 'appel'], properties: {
+          titre: { type: 'string', description: 'Le titre accrocheur, deux lignes au plus' },
+          angle: { type: 'string', description: 'L\'angle en une phrase entière' },
+          format: { type: 'string', description: 'Un format pris parmi ceux fournis dans la consigne' },
+          appel: { type: 'string', description: 'Un appel à l\'action doux, jamais une urgence' },
+        } } },
+      } } },
+      mixSemaine: { type: 'array', minItems: 4, maxItems: 7, description: 'La semaine de publications, un registre par entrée, en variant', items: { type: 'object', required: ['jour', 'registre', 'quoi'], properties: {
+        jour: { type: 'string', description: 'Lundi, mardi… ou « Jour 1 »' },
+        registre: { type: 'string', enum: CLES_REGISTRES },
+        quoi: { type: 'string', description: 'Ce qui se publie ce jour-là, en quelques mots' },
+      } } },
       offres: { type: 'array', minItems: 4, maxItems: 10, items: { type: 'object', required: ['nom', 'colonne', 'marche', 'description', 'prixObserves', 'jalon'], properties: {
         nom: { type: 'string' }, colonne: { type: 'string', enum: ['A', 'B'], description: 'A : Krystine présente en personne; B : rapporte sans elle' },
         marche: { type: 'string' }, description: { type: 'string' },
