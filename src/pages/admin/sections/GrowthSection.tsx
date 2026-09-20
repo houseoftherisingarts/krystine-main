@@ -19,7 +19,10 @@ const ecoule = (debut?: { toDate: () => Date } | null, fin?: { toDate: () => Dat
   const s = Math.max(0, Math.round(((fin ? fin.toDate() : new Date()).getTime() - debut.toDate().getTime()) / 1000));
   return s < 60 ? `${s} s` : `${Math.floor(s / 60)} min ${String(s % 60).padStart(2, '0')} s`;
 };
-const COLONNES: Record<ProduitCatalogue['colonne'], string> = { entree: 'Entrée gratuite', A: 'Cœur, colonne A (Krystine présente)', B: 'Cœur, colonne B (rapporte sans elle)', suite: 'Suite' };
+// Les chiffres se lisent en français : virgule décimale et espace pour les milliers.
+const dollars = (n: number) => `${new Intl.NumberFormat('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} $`;
+const nombre = (n: number) => new Intl.NumberFormat('fr-CA').format(n);
+const COLONNES: Record<ProduitCatalogue['colonne'], string> ={ entree: 'Entrée gratuite', A: 'Cœur, colonne A (Krystine présente)', B: 'Cœur, colonne B (rapporte sans elle)', suite: 'Suite' };
 const ETATS: Record<GrowthRun['statut'], { label: string; classe: string }> = {
   en_attente: { label: 'En file', classe: 'bg-[#38403a]/10 text-[#38403a]/80 dark:bg-white/10 dark:text-white/70' },
   en_cours: { label: 'En cours', classe: 'bg-[#BA7B39]/15 text-[#8B4A2F] dark:text-[#d9a05b]' },
