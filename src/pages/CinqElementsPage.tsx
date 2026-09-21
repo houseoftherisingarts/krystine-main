@@ -284,6 +284,7 @@ const CinqElementsPage: React.FC = () => {
                       <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-1 h-4 w-4 accent-[#BA7B39]" />
                       <span>Je veux recevoir l'extrait et l'infolettre de Krystine. Désinscription en un clic, à tout moment.</span>
                     </label>
+                    {RECAPTCHA_SITE_KEY && <div ref={captcha.boxRef} className="mt-6" />}
                     <button
                       type="submit"
                       disabled={busy}
