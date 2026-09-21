@@ -5,10 +5,11 @@
 // ce que le studio a livré, et « Vos demandes », ce qu'elle a demandé, avec un
 // crochet dès que c'est fait. Les deux racontent la même histoire vue des deux
 // bords, donc ils vivent sous la même entrée de navigation. Le panneau des
-// demandes vient de _vexel-base/src/vexel/DemandesClientPanel.tsx et se
-// branche avec le slug et la clé qui servent déjà à l'iframe de demande
-// (DemandeVexel.tsx). Les deux vues restent montées pour que le compte des
-// demandes en attente alimente le badge sans attendre le premier clic.
+// demandes vient de _vexel-base/src/vexel/DemandesClientPanel.tsx et se nourrit
+// de la callable `mesDemandes` (functions/src/mesDemandes.ts), qui vérifie
+// l'admin et va chercher la liste chez Vexel côté serveur : aucune clé du
+// studio ne descend dans cette page. Les deux vues restent montées pour que le
+// compte des demandes en attente alimente le badge sans attendre le premier clic.
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { JOURNAL, nombreEtapes, type Etape } from '../../../lib/changelog';
