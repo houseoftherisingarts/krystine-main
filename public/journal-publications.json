@@ -415,5 +415,22 @@
       "public/assets-manifest.json",
       "src/lib/changelog.ts"
     ]
+  },
+  {
+    "quand": "2026-09-21T13:39:15.240Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "7eb58d6",
+    "message": "Collant Vexel : « Continuer vers Vexel » redevient un lien ordinaire en nouvel onglet; l'ouverture en arrière-plan par script n'existe pas dans Chrome, qui place l'onglet d'après le vrai clic",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/vexel-garde.js",
+      "src/lib/changelog.ts",
+      "src/vexel/CollantVexel.tsx"
+    ]
   }
 ]
