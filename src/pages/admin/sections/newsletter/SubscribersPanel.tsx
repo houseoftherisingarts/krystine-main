@@ -2,6 +2,7 @@ import React, { useDeferredValue, useEffect, useMemo, useRef, useState } from 'r
 import { PALIERS, STATUTS, statsDepuisFiches, libelleTag, explicationTag } from '../../../../lib/paliers';
 import {
   getNewsletterSubscribers, invalidateNewsletterSubscribers, deleteNewsletterSubscriber, bulkAddNewsletterSubscribers,
+  rehabiliterAbonne, garderConfirmee, remettreQuarantaine, desabonnerAbonnements,
   type NewsletterSubscriber, type BulkImportResult,
 } from '../../../../firebase/firestore';
 import { parseCsv, mapCsvToSubscribers } from '../../../../lib/csv';
