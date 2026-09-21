@@ -234,6 +234,19 @@ export async function addNewsletterSubscriber(data: Omit<NewsletterSubscriber, '
   // La langue du site au moment de l'inscription : c'est elle qui décide
   // quelle version d'une infolettre la personne reçoit.
   if (clean.lang !== 'fr' && clean.lang !== 'en') clean.lang = getLang();
+  // La garde anti-robots. Tous les formulaires publics (infolettre, listes
+  // d'attente, quiz, consentement d'une membre connectée) passent par ici :
+  // un seul contrôle les couvre tous. Un alias jetable entre en quarantaine,
+  // il ne reçoit rien, et Krystine tranche dans Admin › Infolettre › Abonnés.
+  // Le compte lui-même n'est jamais bloqué : ça peut être une vraie personne
+  // prudente, et c'est d'ailleurs le cas le plus probable.
+  const domaine = domaineAlias(clean.email);
+  if (domaine) {
+    clean.statusAvant = clean.status;
+    clean.status = 'suspect';
+    clean.tags = Array.from(new Set([...(clean.tags || []), 'robot-potentiel']));
+    clean.robotPotentiel = { raison: raisonAlias(domaine), poseLe: serverTimestamp(), par: 'garde automatique' };
+  }
   invalidateNewsletterSubscribers();
   return addDoc(collection(db, 'newsletter'), { ...clean, subscribedAt: serverTimestamp() });
 }
