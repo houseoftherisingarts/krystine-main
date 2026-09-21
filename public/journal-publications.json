@@ -492,5 +492,27 @@
       "src/vexelhotjar/tracker.ts",
       "storage.rules"
     ]
+  },
+  {
+    "quand": "2026-09-21T23:57:59.652Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "82a574e",
+    "message": "Visiteurs et clics : la mesure sur les pages statiques (accueil, speaking, communauté, liste d'attente) par le script autonome /vh/vexelhotjar.js",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "package.json",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/communaute/index.html",
+      "public/liste-attente-origine/index.html",
+      "public/speaking/index.html",
+      "public/vh/replay-BBJMOS72.js",
+      "public/vh/vexelhotjar.js",
+      "scripts/vexelhotjar-statique.mjs",
+      "src/vexelhotjar/statique.ts"
+    ]
   }
 ]
