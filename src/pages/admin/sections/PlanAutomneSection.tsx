@@ -254,7 +254,7 @@ const PlanAutomneSection: React.FC = () => {
         </div>
 
         {/* ── Équipe, tournée, parké ── */}
-        <div className="grid grid-cols-1 gap-3 px-3 pb-3 lg:grid-cols-[1.05fr_1.1fr_0.75fr] lg:gap-2">
+        <div className="grid grid-cols-1 items-start gap-3 px-3 pb-3 lg:grid-cols-[1.05fr_1.1fr_0.75fr] lg:gap-2">
           <section className="overflow-hidden rounded-[8px] border border-[#e4e9ee]">
             <TitreBande>{EQUIPE_TITRE}</TitreBande>
             <div className="divide-y divide-[#eef1f4]">
