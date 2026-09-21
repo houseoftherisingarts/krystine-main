@@ -121,7 +121,7 @@ const PlanAutomneSection: React.FC = () => {
           <img
             src={ENTETE.photo}
             alt="Une femme assise devant un lac au lever du jour, une tasse entre les mains"
-            className="h-[120px] w-full rounded-[8px] object-cover object-center lg:h-[168px] lg:w-[300px] lg:rounded-none"
+            className="h-[120px] w-full rounded-[8px] object-cover object-center lg:h-full lg:w-[300px] lg:rounded-none"
           />
 
           <p className="font-serif text-[20px] leading-[1.28] text-[#1d2f3d] lg:text-center lg:text-[24px]">
