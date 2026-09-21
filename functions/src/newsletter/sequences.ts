@@ -11,6 +11,7 @@ import {
   unsubscribeUrl, unsubscribeOneClickUrl, assurerJeton } from './mail';
 import { renderEmailHtml, renderEmailText, newsletterAttachments, type NewsletterBlock, type Couverture, type Lang, type Bandeau } from './renderer';
 import { ADMIN_EMAILS } from './send';
+import { champsRobot } from './robots';
 
 // ─── Les séquences : des courriels qui partent tout seuls, dans le temps ────
 // Le moteur des rappels du direct (live.ts) généralisé. Une séquence est une
