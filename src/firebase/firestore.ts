@@ -174,7 +174,11 @@ export async function deleteEvent(id: string) {
 // `prettySource()` keeps the filter dropdown readable.
 //
 // ─── Newsletter subscribers (CRM) ────────────────────────────────────────────
-export type SubscriberStatus = 'active' | 'unsubscribed' | 'bounced' | 'pending';
+// `suspect` : la garde anti-robots (21 septembre 2026). L'adresse vient d'un
+// domaine d'alias jetable, elle ne reçoit rien, et Krystine tranche dans
+// Admin › Infolettre › Abonnés › Robots potentiels. Aucun chemin d'envoi ne
+// cible ce statut : tous filtrent sur `active`.
+export type SubscriberStatus = 'active' | 'unsubscribed' | 'bounced' | 'pending' | 'suspect';
 
 export interface NewsletterSubscriber {
   id?: string;

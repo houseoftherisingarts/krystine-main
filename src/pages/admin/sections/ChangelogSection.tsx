@@ -13,7 +13,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { JOURNAL, nombreEtapes, type Etape } from '../../../lib/changelog';
 import DemandesClientPanel from '../../../components/admin/DemandesClientPanel';
-import { auth } from '../../../firebase';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import app from '../../../firebase';
+import type { DemandeVue } from '../../../components/admin/DemandesClientPanel';
 
 const MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
 
@@ -24,15 +26,17 @@ const enLettres = (iso: string): string => {
 };
 
 /**
- * La porte du studio. Le slug est celui de l'iframe de demande; la lecture, elle,
- * ne se prouve pas avec la clé du formulaire (elle est dans le bundle) mais avec
- * le jeton d'identité de l'admin connectée, que la fonction vérifie contre la
- * liste des courriels admis dans le dossier Vexel de Krystine.
+ * La liste passe par notre propre serveur, jamais par le studio en direct : la
+ * callable `mesDemandes` vérifie que l'appelante est admin, lit la clé du
+ * dossier Vexel dans un secret et rapporte la liste. Aucune clé ici.
  */
-const VEXEL_CLIENT = 'krystine';
-const VEXEL_DEMANDES = 'https://us-central1-vexel-integrations.cloudfunctions.net/demandesClient';
-
-const jetonAdmin = () => auth?.currentUser?.getIdToken() ?? Promise.resolve(null);
+const chargerDemandes = async (): Promise<DemandeVue[]> => {
+  const appel = httpsCallable<unknown, { demandes: DemandeVue[] }>(
+    getFunctions(app!, 'us-central1'),
+    'mesDemandes',
+  );
+  return (await appel()).data.demandes ?? [];
+};
 
 // TEMPORAIRE (capture du 21 septembre 2026) : ?demoDemandes=1 remplit le
 // panneau sans appeler la fonction, le temps de regarder le rendu. À retirer.
@@ -214,9 +218,7 @@ const ChangelogSection: React.FC = () => {
       </div>
       <div className={`kr-demandes ${onglet === 'demandes' ? '' : 'hidden'}`} role="tabpanel">
         <DemandesClientPanel
-          endpoint={VEXEL_DEMANDES}
-          client={VEXEL_CLIENT}
-          obtenirJeton={jetonAdmin}
+          charger={chargerDemandes}
           lang="fr"
           onEnAttente={setEnAttente}
           donneesDemo={new URLSearchParams(window.location.search).get('demoDemandes') ? DEMO : undefined}
