@@ -42,6 +42,7 @@ import Portail from '../components/Portail';
 import { suivreVerification, compterProgrammesSuivis, televerserPiece, demanderBadgeBleu, type Verification } from '../firebase/verification';
 import { SEUIL_PROGRAMMES } from '../lib/badgeBleu';
 import EditModeToggleButton from '../components/edit/EditModeToggleButton';
+import PorteMembre from '../components/compte/PorteMembre';
 import { useGamification, montrerBadgeBleu } from '../contexts/GamificationContext';
 
 // Le texte du niṣka, écrit par Alex le 6 septembre 2026, lu sous la bourse.
