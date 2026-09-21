@@ -225,35 +225,32 @@ function genUnsubToken(): string {
   return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
 }
 
+// Le navigateur n'écrit plus dans `newsletter` : il appelle la fonction
+// `inscrireInfolettre`, seule à tenir la plume depuis le 21 septembre 2026.
+// La règle Firestore refuse désormais toute création côté client, donc la
+// garde (alias jetables, cadence par adresse IP, pot de miel) ne se contourne
+// plus en parlant à l'API directement. La signature ne bouge pas : les six
+// appelants du site (infolettre, listes d'attente, direct du podcast, quiz,
+// consentement d'une membre) restent tels quels.
 export async function addNewsletterSubscriber(data: Omit<NewsletterSubscriber, 'id' | 'subscribedAt'>) {
-  if (!db) return console.warn('[Firestore] Not configured');
-  // Firestore rejects `undefined` values. Keep only defined, non-empty fields.
+  if (!app) return console.warn('[Firestore] Not configured');
+  // La fonction refuse `undefined` au transport comme Firestore le refusait
+  // à l'écriture : on ne garde que ce qui porte une valeur.
   const clean: Record<string, any> = {};
   for (const [k, v] of Object.entries(data)) {
     if (v !== undefined && v !== null && v !== '') clean[k] = v;
   }
   if (!clean.email) return;
-  clean.email = String(clean.email).trim().toLowerCase();
-  if (!clean.status) clean.status = 'active';
-  if (!clean.unsubscribeToken) clean.unsubscribeToken = genUnsubToken();
   // La langue du site au moment de l'inscription : c'est elle qui décide
-  // quelle version d'une infolettre la personne reçoit.
+  // quelle version d'une infolettre la personne reçoit. Elle se lit dans le
+  // navigateur (localStorage, ?lang=), pas sur le serveur, donc elle voyage.
   if (clean.lang !== 'fr' && clean.lang !== 'en') clean.lang = getLang();
-  // La garde anti-robots. Tous les formulaires publics (infolettre, listes
-  // d'attente, quiz, consentement d'une membre connectée) passent par ici :
-  // un seul contrôle les couvre tous. Un alias jetable entre en quarantaine,
-  // il ne reçoit rien, et Krystine tranche dans Admin › Infolettre › Abonnés.
-  // Le compte lui-même n'est jamais bloqué : ça peut être une vraie personne
-  // prudente, et c'est d'ailleurs le cas le plus probable.
-  const domaine = domaineAlias(clean.email);
-  if (domaine) {
-    clean.statusAvant = clean.status;
-    clean.status = 'suspect';
-    clean.tags = Array.from(new Set([...(clean.tags || []), 'robot-potentiel']));
-    clean.robotPotentiel = { raison: raisonAlias(domaine), poseLe: serverTimestamp(), par: 'garde automatique' };
-  }
   invalidateNewsletterSubscribers();
-  return addDoc(collection(db, 'newsletter'), { ...clean, subscribedAt: serverTimestamp() });
+  const appeler = httpsCallable<Record<string, any>, { ok: boolean; id: string; status: string }>(
+    getFunctions(app, 'us-central1'), 'inscrireInfolettre',
+  );
+  const res = await appeler(clean);
+  return res.data;
 }
 
 // La collection `newsletter` dépasse les 33 000 documents depuis l'import
