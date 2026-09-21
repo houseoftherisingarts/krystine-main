@@ -300,5 +300,48 @@
       "src/components/layout/SignInModal.tsx",
       "src/pages/ClientPortal.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-21T12:05:45.933Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "730badd",
+    "message": "Robots potentiels (reCAPTCHA durci, alias jetables en quarantaine, onglet Abonnés avec réhabilitation, carte membre et confirmerHumain), sous-onglet Vos demandes avec crochets dans le Journal (fonction mesDemandes), listes d'attente réparées (bouton du Foyer, formations, clés retraite et origine2), collant sobre sans foil avec loupe au survol",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/captcha.ts",
+      "functions/src/cinqelements.ts",
+      "functions/src/index.ts",
+      "functions/src/mesDemandes.ts",
+      "functions/src/musique.ts",
+      "functions/src/newsletter/robots.ts",
+      "functions/src/newsletter/sequences.ts",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/vexel-garde.js",
+      "scripts/newsletter/marquer-robots.mjs",
+      "src/components/CarteRobotPotentiel.tsx",
+      "src/components/admin/DemandesClientPanel.tsx",
+      "src/components/layout/SignInModal.tsx",
+      "src/firebase/cinqelements.ts",
+      "src/firebase/firestore.ts",
+      "src/firebase/musique.ts",
+      "src/lib/recaptcha.ts",
+      "src/lib/robots.test.mjs",
+      "src/lib/robots.ts",
+      "src/pages/CinqElementsPage.tsx",
+      "src/pages/ClientPortal.tsx",
+      "src/pages/FormationsLanding.tsx",
+      "src/pages/FoyerPage.tsx",
+      "src/pages/ListeAttenteLoeuvre.tsx",
+      "src/pages/UnsubscribePage.tsx",
+      "src/pages/admin/sections/ChangelogSection.tsx",
+      "src/pages/admin/sections/newsletter/SubscribersPanel.tsx",
+      "src/pages/foyer/MusiqueOrigine.tsx",
+      "src/vexel/CollantVexel.tsx"
+    ]
   }
 ]
