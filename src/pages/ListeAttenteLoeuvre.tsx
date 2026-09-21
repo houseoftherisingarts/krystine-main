@@ -36,7 +36,7 @@ const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: 
 };
 
 /* ── Programme copy (préservé, mot pour mot) ── */
-type ProgrammeKey = 'origine' | 'foyer' | 'kapha' | 'pitta';
+type ProgrammeKey = 'origine' | 'origine2' | 'foyer' | 'retraite' | 'kapha' | 'pitta';
 
 interface ProgrammeMeta {
   source: string;
