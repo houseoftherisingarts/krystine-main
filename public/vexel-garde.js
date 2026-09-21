@@ -60,16 +60,6 @@
     a.setAttribute('aria-label', 'Site créé par Vexel Webstudio');
     a.innerHTML = '<img src="/vexel-logo.png" alt="" width="329" height="320">'
       + '<span class="vg-texte"><span class="vg-kicker">Site créé par</span><span class="vg-nom">Vexel Webstudio</span></span>';
-    // Vexel s'ouvre derrière : la visiteuse reste sur le site (Alex, 21 sept 2026).
-    a.addEventListener('click', function (e) {
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-      e.preventDefault();
-      var b = document.createElement('a');
-      b.href = a.href; b.target = '_blank'; b.rel = 'noopener noreferrer'; b.style.display = 'none';
-      document.body.appendChild(b);
-      b.dispatchEvent(new MouseEvent('click', { bubbles: false, cancelable: true, ctrlKey: true, metaKey: true, view: window }));
-      b.remove();
-    });
     document.body.appendChild(a);
   }
 
