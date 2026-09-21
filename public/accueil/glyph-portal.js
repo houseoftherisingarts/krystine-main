@@ -237,7 +237,7 @@ function monter(section) {
     // Une sonde en 100svh empêche les barres du navigateur de changer sans cesse la course.
     const smallViewport = probe.offsetHeight;
     const viewportHeight = Math.max(1, Math.min(root ? root.clientHeight : smallViewport, smallViewport));
-    H = statique() ? Math.min(viewportHeight * 0.75, 480) : viewportHeight;
+    H = sansCamera() ? Math.min(viewportHeight * 0.75, 480) : viewportHeight;
     section.style.setProperty('--gp-height', `${H}px`);
     travel = H * length;
     art.setAttribute('viewBox', `0 0 ${W} ${H}`);
