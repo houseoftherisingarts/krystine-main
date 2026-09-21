@@ -87,6 +87,7 @@ const NewsletterSignup: React.FC<Props> = ({
         question: askQuestion ? question.trim().slice(0, 1000) || undefined : undefined,
         source,
         tags: tags || [source],
+        site: pot,
       });
       // Loyalty — 5 pts for newsletter subscribe, once per member (keyed on
       // uid so anonymous signups don't earn points until the user signs in).
