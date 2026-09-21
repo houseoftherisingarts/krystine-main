@@ -350,6 +350,11 @@
   /* ---------- trilogie : le mot TRILOGIE ouvre la section (Glyph Portal) ---------- */
   .trilogy{position:relative;z-index:2;background:var(--cream-2)}
   .trilogy .scene2{position:absolute;left:0;right:0;top:-9%;bottom:-9%;z-index:0;background:url('/accueil/assets/trilogy-books.png?v=2027') 58% 82%/117% no-repeat;background-image:image-set(url('/accueil/assets/trilogy-books.webp?v=2027') type('image/webp'),url('/accueil/assets/trilogy-books.png?v=2027') type('image/png'));transform:scale(var(--gp-field-scale,1));transform-origin:58% 70%}
+  /* L'encre du mot doit se lire sur le papier crème : le visuel des trois tomes est
+     assombri tant que la caméra n'est pas entrée, puis il reprend ses couleurs. */
+  .trilogy .tri-encre{position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(155deg,rgba(16,23,19,.62) 0%,rgba(37,50,44,.5) 55%,rgba(16,23,19,.58) 100%);
+    opacity:calc(1 - var(--gp-reveal,0))}
   .trilogy .veil2{position:absolute;inset:0;z-index:1;
     background:
       linear-gradient(90deg, rgba(234,225,208,.98) 0%, rgba(234,225,208,.96) 34%, rgba(234,225,208,.5) 48%, rgba(234,225,208,0) 62%),
