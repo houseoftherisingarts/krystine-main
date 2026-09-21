@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { useAuth } from '../../contexts/AppContext';
 import { telechargerMusiqueOrigine } from '../../firebase/musique';
 import CompteUpsell from '../../components/CompteUpsell';
+import { RECAPTCHA_SITE_KEY, useRecaptcha } from '../../lib/recaptcha';
 
 const ease = [0.16, 0.8, 0.24, 1] as const;
 
