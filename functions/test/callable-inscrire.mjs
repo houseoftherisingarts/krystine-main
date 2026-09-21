@@ -25,9 +25,15 @@ async function inscrire(data) {
   return { http: r.status, ok: r.ok && !rep.error, result: rep.result, error: rep.error };
 }
 
-/** Les fiches de la collection, lues par l'API REST de l'émulateur. */
-async function fiches() {
-  const r = await fetch(`${URL_DB}/newsletter?pageSize=300`);
+/**
+ * Les fiches d'une collection, lues par l'API REST de l'émulateur. Le jeton
+ * « owner » est celui que l'émulateur reconnaît comme propriétaire : sans lui
+ * les règles s'appliquent, et elles réservent la lecture à l'admin.
+ */
+async function fiches(col = 'newsletter') {
+  const r = await fetch(`${URL_DB}/${col}?pageSize=300`, {
+    headers: { Authorization: 'Bearer owner' },
+  });
   const j = await r.json();
   return (j.documents || []).map(d => {
     const f = d.fields || {};
