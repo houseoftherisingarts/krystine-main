@@ -34,16 +34,21 @@ export const musiqueOrigine = onCall(
       const prenom = String(req.data?.prenom || '').trim().slice(0, 80);
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new HttpsError('invalid-argument', 'Courriel invalide.');
       if (req.data?.consent !== true) throw new HttpsError('failed-precondition', 'Le consentement est nécessaire.');
+      // Même garde que l'extrait des 5 éléments : case cochée et cadence par
+      // adresse IP avant la moindre écriture.
+      await garderFormulaire(String(req.data?.token || ''), 'foyer-musique', req.rawRequest?.ip);
       const deja = await db.collection('newsletter').where('email', '==', email).limit(1).get();
       if (deja.empty) {
+        const tags = ['foyer-musique', 'foyer-origine'];
         await db.collection('newsletter').add({
           email,
           ...(prenom ? { firstName: prenom } : {}),
           source: 'foyer-musique',
-          tags: ['foyer-musique', 'foyer-origine'],
+          tags,
           status: 'active',
           unsubscribeToken: crypto.randomBytes(18).toString('hex'),
           subscribedAt: FieldValue.serverTimestamp(),
+          ...champsRobot(email, tags),
         });
       } else {
         const d = deja.docs[0];
