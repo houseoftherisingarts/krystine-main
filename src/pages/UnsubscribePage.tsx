@@ -27,6 +27,10 @@ const UnsubscribePage: React.FC = () => {
     <div className="min-h-screen dark:bg-[#16100a] flex items-center justify-center px-6">
       <div className="max-w-md w-full bg-white dark:bg-[#2a2015] rounded-[24px] border border-[#2a2015]/5 dark:border-white/5 p-10 text-center">
         <img src="https://storage.googleapis.com/inspirata/Vata/1%20(1).png" alt="Inspirata" className="h-14 w-auto mx-auto mb-6 opacity-80 dark:invert dark:brightness-[1.5]" />
+        {/* Une personne connectée dont l'adresse est en quarantaine peut se
+            rétablir d'ici aussi : c'est souvent sur cette page qu'elle arrive
+            en cherchant pourquoi elle ne reçoit plus rien. */}
+        <CarteRobotPotentiel className="mb-8 text-left" />
         {state === 'pending' && (
           <>
             <i className="fa-solid fa-circle-notch fa-spin text-[#7d6330] text-2xl mb-4 block" />
