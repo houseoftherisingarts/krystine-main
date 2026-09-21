@@ -63,6 +63,31 @@ const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
       "Jamais il n'y a eu autant d'informations, et jamais autant de dispersion. " +
       "L'exigence actuelle est de retrouver des repères intérieurs fiables.",
   },
+  // La page /origine-2 renvoie ici tant que la vente n'est pas ouverte, et les
+  // portes « Les Retraites » de l'accueil et de /communaute pointent ici aussi.
+  // Sans leur entrée, les deux retombaient sur la liste générique et Krystine
+  // ne pouvait plus distinguer une inscrite d'une autre dans son CRM.
+  origine2: {
+    source: 'waitlist-origine2',
+    kicker: "Liste d'attente · Expérience Origine 2",
+    title: 'Expérience Origine 2',
+    subtitle: 'La suite du parcours signature',
+    promise:
+      "Expérience Origine 2 est la suite du parcours signature, un accompagnement de douze " +
+      "semaines pour retrouver vos propres repères. Les portes ne sont pas encore ouvertes : " +
+      "inscrivez-vous à la liste et vous recevrez l'invitation avant toute annonce publique.",
+  },
+  retraite: {
+    source: 'waitlist-retraite',
+    kicker: "Liste d'attente · Les retraites",
+    title: 'Les retraites',
+    subtitle: 'Déposer le bruit et revenir au corps',
+    promise:
+      "Les retraites se vivent en nature, en petit groupe, le temps de quelques jours où " +
+      "le bruit se dépose et où le corps reprend sa place. Les dates et les lieux " +
+      "s'annoncent d'abord à la liste, alors inscrivez-vous et vous recevrez l'invitation " +
+      "avant toute annonce publique.",
+  },
   foyer: {
     source: 'waitlist-foyer-origine',
     kicker: "Liste d'attente · Le Foyer d'Origine",
