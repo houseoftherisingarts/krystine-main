@@ -249,6 +249,16 @@ const NewsletterSignup: React.FC<Props> = ({
       )}
 
       <form onSubmit={handleEmailSubmit} className={askFirstName ? 'grid gap-4 sm:grid-cols-2' : 'flex flex-col md:flex-row gap-4 items-center'}>
+        <input
+          type="text"
+          name="site"
+          value={pot}
+          onChange={e => setPot(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          className="absolute -left-[9999px] h-0 w-0 opacity-0"
+        />
         {askFirstName && (
           <input
             type="text"
