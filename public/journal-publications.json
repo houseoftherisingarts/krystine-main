@@ -448,5 +448,49 @@
       "public/assets-manifest.json",
       "src/lib/changelog.ts"
     ]
+  },
+  {
+    "quand": "2026-09-21T23:43:47.032Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "62f3d98",
+    "message": "Visiteurs et clics : la mesure maison VexelHotjar (cartes de chaleur, visites filmées, parcours, accrocs) dans l'admin, avec la collecte /api/vh et l'agrégation planifiée",
+    "cibles": [
+      "hosting",
+      "functions",
+      "firestore",
+      "storage"
+    ],
+    "fichiers": [
+      "firebase.json",
+      "firestore.indexes.json",
+      "firestore.rules",
+      "functions/src/index.ts",
+      "functions/src/vexelhotjar/agregation.ts",
+      "functions/src/vexelhotjar/collecte.ts",
+      "functions/src/vexelhotjar/commun.ts",
+      "functions/src/vexelhotjar/index.ts",
+      "package-lock.json",
+      "package.json",
+      "public/assets-manifest.json",
+      "src/components/layout/ConsentBanner.tsx",
+      "src/pages/AdminDashboard.tsx",
+      "src/pages/admin/AdminShell.tsx",
+      "src/pages/admin/sections/VisiteursSection.tsx",
+      "src/pages/admin/sections/visiteurs/CartesChaleur.tsx",
+      "src/pages/admin/sections/visiteurs/Enregistrements.tsx",
+      "src/pages/admin/sections/visiteurs/Entonnoirs.tsx",
+      "src/pages/admin/sections/visiteurs/Frictions.tsx",
+      "src/pages/admin/sections/visiteurs/Reglages.tsx",
+      "src/pages/admin/sections/visiteurs/VueEnsemble.tsx",
+      "src/pages/admin/sections/visiteurs/chaleur.ts",
+      "src/pages/admin/sections/visiteurs/donnees.ts",
+      "src/pages/admin/sections/visiteurs/graphiques.tsx",
+      "src/types/css.d.ts",
+      "src/vexelhotjar/index.ts",
+      "src/vexelhotjar/replay.ts",
+      "src/vexelhotjar/tracker.ts",
+      "storage.rules"
+    ]
   }
 ]
