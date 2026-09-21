@@ -35,16 +35,23 @@ export const extraitCinqElements = onCall(
       const prenom = String(req.data?.prenom || '').trim().slice(0, 80);
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new HttpsError('invalid-argument', 'Courriel invalide.');
       if (req.data?.consent !== true) throw new HttpsError('failed-precondition', "Le consentement est nécessaire.");
+      // Une visiteuse non connectée passe la case « Je ne suis pas un robot »
+      // et la cadence par adresse IP avant qu'on écrive quoi que ce soit.
+      await garderFormulaire(String(req.data?.token || ''), '5-elements', req.rawRequest?.ip);
       const deja = await db.collection('newsletter').where('email', '==', email).limit(1).get();
       if (deja.empty) {
+        const tags = ['5-elements', 'extrait-livre'];
         await db.collection('newsletter').add({
           email,
           ...(prenom ? { firstName: prenom } : {}),
           source: '5-elements',
-          tags: ['5-elements', 'extrait-livre'],
+          tags,
           status: 'active',
           unsubscribeToken: crypto.randomBytes(18).toString('hex'),
           subscribedAt: FieldValue.serverTimestamp(),
+          // Un alias jetable entre en quarantaine : l'extrait part quand même,
+          // seule l'infolettre attend le verdict de Krystine.
+          ...champsRobot(email, tags),
         });
       } else {
         const d = deja.docs[0];
