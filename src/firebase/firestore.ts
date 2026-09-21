@@ -196,6 +196,19 @@ export interface NewsletterSubscriber {
   phone?: string;                 // repris du profil membre, si le compte en a un
   lang?: string;                  // "fr" | "en" — langue active au moment de l'inscription
   consentement?: boolean;         // true quand une membre connectée coche la case de consentement
+  // ── La garde anti-robots (21 septembre 2026) ──
+  // Une adresse sur un domaine d'alias jetable entre en `status: 'suspect'`.
+  // Elle ne reçoit rien tant qu'elle est là. `statusAvant` garde le statut
+  // qu'elle aurait eu, pour le rétablir d'un bouton.
+  statusAvant?: string;
+  robotPotentiel?: {
+    raison?: string;
+    poseLe?: Timestamp;
+    par?: string;
+    confirmeHumainLe?: Timestamp;        // la personne a repassé le reCAPTCHA elle-même
+    decisionKrystine?: 'gardee' | 'quarantaine';
+    decisionLe?: Timestamp;
+  };
 }
 
 // Generate a URL-safe random token. Used as the subscriber's unsubscribe key
