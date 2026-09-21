@@ -152,7 +152,7 @@ export const confirmerHumain = onCall(
     const lot = db.batch();
     for (const d of enQuarantaine) lot.update(d.ref, champsRehabilitation(d.data() as FicheRobot, 'personne'));
     await lot.commit();
-    console.log(`[confirmerHumain] ${enQuarantaine.length} fiche(s) rétablie(s)`, uid, email);
+    console.log(`[confirmerHumain] ${enQuarantaine.length} fiche(s) rétablie(s)`, uid, email || '(courriel non vérifié : uid seulement)');
     return { ok: true, retablies: enQuarantaine.length };
   },
 );

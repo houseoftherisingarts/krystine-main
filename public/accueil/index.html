@@ -1094,16 +1094,14 @@
           <li><a href="https://www.facebook.com/Krystinestlaurent" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg> Facebook</a></li>
           <li><a href="https://www.youtube.com/@KrystineStLaurent" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z"/></svg> YouTube</a></li>
         </ul>
-        <!-- Collant Vexel : foil, même dessin que la version React (src/vexel/CollantVexel.tsx). Vanille ici puisque
-             /accueil est un export statique. La carte suit la langue affichée par /i18n/static.js (document.documentElement.lang). -->
+        <!-- Collant Vexel : bouton sobre sans foil, même dessin que la version React (src/vexel/CollantVexel.tsx).
+             Vanille ici puisque /accueil est un export statique. La carte suit la langue affichée par /i18n/static.js (document.documentElement.lang). -->
         <div class="cv-wrap" style="position:relative;z-index:1;margin-top:2rem">
           <a id="cvFoil" class="cv-foil" href="https://vexelwebstudio.com" target="_blank" rel="noopener noreferrer" aria-haspopup="dialog" aria-label="Site créé par Vexel Webstudio : en savoir plus">
-            <span aria-hidden class="cv-sheen"></span>
-            <span aria-hidden class="cv-grain"></span>
-            <img src="/vexel-logo.png" alt="" width="329" height="320" style="height:0.9rem;width:auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));">
+            <img src="/vexel-logo.png" alt="" width="329" height="320" style="height:1.15rem;width:auto;opacity:.85;">
             <span style="display:flex;flex-direction:column;line-height:1.15;">
-              <span id="cvKicker" style="font-size:0.35rem;font-weight:600;text-transform:uppercase;letter-spacing:0.2em;color:rgba(255,255,255,0.7);">Site créé par</span>
-              <span id="cvNom" style="margin-top:0.1rem;font-family:ui-serif,Georgia,Cambria,'Times New Roman',Times,serif;font-size:0.55rem;">Vexel Webstudio</span>
+              <span id="cvKicker" style="font-size:0.5rem;font-weight:600;text-transform:uppercase;letter-spacing:0.22em;color:#bb9a5e;">Site créé par</span>
+              <span id="cvNom" style="margin-top:0.15rem;font-family:ui-serif,Georgia,Cambria,'Times New Roman',Times,serif;font-size:0.8rem;">Vexel Webstudio</span>
             </span>
           </a>
         </div>
@@ -1147,17 +1145,12 @@
 
   <style>
     .cv-foil {
-      --mx: 30%; --my: 30%; --rx: 0deg; --ry: 0deg;
-      position: relative; display: inline-flex; align-items: center; gap: 0.4rem;
-      padding: 0.35rem 0.6rem; border-radius: 9px; border: 1.5px solid #fff; color: #fff;
-      text-decoration: none; overflow: hidden; isolation: isolate; cursor: pointer;
-      background: radial-gradient(120% 120% at var(--mx) var(--my), rgb(255 236 200 / 0.22), transparent 55%),
-        linear-gradient(135deg, #22180d 0%, #0b0805 60%, #1c130a 100%);
-      box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35), 0 10px 24px -10px rgb(0 0 0 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.25);
-      transform: perspective(600px) rotateX(var(--rx)) rotateY(var(--ry));
-      transition: transform 220ms ease, box-shadow 220ms ease;
+      position: relative; display: inline-flex; align-items: center; gap: 0.55rem;
+      padding: 0.5rem 0.85rem; border-radius: 2px; border: 1px solid rgba(187,154,94,0.45);
+      background: transparent; color: #f4efe6; text-decoration: none; cursor: pointer;
+      transition: border-color 220ms ease, background-color 220ms ease;
     }
-    .cv-foil:hover { box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35), 0 18px 34px -12px rgb(0 0 0 / 0.65), inset 0 1px 0 rgb(255 255 255 / 0.35); }
+    .cv-foil:hover, .cv-foil:focus-visible { border-color: #bb9a5e; background: rgba(244,239,230,0.05); outline: none; }
     .cv-sheen {
       position: absolute; inset: -40%; pointer-events: none; z-index: 0;
       background: repeating-conic-gradient(from 200deg at var(--mx) var(--my),
@@ -1165,14 +1158,11 @@
       opacity: 0.24; mix-blend-mode: color-dodge; filter: saturate(0.9) blur(2px);
       transition: opacity 260ms ease;
     }
-    .cv-foil:hover .cv-sheen { opacity: 0.4; }
     .cv-grain {
       position: absolute; inset: 0; pointer-events: none; z-index: 0;
       background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/></svg>");
       mix-blend-mode: soft-light; opacity: 0.35;
     }
-    .cv-foil > *:not(.cv-sheen):not(.cv-grain) { position: relative; z-index: 1; }
-    @media (prefers-reduced-motion: reduce) { .cv-foil { transform: none; transition: none; } }
     .cv-overlay { position: fixed; inset: 0; z-index: 900; display: none; align-items: flex-end; justify-content: center; padding: 1rem; background: rgba(28,23,18,0.55); backdrop-filter: blur(4px); }
     .cv-overlay.open { display: flex; }
     .cv-carte { position: relative; width: 100%; max-width: 960px; display: grid; grid-template-columns: minmax(0,1fr); overflow: hidden; border-radius: 15px; background: #f4efe6; border: 1px solid rgba(156,122,68,0.35); color: #1c1712; box-shadow: 0 30px 80px -30px rgba(20,16,12,0.6); text-align: left; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
