@@ -343,5 +343,34 @@
       "src/pages/foyer/MusiqueOrigine.tsx",
       "src/vexel/CollantVexel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-21T13:06:31.732Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "a381d28",
+    "message": "Accueil sans sections collées : rails horizontaux (repères, portes) et portail TRILOGIE; inscriptions à l'infolettre et aux listes d'attente passées côté serveur (fonction inscrireInfolettre, règle newsletter fermée aux navigateurs)",
+    "cibles": [
+      "hosting",
+      "functions",
+      "firestore"
+    ],
+    "fichiers": [
+      "firebase.json",
+      "firestore.rules",
+      "functions/src/index.ts",
+      "functions/src/newsletter/inscrire.ts",
+      "functions/test/callable-inscrire.mjs",
+      "functions/test/regles-newsletter.mjs",
+      "package-lock.json",
+      "package.json",
+      "public/accueil/glyph-portal.js",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "src/components/NewsletterSignup.tsx",
+      "src/firebase.ts",
+      "src/firebase/firestore.ts"
+    ]
   }
 ]
