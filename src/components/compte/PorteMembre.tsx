@@ -12,7 +12,7 @@ const PorteMembre: React.FC = () => {
 
   return (
     <section
-      className="relative isolate min-h-screen overflow-hidden bg-[#EEE7DB] px-6 pb-20 pt-28 dark:bg-[#151d19]"
+      className="relative isolate flex min-h-screen items-center overflow-hidden bg-[#EEE7DB] px-6 pb-20 pt-28 dark:bg-[#151d19]"
       aria-labelledby="porte-membre-titre"
     >
       <style>{`
