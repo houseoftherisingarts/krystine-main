@@ -371,7 +371,9 @@
   .btn-solid:hover{background:var(--brass-deep)}
   .btn-outline{padding:.95rem 1.7rem;background:var(--espresso-soft);border:1px solid var(--espresso-soft);color:var(--ctext);font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;transition:background .3s,border-color .3s,color .3s}
   .btn-outline:hover{background:var(--espresso-deep);border-color:var(--espresso-deep);color:var(--brass-bright)}
-  .tri-foot{position:relative;z-index:2;margin-top:2.4rem;text-align:center;font-family:var(--serif);font-style:italic;color:#8a7152;font-size:1.05rem;line-height:1.5;padding:0 1.5rem}
+  /* La ligne de pied reste dans la colonne de texte : centrée, elle courait sous les
+     couvertures des tomes et s'y perdait. */
+  .tri-foot{position:relative;z-index:2;margin-top:2.4rem;max-width:430px;font-family:var(--serif);font-style:italic;color:#8a7152;font-size:1.05rem;line-height:1.5}
 
   /* ---------- responsive ---------- */
   @media(prefers-reduced-motion:reduce){
