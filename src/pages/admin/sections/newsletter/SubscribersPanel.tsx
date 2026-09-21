@@ -108,7 +108,7 @@ const RobotsPanel: React.FC<{ subs: NewsletterSubscriber[]; refresh: () => Promi
   // 21 septembre 2026).
   const Ligne: React.FC<{ s: NewsletterSubscriber; actions: React.ReactNode; quand: React.ReactNode }> = ({ s, actions, quand }) => (
     <tr className="border-t border-[#293027]/5 dark:border-white/5 align-top">
-      <td className="px-4 py-3 text-[#293027] dark:text-white break-all">
+      <td className="px-4 py-3 text-[#293027] dark:text-white break-all lg:break-normal">
         {s.email}
         {/* Ce que les colonnes masquées diraient, ramené sous l'adresse */}
         <span className="mt-1 block text-[11px] text-[#293027]/50 dark:text-white/50 lg:hidden">

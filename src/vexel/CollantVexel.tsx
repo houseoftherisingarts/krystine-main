@@ -78,9 +78,11 @@ const style = `
   background: transparent;
   color: #f4efe6;
   text-decoration: none;
-  transition: border-color 220ms ease, background-color 220ms ease;
+  transition: border-color 220ms ease, background-color 220ms ease, transform 260ms cubic-bezier(.16,.8,.24,1);
+  transform-origin: right bottom;
 }
-.cv-foil:hover, .cv-foil:focus-visible { border-color: #bb9a5e; background: rgba(244,239,230,0.05); outline: none; }
+.cv-foil:hover, .cv-foil:focus-visible { border-color: #bb9a5e; background: rgba(244,239,230,0.05); outline: none; transform: scale(1.5); z-index: 5; }
+@media (prefers-reduced-motion: reduce) { .cv-foil:hover, .cv-foil:focus-visible { transform: none; } }
 .cv-sheen {
   position: absolute; inset: -40%; pointer-events: none; z-index: 0;
   background: repeating-conic-gradient(from 200deg at var(--mx) var(--my),
