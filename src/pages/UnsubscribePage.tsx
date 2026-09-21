@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { unsubscribeByToken } from '../firebase/firestore';
+import CarteRobotPotentiel from '../components/CarteRobotPotentiel';
 
 type State = 'pending' | 'ok' | 'invalid' | 'test';
 
