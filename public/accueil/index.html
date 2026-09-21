@@ -731,14 +731,14 @@
     .rail-defileur{display:contents}
     .rail-piste{width:max-content;align-items:center;gap:2.4rem;padding:0 max(3rem,calc((100vw - 1180px) / 2));
       margin:0;will-change:transform}
-    .rail-panneau{width:auto}
     .rail-jauge{display:block;position:absolute;left:0;right:0;bottom:0;height:3px;z-index:3;
       background:rgba(58,49,38,.12)}
     .rail-jauge span{display:block;height:100%;background:var(--brass);transform:scaleX(0);transform-origin:0 50%}
-    .reperes .rail-panneau{width:clamp(230px,20vw,290px)}
-    .portes .rail-panneau{width:auto}
+    .reperes .rail-panneau{width:clamp(280px,25vw,350px)}
+    /* les cartes laissent la bande du titre en haut et la légende en bas dégagées */
+    .portes .rail-panneau{width:clamp(240px,23vw,320px)}
+    .portes .rail-piste{margin-bottom:8rem}
     .rail-pied{position:absolute;left:0;right:0;bottom:2.4rem;z-index:3;margin:0 auto}
-    .portes .rail-piste{padding-top:3rem}
   }
 
   /* ============ GLYPH PORTAL ============
