@@ -144,7 +144,7 @@ const PlanAutomneSection: React.FC = () => {
               <i className={`fa-solid ${a.icone} text-[17px] text-[#a98254]`} />
               <div className="min-w-0">
                 <div className="text-[11px] font-bold tracking-[0.1em] text-[#20394d]">{a.titre}</div>
-                <div className="truncate text-[10.5px] text-[#5d7185]">{a.sousTitre}</div>
+                <div className="text-[10.5px] leading-tight text-[#5d7185]">{a.sousTitre}</div>
               </div>
             </div>
           ))}
