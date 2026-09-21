@@ -30,6 +30,21 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-09-21',
+    titre: "Vos demandes cochées, les robots mis à part, et un accueil qui glisse de côté",
+    intro: "Ce que vous avez demandé depuis votre admin se coche maintenant sous vos yeux à mesure que c'est fait, les inscriptions douteuses à l'infolettre sont rangées à part sans être perdues, les listes d'attente ont été vérifiées une à une, et l'accueil a laissé tomber ses sections collantes pour le grand geste latéral du studio.",
+    etapes: [
+      { texte: "Dans le Journal des changements, un sous-onglet « Vos demandes » liste tout ce que vous avez envoyé par « Demander un changement », avec un crochet vert quand c'est fait et la date. La pastille sur l'onglet compte ce qui reste ouvert.", ou: '/admin/changelog', libelle: 'Vos demandes' },
+      { texte: "Dans Abonnés, un onglet « Robots potentiels » reçoit les inscriptions qui ressemblent à des automates (adresses jetables, rafales depuis une même connexion). Elles ne reçoivent plus vos lettres, mais rien n'est effacé : un clic les remet dans la liste. Les personnes qui confirment elles-mêmes qu'elles sont humaines passent dans « Humains confirmés », où vous tranchez à la main.", ou: '/admin/abonnes', libelle: 'Abonnés' },
+      "Une membre que le système a rangée parmi les robots voit dans son espace une carte qui le lui dit sans détour, avec un bouton pour confirmer qu'elle est bien une personne (les courriels Proton et autres adresses sécurisées tombent parfois dans ce filet).",
+      "La vérification anti-robot des formulaires est plus stricte côté serveur, et l'inscription à l'infolettre passe maintenant par le serveur plutôt que par le navigateur : les six formulaires du site ont été testés en vrai après le changement.",
+      { texte: "À la suite du courriel de Manon Lemay, toutes les listes d'attente ont été vérifiées sur ordinateur et sur téléphone : celle de la retraite et celle d'Origine n'enregistraient plus correctement, c'est réparé.", ou: '/liste-attente-origine', libelle: "Liste d'attente" },
+      { texte: "Sur l'accueil, les sections qui restaient collées à l'écran sont parties. À leur place, quatre sections entières glissent de côté au fil du défilement, comme sur le site du studio : Un langage, des repères, puis Par où commencer avec son éventail de portes, puis Votre compte est votre clé, puis Comment tout se relie. Le défilement redevient vertical sur le mot TRILOGIE, dont les lettres s'ouvrent sur les trois livres.", ou: '/accueil', libelle: 'Accueil' },
+      { texte: "La porte de /compte, quand on n'est pas connectée, reprend le module « Votre compte est votre clé » de l'accueil, sans la mention Inspirata.", ou: '/compte', libelle: 'Mon compte' },
+      "La plaque du studio au bas des pages est revenue à un dessin sobre, sans foil; elle grossit au survol, et « Continuer vers Vexel » s'ouvre dans un onglet derrière, sans vous faire quitter la page.",
+    ],
+  },
+  {
     date: '2026-09-20',
     titre: "Vos demandes du jour, l'onglet Gabarits, et un site que vous publiez vous-même",
     intro: "Une grande journée : ce que vous avez demandé depuis votre admin est en ligne, vos infolettres ont maintenant leurs gabarits, et vos propres changements se publient désormais sans passer par Alex, avec un journal qui garde la trace de chacun.",
