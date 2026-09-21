@@ -1345,22 +1345,10 @@
     foil.addEventListener('click', ouvrir);
     fermer.addEventListener('click', fermerCarte);
     var non = document.getElementById('cvNon'); if (non) non.addEventListener('click', fermerCarte);
-    // « Continuer vers Vexel » ouvre un onglet d'arrière-plan : la visiteuse reste ici (Alex, 21 sept 2026).
-    function ouvrirEnArrierePlan(url) {
-      var a = document.createElement('a');
-      a.href = url; a.target = '_blank'; a.rel = 'noopener';
-      a.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0';
-      document.body.appendChild(a);
-      var mac = /Mac|iPhone|iPad/.test(navigator.platform || '');
-      a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, ctrlKey: !mac, metaKey: mac, button: 0, view: window }));
-      a.remove();
-      setTimeout(function () { try { window.focus(); } catch (e) {} }, 60);
-    }
+    // « Continuer vers Vexel » : lien ordinaire en nouvel onglet. Chrome place l'onglet d'après le vrai clic
+    // de la personne (Cmd ou Ctrl), jamais d'après un clic synthétique : l'arrière-plan par script n'existe pas.
     var oui = document.getElementById('cvOui');
-    if (oui) oui.addEventListener('click', function (e) {
-      if (!e.metaKey && !e.ctrlKey && !e.shiftKey && e.button === 0) { e.preventDefault(); ouvrirEnArrierePlan(oui.href); }
-      fermerCarte();
-    });
+    if (oui) oui.addEventListener('click', fermerCarte);
     overlay.addEventListener('click', function (e) { if (e.target === overlay) fermerCarte(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fermerCarte(); });
 
