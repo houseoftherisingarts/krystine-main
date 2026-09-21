@@ -1,6 +1,6 @@
-import { db } from '../firebase';
+import app, { db } from '../firebase';
 import { getLang } from '../lib/i18n/lang';
-import { domaineAlias, raisonAlias } from '../lib/robots';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import {
   collection, addDoc, getDocs, deleteDoc, doc, updateDoc, setDoc, getDoc,
   query, orderBy, where, serverTimestamp, onSnapshot, Timestamp, deleteField,
