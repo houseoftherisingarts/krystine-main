@@ -37,3 +37,4 @@ export { acheterCoffre, ouvrirCoffre, reclamerGrandLot, offrirCoffre } from './c
 export { notifierBillet, annoncerChangement } from './notifs';
 export { interactionMessageDirect, interactionBillet, interactionCommentaire, interactionVoteBillet, interactionVoteCommentaire, interactionPoints } from './interactions';
 export { purgerHabitudesInactives } from './habitudes';
+export { mesDemandes } from './mesDemandes';

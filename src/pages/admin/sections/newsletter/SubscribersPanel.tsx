@@ -60,7 +60,179 @@ export const sourceLabel = (key: string): string => {
   return isGoogle ? `${pretty} · Google` : pretty;
 };
 
+// ─── L'onglet « Robots potentiels » (21 septembre 2026) ──────────────────────
+// Deux listes dans un seul écran. En quarantaine : les adresses sur un domaine
+// d'alias jetable, qui ne reçoivent rien tant qu'elles sont là. Humains
+// confirmés : celles qui ont repassé le reCAPTCHA depuis leur espace membre,
+// qui reçoivent de nouveau, mais qui restent affichées pour que Krystine
+// tranche à la main. Un « Garder » les sort de la liste, un « Remettre en
+// quarantaine » les y renvoie et les empêche de se rouvrir toutes seules.
+const estRobot = (s: NewsletterSubscriber) =>
+  s.status === 'suspect' || !!s.robotPotentiel || (s.tags || []).includes('robot-potentiel');
+const estConfirmee = (s: NewsletterSubscriber) =>
+  !!s.robotPotentiel?.confirmeHumainLe
+  && s.status !== 'suspect'
+  && s.robotPotentiel?.decisionKrystine !== 'gardee';
+const enQuarantaine = (s: NewsletterSubscriber) => s.status === 'suspect';
+
+const dateCourte = (t?: { toDate: () => Date }) => t?.toDate().toLocaleDateString('fr-CA') || '—';
+
+const RobotsPanel: React.FC<{ subs: NewsletterSubscriber[]; refresh: () => Promise<void> }> = ({ subs, refresh }) => {
+  const [occupe, setOccupe] = useState<string | null>(null);
+
+  const quarantaine = useMemo(() => subs.filter(s => estRobot(s) && enQuarantaine(s)), [subs]);
+  const confirmes = useMemo(() => subs.filter(s => estRobot(s) && estConfirmee(s)), [subs]);
+
+  // Un geste, un identifiant occupé, un rafraîchissement. Les quatre boutons
+  // passent par là pour ne pas répéter quatre fois la même plomberie.
+  const agir = async (s: NewsletterSubscriber, faire: () => Promise<unknown>) => {
+    if (!s.id) return;
+    setOccupe(s.id);
+    try { await faire(); await refresh(); } finally { setOccupe(null); }
+  };
+
+  const toutRetirer = async () => {
+    const ids = quarantaine.map(s => s.id).filter(Boolean) as string[];
+    if (!ids.length) return;
+    if (!confirm(
+      `Retirer les ${ids.length} adresses en quarantaine de la liste d'envoi ?\n\n`
+      + 'Leur statut passe à « désabonnée ». Aucune fiche n\'est effacée et leur historique reste intact.',
+    )) return;
+    setOccupe('tout');
+    try { await desabonnerAbonnements(ids); await refresh(); } finally { setOccupe(null); }
+  };
+
+  const Ligne: React.FC<{ s: NewsletterSubscriber; actions: React.ReactNode; quand: React.ReactNode }> = ({ s, actions, quand }) => (
+    <tr className="border-t border-[#293027]/5 dark:border-white/5 align-top">
+      <td className="px-4 py-3 text-[#293027] dark:text-white">{s.email}</td>
+      <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden md:table-cell">{[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'}</td>
+      <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden md:table-cell">{s.source ? sourceLabel(s.source) : '—'}</td>
+      <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden lg:table-cell">{quand}</td>
+      <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden lg:table-cell">{s.robotPotentiel?.raison || '—'}</td>
+      <td className="px-4 py-3 text-right whitespace-nowrap">{actions}</td>
+    </tr>
+  );
+
+  const Entetes: React.FC<{ colonneQuand: string }> = ({ colonneQuand }) => (
+    <thead className="bg-[#EEE7DB] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#293027]/60 dark:text-white/60">
+      <tr>
+        <th className="text-left px-4 py-3">Courriel</th>
+        <th className="text-left px-4 py-3 hidden md:table-cell">Prénom</th>
+        <th className="text-left px-4 py-3 hidden md:table-cell">Source</th>
+        <th className="text-left px-4 py-3 hidden lg:table-cell">{colonneQuand}</th>
+        <th className="text-left px-4 py-3 hidden lg:table-cell">Raison</th>
+        <th className="px-4 py-3"></th>
+      </tr>
+    </thead>
+  );
+
+  const bouton = 'inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-colors disabled:opacity-40';
+
+  return (
+    <div className="space-y-6">
+      <div className="rounded-[15px] border border-[#BA7B39]/30 bg-[#BA7B39]/10 p-4">
+        <p className="text-sm leading-relaxed text-[#293027] dark:text-white">
+          Ces adresses viennent d'alias jetables ou ont déclenché la garde; elles ne reçoivent rien tant qu'elles sont ici.
+        </p>
+        <p className="mt-2 text-[11px] uppercase tracking-[0.15em] font-bold text-[#8B4A2F]">
+          {quarantaine.length.toLocaleString('fr-CA')} en quarantaine
+          {' · '}
+          {confirmes.length.toLocaleString('fr-CA')} humains confirmés à trancher
+        </p>
+      </div>
+
+      {/* ── En quarantaine ── */}
+      <Card className="overflow-hidden">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-b border-[#293027]/5 dark:border-white/5">
+          <h3 className="font-serif text-lg text-[#293027] dark:text-white">En quarantaine ({quarantaine.length})</h3>
+          {quarantaine.length > 0 && (
+            <DangerButton onClick={toutRetirer} disabled={occupe === 'tout'}>
+              <i className="fa-solid fa-user-slash" /> {occupe === 'tout' ? 'Un instant…' : 'Tout retirer'}
+            </DangerButton>
+          )}
+        </div>
+        {quarantaine.length === 0 ? (
+          <EmptyState icon="fa-shield-halved">Aucune adresse en quarantaine. La garde n'a rien retenu.</EmptyState>
+        ) : (
+          <table className="w-full text-sm">
+            <Entetes colonneQuand="Posée le" />
+            <tbody>
+              {quarantaine.map(s => (
+                <Ligne
+                  key={s.id}
+                  s={s}
+                  quand={dateCourte(s.robotPotentiel?.poseLe || s.subscribedAt)}
+                  actions={<>
+                    <button
+                      type="button"
+                      disabled={occupe === s.id}
+                      onClick={() => agir(s, () => rehabiliterAbonne(s))}
+                      title="Rétablir son statut et retirer l'étiquette"
+                      className={`${bouton} mr-2 bg-[#BA7B39]/15 text-[#8B4A2F] hover:bg-[#BA7B39]/30`}
+                    >
+                      <i className="fa-solid fa-user-check" /> C'est une vraie personne
+                    </button>
+                    <DangerButton
+                      disabled={occupe === s.id}
+                      onClick={() => agir(s, () => desabonnerAbonnements([s.id!]))}
+                    >
+                      <i className="fa-solid fa-user-slash" /> Retirer
+                    </DangerButton>
+                  </>}
+                />
+              ))}
+            </tbody>
+          </table>
+        )}
+      </Card>
+
+      {/* ── Humains confirmés ── */}
+      {confirmes.length > 0 && (
+        <Card className="overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#293027]/5 dark:border-white/5">
+            <h3 className="font-serif text-lg text-[#293027] dark:text-white">Humains confirmés ({confirmes.length})</h3>
+            <p className="mt-1 text-xs text-[#293027]/60 dark:text-white/60">
+              Ces personnes ont coché elles-mêmes la case anti-robot depuis leur espace. Elles reçoivent de nouveau les
+              lettres, et elles restent ici tant que vous n'avez pas tranché. Leur adresse est toujours sur un domaine d'alias.
+            </p>
+          </div>
+          <table className="w-full text-sm">
+            <Entetes colonneQuand="Confirmée le" />
+            <tbody>
+              {confirmes.map(s => (
+                <Ligne
+                  key={s.id}
+                  s={s}
+                  quand={dateCourte(s.robotPotentiel?.confirmeHumainLe)}
+                  actions={<>
+                    <button
+                      type="button"
+                      disabled={occupe === s.id}
+                      onClick={() => agir(s, () => garderConfirmee(s))}
+                      title="Sortir cette adresse de la liste, elle reste abonnée"
+                      className={`${bouton} mr-2 bg-[#BA7B39]/15 text-[#8B4A2F] hover:bg-[#BA7B39]/30`}
+                    >
+                      <i className="fa-solid fa-check" /> Garder
+                    </button>
+                    <DangerButton
+                      disabled={occupe === s.id}
+                      onClick={() => agir(s, () => remettreQuarantaine(s))}
+                    >
+                      <i className="fa-solid fa-shield-halved" /> Remettre en quarantaine
+                    </DangerButton>
+                  </>}
+                />
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      )}
+    </div>
+  );
+};
+
 const SubscribersPanel: React.FC = () => {
+  const [ongletRobots, setOngletRobots] = useState(false);
   const [subs, setSubs] = useState<NewsletterSubscriber[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
