@@ -1,6 +1,9 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
-import { limiterParIp, MESSAGE_CADENCE } from './newsletter/robots';
+import { getFirestore } from 'firebase-admin/firestore';
+import {
+  limiterParIp, MESSAGE_CADENCE, champsRehabilitation, type FicheRobot,
+} from './newsletter/robots';
 
 export const RECAPTCHA_SECRET = defineSecret('RECAPTCHA_SECRET');
 
