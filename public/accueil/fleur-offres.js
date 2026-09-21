@@ -146,9 +146,13 @@ const CSS = `
 // offreId vient de habitudes/{uid}.offre.id (écrit par le moteur React,
 // src/lib/offres.ts). Sans compte, ou tant que rien n'a encore été calculé,
 // la fleur retombe sur l'offre de bienvenue existante.
-function choisirOffre(user, offreId) {
+// Le coffre de 50 niskas obéit à l'interrupteur « Coffre de bienvenue bêta »
+// de l'admin (settings/gamification.coffreBeta, même lecture que
+// src/firebase/gamification.ts : absent = ouvert, false = fermé). Fermé par
+// Krystine, la fleur propose l'espace sans le coffre, même avant le 1er octobre.
+function choisirOffre(user, offreId, coffreBetaOuvert) {
   if (user) return OFFRES[offreId] || OFFRES.origine2;
-  return new Date() < FIN_COFFRE_BETA ? OFFRES.coffre : OFFRES.compte;
+  return coffreBetaOuvert && new Date() < FIN_COFFRE_BETA ? OFFRES.coffre : OFFRES.compte;
 }
 
 function monter() {
@@ -177,10 +181,14 @@ function monter() {
   let user = null;
   let offreId = null;
   let suiviRefuse = false;
+  let coffreBetaOuvert = true;
   let db = null;
   try {
     const app = getApps().length ? getApp() : initializeApp(CONFIG);
     db = getFirestore(app);
+    getDoc(doc(db, 'settings', 'gamification'))
+      .then(snap => { coffreBetaOuvert = !(snap.exists() && snap.data()?.coffreBeta === false); })
+      .catch(() => { /* sans réponse, le défaut du moteur (ouvert) tient */ });
     onAuthStateChanged(getAuth(app), u => {
       user = u;
       if (!u || !db) return;
@@ -227,7 +235,7 @@ function monter() {
     fleur.classList.remove('fo-vivante');
     fleur.querySelector('.fo-badge')?.remove();
     fleur.style.visibility = 'hidden';
-    const offre = choisirOffre(user, offreId);
+    const offre = choisirOffre(user, offreId, coffreBetaOuvert);
     noterOffreVue('vue');
 
     voile = document.createElement('div');
