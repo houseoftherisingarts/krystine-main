@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import app, { db } from '../firebase';
+import app from '../firebase';
 import { useApp } from '../contexts/AppContext';
 import { RECAPTCHA_SITE_KEY, useRecaptcha } from '../lib/recaptcha';
 
