@@ -1201,18 +1201,6 @@
     }
     function fermerCarte() { overlay.classList.remove('open'); }
     foil.addEventListener('click', ouvrir);
-    foil.addEventListener('pointermove', function (e) {
-      var r = foil.getBoundingClientRect();
-      var x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-      foil.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
-      foil.style.setProperty('--my', (y * 100).toFixed(1) + '%');
-      foil.style.setProperty('--rx', ((0.5 - y) * 10).toFixed(2) + 'deg');
-      foil.style.setProperty('--ry', ((x - 0.5) * 12).toFixed(2) + 'deg');
-    });
-    foil.addEventListener('pointerleave', function () {
-      foil.style.setProperty('--mx', '30%'); foil.style.setProperty('--my', '30%');
-      foil.style.setProperty('--rx', '0deg'); foil.style.setProperty('--ry', '0deg');
-    });
     fermer.addEventListener('click', fermerCarte);
     var non = document.getElementById('cvNon'); if (non) non.addEventListener('click', fermerCarte);
     var oui = document.getElementById('cvOui'); if (oui) oui.addEventListener('click', fermerCarte);
