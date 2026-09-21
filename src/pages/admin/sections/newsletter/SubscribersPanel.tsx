@@ -579,6 +579,7 @@ const SubscribersPanel: React.FC = () => {
           )}
         </Card>
       )}
+      </>}
     </div>
   );
 };

@@ -1,12 +1,16 @@
 // DemandesClientPanel — la liste des demandes du client, avec le crochet quand c'est fait.
 //
 // Se pose dans l'admin d'un site client, en sous-onglet du journal des
-// changements. Appelle la fonction demandesClient du studio
-// (vexel-site/functions/src/demandesClient.ts) avec le slug et la clé qui
-// servent déjà à /demande/, puis range ce qui revient en quatre blocs : ce qui
-// reste à faire, ce qui avance, ce qui est fait, et ce que le studio n'a pas
-// retenu. Aucun secret ici, rien ne s'écrit : la fonction ne rend que ce que
-// le client a lui-même envoyé plus la réponse du studio.
+// changements. Il range en quatre blocs ce que la prop `charger` lui rend : ce
+// qui reste à faire, ce qui avance, ce qui est fait, et ce que le studio n'a
+// pas retenu. Rien ne s'écrit d'ici, et aucun secret n'y vit.
+//
+// Le panneau ignore volontairement d'où viennent les demandes. La liste se
+// relit chez Vexel par demandesClient, mais cette porte demande la clé du
+// client, et cette clé ne doit jamais descendre dans une page. Le site hôte
+// passe donc par son propre serveur : chez Krystine, la callable `mesDemandes`
+// vérifie que l'appelante est admin, lit la clé dans un secret, appelle le
+// studio et rend la liste.
 //
 // Couleurs : ce fichier ne porte aucune couleur de Vexel en dur. Tout passe
 // par des variables CSS --dc-*, qui reprennent les mêmes noms d'hôte que
@@ -41,17 +45,14 @@ export interface DemandeVue {
 }
 
 export interface DemandesClientPanelProps {
-  /** L'adresse de la fonction demandesClient du studio. */
-  endpoint: string;
-  /** Le slug du client dans clients/{slug}, celui de /demande/. */
-  client: string;
   /**
-   * Rend le jeton d'identité Firebase de la personne connectée au back-office
-   * du site (`user.getIdToken()`), ou null si personne ne l'est. C'est la
-   * seule preuve que la fonction accepte : la clé du formulaire voyage dans
-   * le bundle, donc elle n'ouvre plus rien en lecture.
+   * Va chercher les demandes. Le panneau ne sait pas d'où elles viennent, et
+   * c'est voulu : la clé du client ne doit jamais descendre dans la page, donc
+   * le site hôte passe par SON propre serveur (chez Krystine, la callable
+   * `mesDemandes`, qui vérifie l'admin, lit la clé dans un secret et appelle
+   * le studio). Une erreur levée ici s'affiche telle quelle au client.
    */
-  obtenirJeton: () => Promise<string | null | undefined>;
+  charger: () => Promise<DemandeVue[]>;
   lang?: 'fr' | 'en';
   /**
    * Le nombre de demandes qui restent à faire ou qui avancent, rapporté dès
@@ -86,7 +87,6 @@ const MOTS = {
     chargement: 'Nous allons chercher vos demandes.',
     erreurTitre: 'Vos demandes ne se chargent pas',
     erreurAide: 'Réessayez dans un instant, et écrivez au studio si cela persiste.',
-    horsSession: 'Connectez-vous à votre back-office pour voir vos demandes.',
     reessayer: 'Réessayer',
     voir: (n: number) => (n === 1 ? 'Voir la demande non retenue' : `Voir les ${n} non retenues`),
     cacher: 'Cacher les non retenues',
@@ -109,7 +109,6 @@ const MOTS = {
     chargement: 'Fetching your requests.',
     erreurTitre: 'Your requests did not load',
     erreurAide: 'Try again in a moment, and write to the studio if it keeps happening.',
-    horsSession: 'Sign in to your back office to see your requests.',
     reessayer: 'Try again',
     voir: (n: number) => (n === 1 ? 'Show the one not taken on' : `Show the ${n} not taken on`),
     cacher: 'Hide the ones not taken on',
@@ -263,9 +262,7 @@ const Crochet = () => (
 /* ------------------------------------------------------------ le panneau */
 
 export function DemandesClientPanel({
-  endpoint,
-  client,
-  obtenirJeton,
+  charger,
   lang = 'fr',
   onEnAttente,
   donneesDemo,
@@ -284,31 +281,21 @@ export function DemandesClientPanel({
     let vivant = true;
     setDemandes(null);
     setErreur('');
-    const url = `${endpoint}?client=${encodeURIComponent(client)}`;
-    (async () => {
-      const jeton = await obtenirJeton();
-      if (!vivant) return;
-      if (!jeton) {
-        setErreur(m.horsSession);
-        return;
-      }
-      const r = await fetch(url, { headers: { Authorization: `Bearer ${jeton}` } });
-      const corps = await r.json().catch(() => null);
-      if (!vivant) return;
-      if (!r.ok) throw new Error(corps?.erreur || `${r.status}`);
-      setDemandes(Array.isArray(corps?.demandes) ? (corps.demandes as DemandeVue[]) : []);
-    })().catch((e: unknown) => {
-      if (!vivant) return;
-      setErreur(e instanceof Error ? e.message : String(e));
-    });
+    charger()
+      .then((lot) => {
+        if (vivant) setDemandes(Array.isArray(lot) ? lot : []);
+      })
+      .catch((e: unknown) => {
+        if (vivant) setErreur(e instanceof Error ? e.message : String(e));
+      });
     return () => {
       vivant = false;
     };
-    // obtenirJeton vient souvent d'une fonction fléchée recréée à chaque
-    // rendu : la garder hors des dépendances évite de rappeler la fonction
-    // en boucle. Le tour, lui, force une relecture quand on la demande.
+    // charger vient souvent d'une fonction fléchée recréée à chaque rendu : la
+    // garder hors des dépendances évite de rappeler le serveur en boucle. Le
+    // tour, lui, force une relecture quand on la demande.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [endpoint, client, tour, donneesDemo]);
+  }, [tour, donneesDemo]);
 
   const groupes = useMemo(() => {
     const vides: Record<Bloc, DemandeVue[]> = { afaire: [], encours: [], faites: [], refusees: [] };
@@ -389,7 +376,7 @@ export function DemandesClientPanel({
       {erreur && (
         <div className="dc-etat dc-rate" role="alert">
           <h3>{m.erreurTitre}</h3>
-          <p>{erreur === m.horsSession ? erreur : `${m.erreurAide} (${erreur})`}</p>
+          <p>{`${m.erreurAide} (${erreur})`}</p>
           <button type="button" className="dc-bouton" onClick={() => setTour((t) => t + 1)}>
             {m.reessayer}
           </button>
