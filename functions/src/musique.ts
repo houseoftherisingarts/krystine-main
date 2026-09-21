@@ -12,7 +12,7 @@ import { champsRobot } from './newsletter/robots';
 export const MUSIQUE_ORIGINE_ID = 'kajabi-2149362766';
 
 export const musiqueOrigine = onCall(
-  { region: 'us-central1' },
+  { region: 'us-central1', secrets: [RECAPTCHA_SECRET] },
   async (req) => {
     const db = getFirestore();
     const fSnap = await db.doc(`formations/${MUSIQUE_ORIGINE_ID}`).get();
