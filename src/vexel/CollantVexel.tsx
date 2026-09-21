@@ -1,15 +1,14 @@
-// CollantVexel — le collant foil du pied de page, présent sur tous les sites Vexel sauf
-// vexelwebstudio.com lui-même. Aligné le 16 sept 2026 sur le modèle du Lynx
-// (le-lynx---observatoire/components/CollantVexel.tsx) : logo complet (cercle et sigil) à
-// gauche, « Site créé par » en surtitre et « Vexel Webstudio » en serif, liseré blanc découpé,
-// reflet irisé qui suit le pointeur et reste visible au repos, léger basculement 3D, posé droit.
-// Chez Krystine, le foil est or et cuivre (Alex, 20 sept 2026). La carte qui s'ouvre au clic est
+// CollantVexel — le collant du pied de page, présent sur tous les sites Vexel sauf
+// vexelwebstudio.com lui-même. Chez Krystine, le bouton est sobre et sans foil (Alex, 21 sept
+// 2026) : un filet laiton au canon de son magazine, le logo, « Site créé par » en surtitre et
+// « Vexel Webstudio » en serif, aucun reflet, aucun basculement. La classe cv-foil reste le nom
+// que les gardes (scripts/garde-collant.mjs, public/vexel-garde.js) cherchent. La carte qui s'ouvre au clic est
 // celle de Laurie (xena-horizon-platform/components/BadgeVexel.tsx, 20 sept 2026) : un volet foil
 // avec le grand logo, l'entente en clair (un rabais pour la personne, sans chiffre ni mention de commission, sur l'ordre d'Alex du 20 sept; la
 // propriétaire du site) et « Continuer vers Vexel » qui ouvre vexelwebstudio.com avec le code
 // partenaire déjà rempli (?parrain=CODE, lu par la page /compte).
 // Autonome (styles inline) pour ne dépendre d'aucun token Tailwind du site hôte.
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const TEXTES = {
   FR: {
@@ -55,43 +54,31 @@ export const lienVexel = (code: string) =>
 
 const style = `
 .cv-foil {
-  --mx: 30%; --my: 30%; --rx: 0deg; --ry: 0deg;
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.6rem;
-  border-radius: 9px;
-  border: 1.5px solid #fff;
-  color: #fff;
+  gap: 0.55rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 2px;
+  border: 1px solid rgba(187,154,94,0.45);
+  background: transparent;
+  color: #f4efe6;
   text-decoration: none;
-  overflow: hidden;
-  isolation: isolate;
-  background:
-    radial-gradient(120% 120% at var(--mx) var(--my), rgb(255 236 200 / 0.22), transparent 55%),
-    linear-gradient(135deg, #22180d 0%, #0b0805 60%, #1c130a 100%);
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35), 0 10px 24px -10px rgb(0 0 0 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.25);
-  transform: perspective(600px) rotateX(var(--rx)) rotateY(var(--ry));
-  transition: transform 220ms ease, box-shadow 220ms ease;
-  will-change: transform;
+  transition: border-color 220ms ease, background-color 220ms ease;
 }
-.cv-foil:hover { box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35), 0 18px 34px -12px rgb(0 0 0 / 0.65), inset 0 1px 0 rgb(255 255 255 / 0.35); }
+.cv-foil:hover, .cv-foil:focus-visible { border-color: #bb9a5e; background: rgba(244,239,230,0.05); outline: none; }
 .cv-sheen {
   position: absolute; inset: -40%; pointer-events: none; z-index: 0;
   background: repeating-conic-gradient(from 200deg at var(--mx) var(--my),
     #fff3d6 0deg, #ecc978 24deg, #c98f45 48deg, #a5642c 72deg, #f2d48f 96deg, #fff3d6 120deg);
   opacity: 0.24; mix-blend-mode: color-dodge; filter: saturate(0.9) blur(2px);
-  transition: opacity 260ms ease;
 }
-.cv-foil:hover .cv-sheen { opacity: 0.4; }
 .cv-grain {
   position: absolute; inset: 0; pointer-events: none; z-index: 0;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/></svg>");
   mix-blend-mode: soft-light;
   opacity: 0.35;
 }
-.cv-foil > *:not(.cv-sheen):not(.cv-grain) { position: relative; z-index: 1; }
-@media (prefers-reduced-motion: reduce) { .cv-foil { transform: none; transition: none; } }
 .cv-overlay {
   position: fixed; inset: 0; z-index: 900;
   display: flex; align-items: flex-end; justify-content: center; padding: 1rem;
@@ -169,26 +156,6 @@ export function CollantVexel({ lang = 'FR', className = '', codeParrain = 'KSL-K
   const ouiRef = useRef<HTMLAnchorElement>(null);
   const [ouverte, setOuverte] = useState(false);
 
-  const suivre = useCallback((e: React.PointerEvent<HTMLAnchorElement>) => {
-    const el = ref.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width;
-    const y = (e.clientY - r.top) / r.height;
-    el.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
-    el.style.setProperty('--my', `${(y * 100).toFixed(1)}%`);
-    el.style.setProperty('--rx', `${((0.5 - y) * 10).toFixed(2)}deg`);
-    el.style.setProperty('--ry', `${((x - 0.5) * 12).toFixed(2)}deg`);
-  }, []);
-  const relacher = useCallback(() => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.setProperty('--mx', '30%');
-    el.style.setProperty('--my', '30%');
-    el.style.setProperty('--rx', '0deg');
-    el.style.setProperty('--ry', '0deg');
-  }, []);
-
   // Le lien reste réel (lecteur d'écran, clic du milieu), mais le clic ordinaire explique d'abord.
   const ouvrir = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
@@ -219,18 +186,14 @@ export function CollantVexel({ lang = 'FR', className = '', codeParrain = 'KSL-K
         aria-haspopup="dialog"
         aria-expanded={ouverte}
         aria-label={t.libelle}
-        onPointerMove={suivre}
-        onPointerLeave={relacher}
         className={`cv-foil ${className}`}
       >
-        <span aria-hidden className="cv-sheen" />
-        <span aria-hidden className="cv-grain" />
-        <img src={LOGO_VEXEL} alt="" width={329} height={320} style={{ height: '0.9rem', width: 'auto', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.6))' }} />
+        <img src={LOGO_VEXEL} alt="" width={329} height={320} style={{ height: '1.15rem', width: 'auto', opacity: 0.85 }} />
         <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
-          <span style={{ fontSize: '0.35rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.7)' }}>
+          <span style={{ fontSize: '0.5rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.22em', color: '#bb9a5e' }}>
             {t.kicker}
           </span>
-          <span style={{ marginTop: '0.1rem', fontFamily: SERIF, fontSize: '0.55rem' }}>{t.nom}</span>
+          <span style={{ marginTop: '0.15rem', fontFamily: SERIF, fontSize: '0.8rem' }}>{t.nom}</span>
         </span>
       </a>
 

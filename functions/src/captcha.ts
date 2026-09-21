@@ -120,7 +120,12 @@ export const confirmerHumain = onCall(
 
     const db = getFirestore();
     const uid = req.auth.uid;
-    const email = String(req.auth.token?.email || '').trim().toLowerCase();
+    // Le rapprochement par courriel n'a lieu que si Firebase a vérifié
+    // l'adresse. Sinon, n'importe qui pourrait créer un compte en tapant
+    // l'adresse d'une autre personne et rouvrir SES fiches : dans ce cas, seul
+    // le `uid` compte, donc uniquement les fiches nées de ce compte-là.
+    const verifie = req.auth.token?.email_verified === true;
+    const email = verifie ? String(req.auth.token?.email || '').trim().toLowerCase() : '';
 
     // Par `uid` d'abord, par courriel ensuite : une même personne peut avoir
     // plusieurs fiches (formulaire, import, compte), on les rouvre toutes.
