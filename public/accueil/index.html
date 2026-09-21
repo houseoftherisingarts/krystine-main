@@ -65,14 +65,9 @@
     .rotate-hint span{font-family:var(--serif);font-style:italic;font-size:1.08rem;line-height:1.4;color:var(--ink);max-width:280px}
   }
   @keyframes rotHint{0%,66%,100%{transform:rotate(0)}84%{transform:rotate(-90deg)}}
-  .hero{position:sticky;top:0;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:var(--espresso-deep);z-index:1}
-  /* V2 scroll choreography: hero headline scales + dims as the next sheet rises over it */
-  @supports (animation-timeline: scroll()){
-    .hero h1{animation:ovHeroExit linear both;animation-timeline:scroll(root);animation-range:2vh 88vh}
-    @keyframes ovHeroExit{to{transform:translateY(-12%) scale(.84);opacity:.16}}
-    .hero .sub,.hero .lede,.hero .cta{animation:ovFade linear both;animation-timeline:scroll(root);animation-range:2vh 60vh}
-    @keyframes ovFade{to{opacity:0;transform:translateY(-10%)}}
-  }
+  /* Le hero défile normalement : les feuilles empilées ont été retirées du bureau
+     le 21 septembre 2026 (ordre d'Alex), avec la chorégraphie qui dépendait d'elles. */
+  .hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:var(--espresso-deep);z-index:1}
   .wc{animation:none!important}
   .hero .scene{position:absolute;top:0;bottom:0;right:0;left:auto;width:84%;z-index:0;overflow:hidden;background:#101713}
   .hero .scene video{position:absolute;top:50%;left:0;transform:translateY(-50%);height:100%;width:auto;min-width:100%}
