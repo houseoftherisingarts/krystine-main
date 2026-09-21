@@ -2,6 +2,8 @@ import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import * as crypto from 'crypto';
+import { RECAPTCHA_SECRET, garderFormulaire } from './captcha';
+import { champsRobot } from './newsletter/robots';
 
 // La musique de l'Expérience Origine, offerte au bas du Foyer d'Origine.
 // Connectée : la musique entre dans son espace (section Téléchargements) et
