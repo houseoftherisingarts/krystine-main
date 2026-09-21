@@ -139,6 +139,88 @@
           "order": "DESCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "vh_lots",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "agrege",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "recu",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "vh_sessions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "site",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "debut",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "vh_sessions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "site",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "enregistre",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "debut",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "vh_cartes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "site",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "device",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "page",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "jour",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "vh_jours",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "site",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "jour",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": []

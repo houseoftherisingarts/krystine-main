@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
 import { enableAnalytics } from '../../firebase';
+import { activerVexelHotjar } from '../../vexelhotjar';
 
 const STORAGE_KEY = 'inspirata.consent.v1';
 type ConsentValue = 'accepted' | 'rejected';
@@ -45,6 +46,7 @@ const ConsentBanner: React.FC = () => {
     if (choice === 'accepted') {
       loadMetaPixel();
       enableAnalytics();
+      activerVexelHotjar();
     }
   }, [choice]);
 
