@@ -102,14 +102,27 @@ const RobotsPanel: React.FC<{ subs: NewsletterSubscriber[]; refresh: () => Promi
     try { await desabonnerAbonnements(ids); await refresh(); } finally { setOccupe(null); }
   };
 
+  // Sur mobile la ligne se replie : le courriel coupe où il peut et les deux
+  // boutons passent dessous. Sans ça, une adresse longue pousse le tableau
+  // hors de l'écran et les actions deviennent inatteignables (vu au 390 le
+  // 21 septembre 2026).
   const Ligne: React.FC<{ s: NewsletterSubscriber; actions: React.ReactNode; quand: React.ReactNode }> = ({ s, actions, quand }) => (
     <tr className="border-t border-[#293027]/5 dark:border-white/5 align-top">
-      <td className="px-4 py-3 text-[#293027] dark:text-white">{s.email}</td>
-      <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden md:table-cell">{[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'}</td>
-      <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden md:table-cell">{s.source ? sourceLabel(s.source) : '—'}</td>
-      <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden lg:table-cell">{quand}</td>
-      <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden lg:table-cell">{s.robotPotentiel?.raison || '—'}</td>
-      <td className="px-4 py-3 text-right whitespace-nowrap">{actions}</td>
+      <td className="px-4 py-3 text-[#293027] dark:text-white break-all">
+        {s.email}
+        {/* Ce que les colonnes masquées diraient, ramené sous l'adresse */}
+        <span className="mt-1 block text-[11px] text-[#293027]/50 dark:text-white/50 lg:hidden">
+          {[s.firstName, s.source ? sourceLabel(s.source) : null].filter(Boolean).join(' · ') || '—'}
+          <span className="block">{s.robotPotentiel?.raison || ''}</span>
+        </span>
+      </td>
+      <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden lg:table-cell">{[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'}</td>
+      <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden lg:table-cell">{s.source ? sourceLabel(s.source) : '—'}</td>
+      <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden lg:table-cell whitespace-nowrap">{quand}</td>
+      <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden xl:table-cell">{s.robotPotentiel?.raison || '—'}</td>
+      <td className="px-4 py-3">
+        <div className="flex flex-wrap justify-end gap-2">{actions}</div>
+      </td>
     </tr>
   );
 
