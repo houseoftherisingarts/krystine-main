@@ -19,7 +19,8 @@ import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
 // adresses de tous les jours, seuls les domaines d'alias de Proton Pass
 // figurent ci-dessous.
 export const DOMAINES_ALIAS: Record<string, string> = {
-  // Proton Pass — alias masqués
+  // Proton Pass — alias masqués (proton.me et protonmail.com sont des boîtes
+  // ordinaires et n'ont rien à faire ici)
   'passmail.com':      'Proton Pass',
   'passmail.net':      'Proton Pass',
   'passinbox.com':     'Proton Pass',
@@ -27,28 +28,26 @@ export const DOMAINES_ALIAS: Record<string, string> = {
   // SimpleLogin (Proton) — domaines d'alias
   'simplelogin.com':   'SimpleLogin',
   'simplelogin.co':    'SimpleLogin',
-  'simplelogin.fr':    'SimpleLogin',
+  'simplelogin.io':    'SimpleLogin',
   'slmail.me':         'SimpleLogin',
   'aleeas.com':        'SimpleLogin',
-  'silomails.com':     'SimpleLogin',
-  // DuckDuckGo Email Protection
+  // DuckDuckGo Email Protection (duck.com sert aussi de raccourci vers le
+  // moteur de recherche; côté courriel c'est bien un domaine d'alias)
   'duck.com':          'DuckDuckGo Email Protection',
-  // Mozilla Firefox Relay
+  // Mozilla Firefox Relay — les alias d'aujourd'hui sont en *.mozmail.com,
+  // relay.firefox.com est l'ancien format, gardé pour les vieilles adresses
   'mozmail.com':       'Firefox Relay',
   'relay.firefox.com': 'Firefox Relay',
-  // addy.io (ex-AnonAddy)
+  // addy.io (ex-AnonAddy) : le rebranding a gardé tous les anciens domaines
   'anonaddy.com':      'addy.io',
   'anonaddy.me':       'addy.io',
   'addy.io':           'addy.io',
-  'anonaddy.dev':      'addy.io',
   // Boîtes publiques jetables
   'guerrillamail.com': 'boîte jetable',
   'mailinator.com':    'boîte jetable',
   'yopmail.com':       'boîte jetable',
   'temp-mail.org':     'boîte jetable',
   '10minutemail.com':  'boîte jetable',
-  'mailderive.com':    'boîte jetable',
-  'trashmail.com':     'boîte jetable',
 };
 
 /** Le domaine d'alias d'une adresse, ou null si l'adresse est ordinaire. */
