@@ -1517,7 +1517,7 @@
         /* l'annonce du panneau actif se refait après chaque mesure : la première part
            avant que les sections branchées ne se soient abonnées */
         e.actif=-1;
-        if(!epingle){ e.rail.style.height=''; e.piste.style.transform=''; e.distance=0; return; }
+        if(!epingle){ e.rail.style.height=''; e.piste.style.transform=''; e.distance=0; majActif(e); return; }
         e.distance=Math.max(0, e.piste.scrollWidth - e.vue.clientWidth);
         e.rail.style.height=(vh+e.distance)+'px';
       });
