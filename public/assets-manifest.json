@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-20T23:37:00.574Z",
+  "generatedAt": "2026-09-21T00:07:48.216Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1330,6 +1330,13 @@
       "folder": "origine2",
       "kind": "video",
       "size": 1247642
+    },
+    {
+      "path": "/plan-automne/entete.jpg",
+      "name": "entete.jpg",
+      "folder": "plan-automne",
+      "kind": "image",
+      "size": 25838
     },
     {
       "path": "/podcast/krystine.jpg",
