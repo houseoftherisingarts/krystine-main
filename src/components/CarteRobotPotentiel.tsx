@@ -129,7 +129,7 @@ const CarteRobotPotentiel: React.FC<{ className?: string }> = ({ className = '' 
               ? 'Notre système a détecté que vous êtes peut-être un robot. Cela dit, peut-être utilisez-vous simplement un courriel Proton ou sécurisé. Cliquez ici pour confirmer que vous n’êtes pas un robot.'
               : 'Our system flagged this address as possibly automated. You may simply be using a Proton or another privacy address. Confirm below that you are not a robot.'}
           </p>
-          {RECAPTCHA_SITE_KEY && <div ref={captcha.boxRef} className="mt-4" />}
+          {RECAPTCHA_SITE_KEY && <div ref={captcha.boxRef} className="mt-4 max-w-full overflow-x-auto" />}
           <button
             type="button"
             onClick={confirmer}
