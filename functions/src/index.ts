@@ -18,7 +18,7 @@ export { repondreAbonne } from './newsletter/reponse';
 export { notifierSoutien } from './newsletter/soutien';
 export { chatbotKrystine } from './newsletter/chatbot';
 export { traiterSequences, testerSequence } from './newsletter/sequences';
-export { verifierCaptcha } from './captcha';
+export { verifierCaptcha, confirmerHumain } from './captcha';
 export { creerSessionPaiement, creerPourboire, creerSessionNiskas, creerSessionSaison, stripeWebhook, obtenirLecon } from './paiements';
 export { creerSessionBillets } from './billetterie';
 export { acheterAvecNiskas, reclamerQuotidien, reclamerBienvenue, reclamerCoffreBeta } from './niskas';
