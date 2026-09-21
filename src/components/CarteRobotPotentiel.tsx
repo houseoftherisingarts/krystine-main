@@ -45,7 +45,7 @@ const CarteRobotPotentiel: React.FC<{ className?: string }> = ({ className = '' 
   // se voir refuser ensuite.
   useEffect(() => {
     let vivant = true;
-    if (!user || !app) return;
+    if (apercu || !user || !app) return;
     (async () => {
       try {
         const res = await httpsCallable(getFunctions(app!, 'us-central1'), 'confirmerHumain')({ sonder: true });
