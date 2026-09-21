@@ -388,11 +388,11 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
               'radial-gradient(56% 46% at 50% 46%, rgba(15,22,19,0.6), transparent 78%)',
           }}
         />
+        {/* Strophes purement décoratives. Sans `pointer-events-none`, ces deux
+            calques pleine page (invisibles au repos, opacité 0) recouvraient le
+            bouton « Rejoindre la liste d'attente » du hero et le rendaient mort,
+            sur iPhone comme au bureau (constaté le 21 septembre 2026). */}
         {STANZAS.map((lines, g) => (
-          {/* strophes purement décoratives : sans `pointer-events-none`, ces deux
-              calques pleine page (invisibles au repos, opacité 0) recouvraient le
-              bouton « Rejoindre la liste d'attente » du hero et le rendaient mort,
-              sur iPhone comme au bureau (constaté le 21 septembre 2026) */}
           <div key={g} className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6 text-center md:px-12">
             <div className="max-w-5xl">
               {lines.map((l, i) => (
