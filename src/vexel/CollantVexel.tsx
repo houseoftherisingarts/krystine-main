@@ -243,13 +243,7 @@ export function CollantVexel({ lang = 'FR', className = '', codeParrain = 'KSL-K
                   href={lien}
                   target="_blank"
                   rel="noopener"
-                  onClick={(e) => {
-                    if (!e.metaKey && !e.ctrlKey && !e.shiftKey && e.button === 0) {
-                      e.preventDefault();
-                      ouvrirEnArrierePlan(lien);
-                    }
-                    setOuverte(false);
-                  }}
+                  onClick={() => setOuverte(false)}
                   className="cv-bouton"
                 >
                   {t.oui}
