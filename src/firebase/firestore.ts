@@ -232,7 +232,11 @@ function genUnsubToken(): string {
 // plus en parlant à l'API directement. La signature ne bouge pas : les six
 // appelants du site (infolettre, listes d'attente, direct du podcast, quiz,
 // consentement d'une membre) restent tels quels.
-export async function addNewsletterSubscriber(data: Omit<NewsletterSubscriber, 'id' | 'subscribedAt'>) {
+// `site` est le pot de miel : jamais écrit dans la fiche, seulement lu par la
+// fonction pour refuser l'inscription quand un robot l'a rempli.
+export async function addNewsletterSubscriber(
+  data: Omit<NewsletterSubscriber, 'id' | 'subscribedAt'> & { site?: string },
+) {
   if (!app) return console.warn('[Firestore] Not configured');
   // La fonction refuse `undefined` au transport comme Firestore le refusait
   // à l'écriture : on ne garde que ce qui porte une valeur.
