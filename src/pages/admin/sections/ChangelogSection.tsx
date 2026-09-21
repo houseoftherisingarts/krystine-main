@@ -219,6 +219,7 @@ const ChangelogSection: React.FC = () => {
           obtenirJeton={jetonAdmin}
           lang="fr"
           onEnAttente={setEnAttente}
+          donneesDemo={new URLSearchParams(window.location.search).get('demoDemandes') ? DEMO : undefined}
         />
       </div>
     </div>
