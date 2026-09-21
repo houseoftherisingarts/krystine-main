@@ -110,7 +110,7 @@ const PlanAutomneSection: React.FC = () => {
       <div className="overflow-hidden rounded-[16px] border border-[#dfe5ea] bg-[#fdfefe] shadow-[0_10px_30px_-18px_rgba(24,55,75,0.35)]">
 
         {/* ── L'en-tête : la marque, la phrase, la citation, et la bande photo ── */}
-        <div className="relative grid grid-cols-1 gap-4 bg-gradient-to-r from-[#e9eef3] via-[#dfe8f0] to-[#eef2f6] px-5 py-5 lg:grid-cols-[1fr_auto_1.1fr_1fr] lg:items-center lg:gap-6 lg:py-0 lg:pl-6 lg:pr-6">
+        <div className="relative grid grid-cols-1 gap-4 bg-gradient-to-r from-[#e9eef3] via-[#dfe8f0] to-[#eef2f6] px-5 py-5 lg:h-[176px] lg:grid-cols-[1fr_auto_1.1fr_1fr] lg:items-center lg:gap-6 lg:py-0 lg:pl-6 lg:pr-6">
           <div className="lg:py-5">
             <div className="font-serif text-[40px] font-light leading-none tracking-[0.02em] text-[#20394d]">{ENTETE.marque}</div>
             <div className="mt-1 font-serif text-[15px] tracking-[0.3em] text-[#20394d]">{ENTETE.saison}</div>
