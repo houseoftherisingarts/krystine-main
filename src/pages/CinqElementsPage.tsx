@@ -89,13 +89,22 @@ const CinqElementsPage: React.FC = () => {
     if (!user) {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) { setErreur('Un courriel valide est nécessaire.'); return; }
       if (!consent) { setErreur("Cochez la case de l'infolettre pour recevoir l'extrait."); return; }
+      // La fonction `extraitCinqElements` vérifie ce jeton avant d'écrire quoi
+      // que ce soit : la case n'est pas un décor, elle garde vraiment la porte.
+      if (RECAPTCHA_SITE_KEY && !captcha.getToken()) {
+        setErreur('Cochez la case « Je ne suis pas un robot ».');
+        return;
+      }
     }
     setBusy(true);
     try {
-      const lien = await telechargerExtraitCinqElements(user ? undefined : { email: email.trim(), prenom: prenom.trim(), consent });
+      const lien = await telechargerExtraitCinqElements(
+        user ? undefined : { email: email.trim(), prenom: prenom.trim(), consent, token: captcha.getToken() },
+      );
       setUrl(lien);
       window.location.href = lien;
     } catch {
+      captcha.resetWidget();
       setErreur("Le lien n'a pas pu être préparé. Réessayez dans un instant.");
     } finally {
       setBusy(false);

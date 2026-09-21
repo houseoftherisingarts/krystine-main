@@ -88,7 +88,7 @@ const MOTS = {
     erreurAide: 'Réessayez dans un instant, et écrivez au studio si cela persiste.',
     horsSession: 'Connectez-vous à votre back-office pour voir vos demandes.',
     reessayer: 'Réessayer',
-    voir: (n: number) => `Voir les ${n} non retenues`,
+    voir: (n: number) => (n === 1 ? 'Voir la demande non retenue' : `Voir les ${n} non retenues`),
     cacher: 'Cacher les non retenues',
     livreLe: (d: string) => `Livré le ${d}`,
     mois: [
@@ -111,7 +111,7 @@ const MOTS = {
     erreurAide: 'Try again in a moment, and write to the studio if it keeps happening.',
     horsSession: 'Sign in to your back office to see your requests.',
     reessayer: 'Try again',
-    voir: (n: number) => `Show the ${n} not taken on`,
+    voir: (n: number) => (n === 1 ? 'Show the one not taken on' : `Show the ${n} not taken on`),
     cacher: 'Hide the ones not taken on',
     livreLe: (d: string) => `Shipped ${d}`,
     mois: [
