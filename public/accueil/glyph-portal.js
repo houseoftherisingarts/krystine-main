@@ -223,6 +223,9 @@ function monter(section) {
     // Le clip ne tombe qu'une fois la caméra déjà remplie d'encre.
     field.style.clipPath = t >= 1 ? 'none' : `url(#${clipId})`;
     section.style.setProperty('--gp-caption', String(1 - smooth(0.01, 0.16, p)));
+    /* Le voile qui fait lire l'encre sur le papier tient jusqu'à ce que la caméra
+       soit dans la lettre, puis le visuel du fond reprend ses couleurs. */
+    section.style.setProperty('--gp-encre', String(isStatic ? 1 : 1 - smooth(0.26, 0.64, p)));
     section.style.setProperty('--gp-reveal', String(isStatic ? 1 : smooth(0.78, 0.9, p)));
     section.style.setProperty('--gp-field-scale', String(1 + 0.16 * smooth(0, 0.82, p)));
     section.style.setProperty('--gp-caption-hit', p < 0.08 ? 'auto' : 'none');
