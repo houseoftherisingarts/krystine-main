@@ -2,6 +2,8 @@ import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import * as crypto from 'crypto';
+import { RECAPTCHA_SECRET, garderFormulaire } from './captcha';
+import { champsRobot } from './newsletter/robots';
 
 // L'extrait « Les 5 éléments et leurs qualités », tiré du livre Nature &
 // Ayurveda, offert en échange d'un courriel ou d'un compte. Connectée : le
