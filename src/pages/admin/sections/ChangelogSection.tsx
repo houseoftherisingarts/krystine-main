@@ -205,7 +205,7 @@ const ChangelogSection: React.FC = () => {
         <DemandesClientPanel
           endpoint={VEXEL_DEMANDES}
           client={VEXEL_CLIENT}
-          cle={VEXEL_CLE}
+          obtenirJeton={jetonAdmin}
           lang="fr"
           onEnAttente={setEnAttente}
         />
