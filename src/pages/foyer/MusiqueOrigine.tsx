@@ -125,6 +125,7 @@ const MusiqueOrigine: React.FC = () => {
                     <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-1.5 h-4 w-4 accent-[#bb9a5e]" />
                     <span>Je veux recevoir l'infolettre de Krystine et la musique d'Origine. Désinscription en un clic, à tout moment.</span>
                   </label>
+                  {RECAPTCHA_SITE_KEY && <div ref={captcha.boxRef} className="mt-6" />}
                   <button
                     type="submit"
                     disabled={busy}
