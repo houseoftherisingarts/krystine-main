@@ -3,6 +3,7 @@ import { ArrowRight, DownloadSimple, User, EnvelopeSimple, Check } from '@phosph
 import { motion, useReducedMotion } from 'framer-motion';
 import { useApp } from '../contexts/AppContext';
 import { telechargerExtraitCinqElements } from '../firebase/cinqelements';
+import { RECAPTCHA_SITE_KEY, useRecaptcha } from '../lib/recaptcha';
 import CompteUpsell from '../components/CompteUpsell';
 import RideauEntree from '../components/evenements/RideauEntree';
 import {
