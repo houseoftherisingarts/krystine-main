@@ -432,5 +432,21 @@
       "src/lib/changelog.ts",
       "src/vexel/CollantVexel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-21T16:37:32.172Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "32a021f",
+    "message": "Accueil : plus de piste latérale, les quatre sections (repères, portes, votre clé, comment tout se relie) se lisent de haut en bas à la demande de Krystine; offre du coffre de 50 niskas fermée (interrupteur Coffre de bienvenue bêta éteint, la fleur de l'accueil l'honore); journal du 21 septembre ajusté",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/fleur-offres.js",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "src/lib/changelog.ts"
+    ]
   }
 ]
