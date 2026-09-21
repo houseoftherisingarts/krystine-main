@@ -57,6 +57,11 @@ const NewsletterSignup: React.FC<Props> = ({
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [question, setQuestion] = useState('');
+  // Le pot de miel : un champ que personne ne voit ni n'entend (hors flux,
+  // hors tabulation, caché aux lecteurs d'écran) et qu'un robot qui remplit
+  // tout remplira. La fonction `inscrireInfolettre` refuse l'inscription dès
+  // qu'il porte quelque chose. Aucune case à cocher pour les visiteuses.
+  const [pot, setPot] = useState('');
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
   const reduce = useReducedMotion();
