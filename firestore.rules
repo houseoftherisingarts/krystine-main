@@ -395,14 +395,18 @@ service cloud.firestore {
     }
 
     // ── Newsletter subscribers ──
-    // Public form submits a new signup (email-only). Admins manage the CRM.
-    // Unauthenticated clients may NOT read the subscriber list. Unsubscribe
-    // goes through the `unsubscribeByToken` Cloud Function (Admin SDK) so we
-    // don't need any public read access to this collection.
+    // Plus AUCUNE écriture depuis un navigateur, depuis le 21 septembre 2026.
+    // La règle laissait créer une fiche à quiconque envoyait un champ `email`,
+    // donc un robot qui parle directement à l'API Firestore contournait toute
+    // la garde du matin (alias jetables → `suspect`, cadence par adresse IP,
+    // pot de miel). Tous les formulaires publics passent désormais par la
+    // fonction `inscrireInfolettre` (Admin SDK, functions/src/newsletter/
+    // inscrire.ts), qui applique la garde avant d'écrire; le désabonnement
+    // passait déjà par `unsubscribeByToken`, et la réhabilitation d'une membre
+    // par `confirmerHumain`. L'admin garde ses quatre droits, pour l'import
+    // CSV, les étiquettes de groupe et la quarantaine.
     match /newsletter/{id} {
-      allow create: if request.resource.data.keys().hasAll(['email'])
-                    && request.resource.data.email is string;
-      allow read, update, delete: if isAdmin();
+      allow read, create, update, delete: if isAdmin();
     }
     // Réponses envoyées par Krystine à un abonné (écrites par la fonction
     // repondreAbonne avec l'Admin SDK; l'admin les relit, personne ne les écrit).
