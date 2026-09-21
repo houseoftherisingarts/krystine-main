@@ -81,7 +81,13 @@ const FormationsLanding: React.FC = () => {
   const navigate = useNavigate();
   const reduce = useReducedMotion();
   const go = (href: string) => {
-    if (href.startsWith('#')) { document.getElementById(href.slice(1))?.scrollIntoView({ behavior: 'smooth' }); return; }
+    if (href.startsWith('#')) {
+      // « Voir les formations » menait au repli fermé : la visiteuse arrivait
+      // sur un simple intertitre et les listes d'attente restaient cachées.
+      if (href.slice(1) === 'a-votre-rythme') setRythmeOuvert(true);
+      document.getElementById(href.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
     goToRoute(navigate, href);
   };
   const up = (delay: number) => ({

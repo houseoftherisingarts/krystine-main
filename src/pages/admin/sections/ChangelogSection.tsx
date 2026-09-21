@@ -39,17 +39,6 @@ const chargerDemandes = async (): Promise<DemandeVue[]> => {
   return (await appel()).data.demandes ?? [];
 };
 
-// TEMPORAIRE (capture du 21 septembre 2026) : ?demoDemandes=1 remplit le
-// panneau sans appeler la fonction, le temps de regarder le rendu. À retirer.
-const DEMO = [
-  { id: 'd1', recu: '2026-09-20T14:02:00.000Z', type: 'changement' as const, texte: 'Sur la page du Foyer, la photo de groupe passe avant le paragraphe de présentation. Elle donne le ton et on la voit à peine où elle est.', statut: 'nouvelle' },
-  { id: 'd2', recu: '2026-09-19T09:40:00.000Z', type: 'bug' as const, texte: 'Le bouton d’inscription à l’infolettre ne fait rien sur mon téléphone, alors qu’il fonctionne sur l’ordinateur.', statut: 'nouvelle' },
-  { id: 'd3', recu: '2026-09-18T18:12:00.000Z', type: 'changement' as const, texte: 'J’aimerais une page pour les conférences, avec les dates à venir et un formulaire pour m’inviter.', statut: 'en_cours' },
-  { id: 'd4', recu: '2026-09-15T11:25:00.000Z', type: 'changement' as const, texte: 'Le titre de la page des médias devrait dire « Krystine dans les médias » plutôt que « Médias ».', statut: 'appliquee', fin: '2026-09-16T08:30:00.000Z', resultat: 'Le titre a été changé sur la page et dans la vignette de partage. La page se retrouve aussi plus facilement dans les recherches.' },
-  { id: 'd5', recu: '2026-09-12T16:48:00.000Z', type: 'bug' as const, texte: 'Les commandes de la boutique n’arrivent plus dans ma boîte de réception depuis vendredi.', statut: 'reglee', fin: '2026-09-13T10:05:00.000Z', resultat: 'Les avis partaient dans les indésirables depuis un changement chez le fournisseur de courriel. L’adresse d’envoi a été réauthentifiée et les commandes rentrent de nouveau.' },
-  { id: 'd6', recu: '2026-09-08T13:00:00.000Z', type: 'changement' as const, texte: 'Est-ce qu’on pourrait mettre de la musique qui joue toute seule à l’ouverture de la page d’accueil ?', statut: 'refusee', fin: '2026-09-09T09:15:00.000Z', resultat: 'Un son qui part sans qu’on l’ait demandé fait fermer l’onglet, et les moteurs de recherche le pénalisent. Nous avons plutôt ajouté le lecteur du podcast bien en vue sur l’accueil.' },
-];
-
 /** Le canon de l'admin, passé au panneau portable par variables CSS. */
 const CANON_DEMANDES = `
 .kr-demandes {
@@ -222,7 +211,6 @@ const ChangelogSection: React.FC = () => {
           charger={chargerDemandes}
           lang="fr"
           onEnAttente={setEnAttente}
-          donneesDemo={new URLSearchParams(window.location.search).get('demoDemandes') ? DEMO : undefined}
         />
       </div>
     </div>

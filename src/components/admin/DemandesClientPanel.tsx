@@ -60,8 +60,6 @@ export interface DemandesClientPanelProps {
    * site hôte n'a pas à refaire l'appel pour compter.
    */
   onEnAttente?: (n: number) => void;
-  /** Jeu de démonstration : court-circuite l'appel réseau, pour une capture ou un aperçu. */
-  donneesDemo?: DemandeVue[];
 }
 
 /* ------------------------------------------------------------ les mots */
@@ -265,19 +263,14 @@ export function DemandesClientPanel({
   charger,
   lang = 'fr',
   onEnAttente,
-  donneesDemo,
 }: DemandesClientPanelProps) {
   const m = MOTS[lang];
-  const [demandes, setDemandes] = useState<DemandeVue[] | null>(donneesDemo ?? null);
+  const [demandes, setDemandes] = useState<DemandeVue[] | null>(null);
   const [erreur, setErreur] = useState('');
   const [tour, setTour] = useState(0);
   const [refusOuvert, setRefusOuvert] = useState(false);
 
   useEffect(() => {
-    if (donneesDemo) {
-      setDemandes(donneesDemo);
-      return;
-    }
     let vivant = true;
     setDemandes(null);
     setErreur('');
@@ -295,7 +288,7 @@ export function DemandesClientPanel({
     // garder hors des dépendances évite de rappeler le serveur en boucle. Le
     // tour, lui, force une relecture quand on la demande.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tour, donneesDemo]);
+  }, [tour]);
 
   const groupes = useMemo(() => {
     const vides: Record<Bloc, DemandeVue[]> = { afaire: [], encours: [], faites: [], refusees: [] };
