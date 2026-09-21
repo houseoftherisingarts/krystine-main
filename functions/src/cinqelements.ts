@@ -13,7 +13,7 @@ import { champsRobot } from './newsletter/robots';
 export const CINQ_ELEMENTS_ID = 'extrait-5-elements';
 
 export const extraitCinqElements = onCall(
-  { region: 'us-central1' },
+  { region: 'us-central1', secrets: [RECAPTCHA_SECRET] },
   async (req) => {
     const db = getFirestore();
     const fSnap = await db.doc(`formations/${CINQ_ELEMENTS_ID}`).get();
