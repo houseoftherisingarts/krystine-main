@@ -401,5 +401,19 @@
       "public/assets-manifest.json",
       "src/lib/changelog.ts"
     ]
+  },
+  {
+    "quand": "2026-09-21T13:31:43.059Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "ade6d09",
+    "message": "Journal des changements : formulation de la porte de /compte",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/changelog.ts"
+    ]
   }
 ]
