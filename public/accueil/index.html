@@ -442,22 +442,25 @@
     .reperes{position:relative;min-height:0;display:block;padding-top:4.6rem}
     .portes{padding-top:3.4rem}
 
-    /* PORTES : la rangée se prend au doigt (scroll-snap), les cartes gardent leur étiquette */
-    .fan .card{aspect-ratio:3/3.7;box-shadow:0 10px 24px rgba(40,28,16,.22)}
+    /* PORTES : fan becomes a tappable 2-col grid with labels (no hover on touch) */
+    .fan{height:auto!important;display:grid;grid-template-columns:1fr 1fr;gap:.8rem;max-width:430px;margin:2.2rem auto 0}
+    .fan .card{position:relative!important;left:auto!important;bottom:auto!important;width:100%!important;margin:0!important;
+      transform:none!important;opacity:1!important;aspect-ratio:3/3.7;box-shadow:0 10px 24px rgba(40,28,16,.22)}
     .fan .card::after{background:linear-gradient(180deg,rgba(22,16,10,.25) 0%,transparent 28%,transparent 42%,rgba(22,16,10,.66) 100%)}
     .fan .card::before{content:attr(data-title);position:absolute;left:.7rem;right:.7rem;bottom:.7rem;z-index:2;
       font-family:var(--serif);font-size:.92rem;line-height:1.15;color:var(--ctext);text-shadow:0 1px 6px rgba(0,0,0,.55)}
     .fan .card .verb{opacity:.9;transform:none;left:.7rem;right:.7rem;bottom:2.35rem;text-align:left;font-size:.82rem;color:var(--brass-bright)}
     .fan-cap{display:none}
 
-    /* REPÈRES : la rangée se prend au doigt, chaque repère reste une carte verticale */
+    /* REPÈRES : rangées icône + texte */
     .reperes{padding:3.6rem 0 4rem}
-    .rp-grid{margin-top:2rem}
-    .rp-item{padding:.2rem 1.1rem 1rem}
-    .rp-ic{width:74px;height:74px}
-    .rp-ic svg{width:36px;height:36px}
-    .rp-item h3{margin-top:1.1rem}
-    .rp-item p{margin-top:.5rem;font-size:.96rem}
+    .rp-grid{grid-template-columns:1fr;margin-top:2rem}
+    .rp-item{display:grid;grid-template-columns:auto 1fr;column-gap:1.2rem;text-align:left;align-items:center;padding:1.15rem 0}
+    .rp-item+.rp-item::before{top:0;bottom:auto;left:0;right:0;width:auto;height:1px}
+    .rp-ic{width:66px;height:66px;grid-row:1/3}
+    .rp-ic svg{width:32px;height:32px}
+    .rp-item h3{margin-top:0;align-self:end}
+    .rp-item p{margin-top:.3rem;font-size:.98rem;align-self:start}
     .echo{padding:4rem 0 4.5rem}
 
     /* HUB radial */
@@ -483,9 +486,9 @@
   }
   /* LANDSCAPE mobile (we invite the turn): wide + short -> compact height */
   @media(max-width:900px) and (orientation:landscape){
-    /* portes : la rangée au doigt, cartes plus basses */
+    /* portes : 3-column row across the width */
+    .fan{grid-template-columns:repeat(3,1fr);max-width:760px;gap:.7rem;margin-top:1.8rem}
     .fan .card{aspect-ratio:4/4.5}
-    .portes .rail-panneau{width:min(34vw,220px)}
     /* repères : rangées compactes */
     .reperes{padding:3rem 0 3.4rem}
     /* hub : texte a gauche, radial a droite */
@@ -496,6 +499,7 @@
     .trilogy{padding:0}
   }
   @media(max-width:480px){
+    .fan{max-width:340px;gap:.6rem}
     .hero-inner{padding-bottom:6rem}
   }
 
@@ -709,43 +713,50 @@
   @keyframes btn-gold-reflet{0%{left:-60%}35%,100%{left:130%}}
   @media(prefers-reduced-motion:reduce){.btn-gold,.btn-gold::after{animation:none}}
 
-  /* ============ RAILS HORIZONTAUX ============
+  /* ============ LA PISTE HORIZONTALE ============
      Le geste du studio Vexel (src/site/studio/rail) porté en vanille le 21 septembre
-     2026, quand les feuilles empilées ont quitté le bureau. Deux sections seulement
-     le portent, les deux séries de cartes de la page : les repères et les portes.
-     Défaut : une rangée qu'on prend au doigt, avec scroll-snap, sans jamais capturer
-     le défilement vertical. Sur un bureau assez haut et hors mouvement réduit, la
-     fenêtre s'épingle et le défilement vertical fait avancer la piste. */
-  .rail{position:relative}
-  .rail-entete{max-width:1280px;margin:0 auto;padding:0 3rem}
-  .rail-defileur{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
-  .rail-defileur::-webkit-scrollbar{width:0;height:0}
-  .rail-piste{display:flex;align-items:flex-start;gap:1rem;width:max-content;padding:1.8rem 1.4rem .4rem}
-  .rail-panneau{flex:0 0 auto;scroll-snap-align:center}
-  .reperes .rail-panneau{width:min(74vw,290px)}
-  .portes .rail-panneau{width:min(60vw,240px)}
-  .rail-jauge{display:none}
+     2026, à la place des feuilles empilées. Ce ne sont pas les sections qui font
+     défiler leur contenu : c'est la piste entière qui glisse, un panneau plein écran
+     à la fois. Quatre panneaux, trois hauteurs d'écran de course, un léger accrochage
+     au panneau le plus proche. Bureau assez haut seulement; en téléphone et en
+     mouvement réduit, l'enveloppe ne produit aucune boîte et les quatre sections
+     s'empilent verticalement comme avant. */
+  .piste,.piste-vue,.piste-rail{display:contents}
 
   @media(min-width:901px) and (min-height:700px) and (prefers-reduced-motion:no-preference){
-    .reperes,.portes{padding:0}
-    .rail-vue{position:sticky;top:0;height:100vh;overflow:clip;display:flex;align-items:center;isolation:isolate}
-    .rail-entete{position:absolute;top:0;left:0;right:0;z-index:3;padding:3.4rem 3rem 0;pointer-events:none}
-    .rail-entete a,.rail-entete button{pointer-events:auto}
-    .rail-defileur{display:contents}
-    .rail-piste{width:max-content;align-items:center;gap:2.4rem;padding:0 max(3rem,calc((100vw - 1180px) / 2));
-      margin:0;will-change:transform}
-    .rail-jauge{display:block;position:absolute;left:0;right:0;bottom:0;height:3px;z-index:3;
-      background:rgba(58,49,38,.12)}
-    .rail-jauge span{display:block;height:100%;background:var(--brass);transform:scaleX(0);transform-origin:0 50%}
-    .reperes .rail-panneau{width:clamp(280px,25vw,350px)}
-    .reperes .rail-panneau .rp-ic{width:116px;height:116px}
-    .reperes .rail-panneau .rp-ic svg{width:56px;height:56px}
-    .reperes .rail-panneau p{font-size:1.15rem}
-    /* les cartes laissent la bande du titre en haut et la légende en bas dégagées */
-    .portes .rail-panneau{width:clamp(240px,23vw,320px)}
-    .portes .rail-piste{margin-bottom:8rem}
-    .rail-pied{position:absolute;left:0;right:0;bottom:2.4rem;z-index:3;margin:0 auto}
+    .piste{display:block;position:relative}
+    .piste-vue{display:block;position:sticky;top:0;height:100vh;overflow:clip;isolation:isolate}
+    .piste-rail{display:flex;width:max-content;height:100vh;will-change:transform}
+    .panneau{flex:0 0 var(--pw,100vw);width:var(--pw,100vw);height:100vh;min-height:0;overflow:hidden;
+      display:flex;flex-direction:column;justify-content:center;border-radius:0;box-shadow:none}
+    .panneau>.mx{width:100%}
+
+    /* chaque panneau tient dans l'écran, à 1440 × 900 comme à 1280 × 800 :
+       les marges et la hauteur de l'éventail se resserrent, jamais le contenu */
+    .panneau.reperes{padding:0}
+    .panneau.reperes .rp-grid{margin-top:2.6rem}
+
+    .panneau.portes{padding:0}
+    .panneau.portes .sec-title{font-size:clamp(1.7rem,2.6vw,2.3rem)}
+    .panneau.portes .fan{height:350px;margin-top:2.2rem}
+    .panneau.portes .fan-cap{margin-top:1.6rem;min-height:6.4rem}
+
+    .panneau.membre{padding:0}
+    .panneau.membre .membre-roue{max-width:min(440px,52vh)}
+    .panneau.membre .membre-copy p{margin-top:.9rem}
+    .panneau.membre .membre-copy .btn-gold{margin-top:1.3rem}
+
+    .panneau.relie{padding:0}
+    .panneau.relie .web{max-width:min(470px,56vh)}
+    .panneau.relie .copy2 p{margin-top:1.1rem}
+
+    /* la jauge de la piste, comme la barre du rail de Vexel */
+    .piste-jauge{position:absolute;left:0;right:0;bottom:0;height:3px;z-index:6;background:rgba(58,49,38,.12)}
+    .piste-jauge span{display:block;height:100%;background:var(--brass);transform:scaleX(0);transform-origin:0 50%}
+  }
+  .piste-jauge{display:none}
+  @media(min-width:901px) and (min-height:700px) and (prefers-reduced-motion:no-preference){
+    .piste-jauge{display:block}
   }
 
   /* ============ GLYPH PORTAL ============
@@ -909,67 +920,60 @@
     </div>
   </section>
 
+  <!-- ===== LA PISTE : quatre sections entières qui glissent de côté (geste du studio Vexel) ===== -->
+  <div class="piste" data-piste>
+   <div class="piste-vue">
+    <div class="piste-rail">
+
   <!-- ===== FIL CENTRAL ===== -->
-  <section class="reperes" id="origine">
-   <div class="rail" data-rail="reperes">
-    <div class="rail-vue">
-      <div class="rail-entete">
+  <section class="reperes panneau" id="origine">
+    <div class="mx">
       <h2 class="rp-title reveal">Un langage. Des repères. Une transformation.</h2>
       <div class="rp-orn reveal d1" aria-hidden="true"><span></span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></svg><span></span></div>
-      </div>
-      <div class="rail-defileur">
-      <div class="rp-grid rail-piste">
-        <div class="rp-item rail-panneau reveal d1" style="--rc:#b4533a">
+      <div class="rp-grid">
+        <div class="rp-item reveal d1" style="--rc:#b4533a">
           <span class="rp-ic"><svg class="an-leaf" viewBox="0 0 48 48"><path d="M24 6c6 5 10 12 10 19 0 9-5 15-10 17-5-2-10-8-10-17 0-7 4-14 10-19Z"/><path d="M24 12v24"/><path d="M24 17c-3 .4-5.5 1.9-7 4.3M24 17c3 .4 5.5 1.9 7 4.3M24 24c-3.6.5-6.6 2.3-8.2 5M24 24c3.6.5 6.6 2.3 8.2 5"/></svg></span>
           <h3>Le Corps</h3>
           <p>Un langage intelligent qui vous guide à chaque instant.</p>
         </div>
-        <div class="rp-item rail-panneau reveal d2" style="--rc:#74824a">
+        <div class="rp-item reveal d2" style="--rc:#74824a">
           <span class="rp-ic"><svg class="an-sun" viewBox="0 0 48 48"><circle cx="24" cy="24" r="7.5"/><path d="M24 7.5v5M24 35.5v5M7.5 24h5M35.5 24h5M12.3 12.3l3.5 3.5M32.2 32.2l3.5 3.5M35.7 12.3l-3.5 3.5M15.8 32.2l-3.5 3.5"/></svg></span>
           <h3>La Nature</h3>
           <p>La plus grande enseignante de tous les temps.</p>
         </div>
-        <div class="rp-item rail-panneau reveal d3" style="--rc:#9c7a44">
+        <div class="rp-item reveal d3" style="--rc:#9c7a44">
           <span class="rp-ic"><svg class="an-rings" viewBox="0 0 48 48"><circle cx="24" cy="24" r="4"/><circle cx="24" cy="24" r="10"/><path d="M31 9.6A16 16 0 1 1 17 9.6"/><circle cx="24" cy="6.8" r="1.1"/></svg></span>
           <h3>Les Cycles</h3>
           <p>Des repères naturels pour s'aligner à la vie.</p>
         </div>
-        <div class="rp-item rail-panneau reveal d4" style="--rc:#ab7265">
+        <div class="rp-item reveal d4" style="--rc:#ab7265">
           <span class="rp-ic"><svg class="an-lotus" viewBox="0 0 48 48"><path d="M24 10c3.5 4 5.5 8.5 5.5 12.5 0 5-2.5 8.5-5.5 10-3-1.5-5.5-5-5.5-10 0-4 2-8.5 5.5-12.5Z"/><path d="M18.5 20c-2.5-3-6-4.5-9.5-4.5.5 5.5 2.5 10 6 13 1.6 1.4 3.4 2.4 5.5 3"/><path d="M29.5 20c2.5-3 6-4.5 9.5-4.5-.5 5.5-2.5 10-6 13-1.6 1.4-3.4 2.4-5.5 3"/><path d="M11 36.5c4 1.6 8.5 2.4 13 2.4s9-.8 13-2.4"/></svg></span>
           <h3>Les Qualités</h3>
           <p>Des clés pour mieux comprendre ce qui se joue en vous.</p>
         </div>
-        <div class="rp-item rail-panneau reveal d5" style="--rc:#c8963e">
+        <div class="rp-item reveal d5" style="--rc:#c8963e">
           <span class="rp-ic"><svg class="an-flame" viewBox="0 0 48 48"><path d="M24 7c6 6.5 10 12 10 18a10 10 0 0 1-20 0c0-6 4-11.5 10-18Z"/><path d="M24 22c2.5 3 4 5.5 4 8a4 4 0 0 1-8 0c0-2.5 1.5-5 4-8Z"/></svg></span>
           <h3>Votre Discernement</h3>
           <p>Votre premier repère, à cultiver et à honorer au quotidien.</p>
         </div>
       </div>
-      </div>
-      <div class="rail-jauge" aria-hidden="true"><span></span></div>
     </div>
-   </div>
   </section>
 
   <!-- ===== PORTES ===== -->
-  <section class="portes" id="portes">
-   <div class="rail" data-rail="portes">
-    <div class="rail-vue">
-      <div class="rail-entete">
+  <section class="portes panneau" id="portes">
+    <div class="mx">
       <h2 class="sec-title reveal">Par où commencer</h2>
       <div class="rule reveal d1"></div>
+      <div class="fan" id="fan">
+        <a class="card" href="/podcast" data-num="01" data-title="Le Podcast" data-desc="Nous n'avons jamais eu autant de choix. Et jamais autant de choses n'ont choisi à notre place." data-link="Écouter"><img src="/accueil/assets/portes/podcast.webp" alt="Micro de studio en lumière chaude" width="560" height="750" loading="lazy" decoding="async"><span class="fn">01</span><span class="verb">Écouter</span></a>
+        <a class="card" href="/medias#livres" data-num="02" data-title="La Trilogie" data-desc="Les fondations écrites de l'œuvre : sagesse du corps, cycles, plantes, alimentation, saisons et transformation." data-link="Lire"><img src="/accueil/assets/portes/livres.webp" alt="Livres reliés et brins botaniques" width="560" height="750" loading="lazy" decoding="async"><span class="fn">02</span><span class="verb">Lire</span></a>
+        <a class="card" href="/conferenciere" data-num="03" data-title="Les Conférences" data-desc="Conférences et soirées de parole pour partager la vision et inspirer le changement." data-link="Rencontrer"><img src="/accueil/assets/portes/conferences.webp" alt="Salle de conférence à la lueur des bougies" width="560" height="750" loading="lazy" decoding="async"><span class="fn">03</span><span class="verb">Rencontrer</span></a>
+        <a class="card" href="/formations" data-num="04" data-title="Les Formations" data-desc="Des parcours en ligne, saison après saison, pour apprendre l'Ayurveda et l'appliquer chez soi : alimentation, plantes, rituels et gestion du stress." data-link="Approfondir"><img src="/accueil/assets/portes/formations.webp" alt="Krystine à sa table, ses livres devant elle" width="560" height="750" loading="lazy" decoding="async"><span class="fn">04</span><span class="verb">Approfondir</span></a>
+        <a class="card" href="/liste-attente?programme=retraite" data-num="05" data-title="Les Retraites" data-desc="Des espaces en nature pour déposer le bruit, revenir au corps et s'ouvrir à la transformation." data-link="S'immerger"><img src="/accueil/assets/portes/retraites.webp" alt="Cabane de bois dans la forêt d'automne" width="560" height="750" loading="lazy" decoding="async"><span class="fn">05</span><span class="verb">S'immerger</span></a>
+        <a class="card" href="https://inspiratanature.com" target="_blank" rel="noopener noreferrer" data-num="06" data-title="Inspirata Ayurveda" data-desc="Les huiles, les plantes et les rituels de soin pour incarner l'œuvre au quotidien." data-link="Prendre soin"><img src="/accueil/assets/portes/inspirata.webp" alt="Flacons d'huiles ayurvédiques ambrés" width="560" height="750" loading="lazy" decoding="async"><span class="fn">06</span><span class="verb">Prendre soin</span></a>
       </div>
-      <div class="rail-defileur">
-      <div class="fan rail-piste" id="fan">
-        <a class="card rail-panneau" href="/podcast" data-num="01" data-title="Le Podcast" data-desc="Nous n'avons jamais eu autant de choix. Et jamais autant de choses n'ont choisi à notre place." data-link="Écouter"><img src="/accueil/assets/portes/podcast.webp" alt="Micro de studio en lumière chaude" width="560" height="750" loading="lazy" decoding="async"><span class="fn">01</span><span class="verb">Écouter</span></a>
-        <a class="card rail-panneau" href="/medias#livres" data-num="02" data-title="La Trilogie" data-desc="Les fondations écrites de l'œuvre : sagesse du corps, cycles, plantes, alimentation, saisons et transformation." data-link="Lire"><img src="/accueil/assets/portes/livres.webp" alt="Livres reliés et brins botaniques" width="560" height="750" loading="lazy" decoding="async"><span class="fn">02</span><span class="verb">Lire</span></a>
-        <a class="card rail-panneau" href="/conferenciere" data-num="03" data-title="Les Conférences" data-desc="Conférences et soirées de parole pour partager la vision et inspirer le changement." data-link="Rencontrer"><img src="/accueil/assets/portes/conferences.webp" alt="Salle de conférence à la lueur des bougies" width="560" height="750" loading="lazy" decoding="async"><span class="fn">03</span><span class="verb">Rencontrer</span></a>
-        <a class="card rail-panneau" href="/formations" data-num="04" data-title="Les Formations" data-desc="Des parcours en ligne, saison après saison, pour apprendre l'Ayurveda et l'appliquer chez soi : alimentation, plantes, rituels et gestion du stress." data-link="Approfondir"><img src="/accueil/assets/portes/formations.webp" alt="Krystine à sa table, ses livres devant elle" width="560" height="750" loading="lazy" decoding="async"><span class="fn">04</span><span class="verb">Approfondir</span></a>
-        <a class="card rail-panneau" href="/liste-attente?programme=retraite" data-num="05" data-title="Les Retraites" data-desc="Des espaces en nature pour déposer le bruit, revenir au corps et s'ouvrir à la transformation." data-link="S'immerger"><img src="/accueil/assets/portes/retraites.webp" alt="Cabane de bois dans la forêt d'automne" width="560" height="750" loading="lazy" decoding="async"><span class="fn">05</span><span class="verb">S'immerger</span></a>
-        <a class="card rail-panneau" href="https://inspiratanature.com" target="_blank" rel="noopener noreferrer" data-num="06" data-title="Inspirata Ayurveda" data-desc="Les huiles, les plantes et les rituels de soin pour incarner l'œuvre au quotidien." data-link="Prendre soin"><img src="/accueil/assets/portes/inspirata.webp" alt="Flacons d'huiles ayurvédiques ambrés" width="560" height="750" loading="lazy" decoding="async"><span class="fn">06</span><span class="verb">Prendre soin</span></a>
-      </div>
-      </div>
-      <div class="fan-cap rail-pied" id="fancap">
+      <div class="fan-cap" id="fancap">
         <div class="fc-inner">
           <span class="fc-num">01</span>
           <h3>Le Podcast</h3>
@@ -977,16 +981,14 @@
           <a href="/podcast">Écouter →</a>
         </div>
       </div>
-      <div class="rail-jauge" aria-hidden="true"><span></span></div>
     </div>
-   </div>
   </section>
 
 
 
 
   <!-- ===== ESPACE MEMBRE : la clé qui ouvre le site ===== -->
-  <section class="membre" id="membre">
+  <section class="membre panneau" id="membre">
     <div class="mx membre-grid">
       <div class="membre-roue reveal d2" aria-hidden="true"><img src="/accueil/assets/wheel-watercolor.webp" alt="" width="1024" height="1024" loading="lazy" decoding="async"></div>
       <div class="membre-copy reveal">
@@ -1002,7 +1004,7 @@
   </section>
 
   <!-- ===== COMMENT TOUT SE RELIE ===== -->
-  <section class="relie" id="apropos">
+  <section class="relie panneau" id="apropos">
     <div class="mx">
       <div class="copy2 reveal">
         <h2>Comment tout<br/>se relie</h2>
@@ -1021,6 +1023,10 @@
       </div>
     </div>
   </section>
+
+    </div>
+   </div>
+  </div>
 
   <!-- ===== TRILOGIE · le mot TRILOGIE ouvre la section (Glyph Portal) ===== -->
   <section class="trilogy gp" id="ressources" data-gp data-gp-length="2.4" data-gp-min-width="900" aria-label="TRILOGIE" style="--gp-length:2.4;--gp-characters:8">
@@ -1341,10 +1347,13 @@
     // « Continuer vers Vexel » ouvre un onglet d'arrière-plan : la visiteuse reste ici (Alex, 21 sept 2026).
     function ouvrirEnArrierePlan(url) {
       var a = document.createElement('a');
-      a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.style.display = 'none';
+      a.href = url; a.target = '_blank'; a.rel = 'noopener';
+      a.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0';
       document.body.appendChild(a);
-      a.dispatchEvent(new MouseEvent('click', { bubbles: false, cancelable: true, ctrlKey: true, metaKey: true, view: window }));
+      var mac = /Mac|iPhone|iPad/.test(navigator.platform || '');
+      a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, ctrlKey: !mac, metaKey: mac, button: 0, view: window }));
       a.remove();
+      setTimeout(function () { try { window.focus(); } catch (e) {} }, 60);
     }
     var oui = document.getElementById('cvOui');
     if (oui) oui.addEventListener('click', function (e) {
@@ -1481,95 +1490,117 @@
     });
   }
 
-  /* Rails horizontaux : sur un bureau assez haut, la fenêtre du rail s'épingle et le
-     défilement vertical fait avancer la rangée de panneaux, comme sur le studio de
-     Vexel. Partout ailleurs, la même rangée se prend au doigt (CSS seul, scroll-snap),
-     et le défilement vertical de la page n'est jamais capturé. */
+  /* La piste : quatre sections entières qui glissent de côté, le geste du studio Vexel.
+     Le défilement vertical déplace la piste d'un panneau par hauteur d'écran, avec un
+     léger accrochage sur le panneau le plus proche. Rien ne défile à l'intérieur d'un
+     panneau. Bureau assez haut seulement : ailleurs les quatre sections s'empilent. */
   (function(){
-    const MQ='(min-width:901px) and (min-height:700px) and (prefers-reduced-motion:no-preference)';
-    const mq=matchMedia(MQ);
-    const rails=[].slice.call(document.querySelectorAll('[data-rail]')).map(function(rail){
-      return { rail:rail,
-        vue:rail.querySelector('.rail-vue'),
-        piste:rail.querySelector('.rail-piste'),
-        defileur:rail.querySelector('.rail-defileur'),
-        jauge:rail.querySelector('.rail-jauge span'),
-        panneaux:[].slice.call(rail.querySelectorAll('.rail-panneau')),
-        distance:0, actif:-1 };
-    }).filter(function(e){ return e.vue && e.piste && e.panneaux.length; });
-    if(!rails.length) return;
+    var mq=matchMedia('(min-width:901px) and (min-height:700px) and (prefers-reduced-motion:no-preference)');
+    var piste=document.querySelector('[data-piste]'); if(!piste) return;
+    var vue=piste.querySelector('.piste-vue'), rail=piste.querySelector('.piste-rail');
+    var jauge=piste.querySelector('.piste-jauge span');
+    var panneaux=[].slice.call(rail.querySelectorAll(':scope > .panneau'));
+    var pas=panneaux.length-1, pw=0;
+    if(pas<1) return;
 
-    function majActif(e){
-      const cadre=e.vue.getBoundingClientRect(), centre=cadre.left+cadre.width/2;
-      let i=0, best=Infinity;
-      e.panneaux.forEach(function(p,k){
-        const r=p.getBoundingClientRect(), d=Math.abs(r.left+r.width/2-centre);
-        if(d<best){ best=d; i=k; }
-      });
-      if(i!==e.actif){ e.actif=i; e.rail.dispatchEvent(new CustomEvent('rail:actif',{detail:{index:i}})); }
-    }
     function mesurer(){
-      const vh=innerHeight, epingle=mq.matches;
-      rails.forEach(function(e){
-        /* l'annonce du panneau actif se refait après chaque mesure : la première part
-           avant que les sections branchées ne se soient abonnées */
-        e.actif=-1;
-        if(!epingle){ e.rail.style.height=''; e.piste.style.transform=''; e.distance=0; majActif(e); return; }
-        e.distance=Math.max(0, e.piste.scrollWidth - e.vue.clientWidth);
-        e.rail.style.height=(vh+e.distance)+'px';
-      });
+      if(!mq.matches){ piste.style.height=''; rail.style.transform=''; rail.style.removeProperty('--pw'); return; }
+      pw=vue.clientWidth;
+      rail.style.setProperty('--pw',pw+'px');
+      piste.style.height=(innerHeight*(1+pas))+'px';
+    }
+    /* L'accrochage : la course ralentit en arrivant sur un panneau et repart en
+       douceur, sans jamais s'arrêter net ni sauter. 0 glisserait tout droit, 1
+       ferait un cran dur; 0,62 donne la retenue sans la saccade. */
+    function accrocher(f){
+      var i=Math.floor(f); if(i>=pas) return pas;
+      var t=f-i, doux=t*t*(3-2*t);
+      return i + t + (doux-t)*0.62;
     }
     function peindre(){
       if(!mq.matches) return;
-      const vh=innerHeight;
-      rails.forEach(function(e){
-        const course=e.rail.offsetHeight-vh;
-        const p=course>0 ? Math.min(1,Math.max(0,-e.rail.getBoundingClientRect().top/course)) : 0;
-        e.piste.style.transform='translate3d('+(-p*e.distance).toFixed(1)+'px,0,0)';
-        if(e.jauge) e.jauge.style.transform='scaleX('+p.toFixed(4)+')';
-        majActif(e);
-      });
+      var course=piste.offsetHeight-innerHeight; if(course<=0) return;
+      var p=Math.min(1,Math.max(0,-piste.getBoundingClientRect().top/course));
+      rail.style.transform='translate3d('+(-accrocher(p*pas)*pw).toFixed(1)+'px,0,0)';
+      if(jauge) jauge.style.transform='scaleX('+p.toFixed(4)+')';
     }
-    let tick=false;
-    function auDefilement(){ if(!tick){ tick=true; requestAnimationFrame(function(){ tick=false; peindre(); }); } }
+    var attend=false;
+    function auDefilement(){ if(!attend){ attend=true; requestAnimationFrame(function(){ attend=false; peindre(); }); } }
     addEventListener('scroll',auDefilement,{passive:true});
     addEventListener('resize',function(){ mesurer(); peindre(); });
     mq.addEventListener('change',function(){ mesurer(); peindre(); });
     addEventListener('load',function(){ mesurer(); peindre(); });
-    rails.forEach(function(e){
-      if(e.defileur) e.defileur.addEventListener('scroll',function(){ if(!mq.matches) majActif(e); },{passive:true});
-      /* Un panneau qui attend son tour hors de la fenêtre du rail n'entre jamais dans le
-         champ de l'observateur : la rangée s'allume d'un coup dès que le rail arrive. */
-      new IntersectionObserver(function(es,o){ es.forEach(function(en){ if(en.isIntersecting){
-        e.panneaux.forEach(function(p){ p.classList.add('in'); }); o.disconnect(); } }); },{threshold:.1}).observe(e.rail);
-    });
     mesurer(); peindre();
+
+    /* Un lien vers un panneau vise sa place sur la piste, pas le haut de la piste :
+       sans ça, « Découvrir la trilogie » ramenait aux repères au lieu des portes. */
+    document.addEventListener('click',function(e){
+      if(!mq.matches) return;
+      var a=e.target.closest && e.target.closest('a[href^="#"]'); if(!a) return;
+      var cible=document.getElementById(a.getAttribute('href').slice(1)); if(!cible) return;
+      var i=panneaux.indexOf(cible); if(i<0) return;
+      e.preventDefault();
+      var haut=piste.getBoundingClientRect().top+scrollY;
+      scrollTo({top:Math.round(haut+i*innerHeight),behavior:'smooth'});
+    });
   })();
 
-  /* Portes : la carte au centre du rail prend la vedette et la légende suit. */
+  // Portes en éventail: fan layout, staggered entrance, hover spread, caption swap
   (function(){
     const fan=document.getElementById('fan'); if(!fan) return;
-    const cards=[].slice.call(fan.querySelectorAll('.card'));
-    const cap=document.getElementById('fancap'), inner=cap&&cap.querySelector('.fc-inner');
-    if(!inner) return;
+    const cards=[...fan.querySelectorAll('.card')]; const N=cards.length;
+    const cap=document.getElementById('fancap'), inner=cap.querySelector('.fc-inner');
+    const center=(N-1)/2;
+    function mult(){ const w=innerWidth; if(w<480)return .42; if(w<640)return .54; if(w<860)return .72; return 1; }
+    function slot(i){ const d=i-center, m=mult();
+      return { x:d*190*m, y:Math.abs(d)*Math.abs(d)*9*m, rot:d*6, sc:1-Math.abs(d)*0.04, z:20-Math.round(Math.abs(d)*3) }; }
+    function place(i,o){ const c=cards[i];
+      c.style.transform='translateX('+o.x+'px) translateY('+o.y+'px) rotate('+o.rot+'deg) scale('+o.sc+')';
+      c.style.zIndex=o.z; c.style.opacity=1; }
+    function rest(){ cards.forEach((c,i)=>place(i,slot(i))); }
+    function spread(h){
+      cards.forEach((c,i)=>{ const b=slot(i);
+        if(i===h){ b.y-=26; b.sc*=1.07; b.z=30; b.rot*=.4; }
+        else { const dir=i<h?-1:1, dist=Math.abs(i-h); b.x+=dir*38*(1-Math.min(1,dist/3.2)); b.rot+=dir*2.5/(dist); }
+        place(i,b);
+      });
+    }
     function setCap(c){
       inner.innerHTML='<span class="fc-num">'+c.dataset.num+'</span><h3>'+c.dataset.title+'</h3><p>'+c.dataset.desc+'</p><a href="'+c.getAttribute('href')+'">'+c.dataset.link+' →</a>';
     }
-    let vedette=-1, capT=null;
-    function marquer(i){
-      if(i===vedette||i<0||i>=cards.length) return; vedette=i;
-      cards.forEach(function(c,k){ c.classList.toggle('on',k===i); });
+    let hov=-1, capT=null;
+    function setActive(i){
+      if(i===hov) return; hov=i;
+      cards.forEach((c,k)=>c.classList.toggle('on',k===i));
+      if(i<0){ rest(); return; }
+      spread(i);
       clearTimeout(capT);
       cap.classList.add('swap');
-      capT=setTimeout(function(){ setCap(cards[i]); cap.classList.remove('swap'); },180);
+      capT=setTimeout(()=>{ setCap(cards[i]); cap.classList.remove('swap'); },180);
     }
-    const rail=fan.closest('[data-rail]');
-    if(rail) rail.addEventListener('rail:actif',function(e){ marquer(e.detail.index); });
-    fan.addEventListener('pointerover',function(e){
-      if(e.pointerType==='touch') return;
-      const c=e.target.closest && e.target.closest('.card');
-      if(c) marquer(cards.indexOf(c));
+    fan.addEventListener('pointermove',(e)=>{
+      if(!entered || e.pointerType==='touch') return;
+      var r=fan.getBoundingClientRect();
+      var i=Math.round((e.clientX-r.left-r.width/2)/(190*mult())+center);
+      setActive(Math.max(0,Math.min(N-1,i)));
     });
+    fan.addEventListener('pointerleave',()=>{ if(entered) setActive(-1); });
+    // entrance on scroll-in (staggered rise); reduced-motion = instant
+    let entered=false;
+    function enter(){ if(entered) return; entered=true;
+      if(reduce){ rest(); return; }
+      cards.forEach((c,i)=>{
+        c.style.transition='none';
+        c.style.transform='translateY(120px) scale(.55)'; c.style.opacity='0';
+        const o=slot(i), delay=120+Math.abs(i-center)*90;
+        requestAnimationFrame(()=>setTimeout(()=>{
+          c.style.transition='transform .95s cubic-bezier(.34,1.32,.5,1),opacity .6s ease';
+          place(i,o);
+        },delay));
+      });
+    }
+    const fio=new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ enter(); fio.disconnect(); } }),{threshold:.35});
+    fio.observe(fan);
   })();
 
   // Newsletter: inline validation + success state.

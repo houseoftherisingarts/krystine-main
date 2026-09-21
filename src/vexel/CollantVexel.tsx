@@ -56,10 +56,14 @@ export const ouvrirEnArrierePlan = (url: string) => {
   a.href = url;
   a.target = '_blank';
   a.rel = 'noopener';
-  a.style.display = 'none';
+  // Hors écran plutôt que display:none : certains moteurs ignorent le clic sur un élément non rendu.
+  a.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0';
   document.body.appendChild(a);
-  a.dispatchEvent(new MouseEvent('click', { bubbles: false, cancelable: true, ctrlKey: true, metaKey: true, view: window }));
+  const mac = /Mac|iPhone|iPad/.test(navigator.platform || '');
+  // Le modificateur du système seulement : Cmd sur Mac, Ctrl ailleurs, comme le vrai geste de l'utilisateur.
+  a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, ctrlKey: !mac, metaKey: mac, button: 0, view: window }));
   a.remove();
+  window.setTimeout(() => { try { window.focus(); } catch { /* rien */ } }, 60);
 };
 
 /** L'adresse se reconstruit toujours ici; seul un code de la forme attendue passe. */
