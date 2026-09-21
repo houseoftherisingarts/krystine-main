@@ -130,10 +130,10 @@ const RobotsPanel: React.FC<{ subs: NewsletterSubscriber[]; refresh: () => Promi
     <thead className="bg-[#EEE7DB] dark:bg-white/5 text-[10px] uppercase tracking-widest text-[#293027]/60 dark:text-white/60">
       <tr>
         <th className="text-left px-4 py-3">Courriel</th>
-        <th className="text-left px-4 py-3 hidden md:table-cell">Prénom</th>
-        <th className="text-left px-4 py-3 hidden md:table-cell">Source</th>
+        <th className="text-left px-4 py-3 hidden lg:table-cell">Prénom</th>
+        <th className="text-left px-4 py-3 hidden lg:table-cell">Source</th>
         <th className="text-left px-4 py-3 hidden lg:table-cell">{colonneQuand}</th>
-        <th className="text-left px-4 py-3 hidden lg:table-cell">Raison</th>
+        <th className="text-left px-4 py-3 hidden xl:table-cell">Raison</th>
         <th className="px-4 py-3"></th>
       </tr>
     </thead>
