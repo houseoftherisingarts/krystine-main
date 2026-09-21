@@ -346,6 +346,57 @@ export async function desabonnerAbonnements(ids: string[]): Promise<number> {
   return ids.length;
 }
 
+// ─── La quarantaine des robots potentiels (21 septembre 2026) ────────────────
+// Quatre gestes pour Krystine, tous réversibles, aucun qui efface une fiche.
+//
+//   rehabiliter        « C'est une vraie personne » : la fiche sort pour de
+//                      bon, le motif s'efface, elle redevient une abonnée
+//                      ordinaire et disparaît des deux listes.
+//   garderConfirmee    « Garder » : la personne a repassé le reCAPTCHA
+//                      elle-même, Krystine confirme, la fiche quitte la
+//                      sous-liste mais garde sa trace.
+//   remettreQuarantaine « Remettre en quarantaine » : la fiche redevient
+//                      suspecte ET ne pourra plus se rouvrir toute seule.
+//   desabonnerAbonnements (plus bas) sert de « Retirer ».
+
+/** « C'est une vraie personne » : statut rétabli, étiquette et motif retirés. */
+export async function rehabiliterAbonne(s: NewsletterSubscriber): Promise<void> {
+  if (!db) noDb();
+  if (!s.id) return;
+  invalidateNewsletterSubscribers();
+  await updateDoc(doc(db!, 'newsletter', s.id), {
+    status: s.statusAvant || 'active',
+    tags: (s.tags || []).filter(t => t !== 'robot-potentiel'),
+    statusAvant: deleteField(),
+    robotPotentiel: deleteField(),
+  });
+}
+
+/** « Garder » : la fiche reste active et quitte la sous-liste des confirmées. */
+export async function garderConfirmee(s: NewsletterSubscriber): Promise<void> {
+  if (!db) noDb();
+  if (!s.id) return;
+  invalidateNewsletterSubscribers();
+  await updateDoc(doc(db!, 'newsletter', s.id), {
+    'robotPotentiel.decisionKrystine': 'gardee',
+    'robotPotentiel.decisionLe': serverTimestamp(),
+  });
+}
+
+/** « Remettre en quarantaine » : la fiche redevient suspecte et s'y verrouille. */
+export async function remettreQuarantaine(s: NewsletterSubscriber): Promise<void> {
+  if (!db) noDb();
+  if (!s.id) return;
+  invalidateNewsletterSubscribers();
+  await updateDoc(doc(db!, 'newsletter', s.id), {
+    status: 'suspect',
+    statusAvant: s.status && s.status !== 'suspect' ? s.status : 'active',
+    tags: Array.from(new Set([...(s.tags || []), 'robot-potentiel'])),
+    'robotPotentiel.decisionKrystine': 'quarantaine',
+    'robotPotentiel.decisionLe': serverTimestamp(),
+  });
+}
+
 // ─── Directs du podcast ──────────────────────────────────────────────────────
 // Un document par direct. Les inscrits portent `tag` dans newsletter.tags;
 // les rappels partent de la fonction planifiée `sendLiveReminders`.
