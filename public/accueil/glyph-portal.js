@@ -187,7 +187,11 @@ function monter(section) {
     annotationPath.setAttribute('stroke-width', String(u));
   };
 
-  const statique = () => motion.matches || innerWidth < seuilLarge || !browserFrameSeen || stalled || !target;
+  /* Pas de caméra du tout : mouvement réduit, ou fenêtre étroite. */
+  const sansCamera = () => motion.matches || innerWidth < seuilLarge;
+  /* Image figée : en plus, la première image du navigateur qui tarde, la police absente
+     ou une lettre sans disque plein où entrer. */
+  const statique = () => sansCamera() || !browserFrameSeen || stalled || !target;
 
   const position = () => {
     const origin = root ? root.getBoundingClientRect().top + root.clientTop : 0;
