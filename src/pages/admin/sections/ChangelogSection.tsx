@@ -1,8 +1,18 @@
 // Le journal des changements, tel que Krystine le lit. Le contenu vit dans
 // src/lib/changelog.ts et s'ajoute en tête à chaque journée de travail.
-import React from 'react';
+//
+// Deux sous-onglets depuis le 21 septembre 2026, à sa demande : « Journal »,
+// ce que le studio a livré, et « Vos demandes », ce qu'elle a demandé, avec un
+// crochet dès que c'est fait. Les deux racontent la même histoire vue des deux
+// bords, donc ils vivent sous la même entrée de navigation. Le panneau des
+// demandes vient de _vexel-base/src/vexel/DemandesClientPanel.tsx et se
+// branche avec le slug et la clé qui servent déjà à l'iframe de demande
+// (DemandeVexel.tsx). Les deux vues restent montées pour que le compte des
+// demandes en attente alimente le badge sans attendre le premier clic.
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { JOURNAL, nombreEtapes, type Etape } from '../../../lib/changelog';
+import DemandesClientPanel from '../../../components/admin/DemandesClientPanel';
 
 const MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
 
@@ -12,20 +22,49 @@ const enLettres = (iso: string): string => {
   return `${j} ${MOIS[(m || 1) - 1]} ${a}`;
 };
 
-const ChangelogSection: React.FC = () => {
+/** La porte du studio : la même identité que l'iframe de DemandeVexel.tsx. */
+const VEXEL_CLIENT = 'krystine';
+const VEXEL_CLE = 'aT_yMR68NLyEW3weNDjwYdW_';
+const VEXEL_DEMANDES = 'https://us-central1-vexel-integrations.cloudfunctions.net/demandesClient';
+
+/** Le canon de l'admin, passé au panneau portable par variables CSS. */
+const CANON_DEMANDES = `
+.kr-demandes {
+  --couleur-surface: #FBF8F2;
+  --couleur-texte: #293027;
+  --couleur-muted: rgba(41, 48, 39, 0.62);
+  --couleur-bordure: rgba(56, 64, 58, 0.16);
+  --couleur-accent: #8B4A2F;
+  --couleur-fait: #4a7c59;
+  --rayon-carte: 20px;
+  --police-corps: Inter, system-ui, sans-serif;
+  --police-titre: "Cormorant Garamond", serif;
+}
+.dark .kr-demandes {
+  --couleur-surface: #222b26;
+  --couleur-texte: #ffffff;
+  --couleur-muted: rgba(255, 255, 255, 0.62);
+  --couleur-bordure: rgba(255, 255, 255, 0.14);
+  --couleur-accent: #d9a05b;
+  --couleur-fait: #6fae86;
+}
+`;
+
+const ONGLETS = [
+  { id: 'journal', libelle: 'Journal' },
+  { id: 'demandes', libelle: 'Vos demandes' },
+] as const;
+
+type OngletId = (typeof ONGLETS)[number]['id'];
+
+/* ------------------------------------------------------------ le journal */
+
+const Journal: React.FC = () => {
   const journees = JOURNAL.length;
   const premiere = JOURNAL[JOURNAL.length - 1];
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="font-serif text-3xl text-[#293027] dark:text-white">Journal des changements</h1>
-        <p className="mt-1 max-w-2xl text-sm leading-relaxed text-[#293027]/70 dark:text-white/70">
-          Tout ce qui a été bâti sur votre site depuis le premier jour, une journée à la fois, de la
-          plus récente à la plus ancienne.
-        </p>
-      </div>
-
       {/* La seule rupture de la page : le compte, en gros, avant la frise. */}
       <div className="flex flex-wrap items-center gap-x-10 gap-y-6 rounded-[20px] bg-[#BA7B39] px-6 py-8 text-[#1a1410] md:px-10 md:py-10">
         <div>
@@ -91,7 +130,7 @@ const ChangelogSection: React.FC = () => {
                     </li>
                   );
                 })}
-              </ul>
+              </ol>
             </article>
           </li>
         ))}
@@ -101,6 +140,69 @@ const ChangelogSection: React.FC = () => {
         <i className="fa-solid fa-clock-rotate-left" aria-hidden="true" />
         Une question sur l’une de ces journées se pose dans l’onglet « Demander un changement ».
       </p>
+    </div>
+  );
+};
+
+/* ------------------------------------------------------------ la section */
+
+const ChangelogSection: React.FC = () => {
+  const [onglet, setOnglet] = useState<OngletId>('journal');
+  const [enAttente, setEnAttente] = useState(0);
+
+  return (
+    <div className="space-y-8">
+      <style>{CANON_DEMANDES}</style>
+
+      <div>
+        <h1 className="font-serif text-3xl text-[#293027] dark:text-white">Journal des changements</h1>
+        <p className="mt-1 max-w-2xl text-sm leading-relaxed text-[#293027]/70 dark:text-white/70">
+          Tout ce qui a été bâti sur votre site depuis le premier jour, et la liste de ce que vous
+          avez demandé, avec un crochet dès que c’est livré.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap gap-2" role="tablist" aria-label="Journal et demandes">
+        {ONGLETS.map((o) => {
+          const actif = onglet === o.id;
+          return (
+            <button
+              key={o.id}
+              type="button"
+              role="tab"
+              aria-selected={actif}
+              onClick={() => setOnglet(o.id)}
+              className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-[0.25em] transition-colors ${
+                actif
+                  ? 'border-[#BA7B39] bg-[#BA7B39]/15 text-[#8B4A2F] dark:text-[#d9a05b]'
+                  : 'border-[#38403a]/20 text-[#38403a]/60 hover:border-[#BA7B39]/50 hover:text-[#8B4A2F] dark:border-white/15 dark:text-white/55 dark:hover:text-[#d9a05b]'
+              }`}
+            >
+              {o.libelle}
+              {o.id === 'demandes' && enAttente > 0 && (
+                <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#BA7B39] px-1.5 text-[10px] font-bold tracking-normal text-[#1a1410]">
+                  {enAttente}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Les deux vues restent montées : le panneau compte ses demandes dès
+          l'arrivée sur la page, donc le badge est juste avant le premier clic. */}
+      <div className={onglet === 'journal' ? '' : 'hidden'} role="tabpanel">
+        <Journal />
+      </div>
+      <div className={`kr-demandes ${onglet === 'demandes' ? '' : 'hidden'}`} role="tabpanel">
+        <DemandesClientPanel
+          endpoint={VEXEL_DEMANDES}
+          client={VEXEL_CLIENT}
+          cle={VEXEL_CLE}
+          lang="fr"
+          onEnAttente={setEnAttente}
+        />
+      </div>
     </div>
   );
 };
