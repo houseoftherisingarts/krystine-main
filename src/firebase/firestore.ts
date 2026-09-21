@@ -1,8 +1,9 @@
 import { db } from '../firebase';
 import { getLang } from '../lib/i18n/lang';
+import { domaineAlias, raisonAlias } from '../lib/robots';
 import {
   collection, addDoc, getDocs, deleteDoc, doc, updateDoc, setDoc, getDoc,
-  query, orderBy, where, serverTimestamp, onSnapshot, Timestamp,
+  query, orderBy, where, serverTimestamp, onSnapshot, Timestamp, deleteField,
   writeBatch, limit, getCountFromServer,
   type Unsubscribe,
 } from 'firebase/firestore';
