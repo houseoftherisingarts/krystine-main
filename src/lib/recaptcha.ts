@@ -15,6 +15,14 @@ export const RECAPTCHA_SITE_KEY =
 
 declare const grecaptcha: any;
 
+// La case normale de Google fait 304 px de large, sans démordre. Dans une
+// carte au téléphone, elle déborde et pousse toute la page vers la droite :
+// vu au 390 le 21 septembre 2026 sur la page de désabonnement. Google prévoit
+// une taille « compact » (164 px) pour exactement ce cas, alors on la prend
+// sous 480 px plutôt que de bricoler une mise à l'échelle en CSS.
+const tailleCase = (): 'normal' | 'compact' =>
+  (typeof window !== 'undefined' && window.innerWidth < 480 ? 'compact' : 'normal');
+
 export function useRecaptcha(active: boolean) {
   const boxRef = useRef<HTMLDivElement>(null);
   const widgetRef = useRef<number | null>(null);
@@ -23,7 +31,7 @@ export function useRecaptcha(active: boolean) {
     if (!active || !RECAPTCHA_SITE_KEY) return;
     const render = () => {
       if (widgetRef.current !== null || !boxRef.current) return;
-      widgetRef.current = grecaptcha.render(boxRef.current, { sitekey: RECAPTCHA_SITE_KEY });
+      widgetRef.current = grecaptcha.render(boxRef.current, { sitekey: RECAPTCHA_SITE_KEY, size: tailleCase() });
     };
     if (typeof grecaptcha !== 'undefined' && grecaptcha.render) { render(); return; }
     (window as any).__recaptchaReady = render;
