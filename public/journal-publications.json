@@ -387,5 +387,19 @@
       "public/assets-manifest.json",
       "src/vexel/CollantVexel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-21T13:30:22.891Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "69e2f5f",
+    "message": "Journal des changements : entrée du 21 septembre (demandes cochées, robots potentiels, listes d'attente, inscription côté serveur, accueil en piste latérale, porte de /compte, plaque du studio)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/changelog.ts"
+    ]
   }
 ]
