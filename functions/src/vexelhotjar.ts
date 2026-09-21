@@ -2,7 +2,7 @@ import { onRequest, onCall, HttpsError } from 'firebase-functions/v2/https';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { getFirestore, FieldValue, Timestamp, type DocumentData } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
-import { gunzipSync } from 'zlib';
+import { gunzipSync, gzipSync } from 'zlib';
 import { createHash } from 'crypto';
 import { ADMIN_EMAILS } from './newsletter/send';
 
@@ -34,7 +34,6 @@ const TAILLE_MAX_REPLAY = 6_000_000;      // un morceau d'enregistrement, gzipp�
 const EVENEMENTS_MAX = 600;
 const POINTS_CLICS_MAX = 4000;            // par carte (page × appareil × jour)
 const POINTS_MOUV_MAX = 3000;
-const ELEMENTS_MAX_PAR_PAGE = 80;
 const RETENTION_LOTS_JOURS = 3;
 const RETENTION_SESSIONS_JOURS = 90;
 const RETENTION_JOURS_JOURS = 400;
@@ -49,7 +48,8 @@ const nombre = (v: unknown, min: number, max: number, defaut = 0): number => {
   if (!Number.isFinite(n)) return defaut;
   return Math.min(max, Math.max(min, n));
 };
-const hash = (s: string): string => createHash('sha1').update(s).digest('base64url').slice(0, 10);
+// Hexadécimal seulement : la clé sert de segment de chemin dans un update() pointé.
+const hash = (s: string): string => createHash('sha1').update(s).digest('hex').slice(0, 10);
 
 /** Une clé de champ Firestore sûre pour un chemin de page : /formations/vata → formations_vata. */
 function clePage(path: string): string {
@@ -62,9 +62,11 @@ function jourDe(ms: number): string {
   return new Date(ms).toLocaleDateString('sv-SE', { timeZone: 'America/Toronto' });
 }
 
+const FORMAT_HEURE = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Toronto', hour: '2-digit', hourCycle: 'h23' });
 function heureDe(ms: number): number {
-  return Number(new Date(ms).toLocaleTimeString('fr-CA', { timeZone: 'America/Toronto', hour: '2-digit', hour12: false }).slice(0, 2)) || 0;
+  return Number(FORMAT_HEURE.format(new Date(ms))) || 0;
 }
+const TAGS_INTERACTIFS = new Set(['a', 'button', 'input', 'select', 'textarea', 'label', 'summary', 'video', 'audio']);
 
 function deviceDe(vw: number): Device {
   if (vw < 768) return 'mobile';
@@ -169,20 +171,20 @@ async function recevoirLot(db: FirebaseFirestore.Firestore, site: string, sid: s
 
   const lot = db.collection('vh_lots').doc();
   const session = db.collection('vh_sessions').doc(sid);
+  const existante = await session.get();
   const batch = db.batch();
-  batch.set(lot, { site, sid, vid: vid || null, recu: Timestamp.fromMillis(recu), jour: jourDe(recu), ev: propres, agrege: false });
+  batch.set(lot, { site, sid, vid: vid || null, nouveau: !!d.nouveau, recu: Timestamp.fromMillis(recu), jour: jourDe(recu), ev: propres, agrege: false });
 
   const fiche: DocumentData = {
     site, sid,
     fin: Timestamp.fromMillis(fin),
-    parcours: parcours.length ? parcours : FieldValue.delete(),
-    nbPages: parcours.length || FieldValue.increment(0),
     nbClics: FieldValue.increment(nbClics),
     rage: FieldValue.increment(rage),
     mort: FieldValue.increment(mort),
     erreurs: FieldValue.increment(erreurs),
     dureeMs: FieldValue.increment(dureeMs),
   };
+  if (parcours.length) { fiche.parcours = parcours; fiche.nbPages = parcours.length; }
   if (vid) fiche.vid = vid;
   if (pays) fiche.pays = pays;
   if (premier) {
@@ -197,10 +199,12 @@ async function recevoirLot(db: FirebaseFirestore.Firestore, site: string, sid: s
       fiche.nouveau = !!d.nouveau;
       fiche.entree = premier.path;
     }
-    fiche.derniere = propres.filter(e => e.t === 'vue').pop()?.path;
+    const derniere = propres.filter(e => e.t === 'vue').pop();
+    if (derniere) fiche.derniere = derniere.path;
   }
-  // Une session dont la première vue s'est perdue garde tout de même une date.
-  batch.set(session, { debut: Timestamp.fromMillis(debut), jour: jourDe(debut) }, { merge: true });
+  // Une session dont la première vue s'est perdue garde tout de même une
+  // date de début, posée une seule fois et jamais reculée ni avancée.
+  if (!existante.exists || !existante.get('debut')) { fiche.debut = fiche.debut || Timestamp.fromMillis(debut); fiche.jour = fiche.jour || jourDe(debut); }
   batch.set(session, fiche, { merge: true });
   await batch.commit();
 }
@@ -272,26 +276,22 @@ async function recevoirReplay(db: FirebaseFirestore.Firestore, site: string, sid
   if (!Array.isArray(events) || !events.length) return;
   const json = JSON.stringify(events);
   if (json.length > TAILLE_MAX_REPLAY) throw new Error('morceau trop gros');
-  const { gzipSync } = await import('zlib');
   const gz = gzipSync(Buffer.from(json));
   const fichier = getStorage().bucket().file(`vh/replays/${sid}/${String(seq).padStart(5, '0')}.json.gz`);
   await fichier.save(gz, { contentType: 'application/gzip', resumable: false, metadata: { cacheControl: 'private, max-age=0' } });
-  await db.collection('vh_sessions').doc(sid).set({
+  const ref = db.collection('vh_sessions').doc(sid);
+  const fiche = await ref.get();
+  const maj: DocumentData = {
     site, sid,
     enregistre: true,
     chunks: FieldValue.increment(1),
     octets: FieldValue.increment(gz.length),
     replayMaj: Timestamp.fromMillis(recu),
-    debut: Timestamp.fromMillis(recu),
-  }, { merge: true });
-  // `debut` ne recule jamais : si la fiche existe déjà, la valeur posée par le
-  // premier lot reste; le merge ci-dessus ne sert qu'aux sessions dont
-  // l'enregistrement arrive avant tout lot d'événements.
-  const fiche = await db.collection('vh_sessions').doc(sid).get();
-  const debutActuel = fiche.get('debut') as Timestamp | undefined;
-  if (debutActuel && debutActuel.toMillis() > recu) {
-    await fiche.ref.set({ debut: Timestamp.fromMillis(recu), jour: jourDe(recu) }, { merge: true });
-  }
+  };
+  // La date de début vient du premier lot d'événements; si l'enregistrement
+  // arrive avant lui, elle se pose ici et le lot ne la déplacera pas.
+  if (!fiche.exists || !fiche.get('debut')) { maj.debut = Timestamp.fromMillis(recu); maj.jour = jourDe(recu); }
+  await ref.set(maj, { merge: true });
 }
 
 // ─── L'agrégation : des lots aux journées et aux cartes ─────────────────────
@@ -383,13 +383,19 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = 400): Promise<
           if (e.r) { inc(J, 'rage'); inc(J, `pages.${page}.rage`); }
           if (e.m) { inc(J, 'morts'); inc(J, `pages.${page}.morts`); }
           if (e.obj) { inc(J, `objectifs.${hash(e.obj)}.n`); J.textes[`objectifs.${hash(e.obj)}.nom`] = e.obj; }
-          const k = hash(e.s);
-          inc(J, `pages.${page}.elements.${k}.n`);
-          if (e.r) inc(J, `pages.${page}.elements.${k}.r`);
-          if (e.m) inc(J, `pages.${page}.elements.${k}.m`);
-          J.textes[`pages.${page}.elements.${k}.s`] = e.s;
-          J.textes[`pages.${page}.elements.${k}.tx`] = e.tx || '';
-          if (e.href) J.textes[`pages.${page}.elements.${k}.href`] = e.href;
+          // Le palmarès des éléments ne retient que ce qui se clique pour
+          // vrai (liens, boutons, champs, objectifs) : la carte garde tous
+          // les points, mais un document par jour ne peut pas grossir avec
+          // chaque paragraphe qu'une visiteuse a effleuré.
+          if (TAGS_INTERACTIFS.has(e.tg) || e.obj) {
+            const k = hash(e.s);
+            inc(J, `pages.${page}.elements.${k}.n`);
+            if (e.r) inc(J, `pages.${page}.elements.${k}.r`);
+            if (e.m) inc(J, `pages.${page}.elements.${k}.m`);
+            J.textes[`pages.${page}.elements.${k}.s`] = e.s;
+            J.textes[`pages.${page}.elements.${k}.tx`] = e.tx || '';
+            if (e.href) J.textes[`pages.${page}.elements.${k}.href`] = e.href;
+          }
           carte(cleCarte).clics.push({ s: e.s, tx: e.tx || '', ex: +e.ex.toFixed(3), ey: +e.ey.toFixed(3), vx: +e.vx.toFixed(3), dy: Math.round(e.dy), hd: Math.round(e.hd), r: e.r, m: e.m });
           break;
         }
