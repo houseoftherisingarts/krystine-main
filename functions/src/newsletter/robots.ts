@@ -87,6 +87,48 @@ export function champsRobot(email: string, tags: string[] = [], statusAvant = 'a
   };
 }
 
+/** La fiche telle qu'on la lit pour décider d'une réhabilitation. */
+export interface FicheRobot {
+  status?: string;
+  statusAvant?: string;
+  tags?: string[];
+  robotPotentiel?: { raison?: string; decisionKrystine?: string };
+}
+
+/**
+ * Les champs qui sortent une fiche de la quarantaine. Le statut revient à ce
+ * qu'il était (`statusAvant`, sinon `active`), l'étiquette `robot-potentiel`
+ * tombe, mais `robotPotentiel` RESTE : la trace du motif et la date de
+ * confirmation servent à Krystine dans la sous-liste « Humains confirmés ».
+ * `par` dit qui a tranché : la personne elle-même, ou Krystine.
+ */
+export function champsRehabilitation(fiche: FicheRobot, par: 'personne' | 'krystine'): Record<string, unknown> {
+  const champs: Record<string, unknown> = {
+    status: fiche.statusAvant || 'active',
+    tags: (fiche.tags || []).filter(t => t !== 'robot-potentiel'),
+    statusAvant: FieldValue.delete(),
+  };
+  if (par === 'personne') {
+    champs['robotPotentiel.confirmeHumainLe'] = FieldValue.serverTimestamp();
+  } else {
+    // Krystine dit « c'est une vraie personne » : la fiche sort pour de bon,
+    // le motif ne sert plus à rien et la sous-liste se vide.
+    champs.robotPotentiel = FieldValue.delete();
+  }
+  return champs;
+}
+
+/** Les champs qui remettent une fiche déjà confirmée en quarantaine. */
+export function champsQuarantaine(fiche: FicheRobot): Record<string, unknown> {
+  return {
+    status: 'suspect',
+    statusAvant: fiche.status && fiche.status !== 'suspect' ? fiche.status : 'active',
+    tags: Array.from(new Set([...(fiche.tags || []), 'robot-potentiel'])),
+    'robotPotentiel.decisionKrystine': 'quarantaine',
+    'robotPotentiel.decisionLe': FieldValue.serverTimestamp(),
+  };
+}
+
 // ─── Cadence par adresse IP ──────────────────────────────────────────────────
 // Cinq créations de compte ou inscriptions par heure et par adresse. Le
 // compteur vit dans `garde/ip/{hash}` (l'IP n'est jamais écrite en clair) et
