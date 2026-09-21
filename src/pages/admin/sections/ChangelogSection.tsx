@@ -13,6 +13,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { JOURNAL, nombreEtapes, type Etape } from '../../../lib/changelog';
 import DemandesClientPanel from '../../../components/admin/DemandesClientPanel';
+import { VEXEL_CLE, VEXEL_CLIENT, VEXEL_FONCTIONS } from '../../../components/admin/DemandeVexel';
 
 const MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
 
