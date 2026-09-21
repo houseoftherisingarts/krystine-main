@@ -102,3 +102,52 @@ export const verifierCaptcha = onCall(
     return { ok: true };
   },
 );
+
+// ─── « Je ne suis pas un robot », côté membre ────────────────────────────────
+// Une personne connectée dont la fiche est en quarantaine coche la case depuis
+// son espace (CarteRobotPotentiel.tsx) et se rétablit elle-même. Un alias
+// jetable n'est pas une faute : c'est souvent quelqu'un de prudent, et cette
+// porte lui évite d'écrire à l'équipe pour rien.
+//
+// Krystine garde le dernier mot : une fiche qu'elle a remise en quarantaine
+// (`robotPotentiel.decisionKrystine === 'quarantaine'`) ne se rouvre plus
+// toute seule.
+export const confirmerHumain = onCall(
+  { region: 'us-central1', secrets: [RECAPTCHA_SECRET] },
+  async (req) => {
+    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour confirmer.');
+    await garderFormulaire(String(req.data?.token || ''), 'confirmer-humain', req.rawRequest?.ip);
+
+    const db = getFirestore();
+    const uid = req.auth.uid;
+    const email = String(req.auth.token?.email || '').trim().toLowerCase();
+
+    // Par `uid` d'abord, par courriel ensuite : une même personne peut avoir
+    // plusieurs fiches (formulaire, import, compte), on les rouvre toutes.
+    const [parUid, parEmail] = await Promise.all([
+      db.collection('newsletter').where('uid', '==', uid).get(),
+      email ? db.collection('newsletter').where('email', '==', email).get() : Promise.resolve(null),
+    ]);
+    const fiches = new Map<string, FirebaseFirestore.QueryDocumentSnapshot>();
+    for (const d of parUid.docs) fiches.set(d.id, d);
+    for (const d of parEmail?.docs || []) fiches.set(d.id, d);
+
+    const enQuarantaine = [...fiches.values()].filter(d => (d.data() as FicheRobot).status === 'suspect');
+    if (!enQuarantaine.length) {
+      // Rien à faire : déjà rétablie, ou jamais mise en quarantaine.
+      return { ok: true, retablies: 0 };
+    }
+
+    const bloquee = enQuarantaine.find(d => (d.data() as FicheRobot).robotPotentiel?.decisionKrystine === 'quarantaine');
+    if (bloquee) {
+      console.warn('[confirmerHumain] refus : quarantaine posée par Krystine', uid, email);
+      throw new HttpsError('permission-denied', "Écrivez à l'équipe de Krystine pour être rétablie.");
+    }
+
+    const lot = db.batch();
+    for (const d of enQuarantaine) lot.update(d.ref, champsRehabilitation(d.data() as FicheRobot, 'personne'));
+    await lot.commit();
+    console.log(`[confirmerHumain] ${enQuarantaine.length} fiche(s) rétablie(s)`, uid, email);
+    return { ok: true, retablies: enQuarantaine.length };
+  },
+);
