@@ -142,6 +142,18 @@ const HERO_ART: Record<ProgrammeKey | 'default', HeroArt> = {
     caption: "L'invitation scellée · sceau boussole, sauge et lavande",
     pos: '74% 48%',
   },
+  origine2: {
+    src: 'https://wsrv.nl/?url=https%3A%2F%2Fstorage.googleapis.com%2Forigine1%2Fbanner%2520origine%2520enveloppe.jpg&w=1400&output=webp',
+    alt: "L'enveloppe scellée de l'Expérience Origine, sceau boussole, sauge et lavande",
+    caption: "L'invitation scellée · sceau boussole, sauge et lavande",
+    pos: '74% 48%',
+  },
+  retraite: {
+    src: '/accueil/assets/portes/retraites.webp',
+    alt: "Cabane de bois dans la forêt d'automne",
+    caption: 'La cabane en forêt · quelques jours hors du bruit',
+    pos: '50% 55%',
+  },
   foyer: {
     src: '/assets/foyer-visuel-16x9.jpg',
     alt: 'Le feu du Foyer d’Origine',
