@@ -4,6 +4,7 @@ import { useApp } from '../contexts/AppContext';
 import { retenirCodeDepuisUrl, reclamerCodeRetenu } from '../firebase/parrainage';
 import ClientParrainage from './client/ClientParrainage';
 import Composeur from '../components/communaute/Composeur';
+import CarteRobotPotentiel from '../components/CarteRobotPotentiel';
 import { getBadgesDe, getBadgeVedetteDe, choisirBadgeVedette, oublierVedette, CATALOGUE_BADGES, COMMENT_GAGNER_BADGES } from '../firebase/badgesCatalogue';
 import { suivreMesAmities, accepterAmitie, refuserAmitie, type Amitie } from '../firebase/amities';
 import { getMember, type MemberDoc } from '../firebase/firestore';
