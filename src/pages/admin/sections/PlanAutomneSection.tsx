@@ -176,17 +176,17 @@ const PlanAutomneSection: React.FC = () => {
                 style={{ borderColor: c.couleurs.bord, backgroundColor: c.couleurs.tete }}
               >
                 <header className="px-3 pb-2.5 pt-3">
-                  <div className="flex items-start gap-2.5">
+                  {/* Le numéro flotte : le titre reprend toute la largeur dès la
+                      deuxième ligne, et aucun titre ne déborde sur trois lignes. */}
+                  <div className="after:clear-both after:block after:content-['']">
                     <span
-                      className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full font-serif text-[15px] font-semibold text-white"
+                      className="float-left mr-2.5 flex h-[30px] w-[30px] items-center justify-center rounded-full font-serif text-[15px] font-semibold text-white"
                       style={{ backgroundColor: c.couleurs.pied }}
                     >
                       {c.numero}
                     </span>
-                    <div className="min-w-0">
-                      <h3 className="font-serif text-[13.5px] font-bold uppercase leading-[1.15] tracking-[0.02em]" style={{ color: c.couleurs.accent }}>{c.titre}</h3>
-                      {c.sousTitre && <div className="mt-0.5 text-[11.5px] text-[#3f4a56]">{c.sousTitre}</div>}
-                    </div>
+                    <h3 className="font-serif text-[12px] font-bold uppercase leading-[1.2] tracking-[0.01em]" style={{ color: c.couleurs.accent }}>{c.titre}</h3>
+                    {c.sousTitre && <div className="mt-0.5 text-[11.5px] text-[#3f4a56]">{c.sousTitre}</div>}
                   </div>
                   <div className="mt-2.5 flex items-center gap-2">
                     <i className={`fa-solid ${c.icone} shrink-0 text-[15px]`} style={{ color: c.couleurs.pied }} />
