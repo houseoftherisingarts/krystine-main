@@ -23,8 +23,16 @@ const enLettres = (iso: string): string => {
   return `${j} ${MOIS[(m || 1) - 1]} ${a}`;
 };
 
-/** La porte du studio : la même identité que l'iframe de DemandeVexel.tsx. */
-const VEXEL_DEMANDES = `${VEXEL_FONCTIONS}/demandesClient`;
+/**
+ * La porte du studio. Le slug est celui de l'iframe de demande; la lecture, elle,
+ * ne se prouve pas avec la clé du formulaire (elle est dans le bundle) mais avec
+ * le jeton d'identité de l'admin connectée, que la fonction vérifie contre la
+ * liste des courriels admis dans le dossier Vexel de Krystine.
+ */
+const VEXEL_CLIENT = 'krystine';
+const VEXEL_DEMANDES = 'https://us-central1-vexel-integrations.cloudfunctions.net/demandesClient';
+
+const jetonAdmin = () => auth?.currentUser?.getIdToken() ?? Promise.resolve(null);
 
 /** Le canon de l'admin, passé au panneau portable par variables CSS. */
 const CANON_DEMANDES = `
