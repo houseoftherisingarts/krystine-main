@@ -372,5 +372,20 @@
       "src/firebase.ts",
       "src/firebase/firestore.ts"
     ]
+  },
+  {
+    "quand": "2026-09-21T13:22:50.118Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "f0b8d55",
+    "message": "Accueil : piste de sections entières (repères, portes avec l'éventail remis, votre clé, comment tout se relie) qui glisse latéralement au défilement puis rend la main vers la trilogie; bouton Continuer vers Vexel en arrière-plan comme un Cmd+clic",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "src/vexel/CollantVexel.tsx"
+    ]
   }
 ]
