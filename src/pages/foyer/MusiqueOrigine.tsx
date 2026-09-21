@@ -19,6 +19,9 @@ const MusiqueOrigine: React.FC = () => {
   const [busy, setBusy] = useState(false);
   const [url, setUrl] = useState<string | null>(null);
   const [erreur, setErreur] = useState<string | null>(null);
+  // Case anti-robot pour une visiteuse seulement : la fonction
+  // `musiqueOrigine` vérifie ce jeton avant d'écrire dans l'infolettre.
+  const captcha = useRecaptcha(!user);
 
   const obtenir = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -26,12 +29,19 @@ const MusiqueOrigine: React.FC = () => {
     if (!user) {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) { setErreur('Un courriel valide est nécessaire.'); return; }
       if (!consent) { setErreur("Cochez la case de l'infolettre pour recevoir la musique."); return; }
+      if (RECAPTCHA_SITE_KEY && !captcha.getToken()) {
+        setErreur('Cochez la case « Je ne suis pas un robot ».');
+        return;
+      }
     }
     setBusy(true);
     try {
-      const lien = await telechargerMusiqueOrigine(user ? undefined : { email: email.trim(), prenom: prenom.trim(), consent });
+      const lien = await telechargerMusiqueOrigine(
+        user ? undefined : { email: email.trim(), prenom: prenom.trim(), consent, token: captcha.getToken() },
+      );
       setUrl(lien);
     } catch {
+      captcha.resetWidget();
       setErreur("Le lien n'a pas pu être préparé. Réessayez dans un instant.");
     } finally {
       setBusy(false);
