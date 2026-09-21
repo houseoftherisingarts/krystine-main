@@ -284,5 +284,21 @@
       "src/pages/admin/sections/PlanAutomneSection.tsx",
       "src/pages/admin/sections/plan-automne/ItemCochable.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-21T01:39:23.660Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "d1a9afb",
+    "message": "Porte de /compte pour les visiteuses non connectées : le module « Votre compte est votre clé » de l'accueil (roue aquarelle, bouton or), sans mention d'Inspirata; modale de connexion sans Inspirata",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/compte/PorteMembre.tsx",
+      "src/components/layout/SignInModal.tsx",
+      "src/pages/ClientPortal.tsx"
+    ]
   }
 ]
