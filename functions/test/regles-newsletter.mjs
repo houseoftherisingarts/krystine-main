@@ -85,7 +85,9 @@ await cas("l'admin relit les réponses", () =>
 // depuis le navigateur, chacun avec sa propre règle.
 console.log('\ntémoin — les autres formulaires publics restent ouverts');
 await cas('doshaResults : un visiteur anonyme crée encore son résultat', () =>
-  assertSucceeds(setDoc(doc(anonyme, 'doshaResults/essai'), { dosha: 'vata', createdAt: new Date() })));
+  assertSucceeds(setDoc(doc(anonyme, 'doshaResults/essai'), {
+    email: 'quiz@example.com', dominant: 'vata', createdAt: new Date(),
+  })));
 
 await env.cleanup();
 console.log(`\n${reussis} réussis · ${rates} ratés`);
