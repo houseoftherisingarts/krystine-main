@@ -219,6 +219,9 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
   const aGagner = Object.keys(COMMENT_GAGNER_BADGES).filter(id => !badges.includes(id));
   return (
     <div className="space-y-8">
+      {/* En quarantaine pour cause d'alias jetable : la personne se rétablit
+          elle-même en cochant la case. Invisible pour tout le monde d'autre. */}
+      <CarteRobotPotentiel />
       <div className="grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2">
         <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Courriel</span>{email}</p>
         {member?.phone && <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Téléphone</span>{member.phone}</p>}
