@@ -554,7 +554,7 @@ const AmisDOrigine: React.FC<{ uid: string; lang: string }> = ({ uid, lang }) =>
 };
 
 const ClientPortal: React.FC = () => {
-  const { user, member, isAdmin, setSignInOpen, lang } = useApp();
+  const { user, member, isAdmin, lang } = useApp();
   const gamification = useGamification();
   // Par défaut, l'espace s'ouvre sur les formations : le fil participatif vit au Foyer d'Origine.
   const location = useLocation();
