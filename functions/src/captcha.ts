@@ -145,12 +145,15 @@ export const confirmerHumain = onCall(
     for (const d of parEmail?.docs || []) fiches.set(d.id, d);
 
     const enQuarantaine = [...fiches.values()].filter(d => (d.data() as FicheRobot).status === 'suspect');
+    const bloquee = enQuarantaine.some(d => (d.data() as FicheRobot).robotPotentiel?.decisionKrystine === 'quarantaine');
+
+    if (sonder) return { ok: true, enQuarantaine: enQuarantaine.length, bloquee };
+
     if (!enQuarantaine.length) {
       // Rien à faire : déjà rétablie, ou jamais mise en quarantaine.
       return { ok: true, retablies: 0 };
     }
 
-    const bloquee = enQuarantaine.find(d => (d.data() as FicheRobot).robotPotentiel?.decisionKrystine === 'quarantaine');
     if (bloquee) {
       console.warn('[confirmerHumain] refus : quarantaine posée par Krystine', uid, email);
       throw new HttpsError('permission-denied', "Écrivez à l'équipe de Krystine pour être rétablie.");
