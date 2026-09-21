@@ -112,11 +112,18 @@ export const verifierCaptcha = onCall(
 // Krystine garde le dernier mot : une fiche qu'elle a remise en quarantaine
 // (`robotPotentiel.decisionKrystine === 'quarantaine'`) ne se rouvre plus
 // toute seule.
+// Deux modes, une seule fonction. `{ sonder: true }` dit seulement à la
+// personne si une de ses fiches est en quarantaine : c'est ce qui décide
+// d'afficher la carte ou non. Les règles Firestore ne laissent pas un membre
+// lire la collection `newsletter` (réservée à l'admin), et ce n'est pas une
+// règle qu'on veut desserrer pour une pastille : la question passe donc par
+// ici, où le serveur ne répond que sur les fiches de l'appelante.
 export const confirmerHumain = onCall(
   { region: 'us-central1', secrets: [RECAPTCHA_SECRET] },
   async (req) => {
     if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour confirmer.');
-    await garderFormulaire(String(req.data?.token || ''), 'confirmer-humain', req.rawRequest?.ip);
+    const sonder = req.data?.sonder === true;
+    if (!sonder) await garderFormulaire(String(req.data?.token || ''), 'confirmer-humain', req.rawRequest?.ip);
 
     const db = getFirestore();
     const uid = req.auth.uid;
