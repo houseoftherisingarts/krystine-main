@@ -67,6 +67,14 @@ const SignInModal: React.FC = () => {
     if (c) setCodeParrain(c);
   }, [signInOpen]);
 
+  // « J'ai déjà un compte » ouvre la fenêtre sur la connexion au lieu de
+  // l'inscription. Même pont que « krystine:ouvrir-boutique » ailleurs.
+  useEffect(() => {
+    const ouvrir = () => { setMode('signin'); setSignInOpen(true); };
+    window.addEventListener('krystine:connexion', ouvrir);
+    return () => window.removeEventListener('krystine:connexion', ouvrir);
+  }, [setSignInOpen]);
+
   // La langue du compte, choisie à l'inscription : le site s'ouvre dans cette
   // langue et les infolettres partent dans cette langue. Préréglée sur la
   // langue affichée, changée d'un clic.
