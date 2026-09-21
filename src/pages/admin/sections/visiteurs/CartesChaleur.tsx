@@ -42,6 +42,7 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
   const largeur = LARGEURS[device];
 
   useEffect(() => { if (!pageChoisie && pages[0]) onPage(pages[0].cle); }, [pageChoisie, pages, onPage]);
+  useEffect(() => { setPret(false); }, [page?.path]);
 
   // Les points de la période, pour la page et l'appareil choisis.
   useEffect(() => {
@@ -106,7 +107,14 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
     }
   }, [carte, mode, pret, hauteur, largeur, device]);
 
-  const src = useMemo(() => page ? `${page.path}${page.path.includes('?') ? '&' : '?'}vh=apercu` : 'about:blank', [page?.path]);
+  // Le chemin vient des données recueillies, donc d'un navigateur inconnu :
+  // seul un chemin relatif propre du site s'ouvre en cadre, jamais une
+  // adresse extérieure ni un chemin qui commence par deux barres.
+  const src = useMemo(() => {
+    const chemin = page?.path || '';
+    const sur = /^\/(?!\/)[a-zA-Z0-9\-._~/%]*$/.test(chemin);
+    return sur ? `${chemin}?vh=apercu` : 'about:blank';
+  }, [page?.path]);
   const scrollTotal = carte?.scroll.b0 || carte?.scroll.b5 || 0;
 
   if (!resume) return <div className="h-64 animate-pulse rounded-[20px] bg-white/45" aria-busy="true" />;
@@ -154,7 +162,7 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
           <div style={{ width: largeur * echelle, height: hauteur * echelle }} className="relative mx-auto">
             <div style={{ width: largeur, height: hauteur, transform: `scale(${echelle})`, transformOrigin: 'top left' }} className="absolute left-0 top-0">
               <iframe ref={iframe} key={src + device} src={src} title={`Aperçu de ${page?.path}`} onLoad={surChargement}
-                style={{ width: largeur, height: hauteur, border: 0, pointerEvents: 'none' }} sandbox="allow-scripts allow-same-origin" />
+                style={{ width: largeur, height: hauteur, border: 0, pointerEvents: 'none' }} />
               <canvas ref={canvas} className="pointer-events-none absolute left-0 top-0" style={{ width: largeur, height: hauteur }} aria-hidden="true" />
             </div>
           </div>

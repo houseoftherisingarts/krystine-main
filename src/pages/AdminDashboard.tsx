@@ -31,6 +31,7 @@ import AdminLogin from './admin/AdminLogin';
 import { isDevAdminActive } from '../lib/devAdmin';
 import DashboardSection from './admin/sections/DashboardSection';
 import AnalyticsSection from './admin/sections/AnalyticsSection';
+import VisiteursSection from './admin/sections/VisiteursSection';
 import EventsSection from './admin/sections/EventsSection';
 import LiveSection from './admin/sections/LiveSection';
 import FeedPublicSection from './admin/sections/FeedPublicSection';
@@ -98,6 +99,7 @@ const AdminDashboard: React.FC = () => {
     switch (section) {
       case 'dashboard':   return <DashboardSection onNavigate={setSection} />;
       case 'analytics':   return <AnalyticsSection />;
+      case 'visiteurs':   return <VisiteursSection />;
       case 'orders':      return <OrdersSection />;
       case 'boutique':    return <BoutiqueSection />;
       case 'members':     return <MembersSection />;

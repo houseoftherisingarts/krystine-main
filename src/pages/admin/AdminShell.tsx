@@ -15,6 +15,7 @@ const handleLogout = () => {
 export type AdminSectionId =
   | 'dashboard'
   | 'analytics'
+  | 'visiteurs'
   | 'events'
   | 'blog'
   | 'splash'
@@ -58,6 +59,7 @@ export type AdminSectionId =
 export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   dashboard:  'tableau-de-bord',
   analytics:  'analytics',
+  visiteurs:  'visiteurs',
   orders:     'commandes',
   boutique:   'boutique',
   members:    'clients',
@@ -128,6 +130,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'orders',     label: 'Commandes',        icon: 'fa-box',              groupe: 'ventes' },
   { id: 'boutique',   label: 'Boutique',         icon: 'fa-basket-shopping',  groupe: 'ventes' },
   { id: 'analytics',  label: 'Analytics Shopify', icon: 'fa-chart-line',      groupe: 'ventes' },
+  { id: 'visiteurs',  label: 'Visiteurs et clics', icon: 'fa-arrow-pointer',   groupe: 'ventes' },
   { id: 'bookings',   label: 'Demandes',         icon: 'fa-inbox',            groupe: 'ventes' },
   { id: 'submissions', label: 'Formulaires',     icon: 'fa-clipboard-list',   groupe: 'ventes' },
   { id: 'growth',     label: 'Growth',           icon: 'fa-rocket',           groupe: 'ventes' },
