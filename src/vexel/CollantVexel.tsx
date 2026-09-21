@@ -48,6 +48,20 @@ const LOGO_SALON = '/salon-logo-or.png';
 const LOGO_VEXEL = '/vexel-logo.png';
 const SERIF = 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif';
 
+/** Ouvre Vexel dans un onglet d'arrière-plan : la visiteuse reste sur le site de Krystine (Alex, 21 sept 2026).
+ *  Un clic synthétique avec Ctrl et Cmd sur un lien est ce que les navigateurs traduisent en « nouvel onglet
+ *  sans le passer devant »; là où le geste n'est pas honoré (téléphone), l'onglet s'ouvre quand même. */
+export const ouvrirEnArrierePlan = (url: string) => {
+  const a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.dispatchEvent(new MouseEvent('click', { bubbles: false, cancelable: true, ctrlKey: true, metaKey: true, view: window }));
+  a.remove();
+};
+
 /** L'adresse se reconstruit toujours ici; seul un code de la forme attendue passe. */
 export const lienVexel = (code: string) =>
   /^[A-Z0-9-]{4,24}$/.test(code) ? `https://vexelwebstudio.com/compte?parrain=${encodeURIComponent(code)}` : 'https://vexelwebstudio.com/compte';
@@ -230,7 +244,20 @@ export function CollantVexel({ lang = 'FR', className = '', codeParrain = 'KSL-K
               <p style={{ margin: '1rem 0 0', fontSize: '0.9375rem', lineHeight: 1.65 }}>{t.corps(proprietaire, prenom)}</p>
               {t.question ? <p style={{ margin: '0.75rem 0 0', fontSize: '0.9375rem', fontWeight: 600 }}>{t.question}</p> : null}
               <div className="cv-boutons">
-                <a ref={ouiRef} href={lien} target="_blank" rel="noopener" onClick={() => setOuverte(false)} className="cv-bouton">
+                <a
+                  ref={ouiRef}
+                  href={lien}
+                  target="_blank"
+                  rel="noopener"
+                  onClick={(e) => {
+                    if (!e.metaKey && !e.ctrlKey && !e.shiftKey && e.button === 0) {
+                      e.preventDefault();
+                      ouvrirEnArrierePlan(lien);
+                    }
+                    setOuverte(false);
+                  }}
+                  className="cv-bouton"
+                >
                   {t.oui}
                 </a>
                 <button type="button" className="cv-bouton-non" onClick={() => setOuverte(false)}>

@@ -1203,7 +1203,19 @@
     foil.addEventListener('click', ouvrir);
     fermer.addEventListener('click', fermerCarte);
     var non = document.getElementById('cvNon'); if (non) non.addEventListener('click', fermerCarte);
-    var oui = document.getElementById('cvOui'); if (oui) oui.addEventListener('click', fermerCarte);
+    // « Continuer vers Vexel » ouvre un onglet d'arrière-plan : la visiteuse reste ici (Alex, 21 sept 2026).
+    function ouvrirEnArrierePlan(url) {
+      var a = document.createElement('a');
+      a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.style.display = 'none';
+      document.body.appendChild(a);
+      a.dispatchEvent(new MouseEvent('click', { bubbles: false, cancelable: true, ctrlKey: true, metaKey: true, view: window }));
+      a.remove();
+    }
+    var oui = document.getElementById('cvOui');
+    if (oui) oui.addEventListener('click', function (e) {
+      if (!e.metaKey && !e.ctrlKey && !e.shiftKey && e.button === 0) { e.preventDefault(); ouvrirEnArrierePlan(oui.href); }
+      fermerCarte();
+    });
     overlay.addEventListener('click', function (e) { if (e.target === overlay) fermerCarte(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fermerCarte(); });
 
