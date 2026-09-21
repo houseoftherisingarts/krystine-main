@@ -24,9 +24,7 @@ const enLettres = (iso: string): string => {
 };
 
 /** La porte du studio : la même identité que l'iframe de DemandeVexel.tsx. */
-const VEXEL_CLIENT = 'krystine';
-const VEXEL_CLE = 'aT_yMR68NLyEW3weNDjwYdW_';
-const VEXEL_DEMANDES = 'https://us-central1-vexel-integrations.cloudfunctions.net/demandesClient';
+const VEXEL_DEMANDES = `${VEXEL_FONCTIONS}/demandesClient`;
 
 /** Le canon de l'admin, passé au panneau portable par variables CSS. */
 const CANON_DEMANDES = `
