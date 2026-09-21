@@ -62,6 +62,7 @@ const CarteRobotPotentiel: React.FC<{ className?: string }> = ({ className = '' 
 
   const confirmer = async () => {
     setErreur(null);
+    if (apercu) { setEtat('faite'); return; }
     if (RECAPTCHA_SITE_KEY && !captcha.getToken()) {
       setErreur(fr ? 'Cochez la case « Je ne suis pas un robot ».' : 'Please check the "I\'m not a robot" box.');
       return;
