@@ -477,11 +477,11 @@
     /* touch targets : give text links a 44px tap area */
     .more,.relie .more,.fan-cap a{padding-top:1rem;padding-bottom:1rem}
   }
-  /* LANDSCAPE mobile (we invite the turn): wide + short -> use 2-3 columns, compact height */
+  /* LANDSCAPE mobile (we invite the turn): wide + short -> compact height */
   @media(max-width:900px) and (orientation:landscape){
-    /* portes : 3-column row across the width */
-    .fan{grid-template-columns:repeat(3,1fr);max-width:760px;gap:.7rem;margin-top:1.8rem}
+    /* portes : la rangée au doigt, cartes plus basses */
     .fan .card{aspect-ratio:4/4.5}
+    .portes .rail-panneau{width:min(34vw,220px)}
     /* repères : rangées compactes */
     .reperes{padding:3rem 0 3.4rem}
     /* hub : texte a gauche, radial a droite */
