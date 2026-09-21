@@ -359,8 +359,32 @@ const SubscribersPanel: React.FC = () => {
     }
   };
 
+  const nbRobots = subs.filter(s => estRobot(s) && (enQuarantaine(s) || estConfirmee(s))).length;
+
   return (
     <div className="space-y-4">
+      {/* Deux onglets : la liste entière, et la garde anti-robots */}
+      <div className="flex flex-wrap gap-2">
+        {([[false, 'Tous les abonnés', subs.length], [true, 'Robots potentiels', nbRobots]] as const).map(([cle, nom, n]) => (
+          <button
+            key={String(cle)}
+            type="button"
+            onClick={() => setOngletRobots(cle)}
+            aria-pressed={ongletRobots === cle}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm transition-colors ${
+              ongletRobots === cle
+                ? 'bg-[#293027] text-white border-[#293027]'
+                : 'bg-white dark:bg-[#293027]/60 text-[#293027] dark:text-white border-[#293027]/10 dark:border-white/10 hover:border-[#BA7B39]'
+            }`}
+          >
+            {cle && <i className="fa-solid fa-shield-halved text-[#BA7B39]" />}
+            {nom}
+            <span className="font-serif tabular-nums">{n.toLocaleString('fr-CA')}</span>
+          </button>
+        ))}
+      </div>
+
+      {ongletRobots ? <RobotsPanel subs={subs} refresh={refresh} /> : <>
       {/* Statuts et paliers de la liste; un palier cliqué devient le filtre d'étiquette */}
       {subs.length > 0 && (
         <div className="rounded-[15px] border border-[#293027]/10 dark:border-white/10 bg-white/60 dark:bg-[#293027]/40 p-4">
