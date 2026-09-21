@@ -86,15 +86,15 @@ const ItemCochable: React.FC<Props> = ({ item, etat, defaut, accent, lectureSeul
               className="w-full resize-none rounded-[4px] bg-transparent text-[11px] leading-snug text-[#2b3340] outline-none"
               aria-label={`Mesure de succès pour ${item.texte}`}
             />
-            <div className="mt-1 flex items-center justify-between gap-1">
+            <div className="mt-1 flex flex-col items-start gap-[2px]">
               <button
                 type="button"
                 onMouseDown={e => { e.preventDefault(); setBrouillon(defaut); }}
-                className="text-[9px] uppercase tracking-[0.1em] text-[#8892a0] underline-offset-2 hover:underline"
+                className="text-left text-[9.5px] leading-tight text-[#8892a0] underline-offset-2 hover:underline"
               >
                 Remettre la mesure proposée
               </button>
-              <span className="text-[9px] text-[#a9b1bb]">Entrée enregistre</span>
+              <span className="text-[9.5px] leading-tight text-[#a9b1bb]">Entrée enregistre, Échap annule</span>
             </div>
           </div>
         ) : (
