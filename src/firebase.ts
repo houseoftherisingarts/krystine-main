@@ -40,6 +40,10 @@ if (isConfigured) {
       connectFirestoreEmulator(_db, '127.0.0.1', 8080);
       connectAuthEmulator(_auth, 'http://127.0.0.1:9099', { disableWarnings: true });
       connectStorageEmulator(getStorage(app), '127.0.0.1', 9199);
+      // `getFunctions(app, 'us-central1')` rend toujours la même instance pour
+      // cette région : la brancher ici suffit pour tous les appels du site
+      // (inscrireInfolettre, verifierCaptcha, chatbotKrystine…).
+      connectFunctionsEmulator(getFunctions(app, 'us-central1'), '127.0.0.1', 5001);
       console.info('[Firebase] Connecté aux émulateurs locaux (QA).');
     }
   } catch (e) {
