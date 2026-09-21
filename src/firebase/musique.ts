@@ -9,7 +9,7 @@ export const estTelechargement = (a: { id: string; categorie?: string }) => a.ca
 
 /** Obtient le lien de téléchargement; connectée = ajout à l'espace client,
  *  visiteuse = courriel + consentement à l'infolettre. */
-export async function telechargerMusiqueOrigine(data?: { email: string; prenom?: string; consent: boolean }): Promise<string> {
+export async function telechargerMusiqueOrigine(data?: { email: string; prenom?: string; consent: boolean; token?: string }): Promise<string> {
   if (!app) throw new Error('[Musique] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'musiqueOrigine');
   const res = await call(data || {});
