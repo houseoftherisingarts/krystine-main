@@ -9,7 +9,7 @@ import { nb } from './donnees';
 
 export const TEINTES = { cuivre: '#BA7B39', bleu: '#2F6FBF', prune: '#8E4B8B', encre: '#293027', grille: 'rgba(41,48,39,0.08)' };
 
-const Bulle: React.FC<{ x: number; y: number; children: React.ReactNode }> = ({ x, y, children }) => (
+const Bulle: React.FC<{ x: number | string; y: number; children: React.ReactNode }> = ({ x, y, children }) => (
   <div className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full rounded-[10px] bg-[#293027] px-3 py-2 text-[11px] leading-snug text-[#EEE7DB] shadow-[0_10px_30px_-12px_rgba(41,48,39,0.6)]" style={{ left: x, top: y - 8 }}>
     {children}
   </div>
@@ -64,7 +64,7 @@ export const Courbe: React.FC<{ points: { x: string; y: number; etiquette?: stri
         )}
       </svg>
       {survol !== null && points[survol] && (
-        <Bulle x={`${(X(survol) / L) * 100}%` as unknown as number} y={(Y(points[survol].y) / H) * hauteur}>
+        <Bulle x={`${(X(survol) / L) * 100}%`} y={(Y(points[survol].y) / H) * hauteur}>
           <div className="font-semibold">{nb(points[survol].y)} {nomSerie}</div>
           <div className="opacity-70">{points[survol].etiquette || points[survol].x}</div>
         </Bulle>
@@ -155,7 +155,7 @@ export const Heures: React.FC<{ valeurs: number[] }> = ({ valeurs }) => {
         })}
       </svg>
       {survol !== null && (
-        <Bulle x={`${((10 + survol * larg + larg / 2) / L) * 100}%` as unknown as number} y={(H - b - (valeurs[survol] / max) * (H - b - 10)) / H * 120}>
+        <Bulle x={`${((10 + survol * larg + larg / 2) / L) * 100}%`} y={(H - b - (valeurs[survol] / max) * (H - b - 10)) / H * 120}>
           <div className="font-semibold">{nb(valeurs[survol])} vues</div>
           <div className="opacity-70">entre {survol} h et {survol + 1} h</div>
         </Bulle>
