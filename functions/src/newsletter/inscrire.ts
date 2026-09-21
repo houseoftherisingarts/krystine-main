@@ -47,12 +47,12 @@ export const inscrireInfolettre = onCall(
       throw new HttpsError('invalid-argument', 'Entrez une adresse courriel valide.');
     }
 
-    // `req.ip` d'abord, l'adresse du socket en repli : l'émulateur des
-    // fonctions laisse `req.ip` vide, et `limiterParIp` laisse passer tout ce
-    // qui arrive sans adresse. Le repli n'est pas une donnée que l'appelant
-    // choisit (contrairement à un en-tête), donc il ne desserre rien.
-    const ip = req.rawRequest?.ip || req.rawRequest?.socket?.remoteAddress;
-    if (!(await limiterParIp(ip, 'infolettre'))) {
+    // Même garde que `verifierCaptcha`, `extraitCinqElements` et
+    // `musiqueOrigine` : cinq par heure et par adresse. L'émulateur des
+    // fonctions ne donne pas d'adresse, et `limiterParIp` laisse alors passer,
+    // donc la cadence se vérifie à part (functions/test/callable-inscrire.mjs,
+    // dernière section).
+    if (!(await limiterParIp(req.rawRequest?.ip, 'infolettre'))) {
       console.warn('[inscrire] cadence dépassée');
       throw new HttpsError('resource-exhausted', MESSAGE_CADENCE);
     }
