@@ -128,21 +128,19 @@ if (CSV) {
   }
 } else {
   console.log(`\n${fiches.length.toLocaleString('fr-CA')} fiches lues dans « newsletter ».\n`);
-  console.log(`À marquer     : ${aMarquer.length}`);
-  console.log(`Déjà marquées : ${deja.length}${deja.length ? ` (${deja.map(f => f.email).join(', ')})` : ''}`);
-  console.log(`Inertes       : ${inertes.length} (désabonnées ou rebondies, elles ne reçoivent déjà rien)`);
+  const ligne = f => `  ${f.email}${f.firstName ? ` · ${f.firstName}` : ''} · ${f.status} · ${f.domaine} · source ${f.source || '—'}`;
+  console.log(`À marquer (actives)  : ${aMarquer.length}`);
+  console.log(`Dormantes (pending)  : ${dormantes.length} — sur un alias, mais aucun envoi ne les cible aujourd'hui`);
+  console.log(`Déjà marquées        : ${deja.length}${deja.length ? ` (${deja.map(f => f.email).join(', ')})` : ''}`);
+  console.log(`Inertes              : ${inertes.length} (désabonnées ou rebondies)`);
   if (Object.keys(parDomaine).length) {
-    console.log('\nPar domaine :');
+    console.log('\nPar domaine, parmi les actives :');
     for (const [d, n] of Object.entries(parDomaine).sort((a, b) => b[1] - a[1])) {
       console.log(`  ${String(n).padStart(4)}  ${d}  (${DOMAINES[d]})`);
     }
   }
-  if (aMarquer.length) {
-    console.log('\nLes adresses :');
-    for (const f of aMarquer) {
-      console.log(`  ${f.email}${f.firstName ? ` · ${f.firstName}` : ''} · ${f.status} · source ${f.source || '—'}`);
-    }
-  }
+  if (aMarquer.length) { console.log('\nÀ marquer :'); for (const f of aMarquer) console.log(ligne(f)); }
+  if (dormantes.length) { console.log('\nDormantes, pour information :'); for (const f of dormantes) console.log(ligne(f)); }
 }
 
 if (!ECRIRE) {
