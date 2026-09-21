@@ -129,20 +129,29 @@ verifier('la deuxième inscription est une fiche distincte, les deux existent', 
   assert.equal(liste.filter(f => f.email === 'lectrice@example.com').length, 2));
 
 // ── 6. La cadence par adresse IP ────────────────────────────────────────────
-// Trois appels acceptés jusqu'ici (le pot de miel et le courriel invalide sont
-// refusés avant le compteur). Deux de plus font cinq, le sixième tombe.
-const r6 = await inscrire({ email: 'cadence4@example.com', source: 'infolettre' });
-const r7 = await inscrire({ email: 'cadence5@example.com', source: 'infolettre' });
-const r8 = await inscrire({ email: 'cadence6@example.com', source: 'infolettre' });
-verifier('les 4e et 5e inscriptions de la même IP passent', () => {
-  assert.equal(r6.ok, true, `4e refusée : ${JSON.stringify(r6.error)}`);
-  assert.equal(r7.ok, true, `5e refusée : ${JSON.stringify(r7.error)}`);
-});
-verifier('la 6e inscription de la même IP dans l\'heure → resource-exhausted', () => {
-  assert.equal(r8.ok, false, '6e acceptée alors qu\'elle devait tomber');
-  assert.equal(r8.error?.status, 'RESOURCE_EXHAUSTED', JSON.stringify(r8.error));
-  assert.match(r8.error.message, /Trop de tentatives/);
-});
+// L'émulateur des fonctions ne remplit pas `rawRequest.ip` (vérifié : ni
+// `req.ip`, ni `x-forwarded-for`, ni l'adresse du socket), et `limiterParIp`
+// laisse passer tout appel qui arrive sans adresse, exprès : on ne ferme
+// jamais la porte sur une donnée qu'on n'a pas. Le refus au sixième appel se
+// vérifie donc sur le compteur lui-même, contre la même base émulée, avec une
+// adresse explicite. C'est le même compteur que la fonction appelle, à la
+// clé `infolettre` près.
+const { initializeApp } = await import('firebase-admin/app');
+const { limiterParIp, MESSAGE_CADENCE } = await import('../lib/newsletter/robots.js');
+initializeApp({ projectId: PROJET });
+
+const passages = [];
+for (let i = 0; i < 6; i++) passages.push(await limiterParIp('203.0.113.7', 'infolettre'));
+const autreIp = await limiterParIp('203.0.113.8', 'infolettre');
+
+verifier('les cinq premiers appels d\'une même IP passent', () =>
+  assert.deepEqual(passages.slice(0, 5), [true, true, true, true, true]));
+verifier('le 6e appel de la même IP dans l\'heure est refusé', () =>
+  assert.equal(passages[5], false));
+verifier('une autre IP n\'est pas punie pour la première', () =>
+  assert.equal(autreIp, true));
+verifier('le message de refus est celui que la fonction renvoie', () =>
+  assert.match(MESSAGE_CADENCE, /Trop de tentatives/));
 
 console.log(`\n${reussis} réussis · ${rates} ratés`);
 assert.equal(rates, 0, `${rates} test(s) de la callable en échec`);
