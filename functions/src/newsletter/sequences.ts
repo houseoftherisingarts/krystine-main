@@ -73,11 +73,15 @@ async function jetonPour(email: string, firstName?: string, lang?: string, uid?:
     return assurerJeton(d.ref, (d.data() as { unsubscribeToken?: string }).unsubscribeToken);
   }
   const jeton = await assurerJeton(null);
+  // Une acheteuse sur un alias jetable reste une acheteuse : sa séquence
+  // d'achat part quand même (elle a payé), mais sa fiche entre en quarantaine
+  // pour l'infolettre générale, le temps que Krystine tranche.
   await db.collection('newsletter').add({
     email, firstName: firstName || '', uid: uid || null, lang: lang === 'en' ? 'en' : 'fr',
     status: 'active', source: 'achat-formation', tags: ['formations'],
     unsubscribeToken: jeton, welcomeSentAt: FieldValue.serverTimestamp(),
     createdAt: FieldValue.serverTimestamp(),
+    ...champsRobot(email, ['formations']),
   });
   return jeton;
 }

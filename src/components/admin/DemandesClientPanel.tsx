@@ -45,8 +45,13 @@ export interface DemandesClientPanelProps {
   endpoint: string;
   /** Le slug du client dans clients/{slug}, celui de /demande/. */
   client: string;
-  /** La clé du client, la même qu'ailleurs dans ce back-office. */
-  cle: string;
+  /**
+   * Rend le jeton d'identité Firebase de la personne connectée au back-office
+   * du site (`user.getIdToken()`), ou null si personne ne l'est. C'est la
+   * seule preuve que la fonction accepte : la clé du formulaire voyage dans
+   * le bundle, donc elle n'ouvre plus rien en lecture.
+   */
+  obtenirJeton: () => Promise<string | null | undefined>;
   lang?: 'fr' | 'en';
   /**
    * Le nombre de demandes qui restent à faire ou qui avancent, rapporté dès
@@ -81,6 +86,7 @@ const MOTS = {
     chargement: 'Nous allons chercher vos demandes.',
     erreurTitre: 'Vos demandes ne se chargent pas',
     erreurAide: 'Réessayez dans un instant, et écrivez au studio si cela persiste.',
+    horsSession: 'Connectez-vous à votre back-office pour voir vos demandes.',
     reessayer: 'Réessayer',
     voir: (n: number) => `Voir les ${n} non retenues`,
     cacher: 'Cacher les non retenues',
@@ -103,6 +109,7 @@ const MOTS = {
     chargement: 'Fetching your requests.',
     erreurTitre: 'Your requests did not load',
     erreurAide: 'Try again in a moment, and write to the studio if it keeps happening.',
+    horsSession: 'Sign in to your back office to see your requests.',
     reessayer: 'Try again',
     voir: (n: number) => `Show the ${n} not taken on`,
     cacher: 'Hide the ones not taken on',
@@ -258,7 +265,7 @@ const Crochet = () => (
 export function DemandesClientPanel({
   endpoint,
   client,
-  cle,
+  obtenirJeton,
   lang = 'fr',
   onEnAttente,
   donneesDemo,
@@ -277,25 +284,31 @@ export function DemandesClientPanel({
     let vivant = true;
     setDemandes(null);
     setErreur('');
-    const url = `${endpoint}?client=${encodeURIComponent(client)}&cle=${encodeURIComponent(cle)}`;
-    fetch(url)
-      .then(async (r) => {
-        const corps = await r.json().catch(() => null);
-        if (!r.ok) throw new Error(corps?.erreur || `${r.status}`);
-        return corps;
-      })
-      .then((corps) => {
-        if (!vivant) return;
-        setDemandes(Array.isArray(corps?.demandes) ? (corps.demandes as DemandeVue[]) : []);
-      })
-      .catch((e: unknown) => {
-        if (!vivant) return;
-        setErreur(e instanceof Error ? e.message : String(e));
-      });
+    const url = `${endpoint}?client=${encodeURIComponent(client)}`;
+    (async () => {
+      const jeton = await obtenirJeton();
+      if (!vivant) return;
+      if (!jeton) {
+        setErreur(m.horsSession);
+        return;
+      }
+      const r = await fetch(url, { headers: { Authorization: `Bearer ${jeton}` } });
+      const corps = await r.json().catch(() => null);
+      if (!vivant) return;
+      if (!r.ok) throw new Error(corps?.erreur || `${r.status}`);
+      setDemandes(Array.isArray(corps?.demandes) ? (corps.demandes as DemandeVue[]) : []);
+    })().catch((e: unknown) => {
+      if (!vivant) return;
+      setErreur(e instanceof Error ? e.message : String(e));
+    });
     return () => {
       vivant = false;
     };
-  }, [endpoint, client, cle, tour, donneesDemo]);
+    // obtenirJeton vient souvent d'une fonction fléchée recréée à chaque
+    // rendu : la garder hors des dépendances évite de rappeler la fonction
+    // en boucle. Le tour, lui, force une relecture quand on la demande.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [endpoint, client, tour, donneesDemo]);
 
   const groupes = useMemo(() => {
     const vides: Record<Bloc, DemandeVue[]> = { afaire: [], encours: [], faites: [], refusees: [] };
@@ -376,9 +389,7 @@ export function DemandesClientPanel({
       {erreur && (
         <div className="dc-etat dc-rate" role="alert">
           <h3>{m.erreurTitre}</h3>
-          <p>
-            {m.erreurAide} ({erreur})
-          </p>
+          <p>{erreur === m.horsSession ? erreur : `${m.erreurAide} (${erreur})`}</p>
           <button type="button" className="dc-bouton" onClick={() => setTour((t) => t + 1)}>
             {m.reessayer}
           </button>
