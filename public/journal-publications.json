@@ -262,5 +262,27 @@
       "src/vexel/CollantVexel.tsx",
       "storage.rules"
     ]
+  },
+  {
+    "quand": "2026-09-21T00:08:27.107Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "c65bea4",
+    "message": "Plan d'automne interactif dans l'admin (sous Growth) : l'infographie KSL Automne 2026 refaite, actions cochables, barres Fait et Impact vérifié, mesures de succès éditables et sourcées",
+    "cibles": [
+      "hosting",
+      "firestore"
+    ],
+    "fichiers": [
+      "firestore.rules",
+      "public/assets-manifest.json",
+      "public/plan-automne/entete.jpg",
+      "src/firebase/planAutomne.ts",
+      "src/lib/planAutomne.ts",
+      "src/pages/AdminDashboard.tsx",
+      "src/pages/admin/AdminShell.tsx",
+      "src/pages/admin/sections/PlanAutomneSection.tsx",
+      "src/pages/admin/sections/plan-automne/ItemCochable.tsx"
+    ]
   }
 ]
