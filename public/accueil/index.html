@@ -705,6 +705,101 @@
   @keyframes btn-gold-reflet{0%{left:-60%}35%,100%{left:130%}}
   @media(prefers-reduced-motion:reduce){.btn-gold,.btn-gold::after{animation:none}}
 
+  /* ============ RAILS HORIZONTAUX ============
+     Le geste du studio Vexel (src/site/studio/rail) porté en vanille le 21 septembre
+     2026, quand les feuilles empilées ont quitté le bureau. Deux sections seulement
+     le portent, les deux séries de cartes de la page : les repères et les portes.
+     Défaut : une rangée qu'on prend au doigt, avec scroll-snap, sans jamais capturer
+     le défilement vertical. Sur un bureau assez haut et hors mouvement réduit, la
+     fenêtre s'épingle et le défilement vertical fait avancer la piste. */
+  .rail{position:relative}
+  .rail-entete{max-width:1280px;margin:0 auto;padding:0 3rem}
+  .rail-defileur{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
+  .rail-defileur::-webkit-scrollbar{width:0;height:0}
+  .rail-piste{display:flex;align-items:flex-start;gap:1rem;width:max-content;padding:1.8rem 1.4rem .4rem}
+  .rail-panneau{flex:0 0 auto;scroll-snap-align:center}
+  .reperes .rail-panneau{width:min(74vw,290px)}
+  .portes .rail-panneau{width:min(60vw,240px)}
+  .rail-jauge{display:none}
+
+  @media(min-width:901px) and (min-height:700px) and (prefers-reduced-motion:no-preference){
+    .reperes,.portes{padding:0}
+    .rail-vue{position:sticky;top:0;height:100vh;overflow:clip;display:flex;align-items:center;isolation:isolate}
+    .rail-entete{position:absolute;top:0;left:0;right:0;z-index:3;padding:3.4rem 3rem 0;pointer-events:none}
+    .rail-entete a,.rail-entete button{pointer-events:auto}
+    .rail-defileur{display:contents}
+    .rail-piste{width:max-content;align-items:center;gap:2.4rem;padding:0 max(3rem,calc((100vw - 1180px) / 2));
+      margin:0;will-change:transform}
+    .rail-panneau{width:auto}
+    .rail-jauge{display:block;position:absolute;left:0;right:0;bottom:0;height:3px;z-index:3;
+      background:rgba(58,49,38,.12)}
+    .rail-jauge span{display:block;height:100%;background:var(--brass);transform:scaleX(0);transform-origin:0 50%}
+    .reperes .rail-panneau{width:clamp(230px,20vw,290px)}
+    .portes .rail-panneau{width:auto}
+    .rail-pied{position:absolute;left:0;right:0;bottom:2.4rem;z-index:3;margin:0 auto}
+    .portes .rail-piste{padding-top:3rem}
+  }
+
+  /* ============ GLYPH PORTAL ============
+     Glyph Portal © 2026 Christian Katzmann. MIT. Origin: UsefulPortal.astro sur
+     https://ktzm.dk. Porté en vanille depuis _vexel-base/src/vexel/GlyphPortal.tsx;
+     garder cet avis avec les copies. Le comportement vit dans accueil/glyph-portal.js. */
+  .gp{--gp-paper:var(--cream-2);--gp-ink:var(--ink);--gp-field:#eae1d0;
+    position:relative;isolation:isolate;background:var(--gp-paper);color:var(--gp-ink)}
+  .gp>[data-gp-viewport]{position:absolute;inset:0 auto auto 0;height:100vh;height:100svh;width:0;pointer-events:none;visibility:hidden}
+  .gp [data-gp-pin]{position:relative;height:var(--gp-height,100svh);overflow:clip;isolation:isolate;container-type:size}
+  .gp:not([data-gp-ready]) [data-gp-pin]{height:0}
+  .gp [data-gp-field]{position:absolute;inset:0;background:var(--gp-field);opacity:0;pointer-events:none}
+  .gp[data-gp-ready] [data-gp-field]{opacity:1}
+  .gp [data-gp-art]{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+  .gp [data-gp-marks]{fill:none;stroke:var(--gp-ink);opacity:.6}
+  .gp [data-gp-choices]{position:absolute;inset:0;visibility:hidden;pointer-events:none}
+  .gp[data-gp-choosing="true"] [data-gp-choices]{visibility:visible}
+  .gp [data-gp-letter]{box-sizing:border-box;position:absolute;border:0;padding:0;margin:0;background:transparent;cursor:pointer;pointer-events:auto;touch-action:pan-y}
+  .gp [data-gp-letter]:disabled{pointer-events:none}
+  .gp [data-gp-letter]:focus-visible{outline:2px solid var(--brass-deep);outline-offset:5px}
+  .gp [data-gp-glyph]{font-family:var(--serif);font-weight:600;font-size:100px;font-kerning:none;font-variant-ligatures:none;letter-spacing:0}
+  .gp [data-gp-touch-picker]{display:none;position:absolute;top:calc(var(--gp-word-bottom,50%) + 42px);left:50%;
+    transform:translateX(-50%);align-items:center;gap:12px;visibility:hidden;z-index:4}
+  .gp[data-gp-choosing="true"] [data-gp-touch-picker]{visibility:visible}
+  .gp [data-gp-select]{min-height:44px;min-width:120px;border:1px solid rgba(187,154,94,.6);border-radius:9px;
+    background:var(--cream);color:var(--ink);padding:0 .7rem;font:500 .8rem/1 var(--sans)}
+  .gp [data-gp-select]:focus-visible{outline:2px solid var(--brass-deep);outline-offset:4px}
+  @media(any-pointer:coarse){.gp [data-gp-touch-picker]{display:flex}}
+  .gp [data-gp-fallback]{position:absolute;inset:0;display:none;place-items:center;
+    font-family:var(--serif);font-weight:600;font-size:min(calc(100cqw / var(--gp-characters)),38cqh);line-height:1;color:var(--gp-field)}
+  .gp[data-gp-ready] [data-gp-fallback]{visibility:hidden}
+  .gp [data-gp-caption]{position:absolute;inset:auto 8% 9%;display:flex;align-items:center;justify-content:space-between;
+    gap:1rem;z-index:4;opacity:var(--gp-caption,1);pointer-events:var(--gp-caption-hit,auto)}
+  .gp [data-gp-hint]{max-width:30ch;font-family:var(--serif);font-size:1.05rem;color:var(--ink-soft)}
+  .gp [data-gp-enter]{display:inline-flex;align-items:center;gap:.9rem;min-height:44px;color:var(--brass-deep);
+    font-size:.66rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+    border-bottom:1px solid rgba(187,154,94,.5);padding-bottom:2px}
+  .gp [data-gp-enter]:hover{color:var(--ink)}
+  .gp [data-gp-enter]:focus-visible{outline:2px solid currentColor;outline-offset:5px}
+  .gp [data-gp-content]{box-sizing:border-box;position:relative;min-height:var(--gp-height,100svh);
+    display:flex;flex-direction:column;justify-content:center;padding:5rem 0;background:var(--gp-field);overflow:hidden}
+  .gp[data-gp-motion="on"] [data-gp-pin]{position:sticky;top:0}
+  .gp[data-gp-motion="off"] [data-gp-hint]{display:none}
+  .gp[data-gp-motion="on"] [data-gp-content]{margin-top:calc((var(--gp-length) - 1) * var(--gp-height));
+    background:transparent;opacity:var(--gp-reveal,0);pointer-events:none}
+  .gp[data-gp-motion="on"][data-gp-entered="true"] [data-gp-content]{pointer-events:auto}
+  .gp[data-gp-motion="on"]:has([data-gp-content]:focus-within) [data-gp-field]{clip-path:none!important}
+  .gp[data-gp-motion="on"] [data-gp-content]:focus-within{opacity:1;pointer-events:auto}
+  .gp:has([data-gp-content]:focus-within) [data-gp-caption],
+  .gp:has([data-gp-content]:focus-within) [data-gp-marks]{opacity:0}
+  @media(prefers-reduced-motion:reduce){
+    .gp [data-gp-pin]{position:relative!important}
+    .gp [data-gp-content]{margin-top:0!important;opacity:1!important;background:var(--gp-field)!important;min-height:0;padding:4rem 0}
+    .gp [data-gp-caption]{opacity:1!important}
+    .gp [data-gp-hint]{display:none}
+  }
+  @media(max-width:900px){
+    .gp [data-gp-caption]{inset:auto 1.4rem 1.6rem;flex-direction:column;align-items:flex-start;gap:.6rem}
+    .gp [data-gp-content]{padding:3.4rem 0 4rem}
+  }
+
 </style>
 <style>/* no-italic-rule : règle dure d'Alex, l'accent passe par la couleur et le poids */
   em,i,.italic,.foot .q,.echo-line em,.tri-foot,.fan .card .fn,.fan .card .verb,.fan-cap .fc-num,
