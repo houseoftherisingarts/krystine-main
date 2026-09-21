@@ -106,8 +106,7 @@ export function peindreDefilement(canvas: HTMLCanvasElement, scroll: Record<stri
   for (let b = 0; b < 100; b += 5) {
     const part = (scroll[`b${b + 5}`] || 0) / total;
     const y0 = (b / 100) * H, y1 = ((b + 5) / 100) * H;
-    const idx = Math.min(RAMPE.length - 1, Math.floor((1 - part) * (RAMPE.length - 1) + 0.0001));
-    ctx.fillStyle = RAMPE[Math.max(0, RAMPE.length - 1 - idx)];
+    ctx.fillStyle = RAMPE[Math.round(part * (RAMPE.length - 1))];
     ctx.globalAlpha = 0.16 + part * 0.5;
     ctx.fillRect(0, y0, canvas.width, y1 - y0);
     ctx.globalAlpha = 1;
