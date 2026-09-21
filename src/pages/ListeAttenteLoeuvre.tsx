@@ -101,7 +101,8 @@ const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
   kapha: {
     source: 'waitlist-kapha',
     kicker: 'Saison Kapha · Bientôt',
-    title: 'Le Printemps · Programme Kapha',
+    // « Le Printemps · Programme Kapha » passait sur trois lignes à 390 px.
+    title: 'Le Printemps · Kapha',
     subtitle: 'Activer · Alléger · Stimuler',
     promise:
       "L'éveil du printemps demande de bouger, drainer, alléger. Un programme " +
