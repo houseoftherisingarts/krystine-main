@@ -121,7 +121,7 @@ const RobotsPanel: React.FC<{ subs: NewsletterSubscriber[]; refresh: () => Promi
       <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden lg:table-cell whitespace-nowrap">{quand}</td>
       <td className="px-4 py-3 text-[#293027]/70 dark:text-white/70 hidden xl:table-cell">{s.robotPotentiel?.raison || '—'}</td>
       <td className="px-4 py-3">
-        <div className="flex flex-wrap justify-end gap-2">{actions}</div>
+        <div className="flex flex-wrap justify-end gap-2 xl:flex-nowrap">{actions}</div>
       </td>
     </tr>
   );
