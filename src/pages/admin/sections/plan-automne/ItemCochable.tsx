@@ -76,7 +76,7 @@ const ItemCochable: React.FC<Props> = ({ item, etat, defaut, accent, lectureSeul
             <textarea
               ref={champ}
               value={brouillon}
-              rows={4}
+              rows={8}
               onChange={e => setBrouillon(e.target.value)}
               onBlur={enregistrer}
               onKeyDown={e => {
