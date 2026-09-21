@@ -48,23 +48,11 @@ const LOGO_SALON = '/salon-logo-or.png';
 const LOGO_VEXEL = '/vexel-logo.png';
 const SERIF = 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif';
 
-/** Ouvre Vexel dans un onglet d'arrière-plan : la visiteuse reste sur le site de Krystine (Alex, 21 sept 2026).
- *  Un clic synthétique avec Ctrl et Cmd sur un lien est ce que les navigateurs traduisent en « nouvel onglet
- *  sans le passer devant »; là où le geste n'est pas honoré (téléphone), l'onglet s'ouvre quand même. */
-export const ouvrirEnArrierePlan = (url: string) => {
-  const a = document.createElement('a');
-  a.href = url;
-  a.target = '_blank';
-  a.rel = 'noopener';
-  // Hors écran plutôt que display:none : certains moteurs ignorent le clic sur un élément non rendu.
-  a.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0';
-  document.body.appendChild(a);
-  const mac = /Mac|iPhone|iPad/.test(navigator.platform || '');
-  // Le modificateur du système seulement : Cmd sur Mac, Ctrl ailleurs, comme le vrai geste de l'utilisateur.
-  a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, ctrlKey: !mac, metaKey: mac, button: 0, view: window }));
-  a.remove();
-  window.setTimeout(() => { try { window.focus(); } catch { /* rien */ } }, 60);
-};
+/* Le bouton « Continuer vers Vexel » est un lien ordinaire en nouvel onglet. Un onglet d'arrière-plan
+   depuis un script est impossible dans Chrome : le navigateur décide de la place de l'onglet d'après
+   le VRAI clic de la personne (ses touches Cmd ou Ctrl), jamais d'après un clic synthétique, et le
+   « pop-under » (ouvrir puis se redonner le focus) est bloqué depuis des années. Seul un Cmd+clic ou
+   un Ctrl+clic de la visiteuse ouvre derrière (constaté par Alex le 21 sept 2026). */
 
 /** L'adresse se reconstruit toujours ici; seul un code de la forme attendue passe. */
 export const lienVexel = (code: string) =>
