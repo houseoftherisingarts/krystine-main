@@ -273,7 +273,7 @@ const PlanAutomneSection: React.FC = () => {
           <section className="overflow-hidden rounded-[8px] border border-[#e4e9ee]">
             <TitreBande>{TOURNEE_TITRE}</TitreBande>
             <div className="bg-[#fafcfd] px-3 py-2.5">
-              <div className="grid grid-cols-2 gap-x-3 gap-y-2 sm:grid-cols-4">
+              <div className="grid grid-cols-2 gap-x-3 gap-y-2">
                 {TOURNEE_ZONES.map(z => (
                   <div key={z.nom}>
                     <div className="flex items-center gap-1.5">
