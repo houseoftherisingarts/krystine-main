@@ -292,8 +292,12 @@ const PlanAutomneSection: React.FC = () => {
                 ))}
               </div>
 
+              {/* La frise des cinq étapes. Elle se lit de haut en bas plutôt
+                  que de gauche à droite : à cette largeur, cinq colonnes
+                  écraseraient les mesures de succès jusqu'à un mot par ligne. */}
               <div className="mt-3 border-t border-[#eef1f4] pt-2.5">
-                <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-5 lg:gap-1.5">
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#7b8593]">Les cinq étapes</h4>
+                <ul className="mt-2 space-y-2.5 border-l border-[#e0d4c2] pl-3">
                   {TOURNEE_FRISE.map(e => rendreItem(e, '#a98254', true))}
                 </ul>
               </div>
