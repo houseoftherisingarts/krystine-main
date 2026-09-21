@@ -18,9 +18,21 @@ import { RECAPTCHA_SITE_KEY, useRecaptcha } from '../lib/recaptcha';
 
 type Etat = 'cachee' | 'visible' | 'envoi' | 'faite' | 'refusee';
 
+// Aperçu en développement seulement, même convention que `devAdmin.ts` :
+// `?robot=visible`, `?robot=faite`, `?robot=refusee` montrent la carte dans
+// l'état voulu sans passer par la fonction. Ça sert à la relire à l'œil et à
+// la capturer sans poser de fausse fiche dans `newsletter`. Un build de
+// production remplace `import.meta.env.DEV` par false et tout ceci disparaît.
+function apercuDev(): Etat | null {
+  if (!(import.meta as any).env?.DEV || typeof window === 'undefined') return null;
+  const v = new URLSearchParams(window.location.search).get('robot');
+  return v === 'visible' || v === 'faite' || v === 'refusee' ? v : null;
+}
+
 const CarteRobotPotentiel: React.FC<{ className?: string }> = ({ className = '' }) => {
   const { lang, user } = useApp();
-  const [etat, setEtat] = useState<Etat>('cachee');
+  const apercu = apercuDev();
+  const [etat, setEtat] = useState<Etat>(apercu || 'cachee');
   const [erreur, setErreur] = useState<string | null>(null);
   const captcha = useRecaptcha(etat === 'visible' || etat === 'envoi');
   const fr = lang === 'FR';
