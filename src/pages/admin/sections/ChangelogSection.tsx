@@ -129,7 +129,7 @@ const Journal: React.FC = () => {
                     </li>
                   );
                 })}
-              </ol>
+              </ul>
             </article>
           </li>
         ))}
