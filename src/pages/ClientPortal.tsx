@@ -630,36 +630,7 @@ const ClientPortal: React.FC = () => {
   useEffect(() => { retenirCodeDepuisUrl(); }, []);
   useEffect(() => { if (user) reclamerCodeRetenu(user.uid, user.displayName || '').catch(() => {}); }, [user]);
 
-  if (!user) {
-    return (
-      <div
-        className="flex min-h-screen items-center justify-center px-6 pb-24 pt-32 dark:bg-[#151d19]"
-        style={{ background: 'radial-gradient(120% 80% at 50% 0%, rgba(250,247,240,0.95), transparent 60%), #EEE7DB' }}
-      >
-        <div className="w-full max-w-md rounded-[24px] border border-white/60 bg-white/55 px-8 py-12 text-center shadow-[0_30px_80px_-30px_rgba(41,48,39,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-[#293027]/55">
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#8B4A2F] dark:text-[#d9a05b]">Inspirata</p>
-          <h1 className="mt-3 font-serif text-3xl text-[#293027] dark:text-white" style={{ letterSpacing: '-0.01em' }}>
-            {lang === 'FR' ? 'Votre espace' : 'Your space'}
-          </h1>
-          <div className="mx-auto mt-5 h-px w-16 bg-[#BA7B39]" aria-hidden="true" />
-          <p className="mt-5 text-sm leading-relaxed text-[#38403a]/70 dark:text-white/65">
-            {lang === 'FR'
-              ? 'Vos formations, vos messages, vos vidéos et vos cadeaux de parrainage vous attendent de l\'autre côté.'
-              : 'Your courses, your messages, your videos, and your referral gifts are waiting on the other side.'}
-          </p>
-          <button
-            onClick={() => setSignInOpen(true)}
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-10 py-4 text-xs font-bold uppercase tracking-widest text-[#293027] shadow-[0_10px_28px_-10px_rgba(186,123,57,0.8)] transition-[background-color,transform] hover:bg-[#9c6630] active:scale-[0.98]"
-          >
-            <i className="fa-solid fa-arrow-right-to-bracket" /> {lang === 'FR' ? 'Se connecter' : 'Sign in'}
-          </button>
-          <p className="mt-4 text-xs text-[#38403a]/50 dark:text-white/45">
-            {lang === 'FR' ? 'Le compte se crée en une minute, au même endroit.' : 'Creating an account takes a minute, in the same place.'}
-          </p>
-        </div>
-      </div>
-    );
-  }
+  if (!user) return <PorteMembre />;
 
   // Un compte admin vit dans le portail client comme tout le monde : ça lui
   // montre exactement ce que les clientes voient. L'espace admin ne s'atteint
