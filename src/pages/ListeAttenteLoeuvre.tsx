@@ -130,7 +130,8 @@ const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
 };
 
 const isKnownProgramme = (key: string): key is ProgrammeKey =>
-  key === 'origine' || key === 'foyer' || key === 'kapha' || key === 'pitta';
+  key === 'origine' || key === 'origine2' || key === 'foyer'
+  || key === 'retraite' || key === 'kapha' || key === 'pitta';
 
 /* ── Planche photo du hero (par programme) ── */
 interface HeroArt { src: string; alt: string; caption: string; pos: string }
