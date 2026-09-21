@@ -192,7 +192,7 @@ const SignInModal: React.FC = () => {
 
         <h2 className="font-serif text-3xl text-[#2a2015] dark:text-white mb-2">{titles[mode]}</h2>
         <p className="text-sm text-[#2a2015]/60 dark:text-white/60 mb-6">
-          {lang === 'FR' ? 'Accédez à votre espace client Inspirata.' : 'Access your Inspirata client space.'}
+          {lang === 'FR' ? 'Accédez à votre espace membre.' : 'Access your member space.'}
         </p>
 
         {mode === 'signup' && (
