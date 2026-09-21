@@ -1740,33 +1740,37 @@
     <svg class="ic-off" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5"/></svg>
   </button>
 <script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-  import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-  const app = initializeApp({
-    apiKey: "AIzaSyCjxu7l0ZNpbLa5LJdTe5WdjlTmLhoNUNk",
-    authDomain: "krystinestlaurent-87566.firebaseapp.com",
-    projectId: "krystinestlaurent-87566",
-    storageBucket: "krystinestlaurent-87566.firebasestorage.app",
-    messagingSenderId: "908806491352",
-    appId: "1:908806491352:web:a11a9f39bdcc5183851bad"
-  });
-  const db = getFirestore(app);
-  function token(){ const b=new Uint8Array(18); crypto.getRandomValues(b); return Array.from(b,x=>x.toString(16).padStart(2,'0')).join(''); }
+  // Les formulaires de cette page (infolettre de l'Œuvre, annonce du tome 3,
+  // liste d'attente du Foyer) n'écrivent plus dans Firestore depuis le
+  // navigateur : ils appellent la fonction `inscrireInfolettre`, qui tient la
+  // garde anti-robots côté serveur. Plus de SDK Firebase à charger ici, un
+  // simple POST suffit, et la règle Firestore a fermé la porte derrière.
+  const PROJET = 'krystinestlaurent-87566';
+  const LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
+  const URL_INSCRIRE = LOCAL
+    ? `http://127.0.0.1:5001/${PROJET}/us-central1/inscrireInfolettre`
+    : `https://us-central1-${PROJET}.cloudfunctions.net/inscrireInfolettre`;
+
   window.__nlSubscribe = async (email, source, tags, extra) => {
     const sup = {};
     if (extra) for (const [k, v] of Object.entries(extra)) {
       const t = typeof v === 'string' ? v.trim() : v;
       if (t) sup[k] = t;
     }
-    await addDoc(collection(db,'newsletter'), {
-      email: String(email).trim().toLowerCase(),
-      source: source || 'accueil-loeuvre',
-      tags: tags || ['accueil-loeuvre'],
-      status: 'active',
-      unsubscribeToken: token(),
-      subscribedAt: serverTimestamp(),
-      ...sup
+    const r = await fetch(URL_INSCRIRE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: {
+        email: String(email).trim().toLowerCase(),
+        source: source || 'accueil-loeuvre',
+        tags: tags || ['accueil-loeuvre'],
+        status: 'active',
+        ...sup
+      } })
     });
+    const rep = await r.json().catch(() => null);
+    if (!r.ok || !rep || rep.error) throw new Error((rep && rep.error && rep.error.message) || 'inscription refusée');
+    return rep.result;
   };
 </script>
 <script src="/i18n/static.js" defer></script>
