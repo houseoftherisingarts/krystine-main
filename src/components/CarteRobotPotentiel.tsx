@@ -25,28 +25,24 @@ const CarteRobotPotentiel: React.FC<{ className?: string }> = ({ className = '' 
   const captcha = useRecaptcha(etat === 'visible' || etat === 'envoi');
   const fr = lang === 'FR';
 
-  // Est-ce que cette personne a au moins une fiche en quarantaine ? On
-  // interroge par `uid`, puis par courriel : une même personne peut avoir
-  // plusieurs inscriptions (formulaire, import, compte).
+  // Est-ce que cette personne a au moins une fiche en quarantaine ? La
+  // collection `newsletter` est fermée en lecture aux membres (règles
+  // Firestore), donc c'est la fonction qui répond, et seulement sur les fiches
+  // de l'appelante. Une fiche verrouillée par Krystine mène directement au
+  // message qui renvoie vers l'équipe : inutile de faire cocher une case pour
+  // se voir refuser ensuite.
   useEffect(() => {
     let vivant = true;
-    if (!user || !db) return;
+    if (!user || !app) return;
     (async () => {
       try {
-        const col = collection(db, 'newsletter');
-        const courriel = (user.email || '').trim().toLowerCase();
-        const lots = await Promise.all([
-          getDocs(query(col, where('uid', '==', user.uid), where('status', '==', 'suspect'))),
-          courriel
-            ? getDocs(query(col, where('email', '==', courriel), where('status', '==', 'suspect')))
-            : Promise.resolve(null),
-        ]);
-        const combien = lots.reduce((n, l) => n + (l?.size ?? 0), 0);
-        if (vivant && combien > 0) setEtat('visible');
+        const res = await httpsCallable(getFunctions(app!, 'us-central1'), 'confirmerHumain')({ sonder: true });
+        const d = res.data as { enQuarantaine?: number; bloquee?: boolean };
+        if (!vivant || !d?.enQuarantaine) return;
+        setEtat(d.bloquee ? 'refusee' : 'visible');
       } catch {
-        // Les règles Firestore ne laissent pas lire la collection depuis le
-        // navigateur pour tout le monde : dans ce cas la carte reste cachée
-        // plutôt que d'inquiéter quelqu'un pour rien.
+        // Fonction injoignable : la carte reste cachée plutôt que d'inquiéter
+        // quelqu'un pour rien.
       }
     })();
     return () => { vivant = false; };
