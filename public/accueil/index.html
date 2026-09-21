@@ -955,13 +955,14 @@
       <div class="rail-defileur">
       <div class="fan rail-piste" id="fan">
         <a class="card rail-panneau" href="/podcast" data-num="01" data-title="Le Podcast" data-desc="Nous n'avons jamais eu autant de choix. Et jamais autant de choses n'ont choisi à notre place." data-link="Écouter"><img src="/accueil/assets/portes/podcast.webp" alt="Micro de studio en lumière chaude" width="560" height="750" loading="lazy" decoding="async"><span class="fn">01</span><span class="verb">Écouter</span></a>
-        <a class="card" href="/medias#livres" data-num="02" data-title="La Trilogie" data-desc="Les fondations écrites de l'œuvre : sagesse du corps, cycles, plantes, alimentation, saisons et transformation." data-link="Lire"><img src="/accueil/assets/portes/livres.webp" alt="Livres reliés et brins botaniques" width="560" height="750" loading="lazy" decoding="async"><span class="fn">02</span><span class="verb">Lire</span></a>
-        <a class="card" href="/conferenciere" data-num="03" data-title="Les Conférences" data-desc="Conférences et soirées de parole pour partager la vision et inspirer le changement." data-link="Rencontrer"><img src="/accueil/assets/portes/conferences.webp" alt="Salle de conférence à la lueur des bougies" width="560" height="750" loading="lazy" decoding="async"><span class="fn">03</span><span class="verb">Rencontrer</span></a>
-        <a class="card" href="/formations" data-num="04" data-title="Les Formations" data-desc="Des parcours en ligne, saison après saison, pour apprendre l'Ayurveda et l'appliquer chez soi : alimentation, plantes, rituels et gestion du stress." data-link="Approfondir"><img src="/accueil/assets/portes/formations.webp" alt="Krystine à sa table, ses livres devant elle" width="560" height="750" loading="lazy" decoding="async"><span class="fn">04</span><span class="verb">Approfondir</span></a>
-        <a class="card" href="/liste-attente?programme=retraite" data-num="05" data-title="Les Retraites" data-desc="Des espaces en nature pour déposer le bruit, revenir au corps et s'ouvrir à la transformation." data-link="S'immerger"><img src="/accueil/assets/portes/retraites.webp" alt="Cabane de bois dans la forêt d'automne" width="560" height="750" loading="lazy" decoding="async"><span class="fn">05</span><span class="verb">S'immerger</span></a>
-        <a class="card" href="https://inspiratanature.com" target="_blank" rel="noopener noreferrer" data-num="06" data-title="Inspirata Ayurveda" data-desc="Les huiles, les plantes et les rituels de soin pour incarner l'œuvre au quotidien." data-link="Prendre soin"><img src="/accueil/assets/portes/inspirata.webp" alt="Flacons d'huiles ayurvédiques ambrés" width="560" height="750" loading="lazy" decoding="async"><span class="fn">06</span><span class="verb">Prendre soin</span></a>
+        <a class="card rail-panneau" href="/medias#livres" data-num="02" data-title="La Trilogie" data-desc="Les fondations écrites de l'œuvre : sagesse du corps, cycles, plantes, alimentation, saisons et transformation." data-link="Lire"><img src="/accueil/assets/portes/livres.webp" alt="Livres reliés et brins botaniques" width="560" height="750" loading="lazy" decoding="async"><span class="fn">02</span><span class="verb">Lire</span></a>
+        <a class="card rail-panneau" href="/conferenciere" data-num="03" data-title="Les Conférences" data-desc="Conférences et soirées de parole pour partager la vision et inspirer le changement." data-link="Rencontrer"><img src="/accueil/assets/portes/conferences.webp" alt="Salle de conférence à la lueur des bougies" width="560" height="750" loading="lazy" decoding="async"><span class="fn">03</span><span class="verb">Rencontrer</span></a>
+        <a class="card rail-panneau" href="/formations" data-num="04" data-title="Les Formations" data-desc="Des parcours en ligne, saison après saison, pour apprendre l'Ayurveda et l'appliquer chez soi : alimentation, plantes, rituels et gestion du stress." data-link="Approfondir"><img src="/accueil/assets/portes/formations.webp" alt="Krystine à sa table, ses livres devant elle" width="560" height="750" loading="lazy" decoding="async"><span class="fn">04</span><span class="verb">Approfondir</span></a>
+        <a class="card rail-panneau" href="/liste-attente?programme=retraite" data-num="05" data-title="Les Retraites" data-desc="Des espaces en nature pour déposer le bruit, revenir au corps et s'ouvrir à la transformation." data-link="S'immerger"><img src="/accueil/assets/portes/retraites.webp" alt="Cabane de bois dans la forêt d'automne" width="560" height="750" loading="lazy" decoding="async"><span class="fn">05</span><span class="verb">S'immerger</span></a>
+        <a class="card rail-panneau" href="https://inspiratanature.com" target="_blank" rel="noopener noreferrer" data-num="06" data-title="Inspirata Ayurveda" data-desc="Les huiles, les plantes et les rituels de soin pour incarner l'œuvre au quotidien." data-link="Prendre soin"><img src="/accueil/assets/portes/inspirata.webp" alt="Flacons d'huiles ayurvédiques ambrés" width="560" height="750" loading="lazy" decoding="async"><span class="fn">06</span><span class="verb">Prendre soin</span></a>
       </div>
-      <div class="fan-cap" id="fancap">
+      </div>
+      <div class="fan-cap rail-pied" id="fancap">
         <div class="fc-inner">
           <span class="fc-num">01</span>
           <h3>Le Podcast</h3>
@@ -969,7 +970,9 @@
           <a href="/podcast">Écouter →</a>
         </div>
       </div>
+      <div class="rail-jauge" aria-hidden="true"><span></span></div>
     </div>
+   </div>
   </section>
 
 
@@ -1012,9 +1015,32 @@
     </div>
   </section>
 
-  <!-- ===== TRILOGIE ===== -->
-  <section class="trilogy" id="ressources">
-    <div class="scene2"></div>
+  <!-- ===== TRILOGIE · le mot TRILOGIE ouvre la section (Glyph Portal) ===== -->
+  <section class="trilogy gp" id="ressources" data-gp data-gp-length="2.4" data-gp-min-width="900" aria-label="TRILOGIE" style="--gp-length:2.4;--gp-characters:8">
+    <noscript><style>.gp:not([data-gp-ready]) [data-gp-pin]{height:60vh}.gp [data-gp-fallback]{display:grid}.gp [data-gp-hint]{display:none}</style></noscript>
+    <div data-gp-viewport aria-hidden="true"></div>
+    <div data-gp-pin>
+      <div data-gp-field aria-hidden="true"><div class="scene2"></div></div>
+      <svg data-gp-art aria-hidden="true" focusable="false">
+        <defs>
+          <clipPath id="gp-trilogie-clip" clipPathUnits="userSpaceOnUse">
+            <text data-gp-glyph x="0" y="0">TRILOGIE</text>
+          </clipPath>
+        </defs>
+        <g data-gp-marks style="visibility:hidden"><path /></g>
+      </svg>
+      <div data-gp-choices role="radiogroup" aria-label="Choisir la lettre par laquelle entrer"></div>
+      <label data-gp-touch-picker>
+        <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)">Lettre d'entrée</span>
+        <select data-gp-select><option value="" disabled selected>Choisir une lettre</option></select>
+      </label>
+      <span data-gp-fallback aria-hidden="true">TRILOGIE</span>
+      <div data-gp-caption>
+        <span data-gp-hint aria-hidden="true">Défilez pour entrer.</span>
+        <a data-gp-enter href="#trilogie-contenu">Entrer dans la trilogie <span aria-hidden="true">↘</span></a>
+      </div>
+    </div>
+    <div data-gp-content id="trilogie-contenu" tabindex="-1">
     <div class="veil2"></div>
     <div class="tinner">
       <div class="tcopy reveal">
@@ -1030,6 +1056,7 @@
       </div>
     </div>
     <div class="tri-foot reveal d3">La trilogie pose les fondations écrites. Le retour au point d'origine devient l'axe de l'œuvre.</div>
+    </div>
   </section>
 
   <!-- ===== TOME 3 · capture au pic d'intérêt (juste après la trilogie) ===== -->
