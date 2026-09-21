@@ -1474,62 +1474,88 @@
     });
   }
 
-  // Portes en éventail: fan layout, staggered entrance, hover spread, caption swap
+  /* Rails horizontaux : sur un bureau assez haut, la fenêtre du rail s'épingle et le
+     défilement vertical fait avancer la rangée de panneaux, comme sur le studio de
+     Vexel. Partout ailleurs, la même rangée se prend au doigt (CSS seul, scroll-snap),
+     et le défilement vertical de la page n'est jamais capturé. */
   (function(){
-    const fan=document.getElementById('fan'); if(!fan) return;
-    const cards=[...fan.querySelectorAll('.card')]; const N=cards.length;
-    const cap=document.getElementById('fancap'), inner=cap.querySelector('.fc-inner');
-    const center=(N-1)/2;
-    function mult(){ const w=innerWidth; if(w<480)return .42; if(w<640)return .54; if(w<860)return .72; return 1; }
-    function slot(i){ const d=i-center, m=mult();
-      return { x:d*190*m, y:Math.abs(d)*Math.abs(d)*9*m, rot:d*6, sc:1-Math.abs(d)*0.04, z:20-Math.round(Math.abs(d)*3) }; }
-    function place(i,o){ const c=cards[i];
-      c.style.transform='translateX('+o.x+'px) translateY('+o.y+'px) rotate('+o.rot+'deg) scale('+o.sc+')';
-      c.style.zIndex=o.z; c.style.opacity=1; }
-    function rest(){ cards.forEach((c,i)=>place(i,slot(i))); }
-    function spread(h){
-      cards.forEach((c,i)=>{ const b=slot(i);
-        if(i===h){ b.y-=26; b.sc*=1.07; b.z=30; b.rot*=.4; }
-        else { const dir=i<h?-1:1, dist=Math.abs(i-h); b.x+=dir*38*(1-Math.min(1,dist/3.2)); b.rot+=dir*2.5/(dist); }
-        place(i,b);
+    const MQ='(min-width:901px) and (min-height:700px) and (prefers-reduced-motion:no-preference)';
+    const mq=matchMedia(MQ);
+    const rails=[].slice.call(document.querySelectorAll('[data-rail]')).map(function(rail){
+      return { rail:rail,
+        vue:rail.querySelector('.rail-vue'),
+        piste:rail.querySelector('.rail-piste'),
+        defileur:rail.querySelector('.rail-defileur'),
+        jauge:rail.querySelector('.rail-jauge span'),
+        panneaux:[].slice.call(rail.querySelectorAll('.rail-panneau')),
+        distance:0, actif:-1 };
+    }).filter(function(e){ return e.vue && e.piste && e.panneaux.length; });
+    if(!rails.length) return;
+
+    function majActif(e){
+      const cadre=e.vue.getBoundingClientRect(), centre=cadre.left+cadre.width/2;
+      let i=0, best=Infinity;
+      e.panneaux.forEach(function(p,k){
+        const r=p.getBoundingClientRect(), d=Math.abs(r.left+r.width/2-centre);
+        if(d<best){ best=d; i=k; }
+      });
+      if(i!==e.actif){ e.actif=i; e.rail.dispatchEvent(new CustomEvent('rail:actif',{detail:{index:i}})); }
+    }
+    function mesurer(){
+      const vh=innerHeight, epingle=mq.matches;
+      rails.forEach(function(e){
+        if(!epingle){ e.rail.style.height=''; e.piste.style.transform=''; e.distance=0; return; }
+        e.distance=Math.max(0, e.piste.scrollWidth - e.vue.clientWidth);
+        e.rail.style.height=(vh+e.distance)+'px';
       });
     }
+    function peindre(){
+      if(!mq.matches) return;
+      const vh=innerHeight;
+      rails.forEach(function(e){
+        const course=e.rail.offsetHeight-vh;
+        const p=course>0 ? Math.min(1,Math.max(0,-e.rail.getBoundingClientRect().top/course)) : 0;
+        e.piste.style.transform='translate3d('+(-p*e.distance).toFixed(1)+'px,0,0)';
+        if(e.jauge) e.jauge.style.transform='scaleX('+p.toFixed(4)+')';
+        majActif(e);
+      });
+    }
+    let tick=false;
+    function auDefilement(){ if(!tick){ tick=true; requestAnimationFrame(function(){ tick=false; peindre(); }); } }
+    addEventListener('scroll',auDefilement,{passive:true});
+    addEventListener('resize',function(){ mesurer(); peindre(); });
+    mq.addEventListener('change',function(){ mesurer(); peindre(); });
+    addEventListener('load',function(){ mesurer(); peindre(); });
+    rails.forEach(function(e){
+      if(e.defileur) e.defileur.addEventListener('scroll',function(){ if(!mq.matches) majActif(e); },{passive:true});
+    });
+    mesurer(); peindre();
+  })();
+
+  /* Portes : la carte au centre du rail prend la vedette et la légende suit. */
+  (function(){
+    const fan=document.getElementById('fan'); if(!fan) return;
+    const cards=[].slice.call(fan.querySelectorAll('.card'));
+    const cap=document.getElementById('fancap'), inner=cap&&cap.querySelector('.fc-inner');
+    if(!inner) return;
     function setCap(c){
       inner.innerHTML='<span class="fc-num">'+c.dataset.num+'</span><h3>'+c.dataset.title+'</h3><p>'+c.dataset.desc+'</p><a href="'+c.getAttribute('href')+'">'+c.dataset.link+' →</a>';
     }
-    let hov=-1, capT=null;
-    function setActive(i){
-      if(i===hov) return; hov=i;
-      cards.forEach((c,k)=>c.classList.toggle('on',k===i));
-      if(i<0){ rest(); return; }
-      spread(i);
+    let vedette=-1, capT=null;
+    function marquer(i){
+      if(i===vedette||i<0||i>=cards.length) return; vedette=i;
+      cards.forEach(function(c,k){ c.classList.toggle('on',k===i); });
       clearTimeout(capT);
       cap.classList.add('swap');
-      capT=setTimeout(()=>{ setCap(cards[i]); cap.classList.remove('swap'); },180);
+      capT=setTimeout(function(){ setCap(cards[i]); cap.classList.remove('swap'); },180);
     }
-    fan.addEventListener('pointermove',(e)=>{
-      if(!entered || e.pointerType==='touch') return;
-      var r=fan.getBoundingClientRect();
-      var i=Math.round((e.clientX-r.left-r.width/2)/(190*mult())+center);
-      setActive(Math.max(0,Math.min(N-1,i)));
+    const rail=fan.closest('[data-rail]');
+    if(rail) rail.addEventListener('rail:actif',function(e){ marquer(e.detail.index); });
+    fan.addEventListener('pointerover',function(e){
+      if(e.pointerType==='touch') return;
+      const c=e.target.closest && e.target.closest('.card');
+      if(c) marquer(cards.indexOf(c));
     });
-    fan.addEventListener('pointerleave',()=>{ if(entered) setActive(-1); });
-    // entrance on scroll-in (staggered rise); reduced-motion = instant
-    let entered=false;
-    function enter(){ if(entered) return; entered=true;
-      if(reduce){ rest(); return; }
-      cards.forEach((c,i)=>{
-        c.style.transition='none';
-        c.style.transform='translateY(120px) scale(.55)'; c.style.opacity='0';
-        const o=slot(i), delay=120+Math.abs(i-center)*90;
-        requestAnimationFrame(()=>setTimeout(()=>{
-          c.style.transition='transform .95s cubic-bezier(.34,1.32,.5,1),opacity .6s ease';
-          place(i,o);
-        },delay));
-      });
-    }
-    const fio=new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ enter(); fio.disconnect(); } }),{threshold:.35});
-    fio.observe(fan);
   })();
 
   // Newsletter: inline validation + success state.
