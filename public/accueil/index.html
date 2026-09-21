@@ -1533,6 +1533,10 @@
     addEventListener('load',function(){ mesurer(); peindre(); });
     rails.forEach(function(e){
       if(e.defileur) e.defileur.addEventListener('scroll',function(){ if(!mq.matches) majActif(e); },{passive:true});
+      /* Un panneau qui attend son tour hors de la fenêtre du rail n'entre jamais dans le
+         champ de l'observateur : la rangée s'allume d'un coup dès que le rail arrive. */
+      new IntersectionObserver(function(es,o){ es.forEach(function(en){ if(en.isIntersecting){
+        e.panneaux.forEach(function(p){ p.classList.add('in'); }); o.disconnect(); } }); },{threshold:.1}).observe(e.rail);
     });
     mesurer(); peindre();
   })();
