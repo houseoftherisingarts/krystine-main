@@ -150,7 +150,7 @@ const RobotsPanel: React.FC<{ subs: NewsletterSubscriber[]; refresh: () => Promi
         <p className="mt-2 text-[11px] uppercase tracking-[0.15em] font-bold text-[#8B4A2F]">
           {quarantaine.length.toLocaleString('fr-CA')} en quarantaine
           {' · '}
-          {confirmes.length.toLocaleString('fr-CA')} humains confirmés à trancher
+          {confirmes.length.toLocaleString('fr-CA')} {confirmes.length === 1 ? 'humain confirmé' : 'humains confirmés'} à trancher
         </p>
       </div>
 
