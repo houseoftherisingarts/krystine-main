@@ -80,6 +80,9 @@ const CinqElementsPage: React.FC = () => {
   const [busy, setBusy] = useState(false);
   const [url, setUrl] = useState<string | null>(null);
   const [erreur, setErreur] = useState<string | null>(null);
+  // La case anti-robot n'est posée que pour une visiteuse non connectée :
+  // une membre déjà authentifiée n'a rien à prouver.
+  const captcha = useRecaptcha(!user);
 
   useMotionV2(root);
 
