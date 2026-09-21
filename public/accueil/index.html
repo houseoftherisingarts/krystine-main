@@ -347,9 +347,9 @@
   .nl-msg.err{color:#dd8a5e}
   .nl-msg.ok{color:var(--brass-bright);font-family:var(--serif);font-style:italic;font-size:.95rem}
 
-  /* ---------- trilogie ---------- */
-  .trilogy{position:sticky;top:0;z-index:2;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:#eae1d0;border-radius:18px 18px 0 0;box-shadow:0 -26px 60px rgba(40,28,16,.28)}
-  .trilogy .scene2{position:absolute;left:0;right:0;top:-9%;bottom:-9%;z-index:0;background:url('/accueil/assets/trilogy-books.png?v=2027') 58% 82%/117% no-repeat;background-image:image-set(url('/accueil/assets/trilogy-books.webp?v=2027') type('image/webp'),url('/accueil/assets/trilogy-books.png?v=2027') type('image/png'))}
+  /* ---------- trilogie : le mot TRILOGIE ouvre la section (Glyph Portal) ---------- */
+  .trilogy{position:relative;z-index:2;background:var(--cream-2)}
+  .trilogy .scene2{position:absolute;left:0;right:0;top:-9%;bottom:-9%;z-index:0;background:url('/accueil/assets/trilogy-books.png?v=2027') 58% 82%/117% no-repeat;background-image:image-set(url('/accueil/assets/trilogy-books.webp?v=2027') type('image/webp'),url('/accueil/assets/trilogy-books.png?v=2027') type('image/png'));transform:scale(var(--gp-field-scale,1));transform-origin:58% 70%}
   .trilogy .veil2{position:absolute;inset:0;z-index:1;
     background:
       linear-gradient(90deg, rgba(234,225,208,.98) 0%, rgba(234,225,208,.96) 34%, rgba(234,225,208,.5) 48%, rgba(234,225,208,0) 62%),
