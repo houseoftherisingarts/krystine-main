@@ -30,11 +30,12 @@ const CLE_SID = 'vh.sid';
 const CLE_SID_T = 'vh.sid.t';
 const CLE_VID = 'vh.vid';
 const CLE_REPLAY = 'vh.replay';
+const CLE_PARCOURS = 'vh.parcours';
 const INACTIVITE_MS = 30 * 60_000;
 const CADENCE_ENVOI_MS = 8_000;
-const RAGE_FENETRE_MS = 700;
+const RAGE_FENETRE_MS = 1000;
 const RAGE_RAYON_PX = 30;
-const MORT_DELAI_MS = 700;
+const MORT_DELAI_MS = 1500;
 const MOUV_PAS_MS = 250;
 const MOUV_MAX_PAR_PAGE = 400;
 
@@ -82,8 +83,13 @@ function ouvrirSession() {
   if (!sid || Date.now() - dernier > INACTIVITE_MS) {
     sid = id();
     ecrire(sessionStorage, CLE_SID, sid);
-    parcours = [];
+    ecrire(sessionStorage, CLE_PARCOURS, '[]');
+    ecrire(sessionStorage, CLE_REPLAY, '');
   }
+  // Le parcours survit à un rechargement : la deuxième page d'une même visite
+  // ne se compte pas comme une nouvelle visite.
+  try { parcours = JSON.parse(lire(sessionStorage, CLE_PARCOURS) || '[]'); } catch { parcours = []; }
+  if (!Array.isArray(parcours)) parcours = [];
   toucherSession();
   vid = lire(localStorage, CLE_VID);
   if (!vid) { vid = id(); nouveau = true; ecrire(localStorage, CLE_VID, vid); }
@@ -180,13 +186,14 @@ function ouvrirPage(premier: boolean) {
   clicsRecents = [];
   formsCommences = new Map();
   formsSoumis = new Set();
-  if (parcours[parcours.length - 1] !== path) parcours.push(path);
+  const premiereDeLaVisite = parcours.length === 0;
+  if (parcours[parcours.length - 1] !== path) { parcours.push(path); ecrire(sessionStorage, CLE_PARCOURS, JSON.stringify(parcours.slice(-60))); }
   window.setTimeout(mesurerScroll, 400);
   pousser({
     t: 'vue', titre: document.title.slice(0, 120),
     ref: premier ? document.referrer.slice(0, 300) : '',
     vw: window.innerWidth, vh: window.innerHeight, lang: document.documentElement.lang || navigator.language,
-    premier: premier && parcours.length === 1, utm: utmDe(),
+    premier: premier && premiereDeLaVisite, utm: utmDe(),
   });
 }
 
@@ -194,13 +201,28 @@ function fermerPage(fin: boolean) {
   if (!pv) return;
   mesurerScroll();
   viderMouvements();
-  for (const [s, champ] of formsCommences) {
-    if (!formsSoumis.has(s)) pousser({ t: 'form', s, etat: 'abandon', champ });
+  if (fin) {
+    for (const [s, champ] of formsCommences) {
+      if (!formsSoumis.has(s)) pousser({ t: 'form', s, etat: 'abandon', champ });
+    }
+    formsCommences.clear();
   }
-  formsCommences.clear();
   pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin });
+  debutPage = Date.now();
   envoyer();
   if (fin) pv = '';
+}
+
+// L'onglet passe à l'arrière-plan : le temps passé part tout de suite (le
+// navigateur peut tuer la page sans prévenir), et la même vue reprend au
+// retour sans compter une nouvelle visite de la page.
+function pauserPage() {
+  if (!pv) return;
+  mesurerScroll();
+  viderMouvements();
+  pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin: false });
+  debutPage = Date.now();
+  envoyer();
 }
 
 // ─── Clics, mouvements, erreurs, formulaires ────────────────────────────────
@@ -214,7 +236,7 @@ function surClic(ev: MouseEvent) {
   const ey = rect.height ? (ev.clientY - rect.top) / rect.height : 0.5;
   const now = Date.now();
 
-  // Clic de rage : au moins trois clics en moins de 700 ms dans un rayon de 30 px.
+  // Clic de rage : au moins trois clics en moins d'une seconde dans un rayon de 30 px.
   clicsRecents = clicsRecents.filter(c => now - c.t < RAGE_FENETRE_MS);
   clicsRecents.push({ x: ev.clientX, y: ev.clientY, t: now });
   const rage = clicsRecents.length >= 3 && clicsRecents.every(c => Math.hypot(c.x - ev.clientX, c.y - ev.clientY) < RAGE_RAYON_PX);
@@ -231,7 +253,7 @@ function surClic(ev: MouseEvent) {
   };
   if (!e.obj) delete e.obj;
 
-  // Clic mort : rien ne bouge dans les 700 ms (ni le DOM, ni l'adresse, ni le
+  // Clic mort : rien ne bouge dans la seconde et demie (ni le DOM, ni l'adresse, ni le
   // défilement) après un clic sur autre chose qu'un champ de saisie.
   const champ = inter.matches('input,select,textarea,label');
   const pathAvant = location.href;
@@ -242,7 +264,7 @@ function surClic(ev: MouseEvent) {
   window.setTimeout(() => {
     const bouge = location.href !== pathAvant || Math.abs(window.scrollY - scrollAvant) > 4 || mutationDepuis !== mutAvant || pv !== pvAvant;
     e.m = !bouge;
-    if (pv !== pvAvant) { e.path = e.path; }
+    if (!actif) return;
     file.push(e); toucherSession();
     if (minuterie === undefined) minuterie = window.setTimeout(envoyer, CADENCE_ENVOI_MS);
   }, MORT_DELAI_MS);
@@ -351,7 +373,7 @@ export function demarrerVexelHotjar(c: ConfigVexelHotjar) {
   document.addEventListener('submit', surSoumission, true);
   window.addEventListener('error', surErreur);
   window.addEventListener('unhandledrejection', surErreur);
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') fermerPage(true); else if (!pv && !exclu(chemin())) ouvrirPage(false); });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') pauserPage(); else debutPage = Date.now(); });
   window.addEventListener('pagehide', () => fermerPage(true));
   ouvrirPage(true);
   peutEtreEnregistrer();
