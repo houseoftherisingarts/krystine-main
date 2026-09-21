@@ -97,8 +97,12 @@ do {
 } while (page);
 
 // ── 2. Trier ────────────────────────────────────────────────────────────────
-const AVEC_ENVOI = new Set(['active', 'pending']); // pending ne reçoit pas, mais peut basculer
+// Seules les fiches `active` sont marquées : ce sont les seules qui reçoivent
+// vraiment quelque chose (send.ts et live.ts ne ciblent que `active`). Les
+// `pending` sont montrées à part, parce qu'elles ne reçoivent rien aujourd'hui
+// mais basculeraient à `active` si quelqu'un les réveillait un jour.
 const aMarquer = [];
+const dormantes = [];
 const deja = [];
 const inertes = [];
 
@@ -107,8 +111,9 @@ for (const f of fiches) {
   if (!domaine) continue;
   f.domaine = domaine;
   if (f.dejaMarquee || f.status === 'suspect') { deja.push(f); continue; }
-  if (!AVEC_ENVOI.has(f.status)) { inertes.push(f); continue; }
-  aMarquer.push(f);
+  if (f.status === 'active') { aMarquer.push(f); continue; }
+  if (f.status === 'pending') { dormantes.push(f); continue; }
+  inertes.push(f);
 }
 
 // ── 3. Rendre compte ────────────────────────────────────────────────────────
