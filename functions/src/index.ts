@@ -6,6 +6,7 @@ export { shopifyWebhook } from './shopify/webhook';
 export { shopifyBackfill } from './shopify/backfill';
 export { sendNewsletter } from './newsletter/send';
 export { unsubscribeByToken } from './newsletter/unsubscribe';
+export { inscrireInfolettre } from './newsletter/inscrire';
 export { sendWelcomeEmail } from './newsletter/welcome';
 export { sendLiveReminders, envoyerRappelDirect } from './newsletter/live';
 export { ouverture } from './newsletter/ouverture';
