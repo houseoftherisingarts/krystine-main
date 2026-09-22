@@ -133,6 +133,22 @@
         "destination": "/og/politique-de-confidentialite.html"
       },
       {
+        "source": "/presse",
+        "destination": "/og/presse.html"
+      },
+      {
+        "source": "/presskit",
+        "destination": "/og/presse.html"
+      },
+      {
+        "source": "/press-kit",
+        "destination": "/og/presse.html"
+      },
+      {
+        "source": "/en/press",
+        "destination": "/og/presse.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
