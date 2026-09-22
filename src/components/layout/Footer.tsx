@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useApp, useBoutique } from '../../contexts/AppContext';
+import { useSiteFlags } from '../../contexts/SiteFlagsContext';
 import { CONTENT } from '../../content';
 import { isStaticRoute } from '../../lib/staticRoutes';
 import { db } from '../../firebase';
