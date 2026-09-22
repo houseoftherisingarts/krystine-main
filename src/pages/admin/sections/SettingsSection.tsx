@@ -69,10 +69,12 @@ const SITE_AUDIO: Array<{
 const PagesDuSiteCard: React.FC = () => {
   const [origine2Ouvert, setOrigine2Ouvert] = useState(false);
   const [chatbotOuvert, setChatbotOuvert] = useState(false);
+  const [presseOuvert, setPresseOuvert] = useState(false);
   const [charge, setCharge] = useState(true);
   useEffect(() => subscribeToSiteFlags(f => {
     setOrigine2Ouvert(f.origine2Ouvert);
     setChatbotOuvert(f.chatbotOuvert);
+    setPresseOuvert(f.presseOuvert);
     setCharge(false);
   }), []);
   return (
