@@ -162,6 +162,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'newsletter', label: 'Infolettre',       icon: 'fa-envelope',         groupe: 'contenu' },
   { id: 'media',      label: 'Médiathèque',      icon: 'fa-photo-film',       groupe: 'contenu' },
   { id: 'assets',     label: 'Assets et téléchargements', icon: 'fa-download', groupe: 'reglages' },
+  { id: 'enPreparation', label: 'En préparation', icon: 'fa-eye-slash',       groupe: 'reglages' },
   { id: 'settings',   label: 'Paramètres',       icon: 'fa-gear',             groupe: 'reglages' },
   { id: 'demande',    label: 'Demander un changement', icon: 'fa-bolt',       groupe: 'reglages' },
   { id: 'partenaireVexel', label: 'Devenir partenaire Vexel', icon: 'fa-handshake', groupe: 'reglages' },
