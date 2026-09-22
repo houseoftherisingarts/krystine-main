@@ -137,7 +137,7 @@ export function applyPageMeta(pathname: string) {
   setNamedMeta('name', 'twitter:image', image);
   setNamedMeta('name', 'twitter:image:alt', imageAlt);
 
-  const canonicalHref = ORIGIN + (pathname === '/' ? '/' : pathname.replace(/\/$/, ''));
+  const canonicalHref = ORIGIN + (route === '/' ? '/' : route.replace(/\/$/, ''));
   let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
   if (!link) {
     link = document.createElement('link');
