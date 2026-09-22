@@ -27,6 +27,20 @@ function tropVite(ip: string): boolean {
   return e.n > 240;
 }
 
+// Débit global de l'instance, toutes adresses confondues : l'adresse IP
+// derrière l'hébergement se lit à sa place dans x-forwarded-for, mais un
+// appel direct à l'URL run.app de la fonction peut en forger une par requête
+// et contourner la cadence par adresse; ce plafond et la cadence par session
+// bornent ce qu'un tel appel peut écrire.
+const DEBIT_GLOBAL_PAR_MIN = 3000;
+let debit = { n: 0, t: 0 };
+function tropDeMonde(): boolean {
+  const now = Date.now();
+  if (now - debit.t > 60_000) debit = { n: 0, t: now };
+  debit.n += 1;
+  return debit.n > DEBIT_GLOBAL_PAR_MIN;
+}
+
 // L'hôte annoncé par le navigateur (Origin, sinon Referer) doit être le site.
 function hotePermis(req: { get: (h: string) => string | undefined }): boolean {
   const hote = hoteDe(req.get('origin') || req.get('referer') || '');
@@ -111,6 +125,7 @@ export const vhCollecter = onRequest(
 
     const site = texte(d.site, 40);
     const sid = texte(d.sid, 64);
+    if (tropVite('sid:' + sid) || tropDeMonde()) { res.status(429).send(''); return; }
     if (!SITES_PERMIS.includes(site) || !/^[a-z0-9-]{8,64}$/.test(sid)) { res.status(400).send(''); return; }
 
     const db = getFirestore();
@@ -227,6 +242,7 @@ function nettoyer(e: any): DocumentData | null {
         ...base,
         duree: nombre(e.duree, 0, 6 * 3600_000),
         scrollMax: nombre(e.scrollMax, 0, 100),
+        clos: e.clos ? 1 : 0,   // 1 : la vue de page est close (changement de page ou fermeture); 0 : l'onglet passe à l'arrière-plan
         pages: nombre(e.pages, 0, 1000),
         fin: !!e.fin,
         vw: nombre(e.vw, 200, 10000, 1280),
@@ -247,7 +263,9 @@ function nettoyer(e: any): DocumentData | null {
       };
     case 'mouv': {
       const pts = Array.isArray(e.pts) ? e.pts.slice(0, 800).map((n: unknown) => nombre(n, 0, 200000)) : [];
-      return { ...base, vw: nombre(e.vw, 200, 10000, 1280), hd: nombre(e.hd, 0, 200000), pts };
+      // nrm: 1 quand le traceur a déjà mis y en dix-millièmes de la hauteur
+      // du document au moment de chaque point; sinon hd sert à le faire ici.
+      return { ...base, vw: nombre(e.vw, 200, 10000, 1280), hd: nombre(e.hd, 0, 200000), nrm: e.nrm ? 1 : 0, pts };
     }
     case 'erreur':
       return { ...base, msg: texte(e.msg, 200), src: texte(e.src, 200), ligne: nombre(e.ligne, 0, 1e6) };

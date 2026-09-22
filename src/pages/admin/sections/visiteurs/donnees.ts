@@ -151,11 +151,11 @@ export function resumer(journees: Journee[], de: string, a: string): Resume {
 // ─── Cartes de chaleur ──────────────────────────────────────────────────────
 
 export interface PointClic { s: string; tx: string; ex: number; ey: number; vx: number; dy: number; hd: number; r?: boolean; m?: boolean }
-/** Les points d'une page sur un appareil : nClics est le vrai compte, clics les points gardés (plafonnés par jour). */
-export interface Carte { clics: PointClic[]; mouv: number[]; vues: number; nClics: number; scroll: Record<string, number> }
+/** Les points d'une page sur un appareil : nClics, nRage et nMorts sont les vrais comptes, clics les points gardés (plafonnés par jour). */
+export interface Carte { clics: PointClic[]; mouv: number[]; vues: number; nClics: number; nRage: number; nMorts: number; scroll: Record<string, number> }
 
 export async function chargerCarte(device: Device, clePage: string, de: string, a: string): Promise<Carte> {
-  const c: Carte = { clics: [], mouv: [], vues: 0, nClics: 0, scroll: {} };
+  const c: Carte = { clics: [], mouv: [], vues: 0, nClics: 0, nRage: 0, nMorts: 0, scroll: {} };
   if (!db) return c;
   const q = query(collection(db, 'vh_cartes'), where('site', '==', SITE_VEXELHOTJAR), where('device', '==', device), where('page', '==', clePage), where('jour', '>=', de), where('jour', '<=', a));
   const snap = await getDocs(q);
@@ -167,6 +167,8 @@ export async function chargerCarte(device: Device, clePage: string, de: string, 
     if (x.mouvV === 2) c.mouv.push(...((x.mouv as number[]) || []));
     c.vues += x.vues || 0;
     c.nClics += typeof x.nClics === 'number' ? x.nClics : clics.length;
+    c.nRage += typeof x.nRage === 'number' ? x.nRage : clics.filter(p => p.r).length;
+    c.nMorts += typeof x.nMorts === 'number' ? x.nMorts : clics.filter(p => p.m).length;
     for (const [b, n] of Object.entries((x.scroll as Record<string, number>) || {})) add(c.scroll, b, n);
   }
   return c;

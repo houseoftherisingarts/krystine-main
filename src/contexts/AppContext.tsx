@@ -188,6 +188,31 @@ const UIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 // L'aperçu des cartes de chaleur (?vh=apercu, dans un cadre de l'admin) se
 // rend comme pour une visiteuse anonyme : le menu et les boutons réservés à
 // l'admin décaleraient les éléments sur lesquels les clics sont ancrés.
+// Firebase Auth garde la session dans IndexedDB (`firebaseLocalStorageDb`,
+// clés `firebase:authUser:…`). On regarde sans rien créer : si la liste des
+// bases n'est pas disponible ou que la lecture échoue, on répond « non ».
+async function sessionPersistee(): Promise<boolean> {
+  try {
+    if (!('indexedDB' in window) || typeof indexedDB.databases !== 'function') return false;
+    const bases = await indexedDB.databases();
+    if (!bases.some(b => b.name === 'firebaseLocalStorageDb')) return false;
+    return await new Promise<boolean>(resolve => {
+      const req = indexedDB.open('firebaseLocalStorageDb');
+      req.onerror = () => resolve(false);
+      req.onblocked = () => resolve(false);
+      req.onsuccess = () => {
+        const db = req.result;
+        try {
+          if (!db.objectStoreNames.contains('firebaseLocalStorage')) { db.close(); resolve(false); return; }
+          const cles = db.transaction('firebaseLocalStorage', 'readonly').objectStore('firebaseLocalStorage').getAllKeys();
+          cles.onsuccess = () => { db.close(); resolve(cles.result.some(k => String(k).startsWith('firebase:authUser:'))); };
+          cles.onerror = () => { db.close(); resolve(false); };
+        } catch { db.close(); resolve(false); }
+      };
+    });
+  } catch { return false; }
+}
+
 const APERCU = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('vh') === 'apercu';
 
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -203,8 +228,11 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     if (import.meta.env.DEV && typeof window !== 'undefined' && !APERCU) {
       try { if (localStorage.getItem('__devAdmin') === '1') setIsAdmin(true); } catch { /* noop */ }
     }
-    // Si Firebase ne répond jamais (réseau coupé), la mesure démarre quand même.
-    const garde = window.setTimeout(() => setAuthReady(true), 4000);
+    // Si Firebase ne répond pas en quatre secondes (réseau coupé), la mesure
+    // démarre quand même, sauf quand ce navigateur garde une session en
+    // réserve : là on attend la vraie réponse, sinon le premier lot d'une
+    // administratrice partirait avant son drapeau d'exclusion.
+    const garde = window.setTimeout(() => { sessionPersistee().then(oui => { if (!oui) setAuthReady(true); }); }, 4000);
     // Capture any pending redirect-back from `signInWithRedirect` (the
     // fallback path used when popup auth is blocked). No-op when nothing is
     // pending. Fires before the auth subscription so the bootstrap runs

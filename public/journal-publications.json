@@ -632,5 +632,38 @@
       "public/assets-manifest.json",
       "src/pages/admin/sections/visiteurs/Reglages.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-22T03:04:57.831Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "b81a9f3",
+    "message": "Visiteurs et clics : agrégation verrouillée et bornée, adresse IP sûre, cartes de chaleur justes (audit)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/index.ts",
+      "functions/src/vexelhotjar/agregation.ts",
+      "functions/src/vexelhotjar/collecte.ts",
+      "functions/src/vexelhotjar/commun.ts",
+      "functions/src/vexelhotjar/index.ts",
+      "public/assets-manifest.json",
+      "public/vh/vexelhotjar.js",
+      "src/components/layout/ConsentBanner.tsx",
+      "src/contexts/AppContext.tsx",
+      "src/pages/admin/sections/visiteurs/CartesChaleur.tsx",
+      "src/pages/admin/sections/visiteurs/Enregistrements.tsx",
+      "src/pages/admin/sections/visiteurs/Entonnoirs.tsx",
+      "src/pages/admin/sections/visiteurs/Frictions.tsx",
+      "src/pages/admin/sections/visiteurs/Reglages.tsx",
+      "src/pages/admin/sections/visiteurs/VueEnsemble.tsx",
+      "src/pages/admin/sections/visiteurs/chaleur.ts",
+      "src/pages/admin/sections/visiteurs/donnees.ts",
+      "src/pages/origine/components/components/ui/PricingSection.tsx",
+      "src/vexelhotjar/tracker.ts",
+      "src/vite-env.d.ts"
+    ]
   }
 ]

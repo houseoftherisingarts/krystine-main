@@ -4,7 +4,7 @@ import { getFirestore, FieldValue, Timestamp, type DocumentData } from 'firebase
 import { getStorage } from 'firebase-admin/storage';
 import { ADMIN_EMAILS } from '../newsletter/send';
 import {
-  POINTS_CLICS_MAX, POINTS_MOUV_MAX, TAILLE_MAX_CARTE, PLAFONDS_JOURNEE, ELEMENTS_PAR_PAGE_MAX,
+  POINTS_CLICS_MAX, POINTS_MOUV_MAX, TAILLE_MAX_CARTE, TAILLE_MAX_JOUR, PLAFONDS_JOURNEE, ELEMENTS_PAR_PAGE_MAX,
   LOTS_PAR_TOUR, VERROU_MS, RECLAMATION_MS, DERIVE_HORLOGE_MS, DOC_VERROU,
   RETENTION_LOTS_JOURS, RETENTION_SESSIONS_JOURS, RETENTION_JOURS_JOURS,
   texte, hash, clePage, jourDe, heureDe, deviceDe, hoteDe, TAGS_INTERACTIFS, type Device,
@@ -52,6 +52,33 @@ function borner(J: Journee, existant: DocumentData) {
   for (const k of Object.keys(J.textes)) if (!ok(k)) delete J.textes[k];
 }
 
+// Les plafonds par famille ne suffisent pas à garantir le mégaoctet de
+// Firestore (cent pages de trente éléments aux longs sélecteurs le dépassent) :
+// on mesure, et les éléments cliqués des pages les moins vues tombent d'abord,
+// puis la liste d'erreurs. Les compteurs de la journée s'écrivent toujours.
+function alleger(J: Journee, existant: DocumentData) {
+  const base = Buffer.byteLength(JSON.stringify(existant));
+  const taille = () => base + Buffer.byteLength(JSON.stringify(J.compteurs)) + Buffer.byteLength(JSON.stringify(J.textes));
+  if (taille() <= TAILLE_MAX_JOUR) return;
+  const vues = new Map<string, number>();
+  for (const k of Object.keys(J.compteurs)) {
+    const m = /^pages\.([^.]+)\.elements\./.exec(k);
+    if (m && !vues.has(m[1])) vues.set(m[1], (J.compteurs[`pages.${m[1]}.vues`] || 0) + (existant.pages?.[m[1]]?.vues || 0));
+  }
+  const ordre = [...vues.entries()].sort((a, b) => a[1] - b[1]).map(([p]) => p);
+  for (const p of ordre) {
+    if (taille() <= TAILLE_MAX_JOUR) break;
+    const prefixe = `pages.${p}.elements.`;
+    for (const k of Object.keys(J.compteurs)) if (k.startsWith(prefixe)) delete J.compteurs[k];
+    for (const k of Object.keys(J.textes)) if (k.startsWith(prefixe)) delete J.textes[k];
+  }
+  if (taille() > TAILLE_MAX_JOUR) {
+    for (const k of Object.keys(J.textes)) if (k.startsWith('erreursListe.')) delete J.textes[k];
+    for (const k of Object.keys(J.compteurs)) if (k.startsWith('erreursListe.')) delete J.compteurs[k];
+  }
+  if (taille() > TAILLE_MAX_JOUR) console.warn(`[vexelhotjar] journée au plafond : ${taille()} octets, seuls les compteurs passent`);
+}
+
 async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR): Promise<number> {
   // Les lots frais d'abord; sinon ceux qu'un tour précédent a réclamés sans
   // jamais les marquer (fonction tuée en route), passé trente minutes.
@@ -68,7 +95,10 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
   const reclame = Timestamp.now();
   for (let i = 0; i < docs.length; i += 450) {
     const b = db.batch();
-    for (const d of docs.slice(i, i + 450)) b.update(d.ref, { agrege: 'encours', reclame });
+    // set + merge plutôt qu'update : un lot effacé entre-temps (vhEffacerSession)
+    // ne fait pas échouer tout le lot d'écritures, il renaît en souche avec sa
+    // date et la purge l'emporte plus tard.
+    for (const d of docs.slice(i, i + 450)) b.set(d.ref, { agrege: 'encours', reclame, recu: d.get('recu') }, { merge: true });
     await b.commit();
   }
 
@@ -128,13 +158,16 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
           inc(J, 'dureeMs', e.duree);
           inc(J, `pages.${page}.dureeMs`, e.duree);
           // Une vue peut sortir plusieurs fois (l'onglet passe à l'arrière-plan,
-          // puis revient) : seule la sortie finale compte pour les rebonds et
-          // le défilement, en paliers de 5 % atteints, une fois par vue. La
-          // carte de défilement lit ensuite « 62 % des visites ont vu ce palier ».
-          if (!e.fin) break;
+          // puis revient) : seule la sortie qui clôt la vue (clos : changement
+          // de page dans l'application ou fermeture) compte pour le défilement,
+          // en paliers de 5 % atteints, une fois par vue; fin (la visite quitte
+          // le site) compte pour les rebonds. Les lots d'avant le champ clos
+          // n'ont que fin. La carte de défilement lit ensuite « 62 % des
+          // visites ont vu ce palier ».
+          const clos = 'clos' in e ? !!e.clos : !!e.fin;
+          if (e.fin) { inc(J, 'fins'); if (e.pages <= 1) inc(J, 'rebonds'); }
+          if (!clos) break;
           inc(J, `pages.${page}.sorties`);
-          inc(J, 'fins');
-          if (e.pages <= 1) inc(J, 'rebonds');
           const C = carte(cleCarte);
           for (let b = 0; b <= 100; b += 5) {
             if (e.scrollMax >= b) { inc(J, `pages.${page}.scroll.b${b}`); C.scroll[`b${b}`] = (C.scroll[`b${b}`] || 0) + 1; }
@@ -167,13 +200,16 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
         case 'mouv': {
           // Les points de souris se gardent en fraction de la page (x en
           // millièmes de la largeur, y en dix-millièmes de la hauteur du
-          // document du jour), pour se reposer sur la page vivante quelle
-          // que soit sa hauteur au moment de regarder la carte.
-          if (!(e.hd > 0)) break;
+          // document), pour se reposer sur la page vivante quelle que soit
+          // sa hauteur au moment de regarder la carte. Le traceur normalise
+          // y au moment de chaque point (nrm: 1); un lot ancien, en pixels,
+          // se divise par la hauteur envoyée avec lui.
+          if (!e.nrm && !(e.hd > 0)) break;
           const C = carte(cleCarte);
           const pts = e.pts as number[];
           for (let i = 0; i + 1 < pts.length && C.mouv.length < POINTS_MOUV_MAX * 2; i += 2) {
-            C.mouv.push(pts[i], Math.min(10000, Math.round((pts[i + 1] / e.hd) * 10000)));
+            const y = e.nrm ? pts[i + 1] : Math.round((pts[i + 1] / e.hd) * 10000);
+            C.mouv.push(pts[i], Math.max(0, Math.min(10000, y)));
           }
           break;
         }
@@ -216,6 +252,7 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
     try {
       const existant = (await ref.get()).data() || {};
       borner(J, existant);
+      alleger(J, existant);
       await ref.set({ site, jour }, { merge: true });
       const maj: DocumentData = {};
       for (const [chemin, n] of Object.entries(J.compteurs)) maj[chemin] = FieldValue.increment(n);
@@ -246,6 +283,8 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
         clics, mouv, mouvV: 2, scroll,
         vues: (d.vues || 0) + C.vues,
         nClics: (d.nClics || 0) + C.clics.length,
+        nRage: (d.nRage || 0) + C.clics.filter(p => p.r).length,
+        nMorts: (d.nMorts || 0) + C.clics.filter(p => p.m).length,
         maj: Timestamp.now(),
       });
       // La carte reste sous le mégaoctet de Firestore : les points les plus
@@ -263,7 +302,7 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
 
   for (let i = 0; i < docs.length; i += 450) {
     const b = db.batch();
-    for (const d of docs.slice(i, i + 450)) b.update(d.ref, { agrege: true });
+    for (const d of docs.slice(i, i + 450)) b.set(d.ref, { agrege: true, recu: d.get('recu') }, { merge: true });
     await b.commit();
   }
   return docs.length;

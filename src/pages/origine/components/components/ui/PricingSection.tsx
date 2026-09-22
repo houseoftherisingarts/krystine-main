@@ -277,7 +277,7 @@ export const PricingSection: React.FC = () => {
                   </div>
                   <button 
                     onClick={() => {
-                      if ((window as any).fbq) (window as any).fbq('track', 'InitiateCheckout');
+                      trackObjectif('Paiement commencé · Origine', 'gros', { paiement: true });
                       window.open('/liste-attente?programme=origine', '_blank');
                     }}
                     className="w-full py-4 md:py-5 px-4 md:px-8 font-serif text-base md:text-lg tracking-[0.1em] md:tracking-[0.15em] uppercase text-[#FDFBF7] bg-[#4A5D52] rounded-xl hover:-translate-y-1 hover:shadow-xl transition-all duration-300 relative overflow-hidden group"

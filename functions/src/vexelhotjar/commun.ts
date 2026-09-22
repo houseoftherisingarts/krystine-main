@@ -49,6 +49,7 @@ export const EVENEMENTS_MAX = 600;
 export const POINTS_CLICS_MAX = 1500;
 export const POINTS_MOUV_MAX = 3000;
 export const TAILLE_MAX_CARTE = 900_000;
+export const TAILLE_MAX_JOUR = 900_000;   // octets, journée existante plus incréments du tour
 // Une journée non plus : au-delà de ces plafonds, les nouvelles clés du jour
 // (une page jamais vue, une source de plus) se laissent tomber.
 export const PLAFONDS_JOURNEE: Record<string, number> = { pages: 100, entrees: 100, sources: 100, campagnes: 60, objectifs: 80, erreursListe: 40, formulaires: 60 };

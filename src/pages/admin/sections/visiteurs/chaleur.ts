@@ -1,11 +1,12 @@
 // ─── Le rendu des cartes de chaleur ─────────────────────────────────────────
 // Chaque point est d'abord ancré à son élément dans la page vivante (le
 // sélecteur enregistré au clic, puis la position relative dans l'élément) :
-// la carte reste juste quand un bloc se déplace ou change de hauteur. Sans
-// élément retrouvé, ou pour un élément fixé à l'écran (un menu, une bulle de
-// clavardage : sa place dans le cadre ne dit rien de l'endroit du clic), on
-// retombe sur la position dans la page, mise à l'échelle de la hauteur du
-// document du jour. La chaleur se peint en
+// la carte reste juste quand un bloc se déplace ou change de hauteur. Un
+// élément fixé à l'écran (le menu, une bulle de clavardage) reçoit ses clics
+// là où il se dessine dans l'aperçu, comme chez Hotjar : la lectrice cherche
+// les clics sur le menu, pas à la hauteur où la visiteuse avait défilé. Sans
+// élément retrouvé, on retombe sur la position dans la page, mise à
+// l'échelle de la hauteur du document du jour. La chaleur se peint en
 // niveaux de gris puis se colore avec une rampe chaude tirée de la palette
 // du site (or, cuivre, rouille, presque noir).
 
@@ -20,7 +21,7 @@ export function ancrer(doc: Document, largeur: number, hauteurDoc: number, point
     let r: DOMRect | null = null;
     try {
       const el = doc.querySelector(s);
-      if (el && !fixe(doc, el)) { const b = el.getBoundingClientRect(); if (b.width > 0 && b.height > 0) r = b; }
+      if (el) { const b = el.getBoundingClientRect(); if (b.width > 0 && b.height > 0) r = b; }
     } catch { /* sélecteur invalide */ }
     cache.set(s, r);
     return r;
@@ -32,18 +33,6 @@ export function ancrer(doc: Document, largeur: number, hauteurDoc: number, point
     const ratio = p.hd > 0 ? hauteurDoc / p.hd : 1;
     return { x: p.vx * largeur, y: p.dy * ratio, point: p };
   });
-}
-
-/** Vrai si l'élément, ou l'un de ses parents, est fixé à l'écran. */
-function fixe(doc: Document, el: Element): boolean {
-  const win = doc.defaultView;
-  if (!win) return false;
-  let e: Element | null = el;
-  for (let n = 0; e && n < 12; n += 1, e = e.parentElement) {
-    const pos = win.getComputedStyle(e).position;
-    if (pos === 'fixed' || pos === 'sticky') return true;
-  }
-  return false;
 }
 
 /** Les points de souris (x en millièmes de la largeur, y en dix-millièmes de la hauteur du document) posés sur le cadre. */

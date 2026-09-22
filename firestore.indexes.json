@@ -223,5 +223,56 @@
       ]
     }
   ],
-  "fieldOverrides": []
+  "fieldOverrides": [
+    {
+      "collectionGroup": "vh_cartes",
+      "fieldPath": "clics",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "vh_cartes",
+      "fieldPath": "mouv",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "vh_cartes",
+      "fieldPath": "scroll",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "vh_jours",
+      "fieldPath": "pages",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "vh_jours",
+      "fieldPath": "entrees",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "vh_jours",
+      "fieldPath": "sources",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "vh_jours",
+      "fieldPath": "campagnes",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "vh_jours",
+      "fieldPath": "objectifs",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "vh_jours",
+      "fieldPath": "formulaires",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "vh_jours",
+      "fieldPath": "erreursListe",
+      "indexes": []
+    }
+  ]
 }

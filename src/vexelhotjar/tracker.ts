@@ -59,7 +59,11 @@ let scrollMax = 0;
 let mouvements: number[] = [];
 let dernierMouv = 0;
 let clicsRecents: { x: number; y: number; t: number }[] = [];
-let mutationDepuis = 0;
+// Mutations du DOM récentes, par paires (horodatage, nombre), pour juger un
+// clic mort en comparant le remue-ménage d'avant le clic à celui d'après.
+let mutations: number[] = [];
+let cibleClic: Element | null = null;   // l'élément cliqué dont on guette la réponse
+let styleSurCible = 0;
 let formsCommences = new Map<string, string>();   // sélecteur du formulaire → dernier champ touché
 let formsSoumis = new Set<string>();
 
@@ -165,12 +169,17 @@ function envoyer() {
   livrer(corps);
 }
 
+// Le quota de 64 Kio de sendBeacon et de fetch keepalive est partagé par tous
+// les envois en attente de la page : ils ne servent qu'au moment où la page
+// se cache ou se ferme (le navigateur peut la tuer sans prévenir); les envois
+// de routine, toutes les huit secondes, passent par un fetch ordinaire.
 function livrer(corps: string | Blob) {
   const blob = corps instanceof Blob ? corps : new Blob([corps], { type: 'text/plain' });
+  const ferme = document.visibilityState === 'hidden' && blob.size < 60_000;
   try {
-    if (blob.size < 60_000 && navigator.sendBeacon && navigator.sendBeacon(config.endpoint, blob)) return;
+    if (ferme && navigator.sendBeacon && navigator.sendBeacon(config.endpoint, blob)) return;
   } catch { /* on passe par fetch */ }
-  fetch(config.endpoint, { method: 'POST', body: blob, keepalive: blob.size < 60_000, credentials: 'omit' }).catch(() => {});
+  fetch(config.endpoint, { method: 'POST', body: blob, keepalive: ferme, credentials: 'omit' }).catch(() => {});
 }
 
 // ─── Pages ──────────────────────────────────────────────────────────────────
@@ -186,6 +195,32 @@ function utmDe(): Record<string, string> | undefined {
 
 function hauteurDoc(): number {
   return Math.max(document.documentElement.scrollHeight, document.body?.scrollHeight || 0, 1);
+}
+
+function noterMutations(recs: MutationRecord[]) {
+  const now = Date.now();
+  let n = 0;
+  for (let i = 0; i < recs.length; i++) {
+    const r = recs[i];
+    if (r.type === 'attributes' && r.attributeName === 'style') {
+      // Une animation en style ne compte que sur l'élément cliqué lui-même
+      // (le bouton qui s'enfonce, le tiroir qui glisse) : ailleurs, c'est
+      // le décor qui bouge tout seul.
+      if (cibleClic && cibleClic.contains(r.target)) styleSurCible += 1;
+    } else n += 1;
+  }
+  if (n) mutations.push(now, n);
+  if (mutations.length > 400) {
+    let i = 0;
+    while (i < mutations.length && mutations[i] < now - MORT_DELAI_MS * 2) i += 2;
+    mutations = mutations.slice(i);
+  }
+}
+
+function mutationsEntre(a: number, b: number): number {
+  let n = 0;
+  for (let i = 0; i + 1 < mutations.length; i += 2) if (mutations[i] >= a && mutations[i] < b) n += mutations[i + 1];
+  return n;
 }
 
 function mesurerScroll() {
@@ -226,7 +261,8 @@ function fermerPage(fin: boolean) {
     }
     formsCommences.clear();
   }
-  pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin, vw: window.innerWidth });
+  // clos : la vue de page est finie (changement de page ou fermeture); fin : la visite quitte le site.
+  pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin, clos: 1, vw: window.innerWidth });
   debutPage = Date.now();
   envoyer();
   if (fin) pv = '';
@@ -239,6 +275,7 @@ function pauserPage() {
   if (!pv) return;
   mesurerScroll();
   viderMouvements();
+  // L'onglet passe à l'arrière-plan : la vue continue (pas de clos), seule la durée s'additionne.
   pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin: false, vw: window.innerWidth });
   debutPage = Date.now();
   envoyer();
@@ -276,16 +313,24 @@ function surClic(ev: MouseEvent) {
   if (!e.obj) { delete e.obj; delete e.niv; }
   if (!e.ia) delete e.ia;
 
-  // Clic mort : rien ne bouge dans la seconde et demie (ni le DOM, ni l'adresse, ni le
-  // défilement) après un clic sur autre chose qu'un champ de saisie.
+  // Clic mort : rien ne bouge dans la seconde et demie (ni l'adresse, ni le
+  // défilement, ni la page) après un clic sur autre chose qu'un champ de
+  // saisie. La page a répondu si le DOM a bougé plus qu'il ne bougeait déjà
+  // avant le clic (un panneau ouvert, une classe basculée, des nœuds ajoutés)
+  // ou si l'élément cliqué lui-même s'anime : le remue-ménage de fond
+  // (carrousel, décor animé) se retranche puisqu'il existait avant le clic.
   const champ = inter.matches('input,select,textarea,label');
   const pathAvant = location.href;
   const scrollAvant = window.scrollY;
-  const mutAvant = mutationDepuis;
   const pvAvant = pv;
   if (champ) { pousser(e); return; }
+  const avant = mutationsEntre(now - MORT_DELAI_MS, now);
+  cibleClic = inter;
+  styleSurCible = 0;
   window.setTimeout(() => {
-    const bouge = location.href !== pathAvant || Math.abs(window.scrollY - scrollAvant) > 4 || mutationDepuis !== mutAvant || pv !== pvAvant;
+    const apres = mutationsEntre(now, now + MORT_DELAI_MS + 100);
+    const bouge = location.href !== pathAvant || Math.abs(window.scrollY - scrollAvant) > 4 || pv !== pvAvant || apres > avant || styleSurCible > 0;
+    if (cibleClic === inter) cibleClic = null;
     e.m = !bouge;
     pousser(e);   // garde son horodatage et sa page; la file part à quarante événements comme pour le reste
   }, MORT_DELAI_MS);
@@ -296,13 +341,15 @@ function surMouvement(ev: MouseEvent) {
   const now = Date.now();
   if (now - dernierMouv < MOUV_PAS_MS || mouvements.length >= MOUV_MAX_PAR_PAGE * 2) return;
   dernierMouv = now;
-  mouvements.push(Math.round((ev.clientX / window.innerWidth) * 1000), Math.round(ev.clientY + window.scrollY));
+  // x en millièmes de la largeur, y en dix-millièmes de la hauteur du document
+  // mesurée au moment du point : la page peut grandir entre deux points.
+  mouvements.push(Math.round((ev.clientX / window.innerWidth) * 1000), Math.min(10000, Math.round(((ev.clientY + window.scrollY) / hauteurDoc()) * 10000)));
   if (mouvements.length >= 200) viderMouvements();
 }
 
 function viderMouvements() {
   if (!mouvements.length) return;
-  pousser({ t: 'mouv', vw: window.innerWidth, hd: hauteurDoc(), pts: mouvements });
+  pousser({ t: 'mouv', vw: window.innerWidth, nrm: 1, pts: mouvements });
   mouvements = [];
 }
 
@@ -390,14 +437,13 @@ export function demarrerVexelHotjar(c: ConfigVexelHotjar) {
   actif = true;
   ouvrirSession();
   brancherNavigation();
-  // Ce qui compte comme « la page a répondu » après un clic : un élément qui
-  // apparaît ou disparaît, un état qui bascule (classe, hidden, open, aria).
-  // Les animations (attribut style), les horloges et le texte qui se met à
-  // jour tout seul ne comptent pas, sinon aucun clic ne serait jamais mort.
-  observateur = new MutationObserver(() => { mutationDepuis += 1; });
+  // On note les mutations du DOM (nœuds ajoutés ou retirés, états qui
+  // basculent, style) pour juger les clics morts dans surClic; le texte qui
+  // se met à jour tout seul (horloges, compteurs) ne compte pas.
+  observateur = new MutationObserver(noterMutations);
   observateur.observe(document.documentElement, {
     childList: true, subtree: true, attributes: true,
-    attributeFilter: ['class', 'hidden', 'open', 'src', 'href', 'disabled', 'value', 'checked', 'aria-expanded', 'aria-hidden', 'aria-selected', 'aria-pressed', 'aria-checked', 'data-state'],
+    attributeFilter: ['class', 'hidden', 'open', 'src', 'href', 'disabled', 'value', 'checked', 'aria-expanded', 'aria-hidden', 'aria-selected', 'aria-pressed', 'aria-checked', 'data-state', 'style'],
   });
   document.addEventListener('click', surClic, true);
   document.addEventListener('mousemove', surMouvement, { passive: true });

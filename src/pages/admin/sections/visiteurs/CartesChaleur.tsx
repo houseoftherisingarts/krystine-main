@@ -130,8 +130,12 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
       peindreDefilement(c, carte.scroll, FOLDS[device] * k);
       setListe([]);
     } else {
-      const z = zones(doc, carte.clics);
-      peindreZones(c, k === 1 ? z : z.map(x => (x.rect ? { ...x, rect: { x: x.rect.x * k, y: x.rect.y * k, w: x.rect.w * k, h: x.rect.h * k } } : x)), carte.clics.length);
+      // Les points gardés sont un échantillon (les derniers de chaque jour) :
+      // les comptes par zone se ramènent au vrai total pour rester lisibles
+      // à côté du nombre de clics de l'en-tête.
+      const f = carte.clics.length && carte.nClics > carte.clics.length ? carte.nClics / carte.clics.length : 1;
+      const z = zones(doc, carte.clics).map(x => (f > 1 ? { ...x, n: Math.round(x.n * f), r: Math.round(x.r * f), m: Math.round(x.m * f) } : x));
+      peindreZones(c, k === 1 ? z : z.map(x => (x.rect ? { ...x, rect: { x: x.rect.x * k, y: x.rect.y * k, w: x.rect.w * k, h: x.rect.h * k } } : x)), Math.max(carte.nClics, carte.clics.length, 1));
       setListe(z);
     }
   }, [carte, mode, pret, hauteur, largeur, device]);
@@ -194,7 +198,7 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
         <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-[12px] text-[#38403a]/65 dark:text-white/55">
           <span><b className="font-semibold text-[#293027] dark:text-white">{nb(carte?.vues || 0)}</b> vues sur cet appareil</span>
           <span><b className="font-semibold text-[#293027] dark:text-white">{nb(carte?.nClics || 0)}</b> clics</span>
-          <span><b className="font-semibold text-[#BC4A3C]">{nb(carte?.clics.filter(p => p.r).length || 0)}</b> de rage</span>
+          <span><b className="font-semibold text-[#BC4A3C]">{nb(carte?.nRage || 0)}</b> de rage</span>
           <span><b className="font-semibold text-[#293027] dark:text-white">{nb(carte?.clics.filter(p => p.m).length || 0)}</b> dans le vide</span>
           {scrollTotal > 0 && <span><b className="font-semibold text-[#293027] dark:text-white">{pct(carte?.scroll.b50 || 0, scrollTotal)} %</b> passent la moitié de la page</span>}
           {chargement && <span className="text-[#8B4A2F]"><i className="fa-solid fa-circle-notch fa-spin mr-1" aria-hidden="true" />chargement</span>}
@@ -229,7 +233,7 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
           </Card>
           {mode === 'zones' && liste.length > 0 && (
             <Card className="p-5">
-              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#38403a]/55">Les plus cliqués</p>
+              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#38403a]/55">Les plus cliqués{carte && carte.nClics > carte.clics.length ? ` · estimés sur les ${nb(carte.clics.length)} derniers clics gardés` : ''}</p>
               <ol className="space-y-2 text-[13px]">
                 {liste.slice(0, 12).map((z, i) => (
                   <li key={`${i}-${z.s}`} className="flex items-baseline justify-between gap-2">
