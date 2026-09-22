@@ -152,12 +152,17 @@ function texteDe(el: Element): string {
 
 // ─── La file et l'envoi ─────────────────────────────────────────────────────
 
+// enFermeture : la page se ferme ou se cache; un lot qui déborde la file
+// pendant ces poussées (la sortie, les formulaires laissés, la souris) part
+// aussi par beacon, sinon la fermeture de l'onglet l'annulerait.
+let enFermeture = false;
+
 function pousser(e: Omit<Ev, 'ts' | 'path' | 'pv'> & Partial<Ev>) {
   if (!actif) return;
   file.push({ ts: Date.now(), path: pathCourant, pv, ...e } as Ev);
   toucherSession();
-  if (file.length >= 40) envoyer();
-  else if (minuterie === undefined) minuterie = window.setTimeout(envoyer, CADENCE_ENVOI_MS);
+  if (file.length >= 40) envoyer(enFermeture);
+  else if (minuterie === undefined) minuterie = window.setTimeout(() => envoyer(), CADENCE_ENVOI_MS);
 }
 
 // urgent : la page se ferme ou se cache, le lot part par beacon (voir livrer).
@@ -262,18 +267,23 @@ function ouvrirPage(premier: boolean) {
 
 function fermerPage(fin: boolean) {
   if (!pv) return;
-  mesurerScroll();
-  viderMouvements();
-  if (fin) {
-    for (const [s, champ] of formsCommences) {
-      if (!formsSoumis.has(s)) pousser({ t: 'form', s, etat: 'abandon', champ });
+  enFermeture = fin;
+  try {
+    mesurerScroll();
+    viderMouvements();
+    if (fin) {
+      for (const [s, champ] of formsCommences) {
+        if (!formsSoumis.has(s)) pousser({ t: 'form', s, etat: 'abandon', champ });
+      }
+      formsCommences.clear();
     }
-    formsCommences.clear();
+    // clos : la vue de page est finie (changement de page ou fermeture); fin : la visite quitte le site.
+    pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin, clos: 1, vw: window.innerWidth });
+    debutPage = Date.now();
+    envoyer(fin);
+  } finally {
+    enFermeture = false;
   }
-  // clos : la vue de page est finie (changement de page ou fermeture); fin : la visite quitte le site.
-  pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin, clos: 1, vw: window.innerWidth });
-  debutPage = Date.now();
-  envoyer(fin);
   if (fin) pv = '';
 }
 
@@ -282,12 +292,17 @@ function fermerPage(fin: boolean) {
 // retour sans compter une nouvelle visite de la page.
 function pauserPage() {
   if (!pv) return;
-  mesurerScroll();
-  viderMouvements();
-  // L'onglet passe à l'arrière-plan : la vue continue (pas de clos), seule la durée s'additionne.
-  pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin: false, vw: window.innerWidth });
-  debutPage = Date.now();
-  envoyer(true);
+  enFermeture = true;
+  try {
+    mesurerScroll();
+    viderMouvements();
+    // L'onglet passe à l'arrière-plan : la vue continue (pas de clos), seule la durée s'additionne.
+    pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin: false, vw: window.innerWidth });
+    debutPage = Date.now();
+    envoyer(true);
+  } finally {
+    enFermeture = false;
+  }
 }
 
 // ─── Clics, mouvements, erreurs, formulaires ────────────────────────────────
