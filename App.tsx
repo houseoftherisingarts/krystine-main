@@ -94,6 +94,8 @@ const CinqElementsPage = lazy(() => import('./src/pages/CinqElementsPage'));
 const PodcastV2 = lazy(() => import('./src/pages/concepts/PodcastV2'));
 const QuestionLive = lazy(() => import('./src/pages/podcast/QuestionLive'));
 const DirectPage = lazy(() => import('./src/pages/DirectPage'));
+// La salle de presse : les faits, les visuels 1920 × 1080 et le zip du kit.
+const PressePage = lazy(() => import('./src/pages/PressePage'));
 
 // On-palette loader (crème V2 + laiton). Le site est magazine crème :
 // un loader espresso flashait un écran brun entre deux pages claires.
