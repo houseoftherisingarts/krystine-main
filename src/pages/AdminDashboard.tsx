@@ -137,6 +137,7 @@ const AdminDashboard: React.FC = () => {
       case 'media':       return <MediaSection />;
       case 'assets':      return <AssetsSection />;
       case 'formations':  return <FormationsSection />;
+      case 'enPreparation': return <EnPreparationSection />;
       case 'settings':    return <SettingsSection user={u} />;
     }
   };
