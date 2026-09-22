@@ -116,7 +116,7 @@ const PostsPrefaitsSection: React.FC = () => {
                       <a
                         href={carte.fichiers.portrait}
                         download
-                        className="inline-flex items-center gap-2 rounded-full border border-[#9c7a44]/50 px-3.5 py-2 text-[12px] font-bold uppercase tracking-[0.06em] text-[#7d6330] hover:border-[#9c7a44]"
+                        className="inline-flex items-center gap-2 rounded-full border border-[#9c7a44]/50 px-3.5 py-2 text-[13px] font-bold uppercase tracking-[0.06em] text-[#7d6330] hover:border-[#9c7a44]"
                       >
                         <i className="fa-solid fa-arrow-down-to-line" /> Portrait
                       </a>
