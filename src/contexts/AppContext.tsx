@@ -3,6 +3,7 @@ import app from '../firebase';
 import React, { createContext, useContext, useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { getAuth, type User } from 'firebase/auth';
 import { subscribeToAuthState, isAdminUser, handleRedirectResult } from '../firebase/auth';
+import { exclureMoi, exclusionDecidee } from '../vexelhotjar/tracker';
 import {
   subscribeToMember, updateMember, type MemberDoc,
   subscribeToBoutiqueSettings, DEFAULT_BOUTIQUE_SETTINGS, type BoutiqueSettings,
@@ -201,7 +202,12 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     handleRedirectResult().catch(() => { /* logged in helper */ });
     const unsub = subscribeToAuthState(u => {
       setUser(u);
-      setIsAdmin(isAdminUser(u));
+      const admin = isAdminUser(u);
+      setIsAdmin(admin);
+      // Le navigateur d'une administratrice (Krystine, Alex) sort de la mesure
+      // des visites, du Pixel et de GA4, et y reste après la déconnexion; le
+      // réglage « ce navigateur » de Visiteurs et clics permet de revenir dessus.
+      if (admin && !exclusionDecidee()) exclureMoi(true);
     });
     return unsub;
   }, []);

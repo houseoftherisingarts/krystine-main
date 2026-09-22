@@ -232,6 +232,30 @@ export async function enregistrerReglages(r: Partial<ReglagesVexelHotjar>): Prom
   await setDoc(doc(db, 'settings', 'vexelhotjar'), r, { merge: true });
 }
 
+// ─── Hors compte : les adresses IP de Krystine et d'Alex ───────────────────
+// Dans vh_prive/exclusions, lisible par l'admin seul (settings/ est public).
+// Le collecteur relit la liste toutes les cinq minutes.
+
+export interface AdresseExclue { ip: string; note: string; ajoutee: number }
+
+export async function chargerExclusions(): Promise<AdresseExclue[]> {
+  if (!db) return [];
+  const snap = await getDoc(doc(db, 'vh_prive', 'exclusions'));
+  const liste = (snap.data()?.ips || []) as Partial<AdresseExclue>[];
+  return liste.filter(e => typeof e.ip === 'string' && e.ip).map(e => ({ ip: String(e.ip), note: String(e.note || ''), ajoutee: Number(e.ajoutee) || 0 }));
+}
+
+export async function enregistrerExclusions(ips: AdresseExclue[]): Promise<void> {
+  if (!db) return;
+  await setDoc(doc(db, 'vh_prive', 'exclusions'), { ips: ips.slice(0, 40) }, { merge: true });
+}
+
+/** L'adresse d'où l'admin regarde le tableau, vue par le collecteur. */
+export async function monAdresse(): Promise<string> {
+  const res = await fn('vhMonAdresse')({});
+  return String((res.data as { ip?: string })?.ip || '');
+}
+
 export async function rafraichirMaintenant(): Promise<number> {
   const res = await fn('vhAgregerMaintenant')({});
   return ((res.data as { lots?: number }) || {}).lots || 0;

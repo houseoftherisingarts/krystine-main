@@ -15,6 +15,7 @@ import { createHash } from 'crypto';
 //                        journées (vh_jours) et les cartes (vh_cartes)
 //   vhAgregerMaintenant  le bouton « Rafraîchir » de l'admin, même travail
 //   vhEffacerSession     l'admin retire une session et son enregistrement
+//   vhMonAdresse         l'adresse IP de l'admin qui appelle, pour l'exclure
 //   vhPurger             chaque nuit, jette ce qui a dépassé sa durée de vie
 //
 // Collections : vh_lots (brut, quelques jours), vh_sessions (une fiche par
@@ -32,6 +33,10 @@ export const ORIGINES_DEV = ['http://localhost:5173', 'http://localhost:5199', '
 // site lui-même, ses alias Firebase, et les origines de développement. Un envoi
 // scripté peut imiter l'en-tête, la vraie borne reste les tailles et la cadence.
 export const HOTES_PERMIS = ['krystinestlaurent.ca', 'krystinestlaurent-87566.web.app', 'krystinestlaurent-87566.firebaseapp.com', 'localhost', '127.0.0.1'];
+// Les adresses IP de Krystine et d'Alex, à ne jamais compter : dans un document
+// que seul l'admin lit (vh_prive/exclusions), jamais dans settings/ qui est public.
+export const DOC_EXCLUSIONS = ['vh_prive', 'exclusions'] as const;
+export const IPS_EXCLUES_MAX = 40;
 export const TAILLE_MAX_LOT = 1_000_000;         // un lot d'événements ne dépasse jamais 1 Mo
 export const TAILLE_MAX_REPLAY = 6_000_000;      // un morceau d'enregistrement, gzippé ou non
 export const EVENEMENTS_MAX = 600;
@@ -95,3 +100,9 @@ export function hoteDe(url: string): string {
 // Une cadence par adresse (hachée avec un sel du jour, jamais gardée) :
 // 240 requêtes par minute et par instance, largement au-dessus d'une vraie
 // visite, assez bas pour qu'un script qui boucle ne remplisse pas la base.
+
+/** L'adresse du navigateur telle que l'hébergement la transmet (le premier maillon de x-forwarded-for). */
+export function adresseDe(req: { get?: (h: string) => string | undefined; headers?: Record<string, unknown>; ip?: string }): string {
+  const brut = (req.get ? req.get('x-forwarded-for') : String(req.headers?.['x-forwarded-for'] || '')) || req.ip || '';
+  return String(brut).split(',')[0].trim();
+}

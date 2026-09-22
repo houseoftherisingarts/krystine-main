@@ -32,6 +32,7 @@ const CLE_SID_T = 'vh.sid.t';
 const CLE_VID = 'vh.vid';
 const CLE_REPLAY = 'vh.replay';
 const CLE_PARCOURS = 'vh.parcours';
+const CLE_MOI = 'vh.moi';   // '1' : ce navigateur ne se compte pas (Krystine, Alex); '0' : il se compte malgré tout
 const INACTIVITE_MS = 30 * 60_000;
 const CADENCE_ENVOI_MS = 8_000;
 const RAGE_FENETRE_MS = 1000;
@@ -382,7 +383,7 @@ async function compresser(texte: string): Promise<Blob> {
 let observateur: MutationObserver | null = null;
 
 export function demarrerVexelHotjar(c: ConfigVexelHotjar) {
-  if (actif || typeof window === 'undefined') return;
+  if (actif || typeof window === 'undefined' || mesureExclue()) return;
   if (new URLSearchParams(location.search).get('vh') === 'apercu') return;   // l'aperçu de l'admin ne se compte pas
   config = { endpoint: '/api/vh', exclure: ['/admin'], echantillonReplay: 0, ...c };
   actif = true;
@@ -410,6 +411,27 @@ export function arreterVexelHotjar() {
   observateur?.disconnect();
   arreterReplay?.();
   arreterReplay = null;
+}
+
+// ─── Se tenir hors compte ───────────────────────────────────────────────────
+// Les navigateurs de Krystine et d'Alex ne comptent pas : dès qu'une
+// administratrice se connecte, le drapeau se pose dans localStorage et reste
+// après la déconnexion, pour ce navigateur. La bannière de consentement et la
+// façade de suivi (src/lib/track.ts) le lisent aussi, pour le Pixel et GA4.
+
+const moi = (): string => (typeof localStorage === 'undefined' ? '' : lire(localStorage, CLE_MOI));
+
+/** Vrai quand ce navigateur a demandé à ne pas être compté. */
+export function mesureExclue(): boolean { return moi() === '1'; }
+
+/** Vrai quand ce navigateur a déjà choisi, dans un sens ou dans l'autre. */
+export function exclusionDecidee(): boolean { return moi() !== ''; }
+
+/** Compter ou non ce navigateur; ne pas compter arrête la mesure sur-le-champ. */
+export function exclureMoi(oui: boolean) {
+  if (typeof localStorage === 'undefined') return;
+  ecrire(localStorage, CLE_MOI, oui ? '1' : '0');
+  if (oui) arreterVexelHotjar();
 }
 
 /** Un objectif atteint hors clic (un achat confirmé, une inscription) : `window.vexelhotjar.objectif('achat', 'gros')`. */

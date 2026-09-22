@@ -1,22 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Label, PrimaryButton, ToggleSwitch, Textarea } from '../../primitives';
-import { chargerReglages, enregistrerReglages } from './donnees';
+import { Card, GhostButton, Input, Label, PrimaryButton, ToggleSwitch, Textarea } from '../../primitives';
+import { chargerReglages, enregistrerReglages, chargerExclusions, enregistrerExclusions, monAdresse, type AdresseExclue } from './donnees';
 import { REGLAGES_DEFAUT, type ReglagesVexelHotjar } from '../../../../vexelhotjar';
+import { exclureMoi, mesureExclue } from '../../../../vexelhotjar/tracker';
 
 // ─── Réglages ───────────────────────────────────────────────────────────────
 // La mesure s'allume et s'éteint ici, la part des visites filmées se choisit
 // au curseur, et les adresses à ignorer se tapent une par ligne. Le site lit
 // ces réglages à chaque chargement, donc un changement prend effet pour les
-// prochaines visites, sans rien redéployer.
+// prochaines visites, sans rien redéployer. La carte « Hors compte » tient
+// Krystine et Alex à l'écart des chiffres : par navigateur (drapeau posé à la
+// connexion à l'admin) et par adresse IP (vh_prive/exclusions, que le
+// collecteur relit toutes les cinq minutes).
 
 const Reglages: React.FC = () => {
   const [r, setR] = useState<ReglagesVexelHotjar | null>(null);
   const [exclure, setExclure] = useState('');
   const [etat, setEtat] = useState<'repos' | 'sauve' | 'fait'>('repos');
+  const [moiExclu, setMoiExclu] = useState(() => mesureExclue());
+  const [ips, setIps] = useState<AdresseExclue[]>([]);
+  const [ipActuelle, setIpActuelle] = useState('');
+  const [noteIp, setNoteIp] = useState('');
 
   useEffect(() => {
     chargerReglages().then(x => { setR(x); setExclure((x.exclure || []).join('\n')); }).catch(() => setR(REGLAGES_DEFAUT));
+    chargerExclusions().then(setIps).catch(() => {});
+    monAdresse().then(setIpActuelle).catch(() => {});
   }, []);
+
+  const basculerMoi = (exclu: boolean) => { exclureMoi(exclu); setMoiExclu(exclu); };
+  const poserIps = async (liste: AdresseExclue[]) => { setIps(liste); await enregistrerExclusions(liste).catch(() => {}); };
+  const dejaExclue = !!ipActuelle && ips.some(e => e.ip === ipActuelle);
+  const exclureActuelle = () => poserIps([...ips, { ip: ipActuelle, note: noteIp.trim(), ajoutee: Date.now() }]).then(() => setNoteIp(''));
 
   const enregistrer = async () => {
     if (!r) return;
@@ -65,6 +80,40 @@ const Reglages: React.FC = () => {
           <Textarea rows={4} value={exclure} onChange={e => setExclure(e.target.value)} placeholder={'/admin\n/compte'} />
         </Card>
 
+        <Card className="p-6">
+          <h3 className="font-serif text-lg text-[#293027] dark:text-white">Hors compte : vous et Alex</h3>
+          <p className="mt-1 max-w-xl text-sm text-[#38403a]/70 dark:text-white/60">
+            Vos propres visites fausseraient les chiffres. Le navigateur où vous ouvrez l'administration sort de la mesure dès la première connexion, et il en reste sorti même déconnectée; l'adresse IP de la maison ou du bureau couvre en plus le téléphone et la tablette qui passent par le même réseau.
+          </p>
+          <div className="mt-5 flex items-start justify-between gap-6 border-t border-[#38403a]/10 pt-5">
+            <div>
+              <p className="text-sm text-[#293027] dark:text-white">Ce navigateur</p>
+              <p className="text-[12px] text-[#38403a]/55 dark:text-white/45">{moiExclu ? 'Pas compté, ni par la mesure, ni par le Pixel, ni par Google.' : 'Compté comme une visiteuse ordinaire.'}</p>
+            </div>
+            <ToggleSwitch checked={moiExclu} onChange={basculerMoi} label={moiExclu ? 'Pas compté' : 'Compté'} />
+          </div>
+          <div className="mt-5 border-t border-[#38403a]/10 pt-5">
+            <p className="text-sm text-[#293027] dark:text-white">Adresses IP jamais comptées</p>
+            {ips.length ? (
+              <ul className="mt-2 divide-y divide-[#38403a]/10">
+                {ips.map(e => (
+                  <li key={e.ip} className="flex items-center justify-between gap-3 py-2">
+                    <span className="min-w-0 truncate text-[13px] text-[#293027] dark:text-white"><span className="font-mono">{e.ip}</span>{e.note ? <span className="text-[#38403a]/60 dark:text-white/50"> · {e.note}</span> : null}</span>
+                    <GhostButton type="button" className="shrink-0 !px-3 !py-1.5 !text-[10px]" onClick={() => poserIps(ips.filter(x => x.ip !== e.ip))} aria-label={`Retirer ${e.ip}`}>Retirer</GhostButton>
+                  </li>
+                ))}
+              </ul>
+            ) : <p className="mt-1 text-[12px] text-[#38403a]/55 dark:text-white/45">Aucune adresse pour l'instant.</p>}
+            <div className="mt-4 flex flex-wrap items-end gap-3">
+              <div className="min-w-0 grow">
+                <Label>Votre adresse en ce moment{ipActuelle ? ` : ${ipActuelle}` : ''}</Label>
+                <Input value={noteIp} onChange={e => setNoteIp(e.target.value)} placeholder="Une note, par exemple : la maison" disabled={!ipActuelle || dejaExclue} />
+              </div>
+              <PrimaryButton type="button" onClick={exclureActuelle} disabled={!ipActuelle || dejaExclue}>{dejaExclue ? 'Déjà hors compte' : 'Exclure cette adresse'}</PrimaryButton>
+            </div>
+          </div>
+        </Card>
+
         <div className="flex items-center gap-3">
           <PrimaryButton type="button" onClick={enregistrer} disabled={etat === 'sauve'}>{etat === 'sauve' ? 'Enregistrement…' : 'Enregistrer les réglages'}</PrimaryButton>
           {etat === 'fait' && <span className="text-sm text-[#2D4A3E]"><i className="fa-solid fa-check mr-1.5" aria-hidden="true" />Enregistré, en vigueur pour les prochaines visites.</span>}
@@ -77,7 +126,7 @@ const Reglages: React.FC = () => {
           <ul className="space-y-2 text-[13px] leading-relaxed text-[#38403a]/75 dark:text-white/65">
             <li>Les chiffres par jour et les cartes de chaleur se gardent un peu plus d'un an.</li>
             <li>Les visites et leurs films s'effacent d'eux-mêmes après quatre-vingt-dix jours, ou plus tôt d'un clic sur la corbeille.</li>
-            <li>Aucune adresse IP n'est conservée et aucun nom n'est rattaché à une visite; l'identifiant de visiteuse est un nombre tiré au hasard dans son navigateur.</li>
+            <li>Aucune adresse IP de visiteuse n'est conservée et aucun nom n'est rattaché à une visite; l'identifiant de visiteuse est un nombre tiré au hasard dans son navigateur. Les seules adresses gardées sont les vôtres, posées ici pour être ignorées.</li>
           </ul>
         </Card>
         <Card className="p-5">

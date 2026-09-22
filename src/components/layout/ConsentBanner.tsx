@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
 import { enableAnalytics } from '../../firebase';
 import { activerVexelHotjar } from '../../vexelhotjar';
+import { mesureExclue } from '../../vexelhotjar/tracker';
 
 const STORAGE_KEY = 'inspirata.consent.v1';
 type ConsentValue = 'accepted' | 'rejected';
@@ -43,7 +44,8 @@ const ConsentBanner: React.FC = () => {
   const [choice, setChoice] = useState<ConsentValue | null>(() => getConsent());
 
   useEffect(() => {
-    if (choice === 'accepted') {
+    // Un navigateur d'administratrice (drapeau vh.moi) ne charge rien, même consenti.
+    if (choice === 'accepted' && !mesureExclue()) {
       loadMetaPixel();
       enableAnalytics();
       activerVexelHotjar();

@@ -5,7 +5,7 @@ import { getStorage } from 'firebase-admin/storage';
 import { ADMIN_EMAILS } from '../newsletter/send';
 import {
   POINTS_CLICS_MAX, POINTS_MOUV_MAX, RETENTION_LOTS_JOURS, RETENTION_SESSIONS_JOURS, RETENTION_JOURS_JOURS,
-  texte, hash, clePage, jourDe, heureDe, deviceDe, hoteDe, TAGS_INTERACTIFS, type Device,
+  texte, hash, clePage, jourDe, heureDe, deviceDe, hoteDe, adresseDe, TAGS_INTERACTIFS, type Device,
 } from './commun';
 
 type Compteurs = Record<string, number>;
@@ -219,6 +219,16 @@ export const vhAgregerMaintenant = onCall(
       if (n < 400) break;
     }
     return { lots: total };
+  },
+);
+
+// L'adresse d'où l'admin appelle, telle que vhCollecter la verrait : le bouton
+// « Exclure cette adresse » des réglages la pose dans vh_prive/exclusions.
+export const vhMonAdresse = onCall(
+  { region: 'us-central1', cors: true },
+  async (req) => {
+    exigerAdmin(req);
+    return { ip: adresseDe(req.rawRequest) };
   },
 );
 

@@ -10,12 +10,13 @@
 
 import { pixel } from './metaPixel';
 import { logLead, logObjectif, logPageView } from '../firebase';
-import { objectif, type NiveauObjectif } from '../vexelhotjar/tracker';
+import { mesureExclue, objectif, type NiveauObjectif } from '../vexelhotjar/tracker';
 
 /** Fire on every successful opt-in (newsletter, waitlist, quiz capture).
  *  `source` mirrors the internal source tag already used in each handler.
  *  Un opt-in est aussi un petit succès dans Visiteurs et clics. */
 export function trackLead(source: string): void {
+  if (mesureExclue()) return;
   pixel.lead({ content_name: source });
   logLead(source);
   objectif(`Inscription · ${source}`, 'petit');
@@ -26,6 +27,7 @@ export function trackLead(source: string): void {
  *  tableau Visiteurs et clics, au Pixel (audiences de reciblage : ObjectifGros
  *  et ObjectifPetit, plus InitiateCheckout quand un paiement commence) et à GA4. */
 export function trackObjectif(nom: string, niveau: NiveauObjectif, options?: { paiement?: boolean }): void {
+  if (mesureExclue()) return;
   objectif(nom, niveau);
   pixel.objectif(nom, niveau);
   if (options?.paiement) pixel.initiateCheckout({ content_name: nom });
@@ -34,11 +36,13 @@ export function trackObjectif(nom: string, niveau: NiveauObjectif, options?: { p
 
 /** Fire on each SPA route change (mounted via RouteTracker). */
 export function trackPageView(path: string, title?: string): void {
+  if (mesureExclue()) return;
   pixel.pageView();
   logPageView(path, title);
 }
 
 /** Fire when a visitor lands on a high-intent page (quiz, formations, guide). */
 export function trackKeyPageView(name: string): void {
+  if (mesureExclue()) return;
   pixel.viewContent({ content_name: name });
 }

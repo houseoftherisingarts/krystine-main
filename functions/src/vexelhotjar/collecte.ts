@@ -3,8 +3,8 @@ import { getFirestore, FieldValue, Timestamp, type DocumentData } from 'firebase
 import { getStorage } from 'firebase-admin/storage';
 import { gunzipSync, gzipSync } from 'zlib';
 import {
-  SITES_PERMIS, ORIGINES_DEV, HOTES_PERMIS, TAILLE_MAX_LOT, TAILLE_MAX_REPLAY, EVENEMENTS_MAX,
-  texte, cheminSur, nombre, hash, jourDe, deviceDe, hoteDe,
+  SITES_PERMIS, ORIGINES_DEV, HOTES_PERMIS, TAILLE_MAX_LOT, TAILLE_MAX_REPLAY, EVENEMENTS_MAX, DOC_EXCLUSIONS,
+  texte, cheminSur, nombre, hash, jourDe, deviceDe, hoteDe, adresseDe,
 } from './commun';
 
 // ─── La collecte : lots d'événements et morceaux d'enregistrement ───────────
@@ -47,6 +47,26 @@ function corpsDe(req: { rawBody?: Buffer; body?: unknown }): unknown {
   return JSON.parse(buf.toString('utf8'));
 }
 
+// Les adresses de Krystine et d'Alex (vh_prive/exclusions, posées dans les
+// réglages de l'admin) : lues au plus une fois par cinq minutes par instance,
+// et un lot qui en vient reçoit un 204 sans rien écrire.
+const EXCLUSIONS_TTL_MS = 5 * 60_000;
+let exclusions: { ips: Set<string>; t: number } = { ips: new Set(), t: 0 };
+async function adresseExclue(db: FirebaseFirestore.Firestore, ip: string): Promise<boolean> {
+  if (!ip) return false;
+  if (Date.now() - exclusions.t > EXCLUSIONS_TTL_MS) {
+    try {
+      const snap = await db.collection(DOC_EXCLUSIONS[0]).doc(DOC_EXCLUSIONS[1]).get();
+      const liste = (snap.data()?.ips || []) as { ip?: unknown }[];
+      exclusions = { ips: new Set(liste.map(e => String(e?.ip || '').trim()).filter(Boolean)), t: Date.now() };
+    } catch (e) {
+      console.error('[vexelhotjar] exclusions illisibles', (e as Error).message);
+      exclusions = { ips: exclusions.ips, t: Date.now() };
+    }
+  }
+  return exclusions.ips.has(ip);
+}
+
 // ─── vhCollecter : la porte d'entrée du script ──────────────────────────────
 
 
@@ -63,7 +83,7 @@ export const vhCollecter = onRequest(
     if (req.method !== 'POST') { res.status(405).send(''); return; }
     if (!hotePermis(req)) { res.status(403).send(''); return; }
 
-    const ip = (req.get('x-forwarded-for') || req.ip || '').split(',')[0].trim();
+    const ip = adresseDe(req);
     if (tropVite(ip)) { res.status(429).send(''); return; }
 
     let d: any;
@@ -75,6 +95,7 @@ export const vhCollecter = onRequest(
     if (!SITES_PERMIS.includes(site) || !/^[a-z0-9-]{8,64}$/.test(sid)) { res.status(400).send(''); return; }
 
     const db = getFirestore();
+    if (await adresseExclue(db, ip)) { res.status(204).send(''); return; }
     const pays = texte(req.get('x-country-code') || req.get('cf-ipcountry') || '', 2).toUpperCase() || undefined;
     const recu = Date.now();
 

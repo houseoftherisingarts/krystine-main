@@ -39,4 +39,4 @@ export { notifierBillet, annoncerChangement } from './notifs';
 export { interactionMessageDirect, interactionBillet, interactionCommentaire, interactionVoteBillet, interactionVoteCommentaire, interactionPoints } from './interactions';
 export { purgerHabitudesInactives } from './habitudes';
 export { mesDemandes } from './mesDemandes';
-export { vhCollecter, vhAgreger, vhAgregerMaintenant, vhEffacerSession, vhPurger } from './vexelhotjar';
+export { vhCollecter, vhAgreger, vhAgregerMaintenant, vhEffacerSession, vhMonAdresse, vhPurger } from './vexelhotjar';
