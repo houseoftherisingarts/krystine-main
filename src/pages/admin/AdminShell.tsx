@@ -96,6 +96,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   dosha:      'quiz-dosha',
   media:      'mediatheque',
   formations: 'formations',
+  enPreparation: 'en-preparation',
   assets:     'assets',
   settings:   'parametres',
 };
