@@ -67,6 +67,7 @@ import NewsletterSection from './admin/sections/NewsletterSection';
 import GuideSection from './admin/sections/GuideSection';
 import DoshaSection from './admin/sections/DoshaSection';
 import MediaSection from './admin/sections/MediaSection';
+import EnPreparationSection from './admin/sections/EnPreparationSection';
 import SettingsSection from './admin/sections/SettingsSection';
 
 const AdminDashboard: React.FC = () => {
