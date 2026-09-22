@@ -537,5 +537,44 @@
       "src/pages/admin/sections/visiteurs/graphiques.tsx",
       "src/vexelhotjar/tracker.ts"
     ]
+  },
+  {
+    "quand": "2026-09-22T01:16:17.160Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "bafb07f",
+    "message": "Objectifs à deux niveaux : gros (transactions, paiement commencé et achat confirmé) et petits succès (engagement), branchés au Pixel et à GA4; collecte bornée à l'origine du site et au corps décompressé",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/cadeaux.ts",
+      "functions/src/paiements.ts",
+      "functions/src/vexelhotjar/agregation.ts",
+      "functions/src/vexelhotjar/collecte.ts",
+      "functions/src/vexelhotjar/commun.ts",
+      "public/assets-manifest.json",
+      "public/communaute/index.html",
+      "public/liste-attente-origine/index.html",
+      "public/speaking/index.html",
+      "public/vh/vexelhotjar.js",
+      "src/components/client/CadeauCarte.tsx",
+      "src/components/evenements/BilletCarte.tsx",
+      "src/components/layout/CartDrawer.tsx",
+      "src/firebase.ts",
+      "src/firebase/direct.ts",
+      "src/firebase/firestore.ts",
+      "src/firebase/formations.ts",
+      "src/firebase/points.ts",
+      "src/lib/metaPixel.ts",
+      "src/lib/track.ts",
+      "src/pages/ClientPortal.tsx",
+      "src/pages/DirectPage.tsx",
+      "src/pages/admin/sections/visiteurs/Reglages.tsx",
+      "src/pages/admin/sections/visiteurs/VueEnsemble.tsx",
+      "src/pages/admin/sections/visiteurs/donnees.ts",
+      "src/vexelhotjar/tracker.ts"
+    ]
   }
 ]
