@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-22T17:51:49.193Z",
+  "generatedAt": "2026-09-22T19:02:07.890Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1358,6 +1358,1098 @@
       "folder": "podcast",
       "kind": "image",
       "size": 66860
+    },
+    {
+      "path": "/presse/boutique-en-texte-qr.png",
+      "name": "boutique-en-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 273659
+    },
+    {
+      "path": "/presse/boutique-en-texte.png",
+      "name": "boutique-en-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 274192
+    },
+    {
+      "path": "/presse/boutique-fr-texte-qr.png",
+      "name": "boutique-fr-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 278559
+    },
+    {
+      "path": "/presse/boutique-fr-texte.png",
+      "name": "boutique-fr-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 278180
+    },
+    {
+      "path": "/presse/boutique-nu-qr.jpg",
+      "name": "boutique-nu-qr.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 221588
+    },
+    {
+      "path": "/presse/boutique-nu.jpg",
+      "name": "boutique-nu.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 213207
+    },
+    {
+      "path": "/presse/conferenciere-en-texte-qr.png",
+      "name": "conferenciere-en-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 290460
+    },
+    {
+      "path": "/presse/conferenciere-en-texte.png",
+      "name": "conferenciere-en-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 287300
+    },
+    {
+      "path": "/presse/conferenciere-fr-texte-qr.png",
+      "name": "conferenciere-fr-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 292956
+    },
+    {
+      "path": "/presse/conferenciere-fr-texte.png",
+      "name": "conferenciere-fr-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 291937
+    },
+    {
+      "path": "/presse/conferenciere-nu-qr.jpg",
+      "name": "conferenciere-nu-qr.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 161688
+    },
+    {
+      "path": "/presse/conferenciere-nu.jpg",
+      "name": "conferenciere-nu.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 137186
+    },
+    {
+      "path": "/presse/contact-en-texte-qr.png",
+      "name": "contact-en-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 470343
+    },
+    {
+      "path": "/presse/contact-en-texte.png",
+      "name": "contact-en-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 468665
+    },
+    {
+      "path": "/presse/contact-fr-texte-qr.png",
+      "name": "contact-fr-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 473343
+    },
+    {
+      "path": "/presse/contact-fr-texte.png",
+      "name": "contact-fr-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 472140
+    },
+    {
+      "path": "/presse/contact-nu-qr.jpg",
+      "name": "contact-nu-qr.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 623502
+    },
+    {
+      "path": "/presse/contact-nu.jpg",
+      "name": "contact-nu.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 608354
+    },
+    {
+      "path": "/presse/livres-en-texte-qr.png",
+      "name": "livres-en-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 360962
+    },
+    {
+      "path": "/presse/livres-en-texte.png",
+      "name": "livres-en-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 362178
+    },
+    {
+      "path": "/presse/livres-fr-texte-qr.png",
+      "name": "livres-fr-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 358169
+    },
+    {
+      "path": "/presse/livres-fr-texte.png",
+      "name": "livres-fr-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 360348
+    },
+    {
+      "path": "/presse/livres-nu-qr.jpg",
+      "name": "livres-nu-qr.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 232132
+    },
+    {
+      "path": "/presse/livres-nu.jpg",
+      "name": "livres-nu.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 202057
+    },
+    {
+      "path": "/presse/medias-en-texte-qr.png",
+      "name": "medias-en-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 358788
+    },
+    {
+      "path": "/presse/medias-en-texte.png",
+      "name": "medias-en-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 357344
+    },
+    {
+      "path": "/presse/medias-fr-texte-qr.png",
+      "name": "medias-fr-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 361331
+    },
+    {
+      "path": "/presse/medias-fr-texte.png",
+      "name": "medias-fr-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 359628
+    },
+    {
+      "path": "/presse/medias-nu-qr.jpg",
+      "name": "medias-nu-qr.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 439009
+    },
+    {
+      "path": "/presse/medias-nu.jpg",
+      "name": "medias-nu.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 411922
+    },
+    {
+      "path": "/presse/origine-en-texte-qr.png",
+      "name": "origine-en-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 530402
+    },
+    {
+      "path": "/presse/origine-en-texte.png",
+      "name": "origine-en-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 529206
+    },
+    {
+      "path": "/presse/origine-fr-texte-qr.png",
+      "name": "origine-fr-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 530256
+    },
+    {
+      "path": "/presse/origine-fr-texte.png",
+      "name": "origine-fr-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 529038
+    },
+    {
+      "path": "/presse/photo-krystine-kimono.jpg",
+      "name": "photo-krystine-kimono.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 216072
+    },
+    {
+      "path": "/presse/photo-krystine-sourire.jpg",
+      "name": "photo-krystine-sourire.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 230061
+    },
+    {
+      "path": "/presse/photo-krystine-table.jpg",
+      "name": "photo-krystine-table.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 169049
+    },
+    {
+      "path": "/presse/photo-krystine-tapis.jpg",
+      "name": "photo-krystine-tapis.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 95292
+    },
+    {
+      "path": "/presse/photo-les-livres.jpg",
+      "name": "photo-les-livres.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 186944
+    },
+    {
+      "path": "/presse/photo-sante-la-vie.jpg",
+      "name": "photo-sante-la-vie.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 255969
+    },
+    {
+      "path": "/presse/podcast-en-texte-qr.png",
+      "name": "podcast-en-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 380597
+    },
+    {
+      "path": "/presse/podcast-en-texte.png",
+      "name": "podcast-en-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 378892
+    },
+    {
+      "path": "/presse/podcast-fr-texte-qr.png",
+      "name": "podcast-fr-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 386398
+    },
+    {
+      "path": "/presse/podcast-fr-texte.png",
+      "name": "podcast-fr-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 383375
+    },
+    {
+      "path": "/presse/podcast-nu-qr.jpg",
+      "name": "podcast-nu-qr.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 197202
+    },
+    {
+      "path": "/presse/podcast-nu.jpg",
+      "name": "podcast-nu.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 184296
+    },
+    {
+      "path": "/presse/portrait-en-texte-qr.png",
+      "name": "portrait-en-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 328077
+    },
+    {
+      "path": "/presse/portrait-en-texte.png",
+      "name": "portrait-en-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 325433
+    },
+    {
+      "path": "/presse/portrait-fr-texte-qr.png",
+      "name": "portrait-fr-texte-qr.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 328353
+    },
+    {
+      "path": "/presse/portrait-fr-texte.png",
+      "name": "portrait-fr-texte.png",
+      "folder": "presse",
+      "kind": "image",
+      "size": 328900
+    },
+    {
+      "path": "/presse/portrait-nu-qr.jpg",
+      "name": "portrait-nu-qr.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 223758
+    },
+    {
+      "path": "/presse/portrait-nu.jpg",
+      "name": "portrait-nu.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 201497
+    },
+    {
+      "path": "/presse/site-accueil.jpg",
+      "name": "site-accueil.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 200696
+    },
+    {
+      "path": "/presse/site-boutique.jpg",
+      "name": "site-boutique.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 166243
+    },
+    {
+      "path": "/presse/site-conferenciere.jpg",
+      "name": "site-conferenciere.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 69613
+    },
+    {
+      "path": "/presse/site-formations.jpg",
+      "name": "site-formations.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 123149
+    },
+    {
+      "path": "/presse/site-krystine.jpg",
+      "name": "site-krystine.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 118054
+    },
+    {
+      "path": "/presse/site-medias.jpg",
+      "name": "site-medias.jpg",
+      "folder": "presse",
+      "kind": "image",
+      "size": 86723
+    },
+    {
+      "path": "/presse/logos/mot-symbole-creme-sur-encre.png",
+      "name": "mot-symbole-creme-sur-encre.png",
+      "folder": "presse/logos",
+      "kind": "image",
+      "size": 14010
+    },
+    {
+      "path": "/presse/logos/mot-symbole-creme-transparent.png",
+      "name": "mot-symbole-creme-transparent.png",
+      "folder": "presse/logos",
+      "kind": "image",
+      "size": 13999
+    },
+    {
+      "path": "/presse/logos/mot-symbole-encre-sur-creme.png",
+      "name": "mot-symbole-encre-sur-creme.png",
+      "folder": "presse/logos",
+      "kind": "image",
+      "size": 57633
+    },
+    {
+      "path": "/presse/logos/mot-symbole-encre-transparent.png",
+      "name": "mot-symbole-encre-transparent.png",
+      "folder": "presse/logos",
+      "kind": "image",
+      "size": 13841
+    },
+    {
+      "path": "/presse/thumbs/boutique-en-texte-qr.webp",
+      "name": "boutique-en-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 13336
+    },
+    {
+      "path": "/presse/thumbs/boutique-en-texte.webp",
+      "name": "boutique-en-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 12206
+    },
+    {
+      "path": "/presse/thumbs/boutique-fr-texte-qr.webp",
+      "name": "boutique-fr-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 13994
+    },
+    {
+      "path": "/presse/thumbs/boutique-fr-texte.webp",
+      "name": "boutique-fr-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 12992
+    },
+    {
+      "path": "/presse/thumbs/boutique-nu-qr.webp",
+      "name": "boutique-nu-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 22334
+    },
+    {
+      "path": "/presse/thumbs/boutique-nu.webp",
+      "name": "boutique-nu.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 21348
+    },
+    {
+      "path": "/presse/thumbs/conferenciere-en-texte-qr.webp",
+      "name": "conferenciere-en-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 10298
+    },
+    {
+      "path": "/presse/thumbs/conferenciere-en-texte.webp",
+      "name": "conferenciere-en-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 8756
+    },
+    {
+      "path": "/presse/thumbs/conferenciere-fr-texte-qr.webp",
+      "name": "conferenciere-fr-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 11146
+    },
+    {
+      "path": "/presse/thumbs/conferenciere-fr-texte.webp",
+      "name": "conferenciere-fr-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 9558
+    },
+    {
+      "path": "/presse/thumbs/conferenciere-nu-qr.webp",
+      "name": "conferenciere-nu-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 8302
+    },
+    {
+      "path": "/presse/thumbs/conferenciere-nu.webp",
+      "name": "conferenciere-nu.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 7222
+    },
+    {
+      "path": "/presse/thumbs/contact-en-texte-qr.webp",
+      "name": "contact-en-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 15806
+    },
+    {
+      "path": "/presse/thumbs/contact-en-texte.webp",
+      "name": "contact-en-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 14730
+    },
+    {
+      "path": "/presse/thumbs/contact-fr-texte-qr.webp",
+      "name": "contact-fr-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 17338
+    },
+    {
+      "path": "/presse/thumbs/contact-fr-texte.webp",
+      "name": "contact-fr-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 15384
+    },
+    {
+      "path": "/presse/thumbs/contact-nu-qr.webp",
+      "name": "contact-nu-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 41934
+    },
+    {
+      "path": "/presse/thumbs/contact-nu.webp",
+      "name": "contact-nu.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 40520
+    },
+    {
+      "path": "/presse/thumbs/livres-en-texte-qr.webp",
+      "name": "livres-en-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 11150
+    },
+    {
+      "path": "/presse/thumbs/livres-en-texte.webp",
+      "name": "livres-en-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 10036
+    },
+    {
+      "path": "/presse/thumbs/livres-fr-texte-qr.webp",
+      "name": "livres-fr-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 10854
+    },
+    {
+      "path": "/presse/thumbs/livres-fr-texte.webp",
+      "name": "livres-fr-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 9750
+    },
+    {
+      "path": "/presse/thumbs/livres-nu-qr.webp",
+      "name": "livres-nu-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 13300
+    },
+    {
+      "path": "/presse/thumbs/livres-nu.webp",
+      "name": "livres-nu.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 12014
+    },
+    {
+      "path": "/presse/thumbs/medias-en-texte-qr.webp",
+      "name": "medias-en-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 15482
+    },
+    {
+      "path": "/presse/thumbs/medias-en-texte.webp",
+      "name": "medias-en-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 14502
+    },
+    {
+      "path": "/presse/thumbs/medias-fr-texte-qr.webp",
+      "name": "medias-fr-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 16314
+    },
+    {
+      "path": "/presse/thumbs/medias-fr-texte.webp",
+      "name": "medias-fr-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 14760
+    },
+    {
+      "path": "/presse/thumbs/medias-nu-qr.webp",
+      "name": "medias-nu-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 31368
+    },
+    {
+      "path": "/presse/thumbs/medias-nu.webp",
+      "name": "medias-nu.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 30818
+    },
+    {
+      "path": "/presse/thumbs/origine-en-texte-qr.webp",
+      "name": "origine-en-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 28352
+    },
+    {
+      "path": "/presse/thumbs/origine-en-texte.webp",
+      "name": "origine-en-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 26954
+    },
+    {
+      "path": "/presse/thumbs/origine-fr-texte-qr.webp",
+      "name": "origine-fr-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 28488
+    },
+    {
+      "path": "/presse/thumbs/origine-fr-texte.webp",
+      "name": "origine-fr-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 26972
+    },
+    {
+      "path": "/presse/thumbs/photo-krystine-kimono.webp",
+      "name": "photo-krystine-kimono.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 17940
+    },
+    {
+      "path": "/presse/thumbs/photo-krystine-sourire.webp",
+      "name": "photo-krystine-sourire.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 18872
+    },
+    {
+      "path": "/presse/thumbs/photo-krystine-table.webp",
+      "name": "photo-krystine-table.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 13622
+    },
+    {
+      "path": "/presse/thumbs/photo-krystine-tapis.webp",
+      "name": "photo-krystine-tapis.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 6406
+    },
+    {
+      "path": "/presse/thumbs/photo-les-livres.webp",
+      "name": "photo-les-livres.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 13766
+    },
+    {
+      "path": "/presse/thumbs/photo-sante-la-vie.webp",
+      "name": "photo-sante-la-vie.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 19436
+    },
+    {
+      "path": "/presse/thumbs/podcast-en-texte-qr.webp",
+      "name": "podcast-en-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 16688
+    },
+    {
+      "path": "/presse/thumbs/podcast-en-texte.webp",
+      "name": "podcast-en-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 15104
+    },
+    {
+      "path": "/presse/thumbs/podcast-fr-texte-qr.webp",
+      "name": "podcast-fr-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 17066
+    },
+    {
+      "path": "/presse/thumbs/podcast-fr-texte.webp",
+      "name": "podcast-fr-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 15468
+    },
+    {
+      "path": "/presse/thumbs/podcast-nu-qr.webp",
+      "name": "podcast-nu-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 21376
+    },
+    {
+      "path": "/presse/thumbs/podcast-nu.webp",
+      "name": "podcast-nu.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 20018
+    },
+    {
+      "path": "/presse/thumbs/portrait-en-texte-qr.webp",
+      "name": "portrait-en-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 13282
+    },
+    {
+      "path": "/presse/thumbs/portrait-en-texte.webp",
+      "name": "portrait-en-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 12062
+    },
+    {
+      "path": "/presse/thumbs/portrait-fr-texte-qr.webp",
+      "name": "portrait-fr-texte-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 13660
+    },
+    {
+      "path": "/presse/thumbs/portrait-fr-texte.webp",
+      "name": "portrait-fr-texte.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 12534
+    },
+    {
+      "path": "/presse/thumbs/portrait-nu-qr.webp",
+      "name": "portrait-nu-qr.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 17136
+    },
+    {
+      "path": "/presse/thumbs/portrait-nu.webp",
+      "name": "portrait-nu.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 15358
+    },
+    {
+      "path": "/presse/thumbs/site-accueil.webp",
+      "name": "site-accueil.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 17510
+    },
+    {
+      "path": "/presse/thumbs/site-boutique.webp",
+      "name": "site-boutique.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 16484
+    },
+    {
+      "path": "/presse/thumbs/site-conferenciere.webp",
+      "name": "site-conferenciere.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 6114
+    },
+    {
+      "path": "/presse/thumbs/site-formations.webp",
+      "name": "site-formations.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 11588
+    },
+    {
+      "path": "/presse/thumbs/site-krystine.webp",
+      "name": "site-krystine.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 9956
+    },
+    {
+      "path": "/presse/thumbs/site-medias.webp",
+      "name": "site-medias.webp",
+      "folder": "presse/thumbs",
+      "kind": "image",
+      "size": 6916
+    },
+    {
+      "path": "/pubs/posts/A01-carre.png",
+      "name": "A01-carre.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 770248
+    },
+    {
+      "path": "/pubs/posts/A01-portrait.png",
+      "name": "A01-portrait.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 1020307
+    },
+    {
+      "path": "/pubs/posts/A01-vignette.webp",
+      "name": "A01-vignette.webp",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 24086
+    },
+    {
+      "path": "/pubs/posts/A02-carre.png",
+      "name": "A02-carre.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 875278
+    },
+    {
+      "path": "/pubs/posts/A02-portrait.png",
+      "name": "A02-portrait.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 1225414
+    },
+    {
+      "path": "/pubs/posts/A02-vignette.webp",
+      "name": "A02-vignette.webp",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 27520
+    },
+    {
+      "path": "/pubs/posts/A03-carre.png",
+      "name": "A03-carre.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 916721
+    },
+    {
+      "path": "/pubs/posts/A03-portrait.png",
+      "name": "A03-portrait.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 1126109
+    },
+    {
+      "path": "/pubs/posts/A03-vignette.webp",
+      "name": "A03-vignette.webp",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 30318
+    },
+    {
+      "path": "/pubs/posts/B01-carre.png",
+      "name": "B01-carre.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 856480
+    },
+    {
+      "path": "/pubs/posts/B01-portrait.png",
+      "name": "B01-portrait.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 1034437
+    },
+    {
+      "path": "/pubs/posts/B01-vignette.webp",
+      "name": "B01-vignette.webp",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 28026
+    },
+    {
+      "path": "/pubs/posts/B02-carre.png",
+      "name": "B02-carre.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 933472
+    },
+    {
+      "path": "/pubs/posts/B02-portrait.png",
+      "name": "B02-portrait.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 1311804
+    },
+    {
+      "path": "/pubs/posts/B02-vignette.webp",
+      "name": "B02-vignette.webp",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 34776
+    },
+    {
+      "path": "/pubs/posts/B03-carre.png",
+      "name": "B03-carre.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 436936
+    },
+    {
+      "path": "/pubs/posts/B03-portrait.png",
+      "name": "B03-portrait.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 580154
+    },
+    {
+      "path": "/pubs/posts/B03-vignette.webp",
+      "name": "B03-vignette.webp",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 17020
+    },
+    {
+      "path": "/pubs/posts/C01-carre.png",
+      "name": "C01-carre.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 1200467
+    },
+    {
+      "path": "/pubs/posts/C01-portrait.png",
+      "name": "C01-portrait.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 1553511
+    },
+    {
+      "path": "/pubs/posts/C01-vignette.webp",
+      "name": "C01-vignette.webp",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 49582
+    },
+    {
+      "path": "/pubs/posts/C02-carre.png",
+      "name": "C02-carre.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 450626
+    },
+    {
+      "path": "/pubs/posts/C02-portrait.png",
+      "name": "C02-portrait.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 535523
+    },
+    {
+      "path": "/pubs/posts/C02-vignette.webp",
+      "name": "C02-vignette.webp",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 14670
+    },
+    {
+      "path": "/pubs/posts/C03-carre.png",
+      "name": "C03-carre.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 951307
+    },
+    {
+      "path": "/pubs/posts/C03-portrait.png",
+      "name": "C03-portrait.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 1058641
+    },
+    {
+      "path": "/pubs/posts/C03-vignette.webp",
+      "name": "C03-vignette.webp",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 25226
+    },
+    {
+      "path": "/pubs/posts/D01-carre.png",
+      "name": "D01-carre.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 427605
+    },
+    {
+      "path": "/pubs/posts/D01-portrait.png",
+      "name": "D01-portrait.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 436622
+    },
+    {
+      "path": "/pubs/posts/D01-vignette.webp",
+      "name": "D01-vignette.webp",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 21332
+    },
+    {
+      "path": "/pubs/posts/D02-carre.png",
+      "name": "D02-carre.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 702249
+    },
+    {
+      "path": "/pubs/posts/D02-portrait.png",
+      "name": "D02-portrait.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 925545
+    },
+    {
+      "path": "/pubs/posts/D02-vignette.webp",
+      "name": "D02-vignette.webp",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 24002
+    },
+    {
+      "path": "/pubs/posts/D03-carre.png",
+      "name": "D03-carre.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 778846
+    },
+    {
+      "path": "/pubs/posts/D03-portrait.png",
+      "name": "D03-portrait.png",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 956532
+    },
+    {
+      "path": "/pubs/posts/D03-vignette.webp",
+      "name": "D03-vignette.webp",
+      "folder": "pubs/posts",
+      "kind": "image",
+      "size": 20200
     },
     {
       "path": "/footer-jacques-cartier.jpg",

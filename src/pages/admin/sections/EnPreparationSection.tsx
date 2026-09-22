@@ -123,7 +123,7 @@ const EnPreparationSection: React.FC = () => {
                 </p>
               </div>
               <span
-                className={`shrink-0 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest ${
+                className={`max-w-full rounded-full px-3 py-1.5 text-[10px] font-bold uppercase leading-relaxed tracking-wider ${
                   ouvert
                     ? 'bg-[#BA7B39]/15 text-[#8B4A2F] dark:text-[#d9a05b]'
                     : 'bg-[#293027]/8 text-[#293027]/55 dark:bg-white/10 dark:text-white/55'

@@ -2,114 +2,125 @@
   "master": {
     "tasks": [
       {
-        "id": 1,
+        "id": "1",
         "title": "Add presseOuvert flag to siteFlags system",
         "description": "Extend the existing siteFlags system to include a presseOuvert toggle that controls visibility of the press kit page to the public while keeping it visible to administrators in preview mode.",
         "details": "1. Add presseOuvert: boolean to the SiteFlags interface in src/firebase/siteFlags.ts, defaulting to false\n2. Update DEFAULT_FLAGS object to include presseOuvert: false\n3. Update TypeScript types to include the new flag throughout the system\n4. The flag will follow the existing pattern used by foyerOuvert, origine2Ouvert, and chatbotOuvert\n5. Ensure the flag is properly integrated with Firebase Firestore (siteSettings/flags document)\n\nImplementation:\n```typescript\nexport interface SiteFlags {\n  // ... existing flags\n  /** Le press kit est ouvert au public. Éteint, la page /presse reste invisible\n   *  au visiteur ordinaire mais l'administratrice y accède avec un bandeau\n   *  d'aperçu. Interrupteur dans l'admin, section En préparation. Éteint par\n   *  défaut (Alex, 22 septembre 2026). */\n  presseOuvert: boolean;\n}\n\nexport const DEFAULT_FLAGS: SiteFlags = {\n  // ... existing defaults\n  presseOuvert: false,\n};\n```",
         "testStrategy": "1. Verify the flag is properly stored in Firestore at siteSettings/flags\n2. Test that getSiteFlags() returns presseOuvert with the correct default value\n3. Verify subscribeToSiteFlags() emits updates when presseOuvert changes\n4. Test setSiteFlag('presseOuvert', true/false) updates the flag in Firestore",
         "priority": "high",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-09-22T19:01:37.403Z"
       },
       {
-        "id": 2,
+        "id": "2",
         "title": "Create Krystine press kit page with V2 magazine design",
         "description": "Build a /presse page for Krystine following the V2 magazine crème design language, modeled after the FMM 2026 press page structure with facts, downloadable visuals (1920×1080), text/QR/photo variants, logos, texts, and zip downloads.",
         "details": "1. Create src/pages/PressePage.tsx following the V2 magazine crème design system from src/components/v2/Magazine.tsx and src/pages/concepts/MediasV2.tsx\n2. Use V2 colors: creme (#f4efe6, #efe6d7), encre (#1c1712), or (#7d6330), filet (#9c7a44)\n3. Typography: Fraunces (v2-serif) for titles, Inter for body, uppercase kickers with tracking\n4. Structure the page with:\n   - Masthead with number and location\n   - TitreV2 component for main title\n   - Facts section at the top\n   - Visual assets section with 1920×1080 downloadable images (WebP thumbnails)\n   - Text variants (full text, QR code version, photo-only)\n   - Logos section (high-res downloads)\n   - Copy blocks (bio, descriptions)\n   - Single ZIP download button for complete kit\n5. Create src/content/presse.ts for all press kit content (facts, bio, descriptions)\n6. Add routes: /presse, /presskit, /press-kit, /en/press (all pointing to the same component)\n7. Integrate with useSiteFlags() to check presseOuvert flag\n8. Show preview banner when flag is off and user is admin (check via ADMIN_EMAILS from src/firebase/auth)\n9. Redirect non-admin users to home when presseOuvert is false\n\nComponent structure:\n```tsx\nimport { StyleV2, Masthead, TitreV2, Kicker, V2, GOUTTIERE } from '../../components/v2/Magazine';\nimport { useSiteFlags } from '../../firebase/siteFlags';\nimport { ADMIN_EMAILS } from '../../firebase/auth';\n\nexport default function PressePage() {\n  const { presseOuvert } = useSiteFlags();\n  const { user } = useApp();\n  const isAdmin = user?.email && ADMIN_EMAILS.includes(user.email);\n  \n  // Redirect non-admins when closed\n  if (!presseOuvert && !isAdmin) {\n    return <Navigate to=\"/\" />;\n  }\n  \n  return (\n    <div style={{ background: V2.creme }}>\n      <StyleV2 />\n      {!presseOuvert && isAdmin && <PreviewBanner />}\n      {/* Press kit content */}\n    </div>\n  );\n}\n```",
         "testStrategy": "1. Run boucle-verdict with Playwright screenshots at 1440px and 390px\n2. Verify all text follows voix-alex guidelines (no em-dash, no italics, formal vous)\n3. Test downloads work for all assets (images, logos, ZIP)\n4. Verify page is hidden from public when presseOuvert is false\n5. Verify admin can preview page with banner when flag is off\n6. Test all route aliases (/presse, /presskit, /press-kit, /en/press)\n7. Validate typography: titles max 2 lines on desktop and mobile\n8. Check visual hierarchy and full-width layout (no centered blocks with empty space)",
         "priority": "high",
         "dependencies": [
-          1
+          "1"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-09-22T19:01:37.411Z"
       },
       {
-        "id": 3,
+        "id": "3",
         "title": "Generate press kit visual assets via script",
         "description": "Create a Node.js script to generate press kit visuals (1920×1080 images with text, QR codes, photo variants) from actual site assets (photos, book covers, site screenshots) with WebP thumbnail versions for the page.",
         "details": "1. Create scripts/presse/build-kit.mjs following the pattern from FMM 2026\n2. Use existing assets from storage.googleapis.com/inspirata/\n3. Generate variants:\n   - Full card: photo + text + QR code\n   - Text-only version\n   - Photo-only version (clean)\n   - QR code version with CTA\n4. Output to public/presse/ with naming convention: press-{variant}-{index}.jpg (1920×1080)\n5. Generate WebP thumbnails (480×270) for page display: press-{variant}-{index}-thumb.webp\n6. Create a manifest.json with metadata for each visual (title, description, variants available)\n7. Add script to package.json prebuild hook or as separate command\n8. Use node-canvas or Playwright for image generation\n9. Include Krystine's professional photos, book covers (Tome 1, 2, 3), site screenshots\n10. QR codes should point to www.krystinestlaurent.ca with proper UTM parameters\n\nScript structure:\n```javascript\nimport { chromium } from 'playwright';\nimport sharp from 'sharp'; // for WebP conversion\n\nconst variants = [\n  { type: 'full', template: 'fullCard.html' },\n  { type: 'text', template: 'textOnly.html' },\n  { type: 'photo', template: 'photoOnly.html' },\n  { type: 'qr', template: 'qrCard.html' },\n];\n\nfor (const variant of variants) {\n  // Generate 1920×1080 JPG\n  // Generate 480×270 WebP thumbnail\n  // Update manifest.json\n}\n```",
         "testStrategy": "1. Run script and verify all images are generated at correct dimensions (1920×1080 JPG, 480×270 WebP)\n2. Check visual quality of generated assets (no pixelation, proper colors)\n3. Verify QR codes scan correctly and point to the right URL\n4. Test manifest.json contains accurate metadata\n5. Verify all source assets are accessible and properly licensed\n6. Run on clean build to ensure script works in CI/CD context",
         "priority": "medium",
         "dependencies": [
-          2
+          "2"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-09-22T19:01:37.415Z"
       },
       {
-        "id": 4,
+        "id": "4",
         "title": "Create Admin En Préparation section for toggled pages",
         "description": "Build a new admin section that lists all pages with visibility toggles (press kit, Origine 2, Foyer, chatbot, TEDx) with preview buttons and toggle switches to approve and publish each page.",
         "details": "1. Create src/pages/admin/sections/EnPreparationSection.tsx\n2. Add 'enPreparation' to AdminSectionId type in src/pages/admin/AdminShell.tsx\n3. Add to SECTION_SLUGS with slug 'en-preparation'\n4. Display a card for each toggleable feature:\n   - Press Kit (presseOuvert)\n   - Origine 2 (origine2Ouvert)\n   - Foyer (foyerOuvert)\n   - Assistante (chatbotOuvert)\n   - TEDx (showTedx)\n5. Each card shows:\n   - Feature name and description\n   - Current status badge (En préparation / Publié)\n   - Preview button (opens in new tab with ?apercu=1)\n   - Toggle switch to publish/unpublish\n6. Use existing ToggleSwitch and Card components from src/pages/admin/primitives.tsx\n7. Subscribe to site flags via subscribeToSiteFlags\n8. Use setSiteFlag to update flags when toggles change\n9. Style following existing admin sections pattern\n\nComponent structure:\n```tsx\nimport { Card, ToggleSwitch } from '../primitives';\nimport { subscribeToSiteFlags, setSiteFlag } from '../../../firebase/siteFlags';\n\nconst EnPreparationSection: React.FC = () => {\n  const [flags, setFlags] = useState<SiteFlags>(DEFAULT_FLAGS);\n  \n  useEffect(() => subscribeToSiteFlags(setFlags), []);\n  \n  const features = [\n    { key: 'presseOuvert', name: 'Press Kit', url: '/presse', description: 'Dossier de presse complet avec visuels et textes' },\n    { key: 'origine2Ouvert', name: 'Origine 2', url: '/origine-2', description: 'Page de vente Expérience Origine 2' },\n    // ... other features\n  ];\n  \n  return (\n    <div className=\"p-8\">\n      <h2>Pages en préparation</h2>\n      {features.map(f => (\n        <Card key={f.key}>\n          {/* Feature card with toggle and preview */}\n        </Card>\n      ))}\n    </div>\n  );\n};\n```",
         "testStrategy": "1. Verify all toggleable features appear in the section\n2. Test that preview buttons open correct pages with ?apercu=1 parameter\n3. Verify toggles update flags in Firestore in real-time\n4. Test that toggling on makes pages visible to public immediately\n5. Verify status badges update when flags change\n6. Test concurrent admin sessions see live updates\n7. Verify proper access control (admin-only section)",
         "priority": "high",
         "dependencies": [
-          1,
-          2
+          "1",
+          "2"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-09-22T19:01:37.419Z"
       },
       {
-        "id": 5,
+        "id": "5",
         "title": "Create posts préfaits infrastructure and scripts",
         "description": "Build the pre-made posts system with a queue file, HTML template, generation script, and publishing script for Instagram/Facebook posts, following the Vexel model but branded for Krystine.",
         "details": "1. Create scripts/posts/ directory with:\n   - file.json: Queue of posts to generate (array of { id, caption, image, cta, scheduled, status })\n   - gabarit.html: HTML template for post rendering (Krystine brand: V2 colors, Fraunces/Inter fonts)\n   - generer.mjs: Script to render gabarit.html with Playwright, output to public/pubs/posts/\n   - publier.mjs: Script to post to Meta Graph API (Instagram/Facebook)\n2. Template design:\n   - Background: V2.creme (#f4efe6)\n   - Typography: Fraunces for headlines, Inter for body\n   - Accent: V2.or (#7d6330) for highlights\n   - Include photo frame with V2.filet (#9c7a44) border\n   - Dimensions: 1080×1080 for Instagram, 1200×630 for Facebook\n   - No italics, no em-dash (per Alex's rules)\n3. Generation script:\n   - Read file.json\n   - For each post with status \"ready\": render HTML template with data\n   - Screenshot at correct dimensions using Playwright\n   - Save to public/pubs/posts/{id}.jpg and {id}-ig.jpg\n   - Update status to \"generated\"\n4. Publishing script:\n   - Check for META_ACCESS_TOKEN in environment\n   - Read generated posts with status \"generated\"\n   - Upload to Meta Graph API\n   - Update status to \"published\" with timestamp\n   - If token missing, save to Desktop with instructions\n5. Schedule: plist to run every 2 days (following Vexel model)\n6. Add error handling and logging to scripts/posts/posts.log\n\nfile.json structure:\n```json\n[\n  {\n    \"id\": \"2026-09-23-ayurveda-tip\",\n    \"caption\": \"Un rituel matinal qui change tout...\",\n    \"image\": \"https://storage.googleapis.com/inspirata/...\",\n    \"headline\": \"Rituel Ayurvédique\",\n    \"body\": \"Commencez votre journée avec...\",\n    \"cta\": \"www.krystinestlaurent.ca/formations\",\n    \"scheduled\": \"2026-09-23T09:00:00Z\",\n    \"status\": \"ready\"\n  }\n]\n```",
         "testStrategy": "1. Test generer.mjs creates correct image dimensions (1080×1080, 1200×630)\n2. Verify generated images match Krystine brand (V2 colors, fonts, no italics)\n3. Test publier.mjs uploads to Meta API successfully (with valid token)\n4. Test fallback behavior when token is missing (save to Desktop)\n5. Verify file.json status updates correctly through the pipeline\n6. Test error handling (invalid image URL, API errors)\n7. Verify logging captures all operations to posts.log",
         "priority": "medium",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-09-22T18:53:20.925Z"
       },
       {
-        "id": 6,
+        "id": "6",
         "title": "Create Admin Posts Préfaits section",
         "description": "Build an admin panel section that displays the pre-made posts queue, showing visual previews, captions, download buttons, and status for each scheduled post.",
         "details": "1. Create src/pages/admin/sections/PostsSection.tsx\n2. Add 'posts' to AdminSectionId in AdminShell.tsx\n3. Add to SECTION_SLUGS with slug 'posts-prefaits'\n4. Read scripts/posts/file.json on mount and subscribe to updates\n5. Display posts in a grid/list:\n   - Thumbnail of generated image (if status >= \"generated\")\n   - Caption preview (first 100 chars with ellipsis)\n   - Scheduled date/time\n   - Status badge (ready / generated / published / error)\n   - Actions:\n     - Preview button (modal with full image + caption)\n     - Download button (direct download of generated image)\n     - Regenerate button (re-run generation for this post)\n     - Delete button (remove from queue)\n     - Publish now button (bypass schedule)\n6. Add \"Nouveau post\" button to create new entries in file.json\n7. Show last generation time and next scheduled generation\n8. Add filter/sort options (by status, by date)\n9. Use existing Card and Button components from admin primitives\n10. Handle file.json updates via Firebase Cloud Functions or direct file writes (needs evaluation)\n\nComponent structure:\n```tsx\nimport { Card, GhostButton } from '../primitives';\n\ninterface Post {\n  id: string;\n  caption: string;\n  image: string;\n  headline: string;\n  body: string;\n  cta: string;\n  scheduled: string;\n  status: 'ready' | 'generated' | 'published' | 'error';\n}\n\nconst PostsSection: React.FC = () => {\n  const [posts, setPosts] = useState<Post[]>([]);\n  \n  useEffect(() => {\n    // Fetch scripts/posts/file.json\n    fetch('/pubs/posts/file.json')\n      .then(r => r.json())\n      .then(setPosts);\n  }, []);\n  \n  return (\n    <div className=\"p-8\">\n      <h2>Posts préfaits</h2>\n      <div className=\"grid grid-cols-3 gap-4\">\n        {posts.map(post => (\n          <PostCard key={post.id} post={post} />\n        ))}\n      </div>\n    </div>\n  );\n};\n```",
         "testStrategy": "1. Verify posts from file.json display correctly with all metadata\n2. Test preview modal shows full image and caption\n3. Test download button retrieves correct image file\n4. Verify status badges update when posts are generated/published\n5. Test regenerate button triggers generation script\n6. Test delete button removes post from queue\n7. Test \"Publish now\" bypasses schedule and posts immediately\n8. Verify filter/sort functionality works correctly\n9. Test \"Nouveau post\" form validation and submission",
         "priority": "medium",
         "dependencies": [
-          5
+          "5"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-09-22T18:53:20.931Z"
       },
       {
-        "id": 7,
+        "id": "7",
         "title": "Create Vexel press kit page (no toggle, always public)",
         "description": "Build a /presse page for the Vexel site with Vexel branding (black/white, Merriweather/Outfit, chrome aesthetic), containing press assets and visuals. This page is always public, no visibility toggle required.",
         "details": "NOTE: This task requires information about the Vexel site location. Based on PRD, the Vexel site should be at ~/Documents/Websites/vexel-site or similar. The task assumes the Vexel codebase follows similar React/TypeScript patterns.\n\n1. Locate Vexel site directory (likely ~/Documents/Websites/vexel-site)\n2. Create src/pages/PressePage.tsx in Vexel codebase\n3. Apply Vexel branding:\n   - Colors: Pure black (#000000), Pure white (#FFFFFF)\n   - Typography: Merriweather (serif, for headlines), Outfit (sans-serif, for body)\n   - Aesthetic: Chrome/metallic accents, sharp edges, high contrast\n   - No glassmorphism (that's Krystine's L'Œuvre brand)\n4. Structure similar to Krystine press kit:\n   - Facts section (Vexel agency info, portfolio highlights)\n   - Visual assets (1920×1080 project screenshots, case studies)\n   - Logos (Vexel wordmark, icon, variations)\n   - Agency description and services\n   - Client list and testimonials\n   - ZIP download for complete kit\n5. Generate assets via scripts/presse/build-kit.mjs (Vexel-specific)\n6. Add route /presse (and /press, /press-kit aliases)\n7. NO visibility toggle (page is always public)\n8. Ensure .env.local is present for deployment\n9. Verify /compte route works after deployment\n\nVexel color scheme:\n```typescript\nconst VEXEL = {\n  noir: '#000000',\n  blanc: '#FFFFFF',\n  chrome: '#C0C0C0',\n  accent: '#1a1a1a',\n};\n```",
         "testStrategy": "1. Run boucle-verdict with Playwright screenshots at 1440px and 390px\n2. Verify Vexel branding is consistent (black/white, Merriweather/Outfit)\n3. Test all asset downloads work (images, logos, ZIP)\n4. Verify page is publicly accessible (no auth required)\n5. Test on local dev server and after deployment\n6. Verify .env.local is configured and /compte route works\n7. Check contrast and readability on both dark and light displays\n8. Validate no Krystine branding appears (no crème colors, no Fraunces font)",
         "priority": "low",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-09-22T19:01:37.424Z"
       },
       {
-        "id": 8,
+        "id": "8",
         "title": "Deploy all changes and run visual verification",
         "description": "Deploy Krystine press kit, admin sections, and posts system; deploy Vexel press kit; run full visual verification suite (boucle-verdict) at 1440px and 390px for all new pages.",
         "details": "1. Krystine deployment:\n   - Run scripts/publier.sh with descriptive message in French\n   - Message format: \"Press kit Krystine (éteint par défaut), section En préparation, module Posts préfaits\"\n   - Verify Firebase hosting, functions, and firestore rules deploy\n   - Check journal-publications.json is updated\n2. Vexel deployment:\n   - Verify .env.local is present in Vexel directory\n   - Run Vexel deployment script (check for deploy.sh or similar)\n   - Verify /compte route is accessible post-deployment\n3. Visual verification (boucle-verdict):\n   - Krystine /presse at 1440px and 390px (admin preview mode)\n   - Krystine /admin/en-preparation section\n   - Krystine /admin/posts-prefaits section\n   - Vexel /presse at 1440px and 390px\n   - Use Playwright headless: scripts/qa/shot.mjs or create new script\n   - Verify with Sonnet checker (3 rounds max)\n   - Check grid criteria:\n     - Full-width layout (no centered blocks with empty margins)\n     - No overlapping elements\n     - Titles max 2 lines (desktop and mobile)\n     - Videos embedded in page (not buttons/new tabs)\n     - Sticky sections where appropriate\n     - Popups appear in viewport\n     - Text readable on all backgrounds\n4. Final checks:\n   - Test presseOuvert toggle from admin\n   - Verify admin can preview press kit when flag is off\n   - Test public cannot access when flag is off\n   - Verify posts generation and publishing scripts work\n   - Check all routes and aliases work correctly\n5. Generate deployment report listing:\n   - Pages deployed\n   - Pages verified (with screenshot links)\n   - Any remaining issues\n   - Commit SHA references",
         "testStrategy": "1. Verify Krystine site is live with all new features accessible\n2. Verify Vexel site is live with press kit page accessible\n3. Review all boucle-verdict screenshots (desktop and mobile)\n4. Test all interactive features (toggles, downloads, previews)\n5. Verify no console errors on any page\n6. Test cross-browser compatibility (Chrome, Safari, Firefox)\n7. Verify mobile responsiveness on real devices\n8. Check page load performance (< 3s for LCP)\n9. Verify proper error handling (404s, network failures)\n10. Confirm journal-publications.json contains correct entries",
         "priority": "high",
         "dependencies": [
-          2,
-          3,
-          4,
-          5,
-          6,
-          7
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7"
         ],
         "status": "pending",
         "subtasks": []
       }
     ],
     "metadata": {
-      "created": "2026-09-22T17:47:06.714Z",
-      "updated": "2026-09-22T17:47:06.714Z",
-      "description": "Tasks for master context"
+      "version": "1.0.0",
+      "lastModified": "2026-09-22T19:01:37.424Z",
+      "taskCount": 8,
+      "completedCount": 7,
+      "tags": [
+        "master"
+      ]
     }
   }
 }

@@ -39,6 +39,14 @@ export const SHOTS = [
   },
   {
     n: '05',
+    key: 'site-formations',
+    capture: 'formations.png',
+    adresse: 'krystinestlaurent.ca/formations',
+    fr: 'Les formations et les parcours saisonniers.',
+    en: 'The courses and the seasonal programmes.',
+  },
+  {
+    n: '06',
     key: 'site-boutique',
     capture: 'boutique.png',
     adresse: 'krystinestlaurent.ca/boutique',

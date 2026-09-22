@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { ArrowDown, ArrowUpRight, Download, ShareNetwork, QrCode, ImageSquare, X, CaretLeft, CaretRight, EyeSlash } from '@phosphor-icons/react';
+import { ArrowUpRight, Download, ShareNetwork, QrCode, ImageSquare, X, CaretLeft, CaretRight, EyeSlash } from '@phosphor-icons/react';
 import {
   StyleV2, Kicker, Masthead, TitreV2, SousTitreV2, LiensChapitres, LigneDefiler,
   TitreChapitre, Filet, Reveal, CarteVerte, BoutonNoir, BoutonCuivre, LienSouligne,
@@ -302,7 +302,7 @@ const PressePage: React.FC = () => {
               className="h-full w-full object-cover object-center will-change-transform"
             />
             <span data-fade className="absolute left-0 top-0 bg-[#1c1712] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.24em] text-[#f4efe6]">
-              {lang === 'EN' ? 'Portrait' : 'Portrait'}
+              Portrait
             </span>
           </div>
         </div>
@@ -516,11 +516,6 @@ const PressePage: React.FC = () => {
         </div>
       )}
 
-      <div className="flex items-center justify-center pb-16">
-        <a href="#visuels" className="inline-flex items-center gap-2 text-[0.6rem] uppercase tracking-[0.24em] text-[#1c1712]/35 transition-colors hover:text-[#7d6330]">
-          <ArrowDown size={12} weight="regular" /> {t.visuelsTitre}
-        </a>
-      </div>
     </div>
   );
 };

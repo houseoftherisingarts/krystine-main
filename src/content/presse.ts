@@ -145,6 +145,11 @@ export const PAGES: Feuillet[] = [
     legendeFR: 'krystinestlaurent.ca/medias', legendeEN: 'krystinestlaurent.ca/medias',
   },
   {
+    key: 'site-formations', fichier: 'site-formations.jpg',
+    labelFR: 'Les formations', labelEN: 'The courses',
+    legendeFR: 'krystinestlaurent.ca/formations', legendeEN: 'krystinestlaurent.ca/formations',
+  },
+  {
     key: 'site-boutique', fichier: 'site-boutique.jpg',
     labelFR: 'La boutique', labelEN: 'The shop',
     legendeFR: 'krystinestlaurent.ca/boutique', legendeEN: 'krystinestlaurent.ca/boutique',

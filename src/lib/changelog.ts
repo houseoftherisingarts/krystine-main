@@ -31,11 +31,14 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 export const JOURNAL: EntreeJournal[] = [
   {
     date: '2026-09-22',
-    titre: "Le plan du mois, avec vos trois livres à déposer",
-    intro: "Un nouvel onglet porte les trois chantiers des trente prochains jours, dictés par Alex : le visuel de l'Expérience Origine, vos livres découpés en petits livres anglais vendus aux États-Unis, et une chaîne YouTube qui publie chaque jour dans votre voix. Chaque étape se coche, dit qui la fait, et garde la date.",
+    titre: "Le plan du mois, votre salle de presse et douze publications prêtes",
+    intro: "Un nouvel onglet porte les trois chantiers des trente prochains jours, dictés par Alex : le visuel de l'Expérience Origine, vos livres découpés en petits livres anglais vendus aux États-Unis, et une chaîne YouTube qui publie chaque jour dans votre voix. Chaque étape se coche, dit qui la fait, et garde la date. La même journée apporte votre salle de presse, encore éteinte jusqu'à ce que vous l'ayez relue, la section qui vous laisse prévisualiser toute page fermée avant de l'ouvrir, et douze publications déjà mises en page pour Facebook et Instagram.",
     etapes: [
       { texte: "Sous Ventes, l'onglet « Plan du mois » liste les trois chantiers et leurs étapes, avec une barre d'avancement par chantier. Cocher une étape écrit la date; une note d'une ligne peut s'ajouter dessous.", ou: '/admin/plan-du-mois', libelle: 'Plan du mois' },
       { texte: "Dans le deuxième chantier, trois boutons reçoivent vos livres en PDF (livre 1, livre 2, livre 3). Les fichiers restent privés, vous seule et Alex pouvez les ouvrir, et Alex les récupère directement depuis le code pour les analyser.", ou: '/admin/plan-du-mois', libelle: 'Déposer vos livres' },
+      { texte: "Votre salle de presse est prête : soixante et un visuels en 1920 sur 1080, vos portraits, vos biographies dans les deux langues et un seul fichier de dix-sept mégaoctets qu'une journaliste emporte d'un clic. Elle reste invisible du public tant que vous ne l'avez pas allumée; vous seule la voyez en attendant, avec un bandeau qui le rappelle.", ou: '/presse', libelle: 'Voir la salle de presse' },
+      { texte: "Sous Réglages, la section « En préparation » réunit tout ce qui est encore fermé sur le site, de la salle de presse au Foyer en passant par l'Expérience Origine 2 et les mentions du TEDx. Chaque ligne s'ouvre en aperçu dans un nouvel onglet, et l'interrupteur à côté l'allume pour tout le monde quand elle vous convient.", ou: '/admin/en-preparation', libelle: 'En préparation' },
+      { texte: "Sous Contenu, l'onglet « Posts préfaits » montre douze publications déjà mises en page à partir de vos textes, chacune avec sa légende à copier et son visuel à télécharger en portrait ou en carré. Vous copiez, vous téléchargez, vous publiez à votre rythme.", ou: '/admin/posts-prefaits', libelle: 'Posts préfaits' },
     ],
   },
   {
