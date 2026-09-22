@@ -680,5 +680,34 @@
       "public/assets-manifest.json",
       "src/vexel/CollantVexel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-22T17:52:27.099Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "88d3b0e",
+    "message": "Plan du mois : trois chantiers cochables avec repères vérifiés, et le dépôt des trois livres en PDF (admin › Plan du mois)",
+    "cibles": [
+      "hosting",
+      "storage"
+    ],
+    "fichiers": [
+      ".gitignore",
+      ".taskmaster/config.json",
+      ".taskmaster/docs/prd-press-kit-2026-09-22.md",
+      ".taskmaster/state.json",
+      ".taskmaster/tasks/tasks.json",
+      "public/assets-manifest.json",
+      "scripts/livres/telecharger.sh",
+      "src/firebase/planMois.ts",
+      "src/lib/changelog.ts",
+      "src/lib/planMois.ts",
+      "src/pages/AdminDashboard.tsx",
+      "src/pages/admin/AdminShell.tsx",
+      "src/pages/admin/sections/PlanMoisSection.tsx",
+      "src/pages/admin/sections/plan-mois/EtapeCochable.tsx",
+      "src/pages/admin/sections/plan-mois/LivresSources.tsx",
+      "storage.rules"
+    ]
   }
 ]
