@@ -42,12 +42,13 @@ const Entonnoirs: React.FC<Props> = ({ resume, periode }) => {
   const [sessions, setSessions] = useState<Session[] | null>(null);
   const [edite, setEdite] = useState<Entonnoir | null>(null);
   const [sauve, setSauve] = useState(false);
+  const [erreur, setErreur] = useState(false);
 
   useEffect(() => { chargerReglages().then(r => setListe(r.entonnoirs || [])); }, []);
   useEffect(() => {
     let vivant = true;
-    setSessions(null);
-    chargerSessions(new Date(periode.de + 'T00:00:00')).then(s => { if (vivant) setSessions(s); }).catch(() => { if (vivant) setSessions([]); });
+    setSessions(null); setErreur(false);
+    chargerSessions(new Date(periode.de + 'T00:00:00')).then(s => { if (vivant) setSessions(s); }).catch(() => { if (vivant) { setErreur(true); setSessions([]); } });
     return () => { vivant = false; };
   }, [periode]);
 
@@ -73,7 +74,7 @@ const Entonnoirs: React.FC<Props> = ({ resume, periode }) => {
       {!edite && (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-[#38403a]/70 dark:text-white/60">
-            {sessions ? `${nb(sessions.length)} visites lues sur ${periode.jours} jours.` : 'Lecture des visites…'}
+            {erreur ? 'La lecture des visites a échoué; changez de période ou revenez dans un instant.' : sessions ? `${nb(sessions.length)} visites lues sur ${periode.jours} jours.` : 'Lecture des visites…'}
           </p>
           <PrimaryButton type="button" onClick={() => setEdite({ id: `e${Date.now().toString(36)}`, nom: '', etapes: [chemins[0] || '/accueil', ''] })}>
             <i className="fa-solid fa-plus" aria-hidden="true" /> Nouveau parcours

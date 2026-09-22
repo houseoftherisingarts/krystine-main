@@ -46,6 +46,8 @@ interface UIContextType {
 interface AuthContextType {
   user: User | null;
   member: MemberDoc | null;
+  /** Firebase a répondu une première fois (connectée ou non) : la mesure des visites attend ce moment. */
+  authReady: boolean;
   isAdmin: boolean;
   setIsAdmin: (v: boolean) => void;
   signInOpen: boolean;
@@ -183,24 +185,33 @@ const UIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   );
 };
 
+// L'aperçu des cartes de chaleur (?vh=apercu, dans un cadre de l'admin) se
+// rend comme pour une visiteuse anonyme : le menu et les boutons réservés à
+// l'admin décaleraient les éléments sur lesquels les clics sont ancrés.
+const APERCU = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('vh') === 'apercu';
+
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [member, setMember] = useState<MemberDoc | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
 
   useEffect(() => {
     // Dev-only: when `localStorage.__devAdmin === '1'`, flip admin true
     // without requiring a real Firebase sign-in. Production is untouched.
-    if (import.meta.env.DEV && typeof window !== 'undefined') {
+    if (import.meta.env.DEV && typeof window !== 'undefined' && !APERCU) {
       try { if (localStorage.getItem('__devAdmin') === '1') setIsAdmin(true); } catch { /* noop */ }
     }
+    // Si Firebase ne répond jamais (réseau coupé), la mesure démarre quand même.
+    const garde = window.setTimeout(() => setAuthReady(true), 4000);
     // Capture any pending redirect-back from `signInWithRedirect` (the
     // fallback path used when popup auth is blocked). No-op when nothing is
     // pending. Fires before the auth subscription so the bootstrap runs
     // before downstream effects react to the new user.
     handleRedirectResult().catch(() => { /* logged in helper */ });
     const unsub = subscribeToAuthState(u => {
+      if (APERCU) { setUser(null); setIsAdmin(false); setAuthReady(true); return; }
       setUser(u);
       const admin = isAdminUser(u);
       setIsAdmin(admin);
@@ -208,8 +219,9 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       // des visites, du Pixel et de GA4, et y reste après la déconnexion; le
       // réglage « ce navigateur » de Visiteurs et clics permet de revenir dessus.
       if (admin && !exclusionDecidee()) exclureMoi(true);
+      setAuthReady(true);
     });
-    return unsub;
+    return () => { window.clearTimeout(garde); unsub(); };
   }, []);
 
   useEffect(() => {
@@ -221,8 +233,8 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   }, [user]);
 
   const value = useMemo<AuthContextType>(() => ({
-    user, member, isAdmin, setIsAdmin, signInOpen, setSignInOpen,
-  }), [user, member, isAdmin, signInOpen]);
+    user, member, authReady, isAdmin, setIsAdmin, signInOpen, setSignInOpen,
+  }), [user, member, authReady, isAdmin, signInOpen]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

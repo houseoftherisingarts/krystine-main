@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LogoO } from './LogoO';
 import { X, Check } from 'lucide-react';
+import { trackObjectif } from '../../../../../lib/track';
 
 const TableRow: React.FC<{ title: string; detail?: React.ReactNode; value: string; isLast?: boolean }> = ({ title, detail, value, isLast }) => (
   <div className={`flex justify-between items-start py-4 ${isLast ? '' : 'border-b border-[#C8943E]/10'}`}>
@@ -105,7 +106,7 @@ const PaymentModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
               <div className="p-6 md:p-8 pt-0 mt-auto">
                 <button
                   onClick={() => {
-                    if ((window as any).fbq) (window as any).fbq('track', 'InitiateCheckout');
+                    trackObjectif('Paiement commencé · Origine', 'gros', { paiement: true });
                     window.open('/liste-attente?programme=origine', '_blank');
                   }}
                   className="w-full py-4 bg-[#4A5D52] hover:bg-[#3A4D42] text-[#FDFBF7] rounded-xl font-serif text-lg tracking-widest uppercase transition-all shadow-md hover:shadow-xl hover:-translate-y-1"

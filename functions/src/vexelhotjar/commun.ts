@@ -14,9 +14,9 @@ import { createHash } from 'crypto';
 //   vhAgreger            toutes les 15 minutes, fond les lots dans les
 //                        journées (vh_jours) et les cartes (vh_cartes)
 //   vhAgregerMaintenant  le bouton « Rafraîchir » de l'admin, même travail
-//   vhEffacerSession     l'admin retire une session et son enregistrement
-//   vhMonAdresse         l'adresse IP de l'admin qui appelle, pour l'exclure
+//   vhEffacerSession     l'admin retire une session, son enregistrement et ses lots
 //   vhPurger             chaque nuit, jette ce qui a dépassé sa durée de vie
+// et GET /api/vh?moi rend à l'admin son adresse telle que le collecteur la voit.
 //
 // Collections : vh_lots (brut, quelques jours), vh_sessions (une fiche par
 // visite, 90 jours), vh_jours (une fiche par jour et par site, 400 jours),
@@ -37,11 +37,30 @@ export const HOTES_PERMIS = ['krystinestlaurent.ca', 'krystinestlaurent-87566.we
 // que seul l'admin lit (vh_prive/exclusions), jamais dans settings/ qui est public.
 export const DOC_EXCLUSIONS = ['vh_prive', 'exclusions'] as const;
 export const IPS_EXCLUES_MAX = 40;
-export const TAILLE_MAX_LOT = 1_000_000;         // un lot d'événements ne dépasse jamais 1 Mo
+// Les réglages de l'admin (settings/vexelhotjar : allumée ou non, chemins à
+// ignorer) et le verrou de l'agrégation, relus toutes les cinq minutes.
+export const DOC_REGLAGES = ['settings', 'vexelhotjar'] as const;
+export const DOC_VERROU = ['vh_prive', 'verrou'] as const;
+export const CACHE_REGLAGES_MS = 5 * 60_000;
+export const TAILLE_MAX_LOT = 500_000;           // un lot d'événements, en octets
 export const TAILLE_MAX_REPLAY = 6_000_000;      // un morceau d'enregistrement, gzippé ou non
 export const EVENEMENTS_MAX = 600;
-export const POINTS_CLICS_MAX = 4000;            // par carte (page × appareil × jour)
+// Une carte (page × appareil × jour) reste loin sous le mégaoctet de Firestore.
+export const POINTS_CLICS_MAX = 1500;
 export const POINTS_MOUV_MAX = 3000;
+export const TAILLE_MAX_CARTE = 900_000;
+// Une journée non plus : au-delà de ces plafonds, les nouvelles clés du jour
+// (une page jamais vue, une source de plus) se laissent tomber.
+export const PLAFONDS_JOURNEE: Record<string, number> = { pages: 100, entrees: 100, sources: 100, campagnes: 60, objectifs: 80, erreursListe: 40, formulaires: 60 };
+export const ELEMENTS_PAR_PAGE_MAX = 30;
+// L'agrégation : tant de lots par tour, un verrou de neuf minutes, un lot
+// réclamé puis oublié (fonction tuée en route) se reprend après trente
+// minutes, et une horloge de visiteur décalée de plus de six heures cède la
+// place à l'heure de réception.
+export const LOTS_PAR_TOUR = 250;
+export const VERROU_MS = 9 * 60_000;
+export const RECLAMATION_MS = 30 * 60_000;
+export const DERIVE_HORLOGE_MS = 6 * 3600_000;
 export const RETENTION_LOTS_JOURS = 3;
 export const RETENTION_SESSIONS_JOURS = 90;
 export const RETENTION_JOURS_JOURS = 400;
@@ -70,10 +89,11 @@ export const nombre = (v: unknown, min: number, max: number, defaut = 0): number
 // Hexadécimal seulement : la clé sert de segment de chemin dans un update() pointé.
 export const hash = (s: string): string => createHash('sha1').update(s).digest('hex').slice(0, 10);
 
-/** Une clé de champ Firestore sûre pour un chemin de page : /formations/vata → formations_vata. */
+/** Une clé de champ Firestore pour un chemin de page : p + dix hexadécimaux du
+ *  chemin, pour que /a-b et /a/b ne se confondent jamais; le chemin lisible
+ *  se garde à côté (pages.<clé>.path). */
 export function clePage(path: string): string {
-  const c = path.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 80);
-  return c || 'accueil';
+  return 'p' + hash(path || '/');
 }
 
 export function jourDe(ms: number): string {
@@ -101,8 +121,22 @@ export function hoteDe(url: string): string {
 // 240 requêtes par minute et par instance, largement au-dessus d'une vraie
 // visite, assez bas pour qu'un script qui boucle ne remplisse pas la base.
 
-/** L'adresse du navigateur telle que l'hébergement la transmet (le premier maillon de x-forwarded-for). */
-export function adresseDe(req: { get?: (h: string) => string | undefined; headers?: Record<string, unknown>; ip?: string }): string {
-  const brut = (req.get ? req.get('x-forwarded-for') : String(req.headers?.['x-forwarded-for'] || '')) || req.ip || '';
-  return String(brut).split(',')[0].trim();
+type Requete = { get?: (h: string) => string | undefined; headers?: Record<string, unknown>; ip?: string };
+const entete = (req: Requete, nom: string): string => String((req.get ? req.get(nom) : req.headers?.[nom]) || '');
+
+/** Les maillons de x-forwarded-for, du plus lointain au plus proche. */
+export function chaineDe(req: Requete): string[] {
+  return entete(req, 'x-forwarded-for').split(',').map(s => s.trim()).filter(Boolean);
+}
+
+/** L'adresse du navigateur. Par l'hébergement (les lots, /api/vh?moi), la
+ *  chaîne finit par « …, client, mandataire de Firebase Hosting » : le
+ *  client est l'avant-dernier maillon, et ce qu'un navigateur glisse
+ *  lui-même en tête de chaîne ne compte pas. Appelée en direct (l'adresse
+ *  run.app), le client est le dernier maillon. */
+export function adresseDe(req: Requete): string {
+  const chaine = chaineDe(req);
+  if (!chaine.length) return String(req.ip || '').trim();
+  const parHebergement = !!(entete(req, 'x-country-code') || entete(req, 'x-forwarded-host'));
+  return parHebergement && chaine.length >= 2 ? chaine[chaine.length - 2] : chaine[chaine.length - 1];
 }

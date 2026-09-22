@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useApp } from '../../contexts/AppContext';
+import { useApp, useAuth } from '../../contexts/AppContext';
 import { enableAnalytics } from '../../firebase';
 import { activerVexelHotjar } from '../../vexelhotjar';
 import { mesureExclue } from '../../vexelhotjar/tracker';
@@ -41,16 +41,19 @@ export function getConsent(): ConsentValue | null {
 
 const ConsentBanner: React.FC = () => {
   const { lang } = useApp();
+  const { authReady } = useAuth();
   const [choice, setChoice] = useState<ConsentValue | null>(() => getConsent());
 
   useEffect(() => {
-    // Un navigateur d'administratrice (drapeau vh.moi) ne charge rien, même consenti.
-    if (choice === 'accepted' && !mesureExclue()) {
+    // Un navigateur d'administratrice (drapeau vh.moi) ne charge rien, même
+    // consenti; le drapeau se pose à la première réponse de Firebase, donc
+    // rien ne démarre avant elle.
+    if (choice === 'accepted' && authReady && !mesureExclue()) {
       loadMetaPixel();
       enableAnalytics();
       activerVexelHotjar();
     }
-  }, [choice]);
+  }, [choice, authReady]);
 
   const decide = (value: ConsentValue) => {
     window.localStorage.setItem(STORAGE_KEY, value);

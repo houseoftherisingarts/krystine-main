@@ -4,8 +4,10 @@ import { getFirestore, FieldValue, Timestamp, type DocumentData } from 'firebase
 import { getStorage } from 'firebase-admin/storage';
 import { ADMIN_EMAILS } from '../newsletter/send';
 import {
-  POINTS_CLICS_MAX, POINTS_MOUV_MAX, RETENTION_LOTS_JOURS, RETENTION_SESSIONS_JOURS, RETENTION_JOURS_JOURS,
-  texte, hash, clePage, jourDe, heureDe, deviceDe, hoteDe, adresseDe, TAGS_INTERACTIFS, type Device,
+  POINTS_CLICS_MAX, POINTS_MOUV_MAX, TAILLE_MAX_CARTE, PLAFONDS_JOURNEE, ELEMENTS_PAR_PAGE_MAX,
+  LOTS_PAR_TOUR, VERROU_MS, RECLAMATION_MS, DERIVE_HORLOGE_MS, DOC_VERROU,
+  RETENTION_LOTS_JOURS, RETENTION_SESSIONS_JOURS, RETENTION_JOURS_JOURS,
+  texte, hash, clePage, jourDe, heureDe, deviceDe, hoteDe, TAGS_INTERACTIFS, type Device,
 } from './commun';
 
 type Compteurs = Record<string, number>;
@@ -22,9 +24,53 @@ interface Carte {
 
 function inc(j: Journee, chemin: string, n = 1) { j.compteurs[chemin] = (j.compteurs[chemin] || 0) + n; }
 
-async function agreger(db: FirebaseFirestore.Firestore, maxLots = 400): Promise<number> {
-  const snap = await db.collection('vh_lots').where('agrege', '==', false).orderBy('recu').limit(maxLots).get();
-  if (snap.empty) return 0;
+// Un document de journée ne grossit pas sans fin : au-delà du plafond d'une
+// famille (pages, sources, campagnes, erreurs, formulaires, objectifs, et
+// les éléments cliqués d'une page), les nouvelles clés du jour se laissent
+// tomber; ce qui est déjà dans le document continue de se compter.
+function borner(J: Journee, existant: DocumentData) {
+  const admis = new Map<string, Set<string>>();
+  const garde = (famille: string, cle: string, max: number, initial: () => string[]): boolean => {
+    let s = admis.get(famille);
+    if (!s) { s = new Set(initial()); admis.set(famille, s); }
+    if (s.has(cle)) return true;
+    if (s.size >= max) return false;
+    s.add(cle);
+    return true;
+  };
+  const ok = (chemin: string): boolean => {
+    const seg = chemin.split('.');
+    const max = PLAFONDS_JOURNEE[seg[0]];
+    if (max !== undefined && seg.length >= 2 && !garde(seg[0], seg[1], max, () => Object.keys(existant[seg[0]] || {}))) return false;
+    if (seg[0] === 'pages' && seg[2] === 'elements' && seg.length >= 4) {
+      const famille = `pages.${seg[1]}.elements`;
+      if (!garde(famille, seg[3], ELEMENTS_PAR_PAGE_MAX, () => Object.keys(existant.pages?.[seg[1]]?.elements || {}))) return false;
+    }
+    return true;
+  };
+  for (const k of Object.keys(J.compteurs)) if (!ok(k)) delete J.compteurs[k];
+  for (const k of Object.keys(J.textes)) if (!ok(k)) delete J.textes[k];
+}
+
+async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR): Promise<number> {
+  // Les lots frais d'abord; sinon ceux qu'un tour précédent a réclamés sans
+  // jamais les marquer (fonction tuée en route), passé trente minutes.
+  let docs = (await db.collection('vh_lots').where('agrege', '==', false).orderBy('recu').limit(maxLots).get()).docs;
+  if (!docs.length) {
+    const oublies = await db.collection('vh_lots').where('agrege', '==', 'encours').orderBy('recu').limit(maxLots).get();
+    const limite = Date.now() - RECLAMATION_MS;
+    docs = oublies.docs.filter(d => { const r = d.get('reclame'); return !(r instanceof Timestamp) || r.toMillis() < limite; });
+  }
+  if (!docs.length) return 0;
+
+  // Réclamer avant de fondre : un lot n'entre qu'une fois dans les chiffres,
+  // même si le tour meurt en route (il se reprendra, voir plus haut).
+  const reclame = Timestamp.now();
+  for (let i = 0; i < docs.length; i += 450) {
+    const b = db.batch();
+    for (const d of docs.slice(i, i + 450)) b.update(d.ref, { agrege: 'encours', reclame });
+    await b.commit();
+  }
 
   const journees = new Map<string, Journee>();
   const cartes = new Map<string, Carte>();
@@ -39,11 +85,15 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = 400): Promise<
     return c;
   };
 
-  for (const doc of snap.docs) {
+  for (const doc of docs) {
     const lot = doc.data();
     const site = lot.site as string;
+    const recuMs = lot.recu instanceof Timestamp ? lot.recu.toMillis() : Date.now();
     for (const e of (lot.ev as DocumentData[]) || []) {
-      const jour = jourDe(e.ts);
+      // L'horloge du visiteur date l'événement, sauf quand elle est décalée
+      // de plus de six heures : l'heure de réception prend alors le relais.
+      const ts = Math.abs(Number(e.ts) - recuMs) > DERIVE_HORLOGE_MS ? recuMs : Number(e.ts);
+      const jour = jourDe(ts);
       const J = journee(`${site}_${jour}`);
       const page = clePage(e.path);
       J.textes[`pages.${page}.path`] = e.path;
@@ -54,7 +104,7 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = 400): Promise<
         case 'vue': {
           inc(J, 'vues');
           inc(J, `pages.${page}.vues`);
-          inc(J, `heures.h${heureDe(e.ts)}`);
+          inc(J, `heures.h${heureDe(ts)}`);
           inc(J, `appareils.${device}`);
           if (e.titre) J.textes[`pages.${page}.titre`] = e.titre;
           if (e.premier) {
@@ -77,11 +127,14 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = 400): Promise<
         case 'sortie': {
           inc(J, 'dureeMs', e.duree);
           inc(J, `pages.${page}.dureeMs`, e.duree);
-          inc(J, `pages.${page}.sorties`, e.fin ? 1 : 0);
-          if (e.fin && e.pages <= 1) inc(J, 'rebonds');
-          if (e.fin) inc(J, 'fins');
-          // Le défilement se compte en paliers de 5 % atteints : la carte de
-          // défilement lit ensuite « 62 % des visites ont vu ce palier ».
+          // Une vue peut sortir plusieurs fois (l'onglet passe à l'arrière-plan,
+          // puis revient) : seule la sortie finale compte pour les rebonds et
+          // le défilement, en paliers de 5 % atteints, une fois par vue. La
+          // carte de défilement lit ensuite « 62 % des visites ont vu ce palier ».
+          if (!e.fin) break;
+          inc(J, `pages.${page}.sorties`);
+          inc(J, 'fins');
+          if (e.pages <= 1) inc(J, 'rebonds');
           const C = carte(cleCarte);
           for (let b = 0; b <= 100; b += 5) {
             if (e.scrollMax >= b) { inc(J, `pages.${page}.scroll.b${b}`); C.scroll[`b${b}`] = (C.scroll[`b${b}`] || 0) + 1; }
@@ -96,10 +149,10 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = 400): Promise<
           if (e.m) { inc(J, 'morts'); inc(J, `pages.${page}.morts`); }
           if (e.obj) { inc(J, `objectifs.${hash(e.obj)}.n`); J.textes[`objectifs.${hash(e.obj)}.nom`] = e.obj; J.textes[`objectifs.${hash(e.obj)}.niv`] = e.niv === 'gros' ? 'gros' : 'petit'; }
           // Le palmarès des éléments ne retient que ce qui se clique pour
-          // vrai (liens, boutons, champs, objectifs) : la carte garde tous
-          // les points, mais un document par jour ne peut pas grossir avec
-          // chaque paragraphe qu'une visiteuse a effleuré.
-          if (TAGS_INTERACTIFS.has(e.tg) || e.obj) {
+          // vrai (liens, boutons, champs, rôles de bouton, objectifs) : la
+          // carte garde tous les points, mais un document par jour ne peut
+          // pas grossir avec chaque paragraphe qu'une visiteuse a effleuré.
+          if (e.ia || TAGS_INTERACTIFS.has(e.tg) || e.obj) {
             const k = hash(e.s);
             inc(J, `pages.${page}.elements.${k}.n`);
             if (e.r) inc(J, `pages.${page}.elements.${k}.r`);
@@ -112,8 +165,16 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = 400): Promise<
           break;
         }
         case 'mouv': {
+          // Les points de souris se gardent en fraction de la page (x en
+          // millièmes de la largeur, y en dix-millièmes de la hauteur du
+          // document du jour), pour se reposer sur la page vivante quelle
+          // que soit sa hauteur au moment de regarder la carte.
+          if (!(e.hd > 0)) break;
           const C = carte(cleCarte);
-          if (C.mouv.length < POINTS_MOUV_MAX * 2) C.mouv.push(...(e.pts as number[]).slice(0, POINTS_MOUV_MAX * 2 - C.mouv.length));
+          const pts = e.pts as number[];
+          for (let i = 0; i + 1 < pts.length && C.mouv.length < POINTS_MOUV_MAX * 2; i += 2) {
+            C.mouv.push(pts[i], Math.min(10000, Math.round((pts[i + 1] / e.hd) * 10000)));
+          }
           break;
         }
         case 'erreur': {
@@ -145,64 +206,115 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = 400): Promise<
   }
 
   // Les journées s'écrivent par mise à jour pointée (update avec chemins),
-  // ce qui laisse Firestore incrémenter sans relire. Le document est créé
-  // vide d'abord si besoin.
+  // ce qui laisse Firestore incrémenter sans relire les compteurs; le
+  // document se lit une fois pour connaître les clés déjà là (plafonds).
+  // Une journée qui refuse l'écriture ne bloque ni les autres ni les lots :
+  // l'erreur se consigne et le tour continue.
   for (const [cle, J] of journees) {
     const ref = db.collection('vh_jours').doc(cle);
     const [site, jour] = [cle.slice(0, cle.indexOf('_')), cle.slice(cle.indexOf('_') + 1)];
-    await ref.set({ site, jour }, { merge: true });
-    const maj: DocumentData = {};
-    for (const [chemin, n] of Object.entries(J.compteurs)) maj[chemin] = FieldValue.increment(n);
-    for (const [chemin, t] of Object.entries(J.textes)) maj[chemin] = t;
-    maj.maj = Timestamp.now();
-    // Firestore plafonne un update à 500 champs : on découpe.
-    const entrees = Object.entries(maj);
-    for (let i = 0; i < entrees.length; i += 450) {
-      await ref.update(Object.fromEntries(entrees.slice(i, i + 450)));
+    try {
+      const existant = (await ref.get()).data() || {};
+      borner(J, existant);
+      await ref.set({ site, jour }, { merge: true });
+      const maj: DocumentData = {};
+      for (const [chemin, n] of Object.entries(J.compteurs)) maj[chemin] = FieldValue.increment(n);
+      for (const [chemin, t] of Object.entries(J.textes)) maj[chemin] = t;
+      maj.maj = Timestamp.now();
+      // Firestore plafonne un update à 500 champs : on découpe.
+      const entrees = Object.entries(maj);
+      for (let i = 0; i < entrees.length; i += 450) {
+        await ref.update(Object.fromEntries(entrees.slice(i, i + 450)));
+      }
+    } catch (e) {
+      console.error(`[vexelhotjar] journée ${cle} non écrite`, (e as Error).message);
     }
   }
 
   for (const [cle, C] of cartes) {
     const ref = db.collection('vh_cartes').doc(cle);
-    const actuel = await ref.get();
-    const d = actuel.exists ? actuel.data() as DocumentData : {};
-    const [site, jour, device] = cle.split('_');
-    const clics = ((d.clics as DocumentData[]) || []).concat(C.clics).slice(-POINTS_CLICS_MAX);
-    const mouv = ((d.mouv as number[]) || []).concat(C.mouv).slice(-POINTS_MOUV_MAX * 2);
-    const scroll: Compteurs = { ...(d.scroll || {}) };
-    for (const [b, n] of Object.entries(C.scroll)) scroll[b] = (scroll[b] || 0) + n;
-    await ref.set({
-      site, jour, device, page: cle.split('_').slice(3).join('_'),
-      clics, mouv, scroll,
-      vues: (d.vues || 0) + C.vues,
-      nClics: (d.nClics || 0) + C.clics.length,
-      maj: Timestamp.now(),
-    });
+    try {
+      const actuel = await ref.get();
+      const d = actuel.exists ? actuel.data() as DocumentData : {};
+      const [site, jour, device] = cle.split('_');
+      let clics = ((d.clics as DocumentData[]) || []).concat(C.clics).slice(-POINTS_CLICS_MAX);
+      const mouv = (d.mouvV === 2 ? (d.mouv as number[]) || [] : []).concat(C.mouv).slice(-POINTS_MOUV_MAX * 2);
+      const scroll: Compteurs = { ...(d.scroll || {}) };
+      for (const [b, n] of Object.entries(C.scroll)) scroll[b] = (scroll[b] || 0) + n;
+      const fiche = (): DocumentData => ({
+        site, jour, device, page: cle.split('_').slice(3).join('_'),
+        clics, mouv, mouvV: 2, scroll,
+        vues: (d.vues || 0) + C.vues,
+        nClics: (d.nClics || 0) + C.clics.length,
+        maj: Timestamp.now(),
+      });
+      // La carte reste sous le mégaoctet de Firestore : les points les plus
+      // anciens tombent tant qu'il le faut (nClics garde le vrai compte).
+      let doc = fiche();
+      while (clics.length > 100 && Buffer.byteLength(JSON.stringify(doc)) > TAILLE_MAX_CARTE) {
+        clics = clics.slice(Math.ceil(clics.length / 4));
+        doc = fiche();
+      }
+      await ref.set(doc);
+    } catch (e) {
+      console.error(`[vexelhotjar] carte ${cle} non écrite`, (e as Error).message);
+    }
   }
 
-  const batch = db.batch();
-  for (const doc of snap.docs) batch.update(doc.ref, { agrege: true });
-  await batch.commit();
-  return snap.size;
+  for (let i = 0; i < docs.length; i += 450) {
+    const b = db.batch();
+    for (const d of docs.slice(i, i + 450)) b.update(d.ref, { agrege: true });
+    await b.commit();
+  }
+  return docs.length;
+}
+
+// Un seul tour à la fois : l'horloge et le bouton « Rafraîchir » se partagent
+// un verrou (vh_prive/verrou) tenu neuf minutes au plus, pour qu'un même lot
+// ne soit jamais fondu deux fois par deux tours qui se chevauchent.
+async function verrouiller(db: FirebaseFirestore.Firestore, par: string): Promise<boolean> {
+  const ref = db.collection(DOC_VERROU[0]).doc(DOC_VERROU[1]);
+  return db.runTransaction(async (tx) => {
+    const snap = await tx.get(ref);
+    if (Number(snap.data()?.jusqua || 0) > Date.now()) return false;
+    tx.set(ref, { jusqua: Date.now() + VERROU_MS, par, depuis: Timestamp.now() });
+    return true;
+  });
+}
+
+async function liberer(db: FirebaseFirestore.Firestore) {
+  await db.collection(DOC_VERROU[0]).doc(DOC_VERROU[1]).set({ jusqua: 0 }, { merge: true }).catch(() => {});
+}
+
+async function agregerTout(db: FirebaseFirestore.Firestore, tours: number, par: string): Promise<{ lots: number; occupe: boolean }> {
+  if (!(await verrouiller(db, par))) return { lots: 0, occupe: true };
+  let total = 0;
+  try {
+    for (let i = 0; i < tours; i += 1) {
+      const n = await agreger(db);
+      total += n;
+      if (n < LOTS_PAR_TOUR) break;
+    }
+  } finally {
+    await liberer(db);
+  }
+  return { lots: total, occupe: false };
 }
 
 export const vhAgreger = onSchedule(
   { schedule: 'every 15 minutes', timeZone: 'America/Toronto', memory: '512MiB', timeoutSeconds: 300 },
   async () => {
-    const db = getFirestore();
-    let total = 0;
-    for (let i = 0; i < 8; i += 1) {
-      const n = await agreger(db);
-      total += n;
-      if (n < 400) break;
-    }
-    if (total) console.log(`[vexelhotjar] ${total} lots agrégés`);
+    const { lots, occupe } = await agregerTout(getFirestore(), 8, 'horloge');
+    if (occupe) console.log('[vexelhotjar] agrégation déjà en cours, tour sauté');
+    else if (lots) console.log(`[vexelhotjar] ${lots} lots agrégés`);
   },
 );
 
-function exigerAdmin(req: { auth?: { token: { email?: string; email_verified?: boolean } } }) {
+// La même liste d'admins que le reste des fonctions (newsletter, envois) :
+// l'adresse suffit, comme pour elles.
+function exigerAdmin(req: { auth?: { token: { email?: string } } }) {
   const email = String(req.auth?.token.email || '').toLowerCase();
-  if (!req.auth || !ADMIN_EMAILS.includes(email) || !req.auth.token.email_verified) {
+  if (!req.auth || !ADMIN_EMAILS.includes(email)) {
     throw new HttpsError('permission-denied', "Réservé à l'admin.");
   }
 }
@@ -211,24 +323,7 @@ export const vhAgregerMaintenant = onCall(
   { region: 'us-central1', memory: '512MiB', timeoutSeconds: 300, cors: true },
   async (req) => {
     exigerAdmin(req);
-    const db = getFirestore();
-    let total = 0;
-    for (let i = 0; i < 6; i += 1) {
-      const n = await agreger(db);
-      total += n;
-      if (n < 400) break;
-    }
-    return { lots: total };
-  },
-);
-
-// L'adresse d'où l'admin appelle, telle que vhCollecter la verrait : le bouton
-// « Exclure cette adresse » des réglages la pose dans vh_prive/exclusions.
-export const vhMonAdresse = onCall(
-  { region: 'us-central1', cors: true },
-  async (req) => {
-    exigerAdmin(req);
-    return { ip: adresseDe(req.rawRequest) };
+    return agregerTout(getFirestore(), 6, 'admin');
   },
 );
 
@@ -240,6 +335,7 @@ export const vhEffacerSession = onCall(
     if (!/^[a-z0-9-]{8,64}$/.test(sid)) throw new HttpsError('invalid-argument', 'Session inconnue.');
     const db = getFirestore();
     await getStorage().bucket().deleteFiles({ prefix: `vh/replays/${sid}/` }).catch(() => {});
+    await effacerRequete(db.collection('vh_lots').where('sid', '==', sid));
     await db.collection('vh_sessions').doc(sid).delete();
     return { ok: true };
   },
@@ -267,7 +363,7 @@ export const vhPurger = onSchedule(
     const db = getFirestore();
     const bucket = getStorage().bucket();
     const limite = (jours: number) => Timestamp.fromMillis(Date.now() - jours * 86_400_000);
-    const lots = await effacerRequete(db.collection('vh_lots').where('agrege', '==', true).where('recu', '<', limite(RETENTION_LOTS_JOURS)));
+    const lots = await effacerRequete(db.collection('vh_lots').where('agrege', 'in', [true, 'encours']).where('recu', '<', limite(RETENTION_LOTS_JOURS)));
     const sessions = await effacerRequete(
       db.collection('vh_sessions').where('debut', '<', limite(RETENTION_SESSIONS_JOURS)),
       async (d) => { if (d.get('enregistre')) await bucket.deleteFiles({ prefix: `vh/replays/${d.id}/` }).catch(() => {}); },

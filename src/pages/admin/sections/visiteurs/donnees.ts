@@ -3,8 +3,8 @@
 // (vh_sessions) et des enregistrements (Storage), plus les réglages. Tout est
 // résumé ici en objets simples pour que les onglets n'aient qu'à afficher.
 
-import { collection, doc, getDoc, getDocs, limit, orderBy, query, setDoc, where, Timestamp } from 'firebase/firestore';
-import { getStorage, ref, getBytes } from 'firebase/storage';
+import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, limit, orderBy, query, setDoc, where, Timestamp } from 'firebase/firestore';
+import { getStorage, ref, getBytes, listAll } from 'firebase/storage';
 import { httpsCallable, getFunctions } from 'firebase/functions';
 import app, { db } from '../../../../firebase';
 import { SITE_VEXELHOTJAR, REGLAGES_DEFAUT, type ReglagesVexelHotjar } from '../../../../vexelhotjar';
@@ -95,8 +95,13 @@ export function resumer(journees: Journee[], de: string, a: string): Resume {
     for (let h = 0; h < 24; h += 1) r.heures[h] += j.heures?.[`h${h}`] || 0;
     for (const d of ['ordinateur', 'tablette', 'mobile'] as Device[]) r.appareils[d] += j.appareils?.[d] || 0;
     for (const [cle, p] of Object.entries(j.pages || {})) {
-      let page = pages.get(cle);
-      if (!page) { page = { cle, path: p.path || cle, titre: p.titre || '', vues: 0, dureeMs: 0, sorties: 0, clics: 0, rage: 0, morts: 0, scrollN: 0, scroll: {}, elements: {} }; pages.set(cle, page); }
+      // Une page se reconnaît à son chemin, et sa clé est celle de la journée
+      // la plus récente (les journées arrivent triées), pour que les cartes
+      // se lisent sous la clé en vigueur.
+      const chemin = p.path || cle;
+      let page = pages.get(chemin);
+      if (!page) { page = { cle, path: chemin, titre: p.titre || '', vues: 0, dureeMs: 0, sorties: 0, clics: 0, rage: 0, morts: 0, scrollN: 0, scroll: {}, elements: {} }; pages.set(chemin, page); }
+      page.cle = cle;
       if (p.titre) page.titre = p.titre;
       page.vues += p.vues || 0; page.dureeMs += p.dureeMs || 0; page.sorties += p.sorties || 0; page.clics += p.clics || 0;
       page.rage += p.rage || 0; page.morts += p.morts || 0; page.scrollN += p.scrollN || 0;
@@ -146,18 +151,22 @@ export function resumer(journees: Journee[], de: string, a: string): Resume {
 // ─── Cartes de chaleur ──────────────────────────────────────────────────────
 
 export interface PointClic { s: string; tx: string; ex: number; ey: number; vx: number; dy: number; hd: number; r?: boolean; m?: boolean }
-export interface Carte { clics: PointClic[]; mouv: number[]; vues: number; scroll: Record<string, number> }
+/** Les points d'une page sur un appareil : nClics est le vrai compte, clics les points gardés (plafonnés par jour). */
+export interface Carte { clics: PointClic[]; mouv: number[]; vues: number; nClics: number; scroll: Record<string, number> }
 
 export async function chargerCarte(device: Device, clePage: string, de: string, a: string): Promise<Carte> {
-  const c: Carte = { clics: [], mouv: [], vues: 0, scroll: {} };
+  const c: Carte = { clics: [], mouv: [], vues: 0, nClics: 0, scroll: {} };
   if (!db) return c;
   const q = query(collection(db, 'vh_cartes'), where('site', '==', SITE_VEXELHOTJAR), where('device', '==', device), where('page', '==', clePage), where('jour', '>=', de), where('jour', '<=', a));
   const snap = await getDocs(q);
   for (const d of snap.docs) {
     const x = d.data();
-    c.clics.push(...((x.clics as PointClic[]) || []));
-    c.mouv.push(...((x.mouv as number[]) || []));
+    const clics = (x.clics as PointClic[]) || [];
+    c.clics.push(...clics);
+    // Les points de souris en fraction de page (mouvV 2); ceux d'avant, en pixels absolus, ne se posent plus.
+    if (x.mouvV === 2) c.mouv.push(...((x.mouv as number[]) || []));
     c.vues += x.vues || 0;
+    c.nClics += typeof x.nClics === 'number' ? x.nClics : clics.length;
     for (const [b, n] of Object.entries((x.scroll as Record<string, number>) || {})) add(c.scroll, b, n);
   }
   return c;
@@ -200,17 +209,22 @@ async function degzipper(octets: ArrayBuffer): Promise<string> {
   return new Response(flux).text();
 }
 
-/** Les événements rrweb d'une session, morceau après morceau, dans l'ordre. */
-export async function chargerEnregistrement(sid: string, chunks: number): Promise<unknown[]> {
-  if (!app) return [];
+/** Les événements rrweb d'une session, morceau après morceau, dans l'ordre
+ *  des fichiers réellement présents (un morceau perdu en route ne cache pas
+ *  ceux qui l'ont suivi). */
+export async function chargerEnregistrement(sid: string): Promise<unknown[]> {
+  if (!app || !/^[a-z0-9-]{8,64}$/.test(sid)) return [];
   const storage = getStorage(app);
+  const dossier = await listAll(ref(storage, `vh/replays/${sid}`));
+  const morceaux = dossier.items
+    .filter(f => /^\d+\.json(\.gz)?$/.test(f.name))
+    .sort((a, b) => parseInt(a.name, 10) - parseInt(b.name, 10));
   const events: unknown[] = [];
-  for (let n = 0; n < chunks; n += 1) {
+  for (const f of morceaux) {
     try {
-      const octets = await getBytes(ref(storage, `vh/replays/${sid}/${String(n).padStart(5, '0')}.json.gz`));
-      const morceau = JSON.parse(await degzipper(octets));
+      const morceau = JSON.parse(await degzipper(await getBytes(f)));
       if (Array.isArray(morceau)) events.push(...morceau);
-    } catch { /* un morceau perdu ne bloque pas la lecture des autres */ }
+    } catch { /* un morceau illisible ne bloque pas la lecture des autres */ }
   }
   return events;
 }
@@ -245,20 +259,32 @@ export async function chargerExclusions(): Promise<AdresseExclue[]> {
   return liste.filter(e => typeof e.ip === 'string' && e.ip).map(e => ({ ip: String(e.ip), note: String(e.note || ''), ajoutee: Number(e.ajoutee) || 0 }));
 }
 
-export async function enregistrerExclusions(ips: AdresseExclue[]): Promise<void> {
+export const EXCLUSIONS_MAX = 40;
+
+/** Ajoute ou retire une adresse sans réécrire la liste entière : deux
+ *  administratrices qui règlent en même temps ne s'effacent pas l'une l'autre. */
+export async function ajouterExclusion(e: AdresseExclue): Promise<void> {
   if (!db) return;
-  await setDoc(doc(db, 'vh_prive', 'exclusions'), { ips: ips.slice(0, 40) }, { merge: true });
+  await setDoc(doc(db, 'vh_prive', 'exclusions'), { ips: arrayUnion({ ip: e.ip, note: e.note, ajoutee: e.ajoutee }) }, { merge: true });
+}
+export async function retirerExclusion(e: AdresseExclue): Promise<void> {
+  if (!db) return;
+  await setDoc(doc(db, 'vh_prive', 'exclusions'), { ips: arrayRemove({ ip: e.ip, note: e.note, ajoutee: e.ajoutee }) }, { merge: true });
 }
 
-/** L'adresse d'où l'admin regarde le tableau, vue par le collecteur. */
+/** L'adresse d'où l'admin regarde le tableau, vue par le collecteur lui-même
+ *  (GET /api/vh?moi passe par l'hébergement comme les lots). */
 export async function monAdresse(): Promise<string> {
-  const res = await fn('vhMonAdresse')({});
-  return String((res.data as { ip?: string })?.ip || '');
+  const res = await fetch('/api/vh?moi', { cache: 'no-store', credentials: 'omit' });
+  if (!res.ok) return '';
+  return String(((await res.json()) as { ip?: string })?.ip || '');
 }
 
-export async function rafraichirMaintenant(): Promise<number> {
+/** Lance un tour d'agrégation; occupe : l'horloge tenait déjà le verrou. */
+export async function rafraichirMaintenant(): Promise<{ lots: number; occupe: boolean }> {
   const res = await fn('vhAgregerMaintenant')({});
-  return ((res.data as { lots?: number }) || {}).lots || 0;
+  const d = (res.data as { lots?: number; occupe?: boolean }) || {};
+  return { lots: d.lots || 0, occupe: !!d.occupe };
 }
 
 // ─── Petits formats ─────────────────────────────────────────────────────────

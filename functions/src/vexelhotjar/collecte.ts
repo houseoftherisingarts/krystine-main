@@ -3,8 +3,8 @@ import { getFirestore, FieldValue, Timestamp, type DocumentData } from 'firebase
 import { getStorage } from 'firebase-admin/storage';
 import { gunzipSync, gzipSync } from 'zlib';
 import {
-  SITES_PERMIS, ORIGINES_DEV, HOTES_PERMIS, TAILLE_MAX_LOT, TAILLE_MAX_REPLAY, EVENEMENTS_MAX, DOC_EXCLUSIONS,
-  texte, cheminSur, nombre, hash, jourDe, deviceDe, hoteDe, adresseDe,
+  SITES_PERMIS, ORIGINES_DEV, HOTES_PERMIS, TAILLE_MAX_LOT, TAILLE_MAX_REPLAY, EVENEMENTS_MAX, DOC_EXCLUSIONS, DOC_REGLAGES, CACHE_REGLAGES_MS,
+  texte, cheminSur, nombre, hash, jourDe, deviceDe, hoteDe, adresseDe, chaineDe,
 } from './commun';
 
 // ─── La collecte : lots d'événements et morceaux d'enregistrement ───────────
@@ -47,25 +47,35 @@ function corpsDe(req: { rawBody?: Buffer; body?: unknown }): unknown {
   return JSON.parse(buf.toString('utf8'));
 }
 
-// Les adresses de Krystine et d'Alex (vh_prive/exclusions, posées dans les
-// réglages de l'admin) : lues au plus une fois par cinq minutes par instance,
-// et un lot qui en vient reçoit un 204 sans rien écrire.
-const EXCLUSIONS_TTL_MS = 5 * 60_000;
-let exclusions: { ips: Set<string>; t: number } = { ips: new Set(), t: 0 };
-async function adresseExclue(db: FirebaseFirestore.Firestore, ip: string): Promise<boolean> {
-  if (!ip) return false;
-  if (Date.now() - exclusions.t > EXCLUSIONS_TTL_MS) {
-    try {
-      const snap = await db.collection(DOC_EXCLUSIONS[0]).doc(DOC_EXCLUSIONS[1]).get();
-      const liste = (snap.data()?.ips || []) as { ip?: unknown }[];
-      exclusions = { ips: new Set(liste.map(e => String(e?.ip || '').trim()).filter(Boolean)), t: Date.now() };
-    } catch (e) {
-      console.error('[vexelhotjar] exclusions illisibles', (e as Error).message);
-      exclusions = { ips: exclusions.ips, t: Date.now() };
-    }
+// Ce que l'admin a réglé, relu au plus une fois par cinq minutes par
+// instance : la mesure allumée ou non et les chemins à ignorer
+// (settings/vexelhotjar), et les adresses de Krystine et d'Alex
+// (vh_prive/exclusions). Mesure éteinte ou adresse hors compte : le lot
+// reçoit un 204 sans rien écrire; un chemin ignoré perd ses événements.
+interface Reglages { actif: boolean; exclure: string[]; ips: Set<string>; t: number }
+let reglages: Reglages = { actif: true, exclure: [], ips: new Set(), t: 0 };
+async function lireReglages(db: FirebaseFirestore.Firestore): Promise<Reglages> {
+  if (Date.now() - reglages.t < CACHE_REGLAGES_MS) return reglages;
+  try {
+    const [r, x] = await Promise.all([
+      db.collection(DOC_REGLAGES[0]).doc(DOC_REGLAGES[1]).get(),
+      db.collection(DOC_EXCLUSIONS[0]).doc(DOC_EXCLUSIONS[1]).get(),
+    ]);
+    const liste = (x.data()?.ips || []) as { ip?: unknown }[];
+    const exclure = (Array.isArray(r.data()?.exclure) ? r.data()!.exclure : []) as unknown[];
+    reglages = {
+      actif: r.exists ? r.data()!.actif !== false : true,
+      exclure: exclure.map(c => texte(c, 200)).filter(c => c.startsWith('/')),
+      ips: new Set(liste.map(e => String(e?.ip || '').trim()).filter(Boolean)),
+      t: Date.now(),
+    };
+  } catch (e) {
+    console.error('[vexelhotjar] réglages illisibles', (e as Error).message);
+    reglages = { ...reglages, t: Date.now() };
   }
-  return exclusions.ips.has(ip);
+  return reglages;
 }
+const cheminIgnore = (path: string, exclure: string[]) => exclure.some(p => path === p || path.startsWith(p.endsWith('/') ? p : p + '/'));
 
 // ─── vhCollecter : la porte d'entrée du script ──────────────────────────────
 
@@ -76,10 +86,19 @@ export const vhCollecter = onRequest(
     const origine = req.get('origin') || '';
     if (ORIGINES_DEV.includes(origine)) {
       res.set('Access-Control-Allow-Origin', origine);
-      res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
       res.set('Access-Control-Allow-Headers', 'Content-Type');
     }
     if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
+    // GET /api/vh?moi : l'adresse de qui appelle, vue d'ici, par le même
+    // chemin que les lots (l'hébergement, puis cette fonction), pour que le
+    // bouton « Exclure cette adresse » de l'admin pose la bonne.
+    if (req.method === 'GET') {
+      if (!('moi' in req.query)) { res.status(404).send(''); return; }
+      res.set('Cache-Control', 'no-store');
+      res.json({ ip: adresseDe(req), chaine: chaineDe(req), pays: texte(req.get('x-country-code') || '', 2) || null });
+      return;
+    }
     if (req.method !== 'POST') { res.status(405).send(''); return; }
     if (!hotePermis(req)) { res.status(403).send(''); return; }
 
@@ -95,7 +114,8 @@ export const vhCollecter = onRequest(
     if (!SITES_PERMIS.includes(site) || !/^[a-z0-9-]{8,64}$/.test(sid)) { res.status(400).send(''); return; }
 
     const db = getFirestore();
-    if (await adresseExclue(db, ip)) { res.status(204).send(''); return; }
+    const r = await lireReglages(db);
+    if (!r.actif || (ip && r.ips.has(ip))) { res.status(204).send(''); return; }
     const pays = texte(req.get('x-country-code') || req.get('cf-ipcountry') || '', 2).toUpperCase() || undefined;
     const recu = Date.now();
 
@@ -103,7 +123,7 @@ export const vhCollecter = onRequest(
       if (d.t === 'replay') {
         await recevoirReplay(db, site, sid, d, recu);
       } else {
-        await recevoirLot(db, site, sid, d, recu, pays);
+        await recevoirLot(db, site, sid, d, recu, pays, r.exclure);
       }
     } catch (e) {
       console.error('[vexelhotjar] lot refusé', (e as Error).message);
@@ -114,17 +134,17 @@ export const vhCollecter = onRequest(
   },
 );
 
-async function recevoirLot(db: FirebaseFirestore.Firestore, site: string, sid: string, d: any, recu: number, pays?: string) {
+async function recevoirLot(db: FirebaseFirestore.Firestore, site: string, sid: string, d: any, recu: number, pays?: string, exclure: string[] = []) {
   const ev: unknown[] = Array.isArray(d.ev) ? d.ev.slice(0, EVENEMENTS_MAX) : [];
   if (!ev.length) return;
-  if (JSON.stringify(ev).length > TAILLE_MAX_LOT) throw new Error('lot trop gros');
+  if (Buffer.byteLength(JSON.stringify(ev)) > TAILLE_MAX_LOT) throw new Error('lot trop gros');
 
   const parcours: string[] = Array.isArray(d.parcours) ? d.parcours.slice(0, 60).map((p: unknown) => texte(p, 200)) : [];
   const vid = texte(d.vid, 64) || undefined;
 
   // Les événements sont nettoyés champ par champ : rien d'autre que ce que
   // le script est censé envoyer n'entre dans la base.
-  const propres = ev.map((e: any) => nettoyer(e)).filter(Boolean) as DocumentData[];
+  const propres = (ev.map((e: any) => nettoyer(e)).filter(Boolean) as DocumentData[]).filter(e => !cheminIgnore(e.path, exclure));
   if (!propres.length) return;
 
   const premier = propres.find(e => e.t === 'vue');
@@ -209,6 +229,7 @@ function nettoyer(e: any): DocumentData | null {
         scrollMax: nombre(e.scrollMax, 0, 100),
         pages: nombre(e.pages, 0, 1000),
         fin: !!e.fin,
+        vw: nombre(e.vw, 200, 10000, 1280),
       };
     case 'clic':
       return {
@@ -220,13 +241,13 @@ function nettoyer(e: any): DocumentData | null {
         ex: nombre(e.ex, 0, 1), ey: nombre(e.ey, 0, 1),
         vx: nombre(e.vx, 0, 1), dy: nombre(e.dy, 0, 200000), hd: nombre(e.hd, 0, 200000),
         vw: nombre(e.vw, 200, 10000, 1280),
-        r: !!e.r, m: !!e.m,
+        r: !!e.r, m: !!e.m, ia: !!e.ia,
         obj: texte(e.obj, 40) || null,
         niv: e.niv === 'gros' ? 'gros' : 'petit',
       };
     case 'mouv': {
       const pts = Array.isArray(e.pts) ? e.pts.slice(0, 800).map((n: unknown) => nombre(n, 0, 200000)) : [];
-      return { ...base, vw: nombre(e.vw, 200, 10000, 1280), pts };
+      return { ...base, vw: nombre(e.vw, 200, 10000, 1280), hd: nombre(e.hd, 0, 200000), pts };
     }
     case 'erreur':
       return { ...base, msg: texte(e.msg, 200), src: texte(e.src, 200), ligne: nombre(e.ligne, 0, 1e6) };
@@ -262,6 +283,4 @@ async function recevoirReplay(db: FirebaseFirestore.Firestore, site: string, sid
   if (!fiche.exists || !fiche.get('debut')) { maj.debut = Timestamp.fromMillis(recu); maj.jour = jourDe(recu); }
   await ref.set(maj, { merge: true });
 }
-
-// ─── L'agrégation : des lots aux journées et aux cartes ─────────────────────
 

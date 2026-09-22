@@ -34,7 +34,7 @@ const Lecteur: React.FC<{ session: Session; onFermer: () => void }> = ({ session
     (async () => {
       try {
         const [events, mod] = await Promise.all([
-          chargerEnregistrement(session.sid, session.chunks || 0),
+          chargerEnregistrement(session.sid),
           import('rrweb-player'),
         ]);
         await import('rrweb-player/dist/style.css');
@@ -53,7 +53,7 @@ const Lecteur: React.FC<{ session: Session; onFermer: () => void }> = ({ session
       }
     })();
     return () => { vivant = false; try { lecteur?.$destroy?.(); } catch { /* déjà fermé */ } };
-  }, [session.sid, session.chunks]);
+  }, [session.sid]);
 
   return (
     <Card className="p-5">

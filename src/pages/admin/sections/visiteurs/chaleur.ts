@@ -2,8 +2,10 @@
 // Chaque point est d'abord ancré à son élément dans la page vivante (le
 // sélecteur enregistré au clic, puis la position relative dans l'élément) :
 // la carte reste juste quand un bloc se déplace ou change de hauteur. Sans
-// élément retrouvé, on retombe sur la position dans la page, mise à
-// l'échelle de la hauteur du document du jour. La chaleur se peint en
+// élément retrouvé, ou pour un élément fixé à l'écran (un menu, une bulle de
+// clavardage : sa place dans le cadre ne dit rien de l'endroit du clic), on
+// retombe sur la position dans la page, mise à l'échelle de la hauteur du
+// document du jour. La chaleur se peint en
 // niveaux de gris puis se colore avec une rampe chaude tirée de la palette
 // du site (or, cuivre, rouille, presque noir).
 
@@ -18,7 +20,7 @@ export function ancrer(doc: Document, largeur: number, hauteurDoc: number, point
     let r: DOMRect | null = null;
     try {
       const el = doc.querySelector(s);
-      if (el) { const b = el.getBoundingClientRect(); if (b.width > 0 && b.height > 0) r = b; }
+      if (el && !fixe(doc, el)) { const b = el.getBoundingClientRect(); if (b.width > 0 && b.height > 0) r = b; }
     } catch { /* sélecteur invalide */ }
     cache.set(s, r);
     return r;
@@ -32,9 +34,22 @@ export function ancrer(doc: Document, largeur: number, hauteurDoc: number, point
   });
 }
 
-export function ancrerMouvements(largeur: number, ratioHauteur: number, mouv: number[]): Position[] {
+/** Vrai si l'élément, ou l'un de ses parents, est fixé à l'écran. */
+function fixe(doc: Document, el: Element): boolean {
+  const win = doc.defaultView;
+  if (!win) return false;
+  let e: Element | null = el;
+  for (let n = 0; e && n < 12; n += 1, e = e.parentElement) {
+    const pos = win.getComputedStyle(e).position;
+    if (pos === 'fixed' || pos === 'sticky') return true;
+  }
+  return false;
+}
+
+/** Les points de souris (x en millièmes de la largeur, y en dix-millièmes de la hauteur du document) posés sur le cadre. */
+export function ancrerMouvements(largeur: number, hauteur: number, mouv: number[]): Position[] {
   const out: Position[] = [];
-  for (let i = 0; i + 1 < mouv.length; i += 2) out.push({ x: (mouv[i] / 1000) * largeur, y: mouv[i + 1] * ratioHauteur });
+  for (let i = 0; i + 1 < mouv.length; i += 2) out.push({ x: (mouv[i] / 1000) * largeur, y: (mouv[i + 1] / 10000) * hauteur });
   return out;
 }
 
@@ -116,9 +131,11 @@ export function peindreDefilement(canvas: HTMLCanvasElement, scroll: Record<stri
     ctx.fillText(`${Math.round(part * 100)} %`, canvas.width - 16, y1 - 8);
   }
   // La ligne de flottaison : ce que l'écran montre avant tout défilement.
-  // Le cadre est réduit à l'écran (jusqu'à quatre fois sur mobile), donc la
-  // ligne est épaisse, doublée d'un halo clair pour rester visible sur un
-  // hero sombre, et son étiquette a un fond.
+  // Une page qui tient dans l'écran n'en a pas. Le cadre est réduit à
+  // l'écran (jusqu'à quatre fois sur mobile), donc la ligne est épaisse,
+  // doublée d'un halo clair pour rester visible sur un hero sombre, et son
+  // étiquette a un fond; sur un cadre étroit, l'étiquette est courte.
+  if (hauteurFold >= canvas.height - 8) return;
   const ep = Math.max(4, Math.round(canvas.width / 240));
   ctx.strokeStyle = 'rgba(255,255,255,0.9)';
   ctx.lineWidth = ep * 2.5;
@@ -130,7 +147,7 @@ export function peindreDefilement(canvas: HTMLCanvasElement, scroll: Record<stri
   ctx.setLineDash([]);
   const taille = Math.max(14, Math.round(canvas.width / 60));
   ctx.font = `700 ${taille}px Inter, system-ui, sans-serif`;
-  const texte = 'Ligne de flottaison : ce que l\'écran montre sans défiler';
+  const texte = canvas.width < 700 ? 'Ligne de flottaison' : 'Ligne de flottaison : ce que l\'écran montre sans défiler';
   const largeurTexte = ctx.measureText(texte).width;
   ctx.fillStyle = '#8B4A2F';
   ctx.beginPath();

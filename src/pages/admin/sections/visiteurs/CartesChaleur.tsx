@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Card } from '../../primitives';
 import { chargerCarte, nb, nomElement, pct, type Carte, type Device, type Resume } from './donnees';
-import { ancrer, ancrerMouvements, peindreChaleur, peindreDefilement, peindreZones, zones, type Zone } from './chaleur';
+import { ancrer, ancrerMouvements, peindreChaleur, peindreDefilement, peindreZones, zones, type Position, type Zone } from './chaleur';
 import { hauteurNaturelle, reveler } from './cadre';
 import type { Periode } from '../VisiteursSection';
 
 // ─── Cartes de chaleur ──────────────────────────────────────────────────────
 // La page vivante s'ouvre dans un cadre à la largeur de l'appareil choisi
-// (1440 pour l'ordinateur, 390 pour le téléphone), sans défilement interne
+// (1440 pour l'ordinateur, 1024 pour la tablette, 390 pour le téléphone), sans défilement interne
 // puisque le cadre prend toute la hauteur du document, et la carte se peint
 // sur un canevas posé par-dessus. Quatre lectures : les clics, les
 // déplacements de la souris, le défilement, et les zones (chaque bouton ou
@@ -22,6 +22,14 @@ const MODES: { id: Mode; label: string; icon: string }[] = [
 ];
 const LARGEURS: Record<Device, number> = { ordinateur: 1440, tablette: 1024, mobile: 390 };
 const FOLDS: Record<Device, number> = { ordinateur: 900, tablette: 1366, mobile: 844 };
+const APPAREILS: { id: Device; label: string; icon: string }[] = [
+  { id: 'ordinateur', label: 'Ordinateur', icon: 'fa-desktop' },
+  { id: 'tablette',   label: 'Tablette',   icon: 'fa-tablet-screen-button' },
+  { id: 'mobile',     label: 'Téléphone',  icon: 'fa-mobile-screen' },
+];
+// Safari refuse un canevas de plus de seize millions de pixels : au-delà, la
+// mémoire se réduit et le CSS remet la carte à la taille du cadre.
+const PIXELS_CANEVAS_MAX = 16e6;
 
 interface Props { resume: Resume | null; periode: Periode; pageChoisie: string; onPage: (cle: string) => void }
 
@@ -37,6 +45,8 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
   const iframe = useRef<HTMLIFrameElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const enveloppe = useRef<HTMLDivElement>(null);
+  const observateurCadre = useRef<ResizeObserver | null>(null);
+  const rafCadre = useRef(0);
 
   const pages = resume?.pages || [];
   const page = pages.find(p => p.cle === pageChoisie) || pages[0];
@@ -87,15 +97,17 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
     const el = iframe.current;
     const win = el?.contentWindow;
     if (!el || !win?.document.body) return;
+    observateurCadre.current?.disconnect();
     reveler(el, FOLDS[device]).finally(() => {
+      if (iframe.current !== el) return;   // le cadre a été remplacé pendant la révélation
       mesurer();
       setPret(true);
-      let prevu = 0;
       const obs = new (win as Window & typeof globalThis).ResizeObserver(() => {
-        if (prevu) return;
-        prevu = window.requestAnimationFrame(() => { prevu = 0; mesurer(); });
+        if (rafCadre.current) return;
+        rafCadre.current = window.requestAnimationFrame(() => { rafCadre.current = 0; if (iframe.current === el) mesurer(); });
       });
       obs.observe(win.document.body);
+      observateurCadre.current = obs;
     });
   };
 
@@ -104,21 +116,22 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
     const c = canvas.current;
     const doc = iframe.current?.contentDocument;
     if (!c || !doc || !pret || !carte) return;
-    c.width = largeur; c.height = hauteur;
-    const rayon = device === 'mobile' ? 16 : 26;
+    const k = Math.min(1, Math.sqrt(PIXELS_CANEVAS_MAX / (largeur * hauteur)));
+    c.width = Math.round(largeur * k); c.height = Math.round(hauteur * k);
+    const echelle = (p: Position[]) => (k === 1 ? p : p.map(q => ({ ...q, x: q.x * k, y: q.y * k })));
+    const rayon = (device === 'mobile' ? 16 : 26) * k;
     if (mode === 'clics') {
-      peindreChaleur(c, ancrer(doc, largeur, hauteur, carte.clics), rayon);
+      peindreChaleur(c, echelle(ancrer(doc, largeur, hauteur, carte.clics)), rayon);
       setListe([]);
     } else if (mode === 'mouvements') {
-      const hdRef = carte.clics.length ? carte.clics.map(p => p.hd).sort((a, b) => a - b)[Math.floor(carte.clics.length / 2)] : hauteur;
-      peindreChaleur(c, ancrerMouvements(largeur, hdRef ? hauteur / hdRef : 1, carte.mouv), rayon * 1.6, 60);
+      peindreChaleur(c, echelle(ancrerMouvements(largeur, hauteur, carte.mouv)), rayon * 1.6, 60);
       setListe([]);
     } else if (mode === 'defilement') {
-      peindreDefilement(c, carte.scroll, FOLDS[device]);
+      peindreDefilement(c, carte.scroll, FOLDS[device] * k);
       setListe([]);
     } else {
       const z = zones(doc, carte.clics);
-      peindreZones(c, z, carte.clics.length);
+      peindreZones(c, k === 1 ? z : z.map(x => (x.rect ? { ...x, rect: { x: x.rect.x * k, y: x.rect.y * k, w: x.rect.w * k, h: x.rect.h * k } } : x)), carte.clics.length);
       setListe(z);
     }
   }, [carte, mode, pret, hauteur, largeur, device]);
@@ -135,7 +148,20 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
     const sur = /^\/(?!\/)[a-zA-Z0-9\-._~/%]*$/.test(chemin);
     return sur ? `${chemin}?vh=apercu` : 'about:blank';
   }, [page?.path]);
+  // Le cadre change (page, appareil) ou l'onglet se ferme : l'observateur et
+  // la mesure en attente s'arrêtent avec lui.
+  useEffect(() => () => {
+    observateurCadre.current?.disconnect();
+    observateurCadre.current = null;
+    if (rafCadre.current) { window.cancelAnimationFrame(rafCadre.current); rafCadre.current = 0; }
+  }, [src, device]);
   const scrollTotal = carte?.scroll.b0 || carte?.scroll.b5 || 0;
+  // Ce qui manque, dit pour la carte qu'on regarde.
+  const vide: string | null = chargement || !carte ? null
+    : (mode === 'clics' || mode === 'zones') && !carte.clics.length ? 'Aucun clic sur cette page, sur cet appareil, pendant la période.'
+    : mode === 'mouvements' && !carte.mouv.length ? (device === 'mobile' ? "Sur téléphone, il n'y a pas de souris : cette carte reste vide." : 'Aucun déplacement de souris relevé sur cette page pendant la période.')
+    : mode === 'defilement' && !scrollTotal ? 'Aucune visite terminée sur cette page pendant la période : le défilement se compte quand la page se ferme.'
+    : null;
 
   if (!resume) return <div className="h-64 animate-pulse rounded-[20px] bg-white/45" aria-busy="true" />;
   if (!pages.length) return <Card className="p-6"><p className="text-sm text-[#38403a]/70">Les cartes apparaissent dès qu'une page a reçu des visites.</p></Card>;
@@ -151,9 +177,9 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
             </select>
           </label>
           <div className="flex flex-wrap gap-1 rounded-full border border-[#38403a]/10 bg-white/50 p-1" role="group" aria-label="Appareil">
-            {(['ordinateur', 'mobile'] as Device[]).map(d => (
-              <button key={d} type="button" onClick={() => { setDevice(d); setPret(false); }} className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] ${device === d ? 'bg-[#293027] text-[#EEE7DB]' : 'text-[#38403a]/65 hover:bg-white/70'}`}>
-                <i className={`fa-solid ${d === 'mobile' ? 'fa-mobile-screen' : 'fa-desktop'} text-[10px]`} aria-hidden="true" />{d === 'mobile' ? 'Téléphone' : 'Ordinateur'}
+            {APPAREILS.map(d => (
+              <button key={d.id} type="button" onClick={() => { setDevice(d.id); setPret(false); }} className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] ${device === d.id ? 'bg-[#293027] text-[#EEE7DB]' : 'text-[#38403a]/65 hover:bg-white/70'}`}>
+                <i className={`fa-solid ${d.icon} text-[10px]`} aria-hidden="true" />{d.label}
               </button>
             ))}
           </div>
@@ -167,12 +193,12 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
         </div>
         <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-[12px] text-[#38403a]/65 dark:text-white/55">
           <span><b className="font-semibold text-[#293027] dark:text-white">{nb(carte?.vues || 0)}</b> vues sur cet appareil</span>
-          <span><b className="font-semibold text-[#293027] dark:text-white">{nb(carte?.clics.length || 0)}</b> clics</span>
+          <span><b className="font-semibold text-[#293027] dark:text-white">{nb(carte?.nClics || 0)}</b> clics</span>
           <span><b className="font-semibold text-[#BC4A3C]">{nb(carte?.clics.filter(p => p.r).length || 0)}</b> de rage</span>
           <span><b className="font-semibold text-[#293027] dark:text-white">{nb(carte?.clics.filter(p => p.m).length || 0)}</b> dans le vide</span>
           {scrollTotal > 0 && <span><b className="font-semibold text-[#293027] dark:text-white">{pct(carte?.scroll.b50 || 0, scrollTotal)} %</b> passent la moitié de la page</span>}
           {chargement && <span className="text-[#8B4A2F]"><i className="fa-solid fa-circle-notch fa-spin mr-1" aria-hidden="true" />chargement</span>}
-          {!chargement && carte && !carte.clics.length && !carte.mouv.length && !scrollTotal && <span className="text-[#8B4A2F]">Aucune donnée pour cette page sur cet appareil pendant la période.</span>}
+          {vide && <span className="text-[#8B4A2F]">{vide}</span>}
         </div>
       </Card>
 
@@ -196,7 +222,7 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
             <div className="mb-3 flex justify-between text-[11px] text-[#38403a]/55"><span>peu</span><span>beaucoup</span></div>
             <p className="text-[13px] leading-relaxed text-[#38403a]/75 dark:text-white/65">
               {mode === 'clics' && 'Chaque tache est un endroit où des visiteuses ont cliqué; plus elle est sombre, plus il y a eu de clics. Un clic est rattaché au bouton ou au lien touché, la carte reste donc juste même si la page a changé de hauteur.'}
-              {mode === 'mouvements' && 'Les traces de la souris montrent ce que le regard suit sur un ordinateur : les zones sombres sont celles où la souris s\'attarde. Sur téléphone, il n\'y a pas de souris et cette carte reste vide.'}
+              {mode === 'mouvements' && 'Les traces de la souris montrent ce que le regard suit sur un ordinateur ou une tablette avec souris : les zones sombres sont celles où la souris s\'attarde. Sur téléphone, il n\'y a pas de souris et cette carte reste vide.'}
               {mode === 'defilement' && 'Chaque bande dit la part des visites qui est descendue jusque là. La ligne pointillée marque ce que l\'écran montre avant tout défilement : ce qui est en dessous n\'est vu que par celles qui défilent.'}
               {mode === 'zones' && 'Chaque bouton ou lien cliqué est encadré avec son nombre de clics et sa part de tous les clics de la page. Un cadre rouge signale des clics de rage.'}
             </p>

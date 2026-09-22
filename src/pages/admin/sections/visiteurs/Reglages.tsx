@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, GhostButton, Input, Label, PrimaryButton, ToggleSwitch, Textarea } from '../../primitives';
-import { chargerReglages, enregistrerReglages, chargerExclusions, enregistrerExclusions, monAdresse, type AdresseExclue } from './donnees';
+import { chargerReglages, enregistrerReglages, chargerExclusions, ajouterExclusion, retirerExclusion, monAdresse, EXCLUSIONS_MAX, type AdresseExclue } from './donnees';
 import { REGLAGES_DEFAUT, type ReglagesVexelHotjar } from '../../../../vexelhotjar';
 import { exclureMoi, mesureExclue } from '../../../../vexelhotjar/tracker';
 
@@ -29,9 +29,11 @@ const Reglages: React.FC = () => {
   }, []);
 
   const basculerMoi = (exclu: boolean) => { exclureMoi(exclu); setMoiExclu(exclu); };
-  const poserIps = async (liste: AdresseExclue[]) => { setIps(liste); await enregistrerExclusions(liste).catch(() => {}); };
+  const ajouterIp = async (e: AdresseExclue) => { setIps(l => [...l, e]); await ajouterExclusion(e).catch(() => {}); };
+  const retirerIp = async (e: AdresseExclue) => { setIps(l => l.filter(x => x.ip !== e.ip)); await retirerExclusion(e).catch(() => {}); };
   const dejaExclue = !!ipActuelle && ips.some(e => e.ip === ipActuelle);
-  const exclureActuelle = () => poserIps([...ips, { ip: ipActuelle, note: noteIp.trim(), ajoutee: Date.now() }]).then(() => setNoteIp(''));
+  const pleine = ips.length >= EXCLUSIONS_MAX;
+  const exclureActuelle = () => ajouterIp({ ip: ipActuelle, note: noteIp.trim(), ajoutee: Date.now() }).then(() => setNoteIp(''));
 
   const enregistrer = async () => {
     if (!r) return;
@@ -99,7 +101,7 @@ const Reglages: React.FC = () => {
                 {ips.map(e => (
                   <li key={e.ip} className="flex items-center justify-between gap-3 py-2">
                     <span className="min-w-0 truncate text-[13px] text-[#293027] dark:text-white"><span className="font-mono">{e.ip}</span>{e.note ? <span className="text-[#38403a]/60 dark:text-white/50"> · {e.note}</span> : null}</span>
-                    <GhostButton type="button" className="shrink-0 !px-3 !py-1.5 !text-[10px]" onClick={() => poserIps(ips.filter(x => x.ip !== e.ip))} aria-label={`Retirer ${e.ip}`}>Retirer</GhostButton>
+                    <GhostButton type="button" className="shrink-0 !px-3 !py-1.5 !text-[10px]" onClick={() => retirerIp(e)} aria-label={`Retirer ${e.ip}`}>Retirer</GhostButton>
                   </li>
                 ))}
               </ul>
@@ -107,9 +109,9 @@ const Reglages: React.FC = () => {
             <div className="mt-4 flex flex-wrap items-end gap-3">
               <div className="min-w-0 grow">
                 <Label>Votre adresse en ce moment{ipActuelle ? ` : ${ipActuelle}` : ''}</Label>
-                <Input value={noteIp} onChange={e => setNoteIp(e.target.value)} placeholder="Une note, par exemple : la maison" disabled={!ipActuelle || dejaExclue} />
+                <Input value={noteIp} onChange={e => setNoteIp(e.target.value)} placeholder="Une note, par exemple : la maison" disabled={!ipActuelle || dejaExclue || pleine} />
               </div>
-              <PrimaryButton type="button" onClick={exclureActuelle} disabled={!ipActuelle || dejaExclue}>{dejaExclue ? 'Déjà hors compte' : 'Exclure cette adresse'}</PrimaryButton>
+              <PrimaryButton type="button" onClick={exclureActuelle} disabled={!ipActuelle || dejaExclue || pleine}>{dejaExclue ? 'Déjà hors compte' : pleine ? `Liste pleine (${EXCLUSIONS_MAX})` : 'Exclure cette adresse'}</PrimaryButton>
             </div>
           </div>
         </Card>

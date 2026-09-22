@@ -226,7 +226,7 @@ function fermerPage(fin: boolean) {
     }
     formsCommences.clear();
   }
-  pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin });
+  pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin, vw: window.innerWidth });
   debutPage = Date.now();
   envoyer();
   if (fin) pv = '';
@@ -239,7 +239,7 @@ function pauserPage() {
   if (!pv) return;
   mesurerScroll();
   viderMouvements();
-  pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin: false });
+  pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin: false, vw: window.innerWidth });
   debutPage = Date.now();
   envoyer();
 }
@@ -249,7 +249,8 @@ function pauserPage() {
 function surClic(ev: MouseEvent) {
   if (!pv || !(ev.target instanceof Element)) return;
   const cible = ev.target;
-  const inter = cible.closest(INTERACTIFS) || cible;
+  const interactif = cible.closest(INTERACTIFS);
+  const inter = interactif || cible;
   const rect = inter.getBoundingClientRect();
   const ex = rect.width ? (ev.clientX - rect.left) / rect.width : 0.5;
   const ey = rect.height ? (ev.clientY - rect.top) / rect.height : 0.5;
@@ -268,10 +269,12 @@ function surClic(ev: MouseEvent) {
     ex: +Math.min(1, Math.max(0, ex)).toFixed(3), ey: +Math.min(1, Math.max(0, ey)).toFixed(3),
     vx: +(ev.clientX / window.innerWidth).toFixed(3), dy: Math.round(ev.clientY + window.scrollY), hd: hauteurDoc(),
     vw: window.innerWidth, r: rage, m: false,
+    ia: interactif ? 1 : 0,   // un vrai élément cliquable (lien, bouton, champ, rôle de bouton)
     obj: inter.getAttribute('data-vh-objectif') || undefined,
     niv: niveauDe(inter.getAttribute('data-vh-niveau')),
   };
   if (!e.obj) { delete e.obj; delete e.niv; }
+  if (!e.ia) delete e.ia;
 
   // Clic mort : rien ne bouge dans la seconde et demie (ni le DOM, ni l'adresse, ni le
   // défilement) après un clic sur autre chose qu'un champ de saisie.
@@ -284,9 +287,7 @@ function surClic(ev: MouseEvent) {
   window.setTimeout(() => {
     const bouge = location.href !== pathAvant || Math.abs(window.scrollY - scrollAvant) > 4 || mutationDepuis !== mutAvant || pv !== pvAvant;
     e.m = !bouge;
-    if (!actif) return;
-    file.push(e); toucherSession();
-    if (minuterie === undefined) minuterie = window.setTimeout(envoyer, CADENCE_ENVOI_MS);
+    pousser(e);   // garde son horodatage et sa page; la file part à quarante événements comme pour le reste
   }, MORT_DELAI_MS);
 }
 
@@ -301,7 +302,7 @@ function surMouvement(ev: MouseEvent) {
 
 function viderMouvements() {
   if (!mouvements.length) return;
-  pousser({ t: 'mouv', vw: window.innerWidth, pts: mouvements });
+  pousser({ t: 'mouv', vw: window.innerWidth, hd: hauteurDoc(), pts: mouvements });
   mouvements = [];
 }
 
@@ -389,8 +390,15 @@ export function demarrerVexelHotjar(c: ConfigVexelHotjar) {
   actif = true;
   ouvrirSession();
   brancherNavigation();
+  // Ce qui compte comme « la page a répondu » après un clic : un élément qui
+  // apparaît ou disparaît, un état qui bascule (classe, hidden, open, aria).
+  // Les animations (attribut style), les horloges et le texte qui se met à
+  // jour tout seul ne comptent pas, sinon aucun clic ne serait jamais mort.
   observateur = new MutationObserver(() => { mutationDepuis += 1; });
-  observateur.observe(document.documentElement, { childList: true, subtree: true, attributes: true, characterData: true });
+  observateur.observe(document.documentElement, {
+    childList: true, subtree: true, attributes: true,
+    attributeFilter: ['class', 'hidden', 'open', 'src', 'href', 'disabled', 'value', 'checked', 'aria-expanded', 'aria-hidden', 'aria-selected', 'aria-pressed', 'aria-checked', 'data-state'],
+  });
   document.addEventListener('click', surClic, true);
   document.addEventListener('mousemove', surMouvement, { passive: true });
   document.addEventListener('scroll', mesurerScroll, { passive: true });

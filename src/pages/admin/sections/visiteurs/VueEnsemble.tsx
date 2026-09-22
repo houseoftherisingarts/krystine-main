@@ -35,8 +35,8 @@ const VueEnsemble: React.FC<Props> = ({ resume, periode, onVoirCarte, onRafraich
   const rafraichir = async () => {
     setRafraichit(true); setMot(null);
     try {
-      const n = await rafraichirMaintenant();
-      setMot(n ? `${nb(n)} lot${n > 1 ? 's' : ''} ajouté${n > 1 ? 's' : ''} aux chiffres.` : 'Tout était déjà à jour.');
+      const { lots: n, occupe } = await rafraichirMaintenant();
+      setMot(occupe ? "L'horloge fond déjà les lots : les chiffres arrivent dans quelques minutes." : n ? `${nb(n)} lot${n > 1 ? 's' : ''} ajouté${n > 1 ? 's' : ''} aux chiffres.` : 'Tout était déjà à jour.');
       onRafraichi();
     } catch (e: any) {
       setMot(e?.message || 'Le rafraîchissement a échoué.');
