@@ -261,7 +261,7 @@ const PressePage: React.FC = () => {
       <section data-hero className={`relative w-full ${GOUTTIERE} pt-[clamp(6rem,12vh,9rem)] pb-[clamp(2rem,5vh,4rem)]`}>
         <Masthead gauche={<>N&deg; 09 &middot; {t.titre}</>} />
         <div className="mt-[clamp(2rem,5vh,3.5rem)]">
-          <Kicker data-fade className="mb-6">{t.kicker}</Kicker>
+          <p data-fade className="mb-6 text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330]">{t.kicker}</p>
           <TitreV2 lignes={[t.titre]} />
           <SousTitreV2>{t.soustitre}</SousTitreV2>
           <LiensChapitres liens={t.liens} />

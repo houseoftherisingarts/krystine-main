@@ -94,11 +94,11 @@ const PostsPrefaitsSection: React.FC = () => {
                   <img src={carte.vignette} alt="" className="aspect-square w-full object-cover" />
                   <div className="flex flex-1 flex-col px-4 py-4">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#9c7a44]">{SERIES[carte.serie] || carte.serie}</span>
+                      <span className="text-[13px] font-bold uppercase tracking-[0.16em] text-[#9c7a44]">{SERIES[carte.serie] || carte.serie}</span>
                       {carte.etat === 'publiee' && carte.publieeLe ? (
-                        <span className="shrink-0 rounded-full bg-[#e7efe4] px-2 py-[3px] text-[11px] font-semibold text-[#4a6e4a]">Publié le {enLettres(carte.publieeLe)}</span>
+                        <span className="shrink-0 rounded-full bg-[#e7efe4] px-2 py-[3px] text-[13px] font-semibold text-[#4a6e4a]">Publié le {enLettres(carte.publieeLe)}</span>
                       ) : (
-                        <span className="shrink-0 rounded-full bg-[#f0e6d2] px-2 py-[3px] text-[11px] font-semibold text-[#7d6330]">À publier</span>
+                        <span className="shrink-0 rounded-full bg-[#f0e6d2] px-2 py-[3px] text-[13px] font-semibold text-[#7d6330]">À publier</span>
                       )}
                     </div>
                     <h3 className="pp-serif mt-2 text-[19px] leading-[1.1] text-[#1c1712]">{carte.titre}</h3>
