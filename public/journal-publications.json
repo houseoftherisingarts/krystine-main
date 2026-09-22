@@ -618,5 +618,19 @@
       "src/pages/admin/sections/visiteurs/donnees.ts",
       "src/vexelhotjar/tracker.ts"
     ]
+  },
+  {
+    "quand": "2026-09-22T02:09:42.795Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "0e068db",
+    "message": "Visiteurs et clics : onglet Réglages fluide sur téléphone (grille et interrupteur)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/visiteurs/Reglages.tsx"
+    ]
   }
 ]
