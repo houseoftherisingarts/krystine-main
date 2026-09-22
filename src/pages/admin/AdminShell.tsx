@@ -98,6 +98,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   media:      'mediatheque',
   formations: 'formations',
   enPreparation: 'en-preparation',
+  postsPrefaits: 'posts-prefaits',
   assets:     'assets',
   settings:   'parametres',
 };
