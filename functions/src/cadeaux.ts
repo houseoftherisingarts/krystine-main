@@ -129,7 +129,7 @@ export const utiliserCadeau = onCall(
       'line_items[0][quantity]': '1',
       'automatic_tax[enabled]': 'true',
       billing_address_collection: 'required',
-      success_url: `${SITE}/compte?achat=ok`,
+      success_url: `${SITE}/compte?achat=ok&cadeau=ok`,
       cancel_url: `${SITE}/cours/${c.formationId}`,
       'metadata[uid]': c.uid,
       'metadata[formationId]': c.formationId,

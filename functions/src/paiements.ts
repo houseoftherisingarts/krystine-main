@@ -63,7 +63,7 @@ export const creerSessionPaiement = onCall(
       // (echangerRecompense, functions/src/recompenses.ts) : il porte déjà
       // sa propre restriction de 50 $ minimum côté Stripe.
       allow_promotion_codes: 'true',
-      success_url: `${SITE}/compte?achat=ok`,
+      success_url: `${SITE}/compte?achat=ok&formation=${encodeURIComponent(formationId)}`,
       cancel_url: `${SITE}/cours/${formationId}`,
       'metadata[uid]': req.auth.uid,
       'metadata[formationId]': formationId,

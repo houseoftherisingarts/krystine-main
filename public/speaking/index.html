@@ -790,7 +790,7 @@
       source:S('speaking-'+lang), status:S('new'), createdAt:{timestampValue:new Date().toISOString()}
     };
     fetch('https://firestore.googleapis.com/v1/projects/krystinestlaurent-87566/databases/(default)/documents/bookingRequests',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:fields})})
-      .then(function(r){ if(!r.ok) throw new Error(r.status); f.classList.add('sent'); setMsg(D._done,'ok'); })
+      .then(function(r){ if(!r.ok) throw new Error(r.status); f.classList.add('sent'); setMsg(D._done,'ok'); if(window.vexelhotjar)window.vexelhotjar.objectif('Demande de conférence','petit'); })
       .catch(function(){ btn.disabled=false; setMsg(D._fail,'err'); });
   });
 })();

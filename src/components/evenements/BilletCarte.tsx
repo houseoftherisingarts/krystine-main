@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { httpsCallable, getFunctions } from 'firebase/functions';
 import app from '../../firebase';
+import { trackObjectif } from '../../lib/track';
 import { useApp } from '../../contexts/AppContext';
 import { enVente, placesRestantes, type EventDoc } from '../../firebase/firestore';
 import { enDollars, avecTaxes } from '../../firebase/billets';
@@ -46,6 +47,7 @@ const BilletCarte: React.FC<{
     try {
       const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionBillets');
       const res = await call({ eventId: ev.id, quantite });
+      trackObjectif('Paiement commencé · billets', 'gros', { paiement: true });
       window.location.href = (res.data as { url: string }).url;
     } catch {
       setErreur(fr ? 'Le paiement n’a pas pu démarrer. Réessayez dans un instant.' : 'Payment could not start. Try again in a moment.');

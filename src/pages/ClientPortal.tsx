@@ -13,6 +13,7 @@ import { updateMember, getClientOrdersForMember, getDoshaResultsForMember, getGu
 import { uploadImage, reduireImage } from '../firebase/storage';
 import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../shopify';
 import { findOilForDosha } from '../lib/shopifyOil';
+import { trackObjectif } from '../lib/track';
 import { ritualForDosha } from '../lib/doshaRituals';
 import { jsPDF } from 'jspdf';
 import ClientMessagerie from './client/ClientMessagerie';
@@ -601,6 +602,22 @@ const ClientPortal: React.FC = () => {
     return () => window.removeEventListener('krystine:ouvrir-boutique', ouvrir);
   }, []);
 
+  // Retour de Stripe, toutes portes confondues : l'achat confirmé compte
+  // comme gros objectif (Visiteurs et clics, Pixel, GA4) une seule fois, avant
+  // que les deux lectures d'en dessous n'effacent les paramètres de l'adresse.
+  useState(() => {
+    try {
+      const q = new URLSearchParams(window.location.search);
+      const nom = q.get('achat') === 'ok'
+        ? (q.get('formation') ? `Achat confirmé · ${q.get('formation')}` : q.get('cadeau') === 'ok' ? 'Achat confirmé · cadeau' : q.get('onglet') === 'billets' ? 'Achat confirmé · billets' : 'Achat confirmé')
+        : q.get('niskas') === 'ok' ? 'Achat confirmé · niskas' : q.get('saison') === 'ok' ? 'Achat confirmé · saison' : '';
+      if (nom) {
+        trackObjectif(nom.slice(0, 40), 'gros');
+        if (q.get('achat') === 'ok') { q.delete('achat'); q.delete('formation'); q.delete('cadeau'); const reste = q.toString(); window.history.replaceState(null, '', `${window.location.pathname}${reste ? `?${reste}` : ''}`); }
+      }
+    } catch { /* noop */ }
+    return null;
+  });
   // Retour de Stripe : le paquet de niskas arrive par le webhook, on le dit.
   const [merciNiskas, setMerciNiskas] = useState(() => {
     try {

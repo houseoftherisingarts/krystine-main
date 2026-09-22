@@ -4,7 +4,8 @@
 // carte de chaleur retombe au bon endroit même quand la mise en page bouge),
 // jusqu'où elles descendent, les clics de rage et les clics morts, les
 // erreurs JavaScript, les formulaires commencés puis laissés, et les
-// objectifs (`data-vh-objectif="nom"` sur un bouton).
+// objectifs (`data-vh-objectif="nom"` sur un bouton, `data-vh-niveau="gros"`
+// pour une transaction, « petit » sinon).
 //
 // Il ne démarre qu'après le consentement aux témoins, ne pose aucun témoin,
 // garde l'identifiant de session dans sessionStorage et celui de visiteuse
@@ -100,6 +101,12 @@ function toucherSession() { ecrire(sessionStorage, CLE_SID_T, String(Date.now())
 // ─── Sélecteurs ─────────────────────────────────────────────────────────────
 
 const INTERACTIFS = 'a,button,input,select,textarea,label,summary,[role="button"],[role="link"],[data-vh-objectif]';
+// Deux niveaux d'objectif : « gros » pour une transaction (un achat, un
+// billet), « petit » pour l'engagement qui revient (une liste d'attente,
+// l'infolettre, un quiz complété).
+export type NiveauObjectif = 'gros' | 'petit';
+const niveauDe = (v: unknown): NiveauObjectif => (v === 'gros' ? 'gros' : 'petit');
+
 
 /** Un chemin CSS court et stable : un id s'il y en a un, sinon la lignée avec nth-of-type, six niveaux au plus. */
 export function selecteur(el: Element): string {
@@ -261,8 +268,9 @@ function surClic(ev: MouseEvent) {
     vx: +(ev.clientX / window.innerWidth).toFixed(3), dy: Math.round(ev.clientY + window.scrollY), hd: hauteurDoc(),
     vw: window.innerWidth, r: rage, m: false,
     obj: inter.getAttribute('data-vh-objectif') || undefined,
+    niv: niveauDe(inter.getAttribute('data-vh-niveau')),
   };
-  if (!e.obj) delete e.obj;
+  if (!e.obj) { delete e.obj; delete e.niv; }
 
   // Clic mort : rien ne bouge dans la seconde et demie (ni le DOM, ni l'adresse, ni le
   // défilement) après un clic sur autre chose qu'un champ de saisie.
@@ -404,12 +412,12 @@ export function arreterVexelHotjar() {
   arreterReplay = null;
 }
 
-/** Un objectif atteint hors clic (un achat confirmé, une inscription) : `window.vexelhotjar.objectif('achat')`. */
-export function objectif(nom: string) {
-  pousser({ t: 'objectif', nom: String(nom).slice(0, 40) });
+/** Un objectif atteint hors clic (un achat confirmé, une inscription) : `window.vexelhotjar.objectif('achat', 'gros')`. */
+export function objectif(nom: string, niveau: NiveauObjectif = 'petit') {
+  pousser({ t: 'objectif', nom: String(nom).slice(0, 40), niv: niveauDe(niveau) });
 }
 
 declare global {
-  interface Window { vexelhotjar?: { objectif: (nom: string) => void } }
+  interface Window { vexelhotjar?: { objectif: (nom: string, niveau?: NiveauObjectif) => void } }
 }
 if (typeof window !== 'undefined') window.vexelhotjar = { objectif };

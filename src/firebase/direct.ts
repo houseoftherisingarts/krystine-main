@@ -4,6 +4,7 @@ import {
   serverTimestamp, setDoc, where, type Timestamp, type Unsubscribe,
 } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import { trackObjectif } from '../lib/track';
 
 // ─── Le studio du direct ─────────────────────────────────────────────────────
 // Un direct vit sous `directs/{directId}` : les messages du clavardage, les
@@ -128,6 +129,7 @@ export async function ouvrirPourboire(montant: number, directId: string, titre: 
     getFunctions(app, 'us-central1'), 'creerPourboire',
   );
   const { data } = await call({ montant, directId, titre });
+  trackObjectif('Paiement commencé · pourboire', 'gros', { paiement: true });
   return data.url;
 }
 

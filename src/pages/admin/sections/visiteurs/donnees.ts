@@ -28,7 +28,7 @@ export interface Journee {
   entrees?: Record<string, number>;
   sources?: Record<string, { n: number; nom: string }>;
   campagnes?: Record<string, { n: number; source: string; campagne: string }>;
-  objectifs?: Record<string, { n: number; nom: string }>;
+  objectifs?: Record<string, { n: number; nom: string; niv?: 'gros' | 'petit' }>;
   erreursListe?: Record<string, { n: number; msg: string; src: string; path: string }>;
   formulaires?: Record<string, { s: string; path: string; debuts?: number; soumis?: number; abandons?: number; dernierChamp?: string }>;
 }
@@ -48,7 +48,7 @@ export interface Resume {
   pages: PageResume[];
   sources: { nom: string; n: number }[];
   campagnes: { source: string; campagne: string; n: number }[];
-  objectifs: { nom: string; n: number }[];
+  objectifs: { nom: string; n: number; niveau: 'gros' | 'petit' }[];
   erreursListe: { msg: string; src: string; path: string; n: number }[];
   formulaires: { s: string; path: string; debuts: number; soumis: number; abandons: number; dernierChamp?: string }[];
 }
@@ -83,7 +83,7 @@ export function resumer(journees: Journee[], de: string, a: string): Resume {
   const pages = new Map<string, PageResume>();
   const sources: Record<string, number> = {};
   const campagnes = new Map<string, { source: string; campagne: string; n: number }>();
-  const objectifs: Record<string, number> = {};
+  const objectifs = new Map<string, { n: number; niveau: 'gros' | 'petit' }>();
   const erreurs = new Map<string, { msg: string; src: string; path: string; n: number }>();
   const forms = new Map<string, { s: string; path: string; debuts: number; soumis: number; abandons: number; dernierChamp?: string }>();
   const parJour = new Map<string, { vues: number; sessions: number; nouveaux: number }>();
@@ -113,7 +113,10 @@ export function resumer(journees: Journee[], de: string, a: string): Resume {
       const e = campagnes.get(k) || { source: c.source, campagne: c.campagne, n: 0 };
       e.n += c.n || 0; campagnes.set(k, e);
     }
-    for (const o of Object.values(j.objectifs || {})) add(objectifs, o.nom, o.n);
+    for (const o of Object.values(j.objectifs || {})) {
+      const x = objectifs.get(o.nom) || { n: 0, niveau: o.niv === 'gros' ? 'gros' as const : 'petit' as const };
+      x.n += o.n || 0; objectifs.set(o.nom, x);
+    }
     for (const [k, e] of Object.entries(j.erreursListe || {})) {
       const x = erreurs.get(k) || { msg: e.msg, src: e.src, path: e.path, n: 0 };
       x.n += e.n || 0; erreurs.set(k, x);
@@ -134,7 +137,7 @@ export function resumer(journees: Journee[], de: string, a: string): Resume {
   r.pages = [...pages.values()].sort((x, y) => y.vues - x.vues);
   r.sources = Object.entries(sources).map(([nom, n]) => ({ nom, n })).sort((x, y) => y.n - x.n);
   r.campagnes = [...campagnes.values()].sort((x, y) => y.n - x.n);
-  r.objectifs = Object.entries(objectifs).map(([nom, n]) => ({ nom, n })).sort((x, y) => y.n - x.n);
+  r.objectifs = [...objectifs.entries()].map(([nom, x]) => ({ nom, ...x })).sort((x, y) => y.n - x.n);
   r.erreursListe = [...erreurs.values()].sort((x, y) => y.n - x.n);
   r.formulaires = [...forms.values()].sort((x, y) => y.abandons - x.abandons);
   return r;

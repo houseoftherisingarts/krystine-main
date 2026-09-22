@@ -83,7 +83,7 @@ const Reglages: React.FC = () => {
         <Card className="p-5">
           <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#38403a]/55">Pour marquer un objectif</p>
           <p className="text-[13px] leading-relaxed text-[#38403a]/75 dark:text-white/65">
-            Un bouton qui compte (acheter, s'inscrire, réserver) peut porter l'attribut <code className="rounded bg-[#293027]/10 px-1 py-0.5 font-mono text-[12px]">data-vh-objectif="achat"</code> : chaque clic s'ajoute alors aux objectifs de la vue d'ensemble. C'est un geste de Vexel, à demander dans « Demander un changement ».
+            Les transactions (un paiement commencé, un achat confirmé, un billet) comptent comme gros objectifs; l'engagement qui revient (une liste d'attente, l'infolettre, un quiz complété, un compte créé) compte comme petit succès. Les deux nourrissent aussi les audiences de reciblage du Pixel. Un nouveau bouton se marque avec <code className="rounded bg-[#293027]/10 px-1 py-0.5 font-mono text-[12px]">data-vh-objectif="nom"</code> et <code className="rounded bg-[#293027]/10 px-1 py-0.5 font-mono text-[12px]">data-vh-niveau="gros"</code> : c'est un geste de Vexel, à demander dans « Demander un changement ».
           </p>
         </Card>
       </div>

@@ -70,6 +70,11 @@ const VueEnsemble: React.FC<Props> = ({ resume, periode, onVoirCarte, onRafraich
     .map(p => ({ ...p, moitie: pct(p.scroll.b50 || 0, p.scrollN) }))
     .sort((a, b) => a.moitie - b.moitie)
     .slice(0, 5);
+  // Les gros objectifs sont les transactions, les petits succès l'engagement
+  // qui revient; les deux sortent des mêmes boutons marqués et des mêmes appels.
+  const gros = resume.objectifs.filter(o => o.niveau === 'gros').slice(0, 8);
+  const petits = resume.objectifs.filter(o => o.niveau !== 'gros').slice(0, 8);
+  const totalGros = gros.reduce((n, o) => n + o.n, 0);
 
   return (
     <div className="space-y-6">
@@ -170,12 +175,18 @@ const VueEnsemble: React.FC<Props> = ({ resume, periode, onVoirCarte, onRafraich
         </Card>
       </div>
 
-      {resume.objectifs.length > 0 && (
+      <div className="grid gap-6 lg:grid-cols-2">
         <Card className="min-w-0 p-6">
-          <Titre note="boutons marqués comme objectif">Objectifs atteints</Titre>
-          <Barres lignes={resume.objectifs.map(o => ({ nom: o.nom, n: o.n }))} unite=" fois" />
+          <Titre note={gros.length ? `${nb(totalGros)} sur ${nb(resume.sessions)} visites` : 'achats, billets, paiements'}>Gros objectifs</Titre>
+          {gros.length ? <Barres lignes={gros.map(o => ({ nom: o.nom, n: o.n }))} unite=" fois" />
+            : <p className="text-sm text-[#38403a]/55">Aucune transaction sur la période. Un paiement commencé et un achat confirmé comptent ici, chacun sous son nom.</p>}
         </Card>
-      )}
+        <Card className="min-w-0 p-6">
+          <Titre note="listes d'attente, infolettre, quiz, compte">Petits succès</Titre>
+          {petits.length ? <Barres lignes={petits.map(o => ({ nom: o.nom, n: o.n }))} unite=" fois" couleur={TEINTES.bleu} />
+            : <p className="text-sm text-[#38403a]/55">Aucun engagement sur la période. Chaque inscription et chaque quiz complété s'ajoutent ici.</p>}
+        </Card>
+      </div>
     </div>
   );
 };

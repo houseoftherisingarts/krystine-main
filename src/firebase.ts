@@ -90,4 +90,11 @@ export function logLead(source: string) {
   } catch { /* noop */ }
 }
 
+export function logObjectif(nom: string, niveau: 'gros' | 'petit') {
+  if (!_analytics) return;
+  try {
+    logEvent(_analytics, 'objectif', { nom, niveau });
+  } catch { /* noop */ }
+}
+
 export default app;

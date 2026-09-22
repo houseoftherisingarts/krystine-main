@@ -3,23 +3,38 @@ import { getFirestore, FieldValue, Timestamp, type DocumentData } from 'firebase
 import { getStorage } from 'firebase-admin/storage';
 import { gunzipSync, gzipSync } from 'zlib';
 import {
-  SITES_PERMIS, ORIGINES_DEV, TAILLE_MAX_LOT, TAILLE_MAX_REPLAY, EVENEMENTS_MAX,
-  texte, cheminSur, nombre, hash, jourDe, deviceDe,
+  SITES_PERMIS, ORIGINES_DEV, HOTES_PERMIS, TAILLE_MAX_LOT, TAILLE_MAX_REPLAY, EVENEMENTS_MAX,
+  texte, cheminSur, nombre, hash, jourDe, deviceDe, hoteDe,
 } from './commun';
 
 // ─── La collecte : lots d'événements et morceaux d'enregistrement ───────────
 // Voir commun.ts pour la vue d'ensemble du module.
 
+// La cadence se compte par instance et par adresse (240 lots la minute); la
+// borne ferme reste maxInstances × 240. Le compteur se vide de ses entrées
+// mortes dès qu'il grossit, pour que la mémoire ne suive pas le nombre
+// d'adresses vues dans la journée.
 const cadence = new Map<string, { n: number; t: number }>();
 function tropVite(ip: string): boolean {
-  const cle = hash(ip + jourDe(Date.now()));
+  const cle = hash((ip || 'inconnue') + jourDe(Date.now()));
   const now = Date.now();
+  if (cadence.size > 5000) {
+    for (const [k, v] of cadence) if (now - v.t > 60_000) cadence.delete(k);
+  }
   const e = cadence.get(cle);
   if (!e || now - e.t > 60_000) { cadence.set(cle, { n: 1, t: now }); return false; }
   e.n += 1;
   return e.n > 240;
 }
 
+// L'hôte annoncé par le navigateur (Origin, sinon Referer) doit être le site.
+function hotePermis(req: { get: (h: string) => string | undefined }): boolean {
+  const hote = hoteDe(req.get('origin') || req.get('referer') || '');
+  return HOTES_PERMIS.includes(hote);
+}
+
+// Le corps se borne avant d'être décompressé et relu : la taille brute, puis
+// la taille décompressée (un petit gzip peut cacher des gigaoctets).
 function corpsDe(req: { rawBody?: Buffer; body?: unknown }): unknown {
   let buf = req.rawBody;
   if (!buf || !buf.length) {
@@ -27,7 +42,8 @@ function corpsDe(req: { rawBody?: Buffer; body?: unknown }): unknown {
     else if (req.body && typeof req.body === 'object') return req.body;
     else return null;
   }
-  if (buf[0] === 0x1f && buf[1] === 0x8b) buf = gunzipSync(buf);
+  if (buf.length > TAILLE_MAX_REPLAY) throw new Error('corps trop gros');
+  if (buf[0] === 0x1f && buf[1] === 0x8b) buf = gunzipSync(buf, { maxOutputLength: TAILLE_MAX_REPLAY });
   return JSON.parse(buf.toString('utf8'));
 }
 
@@ -45,6 +61,7 @@ export const vhCollecter = onRequest(
     }
     if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
     if (req.method !== 'POST') { res.status(405).send(''); return; }
+    if (!hotePermis(req)) { res.status(403).send(''); return; }
 
     const ip = (req.get('x-forwarded-for') || req.ip || '').split(',')[0].trim();
     if (tropVite(ip)) { res.status(429).send(''); return; }
@@ -184,6 +201,7 @@ function nettoyer(e: any): DocumentData | null {
         vw: nombre(e.vw, 200, 10000, 1280),
         r: !!e.r, m: !!e.m,
         obj: texte(e.obj, 40) || null,
+        niv: e.niv === 'gros' ? 'gros' : 'petit',
       };
     case 'mouv': {
       const pts = Array.isArray(e.pts) ? e.pts.slice(0, 800).map((n: unknown) => nombre(n, 0, 200000)) : [];
@@ -194,7 +212,7 @@ function nettoyer(e: any): DocumentData | null {
     case 'form':
       return { ...base, s: texte(e.s, 300), etat: texte(e.etat, 10), champ: texte(e.champ, 80) };
     case 'objectif':
-      return { ...base, nom: texte(e.nom, 40) };
+      return { ...base, nom: texte(e.nom, 40), niv: e.niv === 'gros' ? 'gros' : 'petit' };
     default:
       return null;
   }

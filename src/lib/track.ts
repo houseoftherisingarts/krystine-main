@@ -9,13 +9,27 @@
 // ever tracked. Route all conversion + page-view signals through here.
 
 import { pixel } from './metaPixel';
-import { logLead, logPageView } from '../firebase';
+import { logLead, logObjectif, logPageView } from '../firebase';
+import { objectif, type NiveauObjectif } from '../vexelhotjar/tracker';
 
 /** Fire on every successful opt-in (newsletter, waitlist, quiz capture).
- *  `source` mirrors the internal source tag already used in each handler. */
+ *  `source` mirrors the internal source tag already used in each handler.
+ *  Un opt-in est aussi un petit succès dans Visiteurs et clics. */
 export function trackLead(source: string): void {
   pixel.lead({ content_name: source });
   logLead(source);
+  objectif(`Inscription · ${source}`, 'petit');
+}
+
+/** Un objectif atteint. « gros » pour une transaction (paiement commencé,
+ *  achat confirmé, billet), « petit » pour l'engagement qui revient. Va au
+ *  tableau Visiteurs et clics, au Pixel (audiences de reciblage : ObjectifGros
+ *  et ObjectifPetit, plus InitiateCheckout quand un paiement commence) et à GA4. */
+export function trackObjectif(nom: string, niveau: NiveauObjectif, options?: { paiement?: boolean }): void {
+  objectif(nom, niveau);
+  pixel.objectif(nom, niveau);
+  if (options?.paiement) pixel.initiateCheckout({ content_name: nom });
+  logObjectif(nom, niveau);
 }
 
 /** Fire on each SPA route change (mounted via RouteTracker). */

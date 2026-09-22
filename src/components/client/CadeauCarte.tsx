@@ -1,6 +1,7 @@
 import { cheminCours } from '../../lib/cheminCours';
 import React, { useState } from 'react';
 import { prixReduit, utiliserCadeau, type Cadeau } from '../../firebase/cadeaux';
+import { trackObjectif } from '../../lib/track';
 
 // La carte d'un cadeau de Krystine : la formation, le rabais, son mot, et le
 // bouton qui l'utilise (accordé sur le champ à 100 %, Stripe au prix réduit
@@ -22,6 +23,7 @@ const CadeauCarte: React.FC<{ cadeau: Cadeau; lang: string; compact?: boolean }>
         setDit(fr ? `« ${cadeau.formationTitre} » est à vous. Elle vous attend dans « Mes formations ».` : `“${cadeau.formationTitre}” is yours. It is waiting in “My courses”.`);
         window.setTimeout(() => window.location.assign(cheminCours(cadeau.formationId)), 1600);
       } else if (r.url) {
+        trackObjectif('Paiement commencé · cadeau', 'gros', { paiement: true });
         window.location.href = r.url;
       }
     } catch (e) {

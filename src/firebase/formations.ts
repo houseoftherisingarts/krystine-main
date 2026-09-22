@@ -3,6 +3,7 @@ import {  getFirestore, collection, collectionGroup, doc, getDoc, getDocs, order
   updateDoc, deleteDoc, serverTimestamp, Timestamp, addDoc, onSnapshot,} from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, deleteObject } from 'firebase/storage';
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import { trackObjectif } from '../lib/track';
 
 // Les formations natives (migration Kajabi, 2026-08-28). Les documents sont
 // créés par l'import; l'admin les publie, les masque ou les supprime.
@@ -258,6 +259,7 @@ export async function acheterFormation(formationId: string): Promise<string> {
   if (!app) throw new Error('[Formations] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionPaiement');
   const res = await call({ formationId });
+  trackObjectif(`Paiement commencé · ${formationId}`, 'gros', { paiement: true });
   return (res.data as { url: string }).url;
 }
 

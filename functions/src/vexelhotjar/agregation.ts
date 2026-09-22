@@ -94,7 +94,7 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = 400): Promise<
           inc(J, `pages.${page}.clics`);
           if (e.r) { inc(J, 'rage'); inc(J, `pages.${page}.rage`); }
           if (e.m) { inc(J, 'morts'); inc(J, `pages.${page}.morts`); }
-          if (e.obj) { inc(J, `objectifs.${hash(e.obj)}.n`); J.textes[`objectifs.${hash(e.obj)}.nom`] = e.obj; }
+          if (e.obj) { inc(J, `objectifs.${hash(e.obj)}.n`); J.textes[`objectifs.${hash(e.obj)}.nom`] = e.obj; J.textes[`objectifs.${hash(e.obj)}.niv`] = e.niv === 'gros' ? 'gros' : 'petit'; }
           // Le palmarès des éléments ne retient que ce qui se clique pour
           // vrai (liens, boutons, champs, objectifs) : la carte garde tous
           // les points, mais un document par jour ne peut pas grossir avec
@@ -137,6 +137,7 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = 400): Promise<
         case 'objectif': {
           inc(J, `objectifs.${hash(e.nom)}.n`);
           J.textes[`objectifs.${hash(e.nom)}.nom`] = e.nom;
+          J.textes[`objectifs.${hash(e.nom)}.niv`] = e.niv === 'gros' ? 'gros' : 'petit';
           break;
         }
       }

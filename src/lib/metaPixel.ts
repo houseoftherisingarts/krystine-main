@@ -50,4 +50,8 @@ export const pixel = {
   completeRegistration: (params?: Record<string, unknown>) =>
     trackPixelEvent('CompleteRegistration', params),
   viewContent: (params?: Record<string, unknown>) => trackPixelEvent('ViewContent', params),
+  initiateCheckout: (params?: Record<string, unknown>) => trackPixelEvent('InitiateCheckout', params),
+  /** Événement personnalisé pour les audiences de reciblage : ObjectifGros (transactions) ou ObjectifPetit (engagement). */
+  objectif: (nom: string, niveau: 'gros' | 'petit') =>
+    safeCall(() => window.fbq?.('trackCustom', niveau === 'gros' ? 'ObjectifGros' : 'ObjectifPetit', { content_name: nom })),
 };

@@ -1,5 +1,6 @@
 import app, { db } from '../firebase';
 import { getLang } from '../lib/i18n/lang';
+import { trackObjectif } from '../lib/track';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import {
   collection, addDoc, getDocs, deleteDoc, doc, updateDoc, setDoc, getDoc,
@@ -453,13 +454,15 @@ export async function addLiveQuestion(q: Omit<LiveQuestion, 'id' | 'createdAt'>)
   const question = q.question.trim().slice(0, 1000);
   const email = q.email?.trim().toLowerCase().slice(0, 120);
   if (!name || question.length < 3) throw new Error('Nom et question requis');
-  return addDoc(collection(db!, 'liveQuestions'), {
+  const ref = await addDoc(collection(db!, 'liveQuestions'), {
     eventTag: q.eventTag,
     name,
     question,
     ...(email ? { email } : {}),
     createdAt: serverTimestamp(),
   });
+  trackObjectif('Question au balado', 'petit');
+  return ref;
 }
 
 // Tri côté client (pas d'index composite à déployer). Une écriture locale pas
@@ -903,7 +906,9 @@ export interface BookingRequest {
 export async function addBookingRequest(data: Omit<BookingRequest, 'id' | 'status' | 'createdAt'>) {
   if (!db) return console.warn('[Firestore] Not configured');
   const payload = { source: 'conferenciere', ...data, status: 'new' as BookingStatus, createdAt: serverTimestamp() };
-  return addDoc(collection(db, 'bookingRequests'), payload);
+  const ref = await addDoc(collection(db, 'bookingRequests'), payload);
+  trackObjectif('Demande de conférence', 'petit');
+  return ref;
 }
 
 export async function getBookingRequests(): Promise<BookingRequest[]> {
@@ -1039,6 +1044,7 @@ export async function ensureMemberProfile(profile: Omit<MemberDoc, 'joinedAt' | 
   const snap = await getDoc(ref);
   if (!snap.exists()) {
     await setDoc(ref, { ...profile, joinedAt: serverTimestamp(), lastSeenAt: serverTimestamp() });
+    trackObjectif('Compte créé', 'petit');
   } else {
     await setDoc(ref, { ...snap.data(), ...profile, lastSeenAt: serverTimestamp() }, { merge: true });
   }

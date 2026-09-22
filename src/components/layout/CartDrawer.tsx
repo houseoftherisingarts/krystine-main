@@ -4,6 +4,7 @@ import { ASSETS } from '../../content';
 import { createCheckout, formatMoney, isShopifyConfigured } from '../../shopify';
 import { addClientOrder } from '../../firebase/firestore';
 import { points } from '../../firebase/points';
+import { trackObjectif } from '../../lib/track';
 import Portail from '../Portail';
 
 const CartDrawer: React.FC = () => {
@@ -42,6 +43,7 @@ const CartDrawer: React.FC = () => {
       shopifyItems.forEach(i => agg.set(i.variantId!, (agg.get(i.variantId!) || 0) + 1));
       const lines = Array.from(agg.entries()).map(([variantId, quantity]) => ({ variantId, quantity }));
       const url = await createCheckout(lines, lang);
+      trackObjectif('Paiement commencé · boutique', 'gros', { paiement: true });
 
       // Log the order in Firestore (if user is signed in) so it appears in their client space.
       if (user?.email) {

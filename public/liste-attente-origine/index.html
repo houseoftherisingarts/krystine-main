@@ -201,6 +201,7 @@
         });
         f.style.display = 'none';
         msgEl.className = 'msg show';
+        if (window.vexelhotjar) window.vexelhotjar.objectif('Inscription · liste-attente-origine', 'petit');
         msgEl.innerHTML = '<span class="done">Merci. Votre nom est inscrit. Vous serez parmi les premières prévenues à l’ouverture de la prochaine cohorte d’Origine.<span class="sig">Krystine</span></span>';
       }catch(err){
         btn.disabled = false;

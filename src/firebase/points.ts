@@ -10,6 +10,7 @@
 
 import app, { db } from '../firebase';
 import { httpsCallable, getFunctions } from 'firebase/functions';
+import { trackObjectif } from '../lib/track';
 import {
   doc, collection, query, where, orderBy, limit as fbLimit,
   onSnapshot, getDoc, getDocs, setDoc, runTransaction, addDoc, serverTimestamp, Timestamp,
@@ -363,6 +364,7 @@ export async function acheterNiskas(paquet = 'p100'): Promise<string> {
   if (!app) throw new Error('[Niskas] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionNiskas');
   const res = await call({ paquet });
+  trackObjectif('Paiement commencé · niskas', 'gros', { paiement: true });
   return (res.data as { url: string }).url;
 }
 
@@ -371,6 +373,7 @@ export async function acheterSaisonEnArgent(saison: string): Promise<string> {
   if (!app) throw new Error('[Niskas] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionSaison');
   const res = await call({ saison });
+  trackObjectif('Paiement commencé · saison', 'gros', { paiement: true });
   return (res.data as { url: string }).url;
 }
 

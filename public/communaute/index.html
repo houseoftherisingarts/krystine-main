@@ -931,6 +931,7 @@
             if(window.__nlSubscribe){ await window.__nlSubscribe(v,o.source,o.tags); }
             f.style.display='none';
             setMsg(o.done,'ok');
+            if(window.vexelhotjar)window.vexelhotjar.objectif('Inscription · '+o.source,'petit');
           }catch(err){
             if(btn)btn.disabled=false;
             setMsg('Un souci est survenu. Réessayez dans un instant.','err');

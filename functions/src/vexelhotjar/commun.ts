@@ -28,6 +28,10 @@ import { createHash } from 'crypto';
 
 export const SITES_PERMIS = ['krystine'];
 export const ORIGINES_DEV = ['http://localhost:5173', 'http://localhost:5199', 'http://127.0.0.1:5173'];
+// Les hôtes d'où un lot peut venir (l'en-tête Origin ou Referer du navigateur) : le
+// site lui-même, ses alias Firebase, et les origines de développement. Un envoi
+// scripté peut imiter l'en-tête, la vraie borne reste les tailles et la cadence.
+export const HOTES_PERMIS = ['krystinestlaurent.ca', 'krystinestlaurent-87566.web.app', 'krystinestlaurent-87566.firebaseapp.com', 'localhost', '127.0.0.1'];
 export const TAILLE_MAX_LOT = 1_000_000;         // un lot d'événements ne dépasse jamais 1 Mo
 export const TAILLE_MAX_REPLAY = 6_000_000;      // un morceau d'enregistrement, gzippé ou non
 export const EVENEMENTS_MAX = 600;

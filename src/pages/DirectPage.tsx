@@ -8,6 +8,7 @@ import {
 } from '../firebase/direct';
 import { awardPoints } from '../firebase/points';
 import { POINTS } from '../lib/pointsConfig';
+import { trackObjectif } from '../lib/track';
 import VisualiseurVoix from '../components/direct/VisualiseurVoix';
 import ChatDirect from '../components/direct/ChatDirect';
 
@@ -70,6 +71,8 @@ const DirectPage: React.FC = () => {
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get('merci')) {
       setNote('Merci, votre pourboire est arrivé. Les points sont déjà dans votre espace.');
+      trackObjectif('Achat confirmé · pourboire', 'gros');
+      window.history.replaceState(null, '', window.location.pathname);
     }
   }, []);
 
