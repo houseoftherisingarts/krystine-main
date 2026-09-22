@@ -52,6 +52,7 @@ export type AdminSectionId =
   | 'live'
   | 'feedpublic'
   | 'enPreparation'
+  | 'postsPrefaits'
   | 'settings';
 
 // ─── L'adresse de chaque section ─────────────────────────────────────────────
