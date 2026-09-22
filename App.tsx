@@ -288,6 +288,14 @@ const App: React.FC = () => (
           <Route path="/liste-attente"     element={<ListeAttenteLoeuvre />} />
           {/* /origine, /podcast, /vata are served as-is from public/ — see firebase.json */}
 
+          {/* ── Salle de presse ───────────────────────────────────────────
+              Quatre adresses mènent à la même page, pour qu'un raccourci
+              écrit de mémoire dans un courriel tombe juste à tout coup. */}
+          <Route path="/presse"    element={<PressePage />} />
+          <Route path="/presskit"  element={<PressePage />} />
+          <Route path="/press-kit" element={<PressePage />} />
+          <Route path="/en/press"  element={<PressePage />} />
+
           {/* ── Système ───────────────────────────────────────────────── */}
           <Route path="/politique-de-confidentialite" element={<PrivacyPolicy lang="fr" />} />
           <Route path="/compte" element={<ClientPortal />} />
