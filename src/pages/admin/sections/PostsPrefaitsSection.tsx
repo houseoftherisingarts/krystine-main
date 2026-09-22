@@ -108,7 +108,7 @@ const PostsPrefaitsSection: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => copier(carte)}
-                        className="inline-flex items-center gap-2 rounded-full bg-[#1c1712] px-3.5 py-2 text-[12px] font-bold uppercase tracking-[0.06em] text-[#f4efe6] transition-[background-color,transform] active:scale-[0.98]"
+                        className="inline-flex items-center gap-2 rounded-full bg-[#1c1712] px-3.5 py-2 text-[13px] font-bold uppercase tracking-[0.06em] text-[#f4efe6] transition-[background-color,transform] active:scale-[0.98]"
                       >
                         <i className={`fa-solid ${copieId === carte.id ? 'fa-check' : 'fa-copy'}`} />
                         {copieId === carte.id ? 'Copié' : 'Copier la légende'}
