@@ -106,6 +106,31 @@ const PagesDuSiteCard: React.FC = () => {
       {!charge && (
         <div className="mt-6 border-t border-[#293027]/10 pt-6 dark:border-white/10">
           <p className="mb-4 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
+            La salle de presse rassemble vos visuels, vos portraits et vos biographies, prêts à télécharger par
+            une journaliste. Éteinte, elle reste visible de vous seule et son lien n'apparaît pas dans le pied
+            de page. Vous la retrouvez aussi dans Réglages, En préparation.
+          </p>
+          <div className="flex flex-wrap items-center gap-4">
+            <ToggleSwitch
+              checked={presseOuvert}
+              onChange={v => { setPresseOuvert(v); void setSiteFlag('presseOuvert', v); }}
+              label={presseOuvert ? 'La salle de presse est ouverte' : 'La salle de presse est fermée'}
+            />
+            <a
+              href="/presse"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50 hover:text-[#8B4A2F]"
+            >
+              <i className="fa-solid fa-up-right-from-square mr-1.5" />
+              Voir la page avant de l'allumer
+            </a>
+          </div>
+        </div>
+      )}
+      {!charge && (
+        <div className="mt-6 border-t border-[#293027]/10 pt-6 dark:border-white/10">
+          <p className="mb-4 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
             L'assistante de conversation flotte en bas à droite de chaque page et répond aux questions des
             visiteuses. Éteinte, son bouton disparaît du site et plus aucune question ne part vers le serveur.
           </p>
