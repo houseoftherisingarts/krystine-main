@@ -27,18 +27,25 @@ function tropVite(ip: string): boolean {
   return e.n > 240;
 }
 
-// Débit global de l'instance, toutes adresses confondues : l'adresse IP
+// Débit global de l'instance, toutes adresses confondues, en lots et en
+// octets bruts, compté avant de décompresser quoi que ce soit : l'adresse IP
 // derrière l'hébergement se lit à sa place dans x-forwarded-for, mais un
-// appel direct à l'URL run.app de la fonction peut en forger une par requête
-// et contourner la cadence par adresse; ce plafond et la cadence par session
-// bornent ce qu'un tel appel peut écrire.
-const DEBIT_GLOBAL_PAR_MIN = 3000;
-let debit = { n: 0, t: 0 };
-function tropDeMonde(): boolean {
+// appel direct à l'URL run.app de la fonction (que l'hébergement doit pouvoir
+// appeler sans jeton) peut forger une adresse et un sid par requête et
+// contourner les cadences; ce plafond borne ce qu'un tel appel peut écrire
+// (1 200 lots et 30 Mo par minute et par instance, six instances au plus).
+// Le vrai trafic reste loin dessous (un lot par visiteuse toutes les huit
+// secondes); en cas de déluge, les vraies visiteuses de l'instance inondée
+// reçoivent aussi 429 et leurs lots de la minute tombent, c'est le prix.
+const DEBIT_GLOBAL_PAR_MIN = 1200;
+const OCTETS_GLOBAL_PAR_MIN = 30 * 1024 * 1024;
+let debit = { n: 0, o: 0, t: 0 };
+function tropDeMonde(octets: number): boolean {
   const now = Date.now();
-  if (now - debit.t > 60_000) debit = { n: 0, t: now };
+  if (now - debit.t > 60_000) debit = { n: 0, o: 0, t: now };
   debit.n += 1;
-  return debit.n > DEBIT_GLOBAL_PAR_MIN;
+  debit.o += octets;
+  return debit.n > DEBIT_GLOBAL_PAR_MIN || debit.o > OCTETS_GLOBAL_PAR_MIN;
 }
 
 // L'hôte annoncé par le navigateur (Origin, sinon Referer) doit être le site.
@@ -117,7 +124,7 @@ export const vhCollecter = onRequest(
     if (!hotePermis(req)) { res.status(403).send(''); return; }
 
     const ip = adresseDe(req);
-    if (tropVite(ip)) { res.status(429).send(''); return; }
+    if (tropVite(ip) || tropDeMonde(req.rawBody?.length || 0)) { res.status(429).send(''); return; }
 
     let d: any;
     try { d = corpsDe(req); } catch { res.status(400).send(''); return; }
@@ -125,7 +132,7 @@ export const vhCollecter = onRequest(
 
     const site = texte(d.site, 40);
     const sid = texte(d.sid, 64);
-    if (tropVite('sid:' + sid) || tropDeMonde()) { res.status(429).send(''); return; }
+    if (tropVite('sid:' + sid)) { res.status(429).send(''); return; }
     if (!SITES_PERMIS.includes(site) || !/^[a-z0-9-]{8,64}$/.test(sid)) { res.status(400).send(''); return; }
 
     const db = getFirestore();
@@ -242,7 +249,10 @@ function nettoyer(e: any): DocumentData | null {
         ...base,
         duree: nombre(e.duree, 0, 6 * 3600_000),
         scrollMax: nombre(e.scrollMax, 0, 100),
-        clos: e.clos ? 1 : 0,   // 1 : la vue de page est close (changement de page ou fermeture); 0 : l'onglet passe à l'arrière-plan
+        // 1 : la vue de page est close (changement de page ou fermeture); 0 : l'onglet
+        // passe à l'arrière-plan. Un traceur d'avant ce champ (pages statiques en
+        // cache) n'envoie que fin : clos vaut alors fin, comme avant.
+        clos: e.clos === undefined ? (e.fin ? 1 : 0) : (e.clos ? 1 : 0),
         pages: nombre(e.pages, 0, 1000),
         fin: !!e.fin,
         vw: nombre(e.vw, 200, 10000, 1280),

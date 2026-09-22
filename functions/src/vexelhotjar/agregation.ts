@@ -274,7 +274,8 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
       const actuel = await ref.get();
       const d = actuel.exists ? actuel.data() as DocumentData : {};
       const [site, jour, device] = cle.split('_');
-      let clics = ((d.clics as DocumentData[]) || []).concat(C.clics).slice(-POINTS_CLICS_MAX);
+      const anciens = (d.clics as DocumentData[]) || [];
+      let clics = anciens.concat(C.clics).slice(-POINTS_CLICS_MAX);
       const mouv = (d.mouvV === 2 ? (d.mouv as number[]) || [] : []).concat(C.mouv).slice(-POINTS_MOUV_MAX * 2);
       const scroll: Compteurs = { ...(d.scroll || {}) };
       for (const [b, n] of Object.entries(C.scroll)) scroll[b] = (scroll[b] || 0) + n;
@@ -283,8 +284,9 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
         clics, mouv, mouvV: 2, scroll,
         vues: (d.vues || 0) + C.vues,
         nClics: (d.nClics || 0) + C.clics.length,
-        nRage: (d.nRage || 0) + C.clics.filter(p => p.r).length,
-        nMorts: (d.nMorts || 0) + C.clics.filter(p => p.m).length,
+        // Une carte d'avant ces compteurs part des points qu'elle gardait.
+        nRage: (typeof d.nRage === 'number' ? d.nRage : anciens.filter(p => p.r).length) + C.clics.filter(p => p.r).length,
+        nMorts: (typeof d.nMorts === 'number' ? d.nMorts : anciens.filter(p => p.m).length) + C.clics.filter(p => p.m).length,
         maj: Timestamp.now(),
       });
       // La carte reste sous le mégaoctet de Firestore : les points les plus

@@ -199,7 +199,7 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
           <span><b className="font-semibold text-[#293027] dark:text-white">{nb(carte?.vues || 0)}</b> vues sur cet appareil</span>
           <span><b className="font-semibold text-[#293027] dark:text-white">{nb(carte?.nClics || 0)}</b> clics</span>
           <span><b className="font-semibold text-[#BC4A3C]">{nb(carte?.nRage || 0)}</b> de rage</span>
-          <span><b className="font-semibold text-[#293027] dark:text-white">{nb(carte?.clics.filter(p => p.m).length || 0)}</b> dans le vide</span>
+          <span><b className="font-semibold text-[#293027] dark:text-white">{nb(carte?.nMorts || 0)}</b> dans le vide</span>
           {scrollTotal > 0 && <span><b className="font-semibold text-[#293027] dark:text-white">{pct(carte?.scroll.b50 || 0, scrollTotal)} %</b> passent la moitié de la page</span>}
           {chargement && <span className="text-[#8B4A2F]"><i className="fa-solid fa-circle-notch fa-spin mr-1" aria-hidden="true" />chargement</span>}
           {vide && <span className="text-[#8B4A2F]">{vide}</span>}

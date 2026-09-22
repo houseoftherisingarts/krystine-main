@@ -62,8 +62,9 @@ let clicsRecents: { x: number; y: number; t: number }[] = [];
 // Mutations du DOM récentes, par paires (horodatage, nombre), pour juger un
 // clic mort en comparant le remue-ménage d'avant le clic à celui d'après.
 let mutations: number[] = [];
-let cibleClic: Element | null = null;   // l'élément cliqué dont on guette la réponse
-let styleSurCible = 0;
+// Les clics dont on guette la réponse (une seconde et demie chacun) : un
+// compteur par clic, pour qu'un second clic n'efface pas la preuve du premier.
+const guetteurs: { el: Element; n: number }[] = [];
 let formsCommences = new Map<string, string>();   // sélecteur du formulaire → dernier champ touché
 let formsSoumis = new Set<string>();
 
@@ -159,23 +160,26 @@ function pousser(e: Omit<Ev, 'ts' | 'path' | 'pv'> & Partial<Ev>) {
   else if (minuterie === undefined) minuterie = window.setTimeout(envoyer, CADENCE_ENVOI_MS);
 }
 
-function envoyer() {
+// urgent : la page se ferme ou se cache, le lot part par beacon (voir livrer).
+function envoyer(urgent = false) {
   if (minuterie !== undefined) { clearTimeout(minuterie); minuterie = undefined; }
   if (!file.length) return;
   const lot = file;
   file = [];
   const corps = JSON.stringify({ v: 1, t: 'lot', site: config.site, sid, vid, nouveau, parcours: parcours.slice(-60), ev: lot });
   nouveau = false;
-  livrer(corps);
+  livrer(corps, urgent);
 }
 
 // Le quota de 64 Kio de sendBeacon et de fetch keepalive est partagé par tous
 // les envois en attente de la page : ils ne servent qu'au moment où la page
 // se cache ou se ferme (le navigateur peut la tuer sans prévenir); les envois
-// de routine, toutes les huit secondes, passent par un fetch ordinaire.
-function livrer(corps: string | Blob) {
+// de routine, toutes les huit secondes, passent par un fetch ordinaire. Le
+// signal vient de l'appelant (pagehide arrive alors que visibilityState dit
+// encore « visible »), l'état du document ne sert que de filet.
+function livrer(corps: string | Blob, urgent = false) {
   const blob = corps instanceof Blob ? corps : new Blob([corps], { type: 'text/plain' });
-  const ferme = document.visibilityState === 'hidden' && blob.size < 60_000;
+  const ferme = (urgent || document.visibilityState === 'hidden') && blob.size < 60_000;
   try {
     if (ferme && navigator.sendBeacon && navigator.sendBeacon(config.endpoint, blob)) return;
   } catch { /* on passe par fetch */ }
@@ -203,10 +207,15 @@ function noterMutations(recs: MutationRecord[]) {
   for (let i = 0; i < recs.length; i++) {
     const r = recs[i];
     if (r.type === 'attributes' && r.attributeName === 'style') {
-      // Une animation en style ne compte que sur l'élément cliqué lui-même
-      // (le bouton qui s'enfonce, le tiroir qui glisse) : ailleurs, c'est
-      // le décor qui bouge tout seul.
-      if (cibleClic && cibleClic.contains(r.target)) styleSurCible += 1;
+      // Une animation en style ne compte que sur l'élément cliqué, ses
+      // descendants ou ses ancêtres (le bouton qui s'enfonce, la carte qui se
+      // presse quand on clique son texte); ailleurs, c'est le décor qui bouge
+      // tout seul, et html ou body ne comptent pas (une variable de curseur
+      // posée sur la racine masquerait tous les clics morts).
+      const t = r.target;
+      for (const g of guetteurs) {
+        if (g.el.contains(t) || (t !== document.documentElement && t !== document.body && t.contains(g.el))) g.n += 1;
+      }
     } else n += 1;
   }
   if (n) mutations.push(now, n);
@@ -264,7 +273,7 @@ function fermerPage(fin: boolean) {
   // clos : la vue de page est finie (changement de page ou fermeture); fin : la visite quitte le site.
   pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin, clos: 1, vw: window.innerWidth });
   debutPage = Date.now();
-  envoyer();
+  envoyer(fin);
   if (fin) pv = '';
 }
 
@@ -278,7 +287,7 @@ function pauserPage() {
   // L'onglet passe à l'arrière-plan : la vue continue (pas de clos), seule la durée s'additionne.
   pousser({ t: 'sortie', duree: Date.now() - debutPage, scrollMax, pages: parcours.length, fin: false, vw: window.innerWidth });
   debutPage = Date.now();
-  envoyer();
+  envoyer(true);
 }
 
 // ─── Clics, mouvements, erreurs, formulaires ────────────────────────────────
@@ -325,12 +334,12 @@ function surClic(ev: MouseEvent) {
   const pvAvant = pv;
   if (champ) { pousser(e); return; }
   const avant = mutationsEntre(now - MORT_DELAI_MS, now);
-  cibleClic = inter;
-  styleSurCible = 0;
+  const g = { el: inter, n: 0 };
+  guetteurs.push(g);
   window.setTimeout(() => {
     const apres = mutationsEntre(now, now + MORT_DELAI_MS + 100);
-    const bouge = location.href !== pathAvant || Math.abs(window.scrollY - scrollAvant) > 4 || pv !== pvAvant || apres > avant || styleSurCible > 0;
-    if (cibleClic === inter) cibleClic = null;
+    const bouge = location.href !== pathAvant || Math.abs(window.scrollY - scrollAvant) > 4 || pv !== pvAvant || apres > avant || g.n > 0;
+    guetteurs.splice(guetteurs.indexOf(g), 1);
     e.m = !bouge;
     pousser(e);   // garde son horodatage et sa page; la file part à quarante événements comme pour le reste
   }, MORT_DELAI_MS);
