@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "prebuild": "node scripts/garde-collant.mjs && node scripts/build-assets-manifest.mjs && node scripts/vexelhotjar-statique.mjs",
     "postbuild": "node scripts/og/pages-statiques.mjs && node scripts/garde-collant.mjs --dist",
-    "assets": "node scripts/build-assets-manifest.mjs"
+    "assets": "node scripts/build-assets-manifest.mjs",
+    "posts:generer": "node scripts/posts/generer.mjs"
   },
   "dependencies": {
     "@paper-design/shaders-react": "^0.0.76",
