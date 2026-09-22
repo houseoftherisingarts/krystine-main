@@ -590,5 +590,33 @@
       "public/assets-manifest.json",
       "src/pages/admin/sections/visiteurs/VueEnsemble.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-22T02:02:13.519Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "fd7ade5",
+    "message": "Visiteurs et clics : Krystine et Alex hors compte (navigateur admin, adresses IP privées, Pixel et GA4 muets)",
+    "cibles": [
+      "hosting",
+      "functions",
+      "firestore"
+    ],
+    "fichiers": [
+      "firestore.rules",
+      "functions/src/index.ts",
+      "functions/src/vexelhotjar/agregation.ts",
+      "functions/src/vexelhotjar/collecte.ts",
+      "functions/src/vexelhotjar/commun.ts",
+      "functions/src/vexelhotjar/index.ts",
+      "public/assets-manifest.json",
+      "public/vh/vexelhotjar.js",
+      "src/components/layout/ConsentBanner.tsx",
+      "src/contexts/AppContext.tsx",
+      "src/lib/track.ts",
+      "src/pages/admin/sections/visiteurs/Reglages.tsx",
+      "src/pages/admin/sections/visiteurs/donnees.ts",
+      "src/vexelhotjar/tracker.ts"
+    ]
   }
 ]
