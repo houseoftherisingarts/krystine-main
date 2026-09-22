@@ -514,5 +514,28 @@
       "scripts/vexelhotjar-statique.mjs",
       "src/vexelhotjar/statique.ts"
     ]
+  },
+  {
+    "quand": "2026-09-22T01:01:49.223Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "f20f90b",
+    "message": "Visiteurs et clics : correctifs du tour de vérification (formulaires, noms lisibles, mobile, aperçu révélé et hauteurs figées, ligne de flottaison)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      ".gitignore",
+      "public/assets-manifest.json",
+      "public/vh/vexelhotjar.js",
+      "src/pages/admin/sections/visiteurs/CartesChaleur.tsx",
+      "src/pages/admin/sections/visiteurs/Frictions.tsx",
+      "src/pages/admin/sections/visiteurs/VueEnsemble.tsx",
+      "src/pages/admin/sections/visiteurs/cadre.ts",
+      "src/pages/admin/sections/visiteurs/chaleur.ts",
+      "src/pages/admin/sections/visiteurs/donnees.ts",
+      "src/pages/admin/sections/visiteurs/graphiques.tsx",
+      "src/vexelhotjar/tracker.ts"
+    ]
   }
 ]
