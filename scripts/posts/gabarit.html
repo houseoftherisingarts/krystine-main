@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Posts préfaits Krystine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /**
+   * Gabarit des posts préfaits Krystine, porté du press-kit Vexel
+   * (vexel-site/scripts/presskit/gabarit.html) mais rendu dans le canon
+   * magazine crème du site (krystine-v2-branding.md) : fond crème, encre
+   * presque noire, titres Fraunces en font-light, filets laiton pleine
+   * largeur, JAMAIS d'italique. Reçoit ses données par window.__CARTE
+   * (posé par scripts/posts/generer.mjs), avec l'image déjà résolue en
+   * file:// absolu ou en URL distante.
+   */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #f4efe6; }
+  body { font-family: 'Inter', system-ui, sans-serif; }
+
+  :root {
+    --creme: #f4efe6;
+    --creme2: #efe6d7;
+    --carte: #faf6ee;
+    --encre: #1c1712;
+    --encre2: #3a2f23;
+    --laiton: #9c7a44;
+    --or: #7d6330;
+    --brun: #34241a;
+  }
+
+  .carte {
+    position: relative;
+    overflow: hidden;
+    background: var(--creme);
+    color: var(--encre);
+    display: flex;
+    flex-direction: column;
+  }
+  .carte[data-format="portrait"] { width: 1080px; height: 1350px; --m: 64px; --titre-taille: 72px; }
+  .carte[data-format="carre"] { width: 1080px; height: 1080px; --m: 56px; --titre-taille: 58px; }
+
+  /* ------------------------------------------------------- ligne d'édition */
+  .masthead {
+    flex: 0 0 auto;
+    margin: var(--m) var(--m) 0 var(--m);
+    padding-top: 14px;
+    border-top: 1px solid rgba(28, 23, 18, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(28, 23, 18, 0.55);
+  }
+
+  /* ------------------------------------------------------------- en-tête */
+  .entete { flex: 0 0 auto; padding: 22px var(--m) 0 var(--m); }
+  .kicker {
+    display: block;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--or);
+  }
+  .titre {
+    margin: 16px 0 0 0;
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 300;
+    font-size: var(--titre-taille);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    color: var(--encre);
+  }
+  .ligne {
+    margin: 16px 0 0 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--encre2);
+    max-width: 34ch;
+  }
+
+  /* ------------------------------------------------------------- cadre */
+  .zone-cadre { flex: 1 1 auto; min-height: 0; padding: 26px var(--m) 0 var(--m); position: relative; }
+  .cadre {
+    position: relative;
+    height: 100%;
+    border: 1px solid rgba(156, 122, 68, 0.4);
+    padding: 6px;
+  }
+  .cadre-int { position: relative; height: 100%; overflow: hidden; background: var(--creme2); }
+  .cadre-int img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+  .tab-serie {
+    position: absolute;
+    top: -1px;
+    left: 22px;
+    background: var(--encre);
+    color: var(--creme);
+    padding: 7px 16px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  /* --------------------------------------------------------------- pied */
+  .pied {
+    flex: 0 0 auto;
+    margin: 0 var(--m);
+    padding: 22px 0 var(--m) 0;
+    border-top: 1px solid rgba(28, 23, 18, 0.15);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .signature {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 300;
+    font-size: 24px;
+    color: var(--encre);
+  }
+  .signature span { color: var(--or); }
+  .filet-pied {
+    height: 3px;
+    width: 84px;
+    background: var(--laiton);
+  }
+</style>
+</head>
+<body>
+  <div class="carte" id="carte" data-format="carre">
+    <div class="masthead" id="masthead"></div>
+    <div class="entete" id="entete"></div>
+    <div class="zone-cadre" id="zone-cadre"></div>
+    <div class="pied">
+      <span class="signature" id="signature"></span>
+      <span class="filet-pied" aria-hidden="true"></span>
+    </div>
+  </div>
+
+<script>
+(function () {
+  function el(tag, cls) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    return n;
+  }
+
+  var ETIQUETTES = {
+    A: 'Enseignements · Sagesse ayurvédique',
+    B: 'Livres · Trilogie Ayurveda',
+    C: 'Expérience Origine · Formations',
+    D: 'Podcast · Conférences',
+  };
+
+  function construireMasthead(carte) {
+    var m = document.getElementById('masthead');
+    m.innerHTML = '';
+    var gauche = el('span');
+    gauche.textContent = 'N° ' + carte.id + ' · Krystine St-Laurent';
+    var droite = el('span');
+    droite.textContent = 'Québec · MMXXVI';
+    m.appendChild(gauche);
+    m.appendChild(droite);
+  }
+
+  function construireEntete(carte) {
+    var entete = document.getElementById('entete');
+    entete.innerHTML = '';
+    var kicker = el('span', 'kicker');
+    kicker.textContent = ETIQUETTES[carte.serie] || 'Krystine St-Laurent';
+    entete.appendChild(kicker);
+    var titre = document.createElement('h1');
+    titre.id = 'titre';
+    titre.className = 'titre';
+    titre.textContent = carte.titre;
+    entete.appendChild(titre);
+    var ligne = document.createElement('p');
+    ligne.className = 'ligne';
+    ligne.textContent = carte.ligne;
+    entete.appendChild(ligne);
+  }
+
+  function construireCadre(carte) {
+    var zone = document.getElementById('zone-cadre');
+    zone.innerHTML = '';
+    var cadre = el('div', 'cadre');
+    var tab = el('span', 'tab-serie');
+    tab.textContent = 'Série ' + carte.serie;
+    var int = el('div', 'cadre-int');
+    var img = document.createElement('img');
+    img.src = carte.image;
+    img.alt = '';
+    if (carte.objectPosition) img.style.objectPosition = carte.objectPosition;
+    int.appendChild(img);
+    cadre.appendChild(tab);
+    cadre.appendChild(int);
+    zone.appendChild(cadre);
+  }
+
+  function construireSignature() {
+    var s = document.getElementById('signature');
+    s.innerHTML = 'Krystine St-Laurent <span>·</span> krystinestlaurent.ca';
+  }
+
+  function ajusterTitre() {
+    var t = document.getElementById('titre');
+    if (!t) { document.body.dataset.titreLignes = '0'; return; }
+    var taille = parseFloat(getComputedStyle(t).fontSize);
+    function lignes() {
+      var lh = parseFloat(getComputedStyle(t).lineHeight);
+      return Math.round(t.scrollHeight / lh);
+    }
+    var garde = 60;
+    while (lignes() > 2 && taille > 30 && garde-- > 0) {
+      taille -= 2;
+      t.style.fontSize = taille + 'px';
+    }
+    document.body.dataset.titreLignes = String(lignes());
+  }
+
+  function construire(carte, format) {
+    var el0 = document.getElementById('carte');
+    el0.dataset.format = format;
+    construireMasthead(carte);
+    construireEntete(carte);
+    construireCadre(carte);
+    construireSignature();
+    ajusterTitre();
+    document.body.dataset.pret = '1';
+  }
+
+  function attendrePolicesEtConstruire(carte, format) {
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(function () {
+      construire(carte, format);
+    });
+  }
+
+  if (window.__CARTE) {
+    attendrePolicesEtConstruire(window.__CARTE, window.__CARTE.format || 'carre');
+  } else {
+    document.body.textContent = 'Définissez window.__CARTE avant de charger cette page.';
+  }
+})();
+</script>
+</body>
+</html>
