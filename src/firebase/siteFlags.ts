@@ -33,6 +33,12 @@ export interface SiteFlags {
    *  Interrupteur dans l'admin, Réglages → Pages du site. Éteinte par défaut
    *  (Alex, 10 septembre 2026). */
   chatbotOuvert: boolean;
+  /** La salle de presse est ouverte au public. Éteinte, /presse renvoie une
+   *  visiteuse à l'accueil et Krystine reste seule à voir la page, pour la
+   *  relire et l'approuver avant l'allumage; le lien « Presse » du pied de
+   *  page n'apparaît qu'une fois allumée. Interrupteur dans l'admin, Réglages
+   *  → En préparation. Éteinte par défaut (Alex, 22 septembre 2026). */
+  presseOuvert: boolean;
 }
 
 export const DEFAULT_FLAGS: SiteFlags = {
@@ -40,6 +46,7 @@ export const DEFAULT_FLAGS: SiteFlags = {
   foyerOuvert: false,
   origine2Ouvert: false,
   chatbotOuvert: false,
+  presseOuvert: false,
 };
 
 const FLAGS_COLLECTION = 'siteSettings';
