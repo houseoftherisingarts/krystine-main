@@ -108,7 +108,7 @@ const EnPreparationSection: React.FC = () => {
         return (
           <Card key={p.cle} className="p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="min-w-0 flex-1">
+              <div className="min-w-[13rem] flex-1 basis-[18rem]">
                 <h4 className="flex items-center gap-3 text-base font-bold text-[#293027] dark:text-white">
                   <i className={`fa-solid ${p.icone} text-[#BA7B39]`} aria-hidden />
                   {p.nom}
