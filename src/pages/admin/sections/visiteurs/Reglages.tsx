@@ -46,7 +46,7 @@ const Reglages: React.FC = () => {
   const part = Math.round((r.echantillonReplay || 0) * 100);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
       <div className="space-y-6">
         <Card className="p-6">
           <div className="flex items-start justify-between gap-6">
@@ -90,7 +90,7 @@ const Reglages: React.FC = () => {
               <p className="text-sm text-[#293027] dark:text-white">Ce navigateur</p>
               <p className="text-[12px] text-[#38403a]/55 dark:text-white/45">{moiExclu ? 'Pas compté, ni par la mesure, ni par le Pixel, ni par Google.' : 'Compté comme une visiteuse ordinaire.'}</p>
             </div>
-            <ToggleSwitch checked={moiExclu} onChange={basculerMoi} label={moiExclu ? 'Pas compté' : 'Compté'} />
+            <div className="shrink-0"><ToggleSwitch checked={moiExclu} onChange={basculerMoi} label={moiExclu ? 'Pas compté' : 'Compté'} /></div>
           </div>
           <div className="mt-5 border-t border-[#38403a]/10 pt-5">
             <p className="text-sm text-[#293027] dark:text-white">Adresses IP jamais comptées</p>
