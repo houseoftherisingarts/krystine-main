@@ -51,6 +51,7 @@ export type AdminSectionId =
   | 'media'
   | 'live'
   | 'feedpublic'
+  | 'enPreparation'
   | 'settings';
 
 // ─── L'adresse de chaque section ─────────────────────────────────────────────
