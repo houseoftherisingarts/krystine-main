@@ -120,7 +120,8 @@ function setNamedMeta(attr: 'name' | 'property', key: string, value: string) {
 
 export function applyPageMeta(pathname: string) {
   // Collection sub-pages inherit the boutique meta; unknown routes fall back.
-  const base = pathname.startsWith('/boutique/') ? ROUTES['/boutique'] : ROUTES[pathname];
+  const route = ALIAS[pathname] || pathname;
+  const base = route.startsWith('/boutique/') ? ROUTES['/boutique'] : ROUTES[route];
   const raw = base || DEFAULT_META;
   const meta = { title: tr(raw.title), description: tr(raw.description) };
 
