@@ -28,10 +28,13 @@ const NavLink: React.FC<{ href: string; className?: string; children: React.Reac
  */
 const Footer: React.FC = () => {
   const { lang } = useApp();
+  const { presseOuvert } = useSiteFlags();
   const t = CONTENT[lang];
   const nav = t.nav;
   const foot = t.footer;
 
+  // La salle de presse n'apparaît dans le pied de page qu'une fois son
+  // interrupteur allumé dans l'admin, parce que Krystine la relit d'abord.
   const links = [
     { href: '/krystine', label: nav.krystine },
     { href: '/medias', label: nav.medias },
@@ -39,6 +42,7 @@ const Footer: React.FC = () => {
     { href: '/boutique', label: nav.boutique },
     { href: '/points-de-vente', label: nav.pointsDeVente },
     { href: '/conferenciere', label: nav.conferenciere },
+    ...(presseOuvert ? [{ href: '/presse', label: lang === 'FR' ? 'Presse' : 'Press' }] : []),
   ];
 
   const programmes = [
