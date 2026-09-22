@@ -26,13 +26,13 @@ export const CARTES = [
     etiquette: { fr: 'Portrait', en: 'Portrait' },
     qr: { fr: '/krystine', en: '/krystine' },
     fr: {
-      kicker: 'Portrait',
+      kicker: 'Biographie',
       titre: 'Krystine St-Laurent',
-      corps: "Auteure, conférencière et praticienne en ayurveda. Près de quarante ans de pratique en santé holistique, dont dix années aux soins critiques comme infirmière d'urgence, avant de choisir les plantes, l'ayurveda et l'aromathérapie.",
+      corps: "Auteure et conférencière, praticienne en ayurveda depuis près de quarante ans. Avant cela, dix années aux soins critiques comme infirmière d'urgence, jusqu'au jour où elle a choisi les plantes et l'ayurveda, puis l'aromathérapie.",
       meta: 'krystinestlaurent.ca/krystine',
     },
     en: {
-      kicker: 'Portrait',
+      kicker: 'Biography',
       titre: 'Krystine St-Laurent',
       corps: 'Author, speaker and Ayurveda practitioner. Nearly forty years in holistic health, ten of them in critical care as an emergency nurse, before she turned to plants, Ayurveda and aromatherapy.',
       meta: 'krystinestlaurent.ca/krystine',
@@ -91,7 +91,7 @@ export const CARTES = [
     fr: {
       kicker: 'Parcours signature',
       titre: 'L’Expérience Origine',
-      corps: "Douze semaines au cœur de l'ayurveda, bâties pour retrouver une boussole intérieure plutôt qu'une discipline de plus. La prochaine cohorte s'ouvre en novembre, et la liste d'attente reçoit les détails avant toute annonce publique.",
+      corps: "Douze semaines d'ayurveda, bâties pour retrouver une boussole intérieure plutôt qu'une discipline de plus. La prochaine cohorte s'ouvre en novembre, et la liste d'attente en reçoit les détails avant toute annonce publique.",
       meta: 'krystinestlaurent.ca/origine',
     },
     en: {
@@ -175,7 +175,7 @@ export const CARTES = [
     fr: {
       kicker: 'Nous joindre',
       titre: 'Demandes de presse',
-      corps: "Les demandes de conférence, d'entrevue et de partenariat passent par l'équipe, à equipe@inspiratanature.com. Les visuels de cette page se téléchargent librement, à la seule condition de créditer Krystine St-Laurent.",
+      corps: "Les demandes d'entrevue et de conférence passent par l'équipe, à equipe@inspiratanature.com, comme les propositions de partenariat. Les visuels de cette page se téléchargent librement, à la seule condition de créditer Krystine St-Laurent.",
       meta: 'equipe@inspiratanature.com',
     },
     en: {

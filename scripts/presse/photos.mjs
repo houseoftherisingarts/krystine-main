@@ -20,8 +20,8 @@ export const PHOTOS = [
     fichier: 'podcast/krystine.jpg',
     focus: 0.24,
     focusX: 0.62,
-    fr: 'Portrait de Krystine St-Laurent, format vertical recadré.',
-    en: 'Portrait of Krystine St-Laurent, cropped from a vertical frame.',
+    fr: 'Un portrait recadré depuis un format vertical, devant la porte verte.',
+    en: 'A portrait cropped from a vertical frame, against the green door.',
   },
   {
     n: '03',
@@ -29,8 +29,8 @@ export const PHOTOS = [
     fichier: 'accueil/assets/hero-ml-poster.jpg',
     focus: 0.32,
     focusX: 0.53,
-    fr: 'Krystine St-Laurent à table, Nature & Ayurveda et Féminité & Ayurveda devant elle.',
-    en: 'Krystine St-Laurent at a table, Nature & Ayurveda and Féminité & Ayurveda in front of her.',
+    fr: 'À table, ses deux premiers livres posés devant elle.',
+    en: 'At a table, her first two books set out in front of her.',
   },
   {
     n: '04',
@@ -38,8 +38,8 @@ export const PHOTOS = [
     fichier: 'krystine-banner.png',
     focus: 0.5,
     focusX: 0.62,
-    fr: 'Krystine St-Laurent assise, visuel d’ouverture d’Inspira Nature.',
-    en: 'Krystine St-Laurent seated, the opening image of Inspira Nature.',
+    fr: 'Le visuel qui ouvre le site d’Inspira Nature, mandala en trait blanc à gauche.',
+    en: 'The image that opens the Inspira Nature site, a line-drawn mandala on the left.',
   },
   {
     n: '05',

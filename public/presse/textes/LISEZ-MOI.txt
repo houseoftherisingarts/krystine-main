@@ -1,0 +1,32 @@
+KIT DE PRESSE · KRYSTINE ST-LAURENT
+
+Ce dossier rassemble tout ce qu'il faut pour parler de Krystine
+St-Laurent : les visuels en 1920 × 1080, les planches photo, les pages du
+site, les mots-symboles et les textes.
+
+CE QUE VOUS POUVEZ FAIRE
+Tout se télécharge et se publie librement, dans la presse écrite, en
+ligne, à la télévision et sur les réseaux sociaux, à la seule condition de
+créditer Krystine St-Laurent.
+
+CE QU'IL VAUT MIEUX ÉVITER
+Les visuels ne se recadrent pas au point de couper le nom, et les photos
+gardent leurs couleurs d'origine. Si un format particulier vous manque,
+écrivez-nous et nous le préparons.
+
+COMMENT LIRE LES NOMS DE FICHIERS
+  sujet-fr-texte.png        la carte en français
+  sujet-fr-texte-qr.png     la même, avec son code QR
+  sujet-en-texte.png        la carte en anglais
+  sujet-en-texte-qr.png     la même, avec son code QR
+  sujet-nu.jpg              la photo seule, sans texte
+  sujet-nu-qr.jpg           la photo seule, avec le code QR
+  photo-sujet.jpg           une planche photo légendée
+  site-page.jpg             une page du site
+  logos/                    les mots-symboles, sur crème, sur brun
+                            et sur fond transparent
+  textes/                   les biographies et la fiche des faits
+
+CONTACT
+equipe@inspiratanature.com
+krystinestlaurent.ca/presse

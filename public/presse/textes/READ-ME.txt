@@ -1,0 +1,32 @@
+PRESS KIT · KRYSTINE ST-LAURENT
+
+This folder holds everything you need to write about Krystine St-Laurent:
+the 1920 × 1080 visuals, the photo plates, the pages of the site, the
+wordmarks and the texts.
+
+WHAT YOU MAY DO
+Everything downloads and publishes freely, in print, online, on television
+and on social media, on the single condition that Krystine St-Laurent is
+credited.
+
+WHAT TO AVOID
+Please do not crop a visual so tightly that the name disappears, and
+please keep the photographs in their original colours. If you need a
+format that is missing here, write to us and we will prepare it.
+
+HOW THE FILE NAMES WORK
+  subject-fr-texte.png      the card in French
+  subject-fr-texte-qr.png   the same, with its QR code
+  subject-en-texte.png      the card in English
+  subject-en-texte-qr.png   the same, with its QR code
+  subject-nu.jpg            the photograph alone, no text
+  subject-nu-qr.jpg         the photograph alone, with the QR code
+  photo-subject.jpg         a captioned photo plate
+  site-page.jpg             a page of the website
+  logos/                    the wordmarks, on cream, on brown
+                            and on a transparent ground
+  textes/                   the biographies and the fact sheet
+
+CONTACT
+equipe@inspiratanature.com
+krystinestlaurent.ca/presse

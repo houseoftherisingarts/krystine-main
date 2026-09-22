@@ -34,8 +34,8 @@ export const SHOTS = [
     key: 'site-medias',
     capture: 'medias.png',
     adresse: 'krystinestlaurent.ca/medias',
-    fr: 'La page Médias : podcast, télévision et livres.',
-    en: 'The Media page: podcast, television and books.',
+    fr: 'La page Médias, où se rassemblent le podcast et la télévision.',
+    en: 'The Media page, where the podcast and the television work are gathered.',
   },
   {
     n: '05',
