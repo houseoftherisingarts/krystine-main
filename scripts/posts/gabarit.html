@@ -192,6 +192,10 @@
     entete.appendChild(ligne);
   }
 
+  // Retourne une promesse qui se résout une fois la photo vraiment chargée
+  // (ou en échec) : sans cette attente, une capture prise trop tôt montre un
+  // cadre crème vide, la charge de l'image restant asynchrone même après la
+  // construction du reste de la carte.
   function construireCadre(carte) {
     var zone = document.getElementById('zone-cadre');
     zone.innerHTML = '';
@@ -200,13 +204,18 @@
     tab.textContent = 'Série ' + carte.serie;
     var int = el('div', 'cadre-int');
     var img = document.createElement('img');
-    img.src = carte.image;
     img.alt = '';
     if (carte.objectPosition) img.style.objectPosition = carte.objectPosition;
+    var attente = new Promise(function (resoudre) {
+      img.addEventListener('load', resoudre, { once: true });
+      img.addEventListener('error', resoudre, { once: true });
+    });
+    img.src = carte.image;
     int.appendChild(img);
     cadre.appendChild(tab);
     cadre.appendChild(int);
     zone.appendChild(cadre);
+    return attente;
   }
 
   function construireSignature() {

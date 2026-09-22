@@ -140,6 +140,25 @@ async function partager(fichier: string, titre: string): Promise<'partage' | 'co
   return 'copie';
 }
 
+/**
+ * Le chapeau d'un chapitre : le numéro et le titre à gauche, le filet et
+ * la phrase de présentation à droite. Les deux colonnes tiennent la
+ * largeur de la page, là où un seul bloc de texte laissait la moitié
+ * droite de l'écran vide.
+ */
+const Chapeau: React.FC<{ numero: React.ReactNode; titre: string; note: string }> = ({ numero, titre, note }) => (
+  <Reveal className="grid items-end gap-x-[clamp(2rem,5vw,5rem)] gap-y-7 lg:grid-cols-[1fr_0.8fr]">
+    <div>
+      <Kicker className="mb-5">{numero}</Kicker>
+      <TitreChapitre>{titre}</TitreChapitre>
+    </div>
+    <div className="lg:pb-2">
+      <Filet className="mb-5" />
+      <p className="max-w-[46ch] text-[0.98rem] font-light leading-relaxed text-[#3a2f23]/80">{note}</p>
+    </div>
+  </Reveal>
+);
+
 /* ════════════════════════ La tuile ════════════════════════ */
 
 const Tuile: React.FC<{
@@ -293,12 +312,7 @@ const PressePage: React.FC = () => {
 
       {/* ─── LES FAITS ─────────────────────────────────────────────── */}
       <section className={`${SECTION} bg-[#efe6d7]`}>
-        <Reveal>
-          <Kicker className="mb-5">{t.kicker}</Kicker>
-          <TitreChapitre>{t.faitsTitre}</TitreChapitre>
-          <Filet className="mt-7" />
-          <p className="mt-6 max-w-[48ch] text-[0.98rem] font-light leading-relaxed text-[#3a2f23]/80">{t.faitsNote}</p>
-        </Reveal>
+        <Chapeau numero={t.kicker} titre={t.faitsTitre} note={t.faitsNote} />
         <div className="mt-[clamp(2.5rem,6vh,4rem)] grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-5">
           {FAITS.map((f, i) => (
             <Reveal key={f.fr} delay={i * 0.04}>
@@ -316,12 +330,7 @@ const PressePage: React.FC = () => {
 
       {/* ─── LES VISUELS ───────────────────────────────────────────── */}
       <section id="visuels" className={`${SECTION} bg-[#f4efe6]`}>
-        <Reveal>
-          <Kicker className="mb-5">N&deg; 01</Kicker>
-          <TitreChapitre>{t.visuelsTitre}</TitreChapitre>
-          <Filet className="mt-7" />
-          <p className="mt-6 max-w-[52ch] text-[0.98rem] font-light leading-relaxed text-[#3a2f23]/80">{t.visuelsNote}</p>
-        </Reveal>
+        <Chapeau numero={<>N&deg; 01</>} titre={t.visuelsTitre} note={t.visuelsNote} />
         <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-x-[clamp(2rem,4vw,3.5rem)] gap-y-[clamp(3rem,6vh,4.5rem)] md:grid-cols-2">
           {CARTES.map((c: Carte, idx) => {
             const fichier = fichiersCartes[idx];
@@ -349,12 +358,7 @@ const PressePage: React.FC = () => {
 
       {/* ─── LES PHOTOS ────────────────────────────────────────────── */}
       <section id="photos" className={`${SECTION} bg-[#efe6d7]`}>
-        <Reveal>
-          <Kicker className="mb-5">N&deg; 02</Kicker>
-          <TitreChapitre>{t.photosTitre}</TitreChapitre>
-          <Filet className="mt-7" />
-          <p className="mt-6 max-w-[52ch] text-[0.98rem] font-light leading-relaxed text-[#3a2f23]/80">{t.photosNote}</p>
-        </Reveal>
+        <Chapeau numero={<>N&deg; 02</>} titre={t.photosTitre} note={t.photosNote} />
         <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-x-[clamp(2rem,4vw,3.5rem)] gap-y-[clamp(3rem,6vh,4.5rem)] md:grid-cols-2 xl:grid-cols-3">
           {PLANCHES.map((p: Feuillet, idx) => {
             const titre = lang === 'EN' ? p.labelEN : p.labelFR;
@@ -375,12 +379,7 @@ const PressePage: React.FC = () => {
 
       {/* ─── LE SITE ───────────────────────────────────────────────── */}
       <section id="site" className={`${SECTION} bg-[#f4efe6]`}>
-        <Reveal>
-          <Kicker className="mb-5">N&deg; 03</Kicker>
-          <TitreChapitre>{t.siteTitre}</TitreChapitre>
-          <Filet className="mt-7" />
-          <p className="mt-6 max-w-[52ch] text-[0.98rem] font-light leading-relaxed text-[#3a2f23]/80">{t.siteNote}</p>
-        </Reveal>
+        <Chapeau numero={<>N&deg; 03</>} titre={t.siteTitre} note={t.siteNote} />
         <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-x-[clamp(2rem,4vw,3.5rem)] gap-y-[clamp(3rem,6vh,4.5rem)] md:grid-cols-2 xl:grid-cols-3">
           {PAGES.map((p: Feuillet, idx) => {
             const titre = lang === 'EN' ? p.labelEN : p.labelFR;
@@ -401,12 +400,7 @@ const PressePage: React.FC = () => {
 
       {/* ─── LES MOTS-SYMBOLES ─────────────────────────────────────── */}
       <section id="logos" className={`${SECTION} bg-[#efe6d7]`}>
-        <Reveal>
-          <Kicker className="mb-5">N&deg; 04</Kicker>
-          <TitreChapitre>{t.logosTitre}</TitreChapitre>
-          <Filet className="mt-7" />
-          <p className="mt-6 max-w-[52ch] text-[0.98rem] font-light leading-relaxed text-[#3a2f23]/80">{t.logosNote}</p>
-        </Reveal>
+        <Chapeau numero={<>N&deg; 04</>} titre={t.logosTitre} note={t.logosNote} />
         <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-x-[clamp(2rem,4vw,3.5rem)] gap-y-[clamp(3rem,6vh,4.5rem)] sm:grid-cols-2 xl:grid-cols-4">
           {LOGOS.map((l: Feuillet, idx) => {
             const titre = lang === 'EN' ? l.labelEN : l.labelFR;
@@ -430,12 +424,7 @@ const PressePage: React.FC = () => {
 
       {/* ─── LES TEXTES ────────────────────────────────────────────── */}
       <section id="textes" className={`${SECTION} bg-[#f4efe6]`}>
-        <Reveal>
-          <Kicker className="mb-5">N&deg; 05</Kicker>
-          <TitreChapitre>{t.textesTitre}</TitreChapitre>
-          <Filet className="mt-7" />
-          <p className="mt-6 max-w-[52ch] text-[0.98rem] font-light leading-relaxed text-[#3a2f23]/80">{t.textesNote}</p>
-        </Reveal>
+        <Chapeau numero={<>N&deg; 05</>} titre={t.textesTitre} note={t.textesNote} />
         <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-x-[clamp(2rem,4vw,3.5rem)] gap-y-8 sm:grid-cols-2 xl:grid-cols-3">
           {TEXTES.map((x, i) => (
             <Reveal key={x.fichier} delay={i * 0.03} className="border-t border-[#1c1712]/12 pt-5">
