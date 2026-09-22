@@ -182,7 +182,7 @@ const VueEnsemble: React.FC<Props> = ({ resume, periode, onVoirCarte, onRafraich
             : <p className="text-sm text-[#38403a]/55">Aucune transaction sur la période. Un paiement commencé et un achat confirmé comptent ici, chacun sous son nom.</p>}
         </Card>
         <Card className="min-w-0 p-6">
-          <Titre note="listes d'attente, infolettre, quiz, compte">Petits succès</Titre>
+          <Titre note="l'engagement qui revient">Petits succès</Titre>
           {petits.length ? <Barres lignes={petits.map(o => ({ nom: o.nom, n: o.n }))} unite=" fois" couleur={TEINTES.bleu} />
             : <p className="text-sm text-[#38403a]/55">Aucun engagement sur la période. Chaque inscription et chaque quiz complété s'ajoutent ici.</p>}
         </Card>
