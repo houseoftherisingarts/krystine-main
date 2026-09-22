@@ -576,5 +576,19 @@
       "src/pages/admin/sections/visiteurs/donnees.ts",
       "src/vexelhotjar/tracker.ts"
     ]
+  },
+  {
+    "quand": "2026-09-22T01:26:12.061Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "73a4de7",
+    "message": "Visiteurs et clics : note courte sur Petits succès pour un titre d'une ligne en mobile",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/visiteurs/VueEnsemble.tsx"
+    ]
   }
 ]
