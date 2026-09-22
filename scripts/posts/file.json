@@ -1,0 +1,110 @@
+[
+  {
+    "id": "A01",
+    "serie": "A",
+    "titre": "Le feu digestif n'habite pas que l'estomac.",
+    "ligne": "Ce que l'Ayurveda appelle l'Agni, la deuxième étape du Sentier de l'Apothicaire.",
+    "legende": "Le feu digestif, l'Agni, dépasse largement l'estomac : il façonne la façon dont nous transformons une journée entière, ses repas, ses émotions et son bruit. C'est le cœur du deuxième temps du Sentier de l'Apothicaire, le parcours que Krystine a bâti après presque quarante ans à observer ce feu s'éteindre ou se raviver chez celles et ceux qu'elle accompagne. Le sentier complet se découvre sur krystinestlaurent.ca/origine.",
+    "image": "/origine-square.jpg",
+    "lien": "https://www.krystinestlaurent.ca/origine"
+  },
+  {
+    "id": "A02",
+    "serie": "A",
+    "titre": "Dix ans infirmière d'urgence, avant les plateaux.",
+    "ligne": "Ce que l'urgence enseigne sur l'écoute du corps.",
+    "legende": "Avant d'animer trois saisons de Santé La Vie, Krystine a passé dix ans comme infirmière d'urgence, à regarder des corps parler quand les mots n'y arrivaient plus. Cette rigueur clinique reste le socle de tout ce qu'elle transmet aujourd'hui en Ayurveda, en herboristerie et en aromathérapie. Son parcours complet se découvre sur krystinestlaurent.ca/krystine.",
+    "image": "/sante-la-vie.jpg",
+    "lien": "https://www.krystinestlaurent.ca/krystine"
+  },
+  {
+    "id": "A03",
+    "serie": "A",
+    "titre": "Le vent d'automne teste les nerfs.",
+    "ligne": "Comment traverser Vata sans s'épuiser.",
+    "legende": "L'automne installe la saison que l'Ayurveda appelle Vata, sèche et dispersée, et le corps la sent souvent avant que la tête n'en comprenne la raison. Krystine enseigne à enraciner cette saison plutôt qu'à la subir, avec des routines simples de réchauffement et d'ancrage du corps. Le programme complet, à suivre à votre propre rythme, se trouve sur krystinestlaurent.ca/vata.",
+    "image": "/foyer/saison-automne.webp",
+    "lien": "https://www.krystinestlaurent.ca/vata"
+  },
+  {
+    "id": "B01",
+    "serie": "B",
+    "titre": "Nature & Ayurveda, le livre qu'on prête.",
+    "ligne": "Best-seller cinq fois en francophonie.",
+    "legende": "Si l'Ayurveda devait tenir dans un seul livre, ce serait celui-là : les fondements expliqués avec une simplicité qui n'enlève rien à la profondeur. Les professeures de yoga s'en servent comme référence, et les avis le confirment depuis sa parution. Il se commande sur krystinestlaurent.ca/medias#livres.",
+    "image": "https://storage.googleapis.com/inspirata/Livres/nature%20ayurveda%20front.jpg",
+    "lien": "https://www.krystinestlaurent.ca/medias#livres"
+  },
+  {
+    "id": "B02",
+    "serie": "B",
+    "titre": "Féminité & Ayurveda, pour le corps des femmes.",
+    "ligne": "Cycles, hormones et puissance intérieure.",
+    "legende": "Ce deuxième livre s'adresse directement aux femmes, suit leurs cycles et leur énergie qui monte et redescend, et remonte jusqu'à la sagesse que l'Ayurveda garde depuis des millénaires sur le sujet. Best-seller lui aussi cinq fois en francophonie, il accompagne autant l'adolescente que la femme en ménopause. Vous le trouverez sur krystinestlaurent.ca/medias#livres.",
+    "image": "https://storage.googleapis.com/inspirata/Livres/feminite%20ayurveda%20front.jpg",
+    "lien": "https://www.krystinestlaurent.ca/medias#livres"
+  },
+  {
+    "id": "B03",
+    "serie": "B",
+    "titre": "Un troisième livre s'écrit.",
+    "ligne": "Parution prévue en février 2027, aux Éditions de l'Homme.",
+    "legende": "Le titre reste encore secret, mais le troisième livre de la trilogie prend forme chez Éditions de l'Homme, avec une parution visée pour février 2027. Krystine y prolonge ce qu'elle transmet depuis Nature & Ayurveda et Féminité & Ayurveda. Les premières nouvelles se réservent sur krystinestlaurent.ca/medias#livres.",
+    "image": "/livres/titre-a-reveler.webp",
+    "lien": "https://www.krystinestlaurent.ca/medias#livres"
+  },
+  {
+    "id": "C01",
+    "serie": "C",
+    "titre": "Douze semaines pour retrouver sa boussole.",
+    "ligne": "La prochaine cohorte de l'Expérience Origine s'ouvre en novembre.",
+    "legende": "L'Expérience Origine se déploie sur douze semaines, un sentier en trois temps qui va de l'ancrage du corps jusqu'à la clarté de l'esprit, en passant par l'alchimie du feu digestif. La prochaine cohorte s'ouvre en novembre, et la liste d'attente reçoit les détails avant l'annonce publique. Les places se réservent sur krystinestlaurent.ca/origine.",
+    "image": "/accueil/assets/portes/origine.png",
+    "lien": "https://www.krystinestlaurent.ca/origine"
+  },
+  {
+    "id": "C02",
+    "serie": "C",
+    "titre": "Un foyer se prépare, autour du feu.",
+    "ligne": "Le Foyer d'Origine, bientôt.",
+    "legende": "Quelque chose se construit du côté du Foyer d'Origine, un espace pensé pour relier et pour rencontrer ce que nous n'aurions pas pensé chercher. Krystine y travaille en ce moment, entre les saisons et les rituels qui accompagnent chacune d'elles. La liste d'attente s'inscrit sur krystinestlaurent.ca/liste-attente.",
+    "image": "/foyer/hero-atre.webp",
+    "lien": "https://www.krystinestlaurent.ca/liste-attente?programme=foyer"
+  },
+  {
+    "id": "C03",
+    "serie": "C",
+    "titre": "Sept semaines pour traverser Vata.",
+    "ligne": "Le programme se suit à votre rythme, dès maintenant.",
+    "legende": "Le programme Vata suit la saison qui use le plus le système nerveux, avec des semaines pensées pour enraciner le corps avant que l'hiver n'arrive. Il se suit en autonomie, à votre propre rythme, sans cohorte à attendre ni horaire à respecter. Il commence dès maintenant sur krystinestlaurent.ca/vata.",
+    "image": "/vata/couverture.webp",
+    "lien": "https://www.krystinestlaurent.ca/vata"
+  },
+  {
+    "id": "D01",
+    "serie": "D",
+    "titre": "Le podcast entame sa deuxième saison.",
+    "ligne": "Au-delà des tendances, l'émission qui pose les vraies questions.",
+    "legende": "La saison deux du podcast Au-delà des tendances vient tout juste de commencer, avec une question qui revient dans chaque épisode : comment choisir avec discernement ce qui nous nourrit vraiment, dans un monde qui ne cesse de choisir à notre place. L'archive complète de la première saison reste disponible, épisode par épisode. Toute la série s'écoute sur krystinestlaurent.ca/podcast.",
+    "image": "/podcast/saison2-cover.webp",
+    "lien": "https://www.krystinestlaurent.ca/podcast"
+  },
+  {
+    "id": "D02",
+    "serie": "D",
+    "titre": "Une conférence, jamais un module pré-fait.",
+    "ligne": "Au-delà des tendances, la conférence vedette de Krystine.",
+    "legende": "Krystine reprend sur scène le fil de sa conférence vedette, Au-delà des tendances, et invite son public à écouter le corps avant que l'algorithme ne décide à sa place. Chaque intervention se coud sur mesure pour l'organisation qui la reçoit, et rien n'y est recyclé d'un événement à l'autre. Les dates et les demandes se déposent sur krystinestlaurent.ca/krystine.",
+    "image": "/speaking/assets/krystine-stage.webp",
+    "lien": "https://www.krystinestlaurent.ca/krystine"
+  },
+  {
+    "id": "D03",
+    "serie": "D",
+    "titre": "L'Ayurveda comme boussole intérieure.",
+    "ligne": "La conférence signature, en présentiel ou en hybride.",
+    "legende": "Cette conférence signature déplie une cartographie vieille de plusieurs millénaires pour la poser sur la vie moderne, celle où l'air, le feu et l'eau lisent ce qui se passe réellement en nous. Elle dure de quatre-vingt-dix minutes à une demi-journée et s'adapte au public qui la reçoit. La réservation se fait sur krystinestlaurent.ca/krystine.",
+    "image": "/accueil/assets/portes/conferences.png",
+    "lien": "https://www.krystinestlaurent.ca/krystine"
+  }
+]
