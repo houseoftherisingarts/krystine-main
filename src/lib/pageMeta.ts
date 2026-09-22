@@ -88,6 +88,19 @@ const ROUTES: Record<string, PageMeta> = {
     title: `Politique de confidentialité · ${SITE}`,
     description: 'Politique de confidentialité du site krystinestlaurent.ca.',
   },
+  '/presse': {
+    title: `Salle de presse · ${SITE}`,
+    description: 'Les visuels, les portraits, les faits et le kit de presse de Krystine St-Laurent, auteure et conférencière en ayurveda. Téléchargement libre.',
+  },
+};
+
+// Les raccourcis de la salle de presse mènent à la même page et empruntent son
+// titre, sa description et son adresse canonique : sans cette table, un lien
+// vers /presskit rendait le titre de l'accueil et se déclarait canonique.
+const ALIAS: Record<string, string> = {
+  '/presskit': '/presse',
+  '/press-kit': '/presse',
+  '/en/press': '/presse',
 };
 
 const DEFAULT_META: PageMeta = {
