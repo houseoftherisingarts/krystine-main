@@ -30,6 +30,15 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-09-22',
+    titre: "Le plan du mois, avec vos trois livres à déposer",
+    intro: "Un nouvel onglet porte les trois chantiers des trente prochains jours, dictés par Alex : le visuel de l'Expérience Origine, vos livres découpés en petits livres anglais vendus aux États-Unis, et une chaîne YouTube qui publie chaque jour dans votre voix. Chaque étape se coche, dit qui la fait, et garde la date.",
+    etapes: [
+      { texte: "Sous Ventes, l'onglet « Plan du mois » liste les trois chantiers et leurs étapes, avec une barre d'avancement par chantier. Cocher une étape écrit la date; une note d'une ligne peut s'ajouter dessous.", ou: '/admin/plan-du-mois', libelle: 'Plan du mois' },
+      { texte: "Dans le deuxième chantier, trois boutons reçoivent vos livres en PDF (livre 1, livre 2, livre 3). Les fichiers restent privés, vous seule et Alex pouvez les ouvrir, et Alex les récupère directement depuis le code pour les analyser.", ou: '/admin/plan-du-mois', libelle: 'Déposer vos livres' },
+    ],
+  },
+  {
     date: '2026-09-21',
     titre: "Vos demandes cochées, les robots mis à part, et un accueil qui se lit de haut en bas",
     intro: "Ce que vous avez demandé depuis votre admin se coche maintenant sous vos yeux à mesure que c'est fait, les inscriptions douteuses à l'infolettre sont rangées à part sans être perdues, les listes d'attente ont été vérifiées une à une, et l'accueil se lit maintenant de haut en bas, d'un seul défilement, sans section qui colle ni glissement de côté.",

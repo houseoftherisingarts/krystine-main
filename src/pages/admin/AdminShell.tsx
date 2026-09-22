@@ -43,6 +43,7 @@ export type AdminSectionId =
   | 'changelog'
   | 'publications'
   | 'growth'
+  | 'planMois'
   | 'planAutomne'
   | 'newsletter'
   | 'guide'
@@ -87,6 +88,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   changelog:  'journal-des-changements',
   publications: 'publications',
   growth:     'growth',
+  planMois:   'plan-du-mois',
   planAutomne: 'plan-automne',
   newsletter: 'infolettre',
   guide:      'parcours-guides',
@@ -134,6 +136,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'bookings',   label: 'Demandes',         icon: 'fa-inbox',            groupe: 'ventes' },
   { id: 'submissions', label: 'Formulaires',     icon: 'fa-clipboard-list',   groupe: 'ventes' },
   { id: 'growth',     label: 'Growth',           icon: 'fa-rocket',           groupe: 'ventes' },
+  { id: 'planMois',   label: 'Plan du mois',     icon: 'fa-list-check',       groupe: 'ventes' },
   { id: 'planAutomne', label: 'Plan d\'automne', icon: 'fa-map',              groupe: 'ventes' },
   { id: 'members',    label: 'Clients',          icon: 'fa-users',            groupe: 'communaute' },
   { id: 'habitudes',  label: 'Habitudes de tes clientes', icon: 'fa-route',   groupe: 'communaute' },

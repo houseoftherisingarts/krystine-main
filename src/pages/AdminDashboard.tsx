@@ -60,6 +60,7 @@ import PartenaireVexelSection from './admin/sections/PartenaireVexelSection';
 import ChangelogSection from './admin/sections/ChangelogSection';
 import PublicationsSection from './admin/sections/PublicationsSection';
 import GrowthSection from './admin/sections/GrowthSection';
+import PlanMoisSection from './admin/sections/PlanMoisSection';
 import PlanAutomneSection from './admin/sections/PlanAutomneSection';
 import BugsSection from './admin/sections/BugsSection';
 import NewsletterSection from './admin/sections/NewsletterSection';
@@ -127,6 +128,7 @@ const AdminDashboard: React.FC = () => {
       case 'changelog':   return <ChangelogSection />;
       case 'publications': return <PublicationsSection />;
       case 'growth':      return <GrowthSection />;
+      case 'planMois':    return <PlanMoisSection />;
       case 'planAutomne': return <PlanAutomneSection />;
       case 'newsletter':  return <NewsletterSection />;
       case 'guide':       return <GuideSection />;

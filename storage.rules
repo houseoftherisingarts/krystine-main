@@ -105,13 +105,26 @@ service firebase.storage {
     // lecture publique, écriture à l'administration seulement.
     // Les enregistrements de session de VexelHotjar (vh/replays/<session>/n.json.gz)
     // : écrits par la fonction de collecte, lus par l'admin seulement.
+    // Les trois livres de Krystine en PDF, déposés depuis admin › Plan du mois
+    // (Alex, 22 septembre 2026) : des livres entiers, donc lecture et écriture
+    // pour l'administration seulement, PDF seulement, 300 Mo au plus. Alex les
+    // récupère depuis le code (scripts/livres/telecharger.sh). Le tout-venant
+    // plus bas exclut ce dossier de la lecture publique.
+    match /livres-sources/{fichier} {
+      allow read: if isAdmin();
+      allow write: if isAdmin()
+                   && (request.resource == null
+                       || (request.resource.size < 300 * 1024 * 1024
+                           && request.resource.contentType == 'application/pdf'));
+    }
+
     match /vh/{allPaths=**} {
       allow read: if isAdmin();
       allow write: if false;
     }
 
     match /{dossier}/{allPaths=**} {
-      allow read: if dossier != 'formations-contenu' && dossier != 'vault' && dossier != 'verifications' && dossier != 'foyer-essai' && dossier != 'vh';
+      allow read: if dossier != 'formations-contenu' && dossier != 'vault' && dossier != 'verifications' && dossier != 'foyer-essai' && dossier != 'vh' && dossier != 'livres-sources';
       allow write: if isAdmin() && pieceValide(500 * 1024 * 1024);  // 500 Mo
     }
     match /{fichier} {

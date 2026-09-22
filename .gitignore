@@ -54,3 +54,6 @@ graphify-out/
 scripts/qa/shots/
 scripts/qa/report.json
 scripts/qa/tmp/
+
+# Les livres de Krystine récupérés depuis Storage (scripts/livres/telecharger.sh)
+scripts/livres/pdf/
