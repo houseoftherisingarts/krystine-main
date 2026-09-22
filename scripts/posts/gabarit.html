@@ -244,10 +244,12 @@
     el0.dataset.format = format;
     construireMasthead(carte);
     construireEntete(carte);
-    construireCadre(carte);
+    var attentePhoto = construireCadre(carte);
     construireSignature();
     ajusterTitre();
-    document.body.dataset.pret = '1';
+    attentePhoto.then(function () {
+      document.body.dataset.pret = '1';
+    });
   }
 
   function attendrePolicesEtConstruire(carte, format) {
