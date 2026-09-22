@@ -53,3 +53,4 @@ node_modules/
 graphify-out/
 scripts/qa/shots/
 scripts/qa/report.json
+scripts/qa/tmp/

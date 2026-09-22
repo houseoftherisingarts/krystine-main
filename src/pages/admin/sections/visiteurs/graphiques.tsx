@@ -79,12 +79,12 @@ export const Barres: React.FC<{ lignes: { nom: string; n: number; detail?: strin
   const plafond = Math.max(1, max ?? Math.max(0, ...lignes.map(l => l.n)));
   return (
     <ul className="space-y-2.5">
-      {lignes.map(l => (
-        <li key={l.nom}>
+      {lignes.map((l, i) => (
+        <li key={`${i}-${l.nom}`}>
           <button type="button" onClick={l.onClick} disabled={!l.onClick} className={`group block w-full text-left ${l.onClick ? 'cursor-pointer' : 'cursor-default'}`}>
             <div className="mb-1 flex items-baseline justify-between gap-3 text-[13px]">
               <span className={`min-w-0 truncate text-[#293027] dark:text-white ${l.onClick ? 'group-hover:text-[#8B4A2F]' : ''}`}>{l.nom}</span>
-              <span className="shrink-0 tabular-nums text-[#38403a]/70 dark:text-white/60">{nb(l.n)}{unite}{l.detail ? <span className="ml-2 text-[11px] text-[#38403a]/45">{l.detail}</span> : null}</span>
+              <span className="max-w-[55%] shrink-0 truncate tabular-nums text-[#38403a]/70 dark:text-white/60">{nb(l.n)}{unite}{l.detail ? <span className="ml-2 text-[11px] text-[#38403a]/45">{l.detail}</span> : null}</span>
             </div>
             <div className="h-[6px] w-full overflow-hidden rounded-full bg-[#293027]/[0.07] dark:bg-white/10">
               <div className="h-full rounded-full" style={{ width: `${Math.max(1.5, (l.n / plafond) * 100)}%`, background: couleur }} />

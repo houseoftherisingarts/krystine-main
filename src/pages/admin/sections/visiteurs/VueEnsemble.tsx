@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Card, GhostButton } from '../../primitives';
 import { Anneau, Barres, Courbe, Heures, TEINTES, Tuile } from './graphiques';
-import { dateCourte, duree, nb, pct, rafraichirMaintenant, type Resume } from './donnees';
+import { dateCourte, duree, nb, pct, rafraichirMaintenant, type Resume, nomElement } from './donnees';
 import type { Periode } from '../VisiteursSection';
 
 // ─── Vue d'ensemble ─────────────────────────────────────────────────────────
@@ -49,7 +49,7 @@ const VueEnsemble: React.FC<Props> = ({ resume, periode, onVoirCarte, onRafraich
     for (const p of resume.pages) {
       for (const e of Object.values(p.elements)) {
         if (!e.n) continue;
-        tous.push({ nom: e.tx || e.href || e.s.split('>').pop() || 'élément', n: e.n, detail: p.path, cle: p.cle });
+        tous.push({ nom: nomElement(e), n: e.n, detail: p.path, cle: p.cle });
       }
     }
     return tous.sort((a, b) => b.n - a.n).slice(0, 8);
@@ -74,7 +74,7 @@ const VueEnsemble: React.FC<Props> = ({ resume, periode, onVoirCarte, onRafraich
   return (
     <div className="space-y-6">
       {vide && (
-        <Card className="p-6">
+        <Card className="min-w-0 p-6">
           <p className="font-serif text-xl text-[#293027] dark:text-white">Aucune visite mesurée sur ces {periode.jours} jours.</p>
           <p className="mt-2 max-w-2xl text-sm text-[#38403a]/70 dark:text-white/60">
             La mesure commence dès qu'une visiteuse accepte les témoins sur le site, et les chiffres se mettent à jour toutes les quinze minutes.
@@ -96,7 +96,7 @@ const VueEnsemble: React.FC<Props> = ({ resume, periode, onVoirCarte, onRafraich
         <Tuile etiquette="Erreurs" valeur={nb(resume.erreurs)} note="erreurs techniques vues" icone="fa-bug" accent={resume.erreurs ? 'text-[#BC4A3C]' : 'text-[#2D4A3E]'} />
       </div>
 
-      <Card className="p-6">
+      <Card className="min-w-0 p-6">
         <div className="mb-2 flex flex-wrap items-baseline justify-between gap-3">
           <h3 className="font-serif text-lg text-[#293027] dark:text-white">Visites par jour</h3>
           <div className="flex items-center gap-3">
@@ -110,17 +110,17 @@ const VueEnsemble: React.FC<Props> = ({ resume, periode, onVoirCarte, onRafraich
       </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="p-6">
+        <Card className="min-w-0 p-6">
           <Titre note="cliquez pour voir la carte">Pages les plus vues</Titre>
           <Barres lignes={resume.pages.slice(0, 8).map(p => ({ nom: p.titre || p.path, n: p.vues, detail: p.vues ? duree(p.dureeMs / p.vues) : '', onClick: () => onVoirCarte(p.cle) }))} unite=" vues" />
         </Card>
-        <Card className="p-6">
+        <Card className="min-w-0 p-6">
           <Titre>Ce qui reçoit le plus de clics</Titre>
           {elements.length ? (
             <Barres lignes={elements.map(e => ({ nom: e.nom, n: e.n, detail: e.detail, onClick: () => onVoirCarte(e.cle) }))} unite=" clics" couleur={TEINTES.bleu} />
           ) : <p className="text-sm text-[#38403a]/55">Aucun clic sur un lien ou un bouton pour l'instant.</p>}
         </Card>
-        <Card className="p-6">
+        <Card className="min-w-0 p-6">
           <Titre>D'où viennent les visites</Titre>
           {resume.sources.length ? (
             <Barres lignes={resume.sources.slice(0, 7).map(s => ({ nom: s.nom, n: s.n }))} unite=" visites" couleur={TEINTES.prune} />
@@ -132,7 +132,7 @@ const VueEnsemble: React.FC<Props> = ({ resume, periode, onVoirCarte, onRafraich
             </div>
           )}
         </Card>
-        <Card className="p-6">
+        <Card className="min-w-0 p-6">
           <Titre>Appareils et heures</Titre>
           <Anneau parts={[
             { nom: 'Ordinateur', n: resume.appareils.ordinateur, couleur: TEINTES.cuivre },
@@ -146,23 +146,23 @@ const VueEnsemble: React.FC<Props> = ({ resume, periode, onVoirCarte, onRafraich
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="p-6 border-[#BC4A3C]/20">
+        <Card className="min-w-0 border-[#BC4A3C]/20 p-6">
           <Titre note="rage et clics dans le vide">Où ça accroche</Titre>
           {accrocs.length ? (
             <ul className="divide-y divide-[#38403a]/10">
               {accrocs.map(p => (
                 <li key={p.cle} className="flex items-center justify-between gap-3 py-2.5">
                   <button type="button" onClick={() => onVoirCarte(p.cle)} className="min-w-0 truncate text-left text-[13px] text-[#293027] hover:text-[#8B4A2F] dark:text-white">{p.titre || p.path}</button>
-                  <span className="shrink-0 text-[11px] tabular-nums text-[#38403a]/60">
-                    {p.rage > 0 && <span className="mr-2 rounded-full bg-[#BC4A3C]/10 px-2 py-0.5 text-[#BC4A3C]">{nb(p.rage)} rage</span>}
-                    {p.morts > 0 && <span className="rounded-full bg-[#38403a]/10 px-2 py-0.5">{nb(p.morts)} dans le vide</span>}
+                  <span className="flex shrink-0 flex-wrap justify-end gap-1.5 text-[11px] tabular-nums text-[#38403a]/60">
+                    {p.rage > 0 && <span className="whitespace-nowrap rounded-full bg-[#BC4A3C]/10 px-2 py-0.5 text-[#BC4A3C]">{nb(p.rage)} rage</span>}
+                    {p.morts > 0 && <span className="whitespace-nowrap rounded-full bg-[#38403a]/10 px-2 py-0.5">{nb(p.morts)} dans le vide</span>}
                   </span>
                 </li>
               ))}
             </ul>
           ) : <p className="text-sm text-[#38403a]/55">Aucun clic de rage ni clic dans le vide sur la période : les pages répondent.</p>}
         </Card>
-        <Card className="p-6">
+        <Card className="min-w-0 p-6">
           <Titre note="part des visites qui passent la moitié">Pages qu'on lit peu</Titre>
           {peuLues.length ? (
             <Barres lignes={peuLues.map(p => ({ nom: p.titre || p.path, n: p.moitie, onClick: () => onVoirCarte(p.cle) }))} unite=" %" max={100} couleur="#8F9779" />
@@ -171,7 +171,7 @@ const VueEnsemble: React.FC<Props> = ({ resume, periode, onVoirCarte, onRafraich
       </div>
 
       {resume.objectifs.length > 0 && (
-        <Card className="p-6">
+        <Card className="min-w-0 p-6">
           <Titre note="boutons marqués comme objectif">Objectifs atteints</Titre>
           <Barres lignes={resume.objectifs.map(o => ({ nom: o.nom, n: o.n }))} unite=" fois" />
         </Card>

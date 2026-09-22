@@ -107,7 +107,7 @@ export function peindreDefilement(canvas: HTMLCanvasElement, scroll: Record<stri
     const part = (scroll[`b${b + 5}`] || 0) / total;
     const y0 = (b / 100) * H, y1 = ((b + 5) / 100) * H;
     ctx.fillStyle = RAMPE[Math.round(part * (RAMPE.length - 1))];
-    ctx.globalAlpha = 0.16 + part * 0.5;
+    ctx.globalAlpha = 0.1 + part * 0.62;
     ctx.fillRect(0, y0, canvas.width, y1 - y0);
     ctx.globalAlpha = 1;
     ctx.fillStyle = 'rgba(41,48,39,0.85)';
@@ -116,15 +116,29 @@ export function peindreDefilement(canvas: HTMLCanvasElement, scroll: Record<stri
     ctx.fillText(`${Math.round(part * 100)} %`, canvas.width - 16, y1 - 8);
   }
   // La ligne de flottaison : ce que l'écran montre avant tout défilement.
-  ctx.setLineDash([8, 6]);
-  ctx.strokeStyle = '#293027';
-  ctx.lineWidth = 2;
+  // Le cadre est réduit à l'écran (jusqu'à quatre fois sur mobile), donc la
+  // ligne est épaisse, doublée d'un halo clair pour rester visible sur un
+  // hero sombre, et son étiquette a un fond.
+  const ep = Math.max(4, Math.round(canvas.width / 240));
+  ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+  ctx.lineWidth = ep * 2.5;
+  ctx.beginPath(); ctx.moveTo(0, hauteurFold); ctx.lineTo(canvas.width, hauteurFold); ctx.stroke();
+  ctx.setLineDash([ep * 4, ep * 3]);
+  ctx.strokeStyle = '#8B4A2F';
+  ctx.lineWidth = ep;
   ctx.beginPath(); ctx.moveTo(0, hauteurFold); ctx.lineTo(canvas.width, hauteurFold); ctx.stroke();
   ctx.setLineDash([]);
-  ctx.fillStyle = '#293027';
-  ctx.font = `700 ${Math.max(12, Math.round(canvas.width / 80))}px Inter, system-ui, sans-serif`;
+  const taille = Math.max(14, Math.round(canvas.width / 60));
+  ctx.font = `700 ${taille}px Inter, system-ui, sans-serif`;
+  const texte = 'Ligne de flottaison : ce que l\'écran montre sans défiler';
+  const largeurTexte = ctx.measureText(texte).width;
+  ctx.fillStyle = '#8B4A2F';
+  ctx.beginPath();
+  ctx.roundRect(16, hauteurFold - taille * 2.2, largeurTexte + taille * 1.4, taille * 1.8, taille * 0.9);
+  ctx.fill();
+  ctx.fillStyle = '#EEE7DB';
   ctx.textAlign = 'left';
-  ctx.fillText('Ligne de flottaison : ce que l\'écran montre sans défiler', 16, hauteurFold - 10);
+  ctx.fillText(texte, 16 + taille * 0.7, hauteurFold - taille * 0.9);
 }
 
 export interface Zone { s: string; tx: string; n: number; r: number; m: number; rect?: { x: number; y: number; w: number; h: number } }

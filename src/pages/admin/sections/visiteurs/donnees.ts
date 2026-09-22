@@ -237,6 +237,18 @@ export async function rafraichirMaintenant(): Promise<number> {
 // ─── Petits formats ─────────────────────────────────────────────────────────
 
 export const nb = (n: number) => n.toLocaleString('fr-CA');
+
+/** Un nom lisible pour un élément cliqué : son texte, sinon ce qu'il est (« Champ », « Bouton », « Lien vers /formations »), jamais un sélecteur brut. */
+export function nomElement(e: { tx?: string; href?: string; s: string }): string {
+  if (e.tx) return e.tx.length > 44 ? `${e.tx.slice(0, 42).trim()}…` : e.tx;
+  const dernier = e.s.split('>').pop()?.trim() || '';
+  const tag = dernier.replace(/[^a-z].*$/, '');
+  const rang = dernier.match(/nth-of-type\((\d+)\)/)?.[1];
+  const numero = rang ? ` ${rang}` : '';
+  if (e.href) { try { return `Lien vers ${new URL(e.href, 'https://x').pathname}`; } catch { return `Lien${numero}`; } }
+  const noms: Record<string, string> = { input: 'Champ', textarea: 'Champ', select: 'Menu', button: 'Bouton', a: 'Lien', img: 'Image', video: 'Vidéo', h1: 'Titre', h2: 'Titre', h3: 'Titre', p: 'Texte', label: 'Étiquette', summary: 'Volet', header: 'En-tête', nav: 'Menu', footer: 'Pied de page', section: 'Section' };
+  return `${noms[tag] || 'Élément'}${numero}`;
+}
 export const pct = (n: number, d: number) => (d ? Math.round((n / d) * 100) : 0);
 export function duree(ms: number): string {
   const s = Math.round(ms / 1000);

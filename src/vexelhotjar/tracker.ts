@@ -122,7 +122,18 @@ export function selecteur(el: Element): string {
 
 function texteDe(el: Element): string {
   const aria = el.getAttribute('aria-label');
-  const t = (aria || (el as HTMLElement).innerText || el.getAttribute('title') || el.getAttribute('alt') || '').replace(/\s+/g, ' ').trim();
+  // Un champ de formulaire n'a pas de texte : son étiquette, son placeholder
+  // ou son nom disent ce qu'il est (« Courriel », « Votre prénom »).
+  const champ = el.matches('input,select,textarea')
+    ? (el.id && document.querySelector(`label[for="${CSS.escape(el.id)}"]`)?.textContent) || el.getAttribute('placeholder') || el.getAttribute('name') || ''
+    : '';
+  let t = (aria || champ || (el as HTMLElement).innerText || el.getAttribute('title') || el.getAttribute('alt') || '').replace(/\s+/g, ' ').trim();
+  // Un clic dans le vide d'un bandeau ou d'une section ramène tout le texte du
+  // bloc : on garde plutôt ce qu'est le bloc, avec ses premiers mots.
+  if (t.length > 40 && !el.matches(INTERACTIFS)) {
+    const noms: Record<string, string> = { header: 'En-tête', nav: 'Menu', footer: 'Pied de page', section: 'Section', article: 'Article', aside: 'Encadré', main: 'Contenu', form: 'Formulaire' };
+    t = `${noms[el.tagName.toLowerCase()] || 'Zone'} · ${t.slice(0, 28).trim()}…`;
+  }
   return t.slice(0, 60);
 }
 
@@ -305,6 +316,11 @@ function surFocus(ev: FocusEvent) {
 function surSoumission(ev: Event) {
   if (!pv || !(ev.target instanceof HTMLFormElement)) return;
   const s = selecteur(ev.target);
+  // Un formulaire compte une seule fois par page vue, même si le bouton est
+  // pressé dix fois; et un envoi sans champ touché avant (formulaire à bouton
+  // seul) compte aussi comme un début, sinon les envois dépassent les débuts.
+  if (formsSoumis.has(s)) return;
+  if (!formsCommences.has(s)) { formsCommences.set(s, ''); pousser({ t: 'form', s, etat: 'debut', champ: '' }); }
   formsSoumis.add(s);
   pousser({ t: 'form', s, etat: 'soumis', champ: '' });
 }

@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Card } from '../../primitives';
-import { chargerCarte, nb, pct, type Carte, type Device, type Resume } from './donnees';
+import { chargerCarte, nb, nomElement, pct, type Carte, type Device, type Resume } from './donnees';
 import { ancrer, ancrerMouvements, peindreChaleur, peindreDefilement, peindreZones, zones, type Zone } from './chaleur';
+import { hauteurNaturelle, reveler } from './cadre';
 import type { Periode } from '../VisiteursSection';
 
 // ─── Cartes de chaleur ──────────────────────────────────────────────────────
@@ -42,7 +43,9 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
   const largeur = LARGEURS[device];
 
   useEffect(() => { if (!pageChoisie && pages[0]) onPage(pages[0].cle); }, [pageChoisie, pages, onPage]);
-  useEffect(() => { setPret(false); }, [page?.path]);
+  // Changer de page ou d'appareil recharge le cadre (sa clé change), et
+  // tout se remesure.
+  useEffect(() => { setPret(false); }, [page?.path, device]);
 
   // Les points de la période, pour la page et l'appareil choisis.
   useEffect(() => {
@@ -63,24 +66,37 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
     obs.observe(el);
     setLargeurCadre(el.clientWidth);
     return () => obs.disconnect();
-  }, []);
+    // L'enveloppe n'existe qu'une fois le résumé chargé : l'observateur se
+    // pose à ce moment-là, pas au premier rendu (qui montre le squelette).
+  }, [resume, pages.length]);
 
   const echelle = largeurCadre ? Math.min(1, largeurCadre / largeur) : 1;
 
-  // Le cadre annonce sa hauteur de document quand la page est rendue; on
-  // relit deux fois de plus parce que les images et les polices arrivent
-  // après le premier rendu.
+  // Le cadre suit la hauteur de son document : une première lecture quand la
+  // page est rendue, puis à chaque fois que le corps de la page change de
+  // taille (les images, les polices et les données qui arrivent après). Les
+  // hauteurs en « vh » sont figées à l'écran de l'appareil avant chaque
+  // lecture (voir cadre.ts), sinon le cadre et la page grandiraient sans fin.
   const mesurer = () => {
-    const doc = iframe.current?.contentDocument;
-    if (!doc) return;
-    const h = Math.max(doc.documentElement.scrollHeight, doc.body?.scrollHeight || 0, 400);
-    setHauteur(Math.min(h, 30000));
+    const el = iframe.current;
+    if (!el?.contentDocument) return;
+    const h = hauteurNaturelle(el, FOLDS[device]);
+    if (h) setHauteur(h);
   };
   const surChargement = () => {
-    setPret(true);
-    mesurer();
-    window.setTimeout(mesurer, 800);
-    window.setTimeout(mesurer, 2500);
+    const el = iframe.current;
+    const win = el?.contentWindow;
+    if (!el || !win?.document.body) return;
+    reveler(el, FOLDS[device]).finally(() => {
+      mesurer();
+      setPret(true);
+      let prevu = 0;
+      const obs = new (win as Window & typeof globalThis).ResizeObserver(() => {
+        if (prevu) return;
+        prevu = window.requestAnimationFrame(() => { prevu = 0; mesurer(); });
+      });
+      obs.observe(win.document.body);
+    });
   };
 
   // La peinture, dès que la carte, le cadre et la hauteur sont là.
@@ -110,6 +126,10 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
   // Le chemin vient des données recueillies, donc d'un navigateur inconnu :
   // seul un chemin relatif propre du site s'ouvre en cadre, jamais une
   // adresse extérieure ni un chemin qui commence par deux barres.
+  // Le cadre est de même origine par construction (une page du site), et la
+  // carte a besoin de son DOM pour retrouver chaque élément cliqué; le
+  // sandbox garde scripts et origine mais ferme la navigation du parent,
+  // les fenêtres et l'envoi de formulaires depuis la page encadrée.
   const src = useMemo(() => {
     const chemin = page?.path || '';
     const sur = /^\/(?!\/)[a-zA-Z0-9\-._~/%]*$/.test(chemin);
@@ -130,14 +150,14 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
               {pages.map(p => <option key={p.cle} value={p.cle}>{p.titre ? `${p.titre} · ${p.path}` : p.path} ({nb(p.vues)} vues)</option>)}
             </select>
           </label>
-          <div className="flex gap-1 rounded-full border border-[#38403a]/10 bg-white/50 p-1" role="group" aria-label="Appareil">
+          <div className="flex flex-wrap gap-1 rounded-full border border-[#38403a]/10 bg-white/50 p-1" role="group" aria-label="Appareil">
             {(['ordinateur', 'mobile'] as Device[]).map(d => (
               <button key={d} type="button" onClick={() => { setDevice(d); setPret(false); }} className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] ${device === d ? 'bg-[#293027] text-[#EEE7DB]' : 'text-[#38403a]/65 hover:bg-white/70'}`}>
                 <i className={`fa-solid ${d === 'mobile' ? 'fa-mobile-screen' : 'fa-desktop'} text-[10px]`} aria-hidden="true" />{d === 'mobile' ? 'Téléphone' : 'Ordinateur'}
               </button>
             ))}
           </div>
-          <div className="flex gap-1 rounded-full border border-[#38403a]/10 bg-white/50 p-1" role="group" aria-label="Type de carte">
+          <div className="flex flex-wrap gap-1 rounded-full border border-[#38403a]/10 bg-white/50 p-1" role="group" aria-label="Type de carte">
             {MODES.map(m => (
               <button key={m.id} type="button" onClick={() => setMode(m.id)} className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] ${mode === m.id ? 'bg-[#BA7B39] text-[#293027]' : 'text-[#38403a]/65 hover:bg-white/70'}`}>
                 <i className={`fa-solid ${m.icon} text-[10px]`} aria-hidden="true" />{m.label}
@@ -162,7 +182,7 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
           <div style={{ width: largeur * echelle, height: hauteur * echelle }} className="relative mx-auto">
             <div style={{ width: largeur, height: hauteur, transform: `scale(${echelle})`, transformOrigin: 'top left' }} className="absolute left-0 top-0">
               <iframe ref={iframe} key={src + device} src={src} title={`Aperçu de ${page?.path}`} onLoad={surChargement}
-                style={{ width: largeur, height: hauteur, border: 0, pointerEvents: 'none' }} />
+                style={{ width: largeur, height: hauteur, border: 0, pointerEvents: 'none' }} sandbox="allow-scripts allow-same-origin" />
               <canvas ref={canvas} className="pointer-events-none absolute left-0 top-0" style={{ width: largeur, height: hauteur }} aria-hidden="true" />
             </div>
           </div>
@@ -185,9 +205,9 @@ const CartesChaleur: React.FC<Props> = ({ resume, periode, pageChoisie, onPage }
             <Card className="p-5">
               <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#38403a]/55">Les plus cliqués</p>
               <ol className="space-y-2 text-[13px]">
-                {liste.slice(0, 12).map(z => (
-                  <li key={z.s} className="flex items-baseline justify-between gap-2">
-                    <span className="min-w-0 truncate text-[#293027] dark:text-white" title={z.s}>{z.tx || z.s.split('>').pop()}</span>
+                {liste.slice(0, 12).map((z, i) => (
+                  <li key={`${i}-${z.s}`} className="flex items-baseline justify-between gap-2">
+                    <span className="min-w-0 truncate text-[#293027] dark:text-white" title={z.s}>{nomElement(z)}</span>
                     <span className="shrink-0 tabular-nums text-[#38403a]/60">{nb(z.n)}{z.r ? <i className="fa-solid fa-bolt ml-1.5 text-[10px] text-[#BC4A3C]" title="clics de rage" aria-label="clics de rage" /> : null}</span>
                   </li>
                 ))}

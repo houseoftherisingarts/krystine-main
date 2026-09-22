@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Card } from '../../primitives';
-import { nb, pct, type Resume } from './donnees';
+import { nb, nomElement, pct, type Resume } from './donnees';
 
 // ─── Accrocs ────────────────────────────────────────────────────────────────
 // Tout ce qui signale une visiteuse contrariée : les clics de rage (trois
@@ -27,7 +27,7 @@ const Frictions: React.FC<Props> = ({ resume, onVoirCarte }) => {
     const morts: { nom: string; page: string; cle: string; n: number }[] = [];
     for (const p of resume.pages) {
       for (const e of Object.values(p.elements)) {
-        const nom = e.tx || e.href || e.s.split('>').pop() || 'élément';
+        const nom = nomElement(e);
         if (e.r) rage.push({ nom, page: p.titre || p.path, cle: p.cle, n: e.r });
         if (e.m) morts.push({ nom, page: p.titre || p.path, cle: p.cle, n: e.m });
       }
@@ -52,7 +52,7 @@ const Frictions: React.FC<Props> = ({ resume, onVoirCarte }) => {
       <Card className="p-6">
         <Titre icone="fa-bolt" couleur="text-[#BC4A3C]" note={`${nb(resume.rage)} sur la période`}>Clics de rage</Titre>
         {elements.rage.length ? <ul className="divide-y divide-[#38403a]/10">{elements.rage.map((e, i) => <Ligne key={i} {...e} unite="fois" />)}</ul>
-          : <Vide>Aucun clic de rage : personne ne s'est acharné sur un bouton qui ne répondait pas.</Vide>}
+          : <Vide>{resume.rage > 0 ? `Les ${nb(resume.rage)} clics de rage de la période visent des zones qui ne sont ni un lien ni un bouton (une image, un titre) : la carte des clics les montre.` : "Aucun clic de rage : personne ne s'est acharné sur un bouton qui ne répondait pas."}</Vide>}
       </Card>
       <Card className="p-6">
         <Titre icone="fa-ban" note={`${nb(resume.morts)} sur la période`}>Clics dans le vide</Titre>
@@ -71,9 +71,9 @@ const Frictions: React.FC<Props> = ({ resume, onVoirCarte }) => {
                   <span className="shrink-0 text-[12px] tabular-nums text-[#38403a]/70">{nb(f.soumis)} envoyé{f.soumis > 1 ? 's' : ''} · {nb(f.abandons)} laissé{f.abandons > 1 ? 's' : ''}</span>
                 </div>
                 <div className="mt-1.5 h-[6px] w-full overflow-hidden rounded-full bg-[#293027]/[0.07]">
-                  <div className="h-full rounded-full bg-[#2D4A3E]" style={{ width: `${pct(f.soumis, f.debuts)}%` }} />
+                  <div className="h-full rounded-full bg-[#2D4A3E]" style={{ width: `${Math.min(100, pct(f.soumis, f.debuts))}%` }} />
                 </div>
-                <p className="mt-1 text-[11px] text-[#38403a]/55">{pct(f.soumis, f.debuts)} % des {nb(f.debuts)} qui commencent vont au bout{f.dernierChamp ? ` · dernier champ touché avant d'abandonner : ${f.dernierChamp}` : ''}</p>
+                <p className="mt-1 text-[11px] text-[#38403a]/55">{Math.min(100, pct(f.soumis, f.debuts))} % des {nb(f.debuts)} qui commencent vont au bout{f.dernierChamp ? ` · dernier champ touché avant d'abandonner : ${f.dernierChamp}` : ''}</p>
               </li>
             ))}
           </ul>
