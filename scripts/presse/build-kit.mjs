@@ -330,6 +330,11 @@ function shotHtml(s, uri, qrImg) {
     </div>`);
 }
 
+/** La photo seule : le cadre plein et rien d'autre, sans un mot dessus. */
+function nuHtml(uri) {
+  return shell(`<img src="${uri}" style="position:absolute;inset:0;width:${W}px;height:${H}px;object-fit:cover">`);
+}
+
 /** La photo seule, avec la pastille crème qui porte le code QR. */
 function nuQrHtml(uri, qrImg) {
   return shell(`
