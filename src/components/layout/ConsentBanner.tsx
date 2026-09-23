@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp, useAuth } from '../../contexts/AppContext';
 import { enableAnalytics } from '../../firebase';
@@ -43,6 +43,7 @@ const ConsentBanner: React.FC = () => {
   const { lang } = useApp();
   const { authReady } = useAuth();
   const [choice, setChoice] = useState<ConsentValue | null>(() => getConsent());
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Un navigateur d'administratrice (drapeau vh.moi) ne charge rien, même
@@ -60,55 +61,85 @@ const ConsentBanner: React.FC = () => {
     setChoice(value);
   };
 
+  // La bande réserve sa propre hauteur au bas du document tant qu'elle est
+  // là, sinon elle couvrirait la dernière rangée de boutons de la page
+  // qu'on est en train de lire (salle de presse, 22 septembre 2026).
+  useEffect(() => {
+    const bande = ref.current;
+    if (choice || !bande) return;
+    const poser = () => { document.body.style.paddingBottom = `${bande.offsetHeight}px`; };
+    poser();
+    const obs = new ResizeObserver(poser);
+    obs.observe(bande);
+    window.addEventListener('resize', poser);
+    return () => {
+      obs.disconnect();
+      window.removeEventListener('resize', poser);
+      document.body.style.paddingBottom = '';
+    };
+  }, [choice, lang]);
+
   if (choice) return null;
 
-  return (
-    <div
-      role="dialog"
-      aria-live="polite"
-      aria-label={lang === 'FR' ? 'Bandeau de consentement' : 'Consent banner'}
-      className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:max-w-sm z-[60] bg-white/95 dark:bg-[#2a2015]/95 backdrop-blur-xl border border-[#bb9a5e]/25 rounded-2xl shadow-xl p-4 md:p-5"
-    >
-      <div className="flex items-start gap-3 mb-3">
-        <i className="fa-solid fa-cookie-bite text-[#7d6330] text-sm mt-0.5" />
-        <div>
-          <p className="text-[9px] uppercase tracking-[0.3em] font-bold text-[#7d6330] mb-1">
-            {lang === 'FR' ? 'En toute transparence' : 'With full transparency'}
-          </p>
-          {/* Mobile: une ligne. Le détail complet reste sur sm+ (recette
-              bandeau compact, improvements-ledger 2026-07-04). */}
-          <p className="sm:hidden text-xs text-[#2a2015]/80 dark:text-white/80 leading-relaxed">
-            {lang === 'FR'
-              ? 'Quelques témoins discrets, vous gardez le contrôle (Loi 25).'
-              : 'A few discreet cookies; you stay in control (Law 25).'}
-          </p>
-          <p className="hidden sm:block text-xs text-[#2a2015]/80 dark:text-white/80 leading-relaxed">
-            {lang === 'FR'
-              ? "Quelques témoins discrets nous aident à améliorer votre expérience, et si vous êtes connectée, les pages que vous consultez servent aussi à vous proposer une offre qui vous ressemble. Vous gardez le contrôle, comme le veut la Loi 25."
-              : "A few discreet cookies help us improve your experience, and if you're signed in, the pages you visit also help us suggest offers that fit you. You stay in control, as Quebec's Law 25 intends."}
-          </p>
-        </div>
-      </div>
-      <div className="flex gap-2">
-        <button
-          onClick={() => decide('accepted')}
-          className="flex-1 min-h-[44px] bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] font-bold uppercase tracking-widest text-[10px] px-4 py-2.5 rounded-full hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
-        >
-          {lang === 'FR' ? "J'accepte" : 'I accept'}
-        </button>
-        <button
-          onClick={() => decide('rejected')}
-          className="flex-1 min-h-[44px] border border-[#2a2015]/20 dark:border-white/20 text-[#2a2015] dark:text-white font-bold uppercase tracking-widest text-[10px] px-4 py-2.5 rounded-full hover:border-[#bb9a5e] hover:text-[#7d6330] transition-colors"
-        >
-          {lang === 'FR' ? 'Non merci' : 'No thanks'}
-        </button>
-      </div>
+  // Une bande fine ancrée au bas de l'écran, sur toute la largeur, au canon
+  // du Festival Médiéval : la carte flottante d'avant se posait au tiers droit
+  // de l'écran et recouvrait les tuiles de la salle de presse. Tout tient sur
+  // une seule rangée, l'étiquette et le lien de la politique coulant dans la
+  // phrase pour que la bande reste basse.
+  const texte = (
+    <>
+      <span className="hidden sm:inline uppercase tracking-[0.28em] font-bold text-[#7d6330] mr-2">
+        {lang === 'FR' ? 'En toute transparence' : 'With full transparency'}
+      </span>
+      {/* Mobile: une ligne. Le détail complet reste sur sm+ (recette
+          bandeau compact, improvements-ledger 2026-07-04). */}
+      <span className="sm:hidden">
+        {lang === 'FR'
+          ? 'Quelques témoins discrets, vous gardez le contrôle (Loi 25).'
+          : 'A few discreet cookies; you stay in control (Law 25).'}
+      </span>
+      <span className="hidden sm:inline">
+        {lang === 'FR'
+          ? "Quelques témoins discrets nous aident à améliorer votre expérience, et si vous êtes connectée, les pages que vous consultez servent aussi à vous proposer une offre qui vous ressemble. Vous gardez le contrôle, comme le veut la Loi 25."
+          : "A few discreet cookies help us improve your experience, and if you're signed in, the pages you visit also help us suggest offers that fit you. You stay in control, as Quebec's Law 25 intends."}
+      </span>
       <Link
         to="/politique-de-confidentialite"
-        className="block mt-3 text-[10px] text-[#2a2015]/50 dark:text-white/50 underline hover:text-[#7d6330]"
+        className="ml-2 whitespace-nowrap underline text-[#2a2015]/55 dark:text-white/55 hover:text-[#7d6330]"
       >
         {lang === 'FR' ? 'Politique de confidentialité' : 'Privacy policy'}
       </Link>
+    </>
+  );
+
+  return (
+    <div
+      ref={ref}
+      role="dialog"
+      aria-live="polite"
+      aria-label={lang === 'FR' ? 'Bandeau de consentement' : 'Consent banner'}
+      className="fixed inset-x-0 bottom-0 z-[60] border-t border-[#bb9a5e]/30 bg-white/95 dark:bg-[#2a2015]/95 backdrop-blur-xl shadow-[0_-10px_30px_rgba(42,32,21,0.14)]"
+    >
+      <div className="mx-auto flex max-w-[1500px] flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2.5 md:px-8">
+        <p className="min-w-0 flex-1 basis-[15rem] text-[13px] leading-snug text-[#2a2015]/80 dark:text-white/80">
+          <i className="fa-solid fa-cookie-bite text-[#7d6330] mr-2.5" aria-hidden />
+          {texte}
+        </p>
+        <div className="flex shrink-0 gap-2">
+          <button
+            onClick={() => decide('accepted')}
+            className="min-h-[40px] bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] font-bold uppercase tracking-widest text-[13px] px-5 py-2 rounded-full hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
+          >
+            {lang === 'FR' ? "J'accepte" : 'I accept'}
+          </button>
+          <button
+            onClick={() => decide('rejected')}
+            className="min-h-[40px] border border-[#2a2015]/20 dark:border-white/20 text-[#2a2015] dark:text-white font-bold uppercase tracking-widest text-[13px] px-5 py-2 rounded-full hover:border-[#bb9a5e] hover:text-[#7d6330] transition-colors"
+          >
+            {lang === 'FR' ? 'Non merci' : 'No thanks'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

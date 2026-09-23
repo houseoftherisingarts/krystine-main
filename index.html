@@ -325,21 +325,56 @@
       }
 
       /* ──────────────────────────────────────────────────────────────
-         Brand minimum readable text : 12 px floor across the entire
-         site, mobile and desktop. Any Tailwind arbitrary text size
-         below 12 px is bumped up so we catch every spot in one place
-         without sweeping the codebase. <i> tags (Font-Awesome glyph
-         icons) are intentionally NOT excluded : bumping a 9 px
-         chevron to 12 px keeps the icon-with-text rhythm consistent
-         at the new floor.
+         Brand minimum readable text : 13 px floor across the entire
+         site, mobile and desktop (plancher remonté de 12 à 13 px le
+         22 septembre 2026, à la demande du vérificateur visuel de la
+         salle de presse). Toute taille Tailwind arbitraire sous 13 px
+         est remontée ici, pour qu'un seul endroit règle le site entier
+         plutôt que d'aller la changer classe par classe. Les
+         primitives des pages V2 (Kicker, Masthead, liens de
+         chapitres, boutons noir et cuivre, étiquette de planche)
+         passent par ce plancher, comme les liens de la barre de
+         navigation et du pied de page. Les balises <i>
+         (pictogrammes Font-Awesome) restent volontairement dedans :
+         un chevron de 9 px remonté garde le rythme de l'icône collée
+         à son texte.
+         Les quatorze endroits qui montent déjà la taille à l'écran
+         suivant (« text-[0.62rem] md:text-[0.7rem] ») restent justes :
+         leurs deux paliers tombaient tous les deux sous le plancher.
          ────────────────────────────────────────────────────────────── */
       .text-\[6px\],
       .text-\[7px\],
+      .text-\[7\.5px\],
       .text-\[8px\],
+      .text-\[8\.5px\],
       .text-\[9px\],
+      .text-\[9\.5px\],
       .text-\[10px\],
-      .text-\[11px\] {
-        font-size: 12px !important;
+      .text-\[10\.5px\],
+      .text-\[11px\],
+      .text-\[11\.5px\],
+      .text-\[12px\],
+      .text-\[12\.5px\],
+      .text-\[0\.5rem\],
+      .text-\[0\.52rem\],
+      .text-\[0\.55rem\],
+      .text-\[0\.56rem\],
+      .text-\[0\.58rem\],
+      .text-\[0\.6rem\],
+      .text-\[0\.62rem\],
+      .text-\[0\.64rem\],
+      .text-\[0\.65rem\],
+      .text-\[0\.66rem\],
+      .text-\[0\.68rem\],
+      .text-\[0\.7rem\],
+      .text-\[0\.72rem\],
+      .text-\[0\.74rem\],
+      .text-\[0\.75rem\],
+      .text-\[0\.76rem\],
+      .text-\[0\.78rem\],
+      .text-\[0\.8rem\],
+      .text-xs {
+        font-size: 13px !important;
       }
 
       /* Le crayon d'administration (src/components/edit/CrayonSite.tsx) : en
