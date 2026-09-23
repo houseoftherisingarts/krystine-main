@@ -522,9 +522,9 @@ const PressePage: React.FC = () => {
                   <p className="text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/55">{x.fichier.split('/').pop()}</p>
                 </div>
               </div>
-              <div className={BANDE}>
+              <div className={`${BANDE} flex flex-1 flex-col`}>
                 <p className="v2-serif text-[1.05rem] font-light leading-snug text-[#f4efe6]">{lang === 'EN' ? x.labelEN : x.labelFR}</p>
-                <div className="mt-4 grid grid-cols-2 gap-2">
+                <div className="mt-auto grid grid-cols-2 gap-2 pt-4">
                   <Geste onClick={() => lireTexte(x)} libelle={`${t.lire} · ${x.fichier}`}>
                     <ArrowUpRight size={14} weight="regular" /> {t.lire}
                   </Geste>
