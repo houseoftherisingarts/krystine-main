@@ -18,13 +18,15 @@ interface Props {
   etape: Etape;
   etat?: EtapePlanMois;
   accent: string;
+  /** L'accent en version texte, assez foncé pour les liens sur le fond clair. */
+  encre: string;
   /** Vrai quand Firestore refuse l'écriture : on note l'état, sans le promettre. */
   lectureSeule: boolean;
   onCocher: (fait: boolean) => void;
   onNoter: (note: string) => void;
 }
 
-const EtapeCochable: React.FC<Props> = ({ etape, etat, accent, lectureSeule, onCocher, onNoter }) => {
+const EtapeCochable: React.FC<Props> = ({ etape, etat, accent, encre, lectureSeule, onCocher, onNoter }) => {
   const fait = etat?.fait === true;
   const [note, setNote] = useState(etat?.note ?? '');
   const date = etat?.faitLe?.toDate ? etat.faitLe.toDate() : null;
@@ -63,6 +65,25 @@ const EtapeCochable: React.FC<Props> = ({ etape, etat, accent, lectureSeule, onC
           </span>
         </span>
       </label>
+
+      {/* Les références vivent hors de l'étiquette : un clic sur un lien ne coche rien. */}
+      {etape.liens && etape.liens.length > 0 && (
+        <div className="ml-[25px] mt-1 flex flex-wrap gap-x-3 gap-y-1">
+          {etape.liens.map(l => (
+            <a
+              key={l.url}
+              href={l.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-[13px] font-semibold underline decoration-[1px] underline-offset-[3px] transition-opacity duration-200 ease-out hover:opacity-75"
+              style={{ color: encre }}
+            >
+              <i className="fa-solid fa-up-right-from-square text-[10px]" aria-hidden />
+              {l.texte}
+            </a>
+          ))}
+        </div>
+      )}
 
       {fait && (
         <div className="ml-[25px] mt-1.5">

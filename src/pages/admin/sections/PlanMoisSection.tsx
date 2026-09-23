@@ -155,6 +155,7 @@ const PlanMoisSection: React.FC = () => {
                               etape={e}
                               etat={items[e.id]}
                               accent={c.couleurs.accent}
+                              encre={c.couleurs.encre}
                               lectureSeule={refus !== null}
                               onCocher={f => cocher(e.id, f)}
                               onNoter={n => noter(e.id, n)}
