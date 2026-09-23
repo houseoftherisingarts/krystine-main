@@ -547,7 +547,7 @@ const PressePage: React.FC = () => {
             </div>
             {/* Les deux adresses restent sous le bouton : la colonne de droite doit tenir
                 la hauteur du texte de gauche, sinon la moitié de l'écran se vide. */}
-            <div className="flex flex-col items-start gap-6">
+            <div className="flex flex-col items-start justify-between gap-6 lg:py-1">
               <BoutonCuivre href="mailto:equipe@inspiratanature.com">
                 {t.contactGeste} <ArrowUpRight size={14} weight="regular" />
               </BoutonCuivre>
