@@ -101,18 +101,74 @@ async function recadrer(spec, l, h) {
     .flatten({ background: C.fond });
 }
 
-/** Vrai quand la source supporte un 1920 × 1080 sans agrandissement excessif. */
-async function supportePleinePage(spec) {
-  const meta = await sharp(source(spec)).metadata();
-  let cw = meta.width;
-  const format = W / (H - 176);
-  let ch = Math.round(cw / format);
-  if (ch > meta.height) { ch = meta.height; cw = Math.round(ch * format); }
-  return W / cw <= AGRANDISSEMENT_MAX;
+/** La largeur du fondu qui noie le bord de la photo dans le lit flou. */
+const FONDU = 220;
+
+/**
+ * Un masque blanc qui s'efface sur un bord, sur les deux, ou sur aucun.
+ * Sharp le pose en `dest-in` : la photo garde son opacité là où le masque
+ * est blanc et disparaît là où il est transparent.
+ */
+function masqueFondu(l, h, aGauche, aDroite) {
+  const p = FONDU / l;
+  const arrets = [`<stop offset="0" stop-color="#fff" stop-opacity="${aGauche ? 0 : 1}"/>`];
+  if (aGauche) arrets.push(`<stop offset="${p.toFixed(4)}" stop-color="#fff" stop-opacity="1"/>`);
+  if (aDroite) arrets.push(`<stop offset="${(1 - p).toFixed(4)}" stop-color="#fff" stop-opacity="1"/>`);
+  arrets.push(`<stop offset="1" stop-color="#fff" stop-opacity="${aDroite ? 0 : 1}"/>`);
+  return Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${l}" height="${h}">` +
+    `<defs><linearGradient id="f" x1="0" y1="0" x2="1" y2="0">${arrets.join('')}</linearGradient></defs>` +
+    `<rect width="${l}" height="${h}" fill="url(#f)"/></svg>`,
+  );
 }
 
-async function dataUri(spec, l, h) {
-  const buf = await (await recadrer(spec, l, h)).jpeg({ quality: 94, mozjpeg: true }).toBuffer();
+/**
+ * Le fond plein cadre d'une carte ou d'une planche, en l × h.
+ *
+ * Quand la source est assez large, c'est le recadrage net et rien
+ * d'autre : la photo occupe le cadre d'un bord à l'autre, comme le veut
+ * la formule Prisket. Quand elle est trop étroite pour ça, un portrait
+ * debout par exemple, on ne la rétrécit pas dans une colonne avec un bloc
+ * de texte à côté, parce que c'est justement la construction que Krystine
+ * a écartée : la photo garde sa hauteur et sa netteté, et le reste du
+ * cadre reçoit la même image agrandie puis floutée, si bien que le cadre
+ * reste photographique d'un bout à l'autre. Le bord de la photo nette se
+ * perd dans un fondu d'opacité, sans quoi l'œil attrape la couture.
+ *
+ * `ancrage` dit où se pose la photo nette : au centre pour une planche,
+ * du côté laissé libre par le voile de texte pour une carte.
+ */
+async function fondPleinCadre(spec, l, h, ancrage = 'centre') {
+  const chemin = source(spec);
+  const meta = await sharp(chemin).metadata();
+  const format = l / h;
+  let cw = meta.width;
+  let ch = Math.round(cw / format);
+  if (ch > meta.height) { ch = meta.height; cw = Math.round(ch * format); }
+  if (l / cw <= AGRANDISSEMENT_MAX) return recadrer(spec, l, h);
+
+  const lit = await sharp(chemin)
+    .resize(l, h, { fit: 'cover', position: 'center', kernel: 'lanczos3' })
+    .blur(44)
+    .modulate({ brightness: 0.74 })
+    .flatten({ background: C.fond })
+    .toBuffer();
+
+  const nl = Math.min(l, Math.round(meta.width * (h / meta.height)));
+  const gauche = ancrage === 'gauche' ? 0 : ancrage === 'droite' ? l - nl : Math.round((l - nl) / 2);
+  const nette = await sharp(chemin)
+    .resize(nl, h, { fit: 'cover', position: 'center', kernel: 'lanczos3' })
+    .flatten({ background: C.fond })
+    .ensureAlpha()
+    .composite([{ input: masqueFondu(nl, h, gauche > 0, gauche + nl < l), blend: 'dest-in' }])
+    .png()
+    .toBuffer();
+
+  return sharp(lit).composite([{ input: nette, left: gauche, top: 0 }]);
+}
+
+async function dataUri(spec, l, h, ancrage) {
+  const buf = await (await fondPleinCadre(spec, l, h, ancrage)).jpeg({ quality: 94, mozjpeg: true }).toBuffer();
   return 'data:image/jpeg;base64,' + buf.toString('base64');
 }
 
