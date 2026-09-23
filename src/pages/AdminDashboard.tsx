@@ -67,6 +67,7 @@ import NewsletterSection from './admin/sections/NewsletterSection';
 import GuideSection from './admin/sections/GuideSection';
 import DoshaSection from './admin/sections/DoshaSection';
 import MediaSection from './admin/sections/MediaSection';
+import PresseSection from './admin/sections/PresseSection';
 import EnPreparationSection from './admin/sections/EnPreparationSection';
 import PostsPrefaitsSection from './admin/sections/PostsPrefaitsSection';
 import DroitInternationalSection from './admin/sections/DroitInternationalSection';
