@@ -106,6 +106,67 @@ const DOSSIERS: Dossier[] = [
     ],
   },
   {
+    id: 'tva',
+    icone: 'fa-euro-sign',
+    titre: "La TVA européenne, le piège des produits numériques",
+    resume:
+      "Une entreprise établie hors de l'Union doit la TVA dès le premier euro vendu à une particulière européenne. Aucun seuil ne protège, et le taux est celui de son pays à elle.",
+    statut: 'À surveiller',
+    corps: [
+      "Le seuil de dix mille euros dont on entend souvent parler ne s'applique qu'aux entreprises déjà établies dans l'Union qui vendent d'un pays membre à un autre. Une entreprise québécoise n'en bénéficie jamais : la première formation vendue à une Belge ou le premier livre numérique acheté par une Française déclenchent l'obligation. Le taux applicable est celui du pays où vit la cliente, ce qui veut dire vingt taux différents plutôt qu'un.",
+      "Le mécanisme prévu pour rendre cela vivable s'appelle le guichet unique, régime non-Union. Vous choisissez un seul pays membre comme porte d'entrée, vous vous y inscrivez en ligne, puis vous produisez une seule déclaration trimestrielle qui couvre les vingt-sept pays et vous payez en euros. Aucun représentant fiscal n'est exigé pour ce régime, ce qui le distingue de la représentation dont parle le dossier précédent.",
+      "Deux nuances valent la peine d'être connues avant de fixer un prix. Depuis la directive européenne du 5 avril 2022, chaque pays peut appliquer au livre numérique le même taux réduit qu'au livre imprimé, et plusieurs l'ont fait, ce qui rend vos livres nettement moins taxés que vos formations. Une formation préenregistrée, elle, demeure un service fourni par voie électronique, taxé au taux ordinaire du pays de la cliente.",
+      "La sortie de secours existe et elle est simple : quand la vente passe par une véritable place de marché, c'est la place de marché qui devient redevable. Amazon vend vos livres numériques en son propre nom, perçoit la TVA et vous verse une redevance nette, si bien qu'un livre vendu par Amazon ne vous crée aucune obligation européenne. Une boutique que vous exploitez vous-même, comme Shopify ou votre propre site, ne vous protège pas de la même façon, parce que la vente reste la vôtre.",
+    ],
+    geste:
+      "Si l'Europe entre dans le plan, passer les livres numériques par une place de marché et garder votre boutique pour le marché nord-américain, le temps de décider si le guichet unique en vaut la peine.",
+    sources: [
+      { titre: 'Guichet unique de TVA, Commission européenne', url: 'https://vat-one-stop-shop.ec.europa.eu/one-stop-shop_en' },
+      { titre: 'Directive 2022/542 sur les taux réduits', url: 'https://eur-lex.europa.eu/eli/dir/2022/542/oj/eng' },
+      { titre: 'TVA et livres numériques chez Amazon KDP', url: 'https://kdp.amazon.com/en_US/help/topic/G201645450' },
+    ],
+  },
+  {
+    id: 'etats-unis',
+    icone: 'fa-flag-usa',
+    titre: 'Les États-Unis, État par État',
+    resume:
+      "Depuis l'arrêt Wayfair de 2018, un État peut vous réclamer sa taxe de vente sans que vous y ayez le moindre bureau. Les seuils commencent à cent mille dollars de ventes dans cet État.",
+    statut: 'Pas encore',
+    corps: [
+      "Il n'existe pas de taxe de vente américaine, mais une quarantaine de régimes d'États qui se ressemblent sans se confondre. La Cour suprême a jugé en 2018, dans South Dakota contre Wayfair, qu'un État peut exiger la perception de sa taxe sur la seule base d'un lien économique, sans présence physique. Le fait d'être une entreprise canadienne ne change rien : le critère est le montant vendu dans cet État.",
+      "Les seuils et les règles varient assez pour renverser un calcul de prix. Le Dakota du Sud demande cent mille dollars de ventes dans l'année et taxe les produits transférés électroniquement. La Pennsylvanie applique le même seuil de cent mille dollars et taxe les livres numériques à six pour cent, avec un point de plus à Allegheny et deux de plus à Philadelphie. La Californie, elle, fixe son seuil à cinq cent mille dollars et ne taxe pas les livres numériques téléchargés, même après l'élargissement de sa taxe prévu pour janvier 2027.",
+      "La loi californienne sur la vie privée, celle dont tout le monde parle, ne vous vise pas et ne vous visera pas de sitôt. Elle demande un chiffre d'affaires de vingt-six millions six cent vingt-cinq mille dollars, ou les renseignements de cent mille consommateurs californiens, ou la moitié de vos revenus tirée de la vente de données. Aucun de ces trois seuils ne s'approche de votre réalité.",
+      "Autrement dit, le marché américain vous coûtera du temps de comptabilité bien avant de vous coûter du droit de la vie privée, et ce temps ne commence qu'une fois franchis les cent mille dollars de ventes dans un même État.",
+    ],
+    sources: [
+      { titre: 'Département du revenu du Dakota du Sud', url: 'https://dor.sd.gov/businesses/taxes/sales-use-tax/' },
+      { titre: 'Produits numériques en Pennsylvanie', url: 'https://www.pa.gov/agencies/revenue/resources/tax-types-and-information/sales-use-and-hotel-occupancy-tax/digital-products' },
+      { titre: 'Seuil californien après Wayfair', url: 'https://cdtfa.ca.gov/industry/wayfair/' },
+      { titre: "Seuils de la loi californienne sur la vie privée", url: 'https://oag.ca.gov/privacy/ccpa' },
+    ],
+  },
+  {
+    id: 'infolettre',
+    icone: 'fa-envelope-open-text',
+    titre: "L'infolettre, trois pays et trois logiques",
+    resume:
+      "Le Canada et l'Europe demandent une permission avant d'écrire, les États-Unis se contentent d'un désabonnement facile. Votre pratique actuelle satisfait les trois.",
+    statut: 'Vous êtes visée',
+    corps: [
+      "La loi canadienne anti-pourriel exige un consentement avant l'envoi, exprès quand la personne coche elle-même, tacite quand elle vous a acheté quelque chose. Le consentement tacite a une date de péremption que peu de gens connaissent : deux ans après le dernier achat, six mois après une simple demande de renseignements. Chaque message porte votre nom, une façon de vous joindre et un lien de désabonnement qui fonctionne pendant au moins soixante jours, et un retrait se traite dans les dix jours ouvrables.",
+      "L'Europe demande la même permission préalable, avec une exception qui porte le nom de consentement atténué : vous pouvez écrire à une cliente existante au sujet de produits semblables à ce qu'elle a acheté, pourvu qu'elle ait pu refuser au moment de la vente et qu'elle puisse refuser dans chaque message. La Cour de justice a confirmé cette lecture en novembre 2025.",
+      "Les États-Unis fonctionnent à l'envers. Aucune permission préalable n'est requise, mais chaque courriel doit porter une adresse postale réelle, un objet qui ne trompe pas, et un désabonnement honoré en dix jours ouvrables. La sanction se calcule par courriel envoyé, jusqu'à cinquante-trois mille quatre-vingt-huit dollars américains pour un seul message fautif, ce qui rend l'envoi massif à une liste achetée franchement dangereux.",
+      "Votre système actuel demande la permission, envoie la confirmation, garde la trace et retire en un clic, ce qui vous place du bon côté des trois régimes en même temps. Le seul geste qui les briserait tous serait d'importer une liste que vous n'avez pas bâtie vous-même.",
+    ],
+    geste:
+      "Ne jamais importer dans l'infolettre une liste achetée, empruntée ou récoltée ailleurs, même quand une personne de confiance vous l'offre.",
+    sources: [
+      { titre: 'Guide du CRTC sur la loi canadienne anti-pourriel', url: 'https://crtc.gc.ca/eng/com500/guide.htm' },
+      { titre: 'Guide de conformité CAN-SPAM, Federal Trade Commission', url: 'https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business' },
+    ],
+  },
+  {
     id: 'hebergement',
     icone: 'fa-server',
     titre: 'Où vivent vos données, et pourquoi la loi veut le savoir',
