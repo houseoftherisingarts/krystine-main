@@ -138,6 +138,7 @@ const AdminDashboard: React.FC = () => {
       case 'guide':       return <GuideSection />;
       case 'dosha':       return <DoshaSection />;
       case 'media':       return <MediaSection />;
+      case 'presse':      return <PresseSection />;
       case 'assets':      return <AssetsSection />;
       case 'formations':  return <FormationsSection />;
       case 'enPreparation': return <EnPreparationSection />;
