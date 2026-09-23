@@ -54,6 +54,7 @@ export type AdminSectionId =
   | 'enPreparation'
   | 'postsPrefaits'
   | 'droitInternational'
+  | 'presse'
   | 'settings';
 
 // ─── L'adresse de chaque section ─────────────────────────────────────────────
