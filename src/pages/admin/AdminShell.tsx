@@ -53,6 +53,7 @@ export type AdminSectionId =
   | 'feedpublic'
   | 'enPreparation'
   | 'postsPrefaits'
+  | 'droitInternational'
   | 'settings';
 
 // ─── L'adresse de chaque section ─────────────────────────────────────────────

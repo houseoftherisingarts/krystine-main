@@ -49,7 +49,7 @@ const VueEnsemble: React.FC<Props> = ({ resume, periode, onVoirCarte, onRafraich
     for (const p of resume.pages) {
       for (const e of Object.values(p.elements)) {
         if (!e.n) continue;
-        tous.push({ nom: nomElement(e), n: e.n, detail: p.path, cle: p.cle });
+        tous.push({ nom: nomElement(e), n: e.n, detail: p.path === '/' ? 'accueil' : p.path, cle: p.cle });
       }
     }
     return tous.sort((a, b) => b.n - a.n).slice(0, 8);
