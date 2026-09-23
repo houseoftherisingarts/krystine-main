@@ -392,16 +392,19 @@ const retenue = (k) => !SEUL.length || SEUL.includes(k);
 // ─── Les cartes, six variantes par sujet quand la photo le permet ────
 for (const carte of CARTES) {
   if (!retenue(carte.key)) continue;
-  const photo = await dataUri(carte.src, 700, 780);
+  // La photo tient tout le cadre, et le voile de texte se pose du côté
+  // opposé : c'est elle qui décide où la photo nette s'ancre quand la
+  // source est trop étroite pour remplir le 16:9 toute seule.
+  const photo = await dataUri(carte.nu || carte.src, W, H, carte.cote);
   for (const lang of ['fr', 'en']) {
     for (const qr of [false, true]) {
-      const qrImg = qr ? await qrUri(carte.qr[lang]) : null;
+      const qrImg = qr ? await qrUri(carte.qr[lang], 150) : null;
       const nom = `${carte.key}-${lang}-texte${qr ? '-qr' : ''}.png`;
       await shoot(carteHtml({ carte, lang, qr, photo, qrImg }), nom, { ajusterTitre: true });
     }
   }
   if (carte.nu) {
-    const nu = await recadrer(carte.nu, W, H);
+    const nu = await fondPleinCadre(carte.nu, W, H);
     await nu.jpeg({ quality: 92, mozjpeg: true }).toFile(path.join(OUT, `${carte.key}-nu.jpg`));
     rendus.push(`${carte.key}-nu.jpg`);
     const uri = await dataUri(carte.nu, W, H);
@@ -411,14 +414,21 @@ for (const carte of CARTES) {
 }
 
 // ─── Les planches photo, légendées en français et en anglais ─────────
+// Les quatre gestes de la formule veulent quatre fichiers par planche :
+// la photo légendée, la même avec son code QR, la photo seule et la photo
+// seule à code QR. Toutes partent du même cadre plein, si bien que « Photo
+// seule » montre bien la même image, le texte en moins.
 for (const p of PHOTOS) {
   if (!retenue(p.key)) continue;
   const spec = { fichier: p.fichier, focus: p.focus, focusX: p.focusX };
-  const pleine = await supportePleinePage(spec);
-  const uri = pleine ? await dataUri(spec, W, H - 176) : await dataUri(spec, 900, H);
-  const html = pleine ? photoPleineHtml(p, uri) : photoDebouteHtml(p, uri);
-  await shoot(html, `photo-${p.key}.jpg`, { jpeg: true });
-  console.log(`  photo ${p.n} · ${p.key}${pleine ? '' : ' (format debout)'}`);
+  const fond = await fondPleinCadre(spec, W, H);
+  const uri = 'data:image/jpeg;base64,' + (await fond.jpeg({ quality: 94, mozjpeg: true }).toBuffer()).toString('base64');
+  const qrImg = await qrUri(p.chemin, 126);
+  await shoot(photoPleineHtml(p, uri), `photo-${p.key}.jpg`, { jpeg: true });
+  await shoot(photoPleineHtml(p, uri, qrImg), `photo-${p.key}-qr.jpg`, { jpeg: true });
+  await shoot(nuHtml(uri), `photo-${p.key}-nu.jpg`, { jpeg: true });
+  await shoot(nuQrHtml(uri, await qrUri(p.chemin, 132)), `photo-${p.key}-nu-qr.jpg`, { jpeg: true });
+  console.log(`  photo ${p.n} · ${p.key}`);
 }
 
 // ─── Les pages du site ───────────────────────────────────────────────
@@ -426,7 +436,11 @@ for (const s of SHOTS) {
   if (!retenue(s.key)) continue;
   const buf = fs.readFileSync(path.join(CAPTURES, s.capture));
   const uri = 'data:image/jpeg;base64,' + (await sharp(buf).jpeg({ quality: 92, mozjpeg: true }).toBuffer()).toString('base64');
+  const qrImg = await qrUri(s.chemin, 126);
   await shoot(shotHtml(s, uri), `${s.key}.jpg`, { jpeg: true });
+  await shoot(shotHtml(s, uri, qrImg), `${s.key}-qr.jpg`, { jpeg: true });
+  await shoot(nuHtml(uri), `${s.key}-nu.jpg`, { jpeg: true });
+  await shoot(nuQrHtml(uri, await qrUri(s.chemin, 132)), `${s.key}-nu-qr.jpg`, { jpeg: true });
   console.log(`  page ${s.n} · ${s.key}`);
 }
 
