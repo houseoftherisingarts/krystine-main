@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
-import { ArrowUpRight, Download, ShareNetwork, QrCode, ImageSquare, X, CaretLeft, CaretRight, EyeSlash, FileText, Envelope } from '@phosphor-icons/react';
+import { ArrowUpRight, Download, ShareNetwork, QrCode, ImageSquare, X, EyeSlash, FileText, Envelope } from '@phosphor-icons/react';
 import {
   StyleV2, Kicker, Masthead, TitreV2, SousTitreV2, LiensChapitres, LigneDefiler,
   TitreChapitre, Filet, Reveal, BoutonNoir, BoutonCuivre,
