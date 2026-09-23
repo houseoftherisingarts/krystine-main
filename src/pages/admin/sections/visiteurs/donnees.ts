@@ -211,23 +211,45 @@ async function degzipper(octets: ArrayBuffer): Promise<string> {
   return new Response(flux).text();
 }
 
-/** Les événements rrweb d'une session, morceau après morceau, dans l'ordre
- *  des fichiers réellement présents (un morceau perdu en route ne cache pas
- *  ceux qui l'ont suivi). */
+/** Le SDK de Storage réessaie un téléchargement pendant deux minutes
+ *  (DEFAULT_MAX_OPERATION_RETRY_TIME) avant d'abandonner. Quand le seau
+ *  refusait la lecture au navigateur, chaque morceau coûtait donc deux
+ *  minutes de roue qui tourne, et vingt-cinq morceaux, cinquante minutes. */
+const DELAI_MORCEAU_MS = 15_000;
+
+/** Aucun morceau n'est arrivé : c'est une panne de téléchargement, pas un
+ *  film trop court, et le lecteur doit le dire. */
+export class EnregistrementIllisible extends Error {
+  constructor(readonly total: number) {
+    super(`aucun des ${total} morceaux du film n'a pu être téléchargé`);
+    this.name = 'EnregistrementIllisible';
+  }
+}
+
+/** Les événements rrweb d'une session. Les morceaux partent ensemble et
+ *  chacun a son propre délai : un morceau perdu en route ne cache ni ne
+ *  retarde ceux qui l'ont suivi. */
 export async function chargerEnregistrement(sid: string): Promise<unknown[]> {
   if (!app || !/^[a-z0-9-]{8,64}$/.test(sid)) return [];
   const storage = getStorage(app);
+  storage.maxOperationRetryTime = DELAI_MORCEAU_MS;
   const dossier = await listAll(ref(storage, `vh/replays/${sid}`));
   const morceaux = dossier.items
     .filter(f => /^\d+\.json(\.gz)?$/.test(f.name))
     .sort((a, b) => parseInt(a.name, 10) - parseInt(b.name, 10));
-  const events: unknown[] = [];
-  for (const f of morceaux) {
+  if (!morceaux.length) return [];
+  const lots = await Promise.all(morceaux.map(async f => {
     try {
       const morceau = JSON.parse(await degzipper(await getBytes(f)));
-      if (Array.isArray(morceau)) events.push(...morceau);
-    } catch { /* un morceau illisible ne bloque pas la lecture des autres */ }
-  }
+      return Array.isArray(morceau) ? (morceau as unknown[]) : null;
+    } catch (e) {
+      console.warn('[vexelhotjar] morceau illisible', f.name, e);
+      return null;
+    }
+  }));
+  const events: unknown[] = [];
+  for (const lot of lots) if (lot) events.push(...lot);
+  if (!events.length) throw new EnregistrementIllisible(morceaux.length);
   return events;
 }
 

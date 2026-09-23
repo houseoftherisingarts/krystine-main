@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { ArrowUpRight, Download, ShareNetwork, QrCode, ImageSquare, X, CaretLeft, CaretRight, EyeSlash } from '@phosphor-icons/react';
+import { ArrowUpRight, Download, ShareNetwork, QrCode, ImageSquare, X, CaretLeft, CaretRight, EyeSlash, FileText, Envelope } from '@phosphor-icons/react';
 import {
   StyleV2, Kicker, Masthead, TitreV2, SousTitreV2, LiensChapitres, LigneDefiler,
-  TitreChapitre, Filet, Reveal, CarteVerte, BoutonNoir, BoutonCuivre, LienSouligne,
+  TitreChapitre, Filet, Reveal, BoutonNoir, BoutonCuivre,
   useMotionV2, GOUTTIERE,
 } from '../components/v2/Magazine';
 import { useApp, useAuth } from '../contexts/AppContext';
@@ -15,10 +15,29 @@ import {
 } from '../content/presse';
 
 /**
- * La salle de presse, au langage magazine crème des pages V2. Elle porte
- * ce que scripts/presse/build-kit.mjs fabrique : les cartes de 1920 sur
- * 1080, les planches photo, les pages du site, les mots-symboles, les
- * textes et le zip complet.
+ * La salle de presse, bâtie sur la formule Prisket (Krystine, 22 septembre
+ * 2026) : la même page que celle du Festival Médiéval, aux couleurs, aux
+ * polices et aux images de Krystine. Ce qui fait la formule, et qui ne
+ * change plus d'un kit à l'autre :
+ *
+ *   1. la photo occupe toute la largeur de sa tuile, en 16:9, sans marge;
+ *   2. dessous, un panneau brun translucide porte le nom en crème;
+ *   3. quatre boutons sous chaque visuel, en deux rangées de deux, et
+ *      toujours dans cet ordre : Télécharger, Partager, Version QR,
+ *      Photo seule.
+ *
+ * Version QR échange la carte contre celle qui porte le code menant à la
+ * page du sujet, Photo seule retire le texte pour ne garder que l'image.
+ * Les deux se cumulent ici, puisque le kit fabrique aussi la photo nue à
+ * code QR. Cliquer l'image l'ouvre en grand.
+ *
+ * Les couleurs et les polices restent celles des pages V2 : crème #f4efe6
+ * et #efe6d7 pour la page, brun #1c1712 pour les panneaux, cuivre #BA7B39
+ * pour le bouton allumé, Fraunces léger pour les titres.
+ *
+ * Elle porte ce que scripts/presse/build-kit.mjs fabrique : les cartes de
+ * 1920 sur 1080, les planches photo, les pages du site, les mots-symboles,
+ * les textes et le zip complet.
  *
  * Tant que l'interrupteur presseOuvert reste éteint dans l'admin, une
  * visiteuse qui arrive ici repart vers l'accueil, et Krystine reste seule
@@ -28,24 +47,44 @@ import {
 
 const SECTION = `relative w-full ${GOUTTIERE} py-[clamp(4.5rem,12vh,9rem)] scroll-mt-24`;
 
+/* ════════════════════════ Le panneau de la formule ════════════════════════ */
+
+/** Le panneau brun translucide : verre flouté, coins de 15 px, filet clair à 15 %. */
+const PANNEAU = 'rounded-[15px] border border-[#f4efe6]/15 bg-[#1c1712]/90 shadow-[0_30px_70px_-42px_rgba(28,23,18,0.95)] backdrop-blur-md';
+/** La tuile : le même panneau, avec la photo collée à ses bords du haut. */
+const TUILE = `${PANNEAU} flex h-full flex-col overflow-hidden`;
+/** La bande de texte et de boutons, sous la photo. */
+const BANDE = 'border-t border-[#f4efe6]/12 px-5 py-4';
+
+const BOUTON = 'inline-flex min-h-[40px] items-center justify-center gap-2 rounded-full border px-3 py-2 text-[13px] leading-none transition-colors duration-300';
+const CREUX = 'border-[#f4efe6]/25 text-[#f4efe6]/85 hover:border-[#BA7B39] hover:text-[#BA7B39]';
+const ALLUME = 'border-[#BA7B39] bg-[#BA7B39] text-[#1c1712]';
+const ETEINT = 'border-[#f4efe6]/10 text-[#f4efe6]/30 cursor-not-allowed';
+/** Le lien souligné sur fond brun, là où le lien d'encre des pages crème disparaîtrait. */
+const LIEN_CLAIR = 'inline-flex items-center gap-2.5 border-b border-[#BA7B39]/60 pb-1.5 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:text-[#BA7B39]';
+
 const T = {
   FR: {
     kicker: 'Pour la presse',
     titre: 'Salle de presse',
+    titreLignes: ['Salle', 'de presse'],
     soustitre: 'Les visuels, les portraits et les biographies se téléchargent ici librement, à la seule condition de créditer Krystine St-Laurent.',
     liens: [['Les visuels', '#visuels'], ['Les photos', '#photos'], ['Le site', '#site'], ['Les mots-symboles', '#logos'], ['Les textes', '#textes']] as [string, string][],
     defiler: 'Faire défiler',
-    zip: 'Télécharger le kit complet',
+    zip: 'Télécharger tout le kit',
     zipNote: `Un seul fichier, ${PRESSE_ZIP_POIDS} : les visuels, les mots-symboles et les textes.`,
+    heroLegende: 'Le portrait de presse, tel qu’il se télécharge en 1920 × 1080.',
+    brefKicker: 'En bref',
     faitsTitre: 'Les faits',
     faitsNote: 'Tout ce qui se vérifie en un coup d’œil, et la fiche complète en fichier texte.',
     ficheFaits: 'Ouvrir la fiche des faits',
+    contactLabel: 'Contact presse',
     visuelsTitre: 'Les visuels',
     visuelsNote: 'Huit cartes de 1920 sur 1080 pixels, chacune en français et en anglais, avec ou sans code QR.',
     photosTitre: 'Les photos',
     photosNote: 'Six planches légendées dans les deux langues, prêtes à illustrer un article.',
     siteTitre: 'Le site',
-    siteNote: 'Cinq pages captées telles qu’elles s’affichaient à la fabrication du kit.',
+    siteNote: 'Six pages captées telles qu’elles s’affichaient à la fabrication du kit.',
     logosTitre: 'Les mots-symboles',
     logosNote: 'Le site n’a pas d’autre logo que sa signature typographique, et elle existe en quatre versions.',
     textesTitre: 'Les textes',
@@ -55,7 +94,10 @@ const T = {
     partager: 'Partager',
     versionQr: 'Version QR',
     photoSeule: 'Photo seule',
-    copie: 'Adresse copiée',
+    avecTexte: 'Avec texte',
+    qrMene: 'Le code mène à',
+    copie: 'Lien copié',
+    agrandir: 'Agrandir',
     fermer: 'Fermer',
     contactTitre: 'Une demande particulière',
     contactTexte: 'S’il vous manque un format, une photo de scène ou une citation sur un sujet précis, écrivez à l’équipe et nous la préparons.',
@@ -67,20 +109,24 @@ const T = {
   EN: {
     kicker: 'For the press',
     titre: 'Press room',
+    titreLignes: ['Press', 'room'],
     soustitre: 'The visuals, the portraits and the biographies download freely from here, on the single condition that Krystine St-Laurent is credited.',
     liens: [['The visuals', '#visuels'], ['The photographs', '#photos'], ['The site', '#site'], ['The wordmarks', '#logos'], ['The texts', '#textes']] as [string, string][],
     defiler: 'Scroll',
     zip: 'Download the full kit',
     zipNote: `One file, ${PRESSE_ZIP_POIDS}: the visuals, the wordmarks and the texts.`,
+    heroLegende: 'The press portrait, as it downloads at 1920 × 1080.',
+    brefKicker: 'In brief',
     faitsTitre: 'The facts',
     faitsNote: 'Everything that checks out at a glance, with the full sheet as a text file.',
     ficheFaits: 'Open the fact sheet',
+    contactLabel: 'Press contact',
     visuelsTitre: 'The visuals',
     visuelsNote: 'Eight cards at 1920 by 1080 pixels, each one in French and in English, with or without a QR code.',
     photosTitre: 'The photographs',
     photosNote: 'Six captioned plates in both languages, ready to illustrate an article.',
     siteTitre: 'The site',
-    siteNote: 'Five pages captured exactly as they looked when the kit was built.',
+    siteNote: 'Six pages captured exactly as they looked when the kit was built.',
     logosTitre: 'The wordmarks',
     logosNote: 'The site has no logo beyond its typographic signature, and that signature comes in four versions.',
     textesTitre: 'The texts',
@@ -90,7 +136,10 @@ const T = {
     partager: 'Share',
     versionQr: 'QR version',
     photoSeule: 'Photo only',
-    copie: 'Address copied',
+    avecTexte: 'With text',
+    qrMene: 'The code leads to',
+    copie: 'Link copied',
+    agrandir: 'Enlarge',
     fermer: 'Close',
     contactTitre: 'Something else you need',
     contactTexte: 'If a format is missing, or a stage photograph, or a quote on a particular subject, write to the team and we will prepare it.',
@@ -103,19 +152,17 @@ const T = {
 
 /* ════════════════════════ Les gestes d'un fichier ════════════════════════ */
 
-const GESTE = 'inline-flex items-center gap-1.5 text-[0.62rem] uppercase tracking-[0.18em] transition-colors duration-300';
-
 const Geste: React.FC<{
   onClick?: () => void; href?: string; download?: string;
-  actif?: boolean; disponible?: boolean; children: React.ReactNode;
-}> = ({ onClick, href, download, actif = false, disponible = true, children }) => {
-  const couleur = !disponible
-    ? 'text-[#1c1712]/25 cursor-not-allowed'
-    : actif
-      ? 'text-[#7d6330] border-b border-[#9c7a44] pb-0.5'
-      : 'text-[#1c1712]/60 hover:text-[#7d6330] border-b border-transparent pb-0.5';
-  if (href) return <a href={href} download={download} className={`${GESTE} ${couleur}`}>{children}</a>;
-  return <button type="button" disabled={!disponible} onClick={onClick} className={`${GESTE} ${couleur}`}>{children}</button>;
+  actif?: boolean; disponible?: boolean; libelle: string; children: React.ReactNode;
+}> = ({ onClick, href, download, actif = false, disponible = true, libelle, children }) => {
+  const teinte = !disponible ? ETEINT : actif ? ALLUME : CREUX;
+  if (href) return <a href={href} download={download} aria-label={libelle} className={`${BOUTON} ${teinte}`}>{children}</a>;
+  return (
+    <button type="button" disabled={!disponible} onClick={onClick} aria-label={libelle} aria-pressed={actif} className={`${BOUTON} ${teinte}`}>
+      {children}
+    </button>
+  );
 };
 
 /**
@@ -159,33 +206,38 @@ const Chapeau: React.FC<{ numero: React.ReactNode; titre: string; note: string }
   </Reveal>
 );
 
-/* ════════════════════════ La tuile ════════════════════════ */
+/* ════════════════════════ La tuile Prisket ════════════════════════ */
 
 const Tuile: React.FC<{
-  fichier: string; titre: string; legende: string; ratio?: string;
-  fond?: string; onOuvrir: () => void; children: React.ReactNode;
-}> = ({ fichier, titre, legende, ratio = 'aspect-[16/9]', fond = 'bg-[#e7ddcb]', onOuvrir, children }) => (
-  <Reveal className="relative">
-    <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/30" aria-hidden />
+  fichier: string; titre: string; legende?: string; agrandir: string;
+  fond?: string; contenir?: boolean; onOuvrir: () => void;
+  children: React.ReactNode; dessous?: React.ReactNode;
+}> = ({ fichier, titre, legende, agrandir, fond, contenir = false, onOuvrir, children, dessous }) => (
+  <Reveal className={TUILE}>
     <button
       type="button"
       onClick={onOuvrir}
-      className={`group relative block w-full ${ratio} overflow-hidden ${fond}`}
-      aria-label={titre}
+      aria-label={`${agrandir} · ${titre}`}
+      className={`group block w-full cursor-zoom-in overflow-hidden ${fond || ''}`}
     >
       <img
         src={vignette(fichier)}
         alt={titre}
+        width={640}
+        height={360}
         loading="lazy"
-        className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+        decoding="async"
+        className={`aspect-video w-full transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03] ${contenir ? 'object-contain p-8' : 'object-cover'}`}
       />
     </button>
-    <div className="mt-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-      <h3 className="v2-serif font-light text-[1.15rem] leading-tight text-[#1c1712]">{titre}</h3>
-      <p className="text-[0.62rem] uppercase tracking-[0.2em] text-[#1c1712]/40">{fichier.split('/').pop()}</p>
+    <div className={BANDE}>
+      <p className="v2-serif text-[1.05rem] font-light leading-snug text-[#f4efe6]">{titre}</p>
+      {legende && <p className="mt-2 text-[13px] font-light leading-relaxed text-[#f4efe6]/65">{legende}</p>}
+      {/* Les quatre gestes en deux rangées de deux, comme sur la page du festival :
+          sur une seule rangée, le troisième bouton se faisait couper. */}
+      <div className="mt-4 grid grid-cols-2 gap-2">{children}</div>
+      {dessous}
     </div>
-    <p className="mt-1.5 text-sm font-light leading-relaxed text-[#3a2f23]/75">{legende}</p>
-    <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2.5 border-t border-[#1c1712]/10 pt-3.5">{children}</div>
   </Reveal>
 );
 
@@ -245,17 +297,19 @@ const PressePage: React.FC = () => {
 
   const gestesCommuns = (fichier: string, titre: string) => (
     <>
-      <Geste href={pleineRes(fichier)} download={fichier.split('/').pop()}>
-        <Download size={13} weight="regular" /> {t.telecharger}
+      <Geste href={pleineRes(fichier)} download={fichier.split('/').pop()} libelle={`${t.telecharger} · ${titre}`}>
+        <Download size={14} weight="regular" /> {t.telecharger}
       </Geste>
-      <Geste onClick={() => envoyer(fichier, titre)} actif={copie === fichier}>
-        <ShareNetwork size={13} weight="regular" /> {copie === fichier ? t.copie : t.partager}
+      <Geste onClick={() => envoyer(fichier, titre)} actif={copie === fichier} libelle={`${t.partager} · ${titre}`}>
+        <ShareNetwork size={14} weight="regular" /> {copie === fichier ? t.copie : t.partager}
       </Geste>
     </>
   );
 
+  const ficheFaits = () => lireTexte(TEXTES.find(x => x.fichier.includes(lang === 'EN' ? 'facts-en' : 'faits-fr')) || TEXTES[2]);
+
   return (
-    <div ref={root} className="relative w-full bg-[#f4efe6] text-[#1c1712] antialiased overflow-x-hidden">
+    <div ref={root} className="relative w-full overflow-x-hidden bg-[#f4efe6] text-[#1c1712] antialiased">
       <StyleV2 />
 
       {isAdmin && !presseOuvert && (
@@ -276,79 +330,108 @@ const PressePage: React.FC = () => {
         </div>
       )}
 
-      {/* ─── SEUIL ─────────────────────────────────────────────────── */}
+      {/* ─── L'EN-TÊTE · deux colonnes, comme celui du festival ─────── */}
       <section data-hero className={`relative w-full ${GOUTTIERE} pt-[clamp(6rem,12vh,9rem)] pb-[clamp(2rem,5vh,4rem)]`}>
         <Masthead gauche={<>N&deg; 09 &middot; {t.titre}</>} />
-        <div className="mt-[clamp(2rem,5vh,3.5rem)]">
-          <p data-fade className="mb-6 text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330]">{t.kicker}</p>
-          <TitreV2 lignes={[t.titre]} />
-          <SousTitreV2>{t.soustitre}</SousTitreV2>
-          <LiensChapitres liens={t.liens} />
-          <div data-fade className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-            <BoutonNoir href={PRESSE_ZIP}>
-              <Download size={15} weight="regular" /> {t.zip}
-            </BoutonNoir>
-            <p className="text-[0.68rem] uppercase tracking-[0.16em] text-[#1c1712]/45">{t.zipNote}</p>
+        <div className="mt-[clamp(2rem,5vh,3.5rem)] grid items-center gap-x-[clamp(2rem,5vw,4.5rem)] gap-y-[clamp(2.5rem,6vh,4rem)] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+          <div>
+            <p data-fade className="mb-6 text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330]">{t.kicker}</p>
+            <TitreV2 lignes={t.titreLignes} className="text-[clamp(2.9rem,6vw,5.4rem)] max-w-[13ch]" />
+            <SousTitreV2>{t.soustitre}</SousTitreV2>
+            <div data-fade className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
+              <BoutonNoir href={PRESSE_ZIP}>
+                <Download size={15} weight="regular" /> {t.zip}
+              </BoutonNoir>
+              <p className="text-[13px] font-light leading-relaxed text-[#1c1712]/55">{t.zipNote}</p>
+            </div>
+            <LiensChapitres liens={t.liens} />
           </div>
-        </div>
 
-        <div className="relative mt-[clamp(2.5rem,6vh,4.5rem)] w-full">
-          <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
-          <div data-portrait-clip className="relative aspect-[16/9] w-full overflow-hidden bg-[#e7ddcb]" style={{ clipPath: 'inset(0% 0% 0% 0%)' }}>
-            <img
-              data-portrait-img
-              src={pleineRes('portrait-nu.jpg')}
-              alt="Krystine St-Laurent, portrait de presse"
-              className="h-full w-full object-cover object-center will-change-transform"
-            />
-            <span data-fade className="absolute left-0 top-0 bg-[#1c1712] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.24em] text-[#f4efe6]">
-              Portrait
-            </span>
-          </div>
+          {/* La carte du portrait, en 16:9 pleine largeur de sa colonne. */}
+          <figure data-portrait-clip className={`${TUILE} w-full`} style={{ clipPath: 'inset(0% 0% 0% 0%)' }}>
+            <div className="aspect-video w-full overflow-hidden">
+              <img
+                data-portrait-img
+                src={vignette('portrait-nu.jpg')}
+                alt="Krystine St-Laurent, portrait de presse"
+                width={640}
+                height={360}
+                decoding="async"
+                className="h-full w-full object-cover object-center will-change-transform"
+              />
+            </div>
+            <figcaption className={BANDE}>
+              <p className="text-[13px] font-light leading-relaxed text-[#f4efe6]/70">{t.heroLegende}</p>
+            </figcaption>
+          </figure>
         </div>
 
         <LigneDefiler libelle={t.defiler} droite={<>1920 &times; 1080 &middot; PNG &middot; JPG</>} />
       </section>
 
-      {/* ─── LES FAITS ─────────────────────────────────────────────── */}
+      {/* ─── EN BREF · les faits et le contact presse ───────────────── */}
       <section className={`${SECTION} bg-[#efe6d7]`}>
-        <Chapeau numero={t.kicker} titre={t.faitsTitre} note={t.faitsNote} />
-        <div className="mt-[clamp(2.5rem,6vh,4rem)] grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-5">
-          {FAITS.map((f, i) => (
-            <Reveal key={f.fr} delay={i * 0.04}>
-              <p className="v2-serif text-[clamp(2.6rem,5vw,3.6rem)] font-light leading-none text-[#1c1712]">{f.valeur}</p>
-              <p className="mt-3 text-[0.66rem] uppercase leading-relaxed tracking-[0.2em] text-[#1c1712]/55">{lang === 'EN' ? f.en : f.fr}</p>
-            </Reveal>
-          ))}
-        </div>
-        <Reveal className="mt-12">
-          <LienSouligne onClick={() => lireTexte(TEXTES.find(x => x.fichier.includes(lang === 'EN' ? 'facts-en' : 'faits-fr')) || TEXTES[2])}>
-            {t.ficheFaits} <ArrowUpRight size={13} weight="regular" />
-          </LienSouligne>
+        <Reveal className={`${PANNEAU} px-[clamp(1.5rem,4vw,3.5rem)] py-[clamp(2.5rem,6vh,4rem)]`}>
+          <Kicker sombre className="mb-5">{t.brefKicker}</Kicker>
+          <TitreChapitre sombre>{t.faitsTitre}</TitreChapitre>
+          <p className="mt-6 max-w-[52ch] text-[0.98rem] font-light leading-relaxed text-[#f4efe6]/75">{t.faitsNote}</p>
+
+          <dl className="mt-[clamp(2.5rem,6vh,3.5rem)] grid grid-cols-2 gap-x-8 gap-y-9 sm:grid-cols-3 lg:grid-cols-5">
+            {FAITS.map(f => (
+              <div key={f.fr}>
+                <dt className="v2-serif text-[clamp(2.4rem,4.5vw,3.4rem)] font-light leading-none text-[#f4efe6]">{f.valeur}</dt>
+                <dd className="mt-3 text-[13px] font-light leading-relaxed text-[#f4efe6]/65">{lang === 'EN' ? f.en : f.fr}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <div className="mt-[clamp(2.5rem,6vh,3.5rem)] grid items-end gap-x-10 gap-y-8 border-t border-[#f4efe6]/12 pt-8 md:grid-cols-2">
+            <div>
+              <p className="text-[13px] uppercase tracking-[0.22em] text-[#BA7B39]">{t.contactLabel}</p>
+              <a
+                href="mailto:equipe@inspiratanature.com"
+                className="mt-3 inline-flex items-center gap-2 break-all text-[0.98rem] font-light text-[#f4efe6] transition-colors duration-300 hover:text-[#BA7B39]"
+              >
+                <Envelope size={15} weight="regular" className="shrink-0 text-[#BA7B39]" />
+                equipe@inspiratanature.com
+              </a>
+              <p className="mt-2 text-[13px] font-light text-[#f4efe6]/55">krystinestlaurent.ca/presse</p>
+            </div>
+            <div className="md:justify-self-end">
+              <button type="button" onClick={ficheFaits} className={LIEN_CLAIR}>
+                {t.ficheFaits} <ArrowUpRight size={13} weight="regular" />
+              </button>
+            </div>
+          </div>
         </Reveal>
       </section>
 
-      {/* ─── LES VISUELS ───────────────────────────────────────────── */}
+      {/* ─── LES VISUELS · les quatre gestes de la formule ──────────── */}
       <section id="visuels" className={`${SECTION} bg-[#f4efe6]`}>
         <Chapeau numero={<>N&deg; 01</>} titre={t.visuelsTitre} note={t.visuelsNote} />
-        <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-x-[clamp(2rem,4vw,3.5rem)] gap-y-[clamp(3rem,6vh,4.5rem)] md:grid-cols-2">
+        <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-[clamp(1.25rem,2.5vw,1.75rem)] md:grid-cols-2 xl:grid-cols-3">
           {CARTES.map((c: Carte, idx) => {
             const fichier = fichiersCartes[idx];
             const titre = lang === 'EN' ? c.labelEN : c.labelFR;
+            const nu = enNu.has(c.key) && c.nu;
             return (
               <Tuile
                 key={c.key}
                 fichier={fichier}
                 titre={titre}
                 legende={lang === 'EN' ? c.legendeEN : c.legendeFR}
+                agrandir={t.agrandir}
                 onOuvrir={() => setLoupe({ fichiers: fichiersCartes, i: idx })}
+                dessous={enQr.has(c.key) ? (
+                  <p className="mt-3 break-all text-[13px] font-light text-[#BA7B39]">{t.qrMene} {c.cible}</p>
+                ) : undefined}
               >
                 {gestesCommuns(fichier, titre)}
-                <Geste actif={enQr.has(c.key)} onClick={() => bascule(setEnQr, c.key)}>
-                  <QrCode size={13} weight="regular" /> {t.versionQr}
+                <Geste actif={enQr.has(c.key)} onClick={() => bascule(setEnQr, c.key)} libelle={`${t.versionQr} · ${titre}`}>
+                  <QrCode size={14} weight="regular" /> {t.versionQr}
                 </Geste>
-                <Geste actif={enNu.has(c.key)} disponible={c.nu} onClick={() => bascule(setEnNu, c.key)}>
-                  <ImageSquare size={13} weight="regular" /> {t.photoSeule}
+                <Geste actif={nu} disponible={c.nu} onClick={() => bascule(setEnNu, c.key)} libelle={`${nu ? t.avecTexte : t.photoSeule} · ${titre}`}>
+                  <ImageSquare size={14} weight="regular" /> {nu ? t.avecTexte : t.photoSeule}
                 </Geste>
               </Tuile>
             );
@@ -359,7 +442,7 @@ const PressePage: React.FC = () => {
       {/* ─── LES PHOTOS ────────────────────────────────────────────── */}
       <section id="photos" className={`${SECTION} bg-[#efe6d7]`}>
         <Chapeau numero={<>N&deg; 02</>} titre={t.photosTitre} note={t.photosNote} />
-        <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-x-[clamp(2rem,4vw,3.5rem)] gap-y-[clamp(3rem,6vh,4.5rem)] md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-[clamp(1.25rem,2.5vw,1.75rem)] md:grid-cols-2 xl:grid-cols-3">
           {PLANCHES.map((p: Feuillet, idx) => {
             const titre = lang === 'EN' ? p.labelEN : p.labelFR;
             return (
@@ -368,6 +451,7 @@ const PressePage: React.FC = () => {
                 fichier={p.fichier}
                 titre={titre}
                 legende={lang === 'EN' ? p.legendeEN : p.legendeFR}
+                agrandir={t.agrandir}
                 onOuvrir={() => setLoupe({ fichiers: PLANCHES.map(x => x.fichier), i: idx })}
               >
                 {gestesCommuns(p.fichier, titre)}
@@ -380,7 +464,7 @@ const PressePage: React.FC = () => {
       {/* ─── LE SITE ───────────────────────────────────────────────── */}
       <section id="site" className={`${SECTION} bg-[#f4efe6]`}>
         <Chapeau numero={<>N&deg; 03</>} titre={t.siteTitre} note={t.siteNote} />
-        <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-x-[clamp(2rem,4vw,3.5rem)] gap-y-[clamp(3rem,6vh,4.5rem)] md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-[clamp(1.25rem,2.5vw,1.75rem)] md:grid-cols-2 xl:grid-cols-3">
           {PAGES.map((p: Feuillet, idx) => {
             const titre = lang === 'EN' ? p.labelEN : p.labelFR;
             return (
@@ -389,6 +473,7 @@ const PressePage: React.FC = () => {
                 fichier={p.fichier}
                 titre={titre}
                 legende={lang === 'EN' ? p.legendeEN : p.legendeFR}
+                agrandir={t.agrandir}
                 onOuvrir={() => setLoupe({ fichiers: PAGES.map(x => x.fichier), i: idx })}
               >
                 {gestesCommuns(p.fichier, titre)}
@@ -401,7 +486,7 @@ const PressePage: React.FC = () => {
       {/* ─── LES MOTS-SYMBOLES ─────────────────────────────────────── */}
       <section id="logos" className={`${SECTION} bg-[#efe6d7]`}>
         <Chapeau numero={<>N&deg; 04</>} titre={t.logosTitre} note={t.logosNote} />
-        <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-x-[clamp(2rem,4vw,3.5rem)] gap-y-[clamp(3rem,6vh,4.5rem)] sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-[clamp(1.25rem,2.5vw,1.75rem)] md:grid-cols-2 xl:grid-cols-4">
           {LOGOS.map((l: Feuillet, idx) => {
             const titre = lang === 'EN' ? l.labelEN : l.labelFR;
             const sombre = l.key === 'creme-encre' || l.key === 'creme-transparent';
@@ -411,7 +496,8 @@ const PressePage: React.FC = () => {
                 fichier={l.fichier}
                 titre={titre}
                 legende={lang === 'EN' ? l.legendeEN : l.legendeFR}
-                ratio="aspect-[3/1]"
+                agrandir={t.agrandir}
+                contenir
                 fond={sombre ? 'bg-[#34241a]' : 'bg-[#faf6ee]'}
                 onOuvrir={() => setLoupe({ fichiers: LOGOS.map(x => x.fichier), i: idx })}
               >
@@ -422,46 +508,50 @@ const PressePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ─── LES TEXTES ────────────────────────────────────────────── */}
+      {/* ─── LES TEXTES · un feuillet, pas une image ───────────────── */}
       <section id="textes" className={`${SECTION} bg-[#f4efe6]`}>
         <Chapeau numero={<>N&deg; 05</>} titre={t.textesTitre} note={t.textesNote} />
-        <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-x-[clamp(2rem,4vw,3.5rem)] gap-y-8 sm:grid-cols-2 xl:grid-cols-3">
-          {TEXTES.map((x, i) => (
-            <Reveal key={x.fichier} delay={i * 0.03} className="border-t border-[#1c1712]/12 pt-5">
-              <div className="flex items-baseline justify-between gap-4">
-                <h3 className="v2-serif text-[1.05rem] font-light leading-tight text-[#1c1712]">{lang === 'EN' ? x.labelEN : x.labelFR}</h3>
-                <span className="text-[0.58rem] uppercase tracking-[0.24em] text-[#1c1712]/35">{x.langue}</span>
+        <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-[clamp(1.25rem,2.5vw,1.75rem)] md:grid-cols-2 xl:grid-cols-3">
+          {TEXTES.map(x => (
+            <Reveal key={x.fichier} className={TUILE}>
+              <div className="flex aspect-video w-full items-center justify-center bg-[#f4efe6]/[0.04] px-6 text-center">
+                <div>
+                  <FileText size={26} weight="regular" className="mx-auto mb-3 text-[#BA7B39]" />
+                  <p className="text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/55">{x.fichier.split('/').pop()}</p>
+                </div>
               </div>
-              <div className="mt-3.5 flex flex-wrap items-center gap-x-5 gap-y-2">
-                <Geste onClick={() => lireTexte(x)}><ArrowUpRight size={13} weight="regular" /> {t.lire}</Geste>
-                <Geste href={pleineRes(x.fichier)} download={x.fichier.split('/').pop()}>
-                  <Download size={13} weight="regular" /> {t.telecharger}
-                </Geste>
+              <div className={BANDE}>
+                <p className="v2-serif text-[1.05rem] font-light leading-snug text-[#f4efe6]">{lang === 'EN' ? x.labelEN : x.labelFR}</p>
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <Geste onClick={() => lireTexte(x)} libelle={`${t.lire} · ${x.fichier}`}>
+                    <ArrowUpRight size={14} weight="regular" /> {t.lire}
+                  </Geste>
+                  <Geste href={pleineRes(x.fichier)} download={x.fichier.split('/').pop()} libelle={`${t.telecharger} · ${x.fichier}`}>
+                    <Download size={14} weight="regular" /> {t.telecharger}
+                  </Geste>
+                </div>
               </div>
             </Reveal>
           ))}
         </div>
       </section>
 
-      {/* ─── CONTACT · la seule carte sombre de la page ─────────────── */}
+      {/* ─── CONTACT PRESSE ────────────────────────────────────────── */}
       <section className={`${SECTION} bg-[#efe6d7]`}>
-        <Reveal>
-          <CarteVerte className="px-[clamp(1.75rem,5vw,4.5rem)] py-[clamp(3rem,8vh,5rem)]">
-            <div className="grid items-center gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.1fr_0.9fr]">
-              <div>
-                <Kicker sombre className="mb-5">{lang === 'EN' ? 'Contact' : 'Nous joindre'}</Kicker>
-                <TitreChapitre sombre>{t.contactTitre}</TitreChapitre>
-                <p className="mt-7 max-w-[46ch] text-[1rem] font-light leading-relaxed text-[#EEE7DB]/80">{t.contactTexte}</p>
-              </div>
-              <div className="flex flex-col items-start gap-6">
-                <BoutonCuivre href="mailto:equipe@inspiratanature.com">
-                  {t.contactGeste} <ArrowUpRight size={14} weight="regular" />
-                </BoutonCuivre>
-                <p className="text-[0.7rem] uppercase tracking-[0.22em] text-[#EEE7DB]/55">equipe@inspiratanature.com</p>
-                <p className="text-[0.7rem] uppercase tracking-[0.22em] text-[#EEE7DB]/40">krystinestlaurent.ca/presse</p>
-              </div>
+        <Reveal className={`${PANNEAU} px-[clamp(1.75rem,5vw,4.5rem)] py-[clamp(3rem,8vh,5rem)]`}>
+          <div className="grid items-center gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.1fr_0.9fr]">
+            <div>
+              <Kicker sombre className="mb-5">{lang === 'EN' ? 'Contact' : 'Nous joindre'}</Kicker>
+              <TitreChapitre sombre>{t.contactTitre}</TitreChapitre>
+              <p className="mt-7 max-w-[46ch] text-[1rem] font-light leading-relaxed text-[#f4efe6]/80">{t.contactTexte}</p>
             </div>
-          </CarteVerte>
+            <div className="flex flex-col items-start gap-6 lg:items-end">
+              <BoutonCuivre href="mailto:equipe@inspiratanature.com">
+                {t.contactGeste} <ArrowUpRight size={14} weight="regular" />
+              </BoutonCuivre>
+              <p className="text-[13px] uppercase tracking-[0.2em] text-[#f4efe6]/55">equipe@inspiratanature.com</p>
+            </div>
+          </div>
         </Reveal>
       </section>
 
@@ -469,14 +559,14 @@ const PressePage: React.FC = () => {
       {loupe && (
         <div className="fixed inset-0 z-[80] flex flex-col bg-[#1c1712]/94 backdrop-blur-sm" role="dialog" aria-modal="true">
           <div className="flex items-center justify-between px-[clamp(1rem,4vw,3rem)] py-5">
-            <span className="text-[0.62rem] uppercase tracking-[0.24em] text-[#f4efe6]/55">
+            <span className="text-[13px] uppercase tracking-[0.2em] text-[#f4efe6]/55">
               {loupe.i + 1} / {loupe.fichiers.length} &middot; {loupe.fichiers[loupe.i].split('/').pop()}
             </span>
-            <button type="button" onClick={() => setLoupe(null)} className="inline-flex items-center gap-2 text-[0.62rem] uppercase tracking-[0.2em] text-[#f4efe6]/70 transition-colors hover:text-[#BA7B39]">
+            <button type="button" onClick={() => setLoupe(null)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/70 transition-colors hover:text-[#BA7B39]">
               {t.fermer} <X size={15} weight="regular" />
             </button>
           </div>
-          <div className="flex flex-1 items-center justify-center gap-[clamp(0.5rem,2vw,2rem)] px-[clamp(0.75rem,3vw,3rem)] pb-[clamp(1.5rem,5vh,3rem)]">
+          <div className="flex flex-1 items-center justify-center gap-[clamp(0.5rem,2vw,2rem)] overflow-hidden px-[clamp(0.75rem,3vw,3rem)] pb-[clamp(1.5rem,5vh,3rem)]">
             <button type="button" aria-label="Précédent" onClick={() => setLoupe(l => (l ? { ...l, i: (l.i - 1 + l.fichiers.length) % l.fichiers.length } : l))} className="shrink-0 p-3 text-[#f4efe6]/55 transition-colors hover:text-[#BA7B39]">
               <CaretLeft size={22} weight="light" />
             </button>
@@ -486,10 +576,10 @@ const PressePage: React.FC = () => {
             </button>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-[#f4efe6]/12 px-[clamp(1rem,4vw,3rem)] py-5">
-            <a href={pleineRes(loupe.fichiers[loupe.i])} download className="inline-flex items-center gap-2 text-[0.64rem] uppercase tracking-[0.2em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
+            <a href={pleineRes(loupe.fichiers[loupe.i])} download className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
               <Download size={14} weight="regular" /> {t.telecharger}
             </a>
-            <button type="button" onClick={() => envoyer(loupe.fichiers[loupe.i], t.titre)} className="inline-flex items-center gap-2 text-[0.64rem] uppercase tracking-[0.2em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
+            <button type="button" onClick={() => envoyer(loupe.fichiers[loupe.i], t.titre)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
               <ShareNetwork size={14} weight="regular" /> {copie === loupe.fichiers[loupe.i] ? t.copie : t.partager}
             </button>
           </div>
@@ -499,18 +589,22 @@ const PressePage: React.FC = () => {
       {/* ─── LE FEUILLET DE TEXTE ──────────────────────────────────── */}
       {texte && (
         <div className="fixed inset-0 z-[80] flex items-center justify-center bg-[#1c1712]/80 px-[clamp(1rem,4vw,3rem)] py-[clamp(1.5rem,6vh,4rem)] backdrop-blur-sm" role="dialog" aria-modal="true">
-          <div className="flex max-h-full w-full max-w-[760px] flex-col bg-[#faf6ee]">
+          <div className="flex max-h-full w-full max-w-[760px] flex-col rounded-[15px] bg-[#faf6ee]">
             <div className="flex items-center justify-between border-b border-[#1c1712]/12 px-7 py-5">
               <h3 className="v2-serif text-[1.15rem] font-light text-[#1c1712]">{lang === 'EN' ? texte.item.labelEN : texte.item.labelFR}</h3>
-              <button type="button" onClick={() => setTexte(null)} className="inline-flex items-center gap-2 text-[0.62rem] uppercase tracking-[0.2em] text-[#1c1712]/55 transition-colors hover:text-[#7d6330]">
+              <button type="button" onClick={() => setTexte(null)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#1c1712]/55 transition-colors hover:text-[#7d6330]">
                 {t.fermer} <X size={15} weight="regular" />
               </button>
             </div>
             <pre className="flex-1 overflow-auto whitespace-pre-wrap px-7 py-6 font-sans text-[0.9rem] font-light leading-relaxed text-[#3a2f23]">{texte.contenu}</pre>
             <div className="border-t border-[#1c1712]/12 px-7 py-4">
-              <Geste href={pleineRes(texte.item.fichier)} download={texte.item.fichier.split('/').pop()}>
-                <Download size={13} weight="regular" /> {t.telecharger}
-              </Geste>
+              <a
+                href={pleineRes(texte.item.fichier)}
+                download={texte.item.fichier.split('/').pop()}
+                className="inline-flex items-center gap-2 border-b border-[#1c1712]/40 pb-1 text-[13px] uppercase tracking-[0.18em] text-[#1c1712] transition-colors hover:text-[#7d6330]"
+              >
+                <Download size={14} weight="regular" /> {t.telecharger}
+              </a>
             </div>
           </div>
         </div>

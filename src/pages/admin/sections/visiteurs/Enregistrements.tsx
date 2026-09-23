@@ -27,10 +27,15 @@ const Badges: React.FC<{ s: Session }> = ({ s }) => (
 const Lecteur: React.FC<{ session: Session; onFermer: () => void }> = ({ session, onFermer }) => {
   const cible = useRef<HTMLDivElement>(null);
   const [etat, setEtat] = useState<'chargement' | 'pret' | 'vide' | 'erreur'>('chargement');
+  const [motif, setMotif] = useState('');
 
   useEffect(() => {
     let lecteur: { $destroy?: () => void } | null = null;
     let vivant = true;
+    // Le lecteur se monte au-dessus de la liste : sans ce geste, une visite
+    // choisie en bas de page s'ouvrait hors de l'écran et Krystine ne voyait
+    // rien bouger.
+    cible.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     (async () => {
       try {
         const [events, mod] = await Promise.all([
@@ -49,7 +54,9 @@ const Lecteur: React.FC<{ session: Session; onFermer: () => void }> = ({ session
         setEtat('pret');
       } catch (e) {
         console.error('[vexelhotjar] lecture', e);
-        if (vivant) setEtat('erreur');
+        if (!vivant) return;
+        setMotif(e instanceof Error ? e.message : '');
+        setEtat('erreur');
       }
     })();
     return () => { vivant = false; try { lecteur?.$destroy?.(); } catch { /* déjà fermé */ } };
@@ -77,7 +84,7 @@ const Lecteur: React.FC<{ session: Session; onFermer: () => void }> = ({ session
       <div ref={cible} className="vh-lecteur min-h-[200px] overflow-hidden rounded-[16px] bg-[#293027]/95">
         {etat === 'chargement' && <p className="p-10 text-center text-sm text-[#EEE7DB]/70"><i className="fa-solid fa-circle-notch fa-spin mr-2" aria-hidden="true" />Le film se charge</p>}
         {etat === 'vide' && <p className="p-10 text-center text-sm text-[#EEE7DB]/70">Cet enregistrement est trop court pour être rejoué.</p>}
-        {etat === 'erreur' && <p className="p-10 text-center text-sm text-[#EEE7DB]/70">Le film n'a pas pu être lu.</p>}
+        {etat === 'erreur' && <p className="p-10 text-center text-sm text-[#EEE7DB]/70">Le film n'a pas pu être lu{motif ? ` : ${motif}` : ''}.</p>}
       </div>
     </Card>
   );
