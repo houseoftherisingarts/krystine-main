@@ -558,32 +558,31 @@ const PressePage: React.FC = () => {
       </section>
 
       {/* ─── LA LOUPE ───────────────────────────────────────────────── */}
-      {loupe && (() => {
-        const node = refs.current.get(loupe.cle);
-        return (
-          <div className="fixed inset-0 z-[80] flex flex-col bg-[#1c1712]/94 backdrop-blur-sm" role="dialog" aria-modal="true">
-            <div className="flex items-center justify-between px-[clamp(1rem,4vw,3rem)] py-5">
-              <span className="text-[13px] uppercase tracking-[0.2em] text-[#f4efe6]/55">{loupe.titre}</span>
-              <button type="button" onClick={() => setLoupe(null)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/70 transition-colors hover:text-[#BA7B39]">
-                {t.fermer} <X size={15} weight="regular" />
-              </button>
-            </div>
-            <div className="flex flex-1 items-center justify-center overflow-hidden px-[clamp(0.75rem,3vw,3rem)] pb-[clamp(1.5rem,5vh,3rem)]">
-              <div className="max-h-full w-full max-w-4xl">
-                <CadreEchelle>{node ? <div dangerouslySetInnerHTML={{ __html: node.outerHTML }} /> : null}</CadreEchelle>
-              </div>
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-[#f4efe6]/12 px-[clamp(1rem,4vw,3rem)] py-5">
-              <button type="button" onClick={() => telecharger(loupe.cle, `${loupe.cle.replace(':', '-')}.jpg`)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
-                <Download size={14} weight="regular" /> {t.telecharger}
-              </button>
-              <button type="button" onClick={() => envoyer(loupe.cle, `${loupe.cle.replace(':', '-')}.jpg`, loupe.titre)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
-                <ShareNetwork size={14} weight="regular" /> {copie === loupe.cle ? t.copie : t.partager}
-              </button>
+      {loupe && (
+        <div className="fixed inset-0 z-[80] flex flex-col bg-[#1c1712]/94 backdrop-blur-sm" role="dialog" aria-modal="true">
+          <div className="flex items-center justify-between px-[clamp(1rem,4vw,3rem)] py-5">
+            <span className="text-[13px] uppercase tracking-[0.2em] text-[#f4efe6]/55">{loupe.titre}</span>
+            <button type="button" onClick={() => setLoupe(null)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/70 transition-colors hover:text-[#BA7B39]">
+              {t.fermer} <X size={15} weight="regular" />
+            </button>
+          </div>
+          <div className="flex flex-1 items-center justify-center overflow-hidden px-[clamp(0.75rem,3vw,3rem)] pb-[clamp(1.5rem,5vh,3rem)]">
+            <div className="max-h-full w-full max-w-4xl">
+              {/* Un second rendu du même visuel, à une autre échelle : la loupe n'a pas besoin de
+                  réutiliser le nœud de la grille, elle en monte simplement une seconde copie. */}
+              <CadreEchelle>{loupe.visuel}</CadreEchelle>
             </div>
           </div>
-        );
-      })()}
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-[#f4efe6]/12 px-[clamp(1rem,4vw,3rem)] py-5">
+            <button type="button" onClick={() => telecharger(loupe.cle, `${loupe.cle.replace(':', '-')}.jpg`)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
+              <Download size={14} weight="regular" /> {t.telecharger}
+            </button>
+            <button type="button" onClick={() => envoyer(loupe.cle, `${loupe.cle.replace(':', '-')}.jpg`, loupe.titre)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
+              <ShareNetwork size={14} weight="regular" /> {copie === loupe.cle ? t.copie : t.partager}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ─── LE FEUILLET DE TEXTE ───────────────────────────────────── */}
       {texte && (
