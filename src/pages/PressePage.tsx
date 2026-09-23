@@ -230,12 +230,14 @@ const Tuile: React.FC<{
         className={`aspect-video w-full transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03] ${contenir ? 'object-contain p-8' : 'object-cover'}`}
       />
     </button>
-    <div className={BANDE}>
+    <div className={`${BANDE} flex flex-1 flex-col`}>
       <p className="v2-serif text-[1.05rem] font-light leading-snug text-[#f4efe6]">{titre}</p>
       {legende && <p className="mt-2 text-[13px] font-light leading-relaxed text-[#f4efe6]/65">{legende}</p>}
       {/* Les quatre gestes en deux rangées de deux, comme sur la page du festival :
-          sur une seule rangée, le troisième bouton se faisait couper. */}
-      <div className="mt-4 grid grid-cols-2 gap-2">{children}</div>
+          sur une seule rangée, le troisième bouton se faisait couper. La marge
+          automatique les pousse au pied de la tuile, pour que les rangées de
+          boutons s'alignent d'une tuile à l'autre malgré les légendes inégales. */}
+      <div className="mt-auto grid grid-cols-2 gap-2 pt-4">{children}</div>
       {dessous}
     </div>
   </Reveal>
