@@ -102,6 +102,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   enPreparation: 'en-preparation',
   postsPrefaits: 'posts-prefaits',
   droitInternational: 'droit-international',
+  presse:     'kit-de-presse',
   assets:     'assets',
   settings:   'parametres',
 };
