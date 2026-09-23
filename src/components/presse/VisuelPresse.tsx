@@ -248,8 +248,8 @@ export const VisuelPlanche: React.FC<{ item: PlanchePresse; qr: boolean; nu?: bo
       {qr && <Pastille src={qrSrc} taille={126} bas={bandeauHauteur + 40} />}
       <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: bandeauHauteur, background: C.fond, display: 'flex', alignItems: 'center', padding: `0 92px` }}>
         <div style={{ flex: 1 }}>
-          <p style={{ fontSize: page ? 19 : 20, fontWeight: 300, lineHeight: 1.5, color: C.encre, maxWidth: '62ch' }}>{texte}</p>
-          {!page && <p style={{ marginTop: 8, fontSize: 15, fontWeight: 300, lineHeight: 1.5, color: 'rgba(28,23,18,.55)', maxWidth: '62ch' }}>{lang === 'EN' ? item.texteEN : item.texteFR}</p>}
+          <p style={{ fontSize: page ? 19 : 20, fontWeight: 300, lineHeight: page ? 1.4 : 1.5, color: C.encre, maxWidth: '62ch' }}>{item.texteFR}</p>
+          <p style={{ marginTop: page ? 6 : 8, fontSize: 15, fontWeight: 300, lineHeight: page ? 1.4 : 1.5, color: 'rgba(28,23,18,.55)', maxWidth: '62ch' }}>{item.texteEN}</p>
         </div>
         <div style={{ textAlign: 'right', paddingLeft: 48 }}>
           <span style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.17em', fontSize: page ? 18 : 19 }}>Krystine St-Laurent</span>
