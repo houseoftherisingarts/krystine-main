@@ -380,7 +380,7 @@ const PressePage: React.FC = () => {
             <TitreV2 lignes={t.titreLignes} className="text-[clamp(2.9rem,6vw,5.4rem)] max-w-[13ch]" />
             <SousTitreV2>{t.soustitre}</SousTitreV2>
             <div data-fade className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
-              <BoutonNoir as="button" onClick={toutLeKit} disabled={zipEnCours}>
+              <BoutonNoir onClick={zipEnCours ? undefined : toutLeKit} className={zipEnCours ? 'pointer-events-none opacity-60' : ''}>
                 <Download size={15} weight="regular" /> {zipEnCours ? t.zipEnCours : t.zip}
               </BoutonNoir>
               <p className="text-[13px] font-light leading-relaxed text-[#1c1712]/55">{t.zipNote}</p>
