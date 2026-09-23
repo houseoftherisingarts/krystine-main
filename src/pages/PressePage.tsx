@@ -246,6 +246,53 @@ const PressePage: React.FC = () => {
     return () => { window.removeEventListener('keydown', clavier); document.body.style.overflow = avant; };
   }, [loupe, texte]);
 
+  // Les nœuds dédiés au zip : un exemplaire fixe par sujet (FR, avec
+  // texte, sans QR), toujours monté hors écran, pour que « Télécharger
+  // tout le kit » capture la bonne variante même si la grille au-dessus
+  // affiche l'anglais ou une version QR au moment du clic.
+  const refsZip = useRef<Map<string, HTMLDivElement>>(new Map());
+  const enregistrerZip = useCallback((cle: string) => (node: HTMLDivElement | null) => {
+    if (node) refsZip.current.set(cle, node); else refsZip.current.delete(cle);
+  }, []);
+
+  /**
+   * Le zip complet : une photo représentative par sujet (français, avec
+   * texte, sans QR), les quatre mots-symboles et les cinq textes.
+   * ponytail : le kit d'origine cuisait toutes les combinaisons (langue ×
+   * QR × nu), soit une centaine de fichiers ; les reproduire toutes en
+   * direct aurait demandé une centaine de captures html2canvas au clic,
+   * largement plus longues que la patience d'une visiteuse. Chaque
+   * variante reste à un clic via le bouton Télécharger de sa tuile.
+   */
+  const toutLeKit = useCallback(async () => {
+    setZipEnCours(true);
+    try {
+      const fichiers: FichierZip[] = [];
+      for (const c of kit.cartes) {
+        const node = refsZip.current.get(`zc:${c.key}`);
+        if (node) fichiers.push({ nom: `${c.key}-fr-texte.jpg`, data: new Uint8Array(await (await capturerNoeud(node)).arrayBuffer()) });
+      }
+      for (const p of kit.planches) {
+        const node = refsZip.current.get(`zp:${p.key}`);
+        if (node) fichiers.push({ nom: `photo-${p.key}.jpg`, data: new Uint8Array(await (await capturerNoeud(node)).arrayBuffer()) });
+      }
+      for (const p of kit.pages) {
+        const node = refsZip.current.get(`zs:${p.key}`);
+        if (node) fichiers.push({ nom: `site-${p.key}.jpg`, data: new Uint8Array(await (await capturerNoeud(node)).arrayBuffer()) });
+      }
+      for (const l of LOGOS) {
+        try { fichiers.push({ nom: l.fichier.replace('presse/', ''), data: await octets(`/${l.fichier}`) }); } catch { /* logo absent */ }
+      }
+      for (const x of kit.textes) {
+        fichiers.push({ nom: `textes/${x.key}-fr.txt`, data: octetsTexte(x.texteFR) });
+        if (x.texteEN) fichiers.push({ nom: `textes/${x.key}-en.txt`, data: octetsTexte(x.texteEN) });
+      }
+      telechargerBlob(zipper(fichiers), 'kit-presse-krystine-st-laurent.zip');
+    } finally {
+      setZipEnCours(false);
+    }
+  }, [kit]);
+
   if (!pret) return <div className="min-h-screen bg-[#f4efe6]" />;
   if (!presseOuvert && !isAdmin) return <Navigate to="/krystine" replace />;
 
