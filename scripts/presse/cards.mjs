@@ -8,9 +8,12 @@
 // qu'ils y sont écrits. Aucun chiffre d'audience, aucun téléphone,
 // aucune adresse postale, parce que le site n'en publie pas.
 //
-// `src`  : la photo du cadre fileté, fenêtre portrait de 744 × 850.
-// `nu`   : la photo pleine page, quand elle supporte un 16:9 de 1920 px.
-// `cote` : le côté où se pose la photo, l'autre revient au texte.
+// `nu`   : la photo pleine page, quand elle vaut d'être offerte seule.
+// `src`  : la photo de secours, quand le sujet n'a pas de photo seule.
+//          C'est elle qui remplit alors tout le cadre de la carte.
+// `cote` : le côté que la photo garde pour elle, le voile de texte
+//          prenant l'autre. La photo court d'un bord à l'autre dans les
+//          deux cas : la formule Prisket ne connaît pas la demi-page.
 // `focus`, `focusX` : le point d'intérêt, en fraction de la hauteur et
 //          de la largeur, pour que le recadrage garde le sujet.
 

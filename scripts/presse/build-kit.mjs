@@ -82,7 +82,7 @@ function source(spec) {
  * sur (focusX, focus), redimensionné en l × h. Lève quand la source est
  * trop petite pour tenir sans mollir.
  */
-async function recadrer(spec, l, h) {
+async function recadrer(spec, l, h, max = AGRANDISSEMENT_MAX) {
   const chemin = source(spec);
   const meta = await sharp(chemin).metadata();
   const format = l / h;
@@ -92,7 +92,7 @@ async function recadrer(spec, l, h) {
   const gauche = Math.round(borne((spec.focusX ?? 0.5) * meta.width - cw / 2, 0, meta.width - cw));
   const haut = Math.round(borne((spec.focus ?? 0.5) * meta.height - ch / 2, 0, meta.height - ch));
   const facteur = l / cw;
-  if (facteur > AGRANDISSEMENT_MAX) {
+  if (facteur > max) {
     throw new Error(`${spec.fichier || spec.capture} : il faudrait l'agrandir ${facteur.toFixed(2)} fois pour un ${l} × ${h}`);
   }
   return sharp(chemin)

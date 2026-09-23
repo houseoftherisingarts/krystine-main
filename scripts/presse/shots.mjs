@@ -3,6 +3,9 @@
 // 1920 × 1080 avec le nom de la page et son adresse. Une journaliste
 // qui illustre un article sur le site a besoin de le montrer, pas d'une
 // photo de plus, et ces planches lui évitent de recadrer un écran.
+//
+// `chemin` est l'adresse qu'ouvre le code QR de la variante « Version QR » :
+// la page montrée, pour qu'on y arrive d'un coup d'appareil photo.
 
 export const SHOTS = [
   {
@@ -10,6 +13,7 @@ export const SHOTS = [
     key: 'site-accueil',
     capture: 'accueil.png',
     adresse: 'krystinestlaurent.ca',
+    chemin: '/',
     fr: 'L’accueil du site de Krystine St-Laurent.',
     en: 'The home page of Krystine St-Laurent’s site.',
   },
@@ -18,6 +22,7 @@ export const SHOTS = [
     key: 'site-krystine',
     capture: 'krystine.png',
     adresse: 'krystinestlaurent.ca/krystine',
+    chemin: '/krystine',
     fr: 'La page biographique, en langage magazine.',
     en: 'The biography page, laid out as a magazine.',
   },
@@ -26,6 +31,7 @@ export const SHOTS = [
     key: 'site-conferenciere',
     capture: 'conferences.png',
     adresse: 'krystinestlaurent.ca/conferenciere',
+    chemin: '/conferenciere',
     fr: 'La page des conférences et ses trois formats signature.',
     en: 'The speaking page and its three signature formats.',
   },
@@ -34,6 +40,7 @@ export const SHOTS = [
     key: 'site-medias',
     capture: 'medias.png',
     adresse: 'krystinestlaurent.ca/medias',
+    chemin: '/medias',
     fr: 'La page Médias, où se rassemblent le podcast et la télévision.',
     en: 'The Media page, where the podcast and the television work are gathered.',
   },
@@ -42,6 +49,7 @@ export const SHOTS = [
     key: 'site-formations',
     capture: 'formations.png',
     adresse: 'krystinestlaurent.ca/formations',
+    chemin: '/formations',
     fr: 'Les formations et les parcours saisonniers.',
     en: 'The courses and the seasonal programmes.',
   },
@@ -50,6 +58,7 @@ export const SHOTS = [
     key: 'site-boutique',
     capture: 'boutique.png',
     adresse: 'krystinestlaurent.ca/boutique',
+    chemin: '/boutique',
     fr: 'La boutique Inspirata Ayurveda.',
     en: 'The Inspirata Ayurveda shop.',
   },
