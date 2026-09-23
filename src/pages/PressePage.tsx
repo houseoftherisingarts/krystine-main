@@ -273,15 +273,16 @@ const PressePage: React.FC = () => {
         const cle = `${page ? 'page' : 'planche'}:${f.key}`;
         const titre = lang === 'EN' ? f.labelEN : f.labelFR;
         const nom = nomFeuillet(f, nu, qr, page);
+        const visuel = <VisuelPlanche item={f} qr={qr} nu={nu} page={page} />;
         return (
           <Tuile
             key={f.key}
             visuelRef={enregistrer(cle)}
-            visuel={<VisuelPlanche item={f} qr={qr} nu={nu} page={page} />}
+            visuel={visuel}
             titre={titre}
             legende={lang === 'EN' ? f.legendeEN : f.legendeFR}
             agrandir={t.agrandir}
-            onOuvrir={() => setLoupe({ cle, titre })}
+            onOuvrir={() => setLoupe({ cle, titre, visuel })}
             dessous={qr ? <p className="mt-3 break-all text-[13px] font-light text-[#BA7B39]">{t.qrMene} {f.chemin}</p> : undefined}
           >
             {gestesCommuns(cle, nom, titre)}
