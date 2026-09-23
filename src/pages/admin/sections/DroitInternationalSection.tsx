@@ -36,7 +36,7 @@ const DOSSIERS: Dossier[] = [
     icone: 'fa-earth-americas',
     titre: 'La règle qui gouverne tout le reste',
     resume:
-      "Ce n'est pas votre adresse qui décide des lois qui s'appliquent à vous, c'est celle de la personne qui vous achète quelque chose.",
+      "La loi qui vous suit dépend du pays où vit la personne qui achète, jamais de l'endroit d'où vous vendez.",
     statut: 'Vous êtes visée',
     corps: [
       "Une entreprise québécoise qui vend uniquement au Québec vit sous une seule loi de protection des renseignements personnels et sous un seul régime de taxes. Dès qu'une lectrice de Lyon achète un livre numérique ou qu'une abonnée de Boston s'inscrit à l'infolettre, le droit de son pays entre dans votre vie, parce que ces lois protègent les personnes là où elles vivent plutôt que les entreprises là où elles sont établies.",
