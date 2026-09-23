@@ -140,9 +140,12 @@ const PlanMoisSection: React.FC = () => {
                 <div className="mt-3 gap-3 md:columns-2 xl:columns-3">
                   {c.blocs.map(b => {
                     const faitsBloc = b.etapes.filter(e => items[e.id]?.fait).length;
+                    // Le bloc peut se couper entre deux colonnes (chaque étape reste entière et le titre
+                    // garde sa première étape) : sinon les blocs A à D, devenus longs, laissent la
+                    // troisième colonne presque vide sous le bloc E.
                     return (
-                      <div key={b.lettre} className="mb-3 break-inside-avoid rounded-[8px] bg-white/70 px-4 py-3.5">
-                        <div className="flex items-baseline justify-between gap-2">
+                      <div key={b.lettre} className="mb-3 box-decoration-clone rounded-[8px] bg-white/70 px-4 py-3.5">
+                        <div className="flex items-baseline justify-between gap-2 break-after-avoid">
                           <h4 className="font-serif text-[16px] text-[#1c1712]">
                             <span className="mr-2 font-semibold" style={{ color: c.couleurs.encre }}>{b.lettre}</span>{b.titre}
                           </h4>

@@ -33,7 +33,7 @@ const EtapeCochable: React.FC<Props> = ({ etape, etat, accent, encre, lectureSeu
   const qui = QUI[etape.qui];
 
   return (
-    <li>
+    <li className="break-inside-avoid">
       <label className="flex cursor-pointer items-start gap-2.5">
         <input type="checkbox" checked={fait} onChange={e => onCocher(e.target.checked)} className="sr-only" />
         <span
