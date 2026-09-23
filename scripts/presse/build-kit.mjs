@@ -283,10 +283,22 @@ function carteHtml({ carte, lang, qr, photo, qrImg }) {
   `, css);
 }
 
+/**
+ * La pastille crème du code QR, posée sur la photo au-dessus du bandeau.
+ * Elle sert aux variantes « Version QR » des planches et des pages, comme
+ * elle sert déjà à la photo seule des cartes.
+ */
+const pastille = (qrImg, bas) => (qrImg ? `
+  <div style="position:absolute;right:56px;bottom:${bas}px;background:${C.carte};padding:20px 20px 14px;border:1px solid rgba(156,122,68,.5);text-align:center">
+    <img class="qr" src="${qrImg}" style="width:126px;height:126px;display:block">
+    <p class="pied" style="margin-top:11px;font-size:9.5px;letter-spacing:.24em">krystinestlaurent.ca</p>
+  </div>` : '');
+
 /** La planche photo pleine page : photo au bord, bandeau crème en bas. */
-function photoPleineHtml(p, uri) {
+function photoPleineHtml(p, uri, qrImg) {
   return shell(`
     <img src="${uri}" style="position:absolute;inset:0;width:${W}px;height:${H}px;object-fit:cover">
+    ${pastille(qrImg, 176 + 40)}
     <div style="position:absolute;left:0;right:0;bottom:0;height:176px;background:${C.fond};display:flex;align-items:center;padding:0 92px">
       <div class="grain"></div>
       <div style="flex:1">
@@ -300,30 +312,11 @@ function photoPleineHtml(p, uri) {
     </div>`);
 }
 
-/** La planche photo verticale : photo collée à gauche, légende à droite. */
-function photoDebouteHtml(p, uri) {
-  return shell(`
-    <div class="grain"></div>
-    <img src="${uri}" style="position:absolute;left:0;top:0;width:900px;height:${H}px;object-fit:cover">
-    <div style="position:absolute;left:900px;top:0;width:1020px;height:${H}px;padding:96px 92px;display:flex;flex-direction:column;justify-content:space-between">
-      <div>
-        <span class="mot" style="font-size:23px">Krystine St-Laurent</span>
-        <div class="filet" style="margin-top:26px"></div>
-        <p class="kicker" style="margin-top:38px">Photo n° ${p.n}</p>
-        <p class="serif" style="margin-top:24px;font-size:34px;line-height:1.3;color:${C.encre};max-width:22ch">${p.fr}</p>
-        <p style="margin-top:22px;font-size:17px;font-weight:300;line-height:1.6;color:rgba(28,23,18,.55);max-width:40ch">${p.en}</p>
-      </div>
-      <div>
-        <div class="filet"></div>
-        <p class="pied" style="margin-top:22px">Inspira Nature · Québec · krystinestlaurent.ca/presse</p>
-      </div>
-    </div>`);
-}
-
 /** Une page du site, pleine toile, sous un bandeau crème. */
-function shotHtml(s, uri) {
+function shotHtml(s, uri, qrImg) {
   return shell(`
     <img src="${uri}" style="position:absolute;inset:0;width:${W}px;height:${H}px;object-fit:cover">
+    ${pastille(qrImg, 136 + 40)}
     <div style="position:absolute;left:0;right:0;bottom:0;height:136px;background:${C.fond};display:flex;align-items:center;padding:0 92px">
       <div class="grain"></div>
       <div style="flex:1">
