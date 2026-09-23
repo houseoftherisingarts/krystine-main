@@ -224,8 +224,11 @@ export const VisuelCarte: React.FC<{ carte: CartePresse; lang: 'FR' | 'EN'; qr: 
 
 /* ════════════════════════ La planche et la page ════════════════════════ */
 
-export const VisuelPlanche: React.FC<{ item: PlanchePresse; lang: 'FR' | 'EN'; qr: boolean; nu?: boolean; page?: boolean }> = ({ item, lang, qr, nu = false, page = false }) => {
-  const texte = lang === 'EN' ? item.texteEN : item.texteFR;
+// La planche et la page portent toujours leur légende dans les deux
+// langues à la fois, l'une sous l'autre : contrairement aux cartes, elles
+// n'ont pas de variante FR et de variante EN distinctes (build-kit.mjs,
+// fonctions photoPleineHtml et shotHtml, ne prenaient déjà aucun `lang`).
+export const VisuelPlanche: React.FC<{ item: PlanchePresse; qr: boolean; nu?: boolean; page?: boolean }> = ({ item, qr, nu = false, page = false }) => {
   const qrSrc = page ? urlQrPage(item.key) : urlQrPlanche();
 
   if (nu) {
