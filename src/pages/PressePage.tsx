@@ -202,7 +202,7 @@ const PressePage: React.FC = () => {
   const [enQr, setEnQr] = useState<Set<string>>(new Set());
   const [enNu, setEnNu] = useState<Set<string>>(new Set());
   const [copie, setCopie] = useState<string | null>(null);
-  const [loupe, setLoupe] = useState<{ cle: string; titre: string } | null>(null);
+  const [loupe, setLoupe] = useState<{ cle: string; titre: string; visuel: React.ReactNode } | null>(null);
   const [texte, setTexte] = useState<TextePresse | null>(null);
   const [zipEnCours, setZipEnCours] = useState(false);
 
