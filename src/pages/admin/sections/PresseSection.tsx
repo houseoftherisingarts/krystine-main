@@ -80,6 +80,40 @@ export default function PresseSection() {
     arr[i] = { ...arr[i], [champ]: v };
     ecrireBrouillon({ ...kit, [liste]: arr });
   };
+  // Les numéros se suivent : ils se réécrivent après chaque ajout, retrait ou déplacement.
+  const renumeroter = (arr: PlanchePresse[]) => arr.map((p, i) => ({ ...p, n: String(i + 1).padStart(2, '0') }));
+
+  const ajouterPlanche = (liste: 'planches' | 'pages') => {
+    const modele = kit[liste][0];
+    const neuve: PlanchePresse = {
+      key: `photo-${Date.now()}`,
+      n: '',
+      chemin: modele?.chemin ?? '/presse',
+      photo: { fichier: modele?.photo.fichier ?? '', focus: 0.5, focusX: 0.5 },
+      texteFR: '', texteEN: '',
+      labelFR: 'Nouvelle photo', labelEN: 'New picture',
+      legendeFR: '', legendeEN: '',
+      ...(liste === 'pages' && modele?.adresse ? { adresse: modele.adresse } : {}),
+    };
+    ecrireBrouillon({ ...kit, [liste]: renumeroter([...kit[liste], neuve]) });
+    setSelection(neuve.key);
+  };
+
+  const retirerPlanche = (liste: 'planches' | 'pages', i: number) => {
+    const arr = kit[liste].slice();
+    arr.splice(i, 1);
+    ecrireBrouillon({ ...kit, [liste]: renumeroter(arr) });
+    setSelection(null);
+  };
+
+  const deplacerPlanche = (liste: 'planches' | 'pages', i: number, pas: number) => {
+    const j = i + pas;
+    if (j < 0 || j >= kit[liste].length) return;
+    const arr = kit[liste].slice();
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+    ecrireBrouillon({ ...kit, [liste]: renumeroter(arr) });
+  };
+
   const majTexte = (i: number, champ: keyof TextePresse, v: string) => {
     const textes = kit.textes.slice();
     textes[i] = { ...textes[i], [champ]: v };
@@ -126,18 +160,34 @@ export default function PresseSection() {
       )}
 
       {(onglet === 'planches' || onglet === 'pages') && (
-        <div className="grid md:grid-cols-2 gap-4">
-          {kit[onglet].map((p, i) => (
-            <EditeurPlanche key={p.key} item={p} page={onglet === 'pages'}
-              onChamp={(champ, v) => majPlanche(onglet, i, champ, v)}
-              ouvert={selection === p.key} onToggle={() => setSelection(selection === p.key ? null : p.key)}
-              onCadrage={(champ, v) => {
-                const arr = kit[onglet].slice();
-                arr[i] = { ...arr[i], photo: { ...arr[i].photo, [champ]: v } };
-                ecrireBrouillon({ ...kit, [onglet]: arr });
-              }}
-            />
-          ))}
+        <div className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            {kit[onglet].map((p, i) => (
+              <div key={p.key} className="space-y-2">
+                <EditeurPlanche item={p} page={onglet === 'pages'}
+                  onChamp={(champ, v) => majPlanche(onglet, i, champ, v)}
+                  ouvert={selection === p.key} onToggle={() => setSelection(selection === p.key ? null : p.key)}
+                  onCadrage={(champ, v) => {
+                    const arr = kit[onglet].slice();
+                    arr[i] = { ...arr[i], photo: { ...arr[i].photo, [champ]: v } };
+                    ecrireBrouillon({ ...kit, [onglet]: arr });
+                  }}
+                />
+                <div className="flex items-center gap-2 text-xs">
+                  <button onClick={() => deplacerPlanche(onglet, i, -1)} disabled={i === 0}
+                    className="px-2 py-1 rounded-full border border-[#293027]/15 dark:border-white/15 text-[#293027]/60 dark:text-white/60 disabled:opacity-30">Monter</button>
+                  <button onClick={() => deplacerPlanche(onglet, i, 1)} disabled={i === kit[onglet].length - 1}
+                    className="px-2 py-1 rounded-full border border-[#293027]/15 dark:border-white/15 text-[#293027]/60 dark:text-white/60 disabled:opacity-30">Descendre</button>
+                  <button onClick={() => retirerPlanche(onglet, i)}
+                    className="ml-auto px-2 py-1 rounded-full border border-[#293027]/15 dark:border-white/15 text-[#293027]/60 dark:text-white/60 hover:text-[#BA7B39] hover:border-[#BA7B39]">Retirer</button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button onClick={() => ajouterPlanche(onglet)}
+            className="px-4 py-2 rounded-full border border-dashed border-[#293027]/25 dark:border-white/25 text-sm text-[#293027]/70 dark:text-white/70 hover:border-[#BA7B39] hover:text-[#BA7B39] transition-colors">
+            Ajouter une photo
+          </button>
         </div>
       )}
 

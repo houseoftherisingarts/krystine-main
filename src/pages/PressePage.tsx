@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
-import { ArrowUpRight, Download, ShareNetwork, QrCode, ImageSquare, X, EyeSlash, FileText, Envelope } from '@phosphor-icons/react';
+import { ArrowUpRight, CaretLeft, CaretRight, Download, ShareNetwork, QrCode, ImageSquare, X, EyeSlash, FileText, Envelope } from '@phosphor-icons/react';
 import {
   StyleV2, Kicker, Masthead, TitreV2, SousTitreV2, LiensChapitres, LigneDefiler,
   TitreChapitre, Filet, Reveal, BoutonNoir, BoutonCuivre,
@@ -58,7 +58,7 @@ const T = {
     soustitre: 'Les visuels, les portraits et les biographies se téléchargent ici librement, à la seule condition de créditer Krystine St-Laurent.',
     liens: [['Les visuels', '#visuels'], ['Les photos', '#photos'], ['Le site', '#site'], ['Les mots-symboles', '#logos'], ['Les textes', '#textes']] as [string, string][],
     defiler: 'Faire défiler', zip: 'Télécharger tout le kit',
-    zipNote: 'Un fichier zip : une photo par sujet, les mots-symboles et les textes. Les autres langues et versions se téléchargent tuile par tuile.',
+    zipNote: 'Un fichier zip : une photo par sujet dans la langue affichée, les mots-symboles et les textes. Les versions avec code QR et les photos nues se téléchargent tuile par tuile.',
     zipEnCours: 'Préparation du zip…',
     heroLegende: 'Le portrait de presse, tel qu’il se télécharge en 1920 × 1080.',
     brefKicker: 'En bref', faitsTitre: 'Les faits',
@@ -69,6 +69,7 @@ const T = {
     siteTitre: 'Le site', siteNote: 'Six pages du site, montrées telles qu’elles se présentent aujourd’hui.',
     logosTitre: 'Les mots-symboles', logosNote: 'Le site n’a pas d’autre logo que sa signature typographique, et elle existe en quatre versions.',
     textesTitre: 'Les textes', textesNote: 'Les biographies et la fiche des faits, à lire ici ou à emporter en fichier.',
+    precedent: 'Précédente', suivant: 'Suivante',
     lire: 'Lire', telecharger: 'Télécharger', partager: 'Partager', versionQr: 'Version QR', photoSeule: 'Photo seule', avecTexte: 'Avec texte',
     qrMene: 'Le code mène à', copie: 'Téléchargé', agrandir: 'Agrandir', fermer: 'Fermer',
     contactTitre: 'Une demande particulière',
@@ -82,7 +83,7 @@ const T = {
     soustitre: 'The visuals, the portraits and the biographies download freely from here, on the single condition that Krystine St-Laurent is credited.',
     liens: [['The visuals', '#visuels'], ['The photographs', '#photos'], ['The site', '#site'], ['The wordmarks', '#logos'], ['The texts', '#textes']] as [string, string][],
     defiler: 'Scroll', zip: 'Download the full kit',
-    zipNote: 'One zip file: one photo per subject, the wordmarks and the texts. Other languages and versions download tile by tile.',
+    zipNote: 'One zip file: one photo per subject in the language on screen, the wordmarks and the texts. QR versions and bare photographs download tile by tile.',
     zipEnCours: 'Preparing the zip…',
     heroLegende: 'The press portrait, as it downloads at 1920 × 1080.',
     brefKicker: 'In brief', faitsTitre: 'The facts',
@@ -93,6 +94,7 @@ const T = {
     siteTitre: 'The site', siteNote: 'Six pages of the site, shown as they look today.',
     logosTitre: 'The wordmarks', logosNote: 'The site has no logo beyond its typographic signature, and that signature comes in four versions.',
     textesTitre: 'The texts', textesNote: 'The biographies and the fact sheet, to read here or to carry away as a file.',
+    precedent: 'Previous', suivant: 'Next',
     lire: 'Read', telecharger: 'Download', partager: 'Share', versionQr: 'QR version', photoSeule: 'Photo only', avecTexte: 'With text',
     qrMene: 'The code leads to', copie: 'Downloaded', agrandir: 'Enlarge', fermer: 'Close',
     contactTitre: 'Something else you need',
@@ -202,7 +204,10 @@ const PressePage: React.FC = () => {
   const [enQr, setEnQr] = useState<Set<string>>(new Set());
   const [enNu, setEnNu] = useState<Set<string>>(new Set());
   const [copie, setCopie] = useState<string | null>(null);
-  const [loupe, setLoupe] = useState<{ cle: string; titre: string; visuel: React.ReactNode } | null>(null);
+  // La loupe garde la rangée entière, pas seulement la tuile ouverte : les flèches du clavier
+  // font passer d'une image à sa voisine sans repasser par la grille, comme avant le port.
+  type Vue = { cle: string; titre: string; visuel: React.ReactNode };
+  const [loupe, setLoupe] = useState<{ i: number; vues: Vue[] } | null>(null);
   const [texte, setTexte] = useState<TextePresse | null>(null);
   const [zipEnCours, setZipEnCours] = useState(false);
 
@@ -241,7 +246,11 @@ const PressePage: React.FC = () => {
     if (!ouvert) return;
     const avant = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    const clavier = (e: KeyboardEvent) => { if (e.key === 'Escape') { setLoupe(null); setTexte(null); } };
+    const clavier = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { setLoupe(null); setTexte(null); }
+      if (e.key === 'ArrowRight') setLoupe(l => (l ? { ...l, i: (l.i + 1) % l.vues.length } : l));
+      if (e.key === 'ArrowLeft') setLoupe(l => (l ? { ...l, i: (l.i - 1 + l.vues.length) % l.vues.length } : l));
+    };
     window.addEventListener('keydown', clavier);
     return () => { window.removeEventListener('keydown', clavier); document.body.style.overflow = avant; };
   }, [loupe, texte]);
@@ -256,8 +265,8 @@ const PressePage: React.FC = () => {
   }, []);
 
   /**
-   * Le zip complet : une photo représentative par sujet (français, avec
-   * texte, sans QR), les quatre mots-symboles et les cinq textes.
+   * Le zip complet : une photo représentative par sujet, dans la langue
+   * affichée, avec texte et sans QR, les quatre mots-symboles et les textes.
    * ponytail : le kit d'origine cuisait toutes les combinaisons (langue ×
    * QR × nu), soit une centaine de fichiers ; les reproduire toutes en
    * direct aurait demandé une centaine de captures html2canvas au clic,
@@ -270,7 +279,7 @@ const PressePage: React.FC = () => {
       const fichiers: FichierZip[] = [];
       for (const c of kit.cartes) {
         const node = refsZip.current.get(`zc:${c.key}`);
-        if (node) fichiers.push({ nom: `${c.key}-fr-texte.jpg`, data: new Uint8Array(await (await capturerNoeud(node)).arrayBuffer()) });
+        if (node) fichiers.push({ nom: `${c.key}-${L.toLowerCase()}-texte.jpg`, data: new Uint8Array(await (await capturerNoeud(node)).arrayBuffer()) });
       }
       for (const p of kit.planches) {
         const node = refsZip.current.get(`zp:${p.key}`);
@@ -287,7 +296,7 @@ const PressePage: React.FC = () => {
         fichiers.push({ nom: `textes/${x.key}-fr.txt`, data: octetsTexte(x.texteFR) });
         if (x.texteEN) fichiers.push({ nom: `textes/${x.key}-en.txt`, data: octetsTexte(x.texteEN) });
       }
-      telechargerBlob(zipper(fichiers), 'kit-presse-krystine-st-laurent.zip');
+      telechargerBlob(zipper(fichiers), `kit-presse-krystine-st-laurent${L === 'EN' ? '-en' : ''}.zip`);
     } finally {
       setZipEnCours(false);
     }
@@ -329,7 +338,14 @@ const PressePage: React.FC = () => {
             titre={titre}
             legende={lang === 'EN' ? f.legendeEN : f.legendeFR}
             agrandir={t.agrandir}
-            onOuvrir={() => setLoupe({ cle, titre, visuel })}
+            onOuvrir={() => setLoupe({
+              i: liste.indexOf(f),
+              vues: liste.map(g => ({
+                cle: `${page ? 'page' : 'planche'}:${g.key}`,
+                titre: lang === 'EN' ? g.labelEN : g.labelFR,
+                visuel: <VisuelPlanche item={g} qr={enQr.has(g.key)} nu={enNu.has(g.key)} page={page} />,
+              })),
+            })}
             dessous={qr ? <p className="mt-3 break-all text-[13px] font-light text-[#BA7B39]">{t.qrMene} {f.chemin}</p> : undefined}
           >
             {gestesCommuns(cle, nom, titre)}
@@ -456,7 +472,14 @@ const PressePage: React.FC = () => {
                 titre={titre}
                 legende={lang === 'EN' ? c.legendeEN : c.legendeFR}
                 agrandir={t.agrandir}
-                onOuvrir={() => setLoupe({ cle, titre, visuel })}
+                onOuvrir={() => setLoupe({
+                  i: kit.cartes.indexOf(c),
+                  vues: kit.cartes.map(d => ({
+                    cle: `carte:${d.key}`,
+                    titre: lang === 'EN' ? d.titreEN : d.titreFR,
+                    visuel: <VisuelCarte carte={d} lang={L} qr={enQr.has(d.key)} nu={enNu.has(d.key) && !!d.nu} />,
+                  })),
+                })}
                 dessous={qr ? <p className="mt-3 break-all text-[13px] font-light text-[#BA7B39]">{t.qrMene} {c.cibleAffiche}</p> : undefined}
               >
                 {gestesCommuns(cle, nom, titre)}
@@ -491,9 +514,13 @@ const PressePage: React.FC = () => {
           {LOGOS.map((l: Logo) => {
             const titre = lang === 'EN' ? l.labelEN : l.labelFR;
             const sombre = l.key === 'creme-encre' || l.key === 'creme-transparent';
+            // Deux des quatre fichiers portent leur propre fond cuit. La tuile prend exactement
+            // cette couleur, sinon le rectangle du PNG se détache comme une tache grise au milieu
+            // de la carte, ce qui donnait au mot-symbole l'air d'être délavé.
+            const fond = l.key === 'creme-encre' ? '#34241a' : l.key === 'encre-creme' ? '#f3eee5' : sombre ? '#34241a' : '#faf6ee';
             return (
               <Reveal key={l.key} className={TUILE}>
-                <button type="button" onClick={() => window.open(`/${l.fichier}`, '_blank')} aria-label={`${t.agrandir} · ${titre}`} className={`group block w-full cursor-zoom-in overflow-hidden ${sombre ? 'bg-[#34241a]' : 'bg-[#faf6ee]'}`}>
+                <button type="button" onClick={() => window.open(`/${l.fichier}`, '_blank')} aria-label={`${t.agrandir} · ${titre}`} className="group block w-full cursor-zoom-in overflow-hidden" style={{ background: fond }}>
                   <img src={`/${l.fichier}`} alt={titre} loading="lazy" decoding="async" className="aspect-video w-full object-contain p-8 transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" />
                 </button>
                 <div className={`${BANDE} flex flex-1 flex-col`}>
@@ -558,10 +585,13 @@ const PressePage: React.FC = () => {
       </section>
 
       {/* ─── LA LOUPE ───────────────────────────────────────────────── */}
-      {loupe && (
+      {loupe && (() => {
+        const vue = loupe.vues[loupe.i];
+        const glisser = (pas: number) => setLoupe(l => (l ? { ...l, i: (l.i + pas + l.vues.length) % l.vues.length } : l));
+        return (
         <div className="fixed inset-0 z-[80] flex flex-col bg-[#1c1712]/94 backdrop-blur-sm" role="dialog" aria-modal="true">
           <div className="flex items-center justify-between px-[clamp(1rem,4vw,3rem)] py-5">
-            <span className="text-[13px] uppercase tracking-[0.2em] text-[#f4efe6]/55">{loupe.titre}</span>
+            <span className="text-[13px] uppercase tracking-[0.2em] text-[#f4efe6]/55">{vue.titre}</span>
             <button type="button" onClick={() => setLoupe(null)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/70 transition-colors hover:text-[#BA7B39]">
               {t.fermer} <X size={15} weight="regular" />
             </button>
@@ -570,19 +600,30 @@ const PressePage: React.FC = () => {
             <div className="max-h-full w-full max-w-4xl">
               {/* Un second rendu du même visuel, à une autre échelle : la loupe n'a pas besoin de
                   réutiliser le nœud de la grille, elle en monte simplement une seconde copie. */}
-              <CadreEchelle>{loupe.visuel}</CadreEchelle>
+              <CadreEchelle>{vue.visuel}</CadreEchelle>
             </div>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-[#f4efe6]/12 px-[clamp(1rem,4vw,3rem)] py-5">
-            <button type="button" onClick={() => telecharger(loupe.cle, `${loupe.cle.replace(':', '-')}.jpg`)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
+            {loupe.vues.length > 1 && (
+              <button type="button" onClick={() => glisser(-1)} aria-label={t.precedent} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
+                <CaretLeft size={14} weight="regular" /> {t.precedent}
+              </button>
+            )}
+            <button type="button" onClick={() => telecharger(vue.cle, `${vue.cle.replace(':', '-')}.jpg`)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
               <Download size={14} weight="regular" /> {t.telecharger}
             </button>
-            <button type="button" onClick={() => envoyer(loupe.cle, `${loupe.cle.replace(':', '-')}.jpg`, loupe.titre)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
-              <ShareNetwork size={14} weight="regular" /> {copie === loupe.cle ? t.copie : t.partager}
+            <button type="button" onClick={() => envoyer(vue.cle, `${vue.cle.replace(':', '-')}.jpg`, vue.titre)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
+              <ShareNetwork size={14} weight="regular" /> {copie === vue.cle ? t.copie : t.partager}
             </button>
+            {loupe.vues.length > 1 && (
+              <button type="button" onClick={() => glisser(1)} aria-label={t.suivant} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
+                {t.suivant} <CaretRight size={14} weight="regular" />
+              </button>
+            )}
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {/* ─── LE FEUILLET DE TEXTE ───────────────────────────────────── */}
       {texte && (
@@ -608,7 +649,7 @@ const PressePage: React.FC = () => {
 
       {/* ─── LES NŒUDS DU ZIP, hors écran ───────────────────────────── */}
       <div style={{ position: 'fixed', left: -99999, top: 0, width: W, pointerEvents: 'none' }} aria-hidden="true">
-        {kit.cartes.map(c => <div key={c.key} ref={enregistrerZip(`zc:${c.key}`)}><VisuelCarte carte={c} lang="FR" qr={false} /></div>)}
+        {kit.cartes.map(c => <div key={c.key} ref={enregistrerZip(`zc:${c.key}`)}><VisuelCarte carte={c} lang={L} qr={false} /></div>)}
         {kit.planches.map(p => <div key={p.key} ref={enregistrerZip(`zp:${p.key}`)}><VisuelPlanche item={p} qr={false} /></div>)}
         {kit.pages.map(p => <div key={p.key} ref={enregistrerZip(`zs:${p.key}`)}><VisuelPlanche item={p} qr={false} page /></div>)}
       </div>
