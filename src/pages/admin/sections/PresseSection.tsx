@@ -172,7 +172,6 @@ function EditeurCarte({ carte, onChamp, onCadrage, ouvert, onToggle }: {
   carte: CartePresse;
   onChamp: (champ: keyof CartePresse, v: string) => void;
   onCadrage: (champ: 'fichier' | 'focus' | 'focusX', v: string) => void;
-  onPhoto: (f: File) => void;
   ouvert: boolean;
   onToggle: () => void;
 }) {
