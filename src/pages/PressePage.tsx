@@ -543,13 +543,16 @@ const PressePage: React.FC = () => {
             <div>
               <Kicker sombre className="mb-5">{lang === 'EN' ? 'Contact' : 'Nous joindre'}</Kicker>
               <TitreChapitre sombre>{t.contactTitre}</TitreChapitre>
-              <p className="mt-7 max-w-[46ch] text-[1rem] font-light leading-relaxed text-[#f4efe6]/80">{t.contactTexte}</p>
+              <p className="mt-7 max-w-[52ch] text-[1rem] font-light leading-relaxed text-[#f4efe6]/80">{t.contactTexte}</p>
             </div>
-            <div className="flex flex-col items-start gap-6 lg:items-end">
+            {/* Les deux adresses restent sous le bouton : la colonne de droite doit tenir
+                la hauteur du texte de gauche, sinon la moitié de l'écran se vide. */}
+            <div className="flex flex-col items-start gap-6">
               <BoutonCuivre href="mailto:equipe@inspiratanature.com">
                 {t.contactGeste} <ArrowUpRight size={14} weight="regular" />
               </BoutonCuivre>
               <p className="text-[13px] uppercase tracking-[0.2em] text-[#f4efe6]/55">equipe@inspiratanature.com</p>
+              <p className="text-[13px] uppercase tracking-[0.2em] text-[#f4efe6]/40">krystinestlaurent.ca/presse</p>
             </div>
           </div>
         </Reveal>
