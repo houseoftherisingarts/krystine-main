@@ -421,8 +421,7 @@ for (const carte of CARTES) {
 for (const p of PHOTOS) {
   if (!retenue(p.key)) continue;
   const spec = { fichier: p.fichier, focus: p.focus, focusX: p.focusX };
-  const fond = await fondPleinCadre(spec, W, H);
-  const uri = 'data:image/jpeg;base64,' + (await fond.jpeg({ quality: 94, mozjpeg: true }).toBuffer()).toString('base64');
+  const uri = await dataUri(spec, W, H);
   const qrImg = await qrUri(p.chemin, 126);
   await shoot(photoPleineHtml(p, uri), `photo-${p.key}.jpg`, { jpeg: true });
   await shoot(photoPleineHtml(p, uri, qrImg), `photo-${p.key}-qr.jpg`, { jpeg: true });
