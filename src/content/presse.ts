@@ -11,7 +11,7 @@
 export const PRESSE_BASE = '/presse';
 export const PRESSE_ZIP = '/presse/kit-presse-krystine-st-laurent.zip';
 /** Le poids du zip, à relire après chaque `node scripts/presse/build-kit.mjs`. */
-export const PRESSE_ZIP_POIDS = '17 Mo';
+export const PRESSE_ZIP_POIDS = '34 Mo';
 
 export type Langue = 'FR' | 'EN';
 
@@ -86,37 +86,45 @@ export interface Feuillet {
   labelEN: string;
   legendeFR: string;
   legendeEN: string;
+  /**
+   * L'adresse qu'ouvre le code QR de la planche. Les planches et les pages
+   * la portent toutes, parce que la formule Prisket veut ses quatre gestes
+   * sous chaque visuel et pas seulement sous les cartes. Les mots-symboles
+   * s'en passent : une signature typographique n'a ni code QR ni version
+   * sans texte, puisqu'elle est déjà le texte.
+   */
+  cible?: string;
 }
 
 /** Les planches photo, légendées en français et en anglais sur l'image. */
 export const PLANCHES: Feuillet[] = [
   {
-    key: 'krystine-kimono', fichier: 'photo-krystine-kimono.jpg',
+    key: 'krystine-kimono', fichier: 'photo-krystine-kimono.jpg', cible: 'krystinestlaurent.ca/presse',
     labelFR: 'Krystine en kimono', labelEN: 'Krystine in a kimono',
-    legendeFR: 'Un livre ouvert sur les genoux, devant une porte verte.', legendeEN: 'An open book on her lap.',
+    legendeFR: 'En kimono bleu, cadrée en buste.', legendeEN: 'In a blue kimono, head and shoulders.',
   },
   {
-    key: 'krystine-sourire', fichier: 'photo-krystine-sourire.jpg',
+    key: 'krystine-sourire', fichier: 'photo-krystine-sourire.jpg', cible: 'krystinestlaurent.ca/presse',
     labelFR: 'Portrait souriant', labelEN: 'Smiling portrait',
     legendeFR: 'Un format vertical, recadré pour la presse.', legendeEN: 'A vertical frame, cropped for the press.',
   },
   {
-    key: 'krystine-table', fichier: 'photo-krystine-table.jpg',
+    key: 'krystine-table', fichier: 'photo-krystine-table.jpg', cible: 'krystinestlaurent.ca/presse',
     labelFR: 'À table, avec les livres', labelEN: 'At the table, with the books',
     legendeFR: 'Avec Nature & Ayurveda et Féminité & Ayurveda posés devant elle.', legendeEN: 'Nature & Ayurveda and Féminité & Ayurveda.',
   },
   {
-    key: 'krystine-tapis', fichier: 'photo-krystine-tapis.jpg',
+    key: 'krystine-tapis', fichier: 'photo-krystine-tapis.jpg', cible: 'krystinestlaurent.ca/presse',
     labelFR: 'Le visuel d’ouverture', labelEN: 'The opening image',
     legendeFR: 'L’image qui ouvre le site d’Inspira Nature.', legendeEN: 'The image that opens Inspira Nature.',
   },
   {
-    key: 'les-livres', fichier: 'photo-les-livres.jpg',
+    key: 'les-livres', fichier: 'photo-les-livres.jpg', cible: 'krystinestlaurent.ca/presse',
     labelFR: 'Les trois livres', labelEN: 'The three books',
     legendeFR: 'Les trois titres ensemble, dont celui de février 2027.', legendeEN: 'Including the title due in February 2027.',
   },
   {
-    key: 'sante-la-vie', fichier: 'photo-sante-la-vie.jpg',
+    key: 'sante-la-vie', fichier: 'photo-sante-la-vie.jpg', cible: 'krystinestlaurent.ca/presse',
     labelFR: 'Sur le plateau', labelEN: 'On set',
     legendeFR: 'Sur le plateau, parmi les huiles et les crèmes.', legendeEN: 'Santé la vie, among the oils and the creams.',
   },
@@ -125,32 +133,32 @@ export const PLANCHES: Feuillet[] = [
 /** Les pages du site, telles qu'elles s'affichaient à la fabrication du kit. */
 export const PAGES: Feuillet[] = [
   {
-    key: 'site-accueil', fichier: 'site-accueil.jpg',
+    key: 'site-accueil', fichier: 'site-accueil.jpg', cible: 'krystinestlaurent.ca',
     labelFR: 'L’accueil', labelEN: 'The home page',
     legendeFR: 'krystinestlaurent.ca', legendeEN: 'krystinestlaurent.ca',
   },
   {
-    key: 'site-krystine', fichier: 'site-krystine.jpg',
+    key: 'site-krystine', fichier: 'site-krystine.jpg', cible: 'krystinestlaurent.ca/krystine',
     labelFR: 'La biographie', labelEN: 'The biography',
     legendeFR: 'krystinestlaurent.ca/krystine', legendeEN: 'krystinestlaurent.ca/krystine',
   },
   {
-    key: 'site-conferenciere', fichier: 'site-conferenciere.jpg',
+    key: 'site-conferenciere', fichier: 'site-conferenciere.jpg', cible: 'krystinestlaurent.ca/conferenciere',
     labelFR: 'Les conférences', labelEN: 'The talks',
     legendeFR: 'krystinestlaurent.ca/conferenciere', legendeEN: 'krystinestlaurent.ca/conferenciere',
   },
   {
-    key: 'site-medias', fichier: 'site-medias.jpg',
+    key: 'site-medias', fichier: 'site-medias.jpg', cible: 'krystinestlaurent.ca/medias',
     labelFR: 'Les médias', labelEN: 'The media page',
     legendeFR: 'krystinestlaurent.ca/medias', legendeEN: 'krystinestlaurent.ca/medias',
   },
   {
-    key: 'site-formations', fichier: 'site-formations.jpg',
+    key: 'site-formations', fichier: 'site-formations.jpg', cible: 'krystinestlaurent.ca/formations',
     labelFR: 'Les formations', labelEN: 'The courses',
     legendeFR: 'krystinestlaurent.ca/formations', legendeEN: 'krystinestlaurent.ca/formations',
   },
   {
-    key: 'site-boutique', fichier: 'site-boutique.jpg',
+    key: 'site-boutique', fichier: 'site-boutique.jpg', cible: 'krystinestlaurent.ca/boutique',
     labelFR: 'La boutique', labelEN: 'The shop',
     legendeFR: 'krystinestlaurent.ca/boutique', legendeEN: 'krystinestlaurent.ca/boutique',
   },
@@ -211,6 +219,16 @@ export const FAITS: { valeur: string; fr: string; en: string }[] = [
 export function fichierCarte(c: Carte, lang: Langue, nu: boolean, qr: boolean): string {
   if (nu) return `${c.key}-nu${qr ? '-qr' : ''}.jpg`;
   return `${c.key}-${lang.toLowerCase()}-texte${qr ? '-qr' : ''}.png`;
+}
+
+/**
+ * Le nom d'un fichier de planche ou de page. Les quatre variantes suivent
+ * la même règle que les cartes, si bien que les quatre gestes de la
+ * formule marchent partout de la même façon.
+ */
+export function fichierFeuillet(f: Feuillet, nu: boolean, qr: boolean): string {
+  const base = f.fichier.replace(/\.jpg$/, '');
+  return `${base}${nu ? '-nu' : ''}${qr ? '-qr' : ''}.jpg`;
 }
 
 export const pleineRes = (fichier: string) => `${PRESSE_BASE}/${fichier}`;

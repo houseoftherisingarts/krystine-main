@@ -8,6 +8,9 @@
 // qu'ils y sont écrits. Aucun chiffre d'audience, aucun téléphone,
 // aucune adresse postale, parce que le site n'en publie pas.
 //
+// `fond` : le cadre de la carte, quand ni `nu` ni `src` ne convient.
+//          Le podcast est le seul cas : sa pochette porte déjà son titre
+//          en gros, et le titre de la carte viendrait se poser dessus.
 // `nu`   : la photo pleine page, quand elle vaut d'être offerte seule.
 // `src`  : la photo de secours, quand le sujet n'a pas de photo seule.
 //          C'est elle qui remplit alors tout le cadre de la carte.
@@ -108,6 +111,7 @@ export const CARTES = [
     n: '05',
     key: 'podcast',
     cote: 'gauche',
+    fond: { fichier: 'podcast/krystine.jpg', focus: 0.42, focusX: 0.5 },
     src: { fichier: 'podcast/krystine.jpg', focus: 0.24, focusX: 0.62 },
     nu: { fichier: 'podcast/saison2-cover.webp', focus: 0.5, focusX: 0.5 },
     etiquette: { fr: 'Le podcast', en: 'The podcast' },

@@ -16,7 +16,12 @@
 // Le recadrage garde toujours le plus grand rectangle du bon format à
 // l'intérieur de la source, centré sur le point d'intérêt, et refuse
 // d'agrandir au-delà de 1,6 fois : au-delà, la photo devient molle et
-// ne vaut plus rien pour une journaliste qui l'imprime.
+// ne vaut plus rien pour une journaliste qui l'imprime. Deux sorties
+// existent quand une source est trop étroite pour remplir un 16:9, et
+// aucune des deux ne rétrécit la photo dans une colonne, parce que la
+// formule Prisket veut le cadre plein : une carte reçoit un lit flou de
+// la même image sous son voile de texte, une planche accepte d'être
+// agrandie un peu plus fort pour que les six sortent au même format.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -222,7 +227,14 @@ function shell(corps, css = '', hauteur = H) {
  * la photo garde ses couleurs d'origine dessous.
  */
 const VOILE_LARGEUR = 58;
-const VOILE_PLEIN = 0.32;
+// Le voile reste plein jusqu'au bord du texte, et ne s'éteint qu'au-delà,
+// sur les quatre cents pixels qui le séparent de la photo. Un voile qui
+// s'allégeait déjà sous la première colonne de mots laissait le crème
+// tomber sur du crème dès que la photo était claire à cet endroit, et la
+// carte des trois livres, posés sur un fond de papier, le montrait sans
+// discussion. La fraction se calcule sur la géométrie ci-dessous : le
+// texte commence à 420 px du bord intérieur d'un bandeau de 1114 px.
+const VOILE_PLEIN = 0.62;
 function voile(sens, a0 = 0.9, paliers = 18) {
   const lisse = (x) => x * x * x * (x * (x * 6 - 15) + 10);
   const arrets = [];
@@ -234,13 +246,34 @@ function voile(sens, a0 = 0.9, paliers = 18) {
   return `linear-gradient(to ${sens}, ${arrets.join(', ')})`;
 }
 
+/**
+ * Le socle assombrit le bas du cadre sur toute la largeur. Sans lui, les
+ * deux lignes de pied et le mot-symbole se perdent dès que la photo est
+ * claire à cet endroit, et la page des livres posés sur un fond crème le
+ * montrait sans discussion. L'ombre portée du texte ne suffit pas sur du
+ * blanc : il faut abaisser la valeur du fond lui-même, ce que fait ce
+ * dégradé plein en bas puis éteint en courbe douce, comme le voile.
+ */
+const SOCLE_HAUTEUR = 300;
+const SOCLE_PLEIN = 0.3;
+function socle(a0 = 0.72, paliers = 16) {
+  const lisse = (x) => x * x * x * (x * (x * 6 - 15) + 10);
+  const arrets = [];
+  for (let i = 0; i <= paliers; i += 1) {
+    const t = i / paliers;
+    const a = t <= SOCLE_PLEIN ? a0 : a0 * (1 - lisse((t - SOCLE_PLEIN) / (1 - SOCLE_PLEIN)));
+    arrets.push(`rgba(28,23,18,${a.toFixed(4)}) ${(t * 100).toFixed(2)}%`);
+  }
+  return `<div style="position:absolute;left:0;right:0;bottom:0;height:${SOCLE_HAUTEUR}px;background:linear-gradient(to top, ${arrets.join(', ')})"></div>`;
+}
+
 /** Le coin bas gauche : le code QR quand il y en a un, puis les deux lignes de pied. */
 const coin = (qrImg, adresse) => `
   <div style="position:absolute;left:78px;bottom:52px;display:flex;align-items:flex-end;gap:26px">
     ${qrImg ? `<img class="qr" src="${qrImg}" style="width:150px;height:150px;display:block;padding:10px;background:${C.carte};box-shadow:0 2px 14px rgba(0,0,0,.5)">` : ''}
     <div>
-      <p class="ombre" style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.3em;color:rgba(244,239,230,.72)">Inspira Nature · Québec · MMXXVI</p>
-      <p class="ombre" style="margin-top:10px;font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.3em;color:${C.laiton}">${adresse}</p>
+      <p class="ombre" style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.3em;color:rgba(244,239,230,.8)">Inspira Nature · Québec · MMXXVI</p>
+      <p class="ombre" style="margin-top:10px;font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.3em;color:#BA7B39">${adresse}</p>
     </div>
   </div>`;
 
@@ -271,6 +304,7 @@ function carteHtml({ carte, lang, qr, photo, qrImg }) {
   .v-meta{margin-top:42px;font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.3em;color:rgba(186,123,57,.95);text-wrap:pretty}`;
   return shell(`
     <img src="${photo}" style="position:absolute;inset:0;width:${W}px;height:${H}px;object-fit:cover">
+    ${socle()}
     <div class="voile ${voileCote}">
       <p class="v-kicker ombre">${t.kicker}</p>
       <h1 class="v-titre ombre" id="titre">${t.titre}</h1>
@@ -400,7 +434,7 @@ for (const carte of CARTES) {
   // La photo tient tout le cadre, et le voile de texte se pose du côté
   // opposé : c'est elle qui décide où la photo nette s'ancre quand la
   // source est trop étroite pour remplir le 16:9 toute seule.
-  const photo = await dataUri(carte.nu || carte.src, W, H, carte.cote);
+  const photo = await dataUri(carte.fond || carte.nu || carte.src, W, H, carte.cote);
   for (const lang of ['fr', 'en']) {
     for (const qr of [false, true]) {
       const qrImg = qr ? await qrUri(carte.qr[lang], 150) : null;

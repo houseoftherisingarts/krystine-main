@@ -10,7 +10,7 @@ import { useApp, useAuth } from '../contexts/AppContext';
 import { useSiteFlags } from '../contexts/SiteFlagsContext';
 import {
   CARTES, PLANCHES, PAGES, LOGOS, TEXTES, FAITS,
-  PRESSE_ZIP, PRESSE_ZIP_POIDS, fichierCarte, pleineRes, vignette,
+  PRESSE_ZIP, PRESSE_ZIP_POIDS, fichierCarte, fichierFeuillet, pleineRes, vignette,
   type Carte, type Feuillet, type TexteKit,
 } from '../content/presse';
 
@@ -308,6 +308,48 @@ const PressePage: React.FC = () => {
     </>
   );
 
+  /**
+   * Une grille de planches ou de pages. Les quatre gestes valent ici comme
+   * sous les cartes : Krystine a demandé les quatre boutons chaque fois
+   * qu'elle demande un Prisket, et la page du festival les met aussi bien
+   * sous ses photos que sous ses captures du site. Le kit fabrique donc
+   * quatre fichiers par planche, et « Photo seule » montre la même image
+   * que la tuile, la légende en moins.
+   */
+  const grilleFeuillets = (liste: Feuillet[]) => {
+    const fichiers = liste.map(f => fichierFeuillet(f, enNu.has(f.key), enQr.has(f.key)));
+    return (
+      <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-[clamp(1.25rem,2.5vw,1.75rem)] md:grid-cols-2 xl:grid-cols-3">
+        {liste.map((f: Feuillet, idx) => {
+          const fichier = fichiers[idx];
+          const titre = lang === 'EN' ? f.labelEN : f.labelFR;
+          const nu = enNu.has(f.key);
+          return (
+            <Tuile
+              key={f.key}
+              fichier={fichier}
+              titre={titre}
+              legende={lang === 'EN' ? f.legendeEN : f.legendeFR}
+              agrandir={t.agrandir}
+              onOuvrir={() => setLoupe({ fichiers, i: idx })}
+              dessous={enQr.has(f.key) ? (
+                <p className="mt-3 break-all text-[13px] font-light text-[#BA7B39]">{t.qrMene} {f.cible}</p>
+              ) : undefined}
+            >
+              {gestesCommuns(fichier, titre)}
+              <Geste actif={enQr.has(f.key)} onClick={() => bascule(setEnQr, f.key)} libelle={`${t.versionQr} · ${titre}`}>
+                <QrCode size={14} weight="regular" /> {t.versionQr}
+              </Geste>
+              <Geste actif={nu} onClick={() => bascule(setEnNu, f.key)} libelle={`${nu ? t.avecTexte : t.photoSeule} · ${titre}`}>
+                <ImageSquare size={14} weight="regular" /> {nu ? t.avecTexte : t.photoSeule}
+              </Geste>
+            </Tuile>
+          );
+        })}
+      </div>
+    );
+  };
+
   const ficheFaits = () => lireTexte(TEXTES.find(x => x.fichier.includes(lang === 'EN' ? 'facts-en' : 'faits-fr')) || TEXTES[2]);
 
   return (
@@ -444,45 +486,13 @@ const PressePage: React.FC = () => {
       {/* ─── LES PHOTOS ────────────────────────────────────────────── */}
       <section id="photos" className={`${SECTION} bg-[#efe6d7]`}>
         <Chapeau numero={<>N&deg; 02</>} titre={t.photosTitre} note={t.photosNote} />
-        <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-[clamp(1.25rem,2.5vw,1.75rem)] md:grid-cols-2 xl:grid-cols-3">
-          {PLANCHES.map((p: Feuillet, idx) => {
-            const titre = lang === 'EN' ? p.labelEN : p.labelFR;
-            return (
-              <Tuile
-                key={p.key}
-                fichier={p.fichier}
-                titre={titre}
-                legende={lang === 'EN' ? p.legendeEN : p.legendeFR}
-                agrandir={t.agrandir}
-                onOuvrir={() => setLoupe({ fichiers: PLANCHES.map(x => x.fichier), i: idx })}
-              >
-                {gestesCommuns(p.fichier, titre)}
-              </Tuile>
-            );
-          })}
-        </div>
+        {grilleFeuillets(PLANCHES)}
       </section>
 
       {/* ─── LE SITE ───────────────────────────────────────────────── */}
       <section id="site" className={`${SECTION} bg-[#f4efe6]`}>
         <Chapeau numero={<>N&deg; 03</>} titre={t.siteTitre} note={t.siteNote} />
-        <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-[clamp(1.25rem,2.5vw,1.75rem)] md:grid-cols-2 xl:grid-cols-3">
-          {PAGES.map((p: Feuillet, idx) => {
-            const titre = lang === 'EN' ? p.labelEN : p.labelFR;
-            return (
-              <Tuile
-                key={p.key}
-                fichier={p.fichier}
-                titre={titre}
-                legende={lang === 'EN' ? p.legendeEN : p.legendeFR}
-                agrandir={t.agrandir}
-                onOuvrir={() => setLoupe({ fichiers: PAGES.map(x => x.fichier), i: idx })}
-              >
-                {gestesCommuns(p.fichier, titre)}
-              </Tuile>
-            );
-          })}
-        </div>
+        {grilleFeuillets(PAGES)}
       </section>
 
       {/* ─── LES MOTS-SYMBOLES ─────────────────────────────────────── */}

@@ -14,17 +14,20 @@ export const PHOTOS = [
     key: 'krystine-kimono',
     fichier: 'krystine-portrait.jpg',
     chemin: '/presse',
-    focus: 0.24,
+    // La fenêtre 16:9 ne garde que 47 % de la hauteur d'un portrait
+    // debout : centrée plus bas, elle tient la tête et le livre posé sur
+    // les genoux, que la légende promet.
+    focus: 0.44,
     focusX: 0.55,
-    fr: 'Krystine St-Laurent en kimono, un livre ouvert sur les genoux.',
-    en: 'Krystine St-Laurent in a kimono, an open book on her lap.',
+    fr: 'Krystine St-Laurent en kimono bleu, cadrée en buste.',
+    en: 'Krystine St-Laurent in a blue kimono, framed head and shoulders.',
   },
   {
     n: '02',
     key: 'krystine-sourire',
     fichier: 'podcast/krystine.jpg',
     chemin: '/presse',
-    focus: 0.24,
+    focus: 0.42,
     focusX: 0.62,
     fr: 'Un portrait recadré depuis un format vertical, devant la porte verte.',
     en: 'A portrait cropped from a vertical frame, against the green door.',
