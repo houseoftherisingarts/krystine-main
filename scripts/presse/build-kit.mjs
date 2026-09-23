@@ -426,7 +426,16 @@ for (const carte of CARTES) {
 for (const p of PHOTOS) {
   if (!retenue(p.key)) continue;
   const spec = { fichier: p.fichier, focus: p.focus, focusX: p.focusX };
-  const uri = await dataUri(spec, W, H);
+  // Une planche est la photographie brute, plein cadre, et rien d'autre :
+  // pas de lit flou sur les côtés comme en portent les cartes, puisqu'ici
+  // aucun voile de texte ne viendrait le couvrir. Deux des six sources
+  // sont des portraits debout qu'il faut donc agrandir davantage, jusqu'à
+  // deux fois et un peu, et `focus` sert à garder le visage dans la
+  // fenêtre plutôt qu'à sauver des pixels. La planche reste utilisable à
+  // la reproduction où une photo de presse se publie, et c'est le prix à
+  // payer pour que les six planches sortent toutes au même format.
+  const uri = 'data:image/jpeg;base64,' + (await (await recadrer(spec, W, H, 2.2))
+    .jpeg({ quality: 94, mozjpeg: true }).toBuffer()).toString('base64');
   const qrImg = await qrUri(p.chemin, 126);
   await shoot(photoPleineHtml(p, uri), `photo-${p.key}.jpg`, { jpeg: true });
   await shoot(photoPleineHtml(p, uri, qrImg), `photo-${p.key}-qr.jpg`, { jpeg: true });
