@@ -167,6 +167,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'events',     label: 'Événements & Conférences', icon: 'fa-calendar', groupe: 'contenu' },
   { id: 'newsletter', label: 'Infolettre',       icon: 'fa-envelope',         groupe: 'contenu' },
   { id: 'media',      label: 'Médiathèque',      icon: 'fa-photo-film',       groupe: 'contenu' },
+  { id: 'presse',     label: 'Kit de presse',    icon: 'fa-newspaper',        groupe: 'contenu' },
   { id: 'postsPrefaits', label: 'Posts préfaits', icon: 'fa-images',          groupe: 'contenu' },
   { id: 'assets',     label: 'Assets et téléchargements', icon: 'fa-download', groupe: 'reglages' },
   { id: 'enPreparation', label: 'En préparation', icon: 'fa-eye-slash',       groupe: 'reglages' },
