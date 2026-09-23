@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-23T16:14:40.013Z",
+  "generatedAt": "2026-09-23T18:02:00.307Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2016,6 +2016,48 @@
       "folder": "presse",
       "kind": "image",
       "size": 86723
+    },
+    {
+      "path": "/presse/captures/accueil.png",
+      "name": "accueil.png",
+      "folder": "presse/captures",
+      "kind": "image",
+      "size": 2040296
+    },
+    {
+      "path": "/presse/captures/boutique.png",
+      "name": "boutique.png",
+      "folder": "presse/captures",
+      "kind": "image",
+      "size": 1171171
+    },
+    {
+      "path": "/presse/captures/conferences.png",
+      "name": "conferences.png",
+      "folder": "presse/captures",
+      "kind": "image",
+      "size": 314849
+    },
+    {
+      "path": "/presse/captures/formations.png",
+      "name": "formations.png",
+      "folder": "presse/captures",
+      "kind": "image",
+      "size": 363518
+    },
+    {
+      "path": "/presse/captures/krystine.png",
+      "name": "krystine.png",
+      "folder": "presse/captures",
+      "kind": "image",
+      "size": 974220
+    },
+    {
+      "path": "/presse/captures/medias.png",
+      "name": "medias.png",
+      "folder": "presse/captures",
+      "kind": "image",
+      "size": 1188666
     },
     {
       "path": "/presse/logos/mot-symbole-creme-sur-encre.png",
