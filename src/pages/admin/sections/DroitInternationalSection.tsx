@@ -46,6 +46,25 @@ const DOSSIERS: Dossier[] = [
     sources: [],
   },
   {
+    id: 'loi25',
+    icone: 'fa-fleur-de-lis',
+    titre: 'Le Québec, votre sol de départ',
+    resume:
+      "La Loi 25 vous vise depuis 2022, et l'essentiel est déjà en place sur votre site : la personne responsable, la politique, le consentement, les témoins, le registre.",
+    statut: 'Vous êtes visée',
+    corps: [
+      "La réforme québécoise est entrée en vigueur par vagues. Depuis le 22 septembre 2022, toute entreprise tient un registre de ses incidents de confidentialité et ne peut plus activer par défaut les témoins de navigation qui servent au profilage. Depuis le 22 septembre 2023, elle désigne une personne responsable de la protection des renseignements personnels, publie ses coordonnées, adopte une politique de confidentialité écrite en langage simple, et recueille un consentement manifeste, libre et éclairé, donné pour des fins précises. Depuis le 22 septembre 2024 s'ajoute le droit à la portabilité, qui permet à une cliente de repartir avec ses données dans un format lisible par une autre plateforme.",
+      "Par défaut, la personne responsable est celle qui exerce la plus haute autorité dans l'entreprise, donc vous, et cette fonction se délègue par écrit. Votre site porte déjà la politique, la bannière de consentement, le registre et l'outil d'exportation, si bien que votre part du travail tient dans une habitude plutôt que dans un chantier : ne jamais ajouter une case précochée, ne jamais écrire à quelqu'un qui n'a rien demandé, et prévenir Vexel quand un incident survient.",
+      "La Commission d'accès à l'information surveille tout cela et peut imposer des sanctions administratives. Dans les faits, elle enquête quand elle reçoit une plainte, et une plainte vient presque toujours d'une personne qui a demandé quelque chose et n'a pas eu de réponse.",
+    ],
+    sources: [
+      {
+        titre: "Les principaux changements de la Loi 25, Commission d'accès à l'information",
+        url: 'https://www.cai.gouv.qc.ca/protection-renseignements-personnels/sujets-et-domaines-dinteret/principaux-changements-loi-25',
+      },
+    ],
+  },
+  {
     id: 'rgpd',
     icone: 'fa-flag',
     titre: "L'Europe et le règlement général sur la protection des données",
