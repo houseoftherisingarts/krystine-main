@@ -205,57 +205,82 @@ function shell(corps, css = '', hauteur = H) {
   .filet{height:1px;background:rgba(156,122,68,.42)}
   .qr{image-rendering:pixelated}
   .grain{position:absolute;inset:0;background-image:url(${GRAIN});opacity:.035;pointer-events:none;mix-blend-mode:multiply}
+  .ombre{text-shadow:0 1px 2px rgba(0,0,0,.92),0 0 6px rgba(0,0,0,.78),0 0 20px rgba(0,0,0,.5)}
   ${css}
 </style></head><body>${corps}</body></html>`;
 }
 
-const masthead = (numero, lang) => `
-  <div style="position:absolute;left:92px;right:92px;top:58px;display:flex;align-items:baseline;justify-content:space-between">
-    <span class="mot" style="font-size:23px">Krystine St-Laurent</span>
-    <span class="kicker" style="font-size:11.5px">N° ${numero} · ${lang === 'en' ? 'Press room' : 'Salle de presse'}</span>
-  </div>
-  <div class="filet" style="position:absolute;left:92px;right:92px;top:118px"></div>`;
+/* ════════════════════════ La carte plein cadre ════════════════════════ */
 
-const pied = (droite) => `
-  <div class="filet" style="position:absolute;left:92px;right:92px;top:978px"></div>
-  <div style="position:absolute;left:92px;right:92px;top:1004px;display:flex;justify-content:space-between">
-    <span class="pied">Inspira Nature · Québec · MMXXVI</span>
-    <span class="pied">${droite}</span>
+/**
+ * Le voile brun qui porte le texte d'une carte. Une rampe droite laisse
+ * une arête verticale en travers de la photo, parce que l'œil attrape la
+ * cassure de pente même quand l'opacité passe par plusieurs paliers. Le
+ * lissage de Perlin (6t⁵ − 15t⁴ + 10t³) a une dérivée nulle aux deux
+ * bouts, donc le voile naît et meurt sans bord. La couleur est l'encre
+ * presque noire du canon, jamais un brun de terre posé sur la photo, et
+ * la photo garde ses couleurs d'origine dessous.
+ */
+const VOILE_LARGEUR = 58;
+const VOILE_PLEIN = 0.32;
+function voile(sens, a0 = 0.9, paliers = 18) {
+  const lisse = (x) => x * x * x * (x * (x * 6 - 15) + 10);
+  const arrets = [];
+  for (let i = 0; i <= paliers; i += 1) {
+    const t = i / paliers;
+    const a = t <= VOILE_PLEIN ? a0 : a0 * (1 - lisse((t - VOILE_PLEIN) / (1 - VOILE_PLEIN)));
+    arrets.push(`rgba(28,23,18,${a.toFixed(4)}) ${(t * 100).toFixed(2)}%`);
+  }
+  return `linear-gradient(to ${sens}, ${arrets.join(', ')})`;
+}
+
+/** Le coin bas gauche : le code QR quand il y en a un, puis les deux lignes de pied. */
+const coin = (qrImg, adresse) => `
+  <div style="position:absolute;left:78px;bottom:52px;display:flex;align-items:flex-end;gap:26px">
+    ${qrImg ? `<img class="qr" src="${qrImg}" style="width:150px;height:150px;display:block;padding:10px;background:${C.carte};box-shadow:0 2px 14px rgba(0,0,0,.5)">` : ''}
+    <div>
+      <p class="ombre" style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.3em;color:rgba(244,239,230,.72)">Inspira Nature · Québec · MMXXVI</p>
+      <p class="ombre" style="margin-top:10px;font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.3em;color:${C.laiton}">${adresse}</p>
+    </div>
   </div>`;
 
-/** Le cadre fileté et son étiquette noire, repris du langage du site. */
-const planche = (x, uri, etiquette) => `
-  <div style="position:absolute;left:${x - 18}px;top:142px;width:736px;height:816px;border:1px solid rgba(156,122,68,.5)"></div>
-  <img src="${uri}" style="position:absolute;left:${x}px;top:160px;width:700px;height:780px;object-fit:cover">
-  <div style="position:absolute;left:${x + 28}px;top:920px;background:${C.encre};color:${C.carte};height:40px;display:flex;align-items:center;padding:0 22px;font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.3em">${etiquette}</div>`;
+/** Le mot-symbole en bas à droite, la seule signature que le site possède. */
+const signature = `
+  <div style="position:absolute;right:78px;bottom:52px;text-align:right">
+    <p class="mot ombre" style="font-size:26px;color:rgba(244,239,230,.94)">Krystine St-Laurent</p>
+  </div>`;
+
+/** La hauteur du coin, pour que le texte du voile s'arrête au-dessus. */
+const hauteurCoin = (qrImg) => (qrImg ? 170 : 52);
 
 function carteHtml({ carte, lang, qr, photo, qrImg }) {
   const t = carte[lang];
-  const aGauche = carte.cote === 'gauche';
-  const xPhoto = aGauche ? 92 : 1128;
-  const xTexte = aGauche ? 880 : 92;
-  const blocQr = qr ? `
-    <div style="display:flex;align-items:center;gap:20px;margin-top:44px">
-      <img class="qr" src="${qrImg}" style="width:140px;height:140px;border:1px solid rgba(156,122,68,.45);padding:9px;background:${C.carte}">
-      <div>
-        <p class="kicker" style="font-size:11px">${lang === 'en' ? 'Scan to open' : 'Scannez pour ouvrir'}</p>
-        <p style="margin-top:9px;font-size:15px;font-weight:400;color:${C.encreDouce}">${t.meta}</p>
-      </div>
-    </div>` : '';
+  // `cote` dit où se tient la photo : le voile de texte prend l'autre moitié.
+  const voileCote = carte.cote === 'gauche' ? 'droite' : 'gauche';
+  // Le coin bas gauche et la signature bas droite mangent le pied du voile
+  // quand ils tombent du même côté : le texte remonte pour leur laisser la place.
+  const bas = voileCote === 'gauche' ? 52 + hauteurCoin(qrImg) + 44 : 158;
+  const css = `
+  .voile{position:absolute;top:0;bottom:0;width:${VOILE_LARGEUR}%;display:flex;flex-direction:column;justify-content:center}
+  .voile.gauche{left:0;padding:104px 420px ${bas}px 92px;background:${voile('right')}}
+  .voile.droite{right:0;padding:104px 92px ${bas}px 420px;background:${voile('left')}}
+  .v-kicker{font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:.42em;color:${C.laiton}}
+  .v-titre{font-family:Fraunces,Georgia,serif;font-weight:300;font-size:74px;line-height:1.08;letter-spacing:-.014em;color:${C.fond};margin-top:30px}
+  .v-filet{width:76px;height:1px;background:${C.laiton};opacity:.85;margin:34px 0 30px}
+  .v-corps{font-size:29px;font-weight:300;line-height:1.56;color:rgba(244,239,230,.84);text-wrap:pretty}
+  .v-meta{margin-top:42px;font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.3em;color:rgba(186,123,57,.95);text-wrap:pretty}`;
   return shell(`
-    <div class="grain"></div>
-    ${masthead(carte.n, lang)}
-    ${planche(xPhoto, photo, carte.etiquette[lang])}
-    <div style="position:absolute;left:${xTexte}px;top:118px;width:948px;height:860px;display:flex;flex-direction:column;justify-content:center">
-      <p class="kicker">${t.kicker}</p>
-      <h1 class="serif" id="titre" style="margin-top:26px;font-size:88px;line-height:.96;letter-spacing:-.012em;max-width:13ch;color:${C.encre}">${t.titre}</h1>
-      <div style="width:76px;height:1px;background:${C.laiton};margin-top:34px"></div>
-      <p style="margin-top:30px;font-size:21px;font-weight:300;line-height:1.78;color:${C.encreDouce};max-width:47ch">${t.corps}</p>
-      ${qr ? '' : `<p style="margin-top:38px;font-size:11.5px;font-weight:500;text-transform:uppercase;letter-spacing:.26em;color:rgba(28,23,18,.55)">${t.meta}</p>`}
-      ${blocQr}
+    <img src="${photo}" style="position:absolute;inset:0;width:${W}px;height:${H}px;object-fit:cover">
+    <div class="voile ${voileCote}">
+      <p class="v-kicker ombre">${t.kicker}</p>
+      <h1 class="v-titre ombre" id="titre">${t.titre}</h1>
+      <span class="v-filet"></span>
+      <p class="v-corps ombre">${t.corps}</p>
+      <p class="v-meta ombre">${t.meta}</p>
     </div>
-    ${pied('krystinestlaurent.ca/presse')}
-  `);
+    ${coin(qr ? qrImg : null, 'krystinestlaurent.ca/presse')}
+    ${signature}
+  `, css);
 }
 
 /** La planche photo pleine page : photo au bord, bandeau crème en bas. */
