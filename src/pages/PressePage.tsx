@@ -539,7 +539,7 @@ const PressePage: React.FC = () => {
       {/* ─── CONTACT PRESSE ────────────────────────────────────────── */}
       <section className={`${SECTION} bg-[#efe6d7]`}>
         <Reveal className={`${PANNEAU} px-[clamp(1.75rem,5vw,4.5rem)] py-[clamp(3rem,8vh,5rem)]`}>
-          <div className="grid items-center gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.1fr_0.9fr]">
             <div>
               <Kicker sombre className="mb-5">{lang === 'EN' ? 'Contact' : 'Nous joindre'}</Kicker>
               <TitreChapitre sombre>{t.contactTitre}</TitreChapitre>
