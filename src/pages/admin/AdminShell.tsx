@@ -100,6 +100,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   formations: 'formations',
   enPreparation: 'en-preparation',
   postsPrefaits: 'posts-prefaits',
+  droitInternational: 'droit-international',
   assets:     'assets',
   settings:   'parametres',
 };
