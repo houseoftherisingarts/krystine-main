@@ -174,6 +174,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'bugs',       label: 'Problèmes techniques', icon: 'fa-bug',         groupe: 'reglages' },
   { id: 'changelog',  label: 'Journal des changements', icon: 'fa-clock-rotate-left', groupe: 'reglages' },
   { id: 'publications', label: 'Publications', icon: 'fa-book-open', groupe: 'reglages' },
+  { id: 'droitInternational', label: 'Droit international', icon: 'fa-earth-americas', groupe: 'reglages' },
 ];
 const CLE_OUVERTS = 'admin.nav.ouverts';
 const lireOuverts = (): GroupeId[] => {
