@@ -113,9 +113,8 @@ export default function PresseSection() {
       {onglet === 'cartes' && (
         <div className="grid md:grid-cols-2 gap-4">
           {kit.cartes.map((c, i) => (
-            <EditeurCarte key={c.key} carte={c} onChamp={(champ, v) => majCarte(i, champ, v)} onPhoto={async f => majCarte(i, 'photo', '')
-              /* la mise à jour du cadrage se fait via onCadrage ci-dessous, onPhoto n'est pas utilisé */
-            } ouvert={selection === c.key} onToggle={() => setSelection(selection === c.key ? null : c.key)}
+            <EditeurCarte key={c.key} carte={c} onChamp={(champ, v) => majCarte(i, champ, v)}
+              ouvert={selection === c.key} onToggle={() => setSelection(selection === c.key ? null : c.key)}
               onCadrage={(champ, v) => {
                 const cartes = kit.cartes.slice();
                 cartes[i] = { ...cartes[i], photo: { ...cartes[i].photo, [champ]: v } };
