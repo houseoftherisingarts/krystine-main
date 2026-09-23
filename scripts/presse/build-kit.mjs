@@ -362,14 +362,16 @@ async function shoot(html, nom, { jpeg = false, transparent = false, hauteur = H
   await page.evaluate(() => document.fonts.ready);
   if (ajusterTitre) {
     // Un titre de carte ne dépasse jamais deux lignes : on rapetisse la
-    // police par paliers de quatre pixels, et si elle descend sous 52 px
-    // sans y arriver, c'est la copie qu'il faut raccourcir.
+    // police d'un pixel à la fois, et si elle descend sous 42 px sans y
+    // arriver, c'est la copie qu'il faut raccourcir.
     const reste = await page.evaluate(() => {
       const el = document.getElementById('titre');
       if (!el) return 0;
-      let taille = parseFloat(getComputedStyle(el).fontSize);
-      const lignes = () => Math.round(el.getBoundingClientRect().height / (taille * 0.96));
-      while (lignes() > 2 && taille > 52) { taille -= 4; el.style.fontSize = taille + 'px'; }
+      const lignes = () => Math.round(el.offsetHeight / parseFloat(getComputedStyle(el).lineHeight));
+      for (let taille = parseFloat(getComputedStyle(el).fontSize); taille >= 42; taille -= 1) {
+        el.style.fontSize = `${taille}px`;
+        if (lignes() <= 2) return lignes();
+      }
       return lignes();
     });
     if (reste > 2) console.log(`     ! ${nom} : le titre tient sur ${reste} lignes`);
