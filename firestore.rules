@@ -325,6 +325,10 @@ service cloud.firestore {
     // public les lit au démarrage, l'admin les bascule (interrupteur du Foyer).
     match /siteSettings/{id}  { allow read: if true; allow write: if isAdmin(); }
     match /siteOverrides/{id} { allow read: if true; allow write: if isAdmin(); }
+    // Les brouillons de contenu édité dans l'admin (kit de presse, etc.) :
+    // personne d'autre que l'admin ne les lit, tant que « Publier » ne les a
+    // pas recopiés dans settings/{id}.
+    match /brouillons/{id}    { allow read, write: if isAdmin(); }
 
     // Les acheteuses venues de Kajabi, déposées par Krystine depuis son
     // tableau de bord. Ce sont les coordonnées de tierces personnes, alors
