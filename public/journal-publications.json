@@ -1361,5 +1361,20 @@
       "public/assets-manifest.json",
       "src/components/cours/origine/ListeOrigine.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-24T18:21:15.226Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "56b72a55",
+    "message": "Journal des changements : dernière mention de l'ancien système retirée; messages techniques renommés",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/firebase/kajabi.ts",
+      "src/lib/changelog.ts"
+    ]
   }
 ]
