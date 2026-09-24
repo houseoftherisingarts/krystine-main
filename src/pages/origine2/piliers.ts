@@ -8,7 +8,9 @@ import { PILIERS_ORIGINE2 } from './semaines';
 
 export const COHORTES: Record<string, { etiquette: { fr: string; en: string } }> = {
   'kajabi-2149348838': { etiquette: { fr: 'Cohorte fondatrice', en: 'Founding cohort' } },
-  'kajabi-2149503901': { etiquette: { fr: 'Deuxième cohorte', en: 'Second cohort' } },
+  // Le cours complet de la cohorte fondatrice tel qu'importé de Kajabi (produit « Expérience Origine 2 »),
+  // gardé masqué en réserve depuis le reclassement du 24 septembre 2026 (Krystine).
+  'kajabi-2149503901': { etiquette: { fr: 'Cohorte fondatrice (réserve)', en: 'Founding cohort (reserve)' } },
   origine2: { etiquette: { fr: 'Prochaine cohorte', en: 'Next cohort' } },
 };
 
