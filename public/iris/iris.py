@@ -37,14 +37,17 @@ try:
 except ImportError:
     _SSL = ssl.create_default_context()
 
-VERSION = "2.2.0"
+VERSION = "2.3.0"
 PROJECT = "krystinestlaurent-87566"
 BASE = f"https://firestore.googleapis.com/v1/projects/{PROJECT}/databases/(default)/documents"
 HERE = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE = os.path.join(HERE, "iris_config.json")
 LOG = os.path.join(HERE, "iris.log")
 SOURCE = "https://krystinestlaurent.ca/iris/"
-FICHIERS_DISTANTS = {"iris.py": os.path.abspath(__file__), "iris_system.md": None, "iris_site.md": None, "iris_terminal.md": None}
+FICHIERS_DISTANTS = {
+    "iris.py": os.path.abspath(__file__), "iris_system.md": None, "iris_site.md": None, "iris_terminal.md": None,
+    "iris.sh": os.path.expanduser("~/.local/bin/iris"),  # le lanceur : mis à jour sans mot de passe ni réinstallation
+}
 MODEL = os.environ.get("IRIS_MODEL", "opus")
 POLL = 8            # secondes entre deux tours
 HEARTBEAT = 30      # secondes entre deux battements
@@ -280,8 +283,11 @@ def mise_a_jour():
             continue
         local = open(chemin, "rb").read() if os.path.exists(chemin) else b""
         if hashlib.sha256(local).digest() != hashlib.sha256(distant).digest():
+            os.makedirs(os.path.dirname(chemin), exist_ok=True)
             with open(chemin, "wb") as f:
                 f.write(distant)
+            if nom == "iris.sh":
+                os.chmod(chemin, 0o755)
             log(f"mise à jour : {nom} ({len(distant)} octets)")
             if nom == "iris.py":
                 redemarrer = True
