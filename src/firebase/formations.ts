@@ -1,7 +1,7 @@
 import app from '../firebase';
 import {  getFirestore, collection, collectionGroup, doc, getDoc, getDocs, orderBy, query, where, setDoc,
   updateDoc, deleteDoc, serverTimestamp, Timestamp, addDoc, onSnapshot,} from 'firebase/firestore';
-import { getStorage, ref, uploadBytes, deleteObject } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, deleteObject, getDownloadURL } from 'firebase/storage';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { trackObjectif } from '../lib/track';
 
@@ -166,6 +166,9 @@ export interface Lecon {
   docs?: Array<{ nom: string; chemin: string }>;
   /** La source Kajabi (Wistia) d'une leçon importée. */
   wistiaHash?: string;
+  /** La vignette déposée par Krystine (imageUrl) ou venue de Kajabi (vignette). */
+  imageUrl?: string;
+  vignette?: string;
   /** Le verdict du bot scripts/kajabi/verifier-import.mjs : le fichier de
    *  Storage comparé octet par octet à la source Wistia. */
   integrite?: { etat: 'ok' | 'ecart' | 'absent' | 'source-introuvable'; detail: string; verifieLe: string; mode: 'taille' | 'md5' };
@@ -313,8 +316,21 @@ export async function getMembresGroupe(formationId: string): Promise<MembreGroup
 }
 
 // ─── Le contenu riche d'une leçon (admin) ───────────────────────────────────
-export async function majLecon(formationId: string, leconId: string, champs: Partial<Pick<Lecon, 'titre' | 'texte' | 'mois' | 'duree' | 'moduleNom'>>): Promise<void> {
+export async function majLecon(formationId: string, leconId: string, champs: Partial<Pick<Lecon, 'titre' | 'texte' | 'mois' | 'duree' | 'moduleNom' | 'imageUrl'>>): Promise<void> {
   await updateDoc(doc(db(), 'formations', formationId, 'lecons', leconId), champs as Record<string, unknown>);
+}
+
+/** La vignette d'une leçon, publique (les vignettes ne sont pas le contenu) : Storage puis la fiche. */
+export async function poserVignetteLecon(formationId: string, leconId: string, file: File): Promise<string> {
+  if (!app) throw new Error('[Formations] Firebase not configured');
+  if (!file.type.startsWith('image/')) throw new Error('Choisissez une image (JPG, PNG ou WebP).');
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+  const chemin = `formations/${formationId}/lecons/${leconId}/vignette_${Date.now()}.${ext}`;
+  const r = ref(getStorage(app), chemin);
+  await uploadBytes(r, file, { contentType: file.type });
+  const imageUrl = await getDownloadURL(r);
+  await updateDoc(doc(db(), 'formations', formationId, 'lecons', leconId), { imageUrl });
+  return imageUrl;
 }
 
 export async function ajouterDocumentLecon(formationId: string, leconId: string, file: File): Promise<void> {

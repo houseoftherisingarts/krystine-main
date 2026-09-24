@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { suivreLiveEnCours, type LiveEnCours } from '../firebase/lives';
 import { PORTES, porteDuMois, foyerOuvert, DEBUT_LABEL } from './foyer/portesData';
 import { rangSemaine, semaineOuverteRang } from './origine2/semaines';
-import SemainesOrigine2 from './origine2/SemainesOrigine2';
+import CoursOrigine from '../components/cours/origine/CoursOrigine';
+import { estOrigine } from './origine2/piliers';
 import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, type QuestionLecon } from '../firebase/formations';
 import { Navigate, useParams, Link } from 'react-router-dom';
 import {
@@ -324,6 +325,36 @@ const CoursDetailPage: React.FC = () => {
     );
   }
 
+  // L'Expérience Origine (les deux cohortes) a son propre espace : seuil
+  // compact, piliers repliés, vignette et dépôt dans le volet de la leçon.
+  if (estOrigine(id) && accessible) {
+    const rafraichir = async () => {
+      const ls = await getLecons(id);
+      setLecons(ls);
+      setCourante(c => (c ? ls.find(l => l.id === c.id) || c : c));
+    };
+    return (
+      <CoursOrigine
+        id={id}
+        formation={formation}
+        lecons={lecons}
+        courante={courante}
+        terminees={terminees}
+        url={urlCourante}
+        chargement={chargeLecon}
+        erreur={erreur}
+        isAdmin={isAdmin}
+        lang={lang}
+        verrouillee={verrouillee}
+        onOuvrir={l => { void ouvrir(l); }}
+        onTerminee={l => { void basculerTerminee(l); }}
+        onSuivante={suivante}
+        onRafraichir={rafraichir}
+        modales={diplome ? <BravoDiplome infos={diplome} lang={lang} onFermer={() => setDiplome(null)} /> : null}
+      />
+    );
+  }
+
   // Le Foyer et Vata prennent toute la largeur : leur ouverture est une scène,
   // pas une carte posée dans une colonne (règle du plein cadre).
   const scenePleine = accessible && (id === 'foyer' || estVata);
@@ -496,7 +527,6 @@ const CoursDetailPage: React.FC = () => {
             </div>
           );
         })()}
-        {estOrigine2 && accessible && <SemainesOrigine2 dateSortie={formation.dateSortie} />}
         {(() => {
           // Vata a son seuil plein cadre plus haut : ni bannière en carte, ni
           // titre en double par-dessus une image qui le porte déjà.
