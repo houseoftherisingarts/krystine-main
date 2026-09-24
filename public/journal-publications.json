@@ -1211,5 +1211,31 @@
       "public/iris/iris.sh",
       "public/iris/iris_terminal.md"
     ]
+  },
+  {
+    "quand": "2026-09-24T16:43:59.851Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "71783fc8",
+    "message": "Origine 2 : les inscriptions ouvrent en automne au lieu de novembre (accueil, liste d'attente, formations, presse, /origine-2); le lancement du livre passe à mars 2027 et la retraite n'a plus de date (événements, admin); traductions anglaises ajoutées",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/fleur-offres.js",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "scripts/publier.sh",
+      "src/components/LiveEvents.tsx",
+      "src/content/presse.ts",
+      "src/lib/liveEvents.ts",
+      "src/lib/offres.ts",
+      "src/lib/pageMeta.ts",
+      "src/pages/ListeAttenteLoeuvre.tsx",
+      "src/pages/admin/sections/MembersSection.tsx",
+      "src/pages/admin/sections/newsletter/SubscribersPanel.tsx",
+      "src/pages/concepts/FormationsV2.tsx",
+      "src/pages/origine2/semaines.ts"
+    ]
   }
 ]
