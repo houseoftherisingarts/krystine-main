@@ -1194,5 +1194,22 @@
       "src/pages/admin/sections/plan-mois/LivresSources.tsx",
       "storage.rules"
     ]
+  },
+  {
+    "quand": "2026-09-24T15:10:16.945Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "7ef7d16b",
+    "message": "Iris : mise à jour sans perte (git stash automatique avant le pull, lanceur public/iris/iris.sh mis à jour par le relais sans mot de passe)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/iris/install.sh",
+      "public/iris/iris.py",
+      "public/iris/iris.sh",
+      "public/iris/iris_terminal.md"
+    ]
   }
 ]
