@@ -66,7 +66,8 @@ fi
 
 # Ouvert avec `claude` plutôt qu'`iris`, le PATH ne connaît pas l'outil Firebase posé par l'installateur.
 [ -d "$HOME/.iris/tools/node_modules/.bin" ] && PATH="$HOME/.iris/tools/node_modules/.bin:$PATH"
-npx firebase deploy --only "$CIBLES" --project "$PROJET" --non-interactive
+FIREBASE="firebase"; command -v firebase >/dev/null || FIREBASE="npx firebase-tools"
+$FIREBASE deploy --only "$CIBLES" --project "$PROJET" --non-interactive
 
 SHA="$(git rev-parse --short HEAD)"
 git add public/journal-publications.json
