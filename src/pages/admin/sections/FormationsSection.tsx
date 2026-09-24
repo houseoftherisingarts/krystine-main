@@ -251,7 +251,7 @@ import Kajabi (scripts/kajabi/verifier-import.mjs) */}
                 <span title={`${l.integrite.detail} (${l.integrite.mode === 'md5' ? 'octet par octet' : 'taille'}, ${l.integrite.verifieLe.slice(0, 10)})`}
                   className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${l.integrite.etat === 'ok' ? 'bg-emerald-600/12 text-emerald-700 dark:text-emerald-300' : 'bg-red-500/12 text-red-600 dark:text-red-300'}`}>
                   <i className={`fa-solid ${l.integrite.etat === 'ok' ? 'fa-check' : 'fa-triangle-exclamation'}`} />
-                  {l.integrite.etat === 'ok' ? 'Import vérifié' : l.integrite.etat === 'ecart' ? 'Écart avec Kajabi' : l.integrite.etat === 'absent' ? 'Fichier absent' : 'Source disparue'}
+                  {l.integrite.etat === 'ok' ? 'Import vérifié' : l.integrite.etat === 'ecart' ? 'Écart avec la source' : l.integrite.etat === 'absent' ? 'Fichier absent' : 'Source disparue'}
                 </span>
               )}
               <button type="button" onClick={() => setEnEdition(e => e === l.id ? null : l.id)} title="Éditer la leçon" className="text-[#38403a]/40 hover:text-[#8B4A2F] dark:text-white/40"><i className="fa-solid fa-pen" /></button>
@@ -429,7 +429,7 @@ const FormationsSection: React.FC = () => {
           </span>
         </div>
         <p className="mb-6 max-w-2xl text-sm text-[#293027]/60 dark:text-white/60">
-          Le catalogue importé de Kajabi. Une formation masquée reste ici sans être visible
+          Le catalogue importé de l'ancien site. Une formation masquée reste ici sans être visible
           du public. La supprimer la retire pour de bon.
         </p>
         {loading ? (

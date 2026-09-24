@@ -112,7 +112,7 @@ export const JOURNAL: EntreeJournal[] = [
     titre: "Vos demandes de la semaine : désabonner une adresse, et la liste de vos acheteuses",
     intro: "Une journée consacrée à ce que vous avez demandé depuis votre admin : le bouton qu'il manquait pour retirer quelqu'un de l'infolettre sans effacer sa fiche, et la liste des personnes qui avaient acheté une formation sur l'ancien système.",
     etapes: [
-      { texte: "Dans Communauté › Clients, une colonne « Infolettre » dit si l'adresse est abonnée, et le lien « Désabonner » ferme toutes ses inscriptions d'un coup : sa fiche reste, son historique aussi, elle ne reçoit plus rien. C'est le geste qu'il fallait pour les neuf personnes désabonnées depuis Kajabi.", ou: '/admin/clients', libelle: 'Communauté › Clients' },
+      { texte: "Dans Communauté › Clients, une colonne « Infolettre » dit si l'adresse est abonnée, et le lien « Désabonner » ferme toutes ses inscriptions d'un coup : sa fiche reste, son historique aussi, elle ne reçoit plus rien. C'est le geste qu'il fallait pour les neuf personnes désabonnées depuis l'ancien site.", ou: '/admin/clients', libelle: 'Communauté › Clients' },
       { texte: "Dans Communauté › Codes de l'ancien système, le bouton « Télécharger la liste » sort en fichier les noms et les courriels des acheteuses de la formation choisie, et chaque offre du tableau a son petit lien « liste ». La saison Vata en compte vingt-trois, toutes prêtes à recevoir leur code.", ou: '/admin/codes-ancien-systeme', libelle: "Codes de l'ancien système" },
       "Le fichier des clients exporté en CSV porte maintenant l'état de l'infolettre pour chaque adresse.",
     ],
@@ -173,7 +173,7 @@ export const JOURNAL: EntreeJournal[] = [
       { texte: "L'assistante de conversation qui flottait en bas de page peut s'éteindre depuis les Réglages.", ou: '/admin/parametres', libelle: 'Réglages' },
       { texte: "Chaque porte du Foyer devient un vrai module qui contient plusieurs leçons, et chaque leçon peut recevoir plusieurs documents.", ou: '/admin/foyer', libelle: 'Le Foyer dans l’admin' },
       { texte: "Un terrain d'essai du Foyer vous laisse déposer une leçon et voir exactement ce qu'une cliente verrait.", ou: '/admin/foyer', libelle: 'Le terrain d’essai' },
-      { texte: "Vos acheteuses ont été rapatriées depuis Kajabi, et le site sait maintenant quelles habitudes chaque cliente a prises pour lui proposer ce qui lui ressemble.", ou: '/admin/habitudes', libelle: 'Habitudes de vos clientes' },
+      { texte: "Vos acheteuses ont été rapatriées depuis l'ancien site, et le site sait maintenant quelles habitudes chaque cliente a prises pour lui proposer ce qui lui ressemble.", ou: '/admin/habitudes', libelle: 'Habitudes de vos clientes' },
       { texte: "La saison Vata a été refaite au complet : la couverture prend tout l'écran, les huit semaines deviennent de grandes cartes illustrées, une par sens, et un vrai lecteur audio remplace la barre grise du navigateur.", ou: '/cours/vata', libelle: 'L’espace Vata' },
       { texte: "Ce journal que vous lisez a été bâti, et tout l'historique du projet y a été remonté depuis le 21 avril.", ou: '/admin/journal-des-changements', libelle: 'Ce journal' },
       { texte: "Quand une semaine s'achève, un mot de bravo se lève et votre barre de progression avance sous vos yeux.", ou: '/cours/vata', libelle: 'L’espace Vata' },
@@ -190,7 +190,7 @@ export const JOURNAL: EntreeJournal[] = [
     intro: "Vous vouliez pouvoir fermer le Foyer sans qu'on touche au code, et Origine 2 devait exister ailleurs que dans un import.",
     etapes: [
       { texte: "Le Foyer possède son interrupteur dans l'admin, éteint par défaut : fermé, la page ne montre plus que la liste d'attente.", ou: '/admin/parametres', libelle: 'Réglages' },
-      { texte: "L'Expérience Origine 2 a été bâtie sur le site, avec ses propres visuels, plutôt que reprise telle quelle de Kajabi.", ou: '/origine-2', libelle: 'La page d’Origine 2' },
+      { texte: "L'Expérience Origine 2 a été bâtie sur le site, avec ses propres visuels, plutôt que reprise telle quelle de l'ancien site.", ou: '/origine-2', libelle: 'La page d’Origine 2' },
       "Un vérificateur passe les vidéos importées une par une pour confirmer qu'aucune n'a été abîmée en chemin.",
       { texte: "Une fleur des offres est apparue sur l'accueil : elle propose à chaque visiteuse ce qui correspond à son moment.", ou: '/', libelle: 'La page d’accueil' },
     ],
@@ -235,7 +235,7 @@ export const JOURNAL: EntreeJournal[] = [
       { texte: "Iris est arrivée : l'assistante tourne sur votre propre ordinateur, écrit vos infolettres à votre demande et publie elle-même.", ou: '/admin/infolettre', libelle: 'L’infolettre' },
       { texte: "Vous pouvez offrir depuis la fiche d'une cliente un rabais de un à quatre-vingt-dix-neuf pour cent, ou la formation entière.", ou: '/admin/clients', libelle: 'Vos clientes' },
       { texte: "Le Foyer d'Origine est passé en vente, avec « Début le 1er octobre » et la porte d'octobre barrée jusqu'à la date.", ou: '/foyer', libelle: 'Le Foyer' },
-      { texte: "L'espace formation ressemble maintenant à ce que vous connaissez de Kajabi et de Circle, avec ses sections nommées, ses documents et ses leçons qui s'ouvrent au bon moment.", ou: '/admin/formations', libelle: 'Vos formations' },
+      { texte: "L'espace formation ressemble maintenant à ce que vous connaissiez de l'ancien site, avec ses sections nommées, ses documents et ses leçons qui s'ouvrent au bon moment.", ou: '/admin/formations', libelle: 'Vos formations' },
       { texte: "Les rediffusions du direct sont archivées avec leur clavardage, qui se rejoue au fil de la lecture.", ou: '/compte?onglet=rediffusions', libelle: 'Les rediffusions' },
       "L'admin ne fige plus quand il touche vos trente-trois mille contacts.",
     ],
@@ -289,11 +289,11 @@ export const JOURNAL: EntreeJournal[] = [
   },
   {
     date: '2026-08-29',
-    titre: 'Vos quatre-vingt-douze leçons rapatriées de Kajabi',
-    intro: "Le premier cours complet est passé de Kajabi à votre site, avec ses vidéos.",
+    titre: 'Vos quatre-vingt-douze leçons rapatriées de l\'ancien site',
+    intro: "Le premier cours complet est passé de l'ancien site au vôtre, avec ses vidéos.",
     etapes: [
       { texte: "Les quatre-vingt-douze leçons du cours et leurs vingt-quatre modules sont arrivées dans le bon ordre, avec leurs textes.", ou: '/admin/formations', libelle: 'Vos formations' },
-      "Soixante-trois vidéos ont été ré-hébergées chez vous plutôt que de rester chez Kajabi.",
+      "Soixante-trois vidéos ont été ré-hébergées chez vous plutôt que de rester sur l'ancien site.",
       { texte: "Le grand bandeau du site reprend fidèlement celui de l'accueil, sans doublon de votre nom.", ou: '/', libelle: 'La page d’accueil' },
       { texte: "La couverture du podcast est devenue le vrai visuel officiel de la saison 2.", ou: '/podcast', libelle: 'Le podcast' },
     ],
@@ -304,7 +304,7 @@ export const JOURNAL: EntreeJournal[] = [
     intro: "Votre admin est passé du brun au parchemin, et vos formations sont entrées dans le site.",
     etapes: [
       { texte: "L'admin a été redessiné en parchemin et verre, avec son menu flottant et ses pastilles laiton.", ou: '/admin/tableau-de-bord', libelle: 'Le tableau de bord' },
-      { texte: "Vos vingt-trois cours Kajabi ont été importés, avec leurs vignettes, et vous les publiez ou les masquez d'un clic.", ou: '/admin/formations', libelle: 'Vos formations' },
+      { texte: "Vos vingt-trois cours de l'ancien site ont été importés, avec leurs vignettes, et vous les publiez ou les masquez d'un clic.", ou: '/admin/formations', libelle: 'Vos formations' },
       { texte: "Un panneau d'options par formation règle le prix, l'accès payant, la date de sortie et le message aux acheteuses.", ou: '/admin/formations', libelle: 'Vos formations' },
       { texte: "Une section Assets vous laisse téléverser plusieurs fichiers d'un coup, images, vidéos, sons et documents.", ou: '/admin/assets', libelle: 'Assets' },
       { texte: "La communauté et les formations natives sont nées : le mur, la messagerie, les amitiés, l'annuaire, la cloche et le paiement par Stripe.", ou: '/compte', libelle: 'Votre espace' },
@@ -323,7 +323,7 @@ export const JOURNAL: EntreeJournal[] = [
   {
     date: '2026-08-26',
     titre: "L'inscription au podcast en direct, de bout en bout",
-    intro: "Kajabi ne pouvait pas le faire assez vite, alors le système d'inscription au direct a été bâti ici, avec ses rappels.",
+    intro: "L'ancien site ne pouvait pas le faire assez vite, alors le système d'inscription au direct a été bâti ici, avec ses rappels.",
     etapes: [
       { texte: "Une visiteuse s'inscrit au direct depuis la page du podcast, reçoit sa confirmation, puis ses rappels trois jours avant, la veille, une heure avant, et la rediffusion ensuite.", ou: '/podcast', libelle: 'Le podcast' },
       "Les courriels sont habillés aux couleurs de votre planche d'inspiration, avec la vraie couverture du podcast et votre portrait en pièces jointes intégrées.",

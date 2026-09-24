@@ -100,7 +100,7 @@ export const kajabiEmettreCodes = onCall(
 
     const offres = await db.collection('kajabiOffres').where('formationIds', 'array-contains', formationId).get();
     const offerIds = offres.docs.map(d => d.id);
-    if (!offerIds.length) throw new HttpsError('failed-precondition', 'Aucune offre Kajabi n\'est reliée à cette formation. Reliez-les d\'abord dans le tableau.');
+    if (!offerIds.length) throw new HttpsError('failed-precondition', 'Aucune offre de l\'ancien site n\'est reliée à cette formation. Reliez-les d\'abord dans le tableau.');
 
     // Les achats à restaurer pour ces offres, regroupés par adresse.
     const parEmail = new Map<string, { ids: string[]; nom: string; offres: Set<string> }>();

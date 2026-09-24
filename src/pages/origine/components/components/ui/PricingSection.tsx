@@ -114,7 +114,7 @@ const PaymentModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
                   Continuer vers l'inscription
                 </button>
                 <p className="text-center text-xs text-ink-sureau/40 dark:text-paper/40 mt-4 italic">
-                  Redirection sécurisée vers la page de commande Kajabi
+                  Redirection sécurisée vers la page de commande
                 </p>
               </div>
             </div>

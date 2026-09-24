@@ -105,8 +105,8 @@ const AcheteusesSection: React.FC = () => {
       <Card className="p-6">
         <h3 className="mb-2 text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">Rapatrier tes acheteuses</h3>
         <p className={`mb-4 max-w-2xl ${bloc}`}>
-          Les gens qui ont acheté L'Expérience Origine sur Kajabi ne sont pas dans la base de ce site, parce que
-          leur achat s'est fait ailleurs. Sortez leur liste de Kajabi en CSV et déposez-la ici : les courriels
+          Les gens qui ont acheté L'Expérience Origine sur l'ancien site ne sont pas dans la base de ce site, parce que
+          leur achat s'est fait ailleurs. Sortez leur liste de l'ancien site en CSV et déposez-la ici : les courriels
           seront rapprochés des comptes du site, et vous saurez tout de suite lesquelles vous pouvez rejoindre
           directement dans leur espace.
         </p>
@@ -116,7 +116,7 @@ const AcheteusesSection: React.FC = () => {
             <Input value={offre} onChange={e => setOffre(e.target.value)} placeholder="origine-1" />
           </div>
           <div>
-            <Label>Le fichier de Kajabi</Label>
+            <Label>Le fichier de l'ancien site</Label>
             <input
               type="file"
               accept=".csv,text/csv"
@@ -144,7 +144,7 @@ const AcheteusesSection: React.FC = () => {
         <Card className="p-6"><p className={bloc}>Lecture en cours.</p></Card>
       ) : liste.length === 0 ? (
         <EmptyState icon="fa-user-group">
-          Aucune acheteuse n'a encore été rapatriée. Déposez l'export de Kajabi ci-dessus et elles apparaîtront ici.
+          Aucune acheteuse n'a encore été rapatriée. Déposez l'export de l'ancien site ci-dessus et elles apparaîtront ici.
         </EmptyState>
       ) : (
         <>

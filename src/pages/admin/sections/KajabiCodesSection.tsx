@@ -73,7 +73,7 @@ const KajabiCodesSection: React.FC = () => {
   };
 
   if (chargement) return <p className="text-sm text-[#293027]/50">Lecture du registre…</p>;
-  if (!offres.length) return <EmptyState icon="fa-key">Le registre est vide. Lancez <code>node scripts/kajabi/registre.mjs --ecrire</code> pour le remplir depuis Stripe.</EmptyState>;
+  if (!offres.length) return <EmptyState icon="fa-key">Le registre est vide. Alex le remplit depuis Stripe avec le script du registre.</EmptyState>;
 
   const totaux = Object.values(etat).reduce((t, e) => ({ aRestaurer: t.aRestaurer + e.aRestaurer, codeEnvoye: t.codeEnvoye + e.codeEnvoye, restaure: t.restaure + e.restaure }), { ...VIDE });
 
@@ -110,11 +110,11 @@ const KajabiCodesSection: React.FC = () => {
       </Card>
 
       <Card>
-        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">Relier chaque offre Kajabi à sa formation sur le site</p>
-        <p className="mt-2 text-sm text-[#293027]/70">Une offre peut ouvrir plusieurs formations. Le nom entre parenthèses est celui que Stripe a vu; pour une offre sans nom, l'identifiant se retrouve dans Kajabi sous Ventes › Offres.</p>
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">Relier chaque offre de l'ancien site à sa formation ici</p>
+        <p className="mt-2 text-sm text-[#293027]/70">Une offre peut ouvrir plusieurs formations. Le nom entre parenthèses est celui que Stripe a vu; pour une offre sans nom, l'identifiant se retrouve dans l'ancien site sous Ventes › Offres.</p>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full text-sm">
-            <thead><tr className="text-left text-[10px] uppercase tracking-widest text-[#293027]/50"><th className="py-2 pr-4">Offre Kajabi</th><th className="py-2 pr-4">Acheteuses</th><th className="py-2 pr-4">À restaurer · envoyés · retrouvés</th><th className="py-2">Formations du site</th></tr></thead>
+            <thead><tr className="text-left text-[10px] uppercase tracking-widest text-[#293027]/50"><th className="py-2 pr-4">Offre de l'ancien site</th><th className="py-2 pr-4">Acheteuses</th><th className="py-2 pr-4">À restaurer · envoyés · retrouvés</th><th className="py-2">Formations du site</th></tr></thead>
             <tbody>
               {offres.map(o => {
                 const e = etat[o.id] || VIDE;

@@ -167,7 +167,7 @@ export const CHANTIERS: Chantier[] = [
     actions: [
       { id: 'c3.a1', texte: 'Enregistrer podcast (batch)' },
       { id: 'c3.a2', texte: 'Planifier contenus (1 thème/sem)' },
-      { id: 'c3.a3', texte: 'Maintenir la lettre (hors Kajabi)' },
+      { id: 'c3.a3', texte: 'Maintenir la lettre (hors de l\'ancien site)' },
       { id: 'c3.a4', texte: 'Construire le pipeline conférences' },
       { id: 'c3.a5', texte: 'Approcher TEDxQuébec' },
       { id: 'c3.a6', texte: 'Suivre TCCHE' },

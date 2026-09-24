@@ -51,7 +51,7 @@ export const sourceLabel = (key: string): string => {
       case 'guide':             return 'Laissez-vous guider';
       case 'csv-import':        return 'Import CSV';
       case 'import':            return 'Import manuel';
-      case 'kajabi':            return 'Import Kajabi';
+      case 'kajabi':            return 'Import de l\'ancien site';
       case 'origine':           return 'Expérience Origine';
       case 'main':              return 'Infolettre principale';
       default:                  return base;
