@@ -9,7 +9,7 @@ export interface EtatRegistre { aRestaurer: number; codeEnvoye: number; restaure
 
 /** Cliente : entrer le code reçu pour retrouver une formation. */
 export async function utiliserCodeKajabi(code: string): Promise<{ formationId: string; titre: string }> {
-  if (!app) throw new Error('[Kajabi] Firebase not configured');
+  if (!app) throw new Error('[Codes] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'kajabiUtiliserCode');
   return (await call({ code })).data as { formationId: string; titre: string };
 }
@@ -60,7 +60,7 @@ export async function getAcheteusesKajabi(offerIds: string[]): Promise<Acheteuse
 
 /** Admin : envoyer les codes d'une formation migrée (ou un seul, à une adresse de test). */
 export async function emettreCodesKajabi(formationId: string, testEmail?: string): Promise<{ envoyes: number; sautes: number; erreurs: number; message?: string }> {
-  if (!app) throw new Error('[Kajabi] Firebase not configured');
+  if (!app) throw new Error('[Codes] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'kajabiEmettreCodes');
   return (await call({ formationId, testEmail: testEmail || '' })).data as { envoyes: number; sautes: number; erreurs: number; message?: string };
 }

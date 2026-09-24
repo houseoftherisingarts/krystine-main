@@ -284,7 +284,7 @@ export const JOURNAL: EntreeJournal[] = [
     etapes: [
       { texte: "Le parrainage fonctionne par paliers : chaque filleule qui achète rapproche la marraine d'un cadeau, jusqu'à l'accès à vie.", ou: '/compte?onglet=profile', libelle: 'Le parrainage' },
       { texte: "Le composeur du mur accepte le texte, la photo et la vidéo, comme sur Facebook.", ou: '/foyer', libelle: 'Le mur du Foyer' },
-      "Les fonctions d'import de Kajabi ont été retirées, la migration étant terminée.",
+      "Les fonctions d'import de l'ancien site ont été retirées, la migration étant terminée.",
     ],
   },
   {
