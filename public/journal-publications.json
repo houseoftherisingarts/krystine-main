@@ -1237,5 +1237,19 @@
       "src/pages/concepts/FormationsV2.tsx",
       "src/pages/origine2/semaines.ts"
     ]
+  },
+  {
+    "quand": "2026-09-24T16:50:03.623Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "00fbb11f",
+    "message": "Barre du haut : l'icône des notifications (cloche) passe du brun-rouille à un gris un peu plus foncé",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/communaute/Cloche.tsx"
+    ]
   }
 ]
