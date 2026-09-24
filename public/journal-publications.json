@@ -1169,5 +1169,30 @@
       "src/pages/admin/AdminShell.tsx",
       "src/pages/admin/sections/PresseSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-24T14:03:31.920Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "6086f644",
+    "message": "Confirmation d'inscription sans le mot infolettre (courriel de bienvenue et écran du site, « Vous êtes bien inscrite »); plan du mois : vos propres étapes sous chaque chantier (admin › Plan du mois); dépôt des livres jusqu'à 2 Go avec un message d'erreur qui dit la cause; publier.sh installe les dépendances au besoin",
+    "cibles": [
+      "hosting",
+      "functions",
+      "storage"
+    ],
+    "fichiers": [
+      "CLAUDE.md",
+      "functions/src/newsletter/welcome.ts",
+      "public/assets-manifest.json",
+      "scripts/publier.sh",
+      "src/components/NewsletterSignup.tsx",
+      "src/firebase/planMois.ts",
+      "src/lib/changelog.ts",
+      "src/pages/admin/sections/PlanMoisSection.tsx",
+      "src/pages/admin/sections/plan-mois/EtapeCochable.tsx",
+      "src/pages/admin/sections/plan-mois/LivresSources.tsx",
+      "storage.rules"
+    ]
   }
 ]
