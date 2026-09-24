@@ -31,9 +31,15 @@ if ! git ls-remote -q --exit-code origin main >/dev/null 2>&1; then
   exit 1
 fi
 
+AVANT_PULL="$(git rev-parse HEAD)"
 if ! git pull --rebase --autostash -q; then
   echo "Le rebase s'est arrêté sur un conflit. Ne devinez pas : montrez les deux versions en français simple (git status, git diff) et laissez la personne choisir."
   exit 1
+fi
+
+# Les dépendances suivent le dépôt : un paquet ajouté depuis l'autre ordinateur manque ici tant que npm ne l'a pas posé.
+if [ ! -d node_modules ] || ! git diff --quiet "$AVANT_PULL" HEAD -- package.json package-lock.json; then
+  npm install --no-audit --no-fund --loglevel=error
 fi
 
 npm run build
@@ -52,6 +58,11 @@ grep -q '^storage\.rules$' <<<"$FICHIERS" && CIBLES="$CIBLES,storage"
 # L'entrée du journal part avec cette mise en ligne : écrite maintenant, copiée dans dist.
 node scripts/journal-publication.mjs "$MSG" "$CIBLES"
 cp public/journal-publications.json dist/journal-publications.json
+
+# Le déploiement des fonctions compile functions/ (predeploy de firebase.json) : il lui faut ses propres dépendances.
+if grep -q functions <<<"$CIBLES" && { [ ! -d functions/node_modules ] || ! git diff --quiet "$AVANT_PULL" HEAD -- functions/package.json functions/package-lock.json; }; then
+  npm --prefix functions install --no-audit --no-fund --loglevel=error
+fi
 
 npx firebase deploy --only "$CIBLES" --project "$PROJET" --non-interactive
 
