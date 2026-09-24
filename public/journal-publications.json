@@ -1376,5 +1376,20 @@
       "src/firebase/kajabi.ts",
       "src/lib/changelog.ts"
     ]
+  },
+  {
+    "quand": "2026-09-24T19:25:58.519Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "9fd010dd",
+    "message": "Expérience Origine, cohorte fondatrice : le cours complet reclassé (92 leçons, semaine préparatoire à semaine 12, bibliothèque, 16 documents PDF joints), toujours masqué; le cours importé de Kajabi reste en réserve sous l'étiquette « Cohorte fondatrice (réserve) »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "scripts/kajabi/reclasser-origine-fondatrice.mjs",
+      "src/pages/origine2/piliers.ts"
+    ]
   }
 ]
