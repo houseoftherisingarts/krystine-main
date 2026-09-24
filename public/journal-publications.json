@@ -1322,5 +1322,30 @@
       "src/lib/cheminCours.ts",
       "src/pages/origine2/piliers.ts"
     ]
+  },
+  {
+    "quand": "2026-09-24T18:14:58.583Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "85b9f5c1",
+    "message": "Plus aucune mention de l'ancien système nulle part : journal des changements, sources d'import, acheteuses, codes de l'ancien système, bouton de commande d'Origine, message d'erreur serveur",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/kajabi.ts",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "src/lib/changelog.ts",
+      "src/lib/paliers.ts",
+      "src/lib/planAutomne.ts",
+      "src/pages/admin/sections/AcheteusesSection.tsx",
+      "src/pages/admin/sections/FormationsSection.tsx",
+      "src/pages/admin/sections/KajabiCodesSection.tsx",
+      "src/pages/admin/sections/MembersSection.tsx",
+      "src/pages/admin/sections/newsletter/SubscribersPanel.tsx",
+      "src/pages/origine/components/components/ui/PricingSection.tsx"
+    ]
   }
 ]
