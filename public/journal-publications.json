@@ -1304,5 +1304,23 @@
       "src/pages/origine2/SemainesOrigine2.tsx",
       "src/pages/origine2/piliers.ts"
     ]
+  },
+  {
+    "quand": "2026-09-24T18:12:03.468Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "8176a22c",
+    "message": "Expérience Origine, cohorte fondatrice : même espace que les autres cohortes (bannière compacte, piliers Lire/Trier/Ancrer avec leurs semaines, vignettes, dépôt de document réservé à l'admin et visible de toutes); lecteur vidéo borné à la hauteur de l'écran; adresses de cours sans identifiant d'import (/cours/origine-fondatrice, /cours/origine-2, etc.) et plus aucune mention de l'ancien système dans les textes",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "scripts/qa/origine2-audit.mjs",
+      "src/components/cours/origine/VoletLecon.tsx",
+      "src/lib/changelog.ts",
+      "src/lib/cheminCours.ts",
+      "src/pages/origine2/piliers.ts"
+    ]
   }
 ]
