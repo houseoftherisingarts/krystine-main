@@ -1347,5 +1347,19 @@
       "src/pages/admin/sections/newsletter/SubscribersPanel.tsx",
       "src/pages/origine/components/components/ui/PricingSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-24T18:20:10.917Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "b102b62a",
+    "message": "Espace Origine : tous les piliers, « Avant le parcours » et la bibliothèque s'ouvrent repliés",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/origine/ListeOrigine.tsx"
+    ]
   }
 ]
