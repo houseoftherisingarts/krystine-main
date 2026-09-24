@@ -3,7 +3,7 @@ import { chromium } from 'playwright';
 import { mkdirSync } from 'node:fs';
 const OUT = process.argv[2] || 'scripts/qa/out/origine2';
 mkdirSync(OUT, { recursive: true });
-const pages = [['fondatrice', '/cours/kajabi-2149503901?apercu'], ['cohorte2', '/cours/origine2?apercu']];
+const pages = [['fondatrice', '/cours/origine-fondatrice?apercu']];
 const b = await chromium.launch();
 for (const [nom, route] of pages) {
   for (const w of [1440, 390]) {

@@ -54,13 +54,16 @@ const VoletLecon: React.FC<Props> = ({ lecon, formationTitre, autresTitres = [],
 
   const manque = documentManquant(lecon);
   const texte = lecon.texte?.trim() ? nettoyerKajabi(lecon.texte, lecon.titre, formationTitre, lecon.moduleNom, autresTitres) : '';
+  // Une vidéo prête à jouer prend la place : la vignette devient son affiche et
+  // la tête se réduit à une bande, pour que le lecteur tienne dans l'écran.
+  const videoPrete = lecon.type === 'video' && !!url && !chargement && !erreur;
 
   return (
     <article className="overflow-hidden rounded-[15px] border" style={{ borderColor: `${ORIGINE.olive}33`, background: '#fbf4e4' }}>
-      <div className="relative aspect-video max-h-[480px] w-full overflow-hidden" style={{ background: pilier?.fond || ORIGINE.olive }}>
-        {vignette && <img src={vignette} alt="" className="absolute inset-0 h-full w-full object-cover" />}
+      <div className={`relative w-full overflow-hidden ${videoPrete ? 'h-16' : 'aspect-video max-h-[480px]'}`} style={{ background: pilier?.fond || ORIGINE.olive }}>
+        {vignette && !videoPrete && <img src={vignette} alt="" className="absolute inset-0 h-full w-full object-cover" />}
         <span aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(38,41,15,0.88) 0%, rgba(38,41,15,0.25) 55%, transparent 100%)' }} />
-        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 px-6 pb-4 md:px-8">
+        <div className={`absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 px-6 md:px-8 ${videoPrete ? 'pb-5' : 'pb-4'}`}>
           <p className="text-[10px] font-bold uppercase tracking-[0.26em] text-[#f3ead2]/85">{position}</p>
           {isAdmin && (
             <>
@@ -86,7 +89,7 @@ const VoletLecon: React.FC<Props> = ({ lecon, formationTitre, autresTitres = [],
             <p className="text-sm text-red-700">{erreur}</p>
           ) : url ? (
             lecon.type === 'video' ? (
-              <video src={url} controls playsInline poster={vignette} className="w-full rounded-[15px] bg-black" />
+              <video src={url} controls playsInline poster={vignette} className="mx-auto block max-h-[calc(100vh-9rem)] w-auto max-w-full rounded-[15px] bg-black" />
             ) : lecon.type === 'audio' ? (
               <LecteurAudioCours key={lecon.id} url={url} titre={titreDeLecon(lecon.titre)} soustitre={position} pochette={vignette} lang={lang}
                 onFin={() => { if (!terminee) onTerminee(); }} onSuivante={onSuivante} />
@@ -119,7 +122,7 @@ const VoletLecon: React.FC<Props> = ({ lecon, formationTitre, autresTitres = [],
 
         {manque && (
           <p className="mt-6 rounded-[12px] px-4 py-3 text-sm" style={{ background: `${ORIGINE.or}1f`, color: ORIGINE.encre }}>
-            {fr ? 'Le document de cette leçon n’a pas suivi depuis Kajabi. Il arrivera ici dès que Krystine le déposera.' : 'This lesson’s document did not follow from Kajabi. It will appear here once Krystine uploads it.'}
+            {fr ? 'Le document de cette leçon n’est pas encore déposé. Il apparaîtra ici dès que Krystine l’aura ajouté.' : 'This lesson’s document is not uploaded yet. It will appear here once Krystine adds it.'}
           </p>
         )}
 

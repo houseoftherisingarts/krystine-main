@@ -7,7 +7,8 @@ import type { Lecon } from '../../firebase/formations';
 import { PILIERS_ORIGINE2 } from './semaines';
 
 export const COHORTES: Record<string, { etiquette: { fr: string; en: string } }> = {
-  'kajabi-2149503901': { etiquette: { fr: 'Cohorte fondatrice', en: 'Founding cohort' } },
+  'kajabi-2149348838': { etiquette: { fr: 'Cohorte fondatrice', en: 'Founding cohort' } },
+  'kajabi-2149503901': { etiquette: { fr: 'Deuxième cohorte', en: 'Second cohort' } },
   origine2: { etiquette: { fr: 'Prochaine cohorte', en: 'Next cohort' } },
 };
 
@@ -50,7 +51,7 @@ export function semaineDeLecon(l: Pick<Lecon, 'mois' | 'moduleNom'>): number {
   if (m) return Number(m[1]);
   const nom = l.moduleNom || '';
   if (/pr[ée]paratoire/i.test(nom)) return 0;
-  const s = /semaine\s*(\d+)/i.exec(nom);
+  const s = /(?:semaine|module)\s*(\d+)/i.exec(nom);
   return s ? Number(s[1]) : -1;
 }
 
@@ -67,7 +68,7 @@ export function rayonDeLecon(l: Pick<Lecon, 'mois' | 'moduleNom'>): Rayon {
 /** Un nom de module Kajabi rendu lisible : sans « SEMAINE 4- PILLIER 1 », sans majuscules criardes. */
 export function titreDeModule(nom: string): string {
   let t = nom.replace(/\s+/g, ' ').trim();
-  t = t.replace(/^semaine\s*\d+\s*[:\-–]?\s*/i, '').replace(/[:\-–]?\s*pill?ier\s*\d+\s*[:\-–]?\s*/i, ' ').replace(/\s+/g, ' ').trim();
+  t = t.replace(/^(?:semaine|module)\s*\d+\s*[:\-–]?\s*/i, '').replace(/[:\-–]?\s*pill?ier\s*\d+\s*[:\-–]?\s*/i, ' ').replace(/\s+/g, ' ').trim();
   if (!t) return '';
   return adoucir(t).replace(/\s*:\s*/g, ' : ').replace(/\s*-\s*/g, ' - ');
 }
@@ -89,5 +90,5 @@ export function titreDeLecon(titre: string): string {
 /** Une leçon « texte » qui annonce un document sans en porter un : le PDF est resté sur Kajabi. */
 export function documentManquant(l: Lecon): boolean {
   if (l.type !== 'texte' || l.chemin || (l.docs && l.docs.length)) return false;
-  return /pdf|télécharger|telecharger|tableau|outil|résumé|resume|questionnaire|journal de bord/i.test(`${l.titre} ${l.moduleNom || ''}`);
+  return /pdf|télécharger|telecharger|tableau|outil|résumé|resume|questionnaire|journal de bord|document/i.test(`${l.titre} ${l.moduleNom || ''}`);
 }
