@@ -64,6 +64,8 @@ if grep -q functions <<<"$CIBLES" && { [ ! -d functions/node_modules ] || ! git 
   npm --prefix functions install --no-audit --no-fund --loglevel=error
 fi
 
+# Ouvert avec `claude` plutôt qu'`iris`, le PATH ne connaît pas l'outil Firebase posé par l'installateur.
+[ -d "$HOME/.iris/tools/node_modules/.bin" ] && PATH="$HOME/.iris/tools/node_modules/.bin:$PATH"
 npx firebase deploy --only "$CIBLES" --project "$PROJET" --non-interactive
 
 SHA="$(git rev-parse --short HEAD)"
