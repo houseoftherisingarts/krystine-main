@@ -33,15 +33,16 @@ const Livre: React.FC<{ n: NumeroLivre; fiche?: LivreDepose; accent: string; enc
     if (!file) return;
     const estPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
     if (!estPdf) { onErreur(`Le livre ${n} doit être un PDF : « ${file.name} » n'en est pas un.`); return; }
-    if (file.size > TAILLE_MAX_LIVRE) { onErreur(`Le livre ${n} pèse ${poids(file.size)}, au-delà des 300 Mo permis.`); return; }
+    if (file.size > TAILLE_MAX_LIVRE) { onErreur(`Le livre ${n} pèse ${poids(file.size)}, au-delà des 2 Go permis.`); return; }
     setPct(0);
     try {
       await televerserLivre(n, file, setPct).done;
     } catch (err) {
       const code = (err as { code?: string })?.code ?? '';
+      const detail = code || (err as { message?: string })?.message || 'cause inconnue';
       onErreur(code.includes('unauthorized') || code.includes('permission')
-        ? `Le dépôt du livre ${n} a été refusé : les règles ne sont pas encore en ligne. Réessayez après la prochaine publication.`
-        : `Le dépôt du livre ${n} n'a pas passé. Vérifiez la connexion et réessayez.`);
+        ? `Le dépôt du livre ${n} a été refusé (${code}) : votre compte n'est pas reconnu comme administration, ou les règles ne sont pas encore en ligne. Envoyez ce message tel quel à Alex.`
+        : `Le dépôt du livre ${n} n'a pas passé (${detail}). Vérifiez la connexion et réessayez; si ça se répète, envoyez ce message tel quel à Alex.`);
     } finally {
       setPct(null);
     }
@@ -79,7 +80,7 @@ const Livre: React.FC<{ n: NumeroLivre; fiche?: LivreDepose; accent: string; enc
             <p>{poids(fiche.taille)}{date ? ` · déposé le ${enLettres(date)}` : ''}</p>
           </div>
         ) : (
-          <p>Aucun fichier pour l'instant. Un PDF, jusqu'à 300 Mo.</p>
+          <p>Aucun fichier pour l'instant. Un PDF, jusqu'à 2 Go.</p>
         )}
       </div>
 

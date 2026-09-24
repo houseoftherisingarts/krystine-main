@@ -160,14 +160,14 @@ const NewsletterSignup: React.FC<Props> = ({
     const isGoogle = status === 'google-success';
     const title = success ? success.title : isGoogle
       ? (lang === 'FR' ? 'Bienvenue dans le fil' : 'Welcome to the thread')
-      : (lang === 'FR' ? 'Vous êtes bien inscrit·e' : 'You are on the list');
+      : (lang === 'FR' ? 'Vous êtes bien inscrite' : 'You are on the list');
     const body = success ? success.body : isGoogle
       ? (lang === 'FR'
           ? 'Votre espace client Inspirata est prêt et un premier mot de bienvenue arrive dans votre boîte.'
           : 'Your Inspirata client space is ready and a first welcome note is on its way to your inbox.')
       : (lang === 'FR'
-          ? 'Vous êtes maintenant inscrit·e à l\'infolettre, ce courrier que nous envoyons au rythme des saisons. Vous y trouverez à l\'occasion des rituels ou des lectures à emporter avec vous, ainsi que d\'autres petits trésors. Vous n\'avez rien d\'autre à faire pour le moment. La prochaine infolettre arrivera dans votre boîte.'
-          : 'You are now on the newsletter, the letter we send with the seasons. In it you will find, now and then, rituals or readings to take with you, along with a few other small treasures. There is nothing else to do for now. The next newsletter will arrive in your inbox.');
+          ? 'Votre inscription est bien reçue et vous n\'avez rien d\'autre à faire pour le moment. Les prochaines lettres vous arriveront au fil des saisons, avec à l\'occasion un rituel ou une lecture à emporter avec vous, et vous serez avisée avant toute annonce publique.'
+          : 'Your registration is confirmed and there is nothing else to do for now. The next letters will reach you with the seasons, now and then with a ritual or a reading to take with you, and you will hear from us before any public announcement.');
     const ease = [0.16, 0.8, 0.24, 1] as const;
     const fade = (delay: number) => ({
       initial: reduce ? false : { opacity: 0, y: 18, filter: 'blur(6px)' },

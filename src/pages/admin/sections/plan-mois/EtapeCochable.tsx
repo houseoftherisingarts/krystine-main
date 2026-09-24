@@ -24,9 +24,11 @@ interface Props {
   lectureSeule: boolean;
   onCocher: (fait: boolean) => void;
   onNoter: (note: string) => void;
+  /** Présent sur une étape ajoutée par la personne : la retire du plan. */
+  onRetirer?: () => void;
 }
 
-const EtapeCochable: React.FC<Props> = ({ etape, etat, accent, encre, lectureSeule, onCocher, onNoter }) => {
+const EtapeCochable: React.FC<Props> = ({ etape, etat, accent, encre, lectureSeule, onCocher, onNoter, onRetirer }) => {
   const fait = etat?.fait === true;
   const [note, setNote] = useState(etat?.note ?? '');
   const date = etat?.faitLe?.toDate ? etat.faitLe.toDate() : null;
@@ -82,6 +84,14 @@ const EtapeCochable: React.FC<Props> = ({ etape, etat, accent, encre, lectureSeu
               {l.texte}
             </a>
           ))}
+        </div>
+      )}
+
+      {onRetirer && (
+        <div className="ml-[25px] mt-1">
+          <button type="button" onClick={onRetirer} className="text-[13px] font-semibold text-[#7a7f76] underline-offset-2 hover:text-[#9e3d57] hover:underline">
+            Retirer cette étape
+          </button>
         </div>
       )}
 

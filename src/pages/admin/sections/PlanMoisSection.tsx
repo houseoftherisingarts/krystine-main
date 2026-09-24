@@ -7,9 +7,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import EtapeCochable from './plan-mois/EtapeCochable';
 import LivresSources from './plan-mois/LivresSources';
-import { CHANTIERS, ENTETE, PIED_DE_PAGE, TOUTES_LES_ETAPES, type ChantierMois } from '../../../lib/planMois';
+import { CHANTIERS, ENTETE, PIED_DE_PAGE, TOUTES_LES_ETAPES, type ChantierMois, type Etape } from '../../../lib/planMois';
 import {
-  cocherEtape, ecouterPlanMois, noterEtape, type EtapePlanMois, type EtatPlanMois,
+  ajouterEtape, cocherEtape, ecouterPlanMois, noterEtape, retirerEtape, type EtapePlanMois, type EtatPlanMois,
 } from '../../../firebase/planMois';
 
 const ENCRE = '#1c1712';
@@ -32,7 +32,9 @@ const Barre: React.FC<{ label: string; part: number; tout: number; couleur: stri
 );
 
 const PlanMoisSection: React.FC = () => {
-  const [distant, setDistant] = useState<EtatPlanMois>({ items: {}, livres: {} });
+  const [distant, setDistant] = useState<EtatPlanMois>({ items: {}, livres: {}, ajouts: {} });
+  // Le texte en cours de saisie dans « Vos ajouts », un par chantier.
+  const [nouveau, setNouveau] = useState<Record<string, string>>({});
   const [local, setLocal] = useState<Record<string, EtapePlanMois>>({});
   const [refus, setRefus] = useState<string | null>(null);
   const [avis, setAvis] = useState<string | null>(null);
@@ -60,9 +62,27 @@ const PlanMoisSection: React.FC = () => {
   const cocher = (id: string, fait: boolean) => { poser(id, { fait }); cocherEtape(id, fait).catch(surErreur); };
   const noter = (id: string, note: string) => { poser(id, { note }); noterEtape(id, note).catch(surErreur); };
 
-  const faitsDe = (c: ChantierMois) => c.blocs.flatMap(b => b.etapes).filter(e => items[e.id]?.fait).length;
-  const totalDe = (c: ChantierMois) => c.blocs.reduce((n, b) => n + b.etapes.length, 0);
-  const faits = TOUTES_LES_ETAPES.filter(e => items[e.id]?.fait).length;
+  // Les étapes que Krystine ajoute elle-même, dans l'ordre où elle les a écrites.
+  const ajoutsDe = (c: ChantierMois): Etape[] => Object.entries(distant.ajouts)
+    .filter(([, a]) => a.chantier === c.id)
+    .sort(([, a], [, b]) => (a.creeLe?.toMillis?.() ?? 0) - (b.creeLe?.toMillis?.() ?? 0))
+    .map(([id, a]) => ({ id, texte: a.texte, qui: a.qui }));
+  const ajouter = (c: ChantierMois) => {
+    const texte = (nouveau[c.id] ?? '').trim();
+    if (!texte) return;
+    setNouveau(n => ({ ...n, [c.id]: '' }));
+    ajouterEtape(c.id, texte).catch(surErreur);
+  };
+  const retirer = (id: string) => {
+    if (!window.confirm('Retirer cette étape du plan ?')) return;
+    retirerEtape(id).catch(surErreur);
+  };
+
+  const faitsDe = (c: ChantierMois) => c.blocs.flatMap(b => b.etapes).concat(ajoutsDe(c)).filter(e => items[e.id]?.fait).length;
+  const totalDe = (c: ChantierMois) => c.blocs.reduce((n, b) => n + b.etapes.length, 0) + ajoutsDe(c).length;
+  const idsAjouts = Object.keys(distant.ajouts);
+  const total = TOUTES_LES_ETAPES.length + idsAjouts.length;
+  const faits = TOUTES_LES_ETAPES.filter(e => items[e.id]?.fait).length + idsAjouts.filter(id => items[id]?.fait).length;
 
   return (
     <div className="space-y-4">
@@ -95,9 +115,9 @@ const PlanMoisSection: React.FC = () => {
           <div className="rounded-[10px] px-5 py-4" style={{ backgroundColor: ENCRE }}>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <h2 className="font-serif text-[15px] font-semibold uppercase tracking-[0.14em] text-white">Vue d'ensemble</h2>
-              <span className="rounded-[4px] bg-white/10 px-2 py-[3px] text-[13px] font-medium tracking-[0.04em] text-white/85">{TOUTES_LES_ETAPES.length} étapes</span>
+              <span className="rounded-[4px] bg-white/10 px-2 py-[3px] text-[13px] font-medium tracking-[0.04em] text-white/85">{total} étapes</span>
             </div>
-            <div className="mt-3"><Barre label="Fait" part={faits} tout={TOUTES_LES_ETAPES.length} couleur="#4fae7c" epaisse /></div>
+            <div className="mt-3"><Barre label="Fait" part={faits} tout={total} couleur="#4fae7c" epaisse /></div>
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-5">
               {CHANTIERS.map(c => <Barre key={c.id} label={`${c.numero} · ${c.titre}`} part={faitsDe(c)} tout={totalDe(c)} couleur={c.couleurs.accent} />)}
             </div>
@@ -168,6 +188,52 @@ const PlanMoisSection: React.FC = () => {
                       </div>
                     );
                   })}
+                </div>
+
+                {/* Vos ajouts : les étapes que Krystine écrit elle-même, cochées et comptées comme les autres. */}
+                <div className="mt-3 rounded-[8px] bg-white/70 px-4 py-3.5">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <h4 className="font-serif text-[16px] text-[#1c1712]">
+                      <span className="mr-2 font-semibold" style={{ color: c.couleurs.encre }}>+</span>Vos ajouts
+                    </h4>
+                    <span className="shrink-0 text-[13px] tabular-nums text-[#7a7f76]">{ajoutsDe(c).filter(e => items[e.id]?.fait).length}/{ajoutsDe(c).length}</span>
+                  </div>
+                  {ajoutsDe(c).length > 0 && (
+                    <ul className="mt-3 space-y-3">
+                      {ajoutsDe(c).map(e => (
+                        <EtapeCochable
+                          key={e.id}
+                          etape={e}
+                          etat={items[e.id]}
+                          accent={c.couleurs.accent}
+                          encre={c.couleurs.encre}
+                          lectureSeule={refus !== null}
+                          onCocher={f => cocher(e.id, f)}
+                          onNoter={n => noter(e.id, n)}
+                          onRetirer={() => retirer(e.id)}
+                        />
+                      ))}
+                    </ul>
+                  )}
+                  <form className="mt-3 flex flex-col gap-2 sm:flex-row" onSubmit={e => { e.preventDefault(); ajouter(c); }}>
+                    <input
+                      type="text"
+                      value={nouveau[c.id] ?? ''}
+                      onChange={e => setNouveau(n => ({ ...n, [c.id]: e.target.value }))}
+                      placeholder="Une étape de plus pour ce chantier, dans vos mots"
+                      maxLength={240}
+                      className="min-w-0 flex-1 rounded-[6px] border border-[#e3ddd0] bg-white px-3 py-2 text-[14px] text-[#1c1712] outline-none placeholder:text-[#9b968c] focus:border-[#9c7a44]"
+                      aria-label={`Ajouter une étape au chantier ${c.numero}`}
+                    />
+                    <button
+                      type="submit"
+                      disabled={!(nouveau[c.id] ?? '').trim()}
+                      className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full px-4 py-2 text-[13px] font-bold uppercase tracking-[0.08em] text-white transition-[background-color,transform] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                      style={{ backgroundColor: c.couleurs.encre }}
+                    >
+                      <i className="fa-solid fa-plus" />Ajouter
+                    </button>
+                  </form>
                 </div>
               </div>
 

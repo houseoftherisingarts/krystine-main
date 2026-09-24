@@ -107,14 +107,15 @@ service firebase.storage {
     // : écrits par la fonction de collecte, lus par l'admin seulement.
     // Les trois livres de Krystine en PDF, déposés depuis admin › Plan du mois
     // (Alex, 22 septembre 2026) : des livres entiers, donc lecture et écriture
-    // pour l'administration seulement, PDF seulement, 300 Mo au plus. Alex les
+    // pour l'administration seulement, PDF seulement, 2 Go au plus (un PDF
+    // d'éditeur dépasse vite 300 Mo, constaté le 24 septembre 2026). Alex les
     // récupère depuis le code (scripts/livres/telecharger.sh). Le tout-venant
     // plus bas exclut ce dossier de la lecture publique.
     match /livres-sources/{fichier} {
       allow read: if isAdmin();
       allow write: if isAdmin()
                    && (request.resource == null
-                       || (request.resource.size < 300 * 1024 * 1024
+                       || (request.resource.size < 2 * 1024 * 1024 * 1024
                            && request.resource.contentType == 'application/pdf'));
     }
 

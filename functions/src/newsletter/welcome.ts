@@ -43,15 +43,15 @@ function esc(s: unknown): string {
     .replace(/"/g, '&quot;');
 }
 
-export const WELCOME_SUBJECT = 'Vous êtes maintenant inscrit·e à l\'infolettre';
+export const WELCOME_SUBJECT = 'Vous êtes bien inscrite';
 
 // Texte du courriel, une seule fois, servi en HTML et en texte brut.
 function paragraphs(firstName?: string): string[] {
   const salut = firstName ? `Bonjour ${firstName},` : 'Bonjour,';
   return [
     salut,
-    'Vous êtes maintenant inscrit·e à l\'infolettre, ce courrier que nous envoyons au rythme des saisons. Vous y trouverez à l\'occasion des rituels ou des lectures à emporter avec vous, ainsi que d\'autres petits trésors.',
-    'Vous n\'avez rien d\'autre à faire pour le moment. La prochaine infolettre arrivera dans votre boîte.',
+    'Votre inscription est bien reçue, et vous n\'avez rien d\'autre à faire pour le moment.',
+    'Les prochaines lettres vous arriveront au fil des saisons, avec à l\'occasion un rituel ou une lecture à emporter avec vous, et vous serez avisée avant toute annonce publique.',
     'À bientôt,',
     'Krystine St-Laurent',
   ];
@@ -72,7 +72,7 @@ export function renderWelcomeHtml(opts: { firstName?: string; unsubscribeUrl: st
   <title>${esc(WELCOME_SUBJECT)}</title>
 </head>
 <body style="margin:0;padding:0;background:${CHARTE.cream};">
-  <div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;font-size:1px;color:transparent;line-height:1px;">Vous êtes maintenant inscrit·e à l'infolettre. La prochaine arrivera dans votre boîte.</div>
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;font-size:1px;color:transparent;line-height:1px;">Votre inscription est bien reçue. Les prochaines lettres suivront les saisons.</div>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CHARTE.cream};padding:40px 16px;">
     <tr><td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:15px;overflow:hidden;">
@@ -82,7 +82,7 @@ export function renderWelcomeHtml(opts: { firstName?: string; unsubscribeUrl: st
         <tr><td style="padding:40px 40px 8px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
             <tr><td style="padding:0 0 10px;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:${CHARTE.brassInk};font-weight:600;">Inspirata</td></tr>
-            <tr><td style="padding:0 0 22px;font-family:${CHARTE.serif};font-size:36px;line-height:1.08;color:${CHARTE.espresso};font-weight:500;">Vous êtes bien inscrit·e</td></tr>
+            <tr><td style="padding:0 0 22px;font-family:${CHARTE.serif};font-size:36px;line-height:1.08;color:${CHARTE.espresso};font-weight:500;">Vous êtes bien inscrite</td></tr>
             <tr><td style="padding:0 0 26px;"><div style="height:1px;width:64px;background:${CHARTE.brass};"></div></td></tr>
             ${p(salut)}
             ${corps.map(p).join('\n')}

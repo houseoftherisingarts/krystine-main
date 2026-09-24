@@ -6,6 +6,7 @@
 import app, { db } from '../firebase';
 import { deleteField, doc, onSnapshot, setDoc, serverTimestamp, type Timestamp } from 'firebase/firestore';
 import { deleteObject, getStorage, ref, uploadBytesResumable, type UploadTask } from 'firebase/storage';
+import type { Qui } from '../lib/planMois';
 
 export interface EtapePlanMois {
   fait: boolean;
@@ -24,9 +25,19 @@ export interface LivreDepose {
 
 export type NumeroLivre = 1 | 2 | 3;
 
+/** Une étape que Krystine (ou Alex) ajoute elle-même à un chantier, depuis l'admin. */
+export interface AjoutPlanMois {
+  texte: string;
+  /** L'identifiant du chantier (c1, c2, c3) sous lequel l'étape s'affiche. */
+  chantier: string;
+  qui: Qui;
+  creeLe?: Timestamp;
+}
+
 export interface EtatPlanMois {
   items: Record<string, EtapePlanMois>;
   livres: Partial<Record<`livre-${NumeroLivre}`, LivreDepose>>;
+  ajouts: Record<string, AjoutPlanMois>;
 }
 
 export const ID_PLAN_MOIS = 'mois-2026-10';
@@ -37,7 +48,7 @@ export const ID_PLAN_MOIS = 'mois-2026-10';
 // les retrouve depuis le code sans chercher (scripts/livres/telecharger.sh).
 export const DOSSIER_LIVRES = 'livres-sources';
 export const cheminLivre = (n: NumeroLivre): string => `${DOSSIER_LIVRES}/livre-${n}.pdf`;
-export const TAILLE_MAX_LIVRE = 300 * 1024 * 1024;
+export const TAILLE_MAX_LIVRE = 2 * 1024 * 1024 * 1024;  // 2 Go : un livre d'éditeur en PDF dépasse vite 300 Mo
 
 const refPlan = () => doc(db, 'planAutomne', ID_PLAN_MOIS);
 const store = () => {
@@ -56,6 +67,7 @@ export const ecouterPlanMois = (
     onEtat({
       items: (d.items as EtatPlanMois['items'] | undefined) ?? {},
       livres: (d.livres as EtatPlanMois['livres'] | undefined) ?? {},
+      ajouts: (d.ajouts as EtatPlanMois['ajouts'] | undefined) ?? {},
     });
   },
   err => onRefus(err.code === 'permission-denied'
@@ -74,6 +86,16 @@ export const cocherEtape = (id: string, fait: boolean): Promise<void> =>
 /** Pose ou efface la note d'une étape, sans toucher au reste. */
 export const noterEtape = (id: string, note: string): Promise<void> =>
   setDoc(refPlan(), { items: { [id]: { note: note ? note : deleteField() } } }, { merge: true });
+
+/** Ajoute une étape à un chantier, dans les mots de la personne. L'identifiant ne se réutilise jamais. */
+export const ajouterEtape = (chantier: string, texte: string, qui: Qui = 'Krystine'): Promise<string> => {
+  const id = `ajout-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+  return setDoc(refPlan(), { ajouts: { [id]: { texte, chantier, qui, creeLe: serverTimestamp() } } }, { merge: true }).then(() => id);
+};
+
+/** Retire une étape ajoutée, avec sa case et sa note. */
+export const retirerEtape = (id: string): Promise<void> =>
+  setDoc(refPlan(), { ajouts: { [id]: deleteField() }, items: { [id]: deleteField() } }, { merge: true });
 
 interface EnvoiLivre { task: UploadTask; done: Promise<LivreDepose> }
 

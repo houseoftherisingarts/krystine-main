@@ -30,6 +30,16 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-09-24',
+    titre: "Vos propres étapes dans le plan, des livres plus lourds, et un mot d'accueil sans le mot infolettre",
+    intro: "Le plan du mois accepte maintenant les étapes que vous écrivez vous-même, le dépôt des livres reçoit des fichiers jusqu'à deux gigaoctets et dit clairement ce qui cloche quand un envoi ne passe pas, et la confirmation d'inscription ne parle plus d'infolettre.",
+    etapes: [
+      { texte: "Sous chaque chantier du plan, un champ « Vos ajouts » reçoit une étape de plus, dans vos mots. Elle se coche, se note et se retire comme les autres, et elle compte dans l'avancement du chantier.", ou: '/admin/plan-du-mois', libelle: 'Plan du mois' },
+      { texte: "Les trois boutons des livres acceptent un PDF jusqu'à deux gigaoctets au lieu de trois cents mégaoctets, et si un dépôt échoue, le message dit pourquoi, pour que vous puissiez le transmettre tel quel.", ou: '/admin/plan-du-mois', libelle: 'Déposer vos livres' },
+      "Le courriel de bienvenue s'intitule maintenant « Vous êtes bien inscrite », dit que l'inscription est bien reçue, annonce des lettres au fil des saisons et un avis avant toute annonce publique, sans le mot infolettre; l'écran de confirmation du site dit la même chose, en français comme en anglais.",
+    ],
+  },
+  {
     date: '2026-09-22',
     titre: "Le plan du mois, votre salle de presse et douze publications prêtes",
     intro: "Un nouvel onglet porte les trois chantiers des trente prochains jours, dictés par Alex : le visuel de l'Expérience Origine, vos livres découpés en petits livres anglais vendus aux États-Unis, et une chaîne YouTube qui publie chaque jour dans votre voix. Chaque étape se coche, dit qui la fait, et garde la date. La même journée apporte votre salle de presse, encore éteinte jusqu'à ce que vous l'ayez relue, la section qui vous laisse prévisualiser toute page fermée avant de l'ouvrir, et douze publications déjà mises en page pour Facebook et Instagram.",
