@@ -1266,5 +1266,20 @@
       "public/assets-manifest.json",
       "src/components/layout/NavBar.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-24T16:56:50.872Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "2bcabf90",
+    "message": "Retour du nom complet « Krystine St-Laurent » en haut des pages (fin de l'essai)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "src/components/layout/NavBar.tsx"
+    ]
   }
 ]
