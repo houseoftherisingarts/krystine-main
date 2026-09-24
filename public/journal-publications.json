@@ -1281,5 +1281,28 @@
       "public/assets-manifest.json",
       "src/components/layout/NavBar.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-24T17:22:54.771Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "b27d0b87",
+    "message": "Espace de cours Expérience Origine (cohorte fondatrice et prochaine cohorte) : bannière compacte sans titre par-dessus l'illustration, trois piliers repliés (Lire, Trier, Ancrer) avec leurs quatre semaines, couleurs de la couverture du dense au subtil, vignette de leçon (Kajabi ou déposée par Krystine) et dépôt de document depuis le volet, plus de questions sous les leçons",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "scripts/qa/origine2-audit.mjs",
+      "src/components/cours/origine/CoursOrigine.tsx",
+      "src/components/cours/origine/ListeOrigine.tsx",
+      "src/components/cours/origine/SeuilOrigine.tsx",
+      "src/components/cours/origine/VoletLecon.tsx",
+      "src/firebase/formations.ts",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/cours/nettoyerKajabi.ts",
+      "src/pages/origine2/SemainesOrigine2.tsx",
+      "src/pages/origine2/piliers.ts"
+    ]
   }
 ]
