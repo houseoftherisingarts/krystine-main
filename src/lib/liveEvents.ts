@@ -177,9 +177,9 @@ export const LIVE_EVENTS: LiveEvent[] = [
     titleEN: 'The third book launch · Montréal',
     subtitleFR: 'Événement public de lancement',
     subtitleEN: 'Public launch event',
-    dateFR: 'Novembre 2026 · date à confirmer',
-    dateEN: 'November 2026 · date to be confirmed',
-    startDate: '2026-11-15',
+    dateFR: 'Mars 2027 · date à confirmer',
+    dateEN: 'March 2027 · date to be confirmed',
+    startDate: '2027-03-15',
     locationFR: 'Région de Montréal',
     locationEN: 'Greater Montréal',
     waitlistTarget: waitlist('lancement-montreal',
@@ -205,22 +205,21 @@ export const LIVE_EVENTS: LiveEvent[] = [
 
   // ── Retraites à venir (dates + thèmes à confirmer) ──
   {
+    // La date de novembre 2026 est retirée (Krystine, 19 septembre 2026) : la
+    // retraite n'est plus annoncée, seule la liste d'attente demeure. La source
+    // d'inscription garde son identifiant d'origine, sans quoi les personnes
+    // déjà inscrites se retrouveraient orphelines de leur étiquette.
     id: 'retraite-val-morin-nov-2026',
     kind: 'retreat-waitlist',
-    titleFR: 'Retraite Val-Morin',
-    titleEN: 'Val-Morin Retreat',
-    subtitleFR: 'Quatre jours dans les Laurentides',
-    subtitleEN: 'Four days in the Laurentians',
-    dateFR: 'Novembre 2026 · dates à confirmer',
-    dateEN: 'November 2026 · dates to be confirmed',
-    startDate: '2026-11-15',
-    locationFR: 'Val-Morin, Laurentides',
-    locationEN: 'Val-Morin, Laurentians',
-    bodyFR: 'Thème et dates précises à confirmer. Inscription sur liste d\'attente.',
-    bodyEN: 'Theme and exact dates to be confirmed. Waitlist registration.',
+    titleFR: 'Retraite à venir',
+    titleEN: 'Upcoming retreat',
+    dateFR: 'Date à venir',
+    dateEN: 'Date to come',
+    bodyFR: 'Lieu, dates et thème à confirmer. Inscrivez-vous à la liste d\'attente pour être avisée avant toute annonce publique.',
+    bodyEN: 'Place, dates and theme to be confirmed. Join the waitlist to hear before any public announcement.',
     waitlistTarget: waitlist('retraite-val-morin-nov-2026',
-      'Retraite Val-Morin · Novembre 2026',
-      'Val-Morin Retreat · November 2026'),
+      'Retraite · liste d\'attente',
+      'Retreat · waitlist'),
     ctaLabelFR: 'Liste d\'attente',
     ctaLabelEN: 'Join waitlist',
   },

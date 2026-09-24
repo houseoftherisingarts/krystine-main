@@ -50,12 +50,12 @@ interface ProgrammeMeta {
 const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
   origine: {
     source: 'waitlist-origine',
-    kicker: 'Parcours signature · Prochaine cohorte en novembre',
+    kicker: 'Parcours signature · Inscriptions à l’automne',
     title: "L'Expérience Origine",
     subtitle: 'Retrouver votre boussole intérieure',
     promise:
       "L'Expérience Origine est un parcours de 12 semaines au cœur de l'Ayurveda. " +
-      "La cohorte en cours est fermée : la prochaine s'ouvre en novembre. " +
+      "La cohorte en cours est fermée : les inscriptions ouvrent en automne. " +
       "Inscrivez-vous à la liste d'attente et vous serez parmi les premières à " +
       "savoir lorsque les portes rouvriront, avec un accès privilégié et des " +
       "conditions réservées à la liste.",
@@ -404,7 +404,7 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
           </motion.div>
 
           <div className="max-w-[440px] w-full mx-auto lg:mx-0 lg:justify-self-end">
-            <HeroPlate art={HERO_ART[programmeKey]} tab={programmeKey === 'origine' ? (lang === 'FR' ? 'Novembre 2026' : 'November 2026') : programmeKey === 'foyer' ? (lang === 'FR' ? 'Le foyer se prépare' : 'The hearth is being prepared') : (lang === 'FR' ? 'Bientôt' : 'Soon')} />
+            <HeroPlate art={HERO_ART[programmeKey]} tab={programmeKey === 'origine' ? (lang === 'FR' ? 'Automne 2026' : 'Fall 2026') : programmeKey === 'foyer' ? (lang === 'FR' ? 'Le foyer se prépare' : 'The hearth is being prepared') : (lang === 'FR' ? 'Bientôt' : 'Soon')} />
           </div>
         </div>
       </section>

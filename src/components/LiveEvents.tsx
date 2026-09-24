@@ -28,7 +28,7 @@ const SPRIG_BY_EVENT: Record<string, EventSprigVariant> = {
   'lancement-anglicane':         'launch',  // Le lancement du troisième livre · L'Anglicane
   'lancement-montreal':          'launch',  // Dévoilement de la trilogie · Montréal
   'tournee-conferences':         'route',   // Tournée de conférences
-  'retraite-val-morin-nov-2026': 'retreat', // Retraite Val-Morin (novembre 2026)
+  'retraite-val-morin-nov-2026': 'retreat', // Retraite à venir (date retirée le 19 sept. 2026)
   'retraite-fev-2027':           'retreat', // Retraite février 2027
   'retraite-mai-2027':           'retreat', // Retraite mai 2027
   'tedx':                        'mic',     // TEDx

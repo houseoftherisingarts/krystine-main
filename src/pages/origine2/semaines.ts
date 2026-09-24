@@ -46,7 +46,7 @@ export function semaineOuverteRang(dateSortie?: string | null, date = new Date()
 export const rangSemaine = (n?: string) => (n ? SEMAINES.findIndex(s => s.n === n) : -1);
 
 export function labelDebut(dateSortie?: string | null): string {
-  if (!dateSortie) return 'Début en novembre 2026';
+  if (!dateSortie) return 'Début à l’automne 2026';
   const d = dateDebut(dateSortie);
   return `Début le ${d.toLocaleDateString('fr-CA', { day: 'numeric', month: 'long', year: 'numeric' })}`;
 }

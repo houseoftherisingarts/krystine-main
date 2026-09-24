@@ -182,7 +182,7 @@ export function offrePour(ctx: ContexteOffre): Offre {
   return {
     id: 'origine2',
     intertitre: 'Ce qui se prépare pour vous',
-    titre: "L'Expérience Origine 2 ouvre en novembre",
+    titre: "L'Expérience Origine 2 : les inscriptions ouvrent en automne",
     texte: 'Douze semaines avec Krystine pour retrouver vos propres repères. Inscrivez-vous à la liste d’attente et vous recevrez l’invitation avant toute annonce publique.',
     bouton: "Découvrir l'Expérience",
     destination: '/origine-2',

@@ -50,9 +50,9 @@ const sourceLabel = (key: string): string => {
       case 'waitlist-vata':                    return "Liste d'attente · Vata";
       case 'waitlist-retraite-ayurveda-mai-2026': return "Retraite Ayurveda · mai 2026";
       case 'waitlist-lancement-anglicane':     return "Lancement · L'Anglicane (oct. 2026)";
-      case 'waitlist-lancement-montreal':      return 'Lancement · Montréal (nov. 2026)';
+      case 'waitlist-lancement-montreal':      return 'Lancement · Montréal (mars 2027)';
       case 'waitlist-retraite-nov-2026':       return 'Retraite · novembre 2026';
-      case 'waitlist-retraite-val-morin-nov-2026': return 'Retraite Val-Morin · novembre 2026';
+      case 'waitlist-retraite-val-morin-nov-2026': return 'Retraite · liste d\'attente';
       case 'waitlist-retraite-fev-2027':       return 'Retraite · février 2027';
       case 'waitlist-retraite-mai-2027':       return 'Retraite · mai 2027';
       case 'accueil-pulsation': return 'Accueil — La Pulsation';
