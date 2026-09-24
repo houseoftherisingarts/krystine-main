@@ -55,8 +55,7 @@ const ListeOrigine: React.FC<Props> = ({ lecons, courante, terminees, verrouille
     return { avant, parPilier, bibli };
   }, [lecons, fr]);
 
-  const pilierCourant = courante ? PILIERS.find(p => p.semaines.includes(semaineDeLecon(courante)))?.rang : undefined;
-  const rayonCourant = courante ? rayonDeLecon(courante) : undefined;
+  // Tout part replié, même le pilier de la leçon en cours (Alex, 24 septembre 2026).
   const [ouverts, setOuverts] = useState<Record<string, boolean>>({});
   const estOuvert = (cle: string, defaut: boolean) => (ouverts[cle] === undefined ? defaut : ouverts[cle]);
   const basculer = (cle: string, defaut: boolean) => setOuverts(o => ({ ...o, [cle]: !estOuvert(cle, defaut) }));
@@ -118,7 +117,7 @@ const ListeOrigine: React.FC<Props> = ({ lecons, courante, terminees, verrouille
 
   const BlocPilier: React.FC<{ pilier: Pilier; semaines: Semaine[] }> = ({ pilier, semaines }) => {
     const cle = `pilier-${pilier.rang}`;
-    const defaut = pilierCourant === pilier.rang;
+    const defaut = false;
     const nb = semaines.reduce((n, s) => n + s.items.length, 0);
     const faites = semaines.reduce((n, s) => n + s.items.filter(l => terminees[l.id]).length, 0);
     const sombre = pilier.rang !== 3;
@@ -158,9 +157,9 @@ const ListeOrigine: React.FC<Props> = ({ lecons, courante, terminees, verrouille
 
   return (
     <nav aria-label={fr ? 'Les leçons' : 'Lessons'} className="space-y-2">
-      {avant.length > 0 && <GroupeNeutre cle="avant" titre={fr ? 'Avant le parcours' : 'Before the path'} groupes={avant} defaut={rayonCourant === 'avant'} />}
+      {avant.length > 0 && <GroupeNeutre cle="avant" titre={fr ? 'Avant le parcours' : 'Before the path'} groupes={avant} defaut={false} />}
       {parPilier.map(({ pilier, semaines }) => <BlocPilier key={pilier.rang} pilier={pilier} semaines={semaines} />)}
-      {bibli.length > 0 && <GroupeNeutre cle="bibli" titre={fr ? 'Bibliothèque' : 'Library'} groupes={bibli} defaut={rayonCourant === 'bibliotheque'} />}
+      {bibli.length > 0 && <GroupeNeutre cle="bibli" titre={fr ? 'Bibliothèque' : 'Library'} groupes={bibli} defaut={false} />}
     </nav>
   );
 };
