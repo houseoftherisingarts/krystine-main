@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-26T17:41:01.162Z",
+  "generatedAt": "2026-09-26T17:41:58.392Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -840,6 +840,13 @@
       "folder": "compte/skins",
       "kind": "image",
       "size": 42482
+    },
+    {
+      "path": "/conferences/krystine-scene-haut.webp",
+      "name": "krystine-scene-haut.webp",
+      "folder": "conferences",
+      "kind": "image",
+      "size": 85852
     },
     {
       "path": "/conferences/lancement-2018.webp",

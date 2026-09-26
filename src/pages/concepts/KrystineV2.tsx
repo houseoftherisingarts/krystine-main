@@ -767,7 +767,7 @@ export default function KrystineV2() {
               >
                 <img
                   data-portrait-img
-                  src="/foyer/krystine-conference.webp"
+                  src="/conferences/krystine-scene-haut.webp"
                   alt="Krystine St-Laurent sur scène, en conférence"
                   className="h-full w-full object-cover object-[40%_30%] will-change-transform"
                 />
