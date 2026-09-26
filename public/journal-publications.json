@@ -1583,5 +1583,20 @@
       "public/assets-manifest.json",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T14:55:46.287Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e3f409d2",
+    "message": "Page /origine/nouvelles : le visuel d'Origine remplacé par le logo Origine seul (boussole et lettres cuivrées) en tête de page",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/origine/logo-origine.webp",
+      "src/pages/origine/NouvellesFondatrices.tsx"
+    ]
   }
 ]
