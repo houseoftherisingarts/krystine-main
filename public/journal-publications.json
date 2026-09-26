@@ -1453,5 +1453,22 @@
       "src/pages/admin/sections/MembersSection.tsx",
       "src/pages/admin/sections/newsletter/SubscribersPanel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T13:53:50.478Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "5611acce",
+    "message": "Nouvelle page /origine/nouvelles : les trois questions pour les fondatrices d'Expérience Origine, réponses dans l'admin › Formulaires",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "App.tsx",
+      "public/assets-manifest.json",
+      "src/lib/pageMeta.ts",
+      "src/pages/admin/sections/SubmissionsSection.tsx",
+      "src/pages/origine/NouvellesFondatrices.tsx"
+    ]
   }
 ]
