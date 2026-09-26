@@ -467,7 +467,7 @@ const FilmSection: React.FC = () => {
         poster="/accueil/assets/film/conference-2026-poster.jpg"
         aria-label="Krystine St-Laurent en conférence"
         className="absolute inset-0 h-full w-full object-cover"
-        style={{ filter: 'sepia(0.28) saturate(0.82) brightness(0.92) contrast(1.04)' }}
+        style={{ filter: 'sepia(0.34) saturate(0.68) brightness(0.86) contrast(0.94)' }}
       />
       <div
         aria-hidden
@@ -953,7 +953,7 @@ export default function KrystineV2() {
             {/* chiffres */}
             <div className="mt-14 grid grid-cols-3 gap-6 max-w-xl border-t border-[#1c1712]/15 pt-9">
               {[
-                ['40', 'ans de pratique, ou presque'],
+                ['40', 'ans de pratique'],
                 ['03', 'tomes de la trilogie'],
                 ['Scènes', 'USA, Canada & Europe'],
               ].map(([n, l]) => (
