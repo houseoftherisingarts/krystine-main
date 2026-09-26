@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   getEvents, addEvent, updateEvent, deleteEvent, placesRestantes,
-  type EventDoc,
+  getTemoignagesConference, setTemoignagePublie,
+  type EventDoc, type TemoignageConference,
 } from '../../../firebase/firestore';
 import { getBilletsDeEvenement, enDollars, avecTaxes, type Billet } from '../../../firebase/billets';
 import { Card, Input, Textarea, Label, PrimaryButton, GhostButton, DangerButton, ToggleSwitch, EmptyState, ImageUpload, downloadCsv } from '../primitives';
@@ -23,6 +24,58 @@ const lignes = (texte: string) => texte.split('\n');
 const ligneNonVides = (arr?: string[]) => (arr || []).map(s => s.trim()).filter(Boolean);
 
 const dateLisible = (t?: Billet['createdAt']) => t ? t.toDate().toLocaleString('fr-CA', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+
+// ─── Témoignages reçus ──────────────────────────────────────────────────────
+// Les mots laissés sur /conferenciere/temoignage. « Afficher sur la page » les
+// met sur /conferenciere, seulement si la personne a autorisé la publication.
+const TemoignagesRecus: React.FC = () => {
+  const [liste, setListe] = useState<TemoignageConference[] | null>(null);
+  const charger = () => getTemoignagesConference().then(setListe).catch(() => setListe([]));
+  useEffect(() => { charger(); }, []);
+  const basculer = async (t: TemoignageConference) => {
+    if (!t.id) return;
+    await setTemoignagePublie(t.id, !t.publie);
+    charger();
+  };
+  return (
+    <Card className="p-6">
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
+        <h3 className="font-serif text-lg text-[#293027] dark:text-white">Témoignages reçus</h3>
+        <a href="/conferenciere/temoignage" target="_blank" rel="noopener noreferrer" className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#8B4A2F] hover:underline">
+          La page à partager : krystinestlaurent.ca/conferenciere/temoignage
+        </a>
+      </div>
+      {liste === null ? (
+        <p className="text-sm text-[#293027]/55">Chargement…</p>
+      ) : liste.length === 0 ? (
+        <EmptyState icon="fa-comment-dots">Aucun témoignage pour l'instant. Partagez la page ci-dessus après vos conférences.</EmptyState>
+      ) : (
+        <ul className="divide-y divide-[#293027]/10 dark:divide-white/10">
+          {liste.map(t => (
+            <li key={t.id} className="py-4">
+              <p className="font-serif text-[15px] leading-relaxed text-[#293027] dark:text-white">« {t.texte} »</p>
+              <p className="mt-2 text-xs text-[#293027]/60 dark:text-white/60">
+                {[t.nom, t.role, t.evenement].filter(Boolean).join(' · ')}
+                {t.courriel ? ` · ${t.courriel}` : ''}
+                {t.createdAt?.toDate ? ` · reçu le ${t.createdAt.toDate().toLocaleDateString('fr-CA', { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}
+              </p>
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                {t.autorisePublication ? (
+                  <GhostButton type="button" onClick={() => basculer(t)}>
+                    <i className={`fa-solid ${t.publie ? 'fa-eye-slash' : 'fa-eye'}`} /> {t.publie ? 'Retirer de la page' : 'Afficher sur la page'}
+                  </GhostButton>
+                ) : (
+                  <span className="text-xs text-[#8B4A2F]">La personne n'a pas autorisé la publication.</span>
+                )}
+                {t.publie && <span className="rounded-full bg-green-50 px-2.5 py-1 text-[11px] text-green-700">Affiché sur /conferenciere</span>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Card>
+  );
+};
 
 const EventsSection: React.FC = () => {
   const [events, setEvents] = useState<EventDoc[]>([]);
@@ -125,6 +178,7 @@ const EventsSection: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <TemoignagesRecus />
       <div className="flex items-center justify-between">
         <p className="text-sm text-[#293027]/60 dark:text-white/60">{events.length} événement{events.length > 1 ? 's' : ''}</p>
         <PrimaryButton onClick={startCreate}><i className="fa-solid fa-plus" /> Ajouter</PrimaryButton>

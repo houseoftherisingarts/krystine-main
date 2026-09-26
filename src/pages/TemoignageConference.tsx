@@ -93,11 +93,11 @@ const TemoignageConference: React.FC = () => {
                 </label>
                 <div className="grid gap-8 md:grid-cols-2">
                   <label className="block">
-                    <span className="mb-2 block text-[0.6rem] uppercase tracking-[0.2em] text-[#1c1712]/55">Votre nom, tel qu'il paraîtra *</span>
+                    <span className="mb-2 block text-[0.6rem] uppercase tracking-[0.2em] text-[#1c1712]/55">Votre nom *</span>
                     <input value={nom} onChange={(e) => setNom(e.target.value)} maxLength={80} required placeholder="Ex. Julie Tremblay ou Julie T." className={CHAMP} autoComplete="name" />
                   </label>
                   <label className="block">
-                    <span className="mb-2 block text-[0.6rem] uppercase tracking-[0.2em] text-[#1c1712]/55">Ce que vous faites, votre ville</span>
+                    <span className="mb-2 block text-[0.6rem] uppercase tracking-[0.2em] text-[#1c1712]/55">Votre métier, votre ville</span>
                     <input value={role} onChange={(e) => setRole(e.target.value)} maxLength={120} placeholder="Ex. enseignante, Lévis" className={CHAMP} />
                   </label>
                   <label className="block md:col-span-2">
