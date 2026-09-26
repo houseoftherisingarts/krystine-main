@@ -66,18 +66,12 @@ const SIGNATURE_TALKS: {
   },
 ];
 
+// Seulement des paroles réellement reçues (Krystine, 26 septembre 2026 : les
+// témoignages de la directrice RH et de l'animatrice n'en étaient pas).
 const TESTIMONIALS = [
   {
     quote: "Krystine a une voix rare, celle d’une femme qui sait, qui a vu, et qui sait nommer ce que le public n’a jamais osé dire. Notre événement n’a pas été le même après son passage.",
     by: 'Productrice · Festival mondial de yoga',
-  },
-  {
-    quote: 'Un mélange parfait de rigueur scientifique et de sagesse ancestrale. Notre équipe est repartie avec des outils concrets et une nouvelle perspective.',
-    by: 'Directrice RH · Entreprise québécoise',
-  },
-  {
-    quote: "Krystine ne fait pas une conférence. Elle ouvre un espace. Le public écoute différemment, comme s’il rentrait à la maison.",
-    by: 'Animatrice · Salut Bonjour',
   },
 ];
 
@@ -927,11 +921,11 @@ export default function KrystineV2() {
           </h2>
         </div>
 
-        <div data-reveal className="grid md:grid-cols-3 gap-x-[clamp(2rem,4vw,4rem)] gap-y-12">
+        <div data-reveal className="grid gap-y-12">
           {TESTIMONIALS.map((t) => (
-            <figure key={t.by} className="flex flex-col border-t border-[#9c7a44]/40 pt-8">
-              <Quotes size={28} weight="fill" className="text-[#9c7a44]/40 mb-5" />
-              <blockquote className="v2-serif italic text-[#1c1712] text-[1.15rem] leading-[1.55] flex-1">
+            <figure key={t.by} className="flex max-w-[980px] flex-col border-t border-[#9c7a44]/40 pt-10">
+              <Quotes size={34} weight="fill" className="text-[#9c7a44]/40 mb-6" />
+              <blockquote className="v2-serif italic text-[#1c1712] text-[clamp(1.35rem,2.4vw,2rem)] leading-[1.45] flex-1">
                 {t.quote}
               </blockquote>
               <figcaption className="mt-7 text-[0.62rem] uppercase tracking-[0.2em] text-[#7d6330]">{t.by}</figcaption>
