@@ -13,7 +13,7 @@ import AudiencePicker from './AudiencePicker';
 import PreviewFrame from './PreviewFrame';
 import AssistantPanel, { type Proposal } from './AssistantPanel';
 import MediathequePicker from '../../../../components/edit/MediathequePicker';
-import { RenderBlockWeb, POLICES, TAILLES, SEPARATEURS, FONDS_INFOLETTRE, estSombre } from '../../../../lib/newsletterRenderer';
+import { RenderBlockWeb, POLICES, TAILLES, SEPARATEURS, FONDS_INFOLETTRE, LARGEURS_IMAGE, estSombre } from '../../../../lib/newsletterRenderer';
 import { Input, Label, PrimaryButton, GhostButton } from '../../primitives';
 import Portail from '../../../../components/Portail';
 import { traduireParIris } from '../../../../lib/traduction';
@@ -948,6 +948,9 @@ const BlockFrame: React.FC<{
               <button className={`${iconBtn} w-auto px-3 gap-2 text-[10px] uppercase tracking-widest font-bold`} onClick={onPickImage} title="Choisir dans la médiathèque ou téléverser">
                 <i className="fa-solid fa-images text-xs" /> Image
               </button>
+              <select value={c.largeur || 'pleine'} onChange={e => onPatch({ largeur: e.target.value })} className={selectClass} title="Taille de l'image dans la lettre">
+                {Object.entries(LARGEURS_IMAGE).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+              </select>
               <input value={c.alt || ''} onChange={e => onPatch({ alt: e.target.value })} placeholder="Description (accessibilité)" className={`${selectClass} w-44`} />
               <input value={c.href || ''} onChange={e => onPatch({ href: e.target.value })} placeholder="https://… (où mène la photo; le site par défaut)" title="La photo est cliquable : vers ce lien, sinon vers le site" className={`${selectClass} w-64`} />
             </>

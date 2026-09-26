@@ -123,6 +123,13 @@ export interface RenderEmailOptions {
   fond?: string | null;
 }
 
+// Les tailles d'image du composeur (miroir de src/lib/newsletterRenderer.tsx).
+const LARGEURS_IMAGE: Record<string, { px: number }> = {
+  petite: { px: 220 },
+  moyenne: { px: 340 },
+  pleine: { px: 520 },
+};
+
 function esc(s: unknown): string {
   return String(s ?? '')
     .replace(/&/g, '&amp;')
@@ -179,7 +186,9 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
         : '';
       // Chaque photo mène quelque part : au lien choisi, sinon au site.
       const lien = typeof c.href === 'string' && /^https?:\/\//.test(c.href) ? c.href : PUBLIC_BASE_URL;
-      return `<tr><td style="padding:10px 0 12px;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;"><img src="${esc(c.url)}" alt="${esc(c.alt || '')}" style="display:block;width:100%;max-width:520px;height:auto;border-radius:15px;border:0;" /></a></td></tr>${caption}`;
+      // La taille choisie dans le composeur : petite, moyenne ou pleine largeur (par défaut), centrée.
+      const larg = LARGEURS_IMAGE[c.largeur] || LARGEURS_IMAGE.pleine;
+      return `<tr><td align="center" style="padding:10px 0 12px;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;max-width:${larg.px}px;margin:0 auto;"><img src="${esc(c.url)}" alt="${esc(c.alt || '')}" width="${larg.px}" style="display:block;width:100%;max-width:${larg.px}px;height:auto;border-radius:15px;border:0;margin:0 auto;" /></a></td></tr>${caption}`;
     }
     case 'button': {
       const primary = c.variant !== 'secondary';

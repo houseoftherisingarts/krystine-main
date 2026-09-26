@@ -40,6 +40,13 @@ export const POLICES: Record<Police, { label: string; css: string; tw: string }>
   sans:   { label: 'Moderne',    css: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif", tw: 'font-sans' },
   script: { label: 'Manuscrite', css: "'Pinyon Script', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive", tw: '' },
 };
+// Les tailles d'image : petite, moyenne ou pleine largeur (par défaut). Miroir dans functions/src/newsletter/renderer.ts.
+export const LARGEURS_IMAGE: Record<string, { label: string; px: number }> = {
+  petite: { label: 'Petite', px: 220 },
+  moyenne: { label: 'Moyenne', px: 340 },
+  pleine: { label: 'Pleine largeur', px: 520 },
+};
+
 export const TAILLES: Record<Taille, { label: string; px: number; tw: string }> = {
   sm: { label: 'Petit',      px: 14, tw: 'text-sm' },
   md: { label: 'Normal',     px: 16, tw: 'text-base' },
@@ -248,10 +255,11 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
       return <p className={className} style={style} dangerouslySetInnerHTML={{ __html: richToHtml(c.text || '') }} />;
     }
     case 'image': {
+      const larg = LARGEURS_IMAGE[c.largeur as string] || LARGEURS_IMAGE.pleine;
       const capClass = 'text-xs uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 text-center mt-3';
       if (edit) {
         return (
-          <figure className="my-6">
+          <figure className="my-6 mx-auto" style={{ maxWidth: larg.px }}>
             <button type="button" onClick={e => { e.stopPropagation(); edit.pickImage(); }} title="Changer l'image"
               className="group/img relative block w-full rounded-2xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#BA7B39]">
               {c.url
@@ -266,7 +274,7 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
         );
       }
       return (
-        <figure className="my-6">
+        <figure className="my-6 mx-auto" style={{ maxWidth: larg.px }}>
           {c.url && <a href={/^https?:\/\//.test(c.href || '') ? c.href : 'https://www.krystinestlaurent.ca'} target="_blank" rel="noopener noreferrer" className="block"><img src={c.url} alt={c.alt || ''} className="w-full rounded-2xl" /></a>}
           {c.caption && <figcaption className={capClass}>{c.caption}</figcaption>}
         </figure>
@@ -423,7 +431,8 @@ function blockToEmail(block: NewsletterBlock, firstName?: string): string {
       const caption = c.caption
         ? `<tr><td align="center" style="padding:8px 0;font-family:${BRAND.sans};font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:${BRAND.muted};">${esc(c.caption)}</td></tr>`
         : '';
-      return `<tr><td style="padding:16px 0;"><img src="${esc(c.url)}" alt="${esc(c.alt || '')}" style="display:block;width:100%;max-width:560px;border-radius:16px;" /></td></tr>${caption}`;
+      const larg = LARGEURS_IMAGE[c.largeur] || LARGEURS_IMAGE.pleine;
+      return `<tr><td align="center" style="padding:16px 0;"><img src="${esc(c.url)}" alt="${esc(c.alt || '')}" width="${larg.px}" style="display:block;width:100%;max-width:${larg.px}px;border-radius:16px;margin:0 auto;" /></td></tr>${caption}`;
     }
     case 'button': {
       const primary = c.variant !== 'secondary';
