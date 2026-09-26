@@ -1941,5 +1941,24 @@
       "public/conferences/lancement-2018.webp",
       "public/conferences/mont-tremblant-2024-krystine.webp"
     ]
+  },
+  {
+    "quand": "2026-09-26T17:56:44.838Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e2317073",
+    "message": "Page /speaking retirée : elle redirige vers /conferenciere (301), son contenu est archivé tel quel (archives/speaking-2026-09-26 et le coffre, 10_site/archives), sans être transposé; liens anglais de l'accueil vers /en/conferenciere, plan du site nettoyé",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "archives/speaking-2026-09-26/LISEZ-MOI.md",
+      "archives/speaking-2026-09-26/index.html",
+      "firebase.json",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/sitemap.xml",
+      "src/lib/staticRoutes.ts"
+    ]
   }
 ]
