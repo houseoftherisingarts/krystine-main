@@ -63,7 +63,7 @@ const PORTES: { titre: string; ligne: string }[] = [
 const TESTIMONIALS = [
   {
     quote: "Krystine a une voix rare, celle d’une femme qui sait, qui a vu, et qui sait nommer ce que le public n’a jamais osé dire. Notre événement n’a pas été le même après son passage.",
-    by: 'Productrice · Festival mondial de yoga',
+    by: 'Productrice d’événements corporatifs',
   },
 ];
 
