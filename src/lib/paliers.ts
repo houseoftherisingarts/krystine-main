@@ -44,6 +44,8 @@ const LIBELLES: Record<string, string> = {
   'kajabi-desinscrit': 'Ancien site · désinscrites',
   'acheteuse-ancien-systeme': 'Liste acheteuse de l’ancien système',
   'anciennes-origine': 'Anciennes de l’Expérience Origine (cohorte 2024)',
+  'origine-fondatrice': 'Fondatrices de l’Expérience Origine (groupe fondateur)',
+  'origine-2': 'Expérience Origine · deuxième cohorte',
   'origine-lancement-2024': 'Lancement Origine 2024 · offre d’entrée',
   'podcast': 'Podcast',
   'podcast-live': 'Direct du podcast',

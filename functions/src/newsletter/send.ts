@@ -184,9 +184,15 @@ export const audienceInfolettre = onCall(
     const audience: NewsletterAudience = data.audience || { mode: 'all' };
     const lang: Lang = data.lang === 'en' ? 'en' : 'fr';
 
-    const parTag = new Map<string, number>();
-    for (const s of subs) for (const t of s.tags || []) parTag.set(t, (parTag.get(t) || 0) + 1);
-    const tags = [...parTag.entries()].sort((a, b) => a[0].localeCompare(b[0], 'fr')).map(([tag, n]) => ({ tag, n }));
+    // Une personne peut avoir plusieurs fiches (imports successifs) : une liste
+    // compte des personnes, comme l'envoi, qui ne leur écrit qu'une fois.
+    const parTag = new Map<string, Set<string>>();
+    for (const s of subs) for (const t of s.tags || []) {
+      let vus = parTag.get(t);
+      if (!vus) { vus = new Set(); parTag.set(t, vus); }
+      vus.add(s.email.trim().toLowerCase());
+    }
+    const tags = [...parTag.entries()].sort((a, b) => a[0].localeCompare(b[0], 'fr')).map(([tag, v]) => ({ tag, n: v.size }));
 
     const total = selectRecipients(subs, { audience, lang }).length;
     // Le même choix, sans le filtre de langue : combien lisent en français, en anglais.
