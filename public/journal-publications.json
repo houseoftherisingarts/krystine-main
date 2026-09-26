@@ -1417,5 +1417,25 @@
       "public/accueil/index.html",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-09-26T13:35:20.091Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "13f87e8d",
+    "message": "Mesure des visites : distinction entre découverte (premier passage) et retour, avec page d'arrivée, source et inscriptions pour chacune (admin › Visiteurs et clics › Vue d'ensemble)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/vexelhotjar/agregation.ts",
+      "functions/src/vexelhotjar/collecte.ts",
+      "public/assets-manifest.json",
+      "public/vh/vexelhotjar.js",
+      "src/pages/admin/sections/visiteurs/VueEnsemble.tsx",
+      "src/pages/admin/sections/visiteurs/donnees.ts",
+      "src/vexelhotjar/tracker.ts"
+    ]
   }
 ]
