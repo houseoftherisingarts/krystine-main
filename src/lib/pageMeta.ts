@@ -16,7 +16,7 @@ const ROUTES: Record<string, PageMeta> = {
   },
   '/conferenciere': {
     title: `Conférences et ateliers · ${SITE}`,
-    description: 'Conférences et ateliers en santé globale et ayurveda, cousus main pour votre public. USA, Canada et Europe.',
+    description: 'Conférences de Krystine St-Laurent, autrice best-seller : comment choisir dans un monde qui pense de plus en plus à notre place. Au Québec, au Canada et en Europe.',
   },
   '/formations': {
     title: `Formations et expériences · ${SITE}`,

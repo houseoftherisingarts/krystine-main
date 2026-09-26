@@ -6,7 +6,7 @@ import Lenis from 'lenis';
 import SplitType from 'split-type';
 import {
   ArrowUpRight, ArrowDown, CaretDown, Check, CircleNotch,
-  MapPin, Clock, Compass, Microphone, MoonStars, Quotes,
+  MapPin, Compass, Microphone, Quotes,
 } from '@phosphor-icons/react';
 import { useApp } from '../../contexts/AppContext';
 import NewsletterSignup from '../../components/NewsletterSignup';
@@ -36,34 +36,21 @@ const COVERLINES = ['Près de 40 ans de pratique', 'La trilogie · Éditions de 
 
 /* ════════════════════════ Données éditoriales ════════════════════════ */
 
-const SIGNATURE_TALKS: {
-  icon: React.ReactNode; kicker: string; title: string; lede: string;
-  duration: string; format: string; feature?: boolean;
-}[] = [
+// Deux conférences qu'une productrice peut programmer (Krystine, 26 septembre
+// 2026, formulations de travail). L'Ayurveda, la nature et le corps nourrissent
+// ces conférences sans en devenir le titre ni la catégorie.
+const SIGNATURE_TALKS: { icon: React.ReactNode; title: string; sousTitre: string; lede: string }[] = [
   {
     icon: <Compass size={22} weight="light" />,
-    kicker: 'Conférence vedette',
-    title: 'Au-delà des tendances',
-    lede: "Reprendre SA direction, écouter ce que le corps sait avant que l’algorithme ne l’écrase.",
-    duration: '60 à 90 min',
-    format: 'Présentiel · Virtuel',
+    title: 'Plus de réponses. Moins de confiance.',
+    sousTitre: 'Ce que l’abondance d’information fait à notre capacité de choisir.',
+    lede: 'Pourquoi accumuler davantage de réponses ne produit pas nécessairement davantage de clarté, et comment distinguer information, influence et discernement.',
   },
   {
     icon: <Microphone size={22} weight="light" />,
-    kicker: 'Conférence signature',
-    title: 'L’Ayurveda comme boussole intérieure',
-    lede: 'Une cartographie ancestrale pour la vie moderne : comment les éléments lisent ce qui se passe en vous.',
-    duration: '90 min · ½ journée',
-    format: 'Présentiel · Hybride',
-    feature: true,
-  },
-  {
-    icon: <MoonStars size={22} weight="light" />,
-    kicker: 'Conférence dédiée',
-    title: 'La femme et ses saisons',
-    lede: "Cycles biologiques et saisons intérieures, pour vivre en alliance avec son corps plutôt qu’à son insu.",
-    duration: '60 min',
-    format: 'Présentiel',
+    title: 'Quand nous remettons nos choix à l’extérieur',
+    sousTitre: 'Experts, tendances, systèmes, algorithmes et IA : qu’est-ce que nous cessons d’exercer lorsque quelqu’un ou quelque chose choisit pour nous ?',
+    lede: 'Une conversation sur le jugement, l’autonomie et la place que nous voulons conserver dans nos propres décisions.',
   },
 ];
 
@@ -84,7 +71,7 @@ const PROCESS_STEPS = [
 ];
 
 const FAQS = [
-  { q: 'Quels sujets Krystine aborde-t-elle ?', a: "Ayurveda, santé féminine, médecine intégrative, équilibre travail-vie, transmission générationnelle, écologie intérieure. Les conférences sont toujours adaptées au public." },
+  { q: 'Krystine peut-elle adapter une conférence à notre événement ?', a: "Oui. Chaque intervention est adaptée au contexte de l’événement et à son public, tout en conservant une idée centrale claire. Selon la programmation, Krystine peut notamment explorer l’abondance d’information, la prise de décision, l’influence des experts, des tendances et des algorithmes, l’intelligence artificielle et le jugement humain, ainsi que notre capacité à rester participants de nos propres choix." },
   { q: "Voyage-t-elle à l’extérieur du Québec ?", a: "Oui : Canada, États-Unis, France, Belgique, Suisse selon l’agenda. Indiquez la ville dans le formulaire et l’on vous revient avec la faisabilité." },
   { q: 'Quels sont les délais habituels ?', a: "8 à 16 semaines avant l’événement permettent une préparation idéale. Les demandes plus serrées sont étudiées au cas par cas." },
   { q: 'En quelles langues ?', a: 'Français principalement, anglais sur demande, bilingue possible.' },
@@ -744,7 +731,7 @@ export default function KrystineV2() {
           data-fade
           className="flex items-center justify-between border-t border-[#1c1712]/15 pt-3.5 text-[0.6rem] uppercase tracking-[0.28em] text-[#1c1712]/55"
         >
-          <span>N&deg; 01 &middot; Conférences &amp; Ayurvéda</span>
+          <span>N&deg; 01 &middot; Conférences</span>
           <span className="hidden sm:inline">Québec &middot; MMXXVI</span>
         </div>
 
@@ -756,7 +743,7 @@ export default function KrystineV2() {
               data-fade
               className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-7"
             >
-              Conférencière &middot; Autrice
+              Conférencière &middot; Autrice best-seller
             </p>
             <h1 className="v2-serif font-light leading-[0.9] text-[#1c1712] text-[clamp(3.2rem,9.5vw,9.5rem)]">
               <span data-line className="block overflow-hidden">
@@ -819,25 +806,39 @@ export default function KrystineV2() {
               data-fade
               className="v2-serif text-[clamp(1.35rem,2.4vw,1.95rem)] font-light leading-[1.32] text-[#3a2f23] max-w-[34ch]"
             >
-              Chaque conférence est cousue main pour le public qui l&rsquo;attend. Pas un
-              module pré-fait, une rencontre.
+              Comment choisir dans un monde qui pense de plus en plus à notre place&nbsp;?
             </p>
+            <div data-fade className="mt-6 max-w-[40rem] space-y-4 text-[0.98rem] leading-[1.8] text-[#3a2f23]">
+              <p>
+                Nous n&rsquo;avons jamais eu accès à autant d&rsquo;informations, de conseils, d&rsquo;experts, de méthodes et maintenant
+                d&rsquo;intelligence artificielle. Pourtant, plus les réponses se multiplient, plus il peut devenir difficile de savoir
+                lesquelles croire, lesquelles suivre et ce qui nous convient réellement.
+              </p>
+              <p>
+                Sur scène, Krystine St-Laurent explore ce que cette abondance de réponses fait à notre jugement, à notre confiance et à
+                notre capacité de choisir, et comment retrouver des repères sans remettre notre autorité à une nouvelle méthode, un
+                nouvel expert ou une nouvelle technologie.
+              </p>
+            </div>
 
             <div data-fade className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-4">
               <a
                 href="#reserver"
                 className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44]"
               >
-                Réserver une conférence
+                Inviter Krystine
                 <ArrowUpRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
               <a
                 href="#conferences"
                 className="v2-serif italic text-lg text-[#1c1712]/70 hover:text-[#7d6330] transition-colors duration-300"
               >
-                Voir les conférences
+                Découvrir les conférences
               </a>
             </div>
+            <p data-fade className="mt-6 text-[0.6rem] uppercase tracking-[0.24em] text-[#1c1712]/55">
+              Conférences en français, en anglais ou dans les deux
+            </p>
           </div>
         </div>
 
@@ -872,8 +873,7 @@ export default function KrystineV2() {
               data-statement
               className="v2-serif font-light leading-[1.18] text-[#1c1712] text-[clamp(1.9rem,4.4vw,3.6rem)] max-w-[20ch]"
             >
-              près de 40 ans à traverser les milieux de la santé, avant de choisir
-              l&rsquo;herboristerie, l&rsquo;Ayurveda et l&rsquo;aromathérapie.
+              Près de 40 ans à relier ce que nous avons appris à séparer.
             </p>
 
             {/* chiffres */}
@@ -925,32 +925,28 @@ export default function KrystineV2() {
         className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#efe6d7] scroll-mt-24"
       >
         <div data-reveal className="max-w-[760px] mb-16">
-          <Kicker className="mb-5">Chapitre 02 · Conférences signature</Kicker>
+          <Kicker className="mb-5">Chapitre 02 · Conférences</Kicker>
           <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">
-            Trois portes d’entrée
+            Deux conférences à programmer
           </h2>
           <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] text-[#3a2f23] max-w-[46ch] leading-snug">
-            Trois trames maîtresses. Chacune adaptée à votre public, votre temps, votre lieu.
+            Chacune adaptée à votre public, à votre durée et à votre lieu.
           </p>
         </div>
 
-        <div data-reveal className="grid md:grid-cols-3 gap-px bg-[#1c1712]/12 border border-[#1c1712]/12">
+        <div data-reveal className="grid md:grid-cols-2 gap-px bg-[#1c1712]/12 border border-[#1c1712]/12">
           {SIGNATURE_TALKS.map((talk) => (
             <article
               key={talk.title}
-              className={`group h-full flex flex-col p-[clamp(1.75rem,3vw,2.5rem)] transition-colors duration-500 ${talk.feature ? 'bg-[#faf6ee]' : 'bg-[#efe6d7] hover:bg-[#faf6ee]'}`}
+              className="group h-full flex flex-col p-[clamp(1.75rem,3vw,2.75rem)] transition-colors duration-500 bg-[#efe6d7] hover:bg-[#faf6ee]"
             >
               <span className="inline-grid place-items-center w-12 h-12 rounded-full border border-[#9c7a44]/40 text-[#7d6330] mb-7">
                 {talk.icon}
               </span>
-              <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-4">{talk.kicker}</span>
-              <h3 className="v2-serif text-[1.6rem] font-light leading-[1.12] text-[#1c1712] mb-4">{talk.title}</h3>
-              <p className="v2-serif italic text-[#3a2f23] leading-relaxed text-[1rem] flex-1">{talk.lede}</p>
-              <div className="mt-8 pt-5 border-t border-[#1c1712]/12 flex flex-wrap items-center gap-x-5 gap-y-2 text-[0.62rem] uppercase tracking-[0.16em] text-[#1c1712]/65">
-                <span className="inline-flex items-center gap-1.5"><Clock size={13} weight="light" className="text-[#7d6330]" />{talk.duration}</span>
-                <span className="h-1 w-1 rounded-full bg-[#9c7a44]/50" />
-                <span className="inline-flex items-center gap-1.5"><MapPin size={13} weight="light" className="text-[#7d6330]" />{talk.format}</span>
-              </div>
+              <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-4">Conférence</span>
+              <h3 className="v2-serif text-[clamp(1.6rem,2.4vw,2rem)] font-light leading-[1.12] text-[#1c1712] mb-4">{talk.title}</h3>
+              <p className="v2-serif italic text-[#3a2f23] leading-relaxed text-[1.08rem] mb-4">{talk.sousTitre}</p>
+              <p className="text-[#3a2f23] leading-[1.8] text-[0.95rem] flex-1">{talk.lede}</p>
             </article>
           ))}
         </div>

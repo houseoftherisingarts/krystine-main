@@ -178,7 +178,7 @@
   .film .lamp2{z-index:1;position:absolute;width:44vw;height:44vw;border-radius:50%;right:-8vw;bottom:-18vw;background:radial-gradient(circle,rgba(139,74,47,.35) 0%,rgba(40,53,47,0) 65%);filter:blur(40px)}
   .film .mx{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,46rem) 1fr;gap:3rem;align-items:center;width:100%}
   .film .k{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:var(--cu-4)}
-  .film h2{text-shadow:0 2px 24px rgba(27,38,34,.8);font-family:var(--serif);font-weight:500;font-size:clamp(2.7rem,5.4vw,5rem);line-height:1.02;letter-spacing:-.015em;margin-top:1.2rem;max-width:11em;text-transform:none;color:var(--ivory)}
+  .film h2{text-shadow:0 2px 24px rgba(27,38,34,.8);font-family:var(--serif);font-weight:500;font-size:clamp(2.1rem,3.5vw,3.5rem);line-height:1.06;letter-spacing:-.015em;margin-top:1.2rem;max-width:none;width:min(64rem,calc(100vw - 8rem));text-transform:none;color:var(--ivory)}
   .film h2 b{font-weight:500;background:var(--cu-lum);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 2px 18px rgba(27,38,34,.85))}
   .film .sub{font-family:var(--serif);font-size:clamp(1.15rem,1.55vw,1.45rem);line-height:1.5;color:rgba(238,231,219,.86);max-width:36rem;margin-top:1.6rem}
   .film .ctas{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:2.2rem}
@@ -205,9 +205,9 @@
     .film .scene{order:2;position:relative;inset:auto;aspect-ratio:16/9;width:auto;margin:2.4rem 2rem 0;border-radius:10px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.4);z-index:2}
     .film .scene video{object-fit:contain;object-position:center;background:#000}
     .film .veil{background:linear-gradient(180deg,rgba(27,38,34,.2),rgba(27,38,34,0) 40%,rgba(27,38,34,.6))}
-    .film h2{max-width:none}
+    .film h2{max-width:none;width:auto}
   }
-  @media (max-width:640px){ .film{padding:3.6rem 0 3.4rem} .film .scene{margin:2rem 1.3rem 0} .film h2{font-size:2.55rem} }
+  @media (max-width:640px){ .film{padding:3.6rem 0 3.4rem} .film .scene{margin:2rem 1.3rem 0} .film h2{font-size:2.2rem} }
   .reperes{position:relative;z-index:2;background:var(--cream-2);padding:4rem 0 4.5rem}
   .rp-title{text-align:center;font-family:var(--serif);font-weight:500;font-size:clamp(1.4rem,2.5vw,2.05rem);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
   .rp-orn{display:flex;align-items:center;justify-content:center;gap:.75rem;margin:1.1rem auto 0;max-width:300px}
@@ -877,7 +877,7 @@
     </div>
   </section>
 
-  <!-- ===== KRYSTINE SUR SCÈNE : le module du hero de /speaking, tel quel ===== -->
+  <!-- ===== KRYSTINE SUR SCÈNE : positionnement conférencière (Krystine, 26 sept. 2026), le film ne bouge pas ===== -->
   <section class="film" id="film">
     <div class="scene"><video id="filmVid" poster="https://storage.googleapis.com/inspirata/Base%20site/promo-2024/promo-ksl-poster-1920.webp" muted loop playsinline preload="metadata" aria-label="Krystine St-Laurent en conférence"></video></div>
     <div class="veil"></div>
@@ -885,12 +885,13 @@
     <div class="lamp2"></div>
     <div class="mx">
       <div class="copy">
-        <div class="k reveal d1">Conférencière · Autrice · Infirmière</div>
-        <h2 class="reveal d2">Une conférence <b>pour revenir à soi.</b></h2>
-        <p class="sub reveal d3">Depuis près de quarante ans, Krystine St-Laurent relie ce que nous avons appris à séparer : les soins infirmiers, l'ayurveda, les plantes et la sagesse de la nature. Sur scène, elle fait ce qu'elle fait dans ses livres et dans ses jardins : simplifier, rendre accessible, et donner à chacun des rituels simples pour prendre soin de soi au quotidien… dès le lendemain matin !</p>
+        <div class="k reveal d1">Conférencière · Autrice best-seller</div>
+        <h2 class="reveal d2">Comment choisir dans un monde <b>qui pense de plus en plus à notre place&nbsp;?</b></h2>
+        <p class="sub reveal d3">Nous n’avons jamais eu accès à autant d’informations, de conseils, d’experts, de méthodes et maintenant d’intelligence artificielle. Pourtant, plus les réponses se multiplient, plus il peut devenir difficile de savoir lesquelles croire, lesquelles suivre et ce qui nous convient réellement.</p>
+        <p class="sub reveal d3">Sur scène, Krystine St-Laurent explore ce que cette abondance de réponses fait à notre jugement, à notre confiance et à notre capacité de choisir, et comment retrouver des repères sans remettre notre autorité à une nouvelle méthode, un nouvel expert ou une nouvelle technologie.</p>
         <div class="ctas reveal d4">
-          <a class="btn btn-amber" id="filmCta" href="/speaking?lang=fr">Réserver Krystine <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a>
-          <a class="btn btn-line" id="filmTalks" href="/speaking?lang=fr#talks">Voir les conférences</a>
+          <a class="btn btn-amber" id="filmCta" href="/conferenciere#reserver">Inviter Krystine <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a>
+          <a class="btn btn-line" id="filmTalks" href="/conferenciere#conferences">Découvrir les conférences</a>
         </div>
         <button type="button" class="filmbtn reveal d5" id="filmPlay"><i><svg viewBox="0 0 12 12"><path d="M1 0l11 6-11 6z"/></svg></i><span>Voir le film, avec le son</span></button>
         <div class="langs reveal d5">Conférences en français, en anglais ou dans les deux</div>
