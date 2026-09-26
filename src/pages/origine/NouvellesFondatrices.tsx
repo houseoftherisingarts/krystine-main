@@ -82,13 +82,15 @@ const NouvellesFondatrices: React.FC = () => {
         transition={{ duration: 1.1, ease: [0.16, 0.8, 0.24, 1] }}
         className="mx-auto w-full max-w-[880px] rounded-[15px] overflow-hidden shadow-[0_40px_90px_-60px_rgba(41,48,39,0.6)] border border-[#293027]/10"
       >
-        {/* L'en-tête du gabarit « EXPÉRIENCE ORIGINE · Groupe fondateur » de l'infolettre */}
-        <header className="bg-[#f8f6f2] flex items-center justify-between gap-5 pl-7 sm:pl-12 pr-5 sm:pr-8 py-6">
-          <div>
-            <p className="text-[#292b20] text-[clamp(1.5rem,3.6vw,2.4rem)] leading-[1.1] tracking-[0.06em]" style={serif}>EXPÉRIENCE ORIGINE</p>
-            <p className="mt-2 text-[#5f5c50] text-[clamp(1.05rem,2vw,1.3rem)]" style={serif}>Groupe fondateur</p>
-          </div>
-          <img src="/infolettre/entete-origine.jpg" alt="" aria-hidden className="w-[92px] sm:w-[150px] h-auto rounded-[12px] shrink-0" />
+        {/* L'en-tête : le logo d'Origine et le groupe fondateur */}
+        <header className="bg-[#f8f6f2] px-7 sm:px-12 pt-8 pb-7">
+          {/* Le logo d'Origine, découpé de la couverture du Guide du Retour à l'Origine, fond crème retiré. */}
+          <img
+            src="/origine/logo-origine.webp"
+            alt="Origine"
+            className="w-[min(100%,380px)] h-auto"
+          />
+          <p className="mt-3 text-[0.66rem] uppercase tracking-[0.3em] text-[#5f5c50]">EXPÉRIENCE ORIGINE &middot; Groupe fondateur</p>
         </header>
 
         {/* Le bandeau bordeaux de la lettre aux fondatrices */}
