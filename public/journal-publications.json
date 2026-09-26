@@ -1618,5 +1618,20 @@
       "src/pages/concepts/KrystineV2.tsx",
       "src/pages/origine/NouvellesFondatrices.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T15:04:40.665Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "98b05ce4",
+    "message": "Témoignages de conférence : nouvelle page /conferenciere/temoignage pour que le public laisse un mot (publication seulement avec son autorisation et l'accord de Krystine), liste « Témoignages reçus » dans admin › Événements & Conférences, témoignages approuvés affichés sur /conferenciere avec un lien pour en laisser un; règles de la base mises à jour",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/TemoignageConference.tsx",
+      "src/pages/admin/sections/EventsSection.tsx"
+    ]
   }
 ]
