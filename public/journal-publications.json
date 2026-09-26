@@ -1803,5 +1803,22 @@
       "src/firebase/firestore.ts",
       "src/pages/admin/sections/newsletter/NewsletterList.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T17:12:11.195Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d37aea70",
+    "message": "Positionnement conférencière : accueil (section conférence, film intact) et /conferenciere, titre « Comment choisir dans un monde qui pense de plus en plus à notre place ? », deux conférences programmables, FAQ d'adaptation, Inviter Krystine; retrait de « revenir à soi », des rituels, d'Infirmière et de la liste de sujets santé",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "src/lib/pageMeta.ts",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
