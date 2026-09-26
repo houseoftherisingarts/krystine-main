@@ -1534,5 +1534,19 @@
       "public/assets-manifest.json",
       "src/pages/origine/NouvellesFondatrices.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T14:40:39.335Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "71fda205",
+    "message": "Page /origine/nouvelles au gabarit EXPÉRIENCE ORIGINE de l'infolettre : en-tête Groupe fondateur avec le visuel d'Origine, bandeau bordeaux, titre « Depuis EXPÉRIENCE ORIGINE, où en êtes-vous? »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/origine/NouvellesFondatrices.tsx"
+    ]
   }
 ]
