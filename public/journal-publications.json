@@ -1926,5 +1926,20 @@
       "public/conferences/lancement-2018.webp",
       "public/conferences/mont-tremblant-2024-krystine.webp"
     ]
+  },
+  {
+    "quand": "2026-09-26T17:52:27.035Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "fd564922",
+    "message": "Conférencière (/conferenciere) : filtre refait sans flou, photos nettes avec seulement une chaleur dorée (Mont-Tremblant et lancement 2018)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/conferences/lancement-2018.webp",
+      "public/conferences/mont-tremblant-2024-krystine.webp"
+    ]
   }
 ]
