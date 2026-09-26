@@ -57,3 +57,6 @@ scripts/qa/tmp/
 
 # Les livres de Krystine récupérés depuis Storage (scripts/livres/telecharger.sh)
 scripts/livres/pdf/
+
+# Copies en double créées par la synchronisation du Mac (« fichier 2.js »)
+public/vh/* [0-9].js

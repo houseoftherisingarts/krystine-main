@@ -104,7 +104,7 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="font-sans text-brass font-semibold uppercase tracking-[0.2em] text-[0.68rem] mb-6">{foot.contact}</h4>
             <ul className="space-y-3 text-sm">
-              <li><a href="mailto:equipe@inspiratanature.com" className="text-ctextSoft hover:text-brassBright transition-colors">equipe@inspiratanature.com</a></li>
+              <li><a href="mailto:teamksl@inspiratanature.com" className="text-ctextSoft hover:text-brassBright transition-colors">teamksl@inspiratanature.com</a></li>
               <li><a href="https://www.instagram.com/krystinesaintlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-ctextSoft hover:text-brassBright transition-colors"><i className="fa-brands fa-instagram" aria-hidden /> Instagram</a></li>
               <li><a href="https://www.facebook.com/Krystinestlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-ctextSoft hover:text-brassBright transition-colors"><i className="fa-brands fa-facebook" aria-hidden /> Facebook</a></li>
               <li><a href="https://www.youtube.com/@KrystineStLaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-ctextSoft hover:text-brassBright transition-colors"><i className="fa-brands fa-youtube" aria-hidden /> YouTube</a></li>
