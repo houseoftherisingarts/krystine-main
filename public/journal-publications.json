@@ -1403,5 +1403,19 @@
       "functions"
     ],
     "fichiers": []
+  },
+  {
+    "quand": "2026-09-26T13:20:41.444Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b910a8a7",
+    "message": "Accueil : « Par où commencer » remonté juste sous le haut de la page, inscription du tome 3 remontée avant la Trilogie, passage de la Trilogie raccourci, bouton « Découvrir l'œuvre » mène aux portes (d'après le trafic du 21 au 26 septembre)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json"
+    ]
   }
 ]
