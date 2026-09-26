@@ -412,7 +412,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     setAudience(p.audience || { mode: 'all' });
     if (p.scheduledFor) setWhen(toLocal(new Date(p.scheduledFor)));
     setSelectedIdx(null);
-    setSide('preview');
+    // La conversation reste ouverte : la lettre se met à jour au centre, et la réflexion avec Iris continue à droite.
   };
 
   const railWide = side === 'preview';
@@ -633,15 +633,16 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
 
           {/* Rail de droite : réglages d'envoi, aperçu exact, ou Iris */}
           <aside className={`shrink-0 max-h-[45vh] lg:max-h-none border-t lg:border-t-0 lg:border-l border-[#293027]/10 dark:border-white/10 bg-white/40 dark:bg-white/[0.03] overflow-y-auto ${railWide ? 'lg:w-[640px]' : 'lg:w-[380px]'}`}>
-            {side === 'iris' ? (
-              <div className="p-4">
-                <AssistantPanel
-                  draft={{ title, subject, preheader, blocks, audience, scheduledFor: when ? new Date(when).toISOString() : null }}
-                  onProposal={applyProposal}
-                  onClose={() => setSide('reglages')}
-                />
-              </div>
-            ) : side === 'versions' ? (
+            {/* Iris reste montée même quand le rail montre autre chose, pour ne jamais perdre la conversation. */}
+            <div className={side === 'iris' ? 'p-4' : 'hidden'}>
+              <AssistantPanel
+                draft={{ title, subject, preheader, blocks, audience, scheduledFor: when ? new Date(when).toISOString() : null }}
+                onProposal={applyProposal}
+                onClose={() => setSide('reglages')}
+                newsletterId={id}
+              />
+            </div>
+            {side === 'iris' ? null : side === 'versions' ? (
               <div className="p-5 space-y-3">
                 <h3 className="font-serif text-xl text-[#293027] dark:text-white">Historique des versions</h3>
                 <p className="text-xs text-[#293027]/60 dark:text-white/60">La lettre s’enregistre toute seule cinq secondes après chaque changement. Une version se garde ici à chaque heure d’écriture, et juste avant une restauration.</p>

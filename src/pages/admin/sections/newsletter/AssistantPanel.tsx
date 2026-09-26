@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { addDoc, collection, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db } from '../../../../firebase';
 import type { NewsletterAudience, NewsletterBlock } from '../../../../firebase/firestore';
 import { fetchAudience } from './AudiencePicker';
@@ -22,7 +22,15 @@ interface Props {
   draft: { title: string; subject: string; preheader: string; blocks: NewsletterBlock[]; audience: NewsletterAudience; scheduledFor: string | null };
   onProposal: (p: Proposal) => void;
   onClose?: () => void;
+  /** Le brouillon ouvert : la conversation se garde dedans (newsletters/{id}/iris/conversation) et revient à sa réouverture. */
+  newsletterId?: string | null;
 }
+
+// La conversation d'une lettre se garde dans son brouillon, pour que la
+// réflexion menée avec Iris survive à une proposition, à la fermeture du
+// panneau et à la réouverture de la lettre. Les 80 derniers messages suffisent.
+const MAX_GARDES = 80;
+type MsgGarde = { role: 'user' | 'assistant'; content: string; proposalJson?: string };
 
 const STARTERS = [
   'Écris l\'infolettre de la semaine prochaine sur le retour de l\'automne et le dosha Vata.',
@@ -33,7 +41,7 @@ const STARTERS = [
 const HORS_LIGNE_APRES_MS = 90_000;   // trois battements manqués
 const ATTENTE_MAX_MS = 6 * 60_000;    // au-delà, la demande reste en file mais l'écran se libère
 
-const AssistantPanel: React.FC<Props> = ({ draft, onProposal, onClose }) => {
+const AssistantPanel: React.FC<Props> = ({ draft, onProposal, onClose, newsletterId }) => {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
@@ -53,6 +61,31 @@ const AssistantPanel: React.FC<Props> = ({ draft, onProposal, onClose }) => {
     fetchAudience({}).then(r => setTags(r.tags.map(t => ({ tag: t.tag, count: t.n })))).catch(() => null);
   }, []);
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs, busy]);
+
+  // Reprendre la conversation gardée dans le brouillon, à l'ouverture de la lettre.
+  const chargeRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!db || !newsletterId || chargeRef.current === newsletterId) return;
+    chargeRef.current = newsletterId;
+    getDoc(doc(db, 'newsletters', newsletterId, 'iris', 'conversation')).then(s => {
+      const garde = (s.data()?.messages || []) as MsgGarde[];
+      if (!garde.length) return;
+      setMsgs(prev => prev.length ? prev : garde.map(m => {
+        let proposal: Proposal | undefined;
+        try { proposal = m.proposalJson ? JSON.parse(m.proposalJson) : undefined; } catch { proposal = undefined; }
+        return { role: m.role, content: m.content, proposal };
+      }));
+    }).catch(() => null);
+  }, [newsletterId]);
+
+  // Garder chaque nouveau message dans le brouillon.
+  useEffect(() => {
+    if (!db || !newsletterId || !msgs.length) return;
+    const garde: MsgGarde[] = msgs.slice(-MAX_GARDES).map(m => ({
+      role: m.role, content: m.content, ...(m.proposal ? { proposalJson: JSON.stringify(m.proposal) } : {}),
+    }));
+    setDoc(doc(db, 'newsletters', newsletterId, 'iris', 'conversation'), { messages: garde, maj: serverTimestamp() }).catch(() => null);
+  }, [msgs, newsletterId]);
 
   // Le cœur d'Iris : etat/iris.battement, posé par le démon toutes les 30 s.
   useEffect(() => {

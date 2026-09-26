@@ -438,6 +438,8 @@ service cloud.firestore {
       allow write: if isAdmin();
       // L'historique des versions du composeur (une par heure d'écriture).
       match /versions/{v} { allow read, write: if isAdmin(); }
+      // La conversation avec Iris propre à cette lettre (jamais publique, même une fois envoyée).
+      match /iris/{d} { allow read, write: if isAdmin(); }
     }
     // ── Les gabarits d'infolettre (modèles rangés par catégorie, 20 sept 2026) ──
     match /newsletterGabarits/{id} { allow read, write: if isAdmin(); }
