@@ -904,9 +904,9 @@ export default function KrystineV2() {
             >
               <img
                 data-beat-img
-                src="https://storage.googleapis.com/inspirata/Base%20site/promo-2024/promo-ksl-poster.jpg"
-                alt="Krystine St-Laurent en conférence, devant le public"
-                className="absolute inset-0 h-[120%] w-full object-cover object-[22%_center] will-change-transform"
+                src="/conferences/mont-tremblant-2024-portrait.webp"
+                alt="Krystine St-Laurent sur scène devant une salle pleine, Mont-Tremblant, juin 2024"
+                className="absolute inset-0 h-[120%] w-full object-cover object-[70%_center] will-change-transform"
               />
             </div>
             <p
@@ -950,6 +950,23 @@ export default function KrystineV2() {
             </article>
           ))}
         </div>
+      </section>
+
+      {/* ─────────── LA SALLE · vraie photo (lancement du premier livre, 2018) ─────────── */}
+      <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(4rem,10vh,7rem)] bg-[#f4efe6]">
+        <figure data-reveal className="mx-auto max-w-[1400px]">
+          <div className="border border-[#9c7a44]/45 p-2">
+            <img
+              src="/conferences/lancement-2018.webp"
+              alt="Krystine St-Laurent sur scène devant une salle comble, au lancement de son premier livre en 2018"
+              loading="lazy"
+              className="block aspect-[16/9] w-full object-cover"
+            />
+          </div>
+          <figcaption className="mt-4 text-[0.62rem] uppercase tracking-[0.22em] text-[#7d6330]">
+            Au lancement de son premier livre, devant une salle comble &middot; 2018
+          </figcaption>
+        </figure>
       </section>
 
       <TemoignagesSection />

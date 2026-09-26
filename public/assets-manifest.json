@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-26T17:18:12.923Z",
+  "generatedAt": "2026-09-26T17:27:18.266Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -840,6 +840,27 @@
       "folder": "compte/skins",
       "kind": "image",
       "size": 42482
+    },
+    {
+      "path": "/conferences/lancement-2018.webp",
+      "name": "lancement-2018.webp",
+      "folder": "conferences",
+      "kind": "image",
+      "size": 294340
+    },
+    {
+      "path": "/conferences/mont-tremblant-2024-portrait.webp",
+      "name": "mont-tremblant-2024-portrait.webp",
+      "folder": "conferences",
+      "kind": "image",
+      "size": 213650
+    },
+    {
+      "path": "/conferences/mont-tremblant-2024.webp",
+      "name": "mont-tremblant-2024.webp",
+      "folder": "conferences",
+      "kind": "image",
+      "size": 241418
     },
     {
       "path": "/evenements/anglicane-large.webp",
