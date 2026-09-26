@@ -767,9 +767,9 @@ export default function KrystineV2() {
               >
                 <img
                   data-portrait-img
-                  src="/accueil/assets/hero-ml-poster.jpg"
-                  alt="Krystine St-Laurent, conférencière et autrice"
-                  className="h-full w-full object-cover object-[47%_32%] will-change-transform"
+                  src="/foyer/krystine-conference.webp"
+                  alt="Krystine St-Laurent sur scène, en conférence"
+                  className="h-full w-full object-cover object-[40%_30%] will-change-transform"
                 />
                 {/* voile très léger bas pour asseoir la légende */}
                 <div
@@ -904,9 +904,9 @@ export default function KrystineV2() {
             >
               <img
                 data-beat-img
-                src="/origine-square.jpg"
-                alt="Krystine St-Laurent"
-                className="absolute inset-0 h-[120%] w-full object-cover object-center will-change-transform"
+                src="https://storage.googleapis.com/inspirata/Base%20site/promo-2024/promo-ksl-poster.jpg"
+                alt="Krystine St-Laurent en conférence, devant le public"
+                className="absolute inset-0 h-[120%] w-full object-cover object-[22%_center] will-change-transform"
               />
             </div>
             <p
