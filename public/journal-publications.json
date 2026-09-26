@@ -2116,5 +2116,19 @@
       "public/assets-manifest.json",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T21:31:33.708Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "84614e88",
+    "message": "Accueil (section conférence) : le bouton vers la conférence dit simplement Découvrir",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json"
+    ]
   }
 ]
