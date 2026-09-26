@@ -33,6 +33,7 @@ const CLE_VID = 'vh.vid';
 const CLE_REPLAY = 'vh.replay';
 const CLE_MORCEAU = 'vh.morceau';   // le prochain numéro de morceau du film, continu d'un rechargement à l'autre
 const CLE_PARCOURS = 'vh.parcours';
+const CLE_DEC = 'vh.dec';   // '1' : visite de découverte (premier passage de ce navigateur); '0' : visite de retour
 const CLE_MOI = 'vh.moi';   // '1' : ce navigateur ne se compte pas (Krystine, Alex); '0' : il se compte malgré tout
 const INACTIVITE_MS = 30 * 60_000;
 const CADENCE_ENVOI_MS = 8_000;
@@ -47,6 +48,9 @@ let config: Required<Pick<ConfigVexelHotjar, 'site' | 'endpoint' | 'exclure' | '
 let sid = '';
 let vid = '';
 let nouveau = false;
+// Le corridor de la visite, tenu pour toute la session : une visite de
+// découverte reste de découverte jusqu'à sa dernière page.
+let decouverte = false;
 let file: Ev[] = [];
 let parcours: string[] = [];
 let minuterie: number | undefined;
@@ -94,6 +98,7 @@ function ouvrirSession() {
     ecrire(sessionStorage, CLE_PARCOURS, '[]');
     ecrire(sessionStorage, CLE_REPLAY, '');
     ecrire(sessionStorage, CLE_MORCEAU, '0');
+    ecrire(sessionStorage, CLE_DEC, '');
   }
   // Le parcours survit à un rechargement : la deuxième page d'une même visite
   // ne se compte pas comme une nouvelle visite.
@@ -102,6 +107,9 @@ function ouvrirSession() {
   toucherSession();
   vid = lire(localStorage, CLE_VID);
   if (!vid) { vid = id(); nouveau = true; ecrire(localStorage, CLE_VID, vid); }
+  const dec = lire(sessionStorage, CLE_DEC);
+  decouverte = dec ? dec === '1' : nouveau;
+  if (!dec) ecrire(sessionStorage, CLE_DEC, decouverte ? '1' : '0');
 }
 
 function toucherSession() { ecrire(sessionStorage, CLE_SID_T, String(Date.now())); }
@@ -173,7 +181,7 @@ function envoyer(urgent = false) {
   if (!file.length) return;
   const lot = file;
   file = [];
-  const corps = JSON.stringify({ v: 1, t: 'lot', site: config.site, sid, vid, nouveau, parcours: parcours.slice(-60), ev: lot });
+  const corps = JSON.stringify({ v: 1, t: 'lot', site: config.site, sid, vid, nouveau, dec: decouverte, parcours: parcours.slice(-60), ev: lot });
   nouveau = false;
   livrer(corps, urgent);
 }

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Card, GhostButton } from '../../primitives';
 import { Anneau, Barres, Courbe, Heures, TEINTES, Tuile } from './graphiques';
-import { dateCourte, duree, nb, pct, rafraichirMaintenant, type Resume, nomElement } from './donnees';
+import { dateCourte, duree, nb, pct, rafraichirMaintenant, type Resume, type CorridorResume, nomElement } from './donnees';
 import type { Periode } from '../VisiteursSection';
 
 // ─── Vue d'ensemble ─────────────────────────────────────────────────────────
@@ -23,6 +23,28 @@ const Squelette: React.FC = () => (
       {Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-24 animate-pulse rounded-[20px] bg-white/45 dark:bg-white/5" />)}
     </div>
     <div className="h-64 animate-pulse rounded-[20px] bg-white/45 dark:bg-white/5" />
+  </div>
+);
+
+// Deux corridors : la découverte (une personne qui arrive pour la première
+// fois sur le site depuis ce navigateur) et le retour (elle est déjà venue).
+// Ils se lisent côte à côte pour suivre, semaine après semaine, si le site
+// fait venir de nouvelles personnes ou surtout la communauté déjà reliée.
+const Corridor: React.FC<{ titre: string; note: string; c: CorridorResume; couleur: string }> = ({ titre, note, c, couleur }) => (
+  <div className="min-w-0">
+    <p className="font-serif text-base text-[#293027] dark:text-white">{titre}</p>
+    <p className="mb-3 text-[11px] text-[#38403a]/55 dark:text-white/45">{note}</p>
+    <div className="mb-4 flex flex-wrap gap-x-5 gap-y-1 text-[13px] text-[#38403a] dark:text-white/80">
+      <span><b className="tabular-nums">{nb(c.sessions)}</b> visites</span>
+      <span><b className="tabular-nums">{c.sessions ? (c.vues / c.sessions).toFixed(1) : '0'}</b> pages par visite</span>
+      <span><b className="tabular-nums">{pct(c.rebonds, c.fins)} %</b> repartent après une page</span>
+    </div>
+    <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#38403a]/50">Page d'arrivée</p>
+    {c.entrees.length ? <Barres lignes={c.entrees.slice(0, 4).map(e => ({ nom: e.path, n: e.n }))} unite=" visites" couleur={couleur} /> : <p className="text-sm text-[#38403a]/55">Aucune visite pour l'instant.</p>}
+    <p className="mb-2 mt-4 text-[10px] font-bold uppercase tracking-[0.2em] text-[#38403a]/50">D'où elles viennent</p>
+    {c.sources.length ? <Barres lignes={c.sources.slice(0, 4).map(x => ({ nom: x.nom, n: x.n }))} unite=" visites" couleur={couleur} /> : <p className="text-sm text-[#38403a]/55">Aucune source pour l'instant.</p>}
+    <p className="mb-2 mt-4 text-[10px] font-bold uppercase tracking-[0.2em] text-[#38403a]/50">Ce qu'elles ont fait</p>
+    {c.objectifs.length ? <Barres lignes={c.objectifs.slice(0, 4).map(o => ({ nom: o.nom, n: o.n }))} unite=" fois" couleur={couleur} /> : <p className="text-sm text-[#38403a]/55">Aucune inscription ni achat pour l'instant.</p>}
   </div>
 );
 
@@ -112,6 +134,14 @@ const VueEnsemble: React.FC<Props> = ({ resume, periode, onVoirCarte, onRafraich
           </div>
         </div>
         <Courbe nomSerie="visites" points={resume.jours.map(j => ({ x: j.jour, y: j.sessions, etiquette: dateCourte(j.jour) }))} />
+      </Card>
+
+      <Card className="min-w-0 p-6">
+        <Titre note="mesuré depuis le 26 septembre 2026">Découverte et retour</Titre>
+        <div className="grid gap-8 md:grid-cols-2">
+          <Corridor titre="Découverte" note="premier passage sur le site depuis ce navigateur" c={resume.corridors.decouverte} couleur={TEINTES.cuivre} />
+          <Corridor titre="Retour" note="déjà venue sur le site depuis ce navigateur" c={resume.corridors.retour} couleur={TEINTES.bleu} />
+        </div>
       </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">

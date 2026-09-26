@@ -31,6 +31,22 @@ export interface Journee {
   objectifs?: Record<string, { n: number; nom: string; niv?: 'gros' | 'petit' }>;
   erreursListe?: Record<string, { n: number; msg: string; src: string; path: string }>;
   formulaires?: Record<string, { s: string; path: string; debuts?: number; soumis?: number; abandons?: number; dernierChamp?: string }>;
+  corridors?: Partial<Record<Corridor, CorridorJour>>;
+}
+
+/** Découverte : premier passage de ce navigateur. Retour : il est déjà venu. */
+export type Corridor = 'decouverte' | 'retour';
+export interface CorridorJour {
+  sessions?: number; vues?: number; fins?: number; rebonds?: number;
+  entrees?: Record<string, number>;
+  sources?: Record<string, { n: number; nom: string }>;
+  objectifs?: Record<string, { n: number; nom: string }>;
+}
+export interface CorridorResume {
+  sessions: number; vues: number; fins: number; rebonds: number;
+  entrees: { path: string; n: number }[];
+  sources: { nom: string; n: number }[];
+  objectifs: { nom: string; n: number }[];
 }
 
 export interface PageResume extends Required<Pick<PageJour, 'path' | 'vues' | 'dureeMs' | 'sorties' | 'clics' | 'rage' | 'morts' | 'scrollN'>> {
@@ -51,6 +67,7 @@ export interface Resume {
   objectifs: { nom: string; n: number; niveau: 'gros' | 'petit' }[];
   erreursListe: { msg: string; src: string; path: string; n: number }[];
   formulaires: { s: string; path: string; debuts: number; soumis: number; abandons: number; dernierChamp?: string }[];
+  corridors: Record<Corridor, CorridorResume>;
 }
 
 export const jourISO = (d: Date) => d.toLocaleDateString('sv-SE', { timeZone: 'America/Toronto' });
@@ -71,6 +88,7 @@ export async function chargerJournees(de: string, a: string): Promise<Journee[]>
 }
 
 const add = (o: Record<string, number>, k: string, n = 0) => { o[k] = (o[k] || 0) + n; };
+const corridorVide = (): CorridorResume => ({ sessions: 0, vues: 0, fins: 0, rebonds: 0, entrees: [], sources: [], objectifs: [] });
 
 /** Fond plusieurs journées en un seul résumé, avec la série par jour pour la courbe. */
 export function resumer(journees: Journee[], de: string, a: string): Resume {
@@ -79,7 +97,10 @@ export function resumer(journees: Journee[], de: string, a: string): Resume {
     heures: new Array(24).fill(0),
     appareils: { ordinateur: 0, tablette: 0, mobile: 0 },
     pages: [], sources: [], campagnes: [], objectifs: [], erreursListe: [], formulaires: [],
+    corridors: { decouverte: corridorVide(), retour: corridorVide() },
   };
+  const cumul = { decouverte: { entrees: {} as Record<string, number>, sources: {} as Record<string, number>, objectifs: {} as Record<string, number> },
+    retour: { entrees: {} as Record<string, number>, sources: {} as Record<string, number>, objectifs: {} as Record<string, number> } };
   const pages = new Map<string, PageResume>();
   const sources: Record<string, number> = {};
   const campagnes = new Map<string, { source: string; campagne: string; n: number }>();
@@ -113,6 +134,16 @@ export function resumer(journees: Journee[], de: string, a: string): Resume {
       }
     }
     for (const s of Object.values(j.sources || {})) add(sources, s.nom, s.n);
+    for (const c of ['decouverte', 'retour'] as Corridor[]) {
+      const x = j.corridors?.[c];
+      if (!x) continue;
+      const R = r.corridors[c];
+      R.sessions += x.sessions || 0; R.vues += x.vues || 0; R.fins += x.fins || 0; R.rebonds += x.rebonds || 0;
+      // Les entrées sont rangées par clé de page : le chemin se lit dans les pages du jour.
+      for (const [k, n] of Object.entries(x.entrees || {})) add(cumul[c].entrees, j.pages?.[k]?.path || k, n);
+      for (const s of Object.values(x.sources || {})) add(cumul[c].sources, s.nom, s.n);
+      for (const o of Object.values(x.objectifs || {})) add(cumul[c].objectifs, o.nom, o.n);
+    }
     for (const c of Object.values(j.campagnes || {})) {
       const k = c.source + '|' + c.campagne;
       const e = campagnes.get(k) || { source: c.source, campagne: c.campagne, n: 0 };
@@ -145,6 +176,12 @@ export function resumer(journees: Journee[], de: string, a: string): Resume {
   r.objectifs = [...objectifs.entries()].map(([nom, x]) => ({ nom, ...x })).sort((x, y) => y.n - x.n);
   r.erreursListe = [...erreurs.values()].sort((x, y) => y.n - x.n);
   r.formulaires = [...forms.values()].sort((x, y) => y.abandons - x.abandons);
+  const trier = (o: Record<string, number>) => Object.entries(o).map(([nom, n]) => ({ nom, n })).sort((x, y) => y.n - x.n);
+  for (const c of ['decouverte', 'retour'] as Corridor[]) {
+    r.corridors[c].entrees = trier(cumul[c].entrees).map(({ nom, n }) => ({ path: nom, n }));
+    r.corridors[c].sources = trier(cumul[c].sources);
+    r.corridors[c].objectifs = trier(cumul[c].objectifs);
+  }
   return r;
 }
 

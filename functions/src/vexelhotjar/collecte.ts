@@ -183,7 +183,7 @@ async function recevoirLot(db: FirebaseFirestore.Firestore, site: string, sid: s
   const session = db.collection('vh_sessions').doc(sid);
   const existante = await session.get();
   const batch = db.batch();
-  batch.set(lot, { site, sid, vid: vid || null, nouveau: !!d.nouveau, recu: Timestamp.fromMillis(recu), jour: jourDe(recu), ev: propres, agrege: false });
+  batch.set(lot, { site, sid, vid: vid || null, nouveau: !!d.nouveau, dec: typeof d.dec === 'boolean' ? d.dec : null, recu: Timestamp.fromMillis(recu), jour: jourDe(recu), ev: propres, agrege: false });
 
   const fiche: DocumentData = {
     site, sid,

@@ -119,6 +119,9 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
     const lot = doc.data();
     const site = lot.site as string;
     const recuMs = lot.recu instanceof Timestamp ? lot.recu.toMillis() : Date.now();
+    // Découverte (premier passage de ce navigateur) ou retour : le corridor
+    // suit toute la visite. Les lots d'avant le 26 septembre 2026 n'en ont pas.
+    const cor = lot.dec === true ? 'corridors.decouverte' : lot.dec === false ? 'corridors.retour' : '';
     for (const e of (lot.ev as DocumentData[]) || []) {
       // L'horloge du visiteur date l'événement, sauf quand elle est décalée
       // de plus de six heures : l'heure de réception prend alors le relais.
@@ -136,6 +139,7 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
           inc(J, `pages.${page}.vues`);
           inc(J, `heures.h${heureDe(ts)}`);
           inc(J, `appareils.${device}`);
+          if (cor) inc(J, `${cor}.vues`);
           if (e.titre) J.textes[`pages.${page}.titre`] = e.titre;
           if (e.premier) {
             inc(J, 'sessions');
@@ -144,6 +148,12 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
             const hote = hoteDe(e.ref);
             inc(J, `sources.${hote ? hash(hote) : 'direct'}.n`);
             J.textes[`sources.${hote ? hash(hote) : 'direct'}.nom`] = hote || 'Accès direct';
+            if (cor) {
+              inc(J, `${cor}.sessions`);
+              inc(J, `${cor}.entrees.${page}`);
+              inc(J, `${cor}.sources.${hote ? hash(hote) : 'direct'}.n`);
+              J.textes[`${cor}.sources.${hote ? hash(hote) : 'direct'}.nom`] = hote || 'Accès direct';
+            }
             if (e.utm?.utm_source) {
               const k = hash(e.utm.utm_source + '|' + (e.utm.utm_campaign || ''));
               inc(J, `campagnes.${k}.n`);
@@ -166,6 +176,7 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
           // visites ont vu ce palier ».
           const clos = 'clos' in e ? !!e.clos : !!e.fin;
           if (e.fin) { inc(J, 'fins'); if (e.pages <= 1) inc(J, 'rebonds'); }
+          if (e.fin && cor) { inc(J, `${cor}.fins`); if (e.pages <= 1) inc(J, `${cor}.rebonds`); }
           if (!clos) break;
           inc(J, `pages.${page}.sorties`);
           const C = carte(cleCarte);
@@ -180,6 +191,7 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
           inc(J, `pages.${page}.clics`);
           if (e.r) { inc(J, 'rage'); inc(J, `pages.${page}.rage`); }
           if (e.m) { inc(J, 'morts'); inc(J, `pages.${page}.morts`); }
+          if (e.obj && cor) { inc(J, `${cor}.objectifs.${hash(e.obj)}.n`); J.textes[`${cor}.objectifs.${hash(e.obj)}.nom`] = e.obj; }
           if (e.obj) { inc(J, `objectifs.${hash(e.obj)}.n`); J.textes[`objectifs.${hash(e.obj)}.nom`] = e.obj; J.textes[`objectifs.${hash(e.obj)}.niv`] = e.niv === 'gros' ? 'gros' : 'petit'; }
           // Le palmarès des éléments ne retient que ce qui se clique pour
           // vrai (liens, boutons, champs, rôles de bouton, objectifs) : la
@@ -233,6 +245,7 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
         }
         case 'objectif': {
           inc(J, `objectifs.${hash(e.nom)}.n`);
+          if (cor) { inc(J, `${cor}.objectifs.${hash(e.nom)}.n`); J.textes[`${cor}.objectifs.${hash(e.nom)}.nom`] = e.nom; }
           J.textes[`objectifs.${hash(e.nom)}.nom`] = e.nom;
           J.textes[`objectifs.${hash(e.nom)}.niv`] = e.niv === 'gros' ? 'gros' : 'petit';
           break;
