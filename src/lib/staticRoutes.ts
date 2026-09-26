@@ -4,6 +4,9 @@
 // swallow the request before Firebase can serve the real HTML.
 //
 // Keep this list in sync with firebase.json's rewrites.
+// /speaking n'est plus une page : elle redirige vers /conferenciere depuis le
+// 26 septembre 2026 (archive : archives/speaking-2026-09-26). La garder ici
+// force un vrai chargement, pour que la redirection du serveur s'applique.
 export const STATIC_ROUTES = ['/accueil', '/communaute', '/speaking'] as const;
 
 export function isStaticRoute(path: string | undefined | null): boolean {

@@ -10,6 +10,9 @@
       "**/node_modules/**"
     ],
     "redirects": [
+      { "source": "/speaking", "destination": "/conferenciere", "type": 301 },
+      { "source": "/speaking/", "destination": "/conferenciere", "type": 301 },
+      { "source": "/speaking/index.html", "destination": "/conferenciere", "type": 301 },
       {
         "source": "/",
         "destination": "/accueil",
@@ -46,14 +49,6 @@
       {
         "source": "/communaute/**",
         "destination": "/communaute/index.html"
-      },
-      {
-        "source": "/speaking",
-        "destination": "/speaking/index.html"
-      },
-      {
-        "source": "/speaking/**",
-        "destination": "/speaking/index.html"
       },
       {
         "source": "/liste-attente-origine",
