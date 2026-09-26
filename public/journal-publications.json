@@ -1548,5 +1548,26 @@
       "public/assets-manifest.json",
       "src/pages/origine/NouvellesFondatrices.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T14:44:05.734Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d42f5ed8",
+    "message": "Conférencière (/conferenciere) nettoyée : citation du haut remplacée par la question maîtresse de Krystine, « 2025 » et bandeau Salut Bonjour retirés, chiffres justes (près de 40 ans, trois tomes), Inspira Nature retiré, « l'on » au lieu de « on », une seule invitation au compte, une seule carte de retraite, tournée après la parution, Festival mondial de yoga; Inspirata retiré de la barre de partage, du pied de page et du message d'inscription",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "src/components/NewsletterSignup.tsx",
+      "src/components/ShareButtons.tsx",
+      "src/content.ts",
+      "src/lib/liveEvents.ts",
+      "src/lib/pageMeta.ts",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
