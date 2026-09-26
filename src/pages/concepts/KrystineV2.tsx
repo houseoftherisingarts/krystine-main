@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
@@ -10,7 +11,7 @@ import {
 import { useApp } from '../../contexts/AppContext';
 import NewsletterSignup from '../../components/NewsletterSignup';
 import LiveEventsSection from '../../components/LiveEvents';
-import { getEventsPublics, addBookingRequest, type EventDoc } from '../../firebase/firestore';
+import { getEventsPublics, getTemoignagesPublies, addBookingRequest, type EventDoc } from '../../firebase/firestore';
 import type {
   AudienceSize, AudienceType, BudgetRange, EventFormat,
   InterventionDuration, InterventionKind, LangPref,
@@ -438,6 +439,49 @@ const FaqSection: React.FC = () => {
           </div>
         ))}
       </div>
+    </section>
+  );
+};
+
+/* ════════════════════════ Section · Témoignages ════════════════════════ */
+
+// Les paroles fixes plus celles que Krystine approuve dans l'admin
+// (Événements & Conférences › Témoignages reçus). Rien d'inventé.
+const TemoignagesSection: React.FC = () => {
+  const [recus, setRecus] = useState<{ quote: string; by: string }[]>([]);
+  useEffect(() => {
+    getTemoignagesPublies()
+      .then((ts) => setRecus(ts.map((t) => ({ quote: t.texte, by: [t.nom, t.role, t.evenement].filter(Boolean).join(' · ') }))))
+      .catch(() => setRecus([]));
+  }, []);
+  const tous = [...TESTIMONIALS, ...recus];
+  return (
+    <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#f4efe6]">
+      <div data-reveal className="max-w-[760px] mb-16">
+        <Kicker className="mb-5">Ce que l’on en dit</Kicker>
+        <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">
+          Après son passage
+        </h2>
+      </div>
+
+      <div data-reveal className={`grid gap-y-12 ${tous.length > 1 ? 'md:grid-cols-2 gap-x-[clamp(2rem,4vw,4rem)]' : ''}`}>
+        {tous.map((t, i) => (
+          <figure key={`${t.by}-${i}`} className={`flex flex-col border-t border-[#9c7a44]/40 pt-10 ${tous.length > 1 ? '' : 'max-w-[980px]'}`}>
+            <Quotes size={34} weight="fill" className="text-[#9c7a44]/40 mb-6" />
+            <blockquote className={`v2-serif italic text-[#1c1712] leading-[1.45] flex-1 ${tous.length > 1 ? 'text-[clamp(1.15rem,1.8vw,1.45rem)]' : 'text-[clamp(1.35rem,2.4vw,2rem)]'}`}>
+              {t.quote}
+            </blockquote>
+            <figcaption className="mt-7 text-[0.62rem] uppercase tracking-[0.2em] text-[#7d6330]">{t.by}</figcaption>
+          </figure>
+        ))}
+      </div>
+
+      <p data-reveal className="mt-14 text-[0.95rem] text-[#3a2f23]">
+        Vous avez assisté à une conférence de Krystine ?{' '}
+        <Link to="/conferenciere/temoignage" className="border-b border-[#1c1712] pb-0.5 hover:text-[#7d6330] hover:border-[#9c7a44]">
+          Laissez-nous un mot
+        </Link>
+      </p>
     </section>
   );
 };
@@ -912,27 +956,7 @@ export default function KrystineV2() {
         </div>
       </section>
 
-      {/* ─────────── TÉMOIGNAGES ─────────── */}
-      <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#f4efe6]">
-        <div data-reveal className="max-w-[760px] mb-16">
-          <Kicker className="mb-5">Ce que l’on en dit</Kicker>
-          <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">
-            Après son passage
-          </h2>
-        </div>
-
-        <div data-reveal className="grid gap-y-12">
-          {TESTIMONIALS.map((t) => (
-            <figure key={t.by} className="flex max-w-[980px] flex-col border-t border-[#9c7a44]/40 pt-10">
-              <Quotes size={34} weight="fill" className="text-[#9c7a44]/40 mb-6" />
-              <blockquote className="v2-serif italic text-[#1c1712] text-[clamp(1.35rem,2.4vw,2rem)] leading-[1.45] flex-1">
-                {t.quote}
-              </blockquote>
-              <figcaption className="mt-7 text-[0.62rem] uppercase tracking-[0.2em] text-[#7d6330]">{t.by}</figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
+      <TemoignagesSection />
 
       {/* ─────────── CHAPITRE 03 · COMMENT ÇA SE PASSE ─────────── */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#efe6d7]">

@@ -88,6 +88,7 @@ const QuizLoeuvre = lazy(() => import('./src/pages/QuizLoeuvre'));
 // Concepts de refonte (comparaison côte à côte) — pages standalone, chrome masqué.
 const KrystineV1 = lazy(() => import('./src/pages/concepts/KrystineV1'));
 const KrystineV2 = lazy(() => import('./src/pages/concepts/KrystineV2'));
+const TemoignageConference = lazy(() => import('./src/pages/TemoignageConference'));
 const KrystineV3 = lazy(() => import('./src/pages/concepts/KrystineV3'));
 // Formations en langage V2 (magazine crème), même branding que /krystine.
 const FormationsLanding = lazy(() => import('./src/pages/FormationsLanding'));
@@ -275,6 +276,8 @@ const App: React.FC = () => (
           <Route path="/blogue"          element={<BlogueLoeuvre />} />
           <Route path="/points-de-vente" element={<LocationsLoeuvre />} />
           <Route path="/conferenciere"   element={<KrystineV2 />} />
+          <Route path="/conferenciere/temoignage" element={<TemoignageConference />} />
+          <Route path="/temoignage"      element={<TemoignageConference />} />
 
           {/* ── Standalone Quiz + Livres live under /medias,
                 Événements lives under /formations. Keep legacy URLs redirecting. */}

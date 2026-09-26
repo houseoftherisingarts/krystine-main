@@ -487,6 +487,21 @@ service cloud.firestore {
     // connexion (bootstrapAdminEtat, src/firebase/auth.ts) : jamais de
     // lecture, jamais d'écriture côté membre.
     match /etat/admins { allow read: if isAdmin(); allow write: if isAdmin(); }
+    // Témoignages de conférence : le public en dépose, jamais publiés d'office.
+    // Seuls ceux que Krystine approuve (publie) ET que la personne autorise se lisent.
+    match /temoignagesConference/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['nom', 'role', 'evenement', 'texte', 'courriel', 'autorisePublication', 'publie', 'createdAt'])
+        && request.resource.data.nom is string && request.resource.data.nom.size() > 0 && request.resource.data.nom.size() <= 80
+        && request.resource.data.evenement is string && request.resource.data.evenement.size() > 0 && request.resource.data.evenement.size() <= 160
+        && request.resource.data.texte is string && request.resource.data.texte.size() >= 10 && request.resource.data.texte.size() <= 1500
+        && (!('role' in request.resource.data) || (request.resource.data.role is string && request.resource.data.role.size() <= 120))
+        && (!('courriel' in request.resource.data) || (request.resource.data.courriel is string && request.resource.data.courriel.size() <= 200))
+        && request.resource.data.autorisePublication is bool
+        && request.resource.data.publie == false;
+      allow read: if isAdmin() || (resource.data.publie == true && resource.data.autorisePublication == true);
+      allow update, delete: if isAdmin();
+    }
+
     match /bookingRequests/{id} {
       allow create: if request.resource.data.keys().hasAll(['name', 'email']);
       allow read, update, delete: if isAdmin();

@@ -952,6 +952,48 @@ export async function deleteBookingRequest(id: string) {
   return deleteDoc(doc(db!, 'bookingRequests', id));
 }
 
+// ─── Témoignages de conférence ──────────────────────────────────────────────
+// Laissés par le public sur /conferenciere/temoignage. Rien ne s'affiche sur le
+// site sans deux accords : celui de la personne (autorisePublication) et celui
+// de Krystine dans l'admin (publie). Aucun témoignage ne s'invente.
+export interface TemoignageConference {
+  id?: string;
+  nom: string;                  // tel qu'il paraîtra, ex. « Julie Tremblay » ou « Julie T. »
+  role?: string;                // facultatif, ex. « enseignante, Lévis »
+  evenement: string;            // où la personne a vu Krystine
+  texte: string;
+  courriel?: string;            // jamais affiché
+  autorisePublication: boolean;
+  publie: boolean;
+  createdAt?: Timestamp;
+}
+
+export async function addTemoignageConference(data: Omit<TemoignageConference, 'id' | 'publie' | 'createdAt'>) {
+  if (!db) return console.warn('[Firestore] Not configured');
+  const ref = await addDoc(collection(db, 'temoignagesConference'), { ...data, publie: false, createdAt: serverTimestamp() });
+  trackObjectif('Témoignage de conférence', 'petit');
+  return ref;
+}
+
+export async function getTemoignagesConference(): Promise<TemoignageConference[]> {
+  if (!db) return [];
+  const snap = await getDocs(query(collection(db, 'temoignagesConference'), orderBy('createdAt', 'desc')));
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as TemoignageConference));
+}
+
+/** Ceux que Krystine a approuvés, pour la page publique. */
+export async function getTemoignagesPublies(): Promise<TemoignageConference[]> {
+  if (!db) return [];
+  const snap = await getDocs(query(collection(db, 'temoignagesConference'), where('publie', '==', true), where('autorisePublication', '==', true)));
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as TemoignageConference))
+    .sort((a, b) => (b.createdAt?.toMillis?.() ?? 0) - (a.createdAt?.toMillis?.() ?? 0));
+}
+
+export async function setTemoignagePublie(id: string, publie: boolean) {
+  if (!db) noDb();
+  return updateDoc(doc(db!, 'temoignagesConference', id), { publie });
+}
+
 // ─── Media Library (Firebase Storage URL registry) ───────────────────────────
 // Holds two flavours of entries:
 //   • `source: 'upload'`  — files in our Firebase Storage bucket; `path`

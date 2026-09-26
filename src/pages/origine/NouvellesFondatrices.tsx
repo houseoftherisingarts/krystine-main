@@ -93,12 +93,12 @@ const NouvellesFondatrices: React.FC = () => {
           <p className="mt-3 text-[0.66rem] uppercase tracking-[0.3em] text-[#5f5c50]">EXPÉRIENCE ORIGINE &middot; Groupe fondateur</p>
         </header>
 
-        {/* Le bandeau bordeaux de la lettre aux fondatrices */}
-        <div className="relative overflow-hidden bg-[#4a0a1c] px-7 sm:px-12 pt-9 pb-9">
+        {/* Le bandeau vert profond du gabarit « Groupe fondateur » */}
+        <div className="relative overflow-hidden bg-[#28352F] px-7 sm:px-12 pt-9 pb-9">
           <span
             aria-hidden
             className="pointer-events-none absolute -right-[15%] -top-[60%] h-[180%] w-[60%] rounded-full blur-[60px]"
-            style={{ background: 'radial-gradient(circle, rgba(186,123,57,.40) 0%, rgba(74,10,28,0) 70%)' }}
+            style={{ background: 'radial-gradient(circle, rgba(186,123,57,.40) 0%, rgba(40,53,47,0) 70%)' }}
           />
           <p className="relative text-[0.66rem] uppercase tracking-[0.3em] font-semibold text-[#e0b060]">Nouvelles des fondatrices</p>
           <h1 className="relative mt-4 text-[#EEE7DB] text-[clamp(1.55rem,4.2vw,2.8rem)] leading-[1.1] font-medium" style={serif}>
