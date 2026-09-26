@@ -1677,5 +1677,21 @@
       "src/pages/admin/sections/SubmissionsSection.tsx",
       "src/pages/origine/NouvellesFondatrices.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T15:13:26.253Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "192b65af",
+    "message": "Témoignages de conférence : le courriel est rangé à part (temoignagesContacts, lisible par l'admin seulement), jamais dans le témoignage public",
+    "cibles": [
+      "hosting",
+      "firestore"
+    ],
+    "fichiers": [
+      "firestore.rules",
+      "public/assets-manifest.json",
+      "src/firebase/firestore.ts"
+    ]
   }
 ]
