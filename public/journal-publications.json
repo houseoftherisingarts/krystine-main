@@ -1896,5 +1896,20 @@
       "public/conferences/mont-tremblant-2024-salle.webp",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T17:42:05.430Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c8e791d7",
+    "message": "Conférencière (/conferenciere) : photo du haut remplacée par la version fournie par Krystine (fond retravaillé avec ChatGPT, choix de Krystine)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/conferences/krystine-scene-haut.webp",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
