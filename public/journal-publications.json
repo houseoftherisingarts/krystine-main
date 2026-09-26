@@ -1880,5 +1880,21 @@
       "public/conferences/mont-tremblant-2024-salle.webp",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T17:41:08.712Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "f1ebd15c",
+    "message": "Conférencière (/conferenciere) : chapitre 01, la photo de Mont-Tremblant fournie par Krystine (version améliorée par ChatGPT, choix de Krystine) remplace le recadrage",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/conferences/mont-tremblant-2024-krystine.webp",
+      "public/conferences/mont-tremblant-2024-salle.webp",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
