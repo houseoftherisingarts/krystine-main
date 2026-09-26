@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { addGuideResponse } from '../../firebase/firestore';
-import { StyleV2, Masthead, TitreV2, Kicker, GOUTTIERE, useMotionV2 } from '../../components/v2/Magazine';
+import { motion, useReducedMotion } from 'framer-motion';
 
 // /origine/nouvelles : la page que Krystine envoie aux fondatrices de la
 // première Expérience Origine (été 2026), quelques mois après la fin du
@@ -28,18 +28,20 @@ const QUESTIONS = [
   },
 ];
 
-const champ = 'w-full bg-[#faf6ee] border border-[#1c1712]/20 px-5 py-4 text-[0.95rem] leading-[1.75] text-[#1c1712] placeholder-[#1c1712]/35 outline-none transition-colors duration-300 focus:border-[#9c7a44]';
+// La palette de « La Lettre de Krystine » (functions/src/newsletter/renderer.ts) :
+// crème #EEE7DB, papier #f8f6f2, encre #292b20, nuit #141311, or #e0b060.
+const serif = { fontFamily: '"Cormorant Garamond", Georgia, serif' };
+const champ = 'w-full rounded-[12px] bg-[#f8f6f2] border border-[#293027]/15 px-5 py-4 text-[0.95rem] leading-[1.75] text-[#292b20] placeholder-[#293027]/35 outline-none transition-colors duration-300 focus:border-[#e0b060]';
 const libelle = 'block text-[0.62rem] uppercase tracking-[0.24em] text-[#7d6330] mb-2.5';
 
 const NouvellesFondatrices: React.FC = () => {
-  const root = useRef<HTMLDivElement>(null);
-  useMotionV2(root);
   const [prenom, setPrenom] = useState('');
   const [courriel, setCourriel] = useState('');
   const [reponses, setReponses] = useState<Record<string, string>>({});
   const [envoi, setEnvoi] = useState(false);
   const [fait, setFait] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
+  const reduce = useReducedMotion();
 
   const envoyer = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,47 +75,61 @@ const NouvellesFondatrices: React.FC = () => {
   };
 
   return (
-    <div ref={root} className="min-h-screen w-full bg-[#f4efe6] text-[#1c1712]">
-      <StyleV2 />
-      <section data-hero className={`${GOUTTIERE} pt-[clamp(7rem,16vh,10rem)] pb-[clamp(3rem,8vh,5rem)]`}>
-        <div className="mx-auto max-w-[1100px]">
-          <Masthead gauche={<>Expérience Origine &middot; Les fondatrices</>} />
-          <div className="mt-[clamp(2.5rem,7vh,4.5rem)]">
-            <Kicker className="mb-6">{fait ? 'Merci' : 'Trois questions'}</Kicker>
-            <TitreV2
-              lignes={fait ? ['Vos nouvelles', 'sont arrivées'] : ['Depuis Origine,', 'où en êtes-vous?']}
-              className="text-[clamp(2.8rem,7.6vw,6.8rem)] max-w-[16ch]"
-            />
-          </div>
-          {fait && (
-            <p data-fade className="mt-8 v2-serif text-[clamp(1.2rem,2.2vw,1.7rem)] font-light leading-[1.4] text-[#3a2f23] max-w-[42ch]">
+    <main className="min-h-screen w-full bg-[#EEE7DB] px-4 sm:px-6 pt-[clamp(6rem,14vh,8.5rem)] pb-[clamp(4rem,10vh,7rem)]">
+      <motion.article
+        initial={reduce ? false : { opacity: 0, y: 28, filter: 'blur(6px)' }}
+        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+        transition={{ duration: 1.1, ease: [0.16, 0.8, 0.24, 1] }}
+        className="mx-auto w-full max-w-[880px] rounded-[15px] overflow-hidden shadow-[0_40px_90px_-60px_rgba(41,48,39,0.6)] border border-[#293027]/10"
+      >
+        {/* L'en-tête de la lettre */}
+        <header className="bg-[#f8f6f2] px-7 sm:px-12 pt-10 pb-9">
+          <p className="text-[#292b20] text-[clamp(2.2rem,5.4vw,3.6rem)] leading-[1.05] flex flex-wrap items-center gap-x-3" style={serif}>
+            <span>La Lettre de</span>
+            <img src="/compte/signature-krystine-noire.webp" alt="Krystine" className="h-[1.5em] w-auto -my-3" />
+          </p>
+          <p className="mt-3 text-[#5f5c50] text-[clamp(1.1rem,2.2vw,1.35rem)]" style={serif}>Relier ce que nous avons appris à séparer.</p>
+          <p className="mt-5 text-[0.62rem] sm:text-[0.66rem] uppercase tracking-[0.3em] leading-[2] text-[#292b20]/80">
+            Nourrir et soigner<br />Corps et conscience<br />Science et sagesses
+          </p>
+        </header>
+
+        {/* Le bandeau nuit */}
+        <div className="bg-[#141311] px-7 sm:px-12 pt-8 pb-8">
+          <p className="text-[0.66rem] uppercase tracking-[0.3em] font-semibold text-[#e0b060]">Expérience Origine &middot; Les fondatrices</p>
+          <h1 className="mt-4 text-[#EEE7DB] text-[clamp(2rem,4.6vw,3rem)] leading-[1.08] font-medium" style={serif}>
+            {fait ? 'Vos nouvelles sont arrivées' : 'Depuis Origine, où en êtes-vous?'}
+          </h1>
+          <span className="mt-6 block h-px w-16 bg-[#e0b060]" aria-hidden />
+        </div>
+
+        {/* Le corps */}
+        <div className="bg-white px-7 sm:px-12 pt-10 pb-12">
+          {fait ? (
+            <p className="text-[#292b20] text-[clamp(1.2rem,2.4vw,1.55rem)] leading-[1.5] max-w-[40ch]" style={serif}>
               Merci pour ce bout de chemin partagé et pour les nouvelles que vous avez pris le temps de confier.
             </p>
-          )}
-        </div>
-      </section>
+          ) : (
+            <form onSubmit={envoyer}>
+              <div className="grid gap-6 sm:grid-cols-2">
+                <label className="block">
+                  <span className={libelle}>Votre prénom</span>
+                  <input value={prenom} onChange={e => setPrenom(e.target.value)} maxLength={80} autoComplete="given-name" className={champ} />
+                </label>
+                <label className="block">
+                  <span className={libelle}>Votre courriel</span>
+                  <input type="email" value={courriel} onChange={e => setCourriel(e.target.value)} maxLength={200} autoComplete="email" className={champ} />
+                </label>
+              </div>
 
-      {!fait && (
-        <section className={`${GOUTTIERE} pb-[clamp(5rem,12vh,8rem)]`}>
-          <form onSubmit={envoyer} className="mx-auto max-w-[1100px] border-t border-[#1c1712]/15 pt-[clamp(2.5rem,6vh,4rem)]">
-            <div className="grid gap-6 sm:grid-cols-2 max-w-[760px]">
-              <label className="block">
-                <span className={libelle}>Votre prénom</span>
-                <input value={prenom} onChange={e => setPrenom(e.target.value)} maxLength={80} autoComplete="given-name" className={champ} />
-              </label>
-              <label className="block">
-                <span className={libelle}>Votre courriel</span>
-                <input type="email" value={courriel} onChange={e => setCourriel(e.target.value)} maxLength={200} autoComplete="email" className={champ} />
-              </label>
-            </div>
-
-            <ol className="mt-[clamp(3rem,7vh,4.5rem)] space-y-[clamp(3rem,7vh,4.5rem)]">
-              {QUESTIONS.map((q, i) => (
-                <li key={q.qid} className="grid gap-6 md:grid-cols-[5rem_1fr]">
-                  <span className="v2-serif font-light text-[2.6rem] leading-none text-[#9c7a44]">{String(i + 1).padStart(2, '0')}</span>
-                  <div>
-                    <h2 className="v2-serif font-light text-[clamp(1.45rem,2.6vw,2.1rem)] leading-[1.22] text-[#1c1712] max-w-[34ch]">{q.titre}</h2>
-                    <p className="mt-3 text-[0.93rem] leading-[1.85] text-[#3a2f23]/80 max-w-[62ch]">{q.aide}</p>
+              <ol className="mt-12 space-y-12">
+                {QUESTIONS.map((q, i) => (
+                  <li key={q.qid} className="border-t border-[#293027]/10 pt-9">
+                    <div className="flex items-baseline gap-4">
+                      <span className="text-[2.2rem] leading-none text-[#7d6330]" style={serif}>{String(i + 1).padStart(2, '0')}</span>
+                      <h2 className="text-[clamp(1.4rem,2.6vw,1.8rem)] leading-[1.25] text-[#292b20] font-medium" style={serif}>{q.titre}</h2>
+                    </div>
+                    <p className="mt-3 text-[0.93rem] leading-[1.85] text-[#5f5c50]">{q.aide}</p>
                     <textarea
                       rows={6}
                       value={reponses[q.qid] || ''}
@@ -122,25 +138,32 @@ const NouvellesFondatrices: React.FC = () => {
                       aria-label={q.titre}
                       className={`${champ} mt-5 resize-y`}
                     />
-                  </div>
-                </li>
-              ))}
-            </ol>
+                  </li>
+                ))}
+              </ol>
 
-            <div className="mt-[clamp(3rem,7vh,4.5rem)] md:pl-[6.5rem] flex flex-wrap items-center gap-6">
-              <button
-                type="submit"
-                disabled={envoi}
-                className="inline-flex min-h-[46px] items-center justify-center gap-2.5 bg-[#1c1712] px-8 py-3.5 text-[0.68rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] disabled:opacity-50"
-              >
-                {envoi ? 'Envoi…' : 'Envoyer mes réponses'}
-              </button>
-              {erreur && <p className="text-sm text-[#8B4A2F]">{erreur}</p>}
-            </div>
-          </form>
-        </section>
-      )}
-    </div>
+              <div className="mt-12 flex flex-wrap items-center gap-6">
+                <button
+                  type="submit"
+                  disabled={envoi}
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-[#BA7B39] px-8 py-3.5 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#293027] transition-colors duration-300 hover:bg-[#293027] hover:text-[#e0b060] disabled:opacity-50"
+                >
+                  {envoi ? 'Envoi…' : 'Envoyer mes réponses'}
+                </button>
+                {erreur && <p className="text-sm text-[#8B4A2F]">{erreur}</p>}
+              </div>
+            </form>
+          )}
+
+          <img src="/compte/signature-krystine-noire.webp" alt="Krystine St-Laurent" className="mt-12 w-[170px] h-auto" />
+        </div>
+
+        {/* Le pied de la lettre */}
+        <footer className="bg-[#f8f6f2] px-7 sm:px-12 py-6 text-center text-[0.6rem] uppercase tracking-[0.26em] text-[#5f5c50]">
+          Nourrir et soigner &middot; Corps et conscience &middot; Science et sagesses
+        </footer>
+      </motion.article>
+    </main>
   );
 };
 
