@@ -5,7 +5,7 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 import {
   collection, addDoc, getDocs, deleteDoc, doc, updateDoc, setDoc, getDoc,
   query, orderBy, where, serverTimestamp, onSnapshot, Timestamp, deleteField,
-  writeBatch, limit, getCountFromServer,
+  writeBatch, limit, getCountFromServer, arrayUnion,
   type Unsubscribe,
 } from 'firebase/firestore';
 
@@ -478,33 +478,51 @@ export function subscribeToLiveQuestions(eventTag: string, cb: (rows: LiveQuesti
 }
 
 // ─── Bulk import (CSV flow) ──────────────────────────────────────────────────
-// Skips emails that already exist (case-insensitive). Writes in batches of 400
-// to stay under Firestore's 500-op batch limit.
+// Un courriel déjà présent (sans égard à la casse) n'est pas recréé : s'il
+// porte des étiquettes dans le fichier, elles s'ajoutent à sa fiche sans
+// toucher à son statut ni à ses autres étiquettes (une désinscrite reste
+// désinscrite). Écrit par lots de 400, sous la limite de 500 de Firestore.
 export interface BulkImportResult {
   inserted: number;
   skippedDuplicates: number;
   invalid: number;
+  /** Fiches déjà présentes qui ont reçu une ou des étiquettes du fichier. */
+  tagged: number;
 }
 
 export async function bulkAddNewsletterSubscribers(
   rows: Array<Omit<NewsletterSubscriber, 'id' | 'subscribedAt' | 'unsubscribeToken'>>,
 ): Promise<BulkImportResult> {
-  if (!db) { noDb(); return { inserted: 0, skippedDuplicates: 0, invalid: 0 }; }
+  if (!db) { noDb(); return { inserted: 0, skippedDuplicates: 0, invalid: 0, tagged: 0 }; }
 
   const existing = await getNewsletterSubscribers();
   const seen = new Set(existing.map(s => s.email.toLowerCase()));
+  const parCourriel = new Map(existing.map(s => [s.email.toLowerCase(), s]));
   const validRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   let inserted = 0;
   let skipped = 0;
   let invalid = 0;
+  let tagged = 0;
   let batch = writeBatch(db!);
   let ops = 0;
 
   for (const row of rows) {
     const email = String(row.email || '').trim().toLowerCase();
     if (!email || !validRx.test(email)) { invalid++; continue; }
-    if (seen.has(email)) { skipped++; continue; }
+    if (seen.has(email)) {
+      const fiche = parCourriel.get(email);
+      const nouvelles = (row.tags || []).filter(t => !(fiche?.tags || []).includes(t));
+      if (fiche?.id && nouvelles.length) {
+        batch.update(doc(db, 'newsletter', fiche.id), { tags: arrayUnion(...nouvelles) });
+        fiche.tags = [...(fiche.tags || []), ...nouvelles];
+        tagged++;
+        if (++ops >= 400) { await batch.commit(); batch = writeBatch(db!); ops = 0; }
+      } else {
+        skipped++;
+      }
+      continue;
+    }
     seen.add(email);
 
     const ref = doc(collection(db, 'newsletter'));
@@ -530,7 +548,7 @@ export async function bulkAddNewsletterSubscribers(
   }
   if (ops > 0) await batch.commit();
   invalidateNewsletterSubscribers();
-  return { inserted, skippedDuplicates: skipped, invalid };
+  return { inserted, skippedDuplicates: skipped, invalid, tagged };
 }
 
 // ─── Newsletter messages (campaigns) ─────────────────────────────────────────

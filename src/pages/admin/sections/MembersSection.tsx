@@ -331,6 +331,7 @@ const MembersSection: React.FC = () => {
       {importResult && (
         <div className="px-4 py-3 rounded-xl bg-green-50 text-green-700 text-sm">
           Importation terminée : <strong>{importResult.inserted}</strong> ajoutés,
+          &nbsp;<strong>{importResult.tagged ?? 0}</strong> déjà inscrits qui ont reçu l'étiquette,
           &nbsp;<strong>{importResult.skippedDuplicates}</strong> doublons ignorés,
           &nbsp;<strong>{importResult.invalid}</strong> lignes invalides.
           Les nouveaux contacts apparaissent sous « Import manuel » dans le filtre vue ci-dessus.
