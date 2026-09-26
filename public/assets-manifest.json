@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-26T18:46:00.330Z",
+  "generatedAt": "2026-09-26T21:02:13.990Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -105,6 +105,27 @@
       "folder": "accueil/assets",
       "kind": "image",
       "size": 57430
+    },
+    {
+      "path": "/accueil/assets/film/conference-2026-1080.mp4",
+      "name": "conference-2026-1080.mp4",
+      "folder": "accueil/assets/film",
+      "kind": "video",
+      "size": 5714824
+    },
+    {
+      "path": "/accueil/assets/film/conference-2026-720.mp4",
+      "name": "conference-2026-720.mp4",
+      "folder": "accueil/assets/film",
+      "kind": "video",
+      "size": 4263473
+    },
+    {
+      "path": "/accueil/assets/film/conference-2026-poster.jpg",
+      "name": "conference-2026-poster.jpg",
+      "folder": "accueil/assets/film",
+      "kind": "image",
+      "size": 115972
     },
     {
       "path": "/accueil/assets/portes/conferences-scene.webp",

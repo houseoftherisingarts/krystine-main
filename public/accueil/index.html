@@ -879,7 +879,7 @@
 
   <!-- ===== KRYSTINE SUR SCÈNE : positionnement conférencière (Krystine, 26 sept. 2026), le film ne bouge pas ===== -->
   <section class="film" id="film">
-    <div class="scene"><video id="filmVid" poster="https://storage.googleapis.com/inspirata/Base%20site/promo-2024/promo-ksl-poster-1920.webp" muted loop playsinline preload="metadata" aria-label="Krystine St-Laurent en conférence"></video></div>
+    <div class="scene"><video id="filmVid" poster="/accueil/assets/film/conference-2026-poster.jpg" muted loop playsinline preload="metadata" aria-label="Krystine St-Laurent en conférence"></video></div>
     <div class="veil"></div>
     <div class="lamp"></div>
     <div class="lamp2"></div>
@@ -1486,9 +1486,10 @@
   // Krystine sur scène : le film 2024 tourne en boucle muette derrière la copie (comme sur /speaking).
   // Le bouton active ou coupe le son, sur place : même vidéo, même cadre, rien d'autre ne bouge.
   (function(){ var sec=document.getElementById('film'), v=document.getElementById('filmVid'), btn=document.getElementById('filmPlay'); if(!sec||!v||!btn) return;
-    var B='https://storage.googleapis.com/inspirata/Base%20site/promo-2024/', wide=window.innerWidth>900;
+    // Film de conférence 2026 (Krystine, 26 sept.) : les écrans de texte du début et de la fin sont retirés de la boucle.
+    var B='/accueil/assets/film/', wide=window.innerWidth>900;
     var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    v.src=B+(wide?'promo-ksl-v2-1080.mp4':'promo-ksl-v2-720.mp4');
+    v.src=B+(wide?'conference-2026-1080.mp4':'conference-2026-720.mp4');
     v.addEventListener('playing',function(){ v.classList.add('on'); },{once:true});
     function boucle(){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
     if(reduce){ v.removeAttribute('loop'); v.classList.add('on'); }
