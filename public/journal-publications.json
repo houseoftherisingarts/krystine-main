@@ -1520,5 +1520,19 @@
       "src/pages/origine/components/components/ui/PricingSection.tsx",
       "src/pages/podcast/App.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T14:37:41.692Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "3a8a1224",
+    "message": "Page /origine/nouvelles : en-tête « La Lettre de Krystine » retiré, ambiance cuivre et nuit de la lettre gardée",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/origine/NouvellesFondatrices.tsx"
+    ]
   }
 ]
