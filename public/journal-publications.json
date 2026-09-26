@@ -1820,5 +1820,19 @@
       "src/lib/pageMeta.ts",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T17:18:19.990Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b4819599",
+    "message": "Conférencière (/conferenciere) : deux vraies photos de Krystine sur scène remplacent l'image de la table aux livres et celle d'Expérience Origine",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
