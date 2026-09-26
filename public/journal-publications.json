@@ -2144,5 +2144,22 @@
       "public/assets-manifest.json",
       "src/lib/changelog.ts"
     ]
+  },
+  {
+    "quand": "2026-09-26T23:36:21.723Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c54acd65",
+    "message": "Infolettre : nouvel onglet Journal (admin › Infolettre) : chaque lettre partie par mois, sujet, audience, reçue, lue, clics, la lettre telle qu'envoyée et la liste de qui l'a reçue (lue, clic, téléchargement); lecture de ces listes réservée à l'admin",
+    "cibles": [
+      "hosting",
+      "firestore"
+    ],
+    "fichiers": [
+      "firestore.rules",
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/NewsletterSection.tsx",
+      "src/pages/admin/sections/newsletter/JournalPanel.tsx"
+    ]
   }
 ]
