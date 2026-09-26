@@ -295,7 +295,7 @@ export const PricingSection: React.FC = () => {
                         <span className="text-sm md:text-base font-serif text-[#BF5700] whitespace-nowrap text-right shrink-0">Valeur : 297 $</span>
                       </div>
                       <div className="flex justify-between items-start gap-4 md:gap-6">
-                        <span className="text-sm md:text-base text-[#6B5E53] dark:text-paper/80 font-medium leading-relaxed">Accès au contenu inspiré du troisième tome - en parution 14 octobre 2026</span>
+                        <span className="text-sm md:text-base text-[#6B5E53] dark:text-paper/80 font-medium leading-relaxed">Accès au contenu inspiré du troisième tome - en parution 4 février 2027</span>
                         <span className="text-sm md:text-base font-serif text-[#BF5700] whitespace-nowrap text-right shrink-0">Valeur : Inestimable</span>
                       </div>
                     </div>

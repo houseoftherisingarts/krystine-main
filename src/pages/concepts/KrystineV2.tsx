@@ -11,7 +11,7 @@ import { useApp } from '../../contexts/AppContext';
 import NewsletterSignup from '../../components/NewsletterSignup';
 import CompteUpsell from '../../components/CompteUpsell';
 import LiveEventsSection from '../../components/LiveEvents';
-import { getEvents, addBookingRequest, type EventDoc } from '../../firebase/firestore';
+import { getEventsPublics, addBookingRequest, type EventDoc } from '../../firebase/firestore';
 import type {
   AudienceSize, AudienceType, BudgetRange, EventFormat,
   InterventionDuration, InterventionKind, LangPref,
@@ -455,10 +455,16 @@ const FaqSection: React.FC = () => {
 const EventsSection: React.FC = () => {
   const [extraEvents, setExtraEvents] = useState<EventDoc[]>([]);
   useEffect(() => {
-    getEvents().then(setExtraEvents).catch(() => setExtraEvents([]));
+    getEventsPublics().then(setExtraEvents).catch(() => setExtraEvents([]));
   }, []);
   const upcoming = getUpcomingEvents({ hideTedx: true });
-  const extraUpcoming = extraEvents.filter((ev) => new Date(ev.date) >= new Date()).slice(0, 6);
+  // Un événement de la base qui double une carte de l'agenda (même
+  // identifiant, comme le lancement à L'Anglicane) ne s'affiche qu'une fois.
+  const dejaAffiches = new Set(upcoming.map((e) => e.id));
+  const jourLocal = (iso: string) => new Date(/^\d{4}-\d{2}-\d{2}$/.test(iso) ? `${iso}T12:00:00` : iso);
+  const extraUpcoming = extraEvents
+    .filter((ev) => !dejaAffiches.has(ev.slug || ev.id) && jourLocal(ev.date) >= new Date())
+    .slice(0, 6);
 
   return (
     <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#f4efe6]">
@@ -478,7 +484,7 @@ const EventsSection: React.FC = () => {
         {extraUpcoming.length > 0 && (
           <div className="mx-auto max-w-[1180px] mt-4 grid md:grid-cols-2 md:gap-x-14">
             {extraUpcoming.map((ev) => {
-              const dateStr = new Date(ev.date).toLocaleDateString('fr-CA', {
+              const dateStr = jourLocal(ev.date).toLocaleDateString('fr-CA', {
                 weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
               });
               return (

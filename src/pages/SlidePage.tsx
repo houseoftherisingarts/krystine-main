@@ -300,7 +300,7 @@ const SLIDES: Slide[] = [
         eyebrow: 'Trilogie · Tome 3',
         title: '? & Ayurveda',
         body: 'Troisième tome de la trilogie. Le titre se révèle à la parution.',
-        meta: "14 octobre 2026 · Éditions de l'Homme",
+        meta: "4 février 2027 · Éditions de l'Homme",
       },
       {
         icon: 'fa-microphone-lines',

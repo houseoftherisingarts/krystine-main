@@ -131,8 +131,12 @@ const LiveEventRow: React.FC<{ event: LiveEvent; onWaitlist: () => void; onTourR
 
   // Gros chiffre de date à partir de startDate quand on l'a ; sinon on tombe
   // sur le libellé éditorial (dateFR) en serif italique.
-  const d = ev.startDate ? new Date(ev.startDate) : null;
-  const validD = d !== null && !Number.isNaN(d.getTime());
+  // Une date « 2027-02-04 » se lit à midi, heure locale : lue en UTC, elle
+  // reculait d'un jour au Québec (le 14 s'affichait 13). Le gros chiffre ne
+  // paraît que si le libellé donne un jour précis : « Février 2027 · date à
+  // confirmer » ne s'invente pas un 15.
+  const d = ev.startDate ? new Date(/^\d{4}-\d{2}-\d{2}$/.test(ev.startDate) ? `${ev.startDate}T12:00:00` : ev.startDate) : null;
+  const validD = d !== null && !Number.isNaN(d.getTime()) && /^\d/.test(dateLabel || '');
   const day = validD ? d!.getDate() : null;
   const monthYear = validD
     ? d!.toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA', { month: 'short', year: 'numeric' }).replace('.', '')
