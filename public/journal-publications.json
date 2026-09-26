@@ -2087,5 +2087,20 @@
       "public/i18n/en.json",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T21:26:42.492Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "4cc3b473",
+    "message": "Agenda (/conferenciere et autres pages d'événements) : la carte Tournée de conférences devient Krystine sur scène (Conférences · 2027), avec Découvrir la conférence vers /conferenciere#conferences",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/LiveEvents.tsx",
+      "src/lib/liveEvents.ts"
+    ]
   }
 ]
