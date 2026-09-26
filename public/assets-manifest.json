@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-26T12:16:23.517Z",
+  "generatedAt": "2026-09-26T12:40:54.188Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1316,6 +1316,20 @@
       "folder": "infolettre",
       "kind": "image",
       "size": 66114
+    },
+    {
+      "path": "/infolettre/entete-origine.jpg",
+      "name": "entete-origine.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 49768
+    },
+    {
+      "path": "/infolettre/signature-krystine.png",
+      "name": "signature-krystine.png",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 80290
     },
     {
       "path": "/livres/titre-a-reveler.webp",
