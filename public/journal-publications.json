@@ -1748,5 +1748,26 @@
       "src/pages/UnsubscribePage.tsx",
       "src/pages/admin/sections/newsletter/Composer.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T15:48:39.330Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c48116b2",
+    "message": "Désabonnement (/desinscription) : bouton « Oups, je me suis trompée : je reste abonnée » qui rétablit l'abonnement avec le même lien; texte sans Inspirata",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "functions/src/newsletter/unsubscribe.ts",
+      "public/assets-manifest.json",
+      "public/journal-publications.json",
+      "src/firebase/firestore.ts",
+      "src/lib/newsletterRenderer.tsx",
+      "src/pages/UnsubscribePage.tsx",
+      "src/pages/admin/sections/newsletter/Composer.tsx"
+    ]
   }
 ]
