@@ -82,18 +82,27 @@ const NouvellesFondatrices: React.FC = () => {
         transition={{ duration: 1.1, ease: [0.16, 0.8, 0.24, 1] }}
         className="mx-auto w-full max-w-[880px] rounded-[15px] overflow-hidden shadow-[0_40px_90px_-60px_rgba(41,48,39,0.6)] border border-[#293027]/10"
       >
-        {/* Le bandeau nuit */}
-        <div className="relative overflow-hidden bg-[#141311] px-7 sm:px-12 pt-10 pb-10">
+        {/* L'en-tête du gabarit « EXPÉRIENCE ORIGINE · Groupe fondateur » de l'infolettre */}
+        <header className="bg-[#f8f6f2] flex items-center justify-between gap-5 pl-7 sm:pl-12 pr-5 sm:pr-8 py-6">
+          <div>
+            <p className="text-[#292b20] text-[clamp(1.5rem,3.6vw,2.4rem)] leading-[1.1] tracking-[0.06em]" style={serif}>EXPÉRIENCE ORIGINE</p>
+            <p className="mt-2 text-[#5f5c50] text-[clamp(1.05rem,2vw,1.3rem)]" style={serif}>Groupe fondateur</p>
+          </div>
+          <img src="/infolettre/entete-origine.jpg" alt="" aria-hidden className="w-[92px] sm:w-[150px] h-auto rounded-[12px] shrink-0" />
+        </header>
+
+        {/* Le bandeau bordeaux de la lettre aux fondatrices */}
+        <div className="relative overflow-hidden bg-[#4a0a1c] px-7 sm:px-12 pt-9 pb-9">
           <span
             aria-hidden
             className="pointer-events-none absolute -right-[15%] -top-[60%] h-[180%] w-[60%] rounded-full blur-[60px]"
-            style={{ background: 'radial-gradient(circle, rgba(186,123,57,.42) 0%, rgba(20,19,17,0) 70%)' }}
+            style={{ background: 'radial-gradient(circle, rgba(186,123,57,.40) 0%, rgba(74,10,28,0) 70%)' }}
           />
-          <p className="relative text-[0.66rem] uppercase tracking-[0.3em] font-semibold text-[#d9a05b]">Expérience Origine &middot; Les fondatrices</p>
-          <h1 className="relative mt-4 text-[#EEE7DB] text-[clamp(2rem,4.6vw,3rem)] leading-[1.08] font-medium" style={serif}>
-            {fait ? 'Vos nouvelles sont arrivées' : 'Depuis Origine, où en êtes-vous?'}
+          <p className="relative text-[0.66rem] uppercase tracking-[0.3em] font-semibold text-[#e0b060]">Nouvelles des fondatrices</p>
+          <h1 className="relative mt-4 text-[#EEE7DB] text-[clamp(1.55rem,4.2vw,2.8rem)] leading-[1.1] font-medium" style={serif}>
+            {fait ? 'Vos nouvelles sont arrivées' : 'Depuis EXPÉRIENCE ORIGINE, où en êtes-vous?'}
           </h1>
-          <span className="relative mt-6 block h-px w-16 bg-[#BA7B39]" aria-hidden />
+          <span className="relative mt-6 block h-px w-16 bg-[#e0b060]" aria-hidden />
         </div>
 
         {/* Le corps */}
