@@ -1391,5 +1391,17 @@
       "scripts/kajabi/reclasser-origine-fondatrice.mjs",
       "src/pages/origine2/piliers.ts"
     ]
+  },
+  {
+    "quand": "2026-09-26T12:41:01.074Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "52f2cc03",
+    "message": "Infolettre : l'en-tête « Un titre à moi » (nom de la lettre en toutes lettres, image de droite au choix : foyer, médaillon d'Origine ou médiathèque) et la vraie signature du site dans l'en-tête et au bas des lettres et des courriels du direct",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": []
   }
 ]

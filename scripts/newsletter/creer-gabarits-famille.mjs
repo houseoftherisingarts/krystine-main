@@ -18,7 +18,7 @@ const GABARITS = [
     bandeau: { fond: '#28352F', texte: '#EEE7DB', etiquette: 'Groupe fondateur' } },
   { nom: 'Expérience Origine · Deuxième cohorte', categorie: 'Expérience Origine', audience: { mode: 'tags', tags: ['origine-2'] },
     entete: { titre: 'Expérience Origine', sousTitre: 'Deuxième cohorte', image: ORIGINE },
-    bandeau: { fond: '#640d27', texte: '#EEE7DB', etiquette: 'Deuxième cohorte' } },
+    bandeau: { fond: '#4a0a1c', texte: '#EEE7DB', etiquette: 'Deuxième cohorte' } },
 ];
 
 const v = x => x === null || x === undefined ? { nullValue: null }
