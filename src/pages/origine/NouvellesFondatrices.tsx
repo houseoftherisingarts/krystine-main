@@ -85,12 +85,13 @@ const NouvellesFondatrices: React.FC = () => {
         {/* L'en-tête : le logo d'Origine et le groupe fondateur */}
         <header className="bg-[#f8f6f2] px-7 sm:px-12 pt-8 pb-7">
           {/* Le logo d'Origine, découpé de la couverture du Guide du Retour à l'Origine, fond crème retiré. */}
+          <p className="pl-[0.4rem] text-[#8a6a3c] text-[clamp(0.85rem,1.6vw,1.05rem)] tracking-[0.42em]" style={serif}>EXPÉRIENCE</p>
           <img
             src="/origine/logo-origine.webp"
             alt="Origine"
-            className="w-[min(100%,340px)] h-auto"
+            className="-mt-1 w-[min(100%,340px)] h-auto"
           />
-          <p className="mt-3 text-[0.66rem] uppercase tracking-[0.3em] text-[#5f5c50]">EXPÉRIENCE ORIGINE &middot; Groupe fondateur</p>
+          <p className="mt-3 text-[0.66rem] uppercase tracking-[0.3em] text-[#5f5c50]">Groupe fondateur</p>
         </header>
 
         {/* Le bandeau vert profond du gabarit « Groupe fondateur » */}
