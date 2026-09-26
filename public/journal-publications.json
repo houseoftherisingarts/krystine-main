@@ -1727,5 +1727,26 @@
       "src/lib/newsletterRenderer.tsx",
       "src/pages/admin/sections/newsletter/Composer.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T15:48:22.689Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c7c8a5af",
+    "message": "Infolettre : quatre formats d'image au choix (bannière, grande image, moyenne image, kaléidoscope de 4 images) dans la barre de l'image; composeur, aperçu et courriel envoyé",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "functions/src/newsletter/unsubscribe.ts",
+      "public/assets-manifest.json",
+      "scripts/qa/_u_tmp.mjs",
+      "src/firebase/firestore.ts",
+      "src/lib/newsletterRenderer.tsx",
+      "src/pages/UnsubscribePage.tsx",
+      "src/pages/admin/sections/newsletter/Composer.tsx"
+    ]
   }
 ]
