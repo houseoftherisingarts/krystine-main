@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T19:25:51.831Z",
+  "generatedAt": "2026-09-26T12:16:23.517Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1309,6 +1309,13 @@
       "folder": "foyer/sons",
       "kind": "audio",
       "size": 3736
+    },
+    {
+      "path": "/infolettre/entete-foyer.jpg",
+      "name": "entete-foyer.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 66114
     },
     {
       "path": "/livres/titre-a-reveler.webp",

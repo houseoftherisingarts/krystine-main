@@ -29,7 +29,10 @@ const COVER_URL = `${PUBLIC_BASE_URL}/podcast/live-cover.jpg`;
 const SIGNATURE_URL = 'https://storage.googleapis.com/inspirata/Vata/1%20(1).png';
 const PORTRAIT_URL = `${PUBLIC_BASE_URL}/podcast/krystine.jpg`;
 
-export type Couverture = 'podcast' | 'image' | 'aucune';
+export type Couverture = 'podcast' | 'image' | 'titre' | 'aucune';
+
+/** L'en-tête « titre » : le nom de la lettre écrit en toutes lettres (Krystine, 26 sept. 2026). */
+export interface EnteteTitre { titre?: string; sousTitre?: string }
 export type Lang = 'fr' | 'en';
 
 export interface Bandeau {
@@ -105,6 +108,8 @@ export interface RenderEmailOptions {
   /** En-tête : couverture du podcast, image choisie (couvertureUrl), ou rien (défaut). */
   couverture?: Couverture;
   couvertureUrl?: string | null;
+  /** Le titre et le sous-titre de l'en-tête quand couverture = 'titre'. */
+  entete?: EnteteTitre | null;
   /** Signature de Krystine au bas du corps. Défaut : vrai. */
   signature?: boolean;
   /** Pixel de mesure d'ouverture, posé en toute fin de courriel. */
@@ -238,11 +243,34 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
   }
 }
 
+// L'en-tête « titre » reprend l'image « La Lettre de Krystine » : le nom de la
+// lettre en serif, son dernier mot en écriture (Pinyon Script), la devise
+// dessous et le foyer à droite. Le texte se change dans le composeur.
+const ENTETE_FOYER_URL = `${PUBLIC_BASE_URL}/infolettre/entete-foyer.jpg`;
+const ENTETE_FOND = '#f8f6f2';
+function enteteTitreHtml(e: EnteteTitre | null | undefined, lang: Lang): string {
+  const titre = (e?.titre || '').trim() || (lang === 'en' ? "Krystine's Letter" : 'La Lettre de Krystine');
+  const sousTitre = typeof e?.sousTitre === 'string' ? e.sousTitre.trim() : (lang === 'en' ? '' : 'Relier ce que nous avons appris à séparer.');
+  const m = /^(.*[\s'’])([^\s'’]+)$/.exec(titre);
+  const titreHtml = m
+    ? `${esc(m[1])}<span style="font-family:${POLICES.script};font-size:50px;line-height:1;font-weight:400;">${esc(m[2])}</span>`
+    : esc(titre);
+  return `<tr><td bgcolor="${ENTETE_FOND}" style="background:${ENTETE_FOND};padding:0;border-radius:15px 15px 0 0;overflow:hidden;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+            <td valign="middle" style="padding:34px 12px 30px 40px;">
+              <div style="font-family:${CHARTE.serif};font-size:38px;line-height:1.1;color:#292b20;font-weight:400;">${titreHtml}</div>
+              ${sousTitre ? `<div style="padding-top:12px;font-family:${CHARTE.serif};font-size:17px;line-height:1.4;color:#5f5c50;">${esc(sousTitre)}</div>` : ''}
+            </td>
+            <td width="170" valign="bottom" style="padding:0;width:170px;"><a href="${PUBLIC_BASE_URL}" target="_blank" style="display:block;text-decoration:none;"><img src="${ENTETE_FOYER_URL}" width="170" alt="" style="display:block;width:170px;height:auto;border:0;border-radius:0 15px 0 0;" /></a></td>
+          </tr></table>
+        </td></tr>`;
+}
+
 export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOptions): string {
   const pal = palette(opts.fond);
   const blockRows = blocks.map(b => blockToEmail(b, opts.firstName, pal)).join('\n');
   const couverture: Couverture = opts.couverture === 'image' && !opts.couvertureUrl ? 'aucune' : (opts.couverture || 'aucune');
-  const showCover = couverture !== 'aucune';
+  const showCover = couverture !== 'aucune' && couverture !== 'titre';
   const coverSrc = couverture === 'podcast' ? 'cid:cover' : esc(opts.couvertureUrl);
   const lang: Lang = opts.lang === 'en' ? 'en' : 'fr';
   const mots = MOTS[lang];
@@ -264,11 +292,13 @@ export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOpti
     <tr><td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;">
 
+        ${couverture === 'titre' ? enteteTitreHtml(opts.entete, lang) : ''}
+
         ${showCover ? `<tr><td style="padding:0;border-radius:15px 15px 0 0;overflow:hidden;background:${fond};">
           <a href="${PUBLIC_BASE_URL}" target="_blank" style="display:block;text-decoration:none;"><img src="${coverSrc}" width="600" alt="${coverAlt}" style="display:block;width:100%;max-width:600px;height:auto;border-radius:15px 15px 0 0;border:0;" /></a>
         </td></tr>` : ''}
 
-        ${showBandeau ? `<tr><td background="${image}" bgcolor="${fond}" style="background:${fondBandeau};padding:0;${showCover ? '' : 'border-radius:15px 15px 0 0;'}">
+        ${showBandeau ? `<tr><td background="${image}" bgcolor="${fond}" style="background:${fondBandeau};padding:0;${showCover || couverture === 'titre' ? '' : 'border-radius:15px 15px 0 0;'}">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0"${image ? ` style="background:rgba(20,19,17,0.55);"` : ''}>
             <tr><td style="padding:30px 40px 0;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:${CHARTE.gold};font-weight:600;">${esc(etiquette)}</td></tr>
             <tr><td style="padding:18px 40px 20px;font-family:${CHARTE.serif};font-size:34px;line-height:1.08;color:${texte};font-weight:500;">${esc(opts.subject)}</td></tr>

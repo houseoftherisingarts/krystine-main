@@ -314,7 +314,7 @@ export const traduireInfolettre = onCall(
       // mots changent dans le même brouillon.
       await db.collection(`newsletters/${newsletterId}/versions`).add({
         title: src.title || '', subject: src.subject || '', preheader: src.preheader || '', blocks, lang: src.lang || 'fr',
-        bandeau: src.bandeau ?? null, fond: src.fond ?? null, couverture: src.couverture ?? null, couvertureUrl: src.couvertureUrl ?? null, signature: src.signature !== false,
+        bandeau: src.bandeau ?? null, fond: src.fond ?? null, couverture: src.couverture ?? null, couvertureUrl: src.couvertureUrl ?? null, entete: src.entete ?? null, signature: src.signature !== false,
         raison: 'traduction', savedAt: FieldValue.serverTimestamp(),
       });
       await snap.ref.update({ ...mots, title: src.title || mots.title, versionAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp() });

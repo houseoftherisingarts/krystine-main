@@ -95,7 +95,7 @@ export async function traduireParIris(opts: { newsletterId: string; mode: 'copie
   if (opts.mode === 'surplace') {
     await saveNewsletterVersion(opts.newsletterId, {
       title: src.title || '', subject: src.subject || '', preheader: src.preheader || '', blocks, lang: src.lang || 'fr',
-      bandeau: src.bandeau ?? null, fond: src.fond ?? null, couverture: src.couverture, couvertureUrl: src.couvertureUrl ?? null, signature: src.signature !== false,
+      bandeau: src.bandeau ?? null, fond: src.fond ?? null, couverture: src.couverture, couvertureUrl: src.couvertureUrl ?? null, entete: src.entete ?? null, signature: src.signature !== false,
       raison: 'traduction',
     });
     await updateNewsletter(opts.newsletterId, sansUndefined(mots));

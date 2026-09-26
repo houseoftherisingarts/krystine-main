@@ -9,7 +9,7 @@ import {
   createTransporter,
   fromAddr,
   unsubscribeUrl, unsubscribeOneClickUrl, assurerJeton } from './mail';
-import { renderEmailHtml, renderEmailText, newsletterAttachments, type NewsletterBlock, type Couverture, type Lang, type Bandeau } from './renderer';
+import { renderEmailHtml, renderEmailText, newsletterAttachments, type NewsletterBlock, type Couverture, type Lang, type Bandeau, type EnteteTitre } from './renderer';
 import { ADMIN_EMAILS } from './send';
 import { champsRobot } from './robots';
 
@@ -53,6 +53,7 @@ interface NewsletterDoc {
   blocks: NewsletterBlock[];
   couverture?: Couverture;
   couvertureUrl?: string | null;
+  entete?: EnteteTitre | null;
   signature?: boolean;
   lang?: Lang;
   bandeau?: Bandeau | null;
@@ -97,6 +98,7 @@ async function envoyerEtape(transporter: Transporter, lettre: NewsletterDoc, des
     firstName: dest.firstName,
     couverture: lettre.couverture,
     couvertureUrl: lettre.couvertureUrl,
+    entete: lettre.entete,
     signature: lettre.signature,
     lang: lettre.lang,
     bandeau: lettre.bandeau,

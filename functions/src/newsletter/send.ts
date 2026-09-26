@@ -1,7 +1,7 @@
 import { onCall, HttpsError, type CallableRequest } from 'firebase-functions/v2/https';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
-import { renderEmailHtml, renderEmailText, newsletterAttachments, inlineForPreview, type NewsletterBlock, type Couverture, type Lang, type Bandeau } from './renderer';
+import { renderEmailHtml, renderEmailText, newsletterAttachments, inlineForPreview, type NewsletterBlock, type Couverture, type Lang, type Bandeau, type EnteteTitre } from './renderer';
 import { MAIL_SECRETS, NEWSLETTER_POSTAL_ADDRESS, REPLY_TO, createTransporter, fromAddr as buildFrom, unsubscribeUrl as buildUnsub, unsubscribeOneClickUrl, assurerJeton } from './mail';
 import { renderWelcomeHtml, WELCOME_SUBJECT , WELCOME_IMAGE_URL } from './welcome';
 import { buildMail, renderLiveHtml, type LiveEvent } from './live';
@@ -70,6 +70,7 @@ interface NewsletterRecord {
   scheduledFor?: Timestamp;
   couverture?: Couverture;
   couvertureUrl?: string | null;
+  entete?: EnteteTitre | null;
   signature?: boolean;
   lang?: Lang;
   bandeau?: Bandeau | null;
@@ -129,8 +130,8 @@ async function deliverLettreDor(newsletterId: string, doc: NewsletterRecord): Pr
 }
 
 // L'en-tête et la signature choisis dans le composeur, tels quels.
-const enTete = (doc: Pick<NewsletterRecord, 'couverture' | 'couvertureUrl' | 'signature' | 'lang' | 'bandeau' | 'fond'>) =>
-  ({ couverture: doc.couverture, couvertureUrl: doc.couvertureUrl, signature: doc.signature, lang: doc.lang, bandeau: doc.bandeau, fond: doc.fond });
+const enTete = (doc: Pick<NewsletterRecord, 'couverture' | 'couvertureUrl' | 'entete' | 'signature' | 'lang' | 'bandeau' | 'fond'>) =>
+  ({ couverture: doc.couverture, couvertureUrl: doc.couvertureUrl, entete: doc.entete, signature: doc.signature, lang: doc.lang, bandeau: doc.bandeau, fond: doc.fond });
 
 export function selectRecipients<T extends SubscriberDoc>(subs: T[], doc: Pick<NewsletterRecord, 'audience' | 'segmentTag' | 'lang'>): T[] {
   const a: NewsletterAudience = doc.audience || (doc.segmentTag ? { mode: 'tags', tags: [doc.segmentTag] } : { mode: 'all' });
@@ -504,7 +505,7 @@ export const previewNewsletter = onCall(
   { secrets: MAIL_SECRETS, timeoutSeconds: 60 },
   async (request) => {
     assertAdmin(request);
-    const data = (request.data || {}) as { blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string; couverture?: Couverture; couvertureUrl?: string | null; signature?: boolean; lang?: Lang; bandeau?: Bandeau | null; fond?: string | null };
+    const data = (request.data || {}) as { blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string; couverture?: Couverture; couvertureUrl?: string | null; entete?: EnteteTitre | null; signature?: boolean; lang?: Lang; bandeau?: Bandeau | null; fond?: string | null };
     const postalAddress = NEWSLETTER_POSTAL_ADDRESS.value();
     const unsubscribeUrl = buildUnsub('APERCU');
     const firstName = 'Krystine';

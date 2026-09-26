@@ -585,8 +585,9 @@ export interface NewsletterVersion {
   lang?: 'fr' | 'en';
   bandeau?: BandeauInfolettre | null;
   fond?: string | null;
-  couverture?: 'podcast' | 'image' | 'aucune';
+  couverture?: 'podcast' | 'image' | 'titre' | 'aucune';
   couvertureUrl?: string | null;
+  entete?: EnteteTitre | null;
   signature?: boolean;
 }
 
@@ -603,6 +604,9 @@ export async function getNewsletterVersions(id: string): Promise<NewsletterVersi
   return snap.docs.map(d => ({ id: d.id, ...d.data() } as NewsletterVersion));
 }
 
+/** Le titre et le sous-titre de l'en-tête écrit (couverture = 'titre'). */
+export interface EnteteTitre { titre?: string; sousTitre?: string }
+
 export interface NewsletterDoc {
   id?: string;
   title: string;           // internal label for Krystine
@@ -616,8 +620,10 @@ export interface NewsletterDoc {
   scheduledFor?: Timestamp | null;
   // En-tête du courriel : la couverture du podcast, une image de la
   // médiathèque, ou rien (défaut). Signature de Krystine au bas : oui par défaut.
-  couverture?: 'podcast' | 'image' | 'aucune';
+  couverture?: 'podcast' | 'image' | 'titre' | 'aucune';
   couvertureUrl?: string | null;
+  // L'en-tête « titre » : le nom de la lettre en toutes lettres (ex. « La Lettre d'Origine »).
+  entete?: EnteteTitre | null;
   signature?: boolean;
   // La lettre d'or : livrée à l'interne, aux membres, sans courriel ni Resend.
   // `messagerie` la dépose dans leur fil avec le soutien, `section` dans leur
@@ -686,7 +692,7 @@ export async function getNewsletter(id: string): Promise<NewsletterDoc | null> {
 // ensuite comme d'habitude.
 export const CATEGORIES_GABARITS = ['Inspirata', 'Krystine St-Laurent', 'Expérience Origine', 'Événements', 'Growth'];
 
-type ContenuLettre = Pick<NewsletterDoc, 'title' | 'subject' | 'preheader' | 'fromName' | 'blocks' | 'audience' | 'couverture' | 'couvertureUrl' | 'signature' | 'lang' | 'bandeau' | 'fond' | 'lettreDor'>;
+type ContenuLettre = Pick<NewsletterDoc, 'title' | 'subject' | 'preheader' | 'fromName' | 'blocks' | 'audience' | 'couverture' | 'couvertureUrl' | 'entete' | 'signature' | 'lang' | 'bandeau' | 'fond' | 'lettreDor'>;
 
 export interface GabaritInfolettre extends ContenuLettre {
   id?: string;
@@ -699,7 +705,7 @@ export interface GabaritInfolettre extends ContenuLettre {
 const contenuDe = (n: ContenuLettre): ContenuLettre => ({
   title: n.title || '', subject: n.subject || '', preheader: n.preheader || '', fromName: n.fromName || 'Krystine St-Laurent',
   blocks: n.blocks || [], audience: n.audience || { mode: 'all' },
-  couverture: n.couverture || 'aucune', couvertureUrl: n.couvertureUrl || null, signature: n.signature !== false,
+  couverture: n.couverture || 'aucune', couvertureUrl: n.couvertureUrl || null, entete: n.entete || null, signature: n.signature !== false,
   lang: n.lang === 'en' ? 'en' : 'fr', bandeau: n.bandeau || null, fond: n.fond || null, lettreDor: n.lettreDor || null,
 });
 

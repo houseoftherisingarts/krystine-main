@@ -62,7 +62,9 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
   const [pickFor, setPickFor] = useState<number | 'entete' | 'bandeau' | null>(null);   // bloc image, l'en-tête ou le bandeau en attente d'une image
   // En-tête du courriel : « La lettre de Krystine » par défaut (ENTETE_INFOLETTRE_PAR_DEFAUT).
   // La couverture du podcast, une autre image de la médiathèque ou rien restent au choix.
-  const [couverture, setCouverture] = useState<'podcast' | 'image' | 'aucune'>(ENTETE_INFOLETTRE_PAR_DEFAUT.couverture);
+  const [couverture, setCouverture] = useState<'podcast' | 'image' | 'titre' | 'aucune'>(ENTETE_INFOLETTRE_PAR_DEFAUT.couverture);
+  // L'en-tête écrit : le nom de la lettre (dernier mot en écriture) et sa devise.
+  const [entete, setEntete] = useState<{ titre: string; sousTitre: string }>({ titre: '', sousTitre: 'Relier ce que nous avons appris à séparer.' });
   const [couvertureUrl, setCouvertureUrl] = useState<string>(ENTETE_INFOLETTRE_PAR_DEFAUT.couvertureUrl);
   const [signature, setSignature] = useState(true);
   // Langue de la lettre et bandeau : le gabarit du courriel les suit.
@@ -85,7 +87,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     setGabaritBusy(true); setSendErr(null);
     try {
       await save();
-      await saveGabarit(gabarit.nom.trim(), gabarit.categorie.trim(), { title, subject, preheader, fromName, blocks, audience, couverture, couvertureUrl, signature, lang, bandeau, fond, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null });
+      await saveGabarit(gabarit.nom.trim(), gabarit.categorie.trim(), { title, subject, preheader, fromName, blocks, audience, couverture, couvertureUrl, entete: couverture === 'titre' ? entete : null, signature, lang, bandeau, fond, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null });
       setGabarit(null);
       setSendInfo(`Gabarit « ${gabarit.nom.trim()} » enregistré dans « ${gabarit.categorie.trim()} ». Retrouvez-le dans l’onglet Gabarits.`);
     } catch (e: any) { setSendErr(e?.message || 'Impossible d’enregistrer le gabarit.'); }
@@ -95,7 +97,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     setGabaritBusy(true); setSendErr(null);
     try {
       await save();
-      const nid = await nouvelleLettreDepuis({ title, subject, preheader, fromName, blocks, audience, couverture, couvertureUrl, signature, lang, bandeau, fond, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null }, `${title || subject || 'Infolettre'} (copie)`);
+      const nid = await nouvelleLettreDepuis({ title, subject, preheader, fromName, blocks, audience, couverture, couvertureUrl, entete: couverture === 'titre' ? entete : null, signature, lang, bandeau, fond, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null }, `${title || subject || 'Infolettre'} (copie)`);
       onOpen?.(nid);
     } catch (e: any) { setSendErr(e?.message || 'La copie a échoué.'); }
     finally { setGabaritBusy(false); }
@@ -137,6 +139,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
         setWhen(n.scheduledFor ? toLocal(n.scheduledFor.toDate()) : '');
         setCouverture(n.couverture || 'aucune');
         setCouvertureUrl(n.couvertureUrl || '');
+        if (n.entete) setEntete({ titre: n.entete.titre || '', sousTitre: n.entete.sousTitre ?? '' });
         setSignature(n.signature !== false);
         setLang(n.lang === 'en' ? 'en' : 'fr');
         setBandeau(n.bandeau || {});
@@ -207,13 +210,13 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
 
   // Ce que la lettre contient, en une chaîne : la sauvegarde automatique
   // compare à la dernière version enregistrée et ne part que si ça a changé.
-  const etat = JSON.stringify({ title, subject, preheader, fromName, blocks, audience, when, couverture, couvertureUrl, signature, lang, bandeau, fond, lettreDor, dorMessagerie, dorSection });
+  const etat = JSON.stringify({ title, subject, preheader, fromName, blocks, audience, when, couverture, couvertureUrl, entete, signature, lang, bandeau, fond, lettreDor, dorMessagerie, dorSection });
   const etatSauve = useRef<string | null>(null);
   useEffect(() => { if (!loading && etatSauve.current === null) etatSauve.current = etat; }, [loading, etat]);
 
   // La version gardée dans l'historique : le contenu de la lettre, sans
   // l'audience ni la date (qui ne se restaurent pas).
-  const contenuVersion = () => ({ title, subject, preheader, blocks, lang, bandeau, fond, couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, signature });
+  const contenuVersion = () => ({ title, subject, preheader, blocks, lang, bandeau, fond, couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, entete: couverture === 'titre' ? entete : null, signature });
 
   const save = async (): Promise<string | null> => {
     if (isReadOnly) return id;
@@ -221,7 +224,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     const etatAuDepart = etat;
     try {
       const scheduledFor = when ? Timestamp.fromDate(new Date(when)) : null;
-      const enTete = { couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, signature, lang, bandeau, fond, traductionDe, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null };
+      const enTete = { couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, entete: couverture === 'titre' ? entete : null, signature, lang, bandeau, fond, traductionDe, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null };
       let savedId = id;
       if (id) {
         await updateNewsletter(id, { title, subject, preheader, fromName, blocks, audience, scheduledFor, ...enTete });
@@ -267,7 +270,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     try { await saveNewsletterVersion(id, { ...contenuVersion(), raison: 'restauration' }); setVersionAt(Date.now()); } catch { /* noop */ }
     setTitle(v.title || ''); setSubject(v.subject || ''); setPreheader(v.preheader || '');
     setBlocks(v.blocks || []); setLang(v.lang === 'en' ? 'en' : 'fr'); setBandeau(v.bandeau || {}); setFond(v.fond || '#FFFFFF');
-    setCouverture(v.couverture || 'aucune'); setCouvertureUrl(v.couvertureUrl || ''); setSignature(v.signature !== false);
+    setCouverture(v.couverture || 'aucune'); setCouvertureUrl(v.couvertureUrl || ''); if (v.entete) setEntete({ titre: v.entete.titre || '', sousTitre: v.entete.sousTitre ?? '' }); setSignature(v.signature !== false);
     setSelectedIdx(null);
     setSendInfo('Version restaurée. Elle s’enregistre toute seule dans quelques secondes.');
     setVersions(await getNewsletterVersions(id).catch(() => []));
@@ -654,7 +657,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
             ) : side === 'preview' ? (
               <div className="p-4">
                 <p className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/50 dark:text-white/50 mb-3">Le courriel tel qu’il partira</p>
-                <PreviewFrame blocks={blocks} subject={subject} preheader={preheader} couverture={couverture} couvertureUrl={couvertureUrl} signature={signature} lang={lang} bandeau={bandeau} fond={fond} height={Math.max(700, window.innerHeight - 160)} />
+                <PreviewFrame blocks={blocks} subject={subject} preheader={preheader} couverture={couverture} couvertureUrl={couvertureUrl} entete={couverture === 'titre' ? entete : null} signature={signature} lang={lang} bandeau={bandeau} fond={fond} height={Math.max(700, window.innerHeight - 160)} />
               </div>
             ) : (
               <div className="p-5 space-y-5">
@@ -696,6 +699,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
                     { v: 'aucune',  icon: 'fa-minus',      label: 'Aucune image',            aide: 'Le sujet sur le bandeau, puis vos blocs.' },
                     { v: 'podcast', icon: 'fa-podcast',    label: 'Couverture du podcast',   aide: 'Au-delà des tendances, saison 2.' },
                     { v: 'image',   icon: 'fa-images',     label: 'Une image à moi',         aide: 'Choisie dans la médiathèque, en pleine largeur.' },
+                    { v: 'titre',   icon: 'fa-heading',    label: 'Un titre à moi',          aide: 'Le nom de la lettre écrit en toutes lettres, avec le foyer à droite.' },
                   ] as const).map(o => (
                     <label key={o.v} className={`flex items-start gap-3 rounded-2xl border px-3 py-2.5 cursor-pointer transition-colors ${couverture === o.v ? 'border-[#BA7B39] bg-[#BA7B39]/10' : 'border-[#293027]/10 dark:border-white/10 hover:border-[#BA7B39]/50'} ${isReadOnly ? 'opacity-60 cursor-default' : ''}`}>
                       <input type="radio" name="couverture" value={o.v} checked={couverture === o.v} disabled={isReadOnly} onChange={() => { setCouverture(o.v); if (o.v === 'image' && !couvertureUrl) setPickFor('entete'); }} className="mt-1 accent-[#BA7B39]" />
@@ -711,6 +715,13 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
                         ? <img src={couvertureUrl} alt="" className="h-14 w-24 rounded-xl object-cover border border-[#293027]/10 dark:border-white/10" />
                         : <span className="text-xs text-[#8B4A2F]">Aucune image choisie : le courriel partira sans en-tête.</span>}
                       <GhostButton onClick={() => setPickFor('entete')} disabled={isReadOnly}><i className="fa-solid fa-images" /> {couvertureUrl ? 'Changer' : 'Choisir'}</GhostButton>
+                    </div>
+                  )}
+                  {couverture === 'titre' && (
+                    <div className="space-y-2 pl-1">
+                      <Input value={entete.titre} disabled={isReadOnly} onChange={e => setEntete({ ...entete, titre: e.target.value })} placeholder="La Lettre de Krystine" />
+                      <Input value={entete.sousTitre} disabled={isReadOnly} onChange={e => setEntete({ ...entete, sousTitre: e.target.value })} placeholder="Sous-titre (facultatif)" />
+                      <p className="text-xs text-[#293027]/55 dark:text-white/55">Le dernier mot du titre s’écrit à la main, comme « Krystine » sur l’en-tête habituel.</p>
                     </div>
                   )}
                   <label className={`flex items-center gap-3 pl-1 pt-1 text-sm text-[#293027] dark:text-white ${isReadOnly ? 'opacity-60' : 'cursor-pointer'}`}>
