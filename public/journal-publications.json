@@ -1911,5 +1911,20 @@
       "public/conferences/krystine-scene-haut.webp",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T17:47:38.593Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "78d325f5",
+    "message": "Conférencière (/conferenciere) : filtre doré et doux (comme la photo du haut) appliqué aux photos de Mont-Tremblant et du lancement 2018",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/conferences/lancement-2018.webp",
+      "public/conferences/mont-tremblant-2024-krystine.webp"
+    ]
   }
 ]
