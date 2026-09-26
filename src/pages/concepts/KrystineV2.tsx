@@ -6,7 +6,7 @@ import Lenis from 'lenis';
 import SplitType from 'split-type';
 import {
   ArrowUpRight, ArrowDown, CaretDown, Check, CircleNotch,
-  MapPin, Compass, Microphone, Quotes,
+  MapPin, Quotes,
 } from '@phosphor-icons/react';
 import { useApp } from '../../contexts/AppContext';
 import NewsletterSignup from '../../components/NewsletterSignup';
@@ -36,22 +36,26 @@ const COVERLINES = ['Près de 40 ans de pratique', 'La trilogie · Éditions de 
 
 /* ════════════════════════ Données éditoriales ════════════════════════ */
 
-// Deux conférences qu'une productrice peut programmer (Krystine, 26 septembre
-// 2026, formulations de travail). L'Ayurveda, la nature et le corps nourrissent
-// ces conférences sans en devenir le titre ni la catégorie.
-const SIGNATURE_TALKS: { icon: React.ReactNode; title: string; sousTitre: string; lede: string }[] = [
-  {
-    icon: <Compass size={22} weight="light" />,
-    title: 'Plus de réponses. Moins de confiance.',
-    sousTitre: 'Ce que l’abondance d’information fait à notre capacité de choisir.',
-    lede: 'Pourquoi accumuler davantage de réponses ne produit pas nécessairement davantage de clarté, et comment distinguer information, influence et discernement.',
-  },
-  {
-    icon: <Microphone size={22} weight="light" />,
-    title: 'Quand nous remettons nos choix à l’extérieur',
-    sousTitre: 'Experts, tendances, systèmes, algorithmes et IA : qu’est-ce que nous cessons d’exercer lorsque quelqu’un ou quelque chose choisit pour nous ?',
-    lede: 'Une conversation sur le jugement, l’autonomie et la place que nous voulons conserver dans nos propres décisions.',
-  },
+// Une conférence, plusieurs portes de programmation (Krystine, 26 septembre
+// 2026). Les portes ne sont pas des conférences : ce sont des contextes pour
+// le même One Talk. L'Ayurveda, la nature et le corps nourrissent la
+// conférence sans en devenir le titre ni la catégorie.
+const ONE_TALK = {
+  title: 'Plus de réponses. Moins de confiance.',
+  sousTitre: 'Ce que l’abondance d’information fait à notre capacité de juger et de choisir.',
+  texte: 'Nous avons accès à davantage d’informations, de conseils, d’experts, de méthodes et de technologies que jamais. Cette conférence explore ce qui se passe lorsque les réponses se multiplient plus vite que notre capacité à les examiner, et les capacités humaines que nous voulons continuer d’exercer nous-mêmes.',
+  promesse: 'Le public repart avec une façon plus claire d’examiner les réponses qui lui sont proposées, d’en évaluer la pertinence et de décider de la confiance à leur accorder.',
+};
+
+const PORTES: { titre: string; ligne: string }[] = [
+  { titre: 'IA & humain', ligne: 'Ce que nous gagnons à déléguer, et ce que nous voulons continuer d’exercer.' },
+  { titre: 'En entreprise', ligne: 'La place du jugement humain dans des environnements où outils, systèmes et automatisation prennent une place croissante.' },
+  { titre: 'Leadership & entrepreneuriat', ligne: 'Choisir lorsque données, experts, méthodes et recommandations se multiplient.' },
+  { titre: 'Éducation & transmission', ligne: 'Transmettre le savoir tout en développant la capacité à questionner, comprendre et choisir.' },
+  { titre: 'Associations professionnelles', ligne: 'Naviguer entre expertise, recommandations, nouvelles pratiques et jugement professionnel.' },
+  { titre: 'Femmes', ligne: 'Choisir parmi tout ce qui nous est présenté comme étant « bon pour nous ».' },
+  { titre: 'Culture & société', ligne: 'Ce que l’abondance de réponses change dans notre rapport à l’autorité, au jugement et au choix.' },
+  { titre: 'Grand public', ligne: 'Comment déterminer ce qui mérite notre confiance lorsque les réponses se multiplient.' },
 ];
 
 // Seulement des paroles réellement reçues (Krystine, 26 septembre 2026 : les
@@ -71,7 +75,7 @@ const PROCESS_STEPS = [
 ];
 
 const FAQS = [
-  { q: 'Krystine peut-elle adapter une conférence à notre événement ?', a: "Oui. Chaque intervention est adaptée au contexte de l’événement et à son public, tout en conservant une idée centrale claire. Selon la programmation, Krystine peut notamment explorer l’abondance d’information, la prise de décision, l’influence des experts, des tendances et des algorithmes, l’intelligence artificielle et le jugement humain, ainsi que notre capacité à rester participants de nos propres choix." },
+  { q: 'Comment la conférence s’adapte-t-elle à notre événement ?', a: "Le cœur de la conférence demeure le même. Le contexte, les histoires, les exemples et certains angles sont choisis en fonction du public et de la programmation. Une conférence destinée à des dirigeants, à un événement sur l’IA, à une association professionnelle ou à un public féminin peut ainsi ouvrir par une porte différente tout en portant la même conversation centrale." },
   { q: "Voyage-t-elle à l’extérieur du Québec ?", a: "Oui : Canada, États-Unis, France, Belgique, Suisse selon l’agenda. Indiquez la ville dans le formulaire et l’on vous revient avec la faisabilité." },
   { q: 'Quels sont les délais habituels ?', a: "8 à 16 semaines avant l’événement permettent une préparation idéale. Les demandes plus serrées sont étudiées au cas par cas." },
   { q: 'En quelles langues ?', a: 'Français principalement, anglais sur demande, bilingue possible.' },
@@ -743,7 +747,7 @@ export default function KrystineV2() {
               data-fade
               className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-7"
             >
-              Conférencière &middot; Autrice best-seller
+              Conférencière &middot; Keynote speaker &middot; Autrice best-seller
             </p>
             <h1 className="v2-serif font-light leading-[0.9] text-[#1c1712] text-[clamp(3.2rem,9.5vw,9.5rem)]">
               <span data-line className="block overflow-hidden">
@@ -833,7 +837,7 @@ export default function KrystineV2() {
                 href="#conferences"
                 className="v2-serif italic text-lg text-[#1c1712]/70 hover:text-[#7d6330] transition-colors duration-300"
               >
-                Découvrir les conférences
+                Découvrir la conférence
               </a>
             </div>
             <p data-fade className="mt-6 text-[0.6rem] uppercase tracking-[0.24em] text-[#1c1712]/55">
@@ -919,36 +923,40 @@ export default function KrystineV2() {
         </div>
       </section>
 
-      {/* ─────────── CHAPITRE 02 · CONFÉRENCES SIGNATURE ─────────── */}
+      {/* ─────────── CHAPITRE 02 · UNE CONFÉRENCE, PLUSIEURS PORTES ─────────── */}
       <section
         id="conferences"
         className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#efe6d7] scroll-mt-24"
       >
-        <div data-reveal className="max-w-[760px] mb-16">
-          <Kicker className="mb-5">Chapitre 02 · Conférences</Kicker>
-          <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">
-            Deux conférences à programmer
+        <div data-reveal className="max-w-[900px] mb-14">
+          <Kicker className="mb-5">Chapitre 02 · La conférence</Kicker>
+          <h2 className="v2-serif font-light leading-[1.05] text-[#1c1712] text-[clamp(2rem,4.2vw,3.4rem)]">
+            Une conférence. Plusieurs portes de programmation.
           </h2>
-          <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] text-[#3a2f23] max-w-[46ch] leading-snug">
-            Chacune adaptée à votre public, à votre durée et à votre lieu.
-          </p>
         </div>
 
-        <div data-reveal className="grid md:grid-cols-2 gap-px bg-[#1c1712]/12 border border-[#1c1712]/12">
-          {SIGNATURE_TALKS.map((talk) => (
-            <article
-              key={talk.title}
-              className="group h-full flex flex-col p-[clamp(1.75rem,3vw,2.75rem)] transition-colors duration-500 bg-[#efe6d7] hover:bg-[#faf6ee]"
-            >
-              <span className="inline-grid place-items-center w-12 h-12 rounded-full border border-[#9c7a44]/40 text-[#7d6330] mb-7">
-                {talk.icon}
-              </span>
-              <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-4">Conférence</span>
-              <h3 className="v2-serif text-[clamp(1.6rem,2.4vw,2rem)] font-light leading-[1.12] text-[#1c1712] mb-4">{talk.title}</h3>
-              <p className="v2-serif italic text-[#3a2f23] leading-relaxed text-[1.08rem] mb-4">{talk.sousTitre}</p>
-              <p className="text-[#3a2f23] leading-[1.8] text-[0.95rem] flex-1">{talk.lede}</p>
-            </article>
-          ))}
+        {/* Le One Talk */}
+        <article data-reveal className="max-w-[900px] border-t border-[#9c7a44]/50 pt-10">
+          <h3 className="v2-serif text-[clamp(1.8rem,3.2vw,2.6rem)] font-light leading-[1.1] text-[#1c1712]">{ONE_TALK.title}</h3>
+          <p className="mt-5 v2-serif italic text-[clamp(1.1rem,1.8vw,1.35rem)] leading-snug text-[#3a2f23]">{ONE_TALK.sousTitre}</p>
+          <p className="mt-6 max-w-[62ch] text-[0.98rem] leading-[1.85] text-[#3a2f23]">{ONE_TALK.texte}</p>
+          <p className="mt-6 max-w-[62ch] border-l-2 border-[#9c7a44] pl-5 v2-serif text-[1.08rem] leading-[1.7] text-[#1c1712]">{ONE_TALK.promesse}</p>
+        </article>
+
+        {/* Les portes : des contextes pour la même conférence, pas d'autres conférences */}
+        <div data-reveal className="mt-[clamp(3.5rem,8vh,5.5rem)]">
+          <p className="mb-8 text-[0.62rem] uppercase tracking-[0.24em] text-[#7d6330]">Portes de programmation</p>
+          <ol className="grid gap-x-[clamp(2rem,5vw,5rem)] md:grid-cols-2">
+            {PORTES.map((porte, i) => (
+              <li key={porte.titre} className="flex gap-5 border-t border-[#1c1712]/15 py-6">
+                <span className="v2-serif w-8 shrink-0 text-[1.05rem] font-light tabular-nums text-[#7d6330]">{String(i + 1).padStart(2, '0')}</span>
+                <div className="min-w-0">
+                  <h4 className="text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712]">{porte.titre}</h4>
+                  <p className="mt-2 v2-serif text-[1.02rem] leading-[1.6] text-[#3a2f23]">{porte.ligne}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 

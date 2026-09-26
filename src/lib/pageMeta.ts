@@ -15,8 +15,8 @@ const ROUTES: Record<string, PageMeta> = {
     description: 'Krystine St-Laurent, infirmière de formation, auteure et conférencière: Près de 40 ans à traverser les milieux de la santé avant de choisir l’herboristerie, l’Ayurveda et l’aromathérapie.',
   },
   '/conferenciere': {
-    title: `Conférences et ateliers · ${SITE}`,
-    description: 'Conférences de Krystine St-Laurent, autrice best-seller : comment choisir dans un monde qui pense de plus en plus à notre place. Au Québec, au Canada et en Europe.',
+    title: 'Krystine St-Laurent | Conférencière, keynote speaker et autrice best-seller',
+    description: 'Conférences pour entreprises, événements, associations et publics francophones ou anglophones autour de la prise de décision, du discernement, du leadership, de l’IA et de l’humain dans un monde où les réponses se multiplient.',
   },
   '/formations': {
     title: `Formations et expériences · ${SITE}`,
