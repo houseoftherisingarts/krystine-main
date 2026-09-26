@@ -1960,5 +1960,22 @@
       "public/sitemap.xml",
       "src/lib/staticRoutes.ts"
     ]
+  },
+  {
+    "quand": "2026-09-26T18:29:24.229Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "6d37ded3",
+    "message": "Conférencière (/conferenciere) : une conférence (Plus de réponses. Moins de confiance.) et huit portes de programmation, identité Conférencière · Keynote speaker · Autrice best-seller, FAQ d'adaptation, titre et description Google; accueil : même ligne d'identité et Découvrir la conférence",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "src/lib/pageMeta.ts",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
