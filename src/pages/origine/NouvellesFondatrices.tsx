@@ -13,17 +13,17 @@ const SOURCE = 'fondatrices-origine';
 const QUESTIONS = [
   {
     qid: 'q1-change',
-    titre: 'Depuis la fin du parcours, qu’est-ce qui a changé concrètement dans votre quotidien?',
-    aide: 'Un moment où vous avez réagi autrement, une habitude, un plaisir retrouvé, une découverte… Qu’est-ce qui vous vient? Vous pouvez aussi nous dire si vous constatez peu de changement.',
+    titre: 'Qu’est-ce qui vous fait du bien ces temps-ci?',
+    aide: 'Un plaisir retrouvé, une habitude, un moment où vous avez réagi autrement… Peut-être qu’une découverte faite ensemble vous accompagne encore, ou que vos envies sont ailleurs aujourd’hui.',
   },
   {
     qid: 'q2-manque',
-    titre: 'Qu’est-ce qui reste difficile ou vous manque pour poursuivre ce que vous aviez commencé?',
+    titre: 'Qu’est-ce qui vous manque, ou reste difficile?',
     aide: 'Dans quelles situations aimeriez-vous avoir davantage de repères ou de soutien?',
   },
   {
     qid: 'q3-souhait',
-    titre: 'Aujourd’hui, qu’aimeriez-vous retrouver ou faire davantage dans votre vie?',
+    titre: 'Qu’aimeriez-vous vivre dans les mois qui viennent?',
     aide: 'Qu’est-ce que cela changerait pour vous, concrètement?',
   },
 ];

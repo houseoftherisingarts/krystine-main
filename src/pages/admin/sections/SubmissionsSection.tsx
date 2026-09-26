@@ -220,9 +220,9 @@ function normalizeDosha(d: DoshaResult): Submission {
 }
 
 const LIBELLES_FONDATRICES: Record<string, string> = {
-  'q1-change': 'Ce qui a changé',
+  'q1-change': 'Ce qui fait du bien',
   'q2-manque': 'Ce qui manque',
-  'q3-souhait': 'Ce qu’elle souhaite',
+  'q3-souhait': 'Ce qu’elle aimerait vivre',
 };
 
 function normalizeGuide(g: GuideResponse): Submission {
