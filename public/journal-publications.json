@@ -1633,5 +1633,20 @@
       "src/pages/TemoignageConference.tsx",
       "src/pages/admin/sections/EventsSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T15:06:05.004Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c25f4bf1",
+    "message": "Page /origine/nouvelles : logo Origine sans la petite boussole de gauche (une seule boussole, celle du O)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/origine/logo-origine.webp",
+      "src/pages/origine/NouvellesFondatrices.tsx"
+    ]
   }
 ]
