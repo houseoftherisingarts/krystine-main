@@ -26,13 +26,14 @@ export const CHARTE = {
 };
 
 const COVER_URL = `${PUBLIC_BASE_URL}/podcast/live-cover.jpg`;
-const SIGNATURE_URL = 'https://storage.googleapis.com/inspirata/Vata/1%20(1).png';
+// La signature du site (/compte/signature-krystine-noire.webp), en PNG pour les courriels (Krystine, 26 sept. 2026).
+const SIGNATURE_URL = `${PUBLIC_BASE_URL}/infolettre/signature-krystine.png`;
 const PORTRAIT_URL = `${PUBLIC_BASE_URL}/podcast/krystine.jpg`;
 
 export type Couverture = 'podcast' | 'image' | 'titre' | 'aucune';
 
 /** L'en-tête « titre » : le nom de la lettre écrit en toutes lettres (Krystine, 26 sept. 2026). */
-export interface EnteteTitre { titre?: string; sousTitre?: string }
+export interface EnteteTitre { titre?: string; sousTitre?: string; /** Image de droite; le foyer par défaut. */ image?: string | null }
 export type Lang = 'fr' | 'en';
 
 export interface Bandeau {
@@ -251,8 +252,12 @@ const ENTETE_FOND = '#f8f6f2';
 function enteteTitreHtml(e: EnteteTitre | null | undefined, lang: Lang): string {
   const titre = (e?.titre || '').trim() || (lang === 'en' ? "Krystine's Letter" : 'La Lettre de Krystine');
   const sousTitre = typeof e?.sousTitre === 'string' ? e.sousTitre.trim() : (lang === 'en' ? '' : 'Relier ce que nous avons appris à séparer.');
+  const image = e?.image && /^https?:\/\//.test(e.image) && !e.image.endsWith('/entete-foyer.jpg') ? e.image : '';
   const m = /^(.*[\s'’])([^\s'’]+)$/.exec(titre);
-  const titreHtml = m
+  // « Krystine » s'écrit avec sa vraie signature, celle du site; tout autre dernier mot, à la main (Pinyon Script).
+  const titreHtml = m && /^krystine$/i.test(m[2])
+    ? `${esc(m[1])}<img src="${SIGNATURE_URL}" width="172" alt="Krystine St-Laurent" style="display:inline-block;width:172px;height:auto;border:0;vertical-align:middle;margin:-10px 0 -14px 6px;" />`
+    : m
     ? `${esc(m[1])}<span style="font-family:${POLICES.script};font-size:50px;line-height:1;font-weight:400;">${esc(m[2])}</span>`
     : esc(titre);
   return `<tr><td bgcolor="${ENTETE_FOND}" style="background:${ENTETE_FOND};padding:0;border-radius:15px 15px 0 0;overflow:hidden;">
@@ -261,7 +266,9 @@ function enteteTitreHtml(e: EnteteTitre | null | undefined, lang: Lang): string 
               <div style="font-family:${CHARTE.serif};font-size:38px;line-height:1.1;color:#292b20;font-weight:400;">${titreHtml}</div>
               ${sousTitre ? `<div style="padding-top:12px;font-family:${CHARTE.serif};font-size:17px;line-height:1.4;color:#5f5c50;">${esc(sousTitre)}</div>` : ''}
             </td>
-            <td width="170" valign="bottom" style="padding:0;width:170px;"><a href="${PUBLIC_BASE_URL}" target="_blank" style="display:block;text-decoration:none;"><img src="${ENTETE_FOYER_URL}" width="170" alt="" style="display:block;width:170px;height:auto;border:0;border-radius:0 15px 0 0;" /></a></td>
+            ${image
+              ? `<td width="186" valign="middle" style="padding:22px 26px 22px 0;width:186px;"><a href="${PUBLIC_BASE_URL}" target="_blank" style="display:block;text-decoration:none;"><img src="${esc(image)}" width="160" alt="" style="display:block;width:160px;height:auto;border:0;border-radius:12px;" /></a></td>`
+              : `<td width="170" valign="bottom" style="padding:0;width:170px;"><a href="${PUBLIC_BASE_URL}" target="_blank" style="display:block;text-decoration:none;"><img src="${ENTETE_FOYER_URL}" width="170" alt="" style="display:block;width:170px;height:auto;border:0;border-radius:0 15px 0 0;" /></a></td>`}
           </tr></table>
         </td></tr>`;
 }

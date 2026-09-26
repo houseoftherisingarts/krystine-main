@@ -605,7 +605,7 @@ export async function getNewsletterVersions(id: string): Promise<NewsletterVersi
 }
 
 /** Le titre et le sous-titre de l'en-tête écrit (couverture = 'titre'). */
-export interface EnteteTitre { titre?: string; sousTitre?: string }
+export interface EnteteTitre { titre?: string; sousTitre?: string; image?: string | null }
 
 export interface NewsletterDoc {
   id?: string;

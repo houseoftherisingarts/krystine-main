@@ -168,7 +168,8 @@ export function buildMail(step: Step | 'confirm', ev: LiveEvent, firstName?: str
 
 const COVER_URL = `${PUBLIC_BASE_URL}/podcast/live-cover.jpg`;
 const PORTRAIT_URL = `${PUBLIC_BASE_URL}/podcast/krystine.jpg`;
-const SIGNATURE_URL = 'https://storage.googleapis.com/inspirata/Vata/1%20(1).png';
+// La signature du site, en PNG pour les courriels (Krystine, 26 sept. 2026).
+const SIGNATURE_URL = `${PUBLIC_BASE_URL}/infolettre/signature-krystine.png`;
 
 // Les images partent EN PIÈCES INLINE (cid:) : elles s'affichent même quand le
 // client courriel bloque les images distantes. `liveAttachments()` fournit la

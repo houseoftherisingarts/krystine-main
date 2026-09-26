@@ -43,6 +43,13 @@ const BLOCK_PALETTE: Array<{ type: BlockType; icon: string; label: string; templ
 // Le composeur prend tout l'écran (par-dessus le menu de l'admin) : la page
 // s'écrit comme elle sera lue, chaque texte se modifie au clic, chaque image
 // se remplace au clic. Les réglages d'envoi vivent dans le rail de droite.
+// Les images offertes à droite de l'en-tête écrit : chaque lettre de la
+// famille garde le même squelette et se reconnaît à son image (Krystine, 26 sept. 2026).
+const IMAGES_ENTETE = [
+  { nom: 'Le foyer (La Lettre de Krystine)', url: 'https://www.krystinestlaurent.ca/infolettre/entete-foyer.jpg' },
+  { nom: 'Expérience Origine', url: 'https://www.krystinestlaurent.ca/infolettre/entete-origine.jpg' },
+];
+
 const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
   const [loading, setLoading] = useState(newsletterId !== null);
   const [saving, setSaving] = useState(false);
@@ -59,12 +66,12 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
   const [audience, setAudience] = useState<NewsletterAudience>({ mode: 'all' });
   const [when, setWhen] = useState('');          // datetime-local, heure du Québec
   const [side, setSide] = useState<'reglages' | 'preview' | 'iris' | 'versions'>('reglages');
-  const [pickFor, setPickFor] = useState<number | 'entete' | 'bandeau' | null>(null);   // bloc image, l'en-tête ou le bandeau en attente d'une image
+  const [pickFor, setPickFor] = useState<number | 'entete' | 'enteteImage' | 'bandeau' | null>(null);   // bloc image, l'en-tête ou le bandeau en attente d'une image
   // En-tête du courriel : « La lettre de Krystine » par défaut (ENTETE_INFOLETTRE_PAR_DEFAUT).
   // La couverture du podcast, une autre image de la médiathèque ou rien restent au choix.
   const [couverture, setCouverture] = useState<'podcast' | 'image' | 'titre' | 'aucune'>(ENTETE_INFOLETTRE_PAR_DEFAUT.couverture);
   // L'en-tête écrit : le nom de la lettre (dernier mot en écriture) et sa devise.
-  const [entete, setEntete] = useState<{ titre: string; sousTitre: string }>({ titre: '', sousTitre: 'Relier ce que nous avons appris à séparer.' });
+  const [entete, setEntete] = useState<{ titre: string; sousTitre: string; image: string }>({ titre: '', sousTitre: 'Relier ce que nous avons appris à séparer.', image: IMAGES_ENTETE[0].url });
   const [couvertureUrl, setCouvertureUrl] = useState<string>(ENTETE_INFOLETTRE_PAR_DEFAUT.couvertureUrl);
   const [signature, setSignature] = useState(true);
   // Langue de la lettre et bandeau : le gabarit du courriel les suit.
@@ -139,7 +146,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
         setWhen(n.scheduledFor ? toLocal(n.scheduledFor.toDate()) : '');
         setCouverture(n.couverture || 'aucune');
         setCouvertureUrl(n.couvertureUrl || '');
-        if (n.entete) setEntete({ titre: n.entete.titre || '', sousTitre: n.entete.sousTitre ?? '' });
+        if (n.entete) setEntete({ titre: n.entete.titre || '', sousTitre: n.entete.sousTitre ?? '', image: n.entete.image || IMAGES_ENTETE[0].url });
         setSignature(n.signature !== false);
         setLang(n.lang === 'en' ? 'en' : 'fr');
         setBandeau(n.bandeau || {});
@@ -270,7 +277,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     try { await saveNewsletterVersion(id, { ...contenuVersion(), raison: 'restauration' }); setVersionAt(Date.now()); } catch { /* noop */ }
     setTitle(v.title || ''); setSubject(v.subject || ''); setPreheader(v.preheader || '');
     setBlocks(v.blocks || []); setLang(v.lang === 'en' ? 'en' : 'fr'); setBandeau(v.bandeau || {}); setFond(v.fond || '#FFFFFF');
-    setCouverture(v.couverture || 'aucune'); setCouvertureUrl(v.couvertureUrl || ''); if (v.entete) setEntete({ titre: v.entete.titre || '', sousTitre: v.entete.sousTitre ?? '' }); setSignature(v.signature !== false);
+    setCouverture(v.couverture || 'aucune'); setCouvertureUrl(v.couvertureUrl || ''); if (v.entete) setEntete({ titre: v.entete.titre || '', sousTitre: v.entete.sousTitre ?? '', image: v.entete.image || IMAGES_ENTETE[0].url }); setSignature(v.signature !== false);
     setSelectedIdx(null);
     setSendInfo('Version restaurée. Elle s’enregistre toute seule dans quelques secondes.');
     setVersions(await getNewsletterVersions(id).catch(() => []));
@@ -722,6 +729,16 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
                       <Input value={entete.titre} disabled={isReadOnly} onChange={e => setEntete({ ...entete, titre: e.target.value })} placeholder="La Lettre de Krystine" />
                       <Input value={entete.sousTitre} disabled={isReadOnly} onChange={e => setEntete({ ...entete, sousTitre: e.target.value })} placeholder="Sous-titre (facultatif)" />
                       <p className="text-xs text-[#293027]/55 dark:text-white/55">Le dernier mot du titre s’écrit à la main, comme « Krystine » sur l’en-tête habituel.</p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {IMAGES_ENTETE.map(im => (
+                          <button key={im.url} type="button" disabled={isReadOnly} onClick={() => setEntete({ ...entete, image: im.url })} title={im.nom}
+                            className={`h-14 w-14 overflow-hidden rounded-xl border-2 ${entete.image === im.url ? 'border-[#BA7B39]' : 'border-transparent'}`}>
+                            <img src={im.url} alt={im.nom} className="h-full w-full object-cover" />
+                          </button>
+                        ))}
+                        {!IMAGES_ENTETE.some(im => im.url === entete.image) && entete.image && <img src={entete.image} alt="" className="h-14 w-14 rounded-xl object-cover border-2 border-[#BA7B39]" />}
+                        <GhostButton onClick={() => setPickFor('enteteImage')} disabled={isReadOnly}><i className="fa-solid fa-images" /> Autre image</GhostButton>
+                      </div>
                     </div>
                   )}
                   <label className={`flex items-center gap-3 pl-1 pt-1 text-sm text-[#293027] dark:text-white ${isReadOnly ? 'opacity-60' : 'cursor-pointer'}`}>
@@ -794,7 +811,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
       <MediathequePicker
         open={pickFor !== null}
         onClose={() => setPickFor(null)}
-        onSelect={url => { if (pickFor === 'entete') setCouvertureUrl(url); else if (pickFor === 'bandeau') setBandeau(b => ({ ...b, image: url })); else if (pickFor !== null) updateBlock(pickFor, { url }); }}
+        onSelect={url => { if (pickFor === 'enteteImage') setEntete(e => ({ ...e, image: url })); else if (pickFor === 'entete') setCouvertureUrl(url); else if (pickFor === 'bandeau') setBandeau(b => ({ ...b, image: url })); else if (pickFor !== null) updateBlock(pickFor, { url }); }}
       />
     </div>
     </Portail>
