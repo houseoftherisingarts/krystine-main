@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-26T18:43:49.226Z",
+  "generatedAt": "2026-09-26T18:46:00.330Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -105,6 +105,13 @@
       "folder": "accueil/assets",
       "kind": "image",
       "size": 57430
+    },
+    {
+      "path": "/accueil/assets/portes/conferences-scene.webp",
+      "name": "conferences-scene.webp",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 59570
     },
     {
       "path": "/accueil/assets/portes/conferences.png",
