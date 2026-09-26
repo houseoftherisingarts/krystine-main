@@ -9,7 +9,6 @@ import {
 } from '@phosphor-icons/react';
 import { useApp } from '../../contexts/AppContext';
 import NewsletterSignup from '../../components/NewsletterSignup';
-import CompteUpsell from '../../components/CompteUpsell';
 import LiveEventsSection from '../../components/LiveEvents';
 import { getEventsPublics, addBookingRequest, type EventDoc } from '../../firebase/firestore';
 import type {
@@ -32,7 +31,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const EASE = 'cubic-bezier(0.22,1,0.36,1)';
 
-const COVERLINES = ['Près de 40 ans de pratique', '3 livres · Éditions de l’Homme', 'USA, Canada & Europe'];
+const COVERLINES = ['Près de 40 ans de pratique', 'La trilogie · Éditions de l’Homme', 'USA, Canada & Europe'];
 
 /* ════════════════════════ Données éditoriales ════════════════════════ */
 
@@ -70,7 +69,7 @@ const SIGNATURE_TALKS: {
 const TESTIMONIALS = [
   {
     quote: "Krystine a une voix rare, celle d’une femme qui sait, qui a vu, et qui sait nommer ce que le public n’a jamais osé dire. Notre événement n’a pas été le même après son passage.",
-    by: 'Productrice · Festival Mondial',
+    by: 'Productrice · Festival mondial de yoga',
   },
   {
     quote: 'Un mélange parfait de rigueur scientifique et de sagesse ancestrale. Notre équipe est repartie avec des outils concrets et une nouvelle perspective.',
@@ -83,15 +82,15 @@ const TESTIMONIALS = [
 ];
 
 const PROCESS_STEPS = [
-  { n: '01', title: 'Vous nous écrivez', body: "Quelques minutes pour répondre au formulaire ci-dessous. Plus on en sait sur votre vision, mieux on prépare la rencontre." },
-  { n: '02', title: 'Échange de cadrage', body: "L’équipe revient sous 48 h ouvrables avec une proposition. Si elle convient, on planifie un appel pour affiner." },
+  { n: '01', title: 'Vous nous écrivez', body: "Quelques minutes pour répondre au formulaire ci-dessous. Plus l’on en sait sur votre vision, mieux l’on prépare la rencontre." },
+  { n: '02', title: 'Échange de cadrage', body: "L’équipe revient sous 48 h ouvrables avec une proposition. Si elle convient, l’on planifie un appel pour affiner." },
   { n: '03', title: 'Co-création', body: "Krystine ajuste l’intervention selon votre public et votre contexte. Ce n’est jamais un module pré-fait." },
   { n: '04', title: 'Sur scène', body: 'Le jour J, Krystine arrive ancrée et libre. Le reste appartient au public.' },
 ];
 
 const FAQS = [
   { q: 'Quels sujets Krystine aborde-t-elle ?', a: "Ayurveda, santé féminine, médecine intégrative, équilibre travail-vie, transmission générationnelle, écologie intérieure. Les conférences sont toujours adaptées au public." },
-  { q: "Voyage-t-elle à l’extérieur du Québec ?", a: "Oui : Canada, États-Unis, France, Belgique, Suisse selon l’agenda. Indiquez la ville dans le formulaire et on vous revient avec la faisabilité." },
+  { q: "Voyage-t-elle à l’extérieur du Québec ?", a: "Oui : Canada, États-Unis, France, Belgique, Suisse selon l’agenda. Indiquez la ville dans le formulaire et l’on vous revient avec la faisabilité." },
   { q: 'Quels sont les délais habituels ?', a: "8 à 16 semaines avant l’événement permettent une préparation idéale. Les demandes plus serrées sont étudiées au cas par cas." },
   { q: 'En quelles langues ?', a: 'Français principalement, anglais sur demande, bilingue possible.' },
   { q: 'Quelle fourchette tarifaire ?', a: "Variable selon le format, la durée, le public et le déplacement. Indiquez votre enveloppe budgétaire dans le formulaire et l’équipe vous revient avec un devis adapté." },
@@ -384,7 +383,6 @@ const BookingSection: React.FC = () => {
                 <p className="text-center text-[0.82rem] italic v2-serif text-[#3a2f23]/80">
                   Vos réponses sont enregistrées de manière confidentielle. L’équipe revient vers vous avec une proposition adaptée.
                 </p>
-                {!user && <CompteUpsell variant="light" />}
               </form>
             )}
           </div>
@@ -457,7 +455,9 @@ const EventsSection: React.FC = () => {
   useEffect(() => {
     getEventsPublics().then(setExtraEvents).catch(() => setExtraEvents([]));
   }, []);
-  const upcoming = getUpcomingEvents({ hideTedx: true });
+  // Une seule carte de retraite ici : la page parle d'abord aux organisatrices,
+  // et trois « Retraite à venir » sans date se répétaient.
+  const upcoming = getUpcomingEvents({ hideTedx: true }).filter((e) => e.id !== 'retraite-fev-2027' && e.id !== 'retraite-mai-2027');
   // Un événement de la base qui double une carte de l'agenda (même
   // identifiant, comme le lancement à L'Anglicane) ne s'affiche qu'une fois.
   const dejaAffiches = new Set(upcoming.map((e) => e.id));
@@ -469,7 +469,7 @@ const EventsSection: React.FC = () => {
   return (
     <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#f4efe6]">
       <div data-reveal className="max-w-[1040px] mx-auto text-center mb-16">
-        <Kicker className="mb-5">Où on se rejoint · Live</Kicker>
+        <Kicker className="mb-5">Où l’on se rejoint · Live</Kicker>
         <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
           Événements &amp; Conférences
         </h2>
@@ -757,16 +757,9 @@ export default function KrystineV2() {
                   data-fade
                   className="absolute bottom-4 left-4 right-4 v2-serif italic text-[#f4efe6] text-sm tracking-wide"
                 >
-                  « Une voix rare, où la rigueur du clinicien rencontre la sagesse millénaire. »
+                  « Qu’est-ce qui nourrit et soutient réellement la vie ? »
                 </p>
               </div>
-              {/* tab cover-line coin haut-gauche */}
-              <span
-                data-fade
-                className="absolute -top-2 -left-2 bg-[#1c1712] text-[#f4efe6] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.24em]"
-              >
-                2025
-              </span>
             </div>
           </div>
 
@@ -819,7 +812,6 @@ export default function KrystineV2() {
             <ArrowDown size={13} weight="regular" />
             Faire défiler
           </span>
-          <span className="hidden sm:inline">Salut Bonjour &middot; USA, Canada &amp; Europe</span>
         </div>
       </section>
 
@@ -849,8 +841,8 @@ export default function KrystineV2() {
             {/* chiffres */}
             <div className="mt-14 grid grid-cols-3 gap-6 max-w-xl border-t border-[#1c1712]/15 pt-9">
               {[
-                ['37', 'ans de pratique'],
-                ['03', 'livres publiés'],
+                ['40', 'ans de pratique, ou presque'],
+                ['03', 'tomes de la trilogie'],
                 ['Scènes', 'USA, Canada & Europe'],
               ].map(([n, l]) => (
                 <div data-beat key={l}>
@@ -875,7 +867,7 @@ export default function KrystineV2() {
               <img
                 data-beat-img
                 src="/origine-square.jpg"
-                alt="Krystine St-Laurent, univers Inspira Nature"
+                alt="Krystine St-Laurent"
                 className="absolute inset-0 h-[120%] w-full object-cover object-center will-change-transform"
               />
             </div>
@@ -883,7 +875,7 @@ export default function KrystineV2() {
               data-beat
               className="mt-4 v2-serif italic text-[#1c1712]/55 text-sm"
             >
-              Du système de santé conventionnel à la scène &middot; Inspira Nature
+              Du système de santé conventionnel à la scène
             </p>
           </div>
         </div>
@@ -929,7 +921,7 @@ export default function KrystineV2() {
       {/* ─────────── TÉMOIGNAGES ─────────── */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#f4efe6]">
         <div data-reveal className="max-w-[760px] mb-16">
-          <Kicker className="mb-5">Ce qu’on en dit</Kicker>
+          <Kicker className="mb-5">Ce que l’on en dit</Kicker>
           <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">
             Après son passage
           </h2>

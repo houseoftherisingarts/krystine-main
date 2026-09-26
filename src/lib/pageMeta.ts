@@ -86,7 +86,7 @@ const ROUTES: Record<string, PageMeta> = {
   },
   '/compte': {
     title: `Mon espace · ${SITE}`,
-    description: 'Votre espace membre Inspirata: commandes, infolettres et fidélité.',
+    description: 'Votre espace membre : commandes, infolettres et fidélité.',
   },
   '/politique-de-confidentialite': {
     title: `Politique de confidentialité · ${SITE}`,

@@ -163,8 +163,8 @@ const NewsletterSignup: React.FC<Props> = ({
       : (lang === 'FR' ? 'Vous êtes bien inscrite' : 'You are on the list');
     const body = success ? success.body : isGoogle
       ? (lang === 'FR'
-          ? 'Votre espace client Inspirata est prêt et un premier mot de bienvenue arrive dans votre boîte.'
-          : 'Your Inspirata client space is ready and a first welcome note is on its way to your inbox.')
+          ? 'Votre espace client est prêt et un premier mot de bienvenue arrive dans votre boîte.'
+          : 'Your client space is ready and a first welcome note is on its way to your inbox.')
       : (lang === 'FR'
           ? 'Votre inscription est bien reçue et vous n\'avez rien d\'autre à faire pour le moment. Les prochaines lettres vous arriveront au fil des saisons, avec à l\'occasion un rituel ou une lecture à emporter avec vous, et vous serez avisée avant toute annonce publique.'
           : 'Your registration is confirmed and there is nothing else to do for now. The next letters will reach you with the seasons, now and then with a ritual or a reading to take with you, and you will hear from us before any public announcement.');

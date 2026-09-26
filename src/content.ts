@@ -39,7 +39,7 @@ export const CONTENT = {
       krystine: 'Krystine',
       ayurveda: 'Ayurveda',
       formations: 'Formations',
-      boutique: 'Boutique Inspirata Ayurveda',
+      boutique: 'Boutique',
       livres: 'Livres',
       medias: 'Podcasts, Médias & Livres',
       evenements: 'Événements',

@@ -32,7 +32,7 @@ const ShareButtons: React.FC<Props> = ({ title, url, className = '', compact = f
   const [copied, setCopied] = useState(false);
 
   const shareUrl = url || (typeof window !== 'undefined' ? window.location.href : 'https://krystinestlaurent.ca');
-  const shareTitle = title || (typeof document !== 'undefined' ? document.title : 'Inspirata Ayurveda');
+  const shareTitle = title || (typeof document !== 'undefined' ? document.title : 'Krystine St-Laurent');
 
   const onShare = (platform: Platform) => {
     // Loyalty — each share counts. We include ms timestamp in the dedup
@@ -125,7 +125,7 @@ export const PageShareBar: React.FC = () => (
     <div className="max-w-5xl mx-auto px-6 md:px-12 py-6 flex flex-wrap items-center justify-between gap-4">
       <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#2a2015]/60 dark:text-white/60">
         <i className="fa-solid fa-seedling text-[#7d6330] mr-2" />
-        Inspirata Ayurveda
+        Krystine St-Laurent
       </p>
       <ShareButtons />
     </div>
