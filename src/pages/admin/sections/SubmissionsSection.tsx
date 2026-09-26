@@ -64,6 +64,7 @@ function prettySource(s: string): string {
     'accueil-pulsation': 'Pulsation · accueil',
     'quiz': 'Quiz Dosha',
     'guide': 'Laissez-vous guider',
+    'fondatrices-origine': 'Fondatrices d’Origine',
     'import': 'Import CSV',
   };
   if (dict[s]) return dict[s];
@@ -218,8 +219,28 @@ function normalizeDosha(d: DoshaResult): Submission {
   };
 }
 
+const LIBELLES_FONDATRICES: Record<string, string> = {
+  'q1-change': 'Ce qui a changé',
+  'q2-manque': 'Ce qui manque',
+  'q3-souhait': 'Ce qu’elle souhaite',
+};
+
 function normalizeGuide(g: GuideResponse): Submission {
   const name = [g.firstName, g.lastName].filter(Boolean).join(' ').trim() || '(anonyme)';
+  // Réponses écrites (fondatrices d'Origine) : chaque question avec son texte en entier.
+  if (g.source === 'fondatrices-origine') {
+    return {
+      id: `guide-${g.id}`,
+      category: 'guide',
+      name,
+      email: g.email || '',
+      source: g.source,
+      tags: g.tags || [],
+      createdAt: g.createdAt,
+      summary: 'Nouvelles des fondatrices d’Origine',
+      details: (g.answers || []).map(a => ({ label: LIBELLES_FONDATRICES[a.qid] || a.qid, value: a.optionLabel || '—' })),
+    };
+  }
   const answers = (g.answers || []).map(a => `${a.questionLabel || a.qid} → ${a.optionId}`).join('  ·  ');
   return {
     id: `guide-${g.id}`,
@@ -657,7 +678,7 @@ const SubmissionsSection: React.FC = () => {
                         <span className="text-[10px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50 font-bold w-36 shrink-0">
                           {d.label}
                         </span>
-                        <span className="text-[#293027]/85 dark:text-white/85 break-words">{d.value}</span>
+                        <span className="text-[#293027]/85 dark:text-white/85 break-words whitespace-pre-line">{d.value}</span>
                       </div>
                     ))}
 

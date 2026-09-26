@@ -81,6 +81,8 @@ const LocationsLoeuvre = lazy(() => import('./src/pages/LocationsLoeuvre'));
 const GuideLoeuvre = lazy(() => import('./src/pages/GuideLoeuvre'));
 const BoutiqueLoeuvre = lazy(() => import('./src/pages/BoutiqueLoeuvre'));
 const ListeAttenteLoeuvre = lazy(() => import('./src/pages/ListeAttenteLoeuvre'));
+// Les trois questions envoyées aux fondatrices de la première Expérience Origine.
+const NouvellesFondatrices = lazy(() => import('./src/pages/origine/NouvellesFondatrices'));
 const QuizLoeuvre = lazy(() => import('./src/pages/QuizLoeuvre'));
 
 // Concepts de refonte (comparaison côte à côte) — pages standalone, chrome masqué.
@@ -243,6 +245,7 @@ const App: React.FC = () => (
               pré-ouverture : les infos du parcours, sans prix ni inscription,
               avec invitation à la liste d'attente (/liste-attente?programme=origine). */}
           <Route path="/origine" element={<OrigineExperience />} />
+          <Route path="/origine/nouvelles" element={<NouvellesFondatrices />} />
           <Route path="/origine-loeuvre" element={<Navigate to="/origine" replace />} />
           {/* Le Foyer d'Origine — page de vente WIP, accès par URL seulement */}
           <Route path="/foyer" element={<FoyerPage />} />

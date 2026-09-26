@@ -32,6 +32,10 @@ const ROUTES: Record<string, PageMeta> = {
     image: '/5elements/partage.jpg',
     imageAlt: 'Les 5 éléments et leurs qualités, extrait du livre Nature & Ayurveda',
   },
+  '/origine/nouvelles': {
+    title: `Depuis Origine, où en êtes-vous? · ${SITE}`,
+    description: 'Trois questions pour les fondatrices de la première Expérience Origine.',
+  },
   '/medias/tv': {
     title: `À la télé · ${SITE}`,
     description: 'Les chroniques et passages télé de Krystine St-Laurent: santé globale, plantes et rituels de saison.',
