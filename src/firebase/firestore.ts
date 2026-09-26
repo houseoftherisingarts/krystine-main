@@ -968,17 +968,26 @@ export interface TemoignageConference {
   createdAt?: Timestamp;
 }
 
+// Le courriel ne vit jamais dans le document du témoignage, qui devient
+// lisible par tous une fois publié : il va dans temoignagesContacts/{même id},
+// que seule l'admin lit.
 export async function addTemoignageConference(data: Omit<TemoignageConference, 'id' | 'publie' | 'createdAt'>) {
   if (!db) return console.warn('[Firestore] Not configured');
-  const ref = await addDoc(collection(db, 'temoignagesConference'), { ...data, publie: false, createdAt: serverTimestamp() });
+  const { courriel, ...publicable } = data;
+  const ref = await addDoc(collection(db, 'temoignagesConference'), { ...publicable, publie: false, createdAt: serverTimestamp() });
+  if (courriel) await setDoc(doc(db, 'temoignagesContacts', ref.id), { courriel, createdAt: serverTimestamp() }).catch(() => {});
   trackObjectif('Témoignage de conférence', 'petit');
   return ref;
 }
 
 export async function getTemoignagesConference(): Promise<TemoignageConference[]> {
   if (!db) return [];
-  const snap = await getDocs(query(collection(db, 'temoignagesConference'), orderBy('createdAt', 'desc')));
-  return snap.docs.map(d => ({ id: d.id, ...d.data() } as TemoignageConference));
+  const [snap, contacts] = await Promise.all([
+    getDocs(query(collection(db, 'temoignagesConference'), orderBy('createdAt', 'desc'))),
+    getDocs(collection(db, 'temoignagesContacts')),
+  ]);
+  const courriels = new Map(contacts.docs.map(d => [d.id, d.get('courriel') as string]));
+  return snap.docs.map(d => ({ id: d.id, ...d.data(), courriel: courriels.get(d.id) || (d.get('courriel') as string | undefined) } as TemoignageConference));
 }
 
 /** Ceux que Krystine a approuvés, pour la page publique. */
