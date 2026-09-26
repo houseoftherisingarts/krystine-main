@@ -2102,5 +2102,19 @@
       "src/components/LiveEvents.tsx",
       "src/lib/liveEvents.ts"
     ]
+  },
+  {
+    "quand": "2026-09-26T21:30:51.065Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "cfe1fc5a",
+    "message": "Conférencière (/conferenciere) : « ou presque » retiré des chiffres, filtre du film plus feutré",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
