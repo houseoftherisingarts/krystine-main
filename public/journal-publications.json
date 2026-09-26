@@ -2056,5 +2056,21 @@
       "public/i18n/en.json",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T21:13:06.663Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "59b66810",
+    "message": "Conférencière (/conferenciere) : le film reprend le modèle de l'accueil (plein cadre, voile vert, titre de la conférence, Inviter Krystine, bouton du son)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/conferences/film-complet-1080.mp4",
+      "public/conferences/film-complet-720.mp4",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
