@@ -41,7 +41,7 @@ const COVERLINES = ['Près de 40 ans de pratique', 'La trilogie · Éditions de 
 // le même One Talk. L'Ayurveda, la nature et le corps nourrissent la
 // conférence sans en devenir le titre ni la catégorie.
 const ONE_TALK = {
-  title: 'Plus de réponses. Moins de confiance.',
+  title: 'Plus de réponses. Moins de confiance ?',
   sousTitre: 'Ce que l’abondance d’information fait à notre capacité de juger et de choisir.',
   texte: 'Nous avons accès à davantage d’informations, de conseils, d’experts, de méthodes et de technologies que jamais. Cette conférence explore ce qui se passe lorsque les réponses se multiplient plus vite que notre capacité à les examiner, et les capacités humaines que nous voulons continuer d’exercer nous-mêmes.',
   promesse: 'Le public repart avec une façon plus claire d’examiner les réponses qui lui sont proposées, d’en évaluer la pertinence et de décider de la confiance à leur accorder.',
@@ -467,17 +467,18 @@ const FilmSection: React.FC = () => {
         poster="/accueil/assets/film/conference-2026-poster.jpg"
         aria-label="Krystine St-Laurent en conférence"
         className="absolute inset-0 h-full w-full object-cover"
+        style={{ filter: 'sepia(0.28) saturate(0.82) brightness(0.92) contrast(1.04)' }}
       />
       <div
         aria-hidden
         className="absolute inset-0"
-        style={{ background: 'linear-gradient(90deg, rgba(27,38,34,.94) 0%, rgba(27,38,34,.78) 38%, rgba(27,38,34,.28) 72%, rgba(27,38,34,.12) 100%)' }}
+        style={{ background: 'radial-gradient(120% 90% at 70% 45%, rgba(186,123,57,.16) 0%, rgba(27,20,12,0) 55%, rgba(20,15,10,.55) 100%), linear-gradient(90deg, rgba(27,38,34,.94) 0%, rgba(27,38,34,.78) 38%, rgba(27,38,34,.28) 72%, rgba(27,38,34,.12) 100%)' }}
       />
       <div data-reveal className="relative z-10 w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(4rem,10vh,6rem)]">
         <div className="max-w-[34rem]">
           <p className="text-[0.66rem] uppercase tracking-[0.3em] text-[#d9a05b]">Krystine sur scène</p>
           <h2 className="mt-5 v2-serif font-light leading-[1.06] text-[#EEE7DB] text-[clamp(2.2rem,4.4vw,3.6rem)]">
-            Plus de réponses. Moins de confiance.
+            Plus de réponses. Moins de confiance ?
           </h2>
           <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
             <a
