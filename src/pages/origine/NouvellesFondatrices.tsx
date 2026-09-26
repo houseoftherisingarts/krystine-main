@@ -28,10 +28,10 @@ const QUESTIONS = [
   },
 ];
 
-// La palette de « La Lettre de Krystine » (functions/src/newsletter/renderer.ts) :
+// L'ambiance de « La Lettre de Krystine », sans son en-tête (functions/src/newsletter/renderer.ts) :
 // crème #EEE7DB, papier #f8f6f2, encre #292b20, nuit #141311, or #e0b060.
 const serif = { fontFamily: '"Cormorant Garamond", Georgia, serif' };
-const champ = 'w-full rounded-[12px] bg-[#f8f6f2] border border-[#293027]/15 px-5 py-4 text-[0.95rem] leading-[1.75] text-[#292b20] placeholder-[#293027]/35 outline-none transition-colors duration-300 focus:border-[#e0b060]';
+const champ = 'w-full rounded-[12px] bg-[#f8f6f2] border border-[#293027]/15 px-5 py-4 text-[0.95rem] leading-[1.75] text-[#292b20] placeholder-[#293027]/35 outline-none transition-colors duration-300 focus:border-[#BA7B39]';
 const libelle = 'block text-[0.62rem] uppercase tracking-[0.24em] text-[#7d6330] mb-2.5';
 
 const NouvellesFondatrices: React.FC = () => {
@@ -82,25 +82,18 @@ const NouvellesFondatrices: React.FC = () => {
         transition={{ duration: 1.1, ease: [0.16, 0.8, 0.24, 1] }}
         className="mx-auto w-full max-w-[880px] rounded-[15px] overflow-hidden shadow-[0_40px_90px_-60px_rgba(41,48,39,0.6)] border border-[#293027]/10"
       >
-        {/* L'en-tête de la lettre */}
-        <header className="bg-[#f8f6f2] px-7 sm:px-12 pt-10 pb-9">
-          <p className="text-[#292b20] text-[clamp(2.2rem,5.4vw,3.6rem)] leading-[1.05] flex flex-wrap items-center gap-x-3" style={serif}>
-            <span>La Lettre de</span>
-            <img src="/compte/signature-krystine-noire.webp" alt="Krystine" className="h-[1.5em] w-auto -my-3" />
-          </p>
-          <p className="mt-3 text-[#5f5c50] text-[clamp(1.1rem,2.2vw,1.35rem)]" style={serif}>Relier ce que nous avons appris à séparer.</p>
-          <p className="mt-5 text-[0.62rem] sm:text-[0.66rem] uppercase tracking-[0.3em] leading-[2] text-[#292b20]/80">
-            Nourrir et soigner<br />Corps et conscience<br />Science et sagesses
-          </p>
-        </header>
-
         {/* Le bandeau nuit */}
-        <div className="bg-[#141311] px-7 sm:px-12 pt-8 pb-8">
-          <p className="text-[0.66rem] uppercase tracking-[0.3em] font-semibold text-[#e0b060]">Expérience Origine &middot; Les fondatrices</p>
-          <h1 className="mt-4 text-[#EEE7DB] text-[clamp(2rem,4.6vw,3rem)] leading-[1.08] font-medium" style={serif}>
+        <div className="relative overflow-hidden bg-[#141311] px-7 sm:px-12 pt-10 pb-10">
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -right-[15%] -top-[60%] h-[180%] w-[60%] rounded-full blur-[60px]"
+            style={{ background: 'radial-gradient(circle, rgba(186,123,57,.42) 0%, rgba(20,19,17,0) 70%)' }}
+          />
+          <p className="relative text-[0.66rem] uppercase tracking-[0.3em] font-semibold text-[#d9a05b]">Expérience Origine &middot; Les fondatrices</p>
+          <h1 className="relative mt-4 text-[#EEE7DB] text-[clamp(2rem,4.6vw,3rem)] leading-[1.08] font-medium" style={serif}>
             {fait ? 'Vos nouvelles sont arrivées' : 'Depuis Origine, où en êtes-vous?'}
           </h1>
-          <span className="mt-6 block h-px w-16 bg-[#e0b060]" aria-hidden />
+          <span className="relative mt-6 block h-px w-16 bg-[#BA7B39]" aria-hidden />
         </div>
 
         {/* Le corps */}
@@ -126,7 +119,7 @@ const NouvellesFondatrices: React.FC = () => {
                 {QUESTIONS.map((q, i) => (
                   <li key={q.qid} className="border-t border-[#293027]/10 pt-9">
                     <div className="flex items-baseline gap-4">
-                      <span className="text-[2.2rem] leading-none text-[#7d6330]" style={serif}>{String(i + 1).padStart(2, '0')}</span>
+                      <span className="text-[2.2rem] leading-none text-[#BA7B39]" style={serif}>{String(i + 1).padStart(2, '0')}</span>
                       <h2 className="text-[clamp(1.4rem,2.6vw,1.8rem)] leading-[1.25] text-[#292b20] font-medium" style={serif}>{q.titre}</h2>
                     </div>
                     <p className="mt-3 text-[0.93rem] leading-[1.85] text-[#5f5c50]">{q.aide}</p>
