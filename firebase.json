@@ -18,6 +18,13 @@
     ],
     "rewrites": [
       {
+        "source": "/c",
+        "function": {
+          "functionId": "clic",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/vh",
         "function": {
           "functionId": "vhCollecter",

@@ -566,6 +566,11 @@ export interface NewsletterStats {
   recipients?: number;
   delivered?: number;
   opens?: number;
+  /** Depuis le 26 sept. 2026 : ouvertures d'une machine (Apple Mail, filtres) dans les deux minutes de l'envoi. */
+  opensAuto?: number;
+  /** Ouvertures probablement humaines : plus tard que l'envoi, ou prouvées par un clic. */
+  opensHumaines?: number;
+  /** Personnes qui ont cliqué au moins un lien. */
   clicks?: number;
   bounces?: number;
   unsubscribes?: number;

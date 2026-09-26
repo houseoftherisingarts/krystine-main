@@ -262,6 +262,16 @@ function estQuota(err: unknown): boolean {
   return !estLimiteDebit(err) && /quota|daily/i.test(texteErreur(err));
 }
 
+// Chaque lien de la lettre passe par /c sur le domaine de Krystine (clic.ts),
+// sauf le désabonnement et les adresses de courriel, pour compter les clics.
+function suivreLesClics(html: string, n: string, s: string): string {
+  return html.replace(/href="(https?:\/\/[^"]+)"/g, (tout, brut: string) => {
+    const u = brut.replace(/&amp;/g, '&');
+    if (/desinscription|unsubscribe|cloudfunctions\.net/i.test(u)) return tout;
+    return `href="https://www.krystinestlaurent.ca/c?n=${encodeURIComponent(n)}&amp;s=${encodeURIComponent(s)}&amp;u=${encodeURIComponent(u)}"`;
+  });
+}
+
 export async function deliverNewsletter(newsletterId: string): Promise<{ recipients: number; delivered: number; bounces: number; done: boolean }> {
   const db = getFirestore();
   const ref = db.doc(`newsletters/${newsletterId}`);
@@ -339,7 +349,7 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
       replyTo: REPLY_TO,
       to: sub.email,
       subject: doc.subject,
-      html: renderEmailHtml(doc.blocks, opts),
+      html: suivreLesClics(renderEmailHtml(doc.blocks, opts), newsletterId, sub.id),
       text: renderEmailText(doc.blocks, opts),
       headers: {
         'List-Unsubscribe': `<${unsubscribeOneClickUrl(jeton)}>`,

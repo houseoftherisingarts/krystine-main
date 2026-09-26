@@ -119,10 +119,24 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
                     </td>
                     <td className="px-4 py-3 hidden lg:table-cell">
                       {n.status === 'sent' && (n.stats?.recipients || 0) > 0 ? (
-                        <span className="text-[#8B4A2F]">
-                          {Math.round(((n.stats?.opens || 0) / (n.stats!.recipients || 1)) * 100)} %
-                          <span className="ml-1 text-[11px] text-[#293027]/45 dark:text-white/45">({n.stats?.opens || 0})</span>
-                        </span>
+                        // Depuis le 26 sept. 2026, les ouvertures d'une machine (Apple Mail et
+                        // les filtres qui chargent l'image à l'arrivée) se comptent à part :
+                        // le taux affiché est celui des lectures probables, clics à côté.
+                        n.stats?.opensHumaines !== undefined || n.stats?.opensAuto !== undefined ? (
+                          <span className="text-[#8B4A2F]" title="Lectures probables : ouvertures plus tard que l'arrivée du courriel, ou suivies d'un clic">
+                            {Math.round(((n.stats?.opensHumaines || 0) / (n.stats!.recipients || 1)) * 100)} %
+                            <span className="ml-1 text-[11px] text-[#293027]/45 dark:text-white/45">({n.stats?.opensHumaines || 0} lectures)</span>
+                            <span className="block text-[11px] text-[#293027]/50 dark:text-white/50">
+                              {n.stats?.opensAuto || 0} automatiques · {n.stats?.clicks || 0} clic{(n.stats?.clicks || 0) > 1 ? 's' : ''}
+                            </span>
+                          </span>
+                        ) : (
+                          <span className="text-[#8B4A2F]" title="Mesure d'avant le 26 septembre 2026 : elle inclut les ouvertures automatiques (Apple Mail, filtres)">
+                            {Math.round(((n.stats?.opens || 0) / (n.stats!.recipients || 1)) * 100)} %
+                            <span className="ml-1 text-[11px] text-[#293027]/45 dark:text-white/45">({n.stats?.opens || 0})</span>
+                            <span className="block text-[11px] text-[#293027]/50 dark:text-white/50">automatiques incluses</span>
+                          </span>
+                        )
                       ) : <span className="text-[#293027]/35 dark:text-white/35">—</span>}
                     </td>
                     <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden md:table-cell">{n.updatedAt?.toDate().toLocaleDateString('fr-CA') || '—'}</td>
