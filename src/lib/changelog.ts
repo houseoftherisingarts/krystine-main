@@ -30,6 +30,27 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-09-26',
+    titre: "Votre page de conférencière repensée, de vraies photos de scène, et une infolettre qui mesure mieux",
+    intro: "La page conférencière présente maintenant une seule conférence et ses portes de programmation, avec vos vraies photos et votre film. L'accueil suit le même positionnement, et l'infolettre distingue les vraies lectures des ouvertures automatiques.",
+    etapes: [
+      { texte: "Sur l'accueil, « Par où commencer » est remonté juste sous le haut de la page, l'inscription du tome 3 passe avant la Trilogie, et le passage de la Trilogie est raccourci.", ou: '/accueil', libelle: "L'accueil" },
+      { texte: "La section conférence de l'accueil porte le titre « Comment choisir dans un monde qui pense de plus en plus à notre place ? », la ligne « Conférencière · Keynote speaker · Autrice best-seller », les boutons « Inviter Krystine » et « Découvrir », et le nouveau film de conférence, sans ses écrans de texte.", ou: '/accueil', libelle: 'La section conférence' },
+      "La carte « Les conférences » de l'accueil a un nouveau texte et votre photo au micro, et le lien du pied de page s'appelle maintenant « Boutique ».",
+      { texte: "La page conférencière présente une seule conférence, « Plus de réponses. Moins de confiance ? », et ses huit portes de programmation. Les mentions « infirmière », « revenir à soi » et les rituels sont retirées, et la FAQ, le titre et la description pour Google sont mis à jour.", ou: '/conferenciere', libelle: 'La page conférencière' },
+      "De vraies photos de scène s'y trouvent maintenant (vous au micro, Mont-Tremblant 2024, le lancement de 2018), avec un filtre doré, ainsi que votre film de conférence en grande bande, au filtre feutré.",
+      { texte: "Un seul témoignage demeure, signé « Productrice d'événements corporatifs ». Une nouvelle page permet au public de laisser un mot, que vous affichez ou non depuis l'admin, dans Événements & Conférences.", ou: '/conferenciere/temoignage', libelle: 'Laisser un mot' },
+      "Les dates sont corrigées partout : la parution du livre le 4 février 2027 et le lancement à L'Anglicane de Lévis le 14 mars 2027. Le lancement de Montréal est retiré, et la carte « Krystine sur scène » remplace la tournée dans l'agenda.",
+      "L'ancienne page /speaking est retirée : son adresse mène maintenant à la page conférencière, et son contenu est archivé tel quel.",
+      { texte: "Vos 115 fondatrices d'Expérience Origine forment maintenant une liste dans l'infolettre, et l'import d'un fichier ajoute les étiquettes aux personnes déjà inscrites.", ou: '/admin/infolettre', libelle: "L'infolettre" },
+      "Les lectures probables de vos lettres sont séparées des ouvertures automatiques (Apple Mail et les filtres), et les clics sont comptés par personne.",
+      { texte: "La page de désabonnement offre un bouton « Oups, je me suis trompée : je reste abonnée ».", ou: '/desinscription', libelle: 'Désabonnement' },
+      "Un brouillon d'infolettre « Témoignages de conférence » vous attend dans l'admin.",
+      { texte: "La mesure des visites distingue maintenant les visites de découverte des visites de retour.", ou: '/admin/visiteurs', libelle: 'Visiteurs et clics' },
+      "L'adresse de contact du pied de page est maintenant teamksl@inspiratanature.com, « Inspirata » est retiré de la barre de partage et du message de bienvenue, et la date de parution est corrigée sur les pages Podcast et Origine.",
+    ],
+  },
+  {
     date: '2026-09-24',
     titre: "Vos propres étapes dans le plan, des livres plus lourds, et un mot d'accueil sans le mot infolettre",
     intro: "Le plan du mois accepte maintenant les étapes que vous écrivez vous-même, le dépôt des livres reçoit des fichiers jusqu'à deux gigaoctets et dit clairement ce qui cloche quand un envoi ne passe pas, et la confirmation d'inscription ne parle plus d'infolettre.",
