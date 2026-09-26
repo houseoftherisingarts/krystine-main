@@ -40,12 +40,26 @@ export const POLICES: Record<Police, { label: string; css: string; tw: string }>
   sans:   { label: 'Moderne',    css: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif", tw: 'font-sans' },
   script: { label: 'Manuscrite', css: "'Pinyon Script', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive", tw: '' },
 };
-// Les tailles d'image : petite, moyenne ou pleine largeur (par défaut). Miroir dans functions/src/newsletter/renderer.ts.
-export const LARGEURS_IMAGE: Record<string, { label: string; px: number }> = {
-  petite: { label: 'Petite', px: 220 },
-  moyenne: { label: 'Moyenne', px: 340 },
-  pleine: { label: 'Pleine largeur', px: 520 },
+// Les formats d'image : bannière (bande large recadrée), grande, moyenne, ou
+// kaléidoscope de quatre carrés deux par deux. Miroir dans functions/src/newsletter/renderer.ts.
+export const FORMATS_IMAGE: Record<string, { label: string; px: number }> = {
+  banniere: { label: 'Bannière', px: 520 },
+  grande: { label: 'Grande image', px: 520 },
+  moyenne: { label: 'Moyenne image', px: 340 },
+  kaleidoscope: { label: 'Kaléidoscope (4 images)', px: 520 },
 };
+const ANCIENS_FORMATS: Record<string, string> = { pleine: 'grande', petite: 'moyenne' };
+export function formatImage(v: unknown): string {
+  const k = String(v || '');
+  return FORMATS_IMAGE[k] ? k : ANCIENS_FORMATS[k] || 'grande';
+}
+export function recadre(url: string, w: number, h: number): string {
+  return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${w}&h=${h}&fit=cover&a=attention&output=jpg&q=82`;
+}
+// Les quatre cases d'un kaléidoscope : la première est l'image du bloc, les trois autres vivent dans `images`.
+export function casesKaleidoscope(c: any): string[] {
+  return [0, 1, 2, 3].map(i => (i === 0 ? c.url : Array.isArray(c.images) ? c.images[i] : '') || '');
+}
 
 export const TAILLES: Record<Taille, { label: string; px: number; tw: string }> = {
   sm: { label: 'Petit',      px: 14, tw: 'text-sm' },
@@ -142,7 +156,8 @@ export function domToRich(root: Node): string {
 // passent jamais par là : sans `edit`, le rendu est celui d'avant.
 export interface BlockEdit {
   set: (patch: Record<string, any>) => void;
-  pickImage: () => void;
+  /** Sans argument : l'image du bloc. Avec un numéro : une case du kaléidoscope (0 à 3). */
+  pickImage: (casePos?: number) => void;
 }
 
 const Inline: React.FC<{
@@ -255,27 +270,49 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
       return <p className={className} style={style} dangerouslySetInnerHTML={{ __html: richToHtml(c.text || '') }} />;
     }
     case 'image': {
-      const larg = LARGEURS_IMAGE[c.largeur as string] || LARGEURS_IMAGE.pleine;
+      const fmt = formatImage(c.largeur);
+      const px = FORMATS_IMAGE[fmt].px;
+      const lien = /^https?:\/\//.test(c.href || '') ? c.href : 'https://www.krystinestlaurent.ca';
       const capClass = 'text-xs uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 text-center mt-3';
+      const vide = (texte: string, carre = false) => <div className={`${carre ? 'aspect-square' : 'aspect-[21/9] max-h-64'} w-full border-2 border-dashed border-[#B8532F]/40 bg-[#B8532F]/5 flex flex-col items-center justify-center gap-2 text-[#B8532F]`}><i className="fa-solid fa-image text-2xl" /><span className="text-[10px] uppercase tracking-widest font-bold">{texte}</span></div>;
+      const survol = <span className="absolute inset-0 flex items-center justify-center bg-[#3A251E]/0 group-hover/img:bg-[#3A251E]/40 transition-colors"><span className="opacity-0 group-hover/img:opacity-100 transition-opacity bg-white text-[#3A251E] px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest shadow-lg"><i className="fa-solid fa-images mr-2" />Changer</span></span>;
+      if (fmt === 'kaleidoscope') {
+        const cases = casesKaleidoscope(c);
+        return (
+          <figure className="my-6 mx-auto" style={{ maxWidth: px }}>
+            <div className="grid grid-cols-2 gap-3">
+              {cases.map((u, i) => edit ? (
+                <button key={i} type="button" onClick={e => { e.stopPropagation(); edit.pickImage(i); }} title={`Image ${i + 1}`}
+                  className="group/img relative block w-full rounded-xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#BA7B39]">
+                  {u ? <img src={u} alt={c.alt || ''} className="w-full aspect-square object-cover block" /> : vide(`Image ${i + 1}`, true)}
+                  {survol}
+                </button>
+              ) : u ? (
+                <a key={i} href={lien} target="_blank" rel="noopener noreferrer" className="block"><img src={u} alt={c.alt || ''} className="w-full aspect-square object-cover rounded-xl" /></a>
+              ) : null)}
+            </div>
+            {edit
+              ? <Inline tag="figcaption" className={capClass} value={c.caption || ''} placeholder="Légende (facultative)" onCommit={set('caption')} />
+              : c.caption && <figcaption className={capClass}>{c.caption}</figcaption>}
+          </figure>
+        );
+      }
+      const imgClass = fmt === 'banniere' ? 'w-full aspect-[3/1] object-cover block' : 'w-full block';
       if (edit) {
         return (
-          <figure className="my-6 mx-auto" style={{ maxWidth: larg.px }}>
+          <figure className="my-6 mx-auto" style={{ maxWidth: px }}>
             <button type="button" onClick={e => { e.stopPropagation(); edit.pickImage(); }} title="Changer l'image"
               className="group/img relative block w-full rounded-2xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#BA7B39]">
-              {c.url
-                ? <img src={c.url} alt={c.alt || ''} className="w-full block" />
-                : <div className="aspect-[21/9] max-h-64 w-full border-2 border-dashed border-[#B8532F]/40 bg-[#B8532F]/5 flex flex-col items-center justify-center gap-2 text-[#B8532F]"><i className="fa-solid fa-image text-3xl" /><span className="text-xs uppercase tracking-widest font-bold">Choisir une image</span></div>}
-              <span className="absolute inset-0 flex items-center justify-center bg-[#3A251E]/0 group-hover/img:bg-[#3A251E]/40 transition-colors">
-                <span className="opacity-0 group-hover/img:opacity-100 transition-opacity bg-white text-[#3A251E] px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest shadow-lg"><i className="fa-solid fa-images mr-2" />Changer l'image</span>
-              </span>
+              {c.url ? <img src={c.url} alt={c.alt || ''} className={imgClass} /> : vide('Choisir une image')}
+              {survol}
             </button>
             <Inline tag="figcaption" className={capClass} value={c.caption || ''} placeholder="Légende (facultative)" onCommit={set('caption')} />
           </figure>
         );
       }
       return (
-        <figure className="my-6 mx-auto" style={{ maxWidth: larg.px }}>
-          {c.url && <a href={/^https?:\/\//.test(c.href || '') ? c.href : 'https://www.krystinestlaurent.ca'} target="_blank" rel="noopener noreferrer" className="block"><img src={c.url} alt={c.alt || ''} className="w-full rounded-2xl" /></a>}
+        <figure className="my-6 mx-auto" style={{ maxWidth: px }}>
+          {c.url && <a href={lien} target="_blank" rel="noopener noreferrer" className="block"><img src={c.url} alt={c.alt || ''} className={`${imgClass} rounded-2xl`} /></a>}
           {c.caption && <figcaption className={capClass}>{c.caption}</figcaption>}
         </figure>
       );
@@ -427,12 +464,22 @@ function blockToEmail(block: NewsletterBlock, firstName?: string): string {
       return `<tr><td align="${align}" style="padding:8px 0;font-family:${BRAND.sans};font-size:15px;line-height:1.65;color:${BRAND.muted};">${text}</td></tr>`;
     }
     case 'image': {
-      if (!c.url) return '';
       const caption = c.caption
         ? `<tr><td align="center" style="padding:8px 0;font-family:${BRAND.sans};font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:${BRAND.muted};">${esc(c.caption)}</td></tr>`
         : '';
-      const larg = LARGEURS_IMAGE[c.largeur] || LARGEURS_IMAGE.pleine;
-      return `<tr><td align="center" style="padding:16px 0;"><img src="${esc(c.url)}" alt="${esc(c.alt || '')}" width="${larg.px}" style="display:block;width:100%;max-width:${larg.px}px;border-radius:16px;margin:0 auto;" /></td></tr>${caption}`;
+      const fmt = formatImage(c.largeur);
+      if (fmt === 'kaleidoscope') {
+        const imgs = casesKaleidoscope(c).filter(u => /^https?:\/\//.test(u));
+        if (!imgs.length) return '';
+        const cell = (u: string, gauche: boolean) => `<td width="50%" valign="top" style="padding:0 ${gauche ? 6 : 0}px 12px ${gauche ? 0 : 6}px;"><img src="${esc(recadre(u, 500, 500))}" alt="${esc(c.alt || '')}" width="254" style="display:block;width:100%;max-width:254px;border-radius:12px;" /></td>`;
+        let rangs = '';
+        for (let i = 0; i < imgs.length; i += 2) rangs += `<tr>${cell(imgs[i], true)}${imgs[i + 1] ? cell(imgs[i + 1], false) : '<td width="50%"></td>'}</tr>`;
+        return `<tr><td align="center" style="padding:16px 0 4px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">${rangs}</table></td></tr>${caption}`;
+      }
+      if (!c.url) return '';
+      const px = FORMATS_IMAGE[fmt].px;
+      const src = fmt === 'banniere' ? recadre(c.url, 1040, 347) : c.url;
+      return `<tr><td align="center" style="padding:16px 0;"><img src="${esc(src)}" alt="${esc(c.alt || '')}" width="${px}" style="display:block;width:100%;max-width:${px}px;border-radius:16px;margin:0 auto;" /></td></tr>${caption}`;
     }
     case 'button': {
       const primary = c.variant !== 'secondary';

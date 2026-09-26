@@ -1,5 +1,5 @@
 import { onRequest } from 'firebase-functions/v2/https';
-import { getFirestore, Timestamp } from 'firebase-admin/firestore';
+import { getFirestore, Timestamp, FieldValue } from 'firebase-admin/firestore';
 
 // Public HTTPS endpoint invoked by /desinscription?t=TOKEN. Uses the Admin
 // SDK so it bypasses Firestore rules, which lets us keep the subscriber
@@ -13,6 +13,9 @@ export const unsubscribeByToken = onRequest(
   { cors: true, timeoutSeconds: 30 },
   async (req, res) => {
     const token = (req.query.t || req.body?.t || '').toString().trim();
+    // « Oups, je me suis trompée » : le même jeton, avec annuler=1, remet
+    // l'abonnement. Le clic de la personne vaut un oui explicite.
+    const annuler = (req.query.annuler || req.body?.annuler || '').toString() === '1';
     if (!token) { res.json({ ok: false }); return; }
 
     try {
@@ -21,6 +24,13 @@ export const unsubscribeByToken = onRequest(
       if (snap.empty) { res.json({ ok: false }); return; }
 
       const d = snap.docs[0];
+      if (annuler) {
+        if ((d.data() as any).status === 'unsubscribed') {
+          await d.ref.update({ status: 'active', reabonneAt: Timestamp.now(), unsubscribedAt: FieldValue.delete() });
+        }
+        res.json({ ok: true, email: (d.data() as any).email, reabonne: true });
+        return;
+      }
       await d.ref.update({ status: 'unsubscribed', unsubscribedAt: Timestamp.now() });
       res.json({ ok: true, email: (d.data() as any).email });
     } catch (err) {

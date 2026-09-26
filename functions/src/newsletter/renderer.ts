@@ -123,12 +123,30 @@ export interface RenderEmailOptions {
   fond?: string | null;
 }
 
-// Les tailles d'image du composeur (miroir de src/lib/newsletterRenderer.tsx).
-const LARGEURS_IMAGE: Record<string, { px: number }> = {
-  petite: { px: 220 },
+// Les formats d'image du composeur (miroir de src/lib/newsletterRenderer.tsx) :
+// bannière recadrée en bande large, grande, moyenne, ou kaléidoscope de quatre
+// carrés deux par deux. Les recadrages passent par wsrv.nl, déjà employé par le
+// site, pour rester justes dans toutes les boîtes (object-fit n'y tient pas).
+const FORMATS_IMAGE: Record<string, { px: number }> = {
+  banniere: { px: 520 },
+  grande: { px: 520 },
   moyenne: { px: 340 },
-  pleine: { px: 520 },
+  kaleidoscope: { px: 520 },
 };
+const ANCIENS_FORMATS: Record<string, string> = { pleine: 'grande', petite: 'moyenne' };
+function formatImage(v: unknown): string {
+  const k = String(v || '');
+  return FORMATS_IMAGE[k] ? k : ANCIENS_FORMATS[k] || 'grande';
+}
+function recadre(url: string, w: number, h: number): string {
+  return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${w}&h=${h}&fit=cover&a=attention&output=jpg&q=82`;
+}
+// Les quatre images d'un kaléidoscope : la première est l'image du bloc, les trois autres vivent dans `images`.
+function imagesKaleidoscope(c: any): string[] {
+  return [0, 1, 2, 3]
+    .map(i => (i === 0 ? c.url : Array.isArray(c.images) ? c.images[i] : '') || '')
+    .filter((u: string) => /^https?:\/\//.test(u));
+}
 
 function esc(s: unknown): string {
   return String(s ?? '')
@@ -180,15 +198,24 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       return `<tr><td align="${align}" style="padding:0 0 18px;font-family:${police};font-size:${px}px;line-height:1.75;color:${pal.ink};">${text}</td></tr>`;
     }
     case 'image': {
-      if (!c.url) return '';
       const caption = c.caption
         ? `<tr><td align="center" style="padding:8px 0 4px;font-family:${CHARTE.sans};font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:${pal.accent};">${esc(c.caption)}</td></tr>`
         : '';
       // Chaque photo mène quelque part : au lien choisi, sinon au site.
       const lien = typeof c.href === 'string' && /^https?:\/\//.test(c.href) ? c.href : PUBLIC_BASE_URL;
-      // La taille choisie dans le composeur : petite, moyenne ou pleine largeur (par défaut), centrée.
-      const larg = LARGEURS_IMAGE[c.largeur] || LARGEURS_IMAGE.pleine;
-      return `<tr><td align="center" style="padding:10px 0 12px;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;max-width:${larg.px}px;margin:0 auto;"><img src="${esc(c.url)}" alt="${esc(c.alt || '')}" width="${larg.px}" style="display:block;width:100%;max-width:${larg.px}px;height:auto;border-radius:15px;border:0;margin:0 auto;" /></a></td></tr>${caption}`;
+      const fmt = formatImage(c.largeur);
+      if (fmt === 'kaleidoscope') {
+        const imgs = imagesKaleidoscope(c);
+        if (!imgs.length) return '';
+        const cell = (u: string, gauche: boolean) => `<td width="50%" valign="top" style="width:50%;padding:0 ${gauche ? 6 : 0}px 12px ${gauche ? 0 : 6}px;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;"><img src="${esc(recadre(u, 500, 500))}" alt="${esc(c.alt || '')}" width="254" style="display:block;width:100%;max-width:254px;height:auto;border-radius:12px;border:0;" /></a></td>`;
+        let rangs = '';
+        for (let i = 0; i < imgs.length; i += 2) rangs += `<tr>${cell(imgs[i], true)}${imgs[i + 1] ? cell(imgs[i + 1], false) : '<td width="50%" style="width:50%;"></td>'}</tr>`;
+        return `<tr><td align="center" style="padding:10px 0 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">${rangs}</table></td></tr>${caption}`;
+      }
+      if (!c.url) return '';
+      const px = FORMATS_IMAGE[fmt].px;
+      const src = fmt === 'banniere' ? recadre(c.url, 1040, 347) : c.url;
+      return `<tr><td align="center" style="padding:10px 0 12px;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;max-width:${px}px;margin:0 auto;"><img src="${esc(src)}" alt="${esc(c.alt || '')}" width="${px}" style="display:block;width:100%;max-width:${px}px;height:auto;border-radius:15px;border:0;margin:0 auto;" /></a></td></tr>${caption}`;
     }
     case 'button': {
       const primary = c.variant !== 'secondary';

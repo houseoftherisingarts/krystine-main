@@ -808,6 +808,17 @@ export async function unsubscribeByToken(token: string): Promise<{ ok: boolean; 
   }
 }
 
+/** Annule un désabonnement fait par erreur, avec le même jeton. */
+export async function resubscribeByToken(token: string): Promise<{ ok: boolean; email?: string }> {
+  try {
+    const res = await fetch(`${FUNCTIONS_BASE}/unsubscribeByToken?t=${encodeURIComponent(token)}&annuler=1`);
+    if (!res.ok) return { ok: false };
+    return await res.json();
+  } catch {
+    return { ok: false };
+  }
+}
+
 // ─── Dosha Quiz Results ───────────────────────────────────────────────────────
 export interface DoshaResult {
   id?: string;

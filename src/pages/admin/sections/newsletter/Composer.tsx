@@ -13,7 +13,7 @@ import AudiencePicker from './AudiencePicker';
 import PreviewFrame from './PreviewFrame';
 import AssistantPanel, { type Proposal } from './AssistantPanel';
 import MediathequePicker from '../../../../components/edit/MediathequePicker';
-import { RenderBlockWeb, POLICES, TAILLES, SEPARATEURS, FONDS_INFOLETTRE, LARGEURS_IMAGE, estSombre } from '../../../../lib/newsletterRenderer';
+import { RenderBlockWeb, POLICES, TAILLES, SEPARATEURS, FONDS_INFOLETTRE, FORMATS_IMAGE, formatImage, estSombre } from '../../../../lib/newsletterRenderer';
 import { Input, Label, PrimaryButton, GhostButton } from '../../primitives';
 import Portail from '../../../../components/Portail';
 import { traduireParIris } from '../../../../lib/traduction';
@@ -66,7 +66,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
   const [audience, setAudience] = useState<NewsletterAudience>({ mode: 'all' });
   const [when, setWhen] = useState('');          // datetime-local, heure du Québec
   const [side, setSide] = useState<'reglages' | 'preview' | 'iris' | 'versions'>('reglages');
-  const [pickFor, setPickFor] = useState<number | 'entete' | 'enteteImage' | 'bandeau' | null>(null);   // bloc image, l'en-tête ou le bandeau en attente d'une image
+  const [pickFor, setPickFor] = useState<number | { bloc: number; case: number } | 'entete' | 'enteteImage' | 'bandeau' | null>(null);   // bloc image, l'en-tête ou le bandeau en attente d'une image
   // En-tête du courriel : « La lettre de Krystine » par défaut (ENTETE_INFOLETTRE_PAR_DEFAUT).
   // La couverture du podcast, une autre image de la médiathèque ou rien restent au choix.
   const [couverture, setCouverture] = useState<'podcast' | 'image' | 'titre' | 'aucune'>(ENTETE_INFOLETTRE_PAR_DEFAUT.couverture);
@@ -600,7 +600,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
                         onMove={dir => moveBlock(idx, dir)}
                         onRemove={() => removeBlock(idx)}
                         onDuplicate={() => duplicateBlock(idx)}
-                        onPickImage={() => setPickFor(idx)}
+                        onPickImage={pos => setPickFor(pos === undefined ? idx : { bloc: idx, case: pos })}
                         otherHovered={hoverIdx !== null && hoverIdx !== idx}
                         onHoverChange={h => setHoverIdx(v => (h ? idx : v === idx ? null : v))}
                         dragging={drag?.from === idx}
@@ -812,7 +812,12 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
       <MediathequePicker
         open={pickFor !== null}
         onClose={() => setPickFor(null)}
-        onSelect={url => { if (pickFor === 'enteteImage') setEntete(e => ({ ...e, image: url })); else if (pickFor === 'entete') setCouvertureUrl(url); else if (pickFor === 'bandeau') setBandeau(b => ({ ...b, image: url })); else if (pickFor !== null) updateBlock(pickFor, { url }); }}
+        onSelect={url => { if (pickFor === 'enteteImage') setEntete(e => ({ ...e, image: url })); else if (pickFor === 'entete') setCouvertureUrl(url); else if (pickFor === 'bandeau') setBandeau(b => ({ ...b, image: url })); else if (typeof pickFor === 'object' && pickFor !== null) {
+          // Une case du kaléidoscope : la première est l'image du bloc, les autres vont dans `images`.
+          const { bloc, case: pos } = pickFor;
+          if (pos === 0) updateBlock(bloc, { url });
+          else { const images = [...(((blocks[bloc]?.content as any)?.images as string[]) || ['', '', '', ''])]; images[pos] = url; updateBlock(bloc, { images }); }
+        } else if (typeof pickFor === 'number') updateBlock(pickFor, { url }); }}
       />
     </div>
     </Portail>
@@ -834,7 +839,7 @@ const BlockFrame: React.FC<{
   onMove: (dir: -1 | 1) => void;
   onRemove: () => void;
   onDuplicate: () => void;
-  onPickImage: () => void;
+  onPickImage: (casePos?: number) => void;
   otherHovered?: boolean;
   onHoverChange?: (h: boolean) => void;
   dragging?: boolean;
@@ -945,11 +950,11 @@ const BlockFrame: React.FC<{
           )}
           {block.type === 'image' && (
             <>
-              <button className={`${iconBtn} w-auto px-3 gap-2 text-[10px] uppercase tracking-widest font-bold`} onClick={onPickImage} title="Choisir dans la médiathèque ou téléverser">
+              <button className={`${iconBtn} w-auto px-3 gap-2 text-[10px] uppercase tracking-widest font-bold`} onClick={() => onPickImage()} title="Choisir dans la médiathèque ou téléverser">
                 <i className="fa-solid fa-images text-xs" /> Image
               </button>
-              <select value={c.largeur || 'pleine'} onChange={e => onPatch({ largeur: e.target.value })} className={selectClass} title="Taille de l'image dans la lettre">
-                {Object.entries(LARGEURS_IMAGE).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+              <select value={formatImage(c.largeur)} onChange={e => onPatch({ largeur: e.target.value })} className={selectClass} title="Format de l'image dans la lettre">
+                {Object.entries(FORMATS_IMAGE).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
               </select>
               <input value={c.alt || ''} onChange={e => onPatch({ alt: e.target.value })} placeholder="Description (accessibilité)" className={`${selectClass} w-44`} />
               <input value={c.href || ''} onChange={e => onPatch({ href: e.target.value })} placeholder="https://… (où mène la photo; le site par défaut)" title="La photo est cliquable : vers ce lien, sinon vers le site" className={`${selectClass} w-64`} />
