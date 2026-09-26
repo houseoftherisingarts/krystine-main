@@ -2039,5 +2039,22 @@
       "public/accueil/index.html",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-09-26T21:09:20.117Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "613e82d3",
+    "message": "Conférencière (/conferenciere) : le film de conférence 2026 complet, en grande bande sous le haut de la page (muet en boucle, bouton pour le son)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/conferences/film-complet-1080.mp4",
+      "public/conferences/film-complet-720.mp4",
+      "public/i18n/en.json",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
