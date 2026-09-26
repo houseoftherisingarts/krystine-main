@@ -1834,5 +1834,22 @@
       "public/assets-manifest.json",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T17:27:25.699Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "8b1d0c0a",
+    "message": "Conférencière (/conferenciere) : vraies photos de salles pleines, lancement du premier livre en 2018 (grande bande avant les témoignages) et Mont-Tremblant 2024 (chapitre 01), recadrées et éclaircies sans rien ajouter",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/conferences/lancement-2018.webp",
+      "public/conferences/mont-tremblant-2024-portrait.webp",
+      "public/conferences/mont-tremblant-2024.webp",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
