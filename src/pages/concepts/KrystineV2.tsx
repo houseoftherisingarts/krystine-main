@@ -904,9 +904,9 @@ export default function KrystineV2() {
             >
               <img
                 data-beat-img
-                src="/conferences/mont-tremblant-2024-salle.webp"
+                src="/conferences/mont-tremblant-2024-krystine.webp"
                 alt="Krystine St-Laurent en conférence devant une salle pleine, Mont-Tremblant, juin 2024"
-                className="absolute inset-0 h-[120%] w-full object-cover object-center will-change-transform"
+                className="absolute inset-0 h-[120%] w-full object-cover object-[64%_center] will-change-transform"
               />
             </div>
             <p

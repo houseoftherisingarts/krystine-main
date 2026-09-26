@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-26T17:38:42.308Z",
+  "generatedAt": "2026-09-26T17:41:01.162Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -849,18 +849,18 @@
       "size": 277210
     },
     {
+      "path": "/conferences/mont-tremblant-2024-krystine.webp",
+      "name": "mont-tremblant-2024-krystine.webp",
+      "folder": "conferences",
+      "kind": "image",
+      "size": 208666
+    },
+    {
       "path": "/conferences/mont-tremblant-2024-portrait.webp",
       "name": "mont-tremblant-2024-portrait.webp",
       "folder": "conferences",
       "kind": "image",
       "size": 213650
-    },
-    {
-      "path": "/conferences/mont-tremblant-2024-salle.webp",
-      "name": "mont-tremblant-2024-salle.webp",
-      "folder": "conferences",
-      "kind": "image",
-      "size": 93362
     },
     {
       "path": "/conferences/mont-tremblant-2024.webp",
