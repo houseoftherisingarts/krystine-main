@@ -4,6 +4,7 @@ import NewsletterList from './newsletter/NewsletterList';
 import Composer from './newsletter/Composer';
 import LivePanel from './newsletter/LivePanel';
 import CalendarPanel from './newsletter/CalendarPanel';
+import JournalPanel from './newsletter/JournalPanel';
 import LancementPanel from './newsletter/LancementPanel';
 import SequencesPanel from './newsletter/SequencesPanel';
 import AutomaticsPanel from './newsletter/AutomaticsPanel';
@@ -15,7 +16,7 @@ type View =
   | { kind: 'list' }
   | { kind: 'composer'; id: string | null };
 
-type Tab = 'newsletters' | 'gabarits' | 'avis' | 'terminal' | 'calendar' | 'lancement' | 'sequences' | 'subscribers' | 'live' | 'automatics';
+type Tab = 'newsletters' | 'gabarits' | 'avis' | 'terminal' | 'calendar' | 'journal' | 'lancement' | 'sequences' | 'subscribers' | 'live' | 'automatics';
 
 const TABS: Array<{ key: Tab; icon: string; label: string }> = [
   { key: 'newsletters', icon: 'fa-envelope-open-text', label: 'Infolettres' },
@@ -23,6 +24,7 @@ const TABS: Array<{ key: Tab; icon: string; label: string }> = [
   { key: 'avis', icon: 'fa-thumbtack', label: 'Avis épinglés' },
   { key: 'terminal', icon: 'fa-terminal', label: 'Terminal' },
   { key: 'calendar', icon: 'fa-calendar-days', label: 'Calendrier' },
+  { key: 'journal', icon: 'fa-book', label: 'Journal' },
   { key: 'lancement', icon: 'fa-rocket', label: 'Lancement' },
   { key: 'sequences', icon: 'fa-timeline', label: 'Séquences' },
   { key: 'subscribers', icon: 'fa-users', label: 'Abonnés' },
@@ -63,6 +65,7 @@ const NewsletterSection: React.FC = () => {
       {tab === 'avis' && <AvisPanel />}
       {tab === 'terminal' && <TerminalPanel onOpen={open} />}
       {tab === 'calendar' && <CalendarPanel onOpen={open} onNew={() => open(null)} />}
+      {tab === 'journal' && <JournalPanel />}
       {tab === 'lancement' && <LancementPanel onOpen={open} />}
       {tab === 'sequences' && <SequencesPanel onOpen={open} />}
       {tab === 'subscribers' && <SubscribersPanel />}

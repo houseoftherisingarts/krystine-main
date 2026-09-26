@@ -438,6 +438,10 @@ service cloud.firestore {
       allow write: if isAdmin();
       // L'historique des versions du composeur (une par heure d'écriture).
       match /versions/{v} { allow read, write: if isAdmin(); }
+      // Le journal (onglet Journal) : qui l'a reçue, lue, cliquée. Écrits par le serveur seulement.
+      match /envois/{e} { allow read: if isAdmin(); allow write: if false; }
+      match /ouvertures/{o} { allow read: if isAdmin(); allow write: if false; }
+      match /clics/{c} { allow read: if isAdmin(); allow write: if false; }
       // La conversation avec Iris propre à cette lettre (jamais publique, même une fois envoyée).
       match /iris/{d} { allow read, write: if isAdmin(); }
     }
