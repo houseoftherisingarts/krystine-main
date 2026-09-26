@@ -1662,5 +1662,20 @@
       "public/assets-manifest.json",
       "src/pages/origine/NouvellesFondatrices.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T15:12:10.311Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c6a63119",
+    "message": "Page /origine/nouvelles : trois questions accordées à la lettre aux fondatrices (ce qui fait du bien, ce qui manque, ce qu'elle aimerait vivre); libellés ajustés dans admin › Formulaires",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/SubmissionsSection.tsx",
+      "src/pages/origine/NouvellesFondatrices.tsx"
+    ]
   }
 ]
