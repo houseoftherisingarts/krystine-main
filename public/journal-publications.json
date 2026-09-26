@@ -1851,5 +1851,19 @@
       "public/conferences/mont-tremblant-2024.webp",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T17:34:02.882Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "34c31843",
+    "message": "Conférencière (/conferenciere) : photo du lancement 2018 retouchée à la demande de Krystine (jambes légèrement affinées)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/conferences/lancement-2018.webp"
+    ]
   }
 ]
