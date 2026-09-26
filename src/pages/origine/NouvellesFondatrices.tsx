@@ -88,7 +88,7 @@ const NouvellesFondatrices: React.FC = () => {
           <img
             src="/origine/logo-origine.webp"
             alt="Origine"
-            className="w-[min(100%,380px)] h-auto"
+            className="w-[min(100%,340px)] h-auto"
           />
           <p className="mt-3 text-[0.66rem] uppercase tracking-[0.3em] text-[#5f5c50]">EXPÉRIENCE ORIGINE &middot; Groupe fondateur</p>
         </header>
