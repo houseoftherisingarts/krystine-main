@@ -436,52 +436,67 @@ const FaqSection: React.FC = () => {
 
 /* ════════════════════════ Section · Le film ════════════════════════ */
 
-// Le film de conférence 2026 (Krystine, 26 septembre 2026) : muet en boucle,
-// le bouton active le son sur place. Version complète, écrans de texte compris.
+// Le film de conférence 2026 (Krystine, 26 septembre 2026), sur le modèle de
+// l'accueil : plein cadre, voile vert profond à gauche, texte par-dessus. La
+// boucle est la version sans les écrans de texte, pour que rien ne se superpose.
 const FilmSection: React.FC = () => {
   const ref = useRef<HTMLVideoElement>(null);
   const [son, setSon] = useState(false);
   useEffect(() => {
     const v = ref.current; if (!v) return;
-    v.src = window.innerWidth > 900 ? '/conferences/film-complet-1080.mp4' : '/conferences/film-complet-720.mp4';
+    v.src = window.innerWidth > 900 ? '/accueil/assets/film/conference-2026-1080.mp4' : '/accueil/assets/film/conference-2026-720.mp4';
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) v.play().catch(() => {}); else if (v.muted) v.pause();
-    }, { threshold: 0.25 });
+    }, { threshold: 0.2 });
     io.observe(v);
     return () => io.disconnect();
   }, []);
   const basculer = () => {
     const v = ref.current; if (!v) return;
     v.muted = !v.muted; setSon(!v.muted);
-    if (!v.muted) { v.currentTime = 0; v.play().catch(() => {}); }
+    if (!v.muted) v.play().catch(() => {});
   };
   return (
-    <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3rem,8vh,5rem)] bg-[#f4efe6]">
-      <figure data-reveal className="mx-auto max-w-[1400px]">
-        <div className="relative border border-[#9c7a44]/45 p-2">
-          <video
-            ref={ref}
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster="/accueil/assets/film/conference-2026-poster.jpg"
-            aria-label="Krystine St-Laurent en conférence"
-            className="block aspect-[16/9] w-full bg-[#1c1712] object-cover"
-          />
+    <section className="relative w-full overflow-hidden bg-[#1b2622] min-h-[clamp(34rem,82vh,52rem)] flex items-center">
+      <video
+        ref={ref}
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        poster="/accueil/assets/film/conference-2026-poster.jpg"
+        aria-label="Krystine St-Laurent en conférence"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{ background: 'linear-gradient(90deg, rgba(27,38,34,.94) 0%, rgba(27,38,34,.78) 38%, rgba(27,38,34,.28) 72%, rgba(27,38,34,.12) 100%)' }}
+      />
+      <div data-reveal className="relative z-10 w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(4rem,10vh,6rem)]">
+        <div className="max-w-[34rem]">
+          <p className="text-[0.66rem] uppercase tracking-[0.3em] text-[#d9a05b]">Krystine sur scène</p>
+          <h2 className="mt-5 v2-serif font-light leading-[1.06] text-[#EEE7DB] text-[clamp(2.2rem,4.4vw,3.6rem)]">
+            Plus de réponses. Moins de confiance.
+          </h2>
+          <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
+            <a
+              href="#reserver"
+              className="inline-flex items-center gap-2.5 bg-[#BA7B39] px-7 py-3.5 text-[0.68rem] uppercase tracking-[0.2em] text-[#1c1712] transition-colors hover:bg-[#d9a05b]"
+            >
+              Inviter Krystine <ArrowUpRight size={14} weight="regular" />
+            </a>
+            <button
+              type="button"
+              onClick={basculer}
+              aria-pressed={son}
+              className="inline-flex items-center gap-2.5 text-[0.68rem] uppercase tracking-[0.2em] text-[#EEE7DB] border-b border-[#EEE7DB]/60 pb-1 hover:border-[#d9a05b] hover:text-[#d9a05b]"
+            >
+              {son ? 'Couper le son' : 'Voir le film, avec le son'}
+            </button>
+          </div>
         </div>
-        <figcaption className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={basculer}
-            aria-pressed={son}
-            className="inline-flex items-center gap-2.5 text-[0.66rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1 hover:text-[#7d6330] hover:border-[#9c7a44]"
-          >
-            {son ? 'Couper le son' : 'Voir le film, avec le son'}
-          </button>
-          <span className="text-[0.62rem] uppercase tracking-[0.22em] text-[#7d6330]">Krystine St-Laurent en conférence</span>
-        </figcaption>
-      </figure>
+      </div>
     </section>
   );
 };
