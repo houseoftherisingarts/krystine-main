@@ -58,6 +58,9 @@ export interface LiveEvent {
   // réserver mon billet") without changing routing.
   ctaLabelFR?: string;
   ctaLabelEN?: string;
+  /** Remplace l'étiquette du type (ex. « Conférences · 2027 » au lieu de « Tournée · sur demande »). */
+  kickerFR?: string;
+  kickerEN?: string;
 
   // Optional featured highlight (gold ring).
   featured?: boolean;
@@ -169,19 +172,23 @@ export const LIVE_EVENTS: LiveEvent[] = [
     featured: true,
   },
 
-  // ── Tournée de conférences ──
+  // ── Krystine sur scène (Krystine, 26 septembre 2026) ──
+  // Mène à la conférence et à ses portes de programmation plutôt qu'au
+  // formulaire de tournée.
   {
     id: 'tournee-conferences',
     kind: 'tour-request',
-    titleFR: 'Tournée de conférences',
-    titleEN: 'Conference tour',
-    subtitleFR: 'Dates et régions à venir',
-    subtitleEN: 'Dates and regions upcoming',
-    dateFR: 'Après la parution, en 2027',
-    dateEN: 'After the release, in 2027',
-    bodyFR: "Krystine prépare une tournée à travers le Québec et ailleurs. Dites-nous dans quelle région vous aimeriez la recevoir, et si vous pouvez aider à l'organiser.",
-    bodyEN: 'Krystine is preparing a tour across Quebec and beyond. Tell us where you\'d love to receive her — and whether you can help organize.',
-    triggersTourRequest: true,
+    kickerFR: 'Conférences · 2027',
+    kickerEN: 'Talks · 2027',
+    titleFR: 'Krystine sur scène',
+    titleEN: 'Krystine on stage',
+    dateFR: '2027',
+    dateEN: '2027',
+    bodyFR: "De nouvelles dates de conférences et de rencontres seront annoncées au Québec, en Europe et ailleurs.\nVous programmez un événement, un congrès ou une rencontre\u00a0? Découvrez la conférence de Krystine et les différentes portes de programmation.",
+    bodyEN: 'New dates for talks and gatherings will be announced in Quebec, in Europe and beyond.\nAre you programming an event, a conference or a gathering? Discover Krystine’s talk and its different programming angles.',
+    internalHref: '/conferenciere#conferences',
+    ctaLabelFR: 'Découvrir la conférence',
+    ctaLabelEN: 'Discover the talk',
     featured: true,
   },
 

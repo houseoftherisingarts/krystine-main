@@ -143,6 +143,7 @@ const LiveEventRow: React.FC<{ event: LiveEvent; onWaitlist: () => void; onTourR
     : null;
 
   const kindLabel = (() => {
+    if (ev.kickerFR) return lang === 'FR' ? ev.kickerFR : (ev.kickerEN || ev.kickerFR);
     switch (ev.kind) {
       case 'in-progress':      return lang === 'FR' ? 'En cours'             : 'In progress';
       case 'ticketed':         return lang === 'FR' ? 'Billetterie ouverte'  : 'Tickets open';
@@ -208,7 +209,7 @@ const LiveEventRow: React.FC<{ event: LiveEvent; onWaitlist: () => void; onTourR
         </h3>
         {subtitle && <p className="mt-1.5 font-serif italic text-[1.05rem] text-inkSoft">{subtitle}</p>}
         {location && <p className="mt-3 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-inkSoft/70">{location}</p>}
-        {body && <p className="mt-4 max-w-[60ch] font-sans text-[0.95rem] leading-[1.8] text-inkSoft">{body}</p>}
+        {body && <p className="mt-4 max-w-[60ch] whitespace-pre-line font-sans text-[0.95rem] leading-[1.8] text-inkSoft">{body}</p>}
 
         <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-3">
           {ev.kind === 'in-progress' && ev.internalHref && (
@@ -229,7 +230,13 @@ const LiveEventRow: React.FC<{ event: LiveEvent; onWaitlist: () => void; onTourR
               <ArrowRight size={14} className="transition-transform duration-300 group-hover/cta:translate-x-1" />
             </button>
           )}
-          {(ev.kind === 'tour-request' || ev.triggersTourRequest) && (
+          {ev.kind !== 'in-progress' && ev.internalHref && (
+            <a href={ev.internalHref} className={actionLink}>
+              {(lang === 'FR' ? ev.ctaLabelFR : ev.ctaLabelEN) ?? (lang === 'FR' ? 'Découvrir' : 'Discover')}
+              <ArrowRight size={14} className="transition-transform duration-300 group-hover/cta:translate-x-1" />
+            </a>
+          )}
+          {!ev.internalHref && (ev.kind === 'tour-request' || ev.triggersTourRequest) && (
             <button type="button" onClick={onTourRequest} className={actionLink}>
               {(lang === 'FR' ? ev.ctaLabelFR : ev.ctaLabelEN) ?? (lang === 'FR' ? 'Demander une tournée' : 'Request a tour stop')}
               <ArrowRight size={14} className="transition-transform duration-300 group-hover/cta:translate-x-1" />
@@ -419,7 +426,7 @@ export const LiveEventCard: React.FC<CardProps> = ({ event: ev, onWaitlist, onTo
             </motion.span>
             <span className={`inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 rounded-full ${kindBadge.tone}`}>
               <i className={`fa-solid ${kindBadge.icon} text-[9px]`} />
-              {lang === 'FR' ? kindBadge.fr : kindBadge.en}
+              {ev.kickerFR ? (lang === 'FR' ? ev.kickerFR : (ev.kickerEN || ev.kickerFR)) : (lang === 'FR' ? kindBadge.fr : kindBadge.en)}
             </span>
           </div>
 
@@ -461,7 +468,7 @@ export const LiveEventCard: React.FC<CardProps> = ({ event: ev, onWaitlist, onTo
             </p>
           )}
           {body && (
-            <p className="text-sm text-[#2a2015]/70 dark:text-white/70 leading-relaxed mb-4">{body}</p>
+            <p className="whitespace-pre-line text-sm text-[#2a2015]/70 dark:text-white/70 leading-relaxed mb-4">{body}</p>
           )}
 
           {/* Primary CTA per kind + calendar export (when dated). Per-event
@@ -504,7 +511,7 @@ export const LiveEventCard: React.FC<CardProps> = ({ event: ev, onWaitlist, onTo
         {/* Tour-request: trigger on either kind 'tour-request' OR any card
             with `triggersTourRequest: true` (e.g. the parution which doubles
             as a tour signup). */}
-        {(ev.kind === 'tour-request' || ev.triggersTourRequest) && (
+        {!ev.internalHref && (ev.kind === 'tour-request' || ev.triggersTourRequest) && (
           <button
             type="button"
             onClick={onTourRequest}
