@@ -1470,5 +1470,21 @@
       "src/pages/admin/sections/SubmissionsSection.tsx",
       "src/pages/origine/NouvellesFondatrices.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-26T13:55:19.810Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d2c3736d",
+    "message": "Infolettre : la liste « Fondatrices de l'Expérience Origine » (étiquette origine-fondatrice, 115 personnes) porte son nom dans les listes, et chaque liste compte des personnes plutôt que des fiches (admin › Infolettre)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/send.ts",
+      "public/assets-manifest.json",
+      "src/lib/paliers.ts"
+    ]
   }
 ]
