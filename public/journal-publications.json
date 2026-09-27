@@ -2561,5 +2561,21 @@
       "src/pages/UnsubscribePage.tsx",
       "src/pages/admin/sections/newsletter/Composer.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-27T23:26:05.148Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d7d84912",
+    "message": "Infolettre : la phrase manuscrite (Ms Madi) un peu plus grande, pour rester lisible",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "src/lib/newsletterRenderer.tsx"
+    ]
   }
 ]
