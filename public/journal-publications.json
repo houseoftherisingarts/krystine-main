@@ -2393,5 +2393,20 @@
       "public/assets-manifest.json",
       "src/pages/concepts/PodcastV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-27T20:54:24.813Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e80d8dfc",
+    "message": "Podcast : sans direct à venir, le grand bloc du haut de /podcast montre tout seul le dernier épisode paru sur YouTube, intégré, sans date ni heure; la vidéo en double du lecteur est retirée",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/LiveSignup.tsx",
+      "src/pages/concepts/PodcastV2.tsx"
+    ]
   }
 ]
