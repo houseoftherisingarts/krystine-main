@@ -2161,5 +2161,18 @@
       "src/pages/admin/sections/NewsletterSection.tsx",
       "src/pages/admin/sections/newsletter/JournalPanel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-27T18:32:23.584Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "5e76ac93",
+    "message": "Accueil : Expérience Origine 2 remonte juste sous le premier écran, avec son nom complet et le bouton « Rejoindre la liste d'attente » (mise en ligne après reconnexion à Firebase)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json"
+    ]
   }
 ]
