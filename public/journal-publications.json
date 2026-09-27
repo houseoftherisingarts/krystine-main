@@ -2439,5 +2439,28 @@
       "public/assets-manifest.json",
       "src/lib/paliers.ts"
     ]
+  },
+  {
+    "quand": "2026-09-27T21:46:21.280Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "fb814925",
+    "message": "Infolettre : bloc « choix », une grille légère de carrés à cocher (motifs d'intérêt et façon d'avancer); chaque carré mène à la nouvelle page /mes-choix, déjà coché, où la lectrice complète et envoie ses choix, enregistrés comme étiquettes sur sa fiche",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "App.tsx",
+      "functions/src/index.ts",
+      "functions/src/newsletter/choix.ts",
+      "functions/src/newsletter/renderer.ts",
+      "functions/src/newsletter/send.ts",
+      "public/assets-manifest.json",
+      "src/firebase/firestore.ts",
+      "src/lib/choixLettre.ts",
+      "src/lib/newsletterRenderer.tsx",
+      "src/pages/MesChoix.tsx"
+    ]
   }
 ]
