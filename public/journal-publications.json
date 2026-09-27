@@ -2306,5 +2306,20 @@
       "src/components/layout/NavBar.tsx",
       "src/content.ts"
     ]
+  },
+  {
+    "quand": "2026-09-27T20:23:48.324Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "935e2a5d",
+    "message": "Infolettre : un lien d'intérêt (?interet=…) pose l'étiquette interet-… sur la fiche de la lectrice qui clique, pour écrire ensuite seulement à celles qui ont levé la main",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/clic.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
