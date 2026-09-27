@@ -106,7 +106,10 @@ function monter() {
       bulleOuverteAuto = true;
       let deja = false;
       try { deja = sessionStorage.getItem(CLE_BULLE) === '1'; } catch { /* rien */ }
-      if (!deja) setTimeout(() => { if (nonLus().length && !bulle) ouvrirBulle(); try { sessionStorage.setItem(CLE_BULLE, '1'); } catch { /* rien */ } }, 1400);
+      if (!deja) setTimeout(() => {
+        if (nonLus().length && !bulle) { ouvrirBulle(); fermerAuDefilement(); }
+        try { sessionStorage.setItem(CLE_BULLE, '1'); } catch { /* rien */ }
+      }, 1400);
     } else if (bulle) {
       remplirBulle();
     }
@@ -121,6 +124,20 @@ function monter() {
     document.removeEventListener('keydown', surTouche);
   };
   const surTouche = (e) => { if (e.key === 'Escape') fermerBulle(); };
+
+  // La bulle ouverte d'elle-même se range dès que la visiteuse fait défiler la
+  // page : elle cachait le contenu écran après écran (Krystine, 27 sept. 2026).
+  // L'icône reste en bas à droite pour la rouvrir; une bulle rouverte à la
+  // main, elle, reste ouverte.
+  const fermerAuDefilement = () => {
+    const depart = window.scrollY;
+    const surDefilement = () => {
+      if (Math.abs(window.scrollY - depart) < 120) return;
+      window.removeEventListener('scroll', surDefilement);
+      fermerBulle();
+    };
+    window.addEventListener('scroll', surDefilement, { passive: true });
+  };
 
   const marquerLu = (avis) => {
     lusLocal.add(avis.id); ecrireLocal(lusLocal);
