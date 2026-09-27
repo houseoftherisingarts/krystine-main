@@ -522,6 +522,16 @@
   .plus-grid{margin-top:2.6rem}
   .plus .foyer-band + .mx{padding-top:4.2rem}
   .plus-eo2{z-index:4}
+  .offer-origine .o-edition{font-family:var(--serif);font-size:clamp(1.05rem,1.6vw,1.4rem);letter-spacing:.14em;text-transform:uppercase;color:#E6C79B;margin:.35rem 0 0}
+  .offer-origine .o-edition sup{font-size:.6em;letter-spacing:.04em}
+  .offer-origine .o-bouton{display:inline-flex;align-items:center;gap:.7rem;margin-top:clamp(1.3rem,2.2vw,1.9rem);padding:.95rem 1.6rem;border-radius:999px;
+    background:var(--brass);color:#2a2015;font-family:var(--sans);font-weight:600;font-size:clamp(.62rem,.8vw,.7rem);letter-spacing:.22em;text-transform:uppercase;transition:background .3s}
+  .offer-origine:hover .o-bouton{background:#d2b27a}
+  .offer-origine .o-bouton svg{width:18px;height:10px;stroke:currentColor;stroke-width:1.4;fill:none;transition:transform .3s}
+  .offer-origine:hover .o-bouton svg{transform:translateX(4px)}
+  .offer-origine .o-bouton{white-space:nowrap}
+  @media(max-width:600px){ .offer-origine .o-bouton{letter-spacing:.12em;padding:.95rem 1.25rem;gap:.5rem} }
+  .offer-origine .o-fine{margin-top:.8rem;font-size:clamp(.7rem,.85vw,.8rem);line-height:1.6;color:rgba(242,239,233,.6)}
   #offres{padding-bottom:0}
   .offer{position:relative;display:flex;border-radius:22px;overflow:hidden;text-decoration:none;
     transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s}
@@ -862,19 +872,19 @@
   <!-- ===== EXPÉRIENCE ORIGINE 2, sous le hero (Krystine, 27 septembre 2026 : l'offre de l'automne passe en premier) ===== -->
   <section class="plus plus-eo2" id="origine-2">
     <div class="mx">
-      <p class="plus-sur reveal">Inscriptions à l'automne 2026</p>
-      <h2 class="sec-title reveal">Devenez votre premier repère</h2>
-      <div class="rule reveal d1"></div>
-      <div class="plus-grid">
+      <div class="plus-grid" style="margin-top:0">
         <a class="offer offer-origine reveal" href="/liste-attente?programme=origine2">
           <span class="o-halo" aria-hidden="true"><span></span><span></span></span>
           <div class="o-body">
             <div>
-              <span class="o-eyebrow">Liste d'attente ouverte</span>
-              <h3 class="o-title">Expérience Origine&nbsp;2</h3>
+              <span class="o-eyebrow">Une seule ouverture par année · Automne 2026</span>
+              <h2 class="o-title">Expérience Origine</h2>
+              <p class="o-edition">2<sup>e</sup> édition</p>
               <div class="o-filet" aria-hidden="true"></div>
-              <p class="o-tag">Lire · Trier · Ancrer</p>
-              <p class="o-desc">Pour celles qui veulent entreprendre une véritable traversée accompagnée. Douze semaines pour revenir à un repère intérieur plus stable et transformer sa relation à soi, au corps et à la vie.</p>
+              <p class="o-tag">Relier ce que nous avons appris à séparer.</p>
+              <p class="o-desc">Expérience Origine revient cet automne pour une nouvelle édition.</p>
+              <span class="o-bouton">Rejoindre la liste d’attente <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></span>
+              <p class="o-fine">Soyez parmi les premières informées lors de l’ouverture des inscriptions.</p>
             </div>
             <div class="o-porte">
               <img src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg" data-edit-key="accueil.origine.enveloppe" alt="L'enveloppe d'Expérience Origine 2" loading="lazy" decoding="async" />
@@ -882,10 +892,6 @@
               <span class="o-sceau" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v10M7 12h10"/></svg>
               </span>
-              <div class="o-pied">
-                <span class="o-cta">Rejoindre la liste d'attente <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></span>
-                <span class="o-meta">12 semaines · Accompagnée</span>
-              </div>
             </div>
           </div>
         </a>
