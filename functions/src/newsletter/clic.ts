@@ -54,9 +54,17 @@ export const clic = onRequest(
           stats: { ...(deja ? {} : { clicks: FieldValue.increment(1) }) },
           clicsLiens: { [h]: { n: FieldValue.increment(1), url: destination } },
         }, { merge: true });
-        const interet = new URL(destination).searchParams.get('interet') || '';
-        if (INTERET.test(interet)) {
-          await db.doc(`newsletter/${s}`).update({ tags: FieldValue.arrayUnion(`interet-${interet}`) }).catch(() => { /* fiche disparue */ });
+        // `?interet=` pose le motif (interet-choisir...), `?preference=` la façon
+        // d'avancer (preference-autonomie, preference-accompagnement). Les deux
+        // restent séparés : une préférence ne devient jamais un intérêt pour une
+        // offre (Krystine, 27 sept. 2026).
+        const params = new URL(destination).searchParams;
+        const etiquettes = [
+          ...params.getAll('interet').filter(x => INTERET.test(x)).map(x => `interet-${x}`),
+          ...params.getAll('preference').filter(x => INTERET.test(x)).map(x => `preference-${x}`),
+        ];
+        if (etiquettes.length) {
+          await db.doc(`newsletter/${s}`).update({ tags: FieldValue.arrayUnion(...etiquettes) }).catch(() => { /* fiche disparue */ });
         }
         await noterOuverture(n, s, true);
       } catch (e) {

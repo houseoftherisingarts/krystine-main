@@ -57,6 +57,13 @@ const LIBELLES: Record<string, string> = {
   'accueil-pulsation': 'Accueil · Pulsation',
   'medias': 'Médias',
   'conferenciere': 'Conférencière',
+  'interet-choisir': 'Intérêt · Choisir',
+  'interet-rythme': 'Intérêt · Retrouver mon rythme',
+  'interet-rester-entiere': 'Intérêt · Rester entière',
+  'interet-relier': 'Intérêt · Relier',
+  'interet-eo': 'Intérêt · Expérience Origine',
+  'preference-autonomie': 'Préfère avancer à sa façon',
+  'preference-accompagnement': 'Préfère être accompagnée',
 };
 export function libelleTag(tag: string): string {
   const p = PALIERS.find(x => x.tag === tag);
