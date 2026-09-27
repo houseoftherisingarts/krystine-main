@@ -57,7 +57,8 @@ const MOTS: Record<Lang, { etiquette: string; desabonner: string; politique: str
 const POLICES: Record<string, string> = {
   serif: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
   sans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
-  script: "'Pinyon Script', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive",
+  // Ms Madi, la plus proche de la signature de Krystine (son choix, 27 sept. 2026).
+  script: "'Ms Madi', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive",
 };
 const TAILLES: Record<string, number> = { sm: 14, md: 16, lg: 18, xl: 21 };
 
@@ -185,7 +186,7 @@ function nl2br(s: string): string {
 const STYLES_PHRASE: Record<string, string> = {
   grand: 'font-size:1.35em;line-height:1.35',
   tgrand: 'font-size:1.75em;line-height:1.25',
-  manu: `font-family:${"'Pinyon Script', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive"};font-size:1.6em;line-height:1.25;font-weight:400`,
+  manu: `font-family:${"'Ms Madi', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive"};font-size:1.6em;line-height:1.25;font-weight:400`,
 };
 function richToHtml(text: string, accent: string = CHARTE.goldInk): string {
   return esc(text)
@@ -382,7 +383,7 @@ export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOpti
 
   return `<!doctype html>
 <html lang="${lang}">
-<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>${esc(opts.subject)}</title><link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet" /></head>
+<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>${esc(opts.subject)}</title><link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Ms+Madi&display=swap" rel="stylesheet" /></head>
 <body style="margin:0;padding:0;background:${CHARTE.cream};">
   <div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;font-size:1px;color:transparent;line-height:1px;">${esc(opts.preheader || '')}</div>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CHARTE.cream};padding:36px 16px;">

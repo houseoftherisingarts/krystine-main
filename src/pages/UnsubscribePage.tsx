@@ -45,6 +45,10 @@ const UnsubscribePage: React.FC = () => {
       .then(r => {
         setEmail(r.email);
         setState(r.ok ? 'ok' : 'invalid');
+        // Pour EXCLURE ces personnes des publicités, jamais pour les cibler
+        // (Krystine, 27 sept. 2026). Le pixel n'existe que si la visiteuse a
+        // accepté les témoins; sinon cette ligne ne fait rien.
+        if (r.ok) (window as any).fbq?.('trackCustom', 'Desabonnement');
       })
       .catch(() => setState('invalid'));
   }, [loc.search]);
@@ -99,6 +103,15 @@ const UnsubscribePage: React.FC = () => {
                       </label>
                     ))}
                   </div>
+                  {raisons.includes('autrement') && (
+                    <p className="mt-3 text-sm text-[#2a2015]/80 dark:text-white/80">
+                      Vous pouvez suivre Krystine ici :{' '}
+                      <a href="/podcast" className="underline text-[#7d6330]">le podcast</a>,{' '}
+                      <a href="https://www.instagram.com/krystinesaintlaurent" target="_blank" rel="noopener noreferrer" className="underline text-[#7d6330]">Instagram</a>,{' '}
+                      <a href="https://www.facebook.com/Krystinestlaurent" target="_blank" rel="noopener noreferrer" className="underline text-[#7d6330]">Facebook</a> et{' '}
+                      <a href="https://www.youtube.com/@KrystineStLaurent" target="_blank" rel="noopener noreferrer" className="underline text-[#7d6330]">YouTube</a>.
+                    </p>
+                  )}
                   {raisons.includes('autre') && (
                     <textarea value={autre} onChange={e => setAutre(e.target.value)} maxLength={500} rows={3}
                       className="mt-3 w-full rounded-xl border border-[#2a2015]/15 dark:border-white/15 bg-transparent p-3 text-sm text-[#2a2015] dark:text-white" placeholder="Quelques mots, si vous le souhaitez" />

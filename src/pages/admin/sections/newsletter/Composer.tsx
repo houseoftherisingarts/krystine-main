@@ -939,7 +939,7 @@ const BlockFrame: React.FC<{
     <>
       <button className={`${iconBtn} w-auto px-2 text-[11px] font-bold`} onMouseDown={keepFocus} onClick={() => phrase('grand')} title="Agrandir la phrase sélectionnée">A+</button>
       <button className={`${iconBtn} w-auto px-2 text-[13px] font-bold`} onMouseDown={keepFocus} onClick={() => phrase('tgrand')} title="Très grande phrase">A++</button>
-      <button className={`${iconBtn} w-auto px-2 text-[15px]`} style={{ fontFamily: "'Pinyon Script', cursive" }} onMouseDown={keepFocus} onClick={() => phrase('manu')} title="Phrase en manuscrite">Aa</button>
+      <button className={`${iconBtn} w-auto px-2 text-[15px]`} style={{ fontFamily: "'Ms Madi', cursive" }} onMouseDown={keepFocus} onClick={() => phrase('manu')} title="Phrase en manuscrite">Aa</button>
       <button className={iconBtn} onMouseDown={keepFocus} onClick={() => phrase(null)} title="Remettre la phrase normale"><i className="fa-solid fa-text-slash text-xs" /></button>
     </>
   );

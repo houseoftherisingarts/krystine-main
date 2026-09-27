@@ -38,7 +38,7 @@ export const BRAND = {
 export const POLICES: Record<Police, { label: string; css: string; tw: string }> = {
   serif:  { label: 'Éditoriale', css: "'Cormorant Garamond', Georgia, 'Times New Roman', serif", tw: 'font-serif' },
   sans:   { label: 'Moderne',    css: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif", tw: 'font-sans' },
-  script: { label: 'Manuscrite', css: "'Pinyon Script', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive", tw: '' },
+  script: { label: 'Manuscrite', css: "'Ms Madi', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive", tw: '' },
 };
 // Les formats d'image : bannière (bande large recadrée), grande, moyenne, ou
 // kaléidoscope de quatre carrés deux par deux. Miroir dans functions/src/newsletter/renderer.ts.
@@ -110,7 +110,7 @@ function escHtml(s: string): string {
 export const STYLES_PHRASE: Record<string, string> = {
   grand: 'font-size:1.35em;line-height:1.35',
   tgrand: 'font-size:1.75em;line-height:1.25',
-  manu: "font-family:'Pinyon Script','Snell Roundhand','Brush Script MT','Segoe Script',cursive;font-size:1.6em;line-height:1.25;font-weight:400",
+  manu: "font-family:'Ms Madi','Snell Roundhand','Brush Script MT','Segoe Script',cursive;font-size:1.6em;line-height:1.25;font-weight:400",
 };
 const phrasesEnHtml = (h: string) => h
   .replace(/&lt;(grand|tgrand|manu)&gt;/g, (_m, k: string) => `<span data-rich="${k}" style="${STYLES_PHRASE[k].replace(/"/g, '&quot;')}">`)
