@@ -2511,5 +2511,19 @@
       "public/assets/infolettre/lettre-de-krystine.jpg",
       "src/firebase/firestore.ts"
     ]
+  },
+  {
+    "quand": "2026-09-27T23:02:34.008Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "2967e7f8",
+    "message": "Admin › Infolettre : la liste montre le sujet de chaque lettre en premier (le titre interne dessous), et la date et l'heure de dernière modification, les plus récentes en haut",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/newsletter/NewsletterList.tsx"
+    ]
   }
 ]
