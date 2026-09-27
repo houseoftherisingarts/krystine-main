@@ -186,7 +186,7 @@ function nl2br(s: string): string {
 const STYLES_PHRASE: Record<string, string> = {
   grand: 'font-size:1.35em;line-height:1.35',
   tgrand: 'font-size:1.75em;line-height:1.25',
-  manu: `font-family:${"'Ms Madi', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive"};font-size:1.6em;line-height:1.25;font-weight:400`,
+  manu: `font-family:${"'Ms Madi', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive"};font-size:2em;line-height:1.2;font-weight:400`,
 };
 function richToHtml(text: string, accent: string = CHARTE.goldInk): string {
   return esc(text)
