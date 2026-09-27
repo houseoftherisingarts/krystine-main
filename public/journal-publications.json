@@ -2542,5 +2542,24 @@
       "src/lib/newsletterRenderer.tsx",
       "src/pages/admin/sections/newsletter/Composer.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-27T23:22:34.003Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "3efee787",
+    "message": "Infolettre : écriture manuscrite Ms Madi (la plus proche de la signature de Krystine); désabonnement : liens vers le podcast et les réseaux pour « je préfère suivre Krystine autrement », et événement Desabonnement du pixel pour exclure ces personnes des publicités",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "index.html",
+      "public/assets-manifest.json",
+      "src/lib/newsletterRenderer.tsx",
+      "src/pages/UnsubscribePage.tsx",
+      "src/pages/admin/sections/newsletter/Composer.tsx"
+    ]
   }
 ]
