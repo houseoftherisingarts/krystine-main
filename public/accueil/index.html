@@ -50,7 +50,9 @@
     max-width:1280px;margin:0 auto;padding:1.9rem 3rem}
   .logo{font-family:var(--serif);font-weight:600;letter-spacing:.12em;font-size:1.32rem;line-height:1.0;text-transform:uppercase;color:var(--ctext)}
   .navlinks{display:flex;align-items:center;gap:2.1rem;font-size:.68rem;letter-spacing:.17em;text-transform:uppercase;color:var(--ctext-soft)}
-  .navlinks a{position:relative;transition:color .25s}
+  .navlinks a{position:relative;transition:color .25s;white-space:nowrap}
+  .logo{white-space:nowrap}
+  .navlinks{gap:clamp(1.2rem,1.9vw,2.1rem)}
   .navlinks a:hover{color:var(--brass-bright)}
   .navlinks a::after{content:"";position:absolute;left:0;right:100%;bottom:-5px;height:1px;background:var(--brass-bright);transition:right .3s cubic-bezier(.2,.7,.2,1)}
   .navlinks a:hover::after{right:0}
@@ -409,6 +411,8 @@
 
 
   /* ============ MOBILE PASS (impeccable adapt) ============ */
+  /* Entre la tablette et le grand écran, le menu complet ne tient plus sur une ligne : le burger prend le relais (27 sept. 2026). */
+  @media(max-width:1280px){ nav{display:none} .mnav-toggle{display:flex} }
   @media(max-width:900px){
     .mx{padding:0 1.4rem}
     nav{display:none}
@@ -784,7 +788,7 @@
   <nav>
     <div class="logo">Krystine<br/>St-Laurent</div>
     <div class="navlinks">
-      <a href="#oeuvre">L'Œuvre</a><a href="/liste-attente?programme=origine2">Origine</a><a href="/formations">Formations</a>
+      <a href="#oeuvre">L'Œuvre</a><a href="/liste-attente?programme=origine2">Expérience Origine 2</a><a href="/formations">Formations</a>
       <a href="/medias">Médias &amp; Livres</a><a href="/boutique">Boutique</a><a href="#apropos">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold btn-gold--nav">Accéder à mon espace membre</a>
     </div>
   </nav>
@@ -796,7 +800,7 @@
   </button>
   <div id="mnavOverlay" class="mnav-overlay" aria-hidden="true">
     <nav class="mnav-links">
-      <a href="#oeuvre">L'Œuvre</a><a href="/liste-attente?programme=origine2">Origine</a><a href="/formations">Formations</a>
+      <a href="#oeuvre">L'Œuvre</a><a href="/liste-attente?programme=origine2">Expérience Origine 2</a><a href="/formations">Formations</a>
       <a href="/medias">Médias &amp; Livres</a><a href="/boutique">Boutique</a><a href="#apropos">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold" style="margin-top:.5rem">Accéder à mon espace membre</a>
     </nav>
   </div>
@@ -1172,7 +1176,7 @@
       <div>
         <h4>Formations</h4>
         <ul>
-          <li><a href="/liste-attente?programme=origine2">Expérience Origine</a></li>
+          <li><a href="/liste-attente?programme=origine2">Expérience Origine 2</a></li>
           <li><a href="/vata">Programme Vata</a></li>
           <li><a href="/podcast">Podcast</a></li>
         </ul>
