@@ -2577,5 +2577,20 @@
       "public/assets-manifest.json",
       "src/lib/newsletterRenderer.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-27T23:35:20.038Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "917cef27",
+    "message": "Infolettre : les robots de sécurité des boîtes d'entreprise (qui ouvrent tous les liens en quelques secondes) ne posent plus d'étiquettes d'intérêt ni de clics; leurs étiquettes posées par la lettre sont retirées",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/clic.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
