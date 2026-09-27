@@ -6,7 +6,6 @@ import {
 import NewsletterSignup from '../../components/NewsletterSignup';
 import LiveSignup from '../../components/LiveSignup';
 import { trackListenStart, startPresence, stopPresence } from '../../lib/podcastStats';
-import { fetchYouTubeVideos, type YTVideo } from '../../lib/youtube';
 
 /**
  * Podcast « Au-delà des tendances » — branding V2 (magazine crème), même
@@ -64,19 +63,6 @@ function seasonFromTitle(title: string, date = ''): 1 | 2 {
   return 1;
 }
 
-// La vidéo YouTube d'un épisode : même titre une fois la ponctuation, les
-// accents et le préfixe « Ep 4 : » ou « S.2 E3 : » retirés. La plus ancienne
-// correspondance gagne, pour ne pas prendre un extrait publié après.
-const cleTitre = (s: string) => s
-  .toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-  .replace(/^.*?(?:ep\.?|episode|e)\s*\d+\s*:/i, '')
-  .replace(/[^a-z0-9]+/g, ' ').trim();
-function videoPour(titre: string, videos: YTVideo[]): YTVideo | null {
-  const cle = cleTitre(titre);
-  if (cle.length < 8) return null;
-  const trouvees = videos.filter(v => cleTitre(v.title).includes(cle) || cle.includes(cleTitre(v.title)) && cleTitre(v.title).length >= 12);
-  return trouvees.sort((a, b) => a.published.localeCompare(b.published))[0] || null;
-}
 
 async function fetchFeedXml(): Promise<string> {
   for (const mk of PROXIES) {
@@ -160,13 +146,8 @@ export default function PodcastV2() {
     return () => { alive = false; };
   }, []);
 
-  // Les vidéos YouTube de la chaîne, pour intégrer la vidéo de l'épisode choisi
-  // dans la page (Krystine, 27 sept. 2026). Sans vidéo, le lecteur audio reste.
-  const [videos, setVideos] = useState<YTVideo[]>([]);
-  useEffect(() => { fetchYouTubeVideos().then(setVideos).catch(() => { /* audio seul */ }); }, []);
 
   const current = useMemo(() => episodes.find((e) => e.id === selected) || episodes[0], [episodes, selected]);
-  const video = useMemo(() => (current ? videoPour(current.title, videos) : null), [current, videos]);
 
   return (
     <div
@@ -264,7 +245,7 @@ export default function PodcastV2() {
 
       {/* ─────────── Lecteur sticky de l'épisode sélectionné ─────────── */}
       {status === 'ready' && current && (
-        <section className={`${video ? 'relative' : 'sticky top-[64px]'} z-40 bg-[#efe6d7]/95 backdrop-blur-sm border-y border-[#1c1712]/12 py-6`}>
+        <section className={`sticky top-[64px] z-40 bg-[#efe6d7]/95 backdrop-blur-sm border-y border-[#1c1712]/12 py-6`}>
           <div className="w-full px-[clamp(1rem,3vw,3rem)]">
             <div className="flex items-start gap-4">
               {current.image && (
@@ -279,20 +260,7 @@ export default function PodcastV2() {
               <div className="min-w-0 flex-1">
                 <p className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-2">À l’écoute</p>
                 <h2 className="v2-serif font-light text-[#1c1712] text-xl md:text-2xl mb-4 leading-snug">{current.title}</h2>
-                {video && (
-                  <div className="relative w-full max-w-[860px] aspect-video mb-4 overflow-hidden rounded-[10px] bg-[#1c1712] shadow-[0_14px_34px_rgba(28,23,18,0.25)]">
-                    <iframe
-                      key={video.id}
-                      src={`https://www.youtube-nocookie.com/embed/${video.id}?rel=0&modestbranding=1`}
-                      title={current.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      loading="lazy"
-                      className="absolute inset-0 w-full h-full border-0"
-                    />
-                  </div>
-                )}
-                {!video && <audio
+                <audio
                   key={current.id}
                   controls
                   preload="none"
@@ -307,7 +275,7 @@ export default function PodcastV2() {
                   onEnded={stopPresence}
                 >
                   <source src={current.audio} type="audio/mpeg" />
-                </audio>}
+                </audio>
               </div>
             </div>
           </div>

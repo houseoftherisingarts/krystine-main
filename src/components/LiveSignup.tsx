@@ -4,6 +4,21 @@ import { useApp } from '../contexts/AppContext';
 import { getLiveEvents, type LiveEvent } from '../firebase/firestore';
 import NewsletterSignup from './NewsletterSignup';
 import LecteurVideoEmbarque from './LecteurVideoEmbarque';
+import { fetchYouTubeVideos, type YTVideo } from '../lib/youtube';
+
+// Le dernier épisode paru sur YouTube (Krystine, 27 sept. 2026) : la vidéo au
+// plus grand numéro d'épisode (« Ép. 4 », « E3 »...), et parmi ses versions la
+// première publiée, pour ne pas prendre un extrait posté ensuite.
+const numeroEpisode = (titre: string) => {
+  const m = /\b(?:ép|ep|e)\.?\s*(\d+)\b/i.exec(titre.normalize('NFC'));
+  return m ? Number(m[1]) : -1;
+};
+function dernierEpisode(videos: YTVideo[]): YTVideo | null {
+  const num = Math.max(-1, ...videos.map(v => numeroEpisode(v.title)));
+  if (num < 0) return null;
+  return videos.filter(v => numeroEpisode(v.title) === num).sort((a, b) => a.published.localeCompare(b.published))[0] || null;
+}
+const titreEpisode = (t: string) => t.replace(/^.*?podcast\s*:\s*/i, '').trim();
 
 /**
  * Bloc « podcast en direct » : lit le prochain document `liveEvents`, affiche
@@ -35,6 +50,8 @@ const LiveSignup: React.FC = () => {
   const { lang } = useApp();
   const reduce = useReducedMotion();
   const [ev, setEv] = useState<LiveEvent | null>(null);
+  const [dernier, setDernier] = useState<YTVideo | null>(null);
+  useEffect(() => { fetchYouTubeVideos().then(v => setDernier(dernierEpisode(v))).catch(() => setDernier(null)); }, []);
 
   useEffect(() => {
     getLiveEvents().then(list => {
@@ -46,10 +63,14 @@ const LiveSignup: React.FC = () => {
     }).catch(() => setEv(null));
   }, []);
 
-  if (!ev) return null;
+  // Sans direct à venir, le bloc montre le dernier épisode paru sur YouTube,
+  // à jour tout seul, sans date ni heure. Un direct annoncé garde sa date.
+  const aVenir = !!ev && Date.now() <= ev.startsAt.toMillis() + 3 * 3600e3;
+  const episode = !aVenir ? dernier : null;
+  if (!ev && !episode) return null;
 
-  const start = ev.startsAt.toDate();
-  const isPast = Date.now() > start.getTime() + 3 * 3600e3;
+  const start = ev ? ev.startsAt.toDate() : new Date();
+  const isPast = !aVenir;
   const fr = lang === 'FR';
   const jour = fmtDay(start, lang);
   const heureQc = fmtTime(start, lang, TZ);
@@ -57,10 +78,12 @@ const LiveSignup: React.FC = () => {
   const t = fr ? {
     live: 'En direct sur YouTube',
     replay: 'Rediffusion',
-    title: isPast ? 'La rediffusion est en ligne' : 'Le podcast en direct',
+    title: episode ? 'Le nouvel épisode' : isPast ? 'La rediffusion est en ligne' : 'Le podcast en direct',
     sub: 'Spécial ouverture de saison',
-    body: isPast
-      ? `L'épisode en direct du ${jour} reste à votre disposition aussi longtemps que vous le voulez.`
+    body: episode
+      ? titreEpisode(episode.title)
+      : isPast
+      ? `L'épisode en direct reste à votre disposition aussi longtemps que vous le voulez.`
       : 'Nous vous retrouvons en direct pour vous présenter en avant-première les nouveautés de la saison et répondre à vos questions dans le clavardage.',
     body2: isPast ? '' : 'En vous inscrivant, vous pourrez poser votre question à Krystine et vous recevrez le lien, un rappel avant le direct ainsi que la rediffusion.',
     qc: `${heureQc} · Québec`, fra: `${heureFr} · France`,
@@ -71,10 +94,12 @@ const LiveSignup: React.FC = () => {
   } : {
     live: 'Live on YouTube',
     replay: 'Replay',
-    title: isPast ? 'The replay is online' : 'The podcast, live',
+    title: episode ? 'The new episode' : isPast ? 'The replay is online' : 'The podcast, live',
     sub: 'Season-opening special',
-    body: isPast
-      ? `The live episode of ${jour} stays available for as long as you like.`
+    body: episode
+      ? titreEpisode(episode.title)
+      : isPast
+      ? `The live episode stays available for as long as you like.`
       : 'We meet you live to give you a first look at what the new season holds and to answer your questions in the chat.',
     body2: isPast ? '' : 'By signing up, you can ask Krystine your question and you will receive the link, a reminder before the live and the replay.',
     qc: `${heureQc} · Québec`, fra: `${heureFr} · France`,
@@ -114,7 +139,7 @@ const LiveSignup: React.FC = () => {
               </span>
               <YouTubeMark className="h-7 w-7 text-[#EEE7DB]" />
               <span className="text-[clamp(0.85rem,1.4vw,1.15rem)] font-semibold uppercase tracking-[0.3em] text-[#EEE7DB]">
-                {isPast ? t.replay : t.live}
+                {episode ? (fr ? 'Nouvel épisode' : 'New episode') : isPast ? t.replay : t.live}
               </span>
             </motion.div>
             <motion.h2 {...fade(0.15)} className="v2-serif mt-8 font-light leading-[1] text-[clamp(3rem,7vw,5.6rem)]">
@@ -133,7 +158,7 @@ const LiveSignup: React.FC = () => {
                 {t.body2}
               </motion.p>
             )}
-            <motion.div {...fade(0.3)} className="mt-9 flex flex-wrap gap-x-10 gap-y-4">
+            {!isPast && <motion.div {...fade(0.3)} className="mt-9 flex flex-wrap gap-x-10 gap-y-4">
               <div>
                 <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#BA7B39]">{fr ? 'Date' : 'Date'}</p>
                 <p className="v2-serif mt-1 text-[clamp(1.4rem,2.4vw,2rem)] capitalize">{jour}</p>
@@ -143,17 +168,17 @@ const LiveSignup: React.FC = () => {
                 <p className="v2-serif mt-1 text-[clamp(1.4rem,2.4vw,2rem)]">{t.qc}</p>
                 <p className="v2-serif text-[clamp(1.1rem,1.8vw,1.5rem)] text-[#EEE7DB]/65">{t.fra}</p>
               </div>
-            </motion.div>
+            </motion.div>}
           </div>
 
           <motion.div {...fade(0.35)} className={isPast ? 'overflow-hidden rounded-[15px] border border-[#EEE7DB]/12 bg-black shadow-[0_20px_60px_rgba(0,0,0,0.5)]' : 'rounded-[15px] border border-[#EEE7DB]/12 bg-[#211c18]/60 p-[clamp(1.5rem,3.5vw,3rem)] backdrop-blur-sm'}>
             {isPast ? (
               // La rediffusion se regarde ici même, embarquée dans la carte : jamais un bouton, jamais un nouvel onglet (Alex, 6 sept. 2026).
-              <div className="relative aspect-video w-full"><LecteurVideoEmbarque url={ev.replayUrl || ev.youtubeUrl} titre={t.title} className="absolute inset-0 h-full w-full" /></div>
+              <div className="relative aspect-video w-full"><LecteurVideoEmbarque url={episode ? `https://www.youtube.com/watch?v=${episode.id}` : (ev?.replayUrl || ev?.youtubeUrl || '')} titre={episode ? titreEpisode(episode.title) : t.title} className="absolute inset-0 h-full w-full" /></div>
             ) : (
               <NewsletterSignup
                 source="podcast-live"
-                tags={['podcast', 'podcast-live', ev.tag]}
+                tags={['podcast', 'podcast-live', ev?.tag || 'podcast-live']}
                 variant="dark"
                 emailOnly
                 askFirstName
