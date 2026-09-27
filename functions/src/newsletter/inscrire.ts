@@ -105,9 +105,8 @@ export const inscrireInfolettre = onCall(
 
     // Une adresse déjà connue ne crée plus de deuxième fiche (Krystine, 27 sept.
     // 2026) : la nouvelle liste s'ajoute à ses étiquettes, les champs vides se
-    // complètent, et une personne désabonnée ou en attente qui s'inscrit d'elle-
-    // même redevient active. Une fiche en quarantaine ou rebondie garde son
-    // statut. Si la liste rejointe a son propre courriel, il part une fois.
+    // complètent, et une fiche en attente devient active. Une fiche désabonnée,
+    // en quarantaine ou rebondie garde son statut. Si la liste rejointe a son propre courriel, il part une fois.
     const col = getFirestore().collection('newsletter');
     const existantes = await col.where('email', '==', email).limit(10).get();
     if (!existantes.empty) {
@@ -124,7 +123,12 @@ export const inscrireInfolettre = onCall(
       if (fiche.question) maj.question = fiche.question;
       if (fiche.consentement) maj.consentement = true;
       let statut = String(avant.status || 'active');
-      if (status === 'active' && (statut === 'unsubscribed' || statut === 'pending')) {
+      // Une fiche désabonnée ne se réactive JAMAIS d'ici : le formulaire est
+      // public, et quiconque connaît l'adresse pourrait la réabonner sans son
+      // accord. Elle reste désabonnée, et Krystine la réactive dans l'admin si
+      // la personne le demande. Seule une fiche en attente (jamais consentie)
+      // devient active, comme une nouvelle inscription l'aurait fait.
+      if (status === 'active' && statut === 'pending') {
         statut = 'active';
         maj.status = 'active';
         maj.reinscriteLe = FieldValue.serverTimestamp();
