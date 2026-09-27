@@ -378,7 +378,10 @@ export default function PodcastV2() {
                         {list.map((ep) => {
                           const active = ep.id === selected;
                           // La saison 2 commence à l'épisode zéro (« Quand le vide crée le plein »), puis 1 (Alex, 6 sept. 2026).
-                          const num = s === 2 ? list.indexOf(ep) : list.length - list.indexOf(ep);
+                          // Saison 2 : le numéro vient du titre (« Ep 4 », « S2 E3 »); une
+                          // rediffusion n'en porte pas. Saison 1 : le rang, du plus ancien.
+                          const numTitre = /\b(?:E|EP|ÉP)\.?\s*(\d+)/i.exec(ep.title)?.[1];
+                          const num = s === 2 ? (numTitre ?? '·') : list.length - list.indexOf(ep);
                           return (
                             <button
                               key={ep.id}
