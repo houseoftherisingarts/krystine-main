@@ -48,25 +48,48 @@ export const clic = onRequest(
         const db = getFirestore();
         const h = createHash('sha1').update(destination).digest('hex').slice(0, 12);
         const personne = db.doc(`newsletters/${n}/clics/${s}`);
-        const deja = (await personne.get()).exists;
-        await personne.set({ at: FieldValue.serverTimestamp(), liens: FieldValue.arrayUnion(destination) }, { merge: true });
-        await db.doc(`newsletters/${n}`).set({
-          stats: { ...(deja ? {} : { clicks: FieldValue.increment(1) }) },
-          clicsLiens: { [h]: { n: FieldValue.increment(1), url: destination } },
-        }, { merge: true });
-        // `?interet=` pose le motif (interet-choisir...), `?preference=` la façon
-        // d'avancer (preference-autonomie, preference-accompagnement). Les deux
-        // restent séparés : une préférence ne devient jamais un intérêt pour une
-        // offre (Krystine, 27 sept. 2026).
-        const params = new URL(destination).searchParams;
-        const etiquettes = [
-          ...params.getAll('interet').filter(x => INTERET.test(x)).map(x => `interet-${x}`),
-          ...params.getAll('preference').filter(x => INTERET.test(x)).map(x => `preference-${x}`),
-        ];
-        if (etiquettes.length) {
-          await db.doc(`newsletter/${s}`).update({ tags: FieldValue.arrayUnion(...etiquettes) }).catch(() => { /* fiche disparue */ });
+        const avant = await personne.get();
+        const deja = avant.exists;
+        const maintenant = Date.now();
+        // Les robots de sécurité des boîtes d'entreprise et d'université ouvrent
+        // TOUS les liens d'un courriel en quelques secondes pour les vérifier
+        // (constaté le 27 sept. 2026 : BNC, UdeM, ULaval...). Trois liens
+        // différents en moins de dix secondes, aucune personne ne le fait : la
+        // fiche est marquée robot pour cette lettre, ses étiquettes d'intérêt
+        // posées par cette lettre sont retirées, et plus rien ne s'y ajoute.
+        const liensAvant: string[] = avant.get('liens') || [];
+        const heures: number[] = [...(avant.get('heures') || []), maintenant];
+        const liensApres = Array.from(new Set([...liensAvant, destination]));
+        const debut = Math.min(...heures);
+        const robot = avant.get('robot') === true || (liensApres.length >= 3 && maintenant - debut < 10_000);
+        await personne.set({ at: FieldValue.serverTimestamp(), liens: FieldValue.arrayUnion(destination), heures: FieldValue.arrayUnion(maintenant), ...(robot ? { robot: true } : {}) }, { merge: true });
+        const etiquettesDe = (u: string) => {
+          const params = new URL(u).searchParams;
+          return [
+            ...params.getAll('interet').filter(x => INTERET.test(x)).map(x => `interet-${x}`),
+            ...params.getAll('preference').filter(x => INTERET.test(x)).map(x => `preference-${x}`),
+          ];
+        };
+        if (robot) {
+          if (avant.get('robot') !== true) {
+            const aRetirer = Array.from(new Set(liensApres.flatMap(etiquettesDe)));
+            if (aRetirer.length) await db.doc(`newsletter/${s}`).update({ tags: FieldValue.arrayRemove(...aRetirer) }).catch(() => { /* fiche disparue */ });
+            await db.doc(`newsletters/${n}`).set({ stats: { clicks: FieldValue.increment(-1), clicsRobots: FieldValue.increment(1) } }, { merge: true });
+          }
+        } else {
+          const h = createHash('sha1').update(destination).digest('hex').slice(0, 12);
+          await db.doc(`newsletters/${n}`).set({
+            stats: { ...(deja ? {} : { clicks: FieldValue.increment(1) }) },
+            clicsLiens: { [h]: { n: FieldValue.increment(1), url: destination } },
+          }, { merge: true });
+          // `?interet=` pose le motif, `?preference=` la façon d'avancer; une
+          // préférence ne devient jamais un intérêt pour une offre.
+          const etiquettes = etiquettesDe(destination);
+          if (etiquettes.length) {
+            await db.doc(`newsletter/${s}`).update({ tags: FieldValue.arrayUnion(...etiquettes) }).catch(() => { /* fiche disparue */ });
+          }
+          await noterOuverture(n, s, true);
         }
-        await noterOuverture(n, s, true);
       } catch (e) {
         console.warn('[clic]', n, s, e);
       }
