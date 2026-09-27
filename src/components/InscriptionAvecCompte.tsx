@@ -112,30 +112,16 @@ const InscriptionAvecCompte: React.FC<Props> = ({ sourceTag, onSuccess, variant 
     );
   }
 
+  // Une personne connectée n'a qu'un bouton : pas de case, pas de nom ni de
+  // courriel affichés (Krystine, 27 sept. 2026 : l'encadré « Vos informations »
+  // donnait l'impression que ses coordonnées étaient extraites). Le clic sur le
+  // bouton vaut consentement.
   return (
-    <div className={cardCls}>
-      <p className={kickerCls}>{lang === 'FR' ? 'Vos informations' : 'Your details'}</p>
-      <p className={nameCls}>{displayName || email}</p>
-      {displayName && <p className={emailCls}>{email}</p>}
-
-      <label className="mt-5 flex items-start gap-3 cursor-pointer select-none">
-        <input
-          type="checkbox"
-          checked={checked}
-          onChange={e => setChecked(e.target.checked)}
-          className="mt-1 w-4 h-4 shrink-0 accent-[#9c7a44]"
-        />
-        <span className={isEditorial ? 'text-[0.88rem] leading-[1.6] text-[#3a2f23]' : 'text-sm leading-relaxed text-[#2a2015]/80 dark:text-white/80'}>
-          {lang === 'FR'
-            ? "Je m'inscris avec les informations de mon compte et je consens à faire partie de cette liste."
-            : 'Sign me up with my account details; I consent to join this list.'}
-        </span>
-      </label>
-
-      <button type="button" onClick={() => submit()} disabled={!checked || busy} className={buttonCls}>
+    <div>
+      <button type="button" onClick={() => submit(true)} disabled={busy} className={buttonCls.replace('w-full mt-6', 'w-full')}>
         {busy
           ? (lang === 'FR' ? 'Inscription…' : 'Signing up…')
-          : (lang === 'FR' ? "M'inscrire" : 'Sign me up')}
+          : (lang === 'FR' ? "Rejoindre la liste d'attente" : 'Join the waitlist')}
       </button>
 
       {err && <p className="mt-3 text-center text-xs text-red-600">{err}</p>}

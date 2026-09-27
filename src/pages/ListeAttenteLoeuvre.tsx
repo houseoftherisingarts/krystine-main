@@ -313,31 +313,8 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
     }
   };
 
-  const trust = [
-    {
-      num: '01',
-      title: lang === 'FR' ? 'Aucun engagement' : 'No commitment',
-      text: lang === 'FR'
-        ? "Vous êtes inscrite sur la liste, c'est tout. Vous choisirez librement à l'ouverture."
-        : 'You are simply on the list. You will choose freely at the opening.',
-    },
-    {
-      num: '02',
-      title: lang === 'FR' ? 'Avisée en premier' : 'First to know',
-      text: lang === 'FR'
-        ? "Vous recevez les détails par courriel à l'ouverture, avant la communication publique."
-        : 'You receive the details by email at the opening, before the public announcement.',
-    },
-    {
-      num: '03',
-      title: lang === 'FR' ? 'Coordonnées protégées' : 'Details protected',
-      text: lang === 'FR'
-        ? 'Vos coordonnées ne sont jamais partagées. Désabonnement en un clic.'
-        : 'Your details are never shared. One-click unsubscribe.',
-    },
-  ];
 
-  const editionLeft = lang === 'FR' ? "Liste d'attente · Inspira Nature" : 'Waitlist · Inspira Nature';
+  const editionLeft = lang === 'FR' ? "Liste d'attente · Krystine St-Laurent" : 'Waitlist · Krystine St-Laurent';
 
   return (
     <div
@@ -422,9 +399,9 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
 
       {/* ─────────── INSCRIPTION · réassurance + formulaire ─────────── */}
       <section id="inscription" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,9rem)] bg-[#f4efe6]">
-        <div className="grid lg:grid-cols-[5fr_6fr] gap-x-[clamp(2.5rem,6vw,6rem)] gap-y-14 items-start">
+        <div className="grid lg:grid-cols-[5fr_6fr] gap-x-[clamp(2.5rem,6vw,6rem)] gap-y-14 items-center">
 
-          {/* ── Colonne gauche · réassurance numérotée ── */}
+          {/* ── Colonne gauche · titre (les trois points de réassurance retirés à la demande de Krystine, 27 sept. 2026) ── */}
           <Reveal>
             <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330]">
               {lang === 'FR' ? "Liste d'attente" : 'Waitlist'}
@@ -432,18 +409,6 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
             <h2 className="mt-5 v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2rem,4vw,3.2rem)]">
               {lang === 'FR' ? 'Parmi les premières à savoir' : 'Among the first to know'}
             </h2>
-            <div className="mt-10">
-              {trust.map(({ num, title, text }) => (
-                <div key={num} className="border-t border-[#1c1712]/15 py-6 grid grid-cols-[3rem_1fr] gap-4 items-baseline">
-                  <span className="v2-serif italic text-[#7d6330] text-lg tabular-nums">{num}</span>
-                  <div>
-                    <h3 className="v2-serif text-[1.2rem] font-light text-[#1c1712]">{title}</h3>
-                    <p className="mt-1.5 text-[0.92rem] font-light leading-[1.75] text-[#3a2f23] max-w-[46ch]">{text}</p>
-                  </div>
-                </div>
-              ))}
-              <div className="border-t border-[#1c1712]/15" />
-            </div>
           </Reveal>
 
           {/* ── Colonne droite · formulaire éditorial encadré ── */}
