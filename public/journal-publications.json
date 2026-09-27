@@ -2343,5 +2343,22 @@
       "src/pages/admin/sections/newsletter/JournalPanel.tsx",
       "src/pages/admin/sections/newsletter/PreviewFrame.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-27T20:42:56.136Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c8171585",
+    "message": "Infolettre (admin) : un bloc image peut prendre un fond de couleur de la palette (menu « Fond » dans la barre de l'image); l'image se pose dans une carte arrondie de cette couleur, dans l'éditeur, l'aperçu et le courriel envoyé",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "src/lib/newsletterRenderer.tsx",
+      "src/pages/admin/sections/newsletter/Composer.tsx"
+    ]
   }
 ]
