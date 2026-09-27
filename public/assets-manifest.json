@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T22:47:46.761Z",
+  "generatedAt": "2026-09-27T22:54:16.309Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -266,6 +266,20 @@
       "folder": "assets/infolettre",
       "kind": "image",
       "size": 317408
+    },
+    {
+      "path": "/assets/infolettre/lettre-de-krystine-discernement.jpg",
+      "name": "lettre-de-krystine-discernement.jpg",
+      "folder": "assets/infolettre",
+      "kind": "image",
+      "size": 102888
+    },
+    {
+      "path": "/assets/infolettre/lettre-de-krystine.jpg",
+      "name": "lettre-de-krystine.jpg",
+      "folder": "assets/infolettre",
+      "kind": "image",
+      "size": 104086
     },
     {
       "path": "/compte/bienvenue-bureau-720.webp",
