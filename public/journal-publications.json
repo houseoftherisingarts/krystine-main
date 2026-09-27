@@ -2495,5 +2495,21 @@
       "src/lib/paliers.ts",
       "src/pages/UnsubscribePage.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-27T22:54:22.993Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "737693bf",
+    "message": "Infolettre : en-têtes « La Lettre de Krystine » allégés (0,1 Mo au lieu de 1,7 Mo, même image), servis depuis le site; l'en-tête par défaut des nouvelles lettres utilise la version légère",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/assets/infolettre/lettre-de-krystine-discernement.jpg",
+      "public/assets/infolettre/lettre-de-krystine.jpg",
+      "src/firebase/firestore.ts"
+    ]
   }
 ]
