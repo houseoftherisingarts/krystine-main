@@ -413,6 +413,25 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
       const h = c.size === 'lg' ? 'h-16' : c.size === 'sm' ? 'h-4' : 'h-8';
       return <div className={h} />;
     }
+    case 'choix': {
+      // La grille de carrés à cocher (miroir du courriel); chaque carré mène à /mes-choix.
+      const options = (Array.isArray(c.options) ? c.options : []) as { cle: string; libelle: string; phrase?: string }[];
+      return (
+        <div className="my-6">
+          {c.question && <p className="text-center font-serif text-2xl text-[#293027] dark:text-white mb-4">{c.question}</p>}
+          <div className="grid grid-cols-2 gap-3">
+            {options.map(o => (
+              <div key={o.cle} className="rounded-xl border border-[#9c7a44]/45 bg-[#f7f2ea] dark:bg-white/5 px-4 py-3.5">
+                <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7d6330]">
+                  <span className="inline-block w-3 h-3 border-[1.5px] border-[#7d6330] rounded-[3px]" />{o.libelle}
+                </span>
+                {o.phrase && <p className="mt-2 font-serif text-base leading-snug text-[#293027] dark:text-white">{o.phrase}</p>}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
     default:
       return null;
   }

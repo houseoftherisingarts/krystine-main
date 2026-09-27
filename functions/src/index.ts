@@ -42,3 +42,4 @@ export { purgerHabitudesInactives } from './habitudes';
 export { mesDemandes } from './mesDemandes';
 export { vhCollecter, vhAgreger, vhAgregerMaintenant, vhEffacerSession, vhPurger } from './vexelhotjar';
 export { youtubeVideos } from './youtube';
+export { enregistrerChoix } from './newsletter/choix';

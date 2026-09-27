@@ -267,7 +267,8 @@ function estQuota(err: unknown): boolean {
 // sauf le désabonnement et les adresses de courriel, pour compter les clics.
 function suivreLesClics(html: string, n: string, s: string): string {
   return html.replace(/href="(https?:\/\/[^"]+)"/g, (tout, brut: string) => {
-    const u = brut.replace(/&amp;/g, '&');
+    // {{s}} : l'identifiant de la fiche, pour les carrés de /mes-choix.
+    const u = brut.replace(/&amp;/g, '&').replace(/\{\{s\}\}|%7B%7Bs%7D%7D/gi, s);
     if (/desinscription|unsubscribe|cloudfunctions\.net/i.test(u)) return tout;
     return `href="https://www.krystinestlaurent.ca/c?n=${encodeURIComponent(n)}&amp;s=${encodeURIComponent(s)}&amp;u=${encodeURIComponent(u)}"`;
   });

@@ -8,7 +8,7 @@
 
 import { PUBLIC_BASE_URL } from './mail';
 
-export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer' | 'list';
+export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer' | 'list' | 'choix';
 
 export interface NewsletterBlock {
   type: BlockType;
@@ -297,6 +297,29 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       const h = c.size === 'lg' ? 48 : c.size === 'sm' ? 10 : 24;
       return `<tr><td style="height:${h}px;line-height:${h}px;font-size:0;">&nbsp;</td></tr>`;
     }
+    case 'choix': {
+      // Une grille légère de carrés à cocher (Krystine, 27 sept. 2026). Un
+      // courriel ne peut pas porter de vraie case ni de bouton « Soumettre » :
+      // chaque carré mène à /mes-choix, déjà coché, où la lectrice complète et
+      // envoie. {{s}} devient l'identifiant de sa fiche à l'envoi (send.ts), et
+      // le paramètre interet/preference pose l'étiquette dès le clic (clic.ts).
+      const groupe = c.groupe === 'preference' ? 'preference' : 'interet';
+      const options = (Array.isArray(c.options) ? c.options : []).filter((o: any) => o && o.cle && o.libelle);
+      if (!options.length) return '';
+      const fondCarre = pal.sombre ? 'rgba(238,231,219,0.06)' : '#f7f2ea';
+      const bord = pal.sombre ? 'rgba(224,176,96,0.45)' : 'rgba(156,122,68,0.45)';
+      const carre = (o: any) => {
+        const lien = `${PUBLIC_BASE_URL}/mes-choix?s={{s}}&coche=${groupe}:${encodeURIComponent(o.cle)}&${groupe}=${encodeURIComponent(o.cle)}`;
+        return `<td width="50%" valign="top" style="width:50%;padding:6px;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;background:${fondCarre};border:1px solid ${bord};border-radius:12px;padding:14px 16px;">
+          <span style="display:inline-block;width:13px;height:13px;border:1.5px solid ${pal.accent};border-radius:3px;vertical-align:-2px;margin-right:8px;"></span><span style="font-family:${CHARTE.sans};font-size:${t(11)}px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:${pal.accent};">${esc(o.libelle)}</span>
+          ${o.phrase ? `<div style="padding-top:8px;font-family:${CHARTE.serif};font-size:${t(16)}px;line-height:1.4;color:${pal.ink};">${esc(o.phrase)}</div>` : ''}
+        </a></td>`;
+      };
+      let rangs = '';
+      for (let i = 0; i < options.length; i += 2) rangs += `<tr>${carre(options[i])}${options[i + 1] ? carre(options[i + 1]) : '<td width="50%" style="width:50%;"></td>'}</tr>`;
+      const question = c.question ? `<tr><td align="center" style="padding:18px 0 8px;font-family:${CHARTE.serif};font-size:${tTitre(24)}px;line-height:1.2;color:${pal.ink};">${esc(c.question)}</td></tr>` : '';
+      return `${question}<tr><td style="padding:0 0 18px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 -6px;">${rangs}</table></td></tr>`;
+    }
     default:
       return '';
   }
@@ -412,6 +435,10 @@ export function renderEmailText(blocks: NewsletterBlock[], opts: RenderEmailOpti
         break;
       case 'divider':
         lines.push('---');
+        break;
+      case 'choix':
+        if (c.question) lines.push(String(c.question));
+        lines.push((Array.isArray(c.options) ? c.options : []).map((o: any) => `- ${o.libelle} : ${o.phrase || ''}`).join('\n'));
         break;
       case 'list':
         lines.push(String(c.text || '').split(/\r?\n/).filter((l: string) => l.trim()).map((l: string, i: number) => `${c.style === 'numero' ? `${i + 1}.` : '-'} ${stripRich(l)}`).join('\n'));
