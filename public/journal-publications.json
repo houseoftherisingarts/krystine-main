@@ -2260,5 +2260,19 @@
       "functions/src/newsletter/inscrire.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-09-27T19:51:29.913Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "9697137c",
+    "message": "Accueil : nouveau texte de Krystine pour la section Expérience Origine (2e édition, une seule ouverture par année, automne 2026), bouton « Rejoindre la liste d'attente » sous le texte",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json"
+    ]
   }
 ]
