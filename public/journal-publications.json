@@ -2321,5 +2321,27 @@
       "functions/src/newsletter/clic.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-09-27T20:36:20.032Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "be87208a",
+    "message": "Infolettre (admin) : réglage « Taille des lettres » (normale, grande, très grande) qui agrandit tout le texte de la lettre, et bouton « Voir en taille réelle » (ordinateur ou téléphone)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/assistant.ts",
+      "functions/src/newsletter/renderer.ts",
+      "functions/src/newsletter/send.ts",
+      "functions/src/newsletter/sequences.ts",
+      "public/assets-manifest.json",
+      "src/firebase/firestore.ts",
+      "src/pages/admin/sections/newsletter/Composer.tsx",
+      "src/pages/admin/sections/newsletter/JournalPanel.tsx",
+      "src/pages/admin/sections/newsletter/PreviewFrame.tsx"
+    ]
   }
 ]
