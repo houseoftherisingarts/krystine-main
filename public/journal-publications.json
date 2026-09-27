@@ -2525,5 +2525,22 @@
       "public/assets-manifest.json",
       "src/pages/admin/sections/newsletter/NewsletterList.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-27T23:14:58.817Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ca72b75a",
+    "message": "Infolettre (admin) : dans un paragraphe, une phrase sélectionnée peut être agrandie (A+, A++) ou passer en manuscrite, sans changer le reste du bloc; bouton pour la remettre normale",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "src/lib/newsletterRenderer.tsx",
+      "src/pages/admin/sections/newsletter/Composer.tsx"
+    ]
   }
 ]
