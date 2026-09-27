@@ -2477,5 +2477,23 @@
       "functions/src/newsletter/unsubscribe.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-09-27T22:47:54.105Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "2d28bafb",
+    "message": "Désabonnement : la page propose, de façon facultative, les raisons du départ (cases à cocher et texte libre); elles deviennent des étiquettes depart-… sur les fiches de l'adresse",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/unsubscribe.ts",
+      "public/assets-manifest.json",
+      "src/firebase/firestore.ts",
+      "src/lib/paliers.ts",
+      "src/pages/UnsubscribePage.tsx"
+    ]
   }
 ]
