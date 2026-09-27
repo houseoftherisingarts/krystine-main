@@ -2360,5 +2360,24 @@
       "src/lib/newsletterRenderer.tsx",
       "src/pages/admin/sections/newsletter/Composer.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-27T20:48:10.364Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "dc574acd",
+    "message": "Podcast : la page /podcast range les nouveaux épisodes en Saison 2 (par date depuis le 25 août), intègre la vidéo YouTube de l'épisode choisi, et n'affiche plus la date; nouveau service /api/youtube qui lit la chaîne côté serveur (le relais allorigins répondait 500)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "firebase.json",
+      "functions/src/index.ts",
+      "functions/src/youtube.ts",
+      "public/assets-manifest.json",
+      "src/lib/youtube.ts",
+      "src/pages/concepts/PodcastV2.tsx"
+    ]
   }
 ]
