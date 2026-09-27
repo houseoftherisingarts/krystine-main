@@ -2223,5 +2223,27 @@
       "src/components/layout/NavBar.tsx",
       "src/content.ts"
     ]
+  },
+  {
+    "quand": "2026-09-27T19:40:25.621Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "6ebd1cbb",
+    "message": "Liste d'attente Expérience Origine 2 : « Créer mon compte et m'inscrire » inscrit sur la liste dès que le compte existe; la région devient facultative; une adresse déjà connue garde sa fiche (la liste s'ajoute à ses étiquettes, plus de doublon); courriel de confirmation propre à Expérience Origine 2; l'admin (Clients) range ces inscrites sous « Liste d'attente · Expérience Origine 2 »",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/inscrire.ts",
+      "functions/src/newsletter/welcome.ts",
+      "public/assets-manifest.json",
+      "scripts/qa/_nav-tmp 2.mjs",
+      "scripts/qa/_nav-tmp 3.mjs",
+      "src/components/InscriptionAvecCompte.tsx",
+      "src/components/WaitlistModal.tsx",
+      "src/pages/ListeAttenteLoeuvre.tsx",
+      "src/pages/admin/sections/MembersSection.tsx"
+    ]
   }
 ]
