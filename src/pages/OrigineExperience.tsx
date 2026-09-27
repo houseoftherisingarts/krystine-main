@@ -184,7 +184,7 @@ export const TESTIMONIALS = [
 
 /* Pré-ouverture : aucune inscription directe. Tous les appels à l'action
    mènent à la liste d'attente (prix et checkout volontairement absents). */
-const WAITLIST = '/liste-attente?programme=origine';
+const WAITLIST = '/liste-attente?programme=origine2';
 
 /* ════════════════════════ Sections ════════════════════════ */
 

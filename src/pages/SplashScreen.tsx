@@ -169,7 +169,7 @@ const SplashScreen: React.FC = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.95, ease: 'easeOut' }}
-          onClick={e => { e.stopPropagation(); goToRoute(navigate, '/origine'); }}
+          onClick={e => { e.stopPropagation(); goToRoute(navigate, '/liste-attente?programme=origine2'); }}
           className="mt-10 md:mt-12 group inline-flex items-center gap-3 bg-[#bb9a5e] hover:bg-white text-[#2a2015] px-10 py-4 rounded-full font-bold uppercase tracking-[0.25em] text-[11px] md:text-xs shadow-[0_10px_36px_rgba(187, 154, 94,0.35)] transition-all duration-300 whitespace-nowrap"
         >
           {t.cta}

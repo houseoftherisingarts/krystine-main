@@ -14,7 +14,7 @@ interface NavItem { href: string; labelFR: string; labelEN: string; }
 // Condensed nav: Ayurveda/Livres/Quiz live under /medias, Événements under
 // /formations. The 3 "doorways" map to the 3 banners on the home page.
 const NAV: NavItem[] = [
-  { href: '/origine',     labelFR: 'Origine',                      labelEN: 'Origine' },
+  { href: '/liste-attente?programme=origine2',     labelFR: 'Origine',                      labelEN: 'Origine' },
   { href: '/formations',  labelFR: 'Formations',                   labelEN: 'Programs' },
   { href: '/medias',      labelFR: 'Médias & Livres',              labelEN: 'Media & Books' },
   { href: '/boutique',    labelFR: 'Boutique',                     labelEN: 'Shop' },

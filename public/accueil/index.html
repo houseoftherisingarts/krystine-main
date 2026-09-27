@@ -784,8 +784,8 @@
   <nav>
     <div class="logo">Krystine<br/>St-Laurent</div>
     <div class="navlinks">
-      <a href="#oeuvre">L'Œuvre</a><a href="/origine">Origine</a><a href="/formations">Formations</a>
-      <a href="/medias">Médias &amp; Livres</a><a href="/boutique">Boutique</a><a href="#apropos">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold btn-gold--nav">Accéder à mon espace</a>
+      <a href="#oeuvre">L'Œuvre</a><a href="/liste-attente?programme=origine2">Origine</a><a href="/formations">Formations</a>
+      <a href="/medias">Médias &amp; Livres</a><a href="/boutique">Boutique</a><a href="#apropos">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold btn-gold--nav">Accéder à mon espace membre</a>
     </div>
   </nav>
 
@@ -796,8 +796,8 @@
   </button>
   <div id="mnavOverlay" class="mnav-overlay" aria-hidden="true">
     <nav class="mnav-links">
-      <a href="#oeuvre">L'Œuvre</a><a href="/origine">Origine</a><a href="/formations">Formations</a>
-      <a href="/medias">Médias &amp; Livres</a><a href="/boutique">Boutique</a><a href="#apropos">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold" style="margin-top:.5rem">Accéder à mon espace</a>
+      <a href="#oeuvre">L'Œuvre</a><a href="/liste-attente?programme=origine2">Origine</a><a href="/formations">Formations</a>
+      <a href="/medias">Médias &amp; Livres</a><a href="/boutique">Boutique</a><a href="#apropos">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold" style="margin-top:.5rem">Accéder à mon espace membre</a>
     </nav>
   </div>
 
@@ -862,7 +862,7 @@
       <h2 class="sec-title reveal">Devenez votre premier repère</h2>
       <div class="rule reveal d1"></div>
       <div class="plus-grid">
-        <a class="offer offer-origine reveal" href="/origine-2">
+        <a class="offer offer-origine reveal" href="/liste-attente?programme=origine2">
           <span class="o-halo" aria-hidden="true"><span></span><span></span></span>
           <div class="o-body">
             <div>
@@ -972,7 +972,8 @@
   </section>
 
   <!-- ===== ESPACE MEMBRE : la clé qui ouvre le site ===== -->
-  <section class="membre" id="membre">
+  <!-- La section du compte, masquée à la demande de Krystine le 27 septembre 2026 (doublon du bouton du menu; retirer « hidden » pour la faire revenir) -->
+  <section class="membre" id="membre" hidden>
     <div class="mx membre-grid">
       <div class="membre-roue reveal d2" aria-hidden="true"><img src="/accueil/assets/wheel-watercolor.webp" alt="" width="1024" height="1024" loading="lazy" decoding="async"></div>
       <div class="membre-copy reveal">
@@ -1011,7 +1012,7 @@
         </form>
         <p class="tm-fine">Une transmission par mois environ. Désinscription en un clic, votre courriel reste entre nous.</p>
         <p class="tm-msg" id="tmmsg" role="status" aria-live="polite"></p>
-        <div class="acct-upsell">
+        <div class="acct-upsell" hidden>
           <p>Vous voulez plus qu'une infolettre ? Contenus exclusifs et promotions spéciales :</p>
           <a href="/compte" class="btn-gold">Accéder à mon espace</a>
         </div>
@@ -1033,7 +1034,7 @@
         <a class="hnode n0" href="/medias#livres" style="top:12%;left:50%"><span class="ni"><svg class="an-bloom" viewBox="0 0 48 48"><path d="M8.5 12.5c4-2.6 9-3.1 13-1.4v25.4c-4-1.7-9-1.2-13 1.4V12.5Z"/><path d="M39.5 12.5c-4-2.6-9-3.1-13-1.4v25.4c4-1.7 9-1.2 13 1.4V12.5Z"/><path d="M12.5 17.5c2.5-1 5.2-1.3 7.5-.7M12.5 23c2.5-1 5.2-1.3 7.5-.7M35.5 17.5c-2.5-1-5.2-1.3-7.5-.7M35.5 23c-2.5-1-5.2-1.3-7.5-.7"/></svg></span><span class="nt">Les Livres</span></a>
         <a class="hnode n1" href="/podcast" style="top:31%;left:83%"><span class="ni"><svg class="an-pulse" viewBox="0 0 48 48"><path d="M24 8a5.5 5.5 0 0 1 5.5 5.5v8a5.5 5.5 0 0 1-11 0v-8A5.5 5.5 0 0 1 24 8Z"/><path d="M14.5 20a9.5 9.5 0 0 0 19 0M24 29.5V37M17.5 37h13"/><path d="M10 14.5a16 16 0 0 0 0 11M38 14.5a16 16 0 0 1 0 11"/></svg></span><span class="nt">Le Podcast</span></a>
         <a class="hnode n2" href="https://inspiratanature.com" target="_blank" rel="noopener noreferrer" style="top:69%;left:83%"><span class="ni"><svg class="an-sway" viewBox="0 0 48 48"><path d="M20.5 7h7M22 7v4.5h4V7"/><path d="M26 11.5c3.5 2.5 5.5 6 5.5 10.5V33a4.5 4.5 0 0 1-4.5 4.5h-6a4.5 4.5 0 0 1-4.5-4.5V22c0-4.5 2-8 5.5-10.5"/><path d="M24 20c1.8 2.3 2.8 4.2 2.8 6a2.8 2.8 0 1 1-5.6 0c0-1.8 1-3.7 2.8-6Z"/></svg></span><span class="nt">Les huiles corporelles</span></a>
-        <a class="hnode n3" href="/origine" style="top:88%;left:50%"><span class="ni"><svg class="an-spin" viewBox="0 0 48 48"><path d="M26 24a2 2 0 0 1-4 0 4.2 4.2 0 0 1 8.4 0 7.4 7.4 0 0 1-14.8 0 10.6 10.6 0 0 1 21.2 0 14 14 0 0 1-28 0"/></svg></span><span class="nt">Expérience Origine</span></a>
+        <a class="hnode n3" href="/liste-attente?programme=origine2" style="top:88%;left:50%"><span class="ni"><svg class="an-spin" viewBox="0 0 48 48"><path d="M26 24a2 2 0 0 1-4 0 4.2 4.2 0 0 1 8.4 0 7.4 7.4 0 0 1-14.8 0 10.6 10.6 0 0 1 21.2 0 14 14 0 0 1-28 0"/></svg></span><span class="nt">Expérience Origine</span></a>
         <a class="hnode n4" href="/conferenciere" style="top:69%;left:17%"><span class="ni"><svg class="an-bloom" viewBox="0 0 48 48"><circle cx="24" cy="14" r="3.6"/><path d="M18 22.5c1.2-2.8 3.3-4.3 6-4.3s4.8 1.5 6 4.3"/><path d="M17.5 37V27.5h13V37M15.5 27.5l2.2-4.2h12.6l2.2 4.2"/><path d="M34.5 11.5a9 9 0 0 1 2.8 6M13.5 11.5a9 9 0 0 0-2.8 6"/></svg></span><span class="nt">Les Conférences</span></a>
         <a class="hnode n5" href="/liste-attente?programme=retraite" style="top:31%;left:17%"><span class="ni"><svg class="an-sway" viewBox="0 0 48 48"><path d="M17 37V26.5l8.5-6.8 8.5 6.8V37H17Z"/><path d="M22.5 37v-5.8h6V37"/><path d="M9.5 37v-3.2M6.5 34l3-5.2 3 5.2ZM7.3 29.3l2.2-3.8 2.2 3.8"/></svg></span><span class="nt">Les Retraites</span></a>
       </div>
@@ -1171,7 +1172,7 @@
       <div>
         <h4>Formations</h4>
         <ul>
-          <li><a href="/origine">Expérience Origine</a></li>
+          <li><a href="/liste-attente?programme=origine2">Expérience Origine</a></li>
           <li><a href="/vata">Programme Vata</a></li>
           <li><a href="/podcast">Podcast</a></li>
         </ul>

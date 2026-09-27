@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
   ];
 
   const programmes = [
-    { href: '/origine', label: nav.origine },
+    { href: '/liste-attente?programme=origine2', label: nav.origine },
     { href: '/vata', label: nav.vata },
     { href: '/podcast', label: nav.podcast },
   ];
