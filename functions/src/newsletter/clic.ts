@@ -14,6 +14,10 @@ import { noterOuverture } from './ouverture';
 const ACCUEIL = 'https://www.krystinestlaurent.ca/accueil';
 const DOMAINES = ['krystinestlaurent.ca', 'inspiratanature.com'];
 const ID = /^[A-Za-z0-9_-]{1,64}$/;
+// Un lien d'intérêt porte `?interet=<clé>` : le clic pose l'étiquette
+// `interet-<clé>` sur la fiche de la personne (Krystine, 27 sept. 2026), pour
+// qu'elle puisse ensuite écrire seulement à celles qui ont levé la main.
+const INTERET = /^[a-z0-9-]{2,30}$/;
 
 const domaineAmi = (h: string) => DOMAINES.some(d => h === d || h.endsWith('.' + d));
 
@@ -50,6 +54,10 @@ export const clic = onRequest(
           stats: { ...(deja ? {} : { clicks: FieldValue.increment(1) }) },
           clicsLiens: { [h]: { n: FieldValue.increment(1), url: destination } },
         }, { merge: true });
+        const interet = new URL(destination).searchParams.get('interet') || '';
+        if (INTERET.test(interet)) {
+          await db.doc(`newsletter/${s}`).update({ tags: FieldValue.arrayUnion(`interet-${interet}`) }).catch(() => { /* fiche disparue */ });
+        }
         await noterOuverture(n, s, true);
       } catch (e) {
         console.warn('[clic]', n, s, e);
