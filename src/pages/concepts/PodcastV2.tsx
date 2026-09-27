@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Headphones, CalendarBlank, Clock, Play, CircleNotch, ArrowUpRight, ArrowDown,
+  Headphones, Clock, Play, CircleNotch, ArrowUpRight, ArrowDown,
 } from '@phosphor-icons/react';
 import NewsletterSignup from '../../components/NewsletterSignup';
 import LiveSignup from '../../components/LiveSignup';
 import { trackListenStart, startPresence, stopPresence } from '../../lib/podcastStats';
+import { fetchYouTubeVideos, type YTVideo } from '../../lib/youtube';
 
 /**
  * Podcast « Au-delà des tendances » — branding V2 (magazine crème), même
@@ -45,14 +46,36 @@ type Episode = {
 // (l'année complète de la saison 1) reste en Saison 1. Un classement par
 // année aurait mis presque tous les épisodes 2026 en Saison 2, ce qui est
 // faux : on classe par titre, pas par date.
-function seasonFromTitle(title: string): 1 | 2 {
+// Depuis le 27 sept. 2026, les épisodes de la saison 2 portent « S2 », « S.2 »
+// ou seulement « Ep 4 » dans leur titre : tout épisode paru depuis le début de
+// la saison (25 août 2026) va donc aussi en saison 2, sans attendre un mot
+// précis dans le titre.
+const DEBUT_SAISON_2 = Date.parse('2026-08-25T00:00:00-04:00');
+function seasonFromTitle(title: string, date = ''): 1 | 2 {
   const t = title
     .toUpperCase()
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '');
   if (t.includes('REDIFFUSION')) return 2;
   if (t.includes('VIDE CREE LE PLEIN')) return 2;
+  if (/\bS\.?\s?2\b|SAISON 2/.test(t)) return 2;
+  const quand = Date.parse(date);
+  if (!Number.isNaN(quand) && quand >= DEBUT_SAISON_2) return 2;
   return 1;
+}
+
+// La vidéo YouTube d'un épisode : même titre une fois la ponctuation, les
+// accents et le préfixe « Ep 4 : » ou « S.2 E3 : » retirés. La plus ancienne
+// correspondance gagne, pour ne pas prendre un extrait publié après.
+const cleTitre = (s: string) => s
+  .toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+  .replace(/^.*?(?:ep\.?|episode|e)\s*\d+\s*:/i, '')
+  .replace(/[^a-z0-9]+/g, ' ').trim();
+function videoPour(titre: string, videos: YTVideo[]): YTVideo | null {
+  const cle = cleTitre(titre);
+  if (cle.length < 8) return null;
+  const trouvees = videos.filter(v => cleTitre(v.title).includes(cle) || cle.includes(cleTitre(v.title)) && cleTitre(v.title).length >= 12);
+  return trouvees.sort((a, b) => a.published.localeCompare(b.published))[0] || null;
 }
 
 async function fetchFeedXml(): Promise<string> {
@@ -93,17 +116,12 @@ function parseEpisodes(xml: string): { cover: string; episodes: Episode[] } {
       description: desc,
       audio: it.querySelector('enclosure')?.getAttribute('url') || '',
       image: it.getElementsByTagName('itunes:image')[0]?.getAttribute('href') || cover,
-      season: seasonFromTitle(title),
+      season: seasonFromTitle(title, it.querySelector('pubDate')?.textContent || ''),
     };
   });
   return { cover, episodes };
 }
 
-const fmtDate = (d: string) => {
-  const t = new Date(d);
-  if (Number.isNaN(t.getTime())) return '';
-  return t.toLocaleDateString('fr-CA', { year: 'numeric', month: 'long', day: 'numeric' });
-};
 const fmtDur = (d: string) => {
   if (!d) return '';
   if (d.includes(':')) {
@@ -142,7 +160,13 @@ export default function PodcastV2() {
     return () => { alive = false; };
   }, []);
 
+  // Les vidéos YouTube de la chaîne, pour intégrer la vidéo de l'épisode choisi
+  // dans la page (Krystine, 27 sept. 2026). Sans vidéo, le lecteur audio reste.
+  const [videos, setVideos] = useState<YTVideo[]>([]);
+  useEffect(() => { fetchYouTubeVideos().then(setVideos).catch(() => { /* audio seul */ }); }, []);
+
   const current = useMemo(() => episodes.find((e) => e.id === selected) || episodes[0], [episodes, selected]);
+  const video = useMemo(() => (current ? videoPour(current.title, videos) : null), [current, videos]);
 
   return (
     <div
@@ -240,7 +264,7 @@ export default function PodcastV2() {
 
       {/* ─────────── Lecteur sticky de l'épisode sélectionné ─────────── */}
       {status === 'ready' && current && (
-        <section className="sticky top-[64px] z-40 bg-[#efe6d7]/95 backdrop-blur-sm border-y border-[#1c1712]/12 py-6">
+        <section className={`${video ? 'relative' : 'sticky top-[64px]'} z-40 bg-[#efe6d7]/95 backdrop-blur-sm border-y border-[#1c1712]/12 py-6`}>
           <div className="w-full px-[clamp(1rem,3vw,3rem)]">
             <div className="flex items-start gap-4">
               {current.image && (
@@ -255,7 +279,20 @@ export default function PodcastV2() {
               <div className="min-w-0 flex-1">
                 <p className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-2">À l’écoute</p>
                 <h2 className="v2-serif font-light text-[#1c1712] text-xl md:text-2xl mb-4 leading-snug">{current.title}</h2>
-                <audio
+                {video && (
+                  <div className="relative w-full max-w-[860px] aspect-video mb-4 overflow-hidden rounded-[10px] bg-[#1c1712] shadow-[0_14px_34px_rgba(28,23,18,0.25)]">
+                    <iframe
+                      key={video.id}
+                      src={`https://www.youtube-nocookie.com/embed/${video.id}?rel=0&modestbranding=1`}
+                      title={current.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full border-0"
+                    />
+                  </div>
+                )}
+                {!video && <audio
                   key={current.id}
                   controls
                   preload="none"
@@ -270,7 +307,7 @@ export default function PodcastV2() {
                   onEnded={stopPresence}
                 >
                   <source src={current.audio} type="audio/mpeg" />
-                </audio>
+                </audio>}
               </div>
             </div>
           </div>
@@ -367,7 +404,6 @@ export default function PodcastV2() {
                                     <h3 className="v2-serif font-light text-[#1c1712] text-[clamp(1.05rem,1.6vw,1.3rem)] leading-snug">{ep.title}</h3>
                                   </div>
                                   <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 pl-6 text-[0.58rem] uppercase tracking-[0.14em] text-[#1c1712]/55">
-                                    {ep.date && <span className="inline-flex items-center gap-1.5"><CalendarBlank size={11} weight="light" className="text-[#7d6330]" />{fmtDate(ep.date)}</span>}
                                     {ep.duration && <span className="inline-flex items-center gap-1.5"><Clock size={11} weight="light" className="text-[#7d6330]" />{fmtDur(ep.duration)}</span>}
                                   </div>
                                 </div>

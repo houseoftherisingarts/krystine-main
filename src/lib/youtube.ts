@@ -50,6 +50,15 @@ const CACHE_MS = 10 * 60 * 1000; // 10 minutes
 
 export async function fetchYouTubeVideos(): Promise<YTVideo[]> {
   if (cache && Date.now() - cache.at < CACHE_MS) return cache.videos;
+  // D'abord le serveur du site (/api/youtube, 27 sept. 2026) : allorigins
+  // répond 500. Le relais reste en secours.
+  try {
+    const r = await fetch('/api/youtube');
+    if (r.ok) {
+      const j = await r.json() as { videos?: YTVideo[] };
+      if (j.videos?.length) { cache = { videos: j.videos, at: Date.now() }; return j.videos; }
+    }
+  } catch { /* secours plus bas */ }
   const res = await fetch(PROXY);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const xml = await res.text();

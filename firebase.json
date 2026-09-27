@@ -28,6 +28,13 @@
         }
       },
       {
+        "source": "/api/youtube",
+        "function": {
+          "functionId": "youtubeVideos",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/vh",
         "function": {
           "functionId": "vhCollecter",
