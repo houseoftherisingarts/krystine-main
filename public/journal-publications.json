@@ -2174,5 +2174,19 @@
     "fichiers": [
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-09-27T19:12:45.326Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d4e05467",
+    "message": "Accueil : la section du Foyer d'Origine est masquée (rien n'est effacé, elle peut revenir telle quelle)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json"
+    ]
   }
 ]
