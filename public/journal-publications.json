@@ -2245,5 +2245,20 @@
       "src/pages/ListeAttenteLoeuvre.tsx",
       "src/pages/admin/sections/MembersSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-27T19:45:54.310Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "4df9d520",
+    "message": "Sécurité des inscriptions : une adresse désabonnée ne se réactive plus depuis un formulaire public (seule Krystine la réactive dans l'admin)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/inscrire.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
