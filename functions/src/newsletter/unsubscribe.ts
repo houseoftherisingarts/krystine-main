@@ -31,7 +31,14 @@ export const unsubscribeByToken = onRequest(
         res.json({ ok: true, email: (d.data() as any).email, reabonne: true });
         return;
       }
-      await d.ref.update({ status: 'unsubscribed', unsubscribedAt: Timestamp.now() });
+      // Une même adresse peut vivre sous plusieurs fiches (double inscription) :
+      // le désabonnement vaut pour toutes, sinon l'autre fiche continuait de
+      // recevoir les lettres (corrigé le 27 sept. 2026).
+      const email = String((d.data() as any).email || '').trim().toLowerCase();
+      const soeurs = email ? await db.collection('newsletter').where('email', '==', email).get() : null;
+      const refs = new Map([[d.ref.path, d.ref], ...(soeurs?.docs || []).map(x => [x.ref.path, x.ref] as const)]);
+      const quand = Timestamp.now();
+      await Promise.all([...refs.values()].map(r => r.update({ status: 'unsubscribed', unsubscribedAt: quand })));
       res.json({ ok: true, email: (d.data() as any).email });
     } catch (err) {
       console.error('[unsubscribeByToken]', err);
