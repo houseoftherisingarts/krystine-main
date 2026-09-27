@@ -10,7 +10,7 @@ import { fetchYouTubeVideos, type YTVideo } from '../lib/youtube';
 // plus grand numéro d'épisode (« Ép. 4 », « E3 »...), et parmi ses versions la
 // première publiée, pour ne pas prendre un extrait posté ensuite.
 const numeroEpisode = (titre: string) => {
-  const m = /\b(?:ép|ep|e)\.?\s*(\d+)\b/i.exec(titre.normalize('NFC'));
+  const m = /(?:^|[^\p{L}])(?:ép|ep|e)\.?\s*(\d+)(?!\d)/iu.exec(titre.normalize('NFC'));
   return m ? Number(m[1]) : -1;
 };
 function dernierEpisode(videos: YTVideo[]): YTVideo | null {
