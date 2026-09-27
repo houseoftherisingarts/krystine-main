@@ -2423,5 +2423,21 @@
       "src/components/LiveSignup.tsx",
       "src/pages/concepts/PodcastV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-27T21:34:41.798Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "9f30505b",
+    "message": "Infolettre : un clic peut aussi poser la façon d'avancer (preference-autonomie, preference-accompagnement), séparée des intérêts; libellés lisibles des nouvelles étiquettes dans l'admin",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/clic.ts",
+      "public/assets-manifest.json",
+      "src/lib/paliers.ts"
+    ]
   }
 ]
