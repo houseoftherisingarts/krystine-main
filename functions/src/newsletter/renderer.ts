@@ -181,14 +181,22 @@ function nl2br(s: string): string {
 // Texte riche léger : le paragraphe transporte au plus <b>, <i>, <u> et
 // <a href="https://…">. Tout est échappé d'abord, puis ces seules balises
 // sont rendues. Miroir de richToHtml dans src/lib/newsletterRenderer.tsx.
+// Une phrase agrandie ou manuscrite (miroir de src/lib/newsletterRenderer.tsx).
+const STYLES_PHRASE: Record<string, string> = {
+  grand: 'font-size:1.35em;line-height:1.35',
+  tgrand: 'font-size:1.75em;line-height:1.25',
+  manu: `font-family:${"'Pinyon Script', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive"};font-size:1.6em;line-height:1.25;font-weight:400`,
+};
 function richToHtml(text: string, accent: string = CHARTE.goldInk): string {
   return esc(text)
+    .replace(/&lt;(grand|tgrand|manu)&gt;/g, (_m, k: string) => `<span style="${STYLES_PHRASE[k]}">`)
+    .replace(/&lt;\/(grand|tgrand|manu)&gt;/g, '</span>')
     .replace(/&lt;(\/?)(b|i|u)&gt;/g, '<$1$2>')
     .replace(/&lt;a href=&quot;(https?:\/\/[^&]*?)&quot;&gt;/g, `<a href="$1" target="_blank" style="color:${accent};text-decoration:underline;">`)
     .replace(/&lt;\/a&gt;/g, '</a>');
 }
 function stripRich(text: string): string {
-  return String(text ?? '').replace(/<\/?(b|i|u)>/g, '').replace(/<a href="[^"]*">/g, '').replace(/<\/a>/g, '');
+  return String(text ?? '').replace(/<\/?(b|i|u|grand|tgrand|manu)>/g, '').replace(/<a href="[^"]*">/g, '').replace(/<\/a>/g, '');
 }
 
 function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette = PALETTE_CLAIRE, k = 1): string {

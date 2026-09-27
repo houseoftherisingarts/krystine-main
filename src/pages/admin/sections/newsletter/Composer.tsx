@@ -13,7 +13,7 @@ import AudiencePicker from './AudiencePicker';
 import PreviewFrame from './PreviewFrame';
 import AssistantPanel, { type Proposal } from './AssistantPanel';
 import MediathequePicker from '../../../../components/edit/MediathequePicker';
-import { RenderBlockWeb, POLICES, TAILLES, SEPARATEURS, FONDS_INFOLETTRE, FORMATS_IMAGE, formatImage, estSombre } from '../../../../lib/newsletterRenderer';
+import { RenderBlockWeb, POLICES, TAILLES, SEPARATEURS, FONDS_INFOLETTRE, FORMATS_IMAGE, formatImage, estSombre, STYLES_PHRASE } from '../../../../lib/newsletterRenderer';
 import { Input, Label, PrimaryButton, GhostButton } from '../../primitives';
 import Portail from '../../../../components/Portail';
 
@@ -919,6 +919,30 @@ const BlockFrame: React.FC<{
   // la sélection) le temps du clic.
   const keepFocus = (e: React.MouseEvent) => e.preventDefault();
   const exec = (cmd: string, arg?: string) => document.execCommand(cmd, false, arg);
+  // Une phrase choisie grandit ou passe en manuscrite, sans toucher au reste du
+  // bloc : la sélection s'enveloppe d'un <span data-rich>, que domToRich relit.
+  // « Normal » défait l'enveloppe qui contient la sélection.
+  const phrase = (kind: 'grand' | 'tgrand' | 'manu' | null) => {
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return;
+    const r = sel.getRangeAt(0);
+    const noeud = r.commonAncestorContainer.nodeType === 1 ? r.commonAncestorContainer as HTMLElement : r.commonAncestorContainer.parentElement;
+    const deja = noeud?.closest('[data-rich]') as HTMLElement | null;
+    if (deja) { deja.replaceWith(...Array.from(deja.childNodes)); }
+    if (!kind || sel.isCollapsed) return;
+    const span = document.createElement('span');
+    span.dataset.rich = kind;
+    span.setAttribute('style', STYLES_PHRASE[kind]);
+    try { span.appendChild(r.extractContents()); r.insertNode(span); sel.removeAllRanges(); } catch { /* sélection sur deux blocs */ }
+  };
+  const boutonsPhrase = (
+    <>
+      <button className={`${iconBtn} w-auto px-2 text-[11px] font-bold`} onMouseDown={keepFocus} onClick={() => phrase('grand')} title="Agrandir la phrase sélectionnée">A+</button>
+      <button className={`${iconBtn} w-auto px-2 text-[13px] font-bold`} onMouseDown={keepFocus} onClick={() => phrase('tgrand')} title="Très grande phrase">A++</button>
+      <button className={`${iconBtn} w-auto px-2 text-[15px]`} style={{ fontFamily: "'Pinyon Script', cursive" }} onMouseDown={keepFocus} onClick={() => phrase('manu')} title="Phrase en manuscrite">Aa</button>
+      <button className={iconBtn} onMouseDown={keepFocus} onClick={() => phrase(null)} title="Remettre la phrase normale"><i className="fa-solid fa-text-slash text-xs" /></button>
+    </>
+  );
   const lier = () => {
     const url = window.prompt('Adresse du lien (https://…)', 'https://');
     if (!url || !/^https?:\/\//.test(url)) return;
@@ -989,6 +1013,7 @@ const BlockFrame: React.FC<{
                 {Object.entries(TAILLES).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
               </select>
               <button className={iconBtn} onMouseDown={keepFocus} onClick={() => exec('bold')} title="Gras (sélectionnez du texte d’abord)"><i className="fa-solid fa-bold text-xs" /></button>
+              {boutonsPhrase}
               <button className={iconBtn} onMouseDown={keepFocus} onClick={() => exec('italic')} title="Italique"><i className="fa-solid fa-italic text-xs" /></button>
               <button className={iconBtn} onMouseDown={keepFocus} onClick={() => exec('underline')} title="Souligné"><i className="fa-solid fa-underline text-xs" /></button>
               <button className={iconBtn} onMouseDown={keepFocus} onClick={lier} title="Lien sur la sélection"><i className="fa-solid fa-link text-xs" /></button>

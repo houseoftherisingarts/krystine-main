@@ -105,8 +105,19 @@ function escHtml(s: string): string {
   return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+// Une phrase choisie peut grandir ou passer en manuscrite, sans toucher au
+// reste du bloc (Krystine, 27 sept. 2026) : <grand>, <tgrand>, <manu>.
+export const STYLES_PHRASE: Record<string, string> = {
+  grand: 'font-size:1.35em;line-height:1.35',
+  tgrand: 'font-size:1.75em;line-height:1.25',
+  manu: "font-family:'Pinyon Script','Snell Roundhand','Brush Script MT','Segoe Script',cursive;font-size:1.6em;line-height:1.25;font-weight:400",
+};
+const phrasesEnHtml = (h: string) => h
+  .replace(/&lt;(grand|tgrand|manu)&gt;/g, (_m, k: string) => `<span data-rich="${k}" style="${STYLES_PHRASE[k].replace(/"/g, '&quot;')}">`)
+  .replace(/&lt;\/(grand|tgrand|manu)&gt;/g, '</span>');
+
 export function richToHtml(text: string): string {
-  return escHtml(text)
+  return phrasesEnHtml(escHtml(text))
     .replace(/&lt;(\/?)(b|i|u)&gt;/g, '<$1$2>')
     .replace(/&lt;a href=&quot;(https?:\/\/[^&]*?)&quot;&gt;/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:#8B4A2F;text-decoration:underline;">')
     .replace(/&lt;\/a&gt;/g, '</a>')
@@ -114,7 +125,7 @@ export function richToHtml(text: string): string {
 }
 
 export function stripRich(text: string): string {
-  return String(text ?? '').replace(/<\/?(b|i|u)>/g, '').replace(/<a href="[^"]*">/g, '').replace(/<\/a>/g, '');
+  return String(text ?? '').replace(/<\/?(b|i|u|grand|tgrand|manu)>/g, '').replace(/<a href="[^"]*">/g, '').replace(/<\/a>/g, '');
 }
 
 // Le DOM du champ modifiable redevient notre sous-ensemble : gras, italique,
@@ -135,6 +146,8 @@ export function domToRich(root: Node): string {
     if (bold) out = `<b>${out}</b>`;
     if (ital) out = `<i>${out}</i>`;
     if (under) out = `<u>${out}</u>`;
+    const phrase = el.dataset?.rich;
+    if (phrase && ['grand', 'tgrand', 'manu'].includes(phrase)) out = `<${phrase}>${out}</${phrase}>`;
     if (tag === 'a') {
       const href = el.getAttribute('href') || '';
       if (/^https?:\/\//.test(href)) out = `<a href="${href.replace(/"/g, '')}">${out}</a>`;
