@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { unsubscribeByToken, resubscribeByToken } from '../firebase/firestore';
+import { unsubscribeByToken, resubscribeByToken, envoyerRaisonsDepart } from '../firebase/firestore';
+
+const RAISONS_DEPART = [
+  { cle: 'trop-de-courriels', libelle: 'Je reçois trop de courriels' },
+  { cle: 'contenu', libelle: 'Le contenu ne me parle plus' },
+  { cle: 'pas-inscrite', libelle: 'Je ne me souviens pas de m’être inscrite' },
+  { cle: 'autrement', libelle: 'Je préfère suivre Krystine autrement (podcast, réseaux)' },
+  { cle: 'autre', libelle: 'Autre' },
+];
 import CarteRobotPotentiel from '../components/CarteRobotPotentiel';
 
 type State = 'pending' | 'ok' | 'invalid' | 'test' | 'reabonne';
@@ -10,6 +18,15 @@ const UnsubscribePage: React.FC = () => {
   const [state, setState] = useState<State>('pending');
   const [email, setEmail] = useState<string | undefined>();
   const [annule, setAnnule] = useState(false);
+  // Les raisons du départ, facultatives (Krystine, 27 sept. 2026).
+  const [raisons, setRaisons] = useState<string[]>([]);
+  const [autre, setAutre] = useState('');
+  const [raisonEtat, setRaisonEtat] = useState<'choix' | 'envoi' | 'merci'>('choix');
+  const envoyerRaisons = async () => {
+    setRaisonEtat('envoi');
+    const ok = await envoyerRaisonsDepart(token, raisons, autre);
+    setRaisonEtat(ok ? 'merci' : 'choix');
+  };
   const token = new URLSearchParams(loc.search).get('t') || '';
 
   // « Oups, je me suis trompée » : le même lien remet l'abonnement.
@@ -66,6 +83,32 @@ const UnsubscribePage: React.FC = () => {
               >
                 {annule ? 'Un instant…' : 'Oups, je me suis trompée : je reste abonnée'}
               </button>
+            </div>
+            <div className="mb-8 text-left rounded-[18px] border border-[#2a2015]/10 dark:border-white/10 p-5">
+              {raisonEtat === 'merci' ? (
+                <p className="text-sm text-center text-[#2a2015]/80 dark:text-white/80">Merci, votre réponse nous aide.</p>
+              ) : (
+                <>
+                  <p className="text-sm text-[#2a2015]/80 dark:text-white/80 mb-3">Si vous le voulez, dites-nous pourquoi (facultatif) :</p>
+                  <div className="space-y-2">
+                    {RAISONS_DEPART.map(r => (
+                      <label key={r.cle} className="flex items-start gap-3 text-sm text-[#2a2015]/80 dark:text-white/80 cursor-pointer">
+                        <input type="checkbox" className="mt-1 accent-[#7d6330]" checked={raisons.includes(r.cle)}
+                          onChange={e => setRaisons(p => e.target.checked ? [...p, r.cle] : p.filter(x => x !== r.cle))} />
+                        {r.libelle}
+                      </label>
+                    ))}
+                  </div>
+                  {raisons.includes('autre') && (
+                    <textarea value={autre} onChange={e => setAutre(e.target.value)} maxLength={500} rows={3}
+                      className="mt-3 w-full rounded-xl border border-[#2a2015]/15 dark:border-white/15 bg-transparent p-3 text-sm text-[#2a2015] dark:text-white" placeholder="Quelques mots, si vous le souhaitez" />
+                  )}
+                  <button type="button" onClick={envoyerRaisons} disabled={(!raisons.length && !autre.trim()) || raisonEtat === 'envoi'}
+                    className="mt-4 w-full bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors disabled:opacity-40">
+                    {raisonEtat === 'envoi' ? 'Un instant…' : 'Envoyer'}
+                  </button>
+                </>
+              )}
             </div>
             <a href="/accueil" className="inline-block bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors">
               Retour à l’accueil

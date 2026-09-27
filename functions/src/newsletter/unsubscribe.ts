@@ -16,6 +16,12 @@ export const unsubscribeByToken = onRequest(
     // « Oups, je me suis trompée » : le même jeton, avec annuler=1, remet
     // l'abonnement. Le clic de la personne vaut un oui explicite.
     const annuler = (req.query.annuler || req.body?.annuler || '').toString() === '1';
+    // Les raisons du départ (27 sept. 2026), facultatives, envoyées après le
+    // désabonnement : elles deviennent des étiquettes depart-… sur les fiches
+    // de l'adresse, et le texte libre reste dans raisonAutre.
+    const RAISONS = ['trop-de-courriels', 'contenu', 'pas-inscrite', 'autrement', 'autre'];
+    const raisons = (Array.isArray(req.body?.raisons) ? req.body.raisons : []).map(String).filter((r: string) => RAISONS.includes(r));
+    const autre = String(req.body?.autre || '').trim().slice(0, 500);
     if (!token) { res.json({ ok: false }); return; }
 
     try {
@@ -24,6 +30,16 @@ export const unsubscribeByToken = onRequest(
       if (snap.empty) { res.json({ ok: false }); return; }
 
       const d = snap.docs[0];
+      if (raisons.length || autre) {
+        const courriel = String((d.data() as any).email || '').trim().toLowerCase();
+        const toutes = courriel ? (await db.collection('newsletter').where('email', '==', courriel).get()).docs.map(x => x.ref) : [d.ref];
+        const champs: Record<string, unknown> = { raisonsDepart: raisons, raisonLe: Timestamp.now() };
+        if (raisons.length) champs.tags = FieldValue.arrayUnion(...raisons.map((r: string) => `depart-${r}`));
+        if (autre) champs.raisonAutre = autre;
+        await Promise.all(toutes.map(r => r.update(champs)));
+        res.json({ ok: true });
+        return;
+      }
       if (annuler) {
         if ((d.data() as any).status === 'unsubscribed') {
           await d.ref.update({ status: 'active', reabonneAt: Timestamp.now(), unsubscribedAt: FieldValue.delete() });

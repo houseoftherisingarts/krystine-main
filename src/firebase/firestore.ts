@@ -815,6 +815,19 @@ export async function unsubscribeByToken(token: string): Promise<{ ok: boolean; 
   }
 }
 
+/** Les raisons du départ, facultatives, après le désabonnement. */
+export async function envoyerRaisonsDepart(token: string, raisons: string[], autre: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${FUNCTIONS_BASE}/unsubscribeByToken`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ t: token, raisons, autre }),
+    });
+    return res.ok && !!(await res.json()).ok;
+  } catch {
+    return false;
+  }
+}
+
 /** Annule un désabonnement fait par erreur, avec le même jeton. */
 export async function resubscribeByToken(token: string): Promise<{ ok: boolean; email?: string }> {
   try {
