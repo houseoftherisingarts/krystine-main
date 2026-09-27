@@ -271,15 +271,18 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
     }
     case 'image': {
       const fmt = formatImage(c.largeur);
+      // Le fond de couleur de la palette derrière l'image (miroir du courriel).
+      const fondImg = /^#[0-9a-f]{3,8}$/i.test(c.fondImage || '') ? c.fondImage as string : '';
+      const carte: React.CSSProperties = fondImg ? { background: fondImg, borderRadius: 15, padding: '22px 20px 12px' } : {};
       const px = FORMATS_IMAGE[fmt].px;
       const lien = /^https?:\/\//.test(c.href || '') ? c.href : 'https://www.krystinestlaurent.ca';
-      const capClass = 'text-xs uppercase tracking-widest text-[#3A251E]/50 dark:text-white/50 text-center mt-3';
+      const capClass = `text-xs uppercase tracking-widest text-center mt-3 ${fondImg && estSombre(fondImg) ? 'text-[#E0B060]' : 'text-[#3A251E]/50 dark:text-white/50'}`;
       const vide = (texte: string, carre = false) => <div className={`${carre ? 'aspect-square' : 'aspect-[21/9] max-h-64'} w-full border-2 border-dashed border-[#B8532F]/40 bg-[#B8532F]/5 flex flex-col items-center justify-center gap-2 text-[#B8532F]`}><i className="fa-solid fa-image text-2xl" /><span className="text-[10px] uppercase tracking-widest font-bold">{texte}</span></div>;
       const survol = <span className="absolute inset-0 flex items-center justify-center bg-[#3A251E]/0 group-hover/img:bg-[#3A251E]/40 transition-colors"><span className="opacity-0 group-hover/img:opacity-100 transition-opacity bg-white text-[#3A251E] px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest shadow-lg"><i className="fa-solid fa-images mr-2" />Changer</span></span>;
       if (fmt === 'kaleidoscope') {
         const cases = casesKaleidoscope(c);
         return (
-          <figure className="my-6 mx-auto" style={{ maxWidth: px }}>
+          <figure className="my-6 mx-auto" style={{ maxWidth: fondImg ? px + 40 : px, ...carte }}>
             <div className="grid grid-cols-2 gap-3">
               {cases.map((u, i) => edit ? (
                 <button key={i} type="button" onClick={e => { e.stopPropagation(); edit.pickImage(i); }} title={`Image ${i + 1}`}
@@ -300,7 +303,7 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
       const imgClass = fmt === 'banniere' ? 'w-full aspect-[3/1] object-cover block' : 'w-full block';
       if (edit) {
         return (
-          <figure className="my-6 mx-auto" style={{ maxWidth: px }}>
+          <figure className="my-6 mx-auto" style={{ maxWidth: fondImg ? px + 40 : px, ...carte }}>
             <button type="button" onClick={e => { e.stopPropagation(); edit.pickImage(); }} title="Changer l'image"
               className="group/img relative block w-full rounded-2xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#BA7B39]">
               {c.url ? <img src={c.url} alt={c.alt || ''} className={imgClass} /> : vide('Choisir une image')}
@@ -311,7 +314,7 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
         );
       }
       return (
-        <figure className="my-6 mx-auto" style={{ maxWidth: px }}>
+        <figure className="my-6 mx-auto" style={{ maxWidth: fondImg ? px + 40 : px, ...carte }}>
           {c.url && <a href={lien} target="_blank" rel="noopener noreferrer" className="block"><img src={c.url} alt={c.alt || ''} className={`${imgClass} rounded-2xl`} /></a>}
           {c.caption && <figcaption className={capClass}>{c.caption}</figcaption>}
         </figure>

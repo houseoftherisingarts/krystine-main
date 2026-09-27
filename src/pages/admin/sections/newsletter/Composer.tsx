@@ -1005,6 +1005,10 @@ const BlockFrame: React.FC<{
               <select value={formatImage(c.largeur)} onChange={e => onPatch({ largeur: e.target.value })} className={selectClass} title="Format de l'image dans la lettre">
                 {Object.entries(FORMATS_IMAGE).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
               </select>
+              <select value={c.fondImage || ''} onChange={e => onPatch({ fondImage: e.target.value || null })} className={selectClass} title="Fond de couleur derrière l'image, pris dans votre palette">
+                <option value="">Sans fond</option>
+                {FONDS_INFOLETTRE.filter(f => f.hex !== '#FFFFFF').map(f => <option key={f.hex} value={f.hex}>Fond : {f.label}</option>)}
+              </select>
               <input value={c.alt || ''} onChange={e => onPatch({ alt: e.target.value })} placeholder="Description (accessibilité)" className={`${selectClass} w-44`} />
               <input value={c.href || ''} onChange={e => onPatch({ href: e.target.value })} placeholder="https://… (où mène la photo; le site par défaut)" title="La photo est cliquable : vers ce lien, sinon vers le site" className={`${selectClass} w-64`} />
             </>

@@ -212,8 +212,16 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       return `<tr><td align="${align}" style="padding:0 0 18px;font-family:${police};font-size:${px}px;line-height:1.75;color:${pal.ink};">${text}</td></tr>`;
     }
     case 'image': {
+      // Un fond de couleur de la palette derrière l'image (Krystine, 27 sept.
+      // 2026) : l'image se pose dans une carte arrondie de cette couleur, et la
+      // légende passe à l'or sur un fond sombre.
+      const fondImg = couleur(c.fondImage, '');
+      const palImg = fondImg ? palette(fondImg) : pal;
+      const enCarte = (rangs: string) => fondImg
+        ? `<tr><td style="padding:10px 0 14px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="${fondImg}" style="background:${fondImg};border-radius:15px;"><tr><td style="padding:22px 20px 10px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rangs}</table></td></tr></table></td></tr>`
+        : rangs;
       const caption = c.caption
-        ? `<tr><td align="center" style="padding:8px 0 4px;font-family:${CHARTE.sans};font-size:${t(10)}px;letter-spacing:0.28em;text-transform:uppercase;color:${pal.accent};">${esc(c.caption)}</td></tr>`
+        ? `<tr><td align="center" style="padding:8px 0 4px;font-family:${CHARTE.sans};font-size:${t(10)}px;letter-spacing:0.28em;text-transform:uppercase;color:${palImg.accent};">${esc(c.caption)}</td></tr>`
         : '';
       // Chaque photo mène quelque part : au lien choisi, sinon au site.
       const lien = typeof c.href === 'string' && /^https?:\/\//.test(c.href) ? c.href : PUBLIC_BASE_URL;
@@ -224,12 +232,12 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
         const cell = (u: string, gauche: boolean) => `<td width="50%" valign="top" style="width:50%;padding:0 ${gauche ? 6 : 0}px 12px ${gauche ? 0 : 6}px;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;"><img src="${esc(recadre(u, 500, 500))}" alt="${esc(c.alt || '')}" width="254" style="display:block;width:100%;max-width:254px;height:auto;border-radius:12px;border:0;" /></a></td>`;
         let rangs = '';
         for (let i = 0; i < imgs.length; i += 2) rangs += `<tr>${cell(imgs[i], true)}${imgs[i + 1] ? cell(imgs[i + 1], false) : '<td width="50%" style="width:50%;"></td>'}</tr>`;
-        return `<tr><td align="center" style="padding:10px 0 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">${rangs}</table></td></tr>${caption}`;
+        return enCarte(`<tr><td align="center" style="padding:10px 0 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">${rangs}</table></td></tr>${caption}`);
       }
       if (!c.url) return '';
       const px = FORMATS_IMAGE[fmt].px;
       const src = fmt === 'banniere' ? recadre(c.url, 1040, 347) : c.url;
-      return `<tr><td align="center" style="padding:10px 0 12px;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;max-width:${px}px;margin:0 auto;"><img src="${esc(src)}" alt="${esc(c.alt || '')}" width="${px}" style="display:block;width:100%;max-width:${px}px;height:auto;border-radius:15px;border:0;margin:0 auto;" /></a></td></tr>${caption}`;
+      return enCarte(`<tr><td align="center" style="padding:10px 0 12px;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;max-width:${px}px;margin:0 auto;"><img src="${esc(src)}" alt="${esc(c.alt || '')}" width="${px}" style="display:block;width:100%;max-width:${px}px;height:auto;border-radius:15px;border:0;margin:0 auto;" /></a></td></tr>${caption}`);
     }
     case 'button': {
       const primary = c.variant !== 'secondary';
