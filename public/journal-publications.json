@@ -2462,5 +2462,20 @@
       "src/lib/newsletterRenderer.tsx",
       "src/pages/MesChoix.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-27T22:39:25.520Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "dc9f7da0",
+    "message": "Infolettre : se désabonner désabonne toutes les fiches de la même adresse (une fiche en double continuait de recevoir les lettres)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/unsubscribe.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
