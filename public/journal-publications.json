@@ -2408,5 +2408,20 @@
       "src/components/LiveSignup.tsx",
       "src/pages/concepts/PodcastV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-27T20:55:54.204Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "70a9f550",
+    "message": "Podcast : le numéro d'épisode se lit aussi avec « Ép. » (accent), pour choisir la bonne vidéo du dernier épisode",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/LiveSignup.tsx",
+      "src/pages/concepts/PodcastV2.tsx"
+    ]
   }
 ]
