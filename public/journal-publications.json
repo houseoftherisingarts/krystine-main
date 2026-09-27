@@ -2379,5 +2379,19 @@
       "src/lib/youtube.ts",
       "src/pages/concepts/PodcastV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-27T20:52:33.646Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "df6144f6",
+    "message": "Podcast : en Saison 2, le numéro de chaque épisode vient de son titre (l'épisode 4 affichait 0)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/concepts/PodcastV2.tsx"
+    ]
   }
 ]
