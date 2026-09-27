@@ -9,7 +9,7 @@ import {
   createTransporter,
   fromAddr,
   unsubscribeUrl, unsubscribeOneClickUrl, assurerJeton } from './mail';
-import { renderEmailHtml, renderEmailText, newsletterAttachments, type NewsletterBlock, type Couverture, type Lang, type Bandeau, type EnteteTitre } from './renderer';
+import { renderEmailHtml, renderEmailText, newsletterAttachments, type NewsletterBlock, type Couverture, type Lang, type Bandeau, type EnteteTitre, type TailleLecture } from './renderer';
 import { ADMIN_EMAILS } from './send';
 import { champsRobot } from './robots';
 
@@ -58,6 +58,7 @@ interface NewsletterDoc {
   lang?: Lang;
   bandeau?: Bandeau | null;
   fond?: string | null;
+  tailleLecture?: TailleLecture | null;
 }
 
 const H = 3600 * 1000;
@@ -103,6 +104,7 @@ async function envoyerEtape(transporter: Transporter, lettre: NewsletterDoc, des
     lang: lettre.lang,
     bandeau: lettre.bandeau,
     fond: lettre.fond,
+    tailleLecture: lettre.tailleLecture,
   };
   await transporter.sendMail({
     from: fromAddr(lettre.fromName || 'Krystine St-Laurent'),

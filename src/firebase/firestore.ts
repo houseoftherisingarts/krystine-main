@@ -608,6 +608,7 @@ export interface NewsletterVersion {
   lang?: 'fr' | 'en';
   bandeau?: BandeauInfolettre | null;
   fond?: string | null;
+  tailleLecture?: 'normale' | 'grande' | 'tres-grande' | null;
   couverture?: 'podcast' | 'image' | 'titre' | 'aucune';
   couvertureUrl?: string | null;
   entete?: EnteteTitre | null;
@@ -665,6 +666,7 @@ export interface NewsletterDoc {
   // Couleur de fond du corps de la lettre, prise dans la palette du site
   // (FONDS_INFOLETTRE). Blanc quand absent. Les couleurs de texte suivent.
   fond?: string | null;
+  tailleLecture?: 'normale' | 'grande' | 'tres-grande' | null;
   versionAt?: Timestamp;   // dernière version gardée dans /versions
   // Avancement d'un envoi en cours (écrit par les fonctions) : compte des
   // courriels partis, et la raison si la passe est en pause (quota Resend).
@@ -715,7 +717,7 @@ export async function getNewsletter(id: string): Promise<NewsletterDoc | null> {
 // ensuite comme d'habitude.
 export const CATEGORIES_GABARITS = ['Inspirata', 'Krystine St-Laurent', 'Expérience Origine', 'Événements', 'Growth'];
 
-type ContenuLettre = Pick<NewsletterDoc, 'title' | 'subject' | 'preheader' | 'fromName' | 'blocks' | 'audience' | 'couverture' | 'couvertureUrl' | 'entete' | 'signature' | 'lang' | 'bandeau' | 'fond' | 'lettreDor'>;
+type ContenuLettre = Pick<NewsletterDoc, 'title' | 'subject' | 'preheader' | 'fromName' | 'blocks' | 'audience' | 'couverture' | 'couvertureUrl' | 'entete' | 'signature' | 'lang' | 'bandeau' | 'fond' | 'tailleLecture' | 'lettreDor'>;
 
 export interface GabaritInfolettre extends ContenuLettre {
   id?: string;
@@ -729,7 +731,7 @@ const contenuDe = (n: ContenuLettre): ContenuLettre => ({
   title: n.title || '', subject: n.subject || '', preheader: n.preheader || '', fromName: n.fromName || 'Krystine St-Laurent',
   blocks: n.blocks || [], audience: n.audience || { mode: 'all' },
   couverture: n.couverture || 'aucune', couvertureUrl: n.couvertureUrl || null, entete: n.entete || null, signature: n.signature !== false,
-  lang: n.lang === 'en' ? 'en' : 'fr', bandeau: n.bandeau || null, fond: n.fond || null, lettreDor: n.lettreDor || null,
+  lang: n.lang === 'en' ? 'en' : 'fr', bandeau: n.bandeau || null, fond: n.fond || null, tailleLecture: n.tailleLecture || null, lettreDor: n.lettreDor || null,
 });
 
 export async function getGabarits(): Promise<GabaritInfolettre[]> {

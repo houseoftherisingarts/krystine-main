@@ -6,7 +6,7 @@ import type { NewsletterBlock, BandeauInfolettre, EnteteTitre } from '../../../.
 // L'aperçu exact du courriel : le serveur rend le même HTML que celui qui
 // part (previewNewsletter), l'admin l'affiche dans une iframe. Un seul moteur.
 
-export interface EnTete { couverture?: 'podcast' | 'image' | 'titre' | 'aucune'; couvertureUrl?: string | null; entete?: EnteteTitre | null; signature?: boolean; lang?: 'fr' | 'en'; bandeau?: BandeauInfolettre | null; fond?: string | null }
+export interface EnTete { couverture?: 'podcast' | 'image' | 'titre' | 'aucune'; couvertureUrl?: string | null; entete?: EnteteTitre | null; signature?: boolean; lang?: 'fr' | 'en'; bandeau?: BandeauInfolettre | null; fond?: string | null; tailleLecture?: 'normale' | 'grande' | 'tres-grande' | null }
 
 export async function fetchPreview(input: EnTete & { blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string }): Promise<{ html: string; subject: string }> {
   if (!app) throw new Error('Firebase non configuré');
@@ -15,18 +15,18 @@ export async function fetchPreview(input: EnTete & { blocks?: NewsletterBlock[];
   return res.data;
 }
 
-const PreviewFrame: React.FC<EnTete & { blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string; height?: number }> = ({ blocks, subject, preheader, kind, couverture, couvertureUrl, entete, signature, lang, bandeau, fond, height = 900 }) => {
+const PreviewFrame: React.FC<EnTete & { blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string; height?: number }> = ({ blocks, subject, preheader, kind, couverture, couvertureUrl, entete, signature, lang, bandeau, fond, tailleLecture, height = 900 }) => {
   const [html, setHtml] = useState('');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const timer = useRef<number | null>(null);
-  const key = JSON.stringify({ blocks, subject, preheader, kind, couverture, couvertureUrl, entete, signature, lang, bandeau, fond });
+  const key = JSON.stringify({ blocks, subject, preheader, kind, couverture, couvertureUrl, entete, signature, lang, bandeau, fond, tailleLecture });
 
   useEffect(() => {
     if (timer.current) window.clearTimeout(timer.current);
     timer.current = window.setTimeout(() => {
       setBusy(true); setErr(null);
-      fetchPreview({ blocks, subject, preheader, kind, couverture, couvertureUrl, entete, signature, lang, bandeau, fond })
+      fetchPreview({ blocks, subject, preheader, kind, couverture, couvertureUrl, entete, signature, lang, bandeau, fond, tailleLecture })
         .then(r => setHtml(r.html))
         .catch(e => setErr(e?.message || 'Aperçu indisponible'))
         .finally(() => setBusy(false));

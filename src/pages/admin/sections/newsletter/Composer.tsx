@@ -16,6 +16,13 @@ import MediathequePicker from '../../../../components/edit/MediathequePicker';
 import { RenderBlockWeb, POLICES, TAILLES, SEPARATEURS, FONDS_INFOLETTRE, FORMATS_IMAGE, formatImage, estSombre } from '../../../../lib/newsletterRenderer';
 import { Input, Label, PrimaryButton, GhostButton } from '../../primitives';
 import Portail from '../../../../components/Portail';
+
+type TailleLecture = 'normale' | 'grande' | 'tres-grande';
+const TAILLES_LECTURE: { cle: TailleLecture; libelle: string; apercu: string }[] = [
+  { cle: 'normale', libelle: 'Normale', apercu: '18px' },
+  { cle: 'grande', libelle: 'Grande', apercu: '23px' },
+  { cle: 'tres-grande', libelle: 'Très grande', apercu: '28px' },
+];
 import { traduireParIris } from '../../../../lib/traduction';
 
 interface Props {
@@ -78,6 +85,9 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
   const [lang, setLang] = useState<'fr' | 'en'>('fr');
   const [bandeau, setBandeau] = useState<BandeauInfolettre>({});
   const [fond, setFond] = useState<string>('#FFFFFF');
+  // La taille de lecture de toute la lettre (Krystine, 27 sept. 2026).
+  const [tailleLecture, setTailleLecture] = useState<TailleLecture>('normale');
+  const [grandApercu, setGrandApercu] = useState<null | 'ordinateur' | 'telephone'>(null);
   const sombre = estSombre(fond);
   const [traductionDe, setTraductionDe] = useState<string | null>(null);
   const [translating, setTranslating] = useState<'copie' | 'surplace' | null>(null);
@@ -94,7 +104,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     setGabaritBusy(true); setSendErr(null);
     try {
       await save();
-      await saveGabarit(gabarit.nom.trim(), gabarit.categorie.trim(), { title, subject, preheader, fromName, blocks, audience, couverture, couvertureUrl, entete: couverture === 'titre' ? entete : null, signature, lang, bandeau, fond, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null });
+      await saveGabarit(gabarit.nom.trim(), gabarit.categorie.trim(), { title, subject, preheader, fromName, blocks, audience, couverture, couvertureUrl, entete: couverture === 'titre' ? entete : null, signature, lang, bandeau, fond, tailleLecture, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null });
       setGabarit(null);
       setSendInfo(`Gabarit « ${gabarit.nom.trim()} » enregistré dans « ${gabarit.categorie.trim()} ». Retrouvez-le dans l’onglet Gabarits.`);
     } catch (e: any) { setSendErr(e?.message || 'Impossible d’enregistrer le gabarit.'); }
@@ -104,7 +114,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     setGabaritBusy(true); setSendErr(null);
     try {
       await save();
-      const nid = await nouvelleLettreDepuis({ title, subject, preheader, fromName, blocks, audience, couverture, couvertureUrl, entete: couverture === 'titre' ? entete : null, signature, lang, bandeau, fond, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null }, `${title || subject || 'Infolettre'} (copie)`);
+      const nid = await nouvelleLettreDepuis({ title, subject, preheader, fromName, blocks, audience, couverture, couvertureUrl, entete: couverture === 'titre' ? entete : null, signature, lang, bandeau, fond, tailleLecture, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null }, `${title || subject || 'Infolettre'} (copie)`);
       onOpen?.(nid);
     } catch (e: any) { setSendErr(e?.message || 'La copie a échoué.'); }
     finally { setGabaritBusy(false); }
@@ -151,6 +161,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
         setLang(n.lang === 'en' ? 'en' : 'fr');
         setBandeau(n.bandeau || {});
         setFond(n.fond || '#FFFFFF');
+        setTailleLecture((n.tailleLecture as TailleLecture) || 'normale');
         setTraductionDe(n.traductionDe || null);
         setVersionAt(n.versionAt ? n.versionAt.toMillis() : 0);
         setLettreDor(!!n.lettreDor);
@@ -217,13 +228,13 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
 
   // Ce que la lettre contient, en une chaîne : la sauvegarde automatique
   // compare à la dernière version enregistrée et ne part que si ça a changé.
-  const etat = JSON.stringify({ title, subject, preheader, fromName, blocks, audience, when, couverture, couvertureUrl, entete, signature, lang, bandeau, fond, lettreDor, dorMessagerie, dorSection });
+  const etat = JSON.stringify({ title, subject, preheader, fromName, blocks, audience, when, couverture, couvertureUrl, entete, signature, lang, bandeau, fond, tailleLecture, lettreDor, dorMessagerie, dorSection });
   const etatSauve = useRef<string | null>(null);
   useEffect(() => { if (!loading && etatSauve.current === null) etatSauve.current = etat; }, [loading, etat]);
 
   // La version gardée dans l'historique : le contenu de la lettre, sans
   // l'audience ni la date (qui ne se restaurent pas).
-  const contenuVersion = () => ({ title, subject, preheader, blocks, lang, bandeau, fond, couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, entete: couverture === 'titre' ? entete : null, signature });
+  const contenuVersion = () => ({ title, subject, preheader, blocks, lang, bandeau, fond, tailleLecture, couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, entete: couverture === 'titre' ? entete : null, signature });
 
   const save = async (): Promise<string | null> => {
     if (isReadOnly) return id;
@@ -231,7 +242,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     const etatAuDepart = etat;
     try {
       const scheduledFor = when ? Timestamp.fromDate(new Date(when)) : null;
-      const enTete = { couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, entete: couverture === 'titre' ? entete : null, signature, lang, bandeau, fond, traductionDe, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null };
+      const enTete = { couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, entete: couverture === 'titre' ? entete : null, signature, lang, bandeau, fond, tailleLecture, traductionDe, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null };
       let savedId = id;
       if (id) {
         await updateNewsletter(id, { title, subject, preheader, fromName, blocks, audience, scheduledFor, ...enTete });
@@ -276,7 +287,7 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     if (!confirm(`Revenir à la version du ${v.savedAt?.toDate().toLocaleString('fr-CA', { dateStyle: 'long', timeStyle: 'short' }) || '?'} ? La version actuelle est gardée dans l'historique.`)) return;
     try { await saveNewsletterVersion(id, { ...contenuVersion(), raison: 'restauration' }); setVersionAt(Date.now()); } catch { /* noop */ }
     setTitle(v.title || ''); setSubject(v.subject || ''); setPreheader(v.preheader || '');
-    setBlocks(v.blocks || []); setLang(v.lang === 'en' ? 'en' : 'fr'); setBandeau(v.bandeau || {}); setFond(v.fond || '#FFFFFF');
+    setBlocks(v.blocks || []); setLang(v.lang === 'en' ? 'en' : 'fr'); setBandeau(v.bandeau || {}); setFond(v.fond || '#FFFFFF'); setTailleLecture((v.tailleLecture as TailleLecture) || 'normale');
     setCouverture(v.couverture || 'aucune'); setCouvertureUrl(v.couvertureUrl || ''); if (v.entete) setEntete({ titre: v.entete.titre || '', sousTitre: v.entete.sousTitre ?? '', image: v.entete.image || IMAGES_ENTETE[0].url }); setSignature(v.signature !== false);
     setSelectedIdx(null);
     setSendInfo('Version restaurée. Elle s’enregistre toute seule dans quelques secondes.');
@@ -664,8 +675,11 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
               </div>
             ) : side === 'preview' ? (
               <div className="p-4">
-                <p className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/50 dark:text-white/50 mb-3">Le courriel tel qu’il partira</p>
-                <PreviewFrame blocks={blocks} subject={subject} preheader={preheader} couverture={couverture} couvertureUrl={couvertureUrl} entete={couverture === 'titre' ? entete : null} signature={signature} lang={lang} bandeau={bandeau} fond={fond} height={Math.max(700, window.innerHeight - 160)} />
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <p className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/50 dark:text-white/50">Le courriel tel qu’il partira</p>
+                  <GhostButton onClick={() => setGrandApercu('ordinateur')}><i className="fa-solid fa-expand" /> Voir en taille réelle</GhostButton>
+                </div>
+                <PreviewFrame blocks={blocks} subject={subject} preheader={preheader} couverture={couverture} couvertureUrl={couvertureUrl} entete={couverture === 'titre' ? entete : null} signature={signature} lang={lang} bandeau={bandeau} fond={fond} tailleLecture={tailleLecture} height={Math.max(700, window.innerHeight - 160)} />
               </div>
             ) : (
               <div className="p-5 space-y-5">
@@ -790,6 +804,20 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
                   </div>
                   <p className="text-xs text-[#8B4A2F]">{FONDS_INFOLETTRE.find(f => f.hex === fond.toUpperCase())?.label || fond}{sombre ? ' · texte ivoire' : ' · texte encre'}</p>
                 </div>
+                <h3 className="pt-4 border-t border-[#293027]/10 dark:border-white/10 text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60">Taille des lettres</h3>
+                <div className="space-y-2" onClick={e => e.stopPropagation()}>
+                  <p className="text-xs text-[#293027]/55 dark:text-white/55">Agrandit tout le texte de la lettre, pour que chacune lise sans effort.</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {TAILLES_LECTURE.map(o => (
+                      <button key={o.cle} type="button" disabled={isReadOnly} onClick={() => setTailleLecture(o.cle)} aria-pressed={tailleLecture === o.cle}
+                        className={`rounded-xl border-2 px-2 py-3 text-center transition-colors ${tailleLecture === o.cle ? 'border-[#BA7B39] bg-[#BA7B39]/10' : 'border-[#293027]/15 dark:border-white/20 hover:border-[#BA7B39]/60'}`}>
+                        <span className="block font-serif leading-none text-[#293027] dark:text-white" style={{ fontSize: o.apercu }}>Aa</span>
+                        <span className="block mt-2 text-[11px] text-[#293027]/70 dark:text-white/70">{o.libelle}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <GhostButton onClick={() => setGrandApercu('ordinateur')}><i className="fa-solid fa-expand" /> Voir la lettre en taille réelle</GhostButton>
+                </div>
                 <h3 className="pt-4 border-t border-[#293027]/10 dark:border-white/10 text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60">Envoi</h3>
                 <div>
                   <Label>Titre interne (non envoyé)</Label>
@@ -820,6 +848,27 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
         } else if (typeof pickFor === 'number') updateBlock(pickFor, { url }); }}
       />
     </div>
+      {grandApercu && (
+        <Portail>
+          <div className="fixed inset-0 z-[200] bg-[#141311]/80 backdrop-blur-sm overflow-y-auto" onClick={() => setGrandApercu(null)}>
+            <div className="min-h-full flex flex-col items-center px-4 py-6" onClick={e => e.stopPropagation()}>
+              <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
+                <span className="text-[#EEE7DB] text-sm mr-2">La lettre en taille réelle, telle qu’elle arrivera :</span>
+                {(['ordinateur', 'telephone'] as const).map(v => (
+                  <button key={v} type="button" onClick={() => setGrandApercu(v)}
+                    className={`rounded-full px-4 py-2 text-xs uppercase tracking-widest font-bold ${grandApercu === v ? 'bg-[#BA7B39] text-[#141311]' : 'bg-white/10 text-[#EEE7DB] hover:bg-white/20'}`}>
+                    <i className={`fa-solid ${v === 'ordinateur' ? 'fa-desktop' : 'fa-mobile-screen'} mr-2`} />{v === 'ordinateur' ? 'Ordinateur' : 'Téléphone'}
+                  </button>
+                ))}
+                <button type="button" onClick={() => setGrandApercu(null)} className="rounded-full px-4 py-2 text-xs uppercase tracking-widest font-bold bg-white/10 text-[#EEE7DB] hover:bg-white/20"><i className="fa-solid fa-xmark mr-2" />Fermer</button>
+              </div>
+              <div style={{ width: grandApercu === 'telephone' ? 390 : 720, maxWidth: '100%' }}>
+                <PreviewFrame blocks={blocks} subject={subject} preheader={preheader} couverture={couverture} couvertureUrl={couvertureUrl} entete={couverture === 'titre' ? entete : null} signature={signature} lang={lang} bandeau={bandeau} fond={fond} tailleLecture={tailleLecture} height={Math.max(800, window.innerHeight - 120)} />
+              </div>
+            </div>
+          </div>
+        </Portail>
+      )}
     </Portail>
   );
 };

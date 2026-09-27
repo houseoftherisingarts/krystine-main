@@ -77,7 +77,7 @@ const Lettre: React.FC<{ n: NewsletterDoc }> = ({ n }) => {
 
       {vue === 'lettre' && (
         <div className="mt-4 overflow-hidden rounded-xl border border-[#293027]/10">
-          <PreviewFrame blocks={n.blocks} subject={n.subject} preheader={n.preheader} couverture={n.couverture} couvertureUrl={n.couvertureUrl} entete={n.couverture === 'titre' ? n.entete : null} signature={n.signature} lang={n.lang} bandeau={n.bandeau} fond={n.fond} height={900} />
+          <PreviewFrame blocks={n.blocks} subject={n.subject} preheader={n.preheader} couverture={n.couverture} couvertureUrl={n.couvertureUrl} entete={n.couverture === 'titre' ? n.entete : null} signature={n.signature} lang={n.lang} bandeau={n.bandeau} fond={n.fond} tailleLecture={n.tailleLecture} height={900} />
         </div>
       )}
 

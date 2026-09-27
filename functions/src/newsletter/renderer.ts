@@ -121,6 +121,18 @@ export interface RenderEmailOptions {
   bandeau?: Bandeau | null;
   /** Fond du corps de la lettre (palette du site). Blanc par défaut. */
   fond?: string | null;
+  /** Taille de lecture de toute la lettre : normale, grande ou très grande. */
+  tailleLecture?: TailleLecture | null;
+}
+
+// La taille de lecture de toute la lettre (Krystine, 27 sept. 2026 : « j'ai 53
+// ans et j'ai de la difficulté à voir clair, imaginez à 80 ans »). Elle agrandit
+// d'un même facteur le texte de tous les blocs, par-dessus la taille propre de
+// chaque bloc. Les titres grandissent moitié moins, pour rester sur deux lignes.
+export type TailleLecture = 'normale' | 'grande' | 'tres-grande';
+const FACTEURS_LECTURE: Record<TailleLecture, number> = { normale: 1, grande: 1.2, 'tres-grande': 1.4 };
+export function facteurLecture(t?: string | null): number {
+  return FACTEURS_LECTURE[(t as TailleLecture)] || 1;
 }
 
 // Les formats d'image du composeur (miroir de src/lib/newsletterRenderer.tsx) :
@@ -179,13 +191,15 @@ function stripRich(text: string): string {
   return String(text ?? '').replace(/<\/?(b|i|u)>/g, '').replace(/<a href="[^"]*">/g, '').replace(/<\/a>/g, '');
 }
 
-function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette = PALETTE_CLAIRE): string {
+function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette = PALETTE_CLAIRE, k = 1): string {
   const c = (block.content || {}) as any;
+  const t = (px: number) => Math.round(px * k);
+  const tTitre = (px: number) => Math.round(px * (1 + (k - 1) / 2));
   switch (block.type) {
     case 'heading': {
       const level = Number(c.level) || 1;
       const align = c.align === 'center' ? 'center' : 'left';
-      const fontSize = level === 1 ? '32px' : level === 2 ? '26px' : '22px';
+      const fontSize = `${tTitre(level === 1 ? 32 : level === 2 ? 26 : 22)}px`;
       const text = personalize(esc(c.text || ''), firstName);
       const police = POLICES[c.police] || CHARTE.serif;
       return `<tr><td align="${align}" style="padding:18px 0 10px;font-family:${police};font-size:${fontSize};line-height:1.15;color:${pal.ink};font-weight:500;">${text}</td></tr>`;
@@ -194,12 +208,12 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       const align = c.align === 'center' ? 'center' : 'left';
       const text = nl2br(personalize(richToHtml(c.text || '', pal.accent), firstName));
       const police = POLICES[c.police] || CHARTE.sans;
-      const px = TAILLES[c.taille] || 16;
+      const px = t(TAILLES[c.taille] || 16);
       return `<tr><td align="${align}" style="padding:0 0 18px;font-family:${police};font-size:${px}px;line-height:1.75;color:${pal.ink};">${text}</td></tr>`;
     }
     case 'image': {
       const caption = c.caption
-        ? `<tr><td align="center" style="padding:8px 0 4px;font-family:${CHARTE.sans};font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:${pal.accent};">${esc(c.caption)}</td></tr>`
+        ? `<tr><td align="center" style="padding:8px 0 4px;font-family:${CHARTE.sans};font-size:${t(10)}px;letter-spacing:0.28em;text-transform:uppercase;color:${pal.accent};">${esc(c.caption)}</td></tr>`
         : '';
       // Chaque photo mène quelque part : au lien choisi, sinon au site.
       const lien = typeof c.href === 'string' && /^https?:\/\//.test(c.href) ? c.href : PUBLIC_BASE_URL;
@@ -223,7 +237,7 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
         ? `background:${CHARTE.gold};color:${CHARTE.night};`
         : `border:1px solid ${CHARTE.gold};color:${pal.accent};`;
       return `<tr><td style="padding:6px 0 22px;">
-        <a href="${esc(c.href || '#')}" target="_blank" style="display:inline-block;padding:15px 28px;border-radius:999px;font-family:${CHARTE.sans};font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;${style}">${esc(c.label || 'En savoir plus')}</a>
+        <a href="${esc(c.href || '#')}" target="_blank" style="display:inline-block;padding:15px 28px;border-radius:999px;font-family:${CHARTE.sans};font-size:${t(12)}px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;${style}">${esc(c.label || 'En savoir plus')}</a>
       </td></tr>`;
     }
     case 'divider': {
@@ -234,14 +248,14 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       return `<tr><td style="padding:10px 0 24px;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
           <td valign="middle"><div style="height:1px;background:linear-gradient(90deg,transparent,${CHARTE.gold});"></div></td>
-          <td width="120" align="center" valign="middle" style="font-family:${CHARTE.serif};font-size:22px;line-height:1;color:${CHARTE.gold};padding:0 12px;white-space:nowrap;">${g}</td>
+          <td width="120" align="center" valign="middle" style="font-family:${CHARTE.serif};font-size:${t(22)}px;line-height:1;color:${CHARTE.gold};padding:0 12px;white-space:nowrap;">${g}</td>
           <td valign="middle"><div style="height:1px;background:linear-gradient(270deg,transparent,${CHARTE.gold});"></div></td>
         </tr></table>
       </td></tr>`;
     }
     case 'list': {
       const police = POLICES[c.police] || CHARTE.sans;
-      const px = TAILLES[c.taille] || 16;
+      const px = t(TAILLES[c.taille] || 16);
       const numero = c.style === 'numero';
       const items = String(c.text || '').split(/\r?\n/).filter((l: string) => l.trim());
       if (!items.length) return '';
@@ -254,9 +268,9 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
     case 'quote':
       return `<tr><td style="padding:6px 0 24px;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
-          <td style="border-left:2px solid ${CHARTE.gold};padding-left:18px;font-family:${CHARTE.serif};font-size:20px;line-height:1.45;color:${pal.accent};">
+          <td style="border-left:2px solid ${CHARTE.gold};padding-left:18px;font-family:${CHARTE.serif};font-size:${t(20)}px;line-height:1.45;color:${pal.accent};">
             «&nbsp;${personalize(esc(c.text || ''), firstName)}&nbsp;»
-            ${c.attribution ? `<div style="margin-top:10px;font-family:${CHARTE.sans};font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:${pal.accent};">${esc(c.attribution)}</div>` : ''}
+            ${c.attribution ? `<div style="margin-top:10px;font-family:${CHARTE.sans};font-size:${t(10)}px;letter-spacing:0.28em;text-transform:uppercase;color:${pal.accent};">${esc(c.attribution)}</div>` : ''}
           </td>
         </tr></table>
       </td></tr>`;
@@ -264,10 +278,10 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       return `<tr><td style="padding:6px 0 26px;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CHARTE.night};border-radius:15px;border:1px solid rgba(224,176,96,${pal.sombre ? '0.45' : '0.15'});">
           <tr><td style="padding:30px 32px;">
-            ${c.eyebrow ? `<div style="font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:${CHARTE.gold};margin-bottom:12px;font-weight:600;">${esc(c.eyebrow)}</div>` : ''}
-            ${c.title ? `<div style="font-family:${CHARTE.serif};font-size:28px;line-height:1.1;color:${CHARTE.cream};margin-bottom:12px;">${esc(c.title)}</div>` : ''}
-            ${c.body ? `<div style="font-family:${CHARTE.sans};font-size:14px;line-height:1.7;color:rgba(238,231,219,0.7);margin-bottom:22px;">${nl2br(esc(c.body))}</div>` : ''}
-            ${(c.href && c.buttonLabel) ? `<a href="${esc(c.href)}" target="_blank" style="display:inline-block;background:${CHARTE.gold};color:${CHARTE.night};font-family:${CHARTE.sans};font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;padding:15px 28px;border-radius:999px;">${esc(c.buttonLabel)}</a>` : ''}
+            ${c.eyebrow ? `<div style="font-family:${CHARTE.sans};font-size:${t(11)}px;letter-spacing:0.3em;text-transform:uppercase;color:${CHARTE.gold};margin-bottom:12px;font-weight:600;">${esc(c.eyebrow)}</div>` : ''}
+            ${c.title ? `<div style="font-family:${CHARTE.serif};font-size:${tTitre(28)}px;line-height:1.1;color:${CHARTE.cream};margin-bottom:12px;">${esc(c.title)}</div>` : ''}
+            ${c.body ? `<div style="font-family:${CHARTE.sans};font-size:${t(14)}px;line-height:1.7;color:rgba(238,231,219,0.7);margin-bottom:22px;">${nl2br(esc(c.body))}</div>` : ''}
+            ${(c.href && c.buttonLabel) ? `<a href="${esc(c.href)}" target="_blank" style="display:inline-block;background:${CHARTE.gold};color:${CHARTE.night};font-family:${CHARTE.sans};font-size:${t(12)}px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;padding:15px 28px;border-radius:999px;">${esc(c.buttonLabel)}</a>` : ''}
           </td></tr>
         </table>
       </td></tr>`;
@@ -311,7 +325,8 @@ function enteteTitreHtml(e: EnteteTitre | null | undefined, lang: Lang): string 
 
 export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOptions): string {
   const pal = palette(opts.fond);
-  const blockRows = blocks.map(b => blockToEmail(b, opts.firstName, pal)).join('\n');
+  const k = facteurLecture(opts.tailleLecture);
+  const blockRows = blocks.map(b => blockToEmail(b, opts.firstName, pal, k)).join('\n');
   const couverture: Couverture = opts.couverture === 'image' && !opts.couvertureUrl ? 'aucune' : (opts.couverture || 'aucune');
   const showCover = couverture !== 'aucune' && couverture !== 'titre';
   const coverSrc = couverture === 'podcast' ? 'cid:cover' : esc(opts.couvertureUrl);
