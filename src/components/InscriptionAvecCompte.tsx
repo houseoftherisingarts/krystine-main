@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { addNewsletterSubscriber, updateMember } from '../firebase/firestore';
 import { points } from '../firebase/points';
@@ -12,6 +12,19 @@ interface Props {
   /** "pill" pour les cartes rondes (WaitlistModal), "editorial" pour le
    *  formulaire encadré de /liste-attente. */
   variant?: 'pill' | 'editorial';
+  /** Inscrit sans attendre la case : la personne vient de cliquer « Créer mon
+   *  compte et m'inscrire », et ce clic vaut consentement (Krystine, 27 sept. 2026). */
+  auto?: boolean;
+}
+
+/** La liste que la personne a choisie en cliquant « Créer mon compte et m'inscrire »,
+ *  gardée le temps que la fenêtre de connexion crée le compte. */
+export const CLE_INSCRIPTION_APRES_COMPTE = 'inscription-apres-compte';
+export function retenirInscriptionApresCompte(sourceTag: string) {
+  try { sessionStorage.setItem(CLE_INSCRIPTION_APRES_COMPTE, sourceTag); } catch { /* rien */ }
+}
+export function inscriptionApresCompteDemandee(sourceTag: string): boolean {
+  try { return sessionStorage.getItem(CLE_INSCRIPTION_APRES_COMPTE) === sourceTag; } catch { return false; }
 }
 
 /**
@@ -20,22 +33,22 @@ interface Props {
  * Composant partagé entre WaitlistModal et ListeAttenteLoeuvre pour que
  * toute liste d'attente du site profite du même geste.
  */
-const InscriptionAvecCompte: React.FC<Props> = ({ sourceTag, onSuccess, variant = 'pill' }) => {
+const InscriptionAvecCompte: React.FC<Props> = ({ sourceTag, onSuccess, variant = 'pill', auto = false }) => {
   const { lang, user, member } = useApp();
   const [checked, setChecked] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  if (!user) return null;
+  const lance = useRef(false);
 
   const dejaInscrite = !!member?.waitlists?.includes(sourceTag);
-  const displayName = (member?.displayName || user.displayName || '').trim();
+  const displayName = (member?.displayName || user?.displayName || '').trim();
   const [prenom, ...resteDuNom] = displayName.split(/\s+/).filter(Boolean);
   const nom = resteDuNom.join(' ');
-  const email = member?.email || user.email || '';
+  const email = member?.email || user?.email || '';
 
-  const submit = async () => {
-    if (!checked || busy) return;
+  const submit = async (sansCase = false) => {
+    if ((!checked && !sansCase) || busy || !user) return;
     setBusy(true);
     setErr(null);
     try {
@@ -54,6 +67,7 @@ const InscriptionAvecCompte: React.FC<Props> = ({ sourceTag, onSuccess, variant 
       await updateMember(user.uid, { waitlists: [...(member?.waitlists || []), sourceTag] });
       try { await points.newsletterSigned(user.uid, sourceTag); } catch { /* non-fatal */ }
       trackLead(sourceTag);
+      try { sessionStorage.removeItem(CLE_INSCRIPTION_APRES_COMPTE); } catch { /* rien */ }
       onSuccess();
     } catch (e: any) {
       setErr(e?.message || (lang === 'FR' ? 'Une erreur est survenue.' : 'Something went wrong.'));
@@ -61,6 +75,16 @@ const InscriptionAvecCompte: React.FC<Props> = ({ sourceTag, onSuccess, variant 
       setBusy(false);
     }
   };
+
+  useEffect(() => {
+    if (!auto || !user || !email || lance.current) return;
+    lance.current = true;
+    if (dejaInscrite) { onSuccess(); return; }
+    void submit(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auto, user, email, dejaInscrite]);
+
+  if (!user) return null;
 
   const isEditorial = variant === 'editorial';
   const cardCls = isEditorial
@@ -108,7 +132,7 @@ const InscriptionAvecCompte: React.FC<Props> = ({ sourceTag, onSuccess, variant 
         </span>
       </label>
 
-      <button type="button" onClick={submit} disabled={!checked || busy} className={buttonCls}>
+      <button type="button" onClick={() => submit()} disabled={!checked || busy} className={buttonCls}>
         {busy
           ? (lang === 'FR' ? 'Inscription…' : 'Signing up…')
           : (lang === 'FR' ? "M'inscrire" : 'Sign me up')}

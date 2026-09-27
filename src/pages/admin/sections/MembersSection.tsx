@@ -44,7 +44,8 @@ const sourceLabel = (key: string): string => {
   const isGoogle = key.endsWith('_google');
   const pretty = (() => {
     switch (base) {
-      case 'waitlist-origine':                 return "Liste d'attente · Origine (prochaine cohorte)";
+      case 'waitlist-origine':                 return "Liste d'attente · Origine (ancienne liste)";
+      case 'waitlist-origine2':                return "Liste d'attente · Expérience Origine 2";
       case 'waitlist-pitta':                   return "Liste d'attente · Pitta";
       case 'waitlist-kapha':                   return "Liste d'attente · Kapha";
       case 'waitlist-vata':                    return "Liste d'attente · Vata";
@@ -102,12 +103,17 @@ function mergeContacts(members: MemberDoc[], subs: NewsletterSubscriber[]): Cont
     if (!s.email) continue;
     const key = s.email.toLowerCase();
     const src = s.source?.trim();
+    // Depuis le 27 sept. 2026, une abonnée déjà connue qui rejoint une liste
+    // d'attente garde sa fiche : la liste vit dans ses étiquettes. On la range
+    // donc aussi sous cette liste, comme si c'était sa source.
+    const listesTags = (s.tags || []).filter(t => t.startsWith('waitlist-') && t !== src);
     const subDate = s.subscribedAt?.toDate();
     const abonnement = s.id ? [{ id: s.id, status: s.status || 'active' }] : [];
     const existing = map.get(key);
     if (existing) {
       existing.abonnements.push(...abonnement);
       if (src && !existing.sources.includes(src)) existing.sources.push(src);
+      for (const t of listesTags) if (!existing.sources.includes(t)) existing.sources.push(t);
       for (const t of s.tags || []) if (!existing.tags.includes(t)) existing.tags.push(t);
       if (!existing.firstName && s.firstName) existing.firstName = s.firstName;
       if (!existing.lastName && s.lastName) existing.lastName = s.lastName;
@@ -120,7 +126,7 @@ function mergeContacts(members: MemberDoc[], subs: NewsletterSubscriber[]): Cont
         firstName: s.firstName,
         lastName: s.lastName,
         isMember: false,
-        sources: src ? [src] : [],
+        sources: [...(src ? [src] : []), ...listesTags],
         tags: [...(s.tags || [])],
         abonnements: abonnement,
         joinedAt: subDate,

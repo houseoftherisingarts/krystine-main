@@ -7,7 +7,7 @@ import { addNewsletterSubscriber } from '../firebase/firestore';
 import { points } from '../firebase/points';
 import { COUNTRIES, findCountry } from '../lib/regions';
 import BoutonCompte from '../components/BoutonCompte';
-import InscriptionAvecCompte from '../components/InscriptionAvecCompte';
+import InscriptionAvecCompte, { inscriptionApresCompteDemandee, retenirInscriptionApresCompte } from '../components/InscriptionAvecCompte';
 
 /**
  * /liste-attente — capture liste d'attente, langage V2 « magazine crème »
@@ -288,11 +288,8 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
       setErr(lang === 'FR' ? 'Veuillez choisir un pays ou une province.' : 'Please choose a country or province.');
       return;
     }
-    const resolvedRegion = (isFreeText ? regionFreeText : region).trim();
-    if (!resolvedRegion) {
-      setErr(lang === 'FR' ? 'Veuillez préciser votre région.' : 'Please specify your region.');
-      return;
-    }
+    // La région est facultative (Krystine, 27 sept. 2026) : un champ de moins avant de s'inscrire.
+    const resolvedRegion = (isFreeText ? regionFreeText : region).trim() || undefined;
     setBusy(true);
     try {
       await addNewsletterSubscriber({
@@ -470,12 +467,13 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
                     {!user && <BoutonCompte taille="md" className="mt-10" />}
                   </div>
                 ) : user ? (
-                  <InscriptionAvecCompte sourceTag={meta.source} onSuccess={() => setDone(true)} variant="editorial" />
+                  <InscriptionAvecCompte sourceTag={meta.source} onSuccess={() => setDone(true)} variant="editorial" auto={inscriptionApresCompteDemandee(meta.source)} />
                 ) : (
                   <>
                   <BoutonCompte
                     libelle={lang === 'FR' ? "Créer mon compte et m'inscrire" : 'Create my account and join'}
                     taille="md"
+                    onClick={() => retenirInscriptionApresCompte(meta.source)}
                     className="w-full mb-3"
                   />
                   <p className="text-[0.82rem] text-[#3a2f23]/60 mb-7">
@@ -560,7 +558,7 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
 
                       <label className="block">
                         <span className="block mb-1 text-[0.62rem] uppercase tracking-[0.2em] text-[#3a2f23]/70">
-                          {lang === 'FR' ? 'Région' : 'Region'}
+                          {lang === 'FR' ? 'Région (facultatif)' : 'Region (optional)'}
                         </span>
                         {!country ? (
                           <input
@@ -572,7 +570,6 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
                         ) : isFreeText ? (
                           <input
                             type="text"
-                            required
                             value={regionFreeText}
                             onChange={e => setRegionFreeText(e.target.value)}
                             placeholder={country.regionPlaceholder || (lang === 'FR' ? 'Région' : 'Region')}
@@ -581,12 +578,11 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
                         ) : (
                           <div className="relative">
                             <select
-                              required
                               value={region}
                               onChange={e => setRegion(e.target.value)}
                               className={selectBase}
                             >
-                              <option value="" disabled>
+                              <option value="">
                                 {lang === 'FR' ? 'Région' : 'Region'}
                               </option>
                               {(country.regions || []).map(r => (

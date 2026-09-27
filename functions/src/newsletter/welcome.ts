@@ -45,20 +45,63 @@ function esc(s: unknown): string {
 
 export const WELCOME_SUBJECT = 'Vous êtes bien inscrite';
 
-// Texte du courriel, une seule fois, servi en HTML et en texte brut.
-function paragraphs(firstName?: string): string[] {
-  const salut = firstName ? `Bonjour ${firstName},` : 'Bonjour,';
-  return [
-    salut,
-    'Votre inscription est bien reçue, et vous n\'avez rien d\'autre à faire pour le moment.',
-    'Les prochaines lettres vous arriveront au fil des saisons, avec à l\'occasion un rituel ou une lecture à emporter avec vous, et vous serez avisée avant toute annonce publique.',
-    'À bientôt,',
-    'Krystine St-Laurent',
-  ];
+/** Ce qui change d'un courriel de confirmation à l'autre : l'en-tête, le titre
+ *  et les paragraphes du corps. Le salut et la signature restent communs. */
+export interface ContenuConfirmation {
+  sujet: string;
+  surtitre: string;
+  titre: string;
+  apercu: string;
+  corps: string[];
 }
 
-export function renderWelcomeHtml(opts: { firstName?: string; unsubscribeUrl: string; postalAddress: string }): string {
-  const [salut, ...reste] = paragraphs(opts.firstName);
+const CONTENU_GENERAL: ContenuConfirmation = {
+  sujet: 'Vous êtes bien inscrite',
+  surtitre: 'Inspirata',
+  titre: 'Vous êtes bien inscrite',
+  apercu: 'Votre inscription est bien reçue. Les prochaines lettres suivront les saisons.',
+  corps: [
+    'Votre inscription est bien reçue, et vous n\'avez rien d\'autre à faire pour le moment.',
+    'Les prochaines lettres vous arriveront au fil des saisons, avec à l\'occasion un rituel ou une lecture à emporter avec vous, et vous serez avisée avant toute annonce publique.',
+  ],
+};
+
+// Les listes qui ont leur propre courriel de confirmation, par étiquette.
+// Une inscrite qui rejoint l'une d'elles reçoit ce courriel plutôt que le mot
+// de bienvenue général, même si elle était déjà abonnée (Krystine, 27 sept.
+// 2026). Le texte reprend celui de la page de liste d'attente; Krystine le
+// réécrira dans sa voix.
+export const CONFIRMATIONS_LISTES: Record<string, ContenuConfirmation> = {
+  'waitlist-origine2': {
+    sujet: 'Votre inscription à Expérience Origine 2',
+    surtitre: 'Expérience Origine 2',
+    titre: 'Vous êtes sur la liste',
+    apercu: 'Vous recevrez l\'invitation avant toute annonce publique.',
+    corps: [
+      'Votre inscription à la liste d\'attente d\'Expérience Origine 2 est bien reçue.',
+      'Expérience Origine 2 est la suite du parcours signature, un accompagnement de douze semaines pour retrouver vos propres repères.',
+      'Les portes ouvriront bientôt. Vous recevrez l\'invitation avant toute annonce publique, et vous n\'avez rien d\'autre à faire d\'ici là.',
+    ],
+  },
+};
+
+/** Le courriel propre à une liste portée par ces étiquettes, s'il y en a un. */
+export function confirmationPourTags(tags?: string[]): { tag: string; contenu: ContenuConfirmation } | null {
+  for (const tag of tags || []) {
+    if (CONFIRMATIONS_LISTES[tag]) return { tag, contenu: CONFIRMATIONS_LISTES[tag] };
+  }
+  return null;
+}
+
+// Texte du courriel, une seule fois, servi en HTML et en texte brut.
+function paragraphs(firstName?: string, contenu: ContenuConfirmation = CONTENU_GENERAL): string[] {
+  const salut = firstName ? `Bonjour ${firstName},` : 'Bonjour,';
+  return [salut, ...contenu.corps, 'À bientôt,', 'Krystine St-Laurent'];
+}
+
+export function renderWelcomeHtml(opts: { firstName?: string; unsubscribeUrl: string; postalAddress: string; contenu?: ContenuConfirmation }): string {
+  const contenu = opts.contenu || CONTENU_GENERAL;
+  const [salut, ...reste] = paragraphs(opts.firstName, contenu);
   const signature = reste.slice(-2);
   const corps = reste.slice(0, -2);
   const p = (t: string) =>
@@ -69,10 +112,10 @@ export function renderWelcomeHtml(opts: { firstName?: string; unsubscribeUrl: st
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>${esc(WELCOME_SUBJECT)}</title>
+  <title>${esc(contenu.sujet)}</title>
 </head>
 <body style="margin:0;padding:0;background:${CHARTE.cream};">
-  <div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;font-size:1px;color:transparent;line-height:1px;">Votre inscription est bien reçue. Les prochaines lettres suivront les saisons.</div>
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;font-size:1px;color:transparent;line-height:1px;">${esc(contenu.apercu)}</div>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CHARTE.cream};padding:40px 16px;">
     <tr><td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:15px;overflow:hidden;">
@@ -81,8 +124,8 @@ export function renderWelcomeHtml(opts: { firstName?: string; unsubscribeUrl: st
         </td></tr>
         <tr><td style="padding:40px 40px 8px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:0 0 10px;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:${CHARTE.brassInk};font-weight:600;">Inspirata</td></tr>
-            <tr><td style="padding:0 0 22px;font-family:${CHARTE.serif};font-size:36px;line-height:1.08;color:${CHARTE.espresso};font-weight:500;">Vous êtes bien inscrite</td></tr>
+            <tr><td style="padding:0 0 10px;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:${CHARTE.brassInk};font-weight:600;">${esc(contenu.surtitre)}</td></tr>
+            <tr><td style="padding:0 0 22px;font-family:${CHARTE.serif};font-size:36px;line-height:1.08;color:${CHARTE.espresso};font-weight:500;">${esc(contenu.titre)}</td></tr>
             <tr><td style="padding:0 0 26px;"><div style="height:1px;width:64px;background:${CHARTE.brass};"></div></td></tr>
             ${p(salut)}
             ${corps.map(p).join('\n')}
@@ -100,8 +143,8 @@ export function renderWelcomeHtml(opts: { firstName?: string; unsubscribeUrl: st
 </html>`;
 }
 
-export function renderWelcomeText(opts: { firstName?: string; unsubscribeUrl: string; postalAddress: string }): string {
-  return [...paragraphs(opts.firstName), '', opts.postalAddress, `Se désabonner : ${opts.unsubscribeUrl}`].join('\n\n');
+export function renderWelcomeText(opts: { firstName?: string; unsubscribeUrl: string; postalAddress: string; contenu?: ContenuConfirmation }): string {
+  return [...paragraphs(opts.firstName, opts.contenu), '', opts.postalAddress, `Se désabonner : ${opts.unsubscribeUrl}`].join('\n\n');
 }
 
 export const sendWelcomeEmail = onDocumentCreated(
@@ -141,13 +184,18 @@ export const sendWelcomeEmail = onDocumentCreated(
           return;
         }
       }
+      // Une liste qui a son propre courriel (Expérience Origine 2) le reçoit à
+      // la place du mot général.
+      const propre = confirmationPourTags(d.tags);
+      const contenu = propre?.contenu;
+      if (propre) await snap.ref.update({ [`confirmationsEnvoyees.${propre.tag}`]: FieldValue.serverTimestamp() });
       await transporter.sendMail({
         replyTo: REPLY_TO,
         from: fromAddr(),
         to: d.email,
-        subject: WELCOME_SUBJECT,
-        html: renderWelcomeHtml({ firstName: d.firstName, unsubscribeUrl: unsub, postalAddress }),
-        text: renderWelcomeText({ firstName: d.firstName, unsubscribeUrl: unsub, postalAddress }),
+        subject: contenu?.sujet || WELCOME_SUBJECT,
+        html: renderWelcomeHtml({ firstName: d.firstName, unsubscribeUrl: unsub, postalAddress, contenu }),
+        text: renderWelcomeText({ firstName: d.firstName, unsubscribeUrl: unsub, postalAddress, contenu }),
         headers: {
           'List-Unsubscribe': `<${unsubscribeOneClickUrl(jeton)}>`,
           'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
@@ -163,3 +211,43 @@ export const sendWelcomeEmail = onDocumentCreated(
     }
   },
 );
+
+/**
+ * Le courriel propre à une liste, pour une abonnée DÉJÀ connue qui la rejoint :
+ * sa fiche existe, `sendWelcomeEmail` ne se déclenche donc pas. Le verrou
+ * `confirmationsEnvoyees.<étiquette>` empêche un deuxième envoi pour la même
+ * liste. Un échec d'envoi ne fait jamais échouer l'inscription elle-même.
+ */
+export async function envoyerConfirmationListe(
+  ref: FirebaseFirestore.DocumentReference,
+  fiche: { email: string; firstName?: string; unsubscribeToken?: string; confirmationsEnvoyees?: Record<string, unknown> },
+  tag: string,
+): Promise<void> {
+  const contenu = CONFIRMATIONS_LISTES[tag];
+  if (!contenu || fiche.confirmationsEnvoyees?.[tag]) return;
+  await ref.update({ [`confirmationsEnvoyees.${tag}`]: FieldValue.serverTimestamp() });
+  const jeton = await assurerJeton(ref, fiche.unsubscribeToken);
+  const unsub = unsubscribeUrl(jeton);
+  const postalAddress = NEWSLETTER_POSTAL_ADDRESS.value();
+  const transporter = createTransporter();
+  try {
+    await transporter.sendMail({
+      replyTo: REPLY_TO,
+      from: fromAddr(),
+      to: fiche.email,
+      subject: contenu.sujet,
+      html: renderWelcomeHtml({ firstName: fiche.firstName, unsubscribeUrl: unsub, postalAddress, contenu }),
+      text: renderWelcomeText({ firstName: fiche.firstName, unsubscribeUrl: unsub, postalAddress, contenu }),
+      headers: {
+        'List-Unsubscribe': `<${unsubscribeOneClickUrl(jeton)}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
+      attachments: welcomeAttachments(),
+    });
+  } catch (err) {
+    console.error('[envoyerConfirmationListe] envoi raté', fiche.email, tag, err);
+    await ref.update({ [`confirmationsEnvoyees.${tag}`]: FieldValue.delete() });
+  } finally {
+    transporter.close();
+  }
+}

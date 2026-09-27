@@ -3,6 +3,8 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import * as crypto from 'crypto';
 import { RECAPTCHA_SECRET, verifierJeton } from '../captcha';
 import { champsRobot, limiterParIp, MESSAGE_CADENCE } from './robots';
+import { MAIL_SECRETS } from './mail';
+import { CONFIRMATIONS_LISTES, envoyerConfirmationListe } from './welcome';
 
 // ─── La seule porte d'entrée de la collection `newsletter` ───────────────────
 // Jusqu'au 21 septembre 2026, chaque formulaire public écrivait directement
@@ -29,7 +31,7 @@ function texte(v: unknown, max: number): string | undefined {
 }
 
 export const inscrireInfolettre = onCall(
-  { region: 'us-central1', secrets: [RECAPTCHA_SECRET], cors: true },
+  { region: 'us-central1', secrets: [RECAPTCHA_SECRET, ...MAIL_SECRETS], cors: true },
   async (req) => {
     const d = (req.data || {}) as Record<string, unknown>;
 
@@ -101,7 +103,46 @@ export const inscrireInfolettre = onCall(
     if (req.auth?.uid) fiche.uid = req.auth.uid;
     if (d.consentement === true) fiche.consentement = true;
 
-    const ref = await getFirestore().collection('newsletter').add(fiche);
+    // Une adresse déjà connue ne crée plus de deuxième fiche (Krystine, 27 sept.
+    // 2026) : la nouvelle liste s'ajoute à ses étiquettes, les champs vides se
+    // complètent, et une personne désabonnée ou en attente qui s'inscrit d'elle-
+    // même redevient active. Une fiche en quarantaine ou rebondie garde son
+    // statut. Si la liste rejointe a son propre courriel, il part une fois.
+    const col = getFirestore().collection('newsletter');
+    const existantes = await col.where('email', '==', email).limit(10).get();
+    if (!existantes.empty) {
+      const docs = existantes.docs;
+      const cible = docs.find(x => x.get('status') === 'active') || docs[0];
+      const avant = cible.data() as Record<string, any>;
+      const tagsAvant: string[] = Array.isArray(avant.tags) ? avant.tags : [];
+      const nouvelles = tags.filter(t => !tagsAvant.includes(t));
+      const maj: Record<string, unknown> = { derniereInscriptionLe: FieldValue.serverTimestamp() };
+      if (nouvelles.length) maj.tags = FieldValue.arrayUnion(...nouvelles);
+      for (const cle of ['firstName', 'lastName', 'province', 'region', 'phone', 'lang', 'uid'] as const) {
+        if (!avant[cle] && fiche[cle]) maj[cle] = fiche[cle];
+      }
+      if (fiche.question) maj.question = fiche.question;
+      if (fiche.consentement) maj.consentement = true;
+      let statut = String(avant.status || 'active');
+      if (status === 'active' && (statut === 'unsubscribed' || statut === 'pending')) {
+        statut = 'active';
+        maj.status = 'active';
+        maj.reinscriteLe = FieldValue.serverTimestamp();
+      }
+      await cible.ref.update(maj);
+      console.log(`[inscrire] ${source} · fiche existante ${cible.id} · +${nouvelles.join(',') || 'rien'}`);
+      if (statut === 'active') {
+        for (const t of nouvelles) {
+          if (!CONFIRMATIONS_LISTES[t]) continue;
+          try {
+            await envoyerConfirmationListe(cible.ref, { email, firstName: (avant.firstName || fiche.firstName) as string | undefined, unsubscribeToken: avant.unsubscribeToken, confirmationsEnvoyees: avant.confirmationsEnvoyees }, t);
+          } catch (e) { console.error('[inscrire] confirmation', t, e); }
+        }
+      }
+      return { ok: true, id: cible.id, status: statut };
+    }
+
+    const ref = await col.add(fiche);
     console.log(`[inscrire] ${source} · ${fiche.status} · ${ref.id}`);
     return { ok: true, id: ref.id, status: fiche.status as string };
   },

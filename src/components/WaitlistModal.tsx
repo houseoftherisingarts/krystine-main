@@ -4,7 +4,7 @@ import { addNewsletterSubscriber } from '../firebase/firestore';
 import { points } from '../firebase/points';
 import { trackLead } from '../lib/track';
 import BoutonCompte from './BoutonCompte';
-import InscriptionAvecCompte from './InscriptionAvecCompte';
+import InscriptionAvecCompte, { inscriptionApresCompteDemandee, retenirInscriptionApresCompte } from './InscriptionAvecCompte';
 import Portail from './Portail';
 
 export interface WaitlistTarget {
@@ -112,11 +112,12 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ target, onClose }) => {
             </button>
           </div>
         ) : user ? (
-          <InscriptionAvecCompte sourceTag={sourceTag} onSuccess={() => setDone(true)} variant="pill" />
+          <InscriptionAvecCompte sourceTag={sourceTag} onSuccess={() => setDone(true)} variant="pill" auto={inscriptionApresCompteDemandee(sourceTag)} />
         ) : (
           <>
           <BoutonCompte
             libelle={lang === 'FR' ? 'Créer mon compte et m\'inscrire' : 'Create my account and join'}
+            onClick={() => retenirInscriptionApresCompte(sourceTag)}
             taille="md"
             className="w-full"
           />
