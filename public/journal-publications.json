@@ -2592,5 +2592,20 @@
       "functions/src/newsletter/clic.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-09-28T00:10:23.817Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "57d17322",
+    "message": "Infolettre : correction d'une faille qui effaçait les compteurs d'une lettre (destinataires, ouvertures, clics) quand une même personne cliquait deux fois",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/clic.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
