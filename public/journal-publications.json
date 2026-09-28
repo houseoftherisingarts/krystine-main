@@ -2607,5 +2607,25 @@
       "functions/src/newsletter/clic.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-09-28T00:21:18.289Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "1886c5a3",
+    "message": "Admin › Infolettre : nouvel onglet Analyse (d'envoi en envoi : vraies lectures, délais, heures, clics des vraies personnes, désabonnements et raisons, rebonds, robots écartés et robots à prévoir, pistes pour le prochain envoi, conclusions par lettre), réservé à l'admin",
+    "cibles": [
+      "hosting",
+      "functions",
+      "firestore"
+    ],
+    "fichiers": [
+      "firestore.rules",
+      "functions/src/index.ts",
+      "functions/src/newsletter/analyse.ts",
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/NewsletterSection.tsx",
+      "src/pages/admin/sections/newsletter/AnalysePanel.tsx"
+    ]
   }
 ]
