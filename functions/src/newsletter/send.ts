@@ -324,6 +324,17 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
   // Chaque envoi réussi est marqué dans la sous-collection `envois` : après
   // une pause (quota du fournisseur) ou une remise à zéro du curseur, personne
   // ne reçoit la lettre deux fois.
+  // Garde des 48 heures des séquences (27 sept. 2026) : chaque personne servie
+  // reçoit `derniereLettreLe` sur toutes ses fiches actives. Les fiches sont
+  // déjà en mémoire; les écritures partent en arrière-plan par le BulkWriter,
+  // qui règle lui-même son débit, sans retenir l'envoi.
+  const fichesParAdresse = new Map<string, string[]>();
+  for (const d of subsSnap.docs) {
+    const e = String(d.get('email') || '').trim().toLowerCase();
+    if (e) fichesParAdresse.set(e, [...(fichesParAdresse.get(e) || []), d.id]);
+  }
+  const marqueur = db.bulkWriter();
+  marqueur.onWriteError(err => { console.warn('[deliverNewsletter] derniereLettreLe', err.documentRef.path, err.message); return false; });
   const dejaSnap = await ref.collection('envois').select().get();
   const deja = new Set(dejaSnap.docs.map(d => d.id));
   const restants = (prog.lastId ? all.filter(s => s.id > (prog.lastId as string)) : all).filter(s => !deja.has(s.id));
@@ -373,6 +384,9 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
       }
     }
     await ref.collection('envois').doc(sub.id).set({ email: sub.email, at: FieldValue.serverTimestamp() });
+    for (const id of fichesParAdresse.get(String(sub.email).trim().toLowerCase()) || [sub.id]) {
+      marqueur.update(db.doc(`newsletter/${id}`), { derniereLettreLe: FieldValue.serverTimestamp() }).catch(() => { /* noté par onWriteError */ });
+    }
     if (sub.uid) {
       await db.doc(`members/${sub.uid}/inbox/${newsletterId}`).set({
         newsletterId,
@@ -410,6 +424,7 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
   };
   await Promise.all(Array.from({ length: CONCURRENCY }, ouvrier));
   transporter.close();
+  await marqueur.close().catch(err => console.warn('[deliverNewsletter] derniereLettreLe', err));
   delete prog.lockUntil;
 
   if (indexQuota >= 0) {

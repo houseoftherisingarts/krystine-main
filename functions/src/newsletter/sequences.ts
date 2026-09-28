@@ -1,5 +1,6 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
+import { onDocumentUpdated } from 'firebase-functions/v2/firestore';
 import { FieldValue, Timestamp, getFirestore } from 'firebase-admin/firestore';
 import type { Transporter } from 'nodemailer';
 import {
@@ -29,12 +30,27 @@ import { champsRobot } from './robots';
 // avant de partir : la fonction peut être relancée, elle ne renvoie jamais deux
 // fois la même étape à la même personne. Ordre d'Alex du 15 septembre 2026 :
 // c'est la case « Configurer Stripe et automatisations » du plan KSL Automne.
+//
+// Déclencheur { type: 'etiquette', tag } (27 sept. 2026) : une personne qui
+// coche un carré (clic dans une lettre, ou page /mes-choix) reçoit
+// l'étiquette, et entre dans chaque séquence active liée à cette étiquette,
+// une seule fois par adresse. La première étape part au plus tôt une heure
+// après, et chaque étape revérifie avant de partir que l'adresse est encore
+// abonnée et porte encore l'étiquette : les robots de sécurité, dont
+// l'étiquette est retirée quelques secondes après leur passage, sortent ainsi
+// de la séquence sans rien recevoir.
+//
+// Garde des 48 heures (27 sept. 2026) : chaque lettre composée qui part à une
+// personne pose `derniereLettreLe` sur ses fiches actives (envoi général et
+// étape de séquence). Une étape de séquence attend le passage suivant tant que
+// la dernière lettre a moins de 48 heures, sauf l'étape « tout de suite »
+// d'une séquence d'achat (l'accueil d'une acheteuse ne se fait pas attendre).
 
 export interface Etape { cle: string; titre?: string; delaiHeures: number; newsletterId: string }
 export interface Sequence {
   titre: string;
   actif?: boolean;
-  declencheur?: { type: 'achat'; formationId: string } | { type: 'manuel' };
+  declencheur?: { type: 'achat'; formationId: string } | { type: 'etiquette'; tag: string } | { type: 'manuel' };
   etapes?: Etape[];
 }
 interface Inscrit {
@@ -45,6 +61,8 @@ interface Inscrit {
   debuteLe: Timestamp;
   envoyes?: Record<string, unknown>;
   erreurs?: Record<string, string>;
+  sortie?: { raison: string; le: Timestamp };
+  source?: string;
 }
 interface NewsletterDoc {
   subject: string;
@@ -62,7 +80,31 @@ interface NewsletterDoc {
 }
 
 const H = 3600 * 1000;
+const GARDE_MS = 48 * H;
 const normaliser = (e: string) => String(e || '').trim().toLowerCase();
+// La clé d'une personne inscrite par son adresse (à la main ou par étiquette) :
+// la même adresse donne toujours la même fiche, donc jamais deux inscriptions.
+const cleCourriel = (email: string) => normaliser(email).replace(/[^a-z0-9]+/g, '_');
+
+// Ce que disent les fiches `newsletter` d'une adresse au moment d'envoyer :
+// ses fiches actives, si elle s'est désabonnée depuis son entrée, si une fiche
+// active porte l'étiquette, et la date de sa dernière lettre.
+interface EtatAdresse { actives: FirebaseFirestore.DocumentReference[]; desabonnee: boolean; porteEtiquette: (tag: string) => boolean; derniere: number }
+async function etatAdresse(email: string, depuis: number): Promise<EtatAdresse> {
+  const fiches = (await getFirestore().collection('newsletter').where('email', '==', normaliser(email)).get()).docs;
+  const actives = fiches.filter(f => f.get('status') === 'active');
+  const desabonnee = fiches.some(f => {
+    const u = f.get('unsubscribedAt') as Timestamp | undefined;
+    return !!u?.toMillis && u.toMillis() >= depuis;
+  });
+  const derniere = Math.max(0, ...fiches.map(f => (f.get('derniereLettreLe') as Timestamp | undefined)?.toMillis?.() || 0));
+  return {
+    actives: actives.map(f => f.ref),
+    desabonnee,
+    porteEtiquette: (tag) => actives.some(f => ((f.get('tags') || []) as string[]).includes(tag)),
+    derniere,
+  };
+}
 
 // Le jeton de désabonnement vit sur la fiche `newsletter` de l'adresse. Une
 // acheteuse sans fiche en reçoit une (source `achat-formation`, bienvenue
@@ -129,22 +171,43 @@ async function lireLettre(id: string): Promise<NewsletterDoc | null> {
   return d;
 }
 
-// Envoie à un inscrit toutes les étapes dont l'heure est passée et qui ne
-// sont pas encore parties. Le verrou se pose dans une transaction avant
-// l'envoi; un envoi raté retire le verrou et note l'erreur, pour repasser au
-// prochain tour.
+// Envoie à un inscrit les étapes dont l'heure est passée et qui ne sont pas
+// encore parties. Le verrou se pose dans une transaction avant l'envoi; un
+// envoi raté retire le verrou et note l'erreur, pour repasser au prochain
+// tour. Avant tout envoi, l'état de l'adresse est relu (garde des 48 heures;
+// pour une séquence par étiquette, abonnement et étiquette toujours là).
 async function traiterInscrit(transporter: Transporter, seqId: string, seq: Sequence, inscritId: string, lettres: Map<string, NewsletterDoc | null>, maintenant = Date.now()): Promise<number> {
   const db = getFirestore();
   const ref = db.doc(`sequences/${seqId}/inscrits/${inscritId}`);
+  const avant = await ref.get();
+  if (!avant.exists) return 0;
+  const d0 = avant.data() as Inscrit;
+  if (d0.sortie) return 0;
+  const parEtiquette = seq.declencheur?.type === 'etiquette' ? seq.declencheur.tag : null;
+  // Par étiquette, jamais avant une heure : le temps que les robots de
+  // sécurité soient repérés et leur étiquette retirée.
+  const minimum = parEtiquette ? H : 0;
+  const duA = (e: Etape) => d0.debuteLe.toMillis() + Math.max(minimum, (Number(e.delaiHeures) || 0) * H);
+  const dues = (seq.etapes || []).filter(e => e.cle && e.newsletterId && !d0.envoyes?.[e.cle] && duA(e) <= maintenant);
+  if (!dues.length) return 0;
+
+  const etat = await etatAdresse(d0.email, d0.debuteLe.toMillis());
+  // Une adresse inscrite à la main depuis l'admin n'a pas à porter l'étiquette.
+  const exigeEtiquette = !!parEtiquette && String(d0.source || '').startsWith('etiquette:');
+  if (parEtiquette && (etat.desabonnee || !etat.actives.length || (exigeEtiquette && !etat.porteEtiquette(parEtiquette)))) {
+    await ref.update({ sortie: { raison: etat.desabonnee || !etat.actives.length ? 'desabonnee' : 'etiquette-retiree', le: Timestamp.now() } });
+    return 0;
+  }
+  let derniere = etat.derniere;
   let envoyes = 0;
-  for (const e of seq.etapes || []) {
-    if (!e.cle || !e.newsletterId) continue;
+  for (const e of dues) {
+    const exempte = seq.declencheur?.type === 'achat' && !(Number(e.delaiHeures) || 0);
+    if (!exempte && Date.now() - derniere < GARDE_MS) continue;
     const pris = await db.runTransaction(async (tx) => {
       const s = await tx.get(ref);
       if (!s.exists) return null;
       const d = s.data() as Inscrit;
-      if (d.envoyes?.[e.cle]) return null;
-      if (d.debuteLe.toMillis() + (Number(e.delaiHeures) || 0) * H > maintenant) return null;
+      if (d.envoyes?.[e.cle] || d.sortie) return null;
       tx.update(ref, { [`envoyes.${e.cle}`]: Timestamp.now() });
       return d;
     });
@@ -154,8 +217,10 @@ async function traiterInscrit(transporter: Transporter, seqId: string, seq: Sequ
     try {
       if (!lettre) throw new Error(`lettre ${e.newsletterId} introuvable ou vide`);
       await envoyerEtape(transporter, lettre, pris);
+      derniere = Date.now();
       await ref.update({ [`erreurs.${e.cle}`]: FieldValue.delete() });
       await db.doc(`sequences/${seqId}`).update({ [`stats.${e.cle}`]: FieldValue.increment(1), dernierEnvoi: FieldValue.serverTimestamp() });
+      await Promise.all(etat.actives.map(r => r.update({ derniereLettreLe: FieldValue.serverTimestamp() }).catch(() => { /* fiche disparue */ })));
       envoyes++;
     } catch (err) {
       console.error('[sequences] envoi raté', seqId, inscritId, e.cle, err);
@@ -213,8 +278,9 @@ export const traiterSequences = onSchedule(
         const inscrits = await s.ref.collection('inscrits').get();
         for (const i of inscrits.docs) {
           const d = i.data() as Inscrit;
-          // Rien à faire si toutes les étapes sont parties.
-          if (etapes.every(e => d.envoyes?.[e.cle])) continue;
+          // Rien à faire si toutes les étapes sont parties, ou si la personne
+          // est sortie de la séquence.
+          if (d.sortie || etapes.every(e => d.envoyes?.[e.cle])) continue;
           total += await traiterInscrit(transporter, s.id, seq, i.id, lettres);
         }
       }
@@ -243,7 +309,7 @@ export const testerSequence = onCall(
     const mode = req.data?.mode === 'inscrire' ? 'inscrire' : 'etape';
 
     if (mode === 'inscrire') {
-      const id = email.replace(/[^a-z0-9]+/g, '_');
+      const id = cleCourriel(email);
       const ref = db.doc(`sequences/${sequenceId}/inscrits/${id}`);
       if ((await ref.get()).exists) throw new HttpsError('already-exists', 'Cette adresse est déjà dans la séquence.');
       await ref.set({ email, firstName: String(req.data?.firstName || '').trim(), lang: 'fr', debuteLe: Timestamp.now(), envoyes: {}, source: `manuel:${admin}` });
@@ -264,5 +330,44 @@ export const testerSequence = onCall(
       transporter.close();
     }
     return { ok: true };
+  },
+);
+
+// L'entrée par étiquette : chaque fois qu'une fiche `newsletter` gagne une
+// étiquette, la personne entre dans chaque séquence active liée à cette
+// étiquette. La clé est son adresse : une personne déjà là n'entre pas deux
+// fois (sauf si elle en était sortie sans rien recevoir, par exemple parce
+// qu'un robot avait coché à sa place : elle repart alors de zéro). Rien ne
+// part ici; le passage planifié envoie, au plus tôt une heure plus tard.
+export const inscrireSequencesEtiquette = onDocumentUpdated(
+  { document: 'newsletter/{id}', region: 'us-central1' },
+  async (event) => {
+    const avant = new Set<string>((event.data?.before.get('tags') || []) as string[]);
+    const apres = (event.data?.after.get('tags') || []) as string[];
+    const nouvelles = apres.filter(t => !avant.has(t));
+    if (!nouvelles.length || event.data?.after.get('status') !== 'active') return;
+    const email = normaliser(String(event.data?.after.get('email') || ''));
+    if (!email) return;
+    const db = getFirestore();
+    const seqs = (await db.collection('sequences').where('actif', '==', true).where('declencheur.type', '==', 'etiquette').get())
+      .docs.filter(s => nouvelles.includes(String(s.get('declencheur.tag') || '')));
+    const id = cleCourriel(email);
+    for (const s of seqs) {
+      const tag = String(s.get('declencheur.tag'));
+      const ref = db.doc(`sequences/${s.id}/inscrits/${id}`);
+      await db.runTransaction(async (tx) => {
+        const cur = await tx.get(ref);
+        if (cur.exists) {
+          const d = cur.data() as Inscrit;
+          if (!d.sortie || Object.keys(d.envoyes || {}).length) return;
+        }
+        tx.set(ref, {
+          email, firstName: String(event.data?.after.get('firstName') || ''),
+          lang: event.data?.after.get('lang') === 'en' ? 'en' : 'fr',
+          debuteLe: Timestamp.now(), envoyes: {}, source: `etiquette:${tag}`, fiche: event.params.id,
+        });
+      });
+      console.log('[sequences] entrée par étiquette', s.id, tag, email);
+    }
   },
 );

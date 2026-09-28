@@ -15,9 +15,24 @@ const statusLabel: Record<string, { label: string; color: string }> = {
   failed:    { label: 'Échec',      color: 'bg-red-50 text-red-500' },
 };
 
+// Les filtres du haut (27 sept. 2026) : les lettres générales, celles que
+// portent les séquences, et les brouillons créés tout seuls à chaque épisode.
+type Filtre = 'toutes' | 'generales' | 'sequences' | 'auto';
+const FILTRES: { cle: Filtre; nom: string }[] = [
+  { cle: 'toutes', nom: 'Toutes' },
+  { cle: 'generales', nom: 'Générales' },
+  { cle: 'sequences', nom: 'Séquences' },
+  { cle: 'auto', nom: 'Brouillons automatiques' },
+];
+const estAuto = (n: NewsletterDoc) => (n.title || '').startsWith('Brouillon automatique');
+const garder = (f: Filtre, n: NewsletterDoc) =>
+  f === 'toutes' ? true : f === 'sequences' ? n.role === 'sequence' : f === 'auto' ? estAuto(n) : n.role !== 'sequence' && !estAuto(n);
+
 const NewsletterList: React.FC<Props> = ({ onOpen }) => {
   const [items, setItems] = useState<NewsletterDoc[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filtre, setFiltre] = useState<Filtre>('toutes');
+  const visibles = items.filter(n => garder(filtre, n));
 
   const refresh = () => getNewsletters().then(setItems).finally(() => setLoading(false));
   useEffect(() => { refresh(); }, []);
@@ -61,13 +76,23 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3">
-        <p className="text-sm text-[#293027]/60 dark:text-white/60">{items.length} infolettre{items.length > 1 ? 's' : ''}</p>
+        <div className="flex flex-wrap items-center gap-1.5">
+          {FILTRES.map(f => {
+            const n = items.filter(x => garder(f.cle, x)).length;
+            return (
+              <button key={f.cle} onClick={() => setFiltre(f.cle)}
+                className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${filtre === f.cle ? 'bg-[#141311] text-[#EEE7DB] border-[#141311]' : 'border-[#293027]/15 text-[#293027]/70 hover:bg-[#BA7B39]/10 dark:text-white/70 dark:border-white/15'}`}>
+                {f.nom} <span className="opacity-60">({n})</span>
+              </button>
+            );
+          })}
+        </div>
         <PrimaryButton onClick={() => onOpen(null)} className="ml-auto"><i className="fa-solid fa-plus" /> Nouvelle infolettre</PrimaryButton>
       </div>
 
       {erreur && <p className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-2">{erreur}</p>}
 
-      {items.length === 0 ? (
+      {visibles.length === 0 ? (
         <EmptyState icon="fa-envelope-open-text">Aucune infolettre pour l'instant. Créez-en une pour commencer.</EmptyState>
       ) : (
         <Card className="overflow-x-auto">
@@ -83,7 +108,7 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
               </tr>
             </thead>
             <tbody>
-              {items.map(n => {
+              {visibles.map(n => {
                 const st = statusLabel[n.status] || statusLabel.draft;
                 return (
                   <tr key={n.id} className="border-t border-[#293027]/5 dark:border-white/5 hover:bg-[#BA7B39]/5">

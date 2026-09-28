@@ -3,8 +3,9 @@ import { getNewsletters, type NewsletterDoc } from '../../../../firebase/firesto
 import { getFormations, type Formation } from '../../../../firebase/formations';
 import {
   ecouterSequences, ecouterInscrits, creerSequence, enregistrerSequence, supprimerSequence,
-  marquerLettreSequence, testerSequence, type Sequence, type Etape, type Inscrit,
+  marquerLettreSequence, testerSequence, compterInscrits, type Sequence, type Etape, type Inscrit,
 } from '../../../../firebase/sequences';
+import { libelleTag } from '../../../../lib/paliers';
 import { Card, Input, Label, PrimaryButton, GhostButton, DangerButton, ToggleSwitch, EmptyState } from '../../primitives';
 
 // Les séquences : une suite de lettres qui partent toutes seules, à tant de
@@ -14,6 +15,9 @@ import { Card, Input, Label, PrimaryButton, GhostButton, DangerButton, ToggleSwi
 // relit là où elle écrit tout le reste, la séquence ne fait que la porter.
 
 const slug = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'etape';
+// Les carrés qu'une lectrice peut cocher (dans une lettre ou sur /mes-choix) :
+// chacun peut faire entrer une personne dans une séquence (27 sept. 2026).
+const ETIQUETTES = ['interet-choisir', 'interet-rythme', 'interet-rester-entiere', 'interet-relier', 'preference-autonomie', 'preference-accompagnement'];
 const delaiLisible = (h: number) => (h === 0 ? 'tout de suite' : h % 24 === 0 ? `${h / 24} jour${h / 24 > 1 ? 's' : ''} après` : `${h} h après`);
 
 const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) => {
@@ -25,9 +29,16 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
   const [inscrits, setInscrits] = useState<Inscrit[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [occupe, setOccupe] = useState(false);
+  const [compte, setCompte] = useState<Record<string, number>>({});
 
   useEffect(() => ecouterSequences(s => { setSeqs(s); setCourante(c => c || s[0]?.id || null); }), []);
   useEffect(() => { getNewsletters().then(setLettres); getFormations().then(setFormations); }, []);
+  const idsSeqs = seqs.map(s => s.id).join(',');
+  useEffect(() => {
+    for (const s of seqs) compterInscrits(s.id).then(n => setCompte(c => ({ ...c, [s.id]: n }))).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idsSeqs]);
+  useEffect(() => { if (courante) setCompte(c => ({ ...c, [courante]: inscrits.length })); }, [courante, inscrits.length]);
   useEffect(() => { if (!courante) return; return ecouterInscrits(courante, setInscrits); }, [courante]);
   // Le brouillon local suit la séquence choisie, jusqu'à ce qu'on l'enregistre.
   useEffect(() => { setBrouillon(seqs.find(s => s.id === courante) || null); }, [courante, seqs]);
@@ -86,6 +97,7 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
   };
 
   const declencheurTexte = (s: Sequence) => {
+    if (s.declencheur?.type === 'etiquette') return `Quand une personne coche « ${libelleTag(s.declencheur.tag)} »`;
     if (s.declencheur?.type !== 'achat') return 'À la main seulement';
     const fid = s.declencheur.formationId;
     return `À l'achat de « ${formations.find(f => f.id === fid)?.titre || fid} »`;
@@ -104,7 +116,7 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
                 <span className="font-serif text-lg">{s.titre}</span>
                 <span className={`text-[10px] uppercase tracking-widest font-bold ${s.actif ? 'text-[#e0b060]' : courante === s.id ? 'text-white/50' : 'text-[#293027]/40'}`}>{s.actif ? 'Active' : 'En pause'}</span>
               </div>
-              <div className={`text-[11px] ${courante === s.id ? 'text-white/60' : 'text-[#293027]/50 dark:text-white/50'}`}>{(s.etapes || []).length} étape{(s.etapes || []).length > 1 ? 's' : ''} · {declencheurTexte(s)}</div>
+              <div className={`text-[11px] ${courante === s.id ? 'text-white/60' : 'text-[#293027]/50 dark:text-white/50'}`}>{(s.etapes || []).length} étape{(s.etapes || []).length > 1 ? 's' : ''} · {compte[s.id] ?? '…'} inscrite{(compte[s.id] || 0) > 1 ? 's' : ''} · {declencheurTexte(s)}</div>
             </button>
           ))}
         </Card>
@@ -126,15 +138,24 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
               <Label>Ce qui fait entrer une personne dans la séquence</Label>
               <select
                 className="w-full rounded-xl border border-[#293027]/15 bg-white px-3 py-2 text-sm dark:bg-white/5 dark:text-white"
-                value={brouillon.declencheur?.type === 'achat' ? `achat:${(brouillon.declencheur as { formationId: string }).formationId}` : 'manuel'}
+                value={brouillon.declencheur?.type === 'achat' ? `achat:${brouillon.declencheur.formationId}` : brouillon.declencheur?.type === 'etiquette' ? `etiquette:${brouillon.declencheur.tag}` : 'manuel'}
                 onChange={e => {
                   const v = e.target.value;
-                  maj({ declencheur: v === 'manuel' ? { type: 'manuel' } : { type: 'achat', formationId: v.slice(6) } });
+                  maj({ declencheur: v === 'manuel' ? { type: 'manuel' } : v.startsWith('etiquette:') ? { type: 'etiquette', tag: v.slice(10) } : { type: 'achat', formationId: v.slice(6) } });
                 }}>
                 <option value="manuel">À la main seulement (bouton « Inscrire une adresse »)</option>
-                {formations.filter(f => f.paywall).map(f => <option key={f.id} value={`achat:${f.id}`}>L'achat de « {f.titre} »</option>)}
+                <optgroup label="Quand une personne coche :">
+                  {ETIQUETTES.map(t => <option key={t} value={`etiquette:${t}`}>{libelleTag(t)}</option>)}
+                </optgroup>
+                <optgroup label="Quand une personne achète :">
+                  {formations.filter(f => f.paywall).map(f => <option key={f.id} value={`achat:${f.id}`}>L'achat de « {f.titre} »</option>)}
+                </optgroup>
               </select>
-              <p className="mt-1 text-[11px] text-[#293027]/50 dark:text-white/50">L'achat par Stripe inscrit l'acheteuse et envoie tout de suite ce qui est à « tout de suite ». Le reste part au fil des jours, un passage toutes les quinze minutes.</p>
+              <p className="mt-1 text-[11px] text-[#293027]/50 dark:text-white/50">
+                {brouillon.declencheur?.type === 'etiquette'
+                  ? 'La personne qui coche ce carré (dans une lettre ou sur la page de ses choix) entre une seule fois dans la séquence. La première lettre part au plus tôt une heure après, et chaque lettre vérifie avant de partir que la personne est encore abonnée et porte encore ce choix. Jamais deux lettres à moins de 48 heures.'
+                  : 'L\'achat par Stripe inscrit l\'acheteuse et envoie tout de suite ce qui est à « tout de suite ». Le reste part au fil des jours, un passage toutes les quinze minutes, jamais à moins de 48 heures d\'une autre lettre.'}
+              </p>
             </div>
           </Card>
 
@@ -167,7 +188,7 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
                   {e.newsletterId && e.cle && <GhostButton onClick={() => tester(e)} disabled={occupe} title="Envoyer cette étape tout de suite à une adresse"><i className="fa-solid fa-paper-plane" /></GhostButton>}
                   <DangerButton onClick={() => maj({ etapes: (brouillon.etapes || []).filter((_, j) => j !== i) })} title="Retirer l'étape"><i className="fa-solid fa-trash" /></DangerButton>
                 </div>
-                {typeof brouillon.stats?.[e.cle] === 'number' && <div className="md:col-span-4 text-[11px] text-[#8B4A2F]">{brouillon.stats[e.cle]} envoi{brouillon.stats[e.cle] > 1 ? 's' : ''} jusqu'ici</div>}
+                {e.cle && <div className="md:col-span-4 text-[11px] text-[#8B4A2F]">{brouillon.stats?.[e.cle] || 0} envoi{(brouillon.stats?.[e.cle] || 0) > 1 ? 's' : ''} jusqu'ici</div>}
               </div>
             ))}
             <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -191,7 +212,7 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
                   <tbody>
                     {inscrits.slice(0, 60).map(p => (
                       <tr key={p.id} className="border-t border-[#293027]/5 dark:border-white/5">
-                        <td className="py-2 pr-4 text-[#293027] dark:text-white">{p.firstName ? `${p.firstName} · ` : ''}{p.email}</td>
+                        <td className="py-2 pr-4 text-[#293027] dark:text-white">{p.firstName ? `${p.firstName} · ` : ''}{p.email}{p.sortie && <span className="ml-2 text-[10px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50" title={p.sortie.raison === 'desabonnee' ? 'Désabonnée depuis son entrée : plus rien ne lui part.' : 'Son choix a été retiré (souvent un robot de sécurité) : plus rien ne lui part.'}>sortie</span>}</td>
                         <td className="py-2 pr-4 text-[#293027]/60 dark:text-white/60">{p.debuteLe?.toDate().toLocaleDateString('fr-CA')}</td>
                         {(brouillon.etapes || []).map(e => (
                           <td key={e.cle} className="py-2 pr-4">

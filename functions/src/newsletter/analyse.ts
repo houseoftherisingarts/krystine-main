@@ -1,4 +1,5 @@
 import { onCall } from 'firebase-functions/v2/https';
+import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { assertAdmin } from './send';
 
@@ -10,7 +11,9 @@ import { assertAdmin } from './send';
 // désabonnements et leurs raisons dans les sept jours. Les domaines où des
 // robots ont été vus sont cumulés dans `analyseInfolettre/_robots`, avec
 // le nombre d'abonnées actives sur chacun : ce sont les robots à prévoir avant
-// le prochain envoi. Lancé à la main depuis l'admin (onglet Analyse).
+// le prochain envoi. Lancé à la main depuis l'admin (onglet Analyse), et
+// chaque lundi à 7 h tout seul (27 sept. 2026) : le calcul vit dans
+// calculerAnalyse, partagé par le bouton et le passage planifié.
 
 const QC = (d: Date) => new Date(d.getTime() - 4 * 3600e3);
 const domaine = (e: string) => (e.split('@')[1] || '').toLowerCase();
@@ -24,8 +27,7 @@ async function tous(col: FirebaseFirestore.CollectionReference) {
   return (await col.get()).docs;
 }
 
-export const analyserInfolettres = onCall({ region: 'us-central1', timeoutSeconds: 300, memory: '1GiB' }, async (req) => {
-  assertAdmin(req);
+export async function calculerAnalyse(): Promise<{ ok: true; lettres: number; profils: number }> {
   const db = getFirestore();
   const lettres = (await db.collection('newsletters').where('status', '==', 'sent').get()).docs;
   const robotsDomaines: Record<string, number> = {};
@@ -127,4 +129,19 @@ export const analyserInfolettres = onCall({ region: 'us-central1', timeoutSecond
   await db.doc('analyseInfolettre/_profils').set({ calculeLe: Timestamp.now(), personnes: parPersonne.size, parEtiquette, combinaisons, provenance }, { merge: false });
 
   return { ok: true, lettres: resumes.length, profils: parPersonne.size };
+}
+
+export const analyserInfolettres = onCall({ region: 'us-central1', timeoutSeconds: 300, memory: '1GiB' }, async (req) => {
+  assertAdmin(req);
+  return calculerAnalyse();
 });
+
+// Chaque lundi à 7 h (heure de Montréal), l'analyse se refait seule : Krystine
+// ouvre l'onglet Analyse et les chiffres de la semaine y sont déjà.
+export const analyseHebdomadaire = onSchedule(
+  { schedule: '0 7 * * 1', timeZone: 'America/Toronto', region: 'us-central1', timeoutSeconds: 540, memory: '1GiB' },
+  async () => {
+    const r = await calculerAnalyse();
+    console.log('[analyseHebdomadaire]', r);
+  },
+);

@@ -2,7 +2,7 @@ import app, { db } from '../firebase';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import {
   Timestamp, collection, doc, onSnapshot, orderBy, query, serverTimestamp,
-  setDoc, updateDoc, deleteDoc, addDoc,
+  setDoc, updateDoc, deleteDoc, addDoc, getCountFromServer,
 } from 'firebase/firestore';
 
 // Les séquences : des courriels qui partent tout seuls dans le temps après un
@@ -15,7 +15,7 @@ export interface Sequence {
   id: string;
   titre: string;
   actif?: boolean;
-  declencheur?: { type: 'achat'; formationId: string } | { type: 'manuel' };
+  declencheur?: { type: 'achat'; formationId: string } | { type: 'etiquette'; tag: string } | { type: 'manuel' };
   etapes?: Etape[];
   stats?: Record<string, number>;
   dernierEnvoi?: Timestamp;
@@ -30,6 +30,7 @@ export interface Inscrit {
   envoyes?: Record<string, Timestamp>;
   erreurs?: Record<string, string>;
   source?: string;
+  sortie?: { raison: string; le: Timestamp };
 }
 
 const need = () => { if (!db) throw new Error('Firebase non configuré.'); return db; };
@@ -42,6 +43,11 @@ export function ecouterSequences(cb: (s: Sequence[]) => void): () => void {
 export function ecouterInscrits(sequenceId: string, cb: (i: Inscrit[]) => void): () => void {
   const q = query(collection(need(), `sequences/${sequenceId}/inscrits`), orderBy('debuteLe', 'desc'));
   return onSnapshot(q, snap => cb(snap.docs.map(d => ({ id: d.id, ...(d.data() as Omit<Inscrit, 'id'>) }))));
+}
+
+// Le nombre de personnes entrées dans une séquence, sans lire leurs fiches.
+export async function compterInscrits(sequenceId: string): Promise<number> {
+  return (await getCountFromServer(collection(need(), `sequences/${sequenceId}/inscrits`))).data().count;
 }
 
 export async function creerSequence(titre: string): Promise<string> {
