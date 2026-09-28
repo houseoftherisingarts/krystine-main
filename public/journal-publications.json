@@ -2812,5 +2812,19 @@
       "src/pages/admin/sections/DashboardSection.tsx",
       "src/pages/admin/sections/dashboard/CibleNouvellesPersonnesCard.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-28T14:33:27.904Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "715f8a26",
+    "message": "Accueil en anglais : les deux boutons vers la page conférencière menaient à une page introuvable (/en/conferenciere); ils ouvrent maintenant /conferenciere en anglais",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json"
+    ]
   }
 ]
