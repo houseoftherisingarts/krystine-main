@@ -2,6 +2,7 @@ import { onCall } from 'firebase-functions/v2/https';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { assertAdmin } from './send';
+import { photographierMigration } from '../kajabiMigration';
 
 // ─── L'analyse des envois (Krystine, 27 sept. 2026) ─────────────────────────
 // Pour chaque lettre envoyée, relit les traces personne par personne (envois,
@@ -143,5 +144,14 @@ export const analyseHebdomadaire = onSchedule(
   async () => {
     const r = await calculerAnalyse();
     console.log('[analyseHebdomadaire]', r);
+    // 28 sept. 2026 : l'instantané de la migration des anciennes formations
+    // (analyseInfolettre/_migration), une ligne par semaine. Une erreur ici
+    // n'empêche pas l'analyse de l'infolettre, déjà rangée ci-dessus.
+    try {
+      await photographierMigration();
+      console.log('[analyseHebdomadaire] instantané de la migration rangé');
+    } catch (e) {
+      console.error('[analyseHebdomadaire] instantané de la migration raté', e);
+    }
   },
 );

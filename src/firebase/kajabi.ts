@@ -1,4 +1,4 @@
-import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { httpsCallable, getFunctions } from 'firebase/functions';
 import app, { db } from '../firebase';
 
@@ -63,4 +63,40 @@ export async function emettreCodesKajabi(formationId: string, testEmail?: string
   if (!app) throw new Error('[Codes] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'kajabiEmettreCodes');
   return (await call({ formationId, testEmail: testEmail || '' })).data as { envoyes: number; sautes: number; erreurs: number; message?: string };
+}
+
+// ─── Où en est la migration (28 sept. 2026) ────────────────────────────────
+// Les chiffres se calculent côté serveur (functions/src/kajabiMigration.ts);
+// l'historique du lundi et la cible de rythme vivent dans
+// analyseInfolettre/_migration, réservé à l'admin.
+
+export interface LigneMigration { formationId: string; titre: string; personnes: number; codesEmis: number; codesEnvoyes: number; restaures: number; reste: number }
+export interface EtatMigration {
+  calculeLe: string;
+  formations: LigneMigration[];
+  total: Omit<LigneMigration, 'formationId' | 'titre'> & { pourcentage: number; personnesDistinctes: number };
+  nonReliees: number;
+}
+export interface PointMigration { semaine: string; personnes: number; codesEmis: number; codesEnvoyes: number; restaures: number; reste: number; pourcentage: number }
+export interface SuiviMigration { historique: PointMigration[]; cibleParSemaine: number | null }
+
+/** Admin : les chiffres de la migration, calculés maintenant. */
+export async function getEtatMigration(): Promise<EtatMigration> {
+  if (!app) throw new Error('[Codes] Firebase not configured');
+  const call = httpsCallable(getFunctions(app, 'us-central1'), 'kajabiEtatMigration');
+  return (await call({})).data as EtatMigration;
+}
+
+/** Admin : l'historique des lundis et la cible de rythme. */
+export async function getSuiviMigration(): Promise<SuiviMigration> {
+  if (!db) return { historique: [], cibleParSemaine: null };
+  const snap = await getDoc(doc(db, 'analyseInfolettre', '_migration'));
+  const d = (snap.data() || {}) as { historique?: PointMigration[]; cible?: { parSemaine?: number } };
+  return { historique: d.historique || [], cibleParSemaine: typeof d.cible?.parSemaine === 'number' ? d.cible.parSemaine : null };
+}
+
+/** Admin : la cible de rythme (personnes à migrer par semaine). */
+export async function setCibleMigration(parSemaine: number): Promise<void> {
+  if (!db) return;
+  await setDoc(doc(db, 'analyseInfolettre', '_migration'), { cible: { parSemaine, majLe: serverTimestamp() } }, { merge: true });
 }

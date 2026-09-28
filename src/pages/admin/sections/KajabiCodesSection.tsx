@@ -10,6 +10,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { getFormations, type Formation } from '../../../firebase/formations';
 import { getOffresKajabi, relierOffreKajabi, getEtatRegistreKajabi, emettreCodesKajabi, getAcheteusesKajabi, type OffreKajabi, type EtatRegistre } from '../../../firebase/kajabi';
 import { Card, Input, PrimaryButton, GhostButton, EmptyState, downloadCsv } from '../primitives';
+import KajabiMigrationPanel from './KajabiMigrationPanel';
 
 const STATUT_LISIBLE: Record<string, string> = { a_restaurer: 'à restaurer', code_envoye: 'code envoyé', restaure: 'formation retrouvée' };
 
@@ -79,6 +80,8 @@ const KajabiCodesSection: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Le tempo de la migration, en haut (28 sept. 2026). */}
+      <KajabiMigrationPanel />
       <Card>
         <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">Envoyer les codes d'une formation migrée</p>
         <p className="mt-2 text-sm text-[#293027]/70">Choisissez la formation qui vient d'arriver sur le site. Chaque acheteuse de l'ancien système reçoit un code personnel par courriel (et dans sa messagerie si elle a déjà un compte), qu'elle entre dans « Mes formations ». Un code ne sert qu'une fois et vaut 180 jours.</p>

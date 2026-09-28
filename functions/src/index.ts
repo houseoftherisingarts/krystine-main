@@ -35,6 +35,7 @@ export { musiqueOrigine } from './musique';
 export { extraitCinqElements } from './cinqelements';
 export { offrirCadeau, utiliserCadeau } from './cadeaux';
 export { kajabiEmettreCodes, kajabiUtiliserCode } from './kajabi';
+export { kajabiEtatMigration } from './kajabiMigration';
 export { acheterCoffre, ouvrirCoffre, reclamerGrandLot, offrirCoffre } from './coffres';
 export { notifierBillet, annoncerChangement } from './notifs';
 export { interactionMessageDirect, interactionBillet, interactionCommentaire, interactionVoteBillet, interactionVoteCommentaire, interactionPoints } from './interactions';
