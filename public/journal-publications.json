@@ -2695,5 +2695,22 @@
       "public/assets-manifest.json",
       "src/pages/admin/sections/SubmissionsSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-28T01:27:18.959Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "86901ef4",
+    "message": "Admin › Infolettre : onglet « Désabonnements » (chaque départ, ses raisons, son mot, total par raison) et, dans Séquences, un espace de réflexion (la réflexion d'ensemble, la fiche stratégique de chaque séquence, l'intention de chaque étape, bouton « Créer la lettre »)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/firebase/sequences.ts",
+      "src/pages/admin/sections/NewsletterSection.tsx",
+      "src/pages/admin/sections/newsletter/DesabonnementsPanel.tsx",
+      "src/pages/admin/sections/newsletter/SequencesPanel.tsx"
+    ]
   }
 ]
