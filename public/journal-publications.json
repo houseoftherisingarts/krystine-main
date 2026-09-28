@@ -2644,5 +2644,27 @@
       "src/pages/admin/sections/MembersSection.tsx",
       "src/pages/admin/sections/newsletter/AnalysePanel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-28T01:06:13.064Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c52cc1a0",
+    "message": "Infolettre qui tourne seule : analyse chaque lundi 7 h, séquences déclenchées par un choix coché (avec vérification anti-robot et désabonnement), garde des 48 heures entre deux lettres, brouillon automatique à chaque nouvel épisode du podcast; admin › Séquences (déclencheur par choix, inscrites, envois par étape) et filtres dans la liste des infolettres",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/index.ts",
+      "functions/src/newsletter/analyse.ts",
+      "functions/src/newsletter/brouillonsPodcast.ts",
+      "functions/src/newsletter/send.ts",
+      "functions/src/newsletter/sequences.ts",
+      "public/assets-manifest.json",
+      "src/firebase/sequences.ts",
+      "src/pages/admin/sections/newsletter/NewsletterList.tsx",
+      "src/pages/admin/sections/newsletter/SequencesPanel.tsx"
+    ]
   }
 ]
