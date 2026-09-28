@@ -605,6 +605,16 @@ const ClientPortal: React.FC = () => {
   // Retour de Stripe, toutes portes confondues : l'achat confirmé compte
   // comme gros objectif (Visiteurs et clics, Pixel, GA4) une seule fois, avant
   // que les deux lectures d'en dessous n'effacent les paramètres de l'adresse.
+  // Retour de Stripe après l'achat d'une formation (creerSessionCheckout) :
+  // un merci à l'écran et la porte du cours, pour que l'acheteuse sache tout de
+  // suite que c'est fait et où commencer (liste Vata du 28 sept. 2026). Lu
+  // AVANT le compteur d'objectif ci-dessous, qui nettoie l'adresse.
+  const [merciFormation, setMerciFormation] = useState<string | null>(() => {
+    try {
+      const q = new URLSearchParams(window.location.search);
+      return q.get('achat') === 'ok' && q.get('formation') ? q.get('formation') : null;
+    } catch { return null; }
+  });
   useState(() => {
     try {
       const q = new URLSearchParams(window.location.search);
@@ -791,6 +801,20 @@ const ClientPortal: React.FC = () => {
       {/* Le contenu en deux colonnes : l'onglet à gauche, le parrainage à droite */}
       <div className="mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 lg:grid-cols-[1fr_320px]">
         <div className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-[#293027]/55">
+          {merciFormation && (
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-[16px] border border-[#BA7B39]/40 bg-[#BA7B39]/15 px-4 py-4 text-sm text-[#293027] dark:text-white">
+              <span className="min-w-0 flex-1">
+                <strong className="block font-serif text-lg font-normal">{lang === 'FR' ? 'Merci. Votre accès est prêt.' : 'Thank you. Your access is ready.'}</strong>
+                {lang === 'FR' ? 'Votre formation vous attend dans Mes formations. S’il manque quelque chose, rafraîchissez la page dans une minute.' : 'Your program is waiting in My programs. If anything is missing, refresh the page in a minute.'}
+              </span>
+              <span className="flex items-center gap-3">
+                <Link to={`/cours/${merciFormation}`} className="inline-flex min-h-[44px] items-center rounded-full bg-[#293027] px-5 text-[0.7rem] font-bold uppercase tracking-[0.15em] text-[#EEE7DB] hover:bg-[#BA7B39]">
+                  {lang === 'FR' ? 'Commencer' : 'Start'}
+                </Link>
+                <button type="button" onClick={() => setMerciFormation(null)} aria-label={lang === 'FR' ? 'Fermer' : 'Close'} className="text-[#293027]/50 hover:text-[#293027] dark:text-white/50"><i className="fa-solid fa-times" /></button>
+              </span>
+            </div>
+          )}
           {merciNiskas && (
             <div className="mb-5 flex items-center justify-between gap-3 rounded-[16px] border border-[#BA7B39]/40 bg-[#BA7B39]/15 px-4 py-3 text-sm text-[#293027] dark:text-white">
               <span><PieceNiska size={16} className="mr-2 inline-block align-[-3px]" />{lang === 'FR' ? 'Merci. Vos cent niskas arrivent dans votre bourse d’ici une minute.' : 'Thank you. Your hundred niskas land in your purse within a minute.'}</span>
