@@ -30,6 +30,36 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-09-28',
+    titre: "Le premier portrait de vos lectrices et des formulaires plus lisibles",
+    intro: "Douze heures après la lettre du dimanche, les premiers profils se dessinent. La page Formulaires s'ouvre maintenant sur une vue d'ensemble plutôt qu'une longue liste.",
+    etapes: [
+      { texte: "Le portrait du matin est inscrit dans les conclusions de la lettre : 2 024 vraies lectures, 79 personnes qui cliquent, 33 qui ont envoyé leurs choix, 22 départs (0,19 %).", ou: '/admin/infolettre', libelle: 'Infolettre › Analyse' },
+      { texte: "La page Formulaires s'ouvre sur une carte par catégorie : le total, la semaine, le mois, la tendance et les huit dernières semaines. Un clic ouvre la liste.", ou: '/admin/formulaires', libelle: 'Formulaires' },
+      "L'analyse complète du Programme Vata est lancée : le contenu, le parcours d'achat, la page de vente et des objectifs pour l'automne.",
+    ],
+  },
+  {
+    date: '2026-09-27',
+    titre: "Expérience Origine en tête de l'accueil, et une infolettre qui apprend à connaître vos lectrices",
+    intro: "Une longue journée de fondations : l'accueil sert maintenant l'objectif de l'automne, la lettre du dimanche est partie à 11 375 personnes avec des carrés à cocher, et l'infolettre a son espace d'analyse, ses désabonnements et ses séquences qui tournent seules.",
+    etapes: [
+      { texte: "Sur l'accueil, Expérience Origine (2e édition) arrive juste sous la bande « Tel que vu à », avec votre texte. Le Foyer et la section du compte sont cachés, rien n'est effacé.", ou: '/accueil', libelle: "L'accueil" },
+      { texte: "Tous les liens « Origine » mènent à la liste d'attente d'Expérience Origine 2, et le menu dit « Expérience Origine ». Les 21 personnes de l'ancienne liste y sont réunies.", ou: '/liste-attente?programme=origine2', libelle: "La liste d'attente" },
+      "La bulle « Avis épinglé » se range dès qu'on fait défiler la page, et le menu de l'accueil ne déborde plus sur deux lignes.",
+      "La liste d'attente : la région est facultative, les trois points de réassurance sont retirés, une personne connectée n'a plus qu'un bouton, et « Créer mon compte et m'inscrire » inscrit d'un seul geste.",
+      "Une adresse déjà connue garde sa fiche au lieu d'en créer une deuxième, et chaque inscrite à Expérience Origine 2 reçoit son propre courriel de confirmation.",
+      { texte: "La page podcast montre toute seule le dernier épisode paru sur YouTube, sans date; la Saison 2 est bien rangée et numérotée.", ou: '/podcast', libelle: 'Le podcast' },
+      "Le composeur de l'infolettre : taille des lettres pour toute la lettre, aperçu en taille réelle, fond de couleur derrière une image, phrase agrandie ou manuscrite (écriture Ms Madi, la plus proche de votre signature).",
+      { texte: "Les carrés à cocher : une grille légère dans la lettre, et la page « Mes choix » où la lectrice coche ce qui lui ressemble puis envoie.", ou: '/mes-choix', libelle: 'Mes choix' },
+      "Les robots de sécurité des banques et des universités, qui cliquaient tous les liens, sont écartés; une faille qui effaçait les compteurs d'une lettre est corrigée.",
+      { texte: "Se désabonner vaut pour toutes les fiches d'une même adresse, la page propose des raisons facultatives et des liens vers vos autres canaux.", ou: '/admin/infolettre', libelle: 'Infolettre › Désabonnements' },
+      { texte: "Nouvel onglet Analyse : d'envoi en envoi, les vraies lectures, les clics, les profils segmentés, les robots à prévoir et vos conclusions.", ou: '/admin/infolettre', libelle: 'Infolettre › Analyse' },
+      { texte: "L'infolettre tourne seule : analyse chaque lundi à 7 h, brouillon préparé à chaque nouvel épisode, séquences qui démarrent quand une personne coche un carré, garde de 48 heures entre deux lettres. Les séquences ont leur espace de réflexion.", ou: '/admin/infolettre', libelle: 'Infolettre › Séquences' },
+      "L'en-tête « La Lettre de Krystine » est allégé (0,1 Mo au lieu de 1,7 Mo), et la liste des lettres montre le sujet et l'heure de la dernière modification.",
+    ],
+  },
+  {
     date: '2026-09-26',
     titre: "Votre page de conférencière repensée, de vraies photos de scène, et une infolettre qui mesure mieux",
     intro: "La page conférencière présente maintenant une seule conférence et ses portes de programmation, avec vos vraies photos et votre film. L'accueil suit le même positionnement, et l'infolettre distingue les vraies lectures des ouvertures automatiques.",
