@@ -168,6 +168,13 @@ export const inscrireInfolettre = onCall(
 
     const ref = await col.add(fiche);
     console.log(`[inscrire] ${source} · ${fiche.status} · ${ref.id}`);
+    // L'étiquette d'entrée des nouvelles personnes (28 sept. 2026) : posée
+    // APRÈS la création, parce que les séquences par étiquette démarrent sur
+    // une mise à jour de fiche (inscrireSequencesEtiquette), jamais sur une
+    // création. La séquence de bienvenue s'y branche; tant qu'elle est éteinte
+    // dans l'admin, l'étiquette ne fait que marquer la fiche.
+    try { await ref.update({ tags: FieldValue.arrayUnion('entree-site') }); }
+    catch (e) { console.error('[inscrire] étiquette entree-site', ref.id, e); }
     return { ok: true, id: ref.id, status: fiche.status as string };
   },
 );

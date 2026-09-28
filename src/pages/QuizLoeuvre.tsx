@@ -559,6 +559,31 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                 </button>
               </div>
 
+              {/* L'infolettre au moment où l'intérêt est le plus vif, juste sous le
+                  résultat (Krystine, 28 sept. 2026 : le formulaire du bas de page
+                  était trop loin). L'étiquette dosha-… permet d'écrire ensuite
+                  selon la nature de chacune. */}
+              <div className="mt-8 pt-6 border-t border-[#1c1712]/10">
+                <p className="text-[0.62rem] uppercase tracking-[0.24em] text-[#7d6330]">
+                  {lang === 'FR' ? 'Rester sur le fil' : 'Stay on the thread'}
+                </p>
+                <p className="mt-3 text-[0.95rem] leading-relaxed text-[#3a2f23] max-w-[46ch]">
+                  {lang === 'FR'
+                    ? `Recevez les repères de saison pour votre nature ${result.dominant.name}, par courriel.`
+                    : `Receive seasonal markers for your ${result.dominant.name} nature, by email.`}
+                </p>
+                <div className="mt-5">
+                  <NewsletterSignup
+                    source="quiz"
+                    tags={['quiz', `dosha-${String(result.dominant.name || '').toLowerCase()}`]}
+                    variant="light"
+                    emailOnly
+                    accountUpsell={false}
+                    ctaLabel={lang === 'FR' ? 'Rejoindre le fil' : 'Join the thread'}
+                  />
+                </div>
+              </div>
+
               <div className="mt-8 pt-6 border-t border-[#1c1712]/10">
                 <button
                   type="button"

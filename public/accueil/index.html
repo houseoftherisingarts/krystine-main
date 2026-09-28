@@ -53,6 +53,9 @@
   .navlinks a{position:relative;transition:color .25s;white-space:nowrap}
   .logo{white-space:nowrap}
   .navlinks{gap:clamp(1.2rem,1.9vw,2.1rem)}
+  /* Conférences ajouté au menu (28 sept. 2026) : sous 1700 px, lettres un peu
+     moins espacées pour que le bouton de l'espace membre reste dans la barre. */
+  @media (max-width:1699px){.navlinks{gap:clamp(.9rem,1.3vw,1.5rem);letter-spacing:.1em}}
   .navlinks a:hover{color:var(--brass-bright)}
   .navlinks a::after{content:"";position:absolute;left:0;right:100%;bottom:-5px;height:1px;background:var(--brass-bright);transition:right .3s cubic-bezier(.2,.7,.2,1)}
   .navlinks a:hover::after{right:0}
@@ -799,7 +802,7 @@
     <div class="logo">Krystine<br/>St-Laurent</div>
     <div class="navlinks">
       <a href="#oeuvre">L'Œuvre</a><a href="/liste-attente?programme=origine2">Expérience Origine</a><a href="/formations">Formations</a>
-      <a href="/medias">Médias &amp; Livres</a><a href="/boutique">Boutique</a><a href="#apropos">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold btn-gold--nav">Accéder à mon espace membre</a>
+      <a href="/medias">Médias &amp; Livres</a><a href="/conferenciere">Conférences</a><a href="/boutique">Boutique</a><a href="#apropos">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold btn-gold--nav">Accéder à mon espace membre</a>
     </div>
   </nav>
 
@@ -811,7 +814,7 @@
   <div id="mnavOverlay" class="mnav-overlay" aria-hidden="true">
     <nav class="mnav-links">
       <a href="#oeuvre">L'Œuvre</a><a href="/liste-attente?programme=origine2">Expérience Origine</a><a href="/formations">Formations</a>
-      <a href="/medias">Médias &amp; Livres</a><a href="/boutique">Boutique</a><a href="#apropos">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold" style="margin-top:.5rem">Accéder à mon espace membre</a>
+      <a href="/medias">Médias &amp; Livres</a><a href="/conferenciere">Conférences</a><a href="/boutique">Boutique</a><a href="#apropos">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold" style="margin-top:.5rem">Accéder à mon espace membre</a>
     </nav>
   </div>
 

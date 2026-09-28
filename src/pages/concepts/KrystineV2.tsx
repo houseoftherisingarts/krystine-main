@@ -502,6 +502,41 @@ const FilmSection: React.FC = () => {
   );
 };
 
+/* ════════════════════════ Bande · Médias et kit de presse ════════════════════════ */
+
+// Les médias où Krystine a été vue et entendue, repris tels quels de l'ancienne
+// page /speaking (archives/speaking-2026-09-26), sans logos inventés; puis le
+// kit de presse (/presse : photos, biographies, faits), qu'une productrice
+// cherche en premier. Ajouté le 28 septembre 2026 à la demande de Krystine.
+const MEDIAS: [string, string][] = [
+  ['MAtv', 'Télévision'],
+  ['Salut Bonjour', 'TVA'],
+  ['Santé la vie', 'Série télé · 3 saisons'],
+  ['98,5 FM', 'Radio'],
+  ['Coup de Pouce', 'Magazine'],
+  ['Mieux-Être', 'Magazine'],
+  ['Bien', 'Émission télé'],
+];
+
+const MediasBande: React.FC = () => (
+  <section aria-label="Médias" className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3rem,7vh,5rem)] bg-[#efe6d7] border-y border-[#9c7a44]/25">
+    <div data-reveal className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+      <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#7d6330] shrink-0">Vue et entendue à</p>
+      <ul className="flex flex-wrap gap-x-[clamp(1.5rem,3vw,3rem)] gap-y-5">
+        {MEDIAS.map(([nom, genre]) => (
+          <li key={nom} className="leading-none">
+            <span className="v2-serif block text-[clamp(1.05rem,1.6vw,1.4rem)] text-[#1c1712]">{nom}</span>
+            <span className="mt-1.5 block text-[0.56rem] uppercase tracking-[0.2em] text-[#1c1712]/55">{genre}</span>
+          </li>
+        ))}
+      </ul>
+      <Link to="/presse" className="shrink-0 self-start border-b border-[#1c1712] pb-0.5 text-[0.9rem] text-[#1c1712] hover:text-[#7d6330] hover:border-[#9c7a44] lg:self-center">
+        Kit de presse : photos, biographies, faits
+      </Link>
+    </div>
+  </section>
+);
+
 /* ════════════════════════ Section · Témoignages ════════════════════════ */
 
 // Les paroles fixes plus celles que Krystine approuve dans l'admin
@@ -992,6 +1027,8 @@ export default function KrystineV2() {
           </div>
         </div>
       </section>
+
+      <MediasBande />
 
       {/* ─────────── CHAPITRE 02 · UNE CONFÉRENCE, PLUSIEURS PORTES ─────────── */}
       <section

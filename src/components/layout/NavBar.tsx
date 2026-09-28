@@ -17,6 +17,7 @@ const NAV: NavItem[] = [
   { href: '/liste-attente?programme=origine2',     labelFR: 'Expérience Origine',           labelEN: 'Origin Experience' },
   { href: '/formations',  labelFR: 'Formations',                   labelEN: 'Programs' },
   { href: '/medias',      labelFR: 'Médias & Livres',              labelEN: 'Media & Books' },
+  { href: '/conferenciere', labelFR: 'Conférences',               labelEN: 'Speaking' },
   { href: '/boutique',    labelFR: 'Boutique',                     labelEN: 'Shop' },
 ];
 
@@ -78,7 +79,7 @@ const NavBar: React.FC = () => {
             initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-serif font-semibold uppercase text-ink dark:text-ctext text-[1rem] leading-[1.05] tracking-[0.1em] sm:whitespace-nowrap sm:text-[1.32rem] sm:leading-none sm:tracking-[0.12em] transition-colors duration-300 group-hover:text-brassInk dark:group-hover:text-brassBright"
+            className="font-serif font-semibold uppercase text-ink dark:text-ctext text-[1rem] leading-[1.05] tracking-[0.1em] sm:whitespace-nowrap sm:text-[1.32rem] xl:text-[1.05rem] min-[1700px]:text-[1.32rem] sm:leading-none sm:tracking-[0.12em] transition-colors duration-300 group-hover:text-brassInk dark:group-hover:text-brassBright"
           >
             Krystine <br className="sm:hidden" />St-Laurent
           </motion.span>
@@ -86,11 +87,11 @@ const NavBar: React.FC = () => {
 
         {/* Desktop Links — Boutique rendered last as a filled brass pill to give
             the nav a single primary action (revenue-driving). */}
-        <ul className="hidden xl:flex h-11 items-center self-center gap-[2.1rem]">
+        <ul className="hidden xl:flex h-11 items-center self-center gap-1 min-[1700px]:gap-[2.1rem]">
           {NAV.map((item, i) => {
             const active = isActive(item.href);
             const resolved = resolveHref(item.href);
-            const cls = `group relative inline-flex items-center whitespace-nowrap rounded-full px-3 py-2 text-[0.68rem] uppercase tracking-[0.17em] font-sans transition-colors duration-[250ms] ${
+            const cls = `group relative inline-flex items-center whitespace-nowrap rounded-full px-2 py-2 text-[0.62rem] uppercase tracking-[0.08em] min-[1700px]:px-3 min-[1700px]:text-[0.68rem] min-[1700px]:tracking-[0.17em] font-sans transition-colors duration-[250ms] ${
               active ? 'bg-brass/15 text-brassInk dark:text-brassBright' : 'text-ink/80 dark:text-ctext/75 hover:bg-white/60 hover:text-brassInk dark:hover:bg-white/10 dark:hover:text-brassBright'
             }`;
             const underline = (
@@ -152,7 +153,11 @@ const NavBar: React.FC = () => {
             </Link>
           ) : (
             <>
-              <BoutonCompte taille="sm" className="hidden md:inline-flex" />
+              {/* Le libellé complet seulement sur grand écran : entre 1280 et
+                  1700 px, il poussait le bouton hors de la barre une fois
+                  Conférences ajouté au menu (28 sept. 2026). */}
+              <BoutonCompte taille="sm" className="hidden min-[1700px]:inline-flex" />
+              <BoutonCompte taille="sm" libelle={lang === 'FR' ? 'Mon compte' : 'My account'} className="hidden md:inline-flex min-[1700px]:hidden" />
               {/* Sous md, le libellé complet déborderait à côté du panier,
                   de la langue et du menu burger : version compacte, même
                   bouton or, sans icône. */}
