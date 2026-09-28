@@ -2754,5 +2754,26 @@
       "public/assets-manifest.json",
       "src/lib/paliers.ts"
     ]
+  },
+  {
+    "quand": "2026-09-28T12:24:06.749Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ad6f6f1e",
+    "message": "Codes de l'ancien système : tableau « Où en est la migration » (chiffres par formation, cible de rythme, date de fin, courbe des lundis) et instantané hebdomadaire de la migration; registre complété par les membres du Vata guidé (automne 2024) et du Vata autonome",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/index.ts",
+      "functions/src/kajabiMigration.ts",
+      "functions/src/newsletter/analyse.ts",
+      "public/assets-manifest.json",
+      "scripts/kajabi/registre-membres.mjs",
+      "src/firebase/kajabi.ts",
+      "src/pages/admin/sections/KajabiCodesSection.tsx",
+      "src/pages/admin/sections/KajabiMigrationPanel.tsx"
+    ]
   }
 ]
