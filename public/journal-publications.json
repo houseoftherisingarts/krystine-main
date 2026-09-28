@@ -2681,5 +2681,19 @@
       "functions/src/newsletter/brouillonsPodcast.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-09-28T01:17:27.248Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ad82c3f2",
+    "message": "Admin › Formulaires : deux onglets de plus, « Choix de la lettre » (les choix envoyés depuis /mes-choix) et « Désabonnements » (chaque départ fait sur le site, avec ses raisons, son texte libre et le total par raison)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/SubmissionsSection.tsx"
+    ]
   }
 ]
