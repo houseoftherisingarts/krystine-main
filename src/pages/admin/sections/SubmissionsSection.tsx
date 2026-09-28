@@ -1,3 +1,4 @@
+import { libelleTag } from '../../../lib/paliers';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   getBookingRequests,
@@ -25,7 +26,7 @@ import QuestionCards, { type QuestionCard } from './newsletter/QuestionCards';
 // type-specific sections still exist for deeper actions (status changes,
 // mailing CSVs, etc.) — this view is the single "inbox" for what came in.
 
-type FormCategory = 'booking' | 'newsletter' | 'waitlist' | 'podcastLive' | 'dosha' | 'guide';
+type FormCategory = 'booking' | 'newsletter' | 'waitlist' | 'podcastLive' | 'dosha' | 'guide' | 'choix' | 'depart';
 
 interface Submission {
   id: string;
@@ -54,6 +55,8 @@ const CATEGORY_META: Record<FormCategory, { label: string; icon: string; badge: 
   podcastLive:{ label: 'Podcast live',  icon: 'fa-tower-broadcast', badge: 'bg-[#8B4A2F]/15 text-[#8B4A2F]' },
   dosha:      { label: 'Quiz Dosha',    icon: 'fa-circle-nodes',  badge: 'bg-[#5a4a37]/15 text-[#5a4a37]' },
   guide:      { label: 'Laissez-vous guider', icon: 'fa-compass', badge: 'bg-[#4A7C9D]/15 text-[#4A7C9D]' },
+  choix:      { label: 'Choix de la lettre', icon: 'fa-square-check', badge: 'bg-[#28352F]/12 text-[#28352F] dark:bg-white/10 dark:text-white/80' },
+  depart:     { label: 'Désabonnement', icon: 'fa-door-open', badge: 'bg-[#52646A]/15 text-[#52646A]' },
 };
 
 // Human-readable source name. Unknown keys fall back to the raw string.
@@ -157,6 +160,31 @@ const estUneSoumission = (n: NewsletterSubscriber): boolean =>
 
 // Nombre de fiches dessinées d'un coup; le reste vient au clic.
 const PAGE = 60;
+
+// Les choix envoyés depuis /mes-choix et les départs avec leurs raisons
+// (Krystine, 27 sept. 2026) : chacun son onglet, pour ne plus tout mêler.
+const RAISONS_DEPART: Record<string, string> = { 'trop-de-courriels': 'Trop de courriels', contenu: 'Le contenu ne parle plus', 'pas-inscrite': 'Ne se souvient pas de s’être inscrite', autrement: 'Préfère suivre autrement', autre: 'Autre' };
+function normalizeChoix(n: NewsletterSubscriber): Submission {
+  const x = n as NewsletterSubscriber & { choixLe?: Submission['createdAt'] };
+  const choix = (n.tags || []).filter(t => t.startsWith('interet-') || t.startsWith('preference-')).map(libelleTag);
+  return {
+    id: `choix-${n.id}`, category: 'choix',
+    name: [n.firstName, n.lastName].filter(Boolean).join(' ').trim() || '(sans nom)',
+    email: n.email, source: 'mes-choix', tags: n.tags || [], createdAt: x.choixLe,
+    summary: choix.join(' · ') || 'Choix envoyés', details: [],
+  };
+}
+function normalizeDepart(n: NewsletterSubscriber): Submission {
+  const x = n as NewsletterSubscriber & { unsubscribedAt?: Submission['createdAt']; raisonsDepart?: string[]; raisonAutre?: string };
+  const raisons = (x.raisonsDepart || []).map(r => RAISONS_DEPART[r] || r);
+  return {
+    id: `depart-${n.id}`, category: 'depart',
+    name: [n.firstName, n.lastName].filter(Boolean).join(' ').trim() || '(sans nom)',
+    email: n.email, source: n.source || 'newsletter', tags: n.tags || [], createdAt: x.unsubscribedAt,
+    summary: raisons.length ? raisons.join(' · ') : 'Aucune raison donnée',
+    message: x.raisonAutre, details: [],
+  };
+}
 
 function normalizeNewsletter(n: NewsletterSubscriber): Submission {
   const isWaitlist = (n.source || '').startsWith('waitlist-') || (n.tags || []).some(t => t.startsWith('waitlist-'));
@@ -272,6 +300,8 @@ const CATEGORY_TABS: { id: CategoryFilter; label: string }[] = [
   { id: 'podcastLive', label: 'Podcast live' },
   { id: 'dosha',      label: 'Dosha' },
   { id: 'guide',      label: 'Guide' },
+  { id: 'choix',      label: 'Choix de la lettre' },
+  { id: 'depart',     label: 'Désabonnements' },
 ];
 
 const TIME_TABS: { id: TimeFilter; label: string }[] = [
@@ -349,6 +379,10 @@ const SubmissionsSection: React.FC = () => {
       const rows: Submission[] = [
         ...bookings.map(normalizeBooking).map(withMember),
         ...subscribers.filter(estUneSoumission).map(normalizeNewsletter).map(withMember),
+        ...subscribers.filter(n => (n as NewsletterSubscriber & { choixLe?: unknown }).choixLe).map(normalizeChoix).map(withMember),
+        // Les départs faits sur le site (les désabonnements importés de
+        // Shopify ou Kajabi n'ont pas de date de départ).
+        ...subscribers.filter(n => n.status === 'unsubscribed' && (n as NewsletterSubscriber & { unsubscribedAt?: unknown }).unsubscribedAt && !(n.tags || []).includes('essai-technique')).map(normalizeDepart).map(withMember),
         ...doshas.map(normalizeDosha).map(withMember),
         ...guides.map(normalizeGuide).map(withMember),
       ];
@@ -435,7 +469,7 @@ const SubmissionsSection: React.FC = () => {
   const affichees = filtered.slice(0, visibles);
 
   const counts = useMemo(() => {
-    const c: Record<CategoryFilter, number> = { all: subs.length, booking: 0, newsletter: 0, waitlist: 0, podcastLive: 0, dosha: 0, guide: 0 };
+    const c: Record<CategoryFilter, number> = { all: subs.length, booking: 0, newsletter: 0, waitlist: 0, podcastLive: 0, dosha: 0, guide: 0, choix: 0, depart: 0 };
     subs.forEach(s => { c[s.category]++; });
     return c;
   }, [subs]);
@@ -506,6 +540,16 @@ const SubmissionsSection: React.FC = () => {
           );
         })}
       </div>
+
+      {cat === 'depart' && (
+        <Card className="p-5">
+          <p className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60 mb-2">Raisons des départs</p>
+          <div className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-[#293027] dark:text-white">
+            {Object.entries(subs.filter(x => x.category === 'depart').reduce((acc, x) => { (x.summary || '').split(' · ').forEach(r => { acc[r] = (acc[r] || 0) + 1; }); return acc; }, {} as Record<string, number>))
+              .sort((a, b) => b[1] - a[1]).map(([r, n]) => <span key={r}>{r} <b>{n}</b></span>)}
+          </div>
+        </Card>
+      )}
 
       {/* Le paquet de cartes du direct : ce que Krystine projette en ondes. */}
       {cartesDirect.length > 0 && (
