@@ -23,6 +23,12 @@ interface Analyse {
   desabonnements: number; raisonsDepart: Record<string, number>; choixEnvoyes: number;
 }
 interface Fiche { id: string; subject: string; analyse?: Analyse; conclusions?: string }
+interface Profils { personnes?: number; parEtiquette?: Record<string, number>; combinaisons?: Record<string, number>; provenance?: Record<string, Record<string, number>>; calculeLe?: { toDate: () => Date } }
+const ETIQ: Record<string, string> = {
+  'interet-choisir': 'Choisir', 'interet-rythme': 'Retrouver mon rythme', 'interet-rester-entiere': 'Rester entière', 'interet-relier': 'Relier', 'interet-eo': 'Intérêt Expérience Origine',
+  'preference-autonomie': 'Avancer à ma façon', 'preference-accompagnement': 'Être accompagnée', 'sans-preference': 'façon non précisée',
+};
+const ORIG: Record<string, string> = { kajabi: 'Kajabi', boutique: 'Boutique', fondatrice: 'Fondatrices', 'ancienne-origine': 'Anciennes d’Origine', podcast: 'Podcast', acheteuse: 'Acheteuses', site: 'Site seulement' };
 interface Robots { robotsDomaines?: Record<string, number>; prevision?: Record<string, number>; calculeLe?: { toDate: () => Date } }
 
 const LIENS: Record<string, string> = {
@@ -52,6 +58,7 @@ const Barres: React.FC<{ valeurs: [string, number][]; total?: number }> = ({ val
 const AnalysePanel: React.FC = () => {
   const [fiches, setFiches] = useState<Fiche[]>([]);
   const [robots, setRobots] = useState<Robots>({});
+  const [profils, setProfils] = useState<Profils>({});
   const [etat, setEtat] = useState<'charge' | 'pret' | 'calcul' | 'erreur'>('charge');
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [enregistre, setEnregistre] = useState<string | null>(null);
@@ -59,10 +66,10 @@ const AnalysePanel: React.FC = () => {
   const charger = async () => {
     if (!db) return;
     const snap = await getDocs(collection(db, 'analyseInfolettre'));
-    const liste: Fiche[] = []; let r: Robots = {};
-    snap.forEach(d => { if (d.id === '_robots') r = d.data() as Robots; else liste.push({ id: d.id, ...(d.data() as Omit<Fiche, 'id'>) }); });
+    const liste: Fiche[] = []; let r: Robots = {}; let p: Profils = {};
+    snap.forEach(d => { if (d.id === '_robots') r = d.data() as Robots; else if (d.id === '_profils') p = d.data() as Profils; else liste.push({ id: d.id, ...(d.data() as Omit<Fiche, 'id'>) }); });
     liste.sort((a, b) => (b.analyse?.envoyeeLe?.toDate().getTime() || 0) - (a.analyse?.envoyeeLe?.toDate().getTime() || 0));
-    setFiches(liste); setRobots(r);
+    setFiches(liste); setRobots(r); setProfils(p);
     setNotes(Object.fromEntries(liste.map(f => [f.id, f.conclusions || ''])));
     setEtat('pret');
   };
@@ -122,6 +129,44 @@ const AnalysePanel: React.FC = () => {
         <EmptyState icon="fa-chart-line">Aucune analyse pour l’instant. Cliquez sur « Actualiser les chiffres ».</EmptyState>
       ) : (
         <>
+          <Card className="p-6">
+            <h3 className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60 mb-1">Profils segmentés</h3>
+            <p className="text-xs text-[#293027]/55 dark:text-white/55 mb-5">
+              {profils.personnes || 0} abonnées actives ont exprimé au moins un choix (carrés cliqués ou « Envoyer mes choix »), robots exclus. Une même personne peut avoir plusieurs motifs.
+            </p>
+            {profils.personnes ? (
+              <div className="grid lg:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60 mb-3">Ce qui les appelle</h4>
+                    <Barres valeurs={Object.entries(profils.parEtiquette || {}).filter(([k]) => k.startsWith('interet-')).sort((a, b) => b[1] - a[1]).map(([k, v]) => [ETIQ[k] || k, v] as [string, number])} total={profils.personnes} />
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60 mb-3">Comment elles aiment avancer</h4>
+                    <Barres valeurs={Object.entries(profils.parEtiquette || {}).filter(([k]) => k.startsWith('preference-')).sort((a, b) => b[1] - a[1]).map(([k, v]) => [ETIQ[k] || k, v] as [string, number])} total={profils.personnes} />
+                  </div>
+                </div>
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60 mb-3">Combinaisons les plus fréquentes</h4>
+                    <Barres valeurs={Object.entries(profils.combinaisons || {}).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([k, v]) => [k.split(/[|+]/).map(x => ETIQ[x] || x).join(k.includes('|') ? ' · ' : ' + '), v] as [string, number])} />
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60 mb-3">D’où elles viennent</h4>
+                    <div className="space-y-2 text-xs">
+                      {Object.entries(profils.provenance || {}).sort((a, b) => (profils.parEtiquette?.[b[0]] || 0) - (profils.parEtiquette?.[a[0]] || 0)).map(([t, o]) => (
+                        <div key={t} className="flex flex-wrap gap-x-3 gap-y-1"><span className="font-semibold text-[#293027] dark:text-white min-w-[10rem]">{ETIQ[t] || t}</span>
+                          {Object.entries(o).sort((a, b) => b[1] - a[1]).map(([k, v]) => <span key={k} className="text-[#293027]/65 dark:text-white/65">{ORIG[k] || k} {v}</span>)}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : <p className="text-sm text-[#293027]/55">Aucun profil pour l’instant.</p>}
+            <p className="mt-5 text-xs text-[#293027]/55 dark:text-white/55">Pour voir les personnes elles-mêmes : section Clients, filtre par étiquette (par exemple « Intérêt · Retrouver mon rythme »).</p>
+          </Card>
+
           <Card className="p-6">
             <h3 className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60 mb-4">D’envoi en envoi</h3>
             <div className="overflow-x-auto">

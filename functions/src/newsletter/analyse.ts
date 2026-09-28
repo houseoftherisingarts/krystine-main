@@ -99,5 +99,32 @@ export const analyserInfolettres = onCall({ region: 'us-central1', timeoutSecond
   const prevision: Record<string, number> = {};
   for (const d of actives.docs) { const dm = domaine(String(d.get('email') || '')); if (robotsDomaines[dm]) prevision[dm] = (prevision[dm] || 0) + 1; }
   await db.doc('analyseInfolettre/_robots').set({ calculeLe: Timestamp.now(), robotsDomaines, prevision }, { merge: false });
-  return { ok: true, lettres: resumes.length };
+  // Les profils segmentés : qui a coché quoi, les combinaisons motif × façon
+  // d'avancer, et d'où viennent ces personnes. Une personne = une adresse.
+  const MOTIFS = ['interet-choisir', 'interet-rythme', 'interet-rester-entiere', 'interet-relier', 'interet-eo'];
+  const FACONS = ['preference-autonomie', 'preference-accompagnement'];
+  const PROVENANCES: Record<string, string> = { 'kajabi-abonne': 'kajabi', 'shopify-import': 'boutique', 'origine-fondatrice': 'fondatrice', 'anciennes-origine': 'ancienne-origine', 'podcast': 'podcast', 'acheteuse-ancien-systeme': 'acheteuse' };
+  const fichesProfil = await db.collection('newsletter').where('tags', 'array-contains-any', [...MOTIFS, ...FACONS]).get();
+  const parPersonne = new Map<string, Set<string>>();
+  for (const d of fichesProfil.docs) {
+    if (d.get('status') !== 'active') continue;
+    const e = String(d.get('email') || '').toLowerCase();
+    const set = parPersonne.get(e) || new Set<string>();
+    for (const t of (d.get('tags') || []) as string[]) set.add(t);
+    parPersonne.set(e, set);
+  }
+  const parEtiquette: Record<string, number> = {};
+  const combinaisons: Record<string, number> = {};
+  const provenance: Record<string, Record<string, number>> = {};
+  for (const tags of parPersonne.values()) {
+    const m = MOTIFS.filter(t => tags.has(t)); const f = FACONS.filter(t => tags.has(t));
+    for (const t of [...m, ...f]) parEtiquette[t] = (parEtiquette[t] || 0) + 1;
+    for (const x of m) for (const y of (f.length ? f : ['sans-preference'])) combinaisons[`${x}|${y}`] = (combinaisons[`${x}|${y}`] || 0) + 1;
+    for (let i = 0; i < m.length; i++) for (let j = i + 1; j < m.length; j++) combinaisons[`${m[i]}+${m[j]}`] = (combinaisons[`${m[i]}+${m[j]}`] || 0) + 1;
+    const origines = Object.entries(PROVENANCES).filter(([t]) => tags.has(t)).map(([, n]) => n);
+    for (const t of [...m, ...f]) { provenance[t] = provenance[t] || {}; for (const o of (origines.length ? origines : ['site'])) provenance[t][o] = (provenance[t][o] || 0) + 1; }
+  }
+  await db.doc('analyseInfolettre/_profils').set({ calculeLe: Timestamp.now(), personnes: parPersonne.size, parEtiquette, combinaisons, provenance }, { merge: false });
+
+  return { ok: true, lettres: resumes.length, profils: parPersonne.size };
 });

@@ -1,3 +1,4 @@
+import { libelleTag } from '../../../lib/paliers';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   getAllMembers, getNewsletterSubscribers, bulkAddNewsletterSubscribers, updateMember, desabonnerAbonnements,
@@ -68,7 +69,7 @@ const sourceLabel = (key: string): string => {
       case 'kajabi':            return 'Import de l\'ancien site';
       case 'origine':           return 'Expérience Origine';
       case 'main':              return 'Infolettre principale';
-      default:                  return base;
+      default:                  return libelleTag(base);
     }
   })();
   return isGoogle ? `${pretty} · Google` : pretty;
@@ -106,7 +107,8 @@ function mergeContacts(members: MemberDoc[], subs: NewsletterSubscriber[]): Cont
     // Depuis le 27 sept. 2026, une abonnée déjà connue qui rejoint une liste
     // d'attente garde sa fiche : la liste vit dans ses étiquettes. On la range
     // donc aussi sous cette liste, comme si c'était sa source.
-    const listesTags = (s.tags || []).filter(t => t.startsWith('waitlist-') && t !== src);
+    // Les intérêts et les façons d'avancer cochés dans les lettres (27 sept. 2026) servent aussi de vues.
+    const listesTags = (s.tags || []).filter(t => (t.startsWith('waitlist-') || t.startsWith('interet-') || t.startsWith('preference-')) && t !== src);
     const subDate = s.subscribedAt?.toDate();
     const abonnement = s.id ? [{ id: s.id, status: s.status || 'active' }] : [];
     const existing = map.get(key);
