@@ -2740,5 +2740,19 @@
       "public/assets-manifest.json",
       "src/lib/changelog.ts"
     ]
+  },
+  {
+    "quand": "2026-09-28T12:14:10.608Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "fd4a90fe",
+    "message": "Clients : libellés des étiquettes des acheteuses du Vata autonome et du Vata guidé rapatriées de Kajabi (326 personnes)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/paliers.ts"
+    ]
   }
 ]
