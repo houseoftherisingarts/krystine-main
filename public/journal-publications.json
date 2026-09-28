@@ -2712,5 +2712,19 @@
       "src/pages/admin/sections/newsletter/DesabonnementsPanel.tsx",
       "src/pages/admin/sections/newsletter/SequencesPanel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-28T11:22:02.319Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b254773e",
+    "message": "Admin › Formulaires : la page s'ouvre sur une vue d'ensemble par catégorie (total, cette semaine, 30 jours, tendance, huit dernières semaines); la liste s'ouvre en cliquant une catégorie",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/SubmissionsSection.tsx"
+    ]
   }
 ]
