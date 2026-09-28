@@ -288,11 +288,12 @@ function normalizeGuide(g: GuideResponse): Submission {
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
-type CategoryFilter = 'all' | FormCategory;
+type CategoryFilter = 'apercu' | 'all' | FormCategory;
 type TimeFilter = 'all' | '7d' | '30d' | '90d';
 type DoshaFilter = 'all' | 'Vata' | 'Pitta' | 'Kapha' | 'Tridoshic';
 
 const CATEGORY_TABS: { id: CategoryFilter; label: string }[] = [
+  { id: 'apercu',     label: 'Vue d’ensemble' },
   { id: 'all',        label: 'Toutes' },
   { id: 'booking',    label: 'Réservations' },
   { id: 'newsletter', label: 'Infolettre' },
@@ -322,7 +323,8 @@ const DOSHA_TABS: { id: DoshaFilter; label: string; color: string }[] = [
 const SubmissionsSection: React.FC = () => {
   const [subs, setSubs] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
-  const [cat, setCat] = useState<CategoryFilter>('all');
+  // Par défaut, la vue d'ensemble par catégorie, pas la longue liste (Krystine, 28 sept. 2026).
+  const [cat, setCat] = useState<CategoryFilter>('apercu');
   const [time, setTime] = useState<TimeFilter>('all');
   const [dosha, setDosha] = useState<DoshaFilter>('all');
   const [sourceFilter, setSourceFilter] = useState<string>('all');
@@ -469,7 +471,7 @@ const SubmissionsSection: React.FC = () => {
   const affichees = filtered.slice(0, visibles);
 
   const counts = useMemo(() => {
-    const c: Record<CategoryFilter, number> = { all: subs.length, booking: 0, newsletter: 0, waitlist: 0, podcastLive: 0, dosha: 0, guide: 0, choix: 0, depart: 0 };
+    const c: Record<CategoryFilter, number> = { apercu: subs.length, all: subs.length, booking: 0, newsletter: 0, waitlist: 0, podcastLive: 0, dosha: 0, guide: 0, choix: 0, depart: 0 };
     subs.forEach(s => { c[s.category]++; });
     return c;
   }, [subs]);
@@ -639,6 +641,45 @@ const SubmissionsSection: React.FC = () => {
         </GhostButton>
       </div>
 
+      {cat === 'apercu' && (() => {
+        // Une carte par catégorie : le total, les 7 et 30 derniers jours, la
+        // tendance contre la semaine d'avant, et les huit dernières semaines.
+        const maintenant = Date.now(); const J = 86400e3;
+        const cartes = (Object.keys(CATEGORY_META) as FormCategory[]).map(k => {
+          const dates = subs.filter(x => x.category === k).map(x => x.createdAt?.toMillis?.() ?? 0);
+          const dans = (a: number, b: number) => dates.filter(t => t > maintenant - a * J && t <= maintenant - b * J).length;
+          const semaines = Array.from({ length: 8 }, (_, i) => dans(7 * (8 - i), 7 * (7 - i)));
+          return { k, total: dates.length, s7: dans(7, 0), s7avant: dans(14, 7), s30: dans(30, 0), semaines };
+        }).sort((a, b) => b.s30 - a.s30 || b.total - a.total);
+        return (
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            {cartes.map(c => {
+              const meta = CATEGORY_META[c.k]; const max = Math.max(1, ...c.semaines);
+              const ecart = c.s7 - c.s7avant;
+              return (
+                <button key={c.k} type="button" onClick={() => setCat(c.k)} className="text-left">
+                  <Card className="p-5 h-full hover:border-[#BA7B39] transition-colors">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className={`inline-flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 rounded-full ${meta.badge}`}><i className={`fa-solid ${meta.icon}`} />{meta.label}</span>
+                      <span className="font-serif text-3xl text-[#293027] dark:text-white tabular-nums">{c.total}</span>
+                    </div>
+                    <div className="mt-4 flex items-end gap-1 h-12" title="Les huit dernières semaines">
+                      {c.semaines.map((n, i) => <span key={i} className="flex-1 rounded-t bg-[#BA7B39]/70" style={{ height: `${Math.max(4, (100 * n) / max)}%`, opacity: n ? 1 : 0.25 }} />)}
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#293027]/70 dark:text-white/70">
+                      <span><b className="text-[#293027] dark:text-white">{c.s7}</b> cette semaine</span>
+                      <span><b className="text-[#293027] dark:text-white">{c.s30}</b> en 30 jours</span>
+                      {(c.s7 || c.s7avant) ? <span className={ecart > 0 ? 'text-[#4A5D23]' : ecart < 0 ? 'text-[#BC4A3C]' : ''}>{ecart > 0 ? `+${ecart}` : ecart} contre la semaine d’avant</span> : null}
+                    </div>
+                  </Card>
+                </button>
+              );
+            })}
+          </div>
+        );
+      })()}
+
+      {cat !== 'apercu' && (<>
       {/* Results */}
       <div className="text-[11px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50">
         {filtered.length} {filtered.length === 1 ? 'soumission' : 'soumissions'}
@@ -757,6 +798,7 @@ const SubmissionsSection: React.FC = () => {
           )}
         </div>
       )}
+      </>)}
 
       {cartes && (
         <QuestionCards
