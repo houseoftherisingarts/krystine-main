@@ -41,7 +41,9 @@ export function nettoyerDescription(html: string): string {
   const sansCache = html.replace(/<(span|strong|em|b)\b[^>]*color:\s*rgb\(\s*255\s*,\s*255\s*,\s*255\s*\)[^>]*>[\s\S]*?<\/\1>/gi, '');
   return sansCache
     .split(/<\/p>|<br\s*\/?>|\n/i)
-    .map(l => entites(l.replace(/<[^>]+>/g, '')).replace(/\s+/g, ' ').trim())
+    // Décoder d'abord, puis retirer toute balise : « &lt;a href…&gt; » ne doit
+    // jamais redevenir une vraie balise dans la lettre.
+    .map(l => entites(l).replace(/<[^>]*>?/g, '').replace(/[<>]/g, '').replace(/\s+/g, ' ').trim())
     .filter(l => l
       && !/https?:\/\/|www\.|\.(ca|com|fm)\b/i.test(l)
       && !/^par ici/i.test(l)
