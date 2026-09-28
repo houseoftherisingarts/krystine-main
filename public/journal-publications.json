@@ -2826,5 +2826,26 @@
       "public/accueil/index.html",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-09-28T15:31:48.982Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "160471e5",
+    "message": "Conférencière (/conferenciere) : bande « Vue et entendue à » (MAtv, Salut Bonjour, Santé la vie, 98,5 FM, Coup de Pouce, Mieux-Être, Bien) et lien vers le kit de presse; Conférences ajouté au menu principal (site et accueil), menu resserré entre 1280 et 1700 px pour que tout tienne; quiz (/quiz) : inscription à l'infolettre juste sous le résultat, avec l'étiquette du dosha; chaque nouvelle inscription reçoit l'étiquette entree-site, point de départ de la séquence « Bienvenue · nouvelles personnes » (éteinte, fiche stratégique prête dans admin › Infolettre › Séquences)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/inscrire.ts",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "scripts/qa/_tmp-nav 2.mjs",
+      "scripts/qa/_tmp-nav 3.mjs",
+      "src/components/layout/NavBar.tsx",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
