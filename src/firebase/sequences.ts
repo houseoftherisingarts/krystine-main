@@ -10,13 +10,17 @@ import {
 // functions/src/newsletter/sequences.ts; ici, la lecture et l'écriture depuis
 // l'admin, et l'appel de test.
 
-export interface Etape { cle: string; titre?: string; delaiHeures: number; newsletterId: string }
+// `intention` : ce que la lettre doit faire vivre, écrit avant la lettre elle-même (27 sept. 2026).
+export interface Etape { cle: string; titre?: string; delaiHeures: number; newsletterId: string; intention?: string }
+/** La réflexion d'une séquence, posée avant d'écrire ses lettres (27 sept. 2026). */
+export interface StrategieSequence { intention?: string; pourQui?: string; promesse?: string; destination?: string; mesure?: string; notes?: string }
 export interface Sequence {
   id: string;
   titre: string;
   actif?: boolean;
   declencheur?: { type: 'achat'; formationId: string } | { type: 'etiquette'; tag: string } | { type: 'manuel' };
   etapes?: Etape[];
+  strategie?: StrategieSequence;
   stats?: Record<string, number>;
   dernierEnvoi?: Timestamp;
   creeLe?: Timestamp;

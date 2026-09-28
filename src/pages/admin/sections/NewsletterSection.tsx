@@ -6,6 +6,7 @@ import LivePanel from './newsletter/LivePanel';
 import CalendarPanel from './newsletter/CalendarPanel';
 import JournalPanel from './newsletter/JournalPanel';
 import AnalysePanel from './newsletter/AnalysePanel';
+import DesabonnementsPanel from './newsletter/DesabonnementsPanel';
 import LancementPanel from './newsletter/LancementPanel';
 import SequencesPanel from './newsletter/SequencesPanel';
 import AutomaticsPanel from './newsletter/AutomaticsPanel';
@@ -17,7 +18,7 @@ type View =
   | { kind: 'list' }
   | { kind: 'composer'; id: string | null };
 
-type Tab = 'newsletters' | 'gabarits' | 'avis' | 'terminal' | 'calendar' | 'journal' | 'analyse' | 'lancement' | 'sequences' | 'subscribers' | 'live' | 'automatics';
+type Tab = 'newsletters' | 'gabarits' | 'avis' | 'terminal' | 'calendar' | 'journal' | 'analyse' | 'desabonnements' | 'lancement' | 'sequences' | 'subscribers' | 'live' | 'automatics';
 
 const TABS: Array<{ key: Tab; icon: string; label: string }> = [
   { key: 'newsletters', icon: 'fa-envelope-open-text', label: 'Infolettres' },
@@ -27,6 +28,7 @@ const TABS: Array<{ key: Tab; icon: string; label: string }> = [
   { key: 'calendar', icon: 'fa-calendar-days', label: 'Calendrier' },
   { key: 'journal', icon: 'fa-book', label: 'Journal' },
   { key: 'analyse', icon: 'fa-chart-line', label: 'Analyse' },
+  { key: 'desabonnements', icon: 'fa-door-open', label: 'Désabonnements' },
   { key: 'lancement', icon: 'fa-rocket', label: 'Lancement' },
   { key: 'sequences', icon: 'fa-timeline', label: 'Séquences' },
   { key: 'subscribers', icon: 'fa-users', label: 'Abonnés' },
@@ -69,6 +71,7 @@ const NewsletterSection: React.FC = () => {
       {tab === 'calendar' && <CalendarPanel onOpen={open} onNew={() => open(null)} />}
       {tab === 'journal' && <JournalPanel />}
       {tab === 'analyse' && <AnalysePanel />}
+      {tab === 'desabonnements' && <DesabonnementsPanel />}
       {tab === 'lancement' && <LancementPanel onOpen={open} />}
       {tab === 'sequences' && <SequencesPanel onOpen={open} />}
       {tab === 'subscribers' && <SubscribersPanel />}

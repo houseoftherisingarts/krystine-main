@@ -1,12 +1,26 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { getNewsletters, type NewsletterDoc } from '../../../../firebase/firestore';
+import { getNewsletters, nouvelleLettreDepuis, type NewsletterDoc } from '../../../../firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../../../../firebase';
 import { getFormations, type Formation } from '../../../../firebase/formations';
 import {
   ecouterSequences, ecouterInscrits, creerSequence, enregistrerSequence, supprimerSequence,
-  marquerLettreSequence, testerSequence, compterInscrits, type Sequence, type Etape, type Inscrit,
+  marquerLettreSequence, testerSequence, compterInscrits, type Sequence, type Etape, type Inscrit, type StrategieSequence,
 } from '../../../../firebase/sequences';
 import { libelleTag } from '../../../../lib/paliers';
-import { Card, Input, Label, PrimaryButton, GhostButton, DangerButton, ToggleSwitch, EmptyState } from '../../primitives';
+import { Card, Input, Label, PrimaryButton, GhostButton, DangerButton, ToggleSwitch, EmptyState, Textarea } from '../../primitives';
+
+// La réflexion avant les lettres (Krystine, 27 sept. 2026) : pourquoi la
+// séquence existe, pour qui, ce qu'elle promet, où elle mène, comment nous
+// saurons qu'elle marche. Les lettres s'écrivent ensuite, étape par étape.
+const CHAMPS_STRATEGIE: { cle: keyof StrategieSequence; libelle: string; aide: string }[] = [
+  { cle: 'intention', libelle: 'Pourquoi cette séquence', aide: 'Ce que nous voulons offrir à ces personnes.' },
+  { cle: 'pourQui', libelle: 'Pour qui', aide: 'Ce qu’elles vivent quand elles cochent ce carré.' },
+  { cle: 'promesse', libelle: 'Ce qu’elles vont recevoir', aide: 'Le fil des lettres, en une phrase.' },
+  { cle: 'destination', libelle: 'Où elle mène', aide: 'La porte ouverte à la fin (sans pression).' },
+  { cle: 'mesure', libelle: 'Comment nous saurons que cela marche', aide: 'Ce que nous regarderons dans l’Analyse.' },
+  { cle: 'notes', libelle: 'Notes', aide: 'Idées, histoires, épisodes, témoignages à placer.' },
+];
 
 // Les séquences : une suite de lettres qui partent toutes seules, à tant de
 // jours après l'entrée d'une personne. La première sert l'accueil d'une
@@ -30,6 +44,16 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
   const [message, setMessage] = useState<string | null>(null);
   const [occupe, setOccupe] = useState(false);
   const [compte, setCompte] = useState<Record<string, number>>({});
+  // La réflexion d'ensemble, au-dessus de toutes les séquences (admin seulement).
+  const [carte, setCarte] = useState('');
+  const [carteOuverte, setCarteOuverte] = useState(true);
+  const [carteMsg, setCarteMsg] = useState<string | null>(null);
+  useEffect(() => { if (db) getDoc(doc(db, 'analyseInfolettre', '_strategie')).then(d => setCarte(String(d.data()?.contenu || ''))).catch(() => {}); }, []);
+  const garderCarte = async () => {
+    if (!db) return;
+    await setDoc(doc(db, 'analyseInfolettre', '_strategie'), { contenu: carte, maj: serverTimestamp() }, { merge: true });
+    setCarteMsg('Enregistré.'); window.setTimeout(() => setCarteMsg(null), 2000);
+  };
 
   useEffect(() => ecouterSequences(s => { setSeqs(s); setCourante(c => c || s[0]?.id || null); }), []);
   useEffect(() => { getNewsletters().then(setLettres); getFormations().then(setFormations); }, []);
@@ -53,11 +77,30 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
     setOccupe(true); setMessage(null);
     try {
       const etapes = (brouillon.etapes || []).map(e => ({ ...e, cle: e.cle || slug(e.titre || 'etape'), delaiHeures: Math.max(0, Number(e.delaiHeures) || 0) }));
-      await enregistrerSequence(brouillon.id, { titre: brouillon.titre, actif: !!brouillon.actif, declencheur: brouillon.declencheur, etapes });
+      await enregistrerSequence(brouillon.id, { titre: brouillon.titre, actif: !!brouillon.actif, declencheur: brouillon.declencheur, etapes, strategie: brouillon.strategie || {} });
       for (const e of etapes) if (e.newsletterId) await marquerLettreSequence(e.newsletterId).catch(() => {});
       setMessage('Séquence enregistrée.');
       getNewsletters().then(setLettres);
     } catch (e: any) { setMessage(e?.message || 'Échec de l\'enregistrement.'); }
+    finally { setOccupe(false); }
+  };
+
+  // « Créer la lettre » : un brouillon neuf dans le composeur, avec l'en-tête de
+  // la dernière lettre générale, rattaché à l'étape et enregistré tout de suite.
+  const creerLettre = async (i: number) => {
+    if (!brouillon) return;
+    const e = (brouillon.etapes || [])[i];
+    const modele = lettres.find(l => l.status === 'sent' && l.role !== 'sequence') || lettres[0];
+    setOccupe(true); setMessage(null);
+    try {
+      const id = await nouvelleLettreDepuis({ ...(modele || {}), subject: e.titre || '', preheader: '', blocks: [], audience: { mode: 'all' } } as any, `Séquence · ${brouillon.titre} · ${e.titre || `étape ${i + 1}`}`);
+      const etapes = (brouillon.etapes || []).map((x, j) => (j === i ? { ...x, newsletterId: id, cle: x.cle || slug(x.titre || `etape-${i + 1}`) } : x));
+      await enregistrerSequence(brouillon.id, { titre: brouillon.titre, actif: !!brouillon.actif, declencheur: brouillon.declencheur, etapes, strategie: brouillon.strategie || {} });
+      await marquerLettreSequence(id).catch(() => {});
+      maj({ etapes });
+      getNewsletters().then(setLettres);
+      onOpen(id);
+    } catch (err: any) { setMessage(err?.message || 'La lettre n’a pas pu être créée.'); }
     finally { setOccupe(false); }
   };
 
@@ -104,6 +147,20 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
   };
 
   return (
+    <div className="space-y-6">
+    <Card className="p-5">
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="font-serif text-xl text-[#293027] dark:text-white">La réflexion d’ensemble</h3>
+        <GhostButton onClick={() => setCarteOuverte(o => !o)}>{carteOuverte ? 'Replier' : 'Déplier'}</GhostButton>
+      </div>
+      {carteOuverte && (
+        <div className="mt-3 space-y-2">
+          <p className="text-xs text-[#293027]/55 dark:text-white/55">La carte de toutes les séquences : quels motifs, quel ordre, quelles portes, et comment elles se relient à la lettre générale. Réservé à l’admin.</p>
+          <Textarea rows={12} value={carte} onChange={e => setCarte(e.target.value)} />
+          <div className="flex items-center gap-3"><GhostButton onClick={garderCarte}><i className="fa-solid fa-floppy-disk" /> Enregistrer la réflexion</GhostButton>{carteMsg && <span className="text-xs text-[#7d6330]">{carteMsg}</span>}</div>
+        </div>
+      )}
+    </Card>
     <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
       <div className="space-y-3">
         <PrimaryButton onClick={nouvelle} className="w-full"><i className="fa-solid fa-plus" /> Nouvelle séquence</PrimaryButton>
@@ -159,6 +216,20 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
             </div>
           </Card>
 
+          <Card className="p-5 space-y-4">
+            <h3 className="font-serif text-xl text-[#293027] dark:text-white">La réflexion de cette séquence</h3>
+            <div className="grid gap-4 md:grid-cols-2">
+              {CHAMPS_STRATEGIE.map(c => (
+                <div key={c.cle} className={c.cle === 'notes' ? 'md:col-span-2' : ''}>
+                  <Label>{c.libelle}</Label>
+                  <Textarea rows={c.cle === 'notes' ? 5 : 3} value={brouillon.strategie?.[c.cle] || ''} placeholder={c.aide}
+                    onChange={e => maj({ strategie: { ...(brouillon.strategie || {}), [c.cle]: e.target.value } })} />
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-[#293027]/55 dark:text-white/55">Enregistrée avec la séquence (bouton « Enregistrer » plus bas).</p>
+          </Card>
+
           <Card className="p-5 space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="font-serif text-xl text-[#293027] dark:text-white">Les étapes</h3>
@@ -185,8 +256,12 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
                 </div>
                 <div className="flex items-center gap-1.5 whitespace-nowrap">
                   {e.newsletterId && <GhostButton onClick={() => onOpen(e.newsletterId)} title="Ouvrir la lettre dans le composeur"><i className="fa-solid fa-pen" /></GhostButton>}
+                  {!e.newsletterId && <GhostButton onClick={() => creerLettre(i)} disabled={occupe} title="Créer la lettre de cette étape dans le composeur"><i className="fa-solid fa-feather" /> Créer la lettre</GhostButton>}
                   {e.newsletterId && e.cle && <GhostButton onClick={() => tester(e)} disabled={occupe} title="Envoyer cette étape tout de suite à une adresse"><i className="fa-solid fa-paper-plane" /></GhostButton>}
                   <DangerButton onClick={() => maj({ etapes: (brouillon.etapes || []).filter((_, j) => j !== i) })} title="Retirer l'étape"><i className="fa-solid fa-trash" /></DangerButton>
+                </div>
+                <div className="md:col-span-4">
+                  <Textarea rows={2} value={e.intention || ''} placeholder="L’intention de cette lettre : ce qu’elle doit faire vivre, l’histoire ou l’épisode à y mettre." onChange={ev => majEtape(i, { intention: ev.target.value })} />
                 </div>
                 {e.cle && <div className="md:col-span-4 text-[11px] text-[#8B4A2F]">{brouillon.stats?.[e.cle] || 0} envoi{(brouillon.stats?.[e.cle] || 0) > 1 ? 's' : ''} jusqu'ici</div>}
               </div>
@@ -230,6 +305,7 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
           </Card>
         </div>
       )}
+    </div>
     </div>
   );
 };
