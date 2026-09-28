@@ -62,6 +62,8 @@ const LIBELLES: Record<string, string> = {
   'depart-pas-inscrite': 'Départ · ne se souvient pas de s’être inscrite',
   'depart-autrement': 'Départ · préfère suivre autrement',
   'depart-autre': 'Départ · autre raison',
+  'kajabi-vata-autonome': 'A eu le Vata autonome (Kajabi)',
+  'kajabi-vata-guide': 'A eu le Vata guidé, cohorte automne 2024 (Kajabi)',
   'interet-choisir': 'Intérêt · Choisir',
   'interet-rythme': 'Intérêt · Retrouver mon rythme',
   'interet-rester-entiere': 'Intérêt · Rester entière',
