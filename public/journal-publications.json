@@ -2775,5 +2775,19 @@
       "src/pages/admin/sections/KajabiCodesSection.tsx",
       "src/pages/admin/sections/KajabiMigrationPanel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-28T13:52:02.406Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "6edc87ba",
+    "message": "Consignes d'Iris (Terminal) : lire la passerelle du coffre avec Cowork en ouvrant chaque session et y laisser une entrée en la fermant",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/iris/iris_terminal.md"
+    ]
   }
 ]
