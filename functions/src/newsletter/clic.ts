@@ -78,8 +78,11 @@ export const clic = onRequest(
           }
         } else {
           const h = createHash('sha1').update(destination).digest('hex').slice(0, 12);
+          // Jamais `stats: {}` : avec merge, une carte vide REMPLACE tous les
+          // compteurs de la lettre (ils s'effaçaient au deuxième clic d'une même
+          // personne, corrigé le 27 sept. 2026).
           await db.doc(`newsletters/${n}`).set({
-            stats: { ...(deja ? {} : { clicks: FieldValue.increment(1) }) },
+            ...(deja ? {} : { stats: { clicks: FieldValue.increment(1) } }),
             clicsLiens: { [h]: { n: FieldValue.increment(1), url: destination } },
           }, { merge: true });
           // `?interet=` pose le motif, `?preference=` la façon d'avancer; une
