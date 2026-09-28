@@ -2847,5 +2847,19 @@
       "src/pages/QuizLoeuvre.tsx",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-28T20:06:49.829Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "3987805c",
+    "message": "Espace client (/compte) : après l'achat d'une formation, un merci « Votre accès est prêt » avec le bouton Commencer vers le cours (liste Vata, parcours d'achat); séquence « Accueil · Programme Vata » préparée, éteinte, fiche stratégique dans admin › Infolettre › Séquences",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/ClientPortal.tsx"
+    ]
   }
 ]
