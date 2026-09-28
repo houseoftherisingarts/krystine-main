@@ -2726,5 +2726,19 @@
       "public/assets-manifest.json",
       "src/pages/admin/sections/SubmissionsSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-28T11:24:18.461Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "464b51e3",
+    "message": "Journal des changements (admin) : les journées du 27 et du 28 septembre 2026 inscrites; les liens vers l'Infolettre corrigés",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/changelog.ts"
+    ]
   }
 ]
