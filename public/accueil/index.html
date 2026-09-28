@@ -1679,8 +1679,41 @@
     ? `http://127.0.0.1:5001/${PROJET}/us-central1/inscrireInfolettre`
     : `https://us-central1-${PROJET}.cloudfunctions.net/inscrireInfolettre`;
 
+  // D'où vient la personne (voir src/lib/provenance.ts, même clé, même règle) :
+  // la plupart des liens partagés arrivent ici, sur l'accueil statique, où
+  // React ne tourne pas. La première arrivée se garde 60 jours; un lien marqué
+  // (utm_source, via, ref, src) la remplace. Jointe seulement à une inscription.
+  const CLE_PROV = 'ksl.provenance', DUREE_PROV = 60 * 864e5;
+  const propre = (v, max = 60) => String(v || '').trim().toLowerCase().normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, max);
+  const lireProv = () => {
+    try {
+      const p = JSON.parse(localStorage.getItem(CLE_PROV) || 'null');
+      return p && typeof p.le === 'number' && Date.now() - p.le <= DUREE_PROV ? p : null;
+    } catch { return null; }
+  };
+  try {
+    const q = new URLSearchParams(location.search);
+    const marquee = propre(q.get('utm_source') || q.get('via') || q.get('ref') || q.get('src'));
+    if (marquee || !lireProv()) {
+      let referent;
+      try {
+        const h = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+        if (h && !h.endsWith('krystinestlaurent.ca') && h !== location.hostname) referent = h;
+      } catch {}
+      const p = { source: marquee || (referent ? propre(referent) : 'direct'), page: location.pathname.slice(0, 120), le: Date.now() };
+      for (const [k, cle] of [['utm_medium', 'medium'], ['utm_campaign', 'campagne'], ['utm_content', 'contenu']]) {
+        const v = propre(q.get(k)); if (v) p[cle] = v;
+      }
+      if (referent) p.referent = referent;
+      localStorage.setItem(CLE_PROV, JSON.stringify(p));
+    }
+  } catch {}
+
   window.__nlSubscribe = async (email, source, tags, extra) => {
     const sup = {};
+    const prov = lireProv();
+    if (prov) sup.provenance = prov;
     if (extra) for (const [k, v] of Object.entries(extra)) {
       const t = typeof v === 'string' ? v.trim() : v;
       if (t) sup[k] = t;

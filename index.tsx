@@ -2,6 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { loadDictionary } from './src/lib/i18n/lang';
+import { noterProvenance } from './src/lib/provenance';
+
+// La voie d'arrivée (utm_source, via…) se note avant tout : voir src/lib/provenance.ts.
+noterProvenance();
 
 // L'aperçu des cartes de chaleur (?vh=apercu) montre la version sans mouvement
 // du site : rien ne défile dans ce cadre, et une section révélée au défilement

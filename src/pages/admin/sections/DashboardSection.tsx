@@ -11,6 +11,7 @@ import { PALIERS, STATUTS, type CommunauteStats } from '../../../lib/paliers';
 import CommandesStripeCard from './dashboard/CommandesStripeCard';
 import RapportDuJourCard from './dashboard/RapportDuJourCard';
 import NouveauxMembresCard from './dashboard/NouveauxMembresCard';
+import CibleNouvellesPersonnesCard from './dashboard/CibleNouvellesPersonnesCard';
 import CompteurCliquable from './dashboard/DetailCompteur';
 
 interface Stat { label: string; value: number; icon: string; accent: string; hint?: string; }
@@ -113,6 +114,9 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
           </Card>
         ))}
       </div>
+
+      {/* La priorité n° 1 depuis le 28 sept. 2026 : 3 000 nouvelles personnes avant le 15 décembre */}
+      <CibleNouvellesPersonnesCard />
 
       {/* Le rapport du jour, en tête, juste à côté des ventes Stripe */}
       <RapportDuJourCard />

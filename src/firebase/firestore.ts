@@ -8,6 +8,7 @@ import {
   writeBatch, limit, getCountFromServer, arrayUnion,
   type Unsubscribe,
 } from 'firebase/firestore';
+import { lireProvenance } from '../lib/provenance';
 
 const noDb = () => { throw new Error('[Firestore] Firebase not configured. Add VITE_FIREBASE_* to .env.local'); };
 
@@ -250,6 +251,10 @@ export async function addNewsletterSubscriber(
   // quelle version d'une infolettre la personne reçoit. Elle se lit dans le
   // navigateur (localStorage, ?lang=), pas sur le serveur, donc elle voyage.
   if (clean.lang !== 'fr' && clean.lang !== 'en') clean.lang = getLang();
+  // La voie d'arrivée de la personne (src/lib/provenance.ts), pour compter
+  // d'où viennent les nouvelles personnes.
+  const prov = lireProvenance();
+  if (prov && !clean.provenance) clean.provenance = prov;
   invalidateNewsletterSubscribers();
   const appeler = httpsCallable<Record<string, any>, { ok: boolean; id: string; status: string }>(
     getFunctions(app, 'us-central1'), 'inscrireInfolettre',

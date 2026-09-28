@@ -5,6 +5,7 @@ import { loginWithGoogle } from '../firebase/auth';
 import { addNewsletterSubscriber, getMember, updateMember } from '../firebase/firestore';
 import { points } from '../firebase/points';
 import CompteUpsell from './CompteUpsell';
+import { trackLead } from '../lib/track';
 
 type Variant = 'dark' | 'light';
 type Status = 'idle' | 'sending' | 'email-success' | 'google-success' | 'error';
@@ -94,6 +95,9 @@ const NewsletterSignup: React.FC<Props> = ({
       if (user?.uid) {
         try { await points.newsletterSigned(user.uid, source); } catch { /* non-fatal */ }
       }
+      // Une inscription est un contact (Lead) pour le Pixel et GA4 : sans lui,
+      // les inscriptions de ce formulaire, le plus utilisé du site, ne comptaient pas.
+      trackLead(source);
       setStatus('email-success');
       setEmail('');
     } catch (err: any) {
@@ -140,6 +144,7 @@ const NewsletterSignup: React.FC<Props> = ({
           } catch { /* non-fatal — signup succeeded even if CRM write fails */ }
         }
       }
+      trackLead(`${source}_google`);
       setStatus('google-success');
     } catch (err: any) {
       // Popup closed by user is not a real error.

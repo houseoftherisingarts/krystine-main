@@ -75,6 +75,25 @@ export const inscrireInfolettre = onCall(
     // statut vient d'ailleurs que d'un de nos formulaires : on le ramène.
     const status = d.status === 'pending' ? 'pending' : 'active';
 
+    // La voie d'arrivée (src/lib/provenance.ts) : d'où vient cette personne,
+    // pour compter les nouvelles personnes par voie (Krystine, 28 sept. 2026 :
+    // 3 000 nouvelles personnes avant le 15 décembre). Chaque champ est
+    // retaillé ici, rien du navigateur n'entre tel quel. Une voie marquée
+    // (autre que « direct ») pose aussi l'étiquette via-<voie>, qui filtre la
+    // liste et peut déclencher une séquence.
+    const provBrute = (d.provenance && typeof d.provenance === 'object') ? d.provenance as Record<string, unknown> : null;
+    const cle = (v: unknown, max = 60) => String(v ?? '').trim().toLowerCase().replace(/[^a-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, max) || undefined;
+    let provenance: Record<string, unknown> | undefined;
+    if (provBrute && cle(provBrute.source)) {
+      provenance = { source: cle(provBrute.source) };
+      for (const k of ['medium', 'campagne', 'contenu'] as const) { const v = cle(provBrute[k]); if (v) provenance[k] = v; }
+      const page = texte(provBrute.page, 120); if (page) provenance.page = page;
+      const ref = cle(provBrute.referent, 120); if (ref) provenance.referent = ref;
+      const le = Number(provBrute.le);
+      if (Number.isFinite(le) && le > 1.6e12 && le <= Date.now() + 864e5) provenance.arriveeLe = new Date(le);
+      if (provenance.source !== 'direct' && tags.length < 20) tags.push(`via-${provenance.source}`.slice(0, 60));
+    }
+
     const fiche: Record<string, unknown> = {
       email,
       source,
@@ -86,6 +105,7 @@ export const inscrireInfolettre = onCall(
       // reçoit rien, et Krystine tranche dans Admin › Infolettre › Abonnés.
       ...champsRobot(email, tags, status),
     };
+    if (provenance) fiche.provenance = provenance;
 
     const poser = (cle: string, v: string | undefined) => { if (v) fiche[cle] = v; };
     poser('firstName', texte(d.firstName, 80));
