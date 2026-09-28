@@ -2666,5 +2666,20 @@
       "src/pages/admin/sections/newsletter/NewsletterList.tsx",
       "src/pages/admin/sections/newsletter/SequencesPanel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-28T01:09:58.467Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "f2ec9cac",
+    "message": "Brouillon automatique du podcast : la description de l'épisode est décodée avant que toute balise soit retirée (sécurité)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/brouillonsPodcast.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
