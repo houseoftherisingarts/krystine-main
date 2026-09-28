@@ -43,3 +43,4 @@ export { mesDemandes } from './mesDemandes';
 export { vhCollecter, vhAgreger, vhAgregerMaintenant, vhEffacerSession, vhPurger } from './vexelhotjar';
 export { youtubeVideos } from './youtube';
 export { enregistrerChoix } from './newsletter/choix';
+export { analyserInfolettres } from './newsletter/analyse';

@@ -324,6 +324,8 @@ service cloud.firestore {
     // Les drapeaux de visibilité du site (src/firebase/siteFlags.ts) : le
     // public les lit au démarrage, l'admin les bascule (interrupteur du Foyer).
     match /siteSettings/{id}  { allow read: if true; allow write: if isAdmin(); }
+    // L'analyse des envois et les conclusions de Krystine : l'admin seulement.
+    match /analyseInfolettre/{id} { allow read, write: if isAdmin(); }
     match /siteOverrides/{id} { allow read: if true; allow write: if isAdmin(); }
     // Les brouillons de contenu édité dans l'admin (kit de presse, etc.) :
     // personne d'autre que l'admin ne les lit, tant que « Publier » ne les a
