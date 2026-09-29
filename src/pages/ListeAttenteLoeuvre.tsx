@@ -71,11 +71,11 @@ const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
     source: 'waitlist-origine2',
     kicker: "Liste d'attente · Expérience Origine 2",
     title: 'Expérience Origine 2',
-    subtitle: 'La suite du parcours signature',
+    subtitle: 'Le parcours signature · douze semaines avec Krystine St-Laurent',
     promise:
-      "Expérience Origine 2 est la suite du parcours signature, un accompagnement de douze " +
-      "semaines pour retrouver vos propres repères. Les portes ne sont pas encore ouvertes : " +
-      "inscrivez-vous à la liste et vous recevrez l'invitation avant toute annonce publique.",
+      "Expérience Origine 2 est le parcours signature de Krystine St-Laurent : douze semaines accompagnée " +
+      "par elle, pour retrouver vos propres repères. Les portes ouvrent bientôt. Inscrivez-vous " +
+      "à la liste et vous recevrez l'invitation avant toute annonce publique.",
   },
   retraite: {
     source: 'waitlist-retraite',
