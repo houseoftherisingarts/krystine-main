@@ -2998,5 +2998,20 @@
       "public/assets-manifest.json",
       "src/pages/ListeAttenteLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-29T16:42:18.321Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "9ad578b6",
+    "message": "Cours Vata : le lecteur audio reprend chaque capsule là où elle a été laissée, affiche le titre et les boutons sur l'écran verrouillé du téléphone, et dit quoi faire si une capsule ne charge pas; dans la liste des leçons, « Semaine 1 » et le nom de la semaine sur deux lignes, sans coupure",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/LecteurAudioCours.tsx",
+      "src/pages/CoursDetailPage.tsx"
+    ]
   }
 ]
