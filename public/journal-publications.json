@@ -2939,5 +2939,21 @@
       "functions/src/paiements.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-09-29T15:28:47.157Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "216b61e6",
+    "message": "Admin › Formations : bouton « Séquence » sur chaque formation, qui montre les courriels qui partent après l'achat, étape par étape, avec « Écrire la lettre » ou « Ouvrir la lettre »; pour Vata, la série semaine par semaine (accueil, semaines 2 à 7, fin de saison) se prépare d'un clic; Infolettre s'ouvre sur une lettre ou un onglet depuis l'adresse",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/FormationsSection.tsx",
+      "src/pages/admin/sections/NewsletterSection.tsx",
+      "src/pages/admin/sections/SequenceFormationPanel.tsx"
+    ]
   }
 ]
