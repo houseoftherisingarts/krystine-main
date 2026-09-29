@@ -350,7 +350,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
               className="mt-5 inline-flex items-center gap-3 font-sans text-fyLabel uppercase text-brassBright"
             >
               <span className="h-px w-8 bg-brassBright" aria-hidden />
-              <span>Début le 1<sup>er</sup> octobre</span>
+              <span>Ouverture à venir</span>
             </motion.p>
             <motion.p
               initial={reduce ? {} : { opacity: 0, y: 24 }}

@@ -130,6 +130,14 @@ export async function aAchete(uid: string, formationId: string): Promise<boolean
   return snap.exists();
 }
 
+/** La date d'achat et la provenance d'un achat, pour le goutte-à-goutte de Vata. */
+export async function infosAchat(uid: string, formationId: string): Promise<{ source?: string; acheteLe?: Date } | null> {
+  const snap = await getDoc(doc(db(), 'achatsFormations', uid, 'formations', formationId));
+  if (!snap.exists()) return null;
+  const d = snap.data() as { source?: string; acheteLe?: { toDate?: () => Date } };
+  return { source: d.source, acheteLe: d.acheteLe?.toDate?.() };
+}
+
 export async function getFormationsPubliees(): Promise<Formation[]> {
   const snap = await getDocs(query(collection(db(), 'formations'), where('statut', '==', 'publie')));
   return snap.docs

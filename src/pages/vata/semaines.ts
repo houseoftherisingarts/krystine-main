@@ -122,5 +122,20 @@ export function rangDeModule(nom?: string): number {
   return n >= 0 && n < SEMAINES_VATA.length ? n : -1;
 }
 
+// ─── Le goutte-à-goutte (décision de Krystine, 29 septembre 2026) ───────────
+// À l'achat, le seuil (semaine 0) et la semaine 1 sont ouverts; une semaine
+// de plus s'ouvre tous les 7 jours, jusqu'à la semaine 7. Seuls les achats
+// faits sur le site à partir du 29 septembre 2026 suivent ce rythme : les
+// anciennes venues de Kajabi, et tout achat antérieur, gardent tout ouvert.
+export const DRIP_VATA_DEPUIS = new Date(2026, 8, 29);
+export function semainesVataOuvertes(
+  achat: { source?: string; acheteLe?: Date } | null | undefined,
+  maintenant = new Date(),
+): number {
+  if (!achat || achat.source === 'kajabi' || !achat.acheteLe || achat.acheteLe < DRIP_VATA_DEPUIS) return Infinity;
+  const jours = Math.floor((maintenant.getTime() - achat.acheteLe.getTime()) / 86400000);
+  return Math.min(SEMAINES_VATA.length - 1, 1 + Math.floor(Math.max(0, jours) / 7));
+}
+
 export const semaineDeModule = (nom?: string): SemaineVata | undefined =>
   SEMAINES_VATA[rangDeModule(nom)];

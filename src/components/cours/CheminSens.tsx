@@ -36,6 +36,7 @@ const Carte: React.FC<{
   const total = etat?.total ?? 0;
   const faites = etat?.terminees ?? 0;
   const finie = total > 0 && faites >= total;
+  const barree = !!etat?.verrouillee;
   const part = total > 0 ? faites / total : 0;
 
   return (
@@ -78,6 +79,11 @@ const Carte: React.FC<{
             <i className="fa-solid fa-check text-[13px]" />
           </span>
         )}
+        {barree && (
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0d110f]/80 text-[#d9a05b] backdrop-blur-sm">
+            <i className="fa-solid fa-lock text-[12px]" />
+          </span>
+        )}
       </span>
 
       <span className="absolute inset-x-0 bottom-0 block p-4 md:p-5">
@@ -94,9 +100,11 @@ const Carte: React.FC<{
           />
         </span>
         <span className="mt-2 block text-[10px] font-bold uppercase tracking-[0.22em] text-[#d9a05b]/80">
-          {total > 0
-            ? `${faites}/${total} ${lang === 'FR' ? 'leçons' : 'lessons'}`
-            : lang === 'FR' ? 'À venir' : 'Coming'}
+          {barree
+            ? (lang === 'FR' ? 'S’ouvre bientôt' : 'Opens soon')
+            : total > 0
+              ? `${faites}/${total} ${lang === 'FR' ? 'leçons' : 'lessons'}`
+              : lang === 'FR' ? 'À venir' : 'Coming'}
         </span>
       </span>
     </motion.button>

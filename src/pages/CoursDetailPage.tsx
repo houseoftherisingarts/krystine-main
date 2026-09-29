@@ -4,10 +4,11 @@ import { PORTES, porteDuMois, foyerOuvert, DEBUT_LABEL } from './foyer/portesDat
 import { rangSemaine, semaineOuverteRang } from './origine2/semaines';
 import CoursOrigine from '../components/cours/origine/CoursOrigine';
 import { estOrigine } from './origine2/piliers';
+import { FORMATION_VATA, rangDeModule as rangModuleVata, semainesVataOuvertes } from './vata/semaines';
 import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, type QuestionLecon } from '../firebase/formations';
 import { Navigate, useParams, Link } from 'react-router-dom';
 import {
-  getFormation, getLecons, getProgression, marquerLecon, aAchete,
+  getFormation, getLecons, getProgression, marquerLecon, aAchete, infosAchat,
   acheterFormation, urlDeLecon, marquerFormationTerminee,
   type Formation, type Lecon,
 } from '../firebase/formations';
@@ -17,7 +18,7 @@ import { getMember } from '../firebase/firestore';
 import TexteLecon from '../lib/texteLecon';
 import { LecteurVideoPleinEcran } from '../components/LecteurVideoEmbarque';
 import SeuilVata from '../components/cours/SeuilVata';
-import CheminSens, { type EtatSemaine } from '../components/cours/CheminSens';
+import type { EtatSemaine } from '../components/cours/CheminSens';
 import LecteurAudioCours from '../components/cours/LecteurAudioCours';
 import BravoSemaine from '../components/cours/BravoSemaine';
 import BravoDiplome from '../components/cours/BravoDiplome';
@@ -81,6 +82,7 @@ const CoursDetailPage: React.FC = () => {
   const [achete, setAchete] = useState(false);
   const [verifAcces, setVerifAcces] = useState(true);   // le temps de savoir si la personne possède le cours
   const [accesVie, setAccesVie] = useState(false);
+  const [achatVata, setAchatVata] = useState<{ source?: string; acheteLe?: Date } | null>(null);
   // Les petits sons des portes (hover) : le son de survol du Festival
   // Médiéval (orb/sfx/hover.mp3) pour l'ouverte, le petit verrou maison pour
   // les barrées. Volumes très discrets.
@@ -138,6 +140,7 @@ const CoursDetailPage: React.FC = () => {
     if (!user || !id) { setAchete(false); setAccesVie(false); setVerifAcces(false); return; }
     setVerifAcces(true);
     aAchete(user.uid, id).then(setAchete).catch(() => {}).finally(() => setVerifAcces(false));
+    if (id === FORMATION_VATA) infosAchat(user.uid, id).then(setAchatVata).catch(() => {});
     getMember(user.uid).then(m => setAccesVie(!!m?.accesVie)).catch(() => {});
     setProgressionLue(false);
     getProgression(user.uid, id).then(p => {
@@ -157,14 +160,19 @@ const CoursDetailPage: React.FC = () => {
     [isAdmin, apercu, achete, accesVie, formation],
   );
 
-  // Avant le 1er octobre 2026, aucune porte n'est ouverte : tout reste barré.
+  // Avant l'ouverture du cycle (OUVERTURE, foyer/portesData.ts), aucune porte n'est ouverte : tout reste barré.
   // L'Expérience Origine 2 suit le même principe, une semaine à la fois, à
   // partir de la date de départ posée dans l'admin (src/pages/origine2/semaines.ts).
   const estOrigine2 = id === 'origine2';
   const ouvert = estOrigine2 ? semaineOuverteRang(formation?.dateSortie) >= 0 : foyerOuvert();
   const porteOuverteRang = estOrigine2 ? semaineOuverteRang(formation?.dateSortie) : (ouvert ? rangPorte(porteDuMois().n) : -1);
   const rangDe = (n?: string) => (estOrigine2 ? rangSemaine(n) : rangPorte(n));
-  const verrouillee = (l: Lecon) => !isAdmin && ((id === 'foyer' && !ouvert) || rangDe(l.mois) > porteOuverteRang);
+  // Vata en goutte-à-goutte (décision de Krystine, 29 septembre 2026) : une
+  // semaine s'ouvre tous les 7 jours à partir de la date d'achat. Les
+  // anciennes (Kajabi), l'accès à vie et l'admin gardent tout ouvert.
+  const semainesVata = id === FORMATION_VATA && !accesVie ? semainesVataOuvertes(achatVata) : Infinity;
+  const verrouillee = (l: Lecon) => !isAdmin && ((id === 'foyer' && !ouvert) || rangDe(l.mois) > porteOuverteRang
+    || rangModuleVata(l.moduleNom) > semainesVata);
 
   // La page s'ouvre d'elle-même : sur la dernière leçon commencée, sinon sur
   // la première leçon ouverte (l'introduction). Plus de « choisissez une leçon ».
@@ -262,7 +270,7 @@ const CoursDetailPage: React.FC = () => {
   const estVata = !!programme;
   const etatsSemaines = useMemo(() => {
     const par: Record<number, EtatSemaine> = {};
-    for (const s of CHAPITRES) par[s.rang] = { terminees: 0, total: 0, verrouillee: false };
+    for (const s of CHAPITRES) par[s.rang] = { terminees: 0, total: 0, verrouillee: !isAdmin && s.rang > semainesVata };
     for (const l of lecons) {
       const r = rangDeModule(l.moduleNom);
       if (r < 0) continue;
@@ -270,12 +278,11 @@ const CoursDetailPage: React.FC = () => {
       if (terminees[l.id]) par[r].terminees += 1;
     }
     return par;
-  }, [lecons, terminees]);
+  }, [lecons, terminees, isAdmin, semainesVata]);
   const semainesAchevees = CHAPITRES.filter(
     s => (etatsSemaines[s.rang]?.total ?? 0) > 0 && etatsSemaines[s.rang].terminees >= etatsSemaines[s.rang].total,
   ).length;
   const chaleur = lecons.length ? nbTerminees / lecons.length : 0;
-  const semaineCourante = courante ? rangDeModule(courante.moduleNom) : -1;
   const chapitre = useRef<HTMLDivElement | null>(null);
 
   /** Ouvrir une semaine du chemin : sa première leçon encore à faire. */
@@ -395,9 +402,8 @@ const CoursDetailPage: React.FC = () => {
             })()}
           />
         )}
-        {estVata && accessible && (
-          <CheminSens programme={programme!} etats={etatsSemaines} courante={semaineCourante} lang={lang} onOuvrir={ouvrirSemaine} />
-        )}
+        {/* Les cartes des semaines ne forment plus une rangée en haut : chacune
+            coiffe sa semaine dans la liste des leçons (Krystine, 29 sept. 2026). */}
         {id === 'foyer' && accessible && (
           <div className="mt-4 overflow-hidden rounded-[20px] border border-white/60 shadow-[0_24px_60px_-24px_rgba(41,48,39,0.5)] dark:border-white/10">
             <video
@@ -448,12 +454,12 @@ const CoursDetailPage: React.FC = () => {
             <div className="mt-10">
               <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">Les douze portes</p>
               <h2 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">
-                {ouvert ? `La porte de ${ouverte.mois.toLowerCase()} est ouverte` : 'La porte d\'octobre s\'ouvre le 1er octobre'}
+                {ouvert ? `La porte de ${ouverte.mois.toLowerCase()} est ouverte` : 'La première porte s\'ouvrira bientôt'}
               </h2>
               <p className="mt-1 max-w-2xl text-sm text-[#38403a]/60 dark:text-white/60">
                 {ouvert
                   ? 'Une seule porte s\'ouvre à la fois, celle du mois en cours. Les autres attendent leur tour.'
-                  : 'Votre place est prise. La première porte reste barrée jusqu\'au matin du 1er octobre, puis une seule porte s\'ouvre à la fois, celle du mois en cours.'}
+                  : 'Votre place est prise. La première porte reste barrée jusqu\'à l\'ouverture, dont la date vous sera annoncée, puis une seule porte s\'ouvre à la fois, celle du mois en cours.'}
               </p>
 
               <div className="mt-6 grid gap-6 rounded-[24px] border border-[#BA7B39]/40 bg-white/55 p-6 backdrop-blur-md md:grid-cols-[220px_1fr] md:p-8 dark:border-[#BA7B39]/30 dark:bg-[#293027]/55">
@@ -484,7 +490,7 @@ const CoursDetailPage: React.FC = () => {
                   <p className="mt-4 text-sm text-[#38403a]/60 dark:text-white/60">
                     {ouvert
                       ? 'Le rituel du mois se vit ici : gardez la question près de vous, revenez-y chaque matin, et partagez ce qu\'elle remue dans le feed plus bas.'
-                      : 'Le premier dépôt arrive le 1er octobre. D\'ici là, la question de la porte peut déjà vous accompagner.'}
+                      : 'Le premier dépôt arrivera à l\'ouverture. D\'ici là, la question de la porte peut déjà vous accompagner.'}
                   </p>
                 </div>
               </div>
@@ -766,6 +772,28 @@ const CoursDetailPage: React.FC = () => {
                       background: achevee ? `${sem.couleur.vive}14` : `${sem.couleur.vive}09`,
                     } : undefined}
                   >
+                    {sem && sem.bandeau && (() => {
+                      const barree = !!etatsSemaines[sem.rang]?.verrouillee;
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => (barree ? undefined : ouvrirSemaine(sem.rang))}
+                          disabled={barree}
+                          className={`relative block aspect-[16/7] w-full overflow-hidden text-left ${barree ? 'cursor-not-allowed' : ''}`}
+                        >
+                          <img src={sem.bandeau} alt="" loading="lazy" className={`absolute inset-0 h-full w-full object-cover ${barree ? 'saturate-[0.5] opacity-80' : ''}`} />
+                          <span aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(13,17,15,0.85) 5%, rgba(13,17,15,0.25) 60%, rgba(13,17,15,0) 100%)' }} />
+                          {barree && (
+                            <span className="absolute right-2.5 top-2.5 flex h-7 w-7 items-center justify-center rounded-full bg-[#0d110f]/80 text-[#d9a05b]">
+                              <i className="fa-solid fa-lock text-[10px]" />
+                            </span>
+                          )}
+                          <span className="absolute inset-x-0 bottom-0 block px-3.5 pb-2.5 text-[12px] leading-snug text-[#EEE7DB]/90 line-clamp-2">
+                            {barree ? (lang === 'FR' ? 'S’ouvre bientôt' : 'Opens soon') : (lang === 'FR' ? sem.promesse.fr : sem.promesse.en)}
+                          </span>
+                        </button>
+                      );
+                    })()}
                     {g.nom && (
                       <button
                         type="button"
@@ -810,7 +838,7 @@ const CoursDetailPage: React.FC = () => {
                         key={l.id}
                         onClick={() => ouvrir(l)}
                         disabled={verrou}
-                        title={verrou ? (lang === 'FR' ? `S'ouvre avec la porte de ${l.mois}` : `Opens with the ${l.mois} door`) : undefined}
+                        title={verrou ? (l.mois ? (lang === 'FR' ? `S'ouvre avec la porte de ${l.mois}` : `Opens with the ${l.mois} door`) : (lang === 'FR' ? 'Cette semaine s\'ouvrira bientôt' : 'This week opens soon')) : undefined}
                         className={`flex w-full items-center gap-3 rounded-[14px] px-3 py-2.5 text-left text-sm transition-colors ${
                           courante?.id === l.id
                             ? (sem ? 'text-[#F7F3EA]' : 'bg-[#BA7B39] text-[#293027]')
