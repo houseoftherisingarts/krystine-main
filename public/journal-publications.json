@@ -2970,5 +2970,19 @@
       "src/components/cours/SeuilVata.tsx",
       "src/pages/CoursDetailPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-29T16:20:34.159Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "7e129e06",
+    "message": "Liste d'attente d'Expérience Origine 2 (/liste-attente?programme=origine2) : « la suite du parcours signature » devient « Le parcours signature · douze semaines avec Krystine St-Laurent », texte ajusté (accompagnée par elle, les portes ouvrent bientôt)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/ListeAttenteLoeuvre.tsx"
+    ]
   }
 ]
