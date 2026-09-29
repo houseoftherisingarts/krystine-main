@@ -13,6 +13,7 @@ import { Card } from '../primitives';
 // (privé) et la leçon apparaît immédiatement dans le lecteur.
 import { SEMAINES } from '../../origine2/semaines';
 import ProgressionPanel from './ProgressionPanel';
+import SequenceFormationPanel from './SequenceFormationPanel';
 const MOIS_PORTES = ['', 'septembre', 'octobre', 'novembre', 'decembre', 'janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout'];
 const ICONE_LECON: Record<Lecon['type'], string> = {
   video: 'fa-circle-play', audio: 'fa-music', pdf: 'fa-file-pdf', fichier: 'fa-file', texte: 'fa-align-left',
@@ -391,6 +392,7 @@ const FormationsSection: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [optionsOuvertes, setOptionsOuvertes] = useState<string | null>(null);
+  const [sequenceOuverte, setSequenceOuverte] = useState<string | null>(null);
 
   const refresh = () => {
     setLoading(true);
@@ -494,6 +496,18 @@ const FormationsSection: React.FC = () => {
                 </button>
                 <button
                   type="button"
+                  onClick={() => setSequenceOuverte(sequenceOuverte === f.id ? null : f.id)}
+                  title="Les courriels qui partent après l'achat"
+                  className={`shrink-0 rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${
+                    sequenceOuverte === f.id
+                      ? 'border-[#293027] bg-[#293027] text-[#d9a05b]'
+                      : 'border-[#293027]/20 text-[#293027]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/20 dark:text-white/70'
+                  }`}
+                >
+                  <i className="fa-solid fa-envelopes-bulk mr-1" /> Séquence
+                </button>
+                <button
+                  type="button"
                   onClick={() => supprimer(f)}
                   disabled={busy === f.id}
                   title="Supprimer définitivement"
@@ -503,6 +517,7 @@ const FormationsSection: React.FC = () => {
                 </button>
               </div>
               {optionsOuvertes === f.id && <OptionsPanel f={f} onSaved={refresh} />}
+              {sequenceOuverte === f.id && <SequenceFormationPanel formationId={f.id} titre={f.titre} />}
               </div>
             ))}
           </div>

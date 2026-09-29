@@ -37,8 +37,11 @@ const TABS: Array<{ key: Tab; icon: string; label: string }> = [
 ];
 
 const NewsletterSection: React.FC = () => {
-  const [tab, setTab] = useState<Tab>('newsletters');
-  const [view, setView] = useState<View>({ kind: 'list' });
+  // Une autre section peut ouvrir un onglet ou une lettre par l'adresse :
+  // ?onglet=sequences, ?lettre=<id> (fiche d'une formation, 29 sept. 2026).
+  const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const [tab, setTab] = useState<Tab>(() => (TABS.some(t => t.key === params?.get('onglet')) ? params!.get('onglet') as Tab : 'newsletters'));
+  const [view, setView] = useState<View>(() => (params?.get('lettre') ? { kind: 'composer', id: params.get('lettre') } : { kind: 'list' }));
 
   // Le composeur prend toute la place : la barre d'onglets s'efface.
   if (view.kind === 'composer') {
