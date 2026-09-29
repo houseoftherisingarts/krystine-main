@@ -78,6 +78,9 @@ const CoursDetailPage: React.FC = () => {
   const programme = useMemo(() => programmeDe(formation ? { id, titre: formation.titre, imageUrl: formation.imageUrl } : null, lecons), [formation, lecons, id]);
   const rangDeModule = (nom?: string) => programme?.rangDeModule(nom) ?? -1;
   const chapitreDeModule = (nom?: string) => programme?.chapitres[rangDeModule(nom)];
+  // « Introduction », puis « Semaine 1 » à 7 : les mêmes mots partout (Krystine, 29 sept. 2026).
+  const libelleSemaine = (s: { rang: number; sens: { fr: string; en: string } }) =>
+    `${s.rang === 0 ? 'Introduction' : `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${s.rang}`} · ${lang === 'FR' ? s.sens.fr : s.sens.en}`;
   const CHAPITRES = programme?.chapitres ?? [];
   const [achete, setAchete] = useState(false);
   const [verifAcces, setVerifAcces] = useState(true);   // le temps de savoir si la personne possède le cours
@@ -396,7 +399,7 @@ const CoursDetailPage: React.FC = () => {
                 titre: p.titre,
                 duree: p.duree,
                 vignette: vignetteAudio(p, formation || undefined) || s?.vignette,
-                soustitre: s ? `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${s.rang} · ${lang === 'FR' ? s.sens.fr : s.sens.en}` : undefined,
+                soustitre: s ? libelleSemaine(s) : undefined,
                 onOuvrir: () => { void ouvrir(p); requestAnimationFrame(() => chapitre.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })); },
               };
             })()}
@@ -744,7 +747,7 @@ const CoursDetailPage: React.FC = () => {
             {/* La liste des leçons */}
             {/* La liste colle en haut et défile seule : la page ne s'allonge plus
                 à cause d'elle, donc plus de vide à droite quand on descend. */}
-            <aside className="rounded-[20px] border border-white/60 bg-white/55 p-3 backdrop-blur-md lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto dark:border-white/10 dark:bg-[#293027]/55">
+            <aside className="min-w-0 rounded-[20px] border border-white/60 bg-white/55 p-3 backdrop-blur-md lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto dark:border-white/10 dark:bg-[#293027]/55">
               {lecons.length === 0 && (
                 <p className="p-3 text-sm text-[#38403a]/50 dark:text-white/50">{lang === 'FR' ? 'Les leçons arrivent bientôt.' : 'Lessons coming soon.'}</p>
               )}
@@ -792,10 +795,10 @@ const CoursDetailPage: React.FC = () => {
                               className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-serif text-[11px] normal-case tracking-normal text-[#F7F3EA]"
                               style={{ background: achevee ? sem.couleur.vive : `${sem.couleur.vive}bb` }}
                             >
-                              {achevee ? <i className="fa-solid fa-check text-[9px]" /> : sem.roman}
+                              {achevee ? <i className="fa-solid fa-check text-[9px]" /> : etatsSemaines[sem.rang]?.verrouillee ? <i className="fa-solid fa-lock text-[8px]" /> : sem.rang}
                             </span>
                           )}
-                          <span className="min-w-0 truncate">{sem ? (lang === 'FR' ? sem.sens.fr : sem.sens.en) : g.nom}</span>
+                          <span className="min-w-0 truncate">{sem ? libelleSemaine(sem) : g.nom}</span>
                         </span>
                         <span className="flex shrink-0 items-center gap-2 text-[#38403a]/50 dark:text-white/50">
                           <span className="normal-case tracking-normal">{faites}/{g.items.length}</span>
@@ -850,7 +853,7 @@ const CoursDetailPage: React.FC = () => {
             </aside>
 
             {/* Le contenu de la leçon */}
-            <section className="rounded-[20px] border border-white/60 bg-white/55 p-6 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55">
+            <section className="min-w-0 rounded-[20px] border border-white/60 bg-white/55 p-6 backdrop-blur-md dark:border-white/10 dark:bg-[#293027]/55">
               {!courante ? (
                 <div className="py-16 text-center text-[#38403a]/60 dark:text-white/60">
                   <i className="fa-solid fa-circle-play mb-4 block text-4xl text-[#BA7B39]" />
@@ -879,9 +882,8 @@ const CoursDetailPage: React.FC = () => {
                             : <span aria-hidden className="absolute inset-0" style={{ background: `linear-gradient(160deg, ${s.couleur.vive} 0%, ${s.couleur.encre} 100%)` }} />}
                           <span aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(15,20,17,0.92) 6%, rgba(15,20,17,0.34) 60%, transparent 100%)' }} />
                           <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 px-6 pb-4">
-                            <span className="font-serif text-2xl leading-none text-[#d9a05b]">{s.roman}</span>
                             <span className="text-[10px] font-bold uppercase tracking-[0.26em] text-[#EEE7DB]/80">
-                              {lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} {s.rang} · {lang === 'FR' ? s.sens.fr : s.sens.en}
+                              {libelleSemaine(s)}
                             </span>
                           </div>
                         </div>
@@ -905,7 +907,7 @@ const CoursDetailPage: React.FC = () => {
                           pochette={vignetteAudio(courante, formation || undefined) || chapitreDeModule(courante.moduleNom)?.vignette}
                           soustitre={(() => {
                             const s = chapitreDeModule(courante.moduleNom);
-                            return s ? `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${s.rang} · ${lang === 'FR' ? s.sens.fr : s.sens.en}` : courante.moduleNom;
+                            return s ? libelleSemaine(s) : courante.moduleNom;
                           })()}
                           lang={lang}
                           onFin={() => { if (!terminees[courante.id]) void basculerTerminee(courante); }}

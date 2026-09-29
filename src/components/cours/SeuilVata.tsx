@@ -22,6 +22,7 @@ interface Props {
   programme: Programme;
   format: FormatCours;
   image: string;
+  video?: string;
   /** 0 à 1 : la part du parcours accomplie. Réchauffe la scène. */
   chaleur: number;
   terminees: number;
@@ -31,7 +32,7 @@ interface Props {
   reprise?: Reprise;
 }
 
-const SeuilVata: React.FC<Props> = ({ programme, format, image, chaleur, terminees, total, semainesAchevees, lang, reprise }) => {
+const SeuilVata: React.FC<Props> = ({ programme, format, image, video, chaleur, terminees, total, semainesAchevees, lang, reprise }) => {
   const fr = lang === 'FR';
   const nb = programme.chapitres.length;
   const [un, des] = fr ? programme.unite.fr : programme.unite.en;
@@ -48,9 +49,19 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, chaleur, termine
   const pct = total > 0 ? Math.round((terminees / total) * 100) : 0;
 
   return (
-    <section ref={cadre} className="relative h-[74vh] min-h-[460px] w-full overflow-hidden bg-[#151d19] md:h-[92vh] md:min-h-[560px]">
+    // Une bannière posée dans la page, coins arrondis, à peu près la moitié de
+    // l'écran (Krystine, 29 sept. 2026 : « trop grosse »). Le contenu suit le
+    // flux normal : en mobile le titre, la progression et la reprise
+    // s'empilent sans jamais se couvrir. `video` prendra la place de l'image
+    // quand la vidéo d'automne de Krystine sera prête.
+    <div className="mx-auto w-full max-w-[1720px] px-5 pt-[8.5rem] md:px-10 md:pt-40">
+    <section ref={cadre} className="relative flex min-h-[440px] flex-col justify-between gap-6 overflow-hidden rounded-[18px] bg-[#151d19] p-5 shadow-[0_28px_70px_-34px_rgba(41,48,39,0.6)] md:min-h-[clamp(440px,52vh,560px)] md:p-10">
       <motion.div className="absolute inset-0" style={reduce ? undefined : { scale: echelle, y: monte }}>
-        <KenBurns src={image} className="object-[28%_50%] md:object-center" />
+        {video && !reduce ? (
+          <video src={video} poster={image} autoPlay muted loop playsInline className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <KenBurns src={image} className="object-[28%_50%] md:object-center" />
+        )}
       </motion.div>
 
       {/* Le voile : froid en haut, chaud en bas quand le parcours avance. */}
@@ -64,31 +75,26 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, chaleur, termine
       />
       <Atmosphere light={`${Math.round(24 + 52 * chaleur)}% 18%`} strength={0.3 + 0.4 * chaleur} vignette={false} />
 
-      {/* Le titre, en Cormorant Garamond comme sur le diplôme, dans le calme
-          de la droite de la couverture. Deux lignes, jamais plus. */}
+      {/* Le titre, en Cormorant Garamond comme sur le diplôme. Deux lignes, jamais plus. */}
       <motion.div
-        className="absolute inset-x-0 top-[22%] px-5 md:top-[18%] md:px-10"
+        className="relative flex justify-end"
         initial={reduce ? false : { opacity: 0, y: 18, filter: 'blur(6px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         transition={{ duration: 1.2, ease: EASE, delay: 0.05 }}
       >
-        <div className="mx-auto flex max-w-[1720px] justify-end">
-          {/* En mobile le titre tombe sur les herbes : un verre crème le porte. */}
-          <div className="rounded-[16px] bg-[#F7F3EA]/75 px-4 py-3 text-right backdrop-blur-sm md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
-            <p className="text-[10px] font-bold uppercase tracking-[0.34em] text-[#8B4A2F] md:text-[11px]">
-              {fr ? programme.surtitre.fr : programme.surtitre.en}
-            </p>
-            <StickerFormat format={format} lang={lang} className="mt-2" />
-            <h1 className="mt-3 font-serif text-[clamp(3.2rem,8.5vw,7.4rem)] leading-[0.9] text-[#293027]" style={{ letterSpacing: '-0.01em' }}>
-              {(fr ? programme.titre.fr : programme.titre.en).split('\n').map((l, i) => <React.Fragment key={i}>{i > 0 && <br />}{l}</React.Fragment>)}
-            </h1>
-          </div>
+        {/* En mobile le titre tombe sur les herbes : un verre crème le porte. */}
+        <div className="rounded-[16px] bg-[#F7F3EA]/75 px-4 py-3 text-right backdrop-blur-sm md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
+          <p className="text-[10px] font-bold uppercase tracking-[0.34em] text-[#8B4A2F] md:text-[11px]">
+            {fr ? programme.surtitre.fr : programme.surtitre.en}
+          </p>
+          <StickerFormat format={format} lang={lang} className="mt-2" />
+          <h1 className="mt-3 font-serif text-[clamp(2.8rem,6.2vw,5.6rem)] leading-[0.9] text-[#293027]" style={{ letterSpacing: '-0.01em' }}>
+            {(fr ? programme.titre.fr : programme.titre.en).split('\n').map((l, i) => <React.Fragment key={i}>{i > 0 && <br />}{l}</React.Fragment>)}
+          </h1>
         </div>
       </motion.div>
 
-      <div className="absolute inset-x-0 bottom-0 px-5 pb-8 md:px-10 md:pb-12">
-        <div className="mx-auto flex max-w-[1720px] flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-
+      <div className="relative flex flex-col gap-3 md:gap-6 lg:flex-row lg:items-end lg:justify-between">
           {/* Le disque de laiton : les portes ouvertes, pas 50 flammes grises. */}
           <motion.div
             className="flex items-center gap-4 rounded-[18px] border border-[#BA7B39]/30 bg-[#151d19]/70 px-4 py-3.5 backdrop-blur-md sm:gap-5 md:px-5 md:py-4"
@@ -96,7 +102,7 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, chaleur, termine
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ duration: 1.1, ease: EASE, delay: 0.15 }}
           >
-            <div className="relative h-[76px] w-[76px] shrink-0 md:h-[104px] md:w-[104px]">
+            <div className="relative h-[64px] w-[64px] shrink-0 md:h-[88px] md:w-[88px]">
               <svg viewBox="0 0 110 110" className="h-full w-full -rotate-90">
                 <circle cx="55" cy="55" r={rayon} fill="rgba(21,29,25,0.45)" stroke="rgba(238,231,219,0.18)" strokeWidth="3" />
                 <circle
@@ -115,7 +121,7 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, chaleur, termine
               <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#d9a05b]">
                 {fr ? programme.surtitre.fr : programme.surtitre.en}
               </p>
-              <p className="mt-2 max-w-[16ch] font-serif text-[clamp(1.45rem,3vw,2.4rem)] leading-[1.1] text-[#EEE7DB]">
+              <p className="mt-1.5 max-w-[16ch] font-serif text-[clamp(1.3rem,2.4vw,2rem)] leading-[1.1] text-[#EEE7DB]">
                 {fr
                   ? (semainesAchevees === 0
                       ? `${nb} ${des} vous attendent`
@@ -154,9 +160,9 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, chaleur, termine
               </span>
             </motion.button>
           )}
-        </div>
       </div>
     </section>
+    </div>
   );
 };
 
