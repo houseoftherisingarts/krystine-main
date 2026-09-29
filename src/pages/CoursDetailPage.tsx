@@ -798,7 +798,12 @@ const CoursDetailPage: React.FC = () => {
                               {achevee ? <i className="fa-solid fa-check text-[9px]" /> : etatsSemaines[sem.rang]?.verrouillee ? <i className="fa-solid fa-lock text-[8px]" /> : sem.rang}
                             </span>
                           )}
-                          <span className="min-w-0 truncate">{sem ? libelleSemaine(sem) : g.nom}</span>
+                          {sem ? (
+                            <span className="min-w-0">
+                              <span className="block text-[9px] opacity-70">{sem.rang === 0 ? 'Introduction' : `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${sem.rang}`}</span>
+                              <span className="block truncate">{lang === 'FR' ? sem.sens.fr : sem.sens.en}</span>
+                            </span>
+                          ) : <span className="min-w-0 truncate">{g.nom}</span>}
                         </span>
                         <span className="flex shrink-0 items-center gap-2 text-[#38403a]/50 dark:text-white/50">
                           <span className="normal-case tracking-normal">{faites}/{g.items.length}</span>

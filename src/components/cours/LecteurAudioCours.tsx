@@ -55,8 +55,33 @@ const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, l
   const onde = useMemo(() => ondeDe(titre), [titre]);
   const avancement = longueur > 0 ? position / longueur : 0;
 
-  // Une nouvelle leçon : on repart du début.
-  useEffect(() => { setPosition(0); setLongueur(0); setJoue(false); }, [url]);
+  const [erreur, setErreur] = useState(false);
+  // La reprise : la position de chaque capsule se garde sur l'appareil, pour
+  // revenir au bon endroit le lendemain (liste Vata, 28 sept. 2026). La clé
+  // suit le titre, parce que l'adresse du fichier change à chaque visite.
+  const cle = `ksl-audio:${titre}`;
+  const lire = () => { try { return Number(localStorage.getItem(cle)) || 0; } catch { return 0; } };
+  const garder = (t: number) => { try { if (t > 0) localStorage.setItem(cle, String(Math.floor(t))); else localStorage.removeItem(cle); } catch { /* stockage fermé */ } };
+  const dernier = useRef(0);
+  const suivante = useRef(onSuivante);
+  suivante.current = onSuivante;
+
+  // Une nouvelle leçon : on repart de sa position gardée, sinon du début.
+  useEffect(() => { setPosition(0); setLongueur(0); setJoue(false); setErreur(false); }, [url]);
+
+  // L'écran verrouillé du téléphone : titre, pochette et boutons de lecture.
+  useEffect(() => {
+    if (!('mediaSession' in navigator)) return;
+    const ms = navigator.mediaSession;
+    ms.metadata = new MediaMetadata({ title: titre, artist: 'Krystine St-Laurent', album: soustitre || '', artwork: pochette ? [{ src: pochette, sizes: '512x512' }] : [] });
+    const el = () => audio.current;
+    ms.setActionHandler('play', () => { void el()?.play(); });
+    ms.setActionHandler('pause', () => { el()?.pause(); });
+    ms.setActionHandler('seekbackward', () => { const a = el(); if (a) a.currentTime = Math.max(0, a.currentTime - 15); });
+    ms.setActionHandler('seekforward', () => { const a = el(); if (a) a.currentTime = Math.min(a.duration || 0, a.currentTime + 30); });
+    ms.setActionHandler('nexttrack', () => suivante.current?.());
+    return () => { for (const a of ['play', 'pause', 'seekbackward', 'seekforward', 'nexttrack'] as MediaSessionAction[]) { try { ms.setActionHandler(a, null); } catch { /* non pris en charge */ } } };
+  }, [titre, soustitre, pochette]);
 
   useEffect(() => { if (audio.current) audio.current.playbackRate = vitesse; }, [vitesse, url]);
 
@@ -127,11 +152,21 @@ const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, l
           ref={audio}
           src={url}
           preload="metadata"
-          onLoadedMetadata={e => setLongueur(e.currentTarget.duration || 0)}
-          onTimeUpdate={e => setPosition(e.currentTarget.currentTime)}
+          onLoadedMetadata={e => {
+            const d = e.currentTarget.duration || 0;
+            setLongueur(d);
+            const t = lire();
+            if (t > 5 && t < d - 10) { e.currentTarget.currentTime = t; setPosition(t); }
+          }}
+          onTimeUpdate={e => {
+            const t = e.currentTarget.currentTime;
+            setPosition(t);
+            if (Math.abs(t - dernier.current) >= 5) { dernier.current = t; garder(t); }
+          }}
           onPlay={() => setJoue(true)}
-          onPause={() => setJoue(false)}
-          onEnded={() => { setJoue(false); onFin?.(); }}
+          onPause={e => { setJoue(false); garder(e.currentTarget.currentTime); }}
+          onEnded={() => { setJoue(false); garder(0); onFin?.(); }}
+          onError={() => setErreur(true)}
         />
 
         {pochette && (
@@ -159,6 +194,13 @@ const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, l
           </div>
           {soustitre && (
             <p className="mt-0.5 hidden text-[10px] font-bold uppercase tracking-[0.22em] text-[#d9a05b]/70 sm:block">{soustitre}</p>
+          )}
+          {erreur && (
+            <p className="mt-1 text-[12px] leading-snug text-[#EEE7DB]/80">
+              {lang === 'FR'
+                ? <>Cette capsule ne se charge pas. Rechargez la page, et si cela persiste, écrivez-nous : <a className="underline" href="mailto:teamksl@inspiratanature.com">teamksl@inspiratanature.com</a></>
+                : <>This capsule won’t load. Reload the page, and if it persists, write to us: <a className="underline" href="mailto:teamksl@inspiratanature.com">teamksl@inspiratanature.com</a></>}
+            </p>
           )}
         </div>
 
