@@ -2984,5 +2984,19 @@
       "public/assets-manifest.json",
       "src/pages/ListeAttenteLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-29T16:22:09.074Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "24fbdd8f",
+    "message": "Liste d'attente d'Expérience Origine 2 : le « 2 » du titre ne tombe plus seul sur sa ligne",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/ListeAttenteLoeuvre.tsx"
+    ]
   }
 ]
