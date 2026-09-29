@@ -2955,5 +2955,20 @@
       "src/pages/admin/sections/NewsletterSection.tsx",
       "src/pages/admin/sections/SequenceFormationPanel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-29T15:44:03.122Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d6e9af56",
+    "message": "Programme Vata (/cours) : bannière réduite et encadrée (environ la moitié de l'écran, coins arrondis, prête à recevoir une vidéo d'automne); en téléphone, le titre n'est plus couvert par la progression; « Introduction » puis « Semaine 1 à 7 » partout (liste, leçon, reprise); cadenas sur les semaines à venir dans la liste des leçons; la liste ne déborde plus sur téléphone",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/SeuilVata.tsx",
+      "src/pages/CoursDetailPage.tsx"
+    ]
   }
 ]
