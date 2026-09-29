@@ -2861,5 +2861,25 @@
       "public/assets-manifest.json",
       "src/pages/ClientPortal.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-29T13:46:59.302Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "2fb18bb3",
+    "message": "Programme Vata (/cours) : une semaine de plus s'ouvre tous les 7 jours après l'achat (anciennes clientes et accès à vie gardent tout), cadenas sur les semaines à venir, chaque carte coiffe sa semaine dans la liste des leçons; Foyer (/foyer) : la date du 1er octobre est retirée et les portes ne s'ouvrent plus toutes seules (date à venir, liste d'attente conservée)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/CheminSens.tsx",
+      "src/firebase/formations.ts",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/FoyerPage.tsx",
+      "src/pages/foyer/content.ts",
+      "src/pages/foyer/portesData.ts",
+      "src/pages/vata/semaines.ts"
+    ]
   }
 ]
