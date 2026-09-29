@@ -18,7 +18,7 @@ import { getMember } from '../firebase/firestore';
 import TexteLecon from '../lib/texteLecon';
 import { LecteurVideoPleinEcran } from '../components/LecteurVideoEmbarque';
 import SeuilVata from '../components/cours/SeuilVata';
-import type { EtatSemaine } from '../components/cours/CheminSens';
+import CheminSens, { type EtatSemaine } from '../components/cours/CheminSens';
 import LecteurAudioCours from '../components/cours/LecteurAudioCours';
 import BravoSemaine from '../components/cours/BravoSemaine';
 import BravoDiplome from '../components/cours/BravoDiplome';
@@ -402,8 +402,12 @@ const CoursDetailPage: React.FC = () => {
             })()}
           />
         )}
-        {/* Les cartes des semaines ne forment plus une rangée en haut : chacune
-            coiffe sa semaine dans la liste des leçons (Krystine, 29 sept. 2026). */}
+        {/* Les cartes restent visibles en rangée, toutes, avec un cadenas sur les
+            semaines à venir; chacune coiffe aussi sa semaine dans la liste des
+            leçons (Krystine, 29 sept. 2026). */}
+        {estVata && accessible && (
+          <CheminSens programme={programme!} etats={etatsSemaines} courante={courante ? rangDeModule(courante.moduleNom) : -1} lang={lang} onOuvrir={ouvrirSemaine} />
+        )}
         {id === 'foyer' && accessible && (
           <div className="mt-4 overflow-hidden rounded-[20px] border border-white/60 shadow-[0_24px_60px_-24px_rgba(41,48,39,0.5)] dark:border-white/10">
             <video
