@@ -71,8 +71,10 @@ const Carte: React.FC<{
       />
 
       <span className="absolute left-4 top-4 flex items-center gap-2">
-        <span className="flex h-9 min-w-[2.25rem] items-center justify-center rounded-full border border-[#BA7B39]/50 bg-[#0d110f]/80 px-2 font-serif text-sm text-[#d9a05b] backdrop-blur-sm">
-          {s.roman}
+        <span className="flex h-9 items-center justify-center rounded-full border border-[#BA7B39]/50 bg-[#0d110f]/80 px-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#d9a05b] backdrop-blur-sm">
+          {s.rang === 0
+            ? (lang === 'FR' ? 'Introduction' : 'Introduction')
+            : `${lang === 'FR' ? 'Semaine' : 'Week'} ${s.rang}`}
         </span>
         {finie && (
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#BA7B39] text-[#151d19]">
@@ -90,7 +92,7 @@ const Carte: React.FC<{
         <span className="block font-serif text-[clamp(1.35rem,1.7vw,1.75rem)] leading-[1.1] text-[#EEE7DB]">
           {lang === 'FR' ? s.sens.fr : s.sens.en}
         </span>
-        <span className="mt-2 block text-[13px] leading-[1.45] text-[#EEE7DB]/80 line-clamp-3">
+        <span className="mt-2 hidden text-[13px] leading-[1.45] text-[#EEE7DB]/80 line-clamp-3 sm:block">
           {lang === 'FR' ? s.promesse.fr : s.promesse.en}
         </span>
         <span className="mt-3.5 block h-[3px] w-full overflow-hidden rounded-full bg-[#EEE7DB]/15">
@@ -122,11 +124,11 @@ const CheminSens: React.FC<Props> = ({ programme, etats, courante, lang, onOuvri
       </h2>
     </div>
 
-    {/* Une rangée qui respire : les colonnes paires descendent d'un cran, pour
-        que la grille ne se lise pas comme un tableau. */}
-    <div className="mx-auto mt-8 grid max-w-[1720px] grid-cols-1 gap-5 px-5 sm:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-6 xl:grid-cols-5">
+    {/* Une grille rangée, dans l'ordre : Introduction, puis Semaine 1 à 7,
+        quatre par ligne, sans décalage (Krystine, 29 sept. 2026). */}
+    <div className="mx-auto mt-8 grid max-w-[1720px] grid-cols-2 gap-4 px-5 md:px-10 lg:grid-cols-4 lg:gap-6">
       {programme.chapitres.map((s, i) => (
-        <div key={s.rang} className={i % 2 === 1 ? 'lg:mt-12' : ''}>
+        <div key={s.rang}>
           <Carte
             s={s} etat={etats[s.rang]} active={courante === s.rang}
             lang={lang} index={i} onOuvrir={() => onOuvrir(s.rang)}

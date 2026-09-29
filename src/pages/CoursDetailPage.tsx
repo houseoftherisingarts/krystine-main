@@ -402,9 +402,9 @@ const CoursDetailPage: React.FC = () => {
             })()}
           />
         )}
-        {/* Les cartes restent visibles en rangée, toutes, avec un cadenas sur les
-            semaines à venir; chacune coiffe aussi sa semaine dans la liste des
-            leçons (Krystine, 29 sept. 2026). */}
+        {/* Les cartes restent visibles en rangée, toutes, numérotées dans
+            l'ordre, avec un cadenas sur les semaines à venir (Krystine, 29 sept.
+            2026). La liste des leçons ne les répète plus. */}
         {estVata && accessible && (
           <CheminSens programme={programme!} etats={etatsSemaines} courante={courante ? rangDeModule(courante.moduleNom) : -1} lang={lang} onOuvrir={ouvrirSemaine} />
         )}
@@ -776,28 +776,6 @@ const CoursDetailPage: React.FC = () => {
                       background: achevee ? `${sem.couleur.vive}14` : `${sem.couleur.vive}09`,
                     } : undefined}
                   >
-                    {sem && sem.bandeau && (() => {
-                      const barree = !!etatsSemaines[sem.rang]?.verrouillee;
-                      return (
-                        <button
-                          type="button"
-                          onClick={() => (barree ? undefined : ouvrirSemaine(sem.rang))}
-                          disabled={barree}
-                          className={`relative block aspect-[16/7] w-full overflow-hidden text-left ${barree ? 'cursor-not-allowed' : ''}`}
-                        >
-                          <img src={sem.bandeau} alt="" loading="lazy" className={`absolute inset-0 h-full w-full object-cover ${barree ? 'saturate-[0.5] opacity-80' : ''}`} />
-                          <span aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(13,17,15,0.85) 5%, rgba(13,17,15,0.25) 60%, rgba(13,17,15,0) 100%)' }} />
-                          {barree && (
-                            <span className="absolute right-2.5 top-2.5 flex h-7 w-7 items-center justify-center rounded-full bg-[#0d110f]/80 text-[#d9a05b]">
-                              <i className="fa-solid fa-lock text-[10px]" />
-                            </span>
-                          )}
-                          <span className="absolute inset-x-0 bottom-0 block px-3.5 pb-2.5 text-[12px] leading-snug text-[#EEE7DB]/90 line-clamp-2">
-                            {barree ? (lang === 'FR' ? 'S’ouvre bientôt' : 'Opens soon') : (lang === 'FR' ? sem.promesse.fr : sem.promesse.en)}
-                          </span>
-                        </button>
-                      );
-                    })()}
                     {g.nom && (
                       <button
                         type="button"
