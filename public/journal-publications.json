@@ -2924,5 +2924,20 @@
       "src/components/cours/CheminSens.tsx",
       "src/pages/CoursDetailPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-29T15:05:36.875Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "530b1b76",
+    "message": "Paiements : un achat de formation réglé avec un code promo à 100 % ouvre maintenant l'accès (nécessaire pour l'achat test de Vata)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/paiements.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
