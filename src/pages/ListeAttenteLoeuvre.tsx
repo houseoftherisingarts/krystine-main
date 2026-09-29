@@ -70,7 +70,7 @@ const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
   origine2: {
     source: 'waitlist-origine2',
     kicker: "Liste d'attente · Expérience Origine 2",
-    title: 'Expérience Origine 2',
+    title: 'Expérience Origine\u00a02',
     subtitle: 'Le parcours signature · douze semaines avec Krystine St-Laurent',
     promise:
       "Expérience Origine 2 est le parcours signature de Krystine St-Laurent : douze semaines accompagnée " +
