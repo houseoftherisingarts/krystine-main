@@ -362,7 +362,10 @@ export const stripeWebhook = onRequest(
       res.status(200).send('ok'); return;
     }
 
-    if (!uid || !formationId || session.payment_status !== 'paid') { res.status(200).send('incomplete'); return; }
+    // Un code promo à 100 % rend « no_payment_required » au lieu de « paid » :
+    // l'accès s'ouvre quand même (achat test de Vata, 29 septembre 2026).
+    const reglee = session.payment_status === 'paid' || session.payment_status === 'no_payment_required';
+    if (!uid || !formationId || !reglee) { res.status(200).send('incomplete'); return; }
 
     const db = getFirestore();
     const fSnap = await db.doc(`formations/${formationId}`).get();
