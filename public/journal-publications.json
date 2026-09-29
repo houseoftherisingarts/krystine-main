@@ -2909,5 +2909,20 @@
       "public/assets-manifest.json",
       "src/pages/CoursDetailPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-29T15:00:52.831Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d90e2248",
+    "message": "Programme Vata (/cours) : cartes rangées dans l'ordre, quatre par ligne, sans décalage, chacune marquée Introduction puis Semaine 1 à 7; la liste des leçons ne répète plus les cartes",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/CheminSens.tsx",
+      "src/pages/CoursDetailPage.tsx"
+    ]
   }
 ]
