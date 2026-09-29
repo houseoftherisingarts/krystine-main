@@ -2895,5 +2895,19 @@
       "public/assets-manifest.json",
       "public/journal-publications.json"
     ]
+  },
+  {
+    "quand": "2026-09-29T14:35:56.153Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "1786d778",
+    "message": "Programme Vata (/cours) : la rangée des cartes revient en haut, toutes les semaines visibles, cadenas et « S'ouvre bientôt » sur les semaines à venir; chaque carte reste aussi en tête de sa semaine dans la liste des leçons",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/CoursDetailPage.tsx"
+    ]
   }
 ]
