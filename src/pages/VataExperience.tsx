@@ -70,11 +70,17 @@ const PHASES = [
   ['La force tranquille', "L'autonomie totale. Vous repartez habitée par une nouvelle présence et un système d'auto-régulation que vous posséderez pour toujours."],
 ];
 
+// Le tarif de lancement tient jusqu'au 1er novembre 2026 inclus (Krystine,
+// 30 sept. 2026), puis la page affiche 497 $ sans prix barré. La fonction de
+// paiement bascule à la même minute (functions/src/paiements.ts).
+const FIN_LANCEMENT = new Date('2026-11-02T04:00:00Z');
+const enLancement = () => Date.now() < FIN_LANCEMENT.getTime();
+
 const TIERS = [
   {
     name: 'VATA Essentiel', price: '497 $', promo: '397 $', plan: '',
     intro: 'Une formation audio, avec son matériel de support. Un chemin clair, semaine après semaine, pour ancrer, restaurer et cultiver une sérénité qui tient malgré les turbulences.',
-    features: ['Formation audio : 16 capsules et 7 méditations, 4 h 12 min d\'écoute en tout, matériel de support à télécharger', 'Une introduction et 7 semaines, qui s\'ouvrent une à une', '19 rituels d\'automne pour apaiser et honorer Vata', '7 méditations pré-enregistrées, à votre rythme', 'Le guide PDF de 204 pages, un vrai livre sur les cinq sens', 'Journal de bord et d\'observation', '4 capsules sur les rituels de base de l\'Ayurveda', 'Capsules supplémentaires : plantes, épices, aliments de saison, guidances ancestrales'],
+    features: ['Formation audio : 16 capsules et 7 méditations, 4 h 12 min d\'écoute en tout, matériel de support à télécharger', 'Une introduction et 7 semaines, qui s\'ouvrent une à une', '19 rituels d\'automne pour apaiser et honorer Vata', '7 méditations pré-enregistrées, à votre rythme', 'Le guide PDF de 204 pages, un vrai livre sur les cinq sens', 'Journal de bord et d\'observation', '4 capsules sur les rituels de base de l\'Ayurveda', 'Capsules supplémentaires : plantes, épices, aliments de saison, repères de l\'Ayurveda'],
     recommended: false,
   },
 ];
@@ -87,10 +93,12 @@ const TESTIMONIALS = [
 ];
 
 const FAQS = [
-  ["Est-ce que je dois connaître l'Ayurveda ?", "Non, pas du tout. Le programme est conçu pour être simple, concret et accessible. Krystine vulgarise les concepts ancestraux pour qu'ils deviennent des outils pratiques dans votre quotidien moderne."],
+  ["Est-ce que je dois connaître l'Ayurveda ?", "Le programme est conçu pour être simple, concret et accessible. Krystine rend chaque notion claire, pour qu'elle devienne un outil pratique dans votre quotidien."],
   ['Combien de temps ai-je accès au contenu ?', "Vous conservez l'accès à votre parcours VATA tant que la plateforme est en ligne. Vous pourrez donc y revenir l'an prochain si vous en ressentez le besoin."],
   ["Quel est l'investissement de temps requis ?", "C'est un programme qui respecte votre rythme. Les capsules audio font entre 5 et 15 minutes. L'idée n'est pas d'ajouter une corvée, mais de remplacer certaines habitudes stressantes par des rituels d'apaisement."],
-  ['Est-ce que je peux suivre sur mobile ou tablette ?', "Oui. La plateforme est responsive et vous pouvez même écouter vos capsules en mode « podcast » pendant vos déplacements."],
+  ["Comment les semaines s'ouvrent-elles ?", "L'introduction et la semaine 1 s'ouvrent dès votre inscription. Ensuite, une nouvelle semaine s'ouvre tous les 7 jours, un courriel vous prévient à chaque fois, et vous gardez l'accès à tout ce qui est ouvert."],
+  ['Est-ce que je peux suivre sur mobile ou tablette ?', "Oui. Le programme s'adapte à votre téléphone et à votre tablette, et vous pouvez écouter vos capsules comme un balado, même écran verrouillé, pendant vos déplacements."],
+  ['Et si le programme ne me convient pas ?', "Vous avez la garantie cœur léger : si le programme ne vous convient pas, écrivez-nous dans les 15 jours suivant l'achat et nous vous remboursons."],
 ];
 
 const TOC = [
@@ -292,7 +300,7 @@ const Cover: React.FC = () => (
             des turbulences extérieures. Sept semaines d'audio et de rituels, à écouter à votre rythme.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-4">
-            <UnderlineCta label="Apaiser mon système nerveux" />
+            <UnderlineCta label="Commencer la saison Vata" />
             <a
               href="#parcours"
               className="v2-serif text-lg transition-colors duration-300 hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
@@ -402,8 +410,8 @@ const Method: React.FC = () => (
     <ChapterHead
       no="II"
       kicker="La méthode"
-      title="Comment nous allons arrêter la fuite d'énergie"
-      lede="L'Ayurveda agit comme un ancêtre bienveillant qui nous chuchote à l'oreille une sagesse bâtie il y a des milliers d'années. Pas de tâches en plus : trois systèmes de régulation, invisibles dans votre journée."
+      title="Arrêter la fuite d'énergie"
+      lede="L'Ayurveda agit comme une voix bienveillante qui nous chuchote à l'oreille une sagesse éprouvée par le temps. Pas de tâches en plus : trois systèmes de régulation, invisibles dans votre journée."
       className="mb-[clamp(3rem,7vh,5rem)]"
     />
     <div className="border-t" style={{ borderColor: 'rgba(28,23,18,0.16)' }}>
@@ -491,7 +499,7 @@ const Tiers: React.FC = () => (
     <ChapterHead
       no="IV"
       kicker="Votre parcours"
-      title="Traverser la saison avec VATA Essentiel"
+      title="Traverser la saison"
       className="mb-[clamp(3rem,7vh,5rem)]"
     />
     <Reveal>
@@ -515,10 +523,10 @@ const Tiers: React.FC = () => (
               <h3 className="mt-4 v2-serif font-light text-[clamp(1.7rem,2.6vw,2.25rem)] leading-[1.1]" style={{ color: C.ink }}>{tier.name}</h3>
               <p className="mt-3 v2-serif text-[1.05rem] leading-snug" style={{ color: C.sageInk }}>{tier.intro}</p>
               <div className="mt-8 flex items-end gap-3.5">
-                <span className="v2-serif font-light text-[clamp(2.8rem,4.4vw,3.8rem)] leading-none tabular-nums" style={{ color: C.ink }}>{tier.promo}</span>
-                <span className="v2-serif text-xl line-through tabular-nums" style={{ color: 'rgba(28,23,18,0.42)' }}>{tier.price}</span>
+                <span className="v2-serif font-light text-[clamp(2.8rem,4.4vw,3.8rem)] leading-none tabular-nums" style={{ color: C.ink }}>{enLancement() ? tier.promo : tier.price}</span>
+                {enLancement() && <span className="v2-serif text-xl line-through tabular-nums" style={{ color: 'rgba(28,23,18,0.42)' }}>{tier.price}</span>}
               </div>
-              <p className="mt-2 text-[0.72rem] uppercase tracking-[0.16em] min-h-[1.1rem]" style={{ color: 'rgba(28,23,18,0.6)' }}>{tier.plan || 'Tarif de lancement'}</p>
+              <p className="mt-2 text-[0.72rem] uppercase tracking-[0.16em] min-h-[1.1rem]" style={{ color: 'rgba(28,23,18,0.6)' }}>{enLancement() ? 'Tarif de lancement jusqu’au 1er novembre' : 'Accès complet'}</p>
               <button
                 type="button"
                 onClick={go}
@@ -527,9 +535,10 @@ const Tiers: React.FC = () => (
                 onMouseEnter={(e) => { e.currentTarget.style.background = C.sage; e.currentTarget.style.color = C.card; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = C.ink; e.currentTarget.style.color = C.cream; }}
               >
-                Rejoindre VATA Essentiel
+                Commencer la saison Vata
                 <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
               </button>
+              <p className="mt-3 text-center text-[0.8rem] leading-snug" style={{ color: C.inkSoft }}>Garantie cœur léger : 15 jours pour changer d'avis, remboursement complet.</p>
               </div>
               <div>
               <DrawRule className="mt-7 w-full lg:mt-0" color="rgba(116,130,74,0.5)" />
@@ -618,7 +627,7 @@ const Bio: React.FC = () => (
           Krystine <span className="whitespace-nowrap">St‑Laurent</span>
         </h2>
         <p className="mt-5 v2-serif text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[38ch]" style={{ color: C.inkSoft }}>
-          près de 40 ans à la jonction de la rigueur clinique et de la santé globale.
+          Près de 40 ans à relier ce que nous avons appris à séparer.
         </p>
         <DrawRule className="mt-6 w-20" color={C.brass} />
       </Reveal>
@@ -708,7 +717,7 @@ const BackCover: React.FC = () => (
             onMouseEnter={(e) => { e.currentTarget.style.background = C.sage; e.currentTarget.style.color = C.card; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = C.cream; e.currentTarget.style.color = C.dark; }}
           >
-            Apaiser mon système nerveux maintenant
+            Commencer la saison Vata
             <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
           </button>
           <a

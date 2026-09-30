@@ -50,12 +50,15 @@ export const creerSessionPaiement = onCall(
     const f = snap.data() as { titre: string; statut: string; paywall?: boolean; prix?: number | null; imageUrl?: string };
     if (f.statut !== 'publie') throw new HttpsError('failed-precondition', 'Cette formation n\'est pas en vente.');
     if (!f.paywall || !f.prix || f.prix <= 0) throw new HttpsError('failed-precondition', 'Cette formation n\'a pas de prix.');
+    // Vata : le tarif de lancement (prix de la fiche) tient jusqu'au 1er novembre
+    // 2026 inclus, puis le prix régulier s'applique tout seul (Krystine, 30 sept. 2026).
+    const prix = formationId === 'kajabi-2148687644' && Date.now() >= Date.parse('2026-11-02T04:00:00Z') ? 497 : f.prix;
 
     const body = new URLSearchParams({
       mode: 'payment',
       'line_items[0][price_data][currency]': 'cad',
       'line_items[0][price_data][product_data][name]': f.titre,
-      'line_items[0][price_data][unit_amount]': String(Math.round(f.prix * 100)),
+      'line_items[0][price_data][unit_amount]': String(Math.round(prix * 100)),
       'line_items[0][price_data][tax_behavior]': 'exclusive',
       'line_items[0][quantity]': '1',
       ...TAXES_QC,
