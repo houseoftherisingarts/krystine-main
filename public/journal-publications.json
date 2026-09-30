@@ -3252,5 +3252,21 @@
       "src/pages/VataExperience.tsx",
       "src/pages/vata/semaines.ts"
     ]
+  },
+  {
+    "quand": "2026-09-30T16:11:25.603Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a7fdc02f",
+    "message": "Vata : dans le sceau, « Krystine » en doré plus grand et « ST-LAURENT » en ivoire, lisible (bannière du cours et image de la carte)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/compte/signature-krystine-script-or.png",
+      "public/vata/carte-saison-vata.jpg",
+      "src/components/cours/SeuilVata.tsx"
+    ]
   }
 ]
