@@ -3337,5 +3337,22 @@
       "public/assets-manifest.json",
       "src/pages/vata/semaines.ts"
     ]
+  },
+  {
+    "quand": "2026-09-30T19:32:41.460Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "70de0415",
+    "message": "Paiements : après l'achat, Stripe ramène la cliente sur la même adresse que celle où elle a acheté (avec ou sans www), pour qu'elle reste connectée et voie son accès",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/billetterie.ts",
+      "functions/src/cadeaux.ts",
+      "functions/src/paiements.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
