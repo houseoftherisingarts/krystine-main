@@ -572,7 +572,7 @@ const Extrait: React.FC = () => (
         <DrawRule className="mt-6 w-20" />
       </Reveal>
       <Reveal delay={0.1} className="min-w-0">
-        <p className="mb-3 whitespace-nowrap text-[0.6rem] uppercase tracking-[0.14em] sm:hidden" style={{ color: 'rgba(28,23,18,0.62)' }}>Introduction au programme · 7 min 33</p>
+        <p className="mb-3 whitespace-nowrap text-[0.6rem] uppercase tracking-[0.14em] sm:hidden" style={{ color: 'rgba(28,23,18,0.62)' }}>Introduction au programme · 1 min 48</p>
         <div className="[&>div]:static [&>div]:mt-0 [&>div]:px-0">
           <LecteurAudioCours
             url="/vata/extrait-introduction.mp3"
