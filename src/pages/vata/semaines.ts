@@ -63,7 +63,7 @@ export const SEMAINES_VATA: SemaineVata[] = [
   },
   {
     rang: 3, roman: 'III',
-    sens: { fr: 'Le regard', en: 'Sight' },
+    sens: { fr: 'La vue', en: 'Sight' },
     promesse: {
       fr: 'Déposer ses yeux, libérer la vision de la fatigue des écrans et retrouver la clarté.',
       en: 'Rest the eyes, free your sight from screen fatigue and recover clarity.',
