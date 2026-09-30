@@ -762,26 +762,35 @@ const Testimonials: React.FC = () => {
 /* ════════════════════════ La guide · bio typographique ════════════════════════ */
 
 const Bio: React.FC = () => (
+  // La biographie de l'accueil, mot pour mot (Krystine, 30 sept. 2026), avec
+  // sa photo, puis la Trilogie d'Origine.
   <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)]">
-    <div className="grid gap-y-10 lg:grid-cols-[0.9fr_1.1fr] gap-x-[clamp(3rem,7vw,7rem)] items-start">
+    <div className="grid gap-y-10 lg:grid-cols-[1.1fr_0.9fr] gap-x-[clamp(3rem,7vw,7rem)] items-center">
       <Reveal>
-        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.brassInk }}>Fondatrice d'Inspirata Ayurveda</p>
-        <h2 className="mt-4 v2-serif font-light leading-[0.98] text-[clamp(2.6rem,5.4vw,4.6rem)]" style={{ color: C.ink }}>
+        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.brassInk }}>Qui vous accompagne</p>
+        <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(2.4rem,4.6vw,3.8rem)]" style={{ color: C.ink }}>
           Krystine <span className="whitespace-nowrap">St‑Laurent</span>
         </h2>
-        <p className="mt-5 v2-serif text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[38ch]" style={{ color: C.inkSoft }}>
-          Près de 40 ans à relier ce que nous avons appris à séparer.
-        </p>
+        <p className="mt-4 v2-serif text-[clamp(1.1rem,1.9vw,1.4rem)] leading-snug max-w-[34ch]" style={{ color: C.inkSoft }}>Près de 40 ans à relier ce que nous avons appris à séparer.</p>
         <DrawRule className="mt-6 w-20" color={C.brass} />
+        <div className="mt-6 space-y-5 text-[1rem] leading-[1.9] max-w-[56ch]" style={{ color: C.inkSoft }}>
+          <p>Pendant des années, Krystine a œuvré en soins intensifs et en recherche clinique, dans les coulisses du système, avant de choisir l'Ayurveda, les plantes médicinales et l'aromathérapie. Depuis, elle relie la rigueur de la science à la sagesse de la nature, pour que chaque personne apprenne à écouter son propre corps.</p>
+          <p>Autrice de la Trilogie d'Origine, près de 1 200 pages dont deux best-sellers, elle a créé l'émission Santé la vie et le podcast Au-delà des tendances.</p>
+          <p>Dans Vata, c'est elle qui vous guide, capsule après capsule.</p>
+        </div>
+        <a href="/medias" className="mt-8 flex items-center gap-5 group" aria-label="La Trilogie d'Origine, aux Éditions de l'Homme">
+          <img src="/accueil/assets/trilogy-books.png" alt="La Trilogie d'Origine : Nature & Ayurveda, Féminité & Ayurveda et le tome 3 à paraître" loading="lazy" className="h-auto w-[clamp(9rem,18vw,13rem)] transition-transform duration-500 group-hover:-translate-y-1" />
+          <span>
+            <span className="block text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: C.brassInk }}>La Trilogie d'Origine</span>
+            <span className="mt-1 block text-[0.72rem] uppercase tracking-[0.14em]" style={{ color: C.inkSoft }}>Publiée aux Éditions de l'Homme · découvrir les livres</span>
+          </span>
+        </a>
       </Reveal>
       <Reveal delay={0.1}>
-        <div className="space-y-5 text-[1rem] leading-[1.9] max-w-[58ch] lg:pt-2" style={{ color: C.inkSoft }}>
-          <p className="v2-dropcap">
-            Pendant près de 40 ans, Krystine a œuvré en soins intensifs et en recherche clinique, puis en herboristerie,
-            Ayurveda et aromathérapie. Elle a vu ce que l'approche moderne fait bien. Et elle a vu là où elle vous laisse seule.
-          </p>
-          <p>Trois livres aux Éditions de l'Homme. Finaliste au Prix de la Santé Intégrative (catégorie Pionnier). Récipiendaire du Prime Mover Award (Las Vegas).</p>
-        </div>
+        <figure className="border p-2" style={{ borderColor: 'rgba(156,122,68,0.45)', background: C.card }}>
+          <img src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" referrerPolicy="no-referrer" className="block w-full aspect-[4/5] object-cover object-top" />
+          <figcaption className="mt-2 text-right text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: C.brassInk }}>Krystine St-Laurent</figcaption>
+        </figure>
       </Reveal>
     </div>
   </section>
