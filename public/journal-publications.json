@@ -3222,5 +3222,20 @@
       "public/assets-manifest.json",
       "src/pages/admin/sections/newsletter/SequencesPanel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T16:06:26.417Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "623df4fd",
+    "message": "Cours (Kapha, Santé Parfaite et autres) : la bannière affiche le nom de chaque programme sur sa propre image; le titre « SAISON VATA », la phrase et le sceau restent réservés à Vata",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/SeuilVata.tsx",
+      "src/pages/CoursDetailPage.tsx"
+    ]
   }
 ]
