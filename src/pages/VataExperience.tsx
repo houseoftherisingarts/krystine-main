@@ -60,7 +60,7 @@ const SYSTEMS: Array<[string, string, React.ComponentType<{ size?: number; weigh
 ];
 
 const PHASES = [
-  ['Créer le sanctuaire', "Avant de ralentir, il faut se sentir en sécurité. Nous préparons votre espace pour que votre corps s'autorise enfin à déposer les armes."],
+  ['Préparer votre espace', "Avant de ralentir, il faut se sentir en sécurité. Nous préparons votre espace pour que votre corps s'autorise enfin à déposer les armes."],
   ["Le souffle qui ancre", "L'air pour calmer l'air. Le geste invisible qui stoppe le tourbillon mental en quelques secondes, même au milieu du chaos."],
   ['Le luxe du silence', "Protéger vos oreilles. Comment fermer les portes de l'ouïe pour offrir à votre système nerveux le calme dont il a soif."],
   ['Le repos du regard', 'Déposer ses yeux. Libérer votre vision de la fatigue des écrans pour retrouver une clarté que vous croyiez perdue.'],

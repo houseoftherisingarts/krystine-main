@@ -296,7 +296,7 @@ export const CONTENT: GlobalContent = {
     phases: [
       {
         id: 0,
-        title: { fr: "Créer le sanctuaire", en: "Creating the Sanctuary" },
+        title: { fr: "Préparer votre espace", en: "Prepare your space" },
         description: {
           fr: "Avant de ralentir, il faut se sentir en sécurité. Nous préparons votre espace pour que votre corps s'autorise enfin à déposer les armes.",
           en: "Before slowing down, one must feel safe. We prepare your space so your body finally allows itself to lay down its arms."

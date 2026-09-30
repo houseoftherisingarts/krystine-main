@@ -33,9 +33,9 @@ const img = (n: number) => ({
 export const SEMAINES_VATA: SemaineVata[] = [
   {
     rang: 0, roman: '0',
-    sens: { fr: 'Le seuil', en: 'The threshold' },
+    sens: { fr: 'Préparer votre espace', en: 'Prepare your space' },
     promesse: {
-      fr: 'Poser le sanctuaire avant de ralentir, pour que le corps s’autorise à déposer les armes.',
+      fr: 'Préparer le lieu et le moment avant de ralentir, pour que le corps s’autorise à déposer les armes.',
       en: 'Set the sanctuary before slowing down, so the body finally lets go.',
     },
     couleur: { encre: '#4F5C58', vive: '#7A8A85' },

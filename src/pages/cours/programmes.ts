@@ -45,7 +45,7 @@ const SP_CLES: [RegExp, number][] = [
   [/rituels/i, 5], [/prana/i, 6], [/tejas/i, 7], [/ojas/i, 8], [/ancrer/i, 9],
 ];
 const SP: Chapitre[] = ([
-  ['0', { fr: 'Le seuil', en: 'The threshold' }, { fr: 'Votre espace s’ouvre, et le parcours commence par une tasse chaude et un moment à soi.', en: 'Your space opens, and the journey starts with a warm cup and a moment for yourself.' }],
+  ['0', { fr: 'Bienvenue', en: 'Welcome' }, { fr: 'Votre espace s’ouvre, et le parcours commence par une tasse chaude et un moment à soi.', en: 'Your space opens, and the journey starts with a warm cup and a moment for yourself.' }],
   ['I', { fr: 'Le parcours de février', en: 'The February path' }, { fr: 'Le mois où l’énergie remonte doucement, et où le corps demande à être écouté.', en: 'The month energy slowly rises, and the body asks to be heard.' }],
   ['II', { fr: 'Observer', en: 'Observe' }, { fr: 'Comprendre ce qui draine et ce qui nourrit votre énergie, jour après jour.', en: 'Understand what drains and what feeds your energy, day after day.' }],
   ['III', { fr: 'Stabiliser', en: 'Stabilize' }, { fr: 'Poser des appuis simples pour que l’énergie tienne et que l’alignement revienne.', en: 'Set simple anchors so energy holds and alignment returns.' }],
