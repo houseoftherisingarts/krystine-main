@@ -109,6 +109,9 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, un
             {fr ? 'Saison Vata' : 'Vata Season'}
           </h1>
           <span className="mt-4 block h-px w-[min(18rem,60%)] bg-[#EEE7DB]/60" aria-hidden />
+          <p className="mt-4 font-serif text-[clamp(1.15rem,1.9vw,1.6rem)] leading-snug text-[#EEE7DB]/90">
+            {fr ? 'Apaiser le mental, un sens à la fois' : 'Soothe the mind, one sense at a time'}
+          </p>
         </div>
         {/* Le sceau vert des couvertures */}
         <div aria-hidden className="hidden shrink-0 flex-col items-center justify-center rounded-full bg-[#74775f] text-center text-[#F7F3EA] shadow-[0_18px_40px_-18px_rgba(0,0,0,0.7)] sm:flex sm:h-[150px] sm:w-[150px] md:h-[172px] md:w-[172px]">
