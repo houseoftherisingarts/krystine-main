@@ -18,11 +18,11 @@ const statusLabel: Record<string, { label: string; color: string }> = {
 // Les filtres du haut (27 sept. 2026) : les lettres générales, celles que
 // portent les séquences, et les brouillons créés tout seuls à chaque épisode.
 type Filtre = 'toutes' | 'generales' | 'sequences' | 'auto';
-const FILTRES: { cle: Filtre; nom: string }[] = [
-  { cle: 'toutes', nom: 'Toutes' },
-  { cle: 'generales', nom: 'Générales' },
-  { cle: 'sequences', nom: 'Courriels automatisés' },
-  { cle: 'auto', nom: 'Brouillons automatiques' },
+const FILTRES: { cle: Filtre; nom: string; icone: string }[] = [
+  { cle: 'generales', nom: 'Générales', icone: 'fa-envelope-open-text' },
+  { cle: 'sequences', nom: 'Courriels automatisés', icone: 'fa-timeline' },
+  { cle: 'auto', nom: 'Brouillons automatiques', icone: 'fa-wand-magic-sparkles' },
+  { cle: 'toutes', nom: 'Toutes', icone: 'fa-layer-group' },
 ];
 const estAuto = (n: NewsletterDoc) => (n.title || '').startsWith('Brouillon automatique');
 const garder = (f: Filtre, n: NewsletterDoc) =>
@@ -78,13 +78,14 @@ const NewsletterList: React.FC<Props> = ({ onOpen }) => {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-1 rounded-[15px] border border-[#293027]/10 bg-white/60 p-1 dark:border-white/10 dark:bg-white/5">
           {FILTRES.map(f => {
             const n = items.filter(x => garder(f.cle, x)).length;
             return (
               <button key={f.cle} onClick={() => setFiltre(f.cle)}
-                className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${filtre === f.cle ? 'bg-[#141311] text-[#EEE7DB] border-[#141311]' : 'border-[#293027]/15 text-[#293027]/70 hover:bg-[#BA7B39]/10 dark:text-white/70 dark:border-white/15'}`}>
-                {f.nom} <span className="opacity-60">({n})</span>
+                className={`inline-flex items-center gap-2 rounded-[11px] px-4 py-2.5 text-sm font-medium transition-colors ${filtre === f.cle ? 'bg-[#141311] text-[#EEE7DB] shadow-sm' : 'text-[#293027]/75 hover:bg-[#BA7B39]/10 dark:text-white/75'}`}>
+                <i className={`fa-solid ${f.icone} text-[13px] ${filtre === f.cle ? 'text-[#d9a05b]' : 'text-[#8B4A2F]/70'}`} />
+                {f.nom} <span className={`rounded-full px-2 py-0.5 text-[11px] ${filtre === f.cle ? 'bg-white/15' : 'bg-[#293027]/8 dark:bg-white/10'}`}>{n}</span>
               </button>
             );
           })}
