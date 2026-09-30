@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { KenBurns, Atmosphere } from '../motion/loeuvre';
 import type { Programme } from '../../pages/cours/programmes';
-import StickerFormat, { type FormatCours } from './StickerFormat';
+import type { FormatCours } from './StickerFormat';
 
 // Le seuil de l'Expérience Vata : la couverture prend tout l'écran au lieu de
 // tenir dans une carte, et le premier défilement allume la scène. Plus le
@@ -25,6 +25,8 @@ interface Props {
   video?: string;
   /** Une image posée à droite sur le fond vert du sceau, à la place de la photo pleine. */
   decor?: string;
+  /** Fond vert uni du sceau, sans photo ni vidéo (Krystine, 30 sept. 2026 : « la simplicité »). */
+  uni?: boolean;
   /** 0 à 1 : la part du parcours accomplie. Réchauffe la scène. */
   chaleur: number;
   terminees: number;
@@ -34,7 +36,7 @@ interface Props {
   reprise?: Reprise;
 }
 
-const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, chaleur, terminees, total, semainesAchevees, lang, reprise }) => {
+const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, uni, chaleur, terminees, total, semainesAchevees, lang, reprise }) => {
   const fr = lang === 'FR';
   const nb = programme.chapitres.length;
   const [un, des] = fr ? programme.unite.fr : programme.unite.en;
@@ -61,6 +63,8 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, ch
       <motion.div className="absolute inset-0" style={reduce ? undefined : { scale: echelle, y: monte }}>
         {video && !reduce ? (
           <video src={video} poster={image} autoPlay muted loop playsInline className="absolute inset-0 h-full w-full object-cover" />
+        ) : uni ? (
+          <div className="absolute inset-0 bg-[#3d4033]" />
         ) : decor ? (
           // Fond vert du sceau, et l'image du programme qui s'y fond à droite
           // (Krystine, 30 sept. 2026 : ni glace, ni épis, ni frise).
@@ -105,14 +109,13 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, ch
             {fr ? 'Saison Vata' : 'Vata Season'}
           </h1>
           <span className="mt-4 block h-px w-[min(18rem,60%)] bg-[#EEE7DB]/60" aria-hidden />
-          <StickerFormat format={format} lang={lang} className="mt-5" />
         </div>
         {/* Le sceau vert des couvertures */}
-        <div aria-hidden className="hidden shrink-0 flex-col items-center justify-center rounded-full bg-[#5f6b4f]/90 text-center text-[#F7F3EA] shadow-[0_18px_40px_-18px_rgba(0,0,0,0.7)] sm:flex sm:h-[118px] sm:w-[118px] md:h-[138px] md:w-[138px]">
-          <span className="text-[7px] font-light uppercase tracking-[0.22em] md:text-[8px]">L’Expérience</span>
-          <span className="mt-0.5 text-[12px] font-medium uppercase tracking-[0.14em] md:text-[14px]">Ayurveda</span>
-          <span className="text-[8px] font-light uppercase tracking-[0.2em] md:text-[9px]">Saison Vata</span>
-          <img src="/compte/signature-krystine-or.webp" alt="" className="mt-1.5 h-4 w-auto opacity-90 md:h-5" />
+        <div aria-hidden className="hidden shrink-0 flex-col items-center justify-center rounded-full bg-[#74775f] text-center text-[#F7F3EA] shadow-[0_18px_40px_-18px_rgba(0,0,0,0.7)] sm:flex sm:h-[150px] sm:w-[150px] md:h-[172px] md:w-[172px]">
+          <span className="text-[8px] font-light uppercase tracking-[0.18em] md:text-[9px]">L’Expérience</span>
+          <span className="mt-0.5 text-[13px] font-medium uppercase tracking-[0.12em] md:text-[15px]">Ayurveda</span>
+          <span className="text-[9px] font-light uppercase tracking-[0.16em] md:text-[10px]">Saison Vata</span>
+          <img src="/compte/signature-krystine-or.webp" alt="" className="mt-2 h-5 w-auto opacity-90 md:h-6" />
         </div>
       </motion.div>
 

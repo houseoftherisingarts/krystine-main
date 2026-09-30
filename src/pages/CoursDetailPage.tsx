@@ -386,7 +386,7 @@ const CoursDetailPage: React.FC = () => {
             programme={programme!}
             format={formatDe(id, lecons)}
             image="/vata/banniere-automne.jpg"
-            video="/vata/banniere-automne.mp4"
+            uni
             chaleur={chaleur}
             terminees={nbTerminees}
             total={lecons.length}

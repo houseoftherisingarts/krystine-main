@@ -5,11 +5,11 @@ import React from 'react';
 // septembre 2026 : « c'est important de bien identifier quel genre de
 // contenu est-ce qu'on va se consommer »).
 
-export type FormatCours = 'audio' | 'video' | 'texte' | 'mixte';
+export type FormatCours = 'audio' | 'video' | 'texte' | 'mixte' | 'audioDocs';
 
 /** Le format déclaré d'un programme quand ses leçons ne sont pas chargées. */
 const DECLARES: Record<string, FormatCours> = {
-  'kajabi-2148687644': 'audio',   // Vata : seize capsules audio
+  'kajabi-2148687644': 'audioDocs', // Vata : capsules audio et documents PDF (Krystine, 30 sept. 2026)
   'kajabi-2149362090': 'video',   // Santé Parfaite : masterclass filmée
   origine2: 'mixte',
 };
@@ -32,6 +32,7 @@ const LIBELLES: Record<FormatCours, { fr: string; en: string; icone: string }> =
   video: { fr: 'Expérience vidéo', en: 'Video experience', icone: 'fa-circle-play' },
   texte: { fr: 'Lecture guidée', en: 'Guided reading', icone: 'fa-book-open' },
   mixte: { fr: 'Audio et vidéo', en: 'Audio and video', icone: 'fa-photo-film' },
+  audioDocs: { fr: 'Audio et PDF', en: 'Audio and PDF', icone: 'fa-headphones' },
 };
 
 const StickerFormat: React.FC<{
