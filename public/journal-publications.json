@@ -3268,5 +3268,21 @@
       "public/vata/carte-saison-vata.jpg",
       "src/components/cours/SeuilVata.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T16:37:33.905Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "05363b03",
+    "message": "Vata : la signature du sceau reprend celle du site (« ST-LAURENT » plus petit sous « Krystine », éclairci pour se lire sur le vert), dans la bannière et sur l'image de la carte",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/compte/signature-krystine-sceau.png",
+      "public/vata/carte-saison-vata.jpg",
+      "src/components/cours/SeuilVata.tsx"
+    ]
   }
 ]
