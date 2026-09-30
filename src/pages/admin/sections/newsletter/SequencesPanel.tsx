@@ -139,6 +139,35 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
     finally { setOccupe(false); }
   };
 
+  // Les séquences rangées par programme (Krystine, 30 sept. 2026) : Vata,
+  // Expérience Origine 2, puis ce qui ne dépend d'aucun programme.
+  const programmeDe = (s: Sequence): string => {
+    const d = s.declencheur;
+    if (d?.type === 'achat') {
+      if (d.formationId === 'kajabi-2148687644') return 'Vata';
+      if (d.formationId === 'origine2') return 'Expérience Origine 2';
+      return formations.find(f => f.id === d.formationId)?.titre || d.formationId;
+    }
+    if (d?.type === 'etiquette') {
+      if (['interet-rythme', 'preference-autonomie'].includes(d.tag)) return 'Vata';
+      if (['interet-rester-entiere', 'preference-accompagnement'].includes(d.tag)) return 'Expérience Origine 2';
+    }
+    return 'Accueil et général';
+  };
+  const ORDRE_PROGRAMMES = ['Vata', 'Expérience Origine 2'];
+  const groupes = (() => {
+    const m = new Map<string, Sequence[]>();
+    for (const s of seqs) { const g = programmeDe(s); m.set(g, [...(m.get(g) || []), s]); }
+    return [...m.entries()].sort(([a], [b]) => {
+      const ia = ORDRE_PROGRAMMES.indexOf(a), ib = ORDRE_PROGRAMMES.indexOf(b);
+      if (a === 'Accueil et général') return 1;
+      if (b === 'Accueil et général') return -1;
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b);
+    });
+  })();
+  const [groupesOuverts, setGroupesOuverts] = useState<Record<string, boolean>>({});
+  const ouvertG = (g: string, liste: Sequence[]) => groupesOuverts[g] ?? liste.some(x => x.id === courante);
+
   const declencheurTexte = (s: Sequence) => {
     if (s.declencheur?.type === 'etiquette') return `Quand une personne coche « ${libelleTag(s.declencheur.tag)} »`;
     if (s.declencheur?.type !== 'achat') return 'À la main seulement';
@@ -166,16 +195,35 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
         <PrimaryButton onClick={nouvelle} className="w-full"><i className="fa-solid fa-plus" /> Nouvelle séquence</PrimaryButton>
         <Card className="p-2">
           {seqs.length === 0 && <p className="px-3 py-4 text-sm text-[#293027]/60 dark:text-white/60">Aucune séquence encore.</p>}
-          {seqs.map(s => (
-            <button key={s.id} onClick={() => setCourante(s.id)}
-              className={`w-full text-left px-4 py-3 rounded-xl transition-colors ${courante === s.id ? 'bg-[#141311] text-[#EEE7DB]' : 'hover:bg-[#BA7B39]/10 text-[#293027] dark:text-white'}`}>
-              <div className="flex items-baseline justify-between gap-3">
-                <span className="font-serif text-lg">{s.titre}</span>
-                <span className={`text-[10px] uppercase tracking-widest font-bold ${s.actif ? 'text-[#e0b060]' : courante === s.id ? 'text-white/50' : 'text-[#293027]/40'}`}>{s.actif ? 'Active' : 'En pause'}</span>
+          {groupes.map(([g, liste]) => {
+            const ouvert = ouvertG(g, liste);
+            const actives = liste.filter(x => x.actif).length;
+            return (
+              <div key={g} className="mb-1">
+                <button type="button" onClick={() => setGroupesOuverts(o => ({ ...o, [g]: !ouvert }))}
+                  className="flex w-full items-center justify-between gap-3 rounded-xl px-3 py-3 text-left hover:bg-[#BA7B39]/10">
+                  <span className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#8B4A2F] dark:text-[#d9a05b]">
+                    <i className={`fa-solid fa-chevron-right text-[9px] transition-transform ${ouvert ? 'rotate-90' : ''}`} />{g}
+                  </span>
+                  <span className="text-[11px] text-[#293027]/50 dark:text-white/50">{liste.length} séquence{liste.length > 1 ? 's' : ''}{actives ? ` · ${actives} active${actives > 1 ? 's' : ''}` : ''}</span>
+                </button>
+                {ouvert && (
+                  <div className="space-y-1 pb-2 pl-3">
+                    {liste.map(s => (
+                    <button key={s.id} onClick={() => setCourante(s.id)}
+                      className={`w-full text-left px-4 py-3 rounded-xl transition-colors ${courante === s.id ? 'bg-[#141311] text-[#EEE7DB]' : 'hover:bg-[#BA7B39]/10 text-[#293027] dark:text-white'}`}>
+                      <div className="flex items-baseline justify-between gap-3">
+                        <span className="font-serif text-lg">{s.titre}</span>
+                        <span className={`text-[10px] uppercase tracking-widest font-bold ${s.actif ? 'text-[#e0b060]' : courante === s.id ? 'text-white/50' : 'text-[#293027]/40'}`}>{s.actif ? 'Active' : 'En pause'}</span>
+                      </div>
+                      <div className={`text-[11px] ${courante === s.id ? 'text-white/60' : 'text-[#293027]/50 dark:text-white/50'}`}>{(s.etapes || []).length} étape{(s.etapes || []).length > 1 ? 's' : ''} · {compte[s.id] ?? '…'} inscrite{(compte[s.id] || 0) > 1 ? 's' : ''} · {declencheurTexte(s)}</div>
+                    </button>
+                    ))}
+                  </div>
+                )}
               </div>
-              <div className={`text-[11px] ${courante === s.id ? 'text-white/60' : 'text-[#293027]/50 dark:text-white/50'}`}>{(s.etapes || []).length} étape{(s.etapes || []).length > 1 ? 's' : ''} · {compte[s.id] ?? '…'} inscrite{(compte[s.id] || 0) > 1 ? 's' : ''} · {declencheurTexte(s)}</div>
-            </button>
-          ))}
+            );
+          })}
         </Card>
       </div>
 
