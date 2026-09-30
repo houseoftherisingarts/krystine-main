@@ -3175,5 +3175,23 @@
       "public/assets-manifest.json",
       "src/pages/admin/sections/newsletter/NewsletterList.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T15:36:00.363Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "76f73be5",
+    "message": "Vata : une seule version des titres de semaines partout (chronologie de la page de vente, leçons et progression dans l'admin, fenêtre de bravo), celle du cours; journal des changements des 29 et 30 septembre",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/BravoSemaine.tsx",
+      "src/lib/changelog.ts",
+      "src/pages/VataExperience.tsx",
+      "src/pages/admin/sections/FormationsSection.tsx",
+      "src/pages/admin/sections/ProgressionPanel.tsx"
+    ]
   }
 ]
