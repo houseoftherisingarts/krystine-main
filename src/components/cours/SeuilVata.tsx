@@ -103,23 +103,27 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, un
       >
         <div>
           <p className="text-[10px] font-light uppercase tracking-[0.42em] text-[#EEE7DB]/85 md:text-[12px]">
-            {fr ? 'L’Expérience Ayurveda' : 'The Ayurveda Experience'}
+            {uni ? (fr ? 'L’Expérience Ayurveda' : 'The Ayurveda Experience') : (fr ? programme.surtitre.fr : programme.surtitre.en)}
           </p>
           <h1 className="mt-3 font-sans text-[clamp(2.2rem,5vw,4.4rem)] font-extralight uppercase leading-[1] tracking-[0.14em] text-[#F7F3EA]">
-            {fr ? 'Saison Vata' : 'Vata Season'}
+            {(fr ? programme.titre.fr : programme.titre.en).replace(/\n/g, ' ')}
           </h1>
           <span className="mt-4 block h-px w-[min(18rem,60%)] bg-[#EEE7DB]/60" aria-hidden />
-          <p className="mt-4 font-serif text-[clamp(1.15rem,1.9vw,1.6rem)] leading-snug text-[#EEE7DB]/90">
-            {fr ? 'Apaiser le mental, un sens à la fois' : 'Soothe the mind, one sense at a time'}
-          </p>
+          {uni && (
+            <p className="mt-4 font-serif text-[clamp(1.15rem,1.9vw,1.6rem)] leading-snug text-[#EEE7DB]/90">
+              {fr ? 'Apaiser le mental, un sens à la fois' : 'Soothe the mind, one sense at a time'}
+            </p>
+          )}
         </div>
         {/* Le sceau vert des couvertures */}
+        {uni && (
         <div aria-hidden className="hidden shrink-0 flex-col items-center justify-center rounded-full bg-[#74775f] text-center text-[#F7F3EA] shadow-[0_18px_40px_-18px_rgba(0,0,0,0.7)] sm:flex sm:h-[150px] sm:w-[150px] md:h-[172px] md:w-[172px]">
           <span className="text-[8px] font-light uppercase tracking-[0.18em] md:text-[9px]">L’Expérience</span>
           <span className="mt-0.5 text-[13px] font-medium uppercase tracking-[0.12em] md:text-[15px]">Ayurveda</span>
           <span className="text-[9px] font-light uppercase tracking-[0.16em] md:text-[10px]">Saison Vata</span>
           <img src="/compte/signature-krystine-or.webp" alt="" className="mt-2 h-5 w-auto opacity-90 md:h-6" />
         </div>
+        )}
       </motion.div>
 
       <div className="relative flex flex-col gap-3 md:gap-6 lg:flex-row lg:items-end lg:justify-between">

@@ -385,8 +385,8 @@ const CoursDetailPage: React.FC = () => {
           <SeuilVata
             programme={programme!}
             format={formatDe(id, lecons)}
-            image="/vata/banniere-automne.jpg"
-            uni
+            image={id === FORMATION_VATA ? '/vata/carte-saison-vata.jpg' : programme!.couverture}
+            uni={id === FORMATION_VATA}
             chaleur={chaleur}
             terminees={nbTerminees}
             total={lecons.length}
