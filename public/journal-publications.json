@@ -3026,5 +3026,22 @@
     "fichiers": [
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-09-30T13:28:57.737Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "4ba57b66",
+    "message": "Vata : « Le seuil » devient « Préparer votre espace » (carte d'introduction du cours, lettre d'accueil de la série) et « Créer le sanctuaire » devient « Préparer votre espace » sur la page de vente (/vata); Santé Parfaite : l'introduction s'appelle « Bienvenue »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/VataExperience.tsx",
+      "src/pages/cours/programmes.ts",
+      "src/pages/vata/constants.ts",
+      "src/pages/vata/semaines.ts"
+    ]
   }
 ]
