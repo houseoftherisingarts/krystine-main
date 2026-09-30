@@ -3043,5 +3043,19 @@
       "src/pages/vata/constants.ts",
       "src/pages/vata/semaines.ts"
     ]
+  },
+  {
+    "quand": "2026-09-30T13:48:49.520Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a04c0da0",
+    "message": "Cours Vata : colonne « À télécharger » à droite de la leçon (sous la leçon sur téléphone), avec les documents de la semaine en cours d'abord puis ceux des semaines ouvertes, ouverts dans l'aperçu d'un clic; le nom des semaines n'est plus coupé dans la liste",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/CoursDetailPage.tsx"
+    ]
   }
 ]
