@@ -3237,5 +3237,20 @@
       "src/components/cours/SeuilVata.tsx",
       "src/pages/CoursDetailPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T16:10:21.748Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b01fb9aa",
+    "message": "Vata : la semaine 3 s'appelle « La vue » (au lieu de « Le regard ») dans le cours, la page de vente, l'admin et les courriels",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/VataExperience.tsx",
+      "src/pages/vata/semaines.ts"
+    ]
   }
 ]
