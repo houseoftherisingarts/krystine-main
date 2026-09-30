@@ -3115,5 +3115,21 @@
       "src/components/cours/SeuilVata.tsx",
       "src/pages/CoursDetailPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T14:55:32.211Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ee27f3b8",
+    "message": "Cours Vata : bannière simple, fond vert olive qui s'éclaircit, titre fin « SAISON VATA », grand sceau vert avec la signature de Krystine, sans étiquette; catalogue : l'étiquette de Vata dit « Audio et PDF »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/SeuilVata.tsx",
+      "src/components/cours/StickerFormat.tsx",
+      "src/pages/CoursDetailPage.tsx"
+    ]
   }
 ]
