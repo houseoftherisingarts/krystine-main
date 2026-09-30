@@ -121,8 +121,7 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, un
           <span className="text-[8px] font-light uppercase tracking-[0.18em] md:text-[9px]">L’Expérience</span>
           <span className="mt-0.5 text-[13px] font-medium uppercase tracking-[0.12em] md:text-[15px]">Ayurveda</span>
           <span className="text-[9px] font-light uppercase tracking-[0.16em] md:text-[10px]">Saison Vata</span>
-          <img src="/compte/signature-krystine-script-or.png" alt="" className="mt-2 h-7 w-auto md:h-9" />
-          <span className="mt-0.5 text-[7px] font-light uppercase tracking-[0.34em] text-[#F7F3EA]/90 md:text-[8px]">St-Laurent</span>
+          <img src="/compte/signature-krystine-sceau.png" alt="Krystine St-Laurent" className="mt-2 h-9 w-auto md:h-11" />
         </div>
         )}
       </motion.div>

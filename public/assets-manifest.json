@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-30T16:11:18.837Z",
+  "generatedAt": "2026-09-30T16:37:26.166Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -352,11 +352,11 @@
       "size": 62738
     },
     {
-      "path": "/compte/signature-krystine-script-or.png",
-      "name": "signature-krystine-script-or.png",
+      "path": "/compte/signature-krystine-sceau.png",
+      "name": "signature-krystine-sceau.png",
       "folder": "compte",
       "kind": "image",
-      "size": 103201
+      "size": 120751
     },
     {
       "path": "/compte/signature-krystine.png",
@@ -2274,7 +2274,7 @@
       "name": "carte-saison-vata.jpg",
       "folder": "vata",
       "kind": "image",
-      "size": 84967
+      "size": 83903
     },
     {
       "path": "/vata/couverture.webp",
