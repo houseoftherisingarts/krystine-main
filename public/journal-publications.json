@@ -3131,5 +3131,19 @@
       "src/components/cours/StickerFormat.tsx",
       "src/pages/CoursDetailPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T15:02:23.114Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a9d313dc",
+    "message": "Cours Vata : sous « SAISON VATA », la phrase de positionnement « Apaiser le mental, un sens à la fois »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/SeuilVata.tsx"
+    ]
   }
 ]
