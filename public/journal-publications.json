@@ -3013,5 +3013,18 @@
       "src/components/cours/LecteurAudioCours.tsx",
       "src/pages/CoursDetailPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T13:20:56.982Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c3538b75",
+    "message": "Page de vente Vata (/vata) : Introduction puis Semaine 1 à 7, 4 h 12 min d'écoute, carte de prix pleine largeur, bouton unique « Commencer la saison Vata », titres raccourcis, devise sous le nom, tarif de lancement jusqu'au 1er novembre puis 497 $ automatiquement, garantie cœur léger de 15 jours, questions fréquentes revues; paiement : prix régulier de Vata appliqué seul dès le 2 novembre",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json"
+    ]
   }
 ]
