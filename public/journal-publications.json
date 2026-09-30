@@ -3208,5 +3208,19 @@
       "public/vata/carte-saison-vata.jpg",
       "src/pages/FormationsLanding.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T15:47:45.842Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "f282ac6f",
+    "message": "Admin › Infolettre › Courriels automatisés : les séquences rangées par programme (Vata, Expérience Origine 2, Accueil et général), chaque groupe se déplie d'un clic",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/newsletter/SequencesPanel.tsx"
+    ]
   }
 ]
