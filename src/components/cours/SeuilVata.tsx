@@ -23,6 +23,8 @@ interface Props {
   format: FormatCours;
   image: string;
   video?: string;
+  /** Une image posée à droite sur le fond vert du sceau, à la place de la photo pleine. */
+  decor?: string;
   /** 0 à 1 : la part du parcours accomplie. Réchauffe la scène. */
   chaleur: number;
   terminees: number;
@@ -32,7 +34,7 @@ interface Props {
   reprise?: Reprise;
 }
 
-const SeuilVata: React.FC<Props> = ({ programme, format, image, video, chaleur, terminees, total, semainesAchevees, lang, reprise }) => {
+const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, chaleur, terminees, total, semainesAchevees, lang, reprise }) => {
   const fr = lang === 'FR';
   const nb = programme.chapitres.length;
   const [un, des] = fr ? programme.unite.fr : programme.unite.en;
@@ -59,6 +61,16 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, video, chaleur, 
       <motion.div className="absolute inset-0" style={reduce ? undefined : { scale: echelle, y: monte }}>
         {video && !reduce ? (
           <video src={video} poster={image} autoPlay muted loop playsInline className="absolute inset-0 h-full w-full object-cover" />
+        ) : decor ? (
+          // Fond vert du sceau, et l'image du programme qui s'y fond à droite
+          // (Krystine, 30 sept. 2026 : ni glace, ni épis, ni frise).
+          <div className="absolute inset-0 bg-[#28352F]">
+            <img
+              src={decor} alt=""
+              className="absolute inset-y-0 right-0 h-full w-full object-cover object-right opacity-80 md:w-[68%]"
+              style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 45%)', WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 45%)' }}
+            />
+          </div>
         ) : (
           <KenBurns src={image} className="object-[28%_50%] md:object-center" />
         )}
@@ -75,22 +87,32 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, video, chaleur, 
       />
       <Atmosphere light={`${Math.round(24 + 52 * chaleur)}% 18%`} strength={0.3 + 0.4 * chaleur} vignette={false} />
 
-      {/* Le titre, en Cormorant Garamond comme sur le diplôme. Deux lignes, jamais plus. */}
+      {/* La signature du programme, reprise des couvertures des documents
+          (Krystine, 30 sept. 2026) : titre fin, blanc, en capitales espacées,
+          et le sceau vert rond. Deux lignes de titre, jamais plus. */}
+      <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(100deg, rgba(10,18,20,0.82) 0%, rgba(10,18,20,0.5) 45%, rgba(10,18,20,0.18) 80%)' }} />
       <motion.div
-        className="relative flex justify-end"
+        className="relative flex items-start justify-between gap-6"
         initial={reduce ? false : { opacity: 0, y: 18, filter: 'blur(6px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         transition={{ duration: 1.2, ease: EASE, delay: 0.05 }}
       >
-        {/* En mobile le titre tombe sur les herbes : un verre crème le porte. */}
-        <div className="rounded-[16px] bg-[#F7F3EA]/75 px-4 py-3 text-right backdrop-blur-sm md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
-          <p className="text-[10px] font-bold uppercase tracking-[0.34em] text-[#8B4A2F] md:text-[11px]">
-            {fr ? programme.surtitre.fr : programme.surtitre.en}
+        <div>
+          <p className="text-[10px] font-light uppercase tracking-[0.42em] text-[#EEE7DB]/85 md:text-[12px]">
+            {fr ? 'L’Expérience Ayurveda' : 'The Ayurveda Experience'}
           </p>
-          <StickerFormat format={format} lang={lang} className="mt-2" />
-          <h1 className="mt-3 font-serif text-[clamp(2.8rem,6.2vw,5.6rem)] leading-[0.9] text-[#293027]" style={{ letterSpacing: '-0.01em' }}>
-            {(fr ? programme.titre.fr : programme.titre.en).split('\n').map((l, i) => <React.Fragment key={i}>{i > 0 && <br />}{l}</React.Fragment>)}
+          <h1 className="mt-3 font-sans text-[clamp(2.2rem,5vw,4.4rem)] font-extralight uppercase leading-[1] tracking-[0.14em] text-[#F7F3EA]">
+            {fr ? 'Saison Vata' : 'Vata Season'}
           </h1>
+          <span className="mt-4 block h-px w-[min(18rem,60%)] bg-[#EEE7DB]/60" aria-hidden />
+          <StickerFormat format={format} lang={lang} className="mt-5" />
+        </div>
+        {/* Le sceau vert des couvertures */}
+        <div aria-hidden className="hidden shrink-0 flex-col items-center justify-center rounded-full bg-[#5f6b4f]/90 text-center text-[#F7F3EA] shadow-[0_18px_40px_-18px_rgba(0,0,0,0.7)] sm:flex sm:h-[118px] sm:w-[118px] md:h-[138px] md:w-[138px]">
+          <span className="text-[7px] font-light uppercase tracking-[0.22em] md:text-[8px]">L’Expérience</span>
+          <span className="mt-0.5 text-[12px] font-medium uppercase tracking-[0.14em] md:text-[14px]">Ayurveda</span>
+          <span className="text-[8px] font-light uppercase tracking-[0.2em] md:text-[9px]">Saison Vata</span>
+          <img src="/compte/signature-krystine-or.webp" alt="" className="mt-1.5 h-4 w-auto opacity-90 md:h-5" />
         </div>
       </motion.div>
 

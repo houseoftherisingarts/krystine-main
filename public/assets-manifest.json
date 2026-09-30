@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-30T14:21:58.789Z",
+  "generatedAt": "2026-09-30T14:37:42.140Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2247,6 +2247,20 @@
       "folder": "speaking/assets",
       "kind": "image",
       "size": 65882
+    },
+    {
+      "path": "/vata/banniere-automne.jpg",
+      "name": "banniere-automne.jpg",
+      "folder": "vata",
+      "kind": "image",
+      "size": 154283
+    },
+    {
+      "path": "/vata/banniere-automne.mp4",
+      "name": "banniere-automne.mp4",
+      "folder": "vata",
+      "kind": "video",
+      "size": 3553017
     },
     {
       "path": "/vata/couverture.webp",
