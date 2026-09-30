@@ -993,57 +993,45 @@ const CoursDetailPage: React.FC = () => {
               )}
             </section>
 
-            {/* À télécharger (Krystine, 30 sept. 2026) : les documents de la
-                semaine en cours d'abord, puis ceux des semaines déjà ouvertes.
-                À droite sur grand écran, sous la leçon ailleurs. Un clic ouvre
-                l'aperçu, qui porte son bouton « Ouvrir ». */}
+            {/* À télécharger (Krystine, 30 sept. 2026) : seulement les documents
+                de la semaine de la leçon ouverte, chacun avec l'aperçu de sa
+                première page (public/vata/documents/<leçon>.jpg). À droite sur
+                grand écran, sous la leçon ailleurs. Un clic ouvre l'aperçu
+                complet, qui porte son bouton « Ouvrir ». */}
             {estVata && accessible && !apercuPdf && (() => {
-              const docs = lecons.filter(l => l.type === 'pdf' && !verrouillee(l));
-              if (!docs.length) return null;
-              const rangCourant = courante ? rangDeModule(courante.moduleNom) : -1;
-              const groupes = new Map<number, Lecon[]>();
-              for (const l of docs) { const r = rangDeModule(l.moduleNom); groupes.set(r, [...(groupes.get(r) || []), l]); }
-              const ordre = [...groupes.keys()].sort((a, b) => (a === rangCourant ? -1 : b === rangCourant ? 1 : a - b));
-              const aVenir = programme!.chapitres.filter(c => etatsSemaines[c.rang]?.verrouillee).length;
+              const rang = courante ? rangDeModule(courante.moduleNom) : 0;
+              const docs = lecons.filter(l => l.type === 'pdf' && !verrouillee(l) && rangDeModule(l.moduleNom) === rang);
+              const c = programme!.chapitres[rang];
+              if (!docs.length || !c) return null;
               return (
                 <aside className="min-w-0 self-start rounded-[20px] border border-white/60 bg-white/55 p-4 backdrop-blur-md lg:col-start-2 xl:col-start-3 xl:row-start-1 xl:sticky xl:top-24 xl:max-h-[calc(100vh-7rem)] xl:overflow-y-auto dark:border-white/10 dark:bg-[#293027]/55">
                   <p className="px-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#8B4A2F] dark:text-[#d9a05b]">
                     <i className="fa-solid fa-file-arrow-down mr-2" />{lang === 'FR' ? 'À télécharger' : 'Downloads'}
                   </p>
-                  {ordre.map(r => {
-                    const c = programme!.chapitres[r];
-                    return (
-                      <div key={r} className="mt-4">
-                        <p className="px-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#38403a]/55 dark:text-white/55">
-                          {r === rangCourant && <span className="mb-0.5 block text-[#8B4A2F] dark:text-[#d9a05b]">{lang === 'FR' ? 'Cette semaine' : 'This week'}</span>}
-                          {c ? libelleSemaine(c) : ''}
-                        </p>
-                        <ul className="mt-1.5 space-y-1">
-                          {groupes.get(r)!.map(l => (
-                            <li key={l.id}>
-                              <button
-                                type="button"
-                                onClick={async () => {
-                                  try { setApercu({ nom: l.titre, url: await urlDeLecon(id, l.id) }); }
-                                  catch { setErreur(lang === 'FR' ? 'Document indisponible pour le moment.' : 'Document unavailable right now.'); }
-                                }}
-                                className="flex w-full items-start gap-2.5 rounded-[12px] px-2 py-2 text-left text-[13px] leading-snug text-[#38403a]/85 transition-colors hover:bg-white/70 dark:text-white/80 dark:hover:bg-white/10"
-                              >
-                                <i className="fa-solid fa-file-pdf mt-0.5 text-[#8B4A2F]/70" />
-                                <span className="min-w-0 flex-1">{l.titre}</span>
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    );
-                  })}
-                  {aVenir > 0 && (
-                    <p className="mt-4 px-1 text-[11px] leading-snug text-[#38403a]/50 dark:text-white/50">
-                      <i className="fa-solid fa-lock mr-1.5 text-[9px]" />
-                      {lang === 'FR' ? 'Les documents des semaines à venir apparaîtront ici à leur ouverture.' : 'Documents for upcoming weeks will appear here as they open.'}
-                    </p>
-                  )}
+                  <p className="mt-1 px-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#38403a]/55 dark:text-white/55">{libelleSemaine(c)}</p>
+                  <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-2">
+                    {docs.map(l => (
+                      <li key={l.id}>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            try { setApercu({ nom: l.titre, url: await urlDeLecon(id, l.id) }); }
+                            catch { setErreur(lang === 'FR' ? 'Document indisponible pour le moment.' : 'Document unavailable right now.'); }
+                          }}
+                          className="group block w-full text-left"
+                        >
+                          <span className="block overflow-hidden rounded-[10px] border border-[#BA7B39]/25 bg-[#efe6d7] shadow-[0_10px_24px_-16px_rgba(41,48,39,0.6)]">
+                            <img
+                              src={`/vata/documents/${l.id}.jpg`} alt="" loading="lazy"
+                              onError={e => { e.currentTarget.style.display = 'none'; }}
+                              className="aspect-[368/520] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                            />
+                          </span>
+                          <span className="mt-1.5 block text-[12px] leading-snug text-[#38403a]/85 group-hover:text-[#8B4A2F] dark:text-white/80">{l.titre}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
                 </aside>
               );
             })()}
