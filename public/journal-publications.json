@@ -3057,5 +3057,46 @@
       "public/assets-manifest.json",
       "src/pages/CoursDetailPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T14:22:06.350Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "df565d93",
+    "message": "Cours Vata : « À télécharger » montre seulement les documents de la semaine de la leçon ouverte, chacun avec l'aperçu de sa couverture",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/vata/documents/002.jpg",
+      "public/vata/documents/006.jpg",
+      "public/vata/documents/008.jpg",
+      "public/vata/documents/012.jpg",
+      "public/vata/documents/014.jpg",
+      "public/vata/documents/017.jpg",
+      "public/vata/documents/020.jpg",
+      "public/vata/documents/021.jpg",
+      "public/vata/documents/022.jpg",
+      "public/vata/documents/023.jpg",
+      "public/vata/documents/026.jpg",
+      "public/vata/documents/027.jpg",
+      "public/vata/documents/028.jpg",
+      "public/vata/documents/029.jpg",
+      "public/vata/documents/030.jpg",
+      "public/vata/documents/033.jpg",
+      "public/vata/documents/034.jpg",
+      "public/vata/documents/035.jpg",
+      "public/vata/documents/036.jpg",
+      "public/vata/documents/037.jpg",
+      "public/vata/documents/040.jpg",
+      "public/vata/documents/041.jpg",
+      "public/vata/documents/042.jpg",
+      "public/vata/documents/043.jpg",
+      "public/vata/documents/046.jpg",
+      "public/vata/documents/047.jpg",
+      "public/vata/documents/048.jpg",
+      "src/pages/CoursDetailPage.tsx"
+    ]
   }
 ]
