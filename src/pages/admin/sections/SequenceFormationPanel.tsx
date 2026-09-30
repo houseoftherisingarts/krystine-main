@@ -106,7 +106,7 @@ const SequenceFormationPanel: React.FC<{ formationId: string; titre: string }> =
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
         <h4 className="text-xs font-bold uppercase tracking-widest text-[#8B4A2F]">Séquence de courriels</h4>
         <button type="button" onClick={() => navigate('/admin/infolettre?onglet=sequences')} className="text-[11px] text-[#293027]/60 underline hover:text-[#8B4A2F] dark:text-white/60">
-          Stratégie, tests et inscrites dans Infolettre › Séquences
+          Stratégie, tests et inscrites dans Infolettre › Courriels automatisés
         </button>
       </div>
 
@@ -143,7 +143,7 @@ const SequenceFormationPanel: React.FC<{ formationId: string; titre: string }> =
               </button>
             )}
             {etapes.length === 0 && formationId !== FORMATION_VATA && (
-              <p className="text-sm text-[#293027]/60 dark:text-white/60">Aucune étape encore. Elles s’ajoutent dans Infolettre › Séquences.</p>
+              <p className="text-sm text-[#293027]/60 dark:text-white/60">Aucune étape encore. Elles s’ajoutent dans Infolettre › Courriels automatisés.</p>
             )}
 
             <ol className="space-y-2">

@@ -30,7 +30,7 @@ const TABS: Array<{ key: Tab; icon: string; label: string }> = [
   { key: 'analyse', icon: 'fa-chart-line', label: 'Analyse' },
   { key: 'desabonnements', icon: 'fa-door-open', label: 'Désabonnements' },
   { key: 'lancement', icon: 'fa-rocket', label: 'Lancement' },
-  { key: 'sequences', icon: 'fa-timeline', label: 'Séquences' },
+  { key: 'sequences', icon: 'fa-timeline', label: 'Courriels automatisés' },
   { key: 'subscribers', icon: 'fa-users', label: 'Abonnés' },
   { key: 'live', icon: 'fa-tower-broadcast', label: 'Direct' },
   { key: 'automatics', icon: 'fa-robot', label: 'Automatiques' },

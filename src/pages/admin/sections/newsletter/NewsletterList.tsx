@@ -21,7 +21,7 @@ type Filtre = 'toutes' | 'generales' | 'sequences' | 'auto';
 const FILTRES: { cle: Filtre; nom: string }[] = [
   { cle: 'toutes', nom: 'Toutes' },
   { cle: 'generales', nom: 'Générales' },
-  { cle: 'sequences', nom: 'Séquences' },
+  { cle: 'sequences', nom: 'Courriels automatisés' },
   { cle: 'auto', nom: 'Brouillons automatiques' },
 ];
 const estAuto = (n: NewsletterDoc) => (n.title || '').startsWith('Brouillon automatique');
@@ -31,7 +31,9 @@ const garder = (f: Filtre, n: NewsletterDoc) =>
 const NewsletterList: React.FC<Props> = ({ onOpen }) => {
   const [items, setItems] = useState<NewsletterDoc[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filtre, setFiltre] = useState<Filtre>('toutes');
+  // À l'ouverture, les lettres générales seulement : les lettres des séquences
+  // (Vata, bienvenue…) restent dans leur filtre (Krystine, 30 sept. 2026).
+  const [filtre, setFiltre] = useState<Filtre>('generales');
   const visibles = items.filter(n => garder(filtre, n));
 
   const refresh = () => getNewsletters().then(setItems).finally(() => setLoading(false));
