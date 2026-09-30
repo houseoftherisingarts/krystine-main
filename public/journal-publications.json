@@ -3145,5 +3145,21 @@
       "public/assets-manifest.json",
       "src/components/cours/SeuilVata.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T15:20:08.776Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "6d9cbe3b",
+    "message": "Admin › Infolettre : la liste s'ouvre sur les lettres générales, sans les brouillons des séquences (Vata et autres), qui restent dans leur filtre; l'onglet « Séquences » s'appelle « Courriels automatisés »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/NewsletterSection.tsx",
+      "src/pages/admin/sections/SequenceFormationPanel.tsx",
+      "src/pages/admin/sections/newsletter/NewsletterList.tsx"
+    ]
   }
 ]
