@@ -3098,5 +3098,22 @@
       "public/vata/documents/048.jpg",
       "src/pages/CoursDetailPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T14:37:48.943Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "606aee2d",
+    "message": "Cours Vata : nouvelle bannière dans la signature du programme (titre fin « SAISON VATA », sceau vert et signature de Krystine) sur la vidéo d'automne tournée par Krystine (érable roux, en boucle douce)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/vata/banniere-automne.jpg",
+      "public/vata/banniere-automne.mp4",
+      "src/components/cours/SeuilVata.tsx",
+      "src/pages/CoursDetailPage.tsx"
+    ]
   }
 ]
