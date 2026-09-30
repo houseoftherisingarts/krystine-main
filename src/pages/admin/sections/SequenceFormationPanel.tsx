@@ -24,13 +24,13 @@ const serieVata = (): Etape[] => {
       titre: `Bienvenue · ${seuil.sens.fr} et la semaine 1`,
       intention: `L'accès est prêt. ${seuil.promesse.fr} Puis la semaine 1, ${semaines[0].sens.fr.toLowerCase()} : ${semaines[0].promesse.fr}`,
     },
-    ...semaines.slice(1).map(s => ({
+    ...semaines.filter(s => !s.etiquette).slice(1).map(s => ({
       cle: `semaine-${s.rang}`, delaiHeures: (s.rang - 1) * 7 * JOUR, newsletterId: '',
       titre: `Semaine ${s.rang} · ${s.sens.fr}`,
       intention: `La semaine ${s.rang} vient de s'ouvrir. ${s.promesse.fr}`,
     })),
     {
-      cle: 'fin-de-saison', delaiHeures: SEMAINES_VATA.length * 7 * JOUR - 7 * JOUR, newsletterId: '',
+      cle: 'fin-de-saison', delaiHeures: 49 * JOUR, newsletterId: '',
       titre: 'La fin de la saison',
       intention: 'Les sept semaines sont traversées : ce qu’elle a vécu, et la suite.',
     },

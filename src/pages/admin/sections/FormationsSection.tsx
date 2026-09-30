@@ -13,7 +13,7 @@ import { Card } from '../primitives';
 // (privé) et la leçon apparaît immédiatement dans le lecteur.
 import { SEMAINES } from '../../origine2/semaines';
 import ProgressionPanel from './ProgressionPanel';
-import { FORMATION_VATA, SEMAINES_VATA, rangDeModule as rangVata } from '../../vata/semaines';
+import { FORMATION_VATA, SEMAINES_VATA, rangDeModule as rangVata, etiquetteSemaine } from '../../vata/semaines';
 import SequenceFormationPanel from './SequenceFormationPanel';
 const MOIS_PORTES = ['', 'septembre', 'octobre', 'novembre', 'decembre', 'janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout'];
 const ICONE_LECON: Record<Lecon['type'], string> = {
@@ -248,7 +248,7 @@ export const LeconsPanel: React.FC<{ formationId: string }> = ({ formationId }) 
                   // Vata : le même titre de semaine que dans le cours (Krystine, 30 sept. 2026).
                   if (formationId !== FORMATION_VATA) return l.moduleNom;
                   const s = SEMAINES_VATA[rangVata(l.moduleNom)];
-                  return s ? `${s.rang === 0 ? 'Introduction' : `Semaine ${s.rang}`} · ${s.sens.fr}` : l.moduleNom;
+                  return s ? `${etiquetteSemaine(s)} · ${s.sens.fr}` : l.moduleNom;
                 })()}</span>}
                 {l.mois && <span className="ml-1 text-[10px] uppercase tracking-wider text-[#38403a]/40 dark:text-white/40"><i className="fa-solid fa-door-closed mr-1" />{l.mois}</span>}
               </span>

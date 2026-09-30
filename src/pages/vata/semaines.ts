@@ -22,6 +22,8 @@ export interface SemaineVata {
    *  `encre` se lit sur le crème, `vive` sert de pastille, de liseré et de
    *  barre, et se lit sur les fonds sombres. */
   couleur: { encre: string; vive: string };
+  /** Le libellé de la pastille quand ce n'est pas « Semaine N » (la conclusion). */
+  etiquette?: { fr: string; en: string };
 }
 
 const img = (n: number) => ({
@@ -111,7 +113,27 @@ export const SEMAINES_VATA: SemaineVata[] = [
     couleur: { encre: '#7A3D26', vive: '#A9663C' },
     ...img(7),
   },
+  {
+    // La conclusion (Krystine, 30 sept. 2026) : la capsule de fin du Vata guidé
+    // et le guide complet de 204 pages. Elle s'ouvre au jour 49.
+    rang: 8, roman: 'VIII',
+    etiquette: { fr: 'Conclusion', en: 'Conclusion' },
+    sens: { fr: 'Clore la saison', en: 'Closing the season' },
+    promesse: {
+      fr: 'Un dernier mot de Krystine, et votre guide complet à garder pour chaque automne.',
+      en: 'A last word from Krystine, and your complete guide to keep for every autumn.',
+    },
+    couleur: { encre: '#4E6349', vive: '#7A9270' },
+    ...img(8),
+  },
 ];
+
+/** « Introduction », « Semaine N » ou « Conclusion » : le même libellé partout. */
+export function etiquetteSemaine(s: { rang: number; etiquette?: { fr: string; en: string } }, fr = true): string {
+  if (s.etiquette) return fr ? s.etiquette.fr : s.etiquette.en;
+  if (s.rang === 0) return 'Introduction';
+  return `${fr ? 'Semaine' : 'Week'} ${s.rang}`;
+}
 
 /** Le rang de semaine écrit dans un nom de module Kajabi, ou -1. */
 export function rangDeModule(nom?: string): number {

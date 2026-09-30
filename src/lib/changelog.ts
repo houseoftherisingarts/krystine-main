@@ -43,6 +43,7 @@ export const JOURNAL: EntreeJournal[] = [
       { texte: "La série de 8 courriels de Vata est écrite en brouillon, de l'accueil à la fin de la saison. Elle reste éteinte jusqu'à votre accord. On la trouve dans le bouton « Séquence » de Vata.", ou: '/admin/formations', libelle: 'Formations' },
       { texte: "L'Infolettre s'ouvre sur vos lettres générales. Les lettres des séquences ont leur onglet, « Courriels automatisés », dans une barre de filtres plus visible.", ou: '/admin/infolettre', libelle: 'Infolettre' },
       "Un rappel est posé dans votre agenda le 30 octobre pour décider du prix de Vata après le lancement.",
+      { texte: "Vata a maintenant une conclusion : une 9e carte, « Clore la saison », qui s'ouvre au jour 49 avec votre capsule de fin (reprise du Vata guidé) et le guide complet de 204 pages, qui manquait au cours. La semaine 3 s'appelle « La vue ».", ou: '/cours/vata', libelle: 'Le cours Vata' },
     ],
   },
   {

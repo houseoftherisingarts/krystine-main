@@ -48,13 +48,13 @@ const Carte: React.FC<{
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 0.95, ease: EASE, delay: Math.min(index, 5) * 0.09 }}
       whileHover={reduce ? undefined : { y: -6 }}
-      className={`group relative block aspect-[3/4] w-full shrink-0 overflow-hidden rounded-[20px] border text-left transition-colors duration-500 ${
+      className={`group relative block ${s.etiquette ? 'aspect-[16/9] sm:aspect-[16/5]' : 'aspect-[3/4]'} w-full shrink-0 overflow-hidden rounded-[20px] border text-left transition-colors duration-500 ${
         active ? 'border-[#BA7B39]' : 'border-[#EEE7DB]/15 hover:border-[#BA7B39]/70'
       }`}
     >
       {s.image ? (
         <img
-          src={s.image}
+          src={s.etiquette ? s.bandeau : s.image}
           alt=""
           loading={index < 3 ? 'eager' : 'lazy'}
           className={`absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05] ${
@@ -71,10 +71,12 @@ const Carte: React.FC<{
       />
 
       <span className="absolute left-4 top-4 flex items-center gap-2">
-        <span className="flex h-9 items-center justify-center rounded-full border border-[#BA7B39]/50 bg-[#0d110f]/80 px-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#d9a05b] backdrop-blur-sm">
-          {s.rang === 0
-            ? (lang === 'FR' ? 'Introduction' : 'Introduction')
-            : `${lang === 'FR' ? 'Semaine' : 'Week'} ${s.rang}`}
+        <span className="flex h-9 items-center justify-center whitespace-nowrap rounded-full border border-[#BA7B39]/50 bg-[#0d110f]/80 px-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#d9a05b] backdrop-blur-sm">
+          {s.etiquette
+            ? (lang === 'FR' ? s.etiquette.fr : s.etiquette.en)
+            : s.rang === 0
+              ? 'Introduction'
+              : `${lang === 'FR' ? 'Semaine' : 'Week'} ${s.rang}`}
         </span>
         {finie && (
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#BA7B39] text-[#151d19]">
@@ -128,7 +130,7 @@ const CheminSens: React.FC<Props> = ({ programme, etats, courante, lang, onOuvri
         quatre par ligne, sans décalage (Krystine, 29 sept. 2026). */}
     <div className="mx-auto mt-8 grid max-w-[1720px] grid-cols-2 gap-4 px-5 md:px-10 lg:grid-cols-4 lg:gap-6">
       {programme.chapitres.map((s, i) => (
-        <div key={s.rang}>
+        <div key={s.rang} className={s.etiquette ? 'col-span-2 lg:col-span-4' : ''}>
           <Carte
             s={s} etat={etats[s.rang]} active={courante === s.rang}
             lang={lang} index={i} onOuvrir={() => onOuvrir(s.rang)}

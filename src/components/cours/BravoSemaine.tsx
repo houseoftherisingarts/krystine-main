@@ -69,7 +69,7 @@ const BravoSemaine: React.FC<Props> = ({ programme, semaine, avant, apres, semai
               style={{ background: `linear-gradient(to top, ${semaine.couleur.encre}f2 4%, ${semaine.couleur.encre}70 52%, transparent 100%)` }}
             />
             <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 px-6 pb-4">
-              <span className="font-serif text-2xl leading-none text-[#EEE7DB]">{semaine.rang === 0 ? 'Introduction' : `${fr ? 'Semaine' : 'Week'} ${semaine.rang}`}</span>
+              <span className="font-serif text-2xl leading-none text-[#EEE7DB]">{(semaine as { etiquette?: { fr: string; en: string } }).etiquette ? (fr ? (semaine as { etiquette: { fr: string } }).etiquette.fr : (semaine as { etiquette: { en: string } }).etiquette.en) : semaine.rang === 0 ? 'Introduction' : `${fr ? 'Semaine' : 'Week'} ${semaine.rang}`}</span>
               <span className="pb-1 text-[10px] font-bold uppercase tracking-[0.26em] text-[#EEE7DB]/85">
                 {fr ? `${programme.unite.fr[0][0].toUpperCase()}${programme.unite.fr[0].slice(1)} ouverte` : `${programme.unite.en[0][0].toUpperCase()}${programme.unite.en[0].slice(1)} opened`}
               </span>

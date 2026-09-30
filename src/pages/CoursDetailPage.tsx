@@ -4,7 +4,7 @@ import { PORTES, porteDuMois, foyerOuvert, DEBUT_LABEL } from './foyer/portesDat
 import { rangSemaine, semaineOuverteRang } from './origine2/semaines';
 import CoursOrigine from '../components/cours/origine/CoursOrigine';
 import { estOrigine } from './origine2/piliers';
-import { FORMATION_VATA, rangDeModule as rangModuleVata, semainesVataOuvertes } from './vata/semaines';
+import { FORMATION_VATA, rangDeModule as rangModuleVata, semainesVataOuvertes, etiquetteSemaine } from './vata/semaines';
 import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, type QuestionLecon } from '../firebase/formations';
 import { Navigate, useParams, Link } from 'react-router-dom';
 import {
@@ -80,7 +80,7 @@ const CoursDetailPage: React.FC = () => {
   const chapitreDeModule = (nom?: string) => programme?.chapitres[rangDeModule(nom)];
   // « Introduction », puis « Semaine 1 » à 7 : les mêmes mots partout (Krystine, 29 sept. 2026).
   const libelleSemaine = (s: { rang: number; sens: { fr: string; en: string } }) =>
-    `${s.rang === 0 ? 'Introduction' : `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${s.rang}`} · ${lang === 'FR' ? s.sens.fr : s.sens.en}`;
+    `${(s as { etiquette?: { fr: string; en: string } }).etiquette ? etiquetteSemaine(s as never, lang === 'FR') : s.rang === 0 ? 'Introduction' : `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${s.rang}`} · ${lang === 'FR' ? s.sens.fr : s.sens.en}`;
   const CHAPITRES = programme?.chapitres ?? [];
   const [achete, setAchete] = useState(false);
   const [verifAcces, setVerifAcces] = useState(true);   // le temps de savoir si la personne possède le cours
@@ -399,7 +399,7 @@ const CoursDetailPage: React.FC = () => {
               return {
                 titre: p.titre,
                 duree: p.duree,
-                vignette: vignetteAudio(p, formation || undefined) || s?.vignette,
+                vignette: vignetteAudio(p, id === FORMATION_VATA ? undefined : formation || undefined) || s?.vignette,
                 soustitre: s ? libelleSemaine(s) : undefined,
                 onOuvrir: () => { void ouvrir(p); requestAnimationFrame(() => chapitre.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })); },
               };
@@ -723,8 +723,8 @@ const CoursDetailPage: React.FC = () => {
                   <ul className="mt-3 space-y-2">
                     {lecons.map(l => (
                       <li key={l.id} className="flex items-center gap-3 text-sm text-[#38403a]/70 dark:text-white/70">
-                        {l.type === 'audio' && vignetteAudio(l, formation || undefined) ? (
-                          <img src={vignetteAudio(l, formation || undefined)} alt="" className="h-9 w-9 shrink-0 rounded-[9px] object-cover border border-[#BA7B39]/25" />
+                        {l.type === 'audio' && vignetteAudio(l, id === FORMATION_VATA ? undefined : formation || undefined) || (id === FORMATION_VATA ? chapitreDeModule(l.moduleNom)?.vignette : undefined) ? (
+                          <img src={vignetteAudio(l, id === FORMATION_VATA ? undefined : formation || undefined) || (id === FORMATION_VATA ? chapitreDeModule(l.moduleNom)?.vignette : undefined)} alt="" className="h-9 w-9 shrink-0 rounded-[9px] object-cover border border-[#BA7B39]/25" />
                         ) : (
                           <i className={`fa-solid ${ICONES[l.type]} w-4 text-[#8B4A2F]/70`} />
                         )}
@@ -801,7 +801,7 @@ const CoursDetailPage: React.FC = () => {
                           )}
                           {sem ? (
                             <span className="min-w-0">
-                              <span className="block text-[9px] opacity-70">{sem.rang === 0 ? 'Introduction' : `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${sem.rang}`}</span>
+                              <span className="block text-[9px] opacity-70">{(sem as { etiquette?: unknown }).etiquette ? etiquetteSemaine(sem as never, lang === 'FR') : sem.rang === 0 ? 'Introduction' : `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${sem.rang}`}</span>
                               <span className="block leading-snug">{lang === 'FR' ? sem.sens.fr : sem.sens.en}</span>
                             </span>
                           ) : <span className="min-w-0 truncate">{g.nom}</span>}
@@ -839,8 +839,8 @@ const CoursDetailPage: React.FC = () => {
                         }`}
                         style={sem && courante?.id === l.id ? { background: sem.couleur.encre } : undefined}
                       >
-                        {l.type === 'audio' && !verrou && !terminees[l.id] && vignetteAudio(l, formation || undefined) ? (
-                          <img src={vignetteAudio(l, formation || undefined)} alt="" className={`h-9 w-9 shrink-0 rounded-[9px] object-cover border border-[#BA7B39]/25 ${courante?.id === l.id ? 'ring-2 ring-[#BA7B39]' : ''}`} />
+                        {l.type === 'audio' && !verrou && !terminees[l.id] && vignetteAudio(l, id === FORMATION_VATA ? undefined : formation || undefined) || (id === FORMATION_VATA ? chapitreDeModule(l.moduleNom)?.vignette : undefined) ? (
+                          <img src={vignetteAudio(l, id === FORMATION_VATA ? undefined : formation || undefined) || (id === FORMATION_VATA ? chapitreDeModule(l.moduleNom)?.vignette : undefined)} alt="" className={`h-9 w-9 shrink-0 rounded-[9px] object-cover border border-[#BA7B39]/25 ${courante?.id === l.id ? 'ring-2 ring-[#BA7B39]' : ''}`} />
                         ) : (
                           <i className={`fa-solid ${verrou ? 'fa-lock' : terminees[l.id] ? 'fa-circle-check text-green-700' : ICONES[l.type] || 'fa-file'} w-4 ${courante?.id === l.id ? '' : verrou ? 'opacity-50' : 'text-[#8B4A2F]/70'}`} />
                         )}
@@ -910,7 +910,7 @@ const CoursDetailPage: React.FC = () => {
                           key={courante.id}
                           url={urlCourante}
                           titre={courante.titre}
-                          pochette={vignetteAudio(courante, formation || undefined) || chapitreDeModule(courante.moduleNom)?.vignette}
+                          pochette={vignetteAudio(courante, id === FORMATION_VATA ? undefined : formation || undefined) || chapitreDeModule(courante.moduleNom)?.vignette}
                           soustitre={(() => {
                             const s = chapitreDeModule(courante.moduleNom);
                             return s ? libelleSemaine(s) : courante.moduleNom;

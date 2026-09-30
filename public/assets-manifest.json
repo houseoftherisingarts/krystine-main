@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-30T16:37:26.166Z",
+  "generatedAt": "2026-09-30T16:58:10.195Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2473,6 +2473,13 @@
       "size": 36351
     },
     {
+      "path": "/vata/documents/051.jpg",
+      "name": "051.jpg",
+      "folder": "vata/documents",
+      "kind": "image",
+      "size": 51403
+    },
+    {
       "path": "/vata/semaines/s0-large.webp",
       "name": "s0-large.webp",
       "folder": "vata/semaines",
@@ -2639,6 +2646,27 @@
       "folder": "vata/semaines",
       "kind": "image",
       "size": 150296
+    },
+    {
+      "path": "/vata/semaines/s8-large.webp",
+      "name": "s8-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 45344
+    },
+    {
+      "path": "/vata/semaines/s8-thumb.webp",
+      "name": "s8-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 13762
+    },
+    {
+      "path": "/vata/semaines/s8.webp",
+      "name": "s8.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 51172
     }
   ]
 }
