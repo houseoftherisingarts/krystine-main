@@ -3193,5 +3193,20 @@
       "src/pages/admin/sections/FormationsSection.tsx",
       "src/pages/admin/sections/ProgressionPanel.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T15:45:37.329Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c7079ba6",
+    "message": "Vata : nouvelle image de carte dans l'allure de la bannière (vert olive, « SAISON VATA », « Apaiser le mental, un sens à la fois », sceau et signature) dans Mes formations, le catalogue, la page des formations et le lecteur audio",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/vata/carte-saison-vata.jpg",
+      "src/pages/FormationsLanding.tsx"
+    ]
   }
 ]
