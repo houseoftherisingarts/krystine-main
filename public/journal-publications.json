@@ -3414,5 +3414,20 @@
       "public/vata/couvertures/img-046.jpg",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T22:02:40.424Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "4495bb7d",
+    "message": "Page de vente Vata : l'extrait audio garde seulement l'accueil de Krystine (1 min 48, fondu à la fin)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/vata/extrait-introduction.mp3",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
