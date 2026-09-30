@@ -11,6 +11,13 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 
 const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
 const SITE = 'https://www.krystinestlaurent.ca';
+// Le retour de Stripe se fait sur l'adresse d'où l'achat est parti (avec ou
+// sans « www ») : sinon la connexion ne suit pas et la cliente arrive
+// déconnectée après avoir payé (achat test de Vata, 30 sept. 2026).
+const siteDe = (req: { rawRequest?: { headers?: Record<string, unknown> } }): string => {
+  const o = String(req.rawRequest?.headers?.origin || '');
+  return o === 'https://krystinestlaurent.ca' || o === 'https://www.krystinestlaurent.ca' ? o : SITE;
+};
 const ADMIN_EMAILS = [
   'admin@krystinestlaurent.ca',
   'krystine@inspiratanature.com',
@@ -129,8 +136,8 @@ export const utiliserCadeau = onCall(
       'line_items[0][quantity]': '1',
       'automatic_tax[enabled]': 'true',
       billing_address_collection: 'required',
-      success_url: `${SITE}/compte?achat=ok&cadeau=ok`,
-      cancel_url: `${SITE}/cours/${c.formationId}`,
+      success_url: `${siteDe(req)}/compte?achat=ok&cadeau=ok`,
+      cancel_url: `${siteDe(req)}/cours/${c.formationId}`,
       'metadata[uid]': c.uid,
       'metadata[formationId]': c.formationId,
       'metadata[cadeauId]': cadeauId,

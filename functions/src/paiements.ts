@@ -18,6 +18,13 @@ const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
 const STRIPE_WEBHOOK_SECRET = defineSecret('STRIPE_WEBHOOK_SECRET');
 
 const SITE = 'https://www.krystinestlaurent.ca';
+// Le retour de Stripe se fait sur l'adresse d'où l'achat est parti (avec ou
+// sans « www ») : sinon la connexion ne suit pas et la cliente arrive
+// déconnectée après avoir payé (achat test de Vata, 30 sept. 2026).
+const siteDe = (req: { rawRequest?: { headers?: Record<string, unknown> } }): string => {
+  const o = String(req.rawRequest?.headers?.origin || '');
+  return o === 'https://krystinestlaurent.ca' || o === 'https://www.krystinestlaurent.ca' ? o : SITE;
+};
 
 // TPS + TVQ du Québec, via Stripe Tax (calcul automatique selon l'adresse de
 // facturation). Tant que l'enregistrement fiscal Québec n'est pas activé dans
@@ -66,8 +73,8 @@ export const creerSessionPaiement = onCall(
       // (echangerRecompense, functions/src/recompenses.ts) : il porte déjà
       // sa propre restriction de 50 $ minimum côté Stripe.
       allow_promotion_codes: 'true',
-      success_url: `${SITE}/compte?achat=ok&formation=${encodeURIComponent(formationId)}`,
-      cancel_url: `${SITE}/cours/${formationId}`,
+      success_url: `${siteDe(req)}/compte?achat=ok&formation=${encodeURIComponent(formationId)}`,
+      cancel_url: `${siteDe(req)}/cours/${formationId}`,
       'metadata[uid]': req.auth.uid,
       'metadata[formationId]': formationId,
     });
@@ -113,8 +120,8 @@ export const creerPourboire = onCall(
       'line_items[0][price_data][product_data][name]': `Pourboire · ${titre}`,
       'line_items[0][price_data][unit_amount]': String(Math.round(montant * 100)),
       'line_items[0][quantity]': '1',
-      success_url: `${SITE}/direct?merci=1`,
-      cancel_url: `${SITE}/direct`,
+      success_url: `${siteDe(req)}/direct?merci=1`,
+      cancel_url: `${siteDe(req)}/direct`,
       'metadata[uid]': req.auth.uid,
       'metadata[type]': 'pourboire',
       'metadata[directId]': directId,
@@ -172,8 +179,8 @@ export const creerSessionNiskas = onCall(
       'line_items[0][price_data][tax_behavior]': 'exclusive',
       'line_items[0][quantity]': '1',
       ...TAXES_QC,
-      success_url: `${SITE}/compte?niskas=ok`,
-      cancel_url: `${SITE}/compte`,
+      success_url: `${siteDe(req)}/compte?niskas=ok`,
+      cancel_url: `${siteDe(req)}/compte`,
       'metadata[uid]': req.auth.uid,
       'metadata[type]': 'niskas',
       'metadata[niskas]': String(paquet.niskas),
@@ -218,8 +225,8 @@ export const creerSessionSaison = onCall(
       'line_items[0][price_data][tax_behavior]': 'exclusive',
       'line_items[0][quantity]': '1',
       ...TAXES_QC,
-      success_url: `${SITE}/compte?onglet=telechargements&saison=ok`,
-      cancel_url: `${SITE}/compte?onglet=telechargements`,
+      success_url: `${siteDe(req)}/compte?onglet=telechargements&saison=ok`,
+      cancel_url: `${siteDe(req)}/compte?onglet=telechargements`,
       'metadata[uid]': req.auth.uid,
       'metadata[type]': 'saison',
       'metadata[saison]': saison,

@@ -18,6 +18,13 @@ import { createTransporter, fromAddr, REPLY_TO } from './newsletter/mail';
 // l'autre, c'est le patron recommandé par firebase-functions.
 const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
 const SITE = 'https://www.krystinestlaurent.ca';
+// Le retour de Stripe se fait sur l'adresse d'où l'achat est parti (avec ou
+// sans « www ») : sinon la connexion ne suit pas et la cliente arrive
+// déconnectée après avoir payé (achat test de Vata, 30 sept. 2026).
+const siteDe = (req: { rawRequest?: { headers?: Record<string, unknown> } }): string => {
+  const o = String(req.rawRequest?.headers?.origin || '');
+  return o === 'https://krystinestlaurent.ca' || o === 'https://www.krystinestlaurent.ca' ? o : SITE;
+};
 const TAXES_QC = {
   'automatic_tax[enabled]': 'true',
   billing_address_collection: 'required',
@@ -101,8 +108,8 @@ export const creerSessionBillets = onCall(
       'line_items[0][price_data][tax_behavior]': 'exclusive',
       'line_items[0][quantity]': String(quantite),
       ...TAXES_QC,
-      success_url: `${SITE}/compte?onglet=billets&achat=ok`,
-      cancel_url: `${SITE}/evenement/${event.slug || eventId}`,
+      success_url: `${siteDe(req)}/compte?onglet=billets&achat=ok`,
+      cancel_url: `${siteDe(req)}/evenement/${event.slug || eventId}`,
       'metadata[type]': 'billets',
       'metadata[uid]': req.auth.uid,
       'metadata[eventId]': eventId,
