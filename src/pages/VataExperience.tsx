@@ -82,7 +82,7 @@ const TIERS = [
   {
     name: 'VATA Essentiel', price: '497 $', promo: '397 $', plan: '',
     intro: 'Une formation audio, avec son matériel de support. Un chemin clair, semaine après semaine, pour ancrer, restaurer et cultiver une sérénité qui tient malgré les turbulences.',
-    features: ['Formation audio : 16 capsules et 7 méditations, 4 h 12 min d\'écoute en tout, matériel de support à télécharger', 'Une introduction et 7 semaines, qui s\'ouvrent une à une', '19 rituels d\'automne pour apaiser et honorer Vata', '7 méditations pré-enregistrées, à votre rythme', 'Le guide PDF de 204 pages, un vrai livre sur les cinq sens', 'Journal de bord et d\'observation', '4 capsules sur les rituels de base de l\'Ayurveda', 'Capsules supplémentaires : plantes, épices, aliments de saison, repères de l\'Ayurveda'],
+    features: ['Formation audio : 16 capsules et 7 méditations, 4 h 12 min d\'écoute en tout, matériel de support à télécharger', 'Une introduction et 7 semaines, qui s\'ouvrent une à une', '19 rituels d\'automne pour apaiser et honorer Vata', '7 méditations pré-enregistrées, à votre rythme', 'Le guide PDF de 204 pages, un vrai livre sur les cinq sens, offert à la fin du parcours', 'Journal de bord et d\'observation', '4 capsules sur les rituels de base de l\'Ayurveda', 'Capsules supplémentaires : plantes, épices, aliments de saison, repères de l\'Ayurveda'],
     recommended: false,
   },
 ];
