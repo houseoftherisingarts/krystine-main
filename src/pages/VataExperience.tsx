@@ -74,7 +74,7 @@ const TIERS = [
   {
     name: 'VATA Essentiel', price: '497 $', promo: '397 $', plan: '',
     intro: 'Une formation audio, avec son matériel de support. Un chemin clair, semaine après semaine, pour ancrer, restaurer et cultiver une sérénité qui tient malgré les turbulences.',
-    features: ['Formation audio : 16 capsules à écouter, matériel de support à télécharger', '7 semaines · 9 modules (plus une semaine d\'introduction)', '19 rituels d\'automne pour apaiser et honorer Vata', '7 méditations pré-enregistrées, à votre rythme', 'Le guide PDF de 204 pages, un vrai livre sur les cinq sens', 'Journal de bord et d\'observation', '4 capsules sur les rituels de base de l\'Ayurveda', 'Capsules supplémentaires : plantes, épices, aliments de saison, guidances ancestrales'],
+    features: ['Formation audio : 16 capsules et 7 méditations, 4 h 12 min d\'écoute en tout, matériel de support à télécharger', 'Une introduction et 7 semaines, qui s\'ouvrent une à une', '19 rituels d\'automne pour apaiser et honorer Vata', '7 méditations pré-enregistrées, à votre rythme', 'Le guide PDF de 204 pages, un vrai livre sur les cinq sens', 'Journal de bord et d\'observation', '4 capsules sur les rituels de base de l\'Ayurveda', 'Capsules supplémentaires : plantes, épices, aliments de saison, guidances ancestrales'],
     recommended: false,
   },
 ];
@@ -189,7 +189,7 @@ const ChapterHead: React.FC<{ no: string; kicker: string; title: string; lede?: 
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>{kicker}</p>
         <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(2.1rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>{title}</h2>
         {lede && (
-          <p className="mt-5 v2-serif italic text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[46ch]" style={{ color: C.inkSoft }}>{lede}</p>
+          <p className="mt-5 v2-serif text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[46ch]" style={{ color: C.inkSoft }}>{lede}</p>
         )}
         <DrawRule className="mt-6 w-20" />
       </div>
@@ -223,7 +223,7 @@ const Exergue: React.FC<{ children: string }> = ({ children }) => {
     <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(4.5rem,10vh,7.5rem)]">
       <DrawRule className="w-full" color="rgba(116,130,74,0.4)" />
       <motion.blockquote
-        className="mx-auto max-w-[34ch] py-[clamp(3rem,6vh,4.5rem)] text-center v2-serif italic font-light leading-[1.3] text-[clamp(1.6rem,3.4vw,2.7rem)]"
+        className="mx-auto max-w-[34ch] py-[clamp(3rem,6vh,4.5rem)] text-center v2-serif font-light leading-[1.3] text-[clamp(1.6rem,3.4vw,2.7rem)]"
         style={{ color: C.inkSoft }}
         initial="hidden"
         whileInView="show"
@@ -282,12 +282,12 @@ const Cover: React.FC = () => (
 
       <h1 className="relative v2-serif font-light leading-[0.94] text-[clamp(3rem,8.6vw,7.6rem)] max-w-[13ch]" style={{ color: C.ink }}>
         <MaskLine delay={0.05}>Votre corps</MaskLine>
-        <MaskLine delay={0.16}><em className="not-italic" style={{ color: C.sageInk }}>va moins vite.</em></MaskLine>
+        <MaskLine delay={0.16}><em className="not-" style={{ color: C.sageInk }}>va moins vite.</em></MaskLine>
       </h1>
 
       <div className="relative mt-10 grid gap-y-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
         <Reveal delay={0.42} y={20}>
-          <p className="v2-serif italic text-[clamp(1.2rem,2.2vw,1.7rem)] leading-[1.35] max-w-[40ch]" style={{ color: C.inkSoft }}>
+          <p className="v2-serif text-[clamp(1.2rem,2.2vw,1.7rem)] leading-[1.35] max-w-[40ch]" style={{ color: C.inkSoft }}>
             Créer une stabilité intérieure forte et une clarté mentale qui tient, malgré la puissance
             des turbulences extérieures. Sept semaines d'audio et de rituels, à écouter à votre rythme.
           </p>
@@ -295,7 +295,7 @@ const Cover: React.FC = () => (
             <UnderlineCta label="Apaiser mon système nerveux" />
             <a
               href="#parcours"
-              className="v2-serif italic text-lg transition-colors duration-300 hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+              className="v2-serif text-lg transition-colors duration-300 hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
               style={{ color: 'rgba(28,23,18,0.7)', outlineColor: C.sage }}
             >
               Voir le parcours
@@ -338,7 +338,7 @@ const Cover: React.FC = () => (
           </motion.a>
         ))}
       </div>
-      <div className="flex items-center justify-between border-t pt-3.5 pb-1 text-[0.6rem] uppercase tracking-[0.28em]" style={{ borderColor: hairline, color: 'rgba(28,23,18,0.55)' }}>
+      <div className="flex items-center justify-between border-t pt-3.5 pb-1 text-[0.6rem] uppercase tracking-[0.28em]" style={{ borderColor: hairline, color: 'rgba(28,23,18,0.78)' }}>
         <span className="flex items-center gap-2 v2-cue"><ArrowDown size={13} weight="regular" /> Faire défiler</span>
         <span className="hidden sm:inline">Enraciner · Réchauffer · Apaiser</span>
       </div>
@@ -349,7 +349,7 @@ const Cover: React.FC = () => (
 /* ════════════════════════ Chapitre I · Les signaux ════════════════════════ */
 
 const Signals: React.FC = () => (
-  <section id="signaux" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5.5rem,13vh,9rem)] scroll-mt-24">
+  <section id="signaux" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24">
     <div className="grid gap-y-12 lg:grid-cols-[0.85fr_1.15fr] gap-x-[clamp(3rem,6vw,6rem)] items-start">
       <div className="lg:sticky lg:top-28">
         <ChapterHead
@@ -385,7 +385,7 @@ const Signals: React.FC = () => (
           ))}
         </motion.ol>
         <Reveal className="mt-10">
-          <p className="v2-serif italic text-[clamp(1.2rem,2.2vw,1.7rem)] leading-snug max-w-[38ch]" style={{ color: C.sageInk }}>
+          <p className="v2-serif text-[clamp(1.2rem,2.2vw,1.7rem)] leading-snug max-w-[38ch]" style={{ color: C.sageInk }}>
             Ces signes sont le langage du corps. Vata vous invite à ralentir.
           </p>
         </Reveal>
@@ -397,7 +397,7 @@ const Signals: React.FC = () => (
 /* ════════════════════════ Chapitre II · La méthode ════════════════════════ */
 
 const Method: React.FC = () => (
-  <section id="methode" className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5.5rem,13vh,9rem)] scroll-mt-24" style={{ background: C.panel }}>
+  <section id="methode" className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24" style={{ background: C.panel }}>
     <span className="absolute inset-x-0 top-0 h-px" style={{ background: 'rgba(116,130,74,0.45)' }} aria-hidden />
     <ChapterHead
       no="II"
@@ -436,7 +436,7 @@ const Journey: React.FC = () => {
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.78', 'end 0.55'] });
   return (
-    <section id="parcours" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5.5rem,13vh,9rem)] scroll-mt-24">
+    <section id="parcours" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24">
       <ChapterHead
         no="III"
         kicker="L'art de l'ancrage réel"
@@ -469,9 +469,9 @@ const Journey: React.FC = () => {
               >
                 <div className={`flex items-baseline gap-4 ${leftSide ? 'lg:justify-end' : ''}`}>
                   <span aria-hidden className="v2-serif font-light text-[clamp(1.9rem,3.2vw,2.8rem)] leading-none tabular-nums" style={{ color: 'rgba(116,130,74,0.45)' }}>
-                    {String(i + 1).padStart(2, '0')}
+                    {String(i).padStart(2, '0')}
                   </span>
-                  <span className="text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: C.sageInk }}>Semaine {i + 1}</span>
+                  <span className="text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: C.sageInk }}>{i === 0 ? 'Introduction' : `Semaine ${i}`}</span>
                 </div>
                 <h3 className="mt-2.5 v2-serif font-light leading-[1.08] text-[clamp(1.55rem,2.7vw,2.2rem)]" style={{ color: C.ink }}>{t}</h3>
                 <p className={`mt-3 text-[0.94rem] leading-[1.75] max-w-[46ch] ${leftSide ? 'lg:ml-auto' : ''}`} style={{ color: C.inkSoft }}>{d}</p>
@@ -487,7 +487,7 @@ const Journey: React.FC = () => {
 /* ════════════════════════ Chapitre IV · Planche tarifs ════════════════════════ */
 
 const Tiers: React.FC = () => (
-  <section id="tarifs" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5.5rem,13vh,9rem)] scroll-mt-24">
+  <section id="tarifs" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24">
     <ChapterHead
       no="IV"
       kicker="Votre parcours"
@@ -495,15 +495,16 @@ const Tiers: React.FC = () => (
       className="mb-[clamp(3rem,7vh,5rem)]"
     />
     <Reveal>
-      <div className="relative mx-auto max-w-[760px] border" style={{ borderColor: 'rgba(156,122,68,0.45)', background: C.card }}>
+      <div className="relative mx-auto max-w-[1180px] border" style={{ borderColor: 'rgba(156,122,68,0.45)', background: C.card }}>
         <span className="absolute inset-x-0 top-0 h-[3px]" style={{ background: C.sage }} aria-hidden />
         <div className="grid">
           {TIERS.map((tier, i) => (
             <article
               key={tier.name}
-              className={`flex flex-col p-[clamp(1.75rem,3.5vw,3.25rem)] ${i > 0 ? 'border-t md:border-t-0 md:border-l' : ''}`}
+              className={`grid gap-y-2 p-[clamp(1.75rem,3.5vw,3.25rem)] lg:grid-cols-[0.95fr_1.05fr] lg:gap-x-[clamp(3rem,5vw,5rem)] ${i > 0 ? 'border-t md:border-t-0 md:border-l' : ''}`}
               style={{ borderColor: 'rgba(28,23,18,0.12)', background: tier.recommended ? C.sageTint : 'transparent' }}
             >
+              <div className="flex flex-col">
               <div className="min-h-[2rem]">
                 {tier.recommended && (
                   <span className="inline-block px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.24em]" style={{ background: C.sage, color: C.card }}>
@@ -512,25 +513,16 @@ const Tiers: React.FC = () => (
                 )}
               </div>
               <h3 className="mt-4 v2-serif font-light text-[clamp(1.7rem,2.6vw,2.25rem)] leading-[1.1]" style={{ color: C.ink }}>{tier.name}</h3>
-              <p className="mt-3 v2-serif italic text-[1.05rem] leading-snug" style={{ color: C.sageInk }}>{tier.intro}</p>
+              <p className="mt-3 v2-serif text-[1.05rem] leading-snug" style={{ color: C.sageInk }}>{tier.intro}</p>
               <div className="mt-8 flex items-end gap-3.5">
                 <span className="v2-serif font-light text-[clamp(2.8rem,4.4vw,3.8rem)] leading-none tabular-nums" style={{ color: C.ink }}>{tier.promo}</span>
                 <span className="v2-serif text-xl line-through tabular-nums" style={{ color: 'rgba(28,23,18,0.42)' }}>{tier.price}</span>
               </div>
               <p className="mt-2 text-[0.72rem] uppercase tracking-[0.16em] min-h-[1.1rem]" style={{ color: 'rgba(28,23,18,0.6)' }}>{tier.plan || 'Tarif de lancement'}</p>
-              <DrawRule className="mt-7 w-full" color="rgba(116,130,74,0.5)" />
-              <ul className="mt-7 space-y-3.5 flex-1">
-                {tier.features.map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-[0.92rem] leading-[1.65]" style={{ color: C.inkSoft }}>
-                    <Check size={16} weight="bold" className="mt-1 shrink-0" style={{ color: C.sage }} />
-                    {f}
-                  </li>
-                ))}
-              </ul>
               <button
                 type="button"
                 onClick={go}
-                className="group mt-10 inline-flex items-center justify-center gap-2.5 w-full py-4 min-h-[44px] text-[0.7rem] uppercase tracking-[0.2em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+                className="group mt-8 inline-flex items-center justify-center gap-2.5 w-full py-4 min-h-[44px] text-[0.7rem] uppercase tracking-[0.2em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
                 style={{ background: C.ink, color: C.cream, outlineColor: C.sage }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = C.sage; e.currentTarget.style.color = C.card; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = C.ink; e.currentTarget.style.color = C.cream; }}
@@ -538,6 +530,18 @@ const Tiers: React.FC = () => (
                 Rejoindre VATA Essentiel
                 <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
               </button>
+              </div>
+              <div>
+              <DrawRule className="mt-7 w-full lg:mt-0" color="rgba(116,130,74,0.5)" />
+              <ul className="mt-7 space-y-3.5">
+                {tier.features.map((f) => (
+                  <li key={f} className="flex items-start gap-3 text-[0.92rem] leading-[1.65]" style={{ color: C.inkSoft }}>
+                    <Check size={16} weight="bold" className="mt-1 shrink-0" style={{ color: C.sage }} />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              </div>
             </article>
           ))}
         </div>
@@ -551,7 +555,7 @@ const Tiers: React.FC = () => (
 const Testimonials: React.FC = () => {
   const [lead, ...rest] = TESTIMONIALS;
   return (
-    <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5.5rem,13vh,9rem)]" style={{ background: C.panel }}>
+    <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)]" style={{ background: C.panel }}>
       <Reveal className="mb-[clamp(2.5rem,6vh,4rem)]">
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Elles l'ont vécu</p>
         <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(2.1rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>
@@ -562,10 +566,10 @@ const Testimonials: React.FC = () => {
       {/* Témoignage en exergue */}
       <Reveal>
         <figure className="relative border-t pt-[clamp(2rem,4vh,3rem)]" style={{ borderColor: 'rgba(116,130,74,0.45)' }}>
-          <span aria-hidden className="pointer-events-none select-none absolute -top-2 left-0 v2-serif italic leading-none text-[clamp(5rem,9vw,8rem)]" style={{ color: 'rgba(116,130,74,0.18)' }}>
+          <span aria-hidden className="pointer-events-none select-none absolute -top-2 left-0 v2-serif leading-none text-[clamp(5rem,9vw,8rem)]" style={{ color: 'rgba(116,130,74,0.18)' }}>
             «
           </span>
-          <blockquote className="relative v2-serif italic font-light leading-[1.4] text-[clamp(1.35rem,2.6vw,2.1rem)] max-w-[52ch] pl-[clamp(2.5rem,5vw,4.5rem)]" style={{ color: C.ink }}>
+          <blockquote className="relative v2-serif font-light leading-[1.4] text-[clamp(1.35rem,2.6vw,2.1rem)] max-w-[52ch] pl-[clamp(2.5rem,5vw,4.5rem)]" style={{ color: C.ink }}>
             {lead.quote}
           </blockquote>
           <figcaption className="mt-6 pl-[clamp(2.5rem,5vw,4.5rem)]">
@@ -589,7 +593,7 @@ const Testimonials: React.FC = () => {
             className="border-t pt-6"
             style={{ borderColor: 'rgba(28,23,18,0.16)' }}
           >
-            <blockquote className="v2-serif italic font-light text-[1.1rem] leading-[1.55]" style={{ color: C.inkSoft }}>
+            <blockquote className="v2-serif font-light text-[1.1rem] leading-[1.55]" style={{ color: C.inkSoft }}>
               « {t.quote} »
             </blockquote>
             <figcaption className="mt-5">
@@ -606,14 +610,14 @@ const Testimonials: React.FC = () => {
 /* ════════════════════════ La guide · bio typographique ════════════════════════ */
 
 const Bio: React.FC = () => (
-  <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5.5rem,13vh,9rem)]">
+  <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)]">
     <div className="grid gap-y-10 lg:grid-cols-[0.9fr_1.1fr] gap-x-[clamp(3rem,7vw,7rem)] items-start">
       <Reveal>
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.brassInk }}>Fondatrice d'Inspirata Ayurveda</p>
         <h2 className="mt-4 v2-serif font-light leading-[0.98] text-[clamp(2.6rem,5.4vw,4.6rem)]" style={{ color: C.ink }}>
-          Krystine <span className="italic">St-Laurent</span>
+          Krystine <span className="whitespace-nowrap">St‑Laurent</span>
         </h2>
-        <p className="mt-5 v2-serif italic text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[38ch]" style={{ color: C.inkSoft }}>
+        <p className="mt-5 v2-serif text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[38ch]" style={{ color: C.inkSoft }}>
           près de 40 ans à la jonction de la rigueur clinique et de la santé globale.
         </p>
         <DrawRule className="mt-6 w-20" color={C.brass} />
@@ -662,7 +666,7 @@ const Faq: React.FC = () => {
   const mid = Math.ceil(FAQS.length / 2);
   const columns = [FAQS.slice(0, mid), FAQS.slice(mid)];
   return (
-    <section id="faq" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5.5rem,13vh,9rem)] scroll-mt-24">
+    <section id="faq" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24">
       <ChapterHead no="V" kicker="Vos questions" title="Questions fréquentes" className="mb-[clamp(2.5rem,6vh,4rem)]" />
       <div className="grid lg:grid-cols-2 gap-x-[clamp(3rem,6vw,6rem)] items-start border-t" style={{ borderColor: hairline }}>
         {columns.map((col, c) => (
@@ -684,7 +688,7 @@ const BackCover: React.FC = () => (
   <section className="relative w-full overflow-hidden" style={{ background: C.dark }}>
     <span className="absolute inset-x-0 top-0 h-px z-10" style={{ background: C.sage }} aria-hidden />
     <Atmosphere light="50% 8%" strength={0.85} />
-    <div className="relative px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5.5rem,13vh,9rem)] text-center">
+    <div className="relative px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] text-center">
       <Reveal>
         <p className="flex items-center justify-center gap-3 text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: '#c6cf9b' }}>
           <Wind size={15} weight="light" aria-hidden /> Saison Vata · L'automne vous attend
@@ -692,7 +696,7 @@ const BackCover: React.FC = () => (
         <h2 className="mt-7 mx-auto v2-serif font-light leading-[1.08] text-[clamp(2.2rem,5vw,3.9rem)] max-w-[22ch]" style={{ color: C.cream }}>
           Prête à traverser la saison autrement ?
         </h2>
-        <p className="mt-7 mx-auto v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] leading-snug max-w-[40ch]" style={{ color: 'rgba(244,239,230,0.75)' }}>
+        <p className="mt-7 mx-auto v2-serif text-[clamp(1.1rem,2vw,1.5rem)] leading-snug max-w-[40ch]" style={{ color: 'rgba(244,239,230,0.75)' }}>
           « Le calme se cultive pendant que le vent souffle. »
         </p>
         <div className="mt-11 flex flex-wrap items-center justify-center gap-x-9 gap-y-5">
@@ -709,10 +713,10 @@ const BackCover: React.FC = () => (
           </button>
           <a
             href="#tarifs"
-            className="v2-serif italic text-lg transition-colors duration-300 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+            className="v2-serif text-lg transition-colors duration-300 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
             style={{ color: 'rgba(244,239,230,0.8)', outlineColor: C.sage }}
           >
-            Revoir les deux parcours
+            Revoir le programme et son tarif
           </a>
         </div>
         <p className="mt-10 text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: 'rgba(244,239,230,0.5)' }}>
