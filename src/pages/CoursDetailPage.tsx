@@ -740,7 +740,7 @@ const CoursDetailPage: React.FC = () => {
         ) : (
           <div
             ref={chapitre}
-            className={`mt-8 grid gap-6 ${apercuPdf ? 'lg:grid-cols-[300px_minmax(0,1fr)_minmax(0,1fr)]' : 'lg:grid-cols-[320px_1fr]'} ${
+            className={`mt-8 grid gap-6 ${apercuPdf ? 'lg:grid-cols-[300px_minmax(0,1fr)_minmax(0,1fr)]' : estVata && accessible ? 'lg:grid-cols-[320px_1fr] xl:grid-cols-[300px_minmax(0,1fr)_280px]' : 'lg:grid-cols-[320px_1fr]'} ${
               estVata ? 'mx-auto max-w-[1720px] scroll-mt-24 px-5 pt-6 md:px-10' : ''
             }`}
           >
@@ -801,7 +801,7 @@ const CoursDetailPage: React.FC = () => {
                           {sem ? (
                             <span className="min-w-0">
                               <span className="block text-[9px] opacity-70">{sem.rang === 0 ? 'Introduction' : `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${sem.rang}`}</span>
-                              <span className="block truncate">{lang === 'FR' ? sem.sens.fr : sem.sens.en}</span>
+                              <span className="block leading-snug">{lang === 'FR' ? sem.sens.fr : sem.sens.en}</span>
                             </span>
                           ) : <span className="min-w-0 truncate">{g.nom}</span>}
                         </span>
@@ -992,6 +992,61 @@ const CoursDetailPage: React.FC = () => {
                 </>
               )}
             </section>
+
+            {/* À télécharger (Krystine, 30 sept. 2026) : les documents de la
+                semaine en cours d'abord, puis ceux des semaines déjà ouvertes.
+                À droite sur grand écran, sous la leçon ailleurs. Un clic ouvre
+                l'aperçu, qui porte son bouton « Ouvrir ». */}
+            {estVata && accessible && !apercuPdf && (() => {
+              const docs = lecons.filter(l => l.type === 'pdf' && !verrouillee(l));
+              if (!docs.length) return null;
+              const rangCourant = courante ? rangDeModule(courante.moduleNom) : -1;
+              const groupes = new Map<number, Lecon[]>();
+              for (const l of docs) { const r = rangDeModule(l.moduleNom); groupes.set(r, [...(groupes.get(r) || []), l]); }
+              const ordre = [...groupes.keys()].sort((a, b) => (a === rangCourant ? -1 : b === rangCourant ? 1 : a - b));
+              const aVenir = programme!.chapitres.filter(c => etatsSemaines[c.rang]?.verrouillee).length;
+              return (
+                <aside className="min-w-0 self-start rounded-[20px] border border-white/60 bg-white/55 p-4 backdrop-blur-md lg:col-start-2 xl:col-start-3 xl:row-start-1 xl:sticky xl:top-24 xl:max-h-[calc(100vh-7rem)] xl:overflow-y-auto dark:border-white/10 dark:bg-[#293027]/55">
+                  <p className="px-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#8B4A2F] dark:text-[#d9a05b]">
+                    <i className="fa-solid fa-file-arrow-down mr-2" />{lang === 'FR' ? 'À télécharger' : 'Downloads'}
+                  </p>
+                  {ordre.map(r => {
+                    const c = programme!.chapitres[r];
+                    return (
+                      <div key={r} className="mt-4">
+                        <p className="px-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#38403a]/55 dark:text-white/55">
+                          {r === rangCourant && <span className="mb-0.5 block text-[#8B4A2F] dark:text-[#d9a05b]">{lang === 'FR' ? 'Cette semaine' : 'This week'}</span>}
+                          {c ? libelleSemaine(c) : ''}
+                        </p>
+                        <ul className="mt-1.5 space-y-1">
+                          {groupes.get(r)!.map(l => (
+                            <li key={l.id}>
+                              <button
+                                type="button"
+                                onClick={async () => {
+                                  try { setApercu({ nom: l.titre, url: await urlDeLecon(id, l.id) }); }
+                                  catch { setErreur(lang === 'FR' ? 'Document indisponible pour le moment.' : 'Document unavailable right now.'); }
+                                }}
+                                className="flex w-full items-start gap-2.5 rounded-[12px] px-2 py-2 text-left text-[13px] leading-snug text-[#38403a]/85 transition-colors hover:bg-white/70 dark:text-white/80 dark:hover:bg-white/10"
+                              >
+                                <i className="fa-solid fa-file-pdf mt-0.5 text-[#8B4A2F]/70" />
+                                <span className="min-w-0 flex-1">{l.titre}</span>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  })}
+                  {aVenir > 0 && (
+                    <p className="mt-4 px-1 text-[11px] leading-snug text-[#38403a]/50 dark:text-white/50">
+                      <i className="fa-solid fa-lock mr-1.5 text-[9px]" />
+                      {lang === 'FR' ? 'Les documents des semaines à venir apparaîtront ici à leur ouverture.' : 'Documents for upcoming weeks will appear here as they open.'}
+                    </p>
+                  )}
+                </aside>
+              );
+            })()}
 
             {/* Le volet d'aperçu du PDF, à droite, qui colle en haut et défile seul */}
             {apercuPdf && (
