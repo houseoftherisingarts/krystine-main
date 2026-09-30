@@ -3323,5 +3323,19 @@
       "public/assets-manifest.json",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T18:01:28.423Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "5f0da01f",
+    "message": "Cours Vata : la carte de conclusion ne parle plus d'automne (le programme se suit en tout temps)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/vata/semaines.ts"
+    ]
   }
 ]
