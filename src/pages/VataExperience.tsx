@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useScroll, useReducedMotion } from 'framer-mot
 import { Wind, ArrowRight, ArrowDown, Check, CaretDown, Anchor, Ear, Drop } from '@phosphor-icons/react';
 import { Atmosphere } from '../components/motion/loeuvre';
 import StickerFormat from '../components/cours/StickerFormat';
+import LecteurAudioCours from '../components/cours/LecteurAudioCours';
 
 /**
  * Expérience Ayurveda · Saison Vata. Refonte intégrale « revue d'automne » :
@@ -72,7 +73,15 @@ const PHASES = [
   ['Le goût', 'Le réconfort du goût. Les rituels gourmands et les aliments stratégiques qui réchauffent le corps et calment les turbulences.'],
   ['Le toucher', "L'onction du toucher. L'art de l'huile chaude pour recréer une protection autour de vous et ne plus vous sentir à vif."],
   ['La présence', "L'autonomie totale. Vous repartez habitée par une nouvelle présence et un système d'auto-régulation que vous posséderez pour toujours."],
+  ['Clore la saison', 'Un dernier mot de Krystine, et votre guide complet de 204 pages à garder et à relire.'],
 ];
+
+/* Couvertures des documents du programme (public/vata/couvertures) */
+const couv = (id: string) => `/vata/couvertures/${id}.jpg`;
+// Une couverture par étape du parcours, dans l'ordre de PHASES.
+const COUV_PHASES = ['002', '006', '012', '021', '026', '029', '041', '046', 'guide'];
+const COUV_DOCS = ['002', '006', '008', '012', '014', '017', '020', '021', '022', '023', '026', '027', '028', '029', '030', '033', '034', '035', '036', '037', '040', '041', '042', '043', '046', '047', '048'];
+const phaseLabel = (i: number) => (i === 0 ? 'Introduction' : i === PHASES.length - 1 ? 'Conclusion' : `Semaine ${i}`);
 
 // Le tarif de lancement tient jusqu'au 1er novembre 2026 inclus (Krystine,
 // 30 sept. 2026), puis la page affiche 497 $ sans prix barré. La fonction de
@@ -272,6 +281,50 @@ const UnderlineCta: React.FC<{ label: string; onClick?: () => void }> = ({ label
   </button>
 );
 
+/* Une couverture de document, posée comme du papier */
+const Doc: React.FC<{ id: string; className?: string; eager?: boolean }> = ({ id, className = '', eager }) => (
+  <img
+    src={couv(id)}
+    alt=""
+    width={707}
+    height={1000}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding="async"
+    className={`block w-full h-auto aspect-[707/1000] object-cover rounded-[4px] border ${className}`}
+    style={{ borderColor: 'rgba(28,23,18,0.1)', boxShadow: '0 22px 44px -22px rgba(28,23,18,0.5), 0 2px 6px rgba(28,23,18,0.08)' }}
+  />
+);
+
+/* Éventail de couvertures dans l'en-tête : les documents posés sur la table */
+const FAN: Array<[string, number, string, number]> = [
+  // id, rotation, décalage horizontal (% de la carte), profondeur
+  ['006', -13, '-50%', 1],
+  ['012', -6.5, '-25%', 2],
+  ['029', 6.5, '25%', 2],
+  ['041', 13, '50%', 1],
+  ['guide', 0, '0%', 3],
+];
+
+const CoverFan: React.FC = () => {
+  const reduce = useReducedMotion();
+  return (
+    <div aria-hidden className="relative mx-auto w-[min(84vw,360px)] lg:w-full aspect-[1/0.8] select-none">
+      {FAN.map(([id, rot, x, z], i) => (
+        <div key={id} className="absolute bottom-[3%] left-1/2 w-[40%] -ml-[20%]" style={{ zIndex: z }}>
+          <motion.div
+            className="origin-bottom will-change-transform"
+            initial={reduce ? false : { rotate: 0, x: '0%', y: 30, opacity: 0 }}
+            animate={{ rotate: rot, x, y: z === 1 ? '5%' : z === 2 ? '1.5%' : '0%', opacity: 1 }}
+            transition={{ duration: 1.2, ease, delay: 0.35 + i * 0.08 }}
+          >
+            <Doc id={id} eager className={id === 'guide' ? 'scale-[1.08] origin-bottom' : ''} />
+          </motion.div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 /* ════════════════════════ Couverture typographique ════════════════════════ */
 
 const Cover: React.FC = () => (
@@ -284,8 +337,9 @@ const Cover: React.FC = () => (
       </div>
     </Reveal>
 
-    <div className="relative flex-1 flex flex-col justify-center py-[clamp(2.5rem,6vh,4.5rem)]">
+    <div className="relative flex-1 grid items-center gap-y-12 gap-x-[clamp(2rem,4vw,4rem)] py-[clamp(2.5rem,6vh,4.5rem)] lg:grid-cols-[minmax(0,1fr)_clamp(260px,30vw,460px)]">
       <WindLines className="pointer-events-none absolute right-0 top-[6%] w-[min(58vw,640px)] hidden md:block" />
+      <div className="relative min-w-0">
 
       <div className="relative flex items-center gap-5 mb-8">
         <Medallion Icon={Wind} size={46} />
@@ -294,10 +348,10 @@ const Cover: React.FC = () => (
 
       <h1 className="relative v2-serif font-light leading-[0.94] text-[clamp(3rem,8.6vw,7.6rem)] max-w-[13ch]" style={{ color: C.ink }}>
         <MaskLine delay={0.05}>Votre corps</MaskLine>
-        <MaskLine delay={0.16}><em className="not-" style={{ color: C.sageInk }}>va moins vite.</em></MaskLine>
+        <MaskLine delay={0.16}><em className="not-italic" style={{ color: C.sageInk }}>va moins vite.</em></MaskLine>
       </h1>
 
-      <div className="relative mt-10 grid gap-y-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+      <div className="relative mt-10 grid gap-y-8 2xl:grid-cols-[1.15fr_0.85fr] 2xl:items-end">
         <Reveal delay={0.42} y={20}>
           <p className="v2-serif text-[clamp(1.2rem,2.2vw,1.7rem)] leading-[1.35] max-w-[40ch]" style={{ color: C.inkSoft }}>
             Créer une stabilité intérieure forte et une clarté mentale qui tient, malgré la puissance
@@ -314,7 +368,7 @@ const Cover: React.FC = () => (
             </a>
           </div>
         </Reveal>
-        <Reveal delay={0.55} y={16} className="lg:justify-self-end">
+        <Reveal delay={0.55} y={16} className="2xl:justify-self-end">
           <ul className="space-y-2.5">
             {['Formation audio + matériel de support', '7 semaines + introduction', 'Automne · élément air', 'À votre rythme · accès immédiat'].map((m) => (
               <li key={m} className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.2em]" style={{ color: 'rgba(28,23,18,0.62)' }}>
@@ -325,6 +379,8 @@ const Cover: React.FC = () => (
           </ul>
         </Reveal>
       </div>
+      </div>
+      <CoverFan />
     </div>
 
     {/* Sommaire */}
@@ -479,19 +535,123 @@ const Journey: React.FC = () => {
                 y={26}
                 className={`pl-9 lg:pl-0 py-[clamp(1.75rem,4vh,2.75rem)] ${leftSide ? 'lg:col-start-1 lg:text-right' : 'lg:col-start-2'}`}
               >
+                <div className={`flex items-start gap-[clamp(1.1rem,2.2vw,2rem)] ${leftSide ? 'lg:flex-row-reverse' : ''}`}>
+                <div className="w-[clamp(78px,20vw,96px)] lg:w-[clamp(110px,9.5vw,140px)] shrink-0">
+                  <Doc id={COUV_PHASES[i]} />
+                </div>
+                <div className="min-w-0 flex-1">
                 <div className={`flex items-baseline gap-4 ${leftSide ? 'lg:justify-end' : ''}`}>
                   <span aria-hidden className="v2-serif font-light text-[clamp(1.9rem,3.2vw,2.8rem)] leading-none tabular-nums" style={{ color: 'rgba(116,130,74,0.45)' }}>
                     {String(i).padStart(2, '0')}
                   </span>
-                  <span className="text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: C.sageInk }}>{i === 0 ? 'Introduction' : `Semaine ${i}`}</span>
+                  <span className="text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: C.sageInk }}>{phaseLabel(i)}</span>
                 </div>
                 <h3 className="mt-2.5 v2-serif font-light leading-[1.08] text-[clamp(1.55rem,2.7vw,2.2rem)]" style={{ color: C.ink }}>{t}</h3>
                 <p className={`mt-3 text-[0.94rem] leading-[1.75] max-w-[46ch] ${leftSide ? 'lg:ml-auto' : ''}`} style={{ color: C.inkSoft }}>{d}</p>
+                </div>
+                </div>
               </Reveal>
             </div>
           );
         })}
       </div>
+    </section>
+  );
+};
+
+/* ════════════════════════ Écoutez un extrait ════════════════════════ */
+
+const Extrait: React.FC = () => (
+  <section id="extrait" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24" style={{ background: C.cream }}>
+    <div className="grid gap-y-10 lg:grid-cols-[0.8fr_1.2fr] gap-x-[clamp(3rem,6vw,6rem)] items-center">
+      <Reveal>
+        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Écoutez un extrait</p>
+        <h2 className="mt-4 v2-serif font-light leading-[1.05] text-[clamp(2rem,4vw,3.2rem)] max-w-[16ch]" style={{ color: C.ink }}>
+          Écoutez Krystine avant de commencer.
+        </h2>
+        <DrawRule className="mt-6 w-20" />
+      </Reveal>
+      <Reveal delay={0.1} className="min-w-0">
+        <p className="mb-3 whitespace-nowrap text-[0.6rem] uppercase tracking-[0.14em] sm:hidden" style={{ color: 'rgba(28,23,18,0.62)' }}>Introduction au programme · 7 min 33</p>
+        <div className="[&>div]:static [&>div]:mt-0 [&>div]:px-0">
+          <LecteurAudioCours
+            url="/vata/extrait-introduction.mp3"
+            titre="Introduction au programme"
+            soustitre="Krystine St-Laurent"
+            pochette="/vata/couvertures/guide.jpg"
+            lang="FR"
+          />
+        </div>
+      </Reveal>
+    </div>
+  </section>
+);
+
+/* ════════════════════════ Ce que vous recevez ════════════════════════ */
+
+const REPERES: Array<[string, string]> = [
+  ['23', 'capsules et méditations · 4 h 12 min d’écoute'],
+  ['27', 'documents à télécharger'],
+  ['204', 'Le guide complet de 204 pages, offert à la fin du parcours'],
+];
+
+const Received: React.FC = () => {
+  const [tout, setTout] = useState(false);
+  return (
+    <section id="contenu" className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24" style={{ background: C.panel }}>
+      <span className="absolute inset-x-0 top-0 h-px" style={{ background: 'rgba(116,130,74,0.45)' }} aria-hidden />
+      <div className="grid gap-y-12 lg:grid-cols-[minmax(0,1fr)_clamp(220px,24vw,340px)] gap-x-[clamp(3rem,6vw,6rem)] items-end">
+        <div>
+          <Reveal>
+            <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Le matériel du programme</p>
+            <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(2.1rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>Ce que vous recevez</h2>
+            <DrawRule className="mt-6 w-20" />
+          </Reveal>
+          <div className="mt-10 border-t" style={{ borderColor: 'rgba(28,23,18,0.16)' }}>
+            {REPERES.map(([n, l], i) => (
+              <Reveal key={n} delay={i * 0.06}>
+                <div className="grid grid-cols-[4.5rem_1fr] sm:grid-cols-[6.5rem_1fr] items-baseline gap-x-5 border-b py-5" style={{ borderColor: 'rgba(28,23,18,0.16)' }}>
+                  <span className="v2-serif font-light text-[clamp(2rem,3.4vw,2.8rem)] leading-none tabular-nums" style={{ color: C.sageInk }}>{n}</span>
+                  <span className="text-[0.95rem] leading-[1.6]" style={{ color: C.inkSoft }}>{l}</span>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+        <Reveal delay={0.12} className="mx-auto w-[min(50vw,210px)] sm:w-[260px] lg:w-full">
+          <figure>
+            <Doc id="guide" />
+            <figcaption className="mt-4 text-center whitespace-nowrap text-[0.58rem] sm:text-[0.62rem] uppercase tracking-[0.16em] sm:tracking-[0.24em]" style={{ color: 'rgba(28,23,18,0.62)' }}>
+              Le guide complet · 204 pages
+            </figcaption>
+          </figure>
+        </Reveal>
+      </div>
+
+      <motion.ul
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.05 }}
+        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.03 } } }}
+        className="mt-[clamp(3rem,7vh,5rem)] grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 gap-[clamp(0.6rem,1.4vw,1.25rem)]"
+        aria-label="Couvertures des documents du programme"
+      >
+        {COUV_DOCS.map((id, i) => (
+          <motion.li
+            key={id}
+            variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } } }}
+            className={!tout && i >= 9 ? 'hidden sm:block' : ''}
+          >
+            <Doc id={id} />
+          </motion.li>
+        ))}
+      </motion.ul>
+      {!tout && (
+        <div className="mt-8 text-center sm:hidden">
+          <UnderlineCta label="Voir toutes les couvertures" onClick={() => setTout(true)} />
+        </div>
+      )}
+      <span className="absolute inset-x-0 bottom-0 h-px" style={{ background: 'rgba(116,130,74,0.45)' }} aria-hidden />
     </section>
   );
 };
@@ -771,7 +931,9 @@ const VataExperience: React.FC = () => (
     <Exergue>« Le vent se calme lorsqu'il trouve un endroit où se poser. »</Exergue>
     <Signals />
     <Method />
+    <Extrait />
     <Journey />
+    <Received />
     <Tiers />
     <Testimonials />
     <Bio />
