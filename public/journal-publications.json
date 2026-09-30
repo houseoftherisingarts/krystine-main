@@ -3354,5 +3354,30 @@
       "functions/src/paiements.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-09-30T20:02:49.758Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "8668fad4",
+    "message": "Paiement : nouvelle page de choix /paiement/<formation> dans le design du site (image, garantie, façon de payer) pour toutes les formations; le paiement en versements est prêt mais reste fermé jusqu'au réglage de Stripe et à un test; accès suspendu si un versement n'est pas payé",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "App.tsx",
+      "functions/src/paiements.ts",
+      "functions/src/versements.ts",
+      "public/assets-manifest.json",
+      "src/firebase/formations.ts",
+      "src/lib/cheminCours.ts",
+      "src/lib/versements.ts",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/OrigineDeuxPage.tsx",
+      "src/pages/PaiementFormation.tsx",
+      "src/pages/VataExperience.tsx",
+      "src/pages/foyer/Cta.tsx"
+    ]
   }
 ]
