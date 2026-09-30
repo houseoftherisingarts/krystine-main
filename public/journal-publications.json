@@ -3161,5 +3161,19 @@
       "src/pages/admin/sections/SequenceFormationPanel.tsx",
       "src/pages/admin/sections/newsletter/NewsletterList.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T15:21:23.311Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a4271c4e",
+    "message": "Admin › Infolettre : filtres en barre d'onglets bien visible (Générales, Courriels automatisés, Brouillons automatiques, Toutes), avec icônes et nombres",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/newsletter/NewsletterList.tsx"
+    ]
   }
 ]
