@@ -120,7 +120,7 @@ export const SEMAINES_VATA: SemaineVata[] = [
     etiquette: { fr: 'Conclusion', en: 'Conclusion' },
     sens: { fr: 'Clore la saison', en: 'Closing the season' },
     promesse: {
-      fr: 'Un dernier mot de Krystine, et votre guide complet à garder pour chaque automne.',
+      fr: 'Un dernier mot de Krystine, et votre guide complet à garder et à relire.',
       en: 'A last word from Krystine, and your complete guide to keep for every autumn.',
     },
     couleur: { encre: '#4E6349', vive: '#7A9270' },
