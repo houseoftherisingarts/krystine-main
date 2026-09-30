@@ -37,6 +37,9 @@ const IDS: Record<string, string> = Object.fromEntries(Object.entries(SLUGS).map
 /** L'adresse publique d'un cours : /cours/vata plutôt que /cours/kajabi-… */
 export const cheminCours = (id: string, suffixe = ''): string => `/cours/${SLUGS[id] || id}${suffixe}`;
 
+/** La page de choix du paiement (un paiement ou des versements) : /paiement/vata. */
+export const cheminPaiement = (id: string): string => `/paiement/${SLUGS[id] || id}`;
+
 /** L'identifiant Firestore derrière ce qui est écrit dans l'adresse. */
 export const idDeCours = (slugOuId: string): string => IDS[slugOuId] || slugOuId;
 

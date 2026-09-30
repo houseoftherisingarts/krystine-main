@@ -6,10 +6,10 @@ import CoursOrigine from '../components/cours/origine/CoursOrigine';
 import { estOrigine } from './origine2/piliers';
 import { FORMATION_VATA, rangDeModule as rangModuleVata, semainesVataOuvertes, etiquetteSemaine } from './vata/semaines';
 import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, type QuestionLecon } from '../firebase/formations';
-import { Navigate, useParams, Link } from 'react-router-dom';
+import { Navigate, useParams, Link, useNavigate } from 'react-router-dom';
 import {
-  getFormation, getLecons, getProgression, marquerLecon, aAchete, infosAchat,
-  acheterFormation, urlDeLecon, marquerFormationTerminee,
+  getFormation, getLecons, getProgression, marquerLecon, etatAchat, infosAchat,
+  urlDeLecon, marquerFormationTerminee,
   type Formation, type Lecon,
 } from '../firebase/formations';
 import { useAuth, useUI } from '../contexts/AppContext';
@@ -26,7 +26,7 @@ import type { DiplomeInfos } from '../components/cours/Diplome';
 import { programmeDe } from './cours/programmes';
 import { nettoyerKajabi } from './cours/nettoyerKajabi';
 import StickerFormat, { formatDe } from '../components/cours/StickerFormat';
-import { idDeCours, cheminCours, adresseADemenager } from '../lib/cheminCours';
+import { idDeCours, cheminCours, cheminPaiement, adresseADemenager } from '../lib/cheminCours';
 
 // La fiche d'un cours et son lecteur, sur le patron de l'Académie Zéro
 // Limite : liste des leçons et progression à gauche, contenu à droite,
@@ -69,7 +69,7 @@ const CoursDetailPage: React.FC = () => {
   const { id: idAdresse = '' } = useParams();
   // L'adresse dit « vata », la base dit l'identifiant d'import : on traduit.
   const id = idDeCours(idAdresse);
-  const { user, isAdmin, setSignInOpen } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { lang } = useUI();
   const [formation, setFormation] = useState<Formation | null>(null);
   const [replies, setReplies] = useState<Record<string, boolean>>({});
@@ -83,6 +83,9 @@ const CoursDetailPage: React.FC = () => {
     `${(s as { etiquette?: { fr: string; en: string } }).etiquette ? etiquetteSemaine(s as never, lang === 'FR') : s.rang === 0 ? 'Introduction' : `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${s.rang}`} · ${lang === 'FR' ? s.sens.fr : s.sens.en}`;
   const CHAPITRES = programme?.chapitres ?? [];
   const [achete, setAchete] = useState(false);
+  // Un achat en versements dont un prélèvement a échoué : le cours se ferme
+  // et un message remplace les leçons jusqu'au paiement.
+  const [suspendu, setSuspendu] = useState(false);
   const [verifAcces, setVerifAcces] = useState(true);   // le temps de savoir si la personne possède le cours
   const [accesVie, setAccesVie] = useState(false);
   const [achatVata, setAchatVata] = useState<{ source?: string; acheteLe?: Date } | null>(null);
@@ -140,9 +143,11 @@ const CoursDetailPage: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    if (!user || !id) { setAchete(false); setAccesVie(false); setVerifAcces(false); return; }
+    if (!user || !id) { setAchete(false); setSuspendu(false); setAccesVie(false); setVerifAcces(false); return; }
     setVerifAcces(true);
-    aAchete(user.uid, id).then(setAchete).catch(() => {}).finally(() => setVerifAcces(false));
+    etatAchat(user.uid, id)
+      .then(e => { setAchete(e === 'actif'); setSuspendu(e === 'suspendu'); })
+      .catch(() => {}).finally(() => setVerifAcces(false));
     if (id === FORMATION_VATA) infosAchat(user.uid, id).then(setAchatVata).catch(() => {});
     getMember(user.uid).then(m => setAccesVie(!!m?.accesVie)).catch(() => {});
     setProgressionLue(false);
@@ -253,16 +258,10 @@ const CoursDetailPage: React.FC = () => {
     if (prochaine) ouvrir(prochaine);
   };
 
-  const acheter = async () => {
-    if (!user) { setSignInOpen(true); return; }
-    setPaiement(true); setErreur(null);
-    try {
-      window.location.href = await acheterFormation(id);
-    } catch {
-      setErreur(lang === 'FR' ? 'Le paiement n\'a pas pu démarrer. Réessayez.' : 'Payment could not start. Please try again.');
-      setPaiement(false);
-    }
-  };
+  // L'achat passe par la page de choix (un paiement ou des versements),
+  // commune à toutes les formations : src/pages/PaiementFormation.tsx.
+  const navigate = useNavigate();
+  const acheter = () => { setPaiement(true); navigate(cheminPaiement(id)); };
 
   const nbTerminees = lecons.filter(l => terminees[l.id]).length;
   const pct = lecons.length ? Math.round((nbTerminees / lecons.length) * 100) : 0;
@@ -310,7 +309,7 @@ const CoursDetailPage: React.FC = () => {
   // l'admin, accès à vie ou admin) : il est absent du catalogue, pas du compte.
   // Le Foyer a sa page de vente : qui ne le possède pas encore y est menée
   // (le bouton d'achat vit là, avec toute la promesse). Les membres passent.
-  if (id === 'foyer' && formation && !accessible && (!user || !verifAcces)) {
+  if (id === 'foyer' && formation && !accessible && !suspendu && (!user || !verifAcces)) {
     return <Navigate to="/foyer" replace />;
   }
 
@@ -318,11 +317,11 @@ const CoursDetailPage: React.FC = () => {
   // de la première cohorte) à personne qui ne l'a pas : la fiche renvoie à
   // sa page de vente, comme le Foyer ci-dessus. Qui la possède déjà (achat,
   // accès à vie) ou l'admin en aperçu passe tout droit (Alex, 7 sept. 2026).
-  if (formation?.listeAttente && !accessible && (!user || !verifAcces)) {
+  if (formation?.listeAttente && !accessible && !suspendu && (!user || !verifAcces)) {
     return <Navigate to={formation.lienFiche || '/origine'} replace />;
   }
 
-  const masqueMaisPossede = formation && formation.statut !== 'publie' && (isAdmin || achete || accesVie);
+  const masqueMaisPossede = formation && formation.statut !== 'publie' && (isAdmin || achete || suspendu || accesVie);
   if (formation && formation.statut !== 'publie' && !masqueMaisPossede && user && verifAcces) {
     return <div className="min-h-screen bg-[#EEE7DB] pt-40 text-center text-sm text-[#38403a]/50 dark:bg-[#151d19] dark:text-white/50">…</div>;
   }
@@ -681,7 +680,12 @@ const CoursDetailPage: React.FC = () => {
               {formation.description && (
                 <p className="whitespace-pre-line text-[#38403a]/80 dark:text-white/80">{formation.description}</p>
               )}
-              {formation.listeAttente ? (
+              {suspendu ? (
+                <p role="alert" className="mt-6 rounded-[14px] border border-[#8B4A2F]/30 bg-[#8B4A2F]/5 px-5 py-4 text-sm leading-relaxed text-[#38403a] dark:text-white/85">
+                  Votre accès est suspendu : un versement n'a pas pu être prélevé. Il se rouvrira dès le paiement. Écrivez-nous à{' '}
+                  <a href="mailto:teamksl@inspiratanature.com" className="underline">teamksl@inspiratanature.com</a>.
+                </p>
+              ) : formation.listeAttente ? (
                 <>
                   <p className="mt-6 text-sm text-[#38403a]/70 dark:text-white/70">
                     {lang === 'FR'
@@ -717,7 +721,7 @@ const CoursDetailPage: React.FC = () => {
                   <i className="fa-solid fa-eye" /> Aperçu administratrice, sans acheter
                 </a>
               )}
-              {lecons.length > 0 && (
+              {lecons.length > 0 && !suspendu && (
                 <div className="mt-8">
                   <p className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">{lecons.length} {lang === 'FR' ? 'leçons' : 'lessons'}</p>
                   <ul className="mt-3 space-y-2">

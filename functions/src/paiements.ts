@@ -8,6 +8,7 @@ import { exigerModule } from './gamification';
 import { inscrireSequencesAchat } from './newsletter/sequences';
 import { traiterPaiementBillets } from './billetterie';
 import { MAIL_SECRETS } from './newsletter/mail';
+import { prixEnVigueur, versementsPermis, montantVersement } from './versements';
 
 // Le paywall des formations natives (migration Kajabi, 2026-08-28).
 // Trois portes : créer la session Stripe Checkout, encaisser le webhook qui
@@ -59,25 +60,45 @@ export const creerSessionPaiement = onCall(
     if (!f.paywall || !f.prix || f.prix <= 0) throw new HttpsError('failed-precondition', 'Cette formation n\'a pas de prix.');
     // Vata : le tarif de lancement (prix de la fiche) tient jusqu'au 1er novembre
     // 2026 inclus, puis le prix régulier s'applique tout seul (Krystine, 30 sept. 2026).
-    const prix = formationId === 'kajabi-2148687644' && Date.now() >= Date.parse('2026-11-02T04:00:00Z') ? 497 : f.prix;
+    // La bascule vit dans versements.ts, partagée avec la page de choix.
+    const prix = prixEnVigueur(formationId, f.prix);
+
+    // Le paiement en versements (Krystine, 30 sept. 2026) : la règle de
+    // versements.ts décide ce qui est permis pour ce prix, jamais le navigateur.
+    const versements = req.data?.versements === undefined ? 1 : Number(req.data.versements);
+    if (!Number.isInteger(versements) || !versementsPermis(prix).includes(versements)) {
+      throw new HttpsError('invalid-argument', 'Ce nombre de versements n\'est pas offert pour cette formation.');
+    }
 
     const body = new URLSearchParams({
-      mode: 'payment',
       'line_items[0][price_data][currency]': 'cad',
       'line_items[0][price_data][product_data][name]': f.titre,
-      'line_items[0][price_data][unit_amount]': String(Math.round(prix * 100)),
       'line_items[0][price_data][tax_behavior]': 'exclusive',
       'line_items[0][quantity]': '1',
       ...TAXES_QC,
-      // Le code de la récompense « 50 $ sur une formation » se tape ici
-      // (echangerRecompense, functions/src/recompenses.ts) : il porte déjà
-      // sa propre restriction de 50 $ minimum côté Stripe.
-      allow_promotion_codes: 'true',
       success_url: `${siteDe(req)}/compte?achat=ok&formation=${encodeURIComponent(formationId)}`,
       cancel_url: `${siteDe(req)}/cours/${formationId}`,
       'metadata[uid]': req.auth.uid,
       'metadata[formationId]': formationId,
+      'metadata[versements]': String(versements),
     });
+    if (versements === 1) {
+      body.set('mode', 'payment');
+      body.set('line_items[0][price_data][unit_amount]', String(Math.round(prix * 100)));
+      // Le code de la récompense « 50 $ sur une formation » se tape ici
+      // (echangerRecompense, functions/src/recompenses.ts) : il porte déjà
+      // sa propre restriction de 50 $ minimum côté Stripe.
+      body.set('allow_promotion_codes', 'true');
+    } else {
+      // Un abonnement mensuel que le webhook annule au dernier versement. Les
+      // métadonnées suivent l'abonnement pour que chaque facture retrouve l'achat.
+      body.set('mode', 'subscription');
+      body.set('line_items[0][price_data][unit_amount]', String(montantVersement(prix, versements) * 100));
+      body.set('line_items[0][price_data][recurring][interval]', 'month');
+      body.set('subscription_data[metadata][uid]', req.auth.uid);
+      body.set('subscription_data[metadata][formationId]', formationId);
+      body.set('subscription_data[metadata][versements]', String(versements));
+    }
     const email = req.auth.token.email;
     if (email) body.set('customer_email', String(email));
 
@@ -280,12 +301,55 @@ function detailTaxesQC(session: { amount_subtotal?: number; amount_total?: numbe
   return { montantHT, tps, tvq, taxes, total };
 }
 
+// ─── Les versements : l'abonnement Stripe derrière un achat ─────────────────
+// Un achat en n versements est un abonnement mensuel. Ses métadonnées (uid,
+// formationId, versements) disent à quel achat chaque facture appartient.
+type MetaVersements = { uid?: string; formationId?: string; versements?: string };
+
+async function appelStripe(methode: 'GET' | 'DELETE', chemin: string): Promise<{ ok: boolean; status: number; data: any }> {
+  const r = await fetch(`https://api.stripe.com/v1/${chemin}`, {
+    method: methode,
+    headers: { Authorization: `Bearer ${STRIPE_SECRET_KEY.value()}` },
+  });
+  return { ok: r.ok, status: r.status, data: await r.json().catch(() => ({})) };
+}
+
+// L'abonnement et ses métadonnées d'une facture. Selon la version de l'API
+// du point de terminaison, Stripe les range dans invoice.parent (2025 et
+// après) ou directement sur la facture (avant); au besoin on relit l'abonnement.
+async function versementsDeFacture(invoice: any): Promise<{ meta: MetaVersements; abonnementId: string }> {
+  const brut = invoice.parent?.subscription_details?.subscription ?? invoice.subscription ?? '';
+  const abonnementId = typeof brut === 'string' ? brut : String(brut?.id || '');
+  let meta: MetaVersements = invoice.parent?.subscription_details?.metadata || invoice.subscription_details?.metadata || {};
+  if (!meta.formationId && abonnementId) {
+    const r = await appelStripe('GET', `subscriptions/${abonnementId}`);
+    if (r.ok) meta = r.data?.metadata || {};
+  }
+  return { meta, abonnementId };
+}
+
+// Le dernier versement réglé : on arrête l'abonnement pour qu'aucun mois de
+// trop ne soit prélevé. Un abonnement déjà annulé (404) compte comme fait.
+async function annulerAbonnementSiComplet(ref: FirebaseFirestore.DocumentReference, abonnementId: string): Promise<boolean> {
+  const a = (await ref.get()).data() as { versements?: number; versementsPayes?: number; abonnementAnnule?: boolean } | undefined;
+  if (!a || !a.versements || (a.versementsPayes || 0) < a.versements || a.abonnementAnnule) return true;
+  const r = await appelStripe('DELETE', `subscriptions/${abonnementId}`);
+  if (!r.ok && r.status !== 404) {
+    console.error('[paiements] annulation de l\'abonnement refusée', abonnementId, r.data?.error?.message);
+    return false;
+  }
+  await ref.set({ versementsTermine: true, abonnementAnnule: true, termineLe: FieldValue.serverTimestamp() }, { merge: true });
+  console.log(`[paiements] versements terminés, abonnement ${abonnementId} annulé`);
+  return true;
+}
+
 export const stripeWebhook = onRequest(
   // Les secrets de la lettre voyagent avec le webhook : la branche des billets
   // envoie le courriel qui les porte, et Firebase refuse à l'exécution la
   // lecture d'un secret qui n'est pas déclaré ici. Sans cette ligne, les
   // billets s'écriraient en base sans jamais atteindre l'acheteuse.
-  { region: 'us-central1', secrets: [STRIPE_WEBHOOK_SECRET, ...MAIL_SECRETS], cors: false, maxInstances: 5 },
+  // STRIPE_SECRET_KEY : les versements relisent et annulent l'abonnement.
+  { region: 'us-central1', secrets: [STRIPE_WEBHOOK_SECRET, STRIPE_SECRET_KEY, ...MAIL_SECRETS], cors: false, maxInstances: 5 },
   async (req, res) => {
     if (req.method !== 'POST') { res.status(405).send('Method not allowed'); return; }
     const rawBody: Buffer = (req as any).rawBody as Buffer;
@@ -295,6 +359,56 @@ export const stripeWebhook = onRequest(
     }
 
     const event = JSON.parse(rawBody.toString('utf8'));
+
+    // ── Les versements suivants : une facture mensuelle réglée ──
+    if (event.type === 'invoice.paid') {
+      const invoice = event.data?.object || {};
+      const { meta, abonnementId } = await versementsDeFacture(invoice);
+      if (!meta.uid || !meta.formationId || !abonnementId) { res.status(200).send('ignored'); return; }
+      // Le premier versement est compté par checkout.session.completed.
+      if (invoice.billing_reason === 'subscription_create') { res.status(200).send('premier versement'); return; }
+      const db = getFirestore();
+      const ref = db.doc(`achatsFormations/${meta.uid}/formations/${meta.formationId}`);
+      // Une même facture ne se compte jamais deux fois (Stripe peut renvoyer l'événement).
+      const compte = await db.runTransaction(async (tx) => {
+        const snap = await tx.get(ref);
+        if (!snap.exists) return 'absent';
+        const payees = (snap.data() as { facturesPayees?: string[] }).facturesPayees || [];
+        if (payees.includes(String(invoice.id))) return 'deja';
+        tx.set(ref, {
+          versementsPayes: FieldValue.increment(1),
+          suspendu: false,
+          facturesPayees: FieldValue.arrayUnion(String(invoice.id)),
+          dernierVersementLe: FieldValue.serverTimestamp(),
+        }, { merge: true });
+        return 'compte';
+      });
+      // L'achat pas encore écrit : Stripe réessaiera plus tard.
+      if (compte === 'absent') { res.status(500).send('achat absent'); return; }
+      const annule = await annulerAbonnementSiComplet(ref, abonnementId);
+      console.log(`[paiements] versement ${compte} pour ${meta.uid} -> ${meta.formationId}`);
+      res.status(annule ? 200 : 500).send(annule ? 'ok' : 'annulation en attente'); return;
+    }
+
+    // ── Un prélèvement qui échoue, ou un abonnement arrêté avant la fin ──
+    if (event.type === 'customer.subscription.updated' || event.type === 'customer.subscription.deleted') {
+      const sub = event.data?.object || {};
+      const meta: MetaVersements = sub.metadata || {};
+      if (!meta.uid || !meta.formationId) { res.status(200).send('ignored'); return; }
+      const ref = getFirestore().doc(`achatsFormations/${meta.uid}/formations/${meta.formationId}`);
+      const a = (await ref.get()).data() as { versements?: number; versementsPayes?: number; versementsTermine?: boolean } | undefined;
+      if (!a) { res.status(200).send('achat absent'); return; }
+      const impaye = event.type === 'customer.subscription.updated'
+        && (sub.status === 'unpaid' || sub.status === 'past_due') && !a.versementsTermine;
+      const arreteTot = event.type === 'customer.subscription.deleted'
+        && (a.versementsPayes || 0) < (a.versements || Number(meta.versements) || 0);
+      if (impaye || arreteTot) {
+        await ref.set({ suspendu: true, suspenduLe: FieldValue.serverTimestamp() }, { merge: true });
+        console.log(`[paiements] accès suspendu : ${meta.uid} -> ${meta.formationId} (${event.type}, ${sub.status})`);
+      }
+      res.status(200).send('ok'); return;
+    }
+
     if (event.type !== 'checkout.session.completed') { res.status(200).send('ignored'); return; }
     const session = event.data?.object || {};
     const uid = session.metadata?.uid;
@@ -380,7 +494,24 @@ export const stripeWebhook = onRequest(
     const db = getFirestore();
     const fSnap = await db.doc(`formations/${formationId}`).get();
     const f = fSnap.exists ? (fSnap.data() as { titre?: string; imageUrl?: string }) : {};
-    await db.doc(`achatsFormations/${uid}/formations/${formationId}`).set({
+    const refAchat = db.doc(`achatsFormations/${uid}/formations/${formationId}`);
+    // Un achat en versements : le premier est réglé, les suivants arrivent par
+    // invoice.paid. Un renvoi du même événement ne remet pas le compteur à 1.
+    let champsVersements: Record<string, unknown> = {};
+    if (session.mode === 'subscription' && session.subscription) {
+      const abonnementId = typeof session.subscription === 'string' ? session.subscription : String(session.subscription.id || '');
+      const deja = ((await refAchat.get()).data() as { abonnementId?: string } | undefined)?.abonnementId === abonnementId;
+      if (!deja) {
+        champsVersements = {
+          versements: Number(session.metadata?.versements) || 1,
+          versementsPayes: 1,
+          abonnementId,
+          suspendu: false,
+        };
+      }
+    }
+    await refAchat.set({
+      ...champsVersements,
       titre: f.titre || formationId,
       imageUrl: f.imageUrl || '',
       montant: (session.amount_total || 0) / 100,
@@ -421,6 +552,10 @@ export const obtenirLecon = onCall(
       const paywall = !!fiche?.paywall || fiche?.statut !== 'publie';
       if (paywall) {
         const achat = await db.doc(`achatsFormations/${req.auth.uid}/formations/${formationId}`).get();
+        // Un achat en versements dont un prélèvement a échoué : fermé jusqu'au paiement.
+        if ((achat.data() as { suspendu?: boolean } | undefined)?.suspendu) {
+          throw new HttpsError('permission-denied', 'Votre accès est suspendu : un versement n\'a pas pu être prélevé.');
+        }
         // Un achat à l'épisode (Santé la vie, en niskas) n'ouvre que ses épisodes.
         const episodes = (achat.data() as { episodes?: Record<string, unknown> } | undefined)?.episodes;
         if (achat.exists && episodes && !episodes[leconId]) {

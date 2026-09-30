@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useApp, useAuth } from '../../contexts/AppContext';
-import { aAchete, acheterFormation } from '../../firebase/formations';
+import { aAchete } from '../../firebase/formations';
 import { CHEMINS_FOYER } from '../../components/communaute/chemins';
 
 /* ── Rejoindre le Foyer : Stripe Checkout (mise en vente le 6 septembre 2026).
@@ -28,7 +28,7 @@ export const FoyerVenteProvider: React.FC<{ value: FoyerVenteState; children: Re
 }) => <FoyerVenteContext.Provider value={value}>{children}</FoyerVenteContext.Provider>;
 
 export function useRejoindreFoyer() {
-  const { user, setSignInOpen } = useAuth();
+  const { user } = useAuth();
   const { ouvert, demanderListeAttente } = useContext(FoyerVenteContext);
   const [possede, setPossede] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -39,9 +39,9 @@ export function useRejoindreFoyer() {
   const rejoindre = async () => {
     if (possede) { window.location.href = CHEMINS_FOYER.programme; return; }
     if (!ouvert) { demanderListeAttente(); return; }
-    if (!user) { setSignInOpen(true); return; }
+    // La page de choix (un paiement ou des versements) gère aussi la connexion.
     setBusy(true);
-    try { window.location.href = await acheterFormation('foyer'); } catch { setBusy(false); }
+    window.location.href = '/paiement/foyer';
   };
   return { rejoindre, possede, busy, ouvert };
 }

@@ -58,6 +58,8 @@ const VexelPage        = lazy(() => import('./src/pages/VexelPage'));
 const PageIntrouvable  = lazy(() => import('./src/pages/PageIntrouvable'));
 const CoursPage        = lazy(() => import('./src/pages/CoursPage'));
 const CoursDetailPage  = lazy(() => import('./src/pages/CoursDetailPage'));
+// La page de choix du paiement (un paiement ou des versements), commune à toutes les formations.
+const PaiementFormation = lazy(() => import('./src/pages/PaiementFormation'));
 const EvenementsPage   = lazy(() => import('./src/pages/EvenementsPage'));
 const EvenementVente   = lazy(() => import('./src/pages/EvenementVente'));
 const CommunauteEspace = lazy(() => import('./src/pages/CommunauteEspace'));
@@ -308,6 +310,7 @@ const App: React.FC = () => (
           <Route path="/compte" element={<ClientPortal />} />
           <Route path="/cours" element={<CoursPage />} />
           <Route path="/cours/:id" element={<CoursDetailPage />} />
+          <Route path="/paiement/:id" element={<PaiementFormation />} />
           <Route path="/espace" element={<Navigate to="/compte" replace />} />
           {/* Le Foyer social vit SOUS /foyer (Alex, 7 septembre 2026) : le fil,
               l'annuaire, la fiche, les groupes et la messagerie s'ouvrent dans

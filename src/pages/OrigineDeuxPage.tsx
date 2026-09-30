@@ -6,7 +6,7 @@ import { Atmosphere, Feuille, Parallax, Seam } from '../components/motion/loeuvr
 import BandeauApercu from '../components/edit/BandeauApercu';
 import { useUI, useAuth } from '../contexts/AppContext';
 import { useSiteFlags } from '../contexts/SiteFlagsContext';
-import { aAchete, acheterFormation, getFormation, type Formation } from '../firebase/formations';
+import { aAchete, getFormation, type Formation } from '../firebase/formations';
 import BoutonCompte from '../components/BoutonCompte';
 import { PILLARS, WORKS, VALUE_ITEMS, FAQS, TESTIMONIALS } from './OrigineExperience';
 import { SEMAINES, PILIERS_ORIGINE2, labelDebut } from './origine2/semaines';
@@ -38,7 +38,7 @@ const WAITLIST = '/liste-attente?programme=origine2';
 /* ── Rejoindre : liste d'attente tant que l'admin n'a pas ouvert la vente
    (formation.listeAttente), Stripe Checkout ensuite; qui possède entre. ── */
 function useRejoindreOrigine2(formation: Formation | null) {
-  const { user, setSignInOpen } = useAuth();
+  const { user } = useAuth();
   const [possede, setPossede] = useState(false);
   const [busy, setBusy] = useState(false);
   useEffect(() => {
@@ -49,9 +49,9 @@ function useRejoindreOrigine2(formation: Formation | null) {
   const rejoindre = async () => {
     if (possede) { window.location.href = '/cours/origine2'; return; }
     if (!enVente) { window.location.href = WAITLIST; return; }
-    if (!user) { setSignInOpen(true); return; }
+    // La page de choix (un paiement ou des versements) gère aussi la connexion.
     setBusy(true);
-    try { window.location.href = await acheterFormation('origine2'); } catch { setBusy(false); }
+    window.location.href = '/paiement/origine2';
   };
   const label = possede ? 'Ouvrir mon espace' : enVente ? `Prendre ma place · ${formation!.prix} $` : 'Rejoindre la liste d’attente';
   return { rejoindre, possede, busy, enVente, label };

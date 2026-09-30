@@ -125,9 +125,17 @@ export async function marquerFormationTerminee(uid: string, formationId: string,
   }, { merge: true });
 }
 
+// Un achat en versements dont un prélèvement a échoué porte suspendu: true
+// (webhook Stripe) : il ne donne plus accès jusqu'au paiement.
 export async function aAchete(uid: string, formationId: string): Promise<boolean> {
+  return (await etatAchat(uid, formationId)) === 'actif';
+}
+
+/** 'actif' : l'accès est ouvert; 'suspendu' : un versement n'a pas été prélevé. */
+export async function etatAchat(uid: string, formationId: string): Promise<'aucun' | 'actif' | 'suspendu'> {
   const snap = await getDoc(doc(db(), 'achatsFormations', uid, 'formations', formationId));
-  return snap.exists();
+  if (!snap.exists()) return 'aucun';
+  return (snap.data() as { suspendu?: boolean }).suspendu ? 'suspendu' : 'actif';
 }
 
 /** La date d'achat et la provenance d'un achat, pour le goutte-à-goutte de Vata. */
@@ -266,10 +274,12 @@ export async function marquerLecon(uid: string, formationId: string, leconId: st
 
 // ─── Les appels serveur (paywall) ───────────────────────────────────────────
 
-export async function acheterFormation(formationId: string): Promise<string> {
+// versements : 1 (un seul paiement), 3 ou 6 selon src/lib/versements.ts.
+// Le serveur refuse un nombre que la règle ne permet pas pour ce prix.
+export async function acheterFormation(formationId: string, versements = 1): Promise<string> {
   if (!app) throw new Error('[Formations] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionPaiement');
-  const res = await call({ formationId });
+  const res = await call({ formationId, versements });
   trackObjectif(`Paiement commencé · ${formationId}`, 'gros', { paiement: true });
   return (res.data as { url: string }).url;
 }
