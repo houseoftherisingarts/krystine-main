@@ -57,7 +57,7 @@ const PORTES: Porte[] = [
     body: 'Programme Vata ici, une formation audio avec matériel de support, puis les autres formations qui reviendront progressivement sur le site.',
     cta: 'Voir les formations',
     href: '#a-votre-rythme',
-    image: '/assets/vata-cover.webp',
+    image: '/vata/carte-saison-vata.jpg',
   },
 ];
 
