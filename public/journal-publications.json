@@ -3379,5 +3379,18 @@
       "src/pages/VataExperience.tsx",
       "src/pages/foyer/Cta.tsx"
     ]
+  },
+  {
+    "quand": "2026-09-30T21:50:20.965Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "9bfb5da2",
+    "message": "Page de vente Vata (/vata) : éventail de couvertures, une couverture par étape du parcours et la conclusion, « Ce que vous recevez » avec le mur des couvertures et le guide, extrait audio de l'introduction",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json"
+    ]
   }
 ]
