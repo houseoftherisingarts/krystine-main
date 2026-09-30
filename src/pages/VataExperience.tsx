@@ -34,8 +34,8 @@ const C = {
   inkSoft: '#3a2f23',
   brass: '#9c7a44',
   brassInk: '#7d6330',
-  sage: '#74824a',
-  sageInk: '#55602f',
+  sage: '#606d39',
+  sageInk: '#3f4a27',
   sageTint: '#e6e8cf',
   dark: '#34241a',
 };
@@ -203,7 +203,7 @@ const WindLines: React.FC<{ className?: string }> = ({ className = '' }) => {
 const ChapterHead: React.FC<{ no: string; kicker: string; title: string; lede?: string; className?: string }> = ({ no, kicker, title, lede, className = '' }) => (
   <Reveal className={className}>
     <div className="flex items-start gap-[clamp(1.25rem,2.5vw,2.25rem)]">
-      <span aria-hidden className="v2-serif font-light leading-[0.85] text-[clamp(4rem,8vw,7rem)] select-none" style={{ color: 'rgba(116,130,74,0.28)' }}>
+      <span aria-hidden className="v2-serif font-light leading-[0.85] text-[clamp(4rem,8vw,7rem)] select-none" style={{ color: 'rgba(96,109,57,0.55)' }}>
         {no}
       </span>
       <div className="pt-[0.4em]">
@@ -483,7 +483,7 @@ const Method: React.FC = () => (
           >
             <div className="flex items-center gap-5">
               <Medallion Icon={Icon} />
-              <span aria-hidden className="v2-serif font-light text-[clamp(2.4rem,4vw,3.4rem)] leading-none tabular-nums" style={{ color: 'rgba(116,130,74,0.4)' }}>
+              <span aria-hidden className="v2-serif font-light text-[clamp(2.4rem,4vw,3.4rem)] leading-none tabular-nums" style={{ color: '#606d39' }}>
                 {String(i + 1).padStart(2, '0')}
               </span>
             </div>
@@ -537,11 +537,11 @@ const Journey: React.FC = () => {
               >
                 <div className={`flex items-start gap-[clamp(1.1rem,2.2vw,2rem)] ${leftSide ? 'lg:flex-row-reverse' : ''}`}>
                 <div className="w-[clamp(78px,20vw,96px)] lg:w-[clamp(110px,9.5vw,140px)] shrink-0">
-                  <Doc id={COUV_PHASES[i]} />
+                  <Doc id={COUV_PHASES[i] === 'guide' ? 'guide' : `img-${COUV_PHASES[i]}`} />
                 </div>
                 <div className="min-w-0 flex-1">
                 <div className={`flex items-baseline gap-4 ${leftSide ? 'lg:justify-end' : ''}`}>
-                  <span aria-hidden className="v2-serif font-light text-[clamp(1.9rem,3.2vw,2.8rem)] leading-none tabular-nums" style={{ color: 'rgba(116,130,74,0.45)' }}>
+                  <span aria-hidden className="v2-serif font-light text-[clamp(1.9rem,3.2vw,2.8rem)] leading-none tabular-nums" style={{ color: '#606d39' }}>
                     {String(i).padStart(2, '0')}
                   </span>
                   <span className="text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: C.sageInk }}>{phaseLabel(i)}</span>
@@ -628,29 +628,8 @@ const Received: React.FC = () => {
         </Reveal>
       </div>
 
-      <motion.ul
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.05 }}
-        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.03 } } }}
-        className="mt-[clamp(3rem,7vh,5rem)] grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 gap-[clamp(0.6rem,1.4vw,1.25rem)]"
-        aria-label="Couvertures des documents du programme"
-      >
-        {COUV_DOCS.map((id, i) => (
-          <motion.li
-            key={id}
-            variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } } }}
-            className={!tout && i >= 9 ? 'hidden sm:block' : ''}
-          >
-            <Doc id={id} />
-          </motion.li>
-        ))}
-      </motion.ul>
-      {!tout && (
-        <div className="mt-8 text-center sm:hidden">
-          <UnderlineCta label="Voir toutes les couvertures" onClick={() => setTout(true)} />
-        </div>
-      )}
+      {/* Le mur des 27 couvertures est retiré (Krystine, 30 sept. 2026) : leurs
+          titres formaient la table des matières du programme. */}
       <span className="absolute inset-x-0 bottom-0 h-px" style={{ background: 'rgba(116,130,74,0.45)' }} aria-hidden />
     </section>
   );
@@ -709,7 +688,7 @@ const Tiers: React.FC = () => (
               <ul className="mt-7 space-y-3.5">
                 {tier.features.map((f) => (
                   <li key={f} className="flex items-start gap-3 text-[0.92rem] leading-[1.65]" style={{ color: C.inkSoft }}>
-                    <Check size={16} weight="bold" className="mt-1 shrink-0" style={{ color: C.sage }} />
+                    <Check size={16} weight="bold" className="mt-1 shrink-0" style={{ color: C.sageInk }} />
                     {f}
                   </li>
                 ))}

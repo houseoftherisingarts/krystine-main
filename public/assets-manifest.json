@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-30T21:50:13.363Z",
+  "generatedAt": "2026-09-30T22:01:08.804Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2485,6 +2485,62 @@
       "folder": "vata/couvertures",
       "kind": "image",
       "size": 145043
+    },
+    {
+      "path": "/vata/couvertures/img-002.jpg",
+      "name": "img-002.jpg",
+      "folder": "vata/couvertures",
+      "kind": "image",
+      "size": 76135
+    },
+    {
+      "path": "/vata/couvertures/img-006.jpg",
+      "name": "img-006.jpg",
+      "folder": "vata/couvertures",
+      "kind": "image",
+      "size": 28216
+    },
+    {
+      "path": "/vata/couvertures/img-012.jpg",
+      "name": "img-012.jpg",
+      "folder": "vata/couvertures",
+      "kind": "image",
+      "size": 49024
+    },
+    {
+      "path": "/vata/couvertures/img-021.jpg",
+      "name": "img-021.jpg",
+      "folder": "vata/couvertures",
+      "kind": "image",
+      "size": 35240
+    },
+    {
+      "path": "/vata/couvertures/img-026.jpg",
+      "name": "img-026.jpg",
+      "folder": "vata/couvertures",
+      "kind": "image",
+      "size": 59446
+    },
+    {
+      "path": "/vata/couvertures/img-029.jpg",
+      "name": "img-029.jpg",
+      "folder": "vata/couvertures",
+      "kind": "image",
+      "size": 48256
+    },
+    {
+      "path": "/vata/couvertures/img-041.jpg",
+      "name": "img-041.jpg",
+      "folder": "vata/couvertures",
+      "kind": "image",
+      "size": 34991
+    },
+    {
+      "path": "/vata/couvertures/img-046.jpg",
+      "name": "img-046.jpg",
+      "folder": "vata/couvertures",
+      "kind": "image",
+      "size": 43063
     },
     {
       "path": "/vata/documents/002.jpg",
