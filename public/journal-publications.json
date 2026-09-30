@@ -3309,5 +3309,19 @@
       "src/pages/admin/sections/SequenceFormationPanel.tsx",
       "src/pages/vata/semaines.ts"
     ]
+  },
+  {
+    "quand": "2026-09-30T17:43:54.605Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "14ecf172",
+    "message": "Page de vente Vata (/vata) : le guide de 204 pages est « offert à la fin du parcours »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
