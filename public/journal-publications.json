@@ -3392,5 +3392,27 @@
     "fichiers": [
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-09-30T22:01:15.996Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "3ed35fca",
+    "message": "Page de vente Vata : vert plus foncé et lisible pour les chiffres et les textes, mur des 27 couvertures retiré, images du parcours sans le titre des documents",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/vata/couvertures/img-002.jpg",
+      "public/vata/couvertures/img-006.jpg",
+      "public/vata/couvertures/img-012.jpg",
+      "public/vata/couvertures/img-021.jpg",
+      "public/vata/couvertures/img-026.jpg",
+      "public/vata/couvertures/img-029.jpg",
+      "public/vata/couvertures/img-041.jpg",
+      "public/vata/couvertures/img-046.jpg",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
