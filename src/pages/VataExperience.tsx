@@ -530,7 +530,7 @@ const Tiers: React.FC = () => (
               <button
                 type="button"
                 onClick={go}
-                className="group mt-8 inline-flex items-center justify-center gap-2.5 w-full py-4 min-h-[44px] text-[0.7rem] uppercase tracking-[0.2em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+                className="group mt-8 inline-flex items-center justify-center gap-2.5 w-full px-4 py-4 min-h-[44px] text-[0.7rem] uppercase tracking-[0.12em] sm:tracking-[0.2em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
                 style={{ background: C.ink, color: C.cream, outlineColor: C.sage }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = C.sage; e.currentTarget.style.color = C.card; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = C.ink; e.currentTarget.style.color = C.cream; }}
