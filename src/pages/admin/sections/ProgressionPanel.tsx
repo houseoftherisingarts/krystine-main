@@ -171,7 +171,7 @@ const ProgressionPanel: React.FC<{ formationId: string }> = ({ formationId }) =>
                   </td>
                   {estVata && (
                     <td className="py-3 pr-4 text-xs" style={{ color: sem?.couleur.encre }}>
-                      {sem ? `${sem.roman} · ${sem.sens.fr}` : <span className="text-[#293027]/35 dark:text-white/35">—</span>}
+                      {sem ? `${sem.rang === 0 ? 'Introduction' : `Semaine ${sem.rang}`} · ${sem.sens.fr}` : <span className="text-[#293027]/35 dark:text-white/35">—</span>}
                     </td>
                   )}
                   <td className="py-3 pr-4 text-xs text-[#293027]/60 dark:text-white/55">

@@ -30,6 +30,35 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-09-30',
+    titre: "Vata prend sa forme : une seule version, une bannière simple, une page de vente complète",
+    intro: "Toute la journée a servi à finir le Programme Vata, de la page de vente jusqu'aux courriels. Vata n'a plus qu'une seule version de ses titres de semaines, partout.",
+    etapes: [
+      { texte: "Une seule version des titres de semaines de Vata, celle du cours : « Introduction · Préparer votre espace », puis « Semaine 1 · Le souffle » jusqu'à « Semaine 7 · La présence ». Elle s'affiche maintenant aussi dans la chronologie de la page de vente, dans la liste des leçons de l'admin, dans la progression des membres et dans la fenêtre de bravo.", ou: '/cours/vata', libelle: 'Le cours Vata' },
+      { texte: "La bannière du cours est devenue simple : un vert olive qui s'éclaircit, le titre fin « SAISON VATA », la phrase « Apaiser le mental, un sens à la fois » et le grand sceau vert avec votre signature.", ou: '/cours/vata', libelle: 'Le cours Vata' },
+      "Le mot « seuil » a disparu du site. L'introduction de Vata s'appelle « Préparer votre espace », celle de Santé Parfaite « Bienvenue ».",
+      "Dans chaque leçon, une colonne « À télécharger » montre les documents de la semaine avec l'aperçu de leur couverture.",
+      "Le lecteur audio reprend chaque capsule là où elle a été laissée et s'affiche sur l'écran verrouillé du téléphone.",
+      { texte: "La page de vente est revue selon vos décisions : un seul bouton « Commencer la saison Vata », des titres plus courts, votre devise sous votre nom, le tarif de lancement jusqu'au 1er novembre (puis 497 $ tout seul), la garantie cœur léger de 15 jours et des questions fréquentes à jour.", ou: '/vata', libelle: 'La page de vente' },
+      { texte: "La série de 8 courriels de Vata est écrite en brouillon, de l'accueil à la fin de la saison. Elle reste éteinte jusqu'à votre accord. On la trouve dans le bouton « Séquence » de Vata.", ou: '/admin/formations', libelle: 'Formations' },
+      { texte: "L'Infolettre s'ouvre sur vos lettres générales. Les lettres des séquences ont leur onglet, « Courriels automatisés », dans une barre de filtres plus visible.", ou: '/admin/infolettre', libelle: 'Infolettre' },
+      "Un rappel est posé dans votre agenda le 30 octobre pour décider du prix de Vata après le lancement.",
+    ],
+  },
+  {
+    date: '2026-09-29',
+    titre: "Vata en goutte-à-goutte, le Foyer sans date",
+    intro: "Le travail du matin était resté sur un ancien dossier de l'ordinateur. Il est maintenant en ligne, avec le goutte-à-goutte de Vata.",
+    etapes: [
+      { texte: "Vata s'ouvre une semaine à la fois : l'introduction et la semaine 1 dès l'achat, puis une semaine de plus tous les 7 jours. Les anciennes clientes et les accès à vie gardent tout ouvert.", ou: '/cours/vata', libelle: 'Le cours Vata' },
+      "Les cartes des semaines sont numérotées dans l'ordre, quatre par ligne, avec un cadenas sur les semaines à venir.",
+      { texte: "Le Foyer n'affiche plus la date du 1er octobre : « Ouverture à venir », et la liste d'attente reste ouverte.", ou: '/foyer', libelle: 'Le Foyer' },
+      { texte: "La liste d'attente d'Expérience Origine 2 dit « Le parcours signature · douze semaines avec Krystine St-Laurent ».", ou: '/liste-attente?programme=origine2', libelle: "Liste d'attente" },
+      "Un achat fait avec un code promo à 100 % ouvre maintenant bien l'accès, ce qui permet l'achat test.",
+      { texte: "Chaque formation a un bouton « Séquence » qui montre ses courriels automatiques, étape par étape.", ou: '/admin/formations', libelle: 'Formations' },
+    ],
+  },
+  {
     date: '2026-09-28',
     titre: "Le premier portrait de vos lectrices et des formulaires plus lisibles",
     intro: "Douze heures après la lettre du dimanche, les premiers profils se dessinent. La page Formulaires s'ouvre maintenant sur une vue d'ensemble plutôt qu'une longue liste.",

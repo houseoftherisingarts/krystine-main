@@ -59,15 +59,17 @@ const SYSTEMS: Array<[string, string, React.ComponentType<{ size?: number; weigh
   ["La maintenance d'actif", "Votre corps est votre capital le plus précieux. Des rituels simples et puissants remettent de l'huile dans les rouages (sommeil, digestion, chaleur) sans alourdir votre quotidien.", Drop],
 ];
 
+// Les titres des semaines sont ceux du cours (src/pages/vata/semaines.ts), une
+// seule version partout (Krystine, 30 sept. 2026).
 const PHASES = [
   ['Préparer votre espace', "Avant de ralentir, il faut se sentir en sécurité. Nous préparons votre espace pour que votre corps s'autorise enfin à déposer les armes."],
-  ["Le souffle qui ancre", "L'air pour calmer l'air. Le geste invisible qui stoppe le tourbillon mental en quelques secondes, même au milieu du chaos."],
-  ['Le luxe du silence', "Protéger vos oreilles. Comment fermer les portes de l'ouïe pour offrir à votre système nerveux le calme dont il a soif."],
-  ['Le repos du regard', 'Déposer ses yeux. Libérer votre vision de la fatigue des écrans pour retrouver une clarté que vous croyiez perdue.'],
-  ["L'accès direct", "Le secret de l'odorat. Utiliser les essences pour « hacker » votre stress et changer d'état d'esprit en une seule inspiration."],
-  ['La chaleur intérieure', 'Le réconfort du goût. Les rituels gourmands et les aliments stratégiques qui réchauffent le corps et calment les turbulences.'],
-  ['Le cocon de soie', "L'onction du toucher. L'art de l'huile chaude pour recréer une protection autour de vous et ne plus vous sentir à vif."],
-  ['La force tranquille', "L'autonomie totale. Vous repartez habitée par une nouvelle présence et un système d'auto-régulation que vous posséderez pour toujours."],
+  ['Le souffle', "L'air pour calmer l'air. Le geste invisible qui stoppe le tourbillon mental en quelques secondes, même au milieu du chaos."],
+  ["L'ouïe", "Protéger vos oreilles. Comment fermer les portes de l'ouïe pour offrir à votre système nerveux le calme dont il a soif."],
+  ['Le regard', 'Déposer ses yeux. Libérer votre vision de la fatigue des écrans pour retrouver une clarté que vous croyiez perdue.'],
+  ["L'odorat", "Le secret de l'odorat. Utiliser les essences pour « hacker » votre stress et changer d'état d'esprit en une seule inspiration."],
+  ['Le goût', 'Le réconfort du goût. Les rituels gourmands et les aliments stratégiques qui réchauffent le corps et calment les turbulences.'],
+  ['Le toucher', "L'onction du toucher. L'art de l'huile chaude pour recréer une protection autour de vous et ne plus vous sentir à vif."],
+  ['La présence', "L'autonomie totale. Vous repartez habitée par une nouvelle présence et un système d'auto-régulation que vous posséderez pour toujours."],
 ];
 
 // Le tarif de lancement tient jusqu'au 1er novembre 2026 inclus (Krystine,

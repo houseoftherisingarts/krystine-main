@@ -13,6 +13,7 @@ import { Card } from '../primitives';
 // (privé) et la leçon apparaît immédiatement dans le lecteur.
 import { SEMAINES } from '../../origine2/semaines';
 import ProgressionPanel from './ProgressionPanel';
+import { FORMATION_VATA, SEMAINES_VATA, rangDeModule as rangVata } from '../../vata/semaines';
 import SequenceFormationPanel from './SequenceFormationPanel';
 const MOIS_PORTES = ['', 'septembre', 'octobre', 'novembre', 'decembre', 'janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout'];
 const ICONE_LECON: Record<Lecon['type'], string> = {
@@ -243,7 +244,12 @@ export const LeconsPanel: React.FC<{ formationId: string }> = ({ formationId }) 
               <i className={`fa-solid ${ICONE_LECON[l.type] || 'fa-file'} w-4 text-[#8B4A2F]`} />
               <span className="min-w-0 flex-1 truncate text-[#293027] dark:text-white">
                 {i + 1}. {l.titre}
-                {l.moduleNom && <span className="ml-2 rounded-full bg-[#BA7B39]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#8B4A2F]">{l.moduleNom}</span>}
+                {l.moduleNom && <span className="ml-2 rounded-full bg-[#BA7B39]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#8B4A2F]" title={l.moduleNom}>{(() => {
+                  // Vata : le même titre de semaine que dans le cours (Krystine, 30 sept. 2026).
+                  if (formationId !== FORMATION_VATA) return l.moduleNom;
+                  const s = SEMAINES_VATA[rangVata(l.moduleNom)];
+                  return s ? `${s.rang === 0 ? 'Introduction' : `Semaine ${s.rang}`} · ${s.sens.fr}` : l.moduleNom;
+                })()}</span>}
                 {l.mois && <span className="ml-1 text-[10px] uppercase tracking-wider text-[#38403a]/40 dark:text-white/40"><i className="fa-solid fa-door-closed mr-1" />{l.mois}</span>}
               </span>
               {/* Le verdict du bot d'import 
