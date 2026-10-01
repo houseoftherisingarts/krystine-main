@@ -3785,5 +3785,22 @@
       "public/infolettre/massage-visage-gestes.jpg",
       "public/infolettre/quiz-dosha-elements.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-01T21:30:34.946Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "55fdf42d",
+    "message": "Page du quiz (/quiz) : la vidéo du quiz dosha INSPIRATA sous le titre; image du Sérum Défripant d'automne pour l'infolettre",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/serum-defripant-automne.jpg",
+      "public/quiz/quiz-dosha-poster.jpg",
+      "public/quiz/quiz-dosha.mp4",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
