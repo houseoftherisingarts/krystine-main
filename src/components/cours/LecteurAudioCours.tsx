@@ -43,9 +43,43 @@ interface Props {
   lang: 'FR' | 'EN';
   onFin?: () => void;
   onSuivante?: () => void;
+  /** « creme » : habillage clair pour la page de vente. Par défaut, l'apparence sombre de l'espace de cours. */
+  variante?: 'sombre' | 'creme';
 }
 
-const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, lang, onFin, onSuivante }) => {
+// Les deux habillages. « sombre » est exactement celui de l'espace de cours.
+const HABITS = {
+  sombre: {
+    boite: 'border-[#BA7B39]/25 bg-[#151d19]/95 shadow-[0_18px_50px_-20px_rgba(20,19,17,0.85)] backdrop-blur-md',
+    lecture: 'bg-[#BA7B39] text-[#151d19] hover:bg-[#d9a05b]',
+    ligne: 'flex items-baseline justify-between gap-3',
+    rangee: '', commandes: '',
+    titre: 'truncate text-[#EEE7DB]',
+    temps: 'text-[#EEE7DB]/55', tempsTotal: 'text-[#EEE7DB]/30',
+    secondaire: 'text-[#EEE7DB]/70 hover:bg-white/10 hover:text-[#EEE7DB]',
+    soustitre: 'text-[#d9a05b]/70', erreur: 'text-[#EEE7DB]/80',
+    pochette: 'border-[#BA7B39]/30',
+    barrePassee: '#BA7B39', barreAVenir: 'rgba(238,231,219,0.28)',
+  },
+  creme: {
+    boite: 'border-[rgba(156,122,68,0.45)] bg-[#faf6ee] shadow-[0_18px_44px_-28px_rgba(28,23,18,0.35)]',
+    lecture: 'bg-[#3f4a27] text-[#faf6ee] hover:bg-[#606d39]',
+    // Au téléphone, le titre prend toute la ligne (jamais tronqué) et le temps passe dessous.
+    // et les commandes descendent sur leur propre rangée, pour laisser la largeur à l'onde.
+    rangee: 'flex-wrap sm:flex-nowrap',
+    commandes: 'w-full justify-end border-t border-[rgba(156,122,68,0.25)] pt-1.5 sm:w-auto sm:border-0 sm:pt-0',
+    ligne: 'flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3',
+    titre: 'leading-snug text-[#1c1712]',
+    temps: 'text-[#1c1712]/60', tempsTotal: 'text-[#1c1712]/40',
+    secondaire: 'text-[#1c1712]/65 hover:bg-[#1c1712]/[0.06] hover:text-[#1c1712]',
+    soustitre: 'text-[#7d6330]', erreur: 'text-[#1c1712]/80',
+    pochette: 'border-[rgba(156,122,68,0.45)]',
+    barrePassee: '#9c7a44', barreAVenir: 'rgba(28,23,18,0.18)',
+  },
+} as const;
+
+const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, lang, onFin, onSuivante, variante = 'sombre' }) => {
+  const habit = HABITS[variante];
   const audio = useRef<HTMLAudioElement | null>(null);
   const toile = useRef<HTMLCanvasElement | null>(null);
   const [joue, setJoue] = useState(false);
@@ -126,7 +160,7 @@ const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, l
         const proche = joue && Math.abs(i / BARRES - avancement) < 0.03;
         const pulsation = proche ? 1 + 0.28 * Math.sin(brut / 6 + i) : 1;
         const h = Math.max(2, onde[i] * H * 0.86 * pulsation);
-        ctx.fillStyle = passee ? '#BA7B39' : 'rgba(238,231,219,0.28)';
+        ctx.fillStyle = passee ? habit.barrePassee : habit.barreAVenir;
         ctx.beginPath();
         const x = i * pas + (pas - largeur) / 2;
         const y = (H - h) / 2;
@@ -141,13 +175,13 @@ const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, l
     const boucle = () => { dessiner(); id = requestAnimationFrame(boucle); };
     id = requestAnimationFrame(boucle);
     return () => cancelAnimationFrame(id);
-  }, [onde, avancement, joue]);
+  }, [onde, avancement, joue, habit]);
 
   const bouton = 'flex items-center justify-center rounded-full transition-colors';
 
   return (
     <div className="pointer-events-none sticky bottom-3 z-40 mt-6 px-1">
-      <div className="pointer-events-auto flex items-center gap-3 rounded-[18px] border border-[#BA7B39]/25 bg-[#151d19]/95 px-3 py-2.5 shadow-[0_18px_50px_-20px_rgba(20,19,17,0.85)] backdrop-blur-md sm:gap-4 sm:px-4">
+      <div className={`pointer-events-auto flex items-center gap-3 rounded-[18px] border ${habit.boite} ${habit.rangee} px-3 py-2.5 sm:gap-4 sm:px-4`}>
         <audio
           ref={audio}
           src={url}
@@ -170,33 +204,33 @@ const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, l
         />
 
         {pochette && (
-          <img src={pochette} alt="" className="hidden h-14 w-14 shrink-0 rounded-[12px] border border-[#BA7B39]/30 object-cover sm:block" />
+          <img src={pochette} alt="" className={`hidden h-14 w-14 shrink-0 rounded-[12px] border ${habit.pochette} object-cover sm:block`} />
         )}
 
         <button
           type="button"
           onClick={basculer}
           aria-label={joue ? (lang === 'FR' ? 'Pause' : 'Pause') : (lang === 'FR' ? 'Écouter' : 'Play')}
-          className={`${bouton} h-11 w-11 shrink-0 bg-[#BA7B39] text-[#151d19] hover:bg-[#d9a05b]`}
+          className={`${bouton} h-11 w-11 shrink-0 ${habit.lecture}`}
         >
           <i className={`fa-solid ${joue ? 'fa-pause' : 'fa-play'} ${joue ? '' : 'ml-0.5'}`} />
         </button>
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-baseline justify-between gap-3">
-            <p className="min-w-0 truncate text-[13px] text-[#EEE7DB]">{titre}</p>
-            <p className="shrink-0 font-mono text-[11px] tabular-nums text-[#EEE7DB]/55">
-              {duree(position)} <span className="text-[#EEE7DB]/30">/ {duree(longueur)}</span>
+          <div className={habit.ligne}>
+            <p className={`min-w-0 text-[13px] ${habit.titre}`}>{titre}</p>
+            <p className={`shrink-0 font-mono text-[11px] tabular-nums ${habit.temps}`}>
+              {duree(position)} <span className={habit.tempsTotal}>/ {duree(longueur)}</span>
             </p>
           </div>
           <div onClick={pointer} className="mt-1 cursor-pointer" role="presentation">
             <canvas ref={toile} className="h-8 w-full sm:h-9" />
           </div>
           {soustitre && (
-            <p className="mt-0.5 hidden text-[10px] font-bold uppercase tracking-[0.22em] text-[#d9a05b]/70 sm:block">{soustitre}</p>
+            <p className={`mt-0.5 hidden text-[10px] font-bold uppercase tracking-[0.22em] ${habit.soustitre} sm:block`}>{soustitre}</p>
           )}
           {erreur && (
-            <p className="mt-1 text-[12px] leading-snug text-[#EEE7DB]/80">
+            <p className={`mt-1 text-[12px] leading-snug ${habit.erreur}`}>
               {lang === 'FR'
                 ? <>Cette capsule ne se charge pas. Rechargez la page, et si cela persiste, écrivez-nous : <a className="underline" href="mailto:teamksl@inspiratanature.com">teamksl@inspiratanature.com</a></>
                 : <>This capsule won’t load. Reload the page, and if it persists, write to us: <a className="underline" href="mailto:teamksl@inspiratanature.com">teamksl@inspiratanature.com</a></>}
@@ -204,25 +238,25 @@ const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, l
           )}
         </div>
 
-        <div className="flex shrink-0 items-center gap-1">
+        <div className={`flex shrink-0 items-center gap-1 ${habit.commandes}`}>
           <button type="button" onClick={() => sauter(-15)} aria-label="-15 s"
-            className={`${bouton} h-9 w-9 text-[#EEE7DB]/70 hover:bg-white/10 hover:text-[#EEE7DB]`}>
+            className={`${bouton} h-9 w-9 ${habit.secondaire}`}>
             <i className="fa-solid fa-rotate-left text-[13px]" />
           </button>
           <button type="button" onClick={() => sauter(30)} aria-label="+30 s"
-            className={`${bouton} h-9 w-9 text-[#EEE7DB]/70 hover:bg-white/10 hover:text-[#EEE7DB]`}>
+            className={`${bouton} h-9 w-9 ${habit.secondaire}`}>
             <i className="fa-solid fa-rotate-right text-[13px]" />
           </button>
           <button
             type="button"
             onClick={() => setVitesse(v => VITESSES[(VITESSES.indexOf(v) + 1) % VITESSES.length])}
-            className={`${bouton} h-9 min-w-[2.6rem] px-2 font-mono text-[11px] tabular-nums text-[#EEE7DB]/70 hover:bg-white/10 hover:text-[#EEE7DB]`}
+            className={`${bouton} h-9 min-w-[2.6rem] px-2 font-mono text-[11px] tabular-nums ${habit.secondaire}`}
           >
             {vitesse}×
           </button>
           {onSuivante && (
             <button type="button" onClick={onSuivante} aria-label={lang === 'FR' ? 'Leçon suivante' : 'Next lesson'}
-              className={`${bouton} hidden h-9 w-9 text-[#EEE7DB]/70 hover:bg-white/10 hover:text-[#EEE7DB] sm:flex`}>
+              className={`${bouton} hidden h-9 w-9 ${habit.secondaire} sm:flex`}>
               <i className="fa-solid fa-forward-step text-[13px]" />
             </button>
           )}

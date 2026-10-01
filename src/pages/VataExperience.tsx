@@ -14,8 +14,9 @@ import LecteurAudioCours from '../components/cours/LecteurAudioCours';
  * checkout Kajabi, ancres #parcours / #tarifs.
  */
 
-const ease = [0.22, 1, 0.36, 1] as const;
-const SPRING = { type: 'spring' as const, stiffness: 220, damping: 24, mass: 0.8 };
+// La courbe maison, sans rebond (cubic-bezier(.16,.8,.24,1)) et la durée d'apparition.
+const ease = [0.16, 0.8, 0.24, 1] as const;
+const APPEAR = 1.1;
 
 // VATA Essentiel se vend et se suit ici même (Stripe + leçons natives, 50 leçons
 // du produit Kajabi du 17 juillet 2024). Un seul palier depuis septembre 2026 :
@@ -41,6 +42,11 @@ const C = {
 };
 
 const hairline = 'rgba(28,23,18,0.14)';
+
+// Deux sections du même fond crème qui se suivent : leurs marges ne s'additionnent
+// plus (vide de 200 à 300 px relevé le 1er oct. 2026). Le haut de la seconde se resserre.
+const PT_COUTURE = 'pt-6 lg:pt-[4.5rem] pb-[clamp(3.75rem,11vh,9rem)]';
+const PB_COUTURE = 'pt-[clamp(3.75rem,11vh,9rem)] pb-[clamp(2.5rem,7vh,5rem)]';
 
 /* ════════════════════════ Contenu (copie préservée) ════════════════════════ */
 
@@ -137,7 +143,7 @@ const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: 
       initial={reduce ? { opacity: 1 } : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.95, ease, delay }}
+      transition={{ duration: APPEAR, ease, delay }}
     >
       {children}
     </motion.div>
@@ -197,7 +203,7 @@ const WindLines: React.FC<{ className?: string }> = ({ className = '' }) => {
           style={{ opacity: o }}
           initial={reduce ? false : { pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ duration: 1.9, ease, delay }}
+          transition={{ duration: 1.2, ease, delay }}
         />
       ))}
     </svg>
@@ -207,13 +213,14 @@ const WindLines: React.FC<{ className?: string }> = ({ className = '' }) => {
 /* En-tête de chapitre : numéro romain géant + kicker + titre + lede */
 const ChapterHead: React.FC<{ no: string; kicker: string; title: string; lede?: string; className?: string }> = ({ no, kicker, title, lede, className = '' }) => (
   <Reveal className={className}>
-    <div className="flex items-start gap-[clamp(1.25rem,2.5vw,2.25rem)]">
-      <span aria-hidden className="v2-serif font-light leading-[0.85] text-[clamp(4rem,8vw,7rem)] select-none" style={{ color: 'rgba(96,109,57,0.55)' }}>
+    {/* Au téléphone, le chiffre romain passe au-dessus pour laisser toute la largeur au titre. */}
+    <div className="flex flex-col items-start gap-3 sm:flex-row sm:gap-[clamp(1.25rem,2.5vw,2.25rem)]">
+      <span aria-hidden className="v2-serif font-light leading-[0.85] text-[2.75rem] sm:text-[clamp(4rem,8vw,7rem)] select-none" style={{ color: 'rgba(96,109,57,0.55)' }}>
         {no}
       </span>
-      <div className="pt-[0.4em]">
+      <div className="min-w-0 sm:pt-[0.4em]">
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>{kicker}</p>
-        <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.45rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>{title}</h2>
+        <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>{title}</h2>
         {lede && (
           <p className="mt-5 v2-serif text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[46ch]" style={{ color: C.inkSoft }}>{lede}</p>
         )}
@@ -228,15 +235,17 @@ const Medallion: React.FC<{ Icon: React.ComponentType<{ size?: number; weight?: 
   const reduce = useReducedMotion();
   return (
     <motion.span
-      className="inline-grid place-items-center rounded-full will-change-transform"
-      style={{ background: C.sage, color: C.card, width: size, height: size }}
-      initial={reduce ? false : { scale: 0.4, rotate: -12, opacity: 0 }}
-      whileInView={{ scale: 1, rotate: 0, opacity: 1 }}
-      whileHover={reduce ? undefined : { scale: 1.09, rotate: -4 }}
+      className="inline-block shrink-0"
+      style={{ width: size, height: size }}
+      initial={reduce ? false : { opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: true, amount: 0.6 }}
-      transition={SPRING}
+      transition={{ duration: APPEAR, ease }}
     >
-      <Icon size={Math.round(size * 0.44)} weight="light" />
+      {/* La rotation au survol vit en CSS (.v2-medal), souris seulement. */}
+      <span className="v2-medal grid h-full w-full place-items-center rounded-full" style={{ background: C.sage, color: C.card }}>
+        <Icon size={Math.round(size * 0.44)} weight="light" />
+      </span>
     </motion.span>
   );
 };
@@ -260,7 +269,7 @@ const Exergue: React.FC<{ children: string }> = ({ children }) => {
           <motion.span
             key={i}
             className="inline-block will-change-transform"
-            variants={{ hidden: reduce ? { opacity: 1 } : { opacity: 0, y: 14 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } } }}
+            variants={{ hidden: reduce ? { opacity: 1 } : { opacity: 0, y: 14 }, show: { opacity: 1, y: 0, transition: { duration: APPEAR, ease } } }}
           >
             {w}{i < words.length - 1 ? ' ' : ''}
           </motion.span>
@@ -332,7 +341,9 @@ const CoverFan: React.FC = () => {
 
 /* ════════════════════════ Couverture typographique ════════════════════════ */
 
-const Cover: React.FC = () => (
+const Cover: React.FC = () => {
+  const reduce = useReducedMotion();
+  return (
   <header className="relative w-full min-h-screen flex flex-col px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(6.5rem,12vh,9rem)] pb-[clamp(1.5rem,4vh,3rem)]">
     {/* Ligne d'édition */}
     <Reveal y={10}>
@@ -348,7 +359,7 @@ const Cover: React.FC = () => (
 
       <div className="relative flex items-center gap-5 mb-8">
         <Medallion Icon={Wind} size={46} />
-        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Expérience Ayurveda · Formation audio · 7 semaines</p>
+        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Expérience Ayurveda · Formation audio · 7&nbsp;semaines</p>
       </div>
 
       <h1 className="relative v2-serif font-light leading-[0.98] text-[clamp(2.1rem,5.6vw,5.4rem)]" style={{ color: C.ink }}>
@@ -396,17 +407,18 @@ const Cover: React.FC = () => (
       className="border-t"
       style={{ borderColor: hairline }}
     >
-      <div className="grid grid-cols-2 md:grid-cols-5">
+      {/* Au téléphone : deux colonnes serrées, chaque intitulé sur une seule ligne. */}
+      <div className="grid grid-cols-2 gap-x-4 py-2 md:grid-cols-5 md:gap-x-0 md:py-0">
         {TOC.map(([no, label, href], i) => (
           <motion.a
             key={label}
             href={href}
-            variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.8, ease } } }}
-            className={`group flex items-baseline gap-3 py-5 pr-4 min-h-[44px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] ${i > 0 ? 'md:border-l md:pl-6' : ''}`}
+            variants={{ hidden: reduce ? { opacity: 1 } : { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: APPEAR, ease } } }}
+            className={`group flex items-center md:items-baseline gap-2.5 md:gap-3 py-1 md:py-5 md:pr-4 min-h-[44px] whitespace-nowrap focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] ${i > 0 ? 'md:border-l md:pl-6' : ''}`}
             style={{ borderColor: hairline, outlineColor: C.sage }}
           >
-            <span className="v2-serif font-light text-[1.35rem] leading-none transition-colors duration-300" style={{ color: C.sageInk }}>{no}</span>
-            <span className="text-[0.62rem] uppercase tracking-[0.24em] transition-transform duration-300 group-hover:translate-x-1" style={{ color: C.ink }}>{label}</span>
+            <span className="v2-serif font-light text-[1.1rem] md:text-[1.35rem] leading-none transition-colors duration-300" style={{ color: C.sageInk }}>{no}</span>
+            <span className="text-[0.6rem] md:text-[0.62rem] uppercase tracking-[0.16em] md:tracking-[0.24em] transition-transform duration-300 group-hover:translate-x-1" style={{ color: C.ink }}>{label}</span>
           </motion.a>
         ))}
       </div>
@@ -416,7 +428,8 @@ const Cover: React.FC = () => (
       </div>
     </motion.nav>
   </header>
-);
+  );
+};
 
 /* ════════════════════════ Ella · la lectrice qui se reconnaît ════════════════════════ */
 // Ella, l'avatar principal de Krystine (entrepreneure, 45-55 ans), fil du tome 3.
@@ -439,6 +452,7 @@ const Ella: React.FC = () => (
 /* ════════════════════════ Chapitre I · Les signaux ════════════════════════ */
 
 const Signals: React.FC = () => {
+  const reduce = useReducedMotion();
   const [coches, setCoches] = useState<boolean[]>(() => SIGNALS.map(() => false));
   const n = coches.filter(Boolean).length;
   const reponse = n === 0
@@ -447,7 +461,7 @@ const Signals: React.FC = () => {
       ? 'Un premier signe. Vata commence à se faire entendre : c\'est le bon moment pour lui offrir des repères.'
       : 'Le vent intérieur est en turbulence. Vata vous invite à ralentir, et ce programme a été pensé pour ce moment-là.';
   return (
-  <section id="signaux" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24">
+  <section id="signaux" className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PT_COUTURE} scroll-mt-24`}>
     <div className="grid gap-y-12 lg:grid-cols-[0.85fr_1.15fr] gap-x-[clamp(3rem,6vw,6rem)] items-start">
       <div className="lg:sticky lg:top-28">
         <ChapterHead
@@ -466,8 +480,8 @@ const Signals: React.FC = () => {
                 type="button"
                 aria-pressed={coches[i]}
                 onClick={() => setCoches(c => c.map((v, j) => (j === i ? !v : v)))}
-                className="group grid w-full grid-cols-[2.5rem_1fr] md:grid-cols-[3.25rem_0.9fr_1.1fr] gap-x-6 gap-y-1.5 items-baseline py-7 text-left transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
-                style={{ outlineColor: C.sage, background: coches[i] ? C.sageTint : 'transparent' }}
+                className="group grid w-full grid-cols-[2.5rem_1fr] md:grid-cols-[3.25rem_0.9fr_1.1fr] gap-x-6 gap-y-1.5 items-baseline py-7 pl-3 pr-3 md:pl-4 md:pr-5 text-left active:scale-[0.99] motion-reduce:active:scale-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+                style={{ outlineColor: C.sage, background: coches[i] ? C.sageTint : 'transparent', transition: 'background-color .3s cubic-bezier(.16,.8,.24,1), transform .14s cubic-bezier(.16,.8,.24,1)' }}
               >
                 <span
                   aria-hidden
@@ -486,12 +500,33 @@ const Signals: React.FC = () => {
           {n === 0 ? 'Touchez un portrait pour dire oui' : `${n} sur ${SIGNALS.length} vous ressemble${n > 1 ? 'nt' : ''}`}
         </p>
         <Reveal className="mt-8">
-          <p className="v2-serif text-[clamp(1.2rem,2.2vw,1.7rem)] leading-snug max-w-[38ch]" style={{ color: C.sageInk }}>
-            {reponse || 'Ces signes sont le langage du corps. Vata vous invite à ralentir.'}
-          </p>
-          {n >= 2 && (
-            <div className="mt-6"><UnderlineCta label="Voir le parcours" onClick={() => document.getElementById('parcours')?.scrollIntoView({ behavior: 'smooth' })} /></div>
-          )}
+          {/* La phrase de réponse et le lien arrivent en fondu doux, sans saut. */}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.p
+              key={reponse || 'repos'}
+              className="v2-serif text-[clamp(1.2rem,2.2vw,1.7rem)] leading-snug max-w-[38ch]"
+              style={{ color: C.sageInk }}
+              initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4 }}
+              transition={{ duration: 0.6, ease }}
+            >
+              {reponse || 'Ces signes sont le langage du corps. Vata vous invite à ralentir.'}
+            </motion.p>
+          </AnimatePresence>
+          <AnimatePresence initial={false}>
+            {n >= 2 && (
+              <motion.div
+                className="mt-6"
+                initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6, ease }}
+              >
+                <UnderlineCta label="Voir le parcours" onClick={() => document.getElementById('parcours')?.scrollIntoView({ behavior: 'smooth' })} />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Reveal>
       </div>
     </div>
@@ -515,7 +550,7 @@ const Method: React.FC = () => (
       {SYSTEMS.map(([t, d, Icon], i) => (
         <Reveal key={t} delay={i * 0.06}>
           <article
-            className="grid md:grid-cols-[auto_0.85fr_1.15fr] gap-x-[clamp(2rem,4.5vw,4.5rem)] gap-y-5 items-start py-[clamp(2.25rem,5vh,3.5rem)] border-b"
+            className="grid md:grid-cols-[clamp(9.5rem,12vw,11rem)_0.85fr_1.15fr] gap-x-[clamp(2rem,4.5vw,4.5rem)] gap-y-5 items-start py-[clamp(2.25rem,5vh,3.5rem)] border-b"
             style={{ borderColor: 'rgba(28,23,18,0.16)' }}
           >
             <div className="flex items-center gap-5">
@@ -541,7 +576,7 @@ const Journey: React.FC = () => {
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.78', 'end 0.55'] });
   return (
-    <section id="parcours" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24">
+    <section id="parcours" className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PT_COUTURE} scroll-mt-24`}>
       <ChapterHead
         no="III"
         kicker="L'art de l'ancrage réel"
@@ -599,7 +634,7 @@ const Journey: React.FC = () => {
 /* ════════════════════════ Écoutez un extrait ════════════════════════ */
 
 const Extrait: React.FC = () => (
-  <section id="extrait" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24" style={{ background: C.cream }}>
+  <section id="extrait" className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PB_COUTURE} scroll-mt-24`} style={{ background: C.cream }}>
     <div className="grid gap-y-10 lg:grid-cols-[0.8fr_1.2fr] gap-x-[clamp(3rem,6vw,6rem)] items-center">
       <Reveal>
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Écoutez un extrait</p>
@@ -609,7 +644,7 @@ const Extrait: React.FC = () => (
         <DrawRule className="mt-6 w-20" />
       </Reveal>
       <Reveal delay={0.1} className="min-w-0">
-        <p className="mb-3 whitespace-nowrap text-[0.6rem] uppercase tracking-[0.14em] sm:hidden" style={{ color: 'rgba(28,23,18,0.62)' }}>Introduction au programme · 1 min 48</p>
+        <p className="mb-3 whitespace-nowrap text-[0.56rem] uppercase tracking-[0.1em] sm:hidden" style={{ color: 'rgba(28,23,18,0.62)' }}>Introduction au programme · 1 min 48</p>
         <div className="[&>div]:static [&>div]:mt-0 [&>div]:px-0">
           <LecteurAudioCours
             url="/vata/extrait-introduction.mp3"
@@ -617,6 +652,7 @@ const Extrait: React.FC = () => (
             soustitre="Krystine St-Laurent"
             pochette="/vata/couvertures/guide.jpg"
             lang="FR"
+            variante="creme"
           />
         </div>
       </Reveal>
@@ -641,7 +677,7 @@ const Received: React.FC = () => {
         <div>
           <Reveal>
             <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Le matériel du programme</p>
-            <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.45rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>Ce que vous recevez</h2>
+            <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>Ce que vous recevez</h2>
             <DrawRule className="mt-6 w-20" />
           </Reveal>
           <div className="mt-10 border-t" style={{ borderColor: 'rgba(28,23,18,0.16)' }}>
@@ -726,7 +762,7 @@ const Tiers: React.FC = () => (
               <button
                 type="button"
                 onClick={go}
-                className="group mt-8 inline-flex items-center justify-center gap-2.5 w-full px-4 py-4 min-h-[44px] text-[0.7rem] uppercase tracking-[0.12em] sm:tracking-[0.2em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+                className="group mt-8 inline-flex items-center justify-center gap-2 sm:gap-2.5 w-full px-3 sm:px-4 py-4 min-h-[44px] whitespace-nowrap text-[0.66rem] sm:text-[0.7rem] uppercase tracking-[0.06em] sm:tracking-[0.2em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
                 style={{ background: C.ink, color: C.cream, outlineColor: C.sage }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = C.sage; e.currentTarget.style.color = C.card; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = C.ink; e.currentTarget.style.color = C.cream; }}
@@ -758,12 +794,13 @@ const Tiers: React.FC = () => (
 /* ════════════════════════ Témoignages · le courrier ════════════════════════ */
 
 const Testimonials: React.FC = () => {
+  const reduce = useReducedMotion();
   const [lead, ...rest] = TESTIMONIALS;
   return (
     <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)]" style={{ background: C.panel }}>
       <Reveal className="mb-[clamp(2.5rem,6vh,4rem)]">
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Elles l'ont vécu</p>
-        <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.45rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>
+        <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>
           Témoignages de la communauté
         </h2>
       </Reveal>
@@ -785,17 +822,18 @@ const Testimonials: React.FC = () => {
       </Reveal>
 
       <motion.div
-        initial="hidden"
+        initial={reduce ? false : 'hidden'}
         whileInView="show"
         viewport={{ once: true, amount: 0.2 }}
         variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}
         className="mt-[clamp(2.5rem,6vh,4rem)] grid md:grid-cols-2 gap-x-[clamp(3rem,6vw,6rem)] gap-y-10"
       >
-        {rest.map((t) => (
+        {rest.map((t, i) => (
           <motion.figure
             key={t.who}
-            variants={{ hidden: { opacity: 0, y: 26 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease } } }}
-            className="border-t pt-6"
+            variants={{ hidden: { opacity: 0, y: 26 }, show: { opacity: 1, y: 0, transition: { duration: APPEAR, ease } } }}
+            // Nombre impair de cartes : la dernière prend toute la rangée, sans case vide.
+            className={`border-t pt-6 ${rest.length % 2 === 1 && i === rest.length - 1 ? 'md:col-span-2' : ''}`}
             style={{ borderColor: 'rgba(28,23,18,0.16)' }}
           >
             <blockquote className="v2-serif font-light text-[1.1rem] leading-[1.55]" style={{ color: C.inkSoft }}>
@@ -817,7 +855,7 @@ const Testimonials: React.FC = () => {
 const Bio: React.FC = () => (
   // La biographie de l'accueil, mot pour mot (Krystine, 30 sept. 2026), avec
   // sa photo, puis la Trilogie d'Origine.
-  <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)]">
+  <section className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PB_COUTURE}`}>
     <div className="grid gap-y-10 lg:grid-cols-[1.1fr_0.9fr] gap-x-[clamp(3rem,7vw,7rem)] items-center">
       <Reveal>
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.brassInk }}>Qui vous accompagne</p>
@@ -867,7 +905,12 @@ const FAQItem: React.FC<{ q: string; a: string; open: boolean; onClick: () => vo
     </button>
     <AnimatePresence initial={false}>
       {open && (
-        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.35, ease }} className="overflow-hidden">
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: 'auto', opacity: 1, transition: { duration: 0.45, ease } }}
+          exit={{ height: 0, opacity: 0, transition: { duration: 0.25, ease } }}
+          className="overflow-hidden"
+        >
           <p className="pb-7 text-[0.95rem] leading-[1.8] max-w-[62ch]" style={{ color: C.inkSoft }}>{a}</p>
         </motion.div>
       )}
@@ -880,7 +923,7 @@ const Faq: React.FC = () => {
   const mid = Math.ceil(FAQS.length / 2);
   const columns = [FAQS.slice(0, mid), FAQS.slice(mid)];
   return (
-    <section id="faq" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24">
+    <section id="faq" className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PT_COUTURE} scroll-mt-24`}>
       <ChapterHead no="V" kicker="Vos questions" title="Questions fréquentes" className="mb-[clamp(2.5rem,6vh,4rem)]" />
       <div className="grid lg:grid-cols-2 gap-x-[clamp(3rem,6vw,6rem)] items-start border-t" style={{ borderColor: hairline }}>
         {columns.map((col, c) => (
@@ -917,7 +960,7 @@ const BackCover: React.FC = () => (
           <button
             type="button"
             onClick={go}
-            className="group inline-flex items-center gap-2.5 px-9 py-4 min-h-[44px] text-[0.72rem] uppercase tracking-[0.2em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+            className="group inline-flex items-center gap-2 sm:gap-2.5 px-5 sm:px-9 py-4 min-h-[44px] whitespace-nowrap text-[0.68rem] sm:text-[0.72rem] uppercase tracking-[0.08em] sm:tracking-[0.2em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
             style={{ background: C.cream, color: C.dark, outlineColor: C.sage }}
             onMouseEnter={(e) => { e.currentTarget.style.background = C.sage; e.currentTarget.style.color = C.card; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = C.cream; e.currentTarget.style.color = C.dark; }}
@@ -962,8 +1005,10 @@ const VataExperience: React.FC = () => (
         padding-right: 0.12em; color: #55602f;
       }
       @keyframes v2cue { 0%,100% { transform: translateY(0); opacity:.45 } 50% { transform: translateY(8px); opacity:1 } }
-      .v2-cue { animation: v2cue 2.4s cubic-bezier(0.22,1,0.36,1) infinite; }
-      @media (prefers-reduced-motion: reduce) { .v2-cue { animation: none; } }
+      .v2-cue { animation: v2cue 2.4s cubic-bezier(.16,.8,.24,1) 3; }
+      .v2-medal { transition: transform .6s cubic-bezier(.16,.8,.24,1); }
+      @media (hover: hover) and (pointer: fine) { .v2-medal:hover { transform: scale(1.09) rotate(-4deg); } }
+      @media (prefers-reduced-motion: reduce) { .v2-cue { animation: none; } .v2-medal:hover { transform: none; } }
     `}</style>
 
     <div className="v2-grain" aria-hidden />
