@@ -3700,5 +3700,19 @@
       "public/infolettre/entete-inspirata-logo.jpg",
       "public/infolettre/entete-inspirata.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-01T20:47:26.871Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "8a748392",
+    "message": "Infolettre : bannière INSPIRATA AYURVEDA en teinte d'automne",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/entete-inspirata.jpg"
+    ]
   }
 ]
