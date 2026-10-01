@@ -978,9 +978,9 @@ const Faq: React.FC = () => {
 /* ════════════════════════ Quatrième de couverture (moment sombre unique) ════════════════════════ */
 
 const BackCover: React.FC = () => (
-  <section className="relative w-full overflow-hidden" style={{ background: C.dark }}>
+  <section className="relative w-full overflow-hidden" style={{ background: 'linear-gradient(160deg, #3d4033 0%, #4a4d3c 55%, #5a5d47 100%)' }}>
     <span className="absolute inset-x-0 top-0 h-px z-10" style={{ background: C.sage }} aria-hidden />
-    <Atmosphere light="50% 8%" strength={0.85} />
+    <Atmosphere light="50% 8%" strength={0.35} />
     <div className="relative px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] text-center">
       <Reveal>
         <p className="flex items-center justify-center gap-3 text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: '#c6cf9b' }}>
