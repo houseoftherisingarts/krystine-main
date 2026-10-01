@@ -3500,5 +3500,19 @@
       "public/assets-manifest.json",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T02:08:47.672Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "33d2b29f",
+    "message": "Page de vente Vata : les 9 signaux regroupés en trois portraits (le mental, le sommeil et l'énergie, le corps) que la lectrice coche pour dire oui, avec une réponse qui s'adapte",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
