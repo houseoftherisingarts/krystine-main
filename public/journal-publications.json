@@ -3910,5 +3910,23 @@
       "public/quiz/quiz-dosha-ouverture.mp4",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T22:38:06.319Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d24d59bc",
+    "message": "Page du quiz (/quiz) : les pictos aquarelle de Krystine remplacent les icônes (trois natures, résultat, répartition), et les couleurs suivent les siennes : Vata vert, Pitta rouge, Kapha bleu",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/quiz-dosha-pictos.jpg",
+      "public/quiz/pictos/kapha.png",
+      "public/quiz/pictos/pitta.png",
+      "public/quiz/pictos/vata.png",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
