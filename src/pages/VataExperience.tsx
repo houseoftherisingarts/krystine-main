@@ -38,15 +38,24 @@ const C = {
   sage: '#606d39',
   sageInk: '#3f4a27',
   sageTint: '#e6e8cf',
+  // Sauge vivant pour les GRANDS éléments décoratifs (chiffres, médaillons, filets).
+  sageVif: '#74824a',
+  // Bandes vert olive pleine largeur, comme la bannière du cours (1er oct. 2026).
+  paper: '#F7F3EA',
+  ivory: '#EEE7DB',
+  brassLight: '#d9a05b',
+  sagePale: '#dfe3c2',
   dark: '#34241a',
 };
 
+// Dégradé de la bannière du cours : olive foncé vers olive plus pâle.
+const OLIVE = 'linear-gradient(165deg, #3d4033 0%, #4a4d3c 55%, #5a5d47 100%)';
+
 const hairline = 'rgba(28,23,18,0.14)';
 
-// Deux sections du même fond crème qui se suivent : leurs marges ne s'additionnent
-// plus (vide de 200 à 300 px relevé le 1er oct. 2026). Le haut de la seconde se resserre.
-const PT_COUTURE = 'pt-6 lg:pt-[4.5rem] pb-[clamp(3.75rem,11vh,9rem)]';
-const PB_COUTURE = 'pt-[clamp(3.75rem,11vh,9rem)] pb-[clamp(2.5rem,7vh,5rem)]';
+// Rythme crème (1er oct. 2026) : les sections alternent crème et crème chaud
+// (C.panel), avec deux bandes olive. Chaque section garde le même espacement resserré.
+const PY = 'py-[clamp(3.25rem,9vh,7rem)]';
 
 /* ════════════════════════ Contenu (copie préservée) ════════════════════════ */
 
@@ -168,7 +177,7 @@ const MaskLine: React.FC<{ children: React.ReactNode; delay?: number }> = ({ chi
 };
 
 /* Filet qui se trace au scroll */
-const DrawRule: React.FC<{ className?: string; color?: string; delay?: number }> = ({ className = '', color = C.sage, delay = 0.1 }) => {
+const DrawRule: React.FC<{ className?: string; color?: string; delay?: number }> = ({ className = '', color = C.sageVif, delay = 0.1 }) => {
   const reduce = useReducedMotion();
   return (
     <motion.div
@@ -197,7 +206,7 @@ const WindLines: React.FC<{ className?: string }> = ({ className = '' }) => {
         <motion.path
           key={d}
           d={d}
-          stroke={C.sage}
+          stroke={C.sageVif}
           strokeWidth="1.1"
           strokeLinecap="round"
           style={{ opacity: o }}
@@ -211,20 +220,20 @@ const WindLines: React.FC<{ className?: string }> = ({ className = '' }) => {
 };
 
 /* En-tête de chapitre : numéro romain géant + kicker + titre + lede */
-const ChapterHead: React.FC<{ no: string; kicker: string; title: string; lede?: string; className?: string }> = ({ no, kicker, title, lede, className = '' }) => (
+const ChapterHead: React.FC<{ no: string; kicker: string; title: string; lede?: string; className?: string; olive?: boolean }> = ({ no, kicker, title, lede, className = '', olive }) => (
   <Reveal className={className}>
     {/* Au téléphone, le chiffre romain passe au-dessus pour laisser toute la largeur au titre. */}
     <div className="flex flex-col items-start gap-3 sm:flex-row sm:gap-[clamp(1.25rem,2.5vw,2.25rem)]">
-      <span aria-hidden className="v2-serif font-light leading-[0.85] text-[2.75rem] sm:text-[clamp(4rem,8vw,7rem)] select-none" style={{ color: 'rgba(96,109,57,0.55)' }}>
+      <span aria-hidden className="v2-serif font-light leading-[0.85] text-[2.75rem] sm:text-[clamp(4rem,8vw,7rem)] select-none" style={{ color: olive ? C.brassLight : C.sageVif }}>
         {no}
       </span>
       <div className="min-w-0 sm:pt-[0.4em]">
-        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>{kicker}</p>
-        <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>{title}</h2>
+        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: olive ? C.ivory : C.sageInk }}>{kicker}</p>
+        <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)]" style={{ color: olive ? C.paper : C.ink }}>{title}</h2>
         {lede && (
-          <p className="mt-5 v2-serif text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[46ch]" style={{ color: C.inkSoft }}>{lede}</p>
+          <p className="mt-5 v2-serif text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[46ch]" style={{ color: olive ? C.ivory : C.inkSoft }}>{lede}</p>
         )}
-        <DrawRule className="mt-6 w-20" />
+        <DrawRule className="mt-6 w-20" color={olive ? C.brassLight : C.sageVif} />
       </div>
     </div>
   </Reveal>
@@ -243,7 +252,7 @@ const Medallion: React.FC<{ Icon: React.ComponentType<{ size?: number; weight?: 
       transition={{ duration: APPEAR, ease }}
     >
       {/* La rotation au survol vit en CSS (.v2-medal), souris seulement. */}
-      <span className="v2-medal grid h-full w-full place-items-center rounded-full" style={{ background: C.sage, color: C.card }}>
+      <span className="v2-medal grid h-full w-full place-items-center rounded-full" style={{ background: C.sageVif, color: C.card }}>
         <Icon size={Math.round(size * 0.44)} weight="light" />
       </span>
     </motion.span>
@@ -410,12 +419,13 @@ const Cover: React.FC = () => {
 // (Krystine, 30 sept. 2026).
 
 const Ella: React.FC = () => (
-  <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(2rem,6vh,4rem)]">
+  <section className={`relative w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PY}`} style={{ background: OLIVE }}>
     <Reveal>
       <div className="mx-auto max-w-[760px]">
-        <div className="space-y-6 v2-serif text-[clamp(1.2rem,2vw,1.55rem)] leading-[1.55]" style={{ color: C.ink }}>
+        <DrawRule className="mb-8 w-20" color={C.brassLight} />
+        <div className="space-y-6 v2-serif text-[clamp(1.2rem,2vw,1.55rem)] leading-[1.55]" style={{ color: C.paper }}>
           <p>Il est 3 h du matin. Elle a les mains glacées, et le mental déjà au travail : la réunion de demain, la liste qui s'allonge, ce qu'elle a oublié de dire. Le jour, elle tient tout, les gens, les projets, les décisions. Le soir, le corps lâche avant elle.</p>
-          <p style={{ color: C.sageInk }}>Ce qu'elle ressent porte un nom : Vata qui s'emballe. Et il s'apaise lorsque nous lui offrons les bons repères, un sens à la fois.</p>
+          <p style={{ color: C.sagePale }}>Ce qu'elle ressent porte un nom : Vata qui s'emballe. Et il s'apaise lorsque nous lui offrons les bons repères, un sens à la fois.</p>
         </div>
       </div>
     </Reveal>
@@ -434,7 +444,7 @@ const Signals: React.FC = () => {
       ? 'Un premier signe. Vata commence à se faire entendre : c\'est le bon moment pour lui offrir des repères.'
       : 'Le vent intérieur est en turbulence. Vata vous invite à ralentir, et ce programme a été pensé pour ce moment-là.';
   return (
-  <section id="signaux" className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PT_COUTURE} scroll-mt-24`}>
+  <section id="signaux" className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PY} scroll-mt-24`}>
     <div className="grid gap-y-12 lg:grid-cols-[0.85fr_1.15fr] gap-x-[clamp(3rem,6vw,6rem)] items-start">
       <div className="lg:sticky lg:top-28">
         <ChapterHead
@@ -510,7 +520,7 @@ const Signals: React.FC = () => {
 /* ════════════════════════ Chapitre II · La méthode ════════════════════════ */
 
 const Method: React.FC = () => (
-  <section id="methode" className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24" style={{ background: C.panel }}>
+  <section id="methode" className={`relative w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PY} scroll-mt-24`} style={{ background: C.panel }}>
     <span className="absolute inset-x-0 top-0 h-px" style={{ background: 'rgba(116,130,74,0.45)' }} aria-hidden />
     <ChapterHead
       no="II"
@@ -528,7 +538,7 @@ const Method: React.FC = () => (
           >
             <div className="flex items-center gap-5">
               <Medallion Icon={Icon} />
-              <span aria-hidden className="v2-serif font-light text-[clamp(2.4rem,4vw,3.4rem)] leading-none tabular-nums" style={{ color: '#606d39' }}>
+              <span aria-hidden className="v2-serif font-light text-[clamp(2.4rem,4vw,3.4rem)] leading-none tabular-nums" style={{ color: C.sageVif }}>
                 {String(i + 1).padStart(2, '0')}
               </span>
             </div>
@@ -549,7 +559,8 @@ const Journey: React.FC = () => {
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.78', 'end 0.55'] });
   return (
-    <section id="parcours" className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PT_COUTURE} scroll-mt-24`}>
+    <section id="parcours" className={`relative w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PY} scroll-mt-24`} style={{ background: C.panel }}>
+      <span className="absolute inset-x-0 top-0 h-px" style={{ background: 'rgba(116,130,74,0.45)' }} aria-hidden />
       <ChapterHead
         no="III"
         kicker="L'art de l'ancrage réel"
@@ -563,7 +574,7 @@ const Journey: React.FC = () => {
         <div className="pointer-events-none absolute top-1 bottom-1 left-[6px] lg:left-1/2 w-px -translate-x-1/2" style={{ background: 'rgba(116,130,74,0.22)' }} aria-hidden />
         <motion.div
           className="pointer-events-none absolute top-1 bottom-1 left-[6px] lg:left-1/2 w-px -translate-x-1/2 origin-top"
-          style={reduce ? { background: C.sage } : { background: C.sage, scaleY: scrollYProgress }}
+          style={reduce ? { background: C.sageVif } : { background: C.sageVif, scaleY: scrollYProgress }}
           aria-hidden
         />
 
@@ -573,7 +584,7 @@ const Journey: React.FC = () => {
             <div key={t} className="relative grid lg:grid-cols-2 gap-x-[clamp(4rem,8vw,8rem)]">
               <span
                 className="absolute left-[6px] lg:left-1/2 top-[2.9rem] h-2.5 w-2.5 -translate-x-1/2 rounded-full"
-                style={{ background: C.sage, boxShadow: `0 0 0 5px ${C.cream}` }}
+                style={{ background: C.sageVif, boxShadow: `0 0 0 5px ${C.panel}` }}
                 aria-hidden
               />
               <Reveal
@@ -586,7 +597,7 @@ const Journey: React.FC = () => {
                 </div>
                 <div className="min-w-0 flex-1">
                 <div className={`flex items-baseline gap-4 ${leftSide ? 'lg:justify-end' : ''}`}>
-                  <span aria-hidden className="v2-serif font-light text-[clamp(1.9rem,3.2vw,2.8rem)] leading-none tabular-nums" style={{ color: '#606d39' }}>
+                  <span aria-hidden className="v2-serif font-light text-[clamp(1.9rem,3.2vw,2.8rem)] leading-none tabular-nums" style={{ color: C.sageVif }}>
                     {String(i).padStart(2, '0')}
                   </span>
                   <span className="text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: C.sageInk }}>{phaseLabel(i)}</span>
@@ -600,6 +611,7 @@ const Journey: React.FC = () => {
           );
         })}
       </div>
+      <span className="absolute inset-x-0 bottom-0 h-px" style={{ background: 'rgba(116,130,74,0.45)' }} aria-hidden />
     </section>
   );
 };
@@ -607,7 +619,7 @@ const Journey: React.FC = () => {
 /* ════════════════════════ Écoutez un extrait ════════════════════════ */
 
 const Extrait: React.FC = () => (
-  <section id="extrait" className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PB_COUTURE} scroll-mt-24`} style={{ background: C.cream }}>
+  <section id="extrait" className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PY} scroll-mt-24`} style={{ background: C.cream }}>
     <div className="grid gap-y-10 lg:grid-cols-[0.8fr_1.2fr] gap-x-[clamp(3rem,6vw,6rem)] items-center">
       <Reveal>
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Écoutez un extrait</p>
@@ -641,12 +653,58 @@ const REPERES: Array<[string, string]> = [
   ['204', 'Le guide complet de 204 pages, offert à la fin du parcours'],
 ];
 
-const Received: React.FC = () => {
-  const [tout, setTout] = useState(false);
+// Éventail de couvertures sans titre autour du guide (1er oct. 2026) : la couleur
+// des documents, sans remettre leur table des matières.
+const FAN_RECU: Array<[string, number, string, string]> = [
+  // id, rotation, décalage horizontal (% de la carte), descente
+  ['img-006', -17, '-118%', '9%'],
+  ['img-012', -11, '-80%', '4%'],
+  ['img-029', -5, '-41%', '1%'],
+  ['img-041', 5, '41%', '1%'],
+  ['img-046', 11, '80%', '4%'],
+  ['img-026', 17, '118%', '9%'],
+];
+
+const ReceivedFan: React.FC = () => {
+  const reduce = useReducedMotion();
   return (
-    <section id="contenu" className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24" style={{ background: C.panel }}>
-      <span className="absolute inset-x-0 top-0 h-px" style={{ background: 'rgba(116,130,74,0.45)' }} aria-hidden />
-      <div className="grid gap-y-12 lg:grid-cols-[minmax(0,1fr)_clamp(220px,24vw,340px)] gap-x-[clamp(3rem,6vw,6rem)] items-end">
+    <motion.div
+      aria-hidden
+      className="relative mx-auto w-full max-w-[520px] aspect-[1/0.66] select-none"
+      initial={reduce ? false : 'hidden'}
+      whileInView="show"
+      viewport={{ once: true, amount: 0.35 }}
+    >
+      {FAN_RECU.map(([id, rot, x, y], i) => (
+        <div key={id} className="absolute bottom-[4%] left-1/2 w-[25%] -ml-[12.5%]" style={{ zIndex: 6 - Math.abs(i - 2.5) * 2 }}>
+          <motion.div
+            className="origin-bottom will-change-transform"
+            variants={{
+              hidden: { rotate: 0, x: '0%', y: 24, opacity: 0 },
+              show: { rotate: rot, x, y, opacity: 1, transition: { duration: APPEAR, ease, delay: 0.1 + Math.abs(i - 2.5) * 0.06 } },
+            }}
+            style={reduce ? { rotate: rot, x, y } : undefined}
+          >
+            <Doc id={id} />
+          </motion.div>
+        </div>
+      ))}
+      <div className="absolute bottom-[4%] left-1/2 w-[31%] -ml-[15.5%]" style={{ zIndex: 10 }}>
+        <motion.div
+          className="will-change-transform"
+          variants={{ hidden: { y: 24, opacity: 0 }, show: { y: 0, opacity: 1, transition: { duration: APPEAR, ease } } }}
+        >
+          <Doc id="guide" />
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+};
+
+const Received: React.FC = () => {
+  return (
+    <section id="contenu" className={`relative w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PY} scroll-mt-24`} style={{ background: C.cream }}>
+      <div className="grid gap-y-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-x-[clamp(3rem,6vw,6rem)] items-center">
         <div>
           <Reveal>
             <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Le matériel du programme</p>
@@ -657,17 +715,17 @@ const Received: React.FC = () => {
             {REPERES.map(([n, l], i) => (
               <Reveal key={n} delay={i * 0.06}>
                 <div className="grid grid-cols-[4.5rem_1fr] sm:grid-cols-[6.5rem_1fr] items-baseline gap-x-5 border-b py-5" style={{ borderColor: 'rgba(28,23,18,0.16)' }}>
-                  <span className="v2-serif font-light text-[clamp(2rem,3.4vw,2.8rem)] leading-none tabular-nums" style={{ color: C.sageInk }}>{n}</span>
+                  <span className="v2-serif font-light text-[clamp(2rem,3.4vw,2.8rem)] leading-none tabular-nums" style={{ color: C.sageVif }}>{n}</span>
                   <span className="text-[0.95rem] leading-[1.6]" style={{ color: C.inkSoft }}>{l}</span>
                 </div>
               </Reveal>
             ))}
           </div>
         </div>
-        <Reveal delay={0.12} className="mx-auto w-[min(50vw,210px)] sm:w-[260px] lg:w-full">
+        <Reveal delay={0.12} className="w-full min-w-0">
           <figure>
-            <Doc id="guide" />
-            <figcaption className="mt-4 text-center whitespace-nowrap text-[0.58rem] sm:text-[0.62rem] uppercase tracking-[0.16em] sm:tracking-[0.24em]" style={{ color: 'rgba(28,23,18,0.62)' }}>
+            <ReceivedFan />
+            <figcaption className="mt-5 text-center whitespace-nowrap text-[0.58rem] sm:text-[0.62rem] uppercase tracking-[0.16em] sm:tracking-[0.24em]" style={{ color: 'rgba(28,23,18,0.62)' }}>
               Le guide complet · 204 pages
             </figcaption>
           </figure>
@@ -676,7 +734,6 @@ const Received: React.FC = () => {
 
       {/* Le mur des 27 couvertures est retiré (Krystine, 30 sept. 2026) : leurs
           titres formaient la table des matières du programme. */}
-      <span className="absolute inset-x-0 bottom-0 h-px" style={{ background: 'rgba(116,130,74,0.45)' }} aria-hidden />
     </section>
   );
 };
@@ -684,8 +741,11 @@ const Received: React.FC = () => {
 /* ════════════════════════ Chapitre IV · Planche tarifs ════════════════════════ */
 
 const Tiers: React.FC = () => (
-  <section id="tarifs" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24">
+  <section id="tarifs" className="w-full scroll-mt-24">
+    {/* Ouverture de l'offre sur la bande olive; la carte de prix chevauche le bas de la bande. */}
+    <div className="w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(3.25rem,9vh,7rem)] pb-[clamp(7rem,16vh,10rem)]" style={{ background: OLIVE }}>
     <ChapterHead
+      olive
       no="IV"
       kicker="L'offre · Saison Vata"
       title="Près de 40 ans, réunis en sept semaines"
@@ -693,23 +753,25 @@ const Tiers: React.FC = () => (
       className="mb-[clamp(2.5rem,6vh,4rem)]"
     />
     {/* Ce qu'elle y gagne, avant la liste (Krystine, 30 sept. 2026 : « whats in it for them ») */}
-    <div className="mx-auto mb-[clamp(3rem,7vh,5rem)] grid max-w-[1180px] gap-6 md:grid-cols-3">
+    <div className="mx-auto grid max-w-[1180px] gap-6 md:grid-cols-3">
       {[
         ['Un mental apaisé', 'même lorsque tout s\'accélère autour.'],
         ['Un corps réchauffé et nourri', 'au lieu de crispé et desséché.'],
         ['Des repères qui vous appartiennent', 'à reprendre chaque fois que Vata se réveille.'],
       ].map(([t, d], i) => (
         <Reveal key={t} delay={0.08 * i}>
-          <div className="border-t pt-5" style={{ borderColor: C.sageInk }}>
-            <p className="v2-serif font-light text-[clamp(1.35rem,2vw,1.7rem)] leading-[1.15]" style={{ color: C.ink }}>{t}</p>
-            <p className="mt-2 text-[0.95rem] leading-[1.6]" style={{ color: C.inkSoft }}>{d}</p>
+          <div className="border-t pt-5" style={{ borderColor: C.brassLight }}>
+            <p className="v2-serif font-light text-[clamp(1.35rem,2vw,1.7rem)] leading-[1.15]" style={{ color: C.paper }}>{t}</p>
+            <p className="mt-2 text-[0.95rem] leading-[1.6]" style={{ color: C.ivory }}>{d}</p>
           </div>
         </Reveal>
       ))}
     </div>
+    </div>
+    <div className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(3.25rem,9vh,7rem)] -mt-[clamp(4.5rem,11vh,6.5rem)]">
     <Reveal>
-      <div className="relative mx-auto max-w-[1180px] border" style={{ borderColor: 'rgba(156,122,68,0.45)', background: C.card }}>
-        <span className="absolute inset-x-0 top-0 h-[3px]" style={{ background: C.sage }} aria-hidden />
+      <div className="relative mx-auto max-w-[1180px] border" style={{ borderColor: 'rgba(156,122,68,0.45)', background: C.card, boxShadow: '0 30px 60px -30px rgba(28,23,18,0.45)' }}>
+        <span className="absolute inset-x-0 top-0 h-[3px]" style={{ background: C.sageVif }} aria-hidden />
         <div className="grid">
           {TIERS.map((tier, i) => (
             <article
@@ -761,6 +823,7 @@ const Tiers: React.FC = () => (
         </div>
       </div>
     </Reveal>
+    </div>
   </section>
 );
 
@@ -770,7 +833,7 @@ const Testimonials: React.FC = () => {
   const reduce = useReducedMotion();
   const [lead, ...rest] = TESTIMONIALS;
   return (
-    <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)]" style={{ background: C.panel }}>
+    <section className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PY}`} style={{ background: C.panel }}>
       <Reveal className="mb-[clamp(2.5rem,6vh,4rem)]">
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Elles l'ont vécu</p>
         <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>
@@ -828,7 +891,7 @@ const Testimonials: React.FC = () => {
 const Bio: React.FC = () => (
   // La biographie de l'accueil, mot pour mot (Krystine, 30 sept. 2026), avec
   // sa photo, puis la Trilogie d'Origine.
-  <section className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PB_COUTURE}`}>
+  <section className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PY}`}>
     <div className="grid gap-y-10 lg:grid-cols-[1.1fr_0.9fr] gap-x-[clamp(3rem,7vw,7rem)] items-center">
       <Reveal>
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.brassInk }}>Qui vous accompagne</p>
@@ -896,7 +959,7 @@ const Faq: React.FC = () => {
   const mid = Math.ceil(FAQS.length / 2);
   const columns = [FAQS.slice(0, mid), FAQS.slice(mid)];
   return (
-    <section id="faq" className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PT_COUTURE} scroll-mt-24`}>
+    <section id="faq" className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PY} scroll-mt-24`} style={{ background: C.panel }}>
       <ChapterHead no="V" kicker="Vos questions" title="Questions fréquentes" className="mb-[clamp(2.5rem,6vh,4rem)]" />
       <div className="grid lg:grid-cols-2 gap-x-[clamp(3rem,6vw,6rem)] items-start border-t" style={{ borderColor: hairline }}>
         {columns.map((col, c) => (

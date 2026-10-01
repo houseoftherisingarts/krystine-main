@@ -3599,5 +3599,19 @@
       "src/components/cours/LecteurAudioCours.tsx",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T11:20:24.422Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a9c632fc",
+    "message": "Page de vente Vata : le sommaire du haut est retiré",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
