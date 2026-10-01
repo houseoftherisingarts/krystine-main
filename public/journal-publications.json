@@ -3670,5 +3670,20 @@
       "public/assets-manifest.json",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T20:30:22.576Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c428e64c",
+    "message": "Image de la bannière de l'infolettre Défripant et Kapha (/infolettre/entete-defripant-kapha.jpg), et page Vata : nouveau titre « Un sens à la fois » au chapitre du parcours",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/entete-defripant-kapha.jpg",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
