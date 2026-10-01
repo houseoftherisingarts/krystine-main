@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T21:20:19.760Z",
+  "generatedAt": "2026-10-01T21:23:47.990Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1437,6 +1437,13 @@
       "size": 5023056
     },
     {
+      "path": "/infolettre/massage-visage-gestes.jpg",
+      "name": "massage-visage-gestes.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 89949
+    },
+    {
       "path": "/infolettre/picto-visage-cheveux.png",
       "name": "picto-visage-cheveux.png",
       "folder": "infolettre",
@@ -1456,6 +1463,13 @@
       "folder": "infolettre",
       "kind": "image",
       "size": 45698
+    },
+    {
+      "path": "/infolettre/quiz-dosha-elements.jpg",
+      "name": "quiz-dosha-elements.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 165951
     },
     {
       "path": "/infolettre/signature-krystine.png",
