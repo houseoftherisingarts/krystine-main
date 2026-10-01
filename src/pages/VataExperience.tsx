@@ -57,9 +57,9 @@ const SIGNALS = [
 ];
 
 const SYSTEMS: Array<[string, string, React.ComponentType<{ size?: number; weight?: any }>]> = [
-  ["Le système d'ancrage", "Avant de calmer le mental, il faut sécuriser le corps. Le souffle devient votre bouton d'arrêt, accessible en trente secondes, n'importe où. Reprendre les rênes de votre énergie, même en période de turbulences.", Anchor],
-  ['Le filtrage sensoriel', "Vos cinq sens sont actuellement des portes grandes ouvertes. Nous allons poser des filtres, un sens à la fois, pour que le bruit extérieur cesse de vous envahir et que la clarté mentale revienne.", Ear],
-  ["La maintenance d'actif", "Votre corps est votre capital le plus précieux. Des rituels simples et puissants remettent de l'huile dans les rouages (sommeil, digestion, chaleur) sans alourdir votre quotidien.", Drop],
+  ["Le système d'ancrage", "Sécuriser le corps avant de calmer le mental. Le souffle devient votre bouton d'arrêt : trente secondes, n'importe où.", Anchor],
+  ["Le filtrage sensoriel", "Vos cinq sens sont des portes grandes ouvertes. Nous posons des filtres, un sens à la fois, et l'apaisement revient.", Ear],
+  ["Les gestes qui réchauffent", "L'huile chaude, les épices, les aliments qui réchauffent. Le corps se nourrit, le mental se pose.", Drop],
 ];
 
 // Les titres des semaines sont ceux du cours (src/pages/vata/semaines.ts), une
