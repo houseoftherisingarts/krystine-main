@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  getEvents, getBlogPosts, getBookingRequests, countNewsletterSubscribers, countNewsletterCommunaute, getDoshaResults,
+  getEvents, getBlogPosts, getBookingRequests, countNewsletterSubscribers, countNewsletterCommunaute, getDoshaResults, getNewsletters,
   type EventDoc, type BlogPost, type BookingRequest, type DoshaResult,
 } from '../../../firebase/firestore';
 import { useEditMode } from '../../../contexts/EditModeContext';
@@ -25,6 +25,8 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
   const [nbAbonnes, setNbAbonnes] = useState(0);
   const [communaute, setCommunaute] = useState<CommunauteStats | null>(null);
   const [dosha, setDosha] = useState<DoshaResult[]>([]);
+  // La dernière infolettre partie, pour compter les quiz faits depuis (Krystine, 1er oct. 2026).
+  const [derniereLettre, setDerniereLettre] = useState<{ subject: string; at: number } | null>(null);
   const [enDirect, setEnDirect] = useState<PresenceRow[]>([]);
   const [ecoutes, setEcoutes] = useState<{ total: number; parEpisode: { episodeId: string; episodeTitle: string; n: number }[] }>({ total: 0, parEpisode: [] });
 
@@ -48,6 +50,12 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
     countNewsletterSubscribers().then(setNbAbonnes).catch(() => {});
     countNewsletterCommunaute().then(setCommunaute).catch(() => {});
     getDoshaResults().then(setDosha).catch(() => {});
+    getNewsletters().then(ls => {
+      const parties = ls.filter(l => l.status === 'sent' && l.sentAt && (l as any).role !== 'sequence')
+        .map(l => ({ subject: l.subject, at: l.sentAt!.toMillis() }))
+        .sort((a, b) => b.at - a.at);
+      setDerniereLettre(parties[0] || null);
+    }).catch(() => {});
   }, []);
 
   // Écoutes du podcast : présence en direct + trace permanente.
@@ -72,7 +80,8 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
     { label: 'Articles publiés', value: posts.filter(p => p.isPublished !== false).length, icon: 'fa-pen-nib', accent: 'text-[#4A7C9D]', section: 'blog' },
     { label: 'Demandes nouvelles', value: newBookings, icon: 'fa-inbox', accent: 'text-[#BC4A3C]', section: 'bookings', hint: bookings.length > 0 ? `${bookings.length} au total` : undefined },
     { label: 'Infolettre', value: communaute?.statuts.active ?? nbAbonnes, icon: 'fa-envelope', accent: 'text-[#2D4A3E]', section: 'newsletter', hint: communaute ? `${communaute.total.toLocaleString('fr-CA')} contacts au total` : undefined },
-    { label: 'Quiz Dosha', value: dosha.length, icon: 'fa-circle-nodes', accent: 'text-[#8F9779]', section: 'dosha' },
+    { label: 'Quiz Dosha', value: dosha.length, icon: 'fa-circle-nodes', accent: 'text-[#8F9779]', section: 'dosha',
+      hint: derniereLettre ? `+${dosha.filter(r => (r.createdAt?.toMillis?.() ?? 0) >= derniereLettre.at).length} depuis l’infolettre du ${new Date(derniereLettre.at).toLocaleDateString('fr-CA', { day: 'numeric', month: 'long' })}` : undefined },
   ];
 
   return (
