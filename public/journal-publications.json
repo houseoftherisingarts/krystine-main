@@ -3818,5 +3818,19 @@
       "public/quiz/quiz-dosha-banniere.mp4",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T21:45:55.047Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c3dbba91",
+    "message": "Infolettre : bannière dorée INSPIRATA AYURVEDA fournie par Krystine (/infolettre/banniere-inspirata-or.jpg)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/banniere-inspirata-or.jpg"
+    ]
   }
 ]
