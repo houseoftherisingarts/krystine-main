@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T21:05:15.410Z",
+  "generatedAt": "2026-10-01T21:09:34.712Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1428,6 +1428,13 @@
       "folder": "infolettre",
       "kind": "image",
       "size": 49768
+    },
+    {
+      "path": "/infolettre/inspirata-deux-rituels-du-matin.pdf",
+      "name": "inspirata-deux-rituels-du-matin.pdf",
+      "folder": "infolettre",
+      "kind": "document",
+      "size": 5023056
     },
     {
       "path": "/infolettre/picto-visage-mains.png",
