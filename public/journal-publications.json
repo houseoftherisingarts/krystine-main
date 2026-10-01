@@ -3893,5 +3893,22 @@
       "src/content.ts",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T22:25:32.524Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "84e73342",
+    "message": "Page du quiz (/quiz) et infolettre : les nouveaux pictos de Krystine (Vata vert, Pitta rouge, Kapha bleu) dans l'ouverture de la vidéo, sur l'affiche et dans l'image du quiz des lettres",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/quiz-dosha-pictos.jpg",
+      "public/quiz/quiz-dosha-ouverture-poster.jpg",
+      "public/quiz/quiz-dosha-ouverture.mp4",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
