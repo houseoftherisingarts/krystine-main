@@ -3728,5 +3728,19 @@
       "public/assets-manifest.json",
       "public/infolettre/picto-visage-mains.png"
     ]
+  },
+  {
+    "quand": "2026-10-01T21:09:41.914Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b28b4ace",
+    "message": "Guide PDF de deux pages INSPIRATA AYURVEDA : rituel matinal du visage (Sérum Défripant) et automassage matinal activateur (Kapha), /infolettre/inspirata-deux-rituels-du-matin.pdf",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/inspirata-deux-rituels-du-matin.pdf"
+    ]
   }
 ]
