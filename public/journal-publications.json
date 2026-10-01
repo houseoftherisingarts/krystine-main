@@ -3928,5 +3928,19 @@
       "public/quiz/pictos/vata.png",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T22:43:53.179Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "0e12560b",
+    "message": "Admin › Tableau de bord : la carte Quiz Dosha montre aussi le nombre de quiz faits depuis la dernière infolettre envoyée",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/DashboardSection.tsx"
+    ]
   }
 ]
