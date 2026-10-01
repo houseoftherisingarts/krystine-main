@@ -3542,5 +3542,19 @@
       "public/assets-manifest.json",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T02:49:31.155Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "35267373",
+    "message": "Page de vente Vata : le passage d'Ella, avant les signaux, pour que la lectrice se reconnaisse",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
