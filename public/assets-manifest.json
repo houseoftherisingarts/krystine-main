@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T15:42:24.183Z",
+  "generatedAt": "2026-10-01T20:30:15.369Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1393,6 +1393,13 @@
       "folder": "foyer/sons",
       "kind": "audio",
       "size": 3736
+    },
+    {
+      "path": "/infolettre/entete-defripant-kapha.jpg",
+      "name": "entete-defripant-kapha.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 40604
     },
     {
       "path": "/infolettre/entete-foyer.jpg",

@@ -563,9 +563,9 @@ const Journey: React.FC = () => {
       <span className="absolute inset-x-0 top-0 h-px" style={{ background: 'rgba(116,130,74,0.45)' }} aria-hidden />
       <ChapterHead
         no="III"
-        kicker="L'art de l'ancrage réel"
+        kicker="Un sens à la fois"
         title="Le parcours, étape par étape"
-        lede="Délaisser le superflu, éteindre le bruit, rebâtir votre sécurité intérieure."
+        lede="Au bout de sept semaines, lorsque le vent se lève, vous savez comment revenir à vous."
         className="mb-[clamp(3.5rem,8vh,5.5rem)]"
       />
 
