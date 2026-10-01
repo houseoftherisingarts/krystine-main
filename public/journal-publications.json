@@ -3613,5 +3613,20 @@
       "public/assets-manifest.json",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T11:40:19.995Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ca2520f4",
+    "message": "Page de vente Vata : la couleur revient (deux bandes vert olive, crème chaud en alternance, vert sauge vivant pour les grands chiffres, éventail de couvertures en couleur), sommaire retiré",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/journal-publications.json",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
