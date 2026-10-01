@@ -3770,5 +3770,20 @@
       "public/assets-manifest.json",
       "public/infolettre/picto-visage-cheveux.png"
     ]
+  },
+  {
+    "quand": "2026-10-01T21:23:55.508Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "94676c8b",
+    "message": "Infolettre : illustration du massage du visage fournie par Krystine et image de la vidéo du quiz dosha (/infolettre/massage-visage-gestes.jpg, /infolettre/quiz-dosha-elements.jpg)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/massage-visage-gestes.jpg",
+      "public/infolettre/quiz-dosha-elements.jpg"
+    ]
   }
 ]
