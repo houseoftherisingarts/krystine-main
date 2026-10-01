@@ -3444,5 +3444,19 @@
       "public/assets-manifest.json",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T00:58:10.915Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "5f00d909",
+    "message": "Page de vente Vata : promesse « Apaiser le mental, un sens à la fois », « Lorsque le mental s'emballe » pour les signaux, « Reprendre le pouvoir sur vos turbulences » pour la méthode; tous les titres tiennent sur deux lignes au téléphone",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
