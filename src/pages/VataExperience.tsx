@@ -57,22 +57,22 @@ const SIGNALS = [
 ];
 
 const SYSTEMS: Array<[string, string, React.ComponentType<{ size?: number; weight?: any }>]> = [
-  ["Le système d'ancrage", "Sécuriser le corps avant de calmer le mental. Le souffle devient votre bouton d'arrêt : trente secondes, n'importe où.", Anchor],
-  ["Le filtrage sensoriel", "Vos cinq sens sont des portes grandes ouvertes. Nous posons des filtres, un sens à la fois, et l'apaisement revient.", Ear],
+  ["Le système d'ancrage", "Sécuriser le corps avant de calmer le mental. Le souffle devient un bouton d'arrêt : trente secondes, n'importe où.", Anchor],
+  ["Le filtrage sensoriel", "Les cinq sens sont des portes grandes ouvertes. Nous posons des filtres, un sens à la fois, et l'apaisement revient.", Ear],
   ["Les gestes qui réchauffent", "L'huile chaude, les épices, les aliments qui réchauffent. Le corps se nourrit, le mental se pose.", Drop],
 ];
 
 // Les titres des semaines sont ceux du cours (src/pages/vata/semaines.ts), une
 // seule version partout (Krystine, 30 sept. 2026).
 const PHASES = [
-  ['Préparer votre espace', "Avant de ralentir, il faut se sentir en sécurité. Nous préparons votre espace pour que votre corps s'autorise enfin à déposer les armes."],
-  ['Le souffle', "L'air pour calmer l'air. Le geste invisible qui stoppe le tourbillon mental en quelques secondes, même au milieu du chaos."],
-  ["L'ouïe", "Protéger vos oreilles. Comment fermer les portes de l'ouïe pour offrir à votre système nerveux le calme dont il a soif."],
-  ['La vue', 'Déposer ses yeux. Libérer votre vision de la fatigue des écrans pour retrouver une clarté que vous croyiez perdue.'],
-  ["L'odorat", "Le secret de l'odorat. Utiliser les essences pour « hacker » votre stress et changer d'état d'esprit en une seule inspiration."],
-  ['Le goût', 'Le réconfort du goût. Les rituels gourmands et les aliments stratégiques qui réchauffent le corps et calment les turbulences.'],
-  ['Le toucher', "L'onction du toucher. L'art de l'huile chaude pour recréer une protection autour de vous et ne plus vous sentir à vif."],
-  ['La présence', "L'autonomie totale. Vous repartez habitée par une nouvelle présence et un système d'auto-régulation que vous posséderez pour toujours."],
+  ["Préparer votre espace", "Se sentir en sécurité avant de ralentir. Le corps s'autorise enfin à déposer les armes."],
+  ["Le souffle", "Le souffle pour calmer le tourbillon, en quelques secondes."],
+  ["L'ouïe", "Fermer les portes de l'ouïe et offrir au système nerveux le calme dont il a soif."],
+  ["La vue", "Reposer les yeux, loin des écrans, et retrouver une clarté que l'on croyait perdue."],
+  ["L'odorat", "Le nez nous mène : une seule inspiration, et l'état d'esprit change."],
+  ["Le goût", "Les saveurs qui réchauffent le corps et calment les turbulences."],
+  ["Le toucher", "L'huile chaude recrée une protection autour du corps, qui se sent enfin enveloppé."],
+  ["La présence", "Renverser l'effet d'un stress continu, et repartir avec des repères qui nous appartiennent."],
   ['Clore la saison', 'Un dernier mot de Krystine, et votre guide complet de 204 pages à garder et à relire.'],
 ];
 
