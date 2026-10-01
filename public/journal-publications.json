@@ -3584,5 +3584,20 @@
       "public/assets-manifest.json",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T03:15:20.702Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "405a33e1",
+    "message": "Page de vente Vata, finition Impeccable et Kowalski : haut de page compact au téléphone, espaces resserrés, lecteur de l'extrait en crème, titres plus lisibles au téléphone, boutons sur une ligne, alignements, portraits plus doux au toucher, mouvement lent et sans rebond",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/LecteurAudioCours.tsx",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
