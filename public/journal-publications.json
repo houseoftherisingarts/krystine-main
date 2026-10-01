@@ -3878,5 +3878,20 @@
       "public/assets-manifest.json",
       "src/lib/paliers.ts"
     ]
+  },
+  {
+    "quand": "2026-10-01T22:09:15.499Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "fe749c5a",
+    "message": "Page du quiz (/quiz) : textes des doshas revus (éléments cohérents Vent et Espace / Feu et Eau / Eau et Terre, présentation de l'Ayurveda, dix dimensions réelles, « geste » au lieu de « rituel », titre « Le miroir de votre nature »)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/content.ts",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
