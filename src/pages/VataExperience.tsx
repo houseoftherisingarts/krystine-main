@@ -370,7 +370,7 @@ const Cover: React.FC = () => (
         </Reveal>
         <Reveal delay={0.55} y={16} className="2xl:justify-self-end">
           <ul className="space-y-2.5">
-            {['Formation audio + matériel de support', '7 semaines + introduction', 'Automne · élément air', 'À votre rythme · accès immédiat'].map((m) => (
+            {['Formation audio + matériel de support', '7 semaines + introduction', 'Éléments air et espace', 'À votre rythme · accès immédiat'].map((m) => (
               <li key={m} className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.2em]" style={{ color: 'rgba(28,23,18,0.62)' }}>
                 <span className="h-1 w-1 rounded-full shrink-0" style={{ background: C.sage }} />
                 {m}
@@ -852,10 +852,10 @@ const BackCover: React.FC = () => (
     <div className="relative px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] text-center">
       <Reveal>
         <p className="flex items-center justify-center gap-3 text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: '#c6cf9b' }}>
-          <Wind size={15} weight="light" aria-hidden /> Saison Vata · L'automne vous attend
+          <Wind size={15} weight="light" aria-hidden /> Saison Vata · Un sens à la fois
         </p>
         <h2 className="mt-7 mx-auto v2-serif font-light leading-[1.08] text-[clamp(2.2rem,5vw,3.9rem)] max-w-[22ch]" style={{ color: C.cream }}>
-          Prête à traverser la saison autrement ?
+          Prête à apaiser le mental ?
         </h2>
         <p className="mt-7 mx-auto v2-serif text-[clamp(1.1rem,2vw,1.5rem)] leading-snug max-w-[40ch]" style={{ color: 'rgba(244,239,230,0.75)' }}>
           « Le calme se cultive pendant que le vent souffle. »
