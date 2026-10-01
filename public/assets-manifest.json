@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T20:30:15.369Z",
+  "generatedAt": "2026-10-01T20:45:53.394Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1407,6 +1407,20 @@
       "folder": "infolettre",
       "kind": "image",
       "size": 66114
+    },
+    {
+      "path": "/infolettre/entete-inspirata-logo.jpg",
+      "name": "entete-inspirata-logo.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 13351
+    },
+    {
+      "path": "/infolettre/entete-inspirata.jpg",
+      "name": "entete-inspirata.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 34517
     },
     {
       "path": "/infolettre/entete-origine.jpg",
