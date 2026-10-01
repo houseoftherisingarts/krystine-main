@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T21:18:22.756Z",
+  "generatedAt": "2026-10-01T21:20:19.760Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1435,6 +1435,13 @@
       "folder": "infolettre",
       "kind": "document",
       "size": 5023056
+    },
+    {
+      "path": "/infolettre/picto-visage-cheveux.png",
+      "name": "picto-visage-cheveux.png",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 39901
     },
     {
       "path": "/infolettre/picto-visage-gestes.png",
