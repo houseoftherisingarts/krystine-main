@@ -44,16 +44,12 @@ const hairline = 'rgba(28,23,18,0.14)';
 
 /* ════════════════════════ Contenu (copie préservée) ════════════════════════ */
 
+// Les signaux regroupés en trois portraits de Vata qui s'emballe (Krystine,
+// 30 sept. 2026 : une seule idée). La lectrice coche ceux qui lui ressemblent.
 const SIGNALS = [
-  ['La surcharge sensorielle', "Le bruit, les écrans et la lumière s'additionnent dans un environnement qui change sans arrêt. Vos sens ne ferment plus la porte."],
-  ['Le réveil de 3 h du matin', "Le corps est épuisé, mais le mental vous réveille brutalement. Impossible de redescendre."],
-  ['Le manque de focus', "Vous perdez la clarté dans vos pensées et la direction dans vos journées, avec l'impression d'être submergée par ce qui vient de l'extérieur."],
-  ['La dispersion', "Vous commencez dix tâches et n'en finissez aucune. Le fil se perd, la profondeur aussi, et le lien à ce qui compte vraiment s'effrite."],
-  ['Les repères qui bougent', "Ce qui tenait hier ne tient plus. Vous vous demandez si vos références ont besoin d'être revalidées."],
-  ["L'épuisement physique et émotionnel", "Les transitions continues l'amplifient. Le corps suit de moins en moins, et le cœur aussi."],
-  ['La peau de papier', 'La peau tiraille, le froid s\'installe et les mains restent glacées. Votre enveloppe extérieure semble trop fine pour vous protéger.'],
-  ['Le vent intérieur', "Ballonnements et irrégularité. La digestion devient laborieuse, comme si le vent s'était installé dedans."],
-  ['Le corps qui « grince »', "Raideurs et craquements. Le sentiment d'avoir perdu sa fluidité naturelle et son huile interne."],
+  ['Le mental', 'La surcharge des sens, la dispersion, le manque de focus, les repères qui bougent. Tout s\'additionne, et la clarté s\'efface.'],
+  ["Le sommeil et l'énergie", 'Le réveil de 3 h du matin, l\'épuisement physique et émotionnel. Le corps voudrait se reposer, et le mental refuse de redescendre.'],
+  ['Le corps', 'La peau qui tiraille, les mains glacées, la digestion irrégulière, les raideurs. Le corps se dessèche et se crispe.'],
 ];
 
 const SYSTEMS: Array<[string, string, React.ComponentType<{ size?: number; weight?: any }>]> = [
@@ -416,7 +412,15 @@ const Cover: React.FC = () => (
 
 /* ════════════════════════ Chapitre I · Les signaux ════════════════════════ */
 
-const Signals: React.FC = () => (
+const Signals: React.FC = () => {
+  const [coches, setCoches] = useState<boolean[]>(() => SIGNALS.map(() => false));
+  const n = coches.filter(Boolean).length;
+  const reponse = n === 0
+    ? null
+    : n === 1
+      ? 'Un premier signe. Vata commence à se faire entendre : c\'est le bon moment pour lui offrir des repères.'
+      : 'Le vent intérieur est en turbulence. Vata vous invite à ralentir, et ce programme a été pensé pour ce moment-là.';
+  return (
   <section id="signaux" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24">
     <div className="grid gap-y-12 lg:grid-cols-[0.85fr_1.15fr] gap-x-[clamp(3rem,6vw,6rem)] items-start">
       <div className="lg:sticky lg:top-28">
@@ -424,43 +428,50 @@ const Signals: React.FC = () => (
           no="I"
           kicker="Les signaux d'alerte"
           title="Lorsque le mental s'emballe"
-          lede="Nous traversons une période qui bouscule nos repères. Si plus de trois de ces signaux vous ressemblent, votre vent intérieur est en turbulence."
+          lede="Cochez les portraits qui vous ressemblent. Si deux sur trois vous parlent, le vent intérieur est en turbulence."
         />
       </div>
 
       <div>
-        <motion.ol
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.08 }}
-          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07 } } }}
-          className="border-t"
-          style={{ borderColor: hairline }}
-        >
+        <ol className="border-t" style={{ borderColor: hairline }}>
           {SIGNALS.map(([t, d], i) => (
-            <motion.li
-              key={t}
-              variants={{ hidden: { opacity: 0, y: 22 }, show: { opacity: 1, y: 0, transition: { duration: 0.85, ease } } }}
-              className="grid md:grid-cols-[3.25rem_0.9fr_1.1fr] gap-x-6 gap-y-1.5 items-baseline border-b py-6"
-              style={{ borderColor: hairline }}
-            >
-              <span aria-hidden className="v2-serif font-light text-[1.5rem] leading-none tabular-nums" style={{ color: C.sageInk }}>
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <h3 className="v2-serif font-light text-[1.3rem] leading-[1.15]" style={{ color: C.ink }}>{t}</h3>
-              <p className="text-[0.9rem] leading-[1.7]" style={{ color: C.inkSoft }}>{d}</p>
-            </motion.li>
+            <li key={t} className="border-b" style={{ borderColor: hairline }}>
+              <button
+                type="button"
+                aria-pressed={coches[i]}
+                onClick={() => setCoches(c => c.map((v, j) => (j === i ? !v : v)))}
+                className="group grid w-full grid-cols-[2.5rem_1fr] md:grid-cols-[3.25rem_0.9fr_1.1fr] gap-x-6 gap-y-1.5 items-baseline py-7 text-left transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+                style={{ outlineColor: C.sage, background: coches[i] ? C.sageTint : 'transparent' }}
+              >
+                <span
+                  aria-hidden
+                  className="mt-1 flex h-7 w-7 items-center justify-center rounded-full border-2 transition-colors duration-300 md:ml-2"
+                  style={{ borderColor: C.sageInk, background: coches[i] ? C.sageInk : 'transparent', color: C.card }}
+                >
+                  {coches[i] && <Check size={14} weight="bold" />}
+                </span>
+                <h3 className="v2-serif font-light text-[1.45rem] leading-[1.15]" style={{ color: C.ink }}>{t}</h3>
+                <p className="col-start-2 md:col-start-auto text-[0.95rem] leading-[1.7]" style={{ color: C.inkSoft }}>{d}</p>
+              </button>
+            </li>
           ))}
-        </motion.ol>
-        <Reveal className="mt-10">
+        </ol>
+        <p className="mt-4 text-[0.7rem] uppercase tracking-[0.2em]" style={{ color: C.sageInk }}>
+          {n === 0 ? 'Touchez un portrait pour dire oui' : `${n} sur ${SIGNALS.length} vous ressemble${n > 1 ? 'nt' : ''}`}
+        </p>
+        <Reveal className="mt-8">
           <p className="v2-serif text-[clamp(1.2rem,2.2vw,1.7rem)] leading-snug max-w-[38ch]" style={{ color: C.sageInk }}>
-            Ces signes sont le langage du corps. Vata vous invite à ralentir.
+            {reponse || 'Ces signes sont le langage du corps. Vata vous invite à ralentir.'}
           </p>
+          {n >= 2 && (
+            <div className="mt-6"><UnderlineCta label="Voir le parcours" onClick={() => document.getElementById('parcours')?.scrollIntoView({ behavior: 'smooth' })} /></div>
+          )}
         </Reveal>
       </div>
     </div>
   </section>
-);
+  );
+};
 
 /* ════════════════════════ Chapitre II · La méthode ════════════════════════ */
 
