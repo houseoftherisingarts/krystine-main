@@ -3742,5 +3742,19 @@
       "public/assets-manifest.json",
       "public/infolettre/inspirata-deux-rituels-du-matin.pdf"
     ]
+  },
+  {
+    "quand": "2026-10-01T21:18:29.725Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d21a2776",
+    "message": "Infolettre : nouveau picto du massage du visage, plus simple, avec les flèches des gestes (/infolettre/picto-visage-gestes.png)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/picto-visage-gestes.png"
+    ]
   }
 ]
