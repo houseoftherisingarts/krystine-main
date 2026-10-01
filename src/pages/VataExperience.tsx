@@ -68,9 +68,9 @@ const SIGNALS = [
 ];
 
 const SYSTEMS: Array<[string, string, React.ComponentType<{ size?: number; weight?: any }>]> = [
-  ["Le système d'ancrage", "Sécuriser le corps avant de calmer le mental. Le souffle devient un bouton d'arrêt : trente secondes, n'importe où.", Anchor],
-  ["Le filtrage sensoriel", "Les cinq sens sont des portes grandes ouvertes. Nous posons des filtres, un sens à la fois, et l'apaisement revient.", Ear],
-  ["Les gestes qui réchauffent", "L'huile chaude, les épices, les aliments qui réchauffent. Le corps se nourrit, et le mental s'apaise.", Drop],
+  ["Le système d'ancrage", "Le souffle d'abord, pour rappeler au corps qu'il est en sécurité, enveloppé et aimé. Une main sur le cœur, l'autre sur le ventre, l'expiration s'allonge : 4 secondes, puis 5, puis 6, puis 7.", Anchor],
+  ["Le filtrage sensoriel", "Connecter, observer, apaiser nos sens permet de se rebrancher vers le cœur. Un sens à la fois, nous apprenons à choisir ce qui entre et reste dans notre biodiversité intérieure.", Ear],
+  ["Les gestes qui réchauffent", "En sanskrit, le mot huile se dit sneha, et il signifie aussi amour. L'huile chaude, l'armoire à épices et l'eau digestive aident le corps à se réchauffer et la sécheresse à s'hydrater, et le mental s'apaise avec eux.", Drop],
 ];
 
 // Les titres des semaines sont ceux du cours (src/pages/vata/semaines.ts), une
@@ -526,7 +526,7 @@ const Method: React.FC = () => (
       no="II"
       kicker="La méthode"
       title="Reprendre le pouvoir sur vos turbulences"
-      lede="L'Ayurveda agit comme une voix bienveillante qui nous chuchote à l'oreille une sagesse éprouvée par le temps. Pas de tâches en plus : trois systèmes de régulation, invisibles dans votre journée."
+      lede="L'Ayurveda est tel un vieux grand-père qui nous prend par la main pour nous dire : « Viens, je vais te montrer le chemin du retour à la maison. » Nous y avançons une respiration à la fois, sans pression aucune."
       className="mb-[clamp(3rem,7vh,5rem)]"
     />
     <div className="border-t" style={{ borderColor: 'rgba(28,23,18,0.16)' }}>
