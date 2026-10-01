@@ -399,34 +399,7 @@ const Cover: React.FC = () => {
     </div>
 
     {/* Sommaire */}
-    <motion.nav
-      aria-label="Sommaire"
-      initial="hidden"
-      animate="show"
-      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.09, delayChildren: 0.7 } } }}
-      className="border-t"
-      style={{ borderColor: hairline }}
-    >
-      {/* Au téléphone : deux colonnes serrées, chaque intitulé sur une seule ligne. */}
-      <div className="grid grid-cols-2 gap-x-4 py-2 md:grid-cols-5 md:gap-x-0 md:py-0">
-        {TOC.map(([no, label, href], i) => (
-          <motion.a
-            key={label}
-            href={href}
-            variants={{ hidden: reduce ? { opacity: 1 } : { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: APPEAR, ease } } }}
-            className={`group flex items-center md:items-baseline gap-2.5 md:gap-3 py-1 md:py-5 md:pr-4 min-h-[44px] whitespace-nowrap focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] ${i > 0 ? 'md:border-l md:pl-6' : ''}`}
-            style={{ borderColor: hairline, outlineColor: C.sage }}
-          >
-            <span className="v2-serif font-light text-[1.1rem] md:text-[1.35rem] leading-none transition-colors duration-300" style={{ color: C.sageInk }}>{no}</span>
-            <span className="text-[0.6rem] md:text-[0.62rem] uppercase tracking-[0.16em] md:tracking-[0.24em] transition-transform duration-300 group-hover:translate-x-1" style={{ color: C.ink }}>{label}</span>
-          </motion.a>
-        ))}
-      </div>
-      <div className="flex items-center justify-between border-t pt-3.5 pb-1 text-[0.6rem] uppercase tracking-[0.28em]" style={{ borderColor: hairline, color: 'rgba(28,23,18,0.78)' }}>
-        <span className="flex items-center gap-2 v2-cue"><ArrowDown size={13} weight="regular" /> Faire défiler</span>
-        <span className="hidden sm:inline">Enraciner · Réchauffer · Apaiser</span>
-      </div>
-    </motion.nav>
+    {/* Le sommaire est retiré (Krystine, 1er oct. 2026 : pas clair) */}
   </header>
   );
 };
