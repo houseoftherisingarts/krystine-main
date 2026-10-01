@@ -26,7 +26,9 @@ export const clic = onRequest(
   async (req, res) => {
     const n = String(req.query.n || '');
     const s = String(req.query.s || '');
-    const u = String(req.query.u || '');
+    const d = String(req.query.d || '');
+    let u = String(req.query.u || '');
+    if (d && /^[A-Za-z0-9_-]{1,4000}$/.test(d)) u = Buffer.from(d, 'base64url').toString('utf8');
     let destination = ACCUEIL;
     const lettre = ID.test(n) ? await getFirestore().doc(`newsletters/${n}`).get().catch(() => null) : null;
     try {

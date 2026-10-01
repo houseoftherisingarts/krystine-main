@@ -270,7 +270,11 @@ function suivreLesClics(html: string, n: string, s: string): string {
     // {{s}} : l'identifiant de la fiche, pour les carrés de /mes-choix.
     const u = brut.replace(/&amp;/g, '&').replace(/\{\{s\}\}|%7B%7Bs%7D%7D/gi, s);
     if (/desinscription|unsubscribe|cloudfunctions\.net/i.test(u)) return tout;
-    return `href="https://www.krystinestlaurent.ca/c?n=${encodeURIComponent(n)}&amp;s=${encodeURIComponent(s)}&amp;u=${encodeURIComponent(u)}"`;
+    // La destination voyage codée (d=, base64url) : une adresse en clair dans
+    // une autre adresse fait bloquer le lien par Malwarebytes et d'autres
+    // antivirus (Krystine, 1er oct. 2026). clic.ts lit encore u= pour les lettres déjà parties.
+    const d = Buffer.from(u, 'utf8').toString('base64url');
+    return `href="https://www.krystinestlaurent.ca/c?n=${encodeURIComponent(n)}&amp;s=${encodeURIComponent(s)}&amp;d=${d}"`;
   });
 }
 
