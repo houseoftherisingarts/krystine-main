@@ -62,9 +62,9 @@ const PY = 'py-[clamp(3.25rem,9vh,7rem)]';
 // Les signaux regroupés en trois portraits de Vata qui s'emballe (Krystine,
 // 30 sept. 2026 : une seule idée). La lectrice coche ceux qui lui ressemblent.
 const SIGNALS = [
-  ['Le mental', 'La surcharge des sens, la dispersion, le manque de focus, les repères qui bougent. Tout s\'additionne, et la clarté s\'efface.'],
-  ["Le sommeil et l'énergie", 'Le réveil de 3 h du matin, l\'épuisement physique et émotionnel. Le corps voudrait se reposer, et le mental refuse de redescendre.'],
-  ['Le corps', 'La peau qui tiraille, les mains glacées, la digestion irrégulière, les raideurs. Le corps se dessèche et se crispe.'],
+  ['Le mental', 'Le mental tourbillonne dans mille et un scénarios, dont la majorité ne verront jamais le jour. La surstimulation des sens ramène le chaos à l\'intérieur, et la clarté s\'efface.'],
+  ["Le sommeil et l'énergie", 'Le réveil de 3 h du matin, lorsque les soucis de la journée restent ouverts comme de vieux fichiers. L\'épuisement s\'installe, et il devient difficile de retrouver son centre.'],
+  ['Le corps', 'Les mains glacées, la peau sèche et morne, la digestion irrégulière, et le ventre où tant de tensions se font sentir. Le corps se dessèche et demande à être réchauffé.'],
 ];
 
 const SYSTEMS: Array<[string, string, React.ComponentType<{ size?: number; weight?: any }>]> = [
@@ -424,8 +424,8 @@ const Ella: React.FC = () => (
       <div className="mx-auto max-w-[760px]">
         <DrawRule className="mb-8 w-20" color={C.brassLight} />
         <div className="space-y-6 v2-serif text-[clamp(1.2rem,2vw,1.55rem)] leading-[1.55]" style={{ color: C.paper }}>
-          <p>Il est 3 h du matin. Elle a les mains glacées, et le mental déjà au travail : la réunion de demain, la liste qui s'allonge, ce qu'elle a oublié de dire. Le jour, elle tient tout, les gens, les projets, les décisions. Le soir, le corps lâche avant elle.</p>
-          <p style={{ color: C.sagePale }}>Ce qu'elle ressent porte un nom : Vata qui s'emballe. Et il s'apaise lorsque nous lui offrons les bons repères, un sens à la fois.</p>
+          <p>Il est 3 h du matin. Elle a les mains glacées, et le mental déjà au travail : la réunion de demain, la liste qui s'allonge, ce qu'elle a oublié de dire. Le jour, elle tient tout, les gens, les projets, les décisions. Le soir, le corps lâche avant elle. La nuit, les soucis semblent encore plus grands.</p>
+          <p style={{ color: C.sagePale }}>Ce qu'elle ressent porte un nom : Vata, le vent qui fait tourner le moulin intérieur. Plus il vente, plus le mental s'emballe, et il s'apaise lorsque nous lui offrons des points de repère, un sens à la fois.</p>
         </div>
       </div>
     </Reveal>
@@ -441,17 +441,17 @@ const Signals: React.FC = () => {
   const reponse = n === 0
     ? null
     : n === 1
-      ? 'Un premier signe. Vata commence à se faire entendre : c\'est le bon moment pour lui offrir des repères.'
-      : 'Le vent intérieur est en turbulence. Vata vous invite à ralentir, et ce programme a été pensé pour ce moment-là.';
+      ? 'Un premier signal. Vata commence à se faire entendre, et c\'est le bon moment pour mettre en place des points de repère.'
+      : 'Il vente fort à l\'intérieur. C\'est exactement le moment de vous repositionner et de vous enraciner dans des pratiques qui font du sens.';
   return (
   <section id="signaux" className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PY} scroll-mt-24`}>
     <div className="grid gap-y-12 lg:grid-cols-[0.85fr_1.15fr] gap-x-[clamp(3rem,6vw,6rem)] items-start">
       <div className="lg:sticky lg:top-28">
         <ChapterHead
           no="I"
-          kicker="Les signaux d'alerte"
+          kicker="Les signaux du corps"
           title="Lorsque le mental s'emballe"
-          lede="Cochez les portraits qui vous ressemblent. Si deux sur trois vous parlent, le vent intérieur est en turbulence."
+          lede="Cochez les portraits qui vous ressemblent. Si deux sur trois vous parlent, le corps vous envoie déjà des signaux plus forts."
         />
       </div>
 
@@ -494,7 +494,7 @@ const Signals: React.FC = () => {
               exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4 }}
               transition={{ duration: 0.6, ease }}
             >
-              {reponse || 'Ces signes sont le langage du corps. Vata vous invite à ralentir.'}
+              {reponse || 'Ces signes sont des signaux que le corps envoie. Lorsque nous ralentissons assez, il retrouve le chemin du retour vers l\'équilibre.'}
             </motion.p>
           </AnimatePresence>
           <AnimatePresence initial={false}>
@@ -1050,7 +1050,7 @@ const VataExperience: React.FC = () => (
     <div className="v2-grain" aria-hidden />
 
     <Cover />
-    <Exergue>« Le vent se calme lorsqu'il trouve un endroit où se poser. »</Exergue>
+    <Exergue>« Nous avons le pouvoir sur nos turbulences. »</Exergue>
     <Ella />
         <Signals />
     <Method />
