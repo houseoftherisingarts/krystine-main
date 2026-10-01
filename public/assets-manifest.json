@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T21:45:47.949Z",
+  "generatedAt": "2026-10-01T21:50:26.835Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1393,6 +1393,13 @@
       "folder": "foyer/sons",
       "kind": "audio",
       "size": 3736
+    },
+    {
+      "path": "/infolettre/bandeau-bois-calendule.jpg",
+      "name": "bandeau-bois-calendule.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 54438
     },
     {
       "path": "/infolettre/banniere-inspirata-or.jpg",
