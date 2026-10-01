@@ -234,7 +234,7 @@ const QUIZ_DATA: QuizQuestion[] = [
     ],
   },
   {
-    categoryFR: 'Type de fatigue', categoryEN: 'Type of fatigue',
+    categoryFR: 'Type d\'épuisement', categoryEN: 'Type of fatigue',
     questionFR: 'À quoi ressemble votre fatigue quand elle survient ?',
     questionEN: 'What does your fatigue look like when it hits?',
     options: [
@@ -792,8 +792,8 @@ const INSIDE = [
     n: '01',
     titleFR: 'Dix lectures de votre nature',
     titleEN: 'Ten readings of your nature',
-    bodyFR: "Constitution, sommeil, digestion, stress, énergie, émotions, fatigue, tempérament. Dix dimensions du corps et de l'instant, une question à la fois.",
-    bodyEN: 'Build, sleep, digestion, stress, energy, emotions, fatigue, temperament. Ten dimensions of body and moment, one question at a time.',
+    bodyFR: "Constitution, sommeil, digestion, stress, énergie, changement, mental, émotions, épuisement et tempérament : dix dimensions du corps et de l'instant, une question à la fois.",
+    bodyEN: 'Build, sleep, digestion, stress, energy, change, mind, emotions, exhaustion and temperament: ten dimensions of body and moment, one question at a time.',
   },
   {
     n: '02',
@@ -804,10 +804,10 @@ const INSIDE = [
   },
   {
     n: '03',
-    titleFR: 'Un rituel taillé pour vous',
-    titleEN: 'A ritual made for you',
-    bodyFR: "À la fin, le rituel associé à votre dominance et l'huile corporelle qui l'accompagne, transcrits du Guide Rituels d'Inspirata Ayurveda.",
-    bodyEN: "At the end, the ritual matched to your dominance and the body oil that goes with it, drawn from the Inspirata Ayurveda Ritual Guide.",
+    titleFR: 'Un geste choisi pour vous',
+    titleEN: 'A gesture chosen for you',
+    bodyFR: "À la fin, le geste associé à votre dominance et l'huile corporelle qui l'accompagne.",
+    bodyEN: "At the end, the gesture matched to your dominance and the body oil that goes with it.",
   },
 ];
 
@@ -965,14 +965,14 @@ const QuizLoeuvre: React.FC = () => {
           <Reveal>
             <Kicker className="mb-5">{lang === 'FR' ? 'Ce qui vous attend' : 'What you get'}</Kicker>
             <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">
-              {lang === 'FR' ? 'Un miroir, pas une étiquette' : 'A mirror, not a label'}
+              {lang === 'FR' ? 'Le miroir de votre nature' : 'The mirror of your nature'}
             </h2>
           </Reveal>
           <Reveal delay={0.12}>
             <p className="v2-serif italic font-light text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug text-[#3a2f23] max-w-[46ch]">
               {lang === 'FR'
-                ? "Dix questions, votre dominance du moment, et le rituel qui l'accompagne. Suivez votre premier réflexe."
-                : 'Ten questions, your dominance of the moment, and the ritual that fits it. Trust your first instinct.'}
+                ? "Dix questions, votre dominance du moment et le geste qui l'accompagne. Suivez votre premier réflexe."
+                : 'Ten questions, your dominance of the moment and the gesture that fits it. Trust your first instinct.'}
             </p>
           </Reveal>
         </div>
