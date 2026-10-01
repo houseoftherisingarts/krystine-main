@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T20:47:20.180Z",
+  "generatedAt": "2026-10-01T21:05:15.410Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1428,6 +1428,13 @@
       "folder": "infolettre",
       "kind": "image",
       "size": 49768
+    },
+    {
+      "path": "/infolettre/picto-visage-mains.png",
+      "name": "picto-visage-mains.png",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 45698
     },
     {
       "path": "/infolettre/signature-krystine.png",
