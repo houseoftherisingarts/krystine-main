@@ -3656,5 +3656,19 @@
       "public/assets-manifest.json",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T15:42:30.804Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "fe1b95f4",
+    "message": "Page de vente Vata, avec les mots de Krystine : la méthode (le vieux grand-père, le souffle, les sens, sneha)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
