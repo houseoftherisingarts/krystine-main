@@ -273,10 +273,16 @@ const DOSHA_ICON: Record<DoshaType, React.ComponentType<{ size?: number; weight?
 // Système multi-couleur V2 : accent (médaillon plein, filet), accent-encre
 // (texte, contraste AA sur crème/tint) et tint de carte, par dosha.
 const DOSHA_THEME: Record<DoshaType, { accent: string; ink: string; tint: string }> = {
-  vata:  { accent: '#b9822f', ink: '#8a5e1f', tint: '#efe1c6' },
-  pitta: { accent: '#b4533a', ink: '#8f3d29', tint: '#f1ddcf' },
-  kapha: { accent: '#74824a', ink: '#55602f', tint: '#e6e8cf' },
+  // Les couleurs des pictos de Krystine (1er oct. 2026) : Vata vert, Pitta rouge, Kapha bleu.
+  vata:  { accent: '#6e7b45', ink: '#4f5a2e', tint: '#e9ebd8' },
+  pitta: { accent: '#a8443c', ink: '#83322b', tint: '#f3e1dc' },
+  kapha: { accent: '#3d5f94', ink: '#2c4670', tint: '#e1e8f2' },
 };
+
+// Les pictos aquarelle de Krystine, détourés (public/quiz/pictos/).
+const DoshaPicto: React.FC<{ d: DoshaType; size: number; className?: string }> = ({ d, size, className = '' }) => (
+  <img src={`/quiz/pictos/${d}.png`} alt="" aria-hidden width={size} height={size} className={`object-contain ${className}`} style={{ width: size, height: size }} />
+);
 
 const themeForName = (name: string) =>
   DOSHA_THEME[(name || '').trim().toLowerCase() as DoshaType]
@@ -293,31 +299,30 @@ const scoresFromPicks = (picks: (DoshaType | null)[]) => {
 /* ════════════════════════ Micro-composants du résultat ════════════════════════ */
 
 /* Médaillon plein qui éclot (scale + rotate spring) */
-const Medallion: React.FC<{ Icon: React.ComponentType<any>; accent: string; size?: number; iconSize?: number; delay?: number; className?: string }> = ({
-  Icon, accent, size = 64, iconSize = 28, delay = 0.25, className = '',
+const Medallion: React.FC<{ d: DoshaType; size?: number; delay?: number; className?: string }> = ({
+  d, size = 96, delay = 0.25, className = '',
 }) => {
   const reduce = useReducedMotion();
   return (
     <motion.span
-      className={`grid place-items-center rounded-full text-[#faf6ee] will-change-transform ${className}`}
-      style={{ background: accent, width: size, height: size }}
+      className={`grid place-items-center will-change-transform ${className}`}
+      style={{ width: size, height: size }}
       initial={reduce ? false : { scale: 0, rotate: -12 }}
       animate={{ scale: 1, rotate: 0 }}
       transition={{ ...SPRING, delay }}
     >
-      <Icon size={iconSize} weight="light" />
+      <DoshaPicto d={d} size={size} />
     </motion.span>
   );
 };
 
 /* Statistique d'un dosha : icône, pourcentage, filet proportionnel qui se trace */
 const DoshaStat: React.FC<{ d: DoshaType; pct: number }> = ({ d, pct }) => {
-  const Icon = DOSHA_ICON[d];
   const th = DOSHA_THEME[d];
   const reduce = useReducedMotion();
   return (
     <div className="flex flex-col items-center gap-1.5">
-      <Icon size={18} weight="light" style={{ color: th.accent }} />
+      <DoshaPicto d={d} size={30} />
       <span className="v2-serif font-light text-3xl md:text-4xl tabular-nums" style={{ color: th.ink }}>{pct}%</span>
       <span className="text-[0.58rem] uppercase tracking-[0.22em] text-[#1c1712]/60">{d}</span>
       <span className="relative mt-1 block h-px w-16 bg-[#1c1712]/10 overflow-hidden">
@@ -475,7 +480,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   if (result) {
     const ritual = RITUALS[result.dominant.name as 'Vata' | 'Pitta' | 'Kapha'];
     const th = themeForName(result.dominant.name);
-    const Icon = DOSHA_ICON[(result.dominant.name || '').toLowerCase() as DoshaType] ?? Wind;
+    const dRes = ((result.dominant.name || '').toLowerCase() as DoshaType) in DOSHA_THEME ? (result.dominant.name || '').toLowerCase() as DoshaType : 'vata';
     return (
       <Curtain>
         <div className="relative border overflow-hidden" style={{ borderColor: `${th.accent}66`, background: th.tint }}>
@@ -484,7 +489,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
           <div className="grid lg:grid-cols-[0.95fr_1.05fr]">
             {/* Identité : médaillon, dominance, répartition, définition */}
             <div className="p-[clamp(2rem,4.5vw,3.75rem)] text-center lg:border-r" style={{ borderColor: `${th.accent}2e` }}>
-              <Medallion Icon={Icon} accent={th.accent} className="mx-auto" />
+              <Medallion d={dRes} className="mx-auto" />
               <p className="mt-7 text-[0.68rem] uppercase tracking-[0.32em]" style={{ color: th.ink }}>
                 {lang === 'FR' ? 'Votre nature dominante est' : 'Your dominant nature is'}
               </p>
@@ -604,13 +609,13 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   /* ── Écran teaser (toutes les questions répondues, pas encore sauvegardé) ── */
   if (!current && teaser) {
     const th = themeForName(teaser.dominant.name);
-    const Icon = DOSHA_ICON[(teaser.dominant.name || '').toLowerCase() as DoshaType] ?? Wind;
+    const dRes = ((teaser.dominant.name || '').toLowerCase() as DoshaType) in DOSHA_THEME ? (teaser.dominant.name || '').toLowerCase() as DoshaType : 'vata';
     return (
       <Curtain className="max-w-[860px] mx-auto">
         <div className="relative border overflow-hidden text-center" style={{ borderColor: `${th.accent}66`, background: th.tint }}>
           <span aria-hidden className="absolute inset-x-0 top-0 h-[3px]" style={{ background: th.accent }} />
           <div className="p-[clamp(2rem,5vw,4rem)]">
-            <Medallion Icon={Icon} accent={th.accent} className="mx-auto" />
+            <Medallion d={dRes} className="mx-auto" />
             <p className="mt-7 text-[0.68rem] uppercase tracking-[0.32em]" style={{ color: th.ink }}>
               {lang === 'FR' ? 'Votre nature dominante' : 'Your dominant nature'}
             </p>
@@ -903,12 +908,9 @@ const QuizLoeuvre: React.FC = () => {
               {ay.doshas.map((d: any, i: number) => {
                 const key = ALL_DOSHAS[i];
                 const th = DOSHA_THEME[key];
-                const Icon = DOSHA_ICON[key];
                 return (
                   <div key={d.name} className={`flex items-center gap-6 py-6 ${i > 0 ? 'border-t border-[#1c1712]/10' : ''}`}>
-                    <span className="shrink-0 grid place-items-center w-12 h-12 rounded-full text-[#faf6ee]" style={{ background: th.accent }}>
-                      <Icon size={22} weight="light" />
-                    </span>
+                    <DoshaPicto d={key} size={56} className="shrink-0" />
                     <div className="min-w-0">
                       <div className="flex items-baseline gap-3">
                         <p className="v2-serif font-light text-[1.35rem] text-[#1c1712]">{d.name}</p>
