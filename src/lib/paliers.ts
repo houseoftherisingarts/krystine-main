@@ -35,6 +35,7 @@ export function statsDepuisFiches(fiches: { status?: string; tags?: string[] }[]
 // qu'une liste veut dire sans connaître les noms internes.
 const LIBELLES: Record<string, string> = {
   'shopify-import': 'Import Shopify',
+  'cliente-commande': 'Clientes ayant déjà commandé (inscrites)',
   'shopify-abonne': 'Shopify · abonnées',
   'shopify-sans-consentement': 'Shopify · sans consentement',
   'shopify-desinscrit': 'Shopify · désinscrites',
