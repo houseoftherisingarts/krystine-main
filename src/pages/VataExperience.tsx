@@ -428,10 +428,9 @@ const Ella: React.FC = () => (
   <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(2rem,6vh,4rem)]">
     <Reveal>
       <div className="mx-auto max-w-[760px]">
-        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Ella</p>
-        <div className="mt-6 space-y-6 v2-serif text-[clamp(1.2rem,2vw,1.55rem)] leading-[1.55]" style={{ color: C.ink }}>
-          <p>Il est 3 h du matin. Ella a les mains glacées, et le mental déjà au travail : la réunion de demain, la liste qui s'allonge, ce qu'elle a oublié de dire. Le jour, elle tient tout, les gens, les projets, les décisions. Le soir, le corps lâche avant elle.</p>
-          <p style={{ color: C.sageInk }}>Ce qu'Ella ressent porte un nom : Vata qui s'emballe. Et il s'apaise lorsque nous lui offrons les bons repères, un sens à la fois.</p>
+        <div className="space-y-6 v2-serif text-[clamp(1.2rem,2vw,1.55rem)] leading-[1.55]" style={{ color: C.ink }}>
+          <p>Il est 3 h du matin. Elle a les mains glacées, et le mental déjà au travail : la réunion de demain, la liste qui s'allonge, ce qu'elle a oublié de dire. Le jour, elle tient tout, les gens, les projets, les décisions. Le soir, le corps lâche avant elle.</p>
+          <p style={{ color: C.sageInk }}>Ce qu'elle ressent porte un nom : Vata qui s'emballe. Et il s'apaise lorsque nous lui offrons les bons repères, un sens à la fois.</p>
         </div>
       </div>
     </Reveal>
