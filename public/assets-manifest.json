@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T22:09:07.909Z",
+  "generatedAt": "2026-10-01T22:25:23.354Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1486,6 +1486,13 @@
       "size": 61935
     },
     {
+      "path": "/infolettre/quiz-dosha-pictos.jpg",
+      "name": "quiz-dosha-pictos.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 47731
+    },
+    {
       "path": "/infolettre/serum-defripant-automne.jpg",
       "name": "serum-defripant-automne.jpg",
       "folder": "infolettre",
@@ -1995,6 +2002,20 @@
       "folder": "quiz",
       "kind": "video",
       "size": 5590563
+    },
+    {
+      "path": "/quiz/quiz-dosha-ouverture-poster.jpg",
+      "name": "quiz-dosha-ouverture-poster.jpg",
+      "folder": "quiz",
+      "kind": "image",
+      "size": 67461
+    },
+    {
+      "path": "/quiz/quiz-dosha-ouverture.mp4",
+      "name": "quiz-dosha-ouverture.mp4",
+      "folder": "quiz",
+      "kind": "video",
+      "size": 5366243
     },
     {
       "path": "/quiz/quiz-dosha-poster.jpg",
