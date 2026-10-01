@@ -3458,5 +3458,19 @@
       "public/assets-manifest.json",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T01:56:13.619Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d5b87c45",
+    "message": "Page de vente Vata : puce « Éléments air et espace »; dernière section « Saison Vata · Un sens à la fois » et « Prête à apaiser le mental ? »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
