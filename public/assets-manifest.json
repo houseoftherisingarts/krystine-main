@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T21:30:27.342Z",
+  "generatedAt": "2026-10-01T21:35:31.783Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1967,6 +1967,20 @@
       "folder": "pubs/posts",
       "kind": "image",
       "size": 20200
+    },
+    {
+      "path": "/quiz/quiz-dosha-banniere-poster.jpg",
+      "name": "quiz-dosha-banniere-poster.jpg",
+      "folder": "quiz",
+      "kind": "image",
+      "size": 102730
+    },
+    {
+      "path": "/quiz/quiz-dosha-banniere.mp4",
+      "name": "quiz-dosha-banniere.mp4",
+      "folder": "quiz",
+      "kind": "video",
+      "size": 5590563
     },
     {
       "path": "/quiz/quiz-dosha-poster.jpg",

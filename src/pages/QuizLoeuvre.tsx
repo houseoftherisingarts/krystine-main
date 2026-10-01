@@ -846,6 +846,16 @@ const QuizLoeuvre: React.FC = () => {
           <span className="hidden sm:inline">Québec &middot; MMXXVI</span>
         </motion.div>
 
+        {/* La vidéo du quiz en bannière, sans le logo d'ouverture (Krystine, 1er oct. 2026) */}
+        <motion.div {...heroFade(0.2)} className="mt-6">
+          <Planche
+            video="/quiz/quiz-dosha-banniere.mp4"
+            poster="/quiz/quiz-dosha-banniere-poster.jpg"
+            ratio="aspect-[16/9] sm:aspect-[21/9] lg:aspect-[8/3]"
+            etiquette="Vata · Pitta · Kapha"
+          />
+        </motion.div>
+
         <div className="flex-1 grid items-center gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.05fr_0.95fr] mt-[clamp(2rem,5vh,4rem)]">
           {/* Masthead + promesse */}
           <div>
@@ -926,17 +936,6 @@ const QuizLoeuvre: React.FC = () => {
           </span>
           <span className="hidden sm:inline">Vata &middot; Pitta &middot; Kapha</span>
         </motion.div>
-      </section>
-
-      {/* ─────────── LA VIDÉO DU QUIZ (Krystine, 1er oct. 2026) ─────────── */}
-      <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(3rem,8vh,6rem)] bg-[#f4efe6]">
-        <Reveal>
-          <Planche
-            video="/quiz/quiz-dosha.mp4"
-            poster="/quiz/quiz-dosha-poster.jpg"
-            etiquette={lang === 'FR' ? 'Vata · Pitta · Kapha' : 'Vata · Pitta · Kapha'}
-          />
-        </Reveal>
       </section>
 
       {/* ─────────── QU'EST-CE QUE L'AYURVEDA · 2 colonnes pleine largeur ─────────── */}
