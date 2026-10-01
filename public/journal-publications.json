@@ -3756,5 +3756,19 @@
       "public/assets-manifest.json",
       "public/infolettre/picto-visage-gestes.png"
     ]
+  },
+  {
+    "quand": "2026-10-01T21:20:26.679Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e3a16956",
+    "message": "Infolettre : picto du visage avec cheveux (/infolettre/picto-visage-cheveux.png)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/picto-visage-cheveux.png"
+    ]
   }
 ]
