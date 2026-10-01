@@ -17,6 +17,7 @@ import {
 import { findOilForDosha } from '../lib/shopifyOil';
 import { RITUALS } from '../lib/doshaRituals';
 import NewsletterSignup from '../components/NewsletterSignup';
+import { Planche } from '../components/v2/Magazine';
 import { Atmosphere } from '../components/motion/loeuvre';
 
 /**
@@ -925,6 +926,17 @@ const QuizLoeuvre: React.FC = () => {
           </span>
           <span className="hidden sm:inline">Vata &middot; Pitta &middot; Kapha</span>
         </motion.div>
+      </section>
+
+      {/* ─────────── LA VIDÉO DU QUIZ (Krystine, 1er oct. 2026) ─────────── */}
+      <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(3rem,8vh,6rem)] bg-[#f4efe6]">
+        <Reveal>
+          <Planche
+            video="/quiz/quiz-dosha.mp4"
+            poster="/quiz/quiz-dosha-poster.jpg"
+            etiquette={lang === 'FR' ? 'Vata · Pitta · Kapha' : 'Vata · Pitta · Kapha'}
+          />
+        </Reveal>
       </section>
 
       {/* ─────────── QU'EST-CE QUE L'AYURVEDA · 2 colonnes pleine largeur ─────────── */}

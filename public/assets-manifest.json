@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T21:23:47.990Z",
+  "generatedAt": "2026-10-01T21:30:27.342Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1472,6 +1472,13 @@
       "size": 165951
     },
     {
+      "path": "/infolettre/serum-defripant-automne.jpg",
+      "name": "serum-defripant-automne.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 137676
+    },
+    {
       "path": "/infolettre/signature-krystine.png",
       "name": "signature-krystine.png",
       "folder": "infolettre",
@@ -1960,6 +1967,20 @@
       "folder": "pubs/posts",
       "kind": "image",
       "size": 20200
+    },
+    {
+      "path": "/quiz/quiz-dosha-poster.jpg",
+      "name": "quiz-dosha-poster.jpg",
+      "folder": "quiz",
+      "kind": "image",
+      "size": 181887
+    },
+    {
+      "path": "/quiz/quiz-dosha.mp4",
+      "name": "quiz-dosha.mp4",
+      "folder": "quiz",
+      "kind": "video",
+      "size": 8583632
     },
     {
       "path": "/footer-jacques-cartier.jpg",
