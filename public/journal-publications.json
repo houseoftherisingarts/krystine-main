@@ -3472,5 +3472,19 @@
       "public/assets-manifest.json",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T02:01:21.801Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e48ad927",
+    "message": "Page de vente Vata : la méthode resserrée (ancrage, filtrage sensoriel, gestes qui réchauffent)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
