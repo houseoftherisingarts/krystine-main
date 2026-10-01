@@ -3642,5 +3642,19 @@
       "public/assets-manifest.json",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T12:39:47.540Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "cb1e6c6a",
+    "message": "Page de vente Vata, avec les mots de Krystine : citation « Nous avons le pouvoir sur nos turbulences », le passage de 3 h du matin, les trois portraits et leurs réponses",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
