@@ -3685,5 +3685,20 @@
       "public/infolettre/entete-defripant-kapha.jpg",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T20:46:00.137Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "4ead37c9",
+    "message": "Infolettre : bannières INSPIRATA AYURVEDA (/infolettre/entete-inspirata.jpg et entete-inspirata-logo.jpg)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/entete-inspirata-logo.jpg",
+      "public/infolettre/entete-inspirata.jpg"
+    ]
   }
 ]
