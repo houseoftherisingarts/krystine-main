@@ -88,8 +88,17 @@ const enLancement = () => Date.now() < FIN_LANCEMENT.getTime();
 const TIERS = [
   {
     name: 'VATA Essentiel', price: '497 $', promo: '397 $', plan: '',
-    intro: 'Une formation audio, avec son matériel de support. Un chemin clair, semaine après semaine, pour ancrer, restaurer et cultiver une sérénité qui tient malgré les turbulences.',
-    features: ['Formation audio : 16 capsules et 7 méditations, 4 h 12 min d\'écoute en tout, matériel de support à télécharger', 'Une introduction et 7 semaines, qui s\'ouvrent une à une', '19 rituels d\'automne pour apaiser et honorer Vata', '7 méditations pré-enregistrées, à votre rythme', 'Le guide PDF de 204 pages, un vrai livre sur les cinq sens, offert à la fin du parcours', 'Journal de bord et d\'observation', '4 capsules sur les rituels de base de l\'Ayurveda', 'Capsules supplémentaires : plantes, épices, aliments de saison, repères de l\'Ayurveda'],
+    intro: 'Un chemin clair, semaine après semaine, pour apaiser le mental, un sens à la fois.',
+    features: [
+      '16 capsules audio, 4 h 12 min d\'écoute avec Krystine · valeur 800 $',
+      '7 méditations guidées · valeur 210 $',
+      'Le chemin des cinq sens : une introduction et 7 semaines qui s\'ouvrent une à une',
+      '19 rituels pour apaiser Vata, fruits d\'années de recherche',
+      'Le journal de bord et d\'observation, et un petit boni d\'observation chaque semaine',
+      'Les capsules plantes, épices et aliments de saison',
+      'Le guide complet de 204 pages, offert à la fin du parcours · valeur 150 $',
+      'Un accès d\'au moins trois ans à tout ce qui s\'est ouvert',
+    ],
     recommended: false,
   },
 ];
@@ -103,7 +112,7 @@ const TESTIMONIALS = [
 
 const FAQS = [
   ["Est-ce que je dois connaître l'Ayurveda ?", "Le programme est conçu pour être simple, concret et accessible. Krystine rend chaque notion claire, pour qu'elle devienne un outil pratique dans votre quotidien."],
-  ['Combien de temps ai-je accès au contenu ?', "Vous conservez l'accès à votre parcours VATA tant que la plateforme est en ligne. Vous pourrez donc y revenir l'an prochain si vous en ressentez le besoin."],
+  ['Combien de temps ai-je accès au contenu ?', "Vous gardez l'accès à tout ce qui s'est ouvert pendant au moins trois ans. Vous pourrez y revenir chaque fois que Vata se réveille."],
   ["Quel est l'investissement de temps requis ?", "C'est un programme qui respecte votre rythme. Les capsules audio font entre 5 et 15 minutes. L'idée n'est pas d'ajouter une corvée, mais de remplacer certaines habitudes stressantes par des rituels d'apaisement."],
   ["Comment les semaines s'ouvrent-elles ?", "L'introduction et la semaine 1 s'ouvrent dès votre inscription. Ensuite, une nouvelle semaine s'ouvre tous les 7 jours, un courriel vous prévient à chaque fois, et vous gardez l'accès à tout ce qui est ouvert."],
   ['Est-ce que je peux suivre sur mobile ou tablette ?', "Oui. Le programme s'adapte à votre téléphone et à votre tablette, et vous pouvez écouter vos capsules comme un balado, même écran verrouillé, pendant vos déplacements."],
@@ -652,10 +661,26 @@ const Tiers: React.FC = () => (
   <section id="tarifs" className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] scroll-mt-24">
     <ChapterHead
       no="IV"
-      kicker="Votre parcours"
-      title="Traverser la saison"
-      className="mb-[clamp(3rem,7vh,5rem)]"
+      kicker="L'offre · Saison Vata"
+      title="Près de 40 ans de pratique, réunis en sept semaines"
+      lede="Tout ce que Krystine a appris à relier, la clinique, les plantes et l'Ayurveda, rassemblé en un seul chemin."
+      className="mb-[clamp(2.5rem,6vh,4rem)]"
     />
+    {/* Ce qu'elle y gagne, avant la liste (Krystine, 30 sept. 2026 : « whats in it for them ») */}
+    <div className="mx-auto mb-[clamp(3rem,7vh,5rem)] grid max-w-[1180px] gap-6 md:grid-cols-3">
+      {[
+        ['Un mental qui se pose', 'même lorsque tout s\'accélère autour.'],
+        ['Un corps réchauffé et nourri', 'au lieu de crispé et desséché.'],
+        ['Des repères qui vous appartiennent', 'à reprendre chaque fois que Vata se réveille.'],
+      ].map(([t, d], i) => (
+        <Reveal key={t} delay={0.08 * i}>
+          <div className="border-t pt-5" style={{ borderColor: C.sageInk }}>
+            <p className="v2-serif font-light text-[clamp(1.35rem,2vw,1.7rem)] leading-[1.15]" style={{ color: C.ink }}>{t}</p>
+            <p className="mt-2 text-[0.95rem] leading-[1.6]" style={{ color: C.inkSoft }}>{d}</p>
+          </div>
+        </Reveal>
+      ))}
+    </div>
     <Reveal>
       <div className="relative mx-auto max-w-[1180px] border" style={{ borderColor: 'rgba(156,122,68,0.45)', background: C.card }}>
         <span className="absolute inset-x-0 top-0 h-[3px]" style={{ background: C.sage }} aria-hidden />
@@ -680,7 +705,7 @@ const Tiers: React.FC = () => (
                 <span className="v2-serif font-light text-[clamp(2.8rem,4.4vw,3.8rem)] leading-none tabular-nums" style={{ color: C.ink }}>{enLancement() ? tier.promo : tier.price}</span>
                 {enLancement() && <span className="v2-serif text-xl line-through tabular-nums" style={{ color: 'rgba(28,23,18,0.42)' }}>{tier.price}</span>}
               </div>
-              <p className="mt-2 text-[0.72rem] uppercase tracking-[0.16em] min-h-[1.1rem]" style={{ color: 'rgba(28,23,18,0.6)' }}>{enLancement() ? 'Tarif de lancement jusqu’au 1er novembre' : 'Accès complet'}</p>
+              <p className="mt-2 text-[0.72rem] uppercase tracking-[0.16em] min-h-[1.1rem]" style={{ color: 'rgba(28,23,18,0.6)' }}>{enLancement() ? 'Une valeur de plus de 1 100 $ · tarif de lancement jusqu’au 1er novembre' : 'Une valeur de plus de 1 100 $'}</p>
               <button
                 type="button"
                 onClick={go}
@@ -692,7 +717,7 @@ const Tiers: React.FC = () => (
                 Commencer la saison Vata
                 <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
               </button>
-              <p className="mt-3 text-center text-[0.8rem] leading-snug" style={{ color: C.inkSoft }}>Garantie cœur léger : 15 jours pour changer d'avis, remboursement complet.</p>
+              <p className="mt-3 text-center text-[0.8rem] leading-snug" style={{ color: C.inkSoft }}>Garantie cœur léger : 15 jours pour changer d'avis, remboursement complet. De 5 à 15 minutes par jour, à votre rythme.</p>
               </div>
               <div>
               <DrawRule className="mt-7 w-full lg:mt-0" color="rgba(116,130,74,0.5)" />
