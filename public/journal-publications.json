@@ -3514,5 +3514,19 @@
       "public/assets-manifest.json",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T02:34:01.575Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "15611264",
+    "message": "Page de vente Vata : l'offre « Près de 40 ans, réunis en sept semaines », ce qu'elle y gagne, le stack avec ses valeurs (plus de 1 100 $), un accès d'au moins trois ans, 5 à 15 minutes par jour",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
