@@ -213,7 +213,7 @@ const ChapterHead: React.FC<{ no: string; kicker: string; title: string; lede?: 
       </span>
       <div className="pt-[0.4em]">
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>{kicker}</p>
-        <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.85rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>{title}</h2>
+        <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.45rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>{title}</h2>
         {lede && (
           <p className="mt-5 v2-serif text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[46ch]" style={{ color: C.inkSoft }}>{lede}</p>
         )}
@@ -351,7 +351,7 @@ const Cover: React.FC = () => (
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Expérience Ayurveda · Formation audio · 7 semaines</p>
       </div>
 
-      <h1 className="relative v2-serif font-light leading-[0.98] text-[clamp(2.5rem,5.6vw,5.4rem)]" style={{ color: C.ink }}>
+      <h1 className="relative v2-serif font-light leading-[0.98] text-[clamp(2.1rem,5.6vw,5.4rem)]" style={{ color: C.ink }}>
         <MaskLine delay={0.05}>Apaiser le mental,</MaskLine>
         <MaskLine delay={0.16}><em className="not-italic" style={{ color: C.sageInk }}>un sens à la fois.</em></MaskLine>
       </h1>
@@ -624,7 +624,7 @@ const Received: React.FC = () => {
         <div>
           <Reveal>
             <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Le matériel du programme</p>
-            <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.85rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>Ce que vous recevez</h2>
+            <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.45rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>Ce que vous recevez</h2>
             <DrawRule className="mt-6 w-20" />
           </Reveal>
           <div className="mt-10 border-t" style={{ borderColor: 'rgba(28,23,18,0.16)' }}>
@@ -746,7 +746,7 @@ const Testimonials: React.FC = () => {
     <section className="w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)]" style={{ background: C.panel }}>
       <Reveal className="mb-[clamp(2.5rem,6vh,4rem)]">
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Elles l'ont vécu</p>
-        <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.85rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>
+        <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.45rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>
           Témoignages de la communauté
         </h2>
       </Reveal>
