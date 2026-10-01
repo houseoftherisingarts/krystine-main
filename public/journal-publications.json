@@ -3714,5 +3714,19 @@
       "public/assets-manifest.json",
       "public/infolettre/entete-inspirata.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-01T21:05:22.090Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "f61ed16a",
+    "message": "Infolettre : picto du massage du visage (/infolettre/picto-visage-mains.png), tiré du guide des rituels",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/picto-visage-mains.png"
+    ]
   }
 ]
