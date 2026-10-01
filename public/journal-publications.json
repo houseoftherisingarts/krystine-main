@@ -3802,5 +3802,21 @@
       "public/quiz/quiz-dosha.mp4",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-01T21:35:39.263Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "5da7727d",
+    "message": "Page du quiz (/quiz) : la vidéo du quiz en bannière en haut de la page, sans le logo d'ouverture, un peu moins haute",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/quiz/quiz-dosha-banniere-poster.jpg",
+      "public/quiz/quiz-dosha-banniere.mp4",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
