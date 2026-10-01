@@ -3846,5 +3846,23 @@
       "public/assets-manifest.json",
       "public/infolettre/bandeau-bois-calendule.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-01T21:56:21.043Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "48a4abda",
+    "message": "Infolettre : la destination des liens suivis voyage codée (d=) au lieu d'une adresse en clair, pour ne plus être bloquée par les antivirus comme Malwarebytes",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/clic.ts",
+      "functions/src/newsletter/send.ts",
+      "public/assets-manifest.json",
+      "public/infolettre/quiz-dosha-elements.jpg",
+      "public/infolettre/serum-defripant-automne.jpg"
+    ]
   }
 ]
