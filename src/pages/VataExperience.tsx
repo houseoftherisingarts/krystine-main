@@ -359,8 +359,7 @@ const Cover: React.FC = () => (
       <div className="relative mt-10 grid gap-y-8 2xl:grid-cols-[1.15fr_0.85fr] 2xl:items-end">
         <Reveal delay={0.42} y={20}>
           <p className="v2-serif text-[clamp(1.2rem,2.2vw,1.7rem)] leading-[1.35] max-w-[40ch]" style={{ color: C.inkSoft }}>
-            Des points de repère pour apaiser le mental lorsqu'il se met à venter trop fort,
-            à l'intérieur comme à l'extérieur. Sept semaines d'audio et de rituels, à écouter à votre rythme.
+            Des ancrages pour apaiser le mental lorsque les turbulences sont trop fortes.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-4">
             <UnderlineCta label="Commencer la saison Vata" />
