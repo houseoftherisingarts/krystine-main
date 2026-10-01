@@ -3832,5 +3832,19 @@
       "public/assets-manifest.json",
       "public/infolettre/banniere-inspirata-or.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-01T21:50:33.706Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "4e9048d8",
+    "message": "Infolettre : texture de bois et calendule pour le bandeau des lettres INSPIRATA (/infolettre/bandeau-bois-calendule.jpg)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/bandeau-bois-calendule.jpg"
+    ]
   }
 ]
