@@ -55,7 +55,7 @@ const SIGNALS = [
 const SYSTEMS: Array<[string, string, React.ComponentType<{ size?: number; weight?: any }>]> = [
   ["Le système d'ancrage", "Sécuriser le corps avant de calmer le mental. Le souffle devient un bouton d'arrêt : trente secondes, n'importe où.", Anchor],
   ["Le filtrage sensoriel", "Les cinq sens sont des portes grandes ouvertes. Nous posons des filtres, un sens à la fois, et l'apaisement revient.", Ear],
-  ["Les gestes qui réchauffent", "L'huile chaude, les épices, les aliments qui réchauffent. Le corps se nourrit, le mental se pose.", Drop],
+  ["Les gestes qui réchauffent", "L'huile chaude, les épices, les aliments qui réchauffent. Le corps se nourrit, et le mental s'apaise.", Drop],
 ];
 
 // Les titres des semaines sont ceux du cours (src/pages/vata/semaines.ts), une
@@ -662,14 +662,14 @@ const Tiers: React.FC = () => (
     <ChapterHead
       no="IV"
       kicker="L'offre · Saison Vata"
-      title="Près de 40 ans de pratique, réunis en sept semaines"
+      title="Près de 40 ans, réunis en sept semaines"
       lede="Tout ce que Krystine a appris à relier, la clinique, les plantes et l'Ayurveda, rassemblé en un seul chemin."
       className="mb-[clamp(2.5rem,6vh,4rem)]"
     />
     {/* Ce qu'elle y gagne, avant la liste (Krystine, 30 sept. 2026 : « whats in it for them ») */}
     <div className="mx-auto mb-[clamp(3rem,7vh,5rem)] grid max-w-[1180px] gap-6 md:grid-cols-3">
       {[
-        ['Un mental qui se pose', 'même lorsque tout s\'accélère autour.'],
+        ['Un mental apaisé', 'même lorsque tout s\'accélère autour.'],
         ['Un corps réchauffé et nourri', 'au lieu de crispé et desséché.'],
         ['Des repères qui vous appartiennent', 'à reprendre chaque fois que Vata se réveille.'],
       ].map(([t, d], i) => (
