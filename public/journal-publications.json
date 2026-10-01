@@ -3864,5 +3864,19 @@
       "public/infolettre/quiz-dosha-elements.jpg",
       "public/infolettre/serum-defripant-automne.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-01T22:06:44.263Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ee0c69e7",
+    "message": "Admin › Infolettre : libellé lisible de la nouvelle liste « Clientes ayant déjà commandé (inscrites) » (étiquette cliente-commande, 3 361 personnes)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/paliers.ts"
+    ]
   }
 ]
