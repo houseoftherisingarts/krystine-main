@@ -15,6 +15,7 @@ import {
 import { useAuth, useUI } from '../contexts/AppContext';
 import CadreFoyer from '../components/communaute/CadreFoyer';
 import { getMember } from '../firebase/firestore';
+import { restaurerKajabiAuto } from '../firebase/kajabi';
 import TexteLecon from '../lib/texteLecon';
 import { LecteurVideoPleinEcran } from '../components/LecteurVideoEmbarque';
 import SeuilVata from '../components/cours/SeuilVata';
@@ -142,6 +143,9 @@ const CoursDetailPage: React.FC = () => {
       .finally(() => setLoading(false));
   }, [id]);
 
+  // Une formation de l'ancien site retrouvée à la connexion : on relit l'accès.
+  const [relecture, setRelecture] = useState(0);
+  useEffect(() => { if (user) restaurerKajabiAuto(user.uid).then(r => { if (r.restaurees) setRelecture(x => x + 1); }); }, [user]);
   useEffect(() => {
     if (!user || !id) { setAchete(false); setSuspendu(false); setAccesVie(false); setVerifAcces(false); return; }
     setVerifAcces(true);
@@ -155,7 +159,7 @@ const CoursDetailPage: React.FC = () => {
       setTerminees(p.terminees || {});
       setDerniere((p as { derniereLecon?: string }).derniereLecon || null);
     }).catch(() => {}).finally(() => setProgressionLue(true));
-  }, [user, id]);
+  }, [user, id, relecture]);
 
   // Le contenu s'ouvre à qui a acheté (ou reçu) la formation. L'admin voit
   // la même barrière que tout le monde; son aperçu passe par ?apercu (le

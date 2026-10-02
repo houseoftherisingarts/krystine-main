@@ -236,3 +236,89 @@ export const kajabiUtiliserCode = onCall(
     return { formationId: donnees.formationId, titre: f.titre || donnees.formationTitre || donnees.formationId };
   },
 );
+
+// ── Restauration sans code, à la connexion (décision de Krystine, 2 oct. 2026) ──
+// Les anciennes clientes de VATA retrouvent leur formation dès qu'elles se
+// connectent avec la même adresse : aucun code. On lit le registre à cette
+// adresse et on écrit la même preuve d'achat que kajabiUtiliserCode (source
+// kajabi, donc tout le cours ouvert, sans goutte-à-goutte).
+//
+// Sécurité : l'adresse doit être vérifiée par Firebase (Google le fait; un
+// compte courriel et mot de passe confirme son adresse par le lien reçu).
+// Sinon n'importe qui créerait un compte avec l'adresse d'une cliente et
+// prendrait son accès : on répond alors « à vérifier », sans rien ouvrir.
+// Une entrée du registre est liée au premier compte restauré (restaurePar) :
+// un autre compte avec la même adresse est refusé et journalisé.
+//
+// Idempotent : un achat déjà « restaure » est sauté, et une preuve qui existe
+// déjà (un achat fait sur le site) n'est jamais écrasée. Limitée aux
+// formations ci-dessous tant que Krystine n'en a pas décidé d'autres.
+export const FORMATIONS_RESTAURATION_AUTO = ['kajabi-2148687644'];
+const RESTAURABLE = ['a_restaurer', 'code_envoye'];
+
+export const kajabiRestaurerAuto = onCall(
+  { region: 'us-central1' },
+  async (req) => {
+    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous.');
+    const uid = req.auth.uid;
+    const email = normaliser(req.auth.token?.email || '');
+    const rien = { restaurees: [] as string[], aVerifier: false };
+    if (!email) return rien;
+    const db = getFirestore();
+
+    // Offre → formations couvertes par la restauration automatique.
+    const achats = (await db.collection('kajabiRegistre').where('emailNormalise', '==', email).get()).docs;
+    if (!achats.length) return rien;
+    const offerIds = [...new Set(achats.map(d => String(d.get('kjbOfferId') || '')).filter(Boolean))];
+    const offres = offerIds.length ? await db.getAll(...offerIds.map(id => db.doc(`kajabiOffres/${id}`))) : [];
+    const formationsDe = new Map(offres.map(o => [o.id, ((o.get('formationIds') || []) as string[]).filter(f => FORMATIONS_RESTAURATION_AUTO.includes(f))]));
+    const couverts = achats.filter(d => (formationsDe.get(String(d.get('kjbOfferId') || '')) || []).length);
+
+    // Déjà restauré pour un autre compte avec la même adresse : refus journalisé.
+    const autres = couverts.filter(d => { const p = d.get('restaurePar') || (d.get('statut') === 'restaure' ? d.get('uid') : ''); return p && p !== uid; });
+    if (autres.length) console.warn(`[kajabiRestaurerAuto] refus : ${email} déjà restauré pour un autre compte (${autres.map(d => d.id).join(', ')}), appel de ${uid}`);
+
+    const aFaire = couverts.filter(d => RESTAURABLE.includes(String(d.get('statut'))) && !d.get('restaurePar'));
+    if (!aFaire.length) return rien;
+    if (req.auth.token?.email_verified !== true) return { restaurees: [] as string[], aVerifier: true };
+
+    const parFormation = new Map<string, { ids: string[]; offres: Set<string> }>();
+    for (const d of aFaire) {
+      const offre = String(d.get('kjbOfferId'));
+      for (const f of formationsDe.get(offre) || []) {
+        const e = parFormation.get(f) || { ids: [], offres: new Set<string>() };
+        e.ids.push(d.id); e.offres.add(offre); parFormation.set(f, e);
+      }
+    }
+
+    const restaurees: string[] = [];
+    for (const [formationId, info] of parFormation) {
+      const ref = db.doc(`achatsFormations/${uid}/formations/${formationId}`);
+      const f = ((await db.doc(`formations/${formationId}`).get()).data() || {}) as { titre?: string; imageUrl?: string };
+      const fait = await db.runTransaction(async (tx) => {
+        const regRefs = info.ids.map(id => db.doc(`kajabiRegistre/${id}`));
+        const [deja, ...regs] = await tx.getAll(ref, ...regRefs);
+        // Relu dans la transaction : un appel simultané a pu les prendre.
+        const libres = regs.filter(r => RESTAURABLE.includes(String(r.get('statut'))) && !r.get('restaurePar'));
+        if (!libres.length) return false;
+        if (!deja.exists) {
+          tx.set(ref, {
+            titre: f.titre || formationId,
+            imageUrl: f.imageUrl || '',
+            montant: 0,
+            source: 'kajabi',
+            kjbOfferIds: [...info.offres],
+            restaurationAuto: true,
+            acheteLe: FieldValue.serverTimestamp(),
+          });
+        }
+        for (const r of libres) tx.update(r.ref, { statut: 'restaure', uid, restaurePar: uid, restaureLe: FieldValue.serverTimestamp(), restaurationAuto: true });
+        tx.set(db.doc(`members/${uid}`), { kajabiEmails: FieldValue.arrayUnion(email) }, { merge: true });
+        return true;
+      });
+      if (fait) restaurees.push(formationId);
+    }
+    if (restaurees.length) console.log(`[kajabiRestaurerAuto] ${uid} (${email}) a retrouvé ${restaurees.join(', ')}`);
+    return { restaurees, aVerifier: false };
+  },
+);

@@ -247,6 +247,9 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       // des visites, du Pixel et de GA4, et y reste après la déconnexion; le
       // réglage « ce navigateur » de Visiteurs et clics permet de revenir dessus.
       if (admin && !exclusionDecidee()) exclureMoi(true);
+      // Les anciennes clientes de Kajabi retrouvent leurs formations à la
+      // connexion, sans code (Krystine, 2 oct. 2026). En arrière-plan.
+      if (u) void import('../firebase/kajabi').then(m => m.restaurerKajabiAuto(u.uid));
       setAuthReady(true);
     });
     return () => { window.clearTimeout(garde); unsub(); };

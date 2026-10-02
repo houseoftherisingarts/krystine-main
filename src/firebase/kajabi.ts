@@ -1,5 +1,6 @@
 import { collection, doc, getDoc, getDocs, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { httpsCallable, getFunctions } from 'firebase/functions';
+import { getAuth, sendEmailVerification } from 'firebase/auth';
 import app, { db } from '../firebase';
 
 // Les achats de l'ancien système (Kajabi) et leurs codes (functions/src/kajabi.ts).
@@ -12,6 +13,40 @@ export async function utiliserCodeKajabi(code: string): Promise<{ formationId: s
   if (!app) throw new Error('[Codes] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'kajabiUtiliserCode');
   return (await call({ code })).data as { formationId: string; titre: string };
+}
+
+/** Cliente : à la connexion, les achats de l'ancien système à son adresse
+ *  reviennent d'eux-mêmes (kajabiRestaurerAuto). Un seul appel par session et
+ *  par compte, sauf si l'adresse reste à confirmer. Ne lance jamais d'erreur. */
+export interface EtatRestauration { restaurees: number; aVerifier: boolean }
+const restaurations = new Map<string, Promise<EtatRestauration>>();
+export function restaurerKajabiAuto(uid: string): Promise<EtatRestauration> {
+  const cle = `kajabiRestaure:${uid}`;
+  const vide = { restaurees: 0, aVerifier: false };
+  let p = restaurations.get(uid);
+  if (p) return p;
+  let dejaFait = false;
+  try { dejaFait = sessionStorage.getItem(cle) === '1'; } catch { /* stockage bloqué */ }
+  p = dejaFait || !app ? Promise.resolve(vide) : (async () => {
+    // Revenue du lien de confirmation : le jeton doit le savoir avant l'appel.
+    const moi = getAuth(app).currentUser;
+    if (moi && !moi.emailVerified) { await moi.reload(); if (moi.emailVerified) await moi.getIdToken(true); }
+    const call = httpsCallable(getFunctions(app, 'us-central1'), 'kajabiRestaurerAuto');
+    const r = (await call({})).data as { restaurees?: string[]; aVerifier?: boolean };
+    if (!r.aVerifier) try { sessionStorage.setItem(cle, '1'); } catch { /* stockage bloqué */ }
+    return { restaurees: r.restaurees?.length || 0, aVerifier: !!r.aVerifier };
+  })().catch(() => vide);
+  restaurations.set(uid, p);
+  return p;
+}
+
+/** Cliente : le lien qui confirme son adresse (compte courriel et mot de passe). */
+export async function confirmerAdresseKajabi(): Promise<void> {
+  if (!app) throw new Error('[Codes] Firebase not configured');
+  const auth = getAuth(app);
+  if (!auth.currentUser) throw new Error('Connectez-vous.');
+  auth.languageCode = 'fr';
+  await sendEmailVerification(auth.currentUser, { url: `${window.location.origin}/compte?onglet=formations` });
 }
 
 /** Admin : la table offre Kajabi → formations du site. */

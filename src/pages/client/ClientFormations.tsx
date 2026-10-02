@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
 import { getMesFormations, getFormationsPubliees, type AchatFormation, type Formation } from '../../firebase/formations';
 import { estTelechargement } from '../../firebase/musique';
-import { utiliserCodeKajabi } from '../../firebase/kajabi';
+import { utiliserCodeKajabi, restaurerKajabiAuto, confirmerAdresseKajabi } from '../../firebase/kajabi';
 
 // « Mes formations » : les cours que la cliente a achetés. La preuve d'achat
 // est écrite par le serveur au paiement; l'admin peut aussi en accorder.
@@ -28,6 +28,17 @@ const ClientFormations: React.FC = () => {
       .finally(() => setLoading(false));
   };
   useEffect(charger, [user]);
+  // Une formation de l'ancien site retrouvée à la connexion : on relit la liste.
+  // Si l'adresse reste à confirmer, rien ne s'ouvre avant le lien cliqué.
+  const [aVerifier, setAVerifier] = useState(false);
+  const [lienEtat, setLienEtat] = useState<'' | 'envoi' | 'parti' | 'erreur'>('');
+  useEffect(() => {
+    if (user) restaurerKajabiAuto(user.uid).then(r => { setAVerifier(r.aVerifier); if (r.restaurees) charger(); });
+  }, [user]);
+  const envoyerLien = async () => {
+    setLienEtat('envoi');
+    try { await confirmerAdresseKajabi(); setLienEtat('parti'); } catch { setLienEtat('erreur'); }
+  };
 
   const entrerCode = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,6 +110,24 @@ const ClientFormations: React.FC = () => {
               </Link>
               );
             })}
+          </div>
+        )}
+
+        {/* Une formation de l'ancien site attend : l'adresse doit d'abord être confirmée. */}
+        {aVerifier && (
+          <div className="mt-6 rounded-[15px] border border-[#BA7B39]/30 bg-[#BA7B39]/5 p-4 dark:border-white/10 dark:bg-white/5">
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Une formation de l’ancien site vous attend' : 'A course from the former site is waiting for you'}</p>
+            <p className="mt-1 text-sm text-[#293027]/60 dark:text-white/60">
+              {lienEtat === 'parti'
+                ? (lang === 'FR' ? `Le lien est parti vers ${user?.email}. Cliquez dessus, puis revenez ici : votre formation sera ouverte.` : `The link is on its way to ${user?.email}. Click it, then come back here: your course will be open.`)
+                : (lang === 'FR' ? 'Confirmez votre adresse courriel pour l’ouvrir. Nous vous envoyons un lien, il suffit de cliquer dessus.' : 'Confirm your email address to open it. We send you a link; just click it.')}
+            </p>
+            {lienEtat !== 'parti' && (
+              <button type="button" onClick={envoyerLien} disabled={lienEtat === 'envoi'} className="mt-3 rounded-full bg-[#BA7B39] px-5 py-2 text-[11px] font-bold uppercase tracking-widest text-[#293027] disabled:opacity-50">
+                {lienEtat === 'envoi' ? '…' : (lang === 'FR' ? 'Recevoir le lien' : 'Send me the link')}
+              </button>
+            )}
+            {lienEtat === 'erreur' && <p className="mt-2 text-sm text-[#8B4A2F]">{lang === 'FR' ? 'Le lien n’a pas pu partir. Réessayez dans un instant.' : 'The link could not be sent. Try again in a moment.'}</p>}
           </div>
         )}
 
