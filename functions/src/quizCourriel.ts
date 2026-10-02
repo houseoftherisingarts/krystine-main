@@ -51,6 +51,58 @@ export const CLES_RESULTAT: Record<Dosha, { texte: string; source: string }[]> =
   ],
 };
 
+// ─── L'algorithme du résultat (validé par Krystine le 2 oct. 2026) ──────────
+// Pourcentages par bonds de 10. D1 ≥ D2 ≥ D3; à égalité, le Vent passe avant
+// le Feu, qui passe avant la Terre (« le Vent domine toujours »).
+//   équilibre : D1 − D3 ≤ 10       → profil-equilibre (texte à venir de Krystine)
+//   double    : D1 = D2            → profil-double + second-<D2>
+//   teintée   : D1 − D2 = 10       → profil-teinte + second-<D2>
+//   nette     : D1 − D2 ≥ 20       → profil-net
+// Miroir côté navigateur : lireProfil dans src/pages/QuizLoeuvre.tsx.
+export type Branche = 'equilibre' | 'double' | 'teinte' | 'net';
+const PRIORITE: Dosha[] = ['vata', 'pitta', 'kapha'];
+const COURANT_TAG: Record<Dosha, string> = { vata: 'vent', pitta: 'feu', kapha: 'terre' };
+/** L'étiquette qui fait entrer dans la suite de lecture du dominant. */
+export const ETIQUETTE_SUITE: Record<Dosha, string> = { vata: 'suite-vent', pitta: 'suite-feu', kapha: 'suite-terre' };
+/** Les dominances qui ont déjà leur séquence de suite (les autres reçoivent la liste d'attente). */
+export const SUITE_PRETE: Record<Dosha, boolean> = { vata: true, pitta: false, kapha: false };
+
+export interface Profil { ordre: [Dosha, Dosha, Dosha]; branche: Branche; etiquettes: string[] }
+
+export function lireProfil(p: { vata: number; pitta: number; kapha: number }): Profil {
+  const dix = (d: Dosha) => Math.round((Number(p[d]) || 0) / 10) * 10;
+  // Tri stable : à égalité, l'ordre de PRIORITE tient.
+  const ordre = [...PRIORITE].sort((a, b) => dix(b) - dix(a)) as [Dosha, Dosha, Dosha];
+  const [d1, d2, d3] = ordre;
+  const second = `second-${COURANT_TAG[d2]}`;
+  if (dix(d1) - dix(d3) <= 10) return { ordre, branche: 'equilibre', etiquettes: ['profil-equilibre'] };
+  if (dix(d1) === dix(d2)) return { ordre, branche: 'double', etiquettes: ['profil-double', second] };
+  if (dix(d1) - dix(d2) === 10) return { ordre, branche: 'teinte', etiquettes: ['profil-teinte', second] };
+  return { ordre, branche: 'net', etiquettes: ['profil-net'] };
+}
+
+// « une part importante de Vent », « partent du Vent, parce qu'il domine », « mais la Terre y joue ».
+const GENRE: Record<Dosha, { de: string; du: string; le: string; pronom: string }> = {
+  vata: { de: 'de Vent', du: 'du Vent', le: 'le Vent', pronom: 'il' },
+  pitta: { de: 'de Feu', du: 'du Feu', le: 'le Feu', pronom: 'il' },
+  kapha: { de: 'de Terre', du: 'de la Terre', le: 'la Terre', pronom: 'elle' },
+};
+
+/** La phrase du second dosha (branches teintée et, pour l'instant, double); vide sinon. */
+export function phraseSecond(pr: Profil): string {
+  if (pr.branche !== 'teinte' && pr.branche !== 'double') return '';
+  const [d1, d2] = pr.ordre;
+  const a = `Votre lecture montre aussi une part importante ${GENRE[d2].de}.`;
+  if (!SUITE_PRETE[d1]) return a;
+  return `${a} Les lettres qui suivent partent ${GENRE[d1].du}, parce qu’${GENRE[d1].pronom} domine aujourd’hui, mais ${GENRE[d2].le} y joue souvent un rôle.`;
+}
+
+export const LIEN_ATTENTE: Record<Dosha, string | null> = {
+  vata: null,
+  pitta: `${SITE}/liste-attente?programme=pitta`,
+  kapha: `${SITE}/liste-attente?programme=kapha`,
+};
+
 export interface ResultatQuiz {
   prenom: string;
   dominant: Dosha;
@@ -84,6 +136,8 @@ const FILET = '#d9ccb4';
 export function renderResultatHtml(r: ResultatQuiz): string {
   const d = r.dominant;
   const [p1, p2] = CARTE[d];
+  const second = phraseSecond(lireProfil(r.pourcentages));
+  const attente = LIEN_ATTENTE[d];
   const libelle = (t: string) => `<p style="margin:0 0 10px;font-family:${SANS};font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:${LAITON};">${t}</p>`;
   const filet = `<tr><td style="padding:0 40px;"><div style="height:1px;background:${FILET};line-height:1px;font-size:1px;">&nbsp;</div></td></tr>`;
 
@@ -134,6 +188,7 @@ export function renderResultatHtml(r: ResultatQuiz): string {
   <tr><td style="padding:28px 40px 26px;">
     ${libelle('La direction')}
     <p style="margin:0;font-family:${SERIF};font-weight:300;font-size:22px;line-height:1.4;color:${ENCRE};">${DIRECTION[d]}</p>
+    ${second ? `<p style="margin:18px 0 0;font-family:${SANS};font-size:15px;line-height:1.8;color:${DOUX};">${esc(second)}</p>` : ''}
   </td></tr>
 
   ${filet}
@@ -142,6 +197,9 @@ export function renderResultatHtml(r: ResultatQuiz): string {
     ${cles}
   </td></tr>
   ${suite}
+  ${attente ? `<tr><td align="center" style="padding:${suite ? '14px' : '30px'} 40px 6px;">
+      <a href="${esc(attente)}" style="font-family:${SANS};font-size:13px;line-height:1.7;color:${ENCRE};text-decoration:underline;">Rejoindre la liste d’attente du programme ${NOM_AYURVEDA[d]}</a>
+    </td></tr>` : ''}
 
   <tr><td style="padding:34px 40px 36px;">
     <div style="height:1px;background:${FILET};line-height:1px;font-size:1px;margin-bottom:20px;">&nbsp;</div>
@@ -170,11 +228,14 @@ export function renderResultatTexte(r: ResultatQuiz): string {
     '',
     'La direction',
     DIRECTION[d],
+    ...(phraseSecond(lireProfil(r.pourcentages)) ? ['', phraseSecond(lireProfil(r.pourcentages))] : []),
     '',
     'Deux clés tirées de Nature & Ayurveda',
     ...CLES_RESULTAT[d].map(c => `« ${c.texte} » (${c.source})`),
   ];
   if (!r.suite && r.lienSuite) l.push('', `Recevoir la suite de ma lecture : ${r.lienSuite}`);
+  const attenteTxt = LIEN_ATTENTE[d];
+  if (attenteTxt) l.push('', `Rejoindre la liste d’attente du programme ${NOM_AYURVEDA[d]} : ${attenteTxt}`);
   l.push('', 'Krystine St-Laurent · krystinestlaurent.ca',
     'Vous recevez ce courriel parce que vous avez demandé votre résultat au quiz sur krystinestlaurent.ca.');
   return l.join('\n');

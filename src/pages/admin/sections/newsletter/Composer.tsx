@@ -45,6 +45,7 @@ const BLOCK_PALETTE: Array<{ type: BlockType; icon: string; label: string; templ
   { type: 'cta',      icon: 'fa-star',        label: 'Appel fort', template: () => ({ type: 'cta',       content: { eyebrow: 'Nouveauté', title: '', body: '', href: 'https://www.krystinestlaurent.ca', buttonLabel: 'En savoir plus' } }) },
   { type: 'divider',  icon: 'fa-minus',       label: 'Séparateur', template: () => ({ type: 'divider',   content: { style: 'ligne' } }) },
   { type: 'spacer',   icon: 'fa-arrows-up-down', label: 'Espace', template: () => ({ type: 'spacer',    content: { size: 'md' } }) },
+  { type: 'carnet',   icon: 'fa-book-open',   label: 'Carnet d’Ella', template: () => ({ type: 'carnet', content: { dosha: 'vata', lignes: [] } }) },
 ];
 
 // Le composeur prend tout l'écran (par-dessus le menu de l'admin) : la page
@@ -1067,6 +1068,16 @@ const BlockFrame: React.FC<{
               {Object.entries(SEPARATEURS).map(([k, v]) => <option key={k} value={k}>{v.glyphe ? `${v.glyphe.replace(/\s+/g, ' ')}  ${v.label}` : v.label}</option>)}
             </select>
           )}
+          {block.type === 'carnet' && (
+            <>
+              <select value={c.dosha || 'vata'} onChange={e => onPatch({ dosha: e.target.value })} className={selectClass} title="Dosha de la bannière">
+                <option value="vata">Vata (Vent)</option>
+                <option value="pitta">Pitta (Feu)</option>
+                <option value="kapha">Kapha (Terre)</option>
+              </select>
+              <CarnetTexte lignes={Array.isArray(c.lignes) ? c.lignes : []} onChange={lignes => onPatch({ lignes })} />
+            </>
+          )}
           {block.type === 'spacer' && (
             <select value={c.size || 'md'} onChange={e => onPatch({ size: e.target.value })} className={selectClass} title="Hauteur de l'espace">
               <option value="sm">Petit</option>
@@ -1082,6 +1093,24 @@ const BlockFrame: React.FC<{
         </div>
       )}
     </div>
+  );
+};
+
+// Le texte du carnet d'Ella : une zone de texte où une ligne vide sépare deux
+// paragraphes. Le texte vit ici pendant la frappe et s'enregistre à la sortie.
+const CarnetTexte: React.FC<{ lignes: string[]; onChange: (lignes: string[]) => void }> = ({ lignes, onChange }) => {
+  const joint = lignes.join('\n\n');
+  const [texte, setTexte] = useState(joint);
+  useEffect(() => { setTexte(joint); }, [joint]);
+  return (
+    <textarea
+      value={texte}
+      onChange={e => setTexte(e.target.value)}
+      onBlur={() => { const n = texte.split(/\n\s*\n/).map(l => l.replace(/\s*\n\s*/g, ' ').trim()).filter(Boolean); if (n.join('\n\n') !== joint) onChange(n); }}
+      placeholder="Un paragraphe, une ligne vide, le paragraphe suivant."
+      rows={6}
+      className={`${selectClass} w-[28rem] max-w-full font-serif leading-snug`}
+    />
   );
 };
 

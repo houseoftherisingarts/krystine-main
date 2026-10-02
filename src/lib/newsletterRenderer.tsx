@@ -15,6 +15,7 @@ export interface CTAContent       { eyebrow?: string; title?: string; body?: str
 export interface SpacerContent    { size?: 'sm' | 'md' | 'lg' }
 export interface ListContent      { text?: string; style?: 'puce' | 'numero'; police?: Police; taille?: Taille }   // une ligne par puce
 export interface DividerContent   { style?: Separateur }
+export interface CarnetContent    { dosha?: 'vata' | 'pitta' | 'kapha'; lignes?: string[] }   // un paragraphe par ligne
 export type Separateur = 'ligne' | 'pleine' | 'points' | 'fleuron' | 'etoiles' | 'feuille';
 
 // Brand palette — keep in sync with index.html Tailwind config so on-site
@@ -441,6 +442,26 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
                 {o.phrase && <p className="mt-2 font-serif text-base leading-snug text-[#293027] dark:text-white">{o.phrase}</p>}
               </div>
             ))}
+          </div>
+        </div>
+      );
+    }
+    case 'carnet': {
+      // Le carnet d'Ella (miroir du courriel) : bannière du dosha, paragraphes
+      // centrés dans la boîte de papier, séparés d'un losange. Le texte se
+      // change dans la barre d'outils du bloc (composeur).
+      const dosha = ['vata', 'pitta', 'kapha'].includes(c.dosha) ? c.dosha : 'vata';
+      const lignes = (Array.isArray(c.lignes) ? c.lignes : []).map((l: unknown) => String(l ?? '').trim()).filter(Boolean) as string[];
+      return (
+        <div className="my-6">
+          <img src={`/infolettre/carnet-ella-${dosha}.jpg`} alt="Le carnet d’Ella" className="block w-full h-auto mb-2.5" />
+          <div className="border border-[#b89a62] bg-[#f3ead9] p-7 text-center" style={{ fontFamily: "Georgia, 'Times New Roman', serif", color: '#2b241c', fontSize: 17, lineHeight: 1.65 }}>
+            {lignes.length ? lignes.map((l, i) => (
+              <React.Fragment key={i}>
+                {i > 0 && <p className="py-3.5 text-[11px] leading-none text-[#b89a62]">◆</p>}
+                <p>{l}</p>
+              </React.Fragment>
+            )) : <p className="opacity-50">{edit ? 'Écrivez le carnet dans la barre d’outils du bloc.' : ''}</p>}
           </div>
         </div>
       );

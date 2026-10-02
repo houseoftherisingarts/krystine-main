@@ -4,7 +4,7 @@ import * as crypto from 'crypto';
 import { RECAPTCHA_SECRET, garderFormulaire } from './captcha';
 import { MAIL_SECRETS, createTransporter, fromAddr, REPLY_TO, PUBLIC_BASE_URL } from './newsletter/mail';
 import { enregistrerInscription } from './newsletter/inscrire';
-import { renderResultatHtml, renderResultatTexte, sujetResultat, type Dosha } from './quizCourriel';
+import { renderResultatHtml, renderResultatTexte, sujetResultat, lireProfil, ETIQUETTE_SUITE, type Dosha } from './quizCourriel';
 
 // ─── « Recevoir mon résultat » (page /quiz) ──────────────────────────────────
 // Une visiteuse reçoit son résultat par courriel sans créer de compte
@@ -18,6 +18,16 @@ const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const ENVOIS_MAX = 3;
 const FENETRE_MS = 24 * 60 * 60 * 1000;
 const NOM: Record<Dosha, string> = { vata: 'Vata', pitta: 'Pitta', kapha: 'Kapha' };
+
+// L'étiquette de suite (suite-vent, suite-feu, suite-terre) se pose APRÈS
+// l'inscription, dans une mise à jour à part : la séquence par étiquette ne
+// démarre que sur une fiche modifiée (inscrireSequencesEtiquette), jamais à
+// la création, et une étiquette déjà présente à la création ne la déclenche plus.
+async function poserSuite(ins: { id: string; status: string }, d1: Dosha) {
+  if (ins.status !== 'active') return;
+  await getFirestore().doc(`newsletter/${ins.id}`).update({ tags: FieldValue.arrayUnion(ETIQUETTE_SUITE[d1]) });
+}
+const ETIQUETTE_RX = /^(profil-(equilibre|double|teinte|net)|second-(vent|feu|terre))$/;
 
 const pct = (v: unknown) => {
   const n = Math.round(Number(v));
@@ -65,6 +75,11 @@ export const envoyerResultatQuiz = onCall(
     const p = (d.pourcentages && typeof d.pourcentages === 'object') ? d.pourcentages as Record<string, unknown> : {};
     const pourcentages = { vata: pct(p.vata), pitta: pct(p.pitta), kapha: pct(p.kapha) };
     const suite = d.suite === true;
+    // L'algorithme du résultat (quizCourriel.ts) : D1 vient des pourcentages,
+    // Vent puis Feu puis Terre à égalité. Sans pourcentages lisibles, le
+    // dominant reçu reste.
+    const profil = lireProfil(pourcentages);
+    const d1: Dosha = pourcentages.vata + pourcentages.pitta + pourcentages.kapha > 0 ? profil.ordre[0] : dominant;
 
     // Cadence par IP (5 par heure) puis jeton reCAPTCHA, comme la musique d'Origine.
     await garderFormulaire(String(d.token || ''), 'quiz-resultat', req.rawRequest?.ip);
@@ -78,10 +93,11 @@ export const envoyerResultatQuiz = onCall(
       firstName: prenom,
       lastName: '',
       email,
-      dominant: NOM[dominant],
+      dominant: NOM[d1],
       ...pourcentages,
       source: 'quiz-courriel',
-      tags: ['dosha-quiz'],
+      tags: ['dosha-quiz', ...profil.etiquettes],
+      branche: profil.branche,
       suite,
       createdAt: FieldValue.serverTimestamp(),
     });
@@ -92,19 +108,19 @@ export const envoyerResultatQuiz = onCall(
     if (!suite) {
       const k = crypto.randomBytes(24).toString('base64url');
       await getFirestore().doc(`quizSuite/${k}`).set({
-        email, prenom, dosha: dominant, creeLe: FieldValue.serverTimestamp(),
+        email, prenom, dosha: d1, etiquettes: profil.etiquettes, creeLe: FieldValue.serverTimestamp(),
         ...(String(d.lang ?? '').toLowerCase() === 'en' ? { lang: 'en' } : { lang: 'fr' }),
       });
       lienSuite = `${PUBLIC_BASE_URL}/suite-lecture?k=${k}`;
     }
-    const r = { prenom, dominant, pourcentages, suite, lienSuite };
+    const r = { prenom, dominant: d1, pourcentages, suite, lienSuite };
     const transporter = createTransporter();
     try {
       await transporter.sendMail({
         replyTo: REPLY_TO,
         from: fromAddr(),
         to: email,
-        subject: sujetResultat(dominant),
+        subject: sujetResultat(d1),
         html: renderResultatHtml(r),
         text: renderResultatTexte(r),
       });
@@ -119,21 +135,22 @@ export const envoyerResultatQuiz = onCall(
       // L'inscription au fil ne fait jamais échouer l'envoi du résultat.
       try {
         const lang = String(d.lang ?? '').toLowerCase();
-        await enregistrerInscription({
+        const ins = await enregistrerInscription({
           email,
           firstName: prenom,
           source: 'quiz',
-          tags: ['quiz', `dosha-${dominant}`],
+          tags: ['quiz', `dosha-${d1}`, ...profil.etiquettes],
           consentement: true,
           ...(lang === 'fr' || lang === 'en' ? { lang } : {}),
           ...(d.provenance && typeof d.provenance === 'object' ? { provenance: d.provenance } : {}),
         }, req.auth?.uid);
+        await poserSuite(ins, d1);
       } catch (e) {
         console.error('[quiz] inscription au fil', e);
       }
     }
 
-    console.log(`[quiz] résultat envoyé · ${dominant} · suite=${suite}`);
+    console.log(`[quiz] résultat envoyé · ${d1} · ${profil.branche} · suite=${suite}`);
     return { ok: true };
   },
 );
@@ -158,14 +175,16 @@ export const suiteLecture = onRequest(
         const dosha = String(snap.get('dosha') || '') as Dosha;
         if (snap.exists && Date.now() - cree < VIE_MS && Object.prototype.hasOwnProperty.call(NOM, dosha)) {
           if (!snap.get('utiliseLe')) {
-            await enregistrerInscription({
+            const etiquettes = ((snap.get('etiquettes') || []) as unknown[]).map(String).filter(t => ETIQUETTE_RX.test(t));
+            const ins = await enregistrerInscription({
               email: snap.get('email'),
               firstName: snap.get('prenom'),
               source: 'quiz-suite',
-              tags: ['quiz', `dosha-${dosha}`],
+              tags: ['quiz', `dosha-${dosha}`, ...etiquettes],
               consentement: true,
               lang: snap.get('lang'),
             });
+            try { await poserSuite(ins, dosha); } catch (e) { console.error('[suiteLecture] étiquette de suite', e); }
             await ref.update({ utiliseLe: FieldValue.serverTimestamp() });
             console.log(`[suiteLecture] inscrite · ${dosha}`);
           }

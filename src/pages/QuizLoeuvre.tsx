@@ -334,6 +334,22 @@ const themeForName = (name: string) =>
 
 // One answer per question : the dosha the user picked. Total score equals the
 // number of answered questions; percentages are computed from that total.
+// L'algorithme du résultat, miroir de lireProfil (functions/src/quizCourriel.ts) :
+// pourcentages par bonds de 10, Vent puis Feu puis Terre à égalité.
+const PRIORITE_DOSHA: DoshaType[] = ['vata', 'pitta', 'kapha'];
+const TAG_COURANT: Record<DoshaType, string> = { vata: 'vent', pitta: 'feu', kapha: 'terre' };
+const lireProfil = (p: { vata: number; pitta: number; kapha: number }) => {
+  const dix = (d: DoshaType) => Math.round((Number(p[d]) || 0) / 10) * 10;
+  const ordre = [...PRIORITE_DOSHA].sort((a, b) => dix(b) - dix(a));
+  const [d1, d2, d3] = ordre;
+  const second = `second-${TAG_COURANT[d2]}`;
+  const etiquettes = dix(d1) - dix(d3) <= 10 ? ['profil-equilibre']
+    : dix(d1) === dix(d2) ? ['profil-double', second]
+    : dix(d1) - dix(d2) === 10 ? ['profil-teinte', second]
+    : ['profil-net'];
+  return { d1, etiquettes, suite: `suite-${TAG_COURANT[d1]}` };
+};
+
 const scoresFromPicks = (picks: (DoshaType | null)[]) => {
   const s = { vata: 0, pitta: 0, kapha: 0 };
   for (const p of picks) if (p) s[p] += 1;
@@ -431,19 +447,15 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
 
   const computeTeaser = (scores: { vata: number; pitta: number; kapha: number }) => {
     const { vata, pitta, kapha } = scores;
-    let dominant = ay.doshas[0];
-    if (pitta >= vata && pitta >= kapha) dominant = ay.doshas[1];
-    if (kapha >= vata && kapha >= pitta) dominant = ay.doshas[2];
-    if (vata >= pitta && vata >= kapha) dominant = ay.doshas[0];
     const total = vata + pitta + kapha || 1;
-    return {
-      dominant,
-      percentages: {
-        vata: Math.round((vata / total) * 100),
-        pitta: Math.round((pitta / total) * 100),
-        kapha: Math.round((kapha / total) * 100),
-      },
+    const percentages = {
+      vata: Math.round((vata / total) * 100),
+      pitta: Math.round((pitta / total) * 100),
+      kapha: Math.round((kapha / total) * 100),
     };
+    // Le dominant suit l'algorithme validé : à égalité, Vent, puis Feu, puis Terre.
+    const dominant = ay.doshas[PRIORITE_DOSHA.indexOf(lireProfil(percentages).d1)];
+    return { dominant, percentages };
   };
 
   // Single-click answer: records the pick and auto-advances after a brief
@@ -555,7 +567,13 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
       try { await points.quizCompleted(user.uid); } catch { /* non-fatal */ }
       if (fil && user.email) {
         try {
-          await addNewsletterSubscriber({ email: user.email, firstName: firstName || undefined, source: 'quiz', tags: ['quiz', `dosha-${String(dominant.name || '').toLowerCase()}`] } as any);
+          const profil = lireProfil(percentages);
+          const ins = await addNewsletterSubscriber({ email: user.email, firstName: firstName || undefined, source: 'quiz', tags: ['quiz', `dosha-${String(dominant.name || '').toLowerCase()}`, ...profil.etiquettes] } as any);
+          // L'étiquette de suite part dans un second appel, APRÈS l'inscription :
+          // la séquence ne démarre que sur une fiche modifiée, jamais à sa création.
+          if (ins && ins.status === 'active') {
+            try { await addNewsletterSubscriber({ email: user.email, source: 'quiz', tags: [profil.suite] } as any); } catch { /* la suite n'empêche jamais le résultat */ }
+          }
           trackLead('quiz');
           try { await points.newsletterSigned(user.uid, 'quiz'); } catch { /* non-fatal */ }
           try { sessionStorage.removeItem('quiz-fil'); } catch { /* sans stockage */ }

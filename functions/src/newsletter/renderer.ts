@@ -8,7 +8,7 @@
 
 import { PUBLIC_BASE_URL } from './mail';
 
-export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer' | 'list' | 'choix';
+export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer' | 'list' | 'choix' | 'carnet';
 
 export interface NewsletterBlock {
   type: BlockType;
@@ -200,6 +200,8 @@ function stripRich(text: string): string {
   return String(text ?? '').replace(/<\/?(b|i|u|grand|tgrand|manu)>/g, '').replace(/<a href="[^"]*">/g, '').replace(/<\/a>/g, '');
 }
 
+const DOSHAS_CARNET = ['vata', 'pitta', 'kapha'];
+
 function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette = PALETTE_CLAIRE, k = 1): string {
   const c = (block.content || {}) as any;
   const t = (px: number) => Math.round(px * k);
@@ -329,6 +331,20 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       const question = c.question ? `<tr><td align="center" style="padding:18px 0 8px;font-family:${CHARTE.serif};font-size:${tTitre(24)}px;line-height:1.2;color:${pal.ink};">${esc(c.question)}</td></tr>` : '';
       return `${question}<tr><td style="padding:0 0 18px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 -6px;">${rangs}</table></td></tr>`;
     }
+    case 'carnet': {
+      // Le carnet d'Ella (Krystine, 2 oct. 2026) : la bannière du dosha, puis
+      // ses paragraphes centrés dans une boîte de papier, séparés d'un losange.
+      const dosha = DOSHAS_CARNET.includes(c.dosha) ? c.dosha : 'vata';
+      const lignes = (Array.isArray(c.lignes) ? c.lignes : []).map((l: unknown) => String(l ?? '').trim()).filter(Boolean);
+      if (!lignes.length) return '';
+      const serif = "Georgia, 'Times New Roman', serif";
+      const losange = `<tr><td align="center" style="padding:14px 0;font-family:${serif};font-size:${t(11)}px;line-height:1;color:#b89a62;">&#9670;</td></tr>`;
+      const paras = lignes.map((l: string) => `<tr><td align="center" style="font-family:${serif};font-size:${t(17)}px;line-height:1.65;color:#2b241c;">${esc(l)}</td></tr>`).join(losange);
+      return `<tr><td style="padding:10px 0 24px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr><td style="padding:0 0 10px;"><img src="${PUBLIC_BASE_URL}/infolettre/carnet-ella-${dosha}.jpg" alt="Le carnet d’Ella" width="520" style="display:block;width:100%;max-width:520px;height:auto;border:0;" /></td></tr>
+        <tr><td bgcolor="#f3ead9" style="background:#f3ead9;border:1px solid #b89a62;padding:28px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${paras}</table></td></tr>
+      </table></td></tr>`;
+    }
     default:
       return '';
   }
@@ -448,6 +464,9 @@ export function renderEmailText(blocks: NewsletterBlock[], opts: RenderEmailOpti
       case 'choix':
         if (c.question) lines.push(String(c.question));
         lines.push((Array.isArray(c.options) ? c.options : []).map((o: any) => `- ${o.libelle} : ${o.phrase || ''}`).join('\n'));
+        break;
+      case 'carnet':
+        lines.push((Array.isArray(c.lignes) ? c.lignes : []).map((l: unknown) => String(l ?? '').trim()).filter(Boolean).join('\n\n◆\n\n'));
         break;
       case 'list':
         lines.push(String(c.text || '').split(/\r?\n/).filter((l: string) => l.trim()).map((l: string, i: number) => `${c.style === 'numero' ? `${i + 1}.` : '-'} ${stripRich(l)}`).join('\n'));
