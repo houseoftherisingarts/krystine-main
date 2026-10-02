@@ -18,6 +18,8 @@ const ACHATS = [
 const CATALOGUE = [
   { id: 'foyer', titre: "Le Foyer d'Origine", imageUrl: '/assets/foyer-visuel-16x9.jpg', statut: 'publie', paywall: true, prix: 497, lienFiche: '/foyer' },
   { id: 'kajabi-2148687644', titre: "VATA Essentiel · L'Expérience Ayurveda, Saison Vata", imageUrl: '/vata/carte-saison-vata.jpg', statut: 'publie', paywall: true, prix: 1, lienFiche: '/vata' },
+  // Une formation factice en vente, pour voir la carte « à découvrir ».
+  { id: 'qa-en-vente', titre: "PITTA Essentiel · L'Expérience Ayurveda, Saison Pitta", imageUrl: '/vata/carte-saison-vata.jpg', statut: 'publie', paywall: true, prix: 97 },
 ];
 
 const MOCKS = {

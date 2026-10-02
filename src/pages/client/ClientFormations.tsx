@@ -3,6 +3,7 @@ import StickerFormat, { formatDe } from '../../components/cours/StickerFormat';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
+import { useSiteFlags } from '../../contexts/SiteFlagsContext';
 import { getMesFormations, getFormationsPubliees, type AchatFormation, type Formation } from '../../firebase/formations';
 import { estTelechargement } from '../../firebase/musique';
 import { utiliserCodeKajabi, restaurerKajabiAuto, confirmerAdresseKajabi } from '../../firebase/kajabi';
@@ -10,8 +11,28 @@ import { utiliserCodeKajabi, restaurerKajabiAuto, confirmerAdresseKajabi } from 
 // « Mes formations » : les cours que la cliente a achetés. La preuve d'achat
 // est écrite par le serveur au paiement; l'admin peut aussi en accorder.
 
+// Un titre long « VATA Essentiel · L'Expérience Ayurveda, Saison Vata » se
+// lit en deux temps : le nom en titre, la collection en petit dessous.
+const couperTitre = (titre: string): [string, string] => {
+  const i = titre.indexOf('·');
+  return i < 0 ? [titre, ''] : [titre.slice(0, i).trim(), titre.slice(i + 1).trim()];
+};
+// Les formations d'essai (« TEST … ») ne se montrent qu'aux administratrices.
+const estTest = (titre: string) => titre.trim().toUpperCase().startsWith('TEST');
+
+const TitreCarte: React.FC<{ titre: string }> = ({ titre }) => {
+  const [nom, collection] = couperTitre(titre);
+  return (
+    <span className="block min-w-0">
+      <span className="line-clamp-2 block font-medium leading-snug text-[#293027] dark:text-white">{nom}</span>
+      {collection && <span className="mt-0.5 line-clamp-2 block text-xs leading-snug text-[#293027]/55 dark:text-white/55">{collection}</span>}
+    </span>
+  );
+};
+
 const ClientFormations: React.FC = () => {
-  const { user, lang } = useApp();
+  const { user, lang, isAdmin } = useApp();
+  const { foyerOuvert, origine2Ouvert } = useSiteFlags();
   const [achats, setAchats] = useState<AchatFormation[]>([]);
   const [catalogue, setCatalogue] = useState<Formation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +82,13 @@ const ClientFormations: React.FC = () => {
   }
 
   const possedees = new Set(achats.map(a => a.id));
-  const aDecouvrir = catalogue.filter(f => !possedees.has(f.id));
+  const mesFormations = isAdmin ? achats : achats.filter(a => !estTest(a.titre));
+  // Seulement ce qui s'achète vraiment aujourd'hui : ni liste d'attente, ni
+  // Foyer ou Origine 2 tant que leur vente n'est pas ouverte dans l'admin.
+  const fermee = (f: Formation) => f.listeAttente
+    || (f.id === 'foyer' && !foyerOuvert)
+    || (f.id === 'origine2' && !origine2Ouvert);
+  const aDecouvrir = catalogue.filter(f => !possedees.has(f.id) && !fermee(f) && (isAdmin || !estTest(f.titre)));
 
   return (
     <div className="space-y-10">
@@ -70,7 +97,7 @@ const ClientFormations: React.FC = () => {
         <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
           {lang === 'FR' ? 'Vos formations' : 'Your courses'}
         </p>
-        {achats.length === 0 ? (
+        {mesFormations.length === 0 ? (
           <div className="mt-4 rounded-[15px] bg-[#BA7B39]/8 py-8 text-center dark:bg-white/5">
             <i className="fa-solid fa-graduation-cap mb-3 block text-2xl text-[#BA7B39]/60" />
             <p className="font-serif text-lg text-[#293027] dark:text-white">
@@ -81,8 +108,8 @@ const ClientFormations: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {achats.map(a => {
+          <div className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            {mesFormations.map(a => {
               // La couverture 16:9 : celle de la preuve d'achat, sinon celle de la fiche.
               const cover = a.imageUrl || catalogue.find(f => f.id === a.id)?.imageUrl || '';
               return (
@@ -92,18 +119,17 @@ const ClientFormations: React.FC = () => {
                 className="group overflow-hidden rounded-[15px] border border-[#293027]/10 transition-transform duration-300 hover:-translate-y-0.5 dark:border-white/10"
               >
                 {cover ? (
-                  <span className="relative block">
-                    <img src={cover} alt={a.titre} className="aspect-video w-full object-cover" />
-                    <StickerFormat format={formatDe(a.id)} lang={lang} ton="sombre" className="absolute left-3 top-3" />
-                  </span>
+                  <img src={cover} alt={a.titre} className="aspect-video w-full object-cover" />
                 ) : (
                   <div className="flex aspect-video w-full items-center justify-center bg-[#BA7B39]/10">
                     <i className="fa-solid fa-graduation-cap text-2xl text-[#8B4A2F]" />
                   </div>
                 )}
-                <div className="flex items-center justify-between gap-3 p-4">
-                  <p className="font-medium text-[#293027] dark:text-white">{a.titre}</p>
-                  <span className="shrink-0 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] opacity-0 transition-opacity group-hover:opacity-100">
+                {/* Le format sous l'image : il ne couvre plus le titre imprimé sur la couverture. */}
+                <div className="p-4">
+                  <StickerFormat format={formatDe(a.id)} lang={lang} className="mb-3" />
+                  <TitreCarte titre={a.titre} />
+                  <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] transition-colors group-hover:text-[#BA7B39]">
                     {lang === 'FR' ? 'Continuer' : 'Continue'} <i className="fa-solid fa-arrow-right" />
                   </span>
                 </div>
@@ -131,33 +157,41 @@ const ClientFormations: React.FC = () => {
           </div>
         )}
 
-        {/* La case du code : une formation achetée sur l'ancien site revient ici. */}
-        <form onSubmit={entrerCode} className="mt-6 rounded-[15px] border border-[#BA7B39]/30 bg-[#BA7B39]/5 p-4 dark:border-white/10 dark:bg-white/5">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'J’ai reçu un code' : 'I received a code'}</p>
-          <p className="mt-1 text-sm text-[#293027]/60 dark:text-white/60">
-            {lang === 'FR' ? 'Une formation suivie sur l’ancien site vous revient avec le code personnel reçu par courriel.' : 'A course from the former site comes back to you with the personal code you received by email.'}
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <input
-              value={code}
-              onChange={e => setCode(e.target.value.toUpperCase())}
-              placeholder="KSL-XXXX-XXXX"
-              autoComplete="off"
-              spellCheck={false}
-              className="min-w-[200px] flex-1 rounded-[10px] border border-[#293027]/15 bg-white px-3 py-2 font-mono text-sm uppercase tracking-[0.15em] text-[#293027] dark:border-white/15 dark:bg-white/10 dark:text-white"
-            />
-            <button type="submit" disabled={codeEnvoi || !code.trim()} className="rounded-full bg-[#BA7B39] px-5 py-2 text-[11px] font-bold uppercase tracking-widest text-[#293027] disabled:opacity-50">
-              {codeEnvoi ? '…' : (lang === 'FR' ? 'Retrouver ma formation' : 'Recover my course')}
-            </button>
-          </div>
-          {codeEtat && <p className={`mt-2 text-sm ${codeEtat.type === 'ok' ? 'text-[#2f5d3a] dark:text-[#9fd3a8]' : 'text-[#8B4A2F]'}`}>{codeEtat.texte}</p>}
-        </form>
+        {/* Le code d'accès : les anciennes clientes de Vata retrouvent leur accès
+            toutes seules à la connexion; le code ne sert plus qu'aux autres
+            formations de l'ancien site. Une ligne discrète, ouverte au besoin. */}
+        <details className="group/code mt-6" open={!!codeEtat || undefined}>
+          <summary className="inline-flex cursor-pointer list-none items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:text-[#BA7B39] [&::-webkit-details-marker]:hidden">
+            <i className="fa-solid fa-key text-[10px]" />
+            {lang === 'FR' ? 'J’ai reçu un code d’accès' : 'I received an access code'}
+            <i className="fa-solid fa-chevron-down text-[9px] transition-transform group-open/code:rotate-180" />
+          </summary>
+          <form onSubmit={entrerCode} className="mt-3 max-w-xl">
+            <p className="text-sm text-[#293027]/60 dark:text-white/60">
+              {lang === 'FR' ? 'Une formation suivie sur l’ancien site vous revient avec le code personnel reçu par courriel.' : 'A course from the former site comes back to you with the personal code you received by email.'}
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <input
+                value={code}
+                onChange={e => setCode(e.target.value.toUpperCase())}
+                placeholder="KSL-XXXX-XXXX"
+                autoComplete="off"
+                spellCheck={false}
+                className="min-w-[200px] flex-1 rounded-[10px] border border-[#293027]/15 bg-white px-3 py-2 font-mono text-sm uppercase tracking-[0.15em] text-[#293027] dark:border-white/15 dark:bg-white/10 dark:text-white"
+              />
+              <button type="submit" disabled={codeEnvoi || !code.trim()} className="rounded-full bg-[#BA7B39] px-5 py-2 text-[11px] font-bold uppercase tracking-widest text-[#293027] disabled:opacity-50">
+                {codeEnvoi ? '…' : (lang === 'FR' ? 'Retrouver ma formation' : 'Recover my course')}
+              </button>
+            </div>
+            {codeEtat && <p className={`mt-2 text-sm ${codeEtat.type === 'ok' ? 'text-[#2f5d3a] dark:text-[#9fd3a8]' : 'text-[#8B4A2F]'}`}>{codeEtat.texte}</p>}
+          </form>
+        </details>
       </section>
 
       {/* La deuxième moitié : les formations à découvrir et à rejoindre */}
       {aDecouvrir.length > 0 && (
         <section>
-          <div className="flex items-baseline justify-between gap-3">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-2">
             <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
               {lang === 'FR' ? 'Formations à découvrir' : 'Courses to discover'}
             </p>
@@ -165,7 +199,7 @@ const ClientFormations: React.FC = () => {
               {lang === 'FR' ? 'Toutes les formations' : 'All courses'} <i className="fa-solid fa-arrow-right" />
             </Link>
           </div>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+          <div className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {aDecouvrir.map(f => (
               <Link
                 key={f.id}
@@ -173,22 +207,22 @@ const ClientFormations: React.FC = () => {
                 className="group overflow-hidden rounded-[15px] border border-[#BA7B39]/30 transition-transform duration-300 hover:-translate-y-0.5"
               >
                 {f.imageUrl ? (
-                  <span className="relative block">
-                    <img src={f.imageUrl} alt={f.titre} className="aspect-video w-full object-cover" />
-                    <StickerFormat format={formatDe(f.id)} lang={lang} ton="sombre" className="absolute left-3 top-3" />
-                  </span>
+                  <img src={f.imageUrl} alt={f.titre} className="aspect-video w-full object-cover" />
                 ) : (
                   <div className="flex aspect-video w-full items-center justify-center bg-[#BA7B39]/10">
                     <i className="fa-solid fa-graduation-cap text-2xl text-[#8B4A2F]" />
                   </div>
                 )}
-                <div className="flex items-center justify-between gap-3 p-4">
-                  <p className="min-w-0 truncate font-medium text-[#293027] dark:text-white">{f.titre}</p>
+                <div className="p-4">
+                  <StickerFormat format={formatDe(f.id)} lang={lang} className="mb-3" />
+                  <div className="flex items-start justify-between gap-3">
+                  <TitreCarte titre={f.titre} />
                   <span className="shrink-0 rounded-full bg-[#BA7B39] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#293027]">
                     {f.listeAttente
                       ? (lang === 'FR' ? "Liste d'attente" : 'Waitlist')
                       : f.paywall && f.prix ? `${f.prix} $` : (lang === 'FR' ? 'Libre' : 'Free')}
                   </span>
+                  </div>
                 </div>
               </Link>
             ))}

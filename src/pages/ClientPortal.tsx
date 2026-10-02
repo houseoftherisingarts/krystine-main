@@ -268,9 +268,12 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
         <ul className="mt-3 grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-2">
           {FACONS_DE_GAGNER.map((f) => (
             <li key={f.fr} className="flex items-baseline gap-2">
-              <span className="w-16 shrink-0 text-right font-serif font-bold text-[#8B4A2F] dark:text-[#d9a05b]">+{f.pts}</span>
-              <span className="text-[#293027]/85 dark:text-white/85">{lang === 'FR' ? f.fr : f.en}</span>
-              {(lang === 'FR' ? f.noteFR : f.noteEN) && <span className="text-[9px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">{lang === 'FR' ? f.noteFR : f.noteEN}</span>}
+              <span className="w-12 shrink-0 text-right font-serif font-bold text-[#8B4A2F] sm:w-16 dark:text-[#d9a05b]">+{f.pts}</span>
+              {/* La précision suit le libellé et passe dessous quand la place manque, au lieu d'une troisième colonne écrasée sur mobile. */}
+              <span className="min-w-0 text-[#293027]/85 dark:text-white/85">
+                {lang === 'FR' ? f.fr : f.en}
+                {(lang === 'FR' ? f.noteFR : f.noteEN) && <span className="ml-2 inline-block text-[9px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">{lang === 'FR' ? f.noteFR : f.noteEN}</span>}
+              </span>
             </li>
           ))}
         </ul>
@@ -711,7 +714,7 @@ const ClientPortal: React.FC = () => {
         </AvecSignature>
         <div className="absolute inset-0 bg-gradient-to-t from-[#151d19]/75 via-[#151d19]/20 to-transparent" />
         {!member?.bannerURL && (
-          <div className="absolute left-6 top-5 md:left-8 md:top-6">
+          <div className="absolute left-6 top-16 sm:top-5 md:left-8 md:top-6">
             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/75" style={{ textShadow: '0 1px 10px rgba(0,0,0,0.4)' }}>
               {lang === 'FR' ? 'Votre espace' : 'Your space'}
             </p>
@@ -799,8 +802,9 @@ const ClientPortal: React.FC = () => {
       </div>
 
       {/* Le contenu en deux colonnes : l'onglet à gauche, le parrainage à droite */}
-      <div className="mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 lg:grid-cols-[1fr_320px]">
-        <div className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-6 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-[#293027]/55">
+      {/* Sans parrainage, la colonne de droite resterait vide : l'onglet prend alors toute la largeur. */}
+      <div className={`mt-8 grid w-full gap-6 px-6 md:px-8 lg:px-10 ${gamification.parrainage ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
+        <div className="min-w-0 rounded-[24px] border border-white/60 bg-white/55 p-5 backdrop-blur-md md:p-8 dark:border-white/10 dark:bg-[#293027]/55">
           {merciFormation && (
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-[16px] border border-[#BA7B39]/40 bg-[#BA7B39]/15 px-4 py-4 text-sm text-[#293027] dark:text-white">
               <span className="min-w-0 flex-1">
@@ -841,7 +845,7 @@ const ClientPortal: React.FC = () => {
           {tab === 'messagerie' && <ClientMessagerie />}
           {tab === 'aider'     && <ClientAider />}
         </div>
-        <RailCommunaute lang={lang} uid={user.uid} />
+        {gamification.parrainage && <RailCommunaute lang={lang} uid={user.uid} />}
       </div>
 
       {/* Le bouton « Problème technique », fixe en bas à droite, et sa fenêtre */}
