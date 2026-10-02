@@ -4367,5 +4367,19 @@
       "public/infolettre/krystine-univers.jpg",
       "src/lib/newsletterRenderer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T16:16:31.231Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "fadaa1bc",
+    "message": "Admin › Séquences : bouton « M'envoyer un test » sous chaque lettre",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/newsletter/RelectureSequence.tsx"
+    ]
   }
 ]
