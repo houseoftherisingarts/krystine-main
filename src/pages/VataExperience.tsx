@@ -359,7 +359,7 @@ const Cover: React.FC = () => {
             Des ancrages pour apaiser le mental lorsque les turbulences sont trop fortes.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-4">
-            <UnderlineCta label="Commencer la saison Vata" />
+            <UnderlineCta label="Commencer VATA Essentiel" />
             <a
               href="#parcours"
               className="v2-serif text-lg transition-colors duration-300 hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
@@ -779,7 +779,7 @@ const Tiers: React.FC = () => (
                 onMouseEnter={(e) => { e.currentTarget.style.background = C.sage; e.currentTarget.style.color = C.card; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = C.ink; e.currentTarget.style.color = C.cream; }}
               >
-                Commencer la saison Vata
+                Commencer VATA Essentiel
                 <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
               </button>
               <p className="mt-3 text-center text-[0.8rem] leading-snug" style={{ color: C.inkSoft }}>Garantie cœur léger : 15 jours pour changer d'avis, remboursement complet. De 5 à 15 minutes par jour, à votre rythme.</p>
@@ -978,7 +978,7 @@ const BackCover: React.FC = () => (
             onMouseEnter={(e) => { e.currentTarget.style.background = C.sage; e.currentTarget.style.color = C.card; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = C.cream; e.currentTarget.style.color = C.dark; }}
           >
-            Commencer la saison Vata
+            Commencer VATA Essentiel
             <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
           </button>
           <a
