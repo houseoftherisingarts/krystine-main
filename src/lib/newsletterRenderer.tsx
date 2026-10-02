@@ -447,11 +447,15 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
       );
     }
     case 'note': {
-      // La note d'Ayurveda (miroir du courriel).
+      // La note d'Ayurveda (miroir du courriel) : papier posé sur le bois.
+      const lignes = String(c.texte || '').split(/\r?\n/).map((l: string) => l.trim()).filter(Boolean);
       return (
-        <div className="my-6 border border-[#b89a62] border-l-4 bg-[#f3ead9] px-6 py-5">
-          <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7d6330]">{String(c.titre || '').trim() || 'Un mot d’Ayurveda'}</p>
-          <p className="text-[15px] leading-[1.7] text-[#2b241c]">{String(c.texte || '') || (edit ? 'Écrivez la note dans la barre d’outils du bloc.' : '')}</p>
+        <div className="my-6">
+          <img src="/infolettre/note-ayurveda-entete.jpg" alt="" className="block w-full h-auto" />
+          <div className="bg-[#301e12] pb-[18px] pl-[17px]"><div className="bg-[#cdb8a0] pb-6 pl-[18px] pr-[30px] pt-1.5" style={{ fontFamily: "Georgia, 'Times New Roman', serif", color: '#3a2f24', fontSize: 16, lineHeight: 1.6 }}>
+            <p className="pb-4 text-center text-2xl text-[#2b241c]">{String(c.titre || '').trim() || 'Un mot d’Ayurveda'}</p>
+            {lignes.length ? lignes.map((l: string, i: number) => { const k = l.indexOf(' : '); return <p key={i} className="pb-2.5">{k > 0 ? <><strong className="font-semibold text-[#2b241c]">{l.slice(0, k)}</strong> : {l.slice(k + 3)}</> : l}</p>; }) : <p className="opacity-50">{edit ? 'Une ligne par mot clé : « Mot : définition ».' : ''}</p>}
+          </div></div>
         </div>
       );
     }

@@ -1075,7 +1075,7 @@ const BlockFrame: React.FC<{
           {block.type === 'note' && (
             <>
               <input value={c.titre ?? ''} onChange={e => onPatch({ titre: e.target.value })} className={selectClass} placeholder="Un mot d’Ayurveda" title="Petit titre de la note" />
-              <CarnetTexte lignes={c.texte ? [String(c.texte)] : []} onChange={lignes => onPatch({ texte: lignes.join(' ') })} />
+              <textarea defaultValue={c.texte ?? ''} onBlur={e => { if (e.target.value !== (c.texte ?? '')) onPatch({ texte: e.target.value }); }} rows={8} placeholder="Une ligne par mot clé : « Mot : définition »" className={`${selectClass} w-[28rem] max-w-full font-serif leading-snug`} />
             </>
           )}
           {block.type === 'carnet' && (

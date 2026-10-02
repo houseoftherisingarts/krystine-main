@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T15:39:06.667Z",
+  "generatedAt": "2026-10-02T15:46:04.071Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1477,6 +1477,13 @@
       "folder": "infolettre",
       "kind": "image",
       "size": 89949
+    },
+    {
+      "path": "/infolettre/note-ayurveda-entete.jpg",
+      "name": "note-ayurveda-entete.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 66636
     },
     {
       "path": "/infolettre/picto-visage-cheveux.png",

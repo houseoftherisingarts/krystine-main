@@ -164,7 +164,15 @@ function imagesKaleidoscope(c: any): string[] {
 // Le pied de page des lettres ne nomme plus Inspirata Nature (Krystine,
 // 2 oct. 2026) : l'adresse postale reste, la raison sociale tombe.
 function adressePied(adresse: string): string {
-  return String(adresse || '').replace(/\bInspira(?:ta)?\s+(?:Nature|Ayurveda)\b\s*(?:inc\.?)?\s*[,·\-–]?\s*/gi, '').trim();
+  // Ni la province ni le pays (Krystine, 2 oct. 2026) : la rue, la ville et
+  // le code postal suffisent à rester joignable.
+  return String(adresse || '')
+    .replace(/\bInspira(?:ta)?\s+(?:Nature|Ayurveda)\b\s*(?:inc\.?)?\s*[,·\-–]?\s*/gi, '')
+    .replace(/\s*\((?:Québec|Quebec|QC)\)/gi, '')
+    .replace(/,?\s*Canada\b\.?/gi, '')
+    .replace(/,\s*(?:Québec|Quebec|QC)\b(?=\s*(?:[A-Z]\d[A-Z]|,|$))/gi, '')
+    .replace(/\s*,\s*$/, '')
+    .trim();
 }
 
 function esc(s: unknown): string {
@@ -353,16 +361,24 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       </table></td></tr>`;
     }
     case 'note': {
-      // La note d'Ayurveda (Krystine, 2 oct. 2026) : une petite base de savoir
-      // au bas d'une lettre, comme une note posée sur la page.
+      // La note d'Ayurveda (Krystine, 2 oct. 2026) : une page de papier posée
+      // sur le bois, comme dans ses visuels. Une ligne par mot clé; ce qui
+      // précède « : » s'écrit en gras (le mot), le reste est sa définition.
       const titre = String(c.titre ?? '').trim() || 'Un mot d’Ayurveda';
-      const texte = String(c.texte ?? '').trim();
-      if (!texte) return '';
+      const lignes = String(c.texte ?? '').split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      if (!lignes.length) return '';
+      const papier = '#cdb8a0';
+      const ligne = (l: string) => {
+        const k = l.indexOf(' : ');
+        const corps = k > 0 ? `<strong style="font-weight:600;color:#2b241c;">${esc(l.slice(0, k))}</strong> : ${esc(l.slice(k + 3))}` : esc(l);
+        return `<div style="padding:0 0 10px;">${corps}</div>`;
+      };
       return `<tr><td style="padding:14px 0 24px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-        <tr><td bgcolor="#f3ead9" style="background:#f3ead9;border:1px solid #b89a62;border-left:4px solid #b89a62;padding:22px 26px;">
-          <div style="font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:600;color:#7d6330;margin:0 0 10px;">${esc(titre)}</div>
-          <div style="font-family:${CHARTE.sans};font-size:${t(15)}px;line-height:1.7;color:#2b241c;">${esc(texte)}</div>
-        </td></tr>
+        <tr><td style="line-height:0;"><img src="${PUBLIC_BASE_URL}/infolettre/note-ayurveda-entete.jpg" alt="" width="520" style="display:block;width:100%;max-width:520px;height:auto;border:0;" /></td></tr>
+        <tr><td bgcolor="#301e12" style="background:#301e12;padding:0 0 18px 17px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td bgcolor="${papier}" style="background:${papier};padding:6px 30px 26px 18px;">
+          <div style="font-family:${CHARTE.serif};font-size:${t(24)}px;line-height:1.2;color:#2b241c;text-align:center;padding:0 0 16px;">${esc(titre)}</div>
+          <div style="font-family:Georgia, 'Times New Roman', serif;font-size:${t(16)}px;line-height:1.6;color:#3a2f24;">${lignes.map(ligne).join('')}</div>
+        </td></tr></table></td></tr>
       </table></td></tr>`;
     }
     default:
