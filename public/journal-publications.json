@@ -4067,5 +4067,21 @@
       "public/infolettre/carnet-ella-pitta.jpg",
       "public/infolettre/carnet-ella-vata.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-02T13:59:55.055Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "26d0a468",
+    "message": "Infolettre : bannières « Le carnet d'Ella », majuscule et picto plus foncé",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/carnet-ella-kapha.jpg",
+      "public/infolettre/carnet-ella-pitta.jpg",
+      "public/infolettre/carnet-ella-vata.jpg"
+    ]
   }
 ]
