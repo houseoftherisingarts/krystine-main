@@ -4555,5 +4555,19 @@
       "public/assets-manifest.json",
       "src/pages/FormationsLanding.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T17:13:48.436Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "646debaf",
+    "message": "Formations (/formations) : la carte EXPÉRIENCE ORIGINE 2 joue la vidéo du coffret en boucle, sans son",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/FormationsLanding.tsx"
+    ]
   }
 ]
