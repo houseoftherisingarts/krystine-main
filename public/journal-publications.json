@@ -4613,5 +4613,21 @@
       "public/assets-manifest.json",
       "src/lib/versements.ts"
     ]
+  },
+  {
+    "quand": "2026-10-02T18:03:29.366Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "23c9cadc",
+    "message": "Achat test des versements : VATA Essentiel temporairement à 1 $, trois versements permis au prix symbolique",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/versements.ts",
+      "public/assets-manifest.json",
+      "src/lib/versements.ts"
+    ]
   }
 ]
