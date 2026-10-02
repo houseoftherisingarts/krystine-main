@@ -4484,5 +4484,19 @@
       "src/pages/VataExperience.tsx",
       "src/pages/vata/offre.ts"
     ]
+  },
+  {
+    "quand": "2026-10-02T17:03:10.414Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c067ef2b",
+    "message": "Page Vata (/vata) : boutons « Commencer VATA Essentiel »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
