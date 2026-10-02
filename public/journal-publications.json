@@ -5065,5 +5065,20 @@
       "public/assets-manifest.json",
       "public/infolettre/vata-sens.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-02T23:38:07.912Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "12bb82db",
+    "message": "Confirmation d'achat : « Notre équipe est là pour vous »",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/confirmationAchat.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
