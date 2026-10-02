@@ -4444,5 +4444,24 @@
       "src/lib/newsletterRenderer.tsx",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T16:50:26.593Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "3ca5837a",
+    "message": "Infolettres : cinq bas de lettre différents vers VATA Essentiel (éventail, les sens, le souffle, le toucher, la présence) avec bouton; quiz et site : sans le mot « symptômes »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/vata-eventail.jpg",
+      "public/infolettre/vata-pied-presence.jpg",
+      "public/infolettre/vata-pied-souffle.jpg",
+      "public/infolettre/vata-pied-toucher.jpg",
+      "src/content.ts",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
