@@ -9,7 +9,8 @@ import {
 } from '@phosphor-icons/react';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT } from '../content';
-import { addDoshaQuizResult, updateMember } from '../firebase/firestore';
+import { addDoshaQuizResult, updateMember, addNewsletterSubscriber } from '../firebase/firestore';
+import { trackLead } from '../lib/track';
 import { points } from '../firebase/points';
 import {
   getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct,
@@ -438,6 +439,12 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
     setResult(null);
   };
 
+  // Le consentement au fil, demandé au moment de créer son compte pour voir le
+  // résultat (Krystine, 2 oct. 2026 : 95 quiz, 13 inscrites). Jamais coché
+  // d'avance; gardé le temps de la connexion Google.
+  const [fil, setFil] = useState<boolean>(() => { try { return sessionStorage.getItem('quiz-fil') === '1'; } catch { return false; } });
+  const choisirFil = (v: boolean) => { setFil(v); try { sessionStorage.setItem('quiz-fil', v ? '1' : '0'); } catch { /* sans stockage */ } };
+
   const handleQuizCompute = async () => {
     if (!user) { setSignInOpen(true); return; }
     const { dominant, percentages } = teaser ?? computeTeaser(scoresFromPicks(picks));
@@ -460,6 +467,14 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
       // Loyalty: 5 pts for completing the quiz. Idempotent on quiz:{uid},
       // so retaking the quiz doesn't re-grant.
       try { await points.quizCompleted(user.uid); } catch { /* non-fatal */ }
+      if (fil && user.email) {
+        try {
+          await addNewsletterSubscriber({ email: user.email, firstName: firstName || undefined, source: 'quiz', tags: ['quiz', `dosha-${String(dominant.name || '').toLowerCase()}`] } as any);
+          trackLead('quiz');
+          try { await points.newsletterSigned(user.uid, 'quiz'); } catch { /* non-fatal */ }
+          try { sessionStorage.removeItem('quiz-fil'); } catch { /* sans stockage */ }
+        } catch { /* l'inscription au fil n'empêche jamais le résultat */ }
+      }
     } catch {}
     finally { setSubmitting(false); }
     setResult({ dominant, percentages });
@@ -643,6 +658,19 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                   ? (lang === 'FR' ? 'Enregistrez votre résultat dans votre espace pour accéder à vos rituels et recommandations personnalisés.' : 'Save your result to your space to unlock your personalized rituals and recommendations.')
                   : (lang === 'FR' ? 'Connectez-vous pour enregistrer votre profil et débloquer vos rituels personnalisés.' : 'Sign in to save your profile and unlock your personalized rituals.')}
               </p>
+
+              <label className="mt-7 mx-auto flex max-w-[34rem] cursor-pointer items-start gap-3 text-left text-[0.92rem] leading-relaxed text-[#3a2f23]">
+                <input
+                  type="checkbox"
+                  checked={fil}
+                  onChange={e => choisirFil(e.target.checked)}
+                  className="mt-1 h-[18px] w-[18px] shrink-0 cursor-pointer"
+                  style={{ accentColor: th.accent }}
+                />
+                <span>{lang === 'FR'
+                  ? <>Recevoir les repères de saison pour ma nature <b>{teaser.dominant.name}</b>, par courriel. Désabonnement en un clic.</>
+                  : <>Receive seasonal markers for my <b>{teaser.dominant.name}</b> nature, by email. One-click unsubscribe.</>}</span>
+              </label>
 
               <div className="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
                 {user ? (
