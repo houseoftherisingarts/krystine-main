@@ -64,8 +64,8 @@ const SP: Chapitre[] = ([
 export const PROGRAMMES: Record<string, Programme> = {
   'kajabi-2148687644': {
     id: 'kajabi-2148687644',
-    surtitre: { fr: 'Expérience Ayurveda', en: 'Ayurveda Experience' },
-    titre: { fr: 'Saison\nVata', en: 'Vata\nSeason' },
+    surtitre: { fr: 'L’Expérience Ayurveda · Saison Vata', en: 'The Ayurveda Experience · Vata Season' },
+    titre: { fr: 'VATA\nEssentiel', en: 'VATA\nEssential' },
     couverture: '/vata/couverture.webp',
     duree: { fr: '7 semaines', en: '7 weeks' },
     chemin: { etiquette: { fr: 'Le chemin des sens', en: 'The path of the senses' }, titre: { fr: 'Une porte s’ouvre à la fois', en: 'One door opens at a time' } },

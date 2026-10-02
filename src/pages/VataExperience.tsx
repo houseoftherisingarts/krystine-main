@@ -343,9 +343,10 @@ const Cover: React.FC = () => {
       <WindLines className="pointer-events-none absolute right-0 top-[6%] w-[min(58vw,640px)] hidden md:block" />
       <div className="relative min-w-0">
 
+      <p className="relative mb-4 text-[0.66rem] font-semibold uppercase tracking-[0.3em]" style={{ color: C.sageInk }}>L'Expérience Ayurveda · Saison Vata</p>
       <div className="relative flex items-center gap-5 mb-8">
         <Medallion Icon={Wind} size={46} />
-        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>VATA Essentiel · Une expérience Ayurveda de sept semaines</p>
+        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>VATA Essentiel · Sept semaines</p>
       </div>
 
       <h1 className="relative v2-serif font-light leading-[0.98] text-[clamp(2.1rem,5.6vw,5.4rem)]" style={{ color: C.ink }}>

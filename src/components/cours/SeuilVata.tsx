@@ -103,7 +103,7 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, un
       >
         <div>
           <p className="text-[10px] font-light uppercase tracking-[0.42em] text-[#EEE7DB]/85 md:text-[12px]">
-            {uni ? (fr ? 'L’Expérience Ayurveda' : 'The Ayurveda Experience') : (fr ? programme.surtitre.fr : programme.surtitre.en)}
+            {uni ? (fr ? 'L’Expérience Ayurveda · Saison Vata' : 'The Ayurveda Experience · Vata Season') : (fr ? programme.surtitre.fr : programme.surtitre.en)}
           </p>
           <h1 className="mt-3 font-sans text-[clamp(2.2rem,5vw,4.4rem)] font-extralight uppercase leading-[1] tracking-[0.14em] text-[#F7F3EA]">
             {(fr ? programme.titre.fr : programme.titre.en).replace(/\n/g, ' ')}
