@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T17:08:04.429Z",
+  "generatedAt": "2026-10-02T17:09:35.686Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2506,6 +2506,13 @@
       "folder": "vata",
       "kind": "video",
       "size": 3553017
+    },
+    {
+      "path": "/vata/carte-eventail.jpg",
+      "name": "carte-eventail.jpg",
+      "folder": "vata",
+      "kind": "image",
+      "size": 162016
     },
     {
       "path": "/vata/carte-saison-vata.jpg",
