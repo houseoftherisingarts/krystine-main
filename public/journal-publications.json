@@ -5032,5 +5032,24 @@
       "public/vata/semaines/v2-s7.webp",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T23:01:05.469Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "5539cc41",
+    "message": "VATA Essentiel : semaine VII La présence avec la fleur blanche",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/vata-pied-presence.jpg",
+      "public/vata/couvertures/img-048.jpg",
+      "public/vata/semaines/v2-s7-large.webp",
+      "public/vata/semaines/v2-s7-thumb.webp",
+      "public/vata/semaines/v2-s7.webp",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
