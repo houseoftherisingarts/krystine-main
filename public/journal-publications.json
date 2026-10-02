@@ -4862,5 +4862,20 @@
       "functions/src/confirmationAchat.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-02T21:08:24.363Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "466848f3",
+    "message": "Confirmation d'achat : section Vos accès (espace, identifiant, connexion), éventail VATA, fond blanc sous la signature",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/confirmationAchat.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
