@@ -26,9 +26,6 @@ export const VERSEMENTS_OUVERTS = true; // ouvert le 2 oct. 2026 : webhook à 4 
 /** Les nombres de versements permis pour ce prix. */
 export function versementsPermis(prix: number): number[] {
   if (!VERSEMENTS_OUVERTS) return [1];
-  // ACHAT TEST (2 oct. 2026) : à un prix symbolique (5 $ ou moins), les trois
-  // versements restent offerts pour vérifier l'abonnement. À retirer avec le test.
-  if (prix > 0 && prix <= 5) return [1, 3];
   if (prix >= 500) return [1, 3, 6];
   if (prix >= 200) return [1, 3];
   return [1];

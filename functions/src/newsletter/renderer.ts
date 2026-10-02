@@ -102,6 +102,8 @@ export function inlineForPreview(html: string): string {
 }
 
 export interface RenderEmailOptions {
+  /** Titre du bandeau quand il diffère de l’objet (« \n » = changement de ligne). */
+  titreBandeau?: string;
   subject: string;
   preheader?: string;
   unsubscribeUrl: string;
@@ -474,7 +476,7 @@ export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOpti
         ${showBandeau ? `<tr><td background="${image}" bgcolor="${fond}" style="background:${fondBandeau};padding:0;${showCover || couverture === 'titre' ? '' : 'border-radius:15px 15px 0 0;'}">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0"${image ? ` style="background:rgba(20,19,17,0.55);"` : ''}>
             <tr><td style="padding:30px 40px 0;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:${CHARTE.gold};font-weight:600;">${esc(etiquette)}</td></tr>
-            <tr><td style="padding:18px 40px 20px;font-family:${CHARTE.serif};font-size:34px;line-height:1.08;color:${texte};font-weight:500;">${esc(opts.subject)}</td></tr>
+            <tr><td style="padding:18px 40px 20px;font-family:${CHARTE.serif};font-size:34px;line-height:1.08;color:${texte};font-weight:500;">${opts.titreBandeau ? esc(opts.titreBandeau).replace(/\n/g, '<br />') : esc(opts.subject)}</td></tr>
             <tr><td style="padding:0 40px 28px;"><div style="height:1px;width:64px;background:${CHARTE.gold};"></div></td></tr>
           </table>
         </td></tr>` : ''}

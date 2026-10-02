@@ -19,7 +19,7 @@ export const CONFIRMATION_ACHAT_ACTIVE = true;
 // La note d'engagement des versements, la même que sur la page de paiement
 // (src/pages/PaiementFormation.tsx).
 const NOTE_ENGAGEMENT =
-  "En choisissant le paiement en versements, vous vous engagez à régler chaque versement à son échéance. À défaut de paiement, l'accès à la formation et aux privilèges qui s'y rattachent est suspendu jusqu'au règlement du solde.";
+  "Les versements suivants sont prélevés automatiquement chaque mois, à la date anniversaire de votre achat. Le paiement complet des versements est exigé pour préserver l'accès au programme : il ne s'agit pas d'un abonnement. En choisissant le paiement en versements, vous vous engagez à régler chaque versement à son échéance; à défaut de paiement, l'accès à la formation et aux privilèges qui s'y rattachent est suspendu jusqu'au règlement du solde.";
 
 const SOUTIEN = 'Nous sommes là pour vous. Une question, un doute, un petit pépin : écrivez-nous à <a href="mailto:teamksl@inspiratanature.com">teamksl@inspiratanature.com</a>.';
 
@@ -35,13 +35,13 @@ function recapBlocs(r: Recap): NewsletterBlock[] {
   const n = Number(r.versements) || 1;
   const out = [p(`<b>${n > 1 ? 'Montant payé aujourd’hui' : 'Montant payé'}</b> : ${dollars(r.total || 0)}${taxes}.`, 'sm')];
   if (n > 1) {
-    out.push(p(`Paiement en ${n} versements : les ${n === 3 ? 'deux' : n - 1} prochains seront prélevés automatiquement, un mois d’intervalle.`, 'sm'));
+    out.push(p(`Paiement en ${n} versements : les ${n === 3 ? 'deux' : n - 1} prochains seront prélevés automatiquement, chaque mois, à la date anniversaire de votre achat.`, 'sm'));
     out.push(p(NOTE_ENGAGEMENT, 'sm'));
   }
   return out;
 }
 
-export function lettreConfirmation(formationId: string, titre: string, recap: Recap, email = ''): { subject: string; preheader: string; blocks: NewsletterBlock[] } {
+export function lettreConfirmation(formationId: string, titre: string, recap: Recap, email = ''): { subject: string; preheader: string; blocks: NewsletterBlock[]; titreBandeau?: string } {
   const lien = `${PUBLIC_BASE_URL}/cours/${formationId}`;
   const fin: NewsletterBlock[] = [{ type: 'divider', content: { style: 'ligne' } }, ...(formationId === 'kajabi-2148687644' ? [p('<b>Votre formule</b> : VATA Essentiel.', 'sm')] : []), ...recapBlocs(recap), p(SOUTIEN)];
   // Les accès, dans chaque confirmation (Krystine, 2 oct. 2026).
@@ -53,7 +53,8 @@ export function lettreConfirmation(formationId: string, titre: string, recap: Re
   ];
   if (formationId === FORMATION_VATA_ID) {
     return {
-      subject: 'Bienvenue dans L’Expérience Ayurveda, Vata',
+      subject: 'Bienvenue dans L’Expérience Ayurveda, Saison Vata',
+      titreBandeau: 'Bienvenue dans L’Expérience Ayurveda,\nSaison Vata',
       preheader: 'Votre accès est ouvert. Voici par où commencer.',
       blocks: [
         p('Bonjour {{firstName}},'),
@@ -109,7 +110,7 @@ export function optionsConfirmation(subject: string, preheader: string, desinscr
 
 async function envoyer(dest: { email: string; firstName?: string }, formationId: string, titre: string, recap: Recap, prefixe = ''): Promise<void> {
   const l = lettreConfirmation(formationId, titre, recap, dest.email);
-  const opts = optionsConfirmation(l.subject, l.preheader, await lienDesinscription(dest.email), dest.firstName);
+  const opts = { ...optionsConfirmation(l.subject, l.preheader, await lienDesinscription(dest.email), dest.firstName), titreBandeau: l.titreBandeau };
   const transporter = createTransporter();
   try {
     await transporter.sendMail({

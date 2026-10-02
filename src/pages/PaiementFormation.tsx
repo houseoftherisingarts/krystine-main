@@ -19,7 +19,7 @@ import { StyleV2, Kicker, Masthead, Filet, GOUTTIERE } from '../components/v2/Ma
  */
 
 const NOTE_ENGAGEMENT =
-  "En choisissant le paiement en versements, vous vous engagez à régler chaque versement à son échéance. À défaut de paiement, l'accès à la formation et aux privilèges qui s'y rattachent est suspendu jusqu'au règlement du solde.";
+  "Les versements suivants sont prélevés automatiquement chaque mois, à la date anniversaire de votre achat. Le paiement complet des versements est exigé pour préserver l'accès au programme : il ne s'agit pas d'un abonnement. En choisissant le paiement en versements, vous vous engagez à régler chaque versement à son échéance; à défaut de paiement, l'accès à la formation et aux privilèges qui s'y rattachent est suspendu jusqu'au règlement du solde.";
 
 // La description courte : le premier paragraphe de la fiche, coupé proprement.
 const descriptionCourte = (d: string): string => {
