@@ -368,7 +368,7 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       // Découvrir l'univers de Krystine (2 oct. 2026) : ses livres, son podcast
       // et son site au bas des lettres; la bio scellée (jamais paraphrasée)
       // seulement quand bio est vrai, une fois dans une séquence.
-      const BIO = '37 ans d’expérience, soins intensifs, recherche clinique, les coulisses du système, avant de choisir l’herboristerie, l’Ayurveda et l’aromathérapie. Auteure de trois livres aux Éditions de l’Homme. Créatrice de Santé la vie et du podcast Au-delà des tendances.';
+      const BIO = 'Près de 40 ans d’expérience, soins intensifs, recherche clinique, les coulisses du système, avant de choisir l’herboristerie, l’Ayurveda et l’aromathérapie. Auteure de trois livres aux Éditions de l’Homme. Créatrice de Santé la vie et du podcast Au-delà des tendances.';
       const lien = (href: string, mot: string) => `<a href="${href}" target="_blank" style="color:#7d6330;text-decoration:underline;">${mot}</a>`;
       const liens = [lien(`${PUBLIC_BASE_URL}/medias`, 'Ses livres'), lien(`${PUBLIC_BASE_URL}/podcast`, 'Le podcast Au-delà des tendances'), lien(PUBLIC_BASE_URL, 'krystinestlaurent.ca')].join(' &middot; ');
       const bio = c.bio ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>

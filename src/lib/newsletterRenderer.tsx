@@ -451,7 +451,7 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
       return (
         <div className="my-6 border-t border-[#d8c9ad] pt-5 text-[14px] leading-[1.65] text-[#3a2f24]">
           <p className="mb-3.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7d6330]">Découvrir l’univers de Krystine</p>
-          {c.bio && <div className="mb-3.5 flex gap-4"><img src="/infolettre/krystine-univers.jpg" alt="Krystine St-Laurent" className="h-24 w-24 shrink-0 rounded-full object-cover" /><div><p className="pb-1.5 font-serif text-xl text-[#2b241c]">Krystine St-Laurent</p><p>37 ans d’expérience, soins intensifs, recherche clinique, les coulisses du système, avant de choisir l’herboristerie, l’Ayurveda et l’aromathérapie. Auteure de trois livres aux Éditions de l’Homme. Créatrice de Santé la vie et du podcast Au-delà des tendances.</p></div></div>}
+          {c.bio && <div className="mb-3.5 flex gap-4"><img src="/infolettre/krystine-univers.jpg" alt="Krystine St-Laurent" className="h-24 w-24 shrink-0 rounded-full object-cover" /><div><p className="pb-1.5 font-serif text-xl text-[#2b241c]">Krystine St-Laurent</p><p>Près de 40 ans d’expérience, soins intensifs, recherche clinique, les coulisses du système, avant de choisir l’herboristerie, l’Ayurveda et l’aromathérapie. Auteure de trois livres aux Éditions de l’Homme. Créatrice de Santé la vie et du podcast Au-delà des tendances.</p></div></div>}
           <p><a className="underline text-[#7d6330]" href="/medias">Ses livres</a> · <a className="underline text-[#7d6330]" href="/podcast">Le podcast Au-delà des tendances</a> · <a className="underline text-[#7d6330]" href="/">krystinestlaurent.ca</a></p>
         </div>
       );
