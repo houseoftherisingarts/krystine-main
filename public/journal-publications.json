@@ -4997,5 +4997,21 @@
       "src/pages/QuizLoeuvre.tsx",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T22:10:13.127Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d5d0d50d",
+    "message": "Paiement sans compte, sécurité : registre des comptes créés par paiement, au plus 3 par heure par adresse IP, la page de retour invite seulement à vérifier sa boîte courriel",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/paiements.ts",
+      "public/assets-manifest.json",
+      "src/pages/PaiementFormation.tsx"
+    ]
   }
 ]
