@@ -4248,5 +4248,20 @@
       "src/lib/newsletterRenderer.tsx",
       "src/pages/admin/sections/newsletter/Composer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T15:34:22.454Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "35b14214",
+    "message": "Infolettres : pied de page avec « Relier ce que nous avons appris à séparer », sans Inspirata Nature; note d'Ayurveda au bas de la lettre 1 de la suite Vent",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
