@@ -14,7 +14,7 @@ import { FORMATION_VATA_ID } from './versements';
 //
 // L'INTERRUPTEUR : tant que cette constante est fausse, aucune cliente ne
 // reçoit ce courriel. Pour l'allumer, la passer à true et publier.
-export const CONFIRMATION_ACHAT_ACTIVE = false;
+export const CONFIRMATION_ACHAT_ACTIVE = true;
 
 // La note d'engagement des versements, la même que sur la page de paiement
 // (src/pages/PaiementFormation.tsx).
@@ -60,7 +60,7 @@ export function lettreConfirmation(formationId: string, titre: string, recap: Re
         p('<b>Chaque semaine</b> : une nouvelle semaine s’ouvre tous les 7 jours.'),
         p('<b>À la fin du parcours</b> : le guide complet de 204 pages vous attend.'),
         p('<b>Pour retrouver votre parcours</b> : connectez-vous sur krystinestlaurent.ca avec cette même adresse courriel, onglet Mes formations.'),
-        { type: 'button', content: { label: 'Commencer VATA Essentiel', href: lien } },
+        { type: 'button', content: { label: 'Commencer mon Expérience', href: lien } },
         ...fin,
       ],
     };
