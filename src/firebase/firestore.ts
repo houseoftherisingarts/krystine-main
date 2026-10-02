@@ -590,6 +590,9 @@ export interface NewsletterAudience {
   langue?: 'auto' | 'fr' | 'en' | 'toutes';
   tags?: string[];
   emails?: string[];
+  // Listes à exclure (modes « all » et « tags ») : une personne qui porte une
+  // de ces étiquettes est retirée des destinataires.
+  exclure?: string[];
 }
 
 export interface BandeauInfolettre {

@@ -46,6 +46,10 @@ export interface NewsletterAudience {
   // Langue des destinataires : « auto » (celle de la lettre, défaut), « fr »,
   // « en », ou « toutes ». Les personnes choisies une à une ne sont jamais filtrées.
   langue?: 'auto' | 'fr' | 'en' | 'toutes';
+  // Listes à exclure (modes « all » et « tags ») : toute adresse dont une fiche
+  // active porte une de ces étiquettes est retirée, même si une autre fiche
+  // de la même adresse ne la porte pas.
+  exclure?: string[];
 }
 
 // Chaque abonné lit dans une langue (posée à l'inscription, suivie par le
@@ -140,9 +144,14 @@ export function selectRecipients<T extends SubscriberDoc>(subs: T[], doc: Pick<N
   const wanted = new Set((a.emails || []).map(norm));
   const tags = a.tags || [];
   const cible = langueCible({ audience: a, lang: doc.lang });
+  const exclure = a.mode === 'emails' ? [] : (a.exclure || []);
+  const exclues = new Set(exclure.length
+    ? subs.filter(s => (s.tags || []).some(t => exclure.includes(t))).map(s => norm(String(s.email || '')))
+    : []);
   return subs
     .filter(s => {
       if (a.mode === 'emails') return wanted.has(norm(s.email));
+      if (exclues.has(norm(String(s.email || '')))) return false;
       if (cible !== 'toutes' && langueAbonne(s) !== cible) return false;
       if (a.mode === 'tags') return (s.tags || []).some(t => tags.includes(t));
       return true;
@@ -196,6 +205,10 @@ export const audienceInfolettre = onCall(
     const tags = [...parTag.entries()].sort((a, b) => a[0].localeCompare(b[0], 'fr')).map(([tag, v]) => ({ tag, n: v.size }));
 
     const total = selectRecipients(subs, { audience, lang }).length;
+    // Combien la section « Exclure » retire de ce choix.
+    const exclues = (audience.exclure || []).length && audience.mode !== 'emails'
+      ? selectRecipients(subs, { audience: { ...audience, exclure: [] }, lang }).length - total
+      : 0;
     // Le même choix, sans le filtre de langue : combien lisent en français, en anglais.
     const sansLangue = selectRecipients(subs, { audience: { ...audience, langue: 'toutes' }, lang });
     const parLangue = { fr: sansLangue.filter(s => langueAbonne(s) === 'fr').length, en: sansLangue.filter(s => langueAbonne(s) === 'en').length };
@@ -215,7 +228,7 @@ export const audienceInfolettre = onCall(
         }
       }
     }
-    return { total, tags, personnes, parLangue };
+    return { total, exclues, tags, personnes, parLangue };
   },
 );
 

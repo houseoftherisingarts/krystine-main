@@ -12,7 +12,7 @@ import { Label } from '../../primitives';
 // navigateur ne rapatrie plus la collection des 33 000 abonnés : c'est ce qui
 // gelait l'onglet à chaque ouverture d'une infolettre.
 
-export interface AudienceInfo { total: number; tags: Array<{ tag: string; n: number }>; personnes: Array<{ email: string; nom: string }>; parLangue?: { fr: number; en: number } }
+export interface AudienceInfo { total: number; exclues?: number; tags: Array<{ tag: string; n: number }>; personnes: Array<{ email: string; nom: string }>; parLangue?: { fr: number; en: number } }
 
 export async function fetchAudience(input: { audience?: NewsletterAudience; q?: string; lang?: 'fr' | 'en' }): Promise<AudienceInfo> {
   if (!app) throw new Error('Firebase non configuré');
@@ -61,6 +61,10 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
     const cur = value.tags || [];
     onChange({ ...value, mode: 'tags', tags: cur.includes(t) ? cur.filter(x => x !== t) : [...cur, t] });
   };
+  const exclure = value.exclure || [];
+  const toggleExclure = (t: string) => {
+    onChange({ ...value, exclure: exclure.includes(t) ? exclure.filter(x => x !== t) : [...exclure, t] });
+  };
   const toggleEmail = (e: string) => {
     const cur = value.emails || [];
     onChange({ ...value, mode: 'emails', emails: cur.includes(e) ? cur.filter(x => x !== e) : [...cur, e] });
@@ -73,10 +77,13 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
         <span className="font-serif text-2xl text-[#293027] dark:text-white">
           {total !== null ? total : failed ? '?' : <i className="fa-solid fa-circle-notch fa-spin text-sm text-[#8B4A2F]" />}
           {' '}<span className="text-xs text-[#8B4A2F]">{busy && total !== null ? '…' : `personne${(total || 0) > 1 ? 's' : ''}`}</span>
+          {value.mode !== 'emails' && exclure.length > 0 && info?.exclues != null && !busy && (
+            <span className="text-xs text-[#293027]/60 dark:text-white/60"> ({info.exclues} exclue{info.exclues > 1 ? 's' : ''})</span>
+          )}
         </span>
       </div>
       <div className="flex flex-wrap gap-2">
-        <button disabled={disabled} className={chip(value.mode === 'all')} onClick={() => onChange({ mode: 'all' })}>Tout le monde</button>
+        <button disabled={disabled} className={chip(value.mode === 'all')} onClick={() => onChange({ mode: 'all', exclure: value.exclure })}>Tout le monde</button>
         <button disabled={disabled} className={chip(value.mode === 'tags')} onClick={() => onChange({ ...value, mode: 'tags', tags: value.tags || [] })}>Certaines listes</button>
         <button disabled={disabled} className={chip(value.mode === 'emails')} onClick={() => onChange({ ...value, mode: 'emails', emails: value.emails || [] })}>Des personnes</button>
       </div>
@@ -110,6 +117,21 @@ const AudiencePicker: React.FC<{ value: NewsletterAudience; onChange: (a: Newsle
               {libelleTag(t)} <span className="opacity-60">· {n}</span>
             </button>
           ))}
+        </div>
+      )}
+
+      {value.mode !== 'emails' && (
+        <div className="space-y-1.5 pt-3 border-t border-[#293027]/10 dark:border-white/10">
+          <p className="text-[10px] uppercase tracking-widest font-bold text-[#293027]/60 dark:text-white/60">Exclure</p>
+          <p className="text-xs text-[#293027]/55 dark:text-white/55">Une personne qui fait partie d’une liste cochée ici ne reçoit pas la lettre, même si elle est aussi dans une liste choisie plus haut.</p>
+          <div className="flex flex-wrap gap-1.5 max-h-64 overflow-auto">
+            {tags.map(({ tag: t, n }) => (
+              <button key={t} disabled={disabled} onClick={() => toggleExclure(t)} title={explicationTag(t) || t}
+                className={`px-2.5 py-1 rounded-full text-[11px] border transition-colors ${exclure.includes(t) ? 'bg-[#8B4A2F] text-white border-[#8B4A2F] line-through' : 'bg-[#EEE7DB] dark:bg-white/5 text-[#293027]/70 dark:text-white/70 border-transparent hover:border-[#8B4A2F]'}`}>
+                {libelleTag(t)} <span className="opacity-60">· {n}</span>
+              </button>
+            ))}
+          </div>
         </div>
       )}
 

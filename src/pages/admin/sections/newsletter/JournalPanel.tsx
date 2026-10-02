@@ -20,9 +20,10 @@ const jourDe = (d: Date) => d.toLocaleDateString('fr-CA', { weekday: 'long', day
 
 function audienceLisible(n: NewsletterDoc): string {
   const a = n.audience;
-  if (!a || a.mode === 'all') return 'Toute la liste active';
-  if (a.mode === 'emails') return `${a.emails?.length || 0} personne${(a.emails?.length || 0) > 1 ? 's' : ''} choisie${(a.emails?.length || 0) > 1 ? 's' : ''}`;
-  return (a.tags || []).map(libelleTag).join(' · ') || 'Certaines listes';
+  if (a?.mode === 'emails') return `${a.emails?.length || 0} personne${(a.emails?.length || 0) > 1 ? 's' : ''} choisie${(a.emails?.length || 0) > 1 ? 's' : ''}`;
+  const base = !a || a.mode === 'all' ? 'Toute la liste active' : (a.tags || []).map(libelleTag).join(' · ') || 'Certaines listes';
+  const sauf = (a?.exclure || []).map(libelleTag).join(' · ');
+  return sauf ? `${base}, sauf ${sauf}` : base;
 }
 
 async function chargerPersonnes(id: string): Promise<Personne[]> {

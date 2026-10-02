@@ -393,7 +393,8 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
       return;
     }
     if (audienceVide) { setSendErr(audience.mode === 'tags' ? 'Cochez au moins une liste dans « À qui l’envoyer », ou choisissez « Tout le monde ».' : 'Choisissez au moins une personne, ou une autre audience.'); return; }
-    const who = audience.mode === 'all' ? 'tous les abonnés actifs' : audience.mode === 'tags' ? `les listes ${(audience.tags || []).map(libelleTag).join(', ')}` : `${(audience.emails || []).length} personne(s) choisie(s)`;
+    const who = (audience.mode === 'all' ? 'tous les abonnés actifs' : audience.mode === 'tags' ? `les listes ${(audience.tags || []).map(libelleTag).join(', ')}` : `${(audience.emails || []).length} personne(s) choisie(s)`)
+      + (audience.mode !== 'emails' && (audience.exclure || []).length ? `, sauf ${(audience.exclure || []).map(libelleTag).join(', ')}` : '');
     if (!confirm(`Envoyer cette infolettre maintenant à ${who} ? Cette action est irréversible.`)) return;
     await triggerSend();
   };
