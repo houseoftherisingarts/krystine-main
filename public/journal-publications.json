@@ -3970,5 +3970,21 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T12:35:05.749Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a96116a0",
+    "message": "Page du quiz (/quiz) : la bannière passe à la vidéo révisée (intro machine à écrire, Dominance Vent / Feu / Terre, musique d'Origine, krystinestlaurent.ca/quiz)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/quiz/quiz-dosha-revisee-poster.jpg",
+      "public/quiz/quiz-dosha-revisee.mp4",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
