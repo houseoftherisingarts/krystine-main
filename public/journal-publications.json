@@ -4029,5 +4029,27 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T13:24:54.821Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "389dead0",
+    "message": "Quiz (/quiz) : résultat par courriel (formulaire prénom et courriel, compte facultatif), case « Recevoir la suite de ma lecture », lien de suite en un clic dans le courriel, captcha dans la langue du site",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "firebase.json",
+      "functions/src/index.ts",
+      "functions/src/newsletter/inscrire.ts",
+      "functions/src/quiz.ts",
+      "functions/src/quizCourriel.ts",
+      "public/assets-manifest.json",
+      "src/firebase/quiz.ts",
+      "src/lib/recaptcha.ts",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
