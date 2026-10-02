@@ -4832,5 +4832,20 @@
       "functions/src/paiements.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-02T20:56:15.629Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "85964969",
+    "message": "Confirmation d'achat Vata : « Bienvenue dans L'Expérience Ayurveda, Vata », la formule VATA Essentiel dans le récapitulatif (toujours éteinte)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/confirmationAchat.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
