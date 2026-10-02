@@ -455,7 +455,7 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
       return (
         <div className="my-6">
           <img src={`/infolettre/carnet-ella-${dosha}.jpg`} alt="Le carnet d’Ella" className="block w-full h-auto mb-2.5" />
-          <div className="border border-[#b89a62] bg-[#f3ead9] p-7 text-center" style={{ fontFamily: "Georgia, 'Times New Roman', serif", color: '#2b241c', fontSize: 17, lineHeight: 1.65 }}>
+          <div className="border border-[#b89a62] bg-[#f3ead9] p-7 text-center" style={{ fontFamily: "Georgia, 'Times New Roman', serif", color: '#2b241c', fontSize: 17, lineHeight: 1.65, fontStyle: 'italic' }}>
             {lignes.length ? lignes.map((l, i) => (
               <React.Fragment key={i}>
                 {i > 0 && <p className="py-3.5 text-[11px] leading-none text-[#b89a62]">◆</p>}

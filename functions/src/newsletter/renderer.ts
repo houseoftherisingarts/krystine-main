@@ -333,13 +333,14 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
     }
     case 'carnet': {
       // Le carnet d'Ella (Krystine, 2 oct. 2026) : la bannière du dosha, puis
-      // ses paragraphes centrés dans une boîte de papier, séparés d'un losange.
+      // ses paragraphes centrés en italique (choix de Krystine, écriture de carnet)
+      // dans une boîte de papier, séparés d'un losange.
       const dosha = DOSHAS_CARNET.includes(c.dosha) ? c.dosha : 'vata';
       const lignes = (Array.isArray(c.lignes) ? c.lignes : []).map((l: unknown) => String(l ?? '').trim()).filter(Boolean);
       if (!lignes.length) return '';
       const serif = "Georgia, 'Times New Roman', serif";
       const losange = `<tr><td align="center" style="padding:14px 0;font-family:${serif};font-size:${t(11)}px;line-height:1;color:#b89a62;">&#9670;</td></tr>`;
-      const paras = lignes.map((l: string) => `<tr><td align="center" style="font-family:${serif};font-size:${t(17)}px;line-height:1.65;color:#2b241c;">${esc(l)}</td></tr>`).join(losange);
+      const paras = lignes.map((l: string) => `<tr><td align="center" style="font-family:${serif};font-size:${t(17)}px;line-height:1.65;font-style:italic;color:#2b241c;">${esc(l)}</td></tr>`).join(losange);
       return `<tr><td style="padding:10px 0 24px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         <tr><td style="padding:0 0 10px;"><img src="${PUBLIC_BASE_URL}/infolettre/carnet-ella-${dosha}.jpg" alt="Le carnet d’Ella" width="520" style="display:block;width:100%;max-width:520px;height:auto;border:0;" /></td></tr>
         <tr><td bgcolor="#f3ead9" style="background:#f3ead9;border:1px solid #b89a62;padding:28px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${paras}</table></td></tr>
