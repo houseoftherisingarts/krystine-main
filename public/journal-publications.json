@@ -4650,5 +4650,42 @@
       "src/pages/CoursDetailPage.tsx",
       "src/pages/client/ClientFormations.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T18:52:14.498Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "9b43f072",
+    "message": "VATA Essentiel : la collection « L'Expérience Ayurveda · Saison Vata » au-dessus du nom; caisse, Mes formations et bienvenue disent « VATA Essentiel · L'Expérience Ayurveda, Saison Vata »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "scripts/qa/shots/mobile_accueil.png",
+      "scripts/qa/shots/mobile_blogue.png",
+      "scripts/qa/shots/mobile_boutique.png",
+      "scripts/qa/shots/mobile_conferenciere.png",
+      "scripts/qa/shots/mobile_formations.png",
+      "scripts/qa/shots/mobile_foyer.png",
+      "scripts/qa/shots/mobile_guide.png",
+      "scripts/qa/shots/mobile_krystine.png",
+      "scripts/qa/shots/mobile_liste-attente-origine.png",
+      "scripts/qa/shots/mobile_liste-attente.png",
+      "scripts/qa/shots/mobile_medias.png",
+      "scripts/qa/shots/mobile_medias_tv.png",
+      "scripts/qa/shots/mobile_origine.png",
+      "scripts/qa/shots/mobile_podcast.png",
+      "scripts/qa/shots/mobile_points-de-vente.png",
+      "scripts/qa/shots/mobile_quiz.png",
+      "scripts/qa/shots/mobile_vata.png",
+      "src/components/cours/SeuilVata.tsx",
+      "src/lib/paliers.ts",
+      "src/lib/paliers.ts 2.bak-2026-10-02",
+      "src/lib/paliers.ts.bak-2026-10-02",
+      "src/pages/FormationsLanding.tsx",
+      "src/pages/VataExperience.tsx",
+      "src/pages/cours/programmes.ts"
+    ]
   }
 ]
