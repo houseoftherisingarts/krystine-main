@@ -45,8 +45,8 @@ const PORTES: Porte[] = [
     body: 'Lire, trier, ancrer pour retrouver ses propres repères.',
     cta: 'Découvrir Expérience Origine 2',
     href: '/liste-attente?programme=origine2',
-    image: 'https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg',
-    cadrage: '100% 50%',
+    image: '/origine2/packshot-poster.jpg',
+    cadrage: '45% 50%',
   },
   {
     key: 'vata',
