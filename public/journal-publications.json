@@ -4099,5 +4099,21 @@
       "public/infolettre/carnet-ella-pitta.jpg",
       "public/infolettre/carnet-ella-vata.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-02T14:05:38.098Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ac4e78d3",
+    "message": "Infolettre : bannières « Le carnet d'Ella » avec les pictos en couleurs et la dominance sous le picto (Vent, Feu, Terre)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/carnet-ella-kapha.jpg",
+      "public/infolettre/carnet-ella-pitta.jpg",
+      "public/infolettre/carnet-ella-vata.jpg"
+    ]
   }
 ]
