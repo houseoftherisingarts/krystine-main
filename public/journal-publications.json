@@ -4526,5 +4526,20 @@
       "public/assets-manifest.json",
       "src/pages/FormationsLanding.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T17:09:42.986Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "bbfa4114",
+    "message": "Formations (/formations) : la carte VATA Essentiel montre l'éventail des plus belles pages du programme, la fille aux cheveux au centre",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/vata/carte-eventail.jpg",
+      "src/pages/FormationsLanding.tsx"
+    ]
   }
 ]
