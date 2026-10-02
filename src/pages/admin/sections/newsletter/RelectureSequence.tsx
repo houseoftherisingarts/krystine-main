@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { doc, updateDoc, serverTimestamp, deleteField } from 'firebase/firestore';
-import { db, auth } from '../../../../firebase';
+import app, { db, auth } from '../../../../firebase';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import type { NewsletterDoc } from '../../../../firebase/firestore';
 import type { Etape } from '../../../../firebase/sequences';
 import PreviewFrame from './PreviewFrame';
@@ -63,6 +64,20 @@ const RelectureSequence: React.FC<{
   const rangs = etapes.map((e, i) => ({ e, i, l: lettres.find(x => x.id === e.newsletterId) })).filter(r => r.e.newsletterId);
   const [ouverte, setOuverte] = useState<number | null>(derniereOuverte[sequenceId] ?? null);
   const [occupe, setOccupe] = useState(false);
+  // Le test d'une lettre part d'un clic à l'adresse de la personne connectée
+  // (Krystine, 2 oct. 2026), par la même fonction que le test d'une infolettre.
+  const [test, setTest] = useState<{ id: string; etat: 'envoi' | 'ok' | 'erreur'; mot?: string } | null>(null);
+  const envoyerTest = async (id: string) => {
+    const courriel = auth?.currentUser?.email;
+    if (!courriel || !app) { setTest({ id, etat: 'erreur', mot: 'Connectez-vous pour recevoir le test.' }); return; }
+    setTest({ id, etat: 'envoi' });
+    try {
+      await httpsCallable(getFunctions(app, 'us-central1'), 'sendNewsletter')({ newsletterId: id, testEmail: courriel });
+      setTest({ id, etat: 'ok', mot: `Test envoyé à ${courriel}.` });
+    } catch (e: any) {
+      setTest({ id, etat: 'erreur', mot: e?.message || 'Le test n’a pas pu partir.' });
+    }
+  };
   const [erreur, setErreur] = useState<string | null>(null);
   const apercu = useRef<HTMLDivElement>(null);
   useEffect(() => { derniereOuverte = { ...derniereOuverte, [sequenceId]: ouverte as number }; }, [sequenceId, ouverte]);
@@ -146,6 +161,8 @@ const RelectureSequence: React.FC<{
                   ? <GhostButton onClick={basculer} disabled={occupe}><i className="fa-solid fa-rotate-left" /> Retirer l’approbation</GhostButton>
                   : <PrimaryButton onClick={basculer} disabled={occupe}><i className="fa-solid fa-check" /> Approuver cette lettre</PrimaryButton>}
                 <GhostButton onClick={() => onOpen(l.id!)}><i className="fa-solid fa-pen" /> Modifier cette lettre</GhostButton>
+                <GhostButton onClick={() => envoyerTest(l.id!)} disabled={test?.id === l.id && test.etat === 'envoi'}><i className={`fa-solid ${test?.id === l.id && test.etat === 'envoi' ? 'fa-circle-notch fa-spin' : 'fa-paper-plane'}`} /> M’envoyer un test</GhostButton>
+                {test?.id === l.id && test.mot && <span className={`text-xs ${test.etat === 'erreur' ? 'text-red-600' : 'text-[#7d6330]'}`}>{test.mot}</span>}
                 <span className="text-xs text-[#293027]/55 dark:text-white/55">
                   {estApprouvee(l)
                     ? `Approuvée${l.approuvee?.le ? ` le ${l.approuvee.le.toDate().toLocaleDateString('fr-CA', { day: 'numeric', month: 'long' })}` : ''}${l.approuvee?.par ? ` par ${l.approuvee.par}` : ''}.`
