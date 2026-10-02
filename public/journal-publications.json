@@ -4463,5 +4463,26 @@
       "src/content.ts",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T17:01:06.309Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "caa4652e",
+    "message": "Formations : VATA Essentiel en 2 clics (trois grandes cartes, visuel et prix), les parcours en liste d'attente visibles, nom unique VATA Essentiel sur /vata et le pied de page, bouton Mon compte en cuivre avec icône sur mobile",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/BoutonCompte.tsx",
+      "src/components/bouton-compte.css",
+      "src/components/layout/NavBar.tsx",
+      "src/content.ts",
+      "src/lib/offres.ts",
+      "src/pages/FormationsLanding.tsx",
+      "src/pages/VataExperience.tsx",
+      "src/pages/vata/offre.ts"
+    ]
   }
 ]
