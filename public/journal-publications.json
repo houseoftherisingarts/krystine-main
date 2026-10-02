@@ -4814,5 +4814,23 @@
       "public/assets-manifest.json",
       "src/lib/versements.ts"
     ]
+  },
+  {
+    "quand": "2026-10-02T19:58:19.626Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "72a63ef1",
+    "message": "Courriel de confirmation d'achat construit (éteint jusqu'à l'accord de Krystine), test envoyé",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/confirmationAchat.ts",
+      "functions/src/index.ts",
+      "functions/src/newsletter/renderer.ts",
+      "functions/src/paiements.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
