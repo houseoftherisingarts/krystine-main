@@ -76,6 +76,7 @@ export const creerSessionPaiement = onCall(
       'line_items[0][price_data][tax_behavior]': 'exclusive',
       'line_items[0][quantity]': '1',
       ...TAXES_QC,
+      locale: 'fr', // la caisse Stripe en français (Krystine, 2 oct. 2026)
       success_url: `${siteDe(req)}/compte?achat=ok&formation=${encodeURIComponent(formationId)}`,
       cancel_url: `${siteDe(req)}/cours/${formationId}`,
       'metadata[uid]': req.auth.uid,
@@ -141,6 +142,7 @@ export const creerPourboire = onCall(
       'line_items[0][price_data][product_data][name]': `Pourboire · ${titre}`,
       'line_items[0][price_data][unit_amount]': String(Math.round(montant * 100)),
       'line_items[0][quantity]': '1',
+      locale: 'fr', // la caisse Stripe en français (Krystine, 2 oct. 2026)
       success_url: `${siteDe(req)}/direct?merci=1`,
       cancel_url: `${siteDe(req)}/direct`,
       'metadata[uid]': req.auth.uid,
@@ -200,6 +202,7 @@ export const creerSessionNiskas = onCall(
       'line_items[0][price_data][tax_behavior]': 'exclusive',
       'line_items[0][quantity]': '1',
       ...TAXES_QC,
+      locale: 'fr', // la caisse Stripe en français (Krystine, 2 oct. 2026)
       success_url: `${siteDe(req)}/compte?niskas=ok`,
       cancel_url: `${siteDe(req)}/compte`,
       'metadata[uid]': req.auth.uid,
@@ -246,6 +249,7 @@ export const creerSessionSaison = onCall(
       'line_items[0][price_data][tax_behavior]': 'exclusive',
       'line_items[0][quantity]': '1',
       ...TAXES_QC,
+      locale: 'fr', // la caisse Stripe en français (Krystine, 2 oct. 2026)
       success_url: `${siteDe(req)}/compte?onglet=telechargements&saison=ok`,
       cancel_url: `${siteDe(req)}/compte?onglet=telechargements`,
       'metadata[uid]': req.auth.uid,
