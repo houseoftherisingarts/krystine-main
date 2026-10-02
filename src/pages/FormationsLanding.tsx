@@ -38,16 +38,6 @@ const OFFRE_VATA = TIERS[0];
 
 const PORTES: Porte[] = [
   {
-    key: 'foyer',
-    tag: 'Découvrir · relier · ressentir',
-    title: "Le Foyer d'Origine",
-    subtitle: "L'espace de continuité.",
-    body: "Une porte à la fois, tout au long de l'année.",
-    cta: 'Découvrir le Foyer',
-    href: '/foyer',
-    image: '/assets/foyer-visuel-16x9.jpg',
-  },
-  {
     key: 'origine',
     tag: '12 semaines accompagnées',
     title: 'Expérience Origine 2',
@@ -63,7 +53,7 @@ const PORTES: Porte[] = [
     tag: 'À votre rythme · accès immédiat',
     title: OFFRE_VATA.name,
     subtitle: 'Un parcours de sept semaines.',
-    body: "16 capsules audio, 7 méditations guidées, le journal de bord et d'observation, et le guide de 204 pages.",
+    body: "16 capsules, 7 méditations guidées, le journal de bord et d'observation, et le guide de 204 pages.",
     cta: 'Découvrir VATA Essentiel',
     href: '/vata',
     image: SEMAINES_VATA[1].bandeau,
@@ -72,8 +62,11 @@ const PORTES: Porte[] = [
 ];
 
 // Les parcours qui reviennent un à un : chacun a sa liste d'attente.
-interface Parcours { slug: string; titre: string; sous: string; href?: string }
+interface Parcours { slug: string; titre: string; sous: string; href?: string; cta?: string }
 const EN_ATTENTE: Parcours[] = [
+  // Le Foyer attend sa réouverture (Krystine, 2 oct. 2026) : hors des grandes
+  // cartes pendant le lancement de VATA Essentiel, mais sa liste d'attente reste.
+  { slug: 'foyer', titre: "Le Foyer d'Origine", sous: "L'espace de continuité, une porte à la fois", href: '/liste-attente?programme=foyer', cta: 'Être avisée de la réouverture' },
   { slug: 'pitta', titre: 'Saison Pitta', sous: 'Rafraîchir, apaiser, adoucir quand la chaleur monte' },
   { slug: 'kapha', titre: 'Saison Kapha', sous: "Bouger, drainer, alléger à l'éveil du printemps" },
   { slug: 'sante-parfaite', titre: 'Parcours Santé Parfaite', sous: 'Masterclass Énergie et Clarté', href: '/cours/sante-parfaite' },
@@ -107,19 +100,19 @@ const FormationsLanding: React.FC = () => {
         <div aria-hidden className="pointer-events-none absolute -right-[8vw] -bottom-[18vw] h-[44vw] w-[44vw] rounded-full blur-[40px]"
           style={{ background: 'radial-gradient(circle, rgba(139,74,47,.35) 0%, rgba(40,53,47,0) 65%)' }} />
         <div className="relative mx-auto max-w-[1320px]">
-          <motion.p {...up(0.1)} className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-[#BA7B39]">Trois façons d'aller plus loin</motion.p>
+          <motion.p {...up(0.1)} className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-[#BA7B39]">Deux façons d'aller plus loin</motion.p>
           <motion.h1 {...up(0.2)} className="mt-5 max-w-[11em] font-serif text-[clamp(2.7rem,5.4vw,5rem)] font-medium leading-[1.02] tracking-[-0.015em]">
             Choisir votre prochaine porte
           </motion.h1>
           <motion.p {...up(0.32)} className="mt-6 max-w-[36rem] font-serif text-[clamp(1.15rem,1.6vw,1.4rem)] leading-[1.5] text-[#EEE7DB]/80">
-            Selon le moment où vous êtes : découvrir et rester en lien, vivre un parcours accompagné, ou approfondir un sujet à votre rythme.
+            Selon le moment où vous êtes : vivre un parcours accompagné, ou approfondir un sujet à votre rythme.
           </motion.p>
         </div>
       </section>
 
-      {/* ─────────── LES TROIS PORTES, trois grandes cartes ─────────── */}
+      {/* ─────────── LES PORTES OUVERTES, deux grandes cartes ─────────── */}
       <section className="px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(2.5rem,6vh,4.5rem)] pb-[clamp(3.5rem,8vh,6rem)]">
-        <div className="mx-auto grid max-w-[1320px] gap-6 md:grid-cols-3 md:gap-7">
+        <div className="mx-auto grid max-w-[1100px] gap-6 md:grid-cols-2 md:gap-8">
           {PORTES.map((p, i) => (
             <motion.a
               key={p.key}
@@ -178,7 +171,7 @@ const FormationsLanding: React.FC = () => {
                       <span className="mt-1.5 block text-[0.92rem] leading-[1.55] text-[#5b5f55]">{f.sous}</span>
                     </span>
                     <span className="inline-flex items-center gap-2 text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-[#1c1712]/70 transition-colors group-hover:text-[#1c1712]">
-                      {f.href ? 'Découvrir' : "Rejoindre la liste d'attente"} <ArrowRight size={12} weight="bold" className="transition-transform duration-300 group-hover:translate-x-1" />
+                      {f.cta || (f.href ? 'Découvrir' : "Rejoindre la liste d'attente")} <ArrowRight size={12} weight="bold" className="transition-transform duration-300 group-hover:translate-x-1" />
                     </span>
                   </a>
                 </li>
