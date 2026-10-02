@@ -4350,5 +4350,22 @@
       "src/pages/VataExperience.tsx",
       "src/pages/admin/sections/newsletter/Composer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T16:11:13.175Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "006f596e",
+    "message": "Infolettres : portrait centré sur le visage, bio « Près de 40 ans d'expérience »",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "public/infolettre/krystine-univers.jpg",
+      "src/lib/newsletterRenderer.tsx"
+    ]
   }
 ]
