@@ -4152,5 +4152,21 @@
       "src/pages/QuizLoeuvre.tsx",
       "src/pages/admin/sections/newsletter/Composer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T14:40:27.487Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "32e74b8a",
+    "message": "Infolettre : bannières « Le carnet d'Ella » sans la mention extrait, titre centré",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/carnet-ella-kapha.jpg",
+      "public/infolettre/carnet-ella-pitta.jpg",
+      "public/infolettre/carnet-ella-vata.jpg"
+    ]
   }
 ]
