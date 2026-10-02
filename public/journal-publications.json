@@ -4184,5 +4184,23 @@
       "public/assets-manifest.json",
       "src/lib/newsletterRenderer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T14:59:48.908Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a0979051",
+    "message": "Admin › Séquences : aperçu de chaque lettre comme dans la boîte courriel, approbation lettre par lettre; Médiathèque : bouton Télécharger réparé",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/firebase/firestore.ts",
+      "src/pages/admin/sections/MediaSection.tsx",
+      "src/pages/admin/sections/newsletter/Composer.tsx",
+      "src/pages/admin/sections/newsletter/RelectureSequence.tsx",
+      "src/pages/admin/sections/newsletter/SequencesPanel.tsx"
+    ]
   }
 ]
