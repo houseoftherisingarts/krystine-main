@@ -41,9 +41,16 @@ function recapBlocs(r: Recap): NewsletterBlock[] {
   return out;
 }
 
-export function lettreConfirmation(formationId: string, titre: string, recap: Recap): { subject: string; preheader: string; blocks: NewsletterBlock[] } {
+export function lettreConfirmation(formationId: string, titre: string, recap: Recap, email = ''): { subject: string; preheader: string; blocks: NewsletterBlock[] } {
   const lien = `${PUBLIC_BASE_URL}/cours/${formationId}`;
   const fin: NewsletterBlock[] = [{ type: 'divider', content: { style: 'ligne' } }, ...(formationId === 'kajabi-2148687644' ? [p('<b>Votre formule</b> : VATA Essentiel.', 'sm')] : []), ...recapBlocs(recap), p(SOUTIEN)];
+  // Les accès, dans chaque confirmation (Krystine, 2 oct. 2026).
+  const blocsAcces: NewsletterBlock[] = [
+    h('Vos accès'),
+    p(`<b>Votre espace</b> : <a href="${PUBLIC_BASE_URL}/compte">krystinestlaurent.ca/compte</a>, onglet Mes formations.`),
+    p(`<b>Votre identifiant</b> : ${email ? `cette adresse courriel, ${email}` : 'l’adresse courriel utilisée pour votre achat'}.`),
+    p('<b>Pour vous connecter</b> : « Continuer avec Google » si vous avez utilisé Google, sinon votre mot de passe. Si vous ne le retrouvez plus, écrivez-nous : nous vous ouvrons la porte.'),
+  ];
   if (formationId === FORMATION_VATA_ID) {
     return {
       subject: 'Bienvenue dans L’Expérience Ayurveda, Vata',
@@ -51,6 +58,7 @@ export function lettreConfirmation(formationId: string, titre: string, recap: Re
       blocks: [
         p('Bonjour {{firstName}},'),
         p('Nous sommes très heureuses de vous accueillir dans L’Expérience Ayurveda, Vata. Votre accès est ouvert dès maintenant.'),
+        { type: 'image', content: { url: `${PUBLIC_BASE_URL}/infolettre/vata-eventail.jpg`, caption: '', href: lien, alt: 'VATA Essentiel' } },
         h('Trois bonnes raisons d’avoir fait ce choix'),
         p('<b>Vous apprenez à reconnaître le Vent</b> plutôt qu’à le subir : le fil qui se perd, le sommeil qui se fragilise, ce qui s’accumule sans bruit.'),
         p('<b>Vous avancez un sens à la fois</b> : le souffle, l’ouïe, la vue, l’odorat, le goût et le toucher, en courtes capsules qui s’écoutent partout, même l’écran verrouillé.'),
@@ -59,8 +67,8 @@ export function lettreConfirmation(formationId: string, titre: string, recap: Re
         p('<b>Aujourd’hui</b> : l’introduction, Préparer votre espace, et la semaine 1, Le souffle, sont ouvertes.'),
         p('<b>Chaque semaine</b> : une nouvelle semaine s’ouvre tous les 7 jours.'),
         p('<b>À la fin du parcours</b> : le guide complet de 204 pages vous attend.'),
-        p('<b>Pour retrouver votre parcours</b> : connectez-vous sur krystinestlaurent.ca avec cette même adresse courriel, onglet Mes formations.'),
         { type: 'button', content: { label: 'Commencer mon Expérience', href: lien } },
+        ...blocsAcces,
         ...fin,
       ],
     };
@@ -71,8 +79,8 @@ export function lettreConfirmation(formationId: string, titre: string, recap: Re
     blocks: [
       p('Bonjour {{firstName}},'),
       p(`Nous sommes très heureuses de vous accueillir dans ${titre}. Votre accès est ouvert dès maintenant.`),
-      p('<b>Pour retrouver votre parcours</b> : connectez-vous sur krystinestlaurent.ca avec cette même adresse courriel, onglet Mes formations.'),
       { type: 'button', content: { label: 'Commencer', href: lien } },
+      ...blocsAcces,
       ...fin,
     ],
   };
@@ -93,13 +101,14 @@ export function optionsConfirmation(subject: string, preheader: string, desinscr
     postalAddress: NEWSLETTER_POSTAL_ADDRESS.value(),
     couverture: 'aucune',
     bandeau: { etiquette: 'Bienvenue', fond: '#28352F', texte: '#EEE7DB' },
+    fond: '#FFFFFF',
     signature: true,
     lang: 'fr',
   };
 }
 
 async function envoyer(dest: { email: string; firstName?: string }, formationId: string, titre: string, recap: Recap, prefixe = ''): Promise<void> {
-  const l = lettreConfirmation(formationId, titre, recap);
+  const l = lettreConfirmation(formationId, titre, recap, dest.email);
   const opts = optionsConfirmation(l.subject, l.preheader, await lienDesinscription(dest.email), dest.firstName);
   const transporter = createTransporter();
   try {
