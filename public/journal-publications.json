@@ -4877,5 +4877,24 @@
       "functions/src/confirmationAchat.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-02T21:13:18.848Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "5f7fa6b4",
+    "message": "VATA Essentiel : retour au prix régulier; versements prélevés à la date anniversaire, paiement complet exigé pour préserver l'accès (pas un abonnement); titre de la confirmation sur deux lignes",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/confirmationAchat.ts",
+      "functions/src/newsletter/renderer.ts",
+      "functions/src/versements.ts",
+      "public/assets-manifest.json",
+      "src/lib/versements.ts",
+      "src/pages/PaiementFormation.tsx"
+    ]
   }
 ]
