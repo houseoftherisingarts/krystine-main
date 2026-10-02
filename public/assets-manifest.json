@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T22:10:06.059Z",
+  "generatedAt": "2026-10-02T22:49:06.074Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1553,7 +1553,7 @@
       "name": "vata-pied-presence.jpg",
       "folder": "infolettre",
       "kind": "image",
-      "size": 59151
+      "size": 55622
     },
     {
       "path": "/infolettre/vata-pied-souffle.jpg",
@@ -2774,6 +2774,13 @@
       "size": 48256
     },
     {
+      "path": "/vata/couvertures/img-040.jpg",
+      "name": "img-040.jpg",
+      "folder": "vata/couvertures",
+      "kind": "image",
+      "size": 61866
+    },
+    {
       "path": "/vata/couvertures/img-041.jpg",
       "name": "img-041.jpg",
       "folder": "vata/couvertures",
@@ -3324,21 +3331,21 @@
       "name": "v2-s7-large.webp",
       "folder": "vata/semaines",
       "kind": "image",
-      "size": 68956
+      "size": 82064
     },
     {
       "path": "/vata/semaines/v2-s7-thumb.webp",
       "name": "v2-s7-thumb.webp",
       "folder": "vata/semaines",
       "kind": "image",
-      "size": 26166
+      "size": 20360
     },
     {
       "path": "/vata/semaines/v2-s7.webp",
       "name": "v2-s7.webp",
       "folder": "vata/semaines",
       "kind": "image",
-      "size": 87476
+      "size": 71612
     },
     {
       "path": "/vata/semaines/v2-s8-large.webp",
