@@ -5051,5 +5051,19 @@
       "public/vata/semaines/v2-s7.webp",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T23:03:53.051Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "8885cd47",
+    "message": "Infolettres : bannière VATA Essentiel avec les sept semaines (Sept semaines, un sens à la fois)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/vata-sens.jpg"
+    ]
   }
 ]
