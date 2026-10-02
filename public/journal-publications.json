@@ -4717,5 +4717,21 @@
       "public/assets-manifest.json",
       "scripts/qa/compte-shots.mjs"
     ]
+  },
+  {
+    "quand": "2026-10-02T19:07:01.485Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b534e22e",
+    "message": "Espace client (/compte) : Mes formations plus aérée, titres lisibles, code d'accès discret, seulement les formations en vente à découvrir, et espacements corrigés",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "scripts/qa/compte-shots.mjs",
+      "src/pages/ClientPortal.tsx",
+      "src/pages/client/ClientFormations.tsx"
+    ]
   }
 ]
