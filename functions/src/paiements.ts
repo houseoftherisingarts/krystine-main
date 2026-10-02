@@ -86,6 +86,19 @@ export const creerSessionPaiement = onCall(
       'metadata[versements]': String(versements),
     });
     if (uid) body.set('metadata[uid]', uid);
+    // Sans compte : au plus 3 comptes créés par paiement par heure depuis une
+    // même adresse IP (revue de sécurité, 2 oct. 2026). Au-delà, la caisse ne
+    // s'ouvre pas sans connexion; un paiement déjà fait n'est jamais bloqué.
+    if (!uid) {
+      const ip = String(req.rawRequest?.ip || '').slice(0, 64);
+      if (ip) {
+        body.set('metadata[ip]', ip);
+        const recents = await getFirestore().collection('comptesCreesParPaiement').where('ip', '==', ip).limit(20).get();
+        const ilYaUneHeure = Date.now() - 3600_000;
+        const n = recents.docs.filter(d => ((d.data().creeLe as FirebaseFirestore.Timestamp | undefined)?.toMillis() || 0) > ilYaUneHeure).length;
+        if (n >= 3) throw new HttpsError('resource-exhausted', 'Connectez-vous pour poursuivre votre achat.');
+      }
+    }
     if (versements === 1) {
       body.set('mode', 'payment');
       body.set('line_items[0][price_data][unit_amount]', String(Math.round(prix * 100)));
@@ -567,6 +580,13 @@ export const stripeWebhook = onRequest(
         const abonnementId = typeof session.subscription === 'string' ? session.subscription : String(session.subscription.id || '');
         const r = await appelStripe('POST', `subscriptions/${abonnementId}`, new URLSearchParams({ 'metadata[uid]': uid! }));
         if (!r.ok) { console.error('[paiements] uid non posé sur l\'abonnement', abonnementId, r.data?.error?.message); res.status(500).send('abonnement'); return; }
+      }
+      // Le registre des comptes créés par un paiement (revue de sécurité) : la
+      // session de paiement sert de clé, un renvoi de Stripe ne double rien.
+      if (compteCree) {
+        await getFirestore().doc(`comptesCreesParPaiement/${session.id}`).set({
+          uid, adresse, sessionId: session.id || '', ip: String(session.metadata?.ip || ''), creeLe: FieldValue.serverTimestamp(),
+        });
       }
       console.log(`[paiements] achat sans compte : ${adresse} -> ${uid}${compteCree ? ' (compte créé)' : ''}`);
     }

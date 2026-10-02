@@ -183,17 +183,8 @@ const PaiementFormation: React.FC = () => {
               Merci, votre accès s'ouvre.
             </h1>
             <p className="mx-auto mt-6 max-w-[52ch] text-[0.95rem] leading-[1.85] text-[#3a2f23]">
-              Votre compte est créé avec l'adresse courriel du paiement. Un courriel vous attend avec le lien pour choisir votre mot de passe.
-              Si cette adresse est un compte Google, vous pouvez aussi vous connecter avec Google.
+              Vérifiez votre boîte courriel : la confirmation de votre achat est envoyée à l'adresse du paiement, avec le lien pour choisir votre mot de passe et entrer dans votre espace.
             </p>
-            <button
-              type="button"
-              onClick={() => window.dispatchEvent(new CustomEvent('krystine:connexion-raison', { detail: 'Connectez-vous avec l’adresse courriel du paiement pour retrouver votre parcours.' }))}
-              className="group mt-9 inline-flex min-h-[46px] items-center justify-center gap-2.5 bg-[#1c1712] px-7 py-4 text-[0.68rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44]"
-            >
-              Me connecter
-              <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
           </div>
         ) : !enVente || !formation ? (
           <div className="mx-auto mt-[clamp(3rem,8vh,5rem)] max-w-[40rem] text-center">
