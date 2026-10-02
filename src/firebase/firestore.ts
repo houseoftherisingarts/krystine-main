@@ -558,7 +558,7 @@ export async function bulkAddNewsletterSubscribers(
 
 // ─── Newsletter messages (campaigns) ─────────────────────────────────────────
 export type NewsletterStatus = 'draft' | 'scheduled' | 'sending' | 'sent' | 'failed';
-export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer' | 'list' | 'choix' | 'carnet' | 'note';
+export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer' | 'list' | 'choix' | 'carnet' | 'note' | 'univers';
 
 export interface NewsletterBlock {
   type: BlockType;

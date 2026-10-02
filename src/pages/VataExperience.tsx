@@ -1054,6 +1054,7 @@ const VataExperience: React.FC = () => (
     <Ella />
         <Signals />
     <Method />
+    <Exergue>« Une journée n’est pas une suite de cases ; c’est un rythme entier à préserver. »</Exergue>
     <Extrait />
     <Journey />
     <Received />

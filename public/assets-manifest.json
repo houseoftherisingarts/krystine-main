@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T15:57:18.590Z",
+  "generatedAt": "2026-10-02T16:05:17.688Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1470,6 +1470,13 @@
       "folder": "infolettre",
       "kind": "document",
       "size": 5023056
+    },
+    {
+      "path": "/infolettre/krystine-univers.jpg",
+      "name": "krystine-univers.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 23417
     },
     {
       "path": "/infolettre/massage-visage-gestes.jpg",

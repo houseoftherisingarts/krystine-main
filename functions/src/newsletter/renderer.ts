@@ -8,7 +8,7 @@
 
 import { PUBLIC_BASE_URL } from './mail';
 
-export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer' | 'list' | 'choix' | 'carnet' | 'note';
+export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer' | 'list' | 'choix' | 'carnet' | 'note' | 'univers';
 
 export interface NewsletterBlock {
   type: BlockType;
@@ -364,6 +364,25 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
         <tr><td bgcolor="#f3ead9" style="background:#f3ead9;border:1px solid #b89a62;padding:28px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${paras}</table></td></tr>
       </table></td></tr>`;
     }
+    case 'univers': {
+      // Découvrir l'univers de Krystine (2 oct. 2026) : ses livres, son podcast
+      // et son site au bas des lettres; la bio scellée (jamais paraphrasée)
+      // seulement quand bio est vrai, une fois dans une séquence.
+      const BIO = '37 ans d’expérience, soins intensifs, recherche clinique, les coulisses du système, avant de choisir l’herboristerie, l’Ayurveda et l’aromathérapie. Auteure de trois livres aux Éditions de l’Homme. Créatrice de Santé la vie et du podcast Au-delà des tendances.';
+      const lien = (href: string, mot: string) => `<a href="${href}" target="_blank" style="color:#7d6330;text-decoration:underline;">${mot}</a>`;
+      const liens = [lien(`${PUBLIC_BASE_URL}/medias`, 'Ses livres'), lien(`${PUBLIC_BASE_URL}/podcast`, 'Le podcast Au-delà des tendances'), lien(PUBLIC_BASE_URL, 'krystinestlaurent.ca')].join(' &middot; ');
+      const bio = c.bio ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+            <td width="96" valign="top" style="width:96px;padding:0 18px 0 0;"><img src="${PUBLIC_BASE_URL}/infolettre/krystine-univers.jpg" width="96" alt="Krystine St-Laurent" style="display:block;width:96px;height:96px;border-radius:48px;border:0;" /></td>
+            <td valign="top" style="font-family:${CHARTE.sans};font-size:${t(14)}px;line-height:1.65;color:#3a2f24;"><div style="font-family:${CHARTE.serif};font-size:${t(20)}px;color:#2b241c;padding:0 0 6px;">Krystine St-Laurent</div>${esc(BIO)}</td>
+          </tr></table>` : '';
+      return `<tr><td style="padding:10px 0 20px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #d8c9ad;">
+        <tr><td style="padding:22px 0 0;">
+          <div style="font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.24em;text-transform:uppercase;font-weight:600;color:#7d6330;padding:0 0 14px;">Découvrir l’univers de Krystine</div>
+          ${bio}
+          <div style="font-family:${CHARTE.sans};font-size:${t(14)}px;line-height:1.7;color:#3a2f24;padding:${c.bio ? '14px' : '0'} 0 0;">${liens}</div>
+        </td></tr>
+      </table></td></tr>`;
+    }
     case 'note': {
       // La note d'Ayurveda (Krystine, 2 oct. 2026) : une page de papier à double
       // filet et son brin doré, comme dans ses visuels. Une ligne par mot clé; ce qui
@@ -507,6 +526,9 @@ export function renderEmailText(blocks: NewsletterBlock[], opts: RenderEmailOpti
       case 'choix':
         if (c.question) lines.push(String(c.question));
         lines.push((Array.isArray(c.options) ? c.options : []).map((o: any) => `- ${o.libelle} : ${o.phrase || ''}`).join('\n'));
+        break;
+      case 'univers':
+        lines.push('Découvrir l’univers de Krystine', `${PUBLIC_BASE_URL}/medias · ${PUBLIC_BASE_URL}/podcast · ${PUBLIC_BASE_URL}`);
         break;
       case 'note':
         lines.push(`${String(c.titre || 'Un mot d’Ayurveda')}\n${String(c.texte || '')}`);
