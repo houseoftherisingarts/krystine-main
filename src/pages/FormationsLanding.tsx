@@ -56,7 +56,8 @@ const PORTES: Porte[] = [
     body: "16 capsules, 7 méditations guidées, le journal de bord et d'observation, et le guide de 204 pages.",
     cta: 'Découvrir VATA Essentiel',
     href: '/vata',
-    image: SEMAINES_VATA[1].bandeau,
+    image: '/vata/couvertures/006.jpg',
+    cadrage: '50% 52%',
     prix: true,
   },
 ];
