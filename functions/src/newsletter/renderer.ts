@@ -48,9 +48,9 @@ export interface Bandeau {
 const SEPARATEURS: Record<string, string> = { points: '&bull;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&bull;', fleuron: '&#10086;', etoiles: '&#10022;&nbsp;&nbsp;&#10022;&nbsp;&nbsp;&#10022;', feuille: '&#10087;' };
 
 // Les mots du gabarit dans les deux langues de la lettre.
-const MOTS: Record<Lang, { etiquette: string; desabonner: string; politique: string; devise: string; coverAlt: string }> = {
-  fr: { etiquette: 'Infolettre', desabonner: 'Se désabonner', politique: 'Politique de confidentialité', devise: 'Nourrir et soigner &middot; Corps et conscience &middot; Science et sagesses', coverAlt: 'Au-delà des tendances, avec Krystine St-Laurent' },
-  en: { etiquette: 'Newsletter', desabonner: 'Unsubscribe', politique: 'Privacy policy', devise: 'Nourish and heal &middot; Body and consciousness &middot; Science and wisdom', coverAlt: 'Beyond the Trends, with Krystine St-Laurent' },
+const MOTS: Record<Lang, { etiquette: string; desabonner: string; politique: string; devise: string; relier: string; coverAlt: string }> = {
+  fr: { etiquette: 'Infolettre', desabonner: 'Se désabonner', politique: 'Politique de confidentialité', devise: 'Nourrir et soigner &middot; Corps et conscience &middot; Science et sagesses', relier: 'Relier ce que nous avons appris à séparer', coverAlt: 'Au-delà des tendances, avec Krystine St-Laurent' },
+  en: { etiquette: 'Newsletter', desabonner: 'Unsubscribe', politique: 'Privacy policy', devise: 'Nourish and heal &middot; Body and consciousness &middot; Science and wisdom', relier: 'Reconnecting what we were taught to separate', coverAlt: 'Beyond the Trends, with Krystine St-Laurent' },
 };
 
 // Polices et tailles offertes dans le composeur (mêmes clés que src/lib/newsletterRenderer.tsx).
@@ -159,6 +159,12 @@ function imagesKaleidoscope(c: any): string[] {
   return [0, 1, 2, 3]
     .map(i => (i === 0 ? c.url : Array.isArray(c.images) ? c.images[i] : '') || '')
     .filter((u: string) => /^https?:\/\//.test(u));
+}
+
+// Le pied de page des lettres ne nomme plus Inspirata Nature (Krystine,
+// 2 oct. 2026) : l'adresse postale reste, la raison sociale tombe.
+function adressePied(adresse: string): string {
+  return String(adresse || '').replace(/\bInspira(?:ta)?\s+(?:Nature|Ayurveda)\b\s*(?:inc\.?)?\s*[,·\-–]?\s*/gi, '').trim();
 }
 
 function esc(s: unknown): string {
@@ -442,8 +448,9 @@ export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOpti
         </td></tr>
 
         <tr><td style="background:${CHARTE.cream};padding:26px 40px 8px;border-radius:0 0 15px 15px;border:1px solid rgba(41,48,39,0.08);border-top:0;font-family:${CHARTE.sans};font-size:11px;line-height:1.6;color:rgba(41,48,39,0.6);">
+          <div style="font-family:${CHARTE.serif};font-size:16px;line-height:1.4;color:#2b241c;padding-bottom:8px;">${mots.relier}</div>
           <div style="font-family:${CHARTE.sans};font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:${CHARTE.goldInk};padding-bottom:10px;">${mots.devise}</div>
-          <div style="margin-bottom:8px;">${esc(opts.postalAddress)}</div>
+          <div style="margin-bottom:8px;">${esc(adressePied(opts.postalAddress))}</div>
           <div style="padding-bottom:18px;"><a href="${esc(opts.unsubscribeUrl)}" style="color:${CHARTE.goldInk};text-decoration:underline;">${mots.desabonner}</a> · <a href="${PUBLIC_BASE_URL}/politique-de-confidentialite" style="color:${CHARTE.goldInk};text-decoration:underline;">${mots.politique}</a></div>
         </td></tr>
       </table>
@@ -491,6 +498,6 @@ export function renderEmailText(blocks: NewsletterBlock[], opts: RenderEmailOpti
     }
   }
   if (opts.signature !== false) lines.push('Krystine St-Laurent');
-  lines.push('', opts.postalAddress, `${MOTS[opts.lang === 'en' ? 'en' : 'fr'].desabonner} : ${opts.unsubscribeUrl}`);
+  lines.push('', adressePied(opts.postalAddress), `${MOTS[opts.lang === 'en' ? 'en' : 'fr'].desabonner} : ${opts.unsubscribeUrl}`);
   return lines.join('\n\n');
 }
