@@ -22,7 +22,7 @@ export const CONFIRMATION_ACHAT_ACTIVE = true;
 const NOTE_ENGAGEMENT =
   "Les versements suivants sont prélevés automatiquement chaque mois, à la date anniversaire de votre achat. Le paiement complet des versements est exigé pour préserver l'accès au programme : il ne s'agit pas d'un abonnement. En choisissant le paiement en versements, vous vous engagez à régler chaque versement à son échéance; à défaut de paiement, l'accès à la formation et aux privilèges qui s'y rattachent est suspendu jusqu'au règlement du solde.";
 
-const SOUTIEN = 'Nous sommes là pour vous. Une question, un doute, un petit pépin : écrivez-nous à <a href="mailto:teamksl@inspiratanature.com">teamksl@inspiratanature.com</a>.';
+const SOUTIEN = 'Notre équipe est là pour vous. Une question, un doute, un petit pépin : écrivez-nous à <a href="mailto:teamksl@inspiratanature.com">teamksl@inspiratanature.com</a>.';
 
 /** Ce que le courriel lit de la preuve d'achat (montants en cents, CAD). */
 export interface Recap { total?: number; tps?: number; tvq?: number; versements?: number }
