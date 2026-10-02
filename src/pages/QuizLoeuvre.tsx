@@ -263,6 +263,47 @@ const QUIZ_DATA: QuizQuestion[] = [
 
 const ALL_DOSHAS: DoshaType[] = ['vata', 'pitta', 'kapha'];
 
+// Textes de Krystine sous la dominance (FR seulement; la 3e phrase est retirée sur l'écran du résultat).
+const CARTE_DOMINANCE: Record<DoshaType, [string, string, string]> = {
+  vata: [
+    'Le mental part dans tous les sens. Le sommeil devient plus fragile.',
+    'Quand le vent prend trop de place, tout devient plus difficile à tenir ensemble.',
+    'Votre profil vous montre ce qui l’attise chez vous, et ce qui l’apaise.',
+  ],
+  pitta: [
+    'Impatience, irritabilité, et le soir, le feu tarde à s’apaiser.',
+    'À force d’intensité, même ce qui nous fait avancer peut finir par nous brûler.',
+    'Votre profil vous aide à voir ce qui nourrit cette chaleur, et comment la tempérer.',
+  ],
+  kapha: [
+    'Le matin démarre lentement. L’élan tarde à venir et les choses s’accumulent plus facilement.',
+    'Quand tout devient plus lourd, ce n’est pas toujours qu’il faut faire plus.',
+    'Votre profil vous montre ce qui entretient cette lourdeur, et ce qui remet du mouvement.',
+  ],
+};
+const NOM_AYURVEDA: Record<DoshaType, string> = { vata: 'Vata', pitta: 'Pitta', kapha: 'Kapha' };
+
+/* Carte de Krystine + mention discrète du mot Ayurveda */
+const CarteDominance: React.FC<{ d: DoshaType; lang: 'FR' | 'EN'; complet: boolean }> = ({ d, lang, complet }) => {
+  const [p1, p2, p3] = CARTE_DOMINANCE[d];
+  return (
+    <div className="mt-10 max-w-[36ch] mx-auto">
+      {lang === 'FR' && (
+        <div>
+          <p className="v2-serif font-light text-[clamp(1.2rem,2vw,1.5rem)] leading-snug text-[#1c1712]">{p1}</p>
+          <p className="mt-3 text-[0.95rem] leading-[1.75] text-[#3a2f23]">{p2}</p>
+          {!complet && <p className="mt-3 text-[0.95rem] leading-[1.75] text-[#3a2f23]">{p3}</p>}
+        </div>
+      )}
+      <p className="mt-6 text-[0.75rem] leading-relaxed text-[#1c1712]/55">
+        {lang === 'FR'
+          ? `Dans le langage de l’Ayurveda, cette dominance est appelée ${NOM_AYURVEDA[d]}.`
+          : `In the language of Ayurveda, this dominance is called ${NOM_AYURVEDA[d]}.`}
+      </p>
+    </div>
+  );
+};
+
 // Icône éditoriale par dosha (Phosphor, weight light), purement décorative.
 const DOSHA_ICON: Record<DoshaType, React.ComponentType<{ size?: number; weight?: any; className?: string; style?: React.CSSProperties }>> = {
   vata: Wind,
@@ -274,9 +315,10 @@ const DOSHA_ICON: Record<DoshaType, React.ComponentType<{ size?: number; weight?
 // (texte, contraste AA sur crème/tint) et tint de carte, par dosha.
 const DOSHA_THEME: Record<DoshaType, { accent: string; ink: string; tint: string }> = {
   // Les couleurs des pictos de Krystine (1er oct. 2026) : Vata vert, Pitta rouge, Kapha bleu.
-  vata:  { accent: '#6e7b45', ink: '#4f5a2e', tint: '#e9ebd8' },
-  pitta: { accent: '#a8443c', ink: '#83322b', tint: '#f3e1dc' },
-  kapha: { accent: '#3d5f94', ink: '#2c4670', tint: '#e1e8f2' },
+  // Fond crème du site pour toutes, jamais de teinte pâle (Krystine, 2 oct. 2026 : « couleurs pâlottes, arck »).
+  vata:  { accent: '#6e7b45', ink: '#4f5a2e', tint: '#faf6ee' },
+  pitta: { accent: '#a8443c', ink: '#83322b', tint: '#faf6ee' },
+  kapha: { accent: '#3d5f94', ink: '#2c4670', tint: '#faf6ee' },
 };
 
 // Les pictos aquarelle de Krystine, détourés (public/quiz/pictos/).
@@ -317,14 +359,14 @@ const Medallion: React.FC<{ d: DoshaType; size?: number; delay?: number; classNa
 };
 
 /* Statistique d'un dosha : icône, pourcentage, filet proportionnel qui se trace */
-const DoshaStat: React.FC<{ d: DoshaType; pct: number }> = ({ d, pct }) => {
+const DoshaStat: React.FC<{ d: DoshaType; pct: number; label: string }> = ({ d, pct, label }) => {
   const th = DOSHA_THEME[d];
   const reduce = useReducedMotion();
   return (
     <div className="flex flex-col items-center gap-1.5">
       <DoshaPicto d={d} size={30} />
       <span className="v2-serif font-light text-3xl md:text-4xl tabular-nums" style={{ color: th.ink }}>{pct}%</span>
-      <span className="text-[0.58rem] uppercase tracking-[0.22em] text-[#1c1712]/60">{d}</span>
+      <span className="text-[0.58rem] uppercase tracking-[0.22em] text-[#1c1712]/60">{label}</span>
       <span className="relative mt-1 block h-px w-16 bg-[#1c1712]/10 overflow-hidden">
         <motion.span
           className="absolute inset-0"
@@ -505,23 +547,20 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
             <div className="p-[clamp(2rem,4.5vw,3.75rem)] text-center lg:border-r" style={{ borderColor: `${th.accent}2e` }}>
               <Medallion d={dRes} className="mx-auto" />
               <p className="mt-7 text-[0.68rem] uppercase tracking-[0.32em]" style={{ color: th.ink }}>
-                {lang === 'FR' ? 'Votre nature dominante est' : 'Your dominant nature is'}
+                {lang === 'FR' ? 'Votre dominance aujourd’hui' : 'Your dominance today'}
               </p>
               <h2 className="mt-3 v2-serif font-light text-[#1c1712] leading-[0.96] text-[clamp(3rem,6.5vw,5rem)]">
-                {result.dominant.name}
+                {(lang === 'FR' ? DOMINANCE_FR : DOMINANCE_EN)[dRes]}
               </h2>
-              {result.dominant.elements && (
-                <p className="mt-3 text-[0.62rem] uppercase tracking-[0.26em] text-[#1c1712]/55">
-                  {result.dominant.elements}
-                </p>
-              )}
 
               {/* Répartition des trois doshas */}
               <div className="mt-10 flex justify-center gap-9 md:gap-12">
                 {ALL_DOSHAS.map(d => (
-                  <DoshaStat key={d} d={d} pct={result.percentages[d]} />
+                  <DoshaStat key={d} d={d} pct={result.percentages[d]} label={(lang === 'FR' ? DOMINANCE_FR : DOMINANCE_EN)[d]} />
                 ))}
               </div>
+
+              <CarteDominance d={dRes} lang={lang} complet />
 
               <p className="mt-10 v2-serif italic font-light text-[clamp(1.1rem,1.9vw,1.45rem)] leading-relaxed text-[#3a2f23] max-w-[46ch] mx-auto">
                 {result.dominant.definition}
@@ -606,22 +645,19 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
           <div className="p-[clamp(2rem,5vw,4rem)]">
             <Medallion d={dRes} className="mx-auto" />
             <p className="mt-7 text-[0.68rem] uppercase tracking-[0.32em]" style={{ color: th.ink }}>
-              {lang === 'FR' ? 'Votre nature dominante' : 'Your dominant nature'}
+              {lang === 'FR' ? 'Votre dominance aujourd’hui' : 'Your dominance today'}
             </p>
             <h2 className="mt-3 v2-serif font-light text-[#1c1712] leading-[0.96] text-[clamp(3rem,6.5vw,5rem)]">
-              {teaser.dominant.name}
+              {(lang === 'FR' ? DOMINANCE_FR : DOMINANCE_EN)[dRes]}
             </h2>
-            {teaser.dominant.elements && (
-              <p className="mt-3 text-[0.62rem] uppercase tracking-[0.26em] text-[#1c1712]/55">
-                {teaser.dominant.elements}
-              </p>
-            )}
 
             <div className="mt-10 flex justify-center gap-9 md:gap-12">
               {ALL_DOSHAS.map(d => (
-                <DoshaStat key={d} d={d} pct={teaser.percentages[d]} />
+                <DoshaStat key={d} d={d} pct={teaser.percentages[d]} label={(lang === 'FR' ? DOMINANCE_FR : DOMINANCE_EN)[d]} />
               ))}
             </div>
+
+            <CarteDominance d={dRes} lang={lang} complet={false} />
 
             <div className="mt-11 pt-8 border-t max-w-[42rem] mx-auto" style={{ borderColor: `${th.accent}35` }}>
               <p className="inline-flex items-center gap-2.5 text-[0.62rem] uppercase tracking-[0.24em] text-[#3a2f23]">
@@ -630,7 +666,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
               <p className="mt-5 v2-serif italic font-light text-[clamp(1.1rem,1.9vw,1.4rem)] leading-relaxed text-[#3a2f23] max-w-[46ch] mx-auto">
                 {user
                   ? (lang === 'FR' ? 'Enregistrez votre résultat dans votre espace pour retrouver votre profil complet.' : 'Save your result to your space to discover your full profile.')
-                  : (lang === 'FR' ? 'Connectez-vous pour enregistrer votre profil et découvrir votre profil complet.' : 'Sign in to save your profile and discover your full profile.')}
+                  : (lang === 'FR' ? 'Connectez-vous pour enregistrer et découvrir votre profil complet.' : 'Sign in to save and discover your full profile.')}
               </p>
 
               <label className="mt-7 mx-auto flex max-w-[34rem] cursor-pointer items-start gap-3 text-left text-[0.92rem] leading-relaxed text-[#3a2f23]">
@@ -642,7 +678,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                   style={{ accentColor: th.accent }}
                 />
                 <span>{lang === 'FR'
-                  ? <>Recevoir les repères pour ma nature <b>{teaser.dominant.name}</b> et les propositions de Krystine, par courriel. Désabonnement en un clic.</>
+                  ? <>Recevoir les repères pour ma dominance <b>{({ vata: 'Vent', pitta: 'Feu', kapha: 'Terre' } as Record<string, string>)[String(teaser.dominant.name || '').toLowerCase()] || teaser.dominant.name}</b> et les propositions de Krystine, par courriel. Désabonnement en un clic.</>
                   : <>Receive markers for my <b>{teaser.dominant.name}</b> nature and Krystine's offers, by email. One-click unsubscribe.</>}</span>
               </label>
 
