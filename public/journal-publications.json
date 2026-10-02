@@ -4216,5 +4216,19 @@
       "public/assets-manifest.json",
       "src/pages/admin/sections/newsletter/RelectureSequence.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T15:25:37.145Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "4ea6cb06",
+    "message": "Admin › Séquences : la suite Vent du quiz rangée sous Vata",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/newsletter/SequencesPanel.tsx"
+    ]
   }
 ]
