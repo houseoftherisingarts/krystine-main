@@ -32,12 +32,23 @@ const AjusteLargeur: React.FC<{ hauteur: number; children: React.ReactNode }> = 
   const [echelle, setEchelle] = useState(1);
   useEffect(() => {
     const el = boite.current; if (!el) return;
-    const ro = new ResizeObserver(() => setEchelle(Math.min(1, el.clientWidth / LARGEUR_LETTRE)));
+    // On ne suit que la largeur, et on ignore les variations de quelques
+    // pixels : sinon la barre de défilement qui apparaît puis disparaît
+    // relance le calcul sans fin et la page tremble.
+    let derniere = -1;
+    const mesurer = () => {
+      const w = Math.round(el.getBoundingClientRect().width);
+      if (Math.abs(w - derniere) < 4) return;
+      derniere = w;
+      setEchelle(Math.min(1, w / LARGEUR_LETTRE));
+    };
+    mesurer();
+    const ro = new ResizeObserver(mesurer);
     ro.observe(el); return () => ro.disconnect();
   }, []);
   return (
-    <div ref={boite} style={{ height: echelle < 1 ? hauteur * echelle : undefined }}>
-      <div style={echelle < 1 ? { width: LARGEUR_LETTRE, transform: `scale(${echelle})`, transformOrigin: 'top left' } : undefined}>{children}</div>
+    <div ref={boite} style={{ width: '100%', overflow: 'hidden', height: hauteur * echelle }}>
+      <div style={{ width: LARGEUR_LETTRE, maxWidth: echelle < 1 ? undefined : '100%', margin: echelle < 1 ? undefined : '0 auto', transform: echelle < 1 ? `scale(${echelle})` : undefined, transformOrigin: 'top left' }}>{children}</div>
     </div>
   );
 };
