@@ -4896,5 +4896,24 @@
       "src/lib/versements.ts",
       "src/pages/PaiementFormation.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T21:30:20.949Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "bfabaf25",
+    "message": "Infolettre : on peut maintenant exclure des listes; la lettre de lancement VATA Essentiel exclut celles qui ont déjà Vata",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/send.ts",
+      "public/assets-manifest.json",
+      "src/firebase/firestore.ts",
+      "src/pages/admin/sections/newsletter/AudiencePicker.tsx",
+      "src/pages/admin/sections/newsletter/Composer.tsx",
+      "src/pages/admin/sections/newsletter/JournalPanel.tsx"
+    ]
   }
 ]
