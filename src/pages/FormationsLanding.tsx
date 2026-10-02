@@ -3,22 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight } from '@phosphor-icons/react';
 import { goToRoute } from '../lib/staticRoutes';
+import { enLancement, TIERS } from './vata/offre';
+import { SEMAINES_VATA } from './vata/semaines';
 
 /**
- * /formations : les trois portes, dans l'ordre voulu par Krystine (septembre
- * 2026). Le Foyer d'abord (la continuité), l'Expérience Origine ensuite (le
- * parcours accompagné), puis les formations à suivre à votre rythme : le
- * programme Vata maintenant, et les autres qui reviennent une à une sur le
- * site avec leur liste d'attente. Même canon que /speaking : vert profond en
- * ouverture, ivoire ensuite, ambre pour l'accent. Les images se montrent
- * entières, jamais recadrées.
+ * /formations (et /parcours) : les trois portes, dans l'ordre voulu par
+ * Krystine. Le Foyer d'abord (la continuité), EXPÉRIENCE ORIGINE ensuite (le
+ * parcours accompagné), puis VATA Essentiel, qui se suit dès maintenant.
+ * Trois grandes cartes visibles d'emblée : la carte VATA Essentiel mène en
+ * entier à /vata, avec son prix tiré de la même source que la page de vente
+ * (Krystine, 2 oct. 2026 : le chemin en deux clics). Les parcours en liste
+ * d'attente suivent plus bas, visibles et sobres.
  */
 
 const EASE = [0.16, 0.8, 0.24, 1] as const;
+const ENCRE = '#1c1712';
+const OR_ENCRE = '#7d6330';
 
 interface Porte {
   key: string;
-  n: string;
   tag: string;
   title: string;
   subtitle: string;
@@ -26,11 +29,16 @@ interface Porte {
   cta: string;
   href: string;
   image: string;
+  /** Le cadrage dans la carte 16:10, pour garder le sujet de l'image. */
+  cadrage?: string;
+  prix?: boolean;
 }
+
+const OFFRE_VATA = TIERS[0];
 
 const PORTES: Porte[] = [
   {
-    key: 'foyer', n: '01',
+    key: 'foyer',
     tag: 'Découvrir · relier · ressentir',
     title: "Le Foyer d'Origine",
     subtitle: "L'espace de continuité.",
@@ -40,32 +48,32 @@ const PORTES: Porte[] = [
     image: '/assets/foyer-visuel-16x9.jpg',
   },
   {
-    key: 'origine', n: '02',
-    tag: 'Parcours signature · 12 semaines',
+    key: 'origine',
+    tag: '12 semaines accompagnées',
     title: 'Expérience Origine 2',
-    subtitle: 'La transformation accompagnée.',
+    subtitle: 'Le chemin accompagné.',
     body: 'Lire, trier, ancrer pour retrouver ses propres repères.',
     cta: 'Découvrir Expérience Origine 2',
     href: '/liste-attente?programme=origine2',
     image: 'https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg',
+    cadrage: '100% 50%',
   },
   {
-    key: 'rythme', n: '03',
-    tag: 'Ayurveda · corps · cycles',
-    title: 'Les formations à votre rythme',
-    subtitle: 'Approfondir un sujet précis.',
-    body: 'Programme Vata ici, une formation audio avec matériel de support, puis les autres formations qui reviendront progressivement sur le site.',
-    cta: 'Voir les formations',
-    href: '#a-votre-rythme',
-    image: '/vata/carte-saison-vata.jpg',
+    key: 'vata',
+    tag: 'À votre rythme · accès immédiat',
+    title: OFFRE_VATA.name,
+    subtitle: 'Un parcours de sept semaines.',
+    body: "16 capsules audio, 7 méditations guidées, le journal de bord et d'observation, et le guide de 204 pages.",
+    cta: 'Découvrir VATA Essentiel',
+    href: '/vata',
+    image: SEMAINES_VATA[1].bandeau,
+    prix: true,
   },
 ];
 
-// Les formations à votre rythme : Vata se suit dès maintenant, les autres
-// reviennent une à une. Chacune a sa liste d'attente en attendant.
-interface Formation { slug: string; titre: string; sous: string; href?: string }
-const A_VOTRE_RYTHME: Formation[] = [
-  { slug: 'vata', titre: 'Programme Vata', sous: 'Une formation audio, avec son matériel de support. Sept semaines pour enraciner, réchauffer, apaiser.', href: '/vata' },
+// Les parcours qui reviennent un à un : chacun a sa liste d'attente.
+interface Parcours { slug: string; titre: string; sous: string; href?: string }
+const EN_ATTENTE: Parcours[] = [
   { slug: 'pitta', titre: 'Saison Pitta', sous: 'Rafraîchir, apaiser, adoucir quand la chaleur monte' },
   { slug: 'kapha', titre: 'Saison Kapha', sous: "Bouger, drainer, alléger à l'éveil du printemps" },
   { slug: 'sante-parfaite', titre: 'Parcours Santé Parfaite', sous: 'Masterclass Énergie et Clarté', href: '/cours/sante-parfaite' },
@@ -77,17 +85,11 @@ const A_VOTRE_RYTHME: Formation[] = [
 ];
 
 const FormationsLanding: React.FC = () => {
-  const [rythmeOuvert, setRythmeOuvert] = React.useState(false);
   const navigate = useNavigate();
   const reduce = useReducedMotion();
-  const go = (href: string) => {
-    if (href.startsWith('#')) {
-      // « Voir les formations » menait au repli fermé : la visiteuse arrivait
-      // sur un simple intertitre et les listes d'attente restaient cachées.
-      if (href.slice(1) === 'a-votre-rythme') setRythmeOuvert(true);
-      document.getElementById(href.slice(1))?.scrollIntoView({ behavior: 'smooth' });
-      return;
-    }
+  const lancement = enLancement();
+  const go = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
     goToRoute(navigate, href);
   };
   const up = (delay: number) => ({
@@ -99,7 +101,7 @@ const FormationsLanding: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#f6f2ea] text-[#293027]">
       {/* ─────────── HERO, vert profond comme /speaking ─────────── */}
-      <section className="relative overflow-hidden bg-[#1b2622] px-[clamp(1.5rem,5vw,5.5rem)] pt-40 pb-20 text-[#EEE7DB] md:pt-48 md:pb-28">
+      <section className="relative overflow-hidden bg-[#1b2622] px-[clamp(1.5rem,5vw,5.5rem)] pt-32 pb-14 text-[#EEE7DB] md:pt-40 md:pb-20">
         <div aria-hidden className="pointer-events-none absolute -left-[18vw] -top-[24vw] h-[70vw] w-[70vw] max-h-[900px] max-w-[900px] rounded-full blur-[30px]"
           style={{ background: 'radial-gradient(circle, rgba(217,154,82,.42) 0%, rgba(186,123,57,.18) 32%, rgba(40,53,47,0) 68%)' }} />
         <div aria-hidden className="pointer-events-none absolute -right-[8vw] -bottom-[18vw] h-[44vw] w-[44vw] rounded-full blur-[40px]"
@@ -115,87 +117,74 @@ const FormationsLanding: React.FC = () => {
         </div>
       </section>
 
-      {/* ─────────── LES TROIS PORTES ─────────── */}
-      <section className="px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(3rem,7vh,5.5rem)] pb-[clamp(3rem,6vh,4.5rem)]">
-        <div className="mx-auto max-w-[1320px]">
+      {/* ─────────── LES TROIS PORTES, trois grandes cartes ─────────── */}
+      <section className="px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(2.5rem,6vh,4.5rem)] pb-[clamp(3.5rem,8vh,6rem)]">
+        <div className="mx-auto grid max-w-[1320px] gap-6 md:grid-cols-3 md:gap-7">
           {PORTES.map((p, i) => (
-            <motion.article
+            <motion.a
               key={p.key}
+              href={p.href}
+              onClick={(e) => go(e, p.href)}
               initial={reduce ? false : { opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 1, ease: EASE, delay: i * 0.08 }}
-              onClick={() => go(p.href)}
-              className="group grid cursor-pointer items-center gap-6 border-t border-[#293027]/15 py-10 md:grid-cols-[70px_minmax(0,5fr)_minmax(0,6fr)_auto] md:gap-10 md:py-12 last:border-b"
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: EASE, delay: 0.25 + i * 0.08 }}
+              className="group flex flex-col overflow-hidden rounded-[16px] border border-[#293027]/12 bg-[#fbf8f2] shadow-[0_30px_60px_-46px_rgba(41,48,39,0.55)] transition-[border-color,box-shadow] duration-500 hover:border-[#7d6330]/45 hover:shadow-[0_36px_70px_-44px_rgba(41,48,39,0.6)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#7d6330]"
             >
-              <span className="font-serif text-[2.4rem] leading-none text-[#BA7B39]">{p.n}</span>
-              <div className="overflow-hidden rounded-[14px] bg-[#1b2622]/5 shadow-[0_30px_60px_-40px_rgba(41,48,39,0.5)]">
-                <img src={p.image} data-edit-key={`formations.porte.${p.key}`} alt="" loading={i === 0 ? 'eager' : 'lazy'}
-                  className="block h-auto w-full transition-transform duration-[900ms] group-hover:scale-[1.03]" />
+              <div className="relative aspect-[16/10] overflow-hidden bg-[#1b2622]/5">
+                <img src={p.image} data-edit-key={`formations.porte.${p.key}`} alt="" loading="eager"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] group-hover:scale-[1.03]"
+                  style={p.cadrage ? { objectPosition: p.cadrage } : undefined} />
               </div>
-              <div>
-                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-[#BA7B39]">{p.tag}</p>
-                <h2 className="mt-3 font-serif text-[clamp(1.9rem,3vw,2.7rem)] font-medium leading-[1.05] tracking-[-0.01em]">{p.title}</h2>
-                <p className="mt-1.5 font-serif text-lg text-[#8B4A2F]">{p.subtitle}</p>
-                <p className="mt-4 max-w-[42rem] leading-[1.7] text-[#5b5f55]">{p.body}</p>
-                <span className="mt-6 inline-flex items-center gap-2.5 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-[#8B4A2F]">
-                  {p.cta} <ArrowRight size={14} weight="bold" className="transition-transform duration-300 group-hover:translate-x-1" />
-                </span>
+              <div className="flex flex-1 flex-col p-6 md:p-7">
+                <p className="text-[0.66rem] font-semibold uppercase tracking-[0.22em]" style={{ color: OR_ENCRE }}>
+                  {p.tag}
+                </p>
+                <h2 className="mt-3 font-serif text-[clamp(1.75rem,2.4vw,2.35rem)] font-medium leading-[1.05] tracking-[-0.01em]" style={{ color: ENCRE }}>{p.title}</h2>
+                <p className="mt-1.5 font-serif text-lg leading-snug text-[#8B4A2F]">{p.subtitle}</p>
+                <p className="mt-4 leading-[1.7] text-[#5b5f55]">{p.body}</p>
+                {p.prix && (
+                  <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <span className="font-serif text-[2rem] leading-none tabular-nums" style={{ color: ENCRE }}>{lancement ? OFFRE_VATA.promo : OFFRE_VATA.price}</span>
+                    {lancement && <span className="font-serif text-lg line-through tabular-nums text-[#1c1712]/45">{OFFRE_VATA.price}</span>}
+                    {lancement && <span className="text-[0.66rem] font-semibold uppercase tracking-[0.18em]" style={{ color: OR_ENCRE }}>Tarif de lancement</span>}
+                  </p>
+                )}
+                <div className="mt-auto flex items-center justify-between gap-4 pt-7">
+                  <span className="text-[0.72rem] font-semibold uppercase tracking-[0.16em]" style={{ color: ENCRE }}>{p.cta}</span>
+                  <span className="inline-flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full border border-[#1c1712]/30 text-[#1c1712] transition-colors duration-300 group-hover:border-[#1c1712] group-hover:bg-[#1c1712] group-hover:text-[#EEE7DB]">
+                    <ArrowRight size={16} weight="bold" className="transition-transform duration-300 group-hover:translate-x-0.5" />
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center md:justify-end">
-                <span className="inline-flex h-[52px] w-[52px] items-center justify-center rounded-full border border-[#293027]/25 text-[#293027] transition-all duration-300 group-hover:border-[#BA7B39] group-hover:bg-[#BA7B39] group-hover:text-[#fff8ee]">
-                  <ArrowRight size={16} weight="bold" />
-                </span>
-              </div>
-            </motion.article>
+            </motion.a>
           ))}
         </div>
       </section>
 
-      {/* ─────────── À VOTRE RYTHME : Vata maintenant, les autres en liste d'attente ─────────── */}
+      {/* ─────────── LES PARCOURS À VOTRE RYTHME, en liste d'attente ─────────── */}
       <section id="a-votre-rythme" className="scroll-mt-24 px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(5rem,10vh,8rem)]">
-        <div className="mx-auto max-w-[1320px]">
-          <button
-            type="button"
-            onClick={() => setRythmeOuvert(o => !o)}
-            aria-expanded={rythmeOuvert}
-            className="flex w-full items-center justify-between gap-4 text-left"
-          >
-            <span className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-[#BA7B39]">03 · Les formations à votre rythme</span>
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#BA7B39]/45 text-[#8B4A2F] transition-transform duration-500" style={{ transform: rythmeOuvert ? 'rotate(180deg)' : 'none' }}>
-              <i className="fa-solid fa-chevron-down" aria-hidden="true" />
-            </span>
-          </button>
-          {rythmeOuvert && (<>
-          <h2 className="mt-3 max-w-[22ch] font-serif text-[clamp(1.8rem,2.8vw,2.5rem)] font-medium leading-[1.08]">Le programme Vata se suit dès maintenant. Les autres reviennent une à une.</h2>
-          <p className="mt-3 max-w-[46rem] leading-[1.7] text-[#5b5f55]">Chaque formation qui n'est pas encore de retour a sa liste d'attente. Inscrivez-vous et vous recevrez l'invitation avant toute annonce publique.</p>
-          <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {A_VOTRE_RYTHME.map((f, i) => {
-              const ouverte = !!f.href;
+        <div className="mx-auto max-w-[1320px] border-t border-[#293027]/15 pt-[clamp(2.5rem,6vh,4rem)]">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em]" style={{ color: OR_ENCRE }}>Les parcours à votre rythme</p>
+          <h2 className="mt-3 max-w-[24ch] font-serif text-[clamp(1.7rem,2.6vw,2.3rem)] font-medium leading-[1.1]" style={{ color: ENCRE }}>Les autres parcours reviennent un à un.</h2>
+          <p className="mt-3 max-w-[46rem] leading-[1.7] text-[#5b5f55]">Chaque parcours qui revient bientôt a sa liste d'attente. Inscrivez-vous et vous recevrez l'invitation avant toute annonce publique.</p>
+          <ul className="mt-8 grid border-t border-[#293027]/12 sm:grid-cols-2 lg:grid-cols-4">
+            {EN_ATTENTE.map((f) => {
               const href = f.href || `/liste-attente?programme=${f.slug}&titre=${encodeURIComponent(f.titre)}`;
               return (
-                <motion.li
-                  key={f.slug}
-                  initial={reduce ? false : { opacity: 0, y: 18 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.8, ease: EASE, delay: (i % 3) * 0.06 }}
-                  onClick={() => go(href)}
-                  className={`group flex cursor-pointer flex-col justify-between rounded-[14px] border p-6 transition-colors ${ouverte ? 'border-[#BA7B39]/60 bg-[#1b2622] text-[#EEE7DB]' : 'border-[#293027]/15 bg-white/50 hover:border-[#BA7B39]'}`}
-                >
-                  <div>
-                    <p className={`text-[0.66rem] font-semibold uppercase tracking-[0.22em] ${ouverte ? 'text-[#BA7B39]' : 'text-[#8B4A2F]'}`}>{ouverte ? 'Disponible · à votre rythme' : "Liste d'attente"}</p>
-                    <h3 className="mt-2 font-serif text-[1.45rem] leading-[1.15]">{f.titre}</h3>
-                    <p className={`mt-2 text-[0.95rem] leading-[1.6] ${ouverte ? 'text-[#EEE7DB]/75' : 'text-[#5b5f55]'}`}>{f.sous}</p>
-                  </div>
-                  <span className={`mt-6 inline-flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.16em] ${ouverte ? 'text-[#BA7B39]' : 'text-[#8B4A2F]'}`}>
-                    {ouverte ? 'Découvrir le programme' : "Rejoindre la liste d'attente"} <ArrowRight size={13} weight="bold" className="transition-transform duration-300 group-hover:translate-x-1" />
-                  </span>
-                </motion.li>
+                <li key={f.slug} className="border-b border-[#293027]/12">
+                  <a href={href} onClick={(e) => go(e, href)} className="group flex h-full flex-col justify-between gap-4 py-5 pr-6">
+                    <span>
+                      <span className="block font-serif text-[1.25rem] leading-[1.2]" style={{ color: ENCRE }}>{f.titre}</span>
+                      <span className="mt-1.5 block text-[0.92rem] leading-[1.55] text-[#5b5f55]">{f.sous}</span>
+                    </span>
+                    <span className="inline-flex items-center gap-2 text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-[#1c1712]/70 transition-colors group-hover:text-[#1c1712]">
+                      {f.href ? 'Découvrir' : "Rejoindre la liste d'attente"} <ArrowRight size={12} weight="bold" className="transition-transform duration-300 group-hover:translate-x-1" />
+                    </span>
+                  </a>
+                </li>
               );
             })}
           </ul>
-          </>)}
         </div>
       </section>
     </div>

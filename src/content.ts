@@ -48,7 +48,7 @@ export const CONTENT = {
       conferenciere: 'Conférencière',
       origine: 'Expérience Origine',
       podcast: 'Podcast',
-      vata: 'Programme Vata',
+      vata: 'VATA Essentiel',
       admin: 'Admin',
     },
     cards: {

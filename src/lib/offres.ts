@@ -102,9 +102,9 @@ export function offrePour(ctx: ContexteOffre): Offre {
     return {
       id: 'dosha-vata',
       intertitre: 'Ce qui vous ressemble',
-      titre: 'Le Programme Vata, pensé pour vous',
+      titre: 'VATA Essentiel, pensé pour vous',
       texte: `Votre quiz vous place du côté de Vata, le dosha du mouvement et de l'air. Ce programme reprend les rituels qui ancrent et réchauffent ce tempérament, avec les leçons audio et les guides de Krystine pour les suivre à votre rythme.${phrasePrix(formation?.prix)}`,
-      bouton: 'Découvrir le Programme Vata',
+      bouton: 'Découvrir VATA Essentiel',
       destination: DESTINATION_VATA,
     };
   }

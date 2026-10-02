@@ -4,6 +4,7 @@ import { Wind, ArrowRight, ArrowDown, Check, CaretDown, Anchor, Ear, Drop } from
 import { Atmosphere } from '../components/motion/loeuvre';
 import StickerFormat from '../components/cours/StickerFormat';
 import LecteurAudioCours from '../components/cours/LecteurAudioCours';
+import { enLancement, TIERS } from './vata/offre';
 
 /**
  * Expérience Ayurveda · Saison Vata. Refonte intégrale « revue d'automne » :
@@ -93,30 +94,6 @@ const couv = (id: string) => `/vata/couvertures/${id}.jpg`;
 const COUV_PHASES = ['002', '006', '012', '021', '026', '029', '041', '046', 'guide'];
 const COUV_DOCS = ['002', '006', '008', '012', '014', '017', '020', '021', '022', '023', '026', '027', '028', '029', '030', '033', '034', '035', '036', '037', '040', '041', '042', '043', '046', '047', '048'];
 const phaseLabel = (i: number) => (i === 0 ? 'Introduction' : i === PHASES.length - 1 ? 'Conclusion' : `Semaine ${i}`);
-
-// Le tarif de lancement tient jusqu'au 1er novembre 2026 inclus (Krystine,
-// 30 sept. 2026), puis la page affiche 497 $ sans prix barré. La fonction de
-// paiement bascule à la même minute (functions/src/paiements.ts).
-const FIN_LANCEMENT = new Date('2026-11-02T04:00:00Z');
-const enLancement = () => Date.now() < FIN_LANCEMENT.getTime();
-
-const TIERS = [
-  {
-    name: 'VATA Essentiel', price: '497 $', promo: '397 $', plan: '',
-    intro: 'Un chemin clair, semaine après semaine, pour apaiser le mental, un sens à la fois.',
-    features: [
-      '16 capsules audio, 4 h 12 min d\'écoute avec Krystine · valeur 800 $',
-      '7 méditations guidées · valeur 210 $',
-      'Le chemin des cinq sens : une introduction et 7 semaines qui s\'ouvrent une à une',
-      '19 rituels pour apaiser Vata, fruits d\'années de recherche',
-      'Le journal de bord et d\'observation, et un petit boni d\'observation chaque semaine',
-      'Les capsules plantes, épices et aliments de saison',
-      'Le guide complet de 204 pages, offert à la fin du parcours · valeur 150 $',
-      'Un accès d\'au moins trois ans à tout ce qui s\'est ouvert',
-    ],
-    recommended: false,
-  },
-];
 
 const TESTIMONIALS = [
   { quote: "Avant de rejoindre le programme de Krystine, je me sentais épuisée, à concilier travail et vie personnelle sans me laisser de temps. J'avais l'impression que même si je courais plus vite, rien n'y faisait. Aujourd'hui, grâce à de petites pratiques ayurvédiques intégrées à ma routine, j'ai retrouvé de l'énergie et de la clarté sans ajouter de stress à ma journée. Et je sais que ce n'est que le commencement.", who: 'Marie-Claude', role: 'Une vie professionnelle débordante' },
@@ -357,7 +334,7 @@ const Cover: React.FC = () => {
     {/* Ligne d'édition */}
     <Reveal y={10}>
       <div className="flex items-center justify-between border-t pt-3.5 text-[0.6rem] uppercase tracking-[0.28em]" style={{ borderColor: hairline, color: 'rgba(28,23,18,0.55)' }}>
-        <span>Édition d'automne · Saison Vata</span>
+        <span>Édition d'automne · VATA Essentiel</span>
         <span className="hidden sm:inline">Québec · MMXXVI</span>
       </div>
     </Reveal>
@@ -368,7 +345,7 @@ const Cover: React.FC = () => {
 
       <div className="relative flex items-center gap-5 mb-8">
         <Medallion Icon={Wind} size={46} />
-        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Expérience Ayurveda · Formation audio · 7&nbsp;semaines</p>
+        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>VATA Essentiel · Une expérience Ayurveda de sept semaines</p>
       </div>
 
       <h1 className="relative v2-serif font-light leading-[0.98] text-[clamp(2.1rem,5.6vw,5.4rem)]" style={{ color: C.ink }}>
@@ -394,7 +371,7 @@ const Cover: React.FC = () => {
         </Reveal>
         <Reveal delay={0.55} y={16} className="2xl:justify-self-end">
           <ul className="space-y-2.5">
-            {['Formation audio + matériel de support', '7 semaines + introduction', 'Éléments air et espace', 'À votre rythme · accès immédiat'].map((m) => (
+            {['Capsules, méditations et guide de 204 pages', '7 semaines + introduction', 'Éléments air et espace', 'À votre rythme · accès immédiat'].map((m) => (
               <li key={m} className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.2em]" style={{ color: 'rgba(28,23,18,0.62)' }}>
                 <span className="h-1 w-1 rounded-full shrink-0" style={{ background: C.sage }} />
                 {m}
@@ -747,7 +724,7 @@ const Tiers: React.FC = () => (
     <ChapterHead
       olive
       no="IV"
-      kicker="L'offre · Saison Vata"
+      kicker="L'offre · VATA Essentiel"
       title="Près de 40 ans, réunis en sept semaines"
       lede="Tout ce que Krystine a appris à relier, la clinique, les plantes et l'Ayurveda, rassemblé en un seul chemin."
       className="mb-[clamp(2.5rem,6vh,4rem)]"
@@ -984,7 +961,7 @@ const BackCover: React.FC = () => (
     <div className="relative px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3.75rem,11vh,9rem)] text-center">
       <Reveal>
         <p className="flex items-center justify-center gap-3 text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: '#c6cf9b' }}>
-          <Wind size={15} weight="light" aria-hidden /> Saison Vata · Un sens à la fois
+          <Wind size={15} weight="light" aria-hidden /> VATA Essentiel · Un sens à la fois
         </p>
         <h2 className="mt-7 mx-auto v2-serif font-light leading-[1.08] text-[clamp(2.2rem,5vw,3.9rem)] max-w-[22ch]" style={{ color: C.cream }}>
           Prête à apaiser le mental ?
