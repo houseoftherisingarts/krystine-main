@@ -5,6 +5,7 @@ import { Atmosphere } from '../components/motion/loeuvre';
 import StickerFormat from '../components/cours/StickerFormat';
 import LecteurAudioCours from '../components/cours/LecteurAudioCours';
 import { enLancement, TIERS } from './vata/offre';
+import { SEMAINES_VATA } from './vata/semaines';
 import { FORMATION_VATA_ID, prixEnVigueur, montantVersement, versementsPermis } from '../lib/versements';
 
 /**
@@ -72,7 +73,7 @@ const SIGNALS = [
 const SYSTEMS: Array<[string, string, React.ComponentType<{ size?: number; weight?: any }>]> = [
   ["Le système d'ancrage", "Le souffle d'abord, pour rappeler au corps qu'il est en sécurité, enveloppé et aimé. Une main sur le cœur, l'autre sur le ventre, l'expiration s'allonge : 4 secondes, puis 5, puis 6, puis 7.", Anchor],
   ["Le filtrage sensoriel", "Connecter, observer, apaiser nos sens permet de se rebrancher vers le cœur. Un sens à la fois, nous apprenons à choisir ce qui entre et reste dans notre biodiversité intérieure.", Ear],
-  ["Les gestes qui réchauffent", "En sanskrit, le mot huile se dit sneha, et il signifie aussi amour. L'huile chaude, l'armoire à épices et l'eau digestive aident le corps à se réchauffer et la sécheresse à s'hydrater, et le mental s'apaise avec eux.", Drop],
+  ["Ce qui réchauffe", "En sanskrit, le mot huile se dit sneha, et il signifie aussi amour. L'huile chaude, l'armoire à épices et l'eau digestive aident le corps à se réchauffer et la sécheresse à s'hydrater, et le mental s'apaise avec eux.", Drop],
 ];
 
 // Les titres des semaines sont ceux du cours (src/pages/vata/semaines.ts), une
@@ -91,8 +92,8 @@ const PHASES = [
 
 /* Couvertures des documents du programme (public/vata/couvertures) */
 const couv = (id: string) => `/vata/couvertures/${id}.jpg`;
-// Une couverture par étape du parcours, dans l'ordre de PHASES.
-const COUV_PHASES = ['002', '006', '012', '021', '026', '029', '041', '046', 'guide'];
+// L'image de chaque étape du parcours vient de semaines.ts (source unique,
+// Krystine 2 oct. 2026 : les visuels tirés des PDF, sans fleurs gelées).
 const COUV_DOCS = ['002', '006', '008', '012', '014', '017', '020', '021', '022', '023', '026', '027', '028', '029', '030', '033', '034', '035', '036', '037', '040', '041', '042', '043', '046', '047', '048'];
 const phaseLabel = (i: number) => (i === 0 ? 'Introduction' : i === PHASES.length - 1 ? 'Conclusion' : `Semaine ${i}`);
 
@@ -106,7 +107,7 @@ const TESTIMONIALS = [
 const FAQS = [
   ["Est-ce que je dois connaître l'Ayurveda ?", "Le programme est conçu pour être simple, concret et accessible. Krystine rend chaque notion claire, pour qu'elle devienne un outil pratique dans votre quotidien."],
   ['Combien de temps ai-je accès au contenu ?', "Vous gardez l'accès à tout ce qui s'est ouvert pendant au moins trois ans. Vous pourrez y revenir chaque fois que Vata se réveille."],
-  ["Quel est l'investissement de temps requis ?", "C'est un programme qui respecte votre rythme. Les capsules audio font entre 5 et 15 minutes. L'idée n'est pas d'ajouter une corvée, mais de remplacer certaines habitudes stressantes par des rituels d'apaisement."],
+  ["Quel est l'investissement de temps requis ?", "C'est un programme qui respecte votre rythme. Les capsules audio font entre 5 et 15 minutes. L'idée n'est pas d'ajouter une corvée, mais de remplacer certaines habitudes stressantes par des moments d'apaisement."],
   ["Comment les semaines s'ouvrent-elles ?", "L'introduction et la semaine 1 s'ouvrent dès votre inscription. Ensuite, une nouvelle semaine s'ouvre tous les 7 jours, un courriel vous prévient à chaque fois, et vous gardez l'accès à tout ce qui est ouvert."],
   ['Est-ce que je peux suivre sur mobile ou tablette ?', "Oui. Le programme s'adapte à votre téléphone et à votre tablette, et vous pouvez écouter vos capsules comme un balado, même écran verrouillé, pendant vos déplacements."],
   ['Et si le programme ne me convient pas ?', "Vous avez la garantie cœur léger : si le programme ne vous convient pas, écrivez-nous dans les 15 jours suivant l'achat et nous vous remboursons."],
@@ -283,9 +284,9 @@ const UnderlineCta: React.FC<{ label: string; onClick?: () => void }> = ({ label
 );
 
 /* Une couverture de document, posée comme du papier */
-const Doc: React.FC<{ id: string; className?: string; eager?: boolean }> = ({ id, className = '', eager }) => (
+const Doc: React.FC<{ id: string; className?: string; eager?: boolean; src?: string }> = ({ id, className = '', eager, src }) => (
   <img
-    src={couv(id)}
+    src={src ?? couv(id)}
     alt=""
     width={707}
     height={1000}
@@ -365,7 +366,7 @@ const Cover: React.FC = () => {
         </Reveal>
         <Reveal delay={0.55} y={16} className="2xl:justify-self-end">
           <ul className="space-y-2.5">
-            {['Capsules, méditations et guide de 204 pages', '7 semaines + introduction', 'Éléments air et espace', 'À votre rythme · accès immédiat'].map((m) => (
+            {['Capsules, méditations et guide de 204 pages', '7 semaines + introduction', 'Éléments air et espace', 'Accès immédiat'].map((m) => (
               <li key={m} className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.2em]" style={{ color: 'rgba(28,23,18,0.62)' }}>
                 <span className="h-1 w-1 rounded-full shrink-0" style={{ background: C.sage }} />
                 {m}
@@ -564,7 +565,7 @@ const Journey: React.FC = () => {
               >
                 <div className={`flex items-start gap-[clamp(1.1rem,2.2vw,2rem)] ${leftSide ? 'lg:flex-row-reverse' : ''}`}>
                 <div className="w-[clamp(78px,20vw,96px)] lg:w-[clamp(110px,9.5vw,140px)] shrink-0">
-                  <Doc id={COUV_PHASES[i] === 'guide' ? 'guide' : `img-${COUV_PHASES[i]}`} />
+                  <Doc id={`semaine-${i}`} src={SEMAINES_VATA[i]?.vignette} />
                 </div>
                 <div className="min-w-0 flex-1">
                 <div className={`flex items-baseline gap-4 ${leftSide ? 'lg:justify-end' : ''}`}>
@@ -633,7 +634,7 @@ const FAN_RECU: Array<[string, number, string, string]> = [
   ['img-029', -5, '-41%', '1%'],
   ['img-041', 5, '41%', '1%'],
   ['img-046', 11, '80%', '4%'],
-  ['img-026', 17, '118%', '9%'],
+  ['img-021', 17, '118%', '9%'],
 ];
 
 const ReceivedFan: React.FC = () => {
@@ -784,7 +785,7 @@ const Tiers: React.FC = () => (
                 Commencer VATA Essentiel
                 <ArrowRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
               </button>
-              <p className="mt-3 text-center text-[0.8rem] leading-snug" style={{ color: C.inkSoft }}>Garantie cœur léger : 15 jours pour changer d'avis, remboursement complet. De 5 à 15 minutes par jour, à votre rythme.</p>
+              <p className="mt-3 text-center text-[0.8rem] leading-snug" style={{ color: C.inkSoft }}>Garantie cœur léger : 15 jours pour changer d'avis, remboursement complet. De 5 à 15 minutes par jour.</p>
               </div>
               <div>
               <DrawRule className="mt-7 w-full lg:mt-0" color="rgba(116,130,74,0.5)" />
@@ -873,7 +874,7 @@ const Bio: React.FC = () => (
   <section className={`w-full px-[clamp(1.5rem,5vw,5.5rem)] ${PY}`}>
     <div className="grid gap-y-10 lg:grid-cols-[1.1fr_0.9fr] gap-x-[clamp(3rem,7vw,7rem)] items-center">
       <Reveal>
-        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.brassInk }}>Qui vous accompagne</p>
+        <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.brassInk }}>Qui vous guide</p>
         <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(2.4rem,4.6vw,3.8rem)]" style={{ color: C.ink }}>
           Krystine <span className="whitespace-nowrap">St‑Laurent</span>
         </h2>
@@ -992,7 +993,7 @@ const BackCover: React.FC = () => (
           </a>
         </div>
         <p className="mt-10 text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: 'rgba(244,239,230,0.5)' }}>
-          Programme autonome · accès immédiat · à votre rythme
+          Programme autonome · accès immédiat
         </p>
       </Reveal>
     </div>

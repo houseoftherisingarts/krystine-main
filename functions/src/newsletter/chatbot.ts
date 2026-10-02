@@ -18,7 +18,7 @@ CE QU'ELLE OFFRE (les liens sont relatifs au site)
 · Les formations en ligne (/cours) : Ayurveda, plantes, rituels, à suivre à son rythme.
 · Les livres (/medias#livres) : la Trilogie d'Origine, aux Éditions de l'Homme.
 · Le podcast « Au-delà des tendances » (/podcast), avec des directs annoncés sur le site.
-· Les huiles corporelles Inspirata Nature (https://inspiratanature.com), formulées selon les doshas, fabriquées au Québec.
+· Les huiles corporelles Inspirata Nature (https://inspiratanature.com/?country=CA&locale=fr), formulées selon les doshas, fabriquées au Québec.
 · Les conférences et ateliers en entreprise ou en événement (/conferenciere).
 · Les retraites (/liste-attente?programme=retraite).
 · Le quiz Dosha gratuit (/quiz) pour découvrir sa constitution ayurvédique.

@@ -16,7 +16,7 @@ const NOM_AYURVEDA: Record<Dosha, string> = { vata: 'Vata', pitta: 'Pitta', kaph
 const CARTE: Record<Dosha, [string, string]> = {
   vata: [
     'Le mental part dans tous les sens. Le sommeil devient plus fragile.',
-    'Quand le vent prend trop de place, tout devient plus difficile à tenir ensemble.',
+    'Lorsque le vent prend trop de place, tout devient plus difficile à tenir ensemble.',
   ],
   pitta: [
     'Impatience, irritabilité, et le soir, le feu tarde à s’apaiser.',
@@ -24,7 +24,7 @@ const CARTE: Record<Dosha, [string, string]> = {
   ],
   kapha: [
     'Le matin démarre lentement. L’élan tarde à venir et les choses s’accumulent plus facilement.',
-    'Quand tout devient plus lourd, ce n’est pas toujours qu’il faut faire plus.',
+    'Lorsque tout devient plus lourd, ce n’est pas toujours qu’il faut faire plus.',
   ],
 };
 
@@ -38,7 +38,7 @@ const DIRECTION: Record<Dosha, string> = {
 // Texte et page de référence; modifier ici seulement.
 export const CLES_RESULTAT: Record<Dosha, { texte: string; source: string }[]> = {
   vata: [
-    { texte: 'La clé pour apaiser vata : la régularité.', source: 'Nature & Ayurveda, p. 131' },
+    { texte: 'La clé pour apaiser vata : la régularité.', source: 'Nature & Ayurveda, p. 130' },
     { texte: 'Commencer plutôt la journée en consommant quelque chose de chaud', source: 'Nature & Ayurveda, p. 268' },
   ],
   pitta: [

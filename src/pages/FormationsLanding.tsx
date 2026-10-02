@@ -55,7 +55,7 @@ const PORTES: Porte[] = [
     key: 'vata',
     tag: "L'Expérience Ayurveda · Saison Vata",
     title: OFFRE_VATA.name,
-    subtitle: 'Un parcours de sept semaines, à votre rythme, accès immédiat.',
+    subtitle: 'Un parcours de sept semaines, accès immédiat.',
     body: "16 capsules, 7 méditations guidées, le journal de bord et d'observation, et le guide de 204 pages.",
     cta: 'Découvrir VATA Essentiel',
     href: '/vata',
@@ -71,11 +71,11 @@ const EN_ATTENTE: Parcours[] = [
   // Le Foyer attend sa réouverture (Krystine, 2 oct. 2026) : hors des grandes
   // cartes pendant le lancement de VATA Essentiel, mais sa liste d'attente reste.
   { slug: 'foyer', titre: "Le Foyer d'Origine", sous: "L'espace de continuité, une porte à la fois", href: '/liste-attente?programme=foyer', cta: 'Être avisée de la réouverture' },
-  { slug: 'pitta', titre: 'Saison Pitta', sous: 'Rafraîchir, apaiser, adoucir quand la chaleur monte' },
+  { slug: 'pitta', titre: 'Saison Pitta', sous: 'Rafraîchir, apaiser, adoucir lorsque la chaleur monte' },
   { slug: 'kapha', titre: 'Saison Kapha', sous: "Bouger, drainer, alléger à l'éveil du printemps" },
   { slug: 'sante-parfaite', titre: 'Parcours Santé Parfaite', sous: 'Masterclass Énergie et Clarté', href: '/cours/sante-parfaite' },
   { slug: 'vitalite-clarte', titre: 'Vitalité et Clarté', sous: "Trente jours pour changer d'énergie" },
-  { slug: 'cinq-rituels', titre: "Cinq rituels pour apaiser l'esprit", sous: 'Retrouver son centre en quelques gestes' },
+  { slug: 'cinq-rituels', titre: "Cinq rituels pour apaiser l'esprit", sous: 'Retrouver son centre au quotidien' },
   { slug: 'boussole', titre: "L'Ayurveda comme boussole ancestrale", sous: 'Les repères qui traversent les saisons' },
   { slug: 'dharma', titre: 'Aligner son feu avec sa mission', sous: 'Le Dharma, en huit clés concrètes' },
   { slug: 'trois-jours', titre: "Trois jours pour revenir à l'essentiel", sous: 'Sortir du bruit et se retrouver' },
@@ -109,7 +109,7 @@ const FormationsLanding: React.FC = () => {
             Choisir votre prochaine porte
           </motion.h1>
           <motion.p {...up(0.32)} className="mt-6 max-w-[36rem] font-serif text-[clamp(1.15rem,1.6vw,1.4rem)] leading-[1.5] text-[#EEE7DB]/80">
-            Selon le moment où vous êtes : vivre un parcours accompagné, ou approfondir un sujet à votre rythme.
+            Selon le moment où vous êtes : vivre un parcours accompagné, ou approfondir un sujet en autonomie.
           </motion.p>
         </div>
       </section>
@@ -167,7 +167,7 @@ const FormationsLanding: React.FC = () => {
       {/* ─────────── LES PARCOURS À VOTRE RYTHME, en liste d'attente ─────────── */}
       <section id="a-votre-rythme" className="scroll-mt-24 px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(5rem,10vh,8rem)]">
         <div className="mx-auto max-w-[1320px] border-t border-[#293027]/15 pt-[clamp(2.5rem,6vh,4rem)]">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em]" style={{ color: OR_ENCRE }}>Les parcours à votre rythme</p>
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em]" style={{ color: OR_ENCRE }}>En liste d'attente</p>
           <h2 className="mt-3 max-w-[24ch] font-serif text-[clamp(1.7rem,2.6vw,2.3rem)] font-medium leading-[1.1]" style={{ color: ENCRE }}>Les autres parcours reviennent un à un.</h2>
           <p className="mt-3 max-w-[46rem] leading-[1.7] text-[#5b5f55]">Chaque parcours qui revient bientôt a sa liste d'attente. Inscrivez-vous et vous recevrez l'invitation avant toute annonce publique.</p>
           <ul className="mt-8 grid border-t border-[#293027]/12 sm:grid-cols-2 lg:grid-cols-4">

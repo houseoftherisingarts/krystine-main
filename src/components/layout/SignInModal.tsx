@@ -44,6 +44,15 @@ const SignInModal: React.FC = () => {
     return () => window.removeEventListener('krystine:connexion', ouvrir);
   }, [setSignInOpen]);
 
+  // Une page peut dire pourquoi la fenêtre s'ouvre (le paiement, par exemple) :
+  // la phrase remplace « Accédez à votre espace membre. » jusqu'à la fermeture.
+  const [raison, setRaison] = useState<string | null>(null);
+  useEffect(() => {
+    const ouvrir = (e: Event) => { setRaison((e as CustomEvent<string>).detail || null); setSignInOpen(true); };
+    window.addEventListener('krystine:connexion-raison', ouvrir);
+    return () => window.removeEventListener('krystine:connexion-raison', ouvrir);
+  }, [setSignInOpen]);
+
   // La langue du compte, choisie à l'inscription : le site s'ouvre dans cette
   // langue et les infolettres partent dans cette langue. Préréglée sur la
   // langue affichée, changée d'un clic.
@@ -62,7 +71,7 @@ const SignInModal: React.FC = () => {
   const close = () => {
     setSignInOpen(false);
     setEmail(''); setPassword(''); setDisplayName(''); setCodeParrain(codeRetenu());
-    setMode('signup'); reset();
+    setMode('signup'); reset(); setRaison(null);
   };
 
   // Retient le code pour la réclamation d'après connexion (auth.ts). Un code
@@ -153,15 +162,15 @@ const SignInModal: React.FC = () => {
 
   return (
     <Portail>
-    <div className="fixed inset-0 z-[110] flex items-center justify-center overflow-y-auto overscroll-contain p-4 bg-[#2a2015]/50 backdrop-blur-md" onClick={close}>
-      <div className="relative w-full max-w-md bg-white dark:bg-[#2a2015] rounded-[30px] shadow-2xl border border-[#bb9a5e]/20 p-8 md:p-10" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-[110] flex items-start justify-center overflow-y-auto overscroll-contain p-4 bg-[#2a2015]/50 backdrop-blur-md" onClick={close}>
+      <div className="relative my-auto w-full max-w-md bg-white dark:bg-[#2a2015] rounded-[30px] shadow-2xl border border-[#bb9a5e]/20 p-8 md:p-10" onClick={e => e.stopPropagation()}>
         <button onClick={close} className="absolute top-5 right-5 w-9 h-9 rounded-full flex items-center justify-center text-[#2a2015]/40 dark:text-white/40 hover:text-[#2a2015] dark:hover:text-white">
           <i className="fa-solid fa-times text-lg" />
         </button>
 
         <h2 className="font-serif text-3xl text-[#2a2015] dark:text-white mb-2">{titles[mode]}</h2>
         <p className="text-sm text-[#2a2015]/60 dark:text-white/60 mb-6">
-          {lang === 'FR' ? 'Accédez à votre espace membre.' : 'Access your member space.'}
+          {raison ?? (lang === 'FR' ? 'Accédez à votre espace membre.' : 'Access your member space.')}
         </p>
 
         {mode === 'signup' && (

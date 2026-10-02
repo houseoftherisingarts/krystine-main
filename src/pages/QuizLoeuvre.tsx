@@ -269,7 +269,7 @@ const ALL_DOSHAS: DoshaType[] = ['vata', 'pitta', 'kapha'];
 const CARTE_DOMINANCE: Record<DoshaType, [string, string, string]> = {
   vata: [
     'Le mental part dans tous les sens. Le sommeil devient plus fragile.',
-    'Quand le vent prend trop de place, tout devient plus difficile à tenir ensemble.',
+    'Lorsque le vent prend trop de place, tout devient plus difficile à tenir ensemble.',
     'Votre profil vous montre ce qui l’attise chez vous, et ce qui l’apaise.',
   ],
   pitta: [
@@ -279,7 +279,7 @@ const CARTE_DOMINANCE: Record<DoshaType, [string, string, string]> = {
   ],
   kapha: [
     'Le matin démarre lentement. L’élan tarde à venir et les choses s’accumulent plus facilement.',
-    'Quand tout devient plus lourd, ce n’est pas toujours qu’il faut faire plus.',
+    'Lorsque tout devient plus lourd, ce n’est pas toujours qu’il faut faire plus.',
     'Votre profil vous montre ce qui entretient cette lourdeur, et ce qui remet du mouvement.',
   ],
 };
@@ -930,7 +930,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
               transition={{ duration: 0.45, ease }}
               className="p-[clamp(1.75rem,4vw,3.25rem)] pt-[clamp(3rem,5vw,4rem)]"
             >
-              <h3 className="v2-serif font-light text-[#1c1712] leading-[1.08] text-[clamp(1.6rem,3vw,2.4rem)] max-w-[30ch]">
+              <h3 className="v2-serif font-light text-[#1c1712] leading-[1.08] text-[clamp(1.3rem,3vw,2.4rem)] max-w-[30ch]">
                 {lang === 'FR' ? current.questionFR : current.questionEN}
               </h3>
 

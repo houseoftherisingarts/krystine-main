@@ -41,7 +41,7 @@ function recapBlocs(r: Recap): NewsletterBlock[] {
   return out;
 }
 
-export function lettreConfirmation(formationId: string, titre: string, recap: Recap, email = ''): { subject: string; preheader: string; blocks: NewsletterBlock[]; titreBandeau?: string } {
+export function lettreConfirmation(formationId: string, titre: string, recap: Recap, email = ''): { subject: string; preheader: string; blocks: NewsletterBlock[]; titreBandeau?: string; tailleTitreBandeau?: number } {
   const lien = `${PUBLIC_BASE_URL}/cours/${formationId}`;
   const fin: NewsletterBlock[] = [{ type: 'divider', content: { style: 'ligne' } }, ...(formationId === 'kajabi-2148687644' ? [p('<b>Votre formule</b> : VATA Essentiel.', 'sm')] : []), ...recapBlocs(recap), p(SOUTIEN)];
   // Les accès, dans chaque confirmation (Krystine, 2 oct. 2026).
@@ -55,10 +55,12 @@ export function lettreConfirmation(formationId: string, titre: string, recap: Re
     return {
       subject: 'Bienvenue dans L’Expérience Ayurveda, Saison Vata',
       titreBandeau: 'Bienvenue dans L’Expérience Ayurveda,\nSaison Vata',
+      // Plus petit que les 34 px habituels : la première ligne tient sur 520 px.
+      tailleTitreBandeau: 27,
       preheader: 'Votre accès est ouvert. Voici par où commencer.',
       blocks: [
         p('Bonjour {{firstName}},'),
-        p('Nous sommes très heureuses de vous accueillir dans L’Expérience Ayurveda, Vata. Votre accès est ouvert dès maintenant.'),
+        p('Nous sommes très heureuses de vous accueillir dans VATA Essentiel. Votre accès est ouvert dès maintenant.'),
         { type: 'image', content: { url: `${PUBLIC_BASE_URL}/infolettre/vata-eventail.jpg`, caption: '', href: lien, alt: 'VATA Essentiel' } },
         h('Trois bonnes raisons d’avoir fait ce choix'),
         p('<b>Vous apprenez à reconnaître le Vent</b> plutôt qu’à le subir : le fil qui se perd, le sommeil qui se fragilise, ce qui s’accumule sans bruit.'),
@@ -110,7 +112,7 @@ export function optionsConfirmation(subject: string, preheader: string, desinscr
 
 async function envoyer(dest: { email: string; firstName?: string }, formationId: string, titre: string, recap: Recap, prefixe = ''): Promise<void> {
   const l = lettreConfirmation(formationId, titre, recap, dest.email);
-  const opts = { ...optionsConfirmation(l.subject, l.preheader, await lienDesinscription(dest.email), dest.firstName), titreBandeau: l.titreBandeau };
+  const opts = { ...optionsConfirmation(l.subject, l.preheader, await lienDesinscription(dest.email), dest.firstName), titreBandeau: l.titreBandeau, tailleTitreBandeau: l.tailleTitreBandeau };
   const transporter = createTransporter();
   try {
     await transporter.sendMail({

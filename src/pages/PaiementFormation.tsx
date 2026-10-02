@@ -80,7 +80,7 @@ const Chargement: React.FC = () => (
 const PaiementFormation: React.FC = () => {
   const { id: idAdresse = '' } = useParams();
   const id = idDeCours(idAdresse);
-  const { user, authReady, setSignInOpen } = useAuth();
+  const { user, authReady } = useAuth();
   const [formation, setFormation] = useState<Formation | null | undefined>(undefined);
   const [etat, setEtat] = useState<'aucun' | 'actif' | 'suspendu' | null>(null);
   const [choix, setChoix] = useState(1);
@@ -118,7 +118,13 @@ const PaiementFormation: React.FC = () => {
 
   const continuer = () => {
     if (busy) return;
-    if (!user) { enAttente.current = true; setSignInOpen(true); return; }
+    if (!user) {
+      enAttente.current = true;
+      window.dispatchEvent(new CustomEvent('krystine:connexion-raison', {
+        detail: 'Pour retrouver votre parcours après le paiement, créez votre compte ou connectez-vous.',
+      }));
+      return;
+    }
     void lancer(choix);
   };
 
@@ -184,8 +190,10 @@ const PaiementFormation: React.FC = () => {
                   </div>
                 </div>
               )}
-              <h1 className="v2-serif mt-10 max-w-[22ch] text-[clamp(2rem,3.6vw,3.2rem)] font-light leading-[1.04]">
-                {formation.titre}
+              {/* La collection en surtitre et le nom seul en titre : deux lignes au plus. */}
+              {collection && <div className="mt-10"><Kicker>{collection}</Kicker></div>}
+              <h1 className={`v2-serif ${collection ? 'mt-4' : 'mt-10'} max-w-[22ch] text-[clamp(2rem,3.6vw,3.2rem)] font-light leading-[1.04]`}>
+                {nom}
               </h1>
               {formation.description && (
                 <p className="mt-5 max-w-[52ch] text-[0.95rem] leading-[1.85] text-[#3a2f23]">

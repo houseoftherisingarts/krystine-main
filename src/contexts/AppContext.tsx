@@ -327,13 +327,21 @@ const BoutiqueProvider: React.FC<{ children: React.ReactNode }> = ({ children })
   // La redirection de la boutique ne touche QUE la boutique. Avant le 6
   // septembre 2026, elle avalait tout lien passé ici (Origine, Formations,
   // Médias) et envoyait toute la barre de navigation vers l'ancien site.
+  // La boutique s'ouvre en français et en dollars canadiens : les paramètres
+  // s'ajoutent à l'adresse de redirection si l'admin ne les porte pas déjà.
+  const urlBoutique = useMemo(() => {
+    const u = settings.redirectUrl;
+    if (!u || !/inspiratanature\.com/.test(u) || /[?&]locale=/.test(u)) return u;
+    return u + (u.includes('?') ? '&' : '?') + 'country=CA&locale=fr';
+  }, [settings.redirectUrl]);
+
   const resolveHref = useCallback<BoutiqueContextType['resolveHref']>((href) => {
     const estBoutique = href === '/boutique' || href.startsWith('/boutique/') || href.startsWith('/boutique?') || href.startsWith('/boutique#');
-    if (estBoutique && settings.redirectEnabled && settings.redirectUrl) {
-      return { href: settings.redirectUrl, external: true };
+    if (estBoutique && settings.redirectEnabled && urlBoutique) {
+      return { href: urlBoutique, external: true };
     }
     return { href, external: false };
-  }, [settings.redirectEnabled, settings.redirectUrl]);
+  }, [settings.redirectEnabled, urlBoutique]);
 
   const hiddenProducts = useMemo(
     () => new Set(settings.hiddenProducts || []),
@@ -342,11 +350,11 @@ const BoutiqueProvider: React.FC<{ children: React.ReactNode }> = ({ children })
 
   const value = useMemo<BoutiqueContextType>(() => ({
     redirectEnabled: settings.redirectEnabled,
-    redirectUrl: settings.redirectUrl,
+    redirectUrl: urlBoutique,
     hiddenProducts,
     loading,
     resolveHref,
-  }), [settings.redirectEnabled, settings.redirectUrl, hiddenProducts, loading, resolveHref]);
+  }), [settings.redirectEnabled, urlBoutique, hiddenProducts, loading, resolveHref]);
 
   return <BoutiqueContext.Provider value={value}>{children}</BoutiqueContext.Provider>;
 };

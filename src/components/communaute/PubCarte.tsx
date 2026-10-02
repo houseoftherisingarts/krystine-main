@@ -26,7 +26,7 @@ export const PUBS: Pub[] = [
     titre: { fr: 'Inspirata Nature', en: 'Inspirata Nature' },
     texte: { fr: 'Les huiles corporelles de Krystine, formulées selon les doshas et fabriquées au Québec.', en: 'Krystine’s body oils, formulated by dosha and made in Quebec.' },
     cta: { fr: 'Découvrir les huiles', en: 'Discover the oils' },
-    href: 'https://inspiratanature.com',
+    href: 'https://inspiratanature.com/?country=CA&locale=fr',
     externe: true,
   },
   {

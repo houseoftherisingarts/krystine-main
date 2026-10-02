@@ -20,7 +20,7 @@ import { Atmosphere } from '../components/motion/loeuvre';
  */
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-const BOUTIQUE = 'https://www.inspiratanature.com';
+const BOUTIQUE = 'https://www.inspiratanature.com/?country=CA&locale=fr';
 const CONTACT = 'equipe@inspiratanature.com';
 
 interface Spot { name: string; address: string; tel: string; hours: string }

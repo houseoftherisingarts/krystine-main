@@ -15,7 +15,7 @@ export const TIERS = [
       '16 capsules audio, 4 h 12 min d\'écoute avec Krystine · valeur 800 $',
       '7 méditations guidées · valeur 210 $',
       'Le chemin des cinq sens : une introduction et 7 semaines qui s\'ouvrent une à une',
-      '19 rituels pour apaiser Vata, fruits d\'années de recherche',
+      '19 soins pour apaiser Vata, fruits d\'années de recherche',
       'Le journal de bord et d\'observation, et un petit boni d\'observation chaque semaine',
       'Les capsules plantes, épices et aliments de saison',
       'Le guide complet de 204 pages, offert à la fin du parcours · valeur 150 $',

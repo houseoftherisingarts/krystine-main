@@ -524,7 +524,7 @@ const BoutiqueLoeuvre: React.FC = () => {
                     : 'The catalogue is momentarily unavailable. In the meantime, find every product on the Inspirata shop.'}
                 </p>
                 <a
-                  href="https://www.inspiratanature.com"
+                  href="https://www.inspiratanature.com/?country=CA&locale=fr"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group mt-8 inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
@@ -565,7 +565,7 @@ const BoutiqueLoeuvre: React.FC = () => {
                     {lang === 'FR' ? 'Aucun produit pour le moment.' : 'No products at the moment.'}
                   </p>
                   <a
-                    href="https://www.inspiratanature.com"
+                    href="https://www.inspiratanature.com/?country=CA&locale=fr"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group mt-6 inline-flex items-center gap-2.5 text-[0.68rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
