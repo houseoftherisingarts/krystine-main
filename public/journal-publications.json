@@ -4597,5 +4597,21 @@
       "public/assets-manifest.json",
       "src/lib/changelog.ts"
     ]
+  },
+  {
+    "quand": "2026-10-02T17:52:23.999Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "730e5ad3",
+    "message": "VATA Essentiel : paiement en 3 versements ouvert (3 × 146 $, avec léger supplément), webhook Stripe à 4 événements",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/versements.ts",
+      "public/assets-manifest.json",
+      "src/lib/versements.ts"
+    ]
   }
 ]
