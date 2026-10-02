@@ -4427,5 +4427,22 @@
       "src/content.ts",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T16:43:19.264Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "0f83ac6f",
+    "message": "Quiz (/quiz) et lettres : « Quelques clés de l'Ayurveda » en carte vert profond, sans le papier doré",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "src/lib/newsletterRenderer.tsx",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
