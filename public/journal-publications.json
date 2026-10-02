@@ -4733,5 +4733,21 @@
       "src/pages/ClientPortal.tsx",
       "src/pages/client/ClientFormations.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T19:07:57.206Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "cfd9144f",
+    "message": "VATA Essentiel : retour au prix de 397 $ après l'achat test, exception de test retirée",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/versements.ts",
+      "public/assets-manifest.json",
+      "src/lib/versements.ts"
+    ]
   }
 ]
