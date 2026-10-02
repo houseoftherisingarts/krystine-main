@@ -220,6 +220,10 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
   const c = (block.content || {}) as any;
   const t = (px: number) => Math.round(px * k);
   const tTitre = (px: number) => Math.round(px * (1 + (k - 1) / 2));
+  // Un bloc peut n'apparaître qu'entre deux dates (Krystine, 2 oct. 2026 :
+  // « la saison Vata est en cours » ne doit plus se lire en janvier).
+  { const now = Date.now(); const des = Date.parse(String(c?.des || '')); const jusqua = Date.parse(String(c?.jusqua || ''));
+    if ((!isNaN(des) && now < des) || (!isNaN(jusqua) && now > jusqua)) return ''; }
   switch (block.type) {
     case 'heading': {
       const level = Number(c.level) || 1;

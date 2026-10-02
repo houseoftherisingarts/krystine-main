@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T15:50:30.647Z",
+  "generatedAt": "2026-10-02T15:57:18.590Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1533,6 +1533,13 @@
       "folder": "infolettre",
       "kind": "image",
       "size": 80290
+    },
+    {
+      "path": "/infolettre/vata-eventail.jpg",
+      "name": "vata-eventail.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 59807
     },
     {
       "path": "/livres/titre-a-reveler.webp",
