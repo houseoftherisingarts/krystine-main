@@ -4330,5 +4330,25 @@
       "public/assets-manifest.json",
       "public/infolettre/vata-eventail.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-02T16:05:24.794Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "240adcce",
+    "message": "Page Vata (/vata) : exergue « Une journée n'est pas une suite de cases ; c'est un rythme entier à préserver »; infolettres : bloc Univers de Krystine avec bio",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "public/infolettre/krystine-univers.jpg",
+      "src/firebase/firestore.ts",
+      "src/lib/newsletterRenderer.tsx",
+      "src/pages/VataExperience.tsx",
+      "src/pages/admin/sections/newsletter/Composer.tsx"
+    ]
   }
 ]
