@@ -159,7 +159,7 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
       return formations.find(f => f.id === d.formationId)?.titre || d.formationId;
     }
     if (d?.type === 'etiquette') {
-      if (['interet-rythme', 'preference-autonomie'].includes(d.tag)) return 'Vata';
+      if (['interet-rythme', 'preference-autonomie', 'suite-vent'].includes(d.tag)) return 'Vata';
       if (['interet-rester-entiere', 'preference-accompagnement'].includes(d.tag)) return 'Expérience Origine 2';
     }
     return 'Accueil et général';
