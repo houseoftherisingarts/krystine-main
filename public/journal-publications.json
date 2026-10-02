@@ -4411,5 +4411,21 @@
       "public/assets-manifest.json",
       "public/infolettre/vata-sens.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-02T16:37:19.872Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a5b28420",
+    "message": "Quiz (/quiz) : promesse et autorité sous le titre, Ce qui vous attend à jour, Quelques clés de l'Ayurveda sur papier, articulations, pictos en couleurs, bannière visible sur mobile, traceurs publicitaires après consentement (Loi 25 et RGPD)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/layout/ConsentBanner.tsx",
+      "src/content.ts",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
