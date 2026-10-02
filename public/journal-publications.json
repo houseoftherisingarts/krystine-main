@@ -4051,5 +4051,21 @@
       "src/lib/recaptcha.ts",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T13:59:06.271Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "7d18fba1",
+    "message": "Infolettre : bannières « le carnet d'Ella » (Vent, Feu, Terre) pour les lettres de la suite du quiz",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/carnet-ella-kapha.jpg",
+      "public/infolettre/carnet-ella-pitta.jpg",
+      "public/infolettre/carnet-ella-vata.jpg"
+    ]
   }
 ]
