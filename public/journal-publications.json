@@ -4131,5 +4131,26 @@
       "public/infolettre/carnet-ella-pitta.jpg",
       "public/infolettre/carnet-ella-vata.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-02T14:36:22.459Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "3d3c7f2a",
+    "message": "Infolettres : bloc Carnet d'Ella; quiz : algorithme des résultats (nette, teintée, double, équilibre), étiquettes de profil et de suite",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "functions/src/quiz.ts",
+      "functions/src/quizCourriel.ts",
+      "public/assets-manifest.json",
+      "src/firebase/firestore.ts",
+      "src/lib/newsletterRenderer.tsx",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/pages/admin/sections/newsletter/Composer.tsx"
+    ]
   }
 ]
