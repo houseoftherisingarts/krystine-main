@@ -4202,5 +4202,19 @@
       "src/pages/admin/sections/newsletter/RelectureSequence.tsx",
       "src/pages/admin/sections/newsletter/SequencesPanel.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T15:21:36.406Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d795d896",
+    "message": "Admin › Séquences : l'aperçu d'une lettre ne tremble plus à l'ouverture",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/newsletter/RelectureSequence.tsx"
+    ]
   }
 ]
