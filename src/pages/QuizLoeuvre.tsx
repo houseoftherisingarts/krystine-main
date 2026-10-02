@@ -668,8 +668,8 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                   style={{ accentColor: th.accent }}
                 />
                 <span>{lang === 'FR'
-                  ? <>Recevoir les repères de saison pour ma nature <b>{teaser.dominant.name}</b>, par courriel. Désabonnement en un clic.</>
-                  : <>Receive seasonal markers for my <b>{teaser.dominant.name}</b> nature, by email. One-click unsubscribe.</>}</span>
+                  ? <>Recevoir les repères pour ma nature <b>{teaser.dominant.name}</b> et les propositions de Krystine, par courriel. Désabonnement en un clic.</>
+                  : <>Receive markers for my <b>{teaser.dominant.name}</b> nature and Krystine's offers, by email. One-click unsubscribe.</>}</span>
               </label>
 
               <div className="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
