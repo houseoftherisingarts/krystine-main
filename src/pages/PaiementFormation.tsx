@@ -8,6 +8,7 @@ import { getMember } from '../firebase/firestore';
 import { idDeCours, cheminCours } from '../lib/cheminCours';
 import { prixEnVigueur, versementsPermis, montantVersement } from '../lib/versements';
 import { StyleV2, Kicker, Masthead, Filet, GOUTTIERE } from '../components/v2/Magazine';
+import { trackObjectif } from '../lib/track';
 
 /**
  * La page de choix du paiement d'une formation (Krystine, 30 septembre 2026) :
@@ -90,6 +91,17 @@ const PaiementFormation: React.FC = () => {
   const haut = useRef<HTMLElement>(null);
   // Le clic fait avant la connexion : le paiement reprend tout seul au retour.
   const enAttente = useRef(false);
+  // Retour de Stripe après un paiement fait sans compte (?achat=ok) : le
+  // compte se crée avec l'adresse du paiement, la page dit la suite.
+  const [merciSansCompte] = useState(() => {
+    try {
+      const q = new URLSearchParams(window.location.search);
+      if (q.get('achat') !== 'ok') return false;
+      trackObjectif(`Achat confirmé · ${id}`.slice(0, 40), 'gros');
+      window.history.replaceState(null, '', window.location.pathname);
+      return true;
+    } catch { return false; }
+  });
 
   useEffect(() => {
     getFormation(id).then(setFormation).catch(() => setFormation(null));
@@ -116,16 +128,19 @@ const PaiementFormation: React.FC = () => {
     }
   };
 
+  // Payer sans compte (Krystine, 2 oct. 2026) : la caisse s'ouvre tout de
+  // suite; le compte se crée après l'achat avec l'adresse du paiement.
   const continuer = () => {
     if (busy) return;
-    if (!user) {
-      enAttente.current = true;
-      window.dispatchEvent(new CustomEvent('krystine:connexion-raison', {
-        detail: 'Pour retrouver votre parcours après le paiement, créez votre compte ou connectez-vous.',
-      }));
-      return;
-    }
     void lancer(choix);
+  };
+  // Qui a déjà un compte peut s'y connecter d'abord : le paiement reprend au retour.
+  const seConnecter = () => {
+    if (busy) return;
+    enAttente.current = true;
+    window.dispatchEvent(new CustomEvent('krystine:connexion-raison', {
+      detail: 'Pour retrouver votre parcours après le paiement, créez votre compte ou connectez-vous.',
+    }));
   };
 
   useEffect(() => {
@@ -161,7 +176,26 @@ const PaiementFormation: React.FC = () => {
       <section ref={haut} className={`${GOUTTIERE} scroll-mt-20 pt-[clamp(7rem,13vh,9.5rem)] pb-[clamp(4rem,10vh,7rem)]`}>
         <Masthead gauche={<>N&deg; 02 &middot; Votre inscription</>} />
 
-        {!enVente || !formation ? (
+        {merciSansCompte && !user ? (
+          <div className="mx-auto mt-[clamp(3rem,8vh,5rem)] max-w-[44rem] text-center">
+            <Kicker>Paiement reçu</Kicker>
+            <h1 className="v2-serif mt-5 text-[clamp(2rem,4vw,3rem)] font-light leading-[1.05]">
+              Merci, votre accès s'ouvre.
+            </h1>
+            <p className="mx-auto mt-6 max-w-[52ch] text-[0.95rem] leading-[1.85] text-[#3a2f23]">
+              Votre compte est créé avec l'adresse courriel du paiement. Un courriel vous attend avec le lien pour choisir votre mot de passe.
+              Si cette adresse est un compte Google, vous pouvez aussi vous connecter avec Google.
+            </p>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('krystine:connexion-raison', { detail: 'Connectez-vous avec l’adresse courriel du paiement pour retrouver votre parcours.' }))}
+              className="group mt-9 inline-flex min-h-[46px] items-center justify-center gap-2.5 bg-[#1c1712] px-7 py-4 text-[0.68rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44]"
+            >
+              Me connecter
+              <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+            </button>
+          </div>
+        ) : !enVente || !formation ? (
           <div className="mx-auto mt-[clamp(3rem,8vh,5rem)] max-w-[40rem] text-center">
             <Kicker>Paiement</Kicker>
             <h1 className="v2-serif mt-5 text-[clamp(2rem,4vw,3rem)] font-light leading-[1.05]">
@@ -311,8 +345,15 @@ const PaiementFormation: React.FC = () => {
                     <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
                   </button>
                   {!user && (
-                    <p className="mt-3 text-[0.8rem] text-[#1c1712]/60">
-                      Vous serez invitée à vous connecter, puis le paiement reprendra.
+                    <p className="mt-4 max-w-[46ch] text-[0.85rem] leading-[1.7] text-[#3a2f23]">
+                      Aucun compte à créer d'abord : votre espace s'ouvre avec l'adresse courriel du paiement.{' '}
+                      <button
+                        type="button"
+                        onClick={seConnecter}
+                        className="inline-flex min-h-[44px] items-center text-[#1c1712] underline decoration-[#1c1712]/40 underline-offset-4 transition-colors duration-300 hover:text-[#7d6330] hover:decoration-[#9c7a44]"
+                      >
+                        Déjà un compte ? Me connecter
+                      </button>
                     </p>
                   )}
                   {erreur && <p role="alert" className="mt-4 text-[0.85rem] text-[#8B4A2F]">{erreur}</p>}

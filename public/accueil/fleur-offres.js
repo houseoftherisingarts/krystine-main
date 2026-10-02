@@ -40,6 +40,14 @@ const OFFRES = {
     texte: 'Créez votre compte et retrouvez vos formations, la communauté et les cadeaux de Krystine au même endroit.',
     cta: 'Créer mon compte', href: '/compte',
   },
+  // Sans compte, l'offre mène au quiz (Krystine, 2 oct. 2026) : le bouton le
+  // plus cliqué de l'accueil menait à /compte et presque jamais au quiz.
+  quiz: {
+    eyebrow: 'Une offre pour vous',
+    titre: 'Quelle est votre dominance aujourd’hui ?',
+    texte: 'Quelques questions sur votre sommeil, votre mental et votre énergie, et vous découvrez lequel des trois doshas mène en ce moment, avec un premier repère à essayer dès ce soir.',
+    cta: 'Découvrir votre dominance · le quiz gratuit', href: '/quiz',
+  },
   'dosha-vata': {
     eyebrow: 'Ce qui vous ressemble',
     titre: 'Le Programme Vata, pensé pour vous',
@@ -152,7 +160,7 @@ const CSS = `
 // Krystine, la fleur propose l'espace sans le coffre, même avant le 1er octobre.
 function choisirOffre(user, offreId, coffreBetaOuvert) {
   if (user) return OFFRES[offreId] || OFFRES.origine2;
-  return coffreBetaOuvert && new Date() < FIN_COFFRE_BETA ? OFFRES.coffre : OFFRES.compte;
+  return coffreBetaOuvert && new Date() < FIN_COFFRE_BETA ? OFFRES.coffre : OFFRES.quiz;
 }
 
 function monter() {

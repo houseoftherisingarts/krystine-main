@@ -3,6 +3,7 @@ import { onCall, onRequest, HttpsError } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
+import { getAuth } from 'firebase-admin/auth';
 import { crediterNiskas, SANTE_LA_VIE_ID, SAISONS, PRIX_SAISON_CAD } from './niskas';
 import { exigerModule } from './gamification';
 import { inscrireSequencesAchat } from './newsletter/sequences';
@@ -50,7 +51,10 @@ const ADMIN_EMAILS = [
 export const creerSessionPaiement = onCall(
   { region: 'us-central1', secrets: [STRIPE_SECRET_KEY] },
   async (req) => {
-    if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour acheter une formation.');
+    // Payer sans compte (Krystine, 2 oct. 2026) : une visiteuse non connectée
+    // paie avec son adresse courriel, saisie dans la caisse Stripe; le webhook
+    // retrouve ou crée son compte avec cette adresse, puis y écrit l'accès.
+    const uid = req.auth?.uid || '';
     const formationId = String(req.data?.formationId || '');
     if (!formationId) throw new HttpsError('invalid-argument', 'Formation manquante.');
 
@@ -78,10 +82,10 @@ export const creerSessionPaiement = onCall(
       'line_items[0][quantity]': '1',
       ...TAXES_QC,
       locale: 'fr', // la caisse Stripe en français (Krystine, 2 oct. 2026)
-      'metadata[uid]': req.auth.uid,
       'metadata[formationId]': formationId,
       'metadata[versements]': String(versements),
     });
+    if (uid) body.set('metadata[uid]', uid);
     if (versements === 1) {
       body.set('mode', 'payment');
       body.set('line_items[0][price_data][unit_amount]', String(Math.round(prix * 100)));
@@ -89,24 +93,29 @@ export const creerSessionPaiement = onCall(
       // (echangerRecompense, functions/src/recompenses.ts) : il porte déjà
       // sa propre restriction de 50 $ minimum côté Stripe.
       body.set('allow_promotion_codes', 'true');
+      // Sans compte : la fiche client Stripe garde l'adresse pour les reçus.
+      if (!uid) body.set('customer_creation', 'always');
     } else {
       // Un abonnement mensuel que le webhook annule au dernier versement. Les
       // métadonnées suivent l'abonnement pour que chaque facture retrouve l'achat.
       body.set('mode', 'subscription');
       body.set('line_items[0][price_data][unit_amount]', String(montantVersement(prix, versements) * 100));
       body.set('line_items[0][price_data][recurring][interval]', 'month');
-      body.set('subscription_data[metadata][uid]', req.auth.uid);
+      if (uid) body.set('subscription_data[metadata][uid]', uid);
       body.set('subscription_data[metadata][formationId]', formationId);
       body.set('subscription_data[metadata][versements]', String(versements));
     }
-    const email = req.auth.token.email;
+    const email = req.auth?.token.email;
     if (email) body.set('customer_email', String(email));
 
     // Le paiement intégré dans la page du site (Krystine, 2 oct. 2026) : la
     // même session, affichée dans /paiement/<formation> au lieu de la page
     // Stripe. Sans `integre`, l'ancienne redirection reste le repli.
     const integre = req.data?.integre === true;
-    const retour = `${siteDe(req)}/compte?achat=ok&formation=${encodeURIComponent(formationId)}`;
+    // Sans compte, le retour se fait sur la page de paiement, qui explique la suite.
+    const retour = uid
+      ? `${siteDe(req)}/compte?achat=ok&formation=${encodeURIComponent(formationId)}`
+      : `${siteDe(req)}/paiement/${formationId === FORMATION_VATA_ID ? 'vata' : encodeURIComponent(formationId)}?achat=ok`;
     if (integre) {
       body.set('return_url', `${retour}&session_id={CHECKOUT_SESSION_ID}`);
     } else {
@@ -332,10 +341,14 @@ function detailTaxesQC(session: { amount_subtotal?: number; amount_total?: numbe
 // formationId, versements) disent à quel achat chaque facture appartient.
 type MetaVersements = { uid?: string; formationId?: string; versements?: string };
 
-async function appelStripe(methode: 'GET' | 'DELETE', chemin: string): Promise<{ ok: boolean; status: number; data: any }> {
+async function appelStripe(methode: 'GET' | 'DELETE' | 'POST', chemin: string, corps?: URLSearchParams): Promise<{ ok: boolean; status: number; data: any }> {
   const r = await fetch(`https://api.stripe.com/v1/${chemin}`, {
     method: methode,
-    headers: { Authorization: `Bearer ${STRIPE_SECRET_KEY.value()}` },
+    headers: {
+      Authorization: `Bearer ${STRIPE_SECRET_KEY.value()}`,
+      ...(corps ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {}),
+    },
+    ...(corps ? { body: corps } : {}),
   });
   return { ok: r.ok, status: r.status, data: await r.json().catch(() => ({})) };
 }
@@ -347,7 +360,9 @@ async function versementsDeFacture(invoice: any): Promise<{ meta: MetaVersements
   const brut = invoice.parent?.subscription_details?.subscription ?? invoice.subscription ?? '';
   const abonnementId = typeof brut === 'string' ? brut : String(brut?.id || '');
   let meta: MetaVersements = invoice.parent?.subscription_details?.metadata || invoice.subscription_details?.metadata || {};
-  if (!meta.formationId && abonnementId) {
+  // Un achat fait sans compte reçoit son uid sur l'abonnement après coup : la
+  // copie figée sur la facture peut ne pas l'avoir, on relit alors l'abonnement.
+  if ((!meta.formationId || !meta.uid) && abonnementId) {
     const r = await appelStripe('GET', `subscriptions/${abonnementId}`);
     if (r.ok) meta = r.data?.metadata || {};
   }
@@ -367,6 +382,27 @@ async function annulerAbonnementSiComplet(ref: FirebaseFirestore.DocumentReferen
   await ref.set({ versementsTermine: true, abonnementAnnule: true, termineLe: FieldValue.serverTimestamp() }, { merge: true });
   console.log(`[paiements] versements terminés, abonnement ${abonnementId} annulé`);
   return true;
+}
+
+// Le compte d'une acheteuse sans compte : celui qui porte déjà cette adresse,
+// sinon un nouveau, sans mot de passe (elle le choisit par le lien de la
+// confirmation, ou entre avec Google). Un renvoi du même événement retrouve le
+// compte créé la première fois : compteCree ne vaut vrai qu'une fois.
+async function compteParAdresse(adresse: string, nom: string): Promise<{ uid: string; compteCree: boolean }> {
+  const auth = getAuth();
+  try {
+    return { uid: (await auth.getUserByEmail(adresse)).uid, compteCree: false };
+  } catch (err: any) {
+    if (err?.code !== 'auth/user-not-found') throw err;
+  }
+  try {
+    const u = await auth.createUser({ email: adresse, emailVerified: false, ...(nom ? { displayName: nom } : {}) });
+    return { uid: u.uid, compteCree: true };
+  } catch (err: any) {
+    // Deux événements simultanés : l'autre vient de créer le compte.
+    if (err?.code === 'auth/email-already-exists') return { uid: (await auth.getUserByEmail(adresse)).uid, compteCree: false };
+    throw err;
+  }
 }
 
 export const stripeWebhook = onRequest(
@@ -437,7 +473,7 @@ export const stripeWebhook = onRequest(
 
     if (event.type !== 'checkout.session.completed') { res.status(200).send('ignored'); return; }
     const session = event.data?.object || {};
-    const uid = session.metadata?.uid;
+    let uid: string | undefined = session.metadata?.uid;
     const formationId = session.metadata?.formationId;
     // Le détail des taxes, commun aux trois types de vente Stripe. En cents, CAD.
     const detailTaxes = detailTaxesQC(session);
@@ -515,6 +551,25 @@ export const stripeWebhook = onRequest(
     // Un code promo à 100 % rend « no_payment_required » au lieu de « paid » :
     // l'accès s'ouvre quand même (achat test de Vata, 29 septembre 2026).
     const reglee = session.payment_status === 'paid' || session.payment_status === 'no_payment_required';
+    // Un achat fait sans compte : le compte se retrouve, ou se crée, avec
+    // l'adresse saisie dans la caisse. L'accès ne va jamais à une autre adresse.
+    let compteCree = false;
+    if (!uid && formationId && reglee && !session.metadata?.type) {
+      const adresse = String(session.customer_details?.email || '').trim().toLowerCase();
+      if (!adresse) { console.error('[paiements] achat sans compte ni adresse', session.id); res.status(200).send('incomplete'); return; }
+      try {
+        ({ uid, compteCree } = await compteParAdresse(adresse, String(session.customer_details?.name || '')));
+      } catch (err) {
+        console.error('[paiements] compte introuvable et non créé', adresse, err);
+        res.status(500).send('compte'); return; // Stripe réessaiera
+      }
+      if (session.mode === 'subscription' && session.subscription) {
+        const abonnementId = typeof session.subscription === 'string' ? session.subscription : String(session.subscription.id || '');
+        const r = await appelStripe('POST', `subscriptions/${abonnementId}`, new URLSearchParams({ 'metadata[uid]': uid! }));
+        if (!r.ok) { console.error('[paiements] uid non posé sur l\'abonnement', abonnementId, r.data?.error?.message); res.status(500).send('abonnement'); return; }
+      }
+      console.log(`[paiements] achat sans compte : ${adresse} -> ${uid}${compteCree ? ' (compte créé)' : ''}`);
+    }
     if (!uid || !formationId || !reglee) { res.status(200).send('incomplete'); return; }
 
     const db = getFirestore();
@@ -545,6 +600,8 @@ export const stripeWebhook = onRequest(
       acheteLe: FieldValue.serverTimestamp(),
       ...detailTaxes,
       ...(session.metadata?.cadeauId ? { source: 'cadeau', cadeauId: session.metadata.cadeauId } : {}),
+      // Le compte ouvert par cet achat : la confirmation porte le lien du mot de passe.
+      ...(compteCree ? { compteCreeParAchat: true } : {}),
     }, { merge: true });
     if (session.metadata?.cadeauId) {
       await db.doc(`cadeaux/${session.metadata.cadeauId}`).set({ statut: 'utilise', utiliseLe: FieldValue.serverTimestamp(), sessionId: session.id || '' }, { merge: true });

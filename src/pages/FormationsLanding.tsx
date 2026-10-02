@@ -39,18 +39,7 @@ interface Porte {
 const OFFRE_VATA = TIERS[0];
 
 const PORTES: Porte[] = [
-  {
-    key: 'origine',
-    tag: '12 semaines accompagnées',
-    title: 'Expérience Origine 2',
-    subtitle: 'Le chemin accompagné.',
-    body: 'Lire, trier, ancrer pour retrouver ses propres repères.',
-    cta: 'Découvrir Expérience Origine 2',
-    href: '/liste-attente?programme=origine2',
-    image: '/origine2/packshot-poster.jpg',
-    video: '/origine2/packshot.mp4',
-    cadrage: '45% 50%',
-  },
+  // VATA Essentiel en première carte : la seule porte ouverte à l'achat (Krystine, 2 oct. 2026).
   {
     key: 'vata',
     tag: "L'Expérience Ayurveda · Saison Vata",
@@ -62,6 +51,18 @@ const PORTES: Porte[] = [
     image: '/vata/carte-eventail.jpg',
     cadrage: '50% 40%',
     prix: true,
+  },
+  {
+    key: 'origine',
+    tag: '12 semaines accompagnées',
+    title: 'Expérience Origine 2',
+    subtitle: 'Le chemin accompagné.',
+    body: 'Lire, trier, ancrer pour retrouver ses propres repères.',
+    cta: 'Découvrir Expérience Origine 2',
+    href: '/liste-attente?programme=origine2',
+    image: '/origine2/packshot-poster.jpg',
+    video: '/origine2/packshot.mp4',
+    cadrage: '45% 50%',
   },
 ];
 

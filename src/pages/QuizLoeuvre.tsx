@@ -21,6 +21,8 @@ import { findOilForDosha } from '../lib/shopifyOil';
 import { RITUALS } from '../lib/doshaRituals';
 import { Planche } from '../components/v2/Magazine';
 import { Atmosphere } from '../components/motion/loeuvre';
+import { FORMATION_VATA_ID, prixEnVigueur } from '../lib/versements';
+import { TIERS } from './vata/offre';
 
 /**
  * Quiz Dosha, langage V2 « magazine crème » (Fraunces + Inter, crème #f4efe6,
@@ -266,6 +268,28 @@ const QUIZ_DATA: QuizQuestion[] = [
 const ALL_DOSHAS: DoshaType[] = ['vata', 'pitta', 'kapha'];
 
 // Textes de Krystine sous la dominance (FR seulement; la 3e phrase est retirée sur l'écran du résultat).
+// VATA Essentiel au résultat, pour toutes les dominances (Krystine, 2 oct.
+// 2026 : aucune visiteuse du quiz n'allait vers /vata). La ligne qui le
+// justifie suit la dominance; le prix suit la règle de versements.ts.
+const RAISON_VATA: Record<DoshaType, string> = {
+  vata: 'Pour apaiser le Vent qui domine en vous.',
+  pitta: 'Nous sommes en saison Vata : chacune de nous porte du Vent en ce moment.',
+  kapha: 'Nous sommes en saison Vata : chacune de nous porte du Vent en ce moment.',
+};
+const BoutonVata: React.FC<{ d: DoshaType; onGo: () => void; className?: string }> = ({ d, onGo, className = '' }) => (
+  <div className={className}>
+    <p className="v2-serif text-[1.05rem] leading-snug text-[#3a2f23]">{RAISON_VATA[d]}</p>
+    <button
+      type="button"
+      onClick={onGo}
+      className="group mt-4 inline-flex min-h-[52px] w-full items-center justify-center gap-2.5 text-center bg-[#1c1712] px-5 py-4 text-[0.64rem] uppercase tracking-[0.1em] sm:whitespace-nowrap text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] sm:w-auto sm:px-9 sm:text-[0.72rem] sm:tracking-[0.18em]"
+    >
+      Découvrir VATA Essentiel · {prixEnVigueur(FORMATION_VATA_ID, parseInt(TIERS[0].promo, 10))} $
+      <ArrowRight size={15} weight="regular" className="shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
+    </button>
+  </div>
+);
+
 const CARTE_DOMINANCE: Record<DoshaType, [string, string, string]> = {
   vata: [
     'Le mental part dans tous les sens. Le sommeil devient plus fragile.',
@@ -679,24 +703,16 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                 </div>
               )}
 
-{dRes === 'vata' && (
-                <button
-                  type="button"
-                  onClick={() => navigate('/vata')}
-                  className="group mt-9 self-start inline-flex items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
-                >
-                  Découvrir VATA Essentiel
-                  <ArrowRight size={14} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
-                </button>
-              )}
-                            <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
+              <BoutonVata d={dRes} onGo={() => navigate('/vata')} className="mt-9" />
+              {/* Les huiles passent en second (Krystine, 2 oct. 2026). */}
+              <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <button
                   type="button"
                   onClick={() => addDoshaOil(result.dominant.name)}
-                  className="inline-flex items-center gap-3 bg-[#1c1712] px-8 py-4 text-[0.7rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] min-h-[44px]"
+                  className="group inline-flex items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
                 >
                   {lang === 'FR' ? `Ajouter l'huile ${result.dominant.name}` : `Add ${result.dominant.name} oil`}
-                  <ArrowRight size={15} weight="regular" />
+                  <ArrowRight size={14} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
                 <button
                   type="button"
@@ -778,16 +794,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
 
             <CarteDominance d={dRes} lang={lang} complet={false} />
 
-            {dRes === 'vata' && (
-                <button
-                  type="button"
-                  onClick={() => navigate('/vata')}
-                  className="group mt-8 inline-flex items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
-                >
-                  Découvrir VATA Essentiel
-                  <ArrowRight size={14} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
-                </button>
-              )}
+            <BoutonVata d={dRes} onGo={() => navigate('/vata')} className="mt-9" />
 
             <div className="mt-11 pt-8 border-t max-w-[42rem] mx-auto" style={{ borderColor: `${th.accent}35` }}>
               {user ? (

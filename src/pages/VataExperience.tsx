@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useReducedMotion } from 'framer-motion';
 import { Wind, ArrowRight, ArrowDown, Check, CaretDown, Anchor, Ear, Drop } from '@phosphor-icons/react';
 import { Atmosphere } from '../components/motion/loeuvre';
@@ -28,6 +28,8 @@ const APPEAR = 1.1;
 // possède déjà le cours y est renvoyée tout droit vers ses leçons.
 const COURS = '/paiement/vata';
 const go = () => { window.location.href = COURS; };
+// Le prix en vigueur, calculé comme la caisse (versements.ts).
+const prixVata = () => prixEnVigueur(FORMATION_VATA_ID, parseInt(TIERS[0].promo, 10));
 
 /* Tokens V2 + accent sauge de la page */
 const C = {
@@ -354,7 +356,18 @@ const Cover: React.FC = () => {
             Des ancrages pour apaiser le mental lorsque les turbulences sont trop fortes.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-4">
-            <UnderlineCta label="Commencer VATA Essentiel" />
+            {/* Le bouton d'achat avec le prix dès le haut (revue des visiteuses, 2 oct. 2026). */}
+            <button
+              type="button"
+              onClick={go}
+              className="group inline-flex min-h-[48px] items-center justify-center gap-2.5 whitespace-nowrap px-5 py-4 text-[0.64rem] uppercase tracking-[0.08em] sm:px-8 sm:text-[0.72rem] sm:tracking-[0.18em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+              style={{ background: C.ink, color: C.cream, outlineColor: C.sage }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = C.sage; e.currentTarget.style.color = C.card; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = C.ink; e.currentTarget.style.color = C.cream; }}
+            >
+              Commencer VATA Essentiel · {prixVata()} $
+              <ArrowRight size={15} weight="regular" className="shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
+            </button>
             <a
               href="#parcours"
               className="v2-serif text-lg transition-colors duration-300 hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
@@ -1000,6 +1013,47 @@ const BackCover: React.FC = () => (
   </section>
 );
 
+/* ════════════════════════ Barre d'achat mobile ════════════════════════ */
+// Fixe en bas de l'écran sur mobile, après le premier écran; la page garde
+// un espace en bas de la même hauteur pour que rien ne soit caché.
+const BarreAchat: React.FC = () => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const maj = () => setVisible(window.scrollY > window.innerHeight * 0.85);
+    maj();
+    window.addEventListener('scroll', maj, { passive: true });
+    return () => window.removeEventListener('scroll', maj);
+  }, []);
+  return (
+    <>
+    {/* L'espace sous tout le contenu, pied de page compris, pour que la barre ne cache rien. */}
+    <style>{'@media (max-width: 767px) { body { padding-bottom: 84px; } }'}</style>
+    <div
+      aria-hidden={!visible}
+      className={`fixed inset-x-0 bottom-0 z-50 border-t px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden transition-transform duration-500 ${visible ? 'translate-y-0' : 'translate-y-full'}`}
+      style={{ background: C.cream, borderColor: hairline, transitionTimingFunction: 'cubic-bezier(.16,.8,.24,1)' }}
+    >
+      <div className="flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <p className="v2-serif text-[1.35rem] leading-none tabular-nums" style={{ color: C.ink }}>{prixVata()} $</p>
+          <p className="mt-1 text-[0.58rem] uppercase tracking-[0.16em]" style={{ color: 'rgba(28,23,18,0.6)' }}>VATA Essentiel · taxes en sus</p>
+        </div>
+        <button
+          type="button"
+          onClick={go}
+          tabIndex={visible ? 0 : -1}
+          className="inline-flex min-h-[48px] shrink-0 items-center gap-2 px-5 text-[0.64rem] uppercase tracking-[0.14em]"
+          style={{ background: C.ink, color: C.cream }}
+        >
+          Commencer
+          <ArrowRight size={14} weight="regular" />
+        </button>
+      </div>
+    </div>
+    </>
+  );
+};
+
 /* ════════════════════════ Page ════════════════════════ */
 
 const VataExperience: React.FC = () => (
@@ -1043,6 +1097,7 @@ const VataExperience: React.FC = () => (
     <Bio />
     <Faq />
     <BackCover />
+    <BarreAchat />
   </div>
 );
 

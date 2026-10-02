@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { getAuth } from 'firebase-admin/auth';
 import {
   MAIL_SECRETS, NEWSLETTER_POSTAL_ADDRESS, PUBLIC_BASE_URL, REPLY_TO,
   createTransporter, fromAddr, unsubscribeUrl,
@@ -41,7 +42,7 @@ function recapBlocs(r: Recap): NewsletterBlock[] {
   return out;
 }
 
-export function lettreConfirmation(formationId: string, titre: string, recap: Recap, email = ''): { subject: string; preheader: string; blocks: NewsletterBlock[]; titreBandeau?: string; tailleTitreBandeau?: number } {
+export function lettreConfirmation(formationId: string, titre: string, recap: Recap, email = '', lienMotDePasse = ''): { subject: string; preheader: string; blocks: NewsletterBlock[]; titreBandeau?: string; tailleTitreBandeau?: number } {
   const lien = `${PUBLIC_BASE_URL}/cours/${formationId}`;
   const fin: NewsletterBlock[] = [{ type: 'divider', content: { style: 'ligne' } }, ...(formationId === 'kajabi-2148687644' ? [p('<b>Votre formule</b> : VATA Essentiel.', 'sm')] : []), ...recapBlocs(recap), p(SOUTIEN)];
   // Les accès, dans chaque confirmation (Krystine, 2 oct. 2026).
@@ -49,7 +50,10 @@ export function lettreConfirmation(formationId: string, titre: string, recap: Re
     h('Vos accès'),
     p(`<b>Votre espace</b> : <a href="${PUBLIC_BASE_URL}/compte">krystinestlaurent.ca/compte</a>, onglet Mes formations.`),
     p(`<b>Votre identifiant</b> : ${email ? `cette adresse courriel, ${email}` : 'l’adresse courriel utilisée pour votre achat'}.`),
-    p('<b>Pour vous connecter</b> : « Continuer avec Google » si vous avez utilisé Google, sinon votre mot de passe. Si vous ne le retrouvez plus, écrivez-nous : nous vous ouvrons la porte.'),
+    // Le compte ouvert par l'achat sans compte (2 oct. 2026) : le lien pour choisir le mot de passe.
+    lienMotDePasse
+      ? p(`<b>Votre compte est créé avec cette adresse.</b> Pour choisir votre mot de passe : <a href="${lienMotDePasse}">choisir mon mot de passe</a>. Ou connectez-vous avec Google si cette adresse est un compte Google. Le lien reste valable une heure; ensuite, « Mot de passe oublié ? » sur la page de connexion vous en envoie un nouveau.`)
+      : p('<b>Pour vous connecter</b> : « Continuer avec Google » si vous avez utilisé Google, sinon votre mot de passe. Si vous ne le retrouvez plus, écrivez-nous : nous vous ouvrons la porte.'),
   ];
   if (formationId === FORMATION_VATA_ID) {
     return {
@@ -110,8 +114,8 @@ export function optionsConfirmation(subject: string, preheader: string, desinscr
   };
 }
 
-async function envoyer(dest: { email: string; firstName?: string }, formationId: string, titre: string, recap: Recap, prefixe = ''): Promise<void> {
-  const l = lettreConfirmation(formationId, titre, recap, dest.email);
+async function envoyer(dest: { email: string; firstName?: string }, formationId: string, titre: string, recap: Recap, prefixe = '', lienMotDePasse = ''): Promise<void> {
+  const l = lettreConfirmation(formationId, titre, recap, dest.email, lienMotDePasse);
   const opts = { ...optionsConfirmation(l.subject, l.preheader, await lienDesinscription(dest.email), dest.firstName), titreBandeau: l.titreBandeau, tailleTitreBandeau: l.tailleTitreBandeau };
   const transporter = createTransporter();
   try {
@@ -139,7 +143,7 @@ export async function envoyerConfirmationAchat(uid: string, formationId: string,
   try {
     const achat = await db.runTransaction(async (tx) => {
       const s = await tx.get(ref);
-      const d = s.data() as (Recap & { titre?: string; confirmationEnvoyee?: boolean }) | undefined;
+      const d = s.data() as (Recap & { titre?: string; confirmationEnvoyee?: boolean; compteCreeParAchat?: boolean }) | undefined;
       if (!d || d.confirmationEnvoyee) return null;
       tx.set(ref, { confirmationEnvoyee: true, confirmationEnvoyeeLe: FieldValue.serverTimestamp() }, { merge: true });
       return d;
@@ -153,8 +157,19 @@ export async function envoyerConfirmationAchat(uid: string, formationId: string,
       await ref.set({ confirmationEnvoyee: FieldValue.delete(), confirmationEnvoyeeLe: FieldValue.delete() }, { merge: true });
       return;
     }
+    // Un compte ouvert par l'achat, ou jamais encore utilisé : le lien pour
+    // choisir le mot de passe. Sans lien, la lettre garde la consigne habituelle.
+    let lienMotDePasse = '';
     try {
-      await envoyer({ email, firstName }, formationId, achat.titre || formationId, achat);
+      const u = await getAuth().getUser(uid);
+      if (achat.compteCreeParAchat || (!u.passwordHash && u.providerData.length === 0)) {
+        // Repli si le lien ne se fabrique pas : la page de connexion, où « Mot de passe oublié ? » en envoie un.
+        lienMotDePasse = `${PUBLIC_BASE_URL}/compte`;
+        lienMotDePasse = await getAuth().generatePasswordResetLink(email, { url: `${PUBLIC_BASE_URL}/compte` });
+      }
+    } catch (err) { console.error('[confirmation] lien du mot de passe', uid, err); }
+    try {
+      await envoyer({ email, firstName }, formationId, achat.titre || formationId, achat, '', lienMotDePasse);
       console.log(`[confirmation] envoyée à ${email} pour ${formationId}`);
     } catch (err) {
       console.error('[confirmation] envoi raté', uid, formationId, err);
