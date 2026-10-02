@@ -3956,5 +3956,19 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T11:58:23.575Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d98525da",
+    "message": "Page du quiz : la case d'inscription mentionne aussi les propositions de Krystine (consentement clair pour la séquence)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
