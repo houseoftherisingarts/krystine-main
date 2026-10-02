@@ -4000,5 +4000,20 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T12:48:18.612Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "006b7a64",
+    "message": "Page du quiz (/quiz) : le quiz arrive juste après le haut de page, cours sur l'Ayurveda après le résultat, inscription en double retirée, Vent / Feu / Terre au lieu de Vata / Pitta / Kapha en haut, ménage des mots",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/content.ts",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
