@@ -8,7 +8,7 @@ import { exigerModule } from './gamification';
 import { inscrireSequencesAchat } from './newsletter/sequences';
 import { traiterPaiementBillets } from './billetterie';
 import { MAIL_SECRETS } from './newsletter/mail';
-import { prixEnVigueur, versementsPermis, montantVersement } from './versements';
+import { prixEnVigueur, versementsPermis, montantVersement, FORMATION_VATA_ID } from './versements';
 
 // Le paywall des formations natives (migration Kajabi, 2026-08-28).
 // Trois portes : créer la session Stripe Checkout, encaisser le webhook qui
@@ -77,8 +77,6 @@ export const creerSessionPaiement = onCall(
       'line_items[0][quantity]': '1',
       ...TAXES_QC,
       locale: 'fr', // la caisse Stripe en français (Krystine, 2 oct. 2026)
-      success_url: `${siteDe(req)}/compte?achat=ok&formation=${encodeURIComponent(formationId)}`,
-      cancel_url: `${siteDe(req)}/cours/${formationId}`,
       'metadata[uid]': req.auth.uid,
       'metadata[formationId]': formationId,
       'metadata[versements]': String(versements),
@@ -103,20 +101,43 @@ export const creerSessionPaiement = onCall(
     const email = req.auth.token.email;
     if (email) body.set('customer_email', String(email));
 
-    const r = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${STRIPE_SECRET_KEY.value()}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body,
-    });
-    const session = (await r.json()) as { url?: string; error?: { message?: string } };
-    if (!r.ok || !session.url) {
+    // Le paiement intégré dans la page du site (Krystine, 2 oct. 2026) : la
+    // même session, affichée dans /paiement/<formation> au lieu de la page
+    // Stripe. Sans `integre`, l'ancienne redirection reste le repli.
+    const integre = req.data?.integre === true;
+    const retour = `${siteDe(req)}/compte?achat=ok&formation=${encodeURIComponent(formationId)}`;
+    if (integre) {
+      body.set('return_url', `${retour}&session_id={CHECKOUT_SESSION_ID}`);
+    } else {
+      body.set('success_url', retour);
+      // Un paiement abandonné ramène à la page de vente : /vata pour VATA Essentiel.
+      body.set('cancel_url', formationId === FORMATION_VATA_ID ? `${siteDe(req)}/vata` : `${siteDe(req)}/cours/${formationId}`);
+    }
+
+    const creer = async () => {
+      const r = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${STRIPE_SECRET_KEY.value()}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body,
+      });
+      return { ok: r.ok, session: (await r.json()) as { url?: string; client_secret?: string; error?: { message?: string; param?: string } } };
+    };
+    // Stripe a renommé « embedded » en « embedded_page » (version 2026-03-25) :
+    // la version du compte décide lequel est accepté, on essaie l'un puis l'autre.
+    if (integre) body.set('ui_mode', 'embedded_page');
+    let { ok, session } = await creer();
+    if (integre && !ok && session.error?.param === 'ui_mode') {
+      body.set('ui_mode', 'embedded');
+      ({ ok, session } = await creer());
+    }
+    if (!ok || !(integre ? session.client_secret : session.url)) {
       console.error('[paiements] checkout session refusée', session.error?.message);
       throw new HttpsError('internal', 'Le paiement n\'a pas pu démarrer. Réessayez.');
     }
-    return { url: session.url };
+    return integre ? { clientSecret: session.client_secret } : { url: session.url };
   },
 );
 

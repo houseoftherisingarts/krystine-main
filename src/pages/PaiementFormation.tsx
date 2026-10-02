@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { ArrowRight } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AppContext';
-import { acheterFormation, etatAchat, getFormation, type Formation } from '../firebase/formations';
+import { loadStripe, type Stripe } from '@stripe/stripe-js/pure';
+import { acheterFormation, etatAchat, getFormation, preparerPaiementIntegre, type Formation } from '../firebase/formations';
 import { getMember } from '../firebase/firestore';
 import { idDeCours, cheminCours } from '../lib/cheminCours';
 import { prixEnVigueur, versementsPermis, montantVersement } from '../lib/versements';
@@ -28,6 +29,50 @@ const descriptionCourte = (d: string): string => {
   return `${coupe.slice(0, coupe.lastIndexOf(' '))}…`;
 };
 
+// La clé PUBLIQUE de Stripe (Développeurs › Clés API › Clé publiable). Sans
+// elle, la page retombe sur l'ancienne redirection vers la caisse Stripe.
+// La clé PUBLIABLE de Stripe (pk_live, publique par nature : elle affiche le
+// formulaire, elle ne donne accès à rien). Écrite ici pour que les deux
+// ordinateurs publient la même chose (Krystine, 2 oct. 2026).
+const CLE_STRIPE = (import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string | undefined)
+  || 'pk_live_51KhEXLGtDCKaYZ2HSuoYvu8qVIgzOZOIubKgn6YBoUPZsrFFn0OEwQOhBZp2lXS2tr9RccxcdMjfJyaUA0rgyysD00oZcNiUz5';
+let stripeCharge: Promise<Stripe | null> | null = null;
+const chargerStripe = () => (stripeCharge ??= loadStripe(CLE_STRIPE));
+
+/** Le formulaire Stripe intégré (Embedded Checkout), monté dans la page. */
+const CaisseIntegree: React.FC<{ clientSecret: string; onErreur: () => void }> = ({ clientSecret, onErreur }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [pret, setPret] = useState(false);
+  useEffect(() => {
+    let annule = false;
+    let caisse: { mount: (el: HTMLElement) => void; destroy: () => void } | null = null;
+    chargerStripe()
+      .then(s => {
+        if (!s) throw new Error('stripe');
+        return s.createEmbeddedCheckoutPage({ clientSecret });
+      })
+      .then(c => {
+        if (annule) { c.destroy(); return; }
+        caisse = c;
+        if (ref.current) c.mount(ref.current);
+        setPret(true);
+      })
+      .catch(() => { if (!annule) onErreur(); });
+    return () => { annule = true; caisse?.destroy(); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clientSecret]);
+  return (
+    <div className="relative mt-8 min-h-[32rem] border border-[#9c7a44]/30 bg-white">
+      {!pret && (
+        <p className="absolute inset-x-0 top-16 text-center text-[0.68rem] uppercase tracking-[0.2em] text-[#1c1712]/50">
+          Le formulaire sécurisé s'ouvre…
+        </p>
+      )}
+      <div ref={ref} />
+    </div>
+  );
+};
+
 const Chargement: React.FC = () => (
   <div className="min-h-screen bg-[#f4efe6] pt-40 text-center text-sm text-[#1c1712]/50">…</div>
 );
@@ -41,6 +86,8 @@ const PaiementFormation: React.FC = () => {
   const [choix, setChoix] = useState(1);
   const [busy, setBusy] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const haut = useRef<HTMLElement>(null);
   // Le clic fait avant la connexion : le paiement reprend tout seul au retour.
   const enAttente = useRef(false);
 
@@ -59,7 +106,10 @@ const PaiementFormation: React.FC = () => {
   const lancer = async (n: number) => {
     setBusy(true); setErreur(null);
     try {
-      window.location.href = await acheterFormation(id, n);
+      if (!CLE_STRIPE) { window.location.href = await acheterFormation(id, n); return; }
+      setClientSecret(await preparerPaiementIntegre(id, n));
+      setBusy(false);
+      haut.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch {
       setErreur("Le paiement n'a pas pu démarrer. Réessayez.");
       setBusy(false);
@@ -94,11 +144,15 @@ const PaiementFormation: React.FC = () => {
   const prix = enVente ? prixEnVigueur(id, formation!.prix!) : 0;
   const options = enVente ? versementsPermis(prix) : [1];
   const n = options.includes(choix) ? choix : 1;
+  // Le nom porte sa collection après le point médian : « VATA Essentiel · L'Expérience… ».
+  const [nom, ...reste] = (formation?.titre || '').split(' · ');
+  const collection = reste.join(' · ');
+  const changerDeChoix = () => { setClientSecret(null); setErreur(null); };
 
   return (
     <div className="min-h-screen bg-[#f4efe6] text-[#1c1712]">
       <StyleV2 />
-      <section className={`${GOUTTIERE} pt-[clamp(7rem,13vh,9.5rem)] pb-[clamp(4rem,10vh,7rem)]`}>
+      <section ref={haut} className={`${GOUTTIERE} scroll-mt-20 pt-[clamp(7rem,13vh,9.5rem)] pb-[clamp(4rem,10vh,7rem)]`}>
         <Masthead gauche={<>N&deg; 02 &middot; Votre inscription</>} />
 
         {!enVente || !formation ? (
@@ -117,7 +171,7 @@ const PaiementFormation: React.FC = () => {
         ) : (
           <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-[clamp(2.5rem,5vw,5rem)] lg:grid-cols-12">
             {/* ── À gauche : la formation ── */}
-            <div className="min-w-0 lg:col-span-6">
+            <div className={`min-w-0 lg:col-span-6 ${clientSecret ? 'hidden lg:block' : ''}`}>
               {formation.imageUrl && (
                 <div className="relative">
                   <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
@@ -150,10 +204,37 @@ const PaiementFormation: React.FC = () => {
             <div className="min-w-0 lg:col-span-6 lg:pt-2">
               <Kicker>Paiement sécurisé</Kicker>
               <h2 className="v2-serif mt-5 text-[clamp(1.9rem,3.2vw,2.7rem)] font-light leading-[1.05]">
-                Choisissez votre façon de payer
+                {clientSecret ? 'Votre paiement' : 'Choisissez votre façon de payer'}
               </h2>
 
-              {etat === 'suspendu' ? (
+              {clientSecret ? (
+                <>
+                  <div className="mt-8 border border-[#9c7a44]/30 bg-[#faf6ee] px-6 py-6">
+                    <p className="v2-serif text-[1.45rem] font-light leading-snug">{nom}</p>
+                    {collection && (
+                      <p className="mt-1 text-[0.66rem] uppercase tracking-[0.18em] text-[#7d6330]">{collection}</p>
+                    )}
+                    <div className="mt-5 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-[#9c7a44]/25 pt-4">
+                      <span className="text-[0.95rem]">
+                        {n === 1 ? <>1 paiement &middot; {prix} $</> : <>{n} versements de {montantVersement(prix, n)} $ par mois</>}
+                      </span>
+                      <span className="text-[0.68rem] uppercase tracking-[0.18em] text-[#1c1712]/55">Taxes en sus</span>
+                    </div>
+                    {n > 1 && <p className="mt-4 text-[0.8rem] leading-[1.7] text-[#3a2f23]">{NOTE_ENGAGEMENT}</p>}
+                    <button
+                      type="button"
+                      onClick={changerDeChoix}
+                      className="mt-5 inline-flex min-h-[44px] items-center border-b border-[#1c1712] text-[0.68rem] uppercase tracking-[0.18em] transition-colors duration-300 hover:border-[#9c7a44] hover:text-[#7d6330]"
+                    >
+                      Changer de choix
+                    </button>
+                  </div>
+                  <CaisseIntegree
+                    clientSecret={clientSecret}
+                    onErreur={() => { setClientSecret(null); setErreur("Le formulaire de paiement n'a pas pu s'afficher. Réessayez."); }}
+                  />
+                </>
+              ) : etat === 'suspendu' ? (
                 <p role="alert" className="mt-8 border border-[#9c7a44]/40 bg-[#faf6ee] px-6 py-5 text-[0.92rem] leading-[1.75]">
                   Votre accès est suspendu : un versement n'a pas pu être prélevé. Il se rouvrira dès le paiement. Écrivez-nous à{' '}
                   <a href="mailto:teamksl@inspiratanature.com" className="border-b border-[#1c1712]">teamksl@inspiratanature.com</a>.
@@ -218,7 +299,7 @@ const PaiementFormation: React.FC = () => {
                     disabled={busy}
                     className="group mt-8 inline-flex min-h-[46px] w-full items-center justify-center gap-2.5 bg-[#1c1712] px-5 py-4 text-center text-[0.62rem] uppercase tracking-[0.1em] text-[#f4efe6] sm:px-7 sm:text-[0.68rem] sm:tracking-[0.18em] transition-colors duration-300 hover:bg-[#9c7a44] disabled:opacity-60 sm:w-auto"
                   >
-                    {busy ? 'Redirection…' : 'Continuer vers le paiement sécurisé'}
+                    {busy ? (CLE_STRIPE ? 'Préparation…' : 'Redirection…') : 'Continuer vers le paiement sécurisé'}
                     <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
                   </button>
                   {!user && (

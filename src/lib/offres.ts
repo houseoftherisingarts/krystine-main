@@ -1,4 +1,5 @@
 import { cheminCours } from './cheminCours';
+import { prixEnVigueur } from './versements';
 // Le moteur d'offres : à partir de la fiche d'une membre, de ses habitudes de
 // navigation et de ce qu'elle possède déjà, calcule l'UNE offre qui lui revient.
 //
@@ -103,7 +104,7 @@ export function offrePour(ctx: ContexteOffre): Offre {
       id: 'dosha-vata',
       intertitre: 'Ce qui vous ressemble',
       titre: 'VATA Essentiel, pensé pour vous',
-      texte: `Votre quiz vous place du côté de Vata, le dosha du mouvement et de l'air. Ce programme reprend les rituels qui ancrent et réchauffent ce tempérament, avec les leçons audio et les guides de Krystine pour les suivre à votre rythme.${phrasePrix(formation?.prix)}`,
+      texte: `Votre quiz vous place du côté de Vata, le dosha du mouvement et de l'air. Ce programme reprend les rituels qui ancrent et réchauffent ce tempérament, avec les leçons audio et les guides de Krystine pour les suivre à votre rythme.${phrasePrix(typeof formation?.prix === 'number' ? prixEnVigueur(FORMATION_VATA_ID, formation.prix, maintenant) : null)}`,
       bouton: 'Découvrir VATA Essentiel',
       destination: DESTINATION_VATA,
     };

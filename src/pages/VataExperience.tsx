@@ -5,6 +5,7 @@ import { Atmosphere } from '../components/motion/loeuvre';
 import StickerFormat from '../components/cours/StickerFormat';
 import LecteurAudioCours from '../components/cours/LecteurAudioCours';
 import { enLancement, TIERS } from './vata/offre';
+import { FORMATION_VATA_ID, prixEnVigueur, montantVersement, versementsPermis } from '../lib/versements';
 
 /**
  * Expérience Ayurveda · Saison Vata. Refonte intégrale « revue d'automne » :
@@ -771,6 +772,14 @@ const Tiers: React.FC = () => (
                 <span className="v2-serif font-light text-[clamp(2.8rem,4.4vw,3.8rem)] leading-none tabular-nums" style={{ color: C.ink }}>{enLancement() ? tier.promo : tier.price}</span>
                 {enLancement() && <span className="v2-serif text-xl line-through tabular-nums" style={{ color: 'rgba(28,23,18,0.42)' }}>{tier.price}</span>}
               </div>
+              {(() => {
+                const prix = prixEnVigueur(FORMATION_VATA_ID, parseInt(tier.promo, 10));
+                return (
+                  <p className="mt-3 text-[0.9rem] leading-snug tabular-nums" style={{ color: C.inkSoft }}>
+                    {versementsPermis(prix).includes(3) && <>ou 3 versements de {montantVersement(prix, 3)} $<span aria-hidden="true"> · </span></>}Taxes en sus
+                  </p>
+                );
+              })()}
               <p className="mt-2 text-[0.72rem] uppercase tracking-[0.16em] min-h-[1.1rem]" style={{ color: 'rgba(28,23,18,0.6)' }}>{enLancement() ? 'Une valeur de plus de 1 100 $ · tarif de lancement jusqu’au 1er novembre' : 'Une valeur de plus de 1 100 $'}</p>
               <button
                 type="button"

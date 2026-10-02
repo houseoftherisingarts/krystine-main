@@ -679,7 +679,17 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                 </div>
               )}
 
-              <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
+{dRes === 'vata' && (
+                <button
+                  type="button"
+                  onClick={() => navigate('/vata')}
+                  className="group mt-9 self-start inline-flex items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
+                >
+                  Découvrir VATA Essentiel
+                  <ArrowRight size={14} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+              )}
+                            <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <button
                   type="button"
                   onClick={() => addDoshaOil(result.dominant.name)}
@@ -767,6 +777,17 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
             </div>
 
             <CarteDominance d={dRes} lang={lang} complet={false} />
+
+            {dRes === 'vata' && (
+                <button
+                  type="button"
+                  onClick={() => navigate('/vata')}
+                  className="group mt-8 inline-flex items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
+                >
+                  Découvrir VATA Essentiel
+                  <ArrowRight size={14} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+              )}
 
             <div className="mt-11 pt-8 border-t max-w-[42rem] mx-auto" style={{ borderColor: `${th.accent}35` }}>
               {user ? (

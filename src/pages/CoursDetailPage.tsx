@@ -27,6 +27,7 @@ import type { DiplomeInfos } from '../components/cours/Diplome';
 import { programmeDe } from './cours/programmes';
 import { nettoyerKajabi } from './cours/nettoyerKajabi';
 import StickerFormat, { formatDe } from '../components/cours/StickerFormat';
+import { prixEnVigueur } from '../lib/versements';
 import { idDeCours, cheminCours, cheminPaiement, adresseADemenager } from '../lib/cheminCours';
 
 // La fiche d'un cours et son lecteur, sur le patron de l'Académie Zéro
@@ -706,7 +707,7 @@ const CoursDetailPage: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <p className="mt-6 font-serif text-3xl text-[#293027] dark:text-white">{formation.prix} $ CA</p>
+                  <p className="mt-6 font-serif text-3xl text-[#293027] dark:text-white">{formation.prix == null ? formation.prix : prixEnVigueur(id, formation.prix)} $ CA</p>
                   <button
                     onClick={acheter}
                     disabled={paiement}

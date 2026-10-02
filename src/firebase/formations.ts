@@ -284,6 +284,15 @@ export async function acheterFormation(formationId: string, versements = 1): Pro
   return (res.data as { url: string }).url;
 }
 
+/** Le paiement intégré (2 oct. 2026) : la même session Stripe, rendue dans la page du site. */
+export async function preparerPaiementIntegre(formationId: string, versements = 1): Promise<string> {
+  if (!app) throw new Error('[Formations] Firebase not configured');
+  const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionPaiement');
+  const res = await call({ formationId, versements, integre: true });
+  trackObjectif(`Paiement commencé · ${formationId}`, 'gros', { paiement: true });
+  return (res.data as { clientSecret: string }).clientSecret;
+}
+
 export async function urlDeLecon(formationId: string, leconId: string): Promise<string> {
   if (!app) throw new Error('[Formations] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'obtenirLecon');

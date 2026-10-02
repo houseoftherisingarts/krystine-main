@@ -46,6 +46,7 @@ import { SEUIL_PROGRAMMES } from '../lib/badgeBleu';
 import EditModeToggleButton from '../components/edit/EditModeToggleButton';
 import PorteMembre from '../components/compte/PorteMembre';
 import { useGamification, montrerBadgeBleu } from '../contexts/GamificationContext';
+import { etatAchat } from '../firebase/formations';
 
 // Le texte du niṣka, écrit par Alex le 6 septembre 2026, lu sous la bourse.
 const HISTOIRE_NISKA_FR = [
@@ -626,11 +627,27 @@ const ClientPortal: React.FC = () => {
         : q.get('niskas') === 'ok' ? 'Achat confirmé · niskas' : q.get('saison') === 'ok' ? 'Achat confirmé · saison' : '';
       if (nom) {
         trackObjectif(nom.slice(0, 40), 'gros');
-        if (q.get('achat') === 'ok') { q.delete('achat'); q.delete('formation'); q.delete('cadeau'); const reste = q.toString(); window.history.replaceState(null, '', `${window.location.pathname}${reste ? `?${reste}` : ''}`); }
+        if (q.get('achat') === 'ok') { q.delete('achat'); q.delete('formation'); q.delete('cadeau'); q.delete('session_id'); const reste = q.toString(); window.history.replaceState(null, '', `${window.location.pathname}${reste ? `?${reste}` : ''}`); }
       }
     } catch { /* noop */ }
     return null;
   });
+  // Le paiement intégré revient souvent avant le webhook : « Votre accès
+  // s'ouvre… » tant que la preuve d'achat n'est pas écrite (2 oct. 2026).
+  const [accesPret, setAccesPret] = useState(false);
+  useEffect(() => {
+    if (!merciFormation || !user) return;
+    let fini = false; let essais = 0;
+    const verifier = () => {
+      etatAchat(user.uid, merciFormation).then(e => {
+        if (fini) return;
+        if (e !== 'aucun' || ++essais >= 30) { setAccesPret(true); return; }
+        window.setTimeout(verifier, 2000);
+      }).catch(() => { if (!fini) setAccesPret(true); });
+    };
+    verifier();
+    return () => { fini = true; };
+  }, [merciFormation, user]);
   // Retour de Stripe : le paquet de niskas arrive par le webhook, on le dit.
   const [merciNiskas, setMerciNiskas] = useState(() => {
     try {
@@ -808,7 +825,7 @@ const ClientPortal: React.FC = () => {
           {merciFormation && (
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-[16px] border border-[#BA7B39]/40 bg-[#BA7B39]/15 px-4 py-4 text-sm text-[#293027] dark:text-white">
               <span className="min-w-0 flex-1">
-                <strong className="block font-serif text-lg font-normal">{lang === 'FR' ? 'Merci. Votre accès est prêt.' : 'Thank you. Your access is ready.'}</strong>
+                <strong className="block font-serif text-lg font-normal">{!accesPret ? (lang === 'FR' ? 'Merci. Votre accès s’ouvre…' : 'Thank you. Your access is opening…') : lang === 'FR' ? 'Merci. Votre accès est prêt.' : 'Thank you. Your access is ready.'}</strong>
                 {lang === 'FR' ? 'Votre formation vous attend dans Mes formations. S’il manque quelque chose, rafraîchissez la page dans une minute.' : 'Your program is waiting in My programs. If anything is missing, refresh the page in a minute.'}
               </span>
               <span className="flex items-center gap-3">
