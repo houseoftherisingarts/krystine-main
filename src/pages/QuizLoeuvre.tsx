@@ -17,7 +17,6 @@ import {
 } from '../shopify';
 import { findOilForDosha } from '../lib/shopifyOil';
 import { RITUALS } from '../lib/doshaRituals';
-import NewsletterSignup from '../components/NewsletterSignup';
 import { Planche } from '../components/v2/Magazine';
 import { Atmosphere } from '../components/motion/loeuvre';
 
@@ -236,7 +235,7 @@ const QUIZ_DATA: QuizQuestion[] = [
   },
   {
     categoryFR: 'Type d\'épuisement', categoryEN: 'Type of fatigue',
-    questionFR: 'À quoi ressemble votre fatigue quand elle survient ?',
+    questionFR: "À quoi ressemble votre épuisement lorsqu'il survient ?",
     questionEN: 'What does your fatigue look like when it hits?',
     options: [
       { fr: "Épuisement nerveux, sensation d'être vidé·e, surmenage mental.",
@@ -580,31 +579,6 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                 </button>
               </div>
 
-              {/* L'infolettre au moment où l'intérêt est le plus vif, juste sous le
-                  résultat (Krystine, 28 sept. 2026 : le formulaire du bas de page
-                  était trop loin). L'étiquette dosha-… permet d'écrire ensuite
-                  selon la nature de chacune. */}
-              <div className="mt-8 pt-6 border-t border-[#1c1712]/10">
-                <p className="text-[0.62rem] uppercase tracking-[0.24em] text-[#7d6330]">
-                  {lang === 'FR' ? 'Rester sur le fil' : 'Stay on the thread'}
-                </p>
-                <p className="mt-3 text-[0.95rem] leading-relaxed text-[#3a2f23] max-w-[46ch]">
-                  {lang === 'FR'
-                    ? `Recevez les repères de saison pour votre nature ${result.dominant.name}, par courriel.`
-                    : `Receive seasonal markers for your ${result.dominant.name} nature, by email.`}
-                </p>
-                <div className="mt-5">
-                  <NewsletterSignup
-                    source="quiz"
-                    tags={['quiz', `dosha-${String(result.dominant.name || '').toLowerCase()}`]}
-                    variant="light"
-                    emailOnly
-                    accountUpsell={false}
-                    ctaLabel={lang === 'FR' ? 'Rejoindre le fil' : 'Join the thread'}
-                  />
-                </div>
-              </div>
-
               <div className="mt-8 pt-6 border-t border-[#1c1712]/10">
                 <button
                   type="button"
@@ -655,8 +629,8 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
               </p>
               <p className="mt-5 v2-serif italic font-light text-[clamp(1.1rem,1.9vw,1.4rem)] leading-relaxed text-[#3a2f23] max-w-[46ch] mx-auto">
                 {user
-                  ? (lang === 'FR' ? 'Enregistrez votre résultat dans votre espace pour accéder à vos rituels et recommandations personnalisés.' : 'Save your result to your space to unlock your personalized rituals and recommendations.')
-                  : (lang === 'FR' ? 'Connectez-vous pour enregistrer votre profil et débloquer vos rituels personnalisés.' : 'Sign in to save your profile and unlock your personalized rituals.')}
+                  ? (lang === 'FR' ? 'Enregistrez votre résultat dans votre espace pour retrouver votre profil complet.' : 'Save your result to your space to discover your full profile.')
+                  : (lang === 'FR' ? 'Connectez-vous pour enregistrer votre profil et découvrir votre profil complet.' : 'Sign in to save your profile and discover your full profile.')}
               </p>
 
               <label className="mt-7 mx-auto flex max-w-[34rem] cursor-pointer items-start gap-3 text-left text-[0.92rem] leading-relaxed text-[#3a2f23]">
@@ -837,12 +811,15 @@ const INSIDE = [
   },
   {
     n: '03',
-    titleFR: 'Un geste choisi pour vous',
-    titleEN: 'A gesture chosen for you',
-    bodyFR: "À la fin, le geste associé à votre dominance et l'huile corporelle qui l'accompagne.",
-    bodyEN: "At the end, the gesture matched to your dominance and the body oil that goes with it.",
+    titleFR: 'Votre profil complet',
+    titleEN: 'Your full profile',
+    bodyFR: "À la fin, ce qui accentue votre dominance et ce qui l'apaise, avec l'huile qui l'accompagne.",
+    bodyEN: "At the end, what amplifies your dominance and what calms it, with the oil that goes with it.",
   },
 ];
+
+const DOMINANCE_FR: Record<string, string> = { vata: 'Vent', pitta: 'Feu', kapha: 'Terre' };
+const DOMINANCE_EN: Record<string, string> = { vata: 'Wind', pitta: 'Fire', kapha: 'Earth' };
 
 const QuizLoeuvre: React.FC = () => {
   const { lang } = useApp();
@@ -879,7 +856,7 @@ const QuizLoeuvre: React.FC = () => {
             video="/quiz/quiz-dosha-revisee.mp4"
             poster="/quiz/quiz-dosha-revisee-poster.jpg"
             ratio="aspect-[16/9] sm:aspect-[21/9] lg:aspect-[8/3]"
-            etiquette="Vata · Pitta · Kapha"
+            etiquette="Vent · Feu · Terre"
           />
         </motion.div>
 
@@ -918,7 +895,7 @@ const QuizLoeuvre: React.FC = () => {
                 <ArrowDown size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-y-0.5" />
               </a>
               <span className="text-[0.62rem] uppercase tracking-[0.2em] text-[#1c1712]/55">
-                {lang === 'FR' ? 'Gratuit · 3 minutes · Vata · Pitta · Kapha' : 'Free · 3 minutes · Vata · Pitta · Kapha'}
+                {lang === 'FR' ? 'Gratuit · 3 minutes' : 'Free · 3 minutes'}
               </span>
             </motion.div>
           </div>
@@ -929,23 +906,20 @@ const QuizLoeuvre: React.FC = () => {
             <div className="relative bg-[#faf6ee] px-9 py-4">
               {ay.doshas.map((d: any, i: number) => {
                 const key = ALL_DOSHAS[i];
-                const th = DOSHA_THEME[key];
                 return (
                   <div key={d.name} className={`flex items-center gap-6 py-6 ${i > 0 ? 'border-t border-[#1c1712]/10' : ''}`}>
                     <DoshaPicto d={key} size={56} className="shrink-0" />
                     <div className="min-w-0">
-                      <div className="flex items-baseline gap-3">
-                        <p className="v2-serif font-light text-[1.35rem] text-[#1c1712]">{d.name}</p>
-                        <p className="text-[0.56rem] uppercase tracking-[0.22em]" style={{ color: th.ink }}>{d.elements}</p>
-                      </div>
-                      <p className="mt-1 text-[0.85rem] leading-[1.6] text-[#3a2f23]">{d.action}</p>
+                      <p className="v2-serif font-light text-[1.35rem] text-[#1c1712]">
+                        {lang === 'FR' ? 'Dominance ' : 'Dominance of '}{lang === 'FR' ? DOMINANCE_FR[key] : DOMINANCE_EN[key]}
+                      </p>
                     </div>
                   </div>
                 );
               })}
             </div>
             <span className="absolute -top-2 -left-2 bg-[#1c1712] text-[#f4efe6] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.24em]">
-              {lang === 'FR' ? 'Les trois natures' : 'The three natures'}
+              {lang === 'FR' ? 'Les trois dominances' : 'The three dominances'}
             </span>
           </motion.div>
         </div>
@@ -958,8 +932,26 @@ const QuizLoeuvre: React.FC = () => {
             <ArrowDown size={13} weight="regular" />
             {lang === 'FR' ? 'Faire défiler' : 'Scroll'}
           </span>
-          <span className="hidden sm:inline">Vata &middot; Pitta &middot; Kapha</span>
         </motion.div>
+      </section>
+
+      {/* ─────────── LE QUIZ ─────────── */}
+      <section id="quiz" className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,9rem)] bg-[#f4efe6] scroll-mt-24 overflow-hidden">
+        <GiantWord word="Dosha" />
+        <div className="relative z-10">
+          <Reveal className="text-center mb-12">
+            <Kicker className="mb-5">{lang === 'FR' ? 'À vous de jouer' : 'Your turn'}</Kicker>
+            <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
+              {lang === 'FR' ? 'Répondez en toute simplicité' : 'Answer, simply'}
+            </h2>
+            <p className="mt-5 v2-serif italic font-light text-[clamp(1.1rem,1.8vw,1.4rem)] text-[#3a2f23] max-w-[46ch] mx-auto">
+              {lang === 'FR'
+                ? "Il n'y a pas de mauvaise réponse, seulement la vôtre, ici et maintenant."
+                : 'There is no wrong answer, only yours, here and now.'}
+            </p>
+          </Reveal>
+          <Quiz lang={lang} />
+        </div>
       </section>
 
       {/* ─────────── QU'EST-CE QUE L'AYURVEDA · 2 colonnes pleine largeur ─────────── */}
@@ -1014,54 +1006,6 @@ const QuizLoeuvre: React.FC = () => {
             </Reveal>
           ))}
         </div>
-      </section>
-
-      {/* ─────────── LE QUIZ ─────────── */}
-      <section id="quiz" className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,9rem)] bg-[#f4efe6] scroll-mt-24 overflow-hidden">
-        <GiantWord word="Dosha" />
-        <div className="relative z-10">
-          <Reveal className="text-center mb-12">
-            <Kicker className="mb-5">{lang === 'FR' ? 'À vous de jouer' : 'Your turn'}</Kicker>
-            <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
-              {lang === 'FR' ? 'Répondez en toute simplicité' : 'Answer, simply'}
-            </h2>
-            <p className="mt-5 v2-serif italic font-light text-[clamp(1.1rem,1.8vw,1.4rem)] text-[#3a2f23] max-w-[46ch] mx-auto">
-              {lang === 'FR'
-                ? "Il n'y a pas de mauvaise réponse, seulement la vôtre, ici et maintenant."
-                : 'There is no wrong answer, only yours, here and now.'}
-            </p>
-          </Reveal>
-          <Quiz lang={lang} />
-        </div>
-      </section>
-
-      {/* ─────────── SIGNUP · le moment sombre (back-cover), arêtes nettes ─────────── */}
-      <section className="relative overflow-hidden bg-[#34241a] py-[clamp(5rem,12vh,9rem)]">
-        <span aria-hidden className="absolute inset-x-0 top-0 h-px bg-[#9c7a44]" />
-        <Atmosphere light="70% 12%" />
-        <div className="relative z-10 mx-auto w-full max-w-[820px] px-[clamp(1.5rem,5vw,5.5rem)] text-center">
-          <Reveal>
-            <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#c8a86a]">
-              {lang === 'FR' ? 'Rester sur le fil' : 'Stay on the thread'}
-            </p>
-            <h2 className="mt-5 v2-serif font-light leading-[1.04] text-[#f4efe6] text-[clamp(2.2rem,5vw,3.8rem)]">
-              {lang === 'FR' ? 'Le fil, à votre rythme' : 'The thread, at your pace'}
-            </h2>
-            <p className="mt-6 v2-serif italic font-light text-[clamp(1.1rem,1.9vw,1.45rem)] leading-relaxed text-[#f4efe6]/75 max-w-[52ch] mx-auto">
-              {lang === 'FR'
-                ? "Recevez le fil de Krystine : repères saisonniers, rituels selon votre dosha et nouvelles des prochains parcours, sans bruit."
-                : "Receive Krystine's thread: seasonal markers, rituals matched to your dosha and word of upcoming journeys, no noise."}
-            </p>
-          </Reveal>
-          <Reveal delay={0.1} className="mt-10">
-            <NewsletterSignup
-              source="quiz"
-              variant="dark"
-              ctaLabel={lang === 'FR' ? 'Rejoindre le fil' : 'Join the thread'}
-            />
-          </Reveal>
-        </div>
-        <span aria-hidden className="absolute inset-x-0 bottom-0 h-px bg-[#9c7a44]" />
       </section>
 
       {/* ─────────── CONTACT ─────────── */}

@@ -97,7 +97,7 @@ export const CONTENT = {
     toggle: 'FR',
     ayurveda: {
       whatIsTitle: 'QU\'EST-CE QUE L\'AYURVEDA ?',
-      whatIsText: 'Science sœur du yoga, l\'Ayurveda est née en Inde il y a environ 5 000 ans et nous invite à renouer avec les rythmes de la nature. Elle cherche les causes-racines plutôt que de s\'arrêter aux symptômes, pour rétablir l\'harmonie entre le corps, l\'âme et l\'esprit.',
+      whatIsText: 'Science sœur du yoga, l\'Ayurveda nous invite à renouer avec les rythmes de la nature. Elle cherche les causes-racines plutôt que de s\'arrêter aux symptômes, pour rétablir l\'harmonie entre le corps, l\'âme et l\'esprit.',
       title: 'Dosha Quiz',
       introTitle: 'INSPIRATA AYURVEDA',
       introText: 'Peut-être avez-vous toujours pensé que vous étiez unique… mais savez-vous à quel point ?',
@@ -391,7 +391,7 @@ export const CONTENT = {
     toggle: 'EN',
     ayurveda: {
       whatIsTitle: 'WHAT IS AYURVEDA?',
-      whatIsText: 'Sister science of yoga, Ayurveda was born in India some 5,000 years ago and invites us to return to the rhythms of nature. It looks for root causes rather than stopping at symptoms, to restore harmony between body, soul and mind.',
+      whatIsText: 'Sister science of yoga, Ayurveda invites us to return to the rhythms of nature. It looks for root causes rather than stopping at symptoms, to restore harmony between body, soul and mind.',
       title: 'Dosha Quiz',
       introTitle: 'INSPIRATA AYURVEDA',
       introText: 'Perhaps you\'ve always thought you were unique... but do you know to what extent?',
