@@ -361,24 +361,26 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       </table></td></tr>`;
     }
     case 'note': {
-      // La note d'Ayurveda (Krystine, 2 oct. 2026) : une page de papier posée
-      // sur le bois, comme dans ses visuels. Une ligne par mot clé; ce qui
+      // La note d'Ayurveda (Krystine, 2 oct. 2026) : une page de papier à double
+      // filet et son brin doré, comme dans ses visuels. Une ligne par mot clé; ce qui
       // précède « : » s'écrit en gras (le mot), le reste est sa définition.
       const titre = String(c.titre ?? '').trim() || 'Un mot d’Ayurveda';
       const lignes = String(c.texte ?? '').split(/\r?\n/).map(l => l.trim()).filter(Boolean);
       if (!lignes.length) return '';
-      const papier = '#cdb8a0';
+      const papier = '#ece2cf';
       const ligne = (l: string) => {
         const k = l.indexOf(' : ');
         const corps = k > 0 ? `<strong style="font-weight:600;color:#2b241c;">${esc(l.slice(0, k))}</strong> : ${esc(l.slice(k + 3))}` : esc(l);
         return `<div style="padding:0 0 10px;">${corps}</div>`;
       };
       return `<tr><td style="padding:14px 0 24px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-        <tr><td style="line-height:0;"><img src="${PUBLIC_BASE_URL}/infolettre/note-ayurveda-entete.jpg" alt="" width="520" style="display:block;width:100%;max-width:520px;height:auto;border:0;" /></td></tr>
-        <tr><td bgcolor="#301e12" style="background:#301e12;padding:0 0 18px 17px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td bgcolor="${papier}" style="background:${papier};padding:6px 30px 26px 18px;">
-          <div style="font-family:${CHARTE.serif};font-size:${t(24)}px;line-height:1.2;color:#2b241c;text-align:center;padding:0 0 16px;">${esc(titre)}</div>
-          <div style="font-family:Georgia, 'Times New Roman', serif;font-size:${t(16)}px;line-height:1.6;color:#3a2f24;">${lignes.map(ligne).join('')}</div>
-        </td></tr></table></td></tr>
+        <tr><td bgcolor="${papier}" style="background:${papier};border:1px solid #b89a62;padding:6px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="border:1px solid #cdb68a;padding:22px 28px 18px;">
+            <div style="text-align:center;padding:0 0 8px;line-height:0;"><img src="${PUBLIC_BASE_URL}/infolettre/note-brin.png" width="50" alt="" style="display:inline-block;width:50px;height:auto;border:0;" /></div>
+            <div style="font-family:${CHARTE.serif};font-size:${t(24)}px;line-height:1.2;color:#2b241c;text-align:center;padding:0 0 16px;">${esc(titre)}</div>
+            <div style="font-family:Georgia, 'Times New Roman', serif;font-size:${t(16)}px;line-height:1.6;color:#3a2f24;">${lignes.map(ligne).join('')}</div>
+          </td></tr></table>
+        </td></tr>
       </table></td></tr>`;
     }
     default:
