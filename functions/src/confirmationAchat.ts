@@ -43,14 +43,14 @@ function recapBlocs(r: Recap): NewsletterBlock[] {
 
 export function lettreConfirmation(formationId: string, titre: string, recap: Recap): { subject: string; preheader: string; blocks: NewsletterBlock[] } {
   const lien = `${PUBLIC_BASE_URL}/cours/${formationId}`;
-  const fin: NewsletterBlock[] = [{ type: 'divider', content: { style: 'ligne' } }, ...recapBlocs(recap), p(SOUTIEN)];
+  const fin: NewsletterBlock[] = [{ type: 'divider', content: { style: 'ligne' } }, ...(formationId === 'kajabi-2148687644' ? [p('<b>Votre formule</b> : VATA Essentiel.', 'sm')] : []), ...recapBlocs(recap), p(SOUTIEN)];
   if (formationId === FORMATION_VATA_ID) {
     return {
-      subject: 'Bienvenue dans VATA Essentiel',
+      subject: 'Bienvenue dans L’Expérience Ayurveda, Vata',
       preheader: 'Votre accès est ouvert. Voici par où commencer.',
       blocks: [
         p('Bonjour {{firstName}},'),
-        p('Nous sommes très heureuses de vous accueillir dans VATA Essentiel, L’Expérience Ayurveda, Saison Vata. Votre accès est ouvert dès maintenant.'),
+        p('Nous sommes très heureuses de vous accueillir dans L’Expérience Ayurveda, Vata. Votre accès est ouvert dès maintenant.'),
         h('Trois bonnes raisons d’avoir fait ce choix'),
         p('<b>Vous apprenez à reconnaître le Vent</b> plutôt qu’à le subir : le fil qui se perd, le sommeil qui se fragilise, ce qui s’accumule sans bruit.'),
         p('<b>Vous avancez un sens à la fois</b> : le souffle, l’ouïe, la vue, l’odorat, le goût et le toucher, en courtes capsules qui s’écoutent partout, même l’écran verrouillé.'),
