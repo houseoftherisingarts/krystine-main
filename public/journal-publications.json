@@ -4512,5 +4512,19 @@
       "public/assets-manifest.json",
       "src/pages/FormationsLanding.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T17:08:11.514Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b2841084",
+    "message": "Formations (/formations) : la carte VATA Essentiel porte la photo de la semaine 1, la fille aux cheveux",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/FormationsLanding.tsx"
+    ]
   }
 ]
