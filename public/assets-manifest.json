@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T16:43:12.184Z",
+  "generatedAt": "2026-10-02T16:50:18.818Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1546,7 +1546,28 @@
       "name": "vata-eventail.jpg",
       "folder": "infolettre",
       "kind": "image",
-      "size": 59807
+      "size": 60571
+    },
+    {
+      "path": "/infolettre/vata-pied-presence.jpg",
+      "name": "vata-pied-presence.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 59151
+    },
+    {
+      "path": "/infolettre/vata-pied-souffle.jpg",
+      "name": "vata-pied-souffle.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 54032
+    },
+    {
+      "path": "/infolettre/vata-pied-toucher.jpg",
+      "name": "vata-pied-toucher.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 58732
     },
     {
       "path": "/infolettre/vata-sens.jpg",

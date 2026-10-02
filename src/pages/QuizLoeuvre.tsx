@@ -1007,7 +1007,7 @@ const CLES_FR: [string, string][] = [
   ['Vata', 'l’Air et l’Espace, le mouvement.'],
   ['Pitta', 'le Feu et l’Eau, la chaleur et la digestion.'],
   ['Kapha', 'l’Eau et la Terre, la structure et la stabilité.'],
-  ['Causes-racines', 'plutôt que de s’arrêter aux symptômes, l’Ayurveda cherche ce qui les fait naître.'],
+  ['Causes-racines', 'l’Ayurveda remonte à ce qui fait naître un déséquilibre, plutôt que de s’arrêter à ce qui se voit en surface.'],
 ];
 const CLES_EN: [string, string][] = [
   ['Ayurveda', 'from the Sanskrit ayus, life, and veda, knowledge, which can be translated as “the science of life”. Sister of yoga.'],
@@ -1016,7 +1016,7 @@ const CLES_EN: [string, string][] = [
   ['Vata', 'Air and Space, movement.'],
   ['Pitta', 'Fire and Water, heat and digestion.'],
   ['Kapha', 'Water and Earth, structure and stability.'],
-  ['Root causes', 'rather than stopping at symptoms, Ayurveda looks for what gives rise to them.'],
+  ['Root causes', 'Ayurveda traces back to what gives rise to an imbalance, rather than stopping at what shows on the surface.'],
 ];
 
 const QuizLoeuvre: React.FC = () => {
