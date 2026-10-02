@@ -4278,5 +4278,23 @@
       "functions/src/newsletter/renderer.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-02T15:46:11.936Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "9580a9d4",
+    "message": "Infolettres : note d'Ayurveda en papier posé sur le bois, mots clés en gras; pied de page sans province ni pays",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "public/infolettre/note-ayurveda-entete.jpg",
+      "src/lib/newsletterRenderer.tsx",
+      "src/pages/admin/sections/newsletter/Composer.tsx"
+    ]
   }
 ]
