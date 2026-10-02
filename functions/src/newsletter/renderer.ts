@@ -384,25 +384,23 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       </table></td></tr>`;
     }
     case 'note': {
-      // La note d'Ayurveda (Krystine, 2 oct. 2026) : une page de papier à double
-      // filet et son brin doré, comme dans ses visuels. Une ligne par mot clé; ce qui
+      // La note d'Ayurveda (Krystine, 2 oct. 2026) : la carte vert profond du
+      // site, texte ivoire et mots clés cuivre. Une ligne par mot clé; ce qui
       // précède « : » s'écrit en gras (le mot), le reste est sa définition.
-      const titre = String(c.titre ?? '').trim() || 'Un mot d’Ayurveda';
+      const titre = String(c.titre ?? '').trim() || 'Quelques clés de l’Ayurveda';
       const lignes = String(c.texte ?? '').split(/\r?\n/).map(l => l.trim()).filter(Boolean);
       if (!lignes.length) return '';
-      const papier = '#ece2cf';
+      const vert = '#28352F';
       const ligne = (l: string) => {
         const k = l.indexOf(' : ');
-        const corps = k > 0 ? `<strong style="font-weight:600;color:#2b241c;">${esc(l.slice(0, k))}</strong> : ${esc(l.slice(k + 3))}` : esc(l);
+        const corps = k > 0 ? `<strong style="font-weight:600;color:#d79a5c;">${esc(l.slice(0, k))}</strong> : ${esc(l.slice(k + 3))}` : esc(l);
         return `<div style="padding:0 0 10px;">${corps}</div>`;
       };
       return `<tr><td style="padding:14px 0 24px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-        <tr><td bgcolor="${papier}" style="background:${papier};border:1px solid #b89a62;padding:6px;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="border:1px solid #cdb68a;padding:22px 28px 18px;">
-            <div style="text-align:center;padding:0 0 8px;line-height:0;"><img src="${PUBLIC_BASE_URL}/infolettre/note-brin.png" width="50" alt="" style="display:inline-block;width:50px;height:auto;border:0;" /></div>
-            <div style="font-family:${CHARTE.serif};font-size:${t(24)}px;line-height:1.2;color:#2b241c;text-align:center;padding:0 0 16px;">${esc(titre)}</div>
-            <div style="font-family:Georgia, 'Times New Roman', serif;font-size:${t(16)}px;line-height:1.6;color:#3a2f24;">${lignes.map(ligne).join('')}</div>
-          </td></tr></table>
+        <tr><td bgcolor="${vert}" style="background:${vert};padding:30px 30px 20px;">
+          <div style="font-family:${CHARTE.serif};font-size:${t(26)}px;line-height:1.2;color:#EEE7DB;text-align:center;">${esc(titre)}</div>
+          <div style="font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#BA7B39;text-align:center;padding:8px 0 20px;">La science de la vie</div>
+          <div style="font-family:${CHARTE.sans};font-size:${t(15)}px;line-height:1.7;color:#EEE7DB;">${lignes.map(ligne).join('')}</div>
         </td></tr>
       </table></td></tr>`;
     }

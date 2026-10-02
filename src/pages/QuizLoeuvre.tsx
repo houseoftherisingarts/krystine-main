@@ -999,7 +999,7 @@ const INSIDE = [
 const DOMINANCE_FR: Record<string, string> = { vata: 'Vent', pitta: 'Feu', kapha: 'Terre' };
 const DOMINANCE_EN: Record<string, string> = { vata: 'Wind', pitta: 'Fire', kapha: 'Earth' };
 
-// « Quelques clés de l'Ayurveda », au style de la note des lettres (Krystine, 2 oct. 2026).
+// « Quelques clés de l'Ayurveda » : la carte vert profond du site (Krystine, 2 oct. 2026, le papier doré écarté).
 const CLES_FR: [string, string][] = [
   ['Ayurveda', 'du sanskrit ayus, la vie, et veda, la connaissance, pouvant être traduit par « science de la vie ». Sœur du yoga.'],
   ['Les cinq éléments', 'l’Espace, l’Air, le Feu, l’Eau et la Terre, dont tout est fait, nous compris.'],
@@ -1165,21 +1165,21 @@ const QuizLoeuvre: React.FC = () => {
         </div>
       </section>
 
-      {/* ─────────── QUELQUES CLÉS DE L'AYURVEDA · la note des lettres, sur papier ─────────── */}
+      {/* ─────────── QUELQUES CLÉS DE L'AYURVEDA · la carte vert profond ─────────── */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,9rem)] bg-[#f4efe6]">
         <Reveal className="max-w-[44rem] mx-auto">
-          <div className="border border-[#b89a62] bg-[#ece2cf] p-1.5">
-            <div className="border border-[#cdb68a] px-[clamp(1.5rem,5vw,3.25rem)] pt-[clamp(1.75rem,4vw,2.5rem)] pb-[clamp(1.25rem,3vw,2rem)] text-[#3a2f24]">
-              <img src="/infolettre/note-brin.png" alt="" aria-hidden className="mx-auto mb-3 block w-[50px]" />
-              <h2 className="pb-6 text-center v2-serif font-light leading-[1.1] text-[#2b241c] text-[clamp(1.6rem,3.4vw,2.3rem)]">
-                {lang === 'FR' ? 'Quelques clés de l’Ayurveda' : 'A few keys to Ayurveda'}
-              </h2>
-              {(lang === 'FR' ? CLES_FR : CLES_EN).map(([mot, def]) => (
-                <p key={mot} className="pb-3 text-[1rem] leading-[1.7]">
-                  <strong className="font-semibold text-[#2b241c]">{mot}</strong> : {def}
-                </p>
-              ))}
-            </div>
+          <div className="bg-[#28352F] px-[clamp(1.5rem,5vw,3.5rem)] pt-[clamp(2rem,4.5vw,3rem)] pb-[clamp(1.5rem,3.5vw,2.25rem)] text-[#EEE7DB]">
+            <h2 className="text-center v2-serif font-light leading-[1.1] text-[#EEE7DB] text-[clamp(1.6rem,3.4vw,2.3rem)]">
+              {lang === 'FR' ? 'Quelques clés de l’Ayurveda' : 'A few keys to Ayurveda'}
+            </h2>
+            <p className="pt-2 pb-7 text-center text-[0.68rem] uppercase tracking-[0.24em] text-[#BA7B39]">
+              {lang === 'FR' ? 'La science de la vie' : 'The science of life'}
+            </p>
+            {(lang === 'FR' ? CLES_FR : CLES_EN).map(([mot, def]) => (
+              <p key={mot} className="pb-3 text-[1rem] leading-[1.7]">
+                <strong className="font-semibold text-[#d79a5c]">{mot}</strong> : {def}
+              </p>
+            ))}
           </div>
         </Reveal>
       </section>
