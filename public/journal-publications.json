@@ -4749,5 +4749,29 @@
       "public/assets-manifest.json",
       "src/lib/versements.ts"
     ]
+  },
+  {
+    "quand": "2026-10-02T19:29:35.072Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "1d24bbb5",
+    "message": "VATA Essentiel : versements et taxes en sus sous le prix, prix juste après le 1er novembre, lien VATA au résultat Vent du quiz, retour vers /vata après un paiement abandonné; paiement intégré en ligne : le formulaire Stripe s'affiche dans la page",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/paiements.ts",
+      "package-lock.json",
+      "package.json",
+      "public/assets-manifest.json",
+      "src/firebase/formations.ts",
+      "src/lib/offres.ts",
+      "src/pages/ClientPortal.tsx",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/PaiementFormation.tsx",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
