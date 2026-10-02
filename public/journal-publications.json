@@ -3942,5 +3942,19 @@
       "public/assets-manifest.json",
       "src/pages/admin/sections/DashboardSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T11:49:44.089Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "74c3c9ff",
+    "message": "Page du quiz (/quiz) : case « Recevoir les repères de saison pour ma nature » au moment de se connecter pour voir son résultat; cochée, elle inscrit la personne au fil avec ses étiquettes quiz et dosha",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
