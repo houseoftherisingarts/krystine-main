@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T16:16:23.766Z",
+  "generatedAt": "2026-10-02T16:27:34.528Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1547,6 +1547,13 @@
       "folder": "infolettre",
       "kind": "image",
       "size": 59807
+    },
+    {
+      "path": "/infolettre/vata-sens.jpg",
+      "name": "vata-sens.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 100662
     },
     {
       "path": "/livres/titre-a-reveler.webp",

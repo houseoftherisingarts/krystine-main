@@ -15,8 +15,11 @@ export async function fetchPreview(input: EnTete & { blocks?: NewsletterBlock[];
   return res.data;
 }
 
-const PreviewFrame: React.FC<EnTete & { blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string; height?: number }> = ({ blocks, subject, preheader, kind, couverture, couvertureUrl, entete, signature, lang, bandeau, fond, tailleLecture, height = 900 }) => {
+const PreviewFrame: React.FC<EnTete & { blocks?: NewsletterBlock[]; subject?: string; preheader?: string; kind?: string; height?: number; autoHauteur?: boolean; onHauteur?: (h: number) => void }> = ({ blocks, subject, preheader, kind, couverture, couvertureUrl, entete, signature, lang, bandeau, fond, tailleLecture, height = 900, autoHauteur = false, onHauteur }) => {
   const [html, setHtml] = useState('');
+  // En relecture, la lettre se montre en entier : l'iframe prend la hauteur
+  // de son contenu au lieu de cacher le corps sous un défilement interne.
+  const [hAuto, setHAuto] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const timer = useRef<number | null>(null);
@@ -39,7 +42,14 @@ const PreviewFrame: React.FC<EnTete & { blocks?: NewsletterBlock[]; subject?: st
     <div className="relative rounded-[15px] overflow-hidden border border-[#293027]/10 dark:border-white/10 bg-[#EEE7DB]">
       {busy && <div className="absolute top-3 right-3 z-10 text-[10px] uppercase tracking-widest text-[#8B4A2F] bg-white/80 px-2 py-1 rounded-full"><i className="fa-solid fa-circle-notch fa-spin mr-1" />Rendu</div>}
       {err && <div className="p-4 text-sm text-red-600">{err}</div>}
-      <iframe title="Aperçu du courriel" srcDoc={html} sandbox="" style={{ width: '100%', height, border: 0, display: 'block' }} />
+      <iframe title="Aperçu du courriel" srcDoc={html} sandbox={autoHauteur ? 'allow-same-origin' : ''} style={{ width: '100%', height: autoHauteur && hAuto ? hAuto : height, border: 0, display: 'block' }}
+        onLoad={autoHauteur ? e => {
+          const doc = (e.currentTarget as HTMLIFrameElement).contentDocument;
+          if (!doc) return;
+          const mesurer = () => { const h = Math.max(doc.documentElement.scrollHeight, doc.body?.scrollHeight || 0); setHAuto(h); onHauteur?.(h); };
+          mesurer();
+          doc.querySelectorAll('img').forEach(img => { if (!(img as HTMLImageElement).complete) img.addEventListener('load', mesurer, { once: true }); });
+        } : undefined} />
     </div>
   );
 };

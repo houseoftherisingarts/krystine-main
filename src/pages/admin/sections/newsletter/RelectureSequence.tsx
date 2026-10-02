@@ -64,6 +64,7 @@ const RelectureSequence: React.FC<{
   const rangs = etapes.map((e, i) => ({ e, i, l: lettres.find(x => x.id === e.newsletterId) })).filter(r => r.e.newsletterId);
   const [ouverte, setOuverte] = useState<number | null>(derniereOuverte[sequenceId] ?? null);
   const [occupe, setOccupe] = useState(false);
+  const [hauteurLettre, setHauteurLettre] = useState<Record<string, number>>({});
   // Le test d'une lettre part d'un clic à l'adresse de la personne connectée
   // (Krystine, 2 oct. 2026), par la même fonction que le test d'une infolettre.
   const [test, setTest] = useState<{ id: string; etat: 'envoi' | 'ok' | 'erreur'; mot?: string } | null>(null);
@@ -152,7 +153,7 @@ const RelectureSequence: React.FC<{
                     <div className="font-semibold text-[#293027] dark:text-white">{l.subject || 'Sans objet'}</div>
                     {l.preheader && <div className="text-[#293027]/60 dark:text-white/60">{l.preheader}</div>}
                   </div>
-                  <AjusteLargeur hauteur={hauteurApercu}><PreviewFrame blocks={l.blocks} subject={l.subject} preheader={l.preheader} couverture={l.couverture} couvertureUrl={l.couvertureUrl} entete={l.couverture === 'titre' ? l.entete : null} signature={l.signature} lang={l.lang} bandeau={l.bandeau} fond={l.fond} tailleLecture={l.tailleLecture} height={hauteurApercu} /></AjusteLargeur>
+                  <AjusteLargeur hauteur={hauteurLettre[l.id!] || hauteurApercu}><PreviewFrame autoHauteur onHauteur={h => setHauteurLettre(m => (m[l.id!] === h ? m : { ...m, [l.id!]: h }))} blocks={l.blocks} subject={l.subject} preheader={l.preheader} couverture={l.couverture} couvertureUrl={l.couvertureUrl} entete={l.couverture === 'titre' ? l.entete : null} signature={l.signature} lang={l.lang} bandeau={l.bandeau} fond={l.fond} tailleLecture={l.tailleLecture} height={hauteurApercu} /></AjusteLargeur>
                 </div>
               </div>
 
