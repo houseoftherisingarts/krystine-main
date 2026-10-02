@@ -104,7 +104,7 @@ const GiantWord: React.FC<{ word: string }> = ({ word }) => {
     <div ref={ref} aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
       <motion.span
         style={reduce ? undefined : { y }}
-        className="absolute top-[2%] right-[-3%] v2-serif italic font-light leading-none select-none text-[clamp(8rem,22vw,20rem)] text-[#1c1712]/[0.05] will-change-transform"
+        className="absolute top-[2%] right-[-3%] v2-serif font-light leading-none select-none text-[clamp(8rem,22vw,20rem)] text-[#1c1712]/[0.05] will-change-transform"
       >
         {word}
       </motion.span>
@@ -136,7 +136,7 @@ const QUIZ_DATA: QuizQuestion[] = [
     questionFR: 'Comment décririez-vous votre constitution physique ?',
     questionEN: 'How would you describe your physical build?',
     options: [
-      { fr: "Mince, jointures proéminentes, peu de protection sur l'ensemble du corps.",
+      { fr: "Mince, articulations proéminentes, peu de protection sur l'ensemble du corps.",
         en: 'Thin, prominent joints, little padding on the body overall.', type: 'vata' },
       { fr: 'Constitution moyenne et symétrique, bonne musculature.',
         en: 'Medium, symmetrical build with good musculature.', type: 'pitta' },
@@ -642,7 +642,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
 
               <CarteDominance d={dRes} lang={lang} complet />
 
-              <p className="mt-10 v2-serif italic font-light text-[clamp(1.1rem,1.9vw,1.45rem)] leading-relaxed text-[#3a2f23] max-w-[46ch] mx-auto">
+              <p className="mt-10 v2-serif font-light text-[clamp(1.1rem,1.9vw,1.45rem)] leading-relaxed text-[#3a2f23] max-w-[46ch] mx-auto">
                 {result.dominant.definition}
               </p>
             </div>
@@ -652,12 +652,12 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
               {ritual && (
                 <div className="bg-[#faf6ee] border p-7 md:p-9 text-left" style={{ borderColor: `${th.accent}40` }}>
                   <p className="text-[0.62rem] uppercase tracking-[0.3em]" style={{ color: th.ink }}>
-                    {lang === 'FR' ? 'Votre rituel' : 'Your ritual'}
+                    {lang === 'FR' ? 'Votre repère' : 'Your practice'}
                   </p>
                   <h3 className="mt-3 v2-serif font-light text-[#1c1712] leading-[1.08] text-[clamp(1.5rem,2.4vw,2rem)]">
                     {lang === 'FR' ? ritual.titleFR : ritual.titleEN}
                   </h3>
-                  <p className="mt-2 v2-serif italic text-[0.98rem] md:text-[1.05rem]" style={{ color: th.ink }}>
+                  <p className="mt-2 v2-serif text-[0.98rem] md:text-[1.05rem]" style={{ color: th.ink }}>
                     {lang === 'FR' ? ritual.subtitleFR : ritual.subtitleEN}
                   </p>
                   <p className="mt-5 inline-flex items-center gap-2 border px-3.5 py-1.5 text-[0.58rem] uppercase tracking-[0.2em] text-[#3a2f23]" style={{ borderColor: `${th.accent}55` }}>
@@ -949,7 +949,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                 })}
               </div>
 
-              <div className="mt-8 pt-5 border-t border-[#1c1712]/10 flex items-center justify-between">
+              <div className="mt-8 pt-5 border-t border-[#1c1712]/10 flex items-center justify-between gap-5">
                 <button
                   type="button"
                   onClick={goBack}
@@ -958,7 +958,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                 >
                   <ArrowLeft size={13} weight="regular" /> {lang === 'FR' ? 'Précédent' : 'Back'}
                 </button>
-                <span className="v2-serif italic text-[0.92rem] text-[#1c1712]/50">
+                <span className="v2-serif text-[0.92rem] text-right text-[#1c1712]/50">
                   {lang === 'FR' ? 'Suivez votre premier réflexe' : 'Trust your first instinct'}
                 </span>
               </div>
@@ -984,20 +984,40 @@ const INSIDE = [
     n: '02',
     titleFR: 'Votre dominance, en pourcentages',
     titleEN: 'Your dominance, in percentages',
-    bodyFR: 'Vata, Pitta ou Kapha : votre répartition unique du moment, calculée à partir de vos réponses, sans jugement et sans bonne ou mauvaise réponse.',
-    bodyEN: 'Vata, Pitta or Kapha: your unique balance of the moment, drawn from your answers, with no judgment and no right or wrong answer.',
+    bodyFR: 'Vent, Feu ou Terre : votre répartition unique du moment, calculée à partir de vos réponses, sans jugement et sans bonne ou mauvaise réponse.',
+    bodyEN: 'Wind, Fire or Earth: your unique balance of the moment, drawn from your answers, with no judgment and no right or wrong answer.',
   },
   {
     n: '03',
-    titleFR: 'Votre profil complet',
-    titleEN: 'Your full profile',
-    bodyFR: "À la fin, ce qui accentue votre dominance et ce qui l'apaise, avec l'huile qui l'accompagne.",
-    bodyEN: "At the end, what amplifies your dominance and what calms it, with the oil that goes with it.",
+    titleFR: 'Votre résultat, puis la suite',
+    titleEN: 'Your result, then what follows',
+    bodyFR: "Votre résultat complet arrive par courriel. Si vous le souhaitez, la suite de votre lecture suit : des lettres pour reconnaître comment votre dominance se manifeste, ce qui l'accentue et comment elle évolue.",
+    bodyEN: "Your full result arrives by email. If you wish, the rest of your reading follows: letters to recognize how your dominance shows up, what amplifies it and how it evolves.",
   },
 ];
 
 const DOMINANCE_FR: Record<string, string> = { vata: 'Vent', pitta: 'Feu', kapha: 'Terre' };
 const DOMINANCE_EN: Record<string, string> = { vata: 'Wind', pitta: 'Fire', kapha: 'Earth' };
+
+// « Quelques clés de l'Ayurveda », au style de la note des lettres (Krystine, 2 oct. 2026).
+const CLES_FR: [string, string][] = [
+  ['Ayurveda', 'du sanskrit ayus, la vie, et veda, la connaissance, pouvant être traduit par « science de la vie ». Sœur du yoga.'],
+  ['Les cinq éléments', 'l’Espace, l’Air, le Feu, l’Eau et la Terre, dont tout est fait, nous compris.'],
+  ['Dosha', 'une force née de ces éléments. Il y en a trois, présentes en chacune de nous dans des proportions qui lui sont propres.'],
+  ['Vata', 'l’Air et l’Espace, le mouvement.'],
+  ['Pitta', 'le Feu et l’Eau, la chaleur et la digestion.'],
+  ['Kapha', 'l’Eau et la Terre, la structure et la stabilité.'],
+  ['Causes-racines', 'plutôt que de s’arrêter aux symptômes, l’Ayurveda cherche ce qui les fait naître.'],
+];
+const CLES_EN: [string, string][] = [
+  ['Ayurveda', 'from the Sanskrit ayus, life, and veda, knowledge, which can be translated as “the science of life”. Sister of yoga.'],
+  ['The five elements', 'Space, Air, Fire, Water and Earth, of which everything is made, ourselves included.'],
+  ['Dosha', 'a force born of these elements. There are three, present in each of us in proportions of our own.'],
+  ['Vata', 'Air and Space, movement.'],
+  ['Pitta', 'Fire and Water, heat and digestion.'],
+  ['Kapha', 'Water and Earth, structure and stability.'],
+  ['Root causes', 'rather than stopping at symptoms, Ayurveda looks for what gives rise to them.'],
+];
 
 const QuizLoeuvre: React.FC = () => {
   const { lang } = useApp();
@@ -1064,17 +1084,21 @@ const QuizLoeuvre: React.FC = () => {
                 </motion.span>
               </span>
             </h1>
-            <motion.p
-              {...heroFade(0.4)}
-              className="mt-7 v2-serif italic font-light text-[clamp(1.35rem,2.6vw,2rem)] leading-[1.3] text-[#3a2f23] max-w-[28ch]"
-            >
-              {lang === 'FR'
-                ? <>Dix questions pour révéler <span className="not-italic text-[#1c1712]">votre dominance du moment.</span></>
-                : <>Ten questions to reveal <span className="not-italic text-[#1c1712]">your dominance of the moment.</span></>}
-            </motion.p>
+            <motion.div {...heroFade(0.4)} className="mt-7 max-w-[34ch]">
+              <p className="v2-serif font-light text-[clamp(1.35rem,2.6vw,2rem)] leading-[1.3] text-[#1c1712]">
+                {lang === 'FR'
+                  ? 'Voyez ce qui domine, ce qui l’accentue et la direction qui mérite votre attention.'
+                  : 'See what dominates, what amplifies it and the direction that deserves your attention.'}
+              </p>
+              <p className="mt-4 text-[0.82rem] leading-relaxed text-[#3a2f23]/80">
+                {lang === 'FR'
+                  ? 'Par Krystine St-Laurent, autrice de Nature & Ayurveda et de Féminité & Ayurveda (Éditions de l’Homme)'
+                  : 'By Krystine St-Laurent, author of Nature & Ayurveda and Féminité & Ayurveda (Éditions de l’Homme)'}
+              </p>
+            </motion.div>
             <motion.div {...heroFade(0.55)} className="mt-11 flex flex-wrap items-center gap-x-9 gap-y-4">
               <a
-                href="#quiz"
+                href="#quiz-debut"
                 className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
               >
                 {lang === 'FR' ? 'Commencer le quiz' : 'Begin the quiz'}
@@ -1130,35 +1154,34 @@ const QuizLoeuvre: React.FC = () => {
             <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
               {lang === 'FR' ? 'Répondez en toute simplicité' : 'Answer, simply'}
             </h2>
-            <p className="mt-5 v2-serif italic font-light text-[clamp(1.1rem,1.8vw,1.4rem)] text-[#3a2f23] max-w-[46ch] mx-auto">
+            <p className="mt-5 v2-serif font-light text-[clamp(1.1rem,1.8vw,1.4rem)] text-[#3a2f23] max-w-[46ch] mx-auto">
               {lang === 'FR'
                 ? "Il n'y a pas de mauvaise réponse, seulement la vôtre, ici et maintenant."
                 : 'There is no wrong answer, only yours, here and now.'}
             </p>
           </Reveal>
-          <Quiz lang={lang} />
+          {/* « Commencer le quiz » mène à la question même, pour que le bandeau des témoins ne cache pas les choix sur mobile. */}
+          <div id="quiz-debut" className="scroll-mt-[82px]"><Quiz lang={lang} /></div>
         </div>
       </section>
 
-      {/* ─────────── QU'EST-CE QUE L'AYURVEDA · 2 colonnes pleine largeur ─────────── */}
+      {/* ─────────── QUELQUES CLÉS DE L'AYURVEDA · la note des lettres, sur papier ─────────── */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,9rem)] bg-[#f4efe6]">
-        <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-x-[clamp(2.5rem,6vw,6rem)] gap-y-10 items-start">
-          <Reveal>
-            <Kicker className="mb-5">{lang === 'FR' ? 'La sagesse derrière le quiz' : 'The wisdom behind the quiz'}</Kicker>
-            <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">
-              {lang === 'FR' ? "Qu'est-ce que l'Ayurveda ?" : 'What is Ayurveda?'}
-            </h2>
-            <DrawRule className="mt-7 w-24" />
-          </Reveal>
-          <Reveal delay={0.12}>
-            <p className="v2-serif italic font-light text-[clamp(1.25rem,2.2vw,1.75rem)] leading-[1.45] text-[#3a2f23]">
-              {ay.whatIsText}
-            </p>
-            <p className="mt-7 text-[1rem] leading-[1.85] text-[#3a2f23] max-w-[62ch]">
-              {ay.desc}
-            </p>
-          </Reveal>
-        </div>
+        <Reveal className="max-w-[44rem] mx-auto">
+          <div className="border border-[#b89a62] bg-[#ece2cf] p-1.5">
+            <div className="border border-[#cdb68a] px-[clamp(1.5rem,5vw,3.25rem)] pt-[clamp(1.75rem,4vw,2.5rem)] pb-[clamp(1.25rem,3vw,2rem)] text-[#3a2f24]">
+              <img src="/infolettre/note-brin.png" alt="" aria-hidden className="mx-auto mb-3 block w-[50px]" />
+              <h2 className="pb-6 text-center v2-serif font-light leading-[1.1] text-[#2b241c] text-[clamp(1.6rem,3.4vw,2.3rem)]">
+                {lang === 'FR' ? 'Quelques clés de l’Ayurveda' : 'A few keys to Ayurveda'}
+              </h2>
+              {(lang === 'FR' ? CLES_FR : CLES_EN).map(([mot, def]) => (
+                <p key={mot} className="pb-3 text-[1rem] leading-[1.7]">
+                  <strong className="font-semibold text-[#2b241c]">{mot}</strong> : {def}
+                </p>
+              ))}
+            </div>
+          </div>
+        </Reveal>
       </section>
 
       {/* ─────────── CE QUE VOUS OBTENEZ · panneau, cascade indexée ─────────── */}
@@ -1171,10 +1194,10 @@ const QuizLoeuvre: React.FC = () => {
             </h2>
           </Reveal>
           <Reveal delay={0.12}>
-            <p className="v2-serif italic font-light text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug text-[#3a2f23] max-w-[46ch]">
+            <p className="v2-serif font-light text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug text-[#3a2f23] max-w-[46ch]">
               {lang === 'FR'
-                ? "Dix questions, votre dominance du moment et le geste qui l'accompagne. Suivez votre premier réflexe."
-                : 'Ten questions, your dominance of the moment and the gesture that fits it. Trust your first instinct.'}
+                ? 'Dix questions, votre dominance du moment et ce qui l’accentue. Suivez votre premier réflexe.'
+                : 'Ten questions, your dominance of the moment and what amplifies it. Trust your first instinct.'}
             </p>
           </Reveal>
         </div>
@@ -1198,7 +1221,7 @@ const QuizLoeuvre: React.FC = () => {
       <section className="bg-[#f4efe6] py-[clamp(4rem,9vh,6rem)] px-[clamp(1.5rem,5vw,5.5rem)] text-center">
         <a
           href="mailto:teamksl@inspiratanature.com"
-          className="v2-serif italic font-light text-[clamp(1.1rem,1.8vw,1.4rem)] text-[#7d6330] hover:text-[#1c1712] transition-colors duration-300 border-b border-[#9c7a44]/40 pb-1"
+          className="v2-serif font-light text-[clamp(1.1rem,1.8vw,1.4rem)] text-[#7d6330] hover:text-[#1c1712] transition-colors duration-300 border-b border-[#9c7a44]/40 pb-1"
         >
           {lang === 'FR' ? 'Une question ? Écrivez à teamksl@inspiratanature.com' : 'A question? Write to teamksl@inspiratanature.com'}
         </a>

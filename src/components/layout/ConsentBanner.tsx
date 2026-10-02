@@ -95,13 +95,13 @@ const ConsentBanner: React.FC = () => {
           bandeau compact, improvements-ledger 2026-07-04). */}
       <span className="sm:hidden">
         {lang === 'FR'
-          ? 'Quelques témoins discrets, vous gardez le contrôle (Loi 25).'
-          : 'A few discreet cookies; you stay in control (Law 25).'}
+          ? 'Quelques témoins discrets, vous gardez le contrôle (Loi 25 et RGPD).'
+          : 'A few discreet cookies; you stay in control (Law 25 and GDPR).'}
       </span>
       <span className="hidden sm:inline">
         {lang === 'FR'
-          ? "Quelques témoins discrets nous aident à améliorer votre expérience, et si vous êtes connectée, les pages que vous consultez servent aussi à vous proposer une offre qui vous ressemble. Vous gardez le contrôle, comme le veut la Loi 25."
-          : "A few discreet cookies help us improve your experience, and if you're signed in, the pages you visit also help us suggest offers that fit you. You stay in control, as Quebec's Law 25 intends."}
+          ? "Quelques témoins discrets nous aident à améliorer votre expérience, et si vous êtes connectée, les pages que vous consultez servent aussi à vous proposer une offre qui vous ressemble. Vous gardez le contrôle, comme le veulent la Loi 25 et le RGPD."
+          : "A few discreet cookies help us improve your experience, and if you're signed in, the pages you visit also help us suggest offers that fit you. You stay in control, as Quebec's Law 25 and the GDPR intend."}
       </span>
       <Link
         to="/politique-de-confidentialite"
@@ -120,7 +120,7 @@ const ConsentBanner: React.FC = () => {
       aria-label={lang === 'FR' ? 'Bandeau de consentement' : 'Consent banner'}
       className="fixed inset-x-0 bottom-0 z-[60] border-t border-[#bb9a5e]/30 bg-white/95 dark:bg-[#2a2015]/95 backdrop-blur-xl shadow-[0_-10px_30px_rgba(42,32,21,0.14)]"
     >
-      <div className="mx-auto flex max-w-[1500px] flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2.5 md:px-8">
+      <div className="mx-auto flex max-w-[1500px] flex-wrap items-center gap-x-6 gap-y-1.5 sm:gap-y-2 px-4 py-2 sm:py-2.5 md:px-8">
         <p className="min-w-0 flex-1 basis-[15rem] text-[13px] leading-snug text-[#2a2015]/80 dark:text-white/80">
           <i className="fa-solid fa-cookie-bite text-[#7d6330] mr-2.5" aria-hidden />
           {texte}
