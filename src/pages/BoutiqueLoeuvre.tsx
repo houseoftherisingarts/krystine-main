@@ -358,15 +358,6 @@ const BoutiqueLoeuvre: React.FC = () => {
 
       {/* ─────────── HERO · couverture ─────────── */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(7rem,13vh,9.5rem)] pb-[clamp(2rem,5vh,4rem)] min-h-screen flex flex-col">
-        <motion.div
-          initial={reduce ? { opacity: 1 } : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.9, ease: EASE }}
-          className="flex items-center justify-between border-t border-[#1c1712]/15 pt-3.5 text-[0.6rem] uppercase tracking-[0.28em] text-[#1c1712]/55"
-        >
-          <span>N&deg; 04 &middot; {lang === 'FR' ? 'La Boutique' : 'The Boutique'}</span>
-          <span className="hidden sm:inline">Québec &middot; MMXXVI</span>
-        </motion.div>
 
         <div className="flex-1 grid items-stretch gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.05fr_0.95fr] mt-[clamp(2rem,5vh,4rem)]">
           {/* MASTHEAD */}

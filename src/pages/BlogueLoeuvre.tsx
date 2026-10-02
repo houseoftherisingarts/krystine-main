@@ -147,10 +147,6 @@ const BlogueLoeuvre: React.FC = () => {
         <div className="v2-grain" aria-hidden />
 
         <div className={`w-full ${PX} pt-[clamp(6.5rem,12vh,9rem)]`}>
-          <div className="flex items-center justify-between border-t border-[#1c1712]/15 pt-3.5 text-[0.6rem] uppercase tracking-[0.28em] text-[#1c1712]/55">
-            <span>{lang === 'FR' ? 'Le Journal · Lecture' : 'The Journal · Reading'}</span>
-            <span className="hidden sm:inline">Québec &middot; MMXXVI</span>
-          </div>
         </div>
 
         <div className={`mx-auto w-full max-w-[860px] ${PX} lg:px-0 pt-10 pb-[clamp(5rem,12vh,8rem)]`}>
@@ -219,15 +215,6 @@ const BlogueLoeuvre: React.FC = () => {
         ref={heroRef}
         className={`relative w-full ${PX} pt-[clamp(6.75rem,12vh,9rem)] pb-[clamp(2rem,5vh,3.5rem)] min-h-[92vh] flex flex-col`}
       >
-        <motion.div
-          initial={reduce ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.9, ease: EASE }}
-          className="flex items-center justify-between border-t border-[#1c1712]/15 pt-3.5 text-[0.6rem] uppercase tracking-[0.28em] text-[#1c1712]/55"
-        >
-          <span>N&deg; 04 &middot; {lang === 'FR' ? 'Le Journal' : 'The Journal'}</span>
-          <span className="hidden sm:inline">Québec &middot; MMXXVI</span>
-        </motion.div>
 
         <div className="flex-1 grid items-stretch gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.08fr_0.92fr] mt-[clamp(2rem,5vh,3.5rem)]">
           {/* Masthead */}

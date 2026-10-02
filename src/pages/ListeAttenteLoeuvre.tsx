@@ -314,7 +314,6 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
   };
 
 
-  const editionLeft = lang === 'FR' ? "Liste d'attente · Krystine St-Laurent" : 'Waitlist · Krystine St-Laurent';
 
   return (
     <div
@@ -334,11 +333,6 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
 
       {/* ─────────── HERO · couverture (clair, split éditorial) ─────────── */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(6.5rem,12vh,9rem)] pb-[clamp(3rem,8vh,6rem)]">
-        {/* ligne d'édition */}
-        <div className="flex items-center justify-between border-t border-[#1c1712]/15 pt-3.5 text-[0.6rem] uppercase tracking-[0.28em] text-[#1c1712]/55">
-          <span>{editionLeft}</span>
-          <span className="hidden md:inline">Québec · MMXXVI</span>
-        </div>
 
         <div className="mt-[clamp(2.5rem,6vh,4.5rem)] grid lg:grid-cols-[1.1fr_0.9fr] gap-x-[clamp(2.5rem,6vw,6rem)] gap-y-14 items-center">
           <motion.div

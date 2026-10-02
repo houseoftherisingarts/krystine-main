@@ -327,14 +327,6 @@ export default function FormationsV2() {
         data-hero
         className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(7rem,13vh,9.5rem)] pb-[clamp(2rem,5vh,4rem)] min-h-screen flex flex-col"
       >
-        <div
-          data-fade
-          className="flex items-center justify-between border-t border-[#1c1712]/15 pt-3.5 text-[0.6rem] uppercase tracking-[0.28em] text-[#1c1712]/55"
-        >
-          <span>N&deg; 02 &middot; Programmes &amp; Saisons</span>
-          <span className="hidden sm:inline">Québec &middot; MMXXVI</span>
-        </div>
-
         <div className="flex-1 grid items-stretch gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.05fr_0.95fr] mt-[clamp(2rem,5vh,4rem)]">
           {/* MASTHEAD */}
           <div className="order-1 lg:row-start-1 lg:col-start-1 self-start">
@@ -524,7 +516,6 @@ export default function FormationsV2() {
           <span className="v2-serif normal-case tracking-tight text-[0.95rem] text-[#f4efe6]/80">
             Krystine <span className="italic font-light">St-Laurent</span>
           </span>
-          <span>Inspira Nature &middot; Québec &middot; MMXXVI</span>
         </div>
       </footer>
     </div>

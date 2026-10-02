@@ -177,10 +177,6 @@ export default function MediasV2() {
         data-hero
         className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(7rem,13vh,9.5rem)] pb-[clamp(2rem,5vh,4rem)] flex flex-col"
       >
-        <div data-fade className="flex items-center justify-between border-t border-[#1c1712]/15 pt-3.5 text-[0.6rem] uppercase tracking-[0.28em] text-[#1c1712]/55">
-          <span>N&deg; 03 &middot; Médias &amp; Voix</span>
-          <span className="hidden sm:inline">Québec &middot; MMXXVI</span>
-        </div>
 
         <div className="mt-[clamp(2rem,5vh,3.5rem)]">
           <p data-fade className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-6">La voix de Krystine</p>

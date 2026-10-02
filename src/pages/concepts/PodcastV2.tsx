@@ -173,10 +173,6 @@ export default function PodcastV2() {
 
       {/* ─────────── HERO · couverture ─────────── */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(7rem,13vh,9.5rem)] pb-[clamp(2.5rem,6vh,4.5rem)]">
-        <div className="flex items-center justify-between border-t border-[#1c1712]/15 pt-3.5 text-[0.6rem] uppercase tracking-[0.28em] text-[#1c1712]/55">
-          <span>N&deg; 04 &middot; Le Podcast</span>
-          <span className="hidden sm:inline">Québec &middot; MMXXVI</span>
-        </div>
 
         <motion.div
           initial="hidden"

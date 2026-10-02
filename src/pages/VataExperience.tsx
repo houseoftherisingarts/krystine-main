@@ -332,14 +332,6 @@ const Cover: React.FC = () => {
   const reduce = useReducedMotion();
   return (
   <header className="relative w-full min-h-screen flex flex-col px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(6.5rem,12vh,9rem)] pb-[clamp(1.5rem,4vh,3rem)]">
-    {/* Ligne d'édition */}
-    <Reveal y={10}>
-      <div className="flex items-center justify-between border-t pt-3.5 text-[0.6rem] uppercase tracking-[0.28em]" style={{ borderColor: hairline, color: 'rgba(28,23,18,0.55)' }}>
-        <span>Édition d'automne · VATA Essentiel</span>
-        <span className="hidden sm:inline">Québec · MMXXVI</span>
-      </div>
-    </Reveal>
-
     <div className="relative flex-1 grid items-center gap-y-12 gap-x-[clamp(2rem,4vw,4rem)] py-[clamp(2.5rem,6vh,4.5rem)] lg:grid-cols-[minmax(0,1fr)_clamp(260px,30vw,460px)]">
       <WindLines className="pointer-events-none absolute right-0 top-[6%] w-[min(58vw,640px)] hidden md:block" />
       <div className="relative min-w-0">

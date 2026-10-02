@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, CheckCircle } from '@phosphor-icons/react';
-import { StyleV2, Kicker, Masthead, GOUTTIERE } from '../components/v2/Magazine';
+import { StyleV2, Kicker, GOUTTIERE } from '../components/v2/Magazine';
 import { addTemoignageConference } from '../firebase/firestore';
 
 // ─── Laisser un mot sur une conférence (/conferenciere/temoignage) ──────────
@@ -46,7 +46,6 @@ const TemoignageConference: React.FC = () => {
     <div className="min-h-screen bg-[#f4efe6] text-[#1c1712]">
       <StyleV2 />
       <section className={`${GOUTTIERE} pt-[clamp(6.5rem,14vh,9rem)] pb-[clamp(5rem,12vh,8rem)]`}>
-        <Masthead gauche="N° 01 · Conférences" droite="Québec · MMXXVI" />
 
         <div className="mt-[clamp(2.5rem,7vh,4.5rem)] grid gap-[clamp(2.5rem,6vw,6rem)] lg:grid-cols-[1fr_1.1fr]">
           <div>

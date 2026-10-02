@@ -61,13 +61,8 @@ export const Kicker: React.FC<{ children: React.ReactNode; className?: string; s
   <p className={`text-[0.7rem] uppercase tracking-[0.34em] ${sombre ? 'text-[#BA7B39]' : 'text-[#7d6330]'} ${className}`}>{children}</p>
 );
 
-/** La ligne de tête du seuil : le numéro du cahier à gauche, le lieu et l'année à droite. */
-export const Masthead: React.FC<{ gauche: React.ReactNode; droite?: React.ReactNode }> = ({ gauche, droite }) => (
-  <div data-fade className="flex items-center justify-between border-t border-[#1c1712]/15 pt-3.5 text-[0.6rem] uppercase tracking-[0.28em] text-[#1c1712]/55">
-    <span>{gauche}</span>
-    <span className="hidden sm:inline">{droite ?? <>Québec &middot; MMXXVI</>}</span>
-  </div>
-);
+/** Ancienne ligne de tête façon magazine : retirée du site (Krystine, 2 oct. 2026). Ne rend plus rien. */
+export const Masthead: React.FC<{ gauche?: React.ReactNode; droite?: React.ReactNode }> = () => null;
 
 /** Le grand titre du seuil, une ligne par entrée, qui monte depuis le bas à l'arrivée. */
 export const TitreV2: React.FC<{ lignes: string[]; className?: string }> = ({ lignes, className = '' }) => (
@@ -222,7 +217,7 @@ export const QuatriemeCouverture: React.FC<{ citation: React.ReactNode; children
     </div>
     <div className="mt-[clamp(4rem,9vh,7rem)] flex flex-col items-center justify-between gap-4 border-t border-[#f4efe6]/15 pt-7 text-center text-[0.6rem] uppercase tracking-[0.24em] text-[#f4efe6]/45 sm:flex-row sm:text-left">
       <span className="v2-serif normal-case tracking-tight text-[0.95rem] text-[#f4efe6]/80">Krystine <span className="font-light">St-Laurent</span></span>
-      <span className="normal-case tracking-[0.08em]">{note ?? <span className="uppercase tracking-[0.24em]">Inspira Nature &middot; Québec &middot; MMXXVI</span>}</span>
+      <span className="normal-case tracking-[0.08em]">{note}</span>
     </div>
     <div className="mt-8 flex justify-end">
       <CollantVexel lang={lang} />

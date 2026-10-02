@@ -420,13 +420,6 @@ const GuideLoeuvre: React.FC = () => {
 
       {/* ─────────── HERO · une de magazine ─────────── */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(6.5rem,12vh,9rem)] pb-[clamp(2rem,5vh,4rem)] min-h-screen flex flex-col">
-        <motion.div
-          {...heroFade(0.55)}
-          className="flex items-center justify-between border-t border-[#1c1712]/15 pt-3.5 text-[0.6rem] uppercase tracking-[0.28em] text-[#1c1712]/55"
-        >
-          <span>N&deg; 06 &middot; Laissez-vous guider</span>
-          <span className="hidden sm:inline">Québec &middot; MMXXVI</span>
-        </motion.div>
 
         <div className="flex-1 grid items-center gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.1fr_0.9fr] mt-[clamp(2rem,5vh,4rem)]">
           {/* Masthead + promesse */}
