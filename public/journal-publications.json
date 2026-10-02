@@ -4975,5 +4975,27 @@
       "src/pages/vata/offre.ts",
       "src/pages/vata/semaines.ts"
     ]
+  },
+  {
+    "quand": "2026-10-02T22:05:43.025Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "7c1f0669",
+    "message": "Conversion : bouton VATA au résultat du quiz pour toutes, paiement sans compte (compte créé après l'achat), bouton d'achat en haut de /vata et barre fixe mobile, quiz en tête de l'accueil, VATA Essentiel en première carte des formations",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/confirmationAchat.ts",
+      "functions/src/paiements.ts",
+      "public/accueil/fleur-offres.js",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "src/pages/FormationsLanding.tsx",
+      "src/pages/PaiementFormation.tsx",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
