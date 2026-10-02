@@ -4701,5 +4701,21 @@
       "public/assets-manifest.json",
       "src/components/client/BienvenueJeu.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T19:03:21.047Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c4c53864",
+    "message": "Paiement : la caisse Stripe s'affiche en français",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/paiements.ts",
+      "public/assets-manifest.json",
+      "scripts/qa/compte-shots.mjs"
+    ]
   }
 ]
