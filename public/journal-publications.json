@@ -4687,5 +4687,19 @@
       "src/pages/VataExperience.tsx",
       "src/pages/cours/programmes.ts"
     ]
+  },
+  {
+    "quand": "2026-10-02T18:58:38.776Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "abccedb7",
+    "message": "Espace client : la fenêtre « On oublie souvent de jouer » ne s'ouvre plus au retour d'un paiement",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/client/BienvenueJeu.tsx"
+    ]
   }
 ]
