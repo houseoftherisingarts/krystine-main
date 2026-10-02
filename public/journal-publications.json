@@ -4847,5 +4847,20 @@
       "functions/src/confirmationAchat.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-02T21:00:44.705Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ac6a7f09",
+    "message": "Confirmation d'achat allumée : bouton « Commencer mon Expérience »",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/confirmationAchat.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
