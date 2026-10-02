@@ -882,8 +882,8 @@ const QuizLoeuvre: React.FC = () => {
         {/* La vidéo du quiz en bannière, sans le logo d'ouverture (Krystine, 1er oct. 2026) */}
         <motion.div {...heroFade(0.2)} className="mt-6">
           <Planche
-            video="/quiz/quiz-dosha-ouverture.mp4"
-            poster="/quiz/quiz-dosha-ouverture-poster.jpg"
+            video="/quiz/quiz-dosha-revisee.mp4"
+            poster="/quiz/quiz-dosha-revisee-poster.jpg"
             ratio="aspect-[16/9] sm:aspect-[21/9] lg:aspect-[8/3]"
             etiquette="Vata · Pitta · Kapha"
           />

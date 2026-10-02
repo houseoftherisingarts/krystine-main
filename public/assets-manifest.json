@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T11:58:16.253Z",
+  "generatedAt": "2026-10-02T12:34:58.405Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2023,6 +2023,20 @@
       "folder": "quiz",
       "kind": "image",
       "size": 181887
+    },
+    {
+      "path": "/quiz/quiz-dosha-revisee-poster.jpg",
+      "name": "quiz-dosha-revisee-poster.jpg",
+      "folder": "quiz",
+      "kind": "image",
+      "size": 95044
+    },
+    {
+      "path": "/quiz/quiz-dosha-revisee.mp4",
+      "name": "quiz-dosha-revisee.mp4",
+      "folder": "quiz",
+      "kind": "video",
+      "size": 5281914
     },
     {
       "path": "/quiz/quiz-dosha.mp4",
