@@ -4168,5 +4168,21 @@
       "public/infolettre/carnet-ella-pitta.jpg",
       "public/infolettre/carnet-ella-vata.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-02T14:42:20.604Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a65489bc",
+    "message": "Infolettres : texte du Carnet d'Ella en italique",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "src/lib/newsletterRenderer.tsx"
+    ]
   }
 ]
