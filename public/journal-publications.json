@@ -4498,5 +4498,19 @@
       "public/assets-manifest.json",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T17:05:31.579Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "624a221a",
+    "message": "Formations (/formations) : le Foyer passe à la liste d'attente (« Être avisée de la réouverture »), deux grandes cartes, Expérience Origine 2 et VATA Essentiel",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/FormationsLanding.tsx"
+    ]
   }
 ]
