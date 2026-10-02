@@ -4083,5 +4083,21 @@
       "public/infolettre/carnet-ella-pitta.jpg",
       "public/infolettre/carnet-ella-vata.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-02T14:00:51.501Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "fea93153",
+    "message": "Infolettre : bannières « Le carnet d'Ella », mention Dominance Vent (Vata), Feu (Pitta), Terre (Kapha)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/carnet-ella-kapha.jpg",
+      "public/infolettre/carnet-ella-pitta.jpg",
+      "public/infolettre/carnet-ella-vata.jpg"
+    ]
   }
 ]
