@@ -5013,5 +5013,24 @@
       "public/assets-manifest.json",
       "src/pages/PaiementFormation.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T22:49:13.144Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d5a0caaa",
+    "message": "VATA Essentiel : semaine VII La présence avec les mains dans le cosmos (au lieu de la jeune pousse)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/vata-pied-presence.jpg",
+      "public/vata/couvertures/img-040.jpg",
+      "public/vata/semaines/v2-s7-large.webp",
+      "public/vata/semaines/v2-s7-thumb.webp",
+      "public/vata/semaines/v2-s7.webp",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
