@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T21:30:13.903Z",
+  "generatedAt": "2026-10-02T21:53:00.814Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1567,14 +1567,14 @@
       "name": "vata-pied-toucher.jpg",
       "folder": "infolettre",
       "kind": "image",
-      "size": 60058
+      "size": 70992
     },
     {
       "path": "/infolettre/vata-sens.jpg",
       "name": "vata-sens.jpg",
       "folder": "infolettre",
       "kind": "image",
-      "size": 98953
+      "size": 88752
     },
     {
       "path": "/livres/titre-a-reveler.webp",
@@ -3171,6 +3171,195 @@
       "folder": "vata/semaines",
       "kind": "image",
       "size": 51172
+    },
+    {
+      "path": "/vata/semaines/v2-s0-large.webp",
+      "name": "v2-s0-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 60238
+    },
+    {
+      "path": "/vata/semaines/v2-s0-thumb.webp",
+      "name": "v2-s0-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 33418
+    },
+    {
+      "path": "/vata/semaines/v2-s0.webp",
+      "name": "v2-s0.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 115930
+    },
+    {
+      "path": "/vata/semaines/v2-s1-large.webp",
+      "name": "v2-s1-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 34120
+    },
+    {
+      "path": "/vata/semaines/v2-s1-thumb.webp",
+      "name": "v2-s1-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 11880
+    },
+    {
+      "path": "/vata/semaines/v2-s1.webp",
+      "name": "v2-s1.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 38838
+    },
+    {
+      "path": "/vata/semaines/v2-s2-large.webp",
+      "name": "v2-s2-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 173934
+    },
+    {
+      "path": "/vata/semaines/v2-s2-thumb.webp",
+      "name": "v2-s2-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 44126
+    },
+    {
+      "path": "/vata/semaines/v2-s2.webp",
+      "name": "v2-s2.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 169156
+    },
+    {
+      "path": "/vata/semaines/v2-s3-large.webp",
+      "name": "v2-s3-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 34944
+    },
+    {
+      "path": "/vata/semaines/v2-s3-thumb.webp",
+      "name": "v2-s3-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 15002
+    },
+    {
+      "path": "/vata/semaines/v2-s3.webp",
+      "name": "v2-s3.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 51294
+    },
+    {
+      "path": "/vata/semaines/v2-s4-large.webp",
+      "name": "v2-s4-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 42386
+    },
+    {
+      "path": "/vata/semaines/v2-s4-thumb.webp",
+      "name": "v2-s4-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 28592
+    },
+    {
+      "path": "/vata/semaines/v2-s4.webp",
+      "name": "v2-s4.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 92992
+    },
+    {
+      "path": "/vata/semaines/v2-s5-large.webp",
+      "name": "v2-s5-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 130350
+    },
+    {
+      "path": "/vata/semaines/v2-s5-thumb.webp",
+      "name": "v2-s5-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 38314
+    },
+    {
+      "path": "/vata/semaines/v2-s5.webp",
+      "name": "v2-s5.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 123712
+    },
+    {
+      "path": "/vata/semaines/v2-s6-large.webp",
+      "name": "v2-s6-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 64802
+    },
+    {
+      "path": "/vata/semaines/v2-s6-thumb.webp",
+      "name": "v2-s6-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 22596
+    },
+    {
+      "path": "/vata/semaines/v2-s6.webp",
+      "name": "v2-s6.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 77792
+    },
+    {
+      "path": "/vata/semaines/v2-s7-large.webp",
+      "name": "v2-s7-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 68956
+    },
+    {
+      "path": "/vata/semaines/v2-s7-thumb.webp",
+      "name": "v2-s7-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 26166
+    },
+    {
+      "path": "/vata/semaines/v2-s7.webp",
+      "name": "v2-s7.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 87476
+    },
+    {
+      "path": "/vata/semaines/v2-s8-large.webp",
+      "name": "v2-s8-large.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 36404
+    },
+    {
+      "path": "/vata/semaines/v2-s8-thumb.webp",
+      "name": "v2-s8-thumb.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 19982
+    },
+    {
+      "path": "/vata/semaines/v2-s8.webp",
+      "name": "v2-s8.webp",
+      "folder": "vata/semaines",
+      "kind": "image",
+      "size": 71192
     }
   ]
 }

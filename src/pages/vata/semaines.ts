@@ -27,9 +27,9 @@ export interface SemaineVata {
 }
 
 const img = (n: number) => ({
-  image: `/vata/semaines/s${n}.webp`,
-  bandeau: `/vata/semaines/s${n}-large.webp`,
-  vignette: `/vata/semaines/s${n}-thumb.webp`,
+  image: `/vata/semaines/v2-s${n}.webp`,
+  bandeau: `/vata/semaines/v2-s${n}-large.webp`,
+  vignette: `/vata/semaines/v2-s${n}-thumb.webp`,
 });
 
 export const SEMAINES_VATA: SemaineVata[] = [
