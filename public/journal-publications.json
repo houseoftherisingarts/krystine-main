@@ -4798,5 +4798,21 @@
       "src/pages/concepts/MediasV2.tsx",
       "src/pages/concepts/PodcastV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T19:45:53.951Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "69780284",
+    "message": "Achat test du paiement intégré : VATA Essentiel temporairement à 1 $ (1 paiement ou 3 versements de 1 $)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/versements.ts",
+      "public/assets-manifest.json",
+      "src/lib/versements.ts"
+    ]
   }
 ]
