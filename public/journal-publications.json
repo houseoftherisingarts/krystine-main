@@ -4569,5 +4569,19 @@
       "public/assets-manifest.json",
       "src/pages/FormationsLanding.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T17:26:14.782Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "cb3e4619",
+    "message": "Infolettres : bannière de la lettre 4 de la suite Vent, « Le toucher envoie au corps un message de sécurité, d'amour et de confiance »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/vata-pied-toucher.jpg"
+    ]
   }
 ]
