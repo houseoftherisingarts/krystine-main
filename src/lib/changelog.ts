@@ -30,6 +30,35 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-10-02',
+    titre: "Le quiz a enfin sa suite : cinq lettres Vent allumées, un chemin en deux clics vers VATA Essentiel",
+    intro: "Le quiz ne laisse plus personne sans suivi. Le résultat part par courriel, la suite de la lecture est écrite, approuvée et allumée, et VATA Essentiel se trouve en deux clics.",
+    etapes: [
+      { texte: "Le quiz envoie le résultat par courriel : prénom et courriel, compte facultatif, et la case « Recevoir la suite de ma lecture ». Le courriel porte votre carte, la direction et deux clés de Nature & Ayurveda.", ou: '/quiz', libelle: 'Le quiz' },
+      { texte: "La page du quiz est revue : la promesse et la ligne « Par Krystine St-Laurent, autrice de Nature & Ayurveda et de Féminité & Ayurveda » sous le titre, « Quelques clés de l'Ayurveda » sur la carte vert profond, « articulations », et plus de « symptômes ». Le bandeau des témoins nomme la Loi 25 et le RGPD, et le Pixel de Meta attend l'accord.", ou: '/quiz', libelle: 'Le quiz' },
+      "Le résultat suit votre algorithme : dominance nette, teintée, double ou équilibre. En cas d'égalité, le Vent passe en premier.",
+      { texte: "La suite de la lecture · Vent est allumée : cinq lettres dans votre voix (1 h après le résultat, puis jours 3, 6, 9 et 12), avec le carnet d'Ella, les clés de l'Ayurveda, un bas de lettre différent vers VATA Essentiel dans chacune, votre bio dans les lettres 1 et 5, et la référence de Nature & Ayurveda. Six personnes du Vent l'ont commencée.", ou: '/admin/infolettre', libelle: 'Courriels automatisés' },
+      "Dans l'admin, chaque lettre d'une séquence se lit en entier comme dans la boîte courriel, s'approuve une à une et s'envoie en test d'un clic (« M'envoyer un test »).",
+      "Les lettres ont de nouveaux blocs : « Le carnet d'Ella » (bannière de la dominance et page d'Ella en italique), « Quelques clés de l'Ayurveda » et « Découvrir l'univers de Krystine ». Le pied de page est vert foncé, dit « Relier ce que nous avons appris à séparer », et ne nomme plus Inspirata Nature.",
+      { texte: "La page Formations a deux grandes cartes : EXPÉRIENCE ORIGINE 2, avec la vidéo de son coffret, et VATA Essentiel, avec l'éventail de vos plus belles pages et son prix. Le Foyer passe à la liste d'attente plus bas, « Être avisée de la réouverture ».", ou: '/formations', libelle: 'Formations' },
+      { texte: "Vata porte un seul nom : « VATA Essentiel · Une expérience Ayurveda de sept semaines ». Les boutons disent « Commencer VATA Essentiel », et votre phrase « Une journée n'est pas une suite de cases ; c'est un rythme entier à préserver » est sur la page.", ou: '/vata', libelle: 'VATA Essentiel' },
+      "Le bouton « Mon compte » est cuivre, sans reflet ni lueur, avec une icône sur téléphone.",
+      { texte: "La Médiathèque contient les bannières du carnet d'Ella, et son bouton « Télécharger » fonctionne de nouveau.", ou: '/admin/mediatheque', libelle: 'Médiathèque' },
+    ],
+  },
+  {
+    date: '2026-10-01',
+    titre: "La lettre du Sérum Défripant, et les clientes qui ont déjà commandé",
+    intro: "La première lettre INSPIRATA AYURVEDA est partie, avec ses liens en français et un compteur de clics qui passe les antivirus.",
+    etapes: [
+      "La lettre « Le Sérum Défripant est de retour » est partie à 3 406 clientes ayant déjà commandé et inscrites, avec la bannière dorée et le bandeau bois et calendule.",
+      "Les liens vers la boutique s'ouvrent en français, et le compteur de clics ne se fait plus bloquer par les antivirus comme Malwarebytes.",
+      "L'étiquette « Clientes ayant déjà commandé (inscrites) » est posée à partir de l'export de la boutique.",
+      "La lettre de l'Énergisante Kapha attend en brouillon, à envoyer au moins 48 heures après le Sérum.",
+      "Le tableau de bord montre le nombre de quiz faits depuis la dernière infolettre.",
+    ],
+  },
+  {
     date: '2026-09-30',
     titre: "Vata prend sa forme : une seule version, une bannière simple, une page de vente complète",
     intro: "Toute la journée a servi à finir le Programme Vata, de la page de vente jusqu'aux courriels. Vata n'a plus qu'une seule version de ses titres de semaines, partout.",
