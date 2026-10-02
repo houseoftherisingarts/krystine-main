@@ -447,11 +447,11 @@ export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOpti
           </table>
         </td></tr>
 
-        <tr><td style="background:${CHARTE.cream};padding:26px 40px 8px;border-radius:0 0 15px 15px;border:1px solid rgba(41,48,39,0.08);border-top:0;font-family:${CHARTE.sans};font-size:11px;line-height:1.6;color:rgba(41,48,39,0.6);">
-          <div style="font-family:${CHARTE.serif};font-size:16px;line-height:1.4;color:#2b241c;padding-bottom:8px;">${mots.relier}</div>
-          <div style="font-family:${CHARTE.sans};font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:${CHARTE.goldInk};padding-bottom:10px;">${mots.devise}</div>
-          <div style="margin-bottom:8px;">${esc(adressePied(opts.postalAddress))}</div>
-          <div style="padding-bottom:18px;"><a href="${esc(opts.unsubscribeUrl)}" style="color:${CHARTE.goldInk};text-decoration:underline;">${mots.desabonner}</a> · <a href="${PUBLIC_BASE_URL}/politique-de-confidentialite" style="color:${CHARTE.goldInk};text-decoration:underline;">${mots.politique}</a></div>
+        <tr><td bgcolor="${fond}" style="background:${fond};padding:30px 40px 12px;border-radius:0 0 15px 15px;font-family:${CHARTE.sans};font-size:11px;line-height:1.6;color:${texte};opacity:1;">
+          <div style="font-family:${CHARTE.serif};font-size:20px;line-height:1.35;color:${texte};padding-bottom:10px;">${mots.relier}</div>
+          <div style="font-family:${CHARTE.sans};font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:#d9b77a;padding-bottom:14px;">${mots.devise}</div>
+          <div style="margin-bottom:8px;opacity:0.7;">${esc(adressePied(opts.postalAddress))}</div>
+          <div style="padding-bottom:18px;"><a href="${esc(opts.unsubscribeUrl)}" style="color:#d9b77a;text-decoration:underline;">${mots.desabonner}</a> · <a href="${PUBLIC_BASE_URL}/politique-de-confidentialite" style="color:#d9b77a;text-decoration:underline;">${mots.politique}</a></div>
         </td></tr>
       </table>
     </td></tr>
