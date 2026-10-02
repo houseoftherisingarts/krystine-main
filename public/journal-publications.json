@@ -4629,5 +4629,26 @@
       "public/assets-manifest.json",
       "src/lib/versements.ts"
     ]
+  },
+  {
+    "quand": "2026-10-02T18:39:00.221Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "404b0656",
+    "message": "VATA : les anciennes clientes Kajabi retrouvent leur accès complet dans leur profil en se connectant avec la même adresse, sans code",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/index.ts",
+      "functions/src/kajabi.ts",
+      "public/assets-manifest.json",
+      "scripts/kajabi/restaurer-vata.mjs",
+      "src/contexts/AppContext.tsx",
+      "src/firebase/kajabi.ts",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/client/ClientFormations.tsx"
+    ]
   }
 ]
