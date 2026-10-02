@@ -3986,5 +3986,19 @@
       "public/quiz/quiz-dosha-revisee.mp4",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T12:35:47.919Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "13d57646",
+    "message": "Page du quiz (/quiz) : retrait de la ligne de tête « N° 05 · Quiz Dosha / Québec · MMXXVI »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
