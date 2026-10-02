@@ -21,7 +21,7 @@ export function prixEnVigueur(formationId: string, prixFiche: number, maintenant
  *  customer.subscription.updated et .deleted) ne sont pas cochés sur le webhook
  *  et qu'un achat test en 3 versements n'a pas réussi. Sinon l'abonnement ne
  *  s'arrêterait jamais. À ouvrir dans les DEUX fichiers. */
-export const VERSEMENTS_OUVERTS = false;
+export const VERSEMENTS_OUVERTS = true; // ouvert le 2 oct. 2026 : webhook à 4 événements vérifié avec Krystine
 
 /** Les nombres de versements permis pour ce prix. */
 export function versementsPermis(prix: number): number[] {
