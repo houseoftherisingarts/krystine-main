@@ -4583,5 +4583,19 @@
       "public/assets-manifest.json",
       "public/infolettre/vata-pied-toucher.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-02T17:40:23.870Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d12892c6",
+    "message": "Journal des changements de l'admin : journées du 1er et du 2 octobre",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/changelog.ts"
+    ]
   }
 ]
