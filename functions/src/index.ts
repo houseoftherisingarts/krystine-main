@@ -23,6 +23,7 @@ export { traiterSequences, testerSequence, inscrireSequencesEtiquette } from './
 export { verifierCaptcha, confirmerHumain } from './captcha';
 export { creerSessionPaiement, creerPourboire, creerSessionNiskas, creerSessionSaison, stripeWebhook, obtenirLecon } from './paiements';
 export { creerSessionBillets } from './billetterie';
+export { testerConfirmationAchat } from './confirmationAchat';
 export { acheterAvecNiskas, reclamerQuotidien, reclamerBienvenue, reclamerCoffreBeta } from './niskas';
 export { echangerRecompense } from './recompenses';
 export { repondreSondage } from './sondages';

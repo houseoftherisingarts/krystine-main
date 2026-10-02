@@ -8,6 +8,7 @@ import { exigerModule } from './gamification';
 import { inscrireSequencesAchat } from './newsletter/sequences';
 import { traiterPaiementBillets } from './billetterie';
 import { MAIL_SECRETS } from './newsletter/mail';
+import { envoyerConfirmationAchat } from './confirmationAchat';
 import { prixEnVigueur, versementsPermis, montantVersement, FORMATION_VATA_ID } from './versements';
 
 // Le paywall des formations natives (migration Kajabi, 2026-08-28).
@@ -553,6 +554,9 @@ export const stripeWebhook = onRequest(
     // l'inscription et la première étape, sans jamais faire échouer le webhook.
     try { await inscrireSequencesAchat(uid, formationId, session.customer_details?.email || null); }
     catch (err) { console.error('[paiements] séquences', err); }
+    // Le courriel de confirmation d'achat (éteint tant que l'interrupteur de
+    // confirmationAchat.ts est faux). Ne lance jamais.
+    await envoyerConfirmationAchat(uid, formationId, session.customer_details?.email || null);
     res.status(200).send('ok');
   },
 );
