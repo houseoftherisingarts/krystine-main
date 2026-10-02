@@ -4314,5 +4314,21 @@
       "public/infolettre/note-brin.png",
       "src/lib/newsletterRenderer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T15:57:25.984Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "406e14e3",
+    "message": "Infolettres : bannière VATA Essentiel en éventail, P.-S. de la saison Vata qui disparaît après le 20 décembre; note « Quelques clés de l'Ayurveda »",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "public/infolettre/vata-eventail.jpg"
+    ]
   }
 ]
