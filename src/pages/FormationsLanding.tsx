@@ -31,6 +31,8 @@ interface Porte {
   image: string;
   /** Le cadrage dans la carte 16:10, pour garder le sujet de l'image. */
   cadrage?: string;
+  /** Une courte vidéo muette en boucle à la place de l'image (l'image sert d'affiche). */
+  video?: string;
   prix?: boolean;
 }
 
@@ -46,6 +48,7 @@ const PORTES: Porte[] = [
     cta: 'Découvrir Expérience Origine 2',
     href: '/liste-attente?programme=origine2',
     image: '/origine2/packshot-poster.jpg',
+    video: '/origine2/packshot.mp4',
     cadrage: '45% 50%',
   },
   {
@@ -125,9 +128,15 @@ const FormationsLanding: React.FC = () => {
               className="group flex flex-col overflow-hidden rounded-[16px] border border-[#293027]/12 bg-[#fbf8f2] shadow-[0_30px_60px_-46px_rgba(41,48,39,0.55)] transition-[border-color,box-shadow] duration-500 hover:border-[#7d6330]/45 hover:shadow-[0_36px_70px_-44px_rgba(41,48,39,0.6)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#7d6330]"
             >
               <div className="relative aspect-[16/10] overflow-hidden bg-[#1b2622]/5">
-                <img src={p.image} data-edit-key={`formations.porte.${p.key}`} alt="" loading="eager"
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] group-hover:scale-[1.03]"
-                  style={p.cadrage ? { objectPosition: p.cadrage } : undefined} />
+                {p.video && !reduce ? (
+                  <video src={p.video} poster={p.image} autoPlay muted loop playsInline preload="metadata" aria-hidden
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] group-hover:scale-[1.03]"
+                    style={p.cadrage ? { objectPosition: p.cadrage } : undefined} />
+                ) : (
+                  <img src={p.image} data-edit-key={`formations.porte.${p.key}`} alt="" loading="eager"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] group-hover:scale-[1.03]"
+                    style={p.cadrage ? { objectPosition: p.cadrage } : undefined} />
+                )}
               </div>
               <div className="flex flex-1 flex-col p-6 md:p-7">
                 <p className="text-[0.66rem] font-semibold uppercase tracking-[0.22em]" style={{ color: OR_ENCRE }}>
