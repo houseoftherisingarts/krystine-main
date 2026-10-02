@@ -446,6 +446,15 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
         </div>
       );
     }
+    case 'note': {
+      // La note d'Ayurveda (miroir du courriel).
+      return (
+        <div className="my-6 border border-[#b89a62] border-l-4 bg-[#f3ead9] px-6 py-5">
+          <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7d6330]">{String(c.titre || '').trim() || 'Un mot d’Ayurveda'}</p>
+          <p className="text-[15px] leading-[1.7] text-[#2b241c]">{String(c.texte || '') || (edit ? 'Écrivez la note dans la barre d’outils du bloc.' : '')}</p>
+        </div>
+      );
+    }
     case 'carnet': {
       // Le carnet d'Ella (miroir du courriel) : bannière du dosha, paragraphes
       // centrés dans la boîte de papier, séparés d'un losange. Le texte se

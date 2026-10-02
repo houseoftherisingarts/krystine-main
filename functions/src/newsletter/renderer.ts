@@ -8,7 +8,7 @@
 
 import { PUBLIC_BASE_URL } from './mail';
 
-export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer' | 'list' | 'choix' | 'carnet';
+export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer' | 'list' | 'choix' | 'carnet' | 'note';
 
 export interface NewsletterBlock {
   type: BlockType;
@@ -346,6 +346,19 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
         <tr><td bgcolor="#f3ead9" style="background:#f3ead9;border:1px solid #b89a62;padding:28px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${paras}</table></td></tr>
       </table></td></tr>`;
     }
+    case 'note': {
+      // La note d'Ayurveda (Krystine, 2 oct. 2026) : une petite base de savoir
+      // au bas d'une lettre, comme une note posée sur la page.
+      const titre = String(c.titre ?? '').trim() || 'Un mot d’Ayurveda';
+      const texte = String(c.texte ?? '').trim();
+      if (!texte) return '';
+      return `<tr><td style="padding:14px 0 24px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr><td bgcolor="#f3ead9" style="background:#f3ead9;border:1px solid #b89a62;border-left:4px solid #b89a62;padding:22px 26px;">
+          <div style="font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:600;color:#7d6330;margin:0 0 10px;">${esc(titre)}</div>
+          <div style="font-family:${CHARTE.sans};font-size:${t(15)}px;line-height:1.7;color:#2b241c;">${esc(texte)}</div>
+        </td></tr>
+      </table></td></tr>`;
+    }
     default:
       return '';
   }
@@ -465,6 +478,9 @@ export function renderEmailText(blocks: NewsletterBlock[], opts: RenderEmailOpti
       case 'choix':
         if (c.question) lines.push(String(c.question));
         lines.push((Array.isArray(c.options) ? c.options : []).map((o: any) => `- ${o.libelle} : ${o.phrase || ''}`).join('\n'));
+        break;
+      case 'note':
+        lines.push(`${String(c.titre || 'Un mot d’Ayurveda')}\n${String(c.texte || '')}`);
         break;
       case 'carnet':
         lines.push((Array.isArray(c.lignes) ? c.lignes : []).map((l: unknown) => String(l ?? '').trim()).filter(Boolean).join('\n\n◆\n\n'));

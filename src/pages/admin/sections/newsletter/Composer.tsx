@@ -45,6 +45,7 @@ const BLOCK_PALETTE: Array<{ type: BlockType; icon: string; label: string; templ
   { type: 'cta',      icon: 'fa-star',        label: 'Appel fort', template: () => ({ type: 'cta',       content: { eyebrow: 'Nouveauté', title: '', body: '', href: 'https://www.krystinestlaurent.ca', buttonLabel: 'En savoir plus' } }) },
   { type: 'divider',  icon: 'fa-minus',       label: 'Séparateur', template: () => ({ type: 'divider',   content: { style: 'ligne' } }) },
   { type: 'spacer',   icon: 'fa-arrows-up-down', label: 'Espace', template: () => ({ type: 'spacer',    content: { size: 'md' } }) },
+  { type: 'note',     icon: 'fa-note-sticky', label: 'Note d’Ayurveda', template: () => ({ type: 'note', content: { titre: 'Un mot d’Ayurveda', texte: '' } }) },
   { type: 'carnet',   icon: 'fa-book-open',   label: 'Carnet d’Ella', template: () => ({ type: 'carnet', content: { dosha: 'vata', lignes: [] } }) },
 ];
 
@@ -1070,6 +1071,12 @@ const BlockFrame: React.FC<{
             <select value={c.style || 'ligne'} onChange={e => onPatch({ style: e.target.value })} className={selectClass} title="Style du séparateur">
               {Object.entries(SEPARATEURS).map(([k, v]) => <option key={k} value={k}>{v.glyphe ? `${v.glyphe.replace(/\s+/g, ' ')}  ${v.label}` : v.label}</option>)}
             </select>
+          )}
+          {block.type === 'note' && (
+            <>
+              <input value={c.titre ?? ''} onChange={e => onPatch({ titre: e.target.value })} className={selectClass} placeholder="Un mot d’Ayurveda" title="Petit titre de la note" />
+              <CarnetTexte lignes={c.texte ? [String(c.texte)] : []} onChange={lignes => onPatch({ texte: lignes.join(' ') })} />
+            </>
           )}
           {block.type === 'carnet' && (
             <>
