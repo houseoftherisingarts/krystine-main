@@ -12,6 +12,8 @@ import { CONTENT } from '../content';
 import { addDoshaQuizResult, updateMember, addNewsletterSubscriber } from '../firebase/firestore';
 import { trackLead } from '../lib/track';
 import { points } from '../firebase/points';
+import { envoyerResultatQuiz } from '../firebase/quiz';
+import { RECAPTCHA_SITE_KEY, useRecaptcha } from '../lib/recaptcha';
 import {
   getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct,
 } from '../shopify';
@@ -478,6 +480,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
     setFlashPick(null);
     setTeaser(null);
     setResult(null);
+    setEnvoye(false);
   };
 
   // Le consentement au fil, demandé au moment de créer son compte pour voir le
@@ -485,6 +488,48 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   // d'avance; gardé le temps de la connexion Google.
   const [fil, setFil] = useState<boolean>(() => { try { return sessionStorage.getItem('quiz-fil') === '1'; } catch { return false; } });
   const choisirFil = (v: boolean) => { setFil(v); try { sessionStorage.setItem('quiz-fil', v ? '1' : '0'); } catch { /* sans stockage */ } };
+
+  // « Recevoir mon résultat » (Krystine, 2 oct. 2026) : une visiteuse reçoit
+  // son résultat par courriel sans créer de compte. La fonction
+  // `envoyerResultatQuiz` vérifie le jeton reCAPTCHA, enregistre le résultat,
+  // envoie le courriel et inscrit au fil seulement si la case est cochée.
+  const [prenom, setPrenom] = useState('');
+  const [courriel, setCourriel] = useState('');
+  const [pot, setPot] = useState('');
+  const [erreurEnvoi, setErreurEnvoi] = useState<string | null>(null);
+  const [envoye, setEnvoye] = useState(false);
+  const captcha = useRecaptcha(!user && !!teaser && !result);
+
+  const envoyerResultat = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!teaser) return;
+    setErreurEnvoi(null);
+    if (!prenom.trim()) { setErreurEnvoi('Entrez votre prénom.'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(courriel.trim())) { setErreurEnvoi('Entrez une adresse courriel valide.'); return; }
+    if (RECAPTCHA_SITE_KEY && !captcha.getToken()) { setErreurEnvoi('Cochez la case « Je ne suis pas un robot ».'); return; }
+    setSubmitting(true);
+    try {
+      await envoyerResultatQuiz({
+        prenom: prenom.trim(),
+        email: courriel.trim(),
+        dominant: teaser.dominant.name,
+        pourcentages: teaser.percentages,
+        suite: fil,
+        token: captcha.getToken(),
+        site: pot,
+      });
+      if (fil) { trackLead('quiz'); try { sessionStorage.removeItem('quiz-fil'); } catch { /* sans stockage */ } }
+      setEnvoye(true);
+      setResult({ dominant: teaser.dominant, percentages: teaser.percentages });
+    } catch (err: any) {
+      captcha.resetWidget();
+      setErreurEnvoi(err?.code === 'functions/resource-exhausted' && err?.message
+        ? err.message
+        : "Votre résultat n'a pas pu être envoyé. Réessayez dans un instant.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const handleQuizCompute = async () => {
     if (!user) { setSignInOpen(true); return; }
@@ -541,6 +586,23 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
       <Curtain>
         <div className="relative border overflow-hidden" style={{ borderColor: `${th.accent}66`, background: th.tint }}>
           <span aria-hidden className="absolute inset-x-0 top-0 h-[3px]" style={{ background: th.accent }} />
+
+          {envoye && (
+            <div className="px-6 pt-8 text-center" role="status">
+              <p className="v2-serif font-light text-[clamp(1.1rem,1.8vw,1.35rem)] text-[#1c1712]">
+                Votre résultat est en route vers votre courriel.
+              </p>
+              {!user && (
+                <button
+                  type="button"
+                  onClick={() => setSignInOpen(true)}
+                  className="mt-3 text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/60 border-b border-[#1c1712]/30 pb-1 transition-colors hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
+                >
+                  Créer mon espace pour le garder
+                </button>
+              )}
+            </div>
+          )}
 
           <div className="grid lg:grid-cols-[0.95fr_1.05fr]">
             {/* Identité : médaillon, dominance, répartition, définition */}
@@ -638,6 +700,35 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   if (!current && teaser) {
     const th = themeForName(teaser.dominant.name);
     const dRes = ((teaser.dominant.name || '').toLowerCase() as DoshaType) in DOSHA_THEME ? (teaser.dominant.name || '').toLowerCase() as DoshaType : 'vata';
+    // Jamais cochée d'avance.
+    const caseSuite = (
+      <label className="mt-7 mx-auto flex max-w-[34rem] cursor-pointer items-start gap-3 text-left text-[#3a2f23]">
+        <input
+          type="checkbox"
+          checked={fil}
+          onChange={e => choisirFil(e.target.checked)}
+          className="mt-1 h-[18px] w-[18px] shrink-0 cursor-pointer"
+          style={{ accentColor: th.accent }}
+        />
+        <span>
+          <span className="block text-[0.95rem] leading-relaxed">{lang === 'FR' ? 'Recevoir la suite de ma lecture' : 'Receive the rest of my reading'}</span>
+          <span className="mt-1 block text-[0.8rem] leading-relaxed text-[#3a2f23]/75">
+            {lang === 'FR'
+              ? 'Des repères adaptés à votre résultat pour mieux reconnaître ce qui change, ce qui s’accumule et ce qui vous influence.'
+              : 'Markers suited to your result, to better recognize what changes, what builds up and what influences you.'}
+          </span>
+        </span>
+      </label>
+    );
+    const boutonRecommencer = (
+      <button
+        type="button"
+        onClick={restart}
+        className="inline-flex items-center gap-2 text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/60 border-b border-[#1c1712]/30 pb-1 transition-colors hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
+      >
+        <ArrowCounterClockwise size={13} weight="light" /> {lang === 'FR' ? 'Recommencer' : 'Restart'}
+      </button>
+    );
     return (
       <Curtain className="max-w-[860px] mx-auto">
         <div className="relative border overflow-hidden text-center" style={{ borderColor: `${th.accent}66`, background: th.tint }}>
@@ -660,57 +751,90 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
             <CarteDominance d={dRes} lang={lang} complet={false} />
 
             <div className="mt-11 pt-8 border-t max-w-[42rem] mx-auto" style={{ borderColor: `${th.accent}35` }}>
-              <p className="inline-flex items-center gap-2.5 text-[0.62rem] uppercase tracking-[0.24em] text-[#3a2f23]">
-                <LockSimple size={13} weight="light" style={{ color: th.ink }} /> {lang === 'FR' ? 'Profil complet' : 'Full profile'}
-              </p>
-              <p className="mt-5 v2-serif italic font-light text-[clamp(1.1rem,1.9vw,1.4rem)] leading-relaxed text-[#3a2f23] max-w-[46ch] mx-auto">
-                {user
-                  ? (lang === 'FR' ? 'Enregistrez votre résultat dans votre espace pour retrouver votre profil complet.' : 'Save your result to your space to discover your full profile.')
-                  : (lang === 'FR' ? 'Connectez-vous pour enregistrer et découvrir votre profil complet.' : 'Sign in to save and discover your full profile.')}
-              </p>
-
-              <label className="mt-7 mx-auto flex max-w-[34rem] cursor-pointer items-start gap-3 text-left text-[0.92rem] leading-relaxed text-[#3a2f23]">
-                <input
-                  type="checkbox"
-                  checked={fil}
-                  onChange={e => choisirFil(e.target.checked)}
-                  className="mt-1 h-[18px] w-[18px] shrink-0 cursor-pointer"
-                  style={{ accentColor: th.accent }}
-                />
-                <span>{lang === 'FR'
-                  ? <>Recevoir les repères pour ma dominance <b>{({ vata: 'Vent', pitta: 'Feu', kapha: 'Terre' } as Record<string, string>)[String(teaser.dominant.name || '').toLowerCase()] || teaser.dominant.name}</b> et les propositions de Krystine, par courriel. Désabonnement en un clic.</>
-                  : <>Receive markers for my <b>{teaser.dominant.name}</b> nature and Krystine's offers, by email. One-click unsubscribe.</>}</span>
-              </label>
-
-              <div className="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-                {user ? (
-                  <button
-                    type="button"
-                    onClick={handleQuizCompute}
-                    disabled={submitting}
-                    className="inline-flex items-center gap-3 bg-[#1c1712] px-8 py-4 text-[0.7rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] disabled:opacity-60 min-h-[44px]"
-                  >
-                    {submitting
-                      ? (lang === 'FR' ? 'Enregistrement…' : 'Saving…')
-                      : <>{lang === 'FR' ? 'Enregistrer + voir le profil' : 'Save + reveal profile'} <ArrowRight size={15} weight="regular" /></>}
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setSignInOpen(true)}
-                    className="inline-flex items-center gap-3 bg-[#1c1712] px-8 py-4 text-[0.7rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] min-h-[44px]"
-                  >
-                    {lang === 'FR' ? 'Se connecter pour sauvegarder' : 'Sign in to save'} <ArrowRight size={15} weight="regular" />
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={restart}
-                  className="inline-flex items-center gap-2 text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/60 border-b border-[#1c1712]/30 pb-1 transition-colors hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
-                >
-                  <ArrowCounterClockwise size={13} weight="light" /> {lang === 'FR' ? 'Recommencer' : 'Restart'}
-                </button>
-              </div>
+              {user ? (
+                <>
+                  <p className="inline-flex items-center gap-2.5 text-[0.62rem] uppercase tracking-[0.24em] text-[#3a2f23]">
+                    <LockSimple size={13} weight="light" style={{ color: th.ink }} /> {lang === 'FR' ? 'Profil complet' : 'Full profile'}
+                  </p>
+                  <p className="mt-5 v2-serif font-light text-[clamp(1.1rem,1.9vw,1.4rem)] leading-relaxed text-[#3a2f23] max-w-[46ch] mx-auto">
+                    {lang === 'FR' ? 'Enregistrez votre résultat dans votre espace pour retrouver votre profil complet.' : 'Save your result to your space to discover your full profile.'}
+                  </p>
+                  {caseSuite}
+                  <div className="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+                    <button
+                      type="button"
+                      onClick={handleQuizCompute}
+                      disabled={submitting}
+                      className="inline-flex items-center gap-3 bg-[#1c1712] px-8 py-4 text-[0.7rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] disabled:opacity-60 min-h-[44px]"
+                    >
+                      {submitting
+                        ? (lang === 'FR' ? 'Enregistrement…' : 'Saving…')
+                        : <>{lang === 'FR' ? 'Enregistrer + voir le profil' : 'Save + reveal profile'} <ArrowRight size={15} weight="regular" /></>}
+                    </button>
+                    {boutonRecommencer}
+                  </div>
+                </>
+              ) : (
+                <form onSubmit={envoyerResultat} noValidate className="relative max-w-[34rem] mx-auto text-left">
+                  <p className="text-center text-[0.62rem] uppercase tracking-[0.24em] text-[#3a2f23]">
+                    {lang === 'FR' ? 'Votre résultat complet' : 'Your full result'}
+                  </p>
+                  <input
+                    type="text"
+                    name="site"
+                    value={pot}
+                    onChange={e => setPot(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="absolute -left-[9999px] h-0 w-0 opacity-0"
+                  />
+                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                    <input
+                      type="text"
+                      required
+                      autoComplete="given-name"
+                      placeholder={lang === 'FR' ? 'Prénom' : 'First name'}
+                      aria-label={lang === 'FR' ? 'Prénom' : 'First name'}
+                      value={prenom}
+                      onChange={e => setPrenom(e.target.value)}
+                      className="w-full border-b border-[#1c1712]/30 bg-transparent py-3 text-[0.95rem] text-[#1c1712] placeholder:text-[#1c1712]/45 outline-none transition-colors focus:border-[#9c7a44]"
+                    />
+                    <input
+                      type="email"
+                      required
+                      autoComplete="email"
+                      placeholder={lang === 'FR' ? 'Courriel' : 'Email'}
+                      aria-label={lang === 'FR' ? 'Courriel' : 'Email'}
+                      value={courriel}
+                      onChange={e => setCourriel(e.target.value)}
+                      className="w-full border-b border-[#1c1712]/30 bg-transparent py-3 text-[0.95rem] text-[#1c1712] placeholder:text-[#1c1712]/45 outline-none transition-colors focus:border-[#9c7a44]"
+                    />
+                  </div>
+                  {caseSuite}
+                  {RECAPTCHA_SITE_KEY && <div ref={captcha.boxRef} className="mt-6 flex justify-center" />}
+                  <div className="mt-8 flex flex-col items-center gap-3">
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="inline-flex items-center gap-3 bg-[#1c1712] px-8 py-4 text-[0.7rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] disabled:opacity-60 min-h-[44px]"
+                    >
+                      {submitting
+                        ? (lang === 'FR' ? 'Envoi…' : 'Sending…')
+                        : <>{lang === 'FR' ? 'Recevoir mon résultat' : 'Receive my result'} <ArrowRight size={15} weight="regular" /></>}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSignInOpen(true)}
+                      className="text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/60 border-b border-[#1c1712]/30 pb-1 transition-colors hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
+                    >
+                      {lang === 'FR' ? 'J’ai déjà un compte' : 'I already have an account'}
+                    </button>
+                  </div>
+                  {erreurEnvoi && <p role="alert" className="mt-4 text-center text-[0.9rem] text-[#83322b]">{erreurEnvoi}</p>}
+                  <div className="mt-6 flex justify-center">{boutonRecommencer}</div>
+                </form>
+              )}
 
               <p className="mt-7 text-[0.58rem] uppercase tracking-[0.18em] text-[#1c1712]/45">
                 {lang === 'FR' ? 'Vos résultats restent privés et sécurisés.' : 'Your results stay private and secure.'}
@@ -863,6 +987,9 @@ const QuizLoeuvre: React.FC = () => {
   const t = CONTENT[lang];
   const ay = t.ayurveda;
 
+  // Retour du bouton « Recevoir la suite de ma lecture » du courriel (fonction suiteLecture).
+  const [suiteOk] = useState(() => { try { return new URLSearchParams(window.location.search).get('suite') === 'ok'; } catch { return false; } });
+
   const heroFade = (delay: number) => ({
     initial: reduce ? { opacity: 1 } : { opacity: 0, y: 22 },
     animate: { opacity: 1, y: 0 },
@@ -884,6 +1011,11 @@ const QuizLoeuvre: React.FC = () => {
 
       {/* ─────────── HERO · une de magazine ─────────── */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(6.5rem,12vh,9rem)] pb-[clamp(2rem,5vh,4rem)] min-h-screen flex flex-col">
+        {suiteOk && (
+          <p role="status" className="border-y border-[#9c7a44]/40 py-3 text-center text-[0.9rem] text-[#1c1712]">
+            {lang === 'FR' ? 'C’est noté : la suite de votre lecture arrive par courriel.' : 'Noted: the rest of your reading is on its way by email.'}
+          </p>
+        )}
         {/* La ligne de tête « N° 05 · Québec » est retirée de la page du quiz (Krystine, 2 oct. 2026 : elle parle aussi à l'Europe). */}
 
         {/* La vidéo du quiz en bannière, sans le logo d'ouverture (Krystine, 1er oct. 2026) */}

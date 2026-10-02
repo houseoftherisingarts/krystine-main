@@ -28,6 +28,13 @@
         }
       },
       {
+        "source": "/suite-lecture",
+        "function": {
+          "functionId": "suiteLecture",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/youtube",
         "function": {
           "functionId": "youtubeVideos",

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { getLang } from './i18n/lang';
 
 // ─── La case « Je ne suis pas un robot » ─────────────────────────────────────
 // reCAPTCHA v2, rendu à la main. Le crochet vivait dans SignInModal.tsx; il en
@@ -37,7 +38,8 @@ export function useRecaptcha(active: boolean) {
     (window as any).__recaptchaReady = render;
     if (!document.querySelector('script[src*="recaptcha/api.js"]')) {
       const s = document.createElement('script');
-      s.src = 'https://www.google.com/recaptcha/api.js?onload=__recaptchaReady&render=explicit';
+      // La case parle la langue du site (hl=fr ou hl=en).
+      s.src = `https://www.google.com/recaptcha/api.js?onload=__recaptchaReady&render=explicit&hl=${getLang()}`;
       s.async = true;
       document.head.appendChild(s);
     }

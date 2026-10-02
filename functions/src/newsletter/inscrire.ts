@@ -67,114 +67,126 @@ export const inscrireInfolettre = onCall(
     const token = texte(d.token, 4000);
     if (token) await verifierJeton(token, 'infolettre');
 
-    const source = texte(d.source, 80) || 'site';
-    const tags = Array.isArray(d.tags)
-      ? Array.from(new Set(d.tags.map(t => String(t).trim().slice(0, 60)).filter(Boolean))).slice(0, 20)
-      : [source];
-    // Les formulaires publics n'envoient que `active` (ou rien). Tout autre
-    // statut vient d'ailleurs que d'un de nos formulaires : on le ramène.
-    const status = d.status === 'pending' ? 'pending' : 'active';
-
-    // La voie d'arrivée (src/lib/provenance.ts) : d'où vient cette personne,
-    // pour compter les nouvelles personnes par voie (Krystine, 28 sept. 2026 :
-    // 3 000 nouvelles personnes avant le 15 décembre). Chaque champ est
-    // retaillé ici, rien du navigateur n'entre tel quel. Une voie marquée
-    // (autre que « direct ») pose aussi l'étiquette via-<voie>, qui filtre la
-    // liste et peut déclencher une séquence.
-    const provBrute = (d.provenance && typeof d.provenance === 'object') ? d.provenance as Record<string, unknown> : null;
-    const cle = (v: unknown, max = 60) => String(v ?? '').trim().toLowerCase().replace(/[^a-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, max) || undefined;
-    let provenance: Record<string, unknown> | undefined;
-    if (provBrute && cle(provBrute.source)) {
-      provenance = { source: cle(provBrute.source) };
-      for (const k of ['medium', 'campagne', 'contenu'] as const) { const v = cle(provBrute[k]); if (v) provenance[k] = v; }
-      const page = texte(provBrute.page, 120); if (page) provenance.page = page;
-      const ref = cle(provBrute.referent, 120); if (ref) provenance.referent = ref;
-      const le = Number(provBrute.le);
-      if (Number.isFinite(le) && le > 1.6e12 && le <= Date.now() + 864e5) provenance.arriveeLe = new Date(le);
-      if (provenance.source !== 'direct' && tags.length < 20) tags.push(`via-${provenance.source}`.slice(0, 60));
-    }
-
-    const fiche: Record<string, unknown> = {
-      email,
-      source,
-      tags,
-      status,
-      unsubscribeToken: crypto.randomBytes(18).toString('hex'),
-      subscribedAt: FieldValue.serverTimestamp(),
-      // Un alias jetable entre en quarantaine : la fiche existe, elle ne
-      // reçoit rien, et Krystine tranche dans Admin › Infolettre › Abonnés.
-      ...champsRobot(email, tags, status),
-    };
-    if (provenance) fiche.provenance = provenance;
-
-    const poser = (cle: string, v: string | undefined) => { if (v) fiche[cle] = v; };
-    poser('firstName', texte(d.firstName, 80));
-    poser('lastName', texte(d.lastName, 80));
-    poser('question', texte(d.question, 1000));
-    poser('province', texte(d.province, 120));
-    poser('region', texte(d.region, 120));
-    poser('phone', texte(d.phone, 40));
-
-    const lang = String(d.lang ?? '').toLowerCase();
-    if (lang === 'fr' || lang === 'en') fiche.lang = lang;
-
-    // Le `uid` vient du jeton d'authentification, jamais du corps de l'appel :
-    // autrement n'importe qui rattacherait une fiche au compte d'une autre.
-    if (req.auth?.uid) fiche.uid = req.auth.uid;
-    if (d.consentement === true) fiche.consentement = true;
-
-    // Une adresse déjà connue ne crée plus de deuxième fiche (Krystine, 27 sept.
-    // 2026) : la nouvelle liste s'ajoute à ses étiquettes, les champs vides se
-    // complètent, et une fiche en attente devient active. Une fiche désabonnée,
-    // en quarantaine ou rebondie garde son statut. Si la liste rejointe a son propre courriel, il part une fois.
-    const col = getFirestore().collection('newsletter');
-    const existantes = await col.where('email', '==', email).limit(10).get();
-    if (!existantes.empty) {
-      const docs = existantes.docs;
-      const cible = docs.find(x => x.get('status') === 'active') || docs[0];
-      const avant = cible.data() as Record<string, any>;
-      const tagsAvant: string[] = Array.isArray(avant.tags) ? avant.tags : [];
-      const nouvelles = tags.filter(t => !tagsAvant.includes(t));
-      const maj: Record<string, unknown> = { derniereInscriptionLe: FieldValue.serverTimestamp() };
-      if (nouvelles.length) maj.tags = FieldValue.arrayUnion(...nouvelles);
-      for (const cle of ['firstName', 'lastName', 'province', 'region', 'phone', 'lang', 'uid'] as const) {
-        if (!avant[cle] && fiche[cle]) maj[cle] = fiche[cle];
-      }
-      if (fiche.question) maj.question = fiche.question;
-      if (fiche.consentement) maj.consentement = true;
-      let statut = String(avant.status || 'active');
-      // Une fiche désabonnée ne se réactive JAMAIS d'ici : le formulaire est
-      // public, et quiconque connaît l'adresse pourrait la réabonner sans son
-      // accord. Elle reste désabonnée, et Krystine la réactive dans l'admin si
-      // la personne le demande. Seule une fiche en attente (jamais consentie)
-      // devient active, comme une nouvelle inscription l'aurait fait.
-      if (status === 'active' && statut === 'pending') {
-        statut = 'active';
-        maj.status = 'active';
-        maj.reinscriteLe = FieldValue.serverTimestamp();
-      }
-      await cible.ref.update(maj);
-      console.log(`[inscrire] ${source} · fiche existante ${cible.id} · +${nouvelles.join(',') || 'rien'}`);
-      if (statut === 'active') {
-        for (const t of nouvelles) {
-          if (!CONFIRMATIONS_LISTES[t]) continue;
-          try {
-            await envoyerConfirmationListe(cible.ref, { email, firstName: (avant.firstName || fiche.firstName) as string | undefined, unsubscribeToken: avant.unsubscribeToken, confirmationsEnvoyees: avant.confirmationsEnvoyees }, t);
-          } catch (e) { console.error('[inscrire] confirmation', t, e); }
-        }
-      }
-      return { ok: true, id: cible.id, status: statut };
-    }
-
-    const ref = await col.add(fiche);
-    console.log(`[inscrire] ${source} · ${fiche.status} · ${ref.id}`);
-    // L'étiquette d'entrée des nouvelles personnes (28 sept. 2026) : posée
-    // APRÈS la création, parce que les séquences par étiquette démarrent sur
-    // une mise à jour de fiche (inscrireSequencesEtiquette), jamais sur une
-    // création. La séquence de bienvenue s'y branche; tant qu'elle est éteinte
-    // dans l'admin, l'étiquette ne fait que marquer la fiche.
-    try { await ref.update({ tags: FieldValue.arrayUnion('entree-site') }); }
-    catch (e) { console.error('[inscrire] étiquette entree-site', ref.id, e); }
-    return { ok: true, id: ref.id, status: fiche.status as string };
+    return enregistrerInscription(d, req.auth?.uid);
   },
 );
+
+/**
+ * Le cœur de l'inscription, après les gardes (pot de miel, cadence, jeton).
+ * Partagé avec `envoyerResultatQuiz` (quiz.ts), pour qu'une inscription
+ * depuis le courriel du quiz soit écrite exactement comme les autres.
+ * `uid` vient toujours du jeton d'authentification de l'appel, jamais du corps.
+ */
+export async function enregistrerInscription(d: Record<string, unknown>, uid?: string): Promise<{ ok: true; id: string; status: string }> {
+  // L'adresse est déjà validée par l'appelant; on la retaille quand même.
+  const email = String(d.email ?? '').trim().toLowerCase().slice(0, 200);
+  const source = texte(d.source, 80) || 'site';
+  const tags = Array.isArray(d.tags)
+    ? Array.from(new Set(d.tags.map(t => String(t).trim().slice(0, 60)).filter(Boolean))).slice(0, 20)
+    : [source];
+  // Les formulaires publics n'envoient que `active` (ou rien). Tout autre
+  // statut vient d'ailleurs que d'un de nos formulaires : on le ramène.
+  const status = d.status === 'pending' ? 'pending' : 'active';
+
+  // La voie d'arrivée (src/lib/provenance.ts) : d'où vient cette personne,
+  // pour compter les nouvelles personnes par voie (Krystine, 28 sept. 2026 :
+  // 3 000 nouvelles personnes avant le 15 décembre). Chaque champ est
+  // retaillé ici, rien du navigateur n'entre tel quel. Une voie marquée
+  // (autre que « direct ») pose aussi l'étiquette via-<voie>, qui filtre la
+  // liste et peut déclencher une séquence.
+  const provBrute = (d.provenance && typeof d.provenance === 'object') ? d.provenance as Record<string, unknown> : null;
+  const cle = (v: unknown, max = 60) => String(v ?? '').trim().toLowerCase().replace(/[^a-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, max) || undefined;
+  let provenance: Record<string, unknown> | undefined;
+  if (provBrute && cle(provBrute.source)) {
+    provenance = { source: cle(provBrute.source) };
+    for (const k of ['medium', 'campagne', 'contenu'] as const) { const v = cle(provBrute[k]); if (v) provenance[k] = v; }
+    const page = texte(provBrute.page, 120); if (page) provenance.page = page;
+    const ref = cle(provBrute.referent, 120); if (ref) provenance.referent = ref;
+    const le = Number(provBrute.le);
+    if (Number.isFinite(le) && le > 1.6e12 && le <= Date.now() + 864e5) provenance.arriveeLe = new Date(le);
+    if (provenance.source !== 'direct' && tags.length < 20) tags.push(`via-${provenance.source}`.slice(0, 60));
+  }
+
+  const fiche: Record<string, unknown> = {
+    email,
+    source,
+    tags,
+    status,
+    unsubscribeToken: crypto.randomBytes(18).toString('hex'),
+    subscribedAt: FieldValue.serverTimestamp(),
+    // Un alias jetable entre en quarantaine : la fiche existe, elle ne
+    // reçoit rien, et Krystine tranche dans Admin › Infolettre › Abonnés.
+    ...champsRobot(email, tags, status),
+  };
+  if (provenance) fiche.provenance = provenance;
+
+  const poser = (cle: string, v: string | undefined) => { if (v) fiche[cle] = v; };
+  poser('firstName', texte(d.firstName, 80));
+  poser('lastName', texte(d.lastName, 80));
+  poser('question', texte(d.question, 1000));
+  poser('province', texte(d.province, 120));
+  poser('region', texte(d.region, 120));
+  poser('phone', texte(d.phone, 40));
+
+  const lang = String(d.lang ?? '').toLowerCase();
+  if (lang === 'fr' || lang === 'en') fiche.lang = lang;
+
+  // Le `uid` vient du jeton d'authentification, jamais du corps de l'appel :
+  // autrement n'importe qui rattacherait une fiche au compte d'une autre.
+  if (uid) fiche.uid = uid;
+  if (d.consentement === true) fiche.consentement = true;
+
+  // Une adresse déjà connue ne crée plus de deuxième fiche (Krystine, 27 sept.
+  // 2026) : la nouvelle liste s'ajoute à ses étiquettes, les champs vides se
+  // complètent, et une fiche en attente devient active. Une fiche désabonnée,
+  // en quarantaine ou rebondie garde son statut. Si la liste rejointe a son propre courriel, il part une fois.
+  const col = getFirestore().collection('newsletter');
+  const existantes = await col.where('email', '==', email).limit(10).get();
+  if (!existantes.empty) {
+    const docs = existantes.docs;
+    const cible = docs.find(x => x.get('status') === 'active') || docs[0];
+    const avant = cible.data() as Record<string, any>;
+    const tagsAvant: string[] = Array.isArray(avant.tags) ? avant.tags : [];
+    const nouvelles = tags.filter(t => !tagsAvant.includes(t));
+    const maj: Record<string, unknown> = { derniereInscriptionLe: FieldValue.serverTimestamp() };
+    if (nouvelles.length) maj.tags = FieldValue.arrayUnion(...nouvelles);
+    for (const cle of ['firstName', 'lastName', 'province', 'region', 'phone', 'lang', 'uid'] as const) {
+      if (!avant[cle] && fiche[cle]) maj[cle] = fiche[cle];
+    }
+    if (fiche.question) maj.question = fiche.question;
+    if (fiche.consentement) maj.consentement = true;
+    let statut = String(avant.status || 'active');
+    // Une fiche désabonnée ne se réactive JAMAIS d'ici : le formulaire est
+    // public, et quiconque connaît l'adresse pourrait la réabonner sans son
+    // accord. Elle reste désabonnée, et Krystine la réactive dans l'admin si
+    // la personne le demande. Seule une fiche en attente (jamais consentie)
+    // devient active, comme une nouvelle inscription l'aurait fait.
+    if (status === 'active' && statut === 'pending') {
+      statut = 'active';
+      maj.status = 'active';
+      maj.reinscriteLe = FieldValue.serverTimestamp();
+    }
+    await cible.ref.update(maj);
+    console.log(`[inscrire] ${source} · fiche existante ${cible.id} · +${nouvelles.join(',') || 'rien'}`);
+    if (statut === 'active') {
+      for (const t of nouvelles) {
+        if (!CONFIRMATIONS_LISTES[t]) continue;
+        try {
+          await envoyerConfirmationListe(cible.ref, { email, firstName: (avant.firstName || fiche.firstName) as string | undefined, unsubscribeToken: avant.unsubscribeToken, confirmationsEnvoyees: avant.confirmationsEnvoyees }, t);
+        } catch (e) { console.error('[inscrire] confirmation', t, e); }
+      }
+    }
+    return { ok: true, id: cible.id, status: statut };
+  }
+
+  const ref = await col.add(fiche);
+  console.log(`[inscrire] ${source} · ${fiche.status} · ${ref.id}`);
+  // L'étiquette d'entrée des nouvelles personnes (28 sept. 2026) : posée
+  // APRÈS la création, parce que les séquences par étiquette démarrent sur
+  // une mise à jour de fiche (inscrireSequencesEtiquette), jamais sur une
+  // création. La séquence de bienvenue s'y branche; tant qu'elle est éteinte
+  // dans l'admin, l'étiquette ne fait que marquer la fiche.
+  try { await ref.update({ tags: FieldValue.arrayUnion('entree-site') }); }
+  catch (e) { console.error('[inscrire] étiquette entree-site', ref.id, e); }
+  return { ok: true, id: ref.id, status: fiche.status as string };
+}

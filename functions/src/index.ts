@@ -32,6 +32,7 @@ export { badgeAchatFormation, badgePremierBillet, badgeAmitieAcceptee } from './
 export { parrainageFilleule, parrainageAchat, parrainagePourboire } from './parrainage';
 export { groupeMembre } from './groupe';
 export { musiqueOrigine } from './musique';
+export { envoyerResultatQuiz, suiteLecture } from './quiz';
 export { extraitCinqElements } from './cinqelements';
 export { offrirCadeau, utiliserCadeau } from './cadeaux';
 export { kajabiEmettreCodes, kajabiUtiliserCode } from './kajabi';
