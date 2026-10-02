@@ -4381,5 +4381,21 @@
       "public/assets-manifest.json",
       "src/pages/admin/sections/newsletter/RelectureSequence.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T16:27:42.229Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "36f500c1",
+    "message": "Admin › Séquences : chaque lettre s'affiche en entier; infolettres : bannière VATA Essentiel par les sens au bas des lettres",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/vata-sens.jpg",
+      "src/pages/admin/sections/newsletter/PreviewFrame.tsx",
+      "src/pages/admin/sections/newsletter/RelectureSequence.tsx"
+    ]
   }
 ]
