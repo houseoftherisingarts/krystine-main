@@ -4230,5 +4230,23 @@
       "public/assets-manifest.json",
       "src/pages/admin/sections/newsletter/SequencesPanel.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T15:29:37.494Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "2553733f",
+    "message": "Infolettres : nouveau bloc « Note d'Ayurveda » (petite base de savoir au bas d'une lettre)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "src/firebase/firestore.ts",
+      "src/lib/newsletterRenderer.tsx",
+      "src/pages/admin/sections/newsletter/Composer.tsx"
+    ]
   }
 ]
