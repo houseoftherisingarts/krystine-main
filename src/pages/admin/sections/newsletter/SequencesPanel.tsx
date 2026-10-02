@@ -8,6 +8,7 @@ import {
   marquerLettreSequence, testerSequence, compterInscrits, type Sequence, type Etape, type Inscrit, type StrategieSequence,
 } from '../../../../firebase/sequences';
 import { libelleTag } from '../../../../lib/paliers';
+import RelectureSequence, { estApprouvee } from './RelectureSequence';
 import { Card, Input, Label, PrimaryButton, GhostButton, DangerButton, ToggleSwitch, EmptyState, Textarea } from '../../primitives';
 
 // La réflexion avant les lettres (Krystine, 27 sept. 2026) : pourquoi la
@@ -34,11 +35,15 @@ const slug = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,
 const ETIQUETTES = ['interet-choisir', 'interet-rythme', 'interet-rester-entiere', 'interet-relier', 'preference-autonomie', 'preference-accompagnement'];
 const delaiLisible = (h: number) => (h === 0 ? 'tout de suite' : h % 24 === 0 ? `${h / 24} jour${h / 24 > 1 ? 's' : ''} après` : `${h} h après`);
 
+// La séquence ouverte se garde le temps d'un aller-retour au composeur.
+let derniereSequence: string | null = null;
+
 const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) => {
   const [seqs, setSeqs] = useState<Sequence[]>([]);
   const [lettres, setLettres] = useState<NewsletterDoc[]>([]);
   const [formations, setFormations] = useState<Formation[]>([]);
-  const [courante, setCourante] = useState<string | null>(null);
+  const [courante, setCourante] = useState<string | null>(derniereSequence);
+  useEffect(() => { derniereSequence = courante; }, [courante]);
   const [brouillon, setBrouillon] = useState<Sequence | null>(null);
   const [inscrits, setInscrits] = useState<Inscrit[]>([]);
   const [message, setMessage] = useState<string | null>(null);
@@ -66,6 +71,11 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
   useEffect(() => { if (!courante) return; return ecouterInscrits(courante, setInscrits); }, [courante]);
   // Le brouillon local suit la séquence choisie, jusqu'à ce qu'on l'enregistre.
   useEffect(() => { setBrouillon(seqs.find(s => s.id === courante) || null); }, [courante, seqs]);
+
+  // La relecture : combien de lettres de la séquence sont approuvées.
+  const lettresSeq = (brouillon?.etapes || []).filter(e => e.newsletterId).map(e => lettres.find(l => l.id === e.newsletterId));
+  const nbApprouvees = lettresSeq.filter(estApprouvee).length;
+  const nbARelire = lettresSeq.length - nbApprouvees;
 
   const lettresChoisissables = useMemo(() => lettres.filter(l => l.status !== 'sending'), [lettres]);
 
@@ -239,6 +249,12 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
               </div>
               <ToggleSwitch checked={!!brouillon.actif} onChange={v => maj({ actif: v })} label={brouillon.actif ? 'Active : elle envoie' : 'En pause : rien ne part'} />
             </div>
+            {lettresSeq.length > 0 && (
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+                <span className="font-semibold text-[#293027] dark:text-white"><i className="fa-solid fa-envelope-circle-check mr-2 text-[#8B4A2F]" />{nbApprouvees} lettre{nbApprouvees > 1 ? 's' : ''} approuvée{nbApprouvees > 1 ? 's' : ''} sur {lettresSeq.length}</span>
+                {nbARelire > 0 && <span className="text-[#8B4A2F] dark:text-[#e0b060]">{nbARelire} lettre{nbARelire > 1 ? 's ne sont' : ' n’est'} pas encore approuvée{nbARelire > 1 ? 's' : ''}{brouillon.actif ? ' et la séquence est active.' : '.'}</span>}
+              </div>
+            )}
             <div>
               <Label>Ce qui fait entrer une personne dans la séquence</Label>
               <select
@@ -263,6 +279,8 @@ const SequencesPanel: React.FC<{ onOpen: (id: string) => void }> = ({ onOpen }) 
               </p>
             </div>
           </Card>
+
+          <RelectureSequence key={brouillon.id} sequenceId={brouillon.id} etapes={brouillon.etapes || []} lettres={lettres} onOpen={onOpen} onChange={() => getNewsletters().then(setLettres)} />
 
           <Card className="p-5 space-y-4">
             <h3 className="font-serif text-xl text-[#293027] dark:text-white">La réflexion de cette séquence</h3>

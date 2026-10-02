@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { libelleTag } from '../../../../lib/paliers';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import app from '../../../../firebase';
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp, deleteField } from 'firebase/firestore';
 import {
   createNewsletter, updateNewsletter, getNewsletter, saveNewsletterVersion, getNewsletterVersions,
   ENTETE_INFOLETTRE_PAR_DEFAUT, type NewsletterVersion,
@@ -246,7 +246,10 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
       const enTete = { couverture, couvertureUrl: couverture === 'image' ? couvertureUrl : null, entete: couverture === 'titre' ? entete : null, signature, lang, bandeau, fond, tailleLecture, traductionDe, lettreDor: lettreDor ? { messagerie: dorMessagerie, section: dorSection } : null };
       let savedId = id;
       if (id) {
-        await updateNewsletter(id, { title, subject, preheader, fromName, blocks, audience, scheduledFor, ...enTete });
+        // Le texte a changé depuis l'ouverture ou la dernière sauvegarde : une
+        // lettre de séquence approuvée redevient « À relire ».
+        const change = etatSauve.current !== null && etatAuDepart !== etatSauve.current;
+        await updateNewsletter(id, { title, subject, preheader, fromName, blocks, audience, scheduledFor, ...enTete, ...(change ? { approuvee: deleteField() as any } : {}) });
       } else {
         const ref = await createNewsletter({ title, subject, preheader, fromName, blocks, status: 'draft', audience, scheduledFor, ...enTete });
         if (ref) setId(ref.id);

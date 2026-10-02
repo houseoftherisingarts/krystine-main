@@ -673,6 +673,9 @@ export interface NewsletterDoc {
   fond?: string | null;
   tailleLecture?: 'normale' | 'grande' | 'tres-grande' | null;
   versionAt?: Timestamp;   // dernière version gardée dans /versions
+  // Relecture d'une lettre de séquence (onglet Courriels automatisés, 2 oct. 2026) :
+  // posée par « Approuver cette lettre », retirée dès que le texte change.
+  approuvee?: { le?: Timestamp; par?: string } | null;
   // Avancement d'un envoi en cours (écrit par les fonctions) : compte des
   // courriels partis, et la raison si la passe est en pause (quota Resend).
   progress?: { done: number; failed: number; lastId: string | null; raisonPause?: string; pauseJusqua?: Timestamp } | null;

@@ -12,6 +12,12 @@ import { SITE_MEDIA_SEED, MEDIA_CATEGORIES } from '../../../lib/mediaSeed';
 // we fall back to opening the URL in a new tab so Krystine can still
 // right-click → Save as.
 async function downloadImage(url: string, name: string) {
+  // Un fichier du site lui-même (www ou sans www) se lit par son chemin :
+  // même origine, donc aucun blocage CORS selon l'adresse de l'admin.
+  try {
+    const u = new URL(url, window.location.href);
+    if (/(^|\.)krystinestlaurent\.ca$/.test(u.hostname)) url = u.pathname + u.search;
+  } catch { /* adresse illisible : on garde telle quelle */ }
   try {
     const res = await fetch(url, { mode: 'cors' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -28,7 +34,16 @@ async function downloadImage(url: string, name: string) {
     a.remove();
     URL.revokeObjectURL(objectUrl);
   } catch {
-    window.open(url, '_blank', 'noopener,noreferrer');
+    // Sans fenêtre surgissante (souvent bloquée après une attente) : un lien
+    // de téléchargement direct, ouvert dans un onglet si le navigateur refuse.
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   }
 }
 
