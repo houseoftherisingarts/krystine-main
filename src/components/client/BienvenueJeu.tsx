@@ -19,7 +19,10 @@ const BienvenueJeu: React.FC<{ uid: string; vu: boolean | undefined; lang: 'FR' 
   const gam = useGamification();
   const [ouvert, setOuvert] = useState(false);
   useEffect(() => {
-    if (vu === false && gam.panneauJouer) setOuvert(true);
+    // Au retour d'un paiement, la cliente vient chercher son cours : le jeu
+    // ne s'ouvre pas par-dessus la confirmation (Krystine, 2 oct. 2026).
+    const retourAchat = new URLSearchParams(window.location.search).has('achat');
+    if (vu === false && gam.panneauJouer && !retourAchat) setOuvert(true);
   }, [vu, gam.panneauJouer]);
   useEffect(() => {
     const ouvrir = () => { if (gam.panneauJouer) setOuvert(true); };
