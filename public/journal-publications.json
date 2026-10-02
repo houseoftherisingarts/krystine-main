@@ -4397,5 +4397,19 @@
       "src/pages/admin/sections/newsletter/PreviewFrame.tsx",
       "src/pages/admin/sections/newsletter/RelectureSequence.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T16:28:37.414Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "061b0139",
+    "message": "Infolettres : bannière des sens sans « à votre rythme »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/vata-sens.jpg"
+    ]
   }
 ]
