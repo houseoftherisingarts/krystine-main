@@ -4773,5 +4773,30 @@
       "src/pages/QuizLoeuvre.tsx",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T19:44:13.232Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "abd2c57e",
+    "message": "Site : les lignes de tête façon magazine (N° · Québec · MMXXVI) sont retirées partout",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/v2/Magazine.tsx",
+      "src/pages/BlogueLoeuvre.tsx",
+      "src/pages/BoutiqueLoeuvre.tsx",
+      "src/pages/GuideLoeuvre.tsx",
+      "src/pages/ListeAttenteLoeuvre.tsx",
+      "src/pages/LocationsLoeuvre.tsx",
+      "src/pages/TemoignageConference.tsx",
+      "src/pages/VataExperience.tsx",
+      "src/pages/concepts/FormationsV2.tsx",
+      "src/pages/concepts/KrystineV2.tsx",
+      "src/pages/concepts/MediasV2.tsx",
+      "src/pages/concepts/PodcastV2.tsx"
+    ]
   }
 ]
