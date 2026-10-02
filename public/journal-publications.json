@@ -4296,5 +4296,23 @@
       "src/lib/newsletterRenderer.tsx",
       "src/pages/admin/sections/newsletter/Composer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T15:50:38.085Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b5390120",
+    "message": "Infolettres : note d'Ayurveda en page de papier à double filet avec le brin doré, sans la photo",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "public/infolettre/note-ayurveda-entete.jpg",
+      "public/infolettre/note-brin.png",
+      "src/lib/newsletterRenderer.tsx"
+    ]
   }
 ]
