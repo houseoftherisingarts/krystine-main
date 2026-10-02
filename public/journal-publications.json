@@ -4263,5 +4263,20 @@
       "functions/src/newsletter/renderer.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-02T15:39:13.832Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b5782d41",
+    "message": "Infolettres : pied de page en vert foncé, comme la tête de la lettre",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
