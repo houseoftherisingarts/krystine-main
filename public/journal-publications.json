@@ -4541,5 +4541,19 @@
       "public/vata/carte-eventail.jpg",
       "src/pages/FormationsLanding.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-02T17:11:35.121Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "5ccb16ca",
+    "message": "Formations (/formations) : la carte EXPÉRIENCE ORIGINE 2 montre son coffret cuivre",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/FormationsLanding.tsx"
+    ]
   }
 ]
