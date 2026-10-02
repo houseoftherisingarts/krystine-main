@@ -871,13 +871,7 @@ const QuizLoeuvre: React.FC = () => {
 
       {/* ─────────── HERO · une de magazine ─────────── */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(6.5rem,12vh,9rem)] pb-[clamp(2rem,5vh,4rem)] min-h-screen flex flex-col">
-        <motion.div
-          {...heroFade(0.55)}
-          className="flex items-center justify-between border-t border-[#1c1712]/15 pt-3.5 text-[0.6rem] uppercase tracking-[0.28em] text-[#1c1712]/55"
-        >
-          <span>N&deg; 05 &middot; Quiz Dosha</span>
-          <span className="hidden sm:inline">Québec &middot; MMXXVI</span>
-        </motion.div>
+        {/* La ligne de tête « N° 05 · Québec » est retirée de la page du quiz (Krystine, 2 oct. 2026 : elle parle aussi à l'Europe). */}
 
         {/* La vidéo du quiz en bannière, sans le logo d'ouverture (Krystine, 1er oct. 2026) */}
         <motion.div {...heroFade(0.2)} className="mt-6">
