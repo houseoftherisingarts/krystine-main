@@ -5538,5 +5538,25 @@
       "src/pages/admin/sections/visiteurs/donnees.ts",
       "src/vexelhotjar/tracker.ts"
     ]
+  },
+  {
+    "quand": "2026-10-03T17:22:05.118Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "68f7b961",
+    "message": "Quiz : « Recevoir la suite de ma lecture » visible pour toutes, en un clic pour les personnes connectées; bouton de la suite en haut du courriel du résultat",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/index.ts",
+      "functions/src/quiz.ts",
+      "functions/src/quizCourriel.ts",
+      "public/assets-manifest.json",
+      "scripts/qa/_frames.mjs",
+      "src/firebase/quiz.ts",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
