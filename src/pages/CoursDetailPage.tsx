@@ -999,6 +999,24 @@ const CoursDetailPage: React.FC = () => {
                       </button>
                     )}
                   </div>
+                  {/* Au dernier module de Vata (« Clore la saison »), l'évaluation
+                      de fin de saison (/evaluation/vata, 3 oct. 2026). */}
+                  {id === FORMATION_VATA && chapitreDeModule(courante.moduleNom)?.rang === 8 && (
+                    <div className="mt-8 border-t border-[#BA7B39]/25 pt-6">
+                      <p className="max-w-[56ch] text-sm leading-relaxed text-[#3a2f23] dark:text-white/80">
+                        {lang === 'FR'
+                          ? 'Vous arrivez au bout des sept semaines. Dites-nous ce que vous en gardez : vos mots nous aident à préparer la suite.'
+                          : 'You have reached the end of the seven weeks. Tell us what you are keeping from them.'}
+                      </p>
+                      <Link
+                        to="/evaluation/vata"
+                        className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#293027] px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest text-[#EEE7DB] hover:bg-[#1c1712]"
+                      >
+                        {lang === 'FR' ? 'Partager votre expérience' : 'Share your experience'}
+                        <i className="fa-solid fa-arrow-right" />
+                      </Link>
+                    </div>
+                  )}
                 </>
               )}
             </section>

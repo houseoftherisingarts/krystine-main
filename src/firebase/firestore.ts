@@ -1731,3 +1731,56 @@ export async function deleteVexelInquiry(id: string) {
   if (!db) noDb();
   return deleteDoc(doc(db!, 'vexelInquiries', id));
 }
+
+// ─── L'évaluation de fin de VATA Essentiel (/evaluation/vata, 3 oct. 2026) ───
+// Une seule réponse par personne : le document porte son uid, et elle peut le
+// rouvrir pour le modifier. La règle vérifie qu'elle possède la formation;
+// Krystine les lit dans Admin › Formulaires, onglet « Évaluations Vata ».
+// La clé est enregistrée (la règle Firestore la vérifie), le titre s'affiche :
+// les titres exacts des semaines de src/pages/vata/semaines.ts.
+export const SEMAINES_EVALUATION_VATA: [string, string][] = [
+  ['souffle', 'Le souffle'], ['ouie', 'L’ouïe'], ['vue', 'La vue'], ['odorat', 'L’odorat'],
+  ['gout', 'Le goût'], ['toucher', 'Le toucher'], ['presence', 'La présence'],
+];
+export const titreSemaineEvaluation = (cle: string): string =>
+  SEMAINES_EVALUATION_VATA.find(([k]) => k === cle)?.[1] || cle;
+
+export interface EvaluationVata {
+  uid: string;
+  email: string;
+  prenom?: string;
+  vecu: number;                                  // 1 à 5
+  semaine: string;                               // clé de SEMAINES_EVALUATION_VATA
+  changement?: string;
+  manque?: string;
+  recommande: 'oui' | 'peut-etre' | 'non';
+  temoignage: boolean;
+  temoignageForme?: 'prenom' | 'anonyme';
+  suiteSaison: boolean;
+  creeLe?: Timestamp;
+  modifieLe?: Timestamp;
+}
+
+export async function getMonEvaluationVata(uid: string): Promise<EvaluationVata | null> {
+  if (!db || !uid) return null;
+  const snap = await getDoc(doc(db, 'evaluationsVata', uid));
+  return snap.exists() ? (snap.data() as EvaluationVata) : null;
+}
+
+export async function enregistrerEvaluationVata(data: Omit<EvaluationVata, 'creeLe' | 'modifieLe'>, dejaCreee?: Timestamp) {
+  if (!db) throw new Error('Firestore non configuré');
+  const propre: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(data)) if (v !== undefined && v !== '') propre[k] = v;
+  await setDoc(doc(db, 'evaluationsVata', data.uid), {
+    ...propre,
+    creeLe: dejaCreee ?? serverTimestamp(),
+    modifieLe: serverTimestamp(),
+  });
+  trackObjectif('Évaluation VATA Essentiel', 'petit');
+}
+
+export async function getEvaluationsVata(): Promise<EvaluationVata[]> {
+  if (!db) return [];
+  const snap = await getDocs(query(collection(db, 'evaluationsVata'), orderBy('modifieLe', 'desc')));
+  return snap.docs.map(d => d.data() as EvaluationVata);
+}

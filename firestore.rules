@@ -516,6 +516,44 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
+    // L'évaluation de fin de VATA Essentiel (/evaluation/vata, 3 oct. 2026) :
+    // une réponse par personne (le document porte son uid), écrite et modifiée
+    // par elle seule si elle possède la formation; Krystine seule les liste
+    // (Admin › Formulaires › Évaluations Vata). La personne relit la sienne
+    // pour la modifier, jamais celle d'une autre.
+    match /evaluationsVata/{uid} {
+      function possedeVata() {
+        return isAdmin()
+          || exists(/databases/$(database)/documents/achatsFormations/$(uid)/formations/kajabi-2148687644)
+          || (exists(/databases/$(database)/documents/members/$(uid))
+              && get(/databases/$(database)/documents/members/$(uid)).data.get('accesVie', false) == true);
+      }
+      function evaluationValide() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['uid', 'email', 'prenom', 'vecu', 'semaine', 'changement', 'manque', 'recommande', 'temoignage', 'temoignageForme', 'suiteSaison', 'creeLe', 'modifieLe'])
+          && d.keys().hasAll(['uid', 'email', 'vecu', 'semaine', 'recommande', 'temoignage', 'suiteSaison', 'creeLe', 'modifieLe'])
+          && d.uid == uid
+          && d.email is string && d.email.size() <= 200
+          && (!('prenom' in d) || (d.prenom is string && d.prenom.size() <= 80))
+          && d.vecu is int && d.vecu >= 1 && d.vecu <= 5
+          && d.semaine in ['souffle', 'ouie', 'vue', 'odorat', 'gout', 'toucher', 'presence']
+          && (!('changement' in d) || (d.changement is string && d.changement.size() <= 4000))
+          && (!('manque' in d) || (d.manque is string && d.manque.size() <= 4000))
+          && d.recommande in ['oui', 'peut-etre', 'non']
+          && d.temoignage is bool
+          && (!('temoignageForme' in d) || d.temoignageForme in ['prenom', 'anonyme'])
+          && d.suiteSaison is bool
+          && d.modifieLe == request.time;
+      }
+      allow get: if isSelf(uid) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isSelf(uid) && possedeVata() && evaluationValide()
+                    && request.resource.data.creeLe == request.time;
+      allow update: if isSelf(uid) && possedeVata() && evaluationValide()
+                    && request.resource.data.creeLe == resource.data.creeLe;
+      allow delete: if isAdmin();
+    }
+
     match /bookingRequests/{id} {
       allow create: if request.resource.data.keys().hasAll(['name', 'email']);
       allow read, update, delete: if isAdmin();

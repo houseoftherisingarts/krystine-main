@@ -7,6 +7,9 @@ import {
   getGuideResponses,
   getAllMembers,
   getLiveEvents,
+  getEvaluationsVata,
+  titreSemaineEvaluation,
+  type EvaluationVata,
   type BookingRequest,
   type NewsletterSubscriber,
   type DoshaResult,
@@ -26,7 +29,7 @@ import QuestionCards, { type QuestionCard } from './newsletter/QuestionCards';
 // type-specific sections still exist for deeper actions (status changes,
 // mailing CSVs, etc.) — this view is the single "inbox" for what came in.
 
-type FormCategory = 'booking' | 'newsletter' | 'waitlist' | 'podcastLive' | 'dosha' | 'guide' | 'choix' | 'depart';
+type FormCategory = 'booking' | 'newsletter' | 'waitlist' | 'podcastLive' | 'dosha' | 'guide' | 'choix' | 'depart' | 'evaluation';
 
 interface Submission {
   id: string;
@@ -57,6 +60,7 @@ const CATEGORY_META: Record<FormCategory, { label: string; icon: string; badge: 
   guide:      { label: 'Laissez-vous guider', icon: 'fa-compass', badge: 'bg-[#4A7C9D]/15 text-[#4A7C9D]' },
   choix:      { label: 'Choix de la lettre', icon: 'fa-square-check', badge: 'bg-[#28352F]/12 text-[#28352F] dark:bg-white/10 dark:text-white/80' },
   depart:     { label: 'Désabonnement', icon: 'fa-door-open', badge: 'bg-[#52646A]/15 text-[#52646A]' },
+  evaluation: { label: 'Évaluations Vata', icon: 'fa-feather', badge: 'bg-[#4E6349]/15 text-[#4E6349]' },
 };
 
 // Human-readable source name. Unknown keys fall back to the raw string.
@@ -68,6 +72,7 @@ function prettySource(s: string): string {
     'quiz': 'Quiz Dosha',
     'guide': 'Laissez-vous guider',
     'fondatrices-origine': 'Fondatrices d’Origine',
+    'evaluation-vata': 'Évaluation VATA Essentiel',
     'import': 'Import CSV',
   };
   if (dict[s]) return dict[s];
@@ -286,6 +291,34 @@ function normalizeGuide(g: GuideResponse): Submission {
   };
 }
 
+// L'évaluation de fin de VATA Essentiel (/evaluation/vata) : une par personne,
+// modifiable; la date affichée est celle de la dernière version.
+const MOTS_VECU = ['', 'Plutôt difficile', 'En demi-teinte', 'Bien', 'Très bien', 'Profondément nourrissant'];
+const MOTS_RECOMMANDE: Record<string, string> = { oui: 'Oui', 'peut-etre': 'Peut-être', non: 'Non' };
+function normalizeEvaluation(e: EvaluationVata): Submission {
+  const details: Submission['details'] = [
+    { label: 'Ces sept semaines', value: `${e.vecu}/5 · ${MOTS_VECU[e.vecu] || ''}` },
+    { label: 'La semaine qui a le plus parlé', value: titreSemaineEvaluation(e.semaine) },
+    { label: 'Recommanderait à une amie', value: MOTS_RECOMMANDE[e.recommande] || e.recommande },
+    { label: 'Témoignage', value: e.temoignage ? (e.temoignageForme === 'anonyme' ? 'Accepte, de façon anonyme' : 'Accepte, avec le prénom seulement') : 'Non' },
+    { label: 'Prochaine saison', value: e.suiteSaison ? 'Veut être avisée (étiquette suite-apres-vata)' : 'Non' },
+  ];
+  if (e.manque) details.push({ label: 'Ce qui a manqué', value: e.manque });
+  return {
+    id: `evaluation-${e.uid}`,
+    category: 'evaluation',
+    name: e.prenom || e.email.split('@')[0],
+    email: e.email,
+    source: 'evaluation-vata',
+    tags: e.suiteSaison ? ['suite-apres-vata'] : [],
+    createdAt: e.modifieLe || e.creeLe,
+    summary: `${MOTS_VECU[e.vecu] || e.vecu} · ${titreSemaineEvaluation(e.semaine)} · recommande : ${MOTS_RECOMMANDE[e.recommande] || e.recommande}`,
+    message: e.changement ? `Ce qui a changé : ${e.changement}` : undefined,
+    details,
+    memberUid: e.uid,
+  };
+}
+
 // ─── Component ──────────────────────────────────────────────────────────────
 
 type CategoryFilter = 'apercu' | 'all' | FormCategory;
@@ -303,6 +336,7 @@ const CATEGORY_TABS: { id: CategoryFilter; label: string }[] = [
   { id: 'guide',      label: 'Guide' },
   { id: 'choix',      label: 'Choix de la lettre' },
   { id: 'depart',     label: 'Désabonnements' },
+  { id: 'evaluation', label: 'Évaluations Vata' },
 ];
 
 const TIME_TABS: { id: TimeFilter; label: string }[] = [
@@ -356,7 +390,8 @@ const SubmissionsSection: React.FC = () => {
       essaie(getDoshaResults(), 'Quiz Dosha'),
       essaie(getGuideResponses(), 'Laissez-vous guider'),
       essaie(getAllMembers(), 'Membres'),
-    ]).then(([bookings, subscribers, doshas, guides, members]) => {
+      essaie(getEvaluationsVata(), 'Évaluations Vata'),
+    ]).then(([bookings, subscribers, doshas, guides, members, evaluations]) => {
       if (cancelled) return;
       setLoadWarn(echecs);
 
@@ -387,6 +422,7 @@ const SubmissionsSection: React.FC = () => {
         ...subscribers.filter(n => n.status === 'unsubscribed' && (n as NewsletterSubscriber & { unsubscribedAt?: unknown }).unsubscribedAt && !(n.tags || []).includes('essai-technique')).map(normalizeDepart).map(withMember),
         ...doshas.map(normalizeDosha).map(withMember),
         ...guides.map(normalizeGuide).map(withMember),
+        ...evaluations.map(normalizeEvaluation),
       ];
       rows.sort((a, b) => {
         const ta = a.createdAt?.toMillis?.() ?? 0;
@@ -471,7 +507,7 @@ const SubmissionsSection: React.FC = () => {
   const affichees = filtered.slice(0, visibles);
 
   const counts = useMemo(() => {
-    const c: Record<CategoryFilter, number> = { apercu: subs.length, all: subs.length, booking: 0, newsletter: 0, waitlist: 0, podcastLive: 0, dosha: 0, guide: 0, choix: 0, depart: 0 };
+    const c: Record<CategoryFilter, number> = { apercu: subs.length, all: subs.length, booking: 0, newsletter: 0, waitlist: 0, podcastLive: 0, dosha: 0, guide: 0, choix: 0, depart: 0, evaluation: 0 };
     subs.forEach(s => { c[s.category]++; });
     return c;
   }, [subs]);

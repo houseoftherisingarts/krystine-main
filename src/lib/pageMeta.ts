@@ -10,6 +10,10 @@ const ORIGIN = 'https://www.krystinestlaurent.ca';
 type PageMeta = { title: string; description: string; image?: string; imageAlt?: string };
 
 const ROUTES: Record<string, PageMeta> = {
+  '/evaluation/vata': {
+    title: `VATA Essentiel · Partager votre expérience · ${SITE}`,
+    description: 'Ce que vous gardez des sept semaines de VATA Essentiel, en quelques minutes.',
+  },
   '/krystine': {
     title: `${SITE} · Conférencière et auteure en ayurveda`,
     description: 'Krystine St-Laurent, infirmière de formation, auteure et conférencière: Près de 40 ans à traverser les milieux de la santé avant de choisir l’herboristerie, l’Ayurveda et l’aromathérapie.',
