@@ -141,7 +141,7 @@ export function lireLecture(p: { vata: number; pitta: number; kapha: number }, d
   if (branche === 'equilibre') {
     return {
       branche, montres: ['vata', 'pitta', 'kapha'], libelle: 'Votre lecture aujourd’hui', titre: 'Équilibre',
-      noms: ['Vata', 'Pitta', 'Kapha'], carte: [EQUILIBRE.carte], ayurveda: EQUILIBRE.ayurveda,
+      noms: [nomme('vata'), nomme('pitta'), nomme('kapha')], carte: [EQUILIBRE.carte], ayurveda: EQUILIBRE.ayurveda,
       direction: EQUILIBRE.direction, sousCarte: '',
       versSuite: SUITE_PRETE[d1] && d1 === 'vata' ? EQUILIBRE.suite : '',
     };
@@ -161,7 +161,7 @@ export function lireLecture(p: { vata: number; pitta: number; kapha: number }, d
   }
   return {
     branche, montres: [d1], libelle: 'Votre dominance aujourd’hui', titre: NOM_COURANT[d1],
-    noms: [`${NOM_AYURVEDA[d1]} · ${ELEMENTS[d1]}`], carte: [...CARTE[d1]],
+    noms: [`${NOM_AYURVEDA[d1]} (${ELEMENTS[d1]})`], carte: [...CARTE[d1]],
     ayurveda: `Dans le langage de l’Ayurveda, cette dominance est appelée ${nomme(d1)}.`,
     direction: DIRECTION[d1],
     sousCarte: branche === 'teinte' ? `Votre lecture montre aussi une part importante de ${nomme(d2)}.` : '',

@@ -340,7 +340,7 @@ const lireLecture = (p: { vata: number; pitta: number; kapha: number }, lang: 'F
   if (branche === 'equilibre') return {
     branche, montres: ['vata', 'pitta', 'kapha'],
     libelle: en ? 'Your reading today' : 'Votre lecture aujourd’hui', titre: en ? 'Balance' : 'Équilibre',
-    noms: ['Vata', 'Pitta', 'Kapha'], carte: en ? [] : [EQUILIBRE_CARTE],
+    noms: (['vata', 'pitta', 'kapha'] as DoshaType[]).map(d => en ? `${NOM_AYURVEDA[d]} (${ELEMENTS_EN[d]})` : nomme(d)), carte: en ? [] : [EQUILIBRE_CARTE],
     ayurveda: en ? 'In the language of Ayurveda, Vata (Wind and Space), Pitta (Fire and Water) and Kapha (Water and Earth) are nearly even here.' : EQUILIBRE_AYURVEDA,
     sousCarte: '',
   };
@@ -362,7 +362,7 @@ const lireLecture = (p: { vata: number; pitta: number; kapha: number }, lang: 'F
     branche, montres: [d1],
     libelle: en ? 'Your dominance today' : 'Votre dominance aujourd’hui',
     titre: (en ? DOMINANCE_EN : DOMINANCE_FR)[d1],
-    noms: [`${NOM_AYURVEDA[d1]} · ${(en ? ELEMENTS_EN : ELEMENTS)[d1]}`],
+    noms: [`${NOM_AYURVEDA[d1]} (${(en ? ELEMENTS_EN : ELEMENTS)[d1]})`],
     carte: en ? [] : [...CARTE_DOMINANCE[d1]],
     ayurveda: en
       ? `In the language of Ayurveda, this dominance is called ${NOM_AYURVEDA[d1]} (${ELEMENTS_EN[d1]}).`
@@ -497,7 +497,7 @@ const DoshaStat: React.FC<{ d: DoshaType; pct: number; label: string }> = ({ d, 
     <div className="flex flex-col items-center gap-1.5">
       <DoshaPicto d={d} size={30} />
       <span className="v2-serif font-light text-3xl md:text-4xl tabular-nums" style={{ color: th.ink }}>{pct}%</span>
-      <span className="text-[0.58rem] uppercase tracking-[0.22em] text-[#1c1712]/60">{label}</span>
+      <span className="text-center text-[0.58rem] uppercase tracking-[0.16em] text-[#1c1712]/60">{label}</span>
       <span className="relative mt-1 block h-px w-16 bg-[#1c1712]/10 overflow-hidden">
         <motion.span
           className="absolute inset-0"
@@ -744,7 +744,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
               {/* Répartition des trois doshas */}
               <div className="mt-10 flex justify-center gap-9 md:gap-12">
                 {ALL_DOSHAS.map(d => (
-                  <DoshaStat key={d} d={d} pct={result.percentages[d]} label={(lang === 'FR' ? DOMINANCE_FR : DOMINANCE_EN)[d]} />
+                  <DoshaStat key={d} d={d} pct={result.percentages[d]} label={`${NOM_AYURVEDA[d]} (${(lang === 'FR' ? ELEMENTS : ELEMENTS_EN)[d]})`} />
                 ))}
               </div>
 
@@ -868,7 +868,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
 
             <div className="mt-10 flex justify-center gap-9 md:gap-12">
               {ALL_DOSHAS.map(d => (
-                <DoshaStat key={d} d={d} pct={teaser.percentages[d]} label={(lang === 'FR' ? DOMINANCE_FR : DOMINANCE_EN)[d]} />
+                <DoshaStat key={d} d={d} pct={teaser.percentages[d]} label={`${NOM_AYURVEDA[d]} (${(lang === 'FR' ? ELEMENTS : ELEMENTS_EN)[d]})`} />
               ))}
             </div>
 
@@ -1170,7 +1170,7 @@ const QuizLoeuvre: React.FC = () => {
             video="/quiz/quiz-dosha-revisee.mp4"
             poster="/quiz/quiz-dosha-revisee-poster.jpg"
             ratio="aspect-[16/9] sm:aspect-[21/9] lg:aspect-[8/3]"
-            etiquette="Vent · Feu · Terre"
+            etiquette="Vata (Vent et Espace) · Pitta (Feu et Eau) · Kapha (Eau et Terre)"
           />
         </motion.div>
 
@@ -1232,7 +1232,7 @@ const QuizLoeuvre: React.FC = () => {
                         {lang === 'FR' ? 'Dominance ' : 'Dominance of '}{lang === 'FR' ? DOMINANCE_FR[key] : DOMINANCE_EN[key]}
                       </p>
                       <p className="mt-1 text-[0.78rem] text-[#3a2f23]/80">
-                        {NOM_AYURVEDA[key]} · {(lang === 'FR' ? ELEMENTS : ELEMENTS_EN)[key]}
+                        {NOM_AYURVEDA[key]} ({(lang === 'FR' ? ELEMENTS : ELEMENTS_EN)[key]})
                       </p>
                     </div>
                   </div>
