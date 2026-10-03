@@ -521,8 +521,8 @@ const PHRASE_SUITE = (d: DoshaType, prete: boolean) => prete
   ? 'Quelques lettres pour comprendre ce dont vous avez besoin en ce moment et ce qui peut aider. Vous pouvez vous désabonner en un clic.'
   : `Nous vous écrirons lorsque la suite pour ${nomme(d)} sera prête. Vous pouvez vous désabonner en un clic.`;
 const PHRASE_FORMULAIRE = (d: DoshaType, prete: boolean) => prete
-  ? 'Je consens à recevoir par courriel la suite de ma lecture, qui me guidera à partir de mes résultats, ainsi que les propositions de Krystine St-Laurent. Je peux me désabonner en un clic.'
-  : `Je consens à recevoir ma lecture par courriel, puis la suite pour ${nomme(d)} lorsqu’elle sera prête, ainsi que les propositions de Krystine St-Laurent. Je peux me désabonner en un clic.`;
+  ? 'Je souhaite recevoir les lettres de Krystine St-Laurent pour mieux comprendre mes résultats et découvrir les programmes proposés pour aller plus loin. Je peux me désabonner à tout moment.'
+  : `Je souhaite recevoir les lettres de Krystine St-Laurent : la suite pour ${nomme(d)} lorsqu’elle sera prête, et les programmes proposés pour aller plus loin. Je peux me désabonner à tout moment.`;
 const NOTE_SUITE = (d: DoshaType, prete: boolean) => prete
   ? 'C’est noté. La première lettre arrive dans deux jours.'
   : `C’est noté. Nous vous écrirons lorsque la suite pour ${nomme(d)} sera prête.`;
@@ -712,7 +712,8 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   // Deux gestes (Krystine, 3 oct. 2026) : le bouton principal « Recevoir ma
   // lecture et sa suite » vaut consentement (geste positif, clairement
   // décrit juste au-dessus); le petit lien donne le résultat seul.
-  const envoyerResultat = async (e: React.FormEvent, avecSuite = true) => {
+  const [veutSuite, setVeutSuite] = useState(false);
+  const envoyerResultat = async (e: React.FormEvent, avecSuite = veutSuite) => {
     e.preventDefault();
     if (!teaser) return;
     setErreurEnvoi(null);
@@ -1027,10 +1028,14 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                     />
                   </div>
                   {RECAPTCHA_SITE_KEY && <div ref={captcha.boxRef} className="mt-6 flex justify-center" />}
-                  <p className="mt-7 text-center text-[0.88rem] leading-relaxed text-[#3a2f23]">
-                    {lang === 'FR'
+                  <label className="mt-7 flex items-start gap-3 text-left text-[0.88rem] leading-relaxed text-[#3a2f23] cursor-pointer">
+                    <input type="checkbox" checked={veutSuite} onChange={e => setVeutSuite(e.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-[#1c1712]" />
+                    <span>{lang === 'FR'
                       ? PHRASE_FORMULAIRE(lireProfil(teaser.percentages).d1, SUITE_PRETE[lireProfil(teaser.percentages).d1])
-                      : 'I agree to receive by email the rest of my reading, guiding me from my results, as well as offers from Krystine St-Laurent. I can unsubscribe in one click.'}
+                      : 'I would like to receive Krystine St-Laurent’s letters to better understand my results and discover the programs offered to go further. I can unsubscribe at any time.'}</span>
+                  </label>
+                  <p className="mt-3 text-center text-[0.72rem] leading-relaxed text-[#3a2f23]/70">
+                    {lang === 'FR' ? 'Krystine St-Laurent · ' : 'Krystine St-Laurent · '}<a href="mailto:teamksl@inspiratanature.com" className="underline underline-offset-2">teamksl@inspiratanature.com</a>{' · '}<a href="/politique-de-confidentialite" className="underline underline-offset-2">{lang === 'FR' ? 'Politique de confidentialité' : 'Privacy policy'}</a>
                   </p>
                   <div className="mt-5 flex flex-col items-center gap-3">
                     <button
@@ -1040,7 +1045,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                     >
                       {submitting
                         ? (lang === 'FR' ? 'Envoi…' : 'Sending…')
-                        : <>{lang === 'FR' ? 'Recevoir ma lecture et sa suite' : 'Receive my reading and what follows'} <ArrowRight size={15} weight="regular" /></>}
+                        : <>{lang === 'FR' ? 'Recevoir mes résultats' : 'Receive my results'} <ArrowRight size={15} weight="regular" /></>}
                     </button>
                     <button
                       type="button"
