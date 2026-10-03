@@ -122,6 +122,10 @@
   .cta:hover svg{transform:translateX(4px)}
   /* Le quiz en tête de l'accueil (2 oct. 2026) : le quiz en laiton, l'œuvre en contour. */
   .cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:0 1rem}
+  .besoin{margin-top:1.6rem}
+  .besoin-q{font-family:var(--serif);font-weight:500;font-size:clamp(1.15rem,1.7vw,1.45rem);line-height:1.3;letter-spacing:.06em;text-transform:uppercase;color:var(--ctext);margin:0}
+  .besoin-t{font-family:var(--serif);font-size:1.12rem;line-height:1.55;color:var(--ctext-soft);max-width:520px;margin:.5rem 0 0}
+  @media (max-width:640px){ .besoin{margin-top:1rem} .besoin-q{font-size:.95rem} .besoin-t{font-size:.92rem;line-height:1.5} }
   .cta-row .cta{font-size:.8rem;padding:1rem 1.7rem;letter-spacing:.14em}
   .cta.cta-ligne{background:transparent;color:var(--cream);border-color:rgba(187,154,94,.7)}
   .cta.cta-ligne:hover{background:rgba(187,154,94,.16);border-color:var(--brass-bright)}
@@ -862,7 +866,8 @@
         <div class="sub reveal d2">Nous avons appris à chercher les réponses à l'extérieur. Pourtant, le corps et la nature parlent un langage que nous avons simplement oublié de lire.</div>
         <div class="h-rule plain reveal d3" aria-hidden="true"><span></span></div>
         <div class="lede-row reveal d3"><svg class="sprig" viewBox="0 0 26 34" aria-hidden="true"><path d="M13 32V7"/><path d="M13 13C9.5 12 7.5 9.5 7.5 5.5c3.5.5 5.5 3 5.5 7.5Z"/><path d="M13 13c3.5-1 5.5-3.5 5.5-7.5-3.5.5-5.5 3-5.5 7.5Z"/><path d="M13 21c-3.5-1-5.5-3.5-5.5-7.5 3.5.5 5.5 3 5.5 7.5Z"/><path d="M13 21c3.5-1 5.5-3.5 5.5-7.5-3.5.5-5.5 3-5.5 7.5Z"/></svg><p class="lede">Depuis près de 40 ans, <b class="gold">Krystine St-Laurent</b> relie les savoirs traditionnels, l'Ayurveda, les cycles et l'expérience de la nature pour transmettre des repères qui permettent de mieux comprendre ce qui se joue en soi.</p></div>
-        <div class="cta-row reveal d4"><a class="cta" href="/quiz"><span class="cta-txt"><span class="cta-main">Découvrir votre dominance</span><span class="cta-pt"> · </span><span class="cta-sub">le quiz · 3 minutes</span></span> <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a><a class="cta cta-ligne" href="#portes"><span class="cta-txt">Découvrir l'œuvre</span> <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a></div>
+        <div class="besoin reveal d4"><p class="besoin-q">De quoi ai-je besoin en ce moment&nbsp;?</p><p class="besoin-t">En 3 minutes, le quiz aide à reconnaître les éléments qui prennent le plus de place et ce qu'ils peuvent indiquer sur les besoins du moment.</p></div>
+        <div class="cta-row reveal d4"><a class="cta" href="/quiz"><span class="cta-txt"><span class="cta-main">Faire le quiz</span><span class="cta-pt"> · </span><span class="cta-sub">3 minutes</span></span> <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a><a class="cta cta-ligne" href="#portes"><span class="cta-txt">Par où commencer&nbsp;?</span> <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a></div>
       </div>
     </div>
   </section>
