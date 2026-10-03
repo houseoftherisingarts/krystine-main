@@ -30,7 +30,6 @@ export const PALIERS_BADGES: Array<{ seuil: number; badgeId: string }> = [
 export const CADEAUX_PARRAINAGE: Array<{ seuil: number; fr: string; en: string; icone: string }> = [
   { seuil: 1,  fr: 'La musique de l\'Expérience Origine vous est offerte', en: 'The Origine Experience music, yours to keep', icone: 'fa-music' },
   { seuil: 3,  fr: 'Pitta, trois jours de découverte, offert',            en: 'Pitta, three days of discovery, on us',       icone: 'fa-sun' },
-  { seuil: 5,  fr: 'La masterclass Santé Parfaite, offerte',              en: 'The Perfect Health masterclass, on us',      icone: 'fa-leaf' },
   { seuil: 10, fr: 'Vitalité et Clarté, trente jours, offert',            en: 'Vitality and Clarity, thirty days, on us',   icone: 'fa-spa' },
   { seuil: 20, fr: 'L\'accès à vie à toutes les formations',              en: 'Lifetime access to every course',            icone: 'fa-infinity' },
 ];

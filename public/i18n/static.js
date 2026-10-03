@@ -31,7 +31,7 @@
        la langue vit dans le menu ouvert et la pastille flottante disparaît. */
     var dans = document.getElementById('mnavLang');
     if (dans) {
-      st.textContent += '@media(max-width:1280px){.lang-pill{display:none}}';
+      st.textContent += '@media(max-width:' + (dans.getAttribute('data-bp') || '1280') + 'px){.lang-pill{display:none}}';
       dans.setAttribute('aria-label', lang === 'en' ? 'Language' : 'Langue');
       ['fr', 'en'].forEach(function (l) {
         var b = document.createElement('button'); b.type = 'button'; b.textContent = l.toUpperCase();
@@ -39,6 +39,13 @@
         b.addEventListener('click', function () { if (l !== lang) setLang(l); });
         dans.appendChild(b);
       });
+    }
+    /* Sans menu rond (liste d'attente d'Origine, etc.) : sur téléphone, la pastille
+       se pose en haut de page sous l'en-tête, petite, au lieu de flotter sur le contenu. */
+    if (!dans) {
+      var h = document.querySelector('header,.topbar');
+      var top = h ? Math.round(h.getBoundingClientRect().bottom + window.scrollY + 8) : 12;
+      st.textContent += '@media(max-width:640px){.lang-pill{position:absolute;left:auto;right:1rem;bottom:auto;top:' + top + 'px;height:36px}.lang-pill button{height:28px}}';
     }
     document.body.appendChild(el);
   }

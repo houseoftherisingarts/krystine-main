@@ -108,7 +108,7 @@ const FramedValley: React.FC<{ caption: string; tab: string }> = ({ caption, tab
           className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
           style={{ background: 'linear-gradient(to top, rgba(28,23,18,0.55), transparent)' }}
         />
-        <p className="absolute bottom-4 left-4 right-4 v2-serif italic text-[#f4efe6] text-sm tracking-wide">
+        <p className="absolute bottom-4 left-4 right-4 v2-serif text-[#f4efe6] text-sm tracking-wide max-md:bottom-3 max-md:left-3 max-md:right-3 max-md:rounded-[15px] max-md:border max-md:border-[#f6f3ee]/15 max-md:bg-[#161f1a]/60 max-md:px-3.5 max-md:py-2.5 max-md:backdrop-blur-md">
           {caption}
         </p>
       </div>

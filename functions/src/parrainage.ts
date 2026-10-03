@@ -36,7 +36,6 @@ const PALIERS: Array<[number, string]> = [
 const CADEAUX: Array<{ seuil: number; formationId?: string; accesVie?: boolean }> = [
   { seuil: 1, formationId: 'kajabi-2149362766' },   // la musique de l'Expérience Origine
   { seuil: 3, formationId: 'kajabi-2148698908' },   // Pitta, 3 jours de découverte
-  { seuil: 5, formationId: 'kajabi-2149362090' },   // Santé Parfaite, la masterclass
   { seuil: 10, formationId: 'kajabi-2148932239' },  // Vitalité et Clarté, 30 jours
   { seuil: 20, accesVie: true },
 ];
@@ -47,6 +46,8 @@ export const parrainageFilleule = onDocumentCreated(
     const data = event.data?.data() as { parrainUid?: string } | undefined;
     const parrainUid = data?.parrainUid;
     if (!parrainUid || parrainUid === event.params.filleulUid) return;
+    // Module « Parrainage » fermé : ni niskas ni badges (2 oct. 2026).
+    if (!(await lireGamification()).parrainage) return;
     const filleulUid = event.params.filleulUid;
 
     const db = getFirestore();
@@ -91,6 +92,9 @@ export const parrainageAchat = onDocumentCreated(
   async (event) => {
     const achat = event.data?.data() as { source?: string } | undefined;
     if (achat?.source === 'parrainage' || achat?.source === 'niskas') return;
+    // Module « Parrainage » fermé dans l'admin : aucun cadeau, aucun compte
+    // (Krystine, 2 oct. 2026 : tous les cadeaux de parrainage retirés).
+    if (!(await lireGamification()).parrainage) return;
     const filleulUid = event.params.uid;
 
     const db = getFirestore();
@@ -186,6 +190,6 @@ export const parrainagePourboire = onDocumentCreated(
   { document: 'pourboires/{id}', region: 'us-central1' },
   async (event) => {
     const uid = (event.data?.data() as { uid?: string } | undefined)?.uid;
-    if (uid) await verifierSeuilAccesVie(getFirestore(), uid);
+    if (uid && (await lireGamification()).parrainage) await verifierSeuilAccesVie(getFirestore(), uid);
   },
 );

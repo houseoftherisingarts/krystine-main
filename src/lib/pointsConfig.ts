@@ -548,18 +548,6 @@ export const REWARDS: Reward[] = [
     minTier: 'fleur',
     oneShot: true,
   },
-  // Le palier Arbre : Krystine ne donne pas de consultation privée (Alex,
-  // 6 septembre 2026), donc une formation numérique complète.
-  {
-    id: 'masterclass-source',
-    cost: 725,
-    labelFR: 'La masterclass Santé Parfaite, offerte',
-    labelEN: 'The Perfect Health masterclass, on us',
-    descFR: "L'accès complet à la masterclass Santé Parfaite. Offert une seule fois, aux membres du palier Arbre.",
-    descEN: 'Full access to the Perfect Health masterclass. Offered once, for Tree-tier members.',
-    minTier: 'arbre',
-    oneShot: true,
-  },
 
   // ── Priorité 4 : hauts paliers ────────────────────────────────────────────
   {

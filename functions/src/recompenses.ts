@@ -19,7 +19,6 @@ interface RecompenseServeur { cost: number; oneShot?: boolean; label: string }
 export const RECOMPENSES_ECHANGEABLES: Record<string, RecompenseServeur> = {
   'reb-formation': { cost: 435, oneShot: true, label: '50 $ sur une formation Krystine St-Laurent' },
   'reb-10-boutique': { cost: 500, label: '10 % sur la boutique, dès 75 $ d’achat' },
-  'masterclass-source': { cost: 725, oneShot: true, label: 'La masterclass Santé Parfaite, offerte' },
 };
 
 // ─── Le noyau pur : les corps de requête, testables sans réseau ni clé ──────

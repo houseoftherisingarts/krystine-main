@@ -360,7 +360,7 @@ export default function FormationsV2() {
                   style={{ background: 'linear-gradient(to top, rgba(28,23,18,0.5), transparent)' }}
                   aria-hidden
                 />
-                <p data-fade className="absolute bottom-4 left-4 right-4 v2-serif italic text-[#f4efe6] text-sm tracking-wide">
+                <p data-fade className="absolute bottom-4 left-4 right-4 v2-serif text-[#f4efe6] text-sm tracking-wide max-md:bottom-3 max-md:left-3 max-md:right-3 max-md:rounded-[15px] max-md:border max-md:border-[#f6f3ee]/15 max-md:bg-[#161f1a]/60 max-md:px-3.5 max-md:py-2.5 max-md:backdrop-blur-md">
                   « Intégrer l’Ayurveda dans le quotidien, au rythme des saisons. »
                 </p>
               </div>

@@ -324,7 +324,7 @@ const FoyerScene: React.FC<{ ready: boolean }> = ({ ready }) => {
           className="absolute inset-0 z-10 flex flex-col justify-center"
           style={{ opacity: heroFade, y: heroY }}
         >
-          <div className="w-full px-6 pb-6 md:px-12 lg:px-20">
+          <div className="w-full px-6 pb-6 md:px-12 lg:px-20 max-md:mx-auto max-md:w-[calc(100%-2rem)] max-md:rounded-[15px] max-md:border max-md:border-[#f6f3ee]/15 max-md:bg-[#161f1a]/60 max-md:px-5 max-md:py-6 max-md:backdrop-blur-md">
             <motion.div
               initial={reduce ? {} : { opacity: 0, y: 26 }}
               animate={ready ? { opacity: 1, y: 0 } : {}}
@@ -881,9 +881,10 @@ const AchatFoyer: React.FC = () => {
       type="button"
       onClick={rejoindre}
       disabled={busy}
-      className="fixed bottom-[4.75rem] right-5 z-[90] inline-flex h-11 items-center gap-2 rounded-full bg-[#bb9a5e] px-5 sm:bottom-5 sm:right-[4.75rem] sm:px-6 text-xs font-bold uppercase tracking-widest leading-none text-[#2a2015] shadow-[0_12px_35px_-10px_rgba(163,130,63,0.9)] backdrop-blur transition-transform hover:scale-[1.03] disabled:opacity-60"
+      aria-label="Rejoindre" className="fixed bottom-4 right-4 z-[90] inline-flex h-10 items-center gap-2 rounded-full bg-[#bb9a5e] px-4 max-sm:w-10 max-sm:justify-center max-sm:px-0 sm:h-11 sm:bottom-5 sm:right-[4.75rem] sm:px-6 text-xs font-bold uppercase tracking-widest leading-none text-[#2a2015] shadow-[0_12px_35px_-10px_rgba(163,130,63,0.9)] backdrop-blur transition-transform hover:scale-[1.03] disabled:opacity-60"
     >
       <i className={`fa-solid ${possede ? 'fa-door-open' : 'fa-fire'}`} />
+      <span className="contents max-sm:hidden">
       {busy ? 'Redirection…' : possede ? 'Ouvrir ma formation' : ouvert ? (
         <>
           Rejoindre<span className="hidden sm:inline"> le Foyer</span>
@@ -894,6 +895,7 @@ const AchatFoyer: React.FC = () => {
           Rejoindre<span className="hidden sm:inline"> la liste d'attente</span>
         </>
       )}
+      </span>
     </button>
   );
 };

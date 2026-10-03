@@ -67,7 +67,7 @@ export const Cta: React.FC<{ label: string; sub?: string; dark?: boolean }> = ({
         type="button"
         onClick={rejoindre}
         disabled={busy}
-        className="group inline-flex items-center gap-3 whitespace-nowrap rounded-[30px] bg-brass px-7 py-4 font-sans text-[0.85rem] font-semibold uppercase tracking-[0.16em] text-espresso shadow-glow transition-colors duration-300 hover:bg-brassBright focus:outline-none focus-visible:ring-2 focus-visible:ring-brassBright focus-visible:ring-offset-2 disabled:opacity-60 md:px-10 md:py-5 md:text-[0.9rem] md:tracking-[0.2em]"
+        className="group inline-flex items-center gap-3 whitespace-nowrap max-sm:max-w-full max-sm:whitespace-normal max-sm:px-5 max-sm:py-3.5 max-sm:text-left max-sm:text-[0.72rem] max-sm:tracking-[0.12em] rounded-[30px] bg-brass px-7 py-4 font-sans text-[0.85rem] font-semibold uppercase tracking-[0.16em] text-espresso shadow-glow transition-colors duration-300 hover:bg-brassBright focus:outline-none focus-visible:ring-2 focus-visible:ring-brassBright focus-visible:ring-offset-2 disabled:opacity-60 md:px-10 md:py-5 md:text-[0.9rem] md:tracking-[0.2em]"
       >
         {busy ? 'Redirection…' : libelle}
         <ArrowRight
