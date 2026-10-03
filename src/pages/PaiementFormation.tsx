@@ -7,6 +7,7 @@ import { acheterFormation, etatAchat, getFormation, preparerPaiementIntegre, typ
 import { getMember } from '../firebase/firestore';
 import { idDeCours, cheminCours } from '../lib/cheminCours';
 import { prixEnVigueur, versementsPermis, montantVersement } from '../lib/versements';
+import { monRabaisAmbassadrice } from '../firebase/ambassadrices';
 import { StyleV2, Kicker, Masthead, Filet, GOUTTIERE } from '../components/v2/Magazine';
 import { trackObjectif } from '../lib/track';
 
@@ -82,6 +83,13 @@ const PaiementFormation: React.FC = () => {
   const { id: idAdresse = '' } = useParams();
   const id = idDeCours(idAdresse);
   const { user, authReady } = useAuth();
+  // Le rabais d'une membre arrivée par le code d'une ambassadrice : le
+  // serveur l'applique de toute façon, la page montre seulement le bon prix.
+  const [rabaisAmb, setRabaisAmb] = useState(0);
+  useEffect(() => {
+    if (!user) { setRabaisAmb(0); return; }
+    monRabaisAmbassadrice().then(r => setRabaisAmb(r.rabaisPct || 0)).catch(() => {});
+  }, [user]);
   const [formation, setFormation] = useState<Formation | null | undefined>(undefined);
   const [etat, setEtat] = useState<'aucun' | 'actif' | 'suspendu' | null>(null);
   const [choix, setChoix] = useState(1);
@@ -162,8 +170,9 @@ const PaiementFormation: React.FC = () => {
 
   const enVente = !!formation && formation.statut === 'publie' && !!formation.paywall
     && !!formation.prix && formation.prix > 0 && !formation.listeAttente;
-  const prix = enVente ? prixEnVigueur(id, formation!.prix!) : 0;
-  const options = enVente ? versementsPermis(prix) : [1];
+  const prixPlein = enVente ? prixEnVigueur(id, formation!.prix!) : 0;
+  const options = enVente ? versementsPermis(prixPlein) : [1];
+  const prix = rabaisAmb ? Math.round(prixPlein * (100 - rabaisAmb)) / 100 : prixPlein;
   const n = options.includes(choix) ? choix : 1;
   // Le nom porte sa collection après le point médian : « VATA Essentiel · L'Expérience… ».
   const [nom, ...reste] = (formation?.titre || '').split(' · ');

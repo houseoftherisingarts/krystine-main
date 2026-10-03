@@ -316,6 +316,20 @@ service cloud.firestore {
       allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
       allow write: if isAdmin();
     }
+    // Le programme des ambassadrices (functions/src/ambassadrices.ts). Le rang
+    // premium et la part se posent par l'admin; l'ambassadrice règle son
+    // partage par la fonction reglerAmbassadrice, jamais en écrivant ici.
+    match /ambassadrices/{uid} {
+      allow read: if isSelf(uid) || isAdmin();
+      allow write: if isAdmin();
+    }
+    // Le grand livre des commissions : écrit par le webhook Stripe seulement,
+    // l'admin y coche « versée ».
+    match /commissionsAmbassadrices/{id} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.ambassadriceUid == request.auth.uid);
+      allow update: if isAdmin();
+      allow create, delete: if false;
+    }
     match /achatsFormations/{uid}/formations/{fid} {
       allow read: if isSelf(uid) || isAdmin();
       allow write: if isAdmin();

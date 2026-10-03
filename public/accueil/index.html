@@ -823,6 +823,50 @@
     .gp [data-gp-content]{padding:3.4rem 0 4rem}
   }
 
+
+  /* ===== DEVENIR AMBASSADRICE (programme des ambassadrices) =====
+     Cachée tant que l'interrupteur de l'admin (siteSettings/flags.ambassadricesOuvert)
+     est éteint. La carte de droite laisse essayer le partage : le rabais de
+     l'invitée et la commission se déplacent par pas de 5. */
+  .amb{position:relative;z-index:5;background:var(--cream);padding:6rem 0 6.5rem;border-top:1px solid rgba(187,154,94,.32)}
+  .amb[hidden]{display:none}
+  .amb-grid{display:grid;grid-template-columns:1.05fr minmax(340px,.95fr);gap:clamp(2.4rem,6vw,6rem);align-items:center}
+  .amb-eyebrow{font-family:var(--serif);font-weight:600;font-size:.95rem;letter-spacing:.22em;text-transform:uppercase;color:#6a5326}
+  .amb-copy h2{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,3.6vw,2.9rem);line-height:1.04;text-transform:uppercase;letter-spacing:.01em;color:var(--ink);margin-top:.5rem;text-wrap:balance}
+  .amb-rule{width:60px;height:1px;background:var(--brass);margin:1.1rem 0 0}
+  .amb-copy p{margin-top:1.2rem;color:var(--ink-soft);line-height:1.8;font-size:1.08rem;max-width:52ch}
+  .amb-copy .btn-gold{margin-top:1.9rem}
+  .amb-copy .amb-note{margin-top:1rem;font-size:.9rem;color:#7d6330}
+  .amb-carte{position:relative;background:#fdfaf3;border:1px solid rgba(187,154,94,.55);border-radius:15px;padding:2.4rem 2.2rem 2.1rem;
+    box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 30px 60px -38px rgba(58,49,38,.55),0 8px 18px -14px rgba(58,49,38,.3)}
+  .amb-carte::before{content:'';position:absolute;inset:8px;border:1px solid rgba(187,154,94,.3);border-radius:9px;pointer-events:none}
+  .amb-carte-titre{font-family:var(--sans);font-weight:600;font-size:.82rem;letter-spacing:.22em;text-transform:uppercase;color:#7d6330;text-align:center}
+  .amb-parts{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;margin-top:1.7rem}
+  .amb-part--vous{text-align:right}
+  .amb-nb{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(3.2rem,5.4vw,4.4rem);line-height:.9;color:var(--ink);font-variant-numeric:lining-nums tabular-nums}
+  .amb-part--elle .amb-nb{color:#8B4A2F}
+  .amb-lib{display:block;margin-top:.7rem;font-family:var(--sans);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+  .amb-jauge{margin-top:1.3rem;height:5px;border-radius:999px;background:rgba(187,154,94,.38);overflow:hidden}
+  .amb-jauge span{display:block;height:100%;border-radius:999px;background:#8B4A2F;transform-origin:left center;transform:scaleX(.5);transition:transform .26s cubic-bezier(.23,1,.32,1)}
+  .amb-gestes{display:flex;gap:.7rem;margin-top:1.3rem}
+  .amb-geste{flex:1;appearance:none;cursor:pointer;min-height:48px;padding:.7rem .9rem;border-radius:999px;border:1px solid rgba(163,130,63,.6);background:transparent;
+    font-family:var(--sans);font-weight:600;font-size:.86rem;line-height:1.25;color:var(--ink);
+    transition:transform .16s cubic-bezier(.23,1,.32,1),background-color .2s ease,border-color .2s ease,opacity .2s ease}
+  .amb-geste:active{transform:scale(.97)}
+  .amb-geste:focus-visible{outline:2px solid #8B4A2F;outline-offset:3px}
+  .amb-geste:disabled{color:#6b5d4c;border-style:dashed;cursor:default;transform:none}
+  @media(hover:hover) and (pointer:fine){ .amb-geste:not(:disabled):hover{background:rgba(187,154,94,.16);border-color:#a3823f} }
+  .amb-exemple{margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid rgba(187,154,94,.35);font-family:var(--serif);font-size:1.18rem;line-height:1.45;color:var(--ink);text-align:center;min-height:3.5em;text-wrap:balance}
+  .amb .reveal.d1{transition-delay:.06s} .amb .reveal.d2{transition-delay:.14s}
+  @media(max-width:900px){
+    .amb{padding:3.6rem 0 4rem}
+    .amb-grid{grid-template-columns:1fr;gap:2.2rem}
+    .amb-copy{text-align:center}
+    .amb-rule,.amb-copy p{margin-left:auto;margin-right:auto}
+    .amb-carte{padding:2rem 1.3rem 1.7rem}
+    .amb-gestes{flex-direction:column}
+  }
+  @media(prefers-reduced-motion:reduce){ .amb-jauge span,.amb-geste{transition:none} }
 </style>
 <style>/* no-italic-rule : règle dure d'Alex, l'accent passe par la couleur et le poids */
   em,i,.italic,.foot .q,.echo-line em,.tri-foot,.fan .card .fn,.fan .card .verb,.fan-cap .fc-num,
@@ -1177,6 +1221,34 @@
             <a href="/compte" class="btn-gold btn-gold--lg">Accéder à mon espace</a>
           </div>
         <p class="fy-msg" id="fymsg" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DEVENIR AMBASSADRICE (visible seulement quand l'interrupteur de l'admin est allumé) ===== -->
+  <section class="amb" id="ambassadrice" hidden>
+    <div class="mx amb-grid">
+      <div class="amb-copy reveal">
+        <span class="amb-eyebrow">Le cercle des ambassadrices</span>
+        <h2>Devenez ambassadrice</h2>
+        <div class="amb-rule" aria-hidden="true"></div>
+        <p>Si vous parlez déjà de ces enseignements autour de vous, votre parole peut désormais porter un cadeau : la personne qui crée son espace avec votre code obtient 10 % de rabais sur les formations, et vous recevez 10 % de chacun de ses achats.</p>
+        <p>Ce partage vous appartient, et vous pouvez le déplacer à votre guise, jusqu'à offrir votre part entière à la personne que vous invitez.</p>
+        <a href="/compte?ambassadrice=1" class="btn-gold btn-gold--lg">Devenir ambassadrice</a>
+        <p class="amb-note">Votre code vous attend dans votre espace membre.</p>
+      </div>
+      <div class="amb-carte reveal d2" id="ambCarte">
+        <p class="amb-carte-titre">Essayez votre partage</p>
+        <div class="amb-parts">
+          <div class="amb-part amb-part--elle"><span class="amb-nb" id="ambRabais">10 %</span><span class="amb-lib">Rabais de votre invitée</span></div>
+          <div class="amb-part amb-part--vous"><span class="amb-nb" id="ambCommission">10 %</span><span class="amb-lib">Votre commission</span></div>
+        </div>
+        <div class="amb-jauge" aria-hidden="true"><span id="ambJauge"></span></div>
+        <div class="amb-gestes">
+          <button type="button" class="amb-geste" id="ambPlus">Donner plus à mon invitée</button>
+          <button type="button" class="amb-geste" id="ambMoins">Garder plus pour moi</button>
+        </div>
+        <p class="amb-exemple" id="ambExemple" aria-live="polite"></p>
       </div>
     </div>
   </section>
@@ -1781,6 +1853,53 @@
   };
 </script>
 <script src="/i18n/static.js" defer></script>
+  <script>
+  /* Devenir ambassadrice : la section paraît quand l'interrupteur de l'admin est
+     allumé (siteSettings/flags.ambassadricesOuvert, lu par REST), ou avec
+     ?apercu=ambassadrice pour la relire avant de l'allumer. La carte laisse
+     essayer le partage : 20 % à répartir par pas de 5, la commission comptée
+     sur ce que l'invitée paie réellement. */
+  (function(){
+    var sec = document.getElementById('ambassadrice'); if(!sec) return;
+    function montrer(){ sec.removeAttribute('hidden'); }
+    if(/[?&]apercu=ambassadrice/.test(location.search)) montrer();
+    else fetch('https://firestore.googleapis.com/v1/projects/krystinestlaurent-87566/databases/(default)/documents/siteSettings/flags')
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){ var f = d && d.fields && d.fields.ambassadricesOuvert; if(f && f.booleanValue === true) montrer(); })
+      .catch(function(){});
+
+    var PART = 20, PAS = 5, rabais = 10;
+    var elR = document.getElementById('ambRabais'), elC = document.getElementById('ambCommission'),
+        jauge = document.getElementById('ambJauge'), plus = document.getElementById('ambPlus'),
+        moins = document.getElementById('ambMoins'), ex = document.getElementById('ambExemple');
+    var calme = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function en(){ return document.documentElement.lang === 'en'; }
+    function argent(n){ var s = (Math.round(n * 100) / 100).toFixed(2).replace(/\.00$/, ''); return en() ? '$' + s : s.replace('.', ',') + ' $'; }
+    function poser(el, texte, sens){
+      if(el.textContent === texte) return;
+      el.textContent = texte;
+      if(calme || !el.animate) return;
+      el.animate([{opacity:0, transform:'translateY(' + (sens * 8) + 'px)', filter:'blur(3px)'}, {opacity:1, transform:'none', filter:'blur(0)'}],
+        {duration:240, easing:'cubic-bezier(.23,1,.32,1)'});
+    }
+    function rendre(sens){
+      var com = PART - rabais, paye = 100 - rabais;
+      poser(elR, en() ? rabais + '%' : rabais + ' %', sens);
+      poser(elC, en() ? com + '%' : com + ' %', -sens);
+      jauge.style.transform = 'scaleX(' + (rabais / PART) + ')';
+      plus.disabled = rabais >= PART; moins.disabled = rabais <= 0;
+      ex.textContent = en()
+        ? (com ? 'On a $100 course, your guest pays ' + argent(paye) + ' and you receive ' + argent(paye * com / 100) + '.'
+               : 'On a $100 course, your guest pays ' + argent(paye) + ': you give her your whole share.')
+        : (com ? 'Sur une formation de 100 $, votre invitée paie ' + argent(paye) + ' et vous recevez ' + argent(paye * com / 100) + '.'
+               : 'Sur une formation de 100 $, votre invitée paie ' + argent(paye) + ' : vous lui offrez votre part entière.');
+    }
+    plus.addEventListener('click', function(){ rabais = Math.min(PART, rabais + PAS); rendre(1); });
+    moins.addEventListener('click', function(){ rabais = Math.max(0, rabais - PAS); rendre(-1); });
+    rendre(0);
+    new MutationObserver(function(){ rendre(0); }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+  })();
+  </script>
 <script type="module" src="/accueil/glyph-portal.js"></script>
 <script type="module" src="/accueil/fleur-offres.js"></script>
 <script type="module" src="/accueil/avis-babillard.js"></script>

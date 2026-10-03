@@ -31,6 +31,7 @@ export { demanderBadgeBleu, deciderBadgeBleu } from './verification';
 export { murVoteBillet, murVoteCommentaire, murCommentaireCompte, murBilletSupprime, murCommentaireSupprime } from './mur';
 export { badgeAchatFormation, badgePremierBillet, badgeAmitieAcceptee } from './badges';
 export { parrainageFilleule, parrainageAchat, parrainagePourboire } from './parrainage';
+export { devenirAmbassadrice, reglerAmbassadrice, nommerAmbassadrice, monRabaisAmbassadrice } from './ambassadrices';
 export { groupeMembre } from './groupe';
 export { musiqueOrigine } from './musique';
 export { envoyerResultatQuiz, suiteLecture } from './quiz';

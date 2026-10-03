@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
 import { retenirCodeDepuisUrl, reclamerCodeRetenu } from '../firebase/parrainage';
 import ClientParrainage from './client/ClientParrainage';
+import ClientAmbassadrice from './client/ClientAmbassadrice';
 import Composeur from '../components/communaute/Composeur';
 import CarteRobotPotentiel from '../components/CarteRobotPotentiel';
 import { getBadgesDe, getBadgeVedetteDe, choisirBadgeVedette, oublierVedette, CATALOGUE_BADGES, COMMENT_GAGNER_BADGES } from '../firebase/badgesCatalogue';
@@ -523,6 +524,7 @@ const BanniereChoix: React.FC<{
 // fil participatif vit seulement au Foyer d'Origine (/foyer/fil).
 const RailCommunaute: React.FC<{ lang: string; uid: string }> = ({ lang, uid }) => (
   <aside className="space-y-4">
+    <ClientAmbassadrice uid={uid} lang={lang} />
     <ClientParrainage uid={uid} lang={lang} />
   </aside>
 );

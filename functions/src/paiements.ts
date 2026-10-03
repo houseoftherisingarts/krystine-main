@@ -11,6 +11,8 @@ import { traiterPaiementBillets } from './billetterie';
 import { MAIL_SECRETS } from './newsletter/mail';
 import { envoyerConfirmationAchat } from './confirmationAchat';
 import { prixEnVigueur, versementsPermis, montantVersement, FORMATION_VATA_ID } from './versements';
+import { ambassadriceDe } from './ambassadrices';
+import { prixReduitCents, commissionCents } from './ambassadricesRegles';
 
 // Le paywall des formations natives (migration Kajabi, 2026-08-28).
 // Trois portes : créer la session Stripe Checkout, encaisser le webhook qui
@@ -75,9 +77,19 @@ export const creerSessionPaiement = onCall(
       throw new HttpsError('invalid-argument', 'Ce nombre de versements n\'est pas offert pour cette formation.');
     }
 
+    // L'acheteuse arrivée par le code d'une ambassadrice paie le prix réduit
+    // du rabais que celle-ci a choisi; la commission se consigne au webhook.
+    // Une lecture qui échoue ici ne doit jamais empêcher une vente : plein prix.
+    // Sans compte, pas de code de parrainage, donc pas d'ambassadrice.
+    const amb = uid ? await ambassadriceDe(uid).catch((err) => { console.error('[paiements] ambassadrice', err); return null; }) : null;
+    const rabais = amb?.rabaisPct || 0;
+    // Le prix que l'acheteuse paie; les versements permis se décident toujours
+    // sur le prix en vigueur, avant rabais.
+    const prixPaye = rabais ? prixReduitCents(Math.round(prix * 100), rabais) / 100 : prix;
+
     const body = new URLSearchParams({
       'line_items[0][price_data][currency]': 'cad',
-      'line_items[0][price_data][product_data][name]': f.titre,
+      'line_items[0][price_data][product_data][name]': rabais ? `${f.titre} (rabais ambassadrice de ${rabais} %)` : f.titre,
       'line_items[0][price_data][tax_behavior]': 'exclusive',
       'line_items[0][quantity]': '1',
       ...TAXES_QC,
@@ -101,7 +113,7 @@ export const creerSessionPaiement = onCall(
     }
     if (versements === 1) {
       body.set('mode', 'payment');
-      body.set('line_items[0][price_data][unit_amount]', String(Math.round(prix * 100)));
+      body.set('line_items[0][price_data][unit_amount]', String(Math.round(prixPaye * 100)));
       // Le code de la récompense « 50 $ sur une formation » se tape ici
       // (echangerRecompense, functions/src/recompenses.ts) : il porte déjà
       // sa propre restriction de 50 $ minimum côté Stripe.
@@ -112,11 +124,16 @@ export const creerSessionPaiement = onCall(
       // Un abonnement mensuel que le webhook annule au dernier versement. Les
       // métadonnées suivent l'abonnement pour que chaque facture retrouve l'achat.
       body.set('mode', 'subscription');
-      body.set('line_items[0][price_data][unit_amount]', String(montantVersement(prix, versements) * 100));
+      body.set('line_items[0][price_data][unit_amount]', String(montantVersement(prixPaye, versements) * 100));
       body.set('line_items[0][price_data][recurring][interval]', 'month');
       if (uid) body.set('subscription_data[metadata][uid]', uid);
       body.set('subscription_data[metadata][formationId]', formationId);
       body.set('subscription_data[metadata][versements]', String(versements));
+    }
+    if (amb) {
+      body.set('metadata[ambassadriceUid]', amb.uid);
+      body.set('metadata[rabaisPct]', String(amb.rabaisPct));
+      body.set('metadata[commissionPct]', String(amb.commissionPct));
     }
     const email = req.auth?.token.email;
     if (email) body.set('customer_email', String(email));
@@ -625,6 +642,32 @@ export const stripeWebhook = onRequest(
     }, { merge: true });
     if (session.metadata?.cadeauId) {
       await db.doc(`cadeaux/${session.metadata.cadeauId}`).set({ statut: 'utilise', utiliseLe: FieldValue.serverTimestamp(), sessionId: session.id || '' }, { merge: true });
+    }
+    // La vente d'une ambassadrice : une ligne au grand livre des commissions,
+    // calculée sur ce qui a réellement été payé, hors taxes. create() et non
+    // set() : un webhook rejoué ne remet jamais « due » une commission versée.
+    if (session.metadata?.ambassadriceUid) {
+      // En versements, la session ne porte que le premier : la ligne compte
+      // le total attendu et garde le nombre de versements, pour que l'admin
+      // sache que l'argent rentre sur plusieurs mois.
+      const nVersements = session.mode === 'subscription' ? Number(session.metadata?.versements) || 1 : 1;
+      const payeHT = Math.max(0, (session.amount_total || 0) - detailTaxes.taxes) * nVersements;
+      const commissionPct = Number(session.metadata.commissionPct) || 0;
+      try {
+        await db.doc(`commissionsAmbassadrices/${session.id}`).create({
+          ambassadriceUid: session.metadata.ambassadriceUid,
+          acheteuseUid: uid,
+          formationId,
+          titre: f.titre || formationId,
+          payeHT,
+          rabaisPct: Number(session.metadata.rabaisPct) || 0,
+          commissionPct,
+          commission: commissionCents(payeHT, commissionPct),
+          versements: nVersements,
+          statut: 'due',
+          at: FieldValue.serverTimestamp(),
+        });
+      } catch (err) { console.log('[paiements] commission déjà consignée ou refusée', (err as Error).message); }
     }
     console.log(`[paiements] achat enregistré: ${uid} -> ${formationId}`);
     // Les séquences déclenchées par cet achat (onboarding, suite de bienvenue) :

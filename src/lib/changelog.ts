@@ -30,6 +30,18 @@ export const texteEtape = (e: Etape): string => (typeof e === 'string' ? e : e.t
 
 export const JOURNAL: EntreeJournal[] = [
   {
+    date: '2026-10-03',
+    titre: "Vos ambassadrices : un rabais pour leurs invitées, une commission pour elles",
+    intro: "Vos membres peuvent maintenant recommander vos formations et en être remerciées. La personne qui crée son espace avec le code d'une ambassadrice obtient 10 % de rabais sur vos formations, et l'ambassadrice reçoit 10 % de ce qui est payé. Le programme est prêt et reste éteint tant que vous ne l'avez pas allumé.",
+    etapes: [
+      { texte: "Sous Communauté, l'onglet « Ambassadrices » porte l'interrupteur du programme. Allumé, une section « Devenez ambassadrice » paraît au bas de votre page d'accueil, juste avant le pied de page, et vos membres s'inscrivent depuis leur espace.", ou: '/admin/ambassadrices', libelle: 'Ambassadrices' },
+      { texte: "Avant d'allumer, vous pouvez relire la section telle que vos visiteuses la verront, avec la carte où elles essaient leur partage.", ou: '/accueil?apercu=ambassadrice#ambassadrice', libelle: 'Voir la section' },
+      { texte: "Chaque ambassadrice dispose de 20 % qu'elle partage à sa guise entre le rabais de son invitée et sa commission, jusqu'à tout offrir à son invitée si elle le souhaite. Elle le règle elle-même dans son espace membre, où elle voit aussi ce que ses recommandations lui ont valu.", ou: '/compte', libelle: 'Espace membre' },
+      { texte: "Vous choisissez vous-même vos ambassadrices premium, par leur courriel, et leur part plus généreuse se règle au même endroit, pour toutes ou pour une personne en particulier.", ou: '/admin/ambassadrices', libelle: 'Nommer une premium' },
+      { texte: "Chaque vente s'inscrit d'elle-même au grand livre, avec la commission à verser. Vous faites le versement, vous cochez la ligne, et la liste se télécharge pour votre comptabilité.", ou: '/admin/ambassadrices', libelle: 'Le grand livre' },
+    ],
+  },
+  {
     date: '2026-10-02',
     titre: "Le quiz a enfin sa suite : cinq lettres Vent allumées, un chemin en deux clics vers VATA Essentiel",
     intro: "Le quiz ne laisse plus personne sans suivi. Le résultat part par courriel, la suite de la lecture est écrite, approuvée et allumée, et VATA Essentiel se trouve en deux clics.",

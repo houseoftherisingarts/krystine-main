@@ -49,6 +49,7 @@ import KajabiCodesSection from './admin/sections/KajabiCodesSection';
 import BadgeBleuSection from './admin/sections/BadgeBleuSection';
 import MessagesSection from './admin/sections/MessagesSection';
 import RecompensesSection from './admin/sections/RecompensesSection';
+import AmbassadricesSection from './admin/sections/AmbassadricesSection';
 import SkinsATravaillerSection from './admin/sections/SkinsATravaillerSection';
 import SondagesSection from './admin/sections/SondagesSection';
 import GamificationSection from './admin/sections/GamificationSection';
@@ -114,6 +115,7 @@ const AdminDashboard: React.FC = () => {
       case 'badgeBleu':   return <BadgeBleuSection />;
       case 'messages':    return <MessagesSection user={u} />;
       case 'recompenses': return <RecompensesSection />;
+      case 'ambassadrices': return <AmbassadricesSection />;
       case 'skinsATravailler': return <SkinsATravaillerSection />;
       case 'sondages':    return <SondagesSection />;
       case 'gamification': return <GamificationSection user={u} />;

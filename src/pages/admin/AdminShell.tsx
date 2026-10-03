@@ -31,6 +31,7 @@ export type AdminSectionId =
   | 'badgeBleu'
   | 'messages'
   | 'recompenses'
+  | 'ambassadrices'
   | 'skinsATravailler'
   | 'sondages'
   | 'gamification'
@@ -74,6 +75,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   badgeBleu:  'badge-bleu',
   messages:   'messages',
   recompenses:'recompenses',
+  ambassadrices:'ambassadrices',
   skinsATravailler: 'skins-a-travailler',
   sondages:   'sondages',
   gamification: 'gamification',
@@ -153,6 +155,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'badgeBleu',  label: 'Badge Bleu',       icon: 'fa-circle-check',     groupe: 'communaute' },
   { id: 'messages',   label: 'Messages',         icon: 'fa-comments',         groupe: 'communaute' },
   { id: 'recompenses', label: 'Cadeaux',         icon: 'fa-seedling',         groupe: 'communaute' },
+  { id: 'ambassadrices', label: 'Ambassadrices', icon: 'fa-handshake-angle',  groupe: 'communaute' },
   { id: 'skinsATravailler', label: 'Skins à travailler', icon: 'fa-palette',  groupe: 'reglages' },
   { id: 'sondages',   label: 'Sondages répondus', icon: 'fa-clipboard-question', groupe: 'communaute' },
   { id: 'gamification', label: 'Gamification', icon: 'fa-dice', groupe: 'communaute' },

@@ -39,6 +39,13 @@ export interface SiteFlags {
    *  page n'apparaît qu'une fois allumée. Interrupteur dans l'admin, Réglages
    *  → En préparation. Éteinte par défaut (Alex, 22 septembre 2026). */
   presseOuvert: boolean;
+  /** Le programme des ambassadrices est ouvert. Allumé, l'accueil montre la
+   *  section « Devenir ambassadrice » juste avant le pied de page et une
+   *  membre peut s'inscrire depuis son espace. Éteint, rien ne paraît; les
+   *  ambassadrices déjà inscrites gardent leur code et leurs commissions.
+   *  Interrupteur dans l'admin, section Ambassadrices. Éteint par défaut
+   *  (Alex, 3 octobre 2026). */
+  ambassadricesOuvert: boolean;
 }
 
 export const DEFAULT_FLAGS: SiteFlags = {
@@ -47,6 +54,7 @@ export const DEFAULT_FLAGS: SiteFlags = {
   origine2Ouvert: false,
   chatbotOuvert: false,
   presseOuvert: false,
+  ambassadricesOuvert: false,
 };
 
 const FLAGS_COLLECTION = 'siteSettings';

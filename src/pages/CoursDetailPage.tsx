@@ -29,6 +29,7 @@ import { nettoyerKajabi } from './cours/nettoyerKajabi';
 import StickerFormat, { formatDe } from '../components/cours/StickerFormat';
 import { prixEnVigueur } from '../lib/versements';
 import { idDeCours, cheminCours, cheminPaiement, adresseADemenager } from '../lib/cheminCours';
+import { monRabaisAmbassadrice } from '../firebase/ambassadrices';
 
 // La fiche d'un cours et son lecteur, sur le patron de l'Académie Zéro
 // Limite : liste des leçons et progression à gauche, contenu à droite,
@@ -74,6 +75,12 @@ const CoursDetailPage: React.FC = () => {
   const { user, isAdmin } = useAuth();
   const { lang } = useUI();
   const [formation, setFormation] = useState<Formation | null>(null);
+  // Le rabais qui attend une membre arrivée par le code d'une ambassadrice.
+  const [rabaisAmb, setRabaisAmb] = useState<{ rabaisPct: number; nom: string } | null>(null);
+  useEffect(() => {
+    if (!user) { setRabaisAmb(null); return; }
+    monRabaisAmbassadrice().then(r => setRabaisAmb(r.rabaisPct > 0 ? r : null)).catch(() => {});
+  }, [user]);
   const [replies, setReplies] = useState<Record<string, boolean>>({});
   const [lecons, setLecons] = useState<Lecon[]>([]);
   // Le programme refait (seuil, chemin, boîtes, diplôme) : tout cours sauf le Foyer.
@@ -707,7 +714,21 @@ const CoursDetailPage: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <p className="mt-6 font-serif text-3xl text-[#293027] dark:text-white">{formation.prix == null ? formation.prix : prixEnVigueur(id, formation.prix)} $ CA</p>
+                  {rabaisAmb && formation.prix ? (
+                    <>
+                      <p className="mt-6 font-serif text-3xl text-[#293027] dark:text-white">
+                        <span className="mr-3 text-xl text-[#38403a]/45 line-through dark:text-white/40">{prixEnVigueur(id, formation.prix)} $</span>
+                        {(Math.round(prixEnVigueur(id, formation.prix) * (100 - rabaisAmb.rabaisPct)) / 100).toLocaleString('fr-CA')} $ CA
+                      </p>
+                      <p className="mt-1 text-xs font-semibold text-[#8B4A2F]">
+                        {lang === 'FR'
+                          ? `Rabais de ${rabaisAmb.rabaisPct} % offert par ${rabaisAmb.nom || 'votre ambassadrice'}`
+                          : `${rabaisAmb.rabaisPct}% off, offered by ${rabaisAmb.nom || 'your ambassador'}`}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="mt-6 font-serif text-3xl text-[#293027] dark:text-white">{formation.prix == null ? formation.prix : prixEnVigueur(id, formation.prix)} $ CA</p>
+                  )}
                   <button
                     onClick={acheter}
                     disabled={paiement}

@@ -28,6 +28,16 @@ interface Reglage {
 
 const PAGES: Reglage[] = [
   {
+    cle: 'ambassadricesOuvert',
+    nom: 'Programme des ambassadrices',
+    quoi: "La section « Devenez ambassadrice » au bas de la page d'accueil, et l'inscription de vos membres depuis leur espace. Les parts, les premium et les commissions se règlent dans l'onglet Ambassadrices.",
+    adresse: '/accueil',
+    apercu: '/accueil?apercu=ambassadrice#ambassadrice',
+    allume: 'Ouvert, visible par tout le monde',
+    eteint: 'Éteint, rien ne paraît sur le site',
+    icone: 'fa-handshake-angle',
+  },
+  {
     cle: 'presseOuvert',
     nom: 'Salle de presse',
     quoi: "Vos visuels, vos portraits, vos biographies et le kit complet, prêts à télécharger par une journaliste ou une créatrice de contenu. Le lien Presse du pied de page n'apparaît qu'une fois la salle ouverte.",
