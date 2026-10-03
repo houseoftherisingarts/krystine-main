@@ -81,7 +81,7 @@ const SYSTEMS: Array<[string, string, React.ComponentType<{ size?: number; weigh
 // Les titres des semaines sont ceux du cours (src/pages/vata/semaines.ts), une
 // seule version partout (Krystine, 30 sept. 2026).
 const PHASES = [
-  ["Préparer votre espace", "Se sentir en sécurité avant de ralentir. Le corps s'autorise enfin à déposer les armes."],
+  ["Préparer votre espace", "Un espace bienveillant et enveloppant, rien qu'à vous, et une intention déposée chaque matin pour plonger tout en douceur."],
   ["Le souffle", "Le souffle pour calmer le tourbillon, en quelques secondes."],
   ["L'ouïe", "Fermer les portes de l'ouïe et offrir au système nerveux le calme dont il a soif."],
   ["La vue", "Reposer les yeux, loin des écrans, et retrouver une clarté que l'on croyait perdue."],

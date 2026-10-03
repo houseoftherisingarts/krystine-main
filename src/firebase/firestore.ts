@@ -1751,6 +1751,7 @@ export interface EvaluationVata {
   prenom?: string;
   vecu: number;                                  // 1 à 5
   semaine: string;                               // clé de SEMAINES_EVALUATION_VATA
+  pourquoi?: string;                             // pourquoi cette semaine
   changement?: string;
   manque?: string;
   recommande: 'oui' | 'peut-etre' | 'non';

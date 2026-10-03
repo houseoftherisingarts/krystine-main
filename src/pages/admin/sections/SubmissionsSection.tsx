@@ -298,10 +298,10 @@ const MOTS_RECOMMANDE: Record<string, string> = { oui: 'Oui', 'peut-etre': 'Peut
 function normalizeEvaluation(e: EvaluationVata): Submission {
   const details: Submission['details'] = [
     { label: 'Ces sept semaines', value: `${e.vecu}/5 · ${MOTS_VECU[e.vecu] || ''}` },
-    { label: 'La semaine qui a le plus parlé', value: titreSemaineEvaluation(e.semaine) },
+    { label: 'La semaine qui a le plus parlé', value: titreSemaineEvaluation(e.semaine) + (e.pourquoi ? ` · ${e.pourquoi}` : '') },
     { label: 'Recommanderait à une amie', value: MOTS_RECOMMANDE[e.recommande] || e.recommande },
     { label: 'Témoignage', value: e.temoignage ? (e.temoignageForme === 'anonyme' ? 'Accepte, de façon anonyme' : 'Accepte, avec le prénom seulement') : 'Non' },
-    { label: 'Prochaine saison', value: e.suiteSaison ? 'Veut être avisée (étiquette suite-apres-vata)' : 'Non' },
+    { label: 'Prochaine saison', value: e.suiteSaison ? 'Veut être avisée (étiquettes ea-vata-ancienne et demande-prochaine-saison)' : 'Non' },
   ];
   if (e.manque) details.push({ label: 'Ce qui a manqué', value: e.manque });
   return {
@@ -310,7 +310,7 @@ function normalizeEvaluation(e: EvaluationVata): Submission {
     name: e.prenom || e.email.split('@')[0],
     email: e.email,
     source: 'evaluation-vata',
-    tags: e.suiteSaison ? ['suite-apres-vata'] : [],
+    tags: e.suiteSaison ? ['ea-vata-ancienne', 'demande-prochaine-saison'] : [],
     createdAt: e.modifieLe || e.creeLe,
     summary: `${MOTS_VECU[e.vecu] || e.vecu} · ${titreSemaineEvaluation(e.semaine)} · recommande : ${MOTS_RECOMMANDE[e.recommande] || e.recommande}`,
     message: e.changement ? `Ce qui a changé : ${e.changement}` : undefined,

@@ -19,7 +19,7 @@ import { cheminCours } from '../lib/cheminCours';
 // d'infolettre par la porte serveur habituelle (inscrireInfolettre).
 
 const COURRIEL_EQUIPE = 'teamksl@inspiratanature.com';
-const ETIQUETTE_SUITE = 'suite-apres-vata';
+const ETIQUETTES_SUITE = ['ea-vata-ancienne', 'demande-prochaine-saison'];
 
 const ECHELLE: [number, string][] = [
   [1, 'Plutôt difficile'],
@@ -57,6 +57,7 @@ const EvaluationVata: React.FC = () => {
   const [prenom, setPrenom] = useState('');
   const [vecu, setVecu] = useState(0);
   const [semaine, setSemaine] = useState('');
+  const [pourquoi, setPourquoi] = useState('');
   const [changement, setChangement] = useState('');
   const [manque, setManque] = useState('');
   const [recommande, setRecommande] = useState<EvaluationVata['recommande'] | ''>('');
@@ -81,7 +82,7 @@ const EvaluationVata: React.FC = () => {
       if (ev) {
         setAvant(ev);
         setPrenom(ev.prenom || nom);
-        setVecu(ev.vecu); setSemaine(ev.semaine);
+        setVecu(ev.vecu); setSemaine(ev.semaine); setPourquoi(ev.pourquoi || '');
         setChangement(ev.changement || ''); setManque(ev.manque || '');
         setRecommande(ev.recommande);
         setTemoignage(ev.temoignage); setForme(ev.temoignageForme || 'prenom');
@@ -112,6 +113,7 @@ const EvaluationVata: React.FC = () => {
         prenom: prenom.trim().slice(0, 80) || undefined,
         vecu,
         semaine,
+        pourquoi: pourquoi.trim().slice(0, 2000) || undefined,
         changement: changement.trim().slice(0, 4000) || undefined,
         manque: manque.trim().slice(0, 4000) || undefined,
         recommande: recommande as EvaluationVata['recommande'],
@@ -122,7 +124,7 @@ const EvaluationVata: React.FC = () => {
       // La prochaine saison : l'étiquette sur sa fiche d'infolettre, une fois.
       if (suite && !avant?.suiteSaison && email) {
         addNewsletterSubscriber({
-          email, firstName: prenom.trim() || undefined, source: 'evaluation-vata', tags: [ETIQUETTE_SUITE], status: 'active',
+          email, firstName: prenom.trim() || undefined, source: 'evaluation-vata', tags: ETIQUETTES_SUITE, status: 'active',
         }).catch(err => console.warn('[evaluation] étiquette suite-apres-vata', err));
       }
       setAvant(await getMonEvaluationVata(user.uid).catch(() => null));
@@ -209,6 +211,11 @@ const EvaluationVata: React.FC = () => {
               </button>
             ))}
           </div>
+          <label className="mt-6 block">
+            <span className={`${QUESTION} block`}>Pourquoi celle-là ?</span>
+            <textarea value={pourquoi} onChange={e => setPourquoi(e.target.value)} rows={3} maxLength={2000}
+              placeholder="Ce qu’elle a touché chez vous, ce que vous en gardez…" className={`${CHAMP} mt-4 resize-y`} />
+          </label>
         </fieldset>
 
         <label className="block">
