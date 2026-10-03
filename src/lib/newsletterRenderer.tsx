@@ -120,7 +120,7 @@ const phrasesEnHtml = (h: string) => h
 export function richToHtml(text: string): string {
   return phrasesEnHtml(escHtml(text))
     .replace(/&lt;(\/?)(b|i|u)&gt;/g, '<$1$2>')
-    .replace(/&lt;a href=&quot;(https?:\/\/[^&]*?)&quot;&gt;/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:#8B4A2F;text-decoration:underline;">')
+    .replace(/&lt;a href=&quot;(https?:\/\/(?:[^&]|&amp;)*?)&quot;&gt;/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:#8B4A2F;text-decoration:underline;">')
     .replace(/&lt;\/a&gt;/g, '</a>')
     .replace(/\r?\n/g, '<br />');
 }

@@ -211,7 +211,7 @@ function richToHtml(text: string, accent: string = CHARTE.goldInk): string {
     .replace(/&lt;(grand|tgrand|manu)&gt;/g, (_m, k: string) => `<span style="${STYLES_PHRASE[k]}">`)
     .replace(/&lt;\/(grand|tgrand|manu)&gt;/g, '</span>')
     .replace(/&lt;(\/?)(b|i|u)&gt;/g, '<$1$2>')
-    .replace(/&lt;a href=&quot;((?:https?:\/\/|mailto:)[^&]*?)&quot;&gt;/g, `<a href="$1" target="_blank" style="color:${accent};text-decoration:underline;">`)
+    .replace(/&lt;a href=&quot;((?:https?:\/\/|mailto:)(?:[^&]|&amp;)*?)&quot;&gt;/g, `<a href="$1" target="_blank" style="color:${accent};text-decoration:underline;">`)
     .replace(/&lt;\/a&gt;/g, '</a>');
 }
 function stripRich(text: string): string {
