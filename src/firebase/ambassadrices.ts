@@ -1,6 +1,6 @@
 import app, { db } from '../firebase';
 import {
-  doc, getDoc, setDoc, getDocs, collection, query, where, serverTimestamp, type Timestamp,
+  doc, getDoc, setDoc, getDocs, collection, collectionGroup, query, where, serverTimestamp, type Timestamp,
 } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 
@@ -112,3 +112,69 @@ export async function setPartPremium(partPremium: number): Promise<void> {
 
 export const nommerAmbassadrice = (email: string, premium: boolean) =>
   appel<{ uid: string; code: string }>('nommerAmbassadrice', { email, premium });
+
+// ─── Les meilleures candidates ──────────────────────────────────────────────
+// Un indice de 0 à 100 qui classe les membres selon ce que leur fiche montre
+// déjà : ce qu'elles ont suivi, ce qu'elles ont déjà fait venir, et si elles
+// sont encore présentes. Ce n'est pas une prédiction savante : la même
+// recette pour tout le monde, lisible ligne par ligne ci-dessous.
+
+export interface Candidate {
+  uid: string; nom: string; email: string; indice: number; raisons: string[];
+}
+
+interface FicheCandidate {
+  formations: number; totalHT: number; filleules: number; filleulesAcheteuses: number;
+  joursDepuisVisite: number | null; moisAnciennete: number;
+}
+
+export function indiceCandidate(f: FicheCandidate): number {
+  const pts =
+      Math.min(f.formations, 4) / 4 * 30                 // elle a suivi des formations
+    + Math.min(f.totalHT / 50000, 1) * 15                // elle y a investi (plafond 500 $)
+    + Math.min(f.filleules, 5) / 5 * 25                  // elle invite déjà
+    + Math.min(f.filleulesAcheteuses, 2) / 2 * 15        // ses invitées achètent
+    + (f.joursDepuisVisite == null ? 0 : f.joursDepuisVisite <= 30 ? 10 : f.joursDepuisVisite <= 90 ? 5 : 0)
+    + (f.moisAnciennete >= 6 ? 5 : 0);
+  return Math.round(pts);
+}
+
+export async function candidatesAmbassadrices(exclure: string[]): Promise<Candidate[]> {
+  if (!db) return [];
+  const [membres, achats] = await Promise.all([
+    getDocs(collection(db, 'members')),
+    getDocs(collectionGroup(db, 'formations')),
+  ]);
+  // Seules les vraies ventes Stripe comptent (même filtre que commandes.ts).
+  const parUid: Record<string, { n: number; ht: number }> = {};
+  for (const d of achats.docs) {
+    const uid = d.ref.parent.parent?.id;
+    const a = d.data() as { sessionId?: string; montantHT?: number; montant?: number };
+    if (!uid || d.ref.parent.parent?.parent.id !== 'achatsFormations' || !a.sessionId) continue;
+    const e = (parUid[uid] ||= { n: 0, ht: 0 });
+    e.n += 1; e.ht += typeof a.montantHT === 'number' ? a.montantHT : Math.round((a.montant || 0) * 100);
+  }
+  const jour = 86400000, maintenant = Date.now();
+  const hors = new Set(exclure);
+  return membres.docs
+    .map(d => {
+      const m = d.data() as { uid?: string; email?: string; displayName?: string; filleules?: number; filleulesAcheteuses?: number; joinedAt?: Timestamp; lastSeenAt?: Timestamp };
+      const uid = m.uid || d.id;
+      const a = parUid[uid] || { n: 0, ht: 0 };
+      const vue = m.lastSeenAt ? Math.floor((maintenant - m.lastSeenAt.toMillis()) / jour) : null;
+      const fiche: FicheCandidate = {
+        formations: a.n, totalHT: a.ht, filleules: m.filleules || 0, filleulesAcheteuses: m.filleulesAcheteuses || 0,
+        joursDepuisVisite: vue, moisAnciennete: m.joinedAt ? (maintenant - m.joinedAt.toMillis()) / (30 * jour) : 0,
+      };
+      const raisons = [
+        a.n ? `${a.n} formation${a.n > 1 ? 's' : ''} suivie${a.n > 1 ? 's' : ''}` : '',
+        fiche.filleules ? `${fiche.filleules} invitée${fiche.filleules > 1 ? 's' : ''} déjà` : '',
+        fiche.filleulesAcheteuses ? `${fiche.filleulesAcheteuses} invitée${fiche.filleulesAcheteuses > 1 ? 's' : ''} en formation` : '',
+        vue != null && vue <= 30 ? 'présente ce mois-ci' : '',
+      ].filter(Boolean);
+      return { uid, nom: m.displayName || m.email || uid, email: m.email || '', indice: indiceCandidate(fiche), raisons };
+    })
+    .filter(c => c.indice > 0 && c.email && !hors.has(c.uid) && !hors.has(c.email))
+    .sort((x, y) => y.indice - x.indice)
+    .slice(0, 15);
+}

@@ -103,6 +103,8 @@ const QuestionLive = lazy(() => import('./src/pages/podcast/QuestionLive'));
 const DirectPage = lazy(() => import('./src/pages/DirectPage'));
 // La salle de presse : les faits, les visuels 1920 × 1080 et le zip du kit.
 const PressePage = lazy(() => import('./src/pages/PressePage'));
+// Le programme des ambassadrices, expliqué (éteint tant que l'interrupteur de l'admin l'est).
+const AmbassadricesPage = lazy(() => import('./src/pages/AmbassadricesPage'));
 
 // On-palette loader (crème V2 + laiton). Le site est magazine crème :
 // un loader espresso flashait un écran brun entre deux pages claires.
@@ -302,6 +304,7 @@ const App: React.FC = () => (
               Quatre adresses mènent à la même page, pour qu'un raccourci
               écrit de mémoire dans un courriel tombe juste à tout coup. */}
           <Route path="/presse"    element={<PressePage />} />
+          <Route path="/ambassadrices" element={<AmbassadricesPage />} />
           <Route path="/presskit"  element={<PressePage />} />
           <Route path="/press-kit" element={<PressePage />} />
           <Route path="/en/press"  element={<PressePage />} />

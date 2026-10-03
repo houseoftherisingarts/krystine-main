@@ -38,6 +38,8 @@ export const JOURNAL: EntreeJournal[] = [
       { texte: "Avant d'allumer, vous pouvez relire la section telle que vos visiteuses la verront, avec la carte où elles essaient leur partage.", ou: '/accueil?apercu=ambassadrice#ambassadrice', libelle: 'Voir la section' },
       { texte: "Chaque ambassadrice dispose de 20 % qu'elle partage à sa guise entre le rabais de son invitée et sa commission, jusqu'à tout offrir à son invitée si elle le souhaite. Elle le règle elle-même dans son espace membre, où elle voit aussi ce que ses recommandations lui ont valu.", ou: '/compte', libelle: 'Espace membre' },
       { texte: "Vous choisissez vous-même vos ambassadrices premium, par leur courriel, et leur part plus généreuse se règle au même endroit, pour toutes ou pour une personne en particulier.", ou: '/admin/ambassadrices', libelle: 'Nommer une premium' },
+      { texte: "Une liste « Vos meilleures candidates » classe vos membres par leurs chances de bien porter votre parole, d'après les formations suivies, les personnes déjà invitées et leur présence récente. Chaque ligne offre « Lui écrire » et « Nommer ambassadrice ».", ou: '/admin/ambassadrices', libelle: 'Vos meilleures candidates' },
+      { texte: "Une page explique le programme à vos membres : les quatre gestes, le partage à essayer et les questions qui reviennent. Elle s'ouvre au public en même temps que le programme, et vous pouvez la relire dès maintenant.", ou: '/ambassadrices', libelle: 'La page du programme' },
       { texte: "Chaque vente s'inscrit d'elle-même au grand livre, avec la commission à verser. Vous faites le versement, vous cochez la ligne, et la liste se télécharge pour votre comptabilité.", ou: '/admin/ambassadrices', libelle: 'Le grand livre' },
     ],
   },

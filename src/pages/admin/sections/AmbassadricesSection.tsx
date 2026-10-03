@@ -4,7 +4,7 @@ import { setSiteFlag, subscribeToSiteFlags } from '../../../firebase/siteFlags';
 import {
   listerAmbassadrices, listerCommissions, majAmbassadrice, marquerCommission, nommerAmbassadrice,
   getPartPremium, setPartPremium, partDe, rabaisDe, dollars,
-  PART_DEFAUT, PART_MAX, PAS, type Ambassadrice, type Commission,
+  candidatesAmbassadrices, PART_DEFAUT, PART_MAX, PAS, type Ambassadrice, type Commission, type Candidate,
 } from '../../../firebase/ambassadrices';
 
 // La section Ambassadrices de l'admin : l'interrupteur du programme, la part
@@ -27,11 +27,17 @@ const AmbassadricesSection: React.FC = () => {
   const [premium, setPremium] = useState(true);
   const [occupe, setOccupe] = useState(false);
   const [message, setMessage] = useState('');
+  const [candidates, setCandidates] = useState<Candidate[] | null>(null);
 
   useEffect(() => subscribeToSiteFlags(f => { setOuvert(f.ambassadricesOuvert); setPret(true); }), []);
 
   const charger = () => Promise.all([listerAmbassadrices(), listerCommissions(), getPartPremium()])
-    .then(([l, v, pp]) => { setListe(l); setVentes(v); setPP(pp); })
+    .then(([l, v, pp]) => {
+      setListe(l); setVentes(v); setPP(pp);
+      // Les candidates : tout le monde sauf les ambassadrices déjà inscrites et l'équipe.
+      candidatesAmbassadrices([...l.map(a => a.uid), 'houseoftherisingarts@gmail.com', 'krystinestterredhysope@gmail.com', 'alex@lesalondesinconnus.com', 'krystinestlaurent@gmail.com'])
+        .then(setCandidates).catch(() => setCandidates([]));
+    })
     .catch(() => {})
     .finally(() => setCharge(false));
   useEffect(() => { void charger(); }, []);
@@ -55,6 +61,11 @@ const AmbassadricesSection: React.FC = () => {
   const verser = async (v: Commission, versee: boolean) => {
     setVentes(l => l.map(x => (x.id === v.id ? { ...x, statut: versee ? 'versee' : 'due' } : x)));
     await marquerCommission(v.id, versee).catch(() => charger());
+  };
+  const inviter = async (c: Candidate) => {
+    setCandidates(l => (l || []).filter(x => x.uid !== c.uid));
+    try { await nommerAmbassadrice(c.email, false); await charger(); }
+    catch { setMessage(`${c.nom} n'a pas pu être nommée. Réessayez.`); }
   };
   const nommer = async () => {
     setOccupe(true); setMessage('');
@@ -81,6 +92,9 @@ const AmbassadricesSection: React.FC = () => {
           ambassadrice dispose de {PART_DEFAUT} %, soit 10 % pour sa cliente et 10 % pour elle au départ, et elle peut
           déplacer ce partage jusqu'à tout offrir à sa cliente.
         </p>
+        <a href="/ambassadrices" target="_blank" rel="noopener noreferrer" className="mt-3 inline-block border-b border-[#BA7B39] pb-0.5 text-sm font-semibold text-[#8B4A2F]">
+          Voir la page qui explique le programme à vos membres
+        </a>
         <div className="mt-5 flex items-center gap-4 rounded-2xl border border-[#38403a]/10 bg-white/50 px-4 py-3 dark:border-white/10 dark:bg-white/5">
           <ToggleSwitch checked={ouvert} onChange={v => { setOuvert(v); void setSiteFlag('ambassadricesOuvert', v); }} />
           <div className="min-w-0">
@@ -128,6 +142,46 @@ const AmbassadricesSection: React.FC = () => {
           {message && <p className="mt-3 text-sm text-[#8B4A2F]">{message}</p>}
         </Card>
       </div>
+
+      <Card className="p-6">
+        <p className={surtitre}>À qui en parler d'abord</p>
+        <h3 className="mt-1 font-serif text-xl text-[#293027] dark:text-white">Vos meilleures candidates</h3>
+        <p className={aide}>
+          Vos membres classées par leurs chances de bien porter votre parole. L'indice vient de ce que leur fiche montre déjà :
+          les formations suivies, les personnes qu'elles ont invitées, celles qui ont acheté grâce à elles et leur présence récente.
+          Écrivez-leur un mot personnel, puis nommez-les d'un geste.
+        </p>
+        {candidates === null ? (
+          <p className="mt-6 text-sm text-[#293027]/50 dark:text-white/50"><i className="fa-solid fa-circle-notch fa-spin mr-2" />Lecture de vos membres…</p>
+        ) : candidates.length === 0 ? (
+          <EmptyState icon="fa-seedling">Aucune candidate ne ressort pour l'instant. La liste se remplira avec les achats et les invitations.</EmptyState>
+        ) : (
+          <ol className="mt-4 divide-y divide-[#38403a]/10 dark:divide-white/10">
+            {candidates.map((c, i) => (
+              <li key={c.uid} className="flex flex-wrap items-center gap-x-5 gap-y-3 py-3.5">
+                <span className="w-6 shrink-0 text-xs tabular-nums text-[#293027]/45 dark:text-white/45">{i + 1}</span>
+                <div className="w-[74px] shrink-0">
+                  <p className="font-serif text-2xl leading-none tabular-nums text-[#8B4A2F]">{c.indice} %</p>
+                  <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-[#BA7B39]/20" aria-hidden="true">
+                    <div className="h-full w-full origin-left rounded-full bg-[#BA7B39]" style={{ transform: `scaleX(${c.indice / 100})` }} />
+                  </div>
+                </div>
+                <div className="min-w-[200px] flex-1">
+                  <p className="font-semibold text-[#293027] dark:text-white">{c.nom}</p>
+                  <p className="text-xs text-[#293027]/55 dark:text-white/55">{c.raisons.join(' · ') || c.email}</p>
+                </div>
+                <a
+                  href={`mailto:${c.email}`}
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[#38403a]/15 bg-white/40 px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest text-[#38403a]/70 transition-[border-color,color,transform] hover:border-[#BA7B39] hover:text-[#8B4A2F] active:scale-[0.98] dark:border-white/10 dark:bg-white/5 dark:text-white/70"
+                >
+                  Lui écrire
+                </a>
+                <GhostButton onClick={() => inviter(c)}>Nommer ambassadrice</GhostButton>
+              </li>
+            ))}
+          </ol>
+        )}
+      </Card>
 
       <Card className="p-6">
         <p className={surtitre}>Les ambassadrices</p>

@@ -76,6 +76,9 @@ const ClientAmbassadrice: React.FC<{ uid: string; lang: string }> = ({ uid, lang
         >
           {occupe ? (fr ? 'Un instant…' : 'One moment…') : (fr ? 'Devenir ambassadrice' : 'Become an ambassador')}
         </button>
+        <a href="/ambassadrices" className="mt-3 block text-center text-[13px] font-semibold text-[#8B4A2F] underline underline-offset-4 dark:text-[#e0b98a]">
+          {fr ? 'Comprendre le programme' : 'Understand the program'}
+        </a>
         {erreur && <p className="mt-2 text-[11px] text-[#8B4A2F]">{erreur}</p>}
       </div>
     );
