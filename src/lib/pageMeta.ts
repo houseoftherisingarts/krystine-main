@@ -65,8 +65,10 @@ const ROUTES: Record<string, PageMeta> = {
     description: 'Les boutiques partenaires où trouver les livres et rituels Inspirata au Québec.',
   },
   '/quiz': {
-    title: `Quiz Dosha · ${SITE}`,
-    description: 'Dix questions pour révéler votre dominance du moment: Vata, Pitta ou Kapha. 3 minutes.',
+    title: 'De quoi ai-je besoin en ce moment ? · Le quiz de Krystine St-Laurent',
+    description: 'En 3 minutes, repérez les éléments qui prennent le plus de place chez vous ces temps-ci, et ce qui peut les équilibrer.',
+    image: '/quiz/apercu-quiz.jpg',
+    imageAlt: 'Le quiz de Krystine St-Laurent : les trois pictos Vata, Pitta et Kapha',
   },
   '/guide': {
     title: `Laissez-vous guider · ${SITE}`,

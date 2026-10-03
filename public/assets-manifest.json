@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-03T21:46:28.176Z",
+  "generatedAt": "2026-10-03T22:56:52.527Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2065,6 +2065,13 @@
       "folder": "pubs/posts",
       "kind": "image",
       "size": 20200
+    },
+    {
+      "path": "/quiz/apercu-quiz.jpg",
+      "name": "apercu-quiz.jpg",
+      "folder": "quiz",
+      "kind": "image",
+      "size": 90115
     },
     {
       "path": "/quiz/quiz-dosha-banniere-poster.jpg",
