@@ -5195,5 +5195,41 @@
       "src/pages/concepts/KrystineV2.tsx",
       "src/pages/foyer/Cta.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-03T00:54:10.171Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "237d6a1a",
+    "message": "VATA Essentiel sans « Édition d'automne » ni mention de communauté; le mot « gratuit » retiré de tout le site; liens des réseaux sociaux vérifiés",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/growth/index.ts",
+      "functions/src/newsletter/chatbot.ts",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "scripts/i18n/strings.fr.json",
+      "scripts/qa/_tmp-quiz-relecture.mjs",
+      "src/components/client/BoutiqueNiskas.tsx",
+      "src/content/presse.ts",
+      "src/firebase/growth.ts",
+      "src/lib/guideEngine.ts",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/CoursPage.tsx",
+      "src/pages/FormationsLoeuvre.tsx",
+      "src/pages/FormationsPage.tsx",
+      "src/pages/GuideLoeuvre.tsx",
+      "src/pages/VataExperience.tsx",
+      "src/pages/admin/sections/GrowthSection.tsx",
+      "src/pages/admin/sections/growth/FicheResultat.tsx",
+      "src/pages/client/ClientFormations.tsx",
+      "src/pages/concepts/FormationsV2.tsx",
+      "src/pages/podcast/App.tsx",
+      "src/pages/vata/constants.ts",
+      "src/pages/vata/semaines.ts"
+    ]
   }
 ]
