@@ -9,10 +9,10 @@ import {
 } from '@phosphor-icons/react';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT } from '../content';
-import { addDoshaQuizResult, updateMember, addNewsletterSubscriber } from '../firebase/firestore';
+import { addDoshaQuizResult, updateMember } from '../firebase/firestore';
 import { trackLead, trackInterne, noterSource } from '../lib/track';
 import { points } from '../firebase/points';
-import { envoyerResultatQuiz } from '../firebase/quiz';
+import { envoyerResultatQuiz, suiteQuiz, type EtatSuite } from '../firebase/quiz';
 import { RECAPTCHA_SITE_KEY, useRecaptcha } from '../lib/recaptcha';
 import {
   getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct,
@@ -511,6 +511,74 @@ const DoshaStat: React.FC<{ d: DoshaType; pct: number; label: string }> = ({ d, 
   );
 };
 
+/* ── La suite de lecture (Krystine, 3 oct. 2026) ──
+   Miroir de SUITE_PRETE (functions/src/quizCourriel.ts) : les dominances qui
+   ont déjà leur séquence de suite. Jamais d'inscription sans un geste de la
+   personne, sauf l'abonnée active (consentement déjà donné), dont l'étiquette
+   de suite se pose côté serveur. */
+const SUITE_PRETE: Record<DoshaType, boolean> = { vata: true, pitta: false, kapha: false };
+const PHRASE_SUITE = (d: DoshaType, prete: boolean) => prete
+  ? 'Quelques lettres pour comprendre ce dont vous avez besoin en ce moment et ce qui peut aider. Vous pouvez vous désabonner en un clic.'
+  : `Nous vous écrirons lorsque la suite pour ${nomme(d)} sera prête. Vous pouvez vous désabonner en un clic.`;
+const PHRASE_FORMULAIRE = (d: DoshaType, prete: boolean) => prete
+  ? 'Votre lecture vous arrive tout de suite, puis quelques lettres pour comprendre ce dont vous avez besoin en ce moment et ce qui peut aider. Vous pouvez vous désabonner en un clic.'
+  : `Votre lecture vous arrive tout de suite, puis nous vous écrirons lorsque la suite pour ${nomme(d)} sera prête. Vous pouvez vous désabonner en un clic.`;
+const NOTE_SUITE = (d: DoshaType, prete: boolean) => prete
+  ? 'C’est noté. La première lettre arrive dans deux jours.'
+  : `C’est noté. Nous vous écrirons lorsque la suite pour ${nomme(d)} sera prête.`;
+
+const BlocSuite: React.FC<{
+  etat: EtatSuite | 'envoyee';
+  dosha: DoshaType;
+  prete: boolean;
+  occupe: boolean;
+  onInscrire: () => void;
+  onRefuser: () => void;
+}> = ({ etat, dosha, prete, occupe, onInscrire, onRefuser }) => {
+  const lien = 'text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/60 border-b border-[#1c1712]/30 pb-1 transition-colors hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px] disabled:opacity-50';
+  let corps: React.ReactNode;
+  if (etat === 'offre') {
+    corps = (
+      <>
+        <p className="v2-serif font-light text-[clamp(1.25rem,2vw,1.55rem)] leading-snug text-[#1c1712]">Recevoir la suite de ma lecture</p>
+        <p className="mt-3 text-[0.9rem] leading-relaxed text-[#3a2f23] max-w-[44ch] mx-auto">{PHRASE_SUITE(dosha, prete)}</p>
+        <button
+          type="button"
+          onClick={onInscrire}
+          disabled={occupe}
+          className="mt-6 w-full inline-flex items-center justify-center gap-3 bg-[#1c1712] px-8 py-4 text-[0.7rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] disabled:opacity-60 min-h-[44px]"
+        >
+          {occupe ? 'Un instant…' : <>{prete ? 'Recevoir la suite de ma lecture' : 'Être avisée lorsque la suite sera prête'} <ArrowRight size={15} weight="regular" /></>}
+        </button>
+      </>
+    );
+  } else if (etat === 'auto' || etat === 'deja') {
+    corps = (
+      <>
+        <p className="v2-serif font-light text-[clamp(1.15rem,1.9vw,1.4rem)] leading-snug text-[#1c1712]">
+          {etat === 'deja'
+            ? 'La suite de votre lecture vous arrive déjà par courriel.'
+            : prete
+              ? 'Votre lecture continue par courriel : la première lettre arrive dans deux jours.'
+              : `Votre lecture continuera par courriel lorsque la suite pour ${nomme(dosha)} sera prête.`}
+        </p>
+        <button type="button" onClick={onRefuser} disabled={occupe} className={`mt-4 ${lien}`}>Je préfère ne pas recevoir la suite</button>
+      </>
+    );
+  } else if (etat === 'refusee') {
+    corps = <p className="text-[0.95rem] leading-relaxed text-[#3a2f23]">C’est noté : la suite ne vous sera pas envoyée. Vous restez abonnée à nos lettres.</p>;
+  } else if (etat === 'desabonnee') {
+    corps = <p className="text-[0.95rem] leading-relaxed text-[#3a2f23]">Votre adresse est désabonnée de nos lettres. Pour les recevoir de nouveau, écrivez-nous à teamksl@inspiratanature.com.</p>;
+  } else {
+    corps = <p className="v2-serif font-light text-[clamp(1.15rem,1.9vw,1.4rem)] leading-snug text-[#1c1712]">{NOTE_SUITE(dosha, prete)}</p>;
+  }
+  return (
+    <div role="status" className="mt-10 mx-auto max-w-[34rem] border border-[#9c7a44]/50 bg-[#faf6ee] px-6 py-7 text-center">
+      {corps}
+    </div>
+  );
+};
+
 /* ════════════════════════ Le quiz (carte question + progression + résultat) ════════════════════════ */
 
 const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
@@ -607,19 +675,33 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
     setTeaser(null);
     setResult(null);
     setEnvoye(false);
+    setSuite(null);
     resultatVu.current = false;
   };
 
-  // Le consentement au fil, demandé au moment de créer son compte pour voir le
-  // résultat (Krystine, 2 oct. 2026 : 95 quiz, 13 inscrites). Jamais coché
-  // d'avance; gardé le temps de la connexion Google.
-  const [fil, setFil] = useState<boolean>(() => { try { return sessionStorage.getItem('quiz-fil') === '1'; } catch { return false; } });
-  const choisirFil = (v: boolean) => { setFil(v); try { sessionStorage.setItem('quiz-fil', v ? '1' : '0'); } catch { /* sans stockage */ } };
+  // La suite de lecture à l'écran du résultat. Personne connectée : l'état
+  // vient de la fonction suiteQuiz (adresse du compte, dernier résultat).
+  // Personne non connectée : 'envoyee' si elle a choisi « Recevoir ma lecture
+  // et sa suite », rien si elle a choisi seulement son résultat.
+  const [suite, setSuite] = useState<null | { etat: EtatSuite | 'envoyee'; dosha: DoshaType; prete: boolean }>(null);
+  const [suiteOccupe, setSuiteOccupe] = useState(false);
+  const agirSuite = async (action: 'inscrire' | 'refuser') => {
+    setSuiteOccupe(true);
+    try {
+      const r = await suiteQuiz(action);
+      setSuite(r);
+      if (action === 'inscrire' && r.etat === 'inscrite') {
+        trackLead('quiz');
+        if (user) { try { await points.newsletterSigned(user.uid, 'quiz'); } catch { /* non-fatal */ } }
+      }
+    } catch { /* le bouton reste là; rien n'est écrit sans réponse du serveur */ }
+    finally { setSuiteOccupe(false); }
+  };
 
   // « Recevoir mon résultat » (Krystine, 2 oct. 2026) : une visiteuse reçoit
   // son résultat par courriel sans créer de compte. La fonction
   // `envoyerResultatQuiz` vérifie le jeton reCAPTCHA, enregistre le résultat,
-  // envoie le courriel et inscrit au fil seulement si la case est cochée.
+  // envoie le courriel et inscrit au fil seulement par le bouton principal.
   const [prenom, setPrenom] = useState('');
   const [courriel, setCourriel] = useState('');
   const [pot, setPot] = useState('');
@@ -627,7 +709,10 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   const [envoye, setEnvoye] = useState(false);
   const captcha = useRecaptcha(!user && !!teaser && !result);
 
-  const envoyerResultat = async (e: React.FormEvent) => {
+  // Deux gestes (Krystine, 3 oct. 2026) : le bouton principal « Recevoir ma
+  // lecture et sa suite » vaut consentement (geste positif, clairement
+  // décrit juste au-dessus); le petit lien donne le résultat seul.
+  const envoyerResultat = async (e: React.FormEvent, avecSuite = true) => {
     e.preventDefault();
     if (!teaser) return;
     setErreurEnvoi(null);
@@ -641,11 +726,15 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
         email: courriel.trim(),
         dominant: teaser.dominant.name,
         pourcentages: teaser.percentages,
-        suite: fil,
+        suite: avecSuite,
         token: captcha.getToken(),
         site: pot,
       });
-      if (fil) { trackLead('quiz'); try { sessionStorage.removeItem('quiz-fil'); } catch { /* sans stockage */ } }
+      if (avecSuite) {
+        trackLead('quiz');
+        const d1 = lireProfil(teaser.percentages).d1;
+        setSuite({ etat: 'envoyee', dosha: d1, prete: SUITE_PRETE[d1] });
+      }
       setEnvoye(true);
       setResult({ dominant: teaser.dominant, percentages: teaser.percentages });
     } catch (err: any) {
@@ -680,20 +769,9 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
       // Loyalty: 5 pts for completing the quiz. Idempotent on quiz:{uid},
       // so retaking the quiz doesn't re-grant.
       try { await points.quizCompleted(user.uid); } catch { /* non-fatal */ }
-      if (fil && user.email) {
-        try {
-          const profil = lireProfil(percentages);
-          const ins = await addNewsletterSubscriber({ email: user.email, firstName: firstName || undefined, source: 'quiz', tags: ['quiz', `dosha-${String(dominant.name || '').toLowerCase()}`, ...profil.etiquettes] } as any);
-          // L'étiquette de suite part dans un second appel, APRÈS l'inscription :
-          // la séquence ne démarre que sur une fiche modifiée, jamais à sa création.
-          if (ins && ins.status === 'active') {
-            try { await addNewsletterSubscriber({ email: user.email, source: 'quiz', tags: [profil.suite] } as any); } catch { /* la suite n'empêche jamais le résultat */ }
-          }
-          trackLead('quiz');
-          try { await points.newsletterSigned(user.uid, 'quiz'); } catch { /* non-fatal */ }
-          try { sessionStorage.removeItem('quiz-fil'); } catch { /* sans stockage */ }
-        } catch { /* l'inscription au fil n'empêche jamais le résultat */ }
-      }
+      // Abonnée active : la suite se pose d'elle-même côté serveur; sinon,
+      // l'écran lui offre le bouton. La suite n'empêche jamais le résultat.
+      try { setSuite(await suiteQuiz('etat')); } catch { /* sans bloc de suite */ }
     } catch {}
     finally { setSubmitting(false); }
     setResult({ dominant, percentages });
@@ -776,6 +854,17 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                   ? String(result.dominant.definition || '').replace(/^(Vata|Pitta|Kapha)\b/, m => nomme(m.toLowerCase() as DoshaType))
                   : result.dominant.definition}
               </p>
+
+              {suite && lang === 'FR' && (
+                <BlocSuite
+                  etat={suite.etat}
+                  dosha={suite.dosha}
+                  prete={suite.prete}
+                  occupe={suiteOccupe}
+                  onInscrire={() => agirSuite('inscrire')}
+                  onRefuser={() => agirSuite('refuser')}
+                />
+              )}
             </div>
 
             {/* Rituel associé, transcrit de "Guide Rituels, Partie 1", + CTA huile */}
@@ -851,26 +940,6 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   if (!current && teaser) {
     const L = lireLecture(teaser.percentages, lang);
     const th = themeForName(L.branche === 'equilibre' ? '' : teaser.dominant.name);
-    // Jamais cochée d'avance.
-    const caseSuite = (
-      <label className="mt-7 mx-auto flex max-w-[34rem] cursor-pointer items-start gap-3 text-left text-[#3a2f23]">
-        <input
-          type="checkbox"
-          checked={fil}
-          onChange={e => choisirFil(e.target.checked)}
-          className="mt-1 h-[18px] w-[18px] shrink-0 cursor-pointer"
-          style={{ accentColor: th.accent }}
-        />
-        <span>
-          <span className="block text-[0.95rem] leading-relaxed">{lang === 'FR' ? 'Recevoir la suite de ma lecture' : 'Receive the rest of my reading'}</span>
-          <span className="mt-1 block text-[0.8rem] leading-relaxed text-[#3a2f23]/75">
-            {lang === 'FR'
-              ? 'Des repères adaptés à votre résultat pour mieux reconnaître ce qui change, ce qui s’accumule et ce qui vous influence.'
-              : 'Markers suited to your result, to better recognize what changes, what builds up and what influences you.'}
-          </span>
-        </span>
-      </label>
-    );
     const boutonRecommencer = (
       <button
         type="button"
@@ -906,7 +975,6 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                   <p className="mt-5 v2-serif font-light text-[clamp(1.1rem,1.9vw,1.4rem)] leading-relaxed text-[#3a2f23] max-w-[46ch] mx-auto">
                     {lang === 'FR' ? 'Enregistrez votre résultat dans votre espace pour retrouver votre profil complet.' : 'Save your result to your space to discover your full profile.'}
                   </p>
-                  {caseSuite}
                   <div className="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
                     <button
                       type="button"
@@ -958,17 +1026,29 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                       className="w-full border-b border-[#1c1712]/30 bg-transparent py-3 text-[0.95rem] text-[#1c1712] placeholder:text-[#1c1712]/45 outline-none transition-colors focus:border-[#9c7a44]"
                     />
                   </div>
-                  {caseSuite}
                   {RECAPTCHA_SITE_KEY && <div ref={captcha.boxRef} className="mt-6 flex justify-center" />}
-                  <div className="mt-8 flex flex-col items-center gap-3">
+                  <p className="mt-7 text-center text-[0.88rem] leading-relaxed text-[#3a2f23]">
+                    {lang === 'FR'
+                      ? PHRASE_FORMULAIRE(lireProfil(teaser.percentages).d1, SUITE_PRETE[lireProfil(teaser.percentages).d1])
+                      : 'Your reading arrives right away, then a few letters to understand what you need right now and what can help. Unsubscribe in one click.'}
+                  </p>
+                  <div className="mt-5 flex flex-col items-center gap-3">
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="inline-flex items-center gap-3 bg-[#1c1712] px-8 py-4 text-[0.7rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] disabled:opacity-60 min-h-[44px]"
+                      className="w-full inline-flex items-center justify-center gap-3 bg-[#1c1712] px-8 py-4 text-[0.7rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] disabled:opacity-60 min-h-[44px]"
                     >
                       {submitting
                         ? (lang === 'FR' ? 'Envoi…' : 'Sending…')
-                        : <>{lang === 'FR' ? 'Recevoir mon résultat' : 'Receive my result'} <ArrowRight size={15} weight="regular" /></>}
+                        : <>{lang === 'FR' ? 'Recevoir ma lecture et sa suite' : 'Receive my reading and what follows'} <ArrowRight size={15} weight="regular" /></>}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={e => envoyerResultat(e, false)}
+                      disabled={submitting}
+                      className="text-[0.8rem] text-[#1c1712]/60 underline underline-offset-4 decoration-[#1c1712]/30 transition-colors hover:text-[#7d6330] min-h-[44px] disabled:opacity-50"
+                    >
+                      {lang === 'FR' ? 'Recevoir seulement mon résultat' : 'Receive only my result'}
                     </button>
                     <button
                       type="button"
@@ -1156,6 +1236,8 @@ const QuizLoeuvre: React.FC = () => {
 
   // Retour du bouton « Recevoir la suite de ma lecture » du courriel (fonction suiteLecture).
   const [suiteOk] = useState(() => { try { return new URLSearchParams(window.location.search).get('suite') === 'ok'; } catch { return false; } });
+  // Retour du petit lien « Je préfère ne pas recevoir la suite » du courriel.
+  const [suiteNon] = useState(() => { try { return new URLSearchParams(window.location.search).get('suite') === 'non'; } catch { return false; } });
 
   const heroFade = (delay: number) => ({
     initial: reduce ? { opacity: 1 } : { opacity: 0, y: 22 },
@@ -1181,6 +1263,11 @@ const QuizLoeuvre: React.FC = () => {
         {suiteOk && (
           <p role="status" className="border-y border-[#9c7a44]/40 py-3 text-center text-[0.9rem] text-[#1c1712]">
             {lang === 'FR' ? 'C’est noté : la suite de votre lecture arrive par courriel.' : 'Noted: the rest of your reading is on its way by email.'}
+          </p>
+        )}
+        {suiteNon && (
+          <p role="status" className="border-y border-[#9c7a44]/40 py-3 text-center text-[0.9rem] text-[#1c1712]">
+            {lang === 'FR' ? 'C’est noté : la suite ne vous sera pas envoyée. Vous restez abonnée à nos lettres.' : 'Noted: the rest of your reading will not be sent. You remain subscribed to our letters.'}
           </p>
         )}
         {/* La ligne de tête « N° 05 · Québec » est retirée de la page du quiz (Krystine, 2 oct. 2026 : elle parle aussi à l'Europe). */}

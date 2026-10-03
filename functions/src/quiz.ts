@@ -4,7 +4,7 @@ import * as crypto from 'crypto';
 import { RECAPTCHA_SECRET, garderFormulaire } from './captcha';
 import { MAIL_SECRETS, createTransporter, fromAddr, REPLY_TO, PUBLIC_BASE_URL } from './newsletter/mail';
 import { enregistrerInscription } from './newsletter/inscrire';
-import { renderResultatHtml, renderResultatTexte, sujetResultat, lireProfil, ETIQUETTE_SUITE, type Dosha } from './quizCourriel';
+import { renderResultatHtml, renderResultatTexte, sujetResultat, lireProfil, ETIQUETTE_SUITE, SUITE_PRETE, type Dosha } from './quizCourriel';
 
 // ─── « Recevoir mon résultat » (page /quiz) ──────────────────────────────────
 // Une visiteuse reçoit son résultat par courriel sans créer de compte
@@ -25,9 +25,25 @@ const NOM: Record<Dosha, string> = { vata: 'Vata', pitta: 'Pitta', kapha: 'Kapha
 // la création, et une étiquette déjà présente à la création ne la déclenche plus.
 async function poserSuite(ins: { id: string; status: string }, d1: Dosha) {
   if (ins.status !== 'active') return;
-  await getFirestore().doc(`newsletter/${ins.id}`).update({ tags: FieldValue.arrayUnion(ETIQUETTE_SUITE[d1]) });
+  await getFirestore().doc(`newsletter/${ins.id}`).update({ tags: FieldValue.arrayUnion(ETIQUETTE_SUITE[d1]), suiteRefusee: FieldValue.arrayRemove(ETIQUETTE_SUITE[d1]) });
 }
 const ETIQUETTE_RX = /^(profil-(equilibre|double|teinte|net)|second-(vent|feu|terre))$/;
+
+/** La fiche active de cette adresse (consentement déjà donné), ou null. */
+async function ficheActive(email: string) {
+  const snap = await getFirestore().collection('newsletter').where('email', '==', email).limit(10).get();
+  return snap.docs.find(x => x.get('status') === 'active') || null;
+}
+
+/** « Je préfère ne pas recevoir la suite » : retire seulement l'étiquette de
+ *  suite (la séquence s'arrête d'elle-même, raison etiquette-retiree), jamais
+ *  l'abonnement, et note le refus pour qu'un prochain quiz ne la remette pas. */
+async function retirerSuite(email: string, d1: Dosha): Promise<boolean> {
+  const f = await ficheActive(email);
+  if (!f) return false;
+  await f.ref.update({ tags: FieldValue.arrayRemove(ETIQUETTE_SUITE[d1]), suiteRefusee: FieldValue.arrayUnion(ETIQUETTE_SUITE[d1]) });
+  return true;
+}
 
 const pct = (v: unknown) => {
   const n = Math.round(Number(v));
@@ -102,18 +118,16 @@ export const envoyerResultatQuiz = onCall(
       createdAt: FieldValue.serverTimestamp(),
     });
 
-    // Sans la case cochée, le courriel porte un bouton qui inscrit en un clic :
-    // la clé ne donne accès qu'à ce geste-là, et vit 60 jours.
-    let lienSuite: string | undefined;
-    if (!suite) {
-      const k = crypto.randomBytes(24).toString('base64url');
-      await getFirestore().doc(`quizSuite/${k}`).set({
-        email, prenom, dosha: d1, etiquettes: profil.etiquettes, creeLe: FieldValue.serverTimestamp(),
-        ...(String(d.lang ?? '').toLowerCase() === 'en' ? { lang: 'en' } : { lang: 'fr' }),
-      });
-      lienSuite = `${PUBLIC_BASE_URL}/suite-lecture?k=${k}`;
-    }
-    const r = { prenom, dominant: d1, pourcentages, suite, lienSuite };
+    // La clé du courriel ne donne accès qu'à deux gestes, et vit 60 jours :
+    // sans la suite, le bouton qui inscrit en un clic; avec la suite, le
+    // petit lien « Je préfère ne pas recevoir la suite » (&non=1).
+    const k = crypto.randomBytes(24).toString('base64url');
+    await getFirestore().doc(`quizSuite/${k}`).set({
+      email, prenom, dosha: d1, etiquettes: profil.etiquettes, creeLe: FieldValue.serverTimestamp(),
+      ...(String(d.lang ?? '').toLowerCase() === 'en' ? { lang: 'en' } : { lang: 'fr' }),
+    });
+    const lienSuite = `${PUBLIC_BASE_URL}/suite-lecture?k=${k}`;
+    const r = { prenom, dominant: d1, pourcentages, suite, lienSuite, lienRefus: `${lienSuite}&non=1`, prete: SUITE_PRETE[d1] };
     const transporter = createTransporter();
     try {
       await transporter.sendMail({
@@ -167,6 +181,25 @@ export const suiteLecture = onRequest(
   async (req, res) => {
     const k = String(req.query.k || '');
     let ok = false;
+    // « Je préfère ne pas recevoir la suite » : seulement l'étiquette de suite.
+    if (req.query.non === '1') {
+      if (CLE_RX.test(k)) {
+        try {
+          const snap = await getFirestore().doc(`quizSuite/${k}`).get();
+          const cree = (snap.get('creeLe') as Timestamp | undefined)?.toMillis() ?? 0;
+          const dosha = String(snap.get('dosha') || '') as Dosha;
+          if (snap.exists && Date.now() - cree < VIE_MS && Object.prototype.hasOwnProperty.call(NOM, dosha)) {
+            await retirerSuite(String(snap.get('email') || ''), dosha);
+            console.log(`[suiteLecture] suite refusée · ${dosha}`);
+            ok = true;
+          }
+        } catch (e) {
+          console.error('[suiteLecture] refus', e);
+        }
+      }
+      res.redirect(302, ok ? `${PUBLIC_BASE_URL}/quiz?suite=non` : `${PUBLIC_BASE_URL}/quiz`);
+      return;
+    }
     if (CLE_RX.test(k)) {
       try {
         const ref = getFirestore().doc(`quizSuite/${k}`);
@@ -195,5 +228,69 @@ export const suiteLecture = onRequest(
       }
     }
     res.redirect(302, ok ? `${PUBLIC_BASE_URL}/quiz?suite=ok` : `${PUBLIC_BASE_URL}/quiz`);
+  },
+);
+
+// ─── La suite pour une personne connectée, à l'écran du résultat ────────────
+// L'adresse vient TOUJOURS du jeton du compte, la dominance du dernier
+// résultat enregistré sous son uid : rien du navigateur ne choisit ni l'une
+// ni l'autre. Trois gestes :
+//   etat     : abonnée active (consentement déjà donné) → l'étiquette de suite
+//              se pose d'elle-même, sauf si elle l'a déjà refusée; sinon, rien
+//              n'est écrit et l'écran lui offre le bouton.
+//   inscrire : son clic sur « Recevoir la suite de ma lecture » (consentement
+//              explicite) → fiche inscrite/activée, source quiz-suite, puis l'étiquette.
+//   refuser  : « Je préfère ne pas recevoir la suite » → l'étiquette seule part.
+export const suiteQuiz = onCall(
+  { region: 'us-central1', maxInstances: 10 },
+  async (req) => {
+    if (!req.auth?.uid) throw new HttpsError('unauthenticated', 'Connectez-vous pour recevoir la suite.');
+    const email = String(req.auth.token.email || '').trim().toLowerCase();
+    if (!EMAIL_RX.test(email)) throw new HttpsError('failed-precondition', 'Votre compte n’a pas d’adresse courriel.');
+    const action = String((req.data || {}).action || '');
+
+    const res = await getFirestore().collection('doshaResults').where('uid', '==', req.auth.uid).limit(50).get();
+    const dernier = res.docs
+      .map(x => ({ x, t: (x.get('createdAt') as Timestamp | undefined)?.toMillis() ?? 0 }))
+      .sort((a, b) => b.t - a.t)[0]?.x;
+    if (!dernier) throw new HttpsError('failed-precondition', 'Aucun résultat enregistré.');
+    const pourcentages = { vata: pct(dernier.get('vata')), pitta: pct(dernier.get('pitta')), kapha: pct(dernier.get('kapha')) };
+    const profil = lireProfil(pourcentages);
+    const brut = String(dernier.get('dominant') || '').toLowerCase() as Dosha;
+    const d1: Dosha = pourcentages.vata + pourcentages.pitta + pourcentages.kapha > 0 ? profil.ordre[0]
+      : (Object.prototype.hasOwnProperty.call(NOM, brut) ? brut : 'vata');
+    const tag = ETIQUETTE_SUITE[d1];
+    const base = { dosha: d1, prete: SUITE_PRETE[d1] };
+
+    if (action === 'refuser') {
+      await retirerSuite(email, d1);
+      return { ...base, etat: 'refusee' };
+    }
+
+    if (action === 'inscrire') {
+      const nom = String(req.auth.token.name || '').trim().split(/\s+/)[0] || undefined;
+      const ins = await enregistrerInscription({
+        email,
+        firstName: nom,
+        source: 'quiz-suite',
+        tags: ['quiz', `dosha-${d1}`, ...profil.etiquettes],
+        consentement: true,
+        lang: String((req.data || {}).lang ?? '').toLowerCase() === 'en' ? 'en' : 'fr',
+      }, req.auth.uid);
+      if (ins.status !== 'active') return { ...base, etat: 'desabonnee' };
+      await poserSuite(ins, d1);
+      console.log(`[suiteQuiz] inscrite · ${d1}`);
+      return { ...base, etat: 'inscrite' };
+    }
+
+    // etat
+    const f = await ficheActive(email);
+    if (!f) return { ...base, etat: 'offre' };
+    const tags = (f.get('tags') || []) as string[];
+    if (tags.includes(tag)) return { ...base, etat: 'deja' };
+    if (((f.get('suiteRefusee') || []) as string[]).includes(tag)) return { ...base, etat: 'offre' };
+    await f.ref.update({ tags: FieldValue.arrayUnion(tag) });
+    console.log(`[suiteQuiz] abonnée active, suite posée d'elle-même · ${d1}`);
+    return { ...base, etat: 'auto' };
   },
 );

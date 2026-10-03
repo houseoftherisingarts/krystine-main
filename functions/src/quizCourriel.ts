@@ -202,6 +202,26 @@ export interface ResultatQuiz {
   suite: boolean;
   /** Lien « Recevoir la suite de ma lecture » en un clic, quand suite === false. */
   lienSuite?: string;
+  /** Lien « Je préfère ne pas recevoir la suite », quand suite === true. */
+  lienRefus?: string;
+  /** La séquence de suite existe déjà pour cette dominance (SUITE_PRETE). */
+  prete?: boolean;
+}
+
+// Le bloc de la suite, juste après la lecture (Krystine, 3 oct. 2026).
+function texteSuite(r: ResultatQuiz): { titre: string; ligne: string } {
+  if (r.suite) return {
+    titre: r.prete === false
+      ? `Votre lecture continuera par courriel lorsque la suite pour ${nomme(r.dominant)} sera prête.`
+      : 'Votre lecture continue par courriel : la première lettre arrive dans deux jours.',
+    ligne: 'Je préfère ne pas recevoir la suite',
+  };
+  return {
+    titre: 'Recevoir la suite de ma lecture',
+    ligne: r.prete === false
+      ? `Nous vous écrirons lorsque la suite pour ${nomme(r.dominant)} sera prête. Un clic suffit.`
+      : 'Quelques lettres pour comprendre ce dont vous avez besoin en ce moment et ce qui peut aider. Un clic suffit.',
+  };
 }
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -259,12 +279,18 @@ export function renderResultatHtml(r: ResultatQuiz): string {
       ? `<p style="margin:0 0 ${L.carte.length > 1 ? 12 : 18}px;font-family:${SERIF};font-weight:300;font-size:21px;line-height:1.45;color:${ENCRE};">${esc(t)}</p>`
       : `<p style="margin:0 0 18px;font-family:${SANS};font-size:15px;line-height:1.8;color:${DOUX};">${esc(t)}</p>`).join('\n    ');
 
-  const suite = r.suite || !r.lienSuite ? '' : `
-    ${filet}
-    <tr><td align="center" style="padding:30px 40px 6px;">
-      <a href="${esc(r.lienSuite)}" style="display:inline-block;background:${ENCRE};color:#f4efe6;font-family:${SANS};font-size:12px;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;padding:16px 28px;">Recevoir la suite de ma lecture</a>
-      <p style="margin:14px 0 0;font-family:${SANS};font-size:12px;line-height:1.7;color:${DOUX};">Des repères adaptés à votre résultat, par courriel. Un clic suffit.</p>
-    </td></tr>`;
+  const ts = texteSuite(r);
+  const suite = r.suite
+    ? (r.lienRefus ? `
+    <tr><td align="center" style="padding:26px 40px 4px;">
+      <p style="margin:0;font-family:${SERIF};font-weight:300;font-size:19px;line-height:1.5;color:${ENCRE};">${esc(ts.titre)}</p>
+      <p style="margin:10px 0 0;"><a href="${esc(r.lienRefus)}" style="font-family:${SANS};font-size:12px;line-height:1.7;color:${DOUX};text-decoration:underline;">${esc(ts.ligne)}</a></p>
+    </td></tr>` : '')
+    : (r.lienSuite ? `
+    <tr><td align="center" style="padding:28px 40px 4px;">
+      <a href="${esc(r.lienSuite)}" style="display:inline-block;background:${ENCRE};color:#f4efe6;font-family:${SANS};font-size:12px;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;padding:16px 28px;">${esc(ts.titre)}</a>
+      <p style="margin:14px 0 0;font-family:${SANS};font-size:12px;line-height:1.7;color:${DOUX};">${esc(ts.ligne)}</p>
+    </td></tr>` : '');
 
   return `<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -292,6 +318,7 @@ export function renderResultatHtml(r: ResultatQuiz): string {
     <p style="margin:0;font-family:${SANS};font-size:13px;line-height:1.7;color:${DOUX};">${esc(L.ayurveda)}</p>
     ${L.sousCarte ? `<p style="margin:18px 0 0;font-family:${SANS};font-size:15px;line-height:1.8;color:${ENCRE};">${esc(L.sousCarte)}</p>` : ''}
   </td></tr>
+  ${suite}
 
   <tr><td style="padding:28px 40px 26px;">
     ${libelle('La direction')}
@@ -307,8 +334,7 @@ export function renderResultatHtml(r: ResultatQuiz): string {
   ${huile ? `<tr><td style="padding:0 40px 24px;">
       <p style="margin:0;font-family:${SANS};font-size:13px;line-height:1.7;color:${DOUX};">${esc(huile.geste)}, un massage avec <a href="${esc(huile.lien)}" style="color:${ENCRE};text-decoration:underline;">${esc(huile.nom)}</a> d’INSPIRATA AYURVEDA (flacon de 50 ml).</p>
     </td></tr>` : ''}
-  ${suite}
-  ${attente ? `<tr><td align="center" style="padding:${suite ? '14px' : '30px'} 40px 6px;">
+  ${attente ? `<tr><td align="center" style="padding:30px 40px 6px;">
       <a href="${esc(attente)}" style="font-family:${SANS};font-size:13px;line-height:1.7;color:${ENCRE};text-decoration:underline;">Rejoindre la liste d’attente du programme ${nomme(d)}</a>
     </td></tr>` : ''}
 
@@ -337,6 +363,8 @@ export function renderResultatTexte(r: ResultatQuiz): string {
     '',
     L.ayurveda,
     ...(L.sousCarte ? ['', L.sousCarte] : []),
+    ...(r.suite && r.lienRefus ? ['', texteSuite(r).titre, `${texteSuite(r).ligne} : ${r.lienRefus}`] : []),
+    ...(!r.suite && r.lienSuite ? ['', `${texteSuite(r).titre} : ${r.lienSuite}`, texteSuite(r).ligne] : []),
     '',
     'La direction',
     L.direction,
@@ -347,7 +375,6 @@ export function renderResultatTexte(r: ResultatQuiz): string {
   ];
   const huileTxt = HUILE_DOMINANCE[d];
   if (huileTxt) l.push('', `${huileTxt.geste}, un massage avec ${huileTxt.nom} d’INSPIRATA AYURVEDA (flacon de 50 ml) : ${huileTxt.lien}`);
-  if (!r.suite && r.lienSuite) l.push('', `Recevoir la suite de ma lecture : ${r.lienSuite}`);
   const attenteTxt = LIEN_ATTENTE[d];
   if (attenteTxt) l.push('', `Rejoindre la liste d’attente du programme ${nomme(d)} : ${attenteTxt}`);
   l.push('', 'Krystine St-Laurent · krystinestlaurent.ca',
