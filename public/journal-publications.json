@@ -5679,5 +5679,19 @@
       "public/assets-manifest.json",
       "public/quiz/apercu-quiz.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-03T23:00:35.047Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "1f3d5f84",
+    "message": "Quiz : l'aperçu de partage reprend l'image existante de la vidéo du quiz (pas de nouvelle image)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/pageMeta.ts"
+    ]
   }
 ]
