@@ -5650,5 +5650,20 @@
       "src/lib/versements.ts",
       "src/pages/vata/offre.ts"
     ]
+  },
+  {
+    "quand": "2026-10-03T22:57:00.468Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "7a2c678f",
+    "message": "Quiz : aperçu de partage avec les trois pictos (De quoi ai-je besoin en ce moment ?)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/quiz/apercu-quiz.jpg",
+      "src/lib/pageMeta.ts"
+    ]
   }
 ]
