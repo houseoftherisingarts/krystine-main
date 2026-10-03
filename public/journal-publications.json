@@ -5587,5 +5587,19 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-03T17:36:21.272Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c9fb5a5f",
+    "message": "Infolettre : visuel des trois pictos du quiz",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/quiz-pictos.png"
+    ]
   }
 ]
