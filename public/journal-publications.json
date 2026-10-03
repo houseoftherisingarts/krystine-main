@@ -5346,5 +5346,19 @@
       "src/pages/VataExperience.tsx",
       "src/pages/admin/sections/SubmissionsSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-03T14:03:31.771Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "16a576f4",
+    "message": "Évaluation VATA : « Pourquoi celle-là en particulier ? »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/EvaluationVata.tsx"
+    ]
   }
 ]
