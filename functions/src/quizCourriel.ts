@@ -155,7 +155,7 @@ export function lireLecture(p: { vata: number; pitta: number; kapha: number }, d
       direction: PAIRE[k].direction,
       sousCarte: `Votre lecture montre deux dominances à égalité : ${nomme(d1)} et ${nomme(d2)}.`,
       versSuite: SUITE_PRETE[d1] && d1 === 'vata'
-        ? `Votre lecture montre deux dominances à égalité. Les lettres qui suivent parlent de Vata, puisque nous sommes en saison Vata, et ${NOM_AYURVEDA[d2]} y trouve sa place.`
+        ? `Les lettres qui suivent parlent de Vata, puisque nous sommes en saison Vata, et ${NOM_AYURVEDA[d2]} y trouve sa place.`
         : '',
     };
   }
