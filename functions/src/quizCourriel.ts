@@ -54,7 +54,7 @@ export const CLES_RESULTAT: Record<Dosha, { texte: string; source: string }[]> =
 // ─── L'algorithme du résultat (validé par Krystine le 2 oct. 2026) ──────────
 // Pourcentages par bonds de 10. D1 ≥ D2 ≥ D3; à égalité, le Vent passe avant
 // le Feu, qui passe avant la Terre (« le Vent domine toujours »).
-//   équilibre : D1 − D3 ≤ 10       → profil-equilibre (texte à venir de Krystine)
+//   équilibre : D1 − D3 ≤ 10       → profil-equilibre
 //   double    : D1 = D2            → profil-double + second-<D2>
 //   teintée   : D1 − D2 = 10       → profil-teinte + second-<D2>
 //   nette     : D1 − D2 ≥ 20       → profil-net
@@ -81,21 +81,98 @@ export function lireProfil(p: { vata: number; pitta: number; kapha: number }): P
   return { ordre, branche: 'net', etiquettes: ['profil-net'] };
 }
 
-// « une part importante de Vent », « partent du Vent, parce qu'il domine », « mais la Terre y joue ».
-const GENRE: Record<Dosha, { de: string; du: string; le: string; pronom: string }> = {
-  vata: { de: 'de Vent', du: 'du Vent', le: 'le Vent', pronom: 'il' },
-  pitta: { de: 'de Feu', du: 'du Feu', le: 'le Feu', pronom: 'il' },
-  kapha: { de: 'de Terre', du: 'de la Terre', le: 'la Terre', pronom: 'elle' },
+// ─── La nomenclature (règle absolue de Krystine, 3 oct. 2026) ───────────────
+// Nous portons les cinq éléments (Espace, Vent, Feu, Eau, Terre), unis en
+// trois doshas. Chaque fois qu'une dominance est nommée, ses éléments
+// l'accompagnent. Miroir côté navigateur : src/pages/QuizLoeuvre.tsx.
+export const ELEMENTS: Record<Dosha, string> = { vata: 'Vent et Espace', pitta: 'Feu et Eau', kapha: 'Eau et Terre' };
+/** « Vata (Vent et Espace) » */
+export const nomme = (d: Dosha) => `${NOM_AYURVEDA[d]} (${ELEMENTS[d]})`;
+
+// Les textes approuvés par Krystine le 3 oct. 2026 (écran et courriel, mot pour mot).
+const COURANT_PAIRE: Record<string, string> = {
+  'vata-pitta': 'Vent et Feu', 'vata-kapha': 'Vent et Terre', 'pitta-kapha': 'Feu et Terre',
+};
+export const EXPLICATION_DOUBLE = 'Nous sommes faits des cinq éléments : l’Espace, le Vent, le Feu, l’Eau et la Terre. Ils s’unissent en trois doshas : Vata (Vent et Espace), Pitta (Feu et Eau) et Kapha (Eau et Terre). Chez la plupart d’entre nous, deux doshas prennent plus de place que le troisième, l’un dominant, l’autre secondaire : l’Ayurveda appelle cela un type mixte.';
+const PAIRE: Record<string, { phrase: string; direction: string }> = {
+  'vata-pitta': {
+    phrase: 'C’est l’image du vent qui souffle sur le feu : lorsque Vata (Vent et Espace) s’emporte, il attise Pitta (Feu et Eau). La première chose à apaiser, c’est Vata.',
+    direction: 'Enraciner, rafraîchir et apaiser.',
+  },
+  'vata-kapha': {
+    phrase: 'Vata (Vent et Espace) disperse et Kapha (Eau et Terre) alourdit : un jour tout s’agite, le lendemain plus rien n’avance. La chaleur et la régularité aident les deux.',
+    direction: 'Réchauffer, puis activer doucement.',
+  },
+  'pitta-kapha': {
+    phrase: 'Pitta (Feu et Eau) pousse et Kapha (Eau et Terre) retient : beaucoup d’intensité, avec de la lenteur à se mettre en mouvement. Rafraîchir Pitta et activer Kapha vont ensemble.',
+    direction: 'Rafraîchir, apaiser et activer.',
+  },
+};
+export const EQUILIBRE = {
+  carte: 'Vata (Vent et Espace), Pitta (Feu et Eau) et Kapha (Eau et Terre) sont presque à égalité, donc plutôt équilibrés. Cependant, avec le froid et les journées chargées, Vata peut très bien se mettre à dominer.',
+  ayurveda: 'Dans le langage de l’Ayurveda, Vata (Vent et Espace), Pitta (Feu et Eau) et Kapha (Eau et Terre) sont ici presque à égalité.',
+  direction: 'Garder le centre : observer, puis ajuster doucement.',
+  suite: 'Les lettres qui suivent parlent de Vata, puisque nous sommes en saison Vata.',
 };
 
-/** La phrase du second dosha (branches teintée et, pour l'instant, double); vide sinon. */
-export function phraseSecond(pr: Profil): string {
-  if (pr.branche !== 'teinte' && pr.branche !== 'double') return '';
-  const [d1, d2] = pr.ordre;
-  const a = `Votre lecture montre aussi une part importante ${GENRE[d2].de}.`;
-  if (!SUITE_PRETE[d1]) return a;
-  return `${a} Les lettres qui suivent partent ${GENRE[d1].du}, parce qu’${GENRE[d1].pronom} domine aujourd’hui, mais ${GENRE[d2].le} y joue souvent un rôle.`;
+/** Ce que l'écran et le courriel affichent, selon la branche. */
+export interface Lecture {
+  branche: Branche;
+  /** Les doshas montrés sous le grand mot (1, 2 ou 3). */
+  montres: Dosha[];
+  libelle: string;
+  titre: string;
+  /** La ligne sous le grand mot, sans les pictos (le picto précède chaque nom). */
+  noms: string[];
+  carte: string[];
+  ayurveda: string;
+  direction: string;
+  /** Sous la carte (écran et courriel). */
+  sousCarte: string;
+  /** Vers la suite (courriel seulement). */
+  versSuite: string;
 }
+
+export function lireLecture(p: { vata: number; pitta: number; kapha: number }, dominant?: Dosha): Lecture {
+  const pr = lireProfil(p);
+  const vide = p.vata + p.pitta + p.kapha <= 0;
+  const [d1, d2] = vide && dominant ? [dominant, dominant] : pr.ordre;
+  const branche: Branche = vide ? 'net' : pr.branche;
+  if (branche === 'equilibre') {
+    return {
+      branche, montres: ['vata', 'pitta', 'kapha'], libelle: 'Votre lecture aujourd’hui', titre: 'Équilibre',
+      noms: ['Vata', 'Pitta', 'Kapha'], carte: [EQUILIBRE.carte], ayurveda: EQUILIBRE.ayurveda,
+      direction: EQUILIBRE.direction, sousCarte: '',
+      versSuite: SUITE_PRETE[d1] && d1 === 'vata' ? EQUILIBRE.suite : '',
+    };
+  }
+  if (branche === 'double') {
+    const k = `${d1}-${d2}`;
+    return {
+      branche, montres: [d1, d2], libelle: 'Vos deux dominances aujourd’hui', titre: COURANT_PAIRE[k],
+      noms: [nomme(d1), nomme(d2)], carte: [EXPLICATION_DOUBLE, PAIRE[k].phrase],
+      ayurveda: `Dans le langage de l’Ayurveda, ces deux dominances s’appellent ${nomme(d1)} et ${nomme(d2)}.`,
+      direction: PAIRE[k].direction,
+      sousCarte: `Votre lecture montre deux dominances à égalité : ${nomme(d1)} et ${nomme(d2)}.`,
+      versSuite: SUITE_PRETE[d1] && d1 === 'vata'
+        ? `Votre lecture montre deux dominances à égalité. Les lettres qui suivent parlent de Vata, puisque nous sommes en saison Vata, et ${NOM_AYURVEDA[d2]} y trouve sa place.`
+        : '',
+    };
+  }
+  return {
+    branche, montres: [d1], libelle: 'Votre dominance aujourd’hui', titre: NOM_COURANT[d1],
+    noms: [`${NOM_AYURVEDA[d1]} · ${ELEMENTS[d1]}`], carte: [...CARTE[d1]],
+    ayurveda: `Dans le langage de l’Ayurveda, cette dominance est appelée ${nomme(d1)}.`,
+    direction: DIRECTION[d1],
+    sousCarte: branche === 'teinte' ? `Votre lecture montre aussi une part importante de ${nomme(d2)}.` : '',
+    versSuite: branche === 'teinte' && SUITE_PRETE[d1]
+      ? `Les lettres qui suivent partent de ${nomme(d1)}, parce qu’il domine aujourd’hui, mais ${nomme(d2)} y joue souvent un rôle.`
+      : '',
+  };
+}
+
+/** Au-dessus du bouton VATA Essentiel, pour toutes les lectures. */
+export const RAISON_VATA = 'Nous sommes en saison Vata : chacune de nous porte de Vata (Vent et Espace) en ce moment.';
 
 export const LIEN_ATTENTE: Record<Dosha, string | null> = {
   vata: null,
@@ -122,8 +199,11 @@ const PICTO: Record<Dosha, string> = {
 };
 const entier = (n: number) => String(Math.min(100, Math.max(0, Math.round(Number(n) || 0))));
 
-export function sujetResultat(d: Dosha): string {
-  return `Votre lecture du quiz : dominance ${NOM_COURANT[d]}`;
+export function sujetResultat(d: Dosha, pourcentages?: { vata: number; pitta: number; kapha: number }): string {
+  const l = pourcentages ? lireLecture(pourcentages, d) : null;
+  if (l && l.branche === 'equilibre') return 'Votre lecture du quiz : équilibre entre Vata, Pitta et Kapha';
+  if (l && l.branche === 'double') return `Votre lecture du quiz : deux dominances, ${l.noms.join(' et ')}`;
+  return `Votre lecture du quiz : dominance ${nomme(l ? l.montres[0] : d)}`;
 }
 
 const SERIF = "'Fraunces', Georgia, 'Times New Roman', serif";
@@ -134,12 +214,15 @@ const LAITON = '#7d6330';
 const FILET = '#d9ccb4';
 
 export function renderResultatHtml(r: ResultatQuiz): string {
-  const d = r.dominant;
-  const [p1, p2] = CARTE[d];
-  const second = phraseSecond(lireProfil(r.pourcentages));
+  const L = lireLecture(r.pourcentages, r.dominant);
+  const d = L.montres[0];
   const attente = LIEN_ATTENTE[d];
   const libelle = (t: string) => `<p style="margin:0 0 10px;font-family:${SANS};font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:${LAITON};">${t}</p>`;
   const filet = `<tr><td style="padding:0 40px;"><div style="height:1px;background:${FILET};line-height:1px;font-size:1px;">&nbsp;</div></td></tr>`;
+  const grand = L.montres.length === 1 ? 88 : L.montres.length === 2 ? 64 : 52;
+  const medaillons = L.montres.map(x => `<img src="${PICTO[x]}" width="${grand}" height="${grand}" alt="" style="display:inline-block;margin:0 6px 18px;border:0;" />`).join('');
+  // Sous le grand mot : petit picto (20 px) + nom, pour chaque dosha montré.
+  const noms = L.montres.map((x, i) => `<span style="white-space:nowrap;"><img src="${PICTO[x]}" width="20" height="20" alt="" style="display:inline-block;vertical-align:middle;margin:0 6px 0 0;border:0;" /><span style="vertical-align:middle;">${esc(L.noms[i])}</span></span>`).join(`<span style="vertical-align:middle;color:${LAITON};"> &nbsp;·&nbsp; </span>`);
 
   const stats = (['vata', 'pitta', 'kapha'] as Dosha[]).map(x => `
     <td align="center" width="33%" style="padding:0 6px;">
@@ -152,6 +235,14 @@ export function renderResultatHtml(r: ResultatQuiz): string {
     <p style="margin:0 0 6px;font-family:${SERIF};font-weight:300;font-size:19px;line-height:1.5;color:${ENCRE};">« ${esc(c.texte)} »</p>
     <p style="margin:0 0 20px;font-family:${SANS};font-size:12px;color:${DOUX};">${esc(c.source)}</p>`).join('');
 
+  // La carte : la première phrase en serif, les suivantes en corps (double : l'explication, puis la paire).
+  const carte = L.branche === 'double'
+    ? `<p style="margin:0 0 16px;font-family:${SANS};font-size:15px;line-height:1.8;color:${DOUX};">${esc(L.carte[0])}</p>
+    <p style="margin:0 0 18px;font-family:${SERIF};font-weight:300;font-size:21px;line-height:1.45;color:${ENCRE};">${esc(L.carte[1])}</p>`
+    : L.carte.map((t, i) => i === 0
+      ? `<p style="margin:0 0 ${L.carte.length > 1 ? 12 : 18}px;font-family:${SERIF};font-weight:300;font-size:21px;line-height:1.45;color:${ENCRE};">${esc(t)}</p>`
+      : `<p style="margin:0 0 18px;font-family:${SANS};font-size:15px;line-height:1.8;color:${DOUX};">${esc(t)}</p>`).join('\n    ');
+
   const suite = r.suite || !r.lienSuite ? '' : `
     ${filet}
     <tr><td align="center" style="padding:30px 40px 6px;">
@@ -161,7 +252,7 @@ export function renderResultatHtml(r: ResultatQuiz): string {
 
   return `<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${esc(sujetResultat(d))}</title></head>
+<title>${esc(sujetResultat(r.dominant, r.pourcentages))}</title></head>
 <body style="margin:0;padding:0;background:#f4efe6;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4efe6;">
 <tr><td align="center" style="padding:32px 12px;">
@@ -169,9 +260,10 @@ export function renderResultatHtml(r: ResultatQuiz): string {
   <tr><td style="padding:40px 40px 8px;font-family:${SANS};font-size:15px;line-height:1.8;color:${ENCRE};">Bonjour ${esc(r.prenom)},</td></tr>
 
   <tr><td align="center" style="padding:24px 40px 8px;">
-    <img src="${PICTO[d]}" width="88" height="88" alt="" style="display:block;margin:0 auto 18px;border:0;" />
-    ${libelle('Votre dominance aujourd’hui')}
-    <h1 style="margin:0;font-family:${SERIF};font-weight:300;font-size:46px;line-height:1;color:${ENCRE};">${NOM_COURANT[d]}</h1>
+    <div>${medaillons}</div>
+    ${libelle(L.libelle)}
+    <h1 style="margin:0;font-family:${SERIF};font-weight:300;font-size:46px;line-height:1.05;color:${ENCRE};">${esc(L.titre)}</h1>
+    <p style="margin:14px 0 0;font-family:${SANS};font-size:13px;line-height:1.9;color:${DOUX};">${noms}</p>
   </td></tr>
 
   <tr><td style="padding:26px 34px 30px;">
@@ -180,15 +272,15 @@ export function renderResultatHtml(r: ResultatQuiz): string {
 
   ${filet}
   <tr><td style="padding:30px 40px 6px;">
-    <p style="margin:0 0 12px;font-family:${SERIF};font-weight:300;font-size:21px;line-height:1.45;color:${ENCRE};">${esc(p1)}</p>
-    <p style="margin:0 0 18px;font-family:${SANS};font-size:15px;line-height:1.8;color:${DOUX};">${esc(p2)}</p>
-    <p style="margin:0;font-family:${SANS};font-size:13px;line-height:1.7;color:${DOUX};">Dans le langage de l’Ayurveda, cette dominance est appelée ${NOM_AYURVEDA[d]}.</p>
+    ${carte}
+    <p style="margin:0;font-family:${SANS};font-size:13px;line-height:1.7;color:${DOUX};">${esc(L.ayurveda)}</p>
+    ${L.sousCarte ? `<p style="margin:18px 0 0;font-family:${SANS};font-size:15px;line-height:1.8;color:${ENCRE};">${esc(L.sousCarte)}</p>` : ''}
   </td></tr>
 
   <tr><td style="padding:28px 40px 26px;">
     ${libelle('La direction')}
-    <p style="margin:0;font-family:${SERIF};font-weight:300;font-size:22px;line-height:1.4;color:${ENCRE};">${DIRECTION[d]}</p>
-    ${second ? `<p style="margin:18px 0 0;font-family:${SANS};font-size:15px;line-height:1.8;color:${DOUX};">${esc(second)}</p>` : ''}
+    <p style="margin:0;font-family:${SERIF};font-weight:300;font-size:22px;line-height:1.4;color:${ENCRE};">${esc(L.direction)}</p>
+    ${L.versSuite ? `<p style="margin:18px 0 0;font-family:${SANS};font-size:15px;line-height:1.8;color:${DOUX};">${esc(L.versSuite)}</p>` : ''}
   </td></tr>
 
   ${filet}
@@ -198,7 +290,7 @@ export function renderResultatHtml(r: ResultatQuiz): string {
   </td></tr>
   ${suite}
   ${attente ? `<tr><td align="center" style="padding:${suite ? '14px' : '30px'} 40px 6px;">
-      <a href="${esc(attente)}" style="font-family:${SANS};font-size:13px;line-height:1.7;color:${ENCRE};text-decoration:underline;">Rejoindre la liste d’attente du programme ${NOM_AYURVEDA[d]}</a>
+      <a href="${esc(attente)}" style="font-family:${SANS};font-size:13px;line-height:1.7;color:${ENCRE};text-decoration:underline;">Rejoindre la liste d’attente du programme ${nomme(d)}</a>
     </td></tr>` : ''}
 
   <tr><td style="padding:34px 40px 36px;">
@@ -213,29 +305,30 @@ export function renderResultatHtml(r: ResultatQuiz): string {
 }
 
 export function renderResultatTexte(r: ResultatQuiz): string {
-  const d = r.dominant;
-  const [p1, p2] = CARTE[d];
+  const L = lireLecture(r.pourcentages, r.dominant);
+  const d = L.montres[0];
   const l: string[] = [
     `Bonjour ${r.prenom},`,
     '',
-    `Votre dominance aujourd'hui : ${NOM_COURANT[d]}`,
+    `${L.libelle} : ${L.titre}`,
+    L.noms.join(' · '),
     `Vent ${entier(r.pourcentages.vata)} % · Feu ${entier(r.pourcentages.pitta)} % · Terre ${entier(r.pourcentages.kapha)} %`,
     '',
-    p1,
-    p2,
+    ...L.carte,
     '',
-    `Dans le langage de l'Ayurveda, cette dominance est appelée ${NOM_AYURVEDA[d]}.`,
+    L.ayurveda,
+    ...(L.sousCarte ? ['', L.sousCarte] : []),
     '',
     'La direction',
-    DIRECTION[d],
-    ...(phraseSecond(lireProfil(r.pourcentages)) ? ['', phraseSecond(lireProfil(r.pourcentages))] : []),
+    L.direction,
+    ...(L.versSuite ? ['', L.versSuite] : []),
     '',
     'Deux clés tirées de Nature & Ayurveda',
     ...CLES_RESULTAT[d].map(c => `« ${c.texte} » (${c.source})`),
   ];
   if (!r.suite && r.lienSuite) l.push('', `Recevoir la suite de ma lecture : ${r.lienSuite}`);
   const attenteTxt = LIEN_ATTENTE[d];
-  if (attenteTxt) l.push('', `Rejoindre la liste d’attente du programme ${NOM_AYURVEDA[d]} : ${attenteTxt}`);
+  if (attenteTxt) l.push('', `Rejoindre la liste d’attente du programme ${nomme(d)} : ${attenteTxt}`);
   l.push('', 'Krystine St-Laurent · krystinestlaurent.ca',
     'Vous recevez ce courriel parce que vous avez demandé votre résultat au quiz sur krystinestlaurent.ca.');
   return l.join('\n');

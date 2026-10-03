@@ -120,7 +120,7 @@ export const envoyerResultatQuiz = onCall(
         replyTo: REPLY_TO,
         from: fromAddr(),
         to: email,
-        subject: sujetResultat(d1),
+        subject: sujetResultat(d1, pourcentages),
         html: renderResultatHtml(r),
         text: renderResultatTexte(r),
       });

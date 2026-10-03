@@ -271,14 +271,11 @@ const ALL_DOSHAS: DoshaType[] = ['vata', 'pitta', 'kapha'];
 // VATA Essentiel au résultat, pour toutes les dominances (Krystine, 2 oct.
 // 2026 : aucune visiteuse du quiz n'allait vers /vata). La ligne qui le
 // justifie suit la dominance; le prix suit la règle de versements.ts.
-const RAISON_VATA: Record<DoshaType, string> = {
-  vata: 'Pour apaiser le Vent qui domine en vous.',
-  pitta: 'Nous sommes en saison Vata : chacune de nous porte du Vent en ce moment.',
-  kapha: 'Nous sommes en saison Vata : chacune de nous porte du Vent en ce moment.',
-};
-const BoutonVata: React.FC<{ d: DoshaType; onGo: () => void; className?: string }> = ({ d, onGo, className = '' }) => (
+// Une seule phrase pour toutes les lectures (Krystine, 3 oct. 2026), miroir de functions/src/quizCourriel.ts.
+const RAISON_VATA = 'Nous sommes en saison Vata : chacune de nous porte de Vata (Vent et Espace) en ce moment.';
+const BoutonVata: React.FC<{ onGo: () => void; className?: string }> = ({ onGo, className = '' }) => (
   <div className={className}>
-    <p className="v2-serif text-[1.05rem] leading-snug text-[#3a2f23]">{RAISON_VATA[d]}</p>
+    <p className="v2-serif text-[1.05rem] leading-snug text-[#3a2f23]">{RAISON_VATA}</p>
     <button
       type="button"
       onClick={onGo}
@@ -309,23 +306,111 @@ const CARTE_DOMINANCE: Record<DoshaType, [string, string, string]> = {
 };
 const NOM_AYURVEDA: Record<DoshaType, string> = { vata: 'Vata', pitta: 'Pitta', kapha: 'Kapha' };
 
-/* Carte de Krystine + mention discrète du mot Ayurveda */
-const CarteDominance: React.FC<{ d: DoshaType; lang: 'FR' | 'EN'; complet: boolean }> = ({ d, lang, complet }) => {
-  const [p1, p2, p3] = CARTE_DOMINANCE[d];
+// La nomenclature (règle absolue de Krystine, 3 oct. 2026) : nous portons les
+// cinq éléments, unis en trois doshas; chaque dominance nommée porte ses
+// éléments. Textes approuvés le 3 oct. 2026, miroir mot pour mot de
+// lireLecture (functions/src/quizCourriel.ts) : toute retouche aux deux endroits.
+const ELEMENTS: Record<DoshaType, string> = { vata: 'Vent et Espace', pitta: 'Feu et Eau', kapha: 'Eau et Terre' };
+const ELEMENTS_EN: Record<DoshaType, string> = { vata: 'Wind and Space', pitta: 'Fire and Water', kapha: 'Water and Earth' };
+const nomme = (d: DoshaType) => `${NOM_AYURVEDA[d]} (${ELEMENTS[d]})`;
+const COURANT_PAIRE: Record<string, string> = { 'vata-pitta': 'Vent et Feu', 'vata-kapha': 'Vent et Terre', 'pitta-kapha': 'Feu et Terre' };
+const EXPLICATION_DOUBLE = 'Nous sommes faits des cinq éléments : l’Espace, le Vent, le Feu, l’Eau et la Terre. Ils s’unissent en trois doshas : Vata (Vent et Espace), Pitta (Feu et Eau) et Kapha (Eau et Terre). Chez la plupart d’entre nous, deux doshas prennent plus de place que le troisième, l’un dominant, l’autre secondaire : l’Ayurveda appelle cela un type mixte.';
+const PAIRE_PHRASE: Record<string, string> = {
+  'vata-pitta': 'C’est l’image du vent qui souffle sur le feu : lorsque Vata (Vent et Espace) s’emporte, il attise Pitta (Feu et Eau). La première chose à apaiser, c’est Vata.',
+  'vata-kapha': 'Vata (Vent et Espace) disperse et Kapha (Eau et Terre) alourdit : un jour tout s’agite, le lendemain plus rien n’avance. La chaleur et la régularité aident les deux.',
+  'pitta-kapha': 'Pitta (Feu et Eau) pousse et Kapha (Eau et Terre) retient : beaucoup d’intensité, avec de la lenteur à se mettre en mouvement. Rafraîchir Pitta et activer Kapha vont ensemble.',
+};
+const EQUILIBRE_CARTE = 'Vata (Vent et Espace), Pitta (Feu et Eau) et Kapha (Eau et Terre) sont presque à égalité, donc plutôt équilibrés. Cependant, avec le froid et les journées chargées, Vata peut très bien se mettre à dominer.';
+const EQUILIBRE_AYURVEDA = 'Dans le langage de l’Ayurveda, Vata (Vent et Espace), Pitta (Feu et Eau) et Kapha (Eau et Terre) sont ici presque à égalité.';
+
+type Lecture = {
+  branche: 'equilibre' | 'double' | 'teinte' | 'net';
+  montres: DoshaType[];
+  libelle: string;
+  titre: string;
+  noms: string[];
+  carte: string[];
+  ayurveda: string;
+  sousCarte: string;
+};
+const lireLecture = (p: { vata: number; pitta: number; kapha: number }, lang: 'FR' | 'EN'): Lecture => {
+  const { ordre, branche } = lireProfil(p);
+  const [d1, d2] = ordre;
+  const en = lang === 'EN';
+  if (branche === 'equilibre') return {
+    branche, montres: ['vata', 'pitta', 'kapha'],
+    libelle: en ? 'Your reading today' : 'Votre lecture aujourd’hui', titre: en ? 'Balance' : 'Équilibre',
+    noms: ['Vata', 'Pitta', 'Kapha'], carte: en ? [] : [EQUILIBRE_CARTE],
+    ayurveda: en ? 'In the language of Ayurveda, Vata (Wind and Space), Pitta (Fire and Water) and Kapha (Water and Earth) are nearly even here.' : EQUILIBRE_AYURVEDA,
+    sousCarte: '',
+  };
+  if (branche === 'double') {
+    const k = `${d1}-${d2}`;
+    const n = (d: DoshaType) => (en ? `${NOM_AYURVEDA[d]} (${ELEMENTS_EN[d]})` : nomme(d));
+    return {
+      branche, montres: [d1, d2],
+      libelle: en ? 'Your two dominances today' : 'Vos deux dominances aujourd’hui',
+      titre: en ? `${DOMINANCE_EN[d1]} and ${DOMINANCE_EN[d2]}` : COURANT_PAIRE[k],
+      noms: [n(d1), n(d2)], carte: en ? [] : [EXPLICATION_DOUBLE, PAIRE_PHRASE[k]],
+      ayurveda: en
+        ? `In the language of Ayurveda, these two dominances are called ${n(d1)} and ${n(d2)}.`
+        : `Dans le langage de l’Ayurveda, ces deux dominances s’appellent ${nomme(d1)} et ${nomme(d2)}.`,
+      sousCarte: en ? '' : `Votre lecture montre deux dominances à égalité : ${nomme(d1)} et ${nomme(d2)}.`,
+    };
+  }
+  return {
+    branche, montres: [d1],
+    libelle: en ? 'Your dominance today' : 'Votre dominance aujourd’hui',
+    titre: (en ? DOMINANCE_EN : DOMINANCE_FR)[d1],
+    noms: [`${NOM_AYURVEDA[d1]} · ${(en ? ELEMENTS_EN : ELEMENTS)[d1]}`],
+    carte: en ? [] : [...CARTE_DOMINANCE[d1]],
+    ayurveda: en
+      ? `In the language of Ayurveda, this dominance is called ${NOM_AYURVEDA[d1]} (${ELEMENTS_EN[d1]}).`
+      : `Dans le langage de l’Ayurveda, cette dominance est appelée ${nomme(d1)}.`,
+    sousCarte: !en && branche === 'teinte' ? `Votre lecture montre aussi une part importante de ${nomme(d2)}.` : '',
+  };
+};
+
+/* En-tête du résultat : médaillon(s), libellé, grand mot, puis petit picto + nom de chaque dosha montré */
+const EnteteLecture: React.FC<{ L: Lecture; ink: string }> = ({ L, ink }) => (
+  <>
+    <div className="flex justify-center gap-4">
+      {L.montres.map((x, i) => (
+        <Medallion key={x} d={x} size={L.montres.length === 1 ? 96 : L.montres.length === 2 ? 76 : 62} delay={0.25 + i * 0.08} />
+      ))}
+    </div>
+    <p className="mt-7 text-[0.68rem] uppercase tracking-[0.32em]" style={{ color: ink }}>{L.libelle}</p>
+    <h2 className="mt-3 v2-serif font-light text-[#1c1712] leading-[0.96] text-[clamp(3rem,6.5vw,5rem)]">{L.titre}</h2>
+    <p className={`mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[0.8rem] leading-snug text-[#3a2f23] ${L.branche === 'double' ? 'flex-col sm:flex-row' : ''}`}>
+      {L.montres.map((x, i) => (
+        <React.Fragment key={x}>
+          {i > 0 && <span aria-hidden className={`text-[#9c7a44] ${L.branche === 'double' ? 'hidden sm:inline' : ''}`}>·</span>}
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+            <DoshaPicto d={x} size={20} className="shrink-0" />
+            {L.noms[i]}
+          </span>
+        </React.Fragment>
+      ))}
+    </p>
+  </>
+);
+
+/* Carte de Krystine + mention discrète du mot Ayurveda, puis la phrase sous la carte */
+const CarteDominance: React.FC<{ L: Lecture; complet: boolean }> = ({ L, complet }) => {
+  const double = L.branche === 'double';
+  // La 3e phrase de la carte nette est retirée sur l'écran du résultat complet.
+  const carte = L.carte.length === 3 && complet ? L.carte.slice(0, 2) : L.carte;
   return (
     <div className="mt-10 max-w-[36ch] mx-auto">
-      {lang === 'FR' && (
+      {carte.length > 0 && (
         <div>
-          <p className="v2-serif font-light text-[clamp(1.2rem,2vw,1.5rem)] leading-snug text-[#1c1712]">{p1}</p>
-          <p className="mt-3 text-[0.95rem] leading-[1.75] text-[#3a2f23]">{p2}</p>
-          {!complet && <p className="mt-3 text-[0.95rem] leading-[1.75] text-[#3a2f23]">{p3}</p>}
+          {carte.map((t, i) => (double ? i === 1 : i === 0)
+            ? <p key={i} className={`${i > 0 ? 'mt-4 ' : ''}v2-serif font-light text-[clamp(1.2rem,2vw,1.5rem)] leading-snug text-[#1c1712]`}>{t}</p>
+            : <p key={i} className={`${i > 0 ? 'mt-3 ' : ''}text-[0.95rem] leading-[1.75] text-[#3a2f23]`}>{t}</p>)}
         </div>
       )}
-      <p className="mt-6 text-[0.75rem] leading-relaxed text-[#1c1712]/55">
-        {lang === 'FR'
-          ? `Dans le langage de l’Ayurveda, cette dominance est appelée ${NOM_AYURVEDA[d]}.`
-          : `In the language of Ayurveda, this dominance is called ${NOM_AYURVEDA[d]}.`}
-      </p>
+      <p className="mt-6 text-[0.75rem] leading-relaxed text-[#1c1712]/55">{L.ayurveda}</p>
+      {L.sousCarte && <p className="mt-5 text-[0.95rem] leading-[1.75] text-[#1c1712]">{L.sousCarte}</p>}
     </div>
   );
 };
@@ -367,11 +452,15 @@ const lireProfil = (p: { vata: number; pitta: number; kapha: number }) => {
   const ordre = [...PRIORITE_DOSHA].sort((a, b) => dix(b) - dix(a));
   const [d1, d2, d3] = ordre;
   const second = `second-${TAG_COURANT[d2]}`;
-  const etiquettes = dix(d1) - dix(d3) <= 10 ? ['profil-equilibre']
-    : dix(d1) === dix(d2) ? ['profil-double', second]
-    : dix(d1) - dix(d2) === 10 ? ['profil-teinte', second]
+  const branche: 'equilibre' | 'double' | 'teinte' | 'net' = dix(d1) - dix(d3) <= 10 ? 'equilibre'
+    : dix(d1) === dix(d2) ? 'double'
+    : dix(d1) - dix(d2) === 10 ? 'teinte'
+    : 'net';
+  const etiquettes = branche === 'equilibre' ? ['profil-equilibre']
+    : branche === 'double' ? ['profil-double', second]
+    : branche === 'teinte' ? ['profil-teinte', second]
     : ['profil-net'];
-  return { d1, etiquettes, suite: `suite-${TAG_COURANT[d1]}` };
+  return { d1, ordre, branche, etiquettes, suite: `suite-${TAG_COURANT[d1]}` };
 };
 
 const scoresFromPicks = (picks: (DoshaType | null)[]) => {
@@ -622,8 +711,9 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   /* ── Écran résultat complet (dosha + rituel + CTA huile), vedette pleine largeur ── */
   if (result) {
     const ritual = RITUALS[result.dominant.name as 'Vata' | 'Pitta' | 'Kapha'];
-    const th = themeForName(result.dominant.name);
-    const dRes = ((result.dominant.name || '').toLowerCase() as DoshaType) in DOSHA_THEME ? (result.dominant.name || '').toLowerCase() as DoshaType : 'vata';
+    const L = lireLecture(result.percentages, lang);
+    // L'équilibre ne prend la couleur d'aucun dosha : le laiton du site.
+    const th = themeForName(L.branche === 'equilibre' ? '' : result.dominant.name);
     return (
       <Curtain>
         <div className="relative border overflow-hidden" style={{ borderColor: `${th.accent}66`, background: th.tint }}>
@@ -649,13 +739,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
           <div className="grid lg:grid-cols-[0.95fr_1.05fr]">
             {/* Identité : médaillon, dominance, répartition, définition */}
             <div className="p-[clamp(2rem,4.5vw,3.75rem)] text-center lg:border-r" style={{ borderColor: `${th.accent}2e` }}>
-              <Medallion d={dRes} className="mx-auto" />
-              <p className="mt-7 text-[0.68rem] uppercase tracking-[0.32em]" style={{ color: th.ink }}>
-                {lang === 'FR' ? 'Votre dominance aujourd’hui' : 'Your dominance today'}
-              </p>
-              <h2 className="mt-3 v2-serif font-light text-[#1c1712] leading-[0.96] text-[clamp(3rem,6.5vw,5rem)]">
-                {(lang === 'FR' ? DOMINANCE_FR : DOMINANCE_EN)[dRes]}
-              </h2>
+              <EnteteLecture L={L} ink={th.ink} />
 
               {/* Répartition des trois doshas */}
               <div className="mt-10 flex justify-center gap-9 md:gap-12">
@@ -664,10 +748,12 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                 ))}
               </div>
 
-              <CarteDominance d={dRes} lang={lang} complet />
+              <CarteDominance L={L} complet />
 
               <p className="mt-10 v2-serif font-light text-[clamp(1.1rem,1.9vw,1.45rem)] leading-relaxed text-[#3a2f23] max-w-[46ch] mx-auto">
-                {result.dominant.definition}
+                {lang === 'FR'
+                  ? String(result.dominant.definition || '').replace(/^(Vata|Pitta|Kapha)\b/, m => nomme(m.toLowerCase() as DoshaType))
+                  : result.dominant.definition}
               </p>
             </div>
 
@@ -703,7 +789,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                 </div>
               )}
 
-              <BoutonVata d={dRes} onGo={() => navigate('/vata')} className="mt-9" />
+              <BoutonVata onGo={() => navigate('/vata')} className="mt-9" />
               {/* Les huiles passent en second (Krystine, 2 oct. 2026). */}
               <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <button
@@ -742,8 +828,8 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
 
   /* ── Écran teaser (toutes les questions répondues, pas encore sauvegardé) ── */
   if (!current && teaser) {
-    const th = themeForName(teaser.dominant.name);
-    const dRes = ((teaser.dominant.name || '').toLowerCase() as DoshaType) in DOSHA_THEME ? (teaser.dominant.name || '').toLowerCase() as DoshaType : 'vata';
+    const L = lireLecture(teaser.percentages, lang);
+    const th = themeForName(L.branche === 'equilibre' ? '' : teaser.dominant.name);
     // Jamais cochée d'avance.
     const caseSuite = (
       <label className="mt-7 mx-auto flex max-w-[34rem] cursor-pointer items-start gap-3 text-left text-[#3a2f23]">
@@ -778,13 +864,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
         <div className="relative border overflow-hidden text-center" style={{ borderColor: `${th.accent}66`, background: th.tint }}>
           <span aria-hidden className="absolute inset-x-0 top-0 h-[3px]" style={{ background: th.accent }} />
           <div className="p-[clamp(2rem,5vw,4rem)]">
-            <Medallion d={dRes} className="mx-auto" />
-            <p className="mt-7 text-[0.68rem] uppercase tracking-[0.32em]" style={{ color: th.ink }}>
-              {lang === 'FR' ? 'Votre dominance aujourd’hui' : 'Your dominance today'}
-            </p>
-            <h2 className="mt-3 v2-serif font-light text-[#1c1712] leading-[0.96] text-[clamp(3rem,6.5vw,5rem)]">
-              {(lang === 'FR' ? DOMINANCE_FR : DOMINANCE_EN)[dRes]}
-            </h2>
+            <EnteteLecture L={L} ink={th.ink} />
 
             <div className="mt-10 flex justify-center gap-9 md:gap-12">
               {ALL_DOSHAS.map(d => (
@@ -792,9 +872,9 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
               ))}
             </div>
 
-            <CarteDominance d={dRes} lang={lang} complet={false} />
+            <CarteDominance L={L} complet={false} />
 
-            <BoutonVata d={dRes} onGo={() => navigate('/vata')} className="mt-9" />
+            <BoutonVata onGo={() => navigate('/vata')} className="mt-9" />
 
             <div className="mt-11 pt-8 border-t max-w-[42rem] mx-auto" style={{ borderColor: `${th.accent}35` }}>
               {user ? (
@@ -1012,8 +1092,8 @@ const INSIDE = [
     n: '02',
     titleFR: 'Votre dominance, en pourcentages',
     titleEN: 'Your dominance, in percentages',
-    bodyFR: 'Vent, Feu ou Terre : votre répartition unique du moment, calculée à partir de vos réponses, sans jugement et sans bonne ou mauvaise réponse.',
-    bodyEN: 'Wind, Fire or Earth: your unique balance of the moment, drawn from your answers, with no judgment and no right or wrong answer.',
+    bodyFR: 'Vata (Vent et Espace), Pitta (Feu et Eau) ou Kapha (Eau et Terre) : votre répartition unique du moment, calculée à partir de vos réponses, sans jugement et sans bonne ou mauvaise réponse.',
+    bodyEN: 'Vata (Wind and Space), Pitta (Fire and Water) or Kapha (Water and Earth): your unique balance of the moment, drawn from your answers, with no judgment and no right or wrong answer.',
   },
   {
     n: '03',
@@ -1030,18 +1110,18 @@ const DOMINANCE_EN: Record<string, string> = { vata: 'Wind', pitta: 'Fire', kaph
 // « Quelques clés de l'Ayurveda » : la carte vert profond du site (Krystine, 2 oct. 2026, le papier doré écarté).
 const CLES_FR: [string, string][] = [
   ['Ayurveda', 'du sanskrit ayus, la vie, et veda, la connaissance, pouvant être traduit par « science de la vie ». Sœur du yoga.'],
-  ['Les cinq éléments', 'l’Espace, l’Air, le Feu, l’Eau et la Terre, dont tout est fait, nous compris.'],
+  ['Les cinq éléments', 'l’Espace, le Vent, le Feu, l’Eau et la Terre, dont tout est fait, nous compris.'],
   ['Dosha', 'une force née de ces éléments. Il y en a trois, présentes en chacune de nous dans des proportions qui lui sont propres.'],
-  ['Vata', 'l’Air et l’Espace, le mouvement.'],
+  ['Vata', 'le Vent et l’Espace, le mouvement.'],
   ['Pitta', 'le Feu et l’Eau, la chaleur et la digestion.'],
   ['Kapha', 'l’Eau et la Terre, la structure et la stabilité.'],
   ['Causes-racines', 'l’Ayurveda remonte à ce qui fait naître un déséquilibre, plutôt que de s’arrêter à ce qui se voit en surface.'],
 ];
 const CLES_EN: [string, string][] = [
   ['Ayurveda', 'from the Sanskrit ayus, life, and veda, knowledge, which can be translated as “the science of life”. Sister of yoga.'],
-  ['The five elements', 'Space, Air, Fire, Water and Earth, of which everything is made, ourselves included.'],
+  ['The five elements', 'Space, Wind, Fire, Water and Earth, of which everything is made, ourselves included.'],
   ['Dosha', 'a force born of these elements. There are three, present in each of us in proportions of our own.'],
-  ['Vata', 'Air and Space, movement.'],
+  ['Vata', 'Wind and Space, movement.'],
   ['Pitta', 'Fire and Water, heat and digestion.'],
   ['Kapha', 'Water and Earth, structure and stability.'],
   ['Root causes', 'Ayurveda traces back to what gives rise to an imbalance, rather than stopping at what shows on the surface.'],
@@ -1150,6 +1230,9 @@ const QuizLoeuvre: React.FC = () => {
                     <div className="min-w-0">
                       <p className="v2-serif font-light text-[1.35rem] text-[#1c1712]">
                         {lang === 'FR' ? 'Dominance ' : 'Dominance of '}{lang === 'FR' ? DOMINANCE_FR[key] : DOMINANCE_EN[key]}
+                      </p>
+                      <p className="mt-1 text-[0.78rem] text-[#3a2f23]/80">
+                        {NOM_AYURVEDA[key]} · {(lang === 'FR' ? ELEMENTS : ELEMENTS_EN)[key]}
                       </p>
                     </div>
                   </div>
