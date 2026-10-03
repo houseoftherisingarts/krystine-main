@@ -413,7 +413,7 @@
   .mnav-overlay.open .mnav-links a{opacity:1;transform:none}
   .mnav-links a:nth-child(1){transition-delay:.06s}.mnav-links a:nth-child(2){transition-delay:.11s}.mnav-links a:nth-child(3){transition-delay:.16s}
   body.mnav-ouvert .ab-bouton,body.mnav-ouvert .ab-bulle,body.mnav-ouvert .fo-fleur,body.mnav-ouvert .fo-panneau,body.mnav-ouvert .fo-voile,body.mnav-ouvert .amb-toggle{display:none!important}
-  .mnav-lang{position:absolute;z-index:30;top:1.3rem;left:1.3rem;display:flex;align-items:center;gap:.2rem;padding:4px;border-radius:999px;border:1px solid rgba(163,130,63,.5);
+  .mnav-lang{position:fixed;z-index:71;top:1.3rem;left:1.3rem;height:44px;box-sizing:border-box;display:flex;align-items:center;gap:.2rem;padding:0 6px;border-radius:999px;border:1px solid rgba(163,130,63,.5);
     font:600 10px/1 Inter,system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase}
   .mnav-lang button{appearance:none;border:0;background:transparent;color:var(--ink-soft);padding:0 14px;height:32px;border-radius:999px;cursor:pointer;font:inherit;letter-spacing:inherit}
   .mnav-lang button[aria-current="true"]{background:var(--brass);color:#1c1712}
@@ -427,7 +427,19 @@
   /* Entre la tablette et le grand écran, le menu complet ne tient plus sur une ligne : le burger prend le relais (27 sept. 2026). */
   @media(max-width:1280px){ nav{display:none} .mnav-toggle{display:flex} }
   @media(max-width:900px){
-    .mnav-links{gap:.7rem;padding-top:3rem}
+    .mnav-links{gap:.5rem;top:0;bottom:0;justify-content:center;padding-top:4.2rem;width:100%;padding-left:1.3rem;padding-right:1.3rem;box-sizing:border-box}
+    .mnav-links a{font-size:1.3rem;letter-spacing:.04em;text-align:center;padding:.55rem .5rem;white-space:nowrap}
+    .mnav-links a.btn-gold{white-space:nowrap;font-family:var(--sans);font-size:.68rem;letter-spacing:.14em;padding:.9rem 1.2rem;margin-top:.9rem;text-align:center;max-width:100%}
+    /* premier écran : deux boutons pleine largeur du panneau, même hauteur */
+    .hero .cta-row{display:flex;flex-direction:column;align-items:stretch;gap:.6rem}
+    .hero .cta-row .cta{display:flex;position:relative;justify-content:center;align-items:center;margin-top:0;min-height:54px;padding:.7rem 2.6rem;text-align:center;box-sizing:border-box}
+    .hero .cta-row .cta svg{position:absolute;right:1.1rem;top:50%;margin-top:-5px}
+    .hero .cta-txt{display:flex;flex-direction:column;align-items:center;line-height:1.25}
+    .hero .cta-main{white-space:nowrap}
+    .hero .cta-pt{display:none}
+    .hero .cta-sub{display:block;font-size:.58rem;letter-spacing:.16em;opacity:.8;margin-top:.15rem}
+    .hero-inner{padding-bottom:4.4rem}
+    body.hero-vu .ab-bouton,body.hero-vu .ab-bulle,body.hero-vu .fo-fleur,body.hero-vu .fo-panneau,body.hero-vu .amb-toggle{opacity:0!important;pointer-events:none!important}
     .mx{padding:0 1.4rem}
     nav{display:none}
     .navlinks{display:none}
@@ -453,7 +465,7 @@
     .hero .h-rule{max-width:none}
     .hero .lede-row .sprig{width:26px;height:34px;flex-shrink:0}
     .hero .cta{font-size:.7rem;padding:.8rem 1.3rem;margin-top:.7rem}
-    .hero .cta-row{margin-top:.3rem}
+    .hero .cta-row{margin-top:.9rem}
 
     /* TRILOGY */
     .trilogy{min-height:auto;padding:0}
@@ -850,7 +862,7 @@
         <div class="sub reveal d2">Nous avons appris à chercher les réponses à l'extérieur. Pourtant, le corps et la nature parlent un langage que nous avons simplement oublié de lire.</div>
         <div class="h-rule plain reveal d3" aria-hidden="true"><span></span></div>
         <div class="lede-row reveal d3"><svg class="sprig" viewBox="0 0 26 34" aria-hidden="true"><path d="M13 32V7"/><path d="M13 13C9.5 12 7.5 9.5 7.5 5.5c3.5.5 5.5 3 5.5 7.5Z"/><path d="M13 13c3.5-1 5.5-3.5 5.5-7.5-3.5.5-5.5 3-5.5 7.5Z"/><path d="M13 21c-3.5-1-5.5-3.5-5.5-7.5 3.5.5 5.5 3 5.5 7.5Z"/><path d="M13 21c3.5-1 5.5-3.5 5.5-7.5-3.5.5-5.5 3-5.5 7.5Z"/></svg><p class="lede">Depuis près de 40 ans, <b class="gold">Krystine St-Laurent</b> relie les savoirs traditionnels, l'Ayurveda, les cycles et l'expérience de la nature pour transmettre des repères qui permettent de mieux comprendre ce qui se joue en soi.</p></div>
-        <div class="cta-row reveal d4"><a class="cta" href="/quiz">Découvrir votre dominance · le quiz gratuit <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a><a class="cta cta-ligne" href="#portes">Découvrir l'œuvre <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a></div>
+        <div class="cta-row reveal d4"><a class="cta" href="/quiz"><span class="cta-txt"><span class="cta-main">Découvrir votre dominance</span><span class="cta-pt"> · </span><span class="cta-sub">le quiz · 3 minutes</span></span> <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a><a class="cta cta-ligne" href="#portes"><span class="cta-txt">Découvrir l'œuvre</span> <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a></div>
       </div>
     </div>
   </section>
@@ -1645,6 +1657,12 @@
     btn.addEventListener('click',function(){ ov.classList.contains('open')?close():open(); });
     links.forEach(function(a){ a.addEventListener('click',close); });
     document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&ov.classList.contains('open')) close(); });
+  })();
+  /* téléphone : les ronds flottants s'effacent tant que le panneau du premier écran est à l'écran */
+  (function(){
+    var c=document.querySelector('.hero .copy'); if(!c) return;
+    function maj(){ var vu = window.innerWidth<=900 && c.getBoundingClientRect().bottom>window.innerHeight*0.12; document.body.classList.toggle('hero-vu',vu); }
+    window.addEventListener('scroll',maj,{passive:true}); window.addEventListener('resize',maj); maj();
   })();
   /* ambient music: starts on first user click, toggle to mute/resume */
   (function(){

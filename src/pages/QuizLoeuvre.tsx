@@ -1133,7 +1133,7 @@ const QuizLoeuvre: React.FC = () => {
                 <ArrowDown size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-y-0.5" />
               </a>
               <span className="text-[0.62rem] uppercase tracking-[0.2em] text-[#1c1712]/55">
-                {lang === 'FR' ? 'Gratuit · 3 minutes' : 'Free · 3 minutes'}
+                3 minutes
               </span>
             </motion.div>
           </div>

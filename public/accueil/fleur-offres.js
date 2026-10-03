@@ -46,7 +46,7 @@ const OFFRES = {
     eyebrow: 'Une offre pour vous',
     titre: 'Quelle est votre dominance aujourd’hui ?',
     texte: 'Quelques questions sur votre sommeil, votre mental et votre énergie, et vous découvrez lequel des trois doshas mène en ce moment, avec un premier repère à essayer dès ce soir.',
-    cta: 'Découvrir votre dominance · le quiz gratuit', href: '/quiz',
+    cta: 'Découvrir votre dominance · le quiz', href: '/quiz',
   },
   'dosha-vata': {
     eyebrow: 'Ce qui vous ressemble',

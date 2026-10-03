@@ -62,7 +62,7 @@ const ROUTES: Record<string, PageMeta> = {
   },
   '/quiz': {
     title: `Quiz Dosha · ${SITE}`,
-    description: 'Dix questions pour révéler votre dominance du moment: Vata, Pitta ou Kapha. Gratuit, 3 minutes.',
+    description: 'Dix questions pour révéler votre dominance du moment: Vata, Pitta ou Kapha. 3 minutes.',
   },
   '/guide': {
     title: `Laissez-vous guider · ${SITE}`,
