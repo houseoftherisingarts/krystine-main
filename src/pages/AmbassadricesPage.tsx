@@ -14,7 +14,7 @@ import { PART_DEFAUT, PAS } from '../firebase/ambassadrices';
  */
 
 const DOUX = 'cubic-bezier(0.23,1,0.32,1)';
-const GESTE = 'flex-1 min-h-[48px] rounded-full border border-[#EEE7DB]/35 px-4 py-2.5 text-[0.86rem] font-medium leading-tight text-[#EEE7DB] transition-[transform,background-color,border-color] duration-150 active:scale-[0.97] disabled:border-dashed disabled:text-[#EEE7DB]/60 disabled:active:scale-100 [@media(hover:hover)_and_(pointer:fine)]:enabled:hover:border-[#BA7B39] [@media(hover:hover)_and_(pointer:fine)]:enabled:hover:bg-[#BA7B39]/15';
+const GESTE = 'flex-1 min-h-[48px] rounded-full border border-[#EEE7DB]/60 px-4 py-2.5 text-base font-medium leading-tight text-[#EEE7DB] transition-[transform,background-color,border-color] duration-150 active:scale-[0.97] disabled:border-dashed disabled:text-[#EEE7DB]/60 disabled:active:scale-100 [@media(hover:hover)_and_(pointer:fine)]:enabled:hover:border-[#BA7B39] [@media(hover:hover)_and_(pointer:fine)]:enabled:hover:bg-[#BA7B39]/15';
 
 const T = {
   FR: {
@@ -119,7 +119,7 @@ const AmbassadricesPage: React.FC = () => {
       <section className={`${GOUTTIERE} pt-[clamp(7rem,16vh,10rem)] pb-[clamp(4rem,10vh,7rem)]`}>
         <div className="grid items-end gap-[clamp(2rem,6vw,6rem)] lg:grid-cols-[1.15fr_1fr]">
           <Reveal>
-            <Kicker className="mb-6">{t.kicker}</Kicker>
+            <Kicker className="mb-6 !text-[0.88rem] font-semibold !text-[#6a5326]">{t.kicker}</Kicker>
             <h1 className="v2-serif font-light leading-[0.92] text-[clamp(3rem,8.4vw,7.6rem)]">
               {t.titre.map(l => <span key={l} className="block">{l}</span>)}
             </h1>
@@ -138,7 +138,7 @@ const AmbassadricesPage: React.FC = () => {
         <ol className="mt-[clamp(2.5rem,6vh,4.5rem)] grid gap-x-[clamp(2rem,5vw,5rem)] md:grid-cols-2">
           {t.gestes.map(([titre, texte], i) => (
             <li key={titre} className="border-t border-[#1c1712]/15 py-8">
-              <Reveal delay={i * 0.06} className="grid grid-cols-[auto_1fr] gap-x-6">
+              <Reveal delay={i * 0.06} className="grid grid-cols-[clamp(2.6rem,4.4vw,3.6rem)_1fr] gap-x-6">
                 <span className="v2-serif text-[clamp(3rem,5vw,4.4rem)] font-light leading-[0.85] text-[#9c7a44] [font-variant-numeric:lining-nums]">{i + 1}</span>
                 <div>
                   <h3 className="v2-serif text-[clamp(1.45rem,2.2vw,1.9rem)] font-normal leading-[1.15]">{titre}</h3>
@@ -156,7 +156,7 @@ const AmbassadricesPage: React.FC = () => {
           <CarteVerte>
             <div className="grid gap-[clamp(2rem,5vw,5rem)] p-[clamp(2rem,5vw,4.5rem)] lg:grid-cols-[1fr_1.05fr] lg:items-center">
               <div>
-                <Kicker sombre className="mb-5">{t.essaiKicker}</Kicker>
+                <Kicker sombre className="mb-5 !text-[0.88rem] font-semibold !text-[#e2b866]">{t.essaiKicker}</Kicker>
                 <TitreChapitre sombre className="max-w-[14ch]">{t.essaiTitre}</TitreChapitre>
                 <p className="mt-6 max-w-[42ch] text-[1.05rem] leading-[1.75] text-[#EEE7DB]/80">{t.essaiTexte}</p>
               </div>
@@ -210,7 +210,7 @@ const AmbassadricesPage: React.FC = () => {
 
       {/* La fermeture */}
       <section className={`${GOUTTIERE} border-t border-[#1c1712]/12 py-[clamp(4rem,10vh,7rem)]`}>
-        <Reveal className="flex flex-wrap items-end justify-between gap-8">
+        <Reveal className="flex flex-wrap items-end gap-x-[clamp(2rem,6vw,6rem)] gap-y-8">
           <TitreChapitre className="max-w-[14ch]">{t.finTitre}</TitreChapitre>
           <BoutonNoir to="/compte?ambassadrice=1">{t.geste}</BoutonNoir>
         </Reveal>
