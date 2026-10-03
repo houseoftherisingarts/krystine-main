@@ -5431,5 +5431,21 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-03T16:06:07.720Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "03ff0e57",
+    "message": "Quiz : nomenclature au format « Vata (Vent et Espace) » sous le grand mot, dans les pourcentages et la bannière, écran et courriel",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/quizCourriel.ts",
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
