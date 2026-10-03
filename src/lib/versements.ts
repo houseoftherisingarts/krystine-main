@@ -13,7 +13,7 @@ export const FORMATION_VATA_ID = 'kajabi-2148687644';
  *  lancement (prix de la fiche) tient jusqu'au 1er novembre 2026 inclus, puis
  *  le prix régulier de 497 $ s'applique tout seul. */
 export function prixEnVigueur(formationId: string, prixFiche: number, maintenant = Date.now()): number {
-  if (formationId === FORMATION_VATA_ID && maintenant >= Date.parse('2026-11-02T04:00:00Z')) return 497;
+  if (formationId === FORMATION_VATA_ID && maintenant >= Date.parse('2026-11-02T05:00:00Z')) return 497;
   return prixFiche;
 }
 

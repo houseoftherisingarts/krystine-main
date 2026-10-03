@@ -4,7 +4,7 @@
 // Le tarif de lancement tient jusqu'au 1er novembre 2026 inclus (Krystine,
 // 30 sept. 2026), puis la page affiche 497 $ sans prix barré. La fonction de
 // paiement bascule à la même minute (functions/src/paiements.ts).
-export const FIN_LANCEMENT = new Date('2026-11-02T04:00:00Z');
+export const FIN_LANCEMENT = new Date('2026-11-02T05:00:00Z');
 export const enLancement = () => Date.now() < FIN_LANCEMENT.getTime();
 
 export const TIERS = [
