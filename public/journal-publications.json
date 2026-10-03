@@ -5293,5 +5293,18 @@
       "public/assets-manifest.json",
       "public/communaute/index.html"
     ]
+  },
+  {
+    "quand": "2026-10-03T13:47:11.821Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "9f7c0492",
+    "message": "Accueil : titre de recherche « Krystine St-Laurent · Ayurveda, rythmes et saisons » (onglet, Google, partages)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json"
+    ]
   }
 ]
