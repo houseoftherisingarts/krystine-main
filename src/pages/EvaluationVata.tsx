@@ -212,7 +212,7 @@ const EvaluationVata: React.FC = () => {
             ))}
           </div>
           <label className="mt-6 block">
-            <span className={`${QUESTION} block`}>Pourquoi celle-là ?</span>
+            <span className={`${QUESTION} block`}>Pourquoi celle-là en particulier ?</span>
             <textarea value={pourquoi} onChange={e => setPourquoi(e.target.value)} rows={3} maxLength={2000}
               placeholder="Ce qu’elle a touché chez vous, ce que vous en gardez…" className={`${CHAMP} mt-4 resize-y`} />
           </label>
