@@ -5558,5 +5558,20 @@
       "src/firebase/quiz.ts",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-03T17:30:17.494Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "141e75e0",
+    "message": "Quiz : phrase de consentement de Krystine au-dessus du bouton « Recevoir ma lecture et sa suite », sans l'option « seulement mon résultat »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "scripts/qa/_frames.mjs",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
