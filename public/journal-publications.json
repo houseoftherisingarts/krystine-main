@@ -5617,5 +5617,21 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-03T18:49:21.631Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "4935a9d2",
+    "message": "Séquences : une acheteuse de VATA Essentiel sort des suites du quiz; l'accueil Vata n'attend plus la garde des 48 heures; suite Vent : fin « Notre équipe est là pour vous »",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "functions/src/newsletter/sequences.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
