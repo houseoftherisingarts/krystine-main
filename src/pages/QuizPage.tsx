@@ -5,7 +5,7 @@ import { CONTENT } from '../content';
 import { addDoshaQuizResult, updateMember } from '../firebase/firestore';
 import { points } from '../firebase/points';
 import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../shopify';
-import { findOilForDosha } from '../lib/shopifyOil';
+import { findOilForDosha, formatDetail } from '../lib/shopifyOil';
 import { RITUALS } from '../lib/doshaRituals';
 import { trackLead } from '../lib/track';
 import AyurvedaIkigai from '../components/AyurvedaIkigai';
@@ -197,7 +197,7 @@ const QuizPage: React.FC = () => {
 
   const addDoshaOil = (doshaName: string) => {
     const product = findOilForDosha(products, doshaName);
-    const variant = product?.variants.find(v => v.availableForSale) || product?.variants[0];
+    const variant = (product ? formatDetail(product) : undefined);
     if (!product || !variant) {
       navigate('/boutique/huiles-corporelles');
       return;

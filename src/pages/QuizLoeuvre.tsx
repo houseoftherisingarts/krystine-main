@@ -17,7 +17,7 @@ import { RECAPTCHA_SITE_KEY, useRecaptcha } from '../lib/recaptcha';
 import {
   getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct,
 } from '../shopify';
-import { findOilForDosha } from '../lib/shopifyOil';
+import { findOilForDosha, formatDetail } from '../lib/shopifyOil';
 import { RITUALS } from '../lib/doshaRituals';
 import { Planche } from '../components/v2/Magazine';
 import { Atmosphere } from '../components/motion/loeuvre';
@@ -531,7 +531,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
 
   const addDoshaOil = (doshaName: string) => {
     const product = findOilForDosha(products, doshaName);
-    const variant = product?.variants.find(v => v.availableForSale) || product?.variants[0];
+    const variant = (product ? formatDetail(product) : undefined);
     if (!product || !variant) {
       navigate('/boutique/huiles-corporelles');
       return;

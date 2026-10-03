@@ -13,7 +13,7 @@ import { logout } from '../firebase/auth';
 import { updateMember, getClientOrdersForMember, getDoshaResultsForMember, getGuideResponsesForMember, type ClientOrder, type DoshaResult, type GuideResponse } from '../firebase/firestore';
 import { uploadImage, reduireImage } from '../firebase/storage';
 import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../shopify';
-import { findOilForDosha } from '../lib/shopifyOil';
+import { findOilForDosha, formatDetail } from '../lib/shopifyOil';
 import { trackObjectif } from '../lib/track';
 import { ritualForDosha } from '../lib/doshaRituals';
 import { jsPDF } from 'jspdf';
@@ -1112,7 +1112,7 @@ const DoshaTab: React.FC = () => {
     : null;
 
   const addOilToCart = (product: ShopifyProduct) => {
-    const variant = product.variants.find(v => v.availableForSale) || product.variants[0];
+    const variant = formatDetail(product);
     if (!variant) return;
     addToCart({
       id: product.id,
@@ -1337,7 +1337,7 @@ const DoshaTab: React.FC = () => {
               mb: string,
             ) => {
               const product = doshaName ? findOilForDosha(products, doshaName) : undefined;
-              const variant = product?.variants.find(v => v.availableForSale) || product?.variants[0];
+              const variant = product ? formatDetail(product) : undefined;
               const priceText = variant ? formatMoney(variant.price, lang) : '';
               const soldOut = product ? !product.availableForSale : false;
               return (
