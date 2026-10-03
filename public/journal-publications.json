@@ -5693,5 +5693,20 @@
       "public/assets-manifest.json",
       "src/lib/pageMeta.ts"
     ]
+  },
+  {
+    "quand": "2026-10-03T23:06:02.822Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "0549a4df",
+    "message": "Quiz : aperçu de partage sur fond noir avec l'adresse du quiz et les mots-clics",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/quiz/quiz-apercu-noir.jpg",
+      "src/lib/pageMeta.ts"
+    ]
   }
 ]
