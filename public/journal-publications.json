@@ -5462,5 +5462,22 @@
       "functions/src/quizCourriel.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-03T16:33:13.315Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "bba77071",
+    "message": "Boutons « Ajouter l'huile » (quiz, espace client) : toujours le flacon de 50 ml, jamais le format cabine ni la recharge de 500 ml",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/shopifyOil.ts",
+      "src/pages/ClientPortal.tsx",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/pages/QuizPage.tsx"
+    ]
   }
 ]
