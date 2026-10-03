@@ -5414,5 +5414,22 @@
       "src/pages/admin/sections/AmbassadricesSection.tsx",
       "src/pages/client/ClientAmbassadrice.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-03T15:27:37.116Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "5d47f76e",
+    "message": "Quiz : résultats équilibre, deux dominances et teinté réécrits, nomenclature Vata (Vent et Espace), Pitta (Feu et Eau), Kapha (Eau et Terre) partout, cinq éléments; suite Vata : clé « Type mixte »",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/quiz.ts",
+      "functions/src/quizCourriel.ts",
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
