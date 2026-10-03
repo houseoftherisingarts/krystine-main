@@ -30,6 +30,8 @@ function loadMetaPixel() {
   })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
   /* eslint-enable */
   window.fbq?.('init', '836682756431077');
+  // Pixel « KSL » (KAJABI. KSL PIXEL), celui des campagnes de Krystine (3 oct. 2026) : les mêmes événements partent aux deux.
+  window.fbq?.('init', '1520805652120798');
   window.fbq?.('track', 'PageView');
 }
 
