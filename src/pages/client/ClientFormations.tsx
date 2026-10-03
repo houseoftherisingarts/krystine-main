@@ -220,7 +220,7 @@ const ClientFormations: React.FC = () => {
                   <span className="shrink-0 rounded-full bg-[#BA7B39] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#293027]">
                     {f.listeAttente
                       ? (lang === 'FR' ? "Liste d'attente" : 'Waitlist')
-                      : f.paywall && f.prix ? `${f.prix} $` : (lang === 'FR' ? 'Libre' : 'Free')}
+                      : f.paywall && f.prix ? `${f.prix} $` : (lang === 'FR' ? 'Libre' : 'Open')}
                   </span>
                   </div>
                 </div>

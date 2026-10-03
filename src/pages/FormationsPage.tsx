@@ -70,9 +70,9 @@ const FormationsPage: React.FC = () => {
         },
         {
           tag: 'Saison Vata · Disponible',
-          title: "L'Automne",
+          title: 'VATA Essentiel',
           subtitle: 'Enraciner · Réchauffer · Apaiser',
-          description: "Vent, sécheresse, dispersion : la saison Vata teste les nerfs. Un programme pour ancrer le corps et la tête avant l'hiver.",
+          description: "Vent, sécheresse, dispersion : le Vent teste les nerfs. Un programme pour ancrer le corps et la tête, à suivre à votre rythme.",
           duration: 'Programme disponible',
           href: '/vata',
           image: SEASON_IMG.autumn,
@@ -111,9 +111,9 @@ const FormationsPage: React.FC = () => {
         },
         {
           tag: 'Vata season · Available',
-          title: 'Autumn',
+          title: 'VATA Essential',
           subtitle: 'Ground · Warm · Soothe',
-          description: "Wind, dryness, scattering: the Vata season tests the nerves. A program to ground body and mind before winter.",
+          description: "Wind, dryness, scattering: Vata tests the nerves. A program to ground body and mind, at your own pace.",
           duration: 'Program available',
           href: '/vata',
           image: SEASON_IMG.autumn,

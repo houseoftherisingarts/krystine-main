@@ -66,7 +66,7 @@ const CoursPage: React.FC = () => {
                       ? (lang === 'FR' ? "Liste d'attente" : 'Waitlist')
                       : f.paywall && f.prix
                         ? `${f.prix} $ CA`
-                        : (lang === 'FR' ? 'Accès libre' : 'Free access')}
+                        : (lang === 'FR' ? 'Accès libre' : 'Open access')}
                   </p>
                 </div>
               </Link>

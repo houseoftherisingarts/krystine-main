@@ -37,8 +37,8 @@ export const CONTENT: GlobalContent = {
       en: "Ayurveda Experience: Vata Season"
     },
     tagline: {
-      fr: "Froid, sécheresse, surcharge mentale : la saison VATA teste vos limites. Ne laissez pas l'hiver vous éteindre. Apprenez à sécuriser vos portes sensorielles pour ramener le calme à l'intérieur.",
-      en: "Cold, dryness, mental overload: VATA season tests your limits. Don't let winter dim your light. Learn to secure your sensory gateways to restore inner peace."
+      fr: "Froid, sécheresse, surcharge mentale : la saison VATA teste vos limites. Apprenez à sécuriser vos portes sensorielles pour ramener le calme à l'intérieur.",
+      en: "Cold, dryness, mental overload: VATA season tests your limits. Learn to secure your sensory gateways to restore inner peace."
     },
     bullets: [
       { fr: "Programme autonome, déjà entièrement disponible.", en: "Self-paced program, fully available now." },
@@ -220,8 +220,7 @@ export const CONTENT: GlobalContent = {
           { fr: "18 capsules d’accompagnement audio pour les différents modules", en: "18 audio accompaniment capsules for the different modules" },
           { fr: "7 méditations pré-enregistrées, une par semaine", en: "7 pre-recorded meditations, one per week" },
           { fr: "19 rituels guidés", en: "19 guided rituals" },
-          { fr: "Guide PDF de 204 pages, intégré à l’ensemble, comme repère écrit pour vos rituels, recettes et saisons.", en: "204-page PDF guide, integrated into the set, as a written reference for your rituals, recipes, and seasons." },
-          { fr: "Accès à la communauté : Un espace d’échanges dédié sous les capsules, dans la plateforme Vata, pour déposer vos questions, observations et partages au fil des semaines.", en: "Community access: A dedicated exchange space under the capsules, in the Vata platform, to post your questions, observations, and shares over the weeks." }
+          { fr: "Guide PDF de 204 pages, intégré à l’ensemble, comme repère écrit pour vos rituels, recettes et saisons.", en: "204-page PDF guide, integrated into the set, as a written reference for your rituals, recipes, and seasons." }
         ],
         price: { fr: "497 $", en: "$497" },
         promoPrice: { fr: "397 $", en: "$397" },
@@ -256,7 +255,7 @@ export const CONTENT: GlobalContent = {
   },
   testimonials: {
     title: { fr: "Elles l'ont vécu", en: "They Experienced It" },
-    subtitle: { fr: "Témoignages de la communauté", en: "Community Testimonials" },
+    subtitle: { fr: "Témoignages", en: "Testimonials" },
     items: [
       {
         quote: {
@@ -392,8 +391,7 @@ export const CONTENT: GlobalContent = {
           { fr: "18 capsules d’accompagnement audio", en: "18 audio accompaniment capsules" },
           { fr: "7 méditations pré-enregistrées", en: "7 pre-recorded meditations" },
           { fr: "19 rituels guidés", en: "19 guided rituals" },
-          { fr: "Guide PDF de 204 pages", en: "204-page PDF guide" },
-          { fr: "Accès à la communauté", en: "Community access" }
+          { fr: "Guide PDF de 204 pages", en: "204-page PDF guide" }
         ],
         recommended: false,
         checkoutUrl: "/vata#tarifs",
@@ -478,7 +476,7 @@ export const CONTENT: GlobalContent = {
       },
       {
         question: { fr: "Est-ce que je peux suivre sur mobile ou tablette ?", en: "Can I follow on mobile or tablet?" },
-        answer: { fr: "Oui ! La plateforme est responsive et vous pouvez même utiliser l'application mobile gratuite de notre hébergeur pour écouter vos capsules en mode « podcast » pendant vos déplacements.", en: "Yes! The platform is responsive and mobile-friendly." }
+        answer: { fr: "Oui ! La plateforme est responsive et vous pouvez même utiliser l'application mobile de notre hébergeur pour écouter vos capsules en mode « podcast » pendant vos déplacements.", en: "Yes! The platform is responsive and mobile-friendly." }
       },
       {
         question: { fr: "Quelle est la différence entre les deux options ?", en: "What is the difference between the two options?" },

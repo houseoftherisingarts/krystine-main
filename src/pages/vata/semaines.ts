@@ -121,7 +121,7 @@ export const SEMAINES_VATA: SemaineVata[] = [
     sens: { fr: 'Clore la saison', en: 'Closing the season' },
     promesse: {
       fr: 'Un dernier mot de Krystine, et votre guide complet à garder et à relire.',
-      en: 'A last word from Krystine, and your complete guide to keep for every autumn.',
+      en: 'A last word from Krystine, and your complete guide to keep and return to.',
     },
     couleur: { encre: '#4E6349', vive: '#7A9270' },
     ...img(8),

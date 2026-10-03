@@ -13,7 +13,7 @@ import {
   type Espace, type Intention, type Preset, type PresetAudience, type PresetFormat, type ProduitCatalogue, type Registre, type GrowthRun,
 } from '../../../firebase/growth';
 
-const COLONNES: Record<ProduitCatalogue['colonne'], string> = { entree: 'Entrée gratuite', A: 'Cœur, colonne A (Krystine présente)', B: 'Cœur, colonne B (rapporte sans elle)', suite: 'Suite' };
+const COLONNES: Record<ProduitCatalogue['colonne'], string> = { entree: 'Entrée offerte', A: 'Cœur, colonne A (Krystine présente)', B: 'Cœur, colonne B (rapporte sans elle)', suite: 'Suite' };
 const CLES_REGISTRES = Object.keys(REGISTRES) as Registre[];
 
 // Les jalons vivent dans growth.ts et nomment leurs dates en français. Ces fins
@@ -30,7 +30,7 @@ const CLE_REGISTRES = 'growth.registres';
 const VISITE: EtapeSpotlight[] = [
   { cible: 'espaces', titre: 'Où chercher', texte: 'Le module travaille dans deux espaces séparés, la francophonie et l\'anglophonie, et chacun garde ses audiences, ses formats et son propre historique. Commencez par celui que vous visez aujourd\'hui, vous pourrez passer à l\'autre sans rien perdre.' },
   { cible: 'audiences', titre: 'Qui rejoindre', texte: 'Une audience décrit les femmes que vous voulez rejoindre : leur pays, leur âge, leurs affinités et les mots qu\'elles emploient. Choisissez celle qui colle à votre intention, ou modifiez-la pour l\'affiner. C\'est de là que la recherche part.' },
-  { cible: 'produits', titre: 'Quoi proposer', texte: 'Cochez ce que la recherche a le droit de proposer, de l\'extrait gratuit jusqu\'aux programmes et aux conférences. Le module relie ensuite chaque produit au segment qui lui convient, et il ne parle jamais de ce qui reste décoché.' },
+  { cible: 'produits', titre: 'Quoi proposer', texte: 'Cochez ce que la recherche a le droit de proposer, de l\'extrait offert jusqu\'aux programmes et aux conférences. Le module relie ensuite chaque produit au segment qui lui convient, et il ne parle jamais de ce qui reste décoché.' },
   { cible: 'formats', titre: 'Comment le dire', texte: 'Le format décide de la forme de l\'annonce, de sa durée et de son coût : un court vertical, une annonce avant une vidéo, ou une vignette dans le fil. Les chiffres affichés sont indicatifs pour 2026 et servent à comparer, pas à engager une dépense.' },
   { cible: 'registres', titre: 'Quel registre', texte: 'Une audience fidèle se construit avec quatre registres : ce qu\'elle apprend, ce qui l\'inspire, ce que vous racontez de votre parcours, et la preuve que ça fonctionne. Gardez les quatre cochés, et nommez celui qui mène ce cycle-ci.' },
   { cible: 'lancer', titre: 'Lancer la recherche', texte: 'Dites ce que vous voulez obtenir, puis lancez. La recherche tourne une à trois minutes dans le Cloud et vous pouvez quitter la page, elle continue sans vous. Rien ne part vers personne : tout revient en brouillon, à relire.' },
@@ -263,7 +263,7 @@ const GrowthSection: React.FC = () => {
                       <div key={p.id} className={`flex items-start gap-3 rounded-xl px-1 py-1.5 ${p.actif ? '' : 'opacity-50'}`}>
                         <input type="checkbox" disabled={!p.actif} checked={produitIds.includes(p.id)} onChange={e => setProduitIds(ids => e.target.checked ? [...ids, p.id] : ids.filter(i => i !== p.id))} className="mt-1 accent-[#BA7B39]" />
                         <div className="min-w-0 flex-1">
-                          <div className="text-sm font-medium text-[#293027] dark:text-white">{p.nom}{p.prix != null && <span className="ml-2 text-xs text-[#38403a]/55 dark:text-white/50">{p.prix === 0 ? 'gratuit' : `${p.prix} $`}</span>}</div>
+                          <div className="text-sm font-medium text-[#293027] dark:text-white">{p.nom}{p.prix != null && <span className="ml-2 text-xs text-[#38403a]/55 dark:text-white/50">{p.prix === 0 ? 'offert' : `${p.prix} $`}</span>}</div>
                           <div className="text-xs leading-relaxed text-[#38403a]/70 dark:text-white/60">{p.description}</div>
                         </div>
                         <button type="button" onClick={() => basculerProduit(p, !p.actif)} className="shrink-0 text-[10px] font-bold uppercase tracking-[0.18em] text-[#8B4A2F] hover:underline dark:text-[#d9a05b]">{p.actif ? 'Retirer' : 'Remettre'}</button>

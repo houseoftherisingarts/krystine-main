@@ -38,7 +38,7 @@ export const Titre: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 // ─── Les sept parties du résultat ────────────────────────────────────────────
 const SECTIONS = [
   { cle: 'segments', titre: 'Segments', aide: 'Le portrait des groupes de femmes que la recherche a trouvés, avec leurs mots à elles et une estimation de leur taille.' },
-  { cle: 'associations', titre: 'Produits et segments', aide: 'Quel produit parler à quel segment, de l\'entrée gratuite jusqu\'à la suite, avec la raison derrière chaque rapprochement.' },
+  { cle: 'associations', titre: 'Produits et segments', aide: 'Quel produit parler à quel segment, de l\'entrée offerte jusqu\'à la suite, avec la raison derrière chaque rapprochement.' },
   { cle: 'pitchs', titre: 'Pitchs', aide: 'Un brouillon par segment, dans votre voix, à relire avant tout envoi; un clic le dépose dans vos gabarits d\'infolettre.' },
   { cle: 'contenus', titre: 'Contenus par registre', aide: 'Trois idées par registre pour nourrir la semaine sans plafonner; copiez celle qui vous parle dans votre calendrier.' },
   { cle: 'offres', titre: 'Offres', aide: 'Des pistes d\'offres classées selon qu\'elles demandent votre présence ou qu\'elles rapportent sans vous, chacune reliée à un jalon du plan.' },

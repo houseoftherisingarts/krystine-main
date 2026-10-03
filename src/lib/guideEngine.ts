@@ -158,8 +158,8 @@ export const GUIDE_QUESTIONS: GuideQuestion[] = [
     fr: 'Quel type d\'engagement vous ressemble aujourd\'hui ?',
     en: 'What kind of commitment fits you today?',
     options: [
-      { id: 'free',      fr: 'Un premier pas gratuit.',
-        en: 'A free first step.',
+      { id: 'free',      fr: 'Un premier pas offert.',
+        en: 'A first step, offered.',
         weights: { podcast: 5, 'dosha-quiz': 3, 'premiers-rituels': 4 } },
       { id: 'small',     fr: 'Un geste concret pour soi — un livre, une huile.',
         en: 'A small concrete gesture — a book, an oil.',

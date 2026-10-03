@@ -830,7 +830,7 @@ const Testimonials: React.FC = () => {
       <Reveal className="mb-[clamp(2.5rem,6vh,4rem)]">
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.sageInk }}>Elles l'ont vécu</p>
         <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)]" style={{ color: C.ink }}>
-          Témoignages de la communauté
+          Témoignages
         </h2>
       </Reveal>
 

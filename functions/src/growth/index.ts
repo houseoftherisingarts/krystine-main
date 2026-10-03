@@ -172,7 +172,7 @@ export const growthTravailler = onDocumentCreated(
     await ref.update({ statut: 'en_cours', progression: 'Lecture du marché et rédaction en cours (une à trois minutes).' });
 
     const espace: Espace = run.espace === 'en' ? 'en' : 'fr';
-    const catalogue = (run.produits || []).map((p: any) => `- ${p.nom} (colonne ${p.colonne}${p.prix != null ? `, ${p.prix === 0 ? 'gratuit' : p.prix + ' $'}` : ', prix non public'}) : ${p.description}${p.adresse ? ` [krystinestlaurent.ca${p.adresse}]` : ''}`).join('\n');
+    const catalogue = (run.produits || []).map((p: any) => `- ${p.nom} (colonne ${p.colonne}${p.prix != null ? `, ${p.prix === 0 ? 'offert' : p.prix + ' $'}` : ', prix non public'}) : ${p.description}${p.adresse ? ` [krystinestlaurent.ca${p.adresse}]` : ''}`).join('\n');
     const a = run.audience || {};
     const f = run.format;
     const demandes = Array.isArray(run.registres) ? run.registres.filter((k: string) => CLES_REGISTRES.includes(k)) : [];

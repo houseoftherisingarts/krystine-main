@@ -180,7 +180,7 @@ export const FORMATS_DEPART: Omit<PresetFormat, 'id'>[] = [
 // Le catalogue de départ, tiré du site. Les prix absents du site restent vides :
 // le module n'en invente aucun.
 export const CATALOGUE_DEPART: ProduitCatalogue[] = [
-  { id: 'extrait-5-elements', nom: 'Extrait « Les 5 éléments et leurs qualités »', adresse: '/5elements', description: 'Extrait gratuit du livre Nature & Ayurveda, contre un courriel.', colonne: 'entree', prix: 0, actif: true, ordre: 1 },
+  { id: 'extrait-5-elements', nom: 'Extrait « Les 5 éléments et leurs qualités »', adresse: '/5elements', description: 'Extrait offert du livre Nature & Ayurveda, contre un courriel.', colonne: 'entree', prix: 0, actif: true, ordre: 1 },
   { id: 'podcast', nom: 'Podcast Au-delà des tendances et ses directs', adresse: '/podcast', description: 'La voix de Krystine en continu, avec les directs YouTube et leurs rediffusions.', colonne: 'entree', prix: 0, actif: true, ordre: 2 },
   { id: 'quiz-dosha', nom: 'Quiz des doshas', adresse: '/quiz', description: 'Une première lecture de soi par les qualités.', colonne: 'entree', prix: 0, actif: true, ordre: 3 },
   { id: 'origine2', nom: 'Expérience Origine 2', adresse: '/origine-2', description: 'Douze semaines pour sortir du pilotage extérieur et retrouver ses propres repères. Lancement à l\'automne 2026.', colonne: 'A', prix: null, actif: true, ordre: 4 },

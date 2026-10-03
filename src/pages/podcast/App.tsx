@@ -1082,7 +1082,7 @@ const App: React.FC = () => {
                     Pour aller plus loin
                   </h2>
                   <p>
-                    Le podcast est gratuit, hebdomadaire, sans publicité.
+                    Le podcast paraît chaque semaine, sans publicité.
                     Pour inviter Krystine en conférence, la page{' '}
                     <a
                       href="/conferenciere"

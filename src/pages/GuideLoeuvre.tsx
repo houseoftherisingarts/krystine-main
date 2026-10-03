@@ -121,7 +121,7 @@ const INSIDE = [
   },
   {
     n: '03',
-    title: 'Du podcast gratuit au parcours signature',
+    title: 'Du podcast au parcours signature',
     body: "Le podcast, le Quiz Dosha, les Premiers Rituels, la collection Sérénité, la Bibliothèque, les programmes saisonniers, l'Expérience Origine ou les événements en personne. La destination juste, jamais la plus chère par défaut.",
   },
 ];
@@ -466,7 +466,7 @@ const GuideLoeuvre: React.FC = () => {
                 <ArrowDown size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-y-0.5" />
               </a>
               <span className="text-[0.62rem] uppercase tracking-[0.2em] text-[#1c1712]/55">
-                {lang === 'FR' ? 'Gratuit · sans inscription · 2 minutes' : 'Free · no sign-up · 2 minutes'}
+                {lang === 'FR' ? 'Sans inscription · 2 minutes' : 'No sign-up · 2 minutes'}
               </span>
             </motion.div>
           </div>
@@ -534,7 +534,7 @@ const GuideLoeuvre: React.FC = () => {
         <Reveal className="mt-16">
           <div className="border-y border-[#9c7a44]/35 py-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
             <span className="inline-flex items-center gap-2.5 text-[0.66rem] uppercase tracking-[0.2em] text-[#3a2f23]">
-              <Headphones size={15} weight="light" className="text-[#7d6330]" /> {lang === 'FR' ? 'Podcast gratuit' : 'Free podcast'}
+              <Headphones size={15} weight="light" className="text-[#7d6330]" /> Podcast
             </span>
             <span className="inline-flex items-center gap-2.5 text-[0.66rem] uppercase tracking-[0.2em] text-[#3a2f23]">
               <Target size={15} weight="light" className="text-[#7d6330]" /> {lang === 'FR' ? 'Quiz Dosha' : 'Dosha Quiz'}

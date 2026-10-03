@@ -974,7 +974,7 @@ const CoursDetailPage: React.FC = () => {
                     </div>
                   )}
 
-                  {!formation?.questionsFermees && <QuestionsLecon formationId={id} lecon={courante} />}
+                  {!formation?.questionsFermees && !estVata && <QuestionsLecon formationId={id} lecon={courante} />}
                   <div className="mt-6 flex flex-wrap items-center gap-3">
                     <button
                       onClick={() => basculerTerminee(courante)}

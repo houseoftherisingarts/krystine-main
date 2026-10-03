@@ -225,7 +225,7 @@ const CARTES_DEFAUT: CartePresse[] = [
     corpsFR: "Les demandes d'entrevue et de conférence passent par l'équipe, à equipe@inspiratanature.com, comme les propositions de partenariat. Les visuels de cette page se téléchargent librement, à la seule condition de créditer Krystine St-Laurent.",
     metaFR: 'equipe@inspiratanature.com',
     kickerEN: 'Get in touch', titreEN: 'Press enquiries',
-    corpsEN: 'Speaking, interview and partnership requests go through the team, at equipe@inspiratanature.com. Everything on this page is free to download, on the single condition that Krystine St-Laurent is credited.',
+    corpsEN: 'Speaking, interview and partnership requests go through the team, at equipe@inspiratanature.com. Everything on this page is available to download, on the single condition that Krystine St-Laurent is credited.',
     metaEN: 'equipe@inspiratanature.com',
     legendeFR: 'Où écrire, et ce que vous pouvez publier sans rien demander.',
     legendeEN: 'Where to write, and what you may publish.',

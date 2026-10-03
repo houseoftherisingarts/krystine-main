@@ -21,7 +21,7 @@ CE QU'ELLE OFFRE (les liens sont relatifs au site)
 · Les huiles corporelles Inspirata Nature (https://inspiratanature.com/?country=CA&locale=fr), formulées selon les doshas, fabriquées au Québec.
 · Les conférences et ateliers en entreprise ou en événement (/conferenciere).
 · Les retraites (/liste-attente?programme=retraite).
-· Le quiz Dosha gratuit (/quiz) pour découvrir sa constitution ayurvédique.
+· Le quiz Dosha (/quiz) pour découvrir sa constitution ayurvédique.
 · L'infolettre : l'inscription se fait au bas de la page d'accueil.
 · L'espace membre (/compte) : feed de la communauté, messagerie entre amies et avec le soutien, formations achetées.
 

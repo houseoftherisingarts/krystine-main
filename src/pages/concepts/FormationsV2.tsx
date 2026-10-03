@@ -84,7 +84,7 @@ const PROGRAMMES: Programme[] = [
     tag: 'Saison Vata · En autonomie',
     title: 'Programme Vata',
     subtitle: 'Enraciner · Réchauffer · Apaiser',
-    body: "Vent, sécheresse, dispersion : la saison Vata teste les nerfs. Un programme de sept semaines pour ancrer le corps et la tête avant l’hiver, à suivre à votre rythme.",
+    body: "Vent, sécheresse, dispersion : la saison Vata teste les nerfs. Un programme de sept semaines pour ancrer le corps et la tête, à suivre à votre rythme.",
     status: 'En autonomie · dès cette semaine',
     cta: 'Découvrir le programme',
     href: '/vata',
@@ -386,7 +386,7 @@ export default function FormationsV2() {
 
             <p data-fade className="v2-serif text-[clamp(1.35rem,2.4vw,1.95rem)] font-light leading-[1.32] text-[#3a2f23] max-w-[36ch]">
               Une cohorte dont les inscriptions ouvrent en automne, un foyer qui se prépare et un programme
-              d’automne à suivre à votre rythme.
+              à suivre à votre rythme.
             </p>
 
             <div data-fade className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-4">
@@ -427,7 +427,7 @@ export default function FormationsV2() {
             Les programmes de la saison
           </h2>
           <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] text-[#3a2f23] max-w-[46ch] leading-snug">
-            Trois portes cet automne. Choisissez la vôtre.
+            Trois portes. Choisissez la vôtre.
           </p>
         </div>
 

@@ -534,8 +534,8 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
       <div className="pt-2">
         <p className="max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
           {fr
-            ? `${catalogue ? catalogue.videos.length : ''} vidéos, directs et capsules de Krystine. Les vidéos sont gratuites : ouvrir la section coûte ${niskas(COUT_ACCES_VIDEOS, 'FR')}, une seule fois, et tout se regarde ensuite dans « Mes vidéos ».`
-            : `${catalogue ? catalogue.videos.length : ''} videos, lives and capsules by Krystine. The videos are free: opening the section costs ${niskas(COUT_ACCES_VIDEOS, 'EN')}, once, and everything then plays in “My videos”.`}
+            ? `${catalogue ? catalogue.videos.length : ''} vidéos, directs et capsules de Krystine. Les vidéos sont offertes : ouvrir la section coûte ${niskas(COUT_ACCES_VIDEOS, 'FR')}, une seule fois, et tout se regarde ensuite dans « Mes vidéos ».`
+            : `${catalogue ? catalogue.videos.length : ''} videos, lives and capsules by Krystine. The videos are offered: opening the section costs ${niskas(COUT_ACCES_VIDEOS, 'EN')}, once, and everything then plays in “My videos”.`}
         </p>
         {!aAccesVideos && (
           <div className="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-[18px] border-2 border-[#BA7B39] bg-[#BA7B39]/15 p-5 shadow-[0_18px_40px_-24px_rgba(139,74,47,0.6)]">
