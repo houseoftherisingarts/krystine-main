@@ -65,7 +65,7 @@ const COURANT_TAG: Record<Dosha, string> = { vata: 'vent', pitta: 'feu', kapha: 
 /** L'étiquette qui fait entrer dans la suite de lecture du dominant. */
 export const ETIQUETTE_SUITE: Record<Dosha, string> = { vata: 'suite-vent', pitta: 'suite-feu', kapha: 'suite-terre' };
 /** Les dominances qui ont déjà leur séquence de suite (les autres reçoivent la liste d'attente). */
-export const SUITE_PRETE: Record<Dosha, boolean> = { vata: true, pitta: false, kapha: false };
+export const SUITE_PRETE: Record<Dosha, boolean> = { vata: true, pitta: true, kapha: true };
 
 export interface Profil { ordre: [Dosha, Dosha, Dosha]; branche: Branche; etiquettes: string[] }
 

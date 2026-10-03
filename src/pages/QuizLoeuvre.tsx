@@ -516,7 +516,7 @@ const DoshaStat: React.FC<{ d: DoshaType; pct: number; label: string }> = ({ d, 
    ont déjà leur séquence de suite. Jamais d'inscription sans un geste de la
    personne, sauf l'abonnée active (consentement déjà donné), dont l'étiquette
    de suite se pose côté serveur. */
-const SUITE_PRETE: Record<DoshaType, boolean> = { vata: true, pitta: false, kapha: false };
+const SUITE_PRETE: Record<DoshaType, boolean> = { vata: true, pitta: true, kapha: true };
 const PHRASE_SUITE = (d: DoshaType, prete: boolean) => prete
   ? 'Quelques lettres pour comprendre ce dont vous avez besoin en ce moment et ce qui peut aider. Vous pouvez vous désabonner en un clic.'
   : `Nous vous écrirons lorsque la suite pour ${nomme(d)} sera prête. Vous pouvez vous désabonner en un clic.`;
