@@ -74,7 +74,6 @@ const EN_ATTENTE: Parcours[] = [
   { slug: 'foyer', titre: "Le Foyer d'Origine", sous: "L'espace de continuité, une porte à la fois", href: '/liste-attente?programme=foyer', cta: 'Être avisée de la réouverture' },
   { slug: 'pitta', titre: 'Saison Pitta', sous: 'Rafraîchir, apaiser, adoucir lorsque la chaleur monte' },
   { slug: 'kapha', titre: 'Saison Kapha', sous: "Bouger, drainer, alléger à l'éveil du printemps" },
-  { slug: 'sante-parfaite', titre: 'Parcours Santé Parfaite', sous: 'Masterclass Énergie et Clarté', href: '/cours/sante-parfaite' },
   { slug: 'vitalite-clarte', titre: 'Vitalité et Clarté', sous: "Trente jours pour changer d'énergie" },
   { slug: 'cinq-rituels', titre: "Cinq rituels pour apaiser l'esprit", sous: 'Retrouver son centre au quotidien' },
   { slug: 'boussole', titre: "L'Ayurveda comme boussole ancestrale", sous: 'Les repères qui traversent les saisons' },
