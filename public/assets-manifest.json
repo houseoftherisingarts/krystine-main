@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-03T17:31:31.707Z",
+  "generatedAt": "2026-10-03T17:36:13.603Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1526,6 +1526,13 @@
       "folder": "infolettre",
       "kind": "image",
       "size": 47182
+    },
+    {
+      "path": "/infolettre/quiz-pictos.png",
+      "name": "quiz-pictos.png",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 273747
     },
     {
       "path": "/infolettre/serum-defripant-automne.jpg",
