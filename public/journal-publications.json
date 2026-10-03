@@ -5708,5 +5708,19 @@
       "public/quiz/quiz-apercu-noir.jpg",
       "src/lib/pageMeta.ts"
     ]
+  },
+  {
+    "quand": "2026-10-03T23:20:33.684Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d76bcc2c",
+    "message": "Site : le pixel Meta « KSL » (1520805652120798) reçoit aussi les visites et les inscriptions du quiz, pour la campagne",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/layout/ConsentBanner.tsx"
+    ]
   }
 ]
