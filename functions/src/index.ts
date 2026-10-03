@@ -49,3 +49,4 @@ export { youtubeVideos } from './youtube';
 export { enregistrerChoix } from './newsletter/choix';
 export { analyserInfolettres, analyseHebdomadaire } from './newsletter/analyse';
 export { brouillonsPodcast } from './newsletter/brouillonsPodcast';
+export { sauvegardeNocturne } from './sauvegarde';
