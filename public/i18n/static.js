@@ -27,6 +27,19 @@
       b.addEventListener('click', function () { if (l !== lang) setLang(l); });
       el.appendChild(b);
     });
+    /* Sur /accueil, dès que le menu rond remplace la barre (1280 px et moins),
+       la langue vit dans le menu ouvert et la pastille flottante disparaît. */
+    var dans = document.getElementById('mnavLang');
+    if (dans) {
+      st.textContent += '@media(max-width:1280px){.lang-pill{display:none}}';
+      dans.setAttribute('aria-label', lang === 'en' ? 'Language' : 'Langue');
+      ['fr', 'en'].forEach(function (l) {
+        var b = document.createElement('button'); b.type = 'button'; b.textContent = l.toUpperCase();
+        b.setAttribute('aria-current', String(l === lang)); b.setAttribute('lang', l);
+        b.addEventListener('click', function () { if (l !== lang) setLang(l); });
+        dans.appendChild(b);
+      });
+    }
     document.body.appendChild(el);
   }
 
@@ -35,7 +48,7 @@
     var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), n, nodes = [];
     while ((n = w.nextNode())) nodes.push(n);
     nodes.forEach(function (t) {
-      var p = t.parentElement; if (!p || /^(SCRIPT|STYLE|NOSCRIPT)$/.test(p.tagName) || p.closest('.lang-pill')) return;
+      var p = t.parentElement; if (!p || /^(SCRIPT|STYLE|NOSCRIPT)$/.test(p.tagName) || p.closest('.lang-pill,.mnav-lang')) return;
       var v = t.nodeValue, m = /^(\s*)([\s\S]*?)(\s*)$/.exec(v);
       if (m[2] && dict[m[2]] !== undefined) t.nodeValue = m[1] + dict[m[2]] + m[3];
     });

@@ -412,6 +412,11 @@
     padding:.6rem 1rem;opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s cubic-bezier(.2,.7,.2,1)}
   .mnav-overlay.open .mnav-links a{opacity:1;transform:none}
   .mnav-links a:nth-child(1){transition-delay:.06s}.mnav-links a:nth-child(2){transition-delay:.11s}.mnav-links a:nth-child(3){transition-delay:.16s}
+  body.mnav-ouvert .ab-bouton,body.mnav-ouvert .ab-bulle,body.mnav-ouvert .fo-fleur,body.mnav-ouvert .fo-panneau,body.mnav-ouvert .fo-voile,body.mnav-ouvert .amb-toggle{display:none!important}
+  .mnav-lang{position:absolute;z-index:30;top:1.3rem;left:1.3rem;display:flex;align-items:center;gap:.2rem;padding:4px;border-radius:999px;border:1px solid rgba(163,130,63,.5);
+    font:600 10px/1 Inter,system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase}
+  .mnav-lang button{appearance:none;border:0;background:transparent;color:var(--ink-soft);padding:0 14px;height:32px;border-radius:999px;cursor:pointer;font:inherit;letter-spacing:inherit}
+  .mnav-lang button[aria-current="true"]{background:var(--brass);color:#1c1712}
   .mnav-links a:nth-child(4){transition-delay:.21s}.mnav-links a:nth-child(5){transition-delay:.26s}.mnav-links a:nth-child(6){transition-delay:.31s}
   @media(prefers-reduced-motion:reduce){.mnav-links a{transition:none;opacity:1;transform:none}}
 
@@ -422,6 +427,7 @@
   /* Entre la tablette et le grand écran, le menu complet ne tient plus sur une ligne : le burger prend le relais (27 sept. 2026). */
   @media(max-width:1280px){ nav{display:none} .mnav-toggle{display:flex} }
   @media(max-width:900px){
+    .mnav-links{gap:.7rem;padding-top:3rem}
     .mx{padding:0 1.4rem}
     nav{display:none}
     .navlinks{display:none}
@@ -431,18 +437,23 @@
     .hero-frame{display:contents}
     .hero{position:relative;min-height:100svh;padding:0;align-items:flex-end}
     .hero .scene{width:100%;left:0}
-    .hero .scene video{left:50%;right:auto;top:0;transform:translateX(-57%);height:80%;width:auto;min-width:0}
+    .hero .scene video{left:50%;right:auto;top:-5.5rem;transform:translateX(-57%);height:80%;width:auto;min-width:0}
     .hero .veil{background:linear-gradient(180deg,rgba(22,16,10,.34) 0%,rgba(22,16,10,.22) 22%,rgba(22,16,10,.86) 48%,rgba(22,16,10,.96) 100%)}
-    .hero-inner{padding:14rem 1.5rem 5.6rem}
-    .hero .copy{max-width:none}
-    .hero h1{font-size:clamp(1.45rem,6.2vw,2rem);line-height:1.22;letter-spacing:.06em}
-    .h1-lead{font-size:.95rem;margin-bottom:.8rem}
-    .hero .sub{font-size:1.08rem;line-height:1.5;max-width:none}
-    .hero .lede-row{max-width:none;gap:.9rem}
-    .hero .lede-row .lede{font-size:.98rem;line-height:1.6}
+    .hero-inner{padding:12rem 1rem 1.1rem}
+    /* panneau de verre sombre : le texte du premier écran se lit sans lutter avec la photo */
+    .hero .copy{max-width:none;padding:1.1rem 1.1rem 1.2rem;border-radius:15px;background:rgba(22,31,26,.62);
+      -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(246,243,238,.14)}
+    .hero h1{font-size:clamp(1.3rem,5.6vw,1.8rem);line-height:1.2;letter-spacing:.06em}
+    .h1-lead{font-size:.78rem;margin-bottom:.5rem}
+    .hero .sub{font-size:1rem;line-height:1.42;max-width:none}
+    .hero .h-rule{margin:.7rem 0}
+    .hero .h-rule.plain{display:none}
+    .hero .lede-row{max-width:none;gap:.8rem;margin-top:.7rem}
+    .hero .lede-row .lede{font-size:.88rem;line-height:1.5}
     .hero .h-rule{max-width:none}
     .hero .lede-row .sprig{width:26px;height:34px;flex-shrink:0}
-    .hero .cta{font-size:.72rem;padding:.95rem 1.7rem;margin-top:1.4rem}
+    .hero .cta{font-size:.7rem;padding:.8rem 1.3rem;margin-top:.7rem}
+    .hero .cta-row{margin-top:.3rem}
 
     /* TRILOGY */
     .trilogy{min-height:auto;padding:0}
@@ -821,6 +832,7 @@
       <a href="#oeuvre">L'Œuvre</a><a href="/liste-attente?programme=origine2">Expérience Origine</a><a href="/formations">Formations</a>
       <a href="/medias">Médias &amp; Livres</a><a href="/conferenciere">Conférences</a><a href="/boutique">Boutique</a><a href="#apropos">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold" style="margin-top:.5rem">Accéder à mon espace membre</a>
     </nav>
+    <div class="mnav-lang" id="mnavLang" role="group" aria-label="Langue"></div>
   </div>
 
   <!-- ===== HERO ===== -->
@@ -1627,9 +1639,9 @@
     var btn=document.getElementById('mnavBtn'), ov=document.getElementById('mnavOverlay'); if(!btn||!ov) return;
     var links=[].slice.call(ov.querySelectorAll('a'));
     function open(){ btn.classList.add('open'); ov.classList.add('open'); ov.setAttribute('aria-hidden','false');
-      btn.setAttribute('aria-expanded','true'); document.body.style.overflow='hidden'; }
+      btn.setAttribute('aria-expanded','true'); document.body.style.overflow='hidden'; document.body.classList.add('mnav-ouvert'); }
     function close(){ btn.classList.remove('open'); ov.classList.remove('open'); ov.setAttribute('aria-hidden','true');
-      btn.setAttribute('aria-expanded','false'); document.body.style.overflow=''; }
+      btn.setAttribute('aria-expanded','false'); document.body.style.overflow=''; document.body.classList.remove('mnav-ouvert'); }
     btn.addEventListener('click',function(){ ov.classList.contains('open')?close():open(); });
     links.forEach(function(a){ a.addEventListener('click',close); });
     document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&ov.classList.contains('open')) close(); });

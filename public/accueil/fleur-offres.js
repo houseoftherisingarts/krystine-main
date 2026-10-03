@@ -148,7 +148,7 @@ const CSS = `
 .fo-fermer{position:absolute;top:.7rem;right:.7rem;width:34px;height:34px;border-radius:50%;border:1px solid rgba(187,154,94,.35);background:rgba(246,243,238,.8);color:#7d6330;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
 .fo-fermer:hover{background:#fff}
 .fo-fermer svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;stroke-linecap:round;fill:none}
-@media(max-width:640px){.fo-fleur{right:.9rem;bottom:4.4rem;width:58px;height:58px}.fo-panneau{right:.75rem;bottom:4.6rem;padding:1.4rem 1.25rem 1.3rem}.fo-titre{font-size:1.5rem}}
+@media(max-width:640px){.fo-fleur{right:.9rem;bottom:4.2rem;width:46px;height:46px;padding:7px}.fo-panneau{right:.75rem;bottom:4.6rem;padding:1.4rem 1.25rem 1.3rem}.fo-titre{font-size:1.5rem}}
 `;
 
 // offreId vient de habitudes/{uid}.offre.id (écrit par le moteur React,

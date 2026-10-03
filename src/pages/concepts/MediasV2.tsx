@@ -429,9 +429,9 @@ export default function MediasV2() {
           <div>
             <Kicker className="mb-5">Chapitre 03 · À la télé</Kicker>
             <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">Santé la vie</h2>
-            <p className="mt-3 v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] text-[#7d6330]">Trois saisons sur les ondes de MAtv</p>
+            <p className="mt-3 v2-serif text-[clamp(1.1rem,2vw,1.5rem)] text-[#7d6330]">Trois saisons sur les ondes de Vidéotron</p>
             <p className="mt-7 text-[1rem] leading-[1.85] text-[#3a2f23] max-w-[56ch]">
-              Pendant trois saisons, Krystine a conçu, produit et animé Santé la vie sur MAtv, avec son complice François Lemay. Le fil conducteur : relier les sagesses anciennes, l’Ayurveda en tête, aux réalités d’aujourd’hui. Mieux respirer, mieux manger, ralentir et revenir à son équilibre, par gestes simples, sans dogme, une chose à la fois. Ces épisodes vivent aujourd’hui dans votre espace, saison après saison.
+              Pendant trois saisons, Krystine a conçu, produit et animé Santé la vie, diffusée sur Vidéotron. Le fil conducteur : relier les sagesses anciennes, l’Ayurveda en tête, aux réalités d’aujourd’hui. Mieux respirer, mieux manger, ralentir et revenir à son équilibre, par gestes simples, sans dogme, une chose à la fois. Ces épisodes vivent aujourd’hui dans votre espace, saison après saison.
             </p>
           </div>
           <div className="relative w-full">
@@ -439,7 +439,7 @@ export default function MediasV2() {
             <div className="relative w-full aspect-[4/3] overflow-hidden">
               <img
                 src="/sante-la-vie.jpg"
-                alt="Krystine St-Laurent et son coanimateur François Lemay sur le plateau de l’émission Santé la vie (MAtv)"
+                alt="Krystine St-Laurent sur le plateau de l’émission Santé la vie, diffusée sur Vidéotron"
                 className="h-full w-full object-cover object-center"
               />
             </div>

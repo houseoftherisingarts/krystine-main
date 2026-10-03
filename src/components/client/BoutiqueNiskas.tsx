@@ -477,8 +477,8 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'Les intégrales' : 'The full episodes'}</p>
           <p className="mt-1 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
             {fr
-              ? `Les émissions complètes, telles que diffusées sur MAtv, en deux saisons. Chaque émission coûte ${niskas(COUT_EPISODE, 'FR')}, une saison complète ${niskas(COUT_SAISON, 'FR')} ou ${PRIX_SAISON_CAD} $ CA, et tout rejoint vos téléchargements pour de bon.`
-              : `The complete shows, as aired on MAtv, in two seasons. Each one costs ${niskas(COUT_EPISODE, 'EN')}, a full season ${niskas(COUT_SAISON, 'EN')} or $${PRIX_SAISON_CAD} CAD, and everything joins your downloads for good.`}
+              ? `Les émissions complètes, telles que diffusées sur Vidéotron, en deux saisons. Chaque émission coûte ${niskas(COUT_EPISODE, 'FR')}, une saison complète ${niskas(COUT_SAISON, 'FR')} ou ${PRIX_SAISON_CAD} $ CA, et tout rejoint vos téléchargements pour de bon.`
+              : `The complete shows, as aired on Vidéotron, in two seasons. Each one costs ${niskas(COUT_EPISODE, 'EN')}, a full season ${niskas(COUT_SAISON, 'EN')} or $${PRIX_SAISON_CAD} CAD, and everything joins your downloads for good.`}
           </p>
           {episodesTries.length === 0 && (
             <p className="mt-4 text-sm text-[#293027]/50 dark:text-white/50">{fr ? 'Les émissions arrivent.' : 'The shows are on their way.'}</p>

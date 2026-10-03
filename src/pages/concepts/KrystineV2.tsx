@@ -509,7 +509,7 @@ const FilmSection: React.FC = () => {
 // kit de presse (/presse : photos, biographies, faits), qu'une productrice
 // cherche en premier. Ajouté le 28 septembre 2026 à la demande de Krystine.
 const MEDIAS: [string, string][] = [
-  ['MAtv', 'Télévision'],
+  ['Vidéotron', 'Télévision'],
   ['Salut Bonjour', 'TVA'],
   ['Santé la vie', 'Série télé · 3 saisons'],
   ['98,5 FM', 'Radio'],

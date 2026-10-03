@@ -58,7 +58,7 @@ const CSS = `
 .ab-tard{background:none;border:0;color:#7d6330;font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:.75rem .4rem}
 .ab-tard:hover{text-decoration:underline;text-underline-offset:3px}
 .ab-compte{margin-left:auto;font:500 11px/1 Inter,system-ui,sans-serif;color:#665746}
-@media(max-width:640px){.ab-bouton{right:.9rem;bottom:calc(4.4rem + 70px);width:50px;height:50px;padding:12px}.ab-bulle{right:.75rem;bottom:calc(4.4rem + 70px + 62px);padding:1.15rem 1.1rem 1.05rem}}
+@media(max-width:640px){.ab-bouton{right:.9rem;bottom:calc(4.2rem + 46px + 8px);width:44px;height:44px;padding:10px}.ab-bulle{right:.75rem;bottom:calc(4.2rem + 46px + 8px + 56px);padding:1.15rem 1.1rem 1.05rem}}
 `;
 
 const lireLocal = () => { try { return new Set(JSON.parse(localStorage.getItem(CLE_LOCAL) || '[]')); } catch { return new Set(); } };
