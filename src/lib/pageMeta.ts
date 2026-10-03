@@ -67,7 +67,7 @@ const ROUTES: Record<string, PageMeta> = {
   '/quiz': {
     title: 'De quoi ai-je besoin en ce moment ? · Le quiz de Krystine St-Laurent',
     description: 'En 3 minutes, repérez les éléments qui prennent le plus de place chez vous ces temps-ci, et ce qui peut les équilibrer.',
-    image: '/quiz/apercu-quiz.jpg',
+    image: '/quiz/quiz-dosha-revisee-poster.jpg',
     imageAlt: 'Le quiz de Krystine St-Laurent : les trois pictos Vata, Pitta et Kapha',
   },
   '/guide': {
