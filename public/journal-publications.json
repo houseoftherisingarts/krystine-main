@@ -5447,5 +5447,20 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-03T16:11:16.091Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "5a5e8914",
+    "message": "Quiz, courriel deux dominances : la phrase « deux dominances à égalité » n'apparaît plus qu'une fois",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/quizCourriel.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
