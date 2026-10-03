@@ -521,8 +521,8 @@ const PHRASE_SUITE = (d: DoshaType, prete: boolean) => prete
   ? 'Quelques lettres pour comprendre ce dont vous avez besoin en ce moment et ce qui peut aider. Vous pouvez vous désabonner en un clic.'
   : `Nous vous écrirons lorsque la suite pour ${nomme(d)} sera prête. Vous pouvez vous désabonner en un clic.`;
 const PHRASE_FORMULAIRE = (d: DoshaType, prete: boolean) => prete
-  ? 'Votre lecture vous arrive tout de suite, puis quelques lettres pour comprendre ce dont vous avez besoin en ce moment et ce qui peut aider. Vous pouvez vous désabonner en un clic.'
-  : `Votre lecture vous arrive tout de suite, puis nous vous écrirons lorsque la suite pour ${nomme(d)} sera prête. Vous pouvez vous désabonner en un clic.`;
+  ? 'Je consens à recevoir par courriel la suite de ma lecture, qui me guidera à partir de mes résultats, ainsi que les propositions de Krystine St-Laurent. Je peux me désabonner en un clic.'
+  : `Je consens à recevoir ma lecture par courriel, puis la suite pour ${nomme(d)} lorsqu’elle sera prête, ainsi que les propositions de Krystine St-Laurent. Je peux me désabonner en un clic.`;
 const NOTE_SUITE = (d: DoshaType, prete: boolean) => prete
   ? 'C’est noté. La première lettre arrive dans deux jours.'
   : `C’est noté. Nous vous écrirons lorsque la suite pour ${nomme(d)} sera prête.`;
@@ -1030,7 +1030,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                   <p className="mt-7 text-center text-[0.88rem] leading-relaxed text-[#3a2f23]">
                     {lang === 'FR'
                       ? PHRASE_FORMULAIRE(lireProfil(teaser.percentages).d1, SUITE_PRETE[lireProfil(teaser.percentages).d1])
-                      : 'Your reading arrives right away, then a few letters to understand what you need right now and what can help. Unsubscribe in one click.'}
+                      : 'I agree to receive by email the rest of my reading, guiding me from my results, as well as offers from Krystine St-Laurent. I can unsubscribe in one click.'}
                   </p>
                   <div className="mt-5 flex flex-col items-center gap-3">
                     <button
@@ -1041,14 +1041,6 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                       {submitting
                         ? (lang === 'FR' ? 'Envoi…' : 'Sending…')
                         : <>{lang === 'FR' ? 'Recevoir ma lecture et sa suite' : 'Receive my reading and what follows'} <ArrowRight size={15} weight="regular" /></>}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={e => envoyerResultat(e, false)}
-                      disabled={submitting}
-                      className="text-[0.8rem] text-[#1c1712]/60 underline underline-offset-4 decoration-[#1c1712]/30 transition-colors hover:text-[#7d6330] min-h-[44px] disabled:opacity-50"
-                    >
-                      {lang === 'FR' ? 'Recevoir seulement mon résultat' : 'Receive only my result'}
                     </button>
                     <button
                       type="button"
