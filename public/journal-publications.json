@@ -5360,5 +5360,38 @@
       "public/assets-manifest.json",
       "src/pages/EvaluationVata.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-03T14:50:43.681Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "be96c246",
+    "message": "Programme des ambassadrices : rabais pour l'invitée, commission pour l'ambassadrice, premium au choix de Krystine, section Devenez ambassadrice sur l'accueil (éteinte par défaut)",
+    "cibles": [
+      "hosting",
+      "functions",
+      "firestore"
+    ],
+    "fichiers": [
+      "firestore.rules",
+      "functions/src/ambassadrices.ts",
+      "functions/src/ambassadricesRegles.ts",
+      "functions/src/index.ts",
+      "functions/src/paiements.ts",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "src/firebase/ambassadrices.ts",
+      "src/firebase/siteFlags.ts",
+      "src/lib/changelog.ts",
+      "src/pages/AdminDashboard.tsx",
+      "src/pages/ClientPortal.tsx",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/PaiementFormation.tsx",
+      "src/pages/admin/AdminShell.tsx",
+      "src/pages/admin/sections/AmbassadricesSection.tsx",
+      "src/pages/admin/sections/EnPreparationSection.tsx",
+      "src/pages/client/ClientAmbassadrice.tsx"
+    ]
   }
 ]
