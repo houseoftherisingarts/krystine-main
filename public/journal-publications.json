@@ -5306,5 +5306,26 @@
     "fichiers": [
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-03T13:56:48.123Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ad2a2745",
+    "message": "VATA Essentiel : page d'évaluation de fin de saison (/evaluation/vata), réponses dans l'admin, bouton à la fin du cours",
+    "cibles": [
+      "hosting",
+      "firestore"
+    ],
+    "fichiers": [
+      "App.tsx",
+      "firestore.rules",
+      "public/assets-manifest.json",
+      "src/firebase/firestore.ts",
+      "src/lib/pageMeta.ts",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/EvaluationVata.tsx",
+      "src/pages/admin/sections/SubmissionsSection.tsx"
+    ]
   }
 ]
