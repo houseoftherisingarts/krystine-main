@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Card, GhostButton } from '../../primitives';
 import { Anneau, Barres, Courbe, Heures, TEINTES, Tuile } from './graphiques';
 import { dateCourte, duree, nb, pct, rafraichirMaintenant, type Resume, type CorridorResume, nomElement } from './donnees';
+import MesuresQuiz from './MesuresQuiz';
 import type { Periode } from '../VisiteursSection';
 
 // ─── Vue d'ensemble ─────────────────────────────────────────────────────────
@@ -217,6 +218,8 @@ const VueEnsemble: React.FC<Props> = ({ resume, periode, onVoirCarte, onRafraich
             : <p className="text-sm text-[#38403a]/55">Aucun engagement sur la période. Chaque inscription et chaque quiz complété s'ajoutent ici.</p>}
         </Card>
       </div>
+
+      <MesuresQuiz resume={resume} periode={periode} />
     </div>
   );
 };

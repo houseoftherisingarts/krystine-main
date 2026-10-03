@@ -3,7 +3,7 @@
 // (vh_sessions) et des enregistrements (Storage), plus les réglages. Tout est
 // résumé ici en objets simples pour que les onglets n'aient qu'à afficher.
 
-import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, limit, orderBy, query, setDoc, where, Timestamp } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, collection, collectionGroup, doc, getDoc, getDocs, limit, orderBy, query, setDoc, where, Timestamp } from 'firebase/firestore';
 import { getStorage, ref, getBytes, listAll } from 'firebase/storage';
 import { httpsCallable, getFunctions } from 'firebase/functions';
 import app, { db } from '../../../../firebase';
@@ -65,6 +65,8 @@ export interface Resume {
   sources: { nom: string; n: number }[];
   campagnes: { source: string; campagne: string; n: number }[];
   objectifs: { nom: string; n: number; niveau: 'gros' | 'petit' }[];
+  /** Les connexions à l'espace client, jour par jour (l'objectif « connexion »). */
+  connexions: { jour: string; n: number }[];
   erreursListe: { msg: string; src: string; path: string; n: number }[];
   formulaires: { s: string; path: string; debuts: number; soumis: number; abandons: number; dernierChamp?: string }[];
   corridors: Record<Corridor, CorridorResume>;
@@ -96,7 +98,7 @@ export function resumer(journees: Journee[], de: string, a: string): Resume {
     jours: [], vues: 0, sessions: 0, nouveaux: 0, dureeMs: 0, rebonds: 0, fins: 0, clics: 0, rage: 0, morts: 0, erreurs: 0,
     heures: new Array(24).fill(0),
     appareils: { ordinateur: 0, tablette: 0, mobile: 0 },
-    pages: [], sources: [], campagnes: [], objectifs: [], erreursListe: [], formulaires: [],
+    pages: [], sources: [], campagnes: [], objectifs: [], connexions: [], erreursListe: [], formulaires: [],
     corridors: { decouverte: corridorVide(), retour: corridorVide() },
   };
   const cumul = { decouverte: { entrees: {} as Record<string, number>, sources: {} as Record<string, number>, objectifs: {} as Record<string, number> },
@@ -108,6 +110,7 @@ export function resumer(journees: Journee[], de: string, a: string): Resume {
   const erreurs = new Map<string, { msg: string; src: string; path: string; n: number }>();
   const forms = new Map<string, { s: string; path: string; debuts: number; soumis: number; abandons: number; dernierChamp?: string }>();
   const parJour = new Map<string, { vues: number; sessions: number; nouveaux: number }>();
+  const connexions = new Map<string, number>();
 
   for (const j of journees) {
     r.vues += j.vues || 0; r.sessions += j.sessions || 0; r.nouveaux += j.nouveaux || 0; r.dureeMs += j.dureeMs || 0;
@@ -150,6 +153,7 @@ export function resumer(journees: Journee[], de: string, a: string): Resume {
       e.n += c.n || 0; campagnes.set(k, e);
     }
     for (const o of Object.values(j.objectifs || {})) {
+      if (o.nom === 'connexion') connexions.set(j.jour, (connexions.get(j.jour) || 0) + (o.n || 0));
       const x = objectifs.get(o.nom) || { n: 0, niveau: o.niv === 'gros' ? 'gros' as const : 'petit' as const };
       x.n += o.n || 0; objectifs.set(o.nom, x);
     }
@@ -169,6 +173,7 @@ export function resumer(journees: Journee[], de: string, a: string): Resume {
   for (let d = new Date(de + 'T12:00:00'); jourISO(d) <= a; d.setDate(d.getDate() + 1)) {
     const jour = jourISO(d);
     r.jours.push({ jour, ...(parJour.get(jour) || { vues: 0, sessions: 0, nouveaux: 0 }) });
+    r.connexions.push({ jour, n: connexions.get(jour) || 0 });
   }
   r.pages = [...pages.values()].sort((x, y) => y.vues - x.vues);
   r.sources = Object.entries(sources).map(([nom, n]) => ({ nom, n })).sort((x, y) => y.n - x.n);
@@ -215,7 +220,7 @@ export async function chargerCarte(device: Device, clePage: string, de: string, 
 
 export interface Session {
   sid: string; debut: Date; fin?: Date; jour?: string; device?: Device; vw?: number; pays?: string; lang?: string;
-  ref?: string; utm?: Record<string, string>; entree?: string; derniere?: string; parcours?: string[]; nbPages?: number;
+  tz?: string; ref?: string; utm?: Record<string, string>; entree?: string; derniere?: string; parcours?: string[]; nbPages?: number;
   nbClics?: number; rage?: number; mort?: number; erreurs?: number; dureeMs?: number; nouveau?: boolean;
   enregistre?: boolean; chunks?: number; octets?: number;
 }
@@ -372,3 +377,28 @@ export function duree(ms: number): string {
 }
 export const dateCourte = (jour: string) => new Date(jour + 'T12:00:00').toLocaleDateString('fr-CA', { day: 'numeric', month: 'short' });
 export const dateLongue = (d: Date) => d.toLocaleString('fr-CA', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+
+// ─── Les chiffres du quiz qui ne passent pas par le traceur ─────────────────
+// Les résultats laissés avec un courriel (doshaResults) et les achats portant
+// la source « quiz » (achatsFormations, écrite par le webhook de paiement).
+
+export interface ChiffresQuiz { courriels: number; achatsQuiz: number; achatsTotal: number }
+
+export async function chargerChiffresQuiz(de: string): Promise<ChiffresQuiz> {
+  const c: ChiffresQuiz = { courriels: 0, achatsQuiz: 0, achatsTotal: 0 };
+  if (!db) return c;
+  const depuis = Timestamp.fromDate(new Date(de + 'T00:00:00'));
+  const [dosha, achats] = await Promise.all([
+    getDocs(query(collection(db, 'doshaResults'), where('createdAt', '>=', depuis))),
+    getDocs(collectionGroup(db, 'formations')),
+  ]);
+  c.courriels = dosha.docs.filter(d => !!d.data().email).length;
+  for (const d of achats.docs) {
+    if (!d.ref.path.startsWith('achatsFormations/')) continue;
+    const x = d.data();
+    if (!(x.acheteLe instanceof Timestamp) || x.acheteLe.toMillis() < depuis.toMillis()) continue;
+    c.achatsTotal += 1;
+    if (x.source === 'quiz') c.achatsQuiz += 1;
+  }
+  return c;
+}

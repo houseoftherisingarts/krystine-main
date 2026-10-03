@@ -212,6 +212,12 @@ function utmDe(): Record<string, string> | undefined {
   return Object.keys(u).length ? u : undefined;
 }
 
+// Le fuseau horaire du navigateur (America/Toronto, Europe/Paris...) : un
+// indice grossier du lieu, sans adresse IP ni position.
+function fuseauDe(): string | undefined {
+  try { return Intl.DateTimeFormat().resolvedOptions().timeZone?.slice(0, 40) || undefined; } catch { return undefined; }
+}
+
 function hauteurDoc(): number {
   return Math.max(document.documentElement.scrollHeight, document.body?.scrollHeight || 0, 1);
 }
@@ -271,7 +277,7 @@ function ouvrirPage(premier: boolean) {
     t: 'vue', titre: document.title.slice(0, 120),
     ref: premier ? document.referrer.slice(0, 300) : '',
     vw: window.innerWidth, vh: window.innerHeight, lang: document.documentElement.lang || navigator.language,
-    premier: premier && premiereDeLaVisite, utm: utmDe(),
+    premier: premier && premiereDeLaVisite, utm: utmDe(), tz: fuseauDe(),
   });
 }
 
@@ -513,6 +519,9 @@ export function arreterVexelHotjar() {
 // façade de suivi (src/lib/track.ts) le lisent aussi, pour le Pixel et GA4.
 
 const moi = (): string => (typeof localStorage === 'undefined' ? '' : lire(localStorage, CLE_MOI));
+
+/** Vrai quand la mesure tourne, donc quand la visiteuse a accepté les témoins. */
+export function mesureActive(): boolean { return actif; }
 
 /** Vrai quand ce navigateur a demandé à ne pas être compté. */
 export function mesureExclue(): boolean { return moi() === '1'; }

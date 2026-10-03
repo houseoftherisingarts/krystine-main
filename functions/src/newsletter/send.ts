@@ -373,7 +373,7 @@ export async function deliverNewsletter(newsletterId: string): Promise<{ recipie
     // Le pixel de mesure : une image d'un point, propre à cette personne et
     // à cette infolettre. Il dit qui a ouvert, sans rien demander de plus.
     const pixelUrl = `${pixelBase}?n=${encodeURIComponent(newsletterId)}&s=${encodeURIComponent(sub.id)}`;
-    const opts = { subject: doc.subject, preheader: doc.preheader, unsubscribeUrl, postalAddress, firstName: sub.firstName, pixelUrl, ...enTete(doc) };
+    const opts = { subject: doc.subject, preheader: doc.preheader, unsubscribeUrl, postalAddress, firstName: sub.firstName, pixelUrl, campagne: newsletterId, ...enTete(doc) };
     const message = {
       from: fromAddr,
       replyTo: REPLY_TO,
@@ -500,7 +500,7 @@ export const sendNewsletter = onCall(
       // est abonnée; sinon un jeton « TEST » que la page nomme comme tel.
       const abo = await getFirestore().collection('newsletter').where('email', '==', String(testEmail).trim().toLowerCase()).limit(1).get();
       const jetonTest = abo.empty ? 'TEST' : await assurerJeton(abo.docs[0].ref, (abo.docs[0].data() as SubscriberDoc).unsubscribeToken);
-      const opts = { subject: doc.subject, preheader: doc.preheader, unsubscribeUrl: buildUnsub(jetonTest), postalAddress: NEWSLETTER_POSTAL_ADDRESS.value(), firstName: 'Test', ...enTete(doc) };
+      const opts = { subject: doc.subject, preheader: doc.preheader, unsubscribeUrl: buildUnsub(jetonTest), postalAddress: NEWSLETTER_POSTAL_ADDRESS.value(), firstName: 'Test', campagne: newsletterId, ...enTete(doc) };
       try {
         await transporter.sendMail({
           from: buildFrom(doc.fromName || 'Krystine St-Laurent'),

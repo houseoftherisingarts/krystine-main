@@ -145,7 +145,10 @@ async function agreger(db: FirebaseFirestore.Firestore, maxLots = LOTS_PAR_TOUR)
             inc(J, 'sessions');
             if (lot.nouveau) inc(J, 'nouveaux');
             inc(J, `entrees.${page}`);
-            const hote = hoteDe(e.ref);
+            // La marque utm_source (l'infolettre, une publicité) prime sur
+            // l'adresse de provenance : un courriel n'en envoie aucune.
+            const marque = e.utm?.utm_source ? (String(e.utm.utm_source) === 'infolettre' ? 'Infolettre (courriel)' : `${String(e.utm.utm_source)} (utm)`) : '';
+            const hote = marque || hoteDe(e.ref);
             inc(J, `sources.${hote ? hash(hote) : 'direct'}.n`);
             J.textes[`sources.${hote ? hash(hote) : 'direct'}.nom`] = hote || 'Accès direct';
             if (cor) {

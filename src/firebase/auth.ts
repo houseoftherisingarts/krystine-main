@@ -16,6 +16,7 @@ import { doc, setDoc, arrayUnion } from 'firebase/firestore';
 import { points } from './points';
 import { ensureMemberProfile } from './firestore';
 import { reclamerCodeRetenu } from './parrainage';
+import { trackConnexion } from '../lib/track';
 
 // Hard cap on the post-auth bootstrap so a hung Firestore call (rules issue,
 // offline cache lockup, etc.) can never freeze the sign-in modal. The auth
@@ -31,6 +32,7 @@ export async function loginWithEmail(email: string, password: string) {
   if (!auth) throw new Error('Firebase Auth not configured');
   const cred = await signInWithEmailAndPassword(auth, email, password);
   await withTimeout(bootstrapMember(cred.user, 'email'));
+  trackConnexion();
   return cred;
 }
 
@@ -57,6 +59,7 @@ export async function loginWithGoogle() {
   try {
     const cred = await signInWithPopup(auth, provider);
     await withTimeout(bootstrapMember(cred.user, 'google'));
+    trackConnexion();
     return cred;
   } catch (e: any) {
     const code = e?.code || '';
@@ -84,7 +87,7 @@ export async function handleRedirectResult() {
   if (!auth) return null;
   try {
     const cred = await getRedirectResult(auth);
-    if (cred?.user) await withTimeout(bootstrapMember(cred.user, 'google'));
+    if (cred?.user) { await withTimeout(bootstrapMember(cred.user, 'google')); trackConnexion(); }
     return cred;
   } catch (e) {
     console.warn('[auth] handleRedirectResult', e);

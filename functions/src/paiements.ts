@@ -50,6 +50,9 @@ const ADMIN_EMAILS = [
   'krystinestterredhysope@gmail.com',
 ];
 
+// Les provenances qu'un achat peut porter (liste blanche, valeurs courtes).
+const SOURCES_ACHAT = ['quiz', 'infolettre'];
+
 export const creerSessionPaiement = onCall(
   { region: 'us-central1', secrets: [STRIPE_SECRET_KEY] },
   async (req) => {
@@ -98,6 +101,10 @@ export const creerSessionPaiement = onCall(
       'metadata[versements]': String(versements),
     });
     if (uid) body.set('metadata[uid]', uid);
+    // La provenance de l'achat (mesure, 3 oct. 2026) : seule une valeur de la
+    // liste blanche passe; tout le reste est ignoré, jamais une erreur.
+    const source = String(req.data?.source || '').trim().toLowerCase();
+    if (SOURCES_ACHAT.includes(source)) body.set('metadata[source]', source);
     // Sans compte : au plus 3 comptes créés par paiement par heure depuis une
     // même adresse IP (revue de sécurité, 2 oct. 2026). Au-delà, la caisse ne
     // s'ouvre pas sans connexion; un paiement déjà fait n'est jamais bloqué.
@@ -636,7 +643,8 @@ export const stripeWebhook = onRequest(
       sessionId: session.id || '',
       acheteLe: FieldValue.serverTimestamp(),
       ...detailTaxes,
-      ...(session.metadata?.cadeauId ? { source: 'cadeau', cadeauId: session.metadata.cadeauId } : {}),
+      ...(session.metadata?.cadeauId ? { source: 'cadeau', cadeauId: session.metadata.cadeauId }
+        : SOURCES_ACHAT.includes(String(session.metadata?.source || '')) ? { source: String(session.metadata.source) } : {}),
       // Le compte ouvert par cet achat : la confirmation porte le lien du mot de passe.
       ...(compteCree ? { compteCreeParAchat: true } : {}),
     }, { merge: true });

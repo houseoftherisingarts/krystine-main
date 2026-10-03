@@ -204,6 +204,7 @@ async function recevoirLot(db: FirebaseFirestore.Firestore, site: string, sid: s
       fiche.device = premier.device;
       fiche.vw = premier.vw;
       fiche.lang = premier.lang || null;
+      fiche.tz = premier.tz || null;
       fiche.ref = premier.ref || null;
       fiche.utm = premier.utm || null;
       fiche.nouveau = !!d.nouveau;
@@ -240,6 +241,7 @@ function nettoyer(e: any): DocumentData | null {
         vw, vh: nombre(e.vh, 200, 10000, 800),
         device: deviceDe(vw),
         lang: texte(e.lang, 8),
+        tz: /^[A-Za-z_]+(\/[A-Za-z_+\-0-9]+){0,2}$/.test(String(e.tz || '')) ? texte(e.tz, 40) : null,
         premier: !!e.premier,
         utm: utm && Object.keys(utm).length ? utm : null,
       };

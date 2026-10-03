@@ -10,7 +10,7 @@
 
 import { pixel } from './metaPixel';
 import { logLead, logObjectif, logPageView } from '../firebase';
-import { mesureExclue, objectif, type NiveauObjectif } from '../vexelhotjar/tracker';
+import { mesureExclue, mesureActive, objectif, type NiveauObjectif } from '../vexelhotjar/tracker';
 
 /** Fire on every successful opt-in (newsletter, waitlist, quiz capture).
  *  `source` mirrors the internal source tag already used in each handler.
@@ -45,4 +45,44 @@ export function trackPageView(path: string, title?: string): void {
 export function trackKeyPageView(name: string): void {
   if (mesureExclue()) return;
   pixel.viewContent({ content_name: name });
+}
+
+/** Un événement de mesure interne seulement (Visiteurs et clics de l'admin),
+ *  sans Pixel ni GA4. Aucune donnée personnelle : un nom court, rien d'autre.
+ *  Il ne part qu'avec le consentement, comme tout le reste de la mesure. */
+export function trackInterne(nom: string, niveau: NiveauObjectif = 'petit'): void {
+  if (mesureExclue()) return;
+  objectif(nom, niveau);
+}
+
+/** Une connexion à l'espace client (sans courriel ni identifiant). */
+export function trackConnexion(): void {
+  trackInterne('connexion');
+}
+
+// ─── La source « quiz » : de la lecture du résultat jusqu'à l'achat ────────
+// Un simple repère (le mot « quiz » et la date) gardé dans le navigateur, et
+// seulement si la visiteuse a accepté les témoins. Il part avec la demande de
+// paiement; le serveur n'accepte que les valeurs de sa liste blanche.
+
+const CLE_SOURCE = 'ins.source';
+const VALIDITE_SOURCE_MS = 30 * 24 * 3600_000;
+
+export function noterSource(source: 'quiz'): void {
+  if (!mesureActive() || mesureExclue()) return;
+  const v = JSON.stringify({ s: source, t: Date.now() });
+  try { localStorage.setItem(CLE_SOURCE, v); } catch { /* sans stockage */ }
+  try { sessionStorage.setItem(CLE_SOURCE, v); } catch { /* sans stockage */ }
+}
+
+/** La source retenue, ou undefined (rien noté, trop vieux, ou mesure refusée). */
+export function lireSource(): 'quiz' | undefined {
+  if (!mesureActive() || mesureExclue()) return undefined;
+  for (const magasin of [() => sessionStorage, () => localStorage]) {
+    try {
+      const x = JSON.parse(magasin().getItem(CLE_SOURCE) || 'null');
+      if (x?.s === 'quiz' && Date.now() - Number(x.t) < VALIDITE_SOURCE_MS) return 'quiz';
+    } catch { /* on essaie l'autre */ }
+  }
+  return undefined;
 }

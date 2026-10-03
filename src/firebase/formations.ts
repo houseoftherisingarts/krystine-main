@@ -3,7 +3,7 @@ import {  getFirestore, collection, collectionGroup, doc, getDoc, getDocs, order
   updateDoc, deleteDoc, serverTimestamp, Timestamp, addDoc, onSnapshot,} from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, deleteObject, getDownloadURL } from 'firebase/storage';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { trackObjectif } from '../lib/track';
+import { trackObjectif, lireSource } from '../lib/track';
 
 // Les formations natives (migration Kajabi, 2026-08-28). Les documents sont
 // créés par l'import; l'admin les publie, les masque ou les supprime.
@@ -279,7 +279,8 @@ export async function marquerLecon(uid: string, formationId: string, leconId: st
 export async function acheterFormation(formationId: string, versements = 1): Promise<string> {
   if (!app) throw new Error('[Formations] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionPaiement');
-  const res = await call({ formationId, versements });
+  const source = lireSource();
+  const res = await call({ formationId, versements, ...(source ? { source } : {}) });
   trackObjectif(`Paiement commencé · ${formationId}`, 'gros', { paiement: true });
   return (res.data as { url: string }).url;
 }
@@ -288,7 +289,8 @@ export async function acheterFormation(formationId: string, versements = 1): Pro
 export async function preparerPaiementIntegre(formationId: string, versements = 1): Promise<string> {
   if (!app) throw new Error('[Formations] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'creerSessionPaiement');
-  const res = await call({ formationId, versements, integre: true });
+  const source = lireSource();
+  const res = await call({ formationId, versements, integre: true, ...(source ? { source } : {}) });
   trackObjectif(`Paiement commencé · ${formationId}`, 'gros', { paiement: true });
   return (res.data as { clientSecret: string }).clientSecret;
 }

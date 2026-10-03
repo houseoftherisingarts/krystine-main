@@ -111,6 +111,10 @@ export interface RenderEmailOptions {
   unsubscribeUrl: string;
   postalAddress: string;
   firstName?: string;
+  /** L'identifiant de la lettre : si présent, chaque lien vers krystinestlaurent.ca reçoit
+   *  utm_source=infolettre&utm_medium=courriel&utm_campaign=<identifiant> (désabonnement
+   *  et liens externes exceptés), pour que Visiteurs et clics reconnaisse l'arrivée. */
+  campagne?: string;
   /** En-tête : couverture du podcast, image choisie (couvertureUrl), ou rien (défaut). */
   couverture?: Couverture;
   couvertureUrl?: string | null;
@@ -442,7 +446,32 @@ function enteteTitreHtml(e: EnteteTitre | null | undefined, lang: Lang): string 
         </td></tr>`;
 }
 
+// La marque d'infolettre posée sur les liens de krystinestlaurent.ca. Elle
+// épargne le désabonnement, la politique de confidentialité, les liens déjà
+// marqués et tout lien externe. `html` : la marque s'écrit avec &amp;.
+const LIEN_DU_SITE = /^https?:\/\/(?:www\.)?krystinestlaurent\.ca(?:[/?#]|$)/i;
+export function marquerLien(url: string, campagne: string | undefined, html: boolean): string {
+  if (!campagne || !LIEN_DU_SITE.test(url)) return url;
+  if (/desinscription|unsubscribe|politique-de-confidentialite|utm_source=/i.test(url)) return url;
+  const [avant, ancre] = url.split(/(?=#)/);
+  const et = html ? '&amp;' : '&';
+  const marque = `utm_source=infolettre${et}utm_medium=courriel${et}utm_campaign=${encodeURIComponent(campagne)}`;
+  return `${avant}${avant.includes('?') ? et : '?'}${marque}${ancre || ''}`;
+}
+function marquerHtml(html: string, campagne?: string): string {
+  return campagne ? html.replace(/href="(https?:\/\/[^"]+)"/g, (tout, u: string) => { const m = marquerLien(u, campagne, true); return m === u ? tout : `href="${m}"`; }) : html;
+}
+function marquerTexte(texte: string, campagne?: string): string {
+  return campagne ? texte.replace(/https?:\/\/[^\s<>"]+/g, (u: string) => {
+    const fin = (u.match(/[.,;:)\]]+$/) || [''])[0];
+    return marquerLien(u.slice(0, u.length - fin.length), campagne, false) + fin;
+  }) : texte;
+}
+
 export function renderEmailHtml(blocks: NewsletterBlock[], opts: RenderEmailOptions): string {
+  return marquerHtml(rendreHtml(blocks, opts), opts.campagne);
+}
+function rendreHtml(blocks: NewsletterBlock[], opts: RenderEmailOptions): string {
   const pal = palette(opts.fond);
   const k = facteurLecture(opts.tailleLecture);
   const blockRows = blocks.map(b => blockToEmail(b, opts.firstName, pal, k)).join('\n');
@@ -505,6 +534,9 @@ ${opts.pixelUrl ? `  <img src="${opts.pixelUrl}" width="1" height="1" alt="" sty
 }
 
 export function renderEmailText(blocks: NewsletterBlock[], opts: RenderEmailOptions): string {
+  return marquerTexte(rendreTexte(blocks, opts), opts.campagne);
+}
+function rendreTexte(blocks: NewsletterBlock[], opts: RenderEmailOptions): string {
   const lines: string[] = [];
   for (const b of blocks) {
     const c = (b.content || {}) as any;

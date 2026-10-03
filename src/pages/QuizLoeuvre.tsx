@@ -10,7 +10,7 @@ import {
 import { useApp } from '../contexts/AppContext';
 import { CONTENT } from '../content';
 import { addDoshaQuizResult, updateMember, addNewsletterSubscriber } from '../firebase/firestore';
-import { trackLead } from '../lib/track';
+import { trackLead, trackInterne, noterSource } from '../lib/track';
 import { points } from '../firebase/points';
 import { envoyerResultatQuiz } from '../firebase/quiz';
 import { RECAPTCHA_SITE_KEY, useRecaptcha } from '../lib/recaptcha';
@@ -530,6 +530,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   }, [lang]);
 
   const addDoshaOil = (doshaName: string) => {
+    trackInterne('quiz_clic_huile');
     const product = findOilForDosha(products, doshaName);
     const variant = (product ? formatDetail(product) : undefined);
     if (!product || !variant) {
@@ -606,6 +607,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
     setTeaser(null);
     setResult(null);
     setEnvoye(false);
+    resultatVu.current = false;
   };
 
   // Le consentement au fil, demandé au moment de créer son compte pour voir le
@@ -708,6 +710,25 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
 
   const current = step < QUIZ_DATA.length ? QUIZ_DATA[step] : null;
 
+  // Mesure du quiz (sans donnée personnelle) : chaque question atteinte une
+  // seule fois par visite, puis le résultat vu avec sa branche et sa dominance.
+  const questionsVues = useRef(new Set<number>());
+  useEffect(() => {
+    if (step < QUIZ_DATA.length && !questionsVues.current.has(step)) {
+      questionsVues.current.add(step);
+      trackInterne(`quiz_question_${step + 1}`);
+    }
+  }, [step]);
+  const resultatVu = useRef(false);
+  useEffect(() => {
+    if (!teaser || resultatVu.current) return;
+    resultatVu.current = true;
+    const { branche, d1 } = lireProfil(teaser.percentages);
+    trackInterne('quiz_resultat_vu');
+    trackInterne(`quiz_resultat_vu_${branche}_${d1}`);
+    noterSource('quiz');
+  }, [teaser]);
+
   /* ── Écran résultat complet (dosha + rituel + CTA huile), vedette pleine largeur ── */
   if (result) {
     const ritual = RITUALS[result.dominant.name as 'Vata' | 'Pitta' | 'Kapha'];
@@ -789,7 +810,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                 </div>
               )}
 
-              <BoutonVata onGo={() => navigate('/vata')} className="mt-9" />
+              <BoutonVata onGo={() => { trackInterne('quiz_clic_vata'); noterSource('quiz'); navigate('/vata'); }} className="mt-9" />
               {/* Les huiles passent en second (Krystine, 2 oct. 2026). */}
               <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <button
@@ -802,7 +823,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => navigate('/boutique/huiles-corporelles')}
+                  onClick={() => { trackInterne('quiz_clic_huile'); navigate('/boutique/huiles-corporelles'); }}
                   className="group inline-flex items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
                 >
                   {lang === 'FR' ? 'Explorer la collection' : 'Explore the collection'}
@@ -874,7 +895,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
 
             <CarteDominance L={L} complet={false} />
 
-            <BoutonVata onGo={() => navigate('/vata')} className="mt-9" />
+            <BoutonVata onGo={() => { trackInterne('quiz_clic_vata'); noterSource('quiz'); navigate('/vata'); }} className="mt-9" />
 
             <div className="mt-11 pt-8 border-t max-w-[42rem] mx-auto" style={{ borderColor: `${th.accent}35` }}>
               {user ? (
@@ -1207,6 +1228,7 @@ const QuizLoeuvre: React.FC = () => {
             <motion.div {...heroFade(0.55)} className="mt-11 flex flex-wrap items-center gap-x-9 gap-y-4">
               <a
                 href="#quiz-debut"
+                onClick={() => trackInterne('quiz_commence')}
                 className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
               >
                 {lang === 'FR' ? 'Commencer le quiz' : 'Begin the quiz'}
