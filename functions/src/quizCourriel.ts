@@ -180,6 +180,21 @@ export const LIEN_ATTENTE: Record<Dosha, string | null> = {
   kapha: `${SITE}/liste-attente?programme=kapha`,
 };
 
+// L'huile INSPIRATA AYURVEDA de la dominance, pour Pitta et Kapha seulement
+// (leur suite n'existe pas encore). Jamais pour Vata : sa suite vend VATA
+// Essentiel, aucun produit en concurrence. Flacon de 50 ml seulement.
+// Pitta : le 50 ml de La Rafraîchissante Pitta est en rupture (3 oct. 2026),
+// donc aucune ligne; la remettre ici lorsqu'il revient en stock.
+export const HUILE_DOMINANCE: Record<Dosha, { nom: string; lien: string; geste: string } | null> = {
+  vata: null,
+  pitta: null,
+  kapha: {
+    nom: 'L’Énergisante Kapha',
+    lien: 'https://inspiratanature.com/products/huile-corporelle-energisante-kapha?variant=47770571342132&country=CA&locale=fr',
+    geste: 'Le matin, après le brossage à sec et la douche',
+  },
+};
+
 export interface ResultatQuiz {
   prenom: string;
   dominant: Dosha;
@@ -202,7 +217,7 @@ const entier = (n: number) => String(Math.min(100, Math.max(0, Math.round(Number
 export function sujetResultat(d: Dosha, pourcentages?: { vata: number; pitta: number; kapha: number }): string {
   const l = pourcentages ? lireLecture(pourcentages, d) : null;
   if (l && l.branche === 'equilibre') return 'Votre lecture du quiz : équilibre entre Vata, Pitta et Kapha';
-  if (l && l.branche === 'double') return `Votre lecture du quiz : deux dominances, ${l.noms.join(' et ')}`;
+  if (l && l.branche === 'double') return `Votre lecture du quiz : deux dominances, ${l.montres.map(x => NOM_AYURVEDA[x]).join(' et ')}`;
   return `Votre lecture du quiz : dominance ${nomme(l ? l.montres[0] : d)}`;
 }
 
@@ -217,6 +232,7 @@ export function renderResultatHtml(r: ResultatQuiz): string {
   const L = lireLecture(r.pourcentages, r.dominant);
   const d = L.montres[0];
   const attente = LIEN_ATTENTE[d];
+  const huile = HUILE_DOMINANCE[d];
   const libelle = (t: string) => `<p style="margin:0 0 10px;font-family:${SANS};font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:${LAITON};">${t}</p>`;
   const filet = `<tr><td style="padding:0 40px;"><div style="height:1px;background:${FILET};line-height:1px;font-size:1px;">&nbsp;</div></td></tr>`;
   const grand = L.montres.length === 1 ? 88 : L.montres.length === 2 ? 64 : 52;
@@ -288,6 +304,9 @@ export function renderResultatHtml(r: ResultatQuiz): string {
     ${libelle('Deux clés tirées de Nature &amp; Ayurveda')}
     ${cles}
   </td></tr>
+  ${huile ? `<tr><td style="padding:0 40px 24px;">
+      <p style="margin:0;font-family:${SANS};font-size:13px;line-height:1.7;color:${DOUX};">${esc(huile.geste)}, un massage avec <a href="${esc(huile.lien)}" style="color:${ENCRE};text-decoration:underline;">${esc(huile.nom)}</a> d’INSPIRATA AYURVEDA (flacon de 50 ml).</p>
+    </td></tr>` : ''}
   ${suite}
   ${attente ? `<tr><td align="center" style="padding:${suite ? '14px' : '30px'} 40px 6px;">
       <a href="${esc(attente)}" style="font-family:${SANS};font-size:13px;line-height:1.7;color:${ENCRE};text-decoration:underline;">Rejoindre la liste d’attente du programme ${nomme(d)}</a>
@@ -326,6 +345,8 @@ export function renderResultatTexte(r: ResultatQuiz): string {
     'Deux clés tirées de Nature & Ayurveda',
     ...CLES_RESULTAT[d].map(c => `« ${c.texte} » (${c.source})`),
   ];
+  const huileTxt = HUILE_DOMINANCE[d];
+  if (huileTxt) l.push('', `${huileTxt.geste}, un massage avec ${huileTxt.nom} d’INSPIRATA AYURVEDA (flacon de 50 ml) : ${huileTxt.lien}`);
   if (!r.suite && r.lienSuite) l.push('', `Recevoir la suite de ma lecture : ${r.lienSuite}`);
   const attenteTxt = LIEN_ATTENTE[d];
   if (attenteTxt) l.push('', `Rejoindre la liste d’attente du programme ${nomme(d)} : ${attenteTxt}`);
