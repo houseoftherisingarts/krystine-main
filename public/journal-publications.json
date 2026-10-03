@@ -5327,5 +5327,24 @@
       "src/pages/EvaluationVata.tsx",
       "src/pages/admin/sections/SubmissionsSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-03T13:59:55.050Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d0bd7f2a",
+    "message": "Évaluation VATA : « Pourquoi celle-là ? » après la semaine préférée, étiquettes ea-vata-ancienne et demande-prochaine-saison; page Vata : nouvelle description de « Préparer votre espace »",
+    "cibles": [
+      "hosting",
+      "firestore"
+    ],
+    "fichiers": [
+      "firestore.rules",
+      "public/assets-manifest.json",
+      "src/firebase/firestore.ts",
+      "src/pages/EvaluationVata.tsx",
+      "src/pages/VataExperience.tsx",
+      "src/pages/admin/sections/SubmissionsSection.tsx"
+    ]
   }
 ]
