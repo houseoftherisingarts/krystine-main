@@ -5633,5 +5633,22 @@
       "functions/src/newsletter/sequences.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-03T21:46:35.118Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d01b5578",
+    "message": "VATA Essentiel : le prix de lancement tient jusqu'à minuit le 1er novembre (heure normale de l'Est, après le changement d'heure)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/versements.ts",
+      "public/assets-manifest.json",
+      "src/lib/versements.ts",
+      "src/pages/vata/offre.ts"
+    ]
   }
 ]
