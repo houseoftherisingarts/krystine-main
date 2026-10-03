@@ -5601,5 +5601,21 @@
       "public/assets-manifest.json",
       "public/infolettre/quiz-pictos.png"
     ]
+  },
+  {
+    "quand": "2026-10-03T18:22:32.614Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a3571b5d",
+    "message": "Quiz : les suites Pitta et Kapha sont prêtes, le quiz ne dit plus « lorsque la suite sera prête »",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/quizCourriel.ts",
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
