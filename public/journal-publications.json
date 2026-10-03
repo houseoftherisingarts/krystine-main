@@ -5510,5 +5510,33 @@
       "public/assets-manifest.json",
       "src/lib/newsletterRenderer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-03T17:09:29.317Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c9ad8c7e",
+    "message": "Mesure : entonnoir du quiz, source quiz jusqu'à l'achat, connexions à l'espace client, fuseau horaire, liens de l'infolettre marqués",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "functions/src/newsletter/send.ts",
+      "functions/src/paiements.ts",
+      "functions/src/vexelhotjar/agregation.ts",
+      "functions/src/vexelhotjar/collecte.ts",
+      "public/assets-manifest.json",
+      "public/vh/vexelhotjar.js",
+      "src/firebase/auth.ts",
+      "src/firebase/formations.ts",
+      "src/lib/track.ts",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/pages/admin/sections/visiteurs/MesuresQuiz.tsx",
+      "src/pages/admin/sections/visiteurs/VueEnsemble.tsx",
+      "src/pages/admin/sections/visiteurs/donnees.ts",
+      "src/vexelhotjar/tracker.ts"
+    ]
   }
 ]
