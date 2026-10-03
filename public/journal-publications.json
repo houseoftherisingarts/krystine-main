@@ -5573,5 +5573,19 @@
       "scripts/qa/_frames.mjs",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-03T17:31:39.104Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "341e1d85",
+    "message": "Quiz : bouton « Recevoir mes résultats » et case facultative, non cochée, pour recevoir les lettres (texte de Clarity); coordonnées et politique de confidentialité sous le formulaire",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
