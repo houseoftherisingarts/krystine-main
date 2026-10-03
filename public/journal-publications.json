@@ -5479,5 +5479,20 @@
       "src/pages/QuizLoeuvre.tsx",
       "src/pages/QuizPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-03T16:43:45.721Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b44a55f9",
+    "message": "Quiz : ligne vers l'huile INSPIRATA AYURVEDA dans le courriel Kapha (Pitta attend le retour du 50 ml); objet plus court pour deux dominances",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/quizCourriel.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
