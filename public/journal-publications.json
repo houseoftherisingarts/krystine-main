@@ -5665,5 +5665,19 @@
       "public/quiz/apercu-quiz.jpg",
       "src/lib/pageMeta.ts"
     ]
+  },
+  {
+    "quand": "2026-10-03T22:57:40.021Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "baed607e",
+    "message": "Quiz : l'image d'aperçu porte les mots-clics Ayurveda, Éléments, ChangementDeSaison",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/quiz/apercu-quiz.jpg"
+    ]
   }
 ]
