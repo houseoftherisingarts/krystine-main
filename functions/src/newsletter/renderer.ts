@@ -224,14 +224,19 @@ function stripRich(text: string): string {
 
 const DOSHAS_CARNET = ['vata', 'pitta', 'kapha'];
 
+// Un bloc peut n'apparaître qu'entre deux dates (Krystine, 2 oct. 2026 :
+// « la saison Vata est en cours » ne doit plus se lire en janvier).
+// Vaut pour le HTML et pour la version texte du même courriel.
+function horsFenetre(c: any): boolean {
+  const now = Date.now(); const des = Date.parse(String(c?.des || '')); const jusqua = Date.parse(String(c?.jusqua || ''));
+  return (!isNaN(des) && now < des) || (!isNaN(jusqua) && now > jusqua);
+}
+
 function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette = PALETTE_CLAIRE, k = 1): string {
   const c = (block.content || {}) as any;
   const t = (px: number) => Math.round(px * k);
   const tTitre = (px: number) => Math.round(px * (1 + (k - 1) / 2));
-  // Un bloc peut n'apparaître qu'entre deux dates (Krystine, 2 oct. 2026 :
-  // « la saison Vata est en cours » ne doit plus se lire en janvier).
-  { const now = Date.now(); const des = Date.parse(String(c?.des || '')); const jusqua = Date.parse(String(c?.jusqua || ''));
-    if ((!isNaN(des) && now < des) || (!isNaN(jusqua) && now > jusqua)) return ''; }
+  if (horsFenetre(c)) return '';
   switch (block.type) {
     case 'heading': {
       const level = Number(c.level) || 1;
@@ -540,6 +545,7 @@ function rendreTexte(blocks: NewsletterBlock[], opts: RenderEmailOptions): strin
   const lines: string[] = [];
   for (const b of blocks) {
     const c = (b.content || {}) as any;
+    if (horsFenetre(c)) continue;
     switch (b.type) {
       case 'heading':
       case 'paragraph':

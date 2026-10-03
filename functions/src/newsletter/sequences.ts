@@ -201,7 +201,9 @@ async function traiterInscrit(transporter: Transporter, seqId: string, seq: Sequ
   let derniere = etat.derniere;
   let envoyes = 0;
   for (const e of dues) {
-    const exempte = seq.declencheur?.type === 'achat' && !(Number(e.delaiHeures) || 0);
+    // L'accueil de VATA Essentiel ne se fait jamais attendre (3 oct. 2026) :
+    // une lettre de suite reçue juste avant l'achat ne retarde pas sa bienvenue.
+    const exempte = seq.declencheur?.type === 'achat' && (!(Number(e.delaiHeures) || 0) || seqId === 'accueil-vata');
     if (!exempte && Date.now() - derniere < GARDE_MS) continue;
     const pris = await db.runTransaction(async (tx) => {
       const s = await tx.get(ref);
@@ -230,16 +232,35 @@ async function traiterInscrit(transporter: Transporter, seqId: string, seq: Sequ
   return envoyes;
 }
 
+// Les suites du quiz invitent à acheter VATA Essentiel : une acheteuse en sort
+// au moment de l'achat (3 oct. 2026), sans rien perdre de son abonnement.
+const FORMATION_VATA = 'kajabi-2148687644';
+const SEQUENCES_VENTE_VATA = ['suite-vent-quiz', 'suite-feu-quiz', 'suite-terre-quiz'];
+async function sortirSuitesVata(email: string): Promise<void> {
+  const db = getFirestore();
+  for (const id of SEQUENCES_VENTE_VATA) {
+    const ref = db.doc(`sequences/${id}/inscrits/${cleCourriel(email)}`);
+    const s = await ref.get();
+    if (s.exists && !s.get('sortie')) await ref.update({ sortie: { raison: 'achat-vata', le: Timestamp.now() } });
+  }
+}
+
 // Inscrit l'acheteuse d'une formation dans chaque séquence active déclenchée
 // par cet achat, puis envoie tout de suite ce qui est dû à zéro heure. Une
 // personne déjà inscrite garde sa date de départ : rien ne repart.
 export async function inscrireSequencesAchat(uid: string, formationId: string, emailSession?: string | null): Promise<void> {
   const db = getFirestore();
   const seqs = await db.collection('sequences').where('actif', '==', true).where('declencheur.formationId', '==', formationId).get();
-  if (seqs.empty) return;
   const membre = (await db.doc(`members/${uid}`).get()).data() as { email?: string; displayName?: string; lang?: string } | undefined;
   const email = normaliser(membre?.email || emailSession || '');
   if (!email) { console.warn('[sequences] acheteuse sans courriel', uid, formationId); return; }
+  if (formationId === FORMATION_VATA) {
+    // L'adresse du compte et celle du paiement, si elles diffèrent.
+    for (const e of new Set([email, normaliser(emailSession || '')].filter(Boolean))) {
+      try { await sortirSuitesVata(e); } catch (err) { console.error('[sequences] sortie des suites', e, err); }
+    }
+  }
+  if (seqs.empty) return;
   const firstName = String(membre?.displayName || '').trim().split(/\s+/)[0] || undefined;
   let transporter: Transporter | null = null;
   for (const s of seqs.docs) {
@@ -359,7 +380,7 @@ export const inscrireSequencesEtiquette = onDocumentUpdated(
         const cur = await tx.get(ref);
         if (cur.exists) {
           const d = cur.data() as Inscrit;
-          if (!d.sortie || Object.keys(d.envoyes || {}).length) return;
+          if (!d.sortie || d.sortie.raison === 'achat-vata' || Object.keys(d.envoyes || {}).length) return;
         }
         tx.set(ref, {
           email, firstName: String(event.data?.after.get('firstName') || ''),
