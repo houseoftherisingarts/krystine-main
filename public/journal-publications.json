@@ -5494,5 +5494,21 @@
       "functions/src/quizCourriel.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-03T16:49:16.762Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "5b124364",
+    "message": "Infolettres : les liens qui contiennent « & » (par exemple ?country=CA&locale=fr) s'affichent enfin comme des liens dans le texte des lettres",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "src/lib/newsletterRenderer.tsx"
+    ]
   }
 ]
