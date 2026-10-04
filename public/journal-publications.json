@@ -6091,5 +6091,22 @@
       "src/pages/admin/sections/newsletter/JournalPanel.tsx",
       "src/pages/admin/sections/newsletter/LecturesParHeure.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-04T23:24:28.527Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e447caeb",
+    "message": "Infolettre : écriture d'Ella plus lisible (Kalam au lieu de Caveat, encre plus foncée)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "index.html",
+      "public/assets-manifest.json",
+      "src/lib/newsletterRenderer.tsx"
+    ]
   }
 ]
