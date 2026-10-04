@@ -98,8 +98,18 @@ export function invalidateProductsCache() {
   try { localStorage.removeItem(PRODUCTS_CACHE_KEY); } catch { /* noop */ }
 }
 
+// Ce que le public ne voit pas sur le site (Krystine, 4 oct. 2026) : les
+// formats cabine de 500 ml réservés aux massothérapeutes (étiquette B2B,
+// « revente interdite ») et les ensembles, à repenser avant d'y revenir.
+const ETIQUETTES_CACHEES = ['b2b', 'btob500massagetherapy', 'bundle', 'wholesale'];
+const estPublic = (p: { handle: string; title: string; tags: string[] }) =>
+  !p.tags.some((t) => ETIQUETTES_CACHEES.includes(t.toLowerCase()))
+  && !/cabine/i.test(p.title)
+  && !p.handle.startsWith('bap-');
+
 async function fetchProducts(first: number, lang: 'FR' | 'EN'): Promise<ShopifyProduct[]> {
-  const country = lang === 'FR' ? 'CA' : 'US';
+  // Prix en dollars canadiens pour toutes, même en anglais (Krystine, 4 oct. 2026).
+  const country = 'CA';
   const language = lang === 'FR' ? 'FR' : 'EN';
   const query = `
     query Products($first: Int!, $country: CountryCode!, $language: LanguageCode!)
@@ -125,7 +135,7 @@ async function fetchProducts(first: number, lang: 'FR' | 'EN'): Promise<ShopifyP
     }
   `;
   const data = await sf<ProductsResponse>(query, { first, country, language });
-  return data.products.edges.map(({ node }) => ({
+  return data.products.edges.filter(({ node }) => estPublic(node)).map(({ node }) => ({
     id: node.id,
     handle: node.handle,
     title: node.title,
@@ -148,7 +158,7 @@ export async function getProducts(first = 50, lang: 'FR' | 'EN' = 'FR'): Promise
     fetchProducts(first, lang)
       .then(fresh => writeProductsCache(fresh, first, lang))
       .catch(() => { /* keep cached */ });
-    return cached;
+    return cached.filter(estPublic);
   }
   const fresh = await fetchProducts(first, lang);
   writeProductsCache(fresh, first, lang);
@@ -163,7 +173,7 @@ interface CartCreateResponse {
 }
 
 export async function createCheckout(items: { variantId: string; quantity: number }[], lang: 'FR' | 'EN' = 'FR'): Promise<string> {
-  const country = lang === 'FR' ? 'CA' : 'US';
+  const country = 'CA';
   const language = lang === 'FR' ? 'FR' : 'EN';
   const query = `
     mutation CartCreate($input: CartInput!, $country: CountryCode!, $language: LanguageCode!)
