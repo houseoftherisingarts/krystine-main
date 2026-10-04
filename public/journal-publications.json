@@ -6018,5 +6018,19 @@
       "public/assets-manifest.json",
       "src/lib/newsletterRenderer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-04T21:50:56.170Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "713fe075",
+    "message": "Infolettre : bannière du podcast, épisode 5 « Même saison, effets opposés » (/infolettre/podcast-s2-episode-5.jpg)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/podcast-s2-episode-5.jpg"
+    ]
   }
 ]
