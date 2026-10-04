@@ -378,19 +378,19 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
       );
     }
     case 'quote': {
-      const citeClass = 'block mt-3 text-xs uppercase tracking-widest not-italic text-[#B8532F]';
+      const citeClass = 'block mt-4 text-xs uppercase tracking-widest not-italic text-[#BA7B39]';
       if (edit) {
         return (
-          <blockquote className="my-8 border-l-2 border-[#B8532F] pl-6 italic font-serif text-lg text-[#3A251E]/80 dark:text-white/80">
+          <blockquote className="my-8 bg-[#28352F] px-8 py-9 text-center font-serif text-xl leading-snug text-[#EEE7DB]">
             <p>« <Inline value={c.text || ''} placeholder="La citation" multiline onCommit={set('text')} /> »</p>
-            <span className={citeClass}>— <Inline value={c.attribution || ''} placeholder="Qui l'a dit" onCommit={set('attribution')} /></span>
+            <span className={citeClass}><Inline value={c.attribution || ''} placeholder="Qui l'a dit" onCommit={set('attribution')} /></span>
           </blockquote>
         );
       }
       return (
-        <blockquote className="my-8 border-l-2 border-[#B8532F] pl-6 italic font-serif text-lg text-[#3A251E]/80 dark:text-white/80">
+        <blockquote className="my-8 bg-[#28352F] px-8 py-9 text-center font-serif text-xl leading-snug text-[#EEE7DB]">
           <p>« {c.text || ''} »</p>
-          {c.attribution && <cite className={citeClass}>— {c.attribution}</cite>}
+          {c.attribution && <cite className={citeClass}>{c.attribution}</cite>}
         </blockquote>
       );
     }
@@ -577,9 +577,9 @@ function blockToEmail(block: NewsletterBlock, firstName?: string): string {
     case 'quote':
       return `<tr><td style="padding:20px 0;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
-          <td style="border-left:2px solid ${BRAND.gold};padding-left:18px;font-family:${BRAND.serif};font-style:italic;font-size:18px;line-height:1.5;color:${BRAND.royal};">
+          <td bgcolor="#28352F" align="center" style="background:#28352F;padding:34px 30px;text-align:center;font-family:${BRAND.serif};font-size:20px;line-height:1.5;color:#EEE7DB;">
             «&nbsp;${esc(c.text || '')}&nbsp;»
-            ${c.attribution ? `<div style="margin-top:10px;font-family:${BRAND.sans};font-style:normal;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:${BRAND.gold};">— ${esc(c.attribution)}</div>` : ''}
+            ${c.attribution ? `<div style="margin-top:14px;font-family:${BRAND.sans};font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#BA7B39;">${esc(c.attribution)}</div>` : ''}
           </td>
         </tr></table>
       </td></tr>`;

@@ -316,11 +316,13 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       return `<tr><td style="padding:0 0 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table></td></tr>`;
     }
     case 'quote':
-      return `<tr><td style="padding:6px 0 24px;">
+      // La citation se détache sur la carte vert profond du site, centrée,
+      // texte ivoire et signature cuivre (Krystine, 4 oct. 2026).
+      return `<tr><td style="padding:14px 0 28px;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
-          <td style="border-left:2px solid ${CHARTE.gold};padding-left:18px;font-family:${CHARTE.serif};font-size:${t(20)}px;line-height:1.45;color:${pal.accent};">
+          <td bgcolor="#28352F" align="center" style="background:#28352F;padding:34px 30px;text-align:center;font-family:${CHARTE.serif};font-size:${t(22)}px;line-height:1.45;color:#EEE7DB;">
             «&nbsp;${personalize(esc(c.text || ''), firstName)}&nbsp;»
-            ${c.attribution ? `<div style="margin-top:10px;font-family:${CHARTE.sans};font-size:${t(10)}px;letter-spacing:0.28em;text-transform:uppercase;color:${pal.accent};">${esc(c.attribution)}</div>` : ''}
+            ${c.attribution ? `<div style="margin-top:16px;font-family:${CHARTE.sans};font-size:${t(10)}px;letter-spacing:0.28em;text-transform:uppercase;color:#BA7B39;">${esc(c.attribution)}</div>` : ''}
           </td>
         </tr></table>
       </td></tr>`;
