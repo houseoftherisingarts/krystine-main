@@ -5722,5 +5722,31 @@
       "public/assets-manifest.json",
       "src/components/layout/ConsentBanner.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-04T11:38:40.281Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "dc8c62a9",
+    "message": "Quiz : formulaire du résultat réparé (case anti-robot), réponses mélangées et cercle doré · Vata vente : barre d'achat du téléphone au-dessus du bandeau des témoins, Vata (Vent et Espace), accès semaine par semaine, total des versements · Cours Vata : dates d'ouverture des semaines, leçon précédente, leçons protégées côté serveur, aide technique, SAISON VATA",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/paiements.ts",
+      "public/assets-manifest.json",
+      "src/components/cours/CheminSens.tsx",
+      "src/components/cours/LecteurAudioCours.tsx",
+      "src/components/cours/SeuilVata.tsx",
+      "src/components/layout/ConsentBanner.tsx",
+      "src/firebase/formations.ts",
+      "src/lib/pageMeta.ts",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/FormationsLanding.tsx",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/pages/VataExperience.tsx",
+      "src/pages/vata/semaines.ts"
+    ]
   }
 ]
