@@ -5857,5 +5857,19 @@
       "public/assets-manifest.json",
       "src/shopify.ts"
     ]
+  },
+  {
+    "quand": "2026-10-04T12:27:00.954Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b3c95a3c",
+    "message": "Boutique : aperçu de la boutique du site avec /boutique?apercu=1, même lorsque le renvoi vers inspiratanature.com est allumé",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/BoutiqueLoeuvre.tsx"
+    ]
   }
 ]
