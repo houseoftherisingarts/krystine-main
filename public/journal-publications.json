@@ -5988,5 +5988,19 @@
       "src/pages/ProduitPage.tsx",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-04T21:39:57.754Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "72e1e726",
+    "message": "Quiz (/quiz) : la carte des questions ressort du fond (papier plus clair, cadre doré, ombre, filet aux trois couleurs des doshas)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
