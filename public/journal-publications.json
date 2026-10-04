@@ -5829,5 +5829,19 @@
       "scripts/qa/filet-du-matin.mjs",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-04T12:21:48.809Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ba0c45ab",
+    "message": "Quiz : les dix questions réécrites avec Krystine (titres courts sans « vous », réponses au « je »), étiquettes Le corps / L'esprit (/quiz)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
