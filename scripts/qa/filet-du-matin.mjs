@@ -37,7 +37,8 @@ for (const [largeur, hauteur, appareil] of [[1440, 900, 'ordinateur'], [390, 844
     }
     await page.waitForTimeout(3000);
     const courriel = await page.locator('input[type=email]').count();
-    const robot = await page.locator('iframe[src*="recaptcha"]').count();
+    // La case de Google arrive parfois lentement : on lui laisse 20 s avant de conclure.
+    const robot = await page.waitForSelector('iframe[src*="recaptcha"]', { timeout: 20000 }).then(() => 1).catch(() => 0);
     noter(`Quiz jusqu'au formulaire (${appareil})`, repondues >= 9 && courriel > 0, `${repondues} questions répondues, formulaire ${courriel ? 'présent' : 'ABSENT'}`);
     noter(`Case « Je ne suis pas un robot » (${appareil})`, robot > 0, robot ? 'visible' : 'ABSENTE : le formulaire ne peut pas être envoyé');
   } catch (e) {

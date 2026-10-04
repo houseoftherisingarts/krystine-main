@@ -1057,9 +1057,9 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                   {RECAPTCHA_SITE_KEY && <div ref={captcha.boxRef} className="mt-6 flex justify-center" />}
                   {/* La fuite du tunnel (analyse du 4 oct. 2026) : la case de la suite,
                       décochée et cachée sous le bouton, ne laissait passer que 17 %
-                      des personnes. La suite devient le choix principal, nommé en
-                      clair juste au-dessus du bouton : le clic EST le consentement
-                      (rien n'est coché d'avance), et le résultat seul reste offert. */}
+                      des personnes. La suite est LE choix, nommé en clair juste
+                      au-dessus du bouton : le clic EST le consentement. Aucune option
+                      « sans les lettres » (Krystine, 4 oct. 2026, refusée trois fois). */}
                   <p className="mt-7 text-[0.88rem] leading-relaxed text-[#3a2f23]">
                     {lang === 'FR'
                       ? (SUITE_PRETE[lireProfil(teaser.percentages).d1]
@@ -1080,14 +1080,6 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                       {submitting
                         ? (lang === 'FR' ? 'Envoi…' : 'Sending…')
                         : <>{lang === 'FR' ? 'Recevoir ma lecture et sa suite' : 'Receive my reading and what follows'} <ArrowRight size={15} weight="regular" /></>}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => envoyerResultat(e, false)}
-                      disabled={submitting}
-                      className="text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/60 border-b border-[#1c1712]/30 pb-1 transition-colors hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px] disabled:opacity-50"
-                    >
-                      {lang === 'FR' ? 'Seulement ma lecture, sans les lettres' : 'Only my reading, no letters'}
                     </button>
                     <button
                       type="button"
