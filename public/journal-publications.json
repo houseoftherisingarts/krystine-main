@@ -5915,5 +5915,29 @@
       "src/pages/client/ClientAmbassadrice.tsx",
       "src/shopify.ts"
     ]
+  },
+  {
+    "quand": "2026-10-04T13:19:32.384Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "af24ddbb",
+    "message": "Boutique : langage crème du site partout (une seule carte produit, photos uniformisées sur fond crème, page collection refaite, panier crème) · bouton « Brancher les commandes Shopify » dans l'admin › Analytics · Calendrier de l'Avent rapatrié (script)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/index.ts",
+      "functions/src/shopify/brancher.ts",
+      "public/assets-manifest.json",
+      "scripts/kajabi/rapatrier-calendrier-avent.mjs",
+      "src/components/layout/CartDrawer.tsx",
+      "src/components/v2/Produit.tsx",
+      "src/lib/collections.ts",
+      "src/pages/BoutiqueCollectionPage.tsx",
+      "src/pages/BoutiqueLoeuvre.tsx",
+      "src/pages/ProduitPage.tsx",
+      "src/pages/admin/sections/AnalyticsSection.tsx"
+    ]
   }
 ]
