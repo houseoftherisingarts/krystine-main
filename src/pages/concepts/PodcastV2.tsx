@@ -1,253 +1,408 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
-import { Headphones, CircleNotch, ArrowUpRight, ArrowRight, ArrowDown, Play, Pause } from '@phosphor-icons/react';
+import { motion } from 'framer-motion';
+import {
+  Headphones, Clock, Play, CircleNotch, ArrowUpRight, ArrowDown,
+} from '@phosphor-icons/react';
 import NewsletterSignup from '../../components/NewsletterSignup';
 import LiveSignup from '../../components/LiveSignup';
-import { StyleV2, Kicker, BoutonNoir, GOUTTIERE } from '../../components/v2/Magazine';
-import { chargerFlux, cleVideo, fmtMinutes, type Episode } from '../podcast/episodes';
-import { VIDEOS_EPISODES } from '../podcast/videos';
-import { useLecteur, ControlesAudio, type Lecteur } from '../podcast/LecteurAudio';
+import { trackListenStart, startPresence, stopPresence } from '../../lib/podcastStats';
 
 /**
- * Podcast « Au-delà des tendances », langage V2 (magazine crème).
- * Ordre refait le 4 oct. 2026 sur le diagnostic de Krystine (« pas user
- * friendly ») : le nouvel épisode en tête avec sa vidéo, puis la saison 2,
- * la saison 1 repliée, le direct, et l'infolettre à la fin.
+ * Podcast « Au-delà des tendances » — branding V2 (magazine crème), même
+ * langage que /krystine. Fetch fiable du flux HelloAudio (36 épisodes, temps
+ * réel) PRÉSERVÉ à l'identique, lecteur sticky + liste éditoriale restylés,
+ * infolettre source="podcast". Animations transform/opacity (Framer).
  */
 
+const EASE = 'cubic-bezier(0.22,1,0.36,1)';
 const ease = [0.22, 1, 0.36, 1] as const;
 
-/** Le nouvel épisode : la vidéo YouTube (ou l'image et le lecteur audio), son résumé, l'écoute et le quiz. */
-const NouvelEpisode: React.FC<{ ep: Episode; lecteur: Lecteur }> = ({ ep, lecteur }) => {
-  const reduce = useReducedMotion();
-  const videoId = VIDEOS_EPISODES[cleVideo(ep)];
-  const [audioOuvert, setAudioOuvert] = useState(!videoId);
-  const entree = (delay: number) => ({
-    initial: reduce ? false : { opacity: 0, y: 18 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 1, ease, delay },
-  });
-  const ecouter = () => { setAudioOuvert(true); if (lecteur.courant?.id !== ep.id || !lecteur.enLecture) lecteur.basculer(ep); };
+const RSS_URL = 'https://podcasts.helloaudio.fm/podcast/8b5de66f-dd99-4ccd-be0a-088c2553719e/Gx891ivJLp';
 
-  return (
-    <section className={`relative w-full ${GOUTTIERE} pt-[clamp(5.5rem,11vh,8rem)] pb-[clamp(3rem,8vh,5.5rem)]`}>
-      <div className="grid gap-x-[clamp(2rem,4.5vw,4.5rem)] gap-y-6 lg:grid-cols-[0.8fr_1.2fr] lg:grid-rows-[auto_1fr]">
-        <motion.header {...entree(0.05)} className="lg:col-start-1 lg:row-start-1 lg:self-end">
-          <p className="flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.2em] text-[#7d6330] sm:tracking-[0.34em]"><Headphones size={14} weight="light" className="shrink-0" /> Au-delà des tendances · Le podcast</p>
-          <p className="mt-4 text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/60 sm:tracking-[0.24em]">
-            <span className="hidden sm:inline">Nouvel épisode · </span>Saison {ep.saison}{ep.numero !== null && <> · Épisode {ep.numero}</>}{ep.duree && <> · {fmtMinutes(ep.duree)}</>}
-          </p>
-          <h1 className="v2-serif mt-3 font-light leading-[1.02] text-[#1c1712] text-[clamp(2rem,3.9vw,3.5rem)] max-w-[18ch]">{ep.titre}</h1>
-        </motion.header>
-
-        <motion.div {...entree(0.15)} className="relative lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:self-center">
-          <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
-          <div className="relative aspect-video w-full overflow-hidden bg-[#1c1712]">
-            {videoId ? (
-              <iframe
-                title={ep.titre}
-                src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-                className="absolute inset-0 h-full w-full"
-              />
-            ) : (
-              <button type="button" onClick={ecouter} className="group absolute inset-0" aria-label={`Écouter ${ep.titre}`}>
-                <img src={ep.image || '/podcast/saison2-cover.webp'} alt="" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
-                <span className="absolute inset-0 grid place-items-center bg-[#1c1712]/25 transition-colors duration-300 group-hover:bg-[#1c1712]/40">
-                  <span className="grid h-16 w-16 place-items-center bg-[#1c1712] text-[#f4efe6]"><Play size={22} weight="fill" className="ml-1" /></span>
-                </span>
-              </button>
-            )}
-          </div>
-        </motion.div>
-
-        <motion.div {...entree(0.25)} className="lg:col-start-1 lg:row-start-2 lg:self-start">
-          {ep.resume && <p className="max-w-[46ch] text-[1rem] leading-[1.75] text-[#3a2f23]">{ep.resume}</p>}
-          <div className="mt-7">
-            {audioOuvert ? (
-              <ControlesAudio ep={ep} lecteur={lecteur} className="max-w-[440px]" />
-            ) : (
-              <BoutonNoir onClick={ecouter}>Écouter en audio</BoutonNoir>
-            )}
-          </div>
-          <Link
-            to="/quiz?via=podcast"
-            className="group mt-7 inline-flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-[#1c1712] pb-1 text-[0.95rem] text-[#1c1712] transition-colors duration-300 hover:border-[#9c7a44] hover:text-[#7d6330]"
-          >
-            <span className="v2-serif font-light">De quoi ai-je besoin en ce moment&nbsp;?</span>
-            <span className="inline-flex items-center gap-1.5 text-[0.7rem] uppercase tracking-[0.2em]">Faire le quiz <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" /></span>
-          </Link>
-        </motion.div>
-      </div>
-    </section>
-  );
-};
-
-/** Une ligne d'épisode : numéro, titre, durée, « Écouter » / « En cours »; la ligne active déplie le lecteur. */
-const LigneEpisode: React.FC<{ ep: Episode; rang: string; lecteur: Lecteur }> = ({ ep, rang, lecteur }) => {
-  const actif = lecteur.courant?.id === ep.id;
-  return (
-    <li className={`break-inside-avoid border-b border-[#1c1712]/12 transition-colors duration-300 ${actif ? 'bg-[#efe6d7]' : ''}`}>
-      <button
-        type="button"
-        onClick={() => lecteur.basculer(ep)}
-        className="group flex w-full items-center gap-4 px-2 py-4 text-left transition-colors duration-300 hover:bg-[#efe6d7]/60 sm:px-3"
-      >
-        <span className="v2-serif w-7 shrink-0 text-[0.95rem] tabular-nums text-[#7d6330]">{rang}</span>
-        <span className="min-w-0 flex-1">
-          <span className="v2-serif block font-light leading-snug text-[#1c1712] text-[clamp(1.05rem,1.5vw,1.25rem)]">{ep.titre}</span>
-          {ep.duree && <span className="mt-1 block text-[0.6rem] uppercase tracking-[0.16em] text-[#1c1712]/55">{fmtMinutes(ep.duree)}</span>}
-        </span>
-        <span className={`inline-flex h-10 w-10 shrink-0 items-center justify-center gap-1.5 border text-[0.62rem] sm:h-auto sm:w-auto sm:px-3 sm:py-2 uppercase tracking-[0.16em] transition-colors duration-300 ${actif
-          ? 'border-[#1c1712] bg-[#1c1712] text-[#f4efe6]'
-          : 'border-[#1c1712]/35 text-[#1c1712] group-hover:border-[#1c1712] group-hover:bg-[#1c1712] group-hover:text-[#f4efe6]'}`}
-        >
-          {actif && lecteur.enLecture ? <Pause size={12} weight="fill" className="sm:hidden" /> : <Play size={12} weight="fill" className="sm:hidden" />}
-          <Play size={10} weight="fill" className="hidden sm:block" />
-          <span className="sr-only sm:not-sr-only">{actif ? 'En cours' : 'Écouter'}</span>
-        </span>
-      </button>
-      {actif && <ControlesAudio ep={ep} lecteur={lecteur} className="px-2 pb-5 sm:px-3 sm:pl-14" />}
-    </li>
-  );
-};
-
-const QUESTIONS_S2 = [
-  'Comment démêler le vrai du faux ?',
-  'À quoi et à qui se fier ?',
-  'Qu’est-ce qui mérite réellement notre attention ?',
-  'Comment savoir si une recommandation nous convient ?',
-  'Et si nous revenions à choisir avec discernement ce qui nous nourrit profondément ?',
+// Flux direct d'abord : helloaudio sert access-control-allow-origin: *,
+// aucun proxy requis. allorigins reste en secours; corsproxy.io (403) et
+// thingproxy (mort) retirés le 2026-07-18.
+const PROXIES: ((u: string) => string)[] = [
+  (u) => u,
+  (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
 ];
+
+type Episode = {
+  id: string;
+  title: string;
+  date: string;
+  duration: string;
+  description: string;
+  audio: string;
+  /** Vignette propre à l'épisode (itunes:image de l'item), sinon la pochette. */
+  image: string;
+  season: 1 | 2;
+};
+
+// La saison 2 vient de commencer (25 août 2026) avec un seul épisode à ce
+// jour, « Saison 2, épisode 0 : Quand le vide crée le plein », et la
+// rediffusion du live d'intuition les rejoint. Tout le reste de l'archive
+// (l'année complète de la saison 1) reste en Saison 1. Un classement par
+// année aurait mis presque tous les épisodes 2026 en Saison 2, ce qui est
+// faux : on classe par titre, pas par date.
+// Depuis le 27 sept. 2026, les épisodes de la saison 2 portent « S2 », « S.2 »
+// ou seulement « Ep 4 » dans leur titre : tout épisode paru depuis le début de
+// la saison (25 août 2026) va donc aussi en saison 2, sans attendre un mot
+// précis dans le titre.
+const DEBUT_SAISON_2 = Date.parse('2026-08-25T00:00:00-04:00');
+function seasonFromTitle(title: string, date = ''): 1 | 2 {
+  const t = title
+    .toUpperCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '');
+  if (t.includes('REDIFFUSION')) return 2;
+  if (t.includes('VIDE CREE LE PLEIN')) return 2;
+  if (/\bS\.?\s?2\b|SAISON 2/.test(t)) return 2;
+  const quand = Date.parse(date);
+  if (!Number.isNaN(quand) && quand >= DEBUT_SAISON_2) return 2;
+  return 1;
+}
+
+
+async function fetchFeedXml(): Promise<string> {
+  for (const mk of PROXIES) {
+    try {
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 15000);
+      const res = await fetch(mk(RSS_URL), { signal: ctrl.signal });
+      clearTimeout(to);
+      if (!res.ok) continue;
+      const text = await res.text();
+      if (text.includes('<item')) return text;
+    } catch {
+      /* proxy suivant */
+    }
+  }
+  throw new Error('Flux injoignable');
+}
+
+function parseEpisodes(xml: string): { cover: string; episodes: Episode[] } {
+  const doc = new DOMParser().parseFromString(xml, 'text/xml');
+  const channel = doc.querySelector('channel');
+  const cover =
+    channel?.getElementsByTagName('itunes:image')[0]?.getAttribute('href') ||
+    channel?.querySelector('image > url')?.textContent ||
+    '';
+  const episodes: Episode[] = [...doc.querySelectorAll('item')].map((it, i) => {
+    const desc = (it.querySelector('description')?.textContent || '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const title = it.querySelector('title')?.textContent?.trim() || `Épisode ${i + 1}`;
+    return {
+      id: it.querySelector('guid')?.textContent || String(i),
+      title,
+      date: it.querySelector('pubDate')?.textContent || '',
+      duration: it.getElementsByTagName('itunes:duration')[0]?.textContent?.trim() || '',
+      description: desc,
+      audio: it.querySelector('enclosure')?.getAttribute('url') || '',
+      image: it.getElementsByTagName('itunes:image')[0]?.getAttribute('href') || cover,
+      season: seasonFromTitle(title, it.querySelector('pubDate')?.textContent || ''),
+    };
+  });
+  return { cover, episodes };
+}
+
+const fmtDur = (d: string) => {
+  if (!d) return '';
+  if (d.includes(':')) {
+    const p = d.split(':').map(Number);
+    const m = p.length === 3 ? p[0] * 60 + p[1] : p[0];
+    return `${m} min`;
+  }
+  const s = Number(d);
+  return Number.isNaN(s) ? d : `${Math.round(s / 60)} min`;
+};
 
 export default function PodcastV2() {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
+  // La couverture de la page = le visuel Saison 2 envoyé par Krystine le 8 sept. 2026
+  // (« Visuel et phrases clés », vignette 16:9), indépendamment de la pochette du flux RSS.
+  const [cover, setCover] = useState('/podcast/saison2-cover.webp');
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-  const [saison1Ouverte, setSaison1Ouverte] = useState(false);
-  const lecteur = useLecteur();
+  const [selected, setSelected] = useState<string | null>(null);
+  const [openSeason, setOpenSeason] = useState<1 | 2 | null>(2);
 
   useEffect(() => {
     let alive = true;
-    chargerFlux()
-      .then((eps) => {
+    (async () => {
+      try {
+        const xml = await fetchFeedXml();
+        const parsed = parseEpisodes(xml);
         if (!alive) return;
-        if (!eps.length) throw new Error('Aucun épisode');
-        setEpisodes(eps);
+        if (!parsed.episodes.length) throw new Error('Aucun épisode');
+        setEpisodes(parsed.episodes);
+        setSelected(parsed.episodes[0].id);
         setStatus('ready');
-      })
-      .catch(() => { if (alive) setStatus('error'); });
+      } catch {
+        if (alive) setStatus('error');
+      }
+    })();
     return () => { alive = false; };
   }, []);
 
-  const saison2 = useMemo(() => episodes.filter((e) => e.saison === 2), [episodes]);
-  const saison1 = useMemo(() => episodes.filter((e) => e.saison === 1), [episodes]);
-  const dernier = episodes[0];
-  // Saison 1 : le numéro vient du titre, sinon le rang depuis le plus ancien.
-  const rang = (e: Episode, liste: Episode[]) => (e.numero !== null ? String(e.numero) : e.saison === 2 ? '·' : String(liste.length - liste.indexOf(e)));
+
+  const current = useMemo(() => episodes.find((e) => e.id === selected) || episodes[0], [episodes, selected]);
 
   return (
-    <div className="relative min-h-screen w-full bg-[#f4efe6] text-[#1c1712] antialiased overflow-x-hidden" style={{ fontFamily: '"Inter", system-ui, sans-serif' }}>
-      <StyleV2 />
+    <div
+      className="relative min-h-screen w-full bg-[#f4efe6] text-[#1c1712] antialiased overflow-x-hidden"
+      style={{ fontFamily: '"Inter", system-ui, sans-serif' }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@300;400;500&display=swap');
+        .v2-serif { font-family: "Fraunces", Georgia, serif; }
+        .v2-grain {
+          position: fixed; inset: 0; z-index: 60; pointer-events: none;
+          opacity: 0.045; mix-blend-mode: multiply;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        @keyframes v2cue { 0%,100% { transform: translateY(0); opacity:.45 } 50% { transform: translateY(8px); opacity:1 } }
+        .v2-cue { animation: v2cue 2.4s ${EASE} infinite; }
+        @media (prefers-reduced-motion: reduce) { .v2-cue { animation: none; } }
+      `}</style>
 
-      {status === 'loading' && (
-        <div className={`flex min-h-[70vh] flex-col items-center justify-center ${GOUTTIERE} pt-24 text-[#3a2f23]`}>
-          <CircleNotch className="animate-spin text-[#7d6330]" size={28} weight="bold" />
-          <p className="mt-4 v2-serif font-light">Chargement du nouvel épisode…</p>
-        </div>
-      )}
+      <div className="v2-grain" aria-hidden />
 
-      {status === 'error' && (
-        <div className={`${GOUTTIERE} pt-36 pb-20 text-center`}>
-          <Kicker>Au-delà des tendances · Le podcast</Kicker>
-          <p className="mt-6 v2-serif font-light text-[1.3rem] text-[#3a2f23] mb-6">Les épisodes ne se chargent pas pour l’instant.</p>
-          <a
-            href="https://www.youtube.com/@KrystineStLaurent"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors"
-          >
-            Écouter sur YouTube <ArrowUpRight size={14} weight="regular" />
-          </a>
-        </div>
-      )}
+      {/* Menu unifié du site = NavBar global (affiché par App.tsx) */}
 
-      {status === 'ready' && dernier && (
-        <>
-          {/* ─────────── A · Le nouvel épisode ─────────── */}
-          <NouvelEpisode ep={dernier} lecteur={lecteur} />
+      {/* ─────────── HERO · couverture ─────────── */}
+      <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(7rem,13vh,9.5rem)] pb-[clamp(2.5rem,6vh,4.5rem)]">
 
-          {/* ─────────── B · Saison 2, puis saison 1 repliée ─────────── */}
-          <section id="episodes" className={`w-full ${GOUTTIERE} pb-[clamp(4rem,10vh,7rem)]`}>
-            <div className="flex items-end justify-between border-b border-[#1c1712]/25 pb-4">
-              <h2 className="v2-serif font-light leading-none text-[#1c1712] text-[clamp(1.9rem,3.4vw,2.7rem)]">Saison 2</h2>
-              <span className="text-[0.62rem] uppercase tracking-[0.2em] text-[#7d6330]">{saison2.length} épisodes</span>
-            </div>
-
-            <div className="mt-10 grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-12 lg:grid-cols-[0.85fr_1.15fr]">
-              <ul className="order-1 lg:order-2 border-t border-[#1c1712]/12">
-                {saison2.map((ep) => <LigneEpisode key={ep.id} ep={ep} rang={rang(ep, saison2)} lecteur={lecteur} />)}
+        <motion.div
+          initial="hidden"
+          animate="show"
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } } }}
+          className="mt-[clamp(2rem,5vh,3.5rem)] grid lg:grid-cols-[1.1fr_0.9fr] gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 items-center"
+        >
+          <div>
+            <motion.p variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 1, ease } } }}
+              className="inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-6">
+              <Headphones size={14} weight="light" /> Au-delà des tendances
+            </motion.p>
+            <motion.h1 variants={{ hidden: { opacity: 0, y: 26 }, show: { opacity: 1, y: 0, transition: { duration: 1.1, ease } } }}
+              className="v2-serif font-light leading-[0.94] text-[#1c1712] text-[clamp(2.8rem,7vw,6rem)]">
+              Le Podcast
+            </motion.h1>
+            <motion.p variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 1, ease } } }}
+              className="mt-7 v2-serif italic text-[clamp(1.3rem,2.4vw,1.95rem)] font-light leading-[1.32] text-[#3a2f23] max-w-[38ch]">
+              Nous n’avons jamais eu autant de choix. Et jamais autant de choses n’ont choisi à notre place.
+            </motion.p>
+            <motion.div variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease } } }}
+              className="mt-8 border-l border-[#9c7a44]/60 pl-5">
+              <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#7d6330] mb-3">Saison 2 · les questions que nous ouvrons</p>
+              <ul className="space-y-1.5 v2-serif font-light text-[clamp(1rem,1.35vw,1.15rem)] leading-snug text-[#3a2f23]">
+                <li>Comment démêler le vrai du faux ?</li>
+                <li>À quoi et à qui se fier ?</li>
+                <li>Qu’est-ce qui mérite réellement notre attention ?</li>
+                <li>Comment savoir si une recommandation nous convient ?</li>
+                <li>Et si nous revenions à choisir avec discernement ce qui nous nourrit profondément ?</li>
               </ul>
-
-              <aside className="order-2 lg:order-1 lg:sticky lg:top-24 lg:self-start">
-                <div className="relative">
-                  <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
-                  <img src="/podcast/saison2-cover.webp" alt="Au-delà des tendances, saison 2" referrerPolicy="no-referrer" loading="lazy" className="relative block w-full h-auto" />
-                </div>
-                <p className="mt-9 v2-serif font-light text-[clamp(1.25rem,2vw,1.6rem)] leading-[1.35] text-[#3a2f23] max-w-[34ch]">
-                  Nous n’avons jamais eu autant de choix. Et jamais autant de choses n’ont choisi à notre place.
-                </p>
-                <div className="mt-7 border-l border-[#9c7a44]/60 pl-5">
-                  <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#7d6330] mb-3">Les questions de la saison 2</p>
-                  <ul className="space-y-1.5 v2-serif font-light text-[1.05rem] leading-snug text-[#3a2f23]">
-                    {QUESTIONS_S2.map((q) => <li key={q}>{q}</li>)}
-                  </ul>
-                </div>
-              </aside>
-            </div>
-
-            {saison1.length > 0 && (
-              <div className="mt-[clamp(3.5rem,8vh,5.5rem)]">
-                <button
-                  type="button"
-                  onClick={() => setSaison1Ouverte((o) => !o)}
-                  aria-expanded={saison1Ouverte}
-                  aria-controls="saison-1"
-                  className="group flex w-full items-center justify-between gap-4 border-y border-[#1c1712]/25 py-5 text-left transition-colors duration-300 hover:bg-[#efe6d7]/60"
-                >
-                  <span className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                    <span className="v2-serif font-light leading-none text-[#1c1712] text-[clamp(1.6rem,2.8vw,2.2rem)]">Saison 1</span>
-                    <span className="text-[0.62rem] uppercase tracking-[0.2em] text-[#7d6330]">{saison1.length} épisodes</span>
-                  </span>
-                  <span className="inline-flex shrink-0 items-center gap-2 border-b border-[#1c1712] pb-1 text-[0.68rem] uppercase tracking-[0.2em] text-[#1c1712] group-hover:text-[#7d6330] group-hover:border-[#9c7a44]">
-                    {saison1Ouverte ? 'Masquer' : 'Voir les épisodes'}
-                    <ArrowDown size={13} className={`transition-transform duration-300 ${saison1Ouverte ? 'rotate-180' : ''}`} />
-                  </span>
-                </button>
-                {saison1Ouverte && (
-                  <ul id="saison-1" className="lg:columns-2 lg:gap-x-[clamp(2rem,5vw,5rem)]">
-                    {saison1.map((ep) => <LigneEpisode key={ep.id} ep={ep} rang={rang(ep, saison1)} lecteur={lecteur} />)}
-                  </ul>
-                )}
-              </div>
+            </motion.div>
+            {status === 'ready' && (
+              <motion.p variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease } } }}
+                className="mt-7 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712]/55">
+                {episodes.length} épisodes &middot; mis à jour en temps réel
+              </motion.p>
             )}
-          </section>
-        </>
+          </div>
+
+          {cover && (
+            <motion.div
+              variants={{ hidden: { opacity: 0, scale: 1.04 }, show: { opacity: 1, scale: 1, transition: { duration: 1.1, ease } } }}
+              className="relative justify-self-center lg:justify-self-end w-full max-w-[640px]"
+            >
+              <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
+              <img
+                src={cover}
+                alt="Au-delà des tendances, saison 2"
+                referrerPolicy="no-referrer"
+                className="relative w-full h-auto"
+              />
+            </motion.div>
+          )}
+        </motion.div>
+
+        {status === 'ready' && (
+          <div className="flex items-end justify-between border-b border-[#1c1712]/15 pb-3.5 mt-[clamp(2rem,5vh,3.5rem)] text-[0.6rem] uppercase tracking-[0.28em] text-[#1c1712]/55">
+            <span className="flex items-center gap-2 v2-cue"><ArrowDown size={13} weight="regular" /> Les épisodes</span>
+            <span className="hidden sm:inline">Inspira Nature</span>
+          </div>
+        )}
+      </section>
+
+      {/* ─────────── Podcast en direct (liveEvents) ─────────── */}
+      <LiveSignup />
+
+      {/* ─────────── Lecteur sticky de l'épisode sélectionné ─────────── */}
+      {status === 'ready' && current && (
+        <section className={`sticky top-[64px] z-40 bg-[#efe6d7]/95 backdrop-blur-sm border-y border-[#1c1712]/12 py-6`}>
+          <div className="w-full px-[clamp(1rem,3vw,3rem)]">
+            <div className="flex items-start gap-4">
+              {current.image && (
+                <img
+                  src={current.image}
+                  alt=""
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                  className="hidden sm:block w-20 h-20 rounded-[10px] object-cover shrink-0 shadow-[0_10px_24px_rgba(28,23,18,0.25)]"
+                />
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-2">À l’écoute</p>
+                <h2 className="v2-serif font-light text-[#1c1712] text-xl md:text-2xl mb-4 leading-snug">{current.title}</h2>
+                <audio
+                  key={current.id}
+                  controls
+                  preload="none"
+                  className="w-full"
+                  onPlay={e => {
+                    // Première lecture de cet épisode dans ce rendu : trace permanente.
+                    const el = e.currentTarget;
+                    if (!el.dataset.traced) { el.dataset.traced = '1'; trackListenStart(current.id, current.title); }
+                    startPresence(current.id, current.title);
+                  }}
+                  onPause={stopPresence}
+                  onEnded={stopPresence}
+                >
+                  <source src={current.audio} type="audio/mpeg" />
+                </audio>
+              </div>
+            </div>
+          </div>
+        </section>
       )}
 
-      {/* ─────────── C · Le direct (date, formulaire), après les épisodes ─────────── */}
-      <LiveSignup compact sansEpisode />
+      {/* ─────────── Liste / états ─────────── */}
+      <section className="w-full px-[clamp(1rem,3vw,3rem)] py-[clamp(4rem,10vh,7rem)]">
+        {status === 'loading' && (
+          <div className="flex flex-col items-center justify-center py-24 text-[#3a2f23]">
+            <CircleNotch className="animate-spin text-[#7d6330]" size={28} weight="bold" />
+            <p className="mt-4 v2-serif italic">Chargement des épisodes…</p>
+          </div>
+        )}
 
-      {/* ─────────── D · Infolettre ─────────── */}
-      <section className={`relative w-full ${GOUTTIERE} py-[clamp(5rem,13vh,9rem)] bg-[#efe6d7]`}>
+        {status === 'error' && (
+          <div className="text-center py-20">
+            <p className="v2-serif italic text-[#3a2f23] mb-5">Les épisodes ne se chargent pas pour l’instant.</p>
+            <a
+              href="https://www.youtube.com/@KrystineStLaurent"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors"
+            >
+              Écouter sur YouTube <ArrowUpRight size={14} weight="regular" />
+            </a>
+          </div>
+        )}
+
+        {status === 'ready' && (
+          <>
+            <div className="mb-10">
+              <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-4">Tous les épisodes</p>
+              <h2 className="v2-serif font-light text-[#1c1712] text-[clamp(1.8rem,3.4vw,2.8rem)]">L’archive complète</h2>
+              <p className="mt-4 max-w-[52ch] text-[1rem] leading-relaxed text-[#3a2f23]">
+                Cliquez sur une saison pour voir ses épisodes, puis sur un épisode pour l’écouter.
+              </p>
+            </div>
+
+            <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+              {([1, 2] as const).map((s) => {
+                const list = episodes.filter((e) => e.season === s);
+                if (!list.length) return null;
+                const open = openSeason === s;
+                return (
+                  <div key={s}>
+                    <button
+                      onClick={() => setOpenSeason(open ? null : s)}
+                      aria-expanded={open}
+                      aria-controls={`saison-${s}`}
+                      className="group flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-3 border-b border-[#1c1712]/25 pb-4 text-left"
+                    >
+                      <span className="flex items-baseline gap-3">
+                        <span className="v2-serif font-light text-[#1c1712] text-[clamp(1.5rem,2.6vw,2.1rem)]">Saison {s}</span>
+                        <span className="text-[0.62rem] uppercase tracking-[0.18em] text-[#7d6330]">{list.length} épisodes</span>
+                      </span>
+                      <span
+                        className={`inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-[0.8rem] sm:text-[0.85rem] uppercase tracking-[0.14em] transition-colors duration-300 ${open
+                          ? 'border-[#9c7a44]/50 bg-transparent text-[#7d6330] group-hover:bg-[#efe6d7]'
+                          : 'border-[#9c7a44] bg-[#9c7a44] text-[#faf6ee] group-hover:bg-[#7d6330] group-hover:border-[#7d6330]'}`}
+                      >
+                        {open ? 'Cliquer pour fermer' : 'Cliquer pour ouvrir'}
+                        <ArrowDown size={16} weight="bold" className={`transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+                      </span>
+                    </button>
+                    {open && (
+                      <div id={`saison-${s}`}>
+                        {list.map((ep) => {
+                          const active = ep.id === selected;
+                          // La saison 2 commence à l'épisode zéro (« Quand le vide crée le plein »), puis 1 (Alex, 6 sept. 2026).
+                          // Saison 2 : le numéro vient du titre (« Ep 4 », « S2 E3 »); une
+                          // rediffusion n'en porte pas. Saison 1 : le rang, du plus ancien.
+                          const numTitre = /(?:^|[^\p{L}])(?:E|EP|ÉP)\.?\s*(\d+)/iu.exec(ep.title)?.[1];
+                          const num = s === 2 ? (numTitre ?? '·') : list.length - list.indexOf(ep);
+                          return (
+                            <button
+                              key={ep.id}
+                              onClick={() => { setSelected(ep.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                              className={`group w-full text-left border-b border-[#1c1712]/10 py-5 transition-colors duration-300 ${active ? 'bg-[#efe6d7]' : 'hover:bg-[#efe6d7]/50'}`}
+                            >
+                              <div className="flex items-start gap-4 px-1">
+                                {ep.image ? (
+                                  <span className="relative w-12 h-12 shrink-0 overflow-hidden rounded-[10px]">
+                                    <img src={ep.image} alt="" referrerPolicy="no-referrer" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                                    <span className={`absolute inset-0 grid place-items-center transition-colors duration-300 ${active ? 'bg-[#1c1712]/45 text-[#faf6ee]' : 'bg-[#1c1712]/45 text-[#faf6ee] sm:bg-[#1c1712]/0 sm:text-transparent group-hover:bg-[#1c1712]/45 group-hover:text-[#faf6ee]'}`}>
+                                      <Play size={14} weight="fill" className="ml-0.5" />
+                                    </span>
+                                  </span>
+                                ) : (
+                                  <span className={`grid place-items-center w-10 h-10 shrink-0 rounded-full transition-colors duration-300 ${active ? 'bg-[#9c7a44] text-[#faf6ee]' : 'border border-[#9c7a44]/40 text-[#7d6330] group-hover:bg-[#9c7a44] group-hover:text-[#faf6ee]'}`}>
+                                    <Play size={14} weight="fill" className="ml-0.5" />
+                                  </span>
+                                )}
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-baseline gap-2.5">
+                                    <span className="v2-serif text-[#7d6330] tabular-nums text-xs shrink-0">{s === 2 ? String(num) : String(num).padStart(2, '0')}</span>
+                                    <h3 className="v2-serif font-light text-[#1c1712] text-[clamp(1.05rem,1.6vw,1.3rem)] leading-snug">{ep.title}</h3>
+                                  </div>
+                                  <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 pl-6 text-[0.58rem] uppercase tracking-[0.14em] text-[#1c1712]/55">
+                                    {ep.duration && <span className="inline-flex items-center gap-1.5"><Clock size={11} weight="light" className="text-[#7d6330]" />{fmtDur(ep.duration)}</span>}
+                                  </div>
+                                </div>
+                                <span className={`hidden sm:inline-flex shrink-0 self-center items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[0.7rem] uppercase tracking-[0.14em] transition-colors duration-300 ${active ? 'border-[#9c7a44] bg-[#9c7a44] text-[#faf6ee]' : 'border-[#9c7a44]/45 text-[#7d6330] group-hover:bg-[#9c7a44] group-hover:border-[#9c7a44] group-hover:text-[#faf6ee]'}`}>
+                                  <Play size={10} weight="fill" />{active ? 'Sélectionné' : 'Écouter'}
+                                </span>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </section>
+
+      {/* ─────────── INFOLETTRE (back-end préservé) ───────────
+          Colonne unique centrée à 720px retirée (25% d'espace mort de
+          chaque côté à 1440px) : même grille éditoriale 1.1fr/0.9fr et
+          même mesure de 1180px que le hero et l'archive, texte à gauche. */}
+      <section className="relative w-full px-[clamp(1rem,3vw,3rem)] py-[clamp(6rem,15vh,11rem)] bg-[#efe6d7]">
         <div className="w-full grid lg:grid-cols-[1.1fr_0.9fr] gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 items-center">
           <div>
             <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-5">Rester dans le fil</p>
             <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
               Chaque épisode, dans votre boîte
             </h2>
-            <p className="mt-6 v2-serif font-light text-[clamp(1.1rem,2vw,1.45rem)] text-[#3a2f23] max-w-[46ch] leading-snug">
+            <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.45rem)] text-[#3a2f23] max-w-[46ch] leading-snug">
               Recevez chaque nouvel épisode et chaque parution directement par courriel, sans bruit.
             </p>
           </div>

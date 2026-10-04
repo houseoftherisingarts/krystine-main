@@ -46,14 +46,12 @@ const YouTubeMark: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 );
 
-/** `compact` : bloc resserré, placé après la liste des épisodes sur /podcast.
- *  `sansEpisode` : ne montre jamais le dernier épisode YouTube (la page l'affiche déjà en tête). */
-const LiveSignup: React.FC<{ compact?: boolean; sansEpisode?: boolean }> = ({ compact = false, sansEpisode = false }) => {
+const LiveSignup: React.FC = () => {
   const { lang } = useApp();
   const reduce = useReducedMotion();
   const [ev, setEv] = useState<LiveEvent | null>(null);
   const [dernier, setDernier] = useState<YTVideo | null>(null);
-  useEffect(() => { if (sansEpisode) return; fetchYouTubeVideos().then(v => setDernier(dernierEpisode(v))).catch(() => setDernier(null)); }, [sansEpisode]);
+  useEffect(() => { fetchYouTubeVideos().then(v => setDernier(dernierEpisode(v))).catch(() => setDernier(null)); }, []);
 
   useEffect(() => {
     getLiveEvents().then(list => {
@@ -119,7 +117,7 @@ const LiveSignup: React.FC<{ compact?: boolean; sansEpisode?: boolean }> = ({ co
   });
 
   return (
-    <section className={`relative w-full px-[clamp(1rem,3vw,3rem)] ${compact ? 'pb-[clamp(3rem,8vh,5rem)]' : 'pb-[clamp(3rem,7vh,5rem)]'}`}>
+    <section className="relative w-full px-[clamp(1rem,3vw,3rem)] pb-[clamp(3rem,7vh,5rem)]">
       <motion.div
         className="relative w-full overflow-hidden rounded-[15px] bg-[#161311] text-[#EEE7DB] shadow-[0_28px_70px_rgba(20,16,12,0.45)]"
         initial={reduce ? false : { opacity: 0, y: 28 }}
@@ -132,19 +130,19 @@ const LiveSignup: React.FC<{ compact?: boolean; sansEpisode?: boolean }> = ({ co
         <div aria-hidden className="pointer-events-none absolute -right-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-[#c8a86a]/15 blur-3xl" />
         <div aria-hidden className="pointer-events-none absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-[#BA7B39]/10 blur-3xl" />
 
-        <div className={compact ? 'grid grid-cols-1 gap-9 [&>*]:min-w-0 px-[clamp(1.25rem,5vw,4.5rem)] py-[clamp(2.25rem,6vh,3.75rem)] lg:grid-cols-[1.1fr_0.9fr] lg:items-center' : 'grid gap-12 px-[clamp(1.5rem,6vw,6rem)] py-[clamp(3.5rem,9vh,6.5rem)] lg:grid-cols-[1.15fr_0.85fr] lg:items-center'}>
+        <div className="grid gap-12 px-[clamp(1.5rem,6vw,6rem)] py-[clamp(3.5rem,9vh,6.5rem)] lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
           <div>
-            <motion.div {...fade(0.05)} className={`inline-flex items-center rounded-full border border-[#c8a86a]/45 bg-[#c8a86a]/10 ${compact ? 'gap-3 px-4 py-2' : 'gap-4 px-6 py-3'}`}>
+            <motion.div {...fade(0.05)} className="inline-flex items-center gap-4 rounded-full border border-[#c8a86a]/45 bg-[#c8a86a]/10 px-6 py-3">
               <span className="relative flex h-3 w-3">
                 {!isPast && !reduce && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#BA7B39] opacity-70" />}
                 <span className="relative inline-flex h-3 w-3 rounded-full bg-[#BA7B39]" />
               </span>
-              <YouTubeMark className={`${compact ? 'h-5 w-5' : 'h-7 w-7'} text-[#EEE7DB]`} />
-              <span className={`${compact ? 'text-[0.7rem]' : 'text-[clamp(0.85rem,1.4vw,1.15rem)]'} font-semibold uppercase tracking-[0.3em] text-[#EEE7DB]`}>
+              <YouTubeMark className="h-7 w-7 text-[#EEE7DB]" />
+              <span className="text-[clamp(0.85rem,1.4vw,1.15rem)] font-semibold uppercase tracking-[0.3em] text-[#EEE7DB]">
                 {episode ? (fr ? 'Nouvel épisode' : 'New episode') : isPast ? t.replay : t.live}
               </span>
             </motion.div>
-            <motion.h2 {...fade(0.15)} className={`v2-serif font-light leading-[1] ${compact ? 'mt-6 text-[clamp(2.1rem,4.2vw,3.4rem)]' : 'mt-8 text-[clamp(3rem,7vw,5.6rem)]'}`}>
+            <motion.h2 {...fade(0.15)} className="v2-serif mt-8 font-light leading-[1] text-[clamp(3rem,7vw,5.6rem)]">
               {t.title}
             </motion.h2>
             {!isPast && (
@@ -152,15 +150,15 @@ const LiveSignup: React.FC<{ compact?: boolean; sansEpisode?: boolean }> = ({ co
                 {t.sub}
               </motion.p>
             )}
-            <motion.p {...fade(0.25)} className={`${compact ? 'mt-5 text-[clamp(1rem,1.3vw,1.1rem)]' : 'mt-7 text-[clamp(1.1rem,1.6vw,1.35rem)]'} leading-[1.7] text-[#EEE7DB]/80 max-w-[46ch]`}>
+            <motion.p {...fade(0.25)} className="mt-7 text-[clamp(1.1rem,1.6vw,1.35rem)] leading-[1.7] text-[#EEE7DB]/80 max-w-[46ch]">
               {t.body}
             </motion.p>
             {t.body2 && (
-              <motion.p {...fade(0.28)} className={`mt-4 ${compact ? 'text-[0.95rem]' : 'text-[clamp(1rem,1.4vw,1.2rem)]'} leading-[1.7] text-[#EEE7DB]/65 max-w-[46ch]`}>
+              <motion.p {...fade(0.28)} className="mt-4 text-[clamp(1rem,1.4vw,1.2rem)] leading-[1.7] text-[#EEE7DB]/65 max-w-[46ch]">
                 {t.body2}
               </motion.p>
             )}
-            {!isPast && <motion.div {...fade(0.3)} className={`${compact ? 'mt-6' : 'mt-9'} flex flex-wrap gap-x-10 gap-y-4`}>
+            {!isPast && <motion.div {...fade(0.3)} className="mt-9 flex flex-wrap gap-x-10 gap-y-4">
               <div>
                 <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#BA7B39]">{fr ? 'Date' : 'Date'}</p>
                 <p className="v2-serif mt-1 text-[clamp(1.4rem,2.4vw,2rem)] capitalize">{jour}</p>
@@ -173,7 +171,7 @@ const LiveSignup: React.FC<{ compact?: boolean; sansEpisode?: boolean }> = ({ co
             </motion.div>}
           </div>
 
-          <motion.div {...fade(0.35)} className={isPast ? 'overflow-hidden rounded-[15px] border border-[#EEE7DB]/12 bg-black shadow-[0_20px_60px_rgba(0,0,0,0.5)]' : 'rounded-[15px] border border-[#EEE7DB]/12 bg-[#211c18]/60 p-[clamp(1.5rem,3.5vw,3rem)] backdrop-blur-sm max-sm:[&_form]:grid-cols-[minmax(0,1fr)] [&_input]:min-w-0 max-sm:[&_button]:whitespace-normal max-sm:[&_button]:tracking-[0.12em]'}>
+          <motion.div {...fade(0.35)} className={isPast ? 'overflow-hidden rounded-[15px] border border-[#EEE7DB]/12 bg-black shadow-[0_20px_60px_rgba(0,0,0,0.5)]' : 'rounded-[15px] border border-[#EEE7DB]/12 bg-[#211c18]/60 p-[clamp(1.5rem,3.5vw,3rem)] backdrop-blur-sm'}>
             {isPast ? (
               // La rediffusion se regarde ici même, embarquée dans la carte : jamais un bouton, jamais un nouvel onglet (Alex, 6 sept. 2026).
               <div className="relative aspect-video w-full"><LecteurVideoEmbarque url={episode ? `https://www.youtube.com/watch?v=${episode.id}` : (ev?.replayUrl || ev?.youtubeUrl || '')} titre={episode ? titreEpisode(episode.title) : t.title} className="absolute inset-0 h-full w-full" /></div>
