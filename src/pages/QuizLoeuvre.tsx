@@ -994,8 +994,6 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
 
             <CarteDominance L={L} complet={false} />
 
-            <BoutonVata onGo={() => { trackInterne('quiz_clic_vata'); noterSource('quiz'); navigate('/vata'); }} className="mt-9" />
-
             <div className="mt-11 pt-8 border-t max-w-[42rem] mx-auto" style={{ borderColor: `${th.accent}35` }}>
               {user ? (
                 <>
@@ -1022,7 +1020,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
               ) : (
                 <form onSubmit={envoyerResultat} noValidate className="relative max-w-[34rem] mx-auto text-left">
                   <p className="text-center text-[0.62rem] uppercase tracking-[0.24em] text-[#3a2f23]">
-                    {lang === 'FR' ? 'Votre résultat complet' : 'Your full result'}
+                    {lang === 'FR' ? 'Recevoir votre lecture complète' : 'Receive your full reading'}
                   </p>
                   <input
                     type="text"
@@ -1057,24 +1055,39 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                     />
                   </div>
                   {RECAPTCHA_SITE_KEY && <div ref={captcha.boxRef} className="mt-6 flex justify-center" />}
-                  <label className="mt-7 flex items-start gap-3 text-left text-[0.88rem] leading-relaxed text-[#3a2f23] cursor-pointer">
-                    <input type="checkbox" checked={veutSuite} onChange={e => setVeutSuite(e.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-[#1c1712]" />
-                    <span>{lang === 'FR'
-                      ? PHRASE_FORMULAIRE(lireProfil(teaser.percentages).d1, SUITE_PRETE[lireProfil(teaser.percentages).d1])
-                      : 'I would like to receive Krystine St-Laurent’s letters to better understand my results and discover the programs offered to go further. I can unsubscribe at any time.'}</span>
-                  </label>
+                  {/* La fuite du tunnel (analyse du 4 oct. 2026) : la case de la suite,
+                      décochée et cachée sous le bouton, ne laissait passer que 17 %
+                      des personnes. La suite devient le choix principal, nommé en
+                      clair juste au-dessus du bouton : le clic EST le consentement
+                      (rien n'est coché d'avance), et le résultat seul reste offert. */}
+                  <p className="mt-7 text-[0.88rem] leading-relaxed text-[#3a2f23]">
+                    {lang === 'FR'
+                      ? (SUITE_PRETE[lireProfil(teaser.percentages).d1]
+                        ? 'Votre lecture complète arrive par courriel, puis quelques lettres de Krystine St-Laurent pour comprendre ce dont vous avez besoin en ce moment, et les programmes proposés pour aller plus loin. Vous pouvez vous désabonner en un clic.'
+                        : PHRASE_FORMULAIRE(lireProfil(teaser.percentages).d1, false))
+                      : 'Your full reading arrives by email, followed by a few letters from Krystine St-Laurent and the programs offered to go further. You can unsubscribe in one click.'}
+                  </p>
                   <p className="mt-3 text-center text-[0.72rem] leading-relaxed text-[#3a2f23]/70">
                     {lang === 'FR' ? 'Krystine St-Laurent · ' : 'Krystine St-Laurent · '}<a href="mailto:teamksl@inspiratanature.com" className="underline underline-offset-2">teamksl@inspiratanature.com</a>{' · '}<a href="/politique-de-confidentialite" className="underline underline-offset-2">{lang === 'FR' ? 'Politique de confidentialité' : 'Privacy policy'}</a>
                   </p>
                   <div className="mt-5 flex flex-col items-center gap-3">
                     <button
-                      type="submit"
+                      type="button"
+                      onClick={(e) => envoyerResultat(e, true)}
                       disabled={submitting}
                       className="w-full inline-flex items-center justify-center gap-3 bg-[#1c1712] px-8 py-4 text-[0.7rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] disabled:opacity-60 min-h-[44px]"
                     >
                       {submitting
                         ? (lang === 'FR' ? 'Envoi…' : 'Sending…')
-                        : <>{lang === 'FR' ? 'Recevoir mes résultats' : 'Receive my results'} <ArrowRight size={15} weight="regular" /></>}
+                        : <>{lang === 'FR' ? 'Recevoir ma lecture et sa suite' : 'Receive my reading and what follows'} <ArrowRight size={15} weight="regular" /></>}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => envoyerResultat(e, false)}
+                      disabled={submitting}
+                      className="text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/60 border-b border-[#1c1712]/30 pb-1 transition-colors hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px] disabled:opacity-50"
+                    >
+                      {lang === 'FR' ? 'Seulement ma lecture, sans les lettres' : 'Only my reading, no letters'}
                     </button>
                     <button
                       type="button"
@@ -1090,9 +1103,11 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
               )}
 
               <p className="mt-7 text-[0.58rem] uppercase tracking-[0.18em] text-[#1c1712]/45">
-                {lang === 'FR' ? 'Vos résultats restent privés et sécurisés.' : 'Your results stay private and secure.'}
+                {lang === 'FR' ? 'Votre lecture reste privée et sécurisée.' : 'Your reading stays private and secure.'}
               </p>
             </div>
+
+            <BoutonVata onGo={() => { trackInterne('quiz_clic_vata'); noterSource('quiz'); navigate('/vata'); }} className="mt-12" />
           </div>
         </div>
       </Curtain>
