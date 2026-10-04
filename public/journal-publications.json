@@ -5762,5 +5762,26 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-04T11:56:02.645Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b3b1f62c",
+    "message": "Filet du matin : garde qui refuse de publier un site sans la case anti-robot, vérification automatique chaque matin (pages, clés, quiz, inscriptions) avec alerte par courriel, et parcours vérifié depuis l'ordinateur · Quiz : case anti-robot remise en ligne",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "firebase.json",
+      "functions/src/filet.ts",
+      "functions/src/index.ts",
+      "public/assets-manifest.json",
+      "scripts/garde-cles.mjs",
+      "scripts/newsletter/fusionner-doublons.mjs",
+      "scripts/publier.sh",
+      "scripts/qa/filet-du-matin.mjs"
+    ]
   }
 ]
