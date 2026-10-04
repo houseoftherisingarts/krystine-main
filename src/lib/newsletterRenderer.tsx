@@ -381,17 +381,17 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
       const citeClass = 'block mt-4 text-xs uppercase tracking-widest not-italic text-[#BA7B39]';
       if (edit) {
         return (
-          <blockquote className="my-8 bg-[#28352F] px-8 py-9 text-center font-serif text-xl leading-snug text-[#EEE7DB]">
-            <p>« <Inline value={c.text || ''} placeholder="La citation" multiline onCommit={set('text')} /> »</p>
+          <blockquote className="my-8 mx-6 bg-[#28352F] p-[9px] text-center font-serif text-xl leading-snug text-[#EEE7DB]"><div className="border border-[#BA7B39]/60 px-7 pt-6 pb-7"><span aria-hidden className="block text-[3.4rem] leading-[0.9] h-[2.1rem] text-[#BA7B39]">&ldquo;</span>
+            <p><Inline value={c.text || ''} placeholder="La citation" multiline onCommit={set('text')} /></p>
             <span className={citeClass}><Inline value={c.attribution || ''} placeholder="Qui l'a dit" onCommit={set('attribution')} /></span>
-          </blockquote>
+          </div></blockquote>
         );
       }
       return (
-        <blockquote className="my-8 bg-[#28352F] px-8 py-9 text-center font-serif text-xl leading-snug text-[#EEE7DB]">
-          <p>« {c.text || ''} »</p>
+        <blockquote className="my-8 mx-6 bg-[#28352F] p-[9px] text-center font-serif text-xl leading-snug text-[#EEE7DB]"><div className="border border-[#BA7B39]/60 px-7 pt-6 pb-7"><span aria-hidden className="block text-[3.4rem] leading-[0.9] h-[2.1rem] text-[#BA7B39]">&ldquo;</span>
+          <p>{c.text || ''}</p>
           {c.attribution && <cite className={citeClass}>{c.attribution}</cite>}
-        </blockquote>
+        </div></blockquote>
       );
     }
     case 'cta': {

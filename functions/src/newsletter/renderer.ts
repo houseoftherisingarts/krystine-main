@@ -286,7 +286,9 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       const style = primary
         ? `background:${CHARTE.gold};color:${CHARTE.night};`
         : `border:1px solid ${CHARTE.gold};color:${pal.accent};`;
-      return `<tr><td style="padding:6px 0 22px;">
+      // Centré, comme dans l'aperçu de l'admin (Krystine, 4 oct. 2026).
+      const aligne = c.align === 'left' ? 'left' : 'center';
+      return `<tr><td align="${aligne}" style="padding:6px 0 22px;text-align:${aligne};">
         <a href="${esc(c.href || '#')}" target="_blank" style="display:inline-block;padding:15px 28px;border-radius:999px;font-family:${CHARTE.sans};font-size:${t(12)}px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;${style}">${esc(c.label || 'En savoir plus')}</a>
       </td></tr>`;
     }
@@ -316,13 +318,20 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       return `<tr><td style="padding:0 0 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table></td></tr>`;
     }
     case 'quote':
-      // La citation se détache sur la carte vert profond du site, centrée,
-      // texte ivoire et signature cuivre (Krystine, 4 oct. 2026).
-      return `<tr><td style="padding:14px 0 28px;">
+      // La citation, carte vert profond resserrée, filet cuivre intérieur et
+      // grand guillemet : une pièce encadrée plutôt qu'un aplat (Krystine,
+      // 4 oct. 2026 : « un gros carré vert »).
+      return `<tr><td style="padding:18px 34px 30px;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
-          <td bgcolor="#28352F" align="center" style="background:#28352F;padding:34px 30px;text-align:center;font-family:${CHARTE.serif};font-size:${t(22)}px;line-height:1.45;color:#EEE7DB;">
-            «&nbsp;${personalize(esc(c.text || ''), firstName)}&nbsp;»
-            ${c.attribution ? `<div style="margin-top:16px;font-family:${CHARTE.sans};font-size:${t(10)}px;letter-spacing:0.28em;text-transform:uppercase;color:#BA7B39;">${esc(c.attribution)}</div>` : ''}
+          <td bgcolor="#28352F" style="background:#28352F;padding:9px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+              <td align="center" style="border:1px solid rgba(186,123,57,0.6);padding:26px 28px 28px;text-align:center;">
+                <div style="font-family:${CHARTE.serif};font-size:58px;line-height:0.9;height:34px;color:#BA7B39;">&ldquo;</div>
+                <div style="font-family:${CHARTE.serif};font-size:${t(21)}px;line-height:1.5;color:#EEE7DB;">${personalize(esc(c.text || ''), firstName)}</div>
+                <div style="width:38px;height:1px;background:#BA7B39;margin:20px auto 14px;font-size:0;line-height:0;">&nbsp;</div>
+                ${c.attribution ? `<div style="font-family:${CHARTE.sans};font-size:${t(10)}px;letter-spacing:0.3em;text-transform:uppercase;color:#d79a5c;">${esc(c.attribution)}</div>` : ''}
+              </td>
+            </tr></table>
           </td>
         </tr></table>
       </td></tr>`;
