@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-04T21:46:02.575Z",
+  "generatedAt": "2026-10-04T21:50:48.233Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1512,6 +1512,13 @@
       "folder": "infolettre",
       "kind": "image",
       "size": 45698
+    },
+    {
+      "path": "/infolettre/podcast-s2-episode-5.jpg",
+      "name": "podcast-s2-episode-5.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 250874
     },
     {
       "path": "/infolettre/quiz-dosha-elements.jpg",
