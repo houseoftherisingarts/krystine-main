@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-04T23:24:21.100Z",
+  "generatedAt": "2026-10-04T23:31:33.970Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1561,6 +1561,13 @@
       "folder": "infolettre",
       "kind": "image",
       "size": 80290
+    },
+    {
+      "path": "/infolettre/sticker-la-nature-sait.jpg",
+      "name": "sticker-la-nature-sait.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 103640
     },
     {
       "path": "/infolettre/vata-eventail.jpg",
