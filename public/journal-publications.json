@@ -5800,5 +5800,19 @@
       "src/firebase/quiz.ts",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-04T12:11:26.111Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "f2a7392e",
+    "message": "Quiz : la suite de la lecture devient le choix principal du formulaire (« Recevoir ma lecture et sa suite », consentement écrit juste au-dessus, « Seulement ma lecture » reste offert); le formulaire passe avant le bouton VATA (/quiz)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
