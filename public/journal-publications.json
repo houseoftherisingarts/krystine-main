@@ -5748,5 +5748,19 @@
       "src/pages/VataExperience.tsx",
       "src/pages/vata/semaines.ts"
     ]
+  },
+  {
+    "quand": "2026-10-04T11:48:02.482Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "708c3153",
+    "message": "Quiz : au choix d'une réponse, le cercle s'allume en vert avec un crochet avant de passer à la question suivante (/quiz)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
