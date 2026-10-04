@@ -6152,5 +6152,24 @@
     "fichiers": [
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-04T23:56:04.349Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "2b2baa69",
+    "message": "Infolettre : bloc « Bumper sticker » avec la signature dorée de Krystine, kaléidoscope de 1 à 4 images (carrés ou bannière, x pour retirer), bouton principal plus fort (encre, filet cuivre, flèche)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "public/infolettre/signature-krystine-sceau.png",
+      "src/firebase/firestore.ts",
+      "src/lib/newsletterRenderer.tsx",
+      "src/pages/admin/sections/newsletter/Composer.tsx"
+    ]
   }
 ]
