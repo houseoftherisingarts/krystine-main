@@ -5939,5 +5939,19 @@
       "src/pages/ProduitPage.tsx",
       "src/pages/admin/sections/AnalyticsSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-04T13:29:56.128Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a45a2f5e",
+    "message": "Boutique : le catalogue ne plante plus sur une ancienne copie gardée par le navigateur (« La boutique revient bientôt »)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/shopify.ts"
+    ]
   }
 ]
