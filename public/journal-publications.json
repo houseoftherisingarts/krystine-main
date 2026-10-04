@@ -5783,5 +5783,22 @@
       "scripts/publier.sh",
       "scripts/qa/filet-du-matin.mjs"
     ]
+  },
+  {
+    "quand": "2026-10-04T12:03:26.196Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c83b12b8",
+    "message": "Quiz : une personne désabonnée peut se réinscrire elle-même en cochant une case (confirmation par courriel si l'adresse du compte n'est pas vérifiée); le lien « suite » du courriel réinscrit aussi (/quiz)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/quiz.ts",
+      "public/assets-manifest.json",
+      "src/firebase/quiz.ts",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
