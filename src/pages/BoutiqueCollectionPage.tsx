@@ -3,7 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { ArrowLeft } from '@phosphor-icons/react';
 import { useApp, useBoutique } from '../contexts/AppContext';
 import { ASSETS } from '../content';
-import { getProducts, formatMoney, isShopifyConfigured, libelleEtiquette, type ShopifyProduct } from '../shopify';
+import { getProducts, formatMoney, isShopifyConfigured, libelleEtiquette, libelleFormat, type ShopifyProduct } from '../shopify';
 import { useProduitsPerso, appliquerPerso, estVisible, trierSelonPerso } from '../firebase/boutiqueProduits';
 import { modeApercu } from '../lib/apercuBoutique';
 import {
@@ -104,7 +104,7 @@ const BoutiqueCollectionPage: React.FC = () => {
       id: p.id,
       variantId: variant.id,
       title: p.title,
-      type: libelleEtiquette(p.productType, lang) || '',
+      type: libelleFormat(variant.title) || libelleEtiquette(p.productType, lang) || '',
       price: formatMoney(variant.price, lang),
       priceAmount: variant.price.amount,
       priceCurrency: variant.price.currencyCode,
@@ -117,8 +117,8 @@ const BoutiqueCollectionPage: React.FC = () => {
 
   const fr = lang === 'FR';
   const garanties = fr
-    ? [['Paiement sécurisé', 'Par Shopify, en dollars canadiens'], ['Formules maison', 'Conçues par Krystine'], ['Livraison', 'Expédition partout au Canada'], ['Près de 40 ans', 'D’expérience en ayurveda']]
-    : [['Secure checkout', 'By Shopify, in Canadian dollars'], ['House formulas', 'Crafted by Krystine'], ['Shipping', 'Across Canada'], ['Nearly 40 years', 'Of Ayurvedic practice']];
+    ? [['Paiement sécurisé', 'Par Shopify, en dollars canadiens'], ['Formules maison', 'Conçues par Krystine'], ['Livraison', 'Au Canada et aux États-Unis, offerte dès 135 $ avant taxes'], ['Près de 40 ans', 'D’expérience en ayurveda']]
+    : [['Secure checkout', 'By Shopify, in Canadian dollars'], ['House formulas', 'Crafted by Krystine'], ['Shipping', 'To Canada and the United States, included from $135 before taxes'], ['Nearly 40 years', 'Of Ayurvedic practice']];
 
   return (
     <div ref={racine} className="relative w-full bg-[#f4efe6] text-[#1c1712] antialiased overflow-x-hidden" style={{ fontFamily: '"Inter", system-ui, sans-serif' }}>

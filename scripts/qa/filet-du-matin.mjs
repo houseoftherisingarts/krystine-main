@@ -12,7 +12,7 @@ import { execFileSync } from 'node:child_process';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 
-const SITE = 'https://www.krystinestlaurent.ca';
+const SITE = process.env.FILET_SITE || 'https://www.krystinestlaurent.ca';
 const COFFRE = join(homedir(), 'Documents/OBSIDIAN VAULT/Krystine Vault/00_inbox');
 const resultats = [];
 const noter = (nom, ok, detail = '') => resultats.push({ nom, ok, detail });

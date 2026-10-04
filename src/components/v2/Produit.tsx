@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Check, ShoppingBag } from '@phosphor-icons/react';
-import { formatMoney, libelleEtiquette, type ShopifyProduct } from '../../shopify';
+import { formatMoney, libelleEtiquette, libelleFormat, type ShopifyProduct } from '../../shopify';
 
 /**
  * La carte produit unique de la boutique, en langage magazine crème V2
@@ -58,8 +58,10 @@ export const BoutonAjouter: React.FC<{
   titre: string;
   onClick: (e: React.MouseEvent) => void;
   long?: boolean;
+  /** Le format qui part au panier (« 50 ml »), affiché dans le bouton long. */
+  format?: string | null;
   className?: string;
-}> = ({ disponible, ajoute, lang, titre, onClick, long = false, className = '' }) => {
+}> = ({ disponible, ajoute, lang, titre, onClick, long = false, format, className = '' }) => {
   const fr = lang === 'FR';
   if (!disponible) {
     return (
@@ -72,18 +74,39 @@ export const BoutonAjouter: React.FC<{
     <button
       type="button"
       onClick={onClick}
-      aria-label={`${fr ? 'Ajouter au panier' : 'Add to cart'} : ${titre}`}
+      aria-label={`${fr ? 'Ajouter au panier' : 'Add to cart'} : ${titre}${format ? `, ${format}` : ''}`}
       className={`inline-flex min-h-[46px] items-center justify-center gap-2.5 px-6 text-[0.66rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9c7a44] ${ajoute ? 'bg-[#55602f]' : 'bg-[#1c1712] hover:bg-[#9c7a44]'} ${className}`}
     >
       {ajoute
         ? <><Check size={14} /> {fr ? 'Ajouté' : 'Added'}</>
-        : <><ShoppingBag size={14} weight="light" /> {long ? (fr ? 'Ajouter au panier' : 'Add to cart') : (fr ? 'Ajouter' : 'Add')}</>}
+        : <><ShoppingBag size={14} weight="light" /> {long ? (fr ? 'Ajouter au panier' : 'Add to cart') : (fr ? 'Ajouter' : 'Add')}{long && format ? ` · ${format}` : ''}</>}
     </button>
   );
 };
 
 /** La variante qu'une carte ajoute : la première en stock, sinon la première. */
 export const variantePremiere = (p: ShopifyProduct) => p.variants.find(v => v.availableForSale) || p.variants[0];
+
+/** À quoi sert un format, pour la personne qui ne sait pas lequel choisir (4 oct. 2026). */
+export function usageFormat(format: string | null | undefined, lang: 'FR' | 'EN'): string | null {
+  const ml = Number((format || '').match(/(\d+)\s*ml/i)?.[1]);
+  if (!ml) return null;
+  const fr = lang === 'FR';
+  if (ml <= 100) return fr ? 'pour essayer' : 'to try it';
+  if (ml <= 300) return fr ? "pour l'usage de tous les jours" : 'for everyday use';
+  return fr ? 'pour la famille ou les massages' : 'for the family or massages';
+}
+
+/** Le guide des formats en une phrase : « 50 ml pour essayer, 230 ml pour… ». */
+export function guideFormats(p: ShopifyProduct, lang: 'FR' | 'EN'): string | null {
+  const parts = p.variants
+    .filter(v => v.availableForSale)
+    .map(v => libelleFormat(v.title))
+    .filter((f): f is string => !!f)
+    .map(f => { const u = usageFormat(f, lang); return u ? `${f} ${u}` : null; })
+    .filter(Boolean);
+  return parts.length > 1 ? `${parts.join(', ')}.` : null;
+}
 
 /** La carte produit des grilles (boutique, collection). */
 export const CarteProduit: React.FC<{
@@ -99,6 +122,9 @@ export const CarteProduit: React.FC<{
   const type = libelleEtiquette(p.productType, lang);
   const fiche = `/boutique/produit/${p.handle}`;
   const disponible = p.availableForSale && !!variante;
+  // Le format qui part au panier, et les autres offerts sur la fiche.
+  const format = libelleFormat(variante?.title);
+  const autres = p.variants.filter(v => v.availableForSale && v.id !== variante?.id).map(v => libelleFormat(v.title)).filter(Boolean);
 
   return (
     <article className="group flex h-full flex-col">
@@ -110,9 +136,17 @@ export const CarteProduit: React.FC<{
         <h3 className="mt-2.5 v2-serif font-light text-[clamp(1.1rem,2.2vw,1.4rem)] leading-[1.15] text-[#1c1712] line-clamp-2">
           <Link to={fiche} className="hover:text-[#7d6330] transition-colors duration-300">{p.title}</Link>
         </h3>
-        <p className="mt-2 v2-serif font-light text-[1.2rem] text-[#7d6330] tabular-nums">{prix}</p>
+        <p className="mt-2 v2-serif font-light text-[1.2rem] text-[#7d6330] tabular-nums">
+          {prix}
+          {format && <span className="ml-2 text-[0.78rem] text-[#1c1712]/70" style={{ fontFamily: '"Inter", system-ui, sans-serif' }}>{format}</span>}
+        </p>
+        {format && autres.length > 0 && (
+          <p className="mt-1 text-[0.74rem] leading-snug text-[#1c1712]/60">
+            {fr ? 'Aussi en' : 'Also in'} {autres.join(fr ? ' et ' : ' and ')}{fr ? ', sur la fiche' : ', on the product page'}
+          </p>
+        )}
         <div className="mt-auto pt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
-          <BoutonAjouter disponible={disponible} ajoute={ajoute} lang={lang} titre={p.title} onClick={e => onAjouter(p, e)} />
+          <BoutonAjouter disponible={disponible} ajoute={ajoute} lang={lang} titre={p.title} format={format} onClick={e => onAjouter(p, e)} />
           <Link to={fiche} className="group/l inline-flex items-center gap-2 text-[0.64rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712]/40 pb-1 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">
             {fr ? 'Voir' : 'View'} <ArrowRight size={12} className="transition-transform duration-300 group-hover/l:translate-x-0.5" />
           </Link>

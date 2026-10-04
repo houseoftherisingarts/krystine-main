@@ -10,7 +10,7 @@ import { useProduitsPerso, appliquerPerso, estVisible } from '../firebase/boutiq
 import { htmlPropre } from '../lib/htmlPropre';
 import { lireAvis, type ResumeAvis } from '../lib/okendo';
 import { modeApercu, urlProduitHistorique } from '../lib/apercuBoutique';
-import { CaseProduit, taille } from '../components/v2/Produit';
+import { CaseProduit, taille, guideFormats } from '../components/v2/Produit';
 import { StyleV2, Kicker, Reveal, TitreChapitre, CarteVerte, BoutonCuivre, Filet, GOUTTIERE } from '../components/v2/Magazine';
 
 /**
@@ -280,6 +280,7 @@ const ProduitPage: React.FC = () => {
                     );
                   })}
                 </div>
+                {guideFormats(p, lang) && <p className="mt-3 max-w-[52ch] text-[0.84rem] leading-[1.65] text-[#1c1712]/65">{guideFormats(p, lang)}</p>}
               </fieldset>
             )}
 
@@ -313,8 +314,8 @@ const ProduitPage: React.FC = () => {
 
             <p className="mt-6 text-[0.78rem] leading-relaxed text-[#1c1712]/60">
               {fr
-                ? 'Paiement sécurisé par Shopify, en dollars canadiens. Expédition au Canada.'
-                : 'Secure checkout by Shopify, in Canadian dollars. Ships across Canada.'}
+                ? 'Paiement sécurisé par Shopify, en dollars canadiens. Livraison au Canada et aux États-Unis, offerte dès 135 $ d’achat avant taxes.'
+                : 'Secure checkout by Shopify, in Canadian dollars. Ships to Canada and the United States, included from $135 before taxes.'}
             </p>
           </div>
         </div>

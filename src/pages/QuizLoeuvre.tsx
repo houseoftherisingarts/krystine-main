@@ -14,24 +14,19 @@ import { trackLead, trackInterne, noterSource } from '../lib/track';
 import { points } from '../firebase/points';
 import { envoyerResultatQuiz, suiteQuiz, type EtatSuite } from '../firebase/quiz';
 import { RECAPTCHA_SITE_KEY, useRecaptcha } from '../lib/recaptcha';
-import {
-  getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct,
-} from '../shopify';
-import { findOilForDosha, formatDetail } from '../lib/shopifyOil';
 import { RITUALS } from '../lib/doshaRituals';
 import { Planche } from '../components/v2/Magazine';
 import { Atmosphere } from '../components/motion/loeuvre';
-import { FORMATION_VATA_ID, prixEnVigueur } from '../lib/versements';
-import { TIERS } from './vata/offre';
 
 /**
  * Quiz Dosha, langage V2 « magazine crème » (Fraunces + Inter, crème #f4efe6,
  * filets laiton, système multi-couleur Vata/Pitta/Kapha).
  * Garde 100 % de la logique d'origine : QUIZ_DATA, le calcul des scores et des
- * pourcentages, l'auto-avance, le retour/recommencer, l'écriture CRM
- * (addDoshaQuizResult + updateMember + points.quizCompleted) et l'ajout au
- * panier de l'huile dosha (findOilForDosha). Branche aussi le vrai
- * NewsletterSignup (source="quiz").
+ * pourcentages, l'auto-avance, le retour/recommencer et l'écriture CRM
+ * (addDoshaQuizResult + updateMember + points.quizCompleted).
+ * L'écran du résultat porte une seule action à la fois (Krystine, 4 oct.
+ * 2026) : la lecture, puis « Recevoir ma lecture et sa suite », puis, après
+ * l'accord seulement, le repère en cadeau. Aucune offre sur cet écran.
  * Motion : transitions de question en slide+fade (AnimatePresence), filet de
  * progression qui se trace (scaleX), résultat révélé en rideau (clip-path),
  * médaillons qui éclosent (spring), mot Fraunces en profondeur (parallax).
@@ -268,25 +263,6 @@ const QUIZ_DATA: QuizQuestion[] = [
 const ALL_DOSHAS: DoshaType[] = ['vata', 'pitta', 'kapha'];
 
 // Textes de Krystine sous la dominance (FR seulement; la 3e phrase est retirée sur l'écran du résultat).
-// VATA Essentiel au résultat, pour toutes les dominances (Krystine, 2 oct.
-// 2026 : aucune visiteuse du quiz n'allait vers /vata). La ligne qui le
-// justifie suit la dominance; le prix suit la règle de versements.ts.
-// Une seule phrase pour toutes les lectures (Krystine, 3 oct. 2026), miroir de functions/src/quizCourriel.ts.
-const RAISON_VATA = 'Nous sommes en saison Vata : chacune de nous porte de Vata (Vent et Espace) en ce moment.';
-const BoutonVata: React.FC<{ onGo: () => void; className?: string }> = ({ onGo, className = '' }) => (
-  <div className={className}>
-    <p className="v2-serif text-[1.05rem] leading-snug text-[#3a2f23]">{RAISON_VATA}</p>
-    <button
-      type="button"
-      onClick={onGo}
-      className="group mt-4 inline-flex min-h-[52px] w-full items-center justify-center gap-2.5 text-center bg-[#1c1712] px-5 py-4 text-[0.64rem] uppercase tracking-[0.1em] sm:whitespace-nowrap text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] sm:w-auto sm:px-9 sm:text-[0.72rem] sm:tracking-[0.18em]"
-    >
-      Découvrir VATA Essentiel · {prixEnVigueur(FORMATION_VATA_ID, parseInt(TIERS[0].promo, 10))} $
-      <ArrowRight size={15} weight="regular" className="shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
-    </button>
-  </div>
-);
-
 const CARTE_DOMINANCE: Record<DoshaType, [string, string, string]> = {
   vata: [
     'Le mental part dans tous les sens. Le sommeil devient plus fragile.',
@@ -524,7 +500,7 @@ const PHRASE_FORMULAIRE = (d: DoshaType, prete: boolean) => prete
   ? 'Je souhaite recevoir les lettres de Krystine St-Laurent pour mieux comprendre mes résultats et découvrir les programmes proposés pour aller plus loin. Je peux me désabonner à tout moment.'
   : `Je souhaite recevoir les lettres de Krystine St-Laurent : la suite pour ${nomme(d)} lorsqu’elle sera prête, et les programmes proposés pour aller plus loin. Je peux me désabonner à tout moment.`;
 const NOTE_SUITE = (d: DoshaType, prete: boolean) => prete
-  ? 'C’est noté. La première lettre arrive dans deux jours.'
+  ? 'Vos lettres arrivent\u00a0; la première, dans deux jours.'
   : `C’est noté. Nous vous écrirons lorsque la suite pour ${nomme(d)} sera prête.`;
 
 const BlocSuite: React.FC<{
@@ -593,9 +569,59 @@ const BlocSuite: React.FC<{
   } else {
     corps = <p className="v2-serif font-light text-[clamp(1.15rem,1.9vw,1.4rem)] leading-snug text-[#1c1712]">{NOTE_SUITE(dosha, prete)}</p>;
   }
+  // Avant l'accord, l'action tient dans un cadre; après, une simple phrase de clôture.
+  const action = etat === 'offre' || etat === 'desabonnee' || etat === 'confirmation';
   return (
-    <div role="status" className="mt-10 mx-auto max-w-[34rem] border border-[#9c7a44]/50 bg-[#faf6ee] px-6 py-7 text-center">
+    <div role="status" className={action ? 'mt-10 mx-auto max-w-[34rem] border border-[#9c7a44]/50 bg-[#faf6ee] px-6 py-7 text-center' : 'mt-8 mx-auto max-w-[34rem] text-center'}>
       {corps}
+    </div>
+  );
+};
+
+// L'accord donné (courriel reçu, ou abonnée active) : seul ce cas ouvre le repère.
+const ETATS_ACCORD: (EtatSuite | 'envoyee')[] = ['auto', 'deja', 'inscrite', 'envoyee', 'refusee'];
+
+/* Étape 1, identique avant et après l'envoi : le grand mot, les pourcentages, l'explication. */
+const VotreLecture: React.FC<{ L: Lecture; ink: string; percentages: { vata: number; pitta: number; kapha: number }; lang: 'FR' | 'EN'; complet: boolean }> = ({ L, ink, percentages, lang, complet }) => (
+  <>
+    <EnteteLecture L={L} ink={ink} />
+    <div className="mt-10 flex justify-center gap-9 md:gap-12">
+      {ALL_DOSHAS.map(d => (
+        <DoshaStat key={d} d={d} pct={percentages[d]} label={`${NOM_AYURVEDA[d]} (${(lang === 'FR' ? ELEMENTS : ELEMENTS_EN)[d]})`} />
+      ))}
+    </div>
+    <CarteDominance L={L} complet={complet} />
+  </>
+);
+
+/* Étape 3, après l'accord seulement : le repère offert en cadeau (doshaRituals). */
+const RepereCadeau: React.FC<{ dominant: 'Vata' | 'Pitta' | 'Kapha'; th: { accent: string; ink: string }; lang: 'FR' | 'EN' }> = ({ dominant, th, lang }) => {
+  const ritual = RITUALS[dominant];
+  if (!ritual) return null;
+  const soir = dominant === 'Vata';
+  return (
+    <div className="mx-auto max-w-[34rem] bg-[#faf6ee] border p-7 md:p-9 text-left" style={{ borderColor: `${th.accent}40` }}>
+      <p className="text-[0.62rem] uppercase tracking-[0.3em]" style={{ color: th.ink }}>
+        {lang === 'FR'
+          ? (soir ? 'Votre repère de ce soir' : 'Votre repère de demain matin')
+          : (soir ? 'Your practice for tonight' : 'Your practice for tomorrow morning')}
+      </p>
+      <h3 className="mt-3 v2-serif font-light text-[#1c1712] leading-[1.08] text-[clamp(1.5rem,2.4vw,2rem)]">
+        {lang === 'FR' ? ritual.titleFR : ritual.titleEN}
+      </h3>
+      <p className="mt-5 inline-flex items-center gap-2 border px-3.5 py-1.5 text-[0.58rem] uppercase tracking-[0.2em] text-[#3a2f23]" style={{ borderColor: `${th.accent}55` }}>
+        <Clock size={12} weight="light" style={{ color: th.ink }} /> {lang === 'FR' ? ritual.momentFR : ritual.momentEN}
+      </p>
+      <ol className="mt-7 space-y-4">
+        {(lang === 'FR' ? ritual.stepsFR : ritual.stepsEN).map((stepTxt, i) => (
+          <li key={i} className="flex gap-4">
+            <span className="shrink-0 w-7 h-7 rounded-full grid place-items-center v2-serif text-[0.82rem] text-[#faf6ee]" style={{ backgroundColor: th.accent }}>
+              {i + 1}
+            </span>
+            <span className="flex-1 text-[0.92rem] leading-[1.75] text-[#3a2f23]">{stepTxt}</span>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 };
@@ -603,40 +629,11 @@ const BlocSuite: React.FC<{
 /* ════════════════════════ Le quiz (carte question + progression + résultat) ════════════════════════ */
 
 const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
-  const { addToCart, user, member, setSignInOpen } = useApp();
+  const { user, member, setSignInOpen } = useApp();
   const navigate = useNavigate();
   const reduce = useReducedMotion();
   const t = CONTENT[lang];
   const ay = t.ayurveda;
-
-  // Shopify catalog, fetched so the quiz recommendation lands a genuine
-  // variantId in the cart (without which CartDrawer rightly marks items
-  // ineligible for checkout).
-  const [products, setProducts] = useState<ShopifyProduct[]>([]);
-  useEffect(() => {
-    if (!isShopifyConfigured) return;
-    getProducts(50, lang).then(setProducts).catch(() => setProducts([]));
-  }, [lang]);
-
-  const addDoshaOil = (doshaName: string) => {
-    trackInterne('quiz_clic_huile');
-    const product = findOilForDosha(products, doshaName);
-    const variant = (product ? formatDetail(product) : undefined);
-    if (!product || !variant) {
-      navigate('/boutique/huiles-corporelles');
-      return;
-    }
-    addToCart({
-      id: product.id,
-      variantId: variant.id,
-      title: product.title,
-      type: product.productType || 'Huile Corporelle',
-      price: formatMoney(variant.price, lang),
-      priceAmount: variant.price.amount,
-      priceCurrency: variant.price.currencyCode,
-      image: product.featuredImage?.url,
-    });
-  };
 
   // ── Quiz state ──
   const [step, setStep] = useState(0);
@@ -836,129 +833,61 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
     noterSource('quiz');
   }, [teaser]);
 
-  /* ── Écran résultat complet (dosha + rituel + CTA huile), vedette pleine largeur ── */
+  /* ── Écran du résultat : la lecture, puis une seule chose à la fois ──
+     Avant l'accord : l'action « Recevoir ma lecture et sa suite » (BlocSuite).
+     Après l'accord : le repère en cadeau, puis la phrase des lettres.
+     Jamais de solution avant d'avoir le courriel (Krystine, 4 oct. 2026 :
+     « on donne les solutions avant d'avoir pris le courriel, no way »). */
   if (result) {
-    const ritual = RITUALS[result.dominant.name as 'Vata' | 'Pitta' | 'Kapha'];
     const L = lireLecture(result.percentages, lang);
     // L'équilibre ne prend la couleur d'aucun dosha : le laiton du site.
     const th = themeForName(L.branche === 'equilibre' ? '' : result.dominant.name);
+    const accord = lang !== 'FR' || envoye || (!!suite && ETATS_ACCORD.includes(suite.etat));
+    const blocSuite = suite && lang === 'FR' && (
+      <BlocSuite
+        etat={suite.etat}
+        dosha={suite.dosha}
+        prete={suite.prete}
+        occupe={suiteOccupe}
+        onInscrire={() => agirSuite('inscrire')}
+        onRefuser={() => agirSuite('refuser')}
+        onReabonner={() => agirSuite('reabonner')}
+      />
+    );
     return (
-      <Curtain>
-        <div className="relative border overflow-hidden" style={{ borderColor: `${th.accent}66`, background: th.tint }}>
+      <Curtain className="max-w-[860px] mx-auto">
+        <div className="relative border overflow-hidden text-center" style={{ borderColor: `${th.accent}66`, background: th.tint }}>
           <span aria-hidden className="absolute inset-x-0 top-0 h-[3px]" style={{ background: th.accent }} />
+          <div className="p-[clamp(2rem,5vw,4rem)]">
+            <VotreLecture L={L} ink={th.ink} percentages={result.percentages} lang={lang} complet />
 
-          {envoye && (
-            <div className="px-6 pt-8 text-center" role="status">
-              <p className="v2-serif font-light text-[clamp(1.1rem,1.8vw,1.35rem)] text-[#1c1712]">
-                Votre résultat est en route vers votre courriel.
-              </p>
-              {!user && (
-                <button
-                  type="button"
-                  onClick={() => setSignInOpen(true)}
-                  className="mt-3 text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/60 border-b border-[#1c1712]/30 pb-1 transition-colors hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
-                >
-                  Créer mon espace pour le garder
-                </button>
-              )}
-            </div>
-          )}
-
-          <div className="grid lg:grid-cols-[0.95fr_1.05fr]">
-            {/* Identité : médaillon, dominance, répartition, définition */}
-            <div className="p-[clamp(2rem,4.5vw,3.75rem)] text-center lg:border-r" style={{ borderColor: `${th.accent}2e` }}>
-              <EnteteLecture L={L} ink={th.ink} />
-
-              {/* Répartition des trois doshas */}
-              <div className="mt-10 flex justify-center gap-9 md:gap-12">
-                {ALL_DOSHAS.map(d => (
-                  <DoshaStat key={d} d={d} pct={result.percentages[d]} label={`${NOM_AYURVEDA[d]} (${(lang === 'FR' ? ELEMENTS : ELEMENTS_EN)[d]})`} />
-                ))}
-              </div>
-
-              <CarteDominance L={L} complet />
-
-              <p className="mt-10 v2-serif font-light text-[clamp(1.1rem,1.9vw,1.45rem)] leading-relaxed text-[#3a2f23] max-w-[46ch] mx-auto">
-                {lang === 'FR'
-                  ? String(result.dominant.definition || '').replace(/^(Vata|Pitta|Kapha)\b/, m => nomme(m.toLowerCase() as DoshaType))
-                  : result.dominant.definition}
-              </p>
-
-              {suite && lang === 'FR' && (
-                <BlocSuite
-                  etat={suite.etat}
-                  dosha={suite.dosha}
-                  prete={suite.prete}
-                  occupe={suiteOccupe}
-                  onInscrire={() => agirSuite('inscrire')}
-                  onRefuser={() => agirSuite('refuser')}
-                  onReabonner={() => agirSuite('reabonner')}
-                />
-              )}
+            <div className="mt-11 pt-8 border-t max-w-[42rem] mx-auto" style={{ borderColor: `${th.accent}35` }}>
+              {accord ? (
+                <>
+                  <RepereCadeau dominant={result.dominant.name} th={th} lang={lang} />
+                  {envoye && lang === 'FR' && (
+                    <p className="mt-9 text-[0.9rem] leading-relaxed text-[#3a2f23]">Votre résultat est en route vers votre courriel.</p>
+                  )}
+                  {blocSuite}
+                  <button
+                    type="button"
+                    onClick={() => { trackInterne('quiz_clic_boutique'); navigate('/boutique'); }}
+                    className="mt-10 text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/60 border-b border-[#1c1712]/30 pb-1 transition-colors hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
+                  >
+                    {lang === 'FR' ? 'Découvrir la boutique' : 'Visit the shop'}
+                  </button>
+                </>
+              ) : blocSuite}
             </div>
 
-            {/* Rituel associé, transcrit de "Guide Rituels, Partie 1", + CTA huile */}
-            <div className="p-[clamp(2rem,4.5vw,3.75rem)] flex flex-col justify-center">
-              {ritual && (
-                <div className="bg-[#faf6ee] border p-7 md:p-9 text-left" style={{ borderColor: `${th.accent}40` }}>
-                  <p className="text-[0.62rem] uppercase tracking-[0.3em]" style={{ color: th.ink }}>
-                    {lang === 'FR' ? 'Votre repère' : 'Your practice'}
-                  </p>
-                  <h3 className="mt-3 v2-serif font-light text-[#1c1712] leading-[1.08] text-[clamp(1.5rem,2.4vw,2rem)]">
-                    {lang === 'FR' ? ritual.titleFR : ritual.titleEN}
-                  </h3>
-                  <p className="mt-2 v2-serif text-[0.98rem] md:text-[1.05rem]" style={{ color: th.ink }}>
-                    {lang === 'FR' ? ritual.subtitleFR : ritual.subtitleEN}
-                  </p>
-                  <p className="mt-5 inline-flex items-center gap-2 border px-3.5 py-1.5 text-[0.58rem] uppercase tracking-[0.2em] text-[#3a2f23]" style={{ borderColor: `${th.accent}55` }}>
-                    <Clock size={12} weight="light" style={{ color: th.ink }} /> {lang === 'FR' ? ritual.momentFR : ritual.momentEN}
-                  </p>
-                  <ol className="mt-7 space-y-4">
-                    {(lang === 'FR' ? ritual.stepsFR : ritual.stepsEN).map((stepTxt, i) => (
-                      <li key={i} className="flex gap-4">
-                        <span
-                          className="shrink-0 w-7 h-7 rounded-full grid place-items-center v2-serif text-[0.82rem] text-[#faf6ee]"
-                          style={{ backgroundColor: th.accent }}
-                        >
-                          {i + 1}
-                        </span>
-                        <span className="flex-1 text-[0.92rem] leading-[1.75] text-[#3a2f23]">{stepTxt}</span>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              )}
-
-              <BoutonVata onGo={() => { trackInterne('quiz_clic_vata'); noterSource('quiz'); navigate('/vata'); }} className="mt-9" />
-              {/* Les huiles passent en second (Krystine, 2 oct. 2026). */}
-              <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
-                <button
-                  type="button"
-                  onClick={() => addDoshaOil(result.dominant.name)}
-                  className="group inline-flex items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
-                >
-                  {lang === 'FR' ? `Ajouter l'huile ${result.dominant.name}` : `Add ${result.dominant.name} oil`}
-                  <ArrowRight size={14} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { trackInterne('quiz_clic_huile'); navigate('/boutique/huiles-corporelles'); }}
-                  className="group inline-flex items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
-                >
-                  {lang === 'FR' ? 'Explorer la collection' : 'Explore the collection'}
-                  <ArrowRight size={14} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
-                </button>
-              </div>
-
-              <div className="mt-8 pt-6 border-t border-[#1c1712]/10">
-                <button
-                  type="button"
-                  onClick={restart}
-                  className="inline-flex items-center gap-2 text-[0.62rem] uppercase tracking-[0.2em] text-[#1c1712]/55 transition-colors hover:text-[#7d6330] min-h-[44px]"
-                >
-                  <ArrowCounterClockwise size={13} weight="light" /> {lang === 'FR' ? 'Refaire le quiz' : 'Retake the quiz'}
-                </button>
-              </div>
+            <div className="mt-8 flex justify-center">
+              <button
+                type="button"
+                onClick={restart}
+                className="inline-flex items-center gap-2 text-[0.62rem] uppercase tracking-[0.2em] text-[#1c1712]/55 transition-colors hover:text-[#7d6330] min-h-[44px]"
+              >
+                <ArrowCounterClockwise size={13} weight="light" /> {lang === 'FR' ? 'Refaire le quiz' : 'Retake the quiz'}
+              </button>
             </div>
           </div>
         </div>
@@ -984,15 +913,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
         <div className="relative border overflow-hidden text-center" style={{ borderColor: `${th.accent}66`, background: th.tint }}>
           <span aria-hidden className="absolute inset-x-0 top-0 h-[3px]" style={{ background: th.accent }} />
           <div className="p-[clamp(2rem,5vw,4rem)]">
-            <EnteteLecture L={L} ink={th.ink} />
-
-            <div className="mt-10 flex justify-center gap-9 md:gap-12">
-              {ALL_DOSHAS.map(d => (
-                <DoshaStat key={d} d={d} pct={teaser.percentages[d]} label={`${NOM_AYURVEDA[d]} (${(lang === 'FR' ? ELEMENTS : ELEMENTS_EN)[d]})`} />
-              ))}
-            </div>
-
-            <CarteDominance L={L} complet={false} />
+            <VotreLecture L={L} ink={th.ink} percentages={teaser.percentages} lang={lang} complet={false} />
 
             <div className="mt-11 pt-8 border-t max-w-[42rem] mx-auto" style={{ borderColor: `${th.accent}35` }}>
               {user ? (
@@ -1098,8 +1019,6 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                 {lang === 'FR' ? 'Votre lecture reste privée et sécurisée.' : 'Your reading stays private and secure.'}
               </p>
             </div>
-
-            <BoutonVata onGo={() => { trackInterne('quiz_clic_vata'); noterSource('quiz'); navigate('/vata'); }} className="mt-12" />
           </div>
         </div>
       </Curtain>

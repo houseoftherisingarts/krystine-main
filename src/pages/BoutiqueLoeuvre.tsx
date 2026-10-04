@@ -10,12 +10,13 @@ import {
   formatMoney,
   isShopifyConfigured,
   libelleEtiquette,
+  libelleFormat,
   type ShopifyProduct,
 } from '../shopify';
 import { useProduitsPerso, appliquerPerso, estVisible, trierSelonPerso } from '../firebase/boutiqueProduits';
 import { modeApercu } from '../lib/apercuBoutique';
 import NewsletterSignup from '../components/NewsletterSignup';
-import { CaseProduit, CarteProduit, BoutonAjouter, GrilleProduits, taille } from '../components/v2/Produit';
+import { CaseProduit, CarteProduit, BoutonAjouter, GrilleProduits, taille, guideFormats } from '../components/v2/Produit';
 import { COLLECTIONS, assignCollection } from '../lib/collections';
 import { saisonCourante, ORDRE_FAMILLES, USAGES } from '../lib/saisonBoutique';
 import { CarteVerte } from '../components/v2/Magazine';
@@ -37,6 +38,8 @@ import { CarteVerte } from '../components/v2/Magazine';
  */
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+type ShopifyVariant = ShopifyProduct['variants'][number];
 
 /* ════════════════════════ Primitives V2 ════════════════════════ */
 
@@ -103,13 +106,16 @@ const FeaturedProduct: React.FC<{
   p: ShopifyProduct & { accroche?: string };
   lang: 'FR' | 'EN';
   added: string | null;
-  onAdd: (p: ShopifyProduct, e: React.MouseEvent) => void;
+  onAdd: (p: ShopifyProduct, e: React.MouseEvent, v?: ShopifyVariant) => void;
   couleur: string;
   libelle: string;
   pourquoi: string;
   usage?: string;
 }> = ({ p, lang, added, onAdd, couleur, libelle, pourquoi, usage }) => {
-  const variant = p.variants.find(v => v.availableForSale) || p.variants[0];
+  // Le format se choisit ici même (4 oct. 2026) : la nouvelle venue voit
+  // ce qu'elle achète (50 ml, 230 ml, 500 ml) avant d'ajouter.
+  const [choix, setChoix] = useState<string | null>(null);
+  const variant = p.variants.find(v => v.id === choix) || p.variants.find(v => v.availableForSale) || p.variants[0];
   const soldOut = !p.availableForSale;
   const price = variant
     ? formatMoney(variant.price, lang)
@@ -117,6 +123,8 @@ const FeaturedProduct: React.FC<{
   const image = p.featuredImage?.url || p.images[0]?.url;
   const isAdded = added === p.id;
   const fiche = `/boutique/produit/${p.handle}`;
+  const formats = p.variants.filter(v => libelleFormat(v.title));
+  const guide = guideFormats(p, lang);
 
   return (
     <div className="grid lg:grid-cols-[0.8fr_1.2fr] items-center bg-[#faf6ee] border border-[#9c7a44]/25 border-t-2" style={{ borderTopColor: couleur }}>
@@ -131,9 +139,35 @@ const FeaturedProduct: React.FC<{
           <Link to={fiche} className="hover:text-[#7d6330] transition-colors duration-300">{p.title}</Link>
         </h3>
         <ModeEmploi lang={lang} pourquoi={pourquoi} usage={usage} className="mt-6 max-w-[56ch]" />
-        <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
+        {formats.length > 1 && (
+          <fieldset className="mt-8">
+            <legend className="mb-3 text-[0.58rem] uppercase tracking-[0.24em] text-[#7d6330]">{lang === 'FR' ? 'Choisir le format' : 'Choose the size'}</legend>
+            <div className="flex flex-wrap gap-2.5">
+              {formats.map(v => {
+                const choisi = v.id === variant?.id;
+                return (
+                  <button
+                    key={v.id}
+                    type="button"
+                    disabled={!v.availableForSale}
+                    onClick={() => setChoix(v.id)}
+                    aria-pressed={choisi}
+                    className={`min-h-[44px] px-4 py-2 text-[0.74rem] tracking-[0.06em] border transition-colors ${
+                      choisi ? 'bg-[#1c1712] border-[#1c1712] text-[#f4efe6]' : 'border-[#1c1712]/25 text-[#1c1712] hover:border-[#1c1712]'
+                    } ${v.availableForSale ? '' : 'opacity-45 line-through cursor-not-allowed'}`}
+                  >
+                    {libelleFormat(v.title)}
+                    <span className="ml-2 tabular-nums opacity-70">{formatMoney(v.price, lang)}</span>
+                  </button>
+                );
+              })}
+            </div>
+            {guide && <p className="mt-3 max-w-[56ch] text-[0.84rem] leading-[1.65] text-[#1c1712]/65">{guide}</p>}
+          </fieldset>
+        )}
+        <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
           <span className="v2-serif font-light text-[clamp(1.5rem,2.4vw,2rem)] text-[#7d6330] tabular-nums">{price}</span>
-          <BoutonAjouter disponible={!soldOut && !!variant} ajoute={isAdded} lang={lang} titre={p.title} onClick={e => onAdd(p, e)} long />
+          <BoutonAjouter disponible={!soldOut && !!variant?.availableForSale} ajoute={isAdded} lang={lang} titre={p.title} format={libelleFormat(variant?.title)} onClick={e => onAdd(p, e, variant)} long className="whitespace-nowrap max-sm:px-4 max-sm:tracking-[0.12em]" />
           <Link to={fiche} className="text-[0.66rem] uppercase tracking-[0.2em] text-[#1c1712]/70 border-b border-[#1c1712]/30 pb-1 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">
             {lang === 'FR' ? 'Voir le produit' : 'View product'}
           </Link>
@@ -189,15 +223,16 @@ const BoutiqueLoeuvre: React.FC = () => {
     [products, hiddenProducts, perso],
   );
 
-  const handleAdd = (p: ShopifyProduct, e: React.MouseEvent) => {
+  const handleAdd = (p: ShopifyProduct, e: React.MouseEvent, choisie?: ShopifyVariant) => {
     e.preventDefault(); e.stopPropagation();
-    const variant = p.variants.find(v => v.availableForSale) || p.variants[0];
+    const variant = choisie || p.variants.find(v => v.availableForSale) || p.variants[0];
     if (!variant) return;
     addToCart({
       id: p.id,
       variantId: variant.id,
       title: p.title,
-      type: libelleEtiquette(p.productType, lang) || '',
+      // Le panier dit quel format part (« 50 ml »), comme depuis la fiche.
+      type: libelleFormat(variant.title) || libelleEtiquette(p.productType, lang) || '',
       price: formatMoney(variant.price, lang),
       priceAmount: variant.price.amount,
       priceCurrency: variant.price.currencyCode,
@@ -283,7 +318,7 @@ const BoutiqueLoeuvre: React.FC = () => {
 
       {/* ─────────── CHAPITRE 01 · LES ESSENTIELS DE LA SAISON ─────────── */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(7rem,13vh,9.5rem)] pb-[clamp(5rem,12vh,8rem)]">
-        <div className="grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end mt-[clamp(1.5rem,4vh,3rem)]">
+        <div className="grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start mt-[clamp(1.5rem,4vh,3rem)]">
           <div>
             <motion.p
               initial={reduce ? { opacity: 1 } : { opacity: 0, y: 18 }}
@@ -326,15 +361,23 @@ const BoutiqueLoeuvre: React.FC = () => {
             <p className="v2-serif text-[clamp(1.1rem,1.7vw,1.35rem)] font-light leading-[1.5] text-[#3a2f23] max-w-[48ch]">
               {fr ? saison.introFR : saison.introEN}
             </p>
-            <Link
-              to="/quiz"
-              className="mt-6 block py-2 text-[0.92rem] leading-[1.7] text-[#1c1712]/75 hover:text-[#7d6330] transition-colors"
-            >
-              {fr ? 'Vous ne connaissez pas votre dominance ? ' : "Don't know your dominance? "}
-              <span className="whitespace-nowrap border-b border-[#1c1712]/40 pb-0.5">
-                {fr ? 'Le quiz, 3 minutes' : 'The quiz, 3 minutes'} <ArrowRight size={14} className="inline align-[-0.1em]" />
-              </span>
-            </Link>
+            {/* Nouvelle ici ? · ce qu'il faut savoir avant d'acheter, en deux phrases (4 oct. 2026) */}
+            <aside className="mt-7 border-t border-[#9c7a44]/40 pt-5 max-w-[52ch]">
+              <p className="text-[0.62rem] uppercase tracking-[0.26em] text-[#7d6330]">{fr ? 'Nouvelle ici ?' : 'New here?'}</p>
+              <p className="mt-2.5 text-[0.92rem] leading-[1.75] text-[#3a2f23]">
+                {fr
+                  ? "Vous n'avez pas besoin de savoir « quel type » vous êtes. La saison nous influence déjà : en ce moment, l'air froid et sec assèche la peau, rend le sommeil plus léger et fait courir le mental. L'huile ci-dessous a été pensée pour ce moment de l'année."
+                  : 'INSPIRATA AYURVEDA is a line of oils and care products designed by Krystine St-Laurent, with local plants infused by hand in oil. Ayurveda, a care tradition born in India, sees three dominances, Vata (Wind and Space), Pitta (Fire and Water) and Kapha (Water and Earth): each season awakens one, and each oil is made for one of them.'}
+              </p>
+              <p className="mt-2.5 text-[0.92rem] leading-[1.75] text-[#3a2f23]">
+                {fr
+                  ? "Les huiles INSPIRATA AYURVEDA sont conçues par Krystine St-Laurent, avec des plantes d'ici infusées à la main dans l'huile. Pour aller plus loin, à votre rythme : "
+                  : 'You do not need to know yours to begin: the oil below goes with the current season. '}
+                <Link to="/quiz" className="whitespace-nowrap text-[#1c1712] border-b border-[#1c1712]/40 pb-0.5 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">
+                  {fr ? 'Me situer en ce moment · 3 min' : 'Where am I right now · 3 min'} <ArrowRight size={14} className="inline align-[-0.1em]" />
+                </Link>
+              </p>
+            </aside>
           </motion.div>
         </div>
 
@@ -381,6 +424,21 @@ const BoutiqueLoeuvre: React.FC = () => {
                     usage={USAGES[vedette.handle]?.[lang]}
                   />
                 </Reveal>
+              )}
+
+              {/* Avant d'acheter · faits tirés de la politique d'expédition Shopify d'INSPIRATA (4 oct. 2026) */}
+              {visibleProducts.length > 0 && (
+                <ul className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5 border-y border-[#1c1712]/12 py-5">
+                  {(fr
+                    ? [['Paiement sécurisé', 'Par Shopify, en dollars canadiens'], ['Livraison', 'Au Canada et aux États-Unis, en 3 à 4 jours ouvrables en général'], ['Livraison offerte', 'Dès 135 $ d’achat, avant taxes'], ['Fait à la main', 'En petites quantités, selon les formules de Krystine']]
+                    : [['Secure checkout', 'By Shopify, in Canadian dollars'], ['Shipping', 'To Canada and the United States, usually in 3 to 4 business days'], ['Shipping included', 'From $135, before taxes'], ['Handmade', 'In small batches, from Krystine’s formulas']]
+                  ).map(([t, d]) => (
+                    <li key={t}>
+                      <p className="text-[0.58rem] uppercase tracking-[0.22em] text-[#7d6330]">{t}</p>
+                      <p className="mt-1.5 text-[0.84rem] leading-snug text-[#3a2f23]">{d}</p>
+                    </li>
+                  ))}
+                </ul>
               )}
 
               {/* Rangée · les essentiels de la saison */}
@@ -493,8 +551,17 @@ const BoutiqueLoeuvre: React.FC = () => {
             </Reveal>
             <DrawRule className="w-24" />
 
+            {/* Raccourcis vers chaque famille : la page est longue, surtout au téléphone */}
+            <nav aria-label={fr ? 'Les familles' : 'The families'} className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+              {familles.map(({ id, label }) => (
+                <a key={id} href={`#famille-${id}`} className="inline-flex min-h-[40px] items-center text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/75 border-b border-transparent hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">
+                  {label}
+                </a>
+              ))}
+            </nav>
+
             {familles.map(({ id, slug, label, tagline, produits }) => (
-              <div key={id} className="mt-[clamp(3.5rem,8vh,5.5rem)]">
+              <div key={id} id={`famille-${id}`} className="mt-[clamp(3.5rem,8vh,5.5rem)] scroll-mt-28">
                 <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3 border-b border-[#1c1712]/15 pb-4 mb-10">
                   <div>
                     <h3 className="v2-serif font-light text-[clamp(1.6rem,2.8vw,2.3rem)] leading-[1.1] text-[#1c1712]">{label}</h3>
@@ -524,7 +591,7 @@ const BoutiqueLoeuvre: React.FC = () => {
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#f4efe6]">
         <Reveal className="max-w-[760px] mb-6">
           <Kicker className="mb-5">
-            {fr ? 'Chapitre 03 · La signature Inspirata' : 'Chapter 03 · The Inspirata signature'}
+            {fr ? 'La signature INSPIRATA' : 'The INSPIRATA signature'}
           </Kicker>
           <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
             {lang === 'FR' ? 'Ce qui entre dans chaque flacon' : 'What goes into each bottle'}
@@ -547,8 +614,8 @@ const BoutiqueLoeuvre: React.FC = () => {
             },
             {
               Icon: Drop,
-              titleFR: 'Une formule par dominance', titleEN: 'One formula per dominance',
-              bodyFR: 'Chaque huile répond à une dominance, Vata (Vent et Espace), Pitta (Feu et Eau) ou Kapha (Eau et Terre), ou à un moment précis de la vie.',
+              titleFR: 'Ce qui domine en ce moment', titleEN: 'What leads right now',
+              bodyFR: 'Chaque huile répond à ce qui prend de la place selon la saison et le moment : le froid et le sec, la chaleur, la lourdeur, ou un moment précis de la vie.',
               bodyEN: 'Each oil answers a dominance, Vata (Wind and Space), Pitta (Fire and Water) or Kapha (Water and Earth), or a specific moment of life.',
             },
             {
