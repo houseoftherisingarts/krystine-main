@@ -6032,5 +6032,21 @@
       "public/assets-manifest.json",
       "public/infolettre/podcast-s2-episode-5.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-04T22:13:08.722Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "bbae0085",
+    "message": "Infolettre : citation en carte vert profond encadrée d'un filet cuivre, boutons centrés comme dans l'aperçu",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "src/lib/newsletterRenderer.tsx"
+    ]
   }
 ]
