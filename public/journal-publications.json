@@ -6108,5 +6108,19 @@
       "public/assets-manifest.json",
       "src/lib/newsletterRenderer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-04T23:31:41.720Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "84d94a8e",
+    "message": "Infolettre : « bumper sticker » La nature sait, le corps le ressent. (/infolettre/sticker-la-nature-sait.jpg)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/sticker-la-nature-sait.jpg"
+    ]
   }
 ]
