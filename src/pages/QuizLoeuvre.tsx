@@ -787,7 +787,14 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, step]);
 
-  const current = step < QUIZ_DATA.length ? QUIZ_DATA[step] : null;
+  // L'ordre des réponses change à chaque question et à chaque visite : sans
+  // cela, la première réponse était toujours Vata (Krystine, 4 oct. 2026).
+  const [ordres] = useState(() => QUIZ_DATA.map((q) => {
+    const o = q.options.map((_, i) => i);
+    for (let i = o.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; }
+    return o;
+  }));
+  const current = step < QUIZ_DATA.length ? { ...QUIZ_DATA[step], options: ordres[step].map((i) => QUIZ_DATA[step].options[i]) } : null;
 
   // Mesure du quiz (sans donnée personnelle) : chaque question atteinte une
   // seule fois par visite, puis le résultat vu avec sa branche et sa dominance.
@@ -1119,7 +1126,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                 {lang === 'FR' ? current.questionFR : current.questionEN}
               </h3>
 
-              {/* Choix en rangées éditoriales indexées 01/02/03 */}
+              {/* Choix en rangées éditoriales, ordre mélangé, cercle neutre */}
               <div className="mt-9">
                 {current.options.map((opt, idx) => {
                   const isFlash = flashPick === opt.type;
@@ -1133,13 +1140,14 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                         isFlash ? 'bg-[#9c7a44]/10' : 'hover:bg-[#9c7a44]/[0.06]'
                       }`}
                     >
+                      {/* Un cercle neutre qui se remplit d'or au choix : rien ne
+                          trahit le dosha de la réponse (Krystine, 4 oct. 2026). */}
                       <span
-                        className={`v2-serif text-[1.05rem] tabular-nums pt-0.5 transition-colors duration-300 ${
-                          isFlash ? 'text-[#7d6330]' : 'text-[#1c1712]/40 group-hover:text-[#7d6330]'
+                        aria-hidden="true"
+                        className={`mt-[0.45rem] shrink-0 w-[1.05rem] h-[1.05rem] rounded-full border transition-all duration-500 ${
+                          isFlash ? 'border-[#9c7a44] bg-[#9c7a44] shadow-[0_0_0_4px_rgba(156,122,68,0.18)]' : 'border-[#9c7a44]/60 group-hover:border-[#9c7a44] group-hover:shadow-[inset_0_0_0_3px_rgba(156,122,68,0.25)]'
                         }`}
-                      >
-                        0{idx + 1}
-                      </span>
+                      />
                       <span className={`flex-1 text-[0.95rem] leading-[1.75] transition-colors duration-300 ${
                         isFlash ? 'text-[#1c1712]' : 'text-[#3a2f23] group-hover:text-[#1c1712]'
                       }`}>

@@ -79,8 +79,8 @@ const ROUTES: Record<string, PageMeta> = {
     description: 'Le parcours signature de Krystine St-Laurent: un retour à l’origine par l’ayurveda, les plantes et les rituels de saison.',
   },
   '/vata': {
-    title: `Expérience Vata · ${SITE}`,
-    description: 'L’expérience saisonnière d’automne: apaiser Vata avec les rituels, les huiles et la sagesse ayurvédique.',
+    title: `VATA Essentiel · ${SITE}`,
+    description: 'Apaiser le mental, un sens à la fois. VATA Essentiel, une expérience Ayurveda de sept semaines en capsules audio avec Krystine St-Laurent.',
   },
   '/origine-2': {
     title: `L’Expérience Origine 2 · ${SITE}`,

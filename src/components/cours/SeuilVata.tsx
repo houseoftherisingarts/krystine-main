@@ -32,11 +32,13 @@ interface Props {
   terminees: number;
   total: number;
   semainesAchevees: number;
+  /** Vata (uni) : « Semaine N sur 7 », « Introduction » ou « Conclusion », à la place du compte des portes. */
+  reperSemaine?: string;
   lang: 'FR' | 'EN';
   reprise?: Reprise;
 }
 
-const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, uni, chaleur, terminees, total, semainesAchevees, lang, reprise }) => {
+const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, uni, chaleur, terminees, total, semainesAchevees, reperSemaine, lang, reprise }) => {
   const fr = lang === 'FR';
   const nb = programme.chapitres.length;
   const [un, des] = fr ? programme.unite.fr : programme.unite.en;
@@ -106,7 +108,8 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, un
             {uni ? (fr ? 'L’Expérience Ayurveda · Saison Vata' : 'The Ayurveda Experience · Vata Season') : (fr ? programme.surtitre.fr : programme.surtitre.en)}
           </p>
           <h1 className="mt-3 font-sans text-[clamp(2.2rem,5vw,4.4rem)] font-extralight uppercase leading-[1] tracking-[0.14em] text-[#F7F3EA]">
-            {(fr ? programme.titre.fr : programme.titre.en).replace(/\n/g, ' ')}
+            {/* Le titre fin « SAISON VATA » (Krystine, 30 sept. 2026). */}
+            {uni ? (fr ? 'Saison Vata' : 'Vata Season') : (fr ? programme.titre.fr : programme.titre.en).replace(/\n/g, ' ')}
           </h1>
           <span className="mt-4 block h-px w-[min(18rem,60%)] bg-[#EEE7DB]/60" aria-hidden />
           {uni && (
@@ -154,7 +157,7 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, un
                 {fr ? programme.surtitre.fr : programme.surtitre.en}
               </p>
               <p className="mt-1.5 max-w-[16ch] font-serif text-[clamp(1.3rem,2.4vw,2rem)] leading-[1.1] text-[#EEE7DB]">
-                {fr
+                {uni && reperSemaine ? reperSemaine : fr
                   ? (semainesAchevees === 0
                       ? `${nb} ${des} vous attendent`
                       : `${semainesAchevees} ${semainesAchevees > 1 ? des : un} ${semainesAchevees > 1 ? 'ouvertes' : 'ouverte'} sur ${nb}`)

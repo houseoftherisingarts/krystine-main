@@ -43,6 +43,7 @@ interface Props {
   lang: 'FR' | 'EN';
   onFin?: () => void;
   onSuivante?: () => void;
+  onPrecedente?: () => void;
   /** « creme » : habillage clair pour la page de vente. Par défaut, l'apparence sombre de l'espace de cours. */
   variante?: 'sombre' | 'creme';
 }
@@ -78,7 +79,7 @@ const HABITS = {
   },
 } as const;
 
-const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, lang, onFin, onSuivante, variante = 'sombre' }) => {
+const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, lang, onFin, onSuivante, onPrecedente, variante = 'sombre' }) => {
   const habit = HABITS[variante];
   const audio = useRef<HTMLAudioElement | null>(null);
   const toile = useRef<HTMLCanvasElement | null>(null);
@@ -99,6 +100,8 @@ const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, l
   const dernier = useRef(0);
   const suivante = useRef(onSuivante);
   suivante.current = onSuivante;
+  const precedente = useRef(onPrecedente);
+  precedente.current = onPrecedente;
 
   // Une nouvelle leçon : on repart de sa position gardée, sinon du début.
   useEffect(() => { setPosition(0); setLongueur(0); setJoue(false); setErreur(false); }, [url]);
@@ -114,7 +117,8 @@ const LecteurAudioCours: React.FC<Props> = ({ url, titre, soustitre, pochette, l
     ms.setActionHandler('seekbackward', () => { const a = el(); if (a) a.currentTime = Math.max(0, a.currentTime - 15); });
     ms.setActionHandler('seekforward', () => { const a = el(); if (a) a.currentTime = Math.min(a.duration || 0, a.currentTime + 30); });
     ms.setActionHandler('nexttrack', () => suivante.current?.());
-    return () => { for (const a of ['play', 'pause', 'seekbackward', 'seekforward', 'nexttrack'] as MediaSessionAction[]) { try { ms.setActionHandler(a, null); } catch { /* non pris en charge */ } } };
+    ms.setActionHandler('previoustrack', () => precedente.current?.());
+    return () => { for (const a of ['play', 'pause', 'seekbackward', 'seekforward', 'nexttrack', 'previoustrack'] as MediaSessionAction[]) { try { ms.setActionHandler(a, null); } catch { /* non pris en charge */ } } };
   }, [titre, soustitre, pochette]);
 
   useEffect(() => { if (audio.current) audio.current.playbackRate = vitesse; }, [vitesse, url]);

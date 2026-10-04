@@ -38,7 +38,7 @@ export const SEMAINES_VATA: SemaineVata[] = [
     sens: { fr: 'Préparer votre espace', en: 'Prepare your space' },
     promesse: {
       fr: 'Préparer le lieu et le moment avant de ralentir, pour que le corps s’autorise à déposer les armes.',
-      en: 'Set the sanctuary before slowing down, so the body finally lets go.',
+      en: 'Prepare the space before slowing down, so the body finally lets go.',
     },
     couleur: { encre: '#4F5C58', vive: '#7A8A85' },
     ...img(0),
@@ -67,7 +67,7 @@ export const SEMAINES_VATA: SemaineVata[] = [
     rang: 3, roman: 'III',
     sens: { fr: 'La vue', en: 'Sight' },
     promesse: {
-      fr: 'Déposer ses yeux, libérer la vision de la fatigue des écrans et retrouver la clarté.',
+      fr: 'Déposer ses yeux, libérer la vision de l’épuisement des écrans et retrouver la clarté.',
       en: 'Rest the eyes, free your sight from screen fatigue and recover clarity.',
     },
     couleur: { encre: '#3B4F63', vive: '#6A87A3' },

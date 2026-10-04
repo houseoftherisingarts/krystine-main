@@ -14,6 +14,8 @@ export interface EtatSemaine {
   terminees: number;
   total: number;
   verrouillee: boolean;
+  /** La date d'ouverture d'une semaine fermée (« 12 octobre »), si elle est connue. */
+  ouvertureLe?: string;
 }
 
 interface Props {
@@ -105,7 +107,9 @@ const Carte: React.FC<{
         </span>
         <span className="mt-2 block text-[10px] font-bold uppercase tracking-[0.22em] text-[#d9a05b]/80">
           {barree
-            ? (lang === 'FR' ? 'S’ouvre bientôt' : 'Opens soon')
+            ? (etat?.ouvertureLe
+                ? (lang === 'FR' ? `S’ouvre le ${etat.ouvertureLe}` : `Opens ${etat.ouvertureLe}`)
+                : (lang === 'FR' ? 'S’ouvre bientôt' : 'Opens soon'))
             : total > 0
               ? `${faites}/${total} ${lang === 'FR' ? 'leçons' : 'lessons'}`
               : lang === 'FR' ? 'À venir' : 'Coming'}

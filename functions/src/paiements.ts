@@ -689,6 +689,26 @@ export const stripeWebhook = onRequest(
   },
 );
 
+// Le goutte-à-goutte de Vata, recopié de semainesVataOuvertes() et
+// rangDeModule() dans src/pages/vata/semaines.ts (garder les deux en accord) :
+// l'introduction (0) et la semaine 1 s'ouvrent à l'achat, une semaine de plus
+// tous les 7 jours, jusqu'à la conclusion (8). Les achats venus de Kajabi et
+// ceux d'avant le 29 septembre 2026 gardent tout ouvert. La date de départ est
+// acheteLe, sinon accordeLe (un cadeau).
+const DRIP_VATA_DEPUIS = Date.parse('2026-09-29T00:00:00-04:00');
+const DERNIER_RANG_VATA = 8;
+function semainesVataOuvertes(achat: { source?: string; acheteLe?: number } | null, maintenant = Date.now()): number {
+  if (!achat || achat.source === 'kajabi' || !achat.acheteLe || achat.acheteLe < DRIP_VATA_DEPUIS) return Infinity;
+  const jours = Math.floor((maintenant - achat.acheteLe) / 86400000);
+  return Math.min(DERNIER_RANG_VATA, 1 + Math.floor(Math.max(0, jours) / 7));
+}
+function rangDeModuleVata(nom?: string): number {
+  const m = nom?.match(/semaine\s*:?\s*(\d+)/i);
+  if (!m) return -1;
+  const n = Number(m[1]);
+  return n >= 0 && n <= DERNIER_RANG_VATA ? n : -1;
+}
+
 // Sert un fichier de leçon à une acheteuse (URL signée 2 h). Les fichiers de
 // contenu vivent sous formations-contenu/ dans Storage, illisibles au public.
 export const obtenirLecon = onCall(
@@ -701,6 +721,8 @@ export const obtenirLecon = onCall(
 
     const db = getFirestore();
     const estAdmin = ADMIN_EMAILS.includes(String(req.auth.token.email || ''));
+    // La date de départ du goutte-à-goutte de Vata, lue avec l'achat.
+    let achatVata: { source?: string; acheteLe?: number } | null = null;
     if (!estAdmin) {
       const fSnap = await db.doc(`formations/${formationId}`).get();
       const fiche = fSnap.data() as { paywall?: boolean; statut?: string } | undefined;
@@ -724,12 +746,26 @@ export const obtenirLecon = onCall(
           if (!(m.data() as { accesVie?: boolean } | undefined)?.accesVie) {
             throw new HttpsError('permission-denied', 'Cette formation ne vous appartient pas encore.');
           }
+        } else if (formationId === FORMATION_VATA_ID) {
+          const a = achat.data() as { source?: string; acheteLe?: { toMillis?: () => number }; accordeLe?: { toMillis?: () => number } };
+          achatVata = { source: a.source, acheteLe: (a.acheteLe ?? a.accordeLe)?.toMillis?.() };
         }
       }
     }
 
     const lSnap = await db.doc(`formations/${formationId}/lecons/${leconId}`).get();
     if (!lSnap.exists) throw new HttpsError('not-found', 'Leçon introuvable.');
+    // Une semaine de Vata pas encore ouverte ne se sert pas, sauf à l'admin
+    // et à l'accès à vie (comme dans la page de cours).
+    if (achatVata) {
+      const rang = rangDeModuleVata((lSnap.data() as { moduleNom?: string }).moduleNom);
+      if (rang > semainesVataOuvertes(achatVata)) {
+        const m = await db.doc(`members/${req.auth.uid}`).get();
+        if (!(m.data() as { accesVie?: boolean } | undefined)?.accesVie) {
+          throw new HttpsError('permission-denied', 'Cette semaine n\'est pas encore ouverte. Elle s\'ouvrira à son tour, une semaine à la fois.');
+        }
+      }
+    }
     // Un document déposé sous la leçon : même barrière, autre chemin.
     const docIndex = req.data?.docIndex;
     if (typeof docIndex === 'number') {

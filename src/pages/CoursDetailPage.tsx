@@ -4,7 +4,7 @@ import { PORTES, porteDuMois, foyerOuvert, DEBUT_LABEL } from './foyer/portesDat
 import { rangSemaine, semaineOuverteRang } from './origine2/semaines';
 import CoursOrigine from '../components/cours/origine/CoursOrigine';
 import { estOrigine } from './origine2/piliers';
-import { FORMATION_VATA, rangDeModule as rangModuleVata, semainesVataOuvertes, etiquetteSemaine } from './vata/semaines';
+import { FORMATION_VATA, SEMAINES_VATA, rangDeModule as rangModuleVata, semainesVataOuvertes, etiquetteSemaine } from './vata/semaines';
 import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, type QuestionLecon } from '../firebase/formations';
 import { Navigate, useParams, Link, useNavigate } from 'react-router-dom';
 import {
@@ -98,6 +98,26 @@ const CoursDetailPage: React.FC = () => {
   const [verifAcces, setVerifAcces] = useState(true);   // le temps de savoir si la personne possède le cours
   const [accesVie, setAccesVie] = useState(false);
   const [achatVata, setAchatVata] = useState<{ source?: string; acheteLe?: Date } | null>(null);
+  // Tant que l'achat n'est pas lu, achatVata vaut null et le goutte-à-goutte
+  // ouvrirait tout un instant : on attend la lecture.
+  const [achatLu, setAchatLu] = useState(false);
+  // Le petit avis d'une semaine encore fermée, au clic sur sa carte.
+  const [avisVerrou, setAvisVerrou] = useState<string | null>(null);
+  useEffect(() => {
+    if (!avisVerrou) return;
+    const t = window.setTimeout(() => setAvisVerrou(null), 5000);
+    return () => window.clearTimeout(t);
+  }, [avisVerrou]);
+  // Au téléphone, l'aperçu d'un PDF en iframe est illisible : un bouton l'ouvre dans un onglet.
+  const [etroit, setEtroit] = useState(() => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const suivre = () => setEtroit(mq.matches);
+    mq.addEventListener('change', suivre);
+    return () => mq.removeEventListener('change', suivre);
+  }, []);
+  // Le moment de référence d'une simulation ?jour=N (admin seulement).
+  const [maintenantRef] = useState(() => Date.now());
   // Les petits sons des portes (hover) : le son de survol du Festival
   // Médiéval (orb/sfx/hover.mp3) pour l'ouverte, le petit verrou maison pour
   // les barrées. Volumes très discrets.
@@ -160,7 +180,10 @@ const CoursDetailPage: React.FC = () => {
     etatAchat(user.uid, id)
       .then(e => { setAchete(e === 'actif'); setSuspendu(e === 'suspendu'); })
       .catch(() => {}).finally(() => setVerifAcces(false));
-    if (id === FORMATION_VATA) infosAchat(user.uid, id).then(setAchatVata).catch(() => {});
+    if (id === FORMATION_VATA) {
+      setAchatLu(false);
+      infosAchat(user.uid, id).then(setAchatVata).catch(() => {}).finally(() => setAchatLu(true));
+    } else setAchatLu(true);
     getMember(user.uid).then(m => setAccesVie(!!m?.accesVie)).catch(() => {});
     setProgressionLue(false);
     getProgression(user.uid, id).then(p => {
@@ -172,7 +195,10 @@ const CoursDetailPage: React.FC = () => {
   // Le contenu s'ouvre à qui a acheté (ou reçu) la formation. L'admin voit
   // la même barrière que tout le monde; son aperçu passe par ?apercu (le
   // bouton « Aperçu » de l'admin), jamais par défaut.
-  const apercu = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('apercu');
+  const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  // ?jour=N (admin seulement) : la vue d'une acheteuse au jour N du goutte-à-goutte, pour voir ce que voit une cliente.
+  const jourSimule = isAdmin && params?.has('jour') ? Math.max(0, Math.floor(Number(params.get('jour')) || 0)) : null;
+  const apercu = !!params && (params.has('apercu') || jourSimule != null);
   // Une formation en liste d'attente ne s'ouvre à personne, même sans
   // paywall : le prix ou l'accès libre laissent place au bouton d'attente.
   const accessible = useMemo(
@@ -190,18 +216,34 @@ const CoursDetailPage: React.FC = () => {
   // Vata en goutte-à-goutte (décision de Krystine, 29 septembre 2026) : une
   // semaine s'ouvre tous les 7 jours à partir de la date d'achat. Les
   // anciennes (Kajabi), l'accès à vie et l'admin gardent tout ouvert.
-  const semainesVata = id === FORMATION_VATA && !accesVie ? semainesVataOuvertes(achatVata) : Infinity;
-  const verrouillee = (l: Lecon) => !isAdmin && ((id === 'foyer' && !ouvert) || rangDe(l.mois) > porteOuverteRang
+  // Simulation admin : on décale « maintenant » de N jours après un achat
+  // fait à l'instant (un achat daté dans le passé tomberait avant
+  // DRIP_VATA_DEPUIS et ouvrirait tout).
+  const semainesVata = id !== FORMATION_VATA ? Infinity
+    : jourSimule != null ? semainesVataOuvertes({ acheteLe: new Date(maintenantRef) }, new Date(maintenantRef + jourSimule * 86400000))
+    : accesVie ? Infinity
+    : !achatLu ? 1   // en lecture : l'introduction et la semaine 1 seulement
+    : semainesVataOuvertes(achatVata);
+  const departVata = jourSimule != null ? new Date(maintenantRef - jourSimule * 86400000) : achatVata?.acheteLe;
+  // L'admin voit tout, sauf lorsqu'elle simule une acheteuse.
+  const toutVoir = isAdmin && jourSimule == null;
+  const verrouillee = (l: Lecon) => !toutVoir && ((id === 'foyer' && !ouvert) || rangDe(l.mois) > porteOuverteRang
     || rangModuleVata(l.moduleNom) > semainesVata);
+  /** La date d'ouverture d'une semaine de Vata (« 12 octobre »), si elle est connue. */
+  const ouvertureSemaine = (rang: number): string | undefined => {
+    if (id !== FORMATION_VATA || !departVata || semainesVata === Infinity || rang < 2) return undefined;
+    return new Date(departVata.getTime() + 7 * (rang - 1) * 86400000)
+      .toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA', { day: 'numeric', month: 'long', timeZone: 'America/Toronto' });
+  };
 
   // La page s'ouvre d'elle-même : sur la dernière leçon commencée, sinon sur
   // la première leçon ouverte (l'introduction). Plus de « choisissez une leçon ».
   useEffect(() => {
-    if (courante || !accessible || lecons.length === 0 || (user && !progressionLue)) return;
+    if (courante || !accessible || lecons.length === 0 || (user && !progressionLue) || (user && !achatLu)) return;
     const cible = (derniere && lecons.find(l => l.id === derniere && !verrouillee(l))) || lecons.find(l => !verrouillee(l));
     if (cible) void ouvrir(cible);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courante, accessible, lecons, derniere, progressionLue, user]);
+  }, [courante, accessible, lecons, derniere, progressionLue, user, achatLu]);
 
   const ouvrir = async (l: Lecon) => {
     if (verrouillee(l)) return;
@@ -263,12 +305,22 @@ const CoursDetailPage: React.FC = () => {
     }
   };
 
-  const suivante = () => {
-    if (!courante) return;
-    const i = lecons.findIndex(l => l.id === courante.id);
-    const prochaine = lecons.slice(i + 1).find(l => !verrouillee(l));
-    if (prochaine) ouvrir(prochaine);
-  };
+  const iCourante = courante ? lecons.findIndex(l => l.id === courante.id) : -1;
+  const prochaineOuverte = courante ? lecons.slice(iCourante + 1).find(l => !verrouillee(l)) : undefined;
+  const precedenteOuverte = courante ? lecons.slice(0, Math.max(0, iCourante)).reverse().find(l => !verrouillee(l)) : undefined;
+  // À la fin du contenu ouvert : quand la suite s'ouvre (sinon rien, c'est la fin).
+  const suiteFermee = (() => {
+    if (!courante || prochaineOuverte) return null;
+    const l = lecons.slice(iCourante + 1).find(x => verrouillee(x));
+    if (!l) return null;
+    if (l.mois) return lang === 'FR' ? `La suite s'ouvre avec la porte de ${l.mois}.` : `What comes next opens with the ${l.mois} door.`;
+    const date = ouvertureSemaine(rangModuleVata(l.moduleNom));
+    return date
+      ? (lang === 'FR' ? `La suite s'ouvre le ${date}.` : `What comes next opens on ${date}.`)
+      : (lang === 'FR' ? 'La suite s\'ouvre bientôt.' : 'What comes next opens soon.');
+  })();
+  const suivante = () => { if (prochaineOuverte) void ouvrir(prochaineOuverte); };
+  const precedente = () => { if (precedenteOuverte) void ouvrir(precedenteOuverte); };
 
   // L'achat passe par la page de choix (un paiement ou des versements),
   // commune à toutes les formations : src/pages/PaiementFormation.tsx.
@@ -284,7 +336,10 @@ const CoursDetailPage: React.FC = () => {
   const estVata = !!programme;
   const etatsSemaines = useMemo(() => {
     const par: Record<number, EtatSemaine> = {};
-    for (const s of CHAPITRES) par[s.rang] = { terminees: 0, total: 0, verrouillee: !isAdmin && s.rang > semainesVata };
+    for (const s of CHAPITRES) {
+      const fermee = !toutVoir && s.rang > semainesVata;
+      par[s.rang] = { terminees: 0, total: 0, verrouillee: fermee, ouvertureLe: fermee ? ouvertureSemaine(s.rang) : undefined };
+    }
     for (const l of lecons) {
       const r = rangDeModule(l.moduleNom);
       if (r < 0) continue;
@@ -292,7 +347,8 @@ const CoursDetailPage: React.FC = () => {
       if (terminees[l.id]) par[r].terminees += 1;
     }
     return par;
-  }, [lecons, terminees, isAdmin, semainesVata]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lecons, terminees, toutVoir, semainesVata, departVata?.getTime(), lang]);
   const semainesAchevees = CHAPITRES.filter(
     s => (etatsSemaines[s.rang]?.total ?? 0) > 0 && etatsSemaines[s.rang].terminees >= etatsSemaines[s.rang].total,
   ).length;
@@ -303,6 +359,17 @@ const CoursDetailPage: React.FC = () => {
   const ouvrirSemaine = (rang: number) => {
     const duModule = lecons.filter(l => rangDeModule(l.moduleNom) === rang);
     const cible = duModule.find(l => !terminees[l.id] && !verrouillee(l)) || duModule.find(l => !verrouillee(l));
+    if (!cible && etatsSemaines[rang]?.verrouillee) {
+      const c = CHAPITRES[rang] as { etiquette?: { fr: string; en: string } } | undefined;
+      const date = ouvertureSemaine(rang);
+      const nom = lang === 'FR'
+        ? (c?.etiquette ? `La ${c.etiquette.fr.toLowerCase()}` : `La semaine ${rang}`)
+        : (c?.etiquette ? `The ${c.etiquette.en.toLowerCase()}` : `Week ${rang}`);
+      setAvisVerrou(date
+        ? (lang === 'FR' ? `${nom} s'ouvre le ${date}.` : `${nom} opens on ${date}.`)
+        : (lang === 'FR' ? `${nom} s'ouvre bientôt.` : `${nom} opens soon.`));
+      return;
+    }
     if (cible) {
       void ouvrir(cible);
       setReplies(r => ({ ...r, [cible.moduleNom || '']: false }));
@@ -402,6 +469,15 @@ const CoursDetailPage: React.FC = () => {
             terminees={nbTerminees}
             total={lecons.length}
             semainesAchevees={semainesAchevees}
+            reperSemaine={id === FORMATION_VATA ? (() => {
+              // Goutte-à-goutte : la dernière semaine ouverte. Tout ouvert : la semaine de la reprise.
+              const p = lecons.find(l => !terminees[l.id] && !verrouillee(l));
+              const r = semainesVata !== Infinity ? semainesVata : p ? rangModuleVata(p.moduleNom) : SEMAINES_VATA.length - 1;
+              const s = SEMAINES_VATA[Math.max(0, Math.min(r, SEMAINES_VATA.length - 1))];
+              const nb = SEMAINES_VATA.filter(x => x.rang > 0 && !x.etiquette).length;
+              if (s.rang === 0 || s.etiquette) return etiquetteSemaine(s, lang === 'FR');
+              return lang === 'FR' ? `Semaine ${s.rang} sur ${nb}` : `Week ${s.rang} of ${nb}`;
+            })() : undefined}
             lang={lang}
             reprise={(() => {
               const p = lecons.find(l => !terminees[l.id] && !verrouillee(l)) || lecons.find(l => !verrouillee(l));
@@ -422,6 +498,16 @@ const CoursDetailPage: React.FC = () => {
             2026). La liste des leçons ne les répète plus. */}
         {estVata && accessible && (
           <CheminSens programme={programme!} etats={etatsSemaines} courante={courante ? rangDeModule(courante.moduleNom) : -1} lang={lang} onOuvrir={ouvrirSemaine} />
+        )}
+        {avisVerrou && (
+          <p role="status" className="fixed inset-x-4 bottom-6 z-50 mx-auto w-fit max-w-[calc(100%-2rem)] rounded-full border border-[#BA7B39]/40 bg-[#151d19]/92 px-5 py-2.5 text-center text-[13px] text-[#EEE7DB] shadow-[0_14px_36px_-16px_rgba(20,19,17,0.8)] backdrop-blur-md">
+            <i className="fa-solid fa-lock mr-2 text-[11px] text-[#d9a05b]" />{avisVerrou}
+          </p>
+        )}
+        {jourSimule != null && id === FORMATION_VATA && (
+          <p className="fixed left-4 top-24 z-50 rounded-full bg-[#8B4A2F] px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#F7F3EA]">
+            Aperçu : une acheteuse au jour {jourSimule}
+          </p>
         )}
         {id === 'foyer' && accessible && (
           <div className="mt-4 overflow-hidden rounded-[20px] border border-white/60 shadow-[0_24px_60px_-24px_rgba(41,48,39,0.5)] dark:border-white/10">
@@ -859,7 +945,7 @@ const CoursDetailPage: React.FC = () => {
                         key={l.id}
                         onClick={() => ouvrir(l)}
                         disabled={verrou}
-                        title={verrou ? (l.mois ? (lang === 'FR' ? `S'ouvre avec la porte de ${l.mois}` : `Opens with the ${l.mois} door`) : (lang === 'FR' ? 'Cette semaine s\'ouvrira bientôt' : 'This week opens soon')) : undefined}
+                        title={verrou ? (l.mois ? (lang === 'FR' ? `S'ouvre avec la porte de ${l.mois}` : `Opens with the ${l.mois} door`) : ouvertureSemaine(rangModuleVata(l.moduleNom)) ? (lang === 'FR' ? `S'ouvre le ${ouvertureSemaine(rangModuleVata(l.moduleNom))}` : `Opens on ${ouvertureSemaine(rangModuleVata(l.moduleNom))}`) : (lang === 'FR' ? 'Cette semaine s\'ouvrira bientôt' : 'This week opens soon')) : undefined}
                         className={`flex w-full items-center gap-3 rounded-[14px] px-3 py-2.5 text-left text-sm transition-colors ${
                           courante?.id === l.id
                             ? (sem ? 'text-[#F7F3EA]' : 'bg-[#BA7B39] text-[#293027]')
@@ -875,7 +961,7 @@ const CoursDetailPage: React.FC = () => {
                           <i className={`fa-solid ${verrou ? 'fa-lock' : terminees[l.id] ? 'fa-circle-check text-green-700' : ICONES[l.type] || 'fa-file'} w-4 ${courante?.id === l.id ? '' : verrou ? 'opacity-50' : 'text-[#8B4A2F]/70'}`} />
                         )}
                         <span className="min-w-0 flex-1 truncate">{l.titre}</span>
-                        {verrou ? <span className="text-[10px] uppercase tracking-wider opacity-60">{l.mois}</span>
+                        {verrou ? <span className="shrink-0 text-[10px] uppercase tracking-wider opacity-60">{l.mois || (ouvertureSemaine(rangModuleVata(l.moduleNom)) ? (lang === 'FR' ? `S'ouvre le ${ouvertureSemaine(rangModuleVata(l.moduleNom))}` : `Opens ${ouvertureSemaine(rangModuleVata(l.moduleNom))}`) : '')}</span>
                                 : l.duree && <span className="text-[11px] opacity-60">{l.duree}</span>}
                       </button>
                       );
@@ -947,7 +1033,8 @@ const CoursDetailPage: React.FC = () => {
                           })()}
                           lang={lang}
                           onFin={() => { if (!terminees[courante.id]) void basculerTerminee(courante); }}
-                          onSuivante={lecons.findIndex(l => l.id === courante.id) < lecons.length - 1 ? suivante : undefined}
+                          onSuivante={prochaineOuverte ? suivante : undefined}
+                          onPrecedente={precedenteOuverte ? precedente : undefined}
                         />
                       ) : (
                         <a
@@ -960,6 +1047,10 @@ const CoursDetailPage: React.FC = () => {
                       )
                     ) : null}
                   </div>
+                  <p className="mt-3 text-[12px] text-[#38403a]/55 dark:text-white/50">
+                    {lang === 'FR' ? 'Un problème technique ? Écrivez-nous à ' : 'A technical issue? Write to us at '}
+                    <a href="mailto:teamksl@inspiratanature.com" className="underline underline-offset-2 hover:text-[#8B4A2F]">teamksl@inspiratanature.com</a>
+                  </p>
                   {/* Sur Vata, le texte se justifie sous le lecteur (Krystine n'aime pas
                       le drapeau à gauche); la coupure des mots évite les rivières de blanc. */}
                   {courante.texte?.trim() && (
@@ -1010,7 +1101,16 @@ const CoursDetailPage: React.FC = () => {
                         ? (lang === 'FR' ? 'Leçon terminée' : 'Lesson complete')
                         : (lang === 'FR' ? 'Marquer comme terminée' : 'Mark as complete')}
                     </button>
-                    {lecons.findIndex(l => l.id === courante.id) < lecons.length - 1 && (
+                    {precedenteOuverte && (
+                      <button
+                        onClick={precedente}
+                        className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest text-[#293027] hover:bg-[#9c6630]"
+                      >
+                        <i className="fa-solid fa-arrow-left" />
+                        {lang === 'FR' ? 'Leçon précédente' : 'Previous lesson'}
+                      </button>
+                    )}
+                    {prochaineOuverte ? (
                       <button
                         onClick={suivante}
                         className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest text-[#293027] hover:bg-[#9c6630]"
@@ -1018,6 +1118,10 @@ const CoursDetailPage: React.FC = () => {
                         {lang === 'FR' ? 'Leçon suivante' : 'Next lesson'}
                         <i className="fa-solid fa-arrow-right" />
                       </button>
+                    ) : suiteFermee && (
+                      <p className="inline-flex items-center gap-2 text-[12px] font-bold uppercase tracking-widest text-[#8B4A2F] dark:text-[#d9a05b]">
+                        <i className="fa-solid fa-lock text-[10px]" />{suiteFermee}
+                      </p>
                     )}
                   </div>
                   {/* Au dernier module de Vata (« Clore la saison »), l'évaluation
@@ -1099,7 +1203,15 @@ const CoursDetailPage: React.FC = () => {
                     </button>
                   </div>
                 </div>
-                <iframe src={`${apercuPdf.url}#toolbar=0&view=FitH`} title={apercuPdf.nom} className="h-[70vh] w-full flex-1 bg-white lg:h-auto" />
+                {etroit ? (
+                  <div className="flex justify-center px-4 py-8">
+                    <a href={apercuPdf.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-6 py-3 text-xs font-bold uppercase tracking-widest text-[#293027] hover:bg-[#9c6630]">
+                      <i className="fa-solid fa-file-pdf" />{lang === 'FR' ? 'Ouvrir le PDF' : 'Open the PDF'}
+                    </a>
+                  </div>
+                ) : (
+                  <iframe src={`${apercuPdf.url}#toolbar=0&view=FitH`} title={apercuPdf.nom} className="h-[70vh] w-full flex-1 bg-white lg:h-auto" />
+                )}
               </aside>
             )}
           </div>

@@ -142,8 +142,9 @@ export async function etatAchat(uid: string, formationId: string): Promise<'aucu
 export async function infosAchat(uid: string, formationId: string): Promise<{ source?: string; acheteLe?: Date } | null> {
   const snap = await getDoc(doc(db(), 'achatsFormations', uid, 'formations', formationId));
   if (!snap.exists()) return null;
-  const d = snap.data() as { source?: string; acheteLe?: { toDate?: () => Date } };
-  return { source: d.source, acheteLe: d.acheteLe?.toDate?.() };
+  const d = snap.data() as { source?: string; acheteLe?: { toDate?: () => Date }; accordeLe?: { toDate?: () => Date } };
+  // Un cadeau ou un accès accordé n'a pas d'acheteLe : sa date de départ est accordeLe.
+  return { source: d.source, acheteLe: (d.acheteLe ?? d.accordeLe)?.toDate?.() };
 }
 
 export async function getFormationsPubliees(): Promise<Formation[]> {

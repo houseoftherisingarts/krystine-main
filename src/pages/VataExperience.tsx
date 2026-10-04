@@ -80,17 +80,17 @@ const SYSTEMS: Array<[string, string, React.ComponentType<{ size?: number; weigh
 
 // Les titres des semaines sont ceux du cours (src/pages/vata/semaines.ts), une
 // seule version partout (Krystine, 30 sept. 2026).
-const PHASES = [
-  ["Préparer votre espace", "Un espace bienveillant et enveloppant, rien qu'à vous, et une intention déposée chaque matin pour plonger tout en douceur."],
-  ["Le souffle", "Le souffle pour calmer le tourbillon, en quelques secondes."],
-  ["L'ouïe", "Fermer les portes de l'ouïe et offrir au système nerveux le calme dont il a soif."],
-  ["La vue", "Reposer les yeux, loin des écrans, et retrouver une clarté que l'on croyait perdue."],
-  ["L'odorat", "Le nez nous mène : une seule inspiration, et l'état d'esprit change."],
-  ["Le goût", "Les saveurs qui réchauffent le corps et calment les turbulences."],
-  ["Le toucher", "L'huile chaude recrée une protection autour du corps, qui se sent enfin enveloppé."],
-  ["La présence", "Renverser l'effet d'un stress continu, et repartir avec des repères qui nous appartiennent."],
-  ['Clore la saison', 'Un dernier mot de Krystine, et votre guide complet de 204 pages à garder et à relire.'],
-];
+const PHASES: [string, string][] = [
+  "Un espace bienveillant et enveloppant, rien qu'à vous, et une intention déposée chaque matin pour plonger tout en douceur.",
+  "Le souffle pour calmer le tourbillon, en quelques secondes.",
+  "Fermer les portes de l'ouïe et offrir au système nerveux le calme dont il a soif.",
+  "Reposer les yeux, loin des écrans, et retrouver une clarté que l'on croyait perdue.",
+  "Le nez nous mène : une seule inspiration, et l'état d'esprit change.",
+  "Les saveurs qui réchauffent le corps et calment les turbulences.",
+  "L'huile chaude recrée une protection autour du corps, qui se sent enfin enveloppé.",
+  "Renverser l'effet d'un stress continu, et repartir avec des repères qui nous appartiennent.",
+  'Un dernier mot de Krystine, et votre guide complet de 204 pages à garder et à relire.',
+].map((d, i): [string, string] => [SEMAINES_VATA[i].sens.fr, d]);
 
 /* Couvertures des documents du programme (public/vata/couvertures) */
 const couv = (id: string) => `/vata/couvertures/${id}.jpg`;
@@ -379,7 +379,7 @@ const Cover: React.FC = () => {
         </Reveal>
         <Reveal delay={0.55} y={16} className="2xl:justify-self-end">
           <ul className="space-y-2.5">
-            {['Capsules, méditations et guide de 204 pages', '7 semaines + introduction', 'Éléments air et espace', 'Accès immédiat'].map((m) => (
+            {['Capsules, méditations et guide de 204 pages', '7 semaines + introduction', 'Vata (Vent et Espace)', 'Semaine 1 dès l’inscription'].map((m) => (
               <li key={m} className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.2em]" style={{ color: 'rgba(28,23,18,0.62)' }}>
                 <span className="h-1 w-1 rounded-full shrink-0" style={{ background: C.sage }} />
                 {m}
@@ -410,7 +410,7 @@ const Ella: React.FC = () => (
         <DrawRule className="mb-8 w-20" color={C.brassLight} />
         <div className="space-y-6 v2-serif text-[clamp(1.2rem,2vw,1.55rem)] leading-[1.55]" style={{ color: C.paper }}>
           <p>Il est 3 h du matin. Elle a les mains glacées, et le mental déjà au travail : la réunion de demain, la liste qui s'allonge, ce qu'elle a oublié de dire. Le jour, elle tient tout, les gens, les projets, les décisions. Le soir, le corps lâche avant elle. La nuit, les soucis semblent encore plus grands.</p>
-          <p style={{ color: C.sagePale }}>Ce qu'elle ressent porte un nom : Vata, le vent qui fait tourner le moulin intérieur. Plus il vente, plus le mental s'emballe, et il s'apaise lorsque nous lui offrons des points de repère, un sens à la fois.</p>
+          <p style={{ color: C.sagePale }}>Ce qu'elle ressent porte un nom : Vata (Vent et Espace), le vent qui fait tourner le moulin intérieur. Plus il vente, plus le mental s'emballe, et il s'apaise lorsque nous lui offrons des points de repère, un sens à la fois.</p>
         </div>
       </div>
     </Reveal>
@@ -782,7 +782,7 @@ const Tiers: React.FC = () => (
                 const prix = prixEnVigueur(FORMATION_VATA_ID, parseInt(tier.promo, 10));
                 return (
                   <p className="mt-3 text-[0.9rem] leading-snug tabular-nums" style={{ color: C.inkSoft }}>
-                    {versementsPermis(prix).includes(3) && <>ou 3 versements de {montantVersement(prix, 3)} $<span aria-hidden="true"> · </span></>}Taxes en sus
+                    {versementsPermis(prix).includes(3) && <>ou 3 versements de {montantVersement(prix, 3)} $ ({montantVersement(prix, 3) * 3} $ au total)<span aria-hidden="true"> · </span></>}Taxes en sus
                   </p>
                 );
               })()}
@@ -1005,8 +1005,8 @@ const BackCover: React.FC = () => (
             Revoir le programme et son tarif
           </a>
         </div>
-        <p className="mt-10 text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: 'rgba(244,239,230,0.5)' }}>
-          Programme autonome · accès immédiat
+        <p className="mt-10 text-[0.7rem] uppercase tracking-[0.26em]" style={{ color: 'rgba(244,239,230,0.78)' }}>
+          Introduction et semaine 1 dès l’inscription
         </p>
       </Reveal>
     </div>
@@ -1027,11 +1027,11 @@ const BarreAchat: React.FC = () => {
   return (
     <>
     {/* L'espace sous tout le contenu, pied de page compris, pour que la barre ne cache rien. */}
-    <style>{'@media (max-width: 767px) { body { padding-bottom: 84px; } }'}</style>
+    <style>{'@media (max-width: 767px) { body { padding-bottom: calc(84px + var(--bande-temoins, 0px)) !important; } }'}</style>
     <div
       aria-hidden={!visible}
       className={`fixed inset-x-0 bottom-0 z-50 border-t px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden transition-transform duration-500 ${visible ? 'translate-y-0' : 'translate-y-full'}`}
-      style={{ background: C.cream, borderColor: hairline, transitionTimingFunction: 'cubic-bezier(.16,.8,.24,1)' }}
+      style={{ bottom: 'var(--bande-temoins, 0px)', background: C.cream, borderColor: hairline, transitionTimingFunction: 'cubic-bezier(.16,.8,.24,1)' }}
     >
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">

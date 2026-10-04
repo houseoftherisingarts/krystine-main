@@ -69,7 +69,12 @@ const ConsentBanner: React.FC = () => {
   useEffect(() => {
     const bande = ref.current;
     if (choice || !bande) return;
-    const poser = () => { document.body.style.paddingBottom = `${bande.offsetHeight}px`; };
+    // --bande-temoins laisse les barres fixes d'une page (barre d'achat de
+    // /vata) se poser au-dessus de la bande au lieu d'être cachées dessous.
+    const poser = () => {
+      document.body.style.paddingBottom = `${bande.offsetHeight}px`;
+      document.documentElement.style.setProperty('--bande-temoins', `${bande.offsetHeight}px`);
+    };
     poser();
     const obs = new ResizeObserver(poser);
     obs.observe(bande);
@@ -78,6 +83,7 @@ const ConsentBanner: React.FC = () => {
       obs.disconnect();
       window.removeEventListener('resize', poser);
       document.body.style.paddingBottom = '';
+      document.documentElement.style.removeProperty('--bande-temoins');
     };
   }, [choice, lang]);
 
