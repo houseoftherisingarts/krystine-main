@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-04T23:54:39.254Z",
+  "generatedAt": "2026-10-04T23:55:56.960Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1554,6 +1554,13 @@
       "folder": "infolettre",
       "kind": "image",
       "size": 85362
+    },
+    {
+      "path": "/infolettre/signature-krystine-sceau.png",
+      "name": "signature-krystine-sceau.png",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 120751
     },
     {
       "path": "/infolettre/signature-krystine.png",

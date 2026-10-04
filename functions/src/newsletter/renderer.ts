@@ -8,7 +8,7 @@
 
 import { PUBLIC_BASE_URL } from './mail';
 
-export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer' | 'list' | 'choix' | 'carnet' | 'note' | 'univers';
+export type BlockType = 'heading' | 'paragraph' | 'image' | 'button' | 'divider' | 'quote' | 'cta' | 'spacer' | 'list' | 'choix' | 'carnet' | 'note' | 'univers' | 'sticker';
 
 export interface NewsletterBlock {
   type: BlockType;
@@ -167,8 +167,11 @@ function recadre(url: string, w: number, h: number): string {
   return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${w}&h=${h}&fit=cover&a=attention&output=jpg&q=82`;
 }
 // Les quatre images d'un kaléidoscope : la première est l'image du bloc, les trois autres vivent dans `images`.
+// De 1 à 4 cases (nbCases), en carrés ou en bannière (dispo 'bande') : miroir
+// du composeur (Krystine, 4 oct. 2026).
 function imagesKaleidoscope(c: any): string[] {
-  return [0, 1, 2, 3]
+  const n = Number(c.nbCases) >= 1 && Number(c.nbCases) <= 4 ? Number(c.nbCases) : 4;
+  return [0, 1, 2, 3].slice(0, n)
     .map(i => (i === 0 ? c.url : Array.isArray(c.images) ? c.images[i] : '') || '')
     .filter((u: string) => /^https?:\/\//.test(u));
 }
@@ -281,10 +284,16 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       if (fmt === 'kaleidoscope') {
         const imgs = imagesKaleidoscope(c);
         if (!imgs.length) return '';
-        const cell = (u: string, gauche: boolean) => `<td width="50%" valign="top" style="width:50%;padding:0 ${gauche ? 6 : 0}px 12px ${gauche ? 0 : 6}px;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;"><img src="${esc(recadre(u, 500, 500))}" alt="${esc(c.alt || '')}" width="254" style="display:block;width:100%;max-width:254px;height:auto;border-radius:12px;border:0;" /></a></td>`;
+        const bande = c.dispo === 'bande';
+        const k = imgs.length;
+        const parRang = bande || k <= 3 ? k : 2;
+        const ecart = bande ? 6 : 12;
+        const largeur = Math.floor((520 - (parRang - 1) * ecart) / parRang);
+        const haut = bande ? 174 : (k === 1 ? 390 : largeur);
+        const cell = (u: string, j: number) => `<td width="${Math.round(100 / parRang)}%" valign="top" style="width:${Math.round(100 / parRang)}%;padding:0 ${j < parRang - 1 ? ecart : 0}px ${bande ? 0 : 12}px 0;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;"><img src="${esc(recadre(u, largeur * 2, haut * 2))}" alt="${esc(c.alt || '')}" width="${largeur}" style="display:block;width:100%;max-width:${largeur}px;height:auto;border-radius:${bande ? 6 : 12}px;border:0;" /></a></td>`;
         let rangs = '';
-        for (let i = 0; i < imgs.length; i += 2) rangs += `<tr>${cell(imgs[i], true)}${imgs[i + 1] ? cell(imgs[i + 1], false) : '<td width="50%" style="width:50%;"></td>'}</tr>`;
-        return enCarte(`<tr><td align="center" style="padding:10px 0 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">${rangs}</table></td></tr>${caption}`);
+        for (let i = 0; i < k; i += parRang) rangs += `<tr>${imgs.slice(i, i + parRang).map((u, j) => cell(u, j)).join('')}</tr>`;
+        return enCarte(`<tr><td align="center" style="padding:10px 0 ${bande ? 12 : 0}px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">${rangs}</table></td></tr>${caption}`);
       }
       if (!c.url) return '';
       const px = FORMATS_IMAGE[fmt].px;
@@ -293,13 +302,15 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
     }
     case 'button': {
       const primary = c.variant !== 'secondary';
+      // Le bouton principal a du punch (Krystine, 4 oct. 2026) : encre presque
+      // noire, texte ivoire, coins nets et filet cuivre, avec une flèche.
       const style = primary
-        ? `background:${CHARTE.gold};color:${CHARTE.night};`
+        ? `background:#1c1712;color:#f4efe6;border-bottom:3px solid #BA7B39;`
         : `border:1px solid ${CHARTE.gold};color:${pal.accent};`;
       // Centré, comme dans l'aperçu de l'admin (Krystine, 4 oct. 2026).
       const aligne = c.align === 'left' ? 'left' : 'center';
       return `<tr><td align="${aligne}" style="padding:6px 0 22px;text-align:${aligne};">
-        <a href="${esc(c.href || '#')}" target="_blank" style="display:inline-block;padding:15px 28px;border-radius:999px;font-family:${CHARTE.sans};font-size:${t(12)}px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;${style}">${esc(c.label || 'En savoir plus')}</a>
+        <a href="${esc(c.href || '#')}" target="_blank" style="display:inline-block;padding:${primary ? '19px 38px 17px' : '15px 28px'};border-radius:${primary ? '3px' : '999px'};font-family:${CHARTE.sans};font-size:${t(primary ? 13 : 12)}px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;text-decoration:none;${style}">${esc(c.label || 'En savoir plus')}${primary ? '&nbsp;&nbsp;&rarr;' : ''}</a>
       </td></tr>`;
     }
     case 'divider': {
@@ -326,6 +337,24 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
           <td valign="top" style="padding:0 0 8px;font-family:${police};font-size:${px}px;line-height:1.6;color:${pal.ink};">${personalize(richToHtml(l, pal.accent), firstName)}</td>
         </tr>`).join('');
       return `<tr><td style="padding:0 0 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table></td></tr>`;
+    }
+    case 'sticker': {
+      // Le « bumper sticker » (Krystine, 4 oct. 2026) : la phrase-choc de la
+      // lettre sur une carte vert profond arrondie, filet cuivre, et sa vraie
+      // signature dorée en dessous.
+      const sig = c.signature === false ? '' : `<img src="${PUBLIC_BASE_URL}/infolettre/signature-krystine-sceau.png" alt="Krystine St-Laurent" width="150" style="display:block;width:150px;max-width:150px;height:auto;border:0;margin:14px auto 0;" />`;
+      return `<tr><td style="padding:18px 14px 28px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+          <td bgcolor="#28352F" style="background:#28352F;border-radius:22px;padding:10px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+              <td align="center" style="border:1px solid rgba(186,123,57,0.75);border-radius:15px;padding:30px 26px 24px;text-align:center;font-family:${CHARTE.serif};font-size:${t(28)}px;line-height:1.3;color:#EEE7DB;">
+                ${esc(c.text || '')}
+                ${sig}
+              </td>
+            </tr></table>
+          </td>
+        </tr></table>
+      </td></tr>`;
     }
     case 'quote':
       // La citation, carte vert profond resserrée, filet cuivre intérieur et
@@ -571,6 +600,7 @@ function rendreTexte(blocks: NewsletterBlock[], opts: RenderEmailOptions): strin
       case 'heading':
       case 'paragraph':
       case 'quote':
+      case 'sticker':
         if (c.text) lines.push(personalize(stripRich(c.text), opts.firstName));
         break;
       case 'button':

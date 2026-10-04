@@ -42,6 +42,7 @@ const BLOCK_PALETTE: Array<{ type: BlockType; icon: string; label: string; templ
   { type: 'button',   icon: 'fa-hand-pointer',label: 'Bouton',     template: () => ({ type: 'button',    content: { label: 'Découvrir', href: 'https://www.krystinestlaurent.ca', variant: 'primary' } }) },
   { type: 'list',     icon: 'fa-list-ul',     label: 'Puces',      template: () => ({ type: 'list',      content: { text: '', style: 'puce' } }) },
   { type: 'quote',    icon: 'fa-quote-left',  label: 'Citation',   template: () => ({ type: 'quote',     content: { text: '', attribution: '' } }) },
+  { type: 'sticker',  icon: 'fa-certificate', label: 'Bumper sticker', template: () => ({ type: 'sticker', content: { text: '', signature: true } }) },
   { type: 'cta',      icon: 'fa-star',        label: 'Appel fort', template: () => ({ type: 'cta',       content: { eyebrow: 'Nouveauté', title: '', body: '', href: 'https://www.krystinestlaurent.ca', buttonLabel: 'En savoir plus' } }) },
   { type: 'divider',  icon: 'fa-minus',       label: 'Séparateur', template: () => ({ type: 'divider',   content: { style: 'ligne' } }) },
   { type: 'spacer',   icon: 'fa-arrows-up-down', label: 'Espace', template: () => ({ type: 'spacer',    content: { size: 'md' } }) },
@@ -1037,6 +1038,17 @@ const BlockFrame: React.FC<{
               <select value={formatImage(c.largeur)} onChange={e => onPatch({ largeur: e.target.value })} className={selectClass} title="Format de l'image dans la lettre">
                 {Object.entries(FORMATS_IMAGE).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
               </select>
+              {formatImage(c.largeur) === 'kaleidoscope' && (
+                <>
+                  <select value={String(Number(c.nbCases) >= 1 && Number(c.nbCases) <= 4 ? c.nbCases : 4)} onChange={e => onPatch({ nbCases: Number(e.target.value) })} className={selectClass} title="Combien d'images">
+                    {[1, 2, 3, 4].map(n => <option key={n} value={n}>{n} image{n > 1 ? 's' : ''}</option>)}
+                  </select>
+                  <select value={c.dispo === 'bande' ? 'bande' : 'carres'} onChange={e => onPatch({ dispo: e.target.value })} className={selectClass} title="Disposition des images">
+                    <option value="carres">En carrés</option>
+                    <option value="bande">En bannière</option>
+                  </select>
+                </>
+              )}
               <select value={c.fondImage || ''} onChange={e => onPatch({ fondImage: e.target.value || null })} className={selectClass} title="Fond de couleur derrière l'image, pris dans votre palette">
                 <option value="">Sans fond</option>
                 {FONDS_INFOLETTRE.filter(f => f.hex !== '#FFFFFF').map(f => <option key={f.hex} value={f.hex}>Fond : {f.label}</option>)}

@@ -48,7 +48,7 @@ export const FORMATS_IMAGE: Record<string, { label: string; px: number }> = {
   banniere: { label: 'Bannière', px: 520 },
   grande: { label: 'Grande image', px: 520 },
   moyenne: { label: 'Moyenne image', px: 340 },
-  kaleidoscope: { label: 'Kaléidoscope (4 images)', px: 520 },
+  kaleidoscope: { label: 'Kaléidoscope (1 à 4 images)', px: 520 },
 };
 const ANCIENS_FORMATS: Record<string, string> = { pleine: 'grande', petite: 'moyenne' };
 export function formatImage(v: unknown): string {
@@ -61,6 +61,18 @@ export function recadre(url: string, w: number, h: number): string {
 // Les quatre cases d'un kaléidoscope : la première est l'image du bloc, les trois autres vivent dans `images`.
 export function casesKaleidoscope(c: any): string[] {
   return [0, 1, 2, 3].map(i => (i === 0 ? c.url : Array.isArray(c.images) ? c.images[i] : '') || '');
+}
+// Combien de cases et comment elles se posent (Krystine, 4 oct. 2026) : de 1 à
+// 4 images, en carrés (2 par rangée, 3 côte à côte) ou en bannière (une seule
+// bande large, toutes les images côte à côte).
+export function nbKaleidoscope(c: any): number {
+  const n = Number(c.nbCases);
+  return n >= 1 && n <= 4 ? n : 4;
+}
+export function grilleKaleidoscope(n: number, bande: boolean): number[][] {
+  const idx = Array.from({ length: n }, (_, i) => i);
+  if (bande || n <= 3) return [idx];
+  return [idx.slice(0, 2), idx.slice(2)];
 }
 
 export const TAILLES: Record<Taille, { label: string; px: number; tw: string }> = {
@@ -299,18 +311,41 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
       const survol = <span className="absolute inset-0 flex items-center justify-center bg-[#3A251E]/0 group-hover/img:bg-[#3A251E]/40 transition-colors"><span className="opacity-0 group-hover/img:opacity-100 transition-opacity bg-white text-[#3A251E] px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest shadow-lg"><i className="fa-solid fa-images mr-2" />Changer</span></span>;
       if (fmt === 'kaleidoscope') {
         const cases = casesKaleidoscope(c);
+        const n = nbKaleidoscope(c);
+        const bande = c.dispo === 'bande';
+        const rangs = grilleKaleidoscope(n, bande);
+        const forme = bande ? (n === 1 ? 'aspect-[3/1]' : n === 2 ? 'aspect-[3/2]' : n === 3 ? 'aspect-square' : 'aspect-[3/4]') : (n === 1 ? 'aspect-[4/3]' : 'aspect-square');
+        const retirer = (i: number) => {
+          if (i === 0) edit?.set({ url: '' });
+          else { const images = [...((c.images as string[]) || ['', '', '', ''])]; images[i] = ''; edit?.set({ images }); }
+        };
         return (
           <figure className="my-6 mx-auto" style={{ maxWidth: fondImg ? px + 40 : px, ...carte }}>
-            <div className="grid grid-cols-2 gap-3">
-              {cases.map((u, i) => edit ? (
-                <button key={i} type="button" onClick={e => { e.stopPropagation(); edit.pickImage(i); }} title={`Image ${i + 1}`}
-                  className="group/img relative block w-full rounded-xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#BA7B39]">
-                  {u ? <img src={u} alt={c.alt || ''} className="w-full aspect-square object-cover block" /> : vide(`Image ${i + 1}`, true)}
-                  {survol}
-                </button>
-              ) : u ? (
-                <a key={i} href={lien} target="_blank" rel="noopener noreferrer" className="block"><img src={u} alt={c.alt || ''} className="w-full aspect-square object-cover rounded-xl" /></a>
-              ) : null)}
+            <div className={`flex flex-col ${bande ? 'gap-1.5' : 'gap-3'}`}>
+              {rangs.map((rang, r) => (
+                <div key={r} className={`grid ${bande ? 'gap-1.5' : 'gap-3'}`} style={{ gridTemplateColumns: `repeat(${rang.length}, minmax(0, 1fr))` }}>
+                  {rang.map(i => {
+                    const u = cases[i];
+                    return edit ? (
+                      <div key={i} className="relative">
+                        <button type="button" onClick={e => { e.stopPropagation(); edit.pickImage(i); }} title={`Image ${i + 1}`}
+                          className={`group/img relative block w-full ${bande ? 'rounded-md' : 'rounded-xl'} overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#BA7B39]`}>
+                          {u ? <img src={u} alt={c.alt || ''} className={`w-full ${forme} object-cover block`} /> : <div className={forme}>{vide(`Image ${i + 1}`, true)}</div>}
+                          {survol}
+                        </button>
+                        {u && (
+                          <button type="button" onClick={e => { e.stopPropagation(); retirer(i); }} title="Retirer cette image" aria-label="Retirer cette image"
+                            className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-[#141311]/80 text-white text-sm leading-none flex items-center justify-center hover:bg-[#B8532F] shadow">
+                            <i className="fa-solid fa-xmark" />
+                          </button>
+                        )}
+                      </div>
+                    ) : u ? (
+                      <a key={i} href={lien} target="_blank" rel="noopener noreferrer" className="block"><img src={u} alt={c.alt || ''} className={`w-full ${forme} object-cover ${bande ? 'rounded-md' : 'rounded-xl'}`} /></a>
+                    ) : null;
+                  })}
+                </div>
+              ))}
             </div>
             {edit
               ? <Inline tag="figcaption" className={capClass} value={c.caption || ''} placeholder="Légende (facultative)" onCommit={set('caption')} />
@@ -342,7 +377,7 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
       const primary = c.variant !== 'secondary';
       const className = `inline-block px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-md transition-colors ${
         primary
-          ? 'bg-[#3A251E] text-white hover:bg-[#B8532F] hover:text-[#3A251E]'
+          ? 'bg-[#1c1712] text-[#f4efe6] !rounded-[3px] border-b-[3px] border-[#BA7B39] !px-10 !py-4 after:content-[\'→\'] after:ml-3 hover:bg-[#28352F]'
           : 'border border-[#3A251E]/20 text-[#3A251E] dark:text-white hover:border-[#B8532F] hover:text-[#B8532F]'
       }`;
       if (edit) return <div className="my-6 text-center"><Inline className={className} value={c.label || ''} placeholder="Texte du bouton" onCommit={set('label')} /></div>;
@@ -379,6 +414,17 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
         <Tag className={`my-4 pl-6 space-y-1 ${numero ? 'list-decimal' : 'list-disc'} marker:text-[#B8532F]`} style={{ fontFamily: police.css }}>
           {items.filter(l => l.trim()).map((l, i) => <li key={i} className={cls} dangerouslySetInnerHTML={{ __html: richToHtml(l) }} />)}
         </Tag>
+      );
+    }
+    case 'sticker': {
+      const signe = c.signature !== false;
+      return (
+        <div className="my-8 mx-2 rounded-[22px] bg-[#28352F] p-[10px]">
+          <div className="rounded-[15px] border border-[#BA7B39]/75 px-6 pt-8 pb-6 text-center font-serif text-[1.75rem] leading-[1.3] text-[#EEE7DB]">
+            {edit ? <Inline value={c.text || ''} placeholder="La phrase-choc" multiline onCommit={set('text')} /> : (c.text || '')}
+            {signe && <img src="/infolettre/signature-krystine-sceau.png" alt="Krystine St-Laurent" className="mx-auto mt-4 w-[150px]" />}
+          </div>
+        </div>
       );
     }
     case 'quote': {
@@ -550,11 +596,17 @@ function blockToEmail(block: NewsletterBlock, firstName?: string): string {
         : '';
       const fmt = formatImage(c.largeur);
       if (fmt === 'kaleidoscope') {
-        const imgs = casesKaleidoscope(c).filter(u => /^https?:\/\//.test(u));
+        const n = nbKaleidoscope(c);
+        const imgs = casesKaleidoscope(c).slice(0, n).filter(u => /^https?:\/\//.test(u));
         if (!imgs.length) return '';
-        const cell = (u: string, gauche: boolean) => `<td width="50%" valign="top" style="padding:0 ${gauche ? 6 : 0}px 12px ${gauche ? 0 : 6}px;"><img src="${esc(recadre(u, 500, 500))}" alt="${esc(c.alt || '')}" width="254" style="display:block;width:100%;max-width:254px;border-radius:12px;" /></td>`;
+        const bande = c.dispo === 'bande';
+        const k = imgs.length;
+        const parRang = bande || k <= 3 ? k : 2;
+        const largeur = Math.floor((520 - (parRang - 1) * (bande ? 6 : 12)) / parRang);
+        const haut = bande ? 174 : (k === 1 ? 390 : largeur);
+        const cell = (u: string, j: number) => `<td width="${Math.round(100 / parRang)}%" valign="top" style="padding:0 ${j < parRang - 1 ? (bande ? 6 : 12) : 0}px ${bande ? 0 : 12}px 0;"><img src="${esc(recadre(u, largeur * 2, haut * 2))}" alt="${esc(c.alt || '')}" width="${largeur}" style="display:block;width:100%;max-width:${largeur}px;border-radius:${bande ? 6 : 12}px;" /></td>`;
         let rangs = '';
-        for (let i = 0; i < imgs.length; i += 2) rangs += `<tr>${cell(imgs[i], true)}${imgs[i + 1] ? cell(imgs[i + 1], false) : '<td width="50%"></td>'}</tr>`;
+        for (let i = 0; i < k; i += parRang) rangs += `<tr>${imgs.slice(i, i + parRang).map((u, j) => cell(u, j)).join('')}</tr>`;
         return `<tr><td align="center" style="padding:16px 0 4px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">${rangs}</table></td></tr>${caption}`;
       }
       if (!c.url) return '';
@@ -578,6 +630,24 @@ function blockToEmail(block: NewsletterBlock, firstName?: string): string {
     }
     case 'divider':
       return `<tr><td style="padding:16px 0;"><div style="height:1px;background:linear-gradient(90deg,transparent,${BRAND.gold},transparent);"></div></td></tr>`;
+    case 'sticker': {
+      // Le « bumper sticker » (Krystine, 4 oct. 2026) : la phrase-choc de la
+      // lettre sur une carte vert profond arrondie, filet cuivre, et sa vraie
+      // signature dorée en dessous.
+      const sig = c.signature === false ? '' : `<img src="https://www.krystinestlaurent.ca/infolettre/signature-krystine-sceau.png" alt="Krystine St-Laurent" width="150" style="display:block;width:150px;max-width:150px;height:auto;border:0;margin:14px auto 0;" />`;
+      return `<tr><td style="padding:18px 14px 28px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+          <td bgcolor="#28352F" style="background:#28352F;border-radius:22px;padding:10px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+              <td align="center" style="border:1px solid rgba(186,123,57,0.75);border-radius:15px;padding:30px 26px 24px;text-align:center;font-family:${BRAND.serif};font-size:26px;line-height:1.3;color:#EEE7DB;">
+                ${esc(c.text || '')}
+                ${sig}
+              </td>
+            </tr></table>
+          </td>
+        </tr></table>
+      </td></tr>`;
+    }
     case 'quote':
       return `<tr><td style="padding:20px 0;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
