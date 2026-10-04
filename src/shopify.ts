@@ -66,7 +66,7 @@ interface ProductsResponse {
 // Cache products in localStorage for fast repeat visits. Stale-while-revalidate:
 // we return the cached payload immediately (if fresh) and still refire the
 // network request in the background so the next mount has up-to-date data.
-const PRODUCTS_CACHE_KEY = 'inspirata.shopify.products.v1';
+const PRODUCTS_CACHE_KEY = 'inspirata.shopify.products.v1-v2';
 const PRODUCTS_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
 
 interface ProductsCache {
@@ -102,10 +102,12 @@ export function invalidateProductsCache() {
 // formats cabine de 500 ml réservés aux massothérapeutes (étiquette B2B,
 // « revente interdite ») et les ensembles, à repenser avant d'y revenir.
 const ETIQUETTES_CACHEES = ['b2b', 'btob500massagetherapy', 'bundle', 'wholesale'];
-export const estPublic = (p: { handle: string; title: string; tags: string[] }) =>
-  !p.tags.some((t) => ETIQUETTES_CACHEES.includes(t.toLowerCase()))
-  && !/cabine/i.test(p.title)
-  && !p.handle.startsWith('bap-');
+export // Tolère une vieille copie du catalogue gardée par le navigateur (champs
+// manquants) : sinon la boutique affichait « revient bientôt » (4 oct. 2026).
+const estPublic = (p: { handle?: string; title?: string; tags?: string[] | null }) =>
+  !(p.tags || []).some((t) => ETIQUETTES_CACHEES.includes(String(t).toLowerCase()))
+  && !/cabine/i.test(p.title || '')
+  && !String(p.handle || '').startsWith('bap-');
 
 async function fetchProducts(first: number, lang: 'FR' | 'EN'): Promise<ShopifyProduct[]> {
   // Prix en dollars canadiens pour toutes, même en anglais (Krystine, 4 oct. 2026).
