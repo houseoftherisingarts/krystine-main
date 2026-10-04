@@ -5843,5 +5843,19 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-04T12:26:05.053Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "abeef14d",
+    "message": "Boutique : les formats cabine de 500 ml et les ensembles ne s'affichent plus sur le site; prix en dollars canadiens pour toutes, même en anglais (/boutique)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/shopify.ts"
+    ]
   }
 ]
