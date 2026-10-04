@@ -534,7 +534,9 @@ const BlocSuite: React.FC<{
   occupe: boolean;
   onInscrire: () => void;
   onRefuser: () => void;
-}> = ({ etat, dosha, prete, occupe, onInscrire, onRefuser }) => {
+  onReabonner: () => void;
+}> = ({ etat, dosha, prete, occupe, onInscrire, onRefuser, onReabonner }) => {
+  const [retour, setRetour] = useState(false);
   const lien = 'text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/60 border-b border-[#1c1712]/30 pb-1 transition-colors hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px] disabled:opacity-50';
   let corps: React.ReactNode;
   if (etat === 'offre') {
@@ -568,7 +570,26 @@ const BlocSuite: React.FC<{
   } else if (etat === 'refusee') {
     corps = <p className="text-[0.95rem] leading-relaxed text-[#3a2f23]">C’est noté : la suite ne vous sera pas envoyée. Vous restez abonnée à nos lettres.</p>;
   } else if (etat === 'desabonnee') {
-    corps = <p className="text-[0.95rem] leading-relaxed text-[#3a2f23]">Votre adresse est désabonnée de nos lettres. Pour les recevoir de nouveau, écrivez-nous à teamksl@inspiratanature.com.</p>;
+    // Elle se réinscrit elle-même, d'une case (Krystine, 4 oct. 2026).
+    corps = (
+      <>
+        <p className="text-[0.95rem] leading-relaxed text-[#3a2f23]">Votre adresse ne reçoit plus nos lettres pour le moment.</p>
+        <label className="mt-5 flex items-start gap-3 text-left cursor-pointer min-h-[44px]">
+          <input type="checkbox" checked={retour} onChange={(e) => setRetour(e.target.checked)} className="mt-1 h-5 w-5 shrink-0 accent-[#4E6349]" />
+          <span className="text-[0.9rem] leading-relaxed text-[#3a2f23]">Je souhaite recevoir de nouveau les lettres de Krystine St-Laurent, avec la suite de ma lecture. Je peux me désabonner à tout moment.</span>
+        </label>
+        <button
+          type="button"
+          onClick={onReabonner}
+          disabled={!retour || occupe}
+          className="mt-5 w-full inline-flex items-center justify-center gap-3 bg-[#1c1712] px-8 py-4 text-[0.7rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] disabled:opacity-40 min-h-[44px]"
+        >
+          {occupe ? 'Un instant…' : <>Me réinscrire <ArrowRight size={15} weight="regular" /></>}
+        </button>
+      </>
+    );
+  } else if (etat === 'confirmation') {
+    corps = <p className="text-[0.95rem] leading-relaxed text-[#3a2f23]">Un courriel de confirmation vient de partir à votre adresse. Cliquez sur « Confirmer mon retour » et vos lettres reprennent, avec la suite de votre lecture.</p>;
   } else {
     corps = <p className="v2-serif font-light text-[clamp(1.15rem,1.9vw,1.4rem)] leading-snug text-[#1c1712]">{NOTE_SUITE(dosha, prete)}</p>;
   }
@@ -685,12 +706,12 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   // et sa suite », rien si elle a choisi seulement son résultat.
   const [suite, setSuite] = useState<null | { etat: EtatSuite | 'envoyee'; dosha: DoshaType; prete: boolean }>(null);
   const [suiteOccupe, setSuiteOccupe] = useState(false);
-  const agirSuite = async (action: 'inscrire' | 'refuser') => {
+  const agirSuite = async (action: 'inscrire' | 'refuser' | 'reabonner') => {
     setSuiteOccupe(true);
     try {
       const r = await suiteQuiz(action);
       setSuite(r);
-      if (action === 'inscrire' && r.etat === 'inscrite') {
+      if ((action === 'inscrire' || action === 'reabonner') && r.etat === 'inscrite') {
         trackLead('quiz');
         if (user) { try { await points.newsletterSigned(user.uid, 'quiz'); } catch { /* non-fatal */ } }
       }
@@ -871,6 +892,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                   occupe={suiteOccupe}
                   onInscrire={() => agirSuite('inscrire')}
                   onRefuser={() => agirSuite('refuser')}
+                  onReabonner={() => agirSuite('reabonner')}
                 />
               )}
             </div>

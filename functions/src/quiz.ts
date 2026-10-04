@@ -35,6 +35,29 @@ async function ficheActive(email: string) {
   return snap.docs.find(x => x.get('status') === 'active') || null;
 }
 
+/** Réinscription choisie par la personne elle-même (Krystine, 4 oct. 2026 :
+ *  « on ne veut pas traiter cela à la main »). Appelée seulement lorsque la
+ *  propriété de l'adresse est prouvée : un clic dans un courriel envoyé à
+ *  cette adresse, ou un compte dont l'adresse est vérifiée. Les fiches
+ *  désabonnées redeviennent actives; une adresse rebondie ou en quarantaine
+ *  ne se réactive jamais d'ici. */
+async function reactiver(email: string, source: string): Promise<{ id: string; status: string } | null> {
+  const snap = await getFirestore().collection('newsletter').where('email', '==', email).limit(10).get();
+  const desabonnees = snap.docs.filter(x => x.get('status') === 'unsubscribed');
+  if (!desabonnees.length) return null;
+  for (const x of desabonnees) {
+    await x.ref.update({
+      status: 'active',
+      consentement: true,
+      reabonneeLe: FieldValue.serverTimestamp(),
+      reabonneePar: source,
+      statusAvantReabonnement: 'unsubscribed',
+    });
+  }
+  console.log(`[quiz] réinscrite d'elle-même · ${source} · ${desabonnees.length} fiche(s)`);
+  return { id: desabonnees[0].id, status: 'active' };
+}
+
 /** « Je préfère ne pas recevoir la suite » : retire seulement l'étiquette de
  *  suite (la séquence s'arrête d'elle-même, raison etiquette-retiree), jamais
  *  l'abonnement, et note le refus pour qu'un prochain quiz ne la remette pas. */
@@ -217,7 +240,10 @@ export const suiteLecture = onRequest(
               consentement: true,
               lang: snap.get('lang'),
             });
-            try { await poserSuite(ins, dosha); } catch (e) { console.error('[suiteLecture] étiquette de suite', e); }
+            // Le clic vient d'un courriel envoyé à cette adresse : c'est elle,
+            // et c'est son choix. Une adresse désabonnée se réinscrit ici.
+            const finale = ins.status === 'active' ? ins : (await reactiver(String(snap.get('email') || ''), 'quiz-courriel')) || ins;
+            try { await poserSuite(finale, dosha); } catch (e) { console.error('[suiteLecture] étiquette de suite', e); }
             await ref.update({ utiliseLe: FieldValue.serverTimestamp() });
             console.log(`[suiteLecture] inscrite · ${dosha}`);
           }
@@ -242,7 +268,7 @@ export const suiteLecture = onRequest(
 //              explicite) → fiche inscrite/activée, source quiz-suite, puis l'étiquette.
 //   refuser  : « Je préfère ne pas recevoir la suite » → l'étiquette seule part.
 export const suiteQuiz = onCall(
-  { region: 'us-central1', maxInstances: 10 },
+  { region: 'us-central1', maxInstances: 10, secrets: [...MAIL_SECRETS] },
   async (req) => {
     if (!req.auth?.uid) throw new HttpsError('unauthenticated', 'Connectez-vous pour recevoir la suite.');
     const email = String(req.auth.token.email || '').trim().toLowerCase();
@@ -265,6 +291,35 @@ export const suiteQuiz = onCall(
     if (action === 'refuser') {
       await retirerSuite(email, d1);
       return { ...base, etat: 'refusee' };
+    }
+
+    // La case « Je souhaite recevoir de nouveau les lettres » cochée par une
+    // personne désabonnée. Compte à l'adresse vérifiée (Google ou adresse
+    // confirmée) : réinscrite tout de suite. Sinon, un courriel de
+    // confirmation part à l'adresse et son lien fait la réinscription
+    // (suiteLecture) : personne ne peut réabonner l'adresse d'une autre.
+    if (action === 'reabonner') {
+      if (req.auth.token.email_verified === true) {
+        const ins = await reactiver(email, 'quiz-compte');
+        if (!ins) return { ...base, etat: 'desabonnee' };
+        await poserSuite(ins, d1);
+        return { ...base, etat: 'inscrite' };
+      }
+      const k = crypto.randomBytes(24).toString('base64url');
+      await getFirestore().doc(`quizSuite/${k}`).set({
+        email, prenom: String(req.auth.token.name || '').trim().split(/\s+/)[0] || '', dosha: d1,
+        etiquettes: profil.etiquettes, creeLe: FieldValue.serverTimestamp(), lang: 'fr', reabonnement: true,
+      });
+      const lien = `${PUBLIC_BASE_URL}/suite-lecture?k=${k}`;
+      await createTransporter().sendMail({
+        replyTo: REPLY_TO,
+        from: fromAddr(),
+        to: email,
+        subject: 'Confirmer votre retour aux lettres',
+        text: `Bonjour,\n\nVous avez demandé à recevoir de nouveau les lettres de Krystine St-Laurent, avec la suite de votre lecture.\n\nPour confirmer, cliquez ici : ${lien}\n\nSi vous n'avez rien demandé, ignorez simplement ce courriel : rien ne changera.\n\nL'équipe`,
+        html: `<div style="font-family:Georgia,serif;font-size:16px;line-height:1.6;color:#1c1712;max-width:520px"><p>Bonjour,</p><p>Vous avez demandé à recevoir de nouveau les lettres de Krystine St-Laurent, avec la suite de votre lecture.</p><p><a href="${lien}" style="display:inline-block;background:#1c1712;color:#f4efe6;padding:14px 26px;text-decoration:none;font-family:Arial,sans-serif;font-size:13px;letter-spacing:.12em;text-transform:uppercase">Confirmer mon retour</a></p><p>Si vous n'avez rien demandé, ignorez ce courriel : rien ne changera.</p><p>L'équipe</p></div>`,
+      });
+      return { ...base, etat: 'confirmation' };
     }
 
     if (action === 'inscrire') {
