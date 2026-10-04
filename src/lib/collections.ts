@@ -51,9 +51,9 @@ export const COLLECTIONS: CollectionManifest[] = [
     taglineFR: 'Les livres signés Krystine',
     taglineEN: 'Books signed by Krystine',
     storyFR:
-      "Nature & Ayurveda, Féminité & Ayurveda, La Cuisine Tonique — les ouvrages que Krystine tisse depuis plus de quinze ans. Des livres à lire lentement, en début de saison, pour laisser le propos infuser avant d'agir.",
+      "Nature & Ayurveda, Féminité & Ayurveda, La Cuisine Tonique : les ouvrages que Krystine tisse depuis plus de quinze ans. Des livres à lire lentement, en début de saison, pour laisser le propos infuser avant d'agir.",
     storyEN:
-      "Nature & Ayurveda, Femininity & Ayurveda, The Tonic Kitchen — the books Krystine has been weaving for more than fifteen years. Books to read slowly, at the turn of a season, letting the thought settle before acting.",
+      "Nature & Ayurveda, Femininity & Ayurveda, The Tonic Kitchen : the books Krystine has been weaving for more than fifteen years. Books to read slowly, at the turn of a season, letting the thought settle before acting.",
     bannerImage: ASSETS.livresBg,
     // Checked *before* body oils because book titles sometimes mention "Vata"
     // etc. (e.g. an oil-related chapter title) and we don't want those routed
@@ -68,9 +68,9 @@ export const COLLECTIONS: CollectionManifest[] = [
     taglineFR: 'Apaiser · Ancrer · Respirer',
     taglineEN: 'Soothe · Ground · Breathe',
     storyFR:
-      "La formule D-Stress et son roll-on nomade. Un rituel aromatique pour ralentir le tempo — au creux du poignet, derrière la nuque, quand le monde s'accélère.",
+      "La formule D-Stress et son roll-on nomade. Un rituel aromatique pour ralentir le tempo, au creux du poignet, derrière la nuque, quand le monde s'accélère.",
     storyEN:
-      "The D-Stress formula and its travel roll-on. An aromatic ritual to slow the tempo — at the wrist, behind the neck, when the world speeds up.",
+      "The D-Stress formula and its travel roll-on. An aromatic ritual to slow the tempo, at the wrist, behind the neck, when the world speeds up.",
     bannerImage: ASSETS.founderHover,
     match: p => productHas(p, ['d-stress', 'destress', 'd stress', 'roll on', 'roll-on', 'serenite']),
   },
@@ -102,9 +102,9 @@ export const COLLECTIONS: CollectionManifest[] = [
     taglineFR: 'Les gestes qui entourent la formule',
     taglineEN: 'The gestures that surround the formula',
     storyFR:
-      "Les objets qui accompagnent le soin — brosses, coupes, linges. Choisis pour durer, transmis de saison en saison, pensés pour devenir familiers sous la main.",
+      "Les objets qui accompagnent le soin : brosses, coupes, linges. Choisis pour durer, transmis de saison en saison, pensés pour devenir familiers sous la main.",
     storyEN:
-      "The objects that accompany care — brushes, cups, cloths. Chosen to last, passed from season to season, made to grow familiar under the hand.",
+      "The objects that accompany care : brushes, cups, cloths. Chosen to last, passed from season to season, made to grow familiar under the hand.",
     bannerImage: ASSETS.blogBg,
     match: p => productHas(p, ['rituel', 'ritual', 'accessoire', 'accessory', 'brosse', 'brush', 'cup', 'coupe']),
   },
@@ -116,9 +116,9 @@ export const COLLECTIONS: CollectionManifest[] = [
     taglineFR: 'Vata · Pitta · Kapha · Féminité · Sportive · Défripante',
     taglineEN: 'Vata · Pitta · Kapha · Feminine · Sport · Anti-fatigue',
     storyFR:
-      "Six huiles infusées à la main, chacune composée autour d'un dosha ou d'un moment de vie. Des plantes locales, une pression lente, une formulation signée Krystine — pensées pour se rappliquer à soi, matin après matin.",
+      "Six huiles infusées à la main, chacune composée autour d'un dosha ou d'un moment de vie. Des plantes locales, une pression lente, une formulation signée Krystine, pensées pour se rappliquer à soi, matin après matin.",
     storyEN:
-      "Six hand-infused oils, each composed around a dosha or a moment in life. Local plants, slow pressing, a formulation signed by Krystine — made to return to oneself, morning after morning.",
+      "Six hand-infused oils, each composed around a dosha or a moment in life. Local plants, slow pressing, a formulation signed by Krystine, made to return to oneself, morning after morning.",
     bannerImage: ASSETS.ayurvedaBg,
     // Intentionally the broadest body-oil predicate, placed last so that books
     // /candles / roll-ons aren't swallowed by a stray "vata" keyword.

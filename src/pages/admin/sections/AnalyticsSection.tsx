@@ -23,6 +23,8 @@ const AnalyticsSection: React.FC = () => {
   const [range, setRange] = useState('30');
   const [backfillBusy, setBackfillBusy] = useState(false);
   const [backfillMsg, setBackfillMsg] = useState<string | null>(null);
+  const [branchementBusy, setBranchementBusy] = useState(false);
+  const [branchement, setBranchement] = useState<string | null>(null);
 
   const refresh = () => getShopifyOrders(5000).then(setOrders).finally(() => setLoading(false));
   useEffect(() => { refresh(); }, []);
@@ -96,6 +98,30 @@ const AnalyticsSection: React.FC = () => {
     }
   };
 
+  // Crée chez Shopify, par l'app personnalisée, les avis de commande vers le
+  // site (payée, créée, mise à jour). Sans danger à relancer : ce qui existe
+  // déjà n'est pas recréé.
+  const brancherCommandes = async () => {
+    if (!app) { setBranchement('Firebase non configuré.'); return; }
+    setBranchementBusy(true);
+    setBranchement(null);
+    try {
+      type Res = { crees: string[]; erreurs: string[]; abonnements: { id: string; topic: string; versLeSite: boolean }[] };
+      const fn = httpsCallable<unknown, Res>(getFunctions(app), 'shopifyBrancherWebhooks');
+      const { data } = await fn({});
+      const branches = data.abonnements.filter(a => a.versLeSite).map(a => `${a.topic} (${a.id.split('/').pop()})`);
+      setBranchement([
+        data.crees.length ? `Créés maintenant : ${data.crees.join(', ')}.` : 'Rien à créer : tout était déjà branché.',
+        `Branchés vers le site : ${branches.length ? branches.join(', ') : 'aucun'}.`,
+        ...data.erreurs.map(e => `Erreur ${e}`),
+      ].join(' '));
+    } catch (e: any) {
+      setBranchement(e?.message || 'Branchement échoué.');
+    } finally {
+      setBranchementBusy(false);
+    }
+  };
+
   const kpis = [
     { label: 'Revenu', value: formatCurrency(revenue, currency), icon: 'fa-sack-dollar', accent: 'text-[#8B4A2F]' },
     { label: 'Commandes', value: count.toString(), icon: 'fa-box', accent: 'text-[#4A7C9D]' },
@@ -120,11 +146,18 @@ const AnalyticsSection: React.FC = () => {
             >{r.label}</button>
           ))}
         </div>
-        <GhostButton onClick={runBackfill} disabled={backfillBusy}>
-          <i className={`fa-solid ${backfillBusy ? 'fa-circle-notch fa-spin' : 'fa-cloud-arrow-down'}`} />
-          {backfillBusy ? 'Importation…' : 'Importer l\'historique'}
-        </GhostButton>
+        <div className="flex flex-wrap gap-2">
+          <GhostButton onClick={brancherCommandes} disabled={branchementBusy}>
+            <i className={`fa-solid ${branchementBusy ? 'fa-circle-notch fa-spin' : 'fa-plug'}`} />
+            {branchementBusy ? 'Branchement…' : 'Brancher les commandes Shopify'}
+          </GhostButton>
+          <GhostButton onClick={runBackfill} disabled={backfillBusy}>
+            <i className={`fa-solid ${backfillBusy ? 'fa-circle-notch fa-spin' : 'fa-cloud-arrow-down'}`} />
+            {backfillBusy ? 'Importation…' : 'Importer l\'historique'}
+          </GhostButton>
+        </div>
       </div>
+      {branchement && <p className="text-xs text-[#2D4A3E] dark:text-white/80 leading-relaxed">{branchement}</p>}
       {backfillMsg && <p className="text-xs text-[#8B4A2F] font-mono">{backfillMsg}</p>}
 
       {loading ? (

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import {
-  ShoppingBag, Leaf, Sparkle, Check, ArrowRight, ArrowDown, Drop, Plant,
+  ShoppingBag, Leaf, ArrowRight, ArrowDown, Drop, Plant,
 } from '@phosphor-icons/react';
 import { useApp, useBoutique } from '../contexts/AppContext';
 import {
@@ -15,7 +15,7 @@ import {
 import { useProduitsPerso, appliquerPerso, estVisible, trierSelonPerso } from '../firebase/boutiqueProduits';
 import { modeApercu } from '../lib/apercuBoutique';
 import NewsletterSignup from '../components/NewsletterSignup';
-import { Atmosphere } from '../components/motion/loeuvre';
+import { CaseProduit, CarteProduit, BoutonAjouter, GrilleProduits, taille } from '../components/v2/Produit';
 
 /**
  * La Boutique · V2 « magazine crème » (spec canonique krystine-v2-branding).
@@ -33,7 +33,6 @@ import { Atmosphere } from '../components/motion/loeuvre';
  */
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-const SPRING = { type: 'spring' as const, stiffness: 220, damping: 24, mass: 0.8 };
 
 /* ════════════════════════ Primitives V2 ════════════════════════ */
 
@@ -91,129 +90,6 @@ const PortraitParallax: React.FC<{ children: React.ReactNode; className?: string
   );
 };
 
-/* ════════════════════════ Carte produit ════════════════════════ */
-
-const cardVariants = (reduce: boolean) => ({
-  hidden: { opacity: 0, y: reduce ? 0 : 36 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE } },
-  hover: reduce ? {} : { y: -8, transition: SPRING },
-});
-
-const AddButton: React.FC<{
-  p: ShopifyProduct;
-  soldOut: boolean;
-  hasVariant: boolean;
-  isAdded: boolean;
-  lang: 'FR' | 'EN';
-  onAdd: (p: ShopifyProduct, e: React.MouseEvent) => void;
-}> = ({ p, soldOut, hasVariant, isAdded, lang, onAdd }) => {
-  if (soldOut || !hasVariant) {
-    return (
-      <button
-        disabled
-        className="inline-flex items-center gap-2 border border-[#1c1712]/20 px-5 py-3 text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/40 cursor-not-allowed min-h-[44px]"
-      >
-        {lang === 'FR' ? 'Indisponible' : 'Unavailable'}
-      </button>
-    );
-  }
-  return (
-    <button
-      onClick={e => onAdd(p, e)}
-      aria-label={`${lang === 'FR' ? 'Ajouter au panier' : 'Add to cart'} : ${p.title}`}
-      className={`inline-flex items-center gap-2.5 px-5 py-3 text-[0.66rem] uppercase tracking-[0.18em] transition-colors duration-300 min-h-[44px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9c7a44] ${
-        isAdded
-          ? 'bg-[#55602f] border border-[#55602f] text-[#f4efe6]'
-          : 'border border-[#1c1712] text-[#1c1712] hover:bg-[#1c1712] hover:text-[#f4efe6]'
-      }`}
-    >
-      {isAdded ? (
-        <><Check size={14} weight="regular" /> {lang === 'FR' ? 'Ajouté' : 'Added'}</>
-      ) : (
-        <><ShoppingBag size={14} weight="light" /> {lang === 'FR' ? 'Ajouter' : 'Add'}</>
-      )}
-    </button>
-  );
-};
-
-const SoldOutTab: React.FC<{ lang: string }> = ({ lang }) => (
-  <span className="absolute top-0 left-0 z-[2] bg-[#1c1712] text-[#f4efe6] px-3 py-1.5 text-[0.56rem] uppercase tracking-[0.24em]">
-    {lang === 'FR' ? 'Épuisé' : 'Sold out'}
-  </span>
-);
-
-const ProductCard: React.FC<{
-  p: ShopifyProduct;
-  index: number;
-  lang: 'FR' | 'EN';
-  added: string | null;
-  onAdd: (p: ShopifyProduct, e: React.MouseEvent) => void;
-}> = ({ p, index, lang, added, onAdd }) => {
-  const reduce = useReducedMotion() ?? false;
-  const variant = p.variants.find(v => v.availableForSale) || p.variants[0];
-  const soldOut = !p.availableForSale;
-  const price = variant
-    ? formatMoney(variant.price, lang)
-    : formatMoney(p.priceRange.minVariantPrice, lang);
-  const image = p.featuredImage?.url || p.images[0]?.url;
-  const isAdded = added === p.id;
-  const type = libelleEtiquette(p.productType, lang);
-  const fiche = `/boutique/produit/${p.handle}`;
-
-  return (
-    <motion.article
-      variants={cardVariants(reduce)}
-      initial="rest"
-      whileHover="hover"
-      className="group relative flex h-full flex-col bg-[#faf6ee] border border-[#9c7a44]/25 will-change-transform"
-    >
-      {/* Visuel + médaillon prix */}
-      <Link to={fiche} className="relative block" aria-label={p.title}>
-        <div className="relative aspect-[4/5] overflow-hidden bg-[#efe6d7]">
-          {image ? (
-            <img
-              src={image}
-              alt={p.featuredImage?.altText || p.title}
-              loading="lazy"
-              referrerPolicy="no-referrer"
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-            />
-          ) : (
-            <div className="absolute inset-0 grid place-items-center text-[#9c7a44]/40">
-              <ShoppingBag size={36} weight="light" />
-            </div>
-          )}
-          {soldOut && <SoldOutTab lang={lang} />}
-        </div>
-        <motion.span
-          variants={{ rest: { scale: 1, rotate: 0 }, hover: reduce ? {} : { scale: 1.09, rotate: -4 } }}
-          transition={SPRING}
-          className="absolute -bottom-6 right-5 z-[2] grid place-items-center w-[4.25rem] h-[4.25rem] rounded-full bg-[#9c7a44] text-[#faf6ee] v2-serif text-[0.95rem] leading-none shadow-[0_10px_26px_rgba(60,45,20,0.28)] will-change-transform"
-        >
-          {price}
-        </motion.span>
-      </Link>
-
-      {/* Méta */}
-      <div className="flex flex-col flex-1 p-6 pt-8">
-        <span className="text-[0.58rem] uppercase tracking-[0.26em] text-[#7d6330]">
-          {String(index).padStart(2, '0')}{type ? ` · ${type}` : ''}
-        </span>
-        <h3 className="mt-3 v2-serif font-light leading-[1.12] text-[1.5rem] text-[#1c1712]">
-          <Link to={fiche} className="hover:text-[#7d6330] transition-colors duration-300">{p.title}</Link>
-        </h3>
-        <span className="mt-5 block h-px w-10 bg-[#9c7a44]" aria-hidden />
-        <div className="mt-auto pt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
-          <AddButton p={p} soldOut={soldOut} hasVariant={!!variant} isAdded={isAdded} lang={lang} onAdd={onAdd} />
-          <Link to={fiche} className="text-[0.64rem] uppercase tracking-[0.2em] text-[#1c1712]/70 border-b border-[#1c1712]/30 pb-1 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">
-            {lang === 'FR' ? 'Voir le produit' : 'View product'}
-          </Link>
-        </div>
-      </div>
-    </motion.article>
-  );
-};
-
 /* ── Produit vedette · pleine largeur éditoriale ── */
 const FeaturedProduct: React.FC<{
   p: ShopifyProduct & { accroche?: string };
@@ -232,32 +108,14 @@ const FeaturedProduct: React.FC<{
   const fiche = `/boutique/produit/${p.handle}`;
 
   return (
-    <div className="grid lg:grid-cols-[0.9fr_1.1fr] bg-[#faf6ee] border border-[#9c7a44]/25">
-      <Link to={fiche} aria-label={p.title} className="relative block overflow-hidden aspect-[4/3] lg:aspect-auto lg:min-h-[440px] bg-[#efe6d7]">
-        {image ? (
-          <img
-            src={image}
-            alt={p.featuredImage?.altText || p.title}
-            loading="lazy"
-            referrerPolicy="no-referrer"
-            className="absolute inset-0 h-full w-full object-cover object-center"
-          />
-        ) : (
-          <div className="absolute inset-0 grid place-items-center text-[#9c7a44]/40">
-            <ShoppingBag size={44} weight="light" />
-          </div>
-        )}
-        {soldOut && <SoldOutTab lang={lang} />}
+    <div className="grid lg:grid-cols-[0.8fr_1.2fr] items-center bg-[#faf6ee] border border-[#9c7a44]/25">
+      <Link to={fiche} aria-label={p.title} className="group block p-[clamp(1rem,2vw,1.75rem)] pb-0 lg:pb-[clamp(1rem,2vw,1.75rem)]">
+        <CaseProduit src={image} alt={p.featuredImage?.altText || p.title} ratio="aspect-[4/5]" largeur={900} filet={false} etiquette={soldOut ? (lang === 'FR' ? 'Épuisé' : 'Sold out') : null} />
       </Link>
       <div className="flex flex-col justify-center p-[clamp(1.75rem,4vw,3.5rem)]">
-        <div className="flex items-center gap-3 mb-6">
-          <span className="inline-grid place-items-center w-11 h-11 rounded-full bg-[#9c7a44] text-[#faf6ee]">
-            <Sparkle size={20} weight="light" />
-          </span>
-          <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330]">
-            {lang === 'FR' ? 'En vedette' : 'Featured'}{type ? ` · ${type}` : ''}
-          </span>
-        </div>
+        <p className="mb-6 text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330]">
+          {lang === 'FR' ? 'En vedette' : 'Featured'}{type ? ` · ${type}` : ''}
+        </p>
         <h3 className="v2-serif font-light leading-[1.04] text-[#1c1712] text-[clamp(2rem,3.6vw,3.2rem)]">
           <Link to={fiche} className="hover:text-[#7d6330] transition-colors duration-300">{p.title}</Link>
         </h3>
@@ -266,7 +124,7 @@ const FeaturedProduct: React.FC<{
         )}
         <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
           <span className="v2-serif font-light text-[clamp(1.5rem,2.4vw,2rem)] text-[#7d6330] tabular-nums">{price}</span>
-          <AddButton p={p} soldOut={soldOut} hasVariant={!!variant} isAdded={isAdded} lang={lang} onAdd={onAdd} />
+          <BoutonAjouter disponible={!soldOut && !!variant} ajoute={isAdded} lang={lang} titre={p.title} onClick={e => onAdd(p, e)} long />
           <Link to={fiche} className="text-[0.66rem] uppercase tracking-[0.2em] text-[#1c1712]/70 border-b border-[#1c1712]/30 pb-1 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">
             {lang === 'FR' ? 'Voir le produit' : 'View product'}
           </Link>
@@ -334,7 +192,7 @@ const BoutiqueLoeuvre: React.FC = () => {
       price: formatMoney(variant.price, lang),
       priceAmount: variant.price.amount,
       priceCurrency: variant.price.currencyCode,
-      image: p.featuredImage?.url,
+      image: p.featuredImage?.url ? taille(p.featuredImage.url, 300) : undefined,
     });
     setCartOpen(true);
     setAdded(p.id);
@@ -573,17 +431,13 @@ const BoutiqueLoeuvre: React.FC = () => {
 
               {/* Grille des autres produits · cascade indexée */}
               {rest.length > 0 && (
-                <motion.div
-                  initial="hidden"
-                  whileInView="show"
-                  viewport={{ once: true, amount: 0.08 }}
-                  variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
-                  className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-stretch"
-                >
-                  {rest.map((p, idx) => (
-                    <ProductCard key={p.id} p={p} index={idx + 2} lang={lang} added={added} onAdd={handleAdd} />
+                <GrilleProduits>
+                  {rest.map(p => (
+                    <Reveal key={p.id} className="h-full">
+                      <CarteProduit p={p} lang={lang} ajoute={added === p.id} onAjouter={handleAdd} />
+                    </Reveal>
                   ))}
-                </motion.div>
+                </GrilleProduits>
               )}
 
               {/* Catalogue vide après filtrage (tout masqué / aucune donnée) */}
@@ -656,9 +510,7 @@ const BoutiqueLoeuvre: React.FC = () => {
                 }}
               >
                 <div className="flex items-center gap-4">
-                  <span className="inline-grid place-items-center w-12 h-12 rounded-full bg-[#9c7a44] text-[#faf6ee]">
-                    <Icon size={22} weight="light" />
-                  </span>
+                  <Icon size={30} weight="light" className="text-[#7d6330]" />
                   <span className="text-[0.62rem] uppercase tracking-[0.26em] text-[#7d6330]">
                     {String(i + 1).padStart(2, '0')}
                   </span>
@@ -677,10 +529,9 @@ const BoutiqueLoeuvre: React.FC = () => {
 
       {/* ─────────── MOMENT ÉDITORIAL · citation (unique section sombre, arêtes nettes) ─────────── */}
       <section className="relative w-full bg-[#34241a] overflow-hidden border-y border-[#9c7a44]/50">
-        <Atmosphere light="72% 18%" strength={0.9} />
         <div className="relative z-10 px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,9rem)]">
           <Reveal className="max-w-[900px] mx-auto text-center">
-            <Sparkle size={24} weight="light" className="text-[#c8a86a] mx-auto mb-7" />
+            <span className="mx-auto mb-8 block h-px w-12 bg-[#BA7B39]" aria-hidden />
             <p className="v2-serif font-light text-[clamp(1.6rem,3.6vw,2.8rem)] leading-[1.24] text-[#f4efe6]">
               {lang === 'FR'
                 ? '« Le corps sait. Chaque huile est une invitation à l’écouter, un geste à la fois. »'

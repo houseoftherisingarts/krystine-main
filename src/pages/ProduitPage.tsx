@@ -10,6 +10,7 @@ import { useProduitsPerso, appliquerPerso, estVisible } from '../firebase/boutiq
 import { htmlPropre } from '../lib/htmlPropre';
 import { lireAvis, type ResumeAvis } from '../lib/okendo';
 import { modeApercu, urlProduitHistorique } from '../lib/apercuBoutique';
+import { CaseProduit, taille } from '../components/v2/Produit';
 import { StyleV2, Kicker, Reveal, TitreChapitre, CarteVerte, BoutonCuivre, Filet, GOUTTIERE } from '../components/v2/Magazine';
 
 /**
@@ -21,9 +22,6 @@ import { StyleV2, Kicker, Reveal, TitreChapitre, CarteVerte, BoutonCuivre, Filet
 
 const QTE_MAX = 10;
 
-/** Les photos du CDN Shopify se demandent à la taille de leur case. */
-const taille = (url: string, w: number) =>
-  /cdn\.shopify\.com/.test(url) ? `${url}${url.includes('?') ? '&' : '?'}width=${w}` : url;
 
 const Etoiles: React.FC<{ note: number; className?: string }> = ({ note, className = '' }) => (
   <span className={`inline-flex items-center gap-0.5 text-[#9c7a44] ${className}`} aria-hidden>
@@ -206,29 +204,18 @@ const ProduitPage: React.FC = () => {
         <div className="mt-6 grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.05fr_0.95fr] items-start">
           {/* Galerie */}
           <div className="min-w-0">
-            <div className="relative w-full">
-              <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
-              <div className="relative w-full aspect-square lg:aspect-[4/5] overflow-hidden bg-[#efe6d7]">
-                {photoActive ? (
-                  <img
-                    key={photoActive.url}
-                    src={taille(photoActive.url, 1200)}
-                    alt={photoActive.altText || p.title}
-                    referrerPolicy="no-referrer"
-                    className="absolute inset-0 h-full w-full object-cover"
-                  />
-                ) : (
-                  <div className="absolute inset-0 grid place-items-center text-[#9c7a44]/40"><ShoppingBag size={44} weight="light" /></div>
-                )}
-                {!p.availableForSale && (
-                  <span className="absolute top-0 left-0 bg-[#1c1712] text-[#f4efe6] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.24em]">
-                    {fr ? 'Épuisé' : 'Sold out'}
-                  </span>
-                )}
-              </div>
-            </div>
+            <CaseProduit
+              key={photoActive?.url}
+              src={photoActive?.url}
+              alt={photoActive?.altText || p.title}
+              ratio="aspect-square lg:aspect-[4/5]"
+              largeur={1200}
+              marge="p-[8%]"
+              eager
+              etiquette={p.availableForSale ? null : (fr ? 'Épuisé' : 'Sold out')}
+            />
             {photos.length > 1 && (
-              <div className="mt-5 flex gap-3 overflow-x-auto pb-1" role="list">
+              <div className="mt-6 flex gap-3 overflow-x-auto pb-1" role="list">
                 {photos.map((img, i) => (
                   <button
                     key={img.url}
@@ -239,7 +226,7 @@ const ProduitPage: React.FC = () => {
                     aria-pressed={i === photo}
                     className={`relative shrink-0 w-[4.5rem] h-[5.6rem] overflow-hidden bg-[#efe6d7] border transition-colors ${i === photo ? 'border-[#1c1712]' : 'border-[#9c7a44]/30 hover:border-[#9c7a44]'}`}
                   >
-                    <img src={taille(img.url, 200)} alt="" loading="lazy" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
+                    <img src={taille(img.url, 200)} alt="" loading="lazy" referrerPolicy="no-referrer" className="h-full w-full object-contain p-1.5 mix-blend-multiply" />
                   </button>
                 ))}
               </div>

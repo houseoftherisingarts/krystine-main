@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useUI, useAuth, useCart } from '../../contexts/AppContext';
-import { ASSETS } from '../../content';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Check, ShoppingBag, X } from '@phosphor-icons/react';
 import { createCheckout, formatMoney, isShopifyConfigured, libelleConnu } from '../../shopify';
 import { trackObjectif } from '../../lib/track';
 import Portail from '../Portail';
+import { CaseProduit } from '../v2/Produit';
 
 const CartDrawer: React.FC = () => {
   const { lang } = useUI();
@@ -57,102 +59,123 @@ const CartDrawer: React.FC = () => {
     }
   };
 
+  const fr = lang === 'FR';
+
   return (
     <Portail>
     <>
-      {/* Backdrop */}
+      {/* Voile */}
       <div
-        className={`fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${cartOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        className={`fixed inset-0 z-[100] bg-[#1c1712]/45 backdrop-blur-[2px] transition-opacity duration-300 ${cartOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
         onClick={() => setCartOpen(false)}
       />
 
-      {/* Drawer */}
-      <div className={`fixed right-0 top-0 h-full w-full max-w-md overflow-y-auto overscroll-contain bg-white dark:bg-[#2a2015] shadow-2xl z-[101] transform transition-transform duration-500 ease-out flex flex-col ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        
-        {/* Header */}
-        <div className="p-6 border-b border-[#2a2015]/10 dark:border-white/10 flex justify-between items-center bg-[#f6f3ee] dark:bg-[#16100a]">
-          <h3 className="text-2xl font-serif text-[#2a2015] dark:text-white">
-            {lang === 'FR' ? 'Panier' : 'Cart'}
-          </h3>
-          <button onClick={() => setCartOpen(false)} className="w-8 h-8 flex items-center justify-center hover:text-[#7d6330] transition-colors">
-            <i className="fa-solid fa-times text-xl" />
+      {/* Le panier, en langage magazine crème V2 (4 oct. 2026) */}
+      <aside
+        aria-label={fr ? 'Panier' : 'Cart'}
+        inert={!cartOpen}
+        className={`fixed right-0 top-0 z-[101] flex h-full w-full max-w-md flex-col bg-[#f4efe6] text-[#1c1712] shadow-[-30px_0_80px_-40px_rgba(28,23,18,0.45)] transform transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        style={{ fontFamily: '"Inter", system-ui, sans-serif' }}
+      >
+        {/* Tête */}
+        <div className="flex items-end justify-between border-b border-[#1c1712]/12 px-6 pt-7 pb-5">
+          <div>
+            <p className="text-[0.6rem] uppercase tracking-[0.3em] text-[#7d6330]">INSPIRATA AYURVEDA</p>
+            <h3 className="mt-2 text-[2rem] font-light leading-none" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>
+              {fr ? 'Votre panier' : 'Your cart'}
+            </h3>
+          </div>
+          <button
+            type="button"
+            onClick={() => setCartOpen(false)}
+            aria-label={fr ? 'Fermer le panier' : 'Close the cart'}
+            className="grid h-11 w-11 place-items-center text-[#1c1712] transition-colors hover:text-[#7d6330]"
+          >
+            <X size={20} />
           </button>
         </div>
 
-        {/* Success flash — confirms the add even when the user didn't notice the drawer slide in. */}
+        {/* L'ajout se confirme même lorsque le panier glisse sans qu'on le remarque. */}
         <div
           aria-live="polite"
           className={`overflow-hidden transition-[max-height,opacity] duration-300 ${flashTitle ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'}`}
         >
-          <div className="mx-4 mt-4 flex items-center gap-3 bg-[#bb9a5e]/15 border border-[#bb9a5e]/30 rounded-full px-4 py-2.5">
-            <i className="fa-solid fa-circle-check text-[#7d6330]" />
-            <p className="text-xs text-[#2a2015] dark:text-white truncate">
-              <span className="font-bold uppercase tracking-widest text-[10px] text-[#7d6330] mr-2">
-                {lang === 'FR' ? 'Ajouté' : 'Added'}
-              </span>
+          <div className="mx-6 mt-4 flex items-center gap-3 border border-[#9c7a44]/40 bg-[#efe6d7] px-4 py-2.5">
+            <Check size={14} className="shrink-0 text-[#7d6330]" />
+            <p className="truncate text-[0.78rem] text-[#1c1712]">
+              <span className="mr-2 text-[0.58rem] uppercase tracking-[0.22em] text-[#7d6330]">{fr ? 'Ajouté' : 'Added'}</span>
               {flashTitle}
             </p>
           </div>
         </div>
 
-        {/* Items */}
-        <div className="flex-1 overflow-y-auto p-6">
+        {/* Articles */}
+        <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-6">
           {cartItems.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center opacity-40 text-[#2a2015] dark:text-white">
-              <i className="fa-solid fa-basket-shopping text-4xl mb-4" />
-              <p className="text-sm uppercase tracking-widest">{lang === 'FR' ? 'Panier vide' : 'Empty cart'}</p>
+            <div className="flex h-full flex-col items-center justify-center text-center">
+              <ShoppingBag size={34} weight="light" className="mb-5 text-[#9c7a44]" />
+              <p className="text-[1.4rem] font-light" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>{fr ? 'Le panier est vide.' : 'The cart is empty.'}</p>
+              <Link
+                to="/boutique"
+                onClick={() => setCartOpen(false)}
+                className="mt-6 inline-flex items-center gap-2 border-b border-[#1c1712] pb-1.5 text-[0.68rem] uppercase tracking-[0.2em] transition-colors hover:border-[#9c7a44] hover:text-[#7d6330]"
+              >
+                {fr ? 'Voir la boutique' : 'See the shop'} <ArrowRight size={13} />
+              </Link>
             </div>
           ) : (
-            <div className="space-y-6">
+            <ul className="divide-y divide-[#1c1712]/10">
               {cartItems.map((item, i) => (
-                <div key={i} className="flex gap-4">
-                  <div
-                    className="w-20 h-24 rounded-lg bg-[#f6f3ee] bg-cover bg-center shrink-0"
-                    style={{ backgroundImage: `url(${item.image || item.cover || ASSETS.productVata})` }}
-                  />
-                  <div className="flex-1">
-                    <h4 className="font-serif text-[#2a2015] dark:text-white leading-tight mb-1">{item.title || item.name}</h4>
-                    <p className="text-xs text-[#2a2015]/50 dark:text-white/50 uppercase tracking-wider mb-2">{libelleConnu(item.type, lang)}</p>
-                    <div className="flex justify-between items-center">
-                      <span className="font-bold text-[#7d6330]">{item.price}</span>
-                      <button onClick={() => removeFromCart(i)} className="text-xs text-red-400 hover:text-red-600 underline transition-colors">
-                        {lang === 'FR' ? 'Retirer' : 'Remove'}
+                <li key={i} className="flex gap-4 py-5 first:pt-0">
+                  <CaseProduit src={item.image || item.cover} alt="" ratio="aspect-[4/5]" largeur={200} marge="p-1.5" filet={false} className="w-20 shrink-0 border border-[#9c7a44]/30" />
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <p className="text-[0.56rem] uppercase tracking-[0.24em] text-[#7d6330]">{libelleConnu(item.type, lang) || 'INSPIRATA'}</p>
+                    <h4 className="mt-1.5 text-[1.1rem] font-light leading-snug" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>{item.title || item.name}</h4>
+                    <div className="mt-auto flex items-center justify-between pt-3">
+                      <span className="text-[1.05rem] font-light tabular-nums text-[#7d6330]" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>{item.price}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeFromCart(i)}
+                        className="border-b border-[#1c1712]/30 pb-0.5 text-[0.6rem] uppercase tracking-[0.2em] text-[#1c1712]/65 transition-colors hover:border-[#9c7a44] hover:text-[#7d6330]"
+                      >
+                        {fr ? 'Retirer' : 'Remove'}
                       </button>
                     </div>
                   </div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           )}
         </div>
 
-        {/* Footer */}
+        {/* Pied */}
         {cartItems.length > 0 && (
-          <div className="p-6 bg-[#f6f3ee] dark:bg-[#16100a] border-t border-[#2a2015]/10 dark:border-white/10">
-            <div className="flex justify-between mb-6 text-lg font-serif font-bold text-[#2a2015] dark:text-white">
-              <span>Total</span>
-              <span>{totalFormatted}</span>
+          <div className="border-t border-[#1c1712]/12 bg-[#efe6d7] px-6 pt-5 pb-6">
+            <div className="mb-5 flex items-baseline justify-between">
+              <span className="text-[0.62rem] uppercase tracking-[0.26em] text-[#1c1712]/70">Total</span>
+              <span className="text-[1.6rem] font-light tabular-nums" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>{totalFormatted}</span>
             </div>
             {checkoutError && (
-              <p className="mb-4 text-xs text-red-500 text-center">{checkoutError}</p>
+              <p className="mb-4 text-center text-[0.78rem] text-[#8a2f1f]">{checkoutError}</p>
             )}
             <button
+              type="button"
               onClick={handleCheckout}
               disabled={!canCheckout || checkingOut}
-              className="w-full bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group inline-flex min-h-[52px] w-full items-center justify-center gap-2.5 bg-[#1c1712] px-7 text-[0.7rem] uppercase tracking-[0.2em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {checkingOut
-                ? (lang === 'FR' ? 'Redirection vers Shopify…' : 'Redirecting to Shopify…')
-                : (lang === 'FR' ? 'Passer la commande' : 'Checkout')}
+                ? (fr ? 'Redirection vers le paiement…' : 'Redirecting to checkout…')
+                : <>{fr ? 'Passer la commande' : 'Checkout'} <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" /></>}
             </button>
-            {!canCheckout && (
-              <p className="mt-3 text-[10px] text-center text-[#2a2015]/50 dark:text-white/50 uppercase tracking-widest">
-                {lang === 'FR' ? 'Aucun article éligible à la commande' : 'No items eligible for checkout'}
-              </p>
-            )}
+            <p className="mt-3 text-center text-[0.7rem] leading-relaxed text-[#1c1712]/55">
+              {canCheckout
+                ? (fr ? 'Paiement sécurisé par Shopify, en dollars canadiens.' : 'Secure checkout by Shopify, in Canadian dollars.')
+                : (fr ? 'Aucun article éligible à la commande.' : 'No items eligible for checkout.')}
+            </p>
           </div>
         )}
-      </div>
+      </aside>
     </>
     </Portail>
   );

@@ -4,6 +4,7 @@ initializeApp();
 
 export { shopifyWebhook } from './shopify/webhook';
 export { shopifyBackfill } from './shopify/backfill';
+export { shopifyBrancherWebhooks } from './shopify/brancher';
 export { sendNewsletter } from './newsletter/send';
 export { unsubscribeByToken } from './newsletter/unsubscribe';
 export { inscrireInfolettre } from './newsletter/inscrire';
