@@ -57,8 +57,9 @@ const MOTS: Record<Lang, { etiquette: string; desabonner: string; politique: str
 const POLICES: Record<string, string> = {
   serif: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
   sans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
-  // Ms Madi, la plus proche de la signature de Krystine (son choix, 27 sept. 2026).
-  script: "'Ms Madi', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive",
+  // Une seule écriture manuscrite dans les lettres, celle du carnet d'Ella :
+  // Ms Madi était trop intense à lire (Krystine, 4 oct. 2026).
+  script: "'Kalam', 'Bradley Hand', 'Segoe Print', 'Comic Neue', cursive",
   // L'écriture d'Ella (Krystine, 4 oct. 2026) : une main de carnet, posée sur
   // du papier. Bradley Hand prend le relais sur Apple quand Kalam ne charge pas (Kalam plutôt que Caveat : plus lisible, 4 oct. 2026).
   ella: "'Kalam', 'Bradley Hand', 'Segoe Print', 'Comic Neue', cursive",
@@ -211,7 +212,7 @@ function nl2br(s: string): string {
 const STYLES_PHRASE: Record<string, string> = {
   grand: 'font-size:1.35em;line-height:1.35',
   tgrand: 'font-size:1.75em;line-height:1.25',
-  manu: `font-family:${"'Ms Madi', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive"};font-size:2em;line-height:1.2;font-weight:400`,
+  manu: `font-family:${"'Kalam', 'Bradley Hand', 'Segoe Print', 'Comic Neue', cursive"};font-size:1.3em;line-height:1.5;font-weight:400;color:#2b1f14`,
 };
 function richToHtml(text: string, accent: string = CHARTE.goldInk): string {
   return esc(text)
