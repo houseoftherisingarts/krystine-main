@@ -262,7 +262,12 @@ const FeaturedProduct: React.FC<{
 
 const BoutiqueLoeuvre: React.FC = () => {
   const { lang, addToCart, setCartOpen } = useApp();
-  const { redirectEnabled, redirectUrl, hiddenProducts, loading: redirectLoading } = useBoutique();
+  const { redirectEnabled: renvoiActif, redirectUrl, hiddenProducts, loading: redirectLoading } = useBoutique();
+  // ?apercu=1 montre la boutique du site même lorsque le renvoi vers
+  // inspiratanature.com est allumé, pour que Krystine la voie avant la
+  // bascule (4 oct. 2026).
+  const apercu = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('apercu') === '1';
+  const redirectEnabled = renvoiActif && !apercu;
   const reduce = useReducedMotion();
 
   // ── Soupape de redirection (préservée de BoutiquePage) ──
