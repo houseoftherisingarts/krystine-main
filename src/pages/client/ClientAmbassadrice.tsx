@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSiteFlags } from '../../contexts/SiteFlagsContext';
 import {
   monAmbassadrice, devenirAmbassadrice, reglerAmbassadrice, mesCommissions, getPartPremium,
-  partDe, rabaisDe, dollars, PAS, type Ambassadrice, type Commission,
+  partDe, rabaisDe, dollars, aVenir, PAS, type Ambassadrice, type Commission,
 } from '../../firebase/ambassadrices';
 
 // Le panneau de l'ambassadrice dans l'espace membre. Trois états : rien
@@ -88,7 +88,7 @@ const ClientAmbassadrice: React.FC<{ uid: string; lang: string }> = ({ uid, lang
   const commission = part - rabais;
   const change = rabais !== rabaisDe(a, partPremium);
   const lien = LIEN_BASE + a.code;
-  const du = ventes.filter(v => v.statut !== 'versee').reduce((s, v) => s + v.commission, 0);
+  const du = ventes.filter(aVenir).reduce((s, v) => s + v.commission, 0);
   const verse = ventes.filter(v => v.statut === 'versee').reduce((s, v) => s + v.commission, 0);
 
   const copier = async () => {
@@ -180,9 +180,9 @@ const ClientAmbassadrice: React.FC<{ uid: string; lang: string }> = ({ uid, lang
         <ul className="mt-3 space-y-1.5">
           {ventes.slice(0, 8).map(v => (
             <li key={v.id} className="flex items-baseline gap-2 text-[11.5px] text-[#38403a]/80 dark:text-white/75">
-              <span className={`h-1.5 w-1.5 shrink-0 translate-y-[-1px] rounded-full ${v.statut === 'versee' ? 'bg-[#38403a]/25 dark:bg-white/25' : 'bg-[#BA7B39]'}`} />
+              <span className={`h-1.5 w-1.5 shrink-0 translate-y-[-1px] rounded-full ${!aVenir(v) ? 'bg-[#38403a]/25 dark:bg-white/25' : 'bg-[#BA7B39]'}`} />
               <span className="truncate">{v.titre}</span>
-              <span className="ml-auto shrink-0 tabular-nums">{dollars(v.commission)}</span>
+              <span className={`ml-auto shrink-0 tabular-nums ${v.statut === 'annulee' ? 'line-through opacity-60' : ''}`}>{dollars(v.commission)}</span>
             </li>
           ))}
         </ul>

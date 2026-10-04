@@ -102,7 +102,7 @@ export function invalidateProductsCache() {
 // formats cabine de 500 ml réservés aux massothérapeutes (étiquette B2B,
 // « revente interdite ») et les ensembles, à repenser avant d'y revenir.
 const ETIQUETTES_CACHEES = ['b2b', 'btob500massagetherapy', 'bundle', 'wholesale'];
-const estPublic = (p: { handle: string; title: string; tags: string[] }) =>
+export const estPublic = (p: { handle: string; title: string; tags: string[] }) =>
   !p.tags.some((t) => ETIQUETTES_CACHEES.includes(t.toLowerCase()))
   && !/cabine/i.test(p.title)
   && !p.handle.startsWith('bap-');
@@ -165,6 +165,97 @@ export async function getProducts(first = 50, lang: 'FR' | 'EN' = 'FR'): Promise
   return fresh;
 }
 
+// ── La page produit (/boutique/produit/:handle, 4 oct. 2026) ──────────────
+// Une seule fiche, avec la description complète (HTML de Shopify, nettoyée
+// à l'affichage par src/lib/htmlPropre.ts) et toutes les photos.
+export interface ShopifyProductDetail extends ShopifyProduct {
+  descriptionHtml: string;
+  /** L'identifiant numérique, celui qu'Okendo emploie pour les avis. */
+  numericId: string;
+}
+
+export async function getProductByHandle(handle: string, lang: 'FR' | 'EN' = 'FR'): Promise<ShopifyProductDetail | null> {
+  const query = `
+    query Product($handle: String!, $country: CountryCode!, $language: LanguageCode!)
+    @inContext(country: $country, language: $language) {
+      product(handle: $handle) {
+        id handle title description descriptionHtml productType tags availableForSale
+        featuredImage { url altText }
+        images(first: 20) { edges { node { url altText } } }
+        priceRange { minVariantPrice { amount currencyCode } }
+        variants(first: 20) { edges { node { id title availableForSale price { amount currencyCode } } } }
+        onlineStoreUrl
+      }
+    }
+  `;
+  const data = await sf<{ product: (ProductsResponse['products']['edges'][number]['node'] & { descriptionHtml: string }) | null }>(
+    query, { handle, country: 'CA', language: lang === 'FR' ? 'FR' : 'EN' },
+  );
+  const n = data.product;
+  if (!n || !estPublic(n)) return null;
+  return {
+    id: n.id,
+    numericId: n.id.split('/').pop() || '',
+    handle: n.handle,
+    title: n.title,
+    description: n.description,
+    descriptionHtml: n.descriptionHtml,
+    productType: n.productType,
+    tags: n.tags,
+    availableForSale: n.availableForSale,
+    featuredImage: n.featuredImage,
+    images: n.images.edges.map(e => e.node),
+    priceRange: n.priceRange,
+    variants: n.variants.edges.map(e => e.node),
+    onlineStoreUrl: n.onlineStoreUrl,
+  };
+}
+
+// ── Les étiquettes de Shopify en français (4 oct. 2026) ───────────────────
+// Le catalogue porte des types et des étiquettes en anglais (« Facial Serum »,
+// « Ayurvedic lifestyle », « Kitchen »). En français, une étiquette connue se
+// traduit; une étiquette inconnue ne s'affiche pas plutôt que de montrer de
+// l'anglais. Ajouter ici toute nouvelle étiquette à traduire.
+const ETIQUETTES_FR: Record<string, string> = {
+  'ayurvedic lifestyle': 'Art de vivre',
+  'aromatherapie': 'Aromathérapie',
+  'aromatherapy': 'Aromathérapie',
+  'facial serum': 'Sérum visage',
+  'serum': 'Sérum',
+  'kitchen': 'Cuisine',
+  'cuisine': 'Cuisine',
+  'book': 'Livre',
+  'bottle': 'Bouteille',
+  'oil': 'Huile',
+  'body oil': 'Huile corporelle',
+  'candle': 'Chandelle',
+  'chandelle': 'Chandelle',
+  'femininity': 'Féminité',
+  'feminine': 'Féminité',
+  'copper': 'Cuivre',
+};
+
+/** Le libellé à afficher pour un type ou une étiquette Shopify, ou null pour le taire. */
+export function libelleEtiquette(brut: string | null | undefined, lang: 'FR' | 'EN' = 'FR'): string | null {
+  const t = (brut || '').trim();
+  if (!t) return null;
+  if (lang === 'EN') return t;
+  return ETIQUETTES_FR[t.toLowerCase()] || null;
+}
+
+/** Pour un libellé déjà posé (panier) : traduit s'il est connu, sinon tel quel. */
+export function libelleConnu(brut: string | null | undefined, lang: 'FR' | 'EN' = 'FR'): string {
+  const t = (brut || '').trim();
+  return (lang === 'FR' && ETIQUETTES_FR[t.toLowerCase()]) || t;
+}
+
+/** « 50ML » devient « 50 ml »; « Default Title » (produit sans format) devient null. */
+export function libelleFormat(titre: string | null | undefined): string | null {
+  const t = (titre || '').trim();
+  if (!t || /^default title$/i.test(t)) return null;
+  return t.replace(/(\d+)\s*ml\b/gi, '$1 ml');
+}
+
 interface CartCreateResponse {
   cartCreate: {
     cart: { id: string; checkoutUrl: string } | null;
@@ -172,7 +263,7 @@ interface CartCreateResponse {
   };
 }
 
-export async function createCheckout(items: { variantId: string; quantity: number }[], lang: 'FR' | 'EN' = 'FR'): Promise<string> {
+export async function createCheckout(items: { variantId: string; quantity: number }[], lang: 'FR' | 'EN' = 'FR', email?: string): Promise<string> {
   const country = 'CA';
   const language = lang === 'FR' ? 'FR' : 'EN';
   const query = `
@@ -184,7 +275,10 @@ export async function createCheckout(items: { variantId: string; quantity: numbe
       }
     }
   `;
-  const input = { lines: items.map(i => ({ merchandiseId: i.variantId, quantity: i.quantity })) };
+  const input = {
+    lines: items.map(i => ({ merchandiseId: i.variantId, quantity: i.quantity })),
+    buyerIdentity: { countryCode: 'CA', ...(email ? { email } : {}) },
+  };
   const data = await sf<CartCreateResponse>(query, { input, country, language });
   const errors = data.cartCreate.userErrors;
   if (errors?.length) throw new Error(`[Shopify] ${errors.map(e => e.message).join('; ')}`);

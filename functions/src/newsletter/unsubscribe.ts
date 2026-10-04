@@ -29,7 +29,14 @@ export const unsubscribeByToken = onRequest(
       const snap = await db.collection('newsletter').where('unsubscribeToken', '==', token).limit(1).get();
       if (snap.empty) { res.json({ ok: false }); return; }
 
-      const d = snap.docs[0];
+      let d = snap.docs[0];
+      // Une fiche fusionnée renvoie à sa principale (fusion des doublons, 4 oct. 2026) :
+      // le lien d'une vieille lettre agit sur la bonne fiche.
+      const principale = (d.data() as any).fusionneDans;
+      if (principale) {
+        const p = await db.collection('newsletter').doc(String(principale)).get();
+        if (p.exists) d = p as typeof d;
+      }
       if (raisons.length || autre) {
         const courriel = String((d.data() as any).email || '').trim().toLowerCase();
         const toutes = courriel ? (await db.collection('newsletter').where('email', '==', courriel).get()).docs.map(x => x.ref) : [d.ref];
@@ -52,7 +59,7 @@ export const unsubscribeByToken = onRequest(
       // recevoir les lettres (corrigé le 27 sept. 2026).
       const email = String((d.data() as any).email || '').trim().toLowerCase();
       const soeurs = email ? await db.collection('newsletter').where('email', '==', email).get() : null;
-      const refs = new Map([[d.ref.path, d.ref], ...(soeurs?.docs || []).map(x => [x.ref.path, x.ref] as const)]);
+      const refs = new Map([[d.ref.path, d.ref], ...(soeurs?.docs || []).filter(x => x.get('status') !== 'doublon').map(x => [x.ref.path, x.ref] as const)]);
       const quand = Timestamp.now();
       await Promise.all([...refs.values()].map(r => r.update({ status: 'unsubscribed', unsubscribedAt: quand })));
       res.json({ ok: true, email: (d.data() as any).email });

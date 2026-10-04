@@ -9,6 +9,8 @@ import {
 } from '../../../shopify';
 import { COLLECTIONS, assignCollection } from '../../../lib/collections';
 import { Card, Input, Label, PrimaryButton, GhostButton, ToggleSwitch } from '../primitives';
+import { subscribeProduitsPerso, type ProduitPerso } from '../../../firebase/boutiqueProduits';
+import BoutiquePersonnaliser from './BoutiquePersonnaliser';
 
 const BoutiqueSection: React.FC = () => {
   // ── Redirect switch ────────────────────────────────────────────────────
@@ -62,6 +64,15 @@ const BoutiqueSection: React.FC = () => {
   };
 
   useEffect(() => { loadProducts(false); }, []);
+
+  // ── Personnalisation sur le site (boutiqueProduits/{handle}) ──────────
+  const [perso, setPerso] = useState<Map<string, ProduitPerso>>(new Map());
+  const [aPersonnaliser, setAPersonnaliser] = useState<ShopifyProduct | null>(null);
+  useEffect(() => subscribeProduitsPerso(setPerso), []);
+  const estPersonnalise = (h: string) => {
+    const d = perso.get(h);
+    return !!d && !!(d.titre || d.accroche || d.description || d.images?.length || d.ordre || d.masque);
+  };
 
   // Pre-compute the collection each product maps to. Products that match no
   // manifest surface at the top as warnings — they're invisible to shoppers
@@ -235,6 +246,7 @@ const BoutiqueSection: React.FC = () => {
                   <th className="text-left px-4 py-3 hidden md:table-cell">Prix</th>
                   <th className="text-left px-4 py-3 hidden md:table-cell">Stock</th>
                   <th className="text-left px-4 py-3">Visible</th>
+                  <th className="text-left px-4 py-3">Sur le site</th>
                 </tr>
               </thead>
               <tbody>
@@ -311,6 +323,20 @@ const BoutiqueSection: React.FC = () => {
                           : 'Visible'}
                       />
                     </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col items-start gap-1">
+                        <button
+                          type="button"
+                          onClick={() => setAPersonnaliser(p)}
+                          className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-widest font-bold text-[#8B4A2F] border border-[#8B4A2F]/30 rounded-full px-3 py-1.5 hover:bg-[#BA7B39]/10 whitespace-nowrap"
+                        >
+                          <i className="fa-solid fa-pen text-[9px]" /> Personnaliser
+                        </button>
+                        {estPersonnalise(p.handle) && (
+                          <span className="text-[10px] text-[#293027]/50 dark:text-white/50">Personnalisé</span>
+                        )}
+                      </div>
+                    </td>
                   </tr>
                   );
                 })}
@@ -321,7 +347,7 @@ const BoutiqueSection: React.FC = () => {
 
         <div className="mt-6 pt-5 border-t border-[#293027]/10 dark:border-white/10 flex items-center justify-between gap-4 flex-wrap">
           <p className="text-xs text-[#293027]/50 dark:text-white/50">
-            L'édition des produits (titre, prix, images, tags) se fait directement dans Shopify.
+            Le prix, les formats, le stock et les étiquettes se modifient dans Shopify. Le titre, l’accroche, la description et les photos affichés sur le site se modifient ici avec « Personnaliser ».
           </p>
           <GhostButton
             type="button"
@@ -332,6 +358,15 @@ const BoutiqueSection: React.FC = () => {
           </GhostButton>
         </div>
       </Card>
+
+      {aPersonnaliser && (
+        <BoutiquePersonnaliser
+          key={aPersonnaliser.handle}
+          produit={aPersonnaliser}
+          perso={perso.get(aPersonnaliser.handle)}
+          onClose={() => setAPersonnaliser(null)}
+        />
+      )}
     </div>
   );
 };

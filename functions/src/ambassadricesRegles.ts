@@ -47,6 +47,41 @@ export function commissionCents(payeHTCents: number, commissionPct: number): num
   return Math.max(0, Math.round(payeHTCents * commissionPct / 100));
 }
 
+// ─── Les gardes du programme (4 oct. 2026) ──────────────────────────────────
+// Un compte plus vieux que ça au moment du rattachement n'est pas une
+// inscription par le code : ni rabais ni commission (même règle que le
+// parrainage, mais vérifiée ici, que le module Parrainage soit ouvert ou non).
+export const COMPTE_NEUF_MS = 48 * 60 * 60 * 1000;
+// La garantie cœur léger : remboursée dans les 15 jours suivant l'achat. La
+// commission reste « en-attente » jusque-là, puis devient « due ».
+export const GARANTIE_JOURS = 15;
+// La cadence de versement par défaut (settings/ambassadrices.cadenceJours).
+// Affichage seulement : rien n'est versé automatiquement.
+export const CADENCE_DEFAUT_JOURS = 60;
+const JOUR_MS = 24 * 60 * 60 * 1000;
+
+/** Une filiation tient si le compte avait au plus 48 h au rattachement et
+ *  qu'aucune vraie vente ne l'a précédé. */
+export function filiationRecevable(compteCreeMs: number, filiationMs: number, achatAvant: boolean): boolean {
+  return !achatAvant && Number.isFinite(compteCreeMs) && filiationMs - compteCreeMs <= COMPTE_NEUF_MS;
+}
+
+/** Une adresse ramenée à sa personne : minuscules, sans « +étiquette », et
+ *  sans les points d'une adresse Gmail (Gmail les ignore). */
+export function courrielNormalise(adresse: string | null | undefined): string {
+  const [local = '', domaine = ''] = String(adresse || '').trim().toLowerCase().split('@');
+  if (!local || !domaine) return '';
+  const base = local.split('+')[0];
+  const gmail = domaine === 'gmail.com' || domaine === 'googlemail.com';
+  return `${gmail ? base.replace(/\./g, '') : base}@${gmail ? 'gmail.com' : domaine}`;
+}
+
+/** Le moment où une commission devient due : jamais avant la fin de la
+ *  garantie de l'achat, jamais avant que le paiement soit reçu. */
+export function echeanceCommission(payeLeMs: number, debutAchatMs: number): number {
+  return Math.max(payeLeMs, debutAchatMs + GARANTIE_JOURS * JOUR_MS);
+}
+
 // Vérification : npm --prefix functions run build && node functions/lib/ambassadricesRegles.js
 if (require.main === module) {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -66,5 +101,15 @@ if (require.main === module) {
   assert.equal(prixReduitCents(100, 60), 50);
   assert.equal(commissionCents(8730, 10), 873);
   assert.equal(commissionCents(8730, 0), 0);
+  const h = 60 * 60 * 1000;
+  assert.equal(filiationRecevable(0, 47 * h, false), true);
+  assert.equal(filiationRecevable(0, 49 * h, false), false);   // compte trop ancien
+  assert.equal(filiationRecevable(0, 1 * h, true), false);     // un achat avant le rattachement
+  assert.equal(filiationRecevable(NaN, 0, false), false);
+  assert.equal(courrielNormalise('Ma.Rie+vata@GMail.com'), 'marie@gmail.com');
+  assert.equal(courrielNormalise('ma.rie+x@exemple.ca'), 'ma.rie@exemple.ca');
+  assert.equal(courrielNormalise(''), '');
+  assert.equal(echeanceCommission(0, 0), 15 * 24 * h);
+  assert.equal(echeanceCommission(40 * 24 * h, 0), 40 * 24 * h);
   console.log('ambassadricesRegles : tout passe');
 }

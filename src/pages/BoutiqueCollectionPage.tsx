@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { useApp, useBoutique } from '../contexts/AppContext';
 import { ASSETS } from '../content';
-import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../shopify';
+import { getProducts, formatMoney, isShopifyConfigured, libelleEtiquette, type ShopifyProduct } from '../shopify';
+import { useProduitsPerso, appliquerPerso, estVisible, trierSelonPerso } from '../firebase/boutiqueProduits';
+import { modeApercu } from '../lib/apercuBoutique';
 import {
   ALL_PRODUCTS_SLUG, COLLECTIONS, findCollection,
   type CollectionManifest,
 } from '../lib/collections';
-import Portail from '../components/Portail';
 
 // Synthetic manifest used when the route is /boutique/tous — not a real
 // collection, but reuses the same editorial layout so the safety-valve page
@@ -28,16 +29,16 @@ const allProductsManifest = (lang: 'FR' | 'EN'): CollectionManifest => ({
 const BoutiqueCollectionPage: React.FC = () => {
   const { slug = '' } = useParams<{ slug: string }>();
   const { lang, addToCart } = useApp();
-  const { redirectEnabled, redirectUrl, hiddenProducts, loading: redirectLoading } = useBoutique();
+  const { redirectEnabled: renvoiActif, redirectUrl, hiddenProducts, loading: redirectLoading } = useBoutique();
+  // L'aperçu (?apercu=1 sur /boutique) se garde pour la visite : la collection reste visible.
+  const redirectEnabled = renvoiActif && !modeApercu();
+  const { perso } = useProduitsPerso();
 
   const manifest = slug === ALL_PRODUCTS_SLUG ? allProductsManifest(lang) : findCollection(slug);
 
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeProduct, setActiveProduct] = useState<ShopifyProduct | null>(null);
-  const [activeVariantId, setActiveVariantId] = useState<string | null>(null);
-  const [activeImage, setActiveImage] = useState<string | null>(null);
 
   // Same emergency redirect as /boutique — any collection page also bounces
   // to inspiratanature.com when Krystine has the switch enabled.
@@ -77,7 +78,10 @@ const BoutiqueCollectionPage: React.FC = () => {
   // Apply Krystine's per-product hide toggles before the collection match.
   // Hidden handles fall out of every collection (and the all-products view)
   // until she flips them back on in Admin → Boutique.
-  const visibleProducts = products.filter(p => !hiddenProducts.has(p.handle));
+  const visibleProducts = trierSelonPerso(
+    products.filter(p => estVisible(p.handle, hiddenProducts, perso)).map(p => appliquerPerso(p, perso.get(p.handle))),
+    perso,
+  );
   const filtered = visibleProducts.filter(manifest.match);
 
   const label = lang === 'FR' ? manifest.labelFR : manifest.labelEN;
@@ -94,7 +98,7 @@ const BoutiqueCollectionPage: React.FC = () => {
       id: p.id,
       variantId: variant.id,
       title: p.title,
-      type: p.productType,
+      type: libelleEtiquette(p.productType, lang) || '',
       price: formatMoney(variant.price, lang),
       priceAmount: variant.price.amount,
       priceCurrency: variant.price.currencyCode,
@@ -102,15 +106,6 @@ const BoutiqueCollectionPage: React.FC = () => {
     });
   };
 
-  const openProduct = (p: ShopifyProduct) => {
-    setActiveProduct(p);
-    const firstAvailable = p.variants.find(v => v.availableForSale) || p.variants[0];
-    setActiveVariantId(firstAvailable?.id || null);
-    setActiveImage(p.featuredImage?.url || p.images[0]?.url || null);
-  };
-  const closeProduct = () => {
-    setActiveProduct(null); setActiveVariantId(null); setActiveImage(null);
-  };
 
   return (
     <div className="min-h-screen dark:bg-[#16100a] pt-20">
@@ -125,14 +120,14 @@ const BoutiqueCollectionPage: React.FC = () => {
             {lang === 'FR' ? 'Boutique' : 'Shop'}
           </Link>
           <h1 className="text-5xl md:text-7xl font-serif mb-4 leading-[1.05]">{label}</h1>
-          <p className="text-base md:text-lg text-white/80 font-serif italic">{tagline}</p>
+          <p className="text-base md:text-lg text-white/80 font-serif">{tagline}</p>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-6 md:px-12 pb-24">
         {/* Manifesto — short story paragraph, quiet editorial voice */}
         <section className="py-16 md:py-20 text-center">
-          <p className="font-serif italic text-xl md:text-2xl leading-relaxed text-[#2a2015]/80 dark:text-white/80 max-w-3xl mx-auto">
+          <p className="font-serif text-xl md:text-2xl leading-relaxed text-[#2a2015]/80 dark:text-white/80 max-w-3xl mx-auto">
             {story}
           </p>
           <div className="w-24 h-1 bg-[#bb9a5e] mx-auto mt-10" />
@@ -142,7 +137,7 @@ const BoutiqueCollectionPage: React.FC = () => {
         <div className="mb-14 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 text-center">
           {[
             { icon: 'fa-lock',  titleFR: 'Paiement sécurisé',       titleEN: 'Secure checkout',     descFR: 'Shopify + SSL',         descEN: 'Shopify + SSL' },
-            { icon: 'fa-leaf',  titleFR: 'Formules ayurvédiques',   titleEN: 'Ayurvedic formulas',  descFR: 'Conçues par Krystine',  descEN: 'Crafted by Krystine' },
+            { icon: 'fa-leaf',  titleFR: 'Formules maison',         titleEN: 'House formulas',  descFR: 'Conçues par Krystine',  descEN: 'Crafted by Krystine' },
             { icon: 'fa-truck', titleFR: 'Livraison Canada',        titleEN: 'Ships across Canada', descFR: 'Expédition rapide',     descEN: 'Fast shipping' },
             { icon: 'fa-heart', titleFR: 'Satisfaction',            titleEN: 'Satisfaction',        descFR: "Près de 40 ans d'expérience",   descEN: 'Nearly 40 years of expertise' },
           ].map(b => (
@@ -166,7 +161,7 @@ const BoutiqueCollectionPage: React.FC = () => {
         )}
         {!loading && error && (
           <div className="text-center py-24">
-            <p className="text-[#2a2015]/60 dark:text-white/60 font-serif italic mb-4">
+            <p className="text-[#2a2015]/60 dark:text-white/60 font-serif mb-4">
               {lang === 'FR' ? 'La boutique est momentanément indisponible.' : 'The shop is momentarily unavailable.'}
             </p>
             <p className="text-sm text-[#2a2015]/50 dark:text-white/50 font-mono">{error}</p>
@@ -174,7 +169,7 @@ const BoutiqueCollectionPage: React.FC = () => {
         )}
         {!loading && !error && filtered.length === 0 && (
           <div className="text-center py-24">
-            <p className="text-[#2a2015]/60 dark:text-white/60 font-serif italic mb-6">
+            <p className="text-[#2a2015]/60 dark:text-white/60 font-serif mb-6">
               {lang === 'FR'
                 ? 'Les pièces de cette collection arrivent bientôt.'
                 : 'The pieces of this collection are arriving soon.'}
@@ -197,9 +192,9 @@ const BoutiqueCollectionPage: React.FC = () => {
               const soldOut = !product.availableForSale;
               return (
                 <div key={product.id} className="group flex flex-col relative">
-                  <button
-                    type="button"
-                    onClick={() => openProduct(product)}
+                  <Link
+                    to={`/boutique/produit/${product.handle}`}
+                    aria-label={product.title}
                     className="text-left block relative aspect-[3/4] rounded-[24px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 mb-5 bg-[#f6f3ee] dark:bg-[#2a2015] cursor-pointer"
                   >
                     <div
@@ -212,14 +207,14 @@ const BoutiqueCollectionPage: React.FC = () => {
                         {lang === 'FR' ? 'Épuisé' : 'Sold out'}
                       </span>
                     )}
-                  </button>
-                  <div className="text-center px-2 cursor-pointer" onClick={() => openProduct(product)}>
-                    {product.productType && (
-                      <span className="text-[10px] text-[#2a2015]/50 dark:text-white/50 uppercase tracking-[0.25em] font-bold">{product.productType}</span>
+                  </Link>
+                  <Link to={`/boutique/produit/${product.handle}`} className="block text-center px-2">
+                    {libelleEtiquette(product.productType, lang) && (
+                      <span className="text-[10px] text-[#2a2015]/50 dark:text-white/50 uppercase tracking-[0.25em] font-bold">{libelleEtiquette(product.productType, lang)}</span>
                     )}
                     <h3 className="text-lg font-serif text-[#2a2015] dark:text-white mt-1 mb-1 group-hover:text-[#7d6330] transition-colors">{product.title}</h3>
                     <p className="text-sm text-[#2a2015]/80 dark:text-white/80 font-medium">{price}</p>
-                  </div>
+                  </Link>
                   {!soldOut ? (
                     <button
                       type="button"
@@ -261,136 +256,6 @@ const BoutiqueCollectionPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Product detail modal — kept in sync with the original /boutique modal;
-            any future enhancement (ritual panel, notes chips) lands here. */}
-        {activeProduct && (() => {
-          const p = activeProduct;
-          const variant = p.variants.find(v => v.id === activeVariantId) || p.variants[0];
-          const gallery = [p.featuredImage, ...p.images].filter(Boolean) as { url: string; altText: string | null }[];
-          const unique = Array.from(new Map(gallery.map(g => [g.url, g])).values());
-          const displayImage = activeImage || unique[0]?.url || ASSETS.productVata;
-          return (
-            <Portail>
-            <div className="fixed inset-0 z-[90] flex items-center justify-center overflow-y-auto overscroll-contain p-4 bg-[#2a2015]/50 backdrop-blur-md" onClick={closeProduct}>
-              <div
-                className="relative bg-white dark:bg-[#2a2015] w-full max-w-5xl max-h-[90vh] rounded-[30px] shadow-2xl border border-[#bb9a5e]/20 overflow-hidden grid grid-cols-1 md:grid-cols-2"
-                onClick={e => e.stopPropagation()}
-              >
-                <button
-                  onClick={closeProduct}
-                  aria-label={lang === 'FR' ? 'Fermer' : 'Close'}
-                  className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/80 dark:bg-[#16100a]/80 backdrop-blur flex items-center justify-center text-[#2a2015] dark:text-white hover:bg-[#bb9a5e] hover:text-white transition-colors"
-                >
-                  <i className="fa-solid fa-times text-lg" />
-                </button>
-
-                {/* Gallery */}
-                <div className="relative bg-[#f6f3ee] dark:bg-[#16100a] flex flex-col">
-                  <div className="relative aspect-square md:aspect-auto md:flex-1 min-h-[320px]">
-                    <div className="absolute inset-0 bg-contain bg-no-repeat bg-center" style={{ backgroundImage: `url(${displayImage})` }} />
-                  </div>
-                  {unique.length > 1 && (
-                    <div className="p-4 flex gap-2 overflow-x-auto">
-                      {unique.map(img => (
-                        <button
-                          key={img.url}
-                          type="button"
-                          onClick={() => setActiveImage(img.url)}
-                          className={`w-16 h-16 rounded-xl overflow-hidden shrink-0 border-2 transition-colors ${displayImage === img.url ? 'border-[#bb9a5e]' : 'border-transparent hover:border-[#bb9a5e]/50'}`}
-                        >
-                          <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url(${img.url})` }} />
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Details */}
-                <div className="p-8 md:p-10 overflow-y-auto max-h-[90vh]">
-                  {p.productType && (
-                    <span className="text-[10px] text-[#7d6330] uppercase tracking-[0.3em] font-bold block mb-3">{p.productType}</span>
-                  )}
-                  <h2 className="text-3xl md:text-4xl font-serif text-[#2a2015] dark:text-white leading-tight mb-4">{p.title}</h2>
-                  <p className="text-2xl font-serif text-[#7d6330] mb-6">
-                    {variant ? formatMoney(variant.price, lang) : formatMoney(p.priceRange.minVariantPrice, lang)}
-                  </p>
-
-                  <div className="mb-6 flex flex-wrap gap-x-4 gap-y-2 text-sm text-[#2a2015]/75 dark:text-white/75">
-                    <span className="inline-flex items-center gap-1.5">
-                      <i className="fa-solid fa-seedling text-[#7d6330]" />
-                      {lang === 'FR' ? 'Formule Krystine' : 'Krystine formula'}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <i className="fa-solid fa-award text-[#7d6330]" />
-                      {lang === 'FR' ? "Près de 40 ans d'expertise" : 'Nearly 40 years of expertise'}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <i className="fa-solid fa-truck-fast text-[#7d6330]" />
-                      {lang === 'FR' ? 'Expédition Canada' : 'Ships from Canada'}
-                    </span>
-                  </div>
-
-                  {p.description && (
-                    <p className="text-[#2a2015]/70 dark:text-white/70 leading-relaxed mb-8 whitespace-pre-line">{p.description}</p>
-                  )}
-
-                  {p.variants.length > 1 && (
-                    <div className="mb-8">
-                      <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#2a2015]/60 dark:text-white/60 block mb-3">
-                        {lang === 'FR' ? 'Option' : 'Option'}
-                      </span>
-                      <div className="flex flex-wrap gap-2">
-                        {p.variants.map(v => {
-                          const selected = v.id === activeVariantId;
-                          return (
-                            <button
-                              key={v.id}
-                              type="button"
-                              disabled={!v.availableForSale}
-                              onClick={() => setActiveVariantId(v.id)}
-                              className={`px-4 py-2 rounded-full text-xs uppercase tracking-wider font-semibold border transition-colors ${
-                                selected
-                                  ? 'bg-[#2a2015] text-white border-[#2a2015] dark:bg-[#bb9a5e] dark:text-[#2a2015] dark:border-[#bb9a5e]'
-                                  : 'bg-transparent text-[#2a2015] dark:text-white border-[#2a2015]/20 dark:border-white/20 hover:border-[#bb9a5e]'
-                              } ${!v.availableForSale ? 'line-through opacity-40 cursor-not-allowed' : ''}`}
-                            >
-                              {v.title}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  <button
-                    type="button"
-                    disabled={!variant?.availableForSale}
-                    onClick={e => {
-                      handleAdd(p, e, activeVariantId || undefined);
-                      closeProduct();
-                    }}
-                    className="w-full bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors shadow-lg disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    {variant?.availableForSale
-                      ? (lang === 'FR' ? 'Ajouter au panier' : 'Add to cart')
-                      : (lang === 'FR' ? 'Épuisé' : 'Sold out')}
-                  </button>
-
-                  {p.tags.length > 0 && (
-                    <div className="mt-8 pt-6 border-t border-[#2a2015]/10 dark:border-white/10 flex flex-wrap gap-2">
-                      {p.tags.map(tag => (
-                        <span key={tag} className="text-[10px] uppercase tracking-widest text-[#2a2015]/40 dark:text-white/40 bg-[#2a2015]/5 dark:bg-white/5 px-3 py-1 rounded-full">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            </Portail>
-          );
-        })()}
       </div>
     </div>
   );

@@ -335,6 +335,10 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     match /settings/{id}      { allow read: if true; allow write: if isAdmin(); }
+    // La fiche produit personnalisée par Krystine (4 oct. 2026) : titre,
+    // accroche, description, photos, ordre, masqué. Le public la lit pour
+    // afficher la boutique; seule l'admin l'écrit (src/firebase/boutiqueProduits.ts).
+    match /boutiqueProduits/{handle} { allow read: if true; allow write: if isAdmin(); }
     // Les drapeaux de visibilité du site (src/firebase/siteFlags.ts) : le
     // public les lit au démarrage, l'admin les bascule (interrupteur du Foyer).
     match /siteSettings/{id}  { allow read: if true; allow write: if isAdmin(); }
@@ -677,7 +681,9 @@ service cloud.firestore {
                         // 'redeem' (2026-09-07) : l'échange d'une récompense passe par
                         // echangerRecompense (functions/src/recompenses.ts) depuis que le
                         // code (Stripe, Shopify) part du serveur; le navigateur ne débite plus lui-même.
-                        && !(request.resource.data.kind in ['boutique', 'achat-niskas', 'quotidien', 'billet', 'amitie', 'parrainage', 'parrainage-bienvenue', 'adjust', 'coffre', 'coffre-gain', 'badge-bleu', 'foyer-hebdo', 'foyer-roue', 'foyer-mois', 'redeem', 'sondage']));
+                        // 'order' (2026-10-04) : les niskas d'une commande arrivent par le
+                        // webhook Shopify une fois le paiement confirmé, jamais du navigateur.
+                        && !(request.resource.data.kind in ['order', 'boutique', 'achat-niskas', 'quotidien', 'billet', 'amitie', 'parrainage', 'parrainage-bienvenue', 'adjust', 'coffre', 'coffre-gain', 'badge-bleu', 'foyer-hebdo', 'foyer-roue', 'foyer-mois', 'redeem', 'sondage']));
       // La lecture d'un document absent (la transaction d'awardPoints vérifie
       // la clé avant d'écrire) ne révèle rien : elle passe.
       allow read: if isAdmin()

@@ -1,9 +1,9 @@
 import { onDocumentCreated } from 'firebase-functions/v2/firestore';
 import { getFirestore, FieldValue, Firestore } from 'firebase-admin/firestore';
-import { getAuth } from 'firebase-admin/auth';
 import { crediterNiskas } from './niskas';
 import { SEUIL_ACCES_VIE_CENTS, SEUIL_ACCES_VIE_FILLEULES, filleuleCompte } from './parrainageRegles';
 import { lireGamification } from './gamification';
+import { filiationTient } from './ambassadrices';
 
 export { SEUIL_ACCES_VIE_CENTS, SEUIL_ACCES_VIE_FILLEULES };
 
@@ -19,9 +19,6 @@ export { SEUIL_ACCES_VIE_CENTS, SEUIL_ACCES_VIE_FILLEULES };
 // src/lib/pointsConfig.ts (POINTS.parrainage, POINTS.parrainageBienvenue).
 const NISKAS_MARRAINE = 20;
 const NISKAS_FILLEULE = 10;
-// Un compte plus vieux que ça n'est pas une inscription : le parrainage est
-// effacé sans crédit (sinon un vieux compte réclame un code après coup).
-const COMPTE_NEUF_MS = 48 * 60 * 60 * 1000;
 
 const PALIERS: Array<[number, string]> = [
   [1, 'ambassadrice'],
@@ -46,21 +43,26 @@ export const parrainageFilleule = onDocumentCreated(
     const data = event.data?.data() as { parrainUid?: string } | undefined;
     const parrainUid = data?.parrainUid;
     if (!parrainUid || parrainUid === event.params.filleulUid) return;
-    // Module « Parrainage » fermé : ni niskas ni badges (2 oct. 2026).
-    if (!(await lireGamification()).parrainage) return;
     const filleulUid = event.params.filleulUid;
-
     const db = getFirestore();
+
+    // Un compte plus vieux que 48 h au rattachement, un achat avant le
+    // rattachement, ou la marraine elle-même : la filiation est effacée.
+    // Vérifié AVANT l'interrupteur du module, parce que le programme des
+    // ambassadrices lit la même filiation, module ouvert ou non (4 oct. 2026).
+    // Une vérification impossible n'efface rien : ambassadriceDe refusera le rabais.
     try {
-      const cree = Date.parse((await getAuth().getUser(filleulUid)).metadata.creationTime || '');
-      if (cree && Date.now() - cree > COMPTE_NEUF_MS) {
+      if (!(await filiationTient(filleulUid))) {
         await db.doc(`parrainages/${filleulUid}`).delete();
-        console.log(`[parrainage] ${filleulUid} : compte trop ancien, parrainage refusé`);
+        console.log(`[parrainage] ${filleulUid} : filiation refusée (compte ancien, achat antérieur ou même personne)`);
         return;
       }
     } catch (e) {
       console.warn('[parrainage] âge du compte indisponible', e);
     }
+
+    // Module « Parrainage » fermé : ni niskas ni badges (2 oct. 2026).
+    if (!(await lireGamification()).parrainage) return;
 
     const filleules = await db.collection('parrainages').where('parrainUid', '==', parrainUid).count().get();
     const n = filleules.data().count;

@@ -3,13 +3,18 @@ import { Card, Input, Label, PrimaryButton, GhostButton, ToggleSwitch, EmptyStat
 import { setSiteFlag, subscribeToSiteFlags } from '../../../firebase/siteFlags';
 import {
   listerAmbassadrices, listerCommissions, majAmbassadrice, marquerCommission, nommerAmbassadrice,
-  getPartPremium, setPartPremium, partDe, rabaisDe, dollars,
+  getPartPremium, setPartPremium, getCadenceJours, partDe, rabaisDe, dollars, CADENCE_DEFAUT_JOURS,
   candidatesAmbassadrices, PART_DEFAUT, PART_MAX, PAS, type Ambassadrice, type Commission, type Candidate,
 } from '../../../firebase/ambassadrices';
 
 // La section Ambassadrices de l'admin : l'interrupteur du programme, la part
 // des premium, la nomination par courriel, la liste des ambassadrices et le
-// grand livre des commissions (à verser, versées).
+// grand livre des commissions (en attente, à verser, versées, annulées).
+
+const LIBELLE_STATUT: Record<Commission['statut'], string> = {
+  'en-attente': 'en attente', due: 'à verser', versee: 'versée', annulee: 'annulée',
+};
+const dateFr = (t?: { toDate: () => Date } | null) => t?.toDate().toLocaleDateString('fr-CA') || '';
 
 const PARTS = Array.from({ length: PART_MAX / PAS }, (_, i) => (i + 1) * PAS);
 const surtitre = 'text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]';
@@ -22,6 +27,7 @@ const AmbassadricesSection: React.FC = () => {
   const [liste, setListe] = useState<Ambassadrice[]>([]);
   const [ventes, setVentes] = useState<Commission[]>([]);
   const [partPremium, setPP] = useState(30);
+  const [cadence, setCadence] = useState(CADENCE_DEFAUT_JOURS);
   const [charge, setCharge] = useState(true);
   const [email, setEmail] = useState('');
   const [premium, setPremium] = useState(true);
@@ -31,9 +37,9 @@ const AmbassadricesSection: React.FC = () => {
 
   useEffect(() => subscribeToSiteFlags(f => { setOuvert(f.ambassadricesOuvert); setPret(true); }), []);
 
-  const charger = () => Promise.all([listerAmbassadrices(), listerCommissions(), getPartPremium()])
-    .then(([l, v, pp]) => {
-      setListe(l); setVentes(v); setPP(pp);
+  const charger = () => Promise.all([listerAmbassadrices(), listerCommissions(), getPartPremium(), getCadenceJours()])
+    .then(([l, v, pp, c]) => {
+      setListe(l); setVentes(v); setPP(pp); setCadence(c);
       // Les candidates : tout le monde sauf les ambassadrices déjà inscrites et l'équipe.
       candidatesAmbassadrices([...l.map(a => a.uid), 'houseoftherisingarts@gmail.com', 'krystinestterredhysope@gmail.com', 'alex@lesalondesinconnus.com', 'krystinestlaurent@gmail.com'])
         .then(setCandidates).catch(() => setCandidates([]));
@@ -47,12 +53,22 @@ const AmbassadricesSection: React.FC = () => {
     for (const v of ventes) {
       const e = (m[v.ambassadriceUid] ||= { ventes: 0, du: 0 });
       e.ventes += 1;
-      if (v.statut !== 'versee') e.du += v.commission;
+      if (v.statut === 'due') e.du += v.commission;
     }
     return m;
   }, [ventes]);
   const nomDe = (uid: string) => liste.find(a => a.uid === uid)?.nom || uid.slice(0, 6);
-  const totalDu = ventes.filter(v => v.statut !== 'versee').reduce((s, v) => s + v.commission, 0);
+  const totalDu = ventes.filter(v => v.statut === 'due').reduce((s, v) => s + v.commission, 0);
+  const totalAttente = ventes.filter(v => v.statut === 'en-attente').reduce((s, v) => s + v.commission, 0);
+  // Le prochain versement, à titre indicatif : le dernier versement plus la
+  // cadence; sans versement encore, la première commission devenue due ou à
+  // échoir. Rien n'est versé automatiquement.
+  const prochainVersement = useMemo(() => {
+    const derniers = ventes.map(v => v.verseeLe?.toMillis() || 0).filter(Boolean);
+    if (derniers.length) return new Date(Math.max(...derniers) + cadence * 86400000);
+    const echeances = ventes.filter(v => v.statut === 'due' || v.statut === 'en-attente').map(v => v.dueLe?.toMillis() || 0).filter(Boolean);
+    return echeances.length ? new Date(Math.min(...echeances)) : null;
+  }, [ventes, cadence]);
 
   const modifier = async (a: Ambassadrice, patch: Partial<Pick<Ambassadrice, 'premium' | 'part' | 'actif'>>) => {
     setListe(l => l.map(x => (x.uid === a.uid ? { ...x, ...patch } : x)));
@@ -231,19 +247,26 @@ const AmbassadricesSection: React.FC = () => {
           <div>
             <p className={surtitre}>Le grand livre</p>
             <h3 className="mt-1 font-serif text-xl text-[#293027] dark:text-white">{dollars(totalDu)} à verser</h3>
-            <p className={aide}>Chaque vente d'une ambassadrice s'inscrit ici d'elle-même. Vous versez la commission, puis vous cochez la ligne.</p>
+            <p className={aide}>
+              {dollars(totalAttente)} en attente de la fin de la garantie de 15 jours. Versement aux {cadence} jours
+              {prochainVersement ? `, prochain versement le ${prochainVersement.toLocaleDateString('fr-CA')}` : ''}.
+            </p>
+            <p className={aide}>Chaque paiement reçu d'une ambassadrice s'inscrit ici de lui-même (un par versement payé). Un remboursement annule la commission. Vous versez la commission, puis vous cochez la ligne.</p>
           </div>
           <GhostButton
             disabled={!ventes.length}
             onClick={() => downloadCsv('commissions-ambassadrices.csv', ventes.map(v => ({
-              date: v.at?.toDate().toLocaleDateString('fr-CA') || '',
+              date: dateFr(v.at),
               ambassadrice: nomDe(v.ambassadriceUid),
               formation: v.titre,
               paye_hors_taxes: (v.payeHT / 100).toFixed(2),
               rabais_pct: v.rabaisPct,
               commission_pct: v.commissionPct,
               commission: (v.commission / 100).toFixed(2),
-              statut: v.statut === 'versee' ? 'versée' : 'à verser',
+              versement: v.versements && v.versements > 1 ? `${v.versement || 1}/${v.versements}` : '',
+              statut: LIBELLE_STATUT[v.statut] || v.statut,
+              due_le: dateFr(v.dueLe),
+              raison_annulation: v.raisonAnnulation || '',
             })))}
           >
             Télécharger en CSV
@@ -255,15 +278,24 @@ const AmbassadricesSection: React.FC = () => {
           <ul className="mt-4 divide-y divide-[#38403a]/10 dark:divide-white/10">
             {ventes.map(v => (
               <li key={v.id} className="flex flex-wrap items-center gap-x-6 gap-y-2 py-3 text-sm text-[#293027] dark:text-white">
-                <span className="w-24 shrink-0 text-xs text-[#293027]/55 dark:text-white/55">{v.at?.toDate().toLocaleDateString('fr-CA') || ''}</span>
+                <span className="w-24 shrink-0 text-xs text-[#293027]/55 dark:text-white/55">{dateFr(v.at)}</span>
                 <span className="min-w-[160px] flex-1">
                   <span className="font-semibold">{nomDe(v.ambassadriceUid)}</span>
-                  <span className="block text-xs text-[#293027]/55 dark:text-white/55">{v.titre} · {dollars(v.payeHT)} payés · {v.commissionPct} %</span>
+                  <span className="block text-xs text-[#293027]/55 dark:text-white/55">
+                    {v.titre} · {dollars(v.payeHT)} payés · {v.commissionPct} %
+                    {v.versements && v.versements > 1 ? ` · versement ${v.versement || 1} de ${v.versements}` : ''}
+                  </span>
+                  {v.remboursePartiel ? <span className="block text-xs text-[#8B4A2F]">Remboursement partiel de {dollars(v.remboursePartiel)} : à trancher</span> : null}
+                  {v.rembourseApresVersement ? <span className="block text-xs text-[#8B4A2F]">Remboursée après versement : à reprendre sur le prochain versement</span> : null}
                 </span>
-                <span className="font-serif text-lg tabular-nums">{dollars(v.commission)}</span>
+                <span className={`font-serif text-lg tabular-nums ${v.statut === 'annulee' ? 'line-through opacity-50' : ''}`}>{dollars(v.commission)}</span>
                 {v.statut === 'versee'
                   ? <GhostButton onClick={() => verser(v, false)}>Versée · annuler</GhostButton>
-                  : <PrimaryButton onClick={() => verser(v, true)} className="!px-4 !py-2">Marquer versée</PrimaryButton>}
+                  : v.statut === 'due'
+                    ? <PrimaryButton onClick={() => verser(v, true)} className="!px-4 !py-2">Marquer versée</PrimaryButton>
+                    : v.statut === 'en-attente'
+                      ? <span className="text-xs text-[#293027]/55 dark:text-white/55">En attente jusqu'au {dateFr(v.dueLe)}</span>
+                      : <span className="text-xs text-[#8B4A2F]">Annulée{v.raisonAnnulation === 'remboursement' ? ' (remboursement)' : v.raisonAnnulation === 'meme-personne' ? ' (l\'acheteuse est l\'ambassadrice)' : ''}</span>}
               </li>
             ))}
           </ul>

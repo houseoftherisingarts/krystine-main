@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 import { onCall, onRequest, HttpsError } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import { getAuth } from 'firebase-admin/auth';
 import { crediterNiskas, SANTE_LA_VIE_ID, SAISONS, PRIX_SAISON_CAD } from './niskas';
@@ -12,7 +12,7 @@ import { MAIL_SECRETS } from './newsletter/mail';
 import { envoyerConfirmationAchat } from './confirmationAchat';
 import { prixEnVigueur, versementsPermis, montantVersement, FORMATION_VATA_ID } from './versements';
 import { ambassadriceDe } from './ambassadrices';
-import { prixReduitCents, commissionCents } from './ambassadricesRegles';
+import { prixReduitCents, commissionCents, courrielNormalise, echeanceCommission, GARANTIE_JOURS } from './ambassadricesRegles';
 
 // Le paywall des formations natives (migration Kajabi, 2026-08-28).
 // Trois portes : créer la session Stripe Checkout, encaisser le webhook qui
@@ -83,7 +83,12 @@ export const creerSessionPaiement = onCall(
     // L'acheteuse arrivée par le code d'une ambassadrice paie le prix réduit
     // du rabais que celle-ci a choisi; la commission se consigne au webhook.
     // Une lecture qui échoue ici ne doit jamais empêcher une vente : plein prix.
-    // Sans compte, pas de code de parrainage, donc pas d'ambassadrice.
+    // Sans compte, pas de code de parrainage, donc pas de rabais : l'adresse
+    // n'est connue qu'une fois saisie dans la caisse Stripe, trop tard pour
+    // changer le prix. Le webhook reconnaît quand même l'ambassadrice d'une
+    // invitée qui a déjà un compte rattaché, et lui consigne sa commission
+    // sur le plein prix payé (4 oct. 2026). Aucun rabais n'est annoncé à une
+    // visiteuse non connectée (monRabaisAmbassadrice rend 0), donc rien de promis.
     const amb = uid ? await ambassadriceDe(uid).catch((err) => { console.error('[paiements] ambassadrice', err); return null; }) : null;
     const rabais = amb?.rabaisPct || 0;
     // Le prix que l'acheteuse paie; les versements permis se décident toujours
@@ -123,8 +128,9 @@ export const creerSessionPaiement = onCall(
       body.set('line_items[0][price_data][unit_amount]', String(Math.round(prixPaye * 100)));
       // Le code de la récompense « 50 $ sur une formation » se tape ici
       // (echangerRecompense, functions/src/recompenses.ts) : il porte déjà
-      // sa propre restriction de 50 $ minimum côté Stripe.
-      body.set('allow_promotion_codes', 'true');
+      // sa propre restriction de 50 $ minimum côté Stripe. Jamais en plus du
+      // rabais d'une ambassadrice : un seul rabais par achat (4 oct. 2026).
+      if (!rabais) body.set('allow_promotion_codes', 'true');
       // Sans compte : la fiche client Stripe garde l'adresse pour les reçus.
       if (!uid) body.set('customer_creation', 'always');
     } else {
@@ -442,6 +448,80 @@ async function compteParAdresse(adresse: string, nom: string): Promise<{ uid: st
   }
 }
 
+// ─── Les commissions des ambassadrices ──────────────────────────────────────
+// Une ligne par paiement réellement reçu : le paiement unique, puis chaque
+// versement payé. Elle naît « en-attente » jusqu'à la fin de la garantie de
+// 15 jours (commissionsEchues, ambassadrices.ts, la passe à « due »). Un
+// versement jamais payé ne crée jamais de ligne. Un remboursement annule une
+// ligne non versée (charge.refunded, plus bas).
+
+const lirePI = (o: any): string => {
+  const pi = o?.payment_intent ?? o?.payments?.data?.[0]?.payment?.payment_intent;
+  return typeof pi === 'string' ? pi : String(pi?.id || '');
+};
+
+/** L'intention de paiement d'une facture, selon la version de l'API (sur la
+ *  facture avant 2025, dans invoice.payments après). '' si introuvable. */
+async function intentionDeFacture(facture: any): Promise<string> {
+  if (lirePI(facture)) return lirePI(facture);
+  const id = typeof facture === 'string' ? facture : String(facture?.id || '');
+  if (!id) return '';
+  const r = await appelStripe('GET', `invoices/${id}?expand[]=payments`);
+  if (r.ok && lirePI(r.data)) return lirePI(r.data);
+  const r2 = await appelStripe('GET', `invoices/${id}`);
+  return r2.ok ? lirePI(r2.data) : '';
+}
+
+/** L'acheteuse paie-t-elle avec une carte enregistrée chez Stripe au nom de
+ *  son ambassadrice ? Au mieux de ce que Stripe montre (une carte n'est
+ *  visible que sur une fiche client Stripe); une erreur ne bloque rien. */
+async function memeCarte(pi: string, adresseAmbassadrice: string): Promise<boolean> {
+  if (!pi || !adresseAmbassadrice) return false;
+  try {
+    const r = await appelStripe('GET', `payment_intents/${pi}?expand[]=payment_method`);
+    const empreinte = r.data?.payment_method?.card?.fingerprint;
+    if (!empreinte) return false;
+    const clients = await appelStripe('GET', `customers?email=${encodeURIComponent(adresseAmbassadrice)}&limit=10`);
+    for (const c of clients.data?.data || []) {
+      const pm = await appelStripe('GET', `payment_methods?customer=${c.id}&type=card&limit=20`);
+      if ((pm.data?.data || []).some((m: any) => m.card?.fingerprint === empreinte)) return true;
+    }
+  } catch (err) { console.error('[paiements] empreinte de carte', err); }
+  return false;
+}
+
+/** Le versement suivant d'un achat en versements : sa propre ligne, copiée
+ *  de la première (même ambassadrice, mêmes pourcentages), sur ce que cette
+ *  facture a réellement payé hors taxes. */
+async function commissionDuVersement(invoice: any, abonnementId: string): Promise<void> {
+  const db = getFirestore();
+  const lignes = await db.collection('commissionsAmbassadrices').where('abonnementId', '==', abonnementId).get();
+  if (lignes.empty || lignes.docs.some(d => d.id === String(invoice.id))) return;
+  const p = lignes.docs[0].data();
+  const payeHT = Math.max(0, Number(invoice.total_excluding_tax ?? invoice.subtotal ?? 0));
+  const garantieFin = (p.garantieFinLe as FirebaseFirestore.Timestamp | undefined)?.toMillis() || 0;
+  const memePersonne = p.raisonAnnulation === 'meme-personne';
+  await db.doc(`commissionsAmbassadrices/${invoice.id}`).create({
+    ambassadriceUid: p.ambassadriceUid,
+    acheteuseUid: p.acheteuseUid,
+    formationId: p.formationId,
+    titre: p.titre,
+    payeHT,
+    rabaisPct: p.rabaisPct,
+    commissionPct: p.commissionPct,
+    commission: commissionCents(payeHT, Number(p.commissionPct) || 0),
+    versement: lignes.size + 1,
+    versements: p.versements,
+    abonnementId,
+    paymentIntentId: await intentionDeFacture(invoice),
+    statut: memePersonne ? 'annulee' : 'en-attente',
+    ...(memePersonne ? { raisonAnnulation: 'meme-personne' } : {}),
+    garantieFinLe: p.garantieFinLe ?? null,
+    dueLe: Timestamp.fromMillis(Math.max(Date.now(), garantieFin)),
+    at: FieldValue.serverTimestamp(),
+  });
+}
+
 export const stripeWebhook = onRequest(
   // Les secrets de la lettre voyagent avec le webhook : la branche des billets
   // envoie le courriel qui les porte, et Firebase refuse à l'exécution la
@@ -484,6 +564,10 @@ export const stripeWebhook = onRequest(
       });
       // L'achat pas encore écrit : Stripe réessaiera plus tard.
       if (compte === 'absent') { res.status(500).send('achat absent'); return; }
+      // La commission de ce versement payé, s'il y a une ambassadrice. Ne fait
+      // jamais échouer le webhook; create() ne double jamais une ligne.
+      try { await commissionDuVersement(invoice, abonnementId); }
+      catch (err) { console.log('[paiements] commission du versement', (err as Error).message); }
       const annule = await annulerAbonnementSiComplet(ref, abonnementId);
       console.log(`[paiements] versement ${compte} pour ${meta.uid} -> ${meta.formationId}`);
       res.status(annule ? 200 : 500).send(annule ? 'ok' : 'annulation en attente'); return;
@@ -504,6 +588,31 @@ export const stripeWebhook = onRequest(
       if (impaye || arreteTot) {
         await ref.set({ suspendu: true, suspenduLe: FieldValue.serverTimestamp() }, { merge: true });
         console.log(`[paiements] accès suspendu : ${meta.uid} -> ${meta.formationId} (${event.type}, ${sub.status})`);
+      }
+      res.status(200).send('ok'); return;
+    }
+
+    // ── Un remboursement : la commission de ce paiement s'annule si elle n'est
+    // pas encore versée. Déjà versée : la ligne est marquée, à reprendre sur le
+    // versement suivant. Un remboursement partiel se note, l'admin tranche.
+    // (Le point de terminaison Stripe doit écouter charge.refunded.)
+    if (event.type === 'charge.refunded') {
+      const charge = event.data?.object || {};
+      const pi = typeof charge.payment_intent === 'string' ? charge.payment_intent : String(charge.payment_intent?.id || '');
+      if (pi) {
+        const lignes = await getFirestore().collection('commissionsAmbassadrices').where('paymentIntentId', '==', pi).get();
+        const total = charge.refunded === true || (charge.amount_refunded || 0) >= (charge.amount || 0);
+        for (const d of lignes.docs) {
+          const statut = d.data().statut;
+          if (statut === 'annulee') continue;
+          const champs = !total
+            ? { remboursePartiel: charge.amount_refunded || 0 }
+            : statut === 'versee'
+              ? { rembourseApresVersement: true, remboursementLe: FieldValue.serverTimestamp() }
+              : { statut: 'annulee', raisonAnnulation: 'remboursement', annuleeLe: FieldValue.serverTimestamp() };
+          await d.ref.set(champs, { merge: true });
+          console.log(`[paiements] remboursement ${pi} : commission ${d.id} ${JSON.stringify(Object.keys(champs))}`);
+        }
       }
       res.status(200).send('ok'); return;
     }
@@ -591,6 +700,7 @@ export const stripeWebhook = onRequest(
     // Un achat fait sans compte : le compte se retrouve, ou se crée, avec
     // l'adresse saisie dans la caisse. L'accès ne va jamais à une autre adresse.
     let compteCree = false;
+    const sansCompte = !uid;
     if (!uid && formationId && reglee && !session.metadata?.type) {
       const adresse = String(session.customer_details?.email || '').trim().toLowerCase();
       if (!adresse) { console.error('[paiements] achat sans compte ni adresse', session.id); res.status(200).send('incomplete'); return; }
@@ -654,29 +764,56 @@ export const stripeWebhook = onRequest(
     // La vente d'une ambassadrice : une ligne au grand livre des commissions,
     // calculée sur ce qui a réellement été payé, hors taxes. create() et non
     // set() : un webhook rejoué ne remet jamais « due » une commission versée.
-    if (session.metadata?.ambassadriceUid) {
-      // En versements, la session ne porte que le premier : la ligne compte
-      // le total attendu et garde le nombre de versements, pour que l'admin
-      // sache que l'argent rentre sur plusieurs mois.
-      const nVersements = session.mode === 'subscription' ? Number(session.metadata?.versements) || 1 : 1;
-      const payeHT = Math.max(0, (session.amount_total || 0) - detailTaxes.taxes) * nVersements;
-      const commissionPct = Number(session.metadata.commissionPct) || 0;
-      try {
+    // En versements, cette ligne ne compte QUE le premier; chaque versement
+    // payé ajoute la sienne (invoice.paid). Une invitée qui a payé sans se
+    // connecter mais dont l'adresse porte un compte rattaché à une
+    // ambassadrice est reconnue ici (sans rabais : elle a payé le plein prix).
+    try {
+      let amb: { uid: string; rabaisPct: number; commissionPct: number } | null = session.metadata?.ambassadriceUid
+        ? { uid: String(session.metadata.ambassadriceUid), rabaisPct: Number(session.metadata.rabaisPct) || 0, commissionPct: Number(session.metadata.commissionPct) || 0 }
+        : null;
+      if (!amb && sansCompte && !compteCree) {
+        const a = await ambassadriceDe(uid).catch(() => null);
+        if (a) amb = { uid: a.uid, rabaisPct: 0, commissionPct: a.commissionPct };
+      }
+      // Un renvoi du même événement : la ligne existe déjà, rien à refaire.
+      if (amb && !(await db.doc(`commissionsAmbassadrices/${session.id}`).get()).exists) {
+        const abonnementId = session.mode === 'subscription' && session.subscription
+          ? (typeof session.subscription === 'string' ? session.subscription : String(session.subscription.id || ''))
+          : '';
+        const payeHT = Math.max(0, (session.amount_total || 0) - detailTaxes.taxes);
+        const pi = abonnementId ? await intentionDeFacture(session.invoice) : lirePI(session);
+        // Jamais sa propre ambassadrice : même compte, même adresse, ou une
+        // carte enregistrée au nom de l'ambassadrice. La ligne s'inscrit quand
+        // même, annulée, pour que l'admin la voie.
+        const adresseAmb = String((await getAuth().getUser(amb.uid).catch(() => null))?.email || '').toLowerCase();
+        const adresseAcheteuse = courrielNormalise(session.customer_details?.email);
+        const memePersonne = uid === amb.uid
+          || (!!adresseAcheteuse && adresseAcheteuse === courrielNormalise(adresseAmb))
+          || await memeCarte(pi, adresseAmb);
+        const maintenant = Date.now();
         await db.doc(`commissionsAmbassadrices/${session.id}`).create({
-          ambassadriceUid: session.metadata.ambassadriceUid,
+          ambassadriceUid: amb.uid,
           acheteuseUid: uid,
           formationId,
           titre: f.titre || formationId,
           payeHT,
-          rabaisPct: Number(session.metadata.rabaisPct) || 0,
-          commissionPct,
-          commission: commissionCents(payeHT, commissionPct),
-          versements: nVersements,
-          statut: 'due',
+          rabaisPct: amb.rabaisPct,
+          commissionPct: amb.commissionPct,
+          commission: commissionCents(payeHT, amb.commissionPct),
+          versement: 1,
+          versements: abonnementId ? Number(session.metadata?.versements) || 1 : 1,
+          ...(abonnementId ? { abonnementId } : {}),
+          paymentIntentId: pi,
+          ...(sansCompte ? { sansCompte: true } : {}),
+          statut: memePersonne ? 'annulee' : 'en-attente',
+          ...(memePersonne ? { raisonAnnulation: 'meme-personne' } : {}),
+          garantieFinLe: Timestamp.fromMillis(maintenant + GARANTIE_JOURS * 86400000),
+          dueLe: Timestamp.fromMillis(echeanceCommission(maintenant, maintenant)),
           at: FieldValue.serverTimestamp(),
         });
-      } catch (err) { console.log('[paiements] commission déjà consignée ou refusée', (err as Error).message); }
-    }
+      }
+    } catch (err) { console.log('[paiements] commission déjà consignée ou refusée', (err as Error).message); }
     console.log(`[paiements] achat enregistré: ${uid} -> ${formationId}`);
     // Les séquences déclenchées par cet achat (onboarding, suite de bienvenue) :
     // l'inscription et la première étape, sans jamais faire échouer le webhook.

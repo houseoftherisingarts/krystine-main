@@ -12,7 +12,7 @@ import { getMember, type MemberDoc } from '../firebase/firestore';
 import { logout } from '../firebase/auth';
 import { updateMember, getClientOrdersForMember, getDoshaResultsForMember, getGuideResponsesForMember, type ClientOrder, type DoshaResult, type GuideResponse } from '../firebase/firestore';
 import { uploadImage, reduireImage } from '../firebase/storage';
-import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../shopify';
+import { getProducts, formatMoney, isShopifyConfigured, libelleEtiquette, type ShopifyProduct } from '../shopify';
 import { findOilForDosha, formatDetail } from '../lib/shopifyOil';
 import { trackObjectif } from '../lib/track';
 import { ritualForDosha } from '../lib/doshaRituals';
@@ -1357,8 +1357,8 @@ const DoshaTab: React.FC = () => {
                       {product ? (
                         <>
                           <h3 className="text-xl md:text-2xl font-serif text-[#293027] dark:text-white mb-1">{product.title}</h3>
-                          {product.productType && (
-                            <p className="text-[11px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50 mb-3">{product.productType}</p>
+                          {libelleEtiquette(product.productType, lang) && (
+                            <p className="text-[11px] uppercase tracking-widest text-[#293027]/50 dark:text-white/50 mb-3">{libelleEtiquette(product.productType, lang)}</p>
                           )}
                           <p className="text-lg font-serif text-[#8B4A2F] mb-4">{priceText}</p>
                           <div className="flex flex-wrap gap-3">

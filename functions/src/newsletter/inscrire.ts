@@ -141,9 +141,17 @@ export async function enregistrerInscription(d: Record<string, unknown>, uid?: s
   // complètent, et une fiche en attente devient active. Une fiche désabonnée,
   // en quarantaine ou rebondie garde son statut. Si la liste rejointe a son propre courriel, il part une fois.
   const col = getFirestore().collection('newsletter');
-  const existantes = await col.where('email', '==', email).limit(10).get();
+  // La lecture et la création se font dans une transaction : deux clics très
+  // rapprochés ne créent plus deux fiches (fusion des doublons, 4 oct. 2026).
+  const nouvelleRef = col.doc();
+  const existantes = await getFirestore().runTransaction(async (tx) => {
+    const q = await tx.get(col.where('email', '==', email).limit(10));
+    if (q.empty) tx.set(nouvelleRef, fiche);
+    return q;
+  });
   if (!existantes.empty) {
-    const docs = existantes.docs;
+    // Une fiche marquée « doublon » renvoie à sa principale : elle ne sert jamais de cible.
+    const docs = existantes.docs.filter(x => x.get('status') !== 'doublon').length ? existantes.docs.filter(x => x.get('status') !== 'doublon') : existantes.docs;
     const cible = docs.find(x => x.get('status') === 'active') || docs[0];
     const avant = cible.data() as Record<string, any>;
     const tagsAvant: string[] = Array.isArray(avant.tags) ? avant.tags : [];
@@ -179,7 +187,7 @@ export async function enregistrerInscription(d: Record<string, unknown>, uid?: s
     return { ok: true, id: cible.id, status: statut };
   }
 
-  const ref = await col.add(fiche);
+  const ref = nouvelleRef;
   console.log(`[inscrire] ${source} · ${fiche.status} · ${ref.id}`);
   // L'étiquette d'entrée des nouvelles personnes (28 sept. 2026) : posée
   // APRÈS la création, parce que les séquences par étiquette démarrent sur

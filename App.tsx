@@ -43,6 +43,7 @@ function HardReload({ to }: { to: string }) {
 // Lazy-loaded pages for code splitting
 const InspiratHome     = lazy(() => import('./src/pages/InspiratHome'));
 const BoutiqueCollectionPage = lazy(() => import('./src/pages/BoutiqueCollectionPage'));
+const ProduitPage      = lazy(() => import('./src/pages/ProduitPage'));
 const TVPage           = lazy(() => import('./src/pages/TVPage'));
 const ClientPortal     = lazy(() => import('./src/pages/ClientPortal'));
 const DemoSkins        = lazy(() => import('./src/pages/DemoSkins'));
@@ -275,6 +276,7 @@ const App: React.FC = () => (
           <Route path="/v2" element={<KrystineV2 />} />
           <Route path="/v3" element={<KrystineV3 />} />
           <Route path="/boutique"        element={<BoutiqueLoeuvre />} />
+          <Route path="/boutique/produit/:handle" element={<ProduitPage />} />
           <Route path="/boutique/:slug"  element={<BoutiqueCollectionPage />} />
           <Route path="/medias"          element={<MediasV2 />} />
           <Route path="/medias/tv"       element={<TVPage />} />

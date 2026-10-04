@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import {
   ShoppingBag, Leaf, Sparkle, Check, ArrowRight, ArrowDown, Drop, Plant,
@@ -8,8 +9,11 @@ import {
   getProducts,
   formatMoney,
   isShopifyConfigured,
+  libelleEtiquette,
   type ShopifyProduct,
 } from '../shopify';
+import { useProduitsPerso, appliquerPerso, estVisible, trierSelonPerso } from '../firebase/boutiqueProduits';
+import { modeApercu } from '../lib/apercuBoutique';
 import NewsletterSignup from '../components/NewsletterSignup';
 import { Atmosphere } from '../components/motion/loeuvre';
 
@@ -100,7 +104,7 @@ const AddButton: React.FC<{
   soldOut: boolean;
   hasVariant: boolean;
   isAdded: boolean;
-  lang: string;
+  lang: 'FR' | 'EN';
   onAdd: (p: ShopifyProduct, e: React.MouseEvent) => void;
 }> = ({ p, soldOut, hasVariant, isAdded, lang, onAdd }) => {
   if (soldOut || !hasVariant) {
@@ -141,7 +145,7 @@ const SoldOutTab: React.FC<{ lang: string }> = ({ lang }) => (
 const ProductCard: React.FC<{
   p: ShopifyProduct;
   index: number;
-  lang: string;
+  lang: 'FR' | 'EN';
   added: string | null;
   onAdd: (p: ShopifyProduct, e: React.MouseEvent) => void;
 }> = ({ p, index, lang, added, onAdd }) => {
@@ -153,6 +157,8 @@ const ProductCard: React.FC<{
     : formatMoney(p.priceRange.minVariantPrice, lang);
   const image = p.featuredImage?.url || p.images[0]?.url;
   const isAdded = added === p.id;
+  const type = libelleEtiquette(p.productType, lang);
+  const fiche = `/boutique/produit/${p.handle}`;
 
   return (
     <motion.article
@@ -162,7 +168,7 @@ const ProductCard: React.FC<{
       className="group relative flex h-full flex-col bg-[#faf6ee] border border-[#9c7a44]/25 will-change-transform"
     >
       {/* Visuel + médaillon prix */}
-      <div className="relative">
+      <Link to={fiche} className="relative block" aria-label={p.title}>
         <div className="relative aspect-[4/5] overflow-hidden bg-[#efe6d7]">
           {image ? (
             <img
@@ -186,17 +192,22 @@ const ProductCard: React.FC<{
         >
           {price}
         </motion.span>
-      </div>
+      </Link>
 
       {/* Méta */}
       <div className="flex flex-col flex-1 p-6 pt-8">
         <span className="text-[0.58rem] uppercase tracking-[0.26em] text-[#7d6330]">
-          {String(index).padStart(2, '0')}{p.productType ? ` · ${p.productType}` : ''}
+          {String(index).padStart(2, '0')}{type ? ` · ${type}` : ''}
         </span>
-        <h3 className="mt-3 v2-serif font-light leading-[1.12] text-[1.5rem] text-[#1c1712]">{p.title}</h3>
+        <h3 className="mt-3 v2-serif font-light leading-[1.12] text-[1.5rem] text-[#1c1712]">
+          <Link to={fiche} className="hover:text-[#7d6330] transition-colors duration-300">{p.title}</Link>
+        </h3>
         <span className="mt-5 block h-px w-10 bg-[#9c7a44]" aria-hidden />
-        <div className="mt-auto pt-7">
+        <div className="mt-auto pt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
           <AddButton p={p} soldOut={soldOut} hasVariant={!!variant} isAdded={isAdded} lang={lang} onAdd={onAdd} />
+          <Link to={fiche} className="text-[0.64rem] uppercase tracking-[0.2em] text-[#1c1712]/70 border-b border-[#1c1712]/30 pb-1 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">
+            {lang === 'FR' ? 'Voir le produit' : 'View product'}
+          </Link>
         </div>
       </div>
     </motion.article>
@@ -205,8 +216,8 @@ const ProductCard: React.FC<{
 
 /* ── Produit vedette · pleine largeur éditoriale ── */
 const FeaturedProduct: React.FC<{
-  p: ShopifyProduct;
-  lang: string;
+  p: ShopifyProduct & { accroche?: string };
+  lang: 'FR' | 'EN';
   added: string | null;
   onAdd: (p: ShopifyProduct, e: React.MouseEvent) => void;
 }> = ({ p, lang, added, onAdd }) => {
@@ -217,10 +228,12 @@ const FeaturedProduct: React.FC<{
     : formatMoney(p.priceRange.minVariantPrice, lang);
   const image = p.featuredImage?.url || p.images[0]?.url;
   const isAdded = added === p.id;
+  const type = libelleEtiquette(p.productType, lang);
+  const fiche = `/boutique/produit/${p.handle}`;
 
   return (
     <div className="grid lg:grid-cols-[0.9fr_1.1fr] bg-[#faf6ee] border border-[#9c7a44]/25">
-      <div className="relative overflow-hidden aspect-[4/3] lg:aspect-auto lg:min-h-[440px] bg-[#efe6d7]">
+      <Link to={fiche} aria-label={p.title} className="relative block overflow-hidden aspect-[4/3] lg:aspect-auto lg:min-h-[440px] bg-[#efe6d7]">
         {image ? (
           <img
             src={image}
@@ -235,23 +248,28 @@ const FeaturedProduct: React.FC<{
           </div>
         )}
         {soldOut && <SoldOutTab lang={lang} />}
-      </div>
+      </Link>
       <div className="flex flex-col justify-center p-[clamp(1.75rem,4vw,3.5rem)]">
         <div className="flex items-center gap-3 mb-6">
           <span className="inline-grid place-items-center w-11 h-11 rounded-full bg-[#9c7a44] text-[#faf6ee]">
             <Sparkle size={20} weight="light" />
           </span>
           <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330]">
-            {lang === 'FR' ? 'En vedette' : 'Featured'}{p.productType ? ` · ${p.productType}` : ''}
+            {lang === 'FR' ? 'En vedette' : 'Featured'}{type ? ` · ${type}` : ''}
           </span>
         </div>
-        <h3 className="v2-serif font-light leading-[1.04] text-[#1c1712] text-[clamp(2rem,3.6vw,3.2rem)]">{p.title}</h3>
-        {p.description && (
-          <p className="mt-6 text-[1rem] leading-[1.8] text-[#3a2f23] max-w-[56ch] line-clamp-4">{p.description}</p>
+        <h3 className="v2-serif font-light leading-[1.04] text-[#1c1712] text-[clamp(2rem,3.6vw,3.2rem)]">
+          <Link to={fiche} className="hover:text-[#7d6330] transition-colors duration-300">{p.title}</Link>
+        </h3>
+        {(p.accroche || p.description) && (
+          <p className="mt-6 text-[1rem] leading-[1.8] text-[#3a2f23] max-w-[56ch] line-clamp-4">{p.accroche || p.description}</p>
         )}
         <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
           <span className="v2-serif font-light text-[clamp(1.5rem,2.4vw,2rem)] text-[#7d6330] tabular-nums">{price}</span>
           <AddButton p={p} soldOut={soldOut} hasVariant={!!variant} isAdded={isAdded} lang={lang} onAdd={onAdd} />
+          <Link to={fiche} className="text-[0.66rem] uppercase tracking-[0.2em] text-[#1c1712]/70 border-b border-[#1c1712]/30 pb-1 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">
+            {lang === 'FR' ? 'Voir le produit' : 'View product'}
+          </Link>
         </div>
       </div>
     </div>
@@ -266,7 +284,7 @@ const BoutiqueLoeuvre: React.FC = () => {
   // ?apercu=1 montre la boutique du site même lorsque le renvoi vers
   // inspiratanature.com est allumé, pour que Krystine la voie avant la
   // bascule (4 oct. 2026).
-  const apercu = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('apercu') === '1';
+  const apercu = useMemo(() => modeApercu(), []);
   const redirectEnabled = renvoiActif && !apercu;
   const reduce = useReducedMotion();
 
@@ -293,10 +311,15 @@ const BoutiqueLoeuvre: React.FC = () => {
       .finally(() => setLoadingShop(false));
   }, [lang]);
 
-  // Respecter les produits masqués depuis /admin (par handle).
+  // Respecter les produits masqués depuis /admin (par handle, ou dans la
+  // fiche personnalisée), puis appliquer la personnalisation et l'ordre choisi.
+  const { perso } = useProduitsPerso();
   const visibleProducts = useMemo(
-    () => products.filter(p => !hiddenProducts.has(p.handle)),
-    [products, hiddenProducts],
+    () => trierSelonPerso(
+      products.filter(p => estVisible(p.handle, hiddenProducts, perso)).map(p => appliquerPerso(p, perso.get(p.handle))),
+      perso,
+    ),
+    [products, hiddenProducts, perso],
   );
 
   const handleAdd = (p: ShopifyProduct, e: React.MouseEvent) => {
@@ -307,7 +330,7 @@ const BoutiqueLoeuvre: React.FC = () => {
       id: p.id,
       variantId: variant.id,
       title: p.title,
-      type: p.productType,
+      type: libelleEtiquette(p.productType, lang) || '',
       price: formatMoney(variant.price, lang),
       priceAmount: variant.price.amount,
       priceCurrency: variant.price.currencyCode,
@@ -441,9 +464,9 @@ const BoutiqueLoeuvre: React.FC = () => {
               ))}
             </ul>
 
-            <p className="v2-serif italic text-[clamp(1.35rem,2.4vw,1.95rem)] font-light leading-[1.32] text-[#3a2f23] max-w-[36ch]">
+            <p className="v2-serif text-[clamp(1.35rem,2.4vw,1.95rem)] font-light leading-[1.32] text-[#3a2f23] max-w-[36ch]">
               {lang === 'FR'
-                ? 'Huiles corporelles, rituels et soins composés autour d’un dosha ou d’un moment de vie.'
+                ? 'Huiles corporelles, soins et gestes composés autour d’un dosha ou d’un moment de vie.'
                 : 'Body oils, rituals and care composed around a dosha or a moment in life.'}
             </p>
 
@@ -457,7 +480,7 @@ const BoutiqueLoeuvre: React.FC = () => {
               </a>
               <a
                 href="#infolettre"
-                className="v2-serif italic text-lg text-[#1c1712]/70 hover:text-[#7d6330] transition-colors duration-300 min-h-[44px] inline-flex items-center"
+                className="v2-serif text-lg text-[#1c1712]/70 hover:text-[#7d6330] transition-colors duration-300 min-h-[44px] inline-flex items-center"
               >
                 {lang === 'FR' ? 'Recevoir les nouveautés' : 'Get the new arrivals'}
               </a>
@@ -475,7 +498,7 @@ const BoutiqueLoeuvre: React.FC = () => {
             <ArrowDown size={13} weight="regular" />
             {lang === 'FR' ? 'Faire défiler' : 'Scroll'}
           </span>
-          <span className="hidden sm:inline">{lang === 'FR' ? 'Huiles · Rituels · Saisons' : 'Oils · Rituals · Seasons'}</span>
+          <span className="hidden sm:inline">{lang === 'FR' ? 'Huiles · Soins · Saisons' : 'Oils · Care · Seasons'}</span>
         </motion.div>
       </section>
 
@@ -489,9 +512,9 @@ const BoutiqueLoeuvre: React.FC = () => {
         <motion.span
           aria-hidden
           style={reduce ? undefined : { x: ghostX }}
-          className="pointer-events-none select-none absolute top-[34%] left-0 whitespace-nowrap v2-serif italic font-light leading-none text-[clamp(7rem,20vw,18rem)] text-[#9c7a44]/[0.09] will-change-transform"
+          className="pointer-events-none select-none absolute top-[34%] left-0 whitespace-nowrap v2-serif font-light leading-none text-[clamp(7rem,20vw,18rem)] text-[#9c7a44]/[0.09] will-change-transform"
         >
-          {lang === 'FR' ? 'Rituels' : 'Rituals'}
+          {lang === 'FR' ? 'Saisons' : 'Seasons'}
         </motion.span>
 
         <div className="relative">
@@ -502,7 +525,7 @@ const BoutiqueLoeuvre: React.FC = () => {
             <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">
               {lang === 'FR' ? 'Les essentiels de la maison' : 'The essentials of the house'}
             </h2>
-            <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.5rem)] text-[#3a2f23] max-w-[46ch] leading-snug">
+            <p className="mt-6 v2-serif text-[clamp(1.1rem,2vw,1.5rem)] text-[#3a2f23] max-w-[46ch] leading-snug">
               {lang === 'FR'
                 ? 'Chaque flacon est composé à la main, en petite série, au rythme des saisons.'
                 : 'Each bottle is hand-composed, in small batches, season after season.'}
@@ -658,7 +681,7 @@ const BoutiqueLoeuvre: React.FC = () => {
         <div className="relative z-10 px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,9rem)]">
           <Reveal className="max-w-[900px] mx-auto text-center">
             <Sparkle size={24} weight="light" className="text-[#c8a86a] mx-auto mb-7" />
-            <p className="v2-serif italic font-light text-[clamp(1.6rem,3.6vw,2.8rem)] leading-[1.24] text-[#f4efe6]">
+            <p className="v2-serif font-light text-[clamp(1.6rem,3.6vw,2.8rem)] leading-[1.24] text-[#f4efe6]">
               {lang === 'FR'
                 ? '« Le corps sait. Chaque huile est une invitation à l’écouter, un geste à la fois. »'
                 : '« The body knows. Each oil is an invitation to listen, one gesture at a time. »'}
@@ -677,10 +700,10 @@ const BoutiqueLoeuvre: React.FC = () => {
             <Kicker className="mb-5">{lang === 'FR' ? 'Rester dans le fil' : 'Stay in the loop'}</Kicker>
             <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
               {lang === 'FR'
-                ? <>Les nouveautés, <span className="italic">au fil des saisons.</span></>
-                : <>The new arrivals, <span className="italic">season after season.</span></>}
+                ? <>Les nouveautés, <span>au fil des saisons.</span></>
+                : <>The new arrivals, <span>season after season.</span></>}
             </h2>
-            <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.45rem)] text-[#3a2f23] max-w-[44ch] leading-snug">
+            <p className="mt-6 v2-serif text-[clamp(1.1rem,2vw,1.45rem)] text-[#3a2f23] max-w-[44ch] leading-snug">
               {lang === 'FR'
                 ? 'Recevez chaque nouvelle formule et chaque retour en stock directement par courriel.'
                 : 'Get each new formula and restock straight to your inbox.'}

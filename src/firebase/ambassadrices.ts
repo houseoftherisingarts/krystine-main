@@ -14,6 +14,7 @@ export const PART_PREMIUM_DEFAUT = 30;
 export const RABAIS_DEFAUT = 10;
 export const PAS = 5;
 export const PART_MAX = 60;
+export const CADENCE_DEFAUT_JOURS = 60;
 
 export interface Ambassadrice {
   uid: string;
@@ -35,9 +36,21 @@ export interface Commission {
   rabaisPct: number;
   commissionPct: number;
   commission: number;   // cents
-  statut: 'due' | 'versee';
+  // en-attente : garantie de 15 jours pas encore passée; due : à verser;
+  // annulee : remboursement, ou l'acheteuse est l'ambassadrice elle-même.
+  statut: 'en-attente' | 'due' | 'versee' | 'annulee';
+  raisonAnnulation?: 'remboursement' | 'meme-personne';
+  versement?: number;   // 1 à versements, pour un achat en versements
+  versements?: number;
+  remboursePartiel?: number;          // cents remboursés, l'admin tranche
+  rembourseApresVersement?: boolean;  // à reprendre sur le versement suivant
+  dueLe?: Timestamp;
+  verseeLe?: Timestamp | null;
   at?: Timestamp;
 }
+
+/** Ce qui compte encore pour l'ambassadrice (ni annulé, ni déjà versé). */
+export const aVenir = (v: Commission): boolean => v.statut === 'due' || v.statut === 'en-attente';
 
 export const partDe = (a: Pick<Ambassadrice, 'premium' | 'part'>, partPremium = PART_PREMIUM_DEFAUT): number =>
   Math.min(PART_MAX, Math.max(0, typeof a.part === 'number' ? a.part : a.premium ? partPremium : PART_DEFAUT));
@@ -72,6 +85,14 @@ export async function mesCommissions(uid: string): Promise<Commission[]> {
 }
 
 const trier = (l: Commission[]) => l.sort((a, b) => (b.at?.toMillis() || 0) - (a.at?.toMillis() || 0));
+
+/** La cadence de versement, en jours (settings/ambassadrices.cadenceJours).
+ *  Lecture seulement : le site ne verse rien de lui-même. */
+export async function getCadenceJours(): Promise<number> {
+  if (!db) return CADENCE_DEFAUT_JOURS;
+  const n = Number((await getDoc(doc(db, 'settings', 'ambassadrices'))).data()?.cadenceJours);
+  return Number.isFinite(n) && n > 0 ? n : CADENCE_DEFAUT_JOURS;
+}
 
 export async function getPartPremium(): Promise<number> {
   if (!db) return PART_PREMIUM_DEFAUT;

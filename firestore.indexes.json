@@ -221,6 +221,20 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "relancesPaiement",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "etape",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lettre1Le",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": [

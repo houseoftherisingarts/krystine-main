@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useUI, useAuth, useCart } from '../../contexts/AppContext';
 import { ASSETS } from '../../content';
-import { createCheckout, formatMoney, isShopifyConfigured } from '../../shopify';
-import { addClientOrder } from '../../firebase/firestore';
-import { points } from '../../firebase/points';
+import { createCheckout, formatMoney, isShopifyConfigured, libelleConnu } from '../../shopify';
 import { trackObjectif } from '../../lib/track';
 import Portail from '../Portail';
 
@@ -42,37 +40,15 @@ const CartDrawer: React.FC = () => {
       const agg = new Map<string, number>();
       shopifyItems.forEach(i => agg.set(i.variantId!, (agg.get(i.variantId!) || 0) + 1));
       const lines = Array.from(agg.entries()).map(([variantId, quantity]) => ({ variantId, quantity }));
-      const url = await createCheckout(lines, lang);
+      // Le courriel de la membre connectée se pose d'avance au paiement : c'est par
+      // lui que le webhook retrouve son compte pour lui verser ses niskas.
+      const url = await createCheckout(lines, lang, user?.email || undefined);
       trackObjectif('Paiement commencé · boutique', 'gros', { paiement: true });
 
-      // Log the order in Firestore (if user is signed in) so it appears in their client space.
-      if (user?.email) {
-        const orderItems = shopifyItems.map(i => ({
-          title: i.title || '',
-          price: i.price || '',
-          quantity: 1,
-          image: i.image,
-          variantId: i.variantId,
-        }));
-        const currency = shopifyItems.find(i => i.priceCurrency)?.priceCurrency || 'CAD';
-        const subtotalFormatted = formatMoney({ amount: cartTotal, currencyCode: currency }, lang);
-        try {
-          const orderRef = await addClientOrder({
-            uid: user.uid,
-            email: user.email,
-            items: orderItems,
-            subtotal: subtotalFormatted,
-            currency,
-            checkoutUrl: url,
-            status: 'pending_payment',
-          });
-          // Loyalty — 10 pts per item, idempotent on the order id so the
-          // same cart session can't double-earn if the user clicks twice.
-          if (orderRef?.id) {
-            try { await points.orderPlaced(user.uid, orderRef.id, shopifyItems.length); } catch { /* non-fatal */ }
-          }
-        } catch (e) { console.warn('[cart] addClientOrder failed', e); }
-      }
+      // Plus rien n'est écrit ici (4 oct. 2026) : avant, chaque clic créait une
+      // commande « en attente » dans clientOrders et donnait des niskas avant
+      // même le paiement. La commande et ses niskas arrivent maintenant par le
+      // serveur, lorsque Shopify confirme le paiement (functions/src/shopify/webhook.ts).
 
       window.location.href = url;
     } catch (e: any) {
@@ -136,7 +112,7 @@ const CartDrawer: React.FC = () => {
                   />
                   <div className="flex-1">
                     <h4 className="font-serif text-[#2a2015] dark:text-white leading-tight mb-1">{item.title || item.name}</h4>
-                    <p className="text-xs text-[#2a2015]/50 dark:text-white/50 uppercase tracking-wider mb-2">{item.type}</p>
+                    <p className="text-xs text-[#2a2015]/50 dark:text-white/50 uppercase tracking-wider mb-2">{libelleConnu(item.type, lang)}</p>
                     <div className="flex justify-between items-center">
                       <span className="font-bold text-[#7d6330]">{item.price}</span>
                       <button onClick={() => removeFromCart(i)} className="text-xs text-red-400 hover:text-red-600 underline transition-colors">

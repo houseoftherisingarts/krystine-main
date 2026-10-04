@@ -3,6 +3,7 @@ import { onRequest } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
 import { getFirestore } from 'firebase-admin/firestore';
 import { normalizeOrder } from './normalize';
+import { estPayee, traiterCommandePayee } from './commandePayee';
 import type { ShopifyOrderPayload } from './types';
 
 // Defined via `firebase functions:secrets:set SHOPIFY_API_SECRET`
@@ -49,6 +50,13 @@ export const shopifyWebhook = onRequest(
       if (topic.startsWith('orders/')) {
         const order = normalizeOrder(payload);
         await db.collection('shopifyOrders').doc(order.id).set({ ...order, shop, topic }, { merge: true });
+        // orders/paid, ou orders/create (et orders/updated) déjà payée : les
+        // niskas et la commande de l'espace client. Une erreur renvoie 500 pour
+        // que Shopify réessaie; la clé order:shopify:{id} empêche tout doublon.
+        if (estPayee(payload)) {
+          const fait = await traiterCommandePayee(payload);
+          console.info('[shopifyWebhook] commande payée', order.name, topic, fait);
+        }
       } else {
         console.info('[shopifyWebhook] ignored topic', topic);
       }
