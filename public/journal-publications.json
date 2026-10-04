@@ -6002,5 +6002,21 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-04T21:46:09.907Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "0839d2b6",
+    "message": "Infolettre : la citation s'affiche sur la carte vert profond, centrée, texte ivoire et signature cuivre (courriel et aperçu de l'admin)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "src/lib/newsletterRenderer.tsx"
+    ]
   }
 ]
