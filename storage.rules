@@ -83,8 +83,11 @@ service firebase.storage {
 
     // Le paquet Obsidian de Krystine (notes du vault d'Alex, zip publié par
     // krystine_vault_publier) : lecture par l'admin ou par le relais Iris.
+    // Le contenu de Mon Équipe (equipe.json signé ed25519 et equipe.zip) se lit sans compte :
+    // le programme ne demande aucun mot de passe, et la signature garantit l'origine.
     match /vault/{fichier} {
-      allow read: if isAdmin() || (request.auth != null && request.auth.token.email == 'iris@krystinestlaurent.ca');
+      allow read: if isAdmin() || (request.auth != null && request.auth.token.email == 'iris@krystinestlaurent.ca')
+        || fichier == 'equipe.json' || fichier == 'equipe.zip';
       allow write: if false;
     }
 
