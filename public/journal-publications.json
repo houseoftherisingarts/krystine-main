@@ -6076,5 +6076,20 @@
       "src/pages/podcast/videos 2.ts",
       "src/pages/podcast/videos.ts"
     ]
+  },
+  {
+    "quand": "2026-10-04T23:18:55.280Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "7af3095d",
+    "message": "Admin › Infolettre › Journal : graphique des lectures heure par heure pour chaque lettre envoyée (se met à jour tout seul)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/newsletter/JournalPanel.tsx",
+      "src/pages/admin/sections/newsletter/LecturesParHeure.tsx"
+    ]
   }
 ]
