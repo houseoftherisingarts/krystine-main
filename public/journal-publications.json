@@ -6048,5 +6048,33 @@
       "public/assets-manifest.json",
       "src/lib/newsletterRenderer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-04T23:12:51.233Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "06d0f28e",
+    "message": "Infolettre : écriture d'Ella (police Carnet d'Ella, sur papier) ; la page podcast refaite reste hors ligne en attendant l'accord de Krystine",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "index.html",
+      "public/assets-manifest.json",
+      "public/infolettre/papier-ella.jpg",
+      "src/components/LiveSignup 2.tsx",
+      "src/components/LiveSignup.tsx",
+      "src/lib/newsletterRenderer.tsx",
+      "src/pages/concepts/PodcastV2 2.tsx",
+      "src/pages/concepts/PodcastV2.tsx",
+      "src/pages/podcast/LecteurAudio 2.tsx",
+      "src/pages/podcast/LecteurAudio.tsx",
+      "src/pages/podcast/episodes 2.ts",
+      "src/pages/podcast/episodes.ts",
+      "src/pages/podcast/videos 2.ts",
+      "src/pages/podcast/videos.ts"
+    ]
   }
 ]
