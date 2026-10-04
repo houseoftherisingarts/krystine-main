@@ -48,12 +48,12 @@ export const COLLECTIONS: CollectionManifest[] = [
     slug: 'bibliotheque',
     labelFR: 'La Bibliothèque',
     labelEN: 'The Library',
-    taglineFR: 'Les livres signés Krystine',
-    taglineEN: 'Books signed by Krystine',
+    taglineFR: 'Les livres de Krystine',
+    taglineEN: "Krystine's books",
     storyFR:
-      "Nature & Ayurveda, Féminité & Ayurveda, La Cuisine Tonique : les ouvrages que Krystine tisse depuis plus de quinze ans. Des livres à lire lentement, en début de saison, pour laisser le propos infuser avant d'agir.",
+      "Nature & Ayurveda, Féminité & Ayurveda et La Cuisine Tonique. Trois livres écrits pour rester près de soi, annotés, repris d'une saison à l'autre. Bien souvent, ce sont eux qui ouvrent la porte, avant même la première huile.",
     storyEN:
-      "Nature & Ayurveda, Femininity & Ayurveda, The Tonic Kitchen : the books Krystine has been weaving for more than fifteen years. Books to read slowly, at the turn of a season, letting the thought settle before acting.",
+      'Nature & Ayurveda, Femininity & Ayurveda and The Tonic Kitchen. Three books written to stay close at hand, annotated, picked up again from one season to the next. Very often they are what opens the door, even before the first oil.',
     bannerImage: ASSETS.livresBg,
     // Checked *before* body oils because book titles sometimes mention "Vata"
     // etc. (e.g. an oil-related chapter title) and we don't want those routed
@@ -65,12 +65,12 @@ export const COLLECTIONS: CollectionManifest[] = [
     slug: 'serenite',
     labelFR: 'Sérénité',
     labelEN: 'Serenity',
-    taglineFR: 'Apaiser · Ancrer · Respirer',
-    taglineEN: 'Soothe · Ground · Breathe',
+    taglineFR: 'Apaiser, ancrer, respirer',
+    taglineEN: 'Soothe, ground, breathe',
     storyFR:
-      "La formule D-Stress et son roll-on nomade. Un rituel aromatique pour ralentir le tempo, au creux du poignet, derrière la nuque, quand le monde s'accélère.",
+      "La synergie D-Stress et son roll-on, à garder dans le sac. Un rituel aromatique tout simple : quelques gouttes au creux du poignet ou derrière la nuque, trois longues respirations, et le rythme redescend d'un cran.",
     storyEN:
-      "The D-Stress formula and its travel roll-on. An aromatic ritual to slow the tempo, at the wrist, behind the neck, when the world speeds up.",
+      'The D-Stress synergy and its roll-on, to keep in your bag. A very simple aromatic ritual: a few drops at the wrist or behind the neck, three long breaths, and the pace comes down a notch.',
     bannerImage: ASSETS.founderHover,
     match: p => productHas(p, ['d-stress', 'destress', 'd stress', 'roll on', 'roll-on', 'serenite']),
   },
@@ -82,11 +82,25 @@ export const COLLECTIONS: CollectionManifest[] = [
     taglineFR: 'Pour la lumière qui change',
     taglineEN: 'For the changing light',
     storyFR:
-      "Néroli éclatant, soin after-sun réconfortant. Les essentiels qui accompagnent les peaux exposées et les passages entre deux saisons.",
+      "La brume au néroli et la brume après-soleil. Deux soins pour la peau qui a pris le soleil, le vent ou l'air sec, et pour ces passages d'une saison à l'autre où le corps cherche encore son équilibre.",
     storyEN:
-      "Radiant neroli, comforting after-sun care. The essentials that accompany sun-touched skin and the crossings between seasons.",
+      'The neroli mist and the after-sun mist. Two treatments for skin that has taken sun, wind or dry air, and for those crossings from one season to the next when the body is still finding its balance.',
     bannerImage: ASSETS.formationsBg,
-    match: p => productHas(p, ['neroli', 'after sun', 'after-sun', 'aftersun', 'solaire']),
+    match: p => productHas(p, ['neroli', 'after sun', 'after-sun', 'aftersun', 'solaire', 'apres-soleil', 'apres soleil']),
+  },
+  {
+    id: 'visage-sens',
+    slug: 'visage-sens',
+    labelFR: 'Visage & Sens',
+    labelEN: 'Face & Senses',
+    taglineFR: 'Le visage, le nez, les yeux',
+    taglineEN: 'The face, the nose, the eyes',
+    storyFR:
+      "Le sérum visage Défripant, l'huile nasale Nez ZEN et le Repose-Yeux. De petits soins pour ce qui s'expose le plus à l'air, au chauffage et aux écrans. Quelques secondes le matin, quelques minutes le soir.",
+    storyEN:
+      'The Défripant face serum, the Nez ZEN nasal oil and the eye rest. Small treatments for what is most exposed to air, heating and screens. A few seconds in the morning, a few minutes at night.',
+    bannerImage: ASSETS.shopBg,
+    match: p => productHas(p, ['serum', 'visage', 'nasale', 'nez zen', 'repose yeux', 'repose-yeux']),
   },
   // "Les Chandelles" collection retired at request — no candles on
   // sale right now. Slug + match logic kept commented for the day they
@@ -99,26 +113,26 @@ export const COLLECTIONS: CollectionManifest[] = [
     slug: 'rituels',
     labelFR: 'Les Rituels',
     labelEN: 'The Rituals',
-    taglineFR: 'Les gestes qui entourent la formule',
-    taglineEN: 'The gestures that surround the formula',
+    taglineFR: 'Les objets qui entourent le soin',
+    taglineEN: 'The objects around the care',
     storyFR:
-      "Les objets qui accompagnent le soin : brosses, coupes, linges. Choisis pour durer, transmis de saison en saison, pensés pour devenir familiers sous la main.",
+      "Le gratte-langue en cuivre, les bouteilles Inspirata, le palo santo. Des objets choisis pour durer et pour devenir familiers sous la main, parce qu'un rituel tient souvent à un objet qui nous attend au bon endroit.",
     storyEN:
-      "The objects that accompany care : brushes, cups, cloths. Chosen to last, passed from season to season, made to grow familiar under the hand.",
+      'The copper tongue scraper, the Inspirata bottles, the palo santo. Objects chosen to last and to grow familiar in the hand, because a ritual often holds on an object waiting for us in the right place.',
     bannerImage: ASSETS.blogBg,
-    match: p => productHas(p, ['rituel', 'ritual', 'accessoire', 'accessory', 'brosse', 'brush', 'cup', 'coupe']),
+    match: p => productHas(p, ['rituel', 'ritual', 'accessoire', 'accessory', 'brosse', 'brush', 'cup', 'coupe', 'gratte', 'bouteille', 'palo santo']),
   },
   {
     id: 'huiles-corporelles',
     slug: 'huiles-corporelles',
     labelFR: 'Les Huiles Corporelles',
     labelEN: 'The Body Oils',
-    taglineFR: 'Vata · Pitta · Kapha · Féminité · Sportive · Défripante',
-    taglineEN: 'Vata · Pitta · Kapha · Feminine · Sport · Anti-fatigue',
+    taglineFR: 'Une huile pour chaque dominance, et pour les moments de la vie',
+    taglineEN: 'An oil for each dominance, and for the moments of life',
     storyFR:
-      "Six huiles infusées à la main, chacune composée autour d'un dosha ou d'un moment de vie. Des plantes locales, une pression lente, une formulation signée Krystine, pensées pour se rappliquer à soi, matin après matin.",
+      "Cinq huiles infusées à la main : L'Apaisante Vata (Vent et Espace), La Rafraîchissante Pitta (Feu et Eau), L'Énergisante Kapha (Eau et Terre), La Douceur Féminité et La Sportive. Des plantes d'ici, une infusion lente, une formule signée Krystine. Quelques minutes de massage, matin ou soir, et le corps s'en souvient.",
     storyEN:
-      "Six hand-infused oils, each composed around a dosha or a moment in life. Local plants, slow pressing, a formulation signed by Krystine, made to return to oneself, morning after morning.",
+      "Five hand-infused oils: L'Apaisante Vata (Wind and Space), La Rafraîchissante Pitta (Fire and Water), L'Énergisante Kapha (Water and Earth), La Douceur Féminité and La Sportive. Local plants, a slow infusion, a formula signed by Krystine. A few minutes of massage, morning or night, and the body remembers.",
     bannerImage: ASSETS.ayurvedaBg,
     // Intentionally the broadest body-oil predicate, placed last so that books
     // /candles / roll-ons aren't swallowed by a stray "vata" keyword.
