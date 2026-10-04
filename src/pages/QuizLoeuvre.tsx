@@ -654,7 +654,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
       setStep(nextStep);
       setFlashPick(null);
       if (done) setTeaser(computeTeaser(scoresFromPicks(nextPicks)));
-    }, 280);
+    }, 750); // le temps de voir le crochet vert s'allumer (Krystine, 4 oct. 2026)
   };
 
   const goBack = () => {
@@ -1140,14 +1140,17 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                         isFlash ? 'bg-[#9c7a44]/10' : 'hover:bg-[#9c7a44]/[0.06]'
                       }`}
                     >
-                      {/* Un cercle neutre qui se remplit d'or au choix : rien ne
-                          trahit le dosha de la réponse (Krystine, 4 oct. 2026). */}
+                      {/* Un cercle neutre; au choix, il s'allume en vert avec un
+                          crochet, le même pour toutes les réponses : rien ne
+                          trahit le dosha (Krystine, 4 oct. 2026). */}
                       <span
                         aria-hidden="true"
-                        className={`mt-[0.45rem] shrink-0 w-[1.05rem] h-[1.05rem] rounded-full border transition-all duration-500 ${
-                          isFlash ? 'border-[#9c7a44] bg-[#9c7a44] shadow-[0_0_0_4px_rgba(156,122,68,0.18)]' : 'border-[#9c7a44]/60 group-hover:border-[#9c7a44] group-hover:shadow-[inset_0_0_0_3px_rgba(156,122,68,0.25)]'
+                        className={`mt-[0.35rem] shrink-0 w-[1.35rem] h-[1.35rem] rounded-full border grid place-items-center transition-all duration-300 ${
+                          isFlash ? 'border-[#4E6349] bg-[#4E6349] scale-110 shadow-[0_0_0_5px_rgba(78,99,73,0.18)]' : 'border-[#9c7a44]/60 group-hover:border-[#9c7a44] group-hover:shadow-[inset_0_0_0_3px_rgba(156,122,68,0.25)]'
                         }`}
-                      />
+                      >
+                        <Check size={12} weight="bold" className={`text-[#faf6ee] transition-opacity duration-200 ${isFlash ? 'opacity-100' : 'opacity-0'}`} />
+                      </span>
                       <span className={`flex-1 text-[0.95rem] leading-[1.75] transition-colors duration-300 ${
                         isFlash ? 'text-[#1c1712]' : 'text-[#3a2f23] group-hover:text-[#1c1712]'
                       }`}>
@@ -1155,7 +1158,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                       </span>
                       <span className="shrink-0 pt-1">
                         {isFlash
-                          ? <Check size={16} weight="bold" className="text-[#7d6330]" />
+                          ? null
                           : <ArrowRight size={15} weight="regular" className="text-[#7d6330] opacity-0 -translate-x-1.5 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0" />}
                       </span>
                     </button>
