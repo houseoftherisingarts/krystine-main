@@ -60,8 +60,8 @@ const POLICES: Record<string, string> = {
   // Ms Madi, la plus proche de la signature de Krystine (son choix, 27 sept. 2026).
   script: "'Ms Madi', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive",
   // L'écriture d'Ella (Krystine, 4 oct. 2026) : une main de carnet, posée sur
-  // du papier. Bradley Hand prend le relais sur Apple quand Caveat ne charge pas.
-  ella: "'Caveat', 'Bradley Hand', 'Segoe Print', 'Comic Neue', cursive",
+  // du papier. Bradley Hand prend le relais sur Apple quand Kalam ne charge pas (Kalam plutôt que Caveat : plus lisible, 4 oct. 2026).
+  ella: "'Kalam', 'Bradley Hand', 'Segoe Print', 'Comic Neue', cursive",
 };
 const TAILLES: Record<string, number> = { sm: 14, md: 16, lg: 18, xl: 21 };
 
@@ -257,7 +257,7 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       if (c.police === 'ella') {
         const papier = `${PUBLIC_BASE_URL}/infolettre/papier-ella.jpg`;
         return `<tr><td style="padding:4px 0 24px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
-          <td align="${align}" bgcolor="#f3ead9" background="${papier}" style="background:#f3ead9 url('${papier}') center / cover;border:1px solid #d8c6a3;box-shadow:0 10px 24px -14px rgba(60,40,20,0.45);padding:28px 30px 24px;font-family:${police};font-size:${t(Math.round((TAILLES[c.taille] || 16) * 1.45))}px;line-height:1.45;color:#3a2b1e;">${text}</td>
+          <td align="${align}" bgcolor="#f3ead9" background="${papier}" style="background:#f3ead9 url('${papier}') center / cover;border:1px solid #d8c6a3;box-shadow:0 10px 24px -14px rgba(60,40,20,0.45);padding:28px 30px 24px;font-family:${police};font-size:${t(Math.round((TAILLES[c.taille] || 16) * 1.2))}px;line-height:1.65;color:#2b1f14;">${text}</td>
         </tr></table></td></tr>`;
       }
       return `<tr><td align="${align}" style="padding:0 0 18px;font-family:${police};font-size:${px}px;line-height:1.75;color:${pal.ink};">${text}</td></tr>`;
@@ -516,7 +516,7 @@ function rendreHtml(blocks: NewsletterBlock[], opts: RenderEmailOptions): string
 
   return `<!doctype html>
 <html lang="${lang}">
-<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>${esc(opts.subject)}</title><link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Ms+Madi&family=Caveat:wght@400;500&display=swap" rel="stylesheet" /></head>
+<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>${esc(opts.subject)}</title><link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Ms+Madi&family=Kalam:wght@400&display=swap" rel="stylesheet" /></head>
 <body style="margin:0;padding:0;background:${CHARTE.cream};">
   <div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;font-size:1px;color:transparent;line-height:1px;">${esc(opts.preheader || '')}</div>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CHARTE.cream};padding:36px 16px;">

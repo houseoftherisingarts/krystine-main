@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-04T23:18:48.111Z",
+  "generatedAt": "2026-10-04T23:24:21.100Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2151,6 +2151,13 @@
       "size": 8583632
     },
     {
+      "path": "/quiz/pictos/kapha-noir.png",
+      "name": "kapha-noir.png",
+      "folder": "quiz/pictos",
+      "kind": "image",
+      "size": 115580
+    },
+    {
       "path": "/quiz/pictos/kapha.png",
       "name": "kapha.png",
       "folder": "quiz/pictos",
@@ -2158,11 +2165,25 @@
       "size": 98924
     },
     {
+      "path": "/quiz/pictos/pitta-noir.png",
+      "name": "pitta-noir.png",
+      "folder": "quiz/pictos",
+      "kind": "image",
+      "size": 109282
+    },
+    {
       "path": "/quiz/pictos/pitta.png",
       "name": "pitta.png",
       "folder": "quiz/pictos",
       "kind": "image",
       "size": 98578
+    },
+    {
+      "path": "/quiz/pictos/vata-noir.png",
+      "name": "vata-noir.png",
+      "folder": "quiz/pictos",
+      "kind": "image",
+      "size": 104742
     },
     {
       "path": "/quiz/pictos/vata.png",

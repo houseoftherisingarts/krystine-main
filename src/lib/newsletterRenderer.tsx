@@ -40,7 +40,7 @@ export const POLICES: Record<Police, { label: string; css: string; tw: string }>
   serif:  { label: 'Éditoriale', css: "'Cormorant Garamond', Georgia, 'Times New Roman', serif", tw: 'font-serif' },
   sans:   { label: 'Moderne',    css: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif", tw: 'font-sans' },
   script: { label: 'Manuscrite', css: "'Ms Madi', 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive", tw: '' },
-  ella:   { label: 'Carnet d’Ella', css: "'Caveat', 'Bradley Hand', 'Segoe Print', 'Comic Neue', cursive", tw: '' },
+  ella:   { label: 'Carnet d’Ella', css: "'Kalam', 'Bradley Hand', 'Segoe Print', 'Comic Neue', cursive", tw: '' },
 };
 // Les formats d'image : bannière (bande large recadrée), grande, moyenne, ou
 // kaléidoscope de quatre carrés deux par deux. Miroir dans functions/src/newsletter/renderer.ts.
@@ -281,7 +281,7 @@ export const RenderBlockWeb: React.FC<{ block: NewsletterBlock; edit?: BlockEdit
       const taille = TAILLES[(c.taille as Taille) || 'md'];
       const ella = c.police === 'ella';
       const style: React.CSSProperties = ella
-        ? { fontFamily: police.css, fontSize: '1.45em', lineHeight: 1.45, color: '#3a2b1e', background: "#f3ead9 url('/infolettre/papier-ella.jpg') center / cover", border: '1px solid #d8c6a3', boxShadow: '0 10px 24px -14px rgba(60,40,20,0.45)', padding: '28px 30px 24px' }
+        ? { fontFamily: police.css, fontSize: '1.2em', lineHeight: 1.65, color: '#2b1f14', background: "#f3ead9 url('/infolettre/papier-ella.jpg') center / cover", border: '1px solid #d8c6a3', boxShadow: '0 10px 24px -14px rgba(60,40,20,0.45)', padding: '28px 30px 24px' }
         : { fontFamily: police.css };
       const className = `${ella ? '' : 'text-[#3A251E]/80 dark:text-white/80 leading-relaxed'} my-4 ${taille.tw} ${c.align === 'center' ? 'text-center' : 'text-left'}`;
       if (edit) return <Inline tag="p" className={className} style={style} value={c.text || ''} placeholder="Écrivez votre texte ici." multiline rich onCommit={set('text')} />;
