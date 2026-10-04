@@ -1,7 +1,8 @@
 {
   "hosting": {
     "predeploy": [
-      "node scripts/garde-collant.mjs --dist"
+      "node scripts/garde-collant.mjs --dist",
+      "node scripts/garde-cles.mjs"
     ],
     "public": "dist",
     "ignore": [

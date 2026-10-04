@@ -50,3 +50,4 @@ export { enregistrerChoix } from './newsletter/choix';
 export { analyserInfolettres, analyseHebdomadaire } from './newsletter/analyse';
 export { brouillonsPodcast } from './newsletter/brouillonsPodcast';
 export { sauvegardeNocturne } from './sauvegarde';
+export { filetDuMatin, lancerFilet } from './filet';

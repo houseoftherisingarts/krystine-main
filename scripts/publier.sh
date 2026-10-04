@@ -43,6 +43,7 @@ if [ ! -d node_modules ] || ! git diff --quiet "$AVANT_PULL" HEAD -- package.jso
 fi
 
 npm run build
+node scripts/garde-cles.mjs
 
 if [ -n "$(git status --porcelain)" ]; then
   git add -A
