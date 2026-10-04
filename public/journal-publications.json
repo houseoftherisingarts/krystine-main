@@ -6122,5 +6122,22 @@
       "public/assets-manifest.json",
       "public/infolettre/sticker-la-nature-sait.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-04T23:47:21.548Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "127ff143",
+    "message": "Infolettre : une seule écriture manuscrite (celle du carnet d'Ella) pour les titres manuscrits et les phrases mises en valeur; Ms Madi était trop intense",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "src/lib/newsletterRenderer.tsx",
+      "src/pages/admin/sections/newsletter/Composer.tsx"
+    ]
   }
 ]
