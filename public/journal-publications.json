@@ -5953,5 +5953,21 @@
       "public/assets-manifest.json",
       "src/shopify.ts"
     ]
+  },
+  {
+    "quand": "2026-10-04T15:38:31.426Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "73ee124d",
+    "message": "Boutique (aperçu seulement) : « Les essentiels de la saison » (la saison change toute seule), l'huile Vata en tête des essentiels, pourquoi et comment utiliser chaque produit, encadré « Pourquoi l'automassage » tiré de Nature & Ayurveda, textes revus",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/collections.ts",
+      "src/lib/saisonBoutique.ts",
+      "src/pages/BoutiqueLoeuvre.tsx"
+    ]
   }
 ]
