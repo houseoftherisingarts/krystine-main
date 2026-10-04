@@ -5871,5 +5871,49 @@
       "public/assets-manifest.json",
       "src/pages/BoutiqueLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-04T12:51:28.768Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "859ecddb",
+    "message": "Boutique : une page par produit (formats, quantité, avis), photos et textes personnalisables dans l'admin, étiquettes en français, niskas donnés au paiement confirmé · Relance du paiement commencé (deux lettres, éteinte jusqu'à l'allumage) · Ambassadrices : quatre trous fermés (programme toujours éteint) · Infolettre : plus de doublons à l'inscription · Rapatriement des Rituels vivants (script)",
+    "cibles": [
+      "hosting",
+      "functions",
+      "firestore"
+    ],
+    "fichiers": [
+      "App.tsx",
+      "firestore.indexes.json",
+      "firestore.rules",
+      "functions/src/ambassadrices.ts",
+      "functions/src/ambassadricesRegles.ts",
+      "functions/src/index.ts",
+      "functions/src/newsletter/inscrire.ts",
+      "functions/src/newsletter/unsubscribe.ts",
+      "functions/src/paiements.ts",
+      "functions/src/parrainage.ts",
+      "functions/src/relancePaiement.ts",
+      "functions/src/shopify/commandePayee.ts",
+      "functions/src/shopify/webhook.ts",
+      "public/assets-manifest.json",
+      "scripts/kajabi/rapatrier-rituels-vivants.mjs",
+      "src/components/layout/CartDrawer.tsx",
+      "src/firebase/ambassadrices.ts",
+      "src/firebase/boutiqueProduits.ts",
+      "src/lib/apercuBoutique.ts",
+      "src/lib/htmlPropre.ts",
+      "src/lib/okendo.ts",
+      "src/pages/BoutiqueCollectionPage.tsx",
+      "src/pages/BoutiqueLoeuvre.tsx",
+      "src/pages/ClientPortal.tsx",
+      "src/pages/ProduitPage.tsx",
+      "src/pages/admin/sections/AmbassadricesSection.tsx",
+      "src/pages/admin/sections/BoutiquePersonnaliser.tsx",
+      "src/pages/admin/sections/BoutiqueSection.tsx",
+      "src/pages/client/ClientAmbassadrice.tsx",
+      "src/shopify.ts"
+    ]
   }
 ]
