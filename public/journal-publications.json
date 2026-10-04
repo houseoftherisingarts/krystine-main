@@ -5969,5 +5969,24 @@
       "src/lib/saisonBoutique.ts",
       "src/pages/BoutiqueLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-04T16:09:20.997Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e582e64a",
+    "message": "Quiz : écran du résultat avec une seule action (la lecture, puis « Recevoir ma lecture et sa suite », puis le repère de ce soir); VATA et l'huile retirés de cet écran · Boutique (aperçu) : accueil « Nouvelle ici ? » selon la saison, choix du format, paiement et livraison, raccourcis par famille",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "scripts/qa/filet-du-matin.mjs",
+      "src/components/v2/Produit.tsx",
+      "src/pages/BoutiqueCollectionPage.tsx",
+      "src/pages/BoutiqueLoeuvre.tsx",
+      "src/pages/ProduitPage.tsx",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
