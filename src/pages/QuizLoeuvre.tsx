@@ -1054,10 +1054,18 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
       </div>
 
       {current && (
-        <div className="relative border border-[#9c7a44]/35 bg-[#faf6ee] overflow-hidden">
+        /* La carte se détache du fond : papier plus clair, cadre fileté
+           doré décalé et ombre profonde (Krystine, 4 oct. 2026 : « carré
+           blanc sur blanc »). */
+        <div className="relative">
+          <span aria-hidden className="absolute -inset-[10px] border border-[#9c7a44]/45 pointer-events-none" />
+        <div className="relative border border-[#9c7a44] bg-[#fffdf8] overflow-hidden shadow-[0_40px_90px_-40px_rgba(28,23,18,0.55),0_12px_30px_-18px_rgba(28,23,18,0.3)]">
+          <span aria-hidden className="absolute inset-x-0 top-0 h-[4px] flex">
+            <span className="flex-1 bg-[#6e7b45]" /><span className="flex-1 bg-[#a8443c]" /><span className="flex-1 bg-[#3d5f94]" />
+          </span>
           <span
             aria-hidden
-            className="absolute -top-px -left-px bg-[#1c1712] text-[#f4efe6] px-3 py-1.5 text-[0.56rem] uppercase tracking-[0.24em] z-10"
+            className="absolute top-[4px] -left-px bg-[#1c1712] text-[#f4efe6] px-3 py-1.5 text-[0.56rem] uppercase tracking-[0.24em] z-10"
           >
             {lang === 'FR' ? current.categoryFR : current.categoryEN}
           </span>
@@ -1129,6 +1137,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
               </div>
             </motion.div>
           </AnimatePresence>
+        </div>
         </div>
       )}
     </Reveal>
@@ -1322,7 +1331,7 @@ const QuizLoeuvre: React.FC = () => {
       </section>
 
       {/* ─────────── LE QUIZ ─────────── */}
-      <section id="quiz" className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,9rem)] bg-[#f4efe6] scroll-mt-24 overflow-hidden">
+      <section id="quiz" className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,9rem)] bg-[#e9dfcc] scroll-mt-24 overflow-hidden">
         <GiantWord word="Dosha" />
         <div className="relative z-10">
           <Reveal className="text-center mb-12">
