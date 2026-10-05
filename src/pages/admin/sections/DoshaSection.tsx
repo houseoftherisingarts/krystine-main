@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { getDoshaResults, deleteDoshaResult, type DoshaResult } from '../../../firebase/firestore';
+import { getDoshaResults, deleteDoshaResult, getQuizTentatives, marquerTentativeRattrapee, type DoshaResult, type QuizTentative } from '../../../firebase/firestore';
 import { Card, DangerButton, EmptyState, GhostButton, downloadCsv } from '../primitives';
 
 const DoshaSection: React.FC = () => {
   const [rows, setRows] = useState<DoshaResult[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const refresh = () => getDoshaResults().then(setRows).finally(() => setLoading(false));
+  // Les envois du résultat qui ont échoué (case anti-robot, courriel) : à rattraper à la main.
+  const [tentatives, setTentatives] = useState<QuizTentative[]>([]);
+  const refresh = () => {
+    getQuizTentatives().then(setTentatives).catch(() => setTentatives([]));
+    return getDoshaResults().then(setRows).finally(() => setLoading(false));
+  };
+  const aRattraper = tentatives.filter(t => t.statut !== 'rattrapee');
   useEffect(() => { refresh(); }, []);
 
   const del = async (r: DoshaResult) => {
@@ -32,6 +38,25 @@ const DoshaSection: React.FC = () => {
 
   return (
     <div className="space-y-4">
+      {aRattraper.length > 0 && (
+        <Card className="p-4">
+          <p className="text-[10px] uppercase tracking-widest font-bold text-[#83322b]">
+            <i className="fa-solid fa-life-ring mr-2" />{aRattraper.length} lecture{aRattraper.length > 1 ? 's' : ''} à rattraper
+          </p>
+          <p className="mt-1 text-xs text-[#293027]/60 dark:text-white/60">L’envoi du résultat a échoué pour ces personnes. Elles ne sont pas inscrites à l’infolettre : écrivez-leur, puis marquez la ligne comme rattrapée.</p>
+          <ul className="mt-3 divide-y divide-[#293027]/5 dark:divide-white/5">
+            {aRattraper.map(t => (
+              <li key={t.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-2 text-sm">
+                <span className="text-[#293027] dark:text-white">{t.prenom || '(sans prénom)'}</span>
+                <a href={`mailto:${t.email}`} className="text-[#8B4A2F] underline underline-offset-2">{t.email}</a>
+                <span className="capitalize text-[#8B4A2F] font-bold">{t.dominant}</span>
+                <span className="text-xs text-[#293027]/50 dark:text-white/50">{t.derniere?.toDate().toLocaleString('fr-CA') || ''} · {t.essais || 1} essai{(t.essais || 1) > 1 ? 's' : ''} · {t.raison}</span>
+                <GhostButton onClick={async () => { await marquerTentativeRattrapee(t.id); refresh(); }}><i className="fa-solid fa-check" /> Rattrapée</GhostButton>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
       <div className="grid grid-cols-3 gap-3">
         {(['vata', 'pitta', 'kapha'] as const).map(k => (
           <Card key={k} className="p-4 text-center">

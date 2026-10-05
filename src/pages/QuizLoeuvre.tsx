@@ -759,6 +759,9 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   const [courriel, setCourriel] = useState('');
   const [pot, setPot] = useState('');
   const [erreurEnvoi, setErreurEnvoi] = useState<string | null>(null);
+  // L'envoi a échoué côté serveur : ce qui a été saisi reste, la trace est
+  // gardée (quizTentatives) et un bouton Réessayer s'affiche.
+  const [echecServeur, setEchecServeur] = useState(false);
   const [envoye, setEnvoye] = useState(false);
   const captcha = useRecaptcha(!user && !!teaser && !result);
 
@@ -770,6 +773,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
     e.preventDefault();
     if (!teaser) return;
     setErreurEnvoi(null);
+    setEchecServeur(false);
     if (!prenom.trim()) { setErreurEnvoi('Entrez votre prénom.'); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(courriel.trim())) { setErreurEnvoi('Entrez une adresse courriel valide.'); return; }
     if (RECAPTCHA_SITE_KEY && !captcha.getToken()) { setErreurEnvoi('Cochez la case « Je ne suis pas un robot ».'); return; }
@@ -793,9 +797,11 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
       setResult({ dominant: teaser.dominant, percentages: teaser.percentages });
     } catch (err: any) {
       captcha.resetWidget();
-      setErreurEnvoi(err?.code === 'functions/resource-exhausted' && err?.message
+      const deja = err?.code === 'functions/resource-exhausted' && err?.message;
+      setEchecServeur(!deja);
+      setErreurEnvoi(deja
         ? err.message
-        : "Votre résultat n'a pas pu être envoyé. Réessayez dans un instant.");
+        : 'Votre résultat n’a pas pu partir. Ce que vous avez écrit est gardé : cochez de nouveau la case « Je ne suis pas un robot », puis touchez Réessayer.');
     } finally {
       setSubmitting(false);
     }
@@ -1046,6 +1052,23 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                     </button>
                   </div>
                   {erreurEnvoi && <p role="alert" className="mt-4 text-center text-[0.9rem] text-[#83322b]">{erreurEnvoi}</p>}
+                  {echecServeur && (
+                    <div className="mt-4 flex flex-col items-center gap-3 text-center">
+                      <button
+                        type="button"
+                        onClick={(e) => envoyerResultat(e, true)}
+                        disabled={submitting}
+                        className="inline-flex items-center justify-center gap-2 border border-[#1c1712] px-6 py-3 text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712] transition-colors hover:bg-[#1c1712] hover:text-[#f4efe6] disabled:opacity-60 min-h-[44px]"
+                      >
+                        {lang === 'FR' ? 'Réessayer' : 'Try again'}
+                      </button>
+                      <p className="text-[0.85rem] text-[#1c1712]/70">
+                        {lang === 'FR' ? 'Toujours bloqué ? Écrivez-nous à ' : 'Still stuck? Write to '}
+                        <a href="mailto:teamksl@inspiratanature.com" className="underline underline-offset-2">teamksl@inspiratanature.com</a>
+                        {lang === 'FR' ? ', nous vous enverrons votre lecture.' : ' and we will send your reading.'}
+                      </p>
+                    </div>
+                  )}
                   <div className="mt-6 flex justify-center">{boutonRecommencer}</div>
                 </form>
               )}

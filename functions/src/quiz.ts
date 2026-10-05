@@ -68,6 +68,28 @@ async function retirerSuite(email: string, d1: Dosha): Promise<boolean> {
   return true;
 }
 
+/** Ne rien perdre (Krystine, 5 oct. 2026) : lorsqu'un envoi du résultat
+ *  échoue (case anti-robot, cadence, courriel), la personne laisse une trace
+ *  dans `quizTentatives`, lue par l'onglet Quiz Dosha de l'admin. Un seul
+ *  document par adresse (empreinte), mis à jour à chaque essai : un robot ne
+ *  peut pas remplir la collection. Aucune inscription à l'infolettre d'ici,
+ *  le consentement n'est pas vérifié. */
+async function noterTentative(email: string, prenom: string, dominant: string, pourcentages: Record<string, number>, suite: boolean, err: unknown) {
+  try {
+    const e = err as { code?: string; message?: string };
+    const raison = String(e?.code || 'inconnue') + (e?.message ? ` · ${String(e.message).slice(0, 160)}` : '');
+    const id = crypto.createHash('sha256').update(email).digest('hex');
+    await getFirestore().doc(`quizTentatives/${id}`).set({
+      email, prenom, dominant, ...pourcentages, suite, raison,
+      statut: 'a-rattraper',
+      essais: FieldValue.increment(1),
+      derniere: FieldValue.serverTimestamp(),
+    }, { merge: true });
+  } catch (x) {
+    console.error('[quiz] trace de tentative impossible', x);
+  }
+}
+
 const pct = (v: unknown) => {
   const n = Math.round(Number(v));
   return Number.isFinite(n) ? Math.min(100, Math.max(0, n)) : 0;
@@ -122,7 +144,12 @@ export const envoyerResultatQuiz = onCall(
     const d1: Dosha = pourcentages.vata + pourcentages.pitta + pourcentages.kapha > 0 ? doshaSuite(pourcentages) : dominant;
 
     // Cadence par IP (5 par heure) puis jeton reCAPTCHA, comme la musique d'Origine.
-    await garderFormulaire(String(d.token || ''), 'quiz-resultat', req.rawRequest?.ip);
+    try {
+      await garderFormulaire(String(d.token || ''), 'quiz-resultat', req.rawRequest?.ip);
+    } catch (err) {
+      await noterTentative(email, prenom, NOM[d1], pourcentages, suite, err);
+      throw err;
+    }
     if (!(await limiterParAdresse(email))) {
       console.warn('[quiz] refus : plus de 3 envois en 24 h pour cette adresse');
       throw new HttpsError('resource-exhausted', 'Votre résultat a déjà été envoyé à cette adresse. Vérifiez votre boîte de réception.');
@@ -165,6 +192,7 @@ export const envoyerResultatQuiz = onCall(
       });
     } catch (err) {
       console.error('[quiz] envoi raté', err);
+      await noterTentative(email, prenom, NOM[d1], pourcentages, suite, { code: 'envoi-courriel', message: String((err as Error)?.message || '') });
       throw new HttpsError('internal', "Le courriel n'a pas pu partir. Réessayez dans un instant.");
     } finally {
       transporter.close();

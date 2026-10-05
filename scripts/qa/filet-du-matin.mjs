@@ -17,6 +17,17 @@ const COFFRE = join(homedir(), 'Documents/OBSIDIAN VAULT/Krystine Vault/00_inbox
 const resultats = [];
 const noter = (nom, ok, detail = '') => resultats.push({ nom, ok, detail });
 
+// 0. La clé de la case anti-robot dans la version en ligne (même contrôle que
+// functions/src/filet.ts, doublé ici : si l'un des deux filets tombe, l'autre voit).
+try {
+  const html = await (await fetch(SITE + '/quiz')).text();
+  const idx = html.match(/\/assets\/index-[A-Za-z0-9_-]+\.js/)?.[0];
+  const js = idx ? await (await fetch(SITE + idx)).text() : '';
+  noter('Clé anti-robot dans la version en ligne', /6L[0-9A-Za-z_-]{38}/.test(js), idx ? `fichier ${idx}` : 'fichier principal introuvable');
+} catch (e) {
+  noter('Clé anti-robot dans la version en ligne', false, e.message);
+}
+
 const navigateur = await chromium.launch();
 for (const [largeur, hauteur, appareil] of [[1440, 900, 'ordinateur'], [390, 844, 'téléphone']]) {
   const page = await navigateur.newPage({ viewport: { width: largeur, height: hauteur } });

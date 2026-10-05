@@ -883,6 +883,21 @@ export async function getDoshaResults(): Promise<DoshaResult[]> {
   return snap.docs.map(d => ({ id: d.id, ...d.data() } as DoshaResult));
 }
 
+/** Les envois du résultat du quiz qui ont échoué (fonction envoyerResultatQuiz). */
+export interface QuizTentative {
+  id: string; email: string; prenom: string; dominant: string; raison: string;
+  statut: 'a-rattraper' | 'rattrapee'; essais?: number; derniere?: Timestamp;
+}
+export async function getQuizTentatives(): Promise<QuizTentative[]> {
+  if (!db) return [];
+  const snap = await getDocs(query(collection(db, 'quizTentatives'), orderBy('derniere', 'desc')));
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as QuizTentative));
+}
+export async function marquerTentativeRattrapee(id: string) {
+  if (!db) noDb();
+  return updateDoc(doc(db!, 'quizTentatives', id), { statut: 'rattrapee' });
+}
+
 export async function deleteDoshaResult(id: string) {
   if (!db) noDb();
   return deleteDoc(doc(db!, 'doshaResults', id));

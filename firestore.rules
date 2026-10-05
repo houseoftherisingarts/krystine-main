@@ -587,6 +587,12 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
+    // ── Envois du résultat du quiz qui ont échoué : écrits par la fonction
+    //    envoyerResultatQuiz (Admin SDK), lus et rangés par l'admin seulement. ──
+    match /quizTentatives/{id} {
+      allow read, update, delete: if isAdmin();
+    }
+
     // ── Dosha quiz: public create. Members read their own. Admins full. ──
     match /doshaResults/{id} {
       allow create: if request.resource.data.keys().hasAll(['email', 'dominant']);
