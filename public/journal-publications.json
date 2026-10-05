@@ -6377,5 +6377,26 @@
       "src/pages/RituelsVivantsPage.tsx",
       "src/pages/admin/sections/BugsSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-05T21:28:57.302Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a02fdc8",
+    "message": "Cours VATA Essentiel : balises <p> retirées à l'affichage (leçons 050 et 051, et tous les cours), le journal de bord (noir et blanc, couleur) apparaît dans « À télécharger » avec son aperçu, lien du Quiz Dosha rétabli, le paragraphe de semaine venu de Kajabi ne s'affiche plus qu'en tête de semaine, ancien nom remplacé par VATA Essentiel, « dinacharya » corrigé, noms de fichiers remplacés par des titres lisibles; pastille « Un pépin ? » réduite à un rond à droite sur les pages de cours, de paiement et de vente (/cours/vata, /paiement, /vata, /rituels-vivants)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/vata/documents/003-0.jpg",
+      "public/vata/documents/003-1.jpg",
+      "public/vh/replay-LIFUUXWH.js",
+      "public/vh/vexelhotjar.js",
+      "src/components/layout/AidePepin.tsx",
+      "src/lib/texteLecon.tsx",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/cours/nettoyerKajabi.ts"
+    ]
   }
 ]
