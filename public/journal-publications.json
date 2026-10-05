@@ -6203,5 +6203,20 @@
       "public/assets-manifest.json",
       "src/lib/newsletterRenderer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-05T00:23:46.554Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "360876e4",
+    "message": "Infolettre : le filtre de relecture passe automatiquement avant chaque envoi (un point bloquant arrête l'envoi, les autres s'affichent)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/relectureLettre.ts",
+      "src/pages/admin/sections/newsletter/Composer.tsx"
+    ]
   }
 ]
