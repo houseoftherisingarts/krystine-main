@@ -84,7 +84,7 @@ const ROUTES: Record<string, PageMeta> = {
   },
   '/rituels-vivants': {
     title: `Rituels vivants · ${SITE}`,
-    description: 'Rituels vivants, une introduction à l’Ayurveda : 10 capsules vidéo et un bonus avec Krystine St-Laurent pour apaiser le système nerveux, mieux respirer et retrouver un cap clair. 27 $, accès immédiat.',
+    description: 'Rituels vivants, une introduction à l’Ayurveda : 10 capsules vidéo, un bonus et un guide à télécharger avec Krystine St-Laurent pour apaiser le système nerveux, mieux respirer et retrouver un cap clair. 27 $, accès immédiat.',
     image: '/krystine-portrait.jpg',
     imageAlt: 'Krystine St-Laurent, un livre ouvert sur les genoux',
   },

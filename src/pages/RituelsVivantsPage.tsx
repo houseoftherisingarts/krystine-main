@@ -116,6 +116,10 @@ const SOINS: { handle: string; capsule: string; nom: string }[] = [
   { handle: 'gratte-langue-cuivre', capsule: 'Soin de la bouche', nom: 'Gratte-langue en cuivre' },
 ];
 
+// Le guide PDF, inclus avec l'achat (leçon protégée formations/rituels-vivants/lecons/012).
+const GUIDE = 'Le guide des Rituels vivants, à télécharger (14 pages)*';
+const NOTE_GUIDE = '* Tiré du premier tome de Krystine St-Laurent, Nature & Ayurveda.';
+
 const DOSHAS: [string, string, string][] = [
   ['vata', 'Vata', 'Vent et Espace'],
   ['pitta', 'Pitta', 'Feu et Eau'],
@@ -428,6 +432,12 @@ const Capsules: React.FC = () => {
           );
         })}
       </div>
+      <Reveal className="mt-[clamp(2.5rem,6vh,4rem)] text-center">
+        <p className="inline-flex items-start gap-3 text-[1rem] leading-[1.6]" style={{ color: C.ink }}>
+          <Check size={16} weight="bold" className="mt-1 shrink-0" style={{ color: C.accentInk }} />{GUIDE}
+        </p>
+        <p className="mt-2 text-[0.75rem] leading-[1.6]" style={{ color: 'rgba(28,23,18,0.62)' }}>{NOTE_GUIDE}</p>
+      </Reveal>
     </section>
   );
 };
@@ -562,12 +572,13 @@ const Offre: React.FC = () => (
             <div>
               <DrawRule className="mt-7 w-full lg:mt-0" color="rgba(186,123,57,0.4)" />
               <ul className="mt-7 space-y-3.5">
-                {[`10 capsules vidéo + 1 bonus · ${totalLisible}`, 'Accès immédiat, à votre rythme', ...MODULES.map(m => m.etiquette === 'Bonus' ? 'Bonus · Plantes, stress et sagesse' : m.nom)].map((f) => (
+                {[`10 capsules vidéo + 1 bonus · ${totalLisible}`, 'Accès immédiat, à votre rythme', ...MODULES.map(m => m.etiquette === 'Bonus' ? 'Bonus · Plantes, stress et sagesse' : m.nom), GUIDE].map((f) => (
                   <li key={f} className="flex items-start gap-3 text-[0.92rem] leading-[1.65]" style={{ color: C.inkSoft }}>
                     <Check size={16} weight="bold" className="mt-1 shrink-0" style={{ color: C.accentInk }} />{f}
                   </li>
                 ))}
               </ul>
+              <p className="mt-3 text-[0.72rem] leading-[1.6]" style={{ color: 'rgba(28,23,18,0.62)' }}>{NOTE_GUIDE}</p>
             </div>
           </article>
         </div>
