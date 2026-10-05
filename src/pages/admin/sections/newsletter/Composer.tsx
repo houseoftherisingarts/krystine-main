@@ -24,6 +24,7 @@ const TAILLES_LECTURE: { cle: TailleLecture; libelle: string; apercu: string }[]
   { cle: 'tres-grande', libelle: 'Très grande', apercu: '28px' },
 ];
 import { traduireParIris } from '../../../../lib/traduction';
+import { relireLettre, resumeRelecture } from '../../../../lib/relectureLettre';
 
 interface Props {
   newsletterId: string | null;  // null → fresh draft
@@ -396,6 +397,12 @@ const Composer: React.FC<Props> = ({ newsletterId, onBack, onOpen }) => {
     if (audienceVide) { setSendErr(audience.mode === 'tags' ? 'Cochez au moins une liste dans « À qui l’envoyer », ou choisissez « Tout le monde ».' : 'Choisissez au moins une personne, ou une autre audience.'); return; }
     const who = (audience.mode === 'all' ? 'tous les abonnés actifs' : audience.mode === 'tags' ? `les listes ${(audience.tags || []).map(libelleTag).join(', ')}` : `${(audience.emails || []).length} personne(s) choisie(s)`)
       + (audience.mode !== 'emails' && (audience.exclure || []).length ? `, sauf ${(audience.exclure || []).map(libelleTag).join(', ')}` : '');
+    // Le filtre de relecture passe avant chaque envoi (Krystine, 4 oct. 2026) :
+    // un point bloquant arrête l'envoi, les autres se montrent et elle décide.
+    const balises = relireLettre({ subject, preheader, blocks, audience, lettreDor });
+    const bloquants = balises.filter(b => b.gravite === 'bloquant');
+    if (bloquants.length) { setSendErr(`La relecture arrête l’envoi :\n${resumeRelecture(bloquants)}`); alert(`La relecture arrête l’envoi :\n\n${resumeRelecture(bloquants)}`); return; }
+    if (balises.length && !confirm(`La relecture a trouvé ${balises.length} point${balises.length > 1 ? 's' : ''} à regarder avant d’envoyer :\n\n${resumeRelecture(balises)}\n\nOK : envoyer quand même.\nAnnuler : revenir corriger.`)) return;
     if (!confirm(`Envoyer cette infolettre maintenant à ${who} ? Cette action est irréversible.`)) return;
     await triggerSend();
   };
