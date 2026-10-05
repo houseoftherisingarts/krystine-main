@@ -6,6 +6,7 @@ import { libelleTag } from '../../../../lib/paliers';
 import { Card, EmptyState, GhostButton, downloadCsv } from '../../primitives';
 import PreviewFrame from './PreviewFrame';
 import LecturesParHeure from './LecturesParHeure';
+import ClicsLettre from './ClicsLettre';
 
 // ─── Le journal des infolettres (Krystine, 26 septembre 2026) ────────────────
 // Chaque lettre partie, mois par mois : le sujet, à qui elle s'adressait,
@@ -42,7 +43,7 @@ async function chargerPersonnes(id: string): Promise<Personne[]> {
 }
 
 const Lettre: React.FC<{ n: NewsletterDoc }> = ({ n }) => {
-  const [vue, setVue] = useState<'rien' | 'lettre' | 'personnes' | 'heures'>('rien');
+  const [vue, setVue] = useState<'rien' | 'lettre' | 'personnes' | 'heures' | 'clics'>('rien');
   const [personnes, setPersonnes] = useState<Personne[] | null>(null);
   const [filtre, setFiltre] = useState('');
   const s = n.stats || {};
@@ -74,9 +75,12 @@ const Lettre: React.FC<{ n: NewsletterDoc }> = ({ n }) => {
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         <GhostButton type="button" onClick={() => setVue(vue === 'lettre' ? 'rien' : 'lettre')}><i className="fa-solid fa-envelope-open" /> {vue === 'lettre' ? 'Fermer la lettre' : 'Relire la lettre'}</GhostButton>
+        <GhostButton type="button" onClick={() => setVue(vue === 'clics' ? 'rien' : 'clics')}><i className="fa-solid fa-hand-pointer" /> {vue === 'clics' ? 'Fermer les clics' : 'Vrais clics contre robots'}</GhostButton>
         <GhostButton type="button" onClick={() => setVue(vue === 'heures' ? 'rien' : 'heures')}><i className="fa-solid fa-chart-column" /> {vue === 'heures' ? 'Fermer le graphique' : 'Lectures heure par heure'}</GhostButton>
         <GhostButton type="button" onClick={ouvrirPersonnes}><i className="fa-solid fa-users" /> {vue === 'personnes' ? 'Fermer la liste' : 'Qui l’a reçue'}</GhostButton>
       </div>
+
+      {vue === 'clics' && <div className="mt-4"><ClicsLettre n={n} recus={recus} /></div>}
 
       {vue === 'heures' && n.id && <div className="mt-4"><LecturesParHeure id={n.id} envoyeLe={date} recus={recus} /></div>}
 
