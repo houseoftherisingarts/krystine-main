@@ -5,9 +5,12 @@
 // scripts/publier.sh juste après `npm run build`.
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+// Les bibliothèques (vendor-*) et les copies d'iCloud (« fichier 2.js ») sont
+// ignorées : une suite de caractères des shaders imitait la clé, et la garde
+// laissait passer une version sans la vraie clé (5 oct. 2026).
 
 const dossier = join(process.cwd(), 'dist', 'assets');
-const js = readdirSync(dossier).filter((f) => f.endsWith('.js')).map((f) => readFileSync(join(dossier, f), 'utf8')).join('\n');
+const js = readdirSync(dossier).filter((f) => f.endsWith('.js') && !f.startsWith('vendor-') && !/ \d+\.js$/.test(f)).map((f) => readFileSync(join(dossier, f), 'utf8')).join('\n');
 
 const attendues = [
   ['la clé de la case « Je ne suis pas un robot » (VITE_RECAPTCHA_SITE_KEY)', /6L[0-9A-Za-z_-]{38}/],
