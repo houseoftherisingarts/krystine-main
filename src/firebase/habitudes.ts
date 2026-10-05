@@ -89,6 +89,7 @@ const NOMS: Record<string, string> = {
   '/compte': 'Son compte',
   '/conferenciere': 'Conférencière',
   '/vata': 'Programme Vata',
+  '/rituels-vivants': 'Rituels vivants',
 };
 
 /** Le nom lisible d'une page, à partir de son adresse. */

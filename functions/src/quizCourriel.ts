@@ -35,19 +35,20 @@ const DIRECTION: Record<Dosha, string> = {
 };
 
 // Les deux clés tirées des livres de Krystine, par dosha (validées le 2 oct. 2026).
-// Texte et page de référence; modifier ici seulement.
+// Référence complète sous chaque citation (Krystine, 5 oct. 2026) : son nom,
+// le titre, Éditions de l’Homme, l’année, la page. Aucun italique.
 export const CLES_RESULTAT: Record<Dosha, { texte: string; source: string }[]> = {
   vata: [
-    { texte: 'La clé pour apaiser vata : la régularité.', source: 'Nature & Ayurveda, p. 130' },
-    { texte: 'Commencer plutôt la journée en consommant quelque chose de chaud', source: 'Nature & Ayurveda, p. 268' },
+    { texte: 'La clé pour apaiser vata : la régularité.', source: 'Krystine St-Laurent, Nature & Ayurveda, Éditions de l’Homme, 2018, p. 130' },
+    { texte: 'Commencer plutôt la journée en consommant quelque chose de chaud', source: 'Krystine St-Laurent, Nature & Ayurveda, Éditions de l’Homme, 2018, p. 268' },
   ],
   pitta: [
-    { texte: 'Opter pour la modération, ralentir le rythme', source: 'Nature & Ayurveda, p. 135' },
-    { texte: 'l’excès de feu s’apaise rapidement grâce à une connexion avec l’eau, les lacs, les rivières et la paix de mère Nature', source: 'Féminité & Ayurveda, p. 234' },
+    { texte: 'Opter pour la modération, ralentir le rythme', source: 'Krystine St-Laurent, Nature & Ayurveda, Éditions de l’Homme, 2018, p. 135' },
+    { texte: 'l’excès de feu s’apaise rapidement grâce à une connexion avec l’eau, les lacs, les rivières et la paix de mère Nature', source: 'Krystine St-Laurent, Féminité & Ayurveda, Éditions de l’Homme, 2022, p. 234' },
   ],
   kapha: [
-    { texte: 'Le matin, se lever avant 6 heures', source: 'Nature & Ayurveda, p. 141' },
-    { texte: 'pour débuter, marcher au moins 15 minutes chaque jour. Il est important de bouger', source: 'Nature & Ayurveda, p. 141' },
+    { texte: 'Le matin, se lever avant 6 heures', source: 'Krystine St-Laurent, Nature & Ayurveda, Éditions de l’Homme, 2018, p. 141' },
+    { texte: 'pour débuter, marcher au moins 15 minutes chaque jour. Il est important de bouger', source: 'Krystine St-Laurent, Nature & Ayurveda, Éditions de l’Homme, 2018, p. 141' },
   ],
 };
 
@@ -68,6 +69,71 @@ export const ETIQUETTE_SUITE: Record<Dosha, string> = { vata: 'suite-vent', pitt
 export const SUITE_PRETE: Record<Dosha, boolean> = { vata: true, pitta: true, kapha: true };
 
 export interface Profil { ordre: [Dosha, Dosha, Dosha]; branche: Branche; etiquettes: string[] }
+
+// ─── La suite unique en cas d'égalité stricte (Krystine, 5 oct. 2026) ───────
+// Une seule suite de lettres par personne. Lorsque deux doshas (ou trois) sont
+// à égalité stricte, la suite part du dosha que la saison accentue : en saison
+// Vata (du 22 septembre au 31 janvier), Vata passe en premier s'il est parmi
+// les ex æquo; sinon, l'ordre habituel tient (Vent, puis Feu, puis Terre).
+// Sans égalité, la suite part simplement du premier dosha.
+export function enSaisonVata(date = new Date()): boolean {
+  const m = date.getMonth() + 1, j = date.getDate();
+  return m >= 10 || m === 1 || (m === 9 && j >= 22);
+}
+export function doshaSuite(p: { vata: number; pitta: number; kapha: number }, date = new Date()): Dosha {
+  const { ordre } = lireProfil(p);
+  const dix = (d: Dosha) => Math.round((Number(p[d]) || 0) / 10) * 10;
+  const exAequo = ordre.filter(d => dix(d) === dix(ordre[0]));
+  if (enSaisonVata(date) && exAequo.includes('vata')) return 'vata';
+  return ordre[0];
+}
+
+// ─── Le geste de ce soir (ou de demain matin) ───────────────────────────────
+// Recopié mot pour mot de RITUALS (src/lib/doshaRituals.ts), le repère offert
+// à l'écran du résultat. Toute retouche se fait aux deux endroits.
+export const REPERE: Record<Dosha, { libelle: string; titre: string; moment: string; etapes: string[] }> = {
+  vata: {
+    libelle: 'Votre repère de ce soir', titre: 'Rituel du soir', moment: 'Le soir, avant le coucher',
+    etapes: [
+      'Avant de vous coucher, prenez un moment pour un automassage des plus relaxants.',
+      'Prenez une pompe de l\'Huile Corporelle Apaisante VATA et massez vos avant-bras et vos jambes.',
+      'Laissez vos muscles se détendre et sentez votre esprit se bercer, porté par les douces odeurs de lavande et de mélisse.',
+    ],
+  },
+  pitta: {
+    libelle: 'Votre repère de demain matin', titre: 'Rituel matinal', moment: 'Le matin, sous la douche',
+    etapes: [
+      'Durant la douche matinale à l\'eau fraîche, une fois le corps lavé, déposez une petite quantité d\'Huile Corporelle Rafraîchissante PITTA et mélangez-la à l\'eau pour un massage frais et tonifiant.',
+      'Prenez le temps de masser pour bien faire pénétrer l\'huile.',
+      'Sortez ensuite de la douche et épongez, ou rincez à l\'eau un peu plus froide pour un effet rafraîchissant.',
+      'Environ 10 minutes plus tard, la peau aura absorbé l\'huile et vous pourrez vous habiller sans risquer de tâcher vos vêtements.',
+    ],
+  },
+  kapha: {
+    libelle: 'Votre repère de demain matin', titre: 'Rituel matinal', moment: 'Le matin, après le brossage à sec et la douche',
+    etapes: [
+      'Commencez par le brossage à sec avant la douche (environ 3 fois par semaine).',
+      'Après la douche, le corps encore enduit d\'eau et les pores ouverts, prenez une petite quantité d\'Huile Corporelle Énergisante KAPHA et massez les bras, la poitrine et le ventre avec des mouvements vigoureux pour activer la circulation.',
+      'Reprenez un peu d\'huile au besoin et massez sous les aisselles en levant le bras, avec des mouvements dirigés vers le coeur.',
+      'Massez le contour des seins et de la poitrine, idem pour le ventre.',
+      'Environ 10 minutes plus tard, la peau aura absorbé l\'huile et vous pourrez vous habiller.',
+    ],
+  },
+};
+
+// ─── L'offre accessible tout de suite, la même pour tous les résultats ──────
+// Les Rituels vivants (27 $), page /rituels-vivants. Miroir de la carte de
+// l'écran du résultat (src/pages/QuizLoeuvre.tsx) : toute retouche aux deux endroits.
+export const RITUELS_VIVANTS = {
+  libelle: 'Les Rituels vivants · 27 $',
+  titre: 'Pour commencer dès maintenant à intégrer l’Ayurveda, simplement',
+  phrase: 'Votre lecture vous dit quoi équilibrer; les Rituels vivants vous montrent comment, en moins de 5 minutes par jour. Des gestes pratiqués depuis près de 40 ans : l’automassage, les soins du nez, de la bouche, des mains et des pieds. 10 capsules courtes et un bonus.',
+  prix: '27 $',
+  bouton: 'Je commence ce soir',
+  lien: `${SITE}/rituels-vivants?via=courriel-resultat`,
+};
+export const LIEN_PODCAST = `${SITE}/podcast`;
+
 
 export function lireProfil(p: { vata: number; pitta: number; kapha: number }): Profil {
   const dix = (d: Dosha) => Math.round((Number(p[d]) || 0) / 10) * 10;
@@ -202,19 +268,19 @@ export interface ResultatQuiz {
   suite: boolean;
   /** Lien « Recevoir la suite de ma lecture » en un clic, quand suite === false. */
   lienSuite?: string;
-  /** Lien « Je préfère ne pas recevoir la suite », quand suite === true. */
-  lienRefus?: string;
   /** La séquence de suite existe déjà pour cette dominance (SUITE_PRETE). */
   prete?: boolean;
 }
 
 // Le bloc de la suite, juste après la lecture (Krystine, 3 oct. 2026).
+// Aucun lien de refus ici (Krystine, 5 oct. 2026) : le désabonnement vit
+// seulement au pied des lettres.
 function texteSuite(r: ResultatQuiz): { titre: string; ligne: string } {
   if (r.suite) return {
     titre: r.prete === false
       ? `Votre lecture continuera par courriel lorsque la suite pour ${nomme(r.dominant)} sera prête.`
-      : 'Votre lecture continue par courriel : la première lettre arrive dans deux jours.',
-    ligne: 'Je préfère ne pas recevoir la suite',
+      : 'Votre lecture continue par courriel : la première lettre arrive demain.',
+    ligne: '',
   };
   return {
     titre: 'Recevoir la suite de ma lecture',
@@ -237,7 +303,7 @@ const entier = (n: number) => String(Math.min(100, Math.max(0, Math.round(Number
 export function sujetResultat(d: Dosha, pourcentages?: { vata: number; pitta: number; kapha: number }): string {
   const l = pourcentages ? lireLecture(pourcentages, d) : null;
   if (l && l.branche === 'equilibre') return 'Votre lecture du quiz : équilibre entre Vata, Pitta et Kapha';
-  if (l && l.branche === 'double') return `Votre lecture du quiz : deux dominances, ${l.montres.map(x => NOM_AYURVEDA[x]).join(' et ')}`;
+  if (l && l.branche === 'double') return `Votre lecture du quiz : ${l.titre}, ${nomme(l.montres[0])} et ${nomme(l.montres[1])}`;
   return `Votre lecture du quiz : dominance ${nomme(l ? l.montres[0] : d)}`;
 }
 
@@ -248,9 +314,19 @@ const DOUX = '#3a2f23';
 const LAITON = '#7d6330';
 const FILET = '#d9ccb4';
 
+/** Les deux clés montrées : celles du dosha, ou une de chaque pour deux dominances. */
+function clesDe(L: Lecture): { texte: string; source: string }[] {
+  return L.branche === 'double' ? [CLES_RESULTAT[L.montres[0]][0], CLES_RESULTAT[L.montres[1]][0]] : CLES_RESULTAT[L.montres[0]];
+}
+const libelleCles = (c: { source: string }[]) => c.every(x => x.source.includes('Nature & Ayurveda,'))
+  ? 'Deux clés tirées de Nature & Ayurveda' : 'Deux clés tirées des livres de Krystine St-Laurent';
+
 export function renderResultatHtml(r: ResultatQuiz): string {
   const L = lireLecture(r.pourcentages, r.dominant);
   const d = L.montres[0];
+  // Le geste du soir suit la suite de lettres (une seule, voir doshaSuite).
+  const g = REPERE[L.montres.includes(r.dominant) ? r.dominant : d];
+  const lesCles = clesDe(L);
   const attente = LIEN_ATTENTE[d];
   const huile = HUILE_DOMINANCE[d];
   const libelle = (t: string) => `<p style="margin:0 0 10px;font-family:${SANS};font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:${LAITON};">${t}</p>`;
@@ -267,7 +343,7 @@ export function renderResultatHtml(r: ResultatQuiz): string {
       <div style="margin-top:4px;font-family:${SANS};font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:${DOUX};">${NOM_COURANT[x]}</div>
     </td>`).join('');
 
-  const cles = CLES_RESULTAT[d].map(c => `
+  const cles = lesCles.map(c => `
     <p style="margin:0 0 6px;font-family:${SERIF};font-weight:300;font-size:19px;line-height:1.5;color:${ENCRE};">« ${esc(c.texte)} »</p>
     <p style="margin:0 0 20px;font-family:${SANS};font-size:12px;color:${DOUX};">${esc(c.source)}</p>`).join('');
 
@@ -281,11 +357,10 @@ export function renderResultatHtml(r: ResultatQuiz): string {
 
   const ts = texteSuite(r);
   const suite = r.suite
-    ? (r.lienRefus ? `
+    ? `
     <tr><td align="center" style="padding:26px 40px 4px;">
       <p style="margin:0;font-family:${SERIF};font-weight:300;font-size:19px;line-height:1.5;color:${ENCRE};">${esc(ts.titre)}</p>
-      <p style="margin:10px 0 0;"><a href="${esc(r.lienRefus)}" style="font-family:${SANS};font-size:12px;line-height:1.7;color:${DOUX};text-decoration:underline;">${esc(ts.ligne)}</a></p>
-    </td></tr>` : '')
+    </td></tr>`
     : (r.lienSuite ? `
     <tr><td align="center" style="padding:28px 40px 4px;">
       <a href="${esc(r.lienSuite)}" style="display:inline-block;background:${ENCRE};color:#f4efe6;font-family:${SANS};font-size:12px;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;padding:16px 28px;">${esc(ts.titre)}</a>
@@ -328,15 +403,37 @@ export function renderResultatHtml(r: ResultatQuiz): string {
 
   ${filet}
   <tr><td style="padding:30px 40px 6px;">
-    ${libelle('Deux clés tirées de Nature &amp; Ayurveda')}
+    ${libelle(esc(libelleCles(lesCles)))}
     ${cles}
+  </td></tr>
+  ${filet}
+  <tr><td style="padding:30px 40px 8px;">
+    ${libelle(esc(g.libelle))}
+    <p style="margin:0 0 6px;font-family:${SERIF};font-weight:300;font-size:24px;line-height:1.3;color:${ENCRE};">${esc(g.titre)}</p>
+    <p style="margin:0 0 16px;font-family:${SANS};font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:${DOUX};">${esc(g.moment)}</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${g.etapes.map((t, i) => `
+      <tr><td valign="top" width="30" style="padding:0 0 12px;font-family:${SERIF};font-size:17px;line-height:1.5;color:${LAITON};">${i + 1}.</td>
+      <td valign="top" style="padding:0 0 12px;font-family:${SANS};font-size:15px;line-height:1.75;color:${DOUX};">${esc(t)}</td></tr>`).join('')}
+    </table>
   </td></tr>
   ${huile ? `<tr><td style="padding:0 40px 24px;">
       <p style="margin:0;font-family:${SANS};font-size:13px;line-height:1.7;color:${DOUX};">${esc(huile.geste)}, un massage avec <a href="${esc(huile.lien)}" style="color:${ENCRE};text-decoration:underline;">${esc(huile.nom)}</a> d’INSPIRATA AYURVEDA (flacon de 50 ml).</p>
     </td></tr>` : ''}
-  ${attente ? `<tr><td align="center" style="padding:30px 40px 6px;">
-      <a href="${esc(attente)}" style="font-family:${SANS};font-size:13px;line-height:1.7;color:${ENCRE};text-decoration:underline;">Rejoindre la liste d’attente du programme ${nomme(d)}</a>
-    </td></tr>` : ''}
+  <tr><td style="padding:22px 32px 6px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #9c7a44;background:#f4efe6;">
+      <tr><td align="center" style="padding:30px 28px 30px;">
+        ${libelle(esc(RITUELS_VIVANTS.libelle))}
+        <p style="margin:0;font-family:${SERIF};font-weight:300;font-size:30px;line-height:1.15;color:${ENCRE};">${esc(RITUELS_VIVANTS.titre)}</p>
+        <p style="margin:14px 0 0;font-family:${SANS};font-size:15px;line-height:1.75;color:${DOUX};">${esc(RITUELS_VIVANTS.phrase)}</p>
+        <p style="margin:16px 0 0;font-family:${SERIF};font-weight:300;font-size:26px;color:${ENCRE};">${esc(RITUELS_VIVANTS.prix)}</p>
+        <p style="margin:18px 0 0;"><a href="${esc(RITUELS_VIVANTS.lien)}" style="display:inline-block;background:${ENCRE};color:#f4efe6;font-family:${SANS};font-size:12px;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;padding:16px 28px;">${esc(RITUELS_VIVANTS.bouton)}</a></p>
+        ${attente ? `<p style="margin:18px 0 0;"><a href="${esc(attente)}" style="font-family:${SANS};font-size:12px;line-height:1.7;color:${DOUX};text-decoration:underline;">Rejoindre la liste d’attente du programme ${nomme(d)}</a></p>` : ''}
+      </td></tr>
+    </table>
+  </td></tr>
+  <tr><td align="center" style="padding:24px 40px 0;">
+    <a href="${LIEN_PODCAST}" style="font-family:${SANS};font-size:13px;line-height:1.7;color:${ENCRE};text-decoration:underline;">Écouter l’épisode sur le podcast</a>
+  </td></tr>
 
   <tr><td style="padding:34px 40px 36px;">
     <div style="height:1px;background:${FILET};line-height:1px;font-size:1px;margin-bottom:20px;">&nbsp;</div>
@@ -352,6 +449,8 @@ export function renderResultatHtml(r: ResultatQuiz): string {
 export function renderResultatTexte(r: ResultatQuiz): string {
   const L = lireLecture(r.pourcentages, r.dominant);
   const d = L.montres[0];
+  const g = REPERE[L.montres.includes(r.dominant) ? r.dominant : d];
+  const lesCles = clesDe(L);
   const l: string[] = [
     `Bonjour ${r.prenom},`,
     '',
@@ -363,20 +462,25 @@ export function renderResultatTexte(r: ResultatQuiz): string {
     '',
     L.ayurveda,
     ...(L.sousCarte ? ['', L.sousCarte] : []),
-    ...(r.suite && r.lienRefus ? ['', texteSuite(r).titre, `${texteSuite(r).ligne} : ${r.lienRefus}`] : []),
+    ...(r.suite ? ['', texteSuite(r).titre] : []),
     ...(!r.suite && r.lienSuite ? ['', `${texteSuite(r).titre} : ${r.lienSuite}`, texteSuite(r).ligne] : []),
     '',
     'La direction',
     L.direction,
     ...(L.versSuite ? ['', L.versSuite] : []),
     '',
-    'Deux clés tirées de Nature & Ayurveda',
-    ...CLES_RESULTAT[d].map(c => `« ${c.texte} » (${c.source})`),
+    libelleCles(lesCles),
+    ...lesCles.map(c => `« ${c.texte} » (${c.source})`),
+    '',
+    `${g.libelle} : ${g.titre} (${g.moment})`,
+    ...g.etapes.map((t, i) => `${i + 1}. ${t}`),
   ];
   const huileTxt = HUILE_DOMINANCE[d];
   if (huileTxt) l.push('', `${huileTxt.geste}, un massage avec ${huileTxt.nom} d’INSPIRATA AYURVEDA (flacon de 50 ml) : ${huileTxt.lien}`);
   const attenteTxt = LIEN_ATTENTE[d];
+  l.push('', RITUELS_VIVANTS.libelle, `${RITUELS_VIVANTS.titre} · ${RITUELS_VIVANTS.prix}`, RITUELS_VIVANTS.phrase, `${RITUELS_VIVANTS.bouton} : ${RITUELS_VIVANTS.lien}`);
   if (attenteTxt) l.push('', `Rejoindre la liste d’attente du programme ${nomme(d)} : ${attenteTxt}`);
+  l.push('', `Écouter l’épisode sur le podcast : ${LIEN_PODCAST}`);
   l.push('', 'Krystine St-Laurent · krystinestlaurent.ca',
     'Vous recevez ce courriel parce que vous avez demandé votre résultat au quiz sur krystinestlaurent.ca.');
   return l.join('\n');

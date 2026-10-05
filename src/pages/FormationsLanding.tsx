@@ -5,6 +5,7 @@ import { ArrowRight } from '@phosphor-icons/react';
 import { goToRoute } from '../lib/staticRoutes';
 import { enLancement, TIERS } from './vata/offre';
 import { SEMAINES_VATA } from './vata/semaines';
+import { StyleV2, Planche, BoutonNoir, LienSouligne } from '../components/v2/Magazine';
 
 /**
  * /formations (et /parcours) : les trois portes, dans l'ordre voulu par
@@ -66,7 +67,27 @@ const PORTES: Porte[] = [
   },
 ];
 
+// Ce qui s'achète dès maintenant, en tête de page (Krystine, 5 oct. 2026) :
+// VATA Essentiel et Rituels vivants, en cartes V2 avec bouton noir carré.
+interface Disponible { key: string; tag: string; titre: string; sous: string; corps: string; prix?: string; cta: string; href: string; image: string; cadrage: string }
+const DISPONIBLES: Disponible[] = [
+  {
+    key: 'vata', tag: "L'Expérience Ayurveda · Saison Vata", titre: OFFRE_VATA.name,
+    sous: 'Un parcours de sept semaines, la première dès l’inscription.',
+    corps: "16 capsules, 7 méditations guidées, le journal de bord et d'observation, et le guide de 204 pages.",
+    cta: 'Découvrir VATA Essentiel', href: '/vata', image: '/vata/carte-eventail.jpg', cadrage: 'object-[50%_40%]',
+  },
+  {
+    key: 'rituels', tag: 'Une introduction à l’Ayurveda', titre: 'Rituels vivants',
+    sous: 'Des pratiques courtes qui redonnent ancrage et direction.',
+    corps: '10 capsules vidéo et un bonus : l’automassage, les soins du nez et de la bouche, les soins des mains et des pieds.',
+    prix: '27 $', cta: 'Découvrir Rituels vivants', href: '/rituels-vivants', image: '/krystine-portrait.jpg', cadrage: 'object-[50%_28%]',
+  },
+];
+
 // Les parcours qui reviennent un à un : chacun a sa liste d'attente.
+// Gardés ici pour pouvoir les remettre; la page n'en montre plus le mur
+// (Krystine, 5 oct. 2026 : une seule ligne discrète « Être avisée »).
 interface Parcours { slug: string; titre: string; sous: string; href?: string; cta?: string }
 const EN_ATTENTE: Parcours[] = [
   // Le Foyer attend sa réouverture (Krystine, 2 oct. 2026) : hors des grandes
@@ -114,10 +135,42 @@ const FormationsLanding: React.FC = () => {
         </div>
       </section>
 
+      <StyleV2 />
+      {/* ─────────── DISPONIBLE MAINTENANT, deux cartes V2 ─────────── */}
+      <section className="bg-[#f4efe6] px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(3rem,7vh,5rem)] pb-[clamp(3.5rem,8vh,6rem)]">
+        <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330]">Disponible maintenant</p>
+        <div className="mt-8 grid gap-x-[clamp(2rem,4vw,4rem)] gap-y-16 md:grid-cols-2">
+          {DISPONIBLES.map((d, i) => (
+            <motion.div key={d.key} {...up(0.25 + i * 0.08)} className="flex flex-col">
+              <a href={d.href} onClick={(e) => go(e, d.href)} aria-label={d.titre} className="block">
+                <Planche src={d.image} ratio="aspect-[16/10]" position={d.cadrage} etiquette={d.tag} />
+              </a>
+              <h2 className="v2-serif mt-8 font-light leading-[1.02] text-[#1c1712] text-[clamp(2rem,3.4vw,3rem)]">{d.titre}</h2>
+              <p className="v2-serif mt-2 font-light text-[clamp(1.1rem,1.6vw,1.35rem)] leading-[1.35] text-[#7d6330]">{d.sous}</p>
+              <p className="mt-4 max-w-[48ch] text-[0.98rem] leading-[1.8] text-[#3a2f23]">{d.corps}</p>
+              <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                {d.key === 'vata' ? (
+                  <>
+                    <span className="v2-serif text-[2rem] font-light leading-none tabular-nums text-[#1c1712]">{lancement ? OFFRE_VATA.promo : OFFRE_VATA.price}</span>
+                    {lancement && <span className="v2-serif text-lg line-through tabular-nums text-[#1c1712]/45">{OFFRE_VATA.price}</span>}
+                    {lancement && <span className="text-[0.62rem] uppercase tracking-[0.2em] text-[#7d6330]">Tarif de lancement</span>}
+                  </>
+                ) : (
+                  <span className="v2-serif text-[2rem] font-light leading-none tabular-nums text-[#1c1712]">{d.prix}</span>
+                )}
+              </p>
+              <div className="mt-auto pt-8">
+                <BoutonNoir to={d.href}>{d.cta}</BoutonNoir>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
       {/* ─────────── LES PORTES OUVERTES, deux grandes cartes ─────────── */}
-      <section className="px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(2.5rem,6vh,4.5rem)] pb-[clamp(3.5rem,8vh,6rem)]">
-        <div className="mx-auto grid max-w-[1100px] gap-6 md:grid-cols-2 md:gap-8">
-          {PORTES.map((p, i) => (
+      <section className="px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(3.5rem,8vh,6rem)] bg-[#f4efe6]">
+        <div className="grid gap-6">
+          {PORTES.filter(p => p.key !== 'vata').map((p, i) => (
             <motion.a
               key={p.key}
               href={p.href}
@@ -125,9 +178,9 @@ const FormationsLanding: React.FC = () => {
               initial={reduce ? false : { opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: EASE, delay: 0.25 + i * 0.08 }}
-              className="group flex flex-col overflow-hidden rounded-[16px] border border-[#293027]/12 bg-[#fbf8f2] shadow-[0_30px_60px_-46px_rgba(41,48,39,0.55)] transition-[border-color,box-shadow] duration-500 hover:border-[#7d6330]/45 hover:shadow-[0_36px_70px_-44px_rgba(41,48,39,0.6)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#7d6330]"
+              className="group flex flex-col md:flex-row overflow-hidden rounded-[16px] border border-[#293027]/12 bg-[#fbf8f2] shadow-[0_30px_60px_-46px_rgba(41,48,39,0.55)] transition-[border-color,box-shadow] duration-500 hover:border-[#7d6330]/45 hover:shadow-[0_36px_70px_-44px_rgba(41,48,39,0.6)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#7d6330]"
             >
-              <div className="relative aspect-[16/10] overflow-hidden bg-[#1b2622]/5">
+              <div className="relative aspect-[16/10] overflow-hidden bg-[#1b2622]/5 md:aspect-auto md:min-h-[320px] md:w-1/2">
                 {p.video && !reduce ? (
                   <video src={p.video} poster={p.image} autoPlay muted loop playsInline preload="metadata" aria-hidden
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] group-hover:scale-[1.03]"
@@ -164,30 +217,13 @@ const FormationsLanding: React.FC = () => {
         </div>
       </section>
 
-      {/* ─────────── LES PARCOURS À VOTRE RYTHME, en liste d'attente ─────────── */}
-      <section id="a-votre-rythme" className="scroll-mt-24 px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(5rem,10vh,8rem)]">
-        <div className="mx-auto max-w-[1320px] border-t border-[#293027]/15 pt-[clamp(2.5rem,6vh,4rem)]">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em]" style={{ color: OR_ENCRE }}>En liste d'attente</p>
-          <h2 className="mt-3 max-w-[24ch] font-serif text-[clamp(1.7rem,2.6vw,2.3rem)] font-medium leading-[1.1]" style={{ color: ENCRE }}>Les autres parcours reviennent un à un.</h2>
-          <p className="mt-3 max-w-[46rem] leading-[1.7] text-[#5b5f55]">Chaque parcours qui revient bientôt a sa liste d'attente. Inscrivez-vous et vous recevrez l'invitation avant toute annonce publique.</p>
-          <ul className="mt-8 grid border-t border-[#293027]/12 sm:grid-cols-2 lg:grid-cols-4">
-            {EN_ATTENTE.map((f) => {
-              const href = f.href || `/liste-attente?programme=${f.slug}&titre=${encodeURIComponent(f.titre)}`;
-              return (
-                <li key={f.slug} className="border-b border-[#293027]/12">
-                  <a href={href} onClick={(e) => go(e, href)} className="group flex h-full flex-col justify-between gap-4 py-5 pr-6">
-                    <span>
-                      <span className="block font-serif text-[1.25rem] leading-[1.2]" style={{ color: ENCRE }}>{f.titre}</span>
-                      <span className="mt-1.5 block text-[0.92rem] leading-[1.55] text-[#5b5f55]">{f.sous}</span>
-                    </span>
-                    <span className="inline-flex items-center gap-2 text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-[#1c1712]/70 transition-colors group-hover:text-[#1c1712]">
-                      {f.cta || (f.href ? 'Découvrir' : "Rejoindre la liste d'attente")} <ArrowRight size={12} weight="bold" className="transition-transform duration-300 group-hover:translate-x-1" />
-                    </span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
+      {/* ─────────── LES AUTRES PARCOURS : une ligne discrète ───────────
+          Le mur des parcours en attente (EN_ATTENTE) n'est plus affiché;
+          les données restent plus haut pour pouvoir le remettre. */}
+      <section id="a-votre-rythme" className="scroll-mt-24 bg-[#f4efe6] px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(5rem,10vh,8rem)]">
+        <div className="flex flex-col items-start justify-between gap-5 border-t border-[#1c1712]/15 pt-8 sm:flex-row sm:items-center">
+          <p className="v2-serif font-light text-[clamp(1.2rem,1.8vw,1.5rem)] text-[#1c1712]">D'autres parcours reviennent au fil des saisons.</p>
+          <LienSouligne to="/liste-attente">Être avisée</LienSouligne>
         </div>
       </section>
     </div>

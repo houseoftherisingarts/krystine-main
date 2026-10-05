@@ -37,6 +37,7 @@ export { groupeMembre } from './groupe';
 export { musiqueOrigine } from './musique';
 export { envoyerResultatQuiz, suiteLecture, suiteQuiz } from './quiz';
 export { extraitCinqElements } from './cinqelements';
+export { signalerPepin } from './pepin';
 export { offrirCadeau, utiliserCadeau } from './cadeaux';
 export { kajabiEmettreCodes, kajabiUtiliserCode, kajabiRestaurerAuto } from './kajabi';
 export { kajabiEtatMigration } from './kajabiMigration';

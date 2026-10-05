@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-05T18:06:06.911Z",
+  "generatedAt": "2026-10-05T19:48:47.750Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1549,6 +1549,13 @@
       "size": 273747
     },
     {
+      "path": "/infolettre/rituels-vivants-banniere.jpg",
+      "name": "rituels-vivants-banniere.jpg",
+      "folder": "infolettre",
+      "kind": "image",
+      "size": 50363
+    },
+    {
       "path": "/infolettre/serum-defripant-automne.jpg",
       "name": "serum-defripant-automne.jpg",
       "folder": "infolettre",
@@ -2282,6 +2289,76 @@
       "folder": "racine",
       "kind": "image",
       "size": 2801927
+    },
+    {
+      "path": "/rituels-vivants/automassage-bras.webp",
+      "name": "automassage-bras.webp",
+      "folder": "rituels-vivants",
+      "kind": "image",
+      "size": 26222
+    },
+    {
+      "path": "/rituels-vivants/automassage-oreilles.webp",
+      "name": "automassage-oreilles.webp",
+      "folder": "rituels-vivants",
+      "kind": "image",
+      "size": 47466
+    },
+    {
+      "path": "/rituels-vivants/extrait-automassage-poster.webp",
+      "name": "extrait-automassage-poster.webp",
+      "folder": "rituels-vivants",
+      "kind": "image",
+      "size": 26222
+    },
+    {
+      "path": "/rituels-vivants/extrait-automassage.mp4",
+      "name": "extrait-automassage.mp4",
+      "folder": "rituels-vivants",
+      "kind": "video",
+      "size": 3981763
+    },
+    {
+      "path": "/rituels-vivants/extrait-ouverture-poster.webp",
+      "name": "extrait-ouverture-poster.webp",
+      "folder": "rituels-vivants",
+      "kind": "image",
+      "size": 42744
+    },
+    {
+      "path": "/rituels-vivants/extrait-ouverture.mp4",
+      "name": "extrait-ouverture.mp4",
+      "folder": "rituels-vivants",
+      "kind": "video",
+      "size": 881413
+    },
+    {
+      "path": "/rituels-vivants/kajabi-banniere.webp",
+      "name": "kajabi-banniere.webp",
+      "folder": "rituels-vivants",
+      "kind": "image",
+      "size": 26734
+    },
+    {
+      "path": "/rituels-vivants/mains.webp",
+      "name": "mains.webp",
+      "folder": "rituels-vivants",
+      "kind": "image",
+      "size": 41676
+    },
+    {
+      "path": "/rituels-vivants/soin-de-la-bouche.webp",
+      "name": "soin-de-la-bouche.webp",
+      "folder": "rituels-vivants",
+      "kind": "image",
+      "size": 35054
+    },
+    {
+      "path": "/rituels-vivants/soin-du-nez.webp",
+      "name": "soin-du-nez.webp",
+      "folder": "rituels-vivants",
+      "kind": "image",
+      "size": 47776
     },
     {
       "path": "/salon/alex.jpg",

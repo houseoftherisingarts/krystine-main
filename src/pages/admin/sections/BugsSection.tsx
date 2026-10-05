@@ -23,6 +23,7 @@ interface Bug {
   ecran: string;
   statut: Statut;
   vexel: 'transmis' | 'echec';
+  type?: 'technique' | 'introuvable';
   cree?: Timestamp;
 }
 
@@ -67,7 +68,7 @@ const BugsSection: React.FC = () => {
         <div>
           <h2 className="font-serif text-2xl text-[#293027] dark:text-white">Problèmes techniques</h2>
           <p className="mt-1 max-w-xl text-sm text-[#293027]/70 dark:text-white/70">
-            Ce que vos membres signalent depuis le bouton « Problème technique » de leur espace. Le studio reçoit la même fiche et s'en occupe.
+            Ce que vos membres et visiteuses signalent depuis le bouton « Problème technique » de leur espace ou la pastille « Un pépin ? Écrivez-nous » du site. Le studio reçoit la même fiche et s'en occupe.
           </p>
         </div>
         <div className="flex gap-1 rounded-full border border-[#38403a]/10 bg-white/40 p-1 dark:border-white/10 dark:bg-white/5">
@@ -96,6 +97,9 @@ const BugsSection: React.FC = () => {
                   <div className="min-w-0">
                     <div className="mb-2 flex flex-wrap items-center gap-2">
                       <span className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest ${etat.color}`}>{etat.label}</span>
+                      {b.type === 'introuvable' && (
+                        <span className="rounded-full bg-[#38403a]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#293027] dark:bg-white/10 dark:text-white">Ne trouve pas ce qu'elle cherche</span>
+                      )}
                       {b.vexel === 'echec' && (
                         <span className="rounded-full bg-red-50 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-red-600 dark:bg-red-900/30 dark:text-red-300" title="La porte du studio n'a pas répondu au moment de l'envoi.">
                           Pas reçu par le studio

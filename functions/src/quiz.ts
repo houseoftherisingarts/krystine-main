@@ -4,7 +4,7 @@ import * as crypto from 'crypto';
 import { RECAPTCHA_SECRET, garderFormulaire } from './captcha';
 import { MAIL_SECRETS, createTransporter, fromAddr, REPLY_TO, PUBLIC_BASE_URL } from './newsletter/mail';
 import { enregistrerInscription } from './newsletter/inscrire';
-import { renderResultatHtml, renderResultatTexte, sujetResultat, lireProfil, ETIQUETTE_SUITE, SUITE_PRETE, type Dosha } from './quizCourriel';
+import { renderResultatHtml, renderResultatTexte, sujetResultat, lireProfil, doshaSuite, ETIQUETTE_SUITE, SUITE_PRETE, type Dosha } from './quizCourriel';
 
 // ─── « Recevoir mon résultat » (page /quiz) ──────────────────────────────────
 // Une visiteuse reçoit son résultat par courriel sans créer de compte
@@ -114,11 +114,12 @@ export const envoyerResultatQuiz = onCall(
     const p = (d.pourcentages && typeof d.pourcentages === 'object') ? d.pourcentages as Record<string, unknown> : {};
     const pourcentages = { vata: pct(p.vata), pitta: pct(p.pitta), kapha: pct(p.kapha) };
     const suite = d.suite === true;
-    // L'algorithme du résultat (quizCourriel.ts) : D1 vient des pourcentages,
-    // Vent puis Feu puis Terre à égalité. Sans pourcentages lisibles, le
-    // dominant reçu reste.
+    // L'algorithme du résultat (quizCourriel.ts) : D1 vient des pourcentages.
+    // Une seule suite de lettres : à égalité stricte, le dosha que la saison
+    // accentue (doshaSuite : Vata en premier en saison Vata s'il est parmi
+    // les ex æquo). Sans pourcentages lisibles, le dominant reçu reste.
     const profil = lireProfil(pourcentages);
-    const d1: Dosha = pourcentages.vata + pourcentages.pitta + pourcentages.kapha > 0 ? profil.ordre[0] : dominant;
+    const d1: Dosha = pourcentages.vata + pourcentages.pitta + pourcentages.kapha > 0 ? doshaSuite(pourcentages) : dominant;
 
     // Cadence par IP (5 par heure) puis jeton reCAPTCHA, comme la musique d'Origine.
     await garderFormulaire(String(d.token || ''), 'quiz-resultat', req.rawRequest?.ip);
@@ -141,16 +142,17 @@ export const envoyerResultatQuiz = onCall(
       createdAt: FieldValue.serverTimestamp(),
     });
 
-    // La clé du courriel ne donne accès qu'à deux gestes, et vit 60 jours :
-    // sans la suite, le bouton qui inscrit en un clic; avec la suite, le
-    // petit lien « Je préfère ne pas recevoir la suite » (&non=1).
+    // La clé du courriel vit 60 jours et ne sert qu'au bouton qui inscrit en
+    // un clic (sans la suite). Plus aucun lien de refus dans le courriel
+    // (Krystine, 5 oct. 2026) : le désabonnement vit au pied des lettres.
+    // Le chemin &non=1 reste servi pour les courriels déjà partis.
     const k = crypto.randomBytes(24).toString('base64url');
     await getFirestore().doc(`quizSuite/${k}`).set({
       email, prenom, dosha: d1, etiquettes: profil.etiquettes, creeLe: FieldValue.serverTimestamp(),
       ...(String(d.lang ?? '').toLowerCase() === 'en' ? { lang: 'en' } : { lang: 'fr' }),
     });
     const lienSuite = `${PUBLIC_BASE_URL}/suite-lecture?k=${k}`;
-    const r = { prenom, dominant: d1, pourcentages, suite, lienSuite, lienRefus: `${lienSuite}&non=1`, prete: SUITE_PRETE[d1] };
+    const r = { prenom, dominant: d1, pourcentages, suite, lienSuite, prete: SUITE_PRETE[d1] };
     const transporter = createTransporter();
     try {
       await transporter.sendMail({
@@ -283,7 +285,7 @@ export const suiteQuiz = onCall(
     const pourcentages = { vata: pct(dernier.get('vata')), pitta: pct(dernier.get('pitta')), kapha: pct(dernier.get('kapha')) };
     const profil = lireProfil(pourcentages);
     const brut = String(dernier.get('dominant') || '').toLowerCase() as Dosha;
-    const d1: Dosha = pourcentages.vata + pourcentages.pitta + pourcentages.kapha > 0 ? profil.ordre[0]
+    const d1: Dosha = pourcentages.vata + pourcentages.pitta + pourcentages.kapha > 0 ? doshaSuite(pourcentages)
       : (Object.prototype.hasOwnProperty.call(NOM, brut) ? brut : 'vata');
     const tag = ETIQUETTE_SUITE[d1];
     const base = { dosha: d1, prete: SUITE_PRETE[d1] };

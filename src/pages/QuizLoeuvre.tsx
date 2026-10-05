@@ -26,7 +26,8 @@ import { Atmosphere } from '../components/motion/loeuvre';
  * (addDoshaQuizResult + updateMember + points.quizCompleted).
  * L'écran du résultat porte une seule action à la fois (Krystine, 4 oct.
  * 2026) : la lecture, puis « Recevoir ma lecture et sa suite », puis, après
- * l'accord seulement, le repère en cadeau. Aucune offre sur cet écran.
+ * l'accord seulement, le repère en cadeau, puis une seule offre accessible
+ * tout de suite, la même pour tous : les Rituels vivants (Krystine, 5 oct. 2026).
  * Motion : transitions de question en slide+fade (AnimatePresence), filet de
  * progression qui se trace (scaleX), résultat révélé en rideau (clip-path),
  * médaillons qui éclosent (spring), mot Fraunces en profondeur (parallax).
@@ -500,7 +501,7 @@ const PHRASE_FORMULAIRE = (d: DoshaType, prete: boolean) => prete
   ? 'Je souhaite recevoir les lettres de Krystine St-Laurent pour mieux comprendre mes résultats et découvrir les programmes proposés pour aller plus loin. Je peux me désabonner à tout moment.'
   : `Je souhaite recevoir les lettres de Krystine St-Laurent : la suite pour ${nomme(d)} lorsqu’elle sera prête, et les programmes proposés pour aller plus loin. Je peux me désabonner à tout moment.`;
 const NOTE_SUITE = (d: DoshaType, prete: boolean) => prete
-  ? 'Vos lettres arrivent\u00a0; la première, dans deux jours.'
+  ? 'Vos lettres arrivent\u00a0; la première, demain.'
   : `C’est noté. Nous vous écrirons lorsque la suite pour ${nomme(d)} sera prête.`;
 
 const BlocSuite: React.FC<{
@@ -509,11 +510,9 @@ const BlocSuite: React.FC<{
   prete: boolean;
   occupe: boolean;
   onInscrire: () => void;
-  onRefuser: () => void;
   onReabonner: () => void;
-}> = ({ etat, dosha, prete, occupe, onInscrire, onRefuser, onReabonner }) => {
+}> = ({ etat, dosha, prete, occupe, onInscrire, onReabonner }) => {
   const [retour, setRetour] = useState(false);
-  const lien = 'text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/60 border-b border-[#1c1712]/30 pb-1 transition-colors hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px] disabled:opacity-50';
   let corps: React.ReactNode;
   if (etat === 'offre') {
     corps = (
@@ -537,10 +536,9 @@ const BlocSuite: React.FC<{
           {etat === 'deja'
             ? 'La suite de votre lecture vous arrive déjà par courriel.'
             : prete
-              ? 'Votre lecture continue par courriel : la première lettre arrive dans deux jours.'
+              ? 'Votre lecture continue par courriel : la première lettre arrive demain.'
               : `Votre lecture continuera par courriel lorsque la suite pour ${nomme(dosha)} sera prête.`}
         </p>
-        <button type="button" onClick={onRefuser} disabled={occupe} className={`mt-4 ${lien}`}>Je préfère ne pas recevoir la suite</button>
       </>
     );
   } else if (etat === 'refusee') {
@@ -593,6 +591,43 @@ const VotreLecture: React.FC<{ L: Lecture; ink: string; percentages: { vata: num
     <CarteDominance L={L} complet={complet} />
   </>
 );
+
+/* Étape 4, après le repère : les Rituels vivants (27 $), la même offre pour
+   tous les résultats (Krystine, 5 oct. 2026). Miroir de RITUELS_VIVANTS
+   (functions/src/quizCourriel.ts) : toute retouche aux deux endroits. La liste
+   d'attente du programme saisonnier reste en petit lien souligné dessous. */
+const LIEN_ATTENTE: Partial<Record<DoshaType, string>> = {
+  pitta: '/liste-attente?programme=pitta',
+  kapha: '/liste-attente?programme=kapha',
+};
+const CarteRituelsVivants: React.FC<{ dosha: DoshaType | null }> = ({ dosha }) => {
+  const attente = dosha ? LIEN_ATTENTE[dosha] : undefined;
+  return (
+    <div className="mt-10 mx-auto max-w-[34rem] border border-[#9c7a44] bg-[#f4efe6] px-6 py-8 md:px-9 text-center">
+      <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#7d6330]">Les Rituels vivants · 27 $</p>
+      <h3 className="mt-3 v2-serif font-light text-[#1c1712] leading-[1.05] text-[clamp(1.7rem,3vw,2.3rem)]">Pour commencer dès maintenant à intégrer l’Ayurveda, simplement</h3>
+      <p className="mt-4 text-[0.95rem] leading-[1.75] text-[#3a2f23] max-w-[40ch] mx-auto">
+        Votre lecture vous dit quoi équilibrer; les Rituels vivants vous montrent comment, en moins de 5 minutes par jour. Des gestes pratiqués depuis près de 40 ans : l’automassage, les soins du nez, de la bouche, des mains et des pieds. 10 capsules courtes et un bonus.
+      </p>
+      <p className="mt-5 v2-serif font-light text-[1.9rem] text-[#1c1712]">27 $</p>
+      <a
+        href="/rituels-vivants?via=quiz"
+        onClick={() => trackInterne('quiz_clic_rituels_vivants')}
+        className="mt-6 w-full inline-flex items-center justify-center gap-3 bg-[#1c1712] px-8 py-4 text-[0.7rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] min-h-[44px]"
+      >
+        Je commence ce soir <ArrowRight size={15} weight="regular" />
+      </a>
+      {attente && (
+        <a
+          href={attente}
+          className="mt-5 inline-block text-[0.8rem] leading-relaxed text-[#3a2f23] underline underline-offset-4 decoration-[#1c1712]/30 hover:text-[#7d6330] min-h-[44px]"
+        >
+          Rejoindre la liste d’attente du programme {nomme(dosha as DoshaType)}
+        </a>
+      )}
+    </div>
+  );
+};
 
 /* Étape 3, après l'accord seulement : le repère offert en cadeau (doshaRituals). */
 const RepereCadeau: React.FC<{ dominant: 'Vata' | 'Pitta' | 'Kapha'; th: { accent: string; ink: string }; lang: 'FR' | 'EN' }> = ({ dominant, th, lang }) => {
@@ -850,7 +885,6 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
         prete={suite.prete}
         occupe={suiteOccupe}
         onInscrire={() => agirSuite('inscrire')}
-        onRefuser={() => agirSuite('refuser')}
         onReabonner={() => agirSuite('reabonner')}
       />
     );
@@ -869,6 +903,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                     <p className="mt-9 text-[0.9rem] leading-relaxed text-[#3a2f23]">Votre résultat est en route vers votre courriel.</p>
                   )}
                   {blocSuite}
+                  {lang === 'FR' && <CarteRituelsVivants dosha={L.branche === 'equilibre' ? null : L.montres[0]} />}
                   <button
                     type="button"
                     onClick={() => { trackInterne('quiz_clic_boutique'); navigate('/boutique'); }}

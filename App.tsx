@@ -12,6 +12,8 @@ import ConsentBanner from './src/components/layout/ConsentBanner';
 import SignInModal from './src/components/layout/SignInModal';
 import MusiqueDuSite from './src/components/client/MusiqueDuSite';
 import LangPill from './src/components/layout/LangPill';
+import AidePepin from './src/components/layout/AidePepin';
+import { useSearchParams } from 'react-router-dom';
 import LiveBadge from './src/components/layout/LiveBadge';
 import ChatKrystine from './src/components/layout/ChatKrystine';
 import ErrorBoundary from './src/components/layout/ErrorBoundary';
@@ -78,6 +80,8 @@ const FoyerPage = lazy(() => import('./src/pages/FoyerPage'));
 const FoyerEssaiPage = lazy(() => import('./src/pages/foyer/FoyerEssaiPage'));
 // L'Expérience Origine 2 : page de vente native dans la langue du Foyer (9 sept. 2026)
 const OrigineDeuxPage = lazy(() => import('./src/pages/OrigineDeuxPage'));
+// Rituels vivants : la petite offre d'entrée à 27 $ (Krystine, 4 oct. 2026)
+const RituelsVivantsPage = lazy(() => import('./src/pages/RituelsVivantsPage'));
 // Expérience Vata — portée du bundle statique vers React (style L'Œuvre)
 const VataExperience = lazy(() => import('./src/pages/VataExperience'));
 // Pages publiques rebâties from scratch en L'Œuvre (back-end préservé)
@@ -212,6 +216,13 @@ const CalculOffre: React.FC = () => {
   return <OffrePersonnalisee uid={user.uid} />;
 };
 
+// La page /aide : le panneau « Un pépin ? » ouvert, pour les pages statiques
+// (accueil, communauté) dont la pastille mène ici avec ?de=<page d'origine>.
+const PageAide: React.FC = () => {
+  const [q] = useSearchParams();
+  return <AidePepin autonome pageDe={q.get('de') || '/'} />;
+};
+
 const Flottants: React.FC = () => {
   const location = useLocation();
   // L'assistante ne s'affiche que si l'interrupteur des Réglages l'allume, et
@@ -219,7 +230,7 @@ const Flottants: React.FC = () => {
   // clignote jamais à l'écran d'une visiteuse.
   const { chatbotOuvert, pret } = useSiteFlags();
   if (location.pathname === '/podcast/question') return null;
-  return (<><LangPill /><LiveBadge />{pret && chatbotOuvert && <ChatKrystine />}</>);
+  return (<><LangPill /><LiveBadge /><AidePepin />{pret && chatbotOuvert && <ChatKrystine />}</>);
 };
 
 const App: React.FC = () => (
@@ -269,6 +280,7 @@ const App: React.FC = () => (
           <Route path="/direct" element={<DirectPage />} />
           {/* Vata porté en React (remplace le bundle statique /vata) */}
           <Route path="/vata" element={<VataExperience />} />
+          <Route path="/rituels-vivants" element={<RituelsVivantsPage />} />
           <Route path="/krystine"        element={<KrystineV2 />} />
 
           {/* ── Concepts de refonte (comparaison) ─────────────────────── */}
@@ -290,6 +302,7 @@ const App: React.FC = () => (
           {/* ── Standalone Quiz + Livres live under /medias,
                 Événements lives under /formations. Keep legacy URLs redirecting. */}
           <Route path="/quiz"       element={<QuizLoeuvre />} />
+          <Route path="/aide"       element={<PageAide />} />
           <Route path="/guide"      element={<GuideLoeuvre />} />
           <Route path="/ayurveda"   element={<Navigate to="/quiz"                    replace />} />
           <Route path="/dosha-quiz" element={<Navigate to="/quiz"                    replace />} />

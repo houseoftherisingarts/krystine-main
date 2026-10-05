@@ -82,6 +82,12 @@ const ROUTES: Record<string, PageMeta> = {
     title: `VATA Essentiel · ${SITE}`,
     description: 'Apaiser le mental, un sens à la fois. VATA Essentiel, une expérience Ayurveda de sept semaines en capsules audio avec Krystine St-Laurent.',
   },
+  '/rituels-vivants': {
+    title: `Rituels vivants · ${SITE}`,
+    description: 'Rituels vivants, une introduction à l’Ayurveda : 10 capsules vidéo et un bonus avec Krystine St-Laurent pour apaiser le système nerveux, mieux respirer et retrouver un cap clair. 27 $, accès immédiat.',
+    image: '/krystine-portrait.jpg',
+    imageAlt: 'Krystine St-Laurent, un livre ouvert sur les genoux',
+  },
   '/origine-2': {
     title: `L’Expérience Origine 2 · ${SITE}`,
     description: 'Douze semaines avec Krystine St-Laurent pour sortir du pilotage extérieur et retrouver vos propres repères. Inscriptions à l’automne 2026.',

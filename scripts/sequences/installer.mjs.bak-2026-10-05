@@ -10,9 +10,7 @@
 // donc relancer le script met à jour au lieu de créer des doublons. La
 // séquence reste EN PAUSE (`actif: false`) : rien ne part tant que Krystine
 // n'a pas relu les cinq lettres et allumé l'interrupteur dans son admin.
-import { readFileSync, existsSync } from 'node:fs';
-import { createRequire } from 'node:module';
-import { homedir } from 'node:os';
+import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -22,18 +20,7 @@ const PROJET = 'krystinestlaurent-87566';
 const BASE = `https://firestore.googleapis.com/v1/projects/${PROJET}/databases/(default)/documents`;
 const ECRIRE = process.argv.includes('--ecrire');
 
-// Jeton : gcloud s'il existe, sinon la connexion « firebase login » de l'ordinateur.
-const jetonFirebase = async () => {
-  const candidats = [join(homedir(), '.iris/tools/node_modules/firebase-tools/lib/auth.js')];
-  try { candidats.unshift(execFileSync('npm', ['root', '-g'], { encoding: 'utf8' }).trim() + '/firebase-tools/lib/auth.js'); } catch { /* rien */ }
-  const chemin = candidats.find(existsSync);
-  const conf = join(homedir(), '.config/configstore/firebase-tools.json');
-  if (!chemin || !existsSync(conf)) throw new Error('Pas de connexion « firebase login » sur cet ordinateur.');
-  const t = await createRequire(import.meta.url)(chemin).getAccessToken(JSON.parse(readFileSync(conf, 'utf8')).tokens.refresh_token, []);
-  return t.access_token || t;
-};
-let jeton;
-try { jeton = execFileSync('gcloud', ['auth', 'print-access-token'], { encoding: 'utf8' }).trim(); } catch { jeton = await jetonFirebase(); }
+const jeton = execFileSync('gcloud', ['auth', 'print-access-token'], { encoding: 'utf8' }).trim();
 const api = async (methode, chemin, corps) => {
   const r = await fetch(`${BASE}${chemin}`, {
     method: methode,
@@ -84,16 +71,12 @@ const bloc = (b) => {
   return { type, content: reste };
 };
 
-// Argument optionnel : --seq=accueil-xxx lit accueil-xxx.json et n'écrit QUE cette
-// séquence (ni calendrier du lancement). Sans argument : comportement d'origine.
-const AUTRE = (process.argv.find(a => a.startsWith('--seq=')) || '').slice(6);
-const data = JSON.parse(readFileSync(join(ICI, `${AUTRE || 'accueil-origine2'}.json`), 'utf8'));
-const PREFIXE = AUTRE ? `seq-${data.sequence.id.replace(/^accueil-/, '')}` : 'seq-origine2';
+const data = JSON.parse(readFileSync(join(ICI, 'accueil-origine2.json'), 'utf8'));
 const maintenant = new Date();
 
 const plan = [];
 for (const l of data.lettres) {
-  const id = `${PREFIXE}-${l.cle}`;
+  const id = `seq-origine2-${l.cle}`;
   plan.push({
     chemin: `/newsletters/${id}`,
     doc: {
@@ -105,8 +88,7 @@ for (const l of data.lettres) {
       status: 'draft',
       role: 'sequence',
       lang: 'fr',
-      couverture: l.couverture || 'aucune',
-      ...(l.couvertureUrl ? { couvertureUrl: l.couvertureUrl } : {}),
+      couverture: 'aucune',
       signature: true,
       fond: '#FFFFFF',
       bandeau: l.bandeau,
@@ -123,12 +105,12 @@ plan.push({
     titre: data.sequence.titre,
     actif: data.sequence.actif,
     declencheur: data.sequence.declencheur,
-    etapes: data.lettres.map(l => ({ cle: l.cle, titre: l.titre, delaiHeures: l.delaiHeures, newsletterId: `${PREFIXE}-${l.cle}` })),
+    etapes: data.lettres.map(l => ({ cle: l.cle, titre: l.titre, delaiHeures: l.delaiHeures, newsletterId: `seq-origine2-${l.cle}` })),
     creeLe: maintenant,
     maj: maintenant,
   },
 });
-if (!AUTRE) plan.push({ chemin: '/etat/lancementOrigine2', doc: { ...LANCEMENT, maj: maintenant } });
+plan.push({ chemin: '/etat/lancementOrigine2', doc: { ...LANCEMENT, maj: maintenant } });
 
 console.log(`${ECRIRE ? 'Écriture' : 'Essai à blanc'} · ${plan.length} document(s)\n`);
 for (const p of plan) {

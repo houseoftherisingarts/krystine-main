@@ -1,0 +1,173 @@
+{
+  "sequence": {
+    "id": "accueil-rituels-vivants",
+    "titre": "Accueil · Rituels vivants",
+    "declencheur": {
+      "type": "achat",
+      "formationId": "rituels-vivants"
+    },
+    "actif": false
+  },
+  "lettres": [
+    {
+      "cle": "bienvenue",
+      "titre": "Étape 1 · Bienvenue (tout de suite)",
+      "delaiHeures": 0,
+      "subject": "Vos Rituels vivants vous attendent",
+      "preheader": "Vos 10 capsules et votre bonus sont ouverts dans votre espace.",
+      "bandeau": {
+        "fond": "#141311",
+        "texte": "#EEE7DB",
+        "masque": true
+      },
+      "blocs": [
+        {
+          "type": "paragraph",
+          "text": "Bonjour {{firstName}},"
+        },
+        {
+          "type": "paragraph",
+          "text": "Bienvenue dans les Rituels vivants !"
+        },
+        {
+          "type": "paragraph",
+          "text": "Vos 10 capsules et votre bonus sont ouverts dans votre espace. Ne cherchez pas à tout voir ce soir : commencez par la première capsule, « Introduction à l'Ayurveda », une dizaine de minutes, le temps d'une tisane."
+        },
+        {
+          "type": "button",
+          "label": "J'ouvre la capsule 1",
+          "href": "https://www.krystinestlaurent.ca/cours/rituels-vivants"
+        },
+        {
+          "type": "paragraph",
+          "text": "Notre équipe est là pour vous : teamksl@inspiratanature.com"
+        },
+        {
+          "type": "paragraph",
+          "text": "Krystine xx"
+        }
+      ],
+      "couverture": "image",
+      "couvertureUrl": "https://www.krystinestlaurent.ca/infolettre/rituels-vivants-banniere.jpg"
+    },
+    {
+      "cle": "automassage",
+      "titre": "Étape 2 · L'automassage (J+2)",
+      "delaiHeures": 48,
+      "subject": "Ce soir, l'automassage",
+      "preheader": "Un seul geste à garder pour la saison froide.",
+      "bandeau": {
+        "fond": "#141311",
+        "texte": "#EEE7DB",
+        "masque": true
+      },
+      "blocs": [
+        {
+          "type": "paragraph",
+          "text": "Bonjour {{firstName}},"
+        },
+        {
+          "type": "paragraph",
+          "text": "S'il n'y avait qu'un seul geste à garder pour la saison froide, ce serait celui-là. Quelques minutes d'huile tiède, de la tête aux pieds, avant la douche ou avant le coucher : la peau se nourrit, le souffle ralentit, et la soirée change de rythme."
+        },
+        {
+          "type": "paragraph",
+          "text": "Les capsules 4 à 7 vous montrent le geste, pas à pas."
+        },
+        {
+          "type": "button",
+          "label": "Je regarde l'automassage",
+          "href": "https://www.krystinestlaurent.ca/cours/rituels-vivants"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour l'huile, <a href=\"https://inspiratanature.com/products/huile-corporelle-apaisante-vata-3?country=CA&locale=fr\">L'Apaisante Vata</a> (Vent et Espace) a été composée pour ce moment de l'année."
+        },
+        {
+          "type": "paragraph",
+          "text": "Krystine xx"
+        }
+      ],
+      "couverture": "image",
+      "couvertureUrl": "https://www.krystinestlaurent.ca/infolettre/rituels-vivants-banniere.jpg"
+    },
+    {
+      "cle": "matin",
+      "titre": "Étape 3 · Deux gestes du matin (J+4)",
+      "delaiHeures": 96,
+      "subject": "Deux gestes du matin",
+      "preheader": "Une goutte d'huile, le soin de la bouche, deux minutes.",
+      "bandeau": {
+        "fond": "#141311",
+        "texte": "#EEE7DB",
+        "masque": true
+      },
+      "blocs": [
+        {
+          "type": "paragraph",
+          "text": "Bonjour {{firstName}},"
+        },
+        {
+          "type": "paragraph",
+          "text": "Le matin, deux petits gestes font une grande différence : une goutte d'huile à l'entrée du nez, puis le soin de la bouche avant le premier café. Deux minutes, et la journée commence plus doucement."
+        },
+        {
+          "type": "button",
+          "label": "Je regarde le nez et la bouche",
+          "href": "https://www.krystinestlaurent.ca/cours/rituels-vivants"
+        },
+        {
+          "type": "paragraph",
+          "text": "Et vous, quel geste a déjà trouvé sa place dans vos journées ? Répondez-moi en une ligne, je lis chaque réponse."
+        },
+        {
+          "type": "paragraph",
+          "text": "Krystine xx"
+        }
+      ],
+      "couverture": "image",
+      "couvertureUrl": "https://www.krystinestlaurent.ca/infolettre/rituels-vivants-banniere.jpg"
+    },
+    {
+      "cle": "suite",
+      "titre": "Étape 4 · Et ensuite ? (J+7)",
+      "delaiHeures": 168,
+      "subject": "Une semaine de gestes, et ensuite ?",
+      "preheader": "VATA Essentiel prend le relais pour toute la saison froide.",
+      "bandeau": {
+        "fond": "#141311",
+        "texte": "#EEE7DB",
+        "masque": true
+      },
+      "blocs": [
+        {
+          "type": "paragraph",
+          "text": "Bonjour {{firstName}},"
+        },
+        {
+          "type": "paragraph",
+          "text": "Une semaine déjà. Si quelques gestes sont restés, c'est que le corps les a reconnus."
+        },
+        {
+          "type": "paragraph",
+          "text": "Les Rituels vivants sont une porte d'entrée. Pour vivre toute la saison froide avec des repères semaine après semaine, VATA Essentiel prend le relais : 16 capsules, 19 rituels, un guide de 204 pages."
+        },
+        {
+          "type": "button",
+          "label": "Je découvre VATA Essentiel",
+          "href": "https://www.krystinestlaurent.ca/vata?via=accueil-rituels"
+        },
+        {
+          "type": "paragraph",
+          "text": "Notre équipe est là pour vous : teamksl@inspiratanature.com"
+        },
+        {
+          "type": "paragraph",
+          "text": "Krystine xx"
+        }
+      ],
+      "couverture": "image",
+      "couvertureUrl": "https://www.krystinestlaurent.ca/infolettre/rituels-vivants-banniere.jpg"
+    }
+  ]
+}

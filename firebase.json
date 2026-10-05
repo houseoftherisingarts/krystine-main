@@ -134,6 +134,10 @@
         "destination": "/og/vata.html"
       },
       {
+        "source": "/rituels-vivants",
+        "destination": "/og/rituels-vivants.html"
+      },
+      {
         "source": "/origine-2",
         "destination": "/og/origine-2.html"
       },
