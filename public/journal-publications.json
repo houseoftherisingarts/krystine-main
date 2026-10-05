@@ -6171,5 +6171,21 @@
       "src/lib/newsletterRenderer.tsx",
       "src/pages/admin/sections/newsletter/Composer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-05T00:00:51.423Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "fa4ebd21",
+    "message": "Infolettre : kaléidoscope, images de même largeur (écart réparti des deux côtés)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "src/lib/newsletterRenderer.tsx"
+    ]
   }
 ]
