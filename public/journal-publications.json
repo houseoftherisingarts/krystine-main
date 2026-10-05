@@ -6253,5 +6253,21 @@
       "src/pages/podcast/episodes.ts",
       "src/pages/podcast/videos.ts"
     ]
+  },
+  {
+    "quand": "2026-10-05T16:08:17.966Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "118848d9",
+    "message": "Origine 2 : retrait du repère du 8 novembre (aucune semaine ne s'ouvre sans date posée dans l'admin), « date de départ annoncée très bientôt », plus de mention « en automne »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/offres.ts",
+      "src/pages/ListeAttenteLoeuvre.tsx",
+      "src/pages/origine2/semaines.ts"
+    ]
   }
 ]
