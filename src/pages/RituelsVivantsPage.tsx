@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Check, CaretDown, FlowerLotus, Heartbeat, Wind, HandPalm, Compass } from '@phosphor-icons/react';
-import { getProducts, formatMoney, type ShopifyProduct } from '../shopify';
+import { getProducts, type ShopifyProduct } from '../shopify';
 import { cheminPaiement } from '../lib/cheminCours';
 
 /**
@@ -255,7 +255,7 @@ const VideoFan: React.FC = () => {
         <div className="absolute bottom-[3%] left-1/2 w-[46%] -ml-[23%]" style={{ zIndex: 3 }}>
           <motion.div className="will-change-transform" initial={reduce ? false : { y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 1.2, ease, delay: 0.3 }}>
             <video ref={video} src="/rituels-vivants/extrait-ouverture.mp4" poster={img('extrait-ouverture-poster')}
-              autoPlay={!reduce} muted loop playsInline preload="auto" aria-label="Extrait de la capsule d’introduction aux soins des mains et des pieds"
+              autoPlay={!reduce} muted loop playsInline preload="auto" aria-label="Des mains, un flacon d’huile et les gestes du soin"
               className="block w-full aspect-[4/5] object-cover rounded-[4px] border"
               style={{ borderColor: 'rgba(28,23,18,0.1)', boxShadow: '0 30px 60px -26px rgba(28,23,18,0.6), 0 2px 6px rgba(28,23,18,0.08)' }} />
             <span aria-hidden className="absolute inset-x-0 -bottom-[10px] mx-auto block h-[2px] w-12" style={{ background: C.accent }} />
@@ -263,7 +263,7 @@ const VideoFan: React.FC = () => {
         </div>
       </div>
       <figcaption className="mt-7 text-center text-[0.58rem] sm:text-[0.62rem] uppercase tracking-[0.16em] sm:tracking-[0.24em]" style={{ color: 'rgba(28,23,18,0.62)' }}>
-        Les soins des mains et des pieds
+        Les gestes, pas à pas
       </figcaption>
     </figure>
   );
@@ -451,7 +451,7 @@ const RAISONS = [
 const Raisons: React.FC = () => (
   <section id="automassage" className={`relative w-full ${GX} ${PY} scroll-mt-24`}>
     <Reveal className="mb-[clamp(2.5rem,6vh,4rem)]">
-      <h2 className="v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)] max-w-[22ch]" style={{ color: C.ink }}>10 bonnes raisons de pratiquer l’automassage</h2>
+      <h2 className="v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)] max-w-[22ch]" style={{ color: C.ink }}>10 bonnes raisons de pratiquer l’automassage<span aria-hidden>*</span></h2>
       <DrawRule className="mt-6 w-20" />
     </Reveal>
     <div className="grid md:grid-cols-2 gap-x-[clamp(3rem,6vw,6rem)] border-t md:border-t-0" style={{ borderColor: hairline }}>
@@ -464,9 +464,9 @@ const Raisons: React.FC = () => (
         </Reveal>
       ))}
     </div>
-    {/* Page confirmée par Krystine le 5 oct. 2026. */}
-    <p className="mt-8 text-[0.85rem] leading-[1.6]" style={{ color: 'rgba(28,23,18,0.62)' }}>
-      Krystine St-Laurent, Nature &amp; Ayurveda, Éditions de l’Homme, 2018, p. 308-309
+    {/* Page imprimée du livre, confirmée par Krystine le 5 oct. 2026. */}
+    <p className="mt-8 text-[0.75rem] leading-[1.6]" style={{ color: 'rgba(28,23,18,0.62)' }}>
+      * Krystine St-Laurent, Nature &amp; Ayurveda, Éditions de l’Homme, 2018, p. 225
     </p>
   </section>
 );
@@ -582,7 +582,7 @@ const Soins: React.FC<{ produits: ShopifyProduct[] }> = ({ produits }) => (
   <section className={`w-full ${GX} pb-[clamp(3.25rem,9vh,7rem)]`}>
     <Reveal>
       <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.brassInk }}>INSPIRATA AYURVEDA</p>
-      <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)] max-w-[20ch]" style={{ color: C.ink }}>Les soins qui prolongent les gestes</h2>
+      <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)] max-w-[20ch]" style={{ color: C.ink }}>Les huiles utilisées dans les capsules</h2>
       <DrawRule className="mt-6 w-20" color={C.brass} />
     </Reveal>
     <div className="mt-12 grid gap-x-[clamp(1.5rem,3vw,3rem)] gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
@@ -598,9 +598,8 @@ const Soins: React.FC<{ produits: ShopifyProduct[] }> = ({ produits }) => (
                 <figcaption className="mt-2 text-right text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: C.brassInk }}>Capsule · {soin.capsule}</figcaption>
               </figure>
               <p className="mt-6 v2-serif font-light text-[clamp(1.25rem,1.9vw,1.6rem)] leading-[1.25]" style={{ color: C.ink }}>{soin.nom}</p>
-              <p className="mt-1 text-[0.85rem]" style={{ color: 'rgba(58,47,35,0.75)' }}>{formatMoney(p.priceRange.minVariantPrice)}</p>
               <span className="mt-5 inline-flex items-center gap-2.5 border-b pb-1.5 text-[0.72rem] uppercase tracking-[0.2em]" style={{ color: C.ink, borderColor: C.ink }}>
-                Voir le soin <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+                Voir la fiche <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
               </span>
             </Link>
           </Reveal>

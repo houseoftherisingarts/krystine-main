@@ -6330,5 +6330,52 @@
       "src/pages/RituelsVivantsPage.tsx",
       "src/pages/admin/sections/BugsSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-05T19:50:07.880Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c3d4fca8",
+    "message": "Mise en ligne groupée (reprise) : Rituels vivants, résultat du quiz, Formations, pastille d'aide",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "App.tsx",
+      "firebase.json",
+      "functions/src/index.ts",
+      "functions/src/pepin.ts",
+      "functions/src/quiz.ts",
+      "functions/src/quizCourriel.ts",
+      "public/accueil/index.html",
+      "public/aide-pepin.js",
+      "public/assets-manifest.json",
+      "public/communaute/index.html",
+      "public/infolettre/rituels-vivants-banniere.jpg",
+      "public/journal-publications.json",
+      "public/liste-attente-origine/index.html",
+      "public/rituels-vivants/automassage-bras.webp",
+      "public/rituels-vivants/automassage-oreilles.webp",
+      "public/rituels-vivants/extrait-automassage-poster.webp",
+      "public/rituels-vivants/extrait-automassage.mp4",
+      "public/rituels-vivants/extrait-ouverture-poster.webp",
+      "public/rituels-vivants/extrait-ouverture.mp4",
+      "public/rituels-vivants/kajabi-banniere.webp",
+      "public/rituels-vivants/mains.webp",
+      "public/rituels-vivants/soin-de-la-bouche.webp",
+      "public/rituels-vivants/soin-du-nez.webp",
+      "scripts/sequences/accueil-rituels-vivants.json",
+      "scripts/sequences/installer.mjs",
+      "scripts/sequences/installer.mjs.bak-2026-10-05",
+      "src/components/layout/AidePepin.tsx",
+      "src/firebase/habitudes.ts",
+      "src/lib/locale.ts",
+      "src/lib/pageMeta.ts",
+      "src/pages/FormationsLanding.tsx",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/pages/RituelsVivantsPage.tsx",
+      "src/pages/admin/sections/BugsSection.tsx"
+    ]
   }
 ]
