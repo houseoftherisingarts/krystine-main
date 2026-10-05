@@ -6218,5 +6218,20 @@
       "src/lib/relectureLettre.ts",
       "src/pages/admin/sections/newsletter/Composer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-05T00:29:02.726Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "00258b07",
+    "message": "Admin › Infolettre › Journal : « Vrais clics contre robots », lien par lien, pour chaque lettre envoyée",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/newsletter/ClicsLettre.tsx",
+      "src/pages/admin/sections/newsletter/JournalPanel.tsx"
+    ]
   }
 ]
