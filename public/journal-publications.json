@@ -6187,5 +6187,21 @@
       "public/assets-manifest.json",
       "src/lib/newsletterRenderer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-05T00:05:02.453Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b0105a0c",
+    "message": "Infolettre : la phrase en manuscrite se centre toute seule, sans changer l'alignement du reste du paragraphe",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/renderer.ts",
+      "public/assets-manifest.json",
+      "src/lib/newsletterRenderer.tsx"
+    ]
   }
 ]
