@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-05T19:49:55.608Z",
+  "generatedAt": "2026-10-05T21:28:49.251Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2295,14 +2295,14 @@
       "name": "automassage-bras.webp",
       "folder": "rituels-vivants",
       "kind": "image",
-      "size": 26222
+      "size": 15702
     },
     {
       "path": "/rituels-vivants/automassage-oreilles.webp",
       "name": "automassage-oreilles.webp",
       "folder": "rituels-vivants",
       "kind": "image",
-      "size": 47466
+      "size": 24728
     },
     {
       "path": "/rituels-vivants/extrait-automassage-poster.webp",
@@ -2323,14 +2323,14 @@
       "name": "extrait-ouverture-poster.webp",
       "folder": "rituels-vivants",
       "kind": "image",
-      "size": 42744
+      "size": 21006
     },
     {
       "path": "/rituels-vivants/extrait-ouverture.mp4",
       "name": "extrait-ouverture.mp4",
       "folder": "rituels-vivants",
       "kind": "video",
-      "size": 881413
+      "size": 901956
     },
     {
       "path": "/rituels-vivants/kajabi-banniere.webp",
@@ -2344,21 +2344,21 @@
       "name": "mains.webp",
       "folder": "rituels-vivants",
       "kind": "image",
-      "size": 41676
+      "size": 25584
     },
     {
       "path": "/rituels-vivants/soin-de-la-bouche.webp",
       "name": "soin-de-la-bouche.webp",
       "folder": "rituels-vivants",
       "kind": "image",
-      "size": 35054
+      "size": 28008
     },
     {
       "path": "/rituels-vivants/soin-du-nez.webp",
       "name": "soin-du-nez.webp",
       "folder": "rituels-vivants",
       "kind": "image",
-      "size": 47776
+      "size": 22970
     },
     {
       "path": "/salon/alex.jpg",
@@ -2954,6 +2954,20 @@
       "folder": "vata/documents",
       "kind": "image",
       "size": 39522
+    },
+    {
+      "path": "/vata/documents/003-0.jpg",
+      "name": "003-0.jpg",
+      "folder": "vata/documents",
+      "kind": "image",
+      "size": 11363
+    },
+    {
+      "path": "/vata/documents/003-1.jpg",
+      "name": "003-1.jpg",
+      "folder": "vata/documents",
+      "kind": "image",
+      "size": 57832
     },
     {
       "path": "/vata/documents/006.jpg",

@@ -25,7 +25,7 @@ import BravoSemaine from '../components/cours/BravoSemaine';
 import BravoDiplome from '../components/cours/BravoDiplome';
 import type { DiplomeInfos } from '../components/cours/Diplome';
 import { programmeDe } from './cours/programmes';
-import { nettoyerKajabi } from './cours/nettoyerKajabi';
+import { nettoyerKajabi, sansRepetitions, nomDocumentLisible } from './cours/nettoyerKajabi';
 import StickerFormat, { formatDe } from '../components/cours/StickerFormat';
 import { prixEnVigueur } from '../lib/versements';
 import { idDeCours, cheminCours, cheminPaiement, adresseADemenager } from '../lib/cheminCours';
@@ -1055,7 +1055,10 @@ const CoursDetailPage: React.FC = () => {
                       le drapeau à gauche); la coupure des mots évite les rivières de blanc. */}
                   {courante.texte?.trim() && (
                     <TexteLecon
-                      texte={nettoyerKajabi(courante.texte, courante.titre, formation?.titre)}
+                      texte={sansRepetitions(
+                        nettoyerKajabi(courante.texte, courante.titre, formation?.titre),
+                        lecons.slice(0, Math.max(0, lecons.findIndex(l => l.id === courante.id))).filter(l => l.moduleNom === courante.moduleNom && l.texte?.trim()).map(l => nettoyerKajabi(l.texte!, l.titre, formation?.titre)),
+                      )}
                       className={`${courante.chemin ? 'mt-6' : 'mt-2'} max-w-[68ch] text-[#3a2f23] dark:text-white/80 ${estVata ? 'text-justify hyphens-auto [&_h3]:text-left [&_h4]:text-left' : ''}`}
                     />
                   )}
@@ -1071,14 +1074,14 @@ const CoursDetailPage: React.FC = () => {
                               onClick={async () => {
                                 try {
                                   const url = await urlDeDocumentLecon(id, courante.id, i);
-                                  if (/\.pdf$/i.test(d.nom)) setApercu({ nom: d.nom, url });
+                                  if (/\.pdf$/i.test(d.nom)) setApercu({ nom: nomDocumentLisible(d.nom, courante.titre, courante.docs!.length), url });
                                   else window.open(url, '_blank', 'noopener');
                                 }
                                 catch { setErreur(lang === 'FR' ? 'Document indisponible pour le moment.' : 'Document unavailable right now.'); }
                               }}
                               className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/40 px-4 py-2 text-sm text-[#8B4A2F] transition-colors hover:bg-[#BA7B39]/10 dark:text-[#d9a05b]"
                             >
-                              <i className={`fa-solid ${/\.pdf$/i.test(d.nom) ? 'fa-file-pdf' : 'fa-file-arrow-down'}`} /> {d.nom}
+                              <i className={`fa-solid ${/\.pdf$/i.test(d.nom) ? 'fa-file-pdf' : 'fa-file-arrow-down'}`} /> {nomDocumentLisible(d.nom, courante.titre, courante.docs!.length)}
                             </button>
                           </li>
                         ))}
@@ -1153,7 +1156,16 @@ const CoursDetailPage: React.FC = () => {
                 complet, qui porte son bouton « Ouvrir ». */}
             {estVata && accessible && !apercuPdf && (() => {
               const rang = courante ? rangDeModule(courante.moduleNom) : 0;
-              const docs = lecons.filter(l => l.type === 'pdf' && !verrouillee(l) && rangDeModule(l.moduleNom) === rang);
+              // Les leçons PDF de la semaine, puis les documents joints aux autres
+              // leçons (le journal de bord vit sous une leçon audio, 5 oct. 2026).
+              const semaine = lecons.filter(l => !verrouillee(l) && rangDeModule(l.moduleNom) === rang);
+              const docs: Array<{ cle: string; titre: string; image: string; url: () => Promise<string> }> = [];
+              semaine.forEach(l => {
+                if (l.type === 'pdf') docs.push({ cle: l.id, titre: l.titre, image: `/vata/documents/${l.id}.jpg`, url: () => urlDeLecon(id, l.id) });
+                else (l.docs || []).forEach((d, i) => {
+                  if (/\.pdf$/i.test(d.nom)) docs.push({ cle: `${l.id}-${i}`, titre: nomDocumentLisible(d.nom, l.titre, l.docs!.length), image: `/vata/documents/${l.id}-${i}.jpg`, url: () => urlDeDocumentLecon(id, l.id, i) });
+                });
+              });
               const c = programme!.chapitres[rang];
               if (!docs.length || !c) return null;
               return (
@@ -1164,18 +1176,18 @@ const CoursDetailPage: React.FC = () => {
                   <p className="mt-1 px-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#38403a]/55 dark:text-white/55">{libelleSemaine(c)}</p>
                   <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-2">
                     {docs.map(l => (
-                      <li key={l.id}>
+                      <li key={l.cle}>
                         <button
                           type="button"
                           onClick={async () => {
-                            try { setApercu({ nom: l.titre, url: await urlDeLecon(id, l.id) }); }
+                            try { setApercu({ nom: l.titre, url: await l.url() }); }
                             catch { setErreur(lang === 'FR' ? 'Document indisponible pour le moment.' : 'Document unavailable right now.'); }
                           }}
                           className="group block w-full text-left"
                         >
                           <span className="block overflow-hidden rounded-[10px] border border-[#BA7B39]/25 bg-[#efe6d7] shadow-[0_10px_24px_-16px_rgba(41,48,39,0.6)]">
                             <img
-                              src={`/vata/documents/${l.id}.jpg`} alt="" loading="lazy"
+                              src={l.image} alt="" loading="lazy"
                               onError={e => { e.currentTarget.style.display = 'none'; }}
                               className="aspect-[368/520] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                             />

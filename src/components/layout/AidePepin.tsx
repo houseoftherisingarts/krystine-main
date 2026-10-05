@@ -125,6 +125,11 @@ async function enBase64Reduit(blob: Blob): Promise<string> {
 const CACHEE = (p: string) => p.startsWith('/admin') || p === '/compte' || p.startsWith('/compte/');
 // Pages où une barre d'achat fixe occupe le bas de l'écran au téléphone.
 const AVEC_BARRE = (p: string) => p.startsWith('/vata') || p.startsWith('/rituels-vivants');
+// Pages de cours, de paiement et de vente avec barre d'achat (5 oct. 2026) : la pastille se réduit à un
+// petit rond « ? » à droite, monté d'un cran, pour ne couvrir ni l'avis de
+// semaine fermée, ni la liste des leçons, ni le texte sous le bouton de la
+// caisse. Son nom complet reste dans l'info-bulle et pour les lecteurs d'écran.
+const COMPACTE = (p: string) => p.startsWith('/cours/') || p.startsWith('/paiement/') || AVEC_BARRE(p);
 
 // `autonome` : la page /aide, où mène la pastille des pages statiques
 // (accueil, communauté). Le panneau y est déjà ouvert, sans pastille, et
@@ -248,10 +253,16 @@ const AidePepin: React.FC<{ autonome?: boolean; pageDe?: string }> = ({ autonome
         type="button"
         data-bug-ignore
         onClick={ouvrir}
-        className={`fixed left-3 z-[55] inline-flex min-h-[40px] items-center border px-3.5 text-[0.62rem] uppercase tracking-[0.14em] transition-colors hover:bg-white ${AVEC_BARRE(pathname) ? 'bottom-[calc(var(--bande-temoins,0px)+6rem)] md:bottom-[calc(var(--bande-temoins,0px)+4.5rem)]' : 'bottom-[calc(var(--bande-temoins,0px)+0.75rem)] sm:bottom-[calc(var(--bande-temoins,0px)+4.5rem)]'} sm:left-5`}
+        aria-label={t.pastille}
+        title={t.pastille}
+        className={COMPACTE(pathname)
+          ? `fixed right-3 z-[55] inline-flex h-10 w-10 items-center justify-center rounded-full border text-[1.05rem] shadow-[0_8px_20px_-12px_rgba(28,23,18,0.6)] transition-colors hover:bg-white ${AVEC_BARRE(pathname) ? 'bottom-[calc(var(--bande-temoins,0px)+6.5rem)] md:bottom-[calc(var(--bande-temoins,0px)+5.5rem)]' : 'bottom-[calc(var(--bande-temoins,0px)+5.5rem)]'} sm:right-5`
+          : `fixed left-3 z-[55] inline-flex min-h-[40px] items-center border px-3.5 text-[0.62rem] uppercase tracking-[0.14em] transition-colors hover:bg-white ${AVEC_BARRE(pathname) ? 'bottom-[calc(var(--bande-temoins,0px)+6rem)] md:bottom-[calc(var(--bande-temoins,0px)+4.5rem)]' : 'bottom-[calc(var(--bande-temoins,0px)+0.75rem)] sm:bottom-[calc(var(--bande-temoins,0px)+4.5rem)]'} sm:left-5`}
         style={{ background: CREME, color: ENCRE, borderColor: `${FILET}99`, fontFamily: '"Inter", system-ui, sans-serif' }}
       >
-        {t.pastille}
+        {COMPACTE(pathname)
+          ? <span aria-hidden style={{ fontFamily: '"Fraunces", Georgia, serif' }}>?</span>
+          : t.pastille}
       </button>}
 
       {dejaOuvert && (

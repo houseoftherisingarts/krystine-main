@@ -1,4 +1,5 @@
 import React from 'react';
+import { sansBalises } from '../pages/cours/nettoyerKajabi';
 
 // Le texte d'accompagnement d'une leçon, écrit par Krystine dans l'admin
 // avec une mise en forme légère, comme l'éditeur de Kajabi mais sans
@@ -8,14 +9,17 @@ import React from 'react';
 
 const inline = (s: string): React.ReactNode[] => {
   const out: React.ReactNode[] = [];
-  const re = /\*\*(.+?)\*\*|\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<]+)/g;
+  // Liste blanche : http(s), mailto: et chemins du site (« /quiz »); tout autre
+  // schéma (javascript:, data:…) reste du texte.
+  const re = /\*\*(.+?)\*\*|\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+|\/(?!\/)[^\s)]*)\)|(https?:\/\/[^\s<]+)/g;
   let last = 0, k = 0, m: RegExpExecArray | null;
   while ((m = re.exec(s))) {
     if (m.index > last) out.push(s.slice(last, m.index));
     if (m[1]) out.push(<strong key={k++} className="font-semibold text-[#293027] dark:text-white">{m[1]}</strong>);
     else {
       const href = m[3] || m[4];
-      out.push(<a key={k++} href={href} target="_blank" rel="noopener noreferrer" className="underline decoration-[#BA7B39] underline-offset-4 hover:text-[#8B4A2F]">{m[2] || href}</a>);
+      const interne = href.startsWith('/');
+      out.push(<a key={k++} href={href} {...(interne ? {} : { target: '_blank', rel: 'noopener noreferrer' })} className="underline decoration-[#BA7B39] underline-offset-4 hover:text-[#8B4A2F]">{m[2] || href}</a>);
     }
     last = m.index + m[0].length;
   }
@@ -46,7 +50,7 @@ const lignesVersNoeud = (lignes: string[], key: number): React.ReactNode => {
 };
 
 export const TexteLecon: React.FC<{ texte: string; className?: string }> = ({ texte, className = '' }) => {
-  const blocs = texte.replace(/\r\n/g, '\n').trim().split(/\n{2,}/);
+  const blocs = sansBalises(texte).replace(/\r\n/g, '\n').trim().split(/\n{2,}/);
   const noeuds: React.ReactNode[] = [];
   blocs.forEach((b, i) => {
     const lignes = b.split('\n');
