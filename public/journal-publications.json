@@ -6233,5 +6233,25 @@
       "src/pages/admin/sections/newsletter/ClicsLettre.tsx",
       "src/pages/admin/sections/newsletter/JournalPanel.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-05T01:58:51.328Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "f40338f7",
+    "message": "Page podcast (/podcast) refaite : le nouvel épisode en tête avec la vidéo YouTube, la saison 2 avec un vrai lecteur, la saison 1 repliée, le direct après les épisodes",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/LiveSignup 2.tsx",
+      "src/components/LiveSignup.tsx",
+      "src/pages/concepts/PodcastV2 2.tsx",
+      "src/pages/concepts/PodcastV2.tsx",
+      "src/pages/podcast/LecteurAudio.tsx",
+      "src/pages/podcast/episodes.ts",
+      "src/pages/podcast/videos.ts"
+    ]
   }
 ]
