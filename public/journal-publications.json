@@ -6284,5 +6284,51 @@
       "public/assets-manifest.json",
       "scripts/garde-cles.mjs"
     ]
+  },
+  {
+    "quand": "2026-10-05T19:49:01.841Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "db3fdd4b",
+    "message": "Mise en ligne groupée : page Rituels vivants (sœur de Vata, 10 capsules + 1 bonus, 10 bonnes raisons de l'automassage), résultat du quiz (carte Rituels vivants 27 $, courriel riche, résultats mixtes, références des livres, plus d'option de refus), page Formations simplifiée, pastille « Un pépin ? Écrivez-nous » sur tout le site",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "App.tsx",
+      "firebase.json",
+      "functions/src/index.ts",
+      "functions/src/pepin.ts",
+      "functions/src/quiz.ts",
+      "functions/src/quizCourriel.ts",
+      "public/accueil/index.html",
+      "public/aide-pepin.js",
+      "public/assets-manifest.json",
+      "public/communaute/index.html",
+      "public/infolettre/rituels-vivants-banniere.jpg",
+      "public/liste-attente-origine/index.html",
+      "public/rituels-vivants/automassage-bras.webp",
+      "public/rituels-vivants/automassage-oreilles.webp",
+      "public/rituels-vivants/extrait-automassage-poster.webp",
+      "public/rituels-vivants/extrait-automassage.mp4",
+      "public/rituels-vivants/extrait-ouverture-poster.webp",
+      "public/rituels-vivants/extrait-ouverture.mp4",
+      "public/rituels-vivants/kajabi-banniere.webp",
+      "public/rituels-vivants/mains.webp",
+      "public/rituels-vivants/soin-de-la-bouche.webp",
+      "public/rituels-vivants/soin-du-nez.webp",
+      "scripts/sequences/accueil-rituels-vivants.json",
+      "scripts/sequences/installer.mjs",
+      "scripts/sequences/installer.mjs.bak-2026-10-05",
+      "src/components/layout/AidePepin.tsx",
+      "src/firebase/habitudes.ts",
+      "src/lib/locale.ts",
+      "src/lib/pageMeta.ts",
+      "src/pages/FormationsLanding.tsx",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/pages/RituelsVivantsPage.tsx",
+      "src/pages/admin/sections/BugsSection.tsx"
+    ]
   }
 ]
