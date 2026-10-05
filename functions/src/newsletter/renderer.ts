@@ -290,7 +290,7 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
         const ecart = bande ? 6 : 12;
         const largeur = Math.floor((520 - (parRang - 1) * ecart) / parRang);
         const haut = bande ? 174 : (k === 1 ? 390 : largeur);
-        const cell = (u: string, j: number) => `<td width="${Math.round(100 / parRang)}%" valign="top" style="width:${Math.round(100 / parRang)}%;padding:0 ${j < parRang - 1 ? ecart : 0}px ${bande ? 0 : 12}px 0;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;"><img src="${esc(recadre(u, largeur * 2, haut * 2))}" alt="${esc(c.alt || '')}" width="${largeur}" style="display:block;width:100%;max-width:${largeur}px;height:auto;border-radius:${bande ? 6 : 12}px;border:0;" /></a></td>`;
+        const cell = (u: string, j: number) => `<td width="${Math.round(100 / parRang)}%" valign="top" style="width:${Math.round(100 / parRang)}%;padding:0 ${j < parRang - 1 ? ecart / 2 : 0}px ${bande ? 0 : 12}px ${j > 0 ? ecart / 2 : 0}px;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;"><img src="${esc(recadre(u, largeur * 2, haut * 2))}" alt="${esc(c.alt || '')}" width="${largeur}" style="display:block;width:100%;max-width:${largeur}px;height:auto;border-radius:${bande ? 6 : 12}px;border:0;" /></a></td>`;
         let rangs = '';
         for (let i = 0; i < k; i += parRang) rangs += `<tr>${imgs.slice(i, i + parRang).map((u, j) => cell(u, j)).join('')}</tr>`;
         return enCarte(`<tr><td align="center" style="padding:10px 0 ${bande ? 12 : 0}px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">${rangs}</table></td></tr>${caption}`);

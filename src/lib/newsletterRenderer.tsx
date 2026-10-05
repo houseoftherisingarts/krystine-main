@@ -604,7 +604,7 @@ function blockToEmail(block: NewsletterBlock, firstName?: string): string {
         const parRang = bande || k <= 3 ? k : 2;
         const largeur = Math.floor((520 - (parRang - 1) * (bande ? 6 : 12)) / parRang);
         const haut = bande ? 174 : (k === 1 ? 390 : largeur);
-        const cell = (u: string, j: number) => `<td width="${Math.round(100 / parRang)}%" valign="top" style="padding:0 ${j < parRang - 1 ? (bande ? 6 : 12) : 0}px ${bande ? 0 : 12}px 0;"><img src="${esc(recadre(u, largeur * 2, haut * 2))}" alt="${esc(c.alt || '')}" width="${largeur}" style="display:block;width:100%;max-width:${largeur}px;border-radius:${bande ? 6 : 12}px;" /></td>`;
+        const cell = (u: string, j: number) => `<td width="${Math.round(100 / parRang)}%" valign="top" style="padding:0 ${j < parRang - 1 ? (bande ? 3 : 6) : 0}px ${bande ? 0 : 12}px ${j > 0 ? (bande ? 3 : 6) : 0}px;"><img src="${esc(recadre(u, largeur * 2, haut * 2))}" alt="${esc(c.alt || '')}" width="${largeur}" style="display:block;width:100%;max-width:${largeur}px;border-radius:${bande ? 6 : 12}px;" /></td>`;
         let rangs = '';
         for (let i = 0; i < k; i += parRang) rangs += `<tr>${imgs.slice(i, i + parRang).map((u, j) => cell(u, j)).join('')}</tr>`;
         return `<tr><td align="center" style="padding:16px 0 4px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">${rangs}</table></td></tr>${caption}`;
