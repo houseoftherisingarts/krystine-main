@@ -6269,5 +6269,20 @@
       "src/pages/ListeAttenteLoeuvre.tsx",
       "src/pages/origine2/semaines.ts"
     ]
+  },
+  {
+    "quand": "2026-10-05T18:06:15.933Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "fd6218a4",
+    "message": "Quiz réparé (encore) : GitHub reconstruisait le site sans la clé de la case anti-robot après chaque publication; clé publique ajoutée à la publication automatique, garde des clés resserrée (elle se faisait tromper par les shaders)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      ".github/workflows/deploy.yml",
+      "public/assets-manifest.json",
+      "scripts/garde-cles.mjs"
+    ]
   }
 ]
