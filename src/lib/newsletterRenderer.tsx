@@ -124,7 +124,7 @@ function escHtml(s: string): string {
 export const STYLES_PHRASE: Record<string, string> = {
   grand: 'font-size:1.35em;line-height:1.35',
   tgrand: 'font-size:1.75em;line-height:1.25',
-  manu: "font-family:'Kalam','Bradley Hand','Segoe Print','Comic Neue',cursive;font-size:1.3em;line-height:1.5;font-weight:400;color:#2b1f14",
+  manu: "font-family:'Kalam','Bradley Hand','Segoe Print','Comic Neue',cursive;font-size:1.3em;line-height:1.5;font-weight:400;color:#2b1f14;display:block;text-align:center;margin:4px 0",
 };
 const phrasesEnHtml = (h: string) => h
   .replace(/&lt;(grand|tgrand|manu)&gt;/g, (_m, k: string) => `<span data-rich="${k}" style="${STYLES_PHRASE[k].replace(/"/g, '&quot;')}">`)
