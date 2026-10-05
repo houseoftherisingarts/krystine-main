@@ -9,5 +9,5 @@
  * le lecteur audio à la place de la vidéo.
  */
 export const VIDEOS_EPISODES: Record<string, string> = {
-  'S2-5': 'ZwI_D0A2mlw',
+  'S2-5': '5b_Kh_VKY5Y',
 };
