@@ -25,13 +25,16 @@ export const SEMAINES: Semaine[] = Array.from({ length: 12 }, (_, i) => ({
   pilier: (i < 4 ? 1 : i < 8 ? 2 : 3) as 1 | 2 | 3,
 }));
 
-// La cohorte ouvre en novembre 2026 (ordre d'Alex du 10 septembre 2026, la date
-// a été ramenée de janvier 2027 à novembre). Tant que l'admin n'a pas posé de
-// date exacte, le dimanche 8 novembre 2026 sert de repère.
-export const DEBUT_ORIGINE2_DEFAUT = '2026-11-08';
+// Le repère du 8 novembre 2026 est retiré (Krystine, 5 octobre 2026) : la date
+// de départ n'est pas encore annoncée. Tant que l'admin n'a pas posé de date
+// (fiche formation, dateSortie), aucune semaine ne s'ouvre et la page dit que
+// la date sera annoncée.
+export const DEBUT_ORIGINE2_DEFAUT: string | null = null;
 
 export function dateDebut(dateSortie?: string | null): Date {
-  const [a, m, j] = (dateSortie || DEBUT_ORIGINE2_DEFAUT).split('-').map(Number);
+  const iso = dateSortie || DEBUT_ORIGINE2_DEFAUT;
+  if (!iso) return new Date(8640000000000000);
+  const [a, m, j] = iso.split('-').map(Number);
   return new Date(a, (m || 1) - 1, j || 1);
 }
 
@@ -46,7 +49,7 @@ export function semaineOuverteRang(dateSortie?: string | null, date = new Date()
 export const rangSemaine = (n?: string) => (n ? SEMAINES.findIndex(s => s.n === n) : -1);
 
 export function labelDebut(dateSortie?: string | null): string {
-  if (!dateSortie) return 'Début à l’automne 2026';
+  if (!dateSortie) return 'Date de départ annoncée très bientôt';
   const d = dateDebut(dateSortie);
   return `Début le ${d.toLocaleDateString('fr-CA', { day: 'numeric', month: 'long', year: 'numeric' })}`;
 }

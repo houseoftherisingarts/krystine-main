@@ -55,7 +55,7 @@ const PROGRAMMES: Record<ProgrammeKey | 'default', ProgrammeMeta> = {
     subtitle: 'Retrouver votre boussole intérieure',
     promise:
       "L'Expérience Origine est un parcours de 12 semaines au cœur de l'Ayurveda. " +
-      "La cohorte en cours est fermée : les inscriptions ouvrent en automne. " +
+      "La cohorte en cours est fermée : les inscriptions ouvrent très bientôt. " +
       "Inscrivez-vous à la liste d'attente et vous serez parmi les premières à " +
       "savoir lorsque les portes rouvriront, avec un accès privilégié et des " +
       "conditions réservées à la liste.",
