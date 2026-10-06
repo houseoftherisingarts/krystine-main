@@ -6461,5 +6461,20 @@
       "public/assets-manifest.json",
       "src/pages/origine2/piliers.ts"
     ]
+  },
+  {
+    "quand": "2026-10-06T17:57:09.970Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "2f4d02b2",
+    "message": "Quiz (/quiz) : la case « Je ne suis pas un robot » plus tolérante. La case expirée se recharge seule avec un message clair, un jeton trop vieux n'est plus envoyé, une case absente propose « Afficher la case », et la case revient après « Recommencer ». La protection du serveur ne change pas.",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/recaptcha.ts",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
