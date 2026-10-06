@@ -6643,5 +6643,19 @@
       "public/vata/carte-vata-essentiel.jpg",
       "src/pages/CoursDetailPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T19:46:48.133Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e05d6dc0",
+    "message": "Admin › Formations : chaque formation s'affiche avec son titre complet en gros caractères, son prix, son statut en mot coloré, une recherche par titre, les publiées en haut puis les masquées",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/FormationsSection.tsx"
+    ]
   }
 ]
