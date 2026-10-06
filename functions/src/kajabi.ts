@@ -269,6 +269,10 @@ export const FORMATIONS_RESTAURATION_AUTO = ['kajabi-2148687644'];
 export const FORMATION_FONDATRICES = 'kajabi-2149348838';
 const ETIQUETTE_FONDATRICES = 'origine-fondatrice';
 const FONDATRICES_TEST = ['krystine+fondatrice@inspiratanature.com', 'krystinestlaurent+fondatrice@gmail.com'];
+// Le compte d'aperçu créé le 6 oct. 2026 pour parcourir le cours comme une
+// fondatrice (krystinestlaurent+fondatrice@gmail.com) : seul compte dispensé
+// de la vérification d'adresse, parce que ce compte précis est le nôtre.
+const COMPTE_APERCU_UID = '1BDmCB6UtfP6IiJlCHOAZpVO5N72';
 
 async function accorderFondatrice(db: ReturnType<typeof getFirestore>, uid: string, email: string, verifiee: boolean): Promise<'rien' | 'a_verifier' | 'accorde'> {
   const ref = db.doc(`achatsFormations/${uid}/formations/${FORMATION_FONDATRICES}`);
@@ -280,7 +284,7 @@ async function accorderFondatrice(db: ReturnType<typeof getFirestore>, uid: stri
     const abonnees = await db.collection('newsletter').where('email', '==', email).limit(10).get();
     if (!abonnees.docs.some(d => ((d.get('tags') || []) as string[]).includes(ETIQUETTE_FONDATRICES))) return 'rien';
   }
-  if (!verifiee) return 'a_verifier';
+  if (!verifiee && uid !== COMPTE_APERCU_UID) return 'a_verifier';
   const f = ((await db.doc(`formations/${FORMATION_FONDATRICES}`).get()).data() || {}) as { titre?: string; imageUrl?: string };
   await ref.set({
     titre: f.titre || 'Expérience Origine : Cohorte Fondatrice',
