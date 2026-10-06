@@ -93,13 +93,7 @@ export const creerSessionPaiement = onCall(
     const rabais = amb?.rabaisPct || 0;
     // Le prix que l'acheteuse paie; les versements permis se décident toujours
     // sur le prix en vigueur, avant rabais.
-    // Achat test à 1 $ (Krystine, 6 oct. 2026) : seules ses adresses de test,
-    // confirmées et connectées, paient 1 $ en un paiement; tout le reste du
-    // parcours (accès, confirmation, lettres d'accueil) se déroule pour vrai.
-    const courriel = String(req.auth?.token?.email || '').toLowerCase();
-    const achatTest = versements === 1 && req.auth?.token?.email_verified === true
-      && /^(krystinestlaurent\+[a-z0-9-]+@gmail\.com|krystine\+[a-z0-9-]+@inspiratanature\.com)$/.test(courriel);
-    const prixPaye = achatTest ? 1 : rabais ? prixReduitCents(Math.round(prix * 100), rabais) / 100 : prix;
+    const prixPaye = rabais ? prixReduitCents(Math.round(prix * 100), rabais) / 100 : prix;
 
     const body = new URLSearchParams({
       'line_items[0][price_data][currency]': 'cad',
