@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-06T19:25:31.478Z",
+  "generatedAt": "2026-10-06T19:26:07.857Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2664,6 +2664,13 @@
     {
       "path": "/vata/carte-saison-vata.jpg",
       "name": "carte-saison-vata.jpg",
+      "folder": "vata",
+      "kind": "image",
+      "size": 61475
+    },
+    {
+      "path": "/vata/carte-vata-essentiel.jpg",
+      "name": "carte-vata-essentiel.jpg",
       "folder": "vata",
       "kind": "image",
       "size": 61475
