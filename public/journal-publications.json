@@ -6701,5 +6701,20 @@
       "src/pages/FormationsLanding.tsx",
       "src/pages/admin/sections/newsletter/nouvellesInscrites.ts"
     ]
+  },
+  {
+    "quand": "2026-10-06T20:39:28.910Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c75dbaf3",
+    "message": "Admin › Infolettre : nouveau panneau « Les nouvelles inscrites » en tête de l'onglet Infolettres (graphique des 30 derniers jours, vraies nouvelles, déjà connues et désabonnées, solde du jour et de la semaine, les 20 dernières vraies nouvelles avec leur provenance et leur résultat du quiz), en direct",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/NewsletterSection.tsx",
+      "src/pages/admin/sections/newsletter/NouvellesInscritesPanel.tsx"
+    ]
   }
 ]
