@@ -6797,5 +6797,23 @@
       "public/assets-manifest.json",
       "src/pages/RituelsEssentielsPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T22:40:19.644Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b6596759",
+    "message": "Rituels essentiels : bouton d'achat qui tient sur le téléphone, courriel du pied de page qui se coupe, pastille d'aide rangée hors du texte, garantie de 15 jours près du bouton de l'offre, nouvelle adresse de paiement /paiement/rituels-essentiels",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/layout/AidePepin.tsx",
+      "src/components/layout/Footer.tsx",
+      "src/lib/cheminCours.ts",
+      "src/pages/PaiementFormation.tsx",
+      "src/pages/RituelsEssentielsPage.tsx"
+    ]
   }
 ]
