@@ -6490,5 +6490,26 @@
       "public/assets-manifest.json",
       "src/pages/RituelsVivantsPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T18:35:15.131Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "26af4b05",
+    "message": "Accueil (/accueil) : le menu du haut revient sur ordinateur dès 1024 px de large (liens et bouton doré resserrés), le rond du menu ne prend le relais qu'en dessous et réapparaît après le défilement, plus visible sur la vidéo; son de survol remplacé par un son doux accordé sur 432 Hz (accueil et communauté). Pastille d'aide devenue « Un commentaire ? Écrivez-nous » avec quatre choix (J'aime ce que je vois, Une idée, Quelque chose bloque, Je ne trouve pas ce que je cherche); l'admin affiche le type et la section s'appelle Commentaires des visiteuses",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/pepin.ts",
+      "public/accueil/index.html",
+      "public/aide-pepin.js",
+      "public/assets-manifest.json",
+      "public/communaute/index.html",
+      "src/components/layout/AidePepin.tsx",
+      "src/pages/admin/AdminShell.tsx",
+      "src/pages/admin/sections/BugsSection.tsx"
+    ]
   }
 ]
