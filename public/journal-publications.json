@@ -6716,5 +6716,27 @@
       "src/pages/admin/sections/NewsletterSection.tsx",
       "src/pages/admin/sections/newsletter/NouvellesInscritesPanel.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T21:25:12.309Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "2e088a60",
+    "message": "Rituels essentiels : le visuel « Le fondu » sur la carte de /formations, dans la bannière de la page de vente et comme image de partage; nouvelle bannière d'infolettre pour la séquence d'accueil; la pastille « Un commentaire ? » se réduit au rond « ? » sur /formations pour ne plus couvrir la carte Expérience Origine 2",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/infolettre/rituels-essentiels-banniere.jpg",
+      "public/rituels-essentiels/carte-fondu.jpg",
+      "public/rituels-essentiels/carte-fondu.webp",
+      "public/rituels-vivants/rituels-banniere-fondu.webp",
+      "scripts/sequences/accueil-rituels-vivants.json",
+      "src/components/layout/AidePepin.tsx",
+      "src/lib/pageMeta.ts",
+      "src/pages/FormationsLanding.tsx",
+      "src/pages/RituelsEssentielsPage.tsx"
+    ]
   }
 ]
