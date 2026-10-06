@@ -107,6 +107,46 @@ async function shopify(de: Date, a: Date, il30: Date): Promise<{ n: number; mont
   return { n: snap.size, montant: snap.docs.reduce((s, d) => s + (Number(d.get('totalPrice')) || 0), 0) };
 }
 
+/** Les commentaires de la pastille « Un commentaire ? Écrivez-nous » (collection bugs, functions/src/pepin.ts), dernières 24 h. */
+const TYPES_COMMENTAIRE: Record<string, string> = {
+  technique: 'Quelque chose bloque',
+  aime: 'J’aime ce que je vois',
+  idee: 'Une idée',
+  introuvable: 'Je ne trouve pas ce que je cherche',
+};
+interface Commentaires { parType: Record<string, number>; lignes: string[]; nonTraites: number }
+async function commentaires(de: Date): Promise<Commentaires> {
+  const db = getFirestore();
+  const snap = await db.collection('bugs').where('cree', '>=', ts(de)).orderBy('cree', 'desc').get();
+  const parType: Record<string, number> = Object.fromEntries(Object.values(TYPES_COMMENTAIRE).map((t) => [t, 0]));
+  const tries = snap.docs.slice().sort((a, b) => Number(b.get('type') === 'technique' || !b.get('type')) - Number(a.get('type') === 'technique' || !a.get('type')));
+  const lignes = tries.map((d) => {
+    const type = TYPES_COMMENTAIRE[String(d.get('type') || 'technique')] || TYPES_COMMENTAIRE.technique;
+    parType[type] = (parType[type] || 0) + 1;
+    const qui = String(d.get('nom') || '').trim() || String(d.get('courriel') || '').trim();
+    const texte = String(d.get('texte') || '').replace(/\s+/g, ' ').trim();
+    return `${type} · ${d.get('page') || 'page inconnue'}${qui ? ` · ${qui}` : ''} : ${texte.slice(0, 140)}${texte.length > 140 ? '…' : ''}`;
+  });
+  const nonTraites = (await db.collection('bugs').where('statut', 'in', ['nouveau', 'en_cours']).count().get()).data().count;
+  return { parType, lignes, nonTraites };
+}
+
+/** La vérification complète du site (scripts/qa/verif-complete.mjs, sur l'ordinateur de Krystine, vers 5 h 45). */
+interface Verif { le: Date; pages: number; verifications: number; ok: number; anomalies: { page: string; appareil: string; probleme: string }[] }
+async function verifComplete(): Promise<Verif | null> {
+  const d = await getFirestore().doc('sante/verifComplete').get();
+  if (!d.exists) return null;
+  const le = (d.get('le') as Timestamp | undefined)?.toDate();
+  if (!le || Date.now() - le.getTime() > 3 * 3600 * 1000) return null;
+  return {
+    le,
+    pages: Number(d.get('pages')) || 0,
+    verifications: Number(d.get('verifications')) || 0,
+    ok: Number(d.get('ok')) || 0,
+    anomalies: ((d.get('anomalies') || []) as Verif['anomalies']).map((a) => ({ page: a.page, appareil: a.appareil, probleme: a.probleme })),
+  };
+}
+
 export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calculerFilet>>) {
   const db = getFirestore();
   const aujourdhui = jourDe(new Date());
@@ -135,6 +175,10 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
     sur(async () => (await db.collection('bugs').where('statut', '==', 'nouveau').count().get()).data().count),
     sur(async () => (await db.collection('quizTentatives').where('statut', '==', 'a-rattraper').count().get()).data().count),
   ]);
+  const [verif, comm] = await Promise.all([
+    sur(verifComplete),
+    sur(() => commentaires(new Date(Date.now() - 24 * 3600 * 1000))),
+  ]);
 
   const alertes = filet ? filet.controles.filter((c) => c.etat === 'alerte').map((c) => `${c.nom} : ${c.detail}`) : ['Le filet n’a pas pu tourner'];
 
@@ -150,7 +194,8 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
     le: Timestamp.now(),
     jour: aujourdhui,
     veille: hier,
-    verdict: alertes.length ? 'alerte' : 'ok',
+    // Une page en panne, une ressource cassée ou un parcours bloqué compte comme une alerte; un titre trop long ou une page lente, non.
+    verdict: alertes.length || (verif?.anomalies.some((a) => !/^(titre trop long|chargement lent)/.test(a.probleme)) ?? false) ? 'alerte' : 'ok',
     toutFonctionne: { alertes, pepinsHier: pepinsH, pepinsOuverts, quizARattraper: aRattraper, controles: filet?.controles.length ?? 0 },
     veilleChiffres: {
       visites: jH?.sessions ?? null, nouveauxNavigateurs: jH?.nouveaux ?? null,
@@ -165,6 +210,8 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
       shopify: shop7, visitesPub: j7?.pub ?? null, visitesInfolettre: j7?.infolettre ?? null, desabonnements: des7,
     },
     surveiller,
+    verifComplete: verif,
+    commentaires: comm,
   };
 }
 
@@ -172,6 +219,20 @@ export type Bilan = Awaited<ReturnType<typeof calculerBilan>>;
 
 const n = (v: number | null | undefined) => (v == null ? '?' : v.toLocaleString('fr-CA'));
 const argent = (v: number | null | undefined) => (v == null ? '?' : v.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' }));
+
+/** Une même anomalie sur plusieurs pages ou appareils tient sur une seule ligne. */
+function regrouper(anomalies: { page: string; appareil: string; probleme: string }[]): string[] {
+  const parProbleme = new Map<string, Map<string, string[]>>();
+  for (const a of anomalies) {
+    const pages = parProbleme.get(a.probleme) || new Map<string, string[]>();
+    pages.set(a.page, [...(pages.get(a.page) || []), a.appareil]);
+    parProbleme.set(a.probleme, pages);
+  }
+  return [...parProbleme].map(([probleme, pages]) => {
+    const ou = [...pages].map(([page, apps]) => `${page} (${apps.length === 3 ? 'les trois appareils' : apps.join(', ')})`).join(', ');
+    return `${ou} : ${probleme}`;
+  });
+}
 
 export function texteBilan(b: Bilan): string {
   const v = b.veilleChiffres;
@@ -182,8 +243,29 @@ export function texteBilan(b: Bilan): string {
     : `Oui. Les ${b.toutFonctionne.controles} vérifications du site sont bonnes (pages, case anti-robot, connexion, quiz).`;
   const sources = Object.entries(v.parSource).sort((a, c) => c[1] - a[1]).map(([k, x]) => `${k} ${x}`).join(', ');
   const camp = Object.entries(v.campagnes).sort((a, c) => c[1] - a[1]).slice(0, 3).map(([k, x]) => `${k} ${x}`).join(', ');
+  const vc = b.verifComplete;
+  const siteEntier = !vc
+    ? ['Le site en entier : la vérification complète de ce matin n’a pas tourné (l’ordinateur était sans doute éteint ou endormi).']
+    : vc.anomalies.length === 0
+      ? [`Le site en entier : ${n(vc.pages)} pages vérifiées sur téléphone, tablette et ordinateur, tout est bon.`]
+      : [
+        `Le site en entier : ${n(vc.pages)} pages vérifiées sur téléphone, tablette et ordinateur, ${n(vc.anomalies.length)} anomalie(s) :`,
+        ...regrouper(vc.anomalies).slice(0, 20).map((l) => `• ${l}`),
+      ];
+  const c = b.commentaires;
+  const blocCommentaires = !c
+    ? ['Les commentaires n’ont pas pu être lus ce matin.']
+    : c.lignes.length === 0
+      ? ['Aucun commentaire hier.', `Encore non traités au total : ${n(c.nonTraites)}.`]
+      : [
+        Object.entries(c.parType).map(([t, x]) => `${t} : ${x}`).join(' · '),
+        ...c.lignes.map((l) => `• ${l}`),
+        `Encore non traités au total : ${n(c.nonTraites)} (admin, onglet Commentaires des visiteuses).`,
+      ];
   const lignes = [
     'Bonjour Krystine,',
+    '',
+    ...siteEntier,
     '',
     '1. Tout fonctionne ?',
     etat,
@@ -199,7 +281,10 @@ export function texteBilan(b: Bilan): string {
     `Visites venues d’une infolettre : ${n(v.visitesInfolettre)} · 7 jours : ${n(s.visitesInfolettre)}`,
     `Désabonnements : ${n(v.desabonnements)} · 7 jours : ${n(s.desabonnements)}`,
     '',
-    `3. À surveiller : ${b.surveiller}`,
+    `3. Les commentaires des visiteuses (dernières 24 h)`,
+    ...blocCommentaires,
+    '',
+    `4. À surveiller : ${b.surveiller}`,
     '',
     'Le même bilan est dans l’admin, au tableau de bord.',
     '',
