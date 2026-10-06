@@ -6769,5 +6769,19 @@
       "public/rituels-vivants/extrait-krystine-parle.mp4",
       "src/pages/RituelsEssentielsPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T22:30:23.733Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "aafd72d8",
+    "message": "Rituels essentiels (/rituels-essentiels) : les grands chiffres romains des chapitres sont retirés, ils mélangeaient la lectrice",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/RituelsEssentielsPage.tsx"
+    ]
   }
 ]
