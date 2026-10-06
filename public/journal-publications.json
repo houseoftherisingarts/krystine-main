@@ -6738,5 +6738,20 @@
       "src/pages/FormationsLanding.tsx",
       "src/pages/RituelsEssentielsPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T21:59:07.983Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "3368c662",
+    "message": "Rituels essentiels : la courte vidéo au centre de l'éventail en haut de la page est remplacée par une photo fixe sans flacon (le pied sur le tricot crème, lumière chaude); l'ancienne vidéo reste dans le dépôt",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/rituels-vivants/ouverture-image.webp",
+      "src/pages/RituelsEssentielsPage.tsx"
+    ]
   }
 ]
