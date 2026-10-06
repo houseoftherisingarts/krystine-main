@@ -6549,5 +6549,19 @@
       "src/pages/client/ClientTelechargements.tsx",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T19:05:18.493Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "2a287a41",
+    "message": "Espace membre (/compte) : à la connexion, la fenêtre « On oublie souvent de jouer » et toute pastille de niskas restent fermées quand le jeu est à off, même une fraction de seconde",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/contexts/GamificationContext.tsx"
+    ]
   }
 ]
