@@ -6597,5 +6597,22 @@
       "src/pages/cours/programmes.ts",
       "src/vexelhotjar/tracker.ts"
     ]
+  },
+  {
+    "quand": "2026-10-06T19:20:32.435Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "288227c3",
+    "message": "Vérification complète du matin : chaque matin à 5 h 45, l'ordinateur de Krystine ouvre toutes les pages publiques sur téléphone, tablette et ordinateur (réponse, erreurs, images, débordement, menu, éléments qui se recouvrent, titres, lenteur) et refait les parcours (quiz avec la case anti-robot, VATA et Rituels vivants jusqu'à la caisse Stripe, création de compte); résultat dans sante/verifComplete. Le Bilan du matin l'affiche en tête et ajoute les commentaires des visiteuses des dernières 24 h (par type, chacun en une ligne, ceux qui bloquent en premier, et le nombre encore non traités), aussi dans l'encart de l'admin",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "public/assets-manifest.json",
+      "scripts/qa/verif-complete-installer.sh",
+      "scripts/qa/verif-complete.mjs"
+    ]
   }
 ]
