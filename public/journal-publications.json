@@ -6431,5 +6431,21 @@
       "src/pages/admin/sections/DashboardSection.tsx",
       "src/pages/admin/sections/dashboard/BilanDuMatinCard.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T11:54:51.633Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a276d1e4",
+    "message": "Filet du matin réparé (index des résultats du quiz par source, compte illisible signalé sans tout arrêter) et bilan du matin : visites d'infolettre séparées de la publicité",
+    "cibles": [
+      "firestore",
+      "functions"
+    ],
+    "fichiers": [
+      "firestore.indexes.json",
+      "functions/src/bilan.ts",
+      "functions/src/filet.ts"
+    ]
   }
 ]
