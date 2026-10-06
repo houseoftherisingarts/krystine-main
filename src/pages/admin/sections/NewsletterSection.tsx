@@ -13,6 +13,7 @@ import AutomaticsPanel from './newsletter/AutomaticsPanel';
 import TerminalPanel from './newsletter/TerminalPanel';
 import AvisPanel from './newsletter/AvisPanel';
 import GabaritsPanel from './newsletter/GabaritsPanel';
+import NouvellesInscritesPanel from './newsletter/NouvellesInscritesPanel';
 
 type View =
   | { kind: 'list' }
@@ -67,6 +68,8 @@ const NewsletterSection: React.FC = () => {
         ))}
       </div>
 
+      {/* En tête de la vue qui s'ouvre en premier (Krystine, 6 oct. 2026) */}
+      {tab === 'newsletters' && <NouvellesInscritesPanel />}
       {tab === 'newsletters' && <NewsletterList onOpen={open} />}
       {tab === 'gabarits' && <GabaritsPanel onOpen={open} />}
       {tab === 'avis' && <AvisPanel />}
