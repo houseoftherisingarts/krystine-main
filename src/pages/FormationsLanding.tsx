@@ -1,89 +1,28 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight } from '@phosphor-icons/react';
-import { goToRoute } from '../lib/staticRoutes';
 import { enLancement, TIERS } from './vata/offre';
-import { SEMAINES_VATA } from './vata/semaines';
-import { StyleV2, Planche, BoutonNoir, LienSouligne } from '../components/v2/Magazine';
+import { StyleV2, Planche, BoutonNoir, BoutonCuivre, LienSouligne, CarteVerte, Kicker, TitreChapitre } from '../components/v2/Magazine';
 
 /**
- * /formations (et /parcours) : les trois portes, dans l'ordre voulu par
- * Krystine. Le Foyer d'abord (la continuité), EXPÉRIENCE ORIGINE ensuite (le
- * parcours accompagné), puis VATA Essentiel, qui se suit dès maintenant.
- * Trois grandes cartes visibles d'emblée : la carte VATA Essentiel mène en
- * entier à /vata, avec son prix tiré de la même source que la page de vente
- * (Krystine, 2 oct. 2026 : le chemin en deux clics). Les parcours en liste
- * d'attente suivent plus bas, visibles et sobres.
+ * /formations (et /parcours) : une hiérarchie claire (Krystine, 6 oct. 2026).
+ * EXPÉRIENCE ORIGINE 2 est le cœur, la destination, en grand et dans la seule
+ * carte vert profond de la page. Les Rituels essentiels à 27 $ sont la porte
+ * d'entrée, avec l'invitation au quiz juste à côté. VATA Essentiel est le
+ * chemin autonome. Une ligne discrète relie les trois marches.
+ * Aucun prix ni date d'inscription pour Origine 2 : non décidés.
  */
 
 const EASE = [0.16, 0.8, 0.24, 1] as const;
-const ENCRE = '#1c1712';
-const OR_ENCRE = '#7d6330';
-
-interface Porte {
-  key: string;
-  tag: string;
-  title: string;
-  subtitle: string;
-  body: string;
-  cta: string;
-  href: string;
-  image: string;
-  /** Le cadrage dans la carte 16:10, pour garder le sujet de l'image. */
-  cadrage?: string;
-  /** Une courte vidéo muette en boucle à la place de l'image (l'image sert d'affiche). */
-  video?: string;
-  prix?: boolean;
-}
-
 const OFFRE_VATA = TIERS[0];
 
-const PORTES: Porte[] = [
-  // VATA Essentiel en première carte : la seule porte ouverte à l'achat (Krystine, 2 oct. 2026).
-  {
-    key: 'vata',
-    tag: "L'Expérience Ayurveda",
-    title: OFFRE_VATA.name,
-    subtitle: 'Un parcours de sept semaines, la première dès l’inscription.',
-    body: "16 capsules, 7 méditations guidées, le journal de bord et d'observation, et le guide de 204 pages.",
-    cta: 'Découvrir VATA Essentiel',
-    href: '/vata',
-    image: '/vata/carte-eventail.jpg',
-    cadrage: '50% 40%',
-    prix: true,
-  },
-  {
-    key: 'origine',
-    tag: '12 semaines accompagnées',
-    title: 'Expérience Origine 2',
-    subtitle: 'Le chemin accompagné.',
-    body: 'Lire, trier, ancrer pour retrouver ses propres repères.',
-    cta: 'Découvrir Expérience Origine 2',
-    href: '/liste-attente?programme=origine2',
-    image: '/origine2/packshot-poster.jpg',
-    video: '/origine2/packshot.mp4',
-    cadrage: '45% 50%',
-  },
-];
+/** Le lien d'Origine 2 : le lienFiche de formations/origine2. Tant que la
+ *  vente est fermée, /origine-2 mène la visiteuse à sa liste d'attente. */
+const LIEN_ORIGINE2 = '/origine-2';
 
-// Ce qui s'achète dès maintenant, en tête de page (Krystine, 5 oct. 2026) :
-// VATA Essentiel et Rituels essentiels, en cartes V2 avec bouton noir carré.
-interface Disponible { key: string; tag: string; titre: string; sous: string; corps: string; prix?: string; cta: string; href: string; image: string; cadrage: string }
-const DISPONIBLES: Disponible[] = [
-  {
-    key: 'vata', tag: "L'Expérience Ayurveda", titre: OFFRE_VATA.name,
-    sous: 'Un parcours de sept semaines, la première dès l’inscription.',
-    corps: "16 capsules, 7 méditations guidées, le journal de bord et d'observation, et le guide de 204 pages.",
-    cta: 'Découvrir VATA Essentiel', href: '/vata', image: '/vata/carte-eventail.jpg', cadrage: 'object-[50%_40%]',
-  },
-  {
-    key: 'rituels', tag: 'Inspirés de l’Ayurveda', titre: 'Rituels essentiels',
-    sous: 'Des pratiques courtes qui redonnent ancrage et direction.',
-    corps: '10 capsules vidéo et un bonus : l’automassage, les soins du nez et de la bouche, les soins des mains et des pieds.',
-    prix: '27 $', cta: 'Découvrir Rituels essentiels', href: '/rituels-essentiels', image: '/krystine-portrait.jpg', cadrage: 'object-[50%_28%]',
-  },
-];
+/** L'image de la carte Rituels essentiels : Krystine la choisit parmi des
+ *  photos professionnelles (6 oct. 2026). Vide, la carte garde un emplacement
+ *  crème fileté, sans photo. Poser ici le chemin de l'image retenue. */
+const IMAGE_RITUELS = '';
 
 // Les parcours qui reviennent un à un : chacun a sa liste d'attente.
 // Gardés ici pour pouvoir les remettre; la page n'en montre plus le mur
@@ -102,127 +41,159 @@ const EN_ATTENTE: Parcours[] = [
   { slug: 'trois-jours', titre: "Trois jours pour revenir à l'essentiel", sous: 'Sortir du bruit et se retrouver' },
 ];
 
+const MARCHES = ['Commencer', 'Approfondir', 'Être accompagnée'];
+
 const FormationsLanding: React.FC = () => {
-  const navigate = useNavigate();
   const reduce = useReducedMotion();
   const lancement = enLancement();
-  const go = (e: React.MouseEvent, href: string) => {
-    e.preventDefault();
-    goToRoute(navigate, href);
-  };
   const up = (delay: number) => ({
     initial: reduce ? false : { opacity: 0, y: 28 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 1, ease: EASE, delay },
+    transition: { duration: 1.1, ease: EASE, delay },
+  });
+  const vu = (delay = 0) => ({
+    initial: reduce ? false : { opacity: 0, y: 32 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.15 },
+    transition: { duration: 1.1, ease: EASE, delay },
   });
 
   return (
-    <div className="min-h-screen bg-[#f6f2ea] text-[#293027]">
-      {/* ─────────── HERO, vert profond comme /speaking ─────────── */}
-      <section className="relative overflow-hidden bg-[#1b2622] px-[clamp(1.5rem,5vw,5.5rem)] pt-32 pb-14 text-[#EEE7DB] md:pt-40 md:pb-20">
-        <div aria-hidden className="pointer-events-none absolute -left-[18vw] -top-[24vw] h-[70vw] w-[70vw] max-h-[900px] max-w-[900px] rounded-full blur-[30px]"
-          style={{ background: 'radial-gradient(circle, rgba(217,154,82,.42) 0%, rgba(186,123,57,.18) 32%, rgba(40,53,47,0) 68%)' }} />
-        <div aria-hidden className="pointer-events-none absolute -right-[8vw] -bottom-[18vw] h-[44vw] w-[44vw] rounded-full blur-[40px]"
-          style={{ background: 'radial-gradient(circle, rgba(139,74,47,.35) 0%, rgba(40,53,47,0) 65%)' }} />
-        <div className="relative mx-auto max-w-[1320px]">
-          <motion.p {...up(0.1)} className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-[#BA7B39]">Deux façons d'aller plus loin</motion.p>
-          <motion.h1 {...up(0.2)} className="mt-5 max-w-[11em] font-serif text-[clamp(2.7rem,5.4vw,5rem)] font-medium leading-[1.02] tracking-[-0.015em]">
+    <div className="min-h-screen overflow-x-hidden bg-[#f4efe6] text-[#1c1712]">
+      <StyleV2 />
+
+      {/* ─────────── EN-TÊTE, crème ─────────── */}
+      <section className="px-[clamp(1.5rem,5vw,5.5rem)] pt-32 pb-[clamp(2rem,5vh,3.5rem)] md:pt-40">
+        <div className="mx-auto max-w-[1320px]">
+          <motion.div {...up(0.1)}><Kicker>Les formations</Kicker></motion.div>
+          <motion.h1 {...up(0.2)} className="v2-serif mt-5 max-w-[12ch] font-light leading-[0.98] text-[clamp(2.8rem,6.4vw,5.6rem)]">
             Choisir votre prochaine porte
           </motion.h1>
-          <motion.p {...up(0.32)} className="mt-6 max-w-[36rem] font-serif text-[clamp(1.15rem,1.6vw,1.4rem)] leading-[1.5] text-[#EEE7DB]/80">
-            Selon le moment où vous êtes : vivre un parcours accompagné, ou approfondir un sujet en autonomie.
-          </motion.p>
+          {/* Les trois marches, en une ligne discrète */}
+          <motion.ol {...up(0.32)} aria-label="Les trois marches" className="mt-9 flex flex-wrap items-center gap-x-4 gap-y-2 text-[0.66rem] uppercase tracking-[0.24em] text-[#1c1712]/70">
+            {MARCHES.map((m, i) => (
+              <li key={m} className="flex items-center gap-4">
+                {i > 0 && <span aria-hidden className="text-[#9c7a44]">·</span>}
+                <span className={i === MARCHES.length - 1 ? 'text-[#7d6330]' : ''}>{m}</span>
+              </li>
+            ))}
+          </motion.ol>
         </div>
       </section>
 
-      <StyleV2 />
-      {/* ─────────── DISPONIBLE MAINTENANT, deux cartes V2 ─────────── */}
-      <section className="bg-[#f4efe6] px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(3rem,7vh,5rem)] pb-[clamp(3.5rem,8vh,6rem)]">
-        <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330]">Disponible maintenant</p>
-        <div className="mt-8 grid gap-x-[clamp(2rem,4vw,4rem)] gap-y-16 md:grid-cols-2">
-          {DISPONIBLES.map((d, i) => (
-            <motion.div key={d.key} {...up(0.25 + i * 0.08)} className="flex flex-col">
-              <a href={d.href} onClick={(e) => go(e, d.href)} aria-label={d.titre} className="block">
-                <Planche src={d.image} ratio="aspect-[16/10]" position={d.cadrage} etiquette={d.tag} />
-              </a>
-              <h2 className="v2-serif mt-8 font-light leading-[1.02] text-[#1c1712] text-[clamp(2rem,3.4vw,3rem)]">{d.titre}</h2>
-              <p className="v2-serif mt-2 font-light text-[clamp(1.1rem,1.6vw,1.35rem)] leading-[1.35] text-[#7d6330]">{d.sous}</p>
-              <p className="mt-4 max-w-[48ch] text-[0.98rem] leading-[1.8] text-[#3a2f23]">{d.corps}</p>
-              <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                {d.key === 'vata' ? (
-                  <>
-                    <span className="v2-serif text-[2rem] font-light leading-none tabular-nums text-[#1c1712]">{lancement ? OFFRE_VATA.promo : OFFRE_VATA.price}</span>
-                    {lancement && <span className="v2-serif text-lg line-through tabular-nums text-[#1c1712]/45">{OFFRE_VATA.price}</span>}
-                    {lancement && <span className="text-[0.62rem] uppercase tracking-[0.2em] text-[#7d6330]">Tarif de lancement</span>}
-                  </>
-                ) : (
-                  <span className="v2-serif text-[2rem] font-light leading-none tabular-nums text-[#1c1712]">{d.prix}</span>
-                )}
-              </p>
-              <div className="mt-auto pt-8">
-                <BoutonNoir to={d.href}>{d.cta}</BoutonNoir>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* ─────────── LES PORTES OUVERTES, deux grandes cartes ─────────── */}
-      <section className="px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(3.5rem,8vh,6rem)] bg-[#f4efe6]">
-        <div className="grid gap-6">
-          {PORTES.filter(p => p.key !== 'vata').map((p, i) => (
-            <motion.a
-              key={p.key}
-              href={p.href}
-              onClick={(e) => go(e, p.href)}
-              initial={reduce ? false : { opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: EASE, delay: 0.25 + i * 0.08 }}
-              className="group flex flex-col md:flex-row overflow-hidden rounded-[16px] border border-[#293027]/12 bg-[#fbf8f2] shadow-[0_30px_60px_-46px_rgba(41,48,39,0.55)] transition-[border-color,box-shadow] duration-500 hover:border-[#7d6330]/45 hover:shadow-[0_36px_70px_-44px_rgba(41,48,39,0.6)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#7d6330]"
-            >
-              <div className="relative aspect-[16/10] overflow-hidden bg-[#1b2622]/5 md:aspect-auto md:min-h-[320px] md:w-1/2">
-                {p.video && !reduce ? (
-                  <video src={p.video} poster={p.image} autoPlay muted loop playsInline preload="metadata" aria-hidden
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] group-hover:scale-[1.03]"
-                    style={p.cadrage ? { objectPosition: p.cadrage } : undefined} />
-                ) : (
-                  <img src={p.image} data-edit-key={`formations.porte.${p.key}`} alt="" loading="eager"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] group-hover:scale-[1.03]"
-                    style={p.cadrage ? { objectPosition: p.cadrage } : undefined} />
-                )}
-              </div>
-              <div className="flex flex-1 flex-col p-6 md:p-7">
-                <p className="text-[0.66rem] font-semibold uppercase tracking-[0.22em]" style={{ color: OR_ENCRE }}>
-                  {p.tag}
+      {/* ─────────── 1 · LE CŒUR : EXPÉRIENCE ORIGINE 2, la seule carte verte ─────────── */}
+      <section className="px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(4rem,10vh,7rem)]">
+        <motion.div {...up(0.4)} className="mx-auto max-w-[1320px]">
+          <CarteVerte>
+            <div className="grid lg:grid-cols-[1.25fr_1fr]">
+              <div className="flex flex-col p-[clamp(1.75rem,4.5vw,4.25rem)]">
+                <Kicker sombre>Être accompagnée · le cœur du chemin</Kicker>
+                <h2 className="v2-serif mt-6 font-light uppercase leading-[0.95] tracking-[0.01em] text-[#EEE7DB] text-[clamp(2.4rem,5.2vw,5rem)]">
+                  Expérience Origine 2
+                </h2>
+                <p className="mt-6 text-[0.72rem] uppercase leading-[1.9] tracking-[0.2em] text-[#BA7B39]">
+                  <span className="block">Le parcours signature · 12 semaines avec Krystine</span>
+                  <span className="block">Départ le dimanche 10 janvier 2027</span>
                 </p>
-                <h2 className="mt-3 font-serif text-[clamp(1.75rem,2.4vw,2.35rem)] font-medium leading-[1.05] tracking-[-0.01em]" style={{ color: ENCRE }}>{p.title}</h2>
-                <p className="mt-1.5 font-serif text-lg leading-snug text-[#8B4A2F]">{p.subtitle}</p>
-                <p className="mt-4 leading-[1.7] text-[#5b5f55]">{p.body}</p>
-                {p.prix && (
-                  <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <span className="font-serif text-[2rem] leading-none tabular-nums" style={{ color: ENCRE }}>{lancement ? OFFRE_VATA.promo : OFFRE_VATA.price}</span>
-                    {lancement && <span className="font-serif text-lg line-through tabular-nums text-[#1c1712]/45">{OFFRE_VATA.price}</span>}
-                    {lancement && <span className="text-[0.66rem] font-semibold uppercase tracking-[0.18em]" style={{ color: OR_ENCRE }}>Tarif de lancement</span>}
-                  </p>
-                )}
-                <div className="mt-auto flex items-center justify-between gap-4 pt-7">
-                  <span className="text-[0.72rem] font-semibold uppercase tracking-[0.16em]" style={{ color: ENCRE }}>{p.cta}</span>
-                  <span className="inline-flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full border border-[#1c1712]/30 text-[#1c1712] transition-colors duration-300 group-hover:border-[#1c1712] group-hover:bg-[#1c1712] group-hover:text-[#EEE7DB]">
-                    <ArrowRight size={16} weight="bold" className="transition-transform duration-300 group-hover:translate-x-0.5" />
-                  </span>
+                <p className="v2-serif mt-6 max-w-[34ch] font-light text-[clamp(1.2rem,1.8vw,1.5rem)] leading-[1.45] text-[#EEE7DB]/90">
+                  Krystine vous accompagne en direct, une semaine à la fois, avec une cohorte qui avance au même pas.
+                </p>
+                <div className="mt-auto pt-10">
+                  <BoutonCuivre to={LIEN_ORIGINE2}>Être avisée de l'ouverture</BoutonCuivre>
                 </div>
               </div>
-            </motion.a>
-          ))}
+              <div className="relative min-h-[260px] overflow-hidden lg:min-h-[520px]">
+                {reduce ? (
+                  <img src="/origine2/packshot-poster.jpg" alt="" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: '45% 50%' }} />
+                ) : (
+                  <video src="/origine2/packshot.mp4" poster="/origine2/packshot-poster.jpg" autoPlay muted loop playsInline preload="metadata" aria-hidden
+                    className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: '45% 50%' }} />
+                )}
+              </div>
+            </div>
+          </CarteVerte>
+        </motion.div>
+      </section>
+
+      {/* ─────────── 2 · PAR OÙ COMMENCER : Rituels essentiels + le quiz ─────────── */}
+      <section className="bg-[#efe6d7] px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(4rem,10vh,7rem)]">
+        <div className="mx-auto max-w-[1320px]">
+          <motion.div {...vu()}>
+            <Kicker>Commencer</Kicker>
+            <TitreChapitre className="mt-4 text-[clamp(2rem,4.2vw,3.2rem)]">Par où commencer, dès ce soir</TitreChapitre>
+          </motion.div>
+          <div className="mt-12 grid items-center gap-x-[clamp(2rem,5vw,5rem)] gap-y-12 lg:grid-cols-[1.35fr_1fr]">
+            <motion.div {...vu(0.08)} className="grid gap-x-8 gap-y-7 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+              <a href="/rituels-essentiels" aria-label="Rituels essentiels inspirés de l'Ayurveda" className="block">
+                {IMAGE_RITUELS ? (
+                  <Planche src={IMAGE_RITUELS} ratio="aspect-[4/5]" etiquette="Porte d'entrée" />
+                ) : (
+                  <div className="relative w-full">
+                    <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
+                    <div className="relative flex aspect-[16/10] sm:aspect-[4/5] w-full items-center justify-center bg-[#f4efe6]">
+                      <span className="absolute top-0 left-0 bg-[#1c1712] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.24em] text-[#f4efe6]">Porte d'entrée</span>
+                      <span className="pointer-events-none absolute inset-5 border border-[#9c7a44]/25" aria-hidden />
+                      <span className="v2-serif px-8 text-center font-light text-[clamp(1.2rem,1.8vw,1.5rem)] leading-[1.35] text-[#7d6330]">10 capsules<br />et un bonus</span>
+                    </div>
+                  </div>
+                )}
+              </a>
+              <div className="flex flex-col">
+                <h3 className="v2-serif font-light leading-[1.05] text-[clamp(1.7rem,2.5vw,2.25rem)]">Rituels essentiels inspirés de l'Ayurveda</h3>
+                <p className="mt-4 text-[0.95rem] leading-[1.8] text-[#3a2f23]">
+                  Des pratiques courtes qui redonnent ancrage et direction : l'automassage, les soins du nez et de la bouche, les soins des mains et des pieds.
+                </p>
+                <p className="v2-serif mt-5 text-[2rem] font-light leading-none tabular-nums">27 $</p>
+                <div className="mt-auto pt-7">
+                  <BoutonNoir to="/rituels-essentiels">Commencer ce soir</BoutonNoir>
+                </div>
+              </div>
+            </motion.div>
+            <motion.aside {...vu(0.16)} className="border-t border-[#9c7a44]/45 pt-8 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-[clamp(2rem,4vw,3.5rem)]">
+              <p className="v2-serif font-light text-[clamp(1.5rem,2.4vw,2.1rem)] leading-[1.2]">Pas certaine ?</p>
+              <p className="mt-3 max-w-[30ch] text-[0.95rem] leading-[1.8] text-[#3a2f23]">
+                Faites le quiz, en 3 minutes : il vous indique par où commencer selon ce que vous vivez en ce moment.
+              </p>
+              <div className="mt-6">
+                <LienSouligne to="/quiz">Faire le quiz</LienSouligne>
+              </div>
+            </motion.aside>
+          </div>
         </div>
       </section>
 
-      {/* ─────────── LES AUTRES PARCOURS : une ligne discrète ───────────
-          Le mur des parcours en attente (EN_ATTENTE) n'est plus affiché;
-          les données restent plus haut pour pouvoir le remettre. */}
-      <section id="a-votre-rythme" className="scroll-mt-24 bg-[#f4efe6] px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(5rem,10vh,8rem)]">
-        <div className="flex flex-col items-start justify-between gap-5 border-t border-[#1c1712]/15 pt-8 sm:flex-row sm:items-center">
-          <p className="v2-serif font-light text-[clamp(1.2rem,1.8vw,1.5rem)] text-[#1c1712]">D'autres parcours reviennent au fil des saisons.</p>
+      {/* ─────────── 3 · APPROFONDIR : VATA Essentiel ─────────── */}
+      <section className="px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(4rem,10vh,7rem)]">
+        <div className="mx-auto max-w-[1320px]">
+          <motion.div {...vu()}>
+            <Kicker>Approfondir</Kicker>
+            <TitreChapitre className="mt-4 text-[clamp(2rem,4.2vw,3.2rem)]">Approfondir à votre rythme</TitreChapitre>
+          </motion.div>
+          <motion.div {...vu(0.08)} className="mt-12 grid items-center gap-x-[clamp(2rem,5vw,5rem)] gap-y-9 md:grid-cols-[1.1fr_1fr]">
+            <a href="/vata" aria-label={OFFRE_VATA.name} className="block">
+              <Planche src="/vata/carte-eventail.jpg" ratio="aspect-[16/10]" position="object-[50%_40%]" etiquette="L'Expérience Ayurveda" />
+            </a>
+            <div>
+              <h3 className="v2-serif font-light leading-[1.02] text-[clamp(2rem,3.4vw,3rem)]">{OFFRE_VATA.name}</h3>
+              <p className="v2-serif mt-2 font-light text-[clamp(1.1rem,1.6vw,1.35rem)] leading-[1.35] text-[#7d6330]">Un parcours de sept semaines, la première dès l'inscription.</p>
+              <p className="mt-4 max-w-[48ch] text-[0.95rem] leading-[1.8] text-[#3a2f23]">16 capsules, 7 méditations guidées, le journal de bord et d'observation, et le guide de 204 pages.</p>
+              <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span className="v2-serif text-[2rem] font-light leading-none tabular-nums">{lancement ? OFFRE_VATA.promo : OFFRE_VATA.price}</span>
+                {lancement && <span className="v2-serif text-lg line-through tabular-nums text-[#1c1712]/45">{OFFRE_VATA.price}</span>}
+                {lancement && <span className="text-[0.62rem] uppercase tracking-[0.2em] text-[#7d6330]">Tarif de lancement</span>}
+              </p>
+              <div className="mt-8">
+                <BoutonNoir to="/vata">Découvrir VATA Essentiel</BoutonNoir>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ─────────── LES AUTRES PARCOURS : une ligne discrète ─────────── */}
+      <section id="a-votre-rythme" className="scroll-mt-24 px-[clamp(1.5rem,5vw,5.5rem)] pb-[clamp(5rem,10vh,8rem)]">
+        <div className="mx-auto flex max-w-[1320px] flex-col items-start justify-between gap-5 border-t border-[#1c1712]/15 pt-8 sm:flex-row sm:items-center">
+          <p className="v2-serif font-light text-[clamp(1.2rem,1.8vw,1.5rem)]">D'autres parcours reviennent au fil des saisons.</p>
           <LienSouligne to="/liste-attente">Être avisée</LienSouligne>
         </div>
       </section>
