@@ -1,6 +1,7 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import Anthropic from '@anthropic-ai/sdk';
 import { ANTHROPIC_API_KEY } from './assistant';
+import { limiterParIp, MESSAGE_CADENCE } from './robots';
 
 // ─── Le chatbot public du site ───────────────────────────────────────────────
 // Répond aux visiteuses sur Krystine, son parcours, ses livres, ses formations
@@ -37,8 +38,12 @@ Tu ne donnes aucun conseil médical : pour la santé, tu invites à consulter un
 interface ChatMessage { role: 'user' | 'assistant'; content: string }
 
 export const chatbotKrystine = onCall(
-  { region: 'us-central1', secrets: [ANTHROPIC_API_KEY], timeoutSeconds: 60 },
+  { region: 'us-central1', secrets: [ANTHROPIC_API_KEY], timeoutSeconds: 60, maxInstances: 5 },
   async (request) => {
+    // Garde de dépense (revue de sécurité du 6 oct. 2026) : 40 messages par
+    // heure et par adresse IP, assez pour une vraie conversation, trop peu
+    // pour vider le crédit Anthropic en boucle.
+    if (!(await limiterParIp(request.rawRequest?.ip, 'chatbot', 40))) throw new HttpsError('resource-exhausted', MESSAGE_CADENCE);
     const messages = (request.data?.messages || []) as ChatMessage[];
     if (!Array.isArray(messages) || messages.length === 0) {
       throw new HttpsError('invalid-argument', 'messages is required');

@@ -504,6 +504,8 @@ service cloud.firestore {
     }
     match /irisDemandes/{id} { allow read, write: if isAdmin() || isIris(); }
     match /etat/{id}         { allow read: if isAdmin(); allow write: if false; }
+    // Le filet et le bilan du matin (functions/src/filet.ts, bilan.ts) : écrits par les fonctions, lus par l'admin.
+    match /sante/{document=**} { allow read: if isAdmin(); allow write: if false; }
     // Le calendrier maître du lancement (onglet Lancement) : l'admin l'écrit.
     match /etat/lancementOrigine2 { allow read, write: if isAdmin(); }
     match /etat/iris         { allow write: if isIris(); }

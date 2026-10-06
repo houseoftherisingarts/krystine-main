@@ -3,7 +3,7 @@ import { suivreLiveEnCours, type LiveEnCours } from '../firebase/lives';
 import { PORTES, porteDuMois, foyerOuvert, DEBUT_LABEL } from './foyer/portesData';
 import { rangSemaine, semaineOuverteRang } from './origine2/semaines';
 import CoursOrigine from '../components/cours/origine/CoursOrigine';
-import { estOrigine, leconsVisibles } from './origine2/piliers';
+import { LECON_CERTIFICAT, estOrigine, leconsVisibles } from './origine2/piliers';
 import { FORMATION_VATA, SEMAINES_VATA, rangDeModule as rangModuleVata, semainesVataOuvertes, etiquetteSemaine } from './vata/semaines';
 import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, type QuestionLecon } from '../firebase/formations';
 import { Navigate, useParams, Link, useNavigate } from 'react-router-dom';
@@ -240,7 +240,7 @@ const CoursDetailPage: React.FC = () => {
   // La dernière leçon ouverte si elle n'est pas terminée, sinon la première
   // leçon ouverte encore à faire, sinon la première leçon ouverte.
   const leconDeReprise = (): Lecon | undefined =>
-    (derniere ? lecons.find(l => l.id === derniere && !terminees[l.id] && !verrouillee(l)) : undefined)
+    (derniere && derniere !== LECON_CERTIFICAT[id] ? lecons.find(l => l.id === derniere && !terminees[l.id] && !verrouillee(l)) : undefined)
     || lecons.find(l => !terminees[l.id] && !verrouillee(l))
     || lecons.find(l => !verrouillee(l));
 

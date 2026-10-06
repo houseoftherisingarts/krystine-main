@@ -53,4 +53,5 @@ export { analyserInfolettres, analyseHebdomadaire } from './newsletter/analyse';
 export { brouillonsPodcast } from './newsletter/brouillonsPodcast';
 export { sauvegardeNocturne } from './sauvegarde';
 export { filetDuMatin, lancerFilet } from './filet';
+export { lancerBilan } from './bilan';
 export { relancerPaiements } from './relancePaiement';

@@ -3,6 +3,7 @@ import { onCall } from 'firebase-functions/v2/https';
 import { getFirestore, Timestamp, FieldValue } from 'firebase-admin/firestore';
 import { MAIL_SECRETS, createTransporter, fromAddr, REPLY_TO } from './newsletter/mail';
 import { assertAdmin } from './newsletter/send';
+import { calculerBilan, rangerEtEnvoyerBilan } from './bilan';
 
 // ─── Le filet du matin (Krystine, 4 oct. 2026) ──────────────────────────────
 // Le 3 oct. 2026, une version du site construite sans la clé anti-robot a
@@ -118,11 +119,15 @@ async function rangerEtAlerter(r: Awaited<ReturnType<typeof calculerFilet>>) {
 }
 
 export const filetDuMatin = onSchedule(
-  { schedule: '30 6 * * *', timeZone: 'America/Toronto', region: 'us-central1', timeoutSeconds: 120, secrets: [...MAIL_SECRETS] },
+  { schedule: '30 6 * * *', timeZone: 'America/Toronto', region: 'us-central1', timeoutSeconds: 540, memory: '512MiB', secrets: [...MAIL_SECRETS] },
   async () => {
     const r = await calculerFilet();
     console.log('[filetDuMatin]', r.verdict, JSON.stringify(r.chiffres));
     await rangerEtAlerter(r);
+    // Le bilan du matin (6 oct. 2026) : chaque jour, alerte ou pas, à Krystine seulement.
+    const b = await calculerBilan(r);
+    await rangerEtEnvoyerBilan(b);
+    console.log('[bilanDuMatin]', b.verdict, b.surveiller);
   },
 );
 

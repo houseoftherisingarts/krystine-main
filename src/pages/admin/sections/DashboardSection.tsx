@@ -10,6 +10,7 @@ import { Card } from '../primitives';
 import { PALIERS, STATUTS, type CommunauteStats } from '../../../lib/paliers';
 import CommandesStripeCard from './dashboard/CommandesStripeCard';
 import RapportDuJourCard from './dashboard/RapportDuJourCard';
+import BilanDuMatinCard from './dashboard/BilanDuMatinCard';
 import NouveauxMembresCard from './dashboard/NouveauxMembresCard';
 import CibleNouvellesPersonnesCard from './dashboard/CibleNouvellesPersonnesCard';
 import CompteurCliquable from './dashboard/DetailCompteur';
@@ -128,6 +129,8 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
       <CibleNouvellesPersonnesCard />
 
       {/* Le rapport du jour, en tête, juste à côté des ventes Stripe */}
+      <BilanDuMatinCard />
+
       <RapportDuJourCard />
 
       {/* Les nouveaux membres par jour, sur 14, 30 ou 90 jours */}

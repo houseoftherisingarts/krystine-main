@@ -287,6 +287,24 @@
       "collectionGroup": "vh_jours",
       "fieldPath": "erreursListe",
       "indexes": []
+    },
+    {
+      "collectionGroup": "formations",
+      "fieldPath": "acheteLe",
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
     }
   ]
 }
