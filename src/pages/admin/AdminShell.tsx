@@ -177,7 +177,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'settings',   label: 'Paramètres',       icon: 'fa-gear',             groupe: 'reglages' },
   { id: 'demande',    label: 'Demander un changement', icon: 'fa-bolt',       groupe: 'reglages' },
   { id: 'partenaireVexel', label: 'Devenir partenaire Vexel', icon: 'fa-handshake', groupe: 'reglages' },
-  { id: 'bugs',       label: 'Problèmes techniques', icon: 'fa-bug',         groupe: 'reglages' },
+  { id: 'bugs',       label: 'Commentaires des visiteuses', icon: 'fa-comment-dots', groupe: 'reglages' },
   { id: 'changelog',  label: 'Journal des changements', icon: 'fa-clock-rotate-left', groupe: 'reglages' },
   { id: 'publications', label: 'Publications', icon: 'fa-book-open', groupe: 'reglages' },
   { id: 'droitInternational', label: 'Droit international', icon: 'fa-earth-americas', groupe: 'reglages' },

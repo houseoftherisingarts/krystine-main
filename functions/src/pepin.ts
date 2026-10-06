@@ -5,7 +5,7 @@ import * as crypto from 'crypto';
 import { RECAPTCHA_SECRET, garderFormulaire } from './captcha';
 import { limiterParIp, MESSAGE_CADENCE } from './newsletter/robots';
 
-// « Un pépin ? Écrivez-nous » : la pastille d'aide de toutes les pages
+// « Un commentaire ? Écrivez-nous » (ex « Un pépin ? », 6 oct. 2026) : la pastille d'aide de toutes les pages
 // publiques. Une visiteuse non connectée n'a pas le droit d'écrire dans
 // Firestore (règles de `bugs`), alors le message passe ici : la case « Je ne
 // suis pas un robot » et la cadence par adresse IP gardent la porte, puis
@@ -18,7 +18,12 @@ const VEXEL_CLIENT = 'krystine';
 // Clé client publique, déjà dans l'iframe DemandeVexel ; ce n'est pas un secret.
 const VEXEL_CLE = 'aT_yMR68NLyEW3weNDjwYdW_';
 const CAPTURE_MAX = 5 * 1024 * 1024;
-const TYPES = new Set(['technique', 'introuvable']);
+const TYPES = new Set(['aime', 'idee', 'technique', 'introuvable']);
+const PREFIXES: Record<string, string> = {
+  aime: '[Aime ce qu\'elle voit] ',
+  idee: '[Une idée] ',
+  introuvable: '[Ne trouve pas ce qu\'elle cherche] ',
+};
 const MIMES: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
 
 export const signalerPepin = onCall(
@@ -72,7 +77,7 @@ export const signalerPepin = onCall(
           type: type === 'technique' ? 'bug' : 'contact',
           auteurNom: nom,
           auteurCourriel: courriel,
-          texte: (type === 'introuvable' ? '[Ne trouve pas ce qu\'elle cherche] ' : '') + texte,
+          texte: (PREFIXES[type] || '') + texte,
           page: `https://krystinestlaurent.ca${page}`,
           capture,
           agent,

@@ -403,9 +403,11 @@
 
   /* mobile nav: burger + full-screen overlay (hidden above 900px) */
   .mnav-toggle{display:none;position:fixed;top:1.3rem;right:1.3rem;z-index:70;width:44px;height:44px;border-radius:50%;
-    border:1px solid rgba(187,154,94,.6);background:rgba(29,22,4,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
-    align-items:center;justify-content:center;cursor:pointer;color:var(--brass);transition:background .3s}
-  .mnav-toggle:hover{background:rgba(29,22,4,.82)}
+    border:1px solid rgba(214,182,112,.9);background:rgba(22,16,10,.78);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+    box-shadow:0 4px 18px rgba(0,0,0,.35);
+    align-items:center;justify-content:center;cursor:pointer;color:#e3c27a;transition:background .3s}
+  .mnav-toggle:hover{background:rgba(22,16,10,.92)}
+  .mnav-toggle.open{background:rgba(28,23,18,.9)}
   .mnav-toggle svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.4;fill:none}
   .mnav-toggle .ic-close{display:none}
   .mnav-toggle.open .ic-burger{display:none}.mnav-toggle.open .ic-close{display:block}
@@ -428,8 +430,26 @@
 
 
   /* ============ MOBILE PASS (impeccable adapt) ============ */
-  /* Entre la tablette et le grand écran, le menu complet ne tient plus sur une ligne : le burger prend le relais (27 sept. 2026). */
-  @media(max-width:1280px){ nav{display:none} .mnav-toggle{display:flex} }
+  /* Menu complet visible sur ordinateur jusqu'à 1024 px (6 oct. 2026, Krystine ne voyait plus le menu sur son portable) :
+     entre 1024 et 1439 px, liens, espaces et bouton doré resserrés pour tenir sur une ligne. Le burger ne prend le relais
+     que sous 1024 px. Au-dessus, il apparaît seulement après le défilement, pour que le menu reste atteignable. */
+  @media(min-width:1024px) and (max-width:1439px){
+    nav{padding:1.5rem 2rem}
+    .logo{font-size:1.15rem}
+    .navlinks{gap:clamp(.7rem,1.05vw,1.1rem);font-size:.6rem;letter-spacing:.08em}
+    .btn-gold--nav{padding:.45rem .85rem!important;font-size:.56rem!important;letter-spacing:.1em!important}
+  }
+  @media(min-width:1024px) and (max-width:1199px){
+    nav{padding:1.4rem 1.5rem}
+    .logo{font-size:1.02rem}
+    .navlinks{gap:.68rem;font-size:.6rem;letter-spacing:.06em}
+    .btn-gold--nav{padding:.42rem .7rem!important;font-size:.52rem!important;letter-spacing:.07em!important}
+  }
+  @media(min-width:1024px){
+    .mnav-toggle{display:flex;opacity:0;pointer-events:none;transition:opacity .35s ease,background .3s}
+    body.nav-loin .mnav-toggle,.mnav-toggle.open{opacity:1;pointer-events:auto}
+  }
+  @media(max-width:1023px){ nav{display:none} .mnav-toggle{display:flex} }
   @media(max-width:900px){
     .mnav-links{gap:.5rem;top:0;bottom:0;justify-content:center;padding-top:4.2rem;width:100%;padding-left:1.3rem;padding-right:1.3rem;box-sizing:border-box}
     .mnav-links a{font-size:1.3rem;letter-spacing:.04em;text-align:center;padding:.55rem .5rem;white-space:nowrap}
@@ -1514,31 +1534,30 @@
     addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll); onScroll();
   }
 
-  // Subtle wind rustle on hover (synthesized filtered noise, no audio file). Hover-capable devices only.
+  // Son doux au survol, accordé sur 432 Hz (6 oct. 2026, demande de Krystine : « un son qui nourrit »).
+  // Deux sinusoïdes (216 Hz et son octave 432 Hz), attaque lente, longue extinction, volume bas,
+  // un seul son par élément survolé et au moins 250 ms entre deux. Appareils à souris seulement.
   if(matchMedia('(hover: hover)').matches){
     let actx=null;
     function ensureCtx(){ if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(actx&&actx.state==='suspended') actx.resume(); return actx; }
     addEventListener('pointerdown',ensureCtx,{once:true});
-    let last=0;
+    let last=-1;
     function rustle(){
-      const ctx=ensureCtx(); if(!ctx) return;
-      const t=ctx.currentTime; if(t-last<0.05) return; last=t;
-      const dur=0.7;
-      const buf=ctx.createBuffer(1, Math.floor(ctx.sampleRate*dur), ctx.sampleRate);
-      const d=buf.getChannelData(0);
-      for(let i=0;i<d.length;i++){ d[i]=(Math.random()*2-1); }
-      const src=ctx.createBufferSource(); src.buffer=buf;
-      const bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.Q.value=0.55;
-      bp.frequency.setValueAtTime(420,t);
-      bp.frequency.linearRampToValueAtTime(900,t+0.20);   // a soft gust swelling
-      bp.frequency.linearRampToValueAtTime(520,t+dur);
-      const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1500;
+      const ctx=ensureCtx(); if(!ctx||ctx.state!=='running') return;
+      const t=ctx.currentTime; if(last>=0 && t-last<0.25) return; last=t;
+      const attaque=0.05, dur=0.85;
       const g=ctx.createGain();
-      g.gain.setValueAtTime(0.0001,t);
-      g.gain.linearRampToValueAtTime(0.045,t+0.14);        // gentle airy swell
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(0.05,t+attaque);
       g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-      src.connect(bp).connect(lp).connect(g).connect(ctx.destination);
-      src.start(t); src.stop(t+dur);
+      g.gain.linearRampToValueAtTime(0,t+dur+0.03);
+      const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1200;
+      g.connect(lp).connect(ctx.destination);
+      [[216,1],[432,0.35]].forEach(function(p){
+        const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=p[0];
+        const og=ctx.createGain(); og.gain.value=p[1]/1.35;
+        o.connect(og).connect(g); o.start(t); o.stop(t+dur+0.05);
+      });
     }
     // Event delegation: robust even for buttons that move/disappear on hover.
     const HOVER_SEL='.cta,.btn-solid,.btn-outline,.clink,.nlform button,.more,.navlinks a';
@@ -1725,6 +1744,10 @@
     }
     setScale(); addEventListener('resize',setScale); addEventListener('load',setScale); addEventListener('orientationchange',setScale);
   })();
+  /* Ordinateur : le burger apparaît une fois le menu du haut sorti de l'écran (6 oct. 2026). */
+  (function(){ var n=document.querySelector('body>nav'); if(!n) return; var tk=false;
+    function maj(){ tk=false; document.body.classList.toggle('nav-loin', n.getBoundingClientRect().bottom<0); }
+    addEventListener('scroll',function(){ if(!tk){ tk=true; requestAnimationFrame(maj); } },{passive:true}); maj(); })();
   /* mobile nav: burger toggle + full-screen overlay */
   (function(){
     var btn=document.getElementById('mnavBtn'), ov=document.getElementById('mnavOverlay'); if(!btn||!ov) return;

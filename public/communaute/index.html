@@ -827,31 +827,30 @@
     addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll); onScroll();
   }
 
-  // Subtle wind rustle on hover (synthesized filtered noise, no audio file). Hover-capable devices only.
+  // Son doux au survol, accordé sur 432 Hz (6 oct. 2026, demande de Krystine : « un son qui nourrit »).
+  // Deux sinusoïdes (216 Hz et son octave 432 Hz), attaque lente, longue extinction, volume bas,
+  // un seul son par élément survolé et au moins 250 ms entre deux. Appareils à souris seulement.
   if(matchMedia('(hover: hover)').matches){
     let actx=null;
     function ensureCtx(){ if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(actx&&actx.state==='suspended') actx.resume(); return actx; }
     addEventListener('pointerdown',ensureCtx,{once:true});
-    let last=0;
+    let last=-1;
     function rustle(){
-      const ctx=ensureCtx(); if(!ctx) return;
-      const t=ctx.currentTime; if(t-last<0.05) return; last=t;
-      const dur=0.7;
-      const buf=ctx.createBuffer(1, Math.floor(ctx.sampleRate*dur), ctx.sampleRate);
-      const d=buf.getChannelData(0);
-      for(let i=0;i<d.length;i++){ d[i]=(Math.random()*2-1); }
-      const src=ctx.createBufferSource(); src.buffer=buf;
-      const bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.Q.value=0.55;
-      bp.frequency.setValueAtTime(420,t);
-      bp.frequency.linearRampToValueAtTime(900,t+0.20);   // a soft gust swelling
-      bp.frequency.linearRampToValueAtTime(520,t+dur);
-      const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1500;
+      const ctx=ensureCtx(); if(!ctx||ctx.state!=='running') return;
+      const t=ctx.currentTime; if(last>=0 && t-last<0.25) return; last=t;
+      const attaque=0.05, dur=0.85;
       const g=ctx.createGain();
-      g.gain.setValueAtTime(0.0001,t);
-      g.gain.linearRampToValueAtTime(0.045,t+0.14);        // gentle airy swell
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(0.05,t+attaque);
       g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-      src.connect(bp).connect(lp).connect(g).connect(ctx.destination);
-      src.start(t); src.stop(t+dur);
+      g.gain.linearRampToValueAtTime(0,t+dur+0.03);
+      const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1200;
+      g.connect(lp).connect(ctx.destination);
+      [[216,1],[432,0.35]].forEach(function(p){
+        const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=p[0];
+        const og=ctx.createGain(); og.gain.value=p[1]/1.35;
+        o.connect(og).connect(g); o.start(t); o.stop(t+dur+0.05);
+      });
     }
     // Event delegation: robust even for buttons that move/disappear on hover.
     const HOVER_SEL='.cta,.btn-solid,.btn-outline,.clink,.nlform button,.more,.navlinks a';

@@ -7,11 +7,12 @@ import { getLang } from '../../lib/i18n/lang';
 import { RECAPTCHA_SITE_KEY, useRecaptcha } from '../../lib/recaptcha';
 import Portail from '../Portail';
 
-// « Un pépin ? Écrivez-nous » : la petite pastille d'aide de toutes les pages
+// « Un commentaire ? Écrivez-nous » (ex « Un pépin ? », ton positif depuis le
+// 6 oct. 2026 : on peut aussi dire ce qu'on aime ou proposer une idée) : la petite pastille d'aide de toutes les pages
 // publiques, connectée ou non. Elle prolonge le bouton « Problème technique »
 // de l'espace client (même capture d'écran, même destination : `bugs` et
 // l'onglet Problèmes techniques de l'admin) en ajoutant un type (technique ou
-// introuvable) et le courriel de la personne. L'envoi passe par la fonction
+// introuvable, et depuis le 6 oct. 2026 aime ou idee) et le courriel de la personne. L'envoi passe par la fonction
 // `signalerPepin`, qui garde la porte (case anti-robot et cadence par IP).
 // Langage V2 : crème, encre, or, bouton noir carré.
 
@@ -24,13 +25,17 @@ const COTE_MAX = 1600;
 
 const T = {
   FR: {
-    pastille: 'Un pépin ? Écrivez-nous',
-    titre: 'Que se passe-t-il ?',
-    technique: 'Quelque chose ne fonctionne pas',
+    pastille: 'Un commentaire ? Écrivez-nous',
+    infobulle: 'Un commentaire sur votre expérience de navigation ? Écrivez-nous',
+    titre: 'Aidez-nous à vous offrir une expérience à 1000 %',
+    intro: 'Un commentaire sur votre expérience de navigation ? Chaque message est lu par notre équipe.',
+    aime: 'J’aime ce que je vois',
+    idee: 'Une idée',
+    technique: 'Quelque chose bloque',
     introuvable: 'Je ne trouve pas ce que je cherche',
     courriel: 'Votre courriel',
     message: 'Votre message',
-    placeholder: 'Dites-nous ce qui s’est passé, ou ce que vous cherchez.',
+    placeholder: 'Dites-nous ce qui vous plaît, votre idée, ou ce qui bloque.',
     capture: 'Capture d’écran (facultatif)',
     capturer: 'Capturer l’écran',
     capturePendant: 'Capture en cours',
@@ -39,7 +44,7 @@ const T = {
     envoyer: 'Envoyer',
     envoi: 'Envoi en cours',
     fermer: 'Fermer',
-    merci: 'Merci, notre équipe vous répond rapidement.',
+    merci: 'Merci, votre message est bien reçu. Notre équipe le lit avec soin.',
     aussi: 'Vous pouvez aussi écrire à',
     pasImage: 'Le fichier doit être une image.',
     captureRatee: 'La capture automatique n’a pas fonctionné sur cette page. Téléversez plutôt une image.',
@@ -48,13 +53,17 @@ const T = {
     rate: 'L’envoi n’a pas fonctionné. Réessayez dans un instant, ou écrivez à',
   },
   EN: {
-    pastille: 'Something wrong? Write to us',
-    titre: 'What is happening?',
-    technique: 'Something is not working',
+    pastille: 'Any feedback? Write to us',
+    infobulle: 'Any feedback on your browsing experience? Write to us',
+    titre: 'Help us make your experience 1000 %',
+    intro: 'Any feedback on your browsing experience? Every message is read by our team.',
+    aime: 'I like what I see',
+    idee: 'An idea',
+    technique: 'Something is blocking me',
     introuvable: 'I cannot find what I am looking for',
     courriel: 'Your email',
     message: 'Your message',
-    placeholder: 'Tell us what happened, or what you are looking for.',
+    placeholder: 'Tell us what you like, your idea, or what is blocking you.',
     capture: 'Screenshot (optional)',
     capturer: 'Capture the screen',
     capturePendant: 'Capturing',
@@ -63,7 +72,7 @@ const T = {
     envoyer: 'Send',
     envoi: 'Sending',
     fermer: 'Close',
-    merci: 'Thank you, our team will reply shortly.',
+    merci: 'Thank you, your message has been received. Our team reads it with care.',
     aussi: 'You can also write to',
     pasImage: 'The file must be an image.',
     captureRatee: 'Automatic capture did not work on this page. Upload an image instead.',
@@ -73,7 +82,7 @@ const T = {
   },
 };
 
-type Type = 'technique' | 'introuvable';
+type Type = 'aime' | 'idee' | 'technique' | 'introuvable';
 
 /** L'écran visible, photographié derrière le panneau. */
 async function capturerEcran(): Promise<Blob> {
@@ -253,8 +262,8 @@ const AidePepin: React.FC<{ autonome?: boolean; pageDe?: string }> = ({ autonome
         type="button"
         data-bug-ignore
         onClick={ouvrir}
-        aria-label={t.pastille}
-        title={t.pastille}
+        aria-label={t.infobulle}
+        title={t.infobulle}
         className={COMPACTE(pathname)
           ? `fixed right-3 z-[55] inline-flex h-10 w-10 items-center justify-center rounded-full border text-[1.05rem] shadow-[0_8px_20px_-12px_rgba(28,23,18,0.6)] transition-colors hover:bg-white ${AVEC_BARRE(pathname) ? 'bottom-[calc(var(--bande-temoins,0px)+6.5rem)] md:bottom-[calc(var(--bande-temoins,0px)+5.5rem)]' : 'bottom-[calc(var(--bande-temoins,0px)+5.5rem)]'} sm:right-5`
           : `fixed left-3 z-[55] inline-flex min-h-[40px] items-center border px-3.5 text-[0.62rem] uppercase tracking-[0.14em] transition-colors hover:bg-white ${AVEC_BARRE(pathname) ? 'bottom-[calc(var(--bande-temoins,0px)+6rem)] md:bottom-[calc(var(--bande-temoins,0px)+4.5rem)]' : 'bottom-[calc(var(--bande-temoins,0px)+0.75rem)] sm:bottom-[calc(var(--bande-temoins,0px)+4.5rem)]'} sm:left-5`}
@@ -282,7 +291,7 @@ const AidePepin: React.FC<{ autonome?: boolean; pageDe?: string }> = ({ autonome
               onClick={(e) => e.stopPropagation()}
             >
               <div className="mb-5 flex items-start justify-between gap-4">
-                <h2 id="pepin-titre" className="text-[1.7rem] leading-tight" style={serif}>{t.titre}</h2>
+                <h2 id="pepin-titre" className="text-[1.35rem] leading-tight sm:text-[1.55rem]" style={serif}>{t.titre}</h2>
                 <button type="button" onClick={fermer} aria-label={t.fermer} className="flex h-9 w-9 shrink-0 items-center justify-center text-xl leading-none" style={{ color: ENCRE }}>×</button>
               </div>
 
@@ -296,8 +305,9 @@ const AidePepin: React.FC<{ autonome?: boolean; pageDe?: string }> = ({ autonome
                 </div>
               ) : (
                 <>
+                  <p className="-mt-2 mb-4 text-[0.88rem] leading-[1.7]" style={{ color: 'rgba(28,23,18,0.75)' }}>{t.intro}</p>
                   <div className="mb-5 grid gap-2 sm:grid-cols-2" role="radiogroup" aria-labelledby="pepin-titre">
-                    {([['technique', t.technique], ['introuvable', t.introuvable]] as const).map(([id, label], i) => (
+                    {([['aime', t.aime], ['idee', t.idee], ['technique', t.technique], ['introuvable', t.introuvable]] as const).map(([id, label], i) => (
                       <button
                         key={id}
                         ref={i === 0 ? premierRef : undefined}
