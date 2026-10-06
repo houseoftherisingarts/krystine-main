@@ -6614,5 +6614,19 @@
       "scripts/qa/verif-complete-installer.sh",
       "scripts/qa/verif-complete.mjs"
     ]
+  },
+  {
+    "quand": "2026-10-06T19:25:38.485Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "842e70f7",
+    "message": "Image de la carte VATA (catalogue, /cours/vata, Mes formations, lecteur audio) : « L'Expérience Ayurveda · VATA ESSENTIEL » à la place de « SAISON VATA », même allure, même sceau signé",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/vata/carte-saison-vata.jpg"
+    ]
   }
 ]
