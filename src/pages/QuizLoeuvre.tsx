@@ -776,7 +776,14 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
     setEchecServeur(false);
     if (!prenom.trim()) { setErreurEnvoi('Entrez votre prénom.'); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(courriel.trim())) { setErreurEnvoi('Entrez une adresse courriel valide.'); return; }
-    if (RECAPTCHA_SITE_KEY && !captcha.getToken()) { setErreurEnvoi('Cochez la case « Je ne suis pas un robot ».'); return; }
+    if (RECAPTCHA_SITE_KEY && !captcha.getToken()) {
+      setErreurEnvoi(captcha.etat === 'absente'
+        ? 'La case « Je ne suis pas un robot » ne s’est pas affichée. Touchez « Afficher la case », puis cochez-la.'
+        : captcha.etat === 'expiree'
+          ? 'La case « Je ne suis pas un robot » a expiré (elle dure deux minutes). Cochez-la de nouveau, votre lecture partira.'
+          : 'Cochez la case « Je ne suis pas un robot ».');
+      return;
+    }
     setSubmitting(true);
     try {
       await envoyerResultatQuiz({
@@ -798,10 +805,16 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
     } catch (err: any) {
       captcha.resetWidget();
       const deja = err?.code === 'functions/resource-exhausted' && err?.message;
+      // Un refus de la case n'est pas une panne : la case se recharge, et un
+      // seul geste suffit (cocher, puis Réessayer).
+      const caseRefusee = ['functions/deadline-exceeded', 'functions/permission-denied', 'functions/invalid-argument'].includes(err?.code)
+        && /captcha|vérification/i.test(String(err?.message || ''));
       setEchecServeur(!deja);
       setErreurEnvoi(deja
         ? err.message
-        : 'Votre résultat n’a pas pu partir. Ce que vous avez écrit est gardé : cochez de nouveau la case « Je ne suis pas un robot », puis touchez Réessayer.');
+        : caseRefusee
+          ? 'La case « Je ne suis pas un robot » a expiré avant l’envoi. Ce que vous avez écrit est gardé : cochez-la de nouveau, puis touchez Réessayer.'
+          : 'Votre résultat n’a pas pu partir. Ce que vous avez écrit est gardé : cochez de nouveau la case « Je ne suis pas un robot », puis touchez Réessayer.');
     } finally {
       setSubmitting(false);
     }
@@ -1017,6 +1030,25 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                     />
                   </div>
                   {RECAPTCHA_SITE_KEY && <div ref={captcha.boxRef} className="mt-6 flex justify-center" />}
+                  {RECAPTCHA_SITE_KEY && captcha.etat === 'expiree' && (
+                    <p role="status" className="mt-3 text-center text-[0.85rem] text-[#83322b]">
+                      {lang === 'FR' ? 'La case a expiré (elle dure deux minutes) : cochez-la de nouveau.' : 'The box expired (it lasts two minutes): please check it again.'}
+                    </p>
+                  )}
+                  {RECAPTCHA_SITE_KEY && captcha.etat === 'absente' && (
+                    <div role="status" className="mt-3 flex flex-col items-center gap-2 text-center">
+                      <p className="text-[0.85rem] text-[#83322b]">
+                        {lang === 'FR' ? 'La case « Je ne suis pas un robot » ne s’est pas affichée.' : 'The “I’m not a robot” box did not appear.'}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => { setErreurEnvoi(null); captcha.recharger(); }}
+                        className="inline-flex items-center justify-center border border-[#1c1712] px-5 py-2 text-[0.64rem] uppercase tracking-[0.18em] text-[#1c1712] transition-colors hover:bg-[#1c1712] hover:text-[#f4efe6] min-h-[44px]"
+                      >
+                        {lang === 'FR' ? 'Afficher la case' : 'Show the box'}
+                      </button>
+                    </div>
+                  )}
                   {/* La fuite du tunnel (analyse du 4 oct. 2026) : la case de la suite,
                       décochée et cachée sous le bouton, ne laissait passer que 17 %
                       des personnes. La suite est LE choix, nommé en clair juste
