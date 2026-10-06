@@ -6511,5 +6511,43 @@
       "src/pages/admin/AdminShell.tsx",
       "src/pages/admin/sections/BugsSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T18:54:03.268Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "24f03e93",
+    "message": "Jeu des niskas fermé : plus aucune mention de niskas sur le site ni dans la création de compte et l'espace membre (/compte), plus aucun crédit; fréquence d'Origine offerte dans Téléchargements (/origine le dit); fenêtre d'inscription avec les cinq raisons de créer son compte",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/gamification.ts",
+      "functions/src/niskas.ts",
+      "functions/src/paiements.ts",
+      "functions/src/sondages.ts",
+      "public/accueil/fleur-offres.js",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "src/components/OrigineHomeSection.tsx",
+      "src/components/client/BoutiqueNiskas.tsx",
+      "src/components/communaute/CadreFoyer.tsx",
+      "src/components/compte/PorteMembre.tsx",
+      "src/components/compte/RaisonsCompte.tsx",
+      "src/components/layout/MenuMusique.tsx",
+      "src/components/layout/SignInModal.tsx",
+      "src/firebase/gamification.ts",
+      "src/firebase/points.ts",
+      "src/pages/ClientPortal.tsx",
+      "src/pages/DirectPage.tsx",
+      "src/pages/OrigineDeuxPage.tsx",
+      "src/pages/OrigineExperience.tsx",
+      "src/pages/admin/sections/GamificationSection.tsx",
+      "src/pages/client/ClientAider.tsx",
+      "src/pages/client/ClientTelechargements.tsx",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
