@@ -6686,5 +6686,20 @@
       "src/pages/QuizLoeuvre.tsx",
       "src/pages/RituelsEssentielsPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T20:36:29.649Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "486668da",
+    "message": "Formations : nouvelle hiérarchie sur /formations. EXPÉRIENCE ORIGINE 2 au cœur (seule carte vert profond, départ le 10 janvier 2027, liste d'attente), Rituels essentiels à 27 $ comme porte d'entrée avec le quiz, VATA Essentiel pour approfondir",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/FormationsLanding.tsx",
+      "src/pages/admin/sections/newsletter/nouvellesInscrites.ts"
+    ]
   }
 ]
