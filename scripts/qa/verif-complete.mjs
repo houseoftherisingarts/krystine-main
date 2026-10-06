@@ -244,7 +244,7 @@ async function controlerPage(navigateur, app, p) {
           if (ligne) { ligne.top = Math.min(ligne.top, x.top); ligne.bottom = Math.max(ligne.bottom, x.bottom); }
           else tri.push({ top: x.top, bottom: x.bottom });
         }
-        if (tri.length > 2) r.titres.push(`${h.tagName.toLowerCase()} sur ${tri.length} lignes : « ${h.textContent.replace(/\s+/g, ' ').trim().slice(0, 70)} »`);
+        if (tri.length > 2) r.titres.push(`${h.tagName.toLowerCase()} sur ${tri.length} lignes : « ${h.innerText.replace(/\s+/g, " ").trim().slice(0, 70)} »`);
       }
       return r;
     });
