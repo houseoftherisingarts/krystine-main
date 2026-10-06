@@ -6753,5 +6753,21 @@
       "public/rituels-vivants/ouverture-image.webp",
       "src/pages/RituelsEssentielsPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T22:24:33.558Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c54899e9",
+    "message": "Rituels essentiels (/rituels-essentiels) : la vidéo d'origine où Krystine présente les Rituels revient au centre de l'éventail, à la place de la photo fixe",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/rituels-vivants/extrait-krystine-parle-poster.webp",
+      "public/rituels-vivants/extrait-krystine-parle.mp4",
+      "src/pages/RituelsEssentielsPage.tsx"
+    ]
   }
 ]
