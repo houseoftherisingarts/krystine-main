@@ -6476,5 +6476,19 @@
       "src/lib/recaptcha.ts",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T18:26:37.130Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d68569cc",
+    "message": "Rituels vivants (/rituels-vivants) : photo de Krystine les yeux ouverts dans « Votre guide », mots clés en gras sur toute la page, petites précisions pour une débutante (capsules vidéo, doshas expliqués, nouvelle question « Sous quelle forme sont les capsules ? »)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/RituelsVivantsPage.tsx"
+    ]
   }
 ]
