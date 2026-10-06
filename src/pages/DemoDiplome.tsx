@@ -8,7 +8,7 @@ import { telechargerDiplome } from '../lib/diplomePdf';
 
 const INFOS = {
   nom: 'Marie-Claude Tremblay',
-  programme: 'Expérience Ayurveda · Saison Vata',
+  programme: 'L’Expérience Ayurveda · VATA Essentiel',
   accompli: 'huit semaines et cinquante leçons',
   date: '2026-09-10',
   numero: 'VATA · 7644 · A3F19C',

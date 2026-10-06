@@ -1,4 +1,5 @@
 import { cheminCours } from '../../lib/cheminCours';
+import { couperTitre } from '../../lib/titreFormation';
 import StickerFormat, { formatDe } from '../../components/cours/StickerFormat';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -11,12 +12,7 @@ import { utiliserCodeKajabi, restaurerKajabiAuto, confirmerAdresseKajabi } from 
 // « Mes formations » : les cours que la cliente a achetés. La preuve d'achat
 // est écrite par le serveur au paiement; l'admin peut aussi en accorder.
 
-// Un titre long « VATA Essentiel · L'Expérience Ayurveda, Saison Vata » se
-// lit en deux temps : le nom en titre, la collection en petit dessous.
-const couperTitre = (titre: string): [string, string] => {
-  const i = titre.indexOf('·');
-  return i < 0 ? [titre, ''] : [titre.slice(0, i).trim(), titre.slice(i + 1).trim()];
-};
+// Le titre long se lit en deux temps (src/lib/titreFormation.ts).
 // Les formations d'essai (« TEST … ») ne se montrent qu'aux administratrices.
 const estTest = (titre: string) => titre.trim().toUpperCase().startsWith('TEST');
 
@@ -128,7 +124,8 @@ const ClientFormations: React.FC = () => {
                 {/* Le format sous l'image : il ne couvre plus le titre imprimé sur la couverture. */}
                 <div className="p-4">
                   <StickerFormat format={formatDe(a.id)} lang={lang} className="mb-3" />
-                  <TitreCarte titre={a.titre} />
+                  {/* Le titre de la fiche d'abord : un nom officiel changé (6 oct. 2026) suit partout. */}
+                  <TitreCarte titre={catalogue.find(f => f.id === a.id)?.titre || a.titre} />
                   <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] transition-colors group-hover:text-[#BA7B39]">
                     {lang === 'FR' ? 'Continuer' : 'Continue'} <i className="fa-solid fa-arrow-right" />
                   </span>

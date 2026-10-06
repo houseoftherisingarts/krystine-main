@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { couperTitre } from '../lib/titreFormation';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { ArrowRight } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AppContext';
@@ -174,9 +175,8 @@ const PaiementFormation: React.FC = () => {
   const options = enVente ? versementsPermis(prixPlein) : [1];
   const prix = rabaisAmb ? Math.round(prixPlein * (100 - rabaisAmb)) / 100 : prixPlein;
   const n = options.includes(choix) ? choix : 1;
-  // Le nom porte sa collection après le point médian : « VATA Essentiel · L'Expérience… ».
-  const [nom, ...reste] = (formation?.titre || '').split(' · ');
-  const collection = reste.join(' · ');
+  // Le nom et sa collection : « L'Expérience Ayurveda · VATA Essentiel » (src/lib/titreFormation.ts).
+  const [nom, collection] = couperTitre(formation?.titre || '');
   const changerDeChoix = () => { setClientSecret(null); setErreur(null); };
 
   return (

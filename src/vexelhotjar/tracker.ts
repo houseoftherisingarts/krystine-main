@@ -209,6 +209,13 @@ function utmDe(): Record<string, string> | undefined {
   for (const k of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']) {
     const v = q.get(k); if (v) u[k] = v.slice(0, 80);
   }
+  // Un lien marqué « ?via=suite-vent&l=3 » (6 oct. 2026) compte comme une
+  // campagne : la source est le via, la lettre va dans utm_content.
+  const via = q.get('via');
+  if (via && !u.utm_source) {
+    u.utm_source = via.slice(0, 80);
+    const l = q.get('l'); if (l && !u.utm_content) u.utm_content = `l${l}`.slice(0, 80);
+  }
   return Object.keys(u).length ? u : undefined;
 }
 

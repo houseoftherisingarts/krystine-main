@@ -105,11 +105,11 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, un
       >
         <div>
           <p className="text-[10px] font-light uppercase tracking-[0.42em] text-[#EEE7DB]/85 md:text-[12px]">
-            {uni ? (fr ? 'L’Expérience Ayurveda · Saison Vata' : 'The Ayurveda Experience · Vata Season') : (fr ? programme.surtitre.fr : programme.surtitre.en)}
+            {uni ? (fr ? 'L’Expérience Ayurveda' : 'The Ayurveda Experience') : (fr ? programme.surtitre.fr : programme.surtitre.en)}
           </p>
           <h1 className="mt-3 font-sans text-[clamp(2.2rem,5vw,4.4rem)] font-extralight uppercase leading-[1] tracking-[0.14em] text-[#F7F3EA]">
-            {/* Le titre fin « SAISON VATA » (Krystine, 30 sept. 2026). */}
-            {uni ? (fr ? 'Saison Vata' : 'Vata Season') : (fr ? programme.titre.fr : programme.titre.en).replace(/\n/g, ' ')}
+            {/* Le titre officiel « L'Expérience Ayurveda · VATA Essentiel » (Krystine, 6 oct. 2026) : VATA ne parle jamais de saison. */}
+            {uni ? (fr ? 'VATA Essentiel' : 'VATA Essential') : (fr ? programme.titre.fr : programme.titre.en).replace(/\n/g, ' ')}
           </h1>
           <span className="mt-4 block h-px w-[min(18rem,60%)] bg-[#EEE7DB]/60" aria-hidden />
           {uni && (
@@ -123,7 +123,7 @@ const SeuilVata: React.FC<Props> = ({ programme, format, image, video, decor, un
         <div aria-hidden className="hidden shrink-0 flex-col items-center justify-center rounded-full bg-[#74775f] text-center text-[#F7F3EA] shadow-[0_18px_40px_-18px_rgba(0,0,0,0.7)] sm:flex sm:h-[150px] sm:w-[150px] md:h-[172px] md:w-[172px]">
           <span className="text-[8px] font-light uppercase tracking-[0.18em] md:text-[9px]">L’Expérience</span>
           <span className="mt-0.5 text-[13px] font-medium uppercase tracking-[0.12em] md:text-[15px]">Ayurveda</span>
-          <span className="text-[9px] font-light uppercase tracking-[0.16em] md:text-[10px]">Saison Vata</span>
+          <span className="text-[9px] font-light uppercase tracking-[0.16em] md:text-[10px]">VATA Essentiel</span>
           <img src="/compte/signature-krystine-sceau.png" alt="Krystine St-Laurent" className="mt-2 h-9 w-auto md:h-11" />
         </div>
         )}

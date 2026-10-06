@@ -13,7 +13,7 @@ import { SIGNATURE_NOIRE } from '../client/Signature';
 export interface DiplomeInfos {
   /** Le nom de la personne, tel qu'il doit paraître sur le mur. */
   nom: string;
-  /** Le titre du programme, par exemple « Expérience Ayurveda · Saison Vata ». */
+  /** Le titre du programme, par exemple « L’Expérience Ayurveda · VATA Essentiel ». */
   programme: string;
   /** Ce qui a été accompli, par exemple « huit semaines et cinquante leçons ». */
   accompli: string;

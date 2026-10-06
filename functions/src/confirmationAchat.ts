@@ -57,8 +57,8 @@ export function lettreConfirmation(formationId: string, titre: string, recap: Re
   ];
   if (formationId === FORMATION_VATA_ID) {
     return {
-      subject: 'Bienvenue dans L’Expérience Ayurveda, Saison Vata',
-      titreBandeau: 'Bienvenue dans L’Expérience Ayurveda,\nSaison Vata',
+      subject: 'Bienvenue dans L’Expérience Ayurveda · VATA Essentiel',
+      titreBandeau: 'Bienvenue dans L’Expérience Ayurveda ·\nVATA Essentiel',
       // Plus petit que les 34 px habituels : la première ligne tient sur 520 px.
       tailleTitreBandeau: 27,
       preheader: 'Votre accès est ouvert. Voici par où commencer.',

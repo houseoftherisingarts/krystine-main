@@ -110,6 +110,13 @@ export const creerSessionPaiement = onCall(
     // liste blanche passe; tout le reste est ignoré, jamais une erreur.
     const source = String(req.data?.source || '').trim().toLowerCase();
     if (SOURCES_ACHAT.includes(source)) body.set('metadata[source]', source);
+    // Le lien marqué qui a amené la personne (« ?via=suite-vent&l=3 », 6 oct.
+    // 2026) : un mot court, lettres, chiffres et traits seulement. Il se range
+    // dans « via », jamais dans « source » (qui règle l'ouverture des semaines).
+    const via = String(req.data?.via || '').trim().toLowerCase();
+    if (/^[a-z0-9][a-z0-9._-]{0,39}$/.test(via)) body.set('metadata[via]', via);
+    const viaLettre = String(req.data?.viaLettre || '').trim().toLowerCase();
+    if (/^l\d{1,2}$/.test(viaLettre)) body.set('metadata[viaLettre]', viaLettre);
     // Sans compte : au plus 3 comptes créés par paiement par heure depuis une
     // même adresse IP (revue de sécurité, 2 oct. 2026). Au-delà, la caisse ne
     // s'ouvre pas sans connexion; un paiement déjà fait n'est jamais bloqué.
@@ -755,6 +762,8 @@ export const stripeWebhook = onRequest(
       ...detailTaxes,
       ...(session.metadata?.cadeauId ? { source: 'cadeau', cadeauId: session.metadata.cadeauId }
         : SOURCES_ACHAT.includes(String(session.metadata?.source || '')) ? { source: String(session.metadata.source) } : {}),
+      ...(/^[a-z0-9][a-z0-9._-]{0,39}$/.test(String(session.metadata?.via || '')) ? { via: String(session.metadata!.via) } : {}),
+      ...(/^l\d{1,2}$/.test(String(session.metadata?.viaLettre || '')) ? { viaLettre: String(session.metadata!.viaLettre) } : {}),
       // Le compte ouvert par cet achat : la confirmation porte le lien du mot de passe.
       ...(compteCree ? { compteCreeParAchat: true } : {}),
     }, { merge: true });

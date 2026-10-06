@@ -9,8 +9,8 @@ import { MAIL_SECRETS, createTransporter, fromAddr, REPLY_TO, PUBLIC_BASE_URL } 
 // le 21 sept., aucun fini, et personne ne leur écrivait. Toutes les 30 min,
 // ce filet lit dans Stripe les caisses de formation ouvertes depuis plus d'une
 // heure ou expirées, sans paiement. La personne reçoit une lettre (lettre 1),
-// puis une seconde le lendemain (lettre 2), seulement si elle n'a toujours
-// pas acheté. Jamais plus de deux lettres par caisse, jamais à une adresse
+// puis une seconde le lendemain (lettre 2, VATA seulement), seulement si
+// elle n'a toujours pas acheté. Jamais plus de deux lettres par caisse, jamais à une adresse
 // désabonnée de nos lettres, jamais pour un essai à petit prix.
 // Interrupteur : reglages/relancePaiement.actif (éteint tant que Krystine n'a
 // pas approuvé les deux lettres). La mesure : relancesPaiement/{session}.
@@ -108,7 +108,8 @@ export const relancerPaiements = onSchedule(
         continue;
       }
       const f = await db.doc(`formations/${formationId}`).get();
-      const titre = String(f.get('titre') || 'votre formation').split(' · ')[0];
+      // Le titre officiel en entier : « L'Expérience Ayurveda · VATA Essentiel » (Krystine, 6 oct. 2026).
+      const titre = String(f.get('titre') || 'votre formation');
       const prenom = String(s.customer_details?.name || '').trim().split(/\s+/)[0] || '';
       const l = LETTRES[1](prenom, titre, lienDe(formationId));
       await transporter.sendMail({ from: fromAddr(), replyTo: REPLY_TO, to: email, subject: l.sujet, text: l.texte });
@@ -122,6 +123,13 @@ export const relancerPaiements = onSchedule(
     const aSuivre = await db.collection('relancesPaiement').where('etape', '==', 1).where('lettre1Le', '<=', avant).limit(50).get();
     for (const d of aSuivre.docs) {
       const r = d.data() as { email: string; formationId: string; uid?: string; prenom?: string; titre?: string };
+      // La lettre 2 décrit des capsules à écouter : elle est réservée à VATA
+      // (Krystine, 6 oct. 2026). Les Rituels vivants (vidéos) et les autres
+      // formations s'arrêtent à la lettre 1.
+      if (r.formationId !== 'kajabi-2148687644') {
+        await d.ref.update({ etape: 'sans-lettre-2', fermeeLe: FieldValue.serverTimestamp() });
+        continue;
+      }
       if (await estDesabonnee(r.email) || await aDejaAchete(r.email, r.uid || '', r.formationId)) {
         await d.ref.update({ etape: 'achetee-ou-sortie', fermeeLe: FieldValue.serverTimestamp() });
         continue;

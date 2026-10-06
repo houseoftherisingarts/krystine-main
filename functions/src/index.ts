@@ -35,7 +35,7 @@ export { parrainageFilleule, parrainageAchat, parrainagePourboire } from './parr
 export { devenirAmbassadrice, reglerAmbassadrice, nommerAmbassadrice, monRabaisAmbassadrice, commissionsEchues } from './ambassadrices';
 export { groupeMembre } from './groupe';
 export { musiqueOrigine } from './musique';
-export { envoyerResultatQuiz, suiteLecture, suiteQuiz } from './quiz';
+export { envoyerResultatQuiz, suiteLecture, suiteQuiz, rattraperLectureQuiz } from './quiz';
 export { extraitCinqElements } from './cinqelements';
 export { signalerPepin } from './pepin';
 export { offrirCadeau, utiliserCadeau } from './cadeaux';

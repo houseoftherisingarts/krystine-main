@@ -43,7 +43,7 @@ const PORTES: Porte[] = [
   // VATA Essentiel en première carte : la seule porte ouverte à l'achat (Krystine, 2 oct. 2026).
   {
     key: 'vata',
-    tag: "L'Expérience Ayurveda · Saison Vata",
+    tag: "L'Expérience Ayurveda",
     title: OFFRE_VATA.name,
     subtitle: 'Un parcours de sept semaines, la première dès l’inscription.',
     body: "16 capsules, 7 méditations guidées, le journal de bord et d'observation, et le guide de 204 pages.",
@@ -72,7 +72,7 @@ const PORTES: Porte[] = [
 interface Disponible { key: string; tag: string; titre: string; sous: string; corps: string; prix?: string; cta: string; href: string; image: string; cadrage: string }
 const DISPONIBLES: Disponible[] = [
   {
-    key: 'vata', tag: "L'Expérience Ayurveda · Saison Vata", titre: OFFRE_VATA.name,
+    key: 'vata', tag: "L'Expérience Ayurveda", titre: OFFRE_VATA.name,
     sous: 'Un parcours de sept semaines, la première dès l’inscription.',
     corps: "16 capsules, 7 méditations guidées, le journal de bord et d'observation, et le guide de 204 pages.",
     cta: 'Découvrir VATA Essentiel', href: '/vata', image: '/vata/carte-eventail.jpg', cadrage: 'object-[50%_40%]',

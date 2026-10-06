@@ -65,13 +65,22 @@ export function noterProvenance(): void {
     };
     const medium = propre(q.get('utm_medium'));
     const campagne = propre(q.get('utm_campaign'));
-    const contenu = propre(q.get('utm_content'));
+    // « &l=3 » : la lettre d'une suite qui porte le lien (6 oct. 2026).
+    const contenu = propre(q.get('utm_content') || (q.get('l') ? `l${q.get('l')}` : ''));
     if (medium) p.medium = medium;
     if (campagne) p.campagne = campagne;
     if (contenu) p.contenu = contenu;
     if (referent) p.referent = referent;
     localStorage.setItem(CLE, JSON.stringify(p));
   } catch { /* stockage bloqué : l'inscription se fait sans provenance */ }
+}
+
+/** La provenance à joindre à un paiement (6 oct. 2026) : « suite-vent » et,
+ *  si le lien le dit, la lettre (« l3 »). Le serveur la filtre à nouveau. */
+export function viaPaiement(): { via?: string; viaLettre?: string } {
+  const p = lire();
+  if (!p || !p.source || p.source === 'direct' || p.referent) return {};
+  return { via: p.source, ...(p.contenu && /^l\d{1,2}$/.test(p.contenu) ? { viaLettre: p.contenu } : {}) };
 }
 
 /** La provenance à joindre à une inscription, ou undefined. */

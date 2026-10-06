@@ -1,4 +1,5 @@
 import { onCall, onRequest, HttpsError } from 'firebase-functions/v2/https';
+import { onDocumentUpdated } from 'firebase-functions/v2/firestore';
 import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
 import * as crypto from 'crypto';
 import { RECAPTCHA_SECRET, garderFormulaire } from './captcha';
@@ -112,6 +113,75 @@ async function limiterParAdresse(email: string): Promise<boolean> {
   });
 }
 
+
+/** L'envoi de la lecture : la fiche du résultat, la clé de la suite, le
+ *  courriel et, si la personne l'a choisie, l'inscription à la suite. Le même
+ *  geste sert au quiz et au rattrapage d'une lecture échouée (6 oct. 2026). */
+async function envoyerLecture(x: { email: string; prenom: string; d1: Dosha; pourcentages: { vata: number; pitta: number; kapha: number }; suite: boolean; uid?: string; lang: string; provenance?: unknown }) {
+  const { email, prenom, d1, pourcentages, suite, uid, lang, provenance } = x;
+  const profil = lireProfil(pourcentages);
+  await getFirestore().collection('doshaResults').add({
+    ...(uid ? { uid } : {}),
+    firstName: prenom,
+    lastName: '',
+    email,
+    dominant: NOM[d1],
+    ...pourcentages,
+    source: 'quiz-courriel',
+    tags: ['dosha-quiz', ...profil.etiquettes],
+    branche: profil.branche,
+    suite,
+    createdAt: FieldValue.serverTimestamp(),
+  });
+
+  // La clé du courriel vit 60 jours et ne sert qu'au bouton qui inscrit en
+  // un clic (sans la suite). Plus aucun lien de refus dans le courriel
+  // (Krystine, 5 oct. 2026) : le désabonnement vit au pied des lettres.
+  // Le chemin &non=1 reste servi pour les courriels déjà partis.
+  const k = crypto.randomBytes(24).toString('base64url');
+  await getFirestore().doc(`quizSuite/${k}`).set({
+    email, prenom, dosha: d1, etiquettes: profil.etiquettes, creeLe: FieldValue.serverTimestamp(),
+    ...(lang === 'en' ? { lang: 'en' } : { lang: 'fr' }),
+  });
+  const lienSuite = `${PUBLIC_BASE_URL}/suite-lecture?k=${k}`;
+  const r = { prenom, dominant: d1, pourcentages, suite, lienSuite, prete: SUITE_PRETE[d1] };
+  const transporter = createTransporter();
+  try {
+    await transporter.sendMail({
+      replyTo: REPLY_TO,
+      from: fromAddr(),
+      to: email,
+      subject: sujetResultat(d1, pourcentages),
+      html: renderResultatHtml(r),
+      text: renderResultatTexte(r),
+    });
+  } catch (err) {
+    console.error('[quiz] envoi raté', err);
+    await noterTentative(email, prenom, NOM[d1], pourcentages, suite, { code: 'envoi-courriel', message: String((err as Error)?.message || '') });
+    throw new HttpsError('internal', "Le courriel n'a pas pu partir. Réessayez dans un instant.");
+  } finally {
+    transporter.close();
+  }
+
+  if (suite) {
+    // L'inscription au fil ne fait jamais échouer l'envoi du résultat.
+    try {
+      const ins = await enregistrerInscription({
+        email,
+        firstName: prenom,
+        source: 'quiz',
+        tags: ['quiz', `dosha-${d1}`, ...profil.etiquettes],
+        consentement: true,
+        ...(lang === 'fr' || lang === 'en' ? { lang } : {}),
+        ...(provenance ? { provenance } : {}),
+      }, uid);
+      await poserSuite(ins, d1);
+    } catch (e) {
+      console.error('[quiz] inscription au fil', e);
+    }
+  }
+}
+
 export const envoyerResultatQuiz = onCall(
   { region: 'us-central1', secrets: [RECAPTCHA_SECRET, ...MAIL_SECRETS], cors: true },
   async (req) => {
@@ -155,67 +225,8 @@ export const envoyerResultatQuiz = onCall(
       throw new HttpsError('resource-exhausted', 'Votre résultat a déjà été envoyé à cette adresse. Vérifiez votre boîte de réception.');
     }
 
-    await getFirestore().collection('doshaResults').add({
-      ...(req.auth?.uid ? { uid: req.auth.uid } : {}),
-      firstName: prenom,
-      lastName: '',
-      email,
-      dominant: NOM[d1],
-      ...pourcentages,
-      source: 'quiz-courriel',
-      tags: ['dosha-quiz', ...profil.etiquettes],
-      branche: profil.branche,
-      suite,
-      createdAt: FieldValue.serverTimestamp(),
-    });
-
-    // La clé du courriel vit 60 jours et ne sert qu'au bouton qui inscrit en
-    // un clic (sans la suite). Plus aucun lien de refus dans le courriel
-    // (Krystine, 5 oct. 2026) : le désabonnement vit au pied des lettres.
-    // Le chemin &non=1 reste servi pour les courriels déjà partis.
-    const k = crypto.randomBytes(24).toString('base64url');
-    await getFirestore().doc(`quizSuite/${k}`).set({
-      email, prenom, dosha: d1, etiquettes: profil.etiquettes, creeLe: FieldValue.serverTimestamp(),
-      ...(String(d.lang ?? '').toLowerCase() === 'en' ? { lang: 'en' } : { lang: 'fr' }),
-    });
-    const lienSuite = `${PUBLIC_BASE_URL}/suite-lecture?k=${k}`;
-    const r = { prenom, dominant: d1, pourcentages, suite, lienSuite, prete: SUITE_PRETE[d1] };
-    const transporter = createTransporter();
-    try {
-      await transporter.sendMail({
-        replyTo: REPLY_TO,
-        from: fromAddr(),
-        to: email,
-        subject: sujetResultat(d1, pourcentages),
-        html: renderResultatHtml(r),
-        text: renderResultatTexte(r),
-      });
-    } catch (err) {
-      console.error('[quiz] envoi raté', err);
-      await noterTentative(email, prenom, NOM[d1], pourcentages, suite, { code: 'envoi-courriel', message: String((err as Error)?.message || '') });
-      throw new HttpsError('internal', "Le courriel n'a pas pu partir. Réessayez dans un instant.");
-    } finally {
-      transporter.close();
-    }
-
-    if (suite) {
-      // L'inscription au fil ne fait jamais échouer l'envoi du résultat.
-      try {
-        const lang = String(d.lang ?? '').toLowerCase();
-        const ins = await enregistrerInscription({
-          email,
-          firstName: prenom,
-          source: 'quiz',
-          tags: ['quiz', `dosha-${d1}`, ...profil.etiquettes],
-          consentement: true,
-          ...(lang === 'fr' || lang === 'en' ? { lang } : {}),
-          ...(d.provenance && typeof d.provenance === 'object' ? { provenance: d.provenance } : {}),
-        }, req.auth?.uid);
-        await poserSuite(ins, d1);
-      } catch (e) {
-        console.error('[quiz] inscription au fil', e);
-      }
-    }
+    await envoyerLecture({ email, prenom, d1, pourcentages, suite, uid: req.auth?.uid, lang: String(d.lang ?? '').toLowerCase(),
+      provenance: d.provenance && typeof d.provenance === 'object' ? d.provenance : undefined });
 
     console.log(`[quiz] résultat envoyé · ${d1} · ${profil.branche} · suite=${suite}`);
     return { ok: true };
@@ -377,5 +388,43 @@ export const suiteQuiz = onCall(
     await f.ref.update({ tags: FieldValue.arrayUnion(tag) });
     console.log(`[suiteQuiz] abonnée active, suite posée d'elle-même · ${d1}`);
     return { ...base, etat: 'auto' };
+  },
+);
+
+// ─── Rattraper une lecture échouée (Krystine, 6 oct. 2026) ──────────────────
+// Dans quizTentatives, une administratrice pose `envoyer: true` sur une
+// tentative « à rattraper » : la personne reçoit sa lecture par le même geste
+// que le quiz (même courriel, même suite si elle l'avait choisie), une seule
+// fois, puis la tentative passe à « rattrapée ». La règle Firestore réserve
+// cette écriture aux administratrices.
+export const rattraperLectureQuiz = onDocumentUpdated(
+  { document: 'quizTentatives/{id}', region: 'us-central1', secrets: [...MAIL_SECRETS] },
+  async (event) => {
+    const avant = event.data?.before.data();
+    const apres = event.data?.after.data();
+    if (!apres || apres.envoyer !== true || avant?.envoyer === true) return;
+    const ref = event.data!.after.ref;
+    // Un seul envoi : la tentative est réservée dans une transaction.
+    const reservee = await getFirestore().runTransaction(async (tx) => {
+      const snap = await tx.get(ref);
+      if (snap.get('statut') !== 'a-rattraper' || snap.get('envoiLecture')) return false;
+      tx.update(ref, { envoiLecture: 'en-cours' });
+      return true;
+    });
+    if (!reservee) return;
+    const email = String(apres.email || '').trim().toLowerCase();
+    const prenom = String(apres.prenom || '').trim().slice(0, 60);
+    const pourcentages = { vata: pct(apres.vata), pitta: pct(apres.pitta), kapha: pct(apres.kapha) };
+    const DOM: Record<string, Dosha> = { Vata: 'vata', Pitta: 'pitta', Kapha: 'kapha' };
+    const d1: Dosha = pourcentages.vata + pourcentages.pitta + pourcentages.kapha > 0 ? doshaSuite(pourcentages) : (DOM[String(apres.dominant)] || 'vata');
+    try {
+      if (!EMAIL_RX.test(email) || !prenom) throw new Error('adresse ou prénom illisible');
+      await envoyerLecture({ email, prenom, d1, pourcentages, suite: apres.suite === true, lang: 'fr' });
+      await ref.update({ statut: 'rattrapee', envoiLecture: 'envoyee', rattrapeeLe: FieldValue.serverTimestamp(), envoyer: FieldValue.delete() });
+      console.log(`[quiz] lecture rattrapée · ${d1} · suite=${apres.suite === true}`);
+    } catch (e) {
+      console.error('[quiz] rattrapage raté', e);
+      await ref.update({ envoiLecture: 'echec', envoiErreur: String((e as Error)?.message || e).slice(0, 200), envoyer: FieldValue.delete() });
+    }
   },
 );
