@@ -101,7 +101,9 @@ export function documentManquant(l: Lecon, formationId?: string): boolean {
 /** Les leçons retirées de l'affichage, sans rien effacer dans la base :
  *  les Clés d'Origine sont mises de côté pour EXPÉRIENCE ORIGINE 2 (Krystine, 6 oct. 2026). */
 export const LECONS_MASQUEES: Record<string, string[]> = {
-  'kajabi-2149348838': ['014', '015'],   // Clé 0 : le principe des opposés · Clé 1 : les 8 branches
+  // La Clé 0 (014) reste visible, renommée « Une clé de l'Ayurveda : le principe des opposés »,
+  // parce que l'audio de la semaine 1 y renvoie (Krystine, 6 oct. 2026).
+  'kajabi-2149348838': ['015'],   // Clé 1 : les 8 branches
 };
 
 export interface Complement {
