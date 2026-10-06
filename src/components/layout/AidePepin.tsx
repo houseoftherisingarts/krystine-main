@@ -138,7 +138,7 @@ const AVEC_BARRE = (p: string) => p.startsWith('/vata') || p.startsWith('/rituel
 // petit rond « ? » à droite, monté d'un cran, pour ne couvrir ni l'avis de
 // semaine fermée, ni la liste des leçons, ni le texte sous le bouton de la
 // caisse. Son nom complet reste dans l'info-bulle et pour les lecteurs d'écran.
-const COMPACTE = (p: string) => p.startsWith('/cours/') || p.startsWith('/paiement/') || AVEC_BARRE(p);
+const COMPACTE = (p: string) => p === '/formations' || p === '/formations/' || p.startsWith('/cours/') || p.startsWith('/paiement/') || AVEC_BARRE(p);
 
 // `autonome` : la page /aide, où mène la pastille des pages statiques
 // (accueil, communauté). Le panneau y est déjà ouvert, sans pastille, et

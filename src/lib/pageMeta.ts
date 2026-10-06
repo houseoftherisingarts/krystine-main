@@ -85,8 +85,8 @@ const ROUTES: Record<string, PageMeta> = {
   '/rituels-essentiels': {
     title: `Rituels essentiels inspirés de l’Ayurveda · ${SITE}`,
     description: 'Rituels essentiels inspirés de l’Ayurveda : 10 capsules vidéo, un bonus et un guide à télécharger avec Krystine St-Laurent pour apaiser le système nerveux, mieux respirer et retrouver un cap clair. 27 $, accès immédiat.',
-    image: '/krystine-portrait.jpg',
-    imageAlt: 'Krystine St-Laurent, un livre ouvert sur les genoux',
+    image: '/rituels-essentiels/carte-fondu.jpg',
+    imageAlt: 'Rituels essentiels inspirés de l’Ayurveda : gestes simples à l’huile, moins de 5 minutes par jour',
   },
   '/origine-2': {
     title: `L’Expérience Origine 2 · ${SITE}`,

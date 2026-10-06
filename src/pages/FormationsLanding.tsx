@@ -22,7 +22,7 @@ const LIEN_ORIGINE2 = '/origine-2';
 /** L'image de la carte Rituels essentiels : Krystine la choisit parmi des
  *  photos professionnelles (6 oct. 2026). Vide, la carte garde un emplacement
  *  crème fileté, sans photo. Poser ici le chemin de l'image retenue. */
-const IMAGE_RITUELS = '';
+const IMAGE_RITUELS = '/rituels-essentiels/carte-fondu.webp';
 
 // Les parcours qui reviennent un à un : chacun a sa liste d'attente.
 // Gardés ici pour pouvoir les remettre; la page n'en montre plus le mur
@@ -123,10 +123,10 @@ const FormationsLanding: React.FC = () => {
             <TitreChapitre className="mt-4 text-[clamp(2rem,4.2vw,3.2rem)]">Par où commencer, dès ce soir</TitreChapitre>
           </motion.div>
           <div className="mt-12 grid items-center gap-x-[clamp(2rem,5vw,5rem)] gap-y-12 lg:grid-cols-[1.35fr_1fr]">
-            <motion.div {...vu(0.08)} className="grid gap-x-8 gap-y-7 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+            <motion.div {...vu(0.08)} className={`grid gap-x-8 gap-y-7 ${IMAGE_RITUELS ? '' : 'sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]'}`}>
               <a href="/rituels-essentiels" aria-label="Rituels essentiels inspirés de l'Ayurveda" className="block">
                 {IMAGE_RITUELS ? (
-                  <Planche src={IMAGE_RITUELS} ratio="aspect-[4/5]" etiquette="Porte d'entrée" />
+                  <Planche src={IMAGE_RITUELS} alt="Rituels essentiels inspirés de l'Ayurveda : gestes simples à l'huile, moins de 5 minutes par jour" ratio="aspect-[16/10]" etiquette="Porte d'entrée" />
                 ) : (
                   <div className="relative w-full">
                     <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />

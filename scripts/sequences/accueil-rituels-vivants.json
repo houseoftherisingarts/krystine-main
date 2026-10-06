@@ -48,7 +48,7 @@
         }
       ],
       "couverture": "image",
-      "couvertureUrl": "https://www.krystinestlaurent.ca/infolettre/rituels-vivants-banniere.jpg"
+      "couvertureUrl": "https://www.krystinestlaurent.ca/infolettre/rituels-essentiels-banniere.jpg"
     },
     {
       "cle": "automassage",
@@ -93,7 +93,7 @@
         }
       ],
       "couverture": "image",
-      "couvertureUrl": "https://www.krystinestlaurent.ca/infolettre/rituels-vivants-banniere.jpg"
+      "couvertureUrl": "https://www.krystinestlaurent.ca/infolettre/rituels-essentiels-banniere.jpg"
     },
     {
       "cle": "matin",
@@ -130,7 +130,7 @@
         }
       ],
       "couverture": "image",
-      "couvertureUrl": "https://www.krystinestlaurent.ca/infolettre/rituels-vivants-banniere.jpg"
+      "couvertureUrl": "https://www.krystinestlaurent.ca/infolettre/rituels-essentiels-banniere.jpg"
     },
     {
       "cle": "suite",
@@ -171,7 +171,7 @@
         }
       ],
       "couverture": "image",
-      "couvertureUrl": "https://www.krystinestlaurent.ca/infolettre/rituels-vivants-banniere.jpg"
+      "couvertureUrl": "https://www.krystinestlaurent.ca/infolettre/rituels-essentiels-banniere.jpg"
     }
   ]
 }

@@ -567,7 +567,7 @@ const Offre: React.FC = () => (
               {/* La bannière de la première édition (krystinestlaurent.com/RITUELSVIVANTS, renommée Rituels essentiels le 6 oct. 2026). */}
               <div className="relative">
                 <span className="pointer-events-none absolute -inset-1.5 border" style={{ borderColor: 'rgba(156,122,68,0.4)' }} aria-hidden />
-                <img src={img('kajabi-banniere')} alt="Rituels essentiels, la bannière de la première édition" loading="lazy" className="block aspect-[3/1] w-full object-cover" />
+                <img src={img('rituels-banniere-fondu')} alt="Rituels essentiels inspirés de l'Ayurveda, gestes simples à l'huile, moins de 5 minutes par jour" loading="lazy" className="block aspect-[3/1] w-full object-cover" />
               </div>
               <h3 className="mt-8 v2-serif font-light text-[clamp(1.7rem,2.6vw,2.25rem)] leading-[1.1]" style={{ color: C.ink }}>Rituels essentiels</h3>
               <div className="mt-6 flex items-end gap-3.5">
