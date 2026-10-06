@@ -63,10 +63,10 @@ async function inscriptions(de: Date, a: Date): Promise<Inscriptions> {
   return r;
 }
 
-interface Journee { sessions: number; nouveaux: number; quizCommence: number; quizFini: number; pub: number; campagnes: Record<string, number> }
+interface Journee { sessions: number; nouveaux: number; quizCommence: number; quizFini: number; pub: number; infolettre: number; campagnes: Record<string, number> }
 async function journees(jours: string[]): Promise<Journee> {
   const db = getFirestore();
-  const r: Journee = { sessions: 0, nouveaux: 0, quizCommence: 0, quizFini: 0, pub: 0, campagnes: {} };
+  const r: Journee = { sessions: 0, nouveaux: 0, quizCommence: 0, quizFini: 0, pub: 0, infolettre: 0, campagnes: {} };
   const docs = await db.getAll(...jours.map((j) => db.doc(`vh_jours/${SITE_VH}_${j}`)));
   for (const d of docs) {
     if (!d.exists) continue;
@@ -78,6 +78,8 @@ async function journees(jours: string[]): Promise<Journee> {
       if (o.nom === 'quiz_resultat_vu') r.quizFini += o.n || 0;
     }
     for (const c of Object.values((x.campagnes || {}) as Record<string, { n?: number; source?: string; campagne?: string }>)) {
+      // Les liens des infolettres portent aussi des utm : ils se comptent à part, jamais comme de la publicité.
+      if (c.source === 'infolettre') { r.infolettre += c.n || 0; continue; }
       r.pub += c.n || 0;
       const nom = [c.source, c.campagne].filter(Boolean).join(' · ') || 'sans nom';
       r.campagnes[nom] = (r.campagnes[nom] || 0) + (c.n || 0);
@@ -155,12 +157,12 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
       quizCommences: jH?.quizCommence ?? null, quizFinis: jH?.quizFini ?? null, resultatsEnregistres: resH,
       inscriptions: insH?.total ?? null, vraimentNouvelles: insH?.nouvelles ?? null, dejaConnues: insH?.connues ?? null, parSource: insH?.parSource ?? {},
       ventes: venH?.n ?? null, montantVentes: venH?.montant ?? null, titresVentes: venH?.titres ?? [],
-      shopify: shopH, visitesPub: jH?.pub ?? null, campagnes: jH?.campagnes ?? {}, desabonnements: desH,
+      shopify: shopH, visitesPub: jH?.pub ?? null, visitesInfolettre: jH?.infolettre ?? null, campagnes: jH?.campagnes ?? {}, desabonnements: desH,
     },
     septJours: {
       visites: j7?.sessions ?? null, quizCommences: j7?.quizCommence ?? null, quizFinis: j7?.quizFini ?? null, resultatsEnregistres: res7,
       inscriptions: ins7?.total ?? null, vraimentNouvelles: ins7?.nouvelles ?? null, ventes: ven7?.n ?? null, montantVentes: ven7?.montant ?? null,
-      shopify: shop7, visitesPub: j7?.pub ?? null, desabonnements: des7,
+      shopify: shop7, visitesPub: j7?.pub ?? null, visitesInfolettre: j7?.infolettre ?? null, desabonnements: des7,
     },
     surveiller,
   };
@@ -194,6 +196,7 @@ export function texteBilan(b: Bilan): string {
     `Ventes de formations : ${n(v.ventes)} (${argent(v.montantVentes)})${v.titresVentes.length ? `, ${v.titresVentes.join(', ')}` : ''} · 7 jours : ${n(s.ventes)} (${argent(s.montantVentes)})`,
     ...(v.shopify || s.shopify ? [`Commandes de la boutique : ${n(v.shopify?.n)} (${argent(v.shopify?.montant)}) · 7 jours : ${n(s.shopify?.n)} (${argent(s.shopify?.montant)})`] : []),
     `Visites venues de la publicité : ${n(v.visitesPub)}${camp ? ` (${camp})` : ''} · 7 jours : ${n(s.visitesPub)}`,
+    `Visites venues d’une infolettre : ${n(v.visitesInfolettre)} · 7 jours : ${n(s.visitesInfolettre)}`,
     `Désabonnements : ${n(v.desabonnements)} · 7 jours : ${n(s.desabonnements)}`,
     '',
     `3. À surveiller : ${b.surveiller}`,

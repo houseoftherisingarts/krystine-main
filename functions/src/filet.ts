@@ -50,10 +50,17 @@ async function controlerCles(): Promise<Controle[]> {
   }
 }
 
+// Un compte illisible (index manquant, par exemple, le 6 oct. 2026) rend -1 au
+// lieu de faire tomber tout le filet : le contrôle le signale, le reste passe.
 async function compter(col: string, champ: string, depuis: Date, source?: string): Promise<number> {
-  let q = getFirestore().collection(col).where(champ, '>=', Timestamp.fromDate(depuis));
-  if (source) q = q.where('source', '==', source);
-  return (await q.count().get()).data().count;
+  try {
+    let q = getFirestore().collection(col).where(champ, '>=', Timestamp.fromDate(depuis));
+    if (source) q = q.where('source', '==', source);
+    return (await q.count().get()).data().count;
+  } catch (e) {
+    console.error('[filet] compte illisible', col, source || '', (e as Error).message);
+    return -1;
+  }
 }
 
 export async function calculerFilet() {
@@ -92,6 +99,9 @@ export async function calculerFilet() {
     },
   ];
 
+  if ([quiz24, quiz7j, formulaire48, inscrites24, inscrites7j].includes(-1)) {
+    mouvement.push({ nom: 'Lecture des chiffres', etat: 'alerte', detail: 'un compte de la base est illisible (voir les journaux de filetDuMatin)' });
+  }
   const controles = [...pages, ...cles, ...mouvement];
   const alertes = controles.filter((c) => c.etat === 'alerte');
   return {
