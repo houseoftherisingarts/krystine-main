@@ -1,16 +1,14 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
-import { defineSecret } from 'firebase-functions/params';
+import { SECRETS_SHOPIFY, jetonShopify } from './jeton';
 import { assertAdmin } from '../newsletter/send';
 
 // Branche les commandes Shopify sur le site (4 oct. 2026). Les abonnements
 // webhook doivent être créés par l'app personnalisée elle-même (son jeton
-// SHOPIFY_ADMIN_TOKEN), parce que Shopify signe alors chaque envoi avec le
+// jeton, voir jeton.ts), parce que Shopify signe alors chaque envoi avec le
 // client secret de cette app (SHOPIFY_API_SECRET), celui que vérifie
 // shopifyWebhook. Un webhook créé dans Réglages › Notifications serait signé
 // autrement et refusé. Idempotent : seuls les sujets absents sont créés.
 // Aucun jeton ne sort d'ici : la réponse ne porte que des ids et des sujets.
-const SHOPIFY_ADMIN_TOKEN = defineSecret('SHOPIFY_ADMIN_TOKEN');
-const SHOPIFY_SHOP_DOMAIN = defineSecret('SHOPIFY_SHOP_DOMAIN');
 const SHOPIFY_API_VERSION = '2026-07';
 const ADRESSE = 'https://shopifywebhook-lbj5kip6wa-uc.a.run.app';
 const SUJETS = ['ORDERS_PAID', 'ORDERS_CREATE', 'ORDERS_UPDATED'] as const;
@@ -44,12 +42,12 @@ async function lister(shop: string, token: string): Promise<Abonnement[]> {
 
 // Appel depuis l'admin : httpsCallable(functions, 'shopifyBrancherWebhooks')({}).
 export const shopifyBrancherWebhooks = onCall(
-  { secrets: [SHOPIFY_ADMIN_TOKEN, SHOPIFY_SHOP_DOMAIN], timeoutSeconds: 60 },
+  { secrets: SECRETS_SHOPIFY, timeoutSeconds: 60 },
   async (request) => {
     assertAdmin(request);
-    const shop = SHOPIFY_SHOP_DOMAIN.value().trim();
-    const token = SHOPIFY_ADMIN_TOKEN.value().trim();
-    if (!shop || !token) throw new HttpsError('failed-precondition', 'Secrets Shopify manquants.');
+    const { shop, token } = await jetonShopify().catch((e: Error) => {
+      throw new HttpsError('failed-precondition', e.message);
+    });
 
     const existants = await lister(shop, token);
     const crees: string[] = [];

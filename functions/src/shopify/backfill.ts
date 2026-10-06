@@ -1,12 +1,10 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
-import { defineSecret } from 'firebase-functions/params';
+import { SECRETS_SHOPIFY, jetonShopify } from './jeton';
 import { getFirestore } from 'firebase-admin/firestore';
 import { normalizeOrder } from './normalize';
 import type { ShopifyOrderPayload } from './types';
 
-// Admin-API access token (shpat_…) used to read historical orders.
-const SHOPIFY_ADMIN_TOKEN = defineSecret('SHOPIFY_ADMIN_TOKEN');
-const SHOPIFY_SHOP_DOMAIN = defineSecret('SHOPIFY_SHOP_DOMAIN');
+// Admin-API access token fetched on demand (see jeton.ts).
 const SHOPIFY_API_VERSION = '2025-01';
 
 const ADMIN_EMAILS = [
@@ -44,16 +42,16 @@ async function fetchOrdersPage(shop: string, token: string, pageInfoUrl?: string
 // Callable function — admin-only. Pulls every order and writes/merges into Firestore.
 // Usage from admin dashboard: httpsCallable(functions, 'shopifyBackfill')({}).
 export const shopifyBackfill = onCall(
-  { secrets: [SHOPIFY_ADMIN_TOKEN, SHOPIFY_SHOP_DOMAIN], timeoutSeconds: 540, memory: '512MiB' },
+  { secrets: SECRETS_SHOPIFY, timeoutSeconds: 540, memory: '512MiB' },
   async (request) => {
     const email = request.auth?.token?.email;
     if (!email || !ADMIN_EMAILS.includes(email)) {
       throw new HttpsError('permission-denied', 'Admin only.');
     }
 
-    const shop = SHOPIFY_SHOP_DOMAIN.value();
-    const token = SHOPIFY_ADMIN_TOKEN.value();
-    if (!shop || !token) throw new HttpsError('failed-precondition', 'Shopify secrets not configured.');
+    const { shop, token } = await jetonShopify().catch((e: Error) => {
+      throw new HttpsError('failed-precondition', e.message);
+    });
 
     const db = getFirestore();
     let imported = 0;

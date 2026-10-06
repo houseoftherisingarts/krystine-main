@@ -2,6 +2,7 @@ import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
 import { getFirestore, FieldValue, type Firestore } from 'firebase-admin/firestore';
 import { soldeVerifie } from './niskas';
+import { SECRETS_SHOPIFY, jetonShopify } from './shopify/jeton';
 
 // L'échange des récompenses niskas (Alex, 7 septembre 2026). Jumeau serveur
 // de REWARDS dans src/lib/pointsConfig.ts : SEULES les trois récompenses
@@ -9,8 +10,6 @@ import { soldeVerifie } from './niskas';
 // donc echangerRecompense les refuse d'elle-même (invalid-argument).
 
 const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
-const SHOPIFY_ADMIN_TOKEN = defineSecret('SHOPIFY_ADMIN_TOKEN');
-const SHOPIFY_SHOP_DOMAIN = defineSecret('SHOPIFY_SHOP_DOMAIN');
 const SHOPIFY_API_VERSION = '2025-01';
 
 export const MASTERCLASS_SANTE_PARFAITE_ID = 'kajabi-2149362090';
@@ -73,9 +72,7 @@ async function creerCodeStripeFormation(uid: string): Promise<string> {
 /** Un code Shopify unique (10 %, dès 75 $, une utilisation) si l'API Admin
  *  est vraiment configurée; sinon lève, pour laisser le repli s'exécuter. */
 async function creerCodeShopifyBoutique(uid: string): Promise<string> {
-  const token = SHOPIFY_ADMIN_TOKEN.value();
-  const shop = SHOPIFY_SHOP_DOMAIN.value();
-  if (!token || token === 'placeholder' || !shop) throw new Error('Shopify Admin API non configurée');
+  const { shop, token } = await jetonShopify();
 
   const headers = { 'X-Shopify-Access-Token': token, 'Content-Type': 'application/json' };
   const code = genererCodePromo(uid);
@@ -127,7 +124,7 @@ async function codeBoutique10(db: Firestore, uid: string): Promise<string> {
 }
 
 export const echangerRecompense = onCall(
-  { region: 'us-central1', secrets: [STRIPE_SECRET_KEY, SHOPIFY_ADMIN_TOKEN, SHOPIFY_SHOP_DOMAIN] },
+  { region: 'us-central1', secrets: [STRIPE_SECRET_KEY, ...SECRETS_SHOPIFY] },
   async (req) => {
     if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour échanger un cadeau.');
     const uid = req.auth.uid;
