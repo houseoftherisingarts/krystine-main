@@ -6657,5 +6657,34 @@
       "public/assets-manifest.json",
       "src/pages/admin/sections/FormationsSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T20:09:42.179Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "75638dfe",
+    "message": "Rituels vivants devient Rituels essentiels inspirés de l'Ayurveda : nouvelle page /rituels-essentiels (l'ancienne adresse y mène avec ses paramètres), /formations, carte et courriel du quiz, guide inclus",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "App.tsx",
+      "firebase.json",
+      "functions/src/quizCourriel.ts",
+      "functions/src/relancePaiement.ts",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "scripts/kajabi/rapatrier-rituels-vivants.mjs",
+      "scripts/qa/verif-complete.mjs",
+      "scripts/sequences/accueil-rituels-vivants.json",
+      "src/components/layout/AidePepin.tsx",
+      "src/firebase/habitudes.ts",
+      "src/lib/locale.ts",
+      "src/lib/pageMeta.ts",
+      "src/pages/FormationsLanding.tsx",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/pages/RituelsEssentielsPage.tsx"
+    ]
   }
 ]
