@@ -123,8 +123,8 @@ const SOINS: { handle: string; capsule: string; nom: string }[] = [
 ];
 
 // Le guide PDF, inclus avec l'achat (leçon protégée formations/rituels-vivants/lecons/012).
-const GUIDE = <><B>Le guide des Rituels essentiels</B>, à télécharger (<B>14 pages</B>)*</>;
-const NOTE_GUIDE = '* Tiré du premier tome de Krystine St-Laurent, Nature & Ayurveda.';
+const GUIDE = <><B>Le guide des Rituels essentiels</B>, à télécharger (<B>14 pages</B>)</>;
+const NOTE_GUIDE = 'Tiré du premier tome de Krystine St-Laurent, Nature & Ayurveda.';
 
 const DOSHAS: [string, string, string][] = [
   ['vata', 'Vata', 'Vent et Espace'],
@@ -468,7 +468,7 @@ const RAISONS: React.ReactNode[] = [
 const Raisons: React.FC = () => (
   <section id="automassage" className={`relative w-full ${GX} ${PY} scroll-mt-24`}>
     <Reveal className="mb-[clamp(2.5rem,6vh,4rem)]">
-      <h2 className="v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)] max-w-[22ch]" style={{ color: C.ink }}>10 bonnes raisons de pratiquer l’automassage<span aria-hidden>*</span></h2>
+      <h2 className="v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)] max-w-[22ch]" style={{ color: C.ink }}>10 bonnes raisons de pratiquer l’automassage</h2>
       <DrawRule className="mt-6 w-20" />
     </Reveal>
     <div className="grid md:grid-cols-2 gap-x-[clamp(3rem,6vw,6rem)] border-t md:border-t-0" style={{ borderColor: hairline }}>
@@ -483,7 +483,7 @@ const Raisons: React.FC = () => (
     </div>
     {/* Page imprimée du livre, confirmée par Krystine le 5 oct. 2026. */}
     <p className="mt-8 text-[0.75rem] leading-[1.6]" style={{ color: 'rgba(28,23,18,0.62)' }}>
-      * Krystine St-Laurent, Nature &amp; Ayurveda, Éditions de l’Homme, 2018, p. 225
+      Krystine St-Laurent, Nature &amp; Ayurveda, Éditions de l’Homme, 2018, p. 225
     </p>
   </section>
 );
