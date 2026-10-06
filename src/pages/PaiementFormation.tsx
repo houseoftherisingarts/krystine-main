@@ -163,6 +163,7 @@ const PaiementFormation: React.FC = () => {
   if (formation === undefined || !authReady || (user && etat === null)) return <Chargement />;
 
   // Qui possède déjà la formation (ou l'accès à vie) va droit à ses leçons.
+  if (idAdresse === 'rituels-vivants') return <Navigate to={`/paiement/rituels-essentiels${window.location.search}`} replace />;
   if (etat === 'actif') return <Navigate to={cheminCours(id)} replace />;
   // Une formation sans paywall s'ouvre sans passer par la caisse.
   if (formation && formation.statut === 'publie' && !formation.paywall && !formation.listeAttente) {

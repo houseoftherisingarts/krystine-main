@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Check, CaretDown, FlowerLotus, Heartbeat, Wind, HandPalm, Compass } from '@phosphor-icons/react';
 import { getProducts, type ShopifyProduct } from '../shopify';
-import { cheminPaiement } from '../lib/cheminCours';
 
 /**
  * Rituels essentiels : la page de vente de la petite offre d'entrée (27 $),
@@ -17,11 +16,10 @@ import { cheminPaiement } from '../lib/cheminCours';
  * vertébrale, même planche tarif chevauchant une bande sombre, même FAQ et
  * même barre d'achat mobile. L'accent de la page est le cuivre #BA7B39 et
  * le doré #7d6330 du site, et la bande sombre le vert profond du V2.
- * L'achat passe par la page de paiement commune (/paiement/rituels-vivants, l’identifiant reste celui de la première édition).
+ * L'achat passe par la page de paiement commune (/paiement/rituels-essentiels; l’identifiant de la formation reste rituels-vivants, celui de la première édition).
  */
 
-const ID = 'rituels-vivants';
-const PAIEMENT = cheminPaiement(ID);
+const PAIEMENT = '/paiement/rituels-essentiels';
 const CTA = 'J’accède aux Rituels essentiels (27 $)';
 
 const ease = [0.16, 0.8, 0.24, 1] as const;
@@ -219,7 +217,7 @@ const Exergue: React.FC<{ children: string; gras?: number }> = ({ children, gras
 /* Le bouton noir carré de /vata, en lien vers le paiement */
 const BoutonAchat: React.FC<{ children: React.ReactNode; className?: string; clair?: boolean }> = ({ children, className = '', clair }) => (
   <Link to={PAIEMENT}
-    className={`group inline-flex min-h-[48px] items-center justify-center gap-2.5 whitespace-nowrap px-5 py-4 text-[0.64rem] uppercase tracking-[0.08em] sm:px-8 sm:text-[0.72rem] sm:tracking-[0.18em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 ${clair ? 'bg-[#f4efe6] text-[#1c1712]' : 'bg-[#1c1712] text-[#f4efe6]'} hover:bg-[#9c7a44] hover:text-[#faf6ee] ${className}`}
+    className={`group inline-flex min-h-[48px] max-w-full items-center justify-center gap-2.5 px-5 text-center py-4 text-[0.64rem] uppercase tracking-[0.08em] sm:px-8 sm:text-[0.72rem] sm:tracking-[0.18em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 ${clair ? 'bg-[#f4efe6] text-[#1c1712]' : 'bg-[#1c1712] text-[#f4efe6]'} hover:bg-[#9c7a44] hover:text-[#faf6ee] ${className}`}
     style={{ outlineColor: C.accent }}>
     {children}
     <ArrowRight size={15} weight="regular" className="shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
@@ -575,6 +573,7 @@ const Offre: React.FC = () => (
               </div>
               <p className="mt-3 text-[0.9rem] leading-snug" style={{ color: C.inkSoft }}><B>Un seul paiement</B> de 27 $</p>
               <BoutonAchat className="mt-8 w-full !px-3 sm:!px-4 !text-[0.62rem] sm:!text-[0.7rem]">{CTA}</BoutonAchat>
+              <p className="mt-4 text-[0.82rem] leading-[1.6]" style={{ color: C.inkSoft }}><span style={{ color: C.brassInk }}>Garantie cœur léger :</span> 15 jours pour changer d’avis, remboursement complet.</p>
             </div>
             <div>
               <DrawRule className="mt-7 w-full lg:mt-0" color="rgba(186,123,57,0.4)" />
@@ -708,7 +707,7 @@ const Faq: React.FC = () => {
                     {ouvert && (
                       <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1, transition: { duration: 0.45, ease } }}
                         exit={{ height: 0, opacity: 0, transition: { duration: 0.25, ease } }} className="overflow-hidden">
-                        <p className="pb-7 text-[0.95rem] leading-[1.8] max-w-[62ch]" style={{ color: C.inkSoft }}>{a}</p>
+                        <p className="pb-7 text-[0.95rem] leading-[1.8] max-w-[62ch] [overflow-wrap:anywhere]" style={{ color: C.inkSoft }}>{a}</p>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -756,14 +755,20 @@ const BarreAchat: React.FC = () => {
     window.addEventListener('scroll', maj, { passive: true });
     return () => window.removeEventListener('scroll', maj);
   }, []);
+  // La pastille d'aide se loge dans la barre : elle n'apparaît que lorsque la barre est là (téléphone).
+  useEffect(() => {
+    const h = document.documentElement;
+    if (visible) h.setAttribute('data-barre-achat', ''); else h.removeAttribute('data-barre-achat');
+    return () => h.removeAttribute('data-barre-achat');
+  }, [visible]);
   return (
     <>
-      <style>{'@media (max-width: 767px) { body { padding-bottom: calc(84px + var(--bande-temoins, 0px)) !important; } }'}</style>
+      <style>{'@media (max-width: 767px) { body { padding-bottom: calc(84px + var(--bande-temoins, 0px)) !important; } html:not([data-barre-achat]) [data-pepin-barre] { opacity: 0; pointer-events: none; } }'}</style>
       <div aria-hidden={!visible}
         className={`fixed inset-x-0 bottom-0 z-50 border-t px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden transition-transform duration-500 ${visible ? 'translate-y-0' : 'translate-y-full'}`}
         style={{ bottom: 'var(--bande-temoins, 0px)', background: C.cream, borderColor: hairline, transitionTimingFunction: 'cubic-bezier(.16,.8,.24,1)' }}>
         <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0">
+          <div className="min-w-0 pl-12">
             <p className="v2-serif text-[1.35rem] leading-none tabular-nums" style={{ color: C.ink }}>27 $</p>
             <p className="mt-1 text-[0.58rem] uppercase tracking-[0.16em]" style={{ color: 'rgba(28,23,18,0.6)' }}>Rituels essentiels · accès immédiat</p>
           </div>

@@ -32,7 +32,11 @@ const SLUGS: Record<string, string> = {
   'kajabi-2149503901': 'origine-2',
 };
 
-const IDS: Record<string, string> = Object.fromEntries(Object.entries(SLUGS).map(([id, s]) => [s, id]));
+const IDS: Record<string, string> = {
+  ...Object.fromEntries(Object.entries(SLUGS).map(([id, s]) => [s, id])),
+  // /paiement/rituels-essentiels ouvre la caisse de la formation dont l'identifiant reste rituels-vivants.
+  'rituels-essentiels': 'rituels-vivants',
+};
 
 /** L'adresse publique d'un cours : /cours/vata plutôt que /cours/kajabi-… */
 export const cheminCours = (id: string, suffixe = ''): string => `/cours/${SLUGS[id] || id}${suffixe}`;
