@@ -47,6 +47,11 @@ const C = {
 // La bande sombre : le vert profond du langage V2 (jamais de brun).
 const VERT = 'linear-gradient(165deg, #1f2a25 0%, #28352F 55%, #33433b 100%)';
 const hairline = 'rgba(28,23,18,0.14)';
+
+/* Le gras des mots clés (Krystine, 6 oct. 2026) : 600, couleur d'encre, jamais d'italique. */
+const B: React.FC<{ children: React.ReactNode; clair?: boolean }> = ({ children, clair }) => (
+  <strong style={{ fontWeight: 600, color: clair ? C.paper : C.ink }}>{children}</strong>
+);
 const PY = 'py-[clamp(3.25rem,9vh,7rem)]';
 const GX = 'px-[clamp(1.5rem,5vw,5.5rem)]';
 
@@ -83,17 +88,17 @@ const duree = (s: number) => `${Math.floor(s / 60)} min ${String(s % 60).padStar
 const TOTAL = MODULES.reduce((t, m) => t + m.capsules.reduce((u, [, s]) => u + s, 0), 0);
 const totalLisible = `${Math.floor(TOTAL / 3600)} h ${String(Math.round((TOTAL % 3600) / 60)).padStart(2, '0')}`;
 
-const BIENFAITS: [string, React.ComponentType<{ size?: number; weight?: any }>][] = [
-  ['Apaiser le système nerveux', Heartbeat],
-  ['Respirer mieux et clarifier vos pensées', Wind],
-  ['Libérer les tensions accumulées dans les mains et les pieds', HandPalm],
-  ['Retrouver un cap clair grâce à une sagesse ancienne, rendue simple aujourd’hui', Compass],
+const BIENFAITS: [React.ReactNode, React.ComponentType<{ size?: number; weight?: any }>][] = [
+  [<>Apaiser le <B>système nerveux</B></>, Heartbeat],
+  [<><B>Respirer mieux</B> et clarifier vos pensées</>, Wind],
+  [<><B>Libérer les tensions</B> accumulées dans les mains et les pieds</>, HandPalm],
+  [<>Retrouver un <B>cap clair</B> grâce à une sagesse ancienne, rendue simple aujourd’hui</>, Compass],
 ];
 
-const POUR_VOUS = [
-  'Vous sentez l’appel de ralentir, mais vos journées filent sans pause.',
-  'Vous avez essayé tant de solutions… sans jamais trouver celle qui s’installe vraiment.',
-  'Et si ce qu’il vous manquait n’était pas un autre programme, mais un fil authentique pour revenir à vous?',
+const POUR_VOUS: React.ReactNode[] = [
+  <>Vous sentez <B>l’appel de ralentir</B>, mais vos journées filent sans pause.</>,
+  <>Vous avez essayé tant de solutions… sans jamais trouver <B>celle qui s’installe vraiment</B>.</>,
+  <>Et si ce qu’il vous manquait n’était pas un autre programme, mais <B>un fil authentique pour revenir à vous</B>?</>,
 ];
 
 const TEMOIGNAGES: [string, string][] = [
@@ -101,11 +106,12 @@ const TEMOIGNAGES: [string, string][] = [
   ['J’ai enfin compris que prendre soin de moi pouvait ne pas être compliqué!', 'Marie-Anne'],
 ];
 
-const QUESTIONS: [string, string][] = [
-  ['Quand ai-je accès aux capsules ?', 'L’accès est immédiat. Dès le paiement confirmé, les 10 capsules et le bonus vous attendent dans votre espace, sur le site, à regarder à votre rythme.'],
-  ['Combien de temps demandent les capsules ?', `Les 10 capsules et le bonus totalisent ${totalLisible} de vidéo, de 2 à 16 minutes chacune. Les pratiques elles-mêmes tiennent en moins de 5 minutes par jour.`],
-  ['Faut-il déjà connaître l’Ayurveda ?', 'Les trois premières capsules sont une introduction concrète et simple à l’Ayurveda : elles accueillent aussi celles qui la découvrent.'],
-  ['Comment se fait le paiement ?', 'Un seul paiement de 27 $, par carte, sur le formulaire sécurisé du site. Si vous n’avez pas encore de compte, il se crée avec l’adresse courriel du paiement.'],
+const QUESTIONS: [string, React.ReactNode][] = [
+  ['Quand ai-je accès aux capsules ?', <><B>L’accès est immédiat.</B> Dès le paiement confirmé, les 10 capsules et le bonus vous attendent dans votre espace, sur le site, à regarder à votre rythme.</>],
+  ['Sous quelle forme sont les capsules ?', <>Ce sont des <B>vidéos</B>, à regarder dans votre espace sur le site, à l’ordinateur, sur tablette ou sur téléphone. Le <B>guide de 14 pages</B> se télécharge en PDF.</>],
+  ['Combien de temps demandent les capsules ?', <>Les 10 capsules et le bonus totalisent {totalLisible} de vidéo, de 2 à 16 minutes chacune. Les pratiques elles-mêmes tiennent en <B>moins de 5 minutes par jour</B>.</>],
+  ['Faut-il déjà connaître l’Ayurveda ?', <>Les trois premières capsules sont une <B>introduction concrète et simple</B> à l’Ayurveda (la médecine traditionnelle de l’Inde) : elles accueillent aussi celles qui la découvrent.</>],
+  ['Comment se fait le paiement ?', <><B>Un seul paiement de 27 $</B>, par carte, sur le formulaire sécurisé du site. Si vous n’avez pas encore de compte, il se crée avec l’adresse courriel du paiement.</>],
   ['À qui écrire pour une question ?', 'Notre équipe est là pour vous : écrivez-nous à teamksl@inspiratanature.com.'],
 ];
 
@@ -117,7 +123,7 @@ const SOINS: { handle: string; capsule: string; nom: string }[] = [
 ];
 
 // Le guide PDF, inclus avec l'achat (leçon protégée formations/rituels-vivants/lecons/012).
-const GUIDE = 'Le guide des Rituels vivants, à télécharger (14 pages)*';
+const GUIDE = <><B>Le guide des Rituels vivants</B>, à télécharger (<B>14 pages</B>)*</>;
 const NOTE_GUIDE = '* Tiré du premier tome de Krystine St-Laurent, Nature & Ayurveda.';
 
 const DOSHAS: [string, string, string][] = [
@@ -127,6 +133,7 @@ const DOSHAS: [string, string, string][] = [
 ];
 
 const img = (n: string) => `/rituels-vivants/${n}.webp`;
+
 
 /* ════════════════════════ Primitives (calquées sur /vata) ════════════════════════ */
 
@@ -185,7 +192,7 @@ const Medallion: React.FC<{ Icon: React.ComponentType<{ size?: number; weight?: 
   );
 };
 
-const Exergue: React.FC<{ children: string }> = ({ children }) => {
+const Exergue: React.FC<{ children: string; gras?: number }> = ({ children, gras = 0 }) => {
   const reduce = useReducedMotion();
   const words = children.split(' ');
   return (
@@ -198,7 +205,7 @@ const Exergue: React.FC<{ children: string }> = ({ children }) => {
           <React.Fragment key={i}>
             <motion.span className="inline-block will-change-transform"
               variants={{ hidden: reduce ? { opacity: 1 } : { opacity: 0, y: 14 }, show: { opacity: 1, y: 0, transition: { duration: APPEAR, ease } } }}>
-              {w}
+              {i < gras ? <strong style={{ fontWeight: 600, color: C.ink }}>{w}</strong> : w}
             </motion.span>
             {i < words.length - 1 ? ' ' : ''}
           </React.Fragment>
@@ -280,7 +287,7 @@ const Cover: React.FC = () => (
         <p className="mb-4 text-[0.66rem] font-semibold uppercase tracking-[0.3em]" style={{ color: C.accentInk }}>Une introduction à l’Ayurveda</p>
         <div className="flex items-center gap-5 mb-8">
           <Medallion Icon={FlowerLotus} size={46} />
-          <p className="text-[0.62rem] sm:text-[0.7rem] uppercase tracking-[0.14em] sm:tracking-[0.34em]" style={{ color: C.accentInk }}>10 capsules + 1 bonus <span className="whitespace-nowrap">· {totalLisible}</span></p>
+          <p className="text-[0.62rem] sm:text-[0.7rem] uppercase tracking-[0.14em] sm:tracking-[0.34em]" style={{ color: C.accentInk }}>10 capsules vidéo + 1 bonus <span className="whitespace-nowrap">· {totalLisible}</span></p>
         </div>
         <h1 className="v2-serif font-light leading-[0.92] text-[clamp(3rem,6.8vw,6.2rem)]" style={{ color: C.ink }}>
           <MaskLine delay={0.05}>Rituels</MaskLine>
@@ -289,7 +296,7 @@ const Cover: React.FC = () => (
         <span aria-hidden className="mt-6 block h-[2px] w-16" style={{ background: C.accent }} />
         <Reveal delay={0.42} y={20} className="mt-8">
           <p className="v2-serif text-[clamp(1.2rem,2.2vw,1.7rem)] leading-[1.35] max-w-[36ch]" style={{ color: C.inkSoft }}>
-            Quand vos sens sont surchargés : des pratiques courtes qui redonnent ancrage et direction
+            Quand vos sens sont surchargés : des <B>pratiques courtes</B> qui redonnent <B>ancrage et direction</B>
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-4">
             <BoutonAchat>{CTA}</BoutonAchat>
@@ -298,7 +305,7 @@ const Cover: React.FC = () => (
         </Reveal>
         <Reveal delay={0.55} y={16} className="mt-9">
           <ul className="space-y-2.5">
-            {['27 $ · Accès immédiat', 'Moins de 5 minutes par jour', 'Vata, Pitta et Kapha'].map((m) => (
+            {['27 $ · Accès immédiat', 'Moins de 5 minutes par jour', 'Pour tous les profils'].map((m) => (
               <li key={m} className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.2em]" style={{ color: 'rgba(28,23,18,0.62)' }}>
                 <span className="h-1 w-1 rounded-full shrink-0" style={{ background: C.accent }} />{m}
               </li>
@@ -319,7 +326,7 @@ const Bande: React.FC = () => (
       <div className="mx-auto max-w-[760px]">
         <DrawRule className="mb-8 w-20" color={C.accent} />
         <p className="v2-serif text-[clamp(1.2rem,2vw,1.55rem)] leading-[1.55]" style={{ color: C.paper }}>
-          Une introduction concrète, simple, dans le monde des rituels ancestraux prisés pour réduire la turbulence et déposer les bases d’un équilibre. Quand le chaos extérieur devient trop vif et stressant.
+          Une <B clair>introduction concrète, simple</B>, dans le monde des rituels ancestraux prisés pour réduire la turbulence et déposer <B clair>les bases d’un équilibre</B>. Quand le chaos extérieur devient trop vif et stressant.
         </p>
       </div>
     </Reveal>
@@ -330,7 +337,7 @@ const Doshas: React.FC = () => (
   <section className={`w-full ${GX} ${PY}`}>
     <Reveal className="grid items-center gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1fr_1.1fr]">
       <p className="v2-serif font-light text-[clamp(1.35rem,2.3vw,1.95rem)] leading-[1.35] max-w-[30ch]" style={{ color: C.ink }}>
-        Ces gestes accompagnent les trois doshas, quel que soit celui qui domine en ce moment.
+        Ces gestes accompagnent <B>les trois doshas</B> (les trois grandes énergies du corps selon l’Ayurveda), quel que soit celui qui domine en ce moment.
       </p>
       <div className="grid grid-cols-3 gap-4 sm:gap-8">
         {DOSHAS.map(([cle, nom, elements]) => (
@@ -356,7 +363,7 @@ const PourQui: React.FC = () => (
       </div>
       <ol className="border-t" style={{ borderColor: hairline }}>
         {POUR_VOUS.map((p, i) => (
-          <Reveal key={p} delay={i * 0.06}>
+          <Reveal key={i} delay={i * 0.06}>
             <li className="grid grid-cols-[3rem_1fr] md:grid-cols-[4rem_1fr] gap-x-6 items-baseline border-b py-8" style={{ borderColor: hairline }}>
               <span aria-hidden className="v2-serif font-light text-[clamp(1.9rem,3vw,2.6rem)] leading-none tabular-nums" style={{ color: C.accent }}>{String(i + 1).padStart(2, '0')}</span>
               <p className="v2-serif font-light text-[clamp(1.25rem,1.9vw,1.6rem)] leading-[1.4]" style={{ color: C.ink }}>{p}</p>
@@ -375,7 +382,7 @@ const Pratiques: React.FC = () => (
     <ChapterHead no="II" kicker="Les pratiques" title="En moins de 5 minutes par jour" lede="Ces pratiques express vous aident à :" className="mb-[clamp(3rem,7vh,5rem)]" />
     <div className="border-t" style={{ borderColor: 'rgba(28,23,18,0.16)' }}>
       {BIENFAITS.map(([t, Icon], i) => (
-        <Reveal key={t} delay={i * 0.06}>
+        <Reveal key={i} delay={i * 0.06}>
           <article className="grid grid-cols-[auto_1fr] md:grid-cols-[clamp(9.5rem,12vw,11rem)_1fr] gap-x-[clamp(1.5rem,4.5vw,4.5rem)] items-center py-[clamp(1.75rem,4vh,2.75rem)] border-b" style={{ borderColor: 'rgba(28,23,18,0.16)' }}>
             <div className="flex items-center gap-5">
               <Medallion Icon={Icon} />
@@ -398,7 +405,7 @@ const Capsules: React.FC = () => {
   return (
     <section id="capsules" className={`relative w-full ${GX} ${PY} scroll-mt-24`} style={{ background: C.panel }}>
       <span className="absolute inset-x-0 top-0 h-px" style={{ background: 'rgba(186,123,57,0.35)' }} aria-hidden />
-      <ChapterHead no="III" kicker="Ce que vous recevez" title="10 capsules et 1 bonus" lede={`${totalLisible} au total, à votre rythme`} className="mb-[clamp(3.5rem,8vh,5.5rem)]" />
+      <ChapterHead no="III" kicker="Ce que vous recevez" title="10 capsules et 1 bonus" lede={`${totalLisible} de vidéo au total, à votre rythme`} className="mb-[clamp(3.5rem,8vh,5.5rem)]" />
       <div ref={ref} className="relative">
         <div className="pointer-events-none absolute top-1 bottom-1 left-[6px] lg:left-1/2 w-px -translate-x-1/2" style={{ background: 'rgba(186,123,57,0.2)' }} aria-hidden />
         <motion.div className="pointer-events-none absolute top-1 bottom-1 left-[6px] lg:left-1/2 w-px -translate-x-1/2 origin-top"
@@ -434,7 +441,7 @@ const Capsules: React.FC = () => {
       </div>
       <Reveal className="mt-[clamp(2.5rem,6vh,4rem)] text-center">
         <p className="inline-flex items-start gap-3 text-[1rem] leading-[1.6]" style={{ color: C.ink }}>
-          <Check size={16} weight="bold" className="mt-1 shrink-0" style={{ color: C.accentInk }} />{GUIDE}
+          <Check size={16} weight="bold" className="mt-1 shrink-0" style={{ color: C.accentInk }} /><span>{GUIDE}</span>
         </p>
         <p className="mt-2 text-[0.75rem] leading-[1.6]" style={{ color: 'rgba(28,23,18,0.62)' }}>{NOTE_GUIDE}</p>
       </Reveal>
@@ -445,13 +452,13 @@ const Capsules: React.FC = () => {
 /* ════════════════════════ 10 bonnes raisons (Nature & Ayurveda, mot pour mot) ════════════════════════ */
 
 // Tiré mot pour mot du livre de Krystine (Krystine, 5 oct. 2026) : ne rien reformuler.
-const RAISONS = [
+const RAISONS: React.ReactNode[] = [
   'Lubrifie les articulations',
   'Aide à ralentir les effets du vieillissement',
-  'Aide à relâcher le stress',
+  <>Aide à <B>relâcher le stress</B></>,
   'Améliore la tonicité musculaire et l’élasticité de la peau',
-  'Apaise le système nerveux',
-  'Aide à préparer le corps au sommeil',
+  <>Apaise le <B>système nerveux</B></>,
+  <>Aide à préparer le corps au <B>sommeil</B></>,
   'Permet de déloger les impuretés sous la peau et dans les tissus adipeux (graisse)',
   'Stimule la circulation lymphatique et favorise l’élimination des déchets',
   'Aide à s’ancrer dans le moment présent',
@@ -466,7 +473,7 @@ const Raisons: React.FC = () => (
     </Reveal>
     <div className="grid md:grid-cols-2 gap-x-[clamp(3rem,6vw,6rem)] border-t md:border-t-0" style={{ borderColor: hairline }}>
       {RAISONS.map((r, i) => (
-        <Reveal key={r} delay={(i % 2) * 0.06} className={i < 2 ? 'md:border-t' : ''}>
+        <Reveal key={i} delay={(i % 2) * 0.06} className={i < 2 ? 'md:border-t' : ''}>
           <div className="grid grid-cols-[3.25rem_1fr] sm:grid-cols-[4.25rem_1fr] items-baseline gap-x-5 border-b py-5 h-full" style={{ borderColor: hairline }}>
             <span className="v2-serif font-light text-[clamp(2rem,3.4vw,2.8rem)] leading-none tabular-nums" style={{ color: C.accent }}>{String(i + 1).padStart(2, '0')}</span>
             <span className="v2-serif font-light text-[clamp(1.1rem,1.6vw,1.3rem)] leading-[1.45]" style={{ color: C.ink }}>{r}</span>
@@ -505,7 +512,7 @@ const EnImages: React.FC = () => {
           <Reveal>
             <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.accentInk }}>Rituels vivants</p>
             <p className="mt-6 max-w-[46ch] text-[1rem] leading-[1.85]" style={{ color: C.inkSoft }}>
-              L’Ayurveda, l’automassage, les soins du nez et de la bouche, les soins des mains et des pieds, puis une invitation concrète autour des plantes et du stress.
+              L’Ayurveda, <B>l’automassage</B>, les <B>soins du nez et de la bouche</B>, les soins des <B>mains et des pieds</B>, puis une invitation concrète autour des plantes et du stress.
             </p>
             <DrawRule className="mt-6 w-20" />
           </Reveal>
@@ -566,15 +573,15 @@ const Offre: React.FC = () => (
               <div className="mt-6 flex items-end gap-3.5">
                 <span className="v2-serif font-light text-[clamp(2.8rem,4.4vw,3.8rem)] leading-none tabular-nums" style={{ color: C.ink }}>27 $</span>
               </div>
-              <p className="mt-3 text-[0.9rem] leading-snug" style={{ color: C.inkSoft }}>Un seul paiement de 27 $</p>
+              <p className="mt-3 text-[0.9rem] leading-snug" style={{ color: C.inkSoft }}><B>Un seul paiement</B> de 27 $</p>
               <BoutonAchat className="mt-8 w-full !px-3 sm:!px-4 !text-[0.62rem] sm:!text-[0.7rem]">{CTA}</BoutonAchat>
             </div>
             <div>
               <DrawRule className="mt-7 w-full lg:mt-0" color="rgba(186,123,57,0.4)" />
               <ul className="mt-7 space-y-3.5">
-                {[`10 capsules vidéo + 1 bonus · ${totalLisible}`, 'Accès immédiat, à votre rythme', ...MODULES.map(m => m.etiquette === 'Bonus' ? 'Bonus · Plantes, stress et sagesse' : m.nom), GUIDE].map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-[0.92rem] leading-[1.65]" style={{ color: C.inkSoft }}>
-                    <Check size={16} weight="bold" className="mt-1 shrink-0" style={{ color: C.accentInk }} />{f}
+                {[<><B>10 capsules vidéo + 1 bonus</B> · {totalLisible}</>, <><B>Accès immédiat</B>, à votre rythme</>, ...MODULES.map(m => m.etiquette === 'Bonus' ? 'Bonus · Plantes, stress et sagesse' : m.nom), GUIDE].map((f, k) => (
+                  <li key={k} className="flex items-start gap-3 text-[0.92rem] leading-[1.65]" style={{ color: C.inkSoft }}>
+                    <Check size={16} weight="bold" className="mt-1 shrink-0" style={{ color: C.accentInk }} /><span>{f}</span>
                   </li>
                 ))}
               </ul>
@@ -661,12 +668,13 @@ const Bio: React.FC = () => (
         </h2>
         <DrawRule className="mt-6 w-20" color={C.brass} />
         <p className="mt-6 text-[1rem] leading-[1.9] max-w-[56ch]" style={{ color: C.inkSoft }}>
-          Près de 40 ans d’expérience, soins intensifs, recherche clinique, les coulisses du système, avant de choisir l’herboristerie, l’Ayurveda et l’aromathérapie. Auteure de trois livres aux Éditions de l’Homme. Créatrice de Santé la vie et du podcast Au-delà des tendances.
+          <B>Près de 40 ans d’expérience</B>, soins intensifs, recherche clinique, les coulisses du système, avant de choisir l’herboristerie, l’Ayurveda et l’aromathérapie. Auteure de <B>trois livres aux Éditions de l’Homme</B>. Créatrice de Santé la vie et du podcast Au-delà des tendances.
         </p>
       </Reveal>
       <Reveal delay={0.1}>
         <figure className="border p-2 mx-auto max-w-[460px] lg:max-w-none" style={{ borderColor: 'rgba(156,122,68,0.45)', background: C.card }}>
-          <img src="/krystine-portrait.jpg" alt="Krystine St-Laurent, un livre ouvert sur les genoux" loading="lazy" className="block w-full aspect-[4/5] object-cover object-[50%_30%]" />
+          {/* Photo professionnelle, les yeux ouverts (Krystine, 6 oct. 2026 : « la dernière photo, j'ai les yeux fermés »). */}
+          <img src="/speaking/assets/krystine-smile.webp" alt="Krystine St-Laurent, souriante, assise sur un divan" loading="lazy" className="block w-full aspect-[4/5] object-cover object-[62%_40%]" />
           <figcaption className="mt-2 text-right text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: C.brassInk }}>Krystine St-Laurent</figcaption>
         </figure>
       </Reveal>
@@ -726,7 +734,7 @@ const QuatriemeCouverture: React.FC = () => (
         </p>
         <h2 className="mt-7 mx-auto v2-serif font-light leading-[1.08] text-[clamp(2.2rem,5vw,3.9rem)] max-w-[22ch]" style={{ color: C.cream }}>Rituels vivants</h2>
         <p className="mt-7 mx-auto v2-serif text-[clamp(1.1rem,2vw,1.5rem)] leading-snug max-w-[40ch]" style={{ color: 'rgba(244,239,230,0.75)' }}>
-          Quand vos sens sont surchargés : des pratiques courtes qui redonnent ancrage et direction
+          Quand vos sens sont surchargés : des <B clair>pratiques courtes</B> qui redonnent ancrage et direction
         </p>
         <div className="mt-11 flex flex-wrap items-center justify-center gap-x-9 gap-y-5">
           <BoutonAchat clair>{CTA}</BoutonAchat>
@@ -780,7 +788,7 @@ const RituelsVivantsPage: React.FC = () => {
   return (
     <div className="relative min-h-screen w-full antialiased overflow-x-hidden" style={{ background: C.cream, color: C.ink, fontFamily: '"Inter", system-ui, sans-serif' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@300;400;500;600&display=swap');
         .v2-serif { font-family: "Fraunces", Georgia, serif; }
         .v2-grain {
           position: fixed; inset: 0; z-index: 60; pointer-events: none;
@@ -794,7 +802,7 @@ const RituelsVivantsPage: React.FC = () => {
       <div className="v2-grain" aria-hidden />
 
       <Cover />
-      <Exergue>Moins de 5 minutes par jour suffisent pour réinstaller souffle, calme et cap clair.</Exergue>
+      <Exergue gras={6}>Moins de 5 minutes par jour suffisent pour réinstaller souffle, calme et cap clair.</Exergue>
       <Bande />
       <Doshas />
       <PourQui />
