@@ -48,7 +48,7 @@ const MenuMusique: React.FC<{ className?: string }> = ({ className = '' }) => {
 
   const pistes: { id: string; titre: string; sous: string; origine: boolean; dispo: boolean }[] = [
     { id: 'site', titre: fr ? 'L’ambiance du site' : 'The site ambience', sous: fr ? 'Offerte à toutes' : 'For everyone', origine: false, dispo: true },
-    { id: 'origine', titre: fr ? 'La musique d’Origine' : 'The Origine music', sous: aOrigine ? (fr ? 'À vous' : 'Yours') : (fr ? 'Offerte au Foyer, ou 5 niskas à la petite boutique' : 'Offered at the Hearth, or 5 niskas at the little shop'), origine: true, dispo: aOrigine },
+    { id: 'origine', titre: fr ? 'La musique d’Origine' : 'The Origine music', sous: aOrigine ? (fr ? 'À vous' : 'Yours') : (fr ? 'Offerte dans votre espace, onglet Téléchargements' : 'Offered in your space, Downloads tab'), origine: true, dispo: aOrigine },
   ];
 
   return (

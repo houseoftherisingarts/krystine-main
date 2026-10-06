@@ -7,6 +7,8 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 import app from '../../firebase';
 import { codeRetenu, retenirCode, codeParrainExiste, retenirCodeDepuisUrl } from '../../firebase/parrainage';
 import Portail from '../Portail';
+import RaisonsCompte from '../compte/RaisonsCompte';
+import { useGamification } from '../../contexts/GamificationContext';
 // La case « Je ne suis pas un robot ». Le crochet a quitté ce fichier le
 // 21 septembre 2026 pour servir aussi à l'extrait, à la musique et à la carte
 // de réhabilitation de l'espace membre.
@@ -16,6 +18,8 @@ type Mode = 'signin' | 'signup' | 'reset';
 
 const SignInModal: React.FC = () => {
   const { lang, signInOpen, setSignInOpen } = useApp();
+  // Le code de parrain donne des niskas : il disparaît quand le jeu est fermé.
+  const gam = useGamification();
   // La fenêtre s'ouvre sur l'inscription : tout le site mène à se créer un
   // compte. Qui en a déjà un bascule vers la connexion d'un lien.
   const [mode, setMode] = useState<Mode>('signup');
@@ -77,7 +81,7 @@ const SignInModal: React.FC = () => {
   // Retient le code pour la réclamation d'après connexion (auth.ts). Un code
   // tapé qui n'existe pas arrête l'inscription au lieu de se perdre en silence.
   const poserCodeParrain = async (): Promise<boolean> => {
-    if (mode !== 'signup') return true;
+    if (mode !== 'signup' || !gam.parrainage) return true;
     const code = codeParrain.trim().toUpperCase();
     if (code && !(await codeParrainExiste(code))) {
       setErr(lang === 'FR' ? 'Ce code de parrain est introuvable. Vérifiez-le ou laissez le champ vide.' : 'This referral code was not found. Check it or leave the field empty.');
@@ -173,6 +177,11 @@ const SignInModal: React.FC = () => {
           {raison ?? (lang === 'FR' ? 'Accédez à votre espace membre.' : 'Access your member space.')}
         </p>
 
+        {/* Le pourquoi du compte, en création seulement (Krystine, 6 oct. 2026). */}
+        {mode === 'signup' && (
+          <RaisonsCompte fr={lang === 'FR'} className="-mt-2 mb-6 text-[#2a2015]/80 dark:text-white/80" />
+        )}
+
         {mode === 'signup' && (
           <div className="mb-4">
             <span className="block mb-1.5 text-[10px] uppercase tracking-widest text-[#2a2015]/50 dark:text-white/50">
@@ -190,7 +199,7 @@ const SignInModal: React.FC = () => {
           </div>
         )}
 
-        {mode === 'signup' && (
+        {mode === 'signup' && gam.parrainage && (
           <label className="block mb-4">
             <span className="block mb-1.5 text-[10px] uppercase tracking-widest text-[#2a2015]/50 dark:text-white/50">
               {lang === 'FR' ? 'Code de parrain (facultatif)' : 'Referral code (optional)'}

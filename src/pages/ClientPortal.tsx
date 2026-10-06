@@ -232,8 +232,8 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
         {member?.dosha && <p className="text-[#38403a]/70 dark:text-white/70"><span className="mr-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]">Dosha</span><span className="capitalize">{member.dosha}</span></p>}
       </div>
       {!gamification.badgeBleuEquipeSeulement && <BadgeBleuBloc uid={uid} verifie={!!member?.verifie} lang={lang} />}
-      {/* Les niskas : le solde, la porte de la boutique, et toutes les façons d'en gagner */}
-      <div className="rounded-[20px] border border-[#BA7B39]/30 bg-gradient-to-br from-[#BA7B39]/15 to-transparent p-5 md:p-6">
+      {/* Les niskas : le solde, la porte de la boutique, et toutes les façons d'en gagner (caché quand le jeu est fermé) */}
+      {gamification.jeu && <div className="rounded-[20px] border border-[#BA7B39]/30 bg-gradient-to-br from-[#BA7B39]/15 to-transparent p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{lang === 'FR' ? 'Vos niskas' : 'Your niskas'}</p>
@@ -279,7 +279,7 @@ const ProfilVue: React.FC<{ uid: string; member: MemberDoc | null; email: string
             </li>
           ))}
         </ul>
-      </div>
+      </div>}
       {gamification.badges && <div>
         <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">Badges</p>
         {badges.length > 0 ? (
@@ -422,6 +422,7 @@ const BanniereChoix: React.FC<{
   aPhoto: boolean;
   lang: string;
 }> = ({ uid, isDefaultBanner, perso, possede, aPhoto, lang }) => {
+  const gam = useGamification();
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState(false);
   const [ouvert, setOuvert] = useState(false);
@@ -489,7 +490,7 @@ const BanniereChoix: React.FC<{
             {coche('defaut')}<span className="flex-1">{fr ? 'Féminité & Ayurveda (bannière d’origine)' : 'Féminité & Ayurveda (original banner)'}</span>
           </button>
           {/* Les bannières exclusives du cadeau du jour n'apparaissent ici que possédées : jamais en verrouillé, jamais à vendre. */}
-          {BANNIERES.filter(b => b.cle !== 'defaut' && (!b.exclusif || possede[`banniere-${b.cle}`])).map(b => possede[`banniere-${b.cle}`] ? (
+          {BANNIERES.filter(b => b.cle !== 'defaut' && (!b.exclusif || possede[`banniere-${b.cle}`]) && (gam.jeu || possede[`banniere-${b.cle}`])).map(b => possede[`banniere-${b.cle}`] ? (
             <button key={b.cle} type="button" className={ligne} onClick={() => choisir(b.cle)}>
               {coche(b.cle)}<span className="flex-1">{(fr ? b.nomFR : b.nomEN).replace(/^Bannière\s+|\s+banner$/i, '')}</span>
             </button>
@@ -698,8 +699,9 @@ const ClientPortal: React.FC = () => {
     { id: 'diplomes', label: lang === 'FR' ? 'Mes diplômes' : 'My certificates', icon: 'fa-award' },
     { id: 'billets',  label: lang === 'FR' ? 'Mes billets' : 'My tickets', icon: 'fa-ticket' },
     { id: 'rediffusions', label: lang === 'FR' ? 'Rediffusions' : 'Replays', icon: 'fa-circle-play' },
-    { id: 'telechargements', label: lang === 'FR' ? 'Téléchargements et petite boutique' : 'Downloads and little shop', icon: 'fa-download' },
-    { id: 'loyalty',  label: 'Niskas', icon: 'fa-seedling' },
+    { id: 'telechargements', label: gamification.petiteBoutique ? (lang === 'FR' ? 'Téléchargements et petite boutique' : 'Downloads and little shop') : (lang === 'FR' ? 'Téléchargements' : 'Downloads'), icon: 'fa-download' },
+    // L'onglet Niskas disparaît quand le jeu est fermé (settings/gamification).
+    ...(gamification.jeu ? [{ id: 'loyalty' as Tab, label: 'Niskas', icon: 'fa-seedling' }] : []),
     { id: 'dosha',    label: lang === 'FR' ? 'Dosha' : 'Dosha', icon: 'fa-circle-nodes' },
     { id: 'archives', label: lang === 'FR' ? 'Lettres' : 'Letters', icon: 'fa-envelope-open-text' },
     { id: 'messagerie', label: lang === 'FR' ? 'Messagerie' : 'Messages', icon: 'fa-comments' },
@@ -774,14 +776,14 @@ const ClientPortal: React.FC = () => {
                     <i className="fa-solid fa-circle-nodes mr-1" /> {member.dosha}
                   </span>
                 )}
-                <button
+                {gamification.jeu && <button
                   type="button"
                   onClick={() => setTab('loyalty')}
                   className="rounded-full bg-[#BA7B39] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#293027] transition-colors hover:bg-[#d9a05b]"
                 >
                   <PieceNiska size={14} className="mr-1 inline-block align-[-2px]" />
                   {niskas(pointsBalance.balance, lang)}
-                </button>
+                </button>}
                 <span className="hidden truncate text-xs text-white/70 sm:inline">{user.email}</span>
               </div>
             </div>
@@ -858,7 +860,7 @@ const ClientPortal: React.FC = () => {
           {tab === 'billets'   && <ClientBillets />}
           {tab === 'rediffusions' && <ClientRediffusions />}
           {tab === 'telechargements' && <ClientTelechargements />}
-          {tab === 'loyalty'  && <ClientLoyalty />}
+          {tab === 'loyalty' && gamification.jeu && <ClientLoyalty />}
           {tab === 'dosha'    && <DoshaTab />}
           {tab === 'archives' && <ClientArchives />}
           {tab === 'messagerie' && <ClientMessagerie />}
@@ -875,7 +877,7 @@ const ClientPortal: React.FC = () => {
           par erreur — sinon les deux pop-up flasheraient à chaque connexion
           d'une membre qui les a déjà vus. Une fois la fiche là, un champ
           jamais écrit (compte tout neuf) vaut false : à montrer. */}
-      <BienvenueJeu uid={user.uid} vu={member ? !!member.bienvenueVu : undefined} lang={lang} />
+      {gamification.jeu && <BienvenueJeu uid={user.uid} vu={member ? !!member.bienvenueVu : undefined} lang={lang} />}
       <CoffreBeta uid={user.uid} lang={lang} bienvenueVu={member ? !!member.bienvenueVu : undefined} coffreBetaVu={member ? !!member.coffreBetaVu : undefined} />
 
       {/* Le module d'édition du profil, ouvert par la photo de la bannière */}

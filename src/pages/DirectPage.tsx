@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../contexts/AppContext';
+import { useGamification } from '../contexts/GamificationContext';
 import { suivreLiveEnCours, type LiveEnCours } from '../firebase/lives';
 import {
   MONTANTS_POURBOIRE, envoyerCoeur, marquerPresence, ouvrirPourboire,
@@ -26,6 +27,7 @@ const idYouTube = (url?: string): string | null => {
 
 const DirectPage: React.FC = () => {
   const { user, member, isAdmin, setSignInOpen } = useApp();
+  const { jeu } = useGamification();
   const [live, setLive] = useState<LiveEnCours | null>(null);
   const [mode, setMode] = useState<'video' | 'audio'>('video');
   const [coeurs, setCoeurs] = useState<CoeurDirect[]>([]);
@@ -200,9 +202,9 @@ const DirectPage: React.FC = () => {
               className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/45 bg-[#BA7B39]/10 px-5 py-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#E8A85C] transition-colors hover:bg-[#BA7B39]/20">
               <i className="fa-solid fa-heart" />Envoyer un cœur
             </button>
-            <span className="text-[11px] uppercase tracking-[0.18em] text-[#EEE7DB]/40">
+            {jeu && <span className="text-[11px] uppercase tracking-[0.18em] text-[#EEE7DB]/40">
               {POINTS.directCoeur} point par cœur · {POINTS.directMessage} par message ({POINTS.directMessageMax} au plus) · {POINTS.directPresence} pour votre présence
-            </span>
+            </span>}
           </div>
 
           {/* Le pourboire */}

@@ -263,9 +263,13 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'La petite boutique' : 'The little shop'}</p>
-          <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">{fr ? 'Personnalisez votre espace' : 'Personalise your space'}</h3>
+          <h3 className="mt-1 font-serif text-2xl text-[#293027] dark:text-white">{!gam.jeu ? 'Santé la vie' : fr ? 'Personnalisez votre espace' : 'Personalise your space'}</h3>
           <p className="mt-1 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
-            {gam.acheterNiskas
+            {!gam.jeu
+              ? (fr
+                ? `Les saisons complètes de Santé la vie, ${PRIX_SAISON_CAD} $ CA la saison. Elles rejoignent vos téléchargements pour de bon.`
+                : `The complete seasons of Santé la vie, $${PRIX_SAISON_CAD} CAD per season. They join your downloads for good.`)
+              : gam.acheterNiskas
               ? (fr
                 ? `Chaque objet se paie en niskas, la monnaie de votre espace. Vous en gagnez en revenant, en participant et en invitant vos amies. Quand la bourse est courte, un paquet de ${PAQUET_NISKAS.niskas} niskas coûte ${PAQUET_NISKAS.prix} $.`
                 : `Everything here is paid in niskas, the currency of your space. You earn them by coming back, taking part and inviting friends. When the purse runs low, a pack of ${PAQUET_NISKAS.niskas} niskas costs $${PAQUET_NISKAS.prix}.`)
@@ -274,7 +278,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
                 : 'Everything here is paid in niskas, the currency of your space. You earn them by coming back, taking part and inviting friends.')}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        {gam.jeu && <div className="flex items-center gap-3">
           <span className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/40 bg-white/60 px-4 py-2 font-serif text-lg text-[#293027] dark:bg-white/10 dark:text-white">
             <PieceNiska size={20} /> {solde.balance}
           </span>
@@ -289,7 +293,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
               <i className="fa-solid fa-bag-shopping" /> {fr ? 'Acheter des niskas' : 'Buy niskas'}
             </button>
           )}
-        </div>
+        </div>}
       </div>
 
       {/* L'échelle des paquets : de cent pour dix dollars à dix mille pour cinq cents. */}
@@ -330,7 +334,8 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
         </p>
       )}
 
-      {CATEGORIES_BOUTIQUE.map((cat) => {
+      {/* Le jeu fermé : seules les saisons de Santé la vie en argent restent. */}
+      {gam.jeu && CATEGORIES_BOUTIQUE.map((cat) => {
         const items = BOUTIQUE.filter((a) => a.categorie === cat.id && (a.categorie !== 'skin' || !skinsCachees.has(a.id) || !!possede[a.id]));
         return accordeon(cat.id, cat.icone, fr ? cat.titreFR : cat.titreEN, items.length, (
         <>
@@ -476,7 +481,9 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">{fr ? 'Les intégrales' : 'The full episodes'}</p>
           <p className="mt-1 max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
-            {fr
+            {!gam.jeu
+              ? (fr ? 'Les émissions complètes, telles que diffusées sur Vidéotron, saison par saison.' : 'The complete shows, as aired on Vidéotron, season by season.')
+              : fr
               ? `Les émissions complètes, telles que diffusées sur Vidéotron, saison par saison. Chaque émission coûte ${niskas(COUT_EPISODE, 'FR')}, une saison complète ${niskas(COUT_SAISON, 'FR')} ou ${PRIX_SAISON_CAD} $ CA, et tout rejoint vos téléchargements pour de bon.`
               : `The complete shows, as aired on Vidéotron, season by season. Each one costs ${niskas(COUT_EPISODE, 'EN')}, a full season ${niskas(COUT_SAISON, 'EN')} or $${PRIX_SAISON_CAD} CAD, and everything joins your downloads for good.`}
           </p>
@@ -504,7 +511,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
                         >
                           {occupe === `saison-argent-${cle}` ? (fr ? 'Un instant' : 'One moment') : `${PRIX_SAISON_CAD} $`}
                         </button>
-                        {boutonAchat(`saison:${cle}`, fr ? `Santé la vie · saison ${sais.n}` : `Santé la vie · season ${sais.n}`, COUT_SAISON, true)}
+                        {gam.jeu && boutonAchat(`saison:${cle}`, fr ? `Santé la vie · saison ${sais.n}` : `Santé la vie · season ${sais.n}`, COUT_SAISON, true)}
                       </span>
                     )}
                 </div>
@@ -518,7 +525,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
                         </span>
                         {aMoi
                           ? <span className="text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F]"><i className="fa-solid fa-check mr-1" />{fr ? 'Dans vos téléchargements' : 'In your downloads'}</span>
-                          : boutonAchat(`episode:${l.id}`, l.titre, COUT_EPISODE)}
+                          : gam.jeu ? boutonAchat(`episode:${l.id}`, l.titre, COUT_EPISODE) : null}
                       </li>
                     );
                   })}
@@ -530,7 +537,7 @@ const BoutiqueNiskas: React.FC<Props> = ({ possedeMusiqueDeja, episodesPossedes,
       </div>
       ))}
 
-      {accordeon('videos', 'fa-play', fr ? 'Toutes ses vidéos, dans votre espace' : 'All her videos, in your space', catalogue?.videos.length || 0, (
+      {gam.jeu && accordeon('videos', 'fa-play', fr ? 'Toutes ses vidéos, dans votre espace' : 'All her videos, in your space', catalogue?.videos.length || 0, (
       <div className="pt-2">
         <p className="max-w-xl text-sm text-[#293027]/60 dark:text-white/60">
           {fr

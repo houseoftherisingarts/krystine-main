@@ -382,8 +382,8 @@ const OrigineHomeSection: React.FC = () => {
             <EditableText
               fieldKey="home.origine.status.compteHint"
               defaultValue={lang === 'FR'
-                ? 'Créer un compte donne accès à des niskas de bienvenue et ouvre la porte à la prochaine cohorte.'
-                : 'Creating an account grants welcome niskas and opens the door to the next cohort.'}
+                ? 'Créer un compte vous offre la fréquence d’Origine, qui vous attend dans votre espace, et ouvre la porte à la prochaine cohorte.'
+                : 'Creating an account offers you the Origin frequency, waiting in your space, and opens the door to the next cohort.'}
               multiline
             />
           </p>

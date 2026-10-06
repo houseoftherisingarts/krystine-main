@@ -17,6 +17,7 @@ import { useSkinsOverrides } from './SkinsATravaillerSection';
 // src/contexts/GamificationContext.tsx, en temps réel).
 
 const MODULES: Array<{ cle: keyof GamificationSettings; nom: string; description: string }> = [
+  { cle: 'jeu', nom: 'Le jeu des niskas (tout)', description: 'L’interrupteur maître. Fermé : plus aucune mention de niskas sur le site, ni dans la création de compte, ni dans l’espace membre (onglet Niskas, petite boutique, cadeau du jour, plante, bannières), et plus aucune niska n’est donnée. Les soldes des membres restent intacts. Ouvert : chaque module ci-dessous reprend l’état que vous lui avez donné.' },
   { cle: 'acheterNiskas', nom: 'Acheter des niskas', description: 'L’achat de niskas contre de l’argent (Stripe), dans la petite boutique. Fermé : le bouton et les paquets disparaissent; les niskas déjà gagnées restent dépensables.' },
   { cle: 'coffres', nom: 'Coffres et clés', description: 'Achat et ouverture des coffres bronze, argent, or, et de leurs clés. Fermé : les coffres disparaissent de la boutique et du cadeau du jour; personne ne peut plus en ouvrir.' },
   { cle: 'badges', nom: 'Badges', description: 'Tous les badges honorifiques (première flamme, ambassadrice, voix du cercle…), sur les profils, le mur et les clavardages. Fermé : plus aucun badge ne s’affiche ni ne se gagne.' },
@@ -35,7 +36,7 @@ const GamificationSection: React.FC<{ user?: User }> = ({ user }) => {
   const [dit, setDit] = useState<string | null>(null);
   const [connexions, setConnexions] = useState<number | null>(null);
 
-  useEffect(() => subscribeToGamification(setG), []);
+  useEffect(() => subscribeToGamification(setG, true), []);
   useEffect(() => {
     getDoc(doc(db, 'etat', 'admins'))
       .then(s => setConnexions(((s.data()?.uids as string[]) || []).length))

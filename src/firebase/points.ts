@@ -9,6 +9,7 @@
 //   fulfill manually. Each doc records the uid, reward id, cost, and status.
 
 import app, { db } from '../firebase';
+import { jeuOuvertMaintenant } from './gamification';
 import { httpsCallable, getFunctions } from 'firebase/functions';
 import { trackObjectif } from '../lib/track';
 import {
@@ -75,6 +76,9 @@ export async function awardPoints(
   meta?: Record<string, any>,
 ): Promise<{ awarded: number; alreadyAwarded?: boolean }> {
   if (!db || !uid || !amount) return { awarded: 0 };
+  // Le jeu fermé (settings/gamification) : aucune niska ne se gagne. Les
+  // ajustements de l'admin passent toujours.
+  if (amount > 0 && kind !== 'adjust' && !(await jeuOuvertMaintenant())) return { awarded: 0 };
   const eventRef = doc(db, 'pointsEvents', dedupKey);
   const balanceRef = doc(db, 'memberPoints', uid);
   try {

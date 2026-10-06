@@ -615,22 +615,27 @@ const OrigineDeuxPage: React.FC = () => {
                 </div>
               </div>
               {user ? (
-                <a
-                  href="/compte?onglet=telechargements#boutique"
-                  className="mt-9 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-serif text-lg text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]"
-                >
-                  <Download size={20} /> {lang === 'FR' ? 'L\'obtenir dans ma boutique · 5 niskas' : 'Get it in my shop · 5 niskas'}
-                </a>
+                <div>
+                  <a
+                    href="/compte?onglet=telechargements"
+                    className="mt-9 inline-flex items-center gap-3 rounded-full bg-brass px-9 py-4 font-serif text-lg text-espressoDeep transition-colors hover:bg-brassBright min-h-[44px]"
+                  >
+                    <Download size={20} /> {lang === 'FR' ? 'Ouvrir mon espace' : 'Open my space'}
+                  </a>
+                  <p className="mt-4 font-sans text-sm leading-relaxed text-ctextSoft max-w-[62ch]">
+                    {lang === 'FR' ? 'Cette fréquence vous attend dans votre espace membre, offerte avec votre compte.' : 'This frequency is waiting for you in your member space, offered with your account.'}
+                  </p>
+                </div>
               ) : (
                 <div className="mt-9">
                   <BoutonCompte
                     taille="lg"
-                    libelle={lang === 'FR' ? "Créer mon compte pour l'obtenir" : 'Create my account to get it'}
+                    libelle={lang === 'FR' ? 'Créer mon compte' : 'Create my account'}
                   />
                   <p className="mt-4 font-sans text-sm leading-relaxed text-ctextSoft max-w-[62ch]">
                     {lang === 'FR'
-                      ? "Cette fréquence vous attend dans votre espace membre, pour 5 niskas. Votre compte vous offre des niskas de bienvenue dès sa création, de quoi l'obtenir sans attendre."
-                      : 'This frequency is waiting in your member space, for 5 niskas. Your account comes with welcome niskas the moment you create it, enough to get it right away.'}
+                      ? 'Cette fréquence vous attend dans votre espace membre, offerte avec votre compte.'
+                      : 'This frequency is waiting for you in your member space, offered with your account.'}
                   </p>
                 </div>
               )}

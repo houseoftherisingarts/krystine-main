@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../contexts/AppContext';
 import BoutonCompte from '../BoutonCompte';
+import RaisonsCompte from './RaisonsCompte';
 
 // La porte de /compte pour qui n'est pas connecté : le même module que sur la
 // page d'accueil (« Votre compte est votre clé »), roue aquarelle qui tourne
@@ -60,9 +61,10 @@ const PorteMembre: React.FC = () => {
           </p>
           <p className="mx-auto mt-[1.2rem] max-w-[52ch] text-[0.92rem] leading-[1.85] text-[#665746] dark:text-white/65 md:mx-0">
             {fr
-              ? 'Créer votre compte prend une minute, avec votre courriel ou votre compte Google. Il vous ouvre les rediffusions et vos archives, votre profil et le quiz des doshas, les niṣkas de bienvenue, puis les prochains espaces à mesure qu\'ils s\'ouvriront.'
-              : 'Creating your account takes about a minute, with your email or your Google account. It opens the replays and your archives, your profile and the dosha quiz, the welcome niṣkas, and then each new space as it opens.'}
+              ? 'Créer votre compte prend une minute, avec votre courriel ou votre compte Google.'
+              : 'Creating your account takes about a minute, with your email or your Google account.'}
           </p>
+          <RaisonsCompte fr={fr} grand className="mx-auto mt-[1.1rem] max-w-[52ch] text-[#665746] dark:text-white/65 md:mx-0" />
           <div className="mt-[1.8rem]">
             <BoutonCompte
               taille="lg"

@@ -158,8 +158,15 @@ const CSS = `
 // de l'admin (settings/gamification.coffreBeta, même lecture que
 // src/firebase/gamification.ts : absent = ouvert, false = fermé). Fermé par
 // Krystine, la fleur propose l'espace sans le coffre, même avant le 1er octobre.
-function choisirOffre(user, offreId, coffreBetaOuvert) {
-  if (user) return OFFRES[offreId] || OFFRES.origine2;
+// Le jeu des niskas fermé (settings/gamification.jeu, ou à défaut
+// roueQuotidienne, comme src/firebase/gamification.ts) : ni coffre ni
+// niskas, le « coffre de bienvenue » devient l'espace qui attend.
+function choisirOffre(user, offreId, coffreBetaOuvert, jeuOuvert) {
+  if (user) {
+    if (!jeuOuvert && offreId === 'bienvenue') return OFFRES.compte;
+    return OFFRES[offreId] || OFFRES.origine2;
+  }
+  if (!jeuOuvert) return OFFRES.quiz;
   return coffreBetaOuvert && new Date() < FIN_COFFRE_BETA ? OFFRES.coffre : OFFRES.quiz;
 }
 
@@ -190,12 +197,17 @@ function monter() {
   let offreId = null;
   let suiviRefuse = false;
   let coffreBetaOuvert = true;
+  let jeuOuvert = true;
   let db = null;
   try {
     const app = getApps().length ? getApp() : initializeApp(CONFIG);
     db = getFirestore(app);
     getDoc(doc(db, 'settings', 'gamification'))
-      .then(snap => { coffreBetaOuvert = !(snap.exists() && snap.data()?.coffreBeta === false); })
+      .then(snap => {
+        const g = snap.exists() ? snap.data() : {};
+        coffreBetaOuvert = g?.coffreBeta !== false;
+        jeuOuvert = typeof g?.jeu === 'boolean' ? g.jeu : g?.roueQuotidienne !== false;
+      })
       .catch(() => { /* sans réponse, le défaut du moteur (ouvert) tient */ });
     onAuthStateChanged(getAuth(app), u => {
       user = u;
@@ -243,7 +255,7 @@ function monter() {
     fleur.classList.remove('fo-vivante');
     fleur.querySelector('.fo-badge')?.remove();
     fleur.style.visibility = 'hidden';
-    const offre = choisirOffre(user, offreId, coffreBetaOuvert);
+    const offre = choisirOffre(user, offreId, coffreBetaOuvert, jeuOuvert);
     noterOffreVue('vue');
 
     voile = document.createElement('div');

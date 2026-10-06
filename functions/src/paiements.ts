@@ -5,7 +5,7 @@ import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import { getAuth } from 'firebase-admin/auth';
 import { crediterNiskas, SANTE_LA_VIE_ID, SAISONS, PRIX_SAISON_CAD } from './niskas';
-import { exigerModule } from './gamification';
+import { exigerModule, jeuOuvert } from './gamification';
 import { inscrireSequencesAchat } from './newsletter/sequences';
 import { traiterPaiementBillets } from './billetterie';
 import { MAIL_SECRETS } from './newsletter/mail';
@@ -654,7 +654,7 @@ export const stripeWebhook = onRequest(
       const points = Math.round(montant * 10);
       const cle = `pourboire:${session.id}`;
       const evt = db.doc(`pointsEvents/${cle}`);
-      if (!(await evt.get()).exists) {
+      if (await jeuOuvert() && !(await evt.get()).exists) {
         await evt.set({ uid, kind: 'direct', amount: points, dedupKey: cle, meta: { montant, directId }, at: FieldValue.serverTimestamp() });
         await db.doc(`memberPoints/${uid}`).set({
           balance: FieldValue.increment(points),

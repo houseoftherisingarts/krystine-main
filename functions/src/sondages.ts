@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { jeuOuvert } from './gamification';
 
 // Les sondages de l'onglet « Aider » : Krystine en ajoute de temps en temps
 // dans l'admin (settings côté sondages/{id}), une réponse complétée retire
@@ -97,7 +98,8 @@ export const repondreSondage = onCall(
       if (v !== null) reponses[q.id] = v;
     }
 
-    const montant = sondage.recompense || 10;
+    // Le jeu fermé : la réponse s'enregistre, sans niskas.
+    const montant = (await jeuOuvert()) ? (sondage.recompense || 10) : 0;
     const reponseRef = db.doc(`sondages/${sondageId}/reponses/${uid}`);
     const balRef = db.doc(`memberPoints/${uid}`);
     const dedupKey = `sondage:${uid}:${sondageId}`;
@@ -108,8 +110,10 @@ export const repondreSondage = onCall(
       if (fait.exists || deja.exists) throw new HttpsError('already-exists', 'Vous avez déjà répondu à ce sondage.');
       tx.set(reponseRef, { uid, email: req.auth!.token.email || null, reponses, at: FieldValue.serverTimestamp() });
       tx.set(faitRef, { at: FieldValue.serverTimestamp(), niskas: montant });
-      tx.set(evt, { uid, kind: 'sondage', amount: montant, dedupKey, meta: { sondageId }, at: FieldValue.serverTimestamp() });
-      tx.set(balRef, { balance: FieldValue.increment(montant), updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+      if (montant > 0) {
+        tx.set(evt, { uid, kind: 'sondage', amount: montant, dedupKey, meta: { sondageId }, at: FieldValue.serverTimestamp() });
+        tx.set(balRef, { balance: FieldValue.increment(montant), updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+      }
     });
 
     console.log(`[sondages] ${uid} répond à ${sondageId}, +${montant} niskas`);

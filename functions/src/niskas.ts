@@ -3,7 +3,7 @@ import { getFirestore, FieldValue, AggregateField, Firestore, Transaction } from
 import { getAuth } from 'firebase-admin/auth';
 import { randomInt } from 'node:crypto';
 import { ecrireMessageKrystine, uidKrystine, PRIX_COFFRES, SKINS_RARES_COFFRES, NOMS_COSMETIQUES, skinsEnTravail } from './coffres';
-import { lireGamification, exigerModule } from './gamification';
+import { lireGamification, exigerModule, jeuOuvert } from './gamification';
 import {
   KIND_FOYER_MOIS, KIND_FOYER_ROUE, ROUE_FOYER,
   cleFoyerMois, cleFoyerRoue, estJourMoisFoyer, cadeauFoyerDuMois, jourDeRoue,
@@ -113,6 +113,12 @@ export async function crediterNiskas(
   cle: string,
   meta: Record<string, unknown> = {},
 ): Promise<boolean> {
+  // Le jeu fermé : aucune niska ne se donne. Seul un achat déjà payé
+  // (achat-niskas, Stripe) se crédite toujours.
+  if (amount > 0 && kind !== 'achat-niskas' && !(await jeuOuvert())) {
+    console.log(`[niskas] jeu fermé, ${amount} niskas (${kind}) non versées à ${uid}`);
+    return false;
+  }
   const db = getFirestore();
   const evt = db.doc(`pointsEvents/${cle}`);
   return db.runTransaction(async (tx) => {
@@ -253,6 +259,8 @@ export const reclamerBienvenue = onCall(
     if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour votre cadeau de bienvenue.');
     const uid = req.auth.uid;
     const db = getFirestore();
+    // Le jeu fermé : pas de cadeau de bienvenue, sans erreur pour la page.
+    if (!(await jeuOuvert())) return { deja: true, montant: 0, balance: 0 };
     const evt = db.doc(`pointsEvents/welcome-claim:${uid}`);
     const ancien = db.doc(`pointsEvents/welcome:${uid}`);
     const deja = await db.runTransaction(async (tx) => {

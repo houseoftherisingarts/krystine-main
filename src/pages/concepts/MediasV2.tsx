@@ -10,6 +10,7 @@ import {
   Coins, Lock, Star,
 } from '@phosphor-icons/react';
 import { useApp } from '../../contexts/AppContext';
+import { useGamification } from '../../contexts/GamificationContext';
 import { CONTENT } from '../../content';
 import { getProducts, formatMoney, isShopifyConfigured, type ShopifyProduct } from '../../shopify';
 import NewsletterSignup from '../../components/NewsletterSignup';
@@ -54,6 +55,8 @@ const Kicker: React.FC<{ children: React.ReactNode; className?: string }> = ({ c
 export default function MediasV2() {
   const root = useRef<HTMLDivElement>(null);
   const { lang, addToCart, user } = useApp();
+  // Le jeu des niskas fermé : aucun prix en niskas sur la page.
+  const { jeu } = useGamification();
   const t = CONTENT[lang];
   const media = t.media;
   const pod = media.details.podcast;
@@ -459,7 +462,11 @@ export default function MediasV2() {
               {lang === 'FR' ? 'Regarder les épisodes' : 'Watch the episodes'}
             </h3>
             <p className="mt-4 text-[0.95rem] leading-[1.8] text-[#3a2f23] flex-1">
-              {lang === 'FR'
+              {!jeu
+                ? (lang === 'FR'
+                  ? 'Les épisodes de Santé la vie se regardent dans votre espace, une saison complète pour 30 $ CA. Ils rejoignent vos téléchargements pour de bon.'
+                  : 'The episodes of Santé la vie are watched in your space, a full season for $30 CAD. They join your downloads for good.')
+                : lang === 'FR'
                 ? 'Les épisodes de Santé la vie se regardent dans votre espace : 25 niskas l’épisode, et une saison complète pour 175 niskas ou 30 $ CA, au choix. Les niskas se gagnent en visitant votre espace, et s’achètent aussi directement là.'
                 : 'The episodes of Santé la vie are watched in your space: 25 niskas per episode, and a full season for 175 niskas or $30 CAD, your choice. Niskas are earned by visiting your space, and can also be bought there directly.'}
             </p>
@@ -495,9 +502,9 @@ export default function MediasV2() {
             <div className="mt-8 pt-6 border-t border-[#1c1712]/12 flex items-end justify-between gap-4">
               <div>
                 <span className="v2-serif text-[clamp(2rem,4vw,2.8rem)] font-light leading-none text-[#7d6330] tabular-nums">30&nbsp;$</span>
-                <span className="block mt-1.5 text-[0.68rem] uppercase tracking-[0.16em] text-[#1c1712]/45">
+                {jeu && <span className="block mt-1.5 text-[0.68rem] uppercase tracking-[0.16em] text-[#1c1712]/45">
                   {lang === 'FR' ? 'ou 250 niskas' : 'or 250 niskas'}
-                </span>
+                </span>}
               </div>
               <button
                 type="button"

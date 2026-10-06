@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useApp } from '../../contexts/AppContext';
 import { getMesFormations, getLecons, urlDeLecon, type AchatFormation, type Lecon } from '../../firebase/formations';
-import { estTelechargement, MUSIQUE_ORIGINE_ID } from '../../firebase/musique';
+import { estTelechargement, MUSIQUE_ORIGINE_ID, telechargerMusiqueOrigine } from '../../firebase/musique';
 import BoutiqueNiskas from '../../components/client/BoutiqueNiskas';
 import { useGamification } from '../../contexts/GamificationContext';
 import { SANTE_LA_VIE_ID, CATALOGUE_VIDEOS, dureeLisible, vignetteYoutube, type CatalogueVideos } from '../../lib/pointsConfig';
@@ -69,6 +69,24 @@ const ClientTelechargements: React.FC = () => {
   const possedeMusique = items.some(({ achat }) => achat.id === MUSIQUE_ORIGINE_ID);
   const episodesPossedes = new Set(items.filter(({ achat }) => achat.id === SANTE_LA_VIE_ID).flatMap(({ lecons }) => lecons.map((l) => l.id)));
 
+  // La fréquence d'Origine, offerte à toute personne qui a un compte
+  // (Krystine, 6 oct. 2026) : un clic l'ajoute à ses téléchargements
+  // (musiqueOrigine, functions/src/musique.ts) et le fichier part aussitôt.
+  const [musiqueBusy, setMusiqueBusy] = useState(false);
+  const [musiqueErr, setMusiqueErr] = useState(false);
+  const prendreMusique = async () => {
+    setMusiqueBusy(true); setMusiqueErr(false);
+    try {
+      const url = await telechargerMusiqueOrigine();
+      setTour((t) => t + 1);
+      window.location.href = url;
+    } catch {
+      setMusiqueErr(true);
+    } finally {
+      setMusiqueBusy(false);
+    }
+  };
+
   const telecharger = async (fid: string, l: Lecon) => {
     setBusy(l.id);
     try {
@@ -99,20 +117,27 @@ const ClientTelechargements: React.FC = () => {
       <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B4A2F]">
         {lang === 'FR' ? 'Vos téléchargements' : 'Your downloads'}
       </p>
-      {items.length === 0 ? (
-        <div className="mt-4 rounded-[15px] bg-[#BA7B39]/8 py-8 text-center dark:bg-white/5">
-          <i className="fa-solid fa-music mb-3 block text-2xl text-[#BA7B39]/60" />
-          <p className="font-serif text-lg text-[#293027] dark:text-white">
-            {lang === 'FR' ? 'Aucun téléchargement pour le moment' : 'No downloads yet'}
-          </p>
-          <p className="mx-auto mt-1 max-w-md text-sm text-[#293027]/50 dark:text-white/50">
-            {lang === 'FR' ? "La musique d'Origine et les émissions de Santé la vie s'ajoutent ici depuis la petite boutique, juste dessous." : 'The Origin music and the Santé la vie shows land here from the little shop, right below.'}
-          </p>
-          <a href="#boutique" className="mt-4 inline-block text-xs font-bold uppercase tracking-widest text-[#8B4A2F] underline-offset-4 hover:underline">
-            {lang === 'FR' ? 'Voir la boutique' : 'See the shop'}
-          </a>
+      {!possedeMusique && (
+        <div className="mt-4 flex flex-col gap-4 rounded-[15px] border border-[#BA7B39]/30 bg-[#BA7B39]/8 p-4 sm:flex-row sm:items-center dark:bg-white/5">
+          <span className="flex h-16 w-16 flex-none items-center justify-center rounded-[10px] bg-[#BA7B39]/15"><i className="fa-solid fa-music text-2xl text-[#BA7B39]" /></span>
+          <div className="min-w-0 flex-1">
+            <p className="font-serif text-lg text-[#293027] dark:text-white">{lang === 'FR' ? 'La fréquence d’Origine' : 'The Origin frequency'}</p>
+            <p className="mt-1 text-sm text-[#293027]/65 dark:text-white/65">
+              {lang === 'FR' ? 'Elle vous est offerte avec votre compte. Elle vous attend ici, prête à télécharger.' : 'It comes with your account. It is waiting for you here, ready to download.'}
+            </p>
+            {musiqueErr && <p className="mt-1 text-xs text-red-600">{lang === 'FR' ? 'Le téléchargement n’a pas fonctionné. Réessayez.' : 'The download did not work. Please try again.'}</p>}
+          </div>
+          <button
+            type="button"
+            onClick={prendreMusique}
+            disabled={musiqueBusy}
+            className="rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white transition-transform hover:scale-[1.03] disabled:opacity-60"
+          >
+            <i className="fa-solid fa-download mr-1" /> {musiqueBusy ? (lang === 'FR' ? 'Un instant…' : 'One moment…') : (lang === 'FR' ? 'Télécharger' : 'Download')}
+          </button>
         </div>
-      ) : (
+      )}
+      {items.length === 0 ? null : (
         <div className="mt-4 space-y-4">
           {items.map(({ achat, lecons }) => (
             <div key={achat.id} className="flex flex-col gap-4 rounded-[15px] border border-[#293027]/10 p-4 sm:flex-row sm:items-center dark:border-white/10">
@@ -197,7 +222,8 @@ const ClientTelechargements: React.FC = () => {
           )}
         </div>
       )}
-      {gam.petiteBoutique && (
+      {/* Le jeu fermé, la petite boutique ne garde que Santé la vie en argent. */}
+      {(gam.petiteBoutique || !gam.jeu) && (
         <BoutiqueNiskas possedeMusiqueDeja={possedeMusique} episodesPossedes={episodesPossedes} onAchat={() => setTour((t) => t + 1)} />
       )}
     </section>

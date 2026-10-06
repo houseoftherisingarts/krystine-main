@@ -196,7 +196,7 @@ const CadreFoyer: React.FC<Props> = ({ onglet, garde = true, large, personne, dr
                     <i className="fa-solid fa-circle-nodes mr-1" /> {fiche.dosha}
                   </span>
                 )}
-                {!autre && (
+                {!autre && gam.jeu && (
                   <Link
                     to="/compte?onglet=loyalty"
                     className="rounded-full bg-[#BA7B39] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#293027] transition-colors hover:bg-[#d9a05b]"

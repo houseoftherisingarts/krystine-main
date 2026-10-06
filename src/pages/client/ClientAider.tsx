@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useApp } from '../../contexts/AppContext';
+import { useGamification } from '../../contexts/GamificationContext';
 import { getSondagesActifs, suivreSondagesFaits, type Sondage, type ThemeSondage } from '../../firebase/sondages';
 import { PETITES_CAPITALES } from '../../components/communaute/CarteSociale';
 import PieceNiska from '../../components/client/PieceNiska';
@@ -19,6 +20,8 @@ const LIBELLES_THEME: Record<ThemeSondage, { fr: string; en: string }> = {
 const ClientAider: React.FC = () => {
   const { user, lang } = useApp();
   const fr = lang === 'FR';
+  // Le jeu fermé : les sondages restent, sans niskas.
+  const { jeu } = useGamification();
   const [sondages, setSondages] = useState<Sondage[]>([]);
   const [faits, setFaits] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -53,8 +56,8 @@ const ClientAider: React.FC = () => {
       </p>
       <p className="mt-2 max-w-[60ch] text-sm leading-relaxed text-[#293027]/60 dark:text-white/60">
         {fr
-          ? 'Vos réponses nous aident à mieux servir. Chaque sondage complété vous donne 10 niskas.'
-          : 'Your answers help us serve you better. Each completed survey gives you 10 niskas.'}
+          ? (jeu ? 'Vos réponses nous aident à mieux servir. Chaque sondage complété vous donne 10 niskas.' : 'Vos réponses nous aident à mieux servir.')
+          : (jeu ? 'Your answers help us serve you better. Each completed survey gives you 10 niskas.' : 'Your answers help us serve you better.')}
       </p>
 
       {visibles.length === 0 ? (
@@ -78,9 +81,9 @@ const ClientAider: React.FC = () => {
               <li key={s.id} className="rounded-[15px] border border-[#38403a]/10 bg-white/60 p-5 dark:border-white/10 dark:bg-white/5">
                 {fini ? (
                   <div className="flex h-full min-h-[9rem] flex-col items-center justify-center text-center">
-                    <PieceNiska size={28} className="mb-2" />
+                    {justFait.niskas > 0 && <PieceNiska size={28} className="mb-2" />}
                     <p className="font-serif text-lg text-[#293027] dark:text-white">
-                      {fr ? 'Merci.' : 'Thank you.'} +{justFait.niskas} {fr ? 'niskas' : 'niskas'}
+                      {fr ? 'Merci.' : 'Thank you.'}{justFait.niskas > 0 && <> +{justFait.niskas} niskas</>}
                     </p>
                   </div>
                 ) : (
@@ -94,7 +97,7 @@ const ClientAider: React.FC = () => {
                     )}
                     <div className="mt-4 flex items-center justify-between gap-3">
                       <span className="text-xs text-[#293027]/45 dark:text-white/45">
-                        {s.questions?.length || 0} {fr ? 'questions' : 'questions'} · <PieceNiska size={12} className="mr-0.5 inline-block align-[-2px]" />{s.recompense || 10} {fr ? 'niskas' : 'niskas'}
+                        {s.questions?.length || 0} {fr ? 'questions' : 'questions'}{jeu && <> · <PieceNiska size={12} className="mr-0.5 inline-block align-[-2px]" />{s.recompense || 10} niskas</>}
                       </span>
                       <button
                         type="button"

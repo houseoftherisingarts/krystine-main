@@ -7,6 +7,12 @@ import { getFirestore } from 'firebase-admin/firestore';
 // absent d'un champ = module ON, sauf badgeBleuEquipeSeulement, absent = true.
 
 export interface GamificationSettings {
+  // L'interrupteur maître du jeu des niskas (Krystine, 6 oct. 2026). Fermé :
+  // aucune mention de niskas nulle part (pages, création de compte, espace
+  // membre) et aucun crédit côté serveur; les soldes restent intacts.
+  // Absent du document : il suit « Le cadeau du jour » (roueQuotidienne),
+  // l'interrupteur que Krystine a fermé pour fermer le jeu.
+  jeu?: boolean;
   acheterNiskas?: boolean;
   coffres?: boolean;
   badges?: boolean;
@@ -21,7 +27,7 @@ export interface GamificationSettings {
 }
 
 const DEFAUT: Required<GamificationSettings> = {
-  acheterNiskas: true, coffres: true, badges: true, roueQuotidienne: true, roueFoyer: true,
+  jeu: true, acheterNiskas: true, coffres: true, badges: true, roueQuotidienne: true, roueFoyer: true,
   recompenses: true, parrainage: true, coffreBeta: true, panneauJouer: true, petiteBoutique: true,
   badgeBleuEquipeSeulement: true,
 };
@@ -38,8 +44,19 @@ export async function lireGamification(): Promise<Required<GamificationSettings>
   for (const cle of Object.keys(DEFAUT) as Array<keyof GamificationSettings>) {
     if (typeof d[cle] === 'boolean') valeurs[cle] = d[cle] as boolean;
   }
+  // Le jeu fermé ferme tous les modules qui donnent ou vendent des niskas
+  // (même règle que src/firebase/gamification.ts, appliquerJeu).
+  valeurs.jeu = typeof d.jeu === 'boolean' ? d.jeu : (typeof d.roueQuotidienne === 'boolean' ? d.roueQuotidienne : true);
+  if (!valeurs.jeu) {
+    for (const cle of ['acheterNiskas', 'coffres', 'roueQuotidienne', 'roueFoyer', 'recompenses', 'parrainage', 'coffreBeta', 'panneauJouer', 'petiteBoutique'] as const) valeurs[cle] = false;
+  }
   cache = { lu: Date.now(), valeurs };
   return valeurs;
+}
+
+/** Le jeu des niskas est-il ouvert ? Fermé, aucun crédit de niskas. */
+export async function jeuOuvert(): Promise<boolean> {
+  return (await lireGamification()).jeu;
 }
 
 /** Refuse l'appel si le module nommé est fermé. */
