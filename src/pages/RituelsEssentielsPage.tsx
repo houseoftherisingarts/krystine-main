@@ -244,14 +244,6 @@ const FAN: Array<[string, number, string, number]> = [
 
 const VideoFan: React.FC = () => {
   const reduce = useReducedMotion();
-  // React ne pose pas l'attribut muted : sans lui, les téléphones refusent la lecture automatique.
-  const video = useRef<HTMLVideoElement>(null);
-  useEffect(() => {
-    const v = video.current;
-    if (!v || reduce) return;
-    v.muted = true;
-    v.play().catch(() => {});
-  }, [reduce]);
   return (
     <figure className="min-w-0">
       <div className="relative mx-auto w-[min(84vw,380px)] lg:w-full aspect-[1/0.86] select-none">
@@ -265,8 +257,7 @@ const VideoFan: React.FC = () => {
         ))}
         <div className="absolute bottom-[3%] left-1/2 w-[46%] -ml-[23%]" style={{ zIndex: 3 }}>
           <motion.div className="will-change-transform" initial={reduce ? false : { y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 1.2, ease, delay: 0.3 }}>
-            <video ref={video} src="/rituels-vivants/extrait-ouverture.mp4" poster={img('extrait-ouverture-poster')}
-              autoPlay={!reduce} muted loop playsInline preload="auto" aria-label="Des mains, un flacon d’huile et les gestes du soin"
+            <img src="/rituels-vivants/ouverture-image.webp" width={960} height={1200} alt="Un pied posé sur un tricot crème, une main qui masse la cheville" fetchPriority="high" decoding="async"
               className="block w-full aspect-[4/5] object-cover rounded-[4px] border"
               style={{ borderColor: 'rgba(28,23,18,0.1)', boxShadow: '0 30px 60px -26px rgba(28,23,18,0.6), 0 2px 6px rgba(28,23,18,0.08)' }} />
             <span aria-hidden className="absolute inset-x-0 -bottom-[10px] mx-auto block h-[2px] w-12" style={{ background: C.accent }} />

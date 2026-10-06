@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-06T21:25:05.270Z",
+  "generatedAt": "2026-10-06T21:59:01.115Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2366,6 +2366,13 @@
       "folder": "rituels-vivants",
       "kind": "image",
       "size": 25584
+    },
+    {
+      "path": "/rituels-vivants/ouverture-image.webp",
+      "name": "ouverture-image.webp",
+      "folder": "rituels-vivants",
+      "kind": "image",
+      "size": 49996
     },
     {
       "path": "/rituels-vivants/rituels-banniere-fondu.webp",
