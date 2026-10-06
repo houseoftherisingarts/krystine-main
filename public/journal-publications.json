@@ -6410,5 +6410,26 @@
       "functions"
     ],
     "fichiers": []
+  },
+  {
+    "quand": "2026-10-06T11:39:15.092Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "7620de34",
+    "message": "Bilan du matin (6 h 30, à Krystine seulement, encart au tableau de bord de l'admin) et chatbot limité à 40 messages par heure et par adresse IP : fonctions filetDuMatin, lancerBilan, chatbotKrystine, règles et index Firestore",
+    "cibles": [
+      "firestore",
+      "functions"
+    ],
+    "fichiers": [
+      "firestore.indexes.json",
+      "firestore.rules",
+      "functions/src/bilan.ts",
+      "functions/src/filet.ts",
+      "functions/src/index.ts",
+      "functions/src/newsletter/chatbot.ts",
+      "src/pages/admin/sections/DashboardSection.tsx",
+      "src/pages/admin/sections/dashboard/BilanDuMatinCard.tsx"
+    ]
   }
 ]
