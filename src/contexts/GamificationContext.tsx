@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { DEFAUT_GAMIFICATION, subscribeToGamification, type GamificationSettings } from '../firebase/gamification';
+import { DEFAUT_GAMIFICATION, MODULES_NISKAS, subscribeToGamification, type GamificationSettings } from '../firebase/gamification';
 import { ADMIN_EMAILS } from '../firebase/auth';
 
 // Le contexte des interrupteurs de gamification, posé par l'onglet admin
@@ -11,10 +11,20 @@ import { ADMIN_EMAILS } from '../firebase/auth';
 // supposition : il attend pret.
 export type Gamification = Required<GamificationSettings> & { pret: boolean };
 
-const GamificationContext = createContext<Gamification>({ ...DEFAUT_GAMIFICATION, pret: false });
+// Avant la réponse de Firestore, le jeu est tenu pour fermé : aucune fenêtre
+// ni pastille de niskas ne doit apparaître une fraction de seconde à la
+// connexion quand Krystine l'a fermé (6 oct. 2026).
+const EN_ATTENTE: Gamification = {
+  ...DEFAUT_GAMIFICATION,
+  ...Object.fromEntries(MODULES_NISKAS.map(cle => [cle, false])),
+  jeu: false,
+  pret: false,
+};
+
+const GamificationContext = createContext<Gamification>(EN_ATTENTE);
 
 export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [g, setG] = useState<Gamification>({ ...DEFAUT_GAMIFICATION, pret: false });
+  const [g, setG] = useState<Gamification>(EN_ATTENTE);
   useEffect(() => subscribeToGamification(v => setG({ ...v, pret: true })), []);
   return <GamificationContext.Provider value={g}>{children}</GamificationContext.Provider>;
 };
