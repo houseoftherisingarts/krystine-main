@@ -6815,5 +6815,18 @@
       "src/pages/PaiementFormation.tsx",
       "src/pages/RituelsEssentielsPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T23:52:03.334Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "52a9c95d",
+    "message": "Boutique : le site demande lui-même sa clé Shopify à la nouvelle application krystinestlaurent.ca (renouvelée chaque jour), pour brancher les commandes (admin › Analytics) et les codes de la boutique",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json"
+    ]
   }
 ]
