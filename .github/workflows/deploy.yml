@@ -51,9 +51,20 @@ jobs:
         with:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
-      - name: Déployer
+      # Le site et les règles d'abord, les fonctions ensuite : une fonction
+      # planifiée qui refuse de se mettre à jour (droit Cloud Scheduler
+      # manquant au compte de service, 5 et 6 oct. 2026) ne bloque plus la
+      # mise en ligne des pages. L'étape des fonctions reste en échec visible.
+      - name: Déployer le site et les règles
         run: |
           npx firebase-tools deploy \
-            --only hosting,functions,firestore:rules,storage \
+            --only hosting,firestore:rules,storage \
+            --project krystinestlaurent-87566 \
+            --non-interactive
+
+      - name: Déployer les fonctions
+        run: |
+          npx firebase-tools deploy \
+            --only functions \
             --project krystinestlaurent-87566 \
             --non-interactive
