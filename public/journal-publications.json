@@ -6398,5 +6398,17 @@
       "src/pages/CoursDetailPage.tsx",
       "src/pages/cours/nettoyerKajabi.ts"
     ]
+  },
+  {
+    "quand": "2026-10-06T10:53:51.168Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "f2568525",
+    "message": "Cours des fondatrices d'Origine (/cours/origine-fondatrice) : accès sans code à la connexion pour l'étiquette origine-fondatrice, derrière l'interrupteur « Accès des fondatrices » de l'admin (fermé; seules les adresses de test entrent), Clés d'Origine retirées de l'affichage (mises de côté pour EO2), affiche du rituel d'activation matinale jointe à l'exfoliation matinale, questionnaire dosha relié au quiz, « À télécharger » qui rassemble les documents et Le Souffle d'Origine, certificat habillé Origine au nom de la participante, une seule leçon de reprise pour tous les cours; EO2 : le serveur refuse une semaine pas encore ouverte et ses documents",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": []
   }
 ]
