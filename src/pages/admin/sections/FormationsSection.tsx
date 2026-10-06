@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   getFormations, setFormationStatut, deleteFormation, updateFormationOptions,
   getLecons, ajouterLecon, supprimerLecon, setLeconOrdre, creerLeconTexte, remplacerFichierLecon,
-  majLecon, ajouterDocumentLecon, retirerDocumentLecon,
+  majLecon, ajouterDocumentLecon, retirerDocumentLecon, setAccesFondatrices,
   type Formation, type FormationOptions, type Lecon,
 } from '../../../firebase/formations';
 import { Card } from '../primitives';
@@ -277,6 +277,35 @@ import Kajabi (scripts/kajabi/verifier-import.mjs) */}
   );
 };
 
+// L'interrupteur des fondatrices d'Origine (6 octobre 2026) : éteint, seules
+// les adresses de test entrent; allumé, chaque fondatrice de l'étiquette
+// « origine-fondatrice » retrouve le cours en se connectant avec son adresse.
+const AccesFondatrices: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSaved }) => {
+  const [ouvert, setOuvert] = useState(!!f.accesFondatricesOuvert);
+  const [envoi, setEnvoi] = useState(false);
+  const basculer = async () => {
+    const cible = !ouvert;
+    const q = cible
+      ? 'Ouvrir le cours aux fondatrices ? Chaque adresse de l’étiquette « origine-fondatrice » le recevra à sa prochaine connexion. Aucun courriel ne part.'
+      : 'Refermer la porte ? Les fondatrices déjà entrées gardent leur accès; les autres n’entreront plus.';
+    if (!window.confirm(q)) return;
+    setEnvoi(true);
+    try { await setAccesFondatrices(f.id, cible); setOuvert(cible); onSaved(); } finally { setEnvoi(false); }
+  };
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[#BA7B39]/40 bg-white/60 px-4 py-3 dark:bg-white/5">
+      <p className="text-sm text-[#293027] dark:text-white">
+        <span className="font-semibold">Accès des fondatrices : {ouvert ? 'ouvert' : 'fermé'}</span>
+        <span className="block text-xs opacity-70">{ouvert ? 'Chaque fondatrice reçoit le cours en se connectant avec son adresse.' : 'Seules les adresses de test entrent pour le moment.'}</span>
+      </p>
+      <button type="button" onClick={basculer} disabled={envoi}
+        className="rounded-full bg-[#293027] px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-[#EEE7DB] transition-colors hover:bg-[#BA7B39] disabled:opacity-40">
+        {envoi ? '…' : ouvert ? 'Refermer' : 'Ouvrir aux fondatrices'}
+      </button>
+    </div>
+  );
+};
+
 // Le panneau « Options » d'une formation : paywall et prix, evergreen ou
 // sortie datée, lancement orchestré, message aux acheteuses.
 const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSaved }) => {
@@ -318,6 +347,7 @@ const OptionsPanel: React.FC<{ f: Formation; onSaved: () => void }> = ({ f, onSa
 
   return (
     <div className="mt-3 space-y-4 rounded-[15px] bg-[#BA7B39]/8 p-5 dark:bg-white/5">
+      {f.id === 'kajabi-2149348838' && <AccesFondatrices f={f} onSaved={onSaved} />}
       <div className="grid gap-4 md:grid-cols-2">
         <label className={ligne}>
           <input type="checkbox" className={case_} checked={paywall} onChange={e => setPaywall(e.target.checked)} />

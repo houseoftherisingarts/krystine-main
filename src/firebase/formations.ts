@@ -30,6 +30,9 @@ export interface Formation {
   lancementOrchestre?: boolean;
   messageAcheteursEnvoye?: boolean;
   questionsFermees?: boolean;   // aucune question sous les leçons (ex. Vata)
+  // Cours des fondatrices d'Origine : allumé, chaque adresse de l'étiquette
+  // « origine-fondatrice » reçoit le cours à la connexion (functions/src/kajabi.ts).
+  accesFondatricesOuvert?: boolean;
   creeLe?: Timestamp;
   maj?: Timestamp;
 }
@@ -53,6 +56,11 @@ export async function setFormationStatut(id: string, statut: Formation['statut']
 
 export async function deleteFormation(id: string) {
   await deleteDoc(doc(db(), 'formations', id));
+}
+
+/** Admin : l'interrupteur qui ouvre le cours aux fondatrices (étiquette origine-fondatrice). */
+export async function setAccesFondatrices(id: string, ouvert: boolean) {
+  await updateDoc(doc(db(), 'formations', id), { accesFondatricesOuvert: ouvert, maj: serverTimestamp() });
 }
 
 export async function updateFormationOptions(id: string, options: FormationOptions) {

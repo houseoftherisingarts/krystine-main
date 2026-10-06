@@ -9,6 +9,7 @@ import { estTelechargement } from '../../firebase/musique';
 import Diplome, { type DiplomeInfos } from '../../components/cours/Diplome';
 import { telechargerDiplome } from '../../lib/diplomePdf';
 import { cheminCours } from '../../lib/cheminCours';
+import { estOrigine, leconsVisibles } from '../origine2/piliers';
 
 // « Mes diplômes » : les parcours menés jusqu'au bout. Un diplôme ne se range
 // pas dans une collection à part, il se déduit de la progression : quand
@@ -35,7 +36,8 @@ const ClientDiplomes: React.FC = () => {
       try {
         const achats = (await getMesFormations(user.uid)).filter(a => !estTelechargement(a));
         const lus = await Promise.all(achats.map(async a => {
-          const [lecons, prog] = await Promise.all([getLecons(a.id), getProgression(user.uid, a.id)]);
+          const [tout, prog] = await Promise.all([getLecons(a.id), getProgression(user.uid, a.id)]);
+          const lecons = leconsVisibles(a.id, tout);
           const faites = lecons.filter(l => prog.terminees?.[l.id]).length;
           return { a, total: lecons.length, faites, termineeLe: prog.termineeLe };
         }));
@@ -48,8 +50,9 @@ const ClientDiplomes: React.FC = () => {
               formation: a,
               infos: {
                 nom: user.displayName || user.email || (fr ? 'Membre' : 'Member'),
-                programme: a.titre,
-                accompli: fr ? `${total} leçons` : `${total} lessons`,
+                programme: estOrigine(a.id) ? 'EXPÉRIENCE ORIGINE' : a.titre,
+                accompli: estOrigine(a.id) ? (fr ? 'les douze semaines' : 'the twelve weeks') : (fr ? `${total} leçons` : `${total} lessons`),
+                ...(estOrigine(a.id) ? { habillage: 'origine' as const } : {}),
                 date: termineeLe || new Date().toISOString().slice(0, 10),
                 numero: `${a.id.slice(-6).toUpperCase()} · ${user.uid.slice(0, 6).toUpperCase()}`,
               },

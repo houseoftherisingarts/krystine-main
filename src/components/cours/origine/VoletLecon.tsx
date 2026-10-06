@@ -3,6 +3,7 @@ import type { Lecon } from '../../../firebase/formations';
 import TexteLecon from '../../../lib/texteLecon';
 import { nettoyerKajabi } from '../../../pages/cours/nettoyerKajabi';
 import LecteurAudioCours from '../LecteurAudioCours';
+import type { DocAffiche } from './ATelechargerOrigine';
 import { ORIGINE, documentManquant, pilierDeSemaine, semaineDeLecon, titreDeLecon, titreDeModule } from '../../../pages/origine2/piliers';
 
 // Le volet de droite de l'Expérience Origine : la vignette de la leçon en
@@ -27,12 +28,18 @@ interface Props {
   lang: 'FR' | 'EN';
   onTerminee: () => void;
   onSuivante?: () => void;
-  onOuvrirDocument: (index: number) => void;
+  /** Les documents à montrer sous la leçon (les siens et ceux qu'elle emprunte). */
+  documents: DocAffiche[];
+  /** Un lien qui remplace un document resté sur l'ancien site (ex. le quiz). */
+  lien?: { fr: string; en: string; href: string };
+  /** Un bloc propre à la leçon (le certificat). */
+  extra?: React.ReactNode;
+  onOuvrirDocument: (d: DocAffiche) => void;
   onVignette: (file: File) => Promise<void>;
   onDocument: (file: File) => Promise<void>;
 }
 
-const VoletLecon: React.FC<Props> = ({ lecon, formationTitre, autresTitres = [], vignette, position, url, chargement, erreur, terminee, isAdmin, lang, onTerminee, onSuivante, onOuvrirDocument, onVignette, onDocument }) => {
+const VoletLecon: React.FC<Props> = ({ lecon, formationTitre, autresTitres = [], vignette, position, url, chargement, erreur, terminee, isAdmin, lang, onTerminee, onSuivante, documents, lien, extra, onOuvrirDocument, onVignette, onDocument }) => {
   const fr = lang === 'FR';
   const n = semaineDeLecon(lecon);
   const pilier = n >= 1 ? pilierDeSemaine(n) : undefined;
@@ -52,7 +59,7 @@ const VoletLecon: React.FC<Props> = ({ lecon, formationTitre, autresTitres = [],
     } finally { setEnvoi(null); }
   };
 
-  const manque = documentManquant(lecon);
+  const manque = documentManquant(lecon) && !documents.length && !lien && !extra;
   const texte = lecon.texte?.trim() ? nettoyerKajabi(lecon.texte, lecon.titre, formationTitre, lecon.moduleNom, autresTitres) : '';
   // Une vidéo prête à jouer prend la place : la vignette devient son affiche et
   // la tête se réduit à une bande, pour que le lecteur tienne dans l'écran.
@@ -104,15 +111,23 @@ const VoletLecon: React.FC<Props> = ({ lecon, formationTitre, autresTitres = [],
 
         {texte && <TexteLecon texte={texte} className={`${lecon.chemin ? 'mt-6' : 'mt-3'} max-w-[68ch] text-[#3a2f23]`} />}
 
-        {(lecon.docs?.length ?? 0) > 0 && (
+        {extra}
+
+        {lien && (
+          <a href={lien.href} className="mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3 text-xs font-bold uppercase tracking-widest" style={{ background: ORIGINE.or, color: ORIGINE.encre }}>
+            <i className="fa-solid fa-arrow-up-right-from-square" /> {fr ? lien.fr : lien.en}
+          </a>
+        )}
+
+        {documents.length > 0 && (
           <div className="mt-6">
             <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: ORIGINE.olive }}>{fr ? 'Documents de la leçon' : 'Lesson documents'}</p>
             <ul className="mt-2 flex flex-wrap gap-2">
-              {lecon.docs!.map((d, i) => (
+              {documents.map(d => (
                 <li key={d.chemin}>
-                  <button type="button" onClick={() => onOuvrirDocument(i)}
+                  <button type="button" onClick={() => onOuvrirDocument(d)}
                     className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors hover:bg-[#b8923a]/12" style={{ borderColor: `${ORIGINE.or}80`, color: ORIGINE.encre }}>
-                    <i className={`fa-solid ${/\.pdf$/i.test(d.nom) ? 'fa-file-pdf' : 'fa-file-arrow-down'}`} /> {d.nom}
+                    <i className={`fa-solid ${d.pdf ? 'fa-file-pdf' : 'fa-file-arrow-down'}`} /> {d.nom}
                   </button>
                 </li>
               ))}

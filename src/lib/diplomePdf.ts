@@ -1,7 +1,9 @@
 import { jsPDF } from 'jspdf';
 import { SIGNATURE_NOIRE } from '../components/client/Signature';
 import type { DiplomeInfos } from '../components/cours/Diplome';
-import { enLettres } from '../components/cours/Diplome';
+import { enLettres, habillageDiplome } from '../components/cours/Diplome';
+
+const rgb = (hex: string): [number, number, number] => [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)) as [number, number, number];
 
 // Le diplôme en PDF, dessiné en vectoriel plutôt que capturé en image : le
 // texte reste net à l'impression et sélectionnable, et le fichier pèse moins
@@ -12,12 +14,12 @@ import { enLettres } from '../components/cours/Diplome';
 // universitaire du diplôme sans qu'il faille charger une police maison dans
 // le bundle, ce qui alourdirait le site pour tout le monde.
 
-const CREME: [number, number, number] = [247, 243, 234];
-const LAITON: [number, number, number] = [186, 123, 57];
-const LAITON_PALE: [number, number, number] = [212, 176, 126];
+const CREME_VATA: [number, number, number] = [247, 243, 234];
+const LAITON_VATA: [number, number, number] = [186, 123, 57];
+const LAITON_PALE_VATA: [number, number, number] = [212, 176, 126];
 const ENCRE: [number, number, number] = [31, 26, 18];
 const ENCRE_DOUCE: [number, number, number] = [90, 74, 55];
-const BRUN: [number, number, number] = [139, 74, 47];
+const BRUN_VATA: [number, number, number] = [139, 74, 47];
 
 /** Le WebP de la signature converti en PNG : jsPDF ne lit pas le WebP. */
 async function signatureEnPng(): Promise<{ data: string; ratio: number } | null> {
@@ -43,7 +45,7 @@ async function signatureEnPng(): Promise<{ data: string; ratio: number } | null>
 }
 
 /** Une équerre de coin avec sa perle, le seul ornement du parchemin. */
-function coin(doc: jsPDF, x: number, y: number, sx: number, sy: number, taille: number) {
+function coin(doc: jsPDF, x: number, y: number, sx: number, sy: number, taille: number, LAITON: [number, number, number]) {
   doc.setDrawColor(...LAITON);
   doc.setLineWidth(1.1);
   doc.line(x, y, x + sx * taille, y);
@@ -58,6 +60,12 @@ export async function telechargerDiplome(infos: DiplomeInfos, lang: 'FR' | 'EN')
   const W = doc.internal.pageSize.getWidth();    // 842
   const H = doc.internal.pageSize.getHeight();   // 595
   const centre = W / 2;
+  const h = habillageDiplome(infos, fr);
+  const origine = infos.habillage === 'origine';
+  const CREME = origine ? rgb(h.papier) : CREME_VATA;
+  const LAITON = origine ? rgb(h.filet) : LAITON_VATA;
+  const LAITON_PALE = origine ? rgb('#DCBF7A') : LAITON_PALE_VATA;
+  const BRUN = origine ? rgb(h.monogrammeCouleur) : BRUN_VATA;
 
   // Le parchemin
   doc.setFillColor(...CREME);
@@ -72,15 +80,15 @@ export async function telechargerDiplome(infos: DiplomeInfos, lang: 'FR' | 'EN')
 
   // Les quatre coins
   const t = 26;
-  coin(doc, m1 + t, m1, 1, 1, t);
-  coin(doc, W - m1 - t, m1, -1, 1, t);
-  coin(doc, W - m1 - t, H - m1, -1, -1, t);
-  coin(doc, m1 + t, H - m1, 1, -1, t);
+  coin(doc, m1 + t, m1, 1, 1, t, LAITON);
+  coin(doc, W - m1 - t, m1, -1, 1, t, LAITON);
+  coin(doc, W - m1 - t, H - m1, -1, -1, t, LAITON);
+  coin(doc, m1 + t, H - m1, 1, -1, t, LAITON);
 
   let y = 104;
 
   doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...BRUN);
-  doc.text('INSPIRATA AYURVEDA', centre, y, { align: 'center', charSpace: 3.6 });
+  doc.text(h.monogramme.toUpperCase(), centre, y, { align: 'center', charSpace: 3.6 });
   y += 16;
 
   doc.setDrawColor(...LAITON); doc.setLineWidth(0.7);
@@ -105,7 +113,7 @@ export async function telechargerDiplome(infos: DiplomeInfos, lang: 'FR' | 'EN')
   y += 34;
 
   doc.setFont('times', 'normal'); doc.setFontSize(13); doc.setTextColor(...ENCRE_DOUCE);
-  const phrase = fr
+  const phrase = origine ? h.phrase : fr
     ? `pour avoir traversé ${infos.accompli} de l’${infos.programme},\net ouvert une à une les portes de sa perception.`
     : `for completing ${infos.accompli} of the ${infos.programme},\nopening the doors of perception one by one.`;
   const lignes = doc.splitTextToSize(phrase, W - 300);

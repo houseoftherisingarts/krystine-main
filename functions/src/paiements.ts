@@ -848,6 +848,16 @@ function rangDeModuleVata(nom?: string): number {
 
 // Sert un fichier de leçon à une acheteuse (URL signée 2 h). Les fichiers de
 // contenu vivent sous formations-contenu/ dans Storage, illisibles au public.
+/** Le rang (0 à 11) de la semaine ouverte d'EXPÉRIENCE ORIGINE 2, -1 avant le départ ou sans date. */
+function semaineOrigine2Ouverte(dateSortie?: string | null, maintenant = Date.now()): number {
+  if (!dateSortie) return -1;
+  const [a, mo, j] = dateSortie.split('-').map(Number);
+  // Minuit à Montréal (UTC-5 en janvier) : la page compte depuis le minuit local.
+  const debut = Date.UTC(a, (mo || 1) - 1, j || 1, 5);
+  if (maintenant < debut) return -1;
+  return Math.min(11, Math.floor((maintenant - debut) / 86400000 / 7));
+}
+
 export const obtenirLecon = onCall(
   { region: 'us-central1' },
   async (req) => {
@@ -860,9 +870,10 @@ export const obtenirLecon = onCall(
     const estAdmin = ADMIN_EMAILS.includes(String(req.auth.token.email || ''));
     // La date de départ du goutte-à-goutte de Vata, lue avec l'achat.
     let achatVata: { source?: string; acheteLe?: number } | null = null;
+    let fiche: { paywall?: boolean; statut?: string; dateSortie?: string | null } | undefined;
     if (!estAdmin) {
       const fSnap = await db.doc(`formations/${formationId}`).get();
-      const fiche = fSnap.data() as { paywall?: boolean; statut?: string } | undefined;
+      fiche = fSnap.data() as typeof fiche;
       // Une formation payante, ou une formation qui n'est pas publiée (Santé
       // la vie, vendue à l'épisode en niskas), ne se sert qu'à qui la possède.
       const paywall = !!fiche?.paywall || fiche?.statut !== 'publie';
@@ -901,6 +912,16 @@ export const obtenirLecon = onCall(
         if (!(m.data() as { accesVie?: boolean } | undefined)?.accesVie) {
           throw new HttpsError('permission-denied', 'Cette semaine n\'est pas encore ouverte. Elle s\'ouvrira à son tour, une semaine à la fois.');
         }
+      }
+    }
+    // EXPÉRIENCE ORIGINE 2 : une semaine à la fois à partir de la date de
+    // départ (formation.dateSortie), comme dans la page (src/pages/origine2/semaines.ts).
+    // Une semaine pas encore ouverte ne se sert à personne, sauf à l'admin;
+    // la barrière vaut aussi pour les documents de la leçon (docIndex).
+    if (!estAdmin && formationId === 'origine2') {
+      const m = /^semaine-(\d+)$/.exec(String((lSnap.data() as { mois?: string }).mois || ''));
+      if (m && Number(m[1]) - 1 > semaineOrigine2Ouverte(fiche?.dateSortie)) {
+        throw new HttpsError('permission-denied', 'Cette semaine n\'est pas encore ouverte. Elle s\'ouvrira à son tour, une semaine à la fois.');
       }
     }
     // Un document déposé sous la leçon : même barrière, autre chemin.

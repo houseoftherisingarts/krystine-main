@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ajouterDocumentLecon, poserVignetteLecon, urlDeDocumentLecon, type Formation, type Lecon } from '../../../firebase/formations';
-import { COHORTES, ORIGINE, pilierDeSemaine, rayonDeLecon, semaineDeLecon, titreDeLecon } from '../../../pages/origine2/piliers';
+import { COHORTES, COMPLEMENTS, LECON_CERTIFICAT, ORIGINE, nomDeDocument, pilierDeSemaine, rayonDeLecon, semaineDeLecon, titreDeLecon } from '../../../pages/origine2/piliers';
+import type { DiplomeInfos } from '../Diplome';
+import ATelechargerOrigine, { type DocAffiche } from './ATelechargerOrigine';
+import CertificatOrigine from './CertificatOrigine';
 import SeuilOrigine from './SeuilOrigine';
 import ListeOrigine from './ListeOrigine';
 import VoletLecon from './VoletLecon';
@@ -22,6 +25,10 @@ interface Props {
   isAdmin: boolean;
   lang: 'FR' | 'EN';
   verrouillee: (l: Lecon) => boolean;
+  /** La leçon de reprise, la même que celle que la page ouvre d'elle-même. */
+  reprise?: Lecon;
+  nomParticipante: string;
+  onDiplome: (infos: DiplomeInfos) => void;
   onOuvrir: (l: Lecon) => void;
   onTerminee: (l: Lecon) => void;
   onSuivante: () => void;
@@ -29,12 +36,31 @@ interface Props {
   modales?: React.ReactNode;
 }
 
-const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, terminees, url, chargement, erreur, isAdmin, lang, verrouillee, onOuvrir, onTerminee, onSuivante, onRafraichir, modales }) => {
+const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, terminees, url, chargement, erreur, isAdmin, lang, verrouillee, reprise, nomParticipante, onDiplome, onOuvrir, onTerminee, onSuivante, onRafraichir, modales }) => {
   const fr = lang === 'FR';
   const [apercu, setApercu] = useState<{ nom: string; url: string } | null>(null);
   const nbTerminees = lecons.filter(l => terminees[l.id]).length;
   const vignettePropre = (l: Lecon) => l.imageUrl || l.vignette || undefined;
-  const reprise = lecons.find(l => !terminees[l.id] && !verrouillee(l)) || lecons.find(l => !verrouillee(l));
+  // Les documents d'une leçon : les siens, plus ceux qu'elle emprunte à une autre leçon (COMPLEMENTS).
+  const docsDe = (l: Lecon): DocAffiche[] => {
+    const propres = (l.docs || []).map((d, index) => ({ nom: nomDeDocument(d.nom), pdf: /\.pdf$/i.test(d.nom), chemin: d.chemin, source: l.id, index }));
+    const de = COMPLEMENTS[id]?.[l.id]?.docsDe;
+    const autre = de ? lecons.find(x => x.id === de) : undefined;
+    const empruntes = (autre?.docs || []).map((d, index) => ({ nom: nomDeDocument(d.nom), pdf: /\.pdf$/i.test(d.nom), chemin: d.chemin, source: autre!.id, index }));
+    return [...propres, ...empruntes];
+  };
+  // « À télécharger » : tous les documents du cours, une seule fois chacun.
+  const tousLesDocs = (() => {
+    const vus = new Set<string>();
+    const out: DocAffiche[] = [];
+    // Seulement les leçons ouvertes : un document d'une semaine fermée attend sa semaine (le serveur refuse aussi).
+    for (const l of lecons.filter(x => !verrouillee(x))) for (const d of (l.docs || []).map((x, index) => ({ nom: nomDeDocument(x.nom), pdf: /\.pdf$/i.test(x.nom), chemin: x.chemin, source: l.id, index }))) {
+      if (vus.has(d.chemin)) continue;
+      vus.add(d.chemin); out.push(d);
+    }
+    return out;
+  })();
+  const estCertificat = !!courante && LECON_CERTIFICAT[id] === courante.id;
   const etiquette = COHORTES[id] ? (fr ? COHORTES[id].etiquette.fr : COHORTES[id].etiquette.en) : '';
 
   const position = (l: Lecon): string => {
@@ -45,12 +71,9 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
     return rayonDeLecon(l) === 'avant' ? (fr ? 'Avant le parcours' : 'Before the path') : (fr ? 'Bibliothèque' : 'Library');
   };
 
-  const ouvrirDocument = async (index: number) => {
-    if (!courante) return;
-    const d = courante.docs?.[index];
-    if (!d) return;
-    const u = await urlDeDocumentLecon(id, courante.id, index);
-    if (/\.pdf$/i.test(d.nom)) setApercu({ nom: d.nom, url: u });
+  const ouvrirDocument = async (d: DocAffiche) => {
+    const u = await urlDeDocumentLecon(id, d.source, d.index);
+    if (d.pdf) setApercu({ nom: d.nom, url: u });
     else window.open(u, '_blank', 'noopener');
   };
 
@@ -77,6 +100,9 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
         <div className={`mt-8 grid gap-6 ${apercu ? 'lg:grid-cols-[340px_minmax(0,1fr)_minmax(0,1fr)]' : 'lg:grid-cols-[340px_minmax(0,1fr)]'}`}>
           <aside className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:pr-1">
             <ListeOrigine lecons={lecons} courante={courante} terminees={terminees} verrouillee={verrouillee} vignetteDe={vignettePropre} onOuvrir={onOuvrir} lang={lang} />
+            <div className="mt-2">
+              <ATelechargerOrigine documents={tousLesDocs} lang={lang} onOuvrir={d => { void ouvrirDocument(d); }} />
+            </div>
           </aside>
 
           <div className="min-w-0">
@@ -96,7 +122,22 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
                 lang={lang}
                 onTerminee={() => onTerminee(courante)}
                 onSuivante={suivanteExiste ? onSuivante : undefined}
-                onOuvrirDocument={i => { void ouvrirDocument(i); }}
+                documents={docsDe(courante)}
+                lien={COMPLEMENTS[id]?.[courante.id]?.lien}
+                extra={estCertificat ? (
+                  <CertificatOrigine
+                    lecons={lecons}
+                    certificat={courante}
+                    terminees={terminees}
+                    nom={nomParticipante}
+                    numero={`${id.slice(-6).toUpperCase()}`}
+                    lang={lang}
+                    onTerminer={() => onTerminee(courante)}
+                    onDiplome={onDiplome}
+                    onReprendre={reprise && reprise.id !== courante.id ? () => onOuvrir(reprise) : undefined}
+                  />
+                ) : undefined}
+                onOuvrirDocument={d => { void ouvrirDocument(d); }}
                 onVignette={async f => { await poserVignetteLecon(id, courante.id, f); await onRafraichir(); }}
                 onDocument={async f => { await ajouterDocumentLecon(id, courante.id, f); await onRafraichir(); }}
               />

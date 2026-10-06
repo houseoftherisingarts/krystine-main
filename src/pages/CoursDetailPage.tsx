@@ -3,7 +3,7 @@ import { suivreLiveEnCours, type LiveEnCours } from '../firebase/lives';
 import { PORTES, porteDuMois, foyerOuvert, DEBUT_LABEL } from './foyer/portesData';
 import { rangSemaine, semaineOuverteRang } from './origine2/semaines';
 import CoursOrigine from '../components/cours/origine/CoursOrigine';
-import { estOrigine } from './origine2/piliers';
+import { estOrigine, leconsVisibles } from './origine2/piliers';
 import { FORMATION_VATA, SEMAINES_VATA, rangDeModule as rangModuleVata, semainesVataOuvertes, etiquetteSemaine } from './vata/semaines';
 import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, type QuestionLecon } from '../firebase/formations';
 import { Navigate, useParams, Link, useNavigate } from 'react-router-dom';
@@ -167,7 +167,7 @@ const CoursDetailPage: React.FC = () => {
     if (!id) return;
     setLoading(true);
     Promise.all([getFormation(id), getLecons(id)])
-      .then(([f, ls]) => { setFormation(f); setLecons(ls); })
+      .then(([f, ls]) => { setFormation(f); setLecons(leconsVisibles(id, ls)); })
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -236,11 +236,18 @@ const CoursDetailPage: React.FC = () => {
       .toLocaleDateString(lang === 'FR' ? 'fr-CA' : 'en-CA', { day: 'numeric', month: 'long', timeZone: 'America/Toronto' });
   };
 
-  // La page s'ouvre d'elle-même : sur la dernière leçon commencée, sinon sur
-  // la première leçon ouverte (l'introduction). Plus de « choisissez une leçon ».
+  // « Reprendre » : une seule réponse pour toute la page et pour tous les cours.
+  // La dernière leçon ouverte si elle n'est pas terminée, sinon la première
+  // leçon ouverte encore à faire, sinon la première leçon ouverte.
+  const leconDeReprise = (): Lecon | undefined =>
+    (derniere ? lecons.find(l => l.id === derniere && !terminees[l.id] && !verrouillee(l)) : undefined)
+    || lecons.find(l => !terminees[l.id] && !verrouillee(l))
+    || lecons.find(l => !verrouillee(l));
+
+  // La page s'ouvre d'elle-même sur la leçon de reprise. Plus de « choisissez une leçon ».
   useEffect(() => {
     if (courante || !accessible || lecons.length === 0 || (user && !progressionLue) || (user && !achatLu)) return;
-    const cible = (derniere && lecons.find(l => l.id === derniere && !verrouillee(l))) || lecons.find(l => !verrouillee(l));
+    const cible = leconDeReprise();
     if (cible) void ouvrir(cible);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courante, accessible, lecons, derniere, progressionLue, user, achatLu]);
@@ -297,8 +304,9 @@ const CoursDetailPage: React.FC = () => {
       marquerFormationTerminee(user.uid, id, jour).catch(() => {});
       setDiplome({
         nom: user.displayName || user.email || (lang === 'FR' ? 'Membre' : 'Member'),
-        programme: formation?.titre || 'Expérience Ayurveda',
-        accompli: lang === 'FR' ? `${total} leçons` : `${total} lessons`,
+        programme: estOrigine(id) ? 'EXPÉRIENCE ORIGINE' : (formation?.titre || 'Expérience Ayurveda'),
+        accompli: estOrigine(id) ? (lang === 'FR' ? 'les douze semaines' : 'the twelve weeks') : (lang === 'FR' ? `${total} leçons` : `${total} lessons`),
+        ...(estOrigine(id) ? { habillage: 'origine' as const } : {}),
         date: jour,
         numero: `${id.slice(-6).toUpperCase()} · ${user.uid.slice(0, 6).toUpperCase()}`,
       });
@@ -417,7 +425,7 @@ const CoursDetailPage: React.FC = () => {
   // compact, piliers repliés, vignette et dépôt dans le volet de la leçon.
   if (estOrigine(id) && accessible) {
     const rafraichir = async () => {
-      const ls = await getLecons(id);
+      const ls = leconsVisibles(id, await getLecons(id));
       setLecons(ls);
       setCourante(c => (c ? ls.find(l => l.id === c.id) || c : c));
     };
@@ -434,6 +442,9 @@ const CoursDetailPage: React.FC = () => {
         isAdmin={isAdmin}
         lang={lang}
         verrouillee={verrouillee}
+        reprise={leconDeReprise()}
+        nomParticipante={user?.displayName || user?.email || ''}
+        onDiplome={setDiplome}
         onOuvrir={l => { void ouvrir(l); }}
         onTerminee={l => { void basculerTerminee(l); }}
         onSuivante={suivante}
@@ -480,7 +491,7 @@ const CoursDetailPage: React.FC = () => {
             })() : undefined}
             lang={lang}
             reprise={(() => {
-              const p = lecons.find(l => !terminees[l.id] && !verrouillee(l)) || lecons.find(l => !verrouillee(l));
+              const p = leconDeReprise();
               if (!p) return undefined;
               const s = chapitreDeModule(p.moduleNom);
               return {

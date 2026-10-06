@@ -21,7 +21,26 @@ export interface DiplomeInfos {
   date: string;
   /** Le numéro discret en pied de parchemin. */
   numero: string;
+  /** L'habillage du cours : celui d'EXPÉRIENCE ORIGINE (olive, sable et or) au lieu du laiton. */
+  habillage?: 'origine';
 }
+
+/** Les couleurs et les mots propres à chaque habillage, partagés avec le PDF. */
+export const habillageDiplome = (infos: DiplomeInfos, fr: boolean) => infos.habillage === 'origine'
+  ? {
+    papier: '#F6EDD8', filet: '#B8923A', filetPale: 'rgba(184,146,58,0.55)', monogrammeCouleur: '#6A6233', lumiere: 'rgba(106,98,51,0.12)',
+    monogramme: 'EXPÉRIENCE ORIGINE',
+    phrase: fr
+      ? `pour avoir traversé ${infos.accompli} de l’${infos.programme}, cohorte fondatrice 2026.`
+      : `for completing ${infos.accompli} of ${infos.programme}, founding cohort 2026.`,
+  }
+  : {
+    papier: '#F7F3EA', filet: '#BA7B39', filetPale: 'rgba(186,123,57,0.55)', monogrammeCouleur: '#8B4A2F', lumiere: 'rgba(186,123,57,0.13)',
+    monogramme: 'Inspirata Ayurveda',
+    phrase: fr
+      ? `pour avoir traversé ${infos.accompli} de l’${infos.programme}, et ouvert une à une les portes de sa perception.`
+      : `for completing ${infos.accompli} of the ${infos.programme}, opening the doors of perception one by one.`,
+  };
 
 const MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -37,19 +56,20 @@ const GRAIN =
 
 const Diplome: React.FC<{ infos: DiplomeInfos; lang: 'FR' | 'EN' }> = ({ infos, lang }) => {
   const fr = lang === 'FR';
+  const h = habillageDiplome(infos, fr);
   return (
     <div
-      className="diplome-feuille relative mx-auto w-full overflow-hidden bg-[#F7F3EA] text-[#2b2419]"
-      style={{ aspectRatio: '297 / 210', containerType: 'inline-size' }}
+      className="diplome-feuille relative mx-auto w-full overflow-hidden text-[#2b2419]"
+      style={{ aspectRatio: '297 / 210', containerType: 'inline-size', background: h.papier }}
     >
       {/* Le grain du papier */}
       <span aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.055]" style={{ backgroundImage: GRAIN, backgroundSize: '200px 200px', mixBlendMode: 'multiply' }} />
       {/* La lumière chaude qui vient du haut */}
-      <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(72% 54% at 50% 0%, rgba(186,123,57,0.13), transparent 68%)' }} />
+      <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: `radial-gradient(72% 54% at 50% 0%, ${h.lumiere}, transparent 68%)` }} />
 
       {/* Le double filet de laiton */}
-      <span aria-hidden className="pointer-events-none absolute" style={{ inset: '2.6cqw', border: '1.5px solid #BA7B39' }} />
-      <span aria-hidden className="pointer-events-none absolute" style={{ inset: '3.4cqw', border: '0.5px solid rgba(186,123,57,0.55)' }} />
+      <span aria-hidden className="pointer-events-none absolute" style={{ inset: '2.6cqw', border: `1.5px solid ${h.filet}` }} />
+      <span aria-hidden className="pointer-events-none absolute" style={{ inset: '3.4cqw', border: `0.5px solid ${h.filetPale}` }} />
 
       {/* Les quatre coins ornés : un seul dessin, retourné en miroir. */}
       {[
@@ -62,8 +82,8 @@ const Diplome: React.FC<{ infos: DiplomeInfos; lang: 'FR' | 'EN' }> = ({ infos, 
         return (
           <span key={i} aria-hidden className="pointer-events-none absolute" style={{ ...pos, width: '4.4cqw', height: '4.4cqw', transform: tr }}>
             <svg viewBox="0 0 40 40" className="h-full w-full">
-              <path d="M2 16 C 2 7, 7 2, 16 2" fill="none" stroke="#BA7B39" strokeWidth="1.3" />
-              <circle cx="7.5" cy="7.5" r="1.7" fill="#BA7B39" />
+              <path d="M2 16 C 2 7, 7 2, 16 2" fill="none" stroke={h.filet} strokeWidth="1.3" />
+              <circle cx="7.5" cy="7.5" r="1.7" fill={h.filet} />
             </svg>
           </span>
         );
@@ -71,10 +91,10 @@ const Diplome: React.FC<{ infos: DiplomeInfos; lang: 'FR' | 'EN' }> = ({ infos, 
 
       <div className="absolute inset-0 flex flex-col items-center justify-center px-[9cqw] text-center">
         {/* Le monogramme */}
-        <p style={{ fontSize: '1.28cqw', letterSpacing: '0.42em' }} className="font-sans font-bold uppercase text-[#8B4A2F]">
-          Inspirata Ayurveda
+        <p style={{ fontSize: '1.28cqw', letterSpacing: '0.42em' }} className="font-sans font-bold uppercase" >
+          <span style={{ color: h.monogrammeCouleur }}>{h.monogramme}</span>
         </p>
-        <span aria-hidden className="mt-[1.5cqw] block" style={{ width: '7cqw', height: '1px', background: 'linear-gradient(90deg, transparent, #BA7B39, transparent)' }} />
+        <span aria-hidden className="mt-[1.5cqw] block" style={{ width: '7cqw', height: '1px', background: `linear-gradient(90deg, transparent, ${h.filet}, transparent)` }} />
 
         <h1 className="font-serif" style={{ fontSize: '4.3cqw', lineHeight: 1.02, marginTop: '2.1cqw', letterSpacing: '0.015em' }}>
           {fr ? 'Diplôme de complétion' : 'Certificate of Completion'}
@@ -90,9 +110,7 @@ const Diplome: React.FC<{ infos: DiplomeInfos; lang: 'FR' | 'EN' }> = ({ infos, 
         <span aria-hidden className="mt-[1.2cqw] block" style={{ width: '34cqw', height: '1px', background: 'rgba(90,74,55,0.32)' }} />
 
         <p className="font-sans" style={{ fontSize: '1.42cqw', lineHeight: 1.85, marginTop: '2.2cqw', maxWidth: '62cqw', color: '#4a3d2c' }}>
-          {fr
-            ? `pour avoir traversé ${infos.accompli} de l’${infos.programme}, et ouvert une à une les portes de sa perception.`
-            : `for completing ${infos.accompli} of the ${infos.programme}, opening the doors of perception one by one.`}
+          {h.phrase}
         </p>
 
         {/* La signature et la date, sur la même ligne de base */}

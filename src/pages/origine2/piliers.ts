@@ -90,7 +90,47 @@ export function titreDeLecon(titre: string): string {
 }
 
 /** Une leçon « texte » qui annonce un document sans en porter un : le PDF est resté sur Kajabi. */
-export function documentManquant(l: Lecon): boolean {
+export function documentManquant(l: Lecon, formationId?: string): boolean {
   if (l.type !== 'texte' || l.chemin || (l.docs && l.docs.length)) return false;
+  if (formationId && (COMPLEMENTS[formationId]?.[l.id] || LECON_CERTIFICAT[formationId] === l.id)) return false;
   return /pdf|télécharger|telecharger|tableau|outil|résumé|resume|questionnaire|journal de bord|document/i.test(`${l.titre} ${l.moduleNom || ''}`);
+}
+
+// ── Le cours des fondatrices, prêt pour leur arrivée (6 octobre 2026) ──
+
+/** Les leçons retirées de l'affichage, sans rien effacer dans la base :
+ *  les Clés d'Origine sont mises de côté pour EXPÉRIENCE ORIGINE 2 (Krystine, 6 oct. 2026). */
+export const LECONS_MASQUEES: Record<string, string[]> = {
+  'kajabi-2149348838': ['014', '015'],   // Clé 0 : le principe des opposés · Clé 1 : les 8 branches
+};
+
+export interface Complement {
+  /** La leçon dont on montre aussi les documents (le même fichier protégé, pas une copie). */
+  docsDe?: string;
+  /** Un lien qui remplace le document resté sur Kajabi. */
+  lien?: { fr: string; en: string; href: string };
+}
+
+/** Ce qui complète une leçon dont le document n'a jamais été joint. */
+export const COMPLEMENTS: Record<string, Record<string, Complement>> = {
+  'kajabi-2149348838': {
+    // L'exfoliation matinale : l'affiche du rituel d'activation matinale (brossage à sec), déjà dans les outils.
+    '043': { docsDe: '011' },
+    // Le questionnaire dosha : le quiz en ligne prend la place du PDF.
+    '029': { lien: { fr: 'Faire le questionnaire dosha en ligne', en: 'Take the dosha questionnaire online', href: '/quiz' } },
+  },
+};
+
+/** La leçon qui porte le certificat de complétion. */
+export const LECON_CERTIFICAT: Record<string, string> = { 'kajabi-2149348838': '091' };
+
+/** Les leçons que la participante voit (et qui comptent pour le certificat). */
+export function leconsVisibles<T extends { id: string }>(formationId: string, lecons: T[]): T[] {
+  const masquees = LECONS_MASQUEES[formationId];
+  return masquees ? lecons.filter(l => !masquees.includes(l.id)) : lecons;
+}
+
+/** Un nom de fichier montré comme un titre : sans extension ni soulignés. */
+export function nomDeDocument(nom: string): string {
+  return nom.replace(/\.[a-z0-9]{2,4}$/i, '').replace(/[_]+/g, ' ').replace(/\s+/g, ' ').trim();
 }

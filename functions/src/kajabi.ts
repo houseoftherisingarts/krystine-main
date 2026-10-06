@@ -254,6 +254,46 @@ export const kajabiUtiliserCode = onCall(
 // déjà (un achat fait sur le site) n'est jamais écrasée. Limitée aux
 // formations ci-dessous tant que Krystine n'en a pas décidé d'autres.
 export const FORMATIONS_RESTAURATION_AUTO = ['kajabi-2148687644'];
+
+// ── Les fondatrices d'EXPÉRIENCE ORIGINE, sans code (décision de Krystine, 6 oct. 2026) ──
+// Une fondatrice est reconnue à son adresse : une fiche de la collection
+// newsletter à cette adresse porte l'étiquette « origine-fondatrice » (les 115
+// de l'export Kajabi). Elle reçoit le cours dès qu'elle se connecte ou crée son
+// compte avec cette adresse, vérifiée par Firebase (sinon « à vérifier »).
+//
+// L'interrupteur : formations/kajabi-2149348838, champ accesFondatricesOuvert.
+// Absent ou false, personne n'entre, sauf les adresses de test ci-dessous.
+// Krystine l'allume dans l'admin › Formations › Options du cours des fondatrices.
+// La cohorte est close (12 juillet 2026) : tout le cours est ouvert, sans
+// goutte-à-goutte. Une preuve d'achat déjà là n'est jamais écrasée.
+export const FORMATION_FONDATRICES = 'kajabi-2149348838';
+const ETIQUETTE_FONDATRICES = 'origine-fondatrice';
+const FONDATRICES_TEST = ['krystine+fondatrice@inspiratanature.com', 'krystinestlaurent+fondatrice@gmail.com'];
+
+async function accorderFondatrice(db: ReturnType<typeof getFirestore>, uid: string, email: string, verifiee: boolean): Promise<'rien' | 'a_verifier' | 'accorde'> {
+  const ref = db.doc(`achatsFormations/${uid}/formations/${FORMATION_FONDATRICES}`);
+  if ((await ref.get()).exists) return 'rien';
+  const test = FONDATRICES_TEST.includes(email);
+  if (!test) {
+    const fiche = (await db.doc(`formations/${FORMATION_FONDATRICES}`).get()).data() as { accesFondatricesOuvert?: boolean; titre?: string } | undefined;
+    if (fiche?.accesFondatricesOuvert !== true) return 'rien';
+    const abonnees = await db.collection('newsletter').where('email', '==', email).limit(10).get();
+    if (!abonnees.docs.some(d => ((d.get('tags') || []) as string[]).includes(ETIQUETTE_FONDATRICES))) return 'rien';
+  }
+  if (!verifiee) return 'a_verifier';
+  const f = ((await db.doc(`formations/${FORMATION_FONDATRICES}`).get()).data() || {}) as { titre?: string; imageUrl?: string };
+  await ref.set({
+    titre: f.titre || 'Expérience Origine : Cohorte Fondatrice',
+    imageUrl: f.imageUrl || '',
+    montant: 0,
+    source: 'fondatrice',
+    restaurationAuto: true,
+    ...(test ? { test: true } : {}),
+    acheteLe: FieldValue.serverTimestamp(),
+  });
+  console.log(`[kajabiRestaurerAuto] fondatrice ${uid} (${email}) a reçu ${FORMATION_FONDATRICES}${test ? ' (adresse de test)' : ''}`);
+  return 'accorde';
+}
 const RESTAURABLE = ['a_restaurer', 'code_envoye'];
 
 export const kajabiRestaurerAuto = onCall(
@@ -266,9 +306,13 @@ export const kajabiRestaurerAuto = onCall(
     if (!email) return rien;
     const db = getFirestore();
 
+    // Les fondatrices d'EXPÉRIENCE ORIGINE retrouvent leur cours à la connexion.
+    const fondatrice = await accorderFondatrice(db, uid, email, req.auth.token?.email_verified === true);
+    const fin = { restaurees: fondatrice === 'accorde' ? [FORMATION_FONDATRICES] : [] as string[], aVerifier: fondatrice === 'a_verifier' };
+
     // Offre → formations couvertes par la restauration automatique.
     const achats = (await db.collection('kajabiRegistre').where('emailNormalise', '==', email).get()).docs;
-    if (!achats.length) return rien;
+    if (!achats.length) return fin;
     const offerIds = [...new Set(achats.map(d => String(d.get('kjbOfferId') || '')).filter(Boolean))];
     const offres = offerIds.length ? await db.getAll(...offerIds.map(id => db.doc(`kajabiOffres/${id}`))) : [];
     const formationsDe = new Map(offres.map(o => [o.id, ((o.get('formationIds') || []) as string[]).filter(f => FORMATIONS_RESTAURATION_AUTO.includes(f))]));
@@ -279,8 +323,8 @@ export const kajabiRestaurerAuto = onCall(
     if (autres.length) console.warn(`[kajabiRestaurerAuto] refus : ${email} déjà restauré pour un autre compte (${autres.map(d => d.id).join(', ')}), appel de ${uid}`);
 
     const aFaire = couverts.filter(d => RESTAURABLE.includes(String(d.get('statut'))) && !d.get('restaurePar'));
-    if (!aFaire.length) return rien;
-    if (req.auth.token?.email_verified !== true) return { restaurees: [] as string[], aVerifier: true };
+    if (!aFaire.length) return fin;
+    if (req.auth.token?.email_verified !== true) return { restaurees: fin.restaurees, aVerifier: true };
 
     const parFormation = new Map<string, { ids: string[]; offres: Set<string> }>();
     for (const d of aFaire) {
@@ -291,7 +335,7 @@ export const kajabiRestaurerAuto = onCall(
       }
     }
 
-    const restaurees: string[] = [];
+    const restaurees: string[] = [...fin.restaurees];
     for (const [formationId, info] of parFormation) {
       const ref = db.doc(`achatsFormations/${uid}/formations/${formationId}`);
       const f = ((await db.doc(`formations/${formationId}`).get()).data() || {}) as { titre?: string; imageUrl?: string };
@@ -319,6 +363,6 @@ export const kajabiRestaurerAuto = onCall(
       if (fait) restaurees.push(formationId);
     }
     if (restaurees.length) console.log(`[kajabiRestaurerAuto] ${uid} (${email}) a retrouvé ${restaurees.join(', ')}`);
-    return { restaurees, aVerifier: false };
+    return { restaurees, aVerifier: fin.aVerifier };
   },
 );
