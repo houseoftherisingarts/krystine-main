@@ -169,8 +169,8 @@ const DrawRule: React.FC<{ className?: string; color?: string; delay?: number }>
 const ChapterHead: React.FC<{ no: string; kicker: string; title: string; lede?: string; className?: string; sombre?: boolean }> = ({ no, kicker, title, lede, className = '', sombre }) => (
   <Reveal className={className}>
     <div className="flex flex-col items-start gap-3 sm:flex-row sm:gap-[clamp(1.25rem,2.5vw,2.25rem)]">
-      <span aria-hidden className="v2-serif font-light leading-[0.85] text-[2.75rem] sm:text-[clamp(4rem,8vw,7rem)] select-none" style={{ color: sombre ? C.brassLight : C.accent }}>{no}</span>
-      <div className="min-w-0 sm:pt-[0.4em]">
+      {/* Les chiffres romains des chapitres sont retirés : ils mélangeaient la lectrice (Krystine, 6 oct. 2026). */}
+      <div className="min-w-0" data-chapitre={no}>
         <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: sombre ? C.ivory : C.accentInk }}>{kicker}</p>
         <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)]" style={{ color: sombre ? C.paper : C.ink }}>{title}</h2>
         {lede && <p className="mt-5 v2-serif text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug max-w-[46ch]" style={{ color: sombre ? C.ivory : C.inkSoft }}>{lede}</p>}
