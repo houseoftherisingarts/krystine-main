@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-06T21:59:01.115Z",
+  "generatedAt": "2026-10-06T22:24:26.405Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2338,6 +2338,20 @@
       "folder": "rituels-vivants",
       "kind": "video",
       "size": 3981763
+    },
+    {
+      "path": "/rituels-vivants/extrait-krystine-parle-poster.webp",
+      "name": "extrait-krystine-parle-poster.webp",
+      "folder": "rituels-vivants",
+      "kind": "image",
+      "size": 42744
+    },
+    {
+      "path": "/rituels-vivants/extrait-krystine-parle.mp4",
+      "name": "extrait-krystine-parle.mp4",
+      "folder": "rituels-vivants",
+      "kind": "video",
+      "size": 881413
     },
     {
       "path": "/rituels-vivants/extrait-ouverture-poster.webp",
