@@ -6,7 +6,7 @@
 // invisible ouvre TOUTES les pages publiques du site EN LIGNE sur trois
 // appareils (téléphone 390×844, tablette 820×1180, ordinateur 1440×900),
 // puis refait les parcours d'une visiteuse (quiz, VATA jusqu'à la caisse,
-// Rituels vivants jusqu'à la caisse, création de compte jusqu'à la fenêtre).
+// Rituels essentiels jusqu'à la caisse, création de compte jusqu'à la fenêtre).
 // Rien n'est soumis, rien n'est payé.
 //
 // Le résultat va dans Firestore : sante/verifComplete (le dernier) et
@@ -303,8 +303,8 @@ async function parcours(navigateur, app) {
     noter('Case « Je ne suis pas un robot » au résultat du quiz', robot > 0, robot ? 'présente' : 'ABSENTE : le formulaire ne peut pas partir');
   } catch (e) { noter('Quiz jusqu’au formulaire du résultat', false, court(e.message.split('\n')[0])); }
 
-  // VATA puis Rituels vivants : du bouton d'achat jusqu'au formulaire Stripe (rien n'est rempli ni payé).
-  for (const [nom, adresse, bouton] of [['VATA jusqu’à la caisse Stripe', '/vata', /commencer/i], ['Rituels vivants jusqu’à la caisse Stripe', '/rituels-vivants', null]]) {
+  // VATA puis Rituels essentiels : du bouton d'achat jusqu'au formulaire Stripe (rien n'est rempli ni payé).
+  for (const [nom, adresse, bouton] of [['VATA jusqu’à la caisse Stripe', '/vata', /commencer/i], ['Rituels essentiels jusqu’à la caisse Stripe', '/rituels-essentiels', null]]) {
     try {
       await page.goto(SITE + adresse, { waitUntil: 'load', timeout: 45000 });
       await page.waitForTimeout(2000);

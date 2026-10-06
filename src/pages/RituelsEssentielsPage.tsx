@@ -6,8 +6,8 @@ import { getProducts, type ShopifyProduct } from '../shopify';
 import { cheminPaiement } from '../lib/cheminCours';
 
 /**
- * Rituels vivants : la page de vente de la petite offre d'entrée (27 $),
- * rapatriée de l'ancienne page krystinestlaurent.com/RITUELSVIVANTS
+ * Rituels essentiels : la page de vente de la petite offre d'entrée (27 $),
+ * rapatriée de l'ancienne page krystinestlaurent.com/RITUELSVIVANTS, renommée Rituels essentiels le 6 oct. 2026
  * (Krystine, 4 oct. 2026). Les mots sont ceux de Krystine; seuls les mots
  * proscrits et le possessif du corps ont été ajustés.
  *
@@ -17,12 +17,12 @@ import { cheminPaiement } from '../lib/cheminCours';
  * vertébrale, même planche tarif chevauchant une bande sombre, même FAQ et
  * même barre d'achat mobile. L'accent de la page est le cuivre #BA7B39 et
  * le doré #7d6330 du site, et la bande sombre le vert profond du V2.
- * L'achat passe par la page de paiement commune (/paiement/rituels-vivants).
+ * L'achat passe par la page de paiement commune (/paiement/rituels-vivants, l’identifiant reste celui de la première édition).
  */
 
 const ID = 'rituels-vivants';
 const PAIEMENT = cheminPaiement(ID);
-const CTA = 'J’accède aux Rituels vivants (27 $)';
+const CTA = 'J’accède aux Rituels essentiels (27 $)';
 
 const ease = [0.16, 0.8, 0.24, 1] as const;
 const APPEAR = 1.1;
@@ -123,7 +123,7 @@ const SOINS: { handle: string; capsule: string; nom: string }[] = [
 ];
 
 // Le guide PDF, inclus avec l'achat (leçon protégée formations/rituels-vivants/lecons/012).
-const GUIDE = <><B>Le guide des Rituels vivants</B>, à télécharger (<B>14 pages</B>)*</>;
+const GUIDE = <><B>Le guide des Rituels essentiels</B>, à télécharger (<B>14 pages</B>)*</>;
 const NOTE_GUIDE = '* Tiré du premier tome de Krystine St-Laurent, Nature & Ayurveda.';
 
 const DOSHAS: [string, string, string][] = [
@@ -284,14 +284,14 @@ const Cover: React.FC = () => (
   <header className={`relative w-full min-h-screen flex flex-col ${GX} pt-[clamp(6.5rem,12vh,9rem)] pb-[clamp(1.5rem,4vh,3rem)]`}>
     <div className="relative flex-1 grid items-center gap-y-12 gap-x-[clamp(2rem,4vw,4rem)] py-[clamp(2.5rem,6vh,4.5rem)] lg:grid-cols-[minmax(0,1fr)_clamp(300px,38vw,580px)]">
       <div className="relative min-w-0">
-        <p className="mb-4 text-[0.66rem] font-semibold uppercase tracking-[0.3em]" style={{ color: C.accentInk }}>Une introduction à l’Ayurveda</p>
+        <p className="mb-4 text-[0.66rem] font-semibold uppercase tracking-[0.3em]" style={{ color: C.accentInk }}>Inspirés de l’Ayurveda</p>
         <div className="flex items-center gap-5 mb-8">
           <Medallion Icon={FlowerLotus} size={46} />
           <p className="text-[0.62rem] sm:text-[0.7rem] uppercase tracking-[0.14em] sm:tracking-[0.34em]" style={{ color: C.accentInk }}>10 capsules vidéo + 1 bonus <span className="whitespace-nowrap">· {totalLisible}</span></p>
         </div>
         <h1 className="v2-serif font-light leading-[0.92] text-[clamp(3rem,6.8vw,6.2rem)]" style={{ color: C.ink }}>
           <MaskLine delay={0.05}>Rituels</MaskLine>
-          <MaskLine delay={0.16}>vivants</MaskLine>
+          <MaskLine delay={0.16}>essentiels</MaskLine>
         </h1>
         <span aria-hidden className="mt-6 block h-[2px] w-16" style={{ background: C.accent }} />
         <Reveal delay={0.42} y={20} className="mt-8">
@@ -510,7 +510,7 @@ const EnImages: React.FC = () => {
       <div className="grid gap-y-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-x-[clamp(3rem,6vw,6rem)] items-center">
         <div>
           <Reveal>
-            <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.accentInk }}>Rituels vivants</p>
+            <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.accentInk }}>Rituels essentiels</p>
             <p className="mt-6 max-w-[46ch] text-[1rem] leading-[1.85]" style={{ color: C.inkSoft }}>
               L’Ayurveda, <B>l’automassage</B>, les <B>soins du nez et de la bouche</B>, les soins des <B>mains et des pieds</B>, puis une invitation concrète autour des plantes et du stress.
             </p>
@@ -556,7 +556,7 @@ const EnImages: React.FC = () => {
 const Offre: React.FC = () => (
   <section id="offre" className="w-full scroll-mt-24">
     <div className={`w-full ${GX} pt-[clamp(3.25rem,9vh,7rem)] pb-[clamp(7rem,16vh,10rem)]`} style={{ background: VERT }}>
-      <ChapterHead sombre no="IV" kicker="L’offre · Rituels vivants" title="Passez de la surstimulation à la clarté" />
+      <ChapterHead sombre no="IV" kicker="L’offre · Rituels essentiels" title="Passez de la surstimulation à la clarté" />
     </div>
     <div className={`relative w-full ${GX} pb-[clamp(3.25rem,9vh,7rem)] -mt-[clamp(4.5rem,11vh,6.5rem)]`}>
       <Reveal>
@@ -564,12 +564,12 @@ const Offre: React.FC = () => (
           <span className="absolute inset-x-0 top-0 h-[3px]" style={{ background: C.accent }} aria-hidden />
           <article className="grid gap-y-2 p-[clamp(1.75rem,3.5vw,3.25rem)] lg:grid-cols-[0.95fr_1.05fr] lg:gap-x-[clamp(3rem,5vw,5rem)]">
             <div className="flex flex-col">
-              {/* La bannière de la première édition (krystinestlaurent.com/RITUELSVIVANTS). */}
+              {/* La bannière de la première édition (krystinestlaurent.com/RITUELSVIVANTS, renommée Rituels essentiels le 6 oct. 2026). */}
               <div className="relative">
                 <span className="pointer-events-none absolute -inset-1.5 border" style={{ borderColor: 'rgba(156,122,68,0.4)' }} aria-hidden />
-                <img src={img('kajabi-banniere')} alt="Rituels vivants essentiels, la bannière de la première édition" loading="lazy" className="block aspect-[3/1] w-full object-cover" />
+                <img src={img('kajabi-banniere')} alt="Rituels essentiels, la bannière de la première édition" loading="lazy" className="block aspect-[3/1] w-full object-cover" />
               </div>
-              <h3 className="mt-8 v2-serif font-light text-[clamp(1.7rem,2.6vw,2.25rem)] leading-[1.1]" style={{ color: C.ink }}>Rituels vivants</h3>
+              <h3 className="mt-8 v2-serif font-light text-[clamp(1.7rem,2.6vw,2.25rem)] leading-[1.1]" style={{ color: C.ink }}>Rituels essentiels</h3>
               <div className="mt-6 flex items-end gap-3.5">
                 <span className="v2-serif font-light text-[clamp(2.8rem,4.4vw,3.8rem)] leading-none tabular-nums" style={{ color: C.ink }}>27 $</span>
               </div>
@@ -730,9 +730,9 @@ const QuatriemeCouverture: React.FC = () => (
     <div className={`relative ${GX} py-[clamp(3.75rem,11vh,9rem)] text-center`}>
       <Reveal>
         <p className="flex items-center justify-center gap-3 text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.brassLight }}>
-          <FlowerLotus size={15} weight="light" aria-hidden /> Rituels vivants · 27 $
+          <FlowerLotus size={15} weight="light" aria-hidden /> Rituels essentiels · 27 $
         </p>
-        <h2 className="mt-7 mx-auto v2-serif font-light leading-[1.08] text-[clamp(2.2rem,5vw,3.9rem)] max-w-[22ch]" style={{ color: C.cream }}>Rituels vivants</h2>
+        <h2 className="mt-7 mx-auto v2-serif font-light leading-[1.08] text-[clamp(2.2rem,5vw,3.9rem)] max-w-[22ch]" style={{ color: C.cream }}>Rituels essentiels</h2>
         <p className="mt-7 mx-auto v2-serif text-[clamp(1.1rem,2vw,1.5rem)] leading-snug max-w-[40ch]" style={{ color: 'rgba(244,239,230,0.75)' }}>
           Quand vos sens sont surchargés : des <B clair>pratiques courtes</B> qui redonnent ancrage et direction
         </p>
@@ -765,7 +765,7 @@ const BarreAchat: React.FC = () => {
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
             <p className="v2-serif text-[1.35rem] leading-none tabular-nums" style={{ color: C.ink }}>27 $</p>
-            <p className="mt-1 text-[0.58rem] uppercase tracking-[0.16em]" style={{ color: 'rgba(28,23,18,0.6)' }}>Rituels vivants · accès immédiat</p>
+            <p className="mt-1 text-[0.58rem] uppercase tracking-[0.16em]" style={{ color: 'rgba(28,23,18,0.6)' }}>Rituels essentiels · accès immédiat</p>
           </div>
           <Link to={PAIEMENT} tabIndex={visible ? 0 : -1} className="inline-flex min-h-[48px] shrink-0 items-center gap-2 px-5 text-[0.64rem] uppercase tracking-[0.14em]" style={{ background: C.ink, color: C.cream }}>
             J’accède <ArrowRight size={14} weight="regular" />
@@ -778,7 +778,7 @@ const BarreAchat: React.FC = () => {
 
 /* ════════════════════════ Page ════════════════════════ */
 
-const RituelsVivantsPage: React.FC = () => {
+const RituelsEssentielsPage: React.FC = () => {
   const [produits, setProduits] = useState<ShopifyProduct[]>([]);
   useEffect(() => {
     getProducts(60, 'FR')
@@ -821,4 +821,4 @@ const RituelsVivantsPage: React.FC = () => {
   );
 };
 
-export default RituelsVivantsPage;
+export default RituelsEssentielsPage;

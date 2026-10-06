@@ -133,7 +133,7 @@ async function enBase64Reduit(blob: Blob): Promise<string> {
 
 const CACHEE = (p: string) => p.startsWith('/admin') || p === '/compte' || p.startsWith('/compte/');
 // Pages où une barre d'achat fixe occupe le bas de l'écran au téléphone.
-const AVEC_BARRE = (p: string) => p.startsWith('/vata') || p.startsWith('/rituels-vivants');
+const AVEC_BARRE = (p: string) => p.startsWith('/vata') || p.startsWith('/rituels-essentiels');
 // Pages de cours, de paiement et de vente avec barre d'achat (5 oct. 2026) : la pastille se réduit à un
 // petit rond « ? » à droite, monté d'un cran, pour ne couvrir ni l'avis de
 // semaine fermée, ni la liste des leçons, ni le texte sous le bouton de la

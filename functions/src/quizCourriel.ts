@@ -122,15 +122,15 @@ export const REPERE: Record<Dosha, { libelle: string; titre: string; moment: str
 };
 
 // ─── L'offre accessible tout de suite, la même pour tous les résultats ──────
-// Les Rituels vivants (27 $), page /rituels-vivants. Miroir de la carte de
+// Les Rituels essentiels (27 $), page /rituels-essentiels. Miroir de la carte de
 // l'écran du résultat (src/pages/QuizLoeuvre.tsx) : toute retouche aux deux endroits.
 export const RITUELS_VIVANTS = {
-  libelle: 'Les Rituels vivants · 27 $',
+  libelle: 'Les Rituels essentiels · 27 $',
   titre: 'Pour commencer dès maintenant à intégrer l’Ayurveda, simplement',
-  phrase: 'Votre lecture vous dit quoi équilibrer; les Rituels vivants vous montrent comment, en moins de 5 minutes par jour. Des gestes pratiqués depuis près de 40 ans : l’automassage, les soins du nez, de la bouche, des mains et des pieds. 10 capsules courtes et un bonus.',
+  phrase: 'Votre lecture vous dit quoi équilibrer; les Rituels essentiels vous montrent comment, en moins de 5 minutes par jour. Des gestes pratiqués depuis près de 40 ans : l’automassage, les soins du nez, de la bouche, des mains et des pieds. 10 capsules courtes et un bonus.',
   prix: '27 $',
   bouton: 'Je commence ce soir',
-  lien: `${SITE}/rituels-vivants?via=courriel-resultat`,
+  lien: `${SITE}/rituels-essentiels?via=courriel-resultat`,
 };
 export const LIEN_PODCAST = `${SITE}/podcast`;
 

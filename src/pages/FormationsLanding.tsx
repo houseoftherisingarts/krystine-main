@@ -68,7 +68,7 @@ const PORTES: Porte[] = [
 ];
 
 // Ce qui s'achète dès maintenant, en tête de page (Krystine, 5 oct. 2026) :
-// VATA Essentiel et Rituels vivants, en cartes V2 avec bouton noir carré.
+// VATA Essentiel et Rituels essentiels, en cartes V2 avec bouton noir carré.
 interface Disponible { key: string; tag: string; titre: string; sous: string; corps: string; prix?: string; cta: string; href: string; image: string; cadrage: string }
 const DISPONIBLES: Disponible[] = [
   {
@@ -78,10 +78,10 @@ const DISPONIBLES: Disponible[] = [
     cta: 'Découvrir VATA Essentiel', href: '/vata', image: '/vata/carte-eventail.jpg', cadrage: 'object-[50%_40%]',
   },
   {
-    key: 'rituels', tag: 'Une introduction à l’Ayurveda', titre: 'Rituels vivants',
+    key: 'rituels', tag: 'Inspirés de l’Ayurveda', titre: 'Rituels essentiels',
     sous: 'Des pratiques courtes qui redonnent ancrage et direction.',
     corps: '10 capsules vidéo et un bonus : l’automassage, les soins du nez et de la bouche, les soins des mains et des pieds.',
-    prix: '27 $', cta: 'Découvrir Rituels vivants', href: '/rituels-vivants', image: '/krystine-portrait.jpg', cadrage: 'object-[50%_28%]',
+    prix: '27 $', cta: 'Découvrir Rituels essentiels', href: '/rituels-essentiels', image: '/krystine-portrait.jpg', cadrage: 'object-[50%_28%]',
   },
 ];
 

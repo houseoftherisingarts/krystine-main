@@ -20,6 +20,7 @@ const FR_ONLY_PREFIXES = [
   '/origine',
   '/podcast',
   '/vata',
+  '/rituels-essentiels',
   '/rituels-vivants',
   '/salon',
 ];

@@ -1,7 +1,7 @@
 {
   "sequence": {
     "id": "accueil-rituels-vivants",
-    "titre": "Accueil · Rituels vivants",
+    "titre": "Accueil · Rituels essentiels",
     "declencheur": {
       "type": "achat",
       "formationId": "rituels-vivants"
@@ -13,7 +13,7 @@
       "cle": "bienvenue",
       "titre": "Étape 1 · Bienvenue (tout de suite)",
       "delaiHeures": 0,
-      "subject": "Vos Rituels vivants vous attendent",
+      "subject": "Vos Rituels essentiels vous attendent",
       "preheader": "Vos 10 capsules et votre bonus sont ouverts dans votre espace.",
       "bandeau": {
         "fond": "#141311",
@@ -27,7 +27,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Bienvenue dans les Rituels vivants !"
+          "text": "Bienvenue dans les Rituels essentiels !"
         },
         {
           "type": "paragraph",
@@ -154,7 +154,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Les Rituels vivants sont une porte d'entrée. Pour vivre toute la saison froide avec des repères semaine après semaine, VATA Essentiel prend le relais : 16 capsules, 19 rituels, un guide de 204 pages."
+          "text": "Les Rituels essentiels sont une porte d'entrée. Pour vivre toute la saison froide avec des repères semaine après semaine, VATA Essentiel prend le relais : 16 capsules, 19 rituels, un guide de 204 pages."
         },
         {
           "type": "button",

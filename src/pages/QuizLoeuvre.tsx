@@ -27,7 +27,7 @@ import { Atmosphere } from '../components/motion/loeuvre';
  * L'écran du résultat porte une seule action à la fois (Krystine, 4 oct.
  * 2026) : la lecture, puis « Recevoir ma lecture et sa suite », puis, après
  * l'accord seulement, le repère en cadeau, puis une seule offre accessible
- * tout de suite, la même pour tous : les Rituels vivants (Krystine, 5 oct. 2026).
+ * tout de suite, la même pour tous : les Rituels essentiels (Krystine, 5 oct. 2026).
  * Motion : transitions de question en slide+fade (AnimatePresence), filet de
  * progression qui se trace (scaleX), résultat révélé en rideau (clip-path),
  * médaillons qui éclosent (spring), mot Fraunces en profondeur (parallax).
@@ -592,7 +592,7 @@ const VotreLecture: React.FC<{ L: Lecture; ink: string; percentages: { vata: num
   </>
 );
 
-/* Étape 4, après le repère : les Rituels vivants (27 $), la même offre pour
+/* Étape 4, après le repère : les Rituels essentiels (27 $), la même offre pour
    tous les résultats (Krystine, 5 oct. 2026). Miroir de RITUELS_VIVANTS
    (functions/src/quizCourriel.ts) : toute retouche aux deux endroits. La liste
    d'attente du programme saisonnier reste en petit lien souligné dessous. */
@@ -600,18 +600,18 @@ const LIEN_ATTENTE: Partial<Record<DoshaType, string>> = {
   pitta: '/liste-attente?programme=pitta',
   kapha: '/liste-attente?programme=kapha',
 };
-const CarteRituelsVivants: React.FC<{ dosha: DoshaType | null }> = ({ dosha }) => {
+const CarteRituelsEssentiels: React.FC<{ dosha: DoshaType | null }> = ({ dosha }) => {
   const attente = dosha ? LIEN_ATTENTE[dosha] : undefined;
   return (
     <div className="mt-10 mx-auto max-w-[34rem] border border-[#9c7a44] bg-[#f4efe6] px-6 py-8 md:px-9 text-center">
-      <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#7d6330]">Les Rituels vivants · 27 $</p>
+      <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#7d6330]">Les Rituels essentiels · 27 $</p>
       <h3 className="mt-3 v2-serif font-light text-[#1c1712] leading-[1.05] text-[clamp(1.7rem,3vw,2.3rem)]">Pour commencer dès maintenant à intégrer l’Ayurveda, simplement</h3>
       <p className="mt-4 text-[0.95rem] leading-[1.75] text-[#3a2f23] max-w-[40ch] mx-auto">
-        Votre lecture vous dit quoi équilibrer; les Rituels vivants vous montrent comment, en moins de 5 minutes par jour. Des gestes pratiqués depuis près de 40 ans : l’automassage, les soins du nez, de la bouche, des mains et des pieds. 10 capsules courtes et un bonus.
+        Votre lecture vous dit quoi équilibrer; les Rituels essentiels vous montrent comment, en moins de 5 minutes par jour. Des gestes pratiqués depuis près de 40 ans : l’automassage, les soins du nez, de la bouche, des mains et des pieds. 10 capsules courtes et un bonus.
       </p>
       <p className="mt-5 v2-serif font-light text-[1.9rem] text-[#1c1712]">27 $</p>
       <a
-        href="/rituels-vivants?via=quiz"
+        href="/rituels-essentiels?via=quiz"
         onClick={() => trackInterne('quiz_clic_rituels_vivants')}
         className="mt-6 w-full inline-flex items-center justify-center gap-3 bg-[#1c1712] px-8 py-4 text-[0.7rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44] min-h-[44px]"
       >
@@ -922,7 +922,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                     <p className="mt-9 text-[0.9rem] leading-relaxed text-[#3a2f23]">Votre résultat est en route vers votre courriel.</p>
                   )}
                   {blocSuite}
-                  {lang === 'FR' && <CarteRituelsVivants dosha={L.branche === 'equilibre' ? null : L.montres[0]} />}
+                  {lang === 'FR' && <CarteRituelsEssentiels dosha={L.branche === 'equilibre' ? null : L.montres[0]} />}
                   <button
                     type="button"
                     onClick={() => { trackInterne('quiz_clic_boutique'); navigate('/boutique'); }}

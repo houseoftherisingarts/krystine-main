@@ -128,7 +128,7 @@ for (const l of LECONS) {
 }
 if (!A_BLANC) {
   await ecrire(tk, `formations/${ID}`, {
-    titre: 'Rituels vivants : une introduction à l’Ayurveda',
+    titre: 'Rituels essentiels inspirés de l’Ayurveda',
     description: 'Dix capsules vidéo courtes pour apaiser le système nerveux, mieux respirer, libérer les tensions des mains et des pieds, et revenir à un cap clair, en moins de 5 minutes par jour.',
     statut: 'masque', paywall: true, prix: 27, categorie: 'cours', evergreen: true, kajabiId: '2148356971',
     imageUrl: '', creeLe: new Date(), maj: new Date(),

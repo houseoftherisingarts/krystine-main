@@ -124,7 +124,7 @@ export const relancerPaiements = onSchedule(
     for (const d of aSuivre.docs) {
       const r = d.data() as { email: string; formationId: string; uid?: string; prenom?: string; titre?: string };
       // La lettre 2 décrit des capsules à écouter : elle est réservée à VATA
-      // (Krystine, 6 oct. 2026). Les Rituels vivants (vidéos) et les autres
+      // (Krystine, 6 oct. 2026). Les Rituels essentiels (vidéos) et les autres
       // formations s'arrêtent à la lettre 1.
       if (r.formationId !== 'kajabi-2148687644') {
         await d.ref.update({ etape: 'sans-lettre-2', fermeeLe: FieldValue.serverTimestamp() });

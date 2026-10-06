@@ -80,8 +80,8 @@ const FoyerPage = lazy(() => import('./src/pages/FoyerPage'));
 const FoyerEssaiPage = lazy(() => import('./src/pages/foyer/FoyerEssaiPage'));
 // L'Expérience Origine 2 : page de vente native dans la langue du Foyer (9 sept. 2026)
 const OrigineDeuxPage = lazy(() => import('./src/pages/OrigineDeuxPage'));
-// Rituels vivants : la petite offre d'entrée à 27 $ (Krystine, 4 oct. 2026)
-const RituelsVivantsPage = lazy(() => import('./src/pages/RituelsVivantsPage'));
+// Rituels essentiels (ex-Rituels vivants) : la petite offre d'entrée à 27 $ (Krystine, 4 oct. 2026)
+const RituelsEssentielsPage = lazy(() => import('./src/pages/RituelsEssentielsPage'));
 // Expérience Vata — portée du bundle statique vers React (style L'Œuvre)
 const VataExperience = lazy(() => import('./src/pages/VataExperience'));
 // Pages publiques rebâties from scratch en L'Œuvre (back-end préservé)
@@ -135,6 +135,13 @@ const RouteFade: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 const VersFoyer: React.FC = () => {
   const { pathname, search, hash } = useLocation();
   return <Navigate to={`/foyer${pathname}${search}${hash}`} replace />;
+};
+
+// Rituels vivants s'appelle Rituels essentiels depuis le 6 oct. 2026 : l'ancienne
+// adresse mène à la nouvelle en gardant ?via=… des lettres, des pubs et du quiz.
+const VersRituelsEssentiels: React.FC = () => {
+  const { search, hash } = useLocation();
+  return <Navigate to={`/rituels-essentiels${search}${hash}`} replace />;
 };
 
 const Chrome: React.FC = () => {
@@ -280,7 +287,8 @@ const App: React.FC = () => (
           <Route path="/direct" element={<DirectPage />} />
           {/* Vata porté en React (remplace le bundle statique /vata) */}
           <Route path="/vata" element={<VataExperience />} />
-          <Route path="/rituels-vivants" element={<RituelsVivantsPage />} />
+          <Route path="/rituels-essentiels" element={<RituelsEssentielsPage />} />
+          <Route path="/rituels-vivants" element={<VersRituelsEssentiels />} />
           <Route path="/krystine"        element={<KrystineV2 />} />
 
           {/* ── Concepts de refonte (comparaison) ─────────────────────── */}

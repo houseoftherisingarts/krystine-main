@@ -14,6 +14,8 @@
       { "source": "/speaking", "destination": "/conferenciere", "type": 301 },
       { "source": "/speaking/", "destination": "/conferenciere", "type": 301 },
       { "source": "/speaking/index.html", "destination": "/conferenciere", "type": 301 },
+      { "source": "/rituels-vivants", "destination": "/rituels-essentiels", "type": 301 },
+      { "source": "/rituels-vivants/", "destination": "/rituels-essentiels", "type": 301 },
       {
         "source": "/",
         "destination": "/accueil",
@@ -134,8 +136,8 @@
         "destination": "/og/vata.html"
       },
       {
-        "source": "/rituels-vivants",
-        "destination": "/og/rituels-vivants.html"
+        "source": "/rituels-essentiels",
+        "destination": "/og/rituels-essentiels.html"
       },
       {
         "source": "/origine-2",
