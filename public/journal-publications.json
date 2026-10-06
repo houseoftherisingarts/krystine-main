@@ -6563,5 +6563,39 @@
       "public/assets-manifest.json",
       "src/contexts/GamificationContext.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-06T19:09:01.685Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "8dbed946",
+    "message": "VATA porte son titre officiel « L'Expérience Ayurveda · VATA Essentiel » (haut du cours /cours/vata, /vata, /formations, Mes formations, paiement, confirmation d'achat); liens des suites du quiz marqués; relance : lettre 2 pour VATA seulement; rattrapage des lectures du quiz",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/confirmationAchat.ts",
+      "functions/src/index.ts",
+      "functions/src/paiements.ts",
+      "functions/src/quiz.ts",
+      "functions/src/relancePaiement.ts",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "public/vh/vexelhotjar.js",
+      "src/components/cours/Diplome.tsx",
+      "src/components/cours/SeuilVata.tsx",
+      "src/firebase/formations.ts",
+      "src/firebase/growth.ts",
+      "src/lib/provenance.ts",
+      "src/lib/titreFormation.ts",
+      "src/pages/DemoDiplome.tsx",
+      "src/pages/FormationsLanding.tsx",
+      "src/pages/PaiementFormation.tsx",
+      "src/pages/VataExperience.tsx",
+      "src/pages/client/ClientFormations.tsx",
+      "src/pages/cours/programmes.ts",
+      "src/vexelhotjar/tracker.ts"
+    ]
   }
 ]
