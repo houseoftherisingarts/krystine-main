@@ -454,67 +454,89 @@ const FormationsSection: React.FC = () => {
   };
 
   const publiees = formations.filter(f => f.statut === 'publie').length;
+  const [recherche, setRecherche] = useState('');
+  const norm = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const affichees = [...formations]
+    .filter(f => norm(f.titre).includes(norm(recherche.trim())))
+    .sort((x, y) => (x.statut === 'publie' ? 0 : 1) - (y.statut === 'publie' ? 0 : 1));
 
   return (
     <div className="space-y-6">
       <Card className="p-6">
         <div className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
-          <h3 className="text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">
+          <h3 className="text-lg font-bold tracking-wide text-[#1c1712] dark:text-white">
             Vos formations
           </h3>
-          <span className="text-xs text-[#293027]/40 dark:text-white/40">
+          <span className="text-base text-[#1c1712]/80 dark:text-white/80">
             {publiees} publiée{publiees > 1 ? 's' : ''} · {formations.length} au total
           </span>
         </div>
-        <p className="mb-6 max-w-2xl text-sm text-[#293027]/60 dark:text-white/60">
+        <p className="mb-4 max-w-2xl text-base text-[#1c1712] dark:text-white/90">
           Le catalogue importé de l'ancien site. Une formation masquée reste ici sans être visible
           du public. La supprimer la retire pour de bon.
         </p>
+        <input
+          type="search"
+          value={recherche}
+          onChange={e => setRecherche(e.target.value)}
+          placeholder="Chercher une formation par son titre"
+          aria-label="Chercher une formation par son titre"
+          className="mb-5 w-full max-w-xl rounded-xl border border-[#1c1712]/40 bg-white px-4 py-3 text-base text-[#1c1712] placeholder:text-[#1c1712]/70 outline-none focus:border-[#BA7B39] dark:bg-white/5 dark:text-white"
+        />
         {loading ? (
-          <p className="text-sm text-[#293027]/50 dark:text-white/50">Chargement…</p>
+          <p className="text-base text-[#1c1712]/80 dark:text-white/70">Chargement…</p>
         ) : formations.length === 0 ? (
           <p className="text-sm text-[#293027]/50 dark:text-white/50">Aucune formation pour l'instant.</p>
         ) : (
           <div className="space-y-3">
-            {formations.map(f => (
-              <div key={f.id} className="rounded-[15px] border border-[#293027]/10 p-3 dark:border-white/10">
-              <div className="flex items-center gap-4">
+            {affichees.length === 0 && (
+              <p className="text-base text-[#1c1712]">Aucune formation ne correspond à « {recherche} ».</p>
+            )}
+            {affichees.map(f => {
+              const publie = f.statut === 'publie';
+              const attente = publie && f.listeAttente;
+              const mot = attente ? 'Liste d\'attente' : publie ? 'Publiée' : 'Masquée';
+              const couleurMot = attente
+                ? 'bg-[#f3e2b8] text-[#5c4410] border-[#b8902f]'
+                : publie
+                  ? 'bg-[#dcefd9] text-[#14501f] border-[#2f7d3f]'
+                  : 'bg-[#e6e4e0] text-[#3b3935] border-[#8a8680]';
+              const prixTexte = f.prix == null ? 'Prix à fixer' : f.prix === 0 ? 'Accès libre' : `${f.prix} $`;
+              const initiales = f.titre.split(/\s+/).filter(m => m.length > 2).slice(0, 2).map(m => m[0]).join('').toUpperCase() || f.titre.slice(0, 2).toUpperCase();
+              const bouton = 'shrink-0 rounded-full border px-4 py-2 text-[13px] font-bold tracking-wide transition-colors';
+              return (
+              <div key={f.id} className="rounded-[15px] border border-[#1c1712]/25 bg-white p-4 dark:border-white/20 dark:bg-white/5">
+              <div className="flex flex-wrap items-center gap-4">
                 {f.imageUrl ? (
-                  <img src={f.imageUrl} alt={f.titre} className="h-16 w-24 shrink-0 rounded-xl object-cover" />
+                  <img src={f.imageUrl} alt="" className="h-12 w-16 shrink-0 rounded-lg object-cover" />
                 ) : (
-                  <div className="flex h-16 w-24 shrink-0 items-center justify-center rounded-xl bg-[#BA7B39]/10">
-                    <i className="fa-solid fa-graduation-cap text-[#8B4A2F]" />
+                  <div className="flex h-12 w-16 shrink-0 items-center justify-center rounded-lg bg-[#BA7B39]/20 text-sm font-bold text-[#5c3a14]">
+                    {initiales}
                   </div>
                 )}
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-[#293027] dark:text-white">{f.titre}</p>
-                  {f.description && (
-                    <p className="truncate text-xs text-[#293027]/50 dark:text-white/50">{f.description}</p>
-                  )}
+                <div className="min-w-[220px] flex-1">
+                  <p className="text-lg font-bold leading-snug text-[#1c1712] dark:text-white">{f.titre}</p>
+                  <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-base text-[#1c1712] dark:text-white/90">
+                    <span className="font-semibold">{prixTexte}</span>
+                    <span className={`rounded-full border px-3 py-0.5 text-[15px] font-bold ${couleurMot}`}>{mot}</span>
+                  </p>
                 </div>
-                <span
-                  className={`shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest ${
-                    f.statut === 'publie'
-                      ? 'bg-[#BA7B39] text-[#293027]'
-                      : 'bg-[#293027]/10 text-[#293027]/60 dark:bg-white/10 dark:text-white/60'
-                  }`}
-                >
-                  {f.statut === 'publie' ? 'Publiée' : 'Masquée'}
-                </span>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
                 <button
                   type="button"
                   onClick={() => basculer(f)}
                   disabled={busy === f.id}
-                  title={f.statut === 'publie' ? 'Masquer cette formation' : 'Publier cette formation'}
-                  className="shrink-0 rounded-full border border-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] transition-colors hover:bg-[#BA7B39] hover:text-[#293027] disabled:opacity-40"
+                  title={publie ? 'Masquer cette formation' : 'Publier cette formation'}
+                  className={`${bouton} border-[#8B4A2F] text-[#5c2f17] hover:bg-[#BA7B39] hover:text-[#1c1712] disabled:opacity-40`}
                 >
-                  {f.statut === 'publie' ? 'Masquer' : 'Publier'}
+                  {publie ? 'Masquer' : 'Publier'}
                 </button>
                 <a
                   href={cheminCours(f.id, '?apercu=1')}
                   target="_blank" rel="noopener noreferrer"
                   title="Voir le cours comme une membre qui l'a acheté"
-                  className="shrink-0 rounded-full border border-[#293027]/20 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#293027]/70 transition-colors hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/20 dark:text-white/70"
+                  className={`${bouton} border-[#1c1712]/50 text-[#1c1712] hover:border-[#BA7B39] hover:text-[#5c2f17] dark:border-white/40 dark:text-white`}
                 >
                   <i className="fa-solid fa-eye mr-1" /> Aperçu
                 </a>
@@ -522,10 +544,10 @@ const FormationsSection: React.FC = () => {
                   type="button"
                   onClick={() => setOptionsOuvertes(optionsOuvertes === f.id ? null : f.id)}
                   title="Paywall, prix, sortie, lancement"
-                  className={`shrink-0 rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${
+                  className={`${bouton} ${
                     optionsOuvertes === f.id
-                      ? 'border-[#293027] bg-[#293027] text-[#8B4A2F]'
-                      : 'border-[#293027]/20 text-[#293027]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/20 dark:text-white/70'
+                      ? 'border-[#293027] bg-[#293027] text-[#f0c27a]'
+                      : 'border-[#1c1712]/50 text-[#1c1712] hover:border-[#BA7B39] hover:text-[#5c2f17] dark:border-white/40 dark:text-white'
                   }`}
                 >
                   <i className="fa-solid fa-sliders mr-1" /> Options
@@ -534,10 +556,10 @@ const FormationsSection: React.FC = () => {
                   type="button"
                   onClick={() => setSequenceOuverte(sequenceOuverte === f.id ? null : f.id)}
                   title="Les courriels qui partent après l'achat"
-                  className={`shrink-0 rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${
+                  className={`${bouton} ${
                     sequenceOuverte === f.id
-                      ? 'border-[#293027] bg-[#293027] text-[#d9a05b]'
-                      : 'border-[#293027]/20 text-[#293027]/70 hover:border-[#BA7B39] hover:text-[#8B4A2F] dark:border-white/20 dark:text-white/70'
+                      ? 'border-[#293027] bg-[#293027] text-[#f0c27a]'
+                      : 'border-[#1c1712]/50 text-[#1c1712] hover:border-[#BA7B39] hover:text-[#5c2f17] dark:border-white/40 dark:text-white'
                   }`}
                 >
                   <i className="fa-solid fa-envelopes-bulk mr-1" /> Séquence
@@ -547,7 +569,7 @@ const FormationsSection: React.FC = () => {
                   onClick={() => supprimer(f)}
                   disabled={busy === f.id}
                   title="Supprimer définitivement"
-                  className="shrink-0 rounded-full border border-red-300 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-red-600 transition-colors hover:bg-red-600 hover:text-white disabled:opacity-40"
+                  className={`${bouton} ml-auto border-red-400 text-red-700 hover:bg-red-600 hover:text-white disabled:opacity-40`}
                 >
                   <i className="fa-solid fa-trash" />
                 </button>
@@ -555,7 +577,8 @@ const FormationsSection: React.FC = () => {
               {optionsOuvertes === f.id && <OptionsPanel f={f} onSaved={refresh} />}
               {sequenceOuverte === f.id && <SequenceFormationPanel formationId={f.id} titre={f.titre} />}
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </Card>
