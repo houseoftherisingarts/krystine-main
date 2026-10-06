@@ -6628,5 +6628,20 @@
       "public/assets-manifest.json",
       "public/vata/carte-saison-vata.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-06T19:26:15.416Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "bfbb9e03",
+    "message": "Carte VATA : nouvelle adresse d'image (carte-vata-essentiel.jpg) pour que chaque navigateur voie tout de suite « VATA ESSENTIEL » (fiche et /cours/vata)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/vata/carte-vata-essentiel.jpg",
+      "src/pages/CoursDetailPage.tsx"
+    ]
   }
 ]
