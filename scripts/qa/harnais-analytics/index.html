@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Harnais : analytics de démonstration</title>
+    <!-- Recopié de l'index.html du site : icônes, polices, Tailwind et sa palette. -->
+    <!-- Font Awesome (for icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500;600;700&family=Pinyon+Script&family=Ms+Madi&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind CDN for utility classes used by Inspirata styles.
+         Origine palette: copper / sauge / brun / prune / bleu-mineral /
+         beige / ivoire / gris-pierre. Legacy tokens (royal, gold, surface,
+         white) are remapped to Origine so existing utility classes shift
+         without rewriting markup. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              // Remap global vers L'Œuvre : restyle toutes les pages d'un coup.
+              copper:      '#bb9a5e',  // ex-#B8532F → brass (fill/decor); accent TEXTE = brassInk
+              copperDeep:  '#a3823f',
+              sauge:       '#665746',  // sauge neutralisé en ink-soft (pas de vert dans L'Œuvre, sauf forest)
+              brun:        '#5a4a37',
+              brunFonce:   '#2a2015',  // espresso-soft
+              prune:       '#3a2b22',
+              bleuMineral: '#2a2015',
+              beige:       '#ede5d7',  // cream-3
+              ivoire:      '#f6f3ee',  // cream
+              grisPierre:  '#8c8268',
+              royal:   '#2a2015',
+              gold:    '#bb9a5e',  // brass
+              surface: '#f6f3ee',  // cream
+              white:   '#f6f3ee',  // (ex-ivoire warm) → cream
+              // L'Œuvre : tokens nommés (réf 30_library/loeuvre-design-system).
+              brass:        '#bb9a5e',  // accent unique (décor/fond/bouton)
+              brassDeep:    '#a3823f',
+              brassBright:  '#dcb874',  // hover / surbrillance
+              brassInk:     '#7d6330',  // accent EN TEXTE sur crème (AA 5.13:1)
+              espresso:     '#1d1604',
+              espressoDeep: '#16100a',
+              espressoSoft: '#2a2015',
+              cream:        '#f6f3ee',
+              cream2:       '#f1ebe0',
+              cream3:       '#ede5d7',
+              card:         '#faf7f0',
+              ink:          '#3a3126',
+              inkSoft:      '#665746',
+              ochre:        '#c79a52',
+              terracotta:   '#b06a3f',
+              ctext:        '#f4ece0',  // texte sur sombre
+              ctextSoft:    '#cdbfa9',
+              // Accent botanique (Origine) : vert forêt secondaire
+              forest:       '#4a5d52',
+              forestDeep:   '#3a4d42',
+              forestSoft:   '#6f8478',
+              // Fond sombre du Foyer : encre de forêt, jamais le brun (24 août 2026)
+              encre:        '#0f1613',
+              encreSoft:    '#1a2420',
+            },
+            fontFamily: {
+              serif: ['"Cormorant Garamond"', 'serif'],
+              sans: ['"Inter"', 'sans-serif'],
+            },
+            // Échelle du Foyer (25 août 2026) : page de vente lue sur grand écran.
+            // Ratio d'au moins 1,25 entre les paliers; libellé jamais sous 0,8rem,
+            // corps 1,125rem sur desktop et 1,25rem sur très grand écran.
+            fontSize: {
+              fyLabel:   ['0.85rem', { lineHeight: '1.5', letterSpacing: '0.22em' }],
+              fyBody:    ['clamp(1.075rem, 1rem + 0.35vw, 1.25rem)', { lineHeight: '1.75' }],
+              fyLead:    ['clamp(1.35rem, 1.15rem + 0.9vw, 1.9rem)', { lineHeight: '1.38' }],
+              fyH3:      ['clamp(1.6rem, 1.3rem + 1.2vw, 2.3rem)', { lineHeight: '1.18' }],
+              fyH2:      ['clamp(2.1rem, 1.4rem + 2.8vw, 3.6rem)', { lineHeight: '1.06' }],
+              fyDisplay: ['clamp(2.75rem, 1.8rem + 4.6vw, 5.8rem)', { lineHeight: '0.98' }],
+              fyNum:     ['clamp(4.5rem, 3rem + 6vw, 8rem)', { lineHeight: '0.9' }],
+            },
+            borderRadius: {
+              brand: '30px',
+            },
+            boxShadow: {
+              glow:  '0 0 30px rgba(184,83,47,0.18)',
+              depth: '0 8px 24px rgba(107,74,47,0.08)',
+            },
+          }
+        }
+      }
+    </script>
+
+    <style>
+      /* no-italic-rule: règle dure d'Alex, jamais d'italique. L'accent passe par la couleur et le poids. */
+      em, i, .italic, [class*="italic"] { font-style: normal !important; }
+      /* Exception : le texte que Krystine met en forme dans ses infolettres (composeur et lettres archivées). */
+      .nl-riche i, .nl-riche em { font-style: italic !important; }
+      /* touch-target-rule: on touch screens, plain text links and buttons get a 44px hit area without moving a pixel. */
+      @media (pointer: coarse) {
+        a:not(:has(*)), button:not(:has(*)) { position: relative; }
+        a:not(:has(*))::before, button:not(:has(*))::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%); }
+      }
+      /* ──────────────────────────────────────────────────────────────
+         Origine : signature visuelle
+         Éditoriale · organique · ancrée · haut de gamme · silencieuse
+         ────────────────────────────────────────────────────────────── */
+      :root {
+        --color-copper:       #bb9a5e;
+        --color-copper-deep:  #a3823f;
+        --color-sauge:        #665746;
+        --color-brun:         #5a4a37;
+        --color-brun-fonce:   #2a2015;
+        --color-prune:        #3a2b22;
+        --color-bleu-mineral: #2a2015;
+        --color-beige:        #ede5d7;
+        --color-ivoire:       #f6f3ee;
+        --color-gris-pierre:  #8c8268;
+        --shadow-origine:     0 8px 24px rgba(107, 74, 47, 0.08);
+        --shadow-origine-lg:  0 16px 36px rgba(107, 74, 47, 0.10);
+      }
+
+      html { scroll-behavior: smooth; }
+      /* Prevent any off-screen animation (parallax sprigs, letter reveal,
+         founder wash sweep) from showing a horizontal scrollbar. */
+      /* clip (pas hidden) : même coupe visuelle, mais ne crée pas de
+         conteneur de défilement, donc position:sticky reste fonctionnel
+         (le hidden cassait la section pinnée du Foyer). */
+      html, body { overflow-x: clip; }
+      /* Discreet scrollbar : sauge at low opacity so it disappears into
+         the parchment palette instead of shouting copper. */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(122, 128, 102, 0.35);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(122, 128, 102, 0.55); }
+      /* Firefox */
+      html { scrollbar-width: thin; scrollbar-color: rgba(122, 128, 102, 0.35) transparent; }
+      body { font-family: 'Inter', sans-serif; }
+
+      /* Base L'Œuvre : espresso uni comme couche la plus reculée pour
+         TOUTES les pages de la refonte. Plus de photo parchemin globale :
+         elle appartenait à l'ancien design ivoire, se chargeait sur chaque
+         page (image inutile) et flashait derrière les pages pendant les
+         transitions. Chaque page peint son propre fond par-dessus. */
+      /* Fond global = crème V2 : le site est majoritairement magazine crème,
+         un fond sombre flashait du brun entre les pages et à l'overscroll.
+         Les pages sombres (admin, TV) peignent leur propre fond par-dessus. */
+      body {
+        background-color: #f4efe6;
+        color: #1c1712;
+      }
+
+      .origine-card {
+        background: var(--color-ivoire);
+        border: 1px solid rgba(184, 83, 47, 0.16);
+        border-radius: 20px;
+        box-shadow: var(--shadow-origine);
+      }
+      /* Low-contrast filter removed at request : pictures now render at
+         their native saturation/contrast. Keep the class hook so the
+         JSX consumers don't need to be touched, but it's a no-op now. */
+      .origine-image-soft { filter: none; }
+      .origine-image-wash::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(232, 208, 190, 0.15);
+        pointer-events: none;
+      }
+      .origine-btn {
+        background: var(--color-sauge);
+        color: var(--color-ivoire);
+        border: 1px solid rgba(184, 83, 47, 0.5);
+        transition: filter 0.3s ease;
+      }
+      .origine-btn:hover { filter: brightness(1.05); }
+      .origine-btn--brun { background: var(--color-brun); }
+      .origine-picto {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 9999px;
+        background: var(--color-ivoire);
+        color: var(--color-brun);
+        border: 1px solid rgba(184, 83, 47, 0.3);
+        font-size: 1.05rem;
+      }
+      .origine-picto i, .origine-picto svg { stroke-width: 2; color: var(--color-brun); }
+      .origine-rule {
+        height: 1px;
+        background: linear-gradient(to right, transparent, rgba(184,83,47,0.4), transparent);
+      }
+
+      .glass-depth {
+        background: rgba(244, 231, 221, 0.75);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(184, 83, 47, 0.18);
+      }
+      .dark .glass-depth {
+        background: rgba(46, 30, 20, 0.7);
+        border: 1px solid rgba(232, 208, 190, 0.08);
+      }
+      .glass-depth-dark {
+        background: rgba(46, 30, 20, 0.6);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(232, 208, 190, 0.08);
+      }
+      .iridescent-glow { box-shadow: 0 0 30px rgba(184,83,47,0.12); }
+      .text-shadow { text-shadow: 0 2px 20px rgba(58, 37, 30, 0.35); }
+      .text-shadow-sm { text-shadow: 0 1px 8px rgba(58, 37, 30, 0.18); }
+      .rounded-brand { border-radius: 30px; }
+      .shadow-glow { box-shadow: 0 0 30px rgba(184,83,47,0.18); }
+      .shadow-depth { box-shadow: var(--shadow-origine); }
+      .transform-style-3d { transform-style: preserve-3d; }
+      .perspective-1000 { perspective: 1000px; }
+      .animate-pulse-slow { animation: pulse 4s ease-in-out infinite; }
+
+      /* Hero title gold-foil shimmer : a slow sweep across a gradient
+         that's masked to the text (bg-clip: text), so KRYSTINE ST-LAURENT
+         feels stamped in warm metal instead of printed flat. */
+      @keyframes krystine-shimmer {
+        0%   { background-position: 0% 50%; }
+        100% { background-position: 200% 50%; }
+      }
+      .krystine-shimmer-text {
+        background-image: linear-gradient(
+          110deg,
+          #3A251E 0%, #3A251E 30%,
+          #B8532F 44%, #E8CFA0 50%, #B8532F 56%,
+          #3A251E 70%, #3A251E 100%
+        );
+        background-size: 250% 100%;
+        background-position: 0% 50%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: krystine-shimmer 9s ease-in-out infinite;
+        filter: drop-shadow(0 1px 18px rgba(184, 83, 47, 0.22));
+      }
+      .dark .krystine-shimmer-text {
+        background-image: linear-gradient(
+          110deg,
+          #F4E7DD 0%, #F4E7DD 30%,
+          #FFE5B8 46%, #FFF6DB 50%, #FFE5B8 54%,
+          #F4E7DD 70%, #F4E7DD 100%
+        );
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .krystine-shimmer-text { animation: none; background-position: 50% 50%; }
+      }
+
+      /* ──────────────────────────────────────────────────────────────
+         Brand minimum readable text : 13 px floor across the entire
+         site, mobile and desktop (plancher remonté de 12 à 13 px le
+         22 septembre 2026, à la demande du vérificateur visuel de la
+         salle de presse). Toute taille Tailwind arbitraire sous 13 px
+         est remontée ici, pour qu'un seul endroit règle le site entier
+         plutôt que d'aller la changer classe par classe. Les
+         primitives des pages V2 (Kicker, Masthead, liens de
+         chapitres, boutons noir et cuivre, étiquette de planche)
+         passent par ce plancher, comme les liens de la barre de
+         navigation et du pied de page. Les balises <i>
+         (pictogrammes Font-Awesome) restent volontairement dedans :
+         un chevron de 9 px remonté garde le rythme de l'icône collée
+         à son texte.
+         Les quatorze endroits qui montent déjà la taille à l'écran
+         suivant (« text-[0.62rem] md:text-[0.7rem] ») restent justes :
+         leurs deux paliers tombaient tous les deux sous le plancher.
+         Le collant de Vexel au pied de page est la seule exception
+         permanente au plancher, arrêtée le 22 septembre 2026 et écrite
+         au canon (30_library/krystine-v2-branding.md) : « Site créé
+         par » reste à 8 px et « Vexel Webstudio » à 12,8 px, parce que
+         le collant porte ses styles en ligne hors de toute classe
+         Tailwind, qu'il sort identique sur tous les sites de l'atelier,
+         que deux gardes le surveillent (scripts/garde-collant.mjs et
+         public/vexel-garde.js) et que remonter le surtitre à 13 px lui
+         donnerait la taille du nom qu'il annonce.
+         ────────────────────────────────────────────────────────────── */
+      .text-\[6px\],
+      .text-\[7px\],
+      .text-\[7\.5px\],
+      .text-\[8px\],
+      .text-\[8\.5px\],
+      .text-\[9px\],
+      .text-\[9\.5px\],
+      .text-\[10px\],
+      .text-\[10\.5px\],
+      .text-\[11px\],
+      .text-\[11\.5px\],
+      .text-\[12px\],
+      .text-\[12\.5px\],
+      .text-\[0\.5rem\],
+      .text-\[0\.52rem\],
+      .text-\[0\.55rem\],
+      .text-\[0\.56rem\],
+      .text-\[0\.58rem\],
+      .text-\[0\.6rem\],
+      .text-\[0\.62rem\],
+      .text-\[0\.64rem\],
+      .text-\[0\.65rem\],
+      .text-\[0\.66rem\],
+      .text-\[0\.68rem\],
+      .text-\[0\.7rem\],
+      .text-\[0\.72rem\],
+      .text-\[0\.74rem\],
+      .text-\[0\.75rem\],
+      .text-\[0\.76rem\],
+      .text-\[0\.78rem\],
+      .text-\[0\.8rem\],
+      .text-xs {
+        font-size: 13px !important;
+      }
+
+      /* Le crayon d'administration (src/components/edit/CrayonSite.tsx) : en
+         mode modification, chaque texte et chaque photo que le site reconnaît
+         porte un liseré laiton, et celui qui est ouvert passe en trait plein. */
+      .mode-crayon [data-tx] { outline: 1px dashed rgba(187, 154, 94, 0.65); outline-offset: 4px; cursor: text; border-radius: 2px; }
+      .mode-crayon [data-tx]:hover, .mode-crayon [data-tx-actif] { outline: 2px solid #bb9a5e; background-color: rgba(187, 154, 94, 0.08); }
+      .mode-crayon [data-cadre] { outline: 2px dashed rgba(187, 154, 94, 0.75); outline-offset: -2px; cursor: move; }
+      .mode-crayon [data-cadre]:hover, .mode-crayon [data-cadre-actif] { outline: 3px solid #bb9a5e; }
+    </style>
+  </head>
+  <body class="bg-espressoDeep">
+    <div id="root"></div>
+    <script type="module" src="./harnais.tsx"></script>
+  </body>
+</html>
