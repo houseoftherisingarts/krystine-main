@@ -63,3 +63,6 @@ public/vh/* [0-9].js
 
 # Scripts de test temporaires des assistants (peuvent contenir un compte de test) : jamais publiés
 scripts/qa/_tmp-*
+
+# Vidéos de lancement (skill brag-slim) : restent sur l'ordinateur
+brag-output*/
