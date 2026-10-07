@@ -91,19 +91,6 @@ async function noterTentative(email: string, prenom: string, dominant: string, p
   }
 }
 
-/** La case expirée ou absente ne coûte pas une lecture : une seule fois par adresse en 30 jours. */
-async function graceDisponible(email: string): Promise<boolean> {
-  const id = crypto.createHash('sha256').update(email).digest('hex');
-  const ref = getFirestore().doc(`quizTentatives/${id}`);
-  return getFirestore().runTransaction(async (tx) => {
-    const s = await tx.get(ref);
-    const le = (s.get('graceLe') as Timestamp | undefined)?.toMillis() ?? 0;
-    if (Date.now() - le < 30 * 24 * 3600 * 1000) return false;
-    tx.set(ref, { graceLe: Timestamp.now(), statut: 'envoyee-sans-case' }, { merge: true });
-    return true;
-  });
-}
-
 const pct = (v: unknown) => {
   const n = Math.round(Number(v));
   return Number.isFinite(n) ? Math.min(100, Math.max(0, n)) : 0;
@@ -230,16 +217,8 @@ export const envoyerResultatQuiz = onCall(
     try {
       await garderFormulaire(String(d.token || ''), 'quiz-resultat', req.rawRequest?.ip);
     } catch (err) {
-      // Une case expirée ou absente après tout le quiz (7 oct. 2026 : des
-      // lectures perdues après 4 à 10 minutes de quiz) : la lecture part quand
-      // même, une seule fois par adresse en 30 jours. La cadence par IP et le
-      // pot de miel restent; un hôte étranger ou un refus de Google, non.
-      const motif = (err as HttpsError)?.details && ((err as HttpsError).details as { motif?: string }).motif;
-      if (!((motif === 'expire' || motif === 'absent') && (await graceDisponible(email)))) {
-        await noterTentative(email, prenom, NOM[d1], pourcentages, suite, err);
-        throw err;
-      }
-      console.warn(`[quiz] case ${motif} : lecture envoyée quand même (une fois par adresse)`);
+      await noterTentative(email, prenom, NOM[d1], pourcentages, suite, err);
+      throw err;
     }
     if (!(await limiterParAdresse(email))) {
       console.warn('[quiz] refus : plus de 3 envois en 24 h pour cette adresse');

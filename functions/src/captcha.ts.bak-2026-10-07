@@ -34,7 +34,7 @@ interface ReponseGoogle {
 export async function verifierJeton(token: string, ou: string): Promise<void> {
   if (!token) {
     console.warn(`[captcha] refus ${ou} : jeton manquant`);
-    throw new HttpsError('invalid-argument', 'Jeton captcha manquant.', { motif: 'absent' });
+    throw new HttpsError('invalid-argument', 'Jeton captcha manquant.');
   }
 
   let data: ReponseGoogle;
@@ -52,10 +52,8 @@ export async function verifierJeton(token: string, ou: string): Promise<void> {
   }
 
   if (!data.success) {
-    const codes = data['error-codes'] || [];
-    console.warn(`[captcha] refus ${ou} : google dit non`, codes.join(','));
-    // « timeout-or-duplicate » : un jeton vrai, seulement trop vieux.
-    throw new HttpsError('permission-denied', 'Vérification captcha refusée.', { motif: codes.includes('timeout-or-duplicate') ? 'expire' : 'google' });
+    console.warn(`[captcha] refus ${ou} : google dit non`, (data['error-codes'] || []).join(','));
+    throw new HttpsError('permission-denied', 'Vérification captcha refusée.');
   }
 
   const hote = String(data.hostname || '').toLowerCase();
@@ -72,7 +70,7 @@ export async function verifierJeton(token: string, ou: string): Promise<void> {
   const age = Date.now() - pose;
   if (age > AGE_MAX_MS) {
     console.warn(`[captcha] refus ${ou} : défi trop vieux (${Math.round(age / 1000)} s)`);
-    throw new HttpsError('deadline-exceeded', 'La vérification a expiré. Cochez la case de nouveau.', { motif: 'expire' });
+    throw new HttpsError('deadline-exceeded', 'La vérification a expiré. Cochez la case de nouveau.');
   }
 
   console.log(`[captcha] accepté ${ou} · ${hote} · ${Math.round(age / 1000)} s`);

@@ -788,10 +788,12 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
     setChampFautif(null);
     if (!prenom.trim()) { setErreurEnvoi('Entrez votre prénom.'); setChampFautif('prenom'); allerAuChamp('prenom'); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(courriel.trim())) { setErreurEnvoi('Entrez une adresse courriel valide.'); setChampFautif('courriel'); allerAuChamp('courriel'); return; }
-    // Case expirée ou absente : la lecture part quand même (le serveur le permet
-    // une fois par adresse). Seule une case jamais cochée bloque encore.
-    if (RECAPTCHA_SITE_KEY && !captcha.getToken() && (captcha.etat === 'prete' || captcha.etat === 'chargement')) {
-      setErreurEnvoi('Cochez la case « Je ne suis pas un robot ».');
+    if (RECAPTCHA_SITE_KEY && !captcha.getToken()) {
+      setErreurEnvoi(captcha.etat === 'absente'
+        ? 'La case « Je ne suis pas un robot » ne s’est pas affichée. Touchez « Afficher la case », puis cochez-la.'
+        : captcha.etat === 'expiree'
+          ? 'La case « Je ne suis pas un robot » a expiré (elle dure deux minutes). Cochez-la de nouveau, votre lecture partira.'
+          : 'Cochez la case « Je ne suis pas un robot ».');
       return;
     }
     setSubmitting(true);
@@ -1046,7 +1048,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                   {RECAPTCHA_SITE_KEY && <div ref={captcha.boxRef} className="mt-6 flex justify-center" />}
                   {RECAPTCHA_SITE_KEY && captcha.etat === 'expiree' && (
                     <p role="status" className="mt-3 text-center text-[0.85rem] text-[#83322b]">
-                      {lang === 'FR' ? 'La case a expiré, et ce n’est pas grave : touchez le bouton ci-dessous, votre lecture partira.' : 'The box expired, and that’s fine: tap the button below and your reading will be sent.'}
+                      {lang === 'FR' ? 'La case a expiré (elle dure deux minutes) : cochez-la de nouveau.' : 'The box expired (it lasts two minutes): please check it again.'}
                     </p>
                   )}
                   {RECAPTCHA_SITE_KEY && captcha.etat === 'absente' && (
