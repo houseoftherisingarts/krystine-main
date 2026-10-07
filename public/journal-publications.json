@@ -7098,5 +7098,22 @@
       "functions/src/shopify/webhook.ts.bak-2026-10-07",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-07T15:35:16.513Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "14589c1d",
+    "message": "VATA : le Cercle de Transformation Avancée s'ouvre avec les bonis de Transformation profonde (Vata guidé, automne 2024), à la connexion des acheteuses Kajabi; contrôle verifier-vata à jour",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/kajabi.ts",
+      "functions/src/kajabi.ts.bak-2026-10-07",
+      "public/assets-manifest.json",
+      "scripts/vata/verifier-vata.mjs"
+    ]
   }
 ]
