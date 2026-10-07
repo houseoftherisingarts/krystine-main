@@ -7115,5 +7115,29 @@
       "public/assets-manifest.json",
       "scripts/vata/verifier-vata.mjs"
     ]
+  },
+  {
+    "quand": "2026-10-07T16:31:29.358Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "5fe1b12c",
+    "message": "Boutique (/boutique) : plus d'élan (ouverture « Les essentiels de la saison » avec la vraie photo de l'huile, carte vert profond de l'huile de la saison, essentiels numérotés, citation sur l'automassage) · VATA : « Votre accès reste ouvert tant que la formation existe, et jamais moins de trois ans » · Parrainage : plus d'« accès à vie »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "scripts/vata/ouvrir-non-confirmees.mjs",
+      "src/components/client/BienvenueJeu.tsx",
+      "src/components/client/BienvenueJeu.tsx.bak-2026-10-07",
+      "src/firebase/parrainage.ts",
+      "src/firebase/parrainage.ts.bak-2026-10-07",
+      "src/pages/BoutiqueLoeuvre.tsx",
+      "src/pages/BoutiqueLoeuvre.tsx.bak-2026-10-07",
+      "src/pages/VataExperience.tsx",
+      "src/pages/VataExperience.tsx.bak-2026-10-07",
+      "src/pages/vata/offre.ts",
+      "src/pages/vata/offre.ts.bak-2026-10-07"
+    ]
   }
 ]
