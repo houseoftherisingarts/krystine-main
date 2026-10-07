@@ -197,4 +197,4 @@ export function saisonCourante(): SaisonBoutique {
 }
 
 /** Ordre d'affichage des familles sous les essentiels (ids de collections.ts). */
-export const ORDRE_FAMILLES = ['huiles-corporelles', 'visage-sens', 'serenite', 'solaires-saisons', 'rituels', 'bibliotheque'];
+export const ORDRE_FAMILLES = ['huiles-corporelles', 'visage-sens', 'serenite', 'rituels', 'bibliotheque'];

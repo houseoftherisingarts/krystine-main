@@ -74,20 +74,22 @@ export const COLLECTIONS: CollectionManifest[] = [
     bannerImage: ASSETS.founderHover,
     match: p => productHas(p, ['d-stress', 'destress', 'd stress', 'roll on', 'roll-on', 'serenite']),
   },
-  {
-    id: 'solaires-saisons',
-    slug: 'solaires-saisons',
-    labelFR: 'Solaires & Saisons',
-    labelEN: 'Sun & Seasons',
-    taglineFR: 'Pour la lumière qui change',
-    taglineEN: 'For the changing light',
-    storyFR:
-      "La brume au néroli et la brume après-soleil. Deux soins pour la peau qui a pris le soleil, le vent ou l'air sec, et pour ces passages d'une saison à l'autre où le corps cherche encore son équilibre.",
-    storyEN:
-      'The neroli mist and the after-sun mist. Two treatments for skin that has taken sun, wind or dry air, and for those crossings from one season to the next when the body is still finding its balance.',
-    bannerImage: ASSETS.formationsBg,
-    match: p => productHas(p, ['neroli', 'after sun', 'after-sun', 'aftersun', 'solaire', 'apres-soleil', 'apres soleil']),
-  },
+  // « Solaires & Saisons » retirée à la demande de Krystine (7 oct. 2026). Bloc gardé
+  // en commentaire pour le jour où elle revient.
+  // {
+  //   id: 'solaires-saisons',
+  //   slug: 'solaires-saisons',
+  //   labelFR: 'Solaires & Saisons',
+  //   labelEN: 'Sun & Seasons',
+  //   taglineFR: 'Pour la lumière qui change',
+  //   taglineEN: 'For the changing light',
+  //   storyFR:
+  //     "La brume au néroli et la brume après-soleil. Deux soins pour la peau qui a pris le soleil, le vent ou l'air sec, et pour ces passages d'une saison à l'autre où le corps cherche encore son équilibre.",
+  //   storyEN:
+  //     'The neroli mist and the after-sun mist. Two treatments for skin that has taken sun, wind or dry air, and for those crossings from one season to the next when the body is still finding its balance.',
+  //   bannerImage: ASSETS.formationsBg,
+  //   match: p => productHas(p, ['neroli', 'after sun', 'after-sun', 'aftersun', 'solaire', 'apres-soleil', 'apres soleil']),
+  // },
   {
     id: 'visage-sens',
     slug: 'visage-sens',
