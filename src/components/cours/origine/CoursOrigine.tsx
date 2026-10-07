@@ -99,6 +99,16 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
           />
         </div>
 
+        {/* Note d'accueil des fondatrices (Krystine, 7 oct. 2026). */}
+        {id === 'kajabi-2149348838' && fr && (
+          <div className="mt-6 rounded-[15px] border px-6 py-5 text-[0.95rem] leading-relaxed md:px-8" style={{ borderColor: `${ORIGINE.olive}33`, background: '#fbf4e4', color: ORIGINE.encre }}>
+            <p className="font-serif text-xl">Bienvenue dans votre espace d’EXPÉRIENCE ORIGINE.</p>
+            <p className="mt-2">Vous retrouvez ici votre parcours de la première cohorte, transféré de notre ancienne plateforme (krystinestlaurent.com) vers notre nouveau site. Tout y est : les audios des semaines, les méditations, les rencontres, les documents et le journal de bord.</p>
+            <p className="mt-2">Votre progression repart à zéro : vous pouvez cocher les leçons déjà faites. Ce qui est nouveau : la bibliothèque, Le Souffle d’Origine et votre certificat à la fin du parcours. EXPÉRIENCE ORIGINE 2 se prépare.</p>
+            <p className="mt-2">Si un élément manque ou ne s’ouvre pas, écrivez-nous avec le bouton « ? » en bas de l’écran. Notre équipe est là pour vous.</p>
+          </div>
+        )}
+
         <div className={`mt-8 grid gap-6 ${apercu ? 'lg:grid-cols-[340px_minmax(0,1fr)_minmax(0,1fr)]' : 'lg:grid-cols-[340px_minmax(0,1fr)]'}`}>
           <aside className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:pr-1">
             <ListeOrigine lecons={lecons} courante={courante} terminees={terminees} verrouillee={verrouillee} vignetteDe={vignettePropre} onOuvrir={onOuvrir} lang={lang} />
