@@ -260,12 +260,9 @@ export const kajabiUtiliserCode = onCall(
 //   kajabi-2148727800 (+ -bonis)   Vata guidé, « Abondance et Transformation
 //                                  Profonde », cohorte automne 2024 (offres
 //                                  vata-guide-automne-2024 et -bonis du registre)
-//   kajabi-2148740714              Cercle de Transformation Avancée : un boni de
-//                                  Transformation Profonde (Krystine, 7 oct. 2026),
-//                                  ouvert par l'offre vata-guide-automne-2024-bonis
 // Chaque offre ouvre SA formation (table kajabiOffres) : le guidé n'ouvre pas
 // VATA Essentiel, et l'inverse. Contrôle : scripts/vata/verifier-vata.mjs.
-export const FORMATIONS_RESTAURATION_AUTO = ['kajabi-2148687644', 'kajabi-2148727800', 'kajabi-2148727800-bonis', 'kajabi-2148740714'];
+export const FORMATIONS_RESTAURATION_AUTO = ['kajabi-2148687644', 'kajabi-2148727800', 'kajabi-2148727800-bonis'];
 
 // ── Les fondatrices d'EXPÉRIENCE ORIGINE, sans code (décision de Krystine, 6 oct. 2026) ──
 // Une fondatrice est reconnue à son adresse : une fiche de la collection

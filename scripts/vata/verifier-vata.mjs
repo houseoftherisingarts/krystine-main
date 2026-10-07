@@ -39,7 +39,7 @@ const SORTIE = arg('sortie', join(tmpdir(), 'verifier-vata', AUJOURDHUI));
 
 const VERSIONS = {
   essentiel: { nom: 'VATA Essentiel (Vata autonome)', formations: ['kajabi-2148687644'], export: arg('autonome', join(homedir(), 'Downloads', 'product_progress (24).csv')) },
-  guide: { nom: 'Vata guidé, Abondance et Transformation Profonde (cohorte automne 2024)', formations: ['kajabi-2148727800', 'kajabi-2148727800-bonis'], export: arg('guide', join(homedir(), 'Downloads', 'product_progress (25).csv')) },
+  guide: { nom: 'Vata guidé, Abondance et Transformation Profonde (cohorte automne 2024)', formations: ['kajabi-2148727800', 'kajabi-2148727800-bonis', 'kajabi-2148740714'], export: arg('guide', join(homedir(), 'Downloads', 'product_progress (25).csv')) },
 };
 const FORMATIONS_VATA = new Set([...VERSIONS.essentiel.formations, ...VERSIONS.guide.formations, 'kajabi-2148740714']);
 const EQUIPE = new Set(['admin@krystinestlaurent.ca', 'krystine@inspiratanature.com', 'equipe@inspiratanature.com', 'alex@lesalondesinconnus.com',
