@@ -15,6 +15,8 @@ const js = readdirSync(dossier).filter((f) => f.endsWith('.js') && !f.startsWith
 const attendues = [
   ['la clé de la case « Je ne suis pas un robot » (VITE_RECAPTCHA_SITE_KEY)', /6L[0-9A-Za-z_-]{38}/],
   ['la clé Firebase du site (VITE_FIREBASE_API_KEY)', /AIza[0-9A-Za-z_-]{35}/],
+  // Sans elles, le catalogue de /boutique est vide (6 oct. 2026).
+  ['l\'adresse de la boutique Shopify (VITE_SHOPIFY_DOMAIN)', /[a-z0-9-]+\.myshopify\.com/],
 ];
 const manquantes = attendues.filter(([, re]) => !re.test(js)).map(([nom]) => nom);
 if (manquantes.length) {
@@ -22,4 +24,4 @@ if (manquantes.length) {
   console.error("Le fichier .env.local manque ou est incomplet sur cet ordinateur. Rien n'a été mis en ligne. Montrez ce message à Alex.\n");
   process.exit(1);
 }
-console.log('Garde des clés : la case anti-robot et Firebase sont bien dans la version construite.');
+console.log('Garde des clés : la case anti-robot, Firebase et la boutique sont bien dans la version construite.');

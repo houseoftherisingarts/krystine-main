@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Pause, Play } from '@phosphor-icons/react';
+import { CircleNotch, Pause, Play } from '@phosphor-icons/react';
 import { trackListenStart, startPresence, stopPresence } from '../../lib/podcastStats';
 import { enSecondes, type Episode } from './episodes';
 
@@ -21,6 +21,9 @@ export function useLecteur() {
   const audio = useRef<HTMLAudioElement | null>(null);
   const [courant, setCourant] = useState<Episode | null>(null);
   const [enLecture, setEnLecture] = useState(false);
+  // Le son se fait attendre (preload « none », gros fichier) : le bouton tourne
+  // jusqu'au premier son, pour que personne ne retouche « lecture » dans le vide.
+  const [charge, setCharge] = useState(false);
   const [temps, setTemps] = useState(0);
   const [duree, setDuree] = useState(0);
   const traces = useRef(new Set<string>());
@@ -32,12 +35,17 @@ export function useLecteur() {
     const surTemps = () => setTemps(a.currentTime);
     const surDuree = () => { if (Number.isFinite(a.duration)) setDuree(a.duration); };
     const surLecture = () => setEnLecture(true);
-    const surArret = () => { setEnLecture(false); stopPresence(); };
+    const surArret = () => { setEnLecture(false); setCharge(false); stopPresence(); };
+    const surAttente = () => setCharge(true);
+    const surSon = () => setCharge(false);
     a.addEventListener('timeupdate', surTemps);
     a.addEventListener('loadedmetadata', surDuree);
     a.addEventListener('play', surLecture);
     a.addEventListener('pause', surArret);
     a.addEventListener('ended', surArret);
+    a.addEventListener('error', surArret);
+    a.addEventListener('waiting', surAttente);
+    a.addEventListener('playing', surSon);
     return () => {
       a.pause();
       a.removeEventListener('timeupdate', surTemps);
@@ -45,6 +53,9 @@ export function useLecteur() {
       a.removeEventListener('play', surLecture);
       a.removeEventListener('pause', surArret);
       a.removeEventListener('ended', surArret);
+      a.removeEventListener('error', surArret);
+      a.removeEventListener('waiting', surAttente);
+      a.removeEventListener('playing', surSon);
       stopPresence();
     };
   }, []);
@@ -54,7 +65,7 @@ export function useLecteur() {
     const a = audio.current;
     if (!a) return;
     if (courant?.id === ep.id) {
-      if (a.paused) a.play().catch(() => {}); else a.pause();
+      if (a.paused) { setCharge(a.readyState < 3); a.play().catch(() => setCharge(false)); } else a.pause();
       return;
     }
     a.pause();
@@ -62,7 +73,8 @@ export function useLecteur() {
     setCourant(ep);
     setTemps(0);
     setDuree(enSecondes(ep.duree));
-    a.play().catch(() => {});
+    setCharge(true);
+    a.play().catch(() => setCharge(false));
     if (!traces.current.has(ep.id)) { traces.current.add(ep.id); trackListenStart(ep.id, ep.titreBrut); }
     startPresence(ep.id, ep.titreBrut);
   }, [courant]);
@@ -72,7 +84,7 @@ export function useLecteur() {
     if (a) { a.currentTime = s; setTemps(s); }
   }, []);
 
-  return { courant, enLecture, temps, duree, basculer, chercher };
+  return { courant, enLecture, charge, temps, duree, basculer, chercher };
 }
 
 export type Lecteur = ReturnType<typeof useLecteur>;
@@ -81,6 +93,7 @@ export type Lecteur = ReturnType<typeof useLecteur>;
 export const ControlesAudio: React.FC<{ ep: Episode; lecteur: Lecteur; className?: string }> = ({ ep, lecteur, className = '' }) => {
   const actif = lecteur.courant?.id === ep.id;
   const joue = actif && lecteur.enLecture;
+  const attend = actif && lecteur.charge;
   const total = actif ? lecteur.duree : enSecondes(ep.duree);
   const ecoule = actif ? lecteur.temps : 0;
   const pct = total ? Math.min(100, (ecoule / total) * 100) : 0;
@@ -90,10 +103,11 @@ export const ControlesAudio: React.FC<{ ep: Episode; lecteur: Lecteur; className
       <button
         type="button"
         onClick={() => lecteur.basculer(ep)}
-        aria-label={joue ? 'Mettre en pause' : 'Écouter'}
+        aria-label={attend ? 'Chargement de l’épisode' : joue ? 'Mettre en pause' : 'Écouter'}
+        aria-busy={attend || undefined}
         className="grid h-12 w-12 shrink-0 place-items-center bg-[#1c1712] text-[#f4efe6] transition-colors duration-300 hover:bg-[#9c7a44]"
       >
-        {joue ? <Pause size={18} weight="fill" /> : <Play size={18} weight="fill" className="ml-0.5" />}
+        {attend ? <CircleNotch size={18} weight="bold" className="animate-spin" /> : joue ? <Pause size={18} weight="fill" /> : <Play size={18} weight="fill" className="ml-0.5" />}
       </button>
       <div className="min-w-0 flex-1">
         <div className="relative h-[18px]">

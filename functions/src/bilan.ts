@@ -147,6 +147,85 @@ async function verifComplete(): Promise<Verif | null> {
   };
 }
 
+/** « À optimiser aujourd'hui » : au plus 5 points classés par impact, lus dans vh_jours (VexelHotjar) et la vérification complète. Une donnée absente ne produit aucune ligne. */
+const coupe = (t: string, max: number) => { const x = t.replace(/\s+/g, ' ').trim(); return x.length > max ? `${x.slice(0, max)}…` : x; };
+const fois = (k: number) => (k > 1 ? `${k} fois` : '1 fois');
+async function aOptimiser(sept: string[], verif: Verif | null): Promise<{ points: string[]; clics: string[] }> {
+  const db = getFirestore();
+  const docs = await db.getAll(...sept.map((j) => db.doc(`vh_jours/${SITE_VH}_${j}`)));
+  const hierI = sept.length - 1;
+  type Pt = { score: number; ligne: string };
+  const pts: Pt[] = [];
+  const nom = (page: string, p?: { path?: string; titre?: string }) => String(p?.path || p?.titre || page);
+
+  // Éléments avec clics de rage ou sans effet.
+  const elements = new Map<string, { page: string; tx: string; s: string; hierR: number; r: number; hierM: number; m: number }>();
+  // Erreurs, formulaires, défilement.
+  const erreurs = new Map<string, { msg: string; path: string; hier: number; n: number }>();
+  const forms = new Map<string, { path: string; champ: string; abandons: number; soumis: number }>();
+  const defil = new Map<string, { path: string; n: number; quart: number }>();
+  docs.forEach((d, i) => {
+    if (!d.exists) return;
+    const x = d.data() || {};
+    for (const [page, p] of Object.entries((x.pages || {}) as Record<string, any>)) {
+      for (const [k, e] of Object.entries((p.elements || {}) as Record<string, any>)) {
+        const cle = `${page}.${k}`;
+        const a = elements.get(cle) || { page: nom(page, p), tx: String(e.tx || ''), s: String(e.s || ''), hierR: 0, r: 0, hierM: 0, m: 0 };
+        a.r += Number(e.r) || 0; a.m += Number(e.m) || 0;
+        if (i === hierI) { a.hierR += Number(e.r) || 0; a.hierM += Number(e.m) || 0; }
+        elements.set(cle, a);
+      }
+      const nScroll = Number(p.scrollN) || 0;
+      if (nScroll) {
+        const dd = defil.get(page) || { path: nom(page, p), n: 0, quart: 0 };
+        dd.n += nScroll; dd.quart += Number(p.scroll?.b25) || 0;
+        defil.set(page, dd);
+      }
+    }
+    for (const e of Object.values((x.erreursListe || {}) as Record<string, any>)) {
+      // Une même erreur qui ne change que par un numéro (Id:2, Id:3…) se compte une seule fois.
+      const k = `${e.path}|${String(e.msg || '').replace(/\d+/g, '#')}`;
+      const a = erreurs.get(k) || { msg: String(e.msg || ''), path: String(e.path || ''), hier: 0, n: 0 };
+      a.n += Number(e.n) || 0;
+      if (i === hierI) a.hier += Number(e.n) || 0;
+      erreurs.set(k, a);
+    }
+    for (const [k, f] of Object.entries((x.formulaires || {}) as Record<string, any>)) {
+      const a = forms.get(k) || { path: String(f.path || ''), champ: '', abandons: 0, soumis: 0 };
+      a.abandons += Number(f.abandons) || 0; a.soumis += Number(f.soumis) || 0;
+      if (f.dernierChamp) a.champ = String(f.dernierChamp);
+      forms.set(k, a);
+    }
+  });
+
+  // Défauts trouvés ce matin sur le site en entier (les titres longs et les pages lentes passent en dernier).
+  if (verif) {
+    for (const l of regrouper(verif.anomalies)) {
+      pts.push({ score: /titre trop long|chargement lent/.test(l) ? 20 : 1000, ligne: `Trouvé ce matin dans la vérification du site : ${l}.` });
+    }
+  }
+  for (const e of erreurs.values()) {
+    if (!e.n) continue;
+    pts.push({ score: 500 + e.n, ligne: `Une erreur technique survient sur ${e.path || 'le site'} : « ${coupe(e.msg, 90)} » (${fois(e.hier)} hier, ${fois(e.n)} sur 7 jours).` });
+  }
+  // Les clics de frustration ont leur propre rubrique, toujours présente (demande de Krystine, 6 oct. 2026).
+  const clics = [...elements.values()]
+    .filter((e) => e.r + e.m > 0)
+    .sort((a, b) => (b.hierR * 10 + b.hierM * 5 + b.r * 3 + b.m) - (a.hierR * 10 + a.hierM * 5 + a.r * 3 + a.m))
+    .slice(0, 5)
+    .map((e) => `Sur ${e.page}, « ${coupe(e.tx || e.s, 60)} » : ${e.hierR} clic(s) de rage et ${e.hierM} clic(s) sans effet hier, ${e.r} et ${e.m} sur 7 jours.`);
+  for (const f of forms.values()) {
+    if (f.abandons < 3 || f.abandons <= f.soumis) continue;
+    pts.push({ score: 60 + f.abandons, ligne: `Le formulaire de ${f.path || 'une page'} est souvent abandonné (${f.abandons} abandons contre ${f.soumis} envois sur 7 jours${f.champ ? `, souvent au champ « ${coupe(f.champ, 40)} »` : ''}).` });
+  }
+  for (const dd of defil.values()) {
+    if (dd.n < 20 || dd.quart / dd.n >= 0.5) continue;
+    const quittent = Math.round((1 - dd.quart / dd.n) * 100);
+    pts.push({ score: 40 + quittent / 10, ligne: `Sur ${dd.path}, ${quittent} % des visiteuses partent avant d’avoir vu le premier quart de la page (${dd.n} visites sur 7 jours).` });
+  }
+  return { points: pts.sort((a, b) => b.score - a.score).slice(0, 5).map((p) => p.ligne), clics };
+}
+
 export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calculerFilet>>) {
   const db = getFirestore();
   const aujourdhui = jourDe(new Date());
@@ -179,6 +258,7 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
     sur(verifComplete),
     sur(() => commentaires(new Date(Date.now() - 24 * 3600 * 1000))),
   ]);
+  const optimiser = await sur(() => aOptimiser(sept, verif));
 
   const alertes = filet ? filet.controles.filter((c) => c.etat === 'alerte').map((c) => `${c.nom} : ${c.detail}`) : ['Le filet n’a pas pu tourner'];
 
@@ -212,6 +292,8 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
     surveiller,
     verifComplete: verif,
     commentaires: comm,
+    aOptimiser: optimiser?.points ?? null,
+    clicsFrustration: optimiser?.clics ?? null,
   };
 }
 
@@ -286,6 +368,8 @@ export function texteBilan(b: Bilan): string {
     '',
     `4. À surveiller : ${b.surveiller}`,
     '',
+    ...(b.clicsFrustration ? ['5. Clics de frustration (rage et sans effet)', ...(b.clicsFrustration.length ? b.clicsFrustration.map((l) => `• ${l}`) : ['Aucun clic de frustration hier ni dans les 7 derniers jours.']), ''] : []),
+    ...(b.aOptimiser ? ['6. À optimiser aujourd’hui', ...(b.aOptimiser.length ? b.aOptimiser.map((l) => `• ${l}`) : ['Rien de précis à corriger dans les comportements d’hier.']), ''] : []),
     'Le même bilan est dans l’admin, au tableau de bord.',
     '',
     'L’équipe',

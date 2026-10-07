@@ -36,7 +36,7 @@ const OrdersSection: React.FC = () => {
 
   const del = async (o: ClientOrder) => {
     if (!o.id) return;
-    if (!confirm(`Supprimer la commande #${o.id.slice(0, 8)} ?`)) return;
+    if (!confirm(`Supprimer la commande ${(o as { shopifyOrderName?: string }).shopifyOrderName || '#' + o.id.slice(0, 8)} ?`)) return;
     await deleteClientOrder(o.id);
     await refresh();
   };
@@ -53,7 +53,7 @@ const OrdersSection: React.FC = () => {
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-3 mb-2">
-                <p className="font-mono text-xs text-[#293027]/60 dark:text-white/60">#{o.id?.slice(0, 8)}</p>
+                <p className="font-mono text-xs text-[#293027]/60 dark:text-white/60">{(o as { shopifyOrderName?: string }).shopifyOrderName || `#${o.id?.slice(0, 8)}`}</p>
                 <span className={`text-[10px] uppercase tracking-widest font-bold px-2.5 py-0.5 rounded-full ${
                   o.status === 'delivered' ? 'bg-green-50 text-green-600' :
                   o.status === 'shipped' ? 'bg-indigo-50 text-indigo-600' :

@@ -759,6 +759,17 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   const [courriel, setCourriel] = useState('');
   const [pot, setPot] = useState('');
   const [erreurEnvoi, setErreurEnvoi] = useState<string | null>(null);
+  // Le champ à corriger reçoit le curseur et se souligne en rouge : le message
+  // tombe sous le bouton, loin du champ, et se touchait en vain (oct. 2026).
+  const [champFautif, setChampFautif] = useState<'prenom' | 'courriel' | null>(null);
+  const prenomRef = useRef<HTMLInputElement>(null);
+  const courrielRef = useRef<HTMLInputElement>(null);
+  const allerAuChamp = (c: 'prenom' | 'courriel' | null) => {
+    const el = c === 'prenom' ? prenomRef.current : c === 'courriel' ? courrielRef.current : null;
+    if (!el) return;
+    el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    el.focus({ preventScroll: true });
+  };
   // L'envoi a échoué côté serveur : ce qui a été saisi reste, la trace est
   // gardée (quizTentatives) et un bouton Réessayer s'affiche.
   const [echecServeur, setEchecServeur] = useState(false);
@@ -774,8 +785,9 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
     if (!teaser) return;
     setErreurEnvoi(null);
     setEchecServeur(false);
-    if (!prenom.trim()) { setErreurEnvoi('Entrez votre prénom.'); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(courriel.trim())) { setErreurEnvoi('Entrez une adresse courriel valide.'); return; }
+    setChampFautif(null);
+    if (!prenom.trim()) { setErreurEnvoi('Entrez votre prénom.'); setChampFautif('prenom'); allerAuChamp('prenom'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(courriel.trim())) { setErreurEnvoi('Entrez une adresse courriel valide.'); setChampFautif('courriel'); allerAuChamp('courriel'); return; }
     if (RECAPTCHA_SITE_KEY && !captcha.getToken()) {
       setErreurEnvoi(captcha.etat === 'absente'
         ? 'La case « Je ne suis pas un robot » ne s’est pas affichée. Touchez « Afficher la case », puis cochez-la.'
@@ -1014,9 +1026,11 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                       autoComplete="given-name"
                       placeholder={lang === 'FR' ? 'Prénom' : 'First name'}
                       aria-label={lang === 'FR' ? 'Prénom' : 'First name'}
+                      ref={prenomRef}
+                      aria-invalid={champFautif === 'prenom' || undefined}
                       value={prenom}
-                      onChange={e => setPrenom(e.target.value)}
-                      className="w-full border-b border-[#1c1712]/30 bg-transparent py-3 text-[0.95rem] text-[#1c1712] placeholder:text-[#1c1712]/45 outline-none transition-colors focus:border-[#9c7a44]"
+                      onChange={e => { setPrenom(e.target.value); if (champFautif === 'prenom') setChampFautif(null); }}
+                      className={`w-full border-b ${champFautif === 'prenom' ? 'border-[#83322b]' : 'border-[#1c1712]/30'} bg-transparent py-3 text-[0.95rem] text-[#1c1712] placeholder:text-[#1c1712]/45 outline-none transition-colors focus:border-[#9c7a44]`}
                     />
                     <input
                       type="email"
@@ -1024,9 +1038,11 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                       autoComplete="email"
                       placeholder={lang === 'FR' ? 'Courriel' : 'Email'}
                       aria-label={lang === 'FR' ? 'Courriel' : 'Email'}
+                      ref={courrielRef}
+                      aria-invalid={champFautif === 'courriel' || undefined}
                       value={courriel}
-                      onChange={e => setCourriel(e.target.value)}
-                      className="w-full border-b border-[#1c1712]/30 bg-transparent py-3 text-[0.95rem] text-[#1c1712] placeholder:text-[#1c1712]/45 outline-none transition-colors focus:border-[#9c7a44]"
+                      onChange={e => { setCourriel(e.target.value); if (champFautif === 'courriel') setChampFautif(null); }}
+                      className={`w-full border-b ${champFautif === 'courriel' ? 'border-[#83322b]' : 'border-[#1c1712]/30'} bg-transparent py-3 text-[0.95rem] text-[#1c1712] placeholder:text-[#1c1712]/45 outline-none transition-colors focus:border-[#9c7a44]`}
                     />
                   </div>
                   {RECAPTCHA_SITE_KEY && <div ref={captcha.boxRef} className="mt-6 flex justify-center" />}
@@ -1083,7 +1099,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                       {lang === 'FR' ? 'J’ai déjà un compte' : 'I already have an account'}
                     </button>
                   </div>
-                  {erreurEnvoi && <p role="alert" className="mt-4 text-center text-[0.9rem] text-[#83322b]">{erreurEnvoi}</p>}
+                  {erreurEnvoi && <p role="alert" onClick={() => allerAuChamp(champFautif)} className={`mt-4 text-center text-[0.9rem] text-[#83322b] ${champFautif ? 'cursor-pointer' : ''}`}>{erreurEnvoi}</p>}
                   {echecServeur && (
                     <div className="mt-4 flex flex-col items-center gap-3 text-center">
                       <button

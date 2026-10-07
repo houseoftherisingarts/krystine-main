@@ -36,6 +36,11 @@ jobs:
           # dans chaque page du site, ce n'est pas un secret). Sans elle, le
           # formulaire du quiz est refusé pour tout le monde (pannes des 3 et 5 oct. 2026).
           VITE_RECAPTCHA_SITE_KEY: 6LeQ9p0tAAAAALd98BdOx3UviKRcJNBx8JgmSedt
+          # Le catalogue de la boutique (API Storefront de Shopify : clé publique, visible
+          # dans le site). Sans elle, /boutique est vide (constaté le 6 oct. 2026).
+          VITE_SHOPIFY_DOMAIN: inspirata-ayurveda.myshopify.com
+          VITE_SHOPIFY_STOREFRONT_TOKEN: a5681ac07c5273eb9512960d7040f682
+          VITE_SHOPIFY_API_VERSION: 2025-01
         run: |
           npm ci
           npm run build

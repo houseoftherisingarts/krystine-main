@@ -215,8 +215,13 @@ const EvenementsPage: React.FC = () => {
           <div className="mt-12 border-b border-[#1c1712]/12 md:mt-16">
             {index.map((r, i) => (
               <Reveal key={r.cle} delay={Math.min(i * 0.05, 0.2)}>
+                {/* Toute la ligne répond comme son bouton (clics morts sur les titres relevés en oct. 2026). */}
                 <div
-                  className="group grid grid-cols-12 items-center gap-x-4 gap-y-4 border-t border-[#1c1712]/12 py-7 transition-colors duration-300 hover:bg-[#faf6ee] md:py-9"
+                  onClick={(e) => {
+                    if ((e.target as Element).closest('a,button')) return;
+                    e.currentTarget.querySelector<HTMLElement>('a,button')?.click();
+                  }}
+                  className={`group grid grid-cols-12 items-center gap-x-4 gap-y-4 border-t border-[#1c1712]/12 py-7 transition-colors duration-300 hover:bg-[#faf6ee] md:py-9 ${r.geste.type === 'complet' || r.geste.type === 'bientot' ? '' : 'cursor-pointer'}`}
                   onMouseEnter={suivre(r)}
                   onMouseMove={suivre(r)}
                   onMouseLeave={() => setSurvol(null)}

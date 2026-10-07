@@ -1766,21 +1766,22 @@
     function maj(){ var vu = window.innerWidth<=900 && c.getBoundingClientRect().bottom>window.innerHeight*0.12; document.body.classList.toggle('hero-vu',vu); }
     window.addEventListener('scroll',maj,{passive:true}); window.addEventListener('resize',maj); maj();
   })();
-  /* ambient music: starts on first user click, toggle to mute/resume */
-  (function(){
+  /* musique d'ambiance : le bouton la lance et la coupe. Ce script passe AVANT le bouton dans la page :
+     il attend donc que la page soit lue, sinon il ne trouvait jamais le bouton (clics morts releves en oct. 2026).
+     Le depart automatique au premier clic n'a jamais tourne en ligne : il reste retire, la musique part seulement au bouton. */
+  function initAmbiance(){
     var a=document.getElementById('amb'), btn=document.getElementById('ambtoggle'); if(!a||!btn) return;
-    var TARGET=0.34, started=false, ft=null;
+    var TARGET=0.34, ft=null;
     function fadeTo(v,then){ clearInterval(ft); var step=(v-a.volume)/16||0.02;
       ft=setInterval(function(){ a.volume=Math.max(0,Math.min(1,a.volume+step));
         if(Math.abs(a.volume-v)<=Math.abs(step)){ a.volume=v; clearInterval(ft); if(then)then(); } },45); }
-    function play(){ a.volume=0; var pr=a.play(); if(pr&&pr.then){ pr.then(function(){ started=true;
-      btn.classList.remove('muted'); btn.setAttribute('aria-pressed','true'); fadeTo(TARGET); }).catch(function(){}); } }
+    /* le bouton bascule tout de suite (le fichier met du temps a arriver : sans retour, on retouchait le bouton dans le vide), et revient si le son refuse de partir */
+    function play(){ a.volume=0; btn.classList.remove('muted'); btn.setAttribute('aria-pressed','true'); var pr=a.play(); if(pr&&pr.then){ pr.then(function(){
+      fadeTo(TARGET); }).catch(function(){ btn.classList.add('muted'); btn.setAttribute('aria-pressed','false'); }); } }
     function stop(){ fadeTo(0,function(){ a.pause(); }); btn.classList.add('muted'); btn.setAttribute('aria-pressed','false'); }
-    function first(e){ if(started) return; if(e.target.closest&&e.target.closest('#ambtoggle')) return;
-      play(); document.removeEventListener('pointerdown',first); }
-    document.addEventListener('pointerdown',first);
-    btn.addEventListener('click',function(){ if(!started||a.paused){ play(); } else { stop(); } });
-  })();
+    btn.addEventListener('click',function(){ if(a.paused){ play(); } else { stop(); } });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initAmbiance); else initAmbiance();
 
 
 

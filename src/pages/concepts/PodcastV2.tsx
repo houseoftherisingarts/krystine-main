@@ -191,9 +191,19 @@ export default function PodcastV2() {
               </ul>
 
               <aside className="order-2 lg:order-1 lg:sticky lg:top-24 lg:self-start">
+                {/* La pochette se touche comme un bouton (clics morts relevés en oct. 2026) : elle lance le dernier épisode de la saison. */}
                 <div className="relative">
                   <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
-                  <img src="/podcast/saison2-cover.webp" alt="Au-delà des tendances, saison 2" referrerPolicy="no-referrer" loading="lazy" className="relative block w-full h-auto" />
+                  {saison2[0] ? (
+                    <button type="button" onClick={() => lecteur.basculer(saison2[0])} className="group relative block w-full" aria-label={`Écouter ${saison2[0].titre}`}>
+                      <img src="/podcast/saison2-cover.webp" alt="Au-delà des tendances, saison 2" referrerPolicy="no-referrer" loading="lazy" className="relative block w-full h-auto" />
+                      <span className="absolute bottom-2 right-2 grid h-9 w-9 place-items-center bg-[#1c1712] sm:bottom-4 sm:right-4 sm:h-12 sm:w-12 text-[#f4efe6] transition-colors duration-300 group-hover:bg-[#9c7a44]" aria-hidden>
+                        {lecteur.courant?.id === saison2[0].id && lecteur.enLecture ? <Pause size={18} weight="fill" /> : <Play size={18} weight="fill" className="ml-0.5" />}
+                      </span>
+                    </button>
+                  ) : (
+                    <img src="/podcast/saison2-cover.webp" alt="Au-delà des tendances, saison 2" referrerPolicy="no-referrer" loading="lazy" className="relative block w-full h-auto" />
+                  )}
                 </div>
                 <p className="mt-9 v2-serif font-light text-[clamp(1.25rem,2vw,1.6rem)] leading-[1.35] text-[#3a2f23] max-w-[34ch]">
                   Nous n’avons jamais eu autant de choix. Et jamais autant de choses n’ont choisi à notre place.

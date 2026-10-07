@@ -16,6 +16,33 @@ import { RECAPTCHA_SITE_KEY, useRecaptcha } from '../../lib/recaptcha';
 
 type Mode = 'signin' | 'signup' | 'reset';
 
+// Les codes de Firebase (« auth/invalid-credential ») s'affichaient tels quels
+// et se touchaient en vain (clics morts relevés en oct. 2026) : chacun reçoit
+// une phrase claire qui dit quoi faire.
+const messageAuth = (code: string, fr: boolean): string => {
+  switch (code) {
+    case 'auth/invalid-credential':
+    case 'auth/wrong-password':
+    case 'auth/user-not-found':
+    case 'auth/invalid-login-credentials':
+      return fr ? 'Le courriel ou le mot de passe ne correspond à aucun compte. Vérifiez-les, ou touchez « Mot de passe oublié ? » plus bas.' : 'The email or password does not match an account. Check them, or tap “Forgot password?” below.';
+    case 'auth/email-already-in-use':
+      return fr ? 'Un compte existe déjà avec ce courriel : entrez votre mot de passe pour vous connecter.' : 'An account already exists with this email: enter your password to sign in.';
+    case 'auth/invalid-email':
+    case 'auth/missing-email':
+      return fr ? 'Cette adresse courriel semble incomplète. Vérifiez-la.' : 'This email address looks incomplete. Please check it.';
+    case 'auth/weak-password':
+    case 'auth/missing-password':
+      return fr ? 'Le mot de passe doit compter au moins six caractères.' : 'The password needs at least six characters.';
+    case 'auth/too-many-requests':
+      return fr ? 'Trop d’essais d’affilée. Attendez quelques minutes, puis réessayez.' : 'Too many attempts in a row. Wait a few minutes, then try again.';
+    case 'auth/network-request-failed':
+      return fr ? 'La connexion Internet a coupé. Réessayez dans un instant.' : 'The internet connection dropped. Try again in a moment.';
+    default:
+      return fr ? 'La connexion a échoué. Réessayez dans un instant.' : 'Sign-in failed. Try again in a moment.';
+  }
+};
+
 const SignInModal: React.FC = () => {
   const { lang, signInOpen, setSignInOpen } = useApp();
   // Le code de parrain donne des niskas : il disparaît quand le jeu est fermé.
@@ -152,7 +179,9 @@ const SignInModal: React.FC = () => {
         setInfo(lang === 'FR' ? 'Un courriel de réinitialisation a été envoyé.' : 'Reset email sent.');
       }
     } catch (e: any) {
-      setErr(e?.code || e?.message || 'Auth failed');
+      const code = e?.code || '';
+      setErr(messageAuth(code, lang === 'FR'));
+      if (code === 'auth/email-already-in-use') setMode('signin');
     } finally { setBusy(false); }
   };
 
@@ -281,7 +310,7 @@ const SignInModal: React.FC = () => {
           </button>
         </form>
 
-        {err && <p className="mt-4 text-xs text-red-500 font-mono">{err}</p>}
+        {err && <p role="alert" className="mt-4 text-[0.8rem] leading-relaxed text-[#83322b] dark:text-red-300">{err}</p>}
         {info && <p className="mt-4 text-xs text-green-600 font-mono">{info}</p>}
 
         <div className="mt-6 flex flex-col gap-2 text-xs text-center text-[#2a2015]/60 dark:text-white/60">

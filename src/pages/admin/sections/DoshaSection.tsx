@@ -1,8 +1,70 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { collection, getDocs, query, where, type Timestamp } from 'firebase/firestore';
+import { db } from '../../../firebase';
 import { getDoshaResults, deleteDoshaResult, getQuizTentatives, marquerTentativeRattrapee, type DoshaResult, type QuizTentative } from '../../../firebase/firestore';
 import { Card, DangerButton, EmptyState, GhostButton, downloadCsv } from '../primitives';
 
+// « Déjà cliente » : l'adresse était connue AVANT le quiz. Sources lues (lecture seule) :
+// la liste d'infolettre (inscrite plus de 10 minutes avant le quiz, ou fiche importée
+// de Shopify/Kajabi/CSV, ou étiquette client/palier), les commandes Shopify et les
+// commandes payées du site, antérieures au quiz.
+const MARGE_MS = 10 * 60 * 1000;
+const TAGS_CLIENTE = /^(shopify-import|kajabi-abonne|import|csv-import|client|palier-\d+)$/;
+const SOURCES_IMPORT = /import|kajabi|shopify|csv|migration|export/i;
+type Connue = { infolettre?: number; import?: boolean; commande?: number };
+
+const enLots = <T,>(l: T[], n: number) => Array.from({ length: Math.ceil(l.length / n) }, (_, i) => l.slice(i * n, i * n + n));
+const ms = (t?: Timestamp | null) => (t?.toMillis ? t.toMillis() : 0);
+
+async function chargerConnues(emails: string[]): Promise<Map<string, Connue>> {
+  const m = new Map<string, Connue>();
+  if (!db || emails.length === 0) return m;
+  const get = (e: string) => { let c = m.get(e); if (!c) { c = {}; m.set(e, c); } return c; };
+  const lots = enLots(emails, 30);
+  const lire = async (nom: string, fn: (d: any) => void) => {
+    for (const groupe of enLots(lots, 6)) {
+      const snaps = await Promise.all(groupe.map(lot =>
+        getDocs(query(collection(db!, nom), where('email', 'in', lot))).catch(() => null)));
+      snaps.forEach(sn => sn?.forEach(fn));
+    }
+  };
+  await Promise.all([
+    lire('newsletter', d => {
+      const v = d.data(); const c = get(String(v.email || '').toLowerCase());
+      const t = ms(v.subscribedAt);
+      c.infolettre = Math.min(c.infolettre ?? Infinity, t || Infinity);
+      if (SOURCES_IMPORT.test(String(v.source || '')) || (v.tags || []).some((x: string) => TAGS_CLIENTE.test(x))) c.import = true;
+    }),
+    lire('shopifyOrders', d => {
+      const v = d.data(); const c = get(String(v.email || '').toLowerCase());
+      const t = ms(v.createdAt); if (t) c.commande = Math.min(c.commande ?? Infinity, t);
+    }),
+    lire('clientOrders', d => {
+      const v = d.data(); if (!['paid', 'shipped', 'delivered'].includes(v.status)) return;
+      const c = get(String(v.email || '').toLowerCase());
+      const t = ms(v.createdAt); if (t) c.commande = Math.min(c.commande ?? Infinity, t);
+    }),
+  ]);
+  return m;
+}
+
+const estCliente = (c: Connue | undefined, quizMs: number): boolean => {
+  if (!c) return false;
+  if (c.import) return true;
+  if (c.commande && (!quizMs || c.commande < quizMs)) return true;
+  if (c.infolettre && Number.isFinite(c.infolettre) && quizMs && c.infolettre < quizMs - MARGE_MS) return true;
+  return false;
+};
+
+const dateHeure = (t?: Timestamp) => {
+  if (!t?.toDate) return '—';
+  const p = new Intl.DateTimeFormat('fr-CA', { timeZone: 'America/Toronto', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: false }).formatToParts(t.toDate());
+  const g = (k: string) => p.find(x => x.type === k)?.value || '';
+  return `${g('day')} ${g('month')} ${g('year')}, ${g('hour')} h ${g('minute')}`;
+};
+
 const DoshaSection: React.FC = () => {
+  const [connues, setConnues] = useState<Map<string, Connue> | null>(null);
   const [rows, setRows] = useState<DoshaResult[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -10,10 +72,21 @@ const DoshaSection: React.FC = () => {
   const [tentatives, setTentatives] = useState<QuizTentative[]>([]);
   const refresh = () => {
     getQuizTentatives().then(setTentatives).catch(() => setTentatives([]));
-    return getDoshaResults().then(setRows).finally(() => setLoading(false));
+    return getDoshaResults()
+      .then(r => { setRows(r.sort((a, b) => ms(b.createdAt) - ms(a.createdAt))); return r; })
+      .then(r => chargerConnues([...new Set(r.map(x => (x.email || '').trim().toLowerCase()).filter(Boolean))]).then(setConnues).catch(() => setConnues(new Map())))
+      .finally(() => setLoading(false));
   };
   const aRattraper = tentatives.filter(t => t.statut !== 'rattrapee');
   useEffect(() => { refresh(); }, []);
+
+  const statut = (r: DoshaResult): 'cliente' | 'nouvelle' | null =>
+    connues ? (estCliente(connues.get((r.email || '').trim().toLowerCase()), ms(r.createdAt)) ? 'cliente' : 'nouvelle') : null;
+  const decompte = useMemo(() => {
+    let n = 0, c = 0;
+    rows.forEach(r => { const s = statut(r); if (s === 'cliente') c++; else if (s === 'nouvelle') n++; });
+    return { n, c };
+  }, [rows, connues]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const del = async (r: DoshaResult) => {
     if (!r.id) return;
@@ -27,6 +100,8 @@ const DoshaSection: React.FC = () => {
       firstName: r.firstName, lastName: r.lastName, email: r.email,
       dominant: r.dominant, vata: r.vata, pitta: r.pitta, kapha: r.kapha,
       createdAt: r.createdAt?.toDate().toISOString() || '',
+      dateHeure: dateHeure(r.createdAt),
+      cliente: statut(r) === 'cliente' ? 'Déjà cliente' : statut(r) === 'nouvelle' ? 'Nouvelle' : '',
     })));
   };
 
@@ -67,7 +142,7 @@ const DoshaSection: React.FC = () => {
       </div>
 
       <div className="flex items-center justify-between">
-        <p className="text-sm text-[#293027]/60 dark:text-white/60">{rows.length} résultat{rows.length > 1 ? 's' : ''}</p>
+        <p className="text-sm text-[#293027]/60 dark:text-white/60">{rows.length} résultat{rows.length > 1 ? 's' : ''}{connues ? ` · ${decompte.n} nouvelle${decompte.n > 1 ? 's' : ''} · ${decompte.c} déjà cliente${decompte.c > 1 ? 's' : ''}` : ' · vérification des clientes en cours'}</p>
         <GhostButton onClick={exportCsv}><i className="fa-solid fa-file-csv" /> Exporter CSV</GhostButton>
       </div>
 
@@ -79,7 +154,8 @@ const DoshaSection: React.FC = () => {
               <th className="text-left px-4 py-3 hidden md:table-cell">Email</th>
               <th className="text-left px-4 py-3">Dominant</th>
               <th className="text-left px-4 py-3 hidden md:table-cell">Scores</th>
-              <th className="text-left px-4 py-3 hidden md:table-cell">Date</th>
+              <th className="text-left px-4 py-3 hidden md:table-cell">Date et heure</th>
+              <th className="text-left px-4 py-3">Cliente</th>
               <th className="px-4 py-3"></th>
             </tr>
           </thead>
@@ -94,7 +170,12 @@ const DoshaSection: React.FC = () => {
                 <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden md:table-cell font-mono text-xs">
                   V{r.vata} · P{r.pitta} · K{r.kapha}
                 </td>
-                <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden md:table-cell">{r.createdAt?.toDate().toLocaleDateString('fr-CA') || '—'}</td>
+                <td className="px-4 py-3 text-[#293027]/50 dark:text-white/50 hidden md:table-cell">{dateHeure(r.createdAt)}</td>
+                <td className="px-4 py-3 text-xs">
+                  {statut(r) === 'cliente' && <span className="font-bold text-[#8B4A2F]">Déjà cliente</span>}
+                  {statut(r) === 'nouvelle' && <span className="text-[#293027]/70 dark:text-white/70">Nouvelle</span>}
+                  {statut(r) === null && <span className="text-[#293027]/30 dark:text-white/30">…</span>}
+                </td>
                 <td className="px-4 py-3 text-right">
                   <DangerButton onClick={() => del(r)}><i className="fa-solid fa-trash" /></DangerButton>
                 </td>

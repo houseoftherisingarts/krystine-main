@@ -23,7 +23,7 @@ function verifyHmac(rawBody: Buffer, secret: string, sigHeader?: string): boolea
 }
 
 export const shopifyWebhook = onRequest(
-  { secrets: [SHOPIFY_API_SECRET], cors: false, maxInstances: 10 },
+  { secrets: [SHOPIFY_API_SECRET], cors: false, maxInstances: 10, invoker: 'public' },
   async (req, res) => {
     if (req.method !== 'POST') { res.status(405).send('Method not allowed'); return; }
 

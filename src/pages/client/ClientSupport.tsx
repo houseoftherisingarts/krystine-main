@@ -25,6 +25,7 @@ const ClientSupport: React.FC = () => {
   // mot privé (reponseAutorisee: false) : absente ou vraie, la porte reste ouverte.
   const [reponseFermee, setReponseFermee] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const champRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -70,7 +71,12 @@ const ClientSupport: React.FC = () => {
         </div>
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto bg-[#EEE7DB] dark:bg-white/5 rounded-[20px] p-5 space-y-3">
+      {/* Conversation vide : toucher la zone place le curseur dans le champ (clics morts relevés en oct. 2026). */}
+      <div
+        ref={scrollRef}
+        onClick={messages.length === 0 ? () => champRef.current?.focus() : undefined}
+        className={`flex-1 overflow-y-auto bg-[#EEE7DB] dark:bg-white/5 rounded-[20px] p-5 space-y-3 ${messages.length === 0 && !reponseFermee ? 'cursor-text' : ''}`}
+      >
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-[#293027]/40 dark:text-white/40">
             <i className="fa-regular fa-comments text-3xl mb-3" />
@@ -142,6 +148,7 @@ const ClientSupport: React.FC = () => {
       ) : (
         <div className="mt-4 flex gap-3">
           <input
+            ref={champRef}
             type="text"
             value={draft}
             onChange={e => setDraft(e.target.value)}
