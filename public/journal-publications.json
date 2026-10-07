@@ -7060,5 +7060,23 @@
       "public/assets-manifest.json",
       "src/pages/VataExperience.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-07T15:10:09.545Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "9b8fafdd",
+    "message": "Espace client › Mes formations : rangées en rayons par ordre de priorité (Reprendre où vous en étiez, Expérience Origine, les saisons, masterclass et parcours courts, la bibliothèque, archives repliées pour l'admin)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/firebase/formations.ts",
+      "src/firebase/formations.ts.bak-2026-10-07",
+      "src/lib/rayonsFormations.ts",
+      "src/pages/client/ClientFormations.tsx",
+      "src/pages/client/ClientFormations.tsx.bak-2026-10-07"
+    ]
   }
 ]
