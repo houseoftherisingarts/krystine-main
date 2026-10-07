@@ -6981,5 +6981,19 @@
       "public/assets-manifest.json",
       "src/components/cours/origine/CoursOrigine.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-07T12:49:40.373Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "2837807c",
+    "message": "Formations (/formations) : la grande carte devient « Expérience Origine », Cohorte 2, sous-titre « Retrouver ses repères. », départ en janvier 2027",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/FormationsLanding.tsx"
+    ]
   }
 ]
