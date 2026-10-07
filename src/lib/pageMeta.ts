@@ -47,6 +47,8 @@ const ROUTES: Record<string, PageMeta> = {
   '/podcast': {
     title: `Podcast Au-delà des tendances · ${SITE}`,
     description: 'Au-delà des tendances, le podcast de Krystine St-Laurent: conversations sur le corps, les saisons et la sagesse ayurvédique.',
+    image: '/podcast/partage.jpg',
+    imageAlt: 'Au-delà des tendances, le podcast de Krystine St-Laurent, saison 2',
   },
   '/podcast/question': {
     title: `Posez votre question · ${SITE}`,

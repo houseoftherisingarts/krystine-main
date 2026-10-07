@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-07T10:48:57.018Z",
+  "generatedAt": "2026-10-07T11:13:33.370Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1673,6 +1673,13 @@
       "folder": "podcast",
       "kind": "image",
       "size": 78970
+    },
+    {
+      "path": "/podcast/partage.jpg",
+      "name": "partage.jpg",
+      "folder": "podcast",
+      "kind": "image",
+      "size": 167055
     },
     {
       "path": "/podcast/saison2-cover.webp",
