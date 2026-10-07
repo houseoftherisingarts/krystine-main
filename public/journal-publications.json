@@ -6995,5 +6995,24 @@
       "public/assets-manifest.json",
       "src/pages/FormationsLanding.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-07T12:53:28.477Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "32820322",
+    "message": "Plateforme des fondatrices d'Origine : le vert olive devient le vert profond, le cuivre et le crème de la page Formations (palette alignée, en-têtes de leçon compris)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/origine/ATelechargerOrigine.tsx",
+      "src/components/cours/origine/CoursOrigine.tsx",
+      "src/components/cours/origine/ListeOrigine.tsx",
+      "src/components/cours/origine/SeuilOrigine.tsx",
+      "src/components/cours/origine/VoletLecon.tsx",
+      "src/pages/origine2/piliers.ts"
+    ]
   }
 ]
