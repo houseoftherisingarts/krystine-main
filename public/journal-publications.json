@@ -6828,5 +6828,20 @@
     "fichiers": [
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-07T00:07:22.942Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b0b22be6",
+    "message": "Boutique (admin › Analytics) : le branchement des commandes Shopify reconnaît l'adresse du site même avec la barre finale que Shopify ajoute; plus de « aucun » trompeur ni de doublons au deuxième clic",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/shopify/brancher.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
