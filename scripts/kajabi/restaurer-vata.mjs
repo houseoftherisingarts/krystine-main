@@ -22,7 +22,7 @@ const PROJET = 'krystinestlaurent-87566';
 const RACINE = `projects/${PROJET}/databases/(default)/documents`;
 const BASE = `https://firestore.googleapis.com/v1/${RACINE}`;
 const ECRIRE = process.argv.includes('--ecrire');
-const FORMATIONS = ['kajabi-2148687644']; // = FORMATIONS_RESTAURATION_AUTO
+const FORMATIONS = ['kajabi-2148687644', 'kajabi-2148727800', 'kajabi-2148727800-bonis']; // = FORMATIONS_RESTAURATION_AUTO (functions/src/kajabi.ts)
 
 const tok = process.env.FIRESTORE_TOKEN
   || JSON.parse(readFileSync(`${homedir()}/.config/configstore/firebase-tools.json`, 'utf8')).tokens.access_token;

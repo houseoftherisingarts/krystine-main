@@ -253,7 +253,16 @@ export const kajabiUtiliserCode = onCall(
 // Idempotent : un achat déjà « restaure » est sauté, et une preuve qui existe
 // déjà (un achat fait sur le site) n'est jamais écrasée. Limitée aux
 // formations ci-dessous tant que Krystine n'en a pas décidé d'autres.
-export const FORMATIONS_RESTAURATION_AUTO = ['kajabi-2148687644'];
+//
+// Les deux offres VATA de Kajabi (demande de Krystine, 7 oct. 2026 : « Vata
+// plain, et l'expérience enrichie aussi ») :
+//   kajabi-2148687644              VATA Essentiel (Vata autonome, offre 2148658182)
+//   kajabi-2148727800 (+ -bonis)   Vata guidé, « Abondance et Transformation
+//                                  Profonde », cohorte automne 2024 (offres
+//                                  vata-guide-automne-2024 et -bonis du registre)
+// Chaque offre ouvre SA formation (table kajabiOffres) : le guidé n'ouvre pas
+// VATA Essentiel, et l'inverse. Contrôle : scripts/vata/verifier-vata.mjs.
+export const FORMATIONS_RESTAURATION_AUTO = ['kajabi-2148687644', 'kajabi-2148727800', 'kajabi-2148727800-bonis'];
 
 // ── Les fondatrices d'EXPÉRIENCE ORIGINE, sans code (décision de Krystine, 6 oct. 2026) ──
 // Une fondatrice est reconnue à son adresse : une fiche de la collection

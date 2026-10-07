@@ -3,6 +3,7 @@ import type { Lecon } from '../../../firebase/formations';
 import TexteLecon from '../../../lib/texteLecon';
 import { nettoyerKajabi } from '../../../pages/cours/nettoyerKajabi';
 import LecteurAudioCours from '../LecteurAudioCours';
+import VideoLecon from '../VideoLecon';
 import type { DocAffiche } from './ATelechargerOrigine';
 import { ORIGINE, documentManquant, pilierDeSemaine, semaineDeLecon, titreDeLecon, titreDeModule } from '../../../pages/origine2/piliers';
 
@@ -38,6 +39,9 @@ interface Props {
   onVignette: (file: File) => Promise<void>;
   onDocument: (file: File) => Promise<void>;
 }
+
+// Le visuel de marque quand ni la leçon ni le cours n'ont d'image : la photo du coffret.
+const AFFICHE_ORIGINE = '/origine2/packshot-poster.jpg';
 
 const VoletLecon: React.FC<Props> = ({ lecon, formationTitre, autresTitres = [], vignette, position, url, chargement, erreur, terminee, isAdmin, lang, onTerminee, onSuivante, documents, lien, extra, onOuvrirDocument, onVignette, onDocument }) => {
   const fr = lang === 'FR';
@@ -96,7 +100,7 @@ const VoletLecon: React.FC<Props> = ({ lecon, formationTitre, autresTitres = [],
             <p className="text-sm text-red-700">{erreur}</p>
           ) : url ? (
             lecon.type === 'video' ? (
-              <video src={url} controls playsInline poster={vignette} className="mx-auto block max-h-[calc(100vh-9rem)] w-auto max-w-full rounded-[15px] bg-black" />
+              <VideoLecon url={url} affiche={vignette || AFFICHE_ORIGINE} lang={lang} className="mx-auto block max-h-[calc(100vh-9rem)] w-auto max-w-full rounded-[15px] bg-black" />
             ) : lecon.type === 'audio' ? (
               <LecteurAudioCours key={lecon.id} url={url} titre={titreDeLecon(lecon.titre)} soustitre={position} pochette={vignette} lang={lang}
                 onFin={() => { if (!terminee) onTerminee(); }} onSuivante={onSuivante} />

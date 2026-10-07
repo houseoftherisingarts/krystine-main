@@ -60,3 +60,6 @@ scripts/livres/pdf/
 
 # Copies en double créées par la synchronisation du Mac (« fichier 2.js »)
 public/vh/* [0-9].js
+
+# Scripts de test temporaires des assistants (peuvent contenir un compte de test) : jamais publiés
+scripts/qa/_tmp-*

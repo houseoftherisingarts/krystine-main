@@ -21,6 +21,7 @@ import { LecteurVideoPleinEcran } from '../components/LecteurVideoEmbarque';
 import SeuilVata from '../components/cours/SeuilVata';
 import CheminSens, { type EtatSemaine } from '../components/cours/CheminSens';
 import LecteurAudioCours from '../components/cours/LecteurAudioCours';
+import VideoLecon, { vignetteDeLecon } from '../components/cours/VideoLecon';
 import BravoSemaine from '../components/cours/BravoSemaine';
 import BravoDiplome from '../components/cours/BravoDiplome';
 import type { DiplomeInfos } from '../components/cours/Diplome';
@@ -61,7 +62,7 @@ const BANNIERES_ACHETEES: Record<string, { image: string; duree?: { fr: string; 
 // sinon la couverture de la formation (Alex, 7 sept 2026 : « un petit
 // thumbnail aux audio » de l'expérience Ayurveda).
 const vignetteAudio = (l: { imageUrl?: string } & Record<string, any>, formation?: { imageUrl?: string }): string | undefined =>
-  l.imageUrl || l.vignette || l.image || formation?.imageUrl;
+  vignetteDeLecon(l) || formation?.imageUrl;
 
 // Une leçon rattachée à une porte reste verrouillée tant que cette porte
 // n'est pas ouverte (le mois en cours ou un mois déjà passé du cycle), comme
@@ -1031,7 +1032,13 @@ const CoursDetailPage: React.FC = () => {
                       <p className="text-sm text-red-600">{erreur}</p>
                     ) : urlCourante ? (
                       courante.type === 'video' ? (
-                        <video src={urlCourante} controls playsInline className="w-full rounded-[15px] bg-black" />
+                        <VideoLecon
+                          key={courante.id}
+                          url={urlCourante}
+                          affiche={vignetteDeLecon(courante) || chapitreDeModule(courante.moduleNom)?.bandeau || chapitreDeModule(courante.moduleNom)?.image || formation?.imageUrl || (id === FORMATION_VATA ? '/vata/couverture.webp' : '/assets/foyer-visuel-16x9.jpg')}
+                          lang={lang}
+                          className="w-full rounded-[15px] bg-black"
+                        />
                       ) : courante.type === 'audio' ? (
                         <LecteurAudioCours
                           key={courante.id}

@@ -76,6 +76,12 @@ export function fmtTime(d: Date, tz: string = TZ): string {
   return s.replace(/ h 00\b/, ' h').replace(':00', ' h').replace(':', ' h ');
 }
 
+// Le lien du direct : celui de YouTube s'il est posé, sinon la salle du direct
+// du site (/direct), pour qu'aucun bouton de courriel ne parte avec un lien vide.
+export function lienDirect(ev: LiveEvent): string {
+  return ev.youtubeUrl?.trim() || `${PUBLIC_BASE_URL}/direct`;
+}
+
 // Lien « ajouter à mon agenda » (Google Agenda, une heure par défaut).
 // Page maison qui offre tous les agendas (Google, Apple, Outlook, fichier .ics),
 // au lieu d'un lien Google seul. Elle lit l'événement dans l'URL.
@@ -85,7 +91,7 @@ export function calendarUrl(ev: LiveEvent): string {
     title: ev.title,
     start: start.toISOString(),
     dur: String(H / 60000),
-    url: ev.youtubeUrl,
+    url: lienDirect(ev),
   });
   return `${PUBLIC_BASE_URL}/podcast/agenda.html?${q.toString()}`;
 }
@@ -99,7 +105,7 @@ export function buildMail(step: Step | 'confirm', ev: LiveEvent, firstName?: str
   const jour = fmtDay(start);
   const heure = fmtTime(start);
   const agenda = { label: 'Ajouter à mon agenda', url: calendarUrl(ev) };
-  const direct = { label: 'Ouvrir la page du direct', url: ev.youtubeUrl };
+  const direct = { label: 'Ouvrir la page du direct', url: lienDirect(ev) };
 
   switch (step) {
     case 'confirm':
@@ -148,7 +154,7 @@ export function buildMail(step: Step | 'confirm', ev: LiveEvent, firstName?: str
           salut,
           `Dans une heure, à ${heure}, nous ouvrons le direct. Prenez le temps de vous installer, respirez un bon coup, et venez me rejoindre sur YouTube. Le corps aime qu'on arrive doucement.`,
         ],
-        cta: { label: 'Rejoindre le direct', url: ev.youtubeUrl },
+        cta: { label: 'Rejoindre le direct', url: lienDirect(ev) },
         closing: 'À tout de suite!',
       };
     case 'replay':
@@ -160,7 +166,7 @@ export function buildMail(step: Step | 'confirm', ev: LiveEvent, firstName?: str
           `Vous n'avez pas pu être des nôtres ${jour}? La rediffusion du premier épisode en direct est maintenant en ligne. Elle vous attend au rythme qui est le vôtre, pour l'écouter en entier ou pour revenir sur un passage qui vous a parlé.`,
           'Merci à toutes celles et ceux qui étaient là, et à vous qui arrivez maintenant. C\'est ici que nous connectons!',
         ],
-        cta: { label: 'Regarder la rediffusion', url: ev.replayUrl || ev.youtubeUrl },
+        cta: { label: 'Regarder la rediffusion', url: ev.replayUrl || lienDirect(ev) },
         closing: 'À la prochaine!',
       };
   }

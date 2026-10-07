@@ -7,6 +7,7 @@ import ATelechargerOrigine, { type DocAffiche } from './ATelechargerOrigine';
 import CertificatOrigine from './CertificatOrigine';
 import SeuilOrigine from './SeuilOrigine';
 import ListeOrigine from './ListeOrigine';
+import { vignetteDeLecon } from '../VideoLecon';
 import VoletLecon from './VoletLecon';
 
 // L'espace de cours de l'Expérience Origine (les deux cohortes) : le seuil
@@ -40,7 +41,8 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
   const fr = lang === 'FR';
   const [apercu, setApercu] = useState<{ nom: string; url: string } | null>(null);
   const nbTerminees = lecons.filter(l => terminees[l.id]).length;
-  const vignettePropre = (l: Lecon) => l.imageUrl || l.vignette || undefined;
+  // Jamais un arrêt sur image de la vidéo (les vignettes Wistia venues de Kajabi sont ignorées).
+  const vignettePropre = (l: Lecon) => vignetteDeLecon(l);
   // Les documents d'une leçon : les siens, plus ceux qu'elle emprunte à une autre leçon (COMPLEMENTS).
   const docsDe = (l: Lecon): DocAffiche[] => {
     const propres = (l.docs || []).map((d, index) => ({ nom: nomDeDocument(d.nom), pdf: /\.pdf$/i.test(d.nom), chemin: d.chemin, source: l.id, index }));
@@ -112,7 +114,7 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
                 lecon={courante}
                 formationTitre={formation.titre}
                 autresTitres={lecons.map(l => l.titre)}
-                vignette={vignettePropre(courante) || formation.imageUrl}
+                vignette={vignettePropre(courante)}
                 position={position(courante)}
                 url={url}
                 chargement={chargement}
