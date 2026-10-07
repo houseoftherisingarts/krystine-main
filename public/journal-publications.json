@@ -6967,5 +6967,19 @@
       "public/assets-manifest.json",
       "src/pages/origine2/piliers.ts"
     ]
+  },
+  {
+    "quand": "2026-10-07T12:47:50.105Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b78b1f10",
+    "message": "Cours des fondatrices : note d'accueil en haut du cours (parcours transféré de krystinestlaurent.com, progression qui repart à zéro, nouveautés, EXPÉRIENCE ORIGINE 2 se prépare, bouton d'aide)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/origine/CoursOrigine.tsx"
+    ]
   }
 ]
