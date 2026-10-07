@@ -980,7 +980,7 @@ const BackCover: React.FC = () => (
           <Wind size={15} weight="light" aria-hidden /> VATA Essentiel · Un sens à la fois
         </p>
         <h2 className="mt-7 mx-auto v2-serif font-light leading-[1.08] text-[clamp(2.2rem,5vw,3.9rem)] max-w-[22ch]" style={{ color: C.cream }}>
-          Prête à apaiser le mental ?
+          Prête à apaiser le mental&nbsp;?
         </h2>
         <p className="mt-7 mx-auto v2-serif text-[clamp(1.1rem,2vw,1.5rem)] leading-snug max-w-[40ch]" style={{ color: 'rgba(244,239,230,0.75)' }}>
           « Le calme se cultive pendant que le vent souffle. »
