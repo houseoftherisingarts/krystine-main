@@ -43,14 +43,6 @@ export interface ShopifyOrderPayload {
   total_shipping_price_set?: { shop_money: { amount: string; currency_code: string } };
   financial_status: string;   // paid, refunded, voided, partially_paid, pending, authorized, partially_refunded
   fulfillment_status: string | null; // fulfilled, partial, restocked, null
-  // Les expéditions : l'entrepôt y écrit le numéro de suivi (Postes Canada).
-  fulfillments?: {
-    status?: string | null;           // success, cancelled, error, failure
-    shipment_status?: string | null;  // in_transit, out_for_delivery, delivered…
-    tracking_number?: string | null;
-    tracking_url?: string | null;
-    tracking_company?: string | null;
-  }[];
   tags: string;
   customer?: {
     id: number;

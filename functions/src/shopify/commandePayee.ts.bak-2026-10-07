@@ -29,26 +29,6 @@ async function uidParCourriel(courriel: string): Promise<string | null> {
 const argent = (montant: string | undefined, devise: string) =>
   new Intl.NumberFormat('fr-CA', { style: 'currency', currency: devise || 'CAD' }).format(parseFloat(montant || '0') || 0);
 
-// L'état que voit la cliente dans /compte › Commandes, tiré de la commande
-// Shopify à chaque mise à jour (7 oct. 2026) : payée, expédiée avec son
-// numéro de suivi, livrée, annulée.
-function etatCliente(o: ShopifyOrderPayload): { status: string; trackingNumber?: string; trackingUrl?: string } {
-  if (o.cancelled_at) return { status: 'cancelled' };
-  const exp = (o.fulfillments || []).filter(f => f.status !== 'cancelled');
-  const suivi = [...exp].reverse().find(f => f.tracking_number);
-  const piste = suivi ? { trackingNumber: String(suivi.tracking_number), ...(suivi.tracking_url ? { trackingUrl: String(suivi.tracking_url) } : {}) } : {};
-  if (exp.length && exp.every(f => f.shipment_status === 'delivered')) return { status: 'delivered', ...piste };
-  if (exp.length || o.fulfillment_status === 'fulfilled' || o.fulfillment_status === 'partial') return { status: 'shipped', ...piste };
-  return { status: 'paid' };
-}
-
-/** Une commande annulée : l'espace client de la membre le montre, si la commande y est. */
-export async function suivreAnnulation(o: ShopifyOrderPayload): Promise<void> {
-  if (!o.cancelled_at) return;
-  const ref = getFirestore().doc(`clientOrders/shopify-${o.id}`);
-  if ((await ref.get()).exists) await ref.set({ status: 'cancelled', updatedAt: FieldValue.serverTimestamp() }, { merge: true });
-}
-
 /** Retourne ce qui a été fait, pour le journal. Ne lève jamais : le webhook doit répondre 200. */
 export async function traiterCommandePayee(o: ShopifyOrderPayload): Promise<string> {
   const courriel = (o.email || o.customer?.email || '').trim().toLowerCase();
@@ -73,7 +53,7 @@ export async function traiterCommandePayee(o: ShopifyOrderPayload): Promise<stri
     })),
     subtotal: argent(o.subtotal_price, devise),
     currency: devise,
-    ...etatCliente(o),
+    status: 'paid',
     createdAt: o.created_at ? Timestamp.fromDate(new Date(o.created_at)) : FieldValue.serverTimestamp(),
     updatedAt: FieldValue.serverTimestamp(),
   }, { merge: true });
