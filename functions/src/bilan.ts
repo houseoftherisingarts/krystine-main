@@ -114,7 +114,7 @@ const TYPES_COMMENTAIRE: Record<string, string> = {
   idee: 'Une idée',
   introuvable: 'Je ne trouve pas ce que je cherche',
 };
-interface Commentaires { parType: Record<string, number>; lignes: string[]; nonTraites: number }
+interface Commentaires { parType: Record<string, number>; lignes: string[]; nonTraites: number; enAttente: string[]; soutien: string[] }
 async function commentaires(de: Date): Promise<Commentaires> {
   const db = getFirestore();
   const snap = await db.collection('bugs').where('cree', '>=', ts(de)).orderBy('cree', 'desc').get();
@@ -128,7 +128,29 @@ async function commentaires(de: Date): Promise<Commentaires> {
     return `${type} · ${d.get('page') || 'page inconnue'}${qui ? ` · ${qui}` : ''} : ${texte.slice(0, 140)}${texte.length > 140 ? '…' : ''}`;
   });
   const nonTraites = (await db.collection('bugs').where('statut', 'in', ['nouveau', 'en_cours']).count().get()).data().count;
-  return { parType, lignes, nonTraites };
+  // Tout ce qui attend encore une réponse, avec son âge (demande de Krystine, 7 oct. 2026).
+  const depuis = (t: unknown) => {
+    const ms = (t as { toMillis?: () => number })?.toMillis?.();
+    if (!ms) return '';
+    const j = Math.floor((Date.now() - ms) / 86_400_000);
+    return j <= 0 ? 'aujourd’hui' : j === 1 ? 'depuis hier' : `depuis ${j} jours`;
+  };
+  const attente = await db.collection('bugs').where('statut', 'in', ['nouveau', 'en_cours']).get();
+  const enAttente = attente.docs
+    .sort((a, b) => ((a.get('cree')?.toMillis?.() || 0) - (b.get('cree')?.toMillis?.() || 0)))
+    .slice(0, 12)
+    .map((d) => {
+      const qui = String(d.get('nom') || '').trim() || String(d.get('courriel') || '').trim() || 'Une visiteuse';
+      const texte = String(d.get('texte') || d.get('description') || '').replace(/\s+/g, ' ').trim();
+      return `${qui} (${depuis(d.get('cree'))}, ${d.get('page') || 'page inconnue'}) : ${texte.slice(0, 110)}${texte.length > 110 ? '…' : ''}`;
+    });
+  const conv = await db.collection('conversations').where('unreadByAdmin', '>', 0).get();
+  const soutien = conv.docs.map((d) => {
+    const qui = String(d.get('memberName') || '').trim() || String(d.get('memberEmail') || '').trim() || 'Une cliente';
+    const dernier = String(d.get('lastMessage') || '').replace(/\s+/g, ' ').trim();
+    return `${qui} (${d.get('unreadByAdmin')} message(s) non lu(s)${depuis(d.get('lastMessageAt')) ? `, ${depuis(d.get('lastMessageAt'))}` : ''})${dernier ? ` : ${dernier.slice(0, 100)}` : ''}`;
+  });
+  return { parType, lignes, nonTraites, enAttente, soutien };
 }
 
 /** La vérification complète du site (scripts/qa/verif-complete.mjs, sur l'ordinateur de Krystine, vers 5 h 45). */
@@ -346,6 +368,8 @@ export function texteBilan(b: Bilan): string {
         ...c.lignes.map((l) => `• ${l}`),
         `Encore non traités au total : ${n(c.nonTraites)} (admin, onglet Commentaires des visiteuses).`,
       ];
+  if (c && c.enAttente?.length) blocCommentaires.push('', 'Qui attend encore une réponse :', ...c.enAttente.map((l) => `• ${l}`));
+  if (c && c.soutien?.length) blocCommentaires.push('', 'Messages au soutien non lus (admin, onglet Messages) :', ...c.soutien.map((l) => `• ${l}`));
   const lignes = [
     'Bonjour Krystine,',
     '',

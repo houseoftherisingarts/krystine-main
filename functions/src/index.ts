@@ -19,6 +19,7 @@ export { growthLancer, growthTravailler, growthVersGabarit } from './growth';
 export { membreLangue } from './newsletter/langue';
 export { repondreAbonne } from './newsletter/reponse';
 export { notifierSoutien } from './newsletter/soutien';
+export { notifierCommentaire } from './newsletter/commentaire';
 export { chatbotKrystine } from './newsletter/chatbot';
 export { traiterSequences, testerSequence, inscrireSequencesEtiquette } from './newsletter/sequences';
 export { verifierCaptcha, confirmerHumain } from './captcha';
