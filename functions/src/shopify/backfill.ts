@@ -5,7 +5,7 @@ import { normalizeOrder } from './normalize';
 import type { ShopifyOrderPayload } from './types';
 
 // Admin-API access token fetched on demand (see jeton.ts).
-const SHOPIFY_API_VERSION = '2025-01';
+const SHOPIFY_API_VERSION = '2026-07';
 
 const ADMIN_EMAILS = [
   'admin@krystinestlaurent.ca',

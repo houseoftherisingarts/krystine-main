@@ -10,7 +10,7 @@ import { SECRETS_SHOPIFY, jetonShopify } from './shopify/jeton';
 // donc echangerRecompense les refuse d'elle-même (invalid-argument).
 
 const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
-const SHOPIFY_API_VERSION = '2025-01';
+const SHOPIFY_API_VERSION = '2026-07';
 
 export const MASTERCLASS_SANTE_PARFAITE_ID = 'kajabi-2149362090';
 
@@ -69,39 +69,48 @@ async function creerCodeStripeFormation(uid: string): Promise<string> {
   return promo.code;
 }
 
-/** Un code Shopify unique (10 %, dès 75 $, une utilisation) si l'API Admin
- *  est vraiment configurée; sinon lève, pour laisser le repli s'exécuter. */
+/** Un code Shopify unique (10 %, dès 75 $, une utilisation), créé par la
+ *  mutation discountCodeBasicCreate : la portée write_discounts de l'app
+ *  « krystinestlaurent.ca » suffit, alors que l'ancien chemin REST
+ *  price_rules exigeait une portée qu'elle n'a pas (403 le 7 oct. 2026).
+ *  Lève en cas de refus, pour laisser le repli s'exécuter. */
 async function creerCodeShopifyBoutique(uid: string): Promise<string> {
   const { shop, token } = await jetonShopify();
-
-  const headers = { 'X-Shopify-Access-Token': token, 'Content-Type': 'application/json' };
   const code = genererCodePromo(uid);
-  const ruleRes = await fetch(`https://${shop}/admin/api/${SHOPIFY_API_VERSION}/price_rules.json`, {
+  const resp = await fetch(`https://${shop}/admin/api/${SHOPIFY_API_VERSION}/graphql.json`, {
     method: 'POST',
-    headers,
+    headers: { 'X-Shopify-Access-Token': token, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      price_rule: {
-        title: code,
-        target_type: 'line_item',
-        target_selection: 'all',
-        allocation_method: 'across',
-        value_type: 'percentage',
-        value: '-10.0',
-        customer_selection: 'all',
-        prerequisite_subtotal_range: { greater_than_or_equal_to: '75.00' },
-        usage_limit: 1,
-        starts_at: new Date().toISOString(),
+      query: `mutation creer($input: DiscountCodeBasicInput!) {
+        discountCodeBasicCreate(basicCodeDiscount: $input) {
+          codeDiscountNode { id }
+          userErrors { field message }
+        }
+      }`,
+      variables: {
+        input: {
+          title: code,
+          code,
+          startsAt: new Date().toISOString(),
+          usageLimit: 1,
+          appliesOncePerCustomer: true,
+          customerSelection: { all: true },
+          customerGets: { value: { percentage: 0.1 }, items: { all: true } },
+          minimumRequirement: { subtotal: { greaterThanOrEqualToSubtotal: '75.00' } },
+        },
       },
     }),
   });
-  const rule = (await ruleRes.json()) as { price_rule?: { id?: number } };
-  if (!ruleRes.ok || !rule.price_rule?.id) throw new Error('price_rule Shopify refusée');
-  const codeRes = await fetch(`https://${shop}/admin/api/${SHOPIFY_API_VERSION}/price_rules/${rule.price_rule.id}/discount_codes.json`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ discount_code: { code } }),
-  });
-  if (!codeRes.ok) throw new Error('discount_code Shopify refusé');
+  if (!resp.ok) throw new Error(`Shopify ${resp.status}`);
+  const json = (await resp.json()) as {
+    data?: { discountCodeBasicCreate?: { codeDiscountNode: { id: string } | null; userErrors: { message: string }[] } };
+    errors?: { message: string }[];
+  };
+  const r = json.data?.discountCodeBasicCreate;
+  if (json.errors?.length || !r?.codeDiscountNode) {
+    const motifs = [...(json.errors ?? []), ...(r?.userErrors ?? [])].map(e => e.message).join('; ');
+    throw new Error(`code Shopify refusé : ${motifs}`);
+  }
   return code;
 }
 
