@@ -6843,5 +6843,36 @@
       "functions/src/shopify/brancher.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-07T00:26:07.351Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ffc6e90d",
+    "message": "Soir du 6 oct. : boutique branchée (catalogue Shopify ajouté à la publication GitHub, garde des clés, vrai numéro de commande dans l'admin), page Formations refaite (EXPÉRIENCE ORIGINE 2 en grand avec un vert vivant, Rituels et VATA en deux cartes égales, ligne de l'en-tête dans l'ordre de la page), quiz des doshas dans l'admin avec date, heure et cliente déjà connue ou nouvelle, Bilan du matin avec clics de frustration et points à optimiser, corrections des clics sans effet (podcast, quiz, compte, événements, connexion, musique de l'accueil)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      ".github/workflows/deploy.yml",
+      "functions/src/bilan.ts",
+      "functions/src/shopify/webhook.ts",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/iris/iris_terminal.md",
+      "scripts/garde-cles.mjs",
+      "scripts/qa/_tmp-nav 2.mjs",
+      "scripts/qa/_tmp-nav 3.mjs",
+      "src/components/layout/SignInModal.tsx",
+      "src/pages/EvenementsPage.tsx",
+      "src/pages/FormationsLanding.tsx",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/pages/admin/sections/DoshaSection.tsx",
+      "src/pages/admin/sections/OrdersSection.tsx",
+      "src/pages/client/ClientSupport.tsx",
+      "src/pages/concepts/PodcastV2.tsx",
+      "src/pages/podcast/LecteurAudio.tsx"
+    ]
   }
 ]
