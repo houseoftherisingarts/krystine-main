@@ -7139,5 +7139,25 @@
       "src/pages/vata/offre.ts",
       "src/pages/vata/offre.ts.bak-2026-10-07"
     ]
+  },
+  {
+    "quand": "2026-10-07T17:50:45.844Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c53b0cce",
+    "message": "Quiz (/quiz) : une case « Je ne suis pas un robot » expirée ou absente ne fait plus perdre la lecture (envoi permis une fois par adresse en 30 jours, cadence par IP et pot de miel gardés)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/captcha.ts",
+      "functions/src/captcha.ts.bak-2026-10-07",
+      "functions/src/quiz.ts",
+      "functions/src/quiz.ts.bak-2026-10-07",
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/pages/QuizLoeuvre.tsx.bak-2026-10-07"
+    ]
   }
 ]
