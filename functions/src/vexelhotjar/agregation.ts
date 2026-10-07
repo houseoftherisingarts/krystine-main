@@ -369,9 +369,9 @@ export const vhAgreger = onSchedule(
 
 // La même liste d'admins que le reste des fonctions (newsletter, envois) :
 // l'adresse suffit, comme pour elles.
-function exigerAdmin(req: { auth?: { token: { email?: string } } }) {
+function exigerAdmin(req: { auth?: { token: { email?: string; email_verified?: boolean } } }) {
   const email = String(req.auth?.token.email || '').toLowerCase();
-  if (!req.auth || !ADMIN_EMAILS.includes(email)) {
+  if (!req.auth || req.auth.token.email_verified !== true || !ADMIN_EMAILS.includes(email)) {
     throw new HttpsError('permission-denied', "Réservé à l'admin.");
   }
 }
