@@ -7046,5 +7046,19 @@
       "public/assets-manifest.json",
       "src/pages/admin/sections/BugsSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-07T14:44:36.481Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "caeec2ac",
+    "message": "Vente VATA (/vata) : le point d'interrogation du dernier titre ne tombe plus seul sur une ligne au téléphone",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/VataExperience.tsx"
+    ]
   }
 ]
