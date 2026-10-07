@@ -7029,5 +7029,22 @@
       "src/lib/collections.ts",
       "src/lib/saisonBoutique.ts"
     ]
+  },
+  {
+    "quand": "2026-10-07T14:19:42.856Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e16c5857",
+    "message": "Admin › Commentaires des visiteuses : répondre directement à la visiteuse par courriel, avec émojis, confirmation en deux temps et historique des réponses (fonction repondreCommentaire, admin seulement)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/index.ts",
+      "functions/src/newsletter/commentaire.ts",
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/BugsSection.tsx"
+    ]
   }
 ]
