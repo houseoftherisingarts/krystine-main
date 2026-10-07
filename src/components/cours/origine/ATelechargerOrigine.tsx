@@ -34,8 +34,8 @@ const ATelechargerOrigine: React.FC<Props> = ({ documents, lang, onOuvrir }) => 
     catch { setSouffle({ etat: 'erreur', url: '' }); }
   };
 
-  const ligne = 'grid w-full grid-cols-[40px_minmax(0,1fr)] items-center gap-3 rounded-[10px] px-2 py-1.5 text-left text-[13px] leading-snug text-[#26290f]/85 transition-colors hover:bg-[#26290f]/6';
-  const pastille = 'flex h-10 w-10 items-center justify-center rounded-[8px] bg-[#26290f]/8';
+  const ligne = 'grid w-full grid-cols-[40px_minmax(0,1fr)] items-center gap-3 rounded-[10px] px-2 py-1.5 text-left text-[13px] leading-snug text-[#1c2420]/85 transition-colors hover:bg-[#1c2420]/6';
+  const pastille = 'flex h-10 w-10 items-center justify-center rounded-[8px] bg-[#1c2420]/8';
 
   return (
     <div className="rounded-[15px] border" style={{ borderColor: `${ORIGINE.olive}33`, background: ORIGINE.cremeSombre }}>

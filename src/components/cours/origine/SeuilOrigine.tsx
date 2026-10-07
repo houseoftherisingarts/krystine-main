@@ -25,11 +25,11 @@ const SeuilOrigine: React.FC<Props> = ({ image, titre, etiquette, nbLecons, term
       <div className="relative aspect-[16/9] md:aspect-auto md:min-h-[300px]">
         <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover object-[50%_35%]" />
       </div>
-      <div className="flex min-w-0 flex-col justify-between gap-8 px-7 py-7 md:px-10 md:py-9" style={{ background: ORIGINE.oliveProfond, color: '#f3ead2' }}>
+      <div className="flex min-w-0 flex-col justify-between gap-8 px-7 py-7 md:px-10 md:py-9" style={{ background: ORIGINE.oliveProfond, color: '#EEE7DB' }}>
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: ORIGINE.orClair }}>{fr ? 'Expérience Origine' : 'Origin Experience'} · {etiquette}</p>
           <h1 className="mt-3 font-serif text-[clamp(1.7rem,2.6vw,2.4rem)] leading-[1.05]">{titre}</h1>
-          <p className="mt-3 max-w-[46ch] text-[13px] leading-relaxed text-[#f3ead2]/75">
+          <p className="mt-3 max-w-[46ch] text-[13px] leading-relaxed text-[#EEE7DB]/75">
             {fr ? '12 semaines en trois piliers, ' : '12 weeks in three pillars, '}
             {PILIERS.map(p => (fr ? p.nom.fr : p.nom.en).toLowerCase()).join(', ')}.
             {' '}{fr ? 'Chaque semaine dépose son audio, sa méditation et le rendez-vous du dimanche.' : 'Each week brings its audio, its meditation and the Sunday session.'}
@@ -48,7 +48,7 @@ const SeuilOrigine: React.FC<Props> = ({ image, titre, etiquette, nbLecons, term
             <p className="font-serif text-lg leading-tight">{terminees} {fr ? 'sur' : 'of'} {nbLecons} {fr ? 'leçons' : 'lessons'}</p>
             {reprise && (
               <>
-                <p className="mt-1 text-[12px] leading-snug text-[#f3ead2]/70">{fr ? 'Prochaine leçon' : 'Next lesson'} : {reprise.titre}</p>
+                <p className="mt-1 text-[12px] leading-snug text-[#EEE7DB]/70">{fr ? 'Prochaine leçon' : 'Next lesson'} : {reprise.titre}</p>
                 <button type="button" onClick={reprise.onOuvrir}
                   className="mt-3 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[11px] font-bold uppercase tracking-[0.18em] transition-colors hover:brightness-110"
                   style={{ background: ORIGINE.or, color: ORIGINE.encre }}>

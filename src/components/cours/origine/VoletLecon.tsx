@@ -70,17 +70,17 @@ const VoletLecon: React.FC<Props> = ({ lecon, formationTitre, autresTitres = [],
   const videoPrete = lecon.type === 'video' && !!url && !chargement && !erreur;
 
   return (
-    <article className="overflow-hidden rounded-[15px] border" style={{ borderColor: `${ORIGINE.olive}33`, background: '#fbf4e4' }}>
+    <article className="overflow-hidden rounded-[15px] border" style={{ borderColor: `${ORIGINE.olive}33`, background: '#f8f4ec' }}>
       <div className={`relative w-full overflow-hidden ${videoPrete ? 'h-16' : 'aspect-video max-h-[480px]'}`} style={{ background: pilier?.fond || ORIGINE.olive }}>
         {vignette && !videoPrete && <img src={vignette} alt="" className="absolute inset-0 h-full w-full object-cover" />}
-        <span aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(38,41,15,0.88) 0%, rgba(38,41,15,0.25) 55%, transparent 100%)' }} />
+        <span aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(28,36,32,0.88) 0%, rgba(28,36,32,0.25) 55%, transparent 100%)' }} />
         <div className={`absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 px-6 md:px-8 ${videoPrete ? 'pb-5' : 'pb-4'}`}>
-          <p className="text-[10px] font-bold uppercase tracking-[0.26em] text-[#f3ead2]/85">{position}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.26em] text-[#EEE7DB]/85">{position}</p>
           {isAdmin && (
             <>
               <input ref={champVignette} type="file" accept="image/*" className="hidden" onChange={e => { void envoyer('vignette', e.target.files?.[0]); e.target.value = ''; }} />
               <button type="button" onClick={() => champVignette.current?.click()} disabled={envoi === 'vignette'}
-                className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#f3ead2]/40 bg-[#26290f]/55 px-3.5 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#f3ead2] backdrop-blur-sm transition-colors hover:bg-[#26290f]/80 disabled:opacity-50">
+                className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#EEE7DB]/40 bg-[#1c2420]/55 px-3.5 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#EEE7DB] backdrop-blur-sm transition-colors hover:bg-[#1c2420]/80 disabled:opacity-50">
                 <i className={`fa-solid ${envoi === 'vignette' ? 'fa-circle-notch fa-spin' : 'fa-image'}`} />
                 {fr ? 'Changer la vignette' : 'Change thumbnail'}
               </button>
@@ -130,7 +130,7 @@ const VoletLecon: React.FC<Props> = ({ lecon, formationTitre, autresTitres = [],
               {documents.map(d => (
                 <li key={d.chemin}>
                   <button type="button" onClick={() => onOuvrirDocument(d)}
-                    className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors hover:bg-[#b8923a]/12" style={{ borderColor: `${ORIGINE.or}80`, color: ORIGINE.encre }}>
+                    className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors hover:bg-[#BA7B39]/12" style={{ borderColor: `${ORIGINE.or}80`, color: ORIGINE.encre }}>
                     <i className={`fa-solid ${d.pdf ? 'fa-file-pdf' : 'fa-file-arrow-down'}`} /> {d.nom}
                   </button>
                 </li>
@@ -149,7 +149,7 @@ const VoletLecon: React.FC<Props> = ({ lecon, formationTitre, autresTitres = [],
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <input ref={champDocument} type="file" accept="application/pdf,image/*,audio/*,video/*" className="hidden" onChange={e => { void envoyer('document', e.target.files?.[0]); e.target.value = ''; }} />
             <button type="button" onClick={() => champDocument.current?.click()} disabled={envoi === 'document'}
-              className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-[0.16em] transition-colors hover:bg-[#26290f]/6 disabled:opacity-50" style={{ borderColor: `${ORIGINE.olive}66`, color: ORIGINE.olive }}>
+              className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-[0.16em] transition-colors hover:bg-[#1c2420]/6 disabled:opacity-50" style={{ borderColor: `${ORIGINE.olive}66`, color: ORIGINE.olive }}>
               <i className={`fa-solid ${envoi === 'document' ? 'fa-circle-notch fa-spin' : 'fa-file-arrow-up'}`} />
               {fr ? 'Déposer un document' : 'Upload a document'}
             </button>

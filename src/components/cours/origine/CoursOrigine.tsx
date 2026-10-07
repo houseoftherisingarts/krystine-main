@@ -101,7 +101,7 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
 
         {/* Note d'accueil des fondatrices (Krystine, 7 oct. 2026). */}
         {id === 'kajabi-2149348838' && fr && (
-          <div className="mt-6 rounded-[15px] border px-6 py-5 text-[0.95rem] leading-relaxed md:px-8" style={{ borderColor: `${ORIGINE.olive}33`, background: '#fbf4e4', color: ORIGINE.encre }}>
+          <div className="mt-6 rounded-[15px] border px-6 py-5 text-[0.95rem] leading-relaxed md:px-8" style={{ borderColor: `${ORIGINE.olive}33`, background: '#f8f4ec', color: ORIGINE.encre }}>
             <p className="font-serif text-xl">Bienvenue dans votre espace d’EXPÉRIENCE ORIGINE.</p>
             <p className="mt-2">Vous retrouvez ici votre parcours de la première cohorte, transféré de notre ancienne plateforme (krystinestlaurent.com) vers notre nouveau site. Tout y est : les audios des semaines, les méditations, les rencontres, les documents et le journal de bord.</p>
             <p className="mt-2">Votre progression repart à zéro : vous pouvez cocher les leçons déjà faites. Ce qui est nouveau : la bibliothèque, Le Souffle d’Origine et votre certificat à la fin du parcours. EXPÉRIENCE ORIGINE 2 se prépare.</p>
@@ -154,21 +154,21 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
                 onDocument={async f => { await ajouterDocumentLecon(id, courante.id, f); await onRafraichir(); }}
               />
             ) : (
-              <div className="rounded-[15px] px-6 py-16 text-center" style={{ background: '#fbf4e4', color: ORIGINE.olive }}>
+              <div className="rounded-[15px] px-6 py-16 text-center" style={{ background: '#f8f4ec', color: ORIGINE.olive }}>
                 <p className="font-serif text-xl" style={{ color: ORIGINE.encre }}>{fr ? 'Choisissez une leçon dans la liste.' : 'Pick a lesson from the list.'}</p>
               </div>
             )}
           </div>
 
           {apercu && (
-            <aside className="flex flex-col overflow-hidden rounded-[15px] border lg:sticky lg:top-24 lg:h-[calc(100vh-7rem)]" style={{ borderColor: `${ORIGINE.olive}33`, background: '#fbf4e4' }}>
+            <aside className="flex flex-col overflow-hidden rounded-[15px] border lg:sticky lg:top-24 lg:h-[calc(100vh-7rem)]" style={{ borderColor: `${ORIGINE.olive}33`, background: '#f8f4ec' }}>
               <div className="flex items-center justify-between gap-3 border-b px-4 py-3" style={{ borderColor: `${ORIGINE.olive}26` }}>
                 <p className="min-w-0 truncate text-sm" style={{ color: ORIGINE.encre }}><i className="fa-solid fa-file-pdf mr-2" style={{ color: ORIGINE.olive }} />{apercu.nom}</p>
                 <div className="flex shrink-0 items-center gap-2">
                   <a href={apercu.url} target="_blank" rel="noopener noreferrer" className="rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest" style={{ borderColor: `${ORIGINE.or}80`, color: ORIGINE.encre }}>
                     {fr ? 'Ouvrir' : 'Open'}
                   </a>
-                  <button type="button" onClick={() => setApercu(null)} aria-label={fr ? 'Fermer l’aperçu' : 'Close preview'} className="h-8 w-8 rounded-full hover:bg-[#26290f]/6" style={{ color: ORIGINE.olive }}>
+                  <button type="button" onClick={() => setApercu(null)} aria-label={fr ? 'Fermer l’aperçu' : 'Close preview'} className="h-8 w-8 rounded-full hover:bg-[#1c2420]/6" style={{ color: ORIGINE.olive }}>
                     <i className="fa-solid fa-xmark" />
                   </button>
                 </div>

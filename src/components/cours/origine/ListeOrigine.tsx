@@ -71,13 +71,13 @@ const ListeOrigine: React.FC<Props> = ({ lecons, courante, terminees, verrouille
           <li key={l.id}>
             <button type="button" onClick={() => onOuvrir(l)} disabled={verrou}
               className={`grid w-full grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 rounded-[10px] px-2 py-1.5 text-left text-[13px] leading-snug transition-colors ${
-                active ? 'bg-[#b8923a] text-[#26290f]' : verrou ? 'cursor-not-allowed opacity-45' : sombre ? 'text-[#f3ead2]/90 hover:bg-white/10' : 'text-[#26290f]/85 hover:bg-[#26290f]/6'
+                active ? 'bg-[#BA7B39] text-[#1c2420]' : verrou ? 'cursor-not-allowed opacity-45' : sombre ? 'text-[#EEE7DB]/90 hover:bg-white/10' : 'text-[#1c2420]/85 hover:bg-[#1c2420]/6'
               }`}>
               {v ? (
                 <img src={v} alt="" className="h-10 w-10 rounded-[8px] object-cover" />
               ) : (
-                <span className={`flex h-10 w-10 items-center justify-center rounded-[8px] ${active ? 'bg-[#26290f]/12' : sombre ? 'bg-white/10' : 'bg-[#26290f]/8'}`}>
-                  <i className={`fa-solid ${verrou ? 'fa-lock' : faite ? 'fa-circle-check' : ICONES[l.type] || 'fa-file'} text-[13px] ${faite && !active ? 'text-[#b8923a]' : ''}`} />
+                <span className={`flex h-10 w-10 items-center justify-center rounded-[8px] ${active ? 'bg-[#1c2420]/12' : sombre ? 'bg-white/10' : 'bg-[#1c2420]/8'}`}>
+                  <i className={`fa-solid ${verrou ? 'fa-lock' : faite ? 'fa-circle-check' : ICONES[l.type] || 'fa-file'} text-[13px] ${faite && !active ? 'text-[#BA7B39]' : ''}`} />
                 </span>
               )}
               <span className="min-w-0 truncate">{titreDeLecon(l.titre)}</span>

@@ -17,14 +17,15 @@ export const COHORTES: Record<string, { etiquette: { fr: string; en: string } }>
 export const estOrigine = (id: string): boolean => id in COHORTES;
 
 export const ORIGINE = {
-  creme: '#f6e9cf',
-  cremeSombre: '#eddcb8',
-  sable: '#c2ad7c',
-  olive: '#6a6233',
-  oliveProfond: '#2b3111',
-  encre: '#26290f',
-  or: '#b8923a',
-  orClair: '#dcbf7a',
+  // Alignée sur la carte vert profond de /formations (7 oct. 2026 : « le vert olive est trop olive », Krystine).
+  creme: '#f4efe6',
+  cremeSombre: '#efe6d7',
+  sable: '#c9b79a',
+  olive: '#3c4a42',
+  oliveProfond: '#28352F',
+  encre: '#1c2420',
+  or: '#BA7B39',
+  orClair: '#d9a86b',
 };
 
 export interface Pilier {
@@ -40,7 +41,7 @@ export interface Pilier {
 }
 
 export const PILIERS: Pilier[] = [
-  { rang: 1, roman: 'I', nom: { fr: 'Lire', en: 'Read' }, titre: PILIERS_ORIGINE2[0].titre, semaines: [1, 2, 3, 4], fond: ORIGINE.oliveProfond, encre: '#f3ead2', liseret: ORIGINE.orClair },
+  { rang: 1, roman: 'I', nom: { fr: 'Lire', en: 'Read' }, titre: PILIERS_ORIGINE2[0].titre, semaines: [1, 2, 3, 4], fond: ORIGINE.oliveProfond, encre: '#EEE7DB', liseret: ORIGINE.orClair },
   { rang: 2, roman: 'II', nom: { fr: 'Trier', en: 'Sort' }, titre: PILIERS_ORIGINE2[1].titre, semaines: [5, 6, 7, 8], fond: ORIGINE.olive, encre: '#f7efd9', liseret: ORIGINE.orClair },
   { rang: 3, roman: 'III', nom: { fr: 'Ancrer', en: 'Anchor' }, titre: PILIERS_ORIGINE2[2].titre, semaines: [9, 10, 11, 12], fond: ORIGINE.sable, encre: ORIGINE.encre, liseret: ORIGINE.oliveProfond },
 ];
