@@ -6874,5 +6874,28 @@
       "src/pages/concepts/PodcastV2.tsx",
       "src/pages/podcast/LecteurAudio.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-07T10:42:56.831Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "9f3b05e0",
+    "message": "Matin du 7 oct. : photo de profil réparée dans /compte (règle de dépôt pour chaque membre), panier vide qui dit « Votre panier est vide. », menu musique qui se referme au choix de l'ambiance, lecteurs audio ignorés par le compteur des clics sans effet, Bilan du matin débarrassé des fausses erreurs (robots des messageries, navigation privée)",
+    "cibles": [
+      "hosting",
+      "functions",
+      "storage"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "public/assets-manifest.json",
+      "public/vh/vexelhotjar.js",
+      "src/components/layout/CartDrawer.tsx",
+      "src/components/layout/MenuMusique.tsx",
+      "src/components/layout/NavBar.tsx",
+      "src/pages/ClientPortal.tsx",
+      "src/vexelhotjar/tracker.ts",
+      "storage.rules"
+    ]
   }
 ]
