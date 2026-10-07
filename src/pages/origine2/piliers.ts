@@ -103,7 +103,7 @@ export function documentManquant(l: Lecon, formationId?: string): boolean {
 export const LECONS_MASQUEES: Record<string, string[]> = {
   // La Clé 0 (014) reste visible, renommée « Une clé de l'Ayurveda : le principe des opposés »,
   // parce que l'audio de la semaine 1 y renvoie (Krystine, 6 oct. 2026).
-  'kajabi-2149348838': ['015'],   // Clé 1 : les 8 branches
+  'kajabi-2149348838': ['015', '053'],   // Clé 1 : les 8 branches · 053 : « Résumé du chat », vide (7 oct. 2026)
 };
 
 export interface Complement {
