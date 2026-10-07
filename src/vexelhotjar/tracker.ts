@@ -366,7 +366,9 @@ function surClic(ev: MouseEvent) {
   // avant le clic (un panneau ouvert, une classe basculée, des nœuds ajoutés)
   // ou si l'élément cliqué lui-même s'anime : le remue-ménage de fond
   // (carrousel, décor animé) se retranche puisqu'il existait avant le clic.
-  const champ = inter.matches('input,select,textarea,label');
+  // Les lecteurs audio et vidéo du navigateur répondent sans toucher la page :
+  // leurs clics ne sont jamais morts (fausses alertes sur /podcast, 7 oct. 2026).
+  const champ = inter.matches('input,select,textarea,label,audio,video') || !!inter.closest('audio,video');
   const pathAvant = location.href;
   const scrollAvant = window.scrollY;
   const pvAvant = pv;

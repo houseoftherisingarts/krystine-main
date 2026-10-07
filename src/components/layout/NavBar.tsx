@@ -33,7 +33,7 @@ const NavBar: React.FC = () => {
       .catch(() => {});
   }, []);
   const profilVisible = profilPublic || isAdmin;
-  const { cartItems, setCartOpen } = useCart();
+  const { cartItems, cartOpen, setCartOpen } = useCart();
   const { resolveHref } = useBoutique();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -123,7 +123,7 @@ const NavBar: React.FC = () => {
           <MenuMusique className="hidden sm:block" />
 
 
-          <IconButton onClick={() => setCartOpen(true)} title="Panier" ariaLabel={lang === 'FR' ? `Panier, ${cartItems.length} article${cartItems.length > 1 ? 's' : ''}` : `Cart, ${cartItems.length} item${cartItems.length > 1 ? 's' : ''}`}>
+          <IconButton onClick={() => setCartOpen(true)} expanded={cartOpen} title="Panier" ariaLabel={lang === 'FR' ? `Panier, ${cartItems.length} article${cartItems.length > 1 ? 's' : ''}` : `Cart, ${cartItems.length} item${cartItems.length > 1 ? 's' : ''}`}>
             <ShoppingBag size={17} strokeWidth={1.75} />
             {cartItems.length > 0 && (
               <span className="absolute -top-0.5 -right-0.5 bg-brass text-espressoDeep text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold tabular-nums">
@@ -252,11 +252,15 @@ const NavBar: React.FC = () => {
   );
 };
 
-const IconButton: React.FC<{ onClick: () => void; title: string; ariaLabel?: string; className?: string; children: React.ReactNode }> = ({ onClick, title, ariaLabel, className = '', children }) => (
+// `expanded` : le bouton annonce le tiroir qu'il ouvre (panier), vide ou plein.
+const IconButton: React.FC<{ onClick: () => void; title: string; ariaLabel?: string; expanded?: boolean; className?: string; children: React.ReactNode }> = ({ onClick, title, ariaLabel, expanded, className = '', children }) => (
   <button
+    type="button"
     onClick={onClick}
     title={title}
     aria-label={ariaLabel ?? title}
+    aria-haspopup={expanded === undefined ? undefined : 'dialog'}
+    aria-expanded={expanded}
     className={`relative w-11 h-11 flex items-center justify-center rounded-full border border-brass/25 bg-white/55 text-ink/70 dark:border-white/15 dark:bg-white/5 dark:text-ctext/70 hover:text-brassInk dark:hover:text-brassBright hover:bg-brass/10 transition-colors ${className}`}
   >
     {children}

@@ -114,7 +114,7 @@ const CartDrawer: React.FC = () => {
           {cartItems.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center">
               <ShoppingBag size={34} weight="light" className="mb-5 text-[#9c7a44]" />
-              <p className="text-[1.4rem] font-light" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>{fr ? 'Le panier est vide.' : 'The cart is empty.'}</p>
+              <p className="text-[1.4rem] font-light" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>{fr ? 'Votre panier est vide.' : 'Your cart is empty.'}</p>
               <Link
                 to="/boutique"
                 onClick={() => setCartOpen(false)}

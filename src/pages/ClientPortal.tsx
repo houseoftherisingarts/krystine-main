@@ -924,13 +924,18 @@ const ProfileTab: React.FC = () => {
     } finally { setSaving(false); }
   };
 
+  const [erreurPhoto, setErreurPhoto] = useState<string | null>(null);
   const onPickPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!user) return;
     const file = e.target.files?.[0]; if (!file) return;
-    setUploading(true);
+    setUploading(true); setErreurPhoto(null);
     try {
-      const { url } = await uploadImage(file, `members/${user.uid}`);
+      // Le dossier porte l'uid de la membre : c'est ce que storage.rules
+      // vérifie (members/{uid}). La photo est réduite avant de partir.
+      const { url } = await uploadImage(await reduireImage(file), `members/${user.uid}`);
       await updateMember(user.uid, { photoURL: url });
+    } catch {
+      setErreurPhoto(lang === 'FR' ? 'La photo n’a pas pu être envoyée. Essayez une autre image, ou une plus petite.' : 'The photo could not be sent. Try another image, or a smaller one.');
     } finally {
       setUploading(false);
       e.target.value = '';
@@ -948,6 +953,7 @@ const ProfileTab: React.FC = () => {
           <i className="fa-solid fa-camera mr-2" />{lang === 'FR' ? 'Changer la photo' : 'Change photo'}
           <input type="file" accept="image/*" className="hidden" onChange={onPickPhoto} />
         </label>
+        {erreurPhoto && <p role="alert" className="mt-2 text-xs text-[#8a2f1f]">{erreurPhoto}</p>}
       </div>
       <div className="md:col-span-2 space-y-5">
         <div>

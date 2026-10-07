@@ -39,8 +39,12 @@ const MenuMusique: React.FC<{ className?: string }> = ({ className = '' }) => {
   const origineChoisie = !!member?.personnalisation?.musiqueSite;
   // Choisir une piste la fait jouer tout de suite. Sans compte, seule
   // l'ambiance du site existe : elle part directement. Reprendre la piste
-  // déjà choisie la relance si elle était en pause.
+  // déjà choisie la relance si elle était en pause. Le menu se referme à
+  // chaque choix : cliquer la piste qui joue déjà laissait le menu ouvert
+  // sans rien changer, un clic sans effet relevé sur /formations (« L’ambiance
+  // du site · Offerte à toutes », 7 oct. 2026).
   const choisir = async (origine: boolean) => {
+    setOuvert(false);
     if (!user) { setAudioUrl(null, { jouer: true }); return; }
     if (origine === origineChoisie) { if (!audioPlaying) toggleAudio(); return; }
     await updateMember(user.uid, { personnalisation: { ...(member?.personnalisation || {}), musiqueSite: origine } });

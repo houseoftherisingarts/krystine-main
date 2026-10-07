@@ -183,6 +183,8 @@ async function aOptimiser(sept: string[], verif: Verif | null): Promise<{ points
       }
     }
     for (const e of Object.values((x.erreursListe || {}) as Record<string, any>)) {
+      // Bruit sans conséquence pour les visiteuses : robots des messageries qui testent les liens des lettres, navigation privée.
+      if (/Object Not Found Matching Id|Database deleted by request of the user/.test(String(e.msg || ''))) continue;
       // Une même erreur qui ne change que par un numéro (Id:2, Id:3…) se compte une seule fois.
       const k = `${e.path}|${String(e.msg || '').replace(/\d+/g, '#')}`;
       const a = erreurs.get(k) || { msg: String(e.msg || ''), path: String(e.path || ''), hier: 0, n: 0 };
