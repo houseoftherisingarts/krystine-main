@@ -66,3 +66,6 @@ scripts/qa/_tmp-*
 
 # Vidéos de lancement (skill brag-slim) : restent sur l'ordinateur
 brag-output*/
+
+# Cache des routes de la vérification du matin (régénéré à chaque passage)
+scripts/qa/verif-routes.json
