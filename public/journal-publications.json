@@ -6914,5 +6914,20 @@
       "functions/src/newsletter/commentaire.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-07T11:13:41.428Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "23342588",
+    "message": "Podcast (/podcast) : nouvelle vignette de partage, la pochette de la saison 2 d'Au-delà des tendances, au lieu de l'ancienne photo",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/podcast/partage.jpg",
+      "src/lib/pageMeta.ts"
+    ]
   }
 ]
