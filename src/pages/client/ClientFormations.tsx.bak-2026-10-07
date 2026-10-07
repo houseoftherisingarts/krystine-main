@@ -5,10 +5,9 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
 import { useSiteFlags } from '../../contexts/SiteFlagsContext';
-import { getMesFormations, getFormationsPubliees, getDerniereFormation, type AchatFormation, type Formation } from '../../firebase/formations';
+import { getMesFormations, getFormationsPubliees, type AchatFormation, type Formation } from '../../firebase/formations';
 import { estTelechargement } from '../../firebase/musique';
 import { utiliserCodeKajabi, restaurerKajabiAuto, confirmerAdresseKajabi } from '../../firebase/kajabi';
-import { RAYONS, placeDe } from '../../lib/rayonsFormations';
 
 // « Mes formations » : les cours que la cliente a achetés. La preuve d'achat
 // est écrite par le serveur au paiement; l'admin peut aussi en accorder.
@@ -37,12 +36,6 @@ const ClientFormations: React.FC = () => {
   const [code, setCode] = useState('');
   const [codeEtat, setCodeEtat] = useState<{ type: 'ok' | 'erreur'; texte: string } | null>(null);
   const [codeEnvoi, setCodeEnvoi] = useState(false);
-  // La formation touchée le plus récemment : la carte « Reprendre » en tête.
-  const [derniere, setDerniere] = useState<string | null>(null);
-  useEffect(() => {
-    if (!user) return;
-    getDerniereFormation(user.uid).then(setDerniere).catch(() => { /* lecture refusée : pas de carte « Reprendre » */ });
-  }, [user]);
 
   const charger = () => {
     if (!user) return;
@@ -91,43 +84,6 @@ const ClientFormations: React.FC = () => {
   const fermee = (f: Formation) => f.listeAttente
     || (f.id === 'foyer' && !foyerOuvert)
     || (f.id === 'origine2' && !origine2Ouvert);
-  const titreDe = (a: AchatFormation) => catalogue.find(f => f.id === a.id)?.titre || a.titre;
-  // La couverture 16:9 : celle de la preuve d'achat, sinon celle de la fiche.
-  const couverture = (a: AchatFormation) => a.imageUrl || catalogue.find(f => f.id === a.id)?.imageUrl || '';
-  // Les rayons, dans l'ordre de priorité (src/lib/rayonsFormations.ts); un rayon vide ne s'affiche pas.
-  const rayons = RAYONS.map(r => ({
-    ...r,
-    formations: mesFormations.filter(a => placeDe(a.id).cle === r.cle).sort((x, y) => placeDe(x.id).rang - placeDe(y.id).rang),
-  })).filter(r => r.formations.length);
-  // « Reprendre » seulement quand il y a de quoi choisir, et jamais vers les archives.
-  const reprendre = mesFormations.length > 1 ? mesFormations.find(a => a.id === derniere && placeDe(a.id).cle !== 'archives') : undefined;
-  const carte = (a: AchatFormation) => {
-    const cover = couverture(a);
-    return (
-      <Link
-        key={a.id}
-        to={cheminCours(a.id)}
-        className="group overflow-hidden rounded-[15px] border border-[#293027]/10 transition-transform duration-300 hover:-translate-y-0.5 dark:border-white/10"
-      >
-        {cover ? (
-          <img src={cover} alt={a.titre} className="aspect-video w-full object-cover" />
-        ) : (
-          <div className="flex aspect-video w-full items-center justify-center bg-[#BA7B39]/10">
-            <i className="fa-solid fa-graduation-cap text-2xl text-[#8B4A2F]" />
-          </div>
-        )}
-        {/* Le format sous l'image : il ne couvre plus le titre imprimé sur la couverture. */}
-        <div className="p-4">
-          <StickerFormat format={formatDe(a.id)} lang={lang} className="mb-3" />
-          {/* Le titre de la fiche d'abord : un nom officiel changé (6 oct. 2026) suit partout. */}
-          <TitreCarte titre={titreDe(a)} />
-          <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] transition-colors group-hover:text-[#BA7B39]">
-            {lang === 'FR' ? 'Continuer' : 'Continue'} <i className="fa-solid fa-arrow-right" />
-          </span>
-        </div>
-      </Link>
-    );
-  };
   const aDecouvrir = catalogue.filter(f => !possedees.has(f.id) && !fermee(f) && (isAdmin || !estTest(f.titre)));
 
   return (
@@ -148,44 +104,33 @@ const ClientFormations: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="mt-4 space-y-10">
-            {reprendre && (
-              <Link to={cheminCours(reprendre.id)} className="group grid overflow-hidden rounded-[15px] border border-[#BA7B39]/40 bg-[#28352F] sm:grid-cols-[1.1fr_1fr]">
-                {couverture(reprendre)
-                  ? <img src={couverture(reprendre)} alt={reprendre.titre} className="aspect-video h-full w-full object-cover" />
-                  : <div className="aspect-video w-full bg-[#BA7B39]/10" />}
-                <div className="flex flex-col justify-center p-6">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#BA7B39]">{lang === 'FR' ? 'Reprendre où vous en étiez' : 'Pick up where you left off'}</p>
-                  <span className="mt-3 block font-serif text-xl leading-snug text-[#EEE7DB] line-clamp-2">{titreDe(reprendre)}</span>
-                  <span className="mt-5 inline-block self-start rounded-full bg-[#BA7B39] px-5 py-2 text-[11px] font-bold uppercase tracking-widest text-[#28352F] transition-colors group-hover:bg-[#EEE7DB]">
+          <div className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            {mesFormations.map(a => {
+              // La couverture 16:9 : celle de la preuve d'achat, sinon celle de la fiche.
+              const cover = a.imageUrl || catalogue.find(f => f.id === a.id)?.imageUrl || '';
+              return (
+              <Link
+                key={a.id}
+                to={cheminCours(a.id)}
+                className="group overflow-hidden rounded-[15px] border border-[#293027]/10 transition-transform duration-300 hover:-translate-y-0.5 dark:border-white/10"
+              >
+                {cover ? (
+                  <img src={cover} alt={a.titre} className="aspect-video w-full object-cover" />
+                ) : (
+                  <div className="flex aspect-video w-full items-center justify-center bg-[#BA7B39]/10">
+                    <i className="fa-solid fa-graduation-cap text-2xl text-[#8B4A2F]" />
+                  </div>
+                )}
+                {/* Le format sous l'image : il ne couvre plus le titre imprimé sur la couverture. */}
+                <div className="p-4">
+                  <StickerFormat format={formatDe(a.id)} lang={lang} className="mb-3" />
+                  {/* Le titre de la fiche d'abord : un nom officiel changé (6 oct. 2026) suit partout. */}
+                  <TitreCarte titre={catalogue.find(f => f.id === a.id)?.titre || a.titre} />
+                  <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] transition-colors group-hover:text-[#BA7B39]">
                     {lang === 'FR' ? 'Continuer' : 'Continue'} <i className="fa-solid fa-arrow-right" />
                   </span>
                 </div>
               </Link>
-            )}
-            {rayons.map(r => {
-              const grille = (
-                <div className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                  {r.formations.map(carte)}
-                </div>
-              );
-              const titre = r.cle === 'archives' && !isAdmin ? (lang === 'FR' ? 'Vos autres formations' : 'Your other courses') : (lang === 'FR' ? r.fr : r.en);
-              if (r.cle === 'archives' && isAdmin) {
-                return (
-                  <details key={r.cle} className="group/arch">
-                    <summary className="inline-flex cursor-pointer list-none items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#293027]/50 hover:text-[#8B4A2F] dark:text-white/50 [&::-webkit-details-marker]:hidden">
-                      {lang === 'FR' ? `Archives (${r.formations.length})` : `Archives (${r.formations.length})`}
-                      <i className="fa-solid fa-chevron-down text-[9px] transition-transform group-open/arch:rotate-180" />
-                    </summary>
-                    {grille}
-                  </details>
-                );
-              }
-              return (
-                <div key={r.cle}>
-                  <h3 className="font-serif text-lg text-[#293027] dark:text-white">{titre}</h3>
-                  {grille}
-                </div>
               );
             })}
           </div>

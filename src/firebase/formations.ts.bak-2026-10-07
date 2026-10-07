@@ -269,14 +269,6 @@ export interface ProgressionDe {
   maj?: Timestamp;
 }
 
-/** La formation touchée le plus récemment par la membre (carte « Reprendre » de /compte). */
-export async function getDerniereFormation(uid: string): Promise<string | null> {
-  const snap = await getDocs(collection(db(), 'progression', uid, 'formations'));
-  let id: string | null = null; let t = 0;
-  snap.docs.forEach(d => { const m = (d.get('maj') as Timestamp | undefined)?.toMillis?.() || 0; if (m > t) { t = m; id = d.id; } });
-  return id;
-}
-
 export async function getProgression(uid: string, formationId: string): Promise<Progression> {
   const snap = await getDoc(doc(db(), 'progression', uid, 'formations', formationId));
   return snap.exists() ? (snap.data() as Progression) : { terminees: {} };
