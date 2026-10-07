@@ -108,7 +108,7 @@ const TESTIMONIALS = [
 
 const FAQS = [
   ["Est-ce que je dois connaître l'Ayurveda ?", "Le programme est conçu pour être simple, concret et accessible. Krystine rend chaque notion claire, pour qu'elle devienne un outil pratique dans votre quotidien."],
-  ['Combien de temps ai-je accès au contenu ?', "Votre accès reste ouvert tant que la formation existe, et jamais moins de trois ans. Vous pourrez y revenir chaque fois que Vata se réveille."],
+  ['Combien de temps ai-je accès au contenu ?', "Vous gardez l'accès à tout ce qui s'est ouvert pendant au moins trois ans. Vous pourrez y revenir chaque fois que Vata se réveille."],
   ["Quel est l'investissement de temps requis ?", "C'est un programme qui respecte votre rythme. Les capsules audio font entre 5 et 15 minutes. L'idée n'est pas d'ajouter une corvée, mais de remplacer certaines habitudes stressantes par des moments d'apaisement."],
   ["Comment les semaines s'ouvrent-elles ?", "L'introduction et la semaine 1 s'ouvrent dès votre inscription. Ensuite, une nouvelle semaine s'ouvre tous les 7 jours, un courriel vous prévient à chaque fois, et vous gardez l'accès à tout ce qui est ouvert."],
   ['Est-ce que je peux suivre sur mobile ou tablette ?', "Oui. Le programme s'adapte à votre téléphone et à votre tablette, et vous pouvez écouter vos capsules comme un balado, même écran verrouillé, pendant vos déplacements."],

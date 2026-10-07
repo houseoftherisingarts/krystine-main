@@ -19,7 +19,7 @@ export const TIERS = [
       'Le journal de bord et d\'observation, et un petit boni d\'observation chaque semaine',
       'Les capsules plantes, épices et aliments de saison',
       'Le guide complet de 204 pages, offert à la fin du parcours · valeur 150 $',
-      'Un accès ouvert tant que la formation existe, et jamais moins de trois ans',
+      'Un accès d\'au moins trois ans à tout ce qui s\'est ouvert',
     ],
     recommended: false,
   },
