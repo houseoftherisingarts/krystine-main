@@ -6953,5 +6953,19 @@
       "src/components/cours/origine/VoletLecon.tsx",
       "src/pages/CoursDetailPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-07T12:39:32.082Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "80f687ea",
+    "message": "Cours des fondatrices : la leçon vide « Résumé du chat » est masquée aux participantes",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/origine2/piliers.ts"
+    ]
   }
 ]
