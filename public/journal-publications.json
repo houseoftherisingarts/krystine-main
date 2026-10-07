@@ -7014,5 +7014,20 @@
       "src/components/cours/origine/VoletLecon.tsx",
       "src/pages/origine2/piliers.ts"
     ]
+  },
+  {
+    "quand": "2026-10-07T14:05:38.864Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "26bbaab4",
+    "message": "Boutique (aperçu) : la famille « Solaires & Saisons » est retirée",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/collections.ts",
+      "src/lib/saisonBoutique.ts"
+    ]
   }
 ]
