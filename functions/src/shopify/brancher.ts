@@ -15,6 +15,9 @@ const SUJETS = ['ORDERS_PAID', 'ORDERS_CREATE', 'ORDERS_UPDATED'] as const;
 
 interface Abonnement { id: string; topic: string; uri: string }
 
+// Shopify rend l'adresse avec une barre finale : on compare sans elle.
+const versLeSite = (uri: string) => uri.replace(/\/+$/, '') === ADRESSE;
+
 async function graphql<T>(shop: string, token: string, query: string, variables?: Record<string, unknown>): Promise<T> {
   const resp = await fetch(`https://${shop}/admin/api/${SHOPIFY_API_VERSION}/graphql.json`, {
     method: 'POST',
@@ -53,7 +56,7 @@ export const shopifyBrancherWebhooks = onCall(
     const crees: string[] = [];
     const erreurs: string[] = [];
     for (const topic of SUJETS) {
-      if (existants.some(a => a.topic === topic && a.uri === ADRESSE)) continue;
+      if (existants.some(a => a.topic === topic && versLeSite(a.uri))) continue;
       const d = await graphql<{ webhookSubscriptionCreate: { webhookSubscription: Abonnement | null; userErrors: { message: string }[] } }>(
         shop, token, CREER, { topic, abonnement: { uri: ADRESSE, format: 'JSON' } },
       );
@@ -66,7 +69,7 @@ export const shopifyBrancherWebhooks = onCall(
     return {
       crees,
       erreurs,
-      abonnements: finale.map(a => ({ id: a.id, topic: a.topic, versLeSite: a.uri === ADRESSE })),
+      abonnements: finale.map(a => ({ id: a.id, topic: a.topic, versLeSite: versLeSite(a.uri) })),
     };
   },
 );
