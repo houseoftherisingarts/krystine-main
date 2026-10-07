@@ -121,11 +121,13 @@ const FormationsLanding: React.FC = () => {
                 <div className="flex flex-col p-[clamp(1.75rem,4.5vw,4.25rem)]">
                   <Kicker sombre>Être accompagnée · le cœur du chemin</Kicker>
                   <h2 className="v2-serif mt-6 font-light uppercase leading-[0.95] tracking-[0.01em] text-[#EEE7DB] text-[clamp(2.4rem,5.2vw,5rem)]">
-                    Expérience Origine 2
+                    Expérience Origine
                   </h2>
-                  <p className="mt-6 text-[0.72rem] uppercase leading-[1.9] tracking-[0.2em] text-[#BA7B39]">
+                  <p className="v2-serif mt-3 font-light text-[clamp(1.3rem,2.2vw,1.9rem)] text-[#BA7B39]">Cohorte 2</p>
+                  <p className="v2-serif mt-5 font-light text-[clamp(1.5rem,2.4vw,2.1rem)] leading-[1.2] text-[#EEE7DB]">Retrouver ses repères.</p>
+                  <p className="mt-5 text-[0.72rem] uppercase leading-[1.9] tracking-[0.2em] text-[#BA7B39]">
                     <span className="block">Le parcours signature · 12 semaines avec Krystine</span>
-                    <span className="block">Départ le dimanche 10 janvier 2027</span>
+                    <span className="block">Départ en janvier 2027</span>
                   </p>
                   <p className="v2-serif mt-6 max-w-[34ch] font-light text-[clamp(1.2rem,1.8vw,1.5rem)] leading-[1.45] text-[#EEE7DB]/90">
                     Krystine vous accompagne en direct, une semaine à la fois, avec une cohorte qui avance au même pas.
