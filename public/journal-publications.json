@@ -6929,5 +6929,29 @@
       "public/podcast/partage.jpg",
       "src/lib/pageMeta.ts"
     ]
+  },
+  {
+    "quand": "2026-10-07T12:13:39.509Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "f7a85825",
+    "message": "VATA : le Vata guidé (Abondance et transformation profonde, automne 2024) et ses bonis s'ouvrent maintenant à la connexion des acheteuses Kajabi, outil de double vérification scripts/vata/verifier-vata.mjs · Cours : plus aucune image tirée des vidéos comme aperçu (photo du coffret pour Origine, image de la semaine pour VATA), la vidéo se charge au clic · Courriels du direct : renvoi vers /direct si le lien YouTube manque · deux vidéos privées retirées du catalogue des vidéos",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      ".gitignore",
+      "functions/src/kajabi.ts",
+      "functions/src/newsletter/live.ts",
+      "public/assets-manifest.json",
+      "public/compte/videos-krystine.json",
+      "scripts/kajabi/restaurer-vata.mjs",
+      "scripts/vata/verifier-vata.mjs",
+      "src/components/cours/VideoLecon.tsx",
+      "src/components/cours/origine/CoursOrigine.tsx",
+      "src/components/cours/origine/VoletLecon.tsx",
+      "src/pages/CoursDetailPage.tsx"
+    ]
   }
 ]
