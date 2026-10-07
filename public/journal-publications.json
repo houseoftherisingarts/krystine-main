@@ -6897,5 +6897,22 @@
       "src/vexelhotjar/tracker.ts",
       "storage.rules"
     ]
+  },
+  {
+    "quand": "2026-10-07T10:49:04.687Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "f33dc0a7",
+    "message": "Commentaires des visiteuses : un courriel avise teamksl@ à chaque nouveau commentaire ou problème signalé; le Bilan du matin liste tout ce qui attend encore une réponse (commentaires et messages au soutien non lus), avec leur âge",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "functions/src/index.ts",
+      "functions/src/newsletter/commentaire.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
