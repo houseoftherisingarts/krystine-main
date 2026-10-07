@@ -7078,5 +7078,25 @@
       "src/pages/client/ClientFormations.tsx",
       "src/pages/client/ClientFormations.tsx.bak-2026-10-07"
     ]
+  },
+  {
+    "quand": "2026-10-07T15:27:32.734Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "67316026",
+    "message": "Espace client › Commandes : l'expédition, le numéro de suivi Postes Canada, la livraison et l'annulation suivent maintenant Shopify (avant, la commande restait à « Payé »)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/shopify/commandePayee.ts",
+      "functions/src/shopify/commandePayee.ts.bak-2026-10-07",
+      "functions/src/shopify/types.ts",
+      "functions/src/shopify/types.ts.bak-2026-10-07",
+      "functions/src/shopify/webhook.ts",
+      "functions/src/shopify/webhook.ts.bak-2026-10-07",
+      "public/assets-manifest.json"
+    ]
   }
 ]
