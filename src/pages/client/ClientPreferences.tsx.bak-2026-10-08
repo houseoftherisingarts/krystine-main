@@ -161,16 +161,13 @@ const ClientPreferences: React.FC<{ uid: string; member: MemberDoc | null; lang:
           </label>
           <label className="block sm:col-span-2">
             <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-[#38403a]/60 dark:text-white/60">{fr ? 'Année de naissance' : 'Birth year'}</span>
-            {/* Un champ texte à quatre chiffres, sans les petites flèches du champ numérique :
-                le 7 oct. 2026, une membre a cliqué 11 fois sur la flèche qui partait de l'année minimale. */}
             <input
-              type="text"
+              type="number"
               inputMode="numeric"
-              pattern="[0-9]{4}"
-              maxLength={4}
-              autoComplete="bday-year"
+              min={ANNEE_MIN}
+              max={anneeMax}
               value={profil.anneeNaissance}
-              onChange={(e) => setProfil((p) => ({ ...p, anneeNaissance: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
+              onChange={(e) => setProfil((p) => ({ ...p, anneeNaissance: e.target.value }))}
               placeholder="1980"
               className="w-full max-w-[10rem] rounded-full border border-[#38403a]/15 bg-white/70 px-4 py-2.5 text-sm text-[#293027] outline-none focus:border-[#BA7B39] dark:border-white/15 dark:bg-white/5 dark:text-white"
             />
