@@ -7307,5 +7307,20 @@
       "src/pages/admin/sections/BookingsSection.tsx.bak-2026-10-08",
       "src/pages/admin/sections/DemandesPresse.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-08T14:11:00.341Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "3e596b24",
+    "message": "Conférencière (/krystine, /conferenciere, /presse) : le titre « Une conférence, plusieurs portes. » tient sur deux lignes au téléphone",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
