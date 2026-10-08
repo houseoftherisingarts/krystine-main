@@ -7159,5 +7159,20 @@
       "src/pages/QuizLoeuvre.tsx",
       "src/pages/QuizLoeuvre.tsx.bak-2026-10-07"
     ]
+  },
+  {
+    "quand": "2026-10-08T11:36:54.040Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "83101ae2",
+    "message": "Espace client › Profil : l'année de naissance se tape en quatre chiffres, sans les petites flèches (11 clics de rage le 7 oct.)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/client/ClientPreferences.tsx",
+      "src/pages/client/ClientPreferences.tsx.bak-2026-10-08"
+    ]
   }
 ]
